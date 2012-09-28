@@ -75,8 +75,10 @@ macro(cgv_add_module target)
 	
 	# Mark this as a module
 	# FIXME: Might be a hack
-	set_target_properties(${target} PROPERTIES TARGET_IS_MODULE 1)
-	
+	# set_target_properties(${target} PROPERTIES TARGET_IS_MODULE 1)
+
+	# Remember the type for later config generation
+	set_target_properties(${target} PROPERTIES HEADER_LOCAL_PATH "plugins")	
 endmacro()
 
 
@@ -125,8 +127,14 @@ macro(cgv_write_find_file target)
 	string(REPLACE ";" " " DEP_NAMES "${${PROJECT_NAME}_DEP_NAMES}")
 	set(FIND_INIT "${FIND_INIT}set(FIND_NAMES ${DEP_NAMES})\n")
 	set(TARGET "${target}")
-	
-	get_target_property(TARGET_IS_MODULE ${target} TARGET_IS_MODULE)
+
+	get_target_property(TARGET_TYPE ${target} TYPE)
+
+	if (TARGET_TYPE STREQUAL "MODULE_LIBRARY")
+		set(TARGET_IS_MODULE 1)
+	endif()	
+
+#	get_target_property(TARGET_IS_MODULE ${target} TARGET_IS_MODULE)
 #	
 #	if (FIND_IS_MODULE)
 #		set(TARGET_IS_MODULE 1)
@@ -134,6 +142,15 @@ macro(cgv_write_find_file target)
 #		set(TARGET_IS_MODULE 0)
 #	endif()
 #	
+
+	get_target_property(HEADER_LOCAL_PATH ${target} HEADER_LOCAL_PATH)
+	get_target_property(HEADER_LOCAL_NAME ${target} HEADER_LOCAL_NAME)
+	message("Header install name for ${target}: ${HEADER_LOCAL_PATH}")
+
+	if (NOT HEADER_LOCAL_NAME)
+		set(HEADER_LOCAL_NAME ${target})
+	endif()
+
 	set(LIB_PATH "${INSTALL_BASE}/${INSTALL_LIB_PATH}")
 	set(BIN_PATH "${INSTALL_BASE}/${INSTALL_BIN_PATH}")
 	set(HEADER_PATH "${INSTALL_BASE}/${INSTALL_HEADER_PATH}")
@@ -175,8 +192,6 @@ macro(cgv_write_find_file target)
 		file(READ "${MACROS_NAME}" MACRO_DEFINITIONS)
 	endif()
 
-
-	get_target_property(TARGET_TYPE ${target} TYPE)
 
 	set(INPUT_FILE "PkgLibConfig.cmake.in")
 	if (TARGET_TYPE STREQUAL "EXECUTABLE")

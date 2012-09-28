@@ -22,43 +22,68 @@ foreach(fn ${FIND_NAMES})
 	endif()
 
 	if (${fn}_FOUND)
-		# Try to append the include directories
-		if(${fn}_INCLUDE_DIR)
-			list(APPEND @TARGET@_INCLUDE_DIR "${${fn}_INCLUDE_DIR}")
-		elseif (${fn}_INCLUDE_DIRS)
-			list(APPEND @TARGET@_INCLUDE_DIR "${${fn}_INCLUDE_DIRS}")
-		elseif (${fn}_INCLUDE_PATH)
-			list(APPEND @TARGET@_INCLUDE_DIR "${${fn}_INCLUDE_PATH}")
-		elseif (${fn}_INCLUDES)
-			list(APPEND @TARGET@_INCLUDE_DIR "${${fn}_INCLUDES}")
-		endif()
+		# Try to append the include directories with different names
+		list(APPEND @TARGET@_INCLUDE_DIR 
+			${${fn}_INCLUDE_DIR}
+			${${fn}_INCLUDE_DIRS}
+			${${fn}_INCLUDE_PATH}
+			${${fn}_INCLUDES}
+			"")
 
-		# Try to append the libraries
-		if (${fn}_LIBRARIES)
-			list(APPEND @TARGET@_LIBRARIES "${${fn}_LIBRARIES}")
-		elseif (${fn}_LIBRARY)
-			list(APPEND @TARGET@_LIBRARIES "${${fn}_LIBRARY}")
-		endif()	
+		# Try to append the library names with different names
+		list(APPEND @TARGET@_LIBRARIES
+			${${fn}_LIBRARIES}
+			${${fn}_LIBRARY}
+			"")
 
 		# Try to append the definitions
-		if (${fn}_SHARED_DEFINITIONS)
-			list(APPEND @TARGET@_SHARED_DEFINITIONS "${${fn}_SHARED_DEFINITIONS}")
-		endif()
-		if (${fn}_STATIC_DEFINITIONS)
-			list(APPEND @TARGET@_STATIC_DEFINITIONS "${${fn}_STATIC_DEFINITIONS}")
-		endif()
-		if (${fn}_COMMON_DEFINITIONS)
-			list(APPEND @TARGET@_COMMON_DEFINITIONS "${${fn}_COMMON_DEFINITIONS}")
-		endif()		
+		list(APPEND @TARGET@_SHARED_DEFINITIONS ${${fn}_SHARED_DEFINITIONS} "")
+		list(APPEND @TARGET@_STATIC_DEFINITIONS ${${fn}_STATIC_DEFINITIONS} "")
+		list(APPEND @TARGET@_COMMON_DEFINITIONS ${${fn}_COMMON_DEFINITIONS} "")
+
+
+#		if(${fn}_INCLUDE_DIR)
+#			list(APPEND @TARGET@_INCLUDE_DIR "${${fn}_INCLUDE_DIR}")
+#		elseif (${fn}_INCLUDE_DIRS)
+#			list(APPEND @TARGET@_INCLUDE_DIR "${${fn}_INCLUDE_DIRS}")
+#		elseif (${fn}_INCLUDE_PATH)
+#			list(APPEND @TARGET@_INCLUDE_DIR "${${fn}_INCLUDE_PATH}")
+#		elseif (${fn}_INCLUDES)
+#			list(APPEND @TARGET@_INCLUDE_DIR "${${fn}_INCLUDES}")
+#		endif()
+
+		# Try to append the libraries
+#		if (${fn}_LIBRARIES)
+#			list(APPEND @TARGET@_LIBRARIES "${${fn}_LIBRARIES}")
+#		elseif (${fn}_LIBRARY)
+#			list(APPEND @TARGET@_LIBRARIES "${${fn}_LIBRARY}")
+#		endif()	
+
+		# Try to append the definitions
+#		if (${fn}_SHARED_DEFINITIONS)
+#			list(APPEND @TARGET@_SHARED_DEFINITIONS "${${fn}_SHARED_DEFINITIONS}")
+#		endif()
+#		if (${fn}_STATIC_DEFINITIONS)
+#			list(APPEND @TARGET@_STATIC_DEFINITIONS "${${fn}_STATIC_DEFINITIONS}")
+#		endif()
+#		if (${fn}_COMMON_DEFINITIONS)
+#			list(APPEND @TARGET@_COMMON_DEFINITIONS "${${fn}_COMMON_DEFINITIONS}")
+#		endif()		
 	endif()
 
 endforeach()
 
-list(APPEND @TARGET@_INCLUDE_DIR "@PACKAGE_HEADER_PATH@")
-list(APPEND @TARGET@_INCLUDE_DIR "@PACKAGE_HEADER_PATH@/..")
 #list(APPEND @TARGET@_INCLUDE_DIR "@PACKAGE_BUILD_HEADER_PATH@")
-list(APPEND @TARGET@_INCLUDE_DIR "@SOURCE_HEADER_PATH@")
-list(APPEND @TARGET@_INCLUDE_DIR "@SOURCE_HEADER_PATH@/..")
+if (EXISTS "@SOURCE_HEADER_PATH@")
+	list(APPEND @TARGET@_INCLUDE_DIR "@SOURCE_HEADER_PATH@")
+	list(APPEND @TARGET@_INCLUDE_DIR "@SOURCE_HEADER_PATH@/..")
+else()
+	list(APPEND @TARGET@_INCLUDE_DIR "@PACKAGE_HEADER_PATH@/@HEADER_LOCAL_PATH@")
+	list(APPEND @TARGET@_INCLUDE_DIR "@PACKAGE_HEADER_PATH@/@HEADER_LOCAL_PATH@/@HEADER_LOCAL_NAME@")
+endif()
+
+# Remove duplicates from the include dirs
+list(REMOVE_DUPLICATES @TARGET@_INCLUDE_DIR)
 
 # For compatibility also set the @TARGET@_INCLUDE_DIR and @TARGET@_INCLUDE_PATH variable
 set(@TARGET@_INCLUDE_DIRS "${@TARGET@_INCLUDE_DIR}")

@@ -127,6 +127,9 @@ macro(cgv_add_executable target_name)
 		OUTPUT_NAME ${target_name}
 		RELEASE_OUTPUT_NAME ${target_name}
 		DEBUG_OUTPUT_NAME ${target_name}${DEBUG_POSTFIX})	
+
+	# Remember the type for later config generation
+	set_target_properties(${target_name} PROPERTIES HEADER_LOCAL_PATH "apps")
 endmacro()
 
 
@@ -147,6 +150,12 @@ macro(_cgv_add_custom_library target_name folder)
 	# Create installation rules for the target
 	install(TARGETS ${target_name} DESTINATION "${INSTALL_BASE}/${INSTALL_LIB_PATH}")
 	_cgv_install_public_headers("libs/${CONF_INSTALL_NAME}" ${CONF_PUBLIC_HEADERS})
+
+	# Remember the type and install name for later config generation
+	set_target_properties(${target_name} PROPERTIES 
+		HEADER_LOCAL_PATH "libs"
+		HEADER_LOCAL_NAME ${CONF_INSTALL_NAME}
+)
 
 	# Set a source folder for VisualStudio
 	set_target_properties(${target_name} PROPERTIES FOLDER "${folder}")
