@@ -145,7 +145,6 @@ macro(cgv_write_find_file target)
 
 	get_target_property(HEADER_LOCAL_PATH ${target} HEADER_LOCAL_PATH)
 	get_target_property(HEADER_LOCAL_NAME ${target} HEADER_LOCAL_NAME)
-	message("Header install name for ${target}: ${HEADER_LOCAL_PATH}")
 
 	if (NOT HEADER_LOCAL_NAME)
 		set(HEADER_LOCAL_NAME ${target})
