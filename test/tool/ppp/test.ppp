@@ -1,0 +1,51 @@
+@=
+
+exclude "inc_test.ppp"
+
+func(f1)
+{
+	return = "global f1";
+}
+
+func(test_map; :>M = MAP, :>n=7, :>return=0)
+{
+	func(:>f1)
+	{
+		return="local f1";
+	}
+	for (:>i = 0; i< !M::list; ++i) {
+		return += (M::list)[i]
+	}
+	namespace(M) {
+		c = "hallo";
+		d = "welt";
+	}
+	cout("n = ".n."\n")
+	cout(f1()."\n")
+	cout(::f1()."\n")
+}
+
+map = MAP;
+namespace(map) {
+	a = 1;
+	b = 2;
+	include "test_map.ppp"
+}
+map2 = map;
+map::list = [1,2,3,4,5];
+cout("test_map returns ".test_map(<:M=&map, <:n=8)."\n");
+cout("\n\n")cout(map.[])cout("\n\n")
+cout("\n\n")cout(map2.[])cout("\n\n")
+
+cout(fac(<:n=5))
+cout("\n")
+
+cout(f1()."\n")
+cout("test ppp\n")
+
+for(i=0; i<10; ++i) {
+	cout("fibonacci(".i.") = ".fibonacci(<:n=i)."\n")
+}
+cout("test_map::list[3]= ".map::list[3]."\n");
+cout(f1()."\n")
+

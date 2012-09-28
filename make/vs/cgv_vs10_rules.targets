@@ -1,0 +1,81 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <PropertyPageSchema
+      Include="$(MSBuildThisFileDirectory)$(MSBuildThisFileName).xml" />
+    <AvailableItemName
+      Include="generate_make_file">
+      <Targets>_generate_make_file</Targets>
+    </AvailableItemName>
+  </ItemGroup>
+  <UsingTask
+    TaskName="generate_make_file"
+    TaskFactory="XamlTaskFactory"
+    AssemblyName="Microsoft.Build.Tasks.v4.0">
+    <Task>$(MSBuildThisFileDirectory)$(MSBuildThisFileName).xml</Task>
+  </UsingTask>
+  <Target
+    Name="_generate_make_file"
+    BeforeTargets="$(generate_make_fileBeforeTargets)"
+    AfterTargets="$(generate_make_fileAfterTargets)"
+    Condition="'@(generate_make_file)' != ''"
+    DependsOnTargets="$(generate_make_fileDependsOn);Computegenerate_make_fileOutput"
+    Outputs="%(generate_make_file.Outputs)"
+    Inputs="%(generate_make_file.Identity);%(generate_make_file.AdditionalDependencies);$(MSBuildProjectFile)">
+    <ItemGroup
+      Condition="'@(SelectedFiles)' != ''">
+      <generate_make_file
+        Remove="@(generate_make_file)"
+        Condition="'%(Identity)' != '@(SelectedFiles)'" />
+    </ItemGroup>
+    <ItemGroup>
+      <generate_make_file_tlog
+        Include="%(generate_make_file.Outputs)"
+        Condition="'%(generate_make_file.Outputs)' != '' and '%(generate_make_file.ExcludedFromBuild)' != 'true'">
+        <Source>@(generate_make_file, '|')</Source>
+      </generate_make_file_tlog>
+    </ItemGroup>
+    <Message
+      Importance="High"
+      Text="%(generate_make_file.ExecutionDescription)" />
+    <WriteLinesToFile
+      Condition="'@(generate_make_file_tlog)' != '' and '%(generate_make_file_tlog.ExcludedFromBuild)' != 'true'"
+      File="$(IntDir)$(ProjectName).write.1.tlog"
+      Lines="^%(generate_make_file_tlog.Source);@(generate_make_file_tlog-&gt;'%(Fullpath)')" />
+    <generate_make_file
+      Condition="'@(generate_make_file)' != '' and '%(generate_make_file.ExcludedFromBuild)' != 'true'"
+      CommandLineTemplate="%(generate_make_file.CommandLineTemplate)"
+      AdditionalOptions="%(generate_make_file.AdditionalOptions)"
+      Inputs="%(generate_make_file.Identity)" />
+  </Target>
+  <PropertyGroup>
+    <ComputeLinkInputsTargets>
+            $(ComputeLinkInputsTargets);
+            Computegenerate_make_fileOutput;
+          </ComputeLinkInputsTargets>
+    <ComputeLibInputsTargets>
+            $(ComputeLibInputsTargets);
+            Computegenerate_make_fileOutput;
+          </ComputeLibInputsTargets>
+  </PropertyGroup>
+  <Target
+    Name="Computegenerate_make_fileOutput"
+    Condition="'@(generate_make_file)' != ''">
+    <ItemGroup>
+      <generate_make_fileDirsToMake
+        Condition="'@(generate_make_file)' != '' and '%(generate_make_file.ExcludedFromBuild)' != 'true'"
+        Include="%(generate_make_file.Outputs)" />
+      <Link
+        Include="%(generate_make_fileDirsToMake.Identity)"
+        Condition="'%(Extension)'=='.obj' or '%(Extension)'=='.res' or '%(Extension)'=='.rsc' or '%(Extension)'=='.lib'" />
+      <Lib
+        Include="%(generate_make_fileDirsToMake.Identity)"
+        Condition="'%(Extension)'=='.obj' or '%(Extension)'=='.res' or '%(Extension)'=='.rsc' or '%(Extension)'=='.lib'" />
+      <ImpLib
+        Include="%(generate_make_fileDirsToMake.Identity)"
+        Condition="'%(Extension)'=='.obj' or '%(Extension)'=='.res' or '%(Extension)'=='.rsc' or '%(Extension)'=='.lib'" />
+    </ItemGroup>
+    <MakeDir
+      Directories="@(generate_make_fileDirsToMake-&gt;'%(RootDir)%(Directory)')" />
+  </Target>
+</Project>

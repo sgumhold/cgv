@@ -1,0 +1,5 @@
+@exclude<cgv/config/make.ppp>
+@define(projectName="zlib")
+@define(projectType="library")
+@define(projectGUID="fa9d1050-fc30-11dd-87af-0800200c9a66")
+@define(addSharedDefines=["ZLIB_DLL"])

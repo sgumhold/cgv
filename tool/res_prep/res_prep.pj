@@ -1,0 +1,9 @@
+@=
+projectType="tool";
+projectName="res_prep";
+projectGUID="F514B4C6-C19A-4137-8C8E-CE0B6D956B39";
+sourceDirs=[INPUT_DIR];
+sourceFiles=[CGV_DIR."/cgv/utils/scan.cxx",
+             CGV_DIR."/cgv/utils/dir.cxx",
+             CGV_DIR."/cgv/utils/file.cxx"];
+addDefines=["CGV_FORCE_STATIC"];

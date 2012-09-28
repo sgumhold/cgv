@@ -1,0 +1,15 @@
+@exclude<cgv/config/make.ppp>
+@define(projectType="library")
+@define(projectName="multi_mouse_fltk")
+@define(projectGUID="D7E74702-9AFA-41b9-ADF4-A42DFD533779")
+@define(addProjectDirs=[CGV_DIR."/3rd",INPUT_DIR])
+@define(addIncDirs=[CGV_DIR."/3rd"])
+@define(addProjectDeps=["fltk", "multi_mouse"])
+@define(sourceFiles=[
+	CGV_DIR."/cgv/config/lib_begin.h",
+	CGV_DIR."/cgv/config/lib_end.h",
+	INPUT_DIR."/lib_begin_fltk.h",
+	INPUT_DIR."/multi_mouse_fltk.h",
+	INPUT_DIR."/multi_mouse_fltk.cxx"
+])
+@define(addSharedDefines=["CGV_RENDER_GL_EXPORTS", "MULTI_MOUSE_FLTK_EXPORTS"])

@@ -1,0 +1,9 @@
+@=
+projectName="ann_wrapper";
+projectType="library";
+projectGUID="E9694364-B471-4833-92A7-11E5ADD0AF58";
+addProjectDirs=[CGV_DIR."/3rd"];
+addProjectDeps=["ann", "cgv_math"];
+addLibDirs=[env::CGV_SUPPORT_DIR."/3rd/csparse"];
+addIncDirs=[CGV_DIR."/3rd"];
+addSharedDefines=["ANN_WRAPPER_EXPORT"];

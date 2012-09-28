@@ -1,0 +1,16 @@
+varying vec3 N; 
+varying vec4 l; 
+varying vec4 h; 
+
+vec4 my_color_transform(in vec4 c);
+
+void main()
+{
+	gl_Position = ftransform();
+	gl_FrontColor = my_color_transform(gl_Color); 
+	gl_FrontColor = gl_Color; 
+	N = gl_NormalMatrix * gl_Normal;
+	l = gl_LightSource[0].position;
+	h = gl_LightSource[0].halfVector;
+	gl_TexCoord[0] = gl_MultiTexCoord0;
+}

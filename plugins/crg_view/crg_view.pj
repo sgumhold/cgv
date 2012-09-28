@@ -1,0 +1,7 @@
+@exclude<cgv/config/make.ppp>
+@define(projectType="plugin")
+@define(projectName="crg_view")
+@define(projectGUID="07483210-fc2e-11dd-87af-0800200c9a66")
+@define(addProjectDeps=["cgv_render", "cgv_gui"])
+@define(addSharedDefines=["CGV_RENDER_VIEW_EXPORTS"])
+

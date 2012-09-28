@@ -1,0 +1,3 @@
+show all
+
+type(grid):show_axes=false

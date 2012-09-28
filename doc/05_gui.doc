@@ -1,0 +1,191 @@
+// This file is for Doxygen input. It is not compiled.
+
+#include <cgv/gui/register.h>
+#include <cgv/gui/application.h>
+#include <cgv/gui/button.h>
+#include <cgv/gui/control.h>
+#include <cgv/gui/window.h>
+#include <cgv/gui/event_handler.h>
+#include <cgv/gui/provider.h>
+#include <cgv/gui/menu_provider.h>
+#include <cgv/gui/mouse_event.h>
+#include <cgv/gui/driver.h>
+
+using namespace cgv::gui;
+
+/*! \page guiNS GUI Creation
+
+The cgv::gui namespace implements abstract class with the minimal
+functionality necessary for graphical user interfaces. The implementation
+hands on all gui creation calls to a driver. The driver can be implemented
+with an arbitrary gui toolkit and loaded as a plugin. Currently, one driver
+is implemented in the \c cg_fltk plugin that builds on the fltk toolkit. 
+Therefore, if cgv::gui is used make sure to add \c cg_fltk to the list of 
+dependent projects.
+
+\section AbstGUI Abstract GUI Interface
+
+The abstract gui implementation is composed of five components
+- class that reflect gui elements ... these include 
+  - cgv::gui::application ... singleton class with static functions to create and
+     enumerate windows
+  - cgv::gui::gui_group ... represents a gui element that manages child elements
+  - cgv::gui::window ... represents a top level window that also acts as a group
+    that can integrate other gui elements
+  - cgv::gui::text_editor ... a top level window that allows editing of text with
+    syntax highlighting and callbacks when text is changed.
+  - cgv::gui::button ... a button basically has a name and a signal \c click that 
+    is emitted when the button is pressed
+  - cgv::gui::view ... class that is templated over a value type representing a gui
+    element that views a value of the given type
+  - cgv::gui::control ... class again templated over the value type for gui elements
+    that allow to change a value. Two signals are provide: cgv::gui::control::check_value to
+    check before the change of the value whether the change is valid and 
+    cgv::gui::control::value_change which is emitted after the value has actually changed
+- classes that represent an cgv::gui::event with specializations for cgv::gui::key_event and 
+  cgv::gui::mouse_event as well as a cgv::gui::trigger class with a signal emitted after a 
+  given time interval or in regular time intervals.
+- interface classes used by registered objects to tell the framework that
+  they provide a gui or handle events
+  - cgv::gui::event_handler ... derive your class from this class and overload the
+    cgv::gui::event_handler::handle() method to receive and process events emitted in the 3d view
+  - cgv::gui::provider ... derive from this class and overload the cgv::gui::provider::create_gui()
+    method to implement your own gui. Use the add and inline methods of the 
+    cgv::gui::provider class to add gui elements.
+  - cgv::gui::menu_provider ... derive from this class and overload the cgv::gui::menu_provider::create_menu
+    and cgv::gui::menu_provider::destroy_menu methods to add entries to the main menu with the
+    add methods of the \c menu_provider class.
+- convenience functions to ask for file names with cgv::gui::file_open_dialog() or
+  cgv::gui::file_save_dialog().
+- abstract interface class cgv::gui::driver for the implementation of a new gui driver
+
+In order to use the gui functionality, derive your class from the interface
+classes and reimplement the virtual methods. Examples for event handling can
+be found in examples plugin in the classes picker, mouse_tracker and
+simple_cube in simple_cube_8.h. The creation of a gui is illustrated in the 
+classes gui_test in gui_test.cxx, simple_cube or shape.
+
+\section createGUI Implementing the createGUI method
+
+After deriving from \link cgv::gui::provider provider\endlink one has to reimplement the
+\link cgv::gui::provider::create_gui createGUI\endlink-method. Here one uses the methods 
+\link cgv::gui::provider::add_decorator add_decorator\endlink, 
+\link cgv::gui::provider::add_button add_button\endlink, 
+\link cgv::gui::provider::add_view add_view\endlink, 
+\link cgv::gui::provider::add_control add_control\endlink.
+These methods take the following arguments
+- name of the gui element as string value
+- in case of views and controls a reference to a value
+- the type of the gui element as string (not for buttons), for example "slider" or "wheel" for numeric controls
+- an option string that is sent to the newly created gui element 
+  through the \link cgv::base::base::multi_set base::multi_set\endlink 
+  method of the \ref propInt. 
+- optionally a string describing the alignment of the next gui element can be specified, which
+  defaults to "\n" such that by default gui elements are aligned in a vertical list.
+The available gui element types, options for gui elements and alignment depend on 
+the used gui driver. For the \c cg_fltk plugin the options are described in the 
+next section.
+
+The \link cgv::gui::provider::add_button add_button\endlink, 
+\link cgv::gui::provider::add_view add_view\endlink and 
+\link cgv::gui::provider::add_control add_control\endlink methods 
+return a reference counted 
+pointer to the newly created gui element, which is primarily used to attach 
+callbacks to the signals of the gui elements. The \link cgv::gui::button button\endlink 
+has a signal named \link cgv::gui::button::click click\endlink that takes a 
+reference to the button as parameter. The \link cgv::gui::control control\endlink has two signals
+\link cgv::gui::control::check_value check_value\endlink and \link cgv::gui::control::value_change value_change\endlink
+that both take as parameter the reference to the control. Callbacks to functions, 
+methods or C++ functors can be attached
+to the signals with the \link cgv::base::connect connect\endlink functions as described in 
+the \ref sigTut.
+
+Finally, one can structure the gui into a tree with collapsable nodes. For this the 
+\link cgv::gui::provider::add_tree_node add_tree_node(heading,flag,level)\endlink 
+method should be used. The \c heading parameter specifies the text representing the
+node. The \c flag parameter is a reference to a boolean that tells whether the node
+should be expanded or not. Finally, the \c level specifies the hierarchy level of
+the node, that starts with 0 on the root level. The 
+\link cgv::gui::provider::add_tree_node add_tree_node\endlink method returns the
+current value of the \c flag such that it can serve as condition for creating the
+gui of the sub tree as shown in the following code sample from the shape class in
+the examples plugin
+
+\verbatim shape.h\endverbatim 
+\dontinclude shape.h
+\skip class shape
+\until select_prism
+
+\verbatim shape.cxx\endverbatim 
+\dontinclude shape.cxx
+\skip select_cube
+\until }
+\until }
+\until }
+Please note how the call to the \link cgv::gui::provider::update_member update_member\endlink
+in the \link shape::select_cube select_cube\endlink method of the shape class. Here the action
+of pressing the button changes the member variable \c shp. To notify all views and controls of
+the \c shp member, one simply calls the \link cgv::gui::provider::update_member update_member\endlink
+with a pointer to the member as argument. The implementation of \link cgv::gui::provider::update_member update_member\endlink
+uses the \link cgv::gui::provider::find_view find_view\endlink and \link cgv::gui::provider::find_control find_control\endlink
+methods to enumerate all views and controls referencing the member.
+
+\section cg_fltk The cg_fltk Plugin
+In this section a short reference for the gui elements provided by the cg_fltk plugin.
+All gui elements provide the following options that can be set with the property interface
+of the gui elements:
+- x:int32 ... x position of gui element in coordinates relative to parent
+- y:int32 ... y position of gui element in coordinates relative to parent
+- w:int32 ... width of gui element in pixels
+- h:int32 ... height of gui element in pixels
+- image:string ... file name or resource file name of an image to be loaded as icon of the gui element
+- fit_image:bool ... whether to fit icon image to the size of the gui element
+- label:string ... label of the gui element shown in the gui
+- name:string ... name of the gui element 
+- tooltip:string ... tooltip shown when mouse halts over the gui element
+- active:bool ... whether gui element can handle user interaction
+- show:bool ... whether gui element is visible
+- color:int32 ... background color of gui element, where the rgba color (0xaa,0xbb,0xcc,0xdd) 
+  can be specified as 0xaabbccdd
+- align:string ... alignment of the text label of the element relativ to element. The following characters are allowed in the alignment string:
+  - 'T' ... align on top of gui element
+  - 't' ... align inside to top of gui element
+  - 'B' ... align below gui element
+  - 'b' ... align inside at bottom of gui element
+  - 'L' ... align left of gui element
+  - 'l' ... align inside to the left of the gui element
+  - 'R' ... align right of gui element
+  - 'r' ... align inside to the right of the gui element
+
+Please note that when specifying options as a string, the string values must be enclosed with double quotes as
+usual. An example would be
+\code
+add_button("button1", "image=\"but_img.png\";label=\"\";align=\"Tl\"");
+\endcode
+The following gui elements are supported with the given properties
+- add_decorator gui element types
+  - "heading" with the following new properties
+    - level:int32 ... highest level starts with 0
+  - "separator"
+- add_view<int../flt..> ... only uses one gui type that does not have to be specified
+- add_view<string> ... only uses one gui type that does not have to be specified
+- add_control<enum> ... here the gui element type must define the different values of the enum as a comma or semicolon separated list of strings with optional assignment to specific integer values
+- add_control<bool> gui element types
+  - "check" ... check mark
+  - "toggle" ... toggle button
+- add_control<int../flt..> gui element types
+  - "slider" ... only slider
+  - "value_slider" ... shows text input and a slider
+  - "wheel" ... wheel rotating around the y-axis
+  - "dial" ... wheel rotating around the z-axis
+  - "adjuster" ... three buttons of different sensitivity on which the value can be dragged with the mouse 
+  - "value_input" ... text input only
+  - the types support the following new properties
+    - min:flt64 ... minimum value
+    - max:flt64 ... maximum value
+    - step:flt64 ... sensitivity
+    - ticks:bool ... whether to show tick marks on sliders
+    - log:bool ... whether scaling on sliders is done logarithmically  
+- add_control<\link cgv::media::color color<flt32/uint8,RGB/RGBA>\endlink> only uses one gui type that does not have to be specified
+- add_control<std::string> only uses one gui type that does not have to be specified
+*/

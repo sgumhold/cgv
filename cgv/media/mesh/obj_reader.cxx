@@ -1,0 +1,386 @@
+#pragma once
+
+#include "obj_reader.h"
+#include <cgv/utils/file.h>
+#include <cgv/type/standard_types.h>
+#include <cgv/utils/advanced_scan.h>
+#include <cgv/utils/tokenizer.h>
+
+using namespace cgv::math;
+using namespace cgv::type;
+using namespace cgv::utils;
+using namespace cgv::media::illum;
+
+#ifdef WIN32
+#pragma warning(disable:4996)
+#endif
+
+namespace cgv {
+	namespace media {
+		namespace mesh {
+
+obj_reader::v2d_type obj_reader::parse_v2d(const std::vector<token>& T) const
+{
+	v2d_type v(0,0);
+	T.size() > 2 && 
+	is_double(T[1].begin,T[1].end, v(0)) && 
+	is_double(T[2].begin,T[2].end, v(1));
+	return v;
+}
+
+obj_reader::v3d_type obj_reader::parse_v3d(const std::vector<token>& T) const
+{
+	v3d_type v(0,0,0);
+	T.size() > 3 && 
+	is_double(T[1].begin,T[1].end, v(0)) && 
+	is_double(T[2].begin,T[2].end, v(1)) && 
+	is_double(T[3].begin,T[3].end, v(2));
+	return v;
+}
+
+obj_reader::color_type obj_reader::parse_color(const std::vector<token>& T) const
+{
+	double v[4] = {0,0,0,1};
+	T.size() > 3 && 
+	is_double(T[1].begin,T[1].end, v[0]) && 
+	is_double(T[2].begin,T[2].end, v[1]) && 
+	is_double(T[3].begin,T[3].end, v[2]);
+	if (T.size() > 4)
+		is_double(T[4].begin,T[4].end, v[3]);
+	return color_type((float)v[0],(float)v[1],(float)v[2],(float)v[3]);
+}
+
+/// return the index of the currently selected group or -1 if no group is defined
+unsigned obj_reader::get_current_group() const
+{
+	return group_index;
+}
+
+/// return the index of the currently selected material or -1 if no material is defined
+unsigned obj_reader::get_current_material() const
+{
+	return material_index;
+}
+
+obj_reader::obj_reader()
+{
+	clear();
+}
+
+void obj_reader::clear()
+{
+	mtl_lib_files.clear();
+	material_index_lut.clear();
+	nr_materials = 0;
+	nr_groups = 0;
+	minus = 1;
+	nr_normals = nr_texcoords = 0;
+	material_index = -1;
+	have_default_material = false;
+}
+
+/// overide this function to process a comment
+void obj_reader::process_comment(const std::string& comment)
+{
+}
+
+/// overide this function to process a vertex
+void obj_reader::process_vertex(const v3d_type& p)
+{
+}
+
+/// overide this function to process a texcoord
+void obj_reader::process_texcoord(const v2d_type& t)
+{
+}
+
+/// overide this function to process a normal
+void obj_reader::process_normal(const v3d_type& n)
+{
+}
+
+/// convert negative indices to positive ones by adding the number of elements
+void obj_reader::convert_to_positive(unsigned vcount, int *vertices, 
+						 int *texcoords, int *normals,
+						 unsigned v, unsigned n, unsigned t)
+{
+	for (unsigned int i=0; i<vcount; ++i) {
+		if (vertices[i] < 0)
+			vertices[i] += v;
+		if (texcoords) {
+			if (texcoords[i] < 0)
+				texcoords[i] += t;
+		}
+		if (normals) {
+			if (normals[i] < 0)
+				normals[i] += n;
+		}
+	}
+}
+
+/// overide this function to process a face
+void obj_reader::process_face(unsigned vcount, int *vertices, int *texcoords, int *normals)
+{
+}
+
+/// overide this function to process a group given by name and parameter string
+void obj_reader::process_group(const std::string& name, const std::string& parameters)
+{
+}
+
+/// process a material definition
+void obj_reader::process_material(const cgv::media::illum::obj_material& mtl, unsigned)
+{
+}
+
+bool obj_reader::read_obj(const std::string& file_name)
+{
+	std::string content;
+	if (!file::read(file_name, content, true))
+		return false;
+
+	path_name = file::get_path(file_name);
+
+	std::vector<line> lines;
+	split_to_lines(content,lines);
+	
+	minus = 1;
+	material_index = -1;
+	group_index = -1;
+	nr_groups = 0;
+	nr_normals = nr_texcoords = 0;
+	std::map<std::string,unsigned> group_index_lut;
+	std::vector<token> tokens;
+	for (unsigned li=0; li<lines.size(); ++li) {
+		if(li % 1000 == 0)
+			printf("%d Percent done.\r", (int)(100.0*li/(lines.size()-1)) );
+
+		tokenizer(lines[li]).bite_all(tokens);
+		if (tokens.size() == 0)
+			continue;
+
+		switch (tokens[0][0]) {
+		case 'v' :
+			if (tokens[0].size() == 1)
+				process_vertex(parse_v3d(tokens));
+			else {
+				switch (tokens[0][1]) {
+				case 'n' :
+					process_normal(parse_v3d(tokens));
+					++nr_normals;
+					break;
+				case 't' : 
+					process_texcoord(parse_v2d(tokens));
+					++nr_texcoords;
+					break;
+				}
+			}
+			break;
+		case 'f' :
+			if (group_index == -1) {
+				group_index = 0;
+				nr_groups = 1;
+				process_group("main","");
+				group_index_lut["main"] = group_index;
+			}
+			if (material_index == -1) {
+				obj_material m;
+				m.set_name("default");
+				material_index = 0;
+				nr_materials = 1;
+				process_material(m, 0);
+				material_index_lut[m.get_name()] = material_index;
+				have_default_material = true;
+			}
+			parse_face(tokens); 
+			break;
+		case 'g' : 
+			if (tokens.size() > 1) {
+				std::string name = to_string(tokens[1]);
+				std::string parameters;
+				if (tokens.size() > 2)
+					parameters.assign(tokens[2].begin, tokens.back().end - tokens[2].begin);
+
+				std::map<std::string,unsigned>::iterator it = 
+					group_index_lut.find(name);
+
+				if (it != group_index_lut.end())
+					group_index = it->second;
+				else {
+					group_index = nr_groups;
+					++nr_groups;
+					process_group(name, parameters);
+					group_index_lut[name] = group_index;
+				}
+			}
+			break;
+		default:
+			if (to_string(tokens[0]) == "usemtl")
+				parse_material(tokens);
+			else if (to_string(tokens[0]) == "mtllib") {
+				if (tokens.size() > 1)
+					read_mtl(path_name+"/"+to_string(tokens[1]));
+			}
+		}
+		tokens.clear();
+	}
+	printf("\n");
+	return true;
+}
+
+bool obj_reader::read_mtl(const std::string& file_name)
+{
+	if (path_name.empty()) {
+		path_name = file::get_path(file_name);
+	}
+	if (mtl_lib_files.find(file_name) != mtl_lib_files.end())
+		return true;
+
+	std::string content;
+	if (!file::read(file_name, content, true))
+		return false;
+
+	mtl_lib_files.insert(file_name);
+
+	std::vector<line> lines;
+	split_to_lines(content,lines);
+
+	std::vector<token> tokens;
+	obj_material mtl;
+	bool in_mtl = false;
+
+	for (unsigned li=0; li<lines.size(); ++li) {
+		tokens.clear();
+		tokenizer(lines[li]).bite_all(tokens);
+		if (tokens.size() == 0)
+			continue;
+		if (tokens[0] == "newmtl") {
+			if (in_mtl) {
+				// check if material name is new
+				if (material_index_lut.find(mtl.get_name()) == material_index_lut.end()) {
+					material_index_lut[mtl.get_name()] = nr_materials;
+					process_material(mtl, nr_materials);
+					++nr_materials;
+				}
+				// if not overwrite old definition
+				else 
+					process_material(mtl, material_index_lut[mtl.get_name()]);
+			}
+			in_mtl = true;
+			mtl = obj_material();
+			if (tokens.size() > 1)
+				mtl.set_name(to_string(tokens[1]));
+		}
+		else if (tokens[0] == "map_Ka")
+			mtl.set_ambient_texture_name(path_name+"/"+to_string(tokens.back()));
+		else if (tokens[0] == "Ka")
+			mtl.set_ambient(parse_color(tokens));
+		else if (tokens[0] == "map_Kd")
+			mtl.set_diffuse_texture_name(path_name+"/"+to_string(tokens.back()));
+		else if (tokens[0] == "Kd")
+			mtl.set_diffuse(parse_color(tokens));
+		else if (tokens[0] == "map_Ks")
+			mtl.set_specular_texture_name(path_name+"/"+to_string(tokens.back()));
+		else if (tokens[0] == "Ks")
+			mtl.set_specular(parse_color(tokens));
+		else if (tokens[0] == "map_Ke")
+			mtl.set_emission_texture_name(path_name+"/"+to_string(tokens.back()));
+		else if (tokens[0] == "Ke")
+			mtl.set_emission(parse_color(tokens));
+		else if (tokens[0] == "Ns")
+			mtl.set_shininess((float)atof(to_string(tokens.back()).c_str()));
+		else if (tokens[0] == "d")
+			mtl.set_opacity((float)atof(to_string(tokens.back()).c_str()));
+		else if (tokens[0] == "bump") {
+			for (unsigned i=1; i<tokens.size(); ++i) {
+				if (tokens[i] == "-bm") {
+					if (i+1 < tokens.size()) {
+						mtl.set_bump_scale((float)atof(to_string(tokens[i+1]).c_str()));
+						++i;
+					}
+				}
+				else {
+					mtl.set_bump_texture_name(path_name+"/"+to_string(tokens[i]));
+				}
+			}
+		}
+	}
+	if (in_mtl) {
+		// check if material name is new
+		if (material_index_lut.find(mtl.get_name()) == material_index_lut.end()) {
+			material_index_lut[mtl.get_name()] = nr_materials;
+			process_material(mtl, nr_materials);
+			++nr_materials;
+		}
+		// if not overwrite old definition
+		else 
+			process_material(mtl, material_index_lut[mtl.get_name()]);
+	}
+	return true;
+}
+
+void obj_reader::parse_material(const std::vector<token>& tokens)
+{
+	if (tokens.size() < 2)
+		return;
+
+	std::map<std::string,unsigned>::iterator it = 
+		material_index_lut.find(to_string(tokens[1]));
+	
+	if(it != material_index_lut.end())
+		material_index = it->second;
+}
+
+void obj_reader::parse_face(const std::vector<token>& tokens)
+{
+	std::vector<int> vertex_indices;
+	std::vector<int> normal_indices;
+	std::vector<int> texcoord_indices;
+
+	for(unsigned i = 1; i < tokens.size(); i++)	{ 
+		std::vector<token> smaller_tokens;
+		tokenizer(tokens[i]).set_sep("/").bite_all(smaller_tokens);
+		if (smaller_tokens.size() < 1)
+			continue;
+		int vi = atoi(to_string(smaller_tokens[0]).c_str());
+		if (vi > 0)
+			vi -= minus;
+		vertex_indices.push_back(vi);
+		if (smaller_tokens.size() == 1) {
+			if ((int)nr_normals > vi)
+				normal_indices.push_back(vi);
+			if ((int)nr_texcoords > vi)
+				texcoord_indices.push_back(vi);
+			continue;
+		}
+		if (smaller_tokens.size() < 3)
+			continue;
+		unsigned j = 2;
+		if (smaller_tokens[j] != "/") {
+			int ti = atoi(to_string(smaller_tokens[j]).c_str());
+			if (ti > 0)
+				ti -= minus;
+			if ((int)nr_texcoords > ti)
+				texcoord_indices.push_back(ti);
+			++j;
+		}
+		if (smaller_tokens.size() < j+2)
+			continue;
+		int ni = atoi(to_string(smaller_tokens[j+1]).c_str());
+		if (ni > 0)
+			ni -= minus;
+		if ((int)nr_normals > ni)
+			normal_indices.push_back(ni);
+	}
+	int* nml_ptr = 0;
+	if (normal_indices.size() == vertex_indices.size())
+		nml_ptr = &normal_indices[0];
+	int* tex_ptr = 0;
+	if (texcoord_indices.size() == vertex_indices.size())
+		tex_ptr = &texcoord_indices[0];
+	process_face(vertex_indices.size(), &vertex_indices[0], tex_ptr, nml_ptr);
+}
+
+		}
+	}
+}

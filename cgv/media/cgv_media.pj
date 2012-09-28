@@ -1,0 +1,7 @@
+@=
+projectName="cgv_media";
+projectType="library";
+projectGUID="06437363-3B8B-4005-8744-79F2698666F1";
+addProjectDeps=["cgv_utils", "cgv_type", "cgv_data", "cgv_base"];
+excludeSourceFiles=[INPUT_DIR."/color_info.cxx", INPUT_DIR."/color_info.tih"];
+addSharedDefines=["CGV_MEDIA_EXPORTS", "CGV_MEDIA_FONT_EXPORTS", "CGV_MEDIA_ILLUM_EXPORTS", "CGV_MEDIA_IMAGE_EXPORTS", "CGV_MEDIA_VIDEO_EXPORTS"];

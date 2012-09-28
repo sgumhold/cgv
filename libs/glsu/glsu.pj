@@ -1,0 +1,8 @@
+@exclude<cgv/config/make.ppp>
+@define(projectType="library")
+@define(projectName="glsu")
+@define(projectGUID="E0F9BFE1-C51B-4251-8D86-1CC9B7AEA24D")
+@define(excludeSourceDirs=[INPUT_DIR."/doc"])
+@define(addIncDirs=[[INPUT_DIR, "all"]])
+@define(addDependencies=[ ["opengl","all"]])
+@define(defFile=INPUT_DIR."/glsu.def")

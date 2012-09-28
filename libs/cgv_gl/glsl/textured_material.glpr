@@ -1,0 +1,3 @@
+files:textured_material
+fragment_file:lighting.glsl
+fragment_file:bump_map.glfs

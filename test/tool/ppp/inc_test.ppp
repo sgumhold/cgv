@@ -1,0 +1,16 @@
+func(fac; :>n=1, :>return = 1) 
+{
+	if (n > 1) {
+		return = n*fac(n-1);
+	}
+}
+
+func(fibonacci; :>n=0) 
+{
+	if (n > 1) {
+		return = fibonacci(n - 2) + fibonacci(n - 1);
+	}
+	else {
+		return = n;
+	}
+}

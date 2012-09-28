@@ -1,0 +1,5 @@
+@=
+projectName="cgv_signal";
+projectType="library";
+projectGUID="AD3F46B7-ADFC-4204-872B-AFC04ADE28EC";
+addSharedDefines=["CGV_SIGNAL_EXPORTS"];

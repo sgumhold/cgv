@@ -1,0 +1,33 @@
+// diffuse texture map
+uniform sampler2D diffuse_map;
+// whether to use the diffuse map
+uniform bool use_diffuse_map;
+// whether to use the bump map
+uniform bool use_bump_map;
+
+// interpolated surface normal in eye space
+varying vec3 N;
+// interpolated surface point in eye space
+varying vec3 s;
+// interpolated texture coordinates
+varying vec2 tc;
+
+vec3 bump_map_normal(vec3 s, vec2 tc, vec3 N);
+
+vec4 doLighting(vec3 position, vec3 normal, vec4 diffuseMaterial);
+
+void main()
+{
+	// compute bump mapped normal
+	vec4 diff = gl_FrontMaterial.diffuse;
+	if (use_diffuse_map) {
+		diff = texture2D(diffuse_map, tc);
+	}
+	if (use_bump_map) {
+		gl_FragColor = doLighting(s, normalize(bump_map_normal(s,tc,N)),diff);
+	}
+	else {
+		gl_FragColor = doLighting(s, N, diff);
+	}
+	gl_FragColor.a = diff.a;
+}

@@ -1,0 +1,13 @@
+@exclude<cgv/config/make.ppp>
+@define(projectGUID="98FC22B9-320C-4477-80BC-90B0010CAA4B")
+@define(projectType="application")
+@define(projectName="test_sp_multifocus")
+@define(addIncDirs=[CGV_DIR."/libs/space_pilot",CGV_DIR."/3rd"])
+@define(sourceFiles=[INPUT_DIR."/sp_multiviewer.h",
+		               INPUT_DIR."/sp_multiviewer.cxx",
+							INPUT_DIR."/sp_sceneviewer.h",
+		               INPUT_DIR."/sp_sceneviewer.cxx",
+							INPUT_DIR."/test_sp_multifocus.cxx"])
+@define(addDependencies=["opengl","glu"])
+@define(addProjectDeps=["fltk", "space_pilot"])
+@define(addProjectDirs=[CGV_DIR."/libs",CGV_DIR."/3rd/fltk"])

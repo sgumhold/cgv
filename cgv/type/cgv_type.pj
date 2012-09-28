@@ -1,0 +1,33 @@
+@=
+projectName="cgv_type";
+projectType="library";
+projectGUID="D5EA7384-9AAF-420a-9AFD-38BB5E341BD0";
+addProjectDeps=["cgv_utils"];
+excludeSourceFiles=[
+	INPUT_DIR."/info/auto_prop.h",
+	INPUT_DIR."/info/compound_interface.h",
+	INPUT_DIR."/info/compound_interface_impl.h",
+	INPUT_DIR."/info/enum_interface.h",
+	INPUT_DIR."/info/enum_interface_impl.h",
+	INPUT_DIR."/info/io_by_assignments.cxx",
+	INPUT_DIR."/info/io_by_assignments.h",
+	INPUT_DIR."/info/is_equivalent.cxx",
+	INPUT_DIR."/info/is_equivalent.h",
+	INPUT_DIR."/info/name_type.cxx",
+	INPUT_DIR."/info/name_type.h",
+	INPUT_DIR."/info/serialization_interface.h",
+	INPUT_DIR."/info/show_type.cxx",
+	INPUT_DIR."/info/show_type.h",
+	INPUT_DIR."/info/type_access.h",
+	INPUT_DIR."/info/type_description.h",
+	INPUT_DIR."/info/type_description_h.tm",
+	INPUT_DIR."/info/type_interface.cxx",
+	INPUT_DIR."/info/type_interface.h",
+	INPUT_DIR."/info/type_interface_cxx.tm",
+	INPUT_DIR."/info/type_interface_h.tm",
+	INPUT_DIR."/info/type_interface_impl.h",
+	INPUT_DIR."/info/type_interface_traits.cxx",
+	INPUT_DIR."/info/type_interface_traits.h",
+	INPUT_DIR."/info/type_ptr.h",
+	INPUT_DIR."/info/type_reflection.tm"];
+addSharedDefines=["CGV_TYPE_EXPORTS"];

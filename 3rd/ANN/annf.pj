@@ -1,0 +1,4 @@
+@include<3rd/ANN/ann.pj>
+@define(projectName="annf")
+@define(projectGUID="92324260-fc30-11dd-87af-0800200c9a66")
+@define(addDefines=addDefines."ANN_USE_FLOAT")

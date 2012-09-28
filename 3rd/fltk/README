@@ -1,0 +1,62 @@
+This is fltk version 2.0 r7725 modified in the following way by 
+Stefan Gumhold on 19th of december 2010:
+
+1. The directory structure has been merged such that source folders
+   are located within the fltk header folder.
+
+2. In Cursor.h line 18 has been changed from
+Cursor* cursor(Image*, int x, int y);
+=>
+extern FL_API Cursor* cursor(Image*, int x, int y);
+
+3. all test, third party libs and makefile related directories have been 
+   removed
+
+4. changed fltk/win32.h and src/win32/run.cxx to add two modifiable hooks to
+   the windows procedure:
+   
+fltk/win32.h:
+changed line 103 
+extern pfDefWindowProc	 __DefWindowProc;
+=>
+//extern pfDefWindowProc	 __DefWindowProc;
+added lines 150,151
+extern FL_API pfDefWindowProc& refDefWindowProc();
+extern FL_API pfDefWindowProc& refFilterWindowProc();
+
+src/win32/run.cxx:
+added lines 1454-58
+	if (refFilterWindowProc()) {
+		LRESULT res = refFilterWindowProc()(hWnd,uMsg,wParam,lParam);
+		if (res != 0)
+			return res;
+	}
+
+changed line 1817 
+  return __DefWindowProc(hWnd, uMsg, wParam, lParam);
+to line 1822
+  return refDefWindowProc()(hWnd, uMsg, wParam, lParam);
+
+removed line 2123
+
+added lines 2132-2143
+pfDefWindowProc& fltk::refDefWindowProc()
+{
+	static pfDefWindowProc __DefWindowProc = DefWindowProcW;
+	return __DefWindowProc;
+}
+
+pfDefWindowProc& fltk::refFilterWindowProc()
+{
+	static pfDefWindowProc __FilterWindowProc = 0;
+	return __FilterWindowProc;
+}
+
+5. updated include in src/FileChooser.cxx line 3
+#include <../FileChooser.h>
+=>
+#include <fltk/FileChooser.h>
+
+   
+The modified version is provided under the FLTK License provided in the 
+file "COPYING".

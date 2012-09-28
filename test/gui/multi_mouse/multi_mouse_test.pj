@@ -1,0 +1,14 @@
+@exclude<cgv/config/make.ppp>
+@define(projectType="plugin")
+@define(projectName="multi_mouse_test")
+@define(projectGUID="3EB66486-29D0-43cb-ACAD-CF1847096DE2")
+@define(addProjectDirs=[CGV_DIR."/apps",CGV_DIR."/3rd",CGV_DIR."/plugins"])
+@define(addProjectDeps=["cgv", "cgv_viewer", "cg_fltk", "cg_multi_mouse"])
+@define(addIncDirs=[CGV_DIR."/libs/multi_mouse"])
+@define(sourceDirs=[INPUT_DIR])
+@define(sourceFiles=[
+	CGV_DIR."/libs/multi_mouse/sample_application.h",
+	CGV_DIR."/libs/multi_mouse/sample_application.cxx"
+])
+@define(addDependencies=["opengl"])
+@define(addSharedDefines=["MULTI_MOUSE_TEST_EXPORTS"])

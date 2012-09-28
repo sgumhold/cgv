@@ -1,0 +1,6 @@
+@exclude<cgv/config/make.ppp>
+@define(projectType="test")
+@define(projectName="test_base")
+@define(projectGUID="8e76c780-fd21-11dd-87af-0800200c9a66")
+@define(addProjectDeps=["cgv_utils", "cgv_type", "cgv_data", "cgv_base"])
+@define(addSharedDefines=["CGV_TEST_EXPORTS"])

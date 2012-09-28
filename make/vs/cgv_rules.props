@@ -1,0 +1,115 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup
+    Condition="'$(pre_header_ruleBeforeTargets)' == '' and '$(pre_header_ruleAfterTargets)' == '' and '$(ConfigurationType)' != 'Makefile'">
+    <pre_header_ruleBeforeTargets>Midl</pre_header_ruleBeforeTargets>
+    <pre_header_ruleAfterTargets>CustomBuild</pre_header_ruleAfterTargets>
+  </PropertyGroup>
+  <PropertyGroup>
+    <pre_header_ruleDependsOn
+      Condition="'$(ConfigurationType)' != 'Makefile'">_SelectedFiles;$(pre_header_ruleDependsOn)</pre_header_ruleDependsOn>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+    <pre_header_rule>
+      <CommandLineTemplate>"$(CGV_DIR)\bin\ppp" "%(FullPath)" "%(RootDir)%(Directory)%(Filename).h"</CommandLineTemplate>
+      <Outputs>%(RootDir)%(Directory)%(Filename).h</Outputs>
+      <ExecutionDescription>generate header from pre header</ExecutionDescription>
+    </pre_header_rule>
+  </ItemDefinitionGroup>
+  <PropertyGroup
+    Condition="'$(reflect_headerBeforeTargets)' == '' and '$(reflect_headerAfterTargets)' == '' and '$(ConfigurationType)' != 'Makefile'">
+    <reflect_headerBeforeTargets>Midl</reflect_headerBeforeTargets>
+    <reflect_headerAfterTargets>CustomBuild</reflect_headerAfterTargets>
+  </PropertyGroup>
+  <PropertyGroup>
+    <reflect_headerDependsOn
+      Condition="'$(ConfigurationType)' != 'Makefile'">_SelectedFiles;$(reflect_headerDependsOn)</reflect_headerDependsOn>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+    <reflect_header>
+      <CommandLineTemplate>"$(CGV_DIR)\bin\ppp" "%(FullPath)" "$(CGV_DIR)\cgv\type\info\type_description_h.tm" "%(RootDir)%(Directory)%(Filename).tdh" "$(CGV_DIR)\cgv\type\info\type_interface_h.tm" "%(RootDir)%(Directory)%(Filename).tih" "$(CGV_DIR)\cgv\type\info\type_interface_cxx.tm" "%(RootDir)%(Directory)%(Filename)_info.cxx"</CommandLineTemplate>
+      <Outputs>%(RootDir)%(Directory)%(Filename).tdh;%(RootDir)%(Directory)%(Filename).tih;%(RootDir)%(Directory)%(Filename)_info.cxx</Outputs>
+      <ExecutionDescription>generate type description</ExecutionDescription>
+    </reflect_header>
+  </ItemDefinitionGroup>
+  <PropertyGroup
+    Condition="'$(doxygen_BeforeTargets)' == '' and '$(doxygen_AfterTargets)' == '' and '$(ConfigurationType)' != 'Makefile'">
+    <doxygen_BeforeTargets>Midl</doxygen_BeforeTargets>
+    <doxygen_AfterTargets>CustomBuild</doxygen_AfterTargets>
+  </PropertyGroup>
+  <PropertyGroup>
+    <doxygen_DependsOn
+      Condition="'$(ConfigurationType)' != 'Makefile'">_SelectedFiles;$(doxygen_DependsOn)</doxygen_DependsOn>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+    <doxygen_>
+      <CommandLineTemplate>doxygen "%(FullPath)"</CommandLineTemplate>
+      <Outputs>%(RootDir)%(Directory)\html\index.html</Outputs>
+      <ExecutionDescription>create documentation</ExecutionDescription>
+    </doxygen_>
+  </ItemDefinitionGroup>
+  <PropertyGroup
+    Condition="'$(latexBeforeTargets)' == '' and '$(latexAfterTargets)' == '' and '$(ConfigurationType)' != 'Makefile'">
+    <latexBeforeTargets>Midl</latexBeforeTargets>
+    <latexAfterTargets>CustomBuild</latexAfterTargets>
+  </PropertyGroup>
+  <PropertyGroup>
+    <latexDependsOn
+      Condition="'$(ConfigurationType)' != 'Makefile'">_SelectedFiles;$(latexDependsOn)</latexDependsOn>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+    <latex>
+      <CommandLineTemplate>pdflatex "-include-directory=%(RootDir)%(Directory)" "%(FullPath)"</CommandLineTemplate>
+      <Outputs>%(RootDir)%(Directory)\%(Filename).pdf</Outputs>
+      <ExecutionDescription>create pdf from latex</ExecutionDescription>
+    </latex>
+  </ItemDefinitionGroup>
+  <PropertyGroup
+    Condition="'$(image_video_ruleBeforeTargets)' == '' and '$(image_video_ruleAfterTargets)' == '' and '$(ConfigurationType)' != 'Makefile'">
+    <image_video_ruleBeforeTargets>Midl</image_video_ruleBeforeTargets>
+    <image_video_ruleAfterTargets>CustomBuild</image_video_ruleAfterTargets>
+  </PropertyGroup>
+  <PropertyGroup>
+    <image_video_ruleDependsOn
+      Condition="'$(ConfigurationType)' != 'Makefile'">_SelectedFiles;$(image_video_ruleDependsOn)</image_video_ruleDependsOn>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+    <image_video_rule>
+      <CommandLineTemplate>"$(CGV_INSTALL)\bin\res_prep.exe" "%(FullPath)" "$(ProjectDir)%(Filename)%(Extension).cxx"</CommandLineTemplate>
+      <Outputs>$(ProjectDir)%(Filename)%(Extension).cxx</Outputs>
+      <ExecutionDescription>generate image/video resource source file</ExecutionDescription>
+    </image_video_rule>
+  </ItemDefinitionGroup>
+  <PropertyGroup
+    Condition="'$(text_ruleBeforeTargets)' == '' and '$(text_ruleAfterTargets)' == '' and '$(ConfigurationType)' != 'Makefile'">
+    <text_ruleBeforeTargets>Midl</text_ruleBeforeTargets>
+    <text_ruleAfterTargets>CustomBuild</text_ruleAfterTargets>
+  </PropertyGroup>
+  <PropertyGroup>
+    <text_ruleDependsOn
+      Condition="'$(ConfigurationType)' != 'Makefile'">_SelectedFiles;$(text_ruleDependsOn)</text_ruleDependsOn>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+    <text_rule>
+      <CommandLineTemplate>"$(CGV_INSTALL)\bin\res_prep.exe" "%(FullPath)" "$(ProjectDir)%(Filename)%(Extension).h"</CommandLineTemplate>
+      <Outputs>$(ProjectDir)%(Filename)%(Extension).h</Outputs>
+      <ExecutionDescription>generate text resource header file</ExecutionDescription>
+    </text_rule>
+  </ItemDefinitionGroup>
+  <PropertyGroup
+    Condition="'$(shader_test_ruleBeforeTargets)' == '' and '$(shader_test_ruleAfterTargets)' == '' and '$(ConfigurationType)' != 'Makefile'">
+    <shader_test_ruleBeforeTargets>Midl</shader_test_ruleBeforeTargets>
+    <shader_test_ruleAfterTargets>CustomBuild</shader_test_ruleAfterTargets>
+  </PropertyGroup>
+  <PropertyGroup>
+    <shader_test_ruleDependsOn
+      Condition="'$(ConfigurationType)' != 'Makefile'">_SelectedFiles;$(shader_test_ruleDependsOn)</shader_test_ruleDependsOn>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+    <shader_test_rule>
+      <CommandLineTemplate>"$(CGV_INSTALL)\bin\shader_test.exe" "%(FullPath)" "$(ProjectDir)%(Filename)%(Extension).log"</CommandLineTemplate>
+      <Outputs>$(ProjectDir)%(Filename)%(Extension).log</Outputs>
+      <ExecutionDescription>check shader compilation</ExecutionDescription>
+    </shader_test_rule>
+  </ItemDefinitionGroup>
+</Project>

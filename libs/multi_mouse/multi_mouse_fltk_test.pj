@@ -1,0 +1,18 @@
+@exclude<cgv/config/make.ppp>
+@define(projectType="application")
+@define(projectName="multi_mouse_fltk_test")
+@define(projectGUID="D9BA0B54-64E3-46b4-BAD9-98D1E3DCAC77")
+@define(addProjectDirs=[CGV_DIR."/3rd",INPUT_DIR])
+@define(addIncDirs=[CGV_DIR."/3rd", CGV_DIR."/libs"])
+@define(addProjectDeps=["fltk", "multi_mouse", "multi_mouse_fltk"])
+@define(sourceFiles=[
+	CGV_DIR."/libs/cgv_gl/gl/gl_cursor.h",
+	CGV_DIR."/libs/cgv_gl/gl/gl_cursor.cxx",
+	CGV_DIR."/cgv/media/riff.h",
+	CGV_DIR."/cgv/media/riff.cxx",
+	INPUT_DIR."/sample_application.h",
+	INPUT_DIR."/sample_application.cxx",
+	INPUT_DIR."/multi_mouse_fltk_test.cxx"
+])
+@define(addDependencies=["opengl"])
+@define(addSharedDefines=["CGV_RENDER_GL_EXPORTS", "CGV_MEDIA_EXPORTS"])

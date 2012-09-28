@@ -1,0 +1,9 @@
+@=
+include "ppp.pj"
+projectType="application";
+projectName="ppp_appl";
+projectGUID="9B03B2B1-603D-40a9-972E-77871980DE0A";
+addCommandLineArguments=[
+    "-script", 
+	'"'.((CGV_DIR.'/make/ppp/templates/make.ppp')*clean_path).'"',
+	'"'.((CGV_DIR.'/plugins/examples/examples.pj')*clean_path).'"'];

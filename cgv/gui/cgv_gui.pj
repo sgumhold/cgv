@@ -1,0 +1,6 @@
+@=
+projectName="cgv_gui";
+projectType="library";
+projectGUID="007BDDD7-C862-4181-9AB5-1FE6394A6BAB";
+addProjectDeps=["cgv_utils", "cgv_type", "cgv_reflect", "cgv_data", "cgv_base", "cgv_media", "cgv_signal"];
+addSharedDefines=["CGV_GUI_EXPORTS"];

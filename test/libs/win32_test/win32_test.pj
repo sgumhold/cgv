@@ -1,0 +1,11 @@
+@exclude<cgv/config/make.ppp>
+@define(projectType="application")
+@define(projectName="win32_test")
+@define(projectGUID="215C0122-6567-4035-A1A5-0DB5B595D3A9")
+@define(workspaceGUID="4ffd8040-fc11-11dd-87af-0800200c9a66")
+@define(addProjectDeps=["cgv", "cgv_win32"])
+@define(addProjectDirs=[CGV_DIR."/libs"])
+@define(addIncDirs=[CGV_DIR."/libs"])
+@define(sourceDirs=[INPUT_DIR])
+@define(addDependencies=["opengl","glu","glew"])
+@define(sourceFiles=[CGV_DIR."/plugins/examples/picker.cxx"])

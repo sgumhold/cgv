@@ -1,0 +1,28 @@
+@=
+projectName="cgv_gl";
+projectType="library";
+projectGUID="5EFDDD95-15F8-4A18-B96B-79652EA6553E";
+addIncDirs=[[CGV_DIR."/libs", "all"], CGV_DIR."/3rd/glew"];
+addProjectDirs=[CGV_DIR."/3rd/glew"];
+addRules=[
+	[
+		MAP.[
+			["extensions",["glsl", "glvs", "glgs", "glfs", "pglsl", "pglvs", "pglgs", "pglfs", "glpr", "hglsl"]],
+			["tool","shader_test"],
+			["folder","shader"],
+			["rules", 
+				[
+					MAP.[
+						["exclude", 1],
+						["keep_extension",1],
+						["extension", "log"], 
+						["path", "$(PROJECT_BUILD_DIR)"]
+					]
+				] 
+			], 
+			["command", ["shader_test", 0, 1] ]
+		], "all"
+	]
+];
+addProjectDeps=["cgv_utils", "cgv_type", "cgv_data", "cgv_base", "cgv_signal", "cgv_math", "cgv_media", "cgv_render", "glew"];
+addSharedDefines=["CGV_RENDER_GL_EXPORTS"];

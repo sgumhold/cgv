@@ -1,0 +1,5 @@
+@exclude<cgv/config/make.ppp>
+@define(projectType="application")
+@define(projectName="glsu_doc")
+@define(projectGUID="6169B909-1DD4-4491-B3AB-E413F9AC18F4")
+@define(excludeSourceFiles=["comparison_tbb.png","comparison_anaglyph.png","stereo_top.png","stereo3d.png"])

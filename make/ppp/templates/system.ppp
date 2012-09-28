@@ -1,0 +1,140 @@
+@=
+
+if (SYSTEM == "windows") {
+	application_ext = ".exe";
+	shared_lib_ext  = ".dll";
+	static_lib_ext  = ".lib";
+	script_ext      = ".bat";
+	clean_path      = "|/|\\|";
+
+	func(mkdir; :>path="", :>return=1)
+	{
+		:>res = 0;
+		system('mkdir "'.(path*clean_path).'"'; res)
+		if (res!=0) {
+			return = 0
+		}
+	}
+	func(rmdir; :>path="", :>return=1)
+	{
+		:>res = 0;
+		system('rmdir /S /Q "'.(path*clean_path).'"'; res)
+		if (res!=0) {
+			return = 0
+		}
+	}
+	func(copy; :>src="", :>dest="", :>return=1)
+	{
+		:>res = 0;
+		system('copy "'.(src*clean_path).'" "'.(dest*clean_path).'"'; return)
+		if (res!=0) {
+			return = 0
+		}
+	}
+}
+else {
+	application_ext = "";
+	shared_lib_ext  = ".so";
+	static_lib_ext  = ".a";
+	clean_path      = "|\\|/|";
+	script_ext      = ".sh";
+	func(mkdir; :>path="", :>return=1)
+	{
+		:>res = 0;
+		system('mkdir -p "'.(path*clean_path).'"'; res)
+		if (res!=0) {
+			return = 0
+		}
+	}
+	func(rmdir; :>path="", :>return=1)
+	{
+		:>res = 0;
+		system('rmdir "'.(path*clean_path).'"'; res)
+		if (res!=0) {
+			return = 0
+		}
+	}
+	func(copy; :>src="", :>dest="", :>return=1)
+	{
+		:>res = 0;
+		system('cp "'.(src*clean_path).'" "'.(dest*clean_path).'"'; res)
+		if (res!=0) {
+			return = 0
+		}
+	}
+}
+
+// create a directory and terminate with error message if this was not
+// successful. Parameters:
+// - path ... path specification of to be removed directory
+// - help ... text specifying the directory. This is used in the error message
+func(must_mkdir; :>path="", :>help="", :>return=1)
+{
+	return = mkdir(path = <:path);
+	if (!return) {
+		error(0; "could not create ".help." directory ".path)
+		exit(-1)
+	}
+}
+
+// ensure that a directory exist. First check if it exists and if not
+// force creation and terminate if this is not successful. Same parameters
+// as must_mkdir function.
+func(ensure_dir; :>path="", :>help="", :>return=1)
+{
+	if (!?path) {
+		return = must_mkdir(path = <:path, help = <:help)
+	}
+}
+
+// return the directory or file name without path, i.e. c:\windows\temp is transformed
+// to temp and /usr/bin/ppp.pj to ppp.pj. Parameters:
+// - path ... full path specification
+func(drop_path; :>path="", :>return="")
+{
+	:>dir = path-"/\\:";
+	if (!dir != !path) {
+		return = path+(1+!dir);
+	}
+	else {
+		return = path;
+	}
+}
+
+func(get_path; :>path="", :>return="")
+{
+	:>dir = path-"/\\:";
+	if (!dir != !path) {
+		return = dir;
+	}
+}
+
+func(get_extension; :>file_name="", :>return = "")
+{
+	:>base_name = file_name - ".";
+	if (!base_name != !file_name) {
+		return = file_name + (!base_name+1);
+	}
+}
+
+func(concat; :>L=LIST, :>sep="", :>prefix="", :>postfix="", :>return="")
+{
+	if (L ~~ LIST) {
+		if (!L > 0) {
+			return = prefix.L[0].postfix;
+			for (:>i=1; i<!L; ++i) {
+				return = return.sep.prefix.L[i].postfix;
+			}
+		}
+	}
+}
+
+func(merge_lists; :>L1=[], :>L2=[], :>return=[])
+{
+	for (:>i=0; i<!L2; ++i) {
+		if (!(L2[i] < L1)) {
+			L1 = L1.L2[i];
+		}
+	}
+	return = L1;
+}

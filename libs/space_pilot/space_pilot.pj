@@ -1,0 +1,11 @@
+@exclude<cgv/config/make.ppp>
+@define(projectType="library")
+@define(projectName="space_pilot")
+@define(projectGUID="4814491C-BE0E-428c-A025-77EF15836DBB")
+//additional preprocessor definitions for all configurations
+@if(SYSTEM=="windows")@{
+	@define(excludeSourceFiles=[INPUT_DIR."/space_pilot_unix.cxx"])
+	@define(addDefines=["_WIN32_DCOM","_ATL_ATTRIBUTES"])
+@}
+@define(addSharedDefines=["SPACE_PILOT_EXPORTS"])
+@define(defFile=INPUT_DIR."/space_pilot.def")

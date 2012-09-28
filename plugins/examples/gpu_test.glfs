@@ -1,0 +1,28 @@
+uniform sampler2D tex;
+uniform sampler2D img_tex;
+uniform float ambient;
+uniform bool show_tex;
+uniform bool show_img_tex;
+varying vec3 N;
+varying vec4 l;
+varying vec4 h;
+
+vec4 my_color_transform(in vec4 c);
+
+void main (void) {
+	vec3  n = normalize(N);
+	float L_d =clamp(dot(l.xyz, n),0.0,1.0);
+	float L_s = pow(clamp(dot(h.xyz, n),
+			  0.0,1.0), gl_FrontMaterial.shininess);
+   vec4  c = gl_Color;
+	if (show_tex) 
+	   c = c*texture2D(tex, gl_TexCoord[0].xy); 
+	if (show_img_tex) 
+	   c = c*texture2D(img_tex, gl_TexCoord[0].xy); 
+	gl_FragColor = my_color_transform(L_d * c
+	             + L_s * vec4(1.0,1.0,1.0,1.0)
+					 + ambient * gl_Color);
+//	gl_FragColor = L_d * c
+//	             + L_s * vec4(1.0,1.0,1.0,1.0)
+//					 + ambient * gl_Color;
+}

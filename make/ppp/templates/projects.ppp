@@ -1,0 +1,654 @@
+@=
+
+// read a project file from disk and store defines in returned map
+func(read_project; :>pj_file = "", :>return = MAP)
+{
+	namespace(temporary_name_space) {
+		// set the input file specific variables
+		:>INPUT_DIR  = pj_file - "\\/:";
+		:>INPUT_PATH = pj_file;
+		:>INPUT_FILE = pj_file + (!INPUT_DIR);
+		if (INPUT_FILE[0] < "\\/:") {
+			INPUT_FILE = INPUT_FILE+1;
+		}
+		// set default values of not essential defines
+		:>projectType = "plugin";
+		:>projectName = INPUT_FILE-".";
+		:>sourceFiles=[];
+		:>excludeSourceFiles=[];
+		:>sourceDirs=[];
+		:>excludeSourceDirs=[];
+		:>addProjectDirs=[];
+		:>addProjectDeps=[];
+		:>addCommandLineArguments=[];
+		:>workingDirectory = "";
+		:>addIncDirs=[];
+		:>addDefines=[];
+		:>addSharedDefines=[];
+		:>addStaticDefines=[];
+		:>addLibDirs=[];
+		:>addDependencies=[];
+		:>defFile = "";
+		:>addRuleFiles=[];
+		:>addRules=[];
+		:>addMapDeps=[];
+		:>addExcludeProjectDeps=[];
+		include (pj_file)
+	}
+	return = temporary_name_space;
+}
+
+// check_input is a non recursive function that completes the input defined
+// by the user in the project file
+//
+// Update the list of dependent projects and move libs that are installed
+// on the system to the addDependencies define.
+func(check_project_info; :>pj = MAP, :>return=1)
+{
+ 	:>prjDeps = pj::addProjectDeps;
+ 	pj::addProjectDeps=[];
+	for(:>i=0;i<!prjDeps;++i) {
+		if (prjDeps[i] < excludeProjectDeps) {
+			pj::addDependencies = pj::addDependencies.[prjDeps[i]]
+		} else {
+			pj::addProjectDeps = pj::addProjectDeps.[prjDeps[i]]
+		}
+	}
+	if(pj::projectGUID ~~ UNDEF) {
+		error(0; "required define <projectGUID> missing in ".pj::INPUT_PATH);
+		return = 0;
+	}
+	pj::projectGUID = ++pj::projectGUID;
+	if ( (!pj::sourceDirs == 0) & (!pj::sourceFiles == 0) ) {
+		pj::sourceDirs = [pj::INPUT_DIR];
+	}
+	for (i=0;i<!pj::sourceDirs;++i) {
+		pj::sourceDirs[i] = pj::sourceDirs[i]*clean_path;
+	}
+	for (i=0;i<!pj::addLibDirs;++i) {
+		if (pj::addLibDirs[i] ~~ LIST) {
+			pj::addLibDirs[i][0] = pj::addLibDirs[i][0]*clean_path;
+		}
+		else {
+			pj::addLibDirs[i] = pj::addLibDirs[i]*clean_path;
+		}
+	}
+	for (i=0;i<!pj::addProjectDirs;++i) {
+		pj::addProjectDirs[i] = pj::addProjectDirs[i]*clean_path;
+	}
+	for (i=0;i<!pj::sourceFiles;++i) {
+		pj::sourceFiles[i] = pj::sourceFiles[i]*clean_path;
+	}
+	for (i=0;i<!pj::excludeSourceFiles;++i) {
+		pj::excludeSourceFiles[i] = pj::excludeSourceFiles[i]*clean_path;
+	}
+	pj::excludeSourceFiles = pj::excludeSourceFiles . ["CMakeLists.txt"];
+	for (i=0;i<!pj::excludeSourceDirs;++i) {
+		pj::excludeSourceDirs[i] = pj::excludeSourceDirs[i]*clean_path;
+	}
+}
+
+
+// interpret_input is non recursive function that interprets the
+//   project input defines and derives new defines.
+//
+//	extends the passed project map by
+//	- build_dir:STRING   ... directory in which the project targets are located
+//	- exec_idx:INT       ... 1 for executables and 0 otherwise
+//	- projectDeps:LIST of STRING ... list of dependent projects
+//	- projectDirs:LIST of STRING ... list of project directories
+//	- config_indices ... list of configuration indices [0...release static, 
+//                       1...debug static, 2... release shared, 3 ... debug shared]
+func(interpret_input; :>pj = MAP, :>return = "")
+{
+	pj::build_dir = CGV_BUILD_DIR.'/'.pj::projectName;
+	if(!?pj::build_dir) {
+		warning(0; "creating build directory ".pj::build_dir)
+		:>res=0;
+		if (!mkdir(path = pj::build_dir)) {
+			error(0; "could not create build directory ".pj::build_dir);
+			exit(-1);
+		}
+	}
+	//concatenate default and user defined project directories
+	pj::projectDirs = default_projectDirs;
+	pj::projectDirs = pj::projectDirs.pj::addProjectDirs;
+	//concatenate default and user defined project dependencies
+	pj::projectDeps = pj::addProjectDeps;
+	if (pj::projectType == "test") {
+		pj::projectDeps = pj::projectDeps."tester";
+	}
+	//define used configurations and whether configurations are shared or executable
+	pj::is_executable = [0,0,0,0];
+	pj::is_static = [1,1,1,1];
+	pj::is_shared = [0,0,0,0];
+	pj::config_indices = [0,1,2,3];
+	if(pj::projectType=="tool") {
+		pj::config_indices = [0];
+		pj::is_executable = [1,1,1,1];
+		pj::is_static = [0,0,0,0];
+	} elif (pj::projectType=="application") {
+		pj::is_executable = [1,1,1,1];
+		pj::is_static     = [0,0,0,0];
+	} elif (pj::projectType=="library") {
+		pj::is_static[2] = pj::is_static[3] = 0;
+		pj::is_shared[2] = pj::is_shared[3] = 1;
+	} elif (pj::projectType=="shared_library") {
+		pj::config_indices = [2,3];
+		pj::is_static[2] = pj::is_static[3] = 0;
+		pj::is_shared[2] = pj::is_shared[3] = 1;
+	} elif (pj::projectType=="plugin") {
+		pj::is_static[2] = pj::is_static[3] = 0;
+		pj::is_shared[2] = pj::is_shared[3] = 1;
+	} elif (pj::projectType=="test") {
+		pj::is_static[2] = pj::is_static[3] = 0;
+		pj::is_shared[2] = pj::is_shared[3] = 1;
+		pj::config_indices = [2,3];
+	} elif (pj::projectType=="shared_plugin") {
+		pj::config_indices = [2,3];
+		pj::is_static[2] = pj::is_static[3] = 0;
+		pj::is_shared[2] = pj::is_shared[3] = 1;
+	} elif (pj::projectType=="application_plugin") {
+		pj::config_indices = [0,1,2,3,4,5];
+		pj::is_static      = [1,1,0,0,0,0];
+		pj::is_shared      = [0,0,1,1,0,0];
+		pj::is_executable  = [0,0,0,0,1,1];
+	}
+	// define standard variables
+	pj::rules = rules;
+	pj::mapDeps = mapDeps;
+	pj::excludeProjectDeps = excludeProjectDeps;
+	pj::ruleFiles = ruleFiles;
+	pj::parents = [];
+}
+
+func(map_cfg_idx; :>idx = 0, :>cfg_idxs=[], :>return=0)
+{
+	if (idx < cfg_idxs) {
+		return = idx;
+	}
+	elif ((idx^2) < cfg_idxs) {
+		return = idx^2;
+	}
+	elif ((idx^1) < cfg_idxs) {
+		return = idx^1;
+	}
+	else {
+		return = cfg_idxs[0];
+	}
+}
+
+func(map_cfg_idx_self; :>idx = 0, :>cfg_idxs=[], :>return=0)
+{
+	if (!cfg_idxs == 6 && idx < 2) {
+		return = idx + 4;
+	}
+	else {
+		return = map_cfg_idx(idx,cfg_idxs);
+	}
+}
+
+func(read_and_interpret_project; :>pj_file="", :>return="") {
+	// read and interpret project
+	:>pj = read_project(<:pj_file = pj_file);
+	if (check_project_info(<:pj =& pj)) {
+		interpret_input(<:pj =& pj);
+		projects[pj::projectName] = pj;
+		project_list = project_list.[pj::projectName];
+//		project_paths[pj::projectName] = pj::INPUT_DIR;
+		if (debug_read !~ UNDEF) {
+			cout("read project ".pj::projectName." (".concat(pj::projectDeps,",").")\n");
+		}
+		return = pj::projectName;
+	}
+	else {
+		error(0; "check_project_info failed");
+	}
+}
+
+
+func(find_project_file; :>pj_name = "", :>pj_dirs=[], :>return = "")
+{
+	for (:>i=0; (return == "") && (i<!pj_dirs); ++i) {
+		:>path = pj_dirs[i]+"/"+pj_name+".pj";
+		if (?path) {
+			return = path;
+		}
+	}
+}
+
+func(collect_project_paths; :>projectDirs=[], :>return=1)
+{
+	for (:>i=0; i<!projectDirs; ++i) {
+		:>dir = projectDirs[i];
+		// check if the project dir has been processed
+		if (project_dir_map[dir] ~~ UNDEF) {
+			// if not mark as processed
+			project_dir_map[dir] = 1;
+			// scan project files recursively in project dir
+			:>pjs=[];
+			dir(dir; "*.pj"; 1; pjs);
+			for(:>j=0; j<!pjs; ++j) {
+				// and store them in the project location map
+				project_loc_map[pjs[j][0]-3] = pjs[j][1];
+			}
+		}
+	}
+}
+
+func(collect_dependent_project; :>name="", :>return=1)
+{
+	if (projects[name] ~~ UNDEF) {
+		if (project_loc_map[name] ~~ UNDEF) {
+			error(0; "cannot find dependent project ".name);
+			return = 0;
+		} else {
+			read_and_interpret_project(project_loc_map[name]);
+			collect_dependent_projects(name);
+		}
+	}
+	else {
+		return = 0;
+	}
+}
+
+func(collect_dependent_projects; :>project_name="", :>return=1)
+{
+	:>pj =& projects[project_name];
+	collect_project_paths(<:projectDirs =& pj::projectDirs);
+	for (:>i=0; i<!pj::projectDeps; ++i) {
+		collect_dependent_project(pj::projectDeps[i]);
+	}
+}
+
+func(add_parent; :>parent_name="", :>project_name="", :>return=1)
+{
+	if (projects[project_name] ~~ UNDEF) {
+		error(0; "dependent project ".project_name." not read (referenced by project ".parent_name.").");
+	}
+	:>pj =& projects[project_name];
+	pj::parents = pj::parents.[parent_name];
+}
+
+func(add_as_parent; :>project_name="", :>return=1)
+{
+	:>pj =& projects[project_name];
+	:>D  =& pj::projectDeps;
+	for (:>i=0; i<!D; ++i) {
+		add_parent(project_name, D[i]);
+	}
+}
+
+func(dec_child_counts; :>project_name="", :>N = [], :>return=1)
+{
+	:>pj =& projects[project_name];
+	:>P  =& pj::parents;
+	for (:>i=0; i<!P; ++i) {
+		if (--(projects[P[i]]::child_count) == 0) {
+			N = N.P[i];
+		}
+	}
+}
+
+// topologically sort project list and return whether no cycle has been detected
+func(topo_sort; :>return=1)
+{
+	// collect for each project the parent projects
+	for (:>i=0; i<!project_list; ++i) {
+		add_as_parent(project_list[i]);
+	}
+	// initialize child counts and collect projects without children
+	:>L = [];
+	for (i=0; i<!project_list; ++i) {
+		:>cc = !projects[project_list[i]]::projectDeps;
+		projects[project_list[i]]::child_count = cc;
+		if (cc == 0) {
+			L = L.[project_list[i]];
+		}
+	}
+	// perform topological sort
+	:>S = [];
+	for (:>S = []; !L > 0; ) {
+		S = S.L;
+		:>N = [];
+		for (:>i=0; i<!L; ++i) {
+			dec_child_counts(<:project_name = L[i], <:N =& N);
+		}
+		L = N;
+	}
+	// check if everything could be sorted
+	if (!S != !project_list) {
+		:>D = [];
+		for (i=0; i<!project_list; ++i) {
+			if (!(project_list[i] < S)) {
+				D = D.[project_list[i]];
+			}
+		}
+		error(0; "detected cyclic dependency among projects (".concat(D,",").")");
+		return = 0;
+	}
+	else {
+		project_list = S;
+	}
+}
+
+// configuration specific list entries are defined in general by
+//
+// E::values         ... configuration specific values of list entry
+// E::config_indices ... indices of configurations of current project that use the list entry
+// E::export_indices ... indices of configurations for which dependent projects inherit list entry
+//
+// There are several syntax to define a list entry:
+//
+// value ... only the value itself
+// ==> E::values         = map[value] ? map[value] : [value,value,value,value]
+//     E::config_indices = [0,1,2,3]
+//     E::export_indices = []
+//
+// [values:LIST/value, "all/static/shared"] ... pair of value list/value and export definition
+// ==> E::values         = values / map[value] ? map[value] : [value,value,value,value]
+//     E::config_indices = [0,1,2,3]
+//     E::export_indices = [0,1,2,3 / 0,1 / 2,3]
+//
+// [values:LIST/value, config_indices:LIST] ... pair of value list/value and list of config indices
+// ==> E::values         = values / map[value] ? map[value] : [value,value,value,value]
+//     E::config_indices = config_indices
+//     E::export_indices = []
+//
+// [values:LIST/value, config_indices:LIST, export_indices:LIST] ... tripel of value list/value, list of config indices and list of export config indices
+// ==> E::values         = values / map[value] ? map[value] : [value,value,value,value]
+//     E::config_indices = config_indices
+//     E::export_indices = export_indices
+//
+
+func(interpret_list_entry_config; :>entry="", :>config_indices=[0,1,2,3], :>config_map=MAP, :>return=MAP)
+{
+	if (entry ~~ LIST && !entry == 2 && entry[1] ~~ STRING) {
+		if (entry[0] ~~ LIST) {
+			return::values = entry[0];
+		}
+		else {
+			if (config_map[entry[0]]) {
+				return::values = config_map[entry[0]];
+			}
+			else {
+				return::values = [entry[0], entry[0], entry[0], entry[0]];
+			}
+		}
+		return::config_indices = config_indices;
+		if (entry[1] == "all") {
+			return::export_indices = config_indices;
+		}
+		elif (entry[1] == "static") {
+			return::export_indices = [0,1];
+		}
+		elif (entry[1] == "shared") {
+			return::export_indices = [2,3];
+		}
+		else {
+			error(0; "unknown entry specification ".entry[1]." for add value list definition. Only 'static', 'shared', or 'all' are allowed!");
+			return::export_indices = [];
+		}
+	}
+	elif (entry ~~ LIST && !entry >= 2 && !entry <= 3 && entry[1] ~~ LIST && (!entry == 2 || entry[2] ~~ LIST) ) {
+		if (entry[0] ~~ LIST) {
+			return::values = entry[0];
+		}
+		else {
+			if (config_map[entry[0]]) {
+				return::values = config_map[entry[0]];
+			}
+			else {
+				return::values = [entry[0], entry[0], entry[0], entry[0]];
+			}
+		}
+		return::config_indices = entry[1];
+		if (!entry == 3) {
+			return::export_indices = entry[2];
+		}
+		else {
+			return::export_indices = [];
+		}
+	}
+	else {
+		if (config_map[entry]) {
+			return::values = config_map[entry];
+		}
+		else {
+			return::values = [entry,entry,entry,entry];
+		}
+		return::config_indices = config_indices;
+		return::export_indices = [];
+	}
+}
+
+func(interpret_list_entry; :>entry="", :>return=MAP)
+{
+	return::do_export = 0;
+	if (entry ~~ LIST && !entry == 2 && entry[1] ~~ STRING) {
+		return::value = entry[0];
+		if (entry[1] == "all") {
+			return::do_export = 1;
+		}
+		else {
+			error(0; "unknown entry specification ".entry[1]." for add value list definition. Only 'all' is allowed!");
+		}
+	}
+	else {
+		return::value = entry;
+	}
+}
+
+// inherit the values to be exported from project dep_name to project pj and register exports to
+// the exports of pj
+func(inherit_variable_config_dep_pj; :>pj = MAP, :>dep_name="", :>var_name="", :>exp_name="", :>config_indices=[0,1,2,3], :>return=1)
+{
+	:>pd =& projects[dep_name];
+	:>E =& pd[exp_name];
+	for (:>i=0; i<!config_indices; ++i) {
+		:>c=config_indices[i];
+		for (:>j=0; j<!E[c]; ++j) {
+			if (!(E[c][j] < pj[var_name][c])) {
+				pj[var_name][c] = pj[var_name][c].E[c][j];
+			}
+			if (!(E[c][j] < pj[exp_name][c])) {
+				pj[exp_name][c] = pj[exp_name][c].E[c][j];
+			}
+		}
+	}
+}
+
+func(is_string_element; :>elem="", :>list=[], :>return=0)
+{
+	if (elem < list) {
+		return=1;
+	}
+}
+
+func(is_rule_map_element; :>elem=MAP, :>list=[], :>return=0)
+{
+	for (:>i=0; !return && i<!list; ++i) {
+		if (get_rule_name(elem) == get_rule_name(list[i])) {
+			return=1;
+		}
+	}
+}
+
+func(is_dep_map_element; :>elem=[], :>list=[], :>return=0)
+{
+	for (:>i=0; !return && i<!list; ++i) {
+		if (elem[0] == list[i][0]) {
+			return=1;
+		}
+	}
+}
+
+// inherit the values to be exported from project dep_name to project pj and register exports to
+// the exports of pj
+func(inherit_variable_dep_pj; :>pj = MAP, :>dep_name="", :>var_name="", :>exp_name="", :>is_element = is_string_element, :>return=1)
+{
+	:>pd =& projects[dep_name];
+	:>E =& pd[exp_name];
+	for (:>j=0; j<!E; ++j) {
+		if (pj[var_name] ~~ MAP || !is_element(E[j], pj[var_name])) {
+			pj[var_name] = pj[var_name].E[j];
+		}
+		if (pj[var_name] ~~ MAP || !is_element(E[j], pj[exp_name])) {
+			pj[exp_name] = pj[exp_name].E[j];
+		}
+	}
+}
+
+// for project project_name inherit exported values from depependent projects and add
+// to be added values from current project
+func(inherit_variable_config_pj; :>project_name="", :>var_name="", :>exp_name="", :>add_name="", :>config_indices=[0,1,2,3], :>config_map=MAP, :>return=1)
+{
+	:>pj =& projects[project_name];
+
+	// ensure that variable and export variable are initialized
+	if (pj[var_name] ~~ UNDEF) {
+		pj[var_name] = [ [], [], [], [] ];
+	}
+	if (pj[exp_name] ~~ UNDEF) {
+		pj[exp_name] = [ [], [], [], [] ];
+	}
+
+	// inherit values and exports from dependent projects
+	for (:>j=0; j<!pj::projectDeps; ++j) {
+		inherit_variable_config_dep_pj(<:pj =& pj, <:dep_name=pj::projectDeps[j], <:var_name=var_name, <:exp_name=exp_name, <:config_indices=config_indices);
+	}
+
+	// iterate list of values to be added from current project
+	:>A =& pj[add_name];
+	for (:>j=0; j<!A; ++j) {
+		// extract information of how to add current value
+		:>E = interpret_list_entry_config(<:entry = A[j], <:config_indices =& config_indices, <:config_map =& config_map);
+		// add to variable
+		for (:>k=0; k<!E::config_indices; ++k) {
+			if (!(E::values[k] < pj[var_name][E::config_indices[k]])) {
+				pj[var_name][E::config_indices[k]] = pj[var_name][E::config_indices[k]].[E::values[k]];
+			}
+		}
+		// add to export
+		for (:>k=0; k<!E::export_indices; ++k) {
+			if (!(E::values[k] < pj[exp_name][E::export_indices[k]])) {
+				pj[exp_name][E::export_indices[k]] = pj[exp_name][E::export_indices[k]].[E::values[k]];
+			}
+		}
+	}
+}
+
+// for project project_name inherit exported values from depependent projects and add
+// to be added values from current project
+func(inherit_variable_pj; :>project_name="", :>var_name="", :>exp_name="", :>add_name="", :>is_element = is_string_element, :>return=1)
+{
+	:>pj =& projects[project_name];
+
+	// ensure that variable and export variable are initialized
+	if (pj[var_name] ~~ UNDEF) {
+		pj[var_name] = [];
+	}
+	if (pj[exp_name] ~~ UNDEF) {
+		pj[exp_name] = [];
+	}
+
+	// inherit values and exports from dependent projects
+	for (:>j=0; j<!pj::projectDeps; ++j) {
+		inherit_variable_dep_pj(<:pj =& pj, <:dep_name=pj::projectDeps[j], <:var_name=var_name, <:exp_name=exp_name, <:is_element=is_element);
+	}
+
+	// iterate list of to values to be added from current project
+	:>A =& pj[add_name];
+	for (:>j=0; j<!A; ++j) {
+		// extract information of how to add current value
+		:>E = interpret_list_entry(A[j]);
+		// add to variable
+		if (pj[var_name] ~~ MAP || !is_element(E::value, pj[var_name])) {
+			pj[var_name] = pj[var_name].[E::value];
+		}
+		// add to export
+		if (E::do_export) {
+			if (pj[var_name] ~~ MAP || !is_element(E::value, pj[exp_name])) {
+				pj[exp_name] = pj[exp_name].[E::value];
+			}
+		}
+	}
+}
+
+// inherit all to be exported configuration specific values for variable var_name along topological
+// sort of projects
+func(inherit_variable_config; :>var_name="", :>exp_name="", :>add_name="", :>config_indices=[0,1,2,3], :>config_map_name = "", :>return=0)
+{
+	for (:>i=0; i<!project_list; ++i) {
+		if (config_map_name) {
+			inherit_variable_config_pj(<:project_name = project_list[i], <:var_name = var_name, <:exp_name = exp_name, <:add_name = add_name, <:config_indices =& config_indices, <:config_map =& projects[project_list[i]][config_map_name]);
+		}
+		else {
+			inherit_variable_config_pj(<:project_name = project_list[i], <:var_name = var_name, <:exp_name = exp_name, <:add_name = add_name, <:config_indices =& config_indices);
+		}
+	}
+}
+
+// inherit all to be exported values for variable var_name along topological
+// sort of projects
+func(inherit_variable; :>var_name="", :>exp_name="", :>add_name="", :>is_element = is_string_element, :>return=0)
+{
+	for (:>i=0; i<!project_list; ++i) {
+		inherit_variable_pj(project_list[i], var_name, exp_name, add_name, is_element);
+	}
+}
+
+func(inherit_all; :>return=0)
+{
+	inherit_variable("mapDeps", "expMapDeps", "addMapDeps", is_dep_map_element);
+	inherit_variable_config("incDirs", "expIncDirs", "addIncDirs");
+	inherit_variable_config("libDirs", "expLibDirs", "addLibDirs");
+	inherit_variable_config(<:var_name =& "dependencies", <:exp_name =& "expDependencies", <:add_name = "addDependencies", <:config_map_name = "mapDeps");
+	inherit_variable_config("defines", "expDefines", "addDefines");
+	inherit_variable_config("defines", "expDefines", "addStaticDefines", [0,1]);
+	inherit_variable_config("defines", "expDefines", "addSharedDefines", [2,3]);
+	inherit_variable("excludeProjectDeps", "expExcludeProjectDeps", "addExcludeProjectDeps", is_string_element);
+	inherit_variable("ruleFiles", "expRuleFiles", "addRuleFiles", is_string_element);
+	inherit_variable("rules", "expRules", "addRules", is_rule_map_element);
+}
+
+func(collect_dependencies_recursive; :>I=[], :>O=[], :>return=0)
+{
+	for (:>i=0; i<!I; ++i) {
+		if (!(I[i] < O)) {
+			O = O.I[i];
+			if (projects[I[i]]::projectDeps) {
+				collect_dependencies_recursive(<:I=&projects[I[i]]::projectDeps, <:O=&O);
+			}
+		}
+	}
+}
+
+func(collect_dependencies; :>project_name="", :>return=0)
+{
+	:>pj =& projects[project_name];
+	pj::all_dep_projects = [];
+	collect_dependencies_recursive(<:I =& pj::projectDeps, <:O =& pj::all_dep_projects);
+	pj::all_dep_projects_by_type = MAP;
+	for (:>i=0; i<!pj::all_dep_projects; ++i) {
+		:>pt = projects[pj::all_dep_projects[i]]::projectType;
+		if (pj::all_dep_projects_by_type[pt] ~~ UNDEF) {
+			pj::all_dep_projects_by_type[pt] = [ pj::all_dep_projects[i] ];
+		}
+		else {
+			pj::all_dep_projects_by_type[pt] = pj::all_dep_projects_by_type[pt].pj::all_dep_projects[i];
+		}
+	}
+}
+
+func(get_command_line_args; :>pj = MAP, :>ci = 0, :>return = "")
+{
+	if( pj::is_shared[ci] && (pj::plugin_list !~ UNDEF) ) {
+		for(:>i=0; i<!pj::plugin_list; ++i) {
+			return = return.' plugin:'.pj::plugin_list[i].pj::output_post[ci].'.dll';
+		}
+	}
+	for(:>i=0; i<!pj::addCommandLineArguments; ++i) {
+		return = return.' '.pj::addCommandLineArguments[i];
+	}
+}

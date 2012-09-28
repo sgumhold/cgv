@@ -1,0 +1,222 @@
+/*! \mainpage glsu The OpenGL Stereo Utility Library
+
+The glsu library allows easy development of stereoscopic OpenGL applications.
+It supports anaglyph, side by side, horizontal split and quad buffer stereo and provides functions
+to set up the projection matrices for the frustums of left and right eye that are necessary for
+stereoscopic rendering.
+
+This is release 1.0 of the glsu library and is copyright (C) by Stefan Gumhold.
+
+\section License glsu License May 26, 2011
+The glsu library and included programs are provided under the terms
+of a derivative of the BSD 3-Clause License as stated in the accompanying 
+file \c license.txt.
+
+\section Installation Installation of the glsu Library
+The glsu library itself consists of the following two files:
+- \c include/GL/glsu.h
+- \c src/glsu.cxx
+
+Two test programs are provided that use glut / freeglut or fltk
+to create an OpenGL window. The following files are included
+- \c test/test_glsu.h ... header of class that encapsulates common functionality
+- \c test/test_glsu.cxx ... source code of class that encapsulates common functionality
+- \c test/test_glsu_glut.cxx ... source code of test application that uses glut
+- \c test/test_glsu_fltk.cxx ... source code of test application that uses fltk
+
+\subsection Deps Dependencies
+The \c glsu library depends only on \c OpenGL.
+
+The accompanying test examples depend on
+- \c glu and \c glut, (under Windows ensure that environment variable \c GLUT_ROOT_PATH is set) or
+- \c glu and \c fltk2 (under Windows ensure that environment variable \c FLTK2_DIR is set)
+
+\subsection Makefiles Accompanying Makefiles
+CMake project files are provided and have been tested under windows for visual studio 2008. The project
+contains an installation procedure that installs the library header, the lib files and the
+dlls to an installation directory to be defined in CMake in the advanced settings in the
+\c CMAKE_INSTALL_PREFIX variable after the first configuration process. After compilation
+of the library it is important to execute the \c INSTALL project in order to place the
+generated dlls in the bin directory of the installation path. This should be contained
+in the \c PATH variable in order for the system to be able to find it when starting the
+program. For the glut-based test the system variable \c GLUT_ROOT_PATH should be set
+to the glut or freeglut directory and the glut-libs and dlls should be found in the relative
+directories \c Release and \c Debug.
+
+\section Basics Basics on Stereoscopic Rendering
+Full stereoscopic vision can only be stimulated by rendering a 3D 
+scene twice - once from the position of the left eye and once from 
+the position of the right eye and presenting each image only to the
+corresponding eye. 
+
+\subsection Separation Separation of Images
+Several techniques allow to display two different
+images to the different eyes:
+- passive stereo ... the light from two projectors are polarized before
+  projecting onto a common screen, that has to be built with a special 
+  material that preserves polarization. Orthogonal polarization directions 
+  are used and glasses with polarization filters allow to view the differnt
+  images with the different eyes.
+- active stereo ... images for left and right images are switched very fast
+  over time on a fast display. Shutter glasses that allow to darken each eye
+  individually very rapidly are used to select display to each eye only the
+  corresponding images.
+- anaglyph ... different color channels are used to transport left and right
+  image. Often the red channel is used for the left eye and the blue and 
+  optionally green channel for the right eye.
+
+\subsection Modes Stereo Modes
+GPUs support these stereoscopic display modes in the following manners
+- color masks ... during rendering color masks allow to select the color
+  channels into which the current rendering process is writing. In this way
+  anaglyph stereo can be supported with standard double buffering.
+- split viewports ... the desktop can be extended over two display each 
+  supplying one projector with the corresponding image. This can be done 
+  for active stereo. Again standard double buffering can be used. The two
+  rendering processes simply need to use only one half of the viewport.
+- quad buffering ... nvidia FX Quadro cards have native support for stereo. Here
+  the double buffering is extended to quad buffering with one color buffer
+  for each eye. Two displays can then be attached to the GPU in clone mode
+  showing the same gui but views for the different eyes inside OpenGL windows.
+
+In the glsu library the supported different display modes are defined
+in the enum type StereoMode. For the SM_ANAGLYPH mode there are different
+possibilities to map the left and eight eye to different color channels. These
+combinations are defined in the enum type AnaglyphConfiguration.
+
+\subsection Frustums Stereo View Frustums
+Besides the configuration of the rendering process for the different stereo
+modes one has to define different view frustums for the left and right eye
+through corresponding projection matrices. The basic idea is to imagine the
+display screen to be part of the scene. Also imagine a center eye in the middle
+of the left and right eyes. Let the screen be located at a distance \c zZeroParallax 
+away from the center eye along the view direction. The monoscopic frustum is
+defined by six planes: the near and far clipping planes, and four planes spanned by 
+the center eye and the four edges of the screen.
+
+\image html stereo3d.png "3D illustration of stereo frustums"
+
+The stereoscopic frustums are defined similarly by the same near and far clipping
+planes and four planes spanned by the corresponding eye and the same four edges of
+the screen. It is important to keep the view direction, which defines the optical center
+in the image, parallel to the view direction of the center eye. Otherwise the pixels on
+the screen would not be of square shape anymore - their shape would rather vary over the
+screen. 
+
+In monoscopy mode one only needs one symmetric frustum that is defined for example
+with the \c gluPerspective(fovy,aspect,zNear,zFar) function.
+This frustum can be updated by appending a shear along the x axis
+depending on the z-coordinate followed by a translation along the x-axis 
+(by plusminus the half of the eye separation). The effect of shearing and 
+translation cancel at the parallax zero distance where the screen is located
+in the scene.
+
+\image html stereo_top.png "top view illustrating important quantities"
+
+To following quantities are used to specify the stereo frustums
+- \c GLdouble \c fovy, \c aspect, \c zNear and \c zFar ... as in gluPerspective, i.e. the view
+                    angle along the y-direction, the aspect ratio of the
+					screen (width/height) and the distances along the
+					viewing directions to the near and far clipping planes.
+- \c GlsuEye \c eye ... left (-1), center (0) or right (1) eye for which to generate the frustum
+- \c GLdouble \c eyeSeparation ... distance between left and right eye measured relative to the
+                             width of the screen positioned at parallax zero depth, i.e. 
+					         a separation of 1 corresponds to the complete width of the screen.
+- \c GLdouble \c screenWidth  ... the width of the screen in eye coordinates
+- \c GLdouble \c screenHeight ... the height of the screen in eye coordinates
+- \c GLdouble \c zZeroParallax ... distance along view direction (same scaling as zNear and zFar) at
+                             which to place the parallax zero plane of the screen
+
+\section Usage Usage of the glsu Library
+\subsection Config Configuring the Rendering Process
+In the following section the definition of the stereo frustums is explained. Here we first suppose
+that there is a function \c draw_from_eye(GlsuEye) that sets the frustum of the passed eye and renders
+the scene. With this function the stereo rendering process can be implemented with the glsu library
+with the help of the \c glsuConfigureStereo function as done in the \c draw method of the \c test_glsu 
+class:
+
+\dontinclude test_glsu.cxx
+\skip ::draw()
+\skip else {
+\until }
+
+The third call to \c glsuConfigureStereo with the center eye is important to reconstruct the global settings.
+
+For convenience the functions \c glsuStereoRenderProcess and \c glsuStereoRenderProcessScreen are provided. These
+take all stereo parameters as input plus a callback function and a user data of type \c void*, which implements the
+monoscopic rendering of the scene excluding the definition of the projection matrix. The \c test_glsu class implements
+this callback in the static member function \c draw_callback
+
+\dontinclude test_glsu.cxx
+\skip draw_callback
+\until }
+
+And uses the convenience function in the \c draw method:
+
+\dontinclude test_glsu.cxx
+\skip ::draw()
+\skip else
+\until }
+
+\subsection Frustum Defining the Stereo Frustums
+The glsu library uses two subsets of parameters to define the frustums:
+- \c eye, \c eyeSeparation, \c fovy, \c aspect, \c zZeroParallax, \c zNear, \c zFar ... here the screen
+  dimensions are computed from the viewing angle in y-direction \c fovy, the aspect ration \c aspect and
+  the distance \c zZeroParallax from the viewer.
+- \c eye, \c eyeSeparation, \c screenWidth, \c screenHeight, \c zZeroParallax, \c zNear, \c zFar ... here
+  the screen dimensions are specified in world coordinates.
+
+Names of functions that use the second subset are appended with the postfix \c Screen.
+
+For correct illumination relative to two different eye locations, one would have
+to perform the shearing on the projection matrix stack and the translation on the
+model view matrix stack as done in the \c draw_from_eye_physical method of the
+\c test_glsu class:
+
+\dontinclude test_glsu.cxx
+\skip draw_from_eye_physical
+\until }
+
+The projection stack part can be also based on the specification of a monoscopic frustum followed
+by a shear with the function \c glsuStereoShear:
+\code
+	glMatrixMode(GL_PROJECTION_MATRIX);
+	glLoadIdentity();
+	gluPerspective(fovy, aspect, zNear, zFar);
+	glsuStereoShear(eye, eyeSeparation, fovy, aspect, zZeroParallax);
+\endcode
+
+This correct approach places highlights on different locations on illuminated 
+surfaces, what hinders stereoscopic fushion by the human observer. This is illustrated
+in the following two comparisons on the right side with the greenish background
+
+\image html comparison_anaglyph.png "Anaglyph view of comparison between convenient illumination on the left with blue background and physically correct illumination on the right with green background"
+	
+\image html comparison_tbb.png "Vertical split view of comparison between convenient illumination on the left with blue background and physically correct illumination on the right with green background"
+
+To avoid this, one can perform both shearing and translation on the projection stack, 
+such that illumination is done for both eyes from the center eye location. This is implemented
+in the \c draw_from_eye_convenient method of \c test_glsu: 
+
+\dontinclude test_glsu.cxx
+\skip draw_from_eye_convenient
+\until }
+
+The projection stack part can be extended to:
+\code
+	glMatrixMode(GL_PROJECTION_MATRIX);
+	glLoadIdentity();
+	gluStereoFrustum(eye, eyeSeparation, fovy, aspect, zZeroParallax,zNear,zFar);
+	gluStereoTranslate(eye, eyeSeparation, fovy, aspect, zZeroParallax);
+\endcode
+
+or be based on a monoscopic frustum:
+\code
+	glMatrixMode(GL_PROJECTION_MATRIX);
+	glLoadIdentity();
+	gluPerspective(fovy,aspect,zNear,zFar);
+	gluStereoShear(eye, eyeSeparation, fovy, aspect, zZeroParallax);
+	gluStereoTranslate(eye, eyeSeparation, fovy, aspect, zZeroParallax);
+\endcode
+
+*/

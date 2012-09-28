@@ -1,0 +1,7 @@
+@exclude<cgv/config/make.ppp>
+@define(projectType="library")
+@define(projectName="cgv_win32")
+@define(projectGUID="84797B45-5124-48fc-9224-E41E40B19E6D")
+@define(addProjectDeps=["cgv"])
+@define(addDependencies=["opengl"])
+@define(addSharedDefines=["CGV_WIN32_EXPORTS"])

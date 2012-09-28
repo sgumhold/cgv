@@ -1,0 +1,16 @@
+@exclude<cgv/config/make.ppp>
+@define(projectType="plugin")
+@define(projectName="examples_t")
+@define(projectGUID="4f8c8790-fab4-11dd-87af-0800200c9a66")
+@define(addProjectDirs=[CGV_DIR."/libs", CGV_DIR."/plugins", CGV_DIR."/3rd", CGV_DIR."/test"])
+@define(addIncDirs=[CGV_DIR."/libs/delaunay"])
+@define(addProjectDeps=["cgv", "glew", "win32_test", "crg_grid", "crg_stereo_view", "delaunay"])
+@define(sourceFiles=[
+	INPUT_DIR."/picker.cxx",
+	INPUT_DIR."/simple_cube.cxx"
+	])
+@define(addDependencies=["opengl","glu","glew"])
+@define(addCommandLineArguments=[
+	'config:"'.CGV_DIR.'/plugins/examples/config.def"',
+	'"type(shader_config):shader_path='."'".CGV_DIR."/plugins/examples;".CGV_DIR."/cgv/render/glsl'".'"'])
+

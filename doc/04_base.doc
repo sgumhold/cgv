@@ -1,0 +1,462 @@
+// This file is for Doxygen input. It is not compiled.
+
+#include <cgv/base/register.h>
+
+using namespace cgv::base;
+
+/*! \page baseNS Modules of the base namespace
+
+\section baseSEC Base Hierarchy
+
+Most toolkits and frameworks provide a common base class from which all classes
+are derived that can use features of the toolkit or framework. In the cgv framework
+this class is simply called "base" and lives in the namespace cgv::base. The 
+\ref cgv::base::base "base" class provides support for
+- reference counting of instances
+- type casts
+- self reflection of the members and methods and access to properties
+- registration by a plugin.
+
+\a Careful: Although multiple inheritance is used heavily in the cgv framework, it is not allowed
+to inherit \ref cgv::base::base "base" more than one time, what would lead to \b object \b schizophrenia. C++ does not
+allow to enforce this constraint, which therefore lies in the responsibility
+of the programmer. Please be aware of that!
+
+Besides the \ref cgv::base::base "base" class, the following derived classes extend its functionality:
+- \ref cgv::base::named "named" ... support for a name stored for each instance
+- \ref cgv::base::node "node" ... extends the \ref cgv::base::named "named" by a pointer to a parent instance
+- \ref cgv::base::group "group" ... extends \ref cgv::base::node "node" by methods that allow to organize a list of child instances
+
+Theses classes already provide the functionality to construct doubly linked
+tree structures and singly linked acyclic graph structures.
+
+The \ref cgv::base::base "base" class has two more methods that can be used by derived classes
+in an arbitrary way:
+- \ref cgv::base::base::update() "update()" ... for example used by gui classes to post a redraw
+- \ref cgv::base::base::get_user_data() "get_user_data()" ... for example by a gui implementation with a 
+  specific toolkit, returns the toolkit specific gui element instance
+
+\subsection baseRC Reference Counting of Instances
+
+Dynamic memory management with malloc/free and new/delete is quite error prone in C and C++. Frequently memory leaks
+are caused by instances that are allocated but never deallocated again. To circumvent this problem smart
+pointers have been proposed that implement the concept of reference counting. Here a counter is attached 
+to each allocated instance, which counts the number of pointers that reference the instance. The counter is
+incremented when a new pointer references the instance and decremented if the reference is removed. As soon as
+the counter is decreased to zero the instance is removed as it cannot be referenced anymore. Smart pointers
+are implemented in C++ as template classes that overload (re)implement the constructors, destructor and assignment 
+operator such that reference counting is done automatically.
+
+There are two choices of where to store the reference counter. Either directly as member of the instance or in an
+additionally allocated memory block. The first approach is faster and more memory efficent, but has the prerequisite 
+that each instance provides a reference counter and that the access to the reference counter is provided to the smart
+pointer. In the cgv framework both reference counting approaches are supported. The first and more efficient one can
+be used by deriving a class from cgv::data::ref_counted, which simply adds a reference counter to the members of the
+class. The smart pointers for both approaches are implemented in the cgv::data::ref_ptr template, which takes the instance
+type as first template argument and a boolean parameter as second argument. The boolean parameter tells, whether the
+instance type is derived from cgv::data::ref_counted or not.
+
+The \ref cgv::base::base "base" class is also derived from cgv::data::ref_counted such that reference counting is the
+default approach for instances derived from \ref cgv::base::base "base". Therefore all headers corresponding to the types
+in the base hierarchy contain a declaration of the corresponding smart pointer type, i.e. \ref cgv::base::base_ptr "base_ptr",
+\ref cgv::base::node_ptr "node_ptr", etc. Please \b always use these types to declare pointers to instances of types from the 
+base hierarchy.
+
+\subsection baseTC Type Casts
+
+In C++ there is a very important type cast denoted \c dynamic_cast which attempts to cast an instance of type A to type B. 
+If the instance is not derived from B, the dynamic type cast returns a null pointer. The common usage of the dynamic type
+cast operator is to perform casts to derived classes or to check whether an instance implements a given interface. In the 
+cgv framework a lot of functionality works on \ref cgv::base::base_ptr "base_ptr"s. For traversal of the tree / graph structures
+one often needs to know whether a base instance is actually a \ref cgv::base::node "node" or even \ref cgv::base::group "group"
+and has a parent or even children. Furthermore, the gui driver needs to know from an instance whether it provides a GUI or not.
+This is done deriving a class from for example \ref cgv::base::node "node" and from the interface class cgv::gui::provider. The 
+GUI driver can then use the dynamic type cast to cgv::gui::provider to check whether an instance provides a GUI.
+
+The \ref cgv::base::base "base" class provides special methods to simplify the dynamic type casts:
+- \ref cgv::base::base::get_named() "get_named()" ... use dynamic type cast to cast to \ref cgv::base::named_ptr "named_ptr"
+- \ref cgv::base::base::get_node() "get_node()" ... use dynamic type cast to cast to \ref cgv::base::node_ptr "node_ptr"
+- \ref cgv::base::base::get_group() "get_group()" ... use dynamic type cast to cast to \ref cgv::base::group_ptr "group_ptr"
+- \ref cgv::base::base::cast() "cast<T>()" ... use dynamic type cast to cast to type cgv::data::ref_ptr<T>
+- \ref cgv::base::base::get_interface() "get_interface<T>()" ... use dynamic type cast to cast to interface type \c T*, note that 
+  reference counting cannot be supported anymore as interface types are not derived from \ref cgv::base::base "base".
+- \ref cgv::base::base::get_const_interface() "get_const_interface<T>()" ... use dynamic type cast to cast to interface type \c const \c T*, note that 
+  reference counting cannot be supported anymore as interface types are not derived from \ref cgv::base::base "base".
+
+\subsection propInt Property Interface
+In addition to the self reflection functionality a more general property interface is provided by the \ref cgv::base::base "base" class.
+Properties can simply be class members or more complex configurations that influence more than one class member. Properties are 
+accessed by their names and have only the basic types \c bool, \c int (8, 16, 32 or 64 bit), \c float (32 or 64 bit) or \c string. 
+Automatic conversion rules between these types are provided such that each property can be queried in each of the available types.
+
+The following methods can be used to access properties:
+- \ref cgv::base::base::get() "get<T>()"... return a property in the type specified as template argument
+- \ref cgv::base::base::set() "set()"... set the property from a value whose type is automatically derived from the template parameter
+- \ref cgv::base::base::is_property() "is_property()"... check if property of given name exists
+- \ref cgv::base::base::multi_set() "multi_set()"... set several properties from through a string of the form
+  "name1=value1;name2=value2;..."
+
+The programmer has to overload the following methods in derived classes
+to provide access to properties:
+- base::get_property_declarations() ... return a string containing a semicolon 
+  separated list of property declarations. 
+- base::get_void() ... retrieve a property value and store it in a value pointed to by the passed void pointer
+- base::set_void() ... set a property from a value pointed to by the passed void pointer
+
+The class cgv::type::variant can be used to access the arguments which are passed as arbitrary types. 
+The default implementation of the property interface uses the 
+method \ref cgv::base::base::self_reflect() "self_reflect()" to declare, get and set properties.
+Example implementations are found in the examples plugin for example in the header 
+plugins/examples/simple_cube_8.h.
+
+\subsection baseRG Registration by a Plugin
+
+Instances of the classes derived from \ref cgv::base::base "base" can be published to the application and to previously 
+registered listeners by plugins through the registration facility describe in section \ref Plugins. The following
+two methods allow an instance to react to registration and unregistration:
+- \ref cgv::base::base::register() "register()" ... called by registration facility after instance has been registered at all listeners.
+- \ref cgv::base::base::unregister() "unregister()" ... called by registration facility after instance has been unregistered completely
+
+\section Plugins Registration Mechanism for Plugins
+
+Plugins are compiled code modules that can be loaded at runtime. They are
+realized in C++ via shared libraries / dlls. Plugins typically contain 
+implementations of interface classes defined in the cgv library such as
+specializations of image readers. Furthermore, plugins can contain resource
+files such as icons and images.
+
+The most important task of a plugin is to tell the application by whom it is 
+loaded, which that loads the plugin.
+
+
+Plugins in cgv use the registration functionality implemented
+in cgv/base/register.h and cgv/base/register.cxx to provide
+ - instances of implemented class, 
+ - factories for instances
+ - test functions
+ - registration listeners, 
+ - drivers (for example for the gui), 
+ - servers (for example for fonts or triggers) and 
+ - resource files such as image files, which are embedded into an
+   executable of an application or into a plugin. 
+ - resource files can be embedded in binary format into an application or plugin 
+   by converting it with the \c res_prep tool to a cxx-file that can be compiled. 
+   This performs an automatic registration of the resource file, which can be accessed 
+   through the functions defined in the header cgv/data/import.h (see function 
+   cgv::base::register_resource_file). For resource files with the extensions
+   "*.bmp;*.jpg;*.jpeg;*.png;*.tif;*.tiff" (defined in the file make/vs/cgv_rules.rules)
+   the files only need to be present in the source directory and the makefile generation facility
+   does the rest.
+
+Except of resource files all other registration entity must be of a class type that 
+inherits cgv::base::base exactly once. Specialized registration entities are marked
+as such by deriving them also from one of the classes (all declared in cgv/base/register.h):
+ - cgv::base::test, 
+ - cgv::base::factory, 
+ - cgv::base::registration_listener,
+ - cgv::base::driver, 
+ - cgv::base::server
+
+Registration can be done for example in the \c main function of an application
+with the function cgv::base::register_object(object_ptr, options) taking two
+parameters - the to be registered object and an option string. The option string
+is used to steer where the object should be registered to and to allow specification
+of arbitrary registration parameters. For example when registering a factory, one can
+specify a menu text and a shortcut that are used by the standard viewer to integrate
+the factory into the menu structure.
+
+When calling the cgv::base::register_object function, the object and option string are
+passed to all previously registered registration listeners with the method 
+cgv::base::registration_listener::register_object(object,option). After registration the
+cgv::base::base::on_register() method of the registered object is called. This gives the
+object the opportunity to initialize itself knowing that it has been integrated into the
+gui and rendering structures.
+
+As the programmer cannot know which registration listeners keep reference counted pointers
+to a registered object, the function cgv::base::unregister_object is provided. Again all
+registered listeners are notified by their unregister_object method and afterwards the 
+unregister() method of the object itself is called. The listeners must make sure to remove
+all reference counted pointers onto the object passed to their unregister_object() method.
+The object itself would unregister all objects created by itself in its unregister() method.
+Typically, unregistration of an object will cause it and all its dependent objects to be 
+destroyed.
+
+The dynamic version of the cgv_viewer allows to load plugins in form of 
+shared libraries / dlls based on parsing the command line arguments or configuation
+files. The viewer uses the function cgv::base::process_command_line_args to process
+all commands specified on the command line and recursively in configuration files.
+As the \c main functions in shared libraries / dlls are not standardized, the register_object()
+function cannot be used in plugins to for registration. Instead one declares static instances
+of helper classes whose constructors are called when loading the shared library. The 
+registration is then performed in the constructor of the helper class. The following
+helper classes are provided in cgv/base/register.h:
+ - cgv::base::object_registration<T> ... registers an instance created with the default 
+   constructor. The constructor of the helper class also allows to specify an options string,
+ - cgv::base::object_registration_1<T,CA> ... same as above but uses a constructor with one
+   argument of type CA,
+ - cgv::base::object_registration_2<T,CA> ... same as above but uses a constructor with two
+   arguments of type CA1 and CA2,
+ - cgv::base::factory_registration<T> ... registers a default implementation of a factory class
+   that allows to create new instances during runtime. The constructor of the helper class
+   has additional parameters for the type name of the created instances, whether the factory
+   can generate only one instances at a time and the options for factory as well as created
+   instance registration.
+ - cgv::base::factory_registration_1<T,CA> ... see above
+ - cgv::base::factory_registration_2<T,CA1,CA2> ... see above
+ - cgv::base::resource_file_registration ... registeres a resource file, what is typically
+   only used in source files automatically generated with the res_prep tool for resource
+   files
+ 
+During loading a shared library the registration is automatically disabled with the
+function cgv::base::disable_registration(). This is important as the construction of
+instances that demand for the loading of another shared library can cause a deadlock
+of the application. Instead in the disabled registration all registration events are
+cached and executed after loading of the shared library has been completed. The the
+cgv::base::enable_registration() function is called again and the objects are registered
+in the order server, driver, listerener and all the rest. Resource file registration on the
+other hand is unproblematic and not delayed. One can turn off the discarding of the 
+registration events with the function cgv::base::disable_registration_event_cleanup().
+This gives listeners of plugins that are read later access to previously registered
+objects and is the default in the standard cgv_viewer application.
+
+Finally, one can turn on permanent registration by the function 
+cgv::base::enable_permanent_registration() in order to keep a list of all registered
+objects. This list gives configuration files access to all registered objects and allows
+to set their members at program start. Also this option is enabled in the standard cgv_viewer
+application.
+
+\subsection RegEx Registration Example
+Suppose you have implemented a class \c picker in your plugin and want to
+register a new instance of type \c picker when your plugin is loaded. Then
+you simply add the following line to the cxx file where you implemented
+the \c picker class:
+\code
+#include <cgv/base/register.h>
+cgv::base::object_registration<picker> picker_registration("");
+\endcode
+The argument to the \c picker_registration constructor is the option string passed to
+the register_object function and can be used to select a specific 
+listener. For example if you have several windows that can integrate the gui
+of registered objects, you can select the parent window for your object by
+specifying the name of the parent window in then argument to the object registration
+contructor. If an empty string is specified, all listeners will register the object.
+
+If you want to register a factory that can generate \c picker instances you
+use the following line instead:
+\code
+#include <cgv/base/register.h>
+cgv::base::factory_registration<picker> picker_registration("picker", "menu_text=\"new/picker\";shortcut='P'");
+\endcode
+This will add an entry into the "new" submenu of the main menu and
+allow you to create \c pickers with the <Ctrl-P> shortcut. If you want to allow
+only the creation of one instance of picker, the following line is your choice:
+\code
+#include <cgv/base/register.h>
+cgv::base::factory_registration<picker> picker_registration("picker", "menu_text=\"new/picker\";shortcut='P'", true);
+\endcode
+In this signleton case pressing the shortcut <Ctrl-P> several times hides and shows your 
+picker instance.
+
+Finally, to add your own registration listener you use the object_registration helper
+class on a class derived by cgv::base::base and cgv::base::registration_listener.
+
+\section commSEC Communication with Signals and Actions
+
+There are two main communication helpers in the cgv framework: signals 
+and actions. A signal is a callback manager that can be used like a 
+function. It has a signature and can be called like a function. It manages
+a list of callbacks to which functions, methods and instances with ()-operator
+can be added. An action on the other hand tells how to call the method
+of a given class. It stores the arguments that are passed to the method.
+An action is typically passed to a traversal algorithm or class that 
+traverses a tree or acyclic graph built out of cgv::base::group instances.
+On every instance it checks whether it has the type needed to call the
+method of the action and if yes calls this method with the arguments stored
+in the action.
+
+Signals are often used in the gui framework to notify of events such as
+value change events or button press events. Actions are typically applied
+to a scene graph or the tree of drawables in the 3d view of the cgv_viewer, 
+for example to init or draw the drawables or pass events to the drawables.
+
+\subsection sigTut Tutorial on the Usage of Signals
+
+We start with a very simple example of using a signal that takes a single
+integer parameter. One declares the signal according to 
+\code
+#include <iostream>
+#include <cgv/base/signal.h>
+
+signal<int> int_sig;
+\endcode
+Next we want to attach callbacks to the signal, where in the simplest version
+the functions, methods or functors have the same signature (same number and type
+of parameters). Let us declare the following function and class type
+\code
+void int_func(int i) { std::cout << "f(" << i << ")" << std::endl; }
+
+class X : public cgv::base::tacker
+{
+public:
+	void int_method(int i)   { std::cout << "X::m(" << i << ")" << std::endl; }
+	void operator () (int i) { std::cout << "X(" << i << ")" << std::endl; }
+};
+
+X x;
+\endcode
+Now we have a function and a method that take one integer argument exactly like the signal.
+Instances of class \c X like \c x in our example also have the ()-operator overloaded
+with one integer argument. Thus these instances are at the same time functors and can 
+be used as a function with one integer argument, i.e. \c x(17).
+
+Note that the class \c X is derived from cgv::base::tacker, which is important to avoid
+invalid pointers as explained below.
+
+Next we want to attach our three different callbacks to the signal:
+\code
+connect(int_sig, int_func);
+connect(int_sig, &x, &X::int_method);
+connect(int_sig, x);
+\endcode
+Note that when attaching a method of an instance to a signal, one has to provide
+the this pointer of the instance and the method pointer, which is specified in C++
+with a leading &-symbol followed by the class name, two colons and the method name.
+
+After the attachment of callbacks we can send out a signal what can be interpreted
+as emitting an event. This is done by using the signal in exactly the same way as a
+function with an integer argument:
+\code
+int_sig(13);
+\endcode
+what generates the following output to the std::cout stream
+\code
+f(13)
+X::m(13)
+X(13)
+\endcode
+
+Similar to the attachment of callbacks with the cgv::base::connect function, one can
+detach a callback with cgv::base::disconnect according to
+\code
+disconnect(int_sig, int_func);
+disconnect(int_sig, &x, &X::int_method);
+disconnect(int_sig, x);
+\endcode
+Note that when disconnecting a functor instance, all methods of the same instance 
+attached to the signal as callback are detached as well.
+
+Callbacks to methods of instances or functors bear the danger that the instance
+to which the signal was connected is destructed before the signal is emitted. In
+this case the signal would call a method or the ()-operator with an invalid this
+pointer. 
+
+To avoid this problem, all class that can be attached with a method or as functor
+to a signal, have to be derived from the cgv::base::tacker class, which registers
+all connections of the class instance to any signals and removes these connections 
+on destruction of the instance. When a signal is then emitted it wont do a callback
+with invalid this pointer as the tacker class removed the callback from the signal.
+
+Here a short example that relies on this functionality:
+\code
+{
+   X x1;
+   connect(int_sig, x1);
+}
+int_sig(11);
+\endcode
+Signals with more than one argument work in exactly the same way. More difficult
+is the support for return values as these have to be combined from the return
+values of the different callbacks. The only return values supported in the cgv
+framework are of type bool. For boolean return values one can use logical operators
+to combine the return values of the callbacks. In the framework logical AND and OR 
+are supported. One can further select between short circuit evaluation and full
+evaluation. The short circuit evaluation stopps performing callbacks as soon as
+the final return value cannot change anymore, i.e. as soon as the first callback
+returns false when logical AND is used for combining.
+
+The support for signals with boolean return values is provided by the 
+cgv::base::bool_signal template. The logical operator and whether short circuit
+evaluation should be used is specified as string argument in the constructor of 
+the signal. The default choise is logical AND in the short circuit version. It 
+follows a code example, where a boolean signal is used to check the validity of
+a value with the full boolean AND combining option.
+\code
+bool_signal<int> check_valid("+&"); // use '+'/'*' for full/short circuit eval
+                                    // and '&'/'|' for logical AND/OR combination
+bool up_check(int i)   { return i < 10; } 
+bool down_check(int i) { return i > 3; }
+
+connect(check_valid, up_check);
+connect(check_valid, down_check);
+
+if (check_valid(7))
+	std::cout << "7 is valid" << std::endl;
+\endcode
+
+The final feature supported in the signal mechanism of cgv is argument rebinding
+of the callbacks. Suppose you have a callback that has a different number or 
+different types of arguments as the signal to which you want to attach the callback.
+This would typically require the implementation of an interface function with a
+signature matching that of the signal and an implementation that calls the callback
+with parameters derived from the parameters retrieved from the signal.
+
+In cases where this conversion of parameters is simply the exclusion of one or several
+parameters, a rearrangement or the addition of a constant or reference to a variable, 
+one can use the functions cgv::gui::rebind to generate a functor implementing the 
+parameter conversion without the need for the declaration of a new function.
+
+The functors returned by cgv::base::rebind overload the ()-operator with all 
+possible signatures such that they can be attached to any signal. Currently,
+rebinding is only supported for function and methods and not for functors.
+In case of a function the first parameter to the rebind function is the function 
+itself. In case of a method the first two 
+parameters are the this pointer and the method pointer. Depending on the number of
+arguments in the signature of the rebound function / method, the rebind() functions 
+takes one further parameter for each function / method argument. This argument can
+be one out of
+- cgv::base::_0, _1, ..., _9 ... to specify the i-th parameter from the signal
+- cgv::base::_c(value)       ... to specify a constant value
+- cgv::base::_r(variable)    ... to specify a reference to a variable
+
+Here are some examples for rebinding with respect to the integer signal used in 
+the examples before.
+\code
+// ignore parameter from signal when calling a procedure without parameters 
+rebind(proc,    int_sig);
+
+// use constant string value for first argument and first parameter from
+// signal for second parameter when calling a method from an instance y
+// of type Y that takes a string and an int as parameters.
+rebind(y, &Y::str_int_method, int_sig, _c(std::string("string argument")), _0);
+\endcode
+
+The rebind function finally returns a functor instance that could be attached to
+an arbitrary signal. As the returned functor is a temporary object, it would be 
+destroyed after the connect function call has been evaluated. To avoid this, one 
+uses the cgv::base::connect_copy() function instead of the cgv::base::connect() 
+function when attaching a functor resulting from the cgv::base::rebind() function 
+to the signals. This will cause the creation of a permanent copy of the functor.
+
+One final pitfall should be mentioned: when rebinding to a
+method \c m() which is implemented in a base class \c B of the class \c A, the
+this pointer of type \c A has to be cast to the base type \c B when used in the
+rebind method, i.e. 
+\code
+class B {
+   void m(int i);
+};
+class A : public B {
+};
+
+A a;
+
+connect_copy(int_sig, rebind(static_cast<B*>(&a), &B::m)
+\endcode
+Thus you need to use type \c B to cast the this pointer as well as for specifying the
+method pointer.
+
+Finally, one must note that the error messages generated by the compiler, when using
+signals are especially unreadable in case of wrong usage of the rebind functions. Please
+check your code against the explanation here to try to eliminate the error and dont
+try to understand the error message - or rather huge number of error messages.
+*/

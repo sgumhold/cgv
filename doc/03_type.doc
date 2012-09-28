@@ -1,0 +1,23 @@
+// This file is for Doxygen input. It is not compiled.
+
+#include <cgv/base/register.h>
+
+using namespace cgv::type;
+
+/*! \page baseNS Modules of the type namespace
+
+\subsection typeTR Type Reflection
+
+C++ does not allow to enumerate the members and methods of a class and get their names. This
+functionality has to be provided by the programmer and is typically refered to as \a type \a reflection.
+Information about members and methods allows meta programming which is interesting for example to
+provide automatic functionality to generate GUIs or imlpement serializations for reflected types.
+
+In the cgv framework type reflection is kept as simple as possible for the user that provides type reflection information
+as well as for the developer that implements functionality using type information. The basic idea builds on the visitor 
+concept. Functions that provide type reflection information take as their single argument a reference to the visitor 
+class which is derived from the reflection_handler class. In the function all base classes, members and methods 
+are described to the visitor.
+
+To be continued ...
+*/

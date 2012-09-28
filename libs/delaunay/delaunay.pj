@@ -1,0 +1,6 @@
+@exclude<cgv/config/make.ppp>
+@define(projectType="library")
+@define(projectName="delaunay")
+@define(projectGUID="334B280C-CEFC-461e-BB1E-BE50FC399C7E")
+@define(excludeSourceFiles=["mesh_geometry.cxx","triangle_mesh.cxx","delaunay_mesh.cxx","delaunay_mesh_with_hierarchy.cxx"])
+@define(addSharedDefines=["DELAUNAY_EXPORTS"])

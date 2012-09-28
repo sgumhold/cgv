@@ -1,0 +1,7 @@
+@exclude<cgv/config/make.ppp>
+@define(projectType="plugin")
+@define(projectName="crg_spherical_view")
+@define(projectGUID="84799a80-fc2e-11dd-87af-0800200c9a66")
+@define(addProjectDeps=["cgv_render", "cgv_gui"])
+@define(addSharedDefines=["CGV_RENDER_SPHERICAL_VIEW_EXPORTS"])
+

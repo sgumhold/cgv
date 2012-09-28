@@ -1,0 +1,40 @@
+		<Configuration
+			Name=@"config_name[ci].'|Win32'"
+			>
+			<DebugSettings@if(application_name)@{
+				Command=@"CGV_INSTALL.'\\bin\\'.application_name.output_post[ci].'.exe'"
+@}
+@else@{
+				Command="$(TargetPath)"@}@if(workingDirectory!~UNDEF)@{
+				WorkingDirectory=@"workingDirectory"@}
+				@else@{
+				WorkingDirectory=""@}@define(command_line_args="")@if((ci > 1) & (plugin_list !~ UNDEF))@{
+	@for(i=0;i<!plugin_list;++i)@{
+		@define(command_line_args = command_line_args.' plugin:'.plugin_list[i].output_post[ci].'.dll')
+	@}
+@}
+@for(i=0;i<!addCommandLineArguments;++i)@{
+	@define(command_line_args = command_line_args.' '.addCommandLineArguments[i])
+@}
+				CommandArguments=@"command_line_args*'|"|&quot;|'"
+				Attach="false"
+				DebuggerType="3"
+				Remote="1"
+				RemoteMachine="ENCHANTRESS"
+				RemoteCommand=""
+				HttpUrl=""
+				PDBPath=""
+				SQLDebugging=""
+				Environment=""
+				EnvironmentMerge="true"
+				DebuggerFlavor=@"debug_flavor[ci]"
+				MPIRunCommand=""
+				MPIRunArguments=""
+				MPIRunWorkingDirectory=""
+				ApplicationCommand=""
+				ApplicationArguments=""
+				ShimCommand=""
+				MPIAcceptMode=""
+				MPIAcceptFilter=""
+			/>
+		</Configuration>

@@ -1,0 +1,10 @@
+@exclude<cgv/config/make.ppp>
+@define(projectGUID="F66047EB-7992-4eea-B65F-D952109EBCAE")
+@define(projectType="application")
+@define(projectName="test_glsu_fltk")
+@define(excludeSourceFiles=["test_glsu_glut.cxx"])
+@define(addIncDirs=[CGV_DIR."/libs/glsu",CGV_DIR."/3rd"])
+@define(addProjectDeps=["fltk", "glsu"])
+@define(addDependencies=["glu"])
+@define(addProjectDirs=[CGV_DIR."/libs",CGV_DIR."/3rd/fltk"])
+

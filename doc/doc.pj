@@ -1,0 +1,4 @@
+@exclude<cgv/config/make.ppp>
+@define(projectName="doc")
+@define(projectType="tool")
+@define(projectGUID="E4E3902D-4700-4EE9-A64E-6BD4DD762E4A")

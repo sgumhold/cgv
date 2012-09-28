@@ -1,0 +1,167 @@
+@=
+
+rule_variable_map = MAP;
+
+
+func(is_rule; :>R = MAP, :>return=0)
+{
+	if (R::rules) {
+		return = 1;
+	}
+}
+
+func(nr_rule_targets; :>R = MAP, :>return=0)
+{
+	if (R::rules) {
+		return = !R::rules;
+	}
+}
+
+func(map_rule_variables; :>path="", :>return="")
+{
+	return = path;
+	for (:>i=0; i<!rule_variable_map; ++i) {
+		return = return * ("|".rule_variable_map[i]."|".rule_variable_map[rule_variable_map[i]]."|");
+	}
+}
+func(get_rule_name; :>R=MAP, :>return="")
+{
+	if (R::name ~~ UNDEF) {
+		return = R::folder.'_rule';
+	}
+	else {
+		return = R::name;
+	}
+}
+
+func(ensure_rule_ext_map; :>pj = MAP, :>return = 0)
+{
+	if (pj::extMap ~~ UNDEF) {
+
+//		cout("projects[".pj::projectName."]::rules=\n");
+//		cout(pj::rules);
+//		cout("\n\n");
+
+		pj::extMap = MAP;
+		if (pj::rules) {
+			for (:>i=0; i<!pj::rules; ++i) {
+				:>E = pj::rules[i]::extensions;
+				:>entry = [ get_rule_name(<:R =& pj::rules[i]), is_rule(<:R =& pj::rules[i]) ];
+				for (:>j=0; j<!E; ++j) {
+					pj::extMap[E[j]] = entry;
+				}
+			}
+		}
+	}
+}
+
+func(get_rule_id; :>pj=MAP, :>ext="", :>return="")
+{
+	ensure_rule_ext_map(<:pj =& pj);
+	return = ((pj::extMap)[ext])[0];
+}
+
+func(check_is_rule; :>pj=MAP, :>ext="", :>return="")
+{
+	ensure_rule_ext_map(<:pj =& pj);
+	return = pj::extMap[ext][1];
+}
+
+func(rule_target; :>R = MAP, :>i=0, :>return="")
+{
+	:>r =& R::rules[i];
+	if (r::path) {
+		return = r::path;
+	}
+	else {
+		return = "$(INPUT_DIR)";
+	}
+	if (r::name) {
+		return = return.r::name;
+	}
+	else {
+		return = return."$(INPUT_NAME)";
+	}
+	if (r::suffix) {
+		return = return.r::suffix;
+	}
+	if (r::keep_extension) {
+		if (r::keep_extension == 1) {
+			return = return."$(INPUT_EXT)";
+		}
+	}
+	if (r::extension) {
+		return = return.".".r::extension;
+	}
+	return = map_rule_variables(return)*clean_path;
+}
+
+func(rule_prog; :>R = MAP, :>return="")
+{
+	if (R::tool) {
+		if (R::command) {
+			if (R::command~~LIST) {
+				if (!R::command > 0) {
+					if (R::tool == R::command[0]) {
+						return = map_rule_variables("$(CGV_INSTALL)bin/".R::tool)*clean_path;
+					}
+					else {
+						return = R::command[0];
+					}
+				}
+			}
+		}
+	}
+	else {
+		if (R::command) {
+			if (R::command~~LIST) {
+				if (!R::command > 0) {
+					if (R::command[0] == "ppp") {
+						return = map_rule_variables("$(CGV_DIR)bin/ppp")*clean_path;
+					}
+					else {
+						return = R::command[0];
+					}
+				}
+			}
+		}
+	}
+}
+
+func(rule_command_line; :>R = MAP, :>sep = "", :>prefix = "", :>postfix = "", :>return = "")
+{
+	:>L = [rule_prog(<:R =& R)];
+	if (R::command) {
+		for (:>i=1; i<!R::command; ++i) {
+			if (R::command[i] ~~ STRING) {
+				L = L.[map_rule_variables(R::command[i])*clean_path];
+			}
+			else {
+				if (R::command[i] == 0) {
+					L = L.[map_rule_variables("$(INPUT_DIR)$(INPUT_NAME)$(INPUT_EXT)")*clean_path];
+				}
+				else {
+					L = L.[rule_target(<:R =& R, <:i = R::command[i]-1)];
+				}
+			}
+		}
+	}
+	else {
+		L = L.["$(INPUT_DIR)$(INPUT_NAME)$(INPUT_EXT)"];
+		:>n = nr_rule_targets(<:R =& R);
+		for (:>i=0; i<n; ++i) {
+			L = L.[rule_target(<:R =& R, <:i = i)];
+		}
+	}
+	return = concat(<:L =& L, <:sep=sep, <:prefix=prefix, <:postfix=postfix);
+}
+
+func(rule_targets; :>R = MAP, :>sep="", :>prefix="", :>postfix="", :>return="")
+{
+	:>L = [];
+	:>n = nr_rule_targets(<:R =& R);
+	for (:>i=0; i<n; ++i) {
+		L = L.[rule_target(<:R =& R, <:i = i)];
+	}
+	return = concat(<:L =& L, <:sep=sep, <:prefix=prefix, <:postfix=postfix);
+}

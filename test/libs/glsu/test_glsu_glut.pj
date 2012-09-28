@@ -1,0 +1,11 @@
+@exclude<cgv/config/make.ppp>
+@define(projectGUID="E1550F75-BD95-4705-9545-D5B79D63D57C")
+@define(projectType="application")
+@define(projectName="test_glsu_glut")
+@define(addIncDirs=[CGV_DIR."/libs/glsu"])
+@define(addProjectDeps=["glsu"])
+@define(excludeSourceFiles=["test_glsu_fltk.cxx"])
+@define(mapDeps::freeglut = ["freeglut_static","freeglut_static_d","freeglut","freeglut_d"])
+@define(addDependencies=["glu", "freeglut"])
+@define(addProjectDirs=[CGV_DIR."/libs"])
+

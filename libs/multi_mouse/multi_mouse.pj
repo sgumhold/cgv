@@ -1,0 +1,25 @@
+@exclude<cgv/config/make.ppp>
+@define(projectType="library")
+@define(projectName="multi_mouse")
+@define(projectGUID="2E41B740-CF59-416a-BEA3-33815BF3DFE2")
+@define(sourceFiles=[
+	CGV_DIR."/cgv/utils/scan.h",
+	CGV_DIR."/cgv/utils/scan.cxx",
+	CGV_DIR."/cgv/utils/date_time.h",
+	CGV_DIR."/cgv/utils/date_time.cxx",
+	CGV_DIR."/cgv/gui/event.h",
+	CGV_DIR."/cgv/gui/event.cxx",
+	CGV_DIR."/cgv/gui/mouse_event.h",
+	CGV_DIR."/cgv/gui/mouse_event.cxx",
+	INPUT_DIR."/lib_begin.h",
+	INPUT_DIR."/multi_mouse.h",
+	INPUT_DIR."/multi_mouse.cxx",
+	INPUT_DIR."/multi_mouse_detail.h",
+	INPUT_DIR."/multi_mouse_win32.h",
+	INPUT_DIR."/multi_mouse_win32.cxx"
+])
+
+@define(addSharedDefines=["CGV_GUI_EXPORTS", "CGV_MEDIA_TEXT_EXPORTS", "CGV_UTILS_EXPORTS", "MULTI_MOUSE_EXPORTS"])
+@if(SYSTEM=="windows")@{
+	@define(addDependencies=["ws2_32", "msimg32", "opengl"])
+@}

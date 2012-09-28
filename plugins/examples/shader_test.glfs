@@ -1,0 +1,9 @@
+varying vec3 eye_normal;
+varying vec3 eye_position;
+
+vec4 doLighting(vec3 position, vec3 normal, vec4 diffuseMaterial);
+
+void main()
+{
+	gl_FragColor = doLighting(eye_position, eye_normal, gl_FrontMaterial.diffuse);
+}

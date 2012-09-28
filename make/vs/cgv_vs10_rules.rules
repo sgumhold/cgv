@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<VisualStudioToolFile
+	Name="cgv vs10 rules"
+	Version="9,00"
+	>
+	<Rules>
+		<CustomBuildRule
+			Name="generate make file"
+			DisplayName="makegen vs10"
+			CommandLine="&quot;$(CGV_DIR)\bin\ppp&quot; -CGV_COMPILER=vs10 &quot;$(InputPath)&quot; &quot;$(CGV_DIR)\make\ppp\templates\vs_vcproj.tm&quot; &quot;$(CGV_BUILD)\vs10\$(InputName)\$(InputName).vcproj&quot; &quot;$(CGV_DIR)\make\ppp\templates\vs_sln.tm&quot; &quot;$(CGV_BUILD)\vs10\$(InputName)\$(InputName).sln&quot; &quot;$(CGV_DIR)\make\ppp\templates\vs_vcproj_user.tm&quot; &quot;$(CGV_BUILD)\vs10\$(InputName)\$(InputName).vcproj.$(USERDOMAIN).$(USERNAME).user&quot;"
+			Outputs="&quot;$(CGV_BUILD)\vs10\$(InputName)\$(InputName).vcproj&quot;; &quot;$(CGV_BUILD)\vs10\$(InputName)\$(InputName).sln&quot;; &quot;$(CGV_BUILD)\vs9\$(InputName)\$(InputName).vcproj.$(USERDOMAIN).$(USERNAME).user&quot;"
+			AdditionalDependencies="&quot;$(CGV_DIR)\cgv\config\make.ppp&quot;; &quot;$(CGV_DIR)\make\ppp\templates\vs_vcproj_user.tm&quot;; &quot;$(CGV_DIR)\make\ppp\templates\vs_sln.tm&quot;; &quot;$(CGV_DIR)\make\ppp\templates\vs_vcproj.tm&quot;"
+			FileExtensions="*.pj"
+			ExecutionDescription="generate project and solution file with ppp"
+			>
+			<Properties>
+			</Properties>
+		</CustomBuildRule>
+	</Rules>
+</VisualStudioToolFile>

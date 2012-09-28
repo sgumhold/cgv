@@ -1,0 +1,6 @@
+@=
+projectName="cgv_reflect";
+projectType="library";
+projectGUID="F8050E4A-8AD6-43ED-A8DA-2EA7DF365030";
+addProjectDeps=["cgv_utils", "cgv_type"];
+addSharedDefines=["CGV_REFLECT_EXPORTS"];

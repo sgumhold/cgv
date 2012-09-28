@@ -1,0 +1,215 @@
+@PACKAGE_INIT@
+@FIND_INIT@
+
+set(@TARGET@_INCLUDE_DIR "@ADDITIONAL_LIST_SOURCE@" "@ADDITIONAL_LIST_INSTALL@")
+set(@TARGET@_LIBRARIES "")
+set(@TARGET@_SHARED_DEFINITIONS "")
+set(@TARGET@_STATIC_DEFINITIONS "")
+set(@TARGET@_COMMON_DEFINITIONS "")
+set(@TARGET@_IS_MODULE @TARGET_IS_MODULE@)
+
+set(@TARGET@_FOUND TRUE)
+
+# Append the found information to our local information if possible
+foreach(fn ${FIND_NAMES})
+
+	if (NOT ${fn}_FOUND)
+		string(TOUPPER ${fn} fn)
+	endif()
+
+	if (NOT ${fn}_FOUND)
+		string(TOLOWER ${fn} fn)
+	endif()
+
+	if (${fn}_FOUND)
+		# Try to append the include directories
+		if(${fn}_INCLUDE_DIR)
+			list(APPEND @TARGET@_INCLUDE_DIR "${${fn}_INCLUDE_DIR}")
+		elseif (${fn}_INCLUDE_DIRS)
+			list(APPEND @TARGET@_INCLUDE_DIR "${${fn}_INCLUDE_DIRS}")
+		elseif (${fn}_INCLUDE_PATH)
+			list(APPEND @TARGET@_INCLUDE_DIR "${${fn}_INCLUDE_PATH}")
+		elseif (${fn}_INCLUDES)
+			list(APPEND @TARGET@_INCLUDE_DIR "${${fn}_INCLUDES}")
+		endif()
+
+		# Try to append the libraries
+		if (${fn}_LIBRARIES)
+			list(APPEND @TARGET@_LIBRARIES "${${fn}_LIBRARIES}")
+		elseif (${fn}_LIBRARY)
+			list(APPEND @TARGET@_LIBRARIES "${${fn}_LIBRARY}")
+		endif()	
+
+		# Try to append the definitions
+		if (${fn}_SHARED_DEFINITIONS)
+			list(APPEND @TARGET@_SHARED_DEFINITIONS "${${fn}_SHARED_DEFINITIONS}")
+		endif()
+		if (${fn}_STATIC_DEFINITIONS)
+			list(APPEND @TARGET@_STATIC_DEFINITIONS "${${fn}_STATIC_DEFINITIONS}")
+		endif()
+		if (${fn}_COMMON_DEFINITIONS)
+			list(APPEND @TARGET@_COMMON_DEFINITIONS "${${fn}_COMMON_DEFINITIONS}")
+		endif()		
+	endif()
+
+endforeach()
+
+list(APPEND @TARGET@_INCLUDE_DIR "@PACKAGE_HEADER_PATH@")
+list(APPEND @TARGET@_INCLUDE_DIR "@PACKAGE_HEADER_PATH@/..")
+#list(APPEND @TARGET@_INCLUDE_DIR "@PACKAGE_BUILD_HEADER_PATH@")
+list(APPEND @TARGET@_INCLUDE_DIR "@SOURCE_HEADER_PATH@")
+list(APPEND @TARGET@_INCLUDE_DIR "@SOURCE_HEADER_PATH@/..")
+
+# For compatibility also set the @TARGET@_INCLUDE_DIR and @TARGET@_INCLUDE_PATH variable
+set(@TARGET@_INCLUDE_DIRS "${@TARGET@_INCLUDE_DIR}")
+set(@TARGET@_INCLUDES "${@TARGET@_INCLUDE_DIR}")
+set(@TARGET@_INCLUDE_PATH "${@TARGET@_INCLUDE_DIR}")
+
+
+# Make a list of all configurations 
+set(CONFIGS "")
+foreach(conf ${CMAKE_CONFIGURATION_TYPES})
+	string(TOUPPER "${conf}" UPPER_CONF)
+	list(APPEND CONFIGS "${UPPER_CONF}")
+endforeach()
+
+# On unix systems the CMAKE_CONFIGURATION_TYPES variable is not set
+if (NOT CONFIGS)
+	set(CONFIGS RELEASE DEBUG)
+endif()
+
+# Construct the library names
+if (BUILD_SHARED_LIBS)
+	set(@TARGET@_OUTPUT_NAME_RELEASE "@OUTPUT_NAME@")
+	set(@TARGET@_OUTPUT_NAME_DEBUG "@OUTPUT_NAME@@DEBUG_POSTFIX@")
+	if (@TARGET@_IS_MODULE)
+		set(TARGET_POSTFIX "MODULE")
+	else()
+		set(TARGET_POSTFIX "SHARED")
+	endif()
+else()
+	set(@TARGET@_OUTPUT_NAME_RELEASE "@OUTPUT_NAME@@STATIC_POSTFIX@")
+	set(@TARGET@_OUTPUT_NAME_DEBUG "@OUTPUT_NAME@@STATIC_POSTFIX@@DEBUG_POSTFIX@")
+	set(TARGET_POSTFIX "STATIC")
+endif()
+
+# If the project is a target then it might not be built but we assume
+# nevertheless that the files will be present. If it is not a target then
+# we look for the libraries explicitly
+if (NOT TARGET @TARGET@)
+	set(FIND_PATHS "@PACKAGE_LIB_PATH@" 
+				   "@PACKAGE_BIN_PATH@" 
+				   "@PACKAGE_BUILD_BIN_PATH@"
+				   "@PACKAGE_BUILD_LIB_PATH@")
+	
+	# Try to find libraries for all configurations
+	if (@TARGET@_IS_MODULE AND BUILD_SHARED_LIBS AND WIN32)
+		foreach(conf ${CONFIGS})
+			find_file(@TARGET@_LIB_${conf}  ${@TARGET@_OUTPUT_NAME_${conf}}.dll PATHS ${FIND_PATHS})
+		endforeach()
+	else()
+		foreach(conf ${CONFIGS})
+			find_library(@TARGET@_LIB_${conf} ${@TARGET@_OUTPUT_NAME_${conf}} PATHS ${FIND_PATHS})
+		endforeach()
+	endif()
+		
+	# Check if all library types could be found
+	set(ALL_LIBS_FOUND TRUE)
+	foreach(conf ${CONFIGS})
+		if (NOT @TARGET@_LIB_${conf})
+			set(ALL_LIBS_FOUND FALSE)
+			break()
+		endif()
+	endforeach()
+	
+	# If some libraries could not be found then substitute their name with the
+	# first library name that could be found
+	if (NOT ALL_LIBS_FOUND)	
+		set(FIRST_FOUND_NAME FALSE)
+	
+		foreach(conf ${CONFIGS})
+			if(@TARGET@_LIB_${conf})
+				set(FIRST_FOUND_NAME ${@TARGET@_LIB_${conf}})
+				break()
+			endif()
+		endforeach()
+		
+		# If no library was found then we failed
+		if (NOT FIRST_FOUND_NAME)
+			# FIXME: add better error handling here
+			message(FATAL_ERROR "Could not find library @OUTPUT_NAME@")
+			set(@TARGET@_FOUND FALSE)
+			return()
+		endif()
+		
+		# Set all library names that were not found
+		foreach(conf ${CONFIGS})
+			if(NOT @TARGET@_LIB_${conf})
+				set(@TARGET@_LIB_${conf} ${FIRST_FOUND_NAME})
+			endif()
+		endforeach()
+	endif()
+else()
+	# If the project is a target then the job is quite easy - just
+	# read the location names from the target properties
+	foreach(conf ${CONFIGS})
+		get_target_property(@TARGET@_LIB_${conf} @TARGET@ LOCATION_${conf})
+		
+		# Check if we got the name of a DLL. If this is the case then transform
+		# it to a .lib name. Unfortunatly CMake does not have any mechanism to
+		# directly read the name of the import library.
+		get_filename_component(FN_EXT "${@TARGET@_LIB_${conf}}" EXT)
+		string(TOUPPER  "${FN_EXT}" FN_EXT)
+
+		if ("${FN_EXT}" STREQUAL ".DLL")
+			get_filename_component(FN_PATH "${@TARGET@_LIB_${conf}}" PATH)
+			get_filename_component(FN_WE "${@TARGET@_LIB_${conf}}" NAME_WE)
+			if (CMAKE_ARCHIVE_OUTPUT_DIRECTORY)
+				set(@TARGET@_LIB_${conf} "${CMAKE_ARCHIVE_OUTPUT_DIRECTORY}/${FN_WE}${CMAKE_IMPORT_LIBRARY_SUFFIX}")
+			else()
+				set(@TARGET@_LIB_${conf} "${FN_PATH}/${FN_WE}${CMAKE_IMPORT_LIBRARY_SUFFIX}")
+			endif()
+		endif()
+	endforeach()
+endif()
+
+
+
+if (NOT TARGET @TARGET@_IMPORTED_${TARGET_POSTFIX})
+	add_library(@TARGET@_IMPORTED_${TARGET_POSTFIX} ${TARGET_POSTFIX} IMPORTED GLOBAL)
+
+	foreach(conf ${CONFIGS})
+		set_target_properties(@TARGET@_IMPORTED_${TARGET_POSTFIX} PROPERTIES
+			IMPORTED_LINK_INTERFACE_LANGUAGES_${conf} "CXX"
+			IMPORTED_LINK_INTERFACE_LIBRARIES_${conf} "${@TARGET@_LIBRARIES}"
+			IMPORTED_LOCATION_${conf} "${@TARGET@_LIB_${conf}}"
+			IMPORTED_IMPLIB_${conf} "${@TARGET@_LIB_${conf}}")
+	endforeach()
+
+	if (TARGET @TARGET@)
+		add_dependencies(@TARGET@_IMPORTED_${TARGET_POSTFIX} @TARGET@)
+	endif()
+endif()
+
+set(@TARGET@_LIBRARIES "@TARGET@_IMPORTED_${TARGET_POSTFIX}")
+
+
+# Set definitions
+set(@TARGET@_NEW_SHARED_DEFINITIONS "@SHARED_DEFINITIONS@")
+set(@TARGET@_NEW_STATIC_DEFINITIONS "@STATIC_DEFINITIONS@")
+set(@TARGET@_NEW_COMMON_DEFINITIONS "@COMMON_DEFINITIONS@")
+
+list(APPEND @TARGET@_COMMON_DEFINITIONS "${@TARGET@_NEW_COMMON_DEFINITIONS}")
+list(APPEND @TARGET@_STATIC_DEFINITIONS "${@TARGET@_COMMON_DEFINITIONS}${@TARGET@_NEW_STATIC_DEFINITIONS}")
+list(REMOVE_DUPLICATES @TARGET@_COMMON_DEFINITIONS)
+list(REMOVE_DUPLICATES @TARGET@_STATIC_DEFINITIONS)
+
+
+if (BUILD_SHARED_LIBS)
+	set(@TARGET@_DEFINITIONS "${@TARGET@_COMMON_DEFINITIONS};${@TARGET@_NEW_SHARED_DEFINITIONS}")
+else()
+	set(@TARGET@_DEFINITIONS "${@TARGET@_STATIC_DEFINITIONS}")
+endif()
+
+@MACRO_DEFINITIONS@
+

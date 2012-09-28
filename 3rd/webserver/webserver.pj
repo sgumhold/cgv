@@ -1,0 +1,9 @@
+@=
+projectName="webserver";
+projectType="library";
+projectGUID="B7F227A5-11E6-4382-91E6-44905E51ADC7";
+addSharedDefines=["WEBSERVER_EXPORT"];
+addProjectDeps=["cgv_os"];
+if(SYSTEM=="windows") {
+	addDependencies=addDependencies.[["ws2_32","static"], ["msimg32","static"]];
+}

@@ -1,0 +1,8 @@
+@exclude<cgv/config/make.ppp>
+@define(projectGUID="98FC22B9-320C-4477-80BC-90B0010CAA4B")
+@define(projectType="application")
+@define(projectName="test_sp_console")
+@define(addIncDirs=[CGV_DIR."/libs/space_pilot"])
+@define(sourceFiles=[INPUT_DIR."/test_sp_console.cxx"])
+@define(addProjectDeps=["space_pilot"])
+@define(addProjectDirs=[CGV_DIR."/libs"])

@@ -1,0 +1,16 @@
+EXPORTS
+	space_pilot_init
+	space_pilot_open
+	space_pilot_close
+	space_pilot_set_no_message_loop
+	space_pilot_grab_focus
+	space_pilot_release_focus
+	space_pilot_poll_motion
+	space_pilot_poll_keys
+	space_pilot_poll_period
+	space_pilot_poll
+	space_pilot_add_callback
+	space_pilot_remove_callback
+	space_pilot_get_error
+	space_pilot_disable_events
+	space_pilot_get_enabled_events

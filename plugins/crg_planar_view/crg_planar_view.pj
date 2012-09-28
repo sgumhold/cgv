@@ -1,0 +1,8 @@
+@=
+projectType="plugin";
+projectName="crg_planar_view";
+projectGUID="66a1d540-fc2e-11dd-87af-0800200c9a66";
+addProjectDirs=[CGV_DIR."/libs"];
+addProjectDeps=["cgv_utils", "cgv_type", "cgv_base", "cgv_data", "cgv_render", "cgv_gui", "cgv_gl"];
+addSharedDefines=["CGV_RENDER_PLANAR_VIEW_EXPORTS"];
+

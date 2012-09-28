@@ -1,0 +1,12 @@
+varying vec3 eye_normal;
+varying vec3 eye_position;
+
+void main()
+{
+	gl_Position = ftransform();
+	
+	vec4 heye_pos = gl_ModelViewMatrix*gl_Vertex; 
+	eye_position  = heye_pos.xyz / heye_pos.w;
+
+	eye_normal    = normalize(gl_NormalMatrix * gl_Normal);
+}

@@ -1,0 +1,88 @@
+varying vec3 q_tilde;
+//varying float u_tilde;
+varying vec3 inv_T_square_v;
+varying vec3 inv_T_square_e_c;
+varying vec4 e_clip;
+varying vec4 V_clip;
+varying vec3 h0;
+varying vec3 l0;
+varying vec3 h1;
+varying vec3 l1;
+varying vec4 a;
+
+void main()
+{
+	// decompress the matrix T
+	mat3 T;
+	T[0]    = gl_MultiTexCoord0.xyz;
+	T[1].x  = gl_MultiTexCoord0.y;
+	T[1].yz = gl_MultiTexCoord1.xy;
+	T[2].x  = gl_MultiTexCoord0.z;
+	T[2].y  = gl_MultiTexCoord1.y;
+	T[2].z  = gl_MultiTexCoord1.z;
+
+	// invert the matrix T
+	mat3 inv_T;
+	float inv_denom = 1.0/dot(T[0],cross(T[1],T[2]));
+	inv_T[0] = inv_denom*cross(T[1],T[2]);
+	inv_T[1] = inv_denom*cross(T[2],T[0]);
+	inv_T[2] = inv_denom*cross(T[0],T[1]);
+
+	// determine eye point in parameter space
+	vec3 e = gl_ModelViewMatrixInverse[3].xyz;
+	vec3 e_tilde = inv_T*(e - gl_Vertex.xyz);
+
+	// compute helper
+	float inv_e_square = 1.0/dot(e_tilde,e_tilde);
+
+	// determine silhoutte center in parameter space
+	vec3 m_tilde = inv_e_square*e_tilde;
+
+	// determine radius of silhouette in parameter space
+	float r = sqrt(1.0-inv_e_square);
+
+	// compute vector x of length r orthogonal to e in parameter space
+	vec3 x_tilde = vec3(0,0,0);
+	if (abs(e_tilde[1]) > abs(e_tilde[0]))
+		x_tilde[0] = 1.0;
+	else
+		x_tilde[1] = 1.0;
+	x_tilde      = r*normalize(cross(x_tilde,e_tilde));
+
+	// compute vector y of length r orthogonal to x and e in parameter space
+	vec3 y_tilde = r*normalize(cross(e_tilde,x_tilde));
+
+	// compute the corner point in homogeneous object coordinates
+	vec3 V_tilde = m_tilde+gl_MultiTexCoord2.x*x_tilde+gl_MultiTexCoord2.y*y_tilde;
+	vec3 v_tilde = V_tilde - e_tilde;
+
+	vec4 V;
+	V.xyz = T*V_tilde+gl_Vertex.xyz;
+	V.w = 1.0;
+ 
+	q_tilde.xy = gl_MultiTexCoord2.xy;
+	q_tilde.z = sqrt(inv_e_square);
+
+	// compute vector from eye to vertex in eye space
+	vec3 v = (gl_ModelViewMatrix*V).xyz;
+
+
+	// compute components to compute normal in eye space
+	inv_T_square_e_c = gl_NormalMatrix*(inv_T*e_tilde);
+	inv_T_square_v   = gl_NormalMatrix*(inv_T*v_tilde);
+
+	// compute light source directions
+	l0 = normalize(gl_LightSource[0].position.xyz);
+
+	// compute half vectors in eye space
+	v = -normalize(v);
+	h0 = normalize(v+l0);
+	l1 = normalize(vec3(gl_LightSource[1].position));
+	h1 = normalize(v+l1);
+
+	gl_FrontColor  = gl_Color;
+	e_clip         = gl_ModelViewProjectionMatrix * gl_ModelViewMatrixInverse[3];
+	V_clip         = gl_ModelViewProjectionMatrix * V;
+	gl_Position	   = V_clip;
+	a = gl_FrontLightModelProduct.sceneColor;
+}

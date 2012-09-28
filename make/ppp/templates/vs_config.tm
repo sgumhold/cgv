@@ -1,0 +1,132 @@
+@define(is_shared=(ci>1))
+@define(is_debug=((ci==1) | (ci==3)))
+    <Configuration
+			Name=@"config_name[ci].'|Win32'"
+			OutputDirectory=@"CGV_INSTALL.'/'.output_dir[ci]"
+			IntermediateDirectory=@"build_dir_proj.'/$(ProjectName)_$(ConfigurationName)'"
+			ConfigurationType=@"config_type[ci]"
+			CharacterSet="1"
+@if(!is_debug)@{
+			WholeProgramOptimization="1"
+@}
+			>
+      <Tool
+				Name="VCPreBuildEventTool"
+			/>
+      <Tool
+				Name="doxygen"
+			/>
+      <Tool
+				Name="latex"
+			/>
+      <Tool
+				Name="VCCustomBuildTool"
+			/>
+      <Tool
+				Name="reflect header"
+			/>
+      <Tool
+				Name="pre header rule"
+			/>
+      <Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+      <Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+      <Tool
+				Name="VCMIDLTool"
+			/>
+      <Tool
+				Name="VCCLCompilerTool"
+				AdditionalIncludeDirectories=@"includeDirs"
+				PreprocessorDefinitions=@"config_defines[ci]"
+				RuntimeLibrary=@"ci"
+@if(is_debug)@{
+				Optimization="0"
+				DebugInformationFormat="4"
+				MinimalRebuild="true"
+				BasicRuntimeChecks="3"
+@}
+@else@{
+				DebugInformationFormat="3"
+@}
+				UsePrecompiledHeader="0"
+				WarningLevel="3"
+@if(CGV_COMPILER_VERSION==8)@{
+				Detect64BitPortabilityProblems="true"
+@}
+			/>
+      <Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+      <Tool
+				Name="VCResourceCompilerTool"
+			/>
+      <Tool
+				Name="VCPreLinkEventTool"
+			/>
+      <Tool
+				Name=@"linker_tool[ci]"
+@if(dependencies)@{@if(dependencies[ci])@{
+				AdditionalDependencies=@"dependencies[ci]"
+@}@}
+@if(use_lib_deps[ci])@{
+				UseLibraryDependencyInputs="true"
+@}
+				AdditionalLibraryDirectories=@"libDirs"
+@if(!is_debug & is_shared & (installPath ~~ STRING))@{
+				OutputFile=@"installPath.'/$(ProjectName)'.'.'.output_ext[ci]"@}
+@else@{
+				OutputFile=@"'$(OutDir)/$(ProjectName)'.output_post[ci].'.'.output_ext[ci]"@}
+@if(linker_tool[ci]=="VCLinkerTool")@{
+				LinkIncremental=@"link_inc[ci]"
+	@if(defFile ~~ STRING)@{@if((!defFile)>0)@{
+				ModuleDefinitionFile=@"defFile"
+	@}@}
+				GenerateDebugInformation=@if(is_debug)@{"true"@}@else@{"false"@}
+				SubSystem=@"sub_system"
+	@if(!exec_idx)@{
+				ImportLibrary=@"CGV_INSTALL.'/lib/$(TargetName).lib'"
+@//				ProgramDatabaseFile=@"CGV_INSTALL.'/lib/$(TargetName).pdb'"
+	@}
+@}
+			/>
+      <Tool
+				Name="VCALinkTool"
+			/>
+      <Tool
+				Name="VCManifestTool"
+			/>
+      <Tool
+				Name="VCXDCMakeTool"
+			/>
+      <Tool
+				Name="VCBscMakeTool"
+			/>
+      <Tool
+				Name="VCFxCopTool"
+			/>
+      <Tool
+				Name="VCAppVerifierTool"
+			/>
+      <Tool
+				Name="VCWebDeploymentTool"
+			/>
+      <Tool
+				Name="VCPostBuildEventTool"
+@if(projectType == "test")@{
+	@define(command_line=CGV_INSTALL.'\\bin\\tester'.output_post[ci].'.exe')
+	@if((ci > 1) & (plugin_list !~ UNDEF))@{
+		@for(i=0;i<!plugin_list;++i)@{
+			@define(command_line = command_line.' plugin:'.plugin_list[i].output_post[ci].'.dll')
+		@}
+	@}
+	@for(i=0;i<!addCommandLineArguments;++i)@{
+		@define(command_line = command_line.' '.addCommandLineArguments[i])
+	@}
+				Description="performing tests"
+				CommandLine=@"command_line"
+@}
+			/>
+    </Configuration>

@@ -1,0 +1,9 @@
+@exclude<cgv/config/make.ppp>
+@define(projectType="plugin")
+@define(projectName="cmi_io")
+@define(projectGUID="34a69de0-fc2f-11dd-87af-0800200c9a66")
+@define(addProjectDirs=[CGV_DIR."/3rd/png",CGV_DIR."/3rd/tiff",CGV_DIR."/3rd/jpeg"])
+@define(addProjectDeps=["cgv_media","cgv_base","cgv_data", "cgv_type", "png","tiff","jpeg"])
+@define(addIncDirs=[CGV_DIR."/3rd/png",CGV_DIR."/3rd/jpeg",CGV_DIR."/3rd/tiff",CGV_DIR."/3rd/zlib"])
+@define(addSharedDefines=["CGV_MEDIA_IMAGE_IO_EXPORTS"])
+

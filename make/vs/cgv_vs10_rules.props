@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup
+    Condition="'$(generate_make_fileBeforeTargets)' == '' and '$(generate_make_fileAfterTargets)' == '' and '$(ConfigurationType)' != 'Makefile'">
+    <generate_make_fileBeforeTargets>Midl</generate_make_fileBeforeTargets>
+    <generate_make_fileAfterTargets>CustomBuild</generate_make_fileAfterTargets>
+  </PropertyGroup>
+  <PropertyGroup>
+    <generate_make_fileDependsOn
+      Condition="'$(ConfigurationType)' != 'Makefile'">_SelectedFiles;$(generate_make_fileDependsOn)</generate_make_fileDependsOn>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+    <generate_make_file>
+      <CommandLineTemplate>"$(CGV_DIR)\bin\ppp" -CGV_COMPILER=vs10 "%(FullPath)" "$(CGV_DIR)\make\ppp\templates\vs_vcproj.tm" "$(CGV_BUILD)\vs10\%(Filename)\%(Filename).vcproj" "$(CGV_DIR)\make\ppp\templates\vs_sln.tm" "$(CGV_BUILD)\vs10\%(Filename)\%(Filename).sln" "$(CGV_DIR)\make\ppp\templates\vs_vcproj_user.tm" "$(CGV_BUILD)\vs10\%(Filename)\%(Filename).vcproj.$(USERDOMAIN).$(USERNAME).user"</CommandLineTemplate>
+      <Outputs>$(CGV_BUILD)\vs10\%(Filename)\%(Filename).vcproj;$(CGV_BUILD)\vs10\%(Filename)\%(Filename).sln;$(CGV_BUILD)\vs10\%(Filename)\%(Filename).vcproj.$(USERDOMAIN).$(USERNAME).user</Outputs>
+      <ExecutionDescription>generate project and solution file with ppp</ExecutionDescription>
+      <AdditionalDependencies>$(CGV_DIR)\cgv\config\make.ppp;$(CGV_DIR)\make\ppp\templates\vs_vcproj_user.tm;$(CGV_DIR)\make\ppp\templates\vs_sln.tm;$(CGV_DIR)\make\ppp\templates\vs_vcproj.tm</AdditionalDependencies>
+    </generate_make_file>
+  </ItemDefinitionGroup>
+</Project>

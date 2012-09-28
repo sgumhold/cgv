@@ -1,0 +1,5 @@
+@=
+projectName="cgv_math";
+projectType="library";
+projectGUID="8FACC951-6CBE-4911-A3A2-CDED3D7F6B5D";
+addSharedDefines=["CGV_MATH_EXPORTS"];

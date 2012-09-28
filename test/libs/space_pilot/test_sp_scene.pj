@@ -1,0 +1,13 @@
+@exclude<cgv/config/make.ppp>
+@define(projectGUID="98FC22B9-320C-4477-80BC-90B0010CAA4B")
+@define(workspaceGUID="9F77458E-F883-4900-9118-7B2D34CB6DCF")
+@define(projectType="application")
+@define(projectName="test_sp_scene")
+@define(addIncDirs=[CGV_DIR."/libs/space_pilot",CGV_DIR."/3rd"])
+@define(sourceFiles=[INPUT_DIR."/sp_sceneviewer.h",
+		               INPUT_DIR."/sp_sceneviewer.cxx",
+							INPUT_DIR."/test_sp_scene.cxx"])
+@define(addDependencies=["opengl","glu"])
+@define(addProjectDeps=["fltk", "space_pilot"])
+@define(addProjectDirs=[CGV_DIR."/libs",CGV_DIR."/3rd/fltk"])
+

@@ -1,0 +1,65 @@
+@=
+
+// define the CGV specific and project independent variables
+//
+// CGV_DIR, CGV_INSTALL, CGV_BUILD, CGV_SUPPORT_DIR, CGV_DATA
+//
+
+// define the cgv directory from the environment variable
+if(CGV_DIR ~~ UNDEF) {
+	if(env::CGV_DIR ~~ UNDEF) {
+		error(0; "essential environment variable CGV_DIR not defined!\n");
+		exit(-1)
+	} else {
+		CGV_DIR = env::CGV_DIR
+	}
+}
+// define the build directory from the environment variable or the CGV_DIR
+if (env::CGV_BUILD ~~ UNDEF) {
+	CGV_BUILD = CGV_DIR
+} else {
+	CGV_BUILD = env::CGV_BUILD
+}
+// define the install directory from the environment variable or the CGV_DIR
+if(env::CGV_INSTALL ~~ UNDEF) {
+	CGV_INSTALL = CGV_DIR+"/build"
+} else {
+	CGV_INSTALL = env::CGV_INSTALL
+}
+// define the data directory from the environment variable or the CGV_DATA
+if(env::CGV_DATA !~ UNDEF) {
+	CGV_DATA = env::CGV_DATA
+}
+// define the data directory from the environment variable or the CGV_DATA
+if(env::CGV_SUPPORT_DIR !~ UNDEF) {
+	CGV_SUPPORT_DIR = env::CGV_SUPPORT_DIR
+}
+
+
+// configure CGV specific defaults
+::default_projectDirs = [CGV_DIR.'/tool',CGV_DIR.'/cgv',CGV_DIR.'/apps'];
+::default_commonDefs  = ["CGV_DIR=".(CGV_DIR*"|\\|/|")];
+::default_configDefs=[ ["CGV_FORCE_STATIC"], ["CGV_FORCE_STATIC"], [], [], ["CGV_FORCE_STATIC"], ["CGV_FORCE_STATIC"] ];
+
+
+// configure precompiled headers
+::ph_generate = [ "multi_vis", "res_prep", "shader_test" ];
+::ph_generate_from_hdrs = [ "fltk", "cgv", "cg_fltk" ];
+
+::ph_generate = [];
+::ph_generate_from_hdrs = [];
+
+
+
+::ph_options = MAP;
+::ph_detect_hdr = 1;
+::ph_analyze_hdrs = 0;
+ph_options::fltk = MAP;
+ph_options::fltk::exclude_headers = ["menubar.h", "fltk_cairo.h", "forms.h", "ask.h", "Cursor.h", "FileChooser.h",
+	"run.h", "Threads.h", "osx.h", "x.h", "x11.h", "win32.h", "AnsiWidget.h",
+	"gl2opengl.h", "gl.h", "glut.h", "GlChoice.h", "GlWindow.h", "colormap.h", 
+	"fastarrow.h", "mediumarrow.h", "slowarrow.h"];
+ph_options::cgv = MAP;
+ph_options::cgv::exclude_sources = ["socket.cxx"];
+ph_options::cg_fltk = MAP;
+ph_options::cg_fltk::exclude_headers = ["lib_begin.h"];

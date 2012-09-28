@@ -1,0 +1,152 @@
+@=
+
+::config_name=["Release","Debug","Release Dll","Debug Dll","Release Exe","Debug Exe"];
+::link_inc=[1,2,1,2,1,2];
+::use_lib_deps=[1,1,0,0,1,1];
+::is_dbg=["false","true","false","true","false","true"];
+
+rule_variable_map_vs = MAP.[
+	["$(INPUT_DIR)", "$(InputDir)"],
+	["$(INPUT_NAME)", "$(InputName)"],
+	["$(INPUT_EXT)", "$(InputExt)"],
+	["$(PROJECT_BUILD_DIR)", "$(ProjectDir)"],
+	["$(BUILD_DIR)", "$(BUILD_DIR)/"],
+	["$(CGV_INSTALL)", "$(CGV_INSTALL)/"],
+	["$(CGV_DIR)", "$(CGV_DIR)/"]
+];
+
+rule_variable_map_vs10 = MAP.[
+	["$(INPUT_DIR)", "%(RootDir)%(Directory)"],
+	["$(INPUT_NAME)", "%(Filename)"],
+	["$(INPUT_EXT)", "%(Extension)"],
+	["$(PROJECT_BUILD_DIR)", "$(ProjectDir)"],
+	["$(BUILD_DIR)", "$(BUILD_DIR)/"],
+	["$(CGV_INSTALL)", "$(CGV_INSTALL)/"],
+	["$(CGV_DIR)", "$(CGV_DIR)/"]
+];
+
+
+func(::extend_project_info_vs; :>project_name = "", :>return = 1)
+{
+	:>pj =& projects[project_name];
+	:>commonDefs=default_commonDefs.["WIN32", "INPUT_DIR=".(pj::INPUT_DIR*"|\\|/|")];
+	:>configDefs=[ default_configDefs[0].["NDEBUG"], default_configDefs[1].["_DEBUG","CGV_FORCE_STATIC"], 
+		           default_configDefs[2].["NDEBUG"], default_configDefs[3].["_DEBUG"], 
+				   default_configDefs[4].["NDEBUG"], default_configDefs[5].["_DEBUG"] ];
+	if (pj::defines ~~ UNDEF) {
+		pj::defines = [[],[],[],[]];
+	}
+	if (!pj::config_indices == 6) {
+		pj::defines = pj::defines.[ pj::defines[0], pj::defines[1] ];
+	}
+	:>post = ["s", "sd", "", "d", "", "d"];
+
+	pj::runtime_lib_vs10 = ["MultiThreaded", "MultiThreadedDebug", "MultiThreadedDLL", "MultiThreadedDebugDLL", "MultiThreaded", "MultiThreadedDebug"];
+	pj::debug_info_vs10  = ["ProgramDatabase", "EditAndContinue", "ProgramDatabase", "EditAndContinue", "ProgramDatabase", "EditAndContinue"];
+
+	pj::sub_system       = [1,1,1,1,1,1];
+	pj::sub_system_vs10  = ["","","","","",""];
+	pj::config_type      = [4,4,2,2,1,1];
+	pj::config_type_vs10 = ["","","","","",""];
+	pj::output_ext       = ["","","","","",""];
+	pj::output_post      = ["","","","","",""];
+	pj::output_dir       = ["","","","","",""];
+	pj::linker_tool      = ["","","","","",""];
+	pj::linker_tool_vs10 = ["","","","","",""];
+	
+
+	for (:>cj=0; cj<!pj::config_indices; ++cj) {
+		:>configDefsAdd     = [];
+		:>ci = pj::config_indices[cj];
+		pj::output_post[ci] = "_".post[ci].cgv_compiler_version;
+		if (pj::is_executable[ci]) {
+			configDefsAdd            = ["_CONSOLE"];
+			pj::sub_system[ci]       = 1;
+			pj::sub_system_vs10[ci]  = "Console";
+			pj::config_type[ci]      = 1;
+			pj::config_type_vs10[ci] = "Application";
+			pj::output_ext[ci]       = "exe";
+			pj::output_dir[ci]       = "bin";
+			pj::linker_tool[ci]      = "VCLinkerTool";
+			pj::linker_tool_vs10[ci] = "Link";
+		}
+		else {
+			configDefsAdd            = ["_WINDOWS"];
+			pj::sub_system[ci]       = 2;
+			pj::sub_system_vs10[ci]  = "Windows";
+			if (pj::is_shared[ci]) {
+				configDefsAdd            = configDefsAdd.["_USRDLL"];
+				pj::config_type[ci]      = 2;
+				pj::config_type_vs10[ci] = "DynamicLibrary";
+				pj::output_ext[ci]       = "dll";
+				pj::output_dir[ci]       = "bin";
+				pj::linker_tool[ci]      = "VCLinkerTool";
+				pj::linker_tool_vs10[ci] = "Link";
+			}
+			else {
+				configDefsAdd            = configDefsAdd.["_LIB"];
+				pj::config_type[ci]      = 4;
+				pj::config_type_vs10[ci] = "StaticLibrary";
+				pj::output_ext[ci]       = "lib";
+				pj::output_dir[ci]       = "lib";
+				pj::linker_tool[ci]      = "VCLibrarianTool";
+				pj::linker_tool_vs10[ci] = "Lib";
+			}
+		}
+		pj::defines[ci]     = commonDefs.configDefs[ci].configDefsAdd.pj::defines[ci];
+	}
+	if(pj::projectType=="tool") {
+		pj::output_post[0]="";
+	}
+}
+
+func(::get_rule_id_vs10; :>pj=MAP, :>ext="", :>return="")
+{
+	return = get_rule_id(<:pj =& pj, <:ext=ext);
+	if (return == "sources_rule") {
+		return = "ClCompile";
+	}
+	elif (return == "headers_rule" && !check_is_rule(pj,ext)) {
+		return = "ClInclude";
+	}
+	elif (!check_is_rule(<:pj =& pj, <:ext = ext)) {
+		return ="None";
+	}
+}
+
+func(::sort_files_by_rule_id_rec; :>pj = MAP, :>T = MAP, :>excl_cfg_idxs = [], :>return="")
+{
+	update_excl_cfg_idxs(<:T =& T, <:excl_cfg_idxs =& excl_cfg_idxs);
+	for(:>i=0; i<!T; ++i){
+		:>fn = get_folder_name(<:T =& T, <:i=i, <:excl_cfg_idxs =& excl_cfg_idxs);
+		if (fn) {
+			sort_files_by_rule_id_rec(<:pj =& pj, <:T =& T[T[i]], <:excl_cfg_idxs = excl_cfg_idxs);
+		}
+		:>excl_idxs = excl_cfg_idxs;
+		:>gen_ph = 0;
+		fn = get_src_file_name(<:T =& T, <:i = i, <:excl_cfg_idxs =& excl_cfg_idxs, <:excl_idxs =& excl_idxs, <:gen_ph =& gen_ph);
+		if (fn) {
+			:>rule_id = get_rule_id_vs10(<:pj =& pj, <:ext = get_extension(fn));
+			if (!excl_idxs == 0 && !gen_ph) {
+				:>file_entry = fn;
+			}
+			else {
+				:>file_entry = [ fn, excl_idxs, gen_ph ];
+			}
+			if (pj::file_by_rule[rule_id] ~~ UNDEF) {
+				pj::file_by_rule[rule_id] = [file_entry];
+			}
+			else {
+				pj::file_by_rule[rule_id] = pj::file_by_rule[rule_id].[file_entry];
+			}
+		}
+	}
+}
+
+func(::sort_files_by_rule_id; :>pj=MAP, :>return="")
+{
+	if (pj::file_by_rule ~~ UNDEF) {
+		pj::file_by_rule = MAP;
+	}
+	sort_files_by_rule_id_rec(<:pj =& pj, <:T =& pj::sourceTree, <:excl_cfg_idxs = []);
+}

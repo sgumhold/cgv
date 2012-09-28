@@ -1,0 +1,9 @@
+
+%.h: %.ph
+	@$(CGV_DIR)/bin/ppp  "$<" "$@"
+
+%.tdh %.tih %_info.cxx: %.hh
+	@$(CGV_DIR)/bin/ppp  "$<" "$(CGV_DIR)/cgv/type/info/type_description_h.tm" "$(basename $<).tdh"
+	@$(CGV_DIR)/bin/ppp  "$<" "$(CGV_DIR)/cgv/type/info/type_interface_h.tm" "$(basename $<).tih"
+	@$(CGV_DIR)/bin/ppp  "$<" "$(CGV_DIR)/cgv/type/info/type_interface_cxx.tm" "$(basename $<)_info.cxx"
+

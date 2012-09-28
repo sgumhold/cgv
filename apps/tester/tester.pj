@@ -1,0 +1,5 @@
+@exclude<cgv/config/make.ppp>
+@define(projectType="application")
+@define(projectName="tester")
+@define(projectGUID="AC115029-BC4A-4e5b-AEAA-3E41B7A73E46")
+@define(addProjectDeps=["cgv_utils", "cgv_type", "cgv_base"])

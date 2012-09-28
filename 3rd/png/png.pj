@@ -1,0 +1,9 @@
+@exclude<cgv/config/make.ppp>
+@define(projectName="png")
+@define(projectType="library")
+@define(projectGUID="b4ace650-fc31-11dd-87af-0800200c9a66")
+@define(addIncDirs=[CGV_DIR."/3rd/png",CGV_DIR."/3rd/zlib"])
+@define(addProjectDirs=[CGV_DIR."/3rd/zlib"])
+@define(addProjectDeps=["zlib"])
+@define(addSharedDefines=["PNG_BUILD_DLL","PNG_NO_MODULEDEF"])
+@define(addStaticDefines=["PNG_STATIC"])

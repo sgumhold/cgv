@@ -1,0 +1,7 @@
+@exclude<cgv/config/make.ppp>
+@define(projectName="jpeg")
+@define(projectType="library")
+@define(projectGUID="1cd43810-fc31-11dd-87af-0800200c9a66")
+@define(excludeSourceFiles=["jconfig.doc", "jconfig.cfg"])
+@define(addSharedDefines=["JPEG_DLL"])
+@define(addStaticDefines=["JPEG_STATIC"])

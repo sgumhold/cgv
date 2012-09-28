@@ -1,0 +1,40 @@
+varying vec3 q_tilde;
+varying vec3 inv_T_square_v;
+varying vec3 inv_T_square_e_c;
+varying vec4 e_clip;
+varying vec4 V_clip;
+varying vec3 h0;
+varying vec3 l0;
+varying vec3 h1;
+varying vec3 l1;
+varying vec4 a;
+
+void main()
+{
+	float q_tilde_squared_length = dot(q_tilde.xy,q_tilde.xy);
+	if (q_tilde_squared_length > 1.0)
+		discard;
+	float lambda = 1.0/(1.0+q_tilde.z*sqrt(1.0-q_tilde_squared_length));
+	vec3 n = normalize(inv_T_square_e_c + lambda * inv_T_square_v);
+
+	gl_FragColor = a;
+	float ldotn = dot(n,l0);
+	if (ldotn > 0.0) {
+		gl_FragColor += 
+			ldotn*gl_FrontLightProduct[0].diffuse+
+			pow(max(dot(n,normalize(h0)), 0.0), gl_FrontMaterial.shininess)*
+		   gl_FrontLightProduct[0].specular;
+	}
+/*
+	ldotn = dot(n,l1);
+	if (ldotn > 0.0) {
+		gl_FragColor += 
+			ldotn*gl_FrontLightProduct[1].diffuse +
+			pow(max(dot(n,h1), 0.0), gl_FrontMaterial.shininess)*
+				 gl_FrontLightProduct[1].specular;
+	}
+*/
+	vec4 p = e_clip+lambda*(V_clip - e_clip);
+	gl_FragDepth = 0.5*p.z/p.w+0.5;
+	
+}
