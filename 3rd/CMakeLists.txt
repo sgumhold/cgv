@@ -36,6 +36,11 @@ macro(check_3rd_package pkgname subdir depslist)
 				set(${pkgname}_LIBRARIES ${pkgname}_LIBRARY ${pkgname}_LIB)
 			endif()
 		else()
+			# Remove the failed cache entries
+			set(${pkgname}_LIBRARY "" CACHE INTERNAL "hidden ${pkgname} library path")
+			set(${pkgname}_DIR "" CACHE INTERNAL "hidden ${pkgname} dir")
+			set(${pkgname}_INCLUDE_DIR "" CACHE INTERNAL "hidden ${pkgname} dir")
+			# Add the local subdirectory
 			add_subdirectory(${subdir})
 			message(" * Could not find package ${pkgname}. Using local sources from ${subdir}")
 			set(${depslist} "${${depslist}}" ${pkgname})
