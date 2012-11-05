@@ -19,7 +19,7 @@ using namespace cgv::render;
 using namespace cgv::utils::file;
 using namespace cgv::utils;
 
-void perform_test();
+int perform_test();
 
 #ifndef WIN32
 struct fltk_gl_context : public gl::gl_context, public fltk::GlWindow
@@ -88,8 +88,7 @@ struct fltk_gl_context : public gl::gl_context, public fltk::GlWindow
 	std::ostream& output_stream() { return std::cout; }
 	void draw() 
 	{
-		perform_test();
-		exit(0);
+		exit(perform_test());
 	}
 };
 #endif
@@ -125,9 +124,10 @@ int g_argc;
 char** g_argv;
 context* g_ctx_ptr;
 
-void perform_test()
+int perform_test()
 {
 	bool shader_developer = false;
+	bool exit_code = 0;
 	char* options = getenv("CGV_OPTIONS");
 	if (options)
 		shader_developer = is_element("SHADER_DEVELOPER", to_upper(options), ';');
@@ -147,6 +147,7 @@ void perform_test()
 			std::cerr << g_argv[1] << " (1) : glsl program error" << std::endl;
 			if (!shader_developer)
 				write(g_argv[2], "error", 2, true);
+			exit_code = 1;
 		}
 	}
 	else {
@@ -162,6 +163,7 @@ void perform_test()
 			else {
 				if (!shader_developer)
 					convert_to_string(g_argv[1],g_argv[2]);
+				exit_code = 1;
 			}
 //		}
 /*		else {
@@ -172,10 +174,13 @@ void perform_test()
 		}
 		*/
 	}
+	return exit_code;
 }
 
 int main(int argc, char** argv)
 {
+	int exit_code = 0;
+
 	// check command line arguments
 	if (argc != 3) {
 		std::cout << "usage: shader_test.exe input_file log_file" << std::endl;
@@ -196,13 +201,13 @@ int main(int argc, char** argv)
 	g_argv = argv;
 	g_ctx_ptr = ctx_ptr;
 #ifdef WIN32
-	perform_test();
+	exit_code = perform_test();
 #else
 	fltk::run();
 #endif
 	// destroy context
 	delete ctx_ptr;
-	return 0;
+	return exit_code;
 }
 
 namespace cgv {

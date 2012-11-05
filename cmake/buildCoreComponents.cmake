@@ -128,6 +128,11 @@ macro(cgv_add_executable target_name)
 		RELEASE_OUTPUT_NAME ${target_name}
 		DEBUG_OUTPUT_NAME ${target_name}${DEBUG_POSTFIX})	
 
+	# Set the relative path of needed dynamic libraries directly inside
+	# the binary on supported plattforms
+	file(RELATIVE_PATH REL_BIN_TO_LIB "/${INSTALL_BASE}/${INSTALL_BIN_PATH}" "/${INSTALL_BASE}/${INSTALL_LIB_PATH}")
+	set_target_properties(${target_name} PROPERTIES INSTALL_RPATH "\$ORIGIN/${REL_BIN_TO_LIB}")
+
 	# Remember the type for later config generation
 	set_target_properties(${target_name} PROPERTIES HEADER_LOCAL_PATH "apps")
 endmacro()
