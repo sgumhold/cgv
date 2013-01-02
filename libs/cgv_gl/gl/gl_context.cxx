@@ -964,7 +964,7 @@ unsigned int map_to_gl(TextureWrap wrap)
 	static const GLenum gl_texture_wrap[] = { 
 		GL_REPEAT, 
 		GL_CLAMP, GL_CLAMP_TO_EDGE, GL_CLAMP_TO_BORDER, 
-		GL_MIRROR_CLAMP_EXT, GL_MIRROR_CLAMP_TO_EDGE_EXT, GL_MIRROR_CLAMP_TO_BORDER_EXT
+		GL_MIRROR_CLAMP_EXT, GL_MIRROR_CLAMP_TO_EDGE_EXT, GL_MIRROR_CLAMP_TO_BORDER_EXT, GL_MIRRORED_REPEAT
 	};
 	return gl_texture_wrap[wrap];
 }
