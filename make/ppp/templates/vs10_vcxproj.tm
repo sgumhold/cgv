@@ -149,7 +149,7 @@
 @}
   @}
   @skip(gen_files(<:pj =& pj, <:T =& pj::sourceTree))
-  @if(!pj::projectDeps > 0)@{@//
+  @if(!pj::projectDeps > 0 && pj::referenceDeps)@{@//
   <ItemGroup>
 @for(:>i=0; i<!pj::projectDeps; ++i)@{
       @define(:>dep_pn = pj::projectDeps[i])@//

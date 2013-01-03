@@ -125,6 +125,13 @@ addProjectDirs = [
 
 addProjectDeps = ["cgv","cgv_viewer","fltk"];
 
+// By default all projects on which this project depends are included to the workspace (solution).
+// By setting "referenceDeps" to 0, only the workspace only contains this project. This feature is
+// currently only supported for Visual Studio 2010 and works only in the shared version of application
+// plugins as all registration code of statically compiled plugins is discarded when the plugin is not
+// included in the solution.
+
+referenceDeps = 0;
 
 // add additional command line arguments. The most common usage of this
 // is to add a default config file as in the given example
