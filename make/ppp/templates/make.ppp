@@ -65,12 +65,10 @@ if (main_project != "") {
 	topo_sort();
 	//cout(project_list);
 	if (debug_make) {
-		cout("inherit values from child projects\n");
+		cout("inherit values from child projects\n") ;
 	}
 	inherit_all();
 
-	//cout(projects::cg_fltk::incDirs);
-	//cout("\n");
 	//cout(projects::fltk::expIncDirs);
 	if (debug_make) {
 		cout("collecting sources\n");
@@ -92,6 +90,7 @@ if (main_project != "") {
 			cout("generating makefiles in ".(projects[project_list[pj_idx]]::build_dir*clean_path)."\n");
 		}
 		collect_dependencies(project_list[pj_idx]);
+
 		generate_makefile(project_list[pj_idx]);
 	}
 }

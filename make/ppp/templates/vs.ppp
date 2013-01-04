@@ -25,6 +25,25 @@ rule_variable_map_vs10 = MAP.[
 	["$(CGV_DIR)", "$(CGV_DIR)/"]
 ];
 
+append_dep_types_config = [
+	["library", "static_library", "shared_library", "plugin", "application_plugin"],
+	["library", "static_library", "shared_library", "plugin", "application_plugin"],
+	["library", "static_library", "shared_library"],
+	["library", "static_library", "shared_library"]
+];
+
+func(::append_library_dependencies_vs; :>project_name = "", :>return="")
+{
+	:>pj =& projects[project_name];
+	:>L =& pj::all_dep_projects;
+	for (:>ci=0; ci<4; ++ci) {
+		for (:>i=0; i<!L; ++i) {
+			if (projects[L[i]]::projectType < append_dep_types_config[ci]) {
+				pj::dependencies[ci] = pj::dependencies[ci].[L[i].projects[L[i]]::output_post[ci]];
+			}
+		}
+	}
+}
 
 func(::extend_project_info_vs; :>project_name = "", :>return = 1)
 {
@@ -97,6 +116,9 @@ func(::extend_project_info_vs; :>project_name = "", :>return = 1)
 	}
 	if(pj::projectType=="tool") {
 		pj::output_post[0]="";
+	}
+	if (!pj::referenceDeps) {
+		append_library_dependencies_vs(project_name);
 	}
 }
 

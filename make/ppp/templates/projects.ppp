@@ -33,6 +33,7 @@ func(read_project; :>pj_file = "", :>return = MAP)
 		:>addRules=[];
 		:>addMapDeps=[];
 		:>addExcludeProjectDeps=[];
+		:>referenceDeps=1;
 		include (pj_file)
 	}
 	return = temporary_name_space;
@@ -97,8 +98,13 @@ func(check_project_info; :>pj = MAP, :>return=1)
 //	- exec_idx:INT       ... 1 for executables and 0 otherwise
 //	- projectDeps:LIST of STRING ... list of dependent projects
 //	- projectDirs:LIST of STRING ... list of project directories
-//	- config_indices ... list of configuration indices [0...release static, 
-//                       1...debug static, 2... release shared, 3 ... debug shared]
+//	- config_indices ... list of configuration indices [
+//							0...release static, 
+//							1...debug static, 
+//							2... release shared, 
+//							3 ... debug shared,
+//							4 ... release executable from static (only for application_plugin)
+//							5 ... debug executable from static   (only for application_plugin) ]
 func(interpret_input; :>pj = MAP, :>return = "")
 {
 	pj::build_dir = CGV_BUILD_DIR.'/'.pj::projectName;
