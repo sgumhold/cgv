@@ -10,8 +10,14 @@ find_package(ppp)
 # Find 3rd party dependencies
 find_package(GLEW REQUIRED)
 find_package(OpenGL REQUIRED)
-find_package(FLTK2 REQUIRED)
 
+# In Windows FLTK2 is not needed
+if (NOT WIN32)
+	find_package(FLTK2 REQUIRED)
+else()
+	set(FLTK2_LIBRARIES "")
+endif()
+	
 # Add library path to the list of includes
 include_directories(${CGV_DIR}/libs
 					${FLTK2_INCLUDE_DIRS}
@@ -53,6 +59,11 @@ set(SOURCES
 	${SOURCES_SIGNAL}
 	${SOURCES_PPP})
 
+if (WIN32)
+	set(SOURCES ${SOURCES}
+		"${CGV_BASE}/libs/cgv_gl/gl/gl_context_win32.cxx")
+endif()
+	
 
 set(PH_SOURCES
 	../../libs/cgv_gl/gl/gl_context_switch.ph

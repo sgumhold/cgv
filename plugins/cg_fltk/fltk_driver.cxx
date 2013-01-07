@@ -266,6 +266,7 @@ std::string fltk_driver::file_open_dialog(const std::string& title, const std::s
 	ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST;
 	if (GetOpenFileName(&ofn)==TRUE)
 #ifdef _UNICODE
+		std::cout<<"TO WSTR! "<<szFile<<std::endl;
 		return cgv::utils::wstr2str(szFile);
 #else
 		return szFile;
