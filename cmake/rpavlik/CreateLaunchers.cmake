@@ -267,7 +267,7 @@ macro(_launcher_create_target_launcher)
 				USERFILE_COMMAND)
 			
 			configure_file("${_launchermoddir}/targetlauncher.${_suffix}.in"
-				"${CMAKE_CURRENT_BINARY_DIR}/launch-${_targetname}-${_config}.${_suffix}"
+				"${CMAKE_CURRENT_BINARY_DIR}/${_targetname}-${_config}.${_suffix}"
 				@ONLY)
 		endforeach()
 	else()
@@ -287,7 +287,7 @@ macro(_launcher_create_target_launcher)
 			"${USERFILE_COMMAND}"
 			USERFILE_COMMAND)
 		configure_file("${_launchermoddir}/targetlauncher.${_suffix}.in"
-			"${CMAKE_CURRENT_BINARY_DIR}/launch-${_targetname}.${_suffix}"
+			"${CMAKE_CURRENT_BINARY_DIR}/${_targetname}.${_suffix}"
 			@ONLY)
 	endif()
 endmacro()
