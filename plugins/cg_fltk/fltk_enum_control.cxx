@@ -166,13 +166,9 @@ fltk_enum_control(label, acp, value, enum_declarations)
 	const int padding = 20;
 	container = new fltk::Group(x, y, w, enum_strings.size()*h+padding, get_name().c_str());
 
-	// container->box(fltk::BORDER_BOX);
 	container->flags(fltk::ALIGN_INSIDE_TOPLEFT);
 	container->labelfont(fltk::TIMES_BOLD);
-	container->labelsize(13); 
-	
-	
-//	static_cast<fltk::Group*>(container)->add(label);
+
 	for (unsigned int i=0; i<enum_strings.size(); ++i) {
 		fltk::RadioButton *but = new fltk::RadioButton(0,i*h+padding,w,h,enum_strings[i].c_str());
 		but->callback(choice_cb,static_cast<cgv::base::base*>(this));
@@ -217,11 +213,8 @@ fltk_enum_control(label, acp, value, enum_declarations)
 	const int margin = 8;
 	container = new fltk::Group(x, y, w, enum_strings.size()*(h+margin)+padding, get_name().c_str());
 
-	// container->box(fltk::BORDER_BOX);
 	container->flags(fltk::ALIGN_INSIDE_TOPLEFT);
-	container->labelfont(fltk::TIMES_BOLD);
-	container->labelsize(13); 
-	
+	container->labelfont(fltk::TIMES_BOLD);	
 	
 	for (unsigned int i=0; i<enum_strings.size(); ++i) {
 		fltk::ToggleButton *but = new fltk::ToggleButton(0,i*(h+margin)+padding,w,h,enum_strings[i].c_str());
