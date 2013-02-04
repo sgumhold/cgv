@@ -27,6 +27,10 @@ struct CGV_API abst_control_factory
 	virtual control_ptr create(const std::string& label, 
 		void* value_ptr, abst_control_provider* acp, const std::string& value_type, 
 		const std::string& gui_type, int x, int y, int w, int h) = 0;
+		
+	virtual control_ptr create_with_options(const std::string& label, 
+		void* value_ptr, abst_control_provider* acp, const std::string& value_type, 
+		const std::string& gui_type, const std::string &options, int x, int y, int w, int h);
 };
 
 extern CGV_API void register_decorator_factory(abst_decorator_factory* fac);
@@ -42,7 +46,7 @@ extern CGV_API view_ptr create_view(const std::string& label,
 
 extern CGV_API control_ptr create_control(const std::string& label, 
 						void* value_ptr, abst_control_provider* acp, const std::string& value_type, 
-						const std::string& gui_type, int x, int y, int w, int h);
+						const std::string& gui_type, const std::string& options, int x, int y, int w, int h);
 
 template <class T>
 class decorator_factory_registration 

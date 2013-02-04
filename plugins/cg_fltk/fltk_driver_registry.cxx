@@ -1,5 +1,12 @@
 #include "fltk_driver_registry.h"
 
+
+control_ptr abst_control_factory::create_with_options(const std::string& label, void* value_ptr, abst_control_provider* acp, const std::string& value_type, const std::string& gui_type, const std::string& options, int x, int y, int w, int h)
+{
+	return create(label, value_ptr, acp, value_type, gui_type, x, y, w, h);
+}
+
+
 std::vector<abst_decorator_factory*>& ref_decorator_factories()
 {
 	static std::vector<abst_decorator_factory*> factories;
@@ -60,14 +67,15 @@ void register_control_factory(abst_control_factory* fac)
 }
 
 control_ptr create_control(const std::string& label, 
-									void* value_ptr, abst_control_provider* acp, const std::string& value_type, 
-									const std::string& gui_type, int x, int y, int w, int h)
+						void* value_ptr, abst_control_provider* acp, const std::string& value_type, 
+						const std::string& gui_type, const std::string& options, int x, int y, int w, int h)
 {
 	for (unsigned int i=0; i<ref_control_factories().size(); ++i) {
-		control_ptr c = ref_control_factories()[i]->create(label, 
-			value_ptr, acp, value_type, gui_type, x, y, w, h);
+		control_ptr c = ref_control_factories()[i]->create_with_options(label, 
+			value_ptr, acp, value_type, gui_type, options, x, y, w, h);
 		if (!c.empty())
 			return c;
 	}
 	return control_ptr();
 }
+

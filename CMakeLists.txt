@@ -34,5 +34,4 @@ add_dependencies(apps cgv)
 add_subdirectory(plugins/cg_fltk)
 add_subdirectory(plugins/crg_stereo_view)
 add_subdirectory(plugins/crg_grid)
-add_subdirectory(plugins/exercise3/build/cmake)
 

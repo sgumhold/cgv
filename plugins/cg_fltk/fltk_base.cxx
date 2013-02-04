@@ -271,3 +271,4 @@ int fltk_base::handle(fltk::Widget* w, int event)
 		w->cursor(cursor);
 	return 0;
 }
+

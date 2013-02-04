@@ -463,7 +463,8 @@ view_ptr fltk_driver::find_view(gui_group_ptr parent, const void* value_ptr, int
 control_ptr fltk_driver::add_control(gui_group_ptr parent, const std::string& label, 
 												 void* value_ptr, abst_control_provider* acp,
 												 const std::string& value_type, 
-												 const std::string& gui_type, const std::string& options, 
+												 const std::string& gui_type, 
+												 const std::string& options, 
 												 const std::string& align)
 {
 	ensure_lock();
@@ -471,15 +472,17 @@ control_ptr fltk_driver::add_control(gui_group_ptr parent, const std::string& la
 	fltk_gui_group* fggp = parent->get_interface<fltk_gui_group>();
 	fggp->prepare_new_element(parent,x,y,w,h);
 
-	control_ptr c = create_control(label, value_ptr, acp, value_type, gui_type, x, y, w, h);
+	control_ptr c = create_control(label, value_ptr, acp, value_type, gui_type, options, x, y, w, h);
 
 	if (!c.empty()) {
 		if (!options.empty())
 			c->multi_set(options);
+		
 		fggp->finalize_new_element(parent,align, c);
 	}
 	return c;
 }
+
 
 control_ptr fltk_driver::find_control(gui_group_ptr parent, void* value_ptr, int* idx_ptr)
 {
