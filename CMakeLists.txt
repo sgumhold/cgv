@@ -5,8 +5,6 @@ cmake_policy(SET CMP0017 OLD)
 
 option(BUILD_SHARED_LIBS "Create shared libraries" FALSE)
 
-# set(BUILD_SHARED_LIBS TRUE)
-
 # Load general build settings
 include("cmake/buildSettings.cmake")
 
@@ -19,19 +17,17 @@ add_subdirectory(tool)
 add_subdirectory(cgv)
 # Add the libraries subdirectory
 add_subdirectory(libs)
+# Add plugins
+add_subdirectory(plugins)
 # Add apps
 add_subdirectory(apps)
 
 # The framework depends on the tools and on 3rd libraries
-add_dependencies(cgv tools)
+add_dependencies(cgv tools 3rd)
 add_dependencies(cgv 3rd)
 # The tools depend on the 3rd libraries
 add_dependencies(tools 3rd)
-# The apps depend on the CGV framework
-add_dependencies(apps cgv)
-
-# FIXME: delete this line
-add_subdirectory(plugins/cg_fltk)
-add_subdirectory(plugins/crg_stereo_view)
-add_subdirectory(plugins/crg_grid)
-
+# The apps depend on the CGV framework and 3rd party libs
+add_dependencies(apps cgv 3rd)
+# The plugins depend on everything
+add_dependencies(plugins cgv tools 3rd apps)

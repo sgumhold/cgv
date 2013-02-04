@@ -6,8 +6,8 @@ add_subdirectory(cgv_gl)
 add_subdirectory(glsu)
 
 add_custom_target(libs)
-add_dependencies(libs ppp_lib cgv_gl)
+add_dependencies(libs ppp_lib cgv_gl glsu)
 
-set_target_properties(libs PROPERTIES FOLDER "${FOLDER_NAME_TOPLEVEL}")
+set_target_properties(libs PROPERTIES FOLDER "${FOLDER_NAME_LIBS}")
 
 

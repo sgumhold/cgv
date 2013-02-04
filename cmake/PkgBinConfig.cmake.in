@@ -5,15 +5,8 @@
 set(CONFIGS "RELEASE" "DEBUG")
 
 # Construct the library names
-#if (BUILD_SHARED_LIBS)
 	set(@TARGET@_OUTPUT_NAME_RELEASE "@OUTPUT_NAME@")
 	set(@TARGET@_OUTPUT_NAME_DEBUG "@OUTPUT_NAME@@DEBUG_POSTFIX@")
-#	set(TARGET_POSTFIX "SHARED")
-#else()
-#	set(@TARGET@_OUTPUT_NAME_RELEASE "${@OUTPUT_NAME@}${STATIC_POSTFIX}")
-#	set(@TARGET@_OUTPUT_NAME_DEBUG "${@OUTPUT_NAME@}${STATIC_POSTFIX}${DEBUG_POSTFIX}")
-#	set(TARGET_POSTFIX "STATIC")
-#endif()
 
 
 # If the project is a target then it might not be built but we assume

@@ -25,10 +25,3 @@ set_target_properties(crg_grid PROPERTIES FOLDER "${FOLDER_NAME_PLUGINS}")
 
 cgv_write_find_file(crg_grid)
 
-
-find_package(cgv_viewer)
-
-cgv_add_viewer(cgtest
-	crg_grid
-	cg_fltk
-	crg_stereo_view)

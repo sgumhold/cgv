@@ -7,7 +7,7 @@ set(BUILD_CORE_COMPONENTS TRUE)
 # Set build settings for the standard elements of the framework bundle
 get_filename_component(BASE_PATH "${CMAKE_CURRENT_LIST_FILE}" PATH)
 include("${BASE_PATH}/buildSettings.cmake")
-include("${BASE_PATH}/CreateConfigMacros.cmake")
+include("${BASE_PATH}/cgvConfigMacros.cmake")
 
 # define macros to build core components
 include("${BASE_PATH}/CMakeMacroParseArguments.cmake")

@@ -40,35 +40,6 @@ foreach(fn ${FIND_NAMES})
 		list(APPEND @TARGET@_SHARED_DEFINITIONS ${${fn}_SHARED_DEFINITIONS} "")
 		list(APPEND @TARGET@_STATIC_DEFINITIONS ${${fn}_STATIC_DEFINITIONS} "")
 		list(APPEND @TARGET@_COMMON_DEFINITIONS ${${fn}_COMMON_DEFINITIONS} "")
-
-
-#		if(${fn}_INCLUDE_DIR)
-#			list(APPEND @TARGET@_INCLUDE_DIR "${${fn}_INCLUDE_DIR}")
-#		elseif (${fn}_INCLUDE_DIRS)
-#			list(APPEND @TARGET@_INCLUDE_DIR "${${fn}_INCLUDE_DIRS}")
-#		elseif (${fn}_INCLUDE_PATH)
-#			list(APPEND @TARGET@_INCLUDE_DIR "${${fn}_INCLUDE_PATH}")
-#		elseif (${fn}_INCLUDES)
-#			list(APPEND @TARGET@_INCLUDE_DIR "${${fn}_INCLUDES}")
-#		endif()
-
-		# Try to append the libraries
-#		if (${fn}_LIBRARIES)
-#			list(APPEND @TARGET@_LIBRARIES "${${fn}_LIBRARIES}")
-#		elseif (${fn}_LIBRARY)
-#			list(APPEND @TARGET@_LIBRARIES "${${fn}_LIBRARY}")
-#		endif()	
-
-		# Try to append the definitions
-#		if (${fn}_SHARED_DEFINITIONS)
-#			list(APPEND @TARGET@_SHARED_DEFINITIONS "${${fn}_SHARED_DEFINITIONS}")
-#		endif()
-#		if (${fn}_STATIC_DEFINITIONS)
-#			list(APPEND @TARGET@_STATIC_DEFINITIONS "${${fn}_STATIC_DEFINITIONS}")
-#		endif()
-#		if (${fn}_COMMON_DEFINITIONS)
-#			list(APPEND @TARGET@_COMMON_DEFINITIONS "${${fn}_COMMON_DEFINITIONS}")
-#		endif()		
 	endif()
 
 endforeach()
@@ -210,6 +181,13 @@ if (NOT TARGET @TARGET@_IMPORTED_${TARGET_POSTFIX})
 			IMPORTED_LOCATION_${conf} "${@TARGET@_LIB_${conf}}"
 			IMPORTED_IMPLIB_${conf} "${@TARGET@_LIB_${conf}}")
 	endforeach()
+
+	# Also add definitions if no build type was specified. Set this to be the release type
+	set_target_properties(@TARGET@_IMPORTED_${TARGET_POSTFIX} PROPERTIES
+		IMPORTED_LINK_INTERFACE_LANGUAGES "CXX"
+		IMPORTED_LINK_INTERFACE_LIBRARIES "${@TARGET@_LIBRARIES}"
+		IMPORTED_LOCATION "${@TARGET@_LIB_RELEASE}"
+		IMPORTED_IMPLIB "${@TARGET@_LIB_RELEASE}")
 
 	if (TARGET @TARGET@)
 		add_dependencies(@TARGET@_IMPORTED_${TARGET_POSTFIX} @TARGET@)
