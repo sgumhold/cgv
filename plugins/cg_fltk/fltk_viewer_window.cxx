@@ -175,9 +175,9 @@ void fltk_viewer_window::create_gui()
 		rebind(this, &fltk_viewer_window::menu_change_cb));
 	connect_copy(provider::add_control("gui", gui_visible, "check")->value_change,
 		rebind(this, &fltk_viewer_window::gui_change_cb));
-	connect(provider::add_control("state", window_state, "regular;minimized;maximized;fullscreen")->check_value,
+	connect(provider::add_control("state", window_state, "dropdown", "enums='regular;minimized;maximized;fullscreen'")->check_value,
 		this, &fltk_viewer_window::ws_change_cb);
-	connect(provider::add_control("fullscreen monitors", fullscreen_monitors, "current;left;right;both")->check_value,
+	connect(provider::add_control("fullscreen monitors", fullscreen_monitors, "dropdown", "enums='current;left;right;both'")->check_value,
 		this, &fltk_viewer_window::ms_change_cb);
 }
 
