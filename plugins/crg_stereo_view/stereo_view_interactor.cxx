@@ -646,12 +646,12 @@ void stereo_view_interactor::create_gui()
 	if (toggle[0]) {
 		connect_copy(add_control("stereo", stereo_enabled, "check")->value_change,
 			rebind(this, &stereo_view_interactor::on_stereo_change));
-		connect_copy(add_control("mono mode", mono_mode, "left=-1,center,right")->value_change,
+		connect_copy(add_control("mono mode", mono_mode, "dropdown", "enums='left=-1,center,right'")->value_change,
 			rebind(static_cast<drawable*>(this), &drawable::post_redraw));
-		connect_copy(add_control("stereo mode", stereo_mode, "vsplit,hsplit,anaglyph,quad buffer")->value_change,
+		connect_copy(add_control("stereo mode", stereo_mode, "dropdown", "enums='vsplit,hsplit,anaglyph,quad buffer'")->value_change,
 			rebind(static_cast<drawable*>(this), &drawable::post_redraw));
-		connect_copy(add_control("config", ac, 
-			"<red|blue>,<red|cyan>,<yellow|blue>,<magenta|green>,<blue|red>,<cyan|red>,<blue|yellow>,<green|magenta>")->value_change,
+		connect_copy(add_control("config", ac, "dropdown",
+			"enums='<red|blue>,<red|cyan>,<yellow|blue>,<magenta|green>,<blue|red>,<cyan|red>,<blue|yellow>,<green|magenta>'")->value_change,
 			rebind(static_cast<drawable*>(this), &drawable::post_redraw));
 		connect_copy(add_control("eye-dist", eye_distance, "value_slider", "min=0;max=0.1;ticks=true;step=0.001")->value_change,
 			rebind(static_cast<drawable*>(this), &drawable::post_redraw));
