@@ -284,7 +284,6 @@ struct enum_control_factory : public abst_control_factory
 		
 		enums_getter eg;
 		eg.multi_set(options);
-		std::cout<<"Enums: "<<eg.enums<<"  "<<gui_type<<std::endl;
 		// If the enum field was not specified or is empty then assume that the enums are
 		// provided via the old style (mis)using the gui_type field
 		if (eg.enums.empty()) {
