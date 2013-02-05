@@ -1000,11 +1000,11 @@ GLuint gl_context::texture_generate(texture_base& tb)
 		tb.last_error = "attempt to create cube map, which is not supported";
 		return -1;
 	}
-	GLuint tex_id;
+	GLuint tex_id = -1;
 	glGenTextures(1, &tex_id);
 	if (glGetError() == GL_INVALID_OPERATION) {
 		tb.last_error = "attempt to create texture inside glBegin-glEnd-block";
-		return -1;
+		return tex_id;
 	}
 	return tex_id;
 }
