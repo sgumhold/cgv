@@ -111,6 +111,20 @@ public:
 	bool get_void(const std::string& property, const std::string& value_type, void* value_ptr);
 };
 
+//! simple parsing support to access values of properties in a string of property assignment 
+/*! Given an option string (first parameter) with name-value-pairs, i.e. "x=10.4;tooltip='help'" 
+    and a property name (second parameter), the function returns whether the option string contains
+	an assignment of the queried property and if yes, the value is stored in the reference given
+	in the third parameter. The type casts supported by the cgv::type::variant type are used when
+	converting to the reference type.
+	
+	Examples:
+	
+	true  == has_property("x=10.4;tooltip='help'", "x", dbl_var)"       ==> dbl_var = 10.4
+	true  == has_property("x=10.4;tooltip='help'", "x", str_var)"       ==> str_var = "10.4"
+	true  == has_property("x=10.4;tooltip='help'", "tooltip", str_var)" ==> str_var = "help"
+	false == has_property("x=10.4;tooltip='help'", "y", int_var)"       ==> int_var ... not changed
+	*/
 template <typename T>
 bool has_property(const std::string& options, const std::string& property, T& value) {
 	base_generator bg;

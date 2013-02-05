@@ -4,6 +4,7 @@
 #include <cgv/utils/scan.h>
 #include <cgv/utils/scan_enum.h>
 #include <cgv/type/variant.h>
+#include <cgv/base/base_generator.h>
 #include <algorithm>
 
 #ifdef WIN32
@@ -250,20 +251,6 @@ void fltk_enum_toggle_control::set_index(int idx)
 	}
 }
 
-
-
-
-// Helper class to parse the "enums" option  
-struct enums_getter : public cgv::base::base
-{
-	std::string enums;
-	bool self_reflect(cgv::reflect::reflection_handler& rh)
-	{
-		return rh.reflect_member("enums", enums);		
-	}
-};
-
-
 struct enum_control_factory : public abst_control_factory
 {	
 	/// Create a control with options provided
@@ -275,11 +262,10 @@ struct enum_control_factory : public abst_control_factory
 		if (value_type != "enum")
 			return control_ptr();
 		
-		enums_getter eg;
-		eg.multi_set(options);
+		std::string enums;
 		// If the enum field was not specified or is empty then assume that the enums are
 		// provided via the old style (mis)using the gui_type field
-		if (eg.enums.empty()) {
+		if (!cgv::base::has_property(options, "enums", enums)) {
 			std::cerr<<"Warning: Specifying enumerations via the gui type is deprecated."<<std::endl
 					  <<"Please use the new format: add_control(label, variable, \"dropdown\", \"enums='a,b,c'\")"<<std::endl
 					  <<"to place the enumeration strings in the options field. Instead of \"dropdown\" you"<<std::endl
@@ -291,19 +277,19 @@ struct enum_control_factory : public abst_control_factory
 		// Otherwise check which gui type to use to represent this enum
 		if (gui_type == "radio") 
 			return control_ptr(new fltk_enum_radio_control(label, 
-				*static_cast<int*>(value_ptr), acp, eg.enums, x, y, w, h)); 
+				*static_cast<int*>(value_ptr), acp, enums, x, y, w, h)); 
 		else 
 		if (gui_type == "dropdown") 
 			return control_ptr(new fltk_enum_dropdown_control(label, 
-				*static_cast<int*>(value_ptr), acp, eg.enums, x, y, w, h));
+				*static_cast<int*>(value_ptr), acp, enums, x, y, w, h));
 		else
 		if (gui_type == "toggle") 
 			return control_ptr(new fltk_enum_toggle_control(label, 
-				*static_cast<int*>(value_ptr), acp, eg.enums, x, y, w, h)); 
+				*static_cast<int*>(value_ptr), acp, enums, x, y, w, h)); 
 		else {
 			std::cerr<<"Unknown gui type "<<gui_type<<" for enumeration."<<std::endl;
 			return control_ptr(new fltk_enum_dropdown_control(label, 
-				*static_cast<int*>(value_ptr), acp, eg.enums, x, y, w, h));
+				*static_cast<int*>(value_ptr), acp, enums, x, y, w, h));
 		}
 	}
 
