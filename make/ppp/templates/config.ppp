@@ -213,3 +213,36 @@ if (SYSTEM == "linux") {
 	excludeProjectDeps=["fltk","pthread","libjpeg","libpng","zlib","libtiff"];
 }
 project_folders=["plugin","application_plugin","test","application","library","static_library","shared_library","shared_plugin","tool"];
+
+// encoding and decoding of refernces
+
+// encode in a list that text should be placed after ref
+func(after; :>text="", :>ref = "", :>return="") 
+{
+	return = [text, "AFTER", ref];
+}
+
+// encode in a list that text should be placed before ref
+func(before; :>text="", :>ref = "", :>return="") 
+{
+	return = [text, "BEFORE", ref];
+}
+
+// check whether an element has an encoded reference and return "" if not or the type of reference "AFTER" or "BEFORE"
+func(before_or_after; :>elem = "", :>return="") 
+{
+	if (elem ~~ LIST) {
+		if (!elem == 3) {
+			if (elem[1] < ["AFTER", "BEFORE"]) {
+				return = elem[1];
+			}
+		}
+	}
+}
+
+// only call in case before_or_after does not return UNDEF. In this case the encoded reference is returned
+func(get_reference; :>elem = [], :>return = "") 
+{
+	:>return = elem[2];
+}
+

@@ -149,12 +149,12 @@
 @}
   @}
   @skip(gen_files(<:pj =& pj, <:T =& pj::sourceTree))
-  @if(!pj::projectDeps > 0 && pj::referenceDeps)@{@//
+  @if(!pj::projectRefs)@{@//
   <ItemGroup>
-@for(:>i=0; i<!pj::projectDeps; ++i)@{
-      @define(:>dep_pn = pj::projectDeps[i])@//
+@for(:>i=0; i<!pj::projectRefs; ++i)@{
+      @define(:>dep_pn = pj::projectRefs[i])@//
     <ProjectReference Include=@"'..\\'.dep_pn.'\\'.dep_pn.'.vcxproj'">
-      <Project>{@(projects[pj::projectDeps[i]]::projectGUID)}</Project>
+      <Project>{@(projects[pj::projectRefs[i]]::projectGUID)}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
 @}@//

@@ -117,9 +117,9 @@ func(::extend_project_info_vs; :>project_name = "", :>return = 1)
 	if(pj::projectType=="tool") {
 		pj::output_post[0]="";
 	}
-	if (!pj::referenceDeps) {
+//	if (!pj::referenceDeps) {
 		append_library_dependencies_vs(project_name);
-	}
+//	}
 }
 
 func(::get_rule_id_vs10; :>pj=MAP, :>ext="", :>return="")

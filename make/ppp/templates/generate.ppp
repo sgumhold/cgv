@@ -170,6 +170,7 @@ func(::extend_project_info; :>project_name = "", :>return = 1)
 	configure_precompiled_headers(<:pj =& pj);
 	// extend by project file
 	projects[project_name]::sourceTree::make = [ pj::config_indices, pj::INPUT_PATH ];
+	compute_referenced_projects(project_name);
 }
 
 func(generate_makefile; :>project_name="", :>return = 1)

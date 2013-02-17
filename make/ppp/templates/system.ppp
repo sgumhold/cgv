@@ -138,3 +138,12 @@ func(merge_lists; :>L1=[], :>L2=[], :>return=[])
 	}
 	return = L1;
 }
+
+func(intersect_lists; :>L1=[], :>L2=[], :>return=[])
+{
+	for (:>i=0; i<!L1; ++i) {
+		if (L1[i] < L2) {
+			return = return.L1[i];
+		}
+	}
+}
