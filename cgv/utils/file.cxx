@@ -232,6 +232,18 @@ bool write(const std::string& file_name, const char* ptr, size_t size, bool asci
 	return res;
 }
 
+bool append(const std::string& file_name, const char* ptr, size_t size, bool ascii)
+{
+	bool res = false;
+	FILE* fp = ::fopen(file_name.c_str(), ascii ? "a" : "ab");
+	if (fp) {
+		res = ::fwrite(ptr, 1, size, fp) == size;
+		::fclose(fp);
+	}
+	return res;
+}
+
+
 #ifdef _WIN32
 struct FileInfo
 {
