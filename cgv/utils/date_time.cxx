@@ -72,5 +72,20 @@ date_time now()
 	return convert_to_date_time(::time(NULL));
 }
 
+std::ostream& operator << (std::ostream& os, const time& T)
+{
+	return os << int(T.h) << ':' << int(T.minutes) << ':' << int(T.sec);
+}
+
+std::ostream& operator << (std::ostream& os, const date& D)
+{
+	return os << int(D.day) << '.' << int(D.month) << '.' << int(D.year);
+}
+
+std::ostream& operator << (std::ostream& os, const date_time& DT)
+{
+	return os << static_cast<const time&>(DT) << ' ' << static_cast<const date&>(DT);
+}
+
 	}
 }

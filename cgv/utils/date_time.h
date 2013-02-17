@@ -1,5 +1,7 @@
 #pragma once
 
+#include <iostream>
+
 #include "lib_begin.h"
 
 namespace cgv {
@@ -34,6 +36,10 @@ struct CGV_API date_time : public date, public time
 };
 
 extern CGV_API date_time now();
+
+extern CGV_API std::ostream& operator << (std::ostream& os, const time& T);
+extern CGV_API std::ostream& operator << (std::ostream& os, const date& D);
+extern CGV_API std::ostream& operator << (std::ostream& os, const date_time& DT);
 
 	}
 }
