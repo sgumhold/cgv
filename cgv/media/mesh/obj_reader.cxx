@@ -99,6 +99,11 @@ void obj_reader::process_normal(const v3d_type& n)
 {
 }
 
+/// overide this function to process a normal
+void obj_reader::process_color(const color_type& c)
+{
+}
+
 /// convert negative indices to positive ones by adding the number of elements
 void obj_reader::convert_to_positive(unsigned vcount, int *vertices, 
 						 int *texcoords, int *normals,
@@ -171,6 +176,10 @@ bool obj_reader::read_obj(const std::string& file_name)
 					break;
 				case 't' : 
 					process_texcoord(parse_v2d(tokens));
+					++nr_texcoords;
+					break;
+				case 'c' : 
+					process_color(parse_color(tokens));
 					++nr_texcoords;
 					break;
 				}

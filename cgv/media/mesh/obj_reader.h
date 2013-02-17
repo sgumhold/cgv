@@ -72,6 +72,8 @@ protected:
 	virtual void process_vertex(const v3d_type& p);
 	/// overide this function to process a texcoord
 	virtual void process_texcoord(const v2d_type& t);
+	/// overide this function to process a color (this called for vc prefixes which is is not in the standard but for example used in pobj-files)
+	virtual void process_color(const color_type& c);
 	/// overide this function to process a normal
 	virtual void process_normal(const v3d_type& n);
 	/// convert negative indices to positive ones by adding the number of elements
