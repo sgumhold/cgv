@@ -168,6 +168,17 @@ int fltk_driver::question(const std::string& _question, const std::vector<std::s
 	return -1;
 }
 
+bool fltk_driver::query(const std::string& question, std::string& text, bool password)
+{
+	const char* answer = password ? 
+		fltk::password(question.c_str(), text.c_str()) :
+		fltk::input(question.c_str(), text.c_str());
+	if (answer == 0)
+		return false;
+	text = answer;
+	return true;
+}
+
 #ifdef WIN32
 #include <Windows.h>
 #include <cgv/utils/convert.h>

@@ -56,5 +56,15 @@ int question(const std::string& _question, const std::string& answers, int defau
 	return answer_values[d->question(_question,answer_strings,default_answer)];
 }
 
+bool query(const std::string& question, std::string& text, bool password)
+{
+	gui_driver_ptr d = get_gui_driver();
+	if (d.empty())
+		return false;
+
+	return d->query(question,text,password);
+}
+
+
 	}
 }

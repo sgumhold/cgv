@@ -52,6 +52,9 @@ public:
 	text_editor_ptr create_text_editor(unsigned int w, unsigned int h, const std::string& title, int x, int y);
 	/// ask the user with \c _question to select one of the \c answers, where \c default_answer specifies index of default answer
 	int question(const std::string& _question, const std::vector<std::string>& answers, int default_answer = -1);
+	//! query the user for a text, where the second parameter is the default \c text as well as the returned text. 
+	/*! If \c password is true, the text is hidden. The function returns false if the user canceled the input of if no gui driver is available. */
+	bool query(const std::string& question, std::string& text, bool password = false);
 	/// ask user for an open dialog that can select multiple files, return common path prefix and fill field of filenames
 	std::string files_open_dialog(std::vector<std::string>& file_names, const std::string& title, const std::string& filter, const std::string& path);
 	/// ask user for a file to open

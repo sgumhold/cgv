@@ -43,6 +43,9 @@ public:
 	//@{
 	/// ask the user with \c _question to select one of the \c answers, where \c default_answer specifies index of default answer
 	virtual int question(const std::string& _question, const std::vector<std::string>& answers, int default_answer = -1) = 0;
+	//! query the user for a text, where the second parameter is the default \c text as well as the returned text. 
+	/*! If \c password is true, the text is hidden. The function returns false if the user canceled the input of if no gui driver is available. */
+	virtual bool query(const std::string& question, std::string& text, bool password = false) = 0;
 	/// create a text editor
 	virtual text_editor_ptr create_text_editor(unsigned int w, unsigned int h, const std::string& title, int x, int y) = 0;
 	/// ask user for an open dialog that can select multiple files, return common path prefix and fill field of filenames
