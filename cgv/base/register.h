@@ -1,11 +1,13 @@
 #pragma once
 
+#include <cgv/base/base.h>
+#include <cgv/base/named.h>
 #include <string>
 #include <iostream>
 #include <map>
-#include <cgv/base/base.h>
-#include <cgv/base/named.h>
-#include <cgv/base/lib_begin.h>
+
+#include "lib_begin.h"
+
 #ifndef _WIN32
 #include <unistd.h>
 #include <dlfcn.h>
@@ -482,6 +484,7 @@ extern CGV_API std::string& ref_plugin_name();
 /// unload the plugin with the given handle
 extern CGV_API bool unload_plugin(void* handle);
 //@}
+
 
 	}
 }

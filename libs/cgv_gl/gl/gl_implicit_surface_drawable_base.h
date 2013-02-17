@@ -1,6 +1,5 @@
 #pragma once
 
-#include <vector>
 #include <cgv/render/drawable.h>
 #include <cgv/math/mfunc.h>
 #include <cgv/media/axis_aligned_box.h>

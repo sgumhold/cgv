@@ -1,6 +1,5 @@
 #pragma once
 
-#include <string>
 #include <cgv/data/data_format.h>
 #include <cgv/data/data_view.h>
 #include <cgv/render/context.h>

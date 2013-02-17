@@ -1,7 +1,7 @@
 #pragma once
 
-#include <cgv/signal/signal.h>
 #include <cgv/base/group.h>
+#include <cgv/signal/signal.h>
 #include <cgv/gui/event_handler.h>
 #include <cgv/gui/provider.h>
 #include <cgv_gl/gl/gl_context.h>

@@ -1,9 +1,6 @@
 #pragma once
 
 #define _USE_MATH_DEFINES
-#include <stack>
-#include <vector>
-#include <string>
 #include <cgv/data/data_view.h>
 #include <cgv/base/group.h>
 #include <cgv/media/font/font.h>
@@ -12,6 +9,9 @@
 #include <cgv/signal/callback_stream.h>
 #include <cgv/math/vec.h>
 #include <cgv/math/inv.h>
+#include <stack>
+#include <vector>
+#include <string>
 
 #include "lib_begin.h"
 

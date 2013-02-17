@@ -1,10 +1,10 @@
 #pragma once
 
-#include <string>
-#include <vector>
 #include <cgv/type/info/type_id.h>
 #include <cgv/type/info/type_access.h>
 #include "packing_info.h"
+#include <string>
+#include <vector>
 
 #include "lib_begin.h"
 

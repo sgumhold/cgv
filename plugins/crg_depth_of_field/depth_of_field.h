@@ -1,6 +1,5 @@
 #pragma once
 
-#include <vector>
 #include <cgv/base/node.h>
 #include <cgv/render/drawable.h>
 #include <cgv/gui/event_handler.h>

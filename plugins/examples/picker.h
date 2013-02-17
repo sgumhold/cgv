@@ -1,7 +1,7 @@
 #pragma once
 
-#include <cgv/math/vec.h>
 #include <cgv/base/node.h>
+#include <cgv/math/vec.h>
 #include <cgv/gui/event_handler.h>
 #include <cgv/render/drawable.h>
 

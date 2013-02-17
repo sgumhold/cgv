@@ -1,6 +1,5 @@
 #pragma once
 
-#include <string>
 #include <cgv/render/context.h>
 
 #include "lib_begin.h"

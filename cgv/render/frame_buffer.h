@@ -1,6 +1,5 @@
 #pragma once
 
-#include <vector>
 #include <cgv/data/component_format.h>
 #include <cgv/render/texture.h>
 #include <cgv/render/render_buffer.h>

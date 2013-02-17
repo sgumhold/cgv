@@ -1,13 +1,14 @@
-#include "import.h"
+#include <cgv/base/register.h>
 
-#include <stdlib.h>
-#include <map>
+#include "import.h"
 
 #include <cgv/utils/dir.h>
 #include <cgv/utils/file.h>
 #include <cgv/utils/tokenizer.h>
 
-#include <cgv/base/register.h>
+
+#include <stdlib.h>
+#include <map>
 
 using namespace cgv::utils;
 using namespace cgv::utils::file;

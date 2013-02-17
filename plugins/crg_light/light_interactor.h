@@ -1,6 +1,5 @@
 #pragma once
 
-#include <vector>
 #include <cgv/render/drawable.h>
 #include <cgv/media/illum/light_source.hh>
 #include <cgv/gui/provider.h>

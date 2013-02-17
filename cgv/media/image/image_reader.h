@@ -1,9 +1,8 @@
 #pragma once
 
-#include <string>
-#include <vector>
 #include <cgv/base/base.h>
 #include <cgv/data/data_view.h>
+
 #include "lib_begin.h"
 
 using namespace cgv::data;

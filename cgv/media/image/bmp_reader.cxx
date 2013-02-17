@@ -1,11 +1,12 @@
+#ifdef WIN32
+#pragma warning (disable:4996)
+#endif
+
 #include "bmp_reader.h"
 #include <iostream>
 #include <cgv/base/import.h>
 #include <cgv/base/register.h>
 
-#ifdef WIN32
-#pragma warning (disable:4996)
-#endif
 
 namespace cgv {
 	namespace media {

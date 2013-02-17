@@ -1,11 +1,11 @@
 #pragma once
 
+#include "context.h"
+#include "shader_code.h"
 #include <cgv/math/vec.h>
 #include <cgv/math/mat.h>
 #include <cgv/math/fvec.h>
 #include <cgv/math/fmat.h>
-#include "context.h"
-#include "shader_code.h"
 #include <cgv/type/info/type_id.h>
 
 #include "lib_begin.h"

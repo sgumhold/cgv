@@ -1,7 +1,7 @@
 #pragma once
 
-#include <vector>
 #include "node.h"
+#include <vector>
 
 #include "lib_begin.h"
 

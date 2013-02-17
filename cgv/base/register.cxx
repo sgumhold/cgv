@@ -1,13 +1,11 @@
 #include <cgv/base/register.h>
-#include <vector>
 #include <cgv/utils/convert.h>
 #include <cgv/utils/tokenizer.h>
 #include <cgv/utils/advanced_scan.h>
 #include <cgv/utils/file.h>
 
-//#include <cgv/gui/gui_driver.h>
-
 #include <algorithm>
+#include <vector>
 
 using namespace cgv::utils;
 
