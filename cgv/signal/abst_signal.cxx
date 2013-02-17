@@ -8,6 +8,12 @@ signal_base::~signal_base()
 	disconnect_all();
 }
 
+/// return the number of connected functors
+unsigned signal_base::get_nr_functors() const
+{
+	return functors.size();
+}
+
 /// only use this if you exactly know what to do!
 void signal_base::connect_abst(functor_base* fp)
 {
