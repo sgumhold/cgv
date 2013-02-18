@@ -377,12 +377,12 @@ bool fmt1_compares_better(const component_format& fmt,
 {
 	// check format
 	ComponentFormat cf  = fmt.get_standard_component_format();
-/*	if (cf != CF_UNDEF) {
+	if (cf != CF_UNDEF) {
 		ComponentFormat cf1 = fmt1.get_standard_component_format();
 		ComponentFormat cf2 = fmt2.get_standard_component_format();
 		if ((cf1 == cf) != (cf2 == cf))
 			return cf1 == cf;
-	}*/
+	}
 	unsigned int nc = fmt.get_nr_components();
 	unsigned int nc1 = fmt1.get_nr_components();
 	unsigned int nc2 = fmt2.get_nr_components();
