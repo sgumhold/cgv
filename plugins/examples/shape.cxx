@@ -94,7 +94,7 @@ void shape::stream_help(std::ostream&)
 void shape::stream_stats(std::ostream& os)
 {
 	const char* shape_name[] = { 
-		"shape", "prism", "tetra", "octahedron", "dodecahedron", "icosahedron", "cylinder", "cone", "disk", "arrow", "sphere"
+		"shape", "prism", "tetra", "octahedron", "dodecahedron", "icosahedron", "cylinder", "cone", "disk", "arrow", "sphere", "strip"
 	};
 
 	cgv::utils::oprintf(os, "%s: ax=%.1f<down arrow/up arrow>, ay=%.1f<left arrow/right arrow>, shape=%s<S>[%d<R>]\n", 
