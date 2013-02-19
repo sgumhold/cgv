@@ -36,7 +36,11 @@ func(::append_library_dependencies_vs; :>project_name = "", :>return="")
 {
 	:>pj =& projects[project_name];
 	:>L =& pj::all_dep_projects;
-	for (:>ci=0; ci<4; ++ci) {
+	:>ci0 = 2;
+	if (pj::is_executable[0]) {
+		ci0 = 0;
+	}
+	for (:>ci=ci0; ci<4; ++ci) {
 		for (:>i=0; i<!L; ++i) {
 			if (projects[L[i]]::projectType < append_dep_types_config[ci]) {
 				pj::dependencies[ci] = pj::dependencies[ci].[L[i].projects[L[i]]::output_post[ci]];

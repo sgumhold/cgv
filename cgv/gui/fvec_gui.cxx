@@ -1,6 +1,6 @@
-#include <cgv/math/fvec.h>
 #include <cgv/gui/gui_creator.h>
 #include <cgv/gui/provider.h>
+#include <cgv/math/fvec.h>
 #include <limits>
 
 using namespace cgv::gui;

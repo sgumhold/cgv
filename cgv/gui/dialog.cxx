@@ -1,5 +1,5 @@
-#include "dialog.h"
 #include "gui_driver.h"
+#include "dialog.h"
 #include <cgv/utils/tokenizer.h>
 #include <cgv/utils/scan.h>
 

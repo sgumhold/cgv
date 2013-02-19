@@ -1,8 +1,8 @@
 #pragma once
 
 #define _USE_MATH_DEFINES
-#include <cgv/data/data_view.h>
 #include <cgv/base/group.h>
+#include <cgv/data/data_view.h>
 #include <cgv/media/font/font.h>
 #include <cgv/media/illum/phong_material.hh>
 #include <cgv/media/illum/light_source.hh>

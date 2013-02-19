@@ -1,5 +1,5 @@
-#include "menu_provider.h"
 #include <cgv/gui/gui_driver.h>
+#include "menu_provider.h"
 
 namespace cgv {
 	namespace gui {

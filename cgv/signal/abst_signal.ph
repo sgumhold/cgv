@@ -23,6 +23,8 @@ protected:
 	void connect(functor_base* fp);
 	void disconnect(const functor_base* fp);
 public:
+	/// return the number of connected functors
+	unsigned signal_base::get_nr_functors() const;
 	/// only use this if you exactly know what to do!
 	void connect_abst(functor_base* fp);
 	/// virtual destructor

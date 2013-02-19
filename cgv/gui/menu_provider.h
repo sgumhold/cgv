@@ -1,6 +1,5 @@
 #pragma once
 
-#include <cgv/signal/abst_signal.h>
 #include <cgv/gui/button.h>
 #include <cgv/gui/control.h>
 

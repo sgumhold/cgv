@@ -1,7 +1,7 @@
 #pragma once
 
-#include <cgv_gl/gl/gl_view.h>
 #include <cgv/render/drawable.h>
+#include <cgv_gl/gl/gl_view.h>
 #include <cgv/gui/event_handler.h>
 #include <cgv/gui/provider.h>
 #include <cgv_gl/gl/gl.h>

@@ -1,9 +1,8 @@
 #pragma once
 
-#include <cgv/signal/signal.h>
-#include <cgv/signal/bool_signal.h>
-
 #include "view.h"
+
+#include <cgv/signal/signal.h>
 
 #include "lib_begin.h"
 
