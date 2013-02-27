@@ -106,7 +106,7 @@ macro(cgv_write_find_file target)
 		set(INPUT_FILE "PkgBinConfig.cmake.in")
 	endif()
 
-	include(CMakePackageConfigHelpers)
+	include("${MACROS_BASE}/CMakePackageConfigHelpers.cmake")
 
 	configure_package_config_file("${MACROS_BASE}/${INPUT_FILE}"
 		"${CMAKE_BINARY_DIR}/${BUILD_BASE}/${INSTALL_CMAKE_PATH}/${target}Config.cmake"
