@@ -12,6 +12,7 @@ find_package(cgv
 cgv_find_package(FLTK2)
 cgv_find_package(cgv_gl)
 
+
 set(HEADERS
 	DockableGroup.h
 	fltk_align_group.h
@@ -72,9 +73,9 @@ set(SOURCES
 	)
 
 include_directories( 
-	"${FLTK2_INCLUDE_DIRS}" 
-	"${cgv_gl_INCLUDE_DIRS}"
-	"${cgv_INCLUDE_DIRS}")
+	${FLTK2_INCLUDE_DIRS} 
+	${cgv_gl_INCLUDE_DIRS}
+	${cgv_INCLUDE_DIRS})
 
 cgv_add_module(cg_fltk ${SOURCES} ${HEADERS})
 
