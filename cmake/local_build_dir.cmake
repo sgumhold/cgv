@@ -1,1 +1,1 @@
-set(LOCAL_BUILD_DIR "/home/jstaib/cgv/build/build")
+set(LOCAL_BUILD_DIR "/home/gumhold/develop/build/build")
