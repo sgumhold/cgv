@@ -323,6 +323,12 @@ void gl_mesh_drawable_base::center_view()
 	if (views.size() > 0)
 		post_redraw();
 }
+/// return the axis aligned bounding box
+const gl_mesh_drawable_base::box_type& gl_mesh_drawable_base::get_box() const
+{
+	return box;
+}
+
 
 		}
 	}

@@ -1,0 +1,9 @@
+@=
+projectType="plugin";
+projectName="cg_ext";
+projectGUID="F229EEE9-9AC7-41FD-9FF0-06276DE5CCE6";
+addProjectDirs=[CGV_DIR."/plugins"];
+addProjectDeps=["cgv_render", "cgv_gui","cgv_base","cgv_type","cgv_reflect","cgv_utils","cgv_signal","cgv_data", "cg_icons"];
+addIncDirs=[CGV_DIR."/libs"];
+addSharedDefines=["CGV_GUI_EXT_EXPORTS"];
+

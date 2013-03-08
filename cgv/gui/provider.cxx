@@ -137,8 +137,10 @@ void provider::remove_element(base_ptr e)
 // this method removes all elements in the gui and can be used in a method that rebuilds the complete gui
 void provider::remove_all_elements()
 {
-	if (!parent_group.empty())
+	if (!parent_group.empty()) {
 		parent_group->remove_all_children();
+		parent_group->release_all_managed_objects();
+	}
 }
 
 //! find a gui element by name in the current group, return empty pointer if not found
@@ -261,7 +263,7 @@ void provider::recreate_gui()
 	if (!parent_group)
 		return;
 	int selected_child_index = parent_group->get_selected_child_index();
-	parent_group->remove_all_children();
+	remove_all_elements();
 	create_gui();
 	if (selected_child_index != -1 && selected_child_index < (int) (parent_group->get_nr_children()))
 		parent_group->select_child(selected_child_index);

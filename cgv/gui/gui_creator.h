@@ -19,7 +19,7 @@ struct gui_creator
 };
 
 /// register a gui creator
-extern CGV_API void register_gui_creator(gui_creator* gc);
+extern CGV_API void register_gui_creator(gui_creator* gc, const char* creator_name);
 
 /// create the gui for a composed structure
 extern CGV_API bool create_gui(provider* p, const std::string& label, 
@@ -31,8 +31,8 @@ template <class T>
 class gui_creator_registration 
 {
 public:
-	gui_creator_registration() {
-		register_gui_creator(new T());
+	gui_creator_registration(const char* creator_name) {
+		register_gui_creator(new T(), creator_name);
 	}
 };
 

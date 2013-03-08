@@ -126,7 +126,7 @@ public:
 		 file has been collected.*/
 	static bool collect_dir(const std::string& dir_name, bool recursive, std::vector<std::string>& file_names);
 	/** collect shader code files declared in a shader program file.
-	    Program files have the extension glsl and contain lines of the form
+	    Program files have the extension glpr and contain lines of the form
 		 command:argument. The following commands can be used
 		 - file:file_name ... calls attach_file(ctx,file_name)
 		 - vertex_file:file_name ... calls attach_file(ctx,file_name,ST_VERTEX)

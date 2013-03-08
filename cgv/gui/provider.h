@@ -30,6 +30,8 @@ protected:
 	friend class gui_group;
 	//@}
 public:
+	/// use the parent group to append to be managed elements that should be destroyed in  a post_recreate_gui event
+	gui_group_ptr get_parent_group() const { return parent_group; }
 	/// add a newly created view to the group
 	view_ptr add_view_void(const std::string& label, const void* value_ptr, const std::string& value_type, const std::string& gui_type, const std::string& options, const std::string& align);
 	/// add a newly created control to the group
