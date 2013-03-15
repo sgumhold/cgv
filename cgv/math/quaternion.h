@@ -108,15 +108,32 @@ public:
 	/// compute equivalent 3x3 rotation matrix
 	void put_matrix(coord_type* M) const
 	{
-	  M[0] = 1-2*y()*y()-2*z()*z();
-	  M[1] = 2*x()*y()-2*w()*z();
-	  M[2] = 2*x()*z()+2*w()*y();
-	  M[3] = 2*x()*y()+2*w()*z();
-	  M[4] = 1-2*x()*x()-2*z()*z();
-	  M[5] = 2*y()*z()-2*w()*x();
-	  M[6] = 2*x()*z()-2*w()*y();
-	  M[7] = 2*y()*z()+2*w()*x();
-	  M[8] = 1-2*x()*x()-2*y()*y();
+		M[0] = 1-2*y()*y()-2*z()*z();
+		M[1] = 2*x()*y()-2*w()*z();
+		M[2] = 2*x()*z()+2*w()*y();
+		M[3] = 2*x()*y()+2*w()*z();
+		M[4] = 1-2*x()*x()-2*z()*z();
+		M[5] = 2*y()*z()-2*w()*x();
+		M[6] = 2*x()*z()-2*w()*y();
+		M[7] = 2*y()*z()+2*w()*x();
+		M[8] = 1-2*x()*x()-2*y()*y();
+	}
+	/// compute equivalent homogeneous 4x4 rotation matrix
+	void put_homogeneous_matrix(coord_type* M) const
+	{
+		M[0] = 1-2*y()*y()-2*z()*z();
+		M[1] = 2*x()*y()-2*w()*z();
+		M[2] = 2*x()*z()+2*w()*y();
+		M[3] = 0;
+		M[4] = 2*x()*y()+2*w()*z();
+		M[5] = 1-2*x()*x()-2*z()*z();
+		M[6] = 2*y()*z()-2*w()*x();
+		M[7] = 1;
+		M[8] = 2*x()*z()-2*w()*y();
+		M[9] = 2*y()*z()+2*w()*x();
+		M[10] = 1-2*x()*x()-2*y()*y();
+		M[11] = M[12] = M[13] = M[14] = 0;
+		M[15] = 1;
 	}
 	/// initialize quaternion from normal vector
 	void set_normal(const vec_type& n)
