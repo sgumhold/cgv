@@ -1820,7 +1820,7 @@ bool gl_context::set_uniform_void(void* handle,
 		const void* value_ptr, std::string& last_error)
 {
 	GLuint p_id = (const GLuint&) handle - 1;
-	GLint loc = glGetUniformLocationARB(p_id, name.c_str());
+	GLint loc = glGetUniformLocation(p_id, name.c_str());
 	if (loc == -1) {
 		last_error = std::string("Can not find uniform location ")+name;
 		return false;
@@ -1828,14 +1828,14 @@ bool gl_context::set_uniform_void(void* handle,
 	GLhandleARB old_p_id = glGetHandleARB(GL_PROGRAM_OBJECT_ARB);
 	glUseProgramObjectARB(p_id); 
 	switch (value_type) {
-	case TI_BOOL : glUniform1iARB(loc, *static_cast<const bool*>(value_ptr) ? 1 : 0); break;
-	case TI_UINT8 : glUniform1iARB(loc, *static_cast<const uint8_type*>(value_ptr)); break;
-	case TI_UINT16 : glUniform1iARB(loc, *static_cast<const uint16_type*>(value_ptr)); break;
-	case TI_UINT32 : glUniform1iARB(loc, *static_cast<const uint32_type*>(value_ptr)); break;
-	case TI_INT8 : glUniform1iARB(loc, *static_cast<const int8_type*>(value_ptr)); break;
-	case TI_INT16 : glUniform1iARB(loc, *static_cast<const int16_type*>(value_ptr)); break;
-	case TI_INT32 : glUniform1iARB(loc, *static_cast<const int32_type*>(value_ptr)); break;
-	case TI_FLT32 : glUniform1fARB(loc, *static_cast<const flt32_type*>(value_ptr)); break;
+	case TI_BOOL : glUniform1i(loc, *static_cast<const bool*>(value_ptr) ? 1 : 0); break;
+	case TI_UINT8 : glUniform1ui(loc, *static_cast<const uint8_type*>(value_ptr)); break;
+	case TI_UINT16 : glUniform1ui(loc, *static_cast<const uint16_type*>(value_ptr)); break;
+	case TI_UINT32 : glUniform1ui(loc, *static_cast<const uint32_type*>(value_ptr)); break;
+	case TI_INT8 : glUniform1i(loc, *static_cast<const int8_type*>(value_ptr)); break;
+	case TI_INT16 : glUniform1i(loc, *static_cast<const int16_type*>(value_ptr)); break;
+	case TI_INT32 : glUniform1i(loc, *static_cast<const int32_type*>(value_ptr)); break;
+	case TI_FLT32 : glUniform1f(loc, *static_cast<const flt32_type*>(value_ptr)); break;
 
 #include "gl_context_switch.h"
 
