@@ -1,6 +1,6 @@
 #pragma once
 
-#include <cgv/reflect/math/fvec.h>
+#include <cgv_reflect_types/math/fvec.h>
 #include <cgv/media/axis_aligned_box.h>
 #include <cgv/reflect/reflect_extern.h>
 
