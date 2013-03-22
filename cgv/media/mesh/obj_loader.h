@@ -47,7 +47,8 @@ class CGV_API obj_loader : public obj_reader
 public:
 	std::vector<v3d_type> vertices; 
     std::vector<v3d_type> normals; 
-    std::vector<v2d_type> texcoords; 
+    std::vector<v2d_type> texcoords;
+	std::vector<color_type> colors;
 
 	std::vector<unsigned> vertex_indices;
 	std::vector<unsigned> normal_indices;
@@ -65,6 +66,8 @@ protected:
 	void process_texcoord(const v2d_type& t);
 	/// overide this function to process a normal
 	void process_normal(const v3d_type& n);
+	/// overide this function to process a color (this called for vc prefixes which is is not in the standard but for example used in pobj-files)
+	void process_color(const color_type& c);
 	/// overide this function to process a face
 	void process_face(unsigned vcount, int *vertices, 
 					  int *texcoords = 0, int *normals=0);

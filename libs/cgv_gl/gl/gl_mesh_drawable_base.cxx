@@ -34,8 +34,10 @@ struct vertex_data
 	cgv::math::fvec<double,3> v;
 	cgv::math::fvec<double,3> n;
 	cgv::math::fvec<double,2> t;
+	cgv::media::mesh::obj_loader::color_type c;
 	bool has_tc;
 	bool has_nml;
+	bool has_clr;
 };
 
 void __stdcall vertexCallback(GLvoid *vertex)
@@ -45,6 +47,8 @@ void __stdcall vertexCallback(GLvoid *vertex)
 		glNormal3dv(ptr->n);
 	if (ptr->has_tc)
 		glTexCoord2dv(ptr->t);
+	if (ptr->has_clr)
+		glColor3fv(&ptr->c[0]);
 	glVertex3dv(ptr->v);
 }
 
@@ -101,6 +105,9 @@ unsigned render_faces_with_glu(const cgv::media::mesh::obj_loader& loader, const
 				v.has_nml = true;
 			}
 			unsigned hv = j+fi.first_vertex_index;
+			v.has_clr = loader.colors.size() == loader.vertices.size(); 
+			if (v.has_clr)
+				v.c = loader.colors[loader.vertex_indices[hv]];
 			v.v = loader.vertices[loader.vertex_indices[hv]];
 			V[j] = v;
 			gluTessVertex(tobj, V[j].v, &V[j]);
@@ -152,6 +159,8 @@ unsigned render_faces(const cgv::media::mesh::obj_loader& loader, const std::vec
 				glNormal3dv(loader.normals[loader.normal_indices[hn]]);
 			}
 			unsigned hv = j+fi.first_vertex_index;
+			if (loader.colors.size() == loader.vertices.size())
+				glColor4fv(&loader.colors[loader.vertex_indices[hv]][0]);
 			glVertex3dv(loader.vertices[loader.vertex_indices[hv]]);
 		}
 		if (min_d > 4)

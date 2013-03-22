@@ -46,7 +46,7 @@ protected:
 	/// parse 3d vector
 	v3d_type   parse_v3d(const std::vector<cgv::utils::token>& T) const;
 	/// parse a color, if alpha not given it defaults to 1
-	color_type parse_color(const std::vector<cgv::utils::token>& T) const;
+	color_type parse_color(const std::vector<cgv::utils::token>& T, unsigned off = 0) const;
 	int minus;
 	unsigned nr_normals, nr_texcoords;
 	bool have_default_material;

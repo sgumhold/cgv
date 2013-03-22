@@ -38,15 +38,15 @@ obj_reader::v3d_type obj_reader::parse_v3d(const std::vector<token>& T) const
 	return v;
 }
 
-obj_reader::color_type obj_reader::parse_color(const std::vector<token>& T) const
+obj_reader::color_type obj_reader::parse_color(const std::vector<token>& T, unsigned off) const
 {
 	double v[4] = {0,0,0,1};
-	T.size() > 3 && 
-	is_double(T[1].begin,T[1].end, v[0]) && 
-	is_double(T[2].begin,T[2].end, v[1]) && 
-	is_double(T[3].begin,T[3].end, v[2]);
-	if (T.size() > 4)
-		is_double(T[4].begin,T[4].end, v[3]);
+	(T.size() > 3+off) && 
+	is_double(T[1+off].begin,T[1+off].end, v[0]) && 
+	is_double(T[2+off].begin,T[2+off].end, v[1]) && 
+	is_double(T[3+off].begin,T[3+off].end, v[2]);
+	if (T.size() > 4+off)
+		is_double(T[4+off].begin,T[4+off].end, v[3]);
 	return color_type((float)v[0],(float)v[1],(float)v[2],(float)v[3]);
 }
 
@@ -166,8 +166,11 @@ bool obj_reader::read_obj(const std::string& file_name)
 
 		switch (tokens[0][0]) {
 		case 'v' :
-			if (tokens[0].size() == 1)
+			if (tokens[0].size() == 1) {
 				process_vertex(parse_v3d(tokens));
+				if (tokens.size() >= 7)
+					process_color(parse_color(tokens, 3));
+			}
 			else {
 				switch (tokens[0][1]) {
 				case 'n' :
@@ -180,7 +183,6 @@ bool obj_reader::read_obj(const std::string& file_name)
 					break;
 				case 'c' : 
 					process_color(parse_color(tokens));
-					++nr_texcoords;
 					break;
 				}
 			}

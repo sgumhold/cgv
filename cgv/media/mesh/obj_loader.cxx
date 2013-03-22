@@ -41,6 +41,11 @@ void obj_loader::process_normal(const v3d_type& n)
 	normals.push_back(n);
 }
 
+void obj_loader::process_color(const color_type& c)
+{
+	colors.push_back(c);
+}
+
 /// overide this function to process a face
 void obj_loader::process_face(unsigned vcount, int *vertices, 
 							  int *texcoords, int *normals)
@@ -124,14 +129,30 @@ bool obj_loader::read_obj_bin(const std::string& file_name)
 		return false;
 	}
 
+	bool has_colors = false;
+	if (v > 0x7FFFFFFF) {
+		v = 0xFFFFFFFF - v;
+		has_colors = true;
+	}
+
 	// reserve space
 	vertices.resize(v);
+	if (has_colors)
+		colors.resize(v);
+
 	vertex_indices.resize(h);
 	if (v != fread(&vertices[0], sizeof(v3d_type), v, fp) ||
 		h > 0 && h != fread(&vertex_indices[0], sizeof(unsigned), h, fp) )
 	{
 		fclose(fp);
 		return false;
+	}
+	if (has_colors) {
+		if (v != fread(&colors[0], sizeof(color_type), v, fp))
+		{
+			fclose(fp);
+			return false;
+		}
 	}
 	if (n > 0) {
 		normals.resize(n);
@@ -213,6 +234,8 @@ bool obj_loader::write_obj_bin(const std::string& file_name) const
 	if (!fp)
 		return false;
 
+
+
 	// read element count
 	uint32_type v = vertices.size(), 
 		        n = normals.size(),
@@ -221,7 +244,12 @@ bool obj_loader::write_obj_bin(const std::string& file_name) const
 				h = vertex_indices.size(), 
 				g = groups.size(),
 				m = mtl_lib_files.size();
-	if (1!=fwrite(&v, sizeof(uint32_type), 1, fp) ||
+	uint32_type v_write = v;
+	bool has_colors = (colors.size() == vertices.size());
+	if (has_colors)
+		v_write = 0xFFFFFFFF - v;
+
+	if (1!=fwrite(&v_write, sizeof(uint32_type), 1, fp) ||
 		1!=fwrite(&n, sizeof(uint32_type), 1, fp) ||
 		1!=fwrite(&t, sizeof(uint32_type), 1, fp) ||
 		1!=fwrite(&f, sizeof(uint32_type), 1, fp) ||
@@ -232,12 +260,19 @@ bool obj_loader::write_obj_bin(const std::string& file_name) const
 		return false;
 	}
 
-	// reserve space
 	if (v != fwrite(&vertices[0], sizeof(v3d_type), v, fp) ||
 		h > 0 && h != fwrite(&vertex_indices[0], sizeof(unsigned), h, fp) )
 	{
 		fclose(fp);
 		return false;
+	}
+
+	if (has_colors) {
+		if (v != fwrite(&colors[0], sizeof(color_type), v, fp) )
+		{
+			fclose(fp);
+			return false;
+		}
 	}
 	if (n > 0) {
 		if (n != fwrite(&normals[0], sizeof(v3d_type), n, fp) ||
