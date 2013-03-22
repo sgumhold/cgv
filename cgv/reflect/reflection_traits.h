@@ -4,6 +4,7 @@
 #include <cgv/type/info/type_name.h>
 #include <cgv/type/info/type_id.h>
 #include <cgv/type/cond/is_enum.h>
+#include <cgv/type/cond/is_abstract.h>
 #include <cgv/utils/convert_string.h>
 
 #include "lib_begin.h"
@@ -89,7 +90,7 @@ struct CGV_API abst_reflection_traits
  */
 
 /// implementation of the reflection traits providing type specific interface for variable base class
-template <typename T, typename B>
+template <typename T, typename B, bool base_is_abst = cgv::type::cond::is_abstract<B>::value>
 struct reflection_traits_impl : public B
 {
 	/// return the size of the type
@@ -100,6 +101,28 @@ struct reflection_traits_impl : public B
 	void delete_instance(void* instance_ptr) const { delete static_cast<T*>(instance_ptr); }
 	/// construct n instances on the heap with the new operator
 	void* new_instances(unsigned n) const { return new T[n]; }
+	/// delete instances with the delete [] operator
+	void delete_instances(void* instance_array) const { delete [] static_cast<T*>(instance_array); }
+	/// return the type id
+	cgv::type::info::TypeId get_type_id() const { return cgv::type::info::type_id<T>::get_id(); }
+	/// return the type name
+	const char* get_type_name() const { return cgv::type::info::type_name<T>::get_name(); }
+	/// return whether type is an enum type - this is independent of whether enum interface is implemented
+	bool is_enum_type() const { return cgv::type::cond::is_enum<T>::value; }
+};
+
+/// implementation variant for abstract base classes
+template <typename T, typename B>
+struct reflection_traits_impl<T,B,true> : public B
+{
+	/// return the size of the type
+	unsigned size() const { return sizeof(T); }
+	/// construct an instance on the heap with the new operator
+	void* new_instance() const { return 0; }
+	/// delete an instance with the delete operator
+	void delete_instance(void* instance_ptr) const { delete static_cast<T*>(instance_ptr); }
+	/// construct n instances on the heap with the new operator
+	void* new_instances(unsigned n) const { return 0; }
 	/// delete instances with the delete [] operator
 	void delete_instances(void* instance_array) const { delete [] static_cast<T*>(instance_array); }
 	/// return the type id

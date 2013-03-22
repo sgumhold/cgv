@@ -103,7 +103,7 @@ protected:
 		RT rt;
 		switch (process_structural_group_begin(GK_STRUCTURE, member_name, GroupTraversal(reflect_group_begin(GK_STRUCTURE, member_name, &member_ref, &rt)))) {
 		case GT_TERMINATE : return false;
-		case GT_COMPLETE : return static_cast<D&>(member_ref).self_reflect(*this) && group_end(GK_STRUCTURE);
+		case GT_COMPLETE : return static_cast<D&>(member_ref).D::self_reflect(*this) && group_end(GK_STRUCTURE);
 		default: return true;
 		}		
 	}

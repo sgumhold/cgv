@@ -12,9 +12,7 @@ namespace cgv {
 /// different naming conventions for member names
 enum NamingConvention { NC_NONE, NC_SHORT, NC_LONG };
 
-cgv::reflect::enum_reflection_traits<NamingConvention> get_reflection_traits(const NamingConvention&) { 
-	return cgv::reflect::enum_reflection_traits<NamingConvention>("NC_NONE, NC_SHORT, NC_LONG"); 
-}
+extern CGV_API cgv::reflect::enum_reflection_traits<NamingConvention> get_reflection_traits(const NamingConvention&); 
 
 /** read from ascii file */
 class CGV_API ascii_reflection_handler : public io_reflection_handler
@@ -52,7 +50,7 @@ public:
 	ascii_read_reflection_handler(std::istream& _is, const std::string& _content, unsigned _ver, NamingConvention _nc = NC_SHORT, unsigned _tab = 3);
 	///
 	void close();
-	int reflect_group_begin(GroupKind group_kind, const std::string& group_name, const std::string& group_type, void* group_ptr, cgv::reflect::abst_reflection_traits* rt, unsigned grp_size);
+	int reflect_group_begin(GroupKind group_kind, const std::string& group_name, void* group_ptr, cgv::reflect::abst_reflection_traits* rt, unsigned grp_size);
 	///
 	bool reflect_member_void(const std::string& member_name, 
 							 void* member_ptr, cgv::reflect::abst_reflection_traits* rt);
@@ -75,7 +73,7 @@ public:
 	///
 	void close();
 	/// 
-	int reflect_group_begin(GroupKind group_kind, const std::string& group_name, const std::string& group_type, void* group_ptr, cgv::reflect::abst_reflection_traits* rt, unsigned grp_size);
+	int reflect_group_begin(GroupKind group_kind, const std::string& group_name, void* group_ptr, cgv::reflect::abst_reflection_traits* rt, unsigned grp_size);
 	///
 	bool reflect_member_void(const std::string& member_name, 
 							 void* member_ptr, cgv::reflect::abst_reflection_traits* rt);

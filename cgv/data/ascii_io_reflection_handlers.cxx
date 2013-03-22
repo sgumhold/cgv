@@ -6,6 +6,9 @@ using namespace cgv::reflect;
 namespace cgv {
 	namespace data {
 
+cgv::reflect::enum_reflection_traits<NamingConvention> get_reflection_traits(const NamingConvention&) { 
+	return cgv::reflect::enum_reflection_traits<NamingConvention>("NC_NONE, NC_SHORT, NC_LONG"); 
+}
 
 std::string ascii_reflection_handler::extend_name(const std::string& name, bool assign)
 {
@@ -69,7 +72,8 @@ int ascii_reflection_handler::reflect_group_begin(GroupKind group_kind, const st
 /// 
 void ascii_reflection_handler::reflect_group_end(GroupKind group_kind)
 {
-	--nr_idents;
+	if (group_kind != reflection_handler::GK_BASE_CLASS)
+		--nr_idents;
 }
 
 bool ascii_read_reflection_handler::read_reflect_header(const std::string& _content, unsigned _ver)
@@ -111,15 +115,18 @@ void ascii_read_reflection_handler::close()
 	if (&is == &file_is)
 		file_is.close(); 
 }
-int ascii_read_reflection_handler::reflect_group_begin(GroupKind group_kind, const std::string& group_name, const std::string& group_type, void* group_ptr, abst_reflection_traits* rt, unsigned grp_size)
+
+int ascii_read_reflection_handler::reflect_group_begin(GroupKind group_kind, const std::string& group_name, void* group_ptr, abst_reflection_traits* rt, unsigned grp_size)
 {
-	char buffer[10000];
-	is.getline(buffer, 10000);
-	if (is.fail()) {
-		last_error = RE_FILE_READ_ERROR;
-		return false;
+	if (group_kind != reflection_handler::GK_BASE_CLASS) {
+		char buffer[10000];
+		is.getline(buffer, 10000);
+		if (is.fail()) {
+			last_error = RE_FILE_READ_ERROR;
+			return false;
+		}
+		++nr_idents;
 	}
-	++nr_idents;
 	return GT_COMPLETE;
 }
 ///
@@ -172,14 +179,16 @@ void ascii_write_reflection_handler::close()
 		file_os.close(); 
 }
 /// 
-int ascii_write_reflection_handler::reflect_group_begin(GroupKind group_kind, const std::string& group_name, const std::string& group_type, void* group_ptr, abst_reflection_traits* rt, unsigned grp_size)
+int ascii_write_reflection_handler::reflect_group_begin(GroupKind group_kind, const std::string& group_name, void* group_ptr, abst_reflection_traits* rt, unsigned grp_size)
 {
-	os << extend_name(group_name, false) << ":" << group_type << std::endl;
-	if (os.fail()) {
-		last_error = RE_FILE_WRITE_ERROR;
-		return GT_TERMINATE;
+	if (group_kind != reflection_handler::GK_BASE_CLASS) {
+		os << extend_name(group_name, false) << std::endl;
+		if (os.fail()) {
+			last_error = RE_FILE_WRITE_ERROR;
+			return GT_TERMINATE;
+		}
+		++nr_idents;
 	}
-	++nr_idents;
 	return GT_COMPLETE;
 }
 ///
