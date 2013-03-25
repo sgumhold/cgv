@@ -103,7 +103,7 @@ cgv::gui::control_ptr bool_control_factory::create(const std::string& label,
 {
 	if (value_type != "bool")
 		return cgv::gui::control_ptr();
-	if (gui_type == "check") {
+	if (gui_type == "check" || gui_type.empty()) {
 		fltk_bool_control<CW<fltk::CheckButton> >* c = 
 			new fltk_bool_control<CW<fltk::CheckButton> >(
 						label, *static_cast<bool*>(value_ptr), acp, x, y, w, h);
