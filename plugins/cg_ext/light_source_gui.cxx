@@ -31,7 +31,7 @@ struct light_source_gui_creator : public gui_creator
 		light_source& light = *((light_source*) value_ptr);
 		cgv::base::base* b = dynamic_cast<cgv::base::base*>(p);
 
-		connect_copy(p->add_control("type", light.ref_type(), "directional,point,spot")->value_change,
+		connect_copy(p->add_control("type", light.ref_type(), "dropdown", "enums='directional,point,spot'")->value_change,
 			rebind(type_change_cb, p, &light));
 		connect_copy(p->add_control("eye", light.ref_local_to_eye(), "toggle")->value_change,
 			rebind(b, &cgv::base::base::on_set, &light.ref_local_to_eye()));
