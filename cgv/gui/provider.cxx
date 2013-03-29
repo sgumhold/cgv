@@ -262,11 +262,11 @@ void provider::recreate_gui()
 {
 	if (!parent_group)
 		return;
-	int selected_child_index = parent_group->get_selected_child_index();
+	int yscroll = parent_group->get<int>("yscroll");
 	remove_all_elements();
 	create_gui();
-	if (selected_child_index != -1 && selected_child_index < (int) (parent_group->get_nr_children()))
-		parent_group->select_child(selected_child_index);
+	parent_group->set("dolayout", true);
+	parent_group->set("yscroll", yscroll);
 }
 
 std::set<provider*>& ref_providers()

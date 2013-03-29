@@ -2,6 +2,7 @@
 
 #include <cgv/utils/scan.h>
 #include <cgv/gui/provider.h>
+#include <cgv/type/variant.h>
 #include <stdlib.h>
 
 using namespace cgv::base;
@@ -70,6 +71,7 @@ public:
   void scrollTo(int, int);
 };
 
+
 class MyScrollGroup : public ScrollGroup
 {
 	int last_x;
@@ -78,6 +80,9 @@ public:
 	MyScrollGroup(int x,int y,int w,int h, const char*l=0, bool begin=false) : ScrollGroup(x,y,w,h,l,begin)
 	{
 		offsetx = offsety = 0;
+		hscrollbar.pagesize(20);
+		scrollbar.pagesize(200);
+		scrollbar.linesize(14);
 	}
 	void drag(int dx)
 	{
@@ -91,7 +96,7 @@ public:
 			return false;
 		int dx = fltk::event_x() - child(0)->x() + 3;
 		if (dx < 0) dx = -dx;
-		return dx < 3;
+		return dx < 6;
 	}
 	int handle(int event) 
 	{
@@ -121,149 +126,26 @@ public:
 		}
 		return fltk::ScrollGroup::handle(event);
 	}
+	/*	
 	void layout() 
 	{
-
-	  int layout_damage = this->layout_damage();
-
-	  // handle movement in xy without wasting time:
-	  if (!(layout_damage&(LAYOUT_WH|LAYOUT_DAMAGE|LAYOUT_CHILD))) {
-		Group::layout();
+		fltk::ScrollGroup::layout();
+		std::cout << "yscroll_layout = " << yposition() << std::endl;
 		return;
-	  }
-
-	  Rectangle rectangle; bbox(rectangle);
-
-	  // This loop repeats if any scrollbars turn on or off:
-	  for (int repeat=0; repeat<2; repeat++) {
-
-		layout_damage &= ~LAYOUT_WH;
-		if (!(type()&HORIZONTAL)) layout_damage |= LAYOUT_W;
-		if (!(type()&VERTICAL)) layout_damage |= LAYOUT_H;
-		Group::layout(rectangle, layout_damage);
-
-		// move all the children and accumulate their bounding boxes:
-		int dx = layoutdx;
-		int dy = layoutdy;
-		layoutdx = layoutdy = 0;
-		scrolldx += dx;
-		scrolldy += dy;
-		int numchildren = children();
-		int l = numchildren > 0 ? child(0)->x()-offsetx : w();
-		int r = 0;
-		int t = numchildren > 0 ? child(0)->y()-offsety : h();
-		int b = 0;
-		for (int i=0; i < numchildren; i++) {
-		  Widget* o = child(i);
-		  o->position(o->x()+dx, o->y()+dy);
-		  o->layout();
-		  if (o->x() < l) l = o->x();
-		  if (o->y() < t) t = o->y();
-		  if (o->x()+o->w() > r) r = o->x()+o->w();
-		  if (o->y()+o->h() > b) b = o->y()+o->h();
-		}
-
-		// If there is empty space on the bottom (VERTICAL mode) or right
-		// (HORIZONTAL mode), and widgets off to the top or left, move
-		// widgets to use up the available space.
-		int newDx = 0;
-		int newDy = 0;
-		if ( type() & VERTICAL ) {
-		  if ( b < rectangle.b() ) {
-		int space = rectangle.b()-b;
-		int hidden = rectangle.y()-t;
-		newDy = (space>hidden) ? hidden : space;
-		newDy = (newDy>0) ? newDy : 0;
-		  }
-		}
-		if ( type() & HORIZONTAL ) {
-		  if ( r < rectangle.r() ) {
-		int space = rectangle.r()-r;
-		int hidden = rectangle.x()-l; // ell
-		newDx = (space>hidden) ? hidden : space;
-		newDx = (newDx>0) ? newDx : 0;
-		  }
-		}
-
-		// Move the child widgets again if they are to be kept inside.
-		if ( newDx || newDy ) {
-		  for (int i=0; i < numchildren; i++) {
-		Widget* o = child(i);
-		o->position(o->x()+newDx, o->y()+newDy);
-		o->layout();
-		  }
-		}
-
-		// Turn on/off the scrollbars if it fits:
-		if ((type() & VERTICAL) &&
-		((type() & ALWAYS_ON) || t < rectangle.y() || b > rectangle.b())) {
-		  // turn on the vertical scrollbar
-		  if (!scrollbar.visible()) {
-		scrollbar.set_visible();
-		scrollbar.redraw();
-		  }
-		} else {
-		  // turn off the vertical scrollbar
-		  if (scrollbar.visible()) {
-		scrollbar.clear_visible();
-		  }
-		}
-
-		if ((type() & HORIZONTAL) &&
-		((type() & ALWAYS_ON) || l < rectangle.x() || r > rectangle.r())) {
-		  // turn on the horizontal scrollbar
-		  if (!hscrollbar.visible()) {
-		hscrollbar.set_visible();
-		hscrollbar.redraw();
-		  }
-		} else {
-		  // turn off the horizontal scrollbar
-		  if (hscrollbar.visible()) {
-		hscrollbar.clear_visible();
-		  }
-		}
-
-		// fix the width of the scrollbars to current preferences:
-		const int sw = scrollbar_width();
-		scrollbar.w(sw);
-		hscrollbar.h(sw);
-		// Figure out the new contents rectangle and put scrollbars outside it:
-		Rectangle R; bbox(R);
-
-		scrollbar.resize(scrollbar_align()&ALIGN_LEFT ? R.x()-sw : R.r(), R.y(), sw, R.h());
-
-		scrollbar.value(yposition_ = (R.y()-t), R.h(), 0, b-t);
-		hscrollbar.resize(R.x(), scrollbar_align()&ALIGN_TOP ? R.y()-sw : R.b(), R.w(), sw);
-		hscrollbar.value(xposition_ = (R.x()-l), R.w(), 0, r-l);
-		max_x_scroll_ = r-l-R.w();
-		max_y_scroll_ = b-t-R.h();
-
-		// We are done if the new rectangle is the same as last time:
-		if (R.x() == rectangle.x() &&
-		R.y() == rectangle.y() &&
-		R.w() == rectangle.w() &&
-		R.h() == rectangle.h()) break;
-		// otherwise layout again in this new rectangle:
-		rectangle = R;
-	  }
-
 	}
+	*/
 };
+
 }
+
+
+
 fltk_align_group::fltk_align_group(int x, int y, int w, int h, const std::string& _name) : cgv::gui::gui_group(_name)
 {
 	init_aligment();
 	scroll_group = new CG<fltk::MyScrollGroup>(x,y,w,h,get_name().c_str());
-//	scroll_group->type(fltk::ScrollGroup::HORIZONTAL_ALWAYS);
 	scroll_group->box(fltk::FLAT_BOX);
 	scroll_group->user_data(static_cast<cgv::base::base*>(this));
-//	scroll_group->type(fltk::ScrollGroup::VERTICAL);
-//	scroll_group->begin();
-//		inner_group = new PerLineResizeGroup(0,0,w,h,"");
-//		inner_group = new fltk::Group(0,0,w,h,"");
-//		inner_group->user_data(static_cast<cgv::base::base*>(this));
-//	scroll_group->end();
-//	scroll_group->resizable(inner_group);
 }
 
 /// delete fltk group realization
@@ -282,11 +164,27 @@ std::string fltk_align_group::get_property_declarations()
 /// abstract interface for the setter
 bool fltk_align_group::set_void(const std::string& property, const std::string& value_type, const void* value_ptr)
 {
+	if (property == "yscroll") {
+		if (scroll_group) {
+			int yscroll = 0;
+			cgv::type::get_variant(yscroll, value_type, value_ptr);
+			scroll_group->scrollTo(scroll_group->xposition(), yscroll);
+			return true;
+		}
+	}
 	return fltk_base::set_void(scroll_group, this, property, value_type, value_ptr);
+
 }
 /// abstract interface for the getter
 bool fltk_align_group::get_void(const std::string& property, const std::string& value_type, void* value_ptr)
 {
+	if (property == "yscroll") {
+		if (scroll_group) {
+			int yscroll = scroll_group->yposition();
+			cgv::type::set_variant(yscroll, value_type, value_ptr);
+			return true;
+		}
+	}
 	return fltk_base::get_void(scroll_group, this, property, value_type, value_ptr);
 }
 
@@ -426,8 +324,8 @@ void fltk_align_group::finalize_new_element(cgv::gui::gui_group_ptr ggp, const s
 {
 	scroll_group->end();
 	if (scroll_group->children() == 1) {
-		static_cast<fltk::MyScrollGroup*>(scroll_group)->offsetx = x_offset;
-		static_cast<fltk::MyScrollGroup*>(scroll_group)->offsety = y_offset;
+//		static_cast<fltk::MyScrollGroup*>(scroll_group)->offsetx = x_offset;
+//		static_cast<fltk::MyScrollGroup*>(scroll_group)->offsety = y_offset;
 	}
 	cgv::base::group::append_child(element);
 
@@ -498,6 +396,7 @@ void fltk_align_group::select_child(base_ptr ci, bool exclusive)
 {
 	fltk::Widget* widget = static_cast<fltk::Widget*>(ci->get_user_data());
 	widget->take_focus();
+	scroll_group->scrollTo(scroll_group->xposition(), widget->y());
 }
 
 /// defocus child 
