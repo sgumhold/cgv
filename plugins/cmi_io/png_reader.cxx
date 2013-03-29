@@ -159,7 +159,7 @@ bool png_reader::read_image(const data_format& df, const data_view& dv)
 {
 	unsigned char** row_pointers = new unsigned char*[df.get_height()];
 	for (unsigned int y=0; y<df.get_height(); ++y)
-		row_pointers[y] = dv(df.get_height()-y-1).get_ptr<unsigned char>();
+		row_pointers[y] = dv.get_ptr<unsigned char>() + y*dv.get_step_size(0);
 	if (setjmp(png_jmpbuf(png_ptr))) {
 		delete [] row_pointers;
 		return false;
