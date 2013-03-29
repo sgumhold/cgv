@@ -13,7 +13,7 @@ struct phong_material_gui_creator : public gui_creator
 	/// attempt to create a gui and return whether this was successful
 	bool create(provider* p, const std::string& label, 
 		void* value_ptr, const std::string& value_type, 
-		const std::string& gui_type, const std::string& options, bool* toggles)
+		const std::string& gui_type, const std::string& options, bool*)
 	{
 		bool is_phong   = value_type == cgv::type::info::type_name<phong_material>::get_name();
 		bool is_obj_mat = value_type == cgv::type::info::type_name<obj_material>::get_name();

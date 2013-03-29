@@ -1,6 +1,7 @@
 #include <cgv/gui/provider.h>
 #include <cgv/gui/gui_driver.h>
 #include <cgv/gui/trigger.h>
+#include <cgv/base/base_generator.h>
 
 //#include <cgv/os/mutex.h>
 
@@ -125,6 +126,83 @@ button_ptr provider::add_button(const std::string& label, const std::string& opt
 	if (parent_group.empty())
 		return button_ptr();
 	return parent_group->add_button(label, options, align);
+}
+
+bool provider::add_tree_node(const std::string& label, bool& toggle, int level, const std::string& a, gui_group_ptr ggp)
+{
+	if (!ggp)
+		ggp = parent_group;
+	int ii = 0;
+	if (a.size() != 1 || a[0] != '\n') {
+		ii += 1;
+	}
+	int size = 24-4*level;
+	int off  = size+12;
+	ggp->align(std::string("%x-=")+cgv::utils::to_string(off));
+	connect_copy(ggp->add_control(std::string(toggle?"-":"+"), toggle, "toggle", std::string("w=")+cgv::utils::to_string(size), " ")->value_change,
+		rebind(static_cast<provider*>(this), &provider::post_recreate_gui));		
+	ggp->add_decorator(label, "heading", std::string("level=")+cgv::utils::to_string(level), a);
+	return toggle;
+}
+
+std::map<std::pair<const void*,int>, bool>& get_tree_node_toggle_map()
+{
+	static std::map<std::pair<const void*,int>, bool> tree_node_toggle_map;
+	return tree_node_toggle_map;
+}
+
+///
+bool provider::begin_tree_node_void(const std::string& label, const void* value_ptr, int index, bool initial_visibility, const std::string& options, gui_group_ptr ggp)
+{
+	if (!ggp)
+		ggp = parent_group;
+	int level = 2;			  cgv::base::has_property(options, "level", level);
+	std::string align("\n");  cgv::base::has_property(options, "align", align);
+	std::string child_opt;    cgv::base::has_property(options, "options", child_opt);
+	std::string button_opt;   cgv::base::has_property(options, "button_options", button_opt);
+	int size = 24-4*level;    cgv::base::has_property(options, "size", size);
+	int relative_offset = 12; cgv::base::has_property(options, "relative_offset", relative_offset);
+	int off  = size+relative_offset;
+
+	if (!button_opt.empty())
+		button_opt = std::string(";")+button_opt;
+	button_opt = std::string("w=")+cgv::utils::to_string(size) + button_opt;
+
+	if (!child_opt.empty())
+		child_opt = std::string(";")+child_opt;
+	child_opt = std::string("level=")+cgv::utils::to_string(level) + child_opt;
+
+	std::map<std::pair<const void*,int>, bool>::iterator it = get_tree_node_toggle_map().find(std::pair<const void*,int>(value_ptr,index));
+	if (it == get_tree_node_toggle_map().end())
+		get_tree_node_toggle_map()[std::pair<const void*,int>(value_ptr,index)] = initial_visibility;
+
+	bool& toggle = get_tree_node_toggle_map()[std::pair<const void*,int>(value_ptr,index)];
+	ggp->align(std::string("%x-=")+cgv::utils::to_string(off));
+	connect_copy(ggp->add_control(std::string(toggle?"-":"+"), toggle, "toggle", button_opt, " ")->value_change,
+		rebind(static_cast<provider*>(this), &provider::post_recreate_gui));		
+	ggp->add_decorator(label, "heading", child_opt, align);
+	return toggle;
+}
+
+///
+void provider::end_tree_node_void(const void* value_ptr, int)
+{
+}
+
+///
+bool provider::is_tree_node_visible_void(const void* value_ptr, int index) const
+{
+	return get_tree_node_toggle_map()[std::pair<const void*,int>(value_ptr,index)];
+}
+
+///
+void provider::set_tree_node_visibility_void(const void* value_ptr, int index, bool is_visible)
+{
+	bool& toggle = get_tree_node_toggle_map()[std::pair<const void*,int>(value_ptr,index)];
+	if (toggle != is_visible) {
+		toggle = is_visible;
+		post_recreate_gui();
+	}
 }
 
 // remove a single element from the gui
