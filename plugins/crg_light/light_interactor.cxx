@@ -224,7 +224,7 @@ void light_interactor::create_gui()
 		connect_copy(add_control("intensity", intensities[i], "value_slider", "min=0;max=1")->value_change,
 			rebind(static_cast<drawable*>(this), &drawable::post_redraw));
 
-		add_gui(std::string("light ")+to_string(i), lights[i], "", "", (bool*)(&toggles[7*i]+1));
+		add_gui(std::string("light ")+to_string(i), lights[i], "", "");
 		align("\b");
 	}
 }
