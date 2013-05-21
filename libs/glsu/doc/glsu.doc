@@ -89,8 +89,12 @@ Besides the configuration of the rendering process for the different stereo
 modes one has to define different view frustums for the left and right eye
 through corresponding projection matrices. The basic idea is to imagine the
 display screen to be part of the scene. Also imagine a center eye in the middle
-of the left and right eyes. Let the screen be located at a distance \c zZeroParallax 
-away from the center eye along the view direction. The monoscopic frustum is
+of the left and right eyes. One distinguishes an observer located at a fixed position
+centered in front of a screen and a free observer. 
+
+\subsubsection Fixed Fixed Observer
+In case of the fixed observer location, let the screen center be located at a distance 
+\c zZeroParallax away from the center eye along the view direction. The monoscopic frustum is
 defined by six planes: the near and far clipping planes, and four planes spanned by 
 the center eye and the four edges of the screen.
 
@@ -127,6 +131,34 @@ To following quantities are used to specify the stereo frustums
 - \c GLdouble \c zZeroParallax ... distance along view direction (same scaling as zNear and zFar) at
                              which to place the parallax zero plane of the screen
 
+\subsubsection Free Free Observer
+In case of a free observer it is still important that the view direction  is orthogonal to the screen
+for all frustums (left, center, right). This implies that the optical axis is along eye and orthogonal
+projection of the eye onto the screen. The following figure shows an example of a free observer and
+the important quantities that define the frustums:
+
+\image html freeObserver.png "important quantities in free observer mode with frustums clipped by synchronized near and far clipping planes"
+
+To following quantities are used to specify the stereo frustums in case of the free observer
+- \c GlsuEye \c eye ... left (-1), center (0) or right (1) eye for which to generate the frustum
+- \c GLdouble \c eyeSeparation ... distance between left and right eye measured relative to the
+                             width of the screen, i.e. a separation of 1 corresponds to the complete width of the screen.
+- \c GLdouble \c screenWidth  ... the width of the screen in eye coordinates
+- \c GLdouble \c screenHeight ... the height of the screen in eye coordinates
+- \c GLdouble \c observerLocation[3] ... 3d location of the center eye defined in the screen coordinate system, where the origin is in the 
+                                         screen center, x- and y-directions are synchronized with the right and up direction of the screen and the
+										 z-direction points towards the observer, such that the z-coordinate is typically positive. Compared to the
+										 fixed observer case this z-coordinate corresponds to the parallax zero distance. The screen coordinate 
+										 system is not normalized with respect to the \c screenWidth and \c screenHeight, i.e. to put the observer
+										 in the upper right corner, use the coordinates 0.5\c screenWidth, 0.5\c screenHeight.
+- \c GLdouble \c eyeSeparationDirection[3] ... 3d vector pointing from the left to the right eye. This direction is again given in the screen 
+                                         coordinate system. The length of this vector is ignored. 
+- \c GLdouble \c zNear and \c zFar ... distances along the viewing directions to the near and far clipping planes.
+                                       Typically one wants to synchronize the clipping planes in space even if one
+									   of the eyes is closer to the screen. As illustrated in the previous figure,
+									   the eye closer to the screen defines the clipping planes for all frustums in
+									   case of synchronized clipping planes.
+
 \section Usage Usage of the glsu Library
 \subsection Config Configuring the Rendering Process
 In the following section the definition of the stereo frustums is explained. Here we first suppose
@@ -142,8 +174,8 @@ class:
 
 The third call to \c glsuConfigureStereo with the center eye is important to reconstruct the global settings.
 
-For convenience the functions \c glsuStereoRenderProcess and \c glsuStereoRenderProcessScreen are provided. These
-take all stereo parameters as input plus a callback function and a user data of type \c void*, which implements the
+For convenience the functions \c glsuStereoRenderProcess, \c glsuStereoRenderProcessScreen and \c glsuStereoRenderProcessFreeObserver
+are provided. These take all stereo parameters as input plus a callback function and a user data of type \c void*, which implements the
 monoscopic rendering of the scene excluding the definition of the projection matrix. The \c test_glsu class implements
 this callback in the static member function \c draw_callback
 
@@ -159,14 +191,17 @@ And uses the convenience function in the \c draw method:
 \until }
 
 \subsection Frustum Defining the Stereo Frustums
-The glsu library uses two subsets of parameters to define the frustums:
+The glsu library uses three subsets of parameters to define the frustums:
 - \c eye, \c eyeSeparation, \c fovy, \c aspect, \c zZeroParallax, \c zNear, \c zFar ... here the screen
   dimensions are computed from the viewing angle in y-direction \c fovy, the aspect ration \c aspect and
   the distance \c zZeroParallax from the viewer.
 - \c eye, \c eyeSeparation, \c screenWidth, \c screenHeight, \c zZeroParallax, \c zNear, \c zFar ... here
   the screen dimensions are specified in world coordinates.
+- \c eye, \c eyeSeparation, \c screenWidth, \c screenHeight, \c observerLocation, \c eyeSeparationDirection, \c zNear, \c zFar, \c synchClippingPlanes ... 
+  these parameters are used for the free observer. If \c synchClippingPlanes is not \c 0, the near and far clipping planes are synchronized for the
+  frustums of the different eyes.
 
-Names of functions that use the second subset are appended with the postfix \c Screen.
+Names of functions that use the second and third subset are appended with the postfix \c Screen and \c FreeObserver respectively.
 
 For correct illumination relative to two different eye locations, one would have
 to perform the shearing on the projection matrix stack and the translation on the
@@ -177,7 +212,7 @@ model view matrix stack as done in the \c draw_from_eye_physical method of the
 \skip draw_from_eye_physical
 \until }
 
-The projection stack part can be also based on the specification of a monoscopic frustum followed
+In case of a fixed observer the projection stack part can be also based on the specification of a monoscopic frustum followed
 by a shear with the function \c glsuStereoShear:
 \code
 	glMatrixMode(GL_PROJECTION_MATRIX);
@@ -210,7 +245,7 @@ The projection stack part can be extended to:
 	gluStereoTranslate(eye, eyeSeparation, fovy, aspect, zZeroParallax);
 \endcode
 
-or be based on a monoscopic frustum:
+or in case of fixed observer be based on a monoscopic frustum:
 \code
 	glMatrixMode(GL_PROJECTION_MATRIX);
 	glLoadIdentity();

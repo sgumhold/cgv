@@ -24,10 +24,12 @@ enum ImplementationMode  {
 /// keys that support some action
 enum Key {
 	Key_SPACE,  /// toggle mono / stereo mode
+	Key_ENTER,  /// reset free observer
 	Key_ESCAPE, /// exits application
 	Key_F4,     /// changes the stereo mode
 	Key_F5,     /// changes the anaglyph configuration
 	Key_F6,     /// changes implementation mode
+	Key_F7,     /// toggles free observer
 	Key_F10     /// toggles animation
 };
 
@@ -53,6 +55,13 @@ protected:
 	GLdouble zZeroParallax;
 	GLdouble zNear;
 	GLdouble zFar;
+
+	GLdouble screenHeight;
+	// free observer parameters
+	bool useFreeObserver;
+	GLdouble observerLocation[3];
+	GLdouble eyeSeparationDirection[3];
+	int synchClippingPlanes;
 public:
 	/// construct from given aspect ratio
 	test_glsu(GLdouble _aspect = 4.0/3);
@@ -62,6 +71,10 @@ public:
 	bool step_animation();
 	/// handle key event
 	bool key_event(Key key);
+	///
+	bool wheel_event(float delta);
+	/// handle mouse event to set location of free observer
+	bool mouse_event(float x, float y, int modifier);
 	/// pure opengl based rendering of scene independent of current eye
 	void render();
 	/// callback used for automatic implementation mode

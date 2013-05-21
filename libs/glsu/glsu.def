@@ -12,3 +12,8 @@ glsuStereoShear
 glsuStereoShearScreen
 glsuStereoUpdatePerspective
 glsuStereoUpdatePerspectiveScreen
+glsuStereoRenderProcessFreeObserver
+glsuComputeEyeLocation
+glsuStereoPerspectiveFreeObserver
+glsuStereoFrustumFreeObserver
+glsuStereoTranslateFreeObserver
