@@ -101,10 +101,25 @@ bool obj_loader::read_obj(const std::string& file_name)
 	normals.clear();
 	texcoords.clear(); 
 	faces.clear(); 
+	colors.clear();
 
 	if (!obj_reader::read_obj(file_name))
 		return false;
 
+	// correct colors in case of 8bit colors
+	unsigned i;
+	bool do_correct = false;
+	for (i = 0; i < colors.size(); ++i) {
+		if (colors[i][0] > 5 ||colors[i][1] > 5 ||colors[i][2] > 5) {
+			do_correct = true;
+			break;
+		}
+	}
+	if (do_correct) {
+		for (i = 0; i < colors.size(); ++i) {
+			colors[i] *= 1.0f/255;
+		}
+	}
 	write_obj_bin(bin_fn);
 	return true;
 }

@@ -75,7 +75,7 @@ public:
 		int h = df.get_height();
 		setsize(df.get_width(), h);
 		for (int i=0; i<h; ++i) 
-			setpixels(dv.get_ptr<unsigned char>()+dv.get_step_size(0)*(h-i-1), i);
+			setpixels(dv.get_ptr<unsigned char>()+dv.get_step_size(0)*i, i);
 		return true;
 	}
 };
