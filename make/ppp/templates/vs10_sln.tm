@@ -52,6 +52,7 @@ Global
 				@for(:>j=0; j<!pj::all_ref_projects_by_type[project_folders[i]]; ++j)@{@//
 		{@(projects[pj::all_ref_projects_by_type[project_folders[i]][j]]::projectGUID)} = {5A46AE2A-975D-4570-BE19-A5B7B8C13E2@(i)}
 @}@}@}@}@}@//
-	EndGlobalSection@}@//
+	EndGlobalSection
+@}@//
 EndGlobal@}
 @skip(gen_solution(current_project))

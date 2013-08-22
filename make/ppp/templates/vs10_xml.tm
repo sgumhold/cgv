@@ -47,7 +47,7 @@
       Visible="False"
       IncludeInCommandLine="False" />
     <DynamicEnumProperty
-      Name="@(rid)BeforeTargets"
+      Name=@"rid.'BeforeTargets'"
       Category="General"
       EnumProvider="Targets"
       IncludeInCommandLine="False">
@@ -60,7 +60,7 @@
       <DynamicEnumProperty.ProviderSettings>
         <NameValuePair
           Name="Exclude"
-          Value="^@(rid)BeforeTargets|^Compute" />
+          Value=@"'^'.rid.'BeforeTargets|^Compute'" />
       </DynamicEnumProperty.ProviderSettings>
       <DynamicEnumProperty.DataSource>
         <DataSource
@@ -69,7 +69,7 @@
       </DynamicEnumProperty.DataSource>
     </DynamicEnumProperty>
     <DynamicEnumProperty
-      Name="@(rid)AfterTargets"
+      Name=@"rid.'AfterTargets'"
       Category="General"
       EnumProvider="Targets"
       IncludeInCommandLine="False">
@@ -82,7 +82,7 @@
       <DynamicEnumProperty.ProviderSettings>
         <NameValuePair
           Name="Exclude"
-          Value="^@(rid)AfterTargets|^Compute" />
+          Value=@"'^'.rid.'AfterTargets|^Compute'" />
       </DynamicEnumProperty.ProviderSettings>
       <DynamicEnumProperty.DataSource>
         <DataSource
