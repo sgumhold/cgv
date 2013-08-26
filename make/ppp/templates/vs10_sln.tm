@@ -1,5 +1,6 @@
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
+Microsoft Visual Studio Solution File, Format Version @(cgv_compiler_version).00
+# Visual Studio 20@((cgv_compiler_version-10)*2+10)
+
 @func(::gen_project; :>projectName="", :>add_rel_path=1, :>return="")@{
 	@define(:>pj =& projects[projectName])
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = @"projectName", @('"')@if(add_rel_path)@{@('..\\'.projectName.'\\')@}@(projectName.'.vcxproj"'), @"'{'.pj::projectGUID.'}'"
