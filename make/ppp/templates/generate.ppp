@@ -185,7 +185,7 @@ func(generate_makefile; :>project_name="", :>return = 1)
 		transform("vs89.sln.tm"; build_path.".sln");
 		transform("vs_rules.tm"; build_path.".rules");
 	}
-	elif (CGV_COMPILER == "vs10") {
+	elif (CGV_COMPILER == "vs10" || CGV_COMPILER == "vs11") {
 		extend_project_info_vs(project_name);
 		current_project = project_name;
 		:>build_path = projects[project_name]::build_dir."/".project_name;

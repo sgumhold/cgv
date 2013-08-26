@@ -35,19 +35,21 @@ echo [1] ... Microsoft Visual Studio 2005
 echo [2] ... Microsoft Visual Studio 2008 
 echo [3] ... Microsoft Visual Studio 2008 Express
 echo [4] ... Microsoft Visual Studio 2010
+echo [5] ... Microsoft Visual Studio 2012
 echo.
 echo automatic mode:
-echo [5] ... Microsoft Visual Studio 2005 
-echo [6] ... Microsoft Visual Studio 2008 
-echo [7] ... Microsoft Visual Studio 2008 Express
-echo [8] ... Microsoft Visual Studio 2010
+echo [6] ... Microsoft Visual Studio 2005 
+echo [7] ... Microsoft Visual Studio 2008 
+echo [8] ... Microsoft Visual Studio 2008 Express
+echo [9] ... Microsoft Visual Studio 2010
+echo [a] ... Microsoft Visual Studio 2012
 echo.
 echo [q] ... quit script
 echo.
 :ask_again
-set /P selection=choose 1-8 or q^>
+set /P selection=choose 1-9 or a or q^>
 if [%selection%] == [] (
-   echo please enter a number between 1 and 8 or q for quit
+   echo please enter a number between 1 and 9 or a or q for quit
    goto:ask_again
 )
 if "%selection%" == "q" (
@@ -56,17 +58,21 @@ if "%selection%" == "q" (
    goto:eof
 )
 set valid_number=true
-call set /A selection=%selection%
-if %selection% LSS 1 (set valid_number=false)
-if %selection% GTR 8 (set valid_number=false)
+if "%selection%" == "a" (
+	call set /A selection=10 
+) else (
+	call set /A selection=%selection%
+	if %selection% LSS 1 (set valid_number=false)
+	if %selection% GTR 9 (set valid_number=false)
+)
 if %valid_number% == false (
-   echo invalid number outside range [1,8], please try again
+   echo invalid number outside range [1-9,a], please try again
    goto:ask_again
 )
 set interactive_mode=true
-if %selection% GTR 4 (
+if %selection% GTR 5 (
    set interactive_mode=false
-   set /A selection=selection-4
+   set /A selection=selection-5
 )
 set cgvcompiler=undefined
 call set condition=%selection%==1
@@ -77,6 +83,8 @@ call set condition=%selection%==3
 if %condition% (set cgvcompiler=vs9)
 call set condition=%selection%==4
 if %condition% (set cgvcompiler=vs10)
+call set condition=%selection%==5
+if %condition% (set cgvcompiler=vs11)
 if %interactive_mode%==true (
    echo.
    echo selected interactive mode
