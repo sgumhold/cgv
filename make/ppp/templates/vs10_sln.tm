@@ -1,4 +1,4 @@
-Microsoft Visual Studio Solution File, Format Version @(cgv_compiler_version).00
+Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 20@((cgv_compiler_version-10)*2+10)
 
 @func(::gen_project; :>projectName="", :>add_rel_path=1, :>return="")@{
