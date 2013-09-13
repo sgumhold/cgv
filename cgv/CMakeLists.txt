@@ -19,6 +19,17 @@ set(CGV_COMPONENTS
 	type
 	utils)
 
+
+# At the moment the CMake build system is not official but the in-house
+# solution by Stefan Gumhold is used. In order to stick to standard procedures
+# and make the framework compilable under linux CMake is used in parallel.
+# However, this build system is more or less unofficial and the CMakeLists.txt
+# files are not actively maintained by the main developer. Normally it is good
+# practice to explicitely name all source and header files. But because the files
+# to be compiled change and no constistent update of the CMakeLists can be
+# guaranteed a globbing for source files is incorporated in the sub dirs.
+
+
 # Add a sub directory for each component
 foreach(comp ${CGV_COMPONENTS})
 	add_subdirectory(${comp})

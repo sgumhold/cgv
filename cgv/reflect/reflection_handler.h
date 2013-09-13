@@ -286,21 +286,21 @@ struct detail {
 #ifndef CPP11
 	template <bool use_get, typename B>
 	struct reflect_base_dispatch {         static bool reflect(reflection_handler* rh, B& base_ref) { 
-		return rh->reflect_base_impl(base_ref, reflection_traits_info<B>::traits_type()); } };
+		return rh->reflect_base_impl(base_ref, typename reflection_traits_info<B>::traits_type()); } };
 	template <typename B>
 	struct reflect_base_dispatch<true,B> { static bool reflect(reflection_handler* rh, B& base_ref) { 
 		return rh->reflect_base_impl(base_ref, get_reflection_traits(base_ref)); } };
 
 	template <bool use_get, typename T, unsigned n>
 	struct reflect_const_array_dispatch {         static bool reflect(reflection_handler* rh, const std::string& member_name, T (&member_ref)[n]) { 
-		return rh->reflect_const_array_impl(member_name, member_ref, reflection_traits_info<T>::traits_type()); } };
+		return rh->reflect_const_array_impl(member_name, member_ref, typename reflection_traits_info<T>::traits_type()); } };
 	template <typename T, unsigned n>
 	struct reflect_const_array_dispatch<true,T,n> {         static bool reflect(reflection_handler* rh, const std::string& member_name, T (&member_ref)[n]) { 
 		return rh->reflect_const_array_impl(member_name, member_ref, get_reflection_traits(T())); } };
 
 	template <bool use_get, typename T>
 	struct reflect_vector_dispatch {         static bool reflect(reflection_handler* rh, const std::string& member_name, std::vector<T>& member_ref) { 
-		return rh->reflect_vector_impl(member_name, member_ref, reflection_traits_info<T>::traits_type()); } };
+		return rh->reflect_vector_impl(member_name, member_ref, typename reflection_traits_info<T>::traits_type()); } };
 	template <typename T>
 	struct reflect_vector_dispatch<true,T> {         static bool reflect(reflection_handler* rh, const std::string& member_name, std::vector<T>& member_ref) { 
 		return rh->reflect_vector_impl(member_name, member_ref, get_reflection_traits(T())); } };

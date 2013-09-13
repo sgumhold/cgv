@@ -11,27 +11,13 @@ else()
 endif()
 
 
-# Public headers
-# TODO: To be verified
-set(PUBLIC_HEADERS
-	clipboard.h
-	display.h
-	http_request.h
-	lib_begin.h
-	mutex.h
-	socket.h
-	thread.h
-	web_server.h)
-
 # Source files
-set(SOURCES
-	clipboard.cxx
-	display.cxx
-	mutex.cxx
-	pthread_lib.cxx
-	socket.cxx
-	thread.cxx
-	web_server.cxx)
+file(GLOB_RECURSE SOURCES RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "*.cxx")
+# Header files
+file(GLOB_RECURSE PUBLIC_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "*.h")
+# Files to be preprocessed by PPP
+file(GLOB_RECURSE PPP_SOURCES RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "*.ph")
+
 
 # FIXME: Another hack
 if (WIN32)

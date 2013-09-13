@@ -6,35 +6,13 @@ include("../../cmake/buildCoreComponents.cmake")
 # The PPP is required
 find_package(ppp)
 
-# Public headers
-# TODO: To be verified
-set(PUBLIC_HEADERS
-	action.h
-	attach_slot.h
-	base.h
-	base_generator.h
-	console.h
-	group.h
-	import.h
-	lib_begin.h
-	named.h
-	node.h
-	register.h
-	traverser.h)
-
 # Source files
-set(SOURCES
-	action.cxx
-	attach_slot.cxx
-	base.cxx
-	base_generator.cxx
-	console.cxx
-	group.cxx
-	import.cxx
-	named.cxx
-	node.cxx
-	register.cxx
-	traverser.cxx)
+file(GLOB_RECURSE SOURCES RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "*.cxx")
+# Header files
+file(GLOB_RECURSE PUBLIC_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "*.h")
+# PPP files
+file(GLOB_RECURSE PPP_SOURCES RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "*.ph")
+
 
 # Files to be preprocessed by the PPP
 set(PPP_SOURCES

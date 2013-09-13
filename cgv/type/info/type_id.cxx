@@ -1,6 +1,7 @@
 #include "type_id.h"
 #include <cgv/type/standard_types.h>
 #include <map>
+#include <typeinfo>
 
 namespace cgv {
 	namespace type {
