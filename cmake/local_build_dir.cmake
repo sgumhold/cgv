@@ -1,1 +1,0 @@
-set(LOCAL_BUILD_DIR "/home/jstaib/cgv/build/build")
