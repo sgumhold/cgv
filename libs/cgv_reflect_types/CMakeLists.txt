@@ -15,7 +15,7 @@ file(GLOB_RECURSE PUBLIC_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "*.h")
 
 include_directories(
 	"${CGV_DIR}/libs"
-	"${cgv_INCLUDE_DIRS}")
+	${cgv_INCLUDE_DIRS})
 
 cgv_add_library(cgv_reflect_types 
 	SOURCES ${SOURCES} 

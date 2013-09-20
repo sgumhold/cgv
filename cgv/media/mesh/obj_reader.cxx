@@ -1,5 +1,3 @@
-#pragma once
-
 #include "obj_reader.h"
 #include <cgv/utils/file.h>
 #include <cgv/type/standard_types.h>

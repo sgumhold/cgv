@@ -66,9 +66,9 @@ class CGV_API reflection_handler
 	template <typename B, typename RB>
 	bool reflect_base_impl(B& base_ref, const RB&);
 	template <typename T, unsigned n, typename RT>
-	bool reflect_const_array_impl(const std::string& member_name, T (&member_ref)[n], RT&);
+	bool reflect_const_array_impl(const std::string& member_name, T (&member_ref)[n], const RT&);
 	template <typename T, typename RT>
-	bool reflect_vector_impl(const std::string& member_name, std::vector<T>& member_ref, RT&);
+	bool reflect_vector_impl(const std::string& member_name, std::vector<T>& member_ref, const RT&);
 #endif
 public:
 	template <typename T>
@@ -360,7 +360,7 @@ bool reflection_handler::reflect_member(const std::string& member_name, T (&memb
 	reflection_traits_info<T>::traits_type rt;
 #else
 template <typename T, unsigned n, typename RT>
-bool reflection_handler::reflect_const_array_impl(const std::string& member_name, T (&member_ref)[n], RT&)
+bool reflection_handler::reflect_const_array_impl(const std::string& member_name, T (&member_ref)[n], const RT&)
 {
 	RT rt;
 #endif
@@ -394,7 +394,7 @@ bool reflection_handler::reflect_member(const std::string& member_name, std::vec
 	reflection_traits_info<T>::traits_type rt;
 #else
 template <typename T, typename RT>
-bool reflection_handler::reflect_vector_impl(const std::string& member_name, std::vector<T>& member_ref, RT&)
+bool reflection_handler::reflect_vector_impl(const std::string& member_name, std::vector<T>& member_ref, const RT&)
 {
 	RT rt;
 #endif
