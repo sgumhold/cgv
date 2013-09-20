@@ -16,7 +16,7 @@ struct color : public cgv::media::color<T,cm,am>
 {
 	bool self_reflect(cgv::reflect::reflection_handler& rh) {
 		return
-			rh.reflect_member("components", components);
+			rh.reflect_member("components", this->components);
 	}
 };
 
