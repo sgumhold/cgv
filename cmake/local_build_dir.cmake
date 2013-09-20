@@ -1,1 +1,0 @@
-set(LOCAL_BUILD_DIR "/home/joachim/Entwicklung/FrameworkSource/build/build")
