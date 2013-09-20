@@ -21,8 +21,12 @@ struct quaternion : public cgv::math::quaternion<T>
 
 		}
 
+#ifdef REFLECT_IN_CLASS_NAMESPACE
+}} namespace cgv { namespace math {
+#endif
+
 template<typename T>
-extern_reflection_traits<cgv::math::quaternion<T>, cgv::reflect::math::quaternion<T> > get_reflection_traits(const cgv::math::quaternion<T>&) { return extern_reflection_traits<cgv::math::quaternion<T>, cgv::reflect::math::quaternion<T> >(); }
+cgv::reflect::extern_reflection_traits<cgv::math::quaternion<T>, cgv::reflect::math::quaternion<T> > get_reflection_traits(const cgv::math::quaternion<T>&) { return cgv::reflect::extern_reflection_traits<cgv::math::quaternion<T>, cgv::reflect::math::quaternion<T> >(); }
 
 	}
 }

@@ -92,7 +92,7 @@ bool ascii_read_reflection_handler::read_reflect_header(const std::string& _cont
 ascii_read_reflection_handler::ascii_read_reflection_handler(const std::string& file_name, const std::string& _content, unsigned _ver, NamingConvention _nc, unsigned _tab) :
 	ascii_reflection_handler(_content, _ver, _tab), is(file_is)
 {
-#ifdef WIN32
+#if defined (WIN32) && !defined(__MINGW32__)
 	file_is.open(cgv::utils::str2wstr(file_name).c_str());
 #else
 	file_is.open(file_name.c_str());
@@ -154,7 +154,7 @@ ascii_write_reflection_handler::ascii_write_reflection_handler(const std::string
 	ascii_reflection_handler(_content, _ver, _tab), os(file_os)
 {
 	naming_convention = _nc;
-#ifdef WIN32
+#if defined(WIN32) && !defined(__MINGW32__)
 	file_os.open(cgv::utils::str2wstr(file_name).c_str());
 #else
 	file_os.open(file_name.c_str());

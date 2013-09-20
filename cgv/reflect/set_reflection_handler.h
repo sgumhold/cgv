@@ -27,7 +27,7 @@ public:
 						     abst_reflection_traits* rt, GroupKind group_kind, unsigned grp_size);
 };
 
-#ifdef CPP11
+#ifdef REFLECT_TRAITS_WITH_DECLTYPE
 /// call this function to set a variable inside a reflected instance from the given value
 template <typename T, typename Q>
 	bool set_member(T& variable, const std::string& target, const Q& value) {
@@ -43,7 +43,7 @@ namespace compatibility {
 		srh.reflect_member("", variable);
 		return srh.found_target();
 	}
-#ifndef CPP11
+#ifndef REFLECT_TRAITS_WITH_DECLTYPE
 	template <bool use_get, typename T, typename Q>
 	struct set_member_dispatch {           static bool set_member(T& variable, const std::string& target, const Q& value) { 
 		return set_member_impl(variable, target, value, reflection_traits<Q>()); } };

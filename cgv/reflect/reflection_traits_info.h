@@ -2,8 +2,8 @@
 
 #include <cgv/type/cond/is_base_of.h>
 #include <cgv/type/cond/is_standard_type.h>
-#include <cgv/config/cpp_version.h>
 #include "reflection_traits.h"
+#include "reflect_config.h"
 
 namespace cgv {
 	namespace reflect {
@@ -12,7 +12,7 @@ template <bool is_self,typename T>
 struct reflection_traits_info_self
 {
 	static const bool use_get = true; 
-#ifdef CPP11
+#ifdef REFLECT_TRAITS_WITH_DECLTYPE
 	typedef decltype(get_reflection_traits(T())) traits_type; 
 	static const ReflectionTraitsKind kind = traits_type::kind; 
 #else

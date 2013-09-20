@@ -19,19 +19,19 @@ bool phong_material::self_reflect(cgv::reflect::reflection_handler& rh)
 
 			}
 		}
-	}
-}
 
-namespace cgv {
-	namespace media {
-		namespace illum {
+#ifdef REFLECT_IN_CLASS_NAMESPACE
+}} namespace cgv {	namespace media { namespace illum {
+#endif
 
-cgv::reflect::extern_reflection_traits<phong_material, cgv::reflect::media::illum::phong_material> get_reflection_traits(const phong_material&)
+cgv::reflect::extern_reflection_traits<cgv::media::illum::phong_material, cgv::reflect::media::illum::phong_material> get_reflection_traits(const cgv::media::illum::phong_material&)
 {
-	return cgv::reflect::extern_reflection_traits<phong_material, cgv::reflect::media::illum::phong_material>();
+	return cgv::reflect::extern_reflection_traits<cgv::media::illum::phong_material, cgv::reflect::media::illum::phong_material>();
 }
 
+#ifdef REFLECT_IN_CLASS_NAMESPACE
 		}
+#endif
 	}
 }
 

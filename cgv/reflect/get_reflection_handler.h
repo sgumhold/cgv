@@ -28,7 +28,7 @@ public:
 						     abst_reflection_traits* rt, GroupKind group_kind, unsigned grp_size);
 };
 
-#ifdef CPP11
+#ifdef REFLECT_TRAITS_WITH_DECLTYPE
 //! uses cgv::reflect::get_reflection_handler to copy the value of a member from an instance
 /*! \param[in]  variable Instance whoes member should be copied
     \param[in]  target   Specification of member (see cgv::reflect::find_reflection_handler for details)
@@ -47,7 +47,7 @@ namespace compatibility {
 		grh.reflect_member("", variable);
 		return grh.found_valid_target();
 	}
-#ifndef CPP11
+#ifndef REFLECT_TRAITS_WITH_DECLTYPE
 	template <bool use_get, typename T, typename Q>
 	struct get_member_dispatch {           static bool get_member(T& variable, const std::string& target, Q& value) { 
 		return get_member_impl(variable, target, value, reflection_traits<Q>()); } };

@@ -1,6 +1,6 @@
 #pragma once
 
-#include <cgv/reflect/math/vec.h>
+#include <cgv_reflect_types/math/vec.h>
 #include <cgv/media/ray.h>
 #include <cgv/reflect/reflect_extern.h>
 
@@ -16,15 +16,19 @@ struct ray : public cgv::media::ray<T>
 {
 	bool self_reflect(cgv::reflect::reflection_handler& rh) {
 		return
-			rh.reflect_member("origin", origin) &&
-			rh.reflect_member("direction", direction);
+			rh.reflect_member("origin", this->origin) &&
+			rh.reflect_member("direction", this->direction);
 	}
 };
 
 		}
 
+#ifdef REFLECT_IN_CLASS_NAMESPACE
+}} namespace cgv { namespace media {
+#endif
+
 template<typename T>
-extern_reflection_traits<cgv::media::ray<T>, cgv::reflect::media::ray<T> > get_reflection_traits(const cgv::media::ray<T>&) { return extern_reflection_traits<cgv::media::ray<T>, cgv::reflect::media::ray<T> >(); }
+cgv::reflect::extern_reflection_traits<cgv::media::ray<T>, cgv::reflect::media::ray<T> > get_reflection_traits(const cgv::media::ray<T>&) { return cgv::reflect::extern_reflection_traits<cgv::media::ray<T>, cgv::reflect::media::ray<T> >(); }
 
 	}
 }

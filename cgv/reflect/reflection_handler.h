@@ -6,7 +6,6 @@
 #include <cgv/utils/token.h>
 #include <cgv/type/traits/method_pointer.h>
 #include <cgv/type/info/type_id.h>
-#include <cgv/config/cpp_version.h>
 
 #include "self_reflection_tag.h"
 #include "reflection_traits_info.h"
@@ -62,7 +61,7 @@ struct method_interface_impl;
 	with the suffix _void. */
 class CGV_API reflection_handler
 {
-#ifndef CPP11
+#ifndef REFLECT_TRAITS_WITH_DECLTYPE
 	template <typename B, typename RB>
 	bool reflect_base_impl(B& base_ref, const RB&);
 	template <typename T, unsigned n, typename RT>
@@ -199,7 +198,7 @@ public:
 
 
 struct detail {
-#ifndef CPP11
+#ifndef REFLECT_TRAITS_WITH_DECLTYPE
 		template <typename T, ReflectionTraitsKind K> 
 		struct reflect_member_impl
 		{
@@ -283,7 +282,7 @@ struct detail {
 		}
 	};
 
-#ifndef CPP11
+#ifndef REFLECT_TRAITS_WITH_DECLTYPE
 	template <bool use_get, typename B>
 	struct reflect_base_dispatch {         static bool reflect(reflection_handler* rh, B& base_ref) { 
 		return rh->reflect_base_impl(base_ref, typename reflection_traits_info<B>::traits_type()); } };
@@ -311,7 +310,7 @@ struct detail {
 template <typename T>
 bool reflection_handler::reflect_member(const std::string& member_name, T& member_ref)
 {
-#ifdef CPP11
+#ifdef REFLECT_TRAITS_WITH_DECLTYPE
 	return detail::reflect_member_impl<T, reflection_traits_info<T>::kind>::reflect(this, member_name, member_ref);
 #else
 	return detail::reflect_member_impl<T, reflection_traits_info<T>::kind>::reflect(this, member_name, member_ref);
@@ -324,7 +323,7 @@ bool reflection_handler::reflect_method(const std::string& method_name, M m)
 	return detail::reflect_method_impl<M,typename cgv::type::traits::method_pointer<M>::return_type>::reflect(this, method_name, m);
 }
 
-#ifdef CPP11
+#ifdef REFLECT_TRAITS_WITH_DECLTYPE
 template <typename B>
 bool reflection_handler::reflect_base(B& base_ref)
 {
@@ -341,7 +340,7 @@ bool reflection_handler::reflect_base_impl(B& base_ref, const RB&)
 	default: return true;
 	}
 }
-#ifndef CPP11
+#ifndef REFLECT_TRAITS_WITH_DECLTYPE
 template <typename B>
 bool reflection_handler::reflect_base(B& base_ref)
 {
@@ -353,7 +352,7 @@ bool reflection_handler::reflect_base(B& base_ref)
 
 
 
-#ifdef CPP11
+#ifdef REFLECT_TRAITS_WITH_DECLTYPE
 template <typename T, unsigned n>
 bool reflection_handler::reflect_member(const std::string& member_name, T (&member_ref)[n])
 {
@@ -379,7 +378,7 @@ bool reflection_handler::reflect_const_array_impl(const std::string& member_name
 	}
 	return res;
 }
-#ifndef CPP11
+#ifndef REFLECT_TRAITS_WITH_DECLTYPE
 template <typename T, unsigned n>
 bool reflection_handler::reflect_member(const std::string& member_name, T (&member_ref)[n])
 {
@@ -387,7 +386,7 @@ bool reflection_handler::reflect_member(const std::string& member_name, T (&memb
 }
 #endif
 
-#ifdef CPP11
+#ifdef REFLECT_TRAITS_WITH_DECLTYPE
 template <typename T>
 bool reflection_handler::reflect_member(const std::string& member_name, std::vector<T>& member_ref)
 {
@@ -417,7 +416,7 @@ bool reflection_handler::reflect_vector_impl(const std::string& member_name, std
 	}
 	return res;
 }
-#ifndef CPP11
+#ifndef REFLECT_TRAITS_WITH_DECLTYPE
 template <typename T>
 bool reflection_handler::reflect_member(const std::string& member_name, std::vector<T>& member_ref)
 {

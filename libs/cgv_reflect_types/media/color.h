@@ -21,15 +21,15 @@ struct color : public cgv::media::color<T,cm,am>
 };
 
 		}
-extern CGV_API enum_reflection_traits<cgv::media::ColorModel> get_reflection_traits(const cgv::media::ColorModel&);
-extern CGV_API enum_reflection_traits<cgv::media::AlphaModel> get_reflection_traits(const cgv::media::AlphaModel&);
-	}
-}
+#ifdef REFLECT_IN_CLASS_NAMESPACE
+}} namespace cgv { namespace media {
+#endif
 
-namespace cgv {
-	namespace media {
-template <typename T, ColorModel cm, AlphaModel am> 
-cgv::reflect::extern_string_reflection_traits<color<T,cm,am>, cgv::reflect::media::color<T,cm,am> > get_reflection_traits(const color<T,cm,am>&) { return cgv::reflect::extern_string_reflection_traits<color<T,cm,am>, cgv::reflect::media::color<T,cm,am> >(); }
+extern CGV_API cgv::reflect::enum_reflection_traits<cgv::media::ColorModel> get_reflection_traits(const cgv::media::ColorModel&);
+extern CGV_API cgv::reflect::enum_reflection_traits<cgv::media::AlphaModel> get_reflection_traits(const cgv::media::AlphaModel&);
+
+template <typename T, cgv::media::ColorModel cm, cgv::media::AlphaModel am> 
+cgv::reflect::extern_string_reflection_traits<cgv::media::color<T,cm,am>, cgv::reflect::media::color<T,cm,am> > get_reflection_traits(const cgv::media::color<T,cm,am>&) { return cgv::reflect::extern_string_reflection_traits<cgv::media::color<T,cm,am>, cgv::reflect::media::color<T,cm,am> >(); }
 
 
 	}

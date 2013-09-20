@@ -16,21 +16,20 @@ struct plane : public cgv::media::plane<T>
 {
 	bool self_reflect(cgv::reflect::reflection_handler& rh) {
 		return
-			rh.reflect_member("h", h);
+			rh.reflect_member("h", this->h);
 	}
 };
 
 		}
-	}
-}
 
-namespace cgv {
-	namespace media {
+#ifdef REFLECT_IN_CLASS_NAMESPACE
+}} namespace cgv { namespace media {
+#endif
 
 		template<typename T>
-		cgv::reflect::extern_reflection_traits<plane<T>, cgv::reflect::media::plane<T> > 
-			get_reflection_traits(const plane<T>&) { 
-				return cgv::reflect::extern_reflection_traits<plane<T>, cgv::reflect::media::plane<T> >(); 
+		cgv::reflect::extern_reflection_traits<cgv::media::plane<T>, cgv::reflect::media::plane<T> > 
+			get_reflection_traits(const cgv::media::plane<T>&) { 
+				return cgv::reflect::extern_reflection_traits<cgv::media::plane<T>, cgv::reflect::media::plane<T> >(); 
 		}
 
 	}

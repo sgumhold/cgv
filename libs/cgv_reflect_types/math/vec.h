@@ -18,16 +18,17 @@ struct vec : public cgv::math::vec<T>
 	}
 };
 		}
-	}
-}
-namespace cgv {
-	namespace math {
+
+#ifdef REFLECT_IN_CLASS_NAMESPACE
+}} namespace cgv { namespace math {
+#endif
 
 		template <typename T>
-		cgv::reflect::extern_string_reflection_traits<vec<T>, cgv::reflect::math::vec<T> > 
-			get_reflection_traits(const vec<T>&) { 
-				return cgv::reflect::extern_string_reflection_traits<vec<T>, cgv::reflect::math::vec<T> >(); 
+		cgv::reflect::extern_string_reflection_traits<cgv::math::vec<T>, cgv::reflect::math::vec<T> > 
+			get_reflection_traits(const cgv::math::vec<T>&) { 
+				return cgv::reflect::extern_string_reflection_traits<cgv::math::vec<T>, cgv::reflect::math::vec<T> >(); 
 		}
 
 	}
 }
+

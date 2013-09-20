@@ -25,23 +25,22 @@ bool light_source::self_reflect(cgv::reflect::reflection_handler& rh)
 			}
 		}
 
-	}
-}
+#ifdef REFLECT_IN_CLASS_NAMESPACE
+}} namespace cgv {	namespace media { namespace illum {
+#endif
 
-namespace cgv {
-	namespace media {
-		namespace illum {
-
-cgv::reflect::extern_reflection_traits<light_source, cgv::reflect::media::illum::light_source> get_reflection_traits(const light_source&)
+cgv::reflect::enum_reflection_traits<cgv::media::illum::LightType> get_reflection_traits(const cgv::media::illum::LightType&)
 {
-	return cgv::reflect::extern_reflection_traits<light_source, cgv::reflect::media::illum::light_source>();
+	return cgv::reflect::enum_reflection_traits<cgv::media::illum::LightType>("LT_DIRECTIONAL, LT_POINT, LT_SPOT");
 }
 
-cgv::reflect::enum_reflection_traits<LightType> get_reflection_traits(const LightType&)
+cgv::reflect::extern_reflection_traits<cgv::media::illum::light_source, cgv::reflect::media::illum::light_source> get_reflection_traits(const cgv::media::illum::light_source&)
 {
-	return cgv::reflect::enum_reflection_traits<LightType>("LT_DIRECTIONAL, LT_POINT, LT_SPOT");
+	return cgv::reflect::extern_reflection_traits<cgv::media::illum::light_source, cgv::reflect::media::illum::light_source>();
 }
 
+#ifdef REFLECT_IN_CLASS_NAMESPACE
 		}
+#endif
 	}
 }
