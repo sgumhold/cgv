@@ -17,9 +17,16 @@ struct CGV_API phong_material : public cgv::media::illum::phong_material
 };
 			}
 		}
+	}
+}
 
-extern CGV_API extern_reflection_traits<cgv::media::illum::phong_material, cgv::reflect::media::illum::phong_material> get_reflection_traits(const cgv::media::illum::phong_material&);
+namespace cgv {
+	namespace media {
+		namespace illum {
 
+extern CGV_API cgv::reflect::extern_reflection_traits<phong_material, cgv::reflect::media::illum::phong_material> get_reflection_traits(const phong_material&);
+
+		}
 	}
 }
 

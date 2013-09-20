@@ -25,16 +25,23 @@ bool light_source::self_reflect(cgv::reflect::reflection_handler& rh)
 			}
 		}
 
-extern_reflection_traits<cgv::media::illum::light_source, cgv::reflect::media::illum::light_source> get_reflection_traits(const cgv::media::illum::light_source&)
-{
-	return extern_reflection_traits<cgv::media::illum::light_source, cgv::reflect::media::illum::light_source>();
-}
-
-enum_reflection_traits<cgv::media::illum::LightType> get_reflection_traits(const cgv::media::illum::LightType&)
-{
-	return enum_reflection_traits<cgv::media::illum::LightType>("LT_DIRECTIONAL, LT_POINT, LT_SPOT");
-}
-
 	}
 }
 
+namespace cgv {
+	namespace media {
+		namespace illum {
+
+cgv::reflect::extern_reflection_traits<light_source, cgv::reflect::media::illum::light_source> get_reflection_traits(const light_source&)
+{
+	return cgv::reflect::extern_reflection_traits<light_source, cgv::reflect::media::illum::light_source>();
+}
+
+cgv::reflect::enum_reflection_traits<LightType> get_reflection_traits(const LightType&)
+{
+	return cgv::reflect::enum_reflection_traits<LightType>("LT_DIRECTIONAL, LT_POINT, LT_SPOT");
+}
+
+		}
+	}
+}

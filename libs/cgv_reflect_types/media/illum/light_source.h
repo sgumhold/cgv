@@ -18,10 +18,17 @@ struct CGV_API light_source : public cgv::media::illum::light_source
 };
 			}
 		}
+	}
+}
 
-extern CGV_API extern_reflection_traits<cgv::media::illum::light_source, cgv::reflect::media::illum::light_source> get_reflection_traits(const cgv::media::illum::light_source&);
-extern CGV_API enum_reflection_traits<cgv::media::illum::LightType> get_reflection_traits(const cgv::media::illum::LightType&);
+namespace cgv {
+	namespace media {
+		namespace illum {
 
+extern CGV_API cgv::reflect::extern_reflection_traits<light_source, cgv::reflect::media::illum::light_source> get_reflection_traits(const light_source&);
+extern CGV_API cgv::reflect::enum_reflection_traits<LightType> get_reflection_traits(const LightType&);
+
+		}
 	}
 }
 

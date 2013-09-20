@@ -23,12 +23,20 @@ bool obj_material::self_reflect(cgv::reflect::reflection_handler& rh)
 
 			}
 		}
-
-extern_reflection_traits<cgv::media::illum::obj_material, cgv::reflect::media::illum::obj_material> get_reflection_traits(const cgv::media::illum::obj_material&)
-{
-	return extern_reflection_traits<cgv::media::illum::obj_material, cgv::reflect::media::illum::obj_material>();
+	}
 }
 
+namespace cgv {
+	namespace media {
+		namespace illum {
+
+
+cgv::reflect::extern_reflection_traits<obj_material, cgv::reflect::media::illum::obj_material> get_reflection_traits(const obj_material&)
+{
+	return cgv::reflect::extern_reflection_traits<obj_material, cgv::reflect::media::illum::obj_material>();
+}
+
+		}
 	}
 }
 
