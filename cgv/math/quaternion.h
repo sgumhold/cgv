@@ -92,10 +92,10 @@ public:
 	/// initialize quaternion directly
 	void set(coord_type re, coord_type ix, coord_type iy, coord_type iz) 
 	{
-		x() = ix;
-		y() = iy;
-		z() = iz;
-		w() = re;
+		this->x() = ix;
+		this->y() = iy;
+		this->z() = iz;
+		this->w() = re;
 	}
 	/// initialize quaternion from real part and vector
 	void set(coord_type re, const vec_type& im) 
@@ -108,37 +108,37 @@ public:
 	/// compute equivalent 3x3 rotation matrix
 	void put_matrix(coord_type* M) const
 	{
-		M[0] = 1-2*y()*y()-2*z()*z();
-		M[1] = 2*x()*y()-2*w()*z();
-		M[2] = 2*x()*z()+2*w()*y();
-		M[3] = 2*x()*y()+2*w()*z();
-		M[4] = 1-2*x()*x()-2*z()*z();
-		M[5] = 2*y()*z()-2*w()*x();
-		M[6] = 2*x()*z()-2*w()*y();
-		M[7] = 2*y()*z()+2*w()*x();
-		M[8] = 1-2*x()*x()-2*y()*y();
+		M[0] = 1-2*this->y()*this->y()-2*this->z()*this->z();
+		M[1] = 2*this->x()*this->y()-2*this->w()*this->z();
+		M[2] = 2*this->x()*this->z()+2*this->w()*this->y();
+		M[3] = 2*this->x()*this->y()+2*this->w()*this->z();
+		M[4] = 1-2*this->x()*this->x()-2*this->z()*this->z();
+		M[5] = 2*this->y()*this->z()-2*this->w()*this->x();
+		M[6] = 2*this->x()*this->z()-2*this->w()*this->y();
+		M[7] = 2*this->y()*this->z()+2*this->w()*this->x();
+		M[8] = 1-2*this->x()*this->x()-2*this->y()*this->y();
 	}
 	/// compute equivalent homogeneous 4x4 rotation matrix
 	void put_homogeneous_matrix(coord_type* M) const
 	{
-		M[0] = 1-2*y()*y()-2*z()*z();
-		M[1] = 2*x()*y()-2*w()*z();
-		M[2] = 2*x()*z()+2*w()*y();
+		M[0] = 1-2*this->y()*this->y()-2*this->z()*this->z();
+		M[1] = 2*this->x()*this->y()-2*this->w()*this->z();
+		M[2] = 2*this->x()*this->z()+2*this->w()*this->y();
 		M[3] = 0;
-		M[4] = 2*x()*y()+2*w()*z();
-		M[5] = 1-2*x()*x()-2*z()*z();
-		M[6] = 2*y()*z()-2*w()*x();
+		M[4] = 2*this->x()*this->y()+2*this->w()*this->z();
+		M[5] = 1-2*this->x()*this->x()-2*this->z()*this->z();
+		M[6] = 2*this->y()*this->z()-2*this->w()*this->x();
 		M[7] = 0;
-		M[8] = 2*x()*z()-2*w()*y();
-		M[9] = 2*y()*z()+2*w()*x();
-		M[10] = 1-2*x()*x()-2*y()*y();
+		M[8] = 2*this->x()*this->z()-2*this->w()*this->y();
+		M[9] = 2*this->y()*this->z()+2*this->w()*this->x();
+		M[10] = 1-2*this->x()*this->x()-2*this->y()*this->y();
 		M[11] = M[12] = M[13] = M[14] = 0;
 		M[15] = 1;
 	}
 	/// initialize quaternion from normal vector
 	void set_normal(const vec_type& n)
 	{
-		Coord cosfac = 1-n.x();
+		coord_type cosfac = 1-n.x();
 		if (fabs(cosfac)<EPSILON)
 			set(1,0,0,0);
 		else {
@@ -152,9 +152,9 @@ public:
 	/// extract normal vector
 	void put_normal(coord_type* n)
 	{
-		n[0] = 1-2*(y()*y()+ z()*z());
-		n[1] = 2*(w()*z() + x()*y());
-		n[2] = 2*(x()*z() - w()*y());
+		n[0] = 1-2*(this->y()*this->y()+ this->z()*this->z());
+		n[1] = 2*(this->w()*this->z() + this->x()*this->y());
+		n[2] = 2*(this->x()*this->z() - this->w()*this->y());
 	}
 	/// rotate preimage according to quaternion into image
 	void put_image(const vec_type& preimage, vec_type& image) const
@@ -195,14 +195,14 @@ public:
 	/// negate the quaternion
 	void negate() { conjugate(); re() = -re(); }
 	/// compute conjugate
-	void conjugate() { x() = -x(); y() = -y(); z() = -z(); }
+	void conjugate() { this->x() = -this->x(); this->y() = -this->y(); this->z() = -this->z(); }
 	/// return the inverse
 	quaternion<T> inverse() const { quaternion<T> tmp(*this); tmp.invert(); return tmp; }
 	/// compute inverse
 	void invert()
 	{
 		conjugate();
-		coord_type sn = sqr_length();
+		coord_type sn = this->sqr_length();
 		if (sn < EPSILON*EPSILON) 
 			base_type::operator *= ((coord_type) 1e14);
 		else 
@@ -213,7 +213,7 @@ public:
 	{
 		coord_type omega, cosom, sinom, sclp, sclq;
 		*this = q*p;
-		cosom = square_length();
+		cosom = this->square_length();
 		if ( ( 1 + cosom) > EPSILON ) {
 			if ( ( 1 - cosom) > EPSILON ) {
 				omega = acos( cosom );
@@ -229,8 +229,8 @@ public:
 			set(sclp*p.w() + sclq*q.w(), sclp*p.x() + sclq*q.x(), sclp*p.y() + sclq*q.y(), sclp*p.z() + sclq*q.z());
 		}
 		else {
-			sclp = sin ( (1-t)*PI/2 );
-			sclq = sin ( t * PI/2 );
+			sclp = sin ( (1-t)*M_PI/2 );
+			sclq = sin ( t * M_PI/2 );
 			setPoint(p.z(), sclp*p.x() - sclq*p.y(), sclp*p.y() + sclq*p.x(), sclp*p.z() - sclq*p.w());
 		}
 	}
@@ -243,14 +243,14 @@ public:
 	{
 		 // Fastmul-Alg. siehe Seidel-Paper p.4 
 		coord_type s[9], t;
-		s[0] = (z()-y())*(q.y()-q.z());
-		s[1] = (w()+x())*(q.w()+q.x());
-		s[2] = (w()-x())*(q.y()+q.z());
-		s[3] = (z()+y())*(q.w()-q.x());
-		s[4] = (z()-x())*(q.x()-q.y());
-		s[5] = (z()+x())*(q.x()+q.y());
-		s[6] = (w()+y())*(q.w()-q.z());
-		s[7] = (w()-y())*(q.w()+q.z());
+		s[0] = (this->z()-this->y())*(q.y()-q.z());
+		s[1] = (this->w()+this->x())*(q.w()+q.x());
+		s[2] = (this->w()-this->x())*(q.y()+q.z());
+		s[3] = (this->z()+this->y())*(q.w()-q.x());
+		s[4] = (this->z()-this->x())*(q.x()-q.y());
+		s[5] = (this->z()+this->x())*(q.x()+q.y());
+		s[6] = (this->w()+this->y())*(q.w()-q.z());
+		s[7] = (this->w()-this->y())*(q.w()+q.z());
 		s[8] = s[5]+s[6]+s[7];
 		t    = (s[4] +s[8])/2;
 		set(s[0]+t-s[5], s[1]+t-s[8], s[2]+t-s[7], s[3]+t-s[6]);
@@ -259,24 +259,24 @@ public:
 	/// field multiplication
 	quaternion<T> operator * (const quaternion<T>& q) const { quaternion<T> tmp(*this); tmp*=q; return tmp; }
 	///in place multiplication with s
-	quaternion<T>& operator *= (const T& s) { for (unsigned i=0;i<4;++i) v[i] *= s; return *this; }
+	quaternion<T>& operator *= (const T& s) { for (unsigned i=0;i<4;++i) this->v[i] *= s; return *this; }
 	///multiplication with scalar s
 	quaternion<T>  operator * (const T& s) const { quaternion<T> r = *this; r *= s; return r; }
 	//@}
 	/**@name{\large f) access to members}*/
 	//@{
 	/// return real part
-	coord_type re() const { return w(); }
+	coord_type re() const { return this->w(); }
 	/// return reference to real part
-	coord_type& re() { return w(); }
+	coord_type& re() { return this->w(); }
 	/// put imaginary part
-	void put_im(vec_type& vector) const { vector.x() = x(); vector.y() = y(); vector.z() = z(); }
+	void put_im(vec_type& vector) const { vector.x() = this->x(); vector.y() = this->y(); vector.z() = this->z(); }
 	/// return this as vector
-	vec_type im() const { return vec_type(x(),y(),z()); }
+	vec_type im() const { return vec_type(this->x(),this->y(),this->z()); }
 	/// put rotation axis and return rotation angle
 	coord_type put_axis(vec_type& v) const
 	{
-		coord_type l = length();
+		coord_type l = this->length();
 		if (l < (coord_type)EPSILON) {
 			v = vec_type(0,0,1);
 			return 0;
@@ -284,9 +284,9 @@ public:
 		else {
 			put_im(v);
 			coord_type a = atan2(l, re());
-			if (a > 0.5*PI) {
-				a = a - PI;
-				axis = -axis;
+			if (a > 0.5*M_PI) {
+				a = a - M_PI;
+				this->axis = -this->axis;
 			}
 			v /= l;
 			return 2*a;
@@ -307,22 +307,22 @@ quaternion<T> operator * (const T& s, const quaternion<T>& v)
 template <typename T>
 quaternion<T> exp(const quaternion<T>& q)
 {
-	coord_type m = q.im().length();
+	T m = q.im().length();
 	quaternion<T> quat(cos(m),q.im()*(sin(m)/m));
-	(base_type&) quat *= exp(q.re());
+	(typename quaternion<T>::base_type&) quat *= exp(q.re());
 	return quat;
 }
 /// logarithmic map
 template <typename T>
 quaternion<T> log(const quaternion<T>& q)
 {
-	coord_type R = q.length();
-	vec_type v(q.im());
-	coord_type sinTimesR = v.length();
+	T R = q.length();
+	typename quaternion<T>::vec_type v(q.im());
+	T sinTimesR = v.length();
 	if (sinTimesR < EPSILON) 
 		v /= sinTimesR;
 	else {
-		v = vec_type(0,0,0);
+		v = typename quaternion<T>::vec_type(0,0,0);
 		sinTimesR = 0;
 	}
 	return quaternion<T>(::log(R),atan2(sinTimesR, q.re()*v));
