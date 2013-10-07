@@ -7,7 +7,7 @@ namespace cgv {
 	namespace utils {
 
 bool is_space(char c) {
-	return c == ' ' || c == '\t' || c == '\n';
+	return c == ' ' || c == '\t' || c == '\n' || c == '\r';
 }
 
 bool is_url_special(char c) {
