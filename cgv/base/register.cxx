@@ -777,18 +777,38 @@ std::string extend_plugin_name(const std::string& fn)
 	n += "8";
 #elif defined(_MSC_VER) && _MSC_VER < 1600
 	n += "9";
-#elif defined(_MSC_VER)
+#elif defined(_MSC_VER) && _MSC_VER < 1700
 	n += "10";
+#elif defined(_MSC_VER) && _MSC_VER < 1800
+	n += "11";
+#elif defined(_MSC_VER)
+	n += "12";
 #endif
 	n += ".dll";
+#else
+	n = std::string("lib")+n+".so";
 #endif
 	return n;
 }
 
-#ifdef _WIN32
+	}
+}
 
-#include <windows.h>
-#include <winbase.h>
+#ifdef _WIN32
+#	include <windows.h>
+#	include <winbase.h>
+#else
+#	include <unistd.h>
+#	ifdef __APPLE__
+#		include "dlload_osx.cxx"
+#		define RTLD_NOW 1 // set to anything for now
+#	else
+#		include <dlfcn.h>
+#	endif
+#endif
+
+namespace cgv {
+	namespace base {
 
 void* load_plugin(const std::string& file_name)
 {
@@ -805,10 +825,14 @@ void* load_plugin(const std::string& file_name)
 		result = 0;
 		for (int j=0; j<2; ++j) {
 			ref_plugin_name() = fn;
+#ifdef _WIN32
 #ifdef _UNICODE
 			result = LoadLibrary(cgv::utils::str2wstr(fn).c_str());
 #else
 			result = LoadLibrary(fn.c_str());
+#endif
+#else
+			result = dlopen(name.c_str(), RTLD_NOW);
 #endif
 			if (result)
 				break;
@@ -822,53 +846,12 @@ void* load_plugin(const std::string& file_name)
 }
 bool unload_plugin(void* handle)
 {
+#ifdef _WIN32
 	return FreeLibrary((HMODULE)handle) != 0;
-}
-
 #else
-	}
-}
-#define HAVE_DLOPEN 1
-#if HAVE_DLOPEN
-#include <unistd.h>
-
-#ifdef __APPLE__
-# include "dlload_osx.cxx"
-# define RTLD_NOW 1 // set to anything for now
-#else
-# include <dlfcn.h>
+	return dlclose(handle) != 0;
 #endif
-namespace cgv {
-	namespace base {
-void* load_plugin(const std::string& name) {
-  // do not allow plugins if this executable is setuid
-//  if (getuid() != geteuid())  {
-//    fprintf(stderr, "%s: plugins disabled in setuid programs\n", name.c_str());
-//    return 0;
-//  }
-  void* handle = dlopen(name.c_str(), RTLD_NOW);
-  if (handle) {
-    return handle;
-  } else
-	fprintf(stderr, "Error loading plugin: %s\n", dlerror());
-  return 0;
 }
-
-#else
-
-void* load_plugin(const std::string& name) 
-{
-  void* handle = dlopen(("lib"+name+".so").c_str(),RTLD_LAZY);
-  if (!handle) {
-        fprintf (stderr, "%s\n", dlerror());
-        return 0;
-    }
-  else
-  	return handle;
-}
-
-#endif
-#endif
 
 	}
 }
