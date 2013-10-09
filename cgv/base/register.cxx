@@ -832,7 +832,7 @@ void* load_plugin(const std::string& file_name)
 			result = LoadLibrary(fn.c_str());
 #endif
 #else
-			result = dlopen(name.c_str(), RTLD_NOW);
+			result = dlopen(fn.c_str(), RTLD_NOW);
 #endif
 			if (result)
 				break;
