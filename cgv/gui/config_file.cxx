@@ -254,4 +254,6 @@ struct cfg_reg_type
 
 #include "lib_begin.h"
 
-extern CGV_API cfg_reg_type cfg_reg("");
+extern CGV_API cfg_reg_type cfg_reg;
+
+cfg_reg_type cfg_reg("");

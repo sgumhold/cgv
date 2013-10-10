@@ -1,5 +1,3 @@
-#pragma once
-
 #include "gl_mesh_drawable_base.h"
 
 #include <cgv/base/attach_slot.h>

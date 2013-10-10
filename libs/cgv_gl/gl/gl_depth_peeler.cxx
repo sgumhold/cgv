@@ -1,5 +1,3 @@
-#pragma once
-
 #include <cgv_gl/gl/gl.h>
 #include "gl_depth_peeler.h"
 
