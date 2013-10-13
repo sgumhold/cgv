@@ -1,4 +1,4 @@
-/* $Id: tif_win32.c,v 1.33 2008/01/01 15:35:54 fwarmerdam Exp $ */
+/* $Id: tif_win32.c,v 1.39 2011-12-22 17:07:57 bfriesen Exp $ */
 
 /*
  * Copyright (c) 1988-1997 Sam Leffler
@@ -165,8 +165,8 @@ _tiffMapProc(thandle_t fd, void** pbase, toff_t* psize)
 	if ((uint64)sizem!=size)
 		return (0);
 
-	// By passing in 0 for the maximum file size, it specifies that we
-	// create a file mapping object for the full file size.
+	/* By passing in 0 for the maximum file size, it specifies that we
+	   create a file mapping object for the full file size. */
 	hMapFile = CreateFileMapping(fd, NULL, PAGE_READONLY, 0, 0, NULL);
 	if (hMapFile == NULL)
 		return (0);
@@ -240,26 +240,15 @@ TIFFOpen(const char* name, const char* mode)
 
 	m = _TIFFgetMode(mode, module);
 
-	switch(m)
-	{
-	case O_RDONLY:
-		dwMode = OPEN_EXISTING;
-		break;
-	case O_RDWR:
-		dwMode = OPEN_ALWAYS;
-		break;
-	case O_RDWR|O_CREAT:
-		dwMode = OPEN_ALWAYS;
-		break;
-	case O_RDWR|O_TRUNC:
-		dwMode = CREATE_ALWAYS;
-		break;
-	case O_RDWR|O_CREAT|O_TRUNC:
-		dwMode = CREATE_ALWAYS;
-		break;
-	default:
-		return ((TIFF*)0);
+	switch(m) {
+		case O_RDONLY:			dwMode = OPEN_EXISTING; break;
+		case O_RDWR:			dwMode = OPEN_ALWAYS;   break;
+		case O_RDWR|O_CREAT:		dwMode = OPEN_ALWAYS;   break;
+		case O_RDWR|O_TRUNC:		dwMode = CREATE_ALWAYS; break;
+		case O_RDWR|O_CREAT|O_TRUNC:	dwMode = CREATE_ALWAYS; break;
+		default:			return ((TIFF*)0);
 	}
+        
 	fd = (thandle_t)CreateFileA(name,
 		(m == O_RDONLY)?GENERIC_READ:(GENERIC_READ | GENERIC_WRITE),
 		FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, dwMode,
@@ -303,7 +292,7 @@ TIFFOpenW(const wchar_t* name, const char* mode)
 
 	fd = (thandle_t)CreateFileW(name,
 		(m == O_RDONLY)?GENERIC_READ:(GENERIC_READ|GENERIC_WRITE),
-		FILE_SHARE_READ, NULL, dwMode,
+		FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, dwMode,
 		(m == O_RDONLY)?FILE_ATTRIBUTE_READONLY:FILE_ATTRIBUTE_NORMAL,
 		NULL);
 	if (fd == INVALID_HANDLE_VALUE) {
@@ -337,70 +326,47 @@ TIFFOpenW(const wchar_t* name, const char* mode)
 
 #endif /* ndef _WIN32_WCE */
 
-
 void*
 _TIFFmalloc(tmsize_t s)
 {
-	return ((void*)GlobalAlloc(GMEM_FIXED, s));
+	return (malloc((size_t) s));
 }
 
 void
 _TIFFfree(void* p)
 {
-	GlobalFree((HGLOBAL)p);
-	return;
+	free(p);
 }
 
 void*
 _TIFFrealloc(void* p, tmsize_t s)
 {
-	void* pvTmp;
-	tmsize_t old;
-
-	if(p == NULL)
-		return ((void*)GlobalAlloc(GMEM_FIXED, s));
-
-	old = (tmsize_t)GlobalSize(p);
-
-	if (old>=s) {
-		if ((pvTmp = (void*)GlobalAlloc(GMEM_FIXED, s)) != NULL) {
-			CopyMemory(pvTmp, p, s);
-			GlobalFree((HGLOBAL)p);
-		}
-	} else {
-		if ((pvTmp = (void*)GlobalAlloc(GMEM_FIXED, s)) != NULL) {
-			CopyMemory(pvTmp, p, old);
-			GlobalFree((HGLOBAL)p);
-		}
-	}
-	return (pvTmp);
+	return (realloc(p, (size_t) s));
 }
 
 void
 _TIFFmemset(void* p, int v, tmsize_t c)
 {
-	FillMemory(p, c, (BYTE)v);
+	memset(p, v, (size_t) c);
 }
 
 void
 _TIFFmemcpy(void* d, const void* s, tmsize_t c)
 {
-	CopyMemory(d, s, c);
+	memcpy(d, s, (size_t) c);
 }
 
 int
 _TIFFmemcmp(const void* p1, const void* p2, tmsize_t c)
 {
-	register const BYTE *pb1 = (const BYTE *) p1;
-	register const BYTE *pb2 = (const BYTE *) p2;
-	register tmsize_t dwTmp = c;
-	register int iTmp;
-	for (iTmp = 0; dwTmp-- && !iTmp; iTmp = (int)*pb1++ - (int)*pb2++)
-		;
-	return (iTmp);
+	return (memcmp(p1, p2, (size_t) c));
 }
 
 #ifndef _WIN32_WCE
+
+#if (_MSC_VER < 1500)
+#  define vsnprintf _vsnprintf
+#endif
 
 static void
 Win32WarningHandler(const char* module, const char* fmt, va_list ap)
@@ -411,14 +377,17 @@ Win32WarningHandler(const char* module, const char* fmt, va_list ap)
 	LPCTSTR szTitleText = "%s Warning";
 	LPCTSTR szDefaultModule = "LIBTIFF";
 	LPCTSTR szTmpModule = (module == NULL) ? szDefaultModule : module;
-	if ((szTitle = (LPTSTR)LocalAlloc(LMEM_FIXED, (strlen(szTmpModule) +
-		strlen(szTitleText) + strlen(fmt) + 128)*sizeof(char))) == NULL)
+        SIZE_T nBufSize = (strlen(szTmpModule) +
+                        strlen(szTitleText) + strlen(fmt) + 256)*sizeof(char);
+
+	if ((szTitle = (LPTSTR)LocalAlloc(LMEM_FIXED, nBufSize)) == NULL)
 		return;
 	sprintf(szTitle, szTitleText, szTmpModule);
 	szTmp = szTitle + (strlen(szTitle)+2)*sizeof(char);
-	vsprintf(szTmp, fmt, ap);
+	vsnprintf(szTmp, nBufSize-(strlen(szTitle)+2)*sizeof(char), fmt, ap);
 	MessageBoxA(GetFocus(), szTmp, szTitle, MB_OK | MB_ICONINFORMATION);
 	LocalFree(szTitle);
+
 	return;
 #else
 	if (module != NULL)
@@ -439,12 +408,14 @@ Win32ErrorHandler(const char* module, const char* fmt, va_list ap)
 	LPCTSTR szTitleText = "%s Error";
 	LPCTSTR szDefaultModule = "LIBTIFF";
 	LPCTSTR szTmpModule = (module == NULL) ? szDefaultModule : module;
-	if ((szTitle = (LPTSTR)LocalAlloc(LMEM_FIXED, (strlen(szTmpModule) +
-		strlen(szTitleText) + strlen(fmt) + 128)*sizeof(char))) == NULL)
+        SIZE_T nBufSize = (strlen(szTmpModule) +
+                        strlen(szTitleText) + strlen(fmt) + 256)*sizeof(char);
+
+	if ((szTitle = (LPTSTR)LocalAlloc(LMEM_FIXED, nBufSize)) == NULL)
 		return;
 	sprintf(szTitle, szTitleText, szTmpModule);
 	szTmp = szTitle + (strlen(szTitle)+2)*sizeof(char);
-	vsprintf(szTmp, fmt, ap);
+	vsnprintf(szTmp, nBufSize-(strlen(szTitle)+2)*sizeof(char), fmt, ap);
 	MessageBoxA(GetFocus(), szTmp, szTitle, MB_OK | MB_ICONEXCLAMATION);
 	LocalFree(szTitle);
 	return;
@@ -460,3 +431,10 @@ TIFFErrorHandler _TIFFerrorHandler = Win32ErrorHandler;
 #endif /* ndef _WIN32_WCE */
 
 /* vim: set ts=8 sts=8 sw=8 noet: */
+/*
+ * Local Variables:
+ * mode: c
+ * c-basic-offset: 8
+ * fill-column: 78
+ * End:
+ */

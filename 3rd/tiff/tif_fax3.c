@@ -1,4 +1,4 @@
-/* $Id: tif_fax3.c,v 1.65 2008/05/24 02:14:13 fwarmerdam Exp $ */
+/* $Id: tif_fax3.c,v 1.74 2012-06-21 02:01:31 fwarmerdam Exp $ */
 
 /*
  * Copyright (c) 1990-1997 Sam Leffler
@@ -179,10 +179,10 @@ Fax3PreDecode(TIFF* tif, uint16 s)
 static void
 Fax3Unexpected(const char* module, TIFF* tif, uint32 line, uint32 a0)
 {
-	TIFFErrorExt(tif->tif_clientdata, module, "Bad code word at line %lu of %s %lu (x %lu)",
-	    (unsigned long) line, isTiled(tif) ? "tile" : "strip",
-	    (unsigned long) (isTiled(tif) ? tif->tif_curtile : tif->tif_curstrip),
-	    (unsigned long) a0);
+	TIFFErrorExt(tif->tif_clientdata, module, "Bad code word at line %u of %s %u (x %u)",
+	    line, isTiled(tif) ? "tile" : "strip",
+	    (isTiled(tif) ? tif->tif_curtile : tif->tif_curstrip),
+	    a0);
 }
 #define	unexpected(table, a0)	Fax3Unexpected(module, tif, sp->line, a0)
 
@@ -190,31 +190,31 @@ static void
 Fax3Extension(const char* module, TIFF* tif, uint32 line, uint32 a0)
 {
 	TIFFErrorExt(tif->tif_clientdata, module,
-	    "Uncompressed data (not supported) at line %lu of %s %lu (x %lu)",
-	    (unsigned long) line, isTiled(tif) ? "tile" : "strip",
-	    (unsigned long) (isTiled(tif) ? tif->tif_curtile : tif->tif_curstrip),
-	    (unsigned long) a0);
+	    "Uncompressed data (not supported) at line %u of %s %u (x %u)",
+	    line, isTiled(tif) ? "tile" : "strip",
+	    (isTiled(tif) ? tif->tif_curtile : tif->tif_curstrip),
+	    a0);
 }
 #define	extension(a0)	Fax3Extension(module, tif, sp->line, a0)
 
 static void
 Fax3BadLength(const char* module, TIFF* tif, uint32 line, uint32 a0, uint32 lastx)
 {
-	TIFFWarningExt(tif->tif_clientdata, module, "%s at line %lu of %s %lu (got %lu, expected %lu)",
+	TIFFWarningExt(tif->tif_clientdata, module, "%s at line %u of %s %u (got %u, expected %u)",
 	    a0 < lastx ? "Premature EOL" : "Line length mismatch",
-	    (unsigned long) line, isTiled(tif) ? "tile" : "strip",
-	    (unsigned long) (isTiled(tif) ? tif->tif_curtile : tif->tif_curstrip),
-	    (unsigned long) a0, lastx);
+	    line, isTiled(tif) ? "tile" : "strip",
+	    (isTiled(tif) ? tif->tif_curtile : tif->tif_curstrip),
+	    a0, lastx);
 }
 #define	badlength(a0,lastx)	Fax3BadLength(module, tif, sp->line, a0, lastx)
 
 static void
 Fax3PrematureEOF(const char* module, TIFF* tif, uint32 line, uint32 a0)
 {
-	TIFFWarningExt(tif->tif_clientdata, module, "Premature EOF at line %lu of %s %lu (x %lu)",
-	    (unsigned long) line, isTiled(tif) ? "tile" : "strip",
-	    (unsigned long) (isTiled(tif) ? tif->tif_curtile : tif->tif_curstrip),
-	    (unsigned long) a0);
+	TIFFWarningExt(tif->tif_clientdata, module, "Premature EOF at line %u of %s %u (x %u)",
+	    line, isTiled(tif) ? "tile" : "strip",
+	    (isTiled(tif) ? tif->tif_curtile : tif->tif_curstrip),
+	    a0);
 }
 #define	prematureEOF(a0)	Fax3PrematureEOF(module, tif, sp->line, a0)
 
@@ -504,12 +504,29 @@ Fax3SetupState(TIFF* tif)
 	    td->td_compression == COMPRESSION_CCITTFAX4
 	);
 
-	nruns = needsRefLine ? 2*TIFFroundup_32(rowpixels,32) : rowpixels;
-	nruns += 3;
-	dsp->runs = (uint32*) _TIFFCheckMalloc(tif, 2*nruns, sizeof (uint32),
-					  "for Group 3/4 run arrays");
+	/*
+	  Assure that allocation computations do not overflow.
+	  
+	  TIFFroundup and TIFFSafeMultiply return zero on integer overflow
+	*/
+	dsp->runs=(uint32*) NULL;
+	nruns = TIFFroundup_32(rowpixels,32);
+	if (needsRefLine) {
+		nruns = TIFFSafeMultiply(uint32,nruns,2);
+	}
+	if ((nruns == 0) || (TIFFSafeMultiply(uint32,nruns,2) == 0)) {
+		TIFFErrorExt(tif->tif_clientdata, tif->tif_name,
+			     "Row pixels integer overflow (rowpixels %u)",
+			     rowpixels);
+		return (0);
+	}
+	dsp->runs = (uint32*) _TIFFCheckMalloc(tif,
+					       TIFFSafeMultiply(uint32,nruns,2),
+					       sizeof (uint32),
+					       "for Group 3/4 run arrays");
 	if (dsp->runs == NULL)
 		return (0);
+	memset( dsp->runs, 0, TIFFSafeMultiply(uint32,nruns,2)*sizeof(uint32));
 	dsp->curruns = dsp->runs;
 	if (needsRefLine)
 		dsp->refruns = dsp->runs + nruns;
@@ -1256,6 +1273,8 @@ Fax3PrintDir(TIFF* tif, FILE* fd, long flags)
 	if (TIFFFieldSet(tif,FIELD_BADFAXRUN))
 		fprintf(fd, "  Consecutive Bad Fax Lines: %lu\n",
 		    (unsigned long) sp->badfaxrun);
+	if (sp->printdir)
+		(*sp->printdir)(tif, fd, flags);
 }
 
 static int
@@ -1395,12 +1414,12 @@ Fax4Decode(TIFF* tif, uint8* buf, tmsize_t occ, uint16 s)
         BADG4:
 #ifdef FAX3_DEBUG
                 if( GetBits(13) != 0x1001 )
-                    fputs( "Bad RTC\n", stderr );
+                    fputs( "Bad EOFB\n", stderr );
 #endif                
                 ClrBits( 13 );
 		(*sp->fill)(buf, thisrun, pa, lastx);
 		UNCACHE_STATE(tif, sp);
-		return (-1);
+		return ( sp->line ? 1 : -1);	/* don't error on badly-terminated strips */
 	}
 	UNCACHE_STATE(tif, sp);
 	return (1);
@@ -1567,3 +1586,10 @@ TIFFInitCCITTRLEW(TIFF* tif, int scheme)
 #endif /* CCITT_SUPPORT */
 
 /* vim: set ts=8 sts=8 sw=8 noet: */
+/*
+ * Local Variables:
+ * mode: c
+ * c-basic-offset: 8
+ * fill-column: 78
+ * End:
+ */

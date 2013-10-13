@@ -1,4 +1,4 @@
-/* $Id: tif_luv.c,v 1.31 2007/07/19 13:25:43 dron Exp $ */
+/* $Id: tif_luv.c,v 1.35 2011-04-02 20:54:09 bfriesen Exp $ */
 
 /*
  * Copyright (c) 1997 Greg Ward Larson
@@ -224,7 +224,7 @@ LogL16Decode(TIFF* tif, uint8* op, tmsize_t occ, uint16 s)
 					tp[i++] |= (int16)*bp++ << shft;
 			}
 		if (i != npixels) {
-#if defined(__WIN32__) && defined(_MSC_VER)
+#if defined(__WIN32__) && (defined(_MSC_VER) || defined(__MINGW32__))
 			TIFFErrorExt(tif->tif_clientdata, module,
 			    "Not enough data at row %lu (short %I64d pixels)",
 				     (unsigned long) tif->tif_row,
@@ -282,7 +282,7 @@ LogLuvDecode24(TIFF* tif, uint8* op, tmsize_t occ, uint16 s)
 	tif->tif_rawcp = (uint8*) bp;
 	tif->tif_rawcc = cc;
 	if (i != npixels) {
-#if defined(__WIN32__) && defined(_MSC_VER)
+#if defined(__WIN32__) && (defined(_MSC_VER) || defined(__MINGW32__))
 		TIFFErrorExt(tif->tif_clientdata, module,
 			"Not enough data at row %lu (short %I64d pixels)",
 			     (unsigned long) tif->tif_row,
@@ -347,7 +347,7 @@ LogLuvDecode32(TIFF* tif, uint8* op, tmsize_t occ, uint16 s)
 					tp[i++] |= (uint32)*bp++ << shft;
 			}
 		if (i != npixels) {
-#if defined(__WIN32__) && defined(_MSC_VER)
+#if defined(__WIN32__) && (defined(_MSC_VER) || defined(__MINGW32__))
 			TIFFErrorExt(tif->tif_clientdata, module,
 			"Not enough data at row %lu (short %I64d pixels)",
 				     (unsigned long) tif->tif_row,
@@ -491,7 +491,7 @@ LogL16Encode(TIFF* tif, uint8* bp, tmsize_t cc, uint16 s)
 	tif->tif_rawcp = op;
 	tif->tif_rawcc = tif->tif_rawdatasize - occ;
 
-	return (0);
+	return (1);
 }
 
 /*
@@ -538,7 +538,7 @@ LogLuvEncode24(TIFF* tif, uint8* bp, tmsize_t cc, uint16 s)
 	tif->tif_rawcp = op;
 	tif->tif_rawcc = tif->tif_rawdatasize - occ;
 
-	return (0);
+	return (1);
 }
 
 /*
@@ -632,7 +632,7 @@ LogLuvEncode32(TIFF* tif, uint8* bp, tmsize_t cc, uint16 s)
 	tif->tif_rawcp = op;
 	tif->tif_rawcc = tif->tif_rawdatasize - occ;
 
-	return (0);
+	return (1);
 }
 
 /*
@@ -645,7 +645,7 @@ LogLuvEncodeStrip(TIFF* tif, uint8* bp, tmsize_t cc, uint16 s)
 	tmsize_t rowlen = TIFFScanlineSize(tif);
 
 	assert(cc%rowlen == 0);
-	while (cc && (*tif->tif_encoderow)(tif, bp, rowlen, s) == 0)
+	while (cc && (*tif->tif_encoderow)(tif, bp, rowlen, s) == 1)
 		bp += rowlen, cc -= rowlen;
 	return (cc == 0);
 }
@@ -660,7 +660,7 @@ LogLuvEncodeTile(TIFF* tif, uint8* bp, tmsize_t cc, uint16 s)
 	tmsize_t rowlen = TIFFTileRowSize(tif);
 
 	assert(cc%rowlen == 0);
-	while (cc && (*tif->tif_encoderow)(tif, bp, rowlen, s) == 0)
+	while (cc && (*tif->tif_encoderow)(tif, bp, rowlen, s) == 1)
 		bp += rowlen, cc -= rowlen;
 	return (cc == 0);
 }
@@ -1247,7 +1247,10 @@ LogL16InitState(TIFF* tif)
 		    "No support for converting user data format to LogL");
 		return (0);
 	}
-	sp->tbuflen = multiply_ms(td->td_imagewidth, td->td_rowsperstrip);
+        if( isTiled(tif) )
+            sp->tbuflen = multiply_ms(td->td_tilewidth, td->td_tilelength);
+        else
+            sp->tbuflen = multiply_ms(td->td_imagewidth, td->td_rowsperstrip);
 	if (multiply_ms(sp->tbuflen, sizeof (int16)) == 0 ||
 	    (sp->tbuf = (uint8*) _TIFFmalloc(sp->tbuflen * sizeof (int16))) == NULL) {
 		TIFFErrorExt(tif->tif_clientdata, module, "No space for SGILog translation buffer");
@@ -1344,7 +1347,10 @@ LogLuvInitState(TIFF* tif)
 		    "No support for converting user data format to LogLuv");
 		return (0);
 	}
-	sp->tbuflen = multiply_ms(td->td_imagewidth, td->td_rowsperstrip);
+        if( isTiled(tif) )
+            sp->tbuflen = multiply_ms(td->td_tilewidth, td->td_tilelength);
+        else
+            sp->tbuflen = multiply_ms(td->td_imagewidth, td->td_rowsperstrip);
 	if (multiply_ms(sp->tbuflen, sizeof (uint32)) == 0 ||
 	    (sp->tbuf = (uint8*) _TIFFmalloc(sp->tbuflen * sizeof (uint32))) == NULL) {
 		TIFFErrorExt(tif->tif_clientdata, module, "No space for SGILog translation buffer");
@@ -1668,3 +1674,10 @@ bad:
 #endif /* LOGLUV_SUPPORT */
 
 /* vim: set ts=8 sts=8 sw=8 noet: */
+/*
+ * Local Variables:
+ * mode: c
+ * c-basic-offset: 8
+ * fill-column: 78
+ * End:
+ */

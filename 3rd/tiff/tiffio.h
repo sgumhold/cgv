@@ -1,4 +1,4 @@
-/* $Id: tiffio.h,v 1.81 2008/04/10 11:08:48 dron Exp $ */
+/* $Id: tiffio.h,v 1.91 2012-07-29 15:45:29 tgl Exp $ */
 
 /*
  * Copyright (c) 1988-1997 Sam Leffler
@@ -55,15 +55,18 @@ typedef struct tiff TIFF;
  * NB: tsize_t is int32 and not uint32 because some functions
  *     return -1.
  * NB: toff_t is not off_t for many reasons; TIFFs max out at
- *     32-bit file offsets being the most important, and to ensure
- *     that it is unsigned, rather than signed.
+ *     32-bit file offsets, and BigTIFF maxes out at 64-bit
+ *     offsets being the most important, and to ensure use of
+ *     a consistently unsigned type across architectures.
+ *     Prior to libtiff 4.0, this was an unsigned 32 bit type.
  */
 /*
  * this is the machine addressing size type, only it's signed, so make it
  * int32 on 32bit machines, int64 on 64bit machines
  */
 typedef TIFF_SSIZE_T tmsize_t;
-/* the following are depriciated and should be replaced by their defining
+typedef uint64 toff_t;          /* file offset */
+/* the following are deprecated and should be replaced by their defining
    counterparts */
 typedef uint32 ttag_t;          /* directory tag */
 typedef uint16 tdir_t;          /* directory index */
@@ -73,7 +76,6 @@ typedef tstrile_t tstrip_t;     /* strip number */
 typedef tstrile_t ttile_t;      /* tile number */
 typedef tmsize_t tsize_t;       /* i/o size in bytes */
 typedef void* tdata_t;          /* image data ref */
-typedef uint64 toff_t;          /* file offset */
 
 #if !defined(__WIN32__) && (defined(_WIN32) || defined(WIN32))
 #define __WIN32__
@@ -261,15 +263,19 @@ typedef struct {
 #define LOGLUV_PUBLIC 1
 #endif
 
+#if !defined(__GNUC__) && !defined(__attribute__)
+#  define __attribute__(x) /*nothing*/
+#endif
+
 #if defined(c_plusplus) || defined(__cplusplus)
 extern "C" {
 #endif
 typedef void (*TIFFErrorHandler)(const char*, const char*, va_list);
 typedef void (*TIFFErrorHandlerExt)(thandle_t, const char*, const char*, va_list);
 typedef tmsize_t (*TIFFReadWriteProc)(thandle_t, void*, tmsize_t);
-typedef uint64 (*TIFFSeekProc)(thandle_t, uint64, int);
+typedef toff_t (*TIFFSeekProc)(thandle_t, toff_t, int);
 typedef int (*TIFFCloseProc)(thandle_t);
-typedef uint64 (*TIFFSizeProc)(thandle_t);
+typedef toff_t (*TIFFSizeProc)(thandle_t);
 typedef int (*TIFFMapFileProc)(thandle_t, void** base, toff_t* size);
 typedef void (*TIFFUnmapFileProc)(thandle_t, void* base, toff_t size);
 typedef void (*TIFFExtendProc)(TIFF*);
@@ -313,6 +319,13 @@ extern const TIFFField* TIFFFindField(TIFF *, uint32, TIFFDataType);
 extern const TIFFField* TIFFFieldWithTag(TIFF*, uint32);
 extern const TIFFField* TIFFFieldWithName(TIFF*, const char *);
 
+extern uint32 TIFFFieldTag(const TIFFField*);
+extern const char* TIFFFieldName(const TIFFField*);
+extern TIFFDataType TIFFFieldDataType(const TIFFField*);
+extern int TIFFFieldPassCount(const TIFFField*);
+extern int TIFFFieldReadCount(const TIFFField*);
+extern int TIFFFieldWriteCount(const TIFFField*);
+
 typedef int (*TIFFVSetMethod)(TIFF*, uint32, va_list);
 typedef int (*TIFFVGetMethod)(TIFF*, uint32, va_list);
 typedef void (*TIFFPrintMethod)(TIFF*, FILE*, long);
@@ -336,8 +349,8 @@ extern int TIFFVGetField(TIFF* tif, uint32 tag, va_list ap);
 extern int TIFFGetFieldDefaulted(TIFF* tif, uint32 tag, ...);
 extern int TIFFVGetFieldDefaulted(TIFF* tif, uint32 tag, va_list ap);
 extern int TIFFReadDirectory(TIFF* tif);
-extern int TIFFReadCustomDirectory(TIFF* tif, uint64 diroff, const TIFFFieldArray* infoarray);
-extern int TIFFReadEXIFDirectory(TIFF* tif, uint64 diroff);
+extern int TIFFReadCustomDirectory(TIFF* tif, toff_t diroff, const TIFFFieldArray* infoarray);
+extern int TIFFReadEXIFDirectory(TIFF* tif, toff_t diroff);
 extern uint64 TIFFScanlineSize64(TIFF* tif);
 extern tmsize_t TIFFScanlineSize(TIFF* tif);
 extern uint64 TIFFRasterScanlineSize64(TIFF* tif);
@@ -386,13 +399,17 @@ extern int TIFFSetupStrips(TIFF *);
 extern int TIFFWriteCheck(TIFF*, int, const char *);
 extern void TIFFFreeDirectory(TIFF*);
 extern int TIFFCreateDirectory(TIFF*);
+extern int TIFFCreateCustomDirectory(TIFF*,const TIFFFieldArray*);
+extern int TIFFCreateEXIFDirectory(TIFF*);
 extern int TIFFLastDirectory(TIFF*);
 extern int TIFFSetDirectory(TIFF*, uint16);
 extern int TIFFSetSubDirectory(TIFF*, uint64);
 extern int TIFFUnlinkDirectory(TIFF*, uint16);
 extern int TIFFSetField(TIFF*, uint32, ...);
 extern int TIFFVSetField(TIFF*, uint32, va_list);
+extern int TIFFUnsetField(TIFF*, uint32);
 extern int TIFFWriteDirectory(TIFF *);
+extern int TIFFWriteCustomDirectory(TIFF *, uint64 *);
 extern int TIFFCheckpointDirectory(TIFF *);
 extern int TIFFRewriteDirectory(TIFF *);
 
@@ -430,10 +447,10 @@ extern TIFF* TIFFClientOpen(const char*, const char*,
 	    TIFFMapFileProc, TIFFUnmapFileProc);
 extern const char* TIFFFileName(TIFF*);
 extern const char* TIFFSetFileName(TIFF*, const char *);
-extern void TIFFError(const char*, const char*, ...);
-extern void TIFFErrorExt(thandle_t, const char*, const char*, ...);
-extern void TIFFWarning(const char*, const char*, ...);
-extern void TIFFWarningExt(thandle_t, const char*, const char*, ...);
+extern void TIFFError(const char*, const char*, ...) __attribute__((__format__ (__printf__,2,3)));
+extern void TIFFErrorExt(thandle_t, const char*, const char*, ...) __attribute__((__format__ (__printf__,3,4)));
+extern void TIFFWarning(const char*, const char*, ...) __attribute__((__format__ (__printf__,2,3)));
+extern void TIFFWarningExt(thandle_t, const char*, const char*, ...) __attribute__((__format__ (__printf__,3,4)));
 extern TIFFErrorHandler TIFFSetErrorHandler(TIFFErrorHandler);
 extern TIFFErrorHandlerExt TIFFSetErrorHandlerExt(TIFFErrorHandlerExt);
 extern TIFFErrorHandler TIFFSetWarningHandler(TIFFErrorHandler);
@@ -455,7 +472,7 @@ extern tmsize_t TIFFWriteRawStrip(TIFF* tif, uint32 strip, void* data, tmsize_t 
 extern tmsize_t TIFFWriteEncodedTile(TIFF* tif, uint32 tile, void* data, tmsize_t cc);  
 extern tmsize_t TIFFWriteRawTile(TIFF* tif, uint32 tile, void* data, tmsize_t cc);  
 extern int TIFFDataWidth(TIFFDataType);    /* table of tag datatype widths */
-extern void TIFFSetWriteOffset(TIFF* tif, uint64 off);
+extern void TIFFSetWriteOffset(TIFF* tif, toff_t off);
 extern void TIFFSwabShort(uint16*);
 extern void TIFFSwabLong(uint32*);
 extern void TIFFSwabLong8(uint64*);
@@ -495,7 +512,7 @@ extern uint32 LogLuv32fromXYZ(float*, int);
 #endif
 #endif /* LOGLUV_PUBLIC */
 
-extern int TIFFCIELabToRGBInit(TIFFCIELabToRGB*, TIFFDisplay *, float*);
+extern int TIFFCIELabToRGBInit(TIFFCIELabToRGB*, const TIFFDisplay *, float*);
 extern void TIFFCIELabToXYZ(TIFFCIELabToRGB *, uint32, int32, int32,
     float *, float *, float *);
 extern void TIFFXYZToRGB(TIFFCIELabToRGB *, float, float, float,
@@ -523,10 +540,7 @@ typedef	struct {
 } TIFFFieldInfo;
 
 extern int TIFFMergeFieldInfo(TIFF*, const TIFFFieldInfo[], uint32);
-extern const TIFFFieldInfo* TIFFFindFieldInfo(TIFF*, uint32, TIFFDataType);
-extern const TIFFFieldInfo* TIFFFindFieldInfoByName(TIFF* , const char *,
-						    TIFFDataType);
-
+        
 #if defined(c_plusplus) || defined(__cplusplus)
 }
 #endif
@@ -534,3 +548,10 @@ extern const TIFFFieldInfo* TIFFFindFieldInfoByName(TIFF* , const char *,
 #endif /* _TIFFIO_ */
 
 /* vim: set ts=8 sts=8 sw=8 noet: */
+/*
+ * Local Variables:
+ * mode: c
+ * c-basic-offset: 8
+ * fill-column: 78
+ * End:
+ */

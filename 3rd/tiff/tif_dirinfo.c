@@ -1,4 +1,4 @@
-/* $Id: tif_dirinfo.c,v 1.102 2008/05/18 16:18:30 fwarmerdam Exp $ */
+/* $Id: tif_dirinfo.c,v 1.117 2012-08-19 16:56:34 bfriesen Exp $ */
 
 /*
  * Copyright (c) 1988-1997 Sam Leffler
@@ -37,7 +37,7 @@
  *
  * NOTE: The second field (field_readcount) and third field (field_writecount)
  *       sometimes use the values TIFF_VARIABLE (-1), TIFF_VARIABLE2 (-3)
- *       and TIFFTAG_SPP (-2). The macros should be used but would throw off
+ *       and TIFF_SPP (-2). The macros should be used but would throw off
  *       the formatting of the code, so please interprete the -1, -2 and -3
  *       values accordingly.
  */
@@ -112,7 +112,7 @@ tiffFields[] = {
 	{ TIFFTAG_YCBCRCOEFFICIENTS, 3, 3, TIFF_RATIONAL, 0, TIFF_SETGET_C0_FLOAT, TIFF_SETGET_UNDEFINED, FIELD_CUSTOM, 0, 0, "YCbCrCoefficients", NULL },
 	{ TIFFTAG_YCBCRSUBSAMPLING, 2, 2, TIFF_SHORT, 0, TIFF_SETGET_UINT16_PAIR, TIFF_SETGET_UNDEFINED, FIELD_YCBCRSUBSAMPLING, 0, 0, "YCbCrSubsampling", NULL },
 	{ TIFFTAG_YCBCRPOSITIONING, 1, 1, TIFF_SHORT, 0, TIFF_SETGET_UINT16, TIFF_SETGET_UNDEFINED, FIELD_YCBCRPOSITIONING, 0, 0, "YCbCrPositioning", NULL },
-	{ TIFFTAG_REFERENCEBLACKWHITE, 6, 6, TIFF_RATIONAL, 0, TIFF_SETGET_C0_FLOAT, TIFF_SETGET_UNDEFINED, FIELD_CUSTOM, 1, 0, "ReferenceBlackWhite", NULL },
+	{ TIFFTAG_REFERENCEBLACKWHITE, 6, 6, TIFF_RATIONAL, 0, TIFF_SETGET_C0_FLOAT, TIFF_SETGET_UNDEFINED, FIELD_REFBLACKWHITE, 1, 0, "ReferenceBlackWhite", NULL },
 	{ TIFFTAG_XMLPACKET, -3, -3, TIFF_BYTE, 0, TIFF_SETGET_C32_UINT8, TIFF_SETGET_UNDEFINED, FIELD_CUSTOM, 0, 1, "XMLPacket", NULL },
 	/* begin SGI tags */
 	{ TIFFTAG_MATTEING, 1, 1, TIFF_SHORT, 0, TIFF_SETGET_UINT16, TIFF_SETGET_UNDEFINED, FIELD_EXTRASAMPLES, 0, 0, "Matteing", NULL },
@@ -121,13 +121,13 @@ tiffFields[] = {
 	{ TIFFTAG_TILEDEPTH, 1, 1, TIFF_LONG, 0, TIFF_SETGET_UINT32, TIFF_SETGET_UNDEFINED, FIELD_TILEDEPTH, 0, 0, "TileDepth", NULL },
 	/* end SGI tags */
 	/* begin Pixar tags */
-	{ TIFFTAG_PIXAR_IMAGEFULLWIDTH, 1, 1, TIFF_LONG, 0, TIFF_SETGET_UNDEFINED, TIFF_SETGET_UNDEFINED, FIELD_CUSTOM, 1, 0, "ImageFullWidth", NULL },
-	{ TIFFTAG_PIXAR_IMAGEFULLLENGTH, 1, 1, TIFF_LONG, 0, TIFF_SETGET_UNDEFINED, TIFF_SETGET_UNDEFINED, FIELD_CUSTOM, 1, 0, "ImageFullLength", NULL },
+	{ TIFFTAG_PIXAR_IMAGEFULLWIDTH, 1, 1, TIFF_LONG, 0, TIFF_SETGET_UINT32, TIFF_SETGET_UNDEFINED, FIELD_CUSTOM, 1, 0, "ImageFullWidth", NULL },
+	{ TIFFTAG_PIXAR_IMAGEFULLLENGTH, 1, 1, TIFF_LONG, 0, TIFF_SETGET_UINT32, TIFF_SETGET_UNDEFINED, FIELD_CUSTOM, 1, 0, "ImageFullLength", NULL },
 	{ TIFFTAG_PIXAR_TEXTUREFORMAT, -1, -1, TIFF_ASCII, 0, TIFF_SETGET_ASCII, TIFF_SETGET_UNDEFINED, FIELD_CUSTOM, 1, 0, "TextureFormat", NULL },
 	{ TIFFTAG_PIXAR_WRAPMODES, -1, -1, TIFF_ASCII, 0, TIFF_SETGET_ASCII, TIFF_SETGET_UNDEFINED, FIELD_CUSTOM, 1, 0, "TextureWrapModes", NULL },
-	{ TIFFTAG_PIXAR_FOVCOT, 1, 1, TIFF_FLOAT, 0, TIFF_SETGET_UNDEFINED, TIFF_SETGET_UNDEFINED, FIELD_CUSTOM, 1, 0, "FieldOfViewCotangent", NULL },
-	{ TIFFTAG_PIXAR_MATRIX_WORLDTOSCREEN, 16, 16, TIFF_FLOAT, 0, TIFF_SETGET_UNDEFINED, TIFF_SETGET_UNDEFINED, FIELD_CUSTOM, 1, 0, "MatrixWorldToScreen", NULL },
-	{ TIFFTAG_PIXAR_MATRIX_WORLDTOCAMERA, 16, 16, TIFF_FLOAT, 0, TIFF_SETGET_UNDEFINED, TIFF_SETGET_UNDEFINED, FIELD_CUSTOM, 1, 0, "MatrixWorldToCamera", NULL },
+	{ TIFFTAG_PIXAR_FOVCOT, 1, 1, TIFF_FLOAT, 0, TIFF_SETGET_FLOAT, TIFF_SETGET_UNDEFINED, FIELD_CUSTOM, 1, 0, "FieldOfViewCotangent", NULL },
+	{ TIFFTAG_PIXAR_MATRIX_WORLDTOSCREEN, 16, 16, TIFF_FLOAT, 0, TIFF_SETGET_C0_FLOAT, TIFF_SETGET_UNDEFINED, FIELD_CUSTOM, 1, 0, "MatrixWorldToScreen", NULL },
+	{ TIFFTAG_PIXAR_MATRIX_WORLDTOCAMERA, 16, 16, TIFF_FLOAT, 0, TIFF_SETGET_C0_FLOAT, TIFF_SETGET_UNDEFINED, FIELD_CUSTOM, 1, 0, "MatrixWorldToCamera", NULL },
 	{ TIFFTAG_COPYRIGHT, -1, -1, TIFF_ASCII, 0, TIFF_SETGET_ASCII, TIFF_SETGET_UNDEFINED, FIELD_CUSTOM, 1, 0, "Copyright", NULL },
 	/* end Pixar tags */
 	{ TIFFTAG_RICHTIFFIPTC, -3, -3, TIFF_LONG, 0, TIFF_SETGET_C32_UINT32, TIFF_SETGET_UNDEFINED, FIELD_CUSTOM, 0, 1, "RichTIFFIPTC", NULL },
@@ -190,7 +190,23 @@ tiffFields[] = {
 	{ TIFFTAG_ASSHOTPREPROFILEMATRIX, -1, -1, TIFF_SRATIONAL, 0, TIFF_SETGET_C16_FLOAT, TIFF_SETGET_UNDEFINED, FIELD_CUSTOM, 0, 1, "AsShotPreProfileMatrix", NULL },
 	{ TIFFTAG_CURRENTICCPROFILE, -1, -1, TIFF_UNDEFINED, 0, TIFF_SETGET_C16_UINT8, TIFF_SETGET_UNDEFINED, FIELD_CUSTOM, 0, 1, "CurrentICCProfile", NULL },
 	{ TIFFTAG_CURRENTPREPROFILEMATRIX, -1, -1, TIFF_SRATIONAL, 0, TIFF_SETGET_C16_FLOAT, TIFF_SETGET_UNDEFINED, FIELD_CUSTOM, 0, 1, "CurrentPreProfileMatrix", NULL },
+	{ TIFFTAG_PERSAMPLE, 0, 0, TIFF_SHORT, 0, TIFF_SETGET_UNDEFINED, TIFF_SETGET_UNDEFINED, FIELD_PSEUDO, TRUE, FALSE, "PerSample", NULL},
 	/* end DNG tags */
+	/* begin TIFF/FX tags */
+    { TIFFTAG_INDEXED, 1, 1, TIFF_SHORT, 0, TIFF_SETGET_UINT16, TIFF_SETGET_UNDEFINED, FIELD_CUSTOM, 0, 0, "Indexed" },
+    { TIFFTAG_GLOBALPARAMETERSIFD, 1, 1, TIFF_IFD, 0, TIFF_SETGET_UINT32, TIFF_SETGET_UNDEFINED, FIELD_CUSTOM, 0, 0, "GlobalParametersIFD", NULL },
+    { TIFFTAG_PROFILETYPE, 1, 1, TIFF_LONG, 0, TIFF_SETGET_UINT32, TIFF_SETGET_UNDEFINED, FIELD_CUSTOM, 0, 0, "ProfileType", NULL },
+    { TIFFTAG_FAXPROFILE, 1, 1, TIFF_BYTE, 0, TIFF_SETGET_UINT8, TIFF_SETGET_UNDEFINED, FIELD_CUSTOM, 0, 0, "FaxProfile", NULL },
+    { TIFFTAG_CODINGMETHODS, 1, 1, TIFF_LONG, 0, TIFF_SETGET_UINT32, TIFF_SETGET_UNDEFINED, FIELD_CUSTOM, 0, 0, "CodingMethods", NULL },
+    { TIFFTAG_VERSIONYEAR, 4, 4, TIFF_BYTE, 0, TIFF_SETGET_C0_UINT8, TIFF_SETGET_UNDEFINED, FIELD_CUSTOM, 0, 0, "VersionYear", NULL },
+    { TIFFTAG_MODENUMBER, 1, 1, TIFF_BYTE, 0, TIFF_SETGET_UINT8, TIFF_SETGET_UNDEFINED, FIELD_CUSTOM, 0, 0, "ModeNumber", NULL },
+    { TIFFTAG_DECODE, -1, -1, TIFF_SRATIONAL, 0, TIFF_SETGET_C16_FLOAT, TIFF_SETGET_UNDEFINED, FIELD_CUSTOM, 0, 1, "Decode", NULL },
+    { TIFFTAG_IMAGEBASECOLOR, -1, -1, TIFF_SHORT, 0, TIFF_SETGET_C16_UINT16, TIFF_SETGET_UNDEFINED, FIELD_CUSTOM, 0, 1, "ImageBaseColor", NULL },
+    { TIFFTAG_T82OPTIONS, 1, 1, TIFF_LONG, 0, TIFF_SETGET_UINT32, TIFF_SETGET_UNDEFINED, FIELD_CUSTOM, 0, 0, "T82Options", NULL },
+    { TIFFTAG_STRIPROWCOUNTS, -1, -1, TIFF_LONG, 0, TIFF_SETGET_C16_UINT32, TIFF_SETGET_UNDEFINED, FIELD_CUSTOM, 0, 1, "StripRowCounts", NULL },
+    { TIFFTAG_IMAGELAYER, 2, 2, TIFF_LONG, 0, TIFF_SETGET_C0_UINT32, TIFF_SETGET_UNDEFINED, FIELD_CUSTOM, 0, 0, "ImageLayer", NULL },
+	/* end DNG tags */
+	/* begin pseudo tags */
 };
 
 static TIFFField
@@ -257,6 +273,25 @@ static TIFFFieldArray
 tiffFieldArray = { tfiatImage, 0, TIFFArrayCount(tiffFields), tiffFields };
 static TIFFFieldArray
 exifFieldArray = { tfiatExif, 0, TIFFArrayCount(exifFields), exifFields };
+
+/*
+ *  We have our own local lfind() equivelent to avoid subtle differences
+ *  in types passed to lfind() on different systems. 
+ */
+
+static void *
+td_lfind(const void *key, const void *base, size_t *nmemb, size_t size,
+         int(*compar)(const void *, const void *))
+{
+    char *element, *end;
+
+    end = (char *)base + *nmemb * size;
+    for (element = (char *)base; element < end; element += size)
+        if (!compar(key, element))		/* key found */
+            return element;
+
+    return NULL;
+}
 
 const TIFFFieldArray*
 _TIFFGetFields(void)
@@ -327,7 +362,7 @@ _TIFFMergeFields(TIFF* tif, const TIFFField info[], uint32 n)
 {
 	static const char module[] = "_TIFFMergeFields";
 	static const char reason[] = "for fields array";
-	TIFFField** tp;
+	/* TIFFField** tp; */
 	uint32 i;
 
         tif->tif_foundfield = NULL;
@@ -348,7 +383,7 @@ _TIFFMergeFields(TIFF* tif, const TIFFField info[], uint32 n)
 		return 0;
 	}
 
-	tp = tif->tif_fields + tif->tif_nfields;
+	/* tp = tif->tif_fields + tif->tif_nfields; */
 	for (i = 0; i < n; i++) {
 		const TIFFField *fip =
 			TIFFFindField(tif, info[i].field_tag, TIFF_ANY);
@@ -499,14 +534,15 @@ _TIFFFindFieldByName(TIFF* tif, const char *field_name, TIFFDataType dt)
 	if (!tif->tif_fields)
 		return NULL;
 
-	/* NB: use sorted search (e.g. binary search) */
+	/* NB: use linear search since list is sorted by key#, not name */
 
 	key.field_name = (char *)field_name;
 	key.field_type = dt;
 
-	ret = (const TIFFField **) lfind(&pkey, tif->tif_fields,
-					 &tif->tif_nfields,
-					 sizeof(TIFFField *), tagNameCompare);
+	ret = (const TIFFField **) 
+            td_lfind(&pkey, tif->tif_fields, &tif->tif_nfields,
+                     sizeof(TIFFField *), tagNameCompare);
+
 	return tif->tif_foundfield = (ret ? *ret : NULL);
 }
 
@@ -518,8 +554,6 @@ TIFFFieldWithTag(TIFF* tif, uint32 tag)
 		TIFFErrorExt(tif->tif_clientdata, "TIFFFieldWithTag",
 			     "Internal error, unknown tag 0x%x",
 			     (unsigned int) tag);
-		assert(fip != NULL);
-		/*NOTREACHED*/
 	}
 	return (fip);
 }
@@ -532,10 +566,44 @@ TIFFFieldWithName(TIFF* tif, const char *field_name)
 	if (!fip) {
 		TIFFErrorExt(tif->tif_clientdata, "TIFFFieldWithName",
 			     "Internal error, unknown tag %s", field_name);
-		assert(fip != NULL);
-		/*NOTREACHED*/
 	}
 	return (fip);
+}
+
+uint32
+TIFFFieldTag(const TIFFField* fip)
+{
+	return fip->field_tag;
+}
+
+const char *
+TIFFFieldName(const TIFFField* fip)
+{
+	return fip->field_name;
+}
+
+TIFFDataType
+TIFFFieldDataType(const TIFFField* fip)
+{
+	return fip->field_type;
+}
+
+int
+TIFFFieldPassCount(const TIFFField* fip)
+{
+	return fip->field_passcount;
+}
+
+int
+TIFFFieldReadCount(const TIFFField* fip)
+{
+	return fip->field_readcount;
+}
+
+int
+TIFFFieldWriteCount(const TIFFField* fip)
+{
+	return fip->field_writecount;
 }
 
 const TIFFField*
@@ -878,68 +946,12 @@ TIFFMergeFieldInfo(TIFF* tif, const TIFFFieldInfo info[], uint32 n)
 	return 0;
 }
 
-const TIFFFieldInfo*
-TIFFFindFieldInfoByName(TIFF* tif, const char *field_name, TIFFDataType dt)
-{
-#if 0
-	TIFFFieldInfo key = {0, 0, 0, TIFF_NOTYPE, 0, 0, 0, 0, 0, 0, NULL, NULL};
-	TIFFFieldInfo* pkey = &key;
-	const TIFFFieldInfo **ret;
-	if (tif->tif_foundfield
-	    && streq(tif->tif_foundfield->field_name, field_name)
-	    && (dt == TIFF_ANY || dt == tif->tif_foundfield->field_type))
-		return (tif->tif_foundfield);
-
-	/* If we are invoked with no field information, then just return. */
-	if ( !tif->tif_fields ) {
-		return NULL;
-	}
-
-	/* NB: use sorted search (e.g. binary search) */
-
-	key.field_name = (char *)field_name;
-	key.field_type = dt;
-
-	ret = (const TIFFFieldInfo **) lfind(&pkey,
-					     tif->tif_fields,
-					     &tif->tif_nfields,
-					     sizeof(TIFFFieldInfo *),
-					     tagNameCompare);
-	return tif->tif_foundfield = (ret ? *ret : NULL);
-#endif
-	return NULL;
-}
-
-const TIFFFieldInfo*
-TIFFFindFieldInfo(TIFF* tif, uint32 tag, TIFFDataType dt)
-{
-#if 0
-	TIFFFieldInfo key = {0, 0, 0, TIFF_NOTYPE, 0, 0, 0, 0, 0, 0, NULL, NULL};
-	TIFFFieldInfo* pkey = &key;
-	const TIFFFieldInfo **ret;
-	if (tif->tif_foundfield && tif->tif_foundfield->field_tag == tag &&
-	    (dt == TIFF_ANY || dt == tif->tif_foundfield->field_type))
-		return tif->tif_foundfield;
-
-	/* If we are invoked with no field information, then just return. */
-	if ( !tif->tif_fields ) {
-		return NULL;
-	}
-
-	/* NB: use sorted search (e.g. binary search) */
-
-	key.field_tag = tag;
-	key.field_type = dt;
-
-	ret = (const TIFFFieldInfo **) bsearch(&pkey,
-					       tif->tif_fields,
-					       tif->tif_nfields,
-					       sizeof(TIFFFieldInfo *),
-					       tagCompare);
-	return tif->tif_foundfield = (ret ? *ret : NULL);
-#endif
-	return NULL;
-}
-
 /* vim: set ts=8 sts=8 sw=8 noet: */
 
+/*
+ * Local Variables:
+ * mode: c
+ * c-basic-offset: 8
+ * fill-column: 78
+ * End:
+ */

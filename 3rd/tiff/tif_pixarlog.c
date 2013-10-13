@@ -1,4 +1,4 @@
-/* $Id: tif_pixarlog.c,v 1.31 2007/10/01 12:43:49 joris Exp $ */
+/* $Id: tif_pixarlog.c,v 1.38 2012-06-21 01:01:53 fwarmerdam Exp $ */
 
 /*
  * Copyright (c) 1996-1997 Sam Leffler
@@ -83,7 +83,10 @@
  * The codec also handle byte swapping the encoded values as necessary
  * since the library does not have the information necessary
  * to know the bit depth of the raw unencoded buffer.
- * 
+ *
+ * NOTE: This decoder does not appear to update tif_rawcp, and tif_rawcc.
+ * This can cause problems with the implementation of CHUNKY_STRIP_READ_SUPPORT
+ * as noted in http://trac.osgeo.org/gdal/ticket/3894.   FrankW - Jan'11
  */
 
 #include "tif_predict.h"
@@ -117,9 +120,9 @@ horizontalAccumulateF(uint16 *wp, int n, int stride, float *op,
     if (n >= stride) {
 	mask = CODE_MASK;
 	if (stride == 3) {
-	    t0 = ToLinearF[cr = wp[0]];
-	    t1 = ToLinearF[cg = wp[1]];
-	    t2 = ToLinearF[cb = wp[2]];
+	    t0 = ToLinearF[cr = (wp[0] & mask)];
+	    t1 = ToLinearF[cg = (wp[1] & mask)];
+	    t2 = ToLinearF[cb = (wp[2] & mask)];
 	    op[0] = t0;
 	    op[1] = t1;
 	    op[2] = t2;
@@ -136,10 +139,10 @@ horizontalAccumulateF(uint16 *wp, int n, int stride, float *op,
 		op[2] = t2;
 	    }
 	} else if (stride == 4) {
-	    t0 = ToLinearF[cr = wp[0]];
-	    t1 = ToLinearF[cg = wp[1]];
-	    t2 = ToLinearF[cb = wp[2]];
-	    t3 = ToLinearF[ca = wp[3]];
+	    t0 = ToLinearF[cr = (wp[0] & mask)];
+	    t1 = ToLinearF[cg = (wp[1] & mask)];
+	    t2 = ToLinearF[cb = (wp[2] & mask)];
+	    t3 = ToLinearF[ca = (wp[3] & mask)];
 	    op[0] = t0;
 	    op[1] = t1;
 	    op[2] = t2;
@@ -183,9 +186,9 @@ horizontalAccumulate12(uint16 *wp, int n, int stride, int16 *op,
     if (n >= stride) {
 	mask = CODE_MASK;
 	if (stride == 3) {
-	    t0 = ToLinearF[cr = wp[0]] * SCALE12;
-	    t1 = ToLinearF[cg = wp[1]] * SCALE12;
-	    t2 = ToLinearF[cb = wp[2]] * SCALE12;
+	    t0 = ToLinearF[cr = (wp[0] & mask)] * SCALE12;
+	    t1 = ToLinearF[cg = (wp[1] & mask)] * SCALE12;
+	    t2 = ToLinearF[cb = (wp[2] & mask)] * SCALE12;
 	    op[0] = CLAMP12(t0);
 	    op[1] = CLAMP12(t1);
 	    op[2] = CLAMP12(t2);
@@ -202,10 +205,10 @@ horizontalAccumulate12(uint16 *wp, int n, int stride, int16 *op,
 		op[2] = CLAMP12(t2);
 	    }
 	} else if (stride == 4) {
-	    t0 = ToLinearF[cr = wp[0]] * SCALE12;
-	    t1 = ToLinearF[cg = wp[1]] * SCALE12;
-	    t2 = ToLinearF[cb = wp[2]] * SCALE12;
-	    t3 = ToLinearF[ca = wp[3]] * SCALE12;
+	    t0 = ToLinearF[cr = (wp[0] & mask)] * SCALE12;
+	    t1 = ToLinearF[cg = (wp[1] & mask)] * SCALE12;
+	    t2 = ToLinearF[cb = (wp[2] & mask)] * SCALE12;
+	    t3 = ToLinearF[ca = (wp[3] & mask)] * SCALE12;
 	    op[0] = CLAMP12(t0);
 	    op[1] = CLAMP12(t1);
 	    op[2] = CLAMP12(t2);
@@ -247,9 +250,9 @@ horizontalAccumulate16(uint16 *wp, int n, int stride, uint16 *op,
     if (n >= stride) {
 	mask = CODE_MASK;
 	if (stride == 3) {
-	    op[0] = ToLinear16[cr = wp[0]];
-	    op[1] = ToLinear16[cg = wp[1]];
-	    op[2] = ToLinear16[cb = wp[2]];
+	    op[0] = ToLinear16[cr = (wp[0] & mask)];
+	    op[1] = ToLinear16[cg = (wp[1] & mask)];
+	    op[2] = ToLinear16[cb = (wp[2] & mask)];
 	    n -= 3;
 	    while (n > 0) {
 		wp += 3;
@@ -260,10 +263,10 @@ horizontalAccumulate16(uint16 *wp, int n, int stride, uint16 *op,
 		op[2] = ToLinear16[(cb += wp[2]) & mask];
 	    }
 	} else if (stride == 4) {
-	    op[0] = ToLinear16[cr = wp[0]];
-	    op[1] = ToLinear16[cg = wp[1]];
-	    op[2] = ToLinear16[cb = wp[2]];
-	    op[3] = ToLinear16[ca = wp[3]];
+	    op[0] = ToLinear16[cr = (wp[0] & mask)];
+	    op[1] = ToLinear16[cg = (wp[1] & mask)];
+	    op[2] = ToLinear16[cb = (wp[2] & mask)];
+	    op[3] = ToLinear16[ca = (wp[3] & mask)];
 	    n -= 4;
 	    while (n > 0) {
 		wp += 4;
@@ -342,9 +345,9 @@ horizontalAccumulate8(uint16 *wp, int n, int stride, unsigned char *op,
     if (n >= stride) {
 	mask = CODE_MASK;
 	if (stride == 3) {
-	    op[0] = ToLinear8[cr = wp[0]];
-	    op[1] = ToLinear8[cg = wp[1]];
-	    op[2] = ToLinear8[cb = wp[2]];
+	    op[0] = ToLinear8[cr = (wp[0] & mask)];
+	    op[1] = ToLinear8[cg = (wp[1] & mask)];
+	    op[2] = ToLinear8[cb = (wp[2] & mask)];
 	    n -= 3;
 	    while (n > 0) {
 		n -= 3;
@@ -355,10 +358,10 @@ horizontalAccumulate8(uint16 *wp, int n, int stride, unsigned char *op,
 		op[2] = ToLinear8[(cb += wp[2]) & mask];
 	    }
 	} else if (stride == 4) {
-	    op[0] = ToLinear8[cr = wp[0]];
-	    op[1] = ToLinear8[cg = wp[1]];
-	    op[2] = ToLinear8[cb = wp[2]];
-	    op[3] = ToLinear8[ca = wp[3]];
+	    op[0] = ToLinear8[cr = (wp[0] & mask)];
+	    op[1] = ToLinear8[cg = (wp[1] & mask)];
+	    op[2] = ToLinear8[cb = (wp[2] & mask)];
+	    op[3] = ToLinear8[ca = (wp[3] & mask)];
 	    n -= 4;
 	    while (n > 0) {
 		n -= 4;
@@ -393,9 +396,9 @@ horizontalAccumulate8abgr(uint16 *wp, int n, int stride, unsigned char *op,
 	mask = CODE_MASK;
 	if (stride == 3) {
 	    op[0] = 0;
-	    t1 = ToLinear8[cb = wp[2]];
-	    t2 = ToLinear8[cg = wp[1]];
-	    t3 = ToLinear8[cr = wp[0]];
+	    t1 = ToLinear8[cb = (wp[2] & mask)];
+	    t2 = ToLinear8[cg = (wp[1] & mask)];
+	    t3 = ToLinear8[cr = (wp[0] & mask)];
 	    op[1] = t1;
 	    op[2] = t2;
 	    op[3] = t3;
@@ -413,10 +416,10 @@ horizontalAccumulate8abgr(uint16 *wp, int n, int stride, unsigned char *op,
 		op[3] = t3;
 	    }
 	} else if (stride == 4) {
-	    t0 = ToLinear8[ca = wp[3]];
-	    t1 = ToLinear8[cb = wp[2]];
-	    t2 = ToLinear8[cg = wp[1]];
-	    t3 = ToLinear8[cr = wp[0]];
+	    t0 = ToLinear8[ca = (wp[3] & mask)];
+	    t1 = ToLinear8[cb = (wp[2] & mask)];
+	    t2 = ToLinear8[cg = (wp[1] & mask)];
+	    t3 = ToLinear8[cr = (wp[0] & mask)];
 	    op[0] = t0;
 	    op[1] = t1;
 	    op[2] = t2;
@@ -670,7 +673,7 @@ PixarLogSetupDecode(TIFF* tif)
 				      td->td_rowsperstrip), sizeof(uint16));
 	if (tbuf_size == 0)
 		return (0);   /* TODO: this is an error return without error report through TIFFErrorExt */
-	sp->tbuf = (uint16 *) _TIFFmalloc(tbuf_size);
+	sp->tbuf = (uint16 *) _TIFFmalloc(tbuf_size+sizeof(uint16)*sp->stride);
 	if (sp->tbuf == NULL)
 		return (0);
 	if (sp->user_datafmt == PIXARLOGDATAFMT_UNKNOWN)
@@ -785,8 +788,8 @@ PixarLogDecode(TIFF* tif, uint8* op, tmsize_t occ, uint16 s)
 	/* hopefully, we got all the bytes we needed */
 	if (sp->stream.avail_out != 0) {
 		TIFFErrorExt(tif->tif_clientdata, module,
-		    "Not enough data at scanline %lu (short %llu bytes)",
-		    (unsigned long) tif->tif_row, (unsigned long long) sp->stream.avail_out);
+		    "Not enough data at scanline %lu (short " TIFF_UINT64_FORMAT " bytes)",
+		    (unsigned long) tif->tif_row, (TIFF_UINT64_T) sp->stream.avail_out);
 		return (0);
 	}
 
@@ -1143,10 +1146,11 @@ PixarLogEncode(TIFF* tif, uint8* bp, tmsize_t cc, uint16 s)
 	    we need to simplify this code to reflect a ZLib that is likely updated
 	    to deal with 8byte memory sizes, though this code will respond
 	    apropriately even before we simplify it */
-	sp->stream.avail_in = n * sizeof(uint16);
-	if (sp->stream.avail_in != n * sizeof(uint16))
+	sp->stream.avail_in = (uInt) (n * sizeof(uint16));
+	if ((sp->stream.avail_in / sizeof(uint16)) != (uInt) n)
 	{
-		TIFFErrorExt(tif->tif_clientdata, module, "ZLib cannot deal with buffers this size");
+		TIFFErrorExt(tif->tif_clientdata, module,
+			     "ZLib cannot deal with buffers this size");
 		return (0);
 	}
 
@@ -1413,3 +1417,10 @@ bad:
 #endif /* PIXARLOG_SUPPORT */
 
 /* vim: set ts=8 sts=8 sw=8 noet: */
+/*
+ * Local Variables:
+ * mode: c
+ * c-basic-offset: 8
+ * fill-column: 78
+ * End:
+ */

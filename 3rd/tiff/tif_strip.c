@@ -1,4 +1,4 @@
-/* $Id: tif_strip.c,v 1.29 2007/07/19 15:50:28 dron Exp $ */
+/* $Id: tif_strip.c,v 1.35 2012-06-06 05:33:55 fwarmerdam Exp $ */
 
 /*
  * Copyright (c) 1991-1997 Sam Leffler
@@ -30,32 +30,6 @@
  * Strip-organized Image Support Routines.
  */
 #include "tiffiop.h"
-
-static uint32
-multiply_32(TIFF* tif, uint32 nmemb, uint32 elem_size, const char* where)
-{
-	uint32 bytes = nmemb * elem_size;
-
-	if (elem_size && bytes / elem_size != nmemb) {
-		TIFFErrorExt(tif->tif_clientdata, tif->tif_name, "Integer overflow in %s", where);
-		bytes = 0;
-	}
-
-	return (bytes);
-}
-
-static uint64
-multiply_64(TIFF* tif, uint64 nmemb, uint64 elem_size, const char* where)
-{
-	uint64 bytes = nmemb * elem_size;
-
-	if (elem_size && bytes / elem_size != nmemb) {
-		TIFFErrorExt(tif->tif_clientdata, tif->tif_name, "Integer overflow in %s", where);
-		bytes = 0;
-	}
-
-	return (bytes);
-}
 
 /*
  * Compute which strip a (row,sample) value is in.
@@ -92,7 +66,7 @@ TIFFNumberOfStrips(TIFF* tif)
 	nstrips = (td->td_rowsperstrip == (uint32) -1 ? 1 :
 	     TIFFhowmany_32(td->td_imagelength, td->td_rowsperstrip));
 	if (td->td_planarconfig == PLANARCONFIG_SEPARATE)
-		nstrips = multiply_32(tif, nstrips, (uint32)td->td_samplesperpixel,
+		nstrips = _TIFFMultiply32(tif, nstrips, (uint32)td->td_samplesperpixel,
 		    "TIFFNumberOfStrips");
 	return (nstrips);
 }
@@ -125,26 +99,32 @@ TIFFVStripSize64(TIFF* tif, uint32 nrows)
 		uint32 samplingblocks_ver;
 		uint64 samplingrow_samples;
 		uint64 samplingrow_size;
-		assert(td->td_samplesperpixel==3);
-		TIFFGetFieldDefaulted(tif,TIFFTAG_YCBCRSUBSAMPLING,ycbcrsubsampling+0,
-		    ycbcrsubsampling+1);
-		assert((ycbcrsubsampling[0]==1)||(ycbcrsubsampling[0]==2)||(ycbcrsubsampling[0]==4));
-		assert((ycbcrsubsampling[1]==1)||(ycbcrsubsampling[1]==2)||(ycbcrsubsampling[1]==4));
-		if (ycbcrsubsampling[0]*ycbcrsubsampling[1]==0)
+		if(td->td_samplesperpixel!=3)
 		{
 			TIFFErrorExt(tif->tif_clientdata,module,
-			    "Invalid YCbCr subsampling");
+			    "Invalid td_samplesperpixel value");
+			return 0;
+		}
+		TIFFGetFieldDefaulted(tif,TIFFTAG_YCBCRSUBSAMPLING,ycbcrsubsampling+0,
+		    ycbcrsubsampling+1);
+		if ((ycbcrsubsampling[0] != 1 && ycbcrsubsampling[0] != 2 && ycbcrsubsampling[0] != 4)
+		    ||(ycbcrsubsampling[1] != 1 && ycbcrsubsampling[1] != 2 && ycbcrsubsampling[1] != 4))
+		{
+			TIFFErrorExt(tif->tif_clientdata,module,
+				     "Invalid YCbCr subsampling (%dx%d)", 
+				     ycbcrsubsampling[0], 
+				     ycbcrsubsampling[1] );
 			return 0;
 		}
 		samplingblock_samples=ycbcrsubsampling[0]*ycbcrsubsampling[1]+2;
 		samplingblocks_hor=TIFFhowmany_32(td->td_imagewidth,ycbcrsubsampling[0]);
 		samplingblocks_ver=TIFFhowmany_32(nrows,ycbcrsubsampling[1]);
-		samplingrow_samples=multiply_64(tif,samplingblocks_hor,samplingblock_samples,module);
-		samplingrow_size=TIFFhowmany8_64(multiply_64(tif,samplingrow_samples,td->td_bitspersample,module));
-		return(multiply_64(tif,samplingrow_size,samplingblocks_ver,module));
+		samplingrow_samples=_TIFFMultiply64(tif,samplingblocks_hor,samplingblock_samples,module);
+		samplingrow_size=TIFFhowmany8_64(_TIFFMultiply64(tif,samplingrow_samples,td->td_bitspersample,module));
+		return(_TIFFMultiply64(tif,samplingrow_size,samplingblocks_ver,module));
 	}
 	else
-		return(multiply_64(tif,nrows,TIFFScanlineSize64(tif),module));
+		return(_TIFFMultiply64(tif,nrows,TIFFScanlineSize64(tif),module));
 }
 tmsize_t
 TIFFVStripSize(TIFF* tif, uint32 nrows)
@@ -174,7 +154,7 @@ TIFFRawStripSize64(TIFF* tif, uint32 strip)
 
 	if (bytecount == 0)
 	{
-#if defined(__WIN32__) && defined(_MSC_VER)
+#if defined(__WIN32__) && (defined(_MSC_VER) || defined(__MINGW32__))
 		TIFFErrorExt(tif->tif_clientdata, module,
 			     "%I64u: Invalid strip byte count, strip %lu",
 			     (unsigned __int64) bytecount,
@@ -307,33 +287,37 @@ TIFFScanlineSize64(TIFF* tif)
 			uint32 samplingblocks_hor;
 			uint64 samplingrow_samples;
 			uint64 samplingrow_size;
-			assert(td->td_samplesperpixel==3);
-			TIFFGetFieldDefaulted(tif,TIFFTAG_YCBCRSUBSAMPLING,ycbcrsubsampling+0,
-			    ycbcrsubsampling+1);
-			assert((ycbcrsubsampling[0]==1)||(ycbcrsubsampling[0]==2)||(ycbcrsubsampling[0]==4));
-			assert((ycbcrsubsampling[1]==1)||(ycbcrsubsampling[1]==2)||(ycbcrsubsampling[1]==4));
-			if (ycbcrsubsampling[0]*ycbcrsubsampling[1]==0)
+			if(td->td_samplesperpixel!=3)
 			{
-				TIFFErrorExt(tif->tif_clientdata,module,
-				    "Invalid YCbCr subsampling");
-				return 0;
+                            TIFFErrorExt(tif->tif_clientdata,module,
+                                         "Invalid td_samplesperpixel value");
+                            return 0;
 			}
-			samplingblock_samples=ycbcrsubsampling[0]*ycbcrsubsampling[1]+2;
-			samplingblocks_hor=TIFFhowmany_32(td->td_imagewidth,ycbcrsubsampling[0]);
-			samplingrow_samples=multiply_64(tif,samplingblocks_hor,samplingblock_samples,module);
-			samplingrow_size=TIFFhowmany_64(multiply_64(tif,samplingrow_samples,td->td_bitspersample,module),8);
-			assert((samplingrow_size%ycbcrsubsampling[1])==0);
-			scanline_size=(samplingrow_size/ycbcrsubsampling[1]);
+			TIFFGetFieldDefaulted(tif,TIFFTAG_YCBCRSUBSAMPLING,
+                                              ycbcrsubsampling+0,
+                                              ycbcrsubsampling+1);
+			if (((ycbcrsubsampling[0]!=1)&&(ycbcrsubsampling[0]!=2)&&(ycbcrsubsampling[0]!=4)) ||
+			    ((ycbcrsubsampling[1]!=1)&&(ycbcrsubsampling[1]!=2)&&(ycbcrsubsampling[1]!=4)))
+			{
+                            TIFFErrorExt(tif->tif_clientdata,module,
+                                         "Invalid YCbCr subsampling");
+                            return 0;
+			}
+			samplingblock_samples = ycbcrsubsampling[0]*ycbcrsubsampling[1]+2;
+			samplingblocks_hor = TIFFhowmany_32(td->td_imagewidth,ycbcrsubsampling[0]);
+			samplingrow_samples = _TIFFMultiply64(tif,samplingblocks_hor,samplingblock_samples,module);
+			samplingrow_size = TIFFhowmany_64(_TIFFMultiply64(tif,samplingrow_samples,td->td_bitspersample,module),8);
+			scanline_size = (samplingrow_size/ycbcrsubsampling[1]);
 		}
 		else
 		{
 			uint64 scanline_samples;
-			scanline_samples=multiply_64(tif,td->td_imagewidth,td->td_samplesperpixel,module);
-			scanline_size=TIFFhowmany_64(multiply_64(tif,scanline_samples,td->td_bitspersample,module),8);
+			scanline_samples=_TIFFMultiply64(tif,td->td_imagewidth,td->td_samplesperpixel,module);
+			scanline_size=TIFFhowmany_64(_TIFFMultiply64(tif,scanline_samples,td->td_bitspersample,module),8);
 		}
 	}
 	else
-		scanline_size=TIFFhowmany_64(multiply_64(tif,td->td_imagewidth,td->td_bitspersample,module),8);
+		scanline_size=TIFFhowmany_64(_TIFFMultiply64(tif,td->td_imagewidth,td->td_bitspersample,module),8);
 	return(scanline_size);
 }
 tmsize_t
@@ -365,12 +349,12 @@ TIFFRasterScanlineSize64(TIFF* tif)
 	TIFFDirectory *td = &tif->tif_dir;
 	uint64 scanline;
 
-	scanline = multiply_64 (tif, td->td_bitspersample, td->td_imagewidth, module);
+	scanline = _TIFFMultiply64(tif, td->td_bitspersample, td->td_imagewidth, module);
 	if (td->td_planarconfig == PLANARCONFIG_CONTIG) {
-		scanline = multiply_64 (tif, scanline, td->td_samplesperpixel, module);
+		scanline = _TIFFMultiply64(tif, scanline, td->td_samplesperpixel, module);
 		return (TIFFhowmany8_64(scanline));
 	} else
-		return (multiply_64 (tif, TIFFhowmany8_64(scanline),
+		return (_TIFFMultiply64(tif, TIFFhowmany8_64(scanline),
 		    td->td_samplesperpixel, module));
 }
 tmsize_t
@@ -390,3 +374,10 @@ TIFFRasterScanlineSize(TIFF* tif)
 }
 
 /* vim: set ts=8 sts=8 sw=8 noet: */
+/*
+ * Local Variables:
+ * mode: c
+ * c-basic-offset: 8
+ * fill-column: 78
+ * End:
+ */

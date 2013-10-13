@@ -1,4 +1,4 @@
-/* $Id: tiffiop.h,v 1.73 2008/04/14 09:05:26 dron Exp $ */
+/* $Id: tiffiop.h,v 1.84 2012-05-30 01:50:17 fwarmerdam Exp $ */
 
 /*
  * Copyright (c) 1988-1997 Sam Leffler
@@ -58,6 +58,7 @@ extern void *lfind(const void *, const void *, size_t *, size_t,
 #endif
 
 #include "tiffio.h"
+
 #include "tif_dir.h"
 
 #ifndef STRIP_SIZE_DEFAULT
@@ -70,28 +71,6 @@ extern void *lfind(const void *, const void *, size_t *, size_t,
 #define	TRUE	1
 #define	FALSE	0
 #endif
-
-/*
- * TIFF Image File Directories are comprised of a table of field
- * descriptors of the form shown below.  The table is sorted in
- * ascending order by tag.  The values associated with each entry are
- * disjoint and may appear anywhere in the file (so long as they are
- * placed on a word boundary).
- *
- * If the value is 4 bytes or less, in ClassicTIFF, or 8 bytes or less in
- * BigTIFF, then it is placed in the offset field to save space. If so,
- * it is left-justified in the offset field.
- */
-typedef struct {
-	uint16 tdir_tag;        /* see below */
-	uint16 tdir_type;       /* data type; see below */
-	uint64 tdir_count;      /* number of items; length in spec */
-	union {
-		uint16 toff_short;
-		uint32 toff_long;
-		uint64 toff_long8;
-	} tdir_offset;		/* either offset or the data itself if fits */
-} TIFFDirEntry;
 
 typedef struct client_info {
     struct client_info *next;
@@ -141,6 +120,8 @@ struct tiff {
 	#define TIFF_BIGTIFF     0x80000 /* read/write bigtiff */
         #define TIFF_BUF4WRITE  0x100000 /* rawcc bytes are for writing */
         #define TIFF_DIRTYSTRIP 0x200000 /* stripoffsets/stripbytecount dirty*/
+        #define TIFF_PERSAMPLE  0x400000 /* get/set per sample tags as arrays */
+        #define TIFF_BUFFERMMAP 0x800000 /* read buffer (tif_rawdata) points into mmap() memory */
 	uint64               tif_diroff;       /* file offset of current directory */
 	uint64               tif_nextdiroff;   /* file offset of following directory */
 	uint64*              tif_dirlist;      /* list of offsets to already seen directories to prevent IFD looping */
@@ -192,6 +173,8 @@ struct tiff {
 	tmsize_t             tif_scanlineskew; /* scanline skew for reading strips */
 	uint8*               tif_rawdata;      /* raw data buffer */
 	tmsize_t             tif_rawdatasize;  /* # of bytes in raw data buffer */
+        tmsize_t             tif_rawdataoff;   /* rawdata offset within strip */
+        tmsize_t             tif_rawdataloaded;/* amount of data in rawdata */
 	uint8*               tif_rawcp;        /* current spot in raw buffer */
 	tmsize_t             tif_rawcc;        /* bytes unread from raw buffer */
 	/* memory-mapped file support */
@@ -258,12 +241,17 @@ struct tiff {
 #endif
 
 /* NB: the uint32 casts are to silence certain ANSI-C compilers */
-#define TIFFhowmany_32(x, y) ((((uint32)(x))+(((uint32)(y))-1))/((uint32)(y)))
+#define TIFFhowmany_32(x, y) (((uint32)x < (0xffffffff - (uint32)(y-1))) ? \
+			   ((((uint32)(x))+(((uint32)(y))-1))/((uint32)(y))) : \
+			   0U)
 #define TIFFhowmany8_32(x) (((x)&0x07)?((uint32)(x)>>3)+1:(uint32)(x)>>3)
 #define TIFFroundup_32(x, y) (TIFFhowmany_32(x,y)*(y))
 #define TIFFhowmany_64(x, y) ((((uint64)(x))+(((uint64)(y))-1))/((uint64)(y)))
 #define TIFFhowmany8_64(x) (((x)&0x07)?((uint64)(x)>>3)+1:(uint64)(x)>>3)
 #define TIFFroundup_64(x, y) (TIFFhowmany_64(x,y)*(y))
+
+/* Safe multiply which returns zero if there is an integer overflow */
+#define TIFFSafeMultiply(t,v,m) ((((t)(m) != (t)0) && (((t)(((v)*(m))/(m))) == (t)(v))) ? (t)((v)*(m)) : (t)0)
 
 #define TIFFmax(A,B) ((A)>(B)?(A):(B))
 #define TIFFmin(A,B) ((A)<(B)?(A):(B))
@@ -312,8 +300,10 @@ extern TIFFErrorHandler _TIFFerrorHandler;
 extern TIFFErrorHandlerExt _TIFFwarningHandlerExt;
 extern TIFFErrorHandlerExt _TIFFerrorHandlerExt;
 
-extern void* _TIFFCheckMalloc(TIFF* tif, tmsize_t nmemb, tmsize_t elem_size, const char* what);
-extern void* _TIFFCheckRealloc(TIFF* tif, void* buffer, tmsize_t nmemb, tmsize_t elem_size, const char* what);
+extern uint32 _TIFFMultiply32(TIFF*, uint32, uint32, const char*);
+extern uint64 _TIFFMultiply64(TIFF*, uint64, uint64, const char*);
+extern void* _TIFFCheckMalloc(TIFF*, tmsize_t, tmsize_t, const char*);
+extern void* _TIFFCheckRealloc(TIFF*, void*, tmsize_t, tmsize_t, const char*);
 
 extern double _TIFFUInt64ToDouble(uint64);
 extern float _TIFFUInt64ToFloat(uint64);
@@ -353,6 +343,9 @@ extern int TIFFInitPixarLog(TIFF*, int);
 #ifdef LOGLUV_SUPPORT
 extern int TIFFInitSGILog(TIFF*, int);
 #endif
+#ifdef LZMA_SUPPORT
+extern int TIFFInitLZMA(TIFF*, int);
+#endif
 #ifdef VMS
 extern const TIFFCodec _TIFFBuiltinCODECS[];
 #else
@@ -365,3 +358,10 @@ extern TIFFCodec _TIFFBuiltinCODECS[];
 #endif /* _TIFFIOP_ */
 
 /* vim: set ts=8 sts=8 sw=8 noet: */
+/*
+ * Local Variables:
+ * mode: c
+ * c-basic-offset: 8
+ * fill-column: 78
+ * End:
+ */

@@ -1,4 +1,4 @@
-/* $Id: tif_write.c,v 1.32 2007/12/31 21:52:16 fwarmerdam Exp $ */
+/* $Id: tif_write.c,v 1.37 2012-08-13 22:10:17 fwarmerdam Exp $ */
 
 /*
  * Copyright (c) 1988-1997 Sam Leffler
@@ -226,17 +226,28 @@ TIFFWriteEncodedStrip(TIFF* tif, uint32 strip, void* data, tmsize_t cc)
 			return ((tmsize_t) -1);
 		tif->tif_flags |= TIFF_CODERSETUP;
 	}
-        
-	tif->tif_rawcc = 0;
-	tif->tif_rawcp = tif->tif_rawdata;  
 
 	if( td->td_stripbytecount[strip] > 0 )
         {
+            /* Make sure that at the first attempt of rewriting the tile, we will have */
+            /* more bytes available in the output buffer than the previous byte count, */
+            /* so that TIFFAppendToStrip() will detect the overflow when it is called the first */
+            /* time if the new compressed tile is bigger than the older one. (GDAL #4771) */
+            if( tif->tif_rawdatasize <= td->td_stripbytecount[strip] )
+            {
+                if( !(TIFFWriteBufferSetup(tif, NULL,
+                    (tmsize_t)TIFFroundup_64((uint64)(td->td_stripbytecount[strip] + 1), 1024))) )
+                    return ((tmsize_t)(-1));
+            }
+
 	    /* Force TIFFAppendToStrip() to consider placing data at end
                of file. */
             tif->tif_curoff = 0;
         }
-        
+
+    tif->tif_rawcc = 0;
+    tif->tif_rawcp = tif->tif_rawdata;
+
 	tif->tif_flags &= ~TIFF_POSTENCODE;
 	sample = (uint16)(strip / td->td_stripsperimage);
 	if (!(*tif->tif_preencode)(tif, sample))
@@ -362,16 +373,27 @@ TIFFWriteEncodedTile(TIFF* tif, uint32 tile, void* data, tmsize_t cc)
         tif->tif_flags |= TIFF_BUF4WRITE;
 	tif->tif_curtile = tile;
 
-	tif->tif_rawcc = 0;
-	tif->tif_rawcp = tif->tif_rawdata;
-
 	if( td->td_stripbytecount[tile] > 0 )
         {
+            /* Make sure that at the first attempt of rewriting the tile, we will have */
+            /* more bytes available in the output buffer than the previous byte count, */
+            /* so that TIFFAppendToStrip() will detect the overflow when it is called the first */
+            /* time if the new compressed tile is bigger than the older one. (GDAL #4771) */
+            if( tif->tif_rawdatasize <= td->td_stripbytecount[tile] )
+            {
+                if( !(TIFFWriteBufferSetup(tif, NULL,
+                    (tmsize_t)TIFFroundup_64((uint64)(td->td_stripbytecount[tile] + 1), 1024))) )
+                    return ((tmsize_t)(-1));
+            }
+
 	    /* Force TIFFAppendToStrip() to consider placing data at end
                of file. */
             tif->tif_curoff = 0;
         }
-        
+
+    tif->tif_rawcc = 0;
+    tif->tif_rawcp = tif->tif_rawdata;
+
 	/* 
 	 * Compute tiles per row & per column to compute
 	 * current row and column
@@ -498,6 +520,8 @@ TIFFWriteCheck(TIFF* tif, int tiles, const char* module)
 		    "Can not write scanlines to a tiled image");
 		return (0);
 	}
+
+        _TIFFFillStriles( tif );
         
 	/*
 	 * On the first write verify all the required information
@@ -521,7 +545,8 @@ TIFFWriteCheck(TIFF* tif, int tiles, const char* module)
 		 * because this field is used in other parts of library even
 		 * in the single band case.
 		 */
-		tif->tif_dir.td_planarconfig = PLANARCONFIG_CONTIG;
+		if (!TIFFFieldSet(tif, FIELD_PLANARCONFIG))
+                    tif->tif_dir.td_planarconfig = PLANARCONFIG_CONTIG;
 	} else {
 		if (!TIFFFieldSet(tif, FIELD_PLANARCONFIG)) {
 			TIFFErrorExt(tif->tif_clientdata, module,
@@ -731,9 +756,16 @@ TIFFFlushData1(TIFF* tif)
  * appended to the end of the file.
  */
 void
-TIFFSetWriteOffset(TIFF* tif, uint64 off)
+TIFFSetWriteOffset(TIFF* tif, toff_t off)
 {
 	tif->tif_curoff = off;
 }
 
 /* vim: set ts=8 sts=8 sw=8 noet: */
+/*
+ * Local Variables:
+ * mode: c
+ * c-basic-offset: 8
+ * fill-column: 78
+ * End:
+ */
