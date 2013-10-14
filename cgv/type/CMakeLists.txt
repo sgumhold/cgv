@@ -10,8 +10,8 @@ find_package(ppp)
 file(GLOB_RECURSE SOURCES RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "*.cxx")
 # Header files
 file(GLOB_RECURSE PUBLIC_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "*.h")
-list(REMOVE_ITEM PUBLIC_HEADERS "info/type_access.h")
-list(REMOVE_ITEM PUBLIC_HEADERS "info/type_ptr.h")
+#list(REMOVE_ITEM PUBLIC_HEADERS "info/type_access.h")
+#list(REMOVE_ITEM PUBLIC_HEADERS "info/type_ptr.h")
 
 # Files to be preprocessed by PPP
 file(GLOB_RECURSE PPP_SOURCES RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "*.ph")

@@ -223,6 +223,7 @@ macro(build_core_components_finish)
 					${CGV_BASE}/cmake/cgvTargetsConfig.cmake.in
 					${CGV_BASE}/cmake/CMakeMacroParseArguments.cmake
 					${CGV_BASE}/cmake/createConfigScript.cmake
+					${CGV_BASE}/cmake/CMakePackageConfigHelpers.cmake
 					${CGV_BASE}/cmake/FindPkg.cmake.in
 					${CGV_BASE}/cmake/PkgBinConfig.cmake.in
 					${CGV_BASE}/cmake/PkgLibConfig.cmake.in

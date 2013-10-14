@@ -7,12 +7,13 @@ include("../../cmake/buildCoreComponents.cmake")
 file(GLOB_RECURSE SOURCES RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "*.cxx")
 # Header files
 file(GLOB_RECURSE PUBLIC_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "*.h")
+file(GLOB_RECURSE PUBLIC_HEADERS_HH RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "*.hh")
 
 # Definition of the component
 cgv_add_core_component(media
 	SOURCES ${SOURCES}
 	HEADERS ${HEADERS} 
-	PUBLIC_HEADERS ${PUBLIC_HEADERS}
+	PUBLIC_HEADERS ${PUBLIC_HEADERS} ${PUBLIC_HEADERS_HH}
 	CGV_DEPENDENCIES utils type data base)
 
 # This component has multiple static and shared definitions
