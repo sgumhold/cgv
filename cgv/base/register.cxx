@@ -768,7 +768,10 @@ resource_file_registration::resource_file_registration(const char* symbol)
 
 std::string extend_plugin_name(const std::string& fn)
 {
-	std::string n = cgv::utils::file::drop_extension(fn)+"_";
+	std::string n = cgv::utils::file::drop_extension(fn);
+#if defined(_WIN32) || defined(_DEBUG)
+	n += "_";
+#endif
 #ifdef _DEBUG
 	n += "d";
 #endif
