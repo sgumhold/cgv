@@ -1,4 +1,4 @@
-get_filename_component(SRC_NAME "${CMAKE_CURRENT_SOURCE_DIR}" PATH)
+file(RELATIVE_PATH SRC_NAME "${CMAKE_SOURCE_DIR}" "${CMAKE_CURRENT_SOURCE_DIR}")
 set(LOG_BASE "${CMAKE_BINARY_DIR}/@BUILD_BASE@/log/shader/${SRC_NAME}")
 
 macro(cgv_test_shaders target)
