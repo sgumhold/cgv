@@ -33,6 +33,7 @@ struct win32_gl_context : public gl_context
 	static LRESULT CALLBACK MainWndProc(HWND, UINT, WPARAM, LPARAM); 
 
 	bool init_application(); 
+	bool ensure_init_application(); 
 	bool init_instance(const tstring& title, int); 
 	bool set_pixel_format();
 	bool create(const std::string& title, bool show);
@@ -276,10 +277,21 @@ bool win32_gl_context::set_pixel_format()
 	return SetPixelFormat(hdc, iPixelFormat, &pfd) == TRUE;
 }
 
+bool win32_gl_context::ensure_init_application()
+{
+	static bool is_initialized = false;
+	static bool result = false;
+	if (!is_initialized) {
+		result = init_application();
+		is_initialized = true;
+	}
+	return result;
+}
+
 bool win32_gl_context::create(const std::string& title, bool show)
 {
 	hinst = GetModuleHandle(NULL);
-	if (!init_application()) {
+	if (!ensure_init_application()) {
 		std::cout << "failed to init application" << std::endl;
 		return false;
 	}
