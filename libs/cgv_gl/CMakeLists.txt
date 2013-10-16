@@ -31,6 +31,7 @@ set(HEADERS
 set(SOURCES
 	gl/gl.cxx
 	gl/gl_context.cxx
+	gl/gl_context_unix.cxx
 	gl/gl_cursor.cxx
 	gl/gl_depth_peeler.cxx
 	gl/gl_image_drawable_base.cxx

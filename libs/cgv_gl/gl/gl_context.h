@@ -223,9 +223,6 @@ public:
 	//@}
 };
 
-extern CGV_API context* create_gl_context(unsigned int w = 800, 
-		unsigned int h = 600, const std::string& title = "", bool show = false);
-
 		}
 	}
 }
