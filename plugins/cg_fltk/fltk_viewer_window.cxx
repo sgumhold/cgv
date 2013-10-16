@@ -200,8 +200,8 @@ std::string fltk_viewer_window::get_property_declarations()
 {
 	std::string props = fltk_base::get_property_declarations();
 	if (view)
-		props += std::string(";")+view->get_property_declarations();
-	return props+";bg_clr_idx:uint32;gui:bool;icon:int32;menu:bool;menu_order:string;state:string;title:string;W:uint32;H:uint32";
+		props += std::string(";")+view->get_property_declarations()+";"+tab_group->get_property_declarations();
+	return props+";bg_clr_idx:uint32;gui:bool;icon:int32;menu:bool;menu_order:string;dock_order:string;state:string;title:string;W:uint32;H:uint32";
 }
 
 void fltk_viewer_window::ensure_menu_order()
@@ -315,6 +315,8 @@ bool fltk_viewer_window::set_void(const std::string& property, const std::string
 		return tab_group->set_void(property, value_type, value_ptr);
 	}
 	if (view && view->set_void(property, value_type, value_ptr))
+		return true;
+	if (tab_group && tab_group->set_void(property, value_type, value_ptr))
 		return true;
 
 	if (property == "status_info") {
@@ -475,6 +477,8 @@ bool fltk_viewer_window::get_void(const std::string& property, const std::string
 		return true;
 
 	if (view && view->get_void(property, value_type, value_ptr))
+		return true;
+	if (tab_group && tab_group->get_void(property, value_type, value_ptr))
 		return true;
 
 	if (property == "gui")
