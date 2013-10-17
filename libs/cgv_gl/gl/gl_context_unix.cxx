@@ -97,7 +97,12 @@ struct unix_gl_context : public gl_context
 
 bool unix_gl_context::make_current() const
 {
-	if (!glXMakeCurrent(d_dpy, d_win, d_ctx)) {
+	bool res;
+	XLockDisplay(d_dpy);
+	res = glXMakeCurrent(d_dpy, d_win, d_ctx);
+	XUnlockDisplay(d_dpy);
+	
+	if (!res) {
 		std::cerr << "failed to make current" << std::endl;
 		return false;
 	}
@@ -115,9 +120,11 @@ unix_gl_context::unix_gl_context(unsigned int w, unsigned int h)
 
 unix_gl_context::~unix_gl_context()
 {
+	XLockDisplay(d_dpy);
 	glXMakeCurrent(d_dpy, d_win, d_ctx);
 	glXDestroyContext(d_dpy, d_ctx);
 	XDestroyWindow(d_dpy, d_win);
+	XUnlockDisplay(d_dpy);
 	XCloseDisplay(d_dpy);
 	d_dpy = 0;
 	d_win = 0;
@@ -134,6 +141,7 @@ bool unix_gl_context::create(const std::string& title, bool show)
 		std::cerr << "Couldn't open X11 display" << std::endl;
 		return false;
 	}
+	XLockDisplay(d_dpy);
 
 	int attr[] = {
 		GLX_RGBA,
@@ -166,55 +174,57 @@ bool unix_gl_context::create(const std::string& title, bool show)
 
 	if (!visinfo) {
 		std::cerr << "Couldn't get a visual" << std::endl;
-		return false;
+	}
+	else {
+		d_ctx = glXCreateContext(d_dpy, visinfo, NULL, True);
+		
+		
+		// Window parameters
+		XSetWindowAttributes winattr;
+		winattr.background_pixel = 0;
+		winattr.border_pixel = 0;
+		winattr.colormap = XCreateColormap(d_dpy, root, visinfo->visual, AllocNone);
+		winattr.event_mask = StructureNotifyMask | ExposureMask | KeyPressMask;
+		unsigned long mask = CWBackPixel | CWBorderPixel | CWColormap | CWEventMask;
+
+		//std::cout << "Window depth " << visinfo->depth << ", w " << width << "x" << height << std::endl;
+		d_win = XCreateWindow(d_dpy, root, 0, 0, width, height, 0, 
+				visinfo->depth, InputOutput, visinfo->visual, mask, &winattr);
+
+		/*
+		// OpenGL 3.2
+		int gl3attr[] = {
+			GLX_CONTEXT_MAJOR_VERSION_ARB, 3,
+			GLX_CONTEXT_MINOR_VERSION_ARB, 2,
+			GLX_CONTEXT_FLAGS_ARB, GLX_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB,
+			None
+		};
+
+		d_ctx = glXCreateContextAttribsARB(d_dpy, fbcfg[0], NULL, true, gl3attr);
+		*/
+		
+
+		XMapWindow(d_dpy, d_win);
+		glXMakeCurrent(d_dpy, d_win, d_ctx);
+		XUnmapWindow(d_dpy, d_win);
+		/*
+		std::cout << "OpenGL:\n\tvendor " << glGetString(GL_VENDOR) 
+				<< "\n\trenderer " << glGetString(GL_RENDERER)
+				<< "\n\tversion " << glGetString(GL_VERSION)
+				<< "\n\tshader language " << glGetString(GL_SHADING_LANGUAGE_VERSION)
+				<< "\n" << std::endl;
+				*/
+		/*
+		int extCount;
+		glGetIntegerv(GL_NUM_EXTENSIONS, &extCount);
+		for (int i = 0; i < extCount; ++i)
+			std::cout << "Extension " << i+1 << "/" << extCount << ": " << glGetStringi(GL_EXTENSIONS, i) << std::endl;
+		*/
+		glViewport(0, 0, width, height);
 	}
 	
-	d_ctx = glXCreateContext(d_dpy, visinfo, NULL, True);
-	
-	
-	// Window parameters
-	XSetWindowAttributes winattr;
-	winattr.background_pixel = 0;
-	winattr.border_pixel = 0;
-	winattr.colormap = XCreateColormap(d_dpy, root, visinfo->visual, AllocNone);
-	winattr.event_mask = StructureNotifyMask | ExposureMask | KeyPressMask;
-	unsigned long mask = CWBackPixel | CWBorderPixel | CWColormap | CWEventMask;
-
-	//std::cout << "Window depth " << visinfo->depth << ", w " << width << "x" << height << std::endl;
-	d_win = XCreateWindow(d_dpy, root, 0, 0, width, height, 0, 
-			visinfo->depth, InputOutput, visinfo->visual, mask, &winattr);
-
-	/*
-	// OpenGL 3.2
-	int gl3attr[] = {
-		GLX_CONTEXT_MAJOR_VERSION_ARB, 3,
-		GLX_CONTEXT_MINOR_VERSION_ARB, 2,
-		GLX_CONTEXT_FLAGS_ARB, GLX_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB,
-		None
-	};
-
-	d_ctx = glXCreateContextAttribsARB(d_dpy, fbcfg[0], NULL, true, gl3attr);
-	*/
-	
 	XFree(visinfo);
-
-	XMapWindow(d_dpy, d_win);
-	glXMakeCurrent(d_dpy, d_win, d_ctx);
-	XUnmapWindow(d_dpy, d_win);
-	/*
-	std::cout << "OpenGL:\n\tvendor " << glGetString(GL_VENDOR) 
-	          << "\n\trenderer " << glGetString(GL_RENDERER)
-			  << "\n\tversion " << glGetString(GL_VERSION)
-			  << "\n\tshader language " << glGetString(GL_SHADING_LANGUAGE_VERSION)
-			  << "\n" << std::endl;
-			  */
-	/*
-	int extCount;
-	glGetIntegerv(GL_NUM_EXTENSIONS, &extCount);
-	for (int i = 0; i < extCount; ++i)
-		std::cout << "Extension " << i+1 << "/" << extCount << ": " << glGetStringi(GL_EXTENSIONS, i) << std::endl;
-	*/
-	glViewport(0, 0, width, height);
+	XUnlockDisplay(d_dpy);
 	return true;
 }
 
