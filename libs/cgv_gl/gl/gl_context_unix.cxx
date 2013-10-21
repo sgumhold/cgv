@@ -50,6 +50,8 @@ struct unix_gl_context : public gl_context
 	bool is_current() const { return true; }
 	/// make the current context current
 	bool make_current() const;
+	///
+	void clear_current() const;
 	//@}
 
 	/// return the width of the window
@@ -107,6 +109,13 @@ bool unix_gl_context::make_current() const
 		return false;
 	}
 	return true;
+}
+
+void unix_gl_context::clear_current() const
+{
+	XLockDisplay(d_dpy);
+	glXMakeCurrent(d_dpy, 0, 0);
+	XUnlockDisplay(d_dpy);
 }
 
 unix_gl_context::unix_gl_context(unsigned int w, unsigned int h)

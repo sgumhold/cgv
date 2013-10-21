@@ -644,6 +644,20 @@ bool fltk_gl_view::make_current() const
 	return true;
 }
 
+/// clear current context lock
+void fltk_gl_view::clear_current() const
+{
+#if USE_X11
+	std::cerr << "clear_current() not implemented for FLTK under linux!" << std::endl;
+	// glXMakeCurrent(xdisplay, 0, 0);
+#elif defined(_WIN32)
+	wglMakeCurrent(0, 0);
+#elif defined(__APPLE__)
+	// warning: the Quartz version should probably use Core GL (CGL) instead of AGL
+	aglSetCurrentContext(0);
+#endif
+}
+
 /// the context will be redrawn when the system is idle again
 void fltk_gl_view::post_redraw()
 {

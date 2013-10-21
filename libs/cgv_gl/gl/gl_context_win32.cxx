@@ -60,6 +60,9 @@ struct win32_gl_context : public gl_context
 	bool is_current() const { return true; }
 	/// make the current context current
 	bool make_current() const;
+	/// clear the current context, typically used in multi-threaded rendering to allow usage of context in several threads
+	void clear_current() const;
+
 	//@}
 
 	/// return the width of the window
@@ -220,10 +223,16 @@ bool win32_gl_context::make_current() const
 	if (glc == NULL)
 		return false;
 	if (!wglMakeCurrent(hdc,glc)) {
-		std::cerr << "failed to make current" << std::endl;
+		DWORD error = GetLastError();
+		std::cerr << "failed to make current [hdc=" << hdc << ", glc=" << glc << "] with error " << error << std::endl;
 		return false;
 	}
 	return true;
+}
+
+void win32_gl_context::clear_current() const
+{
+	wglMakeCurrent(NULL,NULL);
 }
 
 win32_gl_context::win32_gl_context(unsigned int w, unsigned int h)

@@ -474,6 +474,8 @@ public:
 	virtual bool is_current() const = 0;
 	/// make the current context current if possible
 	virtual bool make_current() const = 0;
+	/// clear the current context, typically used in multi-threaded rendering to allow usage of context in several threads
+	virtual void clear_current() const = 0;
 	//@}
 
 	/// return the width of the window

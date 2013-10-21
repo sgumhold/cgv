@@ -129,6 +129,8 @@ public:
 	bool is_current() const;
 	/// make the current context current if possible
 	bool make_current() const;
+	/// clear current context lock
+	void clear_current() const;
 	/// the context will be redrawn when the system is idle again
 	void post_redraw();
 	/// the context will be redrawn right now. This method cannot be called inside the following methods of a drawable: init, init_frame, draw, finish_draw
