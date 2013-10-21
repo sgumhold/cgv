@@ -77,6 +77,46 @@ bool mutex::try_lock()
 	return pthread_mutex_trylock(&(pthread_mutex_t&)pmutex) != EBUSY;
 }
 
+///construct a mutex
+condition_mutex::condition_mutex()
+{
+	pthread_cond_init(&(pthread_cond_t&)pcond, NULL);
+}
+
+///destruct a mutex
+condition_mutex::~condition_mutex()
+{
+	pthread_cond_destroy(&(pthread_cond_t&)pcond);
+}
+
+/// send the signal to unblock a thread waiting for the condition represented by this condition_mutex
+void condition_mutex::send_signal()
+{
+	pthread_cond_signal(&(pthread_cond_t&)pcond);
+}
+
+/// prefered approach to send the signal and implemented as {lock();send_signal();unlock();}
+void condition_mutex::send_signal_with_lock()
+{
+	lock();
+	send_signal();
+	unlock();
+}
+
+/// broadcast signal to unblock several threads waiting for the condition represented by this condition_mutex
+void condition_mutex::broadcast_signal()
+{
+	pthread_cond_broadcast(&(pthread_cond_t&)pcond);
+}
+
+/// prefered approach to broadcast the signal and implemented as {lock();broadcast_signal();unlock();}
+void condition_mutex::broadcast_signal_with_lock()
+{
+	lock();
+	broadcast_signal();
+	unlock();
+}
+
 	}
 }
 
