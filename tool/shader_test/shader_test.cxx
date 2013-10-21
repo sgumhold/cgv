@@ -60,6 +60,8 @@ struct fltk_gl_context : public gl::gl_context, public fltk::GlWindow
 	bool is_current() const { return true; }
 	/// make the current context current
 	bool make_current() const { const_cast<fltk_gl_context*>(this)->fltk::GlWindow::make_current(); return true; }
+	///
+	void clear_current() const {}
 	//@}
 
 	/// return the width of the window

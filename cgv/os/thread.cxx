@@ -3,6 +3,8 @@
 #include <iostream>
 #ifdef _WIN32
 #include <concrt.h>
+#else
+#include <unistd.h>
 #endif
 
 namespace cgv {
