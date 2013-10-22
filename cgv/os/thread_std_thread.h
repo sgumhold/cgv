@@ -109,14 +109,16 @@ thread::~thread()
 /// return the id of the currently executed thread
 thread_id_type thread::get_current_thread_id()
 {
-	return (int&) std::this_thread::get_id();
+	std::thread::id id = std::this_thread::get_id();
+	return (long long&) id;
 }
 
 /// return id of this thread
 thread_id_type thread::get_id() const
 {
 	std::thread& t = *((std::thread*&) pthread);
-	return (int&) t.get_id();
+	std::thread::id id = t.get_id();
+	return (long long&) id;
 }
 
 class function_thread : public thread
