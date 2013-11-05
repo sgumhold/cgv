@@ -527,7 +527,7 @@ unsigned int create_texture(const cgv::data::const_data_view& dv, unsigned level
 }
 
 /// cover the current viewport with a textured quad
-void gl_texture_to_screen()
+void gl_texture_to_screen(float xmin, float ymin, float xmax, float ymax)
 {
 	GLint mm;
 	glGetIntegerv(GL_MATRIX_MODE, &mm);
@@ -542,16 +542,16 @@ void gl_texture_to_screen()
 
 		glBegin(GL_QUADS);
 			glTexCoord2f(0,0);
-			glVertex2f(-1,-1);
+			glVertex2f(xmin, ymin);
 
 			glTexCoord2f(1,0);
-			glVertex2f( 1,-1);
+			glVertex2f(xmax, ymin);
 
 			glTexCoord2f(1,1);
-			glVertex2f( 1, 1);
+			glVertex2f(xmax, ymax);
 
 			glTexCoord2f(0,1);
-			glVertex2f(-1, 1);
+			glVertex2f(xmin, ymax);
 		glEnd();
 		
 		glPopMatrix();
@@ -561,6 +561,42 @@ void gl_texture_to_screen()
 	
 	glMatrixMode(mm);
 }
+
+void gl_1D_texture_to_screen(bool vary_along_x, float xmin, float ymin, float xmax, float ymax)
+{
+	GLint mm;
+	glGetIntegerv(GL_MATRIX_MODE, &mm);
+
+		glMatrixMode(GL_MODELVIEW);
+		glPushMatrix();
+		glLoadIdentity();
+
+		glMatrixMode(GL_PROJECTION);
+		glPushMatrix();
+		glLoadIdentity();
+
+		glBegin(GL_QUADS);
+			glTexCoord1f(0);
+			glVertex2f(xmin, ymin);
+
+			glTexCoord1f(vary_along_x ? 1.0f : 0.0f);
+			glVertex2f(xmax, ymin);
+
+			glTexCoord1f(1);
+			glVertex2f(xmax, ymax);
+
+			glTexCoord1f(vary_along_x ? 0.0f : 1.0f);
+			glVertex2f(xmin, ymax);
+		glEnd();
+		
+		glPopMatrix();
+		
+		glMatrixMode(GL_MODELVIEW);
+		glPopMatrix();
+	
+	glMatrixMode(mm);
+}
+
 
 		}
 	}

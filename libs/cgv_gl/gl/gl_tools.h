@@ -54,8 +54,11 @@ extern CGV_API unsigned int read_image_to_texture(const std::string& file_name, 
 extern CGV_API bool read_image_to_textures(const std::string& file_name, std::vector<unsigned>& tex_ids, std::vector<float>& durations, bool mipmaps = true, double* aspect_ptr = 0, bool* has_alpha_ptr = 0);
 
 
-/// cover the current viewport with a textured quad
-extern CGV_API void gl_texture_to_screen();
+/// cover the current viewport or a rectangle with it with a quad textured by a 1D texture
+extern CGV_API void gl_1D_texture_to_screen(bool vary_along_x = true, float xmin = -1.0f, float ymin = -1.0f, float xmax = 1.0f, float ymax = 1.0f);
+
+/// cover the current viewport or a rectangle with it with a textured quad
+extern CGV_API void gl_texture_to_screen(float xmin = -1.0f, float ymin = -1.0f, float xmax = 1.0f, float ymax = 1.0f);
 
 /// set the program variables needed by the lighting.glsl shader
 extern CGV_API void set_lighting_parameters(context& ctx, shader_program& prog);
