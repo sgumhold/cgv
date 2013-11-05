@@ -12,6 +12,25 @@ std::string file_open_dialog(const std::string& title, const std::string& filter
 	return d->file_open_dialog(title,filter,path);
 }
 
+/** ask the user for an existing directory. */
+std::string directory_open_dialog(const std::string& title, const std::string& path)
+{
+	gui_driver_ptr d = get_gui_driver();
+	if (d.empty())
+		return "";
+	return d->file_open_dialog(title,"",path);
+}
+
+/** ask the user for a new directory. */
+std::string directory_save_dialog(const std::string& title, const std::string& path)
+{
+	gui_driver_ptr d = get_gui_driver();
+	if (d.empty())
+		return "";
+	return d->file_save_dialog(title,"",path);
+}
+
+
 /// ask user for an open dialog that can select multiple files, return common path prefix and fill field of filenames
 std::string files_open_dialog(std::vector<std::string>& file_names, const std::string& title, const std::string& filter, const std::string& path)
 {

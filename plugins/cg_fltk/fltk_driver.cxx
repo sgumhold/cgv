@@ -16,9 +16,15 @@
 #include <cgv/gui/menu_provider.h>
 #include <cgv/gui/base_provider_generator.h>
 
-#ifdef _WINDOWS
+#ifdef _WIN32
 #include <windows.h>
+#define USE_WIN32
+#else
+#define USE_FLTK
 #endif
+
+// choose one out of the following 2 implementations
+
 
 using namespace cgv::base;
 
@@ -100,7 +106,7 @@ void fltk_driver::quit(int exit_code)
 	for (unsigned int i=0; i<windows.size(); ++i) {
 		static_cast<fltk::Window*>(static_cast<fltk::Widget*>(windows[i]->get_user_data()))->hide();
 	}
-#ifdef _WINDOWS
+#ifdef _WIN32
 	TerminateProcess(GetCurrentProcess(), exit_code);
 #else
 	exit(exit_code);
@@ -179,7 +185,7 @@ bool fltk_driver::query(const std::string& question, std::string& text, bool pas
 	return true;
 }
 
-#ifdef WIN32
+#ifdef USE_WIN32
 #include <Windows.h>
 #include <cgv/utils/convert.h>
 #include <cgv/utils/scan.h>
@@ -234,10 +240,59 @@ void prepare_ofn_struct(OPENFILENAME& ofn, _TCHAR *szFile, int file_size,
 		ofn.lpstrInitialDir = wpath.c_str();
 	}
 }
+#endif
+
+std::string directory_open_dialog(const std::string& title, const std::string& path)
+{
+	const char* fn = fltk::dir_chooser(title.c_str(), path.c_str());
+	if (!fn)
+		return "";
+	return fn;
+}
+
+std::string directory_save_dialog(const std::string& title, const std::string& path)
+{
+	return directory_open_dialog(title, path);
+}
+
+std::string fltk_driver::file_open_dialog(const std::string& title, const std::string& filter, const std::string& path)
+{
+	if (filter.empty())
+		return directory_open_dialog(title, path);
+#ifdef USE_FLTK
+	ensure_lock();
+
+	fltk::Widget* f = fltk::focus();
+	const char* fn = fltk::file_chooser(title.c_str(), filter.c_str(), path.empty()?NULL:path.c_str(), 0);
+	if(f != NULL)
+		f->window()->show();
+	if (!fn)
+		return std::string();
+	return std::string(fn);
+#endif
+
+#ifdef USE_WIN32
+	OPENFILENAME ofn;
+	_TCHAR szFile[500];
+	tstring wfilter, wtitle, wpath;
+	prepare_ofn_struct(ofn, szFile, 500, title, wtitle, filter, wfilter, path, wpath);
+	ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST;
+	if (GetOpenFileName(&ofn)==TRUE)
+#ifdef _UNICODE
+		return cgv::utils::wstr2str(szFile);
+#else
+		return szFile;
+#endif
+	return "";
+#endif
+	std::cerr << "no implementation" << std::endl;
+	return "";
+}
 
 /// ask user for a open dialog that can select multiple files
 std::string fltk_driver::files_open_dialog(std::vector<std::string>& file_names, const std::string& title, const std::string& filter, const std::string& path)
 {
+#ifdef USE_WIN32
 	OPENFILENAME ofn;
 	_TCHAR szFile[10000];
 	tstring wfilter, wtitle, wpath;
@@ -266,26 +321,16 @@ std::string fltk_driver::files_open_dialog(std::vector<std::string>& file_names,
 #endif
 	}
 	return "";
-}
-
-std::string fltk_driver::file_open_dialog(const std::string& title, const std::string& filter, const std::string& path)
-{
-	OPENFILENAME ofn;
-	_TCHAR szFile[500];
-	tstring wfilter, wtitle, wpath;
-	prepare_ofn_struct(ofn, szFile, 500, title, wtitle, filter, wfilter, path, wpath);
-	ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST;
-	if (GetOpenFileName(&ofn)==TRUE)
-#ifdef _UNICODE
-		return cgv::utils::wstr2str(szFile);
-#else
-		return szFile;
 #endif
+	std::cerr << "no implementation" << std::endl;
 	return "";
 }
 
 std::string fltk_driver::file_save_dialog(const std::string& title, const std::string& filter, const std::string& path)
 {
+	if (filter.empty())
+		return directory_save_dialog(title, path);
+#ifdef USE_WIN32
 	OPENFILENAME ofn;
 	_TCHAR szFile[500];
 	tstring wfilter, wtitle, wpath;
@@ -298,35 +343,15 @@ std::string fltk_driver::file_save_dialog(const std::string& title, const std::s
 		return szFile;
 #endif
 	return "";
-}
-#else
-/// ask user for a open dialog that can select multiple files
-std::string fltk_driver::files_open_dialog(std::vector<std::string>& file_names, const std::string& title, const std::string& filter, const std::string& path)
-{
-	// FIXME: THIS IS A STUB!
+#endif
+
+#ifdef USE_FLTK
+	return file_open_dialog(title, filter, path);
+#endif
+
+	std::cerr << "no implementation" << std::endl;
 	return "";
 }
-
-
-
-std::string fltk_driver::file_open_dialog(const std::string& title, const std::string& filter, const std::string& path)
-{
-	ensure_lock();
-
-	fltk::Widget* f = fltk::focus();
-	const char* fn = fltk::file_chooser(title.c_str(), filter.c_str(), path.empty()?NULL:path.c_str(), 0);
-	if(f != NULL)
-		f->window()->show();
-	if (!fn)
-		return std::string();
-	return std::string(fn);
-}
-
-std::string fltk_driver::file_save_dialog(const std::string& title, const std::string& filter, const std::string& path)
-{
-	return file_open_dialog(title, filter, path);
-}
-#endif
 
 void fltk_driver::lock()
 {
