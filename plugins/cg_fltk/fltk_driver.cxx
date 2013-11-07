@@ -23,17 +23,14 @@
 #define USE_FLTK
 #endif
 
-// choose one out of the following 2 implementations
-
-
 using namespace cgv::base;
 
 void ensure_lock()
 {
 	static bool lock_set = false;
 	if (!lock_set) {
-		lock_set = true;
 		fltk::lock();
+		lock_set = true;
 	}
 }
 
@@ -192,6 +189,7 @@ bool fltk_driver::query(const std::string& question, std::string& text, bool pas
 #include <cgv/utils/file.h>
 #include <cgv/utils/dir.h>
 #include <Tchar.h>
+#include <Shlobj.h> // BrowseFolder
 
 typedef std::basic_string<_TCHAR> tstring;
 
@@ -240,14 +238,77 @@ void prepare_ofn_struct(OPENFILENAME& ofn, _TCHAR *szFile, int file_size,
 		ofn.lpstrInitialDir = wpath.c_str();
 	}
 }
+
+void prepare_bi_struct(BROWSEINFO& bi, _TCHAR *wszPath,
+                       const std::string& title, tstring& wtitle,						
+                       const std::string& path, tstring& wpath
+						)
+{
+	ZeroMemory(&bi, sizeof(bi));
+	bi.hwndOwner = GetForegroundWindow();
+	bi.ulFlags = BIF_USENEWUI;
+
+#ifdef _UNICODE
+	wtitle =  cgv::utils::str2wstr(title);	
+	wpath =  cgv::utils::str2wstr(path);	
+#else
+	wtitle = title;    
+	wpath = path;    
+#endif    
+
+	bi.pidlRoot = NULL; 
+	bi.lpszTitle = wtitle.c_str();
+	bi.pszDisplayName = wszPath;
+	bi.lpfn = NULL;
+    			
+}
+
+
+
 #endif
 
 std::string directory_open_dialog(const std::string& title, const std::string& path)
 {
+#ifdef USE_FLTK
 	const char* fn = fltk::dir_chooser(title.c_str(), path.c_str());
 	if (!fn)
 		return "";
 	return fn;
+#endif
+
+#ifdef USE_WIN32
+	_TCHAR szPath[MAX_PATH];
+	tstring wtitle, wpath;
+	BROWSEINFO bi;
+		
+	HRESULT hr = CoInitialize( NULL );
+
+	if (SUCCEEDED(hr))
+	{
+		prepare_bi_struct(bi, szPath, title, wtitle, path, wpath);
+		LPITEMIDLIST item = SHBrowseForFolder(&bi); 
+
+		if( item != NULL )
+		{
+			SHGetPathFromIDList(item, szPath);
+			CoTaskMemFree(item);
+			CoUninitialize();
+#ifdef _UNICODE
+			return cgv::utils::wstr2str(szPath);
+#else
+			return szPath;
+#endif
+		}
+		else
+		{
+			CoUninitialize();
+			return "";
+		}
+	}
+	
+#endif
+	std::cerr << "no implementation" << std::endl;
+	return "";
 }
 
 std::string directory_save_dialog(const std::string& title, const std::string& path)
