@@ -3,6 +3,7 @@
 #include <cgv/gui/provider.h>
 #include <cgv/base/base.h>
 #include <cgv/base/base_generator.h>
+#include <cgv/utils/file.h>
 
 using namespace cgv::signal;
 
@@ -27,6 +28,8 @@ struct file_name_gui_creator : public cgv::gui::gui_creator
 		if (fn.empty())
 			return;
 		*value_ptr = fn;
+		if (b->get_interface<provider>())
+			b->get_interface<provider>()->update_member(value_ptr);
 		if (b)
 			b->on_set(value_ptr);
 	}
@@ -56,6 +59,7 @@ struct file_name_gui_creator : public cgv::gui::gui_creator
 	}
 };
 
+
 struct directory_gui_creator : public cgv::gui::gui_creator
 {
 	void open(std::string* value_ptr, cgv::base::base* b, const std::string& options)
@@ -63,6 +67,10 @@ struct directory_gui_creator : public cgv::gui::gui_creator
 		std::string title, path;
 		cgv::base::has_property(options, "title", title);
 		cgv::base::has_property(options, "path", path);
+		if (path.empty()) {
+			if (value_ptr && !value_ptr->empty())
+				path = cgv::utils::file::get_path(*value_ptr);
+		}
 		std::string fn;
 		bool save = false;
 		cgv::base::has_property(options, "save", save);
@@ -73,6 +81,8 @@ struct directory_gui_creator : public cgv::gui::gui_creator
 		if (fn.empty())
 			return;
 		*value_ptr = fn;
+		if (b->get_interface<provider>())
+			b->get_interface<provider>()->update_member(value_ptr);
 		if (b)
 			b->on_set(value_ptr);
 	}
