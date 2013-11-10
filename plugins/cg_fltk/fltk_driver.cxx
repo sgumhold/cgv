@@ -239,6 +239,38 @@ void prepare_ofn_struct(OPENFILENAME& ofn, _TCHAR *szFile, int file_size,
 	}
 }
 
+// CALLBACK message procedure for the browse folder dialog
+// this callback procedure sets the initial folder of the browse folder dialog
+int CALLBACK BrowseCallbackProc( HWND hwnd, UINT uMsg, 
+    LPARAM lParam,  LPARAM lpData ) 
+{
+    TCHAR initialPath[MAX_PATH];
+ 
+    switch(uMsg) 
+	{
+    
+        case BFFM_INITIALIZED:
+			// check whether initial folder is give
+            if (lpData) 
+			{
+				// so set the initial folder
+				wcscpy( initialPath, (TCHAR *)lpData );
+			}
+            else
+			{
+				// otherwise use current folder als initial folder
+				GetCurrentDirectory(sizeof(initialPath) / sizeof(TCHAR), initialPath); 
+			}
+
+            // set the initial folder in the folder dialog by a message
+            SendMessage(hwnd, BFFM_SETSELECTION, true, (LPARAM)initialPath);
+
+			break;
+	}
+    
+    return 0;
+}
+
 void prepare_bi_struct(BROWSEINFO& bi, _TCHAR *wszPath,
                        const std::string& title, tstring& wtitle,						
                        const std::string& path, tstring& wpath
@@ -258,9 +290,9 @@ void prepare_bi_struct(BROWSEINFO& bi, _TCHAR *wszPath,
 
 	bi.pidlRoot = NULL; 
 	bi.lpszTitle = wtitle.c_str();
-	bi.pszDisplayName = wszPath;
-	bi.lpfn = NULL;
-    			
+	bi.pszDisplayName = wszPath; // in this variable the choosen folder will be saved
+	bi.lpfn = BrowseCallbackProc; // set the callback procedure (used for initial folder setting)
+	bi.lParam = (LPARAM)wpath.c_str(); // remember the initial folder for the callback function (lpfn)    			
 }
 
 
