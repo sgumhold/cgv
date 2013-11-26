@@ -4,12 +4,25 @@
 
 #pragma warning (disable:4996)
 
+
+void myErrorHandler(const char*, const char*, va_list)
+{
+}
+
+void myErrorHandlerExt(thandle_t, const char*, const char*, va_list)
+{
+}
+
 /// default constructor
 tiff_reader::tiff_reader() : fp(0)
 {
 	allows_row_based = false;
 	nr_images = -1;
 	row = 0;
+	TIFFSetErrorHandler(myErrorHandler);
+	TIFFSetErrorHandlerExt(myErrorHandlerExt);
+	TIFFSetWarningHandler(myErrorHandler);
+	TIFFSetWarningHandlerExt(myErrorHandlerExt);
 }
 
 /// close file in destructor
@@ -165,43 +178,50 @@ bool tiff_reader::read_line(const data_format& df, const data_view& dv)
 /// read the whole image into the given data pointer, set data format if not yet specified and allocate the data ptr if not yet done. If image file has not been opened yet, open it and close it after reading
 bool tiff_reader::read_image(const data_format& df, const data_view& dv)
 {
-	if (allows_row_based) {
+	if (!allows_row_based && (df.get_entry_size()/df.get_nr_components() == 1 && df.get_nr_components() >= 3)) {
+		uint32* raster = (uint32*)_TIFFmalloc(df.get_width() * df.get_height() * sizeof (uint32));
+		if (raster == 0) {
+			last_error = "No space for raster buffer";
+			return false;
+		}
+
+		/* Read the image in one chunk into an RGBA array */
+		if (!TIFFReadRGBAImageOriented(fp, df.get_width(), df.get_height(), raster, ORIENTATION_TOPLEFT, 0)) {
+			_TIFFfree(raster);
+			last_error = "Error in reading RGBA image";
+			return false;
+		}
+		/*
+		 * XXX: raster array has 4-byte unsigned integer type, that is why
+		 * we should rearrange it here.
+		 */
+#if HOST_BIGENDIAN
+		TIFFSwabArrayOfLong(raster, df.get_size());
+#endif
+		int pixel_count = df.get_size();
+		if (df.get_entry_size() == 3) {
+			unsigned char *src, *dst;
+			src = (unsigned char *) raster;
+			dst = dv.get_ptr<unsigned char>();
+			while (pixel_count > 0) {
+				*(dst++) = *(src++);
+				*(dst++) = *(src++);
+				*(dst++) = *(src++);
+				src++, pixel_count--;
+			}
+		}
+		else {
+			memcpy(dv.get_ptr<unsigned char>(), raster, pixel_count*df.get_entry_size());
+		}
+		_TIFFfree( raster );
+	}
+	else {
 		bool success = true;
 		for (unsigned int y = 0; success && y < df.get_height(); ++y) {
 			success = read_line(df, dv(df.get_height()-y-1));
 		}
 		return success;
 	}
-    uint32* raster = (uint32*)_TIFFmalloc(df.get_width() * df.get_height() * sizeof (uint32));
-    if (raster == 0) {
-		last_error = "No space for raster buffer";
-        return false;
-    }
-
-    /* Read the image in one chunk into an RGBA array */
-    if (!TIFFReadRGBAImageOriented(fp, df.get_width(), df.get_height(), raster, ORIENTATION_TOPLEFT, 0)) {
-        _TIFFfree(raster);
-		last_error = "Error in reading RGBA image";
-        return false;
-    }
-    /*
-     * XXX: raster array has 4-byte unsigned integer type, that is why
-     * we should rearrange it here.
-     */
-#if HOST_BIGENDIAN
-    TIFFSwabArrayOfLong(raster, df.get_size());
-#endif
-	int pixel_count = df.get_size();
-    unsigned char *src, *dst;
-	src = (unsigned char *) raster;
-	dst = dv.get_ptr<unsigned char>();
-    while (pixel_count > 0) {
-		*(dst++) = *(src++);
-		*(dst++) = *(src++);
-		*(dst++) = *(src++);
-		src++, pixel_count--;
-    }
-    _TIFFfree( raster );
 	if (!TIFFLastDirectory(fp))
 		TIFFReadDirectory(fp);
 	return true;
