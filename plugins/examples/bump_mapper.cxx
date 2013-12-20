@@ -147,7 +147,7 @@ void bump_mapper::on_texture_change()
 void bump_mapper::create_gui() 
 {	
 	add_decorator("Surface Properties", "heading");
-	connect_copy(add_control("primitive", surface_primitive, "square,cube,sphere,torus")
+	connect_copy(add_control("primitive", surface_primitive, "dropdown", "enums='square,cube,sphere,torus'")
 		->value_change,rebind(static_cast<drawable*>(this),&drawable::post_redraw));
 	connect_copy(add_control("minor radius", minor_radius, "value_slider", "min=0.05;max=1;log=true;ticks=true")
 		->value_change,rebind(static_cast<drawable*>(this),&drawable::post_redraw));
@@ -179,7 +179,7 @@ void bump_mapper::create_gui()
 		->value_change,rebind(static_cast<drawable*>(this),&drawable::post_redraw));
 
 	add_decorator("Texture Properties", "heading");
-	connect_copy(add_control("texture", texture_selection, "checker,waves,alhambra,cartuja")
+	connect_copy(add_control("texture", texture_selection, "dropdown", "enums='checker,waves,alhambra,cartuja'")
 		->value_change,rebind(this,&bump_mapper::on_texture_change));
 	connect_copy(add_control("frequency", texture_frequency, "value_slider", "min=0;max=200;log=true;ticks=true")
 		->value_change,rebind(this,&bump_mapper::on_texture_change));
