@@ -2,6 +2,8 @@
 #include "dialog.h"
 #include <cgv/utils/tokenizer.h>
 #include <cgv/utils/scan.h>
+#include <cgv/gui/application.h>
+#include <cgv/signal/rebind.h>
 
 using namespace cgv::utils;
 
@@ -64,6 +66,57 @@ bool query(const std::string& question, std::string& text, bool password)
 
 	return d->query(question,text,password);
 }
+
+void dialog::set_true_and_hide(bool* result, cgv::gui::window* w)
+{
+	*result = true;
+	w->hide();
+}
+/// create from title and adjust size according to content
+dialog::dialog(const std::string& title, const std::string& group_type)
+{
+	result = false;
+	adjust_size = true;
+	D = cgv::gui::application::create_window(400,10,title,"generic");
+	D->set("group", group_type);
+}
+
+/// create from dimensions and title
+dialog::dialog(int w, int h, const std::string& title, const std::string& group_type)
+{
+	result = false;
+	adjust_size = h <= 0;
+	D = cgv::gui::application::create_window(w,adjust_size ? 10 : h,title,"generic");
+	D->set("group", group_type);
+}
+
+/// return the gui group to which new elements are to be add
+cgv::gui::gui_group_ptr dialog::group()
+{
+	return D->get_inner_group();
+}
+
+/// add buttons for ok and or cancel
+void dialog::add_std_buttons(const std::string& ok_label, const std::string& cancel_label)
+{
+	if (!ok_label.empty())
+		cgv::signal::connect_copy(group()->add_button(ok_label, "w=75", "     ")->click, cgv::signal::rebind(set_true_and_hide, cgv::signal::_c(&result), cgv::signal::_c(&(*D))));
+	if (!cancel_label.empty())
+		cgv::signal::connect_copy(group()->add_button(cancel_label, "w=75", "\n")->click, cgv::signal::rebind(&(*D), &cgv::gui::window::hide));
+}
+
+/// execute modal dialog and freeze all other windows
+bool dialog::exec()
+{
+	result = false;
+	if (adjust_size) {
+		D->set("H", group()->get<int>("H"));
+	}
+	D->set("hotspot", true);
+	D->show(true);
+	return result;
+}
+
 
 
 	}
