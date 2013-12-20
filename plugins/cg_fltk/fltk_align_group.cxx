@@ -185,7 +185,13 @@ bool fltk_align_group::get_void(const std::string& property, const std::string& 
 			return true;
 		}
 	}
-	return fltk_base::get_void(scroll_group, this, property, value_type, value_ptr);
+	else if (property == "H") {
+		cgv::type::set_variant(current_y, value_type, value_ptr);
+		return true;
+	}
+	else 
+		return fltk_base::get_void(scroll_group, this, property, value_type, value_ptr);
+	return false;
 }
 
 /// return a fltk::Widget pointer that can be cast into a fltk::Group

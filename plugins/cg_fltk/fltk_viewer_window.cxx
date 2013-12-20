@@ -115,10 +115,14 @@ void fltk_viewer_window::on_register()
 }
 
 /// show the window. This needs to be called after creation to make the window visible
-void fltk_viewer_window::show()
+void fltk_viewer_window::show(bool modal)
 {
-	fltk::Window::show();
+	if (modal)
+		fltk::Window::exec();
+	else
+		fltk::Window::show();
 }
+
 /// hide the window
 void fltk_viewer_window::hide()
 {
@@ -541,7 +545,7 @@ void fltk_viewer_window::set_window_state(WindowState ws, MonitorSelection ms, b
 		case WS_REGULAR:
 			break;
 		case WS_MINIMIZED:
-			show();
+			show(false);
 			break;
 		case WS_MAXIMIZED:
 			resize(old_x, old_y, old_w, old_h);
