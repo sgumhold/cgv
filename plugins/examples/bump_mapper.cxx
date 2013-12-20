@@ -103,7 +103,7 @@ void bump_mapper::draw(context& ctx)
 	prog.set_uniform(ctx, "use_bump_map", use_bump_map);
 	prog.set_uniform(ctx, "use_phong", use_phong);
 	prog.set_uniform(ctx, "use_diffuse_map", use_diffuse_map);
-	prog.set_uniform(ctx, "bump_map_res", texture_resolution);
+	prog.set_uniform(ctx, "bump_map_res", (int)texture_resolution);
 	prog.set_uniform(ctx, "bump_scale", bump_scale);
 	gl::set_lighting_parameters(ctx, prog);
 	if (wire_frame) {

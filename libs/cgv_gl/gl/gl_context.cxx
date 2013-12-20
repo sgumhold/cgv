@@ -458,7 +458,7 @@ void gl_context::enable_material(const textured_material& mat, MaterialSide ms, 
 		prog.set_uniform(*this, "use_bump_map", use_bump_map);
 		if (use_bump_map) {
 			prog.set_uniform(*this, "bump_map", 0);
-			prog.set_uniform(*this, "bump_map_res", mat.get_bump_texture()->get_width());
+			prog.set_uniform(*this, "bump_map_res", (int) (mat.get_bump_texture()->get_width()));
 			prog.set_uniform(*this, "bump_scale", 400*mat.get_bump_scale());
 		}
 		prog.set_uniform(*this, "use_diffuse_map", use_diffuse_map);

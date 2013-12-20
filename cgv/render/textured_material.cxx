@@ -38,9 +38,15 @@ void ensure_texture(context& ctx, texture*& T, const std::string& file_name)
 	if (file_name.empty())
 		return;
 	T = new texture("uint8[L]");
-	T->create_from_image(ctx, file_name);
-	T->set_wrap_s(TW_REPEAT);
-	T->set_wrap_t(TW_REPEAT);
+	if (!T->create_from_image(ctx, file_name)) {
+		std::cerr << "could not create texture from file '" << file_name << "': " << T->get_last_error() << std::endl;
+		delete T;
+		T = 0;
+	}
+	else {
+		T->set_wrap_s(TW_REPEAT);
+		T->set_wrap_t(TW_REPEAT);
+	}
 }
 
 /// call this to ensure that the textures are loaded - typically done in the init_frame method of a drawable
