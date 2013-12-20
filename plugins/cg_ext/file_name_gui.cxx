@@ -45,15 +45,21 @@ struct file_name_gui_creator : public cgv::gui::gui_creator
 		cgv::base::base* b = dynamic_cast<cgv::base::base*>(p);
 		std::string& v = *((std::string*)value_ptr);
 		bool save = false;
+		bool control = true;
+		std::string align_gui = "\n";
 		cgv::base::has_property(options, "save", save);
+		cgv::base::has_property(options, "control", control);
+		cgv::base::has_property(options, "align_gui", align_gui);
 		std::string opts = "image='res://open32.png';w=32;h=32;label=''";
 		if (save)
 			opts = "image='res://save32.png';w=32;h=32;label=''";
-		if (b)
-			p->add_member_control(b, label, v, "", options, " ");
-		else
-			p->add_control(label, v, "", options, " ");
-		connect_copy(p->add_button(label, opts)->click,
+		if (control) {
+			if (b)
+				p->add_member_control(b, label, v, "", options, " ");
+			else
+				p->add_control(label, v, "", options, " ");
+		}
+		connect_copy(p->add_button(label, opts, align_gui)->click,
 			rebind(this, &file_name_gui_creator::open, &v, b, options));
 		return true;
 	}
