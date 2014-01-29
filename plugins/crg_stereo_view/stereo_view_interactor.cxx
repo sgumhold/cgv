@@ -503,9 +503,9 @@ void stereo_view_interactor::init_frame(context& ctx)
 					-y_extent, y_extent, z_near_derived, z_far_derived);
 		else {
 			if (stereo_translate_in_model_view)
-				glsuStereoFrustumScreen(e, eye_distance, y_extent*aspect, y_extent, z_focus, z_near_derived, z_far_derived);
+				glsuStereoFrustumScreen(e, eye_distance, 2*y_extent*aspect, 2*y_extent, z_focus, z_near_derived, z_far_derived);
 			else
-				glsuStereoPerspectiveScreen(e, eye_distance, y_extent*aspect, y_extent, z_focus, z_near_derived, z_far_derived);
+				glsuStereoPerspectiveScreen(e, eye_distance, 2*y_extent*aspect, 2*y_extent, z_focus, z_near_derived, z_far_derived);
 		}
 	}
 	glMatrixMode(GL_MODELVIEW);
