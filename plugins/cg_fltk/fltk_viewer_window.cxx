@@ -703,7 +703,7 @@ void fltk_viewer_window::create_cb(fltk::Widget* w, void* _fac)
 					if (p) {
 						cgv::gui::gui_group_ptr g = get_provider_parent(p);
 						if (!g.empty())
-							v->tab_group->select_child(g);
+							v->tab_group->select_child(g, true);
 					}
 				}
 			}
@@ -761,7 +761,7 @@ void fltk_viewer_window::menu_cb(fltk::Widget* w, void* obj_ptr)
 	fltk_viewer_window* fvw = static_cast<fltk_viewer_window*>(g->user_data());
 	base_ptr object(static_cast<cgv::base::base*>(obj_ptr));
 	base_ptr gp = get_provider_parent(object->get_interface<provider>());
-	fvw->tab_group->select_child(gp);
+	fvw->tab_group->select_child(gp, true);
 	for (unsigned ci=0; ci<fvw->view->get_nr_children(); ++ci)
 		if (fvw->view->get_child(ci) == object) {
 			fvw->view->get_interface<event_handler>()->set_focused_child((int)ci);
