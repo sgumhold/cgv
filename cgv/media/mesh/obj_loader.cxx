@@ -94,6 +94,8 @@ bool obj_loader::read_obj(const std::string& file_name)
 		get_last_write_time(bin_fn) > get_last_write_time(file_name) &&
 		read_obj_bin(bin_fn)) {
 			path_name = get_path(file_name);
+			if (!path_name.empty())
+				path_name += "/";
 			return true;
 	}
 	

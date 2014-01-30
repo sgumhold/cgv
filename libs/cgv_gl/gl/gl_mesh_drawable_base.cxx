@@ -245,21 +245,16 @@ void gl_mesh_drawable_base::draw(context &ctx)
 /// load obj
 bool gl_mesh_drawable_base::read_mesh(const std::string& _file_name)
 {
-	std::string fn = _file_name;
-	if (!exists(fn)) {
-		if (exists(model_path+"/"+fn))
-			fn = model_path+"/"+fn;
-		else
-			fn = find_data_file(fn);
-	}
+	std::string fn = cgv::base::find_data_file(_file_name, "cpMD", "", model_path);
 	if (fn.empty()) {
 		std::cerr << "mesh file " << file_name << " not found" << std::endl;
 		return false;
 	}
 	file_name = _file_name;
 
+	cgv::base::push_file_parent(fn);
+
 	loader.clear();
-	
 	std::string material_file = drop_extension(fn)+".mtl";
 	if (exists(material_file)) {
 		std::cout << "read mtl: " << material_file; std::cout.flush();
@@ -269,6 +264,8 @@ bool gl_mesh_drawable_base::read_mesh(const std::string& _file_name)
 	printf("read obj %s ", file_name.c_str());
 	loader.read_obj(fn);
 	printf("...Done.\n");
+
+	cgv::base::pop_file_parent();
 
 	unsigned vi, mi, gi, M = loader.materials.size(), G = loader.groups.size(), V = loader.vertices.size();
 	// copy materials

@@ -3,6 +3,7 @@
 #include <cgv/utils/file.h>
 #include <cgv/utils/scan.h>
 #include <cgv_gl/gl/gl.h>
+#include <cgv/base/import.h>
 
 using namespace std;
 using namespace cgv::render;
@@ -27,14 +28,10 @@ gl_point_cloud_drawable_base::gl_point_cloud_drawable_base() : ne(pc,ng)
 
 bool gl_point_cloud_drawable_base::read(const std::string& _file_name)
 {
-	string fn = _file_name;
-	if (!exists(fn)) {
-		if (exists(data_path+"/"+fn))
-			fn = data_path+"/"+fn;
-		else {
-			cerr << "point cloud " << _file_name << " not found" << endl;
-			return false;
-		}
+	std::string fn = cgv::base::find_data_file(_file_name, "cpD");
+	if (fn.empty()) {
+		cerr << "point cloud " << _file_name << " not found" << endl;
+		return false;
 	}
 	if (!pc.read(fn)) {
 		cerr << "could not read point cloud " << fn << endl;
@@ -47,14 +44,10 @@ bool gl_point_cloud_drawable_base::read(const std::string& _file_name)
 
 bool gl_point_cloud_drawable_base::append(const std::string& _file_name)
 {
-	string fn = _file_name;
-	if (!exists(fn)) {
-		if (exists(data_path+"/"+fn))
-			fn = data_path+"/"+fn;
-		else {
-			cerr << "point cloud " << _file_name << " not found" << endl;
-			return false;
-		}
+	std::string fn = cgv::base::find_data_file(_file_name, "cpD");
+	if (fn.empty()) {
+		cerr << "point cloud " << _file_name << " not found" << endl;
+		return false;
 	}
 	point_cloud pc1;
 	if (!pc1.read(fn)) {

@@ -3,6 +3,7 @@
 #include <cgv/type/standard_types.h>
 #include <cgv/utils/advanced_scan.h>
 #include <cgv/utils/tokenizer.h>
+#include <cgv/base/import.h>
 
 using namespace cgv::math;
 using namespace cgv::type;
@@ -143,6 +144,8 @@ bool obj_reader::read_obj(const std::string& file_name)
 		return false;
 
 	path_name = file::get_path(file_name);
+	if (!path_name.empty())
+		path_name += "/";
 
 	std::vector<line> lines;
 	split_to_lines(content,lines);
@@ -228,7 +231,7 @@ bool obj_reader::read_obj(const std::string& file_name)
 				parse_material(tokens);
 			else if (to_string(tokens[0]) == "mtllib") {
 				if (tokens.size() > 1)
-					read_mtl(path_name+"/"+to_string(tokens[1]));
+					read_mtl(to_string(tokens[1]));
 			}
 		}
 		tokens.clear();
@@ -239,17 +242,20 @@ bool obj_reader::read_obj(const std::string& file_name)
 
 bool obj_reader::read_mtl(const std::string& file_name)
 {
+	std::string fn = cgv::base::find_data_file(file_name, "cpD");
 	if (path_name.empty()) {
 		path_name = file::get_path(file_name);
+		if (!path_name.empty())
+			path_name += "/";
 	}
-	if (mtl_lib_files.find(file_name) != mtl_lib_files.end())
+	if (mtl_lib_files.find(fn) != mtl_lib_files.end())
 		return true;
 
 	std::string content;
-	if (!file::read(file_name, content, true))
+	if (!file::read(fn, content, true))
 		return false;
 
-	mtl_lib_files.insert(file_name);
+	mtl_lib_files.insert(fn);
 
 	std::vector<line> lines;
 	split_to_lines(content,lines);
@@ -281,19 +287,19 @@ bool obj_reader::read_mtl(const std::string& file_name)
 				mtl.set_name(to_string(tokens[1]));
 		}
 		else if (tokens[0] == "map_Ka")
-			mtl.set_ambient_texture_name(path_name+"/"+to_string(tokens.back()));
+			mtl.set_ambient_texture_name(path_name+to_string(tokens.back()));
 		else if (tokens[0] == "Ka")
 			mtl.set_ambient(parse_color(tokens));
 		else if (tokens[0] == "map_Kd")
-			mtl.set_diffuse_texture_name(path_name+"/"+to_string(tokens.back()));
+			mtl.set_diffuse_texture_name(path_name+to_string(tokens.back()));
 		else if (tokens[0] == "Kd")
 			mtl.set_diffuse(parse_color(tokens));
 		else if (tokens[0] == "map_Ks")
-			mtl.set_specular_texture_name(path_name+"/"+to_string(tokens.back()));
+			mtl.set_specular_texture_name(path_name+to_string(tokens.back()));
 		else if (tokens[0] == "Ks")
 			mtl.set_specular(parse_color(tokens));
 		else if (tokens[0] == "map_Ke")
-			mtl.set_emission_texture_name(path_name+"/"+to_string(tokens.back()));
+			mtl.set_emission_texture_name(path_name+to_string(tokens.back()));
 		else if (tokens[0] == "Ke")
 			mtl.set_emission(parse_color(tokens));
 		else if (tokens[0] == "Ns")
@@ -309,7 +315,7 @@ bool obj_reader::read_mtl(const std::string& file_name)
 					}
 				}
 				else {
-					mtl.set_bump_texture_name(path_name+"/"+to_string(tokens[i]));
+					mtl.set_bump_texture_name(path_name+to_string(tokens[i]));
 				}
 			}
 		}

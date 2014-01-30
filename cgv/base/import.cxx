@@ -55,21 +55,74 @@ std::string find_data_file_1(const std::string& base_path, const std::string& su
 	return find_data_file_rec(dir_name, file_name);
 }
 
-std::string find_data_file(const std::string& file_name, bool recurse, const std::string& sub_path)
+std::string find_data_file(const std::string& file_name, const std::string& strategy, const std::string& sub_directory, const std::string& master_path)
 {
-	std::string fn = find_data_file_1("", sub_path, file_name, recurse);
-	if (!fn.empty())
-		return fn;
-
-	std::map<std::string, resource_file_info>::const_iterator it = ref_resource_file_map().find(file_name);
-	if (it != ref_resource_file_map().end())
-		return std::string("res://")+file_name;
-
-	const std::vector<std::string>& path_list = ref_data_path_list();
-	for (unsigned int i=0; i<path_list.size(); ++i) {
-		fn = find_data_file_1(path_list[i], sub_path, file_name, recurse);
-		if (!fn.empty())
-			return fn;
+//	std::cout << "find " << file_name << " in " << std::endl;
+	for (unsigned i=0; i<strategy.size(); ++i) {
+		switch (strategy[i]) {
+		case 'r' :
+		case 'R' :
+			{
+				std::map<std::string, resource_file_info>::const_iterator it = ref_resource_file_map().find(file_name);
+				if (it != ref_resource_file_map().end())
+					return std::string("res://")+file_name;
+				break;
+			}
+		case 'c' :
+		case 'C' :
+			{
+				std::string fn = find_data_file_1("", sub_directory, file_name, strategy[i] == 'C');
+				//std::cout << "   current -> " << fn << std::endl;
+				if (!fn.empty())
+					return fn;
+				break;
+			}
+		case 'm' :
+		case 'M' :
+			{
+				std::string fn = find_data_file_1(master_path, sub_directory, file_name, strategy[i] == 'M');
+//				std::cout << "   master = " << master_path << " -> " << fn << std::endl;
+				if (!fn.empty())
+					return fn;
+				break;
+			}
+		case 'd' :
+		case 'D' :
+			{
+				const std::vector<std::string>& path_list = ref_data_path_list();
+				for (unsigned int i=0; i<path_list.size(); ++i) {
+					std::string fn = find_data_file_1(path_list[i], sub_directory, file_name, strategy[i] == 'D');
+//					std::cout << "   data = " << path_list[i] << " -> " << fn << std::endl;
+					if (!fn.empty())
+						return fn;
+				}
+				break;
+			}
+		case 'p' :
+		case 'P' :
+			{
+				const std::vector<std::string>& parent_stack = ref_parent_file_stack();
+				if (!parent_stack.empty()) {
+					std::string fn = find_data_file_1(parent_stack.back(), sub_directory, file_name, strategy[i] == 'P');
+//					std::cout << "   parent = " << parent_stack.back() << " -> " << fn << std::endl;
+					if (!fn.empty())
+						return fn;
+				}
+				break;
+			}
+		case 'a' :
+		case 'A' :
+			{
+				const std::vector<std::string>& parent_stack = ref_parent_file_stack();
+				for (unsigned int i=parent_stack.size(); i>0; --i) {
+					std::string fn = find_data_file_1(parent_stack[i-1], sub_directory, file_name, strategy[i] == 'A');
+//					std::cout << "   anchestor = " << parent_stack[i-1] << " -> " << fn << std::endl;
+					if (!fn.empty())
+						return fn;
+				}
+				break;
+			}
+		}
 	}
 	return std::string();
 }
@@ -103,6 +156,39 @@ std::vector<std::string>& ref_data_path_list()
 		initialized = true;
 	}
 	return data_path_list;
+}
+
+/// extract a valid path from the given argument and push it onto the stack of parent paths. This should always be paired with a call to pop_file_parent().
+void push_file_parent(const std::string& path_or_file_name)
+{
+	bool is_path;
+	if (cgv::utils::dir::exists(path_or_file_name))
+		is_path = true;
+	else if (cgv::utils::file::exists(path_or_file_name))
+		is_path = false;
+	else if (cgv::utils::file::get_extension(path_or_file_name).empty())
+		is_path = true;
+	else
+		is_path = false;
+
+	if (is_path)
+		ref_parent_file_stack().push_back(path_or_file_name);
+	else
+		ref_parent_file_stack().push_back(cgv::utils::file::get_path(path_or_file_name));
+}
+
+/// pop the latestly pushed parent path from the parent path stack.
+void pop_file_parent()
+{
+	if (!ref_parent_file_stack().empty())
+		ref_parent_file_stack().pop_back();
+}
+
+/// return a reference to the data path list, which is constructed from the environment variable CGV_DATA
+std::vector<std::string>& ref_parent_file_stack()
+{
+	static std::vector<std::string> parent_file_stack;
+	return parent_file_stack;
 }
 
 /// open a file with fopen supporting resource files, that have the prefix "res://"
