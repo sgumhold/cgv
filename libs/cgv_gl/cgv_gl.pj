@@ -25,4 +25,7 @@ addRules=[
 	]
 ];
 addProjectDeps=["cgv_utils", "cgv_type", "cgv_data", "cgv_base", "cgv_signal", "cgv_math", "cgv_media", "cgv_render", "glew"];
+if(SYSTEM=="windows") {
+	addDependencies=addDependencies.[["user32", "static"], ["gdi32", "static"]];
+}
 addSharedDefines=["CGV_RENDER_GL_EXPORTS"];

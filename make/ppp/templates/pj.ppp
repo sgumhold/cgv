@@ -221,7 +221,7 @@ addMapDeps = [
 //the dependency in a list of two strings with the second entry equal to 
 // - "static" ... dependency exported only to static configurations 
 // - "shared" ... dependency exported only to shared configurations 
-// - "all"    ... dependency exported only to all configurations
+// - "all"    ... dependency exported to all configurations
 
 addDependencies = ["opengl","glu","glew",["Vfw32", "static"] ];
 

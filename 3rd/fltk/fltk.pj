@@ -11,10 +11,10 @@ addProjectDeps=["jpeg","png"];
 addDependencies=["opengl"];
 addIncDirs=[ [CGV_DIR."/3rd/fltk/include","all"], CGV_DIR."/3rd/fltk/visualc",CGV_DIR."/3rd/fltk/compat",CGV_DIR."/3rd/jpeg",CGV_DIR."/3rd/png",CGV_DIR."/3rd/zlib"];
 if (SYSTEM=="windows") {
-	addDependencies=addDependencies.[["ws2_32","all"],["msimg32","all"]];
+	addDependencies=addDependencies.[["user32", "all"], ["gdi32", "all"],["ws2_32","all"],["msimg32","all"]];
 	addDefines=["_WIN32","WIN32_LEAN_AND_MEAN","VC_EXTRA_LEAN","WIN32_EXTRA_LEAN"];
 	if (CGV_COMPILER=="gcc") {
-		addDependencies = addDependencies.[["kernel32","all"],["user32","all"], ["gdi32","all"],  ["Ole32","all"], ["uuid","all"]];
+		addDependencies = addDependencies.[["kernel32","all"], ["Ole32","all"], ["uuid","all"]];
 	}
 	else {
 		addSharedDefines=addSharedDefines."$(NOINHERIT)";
