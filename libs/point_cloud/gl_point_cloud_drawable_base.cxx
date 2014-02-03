@@ -9,14 +9,26 @@ using namespace std;
 using namespace cgv::render;
 using namespace cgv::utils::file;
 
-gl_point_cloud_drawable_base::gl_point_cloud_drawable_base() : ne(pc,ng)
+gl_point_cloud_drawable_base::gl_point_cloud_drawable_base() : 
+	ne(pc,ng), 	
+	base_color(0.6f, 0.4f, 0.4f),
+	nml_color(0.3f, 0.0f, 0.5f),
+	box_color(0.0f,0.8f,0.9f)
 {
 	point_size = 3.0f;
 	line_width = 1;
 	nml_length = 0.5f;
 	
+	base_material.set_ambient(color_type(0.2f,0.2f,0.2f));
+	base_material.set_diffuse(color_type(0.6f,0.4f,0.4f));
+	base_material.set_specular(color_type(0.4f,0.4f,0.4f));
+	base_material.set_shininess(20.0f);
+
+
+
 	show_points = true;
 	show_nmls = true;
+	show_clrs = true;
 	show_box = false;
 	illum_points = true;
 	show_neighbor_graph = false;
@@ -89,15 +101,21 @@ void gl_point_cloud_drawable_base::draw_box(context& ctx)
 	glDisable(GL_LIGHTING);
 	glLineWidth((float)(2*line_width));
 	
-	glColor3f(0.0f,0.0f,1.0f);
+	glColor3fv(&box_color[0]);
 	
 	glPushMatrix();
 	glTranslatef(pc.box.get_center()(0),pc.box.get_center()(1),pc.box.get_center()(2));
-	glScalef(pc.box.get_extent()(0), pc.box.get_extent()(1), pc.box.get_extent()(2));
+	glScalef(0.5f*pc.box.get_extent()(0), 0.5f*pc.box.get_extent()(1), 0.5f*pc.box.get_extent()(2));
 
+	GLboolean cull;
+	glGetBooleanv(GL_CULL_FACE, &cull);
+	if (cull)
+		glDisable(GL_CULL_FACE);
 	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	ctx.tesselate_unit_cube();
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	if (cull)
+		glEnable(GL_CULL_FACE);
 	
 	glPopMatrix();
 
@@ -115,7 +133,7 @@ void gl_point_cloud_drawable_base::draw_points(context& ctx)
 	glPolygonOffset(-2,-5);
 	glEnable(GL_POLYGON_OFFSET_POINT);
 
-		glColor3f(0.5f,0.0f,0.0f);
+		glColor3fv(&base_color[0]);
 		glPointSize(point_size);
 
 		int n = (int)pc.P.size();
@@ -132,7 +150,7 @@ void gl_point_cloud_drawable_base::draw_normals(context& ctx)
 	if (!show_nmls || !pc.has_normals())
 		return;
 	glDisable(GL_LIGHTING);
-		glColor3f(0.0f,0.0f,0.0f);
+		glColor3fv(&nml_color[0]);
 		glLineWidth(line_width);
 		glBegin(GL_LINES);
 		float nml_scale = (nml_length*pc.box.get_extent().length()/sqrt((float)pc.P.size()));
@@ -197,7 +215,7 @@ void gl_point_cloud_drawable_base::draw(context& ctx)
 	if (pc.P.empty())
 		return;
 
-	glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, 100.0f);
+	ctx.enable_material(base_material);
 	glEnable(GL_COLOR_MATERIAL);
 
 	draw_box(ctx);
@@ -211,7 +229,7 @@ void gl_point_cloud_drawable_base::draw(context& ctx)
 
 	glVertexPointer(3, GL_FLOAT, 0, &(pc.P[0].x()));
 	glEnableClientState(GL_VERTEX_ARRAY);
-	if (pc.has_colors()) {
+	if (pc.has_colors() && show_clrs) {
 		glColorPointer(3, GL_FLOAT, 0, &(pc.C[0][0]));
 		glEnableClientState(GL_COLOR_ARRAY);
 	}
@@ -228,7 +246,7 @@ void gl_point_cloud_drawable_base::draw(context& ctx)
 		glDisableClientState(GL_NORMAL_ARRAY);
 	else
 		glEnable(GL_LIGHTING);
-	if (pc.has_colors())
+	if (pc.has_colors() && show_clrs)
 		glDisableClientState(GL_COLOR_ARRAY);
 
 	glDisable(GL_POINT_SMOOTH);
@@ -237,6 +255,7 @@ void gl_point_cloud_drawable_base::draw(context& ctx)
 	glEnable(GL_LIGHTING);
 	glDisableClientState(GL_VERTEX_ARRAY);
 	glLineWidth(1);
+	ctx.disable_material(base_material);
 }
 
 

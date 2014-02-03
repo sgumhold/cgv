@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cgv/render/drawable.h>
+#include <cgv/media/illum/phong_material.hh>
 
 #include "point_cloud.h"
 #include "neighbor_graph.h"
@@ -15,6 +16,7 @@ struct CGV_API gl_point_cloud_drawable_base :
 	typedef point_cloud::Pnt Pnt;
 	typedef point_cloud::Nml Nml;
 	typedef point_cloud::Box Box;
+	typedef cgv::media::illum::phong_material::color_type color_type;
 protected:
 	point_cloud pc;
 	neighbor_graph ng;
@@ -24,13 +26,19 @@ protected:
 	std::string file_name;
 
 	float point_size, line_width, nml_length;
-	bool show_points, show_nmls, show_box;
+	bool show_points, show_nmls, show_clrs, show_box;
 	bool illum_points, show_neighbor_graph;
 
 	unsigned k;
 	bool do_symmetrize;
 	
 	bool reorient_normals;
+
+	cgv::media::illum::phong_material base_material;
+	color_type base_color;
+	color_type nml_color;
+	color_type box_color;
+
 public:
 	void clear();
 

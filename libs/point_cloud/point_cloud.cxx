@@ -31,6 +31,12 @@ public:
 	{
 		pc->N.push_back(point_cloud::Nml(n));
 	}
+	/// overide this function to process a color (this called for vc prefixes which is is not in the standard but for example used in pobj-files)
+	void process_color(const color_type& c)
+	{
+		pc->C.push_back(c);
+	}
+
 };
 
 point_cloud::point_cloud()
