@@ -25,7 +25,7 @@ gl_point_cloud_drawable_base::gl_point_cloud_drawable_base() :
 	base_material.set_shininess(20.0f);
 
 
-
+	smooth_points = false;
 	show_points = true;
 	show_nmls = true;
 	show_clrs = true;
@@ -126,7 +126,7 @@ void gl_point_cloud_drawable_base::draw_points(context& ctx)
 {
 	if (!show_points)
 		return;
-	if (point_size > 1)
+	if (point_size > 1 && smooth_points)
 		glEnable(GL_POINT_SMOOTH);
 	if (!illum_points)
 		glDisable(GL_LIGHTING);

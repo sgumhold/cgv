@@ -71,6 +71,8 @@ bool point_cloud::read(const string& _file_name)
 		success = read_ascii(_file_name);
 	if (ext == "obj" || ext == "pobj")
 		success = read_obj(_file_name);
+	if (ext == "ply")
+		success = read_ply(_file_name);
 	if (success) {
 		set_file_name(_file_name);
 		compute_box();
@@ -90,6 +92,8 @@ bool point_cloud::write(const string& _file_name)
 		return write_ascii(ext == "apc");
 	if (ext == "obj" || ext == "pobj")
 		return write_obj();
+	if (ext == "ply")
+		return write_ply();
 	cerr << "unknown extension <." << ext << ">." << endl;
 	return false;
 }
@@ -259,6 +263,116 @@ bool point_cloud::read_obj(const string& _file_name)
 		return false;
 	if (P.size() != N.size())
 		cerr << "ups different number of normals: " << N.size() << " instead of " << P.size() << endl;
+	return true;
+}
+#include "ply.h"
+
+struct PlyVertex 
+{
+  float x,y,z;             /* the usual 3-space position of a vertex */
+  float nx, ny, nz;
+  unsigned char red, green, blue, alpha;
+};
+
+static PlyProperty vert_props[] = { /* list of property information for a vertex */
+  {"x", Float32, Float32, offsetof(PlyVertex,x), 0, 0, 0, 0},
+  {"y", Float32, Float32, offsetof(PlyVertex,y), 0, 0, 0, 0},
+  {"z", Float32, Float32, offsetof(PlyVertex,z), 0, 0, 0, 0},
+  {"nx", Float32, Float32, offsetof(PlyVertex,nx), 0, 0, 0, 0},
+  {"ny", Float32, Float32, offsetof(PlyVertex,ny), 0, 0, 0, 0},
+  {"nz", Float32, Float32, offsetof(PlyVertex,nz), 0, 0, 0, 0},
+  {"red", Uint8, Uint8, offsetof(PlyVertex,red), 0, 0, 0, 0},
+  {"green", Uint8, Uint8, offsetof(PlyVertex,green), 0, 0, 0, 0},
+  {"blue", Uint8, Uint8, offsetof(PlyVertex,blue), 0, 0, 0, 0},
+  {"alpha", Uint8, Uint8, offsetof(PlyVertex,alpha), 0, 0, 0, 0},
+};
+
+typedef struct PlyFace {
+  unsigned char nverts;
+  int *verts;
+} PlyFace;
+
+static PlyProperty face_props[] = { /* list of property information for a face */
+{"vertex_indices", Int32, Int32, offsetof(PlyFace,verts), 1, Uint8, Uint8, offsetof(PlyFace,nverts)},
+};
+
+static char* propNames[] = { "vertex", "face" };
+
+bool point_cloud::read_ply(const string& _file_name) 
+{
+	PlyFile* ply_in =  open_ply_for_read(const_cast<char*>(_file_name.c_str()));
+  
+	for (int elementType = 0; elementType < ply_in->num_elem_types; ++elementType) {
+		int nrVertices;
+		char* elem_name = setup_element_read_ply (ply_in, elementType, &nrVertices);
+		if (strcmp("vertex", elem_name) == 0) {
+			P.resize(nrVertices);
+			N.resize(nrVertices);
+			C.resize(nrVertices);
+			for (int p=0; p<10; ++p) 
+				setup_property_ply(ply_in, &vert_props[p]);
+			for (int j = 0; j < nrVertices; j++) {
+				PlyVertex vertex;
+				get_element_ply(ply_in, (void *)&vertex);
+				P[j].set(vertex.x, vertex.y, vertex.z);
+				N[j].set(vertex.nx, vertex.ny, vertex.nz);
+				C[j][0] = vertex.red*1.0f/255;
+				C[j][1] = vertex.green*1.0f/255;
+				C[j][2] = vertex.blue*1.0f/255;
+			}
+		}
+	}
+	/* close the PLY file */
+	close_ply (ply_in);
+	free_ply (ply_in);
+	return true;
+}
+
+bool point_cloud::write_ply() const
+{
+	PlyFile* ply_out = open_ply_for_write((file_name+".ply").c_str(), 2, propNames, PLY_BINARY_LE);
+	if (!ply_out) 
+		return false;
+	describe_element_ply (ply_out, "vertex", P.size());
+	for (int p=0; p<10; ++p) 
+		describe_property_ply (ply_out, &vert_props[p]);
+	describe_element_ply (ply_out, "face", 0);
+	describe_property_ply (ply_out, &face_props[0]);
+	header_complete_ply(ply_out);
+
+	put_element_setup_ply (ply_out, "vertex");
+
+	for (int j = 0; j < (int)P.size(); j++) {
+		PlyVertex vertex;
+		vertex.x = P[j][0];
+		vertex.y = P[j][1];
+		vertex.z = P[j][2];
+		if (N.size() == P.size()) {
+			vertex.nx = N[j][0];
+			vertex.ny = N[j][1];
+			vertex.nz = N[j][2];
+		}
+		else {
+			vertex.nx = 0.0f;
+			vertex.ny = 0.0f;
+			vertex.nz = 1.0f;
+		}
+		if (C.size() == P.size()) {
+			vertex.red = (unsigned char)(C[j][0]*255);
+			vertex.green = (unsigned char)(C[j][1]*255);
+			vertex.blue = (unsigned char)(C[j][2]*255);
+		}
+		else {
+			vertex.red   = 255;
+			vertex.green = 255;
+			vertex.blue  = 255;
+		}
+		vertex.alpha = 255;
+		put_element_ply(ply_out, (void *)&vertex);
+	}
+	put_element_setup_ply (ply_out, "face");
+	close_ply (ply_out);
+	free_ply (ply_out);
 	return true;
 }
 

@@ -27,6 +27,7 @@ protected:
 
 	float point_size, line_width, nml_length;
 	bool show_points, show_nmls, show_clrs, show_box;
+	bool smooth_points;
 	bool illum_points, show_neighbor_graph;
 
 	unsigned k;

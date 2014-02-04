@@ -32,12 +32,14 @@ public:
 	bool read_wrl(const std::string& file_name);
 	bool read_ascii(const std::string& file_name);
 	bool read_bin(const std::string& file_name);
+	bool read_ply(const std::string& file_name);
 	const std::string& get_file_name() const { return file_name; }
 	void set_file_name(const std::string& _file_name);
 	bool write(const std::string& file_name);
 	bool write_ascii(bool write_nmls = true) const;
 	bool write_bin() const;
 	bool write_obj() const;
+	bool write_ply() const;
 	void compute_box();
 	bool has_colors() const;
 	bool has_normals() const;
