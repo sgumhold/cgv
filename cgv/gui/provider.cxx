@@ -77,6 +77,26 @@ void provider::update_member(void* member_ptr)
 	} while (true);
 	*/
 }
+void update_group_members(cgv::base::group_ptr gp)
+{
+	if (!gp)
+		return;
+	for (unsigned i=0; i<gp->get_nr_children(); ++i) {
+		base_ptr bp = gp->get_child(i);
+		abst_view* v = bp->get_interface<abst_view>();
+		if (v)
+			v->update();
+		cgv::base::group_ptr cgp = bp->cast<cgv::base::group>();
+		if (cgp)
+			update_group_members(cgp);
+	}
+}
+
+/// call this to update all views and controls of all member
+void provider::update_all_members()
+{
+	update_group_members(parent_group);
+}
 
 gui_group_ptr provider::add_object_gui(base_ptr object, const std::string& label, const std::string& group_type, const std::string& options, const std::string& align)
 {

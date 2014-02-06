@@ -261,6 +261,8 @@ public:
 	virtual std::string get_parent_type() const;
 	/// call this to update all views and controls of a member
 	virtual void update_member(void* member_ptr);
+	/// call this to update all views and controls of all member
+	virtual void update_all_members();
 	/// return a path in the main menu to select the gui
 	virtual std::string get_menu_path() const;
 	/// return a shortcut to activate the gui without menu navigation
