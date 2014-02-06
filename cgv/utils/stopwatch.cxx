@@ -46,28 +46,47 @@ stopwatch::stopwatch(double *result)
 	init();
 }
 
-// add_time adds the time ellapsed thus far
-void stopwatch::add_time()
+double stopwatch::get_current_time(long long& end) const
 {
 	double time;
 #ifdef _WIN32
 	if(perfcounter_available)
 	{
-		long long end;
 		QueryPerformanceCounter((LARGE_INTEGER*) &end);
 		time =(end-start)/ (double)frequency;
-		start = end;
 	}
 	else
 	{
 #endif
-		std::clock_t end = clock();
-		clock_t total = end - (std::clock_t&)start; //get elapsed time
+		end = clock();
+		std::clock_t total = (std::clock_t)(end - start); //get elapsed time
 		time =  double(total)/CLOCKS_PER_SEC;
-		start = end;
 #ifdef _WIN32
 	}
 #endif
+	return time;	
+}
+
+/// return time elpased thus far
+double stopwatch::get_elapsed_time() const
+{
+	long long end;
+	return get_current_time(end);
+}
+
+/// restart timer and return time elapsed until restart
+double stopwatch::restart()
+{
+	long long end;
+	double time = get_current_time(end);
+	start = end;
+	return time;	
+}
+
+// add_time adds the time ellapsed thus far
+void stopwatch::add_time()
+{
+	double time = restart();
 	
 	if(resultd)
 		*resultd += time;	
