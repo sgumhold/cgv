@@ -112,6 +112,17 @@ void fltk_enum_control::public_set_value(int v)
 
 bool fltk_enum_control::set_void(const std::string& property, const std::string& value_type, const void* value_ptr)
 {
+
+	if (property.substr(0,6) == "active" && property.size() > 6) {
+		int i;
+		from_string(i, property.substr(6));
+		fltk::Group *g = static_cast<fltk::Group*>(container);
+		if (g->children() > i) {
+			g->child(i)->activate(variant<bool>::get(value_type, value_ptr));
+			return true;
+		}
+		return false;
+	}
 	return fltk_base::set_void(container, this, property, value_type, value_ptr);
 }
 
