@@ -13,6 +13,19 @@ namespace cgv {
 	namespace render {
 		namespace gl {
 
+// declare some colors by name
+float black[4]     = { 0, 0, 0, 1 };
+float white[4]     = { 1, 1, 1, 1 };
+float gray[4]      = { 0.25f, 0.25f, 0.25f, 1 };
+float green[4]     = { 0, 1, 0, 1 };
+float brown[4]     = { 0.3f, 0.1f, 0, 1 };
+float dark_red[4]  = { 0.4f, 0, 0, 1 };
+float cyan[4]      = { 0, 1, 1, 1 };
+float yellow[4]    = { 1, 1, 0, 1 };
+float red[4]       = { 1, 0, 0, 1 };
+float blue[4]      = { 0, 0, 1, 1 };
+
+
 unsigned map_to_gl(cgv::data::ComponentFormat cf)
 {
 	static unsigned cf_to_gl[] = {

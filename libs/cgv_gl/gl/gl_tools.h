@@ -12,6 +12,9 @@ namespace cgv {
 
 		namespace gl {
 
+// declare some colors by name
+extern CGV_API float black[4], white[4], gray[4], green[4], brown[4], dark_red[4], cyan[4], yellow[4], red[4], blue[4];
+
 /// map a type id to a gl enum
 extern CGV_API unsigned map_to_gl(TypeId ti);
 
@@ -71,6 +74,9 @@ extern CGV_API void push_textured_material_prog(shader_program& prog);
 
 /// pop a shader program from the textured material stack
 extern CGV_API void pop_textured_material_prog();
+
+
+
 
 		}
 	}
