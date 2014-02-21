@@ -44,10 +44,13 @@ fltk_gl_view::fltk_gl_view(int x, int y, int w, int h, const std::string& name)
 	in_draw_method = false;
 	redraw_request = false;
 
+	enabled = false;
+	started_frame_pm = false;
+
 	connect(out_stream.write, this, &fltk_gl_view::process_text_1);
 
-	if ( (mode() & fltk::ALPHA_BUFFER) == 0 )
-		mode(mode()|fltk::ALPHA_BUFFER);
+	if ( (mode() & fltk::ALPHA_BUFFER) == 0 || (mode() & fltk::NO_AUTO_SWAP) == 0 )
+		mode(mode()|fltk::ALPHA_BUFFER|fltk::NO_AUTO_SWAP);
 }
 
 ///
@@ -65,11 +68,15 @@ bool fltk_gl_view::self_reflect(cgv::reflect::reflection_handler& srh)
 	srh.reflect_member("font_size", info_font_size) &&
 	srh.reflect_member("tab_size", tab_size) &&
 	srh.reflect_member("phong_shading", phong_shading) &&
+	srh.reflect_member("performance_monitoring", enabled) &&
 	srh.reflect_member("bg_r", bg_r) &&
 	srh.reflect_member("bg_g", bg_g) &&
 	srh.reflect_member("bg_b", bg_b) &&
 	srh.reflect_member("bg_a", bg_a) &&
-	srh.reflect_member("bg_index", current_background);
+	srh.reflect_member("bg_index", current_background) &&
+	srh.reflect_member("nr_display_cycles", nr_display_cycles) &&
+	srh.reflect_member("bar_line_width", bar_line_width) &&
+	srh.reflect_member("file_name", file_name);
 }
 
 void fltk_gl_view::on_set(void* member_ptr)
@@ -444,16 +451,44 @@ fltk::GLContext get_context(const fltk::GlWindow* glw)
 	return reinterpret_cast<const MyGlWindow*>(glw)->context_;
 }
 
+/// overload render pass to perform measurements
+void fltk_gl_view::render_pass(cgv::render::RenderPass rp, cgv::render::RenderPassFlags rpf, void* ud)
+{
+	start_task((int)rp);
+	cgv::render::gl::gl_context::render_pass(rp, rpf, ud);
+	glFlush();
+	finish_task((int)rp);
+}
+
 /// complete drawing method that configures opengl whenever the context has changed, initializes the current frame and draws the scene
 void fltk_gl_view::draw()
 {
+	if (!started_frame_pm)
+		start_frame();
+
 	in_draw_method = true;
 	bool last_redraw_request = redraw_request;
 	redraw_request = false;
 	if (!valid())
 		configure_gl(get_context(this));
 	render_pass(RP_MAIN, default_render_flags);
-	glFlush();
+
+	if (enabled) {
+		cgv::render::gl::gl_performance_monitor::draw(*this);	
+		glFlush();
+	}
+
+	swap_buffers();
+
+	if (enabled) {
+		finish_frame();
+		if (redraw_request) {
+			start_frame();
+			started_frame_pm = true;
+		}
+		else 
+			started_frame_pm = false;
+	}
 	in_draw_method = false;
 	if (redraw_request != last_redraw_request) {
 		if (redraw_request)
@@ -546,6 +581,11 @@ bool fltk_gl_view::handle(event& e)
 					redraw();
 					return true;
 				}
+				if (ke.get_modifiers() == EM_CTRL) {
+					enabled = !enabled; 
+					redraw();
+					return true;
+				}
 				break;
 			case KEY_F10 :
 				if (ke.get_modifiers() == 0) {
@@ -570,7 +610,7 @@ bool fltk_gl_view::handle(event& e)
 /// overload to stream help information to the given output stream
 void fltk_gl_view::stream_help(std::ostream& os)
 {
-	os << "MAIN: Show   ... help: F1;                  ... status: F8;\n";
+	os << "MAIN: Show   ... help: F1;                  ... [perf-]status: [Ctrl-]F8;\n";
 	os << "      Object ... change focus: [Shift-]Tab; ... remove focused: Delete\n";
 	os << "      Screen ... copy to file: F10;         ... background: F12\n";
 	os << "      Toggle ... menu: Menu; GUI: Shift-Key; FullScreen: F11; Monitor: Shift-F11\n";
@@ -849,4 +889,6 @@ void fltk_gl_view::create_gui()
 	add_control("accum buffer", this, "check", "", "\n", to_void_ptr(3));
 	add_control("quad buffer", this, "check", "", "\n", to_void_ptr(4));
 	add_control("multisample", this, "check", "", "\n", to_void_ptr(5));
+	add_decorator("performance monitor", "heading", "level=3");
+	add_member_control(this, "performance monitoring", enabled, "check");
 }

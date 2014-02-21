@@ -4,7 +4,9 @@
 #include <cgv/signal/signal.h>
 #include <cgv/gui/event_handler.h>
 #include <cgv/gui/provider.h>
+#include <cgv/utils/stopwatch.h>
 #include <cgv_gl/gl/gl_context.h>
+#include <cgv_gl/gl/gl_performance_monitor.h>
 #ifdef WIN32
 #pragma warning (disable:4311)
 #endif
@@ -23,6 +25,7 @@ class CGV_API fltk_gl_view :
 	public cgv::gui::event_handler,
 	public cgv::gui::provider,
 	public cgv::render::gl::gl_context,
+	public cgv::render::gl::gl_performance_monitor,
 	public cgv::gui::control_provider<bool>
 {
 protected:
@@ -123,6 +126,8 @@ public:
 	void resize(unsigned int width, unsigned int height);
 	/// return whether the context is currently in process of rendering
 	bool in_render_process() const;
+	/// overload render pass to perform measurements
+	void render_pass(cgv::render::RenderPass render_pass, cgv::render::RenderPassFlags render_pass_flags, void* user_data = 0);
 	/// return whether the context is created
 	bool is_created() const;
 	/// return whether the context is current
@@ -177,6 +182,7 @@ public:
 private:
 	bool recreate_context;
 	bool no_more_context;
+	bool started_frame_pm;
 	///
 	int last_mouse_x, last_mouse_y;
 
