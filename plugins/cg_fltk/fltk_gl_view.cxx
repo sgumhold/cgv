@@ -456,7 +456,10 @@ void fltk_gl_view::render_pass(cgv::render::RenderPass rp, cgv::render::RenderPa
 {
 	start_task((int)rp);
 	cgv::render::gl::gl_context::render_pass(rp, rpf, ud);
-	glFlush();
+	if (enabled)
+		glFinish();
+	else
+		glFlush();
 	finish_task((int)rp);
 }
 
