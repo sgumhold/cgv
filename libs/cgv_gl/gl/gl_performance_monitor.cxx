@@ -9,14 +9,23 @@ gl_performance_monitor::gl_performance_monitor()
 {
 }
 
-void gl_performance_monitor::draw_lines()
+void gl_performance_monitor::prepare_draw_lines()
 {
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glVertexPointer(2, GL_INT, 0, &positions[0]);
-	glColorPointer(3, GL_FLOAT, 0, &colors[0]);
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glEnableClientState(GL_COLOR_ARRAY);
+}
+
+void gl_performance_monitor::draw_lines()
+{
+
+	glVertexPointer(2, GL_INT, 0, &positions[0]);
+	glColorPointer(3, GL_FLOAT, 0, &colors[0]);
 	glDrawArrays(GL_LINES, 0, positions.size());
+}
+
+void gl_performance_monitor::finish_draw_lines()
+{
 	glDisableClientState(GL_COLOR_ARRAY);
 	glDisableClientState(GL_VERTEX_ARRAY);
 }
@@ -86,6 +95,7 @@ void gl_performance_monitor::draw(cgv::render::context& ctx)
 		int min_i = -1, max_i = -1;
 		if (data.size() > 1) {
 
+			prepare_draw_lines();
 			// go through all but current frame 
 			int x = xmin;
 			for (unsigned i=0; i < data.size()-1; ++i, ++x) {
@@ -124,9 +134,8 @@ void gl_performance_monitor::draw(cgv::render::context& ctx)
 					y += bar_line_width+1;
 				}
 			}
-
+			finish_draw_lines();
 		}
-
 	}
 	glEnable(GL_LIGHTING);
 	glEnable(GL_DEPTH_TEST);
