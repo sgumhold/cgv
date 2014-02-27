@@ -9,11 +9,41 @@ gl_performance_monitor::gl_performance_monitor()
 {
 }
 
+void gl_performance_monitor::draw_lines()
+{
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glVertexPointer(2, GL_INT, 0, &positions[0]);
+	glColorPointer(3, GL_FLOAT, 0, &colors[0]);
+	glEnableClientState(GL_VERTEX_ARRAY);
+	glEnableClientState(GL_COLOR_ARRAY);
+	glDrawArrays(GL_LINES, 0, positions.size());
+	glDisableClientState(GL_COLOR_ARRAY);
+	glDisableClientState(GL_VERTEX_ARRAY);
+}
+
+
 void gl_performance_monitor::draw_bar(int y, const frame_data& fdata)
 {
 	compute_colors(fdata);
 	compute_positions(placement.get_min_pnt()(0),y,placement.get_extent()(0), 0, fdata);
-	glDrawArrays(GL_LINES, 0, positions.size());
+	draw_lines();
+}
+
+void checkClientState()
+{
+	GLint at;
+	glGetIntegerv(GL_CLIENT_ACTIVE_TEXTURE, &at);
+	std::cout << "AT="
+		<< at << " ";
+	std::cout << (glIsEnabled(GL_VERTEX_ARRAY)?"V":"v") 
+			  << (glIsEnabled(GL_NORMAL_ARRAY)?"N":"n")
+			  << (glIsEnabled(GL_COLOR_ARRAY)?"C":"c");
+
+	for (int i=0; i<8; ++i) {
+		glClientActiveTexture(GL_TEXTURE0+i);
+		std::cout << (glIsEnabled(GL_TEXTURE_COORD_ARRAY)?("0"+i):".");
+	}
+	std::cout << std::endl;
 }
 
 void gl_performance_monitor::draw(cgv::render::context& ctx)
@@ -25,7 +55,7 @@ void gl_performance_monitor::draw(cgv::render::context& ctx)
 	int w        = xmax - xmin + 1;
 	int h        = ymax - ymin + 1;
 	int dy       = h/nr_display_cycles;
-
+	
 	ctx.push_pixel_coords();
 
 	glDisable(GL_DEPTH_TEST);
@@ -52,11 +82,6 @@ void gl_performance_monitor::draw(cgv::render::context& ctx)
 	}
 
 	if (!data.empty()) {
-
-		// bind data to attribute pointers
-		glEnableClientState(GL_VERTEX_ARRAY);
-		glEnableClientState(GL_COLOR_ARRAY);
-
 		// draw history of frames and determine local frame index of min and max
 		int min_i = -1, max_i = -1;
 		if (data.size() > 1) {
@@ -68,9 +93,7 @@ void gl_performance_monitor::draw(cgv::render::context& ctx)
 				compute_colors(fdata);
 				compute_positions(x,ymax,0,-dy, fdata);
 				// draw
-				glVertexPointer(2, GL_INT, 0, &positions[0]);
-				glColorPointer(3, GL_FLOAT, 0, &colors[0]);
-				glDrawArrays(GL_LINES, 0, positions.size());
+				draw_lines();
 				// check for min
 				if (min_i == -1 || data[i][data[i].size()-2].time < data[min_i][data[min_i].size()-2].time)
 					min_i = i;
@@ -78,33 +101,31 @@ void gl_performance_monitor::draw(cgv::render::context& ctx)
 				if (max_i == -1 || data[i][data[i].size()-2].time > data[max_i][data[max_i].size()-2].time)
 					max_i = i;
 			}
-		}
-		if (!bar_config.empty()) {
-			int y = ymax + (bar_line_width+4)/2;
-			glLineWidth((float)bar_line_width);
-			for (int c=0; c < (int)bar_config.size(); ++c) {
-				switch (bar_config[c]) {
-				case PMB_MIN :
-					if (min_i != -1)
-						draw_bar(y, data[min_i]);
-					break;
-				case PMB_MAX :
-					if (max_i != -1)
-						draw_bar(y, data[max_i]);
-					break;
-				case PMB_CUR :
-					draw_bar(y, data.back());
-					break;
-				case PMB_AVG :
-					std::cerr << "avg not yet supported" << std::endl;
-					break;
+			if (!bar_config.empty()) {
+				int y = ymax + (bar_line_width+4)/2;
+				glLineWidth((float)bar_line_width);
+				for (int c=0; c < (int)bar_config.size(); ++c) {
+					switch (bar_config[c]) {
+					case PMB_MIN :
+						if (min_i != -1)
+							draw_bar(y, data[min_i]);
+						break;
+					case PMB_MAX :
+						if (max_i != -1)
+							draw_bar(y, data[max_i]);
+						break;
+					case PMB_CUR :
+						draw_bar(y, data.back());
+						break;
+					case PMB_AVG :
+						std::cerr << "avg not yet supported" << std::endl;
+						break;
+					}
+					y += bar_line_width+1;
 				}
-				y += bar_line_width+1;
 			}
-		}
 
-		glDisableClientState(GL_COLOR_ARRAY);
-		glDisableClientState(GL_VERTEX_ARRAY);
+		}
 
 	}
 	glEnable(GL_LIGHTING);

@@ -13,6 +13,7 @@ class CGV_API gl_performance_monitor : public performance_monitor
 {
 protected:
 	void draw_bar(int y, const frame_data& fdata);
+	void draw_lines();
 public:
 	/// construct performance monitor with standard configuration
 	gl_performance_monitor();
