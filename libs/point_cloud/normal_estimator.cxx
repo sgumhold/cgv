@@ -1,61 +1,7 @@
 #include "normal_estimator.h"
+#include "normal_estimation.h"
 #include <cgv/math/functions.h>
-
-#include <cgv/math/mat.h>
-#include <cgv/math/eig.h>
-#include <cgv/math/point_operations.h>
-
-void estimate_normal_ls(unsigned nr_points, const float* _points, float* _normal, float* _evs = 0)
-{
-	cgv::math::mat<float> points;
-	points.set_extern_data(3, nr_points, const_cast<float*>(_points));
-
-	cgv::math::vec<float> normal;
-	normal.set_extern_data(3, _normal);
-
-	cgv::math::mat<float> covmat;
-	cgv::math::vec<float> mean;
-
-	cgv::math::covmat_and_mean(points,covmat,mean);
-	cgv::math::mat<double> dcovmat(covmat), v;
-	cgv::math::diag_mat<double> d;
-	cgv::math::eig_sym(dcovmat,v,d);
-
-	normal = cgv::math::vec<float>(normalize(v.col(2)));
-	if (_evs) {
-		_evs[0] = (float)d(0);		
-		_evs[1] = (float)d(1);		
-		_evs[2] = (float)d(2);
-	}
-}
-
-void estimate_normal_wls(unsigned nr_points, const float* _points, const float* _weights, float* _normal, float* _evs = 0)
-{
-	cgv::math::mat<float> points;
-	points.set_extern_data(3, nr_points, const_cast<float*>(_points));
-	cgv::math::vec<float> weights;
-	weights.set_extern_data(nr_points, const_cast<float*>(_weights));
-	cgv::math::vec<float> normal;
-	normal.set_extern_data(3, _normal);
-
-	cgv::math::mat<float> covmat;
-	cgv::math::vec<float> mean;
-
-	
-
-	cgv::math::weighted_covmat_and_mean(weights,points,covmat,mean);
-	cgv::math::mat<double> dcovmat(covmat), v;
-	cgv::math::diag_mat<double> d;
-	cgv::math::eig_sym(dcovmat,v,d);
-
-	normal = cgv::math::vec<float>(normalize(v.col(2)));
-
-	if (_evs) {
-		_evs[0] = (float)d(0);		
-		_evs[1] = (float)d(1);		
-		_evs[2] = (float)d(2);
-	}
-}
+#include <algorithm>
 
 normal_estimator::normal_estimator(point_cloud& _pc, neighbor_graph& _ng) : pc(_pc), ng(_ng) 
 {
@@ -66,9 +12,9 @@ normal_estimator::normal_estimator(point_cloud& _pc, neighbor_graph& _ng) : pc(_
 }
 
 /// compute geometric quality of a triangle
-normal_estimator::coord_type normal_estimator::compute_normal_quality(const Nml& n1, const Nml& n2) const
+normal_estimator::Crd normal_estimator::compute_normal_quality(const Nml& n1, const Nml& n2) const
 {
-	coord_type nml_comp;
+	Crd nml_comp;
 	if (use_orientation)
 		nml_comp = 0.5f*(dot(n1,n2)+1);
 	else {
@@ -82,165 +28,183 @@ normal_estimator::coord_type normal_estimator::compute_normal_quality(const Nml&
 /// compute normals from neighbor graph and distance and normal weights
 void normal_estimator::smooth_normals()
 {
-	unsigned int vi;
-	const std::vector<Pnt>& P = pc.P;
-	std::vector<Nml>& N = pc.N;
-	unsigned int n = (unsigned int) N.size();
-	std::vector<Nml> NS = N;
-	for (vi = 0; vi < n; ++vi) {
-		const Pnt& pi = P[vi];
-		const Nml& nml_i = N[vi];
-		const std::vector<unsigned int> &Ni = ng.at(vi);
-		unsigned int ni = (unsigned int) Ni.size();
-		coord_type l0_sqr = sqr_length(P[Ni[__min(ni-1,6)]] - pi)*smoothing_scale*smoothing_scale;
+	if (!pc.has_normals())
+		compute_weighted_normals(false);
+
+	std::vector<Crd> weights;
+	std::vector<Pnt> points;
+
+	// copy current normals
+	std::vector<Nml> NS;
+	NS.resize(pc.get_nr_points());
+	Idx i, n = (Idx) pc.get_nr_points();
+	for (i = 0; i < n; ++i)
+		NS[i] = pc.nml(i);
+
+	for (Idx vi = 0; vi < (Idx)pc.get_nr_points(); ++vi) {
+		const Pnt& pi = pc.pnt(vi);
+		const Nml& nml_i = pc.nml(vi);
+		const std::vector<Idx> &Ni = ng.at(vi);
+		unsigned ni = (unsigned) Ni.size();
+		Crd l0_sqr = sqr_length(pc.pnt(Ni[std::min((int)ni-1,6)]) - pi)*smoothing_scale*smoothing_scale;
 		Pnt center(0,0,0);
-		coord_type weight_sum = 0;
-		Vec nml_avg(0,0,0);
-		Vec ortho(0,0,0);
-		Vec repulse(0,0,0);
-		for (unsigned int j=0; j < ni; ++j) {
-			unsigned int vj = Ni[j];
-			Vec dij = P[vj]-P[vi];
-			coord_type lij_sqr = sqr_length(dij);
-			coord_type w_x = exp(-lij_sqr/l0_sqr);
-			coord_type w_n = compute_normal_quality(nml_i,N[vj]);
-			coord_type w   = w_x*w_n;
+		Crd weight_sum = 0;
+		Dir nml_avg(0,0,0);
+		Dir ortho(0,0,0);
+		Dir repulse(0,0,0);
+		for (unsigned j=0; j < ni; ++j) {
+			Idx vj = Ni[j];
+			Dir dij = pc.pnt(vj)-pc.pnt(vi);
+			Crd lij_sqr = sqr_length(dij);
+			Crd w_x = exp(-lij_sqr/l0_sqr);
+			Crd w_n = compute_normal_quality(nml_i,pc.nml(vj));
+			Crd w   = w_x*w_n;
 
 			// compute area weighted normal
 			dij = (1/sqrt(lij_sqr))*dij;
 			Nml nml_ij = cross(dij,cross(nml_i,dij));
 
 			// add contributions
-			nml_avg += w*N[vj];
+			nml_avg += w*pc.nml(vj);
 			ortho   += w*nml_ij;
 			repulse += w*dij;
-			center  += w*P[vj];
+			center  += w*pc.pnt(vj);
 			weight_sum += w;
 		}
 		center = (1.0f/weight_sum)*center;
-		NS[vi] = normalize(N[vi] + 0.4f*normalize(
+		NS[vi] = normalize(pc.nml(vi) + 0.4f*normalize(
 			     nml_avg
 //		   +0.5f*ortho
 //			-3*(dot(N[vi], center - P[vi])/sqrt(l0_sqr))*repulse
 			-repulse
 			));
 	}
-	N = NS;
+	for (i = 0; i < n; ++i)
+		pc.nml(i) = NS[i];
 }
 
 /// recompute normals from neighbor graph and distance and normal weights
 void normal_estimator::compute_weighted_normals(bool reorient)
 {
-	unsigned int vi;
-	const std::vector<Pnt>& P = pc.P;
-	unsigned int n = (unsigned int) P.size();
-	std::vector<Nml>& N = pc.N;
-	if (N.size() != n)
-		N.resize(n);
-
-	std::vector<coord_type> weights;
+	if (!pc.has_normals()) {
+		pc.create_normals();
+		reorient = false;
+	}
+	std::vector<Crd> weights;
 	std::vector<Pnt> points;
-	for (vi = 0; vi < n; ++vi) {
-		const Pnt& pi = P[vi];
-		const std::vector<unsigned int> &Ni = ng.at(vi);
-		unsigned int ni = (unsigned int) Ni.size();
+	for (Idx vi = 0; vi < (Idx)pc.get_nr_points(); ++vi) {
+		const Pnt& pi = pc.pnt(vi);
+		const std::vector<Idx> &Ni = ng.at(vi);
+		unsigned ni = (unsigned) Ni.size();
 		weights.resize(ni+1);
 		points.resize(ni+1);
 		weights[0] = 1;
 		points[0] = pi;
-		coord_type l0_sqr = sqr_length(P[Ni[__min(ni-1,6)]] - pi)*smoothing_scale*smoothing_scale;
-		for (unsigned int j=0; j < ni; ++j) {
-			unsigned int vj = Ni[j];
-			Vec dij = P[vj]-P[vi];
-			coord_type lij_sqr = sqr_length(dij);
-			coord_type w_x = exp(-lij_sqr/l0_sqr);
+		Crd l0_sqr = sqr_length(pc.pnt(Ni[std::min((int)ni-1,6)]) - pi)*smoothing_scale*smoothing_scale;
+		for (unsigned j=0; j < ni; ++j) {
+			Idx vj = Ni[j];
+			Dir dij = pc.pnt(vj)-pc.pnt(vi);
+			Crd lij_sqr = sqr_length(dij);
+			Crd w_x = exp(-lij_sqr/l0_sqr);
 			weights[j+1] = w_x;
-			points[j+1] = P[vj];
+			points[j+1] = pc.pnt(vj);
 		}
 		Nml new_nml;
 		estimate_normal_wls(points.size(), points[0], &weights[0], new_nml);
-		if (reorient && (dot(new_nml,N[vi]) < 0))
+		if (reorient && (dot(new_nml,pc.nml(vi)) < 0))
 			new_nml = -new_nml;
-		N[vi] = new_nml;
+		pc.nml(vi) = new_nml;
 	}
 }
 
 /// recompute normals from neighbor graph and distance and normal weights
 void normal_estimator::compute_bilateral_weighted_normals(bool reorient)
 {
-	unsigned int vi;
-	const std::vector<Pnt>& P = pc.P;
-	std::vector<Nml>& N = pc.N;
-	unsigned int n = (unsigned int) N.size();
-	std::vector<Nml> NS = N;
+	if (!pc.has_normals())
+		compute_weighted_normals(reorient);
 
-	std::vector<coord_type> weights;
+	std::vector<Crd> weights;
 	std::vector<Pnt> points;
-	for (vi = 0; vi < n; ++vi) {
-		const Pnt& pi = P[vi];
-		const Nml& nml_i = N[vi];
-		const std::vector<unsigned int> &Ni = ng.at(vi);
-		unsigned int ni = (unsigned int) Ni.size();
+
+	// copy current normals
+	std::vector<Nml> NS;
+	NS.resize(pc.get_nr_points());
+	Idx i, n = (Idx) pc.get_nr_points();
+	for (i = 0; i < n; ++i)
+		NS[i] = pc.nml(i);
+
+	for (Idx vi = 0; vi < (Idx)pc.get_nr_points(); ++vi) {
+		const Pnt& pi = pc.pnt(vi);
+		const Nml& nml_i = pc.nml(vi);
+		const std::vector<Idx> &Ni = ng.at(vi);
+		unsigned ni = (unsigned) Ni.size();
 		weights.resize(ni+1);
 		points.resize(ni+1);
 		weights[0] = 1;
 		points[0] = pi;
-		coord_type l0_sqr = sqr_length(P[Ni[__min(ni-1,6)]] - pi)*smoothing_scale*smoothing_scale;
-		for (unsigned int j=0; j < ni; ++j) {
-			unsigned int vj = Ni[j];
-			Vec dij = P[vj]-P[vi];
-			coord_type lij_sqr = sqr_length(dij);
-			coord_type w_x = exp(-lij_sqr/l0_sqr);
-			coord_type w_n = compute_normal_quality(nml_i,N[vj]);
-			coord_type w   = w_x*w_n;
+		Crd l0_sqr = sqr_length(pc.pnt(Ni[std::min((int)ni-1,6)]) - pi)*smoothing_scale*smoothing_scale;
+		for (unsigned j=0; j < ni; ++j) {
+			Idx vj = Ni[j];
+			Dir dij = pc.pnt(vj)-pc.pnt(vi);
+			Crd lij_sqr = sqr_length(dij);
+			Crd w_x = exp(-lij_sqr/l0_sqr);
+			Crd w_n = compute_normal_quality(nml_i,pc.nml(vj));
+			Crd w   = w_x*w_n;
 			weights[j+1] = w;
-			points[j+1] = P[vj];
+			points[j+1] = pc.pnt(vj);
 		}
 		estimate_normal_wls(points.size(), points[0], &weights[0], NS[vi]);
-		if (reorient && (dot(NS[vi],N[vi]) < 0))
+		if (reorient && (dot(NS[vi],pc.nml(vi)) < 0))
 			NS[vi] = -NS[vi];
 	}
-	N = NS;
+	for (i = 0; i < n; ++i)
+		pc.nml(i) = NS[i];
 }
 
 /// recompute normals from neighbor graph and distance and normal weights
 void normal_estimator::compute_plane_bilateral_weighted_normals(bool reorient)
 {
-	unsigned int vi;
-	const std::vector<Pnt>& P = pc.P;
-	std::vector<Nml>& N = pc.N;
-	unsigned int n = (unsigned int) N.size();
-	std::vector<Nml> NS = N;
+	if (!pc.has_normals())
+		compute_weighted_normals(reorient);
 
-	std::vector<coord_type> weights;
+	std::vector<Crd> weights;
 	std::vector<Pnt> points;
-	for (vi = 0; vi < n; ++vi) {
-		const Pnt& pi = P[vi];
-		const Nml& nml_i = N[vi];
-		const std::vector<unsigned int> &Ni = ng.at(vi);
-		unsigned int ni = (unsigned int) Ni.size();
+
+	// copy current normals
+	std::vector<Nml> NS;
+	NS.resize(pc.get_nr_points());
+	Idx i, n = (Idx) pc.get_nr_points();
+	for (i = 0; i < n; ++i)
+		NS[i] = pc.nml(i);
+
+	for (Idx vi = 0; vi < (Idx)pc.get_nr_points(); ++vi) {
+		const Pnt& pi = pc.pnt(vi);
+		const Nml& nml_i = pc.nml(vi);
+		const std::vector<Idx> &Ni = ng.at(vi);
+		unsigned ni = (unsigned) Ni.size();
 		weights.resize(ni+1);
 		points.resize(ni+1);
 		weights[0] = 1;
 		points[0] = pi;
-		coord_type l0_sqr = sqr_length(P[Ni[__min(ni-1,6)]] - pi)*smoothing_scale*smoothing_scale;
-		coord_type err0_sqr = l0_sqr*noise_to_sampling_ratio*noise_to_sampling_ratio;
-		for (unsigned int j=0; j < ni; ++j) {
-			unsigned int vj = Ni[j];
-			Vec dij = P[vj]-P[vi];
-			coord_type lij_sqr = sqr_length(dij);
-			coord_type w_x = exp(-lij_sqr/l0_sqr);
-			coord_type errij = dot(N[vj],dij)*dot(N[vj],dij);
-			coord_type w_n = exp(-errij/err0_sqr);
-			coord_type w   = w_x*w_n;
+		Crd l0_sqr = sqr_length(pc.pnt(Ni[std::min((int)ni-1,6)]) - pi)*smoothing_scale*smoothing_scale;
+		Crd err0_sqr = l0_sqr*noise_to_sampling_ratio*noise_to_sampling_ratio;
+		for (unsigned j=0; j < ni; ++j) {
+			Idx vj = Ni[j];
+			Dir dij = pc.pnt(vj)-pc.pnt(vi);
+			Crd lij_sqr = sqr_length(dij);
+			Crd w_x = exp(-lij_sqr/l0_sqr);
+			Crd errij = dot(pc.nml(vj),dij)*dot(pc.nml(vj),dij);
+			Crd w_n = exp(-errij/err0_sqr);
+			Crd w   = w_x*w_n;
 			weights[j+1] = w;
-			points[j+1] = P[vj];
+			points[j+1] = pc.pnt(vj);
 		}
 		estimate_normal_wls(points.size(), points[0], &weights[0], NS[vi]);
-		if (reorient && (dot(NS[vi],N[vi]) < 0))
+		if (reorient && (dot(NS[vi],pc.nml(vi)) < 0))
 			NS[vi] = -NS[vi];
 	}
-	N = NS;
+	for (i = 0; i < n; ++i)
+		pc.nml(i) = NS[i];
 }
 
 #include <cgv/math/union_find.h>
@@ -286,13 +250,9 @@ void normal_estimator::orient_normals(const Pnt& view_point)
 	if (!pc.has_normals())
 		compute_weighted_normals(false);
 
-	unsigned int vi;
-	const std::vector<Pnt>& P = pc.P;
-	std::vector<Nml>& N = pc.N;
-	unsigned int n = (unsigned int) N.size();
-	for (vi = 0; vi < n; ++vi) {
-		if (dot(N[vi],view_point-P[vi]) < 0)
-			N[vi] = -N[vi];
+	for (Idx vi = 0; vi < (Idx)pc.get_nr_points(); ++vi) {
+		if (dot(pc.nml(vi),view_point-pc.pnt(vi)) < 0)
+			pc.nml(vi) = -pc.nml(vi);
 	}
 }
 
@@ -303,43 +263,39 @@ void normal_estimator::orient_normals()
 	if (!pc.has_normals())
 		compute_weighted_normals(false);
 	std::cout << "orienting normals\n=================" << std::endl;
-	unsigned int vi;
-	const std::vector<Pnt>& P = pc.P;
-	std::vector<Nml>& N = pc.N;
-	unsigned int n = (unsigned int) N.size();
 
 	// compute weighted edges and initial point with smallest x-component
 	std::cout << "computing weighted edges" << std::endl;
 	std::vector<weighted_edge_info> E;
-	coord_type min_x = std::numeric_limits<coord_type>::max();
-	unsigned v0 = 0;
-	for (vi = 0; vi < n; ++vi) {
-		const Pnt& pi = P[vi];
+	Crd min_x = std::numeric_limits<Crd>::max();
+	Idx vi, v0 = 0;
+	for (vi = 0; vi < (Idx)pc.get_nr_points(); ++vi) {
+		const Pnt& pi = pc.pnt(vi);
 		if (pi[0] < min_x) {
-			min_x = pi[0];
+			min_x = pi(0);
 			v0 = vi;
 		}
-		const Nml& nml_i = N[vi];
-		const std::vector<unsigned int> &Ni = ng.at(vi);
-		unsigned int ni = (unsigned int) Ni.size();
-		for (unsigned int j=0; j < ni; ++j) {
-			unsigned int vj = Ni[j];
-			const Pnt& pj = P[vj];
-			const Nml& nml_j = N[vj];
-			Vec d = normalize(pj-pi);
-			Vec nml_ip = nml_i - 2*dot(nml_i,d)*d;
+		const Nml& nml_i = pc.nml(vi);
+		const std::vector<Idx> &Ni = ng.at(vi);
+		unsigned ni = (unsigned) Ni.size();
+		for (unsigned j=0; j < ni; ++j) {
+			Idx vj = Ni[j];
+			const Pnt& pj = pc.pnt(vj);
+			const Nml& nml_j = pc.nml(vj);
+			Dir d = normalize(pj-pi);
+			Dir nml_ip = nml_i - 2*dot(nml_i,d)*d;
 			E.push_back(weighted_edge_info(vi,vj,dot(nml_ip, nml_j)));
 		}
 	}
 
 	std::cout << "construct MST" << std::endl;
 	// compute MST as simple neighborgraph
-	cgv::math::union_find uf(n);
+	cgv::math::union_find uf(pc.get_nr_points());
 	std::sort(E.begin(), E.end());
-	std::vector<std::vector<neighbor_info> > MST(n);
-	for (vi = 1; vi < n; ) {
+	std::vector<std::vector<neighbor_info> > MST(pc.get_nr_points());
+	for (vi = 1; vi < (Idx)pc.get_nr_points(); ) {
 		if (E.empty()) {
-			std::cerr << "warning: impossible to build MST over neighbor graph " << n-vi <<  " unreachable vertices" << std::endl;
+			std::cerr << "warning: impossible to build MST over neighbor graph " << pc.get_nr_points()-vi <<  " unreachable vertices" << std::endl;
 			break;
 		}
 		const weighted_edge_info& wei = E.back();
@@ -364,9 +320,9 @@ void normal_estimator::orient_normals()
 	unsigned nr = 0;
 	// flip starting with v0
 	std::vector<edge_info> Q;
-	Q.push_back(edge_info(v0,-1,N[v0][0]>0));
-	if (N[v0][0]>0)
-		N[v0] = -N[v0];
+	Q.push_back(edge_info(v0,-1,pc.nml(v0)(0)>0));
+	if (pc.nml(v0)(0)>0)
+		pc.nml(v0) = -pc.nml(v0);
 	while (!Q.empty()) {
 		edge_info ei = Q.back();
 		Q.pop_back();
@@ -376,7 +332,7 @@ void normal_estimator::orient_normals()
 			if (vj == ei.vj)
 				continue;
 			if (ni[i].flip != ei.flip) {
-				N[vj] = -N[vj];
+				pc.nml(vj) = -pc.nml(vj);
 				++nr;
 			}
 			Q.push_back(edge_info(vj,ei.vi,ei.flip ^ ni[i].flip));

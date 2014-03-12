@@ -1,5 +1,5 @@
 #include "gl_point_cloud_drawable_base.h"
-
+#include "ann_tree.h"
 #include <cgv/utils/file.h>
 #include <cgv/utils/scan.h>
 #include <cgv_gl/gl/gl.h>
@@ -49,7 +49,7 @@ bool gl_point_cloud_drawable_base::read(const std::string& _file_name)
 		cerr << "could not read point cloud " << fn << endl;
 		return false;
 	}
-	file_name = pc.get_file_name();
+	file_name = drop_extension(_file_name);
 	post_redraw();
 	return true;
 }
@@ -68,17 +68,8 @@ bool gl_point_cloud_drawable_base::append(const std::string& _file_name)
 	}
 	if (!file_name.empty())
 		file_name += " and "; 
-	file_name += pc1.get_file_name();
-	unsigned i;
-	bool copy_nmls = pc1.has_normals() && (pc.P.size() == 0 || pc.has_normals());
-	bool copy_clrs = pc1.has_colors() && (pc.P.size() == 0 || pc.has_colors());
-	for (i=0; i<pc1.P.size(); ++i) {
-		pc.P.push_back(pc1.P[i]);
-		if (copy_nmls)
-			pc.N.push_back(pc1.N[i]);
-		if (copy_clrs)
-			pc.C.push_back(pc1.C[i]);
-	}
+	file_name += drop_extension(fn);
+	pc.append(pc1);
 	return true;
 }
 
@@ -88,24 +79,19 @@ bool gl_point_cloud_drawable_base::write(const std::string& fn)
 		cerr << "could not write point cloud " << fn << endl;
 		return false;
 	}
-	file_name = pc.get_file_name();
+	file_name = drop_extension(fn);
 	return true;
 }
 
 
-void gl_point_cloud_drawable_base::draw_box(context& ctx)
+void gl_point_cloud_drawable_base::draw_box(context& ctx, const Box& box)
 {
-	if (!show_box)
-		return;
-
 	glDisable(GL_LIGHTING);
 	glLineWidth((float)(2*line_width));
 	
-	glColor3fv(&box_color[0]);
-	
 	glPushMatrix();
-	glTranslatef(pc.box.get_center()(0),pc.box.get_center()(1),pc.box.get_center()(2));
-	glScalef(0.5f*pc.box.get_extent()(0), 0.5f*pc.box.get_extent()(1), 0.5f*pc.box.get_extent()(2));
+	glTranslatef(box.get_center()(0),box.get_center()(1),box.get_center()(2));
+	glScalef(0.5f*box.get_extent()(0), 0.5f*box.get_extent()(1), 0.5f*box.get_extent()(2));
 
 	GLboolean cull;
 	glGetBooleanv(GL_CULL_FACE, &cull);
@@ -122,6 +108,15 @@ void gl_point_cloud_drawable_base::draw_box(context& ctx)
 	glEnable(GL_LIGHTING);
 }
 
+void gl_point_cloud_drawable_base::draw_box(context& ctx)
+{
+	if (!show_box)
+		return;
+
+	glColor3fv(&box_color[0]);
+	draw_box(ctx, pc.box());	
+}
+
 void gl_point_cloud_drawable_base::draw_points(context& ctx)
 {
 	if (!show_points)
@@ -136,7 +131,7 @@ void gl_point_cloud_drawable_base::draw_points(context& ctx)
 		glColor3fv(&base_color[0]);
 		glPointSize(point_size);
 
-		int n = (int)pc.P.size();
+		int n = (int)pc.get_nr_points();
 		glDrawArrays(GL_POINTS,0,n);
 
 	glDisable(GL_POLYGON_OFFSET_POINT);
@@ -153,11 +148,11 @@ void gl_point_cloud_drawable_base::draw_normals(context& ctx)
 		glColor3fv(&nml_color[0]);
 		glLineWidth(line_width);
 		glBegin(GL_LINES);
-		float nml_scale = (nml_length*pc.box.get_extent().length()/sqrt((float)pc.P.size()));
-		for (unsigned int i=0; i<pc.P.size(); ++i) {
-			Pnt dp = pc.P[i];
+		float nml_scale = (nml_length*pc.box().get_extent().length()/sqrt((float)pc.get_nr_points()));
+		for (unsigned int i=0; i<pc.get_nr_points(); ++i) {
+			Pnt dp = pc.pnt(i);
 			glVertex3fv(dp);
-			dp += nml_scale*pc.N[i];
+			dp += nml_scale*pc.nml(i);
 			glVertex3fv(dp);
 		}
 		glEnd();
@@ -186,7 +181,7 @@ void gl_point_cloud_drawable_base::draw_graph(context& ctx)
 		glLineWidth(line_width);
 		glBegin(GL_LINES);
 		for (unsigned int vi=0; vi<ng.size(); ++vi) {
-			const std::vector<unsigned int> &Ni = ng[vi];
+			const std::vector<Idx> &Ni = ng[vi];
 			for (unsigned int j=0; j<Ni.size(); ++j) {
 				unsigned int vj = Ni[j];
 				// check for symmetric case and only draw once
@@ -212,7 +207,7 @@ void gl_point_cloud_drawable_base::draw_graph(context& ctx)
 
 void gl_point_cloud_drawable_base::draw(context& ctx)
 {
-	if (pc.P.empty())
+	if (pc.get_nr_points() == 0)
 		return;
 
 	ctx.enable_material(base_material);
@@ -220,21 +215,21 @@ void gl_point_cloud_drawable_base::draw(context& ctx)
 
 	draw_box(ctx);
 
-	glVertexPointer(3, GL_FLOAT, 0, &(pc.P[0].x()));
+	glVertexPointer(3, GL_FLOAT, 0, &(pc.pnt(0).x()));
 	glEnableClientState(GL_VERTEX_ARRAY);
 	draw_graph(ctx);
 	glDisableClientState(GL_VERTEX_ARRAY);
 
 	draw_normals(ctx);
 
-	glVertexPointer(3, GL_FLOAT, 0, &(pc.P[0].x()));
+	glVertexPointer(3, GL_FLOAT, 0, &(pc.pnt(0).x()));
 	glEnableClientState(GL_VERTEX_ARRAY);
 	if (pc.has_colors() && show_clrs) {
-		glColorPointer(3, GL_FLOAT, 0, &(pc.C[0][0]));
+		glColorPointer(3, GL_FLOAT, 0, &(pc.clr(0)[0]));
 		glEnableClientState(GL_COLOR_ARRAY);
 	}
 	if (pc.has_normals()) {
-		glNormalPointer(GL_FLOAT, 0, &(pc.N[0].x()));
+		glNormalPointer(GL_FLOAT, 0, &(pc.nml(0).x()));
 		glEnableClientState(GL_NORMAL_ARRAY);
 	}
 	else
@@ -264,59 +259,20 @@ void gl_point_cloud_drawable_base::clear()
 	ng.clear();
 }
 
-#define ANN_USE_FLOAT
-#include <ANN/ANN.h>
-
-struct ann_knn_info : public knn_info
-{
-	unsigned n;
-	ANNpointArray pa;
-	ANNpointSet* ps;
-	ann_knn_info(vector<point_cloud::Pnt>& P)
-	{
-		n = P.size();
-		pa = new  ANNpoint[n];
-		unsigned int i;
-		for (i=0; i<n; ++i)
-			pa[i] = P[i];
-		ps = new ANNkd_tree(pa,n,3);
-	}
-	~ann_knn_info()
-	{
-		delete [] pa;
-		delete ps;
-	}
-	unsigned get_nr_vertices() const
-	{
-		return n;
-	}
-	void append_neighbors(unsigned i, unsigned k, std::vector<unsigned>& neighbor_list) const
-	{
-		static vector<float> dists;
-		static vector<ANNidx> tmp;
-		unsigned off = neighbor_list.size();
-		neighbor_list.resize(off+k);
-		tmp.resize(k+1);
-		dists.resize(k+1);
-		ps->annkSearch(pa[i], k+1, &tmp[0], &dists[0]);
-		std::copy(tmp.begin()+1,tmp.end(),neighbor_list.begin()+off);
-	}
-};
-
-
 
 void gl_point_cloud_drawable_base::build_neighbor_graph()
 {
 	clear();
-	ann_knn_info ann_knn(pc.P);
+	ann_tree T;
+	T.build(pc);		
 	cgv::utils::statistics he_stats;
-	ng.build(k, ann_knn, &he_stats);
+	ng.build(pc.get_nr_points(), k, T, &he_stats);
 	if (do_symmetrize)
 		ng.symmetrize();
 	std::cout << "half edge statistics " << he_stats << std::endl;
-	cout << "v " << (unsigned)(pc.P.size()) 
+	cout << "v " << pc.get_nr_points()
 		  << ", he = " << ng.nr_half_edges 
-		  << " ==> " << (float)ng.nr_half_edges/((unsigned )(pc.P.size())) << " half edges per vertex" << endl;
+		  << " ==> " << (float)ng.nr_half_edges/((unsigned )(pc.get_nr_points())) << " half edges per vertex" << endl;
 }
 
 void gl_point_cloud_drawable_base::compute_normals()

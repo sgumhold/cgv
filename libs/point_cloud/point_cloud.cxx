@@ -14,39 +14,47 @@ using namespace cgv::utils;
 using namespace std;
 using namespace cgv::media::mesh;
 
-class point_cloud_obj_loader : public obj_reader
+class point_cloud_obj_loader : public obj_reader, public point_cloud_types
 {
 protected:
-	point_cloud* pc;
+	std::vector<Pnt>& P;
+	std::vector<Nml>& N;
+	std::vector<Clr>& C;
 public:
 	///
-	point_cloud_obj_loader(point_cloud* _pc) : pc(_pc) {}
+	point_cloud_obj_loader(std::vector<Pnt>& _P, std::vector<Nml>& _N, std::vector<Clr>& _C) : P(_P), N(_N), C(_C) {}
 	/// overide this function to process a vertex
 	void process_vertex(const v3d_type& p)
 	{
-		pc->P.push_back(point_cloud::Pnt(p));
+		P.push_back(point_cloud::Pnt(p));
 	}
 	/// overide this function to process a normal
 	void process_normal(const v3d_type& n)
 	{
-		pc->N.push_back(point_cloud::Nml(n));
+		N.push_back(point_cloud::Nml(n));
 	}
 	/// overide this function to process a color (this called for vc prefixes which is is not in the standard but for example used in pobj-files)
 	void process_color(const color_type& c)
 	{
-		pc->C.push_back(c);
+		C.push_back(c);
 	}
 
 };
 
 point_cloud::point_cloud()
 { 
+	has_clrs = false;
+	has_nmls = false;
 	no_normals_contained = false;
+	box_out_of_date = false;
 }
 
 point_cloud::point_cloud(const string& file_name)
 {
+	has_clrs = false;
+	has_nmls = false;
 	no_normals_contained = false;
+	box_out_of_date = false;
 	read(file_name);
 }
 
@@ -55,6 +63,105 @@ void point_cloud::clear()
 	P.clear();
 	N.clear();
 	C.clear();
+	box_out_of_date = true;
+}
+/// append another point cloud
+void point_cloud::append(const point_cloud& pc)
+{
+	if (pc.get_nr_points() == 0)
+		return;
+	Cnt old_n = P.size();
+	Cnt n = P.size()+pc.get_nr_points();
+	if (has_normals())
+		N.resize(n);
+	if (has_colors())
+		C.resize(n);
+	P.resize(n);
+	if (has_normals() && pc.has_normals())
+		std::copy(pc.N.begin(), pc.N.end(), N.begin()+old_n);
+	if (has_colors() && pc.has_colors())
+		std::copy(pc.C.begin(), pc.C.end(), C.begin()+old_n);
+	std::copy(pc.P.begin(), pc.P.end(), P.begin()+old_n);
+	box_out_of_date = true;
+}
+
+/// clip on box
+void point_cloud::clip(const Box clip_box)
+{
+	Idx j=0;
+	for (Idx i=0; i<(Idx)get_nr_points(); ++i) {
+		if (clip_box.inside(pnt(i))) {
+			if (j < i) {
+				pnt(j) = pnt(i);
+				if (has_colors())
+					clr(j) = clr(i);
+				if (has_normals())
+					nml(j) = nml(i);
+			}
+			++j;
+		}
+	}
+	if (j != get_nr_points()) {
+		if (has_colors())
+			C.resize(j);
+		if (has_normals())
+			N.resize(j);
+		P.resize(j);
+	}
+	box_out_of_date = true;
+}
+
+/// translate by direction
+void point_cloud::translate(const Dir& dir)
+{
+	for (Idx i=0; i<(Idx)get_nr_points(); ++i) {
+		pnt(i) += dir;
+	}
+	B.ref_min_pnt() += dir;
+	B.ref_max_pnt() += dir;
+}
+
+/// transform with linear transform 
+void point_cloud::transform(const Mat& mat)
+{
+	for (Idx i=0; i<(Idx)get_nr_points(); ++i) {
+		pnt(i) = mat*pnt(i);
+	}
+	box_out_of_date = true;
+}
+
+/// transform with affine transform 
+void point_cloud::transform(const AMat& amat)
+{
+	HVec h(0,0,0,1);
+	for (Idx i=0; i<(Idx)get_nr_points(); ++i) {
+		(Dir&)h=pnt(i);
+		pnt(i) = amat*h;
+	}
+	box_out_of_date = true;
+}
+
+/// transform with homogeneous transform and w-clip
+void point_cloud::transform(const HMat& hmat)
+{
+	HVec h0(0,0,0,1), h1;
+	for (Idx i=0; i<(Idx)get_nr_points(); ++i) {
+		(Dir&)h0=pnt(i);
+		h1 = hmat*h0;
+		pnt(i) = (1/h1(3))*(const Dir&)h1;
+	}
+	box_out_of_date = true;
+}
+
+/// add a point and allocate normal and color if necessary
+point_cloud::Idx point_cloud::add_point(const Pnt& p)
+{
+	if (has_normals())
+		N.resize(N.size()+1);
+	if (has_colors())
+		C.resize(P.size()+1);
+	P.push_back(p);
+	return (Idx)P.size()-1;
 }
 
 bool point_cloud::read(const string& _file_name)
@@ -74,26 +181,43 @@ bool point_cloud::read(const string& _file_name)
 	if (ext == "ply")
 		success = read_ply(_file_name);
 	if (success) {
-		set_file_name(_file_name);
-		compute_box();
+		if (N.size() > 0)
+			has_nmls = true;
+		else if (P.size() > 0)
+			has_nmls = false;
+
+		if (C.size() > 0)
+			has_clrs = true;
+		else if (P.size() > 0)
+			has_clrs = false;
+
+		box_out_of_date = true;
 	}
-	else
+	else {
 		cerr << "unknown extension <." << ext << ">." << endl;
+	}
+	if (N.size() > 0 && P.size() != N.size()) {
+		cerr << "ups different number of normals: " << N.size() << " instead of " << P.size() << endl;
+		N.resize(P.size());
+	}
+	if (C.size() > 0 && P.size() != C.size()) {
+		cerr << "ups different number of colors: " << C.size() << " instead of " << P.size() << endl;
+		C.resize(P.size());
+	}
 	return success;
 }
 
 bool point_cloud::write(const string& _file_name)
 {
-	file_name = drop_extension(_file_name);
 	string ext = to_lower(get_extension(_file_name));
 	if (ext == "bpc")
-		return write_bin();
+		return write_bin(_file_name);
 	if (ext == "apc" || ext == "pnt")
-		return write_ascii(ext == "apc");
+		return write_ascii(_file_name, ext == "apc");
 	if (ext == "obj" || ext == "pobj")
-		return write_obj();
+		return write_obj(_file_name);
 	if (ext == "ply")
-		return write_ply();
+		return write_ply(_file_name);
 	cerr << "unknown extension <." << ext << ">." << endl;
 	return false;
 }
@@ -122,11 +246,11 @@ bool point_cloud::read_points(const std::string& file_name)
 					break;
 			}
 			if (j >= 3)
-				P.push_back(Pnt((coord_type)values[0],(coord_type)values[1],(coord_type)values[2]));
+				P.push_back(Pnt((Crd)values[0],(Crd)values[1],(Crd)values[2]));
 			if (j >= 6)
-				N.push_back(Nml((coord_type)values[3],(coord_type)values[4],(coord_type)values[5]));
+				N.push_back(Nml((Crd)values[3],(Crd)values[4],(Crd)values[5]));
 			if (j >= 9)
-				C.push_back(Clr((coord_type)values[6],(coord_type)values[7],(coord_type)values[8]));
+				C.push_back(Clr((Crd)values[6],(Crd)values[7],(Crd)values[8]));
 
 			if ( (P.size() % 10000) == 0)
 				cout << "read " << P.size() << " points" << endl;
@@ -197,17 +321,17 @@ bool point_cloud::read_wrl(const std::string& file_name)
 						is_double(toks[2].begin, toks[2].end, z)) {
 							switch (parse_mode) {
 							case 5 : 
-								P.push_back(Pnt((coord_type)x,(coord_type)y,(coord_type)z)); 
+								P.push_back(Pnt((Crd)x,(Crd)y,(Crd)z)); 
 								if ( (P.size() % 10000) == 0)
 									cout << "read " << P.size() << " points" << endl;
 								break;
 							case 6 : 
-								N.push_back(Nml((coord_type)x,(coord_type)y,(coord_type)z)); 
+								N.push_back(Nml((Crd)x,(Crd)y,(Crd)z)); 
 								if ( (N.size() % 10000) == 0)
 									cout << "read " << N.size() << " normals" << endl;
 								break;
 							case 7 : 
-								C.push_back(Clr((coord_type)x,(coord_type)y,(coord_type)z)); 
+								C.push_back(Clr((Crd)x,(Crd)y,(Crd)z)); 
 								if ( (C.size() % 10000) == 0)
 									cout << "read " << C.size() << " colors" << endl;
 								break;
@@ -246,23 +370,17 @@ bool point_cloud::read_bin(const string& file_name)
 		if (has_clrs)
 			success = success && fread(&C[0][0],sizeof(Clr),n,fp) == n;
 	}
-	if (success) {
-		if (n != m && m != 0)
-			cerr << "ups different number of normals: " << m << " instead of " << n << endl;
-	}
 	return fclose(fp) == 0 && success;
 }
 
 bool point_cloud::read_obj(const string& _file_name) 
 {
-	point_cloud_obj_loader pc_obj(this);
+	point_cloud_obj_loader pc_obj(P,N,C);
 	if (!exists(_file_name))
 		return false;
 	clear();
 	if (!pc_obj.read_obj(_file_name))
 		return false;
-	if (P.size() != N.size())
-		cerr << "ups different number of normals: " << N.size() << " instead of " << P.size() << endl;
 	return true;
 }
 #include "ply.h"
@@ -328,9 +446,9 @@ bool point_cloud::read_ply(const string& _file_name)
 	return true;
 }
 
-bool point_cloud::write_ply() const
+bool point_cloud::write_ply(const std::string& file_name) const
 {
-	PlyFile* ply_out = open_ply_for_write((file_name+".ply").c_str(), 2, propNames, PLY_BINARY_LE);
+	PlyFile* ply_out = open_ply_for_write(file_name.c_str(), 2, propNames, PLY_BINARY_LE);
 	if (!ply_out) 
 		return false;
 	describe_element_ply (ply_out, "vertex", P.size());
@@ -376,12 +494,6 @@ bool point_cloud::write_ply() const
 	return true;
 }
 
-void point_cloud::set_file_name(const string& _file_name)
-{
-	file_name = drop_extension(_file_name);
-}
-
-
 bool point_cloud::read_ascii(const string& file_name)
 {
 	ifstream is(file_name.c_str());
@@ -404,15 +516,13 @@ bool point_cloud::read_ascii(const string& file_name)
 		if (n == 9)
 			C.push_back(Clr(r,g,b));
 	}
-	if (has_normals() && (P.size() != N.size()))
-		cerr << "ups different number of normals: " << N.size() << " instead of " << P.size() << endl;
 	return true;
 }
 
 
-bool point_cloud::write_ascii(bool write_nmls) const
+bool point_cloud::write_ascii(const std::string& file_name, bool write_nmls) const
 {
-	ofstream os((file_name+(write_nmls?".apc":".pnt")).c_str());
+	ofstream os(file_name.c_str());
 	if (os.fail()) 
 		return false;
 	for (unsigned int i=0; i<P.size(); ++i) {
@@ -424,9 +534,9 @@ bool point_cloud::write_ascii(bool write_nmls) const
 	return !os.fail();
 }
 
-bool point_cloud::write_bin() const
+bool point_cloud::write_bin(const std::string& file_name) const
 {
-	FILE* fp = fopen((file_name+".bpc").c_str(), "wb");
+	FILE* fp = fopen(file_name.c_str(), "wb");
 	if (!fp)
 		return false;
 	unsigned int n = (unsigned int)P.size();
@@ -445,9 +555,9 @@ bool point_cloud::write_bin() const
 	return fclose(fp) == 0 && success;
 }
 
-bool point_cloud::write_obj() const
+bool point_cloud::write_obj(const std::string& file_name) const
 {
-	ofstream os((file_name+".pobj").c_str());
+	ofstream os(file_name.c_str());
 	if (os.fail()) 
 		return false;
 	unsigned int i;
@@ -458,19 +568,52 @@ bool point_cloud::write_obj() const
 	return !os.fail();
 }
 
-void point_cloud::compute_box() 
-{
-	box.invalidate();
-	for (unsigned int i = 0; i < P.size(); ++i)
-		box.add_point(P[i]);
-}
-
 bool point_cloud::has_colors() const
 {
-	return !C.empty();
+	return has_clrs;
+}
+
+///
+void point_cloud::create_colors()
+{
+	has_clrs = true;
+	C.resize(P.size());
+}
+
+///
+void point_cloud::destruct_colors()
+{
+	has_clrs = false;
+	C.clear();
 }
 
 bool point_cloud::has_normals() const 
 {
-	return !N.empty(); 
+	return has_nmls; 
+}
+
+///
+void point_cloud::create_normals()
+{
+	has_nmls = true;
+	N.resize(P.size());
+}
+
+///
+void point_cloud::destruct_normals()
+{
+	has_nmls = false;
+	N.clear();
+}
+
+/// return box
+const point_cloud::Box& point_cloud::box() const
+{
+	if (box_out_of_date) {
+		B.invalidate();
+		for (Idx i = 0; i < (Idx)get_nr_points(); ++i)
+			B.add_point(pnt(i));
+		box_out_of_date = false;
+	}
+	return B;
 }

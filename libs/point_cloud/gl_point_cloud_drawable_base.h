@@ -10,12 +10,9 @@
 #include "lib_begin.h"
 
 struct CGV_API gl_point_cloud_drawable_base :
-	public cgv::render::drawable
+	public cgv::render::drawable, public point_cloud_types
 {
-	typedef point_cloud::coord_type coord_type;
-	typedef point_cloud::Pnt Pnt;
-	typedef point_cloud::Nml Nml;
-	typedef point_cloud::Box Box;
+public:
 	typedef cgv::media::illum::phong_material::color_type color_type;
 protected:
 	point_cloud pc;
@@ -63,6 +60,7 @@ public:
 	void draw_edge_color(unsigned int vi, unsigned int j, bool is_symm, bool is_start) const;
 	//void draw_debug_vertex(unsigned int vi);
 
+	void draw_box(cgv::render::context& ctx, const Box& box);
 	void draw_box(cgv::render::context& ctx);
 	void draw_points(cgv::render::context& ctx);
 	void draw_normals(cgv::render::context& ctx);
