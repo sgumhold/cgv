@@ -194,6 +194,25 @@ void gl_mesh_drawable_base::init_frame(context &ctx)
 		materials[i].ensure_textures(ctx);
 }
 
+/// clear all objects living in the context like textures or display lists
+void gl_mesh_drawable_base::clear(context& ctx)
+{
+	// destruct textures and display lists
+	unsigned i;
+	for (i=0; i<materials.size(); ++i) {
+		materials[i].destruct_textures(ctx);
+		for (unsigned j=0; j<materials[i].group_list_ids.size(); ++j) {
+			unsigned dl = materials[i].group_list_ids[j].second;
+			if (dl != -1)
+				glDeleteLists(dl, 1);
+		}
+	}	
+	materials.clear();
+	// destruct group info
+	groups.clear();
+	loader.clear();
+}
+
 void gl_mesh_drawable_base::draw_mesh_group(context &ctx, unsigned gi, bool use_materials)
 {
 	for (unsigned i=0; i<materials.size(); ++i) {
