@@ -1122,6 +1122,7 @@ bool gl_context::texture_create(
 	texture_unbind(tb.tt, tmp_id);
 	return true;
 }
+
 bool gl_context::texture_create_from_buffer(
 						texture_base& tb, 
 						cgv::data::data_format& df, 
@@ -1145,10 +1146,11 @@ bool gl_context::texture_create_from_buffer(
 	}
 	GLuint tmp_id = texture_bind(tb.tt, tex_id);
 
-	if (level == -1) {
-		std::cerr << "construction of mipmaps not supported yet. Copying only to level 0." << std::endl;
+	// check mipmap type
+	bool gen_mipmap = level == -1;
+	if (gen_mipmap)
 		level = 0;
-	}
+
 	glCopyTexImage2D(GL_TEXTURE_2D, level, gl_format, x, y, df.get_width(), df.get_height(), 0);
 	bool error = true;
 	switch (glGetError()) {
@@ -1167,11 +1169,15 @@ bool gl_context::texture_create_from_buffer(
 		error = false;
 	}
 	texture_unbind(tb.tt, tmp_id);
+
+	if (gen_mipmap) 
+		texture_generate_mipmaps(tb, tb.tt == TT_CUBEMAP ? 2 : (int)tb.tt);
+
 	return error;
 }
 
 bool gl_context::texture_replace(
-						const texture_base& tb, 
+						texture_base& tb, 
 						int x, int y, int z, 
 						const cgv::data::const_data_view& data, 
 						int level, const std::vector<cgv::data::data_view>* palettes)
@@ -1209,13 +1215,13 @@ bool gl_context::texture_replace(
 
 	// bind texture
 	GLuint tmp_id = texture_bind(tb.tt,tex_id);
-	replace_texture(data, level, x, y, z, palettes);
+	tb.have_mipmaps = replace_texture(data, level, x, y, z, palettes) || tb.have_mipmaps;
 	texture_unbind(tb.tt, tmp_id);
 	return true;
 }
 
 bool gl_context::texture_replace_from_buffer(
-							const texture_base& tb, 
+							texture_base& tb, 
 							int x, int y, int z, 
 							int x_buffer, int y_buffer, 
 							unsigned int width, unsigned int height, 
@@ -1250,10 +1256,9 @@ bool gl_context::texture_replace_from_buffer(
 		}
 	}
 	// check mipmap type
-	if (level == -1) {
-		std::cerr << "reconstruction of mipmaps not yet supported." << std::endl;
+	bool gen_mipmap = level == -1;
+	if (gen_mipmap)
 		level = 0;
-	}
 
 	// bind texture
 	GLuint tmp_id = texture_bind(tb.tt, tex_id);
@@ -1273,6 +1278,9 @@ bool gl_context::texture_replace_from_buffer(
 			break;
 	}
 	texture_unbind(tb.tt, tmp_id);
+
+	if (gen_mipmap) 
+		texture_generate_mipmaps(tb, tb.tt == TT_CUBEMAP ? 2 : (int)tb.tt);
 	return true;
 }
 
@@ -1281,7 +1289,7 @@ bool gl_context::texture_generate_mipmaps(texture_base& tb, unsigned int dim)
 	GLuint tex_id = ((const GLuint&) tb.handle)-1;
 	GLuint tmp_id = texture_bind(tb.tt,tex_id);
 
-	bool res = generate_mipmaps((int)tb.tt, &tb.last_error);
+	bool res = generate_mipmaps(dim, &tb.last_error);
 	if (res) 
 		tb.have_mipmaps = true;
 

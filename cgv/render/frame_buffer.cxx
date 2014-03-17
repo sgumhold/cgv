@@ -79,8 +79,10 @@ bool frame_buffer::attach(context& ctx, const texture& tex2d, int level, int i)
 bool frame_buffer::attach(context& ctx, const texture& tex3d, int z_or_cube_side, int level, int i)
 {
 	if (tex3d.get_nr_dimensions() != 3) {
-		last_error = "can only attach slices of 3d textures to a frame buffer";
-		return false;
+		if (tex3d.tt != TT_CUBEMAP) {
+			last_error = "can only attach slices of 3d textures or cube maps to a frame buffer";
+			return false;
+		}
 	}
 	tex3d.ensure_state(ctx);
 	return ctx.frame_buffer_attach(*this, tex3d,

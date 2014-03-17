@@ -45,7 +45,7 @@ protected:
 	
 	bool texture_create(
 							texture_base& tb, 
-		               cgv::data::data_format& target_format, 
+							cgv::data::data_format& target_format, 
 							const cgv::data::const_data_view& data, 
 							int level, int cube_side = -1, const std::vector<cgv::data::data_view>* palettes = 0);
 	
@@ -54,13 +54,13 @@ protected:
 							cgv::data::data_format& df, 
 							int x, int y, int level);
 	
-	bool texture_replace(   const texture_base& tb, 
+	bool texture_replace(   texture_base& tb, 
 							int x, int y, int z_or_cube_side, 
 							const cgv::data::const_data_view& data, 
 							int level, const std::vector<cgv::data::data_view>* palettes = 0);
 
 	bool texture_replace_from_buffer(
-							const texture_base& tb, 
+							texture_base& tb, 
 							int x, int y, int z_or_cube_side, 
 							int x_buffer, int y_buffer, 
 							unsigned int width, unsigned int height, 

@@ -30,10 +30,10 @@ extern CGV_API bool generate_mipmaps(unsigned int dim, std::string* last_error =
 /// map the given component format to the best matching available gl component format
 extern CGV_API unsigned find_best_texture_format(const cgv::data::component_format& cf, cgv::data::component_format* best_cf = 0, const std::vector<cgv::data::data_view>* palettes = 0);
 
-/// load data to a texture
+/// load data to a texture with the glTexImage commands and generate mipmaps if the level parameter is -1, return whether mipmaps were created
 extern CGV_API bool load_texture(const cgv::data::const_data_view& data, unsigned gl_tex_format, unsigned level = -1, unsigned cube_side = -1, const std::vector<cgv::data::data_view>* palettes = 0);
 
-/// create a texture from the given data view creating mipmap
+/// create a texture from the given data view creating a mipmap pyramid
 extern CGV_API unsigned int create_texture(const cgv::data::const_data_view& dv, bool mipmap = true, const std::vector<cgv::data::data_view>* palettes = 0, unsigned tex_id = -1);
 
 /// create a certain texture level from the given data view and optionally specify a cube side of a cube map
@@ -44,8 +44,9 @@ extern CGV_API unsigned int create_texture(const cgv::data::const_data_view& dv,
 	A level of -1 corresponds to level 0 with recomputation of the mipmaps after replacement.
 	x,y and z are offsets for 1D, 2D and 3D textures.
     In case of a cube map, the z parameter must be between 0 and 5 and defines the cube side in which to replace.
+	Return value tells whether mipmaps have been recomputed
 */
-extern CGV_API void replace_texture(const cgv::data::const_data_view& data, int level = 0, int x = 0, int y = 0, int z = -1, const std::vector<cgv::data::data_view>* palettes = 0);
+extern CGV_API bool replace_texture(const cgv::data::const_data_view& data, int level = 0, int x = 0, int y = 0, int z = -1, const std::vector<cgv::data::data_view>* palettes = 0);
 
 /** read the given image file into a texture and return the texture id or -1 in case of failure.
     The aspect ratio of the texture is written into the value pointed to by aspect_ptr. In case
