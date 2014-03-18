@@ -88,7 +88,8 @@ void performance_monitor::set_nr_display_cycles(unsigned _nr_cycles)
 /// add a new to me monitored item
 int performance_monitor::add_task(const std::string& name, const cgv::media::color<float>& col)
 {
-	tasks.push_back(performance_task(name,col));
+	performance_task pt(name,col);
+	tasks.push_back(pt);
 	return tasks.size() - 1;
 }
 /// start performance measurement of a new frame 
@@ -102,7 +103,8 @@ void performance_monitor::start_frame()
 		data.pop_front();
 	data.push_back(frame_data());
 	watch.restart();
-	add_measurement(performance_measurement(watch.get_elapsed_time(), 0, true));
+	performance_measurement pm(watch.get_elapsed_time(), 0, true);
+	add_measurement(pm);
 	frame_finished = false;
 	++frame_id;
 }
@@ -112,14 +114,16 @@ void performance_monitor::start_task(int task_id)
 {
 	if (!enabled)
 		return;
-	add_measurement(performance_measurement(watch.get_elapsed_time(), task_id, true));
+	performance_measurement pm(watch.get_elapsed_time(), task_id, true);
+	add_measurement(pm);
 }
 
 void performance_monitor::finish_task(int task_id)
 {
 	if (!enabled)
 		return;
-	add_measurement(performance_measurement(watch.get_elapsed_time(), task_id, false));
+	performance_measurement pm(watch.get_elapsed_time(), task_id, false);
+	add_measurement(pm);
 }
 /// finish measurement of a frame, if this is not called by hand, it is called automatically in the next call to start_frame.
 void performance_monitor::finish_frame()
@@ -127,7 +131,8 @@ void performance_monitor::finish_frame()
 	if (!enabled)
 		return;
 	const char* start_or_finish[] = { "start", "finish" };
-	add_measurement(performance_measurement(watch.get_elapsed_time(), 0, false));
+	performance_measurement pm(watch.get_elapsed_time(), 0, false);
+	add_measurement(pm);
 	frame_finished = true;
 	if (file_name.empty())
 		return;
