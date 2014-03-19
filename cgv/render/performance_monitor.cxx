@@ -142,8 +142,11 @@ void performance_monitor::finish_frame()
 		return;
 	int i;
 	if (need_header) {
-		for (i=0; i<(int)current_frame().size(); ++i)
-			fprintf(fp, i==0?"%s %s":",%s %s", start_or_finish[current_frame()[i].start ? 0 : 1], tasks[current_frame()[i].task_id]);
+		const frame_data& cf = current_frame();
+		for (i=0; i<(int)cf.size(); ++i) {
+			const performance_measurement& pm = cf[i];
+			fprintf(fp, i==0?"%s %s":",%s %s", start_or_finish[pm.start ? 0 : 1], tasks[pm.task_id]);
+		}
 		fprintf(fp, "\n");
 	}
 	fprintf(fp, "%d", frame_id);
