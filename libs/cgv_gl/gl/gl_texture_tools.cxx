@@ -476,7 +476,7 @@ bool load_texture(const cgv::data::const_data_view& data, unsigned gl_tex_format
 	return gen_mipmap;
 }
 
-void replace_texture(const cgv::data::const_data_view& data, int level, int x, int y, int z, const std::vector<cgv::data::data_view>* palettes)
+bool replace_texture(const cgv::data::const_data_view& data, int level, int x, int y, int z, const std::vector<cgv::data::data_view>* palettes)
 {
 	unsigned nr_dim = data.get_format()->get_nr_dimensions();
 	const unsigned char* data_ptr = data.get_ptr<unsigned char>();
@@ -507,8 +507,9 @@ void replace_texture(const cgv::data::const_data_view& data, int level, int x, i
 		break;
 	}
 	if (gen_mipmap) 
-		generate_mipmaps(nr_dim);
+		gen_mipmap = generate_mipmaps(nr_dim);
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+	return gen_mipmap;
 }
 
 unsigned int create_texture(const cgv::data::const_data_view& dv, bool mipmap, const std::vector<data_view>* palettes, unsigned tex_id)

@@ -548,7 +548,10 @@ bool texture::replace(context& ctx, int x, int y, int z_or_cube_side, const cgv:
 		render_component::last_error = "attempt to replace in a not created 1d texture";
 		return false;
 	}
-	return ctx.texture_replace(*this,x,y,z_or_cube_side,data,level, palettes);
+	bool res = ctx.texture_replace(*this,x,y,z_or_cube_side,data,level, palettes);
+	if (res && level == -1 && !have_mipmaps)
+		have_mipmaps = true;
+	return res;
 }
 
 /// replace a block within a 2d texture from the current read buffer.
