@@ -3,6 +3,7 @@
 #include <cgv/utils/tokenizer.h>
 #include <cgv/utils/advanced_scan.h>
 #include <cgv/utils/file.h>
+#include <cgv/type/variant.h>
 
 #include <algorithm>
 #include <vector>
@@ -500,6 +501,39 @@ std::string factory::get_object_options() const
 	return object_options;
 }
 
+
+/// support creation of object by setting create property to true
+std::string factory::get_property_declarations()
+{
+	return "create:bool";
+}
+
+
+/// 
+bool factory::set_void(const std::string& property, const std::string& value_type, const void* value_ptr)
+{
+	if (property == "create") {
+		bool do_create;
+		cgv::type::get_variant(do_create, value_type, value_ptr);
+		if (do_create)
+			register_object(create_object());
+		return true;
+	}
+	else
+		return false;
+}
+
+/// 
+bool factory::get_void(const std::string& property, const std::string& value_type, void* value_ptr)
+{
+	if (property == "create") {
+		cgv::type::set_variant(true, value_type, value_ptr);
+		return true;
+	}
+	else
+		return false;
+}
+
 /// overload to return the type name of the objects that the factory can create
 const std::string& factory::get_created_type_name() const
 {
@@ -769,7 +803,7 @@ resource_file_registration::resource_file_registration(const char* symbol)
 std::string extend_plugin_name(const std::string& fn)
 {
 	std::string n = cgv::utils::file::drop_extension(fn);
-#if defined(_WIN32) || not defined(NDEBUG)
+#if defined(_WIN32) || !defined(NDEBUG)
 	n += "_";
 #endif
 #ifndef NDEBUG

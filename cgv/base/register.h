@@ -179,7 +179,7 @@ struct CGV_API registration_listener
 };
 
 //! interface for a factory that allows to create objects derived from cgv::base::base
-struct CGV_API factory
+struct CGV_API factory : public base
 {
 protected:
 	/// store the type name of the to be created objects
@@ -197,6 +197,12 @@ public:
 	virtual std::string get_object_options() const;
 	/// overload to return the type name of the objects that the factory can create
 	const std::string& get_created_type_name() const;
+	/// support creation of object by setting create property to true
+	std::string get_property_declarations();
+	/// 
+	bool set_void(const std::string& property, const std::string& value_type, const void* value_ptr);
+	/// 
+	bool get_void(const std::string& property, const std::string& value_type, void* value_ptr);
 	/// return whether the factory can only generate one instance of the given type
 	bool is_singleton_factory() const;
 	/// return pointer to singleton
@@ -211,7 +217,7 @@ public:
 
 /// implementation of factory for objects of type T using the standard constructor
 template <class T>
-struct factory_impl : public base, public factory
+struct factory_impl : public factory
 {
 	inline factory_impl(const std::string& _created_type_name, bool _is_singleton = false, const std::string& _object_options = "") : 
 				factory(_created_type_name, _is_singleton, _object_options) {}
@@ -221,7 +227,7 @@ struct factory_impl : public base, public factory
 
 /// implementation of factory for objects of type T using a constructor with one argument of type CA
 template <class T, typename CA>
-struct factory_impl_1 : public base, public factory
+struct factory_impl_1 : public factory
 {
 	CA ca;
 	inline factory_impl_1(CA _ca, const std::string& _created_type_name, bool is_singleton = false, const std::string& _object_options = "") : 
@@ -232,7 +238,7 @@ struct factory_impl_1 : public base, public factory
 
 /// implementation of factory for objects of type T using a constructor with two arguments of types CA1 and CA2
 template <class T, typename CA1, typename CA2>
-struct factory_impl_2 : public base, public factory
+struct factory_impl_2 : public factory
 {
 	CA1 ca1;
 	CA2 ca2;
