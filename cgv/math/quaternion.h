@@ -213,7 +213,7 @@ public:
 	{
 		coord_type omega, cosom, sinom, sclp, sclq;
 		*this = q*p;
-		cosom = this->square_length();
+		cosom = this->sqr_length();
 		if ( ( 1 + cosom) > EPSILON ) {
 			if ( ( 1 - cosom) > EPSILON ) {
 				omega = acos( cosom );
@@ -229,9 +229,9 @@ public:
 			set(sclp*p.w() + sclq*q.w(), sclp*p.x() + sclq*q.x(), sclp*p.y() + sclq*q.y(), sclp*p.z() + sclq*q.z());
 		}
 		else {
-			sclp = sin ( (1-t)*M_PI/2 );
-			sclq = sin ( t * M_PI/2 );
-			setPoint(p.z(), sclp*p.x() - sclq*p.y(), sclp*p.y() + sclq*p.x(), sclp*p.z() - sclq*p.w());
+			sclp = (T)sin ( (1-t)*M_PI/2 );
+			sclq = (T)sin ( t * M_PI/2 );
+			set(p.z(), sclp*p.x() - sclq*p.y(), sclp*p.y() + sclq*p.x(), sclp*p.z() - sclq*p.w());
 		}
 	}
 	/// compute affin combination with angular interpolation
