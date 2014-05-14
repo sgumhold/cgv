@@ -726,7 +726,8 @@ void fltk_gl_view::force_redraw()
 /// select a font given by a font handle
 void fltk_gl_view::enable_font_face(font_face_ptr font_face, float font_size)
 {
-	if (!(font_face == current_font_face) || font_size != current_font_size) {
+	
+	//if (!(font_face == current_font_face) || font_size != current_font_size) {
 		fltk_font_face_ptr fff = font_face.up_cast<fltk_font_face>();
 		if (fff.empty()) {
 			std::cerr << "could not use font face together with fltk" << std::endl;
@@ -735,7 +736,7 @@ void fltk_gl_view::enable_font_face(font_face_ptr font_face, float font_size)
 		fltk::glsetfont(fff->get_fltk_font(),font_size);
 		current_font_face = font_face;
 		current_font_size = font_size;
-	}
+	//}
 }
 
 /// overload to set the value
