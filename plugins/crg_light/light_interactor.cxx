@@ -16,6 +16,20 @@ light_interactor::light_interactor()
 	light_scale = 0.2f;
 }
 
+/// hide all lights
+void light_interactor::hide_all()
+{
+	std::fill(show.begin(), show.end(), false);
+	post_redraw();
+}
+
+/// show all lights
+void light_interactor::show_all()
+{
+	std::fill(show.begin(), show.end(), true);
+	post_redraw();
+}
+
 std::string light_interactor::get_type_name() const
 {
 	return "light_interactor";
@@ -30,8 +44,10 @@ void light_interactor::on_set(void* member_ptr)
 			break;
 		}
 	}
-	if (member_ptr == &file_name)
-		load();
+	if (member_ptr == &file_name) {
+		load(file_name);
+		on_load();
+	}
 
 	post_redraw();
 }
@@ -144,45 +160,62 @@ void light_interactor::finish_frame(context& ctx)
 		}
 }
 
+/// save light_interactor to file
+bool light_interactor::save(const std::string& file_name)  const
+{
+	FILE* fp = fopen(file_name.c_str(), "wb");
+	if (!fp)
+		return false;
+	unsigned n = lights.size();
+	bool success = 
+		fwrite(&n, sizeof(unsigned), 1, fp)             == 1 &&
+		fwrite(&lights[0], sizeof(light_source), n, fp) == n &&
+		fwrite(&intensities[0], sizeof(float), n, fp)   == n &&
+		fwrite(&enabled[0], sizeof(int), n, fp)         == n;
+	fclose(fp);
+	return success;
+}
+
 void light_interactor::save_cb()
 {
 	std::string fn = file_save_dialog("Choose light settings", "(bin):*.bin");
 	if (fn.empty())
 		return;
-	FILE* fp = fopen(fn.c_str(), "wb");
-	if (!fp)
-		return;
-	unsigned n = lights.size();
-	fwrite(&n, sizeof(unsigned), 1, fp) &&
-	fwrite(&lights[0], sizeof(light_source), n, fp) &&
-	fwrite(&intensities[0], sizeof(float), n, fp) &&
-	fwrite(&enabled[0], sizeof(int), n, fp);
-	fclose(fp);
+	save(fn);
 }
 
-void light_interactor::load()
+void light_interactor::on_load()
 {
+	unsigned n = lights.size();
+	toggles.resize(n);
+	handles.resize(n);
+	for (unsigned i=0; i<n;++i) {
+		handles[i] = 0;
+		toggles[i] = 0;
+	}
+	post_recreate_gui();
+	post_redraw();
+}
+
+bool light_interactor::load(const std::string& fn)
+{
+	file_name = fn;
 	FILE* fp = fopen(file_name.c_str(), "rb");
 	if (!fp)
-		return;
+		return false;
 	unsigned n;
-	if (fread(&n, sizeof(unsigned), 1, fp)) {
+	bool success = fread(&n, sizeof(unsigned), 1, fp) == 1;
+	if (success) {
 		lights.resize(n);
 		intensities.resize(n);
 		enabled.resize(n);
-		toggles.resize(n);
-		handles.resize(n);
-		for (unsigned i=0; i<n;++i) {
-			handles[i] = 0;
-			toggles[i] = 0;
-		}
-		fread(&lights[0], sizeof(light_source), n, fp) &&
-		fread(&intensities[0], sizeof(float), n, fp) &&
-		fread(&enabled[0], sizeof(int), n, fp);
-		post_recreate_gui();
-		post_redraw();
+		success = 
+			fread(&lights[0], sizeof(light_source), n, fp) == n &&
+			fread(&intensities[0], sizeof(float), n, fp) == n &&
+			fread(&enabled[0], sizeof(int), n, fp) == n;
 	}
 	fclose(fp);
+	return success;
 }
 
 void light_interactor::load_cb()
@@ -190,8 +223,8 @@ void light_interactor::load_cb()
 	std::string fn = file_open_dialog("Choose light settings", "(bin):*.bin");
 	if (fn.empty())
 		return;
-	file_name = fn;
-	load();
+	load(fn);
+	on_load();
 }
 
 void light_interactor::create_gui()

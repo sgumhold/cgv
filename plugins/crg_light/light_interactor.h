@@ -27,11 +27,15 @@ protected:
 	float light_scale;
 	std::string file_name;
 	void save_cb();
-	void load();
 	void load_cb();
+	void on_load();
 public:
 	/// construct default light interactor
 	light_interactor();
+	/// hide all lights
+	void hide_all();
+	/// show all lights
+	void show_all();
 	/**@name self reflection*/
 	//@{
 	/// return type name
@@ -40,6 +44,10 @@ public:
 	void on_set(void* member_ptr);
 	/// do self reflection
 	bool self_reflect(reflection_handler& rh);
+	/// save light_interactor to file
+	bool save(const std::string& file_name)  const;
+	/// read light_interactor from file
+	bool load(const std::string& file_name);
 	//@}
 
 	/**@name rendering*/
