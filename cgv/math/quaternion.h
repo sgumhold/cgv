@@ -178,8 +178,8 @@ public:
 	/// rotate image according to quaternion into preimage
 	void put_preimage(const vec_type& image, vec_type& preimage) const
 	{
-		preimage = cross(image, im());
-		preimage = dot(image,im())*im()+ (re()*image + re()*(coord_type)2*preimage) + cross(preimage,im());
+		preimage = cross(-im(), image);
+		preimage = dot(image,-im())*(-im()) + re()*(re()*image + (coord_type)2*preimage) + cross(-im(),preimage);
 	}
 	/// rotate vector according to the inverse quaternion
 	void inverse_rotate(vec_type& image) const { vec_type tmp; put_preimage(image, tmp); image = tmp; }
