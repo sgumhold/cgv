@@ -15,6 +15,12 @@ reflection_handler::~reflection_handler()
 {
 }
 
+/** give information on whether reflection_handler creates object*/
+bool reflection_handler::is_creative() const
+{
+	return false;
+}
+
 
 /// check whether a group kind is of array or vector kind
 bool reflection_handler::is_array_kind(GroupKind gk) 

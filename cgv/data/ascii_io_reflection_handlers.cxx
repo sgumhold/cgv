@@ -46,6 +46,12 @@ std::string ascii_reflection_handler::extend_name(const std::string& name, bool 
 	return res;
 }
 
+/// this should return true
+bool ascii_read_reflection_handler::is_creative() const
+{
+	return true;
+}
+
 bool ascii_reflection_handler::reflect_header()
 {
 	in_header = true;

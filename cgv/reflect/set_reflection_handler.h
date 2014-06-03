@@ -15,6 +15,8 @@ protected:
 	std::string value_type;
 	abst_reflection_traits* value_rt;
 public:
+	/// this should return true
+	bool is_creative() const;
 	/// construct from target, value type, pointer to value and optionally reflection_traits
 	set_reflection_handler(const std::string& _target,
 						   const std::string& _value_type,

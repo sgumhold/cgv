@@ -15,6 +15,12 @@ bool binary_reflection_handler::reflect_header()
 	return res;
 }
 
+/// this should return true
+bool binary_read_reflection_handler::is_creative() const
+{
+	return true;
+}
+
 binary_reflection_handler::binary_reflection_handler(const std::string& _content, unsigned _ver) : io_reflection_handler(_content, _ver)
 {
 }

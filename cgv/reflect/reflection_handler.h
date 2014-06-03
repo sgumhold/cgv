@@ -102,7 +102,10 @@ protected:
 		RT rt;
 		switch (process_structural_group_begin(GK_STRUCTURE, member_name, GroupTraversal(reflect_group_begin(GK_STRUCTURE, member_name, &member_ref, &rt)))) {
 		case GT_TERMINATE : return false;
-		case GT_COMPLETE : return static_cast<D&>(member_ref).D::self_reflect(*this) && group_end(GK_STRUCTURE);
+		case GT_COMPLETE : {
+								D& d = static_cast<D&>(member_ref);
+								return d.self_reflect(*this) && group_end(GK_STRUCTURE);
+						   }
 		default: return true;
 		}		
 	}
@@ -161,6 +164,8 @@ public:
 
 	/**@name interface used by reflect and self_reflect functions*/
 	//@{
+	/// give information on whether reflection_handler creates object (defaults to false)
+	virtual bool is_creative() const;
 	/** call this to reflect a member by member name and reference to the member. The
 	    member type is deduced from the reference via templates. The method uses reflect_member_impl 
 		to dispath types with implementation of a self_reflect method and types without. */

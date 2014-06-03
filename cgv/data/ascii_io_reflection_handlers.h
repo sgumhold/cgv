@@ -48,6 +48,8 @@ public:
 	ascii_read_reflection_handler(const std::string& file_name, const std::string& _content, unsigned _ver, NamingConvention _nc = NC_SHORT, unsigned _tab = 3);
     ///
 	ascii_read_reflection_handler(std::istream& _is, const std::string& _content, unsigned _ver, NamingConvention _nc = NC_SHORT, unsigned _tab = 3);
+	/// this should return true
+	bool is_creative() const;
 	///
 	void close();
 	int reflect_group_begin(GroupKind group_kind, const std::string& group_name, void* group_ptr, cgv::reflect::abst_reflection_traits* rt, unsigned grp_size);
