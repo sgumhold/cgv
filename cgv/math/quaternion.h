@@ -276,21 +276,23 @@ public:
 	/// put rotation axis and return rotation angle
 	coord_type put_axis(vec_type& v) const
 	{
-		coord_type l = this->length();
-		if (l < (coord_type)EPSILON) {
+		if (re() > 1) {
+			quaternion<T> q(*this);
+			q.normalize();
+			return q.put_axis(v);
+		}
+		coord_type angle = 2 * acos(re());
+		coord_type s = sqrt(1 - re()*re());
+		if (s < (coord_type)EPSILON) { 
 			v = vec_type(0,0,1);
 			return 0;
 		}
-		else {
-			put_im(v);
-			coord_type a = atan2(l, re());
-			if (a > 0.5*M_PI) {
-				a = a - M_PI;
-				this->axis = -this->axis;
-			}
-			v /= l;
-			return 2*a;
-		}
+		v  = im()/s;
+/*		if (2*angle > M_PI) {
+			angle -= (coord_type)(2*M_PI);
+			v = -v;
+		}*/
+		return angle;
 	}
 	//@}
 };
