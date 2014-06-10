@@ -102,10 +102,11 @@ protected:
 		RT rt;
 		switch (process_structural_group_begin(GK_STRUCTURE, member_name, GroupTraversal(reflect_group_begin(GK_STRUCTURE, member_name, &member_ref, &rt)))) {
 		case GT_TERMINATE : return false;
-		case GT_COMPLETE : {
+		case GT_COMPLETE : return static_cast<D&>(member_ref).D::self_reflect(*this) && group_end(GK_STRUCTURE);
+			/*{
 								D& d = static_cast<D&>(member_ref);
 								return d.self_reflect(*this) && group_end(GK_STRUCTURE);
-						   }
+						   }*/
 		default: return true;
 		}		
 	}
