@@ -410,6 +410,7 @@ protected:
 	virtual bool shader_program_enable(render_component& rc) = 0;
 	virtual bool set_uniform_void(void* handle, const std::string& name, int value_type, bool dimension_independent, const void* value_ptr, std::string& last_error) = 0;
 	virtual bool shader_program_disable(render_component& rc) = 0;
+	virtual void shader_program_detach(void* handle, void* code_handle) = 0;
 	virtual void shader_program_destruct(void* handle) = 0;
 
 public:

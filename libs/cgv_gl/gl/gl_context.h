@@ -121,6 +121,7 @@ protected:
 	bool shader_program_enable(render_component& rc);
 	bool set_uniform_void(void* handle, const std::string& name, int value_type, bool dimension_independent, const void* value_ptr, std::string& last_error);
 	bool shader_program_disable(render_component& rc);
+	void shader_program_detach(void* handle, void* code_handle);
 	void shader_program_destruct(void* handle);
 
 	/// remember the last active context to detect context changes

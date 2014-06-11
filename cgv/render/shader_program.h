@@ -107,7 +107,7 @@ protected:
 	bool show_code_errors : 1;
 	bool linked : 1;
 	bool state_out_of_date : 1;
-	bool has_geometry_shader : 1;
+	int  nr_attached_geometry_shaders : 13;
 
 	std::vector<shader_code*> managed_codes;
 	/// attach a list of files
@@ -155,6 +155,8 @@ public:
 	bool create(context& ctx);
 	/// attach a compiled shader code instance that is managed outside of program
 	bool attach_code(context& ctx, const shader_code& code);
+	/// detach a shader code 
+	bool detach_code(context& ctx, const shader_code& code);
 	/// attach a shader code given as string and managed the created shader code object
 	bool attach_code(context& ctx, const std::string& source, ShaderType st);
 	/// read shader code from file, compile and attach to program

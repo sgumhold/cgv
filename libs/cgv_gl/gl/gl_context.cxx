@@ -1769,6 +1769,13 @@ void gl_context::shader_program_attach(void* handle, void* code_handle)
 	glAttachObjectARB(p_id,c_id);
 }
 
+void gl_context::shader_program_detach(void* handle, void* code_handle)
+{
+	GLuint p_id = (const GLuint&) handle - 1;
+	GLuint c_id = (const GLuint&) code_handle - 1;
+	glDetachObjectARB(p_id,c_id);
+}
+
 bool gl_context::shader_program_link(void* handle, std::string& last_error)
 {
 	GLuint p_id = (const GLuint&) handle - 1;
