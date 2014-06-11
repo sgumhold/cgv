@@ -97,16 +97,18 @@ protected:
 	bool group_end(GroupKind gk);
 	/// implementation of reflection with internal or external self_reflect function
 	template <typename T, typename RT, typename D>
-	bool self_reflect_member(const std::string& member_name, T& member_ref, const RT&, const D&)
+	bool self_reflect_member(const std::string& member_name, T& member_ref, const RT&, const D&, bool hard_cast)
 	{
 		RT rt;
 		switch (process_structural_group_begin(GK_STRUCTURE, member_name, GroupTraversal(reflect_group_begin(GK_STRUCTURE, member_name, &member_ref, &rt)))) {
 		case GT_TERMINATE : return false;
-		case GT_COMPLETE : return static_cast<D&>(member_ref).D::self_reflect(*this) && group_end(GK_STRUCTURE);
-			/*{
-								D& d = static_cast<D&>(member_ref);
-								return d.self_reflect(*this) && group_end(GK_STRUCTURE);
-						   }*/
+		case GT_COMPLETE : 
+			if (hard_cast) 
+				return static_cast<D&>(member_ref).D::self_reflect(*this) && group_end(GK_STRUCTURE);
+			else {
+				D& d = static_cast<D&>(member_ref);
+				return d.self_reflect(*this) && group_end(GK_STRUCTURE);   
+			}
 		default: return true;
 		}		
 	}
@@ -169,9 +171,13 @@ public:
 	virtual bool is_creative() const;
 	/** call this to reflect a member by member name and reference to the member. The
 	    member type is deduced from the reference via templates. The method uses reflect_member_impl 
-		to dispath types with implementation of a self_reflect method and types without. */
+		to dispath types with implementation of a self_reflect method and types without. For polymorphic
+		objects with a polymorphic self_reflect() method the parameter \c hard_cast steers whether the
+		concrete implementation T::self_reflect() is used or the overloaded function member_ref.self_reflect().
+		This is important for self reflection of base classes in polymorphic objects where hard_cast is set
+		to true. In most other cases one can use the default argument false. */
 	template <typename T>
-	bool reflect_member(const std::string& member_name, T& member_ref);
+	bool reflect_member(const std::string& member_name, T& member_ref, bool hard_cast = false);
 	/** call this to reflect a method by method name and reference to the member. The
 	    method type is deduced from the reference via templates. This only works, if you
 		additionally include the header <cgv/base/method_interface_impl.h>, where the 
@@ -210,39 +216,39 @@ struct detail {
 		{
 			template <bool has_external, typename RT>
 			struct reflect_impl {
-				static bool reflect(reflection_handler* rh, const std::string& member_name, T& member_ref, const RT& ) {
+				static bool reflect(reflection_handler* rh, const std::string& member_name, T& member_ref, const RT&, bool hard_cast) {
 					RT rt;
-					return rh->reflect_member_void(member_name, &member_ref, &rt);
+					return rh->reflect_member_void(member_name, &member_ref, &rt, hard_cast);
 				}
 			};
 			template <typename RT>
 			struct reflect_impl<true,RT> {
-				static bool reflect(reflection_handler* rh, const std::string& member_name, T& member_ref, const RT&) {
+				static bool reflect(reflection_handler* rh, const std::string& member_name, T& member_ref, const RT&, bool hard_cast) {
 					RT rt;
-					return rh->self_reflect_member(member_name, member_ref, rt, static_cast<typename RT::external_self_reflect_type&>(member_ref));
+					return rh->self_reflect_member(member_name, member_ref, rt, static_cast<typename RT::external_self_reflect_type&>(member_ref), hard_cast);
 				}
 			};
 			template <typename RT>
-			static bool reflect_RT(reflection_handler* rh, const std::string& member_name, T& member_ref, const RT& rt) {
-				return reflect_impl<RT::has_external,RT>::reflect(rh, member_name, member_ref, rt);	
+			static bool reflect_RT(reflection_handler* rh, const std::string& member_name, T& member_ref, const RT& rt, bool hard_cast) {
+				return reflect_impl<RT::has_external,RT>::reflect(rh, member_name, member_ref, rt, hard_cast);	
 			}
-			static bool reflect(reflection_handler* rh, const std::string& member_name, T& member_ref) {
-				return reflect_RT(rh, member_name, member_ref, get_reflection_traits(member_ref));
+			static bool reflect(reflection_handler* rh, const std::string& member_name, T& member_ref, bool hard_cast) {
+				return reflect_RT(rh, member_name, member_ref, get_reflection_traits(member_ref), hard_cast);
 			}
 		};
 
 		template <typename T> struct reflect_member_impl<T,RTK_STD_TYPE> 
 		{
-			static bool reflect(reflection_handler* rh, const std::string& member_name, T& member_ref) {
+			static bool reflect(reflection_handler* rh, const std::string& member_name, T& member_ref, bool hard_cast) {
 				typename reflection_traits_info<T>::traits_type rt;
-				return rh->reflect_member_void(member_name, &member_ref, &rt);
+				return rh->reflect_member_void(member_name, &member_ref, &rt, hard_cast);
 			}
 		};
 #else
 	template <typename T, ReflectionTraitsKind K> 
 	struct reflect_member_impl
 	{
-		static bool reflect(reflection_handler* rh, const std::string& member_name, T& member_ref) {
+		static bool reflect(reflection_handler* rh, const std::string& member_name, T& member_ref, bool hard_cast) {
 			reflection_traits_info<T>::traits_type rt;
 			return rh->reflect_member_void(member_name, &member_ref, &rt);
 		}
@@ -250,17 +256,17 @@ struct detail {
 
 	template <typename T> struct reflect_member_impl<T,RTK_EXTERNAL_SELF_REFLECT> 
 	{
-		static bool reflect(reflection_handler* rh, const std::string& member_name, T& member_ref) {
+		static bool reflect(reflection_handler* rh, const std::string& member_name, T& member_ref, bool hard_cast) {
 			reflection_traits_info<T>::traits_type rt;
-			return rh->self_reflect_member(member_name, member_ref, rt, static_cast<reflection_traits_info<T>::traits_type::external_self_reflect_type&>(member_ref));
+			return rh->self_reflect_member(member_name, member_ref, rt, static_cast<reflection_traits_info<T>::traits_type::external_self_reflect_type&>(member_ref), hard_cast);
 		}
 	};
 #endif
 	template <typename T> struct reflect_member_impl<T,RTK_SELF_REFLECT> 
 	{
-		static bool reflect(reflection_handler* rh, const std::string& member_name, T& member_ref) {
+		static bool reflect(reflection_handler* rh, const std::string& member_name, T& member_ref, bool hard_cast) {
 			typename reflection_traits_info<T>::traits_type rt;
-			return rh->self_reflect_member(member_name, member_ref, rt, member_ref);
+			return rh->self_reflect_member(member_name, member_ref, rt, member_ref, hard_cast);
 		}
 	};
 
@@ -314,12 +320,12 @@ struct detail {
 
 
 template <typename T>
-bool reflection_handler::reflect_member(const std::string& member_name, T& member_ref)
+bool reflection_handler::reflect_member(const std::string& member_name, T& member_ref, bool hard_cast)
 {
 #ifdef REFLECT_TRAITS_WITH_DECLTYPE
-	return detail::reflect_member_impl<T, reflection_traits_info<T>::kind>::reflect(this, member_name, member_ref);
+	return detail::reflect_member_impl<T, reflection_traits_info<T>::kind>::reflect(this, member_name, member_ref, hard_cast);
 #else
-	return detail::reflect_member_impl<T, reflection_traits_info<T>::kind>::reflect(this, member_name, member_ref);
+	return detail::reflect_member_impl<T, reflection_traits_info<T>::kind>::reflect(this, member_name, member_ref, hard_cast);
 #endif
 }
 
@@ -342,7 +348,7 @@ bool reflection_handler::reflect_base_impl(B& base_ref, const RB&)
 #endif
 	switch (process_structural_group_begin(GK_BASE_CLASS, "", GroupTraversal(reflect_group_begin(GK_BASE_CLASS, "", &base_ref, &rt)))) {
 	case GT_TERMINATE : return false;
-	case GT_COMPLETE : return reflect_member("", base_ref) && group_end(GK_BASE_CLASS);
+	case GT_COMPLETE : return reflect_member("", base_ref, true) && group_end(GK_BASE_CLASS);
 	default: return true;
 	}
 }
