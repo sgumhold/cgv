@@ -176,6 +176,7 @@ bool provider::begin_tree_node_void(const std::string& label, const void* value_
 {
 	if (!ggp)
 		ggp = parent_group;
+	bool decorated = true;	  cgv::base::has_property(options, "decorated", decorated);
 	int level = 2;			  cgv::base::has_property(options, "level", level);
 	std::string align("\n");  cgv::base::has_property(options, "align", align);
 	std::string child_opt;    cgv::base::has_property(options, "options", child_opt);
@@ -188,19 +189,26 @@ bool provider::begin_tree_node_void(const std::string& label, const void* value_
 		button_opt = std::string(";")+button_opt;
 	button_opt = std::string("w=")+cgv::utils::to_string(size) + button_opt;
 
-	if (!child_opt.empty())
-		child_opt = std::string(";")+child_opt;
-	child_opt = std::string("level=")+cgv::utils::to_string(level) + child_opt;
-
 	std::map<std::pair<const void*,int>, bool>::iterator it = get_tree_node_toggle_map().find(std::pair<const void*,int>(value_ptr,index));
 	if (it == get_tree_node_toggle_map().end())
 		get_tree_node_toggle_map()[std::pair<const void*,int>(value_ptr,index)] = initial_visibility;
 
 	bool& toggle = get_tree_node_toggle_map()[std::pair<const void*,int>(value_ptr,index)];
-	ggp->align(std::string("%x-=")+cgv::utils::to_string(off));
-	connect_copy(ggp->add_control(std::string(toggle?"-":"+"), toggle, "toggle", button_opt, " ")->value_change,
-		rebind(static_cast<provider*>(this), &provider::post_recreate_gui));		
-	ggp->add_decorator(label, "heading", child_opt, align);
+
+	if (decorated) {
+		ggp->align(std::string("%x-=")+cgv::utils::to_string(off));
+		connect_copy(ggp->add_control(std::string(toggle?"-":"+"), toggle, "toggle", button_opt, " ")->value_change,
+			rebind(static_cast<provider*>(this), &provider::post_recreate_gui));		
+
+		if (!child_opt.empty())
+			child_opt = std::string(";")+child_opt;
+		child_opt = std::string("level=")+cgv::utils::to_string(level) + child_opt;
+		ggp->add_decorator(label, "heading", child_opt, align);
+	}
+	else {
+		connect_copy(ggp->add_control(std::string(toggle?"-":"+"), toggle, "toggle", button_opt, align)->value_change,
+			rebind(static_cast<provider*>(this), &provider::post_recreate_gui));
+	}
 	return toggle;
 }
 
