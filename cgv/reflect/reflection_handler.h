@@ -218,7 +218,7 @@ struct detail {
 			struct reflect_impl {
 				static bool reflect(reflection_handler* rh, const std::string& member_name, T& member_ref, const RT&, bool hard_cast) {
 					RT rt;
-					return rh->reflect_member_void(member_name, &member_ref, &rt, hard_cast);
+					return rh->reflect_member_void(member_name, &member_ref, &rt);
 				}
 			};
 			template <typename RT>
@@ -241,7 +241,7 @@ struct detail {
 		{
 			static bool reflect(reflection_handler* rh, const std::string& member_name, T& member_ref, bool hard_cast) {
 				typename reflection_traits_info<T>::traits_type rt;
-				return rh->reflect_member_void(member_name, &member_ref, &rt, hard_cast);
+				return rh->reflect_member_void(member_name, &member_ref, &rt);
 			}
 		};
 #else
