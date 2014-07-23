@@ -561,8 +561,12 @@ bool point_cloud::write_obj(const std::string& file_name) const
 	if (os.fail()) 
 		return false;
 	unsigned int i;
-	for (i=0; i<P.size(); ++i)
-		os << "v " << P[i][0] << " " << P[i][1] << " " << P[i][2] << endl;
+	for (i=0; i<P.size(); ++i) {
+		if (has_colors())
+			os << "v " << P[i][0] << " " << P[i][1] << " " << P[i][2] << " " << C[i][0] << " " << C[i][1] << " " << C[i][2] << endl;
+		else
+			os << "v " << P[i][0] << " " << P[i][1] << " " << P[i][2] << endl;
+	}
 	for (i=0; i<N.size(); ++i)
 		os << "vn " << N[i][0] << " " << N[i][1] << " " << N[i][2] << endl;
 	return !os.fail();

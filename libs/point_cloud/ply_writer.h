@@ -2,6 +2,7 @@
 
 #include <vector>
 #include <cgv/math/fvec.h>
+#include <cgv/media/color.h>
 #include "ply.h"
 
 #include "lib_begin.h"
@@ -19,13 +20,17 @@ public:
 	typedef ta_coord_type coord_type;
 	typedef cgv::math::fvec<coord_type,3> Pnt;
 	typedef cgv::math::fvec<coord_type,3> Nml;
+	typedef cgv::media::color<unsigned char,cgv::media::RGB,cgv::media::OPACITY> Clr;
 protected:
 	/// keep pointer to ply file
 	void* ply_file;
 	/// store a dummy normal
 	static Nml dummy_normal;
+	static Clr dummy_color;
 	///
 	bool have_vertex_normals;
+	///
+	bool have_vertex_colors;
 	/// store whether we are writing vertices or faces
 	enum WriteMode { WM_NONE, WM_VERTEX, WM_FACE } write_mode;
 public:
@@ -34,12 +39,12 @@ public:
 	/// open ply file for write
 	bool open(const std::string& file_name, unsigned int nr_vertices, 
 				 unsigned int nr_faces, bool vertex_normals = false, 
-				 PlyFileFormat format = PFF_BINARY_BIG_ENDIAN
+				 bool vertex_colors = false, PlyFileFormat format = PFF_BINARY_BIG_ENDIAN
 				);
 	/// close the ply file
 	void close();
 	/// write one vertex
-	void write_vertex(const Pnt& pt, const Nml& nml = dummy_nml);
+	void write_vertex(const Pnt& pt, const Nml& nml = dummy_normal, const Clr& clr = dummy_color);
 	/// write a triangle given by its three vertex indices
 	void write_triangle(int* vis);
 	/// write a polygon given by its degree and the vertex indices

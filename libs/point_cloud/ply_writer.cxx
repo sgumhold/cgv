@@ -5,6 +5,7 @@ struct PlyVertex
 {
   T x,y,z;
   T nx,ny,nz;
+  unsigned char red, green, blue, alpha;
 };
 
 struct PlyFace 
@@ -36,6 +37,10 @@ PlyProperty* construct_vertex_properties()
 		{"nx", ply_traits<T>::type, ply_traits<T>::type, offsetof(PlyVertex<T>,nx), 0, 0, 0, 0},
 		{"ny", ply_traits<T>::type, ply_traits<T>::type, offsetof(PlyVertex<T>,ny), 0, 0, 0, 0},
 		{"nz", ply_traits<T>::type, ply_traits<T>::type, offsetof(PlyVertex<T>,nz), 0, 0, 0, 0},
+		{"red", Uint8, Uint8, offsetof(PlyVertex<T>,red), 0, 0, 0, 0},
+		{"green", Uint8, Uint8, offsetof(PlyVertex<T>,green), 0, 0, 0, 0},
+		{"blue", Uint8, Uint8, offsetof(PlyVertex<T>,blue), 0, 0, 0, 0},
+		{"alpha", Uint8, Uint8, offsetof(PlyVertex<T>,alpha), 0, 0, 0, 0},
 	};
 	return vertex_props;
 }
@@ -51,11 +56,15 @@ template <typename T>
 typename ply_writer<T>::Nml ply_writer<T>::dummy_normal(0,0,1);
 
 template <typename T>
+typename ply_writer<T>::Clr ply_writer<T>::dummy_color(0,0,0,255);
+
+template <typename T>
 ply_writer<T>::ply_writer()
 {
 	ply_file = 0;
 	write_mode = WM_NONE;
 	have_vertex_normals = false;
+	have_vertex_colors = false;
 }
 
 int to_ply_format(PlyFileFormat format)
@@ -67,7 +76,7 @@ int to_ply_format(PlyFileFormat format)
 template <typename T>
 bool ply_writer<T>::open(const std::string& file_name, 
 								 unsigned int nr_vertices, unsigned int nr_faces, 
-								 bool vertex_normals, PlyFileFormat format)
+								 bool vertex_normals, bool vertex_colors, PlyFileFormat format)
 {
 	PlyFile* ply_out = open_ply_for_write(file_name.c_str(), 2, propNames, format);
 	if (!ply_out) return 0;
@@ -76,10 +85,17 @@ bool ply_writer<T>::open(const std::string& file_name,
 	describe_property_ply (ply_out, &construct_vertex_properties<T>()[1]);
 	describe_property_ply (ply_out, &construct_vertex_properties<T>()[2]);
 	have_vertex_normals = vertex_normals;
+	have_vertex_colors = vertex_colors;
 	if (vertex_normals) {
 		describe_property_ply (ply_out, &construct_vertex_properties<T>()[3]);
 		describe_property_ply (ply_out, &construct_vertex_properties<T>()[4]);
 		describe_property_ply (ply_out, &construct_vertex_properties<T>()[5]);
+	}
+	if (vertex_colors) {
+		describe_property_ply (ply_out, &construct_vertex_properties<T>()[6]);
+		describe_property_ply (ply_out, &construct_vertex_properties<T>()[7]);
+		describe_property_ply (ply_out, &construct_vertex_properties<T>()[8]);
+		describe_property_ply (ply_out, &construct_vertex_properties<T>()[9]);
 	}
 	describe_element_ply  (ply_out, "face", nr_faces);
 	describe_property_ply (ply_out, &face_props[0]);
@@ -90,7 +106,7 @@ bool ply_writer<T>::open(const std::string& file_name,
 
 /// write one vertex
 template <typename T>
-void ply_writer<T>::write_vertex(const Pnt& pt, const Nml& nml)
+void ply_writer<T>::write_vertex(const Pnt& pt, const Nml& nml, const Clr& clr)
 {
 	PlyFile* ply_out = static_cast<PlyFile*>(ply_file);
 	if (!ply_out)
@@ -107,6 +123,12 @@ void ply_writer<T>::write_vertex(const Pnt& pt, const Nml& nml)
 		pv.nx = nml[0];
 		pv.ny = nml[1];
 		pv.nz = nml[2];
+	}
+	if (have_vertex_colors) {
+		pv.red = clr[0];
+		pv.green = clr[1];
+		pv.blue = clr[2];
+		pv.alpha = clr[3];
 	}
 	put_element_ply(ply_out, (void *)&pv);
 }

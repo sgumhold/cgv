@@ -127,7 +127,12 @@ bool surface_reconstructor::write_obj(const std::string& file_name, const std::v
 	Cnt n = (unsigned int) pc->get_nr_points();
 	for (vi = 0; vi < (Idx)n; ++vi) {
 		const Pnt& p = pc->pnt(vi);
-		os << "v " << p[0] << " " << p[1] << " " << p[2] << std::endl;
+		if (pc->has_colors()) {
+			const Clr& c = pc->clr(vi);
+			os << "v " << p[0] << " " << p[1] << " " << p[2] << " " << c[0] << " " << c[1] << " " << c[2] << std::endl;
+		}
+		else
+			os << "v " << p[0] << " " << p[1] << " " << p[2] << std::endl;
 	}
 	for (vi = 0; vi < (Idx)n; ++vi) {
 		const Nml& n = pc->nml(vi);
@@ -309,11 +314,17 @@ bool surface_reconstructor::read_vrml_1(const std::string& file_name, point_clou
 bool surface_reconstructor::write_ply(const std::string& file_name, const std::vector<unsigned int>& T) const
 {
 	ply_writer<Crd> pw;
-	if (!pw.open(file_name, (unsigned int) pc->get_nr_points(), (unsigned int) T.size()/3, true))
+	if (!pw.open(file_name, (unsigned int) pc->get_nr_points(), (unsigned int) T.size()/3, true, pc->has_colors()))
 		return false;
 	unsigned int n = (unsigned int) pc->get_nr_points();
-	for (unsigned int vi = 0; vi < n; ++vi)
-		pw.write_vertex(pc->pnt(vi), pc->nml(vi));
+	if (pc->has_colors()) {
+		for (unsigned int vi = 0; vi < n; ++vi)
+			pw.write_vertex(pc->pnt(vi), pc->nml(vi), pc->clr(vi));
+	}
+	else {
+		for (unsigned int vi = 0; vi < n; ++vi)
+			pw.write_vertex(pc->pnt(vi), pc->nml(vi));
+	}
 	unsigned int ti;
 	for (ti = 0; ti < T.size(); ti += 3)
 		pw.write_triangle((int*)&T[ti]);
