@@ -4,6 +4,7 @@
 #include <cgv/signal/signal.h>
 #include <cgv/gui/event_handler.h>
 #include <cgv/gui/provider.h>
+#include <cgv/gui/mouse_event.h>
 #include <cgv/utils/stopwatch.h>
 #include <cgv_gl/gl/gl_context.h>
 #include <cgv_gl/gl/gl_performance_monitor.h>
@@ -30,9 +31,13 @@ class CGV_API fltk_gl_view :
 {
 protected:
 	void process_text_1(const std::string& text);
-public:
+
 	/**@name fltk interface*/
 	//@{
+private:
+	cgv::gui::mouse_event dnd_release_event;
+	bool dnd_release_event_queued;
+public:
 	/// construct application
 	fltk_gl_view(int x, int y, int w, int h, const std::string& name = "");
 	///

@@ -30,5 +30,6 @@ extern CGV_API cgv::gui::key_event cgv_key_event(cgv::gui::KeyAction a);
 
 /// convert the current fltk event into a cgv mouse event
 extern CGV_API cgv::gui::mouse_event cgv_mouse_event(cgv::gui::MouseAction a, int dx = 0, int dy = 0);
+extern CGV_API cgv::gui::mouse_event cgv_mouse_event(cgv::gui::MouseAction a, cgv::gui::EventFlags flags, int dx = 0, int dy = 0);
 
 #include <cgv/config/lib_end.h>

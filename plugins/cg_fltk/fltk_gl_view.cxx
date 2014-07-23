@@ -36,7 +36,7 @@ void fltk_gl_view::process_text_1(const std::string& text)
 
 /// construct application
 fltk_gl_view::fltk_gl_view(int x, int y, int w, int h, const std::string& name) 
-	: fltk::GlWindow(x,y,w,h), group(name)
+	: fltk::GlWindow(x,y,w,h), group(name), dnd_release_event(0,0,MA_ENTER)
 {
 	recreate_context = false;
 	no_more_context = false;
@@ -46,6 +46,8 @@ fltk_gl_view::fltk_gl_view(int x, int y, int w, int h, const std::string& name)
 
 	enabled = false;
 	started_frame_pm = false;
+
+	dnd_release_event_queued = false;
 
 	connect(out_stream.write, this, &fltk_gl_view::process_text_1);
 
@@ -634,7 +636,7 @@ void fltk_gl_view::stream_stats(std::ostream& os)
 			name = "";
 		name += c->get_type_name();
 	}
-	oprintf(os, "focus = %s<Tab>\n", name.c_str());
+	oprintf(os, "WxH=%d:%d focus = %s<Tab>\n", w(), h(), name.c_str());
 }
 
 /// return the width of the window
@@ -827,7 +829,11 @@ int fltk_gl_view::handle(int ei)
 			return 1;
 		break;
 	case fltk::MOVE:
-		if ( (dx != 0 || dy != 0) && dispatch_event(cgv_mouse_event(MA_MOVE,dx,dy)))
+		if (!dnd_release_event_queued) {
+			if ( (dx != 0 || dy != 0) && dispatch_event(cgv_mouse_event(MA_MOVE,dx,dy)))
+				return 1;
+		}
+		else 
 			return 1;
 		break;
 	case fltk::DRAG:
@@ -844,6 +850,32 @@ int fltk_gl_view::handle(int ei)
 		return 1;
 	case fltk::LEAVE:
 		if (dispatch_event(cgv_mouse_event(MA_LEAVE)))
+			return 1;
+		break;
+	case fltk::DND_ENTER:
+		if (dispatch_event(cgv_mouse_event(MA_ENTER, EF_DND)))
+			return 1;
+		break;
+	case fltk::DND_DRAG :
+		if (dx != 0 || dy != 0) {
+			if (dispatch_event(cgv_mouse_event(MA_DRAG,EF_DND,dx,dy)))
+				return 1;
+		}
+		else
+			return 1;
+		break;
+	case fltk::DND_LEAVE:
+		if (dispatch_event(cgv_mouse_event(MA_LEAVE, EF_DND)))
+			return 1;
+		break;
+	case fltk::DND_RELEASE :
+		dnd_release_event = cgv_mouse_event(MA_RELEASE, EF_DND);
+		dnd_release_event_queued = true;
+		return 1;
+	case fltk::PASTE :
+		dnd_release_event_queued = false;
+		dnd_release_event.set_dnd_text(fltk::event_text());
+		if (dispatch_event(dnd_release_event))
 			return 1;
 		break;
 	}

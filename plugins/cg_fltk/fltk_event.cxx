@@ -277,3 +277,9 @@ cgv::gui::mouse_event cgv_mouse_event(MouseAction a, int dx, int dy)
 	return cgv::gui::mouse_event(fltk::event_x(), fltk::event_y(), a, bs, b, dx, dy, cgv_modifiers(fltk::event_state()), cgv_toggle_keys(fltk::event_state()), fltk::get_time_secs());
 }
 
+cgv::gui::mouse_event cgv_mouse_event(cgv::gui::MouseAction a, cgv::gui::EventFlags flags, int dx, int dy)
+{
+	cgv::gui::mouse_event me = cgv_mouse_event(a, dx, dy);
+	me.set_flags(me.get_flags()|flags);
+	return me;
+}
