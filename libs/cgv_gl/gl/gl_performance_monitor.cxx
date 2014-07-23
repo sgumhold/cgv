@@ -34,7 +34,7 @@ void gl_performance_monitor::finish_draw_lines()
 void gl_performance_monitor::draw_bar(int y, const frame_data& fdata)
 {
 	compute_colors(fdata);
-	compute_positions(placement.get_min_pnt()(0),y,placement.get_extent()(0), 0, fdata);
+	compute_positions(placement.get_min_pnt()(0),y,placement.get_extent()(0)/nr_display_cycles, 0, fdata);
 	draw_lines();
 }
 
@@ -86,6 +86,7 @@ void gl_performance_monitor::draw(cgv::render::context& ctx)
 		for (int i=1; i<nr_display_cycles; ++i) {
 			glVertex2i(xmin, y);
 			glVertex2i(xmax, y);
+			y -= dy;
 		}
 		glEnd();
 	}
