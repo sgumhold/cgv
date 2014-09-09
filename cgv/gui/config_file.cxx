@@ -6,6 +6,7 @@
 #include <cgv/utils/tokenizer.h>
 #include <cgv/base/register.h>
 #include <cgv/reflect/find_reflection_handler.h>
+#include <cgv/reflect/reflect_enum.h>
 #include <algorithm>
 
 using namespace cgv::base;
@@ -132,6 +133,24 @@ public:
 	}
 };
 
+class enum_config_view : public cgv::gui::view<cgv::type::int32_type>
+{
+	abst_enum_reflection_traits* enum_traits;
+	gui_config_file_observer* observer;
+public:
+	enum_config_view(const std::string& _name, void *member_ptr, cgv::reflect::abst_enum_reflection_traits* aert, gui_config_file_observer* _obs) : view<cgv::type::int32_type>(_name, *((cgv::type::int32_type*)member_ptr)), enum_traits(aert), observer(_obs) {}
+	void update()
+	{
+		observer->update_view(cgv::gui::view_ptr(this));
+	}
+	void* get_user_data() const
+	{
+		static std::string last_value;
+		last_value = enum_traits->get_enum_name(get_value());
+		return const_cast<char*>(last_value.c_str());
+	}
+};
+
 void gui_config_file_observer::multi_observe(base_ptr bp, const std::string& property_assignments, unsigned off)
 {
 	// split into single assignments
@@ -168,6 +187,18 @@ void gui_config_file_observer::multi_observe(base_ptr bp, const std::string& pro
 			case cgv::type::info::TI_FLT32 : cfv.view = new config_view<cgv::type::flt32_type>(lhs,*((cgv::type::flt32_type*)member_ptr),this); break;
 			case cgv::type::info::TI_FLT64 : cfv.view = new config_view<cgv::type::flt64_type>(lhs,*((cgv::type::flt64_type*)member_ptr),this); break;
 			case cgv::type::info::TI_STRING : cfv.view = new config_view<std::string>(lhs,*((std::string*)member_ptr),this); break;
+			default:
+				{
+					cgv::reflect::abst_enum_reflection_traits* aert = dynamic_cast<cgv::reflect::abst_enum_reflection_traits*>(rsrh.get_reflection_traits());
+					if (aert) {
+						cfv.view = new enum_config_view(lhs, member_ptr, dynamic_cast<cgv::reflect::abst_enum_reflection_traits*>(aert->clone()), this);
+					}
+					else {
+						std::cerr << "could not create config view for permanent attribute " << lhs << std::endl;
+						exit(0);
+					}
+					break;
+				}
 			}
 			cfv.view->attach_to_reference(member_ptr);
 			this->add_view(cfv);
