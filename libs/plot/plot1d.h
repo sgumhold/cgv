@@ -33,6 +33,7 @@ protected:
 	V3D axis_directions[2];
 	P3D center_location;
 
+	P3D transform_to_world(const P2D& domain_point) const;
 	axis_config& ref_axis_config(unsigned ai);
 	void set_uniforms(cgv::render::context& ctx, cgv::render::shader_program& prog, unsigned i);
 public:

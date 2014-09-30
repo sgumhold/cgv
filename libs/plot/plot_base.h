@@ -4,6 +4,7 @@
 #include <cgv/media/axis_aligned_box.h>
 #include <cgv/render/drawable.h>
 #include <cgv/media/color.h>
+#include <cgv/media/font/font.h>
 #include <cgv/gui/provider.h>
 
 #include "lib_begin.h"
@@ -89,6 +90,18 @@ public:
 	float tick_length[2];
 	bool  label_ticks[2];
 
+	static std::vector<const char*> font_names;
+	static std::string font_name_enum_def;
+
+	unsigned label_font_index;
+	cgv::media::font::font_ptr label_font;
+	cgv::media::font::font_face_ptr label_font_face;
+	void ensure_font_names();
+	void on_font_selection();
+	void on_font_face_selection();
+	float label_font_size;
+	cgv::media::font::FontFaceAttributes label_ffa;
+
 protected:
 	std::vector<plot_base_config*> configs;
 	virtual axis_config& ref_axis_config(unsigned ai) = 0;
@@ -97,6 +110,8 @@ public:
 	plot_base();
 	/// return number of axis
 	virtual unsigned get_nr_axes() const = 0;
+	/// configure the label font
+	void set_label_font(float font_size, cgv::media::font::FontFaceAttributes ffa = cgv::media::font::FFA_REGULAR, const std::string& font_name = "");
 	/**@name management of sub plots*/
 	//@{
 	/// return current number of sub plots

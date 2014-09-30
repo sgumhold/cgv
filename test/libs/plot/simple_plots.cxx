@@ -54,6 +54,7 @@ public:
 		p1.adjust_domain_to_data();
 		p1.set_extent(p1.get_domain().get_extent());
 		p1.adjust_tick_marks_to_domain();
+		p1.set_label_font(16, cgv::media::font::FFA_REGULAR, "Tahoma");
 	}
 	std::string get_type_name() const 
 	{
