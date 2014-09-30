@@ -286,6 +286,14 @@ bool plot1d::init(cgv::render::context& ctx)
 	return true;
 }
 
+plot1d::P3D plot1d::transform_to_world(const P2D& domain_point) const
+{
+	V2D delta = domain_point - domain.get_center();
+	delta /= domain.get_extent();
+	delta *= extent;
+	return center_location + delta(0) * axis_directions[0] + delta(1) * axis_directions[1];
+}
+
 void plot1d::draw(cgv::render::context& ctx)
 {
 	if (!prog.is_created()) {
@@ -346,8 +354,8 @@ void plot1d::draw(cgv::render::context& ctx)
 			glEnd();
 			axis_inside[0] = true;
 		}
-
-		for (int ai = 0; ai < 2; ++ai) {
+		int ai;
+		for (ai = 0; ai < 2; ++ai) {
 			for (int ti = 0; ti < 2; ++ti) {
 				if (axes[ai].ticks[ti].type != TT_NONE) {
 					Crd min_val = domain.get_min_pnt()(ai);
@@ -409,6 +417,66 @@ void plot1d::draw(cgv::render::context& ctx)
 			}
 		}
 		prog.disable(ctx);
+		for (ai = 0; ai < 2; ++ai) {
+			for (int ti = 0; ti < 2; ++ti) if (label_ticks[ti]) {
+				ctx.enable_font_face(label_font_face, label_font_size);
+				if (axes[ai].ticks[ti].type != TT_NONE) {
+					Crd min_val = domain.get_min_pnt()(ai);
+					Crd max_val = domain.get_max_pnt()(ai);
+					int min_i = (int) ((min_val - fmod(min_val, axes[ai].ticks[ti].step) ) / axes[ai].ticks[ti].step);
+					int max_i = (int) ((max_val - fmod(max_val, axes[ai].ticks[ti].step) ) / axes[ai].ticks[ti].step);
+
+					glLineWidth(tick_line_width[ti]);
+					Crd dash_length = tick_length[0]*0.01f*domain.get_extent()(1-domain.get_max_extent_coord_index());
+					if (extent(0) < extent(1)) {
+						if (ai == 1)
+							dash_length *= domain.get_extent()(0);
+						else
+							dash_length *= domain.get_extent()(1)*extent(0) / extent(1);
+					}
+					else {
+						if (ai == 0)
+							dash_length *= domain.get_extent()(1);
+						else
+							dash_length *= domain.get_extent()(0)*extent(1) / extent(0);
+					}
+					Crd s_min = domain.get_min_pnt()(1-ai);
+					Crd s_max = domain.get_max_pnt()(1-ai);
+					
+					for (int i=min_i; i<=max_i; ++i) {
+						V2D c;
+						c(ai) = (Crd) (i*axes[ai].ticks[ti].step);
+						std::string label = cgv::utils::to_string(c(ai));
+
+
+						switch (axes[ai].ticks[ti].type) {
+						case TT_DASH :
+							// ignore ticks on axes
+							if (fabs(c[ai]) > std::numeric_limits<Crd>::epsilon()) {
+								if (s_min + dash_length < 0 && s_max - dash_length > 0) {
+									c(1-ai) = -1.5f*dash_length; 
+									ctx.set_cursor(transform_to_world(c).to_vec(), label, ai == 0 ? cgv::render::TA_TOP : cgv::render::TA_RIGHT);
+									ctx.output_stream() << label;
+									ctx.output_stream().flush();
+								}
+							}
+						case TT_LINE : 
+						case TT_PLANE : 
+							c(1-ai) = s_min - 0.5f*dash_length;
+							ctx.set_cursor(transform_to_world(c).to_vec(), label, ai == 0 ? cgv::render::TA_TOP : cgv::render::TA_RIGHT);
+							ctx.output_stream() << label;
+							ctx.output_stream().flush();
+
+							c(1-ai) = s_max + 0.5f*dash_length;
+							ctx.set_cursor(transform_to_world(c).to_vec(), label, ai == 0 ? cgv::render::TA_BOTTOM : cgv::render::TA_LEFT);
+							ctx.output_stream() << label;
+							ctx.output_stream().flush();
+							break;
+						}
+					}
+				}
+			}
+		}
 	}
 
 	for (unsigned i=0; i<samples.size(); ++i) {
