@@ -13,10 +13,6 @@ namespace cgv {
 class CGV_API abst_control : public abst_view
 {
 public:
-	///
-	typedef cgv::signal::functor<1,data::ref_ptr<abst_control,true> > functor_type;
-	///
-	typedef cgv::signal::bool_functor<1,data::ref_ptr<abst_control,true> > bool_functor_type;
 	/// construct from name
 	abst_control(const std::string& name);
 	/// add default implementation passing the query to the controls() method
@@ -24,9 +20,9 @@ public:
 	/// return whether the control controls the value pointed to by ptr
 	virtual bool controls(const void* ptr) const = 0;
 	/// attach a functor to the value change signal
-	virtual void attach_to_value_change(functor_type* func) = 0;
+	virtual void attach_to_value_change(cgv::signal::functor_base* func) = 0;
 	/// attach a functor to the value change signal
-	virtual void attach_to_check_value(bool_functor_type* bool_func) = 0;
+	virtual void attach_to_check_value(cgv::signal::functor_base* bool_func) = 0;
 };
 
 /// ref counted pointer to abst %control
@@ -99,6 +95,10 @@ protected:
 		}
 	}
 public:
+	/// type of the value check signal
+	typedef cgv::signal::bool_signal<control<T>&> value_check_signal_type;
+	/// type of the value change signal
+	typedef cgv::signal::signal<control<T>&> value_change_signal_type;
 	/// construct abstract element from reference to value
 	control(const std::string& _name, T& _value) : abst_control(_name), value_ptr(&_value), new_value(_value), cp(0) {
 		attach_to_reference(value_ptr);
@@ -139,7 +139,7 @@ public:
 	/// set a different new value from the callbacks attached to the check_value signal
 	void set_new_value(const T& nv) { new_value = nv; }
 	/// return the old value to the callbacks attached to the change_value signal
-	const T& get_old_value() { return new_value; }
+	const T& get_old_value() const { return new_value; }
 	/// set new value only if check_value signal succeeds and send value_change signal. Return true if value has been changed.
 	bool check_and_set_value(const T& nv) {
 		set_new_value(nv);
@@ -155,11 +155,11 @@ public:
 	/// check whether the value represented by this element is pointing to the passed pointer
 	bool controls(const void* ptr) const { return cp ? cp->controls(ptr,value_ptr) : (value_ptr == ptr); }
 	/// attach a functor to the value change signal
-	void attach_to_value_change(functor_type* func) {
+	void attach_to_value_change(cgv::signal::functor_base* func) {
 		value_change.connect_abst(func);
 	}
 	/// attach a functor to the value change signal
-	void attach_to_check_value(bool_functor_type* bool_func) {
+	void attach_to_check_value(cgv::signal::functor_base* bool_func) {
 		check_value.connect_abst(bool_func);
 	}
 };

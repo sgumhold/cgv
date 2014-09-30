@@ -80,8 +80,9 @@ functor_base::~functor_base()
 
 const tacker* functor_base::get_tacker() const
 {
-	return 0; 
+	return dynamic_cast<const tacker*>(this); 
 }
+
 bool functor_base::operator == (const functor_base& f) const
 {
 	const void *p1, *p2, *q1, *q2;

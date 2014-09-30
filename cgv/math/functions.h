@@ -53,7 +53,7 @@ namespace cgv{
 		template <typename T>
 		T Phi(const T& x)
 		{
-			return 0.5*erfc(-x*sqrt(0.5));
+			return (T)(0.5*erfc(-x*sqrt(0.5)));
 		}
 
 		/// evaluate the inverse of the error function Phi^(-1)(p), p=0..1

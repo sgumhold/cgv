@@ -11,18 +11,18 @@ using namespace cgv::gui;
 using namespace cgv::signal;
 using namespace cgv::math;
 
-struct call_on_set_functor : public cgv::gui::abst_control::functor_type
+struct call_on_set_functor : public cgv::gui::control<int>::value_change_signal_type::functor_type, public cgv::signal::tacker
 {
 	cgv::base::base_ptr b;
 	void* member_ptr;
 	call_on_set_functor(cgv::base::base_ptr _b, void* _member_ptr) : b(_b), member_ptr(_member_ptr) {}
 	void put_pointers(const void* &p1, const void* &p2) const { p1 = &(*b); p2 = member_ptr; }
+	void operator() (control<int>&) const		              { b->on_set(member_ptr); }
 	functor_base* clone() const                               { return new call_on_set_functor(*this); }
-	void operator() (const control_ptr& cp) const             { b->on_set(member_ptr); }
 };
 
 template <typename T>
-struct ensure_normalized_functor : public cgv::gui::abst_control::functor_type
+struct ensure_normalized_functor : public cgv::gui::control<T>::value_change_signal_type::functor_type, public cgv::signal::tacker
 {
 	cgv::gui::provider* p;
 	cgv::base::base_ptr b;
@@ -32,7 +32,7 @@ struct ensure_normalized_functor : public cgv::gui::abst_control::functor_type
 	ensure_normalized_functor(cgv::gui::provider* _p, cgv::base::base_ptr _b, T* _member_ptr, int _i, unsigned _n) : p(_p), b(_b), member_ptr(_member_ptr), i(_i), n(_n) {}
 	void put_pointers(const void* &p1, const void* &p2) const { p1 = &(*b); p2 = member_ptr; }
 	functor_base* clone() const                               { return new ensure_normalized_functor(*this); }
-	void operator() (const control_ptr& cp) const
+	void operator() (control<T>&) const
 	{ 
 		unsigned j;
 		T r2_old = 0;
@@ -182,7 +182,7 @@ struct vec_gui_creator : public cgv::gui::gui_creator
 			}
 			cgv::gui::control_ptr cp = p->add_control_void(lab_i, member_ptr, 0, coordinate_type, child_gui_type, child_options, child_align, 0);
 			if (cp) {
-				cgv::gui::abst_control::functor_type* f = 0;
+				cgv::signal::functor_base* f = 0;
 				if (ensure_normalized) {
 					if (type_id == cgv::type::info::TI_FLT32)
 						f = new ensure_normalized_functor<float>(p, b, reinterpret_cast<float*>(crd_ptr), i, dim);

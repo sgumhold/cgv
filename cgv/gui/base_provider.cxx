@@ -431,11 +431,7 @@ void base_provider::parse_definition(ParsingTasks pt)
 							args.size()>2 ? args[2] : std::string(""),
 							args.size()>3 ? args[3] : std::string(""),
 							args.size()>4 ? args[4] : std::string("\n"), 0)
-							->attach_to_value_change(
-								static_cast<abst_control::functor_type*>(
-									of.clone()
-								)
-							);
+							->attach_to_value_change(of.clone());
 					}
 					break;
 				case CMD_TREE_NODE :
