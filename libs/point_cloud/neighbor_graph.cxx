@@ -4,10 +4,6 @@
 
 using namespace std;
 
-knn_info::~knn_info()
-{
-}
-
 neighbor_graph::neighbor_graph() : nr_half_edges(0) {}
 
 void neighbor_graph::clear()

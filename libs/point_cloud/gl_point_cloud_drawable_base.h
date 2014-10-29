@@ -9,6 +9,7 @@
 
 #include "lib_begin.h"
 
+/** drawable for a point cloud that manages a neighbor graph and a normal estimator and supports rendering of point cloud and bounding box. */
 struct CGV_API gl_point_cloud_drawable_base :
 	public cgv::render::drawable, public point_cloud_types
 {

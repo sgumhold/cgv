@@ -351,10 +351,10 @@ bool point_cloud::read_bin(const string& file_name)
 	FILE* fp = fopen(file_name.c_str(), "rb");
 	if (!fp)
 		return false;
-	unsigned int n, m;
+	Cnt n, m;
 	bool success = 
-		fread(&n,sizeof(unsigned int),1,fp) == 1 &&
-		fread(&m,sizeof(unsigned int),1,fp) == 1;
+		fread(&n,sizeof(Cnt),1,fp) == 1 &&
+		fread(&m,sizeof(Cnt),1,fp) == 1;
 	if (success) {
 		clear();
 		bool has_clrs = m >= 2*n;
@@ -539,14 +539,14 @@ bool point_cloud::write_bin(const std::string& file_name) const
 	FILE* fp = fopen(file_name.c_str(), "wb");
 	if (!fp)
 		return false;
-	unsigned int n = (unsigned int)P.size();
-	unsigned int m = (unsigned int)N.size();
-	unsigned int m1 = m;
+	Cnt n = (Cnt)P.size();
+	Cnt m = (Cnt)N.size();
+	Cnt m1 = m;
 	if (has_colors() && C.size() == n)
 		m1 = 2*n+m;
 	bool success = 
-		fwrite(&n,sizeof(unsigned int),1,fp) == 1 &&
-		fwrite(&m1,sizeof(unsigned int),1,fp) == 1 &&
+		fwrite(&n, sizeof(Cnt),1,fp) == 1 &&
+		fwrite(&m1,sizeof(Cnt),1,fp) == 1 &&
 		fwrite(&P[0][0],sizeof(Pnt),n,fp) == n;
 	if (has_normals())
 		success = success && (fwrite(&N[0][0],sizeof(Nml),m,fp) == m);
