@@ -91,6 +91,10 @@ elif (CGV_COMPILER == "vs11") {
 	cgv_compiler_version = 11;
 	project_folder_support=1
 }
+elif (CGV_COMPILER == "vs12") {
+	cgv_compiler_version = 12;
+	project_folder_support=1
+}
 
 rules = [
 	MAP.[ 

@@ -52,7 +52,7 @@
   <PropertyGroup Condition=@('"'."'")$(Configuration)|$(Platform)@("'=='")@(config_name[cj])|Win32@("'".'"') Label="Configuration">
     <ConfigurationType>@(pj::config_type_vs10[cj])</ConfigurationType>
 @if(cgv_compiler_version > 10)@{
-    <PlatformToolset>v110</PlatformToolset>
+    <PlatformToolset>v@(cgv_compiler_version*10)</PlatformToolset>
 @}
     <CharacterSet>Unicode</CharacterSet>
 @if(cj%4==0)@{@//
