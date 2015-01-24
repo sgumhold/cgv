@@ -40,7 +40,7 @@ bool abst_enum_reflection_traits::has_enum_interface() const
 }
 unsigned abst_enum_reflection_traits::get_nr_enum_items() const 
 {
-	return const_cast<abst_enum_reflection_traits*>(this)->ref_values().size(); 
+	return (unsigned) const_cast<abst_enum_reflection_traits*>(this)->ref_values().size(); 
 }
 std::string abst_enum_reflection_traits::get_enum_name(unsigned i) const 
 {

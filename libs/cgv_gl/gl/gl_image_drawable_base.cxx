@@ -131,7 +131,7 @@ bool gl_image_drawable_base::save_images(const std::string& output_file_name)
 
 	unsigned nr = 1;
 	if (files.size() > nr)
-		nr = files.size();
+		nr = (unsigned)files.size();
 
 	for (unsigned i=0; i<nr; ++i) {
 		std::string input_file_name = file_name;

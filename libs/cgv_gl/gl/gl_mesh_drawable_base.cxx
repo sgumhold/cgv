@@ -286,7 +286,7 @@ bool gl_mesh_drawable_base::read_mesh(const std::string& _file_name)
 
 	cgv::base::pop_file_parent();
 
-	unsigned vi, mi, gi, M = loader.materials.size(), G = loader.groups.size(), V = loader.vertices.size();
+	size_t vi, mi, gi, M = loader.materials.size(), G = loader.groups.size(), V = loader.vertices.size();
 	// copy materials
 	materials.clear();
 	
@@ -325,7 +325,7 @@ bool gl_mesh_drawable_base::read_mesh(const std::string& _file_name)
 				continue;
 			GLuint dl = glGenLists(1);
 			materials.back().group_list_ids.push_back(
-				std::pair<unsigned,unsigned>(gi,dl));
+				std::pair<unsigned,unsigned>((unsigned)gi,dl));
 			glNewList(dl,GL_COMPILE);
 			groups[gi].number_faces  = render_faces(loader, grp_faces[gi], GL_TRIANGLES, 3);
 			groups[gi].number_faces += render_faces_with_glu(loader, grp_faces[gi], 4);

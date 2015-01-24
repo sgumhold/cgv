@@ -948,7 +948,7 @@ unsigned variant::get_total_nr_elements() const
 	case LIST_VALUE :
 		{
 			const list_type& L = get_list();
-			unsigned N=0,n = L.size();
+			unsigned N=0,n = (unsigned)L.size();
 			for (unsigned i=0; i<n; ++i)
 				N += L[i].get_total_nr_elements();
 			return N;

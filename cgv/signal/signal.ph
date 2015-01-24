@@ -56,8 +56,8 @@ public:
 	// emit the signal with the ()-operator by using it like bool function 
 	void operator ()(@["typename S::A1 v1"; ", "; "typename S::A".i." v".i]) const
 	{
-		unsigned int n = functors.size();
-		for (unsigned int i=0; i<n; ++i)
+		unsigned n = (unsigned) functors.size();
+		for (unsigned i=0; i<n; ++i)
 			(*static_cast<functor_type*>(functors[i]))(@["v1"; ", "; "v".i]);
 	}
 	functor_type& connect(const functor_type& _f)    { functor_type *f = static_cast<functor_type*>(_f.clone()); signal_base::connect(f); return *f; }

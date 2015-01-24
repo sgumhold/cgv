@@ -541,7 +541,7 @@ unsigned int create_texture(const cgv::data::const_data_view& dv, unsigned level
 }
 
 /// cover the current viewport with a textured quad
-void gl_texture_to_screen(float xmin, float ymin, float xmax, float ymax)
+void gl_texture_to_screen(float xmin, float ymin, float xmax, float ymax, float umin, float vmin, float umax, float vmax)
 {
 	GLint mm;
 	glGetIntegerv(GL_MATRIX_MODE, &mm);
@@ -555,16 +555,16 @@ void gl_texture_to_screen(float xmin, float ymin, float xmax, float ymax)
 		glLoadIdentity();
 
 		glBegin(GL_QUADS);
-			glTexCoord2f(0,0);
+			glTexCoord2f(umin,vmin);
 			glVertex2f(xmin, ymin);
 
-			glTexCoord2f(1,0);
+			glTexCoord2f(umax,vmin);
 			glVertex2f(xmax, ymin);
 
-			glTexCoord2f(1,1);
+			glTexCoord2f(umax,vmax);
 			glVertex2f(xmax, ymax);
 
-			glTexCoord2f(0,1);
+			glTexCoord2f(umin,vmax);
 			glVertex2f(xmin, ymax);
 		glEnd();
 		

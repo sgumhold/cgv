@@ -21,7 +21,7 @@ void gl_performance_monitor::draw_lines()
 
 	glVertexPointer(2, GL_INT, 0, &positions[0]);
 	glColorPointer(3, GL_FLOAT, 0, &colors[0]);
-	glDrawArrays(GL_LINES, 0, positions.size());
+	glDrawArrays(GL_LINES, 0, (GLsizei) positions.size());
 }
 
 void gl_performance_monitor::finish_draw_lines()

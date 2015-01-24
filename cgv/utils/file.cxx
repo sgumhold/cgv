@@ -598,7 +598,7 @@ bool read_string_bin(std::string& s, FILE* fp)
 
 bool write_string_bin(const std::string& s, FILE* fp)
 {
-	cgv::type::uint16_type length = s.size();
+	cgv::type::uint16_type length = (cgv::type::uint16_type)s.size();
 	if (fwrite(&length, sizeof(cgv::type::uint16_type), 1, fp) != 1)
 		return false;
 	if (length == 0)

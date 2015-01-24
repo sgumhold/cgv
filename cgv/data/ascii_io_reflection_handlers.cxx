@@ -35,10 +35,10 @@ std::string ascii_reflection_handler::extend_name(const std::string& name, bool 
 	}
 	res += name;
 
-	unsigned p = res.find_last_of(".");
+	size_t p = res.find_last_of(".");
 	if (p != std::string::npos) {
 		res = res.substr(p+1);
-		for (unsigned j=0; j<nr_idents*tab_size; ++j)
+		for (size_t j=0; j<nr_idents*tab_size; ++j)
 			res = std::string(" ") + res;
 	}
 	if (assign)

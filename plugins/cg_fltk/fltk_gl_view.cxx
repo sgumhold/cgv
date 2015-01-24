@@ -781,7 +781,7 @@ void fltk_gl_view::draw_text(const std::string& text)
 	glRasterPos2i(cursor_x,cursor_y);
 	GLint r_prev[4];
 	glGetIntegerv(GL_CURRENT_RASTER_POSITION, r_prev);
-	fltk::gldrawtext(text.c_str(), text.size());
+	fltk::gldrawtext(text.c_str(), (int)text.size());
 	GLint r[4];
 	glGetIntegerv(GL_CURRENT_RASTER_POSITION, r);
 	cursor_x += r[0]-r_prev[0];

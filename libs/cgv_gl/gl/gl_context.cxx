@@ -1870,19 +1870,19 @@ bool gl_context::set_uniform_void(void* handle,
 	case TI_FLT32+UTO_VECTOR_FMAT : 
 		{
 			const std::vector<fmat<flt32_type,2,2> >& vm = *static_cast<const std::vector<fmat<flt32_type,2,2> >*>(value_ptr);
-			glUniformMatrix2fv(loc, vm.size(), 0, &vm[0](0,0)); 
+			glUniformMatrix2fv(loc, (GLsizei)vm.size(), 0, &vm[0](0,0)); 
 			break;
 		}
 	case TI_FLT32+UTO_VECTOR_FMAT + UTO_DIV: 
 		{
 			const std::vector<fmat<flt32_type,3,3> >& vm = *static_cast<const std::vector<fmat<flt32_type,3,3> >*>(value_ptr);
-			glUniformMatrix3fv(loc, vm.size(), 0, &vm[0](0,0)); 
+			glUniformMatrix3fv(loc, (GLsizei)vm.size(), 0, &vm[0](0, 0));
 			break;
 		}
 	case TI_FLT32+UTO_VECTOR_FMAT + 2*UTO_DIV: 
 		{
 			const std::vector<fmat<flt32_type,4,4> >& vm = *static_cast<const std::vector<fmat<flt32_type,4,4> >*>(value_ptr);
-			glUniformMatrix4fv(loc, vm.size(), 0, &vm[0](0,0)); 
+			glUniformMatrix4fv(loc, (GLsizei)vm.size(), 0, &vm[0](0, 0));
 			break;
 		}
 	default: 

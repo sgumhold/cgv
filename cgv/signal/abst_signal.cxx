@@ -11,7 +11,7 @@ signal_base::~signal_base()
 /// return the number of connected functors
 unsigned signal_base::get_nr_functors() const
 {
-	return functors.size();
+	return (unsigned) functors.size();
 }
 
 /// only use this if you exactly know what to do!

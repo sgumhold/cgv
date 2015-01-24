@@ -114,7 +114,7 @@ std::string find_data_file(const std::string& file_name, const std::string& stra
 		case 'A' :
 			{
 				const std::vector<std::string>& parent_stack = ref_parent_file_stack();
-				for (unsigned int i=parent_stack.size(); i>0; --i) {
+				for (size_t i=parent_stack.size(); i>0; --i) {
 					std::string fn = find_data_file_1(parent_stack[i-1], sub_directory, file_name, strategy[i] == 'A');
 //					std::cout << "   anchestor = " << parent_stack[i-1] << " -> " << fn << std::endl;
 					if (!fn.empty())

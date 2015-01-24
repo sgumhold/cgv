@@ -37,7 +37,7 @@ PBITMAPINFO CreateBitmapInfoStruct(HBITMAP hBmp)
      if (cClrBits < 24) 
          pbmi = (PBITMAPINFO) LocalAlloc(LPTR, 
                     sizeof(BITMAPINFOHEADER) + 
-                    sizeof(RGBQUAD) * (1<< cClrBits)); 
+                    sizeof(RGBQUAD) * (size_t)(1<< cClrBits)); 
 
      // There is no RGBQUAD array for these formats: 24-bit-per-pixel or 32-bit-per-pixel 
 
@@ -225,7 +225,7 @@ void gl_cursor::clear()
 
 void gl_cursor::add_frame(unsigned tex_id)
 {
-	append_step(tex_ids.size(),3);
+	append_step((unsigned)tex_ids.size(),3);
 	tex_ids.push_back(tex_id);
 }
 
@@ -366,7 +366,7 @@ struct ani_riff_handler : public media::riff_handler
 bool gl_cursor::create_from_file(const std::string& file_name)
 {
 	// extract upper case extension
-	unsigned dot = file_name.find_last_of('.');
+	unsigned dot = (unsigned)file_name.find_last_of('.');
 	if (dot == std::string::npos)
 		return false;
 	std::string ext = file_name.substr(dot+1);
@@ -429,13 +429,13 @@ void gl_cursor::update_duration()
 /// return the number of animation steps
 unsigned gl_cursor::get_nr_steps() const
 {
-	return frames.size();
+	return (unsigned)frames.size();
 }
 
 /// return the number of animation frames
 unsigned gl_cursor::get_nr_frames() const
 {
-	return tex_ids.size();
+	return (unsigned)tex_ids.size();
 }
 
 /// return the gl texture id of the given frame

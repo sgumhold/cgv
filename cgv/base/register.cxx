@@ -219,7 +219,7 @@ void enable_registration()
 	// remove registration events
 	if (is_registration_event_cleanup_enabled())
 		ref_registration_events().clear();
-	ref_info().nr_events_before_disable = ref_registration_events().size();
+	ref_info().nr_events_before_disable = (unsigned) ref_registration_events().size();
 	ref_info().registration_enabled = true;
 }
 
@@ -250,7 +250,7 @@ void unregister_all_objects()
 /// access to number of permanently registered objects
 unsigned get_nr_permanently_registered_objects()
 {
-	return ref_object_collection().objects.size();
+	return (unsigned)ref_object_collection().objects.size();
 }
 
 /// access to i-th permanently registered object
@@ -744,7 +744,7 @@ bool process_command_ext(const token& cmd, bool eliminate_quotes, bool* persiste
 				show_split_lines(args);
 				std::cout << "\n" << std::endl;
 				if (persistent && *persistent && cfo)
-					cfo->multi_observe(np, args, args_tok.begin - begin);
+					cfo->multi_observe(np, args, (unsigned)(args_tok.begin - begin));
 				else
 					np->multi_set(args);
 			}
@@ -756,7 +756,7 @@ bool process_command_ext(const token& cmd, bool eliminate_quotes, bool* persiste
 				show_split_lines(args);
 				std::cout << "\n" << std::endl;
 				if (persistent && *persistent && cfo)
-					cfo->multi_observe(bp, args, args_tok.begin - begin);
+					cfo->multi_observe(bp, args, (unsigned)(args_tok.begin - begin));
 				else
 					bp->multi_set(args);
 			}

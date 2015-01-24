@@ -90,7 +90,7 @@ int performance_monitor::add_task(const std::string& name, const cgv::media::col
 {
 	performance_task pt(name,col);
 	tasks.push_back(pt);
-	return tasks.size() - 1;
+	return (int)tasks.size() - 1;
 }
 /// start performance measurement of a new frame 
 void performance_monitor::start_frame()

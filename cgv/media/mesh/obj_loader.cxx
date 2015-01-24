@@ -51,10 +51,10 @@ void obj_loader::process_face(unsigned vcount, int *vertices,
 							  int *texcoords, int *normals)
 {
 	convert_to_positive(vcount,vertices,texcoords,normals,
-		this->vertices.size(),this->normals.size(),this->texcoords.size());
-	faces.push_back(face_info(vcount,vertex_indices.size(),
-		texcoords == 0 ? -1 : texcoord_indices.size(),
-		normals == 0 ? -1 : normal_indices.size(),
+		(unsigned)this->vertices.size(), (unsigned)this->normals.size(), (unsigned)this->texcoords.size());
+	faces.push_back(face_info(vcount,(unsigned)vertex_indices.size(),
+		texcoords == 0 ? -1 : (int)texcoord_indices.size(),
+		normals == 0 ? -1 : (int)normal_indices.size(),
 		get_current_group(),get_current_material()));
 	unsigned i;
 	for (i=0; i<vcount; ++i)
@@ -254,13 +254,13 @@ bool obj_loader::write_obj_bin(const std::string& file_name) const
 
 
 	// read element count
-	uint32_type v = vertices.size(), 
-		        n = normals.size(),
-				t = texcoords.size(), 
-				f = faces.size(),
-				h = vertex_indices.size(), 
-				g = groups.size(),
-				m = mtl_lib_files.size();
+	uint32_type v = (unsigned) vertices.size(), 
+		        n = (unsigned) normals.size(),
+				t = (unsigned) texcoords.size(), 
+				f = (unsigned) faces.size(),
+				h = (unsigned) vertex_indices.size(), 
+				g = (unsigned) groups.size(),
+				m = (unsigned) mtl_lib_files.size();
 	uint32_type v_write = v;
 	bool has_colors = (colors.size() == vertices.size());
 	if (has_colors)

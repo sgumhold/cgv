@@ -37,8 +37,8 @@ std::string light_interactor::get_type_name() const
 
 void light_interactor::on_set(void* member_ptr)
 {
-	unsigned n = lights.size();
-	for (unsigned i=0; i<n; ++i) {
+	size_t n = lights.size();
+	for (size_t i=0; i<n; ++i) {
 		if (member_ptr == &lights[i].ref_type()) {
 			post_recreate_gui();
 			break;
@@ -58,8 +58,8 @@ bool light_interactor::self_reflect(reflection_handler& rh)
 		   rh.reflect_member("light_scale", light_scale) ) )
 		   return false;
 
-	unsigned n = lights.size();
-	for (unsigned i = 0; i < n; ++i) {
+	size_t n = lights.size();
+	for (size_t i = 0; i < n; ++i) {
 		if (! (rh.reflect_member(std::string("enabled_")+to_string(i), (bool&)(enabled[i])) &&
 			   rh.reflect_member(std::string("show_")+to_string(i), (bool&)(show[i])) &&
 			   rh.reflect_member(std::string("toggle_")+to_string(i), (bool&)(toggles[7*i])) &&
@@ -95,7 +95,7 @@ bool light_interactor::init(context& ctx)
 
 void light_interactor::init_frame(context& ctx)
 {
-	unsigned i,n = lights.size();
+	size_t i, n = lights.size();
 	GLint matrix_mode;
 	glGetIntegerv(GL_MATRIX_MODE, &matrix_mode);
 	glMatrixMode(GL_MODELVIEW);
@@ -130,7 +130,7 @@ void light_interactor::draw(context& ctx)
 	glPushAttrib(GL_LIGHTING_BIT);
 	glEnable(GL_LIGHTING);
 	glEnable(GL_COLOR_MATERIAL);
-	unsigned i,n = lights.size();
+	size_t i, n = lights.size();
 	GLint matrix_mode;
 	glGetIntegerv(GL_MATRIX_MODE, &matrix_mode);
 	glMatrixMode(GL_MODELVIEW);
@@ -152,8 +152,8 @@ void light_interactor::draw(context& ctx)
 
 void light_interactor::finish_frame(context& ctx)
 {
-	unsigned n = lights.size();
-	for (unsigned i=0; i<n; ++i)
+	size_t n = lights.size();
+	for (size_t i = 0; i<n; ++i)
 		if (enabled[i]) {
 			ctx.disable_light(handles[i]);
 			handles[i] = 0;
@@ -166,7 +166,7 @@ bool light_interactor::save(const std::string& file_name)  const
 	FILE* fp = fopen(file_name.c_str(), "wb");
 	if (!fp)
 		return false;
-	unsigned n = lights.size();
+	size_t n = lights.size();
 	bool success = 
 		fwrite(&n, sizeof(unsigned), 1, fp)             == 1 &&
 		fwrite(&lights[0], sizeof(light_source), n, fp) == n &&
@@ -186,10 +186,10 @@ void light_interactor::save_cb()
 
 void light_interactor::on_load()
 {
-	unsigned n = lights.size();
+	size_t n = lights.size();
 	toggles.resize(n);
 	handles.resize(n);
-	for (unsigned i=0; i<n;++i) {
+	for (size_t i = 0; i<n; ++i) {
 		handles[i] = 0;
 		toggles[i] = 0;
 	}
@@ -229,7 +229,7 @@ void light_interactor::load_cb()
 
 void light_interactor::create_gui()
 {
-	unsigned i, n = lights.size();
+	size_t i, n = lights.size();
 	add_decorator("Light Interactor", "heading", "level=1");
 	connect_copy(add_button("save", "w=90"," ")->click, rebind(this, &light_interactor::save_cb));
 	connect_copy(add_button("load", "w=90")->click, rebind(this, &light_interactor::load_cb));

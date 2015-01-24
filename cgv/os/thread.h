@@ -58,6 +58,10 @@ public:
 	static void wait_for_signal(condition_mutex& cm);
 	/// prefered approach to wait for signal and implemented as { cm.lock(); wait_for_signal(cm); cm.unlock(); } 
 	static void wait_for_signal_with_lock(condition_mutex& cm);
+	/// sleep till the signal from the given condition_mutex is sent or the timeout is reached, lock the mutex first and unlock after waiting
+	static bool wait_for_signal_or_timeout(condition_mutex& cm, unsigned millisec);
+	/// prefered approach to wait for signal or the timeout is reached and implemented as { cm.lock(); wait_for_signal_or_timeout(cm,millisec); cm.unlock(); } 
+	static bool wait_for_signal_or_timeout_with_lock(condition_mutex& cm, unsigned millisec);
 	/// wait the given number of milliseconds
 	static void wait(unsigned millisec);
 	/// try to stop the thread execution via indicating a stop request. The existence of a stop request

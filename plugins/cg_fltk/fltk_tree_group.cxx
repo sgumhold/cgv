@@ -306,7 +306,7 @@ bool fltk_tree_group::set_void(const std::string& property, const std::string& v
 bool fltk_tree_group::get_void(const std::string& property, const std::string& value_type, void* value_ptr)
 {
 	if (property == "nr_columns") {
-		unsigned n = column_infos.size();
+		unsigned n = (unsigned)column_infos.size();
 		set_variant(n, value_type, value_ptr);
 	}
 	else if (property.substr(0,15) == "column_heading_") {

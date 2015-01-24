@@ -1033,16 +1033,16 @@ void filter_out_local_includes(string& text)
 	string new_text;
 	vector<line> lines;
 	split_to_lines(text, lines, true);
-	unsigned i;
+	size_t i;
 	for (i=0; i<lines.size(); ++i) {
 		string l = to_upper(to_string(token(skip_spaces(lines[i].begin+1,lines[i].end), lines[i].end)));
-		unsigned n = l.length();
+		size_t n = l.length();
 		bool keep = true;
 		if (l.substr(0,7) == "INCLUDE") {
 			bool is_local = true;
 			if (l.find_first_of('"') == string::npos) {
-				unsigned p0 = l.find_first_of('<');
-				unsigned p1 = l.find_first_of('>', p0);
+				size_t p0 = l.find_first_of('<');
+				size_t p1 = l.find_first_of('>', p0);
 				if (p0 != string::npos && p1 != string::npos)
 					is_local = false;
 			}
@@ -1079,7 +1079,7 @@ void filter_out_empty_blocks(string& text)
 	unsigned i,j;
 	for (i=0; i<lines.size(); ++i) {
 		string l = to_upper(to_string(token(skip_spaces(lines[i].begin+1,lines[i].end), lines[i].end)));
-		unsigned n = l.length();
+		size_t n = l.length();
 		if (l.substr(0,2) == "IF")
 			line_types[i] = LT_IF;
 		else if (l.substr(0,4) == "ELIF")

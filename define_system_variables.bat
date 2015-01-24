@@ -24,7 +24,7 @@ if NOT [%1] == [] (
 echo Define System Variables for cgv Framework
 echo -------------------------------------------
 echo    please answer the following question by
-echo    entering a number between 1 and 6 and
+echo    entering a number in [1,9] or letter in [a-c]
 echo    pressing return afterwards.
 echo -------------------------------------------
 echo choose whether to proceed interactively and
@@ -51,7 +51,7 @@ echo.
 :ask_again
 set /P selection=choose 1-9 or a-c or q^>
 if [%selection%] == [] (
-   echo please enter a number between 1 and 9 or a or q for quit
+   echo please enter a number in [1-9] or a letter in [a-c] or q for quit
    goto:ask_again
 )
 if "%selection%" == "q" (

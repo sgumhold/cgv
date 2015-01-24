@@ -176,7 +176,7 @@ fltk_enum_radio_control::fltk_enum_radio_control(const std::string& label, int& 
 fltk_enum_control(label, acp, value, enum_declarations)
 {
 	const int padding = 20;
-	container = new fltk::Group(x, y, w, enum_strings.size()*h+padding, get_name().c_str());
+	container = new fltk::Group(x, y, w, (int)enum_strings.size()*h+padding, get_name().c_str());
 
 	container->flags(fltk::ALIGN_INSIDE_TOPLEFT);
 	container->labelfont(fltk::TIMES_BOLD);
@@ -223,7 +223,7 @@ fltk_enum_control(label, acp, value, enum_declarations)
 {
 	const int padding = 20;
 	const int margin = 8;
-	container = new fltk::Group(x, y, w, enum_strings.size()*(h+margin)+padding, get_name().c_str());
+	container = new fltk::Group(x, y, w, (int)enum_strings.size()*(h+margin)+padding, get_name().c_str());
 
 	container->flags(fltk::ALIGN_INSIDE_TOPLEFT);
 	container->labelfont(fltk::TIMES_BOLD);	

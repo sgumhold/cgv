@@ -131,7 +131,7 @@ bool binary_write_reflection_handler::reflect_member_void(const std::string& mem
 	case cgv::type::info::TI_STRING :
 		{
 			const std::string& str = *((std::string*)member_ptr);
-			cgv::type::uint32_type s = str.size();
+			cgv::type::uint32_type s = (cgv::type::uint32_type)str.size();
 			if (fwrite(&s, sizeof(cgv::type::uint32_type), 1, fp) != 1) {
 				last_error = RE_FILE_WRITE_ERROR;
 				return false;
@@ -145,7 +145,7 @@ bool binary_write_reflection_handler::reflect_member_void(const std::string& mem
 	case cgv::type::info::TI_WSTRING :
 		{
 			const std::wstring& str = *((std::wstring*)member_ptr);
-			cgv::type::uint32_type s = str.size();
+			cgv::type::uint32_type s = (cgv::type::uint32_type)str.size();
 			if (fwrite(&s, sizeof(cgv::type::uint32_type), 1, fp) != 1) {
 				last_error = RE_FILE_WRITE_ERROR;
 				return false;

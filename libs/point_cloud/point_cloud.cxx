@@ -2,6 +2,7 @@
 
 #include "point_cloud.h"
 #include <cgv/utils/file.h>
+#include <cgv/utils/stopwatch.h>
 #include <cgv/utils/scan.h>
 #include <cgv/utils/advanced_scan.h>
 #include <cgv/media/mesh/obj_reader.h>
@@ -70,8 +71,8 @@ void point_cloud::append(const point_cloud& pc)
 {
 	if (pc.get_nr_points() == 0)
 		return;
-	Cnt old_n = P.size();
-	Cnt n = P.size()+pc.get_nr_points();
+	Cnt old_n = (Cnt)P.size();
+	Cnt n = (Cnt)P.size() + pc.get_nr_points();
 	if (has_normals())
 		N.resize(n);
 	if (has_colors())
@@ -164,12 +165,25 @@ point_cloud::Idx point_cloud::add_point(const Pnt& p)
 	return (Idx)P.size()-1;
 }
 
+/// resize the point cloud
+void point_cloud::resize(unsigned nr_points)
+{
+	if (has_normals())
+		N.resize(nr_points);
+	if (has_colors())
+		C.resize(nr_points);
+	P.resize(nr_points);
+}
+
+
 bool point_cloud::read(const string& _file_name)
 {
 	string ext = to_lower(get_extension(_file_name));
 	bool success = false;
 	if (ext == "bpc")
 		success = read_bin(_file_name);
+	if (ext == "xyz")
+		success = read_xyz(_file_name);
 	if (ext == "points")
 		success = read_points(_file_name);
 	if (ext == "wrl")
@@ -213,13 +227,66 @@ bool point_cloud::write(const string& _file_name)
 	if (ext == "bpc")
 		return write_bin(_file_name);
 	if (ext == "apc" || ext == "pnt")
-		return write_ascii(_file_name, ext == "apc");
+		return write_ascii(_file_name, (ext == "apc") && has_normals());
 	if (ext == "obj" || ext == "pobj")
 		return write_obj(_file_name);
 	if (ext == "ply")
 		return write_ply(_file_name);
 	cerr << "unknown extension <." << ext << ">." << endl;
 	return false;
+}
+
+/// read ascii file with lines of the form x y z r g b I colors and intensity values, where intensity values are ignored
+bool point_cloud::read_xyz(const std::string& file_name)
+{
+	string content;
+	cgv::utils::stopwatch watch;
+	if (!cgv::utils::file::read(file_name, content, true))
+		return false;
+	std::cout << "read data from disk "; watch.add_time();
+	clear();
+	vector<line> lines;
+	split_to_lines(content, lines);
+	std::cout << "split data into " << lines.size() << " lines. ";	watch.add_time();
+
+	bool do_parse = false;
+	unsigned i;
+	float scale = 1.0f / 255;
+	for (i = 0; i<lines.size(); ++i) {
+		if (lines[i].empty())
+			continue;
+
+		if (true) {
+			Pnt p;
+			int c[3], I;
+			char tmp = lines[i].end[0];
+			content[lines[i].end - content.c_str()] = 0;
+			sscanf(lines[i].begin, "%f %f %f %d %d %d %d", &p[0], &p[1], &p[2], c, c + 1, c + 2, &I);
+			content[lines[i].end - content.c_str()] = tmp;
+			P.push_back(p);
+			C.push_back(Clr(scale*c[0], scale*c[1], scale*c[2]));
+		}
+		else {
+
+			vector<token> numbers;
+			tokenizer(lines[i]).bite_all(numbers);
+			double values[7];
+			unsigned n = min(7, (int)numbers.size());
+			unsigned j;
+			for (j = 0; j < n; ++j) {
+				if (!is_double(numbers[j].begin, numbers[j].end, values[j]))
+					break;
+			}
+			if (j >= 3)
+				P.push_back(Pnt((Crd)values[0], (Crd)values[1], (Crd)values[2]));
+			if (j >= 6)
+				C.push_back(Clr((Crd)(values[3] / 255.0), (Crd)(values[4] / 255.0), (Crd)(values[5] / 255.0)));
+		}
+		if ((P.size() % 100000) == 0)
+			cout << "read " << P.size() << " points" << endl;
+	}
+	watch.add_time();
+	return true;
 }
 
 bool point_cloud::read_points(const std::string& file_name)
@@ -451,7 +518,7 @@ bool point_cloud::write_ply(const std::string& file_name) const
 	PlyFile* ply_out = open_ply_for_write(file_name.c_str(), 2, propNames, PLY_BINARY_LE);
 	if (!ply_out) 
 		return false;
-	describe_element_ply (ply_out, "vertex", P.size());
+	describe_element_ply (ply_out, "vertex", (int)P.size());
 	for (int p=0; p<10; ++p) 
 		describe_property_ply (ply_out, &vert_props[p]);
 	describe_element_ply (ply_out, "face", 0);

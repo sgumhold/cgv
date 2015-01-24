@@ -33,12 +33,29 @@ void thread::wait_for_signal(condition_mutex& cm)
 	c.cv.wait(c.ul);
 }
 
+/// sleep till the signal from the given condition_mutex is sent or the timeout is reached, lock the mutex first and unlock after waiting
+bool thread::wait_for_signal_or_timeout(condition_mutex& cm, unsigned millisec)
+{
+	Condition& c = *((Condition*&) cm.pcond);
+	std::chrono::milliseconds dura(millisec);
+	return c.cv.wait_for(c.ul, dura) == std::cv_status::no_timeout;
+}
+
 /// prefered approach to wait for signal and implemented as { cm.lock(); wait_for_signal(cm); cm.unlock(); } 
 void thread::wait_for_signal_with_lock(condition_mutex& cm)
 {
 	cm.lock(); 
 	wait_for_signal(cm); 
 	cm.unlock();
+}
+
+/// prefered approach to wait for signal or the timeout is reached and implemented as { cm.lock(); wait_for_signal_or_timeout(cm,millisec); cm.unlock(); } 
+bool thread::wait_for_signal_or_timeout_with_lock(condition_mutex& cm, unsigned millisec)
+{
+	cm.lock(); 
+	bool res =  wait_for_signal_or_timeout(cm, millisec); 
+	cm.unlock();
+	return res;
 }
 
 void* thread::execute_s(void* args)

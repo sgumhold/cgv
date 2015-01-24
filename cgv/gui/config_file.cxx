@@ -59,13 +59,13 @@ public:
 		int delta_pos = 0;
 		for (unsigned i=0; i<views.size(); ++i) {
 			std::string new_value((const char*)views[i].view->get_user_data());
-			unsigned new_len = new_value.length();
+			std::size_t new_len = new_value.length();
 			new_content += content.substr(off, views[i].pos - off);
 			new_content += new_value;
 			off = views[i].pos+views[i].len;
 			views[i].pos += delta_pos;
 			delta_pos += (int)new_len - (int)(views[i].len);
-			views[i].len = new_len;
+			views[i].len = (unsigned)new_len;
 			views[i].out_of_date = false;
 		}
 		new_content += content.substr(off);
@@ -171,8 +171,8 @@ void gui_config_file_observer::multi_observe(base_ptr bp, const std::string& pro
 		void* member_ptr = 0;
 		if (rsrh.found_target()) {
 			member_ptr = rsrh.get_member_ptr();
-			cfv.len = sides[1].get_length();
-			cfv.pos = off+sides[1].begin-&property_assignments[0];
+			cfv.len = (unsigned) sides[1].get_length();
+			cfv.pos = (unsigned) (off+sides[1].begin-&property_assignments[0]);
 			cfv.out_of_date = false;
 			switch (rsrh.get_reflection_traits()->get_type_id()) {
 			case cgv::type::info::TI_BOOL: cfv.view = new config_view<bool>(lhs,*((bool*)member_ptr),this); break;

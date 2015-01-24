@@ -110,7 +110,7 @@ void normal_estimator::compute_weighted_normals(bool reorient)
 			points[j+1] = pc.pnt(vj);
 		}
 		Nml new_nml;
-		estimate_normal_wls(points.size(), points[0], &weights[0], new_nml);
+		estimate_normal_wls((unsigned)points.size(), points[0], &weights[0], new_nml);
 		if (reorient && (dot(new_nml,pc.nml(vi)) < 0))
 			new_nml = -new_nml;
 		pc.nml(vi) = new_nml;
@@ -153,7 +153,7 @@ void normal_estimator::compute_bilateral_weighted_normals(bool reorient)
 			weights[j+1] = w;
 			points[j+1] = pc.pnt(vj);
 		}
-		estimate_normal_wls(points.size(), points[0], &weights[0], NS[vi]);
+		estimate_normal_wls((unsigned)points.size(), points[0], &weights[0], NS[vi]);
 		if (reorient && (dot(NS[vi],pc.nml(vi)) < 0))
 			NS[vi] = -NS[vi];
 	}
@@ -199,7 +199,7 @@ void normal_estimator::compute_plane_bilateral_weighted_normals(bool reorient)
 			weights[j+1] = w;
 			points[j+1] = pc.pnt(vj);
 		}
-		estimate_normal_wls(points.size(), points[0], &weights[0], NS[vi]);
+		estimate_normal_wls((unsigned)points.size(), points[0], &weights[0], NS[vi]);
 		if (reorient && (dot(NS[vi],pc.nml(vi)) < 0))
 			NS[vi] = -NS[vi];
 	}

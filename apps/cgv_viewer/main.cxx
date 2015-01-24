@@ -20,6 +20,7 @@ void generate_gui(gui_driver_ptr d)
 
 int main(int argc, char** argv)
 {
+	cgv::base::register_prog_name(argv[0]);
 	connect(on_gui_driver_registration(),generate_gui);
 	disable_registration_event_cleanup();
 	enable_permanent_registration();

@@ -45,7 +45,7 @@ public:
 	/// function to save all images
 	bool save_images(const std::string& output_file_name);
 	/// return the number of loaded subimages
-	unsigned get_nr_images() const { return tex_ids.size(); }
+	unsigned get_nr_images() const { return (unsigned) tex_ids.size(); }
 	/// draw the image
 	void draw(context&);
 };

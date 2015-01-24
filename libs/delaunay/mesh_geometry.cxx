@@ -25,12 +25,12 @@ template <typename C, class P>
 typename mesh_geometry<C,P>::point_type mesh_geometry<C,P>::transform(const point_type& p, ShapeType shape)
 {
 	switch (shape) {
-		case TRIANGLE :
+		case ST_TRIANGLE :
 			if (p.x()+p.y() > 0)
 				return point_type(-p.x(),-p.y());
 			else
 				return p;
-		case CIRCLE :
+		case ST_CIRCLE :
 			{
 				coord_type r = (coord_type)0.5*(p.x()+1);
 				coord_type a = (coord_type)3.141592654*p.y();
@@ -40,18 +40,29 @@ typename mesh_geometry<C,P>::point_type mesh_geometry<C,P>::transform(const poin
 	return p;
 }
 
+#include <random>
+
 /// generate random points
 template <typename C, class P>
-void mesh_geometry<C,P>::generate_sample_data_set(unsigned int n, ShapeType shape, SamplingType sampling, bool do_random_shuffle)
+void mesh_geometry<C,P>::generate_sample_data_set(unsigned int n, SamplingType sampling, DistributionType dt, GeneratorType gt, ShapeType shape, SamplingStrategy ss, bool do_random_shuffle)
 {
 	unsigned int m;
-	if (shape != SPIRAL && sampling == UNIFORM) {
+	if (shape != ST_SPIRAL && sampling == ST_REGULAR) {
 		m = (unsigned int) sqrt((double)n);
 		n = m*m;
 	}
 	unsigned int N = get_nr_vertices();
 	P.resize(N+n);
 
+	std::mt19937 rand_gen;
+	std::uniform_real_distribution<double> uni_dist(0.0, 1.0);
+	for (unsigned i=0; i<n; ++i) {
+		double x = uni_dist(rand_gen);
+		double y = uni_dist(rand_gen);
+		p_of_vi(N+i) = point_type(x,y);
+	}
+
+/*
 	if (sampling == UNIFORM) {
 		if (shape == SPIRAL) {
 			double scale = 20.0/n;
@@ -87,6 +98,7 @@ void mesh_geometry<C,P>::generate_sample_data_set(unsigned int n, ShapeType shap
 			}
 		}
 	}
+	*/
 	if (do_random_shuffle)
 		std::random_shuffle(P.begin()+N, P.end());
 }

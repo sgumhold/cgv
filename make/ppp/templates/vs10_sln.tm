@@ -21,13 +21,13 @@ EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 @for(:>ci=0;ci<4;++ci)@{@define(:>cj=cfg_ord[ci])@if(cj<pj::config_indices)@{@//
-		@(config_name[cj])|Win32 = @(config_name[cj])|Win32
+		@(config_name[cj])|@(vs_platform) = @(config_name[cj])|@(vs_platform)
 @}@}@//
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 @for(:>ci=0;ci<4;++ci)@{@define(:>cj=cfg_ord[ci])@if(cj<pj::config_indices)@{@//
-		{@(pj::projectGUID)}.@(config_name[cj])|Win32.ActiveCfg = @(config_name[map_cfg_idx_self(cj,pj::config_indices)])|Win32
-		{@(pj::projectGUID)}.@(config_name[cj])|Win32.Build.0 = @(config_name[map_cfg_idx_self(cj,pj::config_indices)])|Win32
+		{@(pj::projectGUID)}.@(config_name[cj])|@(vs_platform).ActiveCfg = @(config_name[map_cfg_idx_self(cj,pj::config_indices)])|@(vs_platform)
+		{@(pj::projectGUID)}.@(config_name[cj])|@(vs_platform).Build.0 = @(config_name[map_cfg_idx_self(cj,pj::config_indices)])|@(vs_platform)
 @}@}
 @if(!pj::all_ref_projects > 0)@{
 	@for(:>i=0;i<!pj::all_ref_projects;++i)@{		
@@ -37,8 +37,8 @@ Global
 			@define(:>cj=cfg_ord[ci])
 			@if(cj<pj::config_indices)@{
 				@define(:>ck=map_cfg_idx(cj,pkConfig_indices))@//
-		{@(pkGUID)}.@(config_name[cj])|Win32.ActiveCfg = @(config_name[ck])|Win32
-		{@(pkGUID)}.@(config_name[cj])|Win32.Build.0 = @(config_name[ck])|Win32
+		{@(pkGUID)}.@(config_name[cj])|@(vs_platform).ActiveCfg = @(config_name[ck])|@(vs_platform)
+		{@(pkGUID)}.@(config_name[cj])|@(vs_platform).Build.0 = @(config_name[ck])|@(vs_platform)
 @}@}@}@}@//
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution

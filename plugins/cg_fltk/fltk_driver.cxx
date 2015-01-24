@@ -113,7 +113,7 @@ void fltk_driver::quit(int exit_code)
 /// copy text to the clipboard
 void fltk_driver::copy_to_clipboard(const std::string& s)
 {
-	fltk::copy(s.c_str(), s.length(), true);
+	fltk::copy(s.c_str(), (int) s.length(), true);
 }
 
 struct PasteWidget : public fltk::Widget

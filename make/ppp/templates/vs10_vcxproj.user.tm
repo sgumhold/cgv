@@ -3,13 +3,13 @@
   @define(:>debug_flavor=["","",0,0])
   @define(:>pj =& projects[project_name])
   @if(pj::is_shared[ci] && (pj::application_name !~ UNDEF))@{@//
-  <PropertyGroup Condition=@('"'."'")$(Configuration)|$(Platform)@("'=='")@(config_name[ci])|Win32@("'".'"')>
+  <PropertyGroup Condition=@('"'."'")$(Configuration)|$(Platform)@("'=='")@(config_name[ci])|@(vs_platform)@("'".'"')>
     <LocalDebuggerCommand>@(CGV_INSTALL.'\\bin\\'.pj::application_name.pj::output_post[ci].'.exe')</LocalDebuggerCommand>
   </PropertyGroup>
 @}
   @define(command_line_args=get_command_line_args(<:pj =& pj, <:ci = ci)*'|"|&quot;|')
   @if((command_line_args != "") || (pj::workingDirectory != "") )@{@//
-  <PropertyGroup Condition=@('"'."'")$(Configuration)|$(Platform)@("'=='")@(config_name[ci])|Win32@("'".'"')>
+  <PropertyGroup Condition=@('"'."'")$(Configuration)|$(Platform)@("'=='")@(config_name[ci])|@(vs_platform)@("'".'"')>
 @if(command_line_args != "")@{@//
     <LocalDebuggerCommandArguments>@(command_line_args)</LocalDebuggerCommandArguments>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
