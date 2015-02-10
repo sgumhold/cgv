@@ -23,9 +23,13 @@ protected:
 	std::string data_path;
 	std::string file_name;
 
+	// reduction to subset 
+	unsigned show_point_step;
+	std::size_t show_point_begin, show_point_end;
+
 	float point_size, line_width, nml_length;
 	bool show_points, show_nmls, show_clrs, show_box;
-	bool smooth_points;
+	bool smooth_points, blend_points, backface_cull_points;
 	bool illum_points, show_neighbor_graph;
 
 	unsigned k;

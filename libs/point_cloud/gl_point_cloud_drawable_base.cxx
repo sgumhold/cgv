@@ -18,7 +18,11 @@ gl_point_cloud_drawable_base::gl_point_cloud_drawable_base() :
 	point_size = 3.0f;
 	line_width = 1;
 	nml_length = 0.5f;
-	
+
+	show_point_step = 1;
+	show_point_begin = 0;
+	show_point_end = 0;
+
 	base_material.set_ambient(color_type(0.2f,0.2f,0.2f));
 	base_material.set_diffuse(color_type(0.6f,0.4f,0.4f));
 	base_material.set_specular(color_type(0.4f,0.4f,0.4f));
@@ -32,6 +36,9 @@ gl_point_cloud_drawable_base::gl_point_cloud_drawable_base() :
 	show_box = false;
 	illum_points = true;
 	show_neighbor_graph = false;
+
+	blend_points = true;
+	backface_cull_points = false;
 
 	k = 30;
 	do_symmetrize = false;
@@ -50,6 +57,9 @@ bool gl_point_cloud_drawable_base::read(const std::string& _file_name)
 		return false;
 	}
 	file_name = drop_extension(_file_name);
+	show_point_begin = 0;
+	show_point_end = pc.get_nr_points();
+
 	post_redraw();
 	return true;
 }
@@ -70,6 +80,8 @@ bool gl_point_cloud_drawable_base::append(const std::string& _file_name)
 		file_name += " and "; 
 	file_name += drop_extension(fn);
 	pc.append(pc1);
+	show_point_begin = 0;
+	show_point_end = pc.get_nr_points();
 	return true;
 }
 
@@ -121,23 +133,41 @@ void gl_point_cloud_drawable_base::draw_points(context& ctx)
 {
 	if (!show_points)
 		return;
-	if (point_size > 1 && smooth_points)
+	if (backface_cull_points) {
+		glCullFace(GL_BACK);
+		glEnable(GL_CULL_FACE);
+	}
+	if (point_size > 1 && smooth_points) {
 		glEnable(GL_POINT_SMOOTH);
+		if (blend_points) {
+			glHint(GL_POINT_SMOOTH_HINT, GL_NICEST);
+			glEnable(GL_BLEND);
+			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		}
+	}
 	if (!illum_points)
 		glDisable(GL_LIGHTING);
-	glPolygonOffset(-2,-5);
+	glPolygonOffset(-2, -5);
 	glEnable(GL_POLYGON_OFFSET_POINT);
 
-		glColor3fv(&base_color[0]);
-		glPointSize(point_size);
+	glColor3fv(&base_color[0]);
+	glPointSize(point_size);
 
-		int n = (int)pc.get_nr_points();
-		glDrawArrays(GL_POINTS,0,n);
+	std::size_t n = (show_point_end - show_point_begin) / show_point_step;
+	glDrawArrays(GL_POINTS, show_point_begin / show_point_step, n);
 
 	glDisable(GL_POLYGON_OFFSET_POINT);
 	if (!illum_points && pc.has_normals())
 		glEnable(GL_LIGHTING);
-	glDisable(GL_POINT_SMOOTH);
+	if (point_size > 1 && smooth_points) {
+		glDisable(GL_POINT_SMOOTH);
+		if (blend_points) {
+			glDisable(GL_BLEND);
+		}
+	}
+	if (backface_cull_points) {
+		glDisable(GL_CULL_FACE);
+	}
 }
 
 void gl_point_cloud_drawable_base::draw_normals(context& ctx)
@@ -222,14 +252,14 @@ void gl_point_cloud_drawable_base::draw(context& ctx)
 
 	draw_normals(ctx);
 
-	glVertexPointer(3, GL_FLOAT, 0, &(pc.pnt(0).x()));
+	glVertexPointer(3, GL_FLOAT, sizeof(Pnt)*show_point_step, &(pc.pnt(0).x()));
 	glEnableClientState(GL_VERTEX_ARRAY);
 	if (pc.has_colors() && show_clrs) {
-		glColorPointer(3, GL_FLOAT, 0, &(pc.clr(0)[0]));
+		glColorPointer(3, GL_FLOAT, sizeof(Clr)*show_point_step, &(pc.clr(0)[0]));
 		glEnableClientState(GL_COLOR_ARRAY);
 	}
 	if (pc.has_normals()) {
-		glNormalPointer(GL_FLOAT, 0, &(pc.nml(0).x()));
+		glNormalPointer(GL_FLOAT, sizeof(Nml)*show_point_step, &(pc.nml(0).x()));
 		glEnableClientState(GL_NORMAL_ARRAY);
 	}
 	else
