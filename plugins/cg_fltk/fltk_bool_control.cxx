@@ -1,4 +1,5 @@
 #include "fltk_bool_control.h"
+#include <cgv/type/variant.h>
 
 #ifdef WIN32
 #pragma warning (disable:4311)
@@ -9,6 +10,7 @@
 #pragma warning (default:4311)
 #endif
 #include <iostream>
+using namespace cgv::type;
 
 void bool_button_cb(fltk::Widget* w, void* button_ptr)
 {
@@ -22,6 +24,18 @@ void bool_button_cb(fltk::Widget* w, void* button_ptr)
 		fbc->set_new_value(tmp_value);
 		if (fB->value() != fbc->get_value())
 			fB->value(fbc->get_value());
+		if (fbc->get_value()) {
+			if (!fbc->true_label.empty())
+				fbc->set("label", fbc->true_label);
+			if (!fbc->true_image.empty())
+				fbc->set("image", fbc->true_image);
+		}
+		else {
+			if (!fbc->false_label.empty())
+				fbc->set("label", fbc->false_label);
+			if (!fbc->false_image.empty())
+				fbc->set("image", fbc->false_image);
+		}
 		fbc->value_change(*fbc);
 	}
 	else
@@ -73,21 +87,53 @@ void fltk_bool_control<FB>::update()
 template <typename FB>
 std::string fltk_bool_control<FB>::get_property_declarations()
 {
-	return fltk_base::get_property_declarations();
+	return fltk_base::get_property_declarations() + ";true_label:string;false_label:string;true_image:string;false_image:string";
 }
 
 /// abstract interface for the setter
 template <typename FB>
 bool fltk_bool_control<FB>::set_void(const std::string& property, const std::string& value_type, const void* value_ptr)
 {
-	return fltk_base::set_void(fB, this, property, value_type, value_ptr);
+	if (property == "true_label") {
+		get_variant(true_label, value_type, value_ptr);
+		if (get_value())
+			set("label", true_label);
+	}
+	else if (property == "false_label") {
+		get_variant(false_label, value_type, value_ptr);
+		if (!get_value())
+			set("label", false_label);
+	}
+	else if (property == "true_image") {
+		get_variant(true_image, value_type, value_ptr);
+		if (get_value())
+			set("image", true_image);
+	}
+	else if (property == "false_image") {
+		get_variant(false_image, value_type, value_ptr);
+		if (!get_value())
+			set("image", false_image);
+	}
+	else
+		return fltk_base::set_void(fB, this, property, value_type, value_ptr);
+	return true;
 }
 
 /// abstract interface for the getter
 template <typename FB>
 bool fltk_bool_control<FB>::get_void(const std::string& property, const std::string& value_type, void* value_ptr)
 {
-	return fltk_base::get_void(fB, this, property, value_type, value_ptr);
+	if (property == "true_label")
+		set_variant(true_label, value_type, value_ptr);
+	else if (property == "false_label")
+		set_variant(false_label, value_type, value_ptr);
+	else if (property == "true_image")
+		set_variant(true_image, value_type, value_ptr);
+	else if (property == "false_image")
+		set_variant(false_image, value_type, value_ptr);
+	else
+		return fltk_base::get_void(fB, this, property, value_type, value_ptr);
+	return true;
 }
 
 /// return a fltk::Widget pointer
