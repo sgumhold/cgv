@@ -3,6 +3,7 @@
 #include <cgv/utils/file.h>
 #include <cgv/utils/scan.h>
 #include <cgv_gl/gl/gl.h>
+#include <cgv_gl/gl/gl_tools.h>
 #include <cgv/base/import.h>
 
 using namespace std;
@@ -15,6 +16,10 @@ gl_point_cloud_drawable_base::gl_point_cloud_drawable_base() :
 	nml_color(0.3f, 0.0f, 0.5f),
 	box_color(0.0f,0.8f,0.9f)
 {
+	view_ptr = 0;
+
+	outline_width_from_pixel = 1.5f;
+	percentual_outline_width = 0.0f;
 	point_size = 3.0f;
 	line_width = 1;
 	nml_length = 0.5f;
@@ -22,23 +27,25 @@ gl_point_cloud_drawable_base::gl_point_cloud_drawable_base() :
 	show_point_step = 1;
 	show_point_begin = 0;
 	show_point_end = 0;
+	orient_splats = true;
 
 	base_material.set_ambient(color_type(0.2f,0.2f,0.2f));
 	base_material.set_diffuse(color_type(0.6f,0.4f,0.4f));
 	base_material.set_specular(color_type(0.4f,0.4f,0.4f));
 	base_material.set_shininess(20.0f);
 
-
-	smooth_points = false;
+	sort_points = true;
+	smooth_points = true;
 	show_points = true;
 	show_nmls = true;
 	show_clrs = true;
 	show_box = false;
 	illum_points = true;
 	show_neighbor_graph = false;
+	use_point_shader = true;	
 
 	blend_points = true;
-	backface_cull_points = false;
+	backface_cull_points = true;
 
 	k = 30;
 	do_symmetrize = false;
@@ -131,12 +138,17 @@ void gl_point_cloud_drawable_base::draw_box(context& ctx)
 
 void gl_point_cloud_drawable_base::draw_points(context& ctx)
 {
+	if (!ensure_view_pointer())
+		exit(0);
+
 	if (!show_points)
 		return;
 	if (backface_cull_points) {
 		glCullFace(GL_BACK);
 		glEnable(GL_CULL_FACE);
 	}
+	else
+		glDisable(GL_CULL_FACE);
 	if (point_size > 1 && smooth_points) {
 		glEnable(GL_POINT_SMOOTH);
 		if (blend_points) {
@@ -153,8 +165,55 @@ void gl_point_cloud_drawable_base::draw_points(context& ctx)
 	glColor3fv(&base_color[0]);
 	glPointSize(point_size);
 
+	if (use_point_shader && pc_prog.is_linked()) {
+		// compute reference point size
+		Pnt e = pc.box().get_extent();
+		Crd A = 2.0f*(e(0)*e(1) + e(1)*e(2) + e(2)*e(0));
+		Crd reference_point_size = 0.1f*sqrt(A/pc.get_nr_points());
+		cgv::render::gl::set_lighting_parameters(ctx, pc_prog);
+		pc_prog.set_uniform(ctx, "cull_backfacing", backface_cull_points);
+		pc_prog.set_uniform(ctx, "smooth_points", smooth_points);
+		pc_prog.set_uniform(ctx, "orient_splats", orient_splats);
+		pc_prog.set_uniform(ctx, "point_size", reference_point_size*point_size*sqrt((float)show_point_step));
+		pc_prog.set_uniform(ctx, "width", ctx.get_width());
+		pc_prog.set_uniform(ctx, "height", ctx.get_height());
+		float pixel_extent_per_depth = (float)(2.0*tan(0.5*0.0174532925199*view_ptr->get_y_view_angle())/ctx.get_height());
+		pc_prog.set_uniform(ctx, "pixel_extent_per_depth", pixel_extent_per_depth);
+		pc_prog.set_uniform(ctx, "outline_width_from_pixel", outline_width_from_pixel);
+		pc_prog.set_uniform(ctx, "percentual_outline_width", 0.01f*percentual_outline_width);
+		pc_prog.enable(ctx);
+	}
 	std::size_t n = (show_point_end - show_point_begin) / show_point_step;
-	glDrawArrays(GL_POINTS, show_point_begin / show_point_step, n);
+	GLint offset = show_point_begin / show_point_step;
+
+	if (sort_points && ensure_view_pointer()) {
+		struct sort_pred {
+			const point_cloud& pc;
+			const Pnt& view_dir;
+			unsigned show_point_step;
+			bool operator () (GLint i, GLint j) const {
+				return dot(pc.pnt(show_point_step*i), view_dir) > dot(pc.pnt(show_point_step*j), view_dir);
+			}
+			sort_pred(const point_cloud& _pc, const Pnt& _view_dir, unsigned _show_point_step) : pc(_pc), view_dir(_view_dir), show_point_step(_show_point_step) {}
+		};
+		Pnt view_dir = view_ptr->get_view_dir();
+		std::vector<GLint> indices;
+		indices.resize(n);
+		size_t i;
+		for (i = 0; i < indices.size(); ++i)
+			indices[i] = (GLint)i + offset;
+		std::sort(indices.begin(), indices.end(), sort_pred(pc, view_dir, show_point_step));
+
+		glDepthFunc(GL_ALWAYS);
+		glDrawElements(GL_POINTS, n, GL_UNSIGNED_INT, &indices[0]);
+		glDepthFunc(GL_LESS);
+	}
+	else {
+		glDrawArrays(GL_POINTS, offset, n);
+	}
+
+	if (use_point_shader && pc_prog.is_linked())
+		pc_prog.disable(ctx);
 
 	glDisable(GL_POLYGON_OFFSET_POINT);
 	if (!illum_points && pc.has_normals())
@@ -233,6 +292,15 @@ void gl_point_cloud_drawable_base::draw_graph(context& ctx)
 		}
 		glEnd();
 	glEnable(GL_LIGHTING);
+}
+
+void gl_point_cloud_drawable_base::init_frame(cgv::render::context& ctx)
+{
+	if (!pc_prog.is_created()) {
+		if (!pc_prog.build_program(ctx, "pc.glpr", true)) {
+			exit(0);
+		}
+	}
 }
 
 void gl_point_cloud_drawable_base::draw(context& ctx)
@@ -353,22 +421,32 @@ bool gl_point_cloud_drawable_base::self_reflect(cgv::reflect::reflection_handler
 		rh.reflect_member("reorient_normals", reorient_normals);
 }
 
+void gl_point_cloud_drawable_base::orient_normals_to_view_point()
+{
+	if (ensure_view_pointer()) {
+		if (ng.empty())
+			build_neighbor_graph();
+		Pnt view_point = view_ptr->get_eye();
+		ne.orient_normals(view_point);
+		post_redraw();
+	}
+}
+
+
 #include <cgv/base/find_action.h>
 #include <cgv/render/view.h>
 
-void gl_point_cloud_drawable_base::orient_normals_to_view_point()
+bool gl_point_cloud_drawable_base::ensure_view_pointer()
 {
 	cgv::base::base_ptr bp(dynamic_cast<cgv::base::base*>(this));
 	if (bp) {
 		vector<cgv::render::view*> views;
 		cgv::base::find_interface<cgv::render::view>(bp, views);
-		if (views.empty())
-			return;
-		if (ng.empty())
-			build_neighbor_graph();
-		Pnt view_point = views[0]->get_eye();
-		ne.orient_normals(view_point);
-		post_redraw();
+		if (!views.empty()) {
+			view_ptr = views[0];
+			return true;
+		}
 	}
+	return false;
 }
 

@@ -1,6 +1,8 @@
 #pragma once
 
 #include <cgv/render/drawable.h>
+#include <cgv/render/shader_program.h>
+#include <cgv/render/view.h>
 #include <cgv/media/illum/phong_material.hh>
 
 #include "point_cloud.h"
@@ -31,16 +33,24 @@ protected:
 	bool show_points, show_nmls, show_clrs, show_box;
 	bool smooth_points, blend_points, backface_cull_points;
 	bool illum_points, show_neighbor_graph;
-
+	bool orient_splats, sort_points;
+	bool use_point_shader;
+	cgv::render::shader_program pc_prog;
 	unsigned k;
 	bool do_symmetrize;
 	
+	float outline_width_from_pixel;
+	float percentual_outline_width;
+
 	bool reorient_normals;
 
 	cgv::media::illum::phong_material base_material;
 	color_type base_color;
 	color_type nml_color;
 	color_type box_color;
+
+	cgv::render::view* view_ptr;
+	bool ensure_view_pointer();
 
 public:
 	void clear();
@@ -70,6 +80,7 @@ public:
 	void draw_points(cgv::render::context& ctx);
 	void draw_normals(cgv::render::context& ctx);
 	void draw_graph(cgv::render::context& ctx);
+	void init_frame(cgv::render::context& ctx);
 	void draw(cgv::render::context& ctx);
 };
 
