@@ -31,7 +31,11 @@ public:
 	/// list of samples
 	std::vector<pnt_type> samples;
 	/// different sampling types
-	enum SamplingType { ST_UNIFORM, ST_REJECTION, ST_TRANSFORM, ST_LAST };
+	enum SamplingType { ST_UNIFORM, ST_REJECTION, ST_TRANSFORM, ST_SQUARE, ST_LAST };
+	///
+	enum TransformationType { TT_COORDINATES, TT_PROJECTION };
+	///
+	TransformationType transformation_type;
 	/// selected sampling type
 	SamplingType sampling_type;
 	/// morphing parameter
@@ -67,6 +71,11 @@ public:
 						return p;
 				} while (true);
 			}
+		case ST_SQUARE :
+			{
+				pnt_type p(pnt_type(get_random(-1,1),get_random(-1,1)));
+				return p;
+			}
 		}
 		return pnt_type(0.0,0.0);
 	}
@@ -81,6 +90,7 @@ public:
 	/// standard constructor
 	random_sampler() : node("random sampler"), n(1000), sampling_type(ST_UNIFORM), lambda(0) 
 	{
+		transformation_type = TT_COORDINATES;
 		generate_sampling();
 	}
 	/// return name of type
@@ -88,18 +98,33 @@ public:
 	{ 
 		return "random_sampler"; 
 	}
+	void on_set(void* member_ptr)
+	{
+		if (member_ptr == &sampling_type)
+			generate_sampling();
+		post_redraw();
+	}
 	void stream_help(std::ostream& os)
 	{
 		os << "toggle sampling type (S)" << std::endl;
 	}
 	void draw(context& ctx)
 	{
+		glDisable(GL_LIGHTING);
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		glDisable(GL_DEPTH_TEST);
+		glEnable(GL_LINE_SMOOTH);
 		glLineWidth(2);
-		glColor3f(1,1,0);
-		ctx.tesselate_unit_disk(100);
-		glColor3f(1,1,1);
-		glPointSize(2);
+		glColor3f(0.5f,0.5f,0);
+		if (sampling_type == ST_SQUARE) {
+			ctx.tesselate_unit_square(); 
+		}
+		else
+			ctx.tesselate_unit_disk(200);
+		glColor3f(1,0.2f,0.0f);
+		glPointSize(4);
 		glEnable(GL_POINT_SMOOTH);
 		glBegin(GL_POINTS);
 		if (!(sampling_type == ST_UNIFORM && lambda > 0)) {
@@ -108,15 +133,27 @@ public:
 			}
 		}
 		else {
-			for (unsigned int i=0; i<samples.size(); ++i) {
-				pnt_type c = cyl_from_car(samples[i]);
-				double r = (1-lambda)*c(0)+lambda*sqrt(c(0));
-				pnt_type p = car_from_cyl(pnt_type(r,c(1)));
-				glVertex2dv(&p(0));
+			if (transformation_type == TT_COORDINATES) {
+				for (unsigned int i=0; i<samples.size(); ++i) {
+					pnt_type c = cyl_from_car(samples[i]);
+					double r = (1-lambda)*c(0)+lambda*sqrt(c(0));
+					pnt_type p = car_from_cyl(pnt_type(r,c(1)));
+					glVertex2dv(&p(0));
+				}
+			}
+			else {
+				for (unsigned int i=0; i<samples.size(); ++i) {
+					pnt_type c = samples[i];
+					c.normalize();
+					pnt_type p = (1-lambda)*samples[i] + lambda*c;
+					glVertex2dv(&p(0));
+				}
 			}
 		}
 		glEnd();
 		glDisable(GL_POINT_SMOOTH);
+		glEnable(GL_DEPTH_TEST);
+		glDisable(GL_BLEND);
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	}
 	bool handle(event& e)
@@ -167,10 +204,12 @@ public:
 	void create_gui() 
 	{	
 		add_control("n", n, "value_slider", "min=1;max=100000;log=true");
-		connect_copy(add_button("uniform", "w=50", "")->click,rebind(this,&random_sampler::select_sampling, ST_UNIFORM));
+		add_member_control(this, "sampling", sampling_type, "dropdown", "enums='uniform,rejection,transform,square'");
+		/*connect_copy(add_button("uniform", "w=50", "")->click,rebind(this,&random_sampler::select_sampling, ST_UNIFORM));
 		connect_copy(add_button("reject", "w=50", "")->click,rebind(this,&random_sampler::select_sampling, ST_REJECTION));
-		connect_copy(add_button("transform", "w=50")->click,rebind(this,&random_sampler::select_sampling, ST_TRANSFORM));
+		connect_copy(add_button("transform", "w=50")->click,rebind(this,&random_sampler::select_sampling, ST_TRANSFORM));*/
 		connect_copy(add_button("generate sampling","tooltip=\"my tooltip\"")->click,rebind(this,&random_sampler::generate_sampling));
+		add_member_control(this, "transformation", transformation_type, "dropdown", "enums='coordinates,projection'");
 		connect_copy(add_control("morph", lambda, "value_slider", "min=0;max=1")->value_change,rebind(static_cast<drawable*>(this),&drawable::post_redraw));
 		connect_copy(add_button("regular", "w=50", "")->click,rebind(this,&random_sampler::select_state, std::string("regular")));
 		connect_copy(add_button("minimize", "w=50", "")->click,rebind(this,&random_sampler::select_state, std::string("minimized")));

@@ -60,9 +60,15 @@ protected:
 	///
 	unsigned int hierarchy_factor;
 	///
+	tm_type::SamplingType sample_sampling;
+	///
+	tm_type::DistributionType sample_distribution;
+	///
+	tm_type::GeneratorType sample_generator;
+	///
 	tm_type::ShapeType sample_shape;
 	///
-	tm_type::SamplingType sample_sampling;
+	tm_type::SamplingStrategy sample_strategy;
 	///
 	unsigned int sample_size;
 	///
