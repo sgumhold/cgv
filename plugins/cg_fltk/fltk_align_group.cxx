@@ -100,31 +100,34 @@ public:
 	}
 	int handle(int event) 
 	{
+		int res = fltk::ScrollGroup::handle(event);
+
 		switch (event) {
 		case fltk::ENTER :
 		case fltk::MOVE :
 		case fltk::RELEASE :
 			cursor(inside() ? fltk::CURSOR_WE : fltk::CURSOR_DEFAULT);
-			return fltk::ScrollGroup::handle(event);
+			return res;
 		case fltk::LEAVE :
-			fltk::ScrollGroup::handle(event);
 			cursor(fltk::CURSOR_DEFAULT);
 			return 1;
 		case fltk::PUSH :
-			if (inside()) {
+			if (inside() && res == 0) {
 				cursor(fltk::CURSOR_WE);
 				last_x = fltk::event_x();
 				return 1;
 			}
-			else
-				return fltk::ScrollGroup::handle(event);
+			return res;
 		case fltk::DRAG :
-			drag(fltk::event_x()-last_x);
-			cursor(fltk::CURSOR_WE);
-			last_x = fltk::event_x();
-			return 1;
+			if (res == 0) {
+				drag(fltk::event_x() - last_x);
+				cursor(fltk::CURSOR_WE);
+				last_x = fltk::event_x();
+				return 1;
+			}
+			return res;
 		}
-		return fltk::ScrollGroup::handle(event);
+		return 0;
 	}
 	/*	
 	void layout() 
