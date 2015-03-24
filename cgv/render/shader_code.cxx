@@ -146,9 +146,11 @@ std::string shader_code::find_file(const std::string& file_name)
 	if (it != ref_resource_file_map().end())
 		return std::string("res://")+file_name;
 
-	if (get_shader_config()->shader_path.empty())
+	if (get_shader_config()->shader_path.empty()) {
+		if (exists(std::string("glsl/") + file_name))
+			return std::string("glsl/") + file_name;
 		return "";
-
+	}
 	return find_in_paths(file_name, get_shader_config()->shader_path, true);
 }
 
