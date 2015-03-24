@@ -366,8 +366,9 @@ void stereo_view_interactor::on_rotation_change()
 void stereo_view_interactor::stream_help(std::ostream& os)
 {
 	os << "stereo_view_interactor\n\a"
-	   << "set focus:                    left mouse button click\n"
-	   << "rotate in image plane:        left mouse button\n";
+		<< "stereo:    on/off with <F4>, toggle mode with <Shift-F4>\n"
+		<< "set focus:                    left mouse button click\n"
+		<< "rotate in image plane:        left mouse button\n";
 	if (fix_view_up_dir)
 		os << "rotate around view direction: disabled [enable by disable of |stereo interactor->Current View->fix_view_up_dir|]\n";
 	else
