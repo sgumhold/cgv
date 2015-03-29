@@ -435,6 +435,8 @@ void stereo_view_interactor::on_stereo_change()
 		bool need_quad_buffer = is_stereo_enabled() && (stereo_mode == GLSU_QUAD_BUFFER);
 		if (need_quad_buffer != bp->get<bool>("quad_buffer")) {
 			bp->set("quad_buffer", need_quad_buffer);
+			if (need_quad_buffer && !bp->get<bool>("quad_buffer"))
+				enable_stereo(false);
 		}
 	}
 	post_redraw();

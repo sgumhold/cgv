@@ -170,12 +170,17 @@ bool fltk_gl_view::is_quad_buffer_attached() const
 	return (mode() & fltk::STEREO) != 0;
 }
 
+#include <cgv/gui/dialog.h>
+
 /// attach a quad buffer to the current frame buffer if not present
 void fltk_gl_view::attach_quad_buffer()
 {
 	if (is_quad_buffer_attached())
 		return;
-	change_mode(mode()|fltk::STEREO);
+	if (can_do(mode() | fltk::STEREO))
+		change_mode(mode() | fltk::STEREO);
+	else
+		cgv::gui::message("insufficient OpenGL support");
 }
 
 /// attach a quad buffer to the current frame buffer if not present
