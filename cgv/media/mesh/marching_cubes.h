@@ -252,6 +252,14 @@ template <typename X, typename T>
 class marching_cubes : public marching_cubes_base<X, T>
 {
 public:
+	// GCC does not examine the base class scope for templates, 
+	// so they must be explicitely redefined
+	typedef typename marching_cubes_base<X, T>::base_type base_type;
+	/// points must have three components
+	typedef typename marching_cubes_base<X, T>::pnt_type pnt_type;
+	/// vectors must have three components
+	typedef typename marching_cubes_base<X, T>::vec_type vec_type;
+	
 	const cgv::math::v3_func<X, T>& func;
 	/// construct marching cubes object
 	marching_cubes(const cgv::math::v3_func<X, T>& _func,
@@ -269,7 +277,7 @@ public:
 		bool show_progress = false)
 	{
 		always_valid<T> valid;
-		extract_impl(_iso_value, box, resx, resy, resz, *this, valid, show_progress);
+		this->extract_impl(_iso_value, box, resx, resy, resz, *this, valid, show_progress);
 	}
 };
 
