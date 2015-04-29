@@ -21,8 +21,10 @@ enum UniformTypeIdOffset {
 	UTO_MAT         = 0x03000,
 	UTO_FVEC        = 0x04000, // offset for fvec<T,2 ..i.. 4>,   where i = (offset - UTO_FVEC) / UTO_DIV + 2
 	UTO_FMAT        = 0x07000,  // offset for fmat<T,2 ..i.. 4,i>, where i = (offset - UTO_FMAT) / UTO_DIV + 2
-	UTO_VECTOR_MAT  = 0x0A000,  // offset for std::vector<mat<T,2 ..i.. 4,i> >
-	UTO_VECTOR_FMAT = 0x0B000,  // offset for std::vector<fmat<T,2 ..i.. 4,i> >, where i = (offset - UTO_VECTOR_FMAT) / UTO_DIV + 2
+	UTO_VECTOR_VEC  = 0x0A000,  // offset for std::vector<vec<T> >
+	UTO_VECTOR_FVEC = 0x0B000,  // offset for std::vector<fvec<T,2 ..i.. 4> >, where i = (offset - UTO_VECTOR_FVEC) / UTO_DIV + 2
+	UTO_VECTOR_MAT  = 0x0E000,  // offset for std::vector<mat<T> >
+	UTO_VECTOR_FMAT = 0x0F000,  // offset for std::vector<fmat<T,2 ..i.. 4,2 ..i.. 4> >, where i = (offset - UTO_VECTOR_FMAT) / UTO_DIV + 2
 };
 
 /// extend cgv::type::info::type_id<T> by vector and matrix types that can be used as arguments to set_uniform
@@ -58,9 +60,16 @@ struct uniform_type_id<cgv::math::mat<T> >
 	}
 };
 
+/// specialization for std::vector<cgv::math::vec<T> >
+template <typename T>
+struct uniform_type_id<std::vector<cgv::math::vec<T> > >
+{
+	static int get_id() {
+		return cgv::type::info::type_id<T>::get_id() + UTO_VECTOR_VEC;
+	}
+};
+
 /// specialization for std::vector<cgv::math::mat>
-// FIXME: Changed UTO_VEC_MAT to UTO_VECTOR_MAT as UTO_VEC_MAT is not defined.
-//        Can we really do this?
 template <typename T>
 struct uniform_type_id<std::vector<cgv::math::mat<T> > >
 {
@@ -87,9 +96,16 @@ struct uniform_type_id<cgv::math::fmat<T,i,i> >
 	}
 };
 
+/// specialization for std::vector<cgv::math::fvec<T,i> >
+template <typename T, unsigned i>
+struct uniform_type_id<std::vector<cgv::math::fvec<T, i> > >
+{
+	static int get_id() {
+		return cgv::type::info::type_id<T>::get_id() + UTO_VECTOR_FVEC + (i - 2)*UTO_DIV;
+	}
+};
+
 /// specialization for std::vector<cgv::math::fmat<T,i,i> >
-// FIXME: Changed UTO_VEC_MAT to UTO_VECTOR_MAT as UTO_VEC_MAT is not defined.
-//        Can we really do this?
 template <typename T, unsigned i>
 struct uniform_type_id<std::vector<cgv::math::fmat<T,i,i> > >
 {

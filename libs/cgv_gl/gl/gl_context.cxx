@@ -1854,15 +1854,57 @@ bool gl_context::set_uniform_void(void* handle,
 
 #include "gl_context_switch.h"
 
-	case TI_FLT32+UTO_VECTOR_MAT : 
+	case TI_FLT32 + UTO_VECTOR_VEC:
+	{
+		unsigned i;
+		const std::vector<vec<flt32_type> >& vm = *static_cast<const std::vector<vec<flt32_type> >*>(value_ptr);
+		for (i = 0; i<vm.size(); ++i) {
+			GLint loc = glGetUniformLocation(p_id, (name + "[" + cgv::utils::to_string(i) + "]").c_str());
+			if (loc == -1) {
+				last_error = std::string("Can not find uniform location ") + name + "[" + cgv::utils::to_string(i) + "]";
+				return false;
+			}
+			switch (vm[i].size()) {
+			case  4: glUniform2fv(loc, 1, vm[i]); break;
+			case  9: glUniform3fv(loc, 1, vm[i]); break;
+			case 16: glUniform4fv(loc, 1, vm[i]); break;
+			}
+		}
+		break;
+	}
+	case TI_FLT32 + UTO_VECTOR_FVEC:
+	{
+		const std::vector<fvec<flt32_type, 2> >& vm = *static_cast<const std::vector<fvec<flt32_type, 2> >*>(value_ptr);
+		glUniform2fv(loc, (GLsizei)vm.size(), &vm[0](0));
+		break;
+	}
+	case TI_FLT32 + UTO_VECTOR_FVEC + UTO_DIV:
+	{
+		const std::vector<fvec<flt32_type, 3> >& vm = *static_cast<const std::vector<fvec<flt32_type, 3> >*>(value_ptr);
+		glUniform3fv(loc, (GLsizei)vm.size(), &vm[0](0));
+		break;
+	}
+	case TI_FLT32 + UTO_VECTOR_FVEC + 2 * UTO_DIV:
+	{
+		const std::vector<fvec<flt32_type, 4> >& vm = *static_cast<const std::vector<fvec<flt32_type, 4> >*>(value_ptr);
+		glUniform4fv(loc, (GLsizei)vm.size(), &vm[0](0));
+		break;
+	}
+
+	case TI_FLT32 + UTO_VECTOR_MAT:
 		{
 			unsigned i;
 			const std::vector<mat<flt32_type> >& vm = *static_cast<const std::vector<mat<flt32_type> >*>(value_ptr);
 			for (i=0; i<vm.size(); ++i) {
+				GLint loc = glGetUniformLocation(p_id, (name + "[" + cgv::utils::to_string(i) + "]").c_str());
+				if (loc == -1) {
+					last_error = std::string("Can not find uniform location ") + name + "[" + cgv::utils::to_string(i) + "]";
+					return false;
+				}
 				switch (vm[i].size()) {
-				case  4 : glUniformMatrix2fv(loc, 1, i, vm[i]); break;
-				case  9 : glUniformMatrix3fv(loc, 1, i, vm[i]); break;
-				case 16 : glUniformMatrix4fv(loc, 1, i, vm[i]); break;
+				case  4 : glUniformMatrix2fv(loc, 1, 0, vm[i]); break;
+				case  9 : glUniformMatrix3fv(loc, 1, 0, vm[i]); break;
+				case 16 : glUniformMatrix4fv(loc, 1, 0, vm[i]); break;
 				}
 			}
 			break;
