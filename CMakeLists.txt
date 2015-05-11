@@ -1,5 +1,4 @@
 cmake_minimum_required(VERSION 2.6)
-#
 
 # Set CMake policy 17 to prefer local find scripts
 cmake_policy(SET CMP0017 OLD)
