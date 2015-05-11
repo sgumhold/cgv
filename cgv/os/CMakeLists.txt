@@ -26,7 +26,7 @@ endif()
 
 
 # add defines with the cgv-directory and the renderer_test directory
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DCGV_DIR=${CGV_SOURCE_DIR} -DINPUT_DIR=${CMAKE_CURRENT_LIST_DIR}")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DCGV_DIR=\"${CGV_SOURCE_DIR}\" -DINPUT_DIR=\"${CMAKE_CURRENT_LIST_DIR}\"")
 
 # Definition of the component
 cgv_add_core_component(os
