@@ -60,8 +60,10 @@ public:
 		data_view dv;
 		data_format df;
 		image_reader r(df);
-		if (!r.read_image(name, dv))
+		if (!r.read_image(name, dv)) {
+			std::cerr << "WARNING: could not read image " << name << "! Maybe cmi_io-plugin is necessary." << std::endl;
 			return false;
+		}
 		PixelType pt = RGB;
 		switch (df.get_standard_component_format()) {
 		case CF_L : pt = MONO; break;
