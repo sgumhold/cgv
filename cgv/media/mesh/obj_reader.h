@@ -18,13 +18,16 @@ namespace cgv {
     functions to allow a derived class to handle the read information. 
 	The default implementations of the processing methods are implemented
 	to simply ignore the read information. */
-class CGV_API obj_reader
+template <typename T>
+class CGV_API obj_reader_generic
 {
 public:
+	/// type of coordinates
+	typedef T crd_type;
 	/// type used to store texture coordinates
-	typedef cgv::math::fvec<double,2> v2d_type;
+	typedef cgv::math::fvec<T,2> v2d_type;
 	/// type used to store positions and normal vectors
-	typedef cgv::math::fvec<double,3> v3d_type;
+	typedef cgv::math::fvec<T,3> v3d_type;
 	/// type used for rgba colors
 	typedef illum::obj_material::color_type color_type;
 private:
@@ -38,6 +41,8 @@ private:
 	unsigned nr_materials;
 	/// mapping from material names to material indices
 	std::map<std::string,unsigned> material_index_lut;
+	///
+	static bool is_double(const char* begin, const char* end, crd_type& value);
 protected:
 	/**@name helpers for reading*/
 	//@{
@@ -90,7 +95,7 @@ protected:
 	//@}
 public:
 	/// default constructor
-	obj_reader();
+	obj_reader_generic();
 	/// clear the reader such that a new file can be read
 	virtual void clear();
 	/// read an obj file
@@ -98,6 +103,10 @@ public:
 	/// read a material file
 	virtual bool read_mtl(const std::string& file_name);
 };
+
+typedef obj_reader_generic<float>  obj_readerf;
+typedef obj_reader_generic<double> obj_readerd;
+typedef obj_reader_generic<double> obj_reader;
 
 		}
 	}

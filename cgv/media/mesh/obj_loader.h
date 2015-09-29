@@ -42,7 +42,8 @@ struct group_info
 /** implements the virtual interface of the obj_reader and stores all 
 	read information. The read information is automatically stored in 
 	binary form to accelerate the second loading of the same obj file. */
-class CGV_API obj_loader : public obj_reader
+template <typename T>
+class CGV_API obj_loader_generic : public obj_reader_generic<T>
 {
 public:
 	std::vector<v3d_type> vertices; 
@@ -88,6 +89,11 @@ public:
 	/// prepare for reading another file
 	void clear();
 };
+
+
+typedef obj_loader_generic<float>  obj_loaderf;
+typedef obj_loader_generic<double> obj_loaderd;
+typedef obj_loader_generic<double> obj_loader;
 
 		}
 	}

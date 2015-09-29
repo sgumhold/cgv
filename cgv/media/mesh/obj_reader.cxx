@@ -18,7 +18,28 @@ namespace cgv {
 	namespace media {
 		namespace mesh {
 
-obj_reader::v2d_type obj_reader::parse_v2d(const std::vector<token>& T) const
+			bool is_double_impl(const char* begin, const char* end, float& value)
+			{
+				double valued;
+				bool res = cgv::utils::is_double(begin, end, valued);
+				value = (float)valued;
+				return res;
+			}
+
+			bool is_double_impl(const char* begin, const char* end, double& value)
+			{
+				return cgv::utils::is_double(begin, end, value);
+			}
+
+///
+template <typename T>
+typename bool obj_reader_generic<T>::is_double(const char* begin, const char* end, crd_type& value)
+{
+	return is_double_impl(begin, end, value);
+}
+
+template <typename T>
+typename obj_reader_generic<T>::v2d_type obj_reader_generic<T>::parse_v2d(const std::vector<token>& T) const
 {
 	v2d_type v(0,0);
 	T.size() > 2 && 
@@ -27,7 +48,8 @@ obj_reader::v2d_type obj_reader::parse_v2d(const std::vector<token>& T) const
 	return v;
 }
 
-obj_reader::v3d_type obj_reader::parse_v3d(const std::vector<token>& T) const
+template <typename T>
+typename obj_reader_generic<T>::v3d_type obj_reader_generic<T>::parse_v3d(const std::vector<token>& T) const
 {
 	v3d_type v(0,0,0);
 	T.size() > 3 && 
@@ -37,9 +59,10 @@ obj_reader::v3d_type obj_reader::parse_v3d(const std::vector<token>& T) const
 	return v;
 }
 
-obj_reader::color_type obj_reader::parse_color(const std::vector<token>& T, unsigned off) const
+template <typename T>
+typename obj_reader_generic<T>::color_type obj_reader_generic<T>::parse_color(const std::vector<token>& T, unsigned off) const
 {
-	double v[4] = {0,0,0,1};
+	crd_type v[4] = {0,0,0,1};
 	(T.size() > 3+off) && 
 	is_double(T[1+off].begin,T[1+off].end, v[0]) && 
 	is_double(T[2+off].begin,T[2+off].end, v[1]) && 
@@ -50,23 +73,27 @@ obj_reader::color_type obj_reader::parse_color(const std::vector<token>& T, unsi
 }
 
 /// return the index of the currently selected group or -1 if no group is defined
-unsigned obj_reader::get_current_group() const
+template <typename T>
+unsigned obj_reader_generic<T>::get_current_group() const
 {
 	return group_index;
 }
 
 /// return the index of the currently selected material or -1 if no material is defined
-unsigned obj_reader::get_current_material() const
+template <typename T>
+unsigned obj_reader_generic<T>::get_current_material() const
 {
 	return material_index;
 }
 
-obj_reader::obj_reader()
+template <typename T>
+obj_reader_generic<T>::obj_reader_generic()
 {
 	clear();
 }
 
-void obj_reader::clear()
+template <typename T>
+void obj_reader_generic<T>::clear()
 {
 	mtl_lib_files.clear();
 	material_index_lut.clear();
@@ -79,32 +106,38 @@ void obj_reader::clear()
 }
 
 /// overide this function to process a comment
-void obj_reader::process_comment(const std::string& comment)
+template <typename T>
+void obj_reader_generic<T>::process_comment(const std::string& comment)
 {
 }
 
 /// overide this function to process a vertex
-void obj_reader::process_vertex(const v3d_type& p)
+template <typename T>
+void obj_reader_generic<T>::process_vertex(const v3d_type& p)
 {
 }
 
 /// overide this function to process a texcoord
-void obj_reader::process_texcoord(const v2d_type& t)
+template <typename T>
+void obj_reader_generic<T>::process_texcoord(const v2d_type& t)
 {
 }
 
 /// overide this function to process a normal
-void obj_reader::process_normal(const v3d_type& n)
+template <typename T>
+void obj_reader_generic<T>::process_normal(const v3d_type& n)
 {
 }
 
 /// overide this function to process a normal
-void obj_reader::process_color(const color_type& c)
+template <typename T>
+void obj_reader_generic<T>::process_color(const color_type& c)
 {
 }
 
 /// convert negative indices to positive ones by adding the number of elements
-void obj_reader::convert_to_positive(unsigned vcount, int *vertices, 
+template <typename T>
+void obj_reader_generic<T>::convert_to_positive(unsigned vcount, int *vertices,
 						 int *texcoords, int *normals,
 						 unsigned v, unsigned n, unsigned t)
 {
@@ -123,21 +156,25 @@ void obj_reader::convert_to_positive(unsigned vcount, int *vertices,
 }
 
 /// overide this function to process a face
-void obj_reader::process_face(unsigned vcount, int *vertices, int *texcoords, int *normals)
+template <typename T>
+void obj_reader_generic<T>::process_face(unsigned vcount, int *vertices, int *texcoords, int *normals)
 {
 }
 
 /// overide this function to process a group given by name and parameter string
-void obj_reader::process_group(const std::string& name, const std::string& parameters)
+template <typename T>
+void obj_reader_generic<T>::process_group(const std::string& name, const std::string& parameters)
 {
 }
 
 /// process a material definition
-void obj_reader::process_material(const cgv::media::illum::obj_material& mtl, unsigned)
+template <typename T>
+void obj_reader_generic<T>::process_material(const cgv::media::illum::obj_material& mtl, unsigned)
 {
 }
 
-bool obj_reader::read_obj(const std::string& file_name)
+template <typename T>
+bool obj_reader_generic<T>::read_obj(const std::string& file_name)
 {
 	std::string content;
 	if (!file::read(file_name, content, true))
@@ -240,7 +277,8 @@ bool obj_reader::read_obj(const std::string& file_name)
 	return true;
 }
 
-bool obj_reader::read_mtl(const std::string& file_name)
+template <typename T>
+bool obj_reader_generic<T>::read_mtl(const std::string& file_name)
 {
 	std::string fn = cgv::base::find_data_file(file_name, "cpD");
 	if (path_name.empty()) {
@@ -334,7 +372,8 @@ bool obj_reader::read_mtl(const std::string& file_name)
 	return true;
 }
 
-void obj_reader::parse_material(const std::vector<token>& tokens)
+template <typename T>
+void obj_reader_generic<T>::parse_material(const std::vector<token>& tokens)
 {
 	if (tokens.size() < 2)
 		return;
@@ -346,7 +385,8 @@ void obj_reader::parse_material(const std::vector<token>& tokens)
 		material_index = it->second;
 }
 
-void obj_reader::parse_face(const std::vector<token>& tokens)
+template <typename T>
+void obj_reader_generic<T>::parse_face(const std::vector<token>& tokens)
 {
 	std::vector<int> vertex_indices;
 	std::vector<int> normal_indices;
@@ -395,6 +435,9 @@ void obj_reader::parse_face(const std::vector<token>& tokens)
 		tex_ptr = &texcoord_indices[0];
 	process_face((unsigned) vertex_indices.size(), &vertex_indices[0], tex_ptr, nml_ptr);
 }
+
+template obj_reader_generic < float >;
+template obj_reader_generic < double >;
 
 		}
 	}

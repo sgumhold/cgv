@@ -25,29 +25,34 @@ face_info::face_info(unsigned _nr, unsigned _vi0, int _ti0, int _ni0, unsigned _
 }
 
 /// overide this function to process a vertex
-void obj_loader::process_vertex(const v3d_type& p)
+template <typename T>
+void obj_loader_generic<T>::process_vertex(const v3d_type& p)
 {
 	vertices.push_back(p);
 }
 
 /// overide this function to process a texcoord
-void obj_loader::process_texcoord(const v2d_type& t)
+template <typename T>
+void obj_loader_generic<T>::process_texcoord(const v2d_type& t)
 {
 	texcoords.push_back(t);
 }
 /// overide this function to process a normal
-void obj_loader::process_normal(const v3d_type& n)
+template <typename T>
+void obj_loader_generic<T>::process_normal(const v3d_type& n)
 {
 	normals.push_back(n);
 }
 
-void obj_loader::process_color(const color_type& c)
+template <typename T>
+void obj_loader_generic<T>::process_color(const color_type& c)
 {
 	colors.push_back(c);
 }
 
 /// overide this function to process a face
-void obj_loader::process_face(unsigned vcount, int *vertices, 
+template <typename T>
+void obj_loader_generic<T>::process_face(unsigned vcount, int *vertices,
 							  int *texcoords, int *normals)
 {
 	convert_to_positive(vcount,vertices,texcoords,normals,
@@ -68,7 +73,8 @@ void obj_loader::process_face(unsigned vcount, int *vertices,
 }
 
 /// overide this function to process a group given by name
-void obj_loader::process_group(const std::string& name, const std::string& parameters)
+template <typename T>
+void obj_loader_generic<T>::process_group(const std::string& name, const std::string& parameters)
 {
 	group_info gi;
 	gi.name = name;
@@ -77,7 +83,8 @@ void obj_loader::process_group(const std::string& name, const std::string& param
 }
 
 /// process a material definition
-void obj_loader::process_material(const obj_material& mtl, unsigned idx)
+template <typename T>
+void obj_loader_generic<T>::process_material(const obj_material& mtl, unsigned idx)
 {
 	if (idx >= materials.size())
 		materials.push_back(mtl);
@@ -85,11 +92,24 @@ void obj_loader::process_material(const obj_material& mtl, unsigned idx)
 		materials[idx] = mtl;
 }
 
+template <typename T>
+const char* get_bin_extension()
+{
+	return  ".bin_obj";
+}
+
+template <>
+const char* get_bin_extension<float>()
+{
+	return  ".bin_objf";
+}
+
 /// overloads reading to support binary file format
-bool obj_loader::read_obj(const std::string& file_name)
+template <typename T>
+bool obj_loader_generic<T>::read_obj(const std::string& file_name)
 {
 	// check if binary file exists
-	std::string bin_fn = drop_extension(file_name)+".bin_obj";
+	std::string bin_fn = drop_extension(file_name) + get_bin_extension<T>();
 	if (exists(bin_fn) &&
 		get_last_write_time(bin_fn) > get_last_write_time(file_name) &&
 		read_obj_bin(bin_fn)) {
@@ -105,7 +125,7 @@ bool obj_loader::read_obj(const std::string& file_name)
 	faces.clear(); 
 	colors.clear();
 
-	if (!obj_reader::read_obj(file_name))
+	if (!obj_reader_generic<T>::read_obj(file_name))
 		return false;
 
 	// correct colors in case of 8bit colors
@@ -126,7 +146,8 @@ bool obj_loader::read_obj(const std::string& file_name)
 	return true;
 }
 
-bool obj_loader::read_obj_bin(const std::string& file_name)
+template <typename T>
+bool obj_loader_generic<T>::read_obj_bin(const std::string& file_name)
 {
 	// open binary file
 	FILE* fp = fopen(file_name.c_str(), "rb");
@@ -227,9 +248,10 @@ bool obj_loader::read_obj_bin(const std::string& file_name)
 }
 
 /// prepare for reading another file
-void obj_loader::clear()
+template <typename T>
+void obj_loader_generic<T>::clear()
 {
-	obj_reader::clear();
+	obj_reader_generic<T>::clear();
 
 	vertices.clear(); 
 	normals.clear(); 
@@ -244,7 +266,8 @@ void obj_loader::clear()
 	materials.clear();
 }
 
-bool obj_loader::write_obj_bin(const std::string& file_name) const
+template <typename T>
+bool obj_loader_generic<T>::write_obj_bin(const std::string& file_name) const
 {
 	// open binary file
 	FILE* fp = fopen(file_name.c_str(), "wb");
@@ -339,7 +362,8 @@ bool obj_loader::write_obj_bin(const std::string& file_name) const
 	return true;
 }
 
-void obj_loader::show_stats() const
+template <typename T>
+void obj_loader_generic<T>::show_stats() const
 {
 	std::cout << "num vertices "<<vertices.size()<<std::endl;
 	std::cout << "num normals "<<normals.size()<<std::endl;
@@ -349,6 +373,8 @@ void obj_loader::show_stats() const
 	std::cout << "num groups "<<groups.size()<<std::endl;
 }
 
+template obj_loader_generic < float >;
+template obj_loader_generic < double >;
 
 
 		}
