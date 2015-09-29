@@ -230,11 +230,15 @@ bool shader_program::attach_program(context& ctx, const std::string& file_name, 
 	std::string fn = shader_code::find_file(file_name);
 	if (fn.empty()) {
 		last_error = "could not find shader program file "+file_name;
+		if (show_error)
+			std::cerr << last_error << std::endl;
 		return false;
 	}
 	std::string content;
 	if (!cgv::base::read_data_file(fn, content, true)) {
 		last_error = "could not read shader program file "+file_name;
+		if (show_error)
+			std::cerr << last_error << std::endl;
 		return false;
 	}	
 	std::vector<line> lines;
@@ -320,6 +324,8 @@ bool shader_program::attach_program(context& ctx, const std::string& file_name, 
 	}
 
 	get_shader_config()->shader_path = old_shader_path;
+	if (show_error && !no_error)
+		std::cerr << last_error << std::endl;
 	return no_error;
 }
 
