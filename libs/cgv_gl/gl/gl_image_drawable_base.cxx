@@ -231,13 +231,13 @@ void gl_image_drawable_base::draw(context& )
 	glDisable(GL_CULL_FACE);
 		glBegin(GL_QUADS);
 			glNormal3d(0,0,1);
-			glTexCoord2d(0,0);
-			glVertex3d(-1,-1,0);
-			glTexCoord2d(1,0);
-			glVertex3d(1,-1,0);
-			glTexCoord2d(1,1);
-			glVertex3d(1,1,0);
 			glTexCoord2d(0,1);
+			glVertex3d(-1,-1,0);
+			glTexCoord2d(1,1);
+			glVertex3d(1,-1,0);
+			glTexCoord2d(1,0);
+			glVertex3d(1,1,0);
+			glTexCoord2d(0,0);
 			glVertex3d(-1,1,0);
 		glEnd();
 	if (use_blending)
