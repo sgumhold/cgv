@@ -34,6 +34,24 @@ void fltk_gl_view::process_text_1(const std::string& text)
 	process_text(text);
 }
 
+class MyGlWindow : public fltk::Window
+{
+public:
+	int mode_;
+	fltk::GlChoice *gl_choice;
+	fltk::GLContext context_;
+	char valid_;
+	char damage1_; // damage() of back buffer
+
+	void *overlay;
+};
+
+fltk::GLContext get_context(const fltk::GlWindow* glw)
+{
+	return reinterpret_cast<const MyGlWindow*>(glw)->context_;
+}
+
+
 /// construct application
 fltk_gl_view::fltk_gl_view(int x, int y, int w, int h, const std::string& name) 
 	: fltk::GlWindow(x,y,w,h), group(name), dnd_release_event(0,0,MA_ENTER)
@@ -354,7 +372,7 @@ void fltk_gl_view::create()
 {
 	fltk::GlWindow::create();
 	make_current();
-
+	configure_gl(get_context(this));
 	single_method_action<cgv::render::drawable,bool,cgv::render::context&> sma(*this, &drawable::init, false, false);
 //	debug_traverse_callback_handler dtcbh;
 //	std::cout << "INIT children" << std::endl;
@@ -439,23 +457,6 @@ void fltk_gl_view::idle_callback(void* ptr)
 {
 	fltk_gl_view* gl_view = (fltk_gl_view*) ptr;
 	gl_view->redraw();
-}
-
-class MyGlWindow : public fltk::Window 
-{
-public:
-  int mode_;
-  fltk::GlChoice *gl_choice;
-  fltk::GLContext context_;
-  char valid_;
-  char damage1_; // damage() of back buffer
-
-  void *overlay;
-};
-
-fltk::GLContext get_context(const fltk::GlWindow* glw)
-{
-	return reinterpret_cast<const MyGlWindow*>(glw)->context_;
 }
 
 /// overload render pass to perform measurements
@@ -665,6 +666,7 @@ void fltk_gl_view::resize(unsigned int width, unsigned int height)
 	}
 	else {
 		fltk::GlWindow::resize(width, height);
+//		cgv::render::gl::gl_context::resize(width, height);
 	}
 }
 
