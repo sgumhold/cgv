@@ -9,10 +9,20 @@
 namespace cgv {
 	namespace data {
 
-/// different naming conventions for member names
-enum NamingConvention { NC_NONE, NC_SHORT, NC_LONG };
+		/// different naming conventions for member names
+		enum NamingConvention { NC_NONE, NC_SHORT, NC_LONG };
+	}
+}
 
-extern CGV_API cgv::reflect::enum_reflection_traits<NamingConvention> get_reflection_traits(const NamingConvention&); 
+namespace cgv {
+	namespace reflect {
+		extern CGV_API enum_reflection_traits<cgv::data::NamingConvention> get_reflection_traits(const cgv::data::NamingConvention&);
+	}
+}
+
+namespace cgv {
+	namespace data {
+
 
 /** read from ascii file */
 class CGV_API ascii_reflection_handler : public io_reflection_handler

@@ -2,13 +2,18 @@
 #include <cgv/utils/scan.h>
 
 using namespace cgv::reflect;
+namespace cgv {
+	namespace reflect {
+
+		enum_reflection_traits<cgv::data::NamingConvention> get_reflection_traits(const cgv::data::NamingConvention&) {
+			return cgv::reflect::enum_reflection_traits<cgv::data::NamingConvention>("NC_NONE, NC_SHORT, NC_LONG");
+		}
+	}
+}
 
 namespace cgv {
 	namespace data {
 
-cgv::reflect::enum_reflection_traits<NamingConvention> get_reflection_traits(const NamingConvention&) { 
-	return cgv::reflect::enum_reflection_traits<NamingConvention>("NC_NONE, NC_SHORT, NC_LONG"); 
-}
 
 std::string ascii_reflection_handler::extend_name(const std::string& name, bool assign)
 {
