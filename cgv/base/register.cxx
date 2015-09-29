@@ -870,6 +870,8 @@ void* load_plugin(const std::string& file_name)
 #endif
 #else
 			result = dlopen(fn.c_str(), RTLD_NOW);
+			if (result == NULL)
+			    std::cerr<<"Error loading library: "<<dlerror()<<std::endl;
 #endif
 			if (result)
 				break;
