@@ -11,9 +11,10 @@ namespace cgv {
 template <bool is_self,typename T> 
 struct reflection_traits_info_self
 {
+	static T* get_dummy_ptr() { return 0; }
 	static const bool use_get = true; 
 #ifdef REFLECT_TRAITS_WITH_DECLTYPE
-	typedef decltype(get_reflection_traits(T())) traits_type; 
+	typedef decltype(get_reflection_traits(*get_dummy_ptr())) traits_type;
 	static const ReflectionTraitsKind kind = traits_type::kind; 
 #else
 	static const ReflectionTraitsKind kind = RTK_EXTERNAL_SELF_REFLECT; 
