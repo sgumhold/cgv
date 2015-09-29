@@ -75,6 +75,8 @@ void plot1d::adjust_domain_axis_to_data(unsigned ai, bool adjust_min, bool adjus
 			}
 		}
 	}
+	if (domain.ref_min_pnt()(ai) == domain.ref_max_pnt()(ai))
+		domain.ref_max_pnt()(ai) += 1;
 }
 
 /// adjust tick marks
