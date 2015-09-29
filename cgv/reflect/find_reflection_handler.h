@@ -24,7 +24,20 @@ private:
 	bool step_if_matches(const std::string& name);
 
 protected:
-	const std::string& target;
+	const std::string* target;
+	const void* target_ptr;
+	struct group_info {
+		std::string group_name;
+		void* group_ptr;
+		abst_reflection_traits* rt;
+		GroupKind group_kind; 
+		unsigned group_size;
+	};
+	bool traverse_matched_groups;
+	std::vector<group_info> traversed_groups;
+	void push_group(const std::string& _group_name, void* _group_ptr, abst_reflection_traits* _rt, GroupKind _group_kind, unsigned _group_size = -1);
+	void check_for_index_increment();
+	std::vector<std::string> target_tokens;
 	bool found;
 	bool valid;
 	std::string member_name;
@@ -34,8 +47,10 @@ protected:
 	unsigned grp_size;
 
 public:
-	/// construct from target
+	/// construct from textual target description
 	find_reflection_handler(const std::string& _target);
+	/// construct from member pointer and boolean flag that tells whether groups should be traversed in case that group pointer matches target
+	find_reflection_handler(const void* _target_ptr, bool _traverse_matched_groups);
 	/// 
 	~find_reflection_handler();
 	/// return whether target has been found
@@ -54,6 +69,9 @@ public:
 	/// overload to navigate grouped reflection information
 	int reflect_group_begin(GroupKind group_kind, const std::string& group_name, void* group_ptr, 
 						    abst_reflection_traits* rt, unsigned grp_size);
+
+	/// ensure that matched group pointers are found also in case that groups are traversed further and no group member corresponds to target pointer
+	void reflect_group_end(GroupKind group_kind);
 	/// check for target during member reflection
 	bool reflect_member_void(const std::string& member_name, void* member_ptr, abst_reflection_traits* rt);
 	/// ignore methods
