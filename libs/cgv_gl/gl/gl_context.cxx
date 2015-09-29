@@ -126,6 +126,8 @@ void gl_context::configure_gl(void* new_context)
 		// which is essential when using scaling to deform tesselated primities
 		glEnable(GL_NORMALIZE);
 		glViewport(0,0,get_width(),get_height());
+		last_width = get_width();
+		last_height = get_height();
 
 		/*
 		if (grp) {
