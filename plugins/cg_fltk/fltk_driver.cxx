@@ -25,6 +25,7 @@
 
 using namespace cgv::base;
 
+
 void ensure_lock()
 {
 	static bool lock_set = false;
@@ -33,7 +34,6 @@ void ensure_lock()
 		lock_set = true;
 	}
 }
-
 
 void fltk_driver::on_register()
 {
@@ -837,8 +837,8 @@ struct menu_listener : public cgv::base::base, public registration_listener
 	}
 };
 
-extern object_registration<fltk_driver> fltk_driver_registration;
-extern object_registration<menu_listener> fml_reg;
+extern object_registration<fltk_driver> fltk_driver_registration("fltk driver");
+extern object_registration<menu_listener> fml_reg("fltk menu driver");
 
-object_registration<fltk_driver> fltk_driver_registration("");
-object_registration<menu_listener> fml_reg("");
+//extern object_registration<fltk_driver> fltk_driver_registration;
+//extern object_registration<menu_listener> fml_reg;

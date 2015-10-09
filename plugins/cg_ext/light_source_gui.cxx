@@ -56,7 +56,7 @@ struct light_source_gui_creator : public gui_creator
 			if(p->begin_tree_node("Position", light.ref_location())){
 				p->align("\a");
 					p->add_gui("position", light.ref_location(), "vector", "min=-1;max=1;ticks=true;step=0.001");
-					p->find_control(light.ref_location()(3))->multi_set("min=0;step=0.0001;log=true");
+					p->find_control(light.ref_location()(3))->multi_set("min=0;step=0.0001;log=true", false);
 					connect_copy(p->find_control(light.ref_location()(3))->value_change,
 						rebind(b, &cgv::base::base::on_set, &light.ref_location()(3)));
 				p->align("\b");

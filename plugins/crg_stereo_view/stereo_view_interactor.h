@@ -5,7 +5,7 @@
 #include <cgv/gui/event_handler.h>
 #include <cgv/gui/provider.h>
 #include <cgv_gl/gl/gl.h>
-#include <GL/glsu.h>
+#include <glsu/GL/glsu.h>
 
 #include "lib_begin.h"
 

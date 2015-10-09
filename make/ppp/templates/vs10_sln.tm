@@ -7,7 +7,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = @"projectName", @('"')@if(ad
 EndProject@}
 @func(::gen_solution; :>projectName="", :>return="")@{
 	@define(:>pj =& projects[projectName])
-	@define(:>cfg_ord  = [3,1,2,0])
+	@define(:>cfg_ord  = [5,4,3,2,1,0])
 	@for(:>i=0; i<!project_folders; ++i)@{
 		@if(pj::all_ref_projects_by_type[project_folders[i]] !~ UNDEF)@{
 			@if((!pj::all_ref_projects_by_type[project_folders[i]]) > 0) @{@//
@@ -19,27 +19,27 @@ EndProject
 		@for(:>i=0;i<!pj::all_ref_projects;++i)@{@skip(gen_project(pj::all_ref_projects[i],1))@}
 	@}
 Global
-	GlobalSection(SolutionConfigurationPlatforms) = preSolution
-@for(:>ci=0;ci<4;++ci)@{@define(:>cj=cfg_ord[ci])@if(cj<pj::config_indices)@{@//
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution@//
+@for(:>ci=0;ci<6;++ci)@{@define(:>cj=cfg_ord[ci])@if(cj<pj::config_indices)@{
 		@(config_name[cj])|@(vs_platform) = @(config_name[cj])|@(vs_platform)
-@}@}@//
+@}@}
 	EndGlobalSection
-	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-@for(:>ci=0;ci<4;++ci)@{@define(:>cj=cfg_ord[ci])@if(cj<pj::config_indices)@{@//
-		{@(pj::projectGUID)}.@(config_name[cj])|@(vs_platform).ActiveCfg = @(config_name[map_cfg_idx_self(cj,pj::config_indices)])|@(vs_platform)
-		{@(pj::projectGUID)}.@(config_name[cj])|@(vs_platform).Build.0 = @(config_name[map_cfg_idx_self(cj,pj::config_indices)])|@(vs_platform)
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution@//
+@for(:>ci=0;ci<6;++ci)@{@define(:>cj=cfg_ord[ci])@if(cj<pj::config_indices)@{
+		{@(pj::projectGUID)}.@(config_name[cj])|@(vs_platform).ActiveCfg = @(config_name[map_cfg_idx(cj,pj::config_indices)])|@(vs_platform)
+		{@(pj::projectGUID)}.@(config_name[cj])|@(vs_platform).Build.0 = @(config_name[map_cfg_idx(cj,pj::config_indices)])|@(vs_platform)
 @}@}
 @if(!pj::all_ref_projects > 0)@{
 	@for(:>i=0;i<!pj::all_ref_projects;++i)@{		
 		@define(:>pkGUID = projects[pj::all_ref_projects[i]]::projectGUID)
 		@define(:>pkConfig_indices = projects[pj::all_ref_projects[i]]::config_indices)
-		@for(:>ci=0;ci<4;++ci)@{
+		@for(:>ci=0;ci<6;++ci)@{
 			@define(:>cj=cfg_ord[ci])
 			@if(cj<pj::config_indices)@{
-				@define(:>ck=map_cfg_idx(cj,pkConfig_indices))@//
+				@define(:>ck=map_cfg_idx(cj,pkConfig_indices))
 		{@(pkGUID)}.@(config_name[cj])|@(vs_platform).ActiveCfg = @(config_name[ck])|@(vs_platform)
 		{@(pkGUID)}.@(config_name[cj])|@(vs_platform).Build.0 = @(config_name[ck])|@(vs_platform)
-@}@}@}@}@//
+@}@}@}@}
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

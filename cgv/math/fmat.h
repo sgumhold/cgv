@@ -216,6 +216,19 @@ std::istream& operator>>(std::istream& in, fmat<T,N,M>& m)
 }
 
 
+
+///returns the outer product of vector v and w
+template < typename T, cgv::type::uint32_type N, typename S, cgv::type::uint32_type M>
+fmat<T, N, M> dyad(const fvec<T,N>& v, const fvec<S,M>& w)
+{
+	fmat<T, N, M> m;
+	for (unsigned i = 0; i < N; i++)
+		for (unsigned j = 0; j < M; j++)
+			m(i, j) = v(i)*(T)w(j);
+	return m;
+}
+
+
 	}
 
 }

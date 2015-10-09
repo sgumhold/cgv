@@ -786,7 +786,7 @@ void fltk_viewer_window::register_object(base_ptr object, const std::string& opt
 		base_generator bg;
 		bg.add("shortcut", sc);
 		bg.add("menu_text", item_text_str);
-		bg.multi_set(options);
+		bg.multi_set(options, false);
 
 		int fltk_sc = fltk_shortcut(sc);
 		if (fltk_sc > 0)
@@ -803,7 +803,7 @@ void fltk_viewer_window::register_object(base_ptr object, const std::string& opt
 	}
 
 	std::string views;
-	if (has_property(options, "views", views)) {
+	if (has_property(options, "views", views, false)) {
 		if (cgv::utils::is_element(get_name(),views))
 			view->append_child(object);
 	}
@@ -811,7 +811,7 @@ void fltk_viewer_window::register_object(base_ptr object, const std::string& opt
 		view->append_child(object);
 
 	std::string parents;
-	if (has_property(options, "parents", parents))
+	if (has_property(options, "parents", parents, false))
 		if (!cgv::utils::is_element(get_name(),parents))
 			return;
 
@@ -827,7 +827,7 @@ void fltk_viewer_window::register_object(base_ptr object, const std::string& opt
 		base_generator bg;
 		bg.add("menu_text", mp);
 		bg.add("shortcut", sc);
-		bg.multi_set(options);
+		bg.multi_set(options, false);
 
 		if (!mp.empty()) {
 			if (!menu) {

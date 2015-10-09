@@ -231,7 +231,7 @@ bool bmp_reader::close()
 	return res == 0;
 }
 
-cgv::base::object_registration<bmp_reader> brr("");
+cgv::base::object_registration<bmp_reader> brr("register bmp reader");
 
 		}
 	}

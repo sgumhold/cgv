@@ -197,7 +197,7 @@ bool video_writer::close()
 }
 
 
-object_registration<video_writer_listener> video_writer_listener_registration("");
+object_registration<video_writer_listener> video_writer_listener_registration("register video writer listener");
 
 		}
 	}

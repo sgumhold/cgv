@@ -110,4 +110,4 @@ void fltk_font_server::enumerate_font_names(std::vector<const char*>& font_names
 		font_names[i] = fs[i]->name();
 }
 
-cgv::base::object_registration<fltk_font_server> font_serv("");
+cgv::base::object_registration<fltk_font_server> font_serv("register font server");

@@ -126,10 +126,10 @@ public:
 	false == has_property("x=10.4;tooltip='help'", "y", int_var)"       ==> int_var ... not changed
 	*/
 template <typename T>
-bool has_property(const std::string& options, const std::string& property, T& value) {
+bool has_property(const std::string& options, const std::string& property, T& value, bool report_error = true) {
 	base_generator bg;
 	bg.add(property, value);
-	bg.multi_set(options);
+	bg.multi_set(options, report_error);
 	return bg.changed(property);
 }
 

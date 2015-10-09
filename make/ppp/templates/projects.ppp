@@ -173,14 +173,23 @@ func(map_cfg_idx; :>idx = 0, :>cfg_idxs=[], :>return=0)
 	if (idx < cfg_idxs) {
 		return = idx;
 	}
-	elif ((idx^2) < cfg_idxs) {
-		return = idx^2;
-	}
-	elif ((idx^1) < cfg_idxs) {
-		return = idx^1;
-	}
 	else {
 		return = cfg_idxs[0];
+		if (idx > 3) {
+			if (idx-4 < cfg_idxs) {
+				return = idx-4;
+			}
+		}
+		elif (idx > 1) {
+			if (idx - 2 < cfg_idxs) {
+				return = idx - 2;
+			}
+		}
+		else {
+			if (idx+2 < cfg_idxs) {
+				return = idx+2;
+			}
+		}
 	}
 }
 

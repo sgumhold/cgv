@@ -16,7 +16,7 @@ void computeDirectionalLight(in gl_LightSourceParameters lightSource,
      						 in vec3 normal,
      						 inout vec4 ambient,
      						 inout vec4 diffuse,
-     						 inout vec4 specular)
+     						 inout vec4 specular) 
 {
 	float diffuseFactor = max(dot(normal, normalize(vec3(lightSource.position))), 0.0);
 	float specularFactor = 0.0;

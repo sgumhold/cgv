@@ -1,6 +1,7 @@
 #pragma once
 
 #include "surface_reconstructor.h"
+#include <cgv/reflect/reflect_enum.h>
 #include "ply_writer.h"
 #include <cgv/utils/file.h>
 #include <cgv/utils/scan.h>
@@ -16,6 +17,16 @@ std::ostream& operator << (std::ostream& os, const grow_event& ge)
 	if (ge.type == EDGE_GROW_EVENT)
 		os << " " << dir_strs[ge.dir];
 	return os << "(" << ge.vi << ":" << ge.j << ":" << ge.k << ")=" << ge.quality;
+}
+
+namespace cgv {
+	namespace reflect {
+
+		cgv::reflect::enum_reflection_traits<surface_reconstructor::DebugMode> get_reflection_traits(const surface_reconstructor::DebugMode&)
+		{
+			return cgv::reflect::enum_reflection_traits<surface_reconstructor::DebugMode>("NONE,SYMMETRIZE,MAKE_CONSISTENT,CYCLE_FILTER");
+		}
+	}
 }
 
 bool surface_reconstructor::self_reflect(cgv::reflect::reflection_handler& srh)

@@ -87,7 +87,7 @@ key_control<T>::key_control(const std::string& _name, T& _value, const std::stri
 	increase_pressed_time = 0;
 	decrease_pressed_time = 0;
 
-	this->multi_set(options);
+	this->multi_set(options, true);
 }
 
 template <typename T>
@@ -196,7 +196,7 @@ bool key_control<bool>::get_void(const std::string& property, const std::string&
 
 key_control<bool>::key_control(const std::string& _name, bool& _value, const std::string& options): control<bool>(_name,_value)
 {
-	multi_set(options);
+	multi_set(options, true);
 }
 
 bool key_control<bool>::handle(event& e)

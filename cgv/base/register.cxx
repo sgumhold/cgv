@@ -14,6 +14,7 @@ namespace cgv {
 	namespace base {
 
 
+
 /**************** additional types *********************/
 
 struct registration_info 
@@ -25,8 +26,8 @@ struct registration_info
 	registration_info() 
 	{
 		registration_enabled = false;
-		permanent_registration = false;
-		registration_event_cleanup = true;
+		permanent_registration = true;
+		registration_event_cleanup = false;
 		nr_events_before_disable = 0;
 	}
 };
@@ -49,8 +50,9 @@ struct object_collection
 	}
 	void unregister_all_objects()
 	{
-		while (objects.size() > 0)
+		while (objects.size() > 0) {
 			unregister_object(objects.back());
+		}
 	}
 	named_ptr find_object_by_name(const std::string& name)
 	{
@@ -131,25 +133,108 @@ void show_split_lines(const std::string& s)
 		std::cout << "\n    " << to_string(toks[i]).c_str();
 }
 
+bool& ref_registration_debugging_enabled()
+{
+	static bool is_debug = false;
+	return is_debug;
+}
 
+/// register an object and send event to all current registration ref_listeners()
+void register_object_internal(base_ptr object, const std::string& options)
+{
+	if (is_registration_debugging_enabled()) {
+		std::cout << "REG OBJECT(";
+		if (object->get_named())
+			std::cout << object->get_named()->get_name();
+		else
+			std::cout << "unnamed";
+		std::cout << ":" << object->get_type_name() << ", " << "'" << options << "')";
+		if (object->get_interface<object_constructor>())
+			std::cout << " [constructor]";
+		if (object->get_interface<registration_listener>())
+			std::cout << " [listener]";
+		std::cout << std::endl;
+
+		static std::map<cgv::base::base*, int> is_registered;
+		if (is_registered.find(&(*object)) == is_registered.end())
+			is_registered[&(*object)] = 1;
+		else {
+			++is_registered[&(*object)];
+			std::cerr << "ERROR: last object registered " << is_registered[&(*object)] << " times" << std::endl;
+		}
+	}
+
+	// send register event to all listeners
+	for (unsigned i = 0; i<ref_listeners().size(); ++i)
+		ref_listeners()[i]->get_interface<registration_listener>()->register_object(object, options);
+
+	// perform permanent registration
+	if (is_permanent_registration_enabled())
+		ref_object_collection().add_object(object);
+	// send register event to object
+	object->on_register();
+}
 
 
 /****************** implementation of exported functions **************/
 
+
+void enable_registration_debugging()
+{
+	ref_registration_debugging_enabled() = true;
+}
+/// disable registration debugging
+void disable_registration_debugging()
+{
+	ref_registration_debugging_enabled() = false;
+}
+
+/// check whether registration debugging is enabled
+bool is_registration_debugging_enabled()
+{
+	return ref_registration_debugging_enabled();
+}
 
 /// enable registration and send all registration events that where emitted during disabled registration
 void enable_registration()
 {
 	if (is_registration_enabled())
 		return;
-	unsigned i, j, i0 = ref_info().nr_events_before_disable;
+
+	if (is_registration_debugging_enabled()) {
+		std::cout << "ENABLE REGISTRATION" << std::endl;
+	}
+	unsigned i, i0 = ref_info().nr_events_before_disable;
 
 	// first execute delayed registrations by replacing constructor objects with constructed objects
 	for (i=i0; i<ref_registration_events().size(); ++i) {
 		base_ptr o = ref_registration_events()[i].first;
 		object_constructor* obr = o->get_interface<object_constructor>();
-		if (obr)
+		if (obr) {
+			if (is_registration_debugging_enabled()) {
+				std::cout << "CONSTRUCT (";
+				if (o->get_named())
+					std::cout << o->get_named()->get_name();
+				else
+					std::cout << "unnamed";
+				std::cout << ":" << o->get_type_name() << ", " << "'" << ref_registration_events()[i].second << "')";
+				if (o->get_interface<registration_listener>())
+					std::cout << " [listener]";
+				std::cout << std::endl;
+			}
 			ref_registration_events()[i].first = obr->construct_object();
+			if (is_registration_debugging_enabled()) {
+				std::cout << "       -> (";
+				if (ref_registration_events()[i].first->get_named())
+					std::cout << ref_registration_events()[i].first->get_named()->get_name();
+				else
+					std::cout << "unnamed";
+				std::cout << ":" << ref_registration_events()[i].first->get_type_name() << ")";
+				if (ref_registration_events()[i].first->get_interface<registration_listener>())
+					std::cout << " [listener]";
+				std::cout << std::endl;
+			}
+		}
 	}
 	// next register all servers
 	const std::vector<base_ptr>& L = ref_listeners();
@@ -157,13 +242,7 @@ void enable_registration()
 		base_ptr object = ref_registration_events()[i].first;
 		if (object->get_interface<server>() == 0)
 			continue;
-		const std::string& options = ref_registration_events()[i].second;
-		for (j=0; j<L.size(); ++j)
-			L[j]->get_interface<registration_listener>()->register_object(object, options);
-		// perform permanent registration
-		if (is_permanent_registration_enabled())
-			ref_object_collection().add_object(object);
-		object->on_register();
+		register_object_internal(object, ref_registration_events()[i].second);
 	}
 
 	// next register all drivers
@@ -171,13 +250,7 @@ void enable_registration()
 		base_ptr object = ref_registration_events()[i].first;
 		if (object->get_interface<driver>() == 0)
 			continue;
-		const std::string& options = ref_registration_events()[i].second;
-		for (j=0; j<L.size(); ++j)
-			L[j]->get_interface<registration_listener>()->register_object(object, options);
-		// perform permanent registration
-		if (is_permanent_registration_enabled())
-			ref_object_collection().add_object(object);
-		object->on_register();
+		register_object_internal(object, ref_registration_events()[i].second);
 	}
 
 	// next register all listeners
@@ -185,14 +258,9 @@ void enable_registration()
 		base_ptr object = ref_registration_events()[i].first;
 		if (object->get_interface<registration_listener>() == 0)
 			continue;
-		const std::string& options = ref_registration_events()[i].second;
-		for (j=0; j<L.size(); ++j)
-			L[j]->get_interface<registration_listener>()->register_object(object, options);
-		// perform permanent registration
-		if (is_permanent_registration_enabled())
-			ref_object_collection().add_object(object);
+		register_object_internal(object, ref_registration_events()[i].second);
+
 		ref_listeners().push_back(object);
-		object->on_register();
 		// send all buffered events
 		for (unsigned j=0; j<i0; ++j)
 			object->get_interface<registration_listener>()->register_object(ref_registration_events()[j].first,
@@ -206,15 +274,8 @@ void enable_registration()
 			object->get_interface<driver>() != 0 ||
 			object->get_interface<server>() != 0)
 			continue;
-		const std::string& options = ref_registration_events()[i].second;
-		for (j=0; j<L.size(); ++j)
-			L[j]->get_interface<registration_listener>()->register_object(object, options);
-		// perform permanent registration
-		if (is_permanent_registration_enabled())
-			ref_object_collection().add_object(object);
-		object->on_register();
+		register_object_internal(object, ref_registration_events()[i].second);
 	}
-
 
 	// remove registration events
 	if (is_registration_event_cleanup_enabled())
@@ -227,6 +288,10 @@ void disable_registration()
 {
 	if (!is_registration_enabled())
 		return;
+	if (is_registration_debugging_enabled()) {
+		std::cout << "DISABLE REGISTRATION" << std::endl;
+	}
+	ref_info().nr_events_before_disable = (unsigned)ref_registration_events().size();
 	ref_info().registration_enabled = false;
 }
 
@@ -238,8 +303,12 @@ bool is_registration_enabled()
 
 void enable_permanent_registration()
 {
-	if (!is_permanent_registration_enabled())
-		ref_info().permanent_registration = true;
+	if (is_permanent_registration_enabled())
+		return;
+	if (is_registration_debugging_enabled()) {
+		std::cout << "ENABLE PERMANENT REGISTRATION" << std::endl;
+	}
+	ref_info().permanent_registration = true;
 }
 
 void unregister_all_objects()
@@ -263,8 +332,12 @@ base_ptr get_permanently_registered_object(unsigned i)
 
 void disable_permanent_registration()
 {
-	if (is_permanent_registration_enabled())
-		ref_info().permanent_registration = false;
+	if (!is_permanent_registration_enabled())
+		return;
+	if (is_registration_debugging_enabled()) {
+		std::cout << "DISABLE PERMANENT REGISTRATION" << std::endl;
+	}
+	ref_info().permanent_registration = false;
 }
 
 /// check whether permanent registration is enabled
@@ -277,6 +350,9 @@ void enable_registration_event_cleanup()
 {
 	if (is_registration_event_cleanup_enabled())
 		return;
+	if (is_registration_debugging_enabled()) {
+		std::cout << "ENABLE REGISTRATION CLEANUP" << std::endl;
+	}
 	ref_info().registration_event_cleanup = true;
 	if (is_registration_enabled())
 		ref_registration_events().clear();
@@ -290,6 +366,11 @@ void enable_registration_event_cleanup()
 //! disable cleanup of registration events (see enable_registration_event_cleanup).
 void disable_registration_event_cleanup()
 {
+	if (!is_registration_event_cleanup_enabled())
+		return;
+	if (is_registration_debugging_enabled()) {
+		std::cout << "DISABLE REGISTRATION CLEANUP" << std::endl;
+	}
 	ref_info().registration_event_cleanup = false;
 }
 
@@ -302,18 +383,32 @@ bool is_registration_event_cleanup_enabled()
 void register_object(base_ptr object, const std::string& options)
 {
 	// if registration is disabled or if registratration event cleanup is disabled, store registration event
-	if (!is_registration_enabled() || !is_registration_event_cleanup_enabled())
+	if (!is_registration_enabled() || !is_registration_event_cleanup_enabled()) {
 		ref_registration_events().push_back(std::pair<base_ptr, std::string>(object, options));
+		
+		if (is_registration_debugging_enabled()) {
+			std::cout << "REG EVENT(";
+			if (object->get_named())
+				std::cout << object->get_named()->get_name();
+			else
+				std::cout << "unnamed";
+			std::cout << ":" << object->get_type_name() << ", " << "'" << options << "')";
+
+			if (object->get_interface<object_constructor>())
+				std::cout << " [constructor]";
+			if (object->get_interface<registration_listener>())
+				std::cout << " [listener]";
+			std::cout << std::endl;
+		}
+
+	}
 	if (!is_registration_enabled())
 		return;
+
 	// execute object constructor in case of delayed registration
 	object_constructor* oc = object->get_interface<object_constructor>();
 	if (oc)
 		object = oc->construct_object();
-
-	// send register event to all listeners
-	for (unsigned i=0; i<ref_listeners().size(); ++i)
-		ref_listeners()[i]->get_interface<registration_listener>()->register_object(object, options);
 
 	// register as listener if necessary
 	registration_listener* rl = object->get_interface<registration_listener>();
@@ -322,22 +417,23 @@ void register_object(base_ptr object, const std::string& options)
 		// send all buffered events
 		if (is_registration_enabled()) {
 			// next register all remaining objects
-			for (unsigned i=0; i<ref_registration_events().size(); ++i)
+			for (unsigned i = 0; i<ref_registration_events().size(); ++i)
 				rl->register_object(ref_registration_events()[i].first,
-									ref_registration_events()[i].second);
+				ref_registration_events()[i].second);
 		}
 	}
-	// perform permanent registration
-	if (is_permanent_registration_enabled())
-		ref_object_collection().add_object(object);
-	// send register event to object
-	object->on_register();
+
+	register_object_internal(object, options);
 }
 
 /// unregister an object and send event to all current registration ref_listeners()
 void unregister_object(base_ptr object, const std::string& options)
 {
 	unsigned int i;
+
+	if (is_registration_debugging_enabled()) {
+		std::cout << "UNREG " << object.operator->() << ", '" << options << "' (" << ref_object_collection().objects.size() << ")" << std::endl;
+	}
 
 	// remove from permanent registration
 	ref_object_collection().remove_object(object);
@@ -746,7 +842,7 @@ bool process_command_ext(const token& cmd, bool eliminate_quotes, bool* persiste
 				if (persistent && *persistent && cfo)
 					cfo->multi_observe(np, args, (unsigned)(args_tok.begin - begin));
 				else
-					np->multi_set(args);
+					np->multi_set(args, true);
 			}
 		}
 		else {
@@ -758,7 +854,7 @@ bool process_command_ext(const token& cmd, bool eliminate_quotes, bool* persiste
 				if (persistent && *persistent && cfo)
 					cfo->multi_observe(bp, args, (unsigned)(args_tok.begin - begin));
 				else
-					bp->multi_set(args);
+					bp->multi_set(args, true);
 			}
 		}
 		return true;

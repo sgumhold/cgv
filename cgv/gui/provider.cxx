@@ -176,13 +176,13 @@ bool provider::begin_tree_node_void(const std::string& label, const void* value_
 {
 	if (!ggp)
 		ggp = parent_group;
-	bool decorated = true;	  cgv::base::has_property(options, "decorated", decorated);
-	int level = 2;			  cgv::base::has_property(options, "level", level);
-	std::string align("\n");  cgv::base::has_property(options, "align", align);
-	std::string child_opt;    cgv::base::has_property(options, "options", child_opt);
-	std::string button_opt;   cgv::base::has_property(options, "button_options", button_opt);
-	int size = 24-4*level;    cgv::base::has_property(options, "size", size);
-	int relative_offset = 12; cgv::base::has_property(options, "relative_offset", relative_offset);
+	bool decorated = true;	  cgv::base::has_property(options, "decorated", decorated, true);
+	int level = 2;			  cgv::base::has_property(options, "level", level, true);
+	std::string align("\n");  cgv::base::has_property(options, "align", align, true);
+	std::string child_opt;    cgv::base::has_property(options, "options", child_opt, true);
+	std::string button_opt;   cgv::base::has_property(options, "button_options", button_opt, true);
+	int size = 24 - 4 * level;    cgv::base::has_property(options, "size", size, true);
+	int relative_offset = 12; cgv::base::has_property(options, "relative_offset", relative_offset, true);
 	int off  = size+relative_offset;
 
 	if (!button_opt.empty())

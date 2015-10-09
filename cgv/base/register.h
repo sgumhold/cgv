@@ -30,6 +30,13 @@ extern void CGV_API disable_registration();
 /// check whether registration is enabled
 extern bool CGV_API is_registration_enabled();
 
+/// enable registration debugging
+extern void CGV_API enable_registration_debugging();
+/// disable registration debugging
+extern void CGV_API disable_registration_debugging();
+/// check whether registration debugging is enabled
+extern bool CGV_API is_registration_debugging_enabled();
+
 /// register a registration listener that stores pointers to all registered objects
 extern void CGV_API enable_permanent_registration();
 /// deregister registration listener and dereference pointers to registered objects

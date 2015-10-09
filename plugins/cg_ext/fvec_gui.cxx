@@ -148,18 +148,18 @@ struct vec_gui_creator : public cgv::gui::gui_creator
 		if (ensure_normalized)
 			proposed_child_options = "min=-1;max=1;ticks=true";
 
-		if (!cgv::base::has_property(options, "main_label", main_label))
+		if (!cgv::base::has_property(options, "main_label", main_label, false))
 			main_label = "";
-		if (!cgv::base::has_property(options, "components", components))
+		if (!cgv::base::has_property(options, "components", components, false))
 			components = "xyzw";
-		if (!cgv::base::has_property(options, "long_label", long_label))
+		if (!cgv::base::has_property(options, "long_label", long_label, false))
 			long_label = false;
 
-		if (!cgv::base::has_property(options, "gui_type", child_gui_type))
+		if (!cgv::base::has_property(options, "gui_type", child_gui_type, false))
 			child_gui_type = "value_slider";
-		if (!cgv::base::has_property(options, "options", child_options))
+		if (!cgv::base::has_property(options, "options", child_options, false))
 			child_options = proposed_child_options;
-		if (!cgv::base::has_property(options, "align", child_align))
+		if (!cgv::base::has_property(options, "align", child_align, false))
 			child_align = "\n";
 
 		// construct gui

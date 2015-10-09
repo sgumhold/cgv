@@ -180,7 +180,7 @@ bool image_writer::get_void(const std::string& property, const std::string& type
 }
 
 
-object_registration<writer_listener> wlr("");
+object_registration<writer_listener> wlr("register image writer listener");
 
 		}
 	}

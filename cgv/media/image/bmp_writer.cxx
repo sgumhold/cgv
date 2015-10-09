@@ -178,7 +178,7 @@ bool bmp_writer::close()
 	return fclose(fp) == 0;
 }
 
-cgv::base::object_registration<bmp_writer> bwr("");
+cgv::base::object_registration<bmp_writer> bwr("register bmp writer");
 
 		}
 	}

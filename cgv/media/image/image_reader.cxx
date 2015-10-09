@@ -323,7 +323,7 @@ bool image_reader::get_void(const std::string& property, const std::string& type
 	return cgv::base::base::get_void(property, type, value);
 }
 
-object_registration<reader_listener> rlr("");
+object_registration<reader_listener> rlr("register image reader registry");
 
 		}
 	}

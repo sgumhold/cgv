@@ -15,12 +15,12 @@ struct file_name_gui_creator : public cgv::gui::gui_creator
 	void open(std::string* value_ptr, cgv::base::base* b, const std::string& options)
 	{
 		std::string title, filter, path;
-		cgv::base::has_property(options, "title", title);
-		cgv::base::has_property(options, "filter", filter);
-		cgv::base::has_property(options, "path", path);
+		cgv::base::has_property(options, "title", title, true);
+		cgv::base::has_property(options, "filter", filter, true);
+		cgv::base::has_property(options, "path", path, true);
 		std::string fn;
 		bool save = false;
-		cgv::base::has_property(options, "save", save);
+		cgv::base::has_property(options, "save", save, true);
 		if (save)
 			fn = file_save_dialog(title, filter, path);
 		else
@@ -47,9 +47,9 @@ struct file_name_gui_creator : public cgv::gui::gui_creator
 		bool save = false;
 		bool control = true;
 		std::string align_gui = "\n";
-		cgv::base::has_property(options, "save", save);
-		cgv::base::has_property(options, "control", control);
-		cgv::base::has_property(options, "align_gui", align_gui);
+		cgv::base::has_property(options, "save", save, true);
+		cgv::base::has_property(options, "control", control, true);
+		cgv::base::has_property(options, "align_gui", align_gui, true);
 		std::string opts = "image='res://open32.png';w=32;h=32;label=''";
 		if (save)
 			opts = "image='res://save32.png';w=32;h=32;label=''";
@@ -71,15 +71,15 @@ struct directory_gui_creator : public cgv::gui::gui_creator
 	void open(std::string* value_ptr, cgv::base::base* b, const std::string& options)
 	{
 		std::string title, path;
-		cgv::base::has_property(options, "title", title);
-		cgv::base::has_property(options, "path", path);
+		cgv::base::has_property(options, "title", title, true);
+		cgv::base::has_property(options, "path", path, true);
 		if (path.empty()) {
 			if (value_ptr && !value_ptr->empty())
 				path = cgv::utils::file::get_path(*value_ptr);
 		}
 		std::string fn;
 		bool save = false;
-		cgv::base::has_property(options, "save", save);
+		cgv::base::has_property(options, "save", save, true);
 		if (save)
 			fn = directory_save_dialog(title, path);
 		else
@@ -104,7 +104,7 @@ struct directory_gui_creator : public cgv::gui::gui_creator
 		cgv::base::base* b = dynamic_cast<cgv::base::base*>(p);
 		std::string& v = *((std::string*)value_ptr);
 		bool save = false;
-		cgv::base::has_property(options, "save", save);
+		cgv::base::has_property(options, "save", save, true);
 		std::string opts = "image='res://open32.png';w=32;h=32;label=''";
 		if (save)
 			opts = "image='res://save32.png';w=32;h=32;label=''";

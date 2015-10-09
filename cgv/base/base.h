@@ -57,7 +57,7 @@ class CGV_API base : public data::ref_counted, public cgv::reflect::self_reflect
 {
 protected:
 	/// give ref_ptr access to destructor
-	friend class data::ref_ptr<base,true>;
+	friend class data::ref_ptr_impl<base,true>;
 	/// make destructor virtual and not accessible from outside
 	virtual ~base();
 	/// give cast_helper_base access to cast_dynamic
@@ -159,7 +159,7 @@ public:
 	/*! , which are defined as colon separated assignments, 
 	    where the types are derived automatically to bool, int, 
 		double or std::string. */
-	void multi_set(const std::string& property_assignments);
+	void multi_set(const std::string& property_assignments, bool report_error = true);
 	//! check if the given name specifies a property.
 	/*! If the type name string pointer is provided, the type of the
 	    property is copied to the referenced string. */

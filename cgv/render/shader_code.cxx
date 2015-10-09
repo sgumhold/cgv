@@ -55,9 +55,9 @@ std::string shader_code::get_last_error(const std::string& file_name) const
 	std::vector<line> lines;
 	split_to_lines(last_error, lines);
 	std::string formated_error;
-	for (unsigned int i=0; i<lines.size(); ++i) {
+	for (unsigned int i = 0; i<lines.size(); ++i) {
 		std::string l = to_string((const token&)(lines[i]));
-		if (to_upper(l.substr(0,5)) == "ERROR") {
+		if (to_upper(l.substr(0, 5)) == "ERROR") {
 			std::vector<token> toks;
 			tokenizer(l).set_sep(":").set_ws("").bite_all(toks);
 			formated_error += fn + "(";
@@ -270,7 +270,7 @@ struct shader_config_registration
 {
 	shader_config_registration()
 	{
-		register_object(cgv::render::get_shader_config());
+		register_object(cgv::render::get_shader_config(), "register global shader config");
 	}
 };
 

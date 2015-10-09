@@ -5,10 +5,15 @@
 #include <cgv/defines/assert.h>
 #include <cgv/type/cond/is_base_of.h>
 #include <cgv/type/cond/has_virtual_destructor.h>
+#include <assert.h>
+
+#include "lib_begin.h"
 
 namespace cgv {
 	/// namespace for data management components
 	namespace data {
+
+// extern CGV_API bool validate_delete(const void* ptr);
 
 template <class T, bool is_ref_counted>
 class ref_ptr;
@@ -22,15 +27,17 @@ protected:
 	{
 		ptr->set_ref_count(ptr->get_ref_count()+1);
 	}
-	/// decrement the count of a ref counted object and delete it if count decreases to zero
+	/// decrement the count of a ref counted object and return whether to delete the object
 	bool dec_ref_count(const ref_counted* ptr) const
 	{
 		int count = ptr->get_ref_count();
-		if (count > 1) {
+		if (count > 0) {
 			ptr->set_ref_count(count-1);
-			return false;
+			return count == 1;
 		}
-		return true;
+		// ERROR: zero ref count decremented
+		assert(0);
+		return false;
 	}
 };
 
@@ -48,17 +55,16 @@ class ref_ptr_impl
 	counter_type* counter;
 protected:
 	/// decrement the count, delete if it is 0
-	T* release()
+	void release()
 	{
-		T* res = 0;
 		if (counter) {
 			if (--counter->count == 0) {
-				res = counter->ptr;
+				delete counter->ptr;
+				counter->ptr = 0;
 				delete counter;
 			}
 			counter = 0;
 		}
-		return res;
 	}
 	/// return the pointer itself
 	T*	ref () const        { return counter ? counter->ptr : 0; }
@@ -97,15 +103,15 @@ class ref_ptr_impl<T,true> : public ref_ptr_tag
 {
 	T* ptr;
 protected:
-	/// if the pointer is set, decrement reference count and release pointer
-	T* release(){
-		T* res = 0;
+	/// if the pointer had been initialized before, decrement reference count and release pointer, if necessary delete instance
+	void release() {
 		if (ptr) { 
-			if (dec_ref_count(ptr))
-				res = ptr;
+			if (dec_ref_count(ptr)) {
+//				if (validate_delete(ptr))
+					delete ptr;
+			}
 			ptr = 0; 
 		}
-		return res;
 	}
 	/// return the pointer itself
 	T*	ref () const         { 
@@ -137,7 +143,7 @@ protected:
 			inc_ref_count(ptr);
 	}
 public:
-	void kill() { ptr = 0; }
+	// void kill() { ptr = 0; }
 	/// return the reference count
 	int get_count() const	{ 
 		return ptr ? ptr->get_ref_count() : 0; 
@@ -163,9 +169,7 @@ public:
 	ref_ptr(const this_type& r) : base_type(r) {}
 	/// destruct reference counted pointer
    ~ref_ptr() { 
-		T* p = this->release();
-		if (p)
-			delete p;
+		this->release();
 	}
 	/// allow to copy ref_ptr<S> to a ref_ptr<T> if T is a base class of S and if T has a virtual destructor
 	template <typename S>
@@ -186,9 +190,7 @@ public:
 	this_type& operator = (const this_type& r) {
 		if (this == &r)
 			return *this;
-		T* p = this->release();
-		if (p)
-			delete p;
+		this->release();
 		new (this) this_type(r);
 		return *this;
 	}
@@ -233,11 +235,11 @@ public:
 	}
 	/// set to null pointer
 	void clear() { 
-		T* p = this->release();
-		if (p)
-			delete p;
+		this->release();
 	}
 };
 
 	}
 }
+
+#include <cgv/config/lib_end.h>
