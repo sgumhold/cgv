@@ -14,18 +14,58 @@ using namespace cgv::render;
 
 planar_view_interactor::planar_view_interactor(const char* name) : node(name)
 {
+	lock_rotation = false;
+	vp_x = 0;
+	vp_y = 0;
 	set_default_values();
+	pos_down.resize(2);
+	pressed = false;
 }
 
 void planar_view_interactor::set_default_values()
 {
 	
 	target.zeros(2);
-	magnification=0.25;
-	vp_x = 0;
-	vp_y = 0;
-	pos_down.resize(2);
-	pressed=false;
+	magnification=1;
+	angle = 0;
+
+	on_set(&magnification);
+	on_set(&target(0));
+	on_set(&target(1));
+	on_set(&angle);
+}
+
+/// describe members
+bool planar_view_interactor::self_reflect(cgv::reflect::reflection_handler& rh)
+{
+	return
+		rh.reflect_member("lock_rotation", lock_rotation) &&
+		rh.reflect_member("angle", angle) &&
+		rh.reflect_member("magnification", magnification) &&
+		rh.reflect_member("center.x", target(0)) &&
+		rh.reflect_member("center.y", target(1));
+}
+
+/// default callback
+void planar_view_interactor::on_set(void* member_ptr)
+{
+	if (member_ptr == &lock_rotation) {
+		if (find_control(angle))
+			find_control(angle)->set("active", !lock_rotation);
+	}
+	post_redraw();
+}
+
+/// create a gui
+void planar_view_interactor::create_gui()
+{
+	add_decorator("Planar View Configuration", "heading", "level=2");
+	add_member_control(this, "lock_rotation", lock_rotation, "check");
+	add_member_control(this, "angle", angle, "value_slider", "min=-180;max=180;ticks=true");
+	add_member_control(this, "zoom", magnification, "value_slider");
+	add_member_control(this, "center.x", target(0), "value");
+	add_member_control(this, "center.y", target(1), "value");
+	find_control(angle)->set("active", !lock_rotation);
 }
 
 const cgv::math::mat<float> planar_view_interactor::get_projection() const
@@ -36,8 +76,10 @@ const cgv::math::mat<float> planar_view_interactor::get_projection() const
 const cgv::math::mat<float> planar_view_interactor::get_modelview() const
 {
 	
-	return cgv::math::scale_44<float>(magnification,magnification,magnification)*
-		cgv::math::translate_44<float>(-target(0),-target(1),0.0f);
+	return 
+		cgv::math::scale_44<float>(magnification, magnification, magnification)*
+		cgv::math::rotatez_44<float>(angle)*
+		cgv::math::translate_44<float>(-target(0), -target(1), 0.0f);
 	
 }
 
@@ -46,14 +88,27 @@ const cgv::math::mat<float> planar_view_interactor::get_modelview() const
 void planar_view_interactor::move(int x, int y)
 {
 
-	vec<float> p = get_context()->get_point_W(x, y, 0.0, DPV).sub_vec(0,2); 
+	vec<float> p = get_context()->get_point_W(x, y, 0.0, DPV).sub_vec(0, 2);
 
-	target += (pos_down-p) ;
-	post_redraw();
+	target += (pos_down - p);
 
+	on_set(&target(0));
+	on_set(&target(1));
 }
 
-void planar_view_interactor::zoom(int x,int y, float ds)
+void planar_view_interactor::rotate(int x, int y)
+{
+	vec<float> p = get_context()->get_point_W(x, y, 0.0, DPV).sub_vec(0, 2);
+	vec<float> dp = p - target;
+	float ap = 180 * atan2(dp(1), dp(0)) / M_PI;
+	vec<float> dd = pos_down - target;
+	float ad = 180 * atan2(dd(1), dd(0)) / M_PI;
+	angle += ap - ad;
+
+	on_set(&angle);
+}
+
+void planar_view_interactor::zoom(int x, int y, float ds)
 {
 	vec<float> p = get_context()->get_point_W(x, y, 0.0, DPV).sub_vec(0,2);
 	
@@ -67,9 +122,9 @@ void planar_view_interactor::zoom(int x,int y, float ds)
 	target -= (s1-s2)*(p-target)/s2;
 
 
-		
-	post_redraw();
-	
+	on_set(&magnification);
+	on_set(&target(0));
+	on_set(&target(1));
 }
 
 
@@ -114,8 +169,10 @@ bool planar_view_interactor::handle(event& e)
 		
 			
 		case MA_PRESS:
-			if (me.get_button_state() == MB_RIGHT_BUTTON && me.get_modifiers() == 0)
-			{
+			if ( (me.get_button_state() == MB_RIGHT_BUTTON && me.get_modifiers() == 0) ||
+				 (me.get_button_state() == MB_LEFT_BUTTON && me.get_modifiers() == 0) ||
+				 (me.get_button_state() == MB_MIDDLE_BUTTON && me.get_modifiers() == 0) )
+					{
 				pressed=true;
 				pos_down = get_context()->get_point_W(me.get_x(),me.get_y(), 0.0, DPV).sub_vec(0,2);
 				return true;
@@ -132,7 +189,21 @@ bool planar_view_interactor::handle(event& e)
 				if(pressed == true)
 					move(me.get_x(),me.get_y());
 				post_redraw();
-			//	return true;
+				return true;
+			}
+			else if (me.get_button_state() == MB_LEFT_BUTTON && me.get_modifiers() == 0 && (me.get_dx() != 0 || me.get_dy() != 0) && !lock_rotation)
+			{
+				if (pressed == true)
+					rotate(me.get_x(), me.get_y());
+				post_redraw();
+				return true;
+			}
+			else if (me.get_button_state() == MB_MIDDLE_BUTTON && me.get_modifiers() == 0 && me.get_dy() != 0)
+			{
+				if (pressed == true)
+					zoom(me.get_x(), me.get_y(), me.get_dy());
+				post_redraw();
+				return true;
 			}
 			break;
 		case MA_RELEASE:

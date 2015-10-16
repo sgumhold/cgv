@@ -17,7 +17,11 @@ struct CGV_API view : public cgv::render::view
 
 		}
 
-extern CGV_API extern_reflection_traits<cgv::render::view, cgv::reflect::render::view> get_reflection_traits(const cgv::render::view&);
+#ifdef REFLECT_IN_CLASS_NAMESPACE
+}} namespace cgv { namespace render {
+#endif
+
+extern CGV_API cgv::reflect::extern_reflection_traits<cgv::render::view, cgv::reflect::render::view> get_reflection_traits(const cgv::render::view&);
 
 	}
 }

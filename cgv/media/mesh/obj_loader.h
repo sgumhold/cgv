@@ -42,12 +42,19 @@ struct group_info
 /** implements the virtual interface of the obj_reader and stores all 
 	read information. The read information is automatically stored in 
 	binary form to accelerate the second loading of the same obj file. */
-class CGV_API obj_loader : public obj_reader
+template <typename T>
+class CGV_API obj_loader_generic : public obj_reader_generic<T>
 {
 public:
+	// We need to repeat the typenames here, because gcc will not inherit them in templates
+	typedef typename obj_reader_generic<T>::v3d_type v3d_type;
+	typedef typename obj_reader_generic<T>::v2d_type v2d_type;
+	typedef typename obj_reader_generic<T>::color_type color_type;
+	
 	std::vector<v3d_type> vertices; 
     std::vector<v3d_type> normals; 
-    std::vector<v2d_type> texcoords; 
+    std::vector<v2d_type> texcoords;
+	std::vector<color_type> colors;
 
 	std::vector<unsigned> vertex_indices;
 	std::vector<unsigned> normal_indices;
@@ -65,6 +72,8 @@ protected:
 	void process_texcoord(const v2d_type& t);
 	/// overide this function to process a normal
 	void process_normal(const v3d_type& n);
+	/// overide this function to process a color (this called for vc prefixes which is is not in the standard but for example used in pobj-files)
+	void process_color(const color_type& c);
 	/// overide this function to process a face
 	void process_face(unsigned vcount, int *vertices, 
 					  int *texcoords = 0, int *normals=0);
@@ -85,6 +94,11 @@ public:
 	/// prepare for reading another file
 	void clear();
 };
+
+
+typedef obj_loader_generic<float>  obj_loaderf;
+typedef obj_loader_generic<double> obj_loaderd;
+typedef obj_loader_generic<double> obj_loader;
 
 		}
 	}

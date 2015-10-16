@@ -13,15 +13,17 @@ struct mat : public cgv::math::mat<T>
 {
 	bool self_reflect(cgv::reflect::reflection_handler& rh) {
 		return 
-			rh.reflect_member("ncols", _ncols) &&
-			rh.reflect_member("nrows", _nrows) &&
-			rh.reflect_member("data", _data);
+			rh.reflect_member("ncols", this->_ncols) &&
+			rh.reflect_member("nrows", this->_nrows) &&
+			rh.reflect_member("data", this->_data);
 	}
 };
 		}
-
-template <typename T>
-extern_string_reflection_traits<cgv::math::mat<T>, cgv::reflect::math::mat<T> > get_reflection_traits(const cgv::math::mat<T>&) { return extern_string_reflection_traits<cgv::math::mat<T>, cgv::reflect::math::mat<T> >(); }
+#ifdef REFLECT_IN_CLASS_NAMESPACE
+}} namespace cgv { namespace math {
+#endif
+		template <typename T>
+		cgv::reflect::extern_string_reflection_traits<cgv::math::mat<T>, cgv::reflect::math::mat<T> > get_reflection_traits(const cgv::math::mat<T>&) { return cgv::reflect::extern_string_reflection_traits<cgv::math::mat<T>, cgv::reflect::math::mat<T> >(); }
 
 	}
 }

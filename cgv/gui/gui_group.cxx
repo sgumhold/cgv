@@ -2,6 +2,7 @@
 #include "gui_driver.h"
 #include "provider.h"
 #include <cgv/base/named.h>
+#include <algorithm>
 
 namespace cgv {
 	namespace gui {
@@ -172,6 +173,34 @@ control_ptr gui_group::find_control_void(void* value_ptr, int* idx_ptr)
 std::string gui_group::get_type_name() const
 {
 	return "gui_group";
+}
+
+void gui_group::add_managed_objects(cgv::base::base_ptr object)
+{
+	if (!is_managed_object(object))
+		managed_objects.push_back(object);
+}
+
+/// release all managed objects
+void gui_group::release_all_managed_objects()
+{
+	managed_objects.clear();
+}
+
+/// release a specific managed object
+void gui_group::release_managed_objects(cgv::base::base_ptr object)
+{
+	std::vector<base_ptr>::iterator iter = std::find(managed_objects.begin(), managed_objects.end(), object);
+	if (iter == managed_objects.end())
+		return;
+	managed_objects.erase(iter);
+}
+
+/// check whether an object is managed by this gui group
+bool gui_group::is_managed_object(cgv::base::base_ptr object)
+{
+	std::vector<base_ptr>::iterator iter = std::find(managed_objects.begin(), managed_objects.end(), object);
+	return iter != managed_objects.end();
 }
 
 // send pure alignment information

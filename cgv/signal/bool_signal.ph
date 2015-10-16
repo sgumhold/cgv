@@ -61,7 +61,7 @@ public:
 	bool operator() (@["typename S::A1 v1"; ", "; "typename S::A".i." v".i]) const
 	{
 		bool result = get_neutral_value();
-		for (unsigned int i=0; i<functors.size(); ++i)
+		for (unsigned i=0; i<(unsigned)functors.size(); ++i)
 			if (combine_result((*static_cast<functor_type*>(functors[i]))(@["v1"; ", "; "v".i]),result))
 				return result;
 		return result;

@@ -13,6 +13,19 @@ namespace cgv {
 	namespace render {
 		namespace gl {
 
+// declare some colors by name
+float black[4]     = { 0, 0, 0, 1 };
+float white[4]     = { 1, 1, 1, 1 };
+float gray[4]      = { 0.25f, 0.25f, 0.25f, 1 };
+float green[4]     = { 0, 1, 0, 1 };
+float brown[4]     = { 0.3f, 0.1f, 0, 1 };
+float dark_red[4]  = { 0.4f, 0, 0, 1 };
+float cyan[4]      = { 0, 1, 1, 1 };
+float yellow[4]    = { 1, 1, 0, 1 };
+float red[4]       = { 1, 0, 0, 1 };
+float blue[4]      = { 0, 0, 1, 1 };
+
+
 unsigned map_to_gl(cgv::data::ComponentFormat cf)
 {
 	static unsigned cf_to_gl[] = {
@@ -463,7 +476,7 @@ bool load_texture(const cgv::data::const_data_view& data, unsigned gl_tex_format
 	return gen_mipmap;
 }
 
-void replace_texture(const cgv::data::const_data_view& data, int level, int x, int y, int z, const std::vector<cgv::data::data_view>* palettes)
+bool replace_texture(const cgv::data::const_data_view& data, int level, int x, int y, int z, const std::vector<cgv::data::data_view>* palettes)
 {
 	unsigned nr_dim = data.get_format()->get_nr_dimensions();
 	const unsigned char* data_ptr = data.get_ptr<unsigned char>();
@@ -494,8 +507,9 @@ void replace_texture(const cgv::data::const_data_view& data, int level, int x, i
 		break;
 	}
 	if (gen_mipmap) 
-		generate_mipmaps(nr_dim);
+		gen_mipmap = generate_mipmaps(nr_dim);
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+	return gen_mipmap;
 }
 
 unsigned int create_texture(const cgv::data::const_data_view& dv, bool mipmap, const std::vector<data_view>* palettes, unsigned tex_id)
@@ -527,7 +541,7 @@ unsigned int create_texture(const cgv::data::const_data_view& dv, unsigned level
 }
 
 /// cover the current viewport with a textured quad
-void gl_texture_to_screen()
+void gl_texture_to_screen(float xmin, float ymin, float xmax, float ymax, float umin, float vmin, float umax, float vmax)
 {
 	GLint mm;
 	glGetIntegerv(GL_MATRIX_MODE, &mm);
@@ -541,17 +555,17 @@ void gl_texture_to_screen()
 		glLoadIdentity();
 
 		glBegin(GL_QUADS);
-			glTexCoord2f(0,0);
-			glVertex2f(-1,-1);
+			glTexCoord2f(umin,vmin);
+			glVertex2f(xmin, ymin);
 
-			glTexCoord2f(1,0);
-			glVertex2f( 1,-1);
+			glTexCoord2f(umax,vmin);
+			glVertex2f(xmax, ymin);
 
-			glTexCoord2f(1,1);
-			glVertex2f( 1, 1);
+			glTexCoord2f(umax,vmax);
+			glVertex2f(xmax, ymax);
 
-			glTexCoord2f(0,1);
-			glVertex2f(-1, 1);
+			glTexCoord2f(umin,vmax);
+			glVertex2f(xmin, ymax);
 		glEnd();
 		
 		glPopMatrix();
@@ -561,6 +575,42 @@ void gl_texture_to_screen()
 	
 	glMatrixMode(mm);
 }
+
+void gl_1D_texture_to_screen(bool vary_along_x, float xmin, float ymin, float xmax, float ymax)
+{
+	GLint mm;
+	glGetIntegerv(GL_MATRIX_MODE, &mm);
+
+		glMatrixMode(GL_MODELVIEW);
+		glPushMatrix();
+		glLoadIdentity();
+
+		glMatrixMode(GL_PROJECTION);
+		glPushMatrix();
+		glLoadIdentity();
+
+		glBegin(GL_QUADS);
+			glTexCoord1f(0);
+			glVertex2f(xmin, ymin);
+
+			glTexCoord1f(vary_along_x ? 1.0f : 0.0f);
+			glVertex2f(xmax, ymin);
+
+			glTexCoord1f(1);
+			glVertex2f(xmax, ymax);
+
+			glTexCoord1f(vary_along_x ? 0.0f : 1.0f);
+			glVertex2f(xmin, ymax);
+		glEnd();
+		
+		glPopMatrix();
+		
+		glMatrixMode(GL_MODELVIEW);
+		glPopMatrix();
+	
+	glMatrixMode(mm);
+}
+
 
 		}
 	}

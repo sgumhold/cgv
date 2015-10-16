@@ -8,8 +8,6 @@ set(@TARGET@_STATIC_DEFINITIONS "")
 set(@TARGET@_COMMON_DEFINITIONS "")
 set(@TARGET@_IS_MODULE @TARGET_IS_MODULE@)
 
-set(@TARGET@_FOUND TRUE)
-
 # Append the found information to our local information if possible
 foreach(fn ${FIND_NAMES})
 
@@ -89,10 +87,23 @@ else()
 	set(TARGET_POSTFIX "STATIC")
 endif()
 
-# If the project is a target then it might not be built but we assume
-# nevertheless that the files will be present. If it is not a target then
-# we look for the libraries explicitly
-if (NOT TARGET @TARGET@)
+
+
+# See if we can go the easy way when our dependency is also a target to be built
+if (TARGET @TARGET@)
+    set(@TARGET@_LIBRARIES @TARGET@)
+    set(@TARGET@_FOUND TRUE)
+endif()
+
+# See if the imported target already exists
+if (TARGET @TARGET@_IMPORTED_${TARGET_POSTFIX})
+    set(@TARGET@_LIBRARIES @TARGET@_IMPORTED_${TARGET_POSTFIX})
+    set(@TARGET@_FOUND TRUE)
+endif()
+
+# If our variable is not set then we generate a new target
+# where we collect names for every configuration
+if (NOT @TARGET@_FOUND)
 	set(FIND_PATHS "@PACKAGE_LIB_PATH@" 
 				   "@PACKAGE_BIN_PATH@" 
 				   "@PACKAGE_BUILD_BIN_PATH@"
@@ -144,57 +155,31 @@ if (NOT TARGET @TARGET@)
 				set(@TARGET@_LIB_${conf} ${FIRST_FOUND_NAME})
 			endif()
 		endforeach()
-	endif()
-else()
-	# If the project is a target then the job is quite easy - just
-	# read the location names from the target properties
-	foreach(conf ${CONFIGS})
-		get_target_property(@TARGET@_LIB_${conf} @TARGET@ LOCATION_${conf})
-		
-		# Check if we got the name of a DLL. If this is the case then transform
-		# it to a .lib name. Unfortunatly CMake does not have any mechanism to
-		# directly read the name of the import library.
-		get_filename_component(FN_EXT "${@TARGET@_LIB_${conf}}" EXT)
-		string(TOUPPER  "${FN_EXT}" FN_EXT)
+    endif()
 
-		if ("${FN_EXT}" STREQUAL ".DLL")
-			get_filename_component(FN_PATH "${@TARGET@_LIB_${conf}}" PATH)
-			get_filename_component(FN_WE "${@TARGET@_LIB_${conf}}" NAME_WE)
-			if (CMAKE_ARCHIVE_OUTPUT_DIRECTORY)
-				set(@TARGET@_LIB_${conf} "${CMAKE_ARCHIVE_OUTPUT_DIRECTORY}/${FN_WE}${CMAKE_IMPORT_LIBRARY_SUFFIX}")
-			else()
-				set(@TARGET@_LIB_${conf} "${FN_PATH}/${FN_WE}${CMAKE_IMPORT_LIBRARY_SUFFIX}")
-			endif()
-		endif()
-	endforeach()
-endif()
-
-
-
-if (NOT TARGET @TARGET@_IMPORTED_${TARGET_POSTFIX})
+    # Generate an imported target which each location for different configurations set accordingly
 	add_library(@TARGET@_IMPORTED_${TARGET_POSTFIX} ${TARGET_POSTFIX} IMPORTED GLOBAL)
 
-	foreach(conf ${CONFIGS})
-		set_target_properties(@TARGET@_IMPORTED_${TARGET_POSTFIX} PROPERTIES
-			IMPORTED_LINK_INTERFACE_LANGUAGES_${conf} "CXX"
-			IMPORTED_LINK_INTERFACE_LIBRARIES_${conf} "${@TARGET@_LIBRARIES}"
-			IMPORTED_LOCATION_${conf} "${@TARGET@_LIB_${conf}}"
-			IMPORTED_IMPLIB_${conf} "${@TARGET@_LIB_${conf}}")
-	endforeach()
+    foreach(conf ${CONFIGS})
+	    set_target_properties(@TARGET@_IMPORTED_${TARGET_POSTFIX} PROPERTIES
+		    IMPORTED_LINK_INTERFACE_LANGUAGES_${conf} "CXX"
+		    IMPORTED_LINK_INTERFACE_LIBRARIES_${conf} "${@TARGET@_LIBRARIES}"
+		    IMPORTED_LOCATION_${conf} "${@TARGET@_LIB_${conf}}"
+		    IMPORTED_IMPLIB_${conf} "${@TARGET@_LIB_${conf}}")
+    endforeach()
 
-	# Also add definitions if no build type was specified. Set this to be the release type
-	set_target_properties(@TARGET@_IMPORTED_${TARGET_POSTFIX} PROPERTIES
-		IMPORTED_LINK_INTERFACE_LANGUAGES "CXX"
-		IMPORTED_LINK_INTERFACE_LIBRARIES "${@TARGET@_LIBRARIES}"
-		IMPORTED_LOCATION "${@TARGET@_LIB_RELEASE}"
-		IMPORTED_IMPLIB "${@TARGET@_LIB_RELEASE}")
+    # Also add definitions if no build type was specified. Set this to be the release type
+    set_target_properties(@TARGET@_IMPORTED_${TARGET_POSTFIX} PROPERTIES
+	    IMPORTED_LINK_INTERFACE_LANGUAGES "CXX"
+	    IMPORTED_LINK_INTERFACE_LIBRARIES "${@TARGET@_LIBRARIES}"
+	    IMPORTED_LOCATION "${@TARGET@_LIB_RELEASE}"
+	    IMPORTED_IMPLIB "${@TARGET@_LIB_RELEASE}")
 
-	if (TARGET @TARGET@)
-		add_dependencies(@TARGET@_IMPORTED_${TARGET_POSTFIX} @TARGET@)
-	endif()
+    # Finally set the libraries info to be exported
+    set(@TARGET@_LIBRARIES "@TARGET@_IMPORTED_${TARGET_POSTFIX}")
+    set(@TARGET@_FOUND TRUE)
 endif()
 
-set(@TARGET@_LIBRARIES "@TARGET@_IMPORTED_${TARGET_POSTFIX}")
 
 
 # Set definitions

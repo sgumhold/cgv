@@ -7,48 +7,13 @@ include("../../cmake/buildCoreComponents.cmake")
 find_package(ppp)
 
 
-# Public headers
-# TODO: To be verified
-set(PUBLIC_HEADERS
-	advanced_scan.h
-	big_binary_file.h
-	bit_operations.h
-	convert.h
-	convert_string.h
-	date_time.h
-	dir.h
-	file.h
-	lib_begin.h
-	progression.h
-	scan_enum.h
-	scan.h
-	statistics.h
-	stopwatch.h
-	token.h
-	tokenizer.h)
-
 # Source files
-set(SOURCES
-	advanced_scan.cxx
-	big_binary_file.cxx
-	bit_operations.cxx
-	convert.cxx
-	convert_string.cxx
-	date_time.cxx
-	dir.cxx
-	file.cxx
-	ostream_printf.cxx
-	progression.cxx
-	scan.cxx
-	scan_enum.cxx
-	statistics.cxx
-	stopwatch.cxx
-	token.cxx
-	tokenizer.cxx)
+file(GLOB_RECURSE SOURCES RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "*.cxx")
+# Header files
+file(GLOB_RECURSE PUBLIC_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "*.h")
+# Files to be preprocessed by PPP
+file(GLOB_RECURSE PPP_SOURCES RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "*.ph")
 
-# Files to be preprocessed by the PPP
-set(PPP_SOURCES
-	ostream_printf.ph)
 
 # Create the PPP files
 ppp_compile("${CGV_DIR}"

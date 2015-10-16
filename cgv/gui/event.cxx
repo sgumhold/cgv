@@ -132,6 +132,10 @@ unsigned char stream_in_modifiers(std::istream& is)
 // write to stream
 void event::stream_out(std::ostream& os) const
 {
+	const char* flag_strs[] = {
+		"", "Multi", "Drag&Drop", "Multi+Drag&Drop"
+	};
+
 	os << "[" << time << "] ";
 	if (get_toggle_keys() != 0) {
 		os << "(";
@@ -157,6 +161,8 @@ void event::stream_out(std::ostream& os) const
 	os << get_modifier_string(get_modifiers()).c_str();
 	if (kind != EID_KEY && kind != EID_MOUSE)
 		os << kind;
+	if (get_flags() != EF_NONE)
+		os << flag_strs[get_flags()] << " ";
 }
 // read from stream
 void event::stream_in(std::istream&)

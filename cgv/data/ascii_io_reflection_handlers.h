@@ -9,12 +9,20 @@
 namespace cgv {
 	namespace data {
 
-/// different naming conventions for member names
-enum NamingConvention { NC_NONE, NC_SHORT, NC_LONG };
-
-cgv::reflect::enum_reflection_traits<NamingConvention> get_reflection_traits(const NamingConvention&) { 
-	return cgv::reflect::enum_reflection_traits<NamingConvention>("NC_NONE, NC_SHORT, NC_LONG"); 
+		/// different naming conventions for member names
+		enum NamingConvention { NC_NONE, NC_SHORT, NC_LONG };
+	}
 }
+
+namespace cgv {
+	namespace reflect {
+		extern CGV_API enum_reflection_traits<cgv::data::NamingConvention> get_reflection_traits(const cgv::data::NamingConvention&);
+	}
+}
+
+namespace cgv {
+	namespace data {
+
 
 /** read from ascii file */
 class CGV_API ascii_reflection_handler : public io_reflection_handler
@@ -50,9 +58,11 @@ public:
 	ascii_read_reflection_handler(const std::string& file_name, const std::string& _content, unsigned _ver, NamingConvention _nc = NC_SHORT, unsigned _tab = 3);
     ///
 	ascii_read_reflection_handler(std::istream& _is, const std::string& _content, unsigned _ver, NamingConvention _nc = NC_SHORT, unsigned _tab = 3);
+	/// this should return true
+	bool is_creative() const;
 	///
 	void close();
-	int reflect_group_begin(GroupKind group_kind, const std::string& group_name, const std::string& group_type, void* group_ptr, cgv::reflect::abst_reflection_traits* rt, unsigned grp_size);
+	int reflect_group_begin(GroupKind group_kind, const std::string& group_name, void* group_ptr, cgv::reflect::abst_reflection_traits* rt, unsigned grp_size);
 	///
 	bool reflect_member_void(const std::string& member_name, 
 							 void* member_ptr, cgv::reflect::abst_reflection_traits* rt);
@@ -75,7 +85,7 @@ public:
 	///
 	void close();
 	/// 
-	int reflect_group_begin(GroupKind group_kind, const std::string& group_name, const std::string& group_type, void* group_ptr, cgv::reflect::abst_reflection_traits* rt, unsigned grp_size);
+	int reflect_group_begin(GroupKind group_kind, const std::string& group_name, void* group_ptr, cgv::reflect::abst_reflection_traits* rt, unsigned grp_size);
 	///
 	bool reflect_member_void(const std::string& member_name, 
 							 void* member_ptr, cgv::reflect::abst_reflection_traits* rt);

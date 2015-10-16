@@ -1,4 +1,4 @@
-/* $Id: tif_flush.c,v 1.5 2008/04/10 11:08:48 dron Exp $ */
+/* $Id: tif_flush.c,v 1.9 2010-03-31 06:40:10 fwarmerdam Exp $ */
 
 /*
  * Copyright (c) 1988-1997 Sam Leffler
@@ -59,6 +59,7 @@ TIFFFlush(TIFF* tif)
                                       tif->tif_dir.td_nstrips, sizes ) )
             {
                 tif->tif_flags &= ~TIFF_DIRTYSTRIP;
+                tif->tif_flags &= ~TIFF_BEENWRITING;
                 return 1;
             }
         }
@@ -72,13 +73,14 @@ TIFFFlush(TIFF* tif)
                                       tif->tif_dir.td_nstrips, sizes ) )
             {
                 tif->tif_flags &= ~TIFF_DIRTYSTRIP;
+                tif->tif_flags &= ~TIFF_BEENWRITING;
                 return 1;
             }
         }
     }
 
     if ((tif->tif_flags & (TIFF_DIRTYDIRECT|TIFF_DIRTYSTRIP)) 
-        && !TIFFWriteDirectory(tif))
+        && !TIFFRewriteDirectory(tif))
         return (0);
 
     return (1);
@@ -97,7 +99,7 @@ int
 TIFFFlushData(TIFF* tif)
 {
 	if ((tif->tif_flags & TIFF_BEENWRITING) == 0)
-		return (0);
+		return (1);
 	if (tif->tif_flags & TIFF_POSTENCODE) {
 		tif->tif_flags &= ~TIFF_POSTENCODE;
 		if (!(*tif->tif_postencode)(tif))
@@ -107,3 +109,10 @@ TIFFFlushData(TIFF* tif)
 }
 
 /* vim: set ts=8 sts=8 sw=8 noet: */
+/*
+ * Local Variables:
+ * mode: c
+ * c-basic-offset: 8
+ * fill-column: 78
+ * End:
+ */

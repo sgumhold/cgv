@@ -15,11 +15,12 @@ void generate_gui(gui_driver_ptr d)
 {
 	window_ptr w = application::create_window(1280,768,"cgv 3d viewer");
 	w->show();
-	register_object(w);
+	register_object(w, "register viewer window");
 }
 
 int main(int argc, char** argv)
 {
+	cgv::base::register_prog_name(argv[0]);
 	connect(on_gui_driver_registration(),generate_gui);
 	disable_registration_event_cleanup();
 	enable_permanent_registration();

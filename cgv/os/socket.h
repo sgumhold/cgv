@@ -21,9 +21,9 @@ protected:
 	/// hides constructor from user
 	socket();
 	/// construct from existing socket identifier
-	socket(unsigned int _id);
+	socket(size_t _id);
 	/// store platform dependent reference to socket
-	unsigned int user_data;
+	size_t user_data;
 	/// store the last error
 	mutable std::string last_error;
 	/// convenience function to set last error and print debug info. The method always returns false.

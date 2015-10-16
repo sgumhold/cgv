@@ -1,8 +1,5 @@
-#ifdef WIN32
+#pragma once
+
 #ifdef _MSC_VER
-#pragma warning (disable:4244)
-#pragma warning (disable:4133)
-#pragma warning (disable:4996)
-#endif
 #include "tif_config.vc.h"
-#endif
+#endif 

@@ -131,7 +131,7 @@ bool gl_image_drawable_base::save_images(const std::string& output_file_name)
 
 	unsigned nr = 1;
 	if (files.size() > nr)
-		nr = files.size();
+		nr = (unsigned)files.size();
 
 	for (unsigned i=0; i<nr; ++i) {
 		std::string input_file_name = file_name;
@@ -231,13 +231,13 @@ void gl_image_drawable_base::draw(context& )
 	glDisable(GL_CULL_FACE);
 		glBegin(GL_QUADS);
 			glNormal3d(0,0,1);
-			glTexCoord2d(0,0);
-			glVertex3d(-1,-1,0);
-			glTexCoord2d(1,0);
-			glVertex3d(1,-1,0);
-			glTexCoord2d(1,1);
-			glVertex3d(1,1,0);
 			glTexCoord2d(0,1);
+			glVertex3d(-1,-1,0);
+			glTexCoord2d(1,1);
+			glVertex3d(1,-1,0);
+			glTexCoord2d(1,0);
+			glVertex3d(1,1,0);
+			glTexCoord2d(0,0);
 			glVertex3d(-1,1,0);
 		glEnd();
 	if (use_blending)

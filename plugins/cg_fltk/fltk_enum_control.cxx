@@ -112,6 +112,17 @@ void fltk_enum_control::public_set_value(int v)
 
 bool fltk_enum_control::set_void(const std::string& property, const std::string& value_type, const void* value_ptr)
 {
+
+	if (property.substr(0,6) == "active" && property.size() > 6) {
+		int i;
+		from_string(i, property.substr(6));
+		fltk::Group *g = static_cast<fltk::Group*>(container);
+		if (g->children() > i) {
+			g->child(i)->activate(variant<bool>::get(value_type, value_ptr));
+			return true;
+		}
+		return false;
+	}
 	return fltk_base::set_void(container, this, property, value_type, value_ptr);
 }
 
@@ -165,7 +176,7 @@ fltk_enum_radio_control::fltk_enum_radio_control(const std::string& label, int& 
 fltk_enum_control(label, acp, value, enum_declarations)
 {
 	const int padding = 20;
-	container = new fltk::Group(x, y, w, enum_strings.size()*h+padding, get_name().c_str());
+	container = new fltk::Group(x, y, w, (int)enum_strings.size()*h+padding, get_name().c_str());
 
 	container->flags(fltk::ALIGN_INSIDE_TOPLEFT);
 	container->labelfont(fltk::TIMES_BOLD);
@@ -212,7 +223,7 @@ fltk_enum_control(label, acp, value, enum_declarations)
 {
 	const int padding = 20;
 	const int margin = 8;
-	container = new fltk::Group(x, y, w, enum_strings.size()*(h+margin)+padding, get_name().c_str());
+	container = new fltk::Group(x, y, w, (int)enum_strings.size()*(h+margin)+padding, get_name().c_str());
 
 	container->flags(fltk::ALIGN_INSIDE_TOPLEFT);
 	container->labelfont(fltk::TIMES_BOLD);	

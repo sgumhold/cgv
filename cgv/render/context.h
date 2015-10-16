@@ -333,7 +333,7 @@ protected:
 	
 	virtual bool texture_create(
 							texture_base& tb, 
-		               cgv::data::data_format& target_format, 
+							cgv::data::data_format& target_format, 
 							const cgv::data::const_data_view& data, 
 							int level, int cube_side = -1, const std::vector<cgv::data::data_view>* palettes = 0) = 0;
 	
@@ -343,13 +343,13 @@ protected:
 							int x, int y, int level) = 0;
 	
 	virtual bool texture_replace(
-							const texture_base& tb, 
+							texture_base& tb, 
 							int x, int y, int z_or_cube_side, 
 							const cgv::data::const_data_view& data, 
 							int level, const std::vector<cgv::data::data_view>* palettes = 0) = 0;
 
 	virtual bool texture_replace_from_buffer(
-							const texture_base& tb, 
+							texture_base& tb, 
 							int x, int y, int z_or_cube_side, 
 							int x_buffer, int y_buffer, 
 							unsigned int width, unsigned int height, 
@@ -410,6 +410,7 @@ protected:
 	virtual bool shader_program_enable(render_component& rc) = 0;
 	virtual bool set_uniform_void(void* handle, const std::string& name, int value_type, bool dimension_independent, const void* value_ptr, std::string& last_error) = 0;
 	virtual bool shader_program_disable(render_component& rc) = 0;
+	virtual void shader_program_detach(void* handle, void* code_handle) = 0;
 	virtual void shader_program_destruct(void* handle) = 0;
 
 public:
@@ -474,6 +475,8 @@ public:
 	virtual bool is_current() const = 0;
 	/// make the current context current if possible
 	virtual bool make_current() const = 0;
+	/// clear the current context, typically used in multi-threaded rendering to allow usage of context in several threads
+	virtual void clear_current() const = 0;
 	//@}
 
 	/// return the width of the window

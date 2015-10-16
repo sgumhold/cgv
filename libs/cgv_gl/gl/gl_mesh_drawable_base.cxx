@@ -1,5 +1,3 @@
-#pragma once
-
 #include "gl_mesh_drawable_base.h"
 
 #include <cgv/base/attach_slot.h>
@@ -34,8 +32,10 @@ struct vertex_data
 	cgv::math::fvec<double,3> v;
 	cgv::math::fvec<double,3> n;
 	cgv::math::fvec<double,2> t;
+	cgv::media::mesh::obj_loader::color_type c;
 	bool has_tc;
 	bool has_nml;
+	bool has_clr;
 };
 
 void __stdcall vertexCallback(GLvoid *vertex)
@@ -45,6 +45,8 @@ void __stdcall vertexCallback(GLvoid *vertex)
 		glNormal3dv(ptr->n);
 	if (ptr->has_tc)
 		glTexCoord2dv(ptr->t);
+	if (ptr->has_clr)
+		glColor3fv(&ptr->c[0]);
 	glVertex3dv(ptr->v);
 }
 
@@ -101,6 +103,9 @@ unsigned render_faces_with_glu(const cgv::media::mesh::obj_loader& loader, const
 				v.has_nml = true;
 			}
 			unsigned hv = j+fi.first_vertex_index;
+			v.has_clr = loader.colors.size() == loader.vertices.size(); 
+			if (v.has_clr)
+				v.c = loader.colors[loader.vertex_indices[hv]];
 			v.v = loader.vertices[loader.vertex_indices[hv]];
 			V[j] = v;
 			gluTessVertex(tobj, V[j].v, &V[j]);
@@ -152,6 +157,8 @@ unsigned render_faces(const cgv::media::mesh::obj_loader& loader, const std::vec
 				glNormal3dv(loader.normals[loader.normal_indices[hn]]);
 			}
 			unsigned hv = j+fi.first_vertex_index;
+			if (loader.colors.size() == loader.vertices.size())
+				glColor4fv(&loader.colors[loader.vertex_indices[hv]][0]);
 			glVertex3dv(loader.vertices[loader.vertex_indices[hv]]);
 		}
 		if (min_d > 4)
@@ -185,6 +192,25 @@ void gl_mesh_drawable_base::init_frame(context &ctx)
 {
 	for (unsigned i=0; i<materials.size(); ++i)
 		materials[i].ensure_textures(ctx);
+}
+
+/// clear all objects living in the context like textures or display lists
+void gl_mesh_drawable_base::clear(context& ctx)
+{
+	// destruct textures and display lists
+	unsigned i;
+	for (i=0; i<materials.size(); ++i) {
+		materials[i].destruct_textures(ctx);
+		for (unsigned j=0; j<materials[i].group_list_ids.size(); ++j) {
+			unsigned dl = materials[i].group_list_ids[j].second;
+			if (dl != -1)
+				glDeleteLists(dl, 1);
+		}
+	}	
+	materials.clear();
+	// destruct group info
+	groups.clear();
+	loader.clear();
 }
 
 void gl_mesh_drawable_base::draw_mesh_group(context &ctx, unsigned gi, bool use_materials)
@@ -238,21 +264,16 @@ void gl_mesh_drawable_base::draw(context &ctx)
 /// load obj
 bool gl_mesh_drawable_base::read_mesh(const std::string& _file_name)
 {
-	std::string fn = _file_name;
-	if (!exists(fn)) {
-		if (exists(model_path+"/"+fn))
-			fn = model_path+"/"+fn;
-		else
-			fn = find_data_file(fn);
-	}
+	std::string fn = cgv::base::find_data_file(_file_name, "cpMD", "", model_path);
 	if (fn.empty()) {
 		std::cerr << "mesh file " << file_name << " not found" << std::endl;
 		return false;
 	}
 	file_name = _file_name;
 
+	cgv::base::push_file_parent(fn);
+
 	loader.clear();
-	
 	std::string material_file = drop_extension(fn)+".mtl";
 	if (exists(material_file)) {
 		std::cout << "read mtl: " << material_file; std::cout.flush();
@@ -263,7 +284,9 @@ bool gl_mesh_drawable_base::read_mesh(const std::string& _file_name)
 	loader.read_obj(fn);
 	printf("...Done.\n");
 
-	unsigned vi, mi, gi, M = loader.materials.size(), G = loader.groups.size(), V = loader.vertices.size();
+	cgv::base::pop_file_parent();
+
+	size_t vi, mi, gi, M = loader.materials.size(), G = loader.groups.size(), V = loader.vertices.size();
 	// copy materials
 	materials.clear();
 	
@@ -302,7 +325,7 @@ bool gl_mesh_drawable_base::read_mesh(const std::string& _file_name)
 				continue;
 			GLuint dl = glGenLists(1);
 			materials.back().group_list_ids.push_back(
-				std::pair<unsigned,unsigned>(gi,dl));
+				std::pair<unsigned,unsigned>((unsigned)gi,dl));
 			glNewList(dl,GL_COMPILE);
 			groups[gi].number_faces  = render_faces(loader, grp_faces[gi], GL_TRIANGLES, 3);
 			groups[gi].number_faces += render_faces_with_glu(loader, grp_faces[gi], 4);
@@ -323,6 +346,12 @@ void gl_mesh_drawable_base::center_view()
 	if (views.size() > 0)
 		post_redraw();
 }
+/// return the axis aligned bounding box
+const gl_mesh_drawable_base::box_type& gl_mesh_drawable_base::get_box() const
+{
+	return box;
+}
+
 
 		}
 	}

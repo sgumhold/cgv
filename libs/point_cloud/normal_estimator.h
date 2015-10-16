@@ -5,26 +5,22 @@
 
 #include "lib_begin.h"
 
-class CGV_API normal_estimator
+/** the normal estimator class needs a reference to a point_cloud and a neighbor_graph and allows to
+    compute [[bilaterally] weighted] least squares normals and to consistently orient the normals */
+class CGV_API normal_estimator : public point_cloud_types
 {
-public:
-	typedef point_cloud::coord_type coord_type;
-	typedef point_cloud::Pnt Pnt;
-	typedef point_cloud::Nml Nml;
-	typedef point_cloud::Nml Vec;
-	typedef point_cloud::Box Box;
-
+protected:
 	point_cloud& pc;
 	neighbor_graph& ng;
-
-	coord_type normal_quality_exp;
-	coord_type smoothing_scale;
-	coord_type noise_to_sampling_ratio;
+public:
+	Crd normal_quality_exp;
+	Crd smoothing_scale;
+	Crd noise_to_sampling_ratio;
 	bool use_orientation;
 
-	coord_type compute_normal_quality(const Nml& n1, const Nml& n2) const;
+	Crd compute_normal_quality(const Nml& n1, const Nml& n2) const;
 public:
-	/// cosntruct from point cloud and neighbor graph
+	/// construct from point cloud and neighbor graph
 	normal_estimator(point_cloud& _pc, neighbor_graph& _ng);
 	/// smooth normals with bilateral weights
 	void smooth_normals();

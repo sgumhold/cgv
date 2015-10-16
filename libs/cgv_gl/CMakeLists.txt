@@ -14,32 +14,10 @@ find_package(ppp)
 cgv_find_package(GLEW)
 cgv_find_package(OpenGL REQUIRED)
 
-
-set(HEADERS
-	gl/gl.h
-	gl/gl_context.h
-	gl/gl_cursor.h
-	gl/gl_depth_peeler.h
-	gl/gl_image_drawable_base.h
-	gl/gl_implicit_surface_drawable_base.h
-	gl/gl_mesh_drawable_base.h
-	gl/gl_tools.h
-	gl/gl_transparent_renderer.h
-	gl/gl_view.h
-	gl/lib_begin.h)
-
-set(SOURCES
-	gl/gl.cxx
-	gl/gl_context.cxx
-	gl/gl_cursor.cxx
-	gl/gl_depth_peeler.cxx
-	gl/gl_image_drawable_base.cxx
-	gl/gl_implicit_surface_drawable_base.cxx
-	gl/gl_mesh_drawable_base.cxx
-	gl/gl_texture_tools.cxx
-	gl/gl_tools.cxx
-	gl/gl_transparent_renderer.cxx
-	gl/gl_view.cxx)
+# Source files
+file(GLOB_RECURSE SOURCES RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "gl/*.cxx")
+# Header files
+file(GLOB_RECURSE HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "gl/*.h")
 
 set(PH_SOURCES gl/gl_context_switch.ph)
 

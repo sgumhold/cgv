@@ -193,6 +193,83 @@ void APIENTRY glsuStereoShear(enum GlsuEye eye, GLdouble eyeSeparation, GLdouble
 }
 
 
+void APIENTRY glsuStereoPerspectiveFreeObserver(enum GlsuEye eye, GLdouble eyeSeparation, 
+										        GLdouble screenWidth, GLdouble screenHeight, 
+										        GLdouble observerLocation[3], GLdouble eyeSeparationDirection[3],
+										        GLdouble zNear, GLdouble zFar, int synchClippingPlanes)
+{
+	glsuStereoFrustumFreeObserver(eye, eyeSeparation, screenWidth, screenHeight, observerLocation, eyeSeparationDirection, zNear, zFar, synchClippingPlanes);
+	glsuStereoTranslateFreeObserver(eye, eyeSeparation, screenWidth, screenHeight, observerLocation, eyeSeparationDirection);
+}
+
+#define sqr(x) ((x)*(x))
+
+GLdouble APIENTRY glsuComputeEyeLocation(enum GlsuEye eye, GLdouble eyeSeparation, GLdouble screenWidth,
+							         GLdouble observerLocation[3], GLdouble eyeSeparationDirection[3],
+									 double eyeLocation[3])
+{
+	// compute eye location
+	unsigned i;
+	double l = sqrt(sqr(eyeSeparationDirection[0])+sqr(eyeSeparationDirection[1])+sqr(eyeSeparationDirection[2]));
+	double f = 0.5*eyeSeparation*screenWidth/l;
+	for (i=0; i<3; ++i)
+		eyeLocation[i] = observerLocation[i] + f* eye * eyeSeparationDirection[i];
+	return f;
+}
+
+void APIENTRY glsuStereoFrustumFreeObserver(enum GlsuEye eye, GLdouble eyeSeparation, 
+									        GLdouble screenWidth, GLdouble screenHeight, 
+									        GLdouble observerLocation[3], GLdouble eyeSeparationDirection[3],
+						                    GLdouble zNear, GLdouble zFar, int synchClippingPlanes)
+{
+	GLdouble a, left, right, bottom, top;
+	// compute eye location
+	GLdouble eyeLocation[3];
+	GLdouble f = glsuComputeEyeLocation(eye, eyeSeparation, screenWidth, observerLocation, eyeSeparationDirection, eyeLocation);
+
+	// update clipping planes
+	if (synchClippingPlanes) {
+		double clipOffset = 0; fabs(f * eyeSeparationDirection[2]);
+		switch (eye) {
+		case GLSU_LEFT : 
+			if (eyeSeparationDirection[2] > 0) 
+				clipOffset = 2* f * eyeSeparationDirection[2];
+			break;
+		case GLSU_CENTER : 
+			clipOffset = f * fabs(eyeSeparationDirection[2]);
+			break;
+		case GLSU_RIGHT : 
+			if (eyeSeparationDirection[2] < 0) 
+				clipOffset = -2* f * eyeSeparationDirection[2];
+			break;
+		}
+		zNear += clipOffset;
+		zFar  += clipOffset;
+	}
+
+	// compute and multiply frustum to current matrix
+	a = zNear/eyeLocation[2];
+
+	bottom = a*(-0.5*screenHeight - eyeLocation[1]);
+	top    = a*( 0.5*screenHeight - eyeLocation[1]);
+
+	left   = a*(-0.5*screenWidth  - eyeLocation[0]);
+	right  = a*( 0.5*screenWidth  - eyeLocation[0]);
+
+	glFrustum(left,right,bottom,top,zNear,zFar);
+}
+
+void APIENTRY glsuStereoTranslateFreeObserver(enum GlsuEye eye, GLdouble eyeSeparation, 
+										      GLdouble screenWidth, GLdouble screenHeight, 
+										      GLdouble observerLocation[3], GLdouble eyeSeparationDirection[3])
+{
+	// compute eye location
+	double eyeLocation[3];
+	glsuComputeEyeLocation(eye, eyeSeparation, screenWidth, observerLocation, eyeSeparationDirection, eyeLocation);
+	glTranslated(-eyeLocation[0], -eyeLocation[1], 0);
+}
+
+
 void APIENTRY glsuStereoRenderProcess(GLdouble eyeSeparation, 
 						     GLdouble fovy, GLdouble aspect, 
 						     GLdouble zZeroParallax,
@@ -255,6 +332,43 @@ void APIENTRY glsuStereoRenderProcessScreen(GLdouble eyeSeparation,
 	glLoadIdentity();
 	
 	glsuStereoPerspectiveScreen(GLSU_RIGHT, eyeSeparation, screenWidth, screenHeight, zZeroParallax, zNear, zFar);
+	
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+	
+	drawSceneCallback(userData);
+	glFlush();
+
+	glsuConfigureStereo(GLSU_CENTER, mode, ac);
+}
+
+
+void APIENTRY glsuStereoRenderProcessFreeObserver(GLdouble eyeSeparation, 
+							                      GLdouble screenWidth, GLdouble screenHeight, 
+										          GLdouble observerLocation[3], GLdouble eyeSeparationDirection[3],
+										          GLdouble zNear, GLdouble zFar, int synchClippingPlanes,
+							                      void (*drawSceneCallback)(void*), void* userData, 
+								                  enum GlsuStereoMode mode, enum GlsuAnaglyphConfiguration ac)
+{
+	glsuConfigureStereo(GLSU_LEFT, mode, ac);
+	
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+
+	glsuStereoPerspectiveFreeObserver(GLSU_LEFT, eyeSeparation, screenWidth, screenHeight, observerLocation, eyeSeparationDirection, zNear, zFar, synchClippingPlanes);
+	
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+	
+	drawSceneCallback(userData);
+	glFlush();
+
+	glsuConfigureStereo(GLSU_RIGHT, mode, ac);
+
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	
+	glsuStereoPerspectiveFreeObserver(GLSU_RIGHT, eyeSeparation, screenWidth, screenHeight, observerLocation, eyeSeparationDirection, zNear, zFar, synchClippingPlanes);
 	
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();

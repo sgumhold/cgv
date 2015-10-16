@@ -8,6 +8,12 @@ using namespace cgv::type;
 namespace cgv {
 	namespace reflect {
 
+/// this should return true
+bool set_reflection_handler::is_creative() const
+{
+	return true;
+}
+
 /// construct from target, value type, pointer to value and optionally reflection_traits
 set_reflection_handler::set_reflection_handler(const std::string& _target, const std::string& _value_type,
 						const void* _value_ptr, abst_reflection_traits* _value_rt)

@@ -21,8 +21,10 @@ enum UniformTypeIdOffset {
 	UTO_MAT         = 0x03000,
 	UTO_FVEC        = 0x04000, // offset for fvec<T,2 ..i.. 4>,   where i = (offset - UTO_FVEC) / UTO_DIV + 2
 	UTO_FMAT        = 0x07000,  // offset for fmat<T,2 ..i.. 4,i>, where i = (offset - UTO_FMAT) / UTO_DIV + 2
-	UTO_VECTOR_MAT  = 0x0A000,  // offset for std::vector<mat<T,2 ..i.. 4,i> >
-	UTO_VECTOR_FMAT = 0x0B000,  // offset for std::vector<fmat<T,2 ..i.. 4,i> >, where i = (offset - UTO_VECTOR_FMAT) / UTO_DIV + 2
+	UTO_VECTOR_VEC  = 0x0A000,  // offset for std::vector<vec<T> >
+	UTO_VECTOR_FVEC = 0x0B000,  // offset for std::vector<fvec<T,2 ..i.. 4> >, where i = (offset - UTO_VECTOR_FVEC) / UTO_DIV + 2
+	UTO_VECTOR_MAT  = 0x0E000,  // offset for std::vector<mat<T> >
+	UTO_VECTOR_FMAT = 0x0F000,  // offset for std::vector<fmat<T,2 ..i.. 4,2 ..i.. 4> >, where i = (offset - UTO_VECTOR_FMAT) / UTO_DIV + 2
 };
 
 /// extend cgv::type::info::type_id<T> by vector and matrix types that can be used as arguments to set_uniform
@@ -58,9 +60,16 @@ struct uniform_type_id<cgv::math::mat<T> >
 	}
 };
 
+/// specialization for std::vector<cgv::math::vec<T> >
+template <typename T>
+struct uniform_type_id<std::vector<cgv::math::vec<T> > >
+{
+	static int get_id() {
+		return cgv::type::info::type_id<T>::get_id() + UTO_VECTOR_VEC;
+	}
+};
+
 /// specialization for std::vector<cgv::math::mat>
-// FIXME: Changed UTO_VEC_MAT to UTO_VECTOR_MAT as UTO_VEC_MAT is not defined.
-//        Can we really do this?
 template <typename T>
 struct uniform_type_id<std::vector<cgv::math::mat<T> > >
 {
@@ -87,9 +96,16 @@ struct uniform_type_id<cgv::math::fmat<T,i,i> >
 	}
 };
 
+/// specialization for std::vector<cgv::math::fvec<T,i> >
+template <typename T, unsigned i>
+struct uniform_type_id<std::vector<cgv::math::fvec<T, i> > >
+{
+	static int get_id() {
+		return cgv::type::info::type_id<T>::get_id() + UTO_VECTOR_FVEC + (i - 2)*UTO_DIV;
+	}
+};
+
 /// specialization for std::vector<cgv::math::fmat<T,i,i> >
-// FIXME: Changed UTO_VEC_MAT to UTO_VECTOR_MAT as UTO_VEC_MAT is not defined.
-//        Can we really do this?
 template <typename T, unsigned i>
 struct uniform_type_id<std::vector<cgv::math::fmat<T,i,i> > >
 {
@@ -107,7 +123,7 @@ protected:
 	bool show_code_errors : 1;
 	bool linked : 1;
 	bool state_out_of_date : 1;
-	bool has_geometry_shader : 1;
+	int  nr_attached_geometry_shaders : 13;
 
 	std::vector<shader_code*> managed_codes;
 	/// attach a list of files
@@ -126,7 +142,7 @@ public:
 		 file has been collected.*/
 	static bool collect_dir(const std::string& dir_name, bool recursive, std::vector<std::string>& file_names);
 	/** collect shader code files declared in a shader program file.
-	    Program files have the extension glsl and contain lines of the form
+	    Program files have the extension glpr and contain lines of the form
 		 command:argument. The following commands can be used
 		 - file:file_name ... calls attach_file(ctx,file_name)
 		 - vertex_file:file_name ... calls attach_file(ctx,file_name,ST_VERTEX)
@@ -155,6 +171,8 @@ public:
 	bool create(context& ctx);
 	/// attach a compiled shader code instance that is managed outside of program
 	bool attach_code(context& ctx, const shader_code& code);
+	/// detach a shader code 
+	bool detach_code(context& ctx, const shader_code& code);
 	/// attach a shader code given as string and managed the created shader code object
 	bool attach_code(context& ctx, const std::string& source, ShaderType st);
 	/// read shader code from file, compile and attach to program

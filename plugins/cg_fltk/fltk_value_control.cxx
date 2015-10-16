@@ -205,8 +205,14 @@ std::string fltk_value_control<T,FC>::get_property_declarations()
 template <typename T, typename FC>
 bool fltk_value_control<T,FC>::set_void(const std::string& property, const std::string& value_type, const void* value_ptr)
 {
-	return valuator_property_interface<FC>::set_void(
-		*this, this, fC, property, value_type, value_ptr);
+	bool res = valuator_property_interface<FC>::set_void(*this, this, fC, property, value_type, value_ptr);
+	if (property == "step") {
+		T tmp = this->get_value();
+		double v = cgv::type::variant<double>::get(cgv::type::info::type_name<T>::get_name(), &tmp);
+		fC->value(v+1.0);
+		fC->value(v);
+	}
+	return res;
 }
 
 /// abstract interface for the getter

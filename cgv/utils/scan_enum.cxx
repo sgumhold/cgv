@@ -20,6 +20,10 @@ void parse_enum_declarations(const std::string& enum_declarations, std::vector<t
 		int new_val;
 		if (defs.size() >= 2 && is_integer(defs[1].begin, defs[1].end, new_val))
 			val = new_val;
+		while (defs[0].size() > 0 && *defs[0].begin == ' ')
+			++defs[0].begin;
+		while (defs[0].size() > 0 && defs[0].end[-1] == ' ')
+			--defs[0].end;
 		enum_names.push_back(defs[0]);
 		enum_values.push_back(val);
 		++val;

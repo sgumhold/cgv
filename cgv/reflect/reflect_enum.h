@@ -43,7 +43,7 @@ struct enum_reflection_traits : public reflection_traits_impl<T, abst_enum_refle
 			declarations() = _declarations; 
 			this->parse_declarations();
 		}
-#ifdef CPP11
+#ifdef REFLECT_TRAITS_WITH_DECLTYPE
 		if (declarations().empty())
 			get_reflection_traits(T());
 #endif

@@ -32,6 +32,8 @@ public:
 	binary_read_reflection_handler(const std::string& file_name, const std::string& _content, unsigned _ver);
     ///
 	binary_read_reflection_handler(FILE* _fp, const std::string& _content, unsigned _ver);
+	/// this should return true
+	bool is_creative() const;
 	///
 	bool reflect_member_void(const std::string& member_name, 
 							 void* member_ptr, cgv::reflect::abst_reflection_traits* rt);

@@ -357,7 +357,7 @@ void base_provider::parse_definition(ParsingTasks pt)
 								  atoi(args[1].c_str()), args[2], 
 								  args.size()>3 ? args[3] : std::string("viewer"));
 						if (args.size()>4)
-							wp->multi_set(args[4]);
+							wp->multi_set(args[4], true);
 						gui_group_stack.push(wp);
 						break;
 					}
@@ -431,11 +431,7 @@ void base_provider::parse_definition(ParsingTasks pt)
 							args.size()>2 ? args[2] : std::string(""),
 							args.size()>3 ? args[3] : std::string(""),
 							args.size()>4 ? args[4] : std::string("\n"), 0)
-							->attach_to_value_change(
-								static_cast<abst_control::functor_type*>(
-									of.clone()
-								)
-							);
+							->attach_to_value_change(of.clone());
 					}
 					break;
 				case CMD_TREE_NODE :
@@ -461,7 +457,7 @@ void base_provider::parse_definition(ParsingTasks pt)
 void base_provider::create_gui()
 {
 	if (!parent_options.empty())
-		parent_group->multi_set(parent_options);
+		parent_group->multi_set(parent_options, true);
 	if (nr_toggles == -1) {
 		nr_toggles = 0;
 		parse_definition(PT_NR_TOGGLES);

@@ -115,10 +115,14 @@ void fltk_viewer_window::on_register()
 }
 
 /// show the window. This needs to be called after creation to make the window visible
-void fltk_viewer_window::show()
+void fltk_viewer_window::show(bool modal)
 {
-	fltk::Window::show();
+	if (modal)
+		fltk::Window::exec();
+	else
+		fltk::Window::show();
 }
+
 /// hide the window
 void fltk_viewer_window::hide()
 {
@@ -200,8 +204,8 @@ std::string fltk_viewer_window::get_property_declarations()
 {
 	std::string props = fltk_base::get_property_declarations();
 	if (view)
-		props += std::string(";")+view->get_property_declarations();
-	return props+";bg_clr_idx:uint32;gui:bool;icon:int32;menu:bool;menu_order:string;state:string;title:string;W:uint32;H:uint32";
+		props += std::string(";")+view->get_property_declarations()+";"+tab_group->get_property_declarations();
+	return props+";bg_clr_idx:uint32;gui:bool;icon:int32;menu:bool;menu_order:string;dock_order:string;state:string;title:string;W:uint32;H:uint32";
 }
 
 void fltk_viewer_window::ensure_menu_order()
@@ -315,6 +319,8 @@ bool fltk_viewer_window::set_void(const std::string& property, const std::string
 		return tab_group->set_void(property, value_type, value_ptr);
 	}
 	if (view && view->set_void(property, value_type, value_ptr))
+		return true;
+	if (tab_group && tab_group->set_void(property, value_type, value_ptr))
 		return true;
 
 	if (property == "status_info") {
@@ -476,6 +482,8 @@ bool fltk_viewer_window::get_void(const std::string& property, const std::string
 
 	if (view && view->get_void(property, value_type, value_ptr))
 		return true;
+	if (tab_group && tab_group->get_void(property, value_type, value_ptr))
+		return true;
 
 	if (property == "gui")
 		cgv::type::set_variant(gui_shown(), value_type, value_ptr);
@@ -537,7 +545,7 @@ void fltk_viewer_window::set_window_state(WindowState ws, MonitorSelection ms, b
 		case WS_REGULAR:
 			break;
 		case WS_MINIMIZED:
-			show();
+			show(false);
 			break;
 		case WS_MAXIMIZED:
 			resize(old_x, old_y, old_w, old_h);
@@ -695,7 +703,7 @@ void fltk_viewer_window::create_cb(fltk::Widget* w, void* _fac)
 					if (p) {
 						cgv::gui::gui_group_ptr g = get_provider_parent(p);
 						if (!g.empty())
-							v->tab_group->select_child(g);
+							v->tab_group->select_child(g, true);
 					}
 				}
 			}
@@ -753,7 +761,7 @@ void fltk_viewer_window::menu_cb(fltk::Widget* w, void* obj_ptr)
 	fltk_viewer_window* fvw = static_cast<fltk_viewer_window*>(g->user_data());
 	base_ptr object(static_cast<cgv::base::base*>(obj_ptr));
 	base_ptr gp = get_provider_parent(object->get_interface<provider>());
-	fvw->tab_group->select_child(gp);
+	fvw->tab_group->select_child(gp, true);
 	for (unsigned ci=0; ci<fvw->view->get_nr_children(); ++ci)
 		if (fvw->view->get_child(ci) == object) {
 			fvw->view->get_interface<event_handler>()->set_focused_child((int)ci);
@@ -778,7 +786,7 @@ void fltk_viewer_window::register_object(base_ptr object, const std::string& opt
 		base_generator bg;
 		bg.add("shortcut", sc);
 		bg.add("menu_text", item_text_str);
-		bg.multi_set(options);
+		bg.multi_set(options, false);
 
 		int fltk_sc = fltk_shortcut(sc);
 		if (fltk_sc > 0)
@@ -795,7 +803,7 @@ void fltk_viewer_window::register_object(base_ptr object, const std::string& opt
 	}
 
 	std::string views;
-	if (has_property(options, "views", views)) {
+	if (has_property(options, "views", views, false)) {
 		if (cgv::utils::is_element(get_name(),views))
 			view->append_child(object);
 	}
@@ -803,7 +811,7 @@ void fltk_viewer_window::register_object(base_ptr object, const std::string& opt
 		view->append_child(object);
 
 	std::string parents;
-	if (has_property(options, "parents", parents))
+	if (has_property(options, "parents", parents, false))
 		if (!cgv::utils::is_element(get_name(),parents))
 			return;
 
@@ -819,7 +827,7 @@ void fltk_viewer_window::register_object(base_ptr object, const std::string& opt
 		base_generator bg;
 		bg.add("menu_text", mp);
 		bg.add("shortcut", sc);
-		bg.multi_set(options);
+		bg.multi_set(options, false);
 
 		if (!mp.empty()) {
 			if (!menu) {

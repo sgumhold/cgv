@@ -4,7 +4,12 @@
 ::link_inc=[1,2,1,2,1,2];
 ::use_lib_deps=[1,1,0,0,1,1];
 ::is_dbg=["false","true","false","true","false","true"];
-
+::vs_platform = "Win32";
+if (CGV_PLATFORM != "") {
+	if (CGV_PLATFORM != "WIN32") {
+		vs_platform = CGV_PLATFORM;
+	}
+}
 rule_variable_map_vs = MAP.[
 	["$(INPUT_DIR)", "$(InputDir)"],
 	["$(INPUT_NAME)", "$(InputName)"],
@@ -63,9 +68,11 @@ func(::extend_project_info_vs; :>project_name = "", :>return = 1)
 		pj::defines = pj::defines.[ pj::defines[0], pj::defines[1] ];
 	}
 	:>post = ["s", "sd", "", "d", "", "d"];
-
 	pj::runtime_lib_vs10 = ["MultiThreaded", "MultiThreadedDebug", "MultiThreadedDLL", "MultiThreadedDebugDLL", "MultiThreaded", "MultiThreadedDebug"];
-	pj::debug_info_vs10  = ["ProgramDatabase", "EditAndContinue", "ProgramDatabase", "EditAndContinue", "ProgramDatabase", "EditAndContinue"];
+	pj::debug_info_vs10  = ["", "EditAndContinue", "", "EditAndContinue", "", "EditAndContinue"];
+	if (CGV_PLATFORM != "WIN32") {
+		pj::debug_info_vs10  = ["", "ProgramDatabase", "", "ProgramDatabase", "", "ProgramDatabase"];
+	}
 
 	pj::sub_system       = [1,1,1,1,1,1];
 	pj::sub_system_vs10  = ["","","","","",""];
@@ -81,7 +88,7 @@ func(::extend_project_info_vs; :>project_name = "", :>return = 1)
 	for (:>cj=0; cj<!pj::config_indices; ++cj) {
 		:>configDefsAdd     = [];
 		:>ci = pj::config_indices[cj];
-		pj::output_post[ci] = "_".post[ci].cgv_compiler_version;
+		pj::output_post[ci] = platform_post."_".post[ci].cgv_compiler_version;
 		if (pj::is_executable[ci]) {
 			configDefsAdd            = ["_CONSOLE"];
 			pj::sub_system[ci]       = 1;
@@ -119,7 +126,8 @@ func(::extend_project_info_vs; :>project_name = "", :>return = 1)
 		pj::defines[ci]     = commonDefs.configDefs[ci].configDefsAdd.pj::defines[ci];
 	}
 	if(pj::projectType=="tool") {
-		pj::output_post[0]="";
+		pj::output_post[0]=platform_post;
+		cout(pj::output_post[0]); cout("\n");
 	}
 //	if (!pj::referenceDeps) {
 		append_library_dependencies_vs(project_name);

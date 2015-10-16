@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 @func(::gen_xml; :>pj = MAP, :>return="")@{
 <ProjectSchemaDefinitions xmlns="clr-namespace:Microsoft.Build.Framework.XamlTypes;assembly=Microsoft.Build.Framework" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:sys="clr-namespace:System;assembly=mscorlib" xmlns:transformCallback="Microsoft.Cpp.Dev10.ConvertPropertyCallback">
   @for(:>i=0; i<!pj::rules; ++i)@{
@@ -132,4 +132,5 @@
   @}
 </ProjectSchemaDefinitions>
 @}
+
 @skip(gen_xml(<:pj =& projects[current_project]))

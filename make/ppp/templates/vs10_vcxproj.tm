@@ -11,13 +11,13 @@
 	@else@{@//
     <@(F[i]) Include=@"F[F[i]][j][0]*clean_path">
 @for(:>k=0; k<!F[F[i]][j][1]; ++k)@{@//
-      <ExcludedFromBuild Condition=@('"'."'")$(Configuration)|$(Platform)@("'=='".config_name[F[F[i]][j][1][k]]."|Win32'".'"')>true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition=@('"'."'")$(Configuration)|$(Platform)@("'=='".config_name[F[F[i]][j][1][k]]."|".vs_platform."'".'"')>true</ExcludedFromBuild>
 @}
 @if(F[F[i]][j][2] > 0)@{
 	@for(:>ci=0;ci<6;++ci)@{
 		@define(:>cj=ci)
 		@if(cj < pj::config_indices && !(cj < F[F[i]][j][1]))@{@//
-      <PrecompiledHeader Condition=@('"'."'$(Configuration)|$(Platform)'=='".config_name[cj]."|Win32'".'"')>@(["Create","NotUsing"][F[F[i]][j][2]-1])</PrecompiledHeader>
+      <PrecompiledHeader Condition=@('"'."'$(Configuration)|$(Platform)'=='".config_name[cj]."|".vs_platform."'".'"')>@(["Create","NotUsing"][F[F[i]][j][2]-1])</PrecompiledHeader>
 @}@}@}
     </@(F[i])>
 @}
@@ -33,9 +33,9 @@
 @for(:>ci=0;ci<6;++ci)@{
     @define(:>cj=cfg_ord[ci])
     @if(cj < pj::config_indices)@{@//
-    <ProjectConfiguration Include=@"config_name[cj].'|Win32'">
+    <ProjectConfiguration Include=@"config_name[cj].'|'.vs_platform">
       <Configuration>@(config_name[cj])</Configuration>
-      <Platform>Win32</Platform>
+      <Platform>@(vs_platform)</Platform>
     </ProjectConfiguration>
 @}
   @}@//
@@ -43,16 +43,16 @@
   <PropertyGroup Label="Globals">
     <ProjectGuid>{@(pj::projectGUID)}</ProjectGuid>
     <RootNamespace>@(pj::projectName)</RootNamespace>
-    <Keyword>Win32Proj</Keyword>
+    <Keyword>@(vs_platform)Proj</Keyword>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
 @for(:>ci=0;ci<6;++ci)@{
     @define(:>cj=cfg_ord1[ci])
     @if(cj < pj::config_indices)@{@//
-  <PropertyGroup Condition=@('"'."'")$(Configuration)|$(Platform)@("'=='")@(config_name[cj])|Win32@("'".'"') Label="Configuration">
+  <PropertyGroup Condition=@('"'."'")$(Configuration)|$(Platform)@("'=='")@(config_name[cj])|@(vs_platform)@("'".'"') Label="Configuration">
     <ConfigurationType>@(pj::config_type_vs10[cj])</ConfigurationType>
 @if(cgv_compiler_version > 10)@{
-    <PlatformToolset>v110</PlatformToolset>
+    <PlatformToolset>v@(cgv_compiler_version*10)</PlatformToolset>
 @}
     <CharacterSet>Unicode</CharacterSet>
 @if(cj%4==0)@{@//
@@ -68,7 +68,7 @@
 @for(:>ci=0;ci<6;++ci)@{
     @define(:>cj=cfg_ord1[ci])
     @if(cj < pj::config_indices)@{@//
-  <ImportGroup Condition=@('"'."'")$(Configuration)|$(Platform)@("'=='")@(config_name[cj])|Win32@("'".'"') Label="PropertySheets">
+  <ImportGroup Condition=@('"'."'")$(Configuration)|$(Platform)@("'=='")@(config_name[cj])|@(vs_platform)@("'".'"') Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
 @}
@@ -79,11 +79,11 @@
 @for(:>ci=0;ci<6;++ci)@{
     @define(:>cj=ci)
     @if(cj < pj::config_indices)@{@//
-    <OutDir Condition=@('"'."'")$(Configuration)|$(Platform)@("'=='")@(config_name[cj])|Win32@("'".'"')>@((CGV_INSTALL."/".pj::output_dir[cj]."/")*clean_path)</OutDir>
-    <IntDir Condition=@('"'."'")$(Configuration)|$(Platform)@("'=='")@(config_name[cj])|Win32@("'".'"')>@((pj::build_dir."/$(ProjectName)_$(Configuration)/")*clean_path)</IntDir>
-    <TargetName Condition=@('"'."'")$(Configuration)|$(Platform)@("'=='")@(config_name[cj])|Win32@("'".'"')>$(ProjectName)@(pj::output_post[cj])</TargetName>
+    <OutDir Condition=@('"'."'")$(Configuration)|$(Platform)@("'=='")@(config_name[cj])|@(vs_platform)@("'".'"')>@((CGV_INSTALL."/".pj::output_dir[cj]."/")*clean_path)</OutDir>
+    <IntDir Condition=@('"'."'")$(Configuration)|$(Platform)@("'=='")@(config_name[cj])|@(vs_platform)@("'".'"')>@((pj::build_dir."/$(ProjectName)_$(Configuration)/")*clean_path)</IntDir>
+    <TargetName Condition=@('"'."'")$(Configuration)|$(Platform)@("'=='")@(config_name[cj])|@(vs_platform)@("'".'"')>$(ProjectName)@(pj::output_post[cj])</TargetName>
 @if(pj::output_dir[cj] == "bin")@{@//
-    <LinkIncremental Condition=@('"'."'")$(Configuration)|$(Platform)@("'=='")@(config_name[cj])|Win32@("'".'"')>@(is_dbg[cj])</LinkIncremental>
+    <LinkIncremental Condition=@('"'."'")$(Configuration)|$(Platform)@("'=='")@(config_name[cj])|@(vs_platform)@("'".'"')>@(is_dbg[cj])</LinkIncremental>
 @}      
     @}
   @}@//
@@ -91,7 +91,7 @@
 @for(:>ci=0;ci<6;++ci)@{
     @define(:>cj=ci)
     @if(cj < pj::config_indices)@{@//
-  <ItemDefinitionGroup Condition=@('"'."'")$(Configuration)|$(Platform)@("'=='")@(config_name[cj])|Win32@("'".'"')>
+  <ItemDefinitionGroup Condition=@('"'."'")$(Configuration)|$(Platform)@("'=='")@(config_name[cj])|@(vs_platform)@("'".'"')>
     <ClCompile>
       <AdditionalIncludeDirectories>@(concat(['$(CGV_DIR)','$(CGV_BUILD)'].pj::incDirs[cj%4], ';')*clean_path);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
 @define(:>D = [])
@@ -140,6 +140,7 @@
 @}
         @else@{@//
       <ImportLibrary>@((CGV_INSTALL.'/lib/$(TargetName).lib')*clean_path)</ImportLibrary>
+      <ProgramDatabaseFile>$(IntDir)$(TargetName).pdb</ProgramDatabaseFile>
 @}
       @}@//
     </@(pj::linker_tool_vs10[cj])>

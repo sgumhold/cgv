@@ -109,7 +109,7 @@ public:
 		gui_group_ptr gg = gui_group_ptr(new fltk_item_group(x,y,w,h,label));
 		if (!gg.empty()) {
 			if (!options.empty())
-				gg->multi_set(options);
+				gg->multi_set(options, true);
 			finalize_new_element(this, align, gg);
 		}
 		return gg;
@@ -124,7 +124,7 @@ public:
 
 		if (!b.empty()) {
 			if (!options.empty())
-				b->multi_set(options);
+				b->multi_set(options, true);
 			finalize_new_element(this,align, b);
 		}
 		return b;
@@ -306,7 +306,7 @@ bool fltk_tree_group::set_void(const std::string& property, const std::string& v
 bool fltk_tree_group::get_void(const std::string& property, const std::string& value_type, void* value_ptr)
 {
 	if (property == "nr_columns") {
-		unsigned n = column_infos.size();
+		unsigned n = (unsigned)column_infos.size();
 		set_variant(n, value_type, value_ptr);
 	}
 	else if (property.substr(0,15) == "column_heading_") {
@@ -435,7 +435,7 @@ gui_group_ptr fltk_tree_group::add_group(const std::string& label, const std::st
 	gui_group_ptr gg = gui_group_ptr(new fltk_item_group(x,y,w,h,label));
 	if (!gg.empty()) {
 		if (!options.empty())
-			gg->multi_set(options);
+			gg->multi_set(options, true);
 		finalize_new_element(this, align, gg);
 	}
 	return gg;
@@ -457,7 +457,7 @@ button_ptr fltk_tree_group::add_button(const std::string& label, const std::stri
 
 	if (!b.empty()) {
 		if (!options.empty())
-			b->multi_set(options);
+			b->multi_set(options, true);
 		finalize_new_element(this,align, b);
 	}
 	return b;

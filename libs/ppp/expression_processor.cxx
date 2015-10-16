@@ -218,7 +218,7 @@ void expression_processor::prepare()
 void expression_processor::extract_begins(std::vector<unsigned>& begins, unsigned i0, unsigned ie) const
 {
 	if (ie==-1)
-		ie = expression_tokens.size();
+		ie = (unsigned)expression_tokens.size();
 	int parenthesis = 0;
 	if (expression_tokens.size() > i0)
 		begins.push_back(i0);

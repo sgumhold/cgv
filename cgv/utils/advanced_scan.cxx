@@ -74,6 +74,9 @@ void split_to_lines(const char* global_begin, const char* global_end,
 			while (end > begin && is_space(end[-1]))
 				--end;
 		}
+		else
+			if (end > begin && end[-1] == '\r')
+				--end;
 		lines.push_back(line(begin,end));
 		++ptr;
 	}

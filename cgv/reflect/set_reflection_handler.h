@@ -15,6 +15,8 @@ protected:
 	std::string value_type;
 	abst_reflection_traits* value_rt;
 public:
+	/// this should return true
+	bool is_creative() const;
 	/// construct from target, value type, pointer to value and optionally reflection_traits
 	set_reflection_handler(const std::string& _target,
 						   const std::string& _value_type,
@@ -27,7 +29,7 @@ public:
 						     abst_reflection_traits* rt, GroupKind group_kind, unsigned grp_size);
 };
 
-#ifdef CPP11
+#ifdef REFLECT_TRAITS_WITH_DECLTYPE
 /// call this function to set a variable inside a reflected instance from the given value
 template <typename T, typename Q>
 	bool set_member(T& variable, const std::string& target, const Q& value) {
@@ -43,7 +45,7 @@ namespace compatibility {
 		srh.reflect_member("", variable);
 		return srh.found_target();
 	}
-#ifndef CPP11
+#ifndef REFLECT_TRAITS_WITH_DECLTYPE
 	template <bool use_get, typename T, typename Q>
 	struct set_member_dispatch {           static bool set_member(T& variable, const std::string& target, const Q& value) { 
 		return set_member_impl(variable, target, value, reflection_traits<Q>()); } };

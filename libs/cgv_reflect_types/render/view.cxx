@@ -18,9 +18,13 @@ bool view::self_reflect(cgv::reflect::reflection_handler& rh)
 
 		}
 
-extern_reflection_traits<cgv::render::view, cgv::reflect::render::view> get_reflection_traits(const cgv::render::view&)
+#ifdef REFLECT_IN_CLASS_NAMESPACE
+}} namespace cgv { namespace render {
+#endif
+
+cgv::reflect::extern_reflection_traits<cgv::render::view, cgv::reflect::render::view> get_reflection_traits(const cgv::render::view&)
 {
-	return extern_reflection_traits<cgv::render::view, cgv::reflect::render::view>();
+	return cgv::reflect::extern_reflection_traits<cgv::render::view, cgv::reflect::render::view>();
 }
 
 	}

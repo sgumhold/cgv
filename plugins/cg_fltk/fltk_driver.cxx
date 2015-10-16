@@ -16,21 +16,24 @@
 #include <cgv/gui/menu_provider.h>
 #include <cgv/gui/base_provider_generator.h>
 
-#ifdef _WINDOWS
+#ifdef _WIN32
 #include <windows.h>
+#define USE_WIN32
+#else
+#define USE_FLTK
 #endif
 
 using namespace cgv::base;
+
 
 void ensure_lock()
 {
 	static bool lock_set = false;
 	if (!lock_set) {
-		lock_set = true;
 		fltk::lock();
+		lock_set = true;
 	}
 }
-
 
 void fltk_driver::on_register()
 {
@@ -100,7 +103,7 @@ void fltk_driver::quit(int exit_code)
 	for (unsigned int i=0; i<windows.size(); ++i) {
 		static_cast<fltk::Window*>(static_cast<fltk::Widget*>(windows[i]->get_user_data()))->hide();
 	}
-#ifdef _WINDOWS
+#ifdef _WIN32
 	TerminateProcess(GetCurrentProcess(), exit_code);
 #else
 	exit(exit_code);
@@ -110,7 +113,7 @@ void fltk_driver::quit(int exit_code)
 /// copy text to the clipboard
 void fltk_driver::copy_to_clipboard(const std::string& s)
 {
-	fltk::copy(s.c_str(), s.length(), true);
+	fltk::copy(s.c_str(), (int) s.length(), true);
 }
 
 struct PasteWidget : public fltk::Widget
@@ -179,13 +182,14 @@ bool fltk_driver::query(const std::string& question, std::string& text, bool pas
 	return true;
 }
 
-#ifdef WIN32
+#ifdef USE_WIN32
 #include <Windows.h>
 #include <cgv/utils/convert.h>
 #include <cgv/utils/scan.h>
 #include <cgv/utils/file.h>
 #include <cgv/utils/dir.h>
 #include <Tchar.h>
+#include <Shlobj.h> // BrowseFolder
 
 typedef std::basic_string<_TCHAR> tstring;
 
@@ -235,9 +239,153 @@ void prepare_ofn_struct(OPENFILENAME& ofn, _TCHAR *szFile, int file_size,
 	}
 }
 
+// CALLBACK message procedure for the browse folder dialog
+// this callback procedure sets the initial folder of the browse folder dialog
+int CALLBACK BrowseCallbackProc( HWND hwnd, UINT uMsg, 
+    LPARAM lParam,  LPARAM lpData ) 
+{
+    TCHAR initialPath[MAX_PATH];
+ 
+    switch(uMsg) 
+	{
+    
+        case BFFM_INITIALIZED:
+			// check whether initial folder is give
+            if (lpData) 
+			{
+				// so set the initial folder
+				wcscpy( initialPath, (TCHAR *)lpData );
+			}
+            else
+			{
+				// otherwise use current folder als initial folder
+				GetCurrentDirectory(sizeof(initialPath) / sizeof(TCHAR), initialPath); 
+			}
+
+            // set the initial folder in the folder dialog by a message
+            SendMessage(hwnd, BFFM_SETSELECTION, true, (LPARAM)initialPath);
+
+			break;
+	}
+    
+    return 0;
+}
+
+void prepare_bi_struct(BROWSEINFO& bi, _TCHAR *wszPath,
+                       const std::string& title, tstring& wtitle,						
+                       const std::string& path, tstring& wpath
+						)
+{
+	ZeroMemory(&bi, sizeof(bi));
+	bi.hwndOwner = GetForegroundWindow();
+	bi.ulFlags = BIF_USENEWUI;
+
+#ifdef _UNICODE
+	wtitle =  cgv::utils::str2wstr(title);	
+	wpath =  cgv::utils::str2wstr(path);	
+#else
+	wtitle = title;    
+	wpath = path;    
+#endif    
+
+	bi.pidlRoot = NULL; 
+	bi.lpszTitle = wtitle.c_str();
+	bi.pszDisplayName = wszPath; // in this variable the choosen folder will be saved
+	bi.lpfn = BrowseCallbackProc; // set the callback procedure (used for initial folder setting)
+	bi.lParam = (LPARAM)wpath.c_str(); // remember the initial folder for the callback function (lpfn)    			
+}
+
+
+
+#endif
+
+std::string directory_open_dialog(const std::string& title, const std::string& path)
+{
+#ifdef USE_FLTK
+	const char* fn = fltk::dir_chooser(title.c_str(), path.c_str());
+	if (!fn)
+		return "";
+	return fn;
+#endif
+
+#ifdef USE_WIN32
+	_TCHAR szPath[MAX_PATH];
+	tstring wtitle, wpath;
+	BROWSEINFO bi;
+		
+	HRESULT hr = CoInitialize( NULL );
+
+	if (SUCCEEDED(hr))
+	{
+		prepare_bi_struct(bi, szPath, title, wtitle, path, wpath);
+		LPITEMIDLIST item = SHBrowseForFolder(&bi); 
+
+		if( item != NULL )
+		{
+			SHGetPathFromIDList(item, szPath);
+			CoTaskMemFree(item);
+			CoUninitialize();
+#ifdef _UNICODE
+			return cgv::utils::wstr2str(szPath);
+#else
+			return szPath;
+#endif
+		}
+		else
+		{
+			CoUninitialize();
+			return "";
+		}
+	}
+	
+#endif
+	std::cerr << "no implementation" << std::endl;
+	return "";
+}
+
+std::string directory_save_dialog(const std::string& title, const std::string& path)
+{
+	return directory_open_dialog(title, path);
+}
+
+std::string fltk_driver::file_open_dialog(const std::string& title, const std::string& filter, const std::string& path)
+{
+	if (filter.empty())
+		return directory_open_dialog(title, path);
+#ifdef USE_FLTK
+	ensure_lock();
+
+	fltk::Widget* f = fltk::focus();
+	const char* fn = fltk::file_chooser(title.c_str(), filter.c_str(), path.empty()?NULL:path.c_str(), 0);
+	if(f != NULL)
+		f->window()->show();
+	if (!fn)
+		return std::string();
+	return std::string(fn);
+#endif
+
+#ifdef USE_WIN32
+	OPENFILENAME ofn;
+	_TCHAR szFile[500];
+	tstring wfilter, wtitle, wpath;
+	prepare_ofn_struct(ofn, szFile, 500, title, wtitle, filter, wfilter, path, wpath);
+	ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST;
+	if (GetOpenFileName(&ofn)==TRUE)
+#ifdef _UNICODE
+		return cgv::utils::wstr2str(szFile);
+#else
+		return szFile;
+#endif
+	return "";
+#endif
+	std::cerr << "no implementation" << std::endl;
+	return "";
+}
+
 /// ask user for a open dialog that can select multiple files
 std::string fltk_driver::files_open_dialog(std::vector<std::string>& file_names, const std::string& title, const std::string& filter, const std::string& path)
 {
+#ifdef USE_WIN32
 	OPENFILENAME ofn;
 	_TCHAR szFile[10000];
 	tstring wfilter, wtitle, wpath;
@@ -266,27 +414,16 @@ std::string fltk_driver::files_open_dialog(std::vector<std::string>& file_names,
 #endif
 	}
 	return "";
-}
-
-std::string fltk_driver::file_open_dialog(const std::string& title, const std::string& filter, const std::string& path)
-{
-	OPENFILENAME ofn;
-	_TCHAR szFile[500];
-	tstring wfilter, wtitle, wpath;
-	prepare_ofn_struct(ofn, szFile, 500, title, wtitle, filter, wfilter, path, wpath);
-	ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST;
-	if (GetOpenFileName(&ofn)==TRUE)
-#ifdef _UNICODE
-		std::cout<<"TO WSTR! "<<szFile<<std::endl;
-		return cgv::utils::wstr2str(szFile);
-#else
-		return szFile;
 #endif
+	std::cerr << "no implementation" << std::endl;
 	return "";
 }
 
 std::string fltk_driver::file_save_dialog(const std::string& title, const std::string& filter, const std::string& path)
 {
+	if (filter.empty())
+		return directory_save_dialog(title, path);
+#ifdef USE_WIN32
 	OPENFILENAME ofn;
 	_TCHAR szFile[500];
 	tstring wfilter, wtitle, wpath;
@@ -299,35 +436,15 @@ std::string fltk_driver::file_save_dialog(const std::string& title, const std::s
 		return szFile;
 #endif
 	return "";
-}
-#else
-/// ask user for a open dialog that can select multiple files
-std::string fltk_driver::files_open_dialog(std::vector<std::string>& file_names, const std::string& title, const std::string& filter, const std::string& path)
-{
-	// FIXME: THIS IS A STUB!
+#endif
+
+#ifdef USE_FLTK
+	return file_open_dialog(title, filter, path);
+#endif
+
+	std::cerr << "no implementation" << std::endl;
 	return "";
 }
-
-
-
-std::string fltk_driver::file_open_dialog(const std::string& title, const std::string& filter, const std::string& path)
-{
-	ensure_lock();
-
-	fltk::Widget* f = fltk::focus();
-	const char* fn = fltk::file_chooser(title.c_str(), filter.c_str(), path.empty()?NULL:path.c_str(), 0);
-	if(f != NULL)
-		f->window()->show();
-	if (!fn)
-		return std::string();
-	return std::string(fn);
-}
-
-std::string fltk_driver::file_save_dialog(const std::string& title, const std::string& filter, const std::string& path)
-{
-	return file_open_dialog(title, filter, path);
-}
-#endif
 
 void fltk_driver::lock()
 {
@@ -720,5 +837,8 @@ struct menu_listener : public cgv::base::base, public registration_listener
 	}
 };
 
-extern object_registration<fltk_driver> fltk_driver_registration("");
-object_registration<menu_listener> fml_reg("");
+extern object_registration<fltk_driver> fltk_driver_registration("fltk driver");
+extern object_registration<menu_listener> fml_reg("fltk menu driver");
+
+//extern object_registration<fltk_driver> fltk_driver_registration;
+//extern object_registration<menu_listener> fml_reg;

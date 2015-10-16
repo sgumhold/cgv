@@ -152,7 +152,7 @@ bool base_provider_generator::parse_gui_file(const std::string& file_name)
 			for (pvd_map_iter pi=providers.begin(); pi != providers.end(); ++pi) {
 				if (!pi->second->is_named_gui_assignment() && pi->first->get_type_name() == key)
 					pi->second->set_gui_definition(def);
-					pi->second->multi_set(options);
+				pi->second->multi_set(options, true);
 			}
 		}
 		else {
@@ -162,7 +162,7 @@ bool base_provider_generator::parse_gui_file(const std::string& file_name)
 			for (pvd_map_iter pi=providers.begin(); pi != providers.end(); ++pi) {
 				if (pi->first->get_named() && pi->first->get_named()->get_name() == key) {
 					pi->second->set_gui_definition(def);
-					pi->second->multi_set(options);
+					pi->second->multi_set(options, true);
 					pi->second->set_named_gui_assignment(true);
 				}
 			}
@@ -189,7 +189,7 @@ bool base_provider_generator::generate_object_gui(base_ptr object)
 		if (iter != defs_by_name.end()) {
 			base_provider_ptr pvd(new base_provider(object, iter->second.definition));
 			if (!iter->second.options.empty())
-				pvd->multi_set(iter->second.options);
+				pvd->multi_set(iter->second.options, true);
 			cgv::base::register_object(pvd);
 			providers[object] = pvd;
 			return true;
@@ -199,7 +199,7 @@ bool base_provider_generator::generate_object_gui(base_ptr object)
 	if (iter != defs_by_type.end()) {
 		base_provider_ptr pvd(new base_provider(object, iter->second.definition));
 		if (!iter->second.options.empty())
-			pvd->multi_set(iter->second.options);
+			pvd->multi_set(iter->second.options, true);
 		cgv::base::register_object(pvd);
 		providers[object] = pvd;
 		return true;

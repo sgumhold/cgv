@@ -40,6 +40,8 @@ class CGV_API gui_group : public cgv::base::group, public cgv::base::registratio
 {
 protected:
 	friend class provider;
+	/// managed objects can be add to the group such that 
+	std::vector<cgv::base::base_ptr> managed_objects;
 	/// access to protected provider method
 	static void set_provider_parent(provider* p, gui_group_ptr g);
 	/// %driver specific handle for the group gui element managing the gui built in the provider
@@ -54,6 +56,23 @@ public:
 	/// overload to return the %type name of this object
 	std::string get_type_name() const;
 	
+	/**@name managed objects */
+	//@{
+	//! add the passed object as an managed object. 
+	/*! This will simply add a reference counted pointer to the object into a list
+	    of managed elements. This pointer is released whenever the gui group is 
+		destroyed or when the gui is recreated. This functionality can be used by
+		gui_creators to manage objects that are not managed by the user of the gui
+		library. An example usage can be found in the bit_field_controler found in the
+		plugin plugins/cg_ext. */
+	void add_managed_objects(cgv::base::base_ptr object);
+	/// release all managed objects
+	void release_all_managed_objects();
+	/// release a specific managed object
+	void release_managed_objects(cgv::base::base_ptr object);
+	/// check whether an object is managed by this gui group
+	bool is_managed_object(cgv::base::base_ptr object);
+	//@/
 	/**@name selection of children */
 	//@{
 	/// return whether several children of the group can be selected at the same time

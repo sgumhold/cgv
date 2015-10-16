@@ -3,5 +3,5 @@ projectName="cgv_reflect_types";
 projectType="library";
 projectGUID="298E3418-DEA7-4B02-A993-FB942B9095D8";
 addIncDirs=[CGV_DIR."/libs"];
-addProjectDeps=["cgv_utils","cgv_type","cgv_reflect","cgv_media", "cgv_math", "cgv_render"];
+addProjectDeps=["cgv_utils","cgv_type","cgv_reflect","cgv_media", "cgv_math", "cgv_render", "cgv_gui"];
 addSharedDefines=["CGV_REFLECT_TYPES_EXPORTS"];

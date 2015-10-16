@@ -131,7 +131,7 @@ struct shortcut_control_factory : public abst_control_factory
 		void* value_ptr, abst_control_provider* acp, const std::string& value_type, 
 		const std::string& gui_type, int x, int y, int w, int h)
 	{
-		if (value_type == "shortcut")
+		if (value_type == "cgv::gui::shortcut" || value_type == "shortcut")
 			return control_ptr(new fltk_shortcut_control(label, 
 			*static_cast<cgv::gui::shortcut*>(value_ptr), acp, x, y, w, h));
 		return control_ptr();

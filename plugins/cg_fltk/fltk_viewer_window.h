@@ -53,7 +53,7 @@ public:
 	/// construct application
 	fltk_viewer_window(int w, int h, const std::string& _title);
 	/// show the window. This needs to be called after creation to make the window visible
-	void show();
+	void show(bool modal);
 	/// hide the window
 	void hide();
 	/// returns fltk_viewer_window

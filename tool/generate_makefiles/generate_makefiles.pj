@@ -1,0 +1,5 @@
+@=
+projectType="tool";
+projectName="generate_makefiles";
+projectGUID="D9A2B0C4-180A-47F7-AFD0-C7D2492AF6C4";
+addCommandLineArguments=['"'.INPUT_DIR."/generate_makefiles.pj".'"'];

@@ -20,11 +20,13 @@ enum MouseAction {
 };
 
 /// different mouse buttons that can be ored together to specify the button state
-enum MouseButton { 
-	MB_NO_BUTTON = 0, //!< no button
-	MB_LEFT_BUTTON = 1,  //!< left button
+enum MouseButton 
+{ 
+	MB_NO_BUTTON = 0,      //!< no button
+	MB_LEFT_BUTTON = 1,    //!< left button
 	MB_MIDDLE_BUTTON = 2,  //!< middle button
-	MB_RIGHT_BUTTON = 4 }; //!< right button
+	MB_RIGHT_BUTTON = 4    //!< right button
+};
 
 /// class to represent all possible mouse events with the EID_MOUSE
 class CGV_API mouse_event : public event
@@ -38,12 +40,16 @@ protected:
 	short dx;
 	/// change in y position
 	short dy;
-	/// store whether 
+	/// store MouseAction 
 	unsigned char action;
 	/// store the button state
 	unsigned char button_state;
 	/// store the pressed button
 	unsigned char button;
+	/// store mouse event flags
+	unsigned char flags;
+	/// the texted resulting from a drag and drop event
+	std::string dnd_text;
 public:
 	/// construct a mouse
 	mouse_event(int x, int y, MouseAction _action, unsigned char _button_state = 0, unsigned char _button = 0, short _dx = 0, short _dy = 0, unsigned char _modifiers = 0, unsigned char _toggle_keys = 0, double _time = 0);
@@ -59,12 +65,14 @@ public:
 	short get_dx() const;
 	/// for move and drag events the difference in y to the previous position, for wheel events the amount the wheel has changed
 	short get_dy() const;
-	/// return the mosue action
+	/// return the mouse action
 	MouseAction get_action() const;
 	/// return the %button state as values from MouseButton combined with a logical or-operation
 	unsigned char get_button_state() const;
 	/// return the pressed or released %button for a %button press or release action
 	unsigned char get_button() const;
+	/// only valid in a MA_RELEASE event with the flag MF_DND set, return the text resulting from the drag&drop action
+	const std::string& get_dnd_text() const;
 
 	/// set current mouse x position 
 	void set_x(short _x);
@@ -80,6 +88,8 @@ public:
 	void set_button_state(unsigned char _button_state);
 	/// set the pressed or released %button for a %button press or release action
 	void set_button(unsigned char _button);
+	/// set the drag&drop text
+	void set_dnd_text(const std::string& text);
 };
 
 	}

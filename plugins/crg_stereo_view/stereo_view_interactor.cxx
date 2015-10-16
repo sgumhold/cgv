@@ -1,8 +1,10 @@
 #include "stereo_view_interactor.h"
+#include <cgv/utils/scan.h>
 #include <cgv/utils/ostream_printf.h>
 #include <cgv/signal/rebind.h>
 #include <cgv/gui/key_event.h>
 #include <cgv/gui/mouse_event.h>
+#include <cgv/media/image/image_writer.h>
 #include <cgv/type/variant.h>
 #define _USE_MATH_DEFINES
 #include <cmath>
@@ -72,6 +74,12 @@ double ext_view::get_parallax_zero_z() const
 ///
 stereo_view_interactor::stereo_view_interactor(const char* name) : node(name)
 {
+	write_depth = false;
+	write_color = true;
+	write_stereo = true;
+	write_width = 1400;
+	write_height = 1050;
+
 	fix_view_up_dir = false;
 	write_images = false;
 	stereo_translate_in_model_view = false;
@@ -87,7 +95,6 @@ stereo_view_interactor::stereo_view_interactor(const char* name) : node(name)
 	check_for_click = -1;
 	mono_mode = GLSU_CENTER;
 	zoom_sensitivity = rotate_sensitivity = 1;
-	toggle[0] = toggle[1] = false;
 }
 /// return the type name 
 std::string stereo_view_interactor::get_type_name() const
@@ -359,8 +366,9 @@ void stereo_view_interactor::on_rotation_change()
 void stereo_view_interactor::stream_help(std::ostream& os)
 {
 	os << "stereo_view_interactor\n\a"
-	   << "set focus:                    left mouse button click\n"
-	   << "rotate in image plane:        left mouse button\n";
+		<< "stereo:    on/off with <F4>, toggle mode with <Shift-F4>\n"
+		<< "set focus:                    left mouse button click\n"
+		<< "rotate in image plane:        left mouse button\n";
 	if (fix_view_up_dir)
 		os << "rotate around view direction: disabled [enable by disable of |stereo interactor->Current View->fix_view_up_dir|]\n";
 	else
@@ -427,6 +435,8 @@ void stereo_view_interactor::on_stereo_change()
 		bool need_quad_buffer = is_stereo_enabled() && (stereo_mode == GLSU_QUAD_BUFFER);
 		if (need_quad_buffer != bp->get<bool>("quad_buffer")) {
 			bp->set("quad_buffer", need_quad_buffer);
+			if (need_quad_buffer && !bp->get<bool>("quad_buffer"))
+				enable_stereo(false);
 		}
 	}
 	post_redraw();
@@ -503,9 +513,9 @@ void stereo_view_interactor::init_frame(context& ctx)
 					-y_extent, y_extent, z_near_derived, z_far_derived);
 		else {
 			if (stereo_translate_in_model_view)
-				glsuStereoFrustumScreen(e, eye_distance, y_extent*aspect, y_extent, z_focus, z_near_derived, z_far_derived);
+				glsuStereoFrustumScreen(e, eye_distance, 2*y_extent*aspect, 2*y_extent, z_focus, z_near_derived, z_far_derived);
 			else
-				glsuStereoPerspectiveScreen(e, eye_distance, y_extent*aspect, y_extent, z_focus, z_near_derived, z_far_derived);
+				glsuStereoPerspectiveScreen(e, eye_distance, 2*y_extent*aspect, 2*y_extent, z_focus, z_near_derived, z_far_derived);
 		}
 	}
 	glMatrixMode(GL_MODELVIEW);
@@ -580,14 +590,56 @@ void stereo_view_interactor::check_write_image(context& ctx, const char* post_fi
 {
 	if (!write_images)
 		return;
-	std::string file_name = image_file_name_prefix+post_fix;
+	
+	std::string ext("bmp");
+	std::string exts = cgv::media::image::image_writer::get_supported_extensions();
+	if (cgv::utils::is_element("png",exts))
+		ext = "png";
+	else if (cgv::utils::is_element("tif",exts))
+		ext = "tif";
 
-	ctx.write_frame_buffer_to_image(file_name+"_d.bmp", cgv::data::CF_D,FB_BACK,0,0,-1,-1,depth_offset, depth_scale);
-	ctx.write_frame_buffer_to_image(file_name+"_c.bmp");
-	if (auto_view_images) {
-		system((std::string("\"")+file_name+"_c.bmp\"").c_str());
-		system((std::string("\"")+file_name+"_d.bmp\"").c_str());
+	std::string file_name = image_file_name_prefix;
+	if (write_stereo) {
+		if (mono_mode == GLSU_LEFT)
+			file_name += "_left";
+		else if (mono_mode == GLSU_RIGHT)
+			file_name += "_right";
 	}
+	if (write_color) {
+		ctx.write_frame_buffer_to_image(file_name+"_rgb." + ext);
+		if (auto_view_images)
+			system((std::string("\"")+file_name+"_rgb." + ext + "\"").c_str());
+	}
+
+	if (write_depth) { 
+		ctx.write_frame_buffer_to_image(file_name+"_depth." + ext, cgv::data::CF_D,FB_BACK,0,0,-1,-1,depth_offset, depth_scale);
+		if (auto_view_images) 
+			system((std::string("\"")+file_name+"_depth." + ext + "\"").c_str());
+	}
+}
+
+void stereo_view_interactor::write_images_to_file()
+{
+	context* ctx = get_context();
+	if (ctx == 0)
+		return;
+
+	if ( (write_width != -1 && ctx->get_width() != write_width) ||
+		 (write_height != -1 && ctx->get_height() != write_height) ) {
+			ctx->resize(write_width, write_height);
+	}
+
+	if (!stereo_enabled && write_stereo) {
+		GlsuEye tmp = mono_mode;
+		mono_mode = GLSU_LEFT;
+		ctx->force_redraw();
+		mono_mode = GLSU_RIGHT;
+		ctx->force_redraw();
+		mono_mode = tmp;
+	}
+	else
+		ctx->force_redraw();
+
 	write_images = false;
 	update_member(&write_images);
 }
@@ -625,91 +677,59 @@ void stereo_view_interactor::dir_gui_cb(vec_type& dir, int i)
 /// you must overload this for gui creation
 void stereo_view_interactor::create_gui()
 {
-	add_decorator("View Configuration", "heading");
-	connect_copy(add_control("zoom_sensitivity", zoom_sensitivity, "value_slider", "min=0.1;max=10;ticks=true;step=0.01;log=true")->value_change,
-		rebind(static_cast<drawable*>(this), &drawable::post_redraw));
-	connect_copy(add_control("rotate_sensitivity", rotate_sensitivity, "value_slider", "min=0.1;max=10;ticks=true;step=0.01;log=true")->value_change,
-		rebind(static_cast<drawable*>(this), &drawable::post_redraw));
-	connect_copy(add_control("show focus", show_focus, "check")->value_change,
-		rebind(static_cast<drawable*>(this), &drawable::post_redraw));
-	add_decorator("Framebuffer to Image", "heading");
-	add_control("depth offset", depth_offset, "value_input", "min=0;max=1;ticks=true;log=true");
-	add_control("depth scale", depth_scale, "value_input", "min=0.01;max=100;ticks=true;log=true");
-	connect_copy(add_control("write buffers to file", write_images, "toggle")->value_change,
-		rebind(static_cast<drawable*>(this), &drawable::post_redraw));
-	add_control("image file name", image_file_name_prefix);
-	add_control("autoview", auto_view_images, "check");
-	align("%x-=32");
-	connect_copy(add_control(std::string(toggle[0]?"-":"+"), toggle[0], "toggle", "w=20", " ")->value_change,
-		rebind(static_cast<provider*>(this), &provider::post_recreate_gui));
-	add_decorator("Stereo Parameters", "heading", "level=2");
-	if (toggle[0]) {
-		connect_copy(add_control("stereo", stereo_enabled, "check")->value_change,
-			rebind(this, &stereo_view_interactor::on_stereo_change));
-		connect_copy(add_control("mono mode", mono_mode, "dropdown", "enums='left=-1,center,right'")->value_change,
-			rebind(static_cast<drawable*>(this), &drawable::post_redraw));
-		connect_copy(add_control("stereo mode", stereo_mode, "dropdown", "enums='vsplit,hsplit,anaglyph,quad buffer'")->value_change,
-			rebind(static_cast<drawable*>(this), &drawable::post_redraw));
-		connect_copy(add_control("config", ac, "dropdown",
-			"enums='<red|blue>,<red|cyan>,<yellow|blue>,<magenta|green>,<blue|red>,<cyan|red>,<blue|yellow>,<green|magenta>'")->value_change,
-			rebind(static_cast<drawable*>(this), &drawable::post_redraw));
-		connect_copy(add_control("eye-dist", eye_distance, "value_slider", "min=0;max=0.1;ticks=true;step=0.001")->value_change,
-			rebind(static_cast<drawable*>(this), &drawable::post_redraw));
-		connect_copy(add_control("parallax-zero-scale", parallax_zero_scale, "value_slider", "min=0.03;max=1;ticks=true;step=0.001;log=true")->value_change,
-			rebind(static_cast<drawable*>(this), &drawable::post_redraw));		
-		connect_copy(add_control("stereo_translate_in_model_view", stereo_translate_in_model_view, "check")->value_change,
-			rebind(static_cast<drawable*>(this), &drawable::post_redraw));
+	if (begin_tree_node("View Configuration", zoom_sensitivity, false)) {
+		align("\a");
+			add_member_control(this, "zoom_sensitivity", zoom_sensitivity, "value_slider", "min=0.1;max=10;ticks=true;step=0.01;log=true");
+			add_member_control(this, "rotate_sensitivity", rotate_sensitivity, "value_slider", "min=0.1;max=10;ticks=true;step=0.01;log=true");
+			add_member_control(this, "show focus", show_focus, "check");
+		align("\b");
+		end_tree_node(zoom_sensitivity);
 	}
-	align("%x-=32");
-	connect_copy(add_control(std::string(toggle[1]?"-":"+"), toggle[1], "toggle", "w=20", " ")->value_change,
-		rebind(static_cast<provider*>(this), &provider::post_recreate_gui));
-	add_decorator("Current View", "heading", "level=2");
-	if (toggle[1]) {
-		add_control("focus x", view::focus(0), "value_input", "w=50;min=-10;max=10;ticks=true"," ");
-		add_control("y", view::focus(1), "value_input", "w=50;min=-10;max=10;ticks=true"," ");
-		add_control("z", view::focus(2), "value_input", "w=50;min=-10;max=10;ticks=true");
-		///
-		add_dir_control("view dir",view_dir);
-		add_dir_control("up dir",view_up_dir);
-		connect_copy(add_control("fix_view_up_dir", fix_view_up_dir, "check")->value_change,
-			rebind(this, &stereo_view_interactor::on_rotation_change));
-
-		add_control("y view angle", y_view_angle, "value_slider", "min=0;max=90;ticks=true;log=true");
-		add_control("extent", y_extent_at_focus, "value_slider", "min=0;max=100;ticks=true;log=true;step=0.0001");
-		add_control("z_near", z_near, "value_slider", "min=0;max=100;log=true;step=0.00001");
-		add_control("z_far", z_far, "value_slider", "min=0;max=10000;log=true;step=0.00001");
-		connect_copy(add_control("clip_relative_to_extent", clip_relative_to_extent, "check")->value_change,
-			rebind(static_cast<drawable*>(this), &drawable::post_redraw));
-
-		connect_copy(find_control(view::focus(0))->value_change,
-			rebind(static_cast<drawable*>(this), &drawable::post_redraw));
-		connect_copy(find_control(view::focus(1))->value_change,
-			rebind(static_cast<drawable*>(this), &drawable::post_redraw));
-		connect_copy(find_control(view::focus(2))->value_change,
-			rebind(static_cast<drawable*>(this), &drawable::post_redraw));
-		connect_copy(find_control(y_view_angle)->value_change,
-			rebind(static_cast<drawable*>(this), &drawable::post_redraw));
-		connect_copy(find_control(y_extent_at_focus)->value_change,
-			rebind(static_cast<drawable*>(this), &drawable::post_redraw));
-		connect_copy(find_control(z_near)->value_change,
-			rebind(static_cast<drawable*>(this), &drawable::post_redraw));
-		connect_copy(find_control(z_far)->value_change,
-			rebind(static_cast<drawable*>(this), &drawable::post_redraw));
+	if (begin_tree_node("Framebuffer to Image", write_images, false)) {
+		align("\a");
+			add_member_control(this, "write buffers to file", write_images, "toggle");
+			add_member_control(this, "width", write_width);
+			add_member_control(this, "height", write_height);
+			add_member_control(this, "write left/right", write_stereo);
+			add_member_control(this, "write color", write_color);
+			add_member_control(this, "write depth", write_depth);
+			add_member_control(this, "depth offset", depth_offset, "value_input", "min=0;max=1;ticks=true;log=true");
+			add_member_control(this, "depth scale", depth_scale, "value_input", "min=0.01;max=100;ticks=true;log=true");
+			add_member_control(this, "image file name", image_file_name_prefix);
+			add_member_control(this, "autoview", auto_view_images, "check");
+		align("\b");
+		end_tree_node(write_images);
 	}
+	if (begin_tree_node("Stereo Parameters", stereo_enabled, true)) {
+		align("\a");
+			connect_copy(add_control("stereo", stereo_enabled, "check")->value_change, rebind(this, &stereo_view_interactor::on_stereo_change));
+			add_member_control(this, "mono mode", mono_mode, "dropdown", "enums='left=-1,center,right'");
+			add_member_control(this, "stereo mode", stereo_mode, "dropdown", "enums='vsplit,hsplit,anaglyph,quad buffer'");
+			add_member_control(this, "config", ac, "dropdown", "enums='<red|blue>,<red|cyan>,<yellow|blue>,<magenta|green>,<blue|red>,<cyan|red>,<blue|yellow>,<green|magenta>'");
+			add_member_control(this, "eye-dist", eye_distance, "value_slider", "min=0;max=0.1;ticks=true;step=0.001");
+			add_member_control(this, "parallax-zero-scale", parallax_zero_scale, "value_slider", "min=0.03;max=1;ticks=true;step=0.001;log=true");		
+			add_member_control(this, "stereo_translate_in_model_view", stereo_translate_in_model_view, "check");
+		align("\b");
+		end_tree_node(stereo_enabled);
+	}
+	if (begin_tree_node("Current View", view::focus(0), true)) {
+		align("\a");
+			add_member_control(this, "focus x", view::focus(0), "value_input", "w=50;min=-10;max=10;ticks=true"," ");
+			add_member_control(this, "y", view::focus(1), "value_input", "w=50;min=-10;max=10;ticks=true"," ");
+			add_member_control(this, "z", view::focus(2), "value_input", "w=50;min=-10;max=10;ticks=true");
+			///
+			add_dir_control("view dir",view_dir);
+			add_dir_control("up dir",view_up_dir);
+			connect_copy(add_control("fix_view_up_dir", fix_view_up_dir, "check")->value_change, rebind(this, &stereo_view_interactor::on_rotation_change));
 
-
-
-/*
-	connect_copy(add_control("stereo", stereo_enabled, "check")->value_change,
-		rebind(this, &stereo_view_interactor::on_stereo_change));
-	connect_copy(add_control("mode", stereo_mode, "vsplit,hsplit,anaglyph,quad buffer")->value_change,
-		rebind(this, &stereo_view_interactor::on_stereo_change));
-	connect_copy(add_control("config", ac, 
-		"<red|blue>,<red|cyan>,<yellow|blue>,<magenta|green>,<blue|red>,<cyan|red>,<blue|yellow>,<green|magenta>")->value_change,
-		rebind(static_cast<drawable*>(this), &drawable::post_redraw));
-	connect_copy(add_control("eye-dist", eye_distance, "value_slider", "min=0;max=0.1;ticks=true;step=0.001")->value_change,
-		rebind(static_cast<drawable*>(this), &drawable::post_redraw));
-*/
+			add_member_control(this, "y view angle", y_view_angle, "value_slider", "min=0;max=90;ticks=true;log=true");
+			add_member_control(this, "extent", y_extent_at_focus, "value_slider", "min=0;max=100;ticks=true;log=true;step=0.0001");
+			add_member_control(this, "z_near", z_near, "value_slider", "min=0;max=100;log=true;step=0.00001");
+			add_member_control(this, "z_far", z_far, "value_slider", "min=0;max=10000;log=true;step=0.00001");
+			add_member_control(this, "clip_relative_to_extent", clip_relative_to_extent, "check");
+		align("\b");
+		end_tree_node(view::focus(0));
+	}
 }
 
 /*
@@ -797,7 +817,12 @@ void stereo_view_interactor::on_set(void* m)
 		on_stereo_change();
 	if (find_control_void(m,0))
 		find_control_void(m,0)->update();
-	post_redraw();
+	if (m == &write_images) {
+		write_images_to_file();
+	}
+	else {
+		post_redraw();
+	}
 }
 
 /// you must overload this for gui creation
@@ -836,6 +861,6 @@ bool stereo_view_interactor::self_reflect(cgv::reflect::reflection_handler& srh)
 
 /// register a newly created cube with the name "cube1" as constructor argument
 extern cgv::base::object_registration_1<stereo_view_interactor,const char*> 
- obj1("stereo interactor", "");
+ obj1("stereo interactor", "registration of stereo interactor");
 
 #endif

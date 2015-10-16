@@ -67,6 +67,10 @@ public:
 	void draw(cgv::render::context &ctx);
 	/// read mesh from the given file_name which is extended by model path if it does not exist
 	virtual bool read_mesh(const std::string& file_name);
+	/// clear all objects living in the context like textures or display lists
+	void clear(context& ctx);
+	/// return the axis aligned bounding box
+	const box_type& get_box() const;
 };
 
 		}

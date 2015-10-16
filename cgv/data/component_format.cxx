@@ -249,7 +249,7 @@ std::string component_format::get_component_name(unsigned int i) const
 {
 	if (i >= get_nr_components())
 		return "";
-	unsigned n = component_string.size();
+	unsigned n = (unsigned)component_string.size();
 	if (i+1 < get_nr_components())
 		n = component_positions[i+1]-1;
 	n -= component_positions[i];

@@ -95,7 +95,7 @@ socket::socket() : user_data(0)
 }
 
 /// construct from existing socket identifier
-socket::socket(unsigned int _id) : user_data(_id)
+socket::socket(size_t _id) : user_data(_id)
 {
 }
 
@@ -226,10 +226,10 @@ bool socket::send_line(const std::string& s)
 
 bool socket::send_data(const std::string& s)
 {
-	int nr_bytes = s.length();
+	int nr_bytes = (int)s.length();
 	const char* buf = s.c_str();
 	do {
-		int nr_bytes_sent = send(user_data,buf,nr_bytes,0);
+		int nr_bytes_sent = send(user_data, buf, nr_bytes, 0);
 		if (nr_bytes_sent <= 0)
 			return set_last_error("send_data/line", nr_bytes_sent == SOCKET_ERROR ? "" : "connection closed");
 		nr_bytes -= nr_bytes_sent;

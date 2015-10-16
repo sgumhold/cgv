@@ -16,8 +16,12 @@ struct qem : public cgv::math::qem<T>
 	}
 };
 
+#ifdef REFLECT_IN_CLASS_NAMESPACE
+}} namespace cgv { namespace math {
+#endif
+
 template <typename T>
-extern_string_reflection_traits<cgv::math::qem<T>, cgv::reflect::math::qem<T> > get_reflection_traits(const cgv::math::qem<T>&) { return extern_string_reflection_traits<cgv::math::qem<T>, cgv::reflect::math::qem<T> >(); }
+cgv::reflect::extern_string_reflection_traits<cgv::math::qem<T>, cgv::reflect::math::qem<T> > get_reflection_traits(const cgv::math::qem<T>&) { return cgv::reflect::extern_string_reflection_traits<cgv::math::qem<T>, cgv::reflect::math::qem<T> >(); }
 
 	}
 }

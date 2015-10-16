@@ -1,6 +1,6 @@
 #pragma once
 
-#if _MSC_VER >= 1600
+#if _MSC_VER > 1600
 #define CPP11
 #endif
 

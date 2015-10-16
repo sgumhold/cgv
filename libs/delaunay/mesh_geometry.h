@@ -14,10 +14,16 @@ public:
 	typedef ta_coord_type coord_type;
 	/// declare point type
 	typedef ta_point_type point_type;
+	/// different sampling types
+	enum SamplingType { ST_REGULAR, ST_RANDOM, ST_STRATIFIED };
+	/// different sampling distributions
+	enum DistributionType { DT_UNIFORM, DT_NORMAL };
 	/// different sampling types for sample data set generation
-	enum SamplingType { RANDOM, RANDOM_HIGH_RES, UNIFORM };
+	enum GeneratorType { GT_RANDOM, GT_PSEUDO_RANDOM_DEFAULT, GT_PSEUDO_RANDOM_MT };
 	/// different shape types for sample data set generation
-	enum ShapeType { SQUARE, TRIANGLE, CIRCLE, SPIRAL };
+	enum ShapeType { ST_SQUARE, ST_TRIANGLE, ST_CIRCLE, ST_SPIRAL };
+	/// different sampling strategies
+	enum SamplingStrategy { SS_REJECTION, SS_TRANSFORM };
 protected:
 	/// list of points
 	std::vector<point_type> P;
@@ -29,7 +35,7 @@ public:
 	/// construct empty triangle mesh
 	mesh_geometry();
 	/// generate random points
-	void generate_sample_data_set(unsigned int n, ShapeType shape, SamplingType sampling, bool do_random_shuffle);
+	void generate_sample_data_set(unsigned int n, SamplingType sampling, DistributionType dt, GeneratorType gt, ShapeType shape, SamplingStrategy ss, bool do_random_shuffle);
 	/// remove all vertices 
 	void clear_geometry();
 	/// return the number of vertices

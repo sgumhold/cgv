@@ -7,7 +7,7 @@ namespace cgv {
 	namespace utils {
 
 bool is_space(char c) {
-	return c == ' ' || c == '\t' || c == '\n';
+	return c == ' ' || c == '\t' || c == '\n' || c == '\r';
 }
 
 bool is_url_special(char c) {
@@ -99,15 +99,15 @@ unsigned int replace(std::string& _s, const std::string& s1, const std::string& 
 {
 	if (s1.empty())
 		return 0;
-	unsigned l  = _s.size();
-	unsigned l1 = s1.size();
+	size_t l  = _s.size();
+	size_t l1 = s1.size();
 	if (l1 > l)
 		return 0;
-	unsigned l2 = s2.size();
+	size_t l2 = s2.size();
 	// count number of replacements in n
-	unsigned n  = 0;
-	for (unsigned pos=0; pos <= l - l1; ++pos) {
-		unsigned i;
+	size_t n = 0;
+	for (size_t pos = 0; pos <= l - l1; ++pos) {
+		size_t i;
 		for (i=0; i<l1; ++i)
 			if (_s[pos+i] != s1[i])
 				break;
@@ -123,10 +123,10 @@ unsigned int replace(std::string& _s, const std::string& s1, const std::string& 
 			pos += l2;
 			++n;
 			if (l1 > l)
-				return n;
+				return (unsigned)n;
 		}
 	}
-	return n;
+	return (unsigned)n;
 }
 
 /// escapes the C++ special characters \a, \b, \f, \n, \r, \t, \v, \', \", \\, \?
@@ -234,12 +234,12 @@ int get_element_index(const std::string& e, const std::string& s, char sep)
 	if (e.empty() && s.empty())
 		return 0;
 
-	int n = s.size();
+	size_t n = s.size();
 	bool at_start = true;
 	int idx = 0;
 	unsigned k = 0;
 	bool match = true;
-	for (int i=0; i<n; ++i) {
+	for (size_t i = 0; i<n; ++i) {
 		if (s[i] == sep) {
 			if (k == e.size() && match)
 				return idx;

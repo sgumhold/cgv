@@ -16,8 +16,14 @@ struct fmat : public cgv::math::fmat<T,N,M>
 };
 		}
 
-template <typename T, cgv::type::uint32_type N, cgv::type::uint32_type M>
-extern_string_reflection_traits<cgv::math::fmat<T,N,M>, cgv::reflect::math::fmat<T,N,M> > get_reflection_traits(const cgv::math::fmat<T,N,M>&) { return extern_string_reflection_traits<cgv::math::fmat<T,N,M>, cgv::reflect::math::fmat<T,N,M> >(); }
+#ifdef REFLECT_IN_CLASS_NAMESPACE
+}} namespace cgv { namespace math {
+#endif
 
+		template <typename T, cgv::type::uint32_type N, cgv::type::uint32_type M>
+		cgv::reflect::extern_string_reflection_traits<cgv::math::fmat<T,N,M>, cgv::reflect::math::fmat<T,N,M> >
+			get_reflection_traits(const cgv::math::fmat<T,N,M>&) {
+				return cgv::reflect::extern_string_reflection_traits<cgv::math::fmat<T,N,M>, cgv::reflect::math::fmat<T,N,M> >();
+		}
 	}
 }

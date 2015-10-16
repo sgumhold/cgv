@@ -1,25 +1,23 @@
-@exclude<cgv/config/make.ppp>
-@define(projectName="tiff")
-@define(projectType="library")
-@define(projectGUID="04047bf0-fc32-11dd-87af-0800200c9a66")
-@define(addIncDirs=[CGV_DIR."/3rd/tiff",CGV_DIR."/3rd/jpeg"])
-@define(defFile="$(CGV_DIR)/3rd/tiff/tiff.def")
-@define(addProjectDirs=[CGV_DIR."/3rd/jpeg"])
-@define(addProjectDeps=["jpeg"])
-@if(SYSTEM=="windows")@{
-@define(addDefines=["_CRT_SECURE_NO_DEPRECATE",
-						  "AVOID_WIN32_FILEIO",
-						  "CHECK_JPEG_YCBCR_SUBSAMPLING",
-						  "DEFAULT_EXTRASAMPLE_AS_ALPHA",
-						  "STRIPCHOP_DEFAULT=TIFF_STRIPCHOP",
-						  "STRIP_SIZE_DEFAULT=8192",
-						  "LOGLUV_SUPPORT",
-						  "NEXT_SUPPORT",
-						  "THUNDER_SUPPORT",
-						  "LZW_SUPPORT",
-						  "PACKBITS_SUPPORT",
-						  "CCITT_SUPPORT",
-						  "TIF_PLATFORM_CONSOLE",
-						  "FILLODER_LSB2MSB"])
-@}
-@define(addStaticDefines=["JPEG_STATIC"])
+@=
+projectName="tiff";
+projectType="library";
+projectGUID="04047bf0-fc32-11dd-87af-0800200c9a66";
+addIncDirs=[CGV_DIR."/3rd/tiff",CGV_DIR."/3rd/jpeg"];
+defFile= CGV_DIR."/3rd/tiff/libtiff.def";
+addProjectDirs=[CGV_DIR."/3rd/jpeg"];
+addProjectDeps=["jpeg"];
+addDefines=["_CRT_SECURE_NO_DEPRECATE",
+			"AVOID_WIN32_FILEIO",
+			"CHECK_JPEG_YCBCR_SUBSAMPLING",
+			"DEFAULT_EXTRASAMPLE_AS_ALPHA",
+			"STRIPCHOP_DEFAULT=TIFF_STRIPCHOP",
+			"STRIP_SIZE_DEFAULT=8192",
+			"LOGLUV_SUPPORT",
+			"NEXT_SUPPORT",
+			"THUNDER_SUPPORT",
+			"LZW_SUPPORT",
+			"PACKBITS_SUPPORT",
+			"CCITT_SUPPORT",
+			"TIF_PLATFORM_CONSOLE",
+			"FILLODER_LSB2MSB"];
+addStaticDefines=["JPEG_STATIC"];

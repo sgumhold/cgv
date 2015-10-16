@@ -1,10 +1,27 @@
 #include <cgv/data/data_view.h>
 #include <iostream> 
 #include <memory.h>
+#include <map>
+#include <cgv/data/ref_ptr.h>
 
 namespace cgv {
 	namespace data {
-
+		/*
+bool validate_delete(const void* ptr)
+{
+	static std::map<const void*, int> del_map;
+	if (del_map.find(ptr) != del_map.end()) {
+		++del_map[ptr];
+//		std::cerr << "ERROR:  multiple (" << del_map[ptr] << ")  delete on " << ptr << std::endl;
+		return false;
+	}
+	else {
+		del_map[ptr] = 1;
+//		std::cerr << "DELETE: " << ptr << std::endl;
+		return true;
+	}
+}
+*/
 /// constructor used to construct sub views onto the data view
 data_view_base::data_view_base(
 		const data_format* _format, 

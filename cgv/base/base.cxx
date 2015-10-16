@@ -270,7 +270,7 @@ std::string base::get_property_declarations()
 }
 
 /// set several properties, which are defined as colon separated assignments, where the types are derived automatically
-void base::multi_set(const std::string& property_assignments)
+void base::multi_set(const std::string& property_assignments, bool report_error)
 {
 	// split into single assignments
 	std::vector<token> toks;
@@ -280,7 +280,8 @@ void base::multi_set(const std::string& property_assignments)
 		std::vector<token> sides;
 		bite_all(tokenizer(toks[i]).set_skip("'\"","'\"","\\\\").set_ws("="),sides);
 		if (sides.size() != 2) {
-			std::cerr << "property assignment >" << to_string(toks[i]).c_str() << "< does not match pattern lhs=rhs" << std::endl;
+			if (report_error)
+				std::cerr << "property assignment >" << to_string(toks[i]).c_str() << "< does not match pattern lhs=rhs" << std::endl;
 			continue;
 		}
 		std::string lhs(to_string(sides[0]));

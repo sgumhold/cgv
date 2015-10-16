@@ -6,52 +6,16 @@ include("../../cmake/buildCoreComponents.cmake")
 # The PPP is required
 find_package(ppp)
 
-# Public headers
-# TODO: To be verified
-set(PUBLIC_HEADERS
-	standard_types.h 
-	lib_begin.h
-	variant.h
-	cond/has_virtual_destructor.h  
-	cond/is_const.h  
-	cond/is_standard_type.h
-	cond/is_base_of.h              
-	cond/is_enum.h
-	ctrl/if_.h
-	func/clean.h       
-	func/drop_ref.h       
-	func/make_const.h  
-	func/make_return.h    
-	func/promote.h
-	func/drop_const.h  
-	func/make_argument.h  
-	func/make_ref.h    
-	func/promote_const.h  
-	func/transfer_const.h
-	info/type_id.h  
-	info/type_name.h
-	info/type_access.h
-	info/type_ptr.h
-	traits/member_pointer.h   
-	traits/min.h  
-	traits/zero.h
-	traits/max.h                
-	traits/one.h
-)
-
 # Source files
-set(SOURCES
-	variant.cxx
-	info/type_id.cxx  
-	info/type_name.cxx
-)
+file(GLOB_RECURSE SOURCES RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "*.cxx")
+# Header files
+file(GLOB_RECURSE PUBLIC_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "*.h")
+#list(REMOVE_ITEM PUBLIC_HEADERS "info/type_access.h")
+#list(REMOVE_ITEM PUBLIC_HEADERS "info/type_ptr.h")
 
-# Files to be preprocessed by the PPP
-set(PPP_SOURCES
-	invalid_type.ph  
-	traits/function_pointer.ph  
-	traits/method_pointer.ph
-)
+# Files to be preprocessed by PPP
+file(GLOB_RECURSE PPP_SOURCES RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "*.ph")
+
 
 # Create the PPP files
 ppp_compile("${CGV_DIR}"

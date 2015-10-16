@@ -4,6 +4,7 @@
 #include <cgv/render/view.h>
 #include <cgv/render/drawable.h>
 #include <cgv/gui/event_handler.h>
+#include <cgv/gui/provider.h>
 #include <cgv/math/vec.h>
 #include <cgv/math/mat.h>
 #include <cgv/math/transformations.h>
@@ -19,7 +20,8 @@
 class planar_view_interactor : 
 	public cgv::base::node, 
 	public cgv::gui::event_handler, 
-	public cgv::render::drawable
+	public cgv::render::drawable,
+	public cgv::gui::provider
 
 {
 public:
@@ -44,7 +46,15 @@ public:
 	const cgv::math::mat<float> get_projection() const;
 	/// return modelview matrix V=T((0,0,-distance)^T)* R_x(elevation) * R_y(azimut)* T(-target)
 	const cgv::math::mat<float> get_modelview() const;
+
+	/// describe members
+	bool self_reflect(cgv::reflect::reflection_handler& rh);
+	/// default callback
+	void on_set(void* member_ptr);
+	/// create a gui
+	void create_gui();
 	
+	void rotate(int x, int y);
 	/// move (dx,dy)
 	void move(int x, int y);
 
@@ -64,6 +74,10 @@ private:
 	/// zoom 
 	float magnification;
 	
-	
+	/// rotation angle
+	float angle;
+
+	/// whether to lock rotation
+	bool lock_rotation;
 	
 };

@@ -195,7 +195,7 @@ bool video_reader::get_void(const std::string& property, const std::string& type
 	return cgv::base::base::get_void(property, type, value);
 }
 
-object_registration<video_reader_listener> video_reader_listener_registration("");
+object_registration<video_reader_listener> video_reader_listener_registration("register video reader listener");
 
 		}
 	}

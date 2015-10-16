@@ -1,6 +1,9 @@
 #pragma once
 
 #include <cgv/render/drawable.h>
+#include <cgv/render/shader_program.h>
+#include <cgv/render/view.h>
+#include <cgv/media/illum/phong_material.hh>
 
 #include "point_cloud.h"
 #include "neighbor_graph.h"
@@ -8,13 +11,12 @@
 
 #include "lib_begin.h"
 
+/** drawable for a point cloud that manages a neighbor graph and a normal estimator and supports rendering of point cloud and bounding box. */
 struct CGV_API gl_point_cloud_drawable_base :
-	public cgv::render::drawable
+	public cgv::render::drawable, public point_cloud_types
 {
-	typedef point_cloud::coord_type coord_type;
-	typedef point_cloud::Pnt Pnt;
-	typedef point_cloud::Nml Nml;
-	typedef point_cloud::Box Box;
+public:
+	typedef cgv::media::illum::phong_material::color_type color_type;
 protected:
 	point_cloud pc;
 	neighbor_graph ng;
@@ -23,14 +25,33 @@ protected:
 	std::string data_path;
 	std::string file_name;
 
-	float point_size, line_width, nml_length;
-	bool show_points, show_nmls, show_box;
-	bool illum_points, show_neighbor_graph;
+	// reduction to subset 
+	unsigned show_point_step;
+	std::size_t show_point_begin, show_point_end;
 
+	float point_size, line_width, nml_length;
+	bool show_points, show_nmls, show_clrs, show_box;
+	bool smooth_points, blend_points, backface_cull_points;
+	bool illum_points, show_neighbor_graph;
+	bool orient_splats, sort_points;
+	bool use_point_shader;
+	cgv::render::shader_program pc_prog;
 	unsigned k;
 	bool do_symmetrize;
 	
+	float outline_width_from_pixel;
+	float percentual_outline_width;
+
 	bool reorient_normals;
+
+	cgv::media::illum::phong_material base_material;
+	color_type base_color;
+	color_type nml_color;
+	color_type box_color;
+
+	cgv::render::view* view_ptr;
+	bool ensure_view_pointer();
+
 public:
 	void clear();
 
@@ -54,10 +75,12 @@ public:
 	void draw_edge_color(unsigned int vi, unsigned int j, bool is_symm, bool is_start) const;
 	//void draw_debug_vertex(unsigned int vi);
 
+	void draw_box(cgv::render::context& ctx, const Box& box);
 	void draw_box(cgv::render::context& ctx);
 	void draw_points(cgv::render::context& ctx);
 	void draw_normals(cgv::render::context& ctx);
 	void draw_graph(cgv::render::context& ctx);
+	void init_frame(cgv::render::context& ctx);
 	void draw(cgv::render::context& ctx);
 };
 

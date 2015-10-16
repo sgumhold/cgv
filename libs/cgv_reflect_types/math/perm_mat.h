@@ -16,8 +16,10 @@ struct CGV_API perm_mat : public ::cgv::math::perm_mat
 	bool self_reflect(cgv::reflect::reflection_handler& rh);
 };
 		}
-
-extern CGV_API extern_reflection_traits<cgv::math::perm_mat, cgv::reflect::math::perm_mat > get_reflection_traits(const cgv::math::perm_mat&);
+#ifdef REFLECT_IN_CLASS_NAMESPACE
+}} namespace cgv { namespace math {
+#endif
+extern CGV_API cgv::reflect::extern_reflection_traits<cgv::math::perm_mat, cgv::reflect::math::perm_mat> get_reflection_traits(const cgv::math::perm_mat&);
 
 	}
 }

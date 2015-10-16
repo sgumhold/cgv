@@ -18,8 +18,15 @@ struct CGV_API obj_material : public cgv::media::illum::obj_material
 			}
 		}
 
-extern CGV_API extern_reflection_traits<cgv::media::illum::obj_material, cgv::reflect::media::illum::obj_material> get_reflection_traits(const cgv::media::illum::obj_material&);
+#ifdef REFLECT_IN_CLASS_NAMESPACE
+}} namespace cgv {	namespace media { namespace illum {
+#endif
 
+extern CGV_API cgv::reflect::extern_reflection_traits<cgv::media::illum::obj_material, cgv::reflect::media::illum::obj_material> get_reflection_traits(const cgv::media::illum::obj_material&);
+
+#ifdef REFLECT_IN_CLASS_NAMESPACE
+		}
+#endif
 	}
 }
 

@@ -1,10 +1,9 @@
-#pragma once
-
 #include "obj_reader.h"
 #include <cgv/utils/file.h>
 #include <cgv/type/standard_types.h>
 #include <cgv/utils/advanced_scan.h>
 #include <cgv/utils/tokenizer.h>
+#include <cgv/base/import.h>
 
 using namespace cgv::math;
 using namespace cgv::type;
@@ -19,55 +18,82 @@ namespace cgv {
 	namespace media {
 		namespace mesh {
 
-obj_reader::v2d_type obj_reader::parse_v2d(const std::vector<token>& T) const
+			bool is_double_impl(const char* begin, const char* end, float& value)
+			{
+				double valued;
+				bool res = cgv::utils::is_double(begin, end, valued);
+				value = (float)valued;
+				return res;
+			}
+
+			bool is_double_impl(const char* begin, const char* end, double& value)
+			{
+				return cgv::utils::is_double(begin, end, value);
+			}
+
+///
+template <typename T>
+bool obj_reader_generic<T>::is_double(const char* begin, const char* end, crd_type& value)
+{
+	return is_double_impl(begin, end, value);
+}
+
+template <typename T>
+typename obj_reader_generic<T>::v2d_type obj_reader_generic<T>::parse_v2d(const std::vector<token>& t) const
 {
 	v2d_type v(0,0);
-	T.size() > 2 && 
-	is_double(T[1].begin,T[1].end, v(0)) && 
-	is_double(T[2].begin,T[2].end, v(1));
+	t.size() > 2 && 
+	is_double(t[1].begin,t[1].end, v(0)) && 
+	is_double(t[2].begin,t[2].end, v(1));
 	return v;
 }
 
-obj_reader::v3d_type obj_reader::parse_v3d(const std::vector<token>& T) const
+template <typename T>
+typename obj_reader_generic<T>::v3d_type obj_reader_generic<T>::parse_v3d(const std::vector<token>& t) const
 {
 	v3d_type v(0,0,0);
-	T.size() > 3 && 
-	is_double(T[1].begin,T[1].end, v(0)) && 
-	is_double(T[2].begin,T[2].end, v(1)) && 
-	is_double(T[3].begin,T[3].end, v(2));
+	t.size() > 3 && 
+	is_double(t[1].begin,t[1].end, v(0)) && 
+	is_double(t[2].begin,t[2].end, v(1)) && 
+	is_double(t[3].begin,t[3].end, v(2));
 	return v;
 }
 
-obj_reader::color_type obj_reader::parse_color(const std::vector<token>& T) const
+template <typename T>
+typename obj_reader_generic<T>::color_type obj_reader_generic<T>::parse_color(const std::vector<token>& t, unsigned off) const
 {
-	double v[4] = {0,0,0,1};
-	T.size() > 3 && 
-	is_double(T[1].begin,T[1].end, v[0]) && 
-	is_double(T[2].begin,T[2].end, v[1]) && 
-	is_double(T[3].begin,T[3].end, v[2]);
-	if (T.size() > 4)
-		is_double(T[4].begin,T[4].end, v[3]);
+	crd_type v[4] = {0,0,0,1};
+	(t.size() > 3+off) && 
+	is_double(t[1+off].begin,t[1+off].end, v[0]) && 
+	is_double(t[2+off].begin,t[2+off].end, v[1]) && 
+	is_double(t[3+off].begin,t[3+off].end, v[2]);
+	if (t.size() > 4+off)
+		is_double(t[4+off].begin,t[4+off].end, v[3]);
 	return color_type((float)v[0],(float)v[1],(float)v[2],(float)v[3]);
 }
 
 /// return the index of the currently selected group or -1 if no group is defined
-unsigned obj_reader::get_current_group() const
+template <typename T>
+unsigned obj_reader_generic<T>::get_current_group() const
 {
 	return group_index;
 }
 
 /// return the index of the currently selected material or -1 if no material is defined
-unsigned obj_reader::get_current_material() const
+template <typename T>
+unsigned obj_reader_generic<T>::get_current_material() const
 {
 	return material_index;
 }
 
-obj_reader::obj_reader()
+template <typename T>
+obj_reader_generic<T>::obj_reader_generic()
 {
 	clear();
 }
 
-void obj_reader::clear()
+template <typename T>
+void obj_reader_generic<T>::clear()
 {
 	mtl_lib_files.clear();
 	material_index_lut.clear();
@@ -80,32 +106,38 @@ void obj_reader::clear()
 }
 
 /// overide this function to process a comment
-void obj_reader::process_comment(const std::string& comment)
+template <typename T>
+void obj_reader_generic<T>::process_comment(const std::string& comment)
 {
 }
 
 /// overide this function to process a vertex
-void obj_reader::process_vertex(const v3d_type& p)
+template <typename T>
+void obj_reader_generic<T>::process_vertex(const v3d_type& p)
 {
 }
 
 /// overide this function to process a texcoord
-void obj_reader::process_texcoord(const v2d_type& t)
+template <typename T>
+void obj_reader_generic<T>::process_texcoord(const v2d_type& t)
 {
 }
 
 /// overide this function to process a normal
-void obj_reader::process_normal(const v3d_type& n)
+template <typename T>
+void obj_reader_generic<T>::process_normal(const v3d_type& n)
 {
 }
 
 /// overide this function to process a normal
-void obj_reader::process_color(const color_type& c)
+template <typename T>
+void obj_reader_generic<T>::process_color(const color_type& c)
 {
 }
 
 /// convert negative indices to positive ones by adding the number of elements
-void obj_reader::convert_to_positive(unsigned vcount, int *vertices, 
+template <typename T>
+void obj_reader_generic<T>::convert_to_positive(unsigned vcount, int *vertices,
 						 int *texcoords, int *normals,
 						 unsigned v, unsigned n, unsigned t)
 {
@@ -124,27 +156,33 @@ void obj_reader::convert_to_positive(unsigned vcount, int *vertices,
 }
 
 /// overide this function to process a face
-void obj_reader::process_face(unsigned vcount, int *vertices, int *texcoords, int *normals)
+template <typename T>
+void obj_reader_generic<T>::process_face(unsigned vcount, int *vertices, int *texcoords, int *normals)
 {
 }
 
 /// overide this function to process a group given by name and parameter string
-void obj_reader::process_group(const std::string& name, const std::string& parameters)
+template <typename T>
+void obj_reader_generic<T>::process_group(const std::string& name, const std::string& parameters)
 {
 }
 
 /// process a material definition
-void obj_reader::process_material(const cgv::media::illum::obj_material& mtl, unsigned)
+template <typename T>
+void obj_reader_generic<T>::process_material(const cgv::media::illum::obj_material& mtl, unsigned)
 {
 }
 
-bool obj_reader::read_obj(const std::string& file_name)
+template <typename T>
+bool obj_reader_generic<T>::read_obj(const std::string& file_name)
 {
 	std::string content;
 	if (!file::read(file_name, content, true))
 		return false;
 
 	path_name = file::get_path(file_name);
+	if (!path_name.empty())
+		path_name += "/";
 
 	std::vector<line> lines;
 	split_to_lines(content,lines);
@@ -166,8 +204,11 @@ bool obj_reader::read_obj(const std::string& file_name)
 
 		switch (tokens[0][0]) {
 		case 'v' :
-			if (tokens[0].size() == 1)
+			if (tokens[0].size() == 1) {
 				process_vertex(parse_v3d(tokens));
+				if (tokens.size() >= 7)
+					process_color(parse_color(tokens, 3));
+			}
 			else {
 				switch (tokens[0][1]) {
 				case 'n' :
@@ -180,7 +221,6 @@ bool obj_reader::read_obj(const std::string& file_name)
 					break;
 				case 'c' : 
 					process_color(parse_color(tokens));
-					++nr_texcoords;
 					break;
 				}
 			}
@@ -228,7 +268,7 @@ bool obj_reader::read_obj(const std::string& file_name)
 				parse_material(tokens);
 			else if (to_string(tokens[0]) == "mtllib") {
 				if (tokens.size() > 1)
-					read_mtl(path_name+"/"+to_string(tokens[1]));
+					read_mtl(to_string(tokens[1]));
 			}
 		}
 		tokens.clear();
@@ -237,19 +277,23 @@ bool obj_reader::read_obj(const std::string& file_name)
 	return true;
 }
 
-bool obj_reader::read_mtl(const std::string& file_name)
+template <typename T>
+bool obj_reader_generic<T>::read_mtl(const std::string& file_name)
 {
+	std::string fn = cgv::base::find_data_file(file_name, "cpD");
 	if (path_name.empty()) {
 		path_name = file::get_path(file_name);
+		if (!path_name.empty())
+			path_name += "/";
 	}
-	if (mtl_lib_files.find(file_name) != mtl_lib_files.end())
+	if (mtl_lib_files.find(fn) != mtl_lib_files.end())
 		return true;
 
 	std::string content;
-	if (!file::read(file_name, content, true))
+	if (!file::read(fn, content, true))
 		return false;
 
-	mtl_lib_files.insert(file_name);
+	mtl_lib_files.insert(fn);
 
 	std::vector<line> lines;
 	split_to_lines(content,lines);
@@ -281,19 +325,19 @@ bool obj_reader::read_mtl(const std::string& file_name)
 				mtl.set_name(to_string(tokens[1]));
 		}
 		else if (tokens[0] == "map_Ka")
-			mtl.set_ambient_texture_name(path_name+"/"+to_string(tokens.back()));
+			mtl.set_ambient_texture_name(path_name+to_string(tokens.back()));
 		else if (tokens[0] == "Ka")
 			mtl.set_ambient(parse_color(tokens));
 		else if (tokens[0] == "map_Kd")
-			mtl.set_diffuse_texture_name(path_name+"/"+to_string(tokens.back()));
+			mtl.set_diffuse_texture_name(path_name+to_string(tokens.back()));
 		else if (tokens[0] == "Kd")
 			mtl.set_diffuse(parse_color(tokens));
 		else if (tokens[0] == "map_Ks")
-			mtl.set_specular_texture_name(path_name+"/"+to_string(tokens.back()));
+			mtl.set_specular_texture_name(path_name+to_string(tokens.back()));
 		else if (tokens[0] == "Ks")
 			mtl.set_specular(parse_color(tokens));
 		else if (tokens[0] == "map_Ke")
-			mtl.set_emission_texture_name(path_name+"/"+to_string(tokens.back()));
+			mtl.set_emission_texture_name(path_name+to_string(tokens.back()));
 		else if (tokens[0] == "Ke")
 			mtl.set_emission(parse_color(tokens));
 		else if (tokens[0] == "Ns")
@@ -309,7 +353,7 @@ bool obj_reader::read_mtl(const std::string& file_name)
 					}
 				}
 				else {
-					mtl.set_bump_texture_name(path_name+"/"+to_string(tokens[i]));
+					mtl.set_bump_texture_name(path_name+to_string(tokens[i]));
 				}
 			}
 		}
@@ -328,7 +372,8 @@ bool obj_reader::read_mtl(const std::string& file_name)
 	return true;
 }
 
-void obj_reader::parse_material(const std::vector<token>& tokens)
+template <typename T>
+void obj_reader_generic<T>::parse_material(const std::vector<token>& tokens)
 {
 	if (tokens.size() < 2)
 		return;
@@ -340,7 +385,8 @@ void obj_reader::parse_material(const std::vector<token>& tokens)
 		material_index = it->second;
 }
 
-void obj_reader::parse_face(const std::vector<token>& tokens)
+template <typename T>
+void obj_reader_generic<T>::parse_face(const std::vector<token>& tokens)
 {
 	std::vector<int> vertex_indices;
 	std::vector<int> normal_indices;
@@ -387,8 +433,12 @@ void obj_reader::parse_face(const std::vector<token>& tokens)
 	int* tex_ptr = 0;
 	if (texcoord_indices.size() == vertex_indices.size())
 		tex_ptr = &texcoord_indices[0];
-	process_face(vertex_indices.size(), &vertex_indices[0], tex_ptr, nml_ptr);
+	process_face((unsigned) vertex_indices.size(), &vertex_indices[0], tex_ptr, nml_ptr);
 }
+
+
+template class obj_reader_generic < float >;
+template class obj_reader_generic < double >;
 
 		}
 	}

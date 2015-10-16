@@ -114,7 +114,7 @@ shader_program::shader_program(bool _show_code_errors)
 	show_code_errors = _show_code_errors;
 	linked = false;
 	state_out_of_date = true;
-	has_geometry_shader = false;
+	nr_attached_geometry_shaders = 0;
 }
 
 /// call destruct method
@@ -131,7 +131,7 @@ shader_program::~shader_program()
 bool shader_program::create(context& ctx)
 {
 	state_out_of_date = true;
-	has_geometry_shader = false;
+	nr_attached_geometry_shaders = 0;
 	if (ctx_ptr)
 		destruct(*ctx_ptr);
 	else
@@ -158,9 +158,27 @@ bool shader_program::attach_code(context& ctx, const shader_code& code)
 	}
 	ctx.shader_program_attach(handle, code.handle);
 	if (code.get_shader_type() == ST_GEOMETRY)
-		has_geometry_shader = true;
+		++nr_attached_geometry_shaders;
 	return true;
 }
+
+/// detach a shader code 
+bool shader_program::detach_code(context& ctx, const shader_code& code)
+{
+	if (!handle) {
+		last_error = "detach_code from shader program that was not created";
+		return false;
+	}
+	if (!code.handle) {
+		last_error = "attempt to detach_code that is not created to shader program";
+		return false;
+	}
+	ctx.shader_program_detach(handle, code.handle);
+	if (code.get_shader_type() == ST_GEOMETRY)
+		--nr_attached_geometry_shaders;
+	return true;
+}
+
 
 /// attach a shader code given as string and managed the created shader code object
 bool shader_program::attach_code(context& ctx, const std::string& source, ShaderType st)
@@ -168,8 +186,7 @@ bool shader_program::attach_code(context& ctx, const std::string& source, Shader
 	shader_code* code_ptr = new shader_code;
 	if (code_ptr->set_code(ctx,source,st) && code_ptr->compile(ctx)) {
 		managed_codes.push_back(code_ptr);
-		attach_code(ctx, *code_ptr);
-		return true;
+		return attach_code(ctx, *code_ptr);
 	}
 	last_error = code_ptr->last_error;
 	delete code_ptr;
@@ -187,8 +204,7 @@ bool shader_program::attach_file(context& ctx, const std::string& file_name, Sha
 		return false;
 	}
 	managed_codes.push_back(code_ptr);
-	attach_code(ctx, *code_ptr);
-	return true;
+	return attach_code(ctx, *code_ptr);
 }
 
 /// read shader code from files with the given base name, compile and attach them
@@ -214,14 +230,19 @@ bool shader_program::attach_program(context& ctx, const std::string& file_name, 
 	std::string fn = shader_code::find_file(file_name);
 	if (fn.empty()) {
 		last_error = "could not find shader program file "+file_name;
+		if (show_error)
+			std::cerr << last_error << std::endl;
 		return false;
 	}
 	std::string content;
 	if (!cgv::base::read_data_file(fn, content, true)) {
 		last_error = "could not read shader program file "+file_name;
+		if (show_error)
+			std::cerr << last_error << std::endl;
 		return false;
 	}	
-	std::vector<line> lines;
+	static std::vector<line> lines;
+	lines.clear();
 	split_to_lines(content, lines);
 	std::string old_shader_path = get_shader_config()->shader_path;
 	std::string path = file::get_path(file_name);
@@ -304,6 +325,8 @@ bool shader_program::attach_program(context& ctx, const std::string& file_name, 
 	}
 
 	get_shader_config()->shader_path = old_shader_path;
+	if (show_error && !no_error)
+		std::cerr << last_error << std::endl;
 	return no_error;
 }
 
@@ -337,7 +360,7 @@ unsigned int shader_program::get_max_nr_geometry_shader_output_vertices(context&
 void shader_program::update_state(context& ctx)
 {
 	if (state_out_of_date) {
-		if (has_geometry_shader) {
+		if (nr_attached_geometry_shaders > 0) {
 			if (geometry_shader_output_count < 1)
 				geometry_shader_output_count = get_max_nr_geometry_shader_output_vertices(ctx);
 			ctx.shader_program_set_state(*this);
@@ -409,7 +432,7 @@ void shader_program::destruct(context& ctx)
 	}
 	linked = false;
 	state_out_of_date = true;
-	has_geometry_shader = false;
+	nr_attached_geometry_shaders = 0;
 }
 
 	}

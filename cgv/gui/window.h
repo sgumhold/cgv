@@ -17,8 +17,10 @@ public:
 	window(const std::string& name);
 	/// overload to return the %type name of this object
 	std::string get_type_name() const;
+	/// return the group that is managing the content of the window
+	virtual gui_group_ptr get_inner_group();
 	/// show the %window. This needs to be called after creation to make the %window visible
-	virtual void show() = 0;
+	virtual void show(bool modal = false) = 0;
 	/// hide the %window
 	virtual void hide() = 0;
 	/// dispatch a cgv event

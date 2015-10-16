@@ -31,9 +31,11 @@ public:
 	void remove_all_children(cgv::gui::gui_group_ptr ggp);
 
 	// window functions
-	void show();
+	void show(bool modal);
 	void hide();
 
+	/// return the group that is managing the content of the window
+	gui_group_ptr get_inner_group();
 	/// only uses the implementation of fltk_base
 	std::string get_property_declarations();
 	/// abstract interface for the setter

@@ -1,4 +1,4 @@
-/* $Id: tif_aux.c,v 1.23 2008/01/01 15:41:22 fwarmerdam Exp $ */
+/* $Id: tif_aux.c,v 1.26 2010-07-01 15:33:28 dron Exp $ */
 
 /*
  * Copyright (c) 1991-1997 Sam Leffler
@@ -33,6 +33,32 @@
 #include "tif_predict.h"
 #include <math.h>
 
+uint32
+_TIFFMultiply32(TIFF* tif, uint32 first, uint32 second, const char* where)
+{
+	uint32 bytes = first * second;
+
+	if (second && bytes / second != first) {
+		TIFFErrorExt(tif->tif_clientdata, where, "Integer overflow in %s", where);
+		bytes = 0;
+	}
+
+	return bytes;
+}
+
+uint64
+_TIFFMultiply64(TIFF* tif, uint64 first, uint64 second, const char* where)
+{
+	uint64 bytes = first * second;
+
+	if (second && bytes / second != first) {
+		TIFFErrorExt(tif->tif_clientdata, where, "Integer overflow in %s", where);
+		bytes = 0;
+	}
+
+	return bytes;
+}
+
 void*
 _TIFFCheckRealloc(TIFF* tif, void* buffer,
 		  tmsize_t nmemb, tmsize_t elem_size, const char* what)
@@ -46,9 +72,12 @@ _TIFFCheckRealloc(TIFF* tif, void* buffer,
 	if (nmemb && elem_size && bytes / elem_size == nmemb)
 		cp = _TIFFrealloc(buffer, bytes);
 
-	if (cp == NULL)
+	if (cp == NULL) {
 		TIFFErrorExt(tif->tif_clientdata, tif->tif_name,
-			     "No space %s", what);
+			     "Failed to allocate memory for %s "
+			     "(%ld elements of %ld bytes each)",
+			     what,(long) nmemb, (long) elem_size);
+	}
 
 	return cp;
 }
@@ -98,6 +127,35 @@ bad:
 		_TIFFfree(tf[2]);
 	tf[0] = tf[1] = tf[2] = 0;
 	return 0;
+}
+
+static int
+TIFFDefaultRefBlackWhite(TIFFDirectory* td)
+{
+	int i;
+
+	if (!(td->td_refblackwhite = (float *)_TIFFmalloc(6*sizeof (float))))
+		return 0;
+        if (td->td_photometric == PHOTOMETRIC_YCBCR) {
+		/*
+		 * YCbCr (Class Y) images must have the ReferenceBlackWhite
+		 * tag set. Fix the broken images, which lacks that tag.
+		 */
+		td->td_refblackwhite[0] = 0.0F;
+		td->td_refblackwhite[1] = td->td_refblackwhite[3] =
+			td->td_refblackwhite[5] = 255.0F;
+		td->td_refblackwhite[2] = td->td_refblackwhite[4] = 128.0F;
+	} else {
+		/*
+		 * Assume RGB (Class R)
+		 */
+		for (i = 0; i < 3; i++) {
+		    td->td_refblackwhite[2*i+0] = 0;
+		    td->td_refblackwhite[2*i+1] =
+			    (float)((1L<<td->td_bitspersample)-1L);
+		}
+	}
+	return 1;
 }
 
 /*
@@ -225,33 +283,10 @@ TIFFVGetFieldDefaulted(TIFF* tif, uint32 tag, va_list ap)
 		}
 		return (1);
 	case TIFFTAG_REFERENCEBLACKWHITE:
-		{
-			int i;
-			static float ycbcr_refblackwhite[] = 
-			{ 0.0F, 255.0F, 128.0F, 255.0F, 128.0F, 255.0F };
-			static float rgb_refblackwhite[6];
-
-			for (i = 0; i < 3; i++) {
-				rgb_refblackwhite[2 * i + 0] = 0.0F;
-				rgb_refblackwhite[2 * i + 1] =
-					(float)((1L<<td->td_bitspersample)-1L);
-			}
-			
-			if (td->td_photometric == PHOTOMETRIC_YCBCR) {
-				/*
-				 * YCbCr (Class Y) images must have the
-				 * ReferenceBlackWhite tag set. Fix the
-				 * broken images, which lacks that tag.
-				 */
-				*va_arg(ap, float **) = ycbcr_refblackwhite;
-			} else {
-				/*
-				 * Assume RGB (Class R)
-				 */
-				*va_arg(ap, float **) = rgb_refblackwhite;
-			}
-			return 1;
-		}
+		if (!td->td_refblackwhite && !TIFFDefaultRefBlackWhite(td))
+			return (0);
+		*va_arg(ap, float **) = td->td_refblackwhite;
+		return (1);
 	}
 	return 0;
 }
@@ -314,4 +349,10 @@ _TIFFUInt64ToDouble(uint64 ui64)
 }
 
 /* vim: set ts=8 sts=8 sw=8 noet: */
-
+/*
+ * Local Variables:
+ * mode: c
+ * c-basic-offset: 8
+ * fill-column: 78
+ * End:
+ */

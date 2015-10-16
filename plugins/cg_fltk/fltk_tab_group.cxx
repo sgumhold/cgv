@@ -38,16 +38,35 @@ fltk::TabGroup* fltk_tab_group::get_fltk_tab_group() const
 /// only uses the implementation of fltk_base
 std::string fltk_tab_group::get_property_declarations()
 {
-	return fltk_base::get_property_declarations();
+	return fltk_base::get_property_declarations()+";selected:string";
 }
 /// abstract interface for the setter
 bool fltk_tab_group::set_void(const std::string& property, const std::string& value_type, const void* value_ptr)
 {
+	if (property == "selected") {
+		std::string name = variant<std::string>::get(value_type, value_ptr);
+		base_ptr b = find_element(name);
+		if (b)
+			select_child(b, true);
+		return true;
+	}
 	return fltk_base::set_void(tab_group, this, property, value_type, value_ptr);
 }
 /// abstract interface for the getter
 bool fltk_tab_group::get_void(const std::string& property, const std::string& value_type, void* value_ptr)
 {
+	if (property == "selected") {
+		std::string name;
+		base_ptr b = get_selected_child();
+		if (b) {
+			if (b->get_named())
+				name = b->get_named()->get_name();
+			else
+				name = b->get_type_name();
+		}
+		variant<std::string>::set(name, value_type, value_ptr);
+		return true;
+	}
 	return fltk_base::get_void(tab_group, this, property, value_type, value_ptr);
 }
 
@@ -64,7 +83,7 @@ void fltk_tab_group::fltk_select_cb(fltk::Widget* w, void*ud)
 	base_ptr c = g->get_selected_child();
 	if (g->last_selected_child != -1)
 		g->tab_group->value(g->last_selected_child);
-	g->select_child(c);
+	g->select_child(c, true);
 }
 
 /// return the index of the currently selected child.
@@ -73,10 +92,10 @@ int fltk_tab_group::get_selected_child_index() const
 	return tab_group->value();
 }
 
-void fltk_tab_group::select_child(base_ptr c)
+void fltk_tab_group::select_child(base_ptr c, bool exclusive)
 {
 //	std::cout << "select " << c->get_type_name().c_str() << std::endl;
-	gui_group::select_child(c);
+	gui_group::select_child(c, exclusive);
 	fltk::Widget* w  = static_cast<fltk::Widget*>(c->get_user_data());
 	if (w == 0) {
 		for (int i=0; i<tab_group->children(); ++i) {
@@ -142,7 +161,7 @@ void fltk_tab_group::register_object(base_ptr object, const std::string& options
 		fltk::Group* fg = static_cast<fltk::Group*>(
 			static_cast<fltk::Widget*>(g->get_user_data()));
 		// select newly created child
-		select_child(g);
+		select_child(g, true);
 		update();
 	} 
 }

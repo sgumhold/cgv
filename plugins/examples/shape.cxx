@@ -14,10 +14,13 @@ using namespace cgv::utils;
 
 shape::shape(const char* name) : group(name), node_flag(true), ax(0), ay(0) 
 {
+	show_edges = true;
+	show_faces = true;
+
 	static double x0 = -2;
 	x = x0;
 	x0 += 4;
-	shp = STRIP;
+	shp = CUBE;
 	no_flat = false;
 	resolution = 25;
 
@@ -87,6 +90,12 @@ bool shape::handle(event& e)
 	return false;
 }
 
+void shape::on_set(void* mp)
+{
+	post_redraw();
+	update_member(mp);
+}
+
 void shape::stream_help(std::ostream&)
 {
 }
@@ -126,17 +135,8 @@ void draw_strip(bool draw_clr = true)
 	}
 }
 
-void shape::draw(context& c)
+void shape::draw_shape(context& c)
 {
-	glPushMatrix();
-	glTranslated(x,0,0);
-	glRotated(ax,1,0,0);
-	glRotated(ay,0,1,0);
-	glColor3f(1,0,0);
-	glPushAttrib(GL_LIGHTING_BIT|GL_POLYGON_BIT);
-	glEnable(GL_LIGHTING);
-	if (shp < CYL || shp == STRIP)
-		glShadeModel(GL_FLAT);
 	switch (shp) {
 	case CUBE: c.tesselate_unit_cube(); break;
 	case PRI: c.tesselate_unit_prism(); break;
@@ -191,6 +191,35 @@ void shape::draw(context& c)
 	default:
 		std::cerr << "unknown shape" << std::endl;
 	}
+}
+
+
+void shape::draw(context& c)
+{
+	glPushMatrix();
+	glTranslated(x,0,0);
+	glRotated(ax,1,0,0);
+	glRotated(ay,0,1,0);
+
+	glPushAttrib(GL_LIGHTING_BIT|GL_POLYGON_BIT);
+	if (show_edges) {
+		glColor3f(1,1,0);
+		glDisable(GL_LIGHTING);
+		glDisable(GL_CULL_FACE);
+		glLineWidth(3);
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		draw_shape(c);
+	}
+	if (show_faces) {
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);	
+		glEnable(GL_CULL_FACE);
+		glEnable(GL_LIGHTING);
+		if (shp < CYL || shp == STRIP)
+			glShadeModel(GL_FLAT);
+		glColor3f(0,0.1f,1);
+		draw_shape(c);
+	}
+
 	glPopAttrib();
 	glPopMatrix();
 }
@@ -259,6 +288,8 @@ void shape::create_gui()
 		// method of the drawable base class
 		rebind(static_cast<drawable*>(this), &drawable::post_redraw)
 	);
+	add_member_control(this, "edges", show_edges, "check");
+	add_member_control(this, "faces", show_faces, "check");
 	/// add buttons that directly select a shape type in a collapsable node
 	if (add_tree_node("buttons", node_flag, 0)) {
 		connect(add_button("cube", "w=40","")->click,this,&shape::select_cube);

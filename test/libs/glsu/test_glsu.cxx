@@ -15,12 +15,21 @@ test_glsu::test_glsu(GLdouble _aspect)
 	stereo_mode = GLSU_ANAGLYPH;
 	anaglyph_configuration   = GLSU_RED_CYAN;
 	implementation_mode = IM_AUTOMATIC;
-	eyeSeparation = 0.1;
+	eyeSeparation = 0.2;
 	fovy = 25;
 	aspect = _aspect;
 	zZeroParallax = 15;
 	zNear = 0.1;
 	zFar = 100;
+
+	screenHeight = 2*zZeroParallax*tan(fovy*.8726646262e-2f);
+
+	useFreeObserver = false;
+	observerLocation[0] = observerLocation[1] = 0;
+	observerLocation[2] = 15;
+	eyeSeparationDirection[0] = 1;
+	eyeSeparationDirection[1] = eyeSeparationDirection[2] = 0;
+	synchClippingPlanes = 1;
 }
 
 // set a new aspect ration
@@ -44,6 +53,12 @@ bool test_glsu::key_event(Key key)
 	case Key_SPACE :
 		mono = !mono;
 		return true;
+	case Key_ENTER :
+		observerLocation[0] = observerLocation[1] = 0;
+		observerLocation[2] = 15;
+		eyeSeparationDirection[0] = 1;
+		eyeSeparationDirection[1] = eyeSeparationDirection[2] = 0;
+		return true;
 	case Key_ESCAPE:
 		exit(0);
 	case Key_F4 :
@@ -58,6 +73,9 @@ bool test_glsu::key_event(Key key)
 		if (++(int&)implementation_mode == IM_END)
 			implementation_mode = IM_BEGIN;
 		return true;
+	case Key_F7 :
+		useFreeObserver = !useFreeObserver;
+		return true;
 	case Key_F10 :
 		animate = !animate;
 		return true;
@@ -65,6 +83,41 @@ bool test_glsu::key_event(Key key)
 	return false;
 }
 
+///
+bool test_glsu::wheel_event(float delta)
+{
+	if (!useFreeObserver)
+		return false;
+
+	observerLocation[2] += delta;
+	return true;
+}
+
+/// handle mouse event to set location of free observer
+bool test_glsu::mouse_event(float x, float y, int modifier)
+{
+	if (!useFreeObserver)
+		return false;
+
+	if (modifier == 0) {
+		observerLocation[0] = x * observerLocation[2];
+		observerLocation[1] = y * observerLocation[2];
+		return true;
+	}
+
+	double l = sqrt(x*x+y*y);
+	if (modifier == 1) {
+		eyeSeparationDirection[0] = x/l;
+		eyeSeparationDirection[1] = y/l;
+		eyeSeparationDirection[2] = 0;
+	}
+	else {
+		eyeSeparationDirection[0] = x/l;
+		eyeSeparationDirection[1] = 0;
+		eyeSeparationDirection[2] = y/l;
+	}
+	return true;
+}
 
 void test_glsu::render()
 {
@@ -73,24 +126,46 @@ void test_glsu::render()
 	if (!Q)
 		Q = gluNewQuadric();
 
-	gluLookAt(0,0,15,0,0,0,0,1,0);
+	gluLookAt(0,0,observerLocation[2],0,0,0,0,1,0);
 
 	GLfloat position[] = { 2.0f, 1.0f, 5.0f, 1.0f };
 	GLfloat position1[] = { 0.0f, 3.0f, 0.0f, 1.0f };
 	glLightfv(GL_LIGHT0, GL_POSITION, position);
 	glLightfv(GL_LIGHT1, GL_POSITION, position1);
 
-	glRotated(angle,0,0,1);
-	gluCylinder(Q, 2, 1, 2, 200, 100);
-	glRotated(angle-90,0,1,0);
-	gluCylinder(Q, 1, 0.02, 3, 200, 200);
-	glRotated(90,1,0,0);
-	glTranslated(0,1,-3);
-	gluCylinder(Q, 0.1, 0.1, 6, 200, 200);
-	glTranslated(0,-1,3);
-	glRotated(90,0,1,0);
-	glTranslated(0,1,-3);
-	gluCylinder(Q, 0.1, 0.1, 6, 20, 200);
+	glPushMatrix();
+		glRotated(angle,0,0,1);
+		gluCylinder(Q, 2, 1, 2, 200, 100);
+		glRotated(angle-90,0,1,0);
+		gluCylinder(Q, 1, 0.02, 3, 200, 200);
+		glRotated(90,1,0,0);
+		glTranslated(0,1,-3);
+		gluCylinder(Q, 0.1, 0.1, 6, 200, 200);
+		glTranslated(0,-1,3);
+		glRotated(90,0,1,0);
+		glTranslated(0,1,-3);
+		gluCylinder(Q, 0.1, 0.1, 6, 20, 200);
+	glPopMatrix();
+
+
+	if (useFreeObserver) {
+		GLdouble leftEyeLocation[3];
+		GLdouble centerEyeLocation[3];
+		GLdouble rightEyeLocation[3];
+		glsuComputeEyeLocation(GLSU_LEFT, eyeSeparation, aspect*screenHeight, observerLocation, eyeSeparationDirection, leftEyeLocation);
+		glsuComputeEyeLocation(GLSU_CENTER, eyeSeparation, aspect*screenHeight, observerLocation, eyeSeparationDirection, centerEyeLocation);
+		glsuComputeEyeLocation(GLSU_RIGHT, eyeSeparation, aspect*screenHeight, observerLocation, eyeSeparationDirection, rightEyeLocation);
+
+		glPushMatrix();
+			glTranslated(leftEyeLocation[0],leftEyeLocation[1],leftEyeLocation[2]-centerEyeLocation[2]);
+			gluSphere(Q, 0.1, 20, 10);
+		glPopMatrix();
+
+		glPushMatrix();
+			glTranslated(rightEyeLocation[0],rightEyeLocation[1],rightEyeLocation[2]-centerEyeLocation[2]);
+			gluSphere(Q, 0.1, 20, 10);
+		glPopMatrix();
+	}
 }
 
 void test_glsu::draw_callback(void* this_ptr)
@@ -102,11 +177,17 @@ void test_glsu::draw_from_eye_physical(GlsuEye eye)
 {
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	glsuStereoFrustum(eye, eyeSeparation, fovy, aspect, zZeroParallax, zNear, zFar);
+	if (useFreeObserver)
+		glsuStereoFrustumFreeObserver(eye, eyeSeparation, aspect*screenHeight, screenHeight, observerLocation, eyeSeparationDirection, zNear, zFar, synchClippingPlanes);
+	else
+		glsuStereoFrustum(eye, eyeSeparation, fovy, aspect, zZeroParallax, zNear, zFar);
 	
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-	glsuStereoTranslate(eye, eyeSeparation, fovy, aspect, zZeroParallax);
+	if (useFreeObserver)
+		glsuStereoTranslateFreeObserver(eye, eyeSeparation, aspect*screenHeight, screenHeight, observerLocation, eyeSeparationDirection);
+	else
+		glsuStereoTranslate(eye, eyeSeparation, fovy, aspect, zZeroParallax);
 	
 	render();
 	glFlush();
@@ -116,7 +197,10 @@ void test_glsu::draw_from_eye_convenient(GlsuEye eye)
 {
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	glsuStereoPerspective(eye, eyeSeparation, fovy, aspect, zZeroParallax, zNear, zFar);
+	if (useFreeObserver)
+		glsuStereoPerspectiveFreeObserver(eye, eyeSeparation, aspect*screenHeight, screenHeight, observerLocation, eyeSeparationDirection, zNear, zFar, synchClippingPlanes);
+	else
+		glsuStereoPerspective(eye, eyeSeparation, fovy, aspect, zZeroParallax, zNear, zFar);
 	
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
@@ -184,7 +268,10 @@ void test_glsu::draw()
 	// stereo done through convenience call
 	else if (implementation_mode == IM_AUTOMATIC) {
 		glClearColor(0.5,0.5,0.7f,1);
-		glsuStereoRenderProcess(eyeSeparation, fovy, aspect, zZeroParallax, zNear, zFar, &test_glsu::draw_callback, this, stereo_mode, anaglyph_configuration);
+		if (useFreeObserver)
+			glsuStereoRenderProcessFreeObserver(eyeSeparation, aspect*screenHeight, screenHeight, observerLocation, eyeSeparationDirection, zNear, zFar, synchClippingPlanes, &test_glsu::draw_callback, this, stereo_mode, anaglyph_configuration);
+		else
+			glsuStereoRenderProcess(eyeSeparation, fovy, aspect, zZeroParallax, zNear, zFar, &test_glsu::draw_callback, this, stereo_mode, anaglyph_configuration);
 	}
 	// stereo done by yourself
 	else {
@@ -204,5 +291,11 @@ void test_glsu::show_help() const
 			"      automatic (blue background) uses gluStereoRenderProcess\n"
 			"      physical (green background) performs gluStereoTranslate on model view\n"
 			"      convenient (red background) performs gluStereoTranslate on projection\n"
+			"   <F7>:toggle free observer mode, in case of free observer mode:\n"
+			"      <Enter> ... reset observerLocation and eyeSeparationDirection\n"
+			"      <Shift>+mouse move ... set x/y-coordinates of observerLocation (fltk also CapsLock)\n"
+			"      <Mouse Wheel> ... adjust z-coordinates of observerLocation\n"
+			"      <Alt>+mouse move ... set eyeSeparationDirection within x/y-plane\n"
+			"      <Ctrl>+mouse move ... set eyeSeparationDirection within x/z-plane\n"
 			"   <F10>:toggle animation" << endl;
 }

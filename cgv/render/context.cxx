@@ -97,14 +97,16 @@ void context::set_bg_color(float r, float g, float b, float a)
 	bg_g = g;
 	bg_b = b;
 	bg_a = a;
-	post_redraw();
+	if (!in_render_process())
+		post_redraw();
 }
 
 /// set a user defined background alpha value
 void context::set_bg_alpha(float a)
 {
 	bg_a = a;
-	post_redraw();
+	if (!in_render_process())
+		post_redraw();
 }
 
 /// set a user defined background color
@@ -114,28 +116,32 @@ void context::set_bg_accum_color(float r, float g, float b, float a)
 	bg_accum_g = g;
 	bg_accum_b = b;
 	bg_accum_a = a;
-	post_redraw();
+	if (!in_render_process())
+		post_redraw();
 }
 
 /// set a user defined background alpha value
 void context::set_bg_accum_alpha(float a)
 {
 	bg_accum_a = a;
-	post_redraw();
+	if (!in_render_process())
+		post_redraw();
 }
 
 /// set a user defined background depth
 void context::set_bg_depth(float d)
 {
 	bg_d = d;
-	post_redraw();
+	if (!in_render_process())
+		post_redraw();
 }
 
 /// set a user defined background color
 void context::set_bg_stencil(int s)
 {
 	bg_s = s;
-	post_redraw();
+	if (!in_render_process())
+		post_redraw();
 }
 
 /// copy the current back ground rgba color into the given float array
@@ -231,7 +237,8 @@ RenderPassFlags context::get_default_render_pass_flags() const
 void context::set_default_render_pass_flags(RenderPassFlags rpf)
 {
 	default_render_flags = rpf;
-	post_redraw();
+	if (!in_render_process())
+		post_redraw();
 }
 
 /// return the current render pass user data

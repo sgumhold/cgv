@@ -19,12 +19,15 @@ protected:
 	bool interlacing;
 	mutable std::string last_error;
 	std::string file_name;
+	unsigned compression_level;
 	bool determine_params(const component_format& cf, int& color_type, int& bit_depth) const;
 public:
 	/// default constructor
 	png_writer();
 	/// close file in destructor
 	~png_writer();
+	///
+	bool self_reflect(cgv::reflect::reflection_handler& rh);
 	/// overload to return the type name of this object
 	std::string get_type_name() const;
 	/// construct a copy of the reader

@@ -2,6 +2,14 @@
 #include <cgv/utils/scan.h>
 
 using namespace cgv::reflect;
+namespace cgv {
+	namespace reflect {
+
+		enum_reflection_traits<cgv::data::NamingConvention> get_reflection_traits(const cgv::data::NamingConvention&) {
+			return cgv::reflect::enum_reflection_traits<cgv::data::NamingConvention>("NC_NONE, NC_SHORT, NC_LONG");
+		}
+	}
+}
 
 namespace cgv {
 	namespace data {
@@ -32,15 +40,21 @@ std::string ascii_reflection_handler::extend_name(const std::string& name, bool 
 	}
 	res += name;
 
-	unsigned p = res.find_last_of(".");
+	size_t p = res.find_last_of(".");
 	if (p != std::string::npos) {
 		res = res.substr(p+1);
-		for (unsigned j=0; j<nr_idents*tab_size; ++j)
+		for (size_t j=0; j<nr_idents*tab_size; ++j)
 			res = std::string(" ") + res;
 	}
 	if (assign)
 		res += "=";
 	return res;
+}
+
+/// this should return true
+bool ascii_read_reflection_handler::is_creative() const
+{
+	return true;
 }
 
 bool ascii_reflection_handler::reflect_header()
@@ -69,7 +83,8 @@ int ascii_reflection_handler::reflect_group_begin(GroupKind group_kind, const st
 /// 
 void ascii_reflection_handler::reflect_group_end(GroupKind group_kind)
 {
-	--nr_idents;
+	if (group_kind != reflection_handler::GK_BASE_CLASS)
+		--nr_idents;
 }
 
 bool ascii_read_reflection_handler::read_reflect_header(const std::string& _content, unsigned _ver)
@@ -88,7 +103,7 @@ bool ascii_read_reflection_handler::read_reflect_header(const std::string& _cont
 ascii_read_reflection_handler::ascii_read_reflection_handler(const std::string& file_name, const std::string& _content, unsigned _ver, NamingConvention _nc, unsigned _tab) :
 	ascii_reflection_handler(_content, _ver, _tab), is(file_is)
 {
-#ifdef WIN32
+#if defined (WIN32) && !defined(__MINGW32__)
 	file_is.open(cgv::utils::str2wstr(file_name).c_str());
 #else
 	file_is.open(file_name.c_str());
@@ -111,15 +126,18 @@ void ascii_read_reflection_handler::close()
 	if (&is == &file_is)
 		file_is.close(); 
 }
-int ascii_read_reflection_handler::reflect_group_begin(GroupKind group_kind, const std::string& group_name, const std::string& group_type, void* group_ptr, abst_reflection_traits* rt, unsigned grp_size)
+
+int ascii_read_reflection_handler::reflect_group_begin(GroupKind group_kind, const std::string& group_name, void* group_ptr, abst_reflection_traits* rt, unsigned grp_size)
 {
-	char buffer[10000];
-	is.getline(buffer, 10000);
-	if (is.fail()) {
-		last_error = RE_FILE_READ_ERROR;
-		return false;
+	if (group_kind != reflection_handler::GK_BASE_CLASS) {
+		char buffer[10000];
+		is.getline(buffer, 10000);
+		if (is.fail()) {
+			last_error = RE_FILE_READ_ERROR;
+			return false;
+		}
+		++nr_idents;
 	}
-	++nr_idents;
 	return GT_COMPLETE;
 }
 ///
@@ -147,7 +165,7 @@ ascii_write_reflection_handler::ascii_write_reflection_handler(const std::string
 	ascii_reflection_handler(_content, _ver, _tab), os(file_os)
 {
 	naming_convention = _nc;
-#ifdef WIN32
+#if defined(WIN32) && !defined(__MINGW32__)
 	file_os.open(cgv::utils::str2wstr(file_name).c_str());
 #else
 	file_os.open(file_name.c_str());
@@ -172,14 +190,16 @@ void ascii_write_reflection_handler::close()
 		file_os.close(); 
 }
 /// 
-int ascii_write_reflection_handler::reflect_group_begin(GroupKind group_kind, const std::string& group_name, const std::string& group_type, void* group_ptr, abst_reflection_traits* rt, unsigned grp_size)
+int ascii_write_reflection_handler::reflect_group_begin(GroupKind group_kind, const std::string& group_name, void* group_ptr, abst_reflection_traits* rt, unsigned grp_size)
 {
-	os << extend_name(group_name, false) << ":" << group_type << std::endl;
-	if (os.fail()) {
-		last_error = RE_FILE_WRITE_ERROR;
-		return GT_TERMINATE;
+	if (group_kind != reflection_handler::GK_BASE_CLASS) {
+		os << extend_name(group_name, false) << std::endl;
+		if (os.fail()) {
+			last_error = RE_FILE_WRITE_ERROR;
+			return GT_TERMINATE;
+		}
+		++nr_idents;
 	}
-	++nr_idents;
 	return GT_COMPLETE;
 }
 ///

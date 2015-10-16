@@ -54,6 +54,7 @@ set(depslist "")
 check_3rd_package(ZLIB zlib depslist)
 check_3rd_package(PNG png depslist)
 check_3rd_package(JPEG jpeg depslist)
+# check_3rd_package(TIFF tiff depslist)
 check_3rd_package(GLEW glew depslist)
 if (WIN32)
 	check_3rd_package(pthread pthread depslist)
@@ -70,7 +71,3 @@ set_target_properties(3rd PROPERTIES FOLDER "${FOLDER_NAME_TOPLEVEL}")
 if (NOT "${depslist}" STREQUAL "")
 	add_dependencies(3rd ${depslist})
 endif()
-
-
-
-

@@ -19,7 +19,8 @@ enum EventId
 enum EventFlags
 {
 	EF_NONE = 0,
-	EF_MULTI = 1 //!< whether event is tagged with id of the device that generated the event
+	EF_MULTI = 1, //!< whether event is tagged with id of the device that generated the event
+	EF_DND = 2    //!< whether mouse has a drag and drop target attached
 };
 
 /// define constants for event modifiers

@@ -33,6 +33,7 @@ struct win32_gl_context : public gl_context
 	static LRESULT CALLBACK MainWndProc(HWND, UINT, WPARAM, LPARAM); 
 
 	bool init_application(); 
+	bool ensure_init_application(); 
 	bool init_instance(const tstring& title, int); 
 	bool set_pixel_format();
 	bool create(const std::string& title, bool show);
@@ -59,6 +60,9 @@ struct win32_gl_context : public gl_context
 	bool is_current() const { return true; }
 	/// make the current context current
 	bool make_current() const;
+	/// clear the current context, typically used in multi-threaded rendering to allow usage of context in several threads
+	void clear_current() const;
+
 	//@}
 
 	/// return the width of the window
@@ -219,10 +223,16 @@ bool win32_gl_context::make_current() const
 	if (glc == NULL)
 		return false;
 	if (!wglMakeCurrent(hdc,glc)) {
-		std::cerr << "failed to make current" << std::endl;
+		DWORD error = GetLastError();
+		std::cerr << "failed to make current [hdc=" << hdc << ", glc=" << glc << "] with error " << error << std::endl;
 		return false;
 	}
 	return true;
+}
+
+void win32_gl_context::clear_current() const
+{
+	wglMakeCurrent(NULL,NULL);
 }
 
 win32_gl_context::win32_gl_context(unsigned int w, unsigned int h)
@@ -276,10 +286,21 @@ bool win32_gl_context::set_pixel_format()
 	return SetPixelFormat(hdc, iPixelFormat, &pfd) == TRUE;
 }
 
+bool win32_gl_context::ensure_init_application()
+{
+	static bool is_initialized = false;
+	static bool result = false;
+	if (!is_initialized) {
+		result = init_application();
+		is_initialized = true;
+	}
+	return result;
+}
+
 bool win32_gl_context::create(const std::string& title, bool show)
 {
 	hinst = GetModuleHandle(NULL);
-	if (!init_application()) {
+	if (!ensure_init_application()) {
 		std::cout << "failed to init application" << std::endl;
 		return false;
 	}

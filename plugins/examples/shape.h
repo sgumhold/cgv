@@ -16,6 +16,8 @@ class shape :
 private:
 	/// flag used to store state of collapsable gui node
 	bool node_flag;
+	bool show_edges;
+	bool show_faces;
 protected:
 	/// resolution of smooth shapes
 	int resolution;
@@ -38,6 +40,7 @@ protected:
 	void select_sphere(cgv::gui::button&);
 	void select_strip(cgv::gui::button&);
 public:
+	void on_set(void*);
 	/// construct from name which is necessary construction argument to node
 	shape(const char* name);
 	/// optional method of base
@@ -46,6 +49,8 @@ public:
 	bool handle(cgv::gui::event& e);
 	/// necessary method of event_handler
 	void stream_help(std::ostream& os);
+	/// optional method of drawable
+	void draw_shape(cgv::render::context&);
 	/// optional method of drawable
 	void draw(cgv::render::context&);
 	/// return a path in the main menu to select the gui

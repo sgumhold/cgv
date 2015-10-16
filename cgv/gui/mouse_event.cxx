@@ -1,5 +1,5 @@
 #include <cgv/gui/mouse_event.h>
-
+#include <string>
 namespace cgv {
 	namespace gui {
 
@@ -7,7 +7,7 @@ namespace cgv {
 // construct a key event from its textual description 
 mouse_event::mouse_event(int _x, int _y, MouseAction _action, unsigned char _button_state, unsigned char _button, short _dx, short _dy, unsigned char _modifiers, unsigned char _toggle_keys, double _time)
 	: event(EID_MOUSE,_modifiers,_toggle_keys,_time), 
-	  x(_x), y(_y), dx(_dx), dy(_dy), action(_action), button_state(_button_state), button(_button)
+	x(_x), y(_y), dx(_dx), dy(_dy), action(_action), button_state(_button_state), button(_button)
 {
 }
 // write to stream
@@ -27,6 +27,8 @@ void mouse_event::stream_out(std::ostream& os) const
 	if ((get_button_state()&MB_RIGHT_BUTTON)!=0)
 		os << "Right_Button+";
 	os << "mouse " << action_strs[get_action()];
+	if ((get_action() == MA_RELEASE) && ((get_flags() & EF_DND) != 0))
+		os << "<" << get_dnd_text() << ">";
 	if (get_action() == MA_PRESS || get_action() == MA_RELEASE)
 		os << " " << button_strs[get_button()];
 	if (get_action() == MA_WHEEL)
@@ -75,6 +77,12 @@ unsigned char mouse_event::get_button() const
 	return button;
 }
 
+/// only valid in a MA_RELEASE event with the flag MF_DND set, return the text resulting from the drag&drop action
+const std::string& mouse_event::get_dnd_text() const
+{
+	return dnd_text;
+}
+
 /// set current mouse x position 
 void mouse_event::set_x(short _x)
 {
@@ -115,6 +123,12 @@ void mouse_event::set_button_state(unsigned char _button_state)
 void mouse_event::set_button(unsigned char _button)
 {
 	button = _button;
+}
+
+/// set the drag&drop text
+void mouse_event::set_dnd_text(const std::string& text)
+{
+	dnd_text = text;
 }
 
 

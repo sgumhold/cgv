@@ -31,8 +31,11 @@ gl_delaunay_mesh_draw::gl_delaunay_mesh_draw() : node("delaunay")
 	s  = 312;
 	primitive_scale = 1.0;
 	hierarchy_factor = 32;
-	sample_shape = tm_type::SPIRAL;
-	sample_sampling = tm_type::RANDOM_HIGH_RES;
+	sample_sampling = tm_type::ST_RANDOM;
+	sample_distribution = tm_type::DT_UNIFORM;
+	sample_generator = tm_type::GT_RANDOM;
+	sample_shape = tm_type::ST_SQUARE;
+	sample_strategy = tm_type::SS_REJECTION;
 	sample_size = 100;
 	sample_shuffle = true;
 
@@ -50,7 +53,7 @@ void gl_delaunay_mesh_draw::init_mesh(unsigned int n)
 	if (set_random_seed)
 		srand(s);
 	tm = new tm_type();
-	tm->generate_sample_data_set(n, sample_shape, sample_sampling, sample_shuffle);
+	tm->generate_sample_data_set(n, sample_sampling, sample_distribution, sample_generator, sample_shape, sample_strategy, sample_shuffle);
 	tm->set_hierarchy_factor(hierarchy_factor);
 	vi = 0;
 	vc = 0;
@@ -489,16 +492,26 @@ void gl_delaunay_mesh_draw::add_circle_center()
 
 void gl_delaunay_mesh_draw::create_gui()
 {
-	add_decorator("Sampling", "heading");
-	add_control("set random seed", set_random_seed, "check");
-	add_control("random seed", s);
-	add_control("nr points", sample_size, "value_slider", "min=3;max=100000000;step=1;log=true");
-	add_control("shape", sample_shape, "SQUARE,TRIANGLE,CIRCLE,SPIRAL");
-	add_control("sampling", sample_sampling, "RANDOM,RANDOM_HIGH_RES,UNIFORM");
-	add_control("shuffle", sample_shuffle, "check");
-	connect_copy(add_button("generate")->click, rebind(this, &gl_delaunay_mesh_draw::init_mesh, _r(sample_size)));
-	connect_copy(add_button("add voronoi points")->click, rebind(this, &gl_delaunay_mesh_draw::add_voronoi_points));
+	if (begin_tree_node("Sampling", set_random_seed, true)) {
 
+		align("\a");
+
+			add_control("set random seed", set_random_seed, "check");
+			add_control("random seed", s);
+			add_control("nr points", sample_size, "value_slider", "min=3;max=100000000;step=1;log=true");
+			add_control("sampling", sample_sampling, "dropdown", "enums='regular,random,stratified'");
+			add_control("distribution", sample_distribution, "dropdown", "enums='uniform,normal'");
+			add_control("generator", sample_generator, "dropdown", "enums='random,pseudo random default,mt'");
+			add_control("shape", sample_shape, "dropdown", "enums='square,triangle,circle,spiral'");
+			add_control("strategy", sample_strategy, "dropdown", "enums='refection,transform'");
+			add_control("shuffle", sample_shuffle, "check");
+			connect_copy(add_button("generate")->click, rebind(this, &gl_delaunay_mesh_draw::init_mesh, _r(sample_size)));
+			connect_copy(add_button("add voronoi points")->click, rebind(this, &gl_delaunay_mesh_draw::add_voronoi_points));
+
+		align("\b");
+
+		end_tree_node(set_random_seed);
+	}
 	add_decorator("Delaunay", "heading");
 	add_control("hierarchy fac", hierarchy_factor, "value_slider", "min=2;max=128;step=1;log=true");
 	connect_copy(add_button("clear mesh")->click, rebind(this, &gl_delaunay_mesh_draw::clear_mesh));

@@ -34,9 +34,27 @@ void fltk_gl_view::process_text_1(const std::string& text)
 	process_text(text);
 }
 
+class MyGlWindow : public fltk::Window
+{
+public:
+	int mode_;
+	fltk::GlChoice *gl_choice;
+	fltk::GLContext context_;
+	char valid_;
+	char damage1_; // damage() of back buffer
+
+	void *overlay;
+};
+
+fltk::GLContext get_context(const fltk::GlWindow* glw)
+{
+	return reinterpret_cast<const MyGlWindow*>(glw)->context_;
+}
+
+
 /// construct application
 fltk_gl_view::fltk_gl_view(int x, int y, int w, int h, const std::string& name) 
-	: fltk::GlWindow(x,y,w,h), group(name)
+	: fltk::GlWindow(x,y,w,h), group(name), dnd_release_event(0,0,MA_ENTER)
 {
 	recreate_context = false;
 	no_more_context = false;
@@ -44,10 +62,15 @@ fltk_gl_view::fltk_gl_view(int x, int y, int w, int h, const std::string& name)
 	in_draw_method = false;
 	redraw_request = false;
 
+	enabled = false;
+	started_frame_pm = false;
+
+	dnd_release_event_queued = false;
+
 	connect(out_stream.write, this, &fltk_gl_view::process_text_1);
 
-	if ( (mode() & fltk::ALPHA_BUFFER) == 0 )
-		mode(mode()|fltk::ALPHA_BUFFER);
+	if ( (mode() & fltk::ALPHA_BUFFER) == 0 || (mode() & fltk::NO_AUTO_SWAP) == 0 )
+		mode(mode()|fltk::ALPHA_BUFFER|fltk::NO_AUTO_SWAP);
 }
 
 ///
@@ -65,11 +88,15 @@ bool fltk_gl_view::self_reflect(cgv::reflect::reflection_handler& srh)
 	srh.reflect_member("font_size", info_font_size) &&
 	srh.reflect_member("tab_size", tab_size) &&
 	srh.reflect_member("phong_shading", phong_shading) &&
+	srh.reflect_member("performance_monitoring", enabled) &&
 	srh.reflect_member("bg_r", bg_r) &&
 	srh.reflect_member("bg_g", bg_g) &&
 	srh.reflect_member("bg_b", bg_b) &&
 	srh.reflect_member("bg_a", bg_a) &&
-	srh.reflect_member("bg_index", current_background);
+	srh.reflect_member("bg_index", current_background) &&
+	srh.reflect_member("nr_display_cycles", nr_display_cycles) &&
+	srh.reflect_member("bar_line_width", bar_line_width) &&
+	srh.reflect_member("file_name", file_name);
 }
 
 void fltk_gl_view::on_set(void* member_ptr)
@@ -161,12 +188,17 @@ bool fltk_gl_view::is_quad_buffer_attached() const
 	return (mode() & fltk::STEREO) != 0;
 }
 
+#include <cgv/gui/dialog.h>
+
 /// attach a quad buffer to the current frame buffer if not present
 void fltk_gl_view::attach_quad_buffer()
 {
 	if (is_quad_buffer_attached())
 		return;
-	change_mode(mode()|fltk::STEREO);
+	if (can_do(mode() | fltk::STEREO))
+		change_mode(mode() | fltk::STEREO);
+	else
+		cgv::gui::message("insufficient OpenGL support");
 }
 
 /// attach a quad buffer to the current frame buffer if not present
@@ -340,7 +372,7 @@ void fltk_gl_view::create()
 {
 	fltk::GlWindow::create();
 	make_current();
-
+	configure_gl(get_context(this));
 	single_method_action<cgv::render::drawable,bool,cgv::render::context&> sma(*this, &drawable::init, false, false);
 //	debug_traverse_callback_handler dtcbh;
 //	std::cout << "INIT children" << std::endl;
@@ -427,33 +459,47 @@ void fltk_gl_view::idle_callback(void* ptr)
 	gl_view->redraw();
 }
 
-class MyGlWindow : public fltk::Window 
+/// overload render pass to perform measurements
+void fltk_gl_view::render_pass(cgv::render::RenderPass rp, cgv::render::RenderPassFlags rpf, void* ud)
 {
-public:
-  int mode_;
-  fltk::GlChoice *gl_choice;
-  fltk::GLContext context_;
-  char valid_;
-  char damage1_; // damage() of back buffer
-
-  void *overlay;
-};
-
-fltk::GLContext get_context(const fltk::GlWindow* glw)
-{
-	return reinterpret_cast<const MyGlWindow*>(glw)->context_;
+	start_task((int)rp);
+	cgv::render::gl::gl_context::render_pass(rp, rpf, ud);
+	if (enabled)
+		glFinish();
+	else
+		glFlush();
+	finish_task((int)rp);
 }
 
 /// complete drawing method that configures opengl whenever the context has changed, initializes the current frame and draws the scene
 void fltk_gl_view::draw()
 {
+	if (!started_frame_pm)
+		start_frame();
+
 	in_draw_method = true;
 	bool last_redraw_request = redraw_request;
 	redraw_request = false;
 	if (!valid())
 		configure_gl(get_context(this));
 	render_pass(RP_MAIN, default_render_flags);
-	glFlush();
+
+	if (enabled) {
+		cgv::render::gl::gl_performance_monitor::draw(*this);	
+		glFlush();
+	}
+
+	swap_buffers();
+
+	if (enabled) {
+		finish_frame();
+		if (redraw_request) {
+			start_frame();
+			started_frame_pm = true;
+		}
+		else 
+			started_frame_pm = false;
+	}
 	in_draw_method = false;
 	if (redraw_request != last_redraw_request) {
 		if (redraw_request)
@@ -546,6 +592,11 @@ bool fltk_gl_view::handle(event& e)
 					redraw();
 					return true;
 				}
+				if (ke.get_modifiers() == EM_CTRL) {
+					enabled = !enabled; 
+					redraw();
+					return true;
+				}
 				break;
 			case KEY_F10 :
 				if (ke.get_modifiers() == 0) {
@@ -570,7 +621,7 @@ bool fltk_gl_view::handle(event& e)
 /// overload to stream help information to the given output stream
 void fltk_gl_view::stream_help(std::ostream& os)
 {
-	os << "MAIN: Show   ... help: F1;                  ... status: F8;\n";
+	os << "MAIN: Show   ... help: F1;                  ... [perf-]status: [Ctrl-]F8;\n";
 	os << "      Object ... change focus: [Shift-]Tab; ... remove focused: Delete\n";
 	os << "      Screen ... copy to file: F10;         ... background: F12\n";
 	os << "      Toggle ... menu: Menu; GUI: Shift-Key; FullScreen: F11; Monitor: Shift-F11\n";
@@ -591,7 +642,7 @@ void fltk_gl_view::stream_stats(std::ostream& os)
 			name = "";
 		name += c->get_type_name();
 	}
-	oprintf(os, "focus = %s<Tab>\n", name.c_str());
+	oprintf(os, "WxH=%d:%d focus = %s<Tab>\n", w(), h(), name.c_str());
 }
 
 /// return the width of the window
@@ -615,6 +666,7 @@ void fltk_gl_view::resize(unsigned int width, unsigned int height)
 	}
 	else {
 		fltk::GlWindow::resize(width, height);
+//		cgv::render::gl::gl_context::resize(width, height);
 	}
 }
 
@@ -644,6 +696,20 @@ bool fltk_gl_view::make_current() const
 	return true;
 }
 
+/// clear current context lock
+void fltk_gl_view::clear_current() const
+{
+#if USE_X11
+	std::cerr << "clear_current() not implemented for FLTK under linux!" << std::endl;
+	// glXMakeCurrent(xdisplay, 0, 0);
+#elif defined(_WIN32)
+	wglMakeCurrent(0, 0);
+#elif defined(__APPLE__)
+	// warning: the Quartz version should probably use Core GL (CGL) instead of AGL
+	aglSetCurrentContext(0);
+#endif
+}
+
 /// the context will be redrawn when the system is idle again
 void fltk_gl_view::post_redraw()
 {
@@ -669,7 +735,8 @@ void fltk_gl_view::force_redraw()
 /// select a font given by a font handle
 void fltk_gl_view::enable_font_face(font_face_ptr font_face, float font_size)
 {
-	if (!(font_face == current_font_face) || font_size != current_font_size) {
+	
+	//if (!(font_face == current_font_face) || font_size != current_font_size) {
 		fltk_font_face_ptr fff = font_face.up_cast<fltk_font_face>();
 		if (fff.empty()) {
 			std::cerr << "could not use font face together with fltk" << std::endl;
@@ -678,7 +745,7 @@ void fltk_gl_view::enable_font_face(font_face_ptr font_face, float font_size)
 		fltk::glsetfont(fff->get_fltk_font(),font_size);
 		current_font_face = font_face;
 		current_font_size = font_size;
-	}
+	//}
 }
 
 /// overload to set the value
@@ -721,7 +788,7 @@ void fltk_gl_view::draw_text(const std::string& text)
 	glRasterPos2i(cursor_x,cursor_y);
 	GLint r_prev[4];
 	glGetIntegerv(GL_CURRENT_RASTER_POSITION, r_prev);
-	fltk::gldrawtext(text.c_str(), text.size());
+	fltk::gldrawtext(text.c_str(), (int)text.size());
 	GLint r[4];
 	glGetIntegerv(GL_CURRENT_RASTER_POSITION, r);
 	cursor_x += r[0]-r_prev[0];
@@ -769,7 +836,11 @@ int fltk_gl_view::handle(int ei)
 			return 1;
 		break;
 	case fltk::MOVE:
-		if ( (dx != 0 || dy != 0) && dispatch_event(cgv_mouse_event(MA_MOVE,dx,dy)))
+		if (!dnd_release_event_queued) {
+			if ( (dx != 0 || dy != 0) && dispatch_event(cgv_mouse_event(MA_MOVE,dx,dy)))
+				return 1;
+		}
+		else 
 			return 1;
 		break;
 	case fltk::DRAG:
@@ -786,6 +857,32 @@ int fltk_gl_view::handle(int ei)
 		return 1;
 	case fltk::LEAVE:
 		if (dispatch_event(cgv_mouse_event(MA_LEAVE)))
+			return 1;
+		break;
+	case fltk::DND_ENTER:
+		if (dispatch_event(cgv_mouse_event(MA_ENTER, EF_DND)))
+			return 1;
+		break;
+	case fltk::DND_DRAG :
+		if (dx != 0 || dy != 0) {
+			if (dispatch_event(cgv_mouse_event(MA_DRAG,EF_DND,dx,dy)))
+				return 1;
+		}
+		else
+			return 1;
+		break;
+	case fltk::DND_LEAVE:
+		if (dispatch_event(cgv_mouse_event(MA_LEAVE, EF_DND)))
+			return 1;
+		break;
+	case fltk::DND_RELEASE :
+		dnd_release_event = cgv_mouse_event(MA_RELEASE, EF_DND);
+		dnd_release_event_queued = true;
+		return 1;
+	case fltk::PASTE :
+		dnd_release_event_queued = false;
+		dnd_release_event.set_dnd_text(fltk::event_text());
+		if (dispatch_event(dnd_release_event))
 			return 1;
 		break;
 	}
@@ -835,4 +932,6 @@ void fltk_gl_view::create_gui()
 	add_control("accum buffer", this, "check", "", "\n", to_void_ptr(3));
 	add_control("quad buffer", this, "check", "", "\n", to_void_ptr(4));
 	add_control("multisample", this, "check", "", "\n", to_void_ptr(5));
+	add_decorator("performance monitor", "heading", "level=3");
+	add_member_control(this, "performance monitoring", enabled, "check");
 }

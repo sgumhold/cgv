@@ -36,6 +36,13 @@ fltk_generic_window::~fltk_generic_window()
 
 }
 
+/// return the group that is managing the content of the window
+gui_group_ptr fltk_generic_window::get_inner_group()
+{
+	if (inner_group)
+		return inner_group;
+	return gui_group_ptr(this);
+}
 
 
 void fltk_generic_window::prepare_new_element(cgv::gui::gui_group_ptr ggp, int& x, int& y, int& w, int& h)
@@ -72,9 +79,12 @@ void fltk_generic_window::remove_all_children(cgv::gui::gui_group_ptr ggp)
 }
 
 
-void fltk_generic_window::show()
+void fltk_generic_window::show(bool modal)
 {
-	fltk::Window::show();
+	if (modal)
+		fltk::Window::exec();
+	else
+		fltk::Window::show();
 }
 
 
@@ -111,8 +121,26 @@ bool fltk_generic_window::set_void(const std::string& property, const std::strin
 		end();
 		layout();
 
-	} else
-	if (inner_group && inner_group->set_void(property, value_type, value_ptr))
+	} 
+	else if (property == "hotspot") {
+		hotspot(this);
+		return true;
+	} 
+	else if (property == "W") {
+		int _w;
+		get_variant(_w, value_type, value_ptr);
+		w(_w);
+		layout();
+		return true;
+	} 
+	else if (property == "H") {
+		int _h;
+		get_variant(_h, value_type, value_ptr);
+		h(_h);
+		layout();
+		return true;
+	} 
+	else if (inner_group && inner_group->set_void(property, value_type, value_ptr))
 		return true;
 	else
 		return false;

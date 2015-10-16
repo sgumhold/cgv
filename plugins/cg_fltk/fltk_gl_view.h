@@ -4,7 +4,10 @@
 #include <cgv/signal/signal.h>
 #include <cgv/gui/event_handler.h>
 #include <cgv/gui/provider.h>
+#include <cgv/gui/mouse_event.h>
+#include <cgv/utils/stopwatch.h>
 #include <cgv_gl/gl/gl_context.h>
+#include <cgv_gl/gl/gl_performance_monitor.h>
 #ifdef WIN32
 #pragma warning (disable:4311)
 #endif
@@ -23,13 +26,18 @@ class CGV_API fltk_gl_view :
 	public cgv::gui::event_handler,
 	public cgv::gui::provider,
 	public cgv::render::gl::gl_context,
+	public cgv::render::gl::gl_performance_monitor,
 	public cgv::gui::control_provider<bool>
 {
 protected:
 	void process_text_1(const std::string& text);
-public:
+
 	/**@name fltk interface*/
 	//@{
+private:
+	cgv::gui::mouse_event dnd_release_event;
+	bool dnd_release_event_queued;
+public:
 	/// construct application
 	fltk_gl_view(int x, int y, int w, int h, const std::string& name = "");
 	///
@@ -123,12 +131,16 @@ public:
 	void resize(unsigned int width, unsigned int height);
 	/// return whether the context is currently in process of rendering
 	bool in_render_process() const;
+	/// overload render pass to perform measurements
+	void render_pass(cgv::render::RenderPass render_pass, cgv::render::RenderPassFlags render_pass_flags, void* user_data = 0);
 	/// return whether the context is created
 	bool is_created() const;
 	/// return whether the context is current
 	bool is_current() const;
 	/// make the current context current if possible
 	bool make_current() const;
+	/// clear current context lock
+	void clear_current() const;
 	/// the context will be redrawn when the system is idle again
 	void post_redraw();
 	/// the context will be redrawn right now. This method cannot be called inside the following methods of a drawable: init, init_frame, draw, finish_draw
@@ -175,6 +187,7 @@ public:
 private:
 	bool recreate_context;
 	bool no_more_context;
+	bool started_frame_pm;
 	///
 	int last_mouse_x, last_mouse_y;
 

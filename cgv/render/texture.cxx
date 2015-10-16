@@ -226,6 +226,7 @@ bool texture::create_from_image(cgv::data::data_format& df, cgv::data::data_view
 	std::string fn = file_name;
 	if (df.empty()) {
 		if (fn.empty()) {
+			cgv::render::render_component::last_error = "attempt to create texture from empty file name";
 			return false;
 		}
 	}
@@ -233,12 +234,19 @@ bool texture::create_from_image(cgv::data::data_format& df, cgv::data::data_view
 	std::vector<data_view> palettes;
 	if (!fn.empty()) {
 		image_reader ir(df, &palette_formats);
-		if (!ir.read_image(fn, dv))
+		if (!ir.read_image(fn, dv)) {
+			cgv::render::render_component::last_error = "error reading image file ";
+			cgv::render::render_component::last_error += fn;
+			cgv::render::render_component::last_error += ": ";
+			cgv::render::render_component::last_error += ir.get_last_error();
 			return false;
+		}
 		for (unsigned i=0; i<palette_formats.size(); ++i) {
 			palettes.push_back(data_view());
-			if (!ir.read_palette(i, palettes.back()))
+			if (!ir.read_palette(i, palettes.back())) {
+				cgv::render::render_component::last_error = "error reading palette";
 				return false;
+			}
 		}
 	}
 	if (cube_side < 1)
@@ -540,7 +548,10 @@ bool texture::replace(context& ctx, int x, int y, int z_or_cube_side, const cgv:
 		render_component::last_error = "attempt to replace in a not created 1d texture";
 		return false;
 	}
-	return ctx.texture_replace(*this,x,y,z_or_cube_side,data,level, palettes);
+	bool res = ctx.texture_replace(*this,x,y,z_or_cube_side,data,level, palettes);
+	if (res && level == -1 && !have_mipmaps)
+		have_mipmaps = true;
+	return res;
 }
 
 /// replace a block within a 2d texture from the current read buffer.

@@ -6,24 +6,12 @@ include("../../cmake/buildCoreComponents.cmake")
 # The PPP is required
 find_package(ppp)
 
-# Public headers
-# TODO: To be verified
-set(PUBLIC_HEADERS
-	bool_combiner.h
-	callback_stream.h
-	lib_begin.h)
-
 # Source files
-set(SOURCES
-	abst_signal.cxx
-	bool_combiner.cxx)
-
-# Files to be preprocessed by the PPP
-set(PPP_SOURCES
-	abst_signal.ph
-	bool_signal.ph
-	rebind.ph
-	signal.ph)
+file(GLOB_RECURSE SOURCES RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "*.cxx")
+# Header files
+file(GLOB_RECURSE PUBLIC_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "*.h")
+# Files to be preprocessed by PPP
+file(GLOB_RECURSE PPP_SOURCES RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "*.ph")
 
 # Schedule preprocessing commands
 ppp_compile("${CGV_DIR}"

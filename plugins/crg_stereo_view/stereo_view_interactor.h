@@ -5,7 +5,7 @@
 #include <cgv/gui/event_handler.h>
 #include <cgv/gui/provider.h>
 #include <cgv_gl/gl/gl.h>
-#include <GL/glsu.h>
+#include <glsu/GL/glsu.h>
 
 #include "lib_begin.h"
 
@@ -49,14 +49,22 @@ class CGV_API stereo_view_interactor :
 {
 protected:
 	double z_near_derived, z_far_derived;
-	bool toggle[2];
 	float depth_offset, depth_scale;
-	bool write_images;
 	bool auto_view_images;
-	std::string image_file_name_prefix;
 	bool show_focus;
 	bool clip_relative_to_extent;
 	double zoom_sensitivity, rotate_sensitivity;
+
+
+	// members for screen shots
+	bool write_images;
+	bool write_depth;
+	bool write_color;
+	bool write_stereo;
+	int  write_width, write_height;
+	std::string image_file_name_prefix;
+	void write_images_to_file();
+
 	void on_stereo_change();
 
 	template <typename T>

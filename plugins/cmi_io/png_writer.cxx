@@ -7,6 +7,7 @@
 png_writer::png_writer() : fp(0)
 {
 	interlacing = false;
+	compression_level = Z_BEST_COMPRESSION;
 }
 /// close file in destructor
 png_writer::~png_writer()
@@ -20,6 +21,12 @@ png_writer::~png_writer()
 std::string png_writer::get_type_name() const
 {
 	return "png_writer";
+}
+
+///
+bool png_writer::self_reflect(cgv::reflect::reflection_handler& rh)
+{
+	return rh.reflect_member("compression_level", compression_level);
 }
 
 /// construct a copy of the reader
@@ -139,7 +146,7 @@ bool png_writer::write_image(const const_data_view& dv, const std::vector<const_
 
 	png_init_io(png_ptr, fp);
 
-	png_set_compression_level(png_ptr,Z_BEST_COMPRESSION);
+	png_set_compression_level(png_ptr,compression_level);
 
 	int h = dv.get_format()->get_height();
 	png_set_IHDR(png_ptr, info_ptr, dv.get_format()->get_width(), h,

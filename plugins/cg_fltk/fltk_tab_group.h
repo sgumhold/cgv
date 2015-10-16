@@ -36,7 +36,7 @@ public:
 	/// return the index of the currently selected child.
 	int get_selected_child_index() const;
 	/// select a given child
-	void select_child(base_ptr c);
+	void select_child(base_ptr c, bool exclusive);
 	/// put default sizes into dimension fields and set inner_group to be active
 	void prepare_new_element(cgv::gui::gui_group_ptr ggp, int& x, int& y, int& w, int& h);
 	/// align last element and add element to group

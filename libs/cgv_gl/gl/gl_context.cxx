@@ -126,6 +126,8 @@ void gl_context::configure_gl(void* new_context)
 		// which is essential when using scaling to deform tesselated primities
 		glEnable(GL_NORMALIZE);
 		glViewport(0,0,get_width(),get_height());
+		last_width = get_width();
+		last_height = get_height();
 
 		/*
 		if (grp) {
@@ -458,7 +460,7 @@ void gl_context::enable_material(const textured_material& mat, MaterialSide ms, 
 		prog.set_uniform(*this, "use_bump_map", use_bump_map);
 		if (use_bump_map) {
 			prog.set_uniform(*this, "bump_map", 0);
-			prog.set_uniform(*this, "bump_map_res", mat.get_bump_texture()->get_width());
+			prog.set_uniform(*this, "bump_map_res", (int) (mat.get_bump_texture()->get_width()));
 			prog.set_uniform(*this, "bump_scale", 400*mat.get_bump_scale());
 		}
 		prog.set_uniform(*this, "use_diffuse_map", use_diffuse_map);
@@ -1122,6 +1124,7 @@ bool gl_context::texture_create(
 	texture_unbind(tb.tt, tmp_id);
 	return true;
 }
+
 bool gl_context::texture_create_from_buffer(
 						texture_base& tb, 
 						cgv::data::data_format& df, 
@@ -1145,10 +1148,11 @@ bool gl_context::texture_create_from_buffer(
 	}
 	GLuint tmp_id = texture_bind(tb.tt, tex_id);
 
-	if (level == -1) {
-		std::cerr << "construction of mipmaps not supported yet. Copying only to level 0." << std::endl;
+	// check mipmap type
+	bool gen_mipmap = level == -1;
+	if (gen_mipmap)
 		level = 0;
-	}
+
 	glCopyTexImage2D(GL_TEXTURE_2D, level, gl_format, x, y, df.get_width(), df.get_height(), 0);
 	bool error = true;
 	switch (glGetError()) {
@@ -1167,11 +1171,15 @@ bool gl_context::texture_create_from_buffer(
 		error = false;
 	}
 	texture_unbind(tb.tt, tmp_id);
+
+	if (gen_mipmap) 
+		texture_generate_mipmaps(tb, tb.tt == TT_CUBEMAP ? 2 : (int)tb.tt);
+
 	return error;
 }
 
 bool gl_context::texture_replace(
-						const texture_base& tb, 
+						texture_base& tb, 
 						int x, int y, int z, 
 						const cgv::data::const_data_view& data, 
 						int level, const std::vector<cgv::data::data_view>* palettes)
@@ -1209,13 +1217,13 @@ bool gl_context::texture_replace(
 
 	// bind texture
 	GLuint tmp_id = texture_bind(tb.tt,tex_id);
-	replace_texture(data, level, x, y, z, palettes);
+	tb.have_mipmaps = replace_texture(data, level, x, y, z, palettes) || tb.have_mipmaps;
 	texture_unbind(tb.tt, tmp_id);
 	return true;
 }
 
 bool gl_context::texture_replace_from_buffer(
-							const texture_base& tb, 
+							texture_base& tb, 
 							int x, int y, int z, 
 							int x_buffer, int y_buffer, 
 							unsigned int width, unsigned int height, 
@@ -1250,10 +1258,9 @@ bool gl_context::texture_replace_from_buffer(
 		}
 	}
 	// check mipmap type
-	if (level == -1) {
-		std::cerr << "reconstruction of mipmaps not yet supported." << std::endl;
+	bool gen_mipmap = level == -1;
+	if (gen_mipmap)
 		level = 0;
-	}
 
 	// bind texture
 	GLuint tmp_id = texture_bind(tb.tt, tex_id);
@@ -1273,6 +1280,9 @@ bool gl_context::texture_replace_from_buffer(
 			break;
 	}
 	texture_unbind(tb.tt, tmp_id);
+
+	if (gen_mipmap) 
+		texture_generate_mipmaps(tb, tb.tt == TT_CUBEMAP ? 2 : (int)tb.tt);
 	return true;
 }
 
@@ -1281,7 +1291,7 @@ bool gl_context::texture_generate_mipmaps(texture_base& tb, unsigned int dim)
 	GLuint tex_id = ((const GLuint&) tb.handle)-1;
 	GLuint tmp_id = texture_bind(tb.tt,tex_id);
 
-	bool res = generate_mipmaps((int)tb.tt, &tb.last_error);
+	bool res = generate_mipmaps(dim, &tb.last_error);
 	if (res) 
 		tb.have_mipmaps = true;
 
@@ -1761,6 +1771,13 @@ void gl_context::shader_program_attach(void* handle, void* code_handle)
 	glAttachObjectARB(p_id,c_id);
 }
 
+void gl_context::shader_program_detach(void* handle, void* code_handle)
+{
+	GLuint p_id = (const GLuint&) handle - 1;
+	GLuint c_id = (const GLuint&) code_handle - 1;
+	glDetachObjectARB(p_id,c_id);
+}
+
 bool gl_context::shader_program_link(void* handle, std::string& last_error)
 {
 	GLuint p_id = (const GLuint&) handle - 1;
@@ -1820,7 +1837,7 @@ bool gl_context::set_uniform_void(void* handle,
 		const void* value_ptr, std::string& last_error)
 {
 	GLuint p_id = (const GLuint&) handle - 1;
-	GLint loc = glGetUniformLocationARB(p_id, name.c_str());
+	GLint loc = glGetUniformLocation(p_id, name.c_str());
 	if (loc == -1) {
 		last_error = std::string("Can not find uniform location ")+name;
 		return false;
@@ -1828,26 +1845,68 @@ bool gl_context::set_uniform_void(void* handle,
 	GLhandleARB old_p_id = glGetHandleARB(GL_PROGRAM_OBJECT_ARB);
 	glUseProgramObjectARB(p_id); 
 	switch (value_type) {
-	case TI_BOOL : glUniform1iARB(loc, *static_cast<const bool*>(value_ptr) ? 1 : 0); break;
-	case TI_UINT8 : glUniform1iARB(loc, *static_cast<const uint8_type*>(value_ptr)); break;
-	case TI_UINT16 : glUniform1iARB(loc, *static_cast<const uint16_type*>(value_ptr)); break;
-	case TI_UINT32 : glUniform1iARB(loc, *static_cast<const uint32_type*>(value_ptr)); break;
-	case TI_INT8 : glUniform1iARB(loc, *static_cast<const int8_type*>(value_ptr)); break;
-	case TI_INT16 : glUniform1iARB(loc, *static_cast<const int16_type*>(value_ptr)); break;
-	case TI_INT32 : glUniform1iARB(loc, *static_cast<const int32_type*>(value_ptr)); break;
-	case TI_FLT32 : glUniform1fARB(loc, *static_cast<const flt32_type*>(value_ptr)); break;
+	case TI_BOOL : glUniform1i(loc, *static_cast<const bool*>(value_ptr) ? 1 : 0); break;
+	case TI_UINT8 : glUniform1ui(loc, *static_cast<const uint8_type*>(value_ptr)); break;
+	case TI_UINT16 : glUniform1ui(loc, *static_cast<const uint16_type*>(value_ptr)); break;
+	case TI_UINT32 : glUniform1ui(loc, *static_cast<const uint32_type*>(value_ptr)); break;
+	case TI_INT8 : glUniform1i(loc, *static_cast<const int8_type*>(value_ptr)); break;
+	case TI_INT16 : glUniform1i(loc, *static_cast<const int16_type*>(value_ptr)); break;
+	case TI_INT32 : glUniform1i(loc, *static_cast<const int32_type*>(value_ptr)); break;
+	case TI_FLT32 : glUniform1f(loc, *static_cast<const flt32_type*>(value_ptr)); break;
 
 #include "gl_context_switch.h"
 
-	case TI_FLT32+UTO_VECTOR_MAT : 
+	case TI_FLT32 + UTO_VECTOR_VEC:
+	{
+		unsigned i;
+		const std::vector<vec<flt32_type> >& vm = *static_cast<const std::vector<vec<flt32_type> >*>(value_ptr);
+		for (i = 0; i<vm.size(); ++i) {
+			GLint loc = glGetUniformLocation(p_id, (name + "[" + cgv::utils::to_string(i) + "]").c_str());
+			if (loc == -1) {
+				last_error = std::string("Can not find uniform location ") + name + "[" + cgv::utils::to_string(i) + "]";
+				return false;
+			}
+			switch (vm[i].size()) {
+			case  4: glUniform2fv(loc, 1, vm[i]); break;
+			case  9: glUniform3fv(loc, 1, vm[i]); break;
+			case 16: glUniform4fv(loc, 1, vm[i]); break;
+			}
+		}
+		break;
+	}
+	case TI_FLT32 + UTO_VECTOR_FVEC:
+	{
+		const std::vector<fvec<flt32_type, 2> >& vm = *static_cast<const std::vector<fvec<flt32_type, 2> >*>(value_ptr);
+		glUniform2fv(loc, (GLsizei)vm.size(), &vm[0](0));
+		break;
+	}
+	case TI_FLT32 + UTO_VECTOR_FVEC + UTO_DIV:
+	{
+		const std::vector<fvec<flt32_type, 3> >& vm = *static_cast<const std::vector<fvec<flt32_type, 3> >*>(value_ptr);
+		glUniform3fv(loc, (GLsizei)vm.size(), &vm[0](0));
+		break;
+	}
+	case TI_FLT32 + UTO_VECTOR_FVEC + 2 * UTO_DIV:
+	{
+		const std::vector<fvec<flt32_type, 4> >& vm = *static_cast<const std::vector<fvec<flt32_type, 4> >*>(value_ptr);
+		glUniform4fv(loc, (GLsizei)vm.size(), &vm[0](0));
+		break;
+	}
+
+	case TI_FLT32 + UTO_VECTOR_MAT:
 		{
 			unsigned i;
 			const std::vector<mat<flt32_type> >& vm = *static_cast<const std::vector<mat<flt32_type> >*>(value_ptr);
 			for (i=0; i<vm.size(); ++i) {
+				GLint loc = glGetUniformLocation(p_id, (name + "[" + cgv::utils::to_string(i) + "]").c_str());
+				if (loc == -1) {
+					last_error = std::string("Can not find uniform location ") + name + "[" + cgv::utils::to_string(i) + "]";
+					return false;
+				}
 				switch (vm[i].size()) {
-				case  4 : glUniformMatrix2fv(loc, 1, i, vm[i]); break;
-				case  9 : glUniformMatrix3fv(loc, 1, i, vm[i]); break;
-				case 16 : glUniformMatrix4fv(loc, 1, i, vm[i]); break;
+				case  4 : glUniformMatrix2fv(loc, 1, 0, vm[i]); break;
+				case  9 : glUniformMatrix3fv(loc, 1, 0, vm[i]); break;
+				case 16 : glUniformMatrix4fv(loc, 1, 0, vm[i]); break;
 				}
 			}
 			break;
@@ -1855,19 +1914,19 @@ bool gl_context::set_uniform_void(void* handle,
 	case TI_FLT32+UTO_VECTOR_FMAT : 
 		{
 			const std::vector<fmat<flt32_type,2,2> >& vm = *static_cast<const std::vector<fmat<flt32_type,2,2> >*>(value_ptr);
-			glUniformMatrix2fv(loc, vm.size(), 0, &vm[0](0,0)); 
+			glUniformMatrix2fv(loc, (GLsizei)vm.size(), 0, &vm[0](0,0)); 
 			break;
 		}
 	case TI_FLT32+UTO_VECTOR_FMAT + UTO_DIV: 
 		{
 			const std::vector<fmat<flt32_type,3,3> >& vm = *static_cast<const std::vector<fmat<flt32_type,3,3> >*>(value_ptr);
-			glUniformMatrix3fv(loc, vm.size(), 0, &vm[0](0,0)); 
+			glUniformMatrix3fv(loc, (GLsizei)vm.size(), 0, &vm[0](0, 0));
 			break;
 		}
 	case TI_FLT32+UTO_VECTOR_FMAT + 2*UTO_DIV: 
 		{
 			const std::vector<fmat<flt32_type,4,4> >& vm = *static_cast<const std::vector<fmat<flt32_type,4,4> >*>(value_ptr);
-			glUniformMatrix4fv(loc, vm.size(), 0, &vm[0](0,0)); 
+			glUniformMatrix4fv(loc, (GLsizei)vm.size(), 0, &vm[0](0, 0));
 			break;
 		}
 	default: 

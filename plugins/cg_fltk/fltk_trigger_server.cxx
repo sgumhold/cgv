@@ -72,4 +72,4 @@ double fltk_trigger_server::get_current_time() const
 	return ::fltk::get_time_secs();
 }
 
-cgv::base::object_registration<fltk_trigger_server> trig_serv("");
+cgv::base::object_registration<fltk_trigger_server> trig_serv("register trigger server");

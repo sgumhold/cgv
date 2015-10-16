@@ -44,11 +44,18 @@ public:
 	void add_time();
 	//destructor stops time measurement and puts the result into cout
 	~stopwatch();
+	/// return time elpased thus far
+	double get_elapsed_time() const;
+	/// restart timer and return time elapsed until restart
+	double restart();
 private:
 	void init();
+	double get_current_time(long long& end) const;
 	long long start;
 	double *resultd;	
 };
 
 	}
 }
+
+#include <cgv/config/lib_end.h>

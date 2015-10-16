@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 2.6)
 # Set CMake policy 17 to prefer local find scripts
 cmake_policy(SET CMP0017 OLD)
 
-option(BUILD_SHARED_LIBS "Create shared libraries" FALSE)
+option(BUILD_SHARED_LIBS "Create shared libraries" TRUE)
 
 # Load general build settings
 include("cmake/buildSettings.cmake")

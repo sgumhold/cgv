@@ -6,14 +6,19 @@ namespace cgv {
 
 bool perm_mat::self_reflect(cgv::reflect::reflection_handler& rh) 
 {
-		return rh.reflect_member("data", _data);
+	cgv::math::vec<float> v;
+	rh.reflect_member("v", v);
+	return rh.reflect_member("data", this->_data);
 }
 
 		}
 
-extern_reflection_traits<cgv::math::perm_mat, cgv::reflect::math::perm_mat> get_reflection_traits(const cgv::math::perm_mat&) 
+#ifdef REFLECT_IN_CLASS_NAMESPACE
+}} namespace cgv {	namespace math {
+#endif
+cgv::reflect::extern_reflection_traits<cgv::math::perm_mat, cgv::reflect::math::perm_mat> get_reflection_traits(const cgv::math::perm_mat&) 
 {
-	return extern_reflection_traits<cgv::math::perm_mat, cgv::reflect::math::perm_mat>(); 
+	return cgv::reflect::extern_reflection_traits<cgv::math::perm_mat, cgv::reflect::math::perm_mat>(); 
 }
 
 	}

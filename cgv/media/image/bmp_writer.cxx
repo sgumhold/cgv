@@ -66,12 +66,13 @@ const std::string& bmp_writer::get_last_error() const
 /** write the data stored in the data view to a file with the file name given in the constructor. */
 bool bmp_writer::open(const std::string& file_name)
 {
-	FILE* fp = fopen(file_name.c_str(), "wb");
-	if (!fp) {
+	FILE* _fp = fopen(file_name.c_str(), "wb");
+	if (!_fp) {
 		last_error = "can't open file for writing: ";
 		last_error += file_name;
 		return false;
 	}
+	fp = _fp;
 	return true;
 }
 
@@ -177,7 +178,7 @@ bool bmp_writer::close()
 	return fclose(fp) == 0;
 }
 
-cgv::base::object_registration<bmp_writer> bwr("");
+cgv::base::object_registration<bmp_writer> bwr("register bmp writer");
 
 		}
 	}

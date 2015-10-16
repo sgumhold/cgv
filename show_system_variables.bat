@@ -3,11 +3,17 @@ call :query_user_path old_path
 echo current Path extension of USER:
 echo -------------------------------
 call :show_list_expanded old_path
+echo -------------------------------
+echo resulting Path:
+echo -------------------------------
+call :show_list_expanded PATH
+echo -------------------------------
 echo.
 echo CGV_DIR:      %CGV_DIR%
 echo CGV_BUILD:    %CGV_BUILD%
 echo CGV_INSTALL:  %CGV_INSTALL%
 echo CGV_COMPILER: %CGV_COMPILER%
+echo CGV_PLATFORM: %CGV_PLATFORM%
 echo CGV_PROJECT_DIR: %CGV_PROJECT_DIR%
 echo CGV_SUPPORT_DIR: %CGV_SUPPORT_DIR%
 pause

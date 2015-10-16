@@ -2,8 +2,10 @@
 @func(::gen_targets; :>pj = MAP, :>return="")@{@//
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
+@if(CGV_COMPILER == "vs10" || CGV_COMPILER == "vs11")@{@//
     <PropertyPageSchema
       Include="$(MSBuildThisFileDirectory)$(MSBuildThisFileName).xml" />
+@}
 @for(:>i=0; i<!pj::rules; ++i)@{
      @if(is_rule(<:R =& pj::rules[i]))@{@//
     <AvailableItemName

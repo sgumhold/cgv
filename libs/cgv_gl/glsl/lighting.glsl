@@ -16,7 +16,7 @@ void computeDirectionalLight(in gl_LightSourceParameters lightSource,
      						 in vec3 normal,
      						 inout vec4 ambient,
      						 inout vec4 diffuse,
-     						 inout vec4 specular)
+     						 inout vec4 specular) 
 {
 	float diffuseFactor = max(dot(normal, normalize(vec3(lightSource.position))), 0.0);
 	float specularFactor = 0.0;
@@ -304,6 +304,50 @@ vec4 doLighting(vec3 position, vec3 normal, vec4 diffuseMaterial)
 	// 'Acm' == gl_FrontMaterial.ambient
 	// 'Acs' = ambient color of scene (set through 'glLightModelfv(GL_LIGHT_MODEL_AMBIENT, sceneAmbient);')
 	return gl_FrontLightModelProduct.sceneColor + ambient + diffuseMaterial * diffuse + specular;
+}
+
+/**
+ * Does the lighting calculation.
+ *
+ * \param position the position of the fragment in eye coordinates
+ * \param normal the normal of the fragment in eye coordinates
+ * \param diffuseMaterial the diffuse material color
+ * \return the fragment color resulting from illumination computations
+ */
+vec4 doLightingAmb(vec3 position, vec3 normal, vec4 ambientMaterial, vec4 diffuseMaterial)
+{
+	// http://www.opengl.org/sdk/docs/man/xhtml/glNormal.xml
+	normal = normalize(normal); // if GL_NORMALIZE is enabled (Page 217); makes no sense here
+	// normal = normal * gl_NormalScale; // if GL_RESCALE_NORMAL is enabled (Page 217); makes no sense here
+
+	// http://www.opengl.org/sdk/docs/man/xhtml/glLightModel.xml
+	vec3 viewVector = vec3(0.0, 0.0, 1.0); // not local viewer
+	if (local_viewer)
+		viewVector = -normalize(position); // if GL_LIGHT_MODEL_LOCAL_VIEWER is set to != 0 (Page 222)
+
+	vec4 ambient = vec4(0.0); // ambient color (variant 1) / factor (variant 2)
+	vec4 diffuse = vec4(0.0); // diffuse color (variant 1) / factor (variant 2)
+	vec4 specular = vec4(0.0); // specular color (variant 1) / factor (variant 2)
+
+	for (int i = 0; i < gl_MaxLights; i++)
+	{
+		//if (enabled[i] == 1)
+		if (lights_enabled[i] == 1)
+		{
+            if (gl_LightSource[i].position.w == 0.0)
+                computeDirectionalLight(gl_LightSource[i], gl_FrontLightProduct[i], normal, ambient, diffuse, specular);
+            else if (gl_LightSource[i].spotCutoff == 180.0)
+                computePointLight(gl_LightSource[i], gl_FrontLightProduct[i], viewVector, position, normal, ambient, diffuse, specular);
+            else
+                computeSpotLight(gl_LightSource[i], gl_FrontLightProduct[i], viewVector, position, normal, ambient, diffuse, specular);
+        }
+	}
+
+	// sceneColor = Ecm + Acm * Acs
+	// 'Ecm' == gl_FrontMaterial.emission
+	// 'Acm' == gl_FrontMaterial.ambient
+	// 'Acs' = ambient color of scene (set through 'glLightModelfv(GL_LIGHT_MODEL_AMBIENT, sceneAmbient);')
+	return gl_FrontLightModelProduct.sceneColor + ambientMaterial * ambient + diffuseMaterial * diffuse + specular;
 }
 
 

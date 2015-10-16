@@ -12,6 +12,7 @@
 template <typename FB>
 struct fltk_bool_control : public control<bool>, public fltk_base
 {
+	std::string true_label, false_label, true_image, false_image;
 	/// pointer to the fltk button	
 	FB* fB;
 	/// construct from label, value reference and dimensions

@@ -6,30 +6,11 @@ include("../../cmake/buildCoreComponents.cmake")
 # The PPP is required
 find_package(ppp)
 
-# Public headers
-# TODO: To be verified
-set(PUBLIC_HEADERS
-	debug_reflection_handler.h
-	find_reflection_handler.h
-	get_reflection_handler.h
-	lib_begin.h
-	reflect_enum.h
-	reflect_extern.h
-	reflection_handler.h
-	reflection_traits.h
-	reflection_traits_info.h
-	self_reflection_tag.h
-	set_reflection_handler.h)
-
 # Source files
-set(SOURCES
-	debug_reflection_handler.cxx
-	find_reflection_handler.cxx
-	get_reflection_handler.cxx
-	reflect_enum.cxx
-	reflection_handler.cxx
-	reflection_traits.cxx
-	set_reflection_handler.cxx)
+file(GLOB_RECURSE SOURCES RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "*.cxx")
+# Header files
+file(GLOB_RECURSE PUBLIC_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "*.h")
+
 
 # Files to be preprocessed by the PPP
 set(PPP_SOURCES

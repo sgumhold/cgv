@@ -19,9 +19,6 @@
 /* The size of a `int', as computed by sizeof. */
 #define SIZEOF_INT 4
 
-/* The size of a `long', as computed by sizeof. */
-#define SIZEOF_LONG 4
-
 /* Signed 8-bit type */
 #define TIFF_INT8_T signed char
 
@@ -34,30 +31,42 @@
 /* Unsigned 16-bit type */
 #define TIFF_UINT16_T unsigned short
 
+/* Signed 32-bit type formatter */
+#define TIFF_INT32_FORMAT "%d"
+
 /* Signed 32-bit type */
 #define TIFF_INT32_T signed int
+
+/* Unsigned 32-bit type formatter */
+#define TIFF_UINT32_FORMAT "%u"
 
 /* Unsigned 32-bit type */
 #define TIFF_UINT32_T unsigned int
 
+/* Signed 64-bit type formatter */
+#define TIFF_INT64_FORMAT "%I64d"
+
 /* Signed 64-bit type */
-#ifdef _MSV_VER
 #define TIFF_INT64_T signed __int64
-#else
-#define TIFF_INT64_T signed long long
-#endif
+
+/* Unsigned 64-bit type formatter */
+#define TIFF_UINT64_FORMAT "%I64u"
 
 /* Unsigned 64-bit type */
-#ifdef _MSV_VER
 #define TIFF_UINT64_T unsigned __int64
-#else
-#define TIFF_UINT64_T unsigned long long
-#endif
+
 /* Signed size type */
 #if defined(_WIN64)
 #define TIFF_SSIZE_T signed __int64
 #else
 #define TIFF_SSIZE_T signed int
+#endif
+
+/* Signed size type formatter */
+#if defined(_WIN64)
+#define TIFF_SSIZE_FORMAT "%I64d"
+#else
+#define TIFF_SSIZE_FORMAT "%ld"
 #endif
 
 /* Pointer difference type */
@@ -82,6 +91,9 @@
 /* Support JPEG compression (requires IJG JPEG library) */
 /* #undef JPEG_SUPPORT */
 
+/* Support JBIG compression (requires JBIG-KIT library) */
+/* #undef JBIG_SUPPORT */
+
 /* Support LogLuv high dynamic range encoding */
 #define LOGLUV_SUPPORT 1
 
@@ -93,7 +105,7 @@
 
 /* Support Old JPEG compresson (read contrib/ojpeg/README first! Compilation
    fails with unpatched IJG JPEG library) */
-/* #undef OJPEG_SUPPORT */
+#define OJPEG_SUPPORT
 
 /* Support Macintosh PackBits algorithm */
 #define PACKBITS_SUPPORT 1
@@ -105,7 +117,7 @@
 #define THUNDER_SUPPORT 1
 
 /* Support Deflate compression */
-/*#undef ZIP_SUPPORT */
+/* #undef ZIP_SUPPORT */
 
 /* Support strip chopping (whether or not to convert single-strip uncompressed
    images to mutiple strips of ~8Kb to reduce memory usage) */
@@ -123,6 +135,9 @@
    lacking the tag (default enabled). */
 #define CHECK_JPEG_YCBCR_SUBSAMPLING 1
 
+/* Support MS MDI magic number files as TIFF */
+/* #undef MDI_SUPPORT */
+
 /*
  * Feature support definitions.
  * XXX: These macros are obsoleted. Don't use them in your apps!
@@ -136,3 +151,10 @@
 #define IPTC_SUPPORT
 
 #endif /* _TIFFCONF_ */
+/*
+ * Local Variables:
+ * mode: c
+ * c-basic-offset: 8
+ * fill-column: 78
+ * End:
+ */

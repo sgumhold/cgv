@@ -24,7 +24,7 @@ if NOT [%1] == [] (
 echo Define System Variables for cgv Framework
 echo -------------------------------------------
 echo    please answer the following question by
-echo    entering a number between 1 and 6 and
+echo    entering a number in [1,9] or letter in [a-c]
 echo    pressing return afterwards.
 echo -------------------------------------------
 echo choose whether to proceed interactively and
@@ -36,20 +36,22 @@ echo [2] ... Microsoft Visual Studio 2008
 echo [3] ... Microsoft Visual Studio 2008 Express
 echo [4] ... Microsoft Visual Studio 2010
 echo [5] ... Microsoft Visual Studio 2012
+echo [6] ... Microsoft Visual Studio 2013
 echo.
 echo automatic mode:
-echo [6] ... Microsoft Visual Studio 2005 
-echo [7] ... Microsoft Visual Studio 2008 
-echo [8] ... Microsoft Visual Studio 2008 Express
-echo [9] ... Microsoft Visual Studio 2010
-echo [a] ... Microsoft Visual Studio 2012
+echo [7] ... Microsoft Visual Studio 2005 
+echo [8] ... Microsoft Visual Studio 2008 
+echo [9] ... Microsoft Visual Studio 2008 Express
+echo [a] ... Microsoft Visual Studio 2010
+echo [b] ... Microsoft Visual Studio 2012
+echo [c] ... Microsoft Visual Studio 2013
 echo.
 echo [q] ... quit script
 echo.
 :ask_again
-set /P selection=choose 1-9 or a or q^>
+set /P selection=choose 1-9 or a-c or q^>
 if [%selection%] == [] (
-   echo please enter a number between 1 and 9 or a or q for quit
+   echo please enter a number in [1-9] or a letter in [a-c] or q for quit
    goto:ask_again
 )
 if "%selection%" == "q" (
@@ -59,20 +61,28 @@ if "%selection%" == "q" (
 )
 set valid_number=true
 if "%selection%" == "a" (
-	call set /A selection=10 
+   call set /A selection=10 
 ) else (
+   if "%selection%" == "b" (
+      call set /A selection=11 
+   ) else (
+      if "%selection%" == "c" (
+         call set /A selection=12
+      ) else (
 	call set /A selection=%selection%
 	if %selection% LSS 1 (set valid_number=false)
 	if %selection% GTR 9 (set valid_number=false)
+      )
+   )
 )
 if %valid_number% == false (
-   echo invalid number outside range [1-9,a], please try again
+   echo invalid number outside range [1-9,a-c], please try again
    goto:ask_again
 )
 set interactive_mode=true
-if %selection% GTR 5 (
+if %selection% GTR 6 (
    set interactive_mode=false
-   set /A selection=selection-5
+   set /A selection=selection-6
 )
 set cgvcompiler=undefined
 call set condition=%selection%==1
@@ -85,6 +95,8 @@ call set condition=%selection%==4
 if %condition% (set cgvcompiler=vs10)
 call set condition=%selection%==5
 if %condition% (set cgvcompiler=vs11)
+call set condition=%selection%==6
+if %condition% (set cgvcompiler=vs12)
 if %interactive_mode%==true (
    echo.
    echo selected interactive mode

@@ -1,24 +1,51 @@
 #include "gl_point_cloud_drawable_base.h"
-
+#include "ann_tree.h"
 #include <cgv/utils/file.h>
 #include <cgv/utils/scan.h>
 #include <cgv_gl/gl/gl.h>
+#include <cgv_gl/gl/gl_tools.h>
+#include <cgv/base/import.h>
 
 using namespace std;
 using namespace cgv::render;
 using namespace cgv::utils::file;
 
-gl_point_cloud_drawable_base::gl_point_cloud_drawable_base() : ne(pc,ng)
+gl_point_cloud_drawable_base::gl_point_cloud_drawable_base() : 
+	ne(pc,ng), 	
+	base_color(0.6f, 0.4f, 0.4f),
+	nml_color(0.3f, 0.0f, 0.5f),
+	box_color(0.0f,0.8f,0.9f)
 {
+	view_ptr = 0;
+
+	outline_width_from_pixel = 1.5f;
+	percentual_outline_width = 0.0f;
 	point_size = 3.0f;
 	line_width = 1;
 	nml_length = 0.5f;
-	
+
+	show_point_step = 1;
+	show_point_begin = 0;
+	show_point_end = 0;
+	orient_splats = true;
+
+	base_material.set_ambient(color_type(0.2f,0.2f,0.2f));
+	base_material.set_diffuse(color_type(0.6f,0.4f,0.4f));
+	base_material.set_specular(color_type(0.4f,0.4f,0.4f));
+	base_material.set_shininess(20.0f);
+
+	sort_points = true;
+	smooth_points = true;
 	show_points = true;
 	show_nmls = true;
+	show_clrs = true;
 	show_box = false;
 	illum_points = true;
 	show_neighbor_graph = false;
+	use_point_shader = true;	
+
+	blend_points = true;
+	backface_cull_points = true;
 
 	k = 30;
 	do_symmetrize = false;
@@ -27,34 +54,29 @@ gl_point_cloud_drawable_base::gl_point_cloud_drawable_base() : ne(pc,ng)
 
 bool gl_point_cloud_drawable_base::read(const std::string& _file_name)
 {
-	string fn = _file_name;
-	if (!exists(fn)) {
-		if (exists(data_path+"/"+fn))
-			fn = data_path+"/"+fn;
-		else {
-			cerr << "point cloud " << _file_name << " not found" << endl;
-			return false;
-		}
+	std::string fn = cgv::base::find_data_file(_file_name, "cpD");
+	if (fn.empty()) {
+		cerr << "point cloud " << _file_name << " not found" << endl;
+		return false;
 	}
 	if (!pc.read(fn)) {
 		cerr << "could not read point cloud " << fn << endl;
 		return false;
 	}
-	file_name = pc.get_file_name();
+	file_name = drop_extension(_file_name);
+	show_point_begin = 0;
+	show_point_end = pc.get_nr_points();
+
 	post_redraw();
 	return true;
 }
 
 bool gl_point_cloud_drawable_base::append(const std::string& _file_name)
 {
-	string fn = _file_name;
-	if (!exists(fn)) {
-		if (exists(data_path+"/"+fn))
-			fn = data_path+"/"+fn;
-		else {
-			cerr << "point cloud " << _file_name << " not found" << endl;
-			return false;
-		}
+	std::string fn = cgv::base::find_data_file(_file_name, "cpD");
+	if (fn.empty()) {
+		cerr << "point cloud " << _file_name << " not found" << endl;
+		return false;
 	}
 	point_cloud pc1;
 	if (!pc1.read(fn)) {
@@ -63,17 +85,10 @@ bool gl_point_cloud_drawable_base::append(const std::string& _file_name)
 	}
 	if (!file_name.empty())
 		file_name += " and "; 
-	file_name += pc1.get_file_name();
-	unsigned i;
-	bool copy_nmls = pc1.has_normals() && (pc.P.size() == 0 || pc.has_normals());
-	bool copy_clrs = pc1.has_colors() && (pc.P.size() == 0 || pc.has_colors());
-	for (i=0; i<pc1.P.size(); ++i) {
-		pc.P.push_back(pc1.P[i]);
-		if (copy_nmls)
-			pc.N.push_back(pc1.N[i]);
-		if (copy_clrs)
-			pc.C.push_back(pc1.C[i]);
-	}
+	file_name += drop_extension(fn);
+	pc.append(pc1);
+	show_point_begin = 0;
+	show_point_end = pc.get_nr_points();
 	return true;
 }
 
@@ -83,55 +98,135 @@ bool gl_point_cloud_drawable_base::write(const std::string& fn)
 		cerr << "could not write point cloud " << fn << endl;
 		return false;
 	}
-	file_name = pc.get_file_name();
+	file_name = drop_extension(fn);
 	return true;
 }
 
 
-void gl_point_cloud_drawable_base::draw_box(context& ctx)
+void gl_point_cloud_drawable_base::draw_box(context& ctx, const Box& box)
 {
-	if (!show_box)
-		return;
-
 	glDisable(GL_LIGHTING);
 	glLineWidth((float)(2*line_width));
 	
-	glColor3f(0.0f,0.0f,1.0f);
-	
 	glPushMatrix();
-	glTranslatef(pc.box.get_center()(0),pc.box.get_center()(1),pc.box.get_center()(2));
-	glScalef(pc.box.get_extent()(0), pc.box.get_extent()(1), pc.box.get_extent()(2));
+	glTranslatef(box.get_center()(0),box.get_center()(1),box.get_center()(2));
+	glScalef(0.5f*box.get_extent()(0), 0.5f*box.get_extent()(1), 0.5f*box.get_extent()(2));
 
+	GLboolean cull;
+	glGetBooleanv(GL_CULL_FACE, &cull);
+	if (cull)
+		glDisable(GL_CULL_FACE);
 	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	ctx.tesselate_unit_cube();
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	if (cull)
+		glEnable(GL_CULL_FACE);
 	
 	glPopMatrix();
 
 	glEnable(GL_LIGHTING);
 }
 
+void gl_point_cloud_drawable_base::draw_box(context& ctx)
+{
+	if (!show_box)
+		return;
+
+	glColor3fv(&box_color[0]);
+	draw_box(ctx, pc.box());	
+}
+
 void gl_point_cloud_drawable_base::draw_points(context& ctx)
 {
+	if (!ensure_view_pointer())
+		exit(0);
+
 	if (!show_points)
 		return;
-	if (point_size > 1)
+	if (backface_cull_points) {
+		glCullFace(GL_BACK);
+		glEnable(GL_CULL_FACE);
+	}
+	else
+		glDisable(GL_CULL_FACE);
+	if (point_size > 1 && smooth_points) {
 		glEnable(GL_POINT_SMOOTH);
+		if (blend_points) {
+			glHint(GL_POINT_SMOOTH_HINT, GL_NICEST);
+			glEnable(GL_BLEND);
+			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		}
+	}
 	if (!illum_points)
 		glDisable(GL_LIGHTING);
-	glPolygonOffset(-2,-5);
+	glPolygonOffset(-2, -5);
 	glEnable(GL_POLYGON_OFFSET_POINT);
 
-		glColor3f(0.5f,0.0f,0.0f);
-		glPointSize(point_size);
+	glColor3fv(&base_color[0]);
+	glPointSize(point_size);
 
-		int n = (int)pc.P.size();
-		glDrawArrays(GL_POINTS,0,n);
+	if (use_point_shader && pc_prog.is_linked()) {
+		// compute reference point size
+		Pnt e = pc.box().get_extent();
+		Crd A = 2.0f*(e(0)*e(1) + e(1)*e(2) + e(2)*e(0));
+		Crd reference_point_size = 0.1f*sqrt(A/pc.get_nr_points());
+		cgv::render::gl::set_lighting_parameters(ctx, pc_prog);
+		pc_prog.set_uniform(ctx, "cull_backfacing", backface_cull_points);
+		pc_prog.set_uniform(ctx, "smooth_points", smooth_points);
+		pc_prog.set_uniform(ctx, "orient_splats", orient_splats);
+		pc_prog.set_uniform(ctx, "point_size", reference_point_size*point_size*sqrt((float)show_point_step));
+		pc_prog.set_uniform(ctx, "width", ctx.get_width());
+		pc_prog.set_uniform(ctx, "height", ctx.get_height());
+		float pixel_extent_per_depth = (float)(2.0*tan(0.5*0.0174532925199*view_ptr->get_y_view_angle())/ctx.get_height());
+		pc_prog.set_uniform(ctx, "pixel_extent_per_depth", pixel_extent_per_depth);
+		pc_prog.set_uniform(ctx, "outline_width_from_pixel", outline_width_from_pixel);
+		pc_prog.set_uniform(ctx, "percentual_outline_width", 0.01f*percentual_outline_width);
+		pc_prog.enable(ctx);
+	}
+	std::size_t n = (show_point_end - show_point_begin) / show_point_step;
+	GLint offset = show_point_begin / show_point_step;
+
+	if (sort_points && ensure_view_pointer()) {
+		struct sort_pred {
+			const point_cloud& pc;
+			const Pnt& view_dir;
+			unsigned show_point_step;
+			bool operator () (GLint i, GLint j) const {
+				return dot(pc.pnt(show_point_step*i), view_dir) > dot(pc.pnt(show_point_step*j), view_dir);
+			}
+			sort_pred(const point_cloud& _pc, const Pnt& _view_dir, unsigned _show_point_step) : pc(_pc), view_dir(_view_dir), show_point_step(_show_point_step) {}
+		};
+		Pnt view_dir = view_ptr->get_view_dir();
+		std::vector<GLint> indices;
+		indices.resize(n);
+		size_t i;
+		for (i = 0; i < indices.size(); ++i)
+			indices[i] = (GLint)i + offset;
+		std::sort(indices.begin(), indices.end(), sort_pred(pc, view_dir, show_point_step));
+
+		glDepthFunc(GL_ALWAYS);
+		glDrawElements(GL_POINTS, n, GL_UNSIGNED_INT, &indices[0]);
+		glDepthFunc(GL_LESS);
+	}
+	else {
+		glDrawArrays(GL_POINTS, offset, n);
+	}
+
+	if (use_point_shader && pc_prog.is_linked())
+		pc_prog.disable(ctx);
 
 	glDisable(GL_POLYGON_OFFSET_POINT);
 	if (!illum_points && pc.has_normals())
 		glEnable(GL_LIGHTING);
-	glDisable(GL_POINT_SMOOTH);
+	if (point_size > 1 && smooth_points) {
+		glDisable(GL_POINT_SMOOTH);
+		if (blend_points) {
+			glDisable(GL_BLEND);
+		}
+	}
+	if (backface_cull_points) {
+		glDisable(GL_CULL_FACE);
+	}
 }
 
 void gl_point_cloud_drawable_base::draw_normals(context& ctx)
@@ -139,14 +234,14 @@ void gl_point_cloud_drawable_base::draw_normals(context& ctx)
 	if (!show_nmls || !pc.has_normals())
 		return;
 	glDisable(GL_LIGHTING);
-		glColor3f(0.0f,0.0f,0.0f);
+		glColor3fv(&nml_color[0]);
 		glLineWidth(line_width);
 		glBegin(GL_LINES);
-		float nml_scale = (nml_length*pc.box.get_extent().length()/sqrt((float)pc.P.size()));
-		for (unsigned int i=0; i<pc.P.size(); ++i) {
-			Pnt dp = pc.P[i];
+		float nml_scale = (nml_length*pc.box().get_extent().length()/sqrt((float)pc.get_nr_points()));
+		for (unsigned int i=0; i<pc.get_nr_points(); ++i) {
+			Pnt dp = pc.pnt(i);
 			glVertex3fv(dp);
-			dp += nml_scale*pc.N[i];
+			dp += nml_scale*pc.nml(i);
 			glVertex3fv(dp);
 		}
 		glEnd();
@@ -175,7 +270,7 @@ void gl_point_cloud_drawable_base::draw_graph(context& ctx)
 		glLineWidth(line_width);
 		glBegin(GL_LINES);
 		for (unsigned int vi=0; vi<ng.size(); ++vi) {
-			const std::vector<unsigned int> &Ni = ng[vi];
+			const std::vector<Idx> &Ni = ng[vi];
 			for (unsigned int j=0; j<Ni.size(); ++j) {
 				unsigned int vj = Ni[j];
 				// check for symmetric case and only draw once
@@ -199,31 +294,40 @@ void gl_point_cloud_drawable_base::draw_graph(context& ctx)
 	glEnable(GL_LIGHTING);
 }
 
+void gl_point_cloud_drawable_base::init_frame(cgv::render::context& ctx)
+{
+	if (!pc_prog.is_created()) {
+		if (!pc_prog.build_program(ctx, "pc.glpr", true)) {
+			exit(0);
+		}
+	}
+}
+
 void gl_point_cloud_drawable_base::draw(context& ctx)
 {
-	if (pc.P.empty())
+	if (pc.get_nr_points() == 0)
 		return;
 
-	glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, 100.0f);
+	ctx.enable_material(base_material);
 	glEnable(GL_COLOR_MATERIAL);
 
 	draw_box(ctx);
 
-	glVertexPointer(3, GL_FLOAT, 0, &(pc.P[0].x()));
+	glVertexPointer(3, GL_FLOAT, 0, &(pc.pnt(0).x()));
 	glEnableClientState(GL_VERTEX_ARRAY);
 	draw_graph(ctx);
 	glDisableClientState(GL_VERTEX_ARRAY);
 
 	draw_normals(ctx);
 
-	glVertexPointer(3, GL_FLOAT, 0, &(pc.P[0].x()));
+	glVertexPointer(3, GL_FLOAT, sizeof(Pnt)*show_point_step, &(pc.pnt(0).x()));
 	glEnableClientState(GL_VERTEX_ARRAY);
-	if (pc.has_colors()) {
-		glColorPointer(3, GL_FLOAT, 0, &(pc.C[0][0]));
+	if (pc.has_colors() && show_clrs) {
+		glColorPointer(3, GL_FLOAT, sizeof(Clr)*show_point_step, &(pc.clr(0)[0]));
 		glEnableClientState(GL_COLOR_ARRAY);
 	}
 	if (pc.has_normals()) {
-		glNormalPointer(GL_FLOAT, 0, &(pc.N[0].x()));
+		glNormalPointer(GL_FLOAT, sizeof(Nml)*show_point_step, &(pc.nml(0).x()));
 		glEnableClientState(GL_NORMAL_ARRAY);
 	}
 	else
@@ -235,7 +339,7 @@ void gl_point_cloud_drawable_base::draw(context& ctx)
 		glDisableClientState(GL_NORMAL_ARRAY);
 	else
 		glEnable(GL_LIGHTING);
-	if (pc.has_colors())
+	if (pc.has_colors() && show_clrs)
 		glDisableClientState(GL_COLOR_ARRAY);
 
 	glDisable(GL_POINT_SMOOTH);
@@ -244,6 +348,7 @@ void gl_point_cloud_drawable_base::draw(context& ctx)
 	glEnable(GL_LIGHTING);
 	glDisableClientState(GL_VERTEX_ARRAY);
 	glLineWidth(1);
+	ctx.disable_material(base_material);
 }
 
 
@@ -252,59 +357,20 @@ void gl_point_cloud_drawable_base::clear()
 	ng.clear();
 }
 
-#define ANN_USE_FLOAT
-#include <ANN/ANN.h>
-
-struct ann_knn_info : public knn_info
-{
-	unsigned n;
-	ANNpointArray pa;
-	ANNpointSet* ps;
-	ann_knn_info(vector<point_cloud::Pnt>& P)
-	{
-		n = P.size();
-		pa = new  ANNpoint[n];
-		unsigned int i;
-		for (i=0; i<n; ++i)
-			pa[i] = P[i];
-		ps = new ANNkd_tree(pa,n,3);
-	}
-	~ann_knn_info()
-	{
-		delete [] pa;
-		delete ps;
-	}
-	unsigned get_nr_vertices() const
-	{
-		return n;
-	}
-	void append_neighbors(unsigned i, unsigned k, std::vector<unsigned>& neighbor_list) const
-	{
-		static vector<float> dists;
-		static vector<ANNidx> tmp;
-		unsigned off = neighbor_list.size();
-		neighbor_list.resize(off+k);
-		tmp.resize(k+1);
-		dists.resize(k+1);
-		ps->annkSearch(pa[i], k+1, &tmp[0], &dists[0]);
-		std::copy(tmp.begin()+1,tmp.end(),neighbor_list.begin()+off);
-	}
-};
-
-
 
 void gl_point_cloud_drawable_base::build_neighbor_graph()
 {
 	clear();
-	ann_knn_info ann_knn(pc.P);
+	ann_tree T;
+	T.build(pc);		
 	cgv::utils::statistics he_stats;
-	ng.build(k, ann_knn, &he_stats);
+	ng.build(pc.get_nr_points(), k, T, &he_stats);
 	if (do_symmetrize)
 		ng.symmetrize();
 	std::cout << "half edge statistics " << he_stats << std::endl;
-	cout << "v " << (unsigned)(pc.P.size()) 
+	cout << "v " << pc.get_nr_points()
 		  << ", he = " << ng.nr_half_edges 
-		  << " ==> " << (float)ng.nr_half_edges/((unsigned )(pc.P.size())) << " half edges per vertex" << endl;
+		  << " ==> " << (float)ng.nr_half_edges/((unsigned )(pc.get_nr_points())) << " half edges per vertex" << endl;
 }
 
 void gl_point_cloud_drawable_base::compute_normals()
@@ -355,22 +421,32 @@ bool gl_point_cloud_drawable_base::self_reflect(cgv::reflect::reflection_handler
 		rh.reflect_member("reorient_normals", reorient_normals);
 }
 
+void gl_point_cloud_drawable_base::orient_normals_to_view_point()
+{
+	if (ensure_view_pointer()) {
+		if (ng.empty())
+			build_neighbor_graph();
+		Pnt view_point = view_ptr->get_eye();
+		ne.orient_normals(view_point);
+		post_redraw();
+	}
+}
+
+
 #include <cgv/base/find_action.h>
 #include <cgv/render/view.h>
 
-void gl_point_cloud_drawable_base::orient_normals_to_view_point()
+bool gl_point_cloud_drawable_base::ensure_view_pointer()
 {
 	cgv::base::base_ptr bp(dynamic_cast<cgv::base::base*>(this));
 	if (bp) {
 		vector<cgv::render::view*> views;
 		cgv::base::find_interface<cgv::render::view>(bp, views);
-		if (views.empty())
-			return;
-		if (ng.empty())
-			build_neighbor_graph();
-		Pnt view_point = views[0]->get_eye();
-		ne.orient_normals(view_point);
-		post_redraw();
+		if (!views.empty()) {
+			view_ptr = views[0];
+			return true;
+		}
 	}
+	return false;
 }
 
