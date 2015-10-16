@@ -26,14 +26,14 @@ set(CMAKE_MODULE_PATH "${CGV_INSTALL_DIR}/${INSTALL_CMAKE_PATH}")
 
 
 set(EXPORTS_FILE_LOCATION "${CGV_INSTALL_DIR}/${INSTALL_CMAKE_PATH}/${CGV_EXPORTS_NAME}") 
-if (NOT EXISTS "${EXPORTS_FILE_LOCATION}")
-	# TODO: Add a better error message and fail
-	message(FATAL_ERROR "There is no CGV installation for this operating system.")
-	return()
-endif()
 
 # FIXME: Add a better check for already imported projects
 if (NOT TARGET cgv_utils)
+    if (NOT EXISTS "${EXPORTS_FILE_LOCATION}")
+    	# TODO: Add a better error message and fail
+        message(FATAL_ERROR "There is no CGV installation for this operating system.")
+        return()
+    endif()
 	include("${EXPORTS_FILE_LOCATION}")
 endif()
 

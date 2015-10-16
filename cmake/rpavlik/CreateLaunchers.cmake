@@ -46,7 +46,6 @@ endif()
 set(__create_launchers YES)
 
 include(rpavlik/CleanDirectoryList)
-include(rpavlik/CreateKdev4Launcher)
 
 # We must run the following at "include" time, not at function call time,
 # to find the path to this module rather than the path to a calling list file
@@ -293,8 +292,6 @@ macro(_launcher_create_target_launcher)
 	endif()
 endmacro()
 
-
-
 function(create_default_target_launcher _targetname)
 	_launcher_system_settings()
 	_launcher_process_args(${ARGN})
@@ -311,9 +308,6 @@ function(create_target_launcher _targetname)
 
 	set(VCPROJNAME "${CMAKE_CURRENT_BINARY_DIR}/${_targetname}")
 	_launcher_produce_vcproj_user()
-
-	# Modification by Joachim Staib: Support for KDevelop4 configurations
-	_launcher_produce_kdevelop_config()
 
 	_launcher_create_target_launcher()
 endfunction()

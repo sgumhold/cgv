@@ -33,42 +33,42 @@ namespace cgv {
 
 ///
 template <typename T>
-typename bool obj_reader_generic<T>::is_double(const char* begin, const char* end, crd_type& value)
+bool obj_reader_generic<T>::is_double(const char* begin, const char* end, crd_type& value)
 {
 	return is_double_impl(begin, end, value);
 }
 
 template <typename T>
-typename obj_reader_generic<T>::v2d_type obj_reader_generic<T>::parse_v2d(const std::vector<token>& T) const
+typename obj_reader_generic<T>::v2d_type obj_reader_generic<T>::parse_v2d(const std::vector<token>& t) const
 {
 	v2d_type v(0,0);
-	T.size() > 2 && 
-	is_double(T[1].begin,T[1].end, v(0)) && 
-	is_double(T[2].begin,T[2].end, v(1));
+	t.size() > 2 && 
+	is_double(t[1].begin,t[1].end, v(0)) && 
+	is_double(t[2].begin,t[2].end, v(1));
 	return v;
 }
 
 template <typename T>
-typename obj_reader_generic<T>::v3d_type obj_reader_generic<T>::parse_v3d(const std::vector<token>& T) const
+typename obj_reader_generic<T>::v3d_type obj_reader_generic<T>::parse_v3d(const std::vector<token>& t) const
 {
 	v3d_type v(0,0,0);
-	T.size() > 3 && 
-	is_double(T[1].begin,T[1].end, v(0)) && 
-	is_double(T[2].begin,T[2].end, v(1)) && 
-	is_double(T[3].begin,T[3].end, v(2));
+	t.size() > 3 && 
+	is_double(t[1].begin,t[1].end, v(0)) && 
+	is_double(t[2].begin,t[2].end, v(1)) && 
+	is_double(t[3].begin,t[3].end, v(2));
 	return v;
 }
 
 template <typename T>
-typename obj_reader_generic<T>::color_type obj_reader_generic<T>::parse_color(const std::vector<token>& T, unsigned off) const
+typename obj_reader_generic<T>::color_type obj_reader_generic<T>::parse_color(const std::vector<token>& t, unsigned off) const
 {
 	crd_type v[4] = {0,0,0,1};
-	(T.size() > 3+off) && 
-	is_double(T[1+off].begin,T[1+off].end, v[0]) && 
-	is_double(T[2+off].begin,T[2+off].end, v[1]) && 
-	is_double(T[3+off].begin,T[3+off].end, v[2]);
-	if (T.size() > 4+off)
-		is_double(T[4+off].begin,T[4+off].end, v[3]);
+	(t.size() > 3+off) && 
+	is_double(t[1+off].begin,t[1+off].end, v[0]) && 
+	is_double(t[2+off].begin,t[2+off].end, v[1]) && 
+	is_double(t[3+off].begin,t[3+off].end, v[2]);
+	if (t.size() > 4+off)
+		is_double(t[4+off].begin,t[4+off].end, v[3]);
 	return color_type((float)v[0],(float)v[1],(float)v[2],(float)v[3]);
 }
 
@@ -436,8 +436,9 @@ void obj_reader_generic<T>::parse_face(const std::vector<token>& tokens)
 	process_face((unsigned) vertex_indices.size(), &vertex_indices[0], tex_ptr, nml_ptr);
 }
 
-template obj_reader_generic < float >;
-template obj_reader_generic < double >;
+
+template class obj_reader_generic < float >;
+template class obj_reader_generic < double >;
 
 		}
 	}
