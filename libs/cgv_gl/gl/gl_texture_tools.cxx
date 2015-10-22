@@ -158,89 +158,6 @@ static const GLenum gl_std_texture_format_ids[] =
 	GL_RGBA16
 };
 
-static const GLenum gl_float_texture_format_ids[] = 
-{
-	GL_RGBA32F_ARB,
-	GL_RGB32F_ARB,
-	GL_ALPHA32F_ARB,
-	GL_INTENSITY32F_ARB,
-	GL_LUMINANCE32F_ARB,
-	GL_LUMINANCE_ALPHA32F_ARB,
-	GL_RGBA16F_ARB,
-	GL_RGB16F_ARB,
-	GL_ALPHA16F_ARB,
-	GL_INTENSITY16F_ARB,
-	GL_LUMINANCE16F_ARB,
-	GL_LUMINANCE_ALPHA16F_ARB,
-	GL_TEXTURE_RED_TYPE_ARB,
-	GL_TEXTURE_GREEN_TYPE_ARB,
-	GL_TEXTURE_BLUE_TYPE_ARB,
-//	GL_TEXTURE_ALPHA_TYPE_ARB,
-//	GL_TEXTURE_LUMINANCE_TYPE_ARB,
-//	GL_TEXTURE_INTENSITY_TYPE_ARB,
-	GL_TEXTURE_DEPTH_TYPE_ARB,
-//	GL_UNSIGNED_NORMALIZED_ARB
-};
-
-static const GLenum gl_int_texture_format_ids[] = 
-{
-	GL_RGBA32UI_EXT,
-	GL_RGB32UI_EXT,
-	GL_ALPHA32UI_EXT,
-	GL_INTENSITY32UI_EXT,
-	GL_LUMINANCE32UI_EXT,
-	GL_LUMINANCE_ALPHA32UI_EXT,
-	GL_RGBA16UI_EXT,
-	GL_RGB16UI_EXT,
-	GL_ALPHA16UI_EXT,
-	GL_INTENSITY16UI_EXT,
-	GL_LUMINANCE16UI_EXT,
-	GL_LUMINANCE_ALPHA16UI_EXT,
-	GL_RGBA8UI_EXT,
-	GL_RGB8UI_EXT,
-	GL_ALPHA8UI_EXT,
-	GL_INTENSITY8UI_EXT,
-	GL_LUMINANCE8UI_EXT,
-	GL_LUMINANCE_ALPHA8UI_EXT,
-	GL_RGBA32I_EXT,
-	GL_RGB32I_EXT,
-	GL_ALPHA32I_EXT,
-	GL_INTENSITY32I_EXT,
-	GL_LUMINANCE32I_EXT,
-	GL_LUMINANCE_ALPHA32I_EXT,
-	GL_RGBA16I_EXT,
-	GL_RGB16I_EXT,
-	GL_ALPHA16I_EXT,
-	GL_INTENSITY16I_EXT,
-	GL_LUMINANCE16I_EXT,
-	GL_LUMINANCE_ALPHA16I_EXT,
-	GL_RGBA8I_EXT,
-	GL_RGB8I_EXT,
-	GL_ALPHA8I_EXT,
-	GL_INTENSITY8I_EXT,
-	GL_LUMINANCE8I_EXT,
-	GL_LUMINANCE_ALPHA8I_EXT,
-
-/*	GL_RED_INTEGER_EXT,
-	GL_GREEN_INTEGER_EXT,
-	GL_BLUE_INTEGER_EXT,
-	GL_ALPHA_INTEGER_EXT,
-	GL_RGB_INTEGER_EXT,
-	GL_RGBA_INTEGER_EXT,
-	GL_BGR_INTEGER_EXT,
-	GL_BGRA_INTEGER_EXT,
-	GL_LUMINANCE_INTEGER_EXT,
-	GL_LUMINANCE_ALPHA_INTEGER_EXT*/
-};
-
-static const GLenum gl_depth_format_ids[] = 
-{
-	GL_DEPTH_COMPONENT,
-	GL_DEPTH_COMPONENT16,
-	GL_DEPTH_COMPONENT24,
-	GL_DEPTH_COMPONENT32
-};
-
 static const char* std_texture_formats[] = {
 	"[A]",
 	"uint8:4[A]",
@@ -287,6 +204,23 @@ static const char* std_texture_formats[] = {
 	"uint16[R,G,B,A]",
 	0
 };
+static const GLenum gl_float_texture_format_ids[] = 
+{
+	GL_RGBA32F_ARB,
+	GL_RGB32F_ARB,
+	GL_ALPHA32F_ARB,
+	GL_INTENSITY32F_ARB,
+	GL_LUMINANCE32F_ARB,
+	GL_LUMINANCE_ALPHA32F_ARB,
+
+	GL_RGBA16F_ARB,
+	GL_RGB16F_ARB,
+	GL_ALPHA16F_ARB,
+	GL_INTENSITY16F_ARB,
+	GL_LUMINANCE16F_ARB,
+	GL_LUMINANCE_ALPHA16F_ARB,
+};
+
 
 static const char* float_texture_formats[] = {
 	"flt32[R,G,B,A]",
@@ -302,12 +236,52 @@ static const char* float_texture_formats[] = {
 	"flt16[I]",
 	"flt16[L]",
 	"flt16[L,A]",
-
-	"flt32[R]",
-	"flt32[G]",
-	"flt32[B]",
-	"flt32[D]",
 	0
+};
+
+static const GLenum gl_int_texture_format_ids[] = 
+{
+	GL_RGBA32UI_EXT,
+	GL_RGB32UI_EXT,
+	GL_ALPHA32UI_EXT,
+	GL_INTENSITY32UI_EXT,
+	GL_LUMINANCE32UI_EXT,
+	GL_LUMINANCE_ALPHA32UI_EXT,
+
+	GL_RGBA16UI_EXT,
+	GL_RGB16UI_EXT,
+	GL_ALPHA16UI_EXT,
+	GL_INTENSITY16UI_EXT,
+	GL_LUMINANCE16UI_EXT,
+	GL_LUMINANCE_ALPHA16UI_EXT,
+	
+	GL_RGBA8UI_EXT,
+	GL_RGB8UI_EXT,
+	GL_ALPHA8UI_EXT,
+	GL_INTENSITY8UI_EXT,
+	GL_LUMINANCE8UI_EXT,
+	GL_LUMINANCE_ALPHA8UI_EXT,
+	
+	GL_RGBA32I_EXT,
+	GL_RGB32I_EXT,
+	GL_ALPHA32I_EXT,
+	GL_INTENSITY32I_EXT,
+	GL_LUMINANCE32I_EXT,
+	GL_LUMINANCE_ALPHA32I_EXT,
+	
+	GL_RGBA16I_EXT,
+	GL_RGB16I_EXT,
+	GL_ALPHA16I_EXT,
+	GL_INTENSITY16I_EXT,
+	GL_LUMINANCE16I_EXT,
+	GL_LUMINANCE_ALPHA16I_EXT,
+	
+	GL_RGBA8I_EXT,
+	GL_RGB8I_EXT,
+	GL_ALPHA8I_EXT,
+	GL_INTENSITY8I_EXT,
+	GL_LUMINANCE8I_EXT,
+	GL_LUMINANCE_ALPHA8I_EXT
 };
 
 static const char* int_texture_formats[] = {
@@ -355,6 +329,14 @@ static const char* int_texture_formats[] = {
 	0
 };
 
+static const GLenum gl_depth_format_ids[] = 
+{
+	GL_DEPTH_COMPONENT,
+	GL_DEPTH_COMPONENT16_ARB,
+	GL_DEPTH_COMPONENT24_ARB,
+	GL_DEPTH_COMPONENT32_ARB
+};
+
 static const char* depth_formats[] = 
 {
 	"[D]",
@@ -363,6 +345,60 @@ static const char* depth_formats[] =
 	"uint32[D]",
 	0
 };
+
+static const GLenum gl_rg_texture_format_ids[] =
+{
+	GL_RED,
+	GL_RG,
+
+	GL_R16F,    
+	GL_R32F,   
+
+	GL_RG16F,   
+	GL_RG32F,  
+
+	GL_R8I,   
+	GL_R8UI,    
+	GL_R16I,    
+	GL_R16UI,   
+	GL_R32I,  
+	GL_R32UI,   
+
+	GL_RG8I, 
+	GL_RG8UI,   
+	GL_RG16I,   
+	GL_RG16UI,  
+	GL_RG32I, 
+	GL_RG32UI
+};
+
+
+static const char* rg_texture_formats[] = {
+	"[R]",
+	"[R,G]",
+
+	"flt16[R]",
+	"flt32[R]",
+
+	"flt16[R,G]",
+	"flt32[R,G]",
+
+	"int8[R]",
+	"uint8[R]",
+	"int16[R]",
+	"uint16[R]",
+	"int32[R]",
+	"uint32[R]",
+
+	"int8[R,G]",
+	"uint8[R,G]",
+	"int16[R,G]",
+	"uint16[R,G]",
+	"int32[R,G]",
+	"uint32[R,G]",
+	0
+};
+
 
 unsigned find_best_texture_format(const cgv::data::component_format& _cf, cgv::data::component_format* best_cf, const std::vector<data_view>* palettes)
 {
@@ -394,11 +430,19 @@ unsigned find_best_texture_format(const cgv::data::component_format& _cf, cgv::d
 		}
 	}
 	if (ensure_glew_initialized() && GLEW_ARB_texture_float) {
-		i = find_best_match(cf,float_texture_formats, best_cf);
+		i = find_best_match(cf, float_texture_formats, best_cf);
 		if (i != -1) {
 			if (best_cf)
 				*best_cf = cgv::data::component_format(float_texture_formats[i]);
 			gl_format = gl_float_texture_format_ids[i];
+		}
+	}
+	if (ensure_glew_initialized() && GLEW_ARB_texture_rg) {
+		i = find_best_match(cf, rg_texture_formats, best_cf);
+		if (i != -1) {
+			if (best_cf)
+				*best_cf = cgv::data::component_format(rg_texture_formats[i]);
+			gl_format = gl_rg_texture_format_ids[i];
 		}
 	}
 	return gl_format;
