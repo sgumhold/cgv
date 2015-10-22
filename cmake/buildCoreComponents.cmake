@@ -53,22 +53,21 @@ macro(_cgv_add_core_library target_name)
 		# Create some filters for IDEs
 		_cgv_define_source_group("Sources" ${COMPONENT_SOURCES})
 		_cgv_define_source_group("Headers" ${COMPONENT_HEADERS} ${COMPONENT_PUBLIC_HEADERS})
-	#	source_group("Sources" FILES ${COMPONENT_SOURCES})
-	#	source_group("Headers" FILES ${COMPONENT_HEADERS} ${COMPONENT_PUBLIC_HEADERS})
 
 		# Create installation rules for the target
 		install(TARGETS ${target_name} DESTINATION "${INSTALL_BASE}/${INSTALL_LIB_PATH}" EXPORT ${CGV_EXPORTS_ID})
 
 		# Append this element to the list of targets
-	#	set(CGV_LIB_TARGETS ${CGV_LIB_TARGETS} ${target_name} CACHE INTERNAL "" FORCE)
 		set(CGV_LIB_TARGETS ${CGV_LIB_TARGETS} ${target_name} PARENT_SCOPE)
 	
 		# Set a source folder for VisualStudio
 		set_target_properties(${target_name} PROPERTIES FOLDER "${FOLDER_NAME_CGV}")
 	
+        _cgv_set_cxx_standard(${target_name})	
+
 		# Set definitions for shared and static libraries.
 		string(TOUPPER ${target_name} TARGET_UPPER)
-		
+
 		_cgv_set_definitions(${target_name}
 			COMMON UNICODE _UNICODE
 			SHARED "${TARGET_UPPER}_EXPORTS" ${COMPONENT_SHARED_DEFINITIONS}
@@ -77,6 +76,9 @@ macro(_cgv_add_core_library target_name)
 		# Add definitions to use unicode
 		# FIXME: This might be a hack
 		add_definitions("-DUNICODE -D_UNICODE")
+	else()
+		# Create a dummy target for dependency checks
+		add_custom_target(${target_name})
 	endif()
 endmacro()
 
@@ -133,6 +135,10 @@ macro(cgv_add_executable target_name)
 	file(RELATIVE_PATH REL_BIN_TO_LIB "/${INSTALL_BASE}/${INSTALL_BIN_PATH}" "/${INSTALL_BASE}/${INSTALL_LIB_PATH}")
 	set_target_properties(${target_name} PROPERTIES INSTALL_RPATH "\$ORIGIN/${REL_BIN_TO_LIB}")
 
+    # Set the language standard
+    _cgv_set_cxx_standard(${target_name})	
+
+
 	# Remember the type for later config generation
 	set_target_properties(${target_name} PROPERTIES HEADER_LOCAL_PATH "apps")
 endmacro()
@@ -159,8 +165,11 @@ macro(_cgv_add_custom_library target_name folder)
 	# Remember the type and install name for later config generation
 	set_target_properties(${target_name} PROPERTIES 
 		HEADER_LOCAL_PATH "libs"
-		HEADER_LOCAL_NAME ${CONF_INSTALL_NAME}
-)
+		HEADER_LOCAL_NAME ${CONF_INSTALL_NAME})
+
+    # Set the language standard
+    _cgv_set_cxx_standard(${target_name})	
+
 
 	# Set a source folder for VisualStudio
 	set_target_properties(${target_name} PROPERTIES FOLDER "${folder}")
@@ -223,7 +232,6 @@ macro(build_core_components_finish)
 					${CGV_BASE}/cmake/cgvTargetsConfig.cmake.in
 					${CGV_BASE}/cmake/CMakeMacroParseArguments.cmake
 					${CGV_BASE}/cmake/createConfigScript.cmake
-					${CGV_BASE}/cmake/CMakePackageConfigHelpers.cmake
 					${CGV_BASE}/cmake/FindPkg.cmake.in
 					${CGV_BASE}/cmake/PkgBinConfig.cmake.in
 					${CGV_BASE}/cmake/PkgLibConfig.cmake.in

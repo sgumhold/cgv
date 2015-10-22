@@ -46,6 +46,9 @@ set(CGV_TARGETS_CONFIG_NAME "cgvTargetsConfig.cmake")
 set(STATIC_POSTFIX "_static")
 set(DEBUG_POSTFIX "_d")
 
+# Set CXX standard to c++11
+set(CXX_STANDARD 11)
+
 # Enable source folders
 # FIXME: Make this an option for VS Express?
 SET_PROPERTY(GLOBAL PROPERTY USE_FOLDERS ON)

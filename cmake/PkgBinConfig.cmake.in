@@ -4,15 +4,28 @@
 # FIXME: Replace this with ${CMAKE_CONFIGURATION_TYPES}
 set(CONFIGS "RELEASE" "DEBUG")
 
-# Construct the library names
-	set(@TARGET@_OUTPUT_NAME_RELEASE "@OUTPUT_NAME@")
-	set(@TARGET@_OUTPUT_NAME_DEBUG "@OUTPUT_NAME@@DEBUG_POSTFIX@")
+# Construct the executable names
+set(@TARGET@_OUTPUT_NAME_RELEASE "@OUTPUT_NAME@")
+set(@TARGET@_OUTPUT_NAME_DEBUG "@OUTPUT_NAME@@DEBUG_POSTFIX@")
+
+
+# See if we can go the easy way when our dependency is also a target to be built
+if (TARGET @TARGET@)
+    set(@TARGET@_EXECUTABLE @TARGET@)
+    set(@TARGET@_FOUND TRUE)
+endif()
+
+# See if the imported target already exists
+if (TARGET @TARGET@_IMPORTED_${TARGET_POSTFIX})
+    set(@TARGET@_EXECUTABLE @TARGET@_IMPORTED_${TARGET_POSTFIX})
+    set(@TARGET@_FOUND TRUE)
+endif()
 
 
 # If the project is a target then it might not be built but we assume
 # nevertheless that the files will be present. If it is not a target then
 # we look for the libraries explicitly
-if (NOT TARGET @TARGET@)
+if (NOT @TARGET@_FOUND)
 	set(FIND_PATHS "@PACKAGE_LIB_PATH@" 
 				   "@PACKAGE_BIN_PATH@" 
 				   "@PACKAGE_BUILD_BIN_PATH@"
@@ -59,31 +72,17 @@ if (NOT TARGET @TARGET@)
 			endif()
 		endforeach()
 	endif()
-else()
-	# If the project is a target then the job is quite easy - just
-	# read the location names from the target properties
-	foreach(conf ${CONFIGS})
-		get_target_property(@TARGET@_EXE_${conf} @TARGET@ LOCATION_${conf})
-	endforeach()
-endif()
 
-
-if (NOT TARGET @TARGET@_IMPORTED_${TARGET_POSTFIX})
-	add_executable(@TARGET@_IMPORTED_${TARGET_POSTFIX} IMPORTED)
-
+    # Generate an imported target which each location for different configurations set accordingly
+    add_executable(@TARGET@_IMPORTED_${TARGET_POSTFIX} IMPORTED)
 	foreach(conf ${CONFIGS})
 		set_target_properties(@TARGET@_IMPORTED_${TARGET_POSTFIX} PROPERTIES
 			IMPORTED_LOCATION_${conf} "${@TARGET@_EXE_${conf}}")
 	endforeach()
-		
-	set(@TARGET@_EXECUTABLE "@TARGET@_IMPORTED_${TARGET_POSTFIX}")
+
+    set(@TARGET@_EXECUTABLE @TARGET@_IMPORTED_${TARGET_POSTFIX})
+    set(@TARGET@_FOUND TRUE)
 endif()
-
-if (TARGET @TARGET@)
-	add_dependencies(@TARGET@_IMPORTED_${TARGET_POSTFIX} @TARGET@)
-endif()
-
-
 
 
 @MACRO_DEFINITIONS@

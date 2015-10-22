@@ -47,11 +47,11 @@ protected:
 	/**@name helpers for reading*/
 	//@{
 	/// parse 2d vector
-	v2d_type   parse_v2d(const std::vector<cgv::utils::token>& T) const;
+	v2d_type   parse_v2d(const std::vector<cgv::utils::token>& t) const;
 	/// parse 3d vector
-	v3d_type   parse_v3d(const std::vector<cgv::utils::token>& T) const;
+	v3d_type   parse_v3d(const std::vector<cgv::utils::token>& t) const;
 	/// parse a color, if alpha not given it defaults to 1
-	color_type parse_color(const std::vector<cgv::utils::token>& T, unsigned off = 0) const;
+	color_type parse_color(const std::vector<cgv::utils::token>& t, unsigned off = 0) const;
 	int minus;
 	unsigned nr_normals, nr_texcoords;
 	bool have_default_material;

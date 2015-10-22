@@ -55,12 +55,12 @@ template <typename T>
 void obj_loader_generic<T>::process_face(unsigned vcount, int *vertices,
 							  int *texcoords, int *normals)
 {
-	convert_to_positive(vcount,vertices,texcoords,normals,
+	this->convert_to_positive(vcount,vertices,texcoords,normals,
 		(unsigned)this->vertices.size(), (unsigned)this->normals.size(), (unsigned)this->texcoords.size());
 	faces.push_back(face_info(vcount,(unsigned)vertex_indices.size(),
 		texcoords == 0 ? -1 : (int)texcoord_indices.size(),
 		normals == 0 ? -1 : (int)normal_indices.size(),
-		get_current_group(),get_current_material()));
+		this->get_current_group(),this->get_current_material()));
 	unsigned i;
 	for (i=0; i<vcount; ++i)
 		vertex_indices.push_back(vertices[i]);
@@ -113,9 +113,9 @@ bool obj_loader_generic<T>::read_obj(const std::string& file_name)
 	if (exists(bin_fn) &&
 		get_last_write_time(bin_fn) > get_last_write_time(file_name) &&
 		read_obj_bin(bin_fn)) {
-			path_name = get_path(file_name);
-			if (!path_name.empty())
-				path_name += "/";
+			this->path_name = get_path(file_name);
+			if (!this->path_name.empty())
+				this->path_name += "/";
 			return true;
 	}
 	
@@ -125,7 +125,7 @@ bool obj_loader_generic<T>::read_obj(const std::string& file_name)
 	faces.clear(); 
 	colors.clear();
 
-	if (!obj_reader_generic<T>::read_obj(file_name))
+	if (!this->read_obj(file_name))
 		return false;
 
 	// correct colors in case of 8bit colors
@@ -227,12 +227,12 @@ bool obj_loader_generic<T>::read_obj_bin(const std::string& file_name)
 			return false;
 		}
 	}
-	if (1 != fread(&have_default_material, sizeof(bool), 1, fp))
+	if (1 != fread(&this->have_default_material, sizeof(bool), 1, fp))
 	{
 		fclose(fp);
 		return false;
 	}
-	if (have_default_material)
+	if (this->have_default_material)
 		materials.push_back(obj_material());
 	
 	for (unsigned mi=0; mi<m; ++mi) {
@@ -241,7 +241,7 @@ bool obj_loader_generic<T>::read_obj_bin(const std::string& file_name)
 			fclose(fp);
 			return false;
 		}
-		read_mtl(s);
+		this->read_mtl(s);
 	}
 	fclose(fp);
 	return true;
@@ -251,7 +251,7 @@ bool obj_loader_generic<T>::read_obj_bin(const std::string& file_name)
 template <typename T>
 void obj_loader_generic<T>::clear()
 {
-	obj_reader_generic<T>::clear();
+	this->clear();
 
 	vertices.clear(); 
 	normals.clear(); 
@@ -283,7 +283,7 @@ bool obj_loader_generic<T>::write_obj_bin(const std::string& file_name) const
 				f = (unsigned) faces.size(),
 				h = (unsigned) vertex_indices.size(), 
 				g = (unsigned) groups.size(),
-				m = (unsigned) mtl_lib_files.size();
+				m = (unsigned) this->mtl_lib_files.size();
 	uint32_type v_write = v;
 	bool has_colors = (colors.size() == vertices.size());
 	if (has_colors)
@@ -344,14 +344,14 @@ bool obj_loader_generic<T>::write_obj_bin(const std::string& file_name) const
 		}
 	}
 
-	if (1 != fwrite(&have_default_material, sizeof(bool), 1, fp))
+	if (1 != fwrite(&this->have_default_material, sizeof(bool), 1, fp))
 	{
 		fclose(fp);
 		return false;
 	}
 
-	std::set<std::string>::const_iterator mi = mtl_lib_files.begin();
-	for (; mi != mtl_lib_files.end(); ++mi) {
+	std::set<std::string>::const_iterator mi = this->mtl_lib_files.begin();
+	for (; mi != this->mtl_lib_files.end(); ++mi) {
 		if (!write_string_bin(*mi, fp)) 
 		{
 			fclose(fp);
@@ -373,8 +373,8 @@ void obj_loader_generic<T>::show_stats() const
 	std::cout << "num groups "<<groups.size()<<std::endl;
 }
 
-template obj_loader_generic < float >;
-template obj_loader_generic < double >;
+template class obj_loader_generic < float >;
+template class obj_loader_generic < double >;
 
 
 		}

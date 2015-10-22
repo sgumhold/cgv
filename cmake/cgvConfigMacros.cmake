@@ -3,6 +3,14 @@ get_filename_component(BASE_PATH "${CMAKE_CURRENT_LIST_FILE}" PATH)
 # define macros to build core components
 include("${BASE_PATH}/CMakeMacroParseArguments.cmake")
 
+macro(_cgv_set_cxx_standard target)
+        # Set the language standard
+        # FIXME: The following will not work in windows. The correct approach would be
+        # set_property(TARGET ${target_name} PROPERTY CXX_STANDARD ${CXX_STANDARD})	
+        # which is not supported. So for now we hack this property in
+        set(CMAKE_CXX_FLAGS "-std=c++11")
+endmacro()
+
 
 macro(_cgv_set_definitions target)
 	parse_arguments(DEFS "SHARED;STATIC;COMMON" "" ${ARGN})
@@ -64,10 +72,9 @@ macro(cgv_add_module target)
 		
 	set_target_properties(${target} PROPERTIES FOLDER "${FOLDER_NAME_PLUGINS}")
 	install(TARGETS ${target} DESTINATION "${INSTALL_BASE}/${INSTALL_LIB_PATH}")
-	
-	# Mark this as a module
-	# FIXME: Might be a hack
-	# set_target_properties(${target} PROPERTIES TARGET_IS_MODULE 1)
+
+    # Set the cxx standard
+	_cgv_set_cxx_standard(${target})
 
 	# Remember the type for later config generation
 	set_target_properties(${target} PROPERTIES HEADER_LOCAL_PATH "plugins")	
