@@ -21,7 +21,7 @@ protected:
 	bool wireframe;
 //	std::vector<cgv::render::textured_material*> tex_materials;
 public:
-	mesh_view() : cgv::base::node("no mesh")
+	mesh_view() : cgv::base::node("mesh")
 	{
 		wireframe = false;
 	}
@@ -36,8 +36,11 @@ public:
 	void on_set(void* member_ptr)
 	{
 		if (member_ptr == &file_name) {
-			read_mesh(file_name);
-			post_recreate_gui();
+			if (read_mesh(file_name)) {
+				set_name(cgv::utils::file::get_file_name(file_name));
+				post_recreate_gui();
+
+			}
 		}
 		update_member(member_ptr);
 		post_redraw();
@@ -48,6 +51,18 @@ public:
 	}
 	void init_frame(cgv::render::context& ctx)
 	{
+		static bool my_tab_selected = false;
+		if (!my_tab_selected) {
+			my_tab_selected = true;
+			cgv::gui::gui_group_ptr gg = ((provider*)this)->get_parent_group();
+			if (gg) {
+				cgv::gui::gui_group_ptr tab_group = gg->get_parent()->cast<cgv::gui::gui_group>();
+				if (tab_group) {
+					cgv::base::base_ptr c = gg;
+					tab_group->select_child(c, true);
+				}
+			}
+		}
 	}
 
 	void enable_material_color(const cgv::render::textured_material::color_type& c, float alpha, GLenum type) const
