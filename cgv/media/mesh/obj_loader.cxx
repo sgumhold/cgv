@@ -125,7 +125,7 @@ bool obj_loader_generic<T>::read_obj(const std::string& file_name)
 	faces.clear(); 
 	colors.clear();
 
-	if (!this->read_obj(file_name))
+	if (!obj_reader_generic<T>::read_obj(file_name))
 		return false;
 
 	// correct colors in case of 8bit colors
@@ -241,7 +241,7 @@ bool obj_loader_generic<T>::read_obj_bin(const std::string& file_name)
 			fclose(fp);
 			return false;
 		}
-		this->read_mtl(s);
+		obj_reader_generic<T>::read_mtl(s);
 	}
 	fclose(fp);
 	return true;
@@ -251,7 +251,7 @@ bool obj_loader_generic<T>::read_obj_bin(const std::string& file_name)
 template <typename T>
 void obj_loader_generic<T>::clear()
 {
-	this->clear();
+	obj_reader_generic<T>::clear();
 
 	vertices.clear(); 
 	normals.clear(); 
