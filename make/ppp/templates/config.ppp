@@ -181,7 +181,7 @@ rules = [
 		]
 	],
 	MAP.[ 
-		["extensions",["h", "hh"]],
+		["extensions",["h", "hh", "hxx"]],
 		["folder","headers"] 
 	],
 	MAP.[ 
