@@ -142,6 +142,13 @@ enum PrimitiveType {
 	PT_LAST
 };
 
+/// different sampling strategies for rendering to textures that steer the computation of the \c tex_coord input to the fragment shader
+enum TextureSampling
+{
+	TS_CELL = 0,   /// for texture resulution N x M x L the \c tex_coord ranges from [1/2N, 1/2M, 1/2L] to [1-1/2N, 1-1/2M, 1-1/2P]
+	TS_VERTEX = 1  /// \c tex_coord ranges from [0,0,0] to [1,1,1]
+};
+
 /// different text alignments
 enum TextAlignment {
 	TA_NONE = 0,

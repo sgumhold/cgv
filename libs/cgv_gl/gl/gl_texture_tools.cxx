@@ -1,6 +1,8 @@
 #include "gl_tools.h"
 
 #include <cgv_gl/gl/gl.h>
+#include <cgv/render/frame_buffer.h>
+#include <cgv/render/shader_program.h>
 #include <iostream>
 
 #ifndef GL_CLAMP_TO_EDGE
@@ -653,6 +655,135 @@ void gl_1D_texture_to_screen(bool vary_along_x, float xmin, float ymin, float xm
 		glPopMatrix();
 	
 	glMatrixMode(mm);
+}
+
+bool complete_program_form_render_to_texture3D(cgv::render::context& ctx, cgv::render::shader_program& prog, std::string* error_message)
+{
+	const char* vertex_shader_source = "\
+#version 150 compatibility\n\
+\n\
+uniform float slice_coord;\n\
+\n\
+out vec3 tex_coord;\n\
+\n\
+void main()\n\
+{\n\
+	tex_coord.xy = gl_MultiTexCoord0.xy;\n\
+	tex_coord.z = slice_coord;\n\
+	gl_Position = gl_Vertex;\n\
+}";
+
+	if (!prog.attach_code(ctx, vertex_shader_source, cgv::render::ST_VERTEX)) {
+		if (error_message)
+			*error_message = "could not attach vertex shader source";
+		return false;
+	}
+	if (!prog.link(ctx)) {
+		if (error_message)
+			*error_message = "could not link render to texture 3D program";
+		return false;
+	}
+
+	return true;
+}
+
+
+bool render_to_texture3D(context& ctx, shader_program& prog, TextureSampling texture_sampling, texture& target_tex, texture* target_tex2, texture* target_tex3, texture* target_tex4)
+{
+	// extract texture resolution
+	int tex_res[3] = { target_tex.get_width(), target_tex.get_height(), target_tex.get_depth() };
+
+	// check consistency of all texture resolutions
+	if (target_tex2) {
+		if (target_tex2->get_width() != tex_res[0] || target_tex2->get_height() != tex_res[1] || target_tex2->get_depth() != tex_res[2]) {
+			std::cerr << "ERROR in cgv:render::gl::render_to_texture3D: texture resolution of target_tex2 does not match resolution of target_tex" << std::endl;
+			return false;
+		}
+	}
+	if (target_tex3) {
+		if (target_tex3->get_width() != tex_res[0] || target_tex3->get_height() != tex_res[1] || target_tex3->get_depth() != tex_res[2]) {
+			std::cerr << "ERROR in cgv:render::gl::render_to_texture3D: texture resolution of target_tex3 does not match resolution of target_tex" << std::endl;
+			return false;
+		}
+	}
+	if (target_tex4) {
+		if (target_tex4->get_width() != tex_res[0] || target_tex4->get_height() != tex_res[1] || target_tex4->get_depth() != tex_res[2]) {
+			std::cerr << "ERROR in cgv:render::gl::render_to_texture3D: texture resolution of target_tex4 does not match resolution of target_tex" << std::endl;
+			return false;
+		}
+	}
+	// create fbo with resolution of slices
+	cgv::render::frame_buffer fbo;
+	fbo.create(ctx, tex_res[0], tex_res[1]);
+
+	fbo.attach(ctx, target_tex, 0, 0, 0);
+	if (!fbo.is_complete(ctx)) {
+		std::cerr << "fbo to update volume gradient not complete" << std::endl;
+		return false;
+	}
+
+	static double V[4 * 3] = {
+		-1, -1, 0, +1, -1, 0,
+		+1, +1, 0, -1, +1, 0
+	};
+	static int F[1 * 4] = {
+		0, 1, 2, 3
+	};
+	double T[4 * 2] = {
+		0, 0, 1, 0,
+		1, 1, 0, 1
+	};
+	if (texture_sampling == TS_VERTEX) {
+		T[0] = T[6] = -0.5 / tex_res[0];
+		T[2] = T[4] = 1.0 + 0.5 / tex_res[0];
+		T[1] = T[3] = -0.5 / tex_res[1];
+		T[5] = T[7] = 1.0 + 0.5 / tex_res[1];
+	}
+
+	// store transformation matrices and reset them to identity
+	glMatrixMode(GL_MODELVIEW);
+	glPushMatrix();
+	glLoadIdentity();
+	glMatrixMode(GL_TEXTURE);
+	glPushMatrix();
+	glLoadIdentity();
+	glMatrixMode(GL_PROJECTION);
+	glPushMatrix();
+	glLoadIdentity();
+
+	// go through slices
+	for (int i = 0; i < tex_res[2]; i++) {
+		// attach textures to fbo
+		fbo.attach(ctx, target_tex, i, 0, 0);
+		if (target_tex2)
+			fbo.attach(ctx, *target_tex2, i, 0, 1);
+		if (target_tex3)
+			fbo.attach(ctx, *target_tex3, i, 0, 2);
+		if (target_tex4)
+			fbo.attach(ctx, *target_tex4, i, 0, 3);
+		fbo.enable(ctx, 0);
+		
+		// draw square
+		if (texture_sampling == TS_CELL)
+			prog.set_uniform(ctx, "slice_coord", (i + 0.5f) / tex_res[2]);
+		else
+			prog.set_uniform(ctx, "slice_coord", (float)i / (tex_res[2]-1));
+
+		ctx.draw_faces(V, 0, T, F, 0, F, 1, 4);
+
+		fbo.disable(ctx);
+	}
+
+	// restore transformation matrices
+	glMatrixMode(GL_MODELVIEW);
+	glPopMatrix();
+	glMatrixMode(GL_TEXTURE);
+	glPopMatrix();
+	glMatrixMode(GL_PROJECTION);
+	glPopMatrix();
+	glMatrixMode(GL_MODELVIEW);
+
+	return true;
 }
 
 
