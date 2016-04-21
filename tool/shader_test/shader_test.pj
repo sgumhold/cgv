@@ -21,6 +21,8 @@
                      CGV_DIR."/libs/cgv_gl/gl/gl_context.cxx",
                      CGV_DIR."/libs/cgv_gl/gl/gl_context_win32.cxx",
                      CGV_DIR."/cgv/render/shader_code.cxx",
+                     CGV_DIR."/cgv/render/frame_buffer.cxx",
+                     CGV_DIR."/cgv/render/render_buffer.cxx",
                      CGV_DIR."/cgv/render/shader_program.cxx"])
 @if(SYSTEM=="windows")@{
 	@define(sourceDirs=sourceDirs.[CGV_DIR."/3rd/glew"])
