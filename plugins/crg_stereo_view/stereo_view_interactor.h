@@ -91,6 +91,14 @@ protected:
 	void on_set(void* m);
 	void on_rotation_change();
 	double get_z_and_unproject(cgv::render::context* ctx, int x, int y, pnt_type& p);
+
+
+	bool animate_view;
+	pnt_type target_view_dir;
+	pnt_type target_view_up_dir;
+	void set_view_orientation(const std::string& axes);
+	int correct_anim_dir_vector(cgv::render::view::pnt_type& dir, const cgv::render::view::pnt_type& v, const cgv::render::view::pnt_type* up) const;
+	void timer_event(double t, double dt);
 public:
 	///
 	stereo_view_interactor(const char* name);

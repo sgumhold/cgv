@@ -1,6 +1,7 @@
 #include "stereo_view_interactor.h"
 #include <cgv/utils/scan.h>
 #include <cgv/utils/ostream_printf.h>
+#include <cgv/gui/trigger.h>
 #include <cgv/signal/rebind.h>
 #include <cgv/gui/key_event.h>
 #include <cgv/gui/mouse_event.h>
@@ -66,6 +67,7 @@ double ext_view::get_parallax_zero_z() const
 ///
 stereo_view_interactor::stereo_view_interactor(const char* name) : node(name)
 {
+
 	write_depth = false;
 	write_color = true;
 	write_stereo = true;
@@ -87,6 +89,9 @@ stereo_view_interactor::stereo_view_interactor(const char* name) : node(name)
 	check_for_click = -1;
 	mono_mode = GLSU_CENTER;
 	zoom_sensitivity = rotate_sensitivity = 1;
+
+	animate_view = false;
+	connect(cgv::gui::get_animation_trigger().shoot, this, &stereo_view_interactor::timer_event);
 }
 /// return the type name 
 std::string stereo_view_interactor::get_type_name() const
@@ -191,6 +196,97 @@ double stereo_view_interactor::get_z_and_unproject(cgv::render::context* ctx, in
 	return z;
 }
 
+void stereo_view_interactor::timer_event(double t, double dt)
+{
+	if (!animate_view)
+		return;
+	/*
+	cgv::render::view::pnt_type z = normalize(target_view_ptr->get_view_dir());
+	cgv::render::view::pnt_type x = normalize(cross(target_view_ptr->get_view_up_dir(), z));
+	cgv::render::view::pnt_type y = cross(z,x);
+	cgv::math::fmat<cgv::render::view::pnt_type::value_type, 3, 3> R1, R2;
+	R1.set_col(0, x);
+	R1.set_col(1, y);
+	R1.set_col(2, z);
+	cgv::math::quaternion<cgv::render::view::pnt_type::value_type> q1(R1);
+
+	R2.set_col(0, cross(target_view_up_dir, target_view_dir));
+	R2.set_col(1, target_view_up_dir);
+	R2.set_col(2, target_view_dir);
+	cgv::math::quaternion<cgv::render::view::pnt_type::value_type> q2(R2);
+
+	q1.affin*/
+	int nr_reached = 0;
+	cgv::render::view::pnt_type dv = target_view_dir - get_view_dir();
+	cgv::render::view::pnt_type up = get_view_up_dir();
+	//		std::cout << "v[" << target_view_ptr->get_view_dir() << "], dv:(" << dv;
+	nr_reached += correct_anim_dir_vector(dv, get_view_dir(), &up);
+	//		std::cout << "->" << dv << "), tv[" << target_view_dir << "]" << std::endl;
+	set_view_dir(normalize(get_view_dir() + dv));
+
+	dv = target_view_up_dir - get_view_up_dir();
+	//		std::cout << "u[" << target_view_ptr->get_view_up_dir() << "], du:(" << dv;
+	nr_reached += correct_anim_dir_vector(dv, get_view_up_dir(), 0);
+	//		std::cout << "->" << dv << "), tv[" << target_view_up_dir << "]" << std::endl;
+	set_view_up_dir(normalize(get_view_up_dir() + dv));
+
+	if (nr_reached == 2)
+		animate_view = false;
+
+	post_redraw();
+}
+
+cgv::render::view::pnt_type unpack_dir(char c)
+{
+	switch (c) {
+	case 'x': return cgv::render::view::pnt_type(1, 0, 0);
+	case 'X': return cgv::render::view::pnt_type(-1, 0, 0);
+	case 'y': return cgv::render::view::pnt_type(0, 1, 0);
+	case 'Y': return cgv::render::view::pnt_type(0, -1, 0);
+	case 'z': return cgv::render::view::pnt_type(0, 0, 1);
+	case 'Z': return cgv::render::view::pnt_type(0, 0, -1);
+	}
+	return cgv::render::view::pnt_type(0, 0, 0);
+}
+
+void stereo_view_interactor::set_view_orientation(const std::string& axes)
+{
+	target_view_dir = unpack_dir(axes[0]);
+	target_view_up_dir = unpack_dir(axes[1]);
+	animate_view = true;
+	//	view_ptr->set_view_dir(unpack_dir(axes[0]));
+	//	view_ptr->set_view_up_dir(unpack_dir(axes[1]));
+	//	post_redraw();
+}
+
+int stereo_view_interactor::correct_anim_dir_vector(cgv::render::view::pnt_type& dv, const cgv::render::view::pnt_type& v, const cgv::render::view::pnt_type* up) const
+{
+	float dir_anim_step = 0.05f;
+	if (dv.length() > 2.0f - 0.1*dir_anim_step) {
+		if (up) {
+			dv = cross(dv, *up);
+		}
+		else {
+			if (fabs(dv(0)) < 1.5f)
+				dv = cgv::render::view::pnt_type(1, 0, 0);
+			else if (fabs(dv(1)) < 1.5f)
+				dv = cgv::render::view::pnt_type(0, 1, 0);
+			else
+				dv = cgv::render::view::pnt_type(0, 0, 1);
+		}
+	}
+
+	if (dv.length() > dir_anim_step) {
+		// orthogonalize dv to v
+		dv = cross(v, cross(dv, v));
+		dv.normalize();
+		dv *= dir_anim_step;
+	}
+	else
+		return 1;
+	return 0;
+}
+
 /// overload and implement this method to handle events
 bool stereo_view_interactor::handle(event& e)
 {
@@ -243,6 +339,30 @@ bool stereo_view_interactor::handle(event& e)
 				y_extent_at_focus *= pow(1.2,1/zoom_sensitivity);
 				update_member(&y_extent_at_focus);
 				post_redraw();
+				return true;
+			case 'X':
+				if (ke.get_modifiers() == (cgv::gui::EM_SHIFT | cgv::gui::EM_CTRL))
+					set_view_orientation("Xy");
+				else if (ke.get_modifiers() == cgv::gui::EM_CTRL)
+					set_view_orientation("xy");
+				else
+					return false;
+				return true;
+			case 'Y':
+				if (ke.get_modifiers() == (cgv::gui::EM_SHIFT | cgv::gui::EM_CTRL))
+					set_view_orientation("Yz");
+				else if (ke.get_modifiers() == cgv::gui::EM_CTRL)
+					set_view_orientation("yz");
+				else
+					return false;
+				return true;
+			case 'Z':
+				if (ke.get_modifiers() == (cgv::gui::EM_SHIFT | cgv::gui::EM_CTRL))
+					set_view_orientation("Zy");
+				else if (ke.get_modifiers() == cgv::gui::EM_CTRL)
+					set_view_orientation("zy");
+				else
+					return false;
 				return true;
 			}
 
