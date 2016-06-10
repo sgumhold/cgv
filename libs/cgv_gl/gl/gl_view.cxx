@@ -42,6 +42,15 @@ gl_view::box_type gl_view::get_scene_extent() const
 	return scene_extent;
 }
 
+void gl_view::set_default_view()
+{
+	set_view_dir(0, 0, -1);
+	set_view_up_dir(0, 1, 0);
+	set_focus(scene_extent.get_center());
+	set_y_extent_at_focus(0.75*scene_extent.get_extent()(1));
+}
+
+
 		}
 	}
 }

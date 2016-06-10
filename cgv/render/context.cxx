@@ -540,6 +540,37 @@ void context::tesselate_unit_cube(bool flip_normals)
 	draw_faces(V,N,T,F,FN,FT,6,4, flip_normals);
 }
 
+/// tesselate an axis aligned box in single precision
+void context::tesselate_box(const cgv::media::axis_aligned_box<double, 3>& B, bool flip_normals) const
+{
+	static double N[6 * 3] = {
+		-1, 0, 0, +1, 0, 0,
+		0, -1, 0, 0, +1, 0,
+		0, 0, -1, 0, 0, +1
+	};
+	static int F[6 * 4] = {
+		0, 2, 6, 4,
+		1, 5, 7, 3,
+		0, 4, 5, 1,
+		2, 3, 7, 6,
+		4, 6, 7, 5,
+		0, 1, 3, 2
+	};
+	static int FN[6 * 4] = {
+		0, 0, 0, 0, 1, 1, 1, 1,
+		2, 2, 2, 2, 3, 3, 3, 3,
+		4, 4, 4, 4, 5, 5, 5, 5
+	};
+	double V[8 * 3];
+
+	for (unsigned i = 0; i < 8; ++i) {
+		V[3 * i] = (i & 1) == 0 ? B.get_min_pnt()(0) : B.get_max_pnt()(0);
+		V[3 * i + 1] = (i & 2) == 0 ? B.get_min_pnt()(1) : B.get_max_pnt()(1);
+		V[3 * i + 2] = (i & 4) != 0 ? B.get_min_pnt()(2) : B.get_max_pnt()(2);
+	}
+	draw_faces(V, N, 0, F, FN, 0, 6, 4, flip_normals);
+}
+
 /// tesselate a prism 
 void context::tesselate_unit_prism(bool flip_normals)
 {

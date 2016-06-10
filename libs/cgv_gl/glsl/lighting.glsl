@@ -298,7 +298,6 @@ vec4 doLighting(vec3 position, vec3 normal, vec4 diffuseMaterial)
                 computeSpotLight(gl_LightSource[i], gl_FrontLightProduct[i], viewVector, position, normal, ambient, diffuse, specular);
         }
 	}
-
 	// sceneColor = Ecm + Acm * Acs
 	// 'Ecm' == gl_FrontMaterial.emission
 	// 'Acm' == gl_FrontMaterial.ambient

@@ -23,7 +23,6 @@ protected:
 	bool fix_view_up_dir;
 public:
 	ext_view();
-	void set_default_view();
 	void set_default_values();
 	GlsuStereoMode get_stereo_mode() const { return stereo_mode; }
 	virtual void set_stereo_mode(GlsuStereoMode sm) { stereo_mode = sm; }
@@ -91,6 +90,7 @@ protected:
 	bool get_void(const std::string& property, const std::string& value_type, void* value_ptr);
 	void on_set(void* m);
 	void on_rotation_change();
+	double get_z_and_unproject(cgv::render::context* ctx, int x, int y, pnt_type& p);
 public:
 	///
 	stereo_view_interactor(const char* name);

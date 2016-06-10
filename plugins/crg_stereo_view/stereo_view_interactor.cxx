@@ -29,14 +29,6 @@ ext_view::ext_view()
 	set_default_values();
 }
 
-void ext_view::set_default_view()
-{
-	set_y_extent_at_focus(2);
-	set_view_dir(0,0,-1);
-	set_focus(0,0,0);
-	set_view_up_dir(0,1,0);
-}
-
 void ext_view::set_default_values()
 {
 	set_default_view();
@@ -129,6 +121,76 @@ bool stereo_view_interactor::init(context& ctx)
 	return drawable::init(ctx);
 }
 
+double stereo_view_interactor::get_z_and_unproject(cgv::render::context* ctx, int x, int y, pnt_type& p)
+{
+	double z; 
+	if (stereo_enabled) {
+		ctx->make_current();
+		double aspect = (double)ctx->get_width() / ctx->get_height();
+		if (stereo_mode == GLSU_SPLIT_VERTICALLY)
+			aspect *= 0.5;
+		if (stereo_mode == GLSU_SPLIT_HORIZONTALLY)
+			aspect *= 2;
+		double y_extent = y_extent_at_focus;
+		GlsuEye e = GLSU_CENTER;
+		
+		// compute eye and focus point
+		pnt_type foc = view::focus;
+		pnt_type eye = get_eye();
+		pnt_type dv = (1 / parallax_zero_scale - 2)*(eye - foc);
+		foc += dv;
+		eye += dv;
+		double z_eye = dot(eye, view_dir);
+		double z_focus = dot(foc, view_dir) - z_eye;
+
+		switch (stereo_mode) {
+		case GLSU_SPLIT_HORIZONTALLY:
+			e = y >= (int)ctx->get_height() / 2 ? GLSU_RIGHT : GLSU_LEFT;
+			break;
+		case GLSU_SPLIT_VERTICALLY:
+			e = x >= (int)ctx->get_width() / 2 ? GLSU_RIGHT : GLSU_LEFT;
+			break;
+		}
+		if (e == GLSU_RIGHT)
+			glsuConfigureStereo(GLSU_LEFT, stereo_mode, ac);
+		glsuConfigureStereo(e, stereo_mode, ac);
+
+		glMatrixMode(GL_PROJECTION);
+		glPushMatrix();
+		glLoadIdentity();
+		if (stereo_translate_in_model_view)
+			glsuStereoFrustumScreen(e, eye_distance, 2 * y_extent*aspect, 2 * y_extent, z_focus, z_near_derived, z_far_derived);
+		else
+			glsuStereoPerspectiveScreen(e, eye_distance, 2 * y_extent*aspect, 2 * y_extent, z_focus, z_near_derived, z_far_derived);
+
+		glMatrixMode(GL_MODELVIEW);
+		glPushMatrix();
+		glLoadIdentity();
+		if (stereo_translate_in_model_view)
+			glsuStereoTranslateScreen(e, eye_distance, y_extent*aspect);
+		gluLookAt(eye(0), eye(1), eye(2), foc(0), foc(1), foc(2), view_up_dir(0), view_up_dir(1), view_up_dir(2));
+
+
+		z = ctx->get_z_D(x, y);
+		DPV = ctx->get_DPV();
+		p = (const double*)get_context()->get_point_W(x, y, z, DPV);
+
+		glMatrixMode(GL_PROJECTION);
+		glPopMatrix();
+		glMatrixMode(GL_MODELVIEW);
+		glPopMatrix();
+
+		if (e == GLSU_LEFT)
+			glsuConfigureStereo(GLSU_RIGHT, stereo_mode, ac);
+		glsuConfigureStereo(GLSU_CENTER, stereo_mode, ac);
+	}
+	else {
+		z = ctx->get_z_D(x, y);
+		p = (const double*)get_context()->get_point_W(x, y, z, DPV);
+	}
+	return z;
+}
+
 /// overload and implement this method to handle events
 bool stereo_view_interactor::handle(event& e)
 {
@@ -213,10 +275,11 @@ bool stereo_view_interactor::handle(event& e)
 			if (check_for_click != -1) {
 				double dt = me.get_time() - check_for_click;
 				if (dt < 0.2) {
-					if (get_context()) {
-						double z = get_context()->get_z_D(me.get_x(), me.get_y());
+					cgv::render::context* ctx = get_context();
+					if (ctx) {
+						pnt_type p;
+						double z = get_z_and_unproject(ctx, me.get_x(), me.get_y(), p);
 						if (z > 0 && z < 1) {
-							pnt_type p = (const double*)get_context()->get_point_W(me.get_x(), me.get_y(), z, DPV);
 							if (y_view_angle > 1) {
 								pnt_type e = get_eye();
 								double l_old = (e-view::focus).length();
@@ -308,10 +371,11 @@ bool stereo_view_interactor::handle(event& e)
 			}
 			else if (e.get_modifiers() == 0) {
 				double scale = exp(0.2*me.get_dy()/zoom_sensitivity);
-				if (get_context()) {
-					double z = get_context()->get_z_D(me.get_x(), me.get_y());
+				cgv::render::context* ctx = get_context();
+				if (ctx) {
+					pnt_type p;
+					double z = get_z_and_unproject(ctx, me.get_x(), me.get_y(), p);
 					if (z > 0 && z < 1) {
-						pnt_type p = (const double*)get_context()->get_point_W(me.get_x(), me.get_y(), z, DPV);
 						view::focus = p + scale*(view::focus-p);
 						update_vec_member(view::focus);
 					}
@@ -484,10 +548,12 @@ void stereo_view_interactor::init_frame(context& ctx)
 	z_near_derived = z_near;
 	z_far_derived = z_far;
 	if (scene_extent.is_valid()) {
-		double z_min = dot(scene_extent.get_corner(0),view_dir);
+		box_type B = scene_extent;
+		B.scale(1.1);
+		double z_min = dot(B.get_corner(0),view_dir);
 		double z_max = z_min;
 		for (unsigned int i=1; i<8; ++i) {
-			double new_z= dot(scene_extent.get_corner(i),view_dir);
+			double new_z= dot(B.get_corner(i),view_dir);
 			if (new_z< z_min)
 				z_min = new_z;
 			if (new_z > z_max)

@@ -4,6 +4,7 @@
 #include <cgv/base/group.h>
 #include <cgv/data/data_view.h>
 #include <cgv/media/font/font.h>
+#include <cgv/media/axis_aligned_box.h>
 #include <cgv/media/illum/phong_material.hh>
 #include <cgv/media/illum/light_source.hh>
 #include <cgv/signal/callback_stream.h>
@@ -670,6 +671,8 @@ public:
 	void tesselate_unit_square(bool flip_normals = false);
 	/// tesselate a unit cube with extent from [-1,-1,-1] to [1,1,1] with face normals that can be flipped
 	void tesselate_unit_cube(bool flip_normals = false);
+	/// tesselate an axis aligned box
+	virtual void tesselate_box(const cgv::media::axis_aligned_box<double, 3>& B, bool flip_normals) const;
 	/// tesselate a prism 
 	void tesselate_unit_prism(bool flip_normals = false);
 	/// tesselate a circular disk of radius 1

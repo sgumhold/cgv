@@ -125,7 +125,7 @@ shader_program& ref_textured_material_prog(context& ctx)
 	if (!prog.is_created()) {
 		if (!prog.build_program(ctx, "textured_material.glpr")) {
 			std::cerr << "could not build textured material shader program" << std::endl;
-			//exit(0);
+			exit(0);
 		}
 		else {
 			std::cout << "successfully built textured material shader program" << std::endl;

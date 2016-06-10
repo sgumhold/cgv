@@ -25,7 +25,12 @@ protected:
 	fpnt_type maxp;
 public:
 	/// standard constructor does not initialize
-	axis_aligned_box() { invalidate(); }	
+	axis_aligned_box() { invalidate(); }
+	/// type conversion copy constructor
+	template <typename S>
+	axis_aligned_box(const axis_aligned_box<S, N>& B) : 
+		minp(T(B.get_min_pnt()(0)), T(B.get_min_pnt()(1)), T(B.get_min_pnt()(2))), 
+		maxp(T(B.get_max_pnt()(0)), T(B.get_max_pnt()(1)), T(B.get_max_pnt()(2))) {}
 	/// construct from min point and max point
 	axis_aligned_box(const fpnt_type& _minp, const fpnt_type& _maxp) : minp(_minp), maxp(_maxp) {}
 	/// construct from min point and max point

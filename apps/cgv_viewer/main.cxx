@@ -26,7 +26,13 @@ int main(int argc, char** argv)
 	enable_permanent_registration();
 	enable_registration();
 	register_object(console::get_console());
-	process_command_line_args(argc, argv);
+	if (argc > 1)
+		process_command_line_args(argc, argv);
+	else {
+		std::string cfg_file_name = cgv::utils::file::drop_extension(argv[0]) + ".cfg";
+		if (cgv::utils::file::exists(cfg_file_name))
+			process_config_file(cfg_file_name);
+	}
 	enable_registration_event_cleanup();
 	bool res = application::run();
 	unregister_all_objects();

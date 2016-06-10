@@ -39,6 +39,8 @@ public:
 	virtual void set_scene_extent(const box_type& _box);
 	///
 	box_type get_scene_extent() const;
+	///
+	void set_default_view();
 	//@}
 };
 		}

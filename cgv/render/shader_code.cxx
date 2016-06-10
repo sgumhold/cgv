@@ -140,6 +140,10 @@ std::string shader_code::find_file(const std::string& file_name)
 {
 	if (exists(file_name))
 		return file_name;
+	
+	std::string try_name = cgv::utils::file::get_path(ref_prog_name()) + "/" + file_name;
+	if (exists(try_name))
+		return try_name;
 
 	std::map<std::string, resource_file_info>::const_iterator it = 
 		ref_resource_file_map().find(file_name);
@@ -147,8 +151,12 @@ std::string shader_code::find_file(const std::string& file_name)
 		return std::string("res://")+file_name;
 
 	if (get_shader_config()->shader_path.empty()) {
-		if (exists(std::string("glsl/") + file_name))
-			return std::string("glsl/") + file_name;
+		try_name = std::string("glsl/") + file_name;
+		if (exists(try_name))
+			return try_name;
+		try_name = cgv::utils::file::get_path(ref_prog_name()) + "/glsl/" + file_name;
+		if (exists(try_name))
+			return try_name;
 		return "";
 	}
 	return find_in_paths(file_name, get_shader_config()->shader_path, true);

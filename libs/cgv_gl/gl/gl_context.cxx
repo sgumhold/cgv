@@ -888,11 +888,13 @@ void gl_context::set_P(const mat_type& P) const
 /// return homogeneous 4x4 projection matrix, which transforms from clip to device space
 gl_context::mat_type gl_context::get_D() const
 {
+	GLint vp[4];
+	glGetIntegerv(GL_VIEWPORT, vp);
 	mat_type D(4,4,0.0);
-	D(0,0) =  0.5*get_width();
-	D(0,3) =  0.5*get_width();
-	D(1,1) = -0.5*get_height(); // flip y-coordinate
-	D(1,3) =  0.5*get_height();
+	D(0,0) =  0.5*vp[2];
+	D(0, 3) = 0.5*vp[2] + vp[0];
+	D(1,1) = -0.5*vp[3]; // flip y-coordinate
+	D(1, 3) = 0.5*vp[3] + vp[1];
 	D(2,2) =  0.5;
 	D(2,3) =  0.5;
 	D(3,3) =  1.0;
@@ -1083,6 +1085,14 @@ bool gl_context::texture_create(
 			gl_format, df.get_width(), df.get_height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
 		break;
 	}
+	GLenum error = glGetError();
+	if (error != GL_NO_ERROR) {
+		tb.last_error = std::string((const char*)gluErrorString(error));
+		glDeleteTextures(1, &tex_id);
+		texture_unbind(tb.tt, tmp_id);
+		return false;
+	}
+
 	texture_unbind(tb.tt, tmp_id);
 	tb.have_mipmaps = false;
 	reinterpret_cast<GLuint&>(tb.handle) = tex_id+1;
