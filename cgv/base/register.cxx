@@ -844,6 +844,10 @@ bool process_command_ext(const token& cmd, bool eliminate_quotes, bool* persiste
 				else
 					np->multi_set(args, true);
 			}
+			else {
+				std::cerr << "could not find object of name '" << identifier << "'" << std::endl;
+				return false;
+			}
 		}
 		else {
 			base_ptr bp = find_object_by_type(identifier);
@@ -855,6 +859,10 @@ bool process_command_ext(const token& cmd, bool eliminate_quotes, bool* persiste
 					cfo->multi_observe(bp, args, (unsigned)(args_tok.begin - begin));
 				else
 					bp->multi_set(args, true);
+			}
+			else {
+				std::cerr << "could not find object of type <" << identifier << ">" << std::endl;
+				return false;
 			}
 		}
 		return true;
