@@ -50,6 +50,10 @@ else()
 	set(CMAKE_POSTFIX "${STATIC_POSTFIX}")
 endif()
 
+if (CGV_INSTALL_TO_GLOBAL)
+	message("Setting installation directory to ${CGV_BASE}")
+	set(CMAKE_INSTALL_PREFIX "${CGV_BASE}/..")
+endif()
 
 # Set the path for the CGV find_package file
 set(cgv_DIR "${CGV_BASE}/cmake")
