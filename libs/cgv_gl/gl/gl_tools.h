@@ -2,6 +2,7 @@
 
 #include <string>
 #include <cgv/data/data_view.h>
+#include <cgv/render/context.h>
 
 #include "lib_begin.h"
 
