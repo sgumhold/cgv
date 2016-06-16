@@ -485,7 +485,8 @@ std::string get_config_file_name(const std::string& _file_name)
 	return file_name;
 }
 
-bool process_command_ext(const token& cmd, bool eliminate_quotes, bool* persistent = 0, config_file_observer* cfo = 0, const char* begin = 0);
+//bool process_command_ext(const token& cmd, bool eliminate_quotes, bool* persistent = 0, config_file_observer* cfo = 0, const char* begin = 0);
+bool process_command_ext(const command_info& info, bool* persistent = 0, config_file_observer* cfo = 0, const char* begin = 0);
 
 config_file_driver*& ref_config_file_driver()
 {
@@ -535,9 +536,12 @@ bool process_config_file_ext(const std::string& _file_name, bool* persistent = 0
 
 	// interpret each line as a command
 	unsigned int i;
-	for (i=0; i<lines.size(); ++i)
-		process_command_ext((token&)(lines[i]), false, persistent, cfo, &content[0]);
-
+	for (i = 0; i < lines.size(); ++i) {
+		command_info info;
+		analyze_command((token&)(lines[i]), false, &info);
+		process_command_ext(info, persistent, cfo, &content[0]);
+		// process_command_ext((token&)(lines[i]), false, persistent, cfo, &content[0]);
+	}
 	return true;
 }
 
@@ -739,7 +743,158 @@ void show_all()
 	return;
 }
 
+CommandType update_info(command_info* info_ptr, CommandType cmd, cgv::utils::token* args_tok_ptr = 0)
+{
 
+	if (info_ptr) {
+		info_ptr->command_type = cmd;
+		if (args_tok_ptr)
+			info_ptr->parameters.push_back(*args_tok_ptr);
+	}
+	return cmd;
+}
+
+CommandType analyze_command(const cgv::utils::token& cmd, bool eliminate_quotes, command_info* info_ptr)
+{
+	// remove unnecessary stuff
+	token cmd_tok = cmd;
+	cmd_tok.begin = skip_spaces(cmd_tok.begin, cmd_tok.end);
+	cmd_tok.end = cutoff_spaces(cmd_tok.begin, cmd_tok.end);
+
+	// detect empty lines and comments
+	if (cmd_tok.empty())
+		return update_info(info_ptr, CT_EMPTY);
+
+	// detect comments
+	if (cmd_tok.get_length() > 1 && cmd_tok[0] == '/' && cmd_tok[1] == '/')
+		return update_info(info_ptr, CT_COMMENT);
+
+	// detect predefined commands
+	if (cmd_tok == "show all")
+		return update_info(info_ptr, CT_SHOW);
+	if (cmd_tok == "persistent")
+		return update_info(info_ptr, CT_PERSISTENT);
+	if (cmd_tok == "initial")
+		return update_info(info_ptr, CT_INITIAL);
+
+	// determine command header
+	token cmd_header = tokenizer(cmd_tok).set_sep(":").set_ws("").set_skip("\"'", "\"'").bite();
+	if (cmd_header.end == cmd_tok.end)
+		return update_info(info_ptr, CT_INITIAL);
+
+	// and command arguments
+	token args_tok(cmd_header.end + 1, cmd_tok.end);
+
+	// eliminate quotes around argument, which need to be used in commands specified on the command line
+	if (eliminate_quotes && args_tok.get_length() >= 2 &&
+		((args_tok[0] == '"'  && args_tok[(int)args_tok.get_length() - 1] == '"') ||
+		(args_tok[0] == '\'' && args_tok[(int)args_tok.get_length() - 1] == '\''))) {
+		++args_tok.begin;
+		--args_tok.end;
+	}
+	std::string args(to_string(args_tok));
+
+	// detect direct commands
+	if (cmd_header == "plugin")
+		return update_info(info_ptr, CT_PLUGIN, &args_tok);
+	if (cmd_header == "config")
+		return update_info(info_ptr, CT_CONFIG, &args_tok);
+	if (cmd_header == "gui")
+		return update_info(info_ptr, CT_GUI, &args_tok);
+
+	// split composed commands into head and argument
+	std::vector<token> toks;
+	tokenizer(cmd_header).set_sep("()").set_ws("").bite_all(toks);
+
+	// check for name or type command
+	if (toks.size() == 4 && toks[1] == "(" && toks[3] == ")" &&
+		(toks[0] == "name" || toks[0] == "type")) {
+
+		std::string identifier = to_string(toks[2]);
+		if (info_ptr)
+			info_ptr->parameters.push_back(toks[2]);
+		return update_info(info_ptr, toks[0] == "name"  ? CT_NAME : CT_TYPE, &args_tok);
+	}
+	return update_info(info_ptr, CT_UNKNOWN);
+}
+
+bool process_command_ext(const command_info& info, bool* persistent, config_file_observer* cfo, const char* begin)
+{
+	switch (info.command_type) {
+	case CT_SHOW:
+		show_all();
+		return true;
+	case CT_PERSISTENT:
+		if (persistent)
+			*persistent = true;
+		return true;
+	case CT_INITIAL:
+		if (persistent)
+			*persistent = false;
+		return true;
+	case CT_PLUGIN:
+		if (load_plugin(to_string(info.parameters[0]))) {
+			std::cout << "read plugin " << info.parameters[0] << std::endl;
+			return true;
+		}
+		std::cerr << "error reading plugin " << info.parameters[0] << std::endl;
+		return false;
+	case CT_CONFIG:
+		if (process_config_file_ext(to_string(info.parameters[0]), persistent)) {
+			std::cout << "read config file " << get_config_file_name(to_string(info.parameters[0])) << std::endl;
+			return true;
+		}
+		std::cerr << "error reading config file " << info.parameters[0] << std::endl;
+		return false;
+	case CT_GUI:
+		if (process_gui_file(to_string(info.parameters[0]))) {
+			std::cout << "read gui file " << info.parameters[0] << std::endl;
+			return true;
+		}
+		std::cerr << "error reading gui file " << info.parameters[0] << std::endl;
+		return false;
+	case CT_NAME:
+	case CT_TYPE:
+		{
+			base_ptr bp;
+			if (info.command_type == CT_NAME) {
+				named_ptr np = find_object_by_name(to_string(info.parameters[0]));
+				if (np) {
+					std::cout << "name(" << np->get_name().c_str() << ")";
+					bp = np;
+				}
+				else
+					std::cerr << "could not find object of name '" << info.parameters[0] << "'" << std::endl;
+			}
+			else {
+				bp = find_object_by_type(to_string(info.parameters[0]));
+				if (bp)
+					std::cout << "type(" << bp->get_type_name() << ")";
+				else
+					std::cerr << "could not find object of type <" << info.parameters[0] << ">" << std::endl;
+			}
+			if (bp) {
+				std::string args = to_string(info.parameters[1]);
+				// replace single quotes by double quotes
+				for (unsigned int x = 0; x < args.size(); ++x)
+					if (args[x] == '\'')
+						args[x] = '"';
+
+				show_split_lines(args);
+				std::cout << "\n" << std::endl;
+				if (persistent && *persistent && cfo)
+					cfo->multi_observe(bp, args, info.parameters[1].begin - begin);
+				else
+					bp->multi_set(to_string(info.parameters[1]), true);
+				return true;
+			}
+			return false;
+		}
+	}
+	return false;
+}
+
+/*
 bool process_command_ext(const token& cmd, bool eliminate_quotes, bool* persistent, config_file_observer* cfo, const char* begin)
 {
 	// remove unnecessary stuff
@@ -872,10 +1027,19 @@ bool process_command_ext(const token& cmd, bool eliminate_quotes, bool* persiste
 		return false;
 	}
 }
+*/
+
+bool process_command(const command_info& info)
+{
+	return process_command_ext(info);
+}
 
 bool process_command(const std::string& cmd, bool eliminate_quotes)
 {
-	return process_command_ext(token(cmd), eliminate_quotes);
+	command_info info;
+	analyze_command(cmd, eliminate_quotes, &info);
+	return process_command_ext(info);
+	//	return process_command_ext(token(cmd), eliminate_quotes);
 }
 
 /// process the command line arguments: extract program name and load all plugins
