@@ -5,6 +5,13 @@ endif()
 
 set(BUILD_SETTINGS_INCLUDED TRUE)
 
+# Set CMake policy 11 to have included scripts push and pop policies
+cmake_policy(SET CMP0011 NEW)
+# Set CMake policy 17 to prefer local find scripts
+cmake_policy(SET CMP0017 OLD)
+# Set CMake policy 53 for old expansion rules
+cmake_policy(SET CMP0053 OLD)
+
 
 get_filename_component(BASE_PATH "${CMAKE_CURRENT_LIST_FILE}" PATH)
 include("${BASE_PATH}/base.cmake")
