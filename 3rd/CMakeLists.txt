@@ -52,17 +52,16 @@ endmacro()
 set(depslist "")
 
 check_3rd_package(ZLIB zlib depslist)
-check_3rd_package(PNG png depslist)
 check_3rd_package(JPEG jpeg depslist)
-# check_3rd_package(TIFF tiff depslist)
 check_3rd_package(GLEW glew depslist)
 if (WIN32)
 	check_3rd_package(pthread pthread depslist)
 endif()
 
 # Always use our modified bastard version
+add_subdirectory(png)
 add_subdirectory(fltk)
-list(APPEND depslist "FLTK2")
+list(APPEND depslist "PNG" "FLTK2")
 
 # Add a custom target for all 3rd packages
 add_custom_target(3rd)
