@@ -20,6 +20,8 @@ endif()
 # For installation set installation prexices
 set(INSTALL_BASE "framework")
 set(INSTALL_HEADER_PATH "include")
+set(INSTALL_SHADER_PATH "shader")
+set(INSTALL_RESOURCE_PATH "res")
 set(INSTALL_LIB_PATH "lib/${OS_PREFIX}")
 set(INSTALL_BIN_PATH "bin/${OS_PREFIX}")
 set(INSTALL_CMAKE_PATH "cmake/${OS_PREFIX}")

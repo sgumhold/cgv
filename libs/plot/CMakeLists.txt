@@ -1,9 +1,6 @@
 cmake_minimum_required(VERSION 2.6)
 project(plot)
 
-# Include base definitions
-include("../../cmake/buildCoreComponents.cmake")
-
 # The CGV framework is needed
 find_package(cgv COMPONENTS  utils type reflect data base media os gui render)
 
@@ -16,6 +13,9 @@ file(GLOB_RECURSE SOURCES RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "*.cxx")
 # Header files
 file(GLOB_RECURSE HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "*.h")
 
+# Shader files
+file(GLOB_RECURSE SHADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "glsl/*.gl*")
+
 include_directories(
 	"${CGV_DIR}/libs"
 	"${cgv_INCLUDE_DIRS}"
@@ -27,6 +27,7 @@ include_directories(
 cgv_add_library(plot 
 	SOURCES ${SOURCES} 
 	PUBLIC_HEADERS ${HEADERS}
+	SHADERS ${SHADERS}
 	DEFINITIONS UNICODE _UNICODE
 	SHARED_DEFINITIONS PLOT_EXPORTS
 	STATIC_DEFINITIONS PLOT_FORCE_STATIC)
