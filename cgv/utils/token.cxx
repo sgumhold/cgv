@@ -8,6 +8,13 @@ namespace cgv {
 token::token() : begin(0), end(0) 
 {
 }
+/// construct from c-string
+token::token(const char* _str) : begin(_str), end(_str)
+{
+	while (*end != 0)
+		++end;
+}
+
 /// construct from character range
 token::token(const char* _b, const char* _e) : begin(_b), end(_e) 
 {

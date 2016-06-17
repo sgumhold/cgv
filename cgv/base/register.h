@@ -2,6 +2,7 @@
 
 #include <cgv/base/base.h>
 #include <cgv/base/named.h>
+#include <cgv/utils/token.h>
 #include <string>
 #include <iostream>
 #include <map>
@@ -410,6 +411,31 @@ struct CGV_API resource_file_registration
 	resource_file_registration(const char* symbol);
 };
 //@}
+
+enum CommandType
+{
+	CT_UNKNOWN,
+	CT_EMPTY,
+	CT_COMMENT,
+	CT_SHOW,
+	CT_PERSISTENT,
+	CT_INITIAL,
+	CT_PLUGIN,
+	CT_CONFIG,
+	CT_GUI,
+	CT_NAME,
+	CT_TYPE
+};
+
+struct command_info
+{
+	CommandType command_type;
+	std::vector<cgv::utils::token> parameters;
+};
+
+extern CommandType CGV_API analyze_command(const cgv::utils::token& cmd, bool eliminate_quotes = true, command_info* info_ptr = 0);
+
+extern bool CGV_API process_command(const command_info& info);
 
 /**@name processing of commands*/
 //@{
