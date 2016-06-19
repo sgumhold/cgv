@@ -81,8 +81,10 @@ void plot_base::ensure_font_names()
 {
 	if (font_names.empty()) {
 		cgv::media::font::enumerate_font_names(font_names);
+		if (font_names.empty())
+			return;
 		font_name_enum_def = std::string("enums='") + font_names[0];
-		for (unsigned i=1; i<font_names.size(); ++i) {
+		for (unsigned i = 1; i < font_names.size(); ++i) {
 			font_name_enum_def += ',';
 			font_name_enum_def += font_names[i];
 		}
