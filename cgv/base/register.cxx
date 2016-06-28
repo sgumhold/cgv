@@ -685,8 +685,8 @@ void register_factory_object(base_ptr fo, const char* item_text, char shortcut)
 }
 
 void register_prog_name(const char* _prog_name)
-{
-	ref_prog_name() = _prog_name;
+{	
+	ref_prog_name() = cgv::utils::file::get_file_name(_prog_name);
 }
 
 resource_file_info::resource_file_info(

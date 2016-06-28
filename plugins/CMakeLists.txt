@@ -5,6 +5,8 @@ add_subdirectory(cg_fltk)
 add_subdirectory(crg_grid)
 add_subdirectory(crg_stereo_view)
 add_subdirectory(cmi_io)
+add_subdirectory(cg_icons)
+add_subdirectory(crg_light)
 #add_subdirectory(examples)
 
 add_custom_target(plugins)
