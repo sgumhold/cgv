@@ -39,15 +39,17 @@ void gl_view::set_scene_extent(const box_type& _box)
 ///
 gl_view::box_type gl_view::get_scene_extent() const
 {
-	return scene_extent;
+	if (scene_extent.is_valid())
+		return scene_extent;
+	return box_type(box_type::pnt_type(-1, -1, -1), box_type::pnt_type(1, 1, 1));
 }
 
 void gl_view::set_default_view()
 {
 	set_view_dir(0, 0, -1);
 	set_view_up_dir(0, 1, 0);
-	set_focus(scene_extent.get_center());
-	set_y_extent_at_focus(0.75*scene_extent.get_extent()(1));
+	set_focus(get_scene_extent().get_center());
+	set_y_extent_at_focus(0.75*get_scene_extent().get_extent()(1));
 }
 
 
