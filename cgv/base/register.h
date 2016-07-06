@@ -412,35 +412,41 @@ struct CGV_API resource_file_registration
 };
 //@}
 
+/// enumerate type for all command types supported in configuration files
 enum CommandType
 {
-	CT_UNKNOWN,
-	CT_EMPTY,
-	CT_COMMENT,
-	CT_SHOW,
-	CT_PERSISTENT,
-	CT_INITIAL,
-	CT_PLUGIN,
-	CT_CONFIG,
-	CT_GUI,
-	CT_NAME,
-	CT_TYPE
+	CT_UNKNOWN,    // command is not known to framework
+	CT_EMPTY,      // command specification was empty
+	CT_COMMENT,    // a comment was given starting with '/'
+	CT_SHOW,       // a show command was specified, currently only show all is supported
+	CT_PERSISTENT, // the persistent command means that all successive value set commands in a config file should be updated during execution when the user changes one of them
+	CT_INITIAL,    // reverts a persistent command
+	CT_PLUGIN,     // loads a plugin
+	CT_CONFIG,     // executes a config file
+	CT_GUI,        // loads a gui description file
+	CT_NAME,       // sets a value of a registered object of the given name
+	CT_TYPE        // sets a value of a registered object of the given type
 };
 
+/// a structure to store an analized command
 struct command_info
 {
+	/// the command type
 	CommandType command_type;
+	/// the parameters, one file name parameter for PLUGIN, CONFIG, GUI and two parameters (name/type, declarations) for NAME or TYPE commands
 	std::vector<cgv::utils::token> parameters;
 };
 
+/// parse a command and optionally store result in the command info, returns the command type
 extern CommandType CGV_API analyze_command(const cgv::utils::token& cmd, bool eliminate_quotes = true, command_info* info_ptr = 0);
 
+/// process a command given by a command info structure, return whether command was processed correctly
 extern bool CGV_API process_command(const command_info& info);
 
 /**@name processing of commands*/
 //@{
 
-//! process a command.
+//! process a command given as string.
 /*! Return whether the command was processed correctly. If eliminate_quotes is 
     set to true, quotes around the command arguments are eliminated. This feature
 	is used for commands specified on the command line, where spaces in the command
