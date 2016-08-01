@@ -89,6 +89,12 @@ std::string& ref_prog_name()
 	return prog_name;
 }
 
+std::string& ref_prog_path_prefix()
+{
+	static std::string prog_path_prefix;
+	return prog_path_prefix;
+}
+
 std::string& ref_plugin_name()
 {
 	static std::string plugin_name;
@@ -687,6 +693,10 @@ void register_factory_object(base_ptr fo, const char* item_text, char shortcut)
 void register_prog_name(const char* _prog_name)
 {	
 	ref_prog_name() = cgv::utils::file::get_file_name(_prog_name);
+	std::string prog_path_prefix = cgv::utils::file::clean_path(cgv::utils::file::get_path(_prog_name));
+	if (!prog_path_prefix.empty())
+		prog_path_prefix += '/';
+	ref_prog_path_prefix() = prog_path_prefix;
 }
 
 resource_file_info::resource_file_info(

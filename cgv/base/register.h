@@ -479,6 +479,8 @@ extern void CGV_API show_all();
 extern CGV_API void register_prog_name(const char* prog_name);
 /// return a refence to the name of the started executable
 extern CGV_API std::string& ref_prog_name();
+/// return a refence to the path prefix of the started executable, this can be prepended for example to dll names
+extern CGV_API std::string& ref_prog_path_prefix();
 /// process the command line arguments: extract program name and load all plugins
 extern CGV_API void process_command_line_args(int argc, char** argv);
 //@}

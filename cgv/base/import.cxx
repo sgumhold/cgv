@@ -5,6 +5,8 @@
 #include <cgv/utils/dir.h>
 #include <cgv/utils/file.h>
 #include <cgv/utils/tokenizer.h>
+#include <cstdlib>
+
 
 
 #include <stdlib.h>
@@ -191,6 +193,28 @@ std::vector<std::string>& ref_parent_file_stack()
 	return parent_file_stack;
 }
 
+bool find_and_extend_system_path(std::string& file_name)
+{
+	std::string system_paths(std::getenv("PATH"));
+	std::vector<cgv::utils::token> path_tokens;
+	bite_all(tokenizer(system_paths).set_ws(
+#ifdef _WIN32
+		";"
+#else
+		":"
+#endif
+		), path_tokens);
+
+	for (unsigned int i = 0; i<path_tokens.size(); ++i) {
+		std::string system_path = to_string(path_tokens[i]);
+		if (cgv::utils::file::exists(system_path + "/" + file_name)) {
+			file_name = system_path + "/" + file_name;
+			return true;
+		}
+	}
+	return false;
+}
+
 /// open a file with fopen supporting resource files, that have the prefix "res://"
 FILE* open_data_file(const std::string& file_name, const char* mode)
 {
@@ -201,17 +225,30 @@ FILE* open_data_file(const std::string& file_name, const char* mode)
 		return 0;
 	std::string source_file = i->second.source_file;
 	if (source_file.empty())
-		source_file = ref_prog_name();
-	else
-		source_file = file::get_path(ref_prog_name())+"/"+source_file;
+		source_file = ref_prog_path_prefix() + ref_prog_name();
+	else {
+		if (cgv::utils::file::exists(ref_prog_path_prefix() + source_file))
+			source_file = ref_prog_path_prefix() + source_file;
+		else {
+			if (!find_and_extend_system_path(source_file)) {
+				std::cerr << "ERROR: could not find " << source_file << " to import " << i->second.file_data << std::endl;
+				return 0;
+			}
+		}
+	}
 	unsigned int off = i->second.file_offset;
-	if (off == (unsigned int)-1)
+	if (off == (unsigned int)-1) {
 		off = find_file_offset(source_file, i->second.file_data, i->second.file_length);
-	if (off == (unsigned int)-1)
-		return 0;
+		if (off == (unsigned int)-1) {
+			std::cerr << "ERROR: could not find offset of " << i->second.file_data << " to import from " << source_file << std::endl;
+			return 0;
+		}
+	}
 	FILE* fp = fopen(source_file.c_str(), mode);
-	if (!fp)
+	if (!fp) {
+		std::cerr << "ERROR: could not open " << source_file << " to  import " << i->second.file_data << std::endl;
 		return 0;
+	}
 	fseek(fp, off, SEEK_SET);
 	return fp;
 }
