@@ -118,7 +118,7 @@ public:
 
 	///matrix vector multiplication
 	template < typename S>
-	const fvec<T,N> operator*(const fvec<S,M>& v) const {
+	const fvec<T,N> operator * (const fvec<S,M>& v) const {
 		fvec<T,N> r;
 		for(unsigned i = 0; i < N; i++)
 			r(i) = dot(row(i),v);
@@ -189,7 +189,15 @@ fmat<T,N,M> operator * (const T& s, const fmat<T,N,M>& m)
 	return m*s; 
 }
 
-
+/// multiply a row vector from the left to matrix m and return a row vector
+template <typename T, cgv::type::uint32_type N, cgv::type::uint32_type M>
+fvec<T, M> operator * (const fvec<T, N>& v_row, const fmat<T, N, M>& m)
+{
+	fvec<T, M> r_row;
+	for (unsigned i = 0; i < M; i++)
+		r_row(i) = dot(m.col(i), v_row);
+	return r_row;
+}
 
 ///output of a matrix onto an ostream
 template <typename T, cgv::type::uint32_type N, cgv::type::uint32_type M>
