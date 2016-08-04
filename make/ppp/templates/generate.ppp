@@ -129,6 +129,9 @@ func(::extend_project_info; :>project_name = "", :>return = 1)
 	// init plugin list to dependent plugins
 	if (pj::all_dep_projects_by_type::plugin) {
 		pj::plugin_list = pj::all_dep_projects_by_type::plugin;
+		if (pj::all_dep_projects_by_type::application_plugin) {
+			pj::plugin_list = pj::plugin_list . pj::all_dep_projects_by_type::application_plugin;
+		}
 	}
 	// determine name of application and extend plugin_list
 	if (pj::projectType == "plugin" || pj::projectType == "application_plugin" || pj::projectType == "test") {
