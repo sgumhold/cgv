@@ -56,17 +56,13 @@ void ext_view::put_coordinate_system(vec_type& x, vec_type& y, vec_type& z) cons
 
 double ext_view::get_parallax_zero_z() const
 {
-	pnt_type foc = view::focus;
-	pnt_type eye = (y_view_angle <= 0.1) ? foc-0.3*z_far*view_dir : get_eye();
-	pnt_type dv  = (1/parallax_zero_scale-2)*(eye - foc);
-	foc += dv;
-	eye += dv;
-	return dot(foc-eye,view_dir);
+	return (1.0 / (1.0 - parallax_zero_scale) - 1.0) * dot(get_focus() - get_eye(), view_dir);
 }
 
 ///
 stereo_view_interactor::stereo_view_interactor(const char* name) : node(name)
 {
+	last_do_viewport_splitting = do_viewport_splitting = false;
 
 	write_depth = false;
 	write_color = true;
@@ -121,79 +117,255 @@ void stereo_view_interactor::stream_stats(std::ostream& os)
 		enabled_strings[is_stereo_enabled()?1:0],
 		stereo_strings[stereo_mode], eye_distance);
 }
+
+/// call this function before a drawing process to support viewport splitting inside the draw call via the activate/deactivate functions
+void stereo_view_interactor::enable_viewport_splitting(unsigned nr_cols, unsigned nr_rows)
+{
+	do_viewport_splitting = true;
+	nr_viewport_columns = nr_cols;
+	nr_viewport_rows = nr_rows;
+	post_redraw();
+}
+
+/// check whether viewport splitting is activated and optionally set the number of columns and rows if corresponding pointers are passed
+bool stereo_view_interactor::is_viewport_splitting_enabled(unsigned* nr_cols_ptr, unsigned* nr_rows_ptr) const
+{
+	if (do_viewport_splitting) {
+		if (nr_cols_ptr)
+			*nr_cols_ptr = nr_viewport_columns;
+		if (nr_rows_ptr)
+			*nr_rows_ptr = nr_viewport_rows;
+	}
+	return do_viewport_splitting;
+}
+
+/// disable viewport splitting
+void stereo_view_interactor::disable_viewport_splitting()
+{
+	do_viewport_splitting = false;
+	DPVs.clear();
+	DPVs_right.clear();
+}
+
+/// inside the drawing process activate the sub-viewport with the given column and row indices, always terminate an activated viewport with deactivate_split_viewport
+void stereo_view_interactor::activate_split_viewport(cgv::render::context& ctx, unsigned col_index, unsigned row_index)
+{
+	glGetIntegerv(GL_VIEWPORT, current_vp);
+	glGetIntegerv(GL_SCISSOR_BOX, current_sb);
+	int new_vp[4], new_sb[4];
+
+	new_vp[2] = current_vp[2] / nr_viewport_columns;
+	new_vp[0] = current_vp[0] + col_index * new_vp[2];
+	new_vp[3] = current_vp[3] / nr_viewport_rows;
+	new_vp[1] = current_vp[1] + row_index * new_vp[3];
+	new_sb[2] = current_sb[2] / nr_viewport_columns;
+	new_sb[0] = current_sb[0] + col_index * new_sb[2];
+	new_sb[3] = current_sb[3] / nr_viewport_rows;
+	new_sb[1] = current_sb[1] + row_index * new_sb[3];
+
+	glViewport(new_vp[0], new_vp[1], new_vp[2], new_vp[3]);
+	glScissor(new_sb[0], new_sb[1], new_sb[2], new_sb[3]);
+
+	double aspect = (double)new_vp[2] / new_vp[3];
+	gl_set_projection_matrix(current_e, aspect);
+	((current_e == GLSU_RIGHT) ? DPVs_right : DPVs)[row_index*nr_viewport_columns + col_index] = ctx.get_DPV();
+}
+
+/// deactivate the previously split viewport
+void stereo_view_interactor::deactivate_split_viewport()
+{
+	glViewport(current_vp[0], current_vp[1], current_vp[2], current_vp[3]);
+	glScissor(current_sb[0], current_sb[1], current_sb[2], current_sb[3]);
+
+	double aspect = (double)current_vp[2] / current_vp[3];
+	gl_set_projection_matrix(current_e, aspect);
+	post_redraw();
+}
+
+
 bool stereo_view_interactor::init(context& ctx)
 {
 	return drawable::init(ctx);
 }
 
-double stereo_view_interactor::get_z_and_unproject(cgv::render::context* ctx, int x, int y, pnt_type& p)
-{
-	double z; 
-	if (stereo_enabled) {
-		ctx->make_current();
-		double aspect = (double)ctx->get_width() / ctx->get_height();
-		if (stereo_mode == GLSU_SPLIT_VERTICALLY)
-			aspect *= 0.5;
-		if (stereo_mode == GLSU_SPLIT_HORIZONTALLY)
-			aspect *= 2;
-		double y_extent = y_extent_at_focus;
-		GlsuEye e = GLSU_CENTER;
-		
-		// compute eye and focus point
-		pnt_type foc = view::focus;
-		pnt_type eye = get_eye();
-		pnt_type dv = (1 / parallax_zero_scale - 2)*(eye - foc);
-		foc += dv;
-		eye += dv;
-		double z_eye = dot(eye, view_dir);
-		double z_focus = dot(foc, view_dir) - z_eye;
+/*
+ctx->make_current();
+double aspect = (double)ctx->get_width() / ctx->get_height();
+GlsuEye e = GLSU_CENTER;
+switch (stereo_mode) {
+case GLSU_SPLIT_HORIZONTALLY:
+e = y >= (int)ctx->get_height() / 2 ? GLSU_RIGHT : GLSU_LEFT;
+aspect *= 2;
+break;
+case GLSU_SPLIT_VERTICALLY:
+e = x >= (int)ctx->get_width() / 2 ? GLSU_RIGHT : GLSU_LEFT;
+aspect *= 0.5;
+break;
+}
 
+// compute eye and focus point
+double y_extent = y_extent_at_focus;
+pnt_type foc = view::focus;
+pnt_type eye = get_eye();
+pnt_type dv = (1 / parallax_zero_scale - 2)*(eye - foc);
+foc += dv;
+eye += dv;
+double z_eye = dot(eye, view_dir);
+double z_focus = dot(foc, view_dir) - z_eye;
+
+if (e == GLSU_RIGHT)
+glsuConfigureStereo(GLSU_LEFT, stereo_mode, ac);
+glsuConfigureStereo(e, stereo_mode, ac);
+
+glMatrixMode(GL_PROJECTION);
+glPushMatrix();
+glLoadIdentity();
+if (stereo_translate_in_model_view)
+glsuStereoFrustumScreen(e, eye_distance, 2 * y_extent*aspect, 2 * y_extent, z_focus, z_near_derived, z_far_derived);
+else
+glsuStereoPerspectiveScreen(e, eye_distance, 2 * y_extent*aspect, 2 * y_extent, z_focus, z_near_derived, z_far_derived);
+
+glMatrixMode(GL_MODELVIEW);
+glPushMatrix();
+glLoadIdentity();
+if (stereo_translate_in_model_view)
+glsuStereoTranslateScreen(e, eye_distance, y_extent*aspect);
+gluLookAt(eye(0), eye(1), eye(2), foc(0), foc(1), foc(2), view_up_dir(0), view_up_dir(1), view_up_dir(2));
+
+z = ctx->get_z_D(x, y);
+DPV = ctx->get_DPV();
+p = (const double*)get_context()->get_point_W(x, y, z, (e == GLSU_RIGHT) ? DPV_right : DPV);
+
+glMatrixMode(GL_PROJECTION);
+glPopMatrix();
+glMatrixMode(GL_MODELVIEW);
+glPopMatrix();
+
+if (e == GLSU_LEFT)
+glsuConfigureStereo(GLSU_RIGHT, stereo_mode, ac);
+glsuConfigureStereo(GLSU_CENTER, stereo_mode, ac);
+
+}
+else {
+z = ctx->get_z_D(x, y);
+p = (const double*)get_context()->get_point_W(x, y, z, DPV);
+*/
+
+//! given a mouse location and the pixel extent of the context, return the DPV matrix for unprojection
+/*! In stereo modes with split viewport, the returned DPV is the one the mouse pointer is on.
+    The return value is in this case -1 or 1 and tells if DPV corresponds to the left (-1) or right (1) viewport.
+	Furthermore, the DPV of the corresponding mouse location in the other eye is returned through DPV_other_ptr
+	and the mouse location in x_other_ptr and y_other_ptr. In anaglyph or quad buffer stereo mode the other
+	mouse location is identical to the incoming x and y location and 0 is returned. In mono mode, 
+	the other DPV and mouse locations are set to values identical to DPV and x,y and also 0 is returned.
+	
+	In case the viewport splitting was enabled during the last drawing process, the DPV and 
+	DPV_other matrices are set to the one valid in the panel that the mouse position x,y is
+	in. The panel column and row indices are passed to the vp_col_idx and vp_row_idx pointers.
+	In case that viewport splitting was disabled, 0 is passed to the panel location index pointers.
+	
+	Finally, the vp_width and vp_height pointers are set to the viewport size of a single panel
+	from split stereo rendering and viewport splitting.
+
+	All pointer arguments starting with DPV_other_ptr can be set to the null pointer.*/
+int stereo_view_interactor::get_DPVs(int x, int y, int width, int height,
+	cgv::render::context::mat_type** DPV_pptr, 
+	cgv::render::context::mat_type** DPV_other_pptr, int* x_other_ptr, int* y_other_ptr,
+	int* vp_col_idx_ptr, int* vp_row_idx_ptr,
+	int* vp_width_ptr, int *vp_height_ptr)
+{
+	cgv::render::context::mat_type* DPV_other_ptr_local = *DPV_pptr = &DPV;
+	int vp_width = width;
+	int vp_height = width;
+	int eye_panel = 0;
+	int off_x = 0, off_y = 0;
+	int x_other = x;
+	int y_other = y;
+	if (stereo_enabled) {
 		switch (stereo_mode) {
 		case GLSU_SPLIT_HORIZONTALLY:
-			e = y >= (int)ctx->get_height() / 2 ? GLSU_RIGHT : GLSU_LEFT;
+			vp_height /= 2;
+			if (y >= vp_height) {
+				eye_panel = 1;
+				*DPV_pptr = &DPV_right;
+				y_other   = y - vp_height;
+				off_y     = vp_height;
+			}
+			else {
+				eye_panel = -1;
+				DPV_other_ptr_local = &DPV_right;
+				y_other   = y + vp_height;
+			}
 			break;
 		case GLSU_SPLIT_VERTICALLY:
-			e = x >= (int)ctx->get_width() / 2 ? GLSU_RIGHT : GLSU_LEFT;
+			vp_width /= 2;
+			if (x >= vp_width) {
+				eye_panel = 1;
+				*DPV_pptr = &DPV_right;
+				x_other   = x - vp_width;
+				off_x     = vp_width;
+			}
+			else {
+				eye_panel = -1;
+				DPV_other_ptr_local = &DPV_right;
+				x_other   = x + vp_width;
+			}
 			break;
 		}
-		if (e == GLSU_RIGHT)
-			glsuConfigureStereo(GLSU_LEFT, stereo_mode, ac);
-		glsuConfigureStereo(e, stereo_mode, ac);
+	}
 
-		glMatrixMode(GL_PROJECTION);
-		glPushMatrix();
-		glLoadIdentity();
-		if (stereo_translate_in_model_view)
-			glsuStereoFrustumScreen(e, eye_distance, 2 * y_extent*aspect, 2 * y_extent, z_focus, z_near_derived, z_far_derived);
-		else
-			glsuStereoPerspectiveScreen(e, eye_distance, 2 * y_extent*aspect, 2 * y_extent, z_focus, z_near_derived, z_far_derived);
+	int vp_col_idx = 0;
+	int vp_row_idx = 0;
+	if (last_do_viewport_splitting) {
+		vp_width /= last_nr_viewport_columns;
+		vp_height /= last_nr_viewport_rows;
+		vp_col_idx = (x - off_x) / vp_width;
+		vp_row_idx = (y - off_y) / vp_height;
+		int vp_idx = vp_row_idx*last_nr_viewport_columns + vp_col_idx;
+		if (eye_panel == 1) {
+			*DPV_pptr           = &DPVs_right[vp_idx];
+			DPV_other_ptr_local = &DPVs[vp_idx];
+		}
+		else {
+			*DPV_pptr           = &DPVs[vp_idx];
+			DPV_other_ptr_local = &DPVs_right[vp_idx];
+		}
+	}
 
-		glMatrixMode(GL_MODELVIEW);
-		glPushMatrix();
-		glLoadIdentity();
-		if (stereo_translate_in_model_view)
-			glsuStereoTranslateScreen(e, eye_distance, y_extent*aspect);
-		gluLookAt(eye(0), eye(1), eye(2), foc(0), foc(1), foc(2), view_up_dir(0), view_up_dir(1), view_up_dir(2));
+	if (DPV_other_pptr)
+		*DPV_other_pptr = DPV_other_ptr_local;
+	if (x_other_ptr)
+		*x_other_ptr = x_other;
+	if (y_other_ptr)
+		*y_other_ptr = y_other;
+	if (vp_col_idx_ptr)
+		*vp_col_idx_ptr = vp_col_idx;
+	if (vp_row_idx_ptr)
+		*vp_row_idx_ptr = vp_row_idx;
+	if (vp_width_ptr)
+		*vp_width_ptr = vp_width;
+	if (vp_height_ptr)
+		*vp_height_ptr = vp_height;
+	return eye_panel;
+}
 
+double stereo_view_interactor::get_z_and_unproject(cgv::render::context& ctx, int x, int y, pnt_type& p)
+{
+	cgv::render::context::mat_type* DPV_ptr, *DPV_other_ptr;
+	int x_other, y_other, vp_col_idx, vp_row_idx, vp_width, vp_height;
+	int eye_panel = get_DPVs(x, y, ctx.get_width(), ctx.get_height(), &DPV_ptr, &DPV_other_ptr, &x_other, &y_other, &vp_col_idx, &vp_row_idx, &vp_width, &vp_height);
+	ctx.make_current();
+	double z       = ctx.get_z_D(x, y);
+	double z_other = ctx.get_z_D(x_other, y_other);
 
-		z = ctx->get_z_D(x, y);
-		DPV = ctx->get_DPV();
-		p = (const double*)get_context()->get_point_W(x, y, z, DPV);
-
-		glMatrixMode(GL_PROJECTION);
-		glPopMatrix();
-		glMatrixMode(GL_MODELVIEW);
-		glPopMatrix();
-
-		if (e == GLSU_LEFT)
-			glsuConfigureStereo(GLSU_RIGHT, stereo_mode, ac);
-		glsuConfigureStereo(GLSU_CENTER, stereo_mode, ac);
+	if (z <= z_other) {
+		p = (double*)ctx.get_point_W(x, y, z, *DPV_ptr);
+		return z;
 	}
 	else {
-		z = ctx->get_z_D(x, y);
-		p = (const double*)get_context()->get_point_W(x, y, z, DPV);
+		p = (double*)ctx.get_point_W(x_other, y_other, z_other, *DPV_other_ptr);
+		return z_other;
 	}
-	return z;
 }
 
 void stereo_view_interactor::timer_event(double t, double dt)
@@ -369,16 +541,39 @@ bool stereo_view_interactor::handle(event& e)
 		}
 	}
 	else if (e.get_kind() == EID_MOUSE) {
-		vec_type x,y,z;
+		cgv::gui::mouse_event me = (cgv::gui::mouse_event&) e;
+
+		vec_type x, y, z;
 		put_coordinate_system(x,y,z);
-		int width = 0, height = 0;
-		double aspect = 1;
+		int width = 640, height = 480;
+		int off_x = 0, off_y = 0;
 		if (get_context()) {
 			width = get_context()->get_width();
 			height = get_context()->get_height();
-			aspect = (double)width/height;
+			if (stereo_enabled) {
+				switch (stereo_mode) {
+				case GLSU_SPLIT_HORIZONTALLY:
+					height /= 2;
+					if (me.get_y() > height)
+						off_y = height;
+					break;
+				case GLSU_SPLIT_VERTICALLY:
+					width /= 2;
+					if (me.get_x() > width)
+						off_x += width;
+					break;
+				}
+			}
+			if (last_do_viewport_splitting) {
+				width /= last_nr_viewport_columns;
+				height /= last_nr_viewport_rows;
+				off_x += ((me.get_x() - off_x) / width) * width;
+				off_y += ((me.get_y() - off_y) / height) * height;
+			}
 		}
-		cgv::gui::mouse_event me = (cgv::gui::mouse_event&) e;
+		int center_x = off_x + width / 2;
+		int center_y = off_y + height / 2;
+
 		switch (me.get_action()) {
 		case MA_PRESS :
 			if (me.get_button() == MB_LEFT_BUTTON && me.get_modifiers() == 0) {
@@ -395,12 +590,12 @@ bool stereo_view_interactor::handle(event& e)
 			if (check_for_click != -1) {
 				double dt = me.get_time() - check_for_click;
 				if (dt < 0.2) {
-					cgv::render::context* ctx = get_context();
-					if (ctx) {
+					if (get_context()) {
+						cgv::render::context& ctx = *get_context();
 						pnt_type p;
 						double z = get_z_and_unproject(ctx, me.get_x(), me.get_y(), p);
 						if (z > 0 && z < 1) {
-							if (y_view_angle > 1) {
+							if (y_view_angle > 0.1) {
 								pnt_type e = get_eye();
 								double l_old = (e-view::focus).length();
 								double l_new = dot(p-e,view_dir);
@@ -434,8 +629,8 @@ bool stereo_view_interactor::handle(event& e)
 				}
 			}
 			if (me.get_button_state() == MB_LEFT_BUTTON && me.get_modifiers() == EM_SHIFT) {
-				int rx = me.get_x() - width/2;
-				int ry = me.get_y() - height/2;
+				int rx = me.get_x() - center_x;
+				int ry = me.get_y() - center_y;
 				double ds = sqrt(((double)me.get_dx()*(double)me.get_dx()+(double)me.get_dy()*(double)me.get_dy())/
 								 ((double)rx*(double)rx+(double)ry*(double)ry));
 				if (rx*me.get_dy() > ry*me.get_dx())
@@ -491,8 +686,8 @@ bool stereo_view_interactor::handle(event& e)
 			}
 			else if (e.get_modifiers() == 0) {
 				double scale = exp(0.2*me.get_dy()/zoom_sensitivity);
-				cgv::render::context* ctx = get_context();
-				if (ctx) {
+				if (get_context()) {
+					cgv::render::context& ctx = *get_context();
 					pnt_type p;
 					double z = get_z_and_unproject(ctx, me.get_x(), me.get_y(), p);
 					if (z > 0 && z < 1) {
@@ -594,8 +789,8 @@ void stereo_view_interactor::finish_frame(cgv::render::context& ctx)
 void stereo_view_interactor::after_finish(cgv::render::context& ctx)
 {
 	if (ctx.get_render_pass() == RP_MAIN) {
-		if (is_stereo_enabled())
-			glsuConfigureStereo(GLSU_CENTER,stereo_mode,ac);
+		if (is_stereo_enabled()) 
+			glsuConfigureStereo(GLSU_CENTER, stereo_mode, ac);
 		check_write_image(ctx, (is_stereo_enabled()&&stereo_mode==GLSU_QUAD_BUFFER)?"_r":"");
 	}
 }
@@ -631,6 +826,22 @@ void stereo_view_interactor::on_set_local_lights()
 {
 }
 
+/// set the current projection matrix
+void stereo_view_interactor::gl_set_projection_matrix(GlsuEye e, double aspect)
+{
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	if (y_view_angle <= 0.1)
+		glOrtho(-aspect*y_extent_at_focus, aspect*y_extent_at_focus, -y_extent_at_focus, y_extent_at_focus, z_near_derived, z_far_derived);
+	else {
+		if (stereo_translate_in_model_view)
+			glsuStereoFrustumScreen(e, eye_distance, 2 * y_extent_at_focus*aspect, 2 * y_extent_at_focus, get_parallax_zero_z(), z_near_derived, z_far_derived);
+		else
+			glsuStereoPerspectiveScreen(e, eye_distance, 2 * y_extent_at_focus*aspect, 2 * y_extent_at_focus, get_parallax_zero_z(), z_near_derived, z_far_derived);
+	}
+	glMatrixMode(GL_MODELVIEW);
+}
+
 /// this method is called in one pass over all drawables before the draw method
 void stereo_view_interactor::init_frame(context& ctx)
 {
@@ -638,77 +849,44 @@ void stereo_view_interactor::init_frame(context& ctx)
 	if ((rpf & RPF_SET_MODELVIEW_PROJECTION) == 0)
 		return;
 
-	GlsuEye e = mono_mode;
+	// determine the current eye and stear multi pass rendering
+	current_e = mono_mode;
 	if (is_stereo_enabled()) {
-		if (ctx.get_render_pass() == RP_STEREO)
-			e = GLSU_LEFT;
+		if (ctx.get_render_pass() == RP_STEREO) {
+			current_e = GLSU_LEFT;
+			last_do_viewport_splitting = do_viewport_splitting;
+			last_nr_viewport_columns = nr_viewport_columns;
+			last_nr_viewport_rows = nr_viewport_rows;
+		}
 		else {
 			glsuConfigureStereo(GLSU_LEFT,stereo_mode,ac);
 			ctx.render_pass(RP_STEREO,RenderPassFlags(rpf&~RPF_HANDLE_SCREEN_SHOT));
 			glsuConfigureStereo(GLSU_RIGHT,stereo_mode,ac);
-			e = GLSU_RIGHT;
+			current_e = GLSU_RIGHT;
 		}
 	}
+	else {
+		last_do_viewport_splitting = do_viewport_splitting;
+		last_nr_viewport_columns = nr_viewport_columns;
+		last_nr_viewport_rows = nr_viewport_rows;
+	}
+
 	// determine aspect ratio from opengl settings
 	GLint vp[4];
 	glGetIntegerv(GL_VIEWPORT, vp);
 	double aspect = (double)vp[2]/vp[3];
 
-	// compute eye and focus point
-	pnt_type foc = view::focus;
-	pnt_type eye = (y_view_angle <= 0.1) ? foc-0.3*z_far*view_dir : get_eye();
-	pnt_type dv  = (1/parallax_zero_scale-2)*(eye - foc);
-	foc += dv;
-	eye += dv;
-	double y_extent = y_extent_at_focus;
-	double z_eye = dot(eye,view_dir);
-	double z_focus = dot(foc,view_dir)-z_eye;
-
 	// compute the clipping planes based on the eye and scene extent
-	z_near_derived = z_near;
-	z_far_derived = z_far;
-	if (scene_extent.is_valid()) {
-		box_type B = scene_extent;
-		B.scale(1.1);
-		double z_min = dot(B.get_corner(0),view_dir);
-		double z_max = z_min;
-		for (unsigned int i=1; i<8; ++i) {
-			double new_z= dot(B.get_corner(i),view_dir);
-			if (new_z< z_min)
-				z_min = new_z;
-			if (new_z > z_max)
-				z_max = new_z;
-		}
-		z_min -= z_eye;
-		z_max -= z_eye;
-		if (z_min > z_near)
-			z_near_derived = z_min;
-		if (z_max > z_near && z_max < z_far)
-			z_far_derived = z_max;
-	}
-	else if (clip_relative_to_extent) {
-		z_near_derived = y_extent_at_focus*z_near;
-		z_far_derived = y_extent_at_focus*z_far;
-	}
-
-	if (rpf & RPF_SET_PROJECTION) {
-		glMatrixMode(GL_PROJECTION);
-		glLoadIdentity();
-		if (y_view_angle <= 0.1)
-			glOrtho(-aspect*y_extent, aspect*y_extent, 
-					-y_extent, y_extent, z_near_derived, z_far_derived);
-		else {
-			if (stereo_translate_in_model_view)
-				glsuStereoFrustumScreen(e, eye_distance, 2*y_extent*aspect, 2*y_extent, z_focus, z_near_derived, z_far_derived);
-			else
-				glsuStereoPerspectiveScreen(e, eye_distance, 2*y_extent*aspect, 2*y_extent, z_focus, z_near_derived, z_far_derived);
-		}
-	}
+	compute_clipping_planes(z_near_derived, z_far_derived, clip_relative_to_extent);
+	if (rpf & RPF_SET_PROJECTION)
+		gl_set_projection_matrix(current_e, aspect);
+	
 	glMatrixMode(GL_MODELVIEW);
 	if (rpf & RPF_SET_MODELVIEW) {
 		// switch back to the modelview transformation stack
 		glLoadIdentity();
 	}
+	
 	if (rpf & RPF_SET_LIGHTS) {
 		float lps[] = { 0,1,1,0, 1,0,1,0, 0,0,1,0, 0,1,0,0 };
 
@@ -717,13 +895,26 @@ void stereo_view_interactor::init_frame(context& ctx)
 		glLightfv(GL_LIGHT2, GL_POSITION, lps+8);
 		glLightfv(GL_LIGHT3, GL_POSITION, lps+12);
 	}
+	
 	on_set_local_lights();
+
 	if (rpf & RPF_SET_MODELVIEW) {
+		pnt_type foc = view::focus;
+		pnt_type eye = get_eye();
 		if (stereo_translate_in_model_view)
-			glsuStereoTranslateScreen(e, eye_distance, y_extent*aspect);
+			glsuStereoTranslateScreen(current_e, eye_distance, y_extent_at_focus*aspect);
 		gluLookAt(eye(0), eye(1), eye(2), foc(0), foc(1), foc(2), view_up_dir(0),view_up_dir(1),view_up_dir(2));
 
-		DPV = ctx.get_DPV();
+		if (current_e == GLSU_RIGHT) {
+			DPV_right = ctx.get_DPV();
+			if (do_viewport_splitting)
+				DPVs_right = std::vector<cgv::render::context::mat_type>(nr_viewport_rows*nr_viewport_columns, DPV_right);
+		}
+		else {
+			DPV = ctx.get_DPV();
+			if (do_viewport_splitting)
+				DPVs = std::vector<cgv::render::context::mat_type>(nr_viewport_rows*nr_viewport_columns, DPV);
+		}
 	}
 }
 
@@ -737,24 +928,23 @@ void stereo_view_interactor::draw(cgv::render::context& ctx)
 	}
 }
 
-
 void stereo_view_interactor::draw_focus()
 {
 	glLineWidth(1.0f);
 	glColor3f(0.5f,0.5f,0.5f);
 	glBegin(GL_LINES);
-	glVertex3dv(view::focus);
-	glVertex3dv(view::focus+vec_type(get_y_extent_at_focus(),0,0));
-	glVertex3dv(view::focus);
-	glVertex3dv(view::focus+vec_type(0,get_y_extent_at_focus(),0));
-	glVertex3dv(view::focus);
-	glVertex3dv(view::focus+vec_type(0,0,get_y_extent_at_focus()));
-	glVertex3dv(view::focus);
-	glVertex3dv(view::focus+vec_type(-get_y_extent_at_focus(),0,0));
-	glVertex3dv(view::focus);
-	glVertex3dv(view::focus+vec_type(0,-get_y_extent_at_focus(),0));
-	glVertex3dv(view::focus);
-	glVertex3dv(view::focus+vec_type(0,0,-get_y_extent_at_focus()));
+	glVertex3dv(get_focus());
+	glVertex3dv(get_focus()+vec_type(get_y_extent_at_focus(),0,0));
+	glVertex3dv(get_focus());
+	glVertex3dv(get_focus()+vec_type(0,get_y_extent_at_focus(),0));
+	glVertex3dv(get_focus());
+	glVertex3dv(get_focus()+vec_type(0,0,get_y_extent_at_focus()));
+	glVertex3dv(get_focus());
+	glVertex3dv(get_focus()+vec_type(-get_y_extent_at_focus(),0,0));
+	glVertex3dv(get_focus());
+	glVertex3dv(get_focus()+vec_type(0,-get_y_extent_at_focus(),0));
+	glVertex3dv(get_focus());
+	glVertex3dv(get_focus()+vec_type(0,0,-get_y_extent_at_focus()));
 	glEnd();
 }
 

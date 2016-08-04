@@ -25,6 +25,9 @@ protected:
 public:
 	/// construct a parallel view with focus in the world origin looking in negative z-direction and the y-direction as up-direction with an extent of +-1
 	gl_view();
+	/// compute clipping planes adapted to the current scene extent, z_near_derived is at least z_near and as large as possible to include the scene, similarly z_far_derived is as small as possible  
+	void compute_clipping_planes(double& z_near_derived, double& z_far_derived, bool clip_relative_to_extent = false) const;
+
 	/**@name getter and setter methods*/
 	//@{
 	///
