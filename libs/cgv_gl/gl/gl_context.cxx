@@ -894,7 +894,7 @@ gl_context::mat_type gl_context::get_D() const
 	D(0,0) =  0.5*vp[2];
 	D(0, 3) = 0.5*vp[2] + vp[0];
 	D(1,1) = -0.5*vp[3]; // flip y-coordinate
-	D(1, 3) = 0.5*vp[3] + vp[1];
+	D(1, 3) = get_height() - 0.5*vp[3] - vp[1];
 	D(2,2) =  0.5;
 	D(2,3) =  0.5;
 	D(3,3) =  1.0;
@@ -909,7 +909,7 @@ double gl_context::get_z_D(int x_D, int y_D) const
 	if (!in_render_process() && !is_current())
 		make_current();
 
-	glReadPixels(x_D, get_height()-y_D, 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &z_D);
+	glReadPixels(x_D, get_height()-y_D-1, 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &z_D);
 	/*
 	GLenum err = glGetError();
 	if (err != GL_NO_ERROR) {

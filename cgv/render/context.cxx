@@ -1093,7 +1093,7 @@ context::vec_type context::get_point_W(const vec_type& p_D, const mat_type& MPD)
 
 context::vec_type context::get_point_W(int x_D, int y_D, double z_D, const mat_type& MPD) const
 {
-	return get_point_W(vec_type(x_D,y_D,z_D),MPD);
+	return get_point_W(vec_type(x_D+0.5f,y_D+0.5f,z_D),MPD);
 }
 
 void context::tesselate_arrow(double length, double aspect, double rel_tip_radius, double tip_aspect)

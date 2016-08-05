@@ -197,6 +197,7 @@ int stereo_view_interactor::get_DPVs(int x, int y, int width, int height,
 	int vp_width = width;
 	int vp_height = height;
 	int eye_panel = 0;
+	// start of stereo viewport in device integer coordinates
 	int off_x = 0, off_y = 0;
 	int x_other = x;
 	int y_other = y;
@@ -204,15 +205,15 @@ int stereo_view_interactor::get_DPVs(int x, int y, int width, int height,
 		switch (stereo_mode) {
 		case GLSU_SPLIT_HORIZONTALLY:
 			vp_height /= 2;
-			if (y < vp_height) {
+			if (y > vp_height) {
 				eye_panel = 1;
 				*DPV_pptr = &DPV_right;
-				y_other   = y + vp_height;
+				y_other   = y - vp_height;
 			}
 			else {
 				eye_panel = -1;
 				DPV_other_ptr_local = &DPV_right;
-				y_other   = y - vp_height;
+				y_other   = y + vp_height;
 				off_y     = vp_height;
 			}
 			break;
@@ -242,7 +243,7 @@ int stereo_view_interactor::get_DPVs(int x, int y, int width, int height,
 		vp_width /= last_nr_viewport_columns;
 		vp_height /= last_nr_viewport_rows;
 		vp_col_idx = (x - off_x) / vp_width;
-		vp_row_idx = nr_viewport_rows - (y - off_y) / vp_height - 1;
+		vp_row_idx = (y - off_y) / vp_height;
 		int vp_idx = vp_row_idx*last_nr_viewport_columns + vp_col_idx;
 		if (eye_panel == 1) {
 			*DPV_pptr           = &DPVs_right[vp_idx];
