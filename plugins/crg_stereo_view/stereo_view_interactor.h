@@ -4,6 +4,7 @@
 #include <cgv_gl/gl/gl_view.h>
 #include <cgv/gui/event_handler.h>
 #include <cgv/gui/provider.h>
+#include <cgv/reflect/reflect_enum.h>
 #include <cgv_gl/gl/gl.h>
 #include <glsu/GL/glsu.h>
 
@@ -38,6 +39,14 @@ public:
 	virtual void set_parallax_zero_scale(double pzs) { parallax_zero_scale = pzs; }
 	void put_coordinate_system(vec_type& x, vec_type& y, vec_type& z) const;
 };
+
+enum StereoMousePointer {
+	SMP_BITMAP,
+	SMP_PIXELS,
+	SMP_ARROW
+};
+
+extern CGV_API cgv::reflect::enum_reflection_traits<StereoMousePointer> get_reflection_traits(const StereoMousePointer&);
 
 class CGV_API stereo_view_interactor : 
 	public cgv::base::node, 
@@ -83,6 +92,18 @@ protected:
 
 	/// overload to set local lights before modelview matrix is set
 	virtual void on_set_local_lights();
+
+	///
+	StereoMousePointer stereo_mouse_pointer;
+	///
+	void draw_mouse_pointer_as_bitmap(cgv::render::context& ctx, int x, int y, int center_x, int center_y, int vp_width, int vp_height, bool visible, cgv::render::context::mat_type &DPV);
+	///
+	void draw_mouse_pointer_as_pixels(cgv::render::context& ctx, int x, int y, int center_x, int center_y, int vp_width, int vp_height, bool visible, cgv::render::context::mat_type &DPV);
+	///
+	void draw_mouse_pointer_as_arrow(cgv::render::context& ctx, int x, int y, int center_x, int center_y, int vp_width, int vp_height, bool visible, cgv::render::context::mat_type &DPV);
+	///
+	void draw_mouse_pointer(cgv::render::context& ctx, bool visible);
+	///
 	void draw_focus();
 	bool self_reflect(cgv::reflect::reflection_handler& srh);
 	std::string get_property_declarations();
@@ -129,15 +150,17 @@ public:
 	in. The panel column and row indices are passed to the vp_col_idx and vp_row_idx pointers.
 	In case that viewport splitting was disabled, 0 is passed to the panel location index pointers.
 
-	Finally, the vp_width and vp_height pointers are set to the viewport size of a single panel
-	from split stereo rendering and viewport splitting.
+	Finally, the vp_width, vp_height, vp_center_x, and vp_center_y pointers are set to the viewport size 
+	and center mouse location of the panel panel that the mouse pointer is in.
 
 	All pointer arguments starting with DPV_other_ptr can be set to the null pointer.*/
 	int get_DPVs(int x, int y, int width, int height,
-		cgv::render::context::mat_type** DPV_pptr,
-		cgv::render::context::mat_type** DPV_other_pptr = 0, int* x_other_ptr = 0, int* y_other_ptr = 0,
+		cgv::math::mat<double>** DPV_pptr,
+		cgv::math::mat<double>** DPV_other_pptr = 0, int* x_other_ptr = 0, int* y_other_ptr = 0,
 		int* vp_col_idx_ptr = 0, int* vp_row_idx_ptr = 0,
-		int* vp_width_ptr = 0, int *vp_height_ptr = 0);
+		int* vp_width_ptr = 0, int *vp_height_ptr = 0,
+		int* vp_center_x_ptr = 0, int* vp_center_y_ptr = 0,
+		int* vp_center_x_other_ptr = 0, int* vp_center_y_other_ptr = 0);
 	//! given a pixel location x,y return the z-value from the depth buffer, which ranges from 0.0 at z_near to 1.0 at z_far and a point in world coordinates
 	/*! in case of stereo rendering two z-values exist that can be unprojected to two points in world
 	    coordinates. In this case the possibility with smaller z value is selected. */
@@ -196,6 +219,8 @@ private:
 	bool last_do_viewport_splitting;
 	unsigned last_nr_viewport_columns;
 	unsigned last_nr_viewport_rows;
+
+	int last_x, last_y;
 };
 
 #include <cgv/config/lib_end.h>

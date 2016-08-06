@@ -56,7 +56,7 @@ void gl_view::compute_clipping_planes(double& z_near_derived, double& z_far_deri
 {
 	// compute eye and focus point
 	pnt_type foc = view::focus;
-	pnt_type eye = (y_view_angle <= 0.1) ? foc - 0.3*z_far*view_dir : get_eye();
+	pnt_type eye = get_eye();
 	double z_eye = dot(eye, view_dir);
 
 	// compute the clipping planes based on the eye and scene extent

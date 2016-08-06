@@ -128,11 +128,14 @@ void view::activate_split_viewport(cgv::render::context& ctx, unsigned col_index
 /// deactivate the previously split viewport
 void view::deactivate_split_viewport()
 {}
+
 int view::get_DPVs(int x, int y, int width, int height,
 	cgv::math::mat<double>** DPV_pptr,
 	cgv::math::mat<double>** DPV_other_pptr, int* x_other_ptr, int* y_other_ptr,
 	int* vp_col_idx_ptr, int* vp_row_idx_ptr,
-	int* vp_width_ptr, int *vp_height_ptr)
+	int* vp_width_ptr, int *vp_height_ptr,
+	int* vp_center_x_ptr, int* vp_center_y_ptr,
+	int* vp_center_x_other_ptr, int* vp_center_y_other_ptr)
 {
 	return 0;
 }

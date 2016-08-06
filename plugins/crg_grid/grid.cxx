@@ -21,6 +21,9 @@ using namespace cgv::utils;
 
 grid::grid() : minX(-50),minZ(-50),maxX(50),maxZ(50) 
 {
+	view_ptr = 0;
+	set_name("grid");
+
 	show_grid=true;
 	factor=0;
 	adaptive_grid=false;
@@ -77,6 +80,16 @@ bool grid::init(cgv::render::context&)
 {
 	return true;
 }
+/// 
+void grid::init_frame(cgv::render::context& ctx)
+{
+	// find the view by traversing the base hierarchy, we assume there is only one
+	std::vector<cgv::render::view*> views;
+	cgv::base::find_interface(base_ptr(this), views);
+	if (views.size() == 0)
+		abort();
+	view_ptr = views[0];
+}
 
 void grid::render_grid_lines(float alpha)
 {
@@ -130,73 +143,105 @@ void grid::render_grid_lines(float alpha)
 
 }
 
-void grid::draw(context &c)
+void grid::draw_grid(context &ctx)
 {
-	if(!show_grid)
-		return;
 	using namespace cgv::math;
-	
-	zaxis = normalize(c.get_V().row(2).sub_vec(0,3));
 
-	mat<double> p(4,4);
+	zaxis = normalize(ctx.get_V().row(2).sub_vec(0, 3));
 
-	p(0,0) = 1.0; p(0,1) = 0.0; p(0,2) = 0.0; p(0,3) = 0.0;
-	p(1,0) = 0.0; p(1,1) = 1.0; p(1,2) = 0.0; p(1,3) = 0.0;
-	p(2,0) = 0.0; p(2,1) = 0.0; p(2,2) = 1.0; p(2,3) = 0.0;
-	p(3,0) = 1.0; p(3,1) = 1.0; p(3,2) = 1.0; p(3,3) = 1.0;
+	mat<double> p(4, 4);
 
-	p = c.get_DPV()*p;
+	p(0, 0) = 1.0; p(0, 1) = 0.0; p(0, 2) = 0.0; p(0, 3) = 0.0;
+	p(1, 0) = 0.0; p(1, 1) = 1.0; p(1, 2) = 0.0; p(1, 3) = 0.0;
+	p(2, 0) = 0.0; p(2, 1) = 0.0; p(2, 2) = 1.0; p(2, 3) = 0.0;
+	p(3, 0) = 1.0; p(3, 1) = 1.0; p(3, 2) = 1.0; p(3, 3) = 1.0;
+
+	p = ctx.get_DPV()*p;
 	cgv::math::unhomog(p);
-	
-	double v = cgv::math::maximum(length(p.col(0)-p.col(3)), length(p.col(1)-p.col(3)) 
-		, length(p.col(2)-p.col(3))) ;
-	//std::cout << v <<":"<< pow(2.0,ceil(log(40.0)-log(v))/log(2.0)) << std::endl;
 
-	factor = (float)pow(2.0,ceil(log(20.0)-log(v))/log(2.0))  ;
-		
-	glPushAttrib(GL_LIGHTING_BIT|GL_CURRENT_BIT);
+	double v = cgv::math::maximum(length(p.col(0) - p.col(3)), length(p.col(1) - p.col(3)), length(p.col(2) - p.col(3)));
+	//std::cout << v <<":"<< pow(2.0,ceil(log(40.0)-log(v))/log(2.0)) << std::endl;
+	factor = (float)pow(2.0, ceil(log(20.0) - log(v)) / log(2.0));
+
+	glPushAttrib(GL_LIGHTING_BIT | GL_CURRENT_BIT);
 	glEnable(GL_LIGHTING);
 	glEnable(GL_COLOR_MATERIAL);
-	glColor3f(0.5f,0.5f,0.5f);
+	glColor3f(0.5f, 0.5f, 0.5f);
 	float r = arrow_length * arrow_aspect;
-	c.push_V();
-		glScalef(r,r,r);
-		c.tesselate_unit_sphere(40);
-	c.pop_V();
+	ctx.push_V();
+	glScalef(r, r, r);
+	ctx.tesselate_unit_sphere(40);
+	ctx.pop_V();
 
 	if (show_axes) {
-		c.push_V();
+		ctx.push_V();
 		//z-axis
-		if(fabs(fabs(zaxis(2)) -1.0)> 0.001 )
+		if (fabs(fabs(zaxis(2)) - 1.0)> 0.001)
 		{
-			glColor3f(0,0,1);
-			c.tesselate_arrow((double)arrow_length, (double)arrow_aspect, (double)arrow_rel_tip_radius, (double)arrow_tip_aspect);
+			glColor3f(0, 0, 1);
+			ctx.tesselate_arrow((double)arrow_length, (double)arrow_aspect, (double)arrow_rel_tip_radius, (double)arrow_tip_aspect);
 		}
 		//x-axis
-		if(fabs(fabs(zaxis(0)) -1.0)> 0.001 )
+		if (fabs(fabs(zaxis(0)) - 1.0)> 0.001)
 		{
-			glRotatef(90,0,1,0);
-			glColor3f(1,0,0);
-			c.tesselate_arrow((double)arrow_length, (double)arrow_aspect, (double)arrow_rel_tip_radius, (double)arrow_tip_aspect);
+			glRotatef(90, 0, 1, 0);
+			glColor3f(1, 0, 0);
+			ctx.tesselate_arrow((double)arrow_length, (double)arrow_aspect, (double)arrow_rel_tip_radius, (double)arrow_tip_aspect);
 		}
-		
+
 		//y-axis
-		if(fabs(fabs(zaxis(1)) -1.0)> 0.001 )
+		if (fabs(fabs(zaxis(1)) - 1.0)> 0.001)
 		{
-			
-			glRotatef(-90,1,0,0);
-			glColor4f(0,1,0,1);
-			c.tesselate_arrow((double)arrow_length, (double)arrow_aspect, (double)arrow_rel_tip_radius, (double)arrow_tip_aspect);
+
+			glRotatef(-90, 1, 0, 0);
+			glColor4f(0, 1, 0, 1);
+			ctx.tesselate_arrow((double)arrow_length, (double)arrow_aspect, (double)arrow_rel_tip_radius, (double)arrow_tip_aspect);
 		}
-		c.pop_V();
+		ctx.pop_V();
 	}
 	glPopAttrib();
 }
 
-void grid::finish_frame(context& c)
+void grid::draw(context &ctx)
 {
-	if(!show_grid || !show_lines)
+	if (!show_grid)
 		return;
+
+	unsigned nr_cols, nr_rows;
+	if (view_ptr && view_ptr->is_viewport_splitting_enabled(&nr_cols, &nr_rows)) {
+		for (unsigned c = 0; c < nr_cols; ++c) {
+			for (unsigned r = 0; r < nr_rows; ++r) {
+				view_ptr->activate_split_viewport(ctx, c, r);
+				draw_grid(ctx);
+				view_ptr->deactivate_split_viewport();
+			}
+		}
+	}
+	else
+		draw_grid(ctx);
+}
+
+void grid::finish_frame(context& ctx)
+{
+	if (!show_grid || !show_lines)
+		return;
+
+	unsigned nr_cols, nr_rows;
+	if (view_ptr && view_ptr->is_viewport_splitting_enabled(&nr_cols, &nr_rows)) {
+		for (unsigned c = 0; c < nr_cols; ++c) {
+			for (unsigned r = 0; r < nr_rows; ++r) {
+				view_ptr->activate_split_viewport(ctx, c, r);
+				draw_lines(ctx);
+				view_ptr->deactivate_split_viewport();
+			}
+		}
+	}
+	else
+		draw_lines(ctx);
+}
+
+void grid::draw_lines(context& ctx)
+{
 	glPushAttrib(GL_COLOR_BUFFER_BIT | GL_LIGHTING_BIT | GL_DEPTH_BUFFER_BIT | GL_LINE_BIT);
 	using namespace cgv::math;
 	glEnable (GL_BLEND); 
