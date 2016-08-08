@@ -1,6 +1,7 @@
 #include "stereo_view_interactor.h"
 #include <cgv_reflect_types/math/fvec.h>
 #include <cgv/utils/scan.h>
+#include <cgv/utils/scan_enum.h>
 #include <cgv/utils/ostream_printf.h>
 #include <cgv/gui/trigger.h>
 #include <cgv/signal/rebind.h>
@@ -20,12 +21,29 @@ using namespace cgv::render;
 using namespace cgv::render::gl;
 
 #define SMP_ENUMS "bitmap,pixels,arrow"
+#define SM_ENUMS "vsplit,hsplit,anaglyph,quad buffer"
+#define AC_ENUMS "red|blue,red|cyan,yellow|blue,magenta|green,blue|red,cyan|red,blue|yellow,green|magenta"
+#define EYE_ENUMS "left=-1,center,right"
 
 cgv::reflect::enum_reflection_traits<StereoMousePointer> get_reflection_traits(const StereoMousePointer&)
 {
 	return cgv::reflect::enum_reflection_traits<StereoMousePointer>(SMP_ENUMS);
 }
 
+cgv::reflect::enum_reflection_traits<GlsuStereoMode> get_reflection_traits(const GlsuStereoMode&)
+{
+	return cgv::reflect::enum_reflection_traits<GlsuStereoMode>(SM_ENUMS);
+}
+
+cgv::reflect::enum_reflection_traits<GlsuAnaglyphConfiguration> get_reflection_traits(const GlsuAnaglyphConfiguration&)
+{
+	return cgv::reflect::enum_reflection_traits<GlsuAnaglyphConfiguration>(AC_ENUMS);
+}
+
+cgv::reflect::enum_reflection_traits<GlsuEye> get_reflection_traits(const GlsuEye&)
+{
+	return cgv::reflect::enum_reflection_traits<GlsuEye>(EYE_ENUMS);
+}
 
 template <typename T>
 fvec<T,3> rotate(const fvec<T,3>& v, const fvec<T,3>& n, T a) 
@@ -106,28 +124,42 @@ std::string stereo_view_interactor::get_type_name() const
 {
 	return "stereo_view_interactor";
 }
+
+/// overload to stream help information to the given output stream
+void stereo_view_interactor::stream_help(std::ostream& os)
+{
+	os << "stereo_view_interactor:\n\a"
+		<< "stereo[F4], stereo mode[s-F4], z_near<s-N,N>, z_far<s-F,F>, select view dir{c-X|Y|Z,sc-X|Y|Z}\n"
+		<< "view all{c-Spc}, set focus{click LMB}, move<RMB>, move forward<MMB>, rotate<LMB>, roll<s-LMB>";
+	if (fix_view_up_dir)
+		os << " disabled";
+	os << "\n";
+	os << "zoom to point<MW> or <PgUp,PgDn>, dolly zoom<s-MW>, eye separation<a+MW>, parallax zero plane<c-MW>\b\n";
+}
+
 /// overload to show the content of this object
 void stereo_view_interactor::stream_stats(std::ostream& os)
 {
-	static const char* stereo_strings[] = {
-		"vsplit", "hsplit", "anaglyph", "quad_buffer"
-	};
-	static const char* mono_strings[] = {
-		"left", "center", "right"
-	};
-	static const char* enabled_strings[] = {
-		"off", "on"
-	};
-	pnt_type e = get_eye();
-	oprintf(os,"View: y-view angle=%.1fº, y-extent=%.1f, z:[%.2f|%.2f,%.2f|%.2f], foc=%.2f,%.2f,%.2f, dir=%.2f,%.2f,%.2f, up=%.2f,%.2f,%.2f\n", 
-		y_view_angle,y_extent_at_focus,z_near_derived, z_near, z_far_derived, z_far,
-		view::focus(0),view::focus(1),view::focus(2),
+	os << "stereo_view_interactor:\n\a";
+
+	oprintf(os, "y_view_angle=%.1fº, y_extent=%.1f, inp_z_range:[%.2f,%.2f]",
+		y_view_angle, y_extent_at_focus, z_near, z_far);
+	if (scene_extent.is_valid())
+		oprintf(os, " adapted to scene: [%.2f,%.2f]\n", z_near_derived, z_far_derived);
+	else if (clip_relative_to_extent)
+		oprintf(os, " adapted to extent: [%.2f,%.2f]\n", z_near_derived, z_far_derived);
+	else
+		os << "\n";
+
+	oprintf(os, "foc=%.2f,%.2f,%.2f, dir=%.2f,%.2f,%.2f, up=%.2f,%.2f,%.2f\n",
+		view::focus(0), view::focus(1), view::focus(2),
 		view_dir(0),view_dir(1),view_dir(2),
 		view_up_dir(0),view_up_dir(1),view_up_dir(2));
-	oprintf(os,"      mono:%s, stereo:%s, mode=%s, eye-dist=%.3f\n", 
-		stereo_strings[mono_mode+1],
-		enabled_strings[is_stereo_enabled()?1:0],
-		stereo_strings[stereo_mode], eye_distance);
+
+	oprintf(os,"mono:%s, stereo:%s, mode=%s, eye-dist=%.3f\b\n", 
+		find_enum_name(EYE_ENUMS, mono_mode).c_str(),
+		(is_stereo_enabled()?"on":"off"),
+		get_element(SM_ENUMS, stereo_mode, ',').c_str(), eye_distance);
 }
 
 /// call this function before a drawing process to support viewport splitting inside the draw call via the activate/deactivate functions
@@ -266,15 +298,22 @@ int stereo_view_interactor::get_DPVs(int x, int y, int width, int height,
 		off_y_other += vp_row_idx * vp_height;
 		int vp_idx = vp_row_idx*last_nr_viewport_columns + vp_col_idx;
 		if (eye_panel == 1) {
-			*DPV_pptr           = &DPVs_right[vp_idx];
-			DPV_other_ptr_local = &DPVs[vp_idx];
+			if (vp_idx < (int)DPVs_right.size())
+				*DPV_pptr           = &DPVs_right[vp_idx];
+			if (vp_idx < (int)DPVs.size())
+				DPV_other_ptr_local = &DPVs[vp_idx];
 		}
 		else {
-			*DPV_pptr           = &DPVs[vp_idx];
-			if (stereo_enabled)
-				DPV_other_ptr_local = &DPVs_right[vp_idx];
-			else
-				DPV_other_ptr_local = &DPVs[vp_idx];
+			if (vp_idx < (int)DPVs.size())
+				*DPV_pptr = &DPVs[vp_idx];
+			if (stereo_enabled) {
+				if (vp_idx < (int)DPVs_right.size())
+					DPV_other_ptr_local = &DPVs_right[vp_idx];
+			}
+			else {
+				if (vp_idx < (int)DPVs.size())
+					DPV_other_ptr_local = &DPVs[vp_idx];
+			}
 		}
 	}
 
@@ -419,22 +458,29 @@ bool stereo_view_interactor::handle(event& e)
 		if (ke.get_action() == KA_PRESS) {
 			switch (ke.get_key()) {
 			case KEY_Space :
-				set_default_view();
-				post_redraw();
-				return true;
+				if (ke.get_modifiers() == EM_CTRL) {
+					set_default_view();
+					post_redraw();
+					return true;
+				}
+				break;
 			case 'F' :
 				if (ke.get_modifiers() == EM_SHIFT)
 					z_far /= 1.05;
-				else
+				else if (ke.get_modifiers() == 0)
 					z_far *= 1.05;
+				else
+					break;
 				update_member(&z_far);
 				post_redraw();
 				return true;
 			case 'N' :
 				if (ke.get_modifiers() == EM_SHIFT)
 					z_near /= 1.05;
-				else
+				else if (ke.get_modifiers() == 0)
 					z_near *= 1.05;
+				else 
+					break;
 				update_member(&z_near);
 				post_redraw();
 				return true;
@@ -442,35 +488,40 @@ bool stereo_view_interactor::handle(event& e)
 				if (ke.get_modifiers() == 0) {
 					stereo_enabled = !stereo_enabled;
 					update_member(&stereo_enabled);
-					on_stereo_change();
-					return true;
 				}
 				else if (ke.get_modifiers() == EM_SHIFT) {
 					stereo_mode = GlsuStereoMode(stereo_mode+1);
 					if (stereo_mode == GLSU_STEREO_MODE_END)
 						stereo_mode = GLSU_STEREO_MODE_BEGIN;
 					update_member(&stereo_mode);
-					on_stereo_change();
+				}
+				else
+					break;
+				on_stereo_change();
+				return true;
+			case KEY_Page_Up:
+				if (ke.get_modifiers() == 0) {
+					y_extent_at_focus /= pow(1.2, 1 / zoom_sensitivity);
+					update_member(&y_extent_at_focus);
+					post_redraw();
 					return true;
 				}
 				break;
-			case KEY_Page_Up:
-				y_extent_at_focus /= pow(1.2,1/zoom_sensitivity);
-				update_member(&y_extent_at_focus);
-				post_redraw();
-				return true;
 			case KEY_Page_Down:
-				y_extent_at_focus *= pow(1.2,1/zoom_sensitivity);
-				update_member(&y_extent_at_focus);
-				post_redraw();
-				return true;
+				if (ke.get_modifiers() == 0) {
+					y_extent_at_focus *= pow(1.2, 1 / zoom_sensitivity);
+					update_member(&y_extent_at_focus);
+					post_redraw();
+					return true;
+				}
+				break;
 			case 'X':
 				if (ke.get_modifiers() == (cgv::gui::EM_SHIFT | cgv::gui::EM_CTRL))
 					set_view_orientation("Xy");
 				else if (ke.get_modifiers() == cgv::gui::EM_CTRL)
 					set_view_orientation("xy");
 				else
-					return false;
+					break;
 				return true;
 			case 'Y':
 				if (ke.get_modifiers() == (cgv::gui::EM_SHIFT | cgv::gui::EM_CTRL))
@@ -478,7 +529,7 @@ bool stereo_view_interactor::handle(event& e)
 				else if (ke.get_modifiers() == cgv::gui::EM_CTRL)
 					set_view_orientation("yz");
 				else
-					return false;
+					break;
 				return true;
 			case 'Z':
 				if (ke.get_modifiers() == (cgv::gui::EM_SHIFT | cgv::gui::EM_CTRL))
@@ -486,7 +537,7 @@ bool stereo_view_interactor::handle(event& e)
 				else if (ke.get_modifiers() == cgv::gui::EM_CTRL)
 					set_view_orientation("zy");
 				else
-					return false;
+					break;
 				return true;
 			}
 
@@ -717,26 +768,6 @@ void stereo_view_interactor::on_rotation_change()
 	post_redraw();
 }
 
-/// overload to stream help information to the given output stream
-void stereo_view_interactor::stream_help(std::ostream& os)
-{
-	os << "stereo_view_interactor\n\a"
-		<< "stereo:    on/off with <F4>, toggle mode with <Shift-F4>\n"
-		<< "set focus:                    left mouse button click\n"
-		<< "rotate in image plane:        left mouse button\n";
-	if (fix_view_up_dir)
-		os << "rotate around view direction: disabled [enable by disable of |stereo interactor->Current View->fix_view_up_dir|]\n";
-	else
-		os << "rotate around view direction: Shift+left mouse button\n";
-
-	os << "dolly zoom / zoom to point:   [Shift+]mouse wheel / PgUp,PgDn\n"
-	   << "change eye separation:        Alt + mouse wheel\n"
-	   << "move parallax zero plane:     Ctrl + mouse wheel\n"
-		<< "move parallel to view dir:   middle mouse button\n"
-	   << "move parallel to image plane: right mouse button\n"
-	   << "decrease/increase z_near/far: [Shift+]N/F\b\n";
-}
-
 /// this method is called in one pass over all drawables after drawing
 void stereo_view_interactor::finish_frame(cgv::render::context& ctx)
 {
@@ -802,8 +833,8 @@ void stereo_view_interactor::draw_mouse_pointer_as_bitmap(cgv::render::context& 
 		0x07, 0xE0
 	};
 
-	double z = (get_parallax_zero_z() - z_near_derived) / (z_far_derived - z_near_derived);
-	cgv::render::context::vec_type p = ctx.get_point_W(x, y, z, DPV);
+	double z0_D = get_z_D(-get_parallax_zero_z(), z_near_derived, z_far_derived);
+	cgv::render::context::vec_type p = ctx.get_point_W(x, y, z0_D, DPV);
 	glRasterPos3d(p(0), p(1), p(2));
 	if (visible)
 		glColor3f(1.0f, 1.0f, 1.0f);
@@ -812,7 +843,7 @@ void stereo_view_interactor::draw_mouse_pointer_as_bitmap(cgv::render::context& 
 	
 	glDisable(GL_LIGHTING);
 	glBitmap(16, 16, 0, 0, 0, 0, bitmap_data);
-	glEnable(GL_LIGHTING);
+//	glEnable(GL_LIGHTING);
 }
 ///
 void stereo_view_interactor::draw_mouse_pointer_as_pixels(cgv::render::context& ctx, int x, int y, int center_x, int center_y, int vp_width, int vp_height, bool visible, cgv::render::context::mat_type &DPV)
@@ -835,31 +866,33 @@ void stereo_view_interactor::draw_mouse_pointer_as_pixels(cgv::render::context& 
 		0, 0, 0, 0, 0, 1, 2, 3, 2, 2, 1, 0, 0, 0, 0, 0,
 		0, 0, 0, 0, 0, 1, 2, 2, 2, 3, 1, 0, 0, 0, 0, 0
 	};
-	static GLushort map_i_to_i_values_visible[] = { 0, 1, 2, 2 };
-	static GLushort map_i_to_i_values_hidden[]  = { 0, 1, 0, 2 };
-	static GLfloat  map_i_to_l_values[] = { 0.0f, 0.0f, 1.0f, 0.5f };
-	static GLfloat  map_i_to_a_values[] = { 0.0f, 1.0f, 1.0f, 1.0f };
+	static GLushort map_i_to_i_values[] = { 0, 1, 2, 3 };
+	
+	static GLfloat  map_i_to_l_values_visible[] = { 0.0f, 0.0f, 0.8f, 1.0f };
+	static GLfloat  map_i_to_a_values_visible[] = { 0.0f, 1.0f, 1.0f, 1.0f };
+	static GLfloat  map_i_to_l_values_hidden[] = { 0.0f, 0.0f, 1.0f, 1.0f };
+	static GLfloat  map_i_to_a_values_hidden[] = { 0.0f, 1.0f, 0.0f, 1.0f };
 
-	double z = (get_parallax_zero_z() - z_near_derived) / (z_far_derived - z_near_derived);
+	double z0_D = get_z_D(-get_parallax_zero_z(), z_near_derived, z_far_derived);
 
-	cgv::render::context::vec_type p = ctx.get_point_W(x, y, z, DPV);
+	cgv::render::context::vec_type p = ctx.get_point_W(x, y, z0_D, DPV);
 	glRasterPos3d(p(0), p(1), p(2));
 
 	glEnable(GL_ALPHA_TEST);
 	glAlphaFunc(GL_GREATER, 0.1f);
-	glPixelMapusv(GL_PIXEL_MAP_I_TO_I, 4, visible ? map_i_to_i_values_visible : map_i_to_i_values_hidden);
-	glPixelMapfv (GL_PIXEL_MAP_I_TO_R, 4, map_i_to_l_values);
-	glPixelMapfv (GL_PIXEL_MAP_I_TO_G, 4, map_i_to_l_values);
-	glPixelMapfv (GL_PIXEL_MAP_I_TO_B, 4, map_i_to_l_values);
-	glPixelMapfv (GL_PIXEL_MAP_I_TO_A, 4, map_i_to_a_values);
+	glPixelMapusv(GL_PIXEL_MAP_I_TO_I, 4, map_i_to_i_values);
+	glPixelMapfv (GL_PIXEL_MAP_I_TO_R, 4, visible ? map_i_to_l_values_visible : map_i_to_l_values_hidden);
+	glPixelMapfv (GL_PIXEL_MAP_I_TO_G, 4, visible ? map_i_to_l_values_visible : map_i_to_l_values_hidden);
+	glPixelMapfv (GL_PIXEL_MAP_I_TO_B, 4, visible ? map_i_to_l_values_visible : map_i_to_l_values_hidden);
+	glPixelMapfv (GL_PIXEL_MAP_I_TO_A, 4, visible ? map_i_to_a_values_visible : map_i_to_a_values_hidden);
 	glPixelTransferi(GL_MAP_COLOR, GL_TRUE);
 	glDisable(GL_LIGHTING);
 
 	glDrawPixels(16, 16, GL_COLOR_INDEX, GL_UNSIGNED_BYTE, pixel_data);
 	
-	glEnable(GL_LIGHTING);
-	glPixelTransferi(GL_MAP_COLOR, GL_FALSE);
-	glDisable(GL_ALPHA_TEST);
+//	glEnable(GL_LIGHTING);
+//	glPixelTransferi(GL_MAP_COLOR, GL_FALSE);
+//	glDisable(GL_ALPHA_TEST);
 }
 
 ///
@@ -868,24 +901,62 @@ void stereo_view_interactor::draw_mouse_pointer_as_arrow(cgv::render::context& c
 	static cgv::media::illum::phong_material smp_mat_visible;
 	static cgv::media::illum::phong_material smp_mat_hidden;
 	smp_mat_visible.set_diffuse(cgv::media::illum::phong_material::color_type(1, 1, 1, 1));
+	smp_mat_hidden.set_diffuse(cgv::media::illum::phong_material::color_type(0.3f, 0.3f, 0.3f, 1));
+	smp_mat_hidden.set_emission(cgv::media::illum::phong_material::color_type(0.3f, 0.3f, 0.3f, 1));
 
-	double z = (get_parallax_zero_z() - z_near_derived) / (z_far_derived - z_near_derived);	
+	double z0_D = get_z_D(-get_parallax_zero_z(), z_near_derived, z_far_derived);
+
 	int dx = center_x - x;
 	int dy = center_y - y;
+	float fx = (float)dx / vp_width;
+	float fy = (float)dy / vp_height;
+	float fmax = max(fabs(fx), fabs(fy));
+	if (fmax < 0.25f) {
+		dx = 1;
+		dy = 0;
+	}	
+	else {
+		if (fmax < 0.5f) {
+			float angle = 4.0f*(fmax - 0.25f)*atan2(float(dy), float(dx));
+			dx = (int)(50.0f * cos(angle));
+			dy = (int)(50.0f * sin(angle));
+		}
+	}
+	float len = sqrt(float(dx*dx + dy*dy));
+	float vp_len = sqrt(float(vp_width*vp_width + vp_height*vp_height));
 	if ((dx == 0) && (dy == 0))
 		dx = 1;
-	float ds_end = 24.0f / sqrt(float(dx*dx + dy*dy));
+	float ds_end = 24.0f / len;
 	int dx_end = int(dx*ds_end);
 	int dy_end = int(dy*ds_end);
-	float ds_begin = 1.5f / sqrt(float(dx*dx + dy*dy));
+	float ds_begin = 1.5f / len;
 	int dx_begin = int(dx*ds_begin);
 	int dy_begin = int(dy*ds_begin);
-	cgv::math::fvec<double, 3> p_end = ctx.get_point_W(x + dx_begin, y + dy_begin, z, DPV);
-	cgv::math::fvec<double, 3> p_begin = ctx.get_point_W(x + dx_end, y + dy_end, z, DPV);
+	cgv::math::fvec<double, 3> p_end = ctx.get_point_W(x + dx_begin, y + dy_begin, z0_D, DPV);
+	cgv::math::fvec<double, 3> p_begin = ctx.get_point_W(x + dx_end, y + dy_end, z0_D, DPV);
 	p_begin -= 0.3f*(p_begin - p_end).length()*get_view_dir();
-	ctx.enable_material(visible ? smp_mat_visible : smp_mat_hidden);
-	ctx.tesselate_arrow(p_begin, p_end, 0.1f, 2.3f, 0.3f);
-	ctx.disable_material(visible ? smp_mat_visible : smp_mat_hidden);
+
+	if (visible) {
+		ctx.enable_material(smp_mat_visible);
+		ctx.tesselate_arrow(p_begin, p_end, 0.1f, 2.3f, 0.3f);
+		ctx.disable_material(smp_mat_visible);
+	}
+	else {
+		glPolygonMode(GL_FRONT, GL_LINE);
+		glEnable(GL_CULL_FACE);
+		glCullFace(GL_BACK);
+		glEnable(GL_LINE_STIPPLE);
+		glLineStipple(1, 0x5555);
+		ctx.enable_material(smp_mat_hidden);
+		ctx.tesselate_arrow(p_begin, p_end, 0.1f, 2.3f, 0.3f, 6);
+		ctx.disable_material(smp_mat_hidden);
+		ctx.enable_material(smp_mat_visible);
+		glLineStipple(1, 0xAAAA);
+		ctx.tesselate_arrow(p_begin, p_end, 0.1f, 2.3f, 0.3f, 6);
+		ctx.disable_material(smp_mat_visible);
+//		glPolygonMode(GL_FRONT, GL_FILL);
+//		glDisable(GL_LINE_STIPPLE);
+	}
 }
 
 void stereo_view_interactor::draw_mouse_pointer(cgv::render::context& ctx, bool visible)
@@ -897,7 +968,10 @@ void stereo_view_interactor::draw_mouse_pointer(cgv::render::context& ctx, bool 
 							 &DPV_ptr, &DPV_other_ptr, &x_other, &y_other, 
 							 &vp_col_idx, &vp_row_idx, &vp_width, &vp_height,
 							 &vp_center_x, &vp_center_y, &vp_center_x_other, &vp_center_y_other);
-	if ((ctx.get_render_pass() == cgv::render::RP_STEREO) == (eye_panel == -1)) {
+
+	if (((stereo_mouse_pointer != SMP_ARROW) && ((ctx.get_render_pass() == cgv::render::RP_STEREO) == (eye_panel == -1))) ||
+		((stereo_mouse_pointer == SMP_ARROW) && (eye_panel == -1))) {
+//	if ((ctx.get_render_pass() == cgv::render::RP_STEREO) == (eye_panel == -1)) {
 		x = last_x;
 		y = last_y;
 		center_x = vp_center_x;
@@ -910,6 +984,8 @@ void stereo_view_interactor::draw_mouse_pointer(cgv::render::context& ctx, bool 
 		center_y = vp_center_y_other;
 		DPV_ptr = DPV_other_ptr;
 	}
+	glPushAttrib(GL_DEPTH_BUFFER_BIT | GL_LINE_BIT | GL_POLYGON_BIT | GL_COLOR_BUFFER_BIT | GL_LIGHTING_BIT | GL_PIXEL_MODE_BIT);
+
 	if (is_viewport_splitting_enabled())
 		activate_split_viewport(ctx, vp_col_idx, vp_row_idx);
 	if (visible) {
@@ -930,15 +1006,12 @@ void stereo_view_interactor::draw_mouse_pointer(cgv::render::context& ctx, bool 
 			draw_mouse_pointer_as_pixels(ctx, x, y, center_x, center_y, vp_width, vp_height, visible, *DPV_ptr);
 		break;
 	case SMP_ARROW:
-		if (visible)
 			draw_mouse_pointer_as_arrow(ctx, x, y, center_x, center_y, vp_width, vp_height, visible, *DPV_ptr);
 		break;
 	}
-	glEnable(GL_DEPTH_TEST);
-	glDepthFunc(GL_LESS);
-	glDepthMask(GL_TRUE);
 	if (is_viewport_splitting_enabled())
 		deactivate_split_viewport();
+	glPopAttrib();
 }
 
 /// this method is called in one pass over all drawables after finish frame
@@ -946,7 +1019,7 @@ void stereo_view_interactor::after_finish(cgv::render::context& ctx)
 {
 	if (ctx.get_render_pass() == RP_MAIN) {
 		if (is_stereo_enabled()) 
-			glsuConfigureStereo(GLSU_CENTER, stereo_mode, ac);
+			glsuConfigureStereo(GLSU_CENTER, stereo_mode, anaglyph_config);
 		check_write_image(ctx, (is_stereo_enabled()&&stereo_mode==GLSU_QUAD_BUFFER)?"_r":"");
 	}
 }
@@ -973,12 +1046,12 @@ void stereo_view_interactor::on_stereo_change()
 			if (need_quad_buffer && !bp->get<bool>("quad_buffer"))
 				enable_stereo(false);
 		}
-		/*
+		
 		if (stereo_enabled && ((stereo_mode == GLSU_SPLIT_HORIZONTALLY) || (stereo_mode == GLSU_SPLIT_VERTICALLY)))
 			bp->set<std::string>("cursor", "invisible");
 		else
 			bp->set<std::string>("cursor", "default");
-			*/
+
 	}
 	post_redraw();
 }
@@ -1019,16 +1092,18 @@ void stereo_view_interactor::init_frame(context& ctx)
 			last_do_viewport_splitting = do_viewport_splitting;
 			last_nr_viewport_columns = nr_viewport_columns;
 			last_nr_viewport_rows = nr_viewport_rows;
+			/*
 			if (do_viewport_splitting) {
 				std::cout << "slit vp in " << nr_viewport_columns << "x" << nr_viewport_rows << std::endl;
 			}
 			else
 				std::cout << "no viewport splitting " << std::endl;
+				*/
 		}
 		else {
-			glsuConfigureStereo(GLSU_LEFT,stereo_mode,ac);
+			glsuConfigureStereo(GLSU_LEFT,stereo_mode,anaglyph_config);
 			ctx.render_pass(RP_STEREO,RenderPassFlags(rpf&~RPF_HANDLE_SCREEN_SHOT));
-			glsuConfigureStereo(GLSU_RIGHT,stereo_mode,ac);
+			glsuConfigureStereo(GLSU_RIGHT,stereo_mode,anaglyph_config);
 			current_e = GLSU_RIGHT;
 		}
 	}
@@ -1239,33 +1314,33 @@ void stereo_view_interactor::create_gui()
 		align("\a");
 			add_member_control(this, "zoom_sensitivity", zoom_sensitivity, "value_slider", "min=0.1;max=10;ticks=true;step=0.01;log=true");
 			add_member_control(this, "rotate_sensitivity", rotate_sensitivity, "value_slider", "min=0.1;max=10;ticks=true;step=0.01;log=true");
-			add_member_control(this, "show focus", show_focus, "check");
+			add_member_control(this, "show_focus", show_focus, "check");
 		align("\b");
 		end_tree_node(zoom_sensitivity);
 	}
 	if (begin_tree_node("Framebuffer to Image", write_images, false)) {
 		align("\a");
-			add_member_control(this, "write buffers to file", write_images, "toggle");
-			add_member_control(this, "width", write_width);
-			add_member_control(this, "height", write_height);
-			add_member_control(this, "write left/right", write_stereo);
-			add_member_control(this, "write color", write_color);
-			add_member_control(this, "write depth", write_depth);
-			add_member_control(this, "depth offset", depth_offset, "value_input", "min=0;max=1;ticks=true;log=true");
-			add_member_control(this, "depth scale", depth_scale, "value_input", "min=0.01;max=100;ticks=true;log=true");
-			add_member_control(this, "image file name", image_file_name_prefix);
-			add_member_control(this, "autoview", auto_view_images, "check");
+			add_member_control(this, "write_images", write_images, "toggle", "tooltip='write buffers to images'");
+			add_member_control(this, "write_width", write_width);
+			add_member_control(this, "write_height", write_height);
+			add_member_control(this, "write_stereo", write_stereo);
+			add_member_control(this, "write_color", write_color);
+			add_member_control(this, "write_depth", write_depth);
+			add_member_control(this, "depth_offset", depth_offset, "value_input", "min=0;max=1;ticks=true;log=true");
+			add_member_control(this, "depth_scale", depth_scale, "value_input", "min=0.01;max=100;ticks=true;log=true");
+			add_member_control(this, "image_file_name", image_file_name_prefix);
+			add_member_control(this, "auto_view_images", auto_view_images, "check");
 		align("\b");
 		end_tree_node(write_images);
 	}
 	if (begin_tree_node("Stereo Parameters", stereo_enabled, true)) {
 		align("\a");
 			connect_copy(add_control("stereo", stereo_enabled, "check")->value_change, rebind(this, &stereo_view_interactor::on_stereo_change));
-			add_member_control(this, "mono mode", mono_mode, "dropdown", "enums='left=-1,center,right'");
-			add_member_control(this, "stereo mode", stereo_mode, "dropdown", "enums='vsplit,hsplit,anaglyph,quad buffer'");
-			add_member_control(this, "config", ac, "dropdown", "enums='<red|blue>,<red|cyan>,<yellow|blue>,<magenta|green>,<blue|red>,<cyan|red>,<blue|yellow>,<green|magenta>'");
-			add_member_control(this, "eye-dist", eye_distance, "value_slider", "min=0;max=0.1;ticks=true;step=0.001");
-			add_member_control(this, "parallax-zero-scale", parallax_zero_scale, "value_slider", "min=0.03;max=1;ticks=true;step=0.001;log=true");		
+			add_member_control(this, "mono_mode", mono_mode, "dropdown", "enums='left=-1,center,right'");
+			add_member_control(this, "stereo_mode", stereo_mode, "dropdown", "enums='vsplit,hsplit,anaglyph,quad buffer'");
+			add_member_control(this, "anaglyph_config", anaglyph_config, "dropdown", "enums='" AC_ENUMS "'");
+			add_member_control(this, "eye_distance", eye_distance, "value_slider", "min=0;max=0.1;ticks=true;step=0.001");
+			add_member_control(this, "parallax_zero_scale", parallax_zero_scale, "value_slider", "min=0.03;max=1;ticks=true;step=0.001;log=true");		
 			add_member_control(this, "stereo_translate_in_model_view", stereo_translate_in_model_view, "check");
 			add_member_control(this, "stereo_mouse_pointer", stereo_mouse_pointer, "dropdown", "enums='" SMP_ENUMS "'");
 			align("\b");
@@ -1277,12 +1352,12 @@ void stereo_view_interactor::create_gui()
 			add_member_control(this, "y", view::focus(1), "value_input", "w=50;min=-10;max=10;ticks=true"," ");
 			add_member_control(this, "z", view::focus(2), "value_input", "w=50;min=-10;max=10;ticks=true");
 			///
-			add_dir_control("view dir",view_dir);
-			add_dir_control("up dir",view_up_dir);
+			add_dir_control("view_dir",view_dir);
+			add_dir_control("view_up_dir",view_up_dir);
 			connect_copy(add_control("fix_view_up_dir", fix_view_up_dir, "check")->value_change, rebind(this, &stereo_view_interactor::on_rotation_change));
 
-			add_member_control(this, "y view angle", y_view_angle, "value_slider", "min=0;max=90;ticks=true;log=true");
-			add_member_control(this, "extent", y_extent_at_focus, "value_slider", "min=0;max=100;ticks=true;log=true;step=0.0001");
+			add_member_control(this, "y_view_angle", y_view_angle, "value_slider", "min=0;max=90;ticks=true;log=true");
+			add_member_control(this, "y_extent_at_focus", y_extent_at_focus, "value_slider", "min=0;max=100;ticks=true;log=true;step=0.0001");
 			add_member_control(this, "z_near", z_near, "value_slider", "min=0;max=100;log=true;step=0.00001");
 			add_member_control(this, "z_far", z_far, "value_slider", "min=0;max=10000;log=true;step=0.00001");
 			add_member_control(this, "clip_relative_to_extent", clip_relative_to_extent, "check");
@@ -1294,7 +1369,7 @@ void stereo_view_interactor::create_gui()
 /*
 	srh.reflect_member("mode", stereo_mode);, "vsplit,hsplit,anaglyph,quad buffer")->value_change,
 		rebind(static_cast<drawable*>(this), &drawable::post_redraw));
-	connect_copy(add_control("config", ac, 
+	connect_copy(add_control("config", anaglyph_config, 
 		"<red|blue>,<red|cyan>,<yellow|blue>,<magenta|green>,<blue|red>,<cyan|red>,<blue|yellow>,<green|magenta>")->value_change,
 		rebind(static_cast<drawable*>(this), &drawable::post_redraw));
 */
@@ -1329,24 +1404,24 @@ bool stereo_view_interactor::set_void(const std::string& property, const std::st
 		std::string v;
 		cgv::type::get_variant(v, value_type, value_ptr);
 		if (v == "<red|blue>")
-			ac = GLSU_RED_BLUE;
+			anaglyph_config = GLSU_RED_BLUE;
 		else if (v == "<red|cyan>")
-			ac = GLSU_RED_CYAN;
+			anaglyph_config = GLSU_RED_CYAN;
 		else if (v == "<yellow|blue>")
-			ac = GLSU_YELLOW_BLUE;
+			anaglyph_config = GLSU_YELLOW_BLUE;
 		else if (v == "<magenta|green>")
-			ac = GLSU_MAGENTA_GREEN;
+			anaglyph_config = GLSU_MAGENTA_GREEN;
 		else if (v == "<blue|red>")
-			ac = GLSU_BLUE_RED;
+			anaglyph_config = GLSU_BLUE_RED;
 		else if (v == "<cyan|red>")
-			ac = GLSU_CYAN_RED;
+			anaglyph_config = GLSU_CYAN_RED;
 		else if (v == "<blue|yellow>")
-			ac = GLSU_BLUE_YELLOW;
+			anaglyph_config = GLSU_BLUE_YELLOW;
 		else if (v == "<green|magenta>")
-			ac = GLSU_GREEN_MAGENTA;
+			anaglyph_config = GLSU_GREEN_MAGENTA;
 		else
 			std::cerr << "string value of stereo_mode must be one out of '<red|blue>,<red|cyan>,<yellow|blue>,<magenta|green>,<blue|red>,<cyan|red>,<blue|yellow>,<green|magenta>'" << std::endl;
-		on_set(&ac);
+		on_set(&anaglyph_config);
 		return true;
 	}
 	return false;
@@ -1395,6 +1470,9 @@ bool stereo_view_interactor::self_reflect(cgv::reflect::reflection_handler& srh)
 	srh.reflect_member("focus_z", view::focus(2)) &&
 	srh.reflect_member("stereo", stereo_enabled) &&
 	srh.reflect_member("eye_dist", eye_distance) &&
+	srh.reflect_member("stereo_mode", stereo_mode) &&
+	srh.reflect_member("mono_mode", mono_mode) &&
+	srh.reflect_member("anaglyph_config", anaglyph_config) &&
 	srh.reflect_member("parallax_zero_scale", parallax_zero_scale) &&
 	srh.reflect_member("stereo_translate_in_model_view", stereo_translate_in_model_view) &&
 	srh.reflect_member("view_dir_x",view_dir(0)) &&

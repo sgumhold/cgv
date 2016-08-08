@@ -1075,7 +1075,7 @@ context::vec_type context::get_point_W(const vec_type& p_D) const
 }
 
 /// compute a the location in world space of a device point.
-context::vec_type context::get_point_W(const vec_type& p_D, const mat_type& MPD) const
+context::vec_type context::get_point_W(const vec_type& p_D, const mat_type& DPV) const
 {
 	vec_type x(4);
 	vec_type b(4);
@@ -1083,7 +1083,7 @@ context::vec_type context::get_point_W(const vec_type& p_D, const mat_type& MPD)
 	b(1) = p_D(1);
 	b(2) = p_D(2);
 	b(3) = 1;
-	svd_solve(MPD,b,x);
+	svd_solve(DPV,b,x);
 	vec_type p(3);
 	p(0) = x(0)/x(3);
 	p(1) = x(1)/x(3);
@@ -1096,12 +1096,12 @@ context::vec_type context::get_point_W(int x_D, int y_D, double z_D, const mat_t
 	return get_point_W(vec_type(x_D+0.5f,y_D+0.5f,z_D),MPD);
 }
 
-void context::tesselate_arrow(double length, double aspect, double rel_tip_radius, double tip_aspect)
+void context::tesselate_arrow(double length, double aspect, double rel_tip_radius, double tip_aspect, int res)
 {
 	std::cout << "tesselate_arrow not implemented in cgv::render::context" << std::endl;
 }
 
-void context::tesselate_arrow(const cgv::math::fvec<double,3>& start, const cgv::math::fvec<double,3>& end, double aspect, double rel_tip_radius, double tip_aspect)
+void context::tesselate_arrow(const cgv::math::fvec<double, 3>& start, const cgv::math::fvec<double, 3>& end, double aspect, double rel_tip_radius, double tip_aspect, int res)
 {
 	std::cout << "tesselate_arrow not implemented in cgv::render::context" << std::endl;
 }

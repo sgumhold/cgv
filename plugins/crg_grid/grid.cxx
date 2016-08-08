@@ -45,21 +45,29 @@ std::string grid::get_type_name() const
 
 bool grid::handle(event& e)
 {
-
 	if (e.get_kind() == EID_KEY) {
 		key_event& ke = static_cast<key_event&>(e);
 		if (ke.get_action() == KA_PRESS) {
-			if (ke.get_key() == 'G' && ke.get_modifiers() == 0) {
+			if ((ke.get_key() == 'G') && (ke.get_modifiers() == 0)) {
 				show_grid=!show_grid;
-				post_redraw();
+				on_set(&show_grid);
 				return true;
 			}
-			if (show_grid && ke.get_key() == 'A' && ke.get_modifiers() == 0) {
-				adaptive_grid=!adaptive_grid;
-				post_redraw();
+			if (show_grid && (ke.get_key() == 'A') && (ke.get_modifiers() == 0)) {
+				adaptive_grid = !adaptive_grid;
+				on_set(&adaptive_grid);
 				return true;
 			}
-			
+			if (show_grid && (ke.get_key() == 'L') && (ke.get_modifiers() == 0)) {
+				show_lines = !show_lines;
+				on_set(&show_lines);
+				return true;
+			}
+			if (show_grid && (ke.get_key() == 'X') && (ke.get_modifiers() == 0)) {
+				show_axes = !show_axes;
+				on_set(&show_axes);
+				return true;
+			}
 		}
 	}
 	return false;
@@ -67,12 +75,12 @@ bool grid::handle(event& e)
 
 void grid::stream_help(std::ostream& os)
 {
-	os << "grid: toggle [g]rid, toggle [a]daptive\n";
+	os << "grid: show [G]rid, [L]ines, a[X]es, [A]daptive grid\n";
 }
 
 void grid::stream_stats(std::ostream& os)
 {
-	//cgv::utils::oprintf(os, "%s: angle = %.1f<left arrow/right arrow>\n", get_name(), a);
+	os << "grid: show" << (show_grid ? "*" : "") << ", lines" << (show_lines ? "*" : "") << ", axes" << (show_axes ? "*" : "") << ", adaptive" << (adaptive_grid ? "*" : "") << "\n";
 }
 
 /// overload to set the view
@@ -280,14 +288,14 @@ void grid::draw_lines(context& ctx)
 bool grid::self_reflect(cgv::reflect::reflection_handler& srh)
 {
 	return
-	srh.reflect_member("show_axes", show_axes) &&
-	srh.reflect_member("adaptive_grid", adaptive_grid) &&
-	srh.reflect_member("show_grid", show_grid) &&
-	srh.reflect_member("show_lines", show_lines) &&
-	srh.reflect_member("arrow_length", arrow_length) &&
-	srh.reflect_member("arrow_aspect", arrow_aspect) &&
-	srh.reflect_member("arrow_rel_tip_radius", arrow_rel_tip_radius) &&
-	srh.reflect_member("arrow_tip_aspect", arrow_tip_aspect);
+		srh.reflect_member("show_axes", show_axes) &&
+		srh.reflect_member("adaptive_grid", adaptive_grid) &&
+		srh.reflect_member("show_grid", show_grid) &&
+		srh.reflect_member("show_lines", show_lines) &&
+		srh.reflect_member("arrow_length", arrow_length) &&
+		srh.reflect_member("arrow_aspect", arrow_aspect) &&
+		srh.reflect_member("arrow_rel_tip_radius", arrow_rel_tip_radius) &&
+		srh.reflect_member("arrow_tip_aspect", arrow_tip_aspect);
 }
 
 /// update gui and post redraw in on_set method

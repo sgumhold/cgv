@@ -701,9 +701,9 @@ public:
 		@param[in] rel_tip_radius is defined as r/R
 		@param[in] tip_aspect is defined as r/l
 	*/
-	virtual void tesselate_arrow(double length = 1, double aspect = 0.1, double rel_tip_radius = 2.0, double tip_aspect = 0.3);
+	virtual void tesselate_arrow(double length = 1, double aspect = 0.1, double rel_tip_radius = 2.0, double tip_aspect = 0.3, int res = 25);
 	/// define length and direction from start and end point and draw an arrow
-	virtual void tesselate_arrow(const cgv::math::fvec<double,3>& start, const cgv::math::fvec<double,3>& end, double aspect = 0.1f, double rel_tip_radius = 2.0f, double tip_aspect = 0.3f);
+	virtual void tesselate_arrow(const cgv::math::fvec<double, 3>& start, const cgv::math::fvec<double, 3>& end, double aspect = 0.1f, double rel_tip_radius = 2.0f, double tip_aspect = 0.3f, int res = 25);
 	//! draw a light source with an emissive material 
 	/*! @param[in] l to be rendered light source
 	    @param[in] intensity_scale used to multiply with the light source values

@@ -17,6 +17,9 @@ extern CGV_API unsigned find_enum_index(int value, const std::vector<int>& enum_
 /// convert name to index
 extern CGV_API unsigned find_enum_index(const std::string& name, const std::vector<token>& enum_names);
 
+/// lookup name of value in enum declaration
+extern CGV_API std::string find_enum_name(const std::string& enum_declarations, int value);
+
 	}
 }
 

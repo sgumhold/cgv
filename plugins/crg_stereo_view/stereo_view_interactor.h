@@ -17,7 +17,7 @@ protected:
 	double parallax_zero_scale;
 	GlsuStereoMode stereo_mode;
 	GlsuEye mono_mode;
-	GlsuAnaglyphConfiguration ac;
+	GlsuAnaglyphConfiguration anaglyph_config;
 	bool stereo_enabled;
 	bool stereo_translate_in_model_view;
 	bool two_d_enabled;
@@ -29,7 +29,7 @@ public:
 	virtual void set_stereo_mode(GlsuStereoMode sm) { stereo_mode = sm; }
 	GlsuEye get_mono_mode() const { return mono_mode; }
 	virtual void set_mono_mode(GlsuEye mm) { mono_mode = mm; }
-	virtual void set_anaglyph_config(GlsuAnaglyphConfiguration _ac) { ac = _ac; }
+	virtual void set_anaglyph_config(GlsuAnaglyphConfiguration _ac) { anaglyph_config = _ac; }
 	bool is_stereo_enabled() const { return stereo_enabled; }
 	virtual void enable_stereo(bool e = true) { stereo_enabled = e; }
 	double get_eye_distance() const { return eye_distance; }
@@ -174,7 +174,7 @@ public:
 	void enable_stereo(bool e = true) { ext_view::enable_stereo(e); update_member(&stereo_enabled); }
 	void set_eye_distance(double e) { ext_view::set_eye_distance(e); update_member(&eye_distance); }
 	void set_parallax_zero_scale(double pzs) { ext_view::set_parallax_zero_scale(pzs); update_member(&parallax_zero_scale); }
-	void set_anaglyph_config(GlsuAnaglyphConfiguration _ac) { ext_view::set_anaglyph_config(_ac); update_member(&ac); }
+	void set_anaglyph_config(GlsuAnaglyphConfiguration _ac) { ext_view::set_anaglyph_config(_ac); update_member(&anaglyph_config); }
 	/// return the type name 
 	std::string get_type_name() const;
 	/// overload to show the content of this object

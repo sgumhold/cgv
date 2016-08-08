@@ -595,7 +595,7 @@ void rotate(const cgv::math::fvec<T,3>& src, const cgv::math::fvec<T,3>& dest)
 	gl_rotate(a, axis);
 }
 
-void gl_context::tesselate_arrow(double length, double aspect, double rel_tip_radius, double tip_aspect)
+void gl_context::tesselate_arrow(double length, double aspect, double rel_tip_radius, double tip_aspect, int res)
 {
 	double cyl_radius = length*aspect;
 	double cone_radius = rel_tip_radius*cyl_radius;
@@ -605,30 +605,30 @@ void gl_context::tesselate_arrow(double length, double aspect, double rel_tip_ra
 	glScaled(cyl_radius,cyl_radius,0.5*cyl_length);
 		push_V();
 			glRotatef(180,1,0,0);
-				tesselate_unit_disk();
+			tesselate_unit_disk(res);
 		pop_V();
 
 	glTranslated(0,0,1);
-		tesselate_unit_cylinder();
+		tesselate_unit_cylinder(res);
 
 	glTranslated(0,0,1);
 	glScaled(rel_tip_radius,rel_tip_radius,cone_length/cyl_length);
 		push_V();
 			glRotatef(180,1,0,0);
-				tesselate_unit_disk();
+				tesselate_unit_disk(res);
 		pop_V();
 	glTranslated(0,0,1);
-		tesselate_unit_cone();
+		tesselate_unit_cone(res);
 	pop_V();
 }
 
 ///
-void gl_context::tesselate_arrow(const cgv::math::fvec<double,3>& start, const cgv::math::fvec<double,3>& end, double aspect, double rel_tip_radius, double tip_aspect)
+void gl_context::tesselate_arrow(const cgv::math::fvec<double, 3>& start, const cgv::math::fvec<double, 3>& end, double aspect, double rel_tip_radius, double tip_aspect, int res)
 {
 	push_V();
 	glTranslated(start(0),start(1),start(2));
 	rotate(cgv::math::fvec<double,3>(0,0,1), end-start);
-	tesselate_arrow((end-start).length(), aspect, rel_tip_radius, tip_aspect);
+	tesselate_arrow((end-start).length(), aspect, rel_tip_radius, tip_aspect, res);
 	pop_V();
 }
 

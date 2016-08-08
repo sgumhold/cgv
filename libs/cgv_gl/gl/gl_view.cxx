@@ -52,6 +52,14 @@ void gl_view::set_default_view()
 	set_y_extent_at_focus(0.75*get_scene_extent().get_extent()(1));
 }
 
+/// transform a z value in eye-coordinates (should be negative!) to device coordinate
+double gl_view::get_z_D(double z_eye, double z_near, double z_far)
+{
+	double C = -(z_far + z_near) / (z_far - z_near);
+	double D = -2.0*z_far*z_near / (z_far - z_near);
+	return 0.5 - 0.5*(D + C*z_eye) / z_eye;
+}
+
 void gl_view::compute_clipping_planes(double& z_near_derived, double& z_far_derived, bool clip_relative_to_extent) const
 {
 	// compute eye and focus point

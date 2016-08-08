@@ -49,6 +49,15 @@ unsigned find_enum_index(const std::string& name, const std::vector<token>& enum
 	}
 	return -1;
 }
+/// lookup name of value in enum declaration
+std::string find_enum_name(const std::string& enum_declarations, int value)
+{
+	std::vector<token> enum_names;
+	std::vector<int> enum_values;
+
+	parse_enum_declarations(enum_declarations, enum_names, enum_values);
+	return to_string(enum_names[find_enum_index(value, enum_values)]);
+}
 
 	}
 }

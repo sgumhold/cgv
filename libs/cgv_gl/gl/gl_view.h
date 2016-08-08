@@ -38,6 +38,8 @@ public:
 	double get_z_far() const;
 	///
 	virtual void set_z_far(double z);
+	/// transform a z value in eye-coordinates (should be negative!) to device coordinate
+	static double get_z_D(double z_eye, double z_near, double z_far);
 	///
 	virtual void set_scene_extent(const box_type& _box);
 	///
