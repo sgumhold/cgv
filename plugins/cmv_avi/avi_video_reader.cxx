@@ -144,7 +144,7 @@ bool avi_video_reader::open(const std::string& file_name,
 	new (&df) cgv::data::data_format(strhdr.rcFrame.right-strhdr.rcFrame.left, 
 												strhdr.rcFrame.bottom-strhdr.rcFrame.top, 
 												cgv::type::info::TI_UINT8, CF_RGB);
-	n = df.get_size();
+	n = df.get_nr_entries();
 	nr_frames = AVIStreamLength(ps);
 	if (nr_frames == -1) {
 		last_error = "no stream length provided";

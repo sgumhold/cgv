@@ -238,7 +238,7 @@ bool avi_video_writer::open(
 	strhdr.fccHandler             = 0;
 	strhdr.dwScale                = 1;
 	strhdr.dwRate                 = (DWORD)fps;		    // 15 fps
-	strhdr.dwSuggestedBufferSize  = image_format.get_size()*image_format.get_entry_size();
+	strhdr.dwSuggestedBufferSize  = image_format.get_nr_bytes();
 	SetRect(&strhdr.rcFrame, 0, 0, image_format.get_width(), image_format.get_height());
 
 	// create the stream;
@@ -291,7 +291,7 @@ bool avi_video_writer::open(
 	// create an image buffer
 	temp_frame.~data_view();
 	new (&temp_frame) data_view(&image_format);
-	n = image_format.get_size();
+	n = image_format.get_nr_entries();
 	frame_index = 0;
 
 	hr = AVIStreamSetFormat(psCompressed, 0, &bhi, bhi.biSize);

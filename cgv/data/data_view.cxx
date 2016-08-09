@@ -93,30 +93,30 @@ unsigned int data_view_base::get_step_size(unsigned int dim) const
 
 
 /// constructor used to construct sub views onto the data view
-template <class D, typename T>
-data_view_impl<D,T>::data_view_impl(const data_format* _format, 
-			T* _data_ptr, unsigned int _dim, const unsigned int* _step_sizes)
+template <class D, typename P>
+data_view_impl<D,P>::data_view_impl(const data_format* _format, 
+			P _data_ptr, unsigned int _dim, const unsigned int* _step_sizes)
 			: data_view_base(_format, _dim, _step_sizes), data_ptr(_data_ptr)
 {
 }
 
 /// construct a data view from the given format, viewing the complete data set
-template <class D, typename T>
-data_view_impl<D,T>::data_view_impl(const data_format* _format, 
-					typename cgv::type::func::transfer_const<T,void>::type* _data_ptr)
-					: data_view_base(_format), data_ptr(static_cast<T*>(_data_ptr))
+template <class D, typename P>
+data_view_impl<D,P>::data_view_impl(const data_format* _format, 
+					typename cgv::type::func::transfer_const<P,void*>::type _data_ptr)
+					: data_view_base(_format), data_ptr(static_cast<P>(_data_ptr))
 {
 }
 
 /// return whether the data pointer is a null pointer
-template <class D, typename T>
-bool data_view_impl<D,T>::empty() const 
+template <class D, typename P>
+bool data_view_impl<D,P>::empty() const 
 {
 	return data_ptr == 0 || format == 0;
 }
 /// access to i-th data entry
-template <class D, typename T>
-D data_view_impl<D,T>::operator () (unsigned int i) const
+template <class D, typename P>
+D data_view_impl<D,P>::operator () (unsigned int i) const
 {
 	if (dim == 0) {
 		std::cerr << "1d operator access to 0d data ptr" << std::endl;
@@ -126,8 +126,8 @@ D data_view_impl<D,T>::operator () (unsigned int i) const
 			   (unsigned int) (dim-1), step_sizes+1);
 }
 /// access to entry at (i,j)
-template <class D, typename T>
-D data_view_impl<D,T>::operator () (unsigned int i, unsigned int j) const
+template <class D, typename P>
+D data_view_impl<D,P>::operator () (unsigned int i, unsigned int j) const
 {
 	if (dim < 2) {
 		std::cerr << "2d operator access to " << dim << "d data ptr" << std::endl;
@@ -137,8 +137,8 @@ D data_view_impl<D,T>::operator () (unsigned int i, unsigned int j) const
 			   (unsigned int) (dim-2),step_sizes+2);
 }
 /// access to entry at (i,j,k)
-template <class D, typename T>
-D data_view_impl<D,T>::operator () (unsigned int i, unsigned int j, unsigned int k) const
+template <class D, typename P>
+D data_view_impl<D,P>::operator () (unsigned int i, unsigned int j, unsigned int k) const
 {
 	if (dim < 3) {
 		std::cerr << "3d operator access to " << dim << "d data ptr" << std::endl;
@@ -148,8 +148,8 @@ D data_view_impl<D,T>::operator () (unsigned int i, unsigned int j, unsigned int
 			   (unsigned int) (dim-3),step_sizes+3);
 }
 /// access to entry at (i,j,k,l)
-template <class D, typename T>
-D data_view_impl<D,T>::operator () (unsigned int i, unsigned int j, unsigned int k, unsigned int l) const
+template <class D, typename P>
+D data_view_impl<D,P>::operator () (unsigned int i, unsigned int j, unsigned int k, unsigned int l) const
 {
 	if (dim < 4) {
 		std::cerr << "4d operator access to " << dim << "d data ptr" << std::endl;
@@ -164,8 +164,8 @@ D data_view_impl<D,T>::operator () (unsigned int i, unsigned int j, unsigned int
 	call to permute. The permutation string must have at least two entries. If it has n entries
 	it must contain each of the first n letters of "ijkl" exactly once, i.e. "ik" would be invalid,
 	whereas "ikj" is a valid permutation. */
-template <class D, typename T>
-D data_view_impl<D,T>::permute(const std::string& permutation) const
+template <class D, typename P>
+D data_view_impl<D,P>::permute(const std::string& permutation) const
 {
 	unsigned int n = (unsigned int) permutation.size();
 	if (n < 2 || n > 4) {
@@ -198,7 +198,7 @@ D data_view_impl<D,T>::permute(const std::string& permutation) const
 /// use base class for construction and don't manage data pointer 
 data_view::data_view(const data_format* _format, unsigned char* _data_ptr, 
 							unsigned int _dim, const unsigned int* _step_sizes) 
-	: data_view_impl<data_view, unsigned char>(_format, _data_ptr, _dim, _step_sizes),
+	: data_view_impl<data_view, unsigned char*>(_format, _data_ptr, _dim, _step_sizes),
 	  owns_ptr(false)
 {
 }
@@ -220,18 +220,18 @@ data_view::~data_view()
 	 the pointer. The data_view will view the complete data set as defined
 	 in the format. */
 data_view::data_view(const data_format* _format) 
-	: data_view_impl<data_view, unsigned char>(_format),
+	: data_view_impl<data_view, unsigned char*>(_format),
 	  owns_ptr(false)
 {
 	if (_format) {
-		data_ptr = new unsigned char[_format->get_size()*_format->get_entry_size()];
+		data_ptr = new unsigned char[_format->get_nr_bytes()];
 		owns_ptr = true;
 	}
 }
 /** construct a data view from the given format, viewing the complete 
     data set. The passed pointer will not be owned by the view. */
 data_view::data_view(const data_format* _format, void* _data_ptr)
-	: data_view_impl<data_view, unsigned char>(_format, _data_ptr),
+	: data_view_impl<data_view, unsigned char*>(_format, _data_ptr),
 	  owns_ptr(false)
 {
 }
@@ -241,7 +241,7 @@ data_view::data_view(const data_format* _format, void* _data_ptr)
 	 destruction with the delete [] operator of type (unsigned char*). */
 data_view::data_view(const data_format* _format, unsigned char* _data_ptr, 
 							bool manage_ptr) 
-	: data_view_impl<data_view, unsigned char>(_format, _data_ptr),
+	: data_view_impl<data_view, unsigned char*>(_format, _data_ptr),
 	  owns_ptr(manage_ptr)
 {
 }
@@ -303,7 +303,7 @@ void data_view::set_ptr(void* ptr)
 /// use base class for construction
 const_data_view::const_data_view(const data_format* _format, const unsigned char* _data_ptr, 
 					 unsigned int _dim, const unsigned int* _step_sizes)
-	: data_view_impl<const_data_view, const unsigned char>(_format, _data_ptr, _dim, _step_sizes)
+	: data_view_impl<const_data_view, const unsigned char*>(_format, _data_ptr, _dim, _step_sizes)
 {
 }
 
@@ -315,13 +315,13 @@ const_data_view::const_data_view()
 /** construct a data view from the given format, viewing the complete 
 	 data set pointed to by the passed data pointer */
 const_data_view::const_data_view(const data_format* _format, const void* _data_ptr)
-	: data_view_impl<const_data_view, const unsigned char>(_format, _data_ptr)
+	: data_view_impl<const_data_view, const unsigned char*>(_format, _data_ptr)
 {
 }
 
 /// copy construct from a non const data view
 const_data_view::const_data_view(const data_view& dv) 
-	: data_view_impl<const_data_view, const unsigned char>(
+	: data_view_impl<const_data_view, const unsigned char*>(
 		dv.get_format(), dv.get_ptr<const unsigned char>(), dv.get_dim(),
 		dv.step_sizes)
 {
@@ -349,8 +349,8 @@ void data_view::reflect_horizontally()
 }
 
 
-template class data_view_impl<data_view,unsigned char>;
-template class data_view_impl<const_data_view,const unsigned char>;
+template class data_view_impl<data_view,unsigned char*>;
+template class data_view_impl<const_data_view,const unsigned char*>;
 
 	}
 }
