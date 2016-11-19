@@ -62,9 +62,16 @@ double gl_view::get_z_D(double z_eye, double z_near, double z_far)
 
 void gl_view::compute_clipping_planes(double& z_near_derived, double& z_far_derived, bool clip_relative_to_extent) const
 {
+	compute_clipping_planes(*this, z_near_derived, z_far_derived, clip_relative_to_extent);
+}
+
+/// compute clipping planes according to given view adapted to the current scene extent, z_near_derived is at least z_near and as large as possible to include the scene, similarly z_far_derived is as small as possible  
+void gl_view::compute_clipping_planes(const cgv::render::view& view, double& z_near_derived, double& z_far_derived, bool clip_relative_to_extent) const
+{
 	// compute eye and focus point
-	pnt_type foc = view::focus;
-	pnt_type eye = get_eye();
+	pnt_type foc = view.get_focus();
+	pnt_type eye = view.get_eye();
+	pnt_type view_dir = view.get_view_dir();
 	double z_eye = dot(eye, view_dir);
 
 	// compute the clipping planes based on the eye and scene extent

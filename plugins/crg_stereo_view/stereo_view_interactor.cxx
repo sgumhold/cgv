@@ -71,15 +71,6 @@ void ext_view::set_default_values()
 	two_d_enabled=false;
 }
 
-void ext_view::put_coordinate_system(vec_type& x, vec_type& y, vec_type& z) const
-{
-	z = -view_dir;
-	z.normalize();
-	x = cross(view_up_dir,z);
-	x.normalize();
-	y = cross(z,x);
-}
-
 
 double ext_view::get_parallax_zero_z() const
 {
@@ -168,6 +159,7 @@ void stereo_view_interactor::enable_viewport_splitting(unsigned nr_cols, unsigne
 	do_viewport_splitting = true;
 	nr_viewport_columns = nr_cols;
 	nr_viewport_rows = nr_rows;
+	ensure_viewport_view_number(nr_cols*nr_rows);
 	post_redraw();
 }
 
@@ -209,8 +201,16 @@ void stereo_view_interactor::activate_split_viewport(cgv::render::context& ctx, 
 	glScissor(new_sb[0], new_sb[1], new_sb[2], new_sb[3]);
 
 	double aspect = (double)new_vp[2] / new_vp[3];
+	unsigned view_index = get_viewport_index(col_index, row_index);
+	ensure_viewport_view_number(view_index + 1);
+	if (use_individual_view[view_index])
+		compute_clipping_planes(views[view_index], z_near_derived, z_far_derived, clip_relative_to_extent);
 	gl_set_projection_matrix(current_e, aspect);
-	((current_e == GLSU_RIGHT) ? DPVs_right : DPVs)[row_index*nr_viewport_columns + col_index] = ctx.get_DPV();
+	if (use_individual_view[view_index]) {
+		compute_clipping_planes(z_near_derived, z_far_derived, clip_relative_to_extent);
+		gl_set_modelview_matrix(current_e, aspect, views[view_index]);
+	}
+	((current_e == GLSU_RIGHT) ? DPVs_right : DPVs)[view_index] = ctx.get_DPV();
 }
 
 /// deactivate the previously split viewport
@@ -221,6 +221,23 @@ void stereo_view_interactor::deactivate_split_viewport()
 
 	double aspect = (double)current_vp[2] / current_vp[3];
 	gl_set_projection_matrix(current_e, aspect);
+	gl_set_modelview_matrix(current_e, aspect, *this);
+}
+
+/// make a viewport manage its own view
+void stereo_view_interactor::viewport_use_individual_view(unsigned col_index, unsigned row_index)
+{
+	unsigned view_index = get_viewport_index(col_index, row_index);
+	ensure_viewport_view_number(view_index + 1);
+	use_individual_view[view_index] = true;
+}
+
+/// access the view of a given viewport
+cgv::render::view& stereo_view_interactor::ref_viewport_view(unsigned col_index, unsigned row_index)
+{
+	unsigned view_index = get_viewport_index(col_index, row_index);
+	ensure_viewport_view_number(view_index + 1);
+	return views[view_index];
 }
 
 
@@ -341,6 +358,13 @@ int stereo_view_interactor::get_DPVs(int x, int y, int width, int height,
 		*vp_center_y_other_ptr = off_y_other + vp_height / 2;
 
 	return eye_panel;
+}
+
+void stereo_view_interactor::get_vp_col_and_row_indices(cgv::render::context& ctx, int x, int y, int& vp_col_idx, int& vp_row_idx)
+{
+	cgv::render::context::mat_type* DPV_ptr, *DPV_other_ptr;
+	int x_other, y_other, vp_width, vp_height;
+	int eye_panel = get_DPVs(x, y, ctx.get_width(), ctx.get_height(), &DPV_ptr, &DPV_other_ptr, &x_other, &y_other, &vp_col_idx, &vp_row_idx, &vp_width, &vp_height);
 }
 
 double stereo_view_interactor::get_z_and_unproject(cgv::render::context& ctx, int x, int y, pnt_type& p)
@@ -551,10 +575,10 @@ bool stereo_view_interactor::handle(event& e)
 			last_x = me.get_x();
 			last_y = me.get_y();
 		}
-		vec_type x, y, z;
-		put_coordinate_system(x,y,z);
 		int width = 640, height = 480;
 		int off_x = 0, off_y = 0;
+		int vp_col_idx, vp_row_idx;
+		cgv::render::view* view_ptr = this;
 		if (get_context()) {
 			width = get_context()->get_width();
 			height = get_context()->get_height();
@@ -577,8 +601,16 @@ bool stereo_view_interactor::handle(event& e)
 				height /= last_nr_viewport_rows;
 				off_x += ((me.get_x() - off_x) / width) * width;
 				off_y += ((me.get_y() - off_y) / height) * height;
+				get_vp_col_and_row_indices(*get_context(), me.get_x(), me.get_y(), vp_col_idx, vp_row_idx);
+				unsigned view_index = get_viewport_index(vp_col_idx, vp_row_idx);
+				if (use_individual_view[view_index]) {
+					view_ptr = &views[view_index];
+				}
 			}
 		}
+		vec_type x, y, z;
+		view_ptr->put_coordinate_system(x, y, z);
+
 		int center_x = off_x + width / 2;
 		int center_y = off_y + height / 2;
 
@@ -604,12 +636,12 @@ bool stereo_view_interactor::handle(event& e)
 						double z = get_z_and_unproject(ctx, me.get_x(), me.get_y(), p);
 						if (z > 0 && z < 1) {
 							if (y_view_angle > 0.1) {
-								pnt_type e = get_eye();
-								double l_old = (e-view::focus).length();
-								double l_new = dot(p-e,view_dir);
-								y_extent_at_focus *= l_new/l_old;
+								pnt_type e = view_ptr->get_eye();
+								double l_old = (e-view_ptr->get_focus()).length();
+								double l_new = dot(p-e,view_ptr->get_view_dir());
+								view_ptr->set_y_extent_at_focus(view_ptr->get_y_extent_at_focus() * l_new / l_old);
 							}
-							view::focus = p;
+							view_ptr->set_focus(p);
 							update_vec_member(view::focus);
 							post_redraw();
 							return true;
@@ -648,7 +680,7 @@ bool stereo_view_interactor::handle(event& e)
 			if (me.get_button_state() == MB_LEFT_BUTTON && me.get_modifiers() == 0) {
 				if(!two_d_enabled)
 				{
-					rotate_image_plane(360.0*me.get_dx()/width/rotate_sensitivity,-360.0*me.get_dy()/height/rotate_sensitivity);
+					rotate_image_plane(*view_ptr, 360.0*me.get_dx()/width/rotate_sensitivity,-360.0*me.get_dy()/height/rotate_sensitivity);
 					update_vec_member(view_up_dir);
 					update_vec_member(view_dir);
 					post_redraw();
@@ -662,21 +694,21 @@ bool stereo_view_interactor::handle(event& e)
 								 ((double)rx*(double)rx+(double)ry*(double)ry));
 				if (rx*me.get_dy() > ry*me.get_dx())
 					ds = -ds;
-				roll(56.3*ds/rotate_sensitivity);
+				roll(*view_ptr, 56.3*ds/rotate_sensitivity);
 				update_vec_member(view_up_dir);
 				post_redraw();
 				return true;
 			}
 			if (me.get_button_state() == MB_RIGHT_BUTTON && me.get_modifiers() == 0) {
-				view::focus = view::focus - 2*(y_extent_at_focus*me.get_dx()/width)*x
-					          + 2*(y_extent_at_focus*me.get_dy()/height)*y;
+				view_ptr->set_focus(view_ptr->get_focus() - 2 * (view_ptr->get_y_extent_at_focus()*me.get_dx() / width)*x
+					+ 2 * (view_ptr->get_y_extent_at_focus()*me.get_dy() / height)*y);
 				update_vec_member(view::focus);
 				post_redraw();
 				return true;
 			}
 			if (me.get_button_state() == MB_MIDDLE_BUTTON && me.get_modifiers() == 0) {
-				view::focus = view::focus - 
-								  10*y_extent_at_focus*me.get_dy()/height*z/zoom_sensitivity;
+				view_ptr->set_focus(view_ptr->get_focus() -
+					10 * view_ptr->get_y_extent_at_focus()*me.get_dy() / height*z / zoom_sensitivity);
 				update_vec_member(view::focus);
 				post_redraw();
 				return true;
@@ -702,11 +734,11 @@ bool stereo_view_interactor::handle(event& e)
 				return true;
 			}
 			else if (e.get_modifiers() == EM_SHIFT) {
-				y_view_angle += me.get_dy()*5;
-				if (y_view_angle < 0)
-					y_view_angle = 0;
-				if (y_view_angle > 180)
-					y_view_angle = 180;
+				view_ptr->set_y_view_angle(view_ptr->get_y_view_angle() + me.get_dy() * 5);
+				if (view_ptr->get_y_view_angle() < 0)
+					view_ptr->set_y_view_angle(0);
+				if (view_ptr->get_y_view_angle() > 180)
+					view_ptr->set_y_view_angle(180);
 				update_member(&y_view_angle);
 				post_redraw();
 				return true;
@@ -718,11 +750,11 @@ bool stereo_view_interactor::handle(event& e)
 					pnt_type p;
 					double z = get_z_and_unproject(ctx, me.get_x(), me.get_y(), p);
 					if (z > 0 && z < 1) {
-						view::focus = p + scale*(view::focus-p);
+						view_ptr->set_focus(p + scale*(view_ptr->get_focus()-p));
 						update_vec_member(view::focus);
 					}
 				}
-				y_extent_at_focus *= scale;
+				view_ptr->set_y_extent_at_focus(view_ptr->get_y_extent_at_focus() * scale);
 				update_member(&y_extent_at_focus);
 				post_redraw();
 				return true;
@@ -735,25 +767,25 @@ bool stereo_view_interactor::handle(event& e)
 }
 
 ///
-void stereo_view_interactor::roll(double angle)
+void stereo_view_interactor::roll(cgv::render::view& view, double angle)
 {
-	view_up_dir = rotate(view_up_dir, view_dir, angle*.1745329252e-1);
+	view.set_view_up_dir(rotate(view.get_view_up_dir(), view.get_view_dir(), angle*.1745329252e-1));
 	on_rotation_change();
 }
 ///
-void stereo_view_interactor::rotate_image_plane(double ax, double ay)
+void stereo_view_interactor::rotate_image_plane(cgv::render::view& view, double ax, double ay)
 {
 	
 	vec_type x,y,z;
-	put_coordinate_system(x,y,z);
+	view.put_coordinate_system(x,y,z);
 	z = ay*x-ax*y;
 	double a = z.length();
 	if (a < 1e-6)
 		return;
 	z = (1/a) * z;
 	a *= .1745329252e-1;
-	view_dir = rotate(view_dir, z, a);
-	view_up_dir = rotate(view_up_dir, z, a);
+	view.set_view_dir(rotate(view.get_view_dir(), z, a));
+	view.set_view_up_dir(rotate(view.get_view_up_dir(), z, a));
 	on_rotation_change();
 }
 
@@ -1077,6 +1109,40 @@ void stereo_view_interactor::gl_set_projection_matrix(GlsuEye e, double aspect)
 	glMatrixMode(GL_MODELVIEW);
 }
 
+void stereo_view_interactor::gl_set_modelview_matrix(GlsuEye e, double aspect, const cgv::render::view& view)
+{
+	glLoadIdentity();
+	
+	float lps[] = { 0, 1, 1, 0, 1, 0, 1, 0, 0, 0, 1, 0, 0, 1, 0, 0 };
+
+	glLightfv(GL_LIGHT0, GL_POSITION, lps);
+	glLightfv(GL_LIGHT1, GL_POSITION, lps + 4);
+	glLightfv(GL_LIGHT2, GL_POSITION, lps + 8);
+	glLightfv(GL_LIGHT3, GL_POSITION, lps + 12);
+
+	on_set_local_lights();
+	pnt_type foc = view.get_focus();
+	pnt_type eye = view.get_eye();
+	pnt_type view_up_dir = view.get_view_up_dir();
+	if (stereo_translate_in_model_view)
+		glsuStereoTranslateScreen(e, eye_distance, view.get_y_extent_at_focus()*aspect);
+	gluLookAt(eye(0), eye(1), eye(2), foc(0), foc(1), foc(2), view_up_dir(0), view_up_dir(1), view_up_dir(2));
+}
+
+/// ensure sufficient number of viewport views
+void stereo_view_interactor::ensure_viewport_view_number(unsigned nr)
+{
+	if (views.size() < nr) {
+		unsigned old_nr = views.size();
+		views.resize(nr);
+		use_individual_view.resize(nr);
+		for (unsigned i = old_nr; i < nr; ++i) {
+			views[i] = *this;
+			use_individual_view[i] = false;
+		}
+	}
+}
+
 /// this method is called in one pass over all drawables before the draw method
 void stereo_view_interactor::init_frame(context& ctx)
 {
@@ -1141,11 +1207,7 @@ void stereo_view_interactor::init_frame(context& ctx)
 	on_set_local_lights();
 
 	if (rpf & RPF_SET_MODELVIEW) {
-		pnt_type foc = view::focus;
-		pnt_type eye = get_eye();
-		if (stereo_translate_in_model_view)
-			glsuStereoTranslateScreen(current_e, eye_distance, y_extent_at_focus*aspect);
-		gluLookAt(eye(0), eye(1), eye(2), foc(0), foc(1), foc(2), view_up_dir(0),view_up_dir(1),view_up_dir(2));
+		gl_set_modelview_matrix(current_e, aspect, *this);
 
 		if (current_e == GLSU_RIGHT) {
 			DPV_right = ctx.get_DPV();

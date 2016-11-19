@@ -129,6 +129,34 @@ void view::activate_split_viewport(cgv::render::context& ctx, unsigned col_index
 void view::deactivate_split_viewport()
 {}
 
+/// make a viewport manage its own view
+void view::viewport_use_individual_view(unsigned col_index, unsigned row_index)
+{
+}
+
+/// check whether viewport manage its own view
+bool view::does_viewport_use_individual_view(unsigned col_index, unsigned row_index) const
+{
+	return false;
+}
+
+/// access the view of a given viewport
+view& view::ref_viewport_view(unsigned col_index, unsigned row_index)
+{
+	return *this;
+}
+
+void view::put_coordinate_system(vec_type& x, vec_type& y, vec_type& z) const
+{
+	z = -view_dir;
+	z.normalize();
+	x = cross(view_up_dir, z);
+	x.normalize();
+	y = cross(z, x);
+}
+
+
+
 int view::get_DPVs(int x, int y, int width, int height,
 	cgv::math::mat<double>** DPV_pptr,
 	cgv::math::mat<double>** DPV_other_pptr, int* x_other_ptr, int* y_other_ptr,

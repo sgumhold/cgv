@@ -64,6 +64,7 @@ public:
 	virtual void set_y_extent_at_focus(double ext);
 	///
 	virtual void set_y_view_angle(double angle);
+	void put_coordinate_system(vec_type& x, vec_type& y, vec_type& z) const;
 	//@}
 
 	/**@name derived quantities*/
@@ -94,6 +95,12 @@ public:
 	virtual void activate_split_viewport(cgv::render::context& ctx, unsigned col_index, unsigned row_index);
 	/// deactivate the previously split viewport
 	virtual void deactivate_split_viewport();
+	/// make a viewport manage its own view
+	virtual void viewport_use_individual_view(unsigned col_index, unsigned row_index);
+	/// check whether viewport manage its own view
+	virtual bool does_viewport_use_individual_view(unsigned col_index, unsigned row_index) const;
+	/// access the view of a given viewport
+	virtual cgv::render::view& ref_viewport_view(unsigned col_index, unsigned row_index);
 	//! given a mouse location and the pixel extent of the context, return the DPV matrix for unprojection
 	/*! In stereo modes with split viewport, the returned DPV is the one the mouse pointer is on.
 	The return value is in this case -1 or 1 and tells if DPV corresponds to the left (-1) or right (1) viewport.

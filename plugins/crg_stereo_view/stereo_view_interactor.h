@@ -37,7 +37,6 @@ public:
 	double get_parallax_zero_scale() const { return parallax_zero_scale; }
 	double get_parallax_zero_z() const;
 	virtual void set_parallax_zero_scale(double pzs) { parallax_zero_scale = pzs; }
-	void put_coordinate_system(vec_type& x, vec_type& y, vec_type& z) const;
 };
 
 enum StereoMousePointer {
@@ -121,6 +120,10 @@ protected:
 	void timer_event(double t, double dt);
 	/// set the current projection matrix
 	void gl_set_projection_matrix(GlsuEye e, double aspect);
+	void gl_set_modelview_matrix(GlsuEye e, double aspect, const cgv::render::view& view);
+	/// ensure sufficient number of viewport views
+	unsigned get_viewport_index(unsigned col_index, unsigned row_index) const { return row_index*nr_viewport_columns + col_index; }
+	void ensure_viewport_view_number(unsigned nr);
 public:
 	///
 	stereo_view_interactor(const char* name);
@@ -136,6 +139,12 @@ public:
 	void activate_split_viewport(cgv::render::context& ctx, unsigned col_index, unsigned row_index);
 	/// deactivate the previously split viewport
 	void deactivate_split_viewport();
+	/// make a viewport manage its own view
+	void viewport_use_individual_view(unsigned col_index, unsigned row_index);
+	/// check whether viewport manage its own view
+	bool does_viewport_use_individual_view(unsigned col_index, unsigned row_index) const { return use_individual_view[get_viewport_index(col_index, row_index)]; }
+	/// access the view of a given viewport
+	cgv::render::view& ref_viewport_view(unsigned col_index, unsigned row_index);
 	//@}
 	//! given a mouse location and the pixel extent of the context, return the DPV matrix for unprojection
 	/*! In stereo modes with split viewport, the returned DPV is the one the mouse pointer is on.
@@ -164,6 +173,7 @@ public:
 	//! given a pixel location x,y return the z-value from the depth buffer, which ranges from 0.0 at z_near to 1.0 at z_far and a point in world coordinates
 	/*! in case of stereo rendering two z-values exist that can be unprojected to two points in world
 	    coordinates. In this case the possibility with smaller z value is selected. */
+	void get_vp_col_and_row_indices(cgv::render::context& ctx, int x, int y, int& vp_col_idx, int& vp_row_idx);
 	double get_z_and_unproject(cgv::render::context& ctx, int x, int y, pnt_type& p);
 	void set_focus(const pnt_type& foc) { ext_view::set_focus(foc); update_vec_member(view::focus); }
 	void set_view_up_dir(const vec_type& vud) { ext_view::set_view_up_dir(vud); update_vec_member(view_up_dir); }
@@ -199,9 +209,9 @@ public:
 	/// you must overload this for gui creation
 	void create_gui();
 	///
-	void roll(double angle);
+	void roll(cgv::render::view& view, double angle);
 	///
-	void rotate_image_plane(double ax, double ay);
+	void rotate_image_plane(cgv::render::view& view, double ax, double ay);
 private:
 	double check_for_click;
 	
@@ -215,6 +225,8 @@ private:
 	unsigned nr_viewport_columns;
 	unsigned nr_viewport_rows;
 	std::vector<cgv::render::context::mat_type> DPVs, DPVs_right;
+	std::vector<cgv::render::view> views;
+	std::vector<bool> use_individual_view;
 
 	bool last_do_viewport_splitting;
 	unsigned last_nr_viewport_columns;
