@@ -153,6 +153,17 @@ void stereo_view_interactor::stream_stats(std::ostream& os)
 		get_element(SM_ENUMS, stereo_mode, ',').c_str(), eye_distance);
 }
 
+unsigned stereo_view_interactor::get_viewport_index(unsigned col_index, unsigned row_index) const
+{
+	unsigned view_index = row_index*nr_viewport_columns + col_index;
+	if (view_index < 0)
+		view_index == 0;
+	else if (view_index >= views.size())
+		view_index = views.size() - 1;
+
+	return view_index;
+}
+
 /// call this function before a drawing process to support viewport splitting inside the draw call via the activate/deactivate functions
 void stereo_view_interactor::enable_viewport_splitting(unsigned nr_cols, unsigned nr_rows)
 {
@@ -680,7 +691,7 @@ bool stereo_view_interactor::handle(event& e)
 			if (me.get_button_state() == MB_LEFT_BUTTON && me.get_modifiers() == 0) {
 				if(!two_d_enabled)
 				{
-					rotate_image_plane(*view_ptr, 360.0*me.get_dx()/width/rotate_sensitivity,-360.0*me.get_dy()/height/rotate_sensitivity);
+					rotate_image_plane(*view_ptr, 360.0*me.get_dx() / width / rotate_sensitivity, -360.0*me.get_dy() / height / rotate_sensitivity);
 					update_vec_member(view_up_dir);
 					update_vec_member(view_dir);
 					post_redraw();
