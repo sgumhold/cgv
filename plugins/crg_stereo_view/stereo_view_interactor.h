@@ -122,7 +122,7 @@ protected:
 	void gl_set_projection_matrix(GlsuEye e, double aspect);
 	void gl_set_modelview_matrix(GlsuEye e, double aspect, const cgv::render::view& view);
 	/// ensure sufficient number of viewport views
-	unsigned get_viewport_index(unsigned col_index, unsigned row_index) const { return row_index*nr_viewport_columns + col_index; }
+	unsigned get_viewport_index(unsigned col_index, unsigned row_index) const;
 	void ensure_viewport_view_number(unsigned nr);
 public:
 	///
