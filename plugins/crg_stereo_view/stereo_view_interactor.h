@@ -142,7 +142,10 @@ public:
 	/// make a viewport manage its own view
 	void viewport_use_individual_view(unsigned col_index, unsigned row_index);
 	/// check whether viewport manage its own view
-	bool does_viewport_use_individual_view(unsigned col_index, unsigned row_index) const { return use_individual_view[get_viewport_index(col_index, row_index)]; }
+	bool does_viewport_use_individual_view(unsigned col_index, unsigned row_index) const { 
+		unsigned i = get_viewport_index(col_index, row_index);
+		return i >= use_individual_view.size() ? false : use_individual_view[i];
+	}
 	/// access the view of a given viewport
 	cgv::render::view& ref_viewport_view(unsigned col_index, unsigned row_index);
 	//@}
