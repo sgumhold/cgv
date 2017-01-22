@@ -1614,6 +1614,10 @@ bool gl_context::frame_buffer_attach(frame_buffer_base& fbb,
 												 const texture_base& t, bool is_depth,
 												 int level, int i, int z_or_cube_side)
 {
+	if (!GLEW_EXT_framebuffer_object) {
+		fbb.last_error = "framebuffer objects not supported";
+		return false;
+	}
 	void* user_data;
 	frame_buffer_bind(fbb, user_data);
 	GLuint tex_id = (const GLuint&) t.handle - 1;
@@ -1650,6 +1654,10 @@ bool gl_context::frame_buffer_attach(frame_buffer_base& fbb,
 /// check for completeness, if not complete, get the reason in last_error
 bool gl_context::frame_buffer_is_complete(const frame_buffer_base& fbb) const
 {
+	if (!GLEW_EXT_framebuffer_object) {
+		fbb.last_error = "framebuffer objects not supported";
+		return false;
+	}
 	void* user_data;
 	frame_buffer_bind(fbb,user_data);
 	GLenum error = glCheckFramebufferStatusEXT(GL_FRAMEBUFFER_EXT);

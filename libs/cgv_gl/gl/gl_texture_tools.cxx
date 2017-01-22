@@ -102,11 +102,13 @@ GLuint gl_tex_dim[] = { GL_TEXTURE_1D, GL_TEXTURE_2D, GL_TEXTURE_3D, GL_TEXTURE_
 bool generate_mipmaps(unsigned int dim, std::string* last_error)
 {
 	if (dim == 0 || dim > 3) {
-		*last_error = "wrong dimension of texture";
+		if (last_error)
+			*last_error = "wrong dimension of texture";
 		return false;
 	}
 	if (!(ensure_glew_initialized() && GLEW_EXT_framebuffer_object)) {
-		*last_error = "automatic generation of mipmaps not supported";
+		if (last_error)
+			*last_error = "automatic generation of mipmaps not supported";
 		return false;
 	}
 	glGenerateMipmapEXT(gl_tex_dim[dim-1]);
