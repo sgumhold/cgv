@@ -7,6 +7,7 @@
 
 #include <algorithm>
 #include <vector>
+#include <set>
 
 using namespace cgv::utils;
 
@@ -29,6 +30,22 @@ struct registration_info
 		permanent_registration = true;
 		registration_event_cleanup = false;
 		nr_events_before_disable = 0;
+	}
+};
+
+struct registration_order_info
+{
+	std::string partial_order;
+	bool before_contructor_execution;
+	std::string when;
+	registration_order_info() : before_contructor_execution(false) 
+	{
+	}
+	registration_order_info(const std::string& _partial_order, bool _before_contructor_execution, const std::string& _when) :
+		partial_order(_partial_order),
+		before_contructor_execution(_before_contructor_execution),
+		when(_when)
+	{
 	}
 };
 
@@ -81,6 +98,12 @@ object_collection& ref_object_collection()
 {
 	static object_collection oc;
 	return oc;
+}
+
+std::vector<registration_order_info>& ref_registration_order_infos()
+{
+	static std::vector<registration_order_info> roi;
+	return roi;
 }
 
 std::string& ref_prog_name()
@@ -141,24 +164,45 @@ void show_split_lines(const std::string& s)
 
 bool& ref_registration_debugging_enabled()
 {
+#if defined CGV_FORCE_STATIC && defined _DEBUG
+	static bool is_debug = true;
+#else
 	static bool is_debug = false;
+#endif
 	return is_debug;
 }
+
+void show_object_debug_info(cgv::base::base_ptr o)
+{
+	std::cout << o->get_type_name();
+	if (o->get_named())
+		std::cout << "<" << o->get_named()->get_name() << ">";
+	bool is_c = o->get_interface<object_constructor>() != 0;
+	bool is_s = o->get_interface<server>() != 0;
+	bool is_d = o->get_interface<driver>() != 0;
+	bool is_l = o->get_interface<registration_listener>() != 0;
+
+	if (is_c || is_s || is_d || is_l) {
+		std::cout << " [";
+		if (is_c)
+			std::cout << "C";
+		if (is_s)
+			std::cout << "S";
+		if (is_d)
+			std::cout << "D";
+		if (is_l)
+			std::cout << "L";
+		std::cout << "]";
+	}
+}
+
 
 /// register an object and send event to all current registration ref_listeners()
 void register_object_internal(base_ptr object, const std::string& options)
 {
 	if (is_registration_debugging_enabled()) {
-		std::cout << "REG OBJECT(";
-		if (object->get_named())
-			std::cout << object->get_named()->get_name();
-		else
-			std::cout << "unnamed";
-		std::cout << ":" << object->get_type_name() << ", " << "'" << options << "')";
-		if (object->get_interface<object_constructor>())
-			std::cout << " [constructor]";
-		if (object->get_interface<registration_listener>())
-			std::cout << " [listener]";
+		std::cout << "REG OBJECT ('" << options << "') ";
+		show_object_debug_info(object);
 		std::cout << std::endl;
 
 		static std::map<cgv::base::base*, int> is_registered;
@@ -184,6 +228,118 @@ void register_object_internal(base_ptr object, const std::string& options)
 
 /****************** implementation of exported functions **************/
 
+void define_registration_order(const std::string& partial_order, bool before_contructor_execution, const std::string& when)
+{
+	ref_registration_order_infos().push_back(registration_order_info(partial_order, before_contructor_execution, when));
+}
+
+void add_partially_ordered(const std::vector<std::set<unsigned> >& combined_partial_order, std::vector<unsigned>& permutation, std::vector<bool>& appended, std::vector<bool>& delayed, unsigned i)
+{
+	if (delayed[i]) {
+		std::cout << "REG ORDER cyclic dependency of registration event <" << ref_registration_events()[i].first->get_type_name() << ">" << std::endl;
+		return;
+	}
+	delayed[i] = true;
+	// ensure that indices that have to come before i, are also added before i
+	for (auto j : combined_partial_order[i]) {
+		if (!appended[j])
+			add_partially_ordered(combined_partial_order, permutation, appended, delayed, j);
+	}
+	delayed[i] = false;
+	appended[i] = true;
+	permutation.push_back(i);
+}
+
+void sort_registration_events(bool before_contructor_execution)
+{
+	// initialized combined partial order
+	unsigned N = ref_registration_events().size();
+	std::vector<std::set<unsigned> > combined_partial_order;
+	combined_partial_order.resize(N);
+	unsigned nr_partial_orders = 0;
+
+	// iterate all registration order infos
+	for (auto roi : ref_registration_order_infos()) {
+		// ignore if before_contructor_execution does not match
+		if (roi.before_contructor_execution != before_contructor_execution)
+			continue;
+
+		// ignore if "when" does not match
+		if (roi.when == "plugins") {
+			if (ref_plugin_name().empty())
+				continue;
+		}
+		else if (roi.when == "program") {
+			if (!ref_plugin_name().empty())
+				continue;
+		}
+		else if (roi.when != "always") {
+			if (ref_plugin_name() != roi.when)
+				continue;
+		}
+
+		// extract partial order
+		std::vector<cgv::utils::token> toks;
+		cgv::utils::tokenizer(roi.partial_order).set_ws(";").bite_all(toks);
+
+		// first construct a vector with indices of registration events
+		std::vector<unsigned> event_indices;
+		unsigned nr_matched = 0;
+		for (auto t : toks) {
+			bool found = false;
+			for (unsigned i = 0; i < N; ++i) {
+				std::string tn = ref_registration_events()[i].first->get_type_name();
+				if (t == tn) {
+					event_indices.push_back(i);
+					++nr_matched;
+					found = true;
+					break;
+				}
+			}
+			if (!found) {
+				std::cout << "REG ORDER: could not find event <" << t << ">" << std::endl;
+			}
+		}
+		if (nr_matched < 2) {
+			std::cout << "REG ORDER: partial order <" << roi.partial_order << "> did match only " << nr_matched << " object" << std::endl;
+			continue;
+		}
+
+		// extend combined partial order by current partial order
+		for (unsigned i = 1; i < event_indices.size(); ++i)
+			combined_partial_order[event_indices[i]].insert(event_indices[i - 1]);
+		++nr_partial_orders;
+	}
+	if (nr_partial_orders == 0)
+		return;
+
+	// compute permutation
+	std::vector<unsigned> permutation;
+	std::vector<bool> appended(N, false);
+	std::vector<bool> delayed(N, false);
+	unsigned i;
+	for (i = 0; i < N; ++i) {
+		if (!appended[i])
+			add_partially_ordered(combined_partial_order, permutation, appended, delayed, i);
+	}
+	if (permutation.size() != N) {
+		std::cerr << "ERROR: could not compute valid permutation of registration events" << std::endl;
+		abort();
+	}
+
+	// permute registration events
+	std::vector<std::pair<base_ptr, std::string> > permuted_registration_events;
+	permuted_registration_events.resize(N);
+	for (i = 0; i < N; ++i)
+		permuted_registration_events[i] = ref_registration_events()[permutation[i]];
+	ref_registration_events() = permuted_registration_events;
+}
+
+registration_order_definition::registration_order_definition(const std::string& partial_order, bool before_contructor_execution, const std::string& when)
+{
+	define_registration_order(partial_order, before_contructor_execution, when);
+}
+
 
 void enable_registration_debugging()
 {
@@ -200,48 +356,39 @@ bool is_registration_debugging_enabled()
 {
 	return ref_registration_debugging_enabled();
 }
-
 /// enable registration and send all registration events that where emitted during disabled registration
 void enable_registration()
 {
 	if (is_registration_enabled())
 		return;
 
-	if (is_registration_debugging_enabled()) {
-		std::cout << "ENABLE REGISTRATION" << std::endl;
-	}
+	if (is_registration_debugging_enabled())
+		std::cout << "REG ENABLE <" << (ref_plugin_name().empty() ? ref_prog_name() : ref_plugin_name()) << "> Begin" << std::endl;
+	
 	unsigned i, i0 = ref_info().nr_events_before_disable;
+
+	sort_registration_events(true);
 
 	// first execute delayed registrations by replacing constructor objects with constructed objects
 	for (i=i0; i<ref_registration_events().size(); ++i) {
 		base_ptr o = ref_registration_events()[i].first;
 		object_constructor* obr = o->get_interface<object_constructor>();
 		if (obr) {
-			if (is_registration_debugging_enabled()) {
-				std::cout << "CONSTRUCT (";
-				if (o->get_named())
-					std::cout << o->get_named()->get_name();
-				else
-					std::cout << "unnamed";
-				std::cout << ":" << o->get_type_name() << ", " << "'" << ref_registration_events()[i].second << "')";
-				if (o->get_interface<registration_listener>())
-					std::cout << " [listener]";
-				std::cout << std::endl;
-			}
+			if (is_registration_debugging_enabled())
+				std::cout << "REG CONSTRUCT " << obr->get_constructed_type_name() << "('" << ref_registration_events()[i].second << "')";
+			
 			ref_registration_events()[i].first = obr->construct_object();
+			
 			if (is_registration_debugging_enabled()) {
-				std::cout << "       -> (";
-				if (ref_registration_events()[i].first->get_named())
-					std::cout << ref_registration_events()[i].first->get_named()->get_name();
-				else
-					std::cout << "unnamed";
-				std::cout << ":" << ref_registration_events()[i].first->get_type_name() << ")";
-				if (ref_registration_events()[i].first->get_interface<registration_listener>())
-					std::cout << " [listener]";
+				std::cout << " -> ";
+				show_object_debug_info(ref_registration_events()[i].first);
 				std::cout << std::endl;
 			}
 		}
 	}
+
+	sort_registration_events(false);
+
 	// next register all servers
 	const std::vector<base_ptr>& L = ref_listeners();
 	for (i=i0; i<ref_registration_events().size(); ++i) {
@@ -286,17 +433,21 @@ void enable_registration()
 	// remove registration events
 	if (is_registration_event_cleanup_enabled())
 		ref_registration_events().clear();
+
 	ref_info().nr_events_before_disable = (unsigned) ref_registration_events().size();
 	ref_info().registration_enabled = true;
+
+	if (is_registration_debugging_enabled())
+		std::cout << "REG ENABLE <" << (ref_plugin_name().empty() ? ref_prog_name() : ref_plugin_name()) << "> End" << std::endl;
 }
 
 void disable_registration()
 {
 	if (!is_registration_enabled())
 		return;
-	if (is_registration_debugging_enabled()) {
-		std::cout << "DISABLE REGISTRATION" << std::endl;
-	}
+	if (is_registration_debugging_enabled())
+		std::cout << "REG DISABLE <" << (ref_plugin_name().empty() ? ref_prog_name() : ref_plugin_name()) << ">" << std::endl;
+
 	ref_info().nr_events_before_disable = (unsigned)ref_registration_events().size();
 	ref_info().registration_enabled = false;
 }
@@ -393,20 +544,10 @@ void register_object(base_ptr object, const std::string& options)
 		ref_registration_events().push_back(std::pair<base_ptr, std::string>(object, options));
 		
 		if (is_registration_debugging_enabled()) {
-			std::cout << "REG EVENT(";
-			if (object->get_named())
-				std::cout << object->get_named()->get_name();
-			else
-				std::cout << "unnamed";
-			std::cout << ":" << object->get_type_name() << ", " << "'" << options << "')";
-
-			if (object->get_interface<object_constructor>())
-				std::cout << " [constructor]";
-			if (object->get_interface<registration_listener>())
-				std::cout << " [listener]";
+			std::cout << "REG EVENT ('" << options << "') ";
+			show_object_debug_info(object);
 			std::cout << std::endl;
 		}
-
 	}
 	if (!is_registration_enabled())
 		return;
@@ -1155,10 +1296,10 @@ void* load_plugin(const std::string& file_name)
 				break;
 			fn = extend_plugin_name(fn);
 		}
-		ref_plugin_name().clear();
 	}
 	if (enabled)
 		enable_registration();
+	ref_plugin_name().clear();
 	return result;
 }
 bool unload_plugin(void* handle)

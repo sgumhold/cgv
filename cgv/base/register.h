@@ -3,6 +3,7 @@
 #include <cgv/base/base.h>
 #include <cgv/base/named.h>
 #include <cgv/utils/token.h>
+#include <cgv/type/info/type_name.h>
 #include <string>
 #include <iostream>
 #include <map>
@@ -30,6 +31,23 @@ extern void CGV_API enable_registration();
 extern void CGV_API disable_registration();
 /// check whether registration is enabled
 extern bool CGV_API is_registration_enabled();
+//! specify a partial order of objects for registration
+/*! \c partial_order is a semicolon separated list of type names that can ignore name spaces.
+    \c before_contructor_execution tells whether the reordering should happen before constructors of delayed registration events are called.
+	\c when specifies in which call to \c enable_registration the reordering should happen. Possible values are 
+	- "always" 
+	- "program" only once for the enable event of the executed program
+	- "plugins" for enable events of all loaded plugins
+	- <plugin_name> only for the enable event of the plugin with the given name
+	If several partial orders are defined for an enable call, a combined partial order is computed and used to find the order closest to the actual
+	registration order that is in accordance to the combined partial order. */
+extern void CGV_API define_registration_order(const std::string& partial_order, bool before_contructor_execution = false, const std::string& when = "always");
+
+/// helper class whose constructor calls the \c define_registration_order() function
+struct CGV_API registration_order_definition
+{
+	registration_order_definition(const std::string& partial_order, bool before_contructor_execution = false, const std::string& when = "always");
+};
 
 /// enable registration debugging
 extern void CGV_API enable_registration_debugging();
@@ -73,11 +91,15 @@ extern void CGV_API register_object(base_ptr object, const std::string& options 
 /// unregister an object and send event to all currently registered registration listeners
 extern void CGV_API unregister_object(base_ptr object, const std::string& options = "");
 
-// abstract base class of helpers to perform delayed registration and creation of objects in case that the registration is currently disabled
+/// abstract base class of helpers to perform delayed registration and creation of objects in case that the registration is currently disabled
 struct CGV_API object_constructor : public cgv::base::base
 {
 public:
-	// creation function
+	/// return the type name of the object constructor class
+	std::string get_type_name() const { return cgv::type::info::type_name<object_constructor>::get_name(); }
+	/// return the type name of the to be constructed object
+	virtual std::string get_constructed_type_name() const = 0;
+	/// creation function
 	virtual base_ptr construct_object() const = 0;
 };
 	
@@ -86,6 +108,10 @@ template <class T>
 class object_constructor_impl : public object_constructor
 {
 public:
+	/// return the type name of the object constructor class
+	std::string get_type_name() const { return cgv::type::info::type_name<object_constructor_impl<T> >::get_name(); }
+	/// return the type name of the to be constructed object
+	std::string get_constructed_type_name() const { return cgv::type::info::type_name<T>::get_name(); }
 	// creation function
 	base_ptr construct_object() const { return base_ptr(new T()); }
 };
@@ -99,6 +125,10 @@ class object_constructor_impl_1 : public object_constructor
 public:
 	// construct from option
 	object_constructor_impl_1(const CA& _ca) : ca(_ca) {}
+	/// return the type name of the object constructor class
+	std::string get_type_name() const { return cgv::type::info::type_name<object_constructor_impl_1<T, CA> >::get_name(); }
+	/// return the type name of the to be constructed object
+	std::string get_constructed_type_name() const { return cgv::type::info::type_name<T>::get_name(); }
 	// creation function
 	base_ptr construct_object() const { return base_ptr(new T(ca)); }
 };
@@ -113,6 +143,10 @@ class object_constructor_impl_2 : public object_constructor
 public:
 	// construct from option
 	object_constructor_impl_2(const CA1& _ca1, const CA2& _ca2) : ca1(_ca1), ca2(_ca2) {}
+	/// return the type name of the object constructor class
+	std::string get_type_name() const { return cgv::type::info::type_name<object_constructor_impl_2<T,CA1,CA2> >::get_name(); }
+	/// return the type name of the to be constructed object
+	std::string get_constructed_type_name() const { return cgv::type::info::type_name<T>::get_name(); }
 	// creation function
 	base_ptr construct_object() const { return base_ptr(new T(ca1,ca2)); }
 };
@@ -411,6 +445,14 @@ struct CGV_API resource_file_registration
 	resource_file_registration(const char* symbol);
 };
 //@}
+
+
+/// interface for objects that process unknown command line arguments
+struct argument_handler
+{
+	/// this function is called on registered objects with the list of unknown command line parameters
+	virtual void handle_args(std::vector<std::string>& args) = 0;
+};
 
 /// enumerate type for all command types supported in configuration files
 enum CommandType
