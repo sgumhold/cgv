@@ -26,14 +26,62 @@ int main(int argc, char** argv)
 	enable_permanent_registration();
 	enable_registration();
 	register_object(console::get_console());
-	if (argc > 1)
-		process_command_line_args(argc, argv);
-	else {
+
+	// try to process command line arguments and store unknown and name and type commands where no object could be found
+	// process_command_line_args(argc, argv);
+	std::vector<command_info> unprocessed;
+	std::vector<int> unknown;
+	bool loaded_config = false;
+	unsigned ai;
+	for (ai = 1; (int)ai < argc; ++ai) {
+		command_info info;
+		cgv::base::analyze_command(cgv::utils::token(argv[ai], argv[ai] + strlen(argv[ai])), true, &info);
+		switch (info.command_type) {
+		case CT_UNKNOWN:
+			unknown.push_back(ai);
+			break;
+		case CT_CONFIG:
+			loaded_config = true;
+		case CT_GUI:
+		case CT_SHOW:
+		case CT_PLUGIN:
+			process_command(info);
+			break;
+		case CT_TYPE:
+		case CT_NAME:
+			if (!process_command(info))
+				unprocessed.push_back(info);
+			break;
+		}
+	}
+
+	if (!loaded_config) {
 		std::string cfg_file_name = cgv::utils::file::drop_extension(argv[0]) + ".cfg";
 		if (cgv::utils::file::exists(cfg_file_name))
 			process_config_file(cfg_file_name);
 	}
+
 	enable_registration_event_cleanup();
+
+	// process so far unprocessed command line arguments
+	for (ai = 0; ai<(int)unprocessed.size(); ++ai)
+		cgv::base::process_command(unprocessed[ai]);
+
+	// attempt to read volume file named by otherwise unknown arguments
+	if (!unknown.empty()) {
+		std::vector<std::string> args;
+		for (ai = 0; ai < (int)unknown.size(); ++ai)
+			args.push_back(argv[unknown[ai]]);
+		unsigned no = get_nr_permanently_registered_objects();
+		for (ai = 0; ai < no && !args.empty(); ++ai) {
+			cgv::base::base_ptr object = get_permanently_registered_object(ai);
+			cgv::base::argument_handler* ah = object->get_interface < cgv::base::argument_handler >();
+			if (ah)
+				ah->handle_args(args);
+		}
+		for (ai = 0; ai < args.size(); ++ai)
+			std::cerr << "WARNING: unknown command line argument '" << args[ai] << "'" << std::endl;
+	}
 	bool res = application::run();
 	unregister_all_objects();
 	return res;
