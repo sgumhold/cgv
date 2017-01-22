@@ -247,17 +247,23 @@ bool avi_video_reader::read_frame(const cgv::data::data_view& dv)
 		return false;
 	}
 	// read frame
-	unsigned int i;
 	if (getFrame != NULL) {
 		unsigned char* buffer = (unsigned char*) AVIStreamGetFrame(getFrame, frame_index);
 		if (buffer == 0) return false;
 		// toggle red and blue components back
+		const BITMAPINFOHEADER& info = reinterpret_cast<const BITMAPINFOHEADER&>(*buffer);
+		unsigned stride = ((((info.biWidth * info.biBitCount) + 31) & ~31) >> 3) - (info.biWidth * info.biBitCount >> 3);
 		buffer += sizeof(BITMAPINFOHEADER);
 		unsigned char* ptr = dv.get_ptr<unsigned char>();
-		for (i=0; i<n; ++i, ptr += 3, buffer += 3) {
-			ptr[0] = buffer[2];
-			ptr[1] = buffer[1];
-			ptr[2] = buffer[0];
+		for (int j = 0; j < info.biHeight; ++j) {
+			for (int i = 0; i < info.biWidth; ++i) {
+				ptr[0] = buffer[2];
+				ptr[1] = buffer[1];
+				ptr[2] = buffer[0];
+				ptr += 3;
+				buffer += 3;
+			}
+			buffer += stride;
 		}
 	}
 	else {
