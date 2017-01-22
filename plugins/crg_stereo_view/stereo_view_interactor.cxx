@@ -195,6 +195,8 @@ void stereo_view_interactor::disable_viewport_splitting()
 /// inside the drawing process activate the sub-viewport with the given column and row indices, always terminate an activated viewport with deactivate_split_viewport
 void stereo_view_interactor::activate_split_viewport(cgv::render::context& ctx, unsigned col_index, unsigned row_index)
 {
+	if (!do_viewport_splitting)
+		return;
 	glGetIntegerv(GL_VIEWPORT, current_vp);
 	glGetIntegerv(GL_SCISSOR_BOX, current_sb);
 	int new_vp[4], new_sb[4];
@@ -227,6 +229,9 @@ void stereo_view_interactor::activate_split_viewport(cgv::render::context& ctx, 
 /// deactivate the previously split viewport
 void stereo_view_interactor::deactivate_split_viewport()
 {
+	if (!do_viewport_splitting)
+		return;
+
 	glViewport(current_vp[0], current_vp[1], current_vp[2], current_vp[3]);
 	glScissor(current_sb[0], current_sb[1], current_sb[2], current_sb[3]);
 
