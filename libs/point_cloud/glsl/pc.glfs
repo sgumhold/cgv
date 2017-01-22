@@ -1,6 +1,9 @@
 #version 150 compatibility
 
+
+uniform bool has_normals;
 uniform bool smooth_points;
+uniform bool illum_points;
 uniform uint width;
 uniform uint height;
 uniform float border_distance_scale;
@@ -36,7 +39,10 @@ void main()
 	float lambda_line =  clamp((percentual_splat_size - 0.5*percentual_pixel_extent - l)/outline_width, 0.0, 1.0);
 
 	// illumination
-	vec4 color_in   = vec4(doLighting(position, normal, color).rgb, 1.0);
+	vec4 color_in = color;
+	if (illum_points && has_normals) {
+		color_in = vec4(doLighting(position, normal, color).rgb, 1.0);
+	}
 	vec4 color_line = vec4(color_in.rgb, lambda_line);
 
 	gl_FragColor = lambda_in * color_in + (1.0 - lambda_out - lambda_in) * color_line;

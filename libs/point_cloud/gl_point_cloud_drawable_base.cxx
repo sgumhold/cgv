@@ -171,8 +171,10 @@ void gl_point_cloud_drawable_base::draw_points(context& ctx)
 		Crd A = 2.0f*(e(0)*e(1) + e(1)*e(2) + e(2)*e(0));
 		Crd reference_point_size = 0.1f*sqrt(A/pc.get_nr_points());
 		cgv::render::gl::set_lighting_parameters(ctx, pc_prog);
+		pc_prog.set_uniform(ctx, "has_normals", pc.has_normals());
 		pc_prog.set_uniform(ctx, "cull_backfacing", backface_cull_points);
 		pc_prog.set_uniform(ctx, "smooth_points", smooth_points);
+		pc_prog.set_uniform(ctx, "illum_points", illum_points);
 		pc_prog.set_uniform(ctx, "orient_splats", orient_splats);
 		pc_prog.set_uniform(ctx, "point_size", reference_point_size*point_size*sqrt((float)show_point_step));
 		pc_prog.set_uniform(ctx, "width", ctx.get_width());
