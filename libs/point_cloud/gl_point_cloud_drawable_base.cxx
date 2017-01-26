@@ -452,3 +452,7 @@ bool gl_point_cloud_drawable_base::ensure_view_pointer()
 	return false;
 }
 
+#ifdef REGISTER_SHADER_FILES
+#include <cgv/base/register.h>
+#include <point_cloud_shader_inc.h>
+#endif

@@ -138,6 +138,13 @@ void shader_code::destruct(context& ctx)
 
 std::string shader_code::find_file(const std::string& file_name)
 {
+	if (file_name.substr(0, 6) == "str://" || file_name.substr(0, 6) == "res://") {
+		std::map<std::string, resource_file_info>::const_iterator it = ref_resource_file_map().find(file_name.substr(6));
+		if (it != ref_resource_file_map().end())
+			return file_name;
+		else
+			return "";
+	}
 	if (exists(file_name))
 		return file_name;
 	
@@ -147,9 +154,12 @@ std::string shader_code::find_file(const std::string& file_name)
 
 	std::map<std::string, resource_file_info>::const_iterator it = 
 		ref_resource_file_map().find(file_name);
-	if (it != ref_resource_file_map().end())
-		return std::string("res://")+file_name;
-
+	if (it != ref_resource_file_map().end()) {
+		if (it->second.file_offset == -1)
+			return std::string("str://") + file_name;
+		else
+			return std::string("res://") + file_name;
+	}
 	if (get_shader_config()->shader_path.empty()) {
 		try_name = std::string("glsl/") + file_name;
 		if (exists(try_name))

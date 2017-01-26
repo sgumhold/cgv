@@ -2,7 +2,7 @@
 projectName="cgv_gl";
 projectType="library";
 projectGUID="5EFDDD95-15F8-4A18-B96B-79652EA6553E";
-addIncDirs=[[CGV_DIR."/libs", "all"], CGV_DIR."/3rd/glew"];
+addIncDirs=[[CGV_DIR."/libs", "all"], CGV_BUILD_DIR."/".projectName, CGV_DIR."/3rd/glew"];
 addProjectDirs=[CGV_DIR."/3rd/glew"];
 addRules=[
 	[
@@ -27,5 +27,6 @@ addRules=[
 addProjectDeps=["cgv_utils", "cgv_type", "cgv_data", "cgv_base", "cgv_signal", "cgv_math", "cgv_media", "cgv_render", "glew"];
 if(SYSTEM=="windows") {
 	addDependencies=addDependencies.[["user32", "static"], ["gdi32", "static"]];
+	addStaticDefines=["REGISTER_SHADER_FILES"];
 }
 addSharedDefines=["CGV_RENDER_GL_EXPORTS"];

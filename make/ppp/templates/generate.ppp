@@ -187,6 +187,7 @@ func(generate_makefile; :>project_name="", :>return = 1)
 		transform("vs89.user.tm"; build_path.".vcproj.".env::USERDOMAIN.".".env::USERNAME.".user");
 		transform("vs89.sln.tm"; build_path.".sln");
 		transform("vs_rules.tm"; build_path.".rules");
+		transform("shader_inc.tm";   build_path."_shader_inc.h");
 	}
 	elif (CGV_COMPILER == "vs10" || CGV_COMPILER == "vs11" || CGV_COMPILER == "vs12") {
 		extend_project_info_vs(project_name);
@@ -199,6 +200,7 @@ func(generate_makefile; :>project_name="", :>return = 1)
 		transform("vs10_vcxproj.tm"; build_path.".vcxproj");
 		transform("vs10_vcxproj.user.tm"; build_path.".vcxproj.user");
 		transform("vs10_vcxproj.filters.tm"; build_path.".vcxproj.filters");
+		transform("shader_inc.tm";   build_path."_shader_inc.h");
 	}
 	elif (CGV_COMPILER == "cmake") {
 		current_project = project_name;

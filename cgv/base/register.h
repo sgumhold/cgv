@@ -439,11 +439,22 @@ extern CGV_API std::map<std::string, resource_file_info>& ref_resource_file_map(
 extern CGV_API void register_resource_file(const std::string& file_path, unsigned int file_offset, unsigned int file_length, const char* file_data, const std::string& source_file = "");
 
 /// convenience class to register a resource file
-struct CGV_API resource_file_registration 
+struct CGV_API resource_file_registration
 {
 	/// builds a resource file info and registers it with the register_resource_file function
-	resource_file_registration(const char* symbol);
+	resource_file_registration(const char* file_data);
 };
+
+/// register a resource string
+extern CGV_API void register_resource_string(const std::string& string_name, const char* string_data);
+
+/// convenience class to register a resource string
+struct CGV_API resource_string_registration
+{
+	/// builds a resource file info and registers it with the register_resource_file function
+	resource_string_registration(const std::string& string_name, const char* string_data);
+};
+
 //@}
 
 

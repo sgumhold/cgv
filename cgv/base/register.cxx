@@ -855,6 +855,11 @@ void register_resource_file(const std::string& file_path, unsigned int file_offs
 	ref_resource_file_map()[file_path] = resource_file_info(file_offset, file_length, file_data, source_file);
 }
 
+void register_resource_string(const std::string& string_name, const char* string_data)
+{
+	ref_resource_file_map()[string_name] = resource_file_info(-1, std::string(string_data).size(), string_data);
+}
+
 void show_implementation(bool& implements_shown, const std::string& type_name)
 {
 	if (implements_shown)
@@ -1217,6 +1222,11 @@ resource_file_registration::resource_file_registration(const char* symbol)
 	if (source_file.empty())
 		source_file = ref_prog_name();
 	register_resource_file(file_path, file_offset,file_size,file_data,source_file);
+}
+
+resource_string_registration::resource_string_registration(const std::string& string_name, const char* string_data)
+{
+	register_resource_string(string_name, string_data);
 }
 
 std::string extend_plugin_name(const std::string& fn)

@@ -113,7 +113,7 @@ bool convert_to_string(const std::string& in_fn, const std::string& out_fn, bool
 	for (unsigned int i=0; i<content.size(); ++i) {
 		bool new_last_is_slash = false;
 		switch (content[i]) {
-		case '/' : 
+		case '/':
 			// in case of single line comment
 			if (last_is_slash)
 				// skip till end of line or end of content
@@ -121,7 +121,7 @@ bool convert_to_string(const std::string& in_fn, const std::string& out_fn, bool
 			else
 				new_last_is_slash = true;
 			break;
-		case '*' :
+		case '*':
 			// in case of single line comment
 			if (last_is_slash) {
 				// skip till end of line or end of content
@@ -133,12 +133,19 @@ bool convert_to_string(const std::string& in_fn, const std::string& out_fn, bool
 					} while (i < content.size() && !(last_is_star && content[i] == '/'));
 				}
 			}
+			else
+				os << content[i];
 			break;
-		case '\\': os << "\\\\"; break;
-		case '\n': os << "\\n\\\n"; break;
-		case '\t': os << "\\t"; break;
-		case '"' : os << "\\\""; break;
-		default: os << content[i]; break;
+		default:
+			if (last_is_slash)
+				os << '/';
+			switch (content[i]) {
+			case '\\': os << "\\\\"; break;
+			case '\n': os << "\\n\\\n"; break;
+			case '\t': os << "\\t"; break;
+			case '"': os << "\\\""; break;
+			default: os << content[i]; break;
+			}
 		}
 		last_is_slash = new_last_is_slash ;
 	}

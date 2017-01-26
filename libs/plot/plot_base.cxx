@@ -221,3 +221,8 @@ void plot_base::create_gui(cgv::base::base* bp, cgv::gui::provider& p)
 
 	}
 }
+
+#ifdef REGISTER_SHADER_FILES
+#include <cgv/base/register.h>
+#include <plot_shader_inc.h>
+#endif

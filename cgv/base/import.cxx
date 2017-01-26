@@ -256,7 +256,14 @@ FILE* open_data_file(const std::string& file_name, const char* mode)
 /// read ascii file into a string
 bool read_data_file(const std::string& file_name, std::string& content, bool ascii)
 {
-	if (file_name.substr(0,6) != "res://")
+	if (file_name.substr(0, 6) == "str://") {
+		std::map<std::string, resource_file_info>::const_iterator it = ref_resource_file_map().find(file_name.substr(6));
+		if (it == ref_resource_file_map().end())
+			return false;
+		content = it->second.file_data;
+		return true;
+	}
+	if (file_name.substr(0, 6) != "res://")
 		return file::read(file_name, content, ascii);
 	unsigned int n = data_file_size(file_name);
 	content.resize(n);
