@@ -184,6 +184,8 @@ bool point_cloud::read(const string& _file_name)
 		success = read_bin(_file_name);
 	if (ext == "xyz")
 		success = read_xyz(_file_name);
+	if (ext == "pct")
+		success = read_pct(_file_name);
 	if (ext == "points")
 		success = read_points(_file_name);
 	if (ext == "wrl")
@@ -235,6 +237,44 @@ bool point_cloud::write(const string& _file_name)
 	cerr << "unknown extension <." << ext << ">." << endl;
 	return false;
 }
+
+/// read ascii file with lines of the form i j x y z I, where ij are pixel coordinates, xyz coordinates and I the intensity
+bool point_cloud::read_pct(const std::string& file_name)
+{
+	string content;
+	double time;
+	{
+		cgv::utils::stopwatch watch(&time);
+		if (!cgv::utils::file::read(file_name, content, true))
+			return false;
+		std::cout << "read from disk in " << watch.get_elapsed_time() << " sec" << std::endl; watch.restart();
+		clear();
+		vector<line> lines;
+		split_to_lines(content, lines);
+		std::cout << "split to " << lines.size() << " lines in " << watch.get_elapsed_time() << " sec" << std::endl; watch.restart();
+
+		bool do_parse = false;
+		float scale = 1.0f / 255;
+		for (unsigned li = 1; li < lines.size(); ++li) {
+			if (lines[li].empty())
+				continue;
+			Pnt p;
+			int i, j, I;
+			char tmp = lines[li].end[0];
+			content[lines[li].end - content.c_str()] = 0;
+			sscanf(lines[li].begin, "%d %d %f %f %f %d", &i, &j, &p[0], &p[1], &p[2], &I);
+			content[lines[li].end - content.c_str()] = tmp;
+			P.push_back(p);
+			C.push_back(Clr(scale*I, scale*I, scale*I));
+			if ((P.size() % 100000) == 0)
+				cout << "read " << P.size() << " points" << endl;
+
+		}
+		std::cout << "parsed in " << watch.get_elapsed_time() << " sec" << std::endl;
+	}
+	return true;
+}
+
 
 /// read ascii file with lines of the form x y z r g b I colors and intensity values, where intensity values are ignored
 bool point_cloud::read_xyz(const std::string& file_name)

@@ -65,6 +65,8 @@ protected:
 	bool read_obj(const std::string& file_name);
 	/// read ascii file with lines of the form x y z r g b I colors and intensity values, where intensity values are ignored
 	bool read_xyz(const std::string& file_name);
+	/// read ascii file with lines of the form i j x y z I, where ij are pixel coordinates, xyz coordinates and I the intensity
+	bool read_pct(const std::string& file_name);
 	/// read ascii file with lines of the form x y z [nx ny nz [r g b] ] with optional normals and optional colors (colors only allowed together with normals)
 	bool read_points(const std::string& file_name);
 	/// read vrml 2.0 files and ignore all but point, normal, and color attributes of a Shape node
