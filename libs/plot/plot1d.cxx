@@ -50,9 +50,11 @@ void plot1d::set_uniforms(cgv::render::context& ctx, cgv::render::shader_program
 	prog.set_uniform(ctx, "domain_max_pnt", domain.get_max_pnt());
 	prog.set_uniform(ctx, "center_location", center_location);
 
-	plot_base::set_uniforms(ctx, prog, i);
-	prog.set_uniform(ctx, "line_color", (cgv::math::fvec<Clr::component_type, Clr::nr_components>&) ref_sub_plot1d_config(i).line_color);
-	prog.set_uniform(ctx, "bar_width", ref_sub_plot1d_config(i).bar_percentual_width*(float)(domain.get_extent()(0) / (ref_sub_plot_samples(i).size()-1.0f)));
+	if (i < get_nr_sub_plots()) {
+		plot_base::set_uniforms(ctx, prog, i);
+		prog.set_uniform(ctx, "line_color", (cgv::math::fvec<Clr::component_type, Clr::nr_components>&) ref_sub_plot1d_config(i).line_color);
+		prog.set_uniform(ctx, "bar_width", ref_sub_plot1d_config(i).bar_percentual_width*(float)(domain.get_extent()(0) / (ref_sub_plot_samples(i).size() - 1.0f)));
+	}
 }
 
 /// adjust the domain with respect to \c ai th axis to the data
@@ -125,6 +127,12 @@ void plot1d::adjust_domain_to_data(bool adjust_x_axis, bool adjust_y_axis)
 		adjust_domain_axis_to_data(0);
 	if (adjust_y_axis) 
 		adjust_domain_axis_to_data(1);
+}
+
+/// query the plot extend in 2D coordinates
+const plot1d::V2D& plot1d::get_extent() const
+{
+	return extent;
 }
 
 /// set the plot extend in 2D coordinates
@@ -287,6 +295,15 @@ bool plot1d::init(cgv::render::context& ctx)
 {
 	return true;
 }
+
+void plot1d::clear(cgv::render::context& ctx)
+{
+	prog.destruct(ctx);
+	stick_prog.destruct(ctx);
+	bar_prog.destruct(ctx);
+	bar_outline_prog.destruct(ctx);
+}
+
 
 plot1d::P3D plot1d::transform_to_world(const P2D& domain_point) const
 {

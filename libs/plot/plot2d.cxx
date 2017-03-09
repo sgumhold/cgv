@@ -198,6 +198,13 @@ void plot2d::draw(cgv::render::context& ctx)
 	}
 }
 
+void plot2d::clear(cgv::render::context& ctx)
+{
+	point_prog.destruct(ctx);
+	line_prog.destruct(ctx);
+	face_prog.destruct(ctx);
+}
+
 void plot2d::create_config_gui(cgv::base::base* bp, cgv::gui::provider& p, unsigned i)
 {
 	plot2d_config& pbc = ref_sub_plot2d_config(i);

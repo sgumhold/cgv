@@ -55,6 +55,8 @@ public:
 	B2D& ref_domain() { return domain; }
 	/// set the plot extend in 2D coordinates
 	void set_extent(const V2D& new_extent);
+	/// query the plot extend in 2D coordinates
+	const V2D& get_extent() const;
 	/// set the plot width to given value and if constrained == true the height, such that the aspect ration is the same as the aspect ratio of the domain
 	void set_width(Crd new_width, bool constrained = true);
 	/// set the plot height to given value and if constrained == true the width, such that the aspect ration is the same as the aspect ratio of the domain
@@ -96,6 +98,7 @@ public:
 
 	bool init(cgv::render::context& ctx);
 	void draw(cgv::render::context& ctx);
+	void clear(cgv::render::context& ctx);
 };
 
 	}
