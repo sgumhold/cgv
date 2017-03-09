@@ -79,7 +79,9 @@ void gl_view::compute_clipping_planes(const cgv::render::view& view, double& z_n
 	z_far_derived = z_far;
 	if (scene_extent.is_valid()) {
 		box_type B = scene_extent;
-		B.scale(1.1);
+		pnt_type offset = B.get_extent().length()*pnt_type(1,1,1);
+		B.add_point(B.get_corner(7) + offset);
+		B.add_point(B.get_corner(0) - offset);
 		double z_min = dot(B.get_corner(0), view_dir);
 		double z_max = z_min;
 		for (unsigned int i = 1; i<8; ++i) {
