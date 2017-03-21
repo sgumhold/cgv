@@ -158,7 +158,8 @@ bool svd(const mat<T> &a, mat<T> &u, diag_mat<T> &w,  mat<T> &v,bool ordering=tr
 					}
 					break;
 				}
-				if (its == maxiter-1) return false;
+				if (its == maxiter-1)
+					return false;
 				x=w[l];
 				nm=k-1;
 				y=w[nm];
