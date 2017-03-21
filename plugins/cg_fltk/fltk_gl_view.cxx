@@ -56,6 +56,10 @@ fltk::GLContext get_context(const fltk::GlWindow* glw)
 fltk_gl_view::fltk_gl_view(int x, int y, int w, int h, const std::string& name) 
 	: fltk::GlWindow(x,y,w,h), group(name), dnd_release_event(0,0,MA_ENTER)
 {
+	last_context = (void*)-1;
+	last_width = -1;
+	last_height = -1;
+
 	recreate_context = false;
 	no_more_context = false;
 
@@ -366,19 +370,16 @@ public:
 	virtual bool on_leave_parent(node_ptr n) { --i; tab(); std::cout << "leave parent " << get_name(n) << std::endl; return false; }
 };
 
-
+#include <fltk/../../compat/FL/Fl.H>
 
 void fltk_gl_view::create()
 {
 	fltk::GlWindow::create();
 	make_current();
-	configure_gl(get_context(this));
-	single_method_action<cgv::render::drawable,bool,cgv::render::context&> sma(*this, &drawable::init, false, false);
-//	debug_traverse_callback_handler dtcbh;
-//	std::cout << "INIT children" << std::endl;
-	for (unsigned i=0; i<get_nr_children(); ++i)
-//		traverser(sma, "nc").traverse(get_child(i), &dtcbh);
-		traverser(sma, "nc").traverse(get_child(i));
+	last_context = get_context(this);
+	if (!configure_gl()) {
+		abort();
+	}
 }
 
 void fltk_gl_view::destroy()
@@ -390,10 +391,7 @@ void fltk_gl_view::destroy()
 	}
 	else {
 		single_method_action<cgv::render::drawable,void,cgv::render::context&> sma(*this, &drawable::clear, true, true);
-//		debug_traverse_callback_handler dtcbh;
-//		std::cout << "CLEAR children" << std::endl;
 		for (unsigned i=0; i<get_nr_children(); ++i)
-//			traverser(sma, "nc").traverse(get_child(i), &dtcbh);
 			traverser(sma, "nc").traverse(get_child(i));
 	}
 	fltk::GlWindow::destroy();
@@ -402,8 +400,6 @@ void fltk_gl_view::destroy()
 /// helper method to remove a child
 void fltk_gl_view::clear_child(base_ptr child)
 {
-//	traverser(make_action<cgv::render::context&>(*this, &drawable::clear),"nc").traverse(child);
-
 	single_method_action<cgv::render::drawable,void,cgv::render::context&> sma(*this, &drawable::clear, false, false);
 	traverser(sma,"nc").traverse(child);
 
@@ -480,8 +476,19 @@ void fltk_gl_view::draw()
 	in_draw_method = true;
 	bool last_redraw_request = redraw_request;
 	redraw_request = false;
-	if (!valid())
-		configure_gl(get_context(this));
+
+	if (!valid()) {
+		if (get_context(this) != last_context) {
+			last_width = get_width();
+			last_height = get_height();
+			configure_gl();
+		}
+		else if ((int)last_width != get_width() || (int)last_height != get_height()) {
+			last_width = get_width();
+			last_height = get_height();
+			resize_gl();
+		}
+	}
 	render_pass(RP_MAIN, default_render_flags);
 
 	if (enabled) {
