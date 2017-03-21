@@ -24,6 +24,9 @@ extern CGV_API unsigned map_to_gl(TypeId ti);
 /// map a component format to a gl enum
 extern CGV_API unsigned map_to_gl(cgv::data::ComponentFormat cf);
 
+/// return OpenGL material side constant
+extern CGV_API unsigned map_to_gl(MaterialSide ms);
+
 /// return one of the six cube map sides gl enums
 extern CGV_API unsigned get_gl_cube_map_target(unsigned side);
 

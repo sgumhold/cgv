@@ -31,14 +31,14 @@ GLuint map_to_gl(PrimitiveType pt)
 		-1,
 		GL_POINTS,
 		GL_LINES,
-		GL_LINES_ADJACENCY_EXT,
+		GL_LINES_ADJACENCY,
 		GL_LINE_STRIP,
-		GL_LINE_STRIP_ADJACENCY_EXT,
+		GL_LINE_STRIP_ADJACENCY,
 		GL_LINE_LOOP,
 		GL_TRIANGLES,
-		GL_TRIANGLES_ADJACENCY_EXT,
+		GL_TRIANGLES_ADJACENCY,
 		GL_TRIANGLE_STRIP,
-		GL_TRIANGLE_STRIP_ADJACENCY_EXT,
+		GL_TRIANGLE_STRIP_ADJACENCY,
 		GL_TRIANGLE_FAN,
 		GL_QUADS,
 		GL_QUAD_STRIP,
@@ -58,10 +58,21 @@ GLuint map_to_gl(MaterialSide ms)
 	return ms_to_gl[ms];
 }
 
+GLuint get_gl_id(void* handle)
+{
+	return (const GLuint&)handle - 1;
+}
+
+void* get_handle(GLuint id)
+{
+	void* handle = 0;
+	(GLuint&)handle = id + 1;
+	return handle;
+}
+
 void gl_context::put_id(void* handle, void* ptr) const
 {
-	GLuint tex_id = (const GLuint&) handle - 1;
-	*static_cast<GLuint*>(ptr) = tex_id;
+	*static_cast<GLuint*>(ptr) = get_gl_id(handle);
 }
 
 /// set a very specific texture format. This should be called after the texture is constructed and before it is created.
@@ -84,10 +95,6 @@ GLuint get_gl_format(const texture& tex)
 /// construct gl_context and attach signals
 gl_context::gl_context()
 {
-	last_context = (void*)-1;
-	last_width = -1;
-	last_height = -1;
-
 	info_font_size = 14;
 	// check if a new context has been created or if the size of the viewport has been changed
 	font_ptr info_font = find_font("Courier New");
@@ -114,38 +121,48 @@ RenderAPI gl_context::get_render_api() const
 }
 
 /// define lighting mode, viewing pyramid and the rendering mode
-void gl_context::configure_gl(void* new_context)
+bool gl_context::configure_gl()
+{
+	if (!ensure_glew_initialized()) {
+		error("gl_context::configure_gl could not initialize glew");
+		return false;
+	}
+
+	if (check_gl_error("gl_context::configure_gl before on enter"))
+		return false;
+
+	enable_font_face(info_font_face, info_font_size);
+	/*
+	GLint context_flags;
+	glGetIntegerv(GL_CONTEXT_FLAGS, &context_flags);
+	*/
+	// use the eye location to compute the specular lighting
+	glLightModelf(GL_LIGHT_MODEL_LOCAL_VIEWER, 0);
+	// this makes opengl normalize all surface normals before lighting calculations,
+	// which is essential when using scaling to deform tesselated primities
+	glEnable(GL_NORMALIZE);
+	glViewport(0, 0, get_width(), get_height());
+	if (check_gl_error("gl_context::configure_gl before init of children"))
+		return false;
+	
+	group_ptr grp(get_group_interface());
+	single_method_action<cgv::render::drawable, bool, cgv::render::context&> sma(*this, &drawable::init, false, false);
+	for (unsigned i = 0; i<grp->get_nr_children(); ++i)
+		traverser(sma, "nc").traverse(grp->get_child(i));
+
+	if (check_gl_error("gl_context::configure_gl after init of children."))
+		return false;
+
+	return true;
+}
+
+void gl_context::resize_gl()
 {
 	group_ptr grp(get_group_interface());
-	if (new_context != last_context) {
-		last_context = new_context;
-		enable_font_face(info_font_face,info_font_size);
-		// use the eye location to compute the specular lighting
-		glLightModelf(GL_LIGHT_MODEL_LOCAL_VIEWER, 0);
-		// this makes opengl normalize all surface normals before lighting calculations,
-		// which is essential when using scaling to deform tesselated primities
-		glEnable(GL_NORMALIZE);
-		glViewport(0,0,get_width(),get_height());
-		last_width = get_width();
-		last_height = get_height();
-
-		/*
-		if (grp) {
-			single_method_action<drawable,void,cgv::render::context*> sma(this, &drawable::set_context);
-			traverser(sma).traverse(grp);
-			single_method_action<drawable,bool,cgv::render::context&> sma1(*this, &drawable::init);
-			traverser(sma1).traverse(grp);
-		}
-		*/
-	}
-	else if ((int)last_width != get_width() || (int)last_height != get_height()) {
-		last_width  = get_width();
-		last_height = get_height();
-		glViewport(0,0,get_width(),get_height());
-		if (grp) {
-			single_method_action_2<drawable,void,unsigned int,unsigned int> sma(last_width, last_height, &drawable::resize);
-			traverser(sma).traverse(grp);
-		}
+	glViewport(0, 0, get_width(), get_height());
+	if (grp) {
+		single_method_action_2<drawable, void, unsigned int, unsigned int> sma(get_width(), get_height(), &drawable::resize);
+		traverser(sma).traverse(grp);
 	}
 }
 
@@ -217,11 +234,17 @@ void gl_context::init_render_pass()
 		glLightfv(GL_LIGHT2, GL_POSITION, lps+8);
 		glLightfv(GL_LIGHT3, GL_POSITION, lps+12);
 	}
+	if (check_gl_error("gl_context::init_render_pass before init_frame"))
+		return;
+
 	group* grp = get_group_interface();
 	if (grp && (get_render_pass_flags()&RPF_DRAWABLES_INIT_FRAME)) {
 		single_method_action<drawable,void,cgv::render::context&> sma(*this, &drawable::init_frame, true, true);
 		traverser(sma).traverse(group_ptr(grp));
 	}
+
+	if (check_gl_error("gl_context::init_render_pass after init_frame"))
+		return;
 	// this defines the background color to which the frame buffer is set by glClear
 	if (get_render_pass_flags()&RPF_SET_CLEAR_COLOR)
 		glClearColor(bg_r,bg_g,bg_b,bg_a);
@@ -393,25 +416,30 @@ void gl_context::perform_screen_shot()
 		wr.write_image(dv);
 }
 
-void enable_material_color(const textured_material::color_type& c, float alpha, GLenum type)
+void enable_material_color(GLenum side, const textured_material::color_type& c, float alpha, GLenum type)
 {
 	GLfloat v[4] = {c[0],c[1],c[2],c[3]*alpha};
-	glMaterialfv(GL_FRONT_AND_BACK, type, v);
+	glMaterialfv(side, type, v);
 }
 
 
 /// enable a material without textures
 void gl_context::enable_material(const cgv::media::illum::phong_material& mat, MaterialSide ms, float alpha)
 {
-	glPushAttrib(GL_LIGHTING_BIT|GL_ENABLE_BIT);
-	glEnable(GL_LIGHTING);
-	glDisable(GL_COLOR_MATERIAL);
-	enable_material_color(mat.get_ambient(),alpha,GL_AMBIENT);
-	enable_material_color(mat.get_diffuse(),alpha,GL_DIFFUSE);
-	enable_material_color(mat.get_specular(),alpha,GL_SPECULAR);
-	enable_material_color(mat.get_emission(),alpha,GL_EMISSION);
-	glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, mat.get_shininess());
-	if (phong_shading) {
+	if (ms == MS_NONE)
+		return;
+	if (ms != MS_BACK) {
+		glPushAttrib(GL_LIGHTING_BIT | GL_ENABLE_BIT);
+		glEnable(GL_LIGHTING);
+		glDisable(GL_COLOR_MATERIAL);
+	}
+	unsigned side = map_to_gl(ms);
+	enable_material_color(side, mat.get_ambient(),alpha,GL_AMBIENT);
+	enable_material_color(side, mat.get_diffuse(),alpha,GL_DIFFUSE);
+	enable_material_color(side, mat.get_specular(),alpha,GL_SPECULAR);
+	enable_material_color(side, mat.get_emission(),alpha,GL_EMISSION);
+	glMaterialf(side, GL_SHININESS, mat.get_shininess());
+	if (phong_shading && (ms != MS_BACK)) {
 		shader_program& prog = ref_textured_material_prog(*this);
 		prog.enable(*this);
 		prog.set_uniform(*this, "use_bump_map", false);
@@ -431,59 +459,66 @@ void gl_context::disable_material(const cgv::media::illum::phong_material& mat)
 /// enable a material with textures
 void gl_context::enable_material(const textured_material& mat, MaterialSide ms, float alpha)
 {
-	bool do_alpha = (mat.get_diffuse_texture() != 0) && mat.get_diffuse_texture()->get_component_name(mat.get_diffuse_texture()->get_nr_components()-1)[0] == 'A';
-	GLuint flags = do_alpha ? GL_COLOR_BUFFER_BIT : GL_CURRENT_BIT;
-	if (mat.get_bump_texture() != 0 || mat.get_diffuse_texture() != 0)
-		flags |= GL_TEXTURE_BIT;
-	flags |= GL_LIGHTING_BIT|GL_ENABLE_BIT;
-	glPushAttrib(flags);
+	if (ms == MS_NONE)
+		return;
+	bool do_alpha = (mat.get_diffuse_texture() != 0) && mat.get_diffuse_texture()->get_component_name(mat.get_diffuse_texture()->get_nr_components() - 1)[0] == 'A';
+	if (ms != MS_BACK) {
+		GLuint flags = do_alpha ? GL_COLOR_BUFFER_BIT : GL_CURRENT_BIT;
+		if (mat.get_bump_texture() != 0 || mat.get_diffuse_texture() != 0)
+			flags |= GL_TEXTURE_BIT;
+		flags |= GL_LIGHTING_BIT | GL_ENABLE_BIT;
+		glPushAttrib(flags);
+		glEnable(GL_LIGHTING);
+		glDisable(GL_COLOR_MATERIAL);
+	}
 
-	glEnable(GL_LIGHTING);
-	glDisable(GL_COLOR_MATERIAL);
-	enable_material_color(mat.get_ambient(),alpha,GL_AMBIENT);
-	enable_material_color(mat.get_diffuse(),alpha,GL_DIFFUSE);
-	enable_material_color(mat.get_specular(),alpha,GL_SPECULAR);
-	enable_material_color(mat.get_emission(),alpha,GL_EMISSION);
-	glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, mat.get_shininess());
+	unsigned side = map_to_gl(ms);
+	enable_material_color(side, mat.get_ambient(), alpha, GL_AMBIENT);
+	enable_material_color(side, mat.get_diffuse(),alpha,GL_DIFFUSE);
+	enable_material_color(side, mat.get_specular(),alpha,GL_SPECULAR);
+	enable_material_color(side, mat.get_emission(),alpha,GL_EMISSION);
+	glMaterialf(side, GL_SHININESS, mat.get_shininess());
 
-	if ((mat.get_bump_texture() || phong_shading) && ref_textured_material_prog(*this).is_linked()) {
-		shader_program& prog = ref_textured_material_prog(*this);
-		bool use_bump_map = mat.get_bump_texture() != 0;
-		if (use_bump_map)
-			mat.get_bump_texture()->enable(*this,0);
+	if (ms != MS_BACK) {
+		if ((mat.get_bump_texture() || phong_shading) && ref_textured_material_prog(*this).is_linked()) {
+			shader_program& prog = ref_textured_material_prog(*this);
+			bool use_bump_map = mat.get_bump_texture() != 0;
+			if (use_bump_map)
+				mat.get_bump_texture()->enable(*this, 0);
 
-		bool use_diffuse_map = mat.get_diffuse_texture() != 0;
-		if (use_diffuse_map)
-			mat.get_diffuse_texture()->enable(*this,1);
+			bool use_diffuse_map = mat.get_diffuse_texture() != 0;
+			if (use_diffuse_map)
+				mat.get_diffuse_texture()->enable(*this, 1);
 
-		prog.enable(*this);
-		prog.set_uniform(*this, "use_bump_map", use_bump_map);
-		if (use_bump_map) {
-			prog.set_uniform(*this, "bump_map", 0);
-			prog.set_uniform(*this, "bump_map_res", (int) (mat.get_bump_texture()->get_width()));
-			prog.set_uniform(*this, "bump_scale", 400*mat.get_bump_scale());
+			prog.enable(*this);
+			prog.set_uniform(*this, "use_bump_map", use_bump_map);
+			if (use_bump_map) {
+				prog.set_uniform(*this, "bump_map", 0);
+				prog.set_uniform(*this, "bump_map_res", (int)(mat.get_bump_texture()->get_width()));
+				prog.set_uniform(*this, "bump_scale", 400 * mat.get_bump_scale());
+			}
+			prog.set_uniform(*this, "use_diffuse_map", use_diffuse_map);
+			if (use_diffuse_map)
+				prog.set_uniform(*this, "diffuse_map", 1);
+			set_lighting_parameters(*this, prog);
 		}
-		prog.set_uniform(*this, "use_diffuse_map", use_diffuse_map);
-		if (use_diffuse_map)
-			prog.set_uniform(*this, "diffuse_map", 1);
-		set_lighting_parameters(*this, prog);
-	}
-	else if (mat.get_diffuse_texture()) {
-		enable_material_color(textured_material::color_type(1,1,1,1),alpha,GL_DIFFUSE);
-		mat.get_diffuse_texture()->enable(*this);
-		glTexEnvi(GL_TEXTURE_2D, GL_TEXTURE_ENV, GL_MODULATE);
-	}
-	if (do_alpha) {
-		glEnable(GL_ALPHA_TEST);
-		switch (mat.get_alpha_test_func()) {
-		case textured_material::AT_ALWAYS : glAlphaFunc(GL_ALWAYS, mat.get_alpha_threshold()); break;
-		case textured_material::AT_LESS   : glAlphaFunc(GL_LESS, mat.get_alpha_threshold()); break;
-		case textured_material::AT_EQUAL  : glAlphaFunc(GL_EQUAL, mat.get_alpha_threshold()); break;
-		case textured_material::AT_GREATER: glAlphaFunc(GL_GREATER, mat.get_alpha_threshold()); break;
+		else if (mat.get_diffuse_texture()) {
+			enable_material_color(side, textured_material::color_type(1, 1, 1, 1), alpha, GL_DIFFUSE);
+			mat.get_diffuse_texture()->enable(*this);
+			glTexEnvi(GL_TEXTURE_2D, GL_TEXTURE_ENV, GL_MODULATE);
 		}
+		if (do_alpha) {
+			glEnable(GL_ALPHA_TEST);
+			switch (mat.get_alpha_test_func()) {
+			case textured_material::AT_ALWAYS: glAlphaFunc(GL_ALWAYS, mat.get_alpha_threshold()); break;
+			case textured_material::AT_LESS: glAlphaFunc(GL_LESS, mat.get_alpha_threshold()); break;
+			case textured_material::AT_EQUAL: glAlphaFunc(GL_EQUAL, mat.get_alpha_threshold()); break;
+			case textured_material::AT_GREATER: glAlphaFunc(GL_GREATER, mat.get_alpha_threshold()); break;
+			}
+		}
+		else
+			glColor4f(1, 1, 1, alpha);
 	}
-	else
-		glColor4f(1,1,1,alpha);
 }
 /// disable phong material
 void gl_context::disable_material(const textured_material& mat)
@@ -728,8 +763,7 @@ bool gl_context::read_frame_buffer(data::data_view& dv,
 		type = df->get_component_type();
 		cf = df->get_standard_component_format();
 		if (w < 1 || h < 1) {
-			std::cerr << "read_frame_buffer: received invalid dimensions ("
-				<< w << "," << h << ")" << std::endl;
+			error(std::string("read_frame_buffer: received invalid dimensions (") + cgv::utils::to_string(w) + "," + cgv::utils::to_string(h) + ")");
 			return false;
 		}
 	}
@@ -743,9 +777,7 @@ bool gl_context::read_frame_buffer(data::data_view& dv,
 	}
 	GLuint gl_type = map_to_gl(type);
 	if (gl_type == 0) {
-		std::cerr << "read_frame_buffer: could not make component type " 
-			<< cgv::type::info::get_type_name(df->get_component_type())
-			<< " to gl type" << std::endl;
+		error(std::string("read_frame_buffer: could not make component type ")+cgv::type::info::get_type_name(df->get_component_type())+" to gl type");
 		return false;
 	}
 	GLuint gl_format = GL_DEPTH_COMPONENT;
@@ -754,8 +786,7 @@ bool gl_context::read_frame_buffer(data::data_view& dv,
 		if (cf != cgv::data::CF_S) {
 			gl_format = map_to_gl(cf);
 			if (gl_format == GL_RGB && cf != cgv::data::CF_RGB) {
-				std::cerr << "read_frame_buffer: could not match component format " 
-					<< df->get_component_format() << std::endl;
+				error(std::string("read_frame_buffer: could not match component format ") + cgv::utils::to_string(df->get_component_format()));
 				return false;
 			}
 		}
@@ -772,7 +803,7 @@ bool gl_context::read_frame_buffer(data::data_view& dv,
 		case FB_BACK_LEFT  :  gl_buffer = GL_BACK_LEFT; break;
 		case FB_BACK_RIGHT  : gl_buffer = GL_BACK_RIGHT; break;
 		default:
-			std::cout << "invalid buffer type " << buffer_type << std::endl;
+			error(std::string("invalid buffer type ")+cgv::utils::to_string(buffer_type));
 			return false;
 		}
 	}
@@ -960,8 +991,16 @@ static const char* color_buffer_formats[] =
 };
 
 
-GLuint tex_dim[] = { GL_TEXTURE_1D, GL_TEXTURE_2D, GL_TEXTURE_3D, GL_TEXTURE_CUBE_MAP_EXT };
-GLuint tex_bind[]= { GL_TEXTURE_BINDING_1D, GL_TEXTURE_BINDING_2D, GL_TEXTURE_BINDING_3D, GL_TEXTURE_BINDING_CUBE_MAP_EXT,GL_TEXTURE_BUFFER };
+GLuint get_tex_dim(TextureType tt) {
+	static GLuint tex_dim[] = { 0, GL_TEXTURE_1D, GL_TEXTURE_2D, GL_TEXTURE_3D, GL_TEXTURE_CUBE_MAP };
+	return tex_dim[tt];
+}
+
+GLuint get_tex_bind(TextureType tt) {
+	static GLuint tex_bind[] = { 0, GL_TEXTURE_BINDING_1D, GL_TEXTURE_BINDING_2D, GL_TEXTURE_BINDING_3D, GL_TEXTURE_BINDING_CUBE_MAP, GL_TEXTURE_BUFFER };
+	return tex_bind[tt];
+}
+
 
 unsigned int map_to_gl(TextureWrap wrap)
 {
@@ -994,22 +1033,92 @@ cgv::data::component_format gl_context::texture_find_best_format(
 	return best_cf;
 }
 
+std::string gl_error() {
+	GLenum eid = glGetError();
+	return std::string((const char*)gluErrorString(eid));
+}
+
+bool gl_context::check_gl_error(const std::string& where, const cgv::render::render_component* rc)
+{
+	GLenum eid = glGetError();
+	if (eid == GL_NO_ERROR)
+		return false;
+	std::string error_string = where + ": " + std::string((const char*)gluErrorString(eid));
+	error(error_string, rc);
+	return true;
+}
+
+bool gl_context::check_texture_support(TextureType tt, const std::string& where, const cgv::render::render_component* rc)
+{
+	switch (tt) {
+	case TT_3D:
+		if (!GLEW_VERSION_1_2) {
+			error(where + ": 3D texture not supported", rc);
+			return false;
+		}
+		break;
+	case TT_CUBEMAP:
+		if (!GLEW_VERSION_1_3) {
+			error(where + ": cubemap texture not supported", rc);
+			return false;
+		}
+		break;
+	}
+	return true;
+}
+
+bool gl_context::check_shader_support(ShaderType st, const std::string& where, const cgv::render::render_component* rc)
+{
+	switch (st) {
+	case ST_COMPUTE:
+		if (GLEW_VERSION_4_3)
+			return true;
+		else {
+			error(where+": compute shader need not supported OpenGL version 4.3", rc);
+			return false;
+		}
+	case ST_TESS_CONTROL:
+	case ST_TESS_EVALUTION:
+		if (GLEW_VERSION_4_0)
+			return true;
+		else {
+			error(where+": tesselation shader need not supported OpenGL version 4.0", rc);
+			return false;
+		}
+	case ST_GEOMETRY:
+		if (GLEW_VERSION_3_2)
+			return true;
+		else {
+			error(where + ": geometry shader need not supported OpenGL version 3.2", rc);
+			return false;
+		}
+	default:
+		if (GLEW_VERSION_2_0)
+			return true;
+		else {
+			error(where + ": shaders need not supported OpenGL version 2.0", rc);
+			return false;
+		}
+	}
+}
+
+bool gl_context::check_fbo_support(const std::string& where, const cgv::render::render_component* rc)
+{
+	if (!GLEW_VERSION_3_0) {
+		error(where + ": framebuffer objects not supported", rc);
+		return false;
+	}
+	return true;
+}
+
 GLuint gl_context::texture_generate(texture_base& tb)
 {
-	if (tb.tt == TT_3D && !(ensure_glew_initialized() && glTexImage3D)) {
-		tb.last_error = "attempt to create 3d texture, which is not supported";
-		return -1;
-	}
-	if (tb.tt == TT_CUBEMAP && !(ensure_glew_initialized() && glewIsExtensionSupported("GL_EXT_texture_cube_map"))) {
-		tb.last_error = "attempt to create cube map, which is not supported";
-		return -1;
-	}
-	GLuint tex_id = -1;
+	if (!check_texture_support(tb.tt, "gl_context::texture_generate", &tb))
+		return get_gl_id(0);
+	GLuint tex_id = get_gl_id(0);
 	glGenTextures(1, &tex_id);
-	if (glGetError() == GL_INVALID_OPERATION) {
-		tb.last_error = "attempt to create texture inside glBegin-glEnd-block";
-		return tex_id;
-	}
+	if (glGetError() == GL_INVALID_OPERATION)
+		error("gl_context::texture_generate: attempt to create texture inside glBegin-glEnd-block", &tb);
 	return tex_id;
 }
 
@@ -1018,7 +1127,7 @@ int gl_context::query_integer_constant(ContextIntegerConstant cic) const
 	GLint gl_const;
 	switch (cic) {
 		case MAX_NR_GEOMETRY_SHADER_OUTPUT_VERTICES :
-			gl_const = GL_MAX_GEOMETRY_OUTPUT_VERTICES_EXT;
+			gl_const = GL_MAX_GEOMETRY_OUTPUT_VERTICES;
 			break;
 	}
 	GLint value;
@@ -1029,26 +1138,24 @@ int gl_context::query_integer_constant(ContextIntegerConstant cic) const
 GLuint gl_context::texture_bind(TextureType tt, GLuint tex_id)
 {
 	GLint tmp_id;
-	glGetIntegerv(tex_bind[tt-1], &tmp_id);
-	glBindTexture(tex_dim[tt-1], tex_id);
+	glGetIntegerv(get_tex_bind(tt), &tmp_id);
+	glBindTexture(get_tex_dim(tt), tex_id);
 	return tmp_id;
 }
 
 void gl_context::texture_unbind(TextureType tt, GLuint tmp_id)
 {
-	glBindTexture(tex_dim[tt-1], tmp_id);
+	glBindTexture(get_tex_dim(tt), tmp_id);
 }
 
-bool gl_context::texture_create(
-						texture_base& tb, 
-						cgv::data::data_format& df)
+bool gl_context::texture_create(texture_base& tb, cgv::data::data_format& df)
 {
 	GLuint gl_format = (const GLuint&) tb.internal_format;
 	
 	if (tb.tt == TT_UNDEF)
 		tb.tt = (TextureType)df.get_nr_dimensions();
 	GLuint tex_id = texture_generate(tb);
-	if (tex_id == -1)
+	if (tex_id == get_gl_id(0))
 		return false;
 	GLuint tmp_id = texture_bind(tb.tt, tex_id);
 
@@ -1071,23 +1178,21 @@ bool gl_context::texture_create(
 			gl_format, df.get_width(), df.get_height(), df.get_depth(), 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
 		break;
 	case TT_CUBEMAP :
-		glTexImage2D( GL_TEXTURE_CUBE_MAP_POSITIVE_X_EXT, 0,
+		glTexImage2D( GL_TEXTURE_CUBE_MAP_POSITIVE_X, 0,
 			gl_format, df.get_width(), df.get_height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
-		glTexImage2D( GL_TEXTURE_CUBE_MAP_NEGATIVE_X_EXT, 0,
+		glTexImage2D( GL_TEXTURE_CUBE_MAP_NEGATIVE_X, 0,
 			gl_format, df.get_width(), df.get_height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
-		glTexImage2D( GL_TEXTURE_CUBE_MAP_POSITIVE_Y_EXT, 0,
+		glTexImage2D( GL_TEXTURE_CUBE_MAP_POSITIVE_Y, 0,
 			gl_format, df.get_width(), df.get_height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
-		glTexImage2D( GL_TEXTURE_CUBE_MAP_NEGATIVE_Y_EXT, 0,
+		glTexImage2D( GL_TEXTURE_CUBE_MAP_NEGATIVE_Y, 0,
 			gl_format, df.get_width(), df.get_height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
-		glTexImage2D( GL_TEXTURE_CUBE_MAP_POSITIVE_Z_EXT, 0,
+		glTexImage2D( GL_TEXTURE_CUBE_MAP_POSITIVE_Z, 0,
 			gl_format, df.get_width(), df.get_height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
-		glTexImage2D( GL_TEXTURE_CUBE_MAP_NEGATIVE_Z_EXT, 0,
+		glTexImage2D( GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, 0,
 			gl_format, df.get_width(), df.get_height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
 		break;
 	}
-	GLenum error = glGetError();
-	if (error != GL_NO_ERROR) {
-		tb.last_error = std::string((const char*)gluErrorString(error));
+	if (check_gl_error("gl_context::texture_create", &tb)) {
 		glDeleteTextures(1, &tex_id);
 		texture_unbind(tb.tt, tmp_id);
 		return false;
@@ -1095,7 +1200,7 @@ bool gl_context::texture_create(
 
 	texture_unbind(tb.tt, tmp_id);
 	tb.have_mipmaps = false;
-	reinterpret_cast<GLuint&>(tb.handle) = tex_id+1;
+	tb.handle = get_handle(tex_id);
 	return true;
 }
 
@@ -1116,12 +1221,12 @@ bool gl_context::texture_create(
 	// create texture is not yet done
 	GLuint tex_id;
 	if (tb.is_created()) 
-		tex_id = (const GLuint&) tb.handle - 1;
+		tex_id = get_gl_id(tb.handle);
 	else {
 		tex_id = texture_generate(tb);
-		if (tex_id == -1)
+		if (tex_id == get_gl_id(0))
 			return false;
-		reinterpret_cast<GLuint&>(tb.handle) = tex_id+1;
+		tb.handle = get_handle(tex_id);
 	}
 
 	// bind texture
@@ -1129,10 +1234,10 @@ bool gl_context::texture_create(
 
 	// load data to texture
 	tb.have_mipmaps = load_texture(data, gl_tex_format, level, cube_side, palettes);
-	
+	bool result = !check_gl_error("gl_context::texture_create", &tb);
 	// restore old texture
 	texture_unbind(tb.tt, tmp_id);
-	return true;
+	return result;
 }
 
 bool gl_context::texture_create_from_buffer(
@@ -1149,12 +1254,12 @@ bool gl_context::texture_create_from_buffer(
 	}
 	GLuint tex_id;
 	if (tb.is_created()) 
-		tex_id = (const GLuint&) tb.handle - 1;
+		tex_id = get_gl_id(tb.handle);
 	else {
 		tex_id = texture_generate(tb);
-		if (tex_id == -1)
+		if (tex_id == get_gl_id(0))
 			return false;
-		reinterpret_cast<GLuint&>(tb.handle) = tex_id+1;
+		tb.handle = get_handle(tex_id);
 	}
 	GLuint tmp_id = texture_bind(tb.tt, tex_id);
 
@@ -1164,28 +1269,35 @@ bool gl_context::texture_create_from_buffer(
 		level = 0;
 
 	glCopyTexImage2D(GL_TEXTURE_2D, level, gl_format, x, y, df.get_width(), df.get_height(), 0);
-	bool error = true;
+	bool result = false;
+	std::string error_string("gl_context::texture_create_from_buffer: ");
 	switch (glGetError()) {
+	case GL_NO_ERROR :
+		result = true;
+		break;
 	case GL_INVALID_ENUM : 
-		tb.last_error = "target was not an accepted value."; 
+		error_string += "target was not an accepted value."; 
 		break;
 	case GL_INVALID_VALUE : 
-		tb.last_error = "level was less than zero or greater than log sub 2(max), where max is the returned value of GL_MAX_TEXTURE_SIZE.\n"
+		error_string += "level was less than zero or greater than log sub 2(max), where max is the returned value of GL_MAX_TEXTURE_SIZE.\n"
 							 "or border was not zero or 1.\n"
 							 "or width was less than zero, greater than 2 + GL_MAX_TEXTURE_SIZE; or width cannot be represented as 2n + 2 * border for some integer n.";
 		break;
 	case GL_INVALID_OPERATION : 
-		tb.last_error = "glCopyTexImage2D was called between a call to glBegin and the corresponding call to glEnd.";
+		error_string += "glCopyTexImage2D was called between a call to glBegin and the corresponding call to glEnd.";
 		break;
 	default:
-		error = false;
+		error_string += (const char*)gluErrorString(glGetError());
+		break;
 	}
 	texture_unbind(tb.tt, tmp_id);
+	if (!result)
+		error(error_string, &tb);
+	else
+		if (gen_mipmap)
+			result = texture_generate_mipmaps(tb, tb.tt == TT_CUBEMAP ? 2 : (int)tb.tt);
 
-	if (gen_mipmap) 
-		texture_generate_mipmaps(tb, tb.tt == TT_CUBEMAP ? 2 : (int)tb.tt);
-
-	return error;
+	return result;
 }
 
 bool gl_context::texture_replace(
@@ -1194,12 +1306,10 @@ bool gl_context::texture_replace(
 						const cgv::data::const_data_view& data, 
 						int level, const std::vector<cgv::data::data_view>* palettes)
 {
-	GLuint tex_id = (const GLuint&) tb.handle - 1;
-	if (tex_id == -1) {
-	tb.last_error = "attempt to replace in not created texture";
+	if (!tb.is_created()) {
+		error("gl_context::texture_replace: attempt to replace in not created texture", &tb);
 		return false;
 	}
-
 	// determine dimension from location arguments
 	unsigned int dim = 1;
 	if (y != -1) {
@@ -1210,26 +1320,27 @@ bool gl_context::texture_replace(
 	// check consistency
 	if (tb.tt == TT_CUBEMAP) {
 		if (dim != 3) {
-			tb.last_error = "replace on cubemap without the side defined";
+			error("gl_context::texture_replace: replace on cubemap without the side defined", &tb);
 			return false;
 		}
 		if (z < 0 || z > 5) {
-			tb.last_error = "replace on cubemap without invalid side specification";
+			error("gl_context::texture_replace: replace on cubemap without invalid side specification", &tb);
 			return false;
 		}
 	}
 	else {
 		if (tb.tt != dim) {
-			tb.last_error = "replace on texture with invalid position specification";
+			error("gl_context::texture_replace: replace on texture with invalid position specification", &tb);
 			return false;
 		}
 	}
 
 	// bind texture
-	GLuint tmp_id = texture_bind(tb.tt,tex_id);
+	GLuint tmp_id = texture_bind(tb.tt, get_gl_id(tb.handle));
 	tb.have_mipmaps = replace_texture(data, level, x, y, z, palettes) || tb.have_mipmaps;
+	bool result = !check_gl_error("gl_context::texture_replace", &tb);
 	texture_unbind(tb.tt, tmp_id);
-	return true;
+	return result;
 }
 
 bool gl_context::texture_replace_from_buffer(
@@ -1239,12 +1350,10 @@ bool gl_context::texture_replace_from_buffer(
 							unsigned int width, unsigned int height, 
 							int level)
 {
-	GLuint tex_id = (const GLuint&) tb.handle - 1;
-	if (tex_id == -1) {
-		tb.last_error = "attempt to replace in not created texture";
+	if (!tb.is_created()) {
+		error("gl_context::texture_replace_from_buffer: attempt to replace in not created texture", &tb);
 		return false;
 	}
-
 	// determine dimension from location arguments
 	unsigned int dim = 2;
 	if (z != -1)
@@ -1253,11 +1362,11 @@ bool gl_context::texture_replace_from_buffer(
 	// consistency checks
 	if (tb.tt == TT_CUBEMAP) {
 		if (dim != 3) {
-			tb.last_error = "replace on cubemap without the side defined";
+			error("gl_context::texture_replace_from_buffer: replace on cubemap without the side defined", &tb);
 			return false;
 		}
 		if (z < 0 || z > 5) {
-			tb.last_error = "replace on cubemap without invalid side specification";
+			error("gl_context::texture_replace_from_buffer: replace on cubemap without invalid side specification", &tb);
 			return false;
 		}
 	}
@@ -1273,84 +1382,80 @@ bool gl_context::texture_replace_from_buffer(
 		level = 0;
 
 	// bind texture
-	GLuint tmp_id = texture_bind(tb.tt, tex_id);
-
+	GLuint tmp_id = texture_bind(tb.tt, get_gl_id(tb.handle));
 	switch (tb.tt) {
-		case TT_2D :
-			glCopyTexSubImage2D(GL_TEXTURE_2D, level, x, y, 
-										x_buffer, y_buffer, width, height);
-			break;
-		case TT_3D :
-			glCopyTexSubImage3D(GL_TEXTURE_3D, level, x, y, z, 
-										x_buffer, y_buffer, width, height);
-			break;
-		case TT_CUBEMAP :
-			glCopyTexSubImage2D(get_gl_cube_map_target(z), level, x, y, 
-										x_buffer, y_buffer, width, height);
-			break;
+	case TT_2D :      glCopyTexSubImage2D(GL_TEXTURE_2D, level, x, y, x_buffer, y_buffer, width, height); break;
+	case TT_3D :      glCopyTexSubImage3D(GL_TEXTURE_3D, level, x, y, z, x_buffer, y_buffer, width, height); break;
+	case TT_CUBEMAP : glCopyTexSubImage2D(get_gl_cube_map_target(z), level, x, y, x_buffer, y_buffer, width, height); break;
 	}
+	bool result = !check_gl_error("gl_context::texture_replace_from_buffer", &tb);
 	texture_unbind(tb.tt, tmp_id);
 
-	if (gen_mipmap) 
-		texture_generate_mipmaps(tb, tb.tt == TT_CUBEMAP ? 2 : (int)tb.tt);
-	return true;
+	if (result && gen_mipmap)
+		result = texture_generate_mipmaps(tb, tb.tt == TT_CUBEMAP ? 2 : (int)tb.tt);
+
+	return result;
 }
 
 bool gl_context::texture_generate_mipmaps(texture_base& tb, unsigned int dim)
 {
-	GLuint tex_id = ((const GLuint&) tb.handle)-1;
-	GLuint tmp_id = texture_bind(tb.tt,tex_id);
+	GLuint tmp_id = texture_bind(tb.tt,get_gl_id(tb.handle));
 
-	bool res = generate_mipmaps(dim, &tb.last_error);
-	if (res) 
+	std::string error_string;
+	bool result = generate_mipmaps(dim, &error_string);
+	if (result)
 		tb.have_mipmaps = true;
+	else
+		error(std::string("gl_context::texture_generate_mipmaps: ") + error_string);
 
 	texture_unbind(tb.tt, tmp_id);
-	return res;
+	return result;
 }
 
-bool gl_context::texture_destruct(render_component& rc)
+bool gl_context::texture_destruct(texture_base& tb)
 {
-	GLuint tex_id = ((const GLuint&) rc.handle)-1;
-	if (tex_id == -1) {
-		rc.last_error = "attempt to destruct not created texture";
+	if (!is_created()) {
+		error("gl_context::texture_destruct: attempt to destruct not created texture", &tb);
 		return false;
 	}
+	GLuint tex_id = get_gl_id(tb.handle);
 	glDeleteTextures(1, &tex_id);
-	rc.handle = 0;
-	return true;
+	bool result = !check_gl_error("gl_context::texture_destruct", &tb);
+	tb.handle = 0;
+	return result;
 }
 
-bool gl_context::texture_set_state(const texture_base& ts)
+bool gl_context::texture_set_state(const texture_base& tb)
 {
-	if (ts.tt == TT_UNDEF) {
-		ts.last_error = "attempt to set state on texture without type";
+	if (tb.tt == TT_UNDEF) {
+		error("gl_context::texture_set_state: attempt to set state on texture without type", &tb);
 		return false;
 	}
-	GLuint tex_id = (GLuint&) ts.handle - 1;
+	GLuint tex_id = (GLuint&) tb.handle - 1;
 	if (tex_id == -1) {
-		ts.last_error = "attempt of setting texture state of not created texture";
+		error("gl_context::texture_set_state: attempt of setting texture state of not created texture", &tb);
 		return false;
 	}
-	GLint tmp_id = texture_bind(ts.tt, tex_id);
+	GLint tmp_id = texture_bind(tb.tt, tex_id);
 
-	glTexParameteri(tex_dim[ts.tt-1], GL_TEXTURE_MIN_FILTER, map_to_gl(ts.min_filter));
-	glTexParameteri(tex_dim[ts.tt-1], GL_TEXTURE_MAG_FILTER, map_to_gl(ts.mag_filter));
-	glTexParameterf(tex_dim[ts.tt-1], GL_TEXTURE_PRIORITY, ts.priority);
-	if (ts.min_filter == TF_ANISOTROP)
-		glTexParameterf(tex_dim[ts.tt-1], GL_TEXTURE_MAX_ANISOTROPY_EXT, ts.anisotropy);
+	glTexParameteri(get_tex_dim(tb.tt), GL_TEXTURE_MIN_FILTER, map_to_gl(tb.min_filter));
+	glTexParameteri(get_tex_dim(tb.tt), GL_TEXTURE_MAG_FILTER, map_to_gl(tb.mag_filter));
+	glTexParameterf(get_tex_dim(tb.tt), GL_TEXTURE_PRIORITY, tb.priority);
+	if (tb.min_filter == TF_ANISOTROP)
+		glTexParameterf(get_tex_dim(tb.tt), GL_TEXTURE_MAX_ANISOTROPY_EXT, tb.anisotropy);
 	else
-		glTexParameterf(tex_dim[ts.tt-1], GL_TEXTURE_MAX_ANISOTROPY_EXT, 1.0f);
-	if (ts.border_color[0] >= 0.0f)
-		glTexParameterfv(tex_dim[ts.tt-1], GL_TEXTURE_BORDER_COLOR, ts.border_color);
-	glTexParameteri(tex_dim[ts.tt-1], GL_TEXTURE_WRAP_S, map_to_gl(ts.wrap_s));
-	if (ts.tt > TT_1D)
-		glTexParameteri(tex_dim[ts.tt-1], GL_TEXTURE_WRAP_T, map_to_gl(ts.wrap_t));
-	if (ts.tt == TT_3D)
-		glTexParameteri(tex_dim[ts.tt-1], GL_TEXTURE_WRAP_R, map_to_gl(ts.wrap_r));
+		glTexParameterf(get_tex_dim(tb.tt), GL_TEXTURE_MAX_ANISOTROPY_EXT, 1.0f);
+	if (tb.border_color[0] >= 0.0f)
+		glTexParameterfv(get_tex_dim(tb.tt), GL_TEXTURE_BORDER_COLOR, tb.border_color);
+	glTexParameteri(get_tex_dim(tb.tt), GL_TEXTURE_WRAP_S, map_to_gl(tb.wrap_s));
+	if (tb.tt > TT_1D)
+		glTexParameteri(get_tex_dim(tb.tt), GL_TEXTURE_WRAP_T, map_to_gl(tb.wrap_t));
+	if (tb.tt == TT_3D)
+		glTexParameteri(get_tex_dim(tb.tt), GL_TEXTURE_WRAP_R, map_to_gl(tb.wrap_r));
 
-	texture_unbind(ts.tt, tmp_id);
-	return true;
+	bool result = !check_gl_error("gl_context::texture_set_state", &tb);
+	texture_unbind(tb.tt, tmp_id);
+	return result;
 }
 
 bool gl_context::texture_enable(
@@ -1358,61 +1463,63 @@ bool gl_context::texture_enable(
 						int tex_unit, unsigned int dim)
 {
 	if (dim < 1 || dim > 3) {
-		tb.last_error = "invalid texture dimension";
+		error("gl_context::texture_enable: invalid texture dimension", &tb);
 		return false;
 	}
 	GLuint tex_id = (GLuint&) tb.handle - 1;
 	if (tex_id == -1) {
-		tb.last_error = "texture not created";
+		error("gl_context::texture_enable: texture not created", &tb);
 		return false;
 	}
 	if (tex_unit >= 0) {
-		if (!ensure_glew_initialized() || !glActiveTextureARB) {
-			tb.last_error = "multi texturing not supported";
+		if (!GLEW_VERSION_1_3) {
+			error("gl_context::texture_enable: multi texturing not supported", &tb);
 			return false;
 		}
-		glActiveTextureARB(GL_TEXTURE0_ARB+tex_unit);
+		glActiveTexture(GL_TEXTURE0+tex_unit);
 	}
 	GLint& old_binding = (GLint&) tb.user_data;
-	glGetIntegerv(tex_bind[tb.tt-1], &old_binding);
+	glGetIntegerv(get_tex_bind(tb.tt), &old_binding);
 	++old_binding;
-	glBindTexture(tex_dim[tb.tt-1], tex_id);
-	glEnable(tex_dim[tb.tt-1]);
+	glBindTexture(get_tex_dim(tb.tt), tex_id);
+	glEnable(get_tex_dim(tb.tt));
+	bool result = !check_gl_error("gl_context::texture_enable", &tb);
 	if (tex_unit >= 0)
-		glActiveTextureARB(GL_TEXTURE0_ARB);
-	return true;
+		glActiveTexture(GL_TEXTURE0);
+	return result;
 }
 
 bool gl_context::texture_disable(
-						const texture_base& tb, 
+						texture_base& tb, 
 						int tex_unit, unsigned int dim)
 {
 	if (dim < 1 || dim > 3) {
-		tb.last_error = "invalid texture dimension";
+		error("gl_context::texture_disable: invalid texture dimension", &tb);
 		return false;
 	}
 	if (tex_unit == -2) {
-		tb.last_error = "invalid texture unit";
+		error("gl_context::texture_disable: invalid texture unit", &tb);
 		return false;
 	}
 	GLuint old_binding = (const GLuint&) tb.user_data;
 	--old_binding;
 	if (tex_unit >= 0)
-		glActiveTextureARB(GL_TEXTURE0_ARB+tex_unit);
-	glDisable(tex_dim[tb.tt-1]);
-	glBindTexture(tex_dim[tb.tt-1], old_binding);
+		glActiveTexture(GL_TEXTURE0+tex_unit);
+	glDisable(get_tex_dim(tb.tt));
+	bool result = !check_gl_error("gl_context::texture_disable", &tb);
+	glBindTexture(get_tex_dim(tb.tt), old_binding);
 	if (tex_unit >= 0)
-		glActiveTextureARB(GL_TEXTURE0_ARB);
-	return true;
+		glActiveTexture(GL_TEXTURE0);
+	return result;
 }
 
 bool gl_context::render_buffer_create(
-						render_component& rc, 
-						cgv::data::component_format& cf, 
-						int& _width, int& _height)
+	render_component& rc,
+	cgv::data::component_format& cf,
+	int& _width, int& _height)
 {
-	if (!(ensure_glew_initialized() && GLEW_EXT_framebuffer_object)) {
-		rc.last_error = "frame buffer objects not supported";
+	if (!GLEW_VERSION_3_0) {
+		error("gl_context::render_buffer_create: frame buffer objects not supported", &rc);
 		return false;
 	}
 	if (_width == -1)
@@ -1421,69 +1528,62 @@ bool gl_context::render_buffer_create(
 		_height = get_height();
 
 	GLuint rb_id;
-	glGenRenderbuffersEXT(1, &rb_id);
-	glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, rb_id);
+	glGenRenderbuffers(1, &rb_id);
+	glBindRenderbuffer(GL_RENDERBUFFER, rb_id);
 
 	GLuint& gl_format = (GLuint&)rc.internal_format;
-	unsigned int i = find_best_match(cf,color_buffer_formats);
+	unsigned i = find_best_match(cf, color_buffer_formats);
 	cgv::data::component_format best_cf(color_buffer_formats[i]);
 	gl_format = gl_color_buffer_format_ids[i];
 
-	if (ensure_glew_initialized() && GLEW_ARB_depth_texture) {
-		i = find_best_match(cf,depth_formats,&best_cf);
-		if (i != -1) {
-			best_cf = cgv::data::component_format(depth_formats[i]);
-			gl_format = gl_depth_format_ids[i];
-		}
+	i = find_best_match(cf, depth_formats, &best_cf);
+	if (i != -1) {
+		best_cf = cgv::data::component_format(depth_formats[i]);
+		gl_format = gl_depth_format_ids[i];
 	}
+
 	cf = best_cf;
 
-	glRenderbufferStorageEXT(GL_RENDERBUFFER_EXT, gl_format,
-		_width, _height);
+	glRenderbufferStorage(GL_RENDERBUFFER, gl_format, _width, _height);
 
-	++rb_id;
-	rc.handle = (void*&) rb_id;
-	--rb_id;
+	if (check_gl_error("gl_context::render_buffer_create", &rc))
+		return false;
+	rc.handle = get_handle(rb_id);
 	return true;
 }
 
 bool gl_context::render_buffer_destruct(render_component& rc)
 {
-	if (!(ensure_glew_initialized() && GLEW_EXT_framebuffer_object)) {
-		rc.last_error = "frame buffer objects not supported";
+	if (!GLEW_VERSION_3_0) {
+		error("gl_context::render_buffer_destruct: frame buffer objects not supported", &rc);
 		return false;
 	}
 	GLuint rb_id = ((GLuint&) rc.handle)+1;
-	glDeleteRenderbuffersEXT(1, &rb_id);
+	glDeleteRenderbuffers(1, &rb_id);
+	if (check_gl_error("gl_context::render_buffer_destruct", &rc))
+		return false;
 	rc.handle = 0;
 	return true;
 }
 
 bool gl_context::frame_buffer_create(frame_buffer_base& fbb)
 {
+	if (!check_fbo_support("gl_context::frame_buffer_create", &fbb))
+		return false;
+
 	if (fbb.width == -1)
 		fbb.width = get_width();
 	if (fbb.height == -1)
 		fbb.height = get_height();
 
-	if (!ensure_glew_initialized()) {
-		fbb.last_error = "could not initialize glew";
-		return false;
-	}
-	if (!GLEW_EXT_framebuffer_object) {
-		fbb.last_error = "framebuffer objects not supported";
-		return false;
-	}
 	// allocate framebuffer object
-	GLuint fbo_id;
-	glGenFramebuffersEXT(1, &fbo_id);
+	GLuint fbo_id = 0;
+	glGenFramebuffers(1, &fbo_id);
 	if (fbo_id == 0) {
-		fbb.last_error = "could not allocate framebuffer object";
+		error("gl_context::frame_buffer_create: could not allocate framebuffer object", &fbb);
 		return false;
 	}
-	++fbo_id;
-	fbb.handle = (void*&) fbo_id;
-	--fbo_id;
+	fbb.handle = get_handle(fbo_id);
 	return true;
 }
 
@@ -1491,17 +1591,17 @@ void gl_context::frame_buffer_bind(const frame_buffer_base& fbb, void*& user_dat
 {
 	if (fbb.handle == 0)
 		return;
-	GLuint fbo_id = (GLuint&) fbb.handle - 1;
+	GLuint fbo_id = get_gl_id(fbb.handle);
 	GLint old_binding;
-	glGetIntegerv(GL_FRAMEBUFFER_BINDING_EXT, &old_binding);
-	reinterpret_cast<GLuint&>(user_data) = old_binding + 1;
-	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, fbo_id);
+	glGetIntegerv(GL_FRAMEBUFFER_BINDING, &old_binding);
+	user_data = get_handle(old_binding);
+	glBindFramebuffer(GL_FRAMEBUFFER, fbo_id);
 }
 
 void gl_context::frame_buffer_unbind(const frame_buffer_base& fbb, void*& user_data) const
 {
-	GLuint old_binding = (const GLuint&) user_data - 1;
-	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, old_binding);
+	GLuint old_binding = get_gl_id(user_data);
+	glBindFramebuffer(GL_FRAMEBUFFER, old_binding);
 	user_data = 0;
 }
 
@@ -1518,24 +1618,24 @@ void gl_context::frame_buffer_unbind(frame_buffer_base& fbb) const
 bool gl_context::frame_buffer_enable(frame_buffer_base& fbb)
 {
 	if (fbb.handle == 0) {
-		fbb.last_error = "attempt to enable not created frame buffer";
+		error("gl_context::frame_buffer_enable: attempt to enable not created frame buffer", &fbb);
 		return false;
 	}
-	GLuint fbo_id = (GLuint&) fbb.handle-1;
+	GLuint fbo_id = get_gl_id(fbb.handle);
 	int i;
 	int n = 0;
 	GLenum draw_buffers[16];
 	if (fbb.enabled_color_attachments.size() == 0) {
 		for (i = 0; i < 16; ++i)
 			if (fbb.attached[i]) {
-				draw_buffers[n] = GL_COLOR_ATTACHMENT0_EXT+i;
+				draw_buffers[n] = GL_COLOR_ATTACHMENT0+i;
 				++n;
 			}
 	}
 	else {
 		for (i = 0; i < (int)fbb.enabled_color_attachments.size(); ++i) {
 			if (fbb.attached[fbb.enabled_color_attachments[i]]) {
-				draw_buffers[n] = GL_COLOR_ATTACHMENT0_EXT+fbb.enabled_color_attachments[i];
+				draw_buffers[n] = GL_COLOR_ATTACHMENT0+fbb.enabled_color_attachments[i];
 				++n;
 			}
 		}
@@ -1549,7 +1649,7 @@ bool gl_context::frame_buffer_enable(frame_buffer_base& fbb)
 		glDrawBuffers(n, draw_buffers);
 	}
 	else {
-		fbb.last_error = "no attached draw buffer selected!!";
+		error("gl_context::frame_buffer_enable: no attached draw buffer selected!!", &fbb);
 		return false;
 	}
 	glViewport(0,0,fbb.width, fbb.height);
@@ -1567,41 +1667,40 @@ bool gl_context::frame_buffer_disable(frame_buffer_base& fbb)
 
 bool gl_context::frame_buffer_destruct(frame_buffer_base& fbb)
 {
-	if (!(ensure_glew_initialized() && GLEW_EXT_framebuffer_object)) {
-		fbb.last_error = "frame buffer objects not supported";
-		return false;
-	}
 	if (fbb.handle == 0) {
-		fbb.last_error = "attempt to destruct not created frame buffer";
+		error("gl_context::frame_buffer_destruct: attempt to destruct not created frame buffer", &fbb);
 		return false;
 	}
-	GLuint fbo_id = (GLuint&)fbb.handle - 1;
-	glDeleteFramebuffersEXT(1, &fbo_id);
+	GLuint fbo_id = get_gl_id(fbb.handle);
+	glDeleteFramebuffers(1, &fbo_id);
 	fbb.handle = 0;
 	fbb.user_data = 0;
 	return true;
 }
 
-bool gl_context::frame_buffer_attach(frame_buffer_base& fbb, 
-												 const render_component& rb, bool is_depth, int i)
+bool gl_context::frame_buffer_attach(frame_buffer_base& fbb, const render_component& rb, bool is_depth, int i)
 {
-	if (rb.handle == 0) {
-		fbb.last_error = "attempt to attach empty render buffer";
+	if (fbb.handle == 0) {
+		error("gl_context::frame_buffer_attach: attempt to attach to frame buffer that is not created", &fbb);
 		return false;
 	}
-	GLuint rb_id = (const GLuint&) rb.handle - 1;
+	if (rb.handle == 0) {
+		error("gl_context::frame_buffer_attach: attempt to attach empty render buffer", &fbb);
+		return false;
+	}
+	GLuint rb_id = get_gl_id(rb.handle);
 	void* user_data;
 	frame_buffer_bind(fbb, user_data);
 	if (is_depth) {
-		glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT, 
-			GL_DEPTH_ATTACHMENT_EXT,
-			GL_RENDERBUFFER_EXT, 
+		glFramebufferRenderbuffer(GL_FRAMEBUFFER, 
+			GL_DEPTH_ATTACHMENT,
+			GL_RENDERBUFFER, 
 			rb_id);
 	}
 	else {
-		glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT, 
-			GL_COLOR_ATTACHMENT0_EXT+i,
-			GL_RENDERBUFFER_EXT, 
+		glFramebufferRenderbuffer(GL_FRAMEBUFFER, 
+			GL_COLOR_ATTACHMENT0+i,
+			GL_RENDERBUFFER, 
 			rb_id);
 		fbb.attached[i] = true;
 	}
@@ -1614,96 +1713,102 @@ bool gl_context::frame_buffer_attach(frame_buffer_base& fbb,
 												 const texture_base& t, bool is_depth,
 												 int level, int i, int z_or_cube_side)
 {
-	if (!GLEW_EXT_framebuffer_object) {
-		fbb.last_error = "framebuffer objects not supported";
+	if (fbb.handle == 0) {
+		error("gl_context::frame_buffer_attach: attempt to attach to frame buffer that is not created", &fbb);
 		return false;
 	}
 	void* user_data;
 	frame_buffer_bind(fbb, user_data);
-	GLuint tex_id = (const GLuint&) t.handle - 1;
+	GLuint tex_id = get_gl_id(t.handle);
 	if (z_or_cube_side == -1) {
 		if (is_depth) {
-			glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, 
-				GL_DEPTH_ATTACHMENT_EXT,
+			glFramebufferTexture2D(GL_FRAMEBUFFER, 
+				GL_DEPTH_ATTACHMENT,
 				GL_TEXTURE_2D, tex_id, level);
 		}
 		else {
-			glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, 
-				GL_COLOR_ATTACHMENT0_EXT+i, 
+			glFramebufferTexture2D(GL_FRAMEBUFFER, 
+				GL_COLOR_ATTACHMENT0+i, 
 				GL_TEXTURE_2D, tex_id, level);
 			fbb.attached[i] = true;
 		}
 	}
 	else {
 		if (t.tt == TT_CUBEMAP) {
-			glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, 
-				GL_COLOR_ATTACHMENT0_EXT+i, 
+			glFramebufferTexture2D(GL_FRAMEBUFFER, 
+				GL_COLOR_ATTACHMENT0+i, 
 				get_gl_cube_map_target(z_or_cube_side), tex_id, level);
 		}
 		else {
-			glFramebufferTexture3DEXT(GL_FRAMEBUFFER_EXT, 
-				GL_COLOR_ATTACHMENT0_EXT+i, 
+			glFramebufferTexture3D(GL_FRAMEBUFFER, 
+				GL_COLOR_ATTACHMENT0+i, 
 				GL_TEXTURE_3D, tex_id, level, z_or_cube_side);
 		}
 		fbb.attached[i] = true;
 	}
+	bool result = !check_gl_error("gl_context::frame_buffer_attach", &fbb);
 	frame_buffer_unbind(fbb, user_data);
-	return true;
+	return result;
 }
 
 /// check for completeness, if not complete, get the reason in last_error
 bool gl_context::frame_buffer_is_complete(const frame_buffer_base& fbb) const
 {
-	if (!GLEW_EXT_framebuffer_object) {
-		fbb.last_error = "framebuffer objects not supported";
+	if (fbb.handle == 0) {
+		error("gl_context::frame_buffer_is_complete: attempt to check completeness on frame buffer that is not created", &fbb);
 		return false;
 	}
 	void* user_data;
 	frame_buffer_bind(fbb,user_data);
-	GLenum error = glCheckFramebufferStatusEXT(GL_FRAMEBUFFER_EXT);
+	GLenum error = glCheckFramebufferStatus(GL_FRAMEBUFFER);
 	frame_buffer_unbind(fbb,user_data);
 	switch (error) {
-	case GL_FRAMEBUFFER_COMPLETE_EXT:
+	case GL_FRAMEBUFFER_COMPLETE:
 		return true;
-   case GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT_EXT:
+	case GL_FRAMEBUFFER_UNDEFINED:
+		fbb.last_error = "undefined framebuffer";
+		return false;
+	case GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT:
 		fbb.last_error = "incomplete attachment";
 		return false;
-    case GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT_EXT:
+	case GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT:
       fbb.last_error = "incomplete or missing attachment";
 		return false;
-    case GL_FRAMEBUFFER_INCOMPLETE_DIMENSIONS_EXT:
-      fbb.last_error = "incomplete dimensions";
+    case GL_FRAMEBUFFER_INCOMPLETE_MULTISAMPLE:
+      fbb.last_error = "incomplete multisample";
 		return false;
-    case GL_FRAMEBUFFER_INCOMPLETE_FORMATS_EXT:
-      fbb.last_error = "incomplete formats";
+    case GL_FRAMEBUFFER_INCOMPLETE_LAYER_TARGETS:
+      fbb.last_error = "incomplete layer targets";
 		return false;
-    case GL_FRAMEBUFFER_INCOMPLETE_DRAW_BUFFER_EXT:
+    case GL_FRAMEBUFFER_INCOMPLETE_DRAW_BUFFER:
       fbb.last_error = "incomplete draw buffer";
 		return false;
-    case GL_FRAMEBUFFER_INCOMPLETE_READ_BUFFER_EXT:
+    case GL_FRAMEBUFFER_INCOMPLETE_READ_BUFFER:
       fbb.last_error = "incomplete read buffer";
 		return false;
-    case GL_FRAMEBUFFER_UNSUPPORTED_EXT:
+    case GL_FRAMEBUFFER_UNSUPPORTED:
       fbb.last_error = "framebuffer objects unsupported";
 		return false;
 	}
-   fbb.last_error = "unknown error";
+	fbb.last_error = "unknown error";
 	return false;
 }
 
 int gl_context::frame_buffer_get_max_nr_color_attachments()
 {
-	if (!(ensure_glew_initialized() && GLEW_EXT_framebuffer_object)) {
-		std::cerr << "frame buffer objects not supported" << std::endl;
+	if (!check_fbo_support("gl_context::frame_buffer_get_max_nr_color_attachments"))
 		return 0;
-	}
+
 	GLint nr;
-	glGetIntegerv(GL_MAX_COLOR_ATTACHMENTS_EXT, &nr);
+	glGetIntegerv(GL_MAX_COLOR_ATTACHMENTS, &nr);
 	return nr;
 }
 
 int gl_context::frame_buffer_get_max_nr_draw_buffers()
 {
+	if (!check_fbo_support("gl_context::frame_buffer_get_max_nr_draw_buffers"))
+		return 0;
+
 	GLint nr;
 	glGetIntegerv(GL_MAX_DRAW_BUFFERS, &nr);
 	return nr;
@@ -1711,108 +1816,109 @@ int gl_context::frame_buffer_get_max_nr_draw_buffers()
 
 GLuint gl_shader_type[] = 
 {
-	GL_VERTEX_SHADER_ARB, GL_VERTEX_SHADER_ARB, GL_GEOMETRY_SHADER_EXT, GL_FRAGMENT_SHADER_ARB
+	0, GL_COMPUTE_SHADER, GL_VERTEX_SHADER, GL_TESS_CONTROL_SHADER, GL_TESS_EVALUATION_SHADER, GL_GEOMETRY_SHADER, GL_FRAGMENT_SHADER
 };
 
-void gl_context::shader_code_destruct(void* handle)
+void gl_context::shader_code_destruct(render_component& sc)
 {
-	GLuint s_id = (GLuint&) handle - 1;
-	glDeleteObjectARB(s_id);
+	if (sc.handle == 0) {
+		error("gl_context::shader_code_destruct: shader not created", &sc);
+		return;
+	}
+	glDeleteShader(get_gl_id(sc.handle));
+	check_gl_error("gl_context::shader_code_destruct", &sc);
 }
 
-void* gl_context::shader_code_create(const std::string& source, ShaderType st, std::string& last_error)
+bool gl_context::shader_code_create(render_component& sc, ShaderType st, const std::string& source)
 {
-	if (!ensure_glew_initialized()) {
-		last_error = "could not initialize glew";
-		return 0;
+	if (!check_shader_support(st, "gl_context::shader_code_create", &sc))
+		return false;
+
+	GLuint s_id = glCreateShader(gl_shader_type[st]);
+	if (s_id == -1) {
+		error(std::string("gl_context::shader_code_create: ")+gl_error(), &sc);
+		return false;
 	}
-	if (!GLEW_ARB_shader_objects) {
-		last_error = "shaders are not supported";
-		return 0;
-	}
-	if (st == ST_GEOMETRY && !(GLEW_EXT_geometry_shader4)) {
-		last_error = "geometry shaders not supported";
-		return 0;
-	}
-	GLuint s_id = glCreateShaderObjectARB(gl_shader_type[st]);
-	if (s_id == -1)
-		return 0;
+	sc.handle = get_handle(s_id);
+
 	const char* s = source.c_str();
-	glShaderSourceARB(s_id, 1, &s,NULL);
-	void* handle = 0;
-	reinterpret_cast<GLuint&>(handle) = s_id+1;
-	return handle;
+	glShaderSource(s_id, 1, &s,NULL);
+	if (check_gl_error("gl_context::shader_code_create", &sc))
+		return false;
+
+	return true;
 }
 
-bool gl_context::shader_code_compile(void* handle, std::string& last_error)
+bool gl_context::shader_code_compile(render_component& sc)
 {
-	GLuint s_id = (GLuint&)handle - 1;
-	glCompileShaderARB(s_id);
+	if (sc.handle == 0) {
+		error("gl_context::shader_code_compile: shader not created", &sc);
+		return false;
+	}
+	GLuint s_id = get_gl_id(sc.handle);
+	glCompileShader(s_id);
 	int result;
-	glGetObjectParameterivARB(s_id, GL_OBJECT_COMPILE_STATUS_ARB, &result); 
+	glGetShaderiv(s_id, GL_COMPILE_STATUS, &result); 
 	if (result == 1)
 		return true;
-	last_error = std::string();
-	int infologLength = 0;
-	int charsWritten  = 0;
-	char *infoLog;
-	glGetObjectParameterivARB(s_id, GL_OBJECT_INFO_LOG_LENGTH_ARB,
-					 &infologLength);
+	sc.last_error = std::string();
+	GLint infologLength = 0;
+	glGetShaderiv(s_id, GL_INFO_LOG_LENGTH, &infologLength);
 	if (infologLength > 0) {
-		infoLog = (char *)malloc(infologLength);
-		glGetInfoLogARB(s_id, infologLength, &charsWritten, infoLog);
-		last_error = infoLog;
+		int charsWritten = 0;
+		char *infoLog = (char *)malloc(infologLength);
+		glGetShaderInfoLog(s_id, infologLength, &charsWritten, infoLog);
+		sc.last_error = infoLog;
 		free(infoLog);
 	}
 	return false;
 }
 
-bool gl_context::shader_program_create(void* &handle, std::string& last_error)
+bool gl_context::shader_program_create(shader_program_base& spb)
 {
-	if (!ensure_glew_initialized()) {
-		last_error = "could not initialize glew";
+	if (!check_shader_support(ST_VERTEX, "gl_context::shader_program_create", &spb))
 		return false;
-	}
-	if (!GLEW_ARB_shader_objects) {
-		last_error = "shaders are not supported";
-		return false;
-	}
-	GLuint p_id = glCreateProgramObjectARB();
-	(GLuint&) handle = p_id + 1;
+	spb.handle = get_handle(glCreateProgram());
 	return true;
 }
 
-void gl_context::shader_program_attach(void* handle, void* code_handle)
+void gl_context::shader_program_attach(shader_program_base& spb, const render_component& sc)
 {
-	GLuint p_id = (const GLuint&) handle - 1;
-	GLuint c_id = (const GLuint&) code_handle - 1;
-	glAttachObjectARB(p_id,c_id);
+	if (spb.handle == 0) {
+		error("gl_context::shader_program_attach: shader program not created", &spb);
+		return;
+	}
+	glAttachShader(get_gl_id(spb.handle), get_gl_id(sc.handle));
 }
 
-void gl_context::shader_program_detach(void* handle, void* code_handle)
+void gl_context::shader_program_detach(shader_program_base& spb, const render_component& sc)
 {
-	GLuint p_id = (const GLuint&) handle - 1;
-	GLuint c_id = (const GLuint&) code_handle - 1;
-	glDetachObjectARB(p_id,c_id);
+	if (spb.handle == 0) {
+		error("gl_context::shader_program_detach: shader program not created", &spb);
+		return;
+	}
+	glDetachShader(get_gl_id(spb.handle), get_gl_id(sc.handle));
 }
 
-bool gl_context::shader_program_link(void* handle, std::string& last_error)
+bool gl_context::shader_program_link(shader_program_base& spb)
 {
-	GLuint p_id = (const GLuint&) handle - 1;
-	glLinkProgramARB(p_id); 
+	if (spb.handle == 0) {
+		error("gl_context::shader_program_link: shader program not created", &spb);
+		return false;
+	}
+	GLuint p_id = get_gl_id(spb.handle);
+	glLinkProgram(p_id); 
 	int result;
-	glGetObjectParameterivARB(p_id, GL_OBJECT_LINK_STATUS_ARB, &result); 
+	glGetProgramiv(p_id, GL_LINK_STATUS, &result); 
 	if (result == 1)
 		return true;
-	int infologLength = 0;
-	int charsWritten  = 0;
-	char *infoLog;
-	glGetObjectParameterivARB(p_id, GL_OBJECT_INFO_LOG_LENGTH_ARB,
-					 &infologLength);
+	GLint infologLength = 0;
+	glGetProgramiv(p_id, GL_INFO_LOG_LENGTH, &infologLength);
 	if (infologLength > 0) {
-		infoLog = (char *)malloc(infologLength);
-		glGetInfoLogARB(p_id, infologLength, &charsWritten, infoLog);
-		last_error = infoLog;
+		GLsizei charsWritten = 0;
+		char *infoLog = (char *)malloc(infologLength);
+		glGetProgramInfoLog(p_id, infologLength, &charsWritten, infoLog);
+		error(std::string("gl_context::shader_program_link\n")+infoLog, &spb);
 		free(infoLog);
 	}
 	return false;
@@ -1820,48 +1926,52 @@ bool gl_context::shader_program_link(void* handle, std::string& last_error)
 
 bool gl_context::shader_program_set_state(shader_program_base& spb)
 {
-	GLuint p_id = (const GLuint&) spb.handle - 1;
-	glProgramParameteriEXT(p_id, GL_GEOMETRY_VERTICES_OUT_EXT, spb.geometry_shader_output_count);
-	glProgramParameteriEXT(p_id, GL_GEOMETRY_INPUT_TYPE_EXT, map_to_gl(spb.geometry_shader_input_type));
-	glProgramParameteriEXT(p_id, GL_GEOMETRY_OUTPUT_TYPE_EXT, map_to_gl(spb.geometry_shader_output_type));
-	return true;
-}
-
-bool gl_context::shader_program_enable(render_component& rc)
-{
-	GLuint p_id = (const GLuint&) rc.handle - 1;
-	GLhandleARB old_p_id = glGetHandleARB(GL_PROGRAM_OBJECT_ARB);
-	(GLhandleARB&)(rc.user_data) = old_p_id;
-	glUseProgramObjectARB(p_id); 
-	return true;
-}
-
-bool gl_context::shader_program_disable(render_component& rc)
-{
-	GLuint p_id = (const GLuint&) rc.handle - 1;
-	GLhandleARB old_p_id = (GLhandleARB&)rc.user_data;
-	glUseProgramObjectARB(old_p_id); 
-	glUseProgramObjectARB(0); 
-	return true;
-}
-void gl_context::shader_program_destruct(void* handle)
-{
-	GLuint p_id = (const GLuint&) handle - 1;
-	glDeleteObjectARB(p_id);
-}
-
-bool gl_context::set_uniform_void(void* handle, 
-		const std::string& name, int value_type, bool dimension_independent, 
-		const void* value_ptr, std::string& last_error)
-{
-	GLuint p_id = (const GLuint&) handle - 1;
-	GLint loc = glGetUniformLocation(p_id, name.c_str());
-	if (loc == -1) {
-		last_error = std::string("Can not find uniform location ")+name;
+	if (spb.handle == 0) {
+		error("gl_context::shader_program_set_state: shader program not created", &spb);
 		return false;
 	}
-	GLhandleARB old_p_id = glGetHandleARB(GL_PROGRAM_OBJECT_ARB);
-	glUseProgramObjectARB(p_id); 
+	GLuint p_id = get_gl_id(spb.handle);
+	glProgramParameteriARB(p_id, GL_GEOMETRY_VERTICES_OUT_ARB, spb.geometry_shader_output_count);
+	glProgramParameteriARB(p_id, GL_GEOMETRY_INPUT_TYPE_ARB, map_to_gl(spb.geometry_shader_input_type));
+	glProgramParameteriARB(p_id, GL_GEOMETRY_OUTPUT_TYPE_ARB, map_to_gl(spb.geometry_shader_output_type));
+	return true;
+}
+
+bool gl_context::shader_program_enable(shader_program_base& spb)
+{
+	GLint old_p_id;
+	glGetIntegerv(GL_CURRENT_PROGRAM, &old_p_id);
+	GLuint p_id = get_gl_id(spb.handle);
+	(GLint&)(spb.user_data) = old_p_id;
+	glUseProgram(p_id); 
+	return true;
+}
+
+bool gl_context::shader_program_disable(shader_program_base& spb)
+{
+	GLuint p_id = get_gl_id(spb.handle);
+	GLint old_p_id = (GLint&)spb.user_data;
+	glUseProgram(old_p_id); 
+	return true;
+}
+void gl_context::shader_program_destruct(shader_program_base& spb)
+{
+	glDeleteProgram(get_gl_id(spb.handle));
+}
+
+bool gl_context::set_uniform_void(shader_program_base& spb,
+		const std::string& name, int value_type, bool dimension_independent, 
+		const void* value_ptr)
+{
+	GLuint p_id = get_gl_id(spb.handle);
+	GLint loc = glGetUniformLocation(p_id, name.c_str());
+	if (loc == -1) {
+		spb.last_error = std::string("Can not find uniform location ")+name;
+		return false;
+	}
+	GLint old_p_id;
+	glGetIntegerv(GL_CURRENT_PROGRAM, &old_p_id);
+	glUseProgram(p_id); 
 	switch (value_type) {
 	case TI_BOOL : glUniform1i(loc, *static_cast<const bool*>(value_ptr) ? 1 : 0); break;
 	case TI_UINT8 : glUniform1ui(loc, *static_cast<const uint8_type*>(value_ptr)); break;
@@ -1881,7 +1991,7 @@ bool gl_context::set_uniform_void(void* handle,
 		for (i = 0; i<vm.size(); ++i) {
 			GLint loc = glGetUniformLocation(p_id, (name + "[" + cgv::utils::to_string(i) + "]").c_str());
 			if (loc == -1) {
-				last_error = std::string("Can not find uniform location ") + name + "[" + cgv::utils::to_string(i) + "]";
+				spb.last_error = std::string("Can not find uniform location ") + name + "[" + cgv::utils::to_string(i) + "]";
 				return false;
 			}
 			switch (vm[i].size()) {
@@ -1918,7 +2028,7 @@ bool gl_context::set_uniform_void(void* handle,
 			for (i=0; i<vm.size(); ++i) {
 				GLint loc = glGetUniformLocation(p_id, (name + "[" + cgv::utils::to_string(i) + "]").c_str());
 				if (loc == -1) {
-					last_error = std::string("Can not find uniform location ") + name + "[" + cgv::utils::to_string(i) + "]";
+					spb.last_error = std::string("Can not find uniform location ") + name + "[" + cgv::utils::to_string(i) + "]";
 					return false;
 				}
 				switch (vm[i].size()) {
@@ -1949,11 +2059,11 @@ bool gl_context::set_uniform_void(void* handle,
 		}
 	default: 
 		std::cerr << "uniform of type " << value_type << " not supported!" << std::endl;
-		last_error = "uniform type not supported"; 
-		glUseProgramObjectARB(old_p_id); 
+		spb.last_error = "uniform type not supported";
+		glUseProgram(old_p_id); 
 		return false;
 	}
-	glUseProgramObjectARB(old_p_id); 
+	glUseProgram(old_p_id); 
 	return true;
 }
 

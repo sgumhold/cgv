@@ -35,99 +35,50 @@ private:
 protected:
 	void put_id(void* handle, void* ptr) const;
 
-	cgv::data::component_format texture_find_best_format(
-							const cgv::data::component_format& cf, 
-							render_component& rc, const std::vector<cgv::data::data_view>* palettes = 0) const;
-	
-	bool texture_create(
-							texture_base& tb, 
-							cgv::data::data_format& df);
-	
-	bool texture_create(
-							texture_base& tb, 
-							cgv::data::data_format& target_format, 
-							const cgv::data::const_data_view& data, 
-							int level, int cube_side = -1, const std::vector<cgv::data::data_view>* palettes = 0);
-	
-	bool texture_create_from_buffer(
-							texture_base& tb, 
-							cgv::data::data_format& df, 
-							int x, int y, int level);
-	
-	bool texture_replace(   texture_base& tb, 
-							int x, int y, int z_or_cube_side, 
-							const cgv::data::const_data_view& data, 
-							int level, const std::vector<cgv::data::data_view>* palettes = 0);
 
-	bool texture_replace_from_buffer(
-							texture_base& tb, 
-							int x, int y, int z_or_cube_side, 
-							int x_buffer, int y_buffer, 
-							unsigned int width, unsigned int height, 
-							int level);
+	cgv::data::component_format texture_find_best_format(const cgv::data::component_format& cf, render_component& rc, const std::vector<cgv::data::data_view>* palettes = 0) const;
+	bool texture_create(texture_base& tb, cgv::data::data_format& df);
+	bool texture_create(texture_base& tb, cgv::data::data_format& target_format, const cgv::data::const_data_view& data, int level, int cube_side = -1, const std::vector<cgv::data::data_view>* palettes = 0);
+	bool texture_create_from_buffer(texture_base& tb, cgv::data::data_format& df, int x, int y, int level);
+	bool texture_replace(texture_base& tb, int x, int y, int z_or_cube_side, const cgv::data::const_data_view& data, int level, const std::vector<cgv::data::data_view>* palettes = 0);
+	bool texture_replace_from_buffer(texture_base& tb, int x, int y, int z_or_cube_side, int x_buffer, int y_buffer, unsigned int width, unsigned int height, int level);
+	bool texture_generate_mipmaps(texture_base& tb, unsigned int dim);
+	bool texture_destruct(texture_base& tb);
+	bool texture_set_state(const texture_base& tb);
+	bool texture_enable(texture_base& tb, int tex_unit, unsigned int nr_dims);
+	bool texture_disable(texture_base& tb, int tex_unit, unsigned int nr_dims);
 
-	bool texture_generate_mipmaps(
-							texture_base& tb, 
-							unsigned int dim);
-
-	bool texture_destruct(render_component& rc);
-
-	bool texture_set_state(const texture_base& ts);
-	
-	bool texture_enable(
-							texture_base& tb, 
-							int tex_unit, unsigned int nr_dims);
-
-	bool texture_disable(
-							const texture_base& tb, 
-							int tex_unit, unsigned int nr_dims);
-
-	bool render_buffer_create(
-							render_component& rc, 
-							cgv::data::component_format& cf, 
-							int& _width, int& _height);
-
+	bool render_buffer_create(render_component& rc, cgv::data::component_format& cf, int& _width, int& _height);
 	bool render_buffer_destruct(render_component& rc);
 
 	bool frame_buffer_create(frame_buffer_base& fbb);
-
-	bool frame_buffer_attach(frame_buffer_base& fbb, 
-									 const render_component& rb, bool is_depth, int i);
-
-	bool frame_buffer_attach(frame_buffer_base& fbb, 
-												 const texture_base& t, bool is_depth, 
-												 int level, int i, int z);
-
+	bool frame_buffer_attach(frame_buffer_base& fbb, const render_component& rb, bool is_depth, int i);
+	bool frame_buffer_attach(frame_buffer_base& fbb, const texture_base& t, bool is_depth, int level, int i, int z);
 	bool frame_buffer_is_complete(const frame_buffer_base& fbb) const;
-
 	bool frame_buffer_enable(frame_buffer_base& fbb);
-
 	bool frame_buffer_disable(frame_buffer_base& fbb);
-
 	bool frame_buffer_destruct(frame_buffer_base& fbb);
-
 	int frame_buffer_get_max_nr_color_attachments();
-
 	int frame_buffer_get_max_nr_draw_buffers();
 
-	void* shader_code_create(const std::string& source, ShaderType st, std::string& last_error);
-	bool shader_code_compile(void* handle, std::string& last_error);
-	void shader_code_destruct(void* handle);
+	bool shader_code_create(render_component& sc, ShaderType st, const std::string& source);
+	bool shader_code_compile(render_component& sc);
+	void shader_code_destruct(render_component& sc);
 
-	bool shader_program_create(void* &handle, std::string& last_error);
-	void shader_program_attach(void* handle, void* code_handle);
-	bool shader_program_link(void* handle, std::string& last_error);
+	bool shader_program_create(shader_program_base& spb);
+	void shader_program_attach(shader_program_base& spb, const render_component& sc);
+	bool shader_program_link(shader_program_base& spb);
 	bool shader_program_set_state(shader_program_base& spb);
-	bool shader_program_enable(render_component& rc);
-	bool set_uniform_void(void* handle, const std::string& name, int value_type, bool dimension_independent, const void* value_ptr, std::string& last_error);
-	bool shader_program_disable(render_component& rc);
-	void shader_program_detach(void* handle, void* code_handle);
-	void shader_program_destruct(void* handle);
+	bool shader_program_enable(shader_program_base& spb);
+	bool set_uniform_void(shader_program_base& spb, const std::string& name, int value_type, bool dimension_independent, const void* value_ptr);
+	bool shader_program_disable(shader_program_base& spb);
+	void shader_program_detach(shader_program_base& spb, const render_component& sc);
+	void shader_program_destruct(shader_program_base& spb);
 
-	/// remember the last active context to detect context changes
-	void* last_context;
-	/// remember the last size of the window to detect resize events
-	unsigned int last_width, last_height;
+	bool check_gl_error(const std::string& where, const cgv::render::render_component* rc = 0);
+	bool check_texture_support(TextureType tt, const std::string& where, const cgv::render::render_component* rc = 0);
+	bool check_shader_support(ShaderType st, const std::string& where, const cgv::render::render_component* rc = 0);
+	bool check_fbo_support(const std::string& where, const cgv::render::render_component* rc = 0);
 	/// font used to draw textual info
 	cgv::media::font::font_face_ptr info_font_face;
 	/// font size to draw textual info
@@ -140,8 +91,9 @@ protected:
 public:
 	/// construct context and attach signals
 	gl_context();
-	/// define lighting mode, viewing pyramid and the rendering mode
-	void configure_gl(void* new_context);
+	/// ensure that glew is initialized, define lighting mode, viewing pyramid and the rendering mode and return whether gl configuration was successful
+	bool configure_gl();
+	void resize_gl();
 	///
 	void perform_screen_shot();
 	/// return the used rendering API

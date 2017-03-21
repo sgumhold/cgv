@@ -17,6 +17,13 @@ namespace cgv {
 	namespace render {
 		namespace gl {
 
+unsigned map_material_side(MaterialSide ms)
+{
+	static unsigned material_side_mapping[] = { GL_FALSE, GL_FRONT, GL_BACK, GL_FRONT_AND_BACK };
+	return material_side_mapping[ms];
+}
+
+
 unsigned int read_image_to_texture(const std::string& file_name, bool mipmaps, double* aspect_ptr, bool* has_alpha_ptr)
 {
 	std::vector<data_format> palette_formats;
