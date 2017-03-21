@@ -157,7 +157,7 @@ unsigned stereo_view_interactor::get_viewport_index(unsigned col_index, unsigned
 {
 	unsigned view_index = row_index*nr_viewport_columns + col_index;
 	if (view_index < 0)
-		view_index == 0;
+		view_index = 0;
 	else if (view_index >= views.size())
 		view_index = views.size() - 1;
 
