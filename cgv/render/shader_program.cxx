@@ -138,7 +138,7 @@ bool shader_program::create(context& ctx)
 		if (handle)
 			destruct(ctx);
 	ctx_ptr = &ctx;
-	return ctx.shader_program_create(handle, last_error);
+	return ctx.shader_program_create(*this);
 }
 
 /// attach a compiled shader code instance that is managed outside of program
@@ -156,7 +156,7 @@ bool shader_program::attach_code(context& ctx, const shader_code& code)
 		last_error = "attempt to attach_code that is not compiled to shader program";
 		return false;
 	}
-	ctx.shader_program_attach(handle, code.handle);
+	ctx.shader_program_attach(*this, code);
 	if (code.get_shader_type() == ST_GEOMETRY)
 		++nr_attached_geometry_shaders;
 	return true;
@@ -173,7 +173,7 @@ bool shader_program::detach_code(context& ctx, const shader_code& code)
 		last_error = "attempt to detach_code that is not created to shader program";
 		return false;
 	}
-	ctx.shader_program_detach(handle, code.handle);
+	ctx.shader_program_detach(*this, code);
 	if (code.get_shader_type() == ST_GEOMETRY)
 		--nr_attached_geometry_shaders;
 	return true;
@@ -372,7 +372,7 @@ void shader_program::update_state(context& ctx)
 bool shader_program::link(context& ctx, bool show_error)
 {
 	update_state(ctx);
-	if (ctx.shader_program_link(handle,last_error)) {
+	if (ctx.shader_program_link(*this)) {
 		linked = true;
 		return true;
 	}
@@ -427,7 +427,7 @@ void shader_program::destruct(context& ctx)
 		managed_codes.pop_back();
 	}
 	if (handle) {
-		ctx.shader_program_destruct(handle);
+		ctx.shader_program_destruct(*this);
 		handle = 0;
 	}
 	linked = false;

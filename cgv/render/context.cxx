@@ -19,6 +19,103 @@ float background_colors[] = {
 	1,1,1,0,
 };
 
+/// construct config with default parameters
+context_creation_config::context_creation_config()
+{
+	/// default: false
+	stereo_mode = false;
+	/// default: true
+	double_buffer = true;
+	/// default: false
+	alpha_buffer = true;
+	/// default: 0
+	stencil_bits = 0;
+	/// default: false
+	forward_compatible = false;
+	/// default: false
+	core_profile = false;
+	/// default: 0
+	accumulation_bits = 0;
+	/// default: -1 ... major version of maximum supported OpenGL version
+	version_major = -1;
+	/// default: -1 ... minor version of maximum supported OpenGL version
+	version_minor = -1;
+	/// default: 0
+	nr_multi_samples = 0;
+}
+
+/// return "render_config"
+std::string context_creation_config::get_type_name() const
+{
+	return "context_creation_config";
+}
+
+/// reflect the shader_path member
+bool context_creation_config::self_reflect(cgv::reflect::reflection_handler& srh)
+{
+	return
+		srh.reflect_member("stereo_mode", stereo_mode) &&
+		srh.reflect_member("double_buffer", double_buffer) &&
+		srh.reflect_member("alpha_buffer", alpha_buffer) &&
+		srh.reflect_member("stencil_bits", stencil_bits) &&
+		srh.reflect_member("forward_compatible", forward_compatible) &&
+		srh.reflect_member("accumulation_bits", accumulation_bits) &&
+		srh.reflect_member("version_major", version_major) &&
+		srh.reflect_member("version_minor", version_minor) &&
+		srh.reflect_member("nr_multi_samples", nr_multi_samples);
+}
+
+/// construct config with default parameters
+render_config::render_config()
+{
+	/// default: -1 ... no fullscreen
+	fullscreen_monitor = -1;
+	/// default: 640
+	window_width = 640;
+	/// default: 480
+	window_height = 480;
+	/// default: false
+	abort_on_error = false;;
+	/// default: true (only in case a gui_driver, which supports this, is loaded)
+	dialog_on_error = true;
+	/// default: true
+	show_error_on_console = true;
+}
+
+/// return "render_config"
+std::string render_config::get_type_name() const
+{
+	return "render_config";
+}
+
+/// reflect the shader_path member
+bool render_config::self_reflect(cgv::reflect::reflection_handler& srh)
+{
+	return
+		context_creation_config::self_reflect(srh) &&
+		srh.reflect_member("stereo_mode", stereo_mode) &&
+		srh.reflect_member("double_buffer", double_buffer) &&
+		srh.reflect_member("alpha_buffer", alpha_buffer) &&
+		srh.reflect_member("stencil_bits", stencil_bits) &&
+		srh.reflect_member("forward_compatible", forward_compatible) &&
+		srh.reflect_member("accumulation_bits", accumulation_bits) &&
+		srh.reflect_member("version_major", version_major) &&
+		srh.reflect_member("version_minor", version_minor) &&
+		srh.reflect_member("nr_multi_samples", nr_multi_samples) &&
+		srh.reflect_member("fullscreen_monitor", fullscreen_monitor) &&
+		srh.reflect_member("window_width", window_width) &&
+		srh.reflect_member("window_height", window_height) &&
+		srh.reflect_member("abort_on_error", abort_on_error) &&
+		srh.reflect_member("dialog_on_error", dialog_on_error) &&
+		srh.reflect_member("show_error_on_console", show_error_on_console);
+}
+
+/// return a pointer to the current shader configuration
+render_config_ptr get_render_config()
+{
+	static render_config_ptr rcp = new render_config();
+	return rcp;
+}
 
 context::context()
 {
@@ -42,6 +139,18 @@ context::context()
 
 	do_screen_shot = false;
 }
+
+/// error handling
+void context::error(const std::string& message, const render_component* rc) const
+{
+	if (rc)
+		rc->last_error = message;
+	if (get_render_config()->show_error_on_console)
+		std::cerr << message << std::endl;
+	if (get_render_config()->abort_on_error)
+		abort();
+}
+
 
 /// virtual destructor
 context::~context()
@@ -1207,3 +1316,15 @@ context* create_context(RenderAPI api,
 
 	}
 }
+
+#include <cgv/base/register.h>
+
+struct render_config_registration
+{
+	render_config_registration()
+	{
+		cgv::base::register_object(cgv::render::get_render_config(), "register global render config");
+	}
+};
+
+render_config_registration render_config_registration_instance;

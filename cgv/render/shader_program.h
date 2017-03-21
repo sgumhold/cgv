@@ -202,8 +202,7 @@ public:
 		 3 or 4 and the matrices of dimensions 2, 3 or 4. */
 	template <typename T>
 	bool set_uniform(context& ctx, const std::string& name, const T& value, bool dimension_independent = false) {
-		return ctx.set_uniform_void(handle, name, uniform_type_id<T>::get_id(), dimension_independent,
-											 &value, last_error);
+		return ctx.set_uniform_void(*this, name, uniform_type_id<T>::get_id(), dimension_independent, &value);
 	}
 	/// disable shader program and restore fixed functionality
 	bool disable(context& ctx);

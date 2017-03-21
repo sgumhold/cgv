@@ -230,6 +230,25 @@ public:
 	shader_program_base();
 };
 
+/*
+/// different vertex buffer types
+enum VertexBufferType {
+	VBT_VERTICES,
+	VBT_INDICES,
+	VBT_TEXTURE,
+	VBT_UNIFORM,
+	VBT_FEEDBACK
+};
+
+/// base interface for a vertex buffer
+class CGV_API vertex_buffer_base : public render_component
+{
+public:
+	VertexBufferType type;
+	vertex_buffer_base();
+};
+*/
+
 /// base interface for framebuffer
 class CGV_API frame_buffer_base : public render_component
 {
@@ -243,7 +262,7 @@ public:
 };
 
 /// different shader types
-enum ShaderType { ST_DETECT, ST_VERTEX, ST_GEOMETRY, ST_FRAGMENT };
+enum ShaderType { ST_DETECT, ST_COMPUTE, ST_VERTEX, ST_TESS_CONTROL, ST_TESS_EVALUTION, ST_GEOMETRY, ST_FRAGMENT };
 
 /// different frame buffer types which can be combined together with or
 enum FrameBufferType {
@@ -280,6 +299,82 @@ class CGV_API shader_program;
 // declare some colors by name
 extern CGV_API float black[4], white[4], gray[4], green[4], brown[4], dark_red[4];
 extern CGV_API float cyan[4], yellow[4], red[4], blue[4];
+
+/** configuration object used to define default creation parameters for contexts */
+struct CGV_API context_creation_config : public cgv::base::base
+{
+	/**@name context creation parameters*/
+	//@{
+	/// default: false
+	bool stereo_mode;
+	/// default: true
+	bool double_buffer;
+	/// default: false
+	bool alpha_buffer;
+	/// default: 0
+	int  stencil_bits;
+	/// default: false
+	bool forward_compatible;
+	/// default: false
+	bool core_profile;
+	/// default: 0
+	int  accumulation_bits;
+	/// default: -1 ... major version of maximum supported OpenGL version
+	int  version_major;
+	/// default: -1 ... minor version of maximum supported OpenGL version
+	int  version_minor;
+	/// default: 0
+	int  nr_multi_samples;
+	//@}
+	/// construct config with default parameters
+	context_creation_config();
+	/// return "context_creation_config"
+	std::string get_type_name() const;
+	/// reflect the shader_path member
+	bool self_reflect(cgv::reflect::reflection_handler& srh);
+};
+
+/// type of ref counted pointer to context creation configuration
+typedef cgv::data::ref_ptr<context_creation_config> context_creation_config_ptr;
+
+/** configuration object used to define default creation parameters for contexts and to configure error handling */
+struct CGV_API render_config : public context_creation_config
+{
+	/**@name window creation parameters*/
+	//@{
+	/// default: -1 ... no fullscreen
+	int fullscreen_monitor;
+	/// default: 640
+	int window_width;
+	/// default: 480
+	int window_height;
+	//@}
+
+	/**@name error handling */
+	//@{
+	/// default: false
+	bool abort_on_error;
+	/// default: true (only in case a gui_driver, which supports this, is loaded)
+	bool dialog_on_error;
+	/// default: true
+	bool show_error_on_console;
+	//@}
+
+	/// construct config with default parameters
+	render_config();
+	/// return "render_config"
+	std::string get_type_name() const;
+	/// reflect the shader_path member
+	bool self_reflect(cgv::reflect::reflection_handler& srh);
+};
+
+/// type of ref counted pointer to render configuration
+typedef cgv::data::ref_ptr<render_config> render_config_ptr;
+
+/// return a pointer to the current shader configuration
+extern CGV_API render_config_ptr get_render_config();
+
+
 
 /** base class for all drawables, which is independent of the used rendering API. */
 class CGV_API context 
@@ -331,96 +426,44 @@ protected:
 
 	virtual void put_id(void* handle, void* ptr) const = 0;
 
-	virtual cgv::data::component_format texture_find_best_format(
-							const cgv::data::component_format& cf, 
-							render_component& rc, const std::vector<cgv::data::data_view>* palettes = 0) const = 0;
-	
-	virtual bool texture_create(
-							texture_base& tb, 
-							cgv::data::data_format& df) = 0;
-	
-	virtual bool texture_create(
-							texture_base& tb, 
-							cgv::data::data_format& target_format, 
-							const cgv::data::const_data_view& data, 
-							int level, int cube_side = -1, const std::vector<cgv::data::data_view>* palettes = 0) = 0;
-	
-	virtual bool texture_create_from_buffer(
-							texture_base& tb, 
-							cgv::data::data_format& df, 
-							int x, int y, int level) = 0;
-	
-	virtual bool texture_replace(
-							texture_base& tb, 
-							int x, int y, int z_or_cube_side, 
-							const cgv::data::const_data_view& data, 
-							int level, const std::vector<cgv::data::data_view>* palettes = 0) = 0;
+	virtual cgv::data::component_format texture_find_best_format(const cgv::data::component_format& cf, render_component& rc, const std::vector<cgv::data::data_view>* palettes = 0) const = 0;
+	virtual bool texture_create				(texture_base& tb, cgv::data::data_format& df) = 0;
+	virtual bool texture_create				(texture_base& tb, cgv::data::data_format& target_format, const cgv::data::const_data_view& data, int level, int cube_side = -1, const std::vector<cgv::data::data_view>* palettes = 0) = 0;
+	virtual bool texture_create_from_buffer (texture_base& tb, cgv::data::data_format& df, int x, int y, int level) = 0;
+	virtual bool texture_replace			(texture_base& tb, int x, int y, int z_or_cube_side, const cgv::data::const_data_view& data, int level, const std::vector<cgv::data::data_view>* palettes = 0) = 0;
+	virtual bool texture_replace_from_buffer(texture_base& tb, int x, int y, int z_or_cube_side, int x_buffer, int y_buffer, unsigned int width, unsigned int height, int level) = 0;
+	virtual bool texture_generate_mipmaps	(texture_base& tb, unsigned int dim) = 0;
+	virtual bool texture_destruct           (texture_base& tb) = 0;
+	virtual bool texture_set_state			(const texture_base& tb) = 0;
+	virtual bool texture_enable				(texture_base& tb, int tex_unit, unsigned int nr_dims) = 0;
+	virtual bool texture_disable			(texture_base& tb, int tex_unit, unsigned int nr_dims) = 0;
 
-	virtual bool texture_replace_from_buffer(
-							texture_base& tb, 
-							int x, int y, int z_or_cube_side, 
-							int x_buffer, int y_buffer, 
-							unsigned int width, unsigned int height, 
-							int level) = 0;
+	virtual bool render_buffer_create       (render_component& rc, cgv::data::component_format& cf, int& _width, int& _height) = 0;
+	virtual bool render_buffer_destruct     (render_component& rc) = 0;
 
-	virtual bool texture_generate_mipmaps(
-							texture_base& tb, 
-							unsigned int dim) = 0;
-
-	virtual bool texture_destruct(render_component& rc) = 0;
-
-	virtual bool texture_set_state(const texture_base& ts) = 0;
-	
-	virtual bool texture_enable(
-							texture_base& tb, 
-							int tex_unit, unsigned int nr_dims) = 0;
-
-	virtual bool texture_disable(
-							const texture_base& tb, 
-							int tex_unit, unsigned int nr_dims) = 0;
-
-	virtual bool render_buffer_create(
-							render_component& rc, 
-							cgv::data::component_format& cf, 
-							int& _width, int& _height) = 0;
-
-	virtual bool render_buffer_destruct(render_component& rc) = 0;
-
-	virtual bool frame_buffer_create(frame_buffer_base& fbb) = 0;
-
-	virtual bool frame_buffer_attach(frame_buffer_base& fbb, 
-									 const render_component& rb, bool is_depth, int i) = 0;
-
-	virtual bool frame_buffer_attach(frame_buffer_base& fbb, 
-												 const texture_base& t, bool is_depth, 
-												 int level, int i, int z) = 0;
-
+	virtual bool frame_buffer_create		   (frame_buffer_base& fbb) = 0;
+	virtual bool frame_buffer_attach		   (frame_buffer_base& fbb, const render_component& rb, bool is_depth, int i) = 0;
+	virtual bool frame_buffer_attach		   (frame_buffer_base& fbb, const texture_base& t, bool is_depth, int level, int i, int z) = 0;
 	virtual bool frame_buffer_is_complete(const frame_buffer_base& fbb) const = 0;
-
-	virtual bool frame_buffer_enable(frame_buffer_base& fbb) = 0;
-
-	virtual bool frame_buffer_disable(frame_buffer_base& fbb) = 0;
-
-	virtual bool frame_buffer_destruct(frame_buffer_base& fbb) = 0;
-
+	virtual bool frame_buffer_enable		   (frame_buffer_base& fbb) = 0;
+	virtual bool frame_buffer_disable		   (frame_buffer_base& fbb) = 0;
+	virtual bool frame_buffer_destruct		   (frame_buffer_base& fbb) = 0;
 	virtual int frame_buffer_get_max_nr_color_attachments() = 0;
-
 	virtual int frame_buffer_get_max_nr_draw_buffers() = 0;
 
-	virtual void* shader_code_create(const std::string& source, ShaderType st, std::string& last_error) = 0;
-	virtual bool shader_code_compile(void* handle, std::string& last_error) = 0;
-	virtual void shader_code_destruct(void* handle) = 0;
+	virtual bool shader_code_create  (render_component& sc, ShaderType st, const std::string& source) = 0;
+	virtual bool shader_code_compile (render_component& sc) = 0;
+	virtual void shader_code_destruct(render_component& sc) = 0;
 
-	virtual bool shader_program_create(void* &handle, std::string& last_error) = 0;
-	virtual void shader_program_attach(void* handle, void* code_handle) = 0;
-	virtual bool shader_program_link(void* handle, std::string& last_error) = 0;
+	virtual bool shader_program_create   (shader_program_base& spb) = 0;
+	virtual void shader_program_attach   (shader_program_base& spb, const render_component& sc) = 0;
+	virtual bool shader_program_link     (shader_program_base& spb) = 0;
 	virtual bool shader_program_set_state(shader_program_base& spb) = 0;
-	virtual bool shader_program_enable(render_component& rc) = 0;
-	virtual bool set_uniform_void(void* handle, const std::string& name, int value_type, bool dimension_independent, const void* value_ptr, std::string& last_error) = 0;
-	virtual bool shader_program_disable(render_component& rc) = 0;
-	virtual void shader_program_detach(void* handle, void* code_handle) = 0;
-	virtual void shader_program_destruct(void* handle) = 0;
-
+	virtual bool shader_program_enable   (shader_program_base& spb) = 0;
+	virtual bool set_uniform_void        (shader_program_base& spb, const std::string& name, int value_type, bool dimension_independent, const void* value_ptr) = 0;
+	virtual bool shader_program_disable  (shader_program_base& spb) = 0;
+	virtual void shader_program_detach   (shader_program_base& spb, const render_component& sc) = 0;
+	virtual void shader_program_destruct (shader_program_base& spb) = 0;
 public:
 	friend class CGV_API render_component;
 	friend class CGV_API texture;
@@ -440,6 +483,8 @@ public:
 	context();
 	/// virtual destructor
 	virtual ~context();
+	/// error handling
+	virtual void error(const std::string& message, const render_component* rc = 0) const;
 
 	/**@name interface for implementation of specific contexts*/
 	//@{

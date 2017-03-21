@@ -132,7 +132,7 @@ void shader_code::destruct(context& ctx)
 {
 	if (!handle)
 		return;
-	ctx.shader_code_destruct(handle);
+	ctx.shader_code_destruct(*this);
 	handle = 0;
 }
 
@@ -245,14 +245,13 @@ bool shader_code::set_code(context& ctx, const std::string &source, ShaderType _
 	st = _st;
 	destruct(ctx);
 	ctx_ptr = &ctx;
-	handle = ctx.shader_code_create(source, st, last_error);
-	return handle != 0;
+	return ctx.shader_code_create(*this, st, source);
 }
 
 ///compile attached source; returns true if successful
 bool shader_code::compile(context& ctx)
 {
-	if (!ctx.shader_code_compile(handle,last_error)) {
+	if (!ctx.shader_code_compile(*this)) {
 		user_data = 0;
 		return false;
 	}
