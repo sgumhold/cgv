@@ -1,0 +1,46 @@
+#version 150 compatibility
+
+uniform bool smooth_points = true;
+uniform int illumination_mode = 1;
+uniform uint width;
+uniform uint height;
+in vec3 normal;
+in vec2 uv;
+in vec4 color;
+in vec3 position;
+in vec2 position_pixel;
+in float percentual_outline_start;
+in float percentual_pixel_extent;
+in float percentual_splat_size;
+in int  side;
+
+//layout pixel_center_integer in vec4 gl_FragCoord;
+
+vec4 doLighting(vec3 position, vec3 normal, vec4 diffuseMaterial);
+
+void main()
+{
+
+	float l = length(uv);
+	
+	if (smooth_points && (l > percentual_splat_size))
+		discard;
+
+	float pixel_scale = 1.0 / percentual_pixel_extent;
+	float outline_width = percentual_splat_size - percentual_outline_start - percentual_pixel_extent;
+	if (outline_width < 0.01) {
+		outline_width = 0.01;
+	}
+
+	float lambda_in   = clamp(pixel_scale*(percentual_outline_start + percentual_pixel_extent - l), 0.0, 1.0);
+	float lambda_out  = clamp(pixel_scale*(l - percentual_splat_size), 0.0, 1.0);
+	float lambda_line =  clamp((percentual_splat_size - 0.5*percentual_pixel_extent - l)/outline_width, 0.0, 1.0);
+
+	// illumination
+	vec4 color_in = color;
+	if (illumination_mode > 0) {
+		color_in = vec4(doLighting(position, normal, color_in).rgb, 1.0);
+	}
+	vec4 color_line = vec4(color_in.rgb, lambda_line);
+	gl_FragColor = lambda_in * color_in + (1.0 - lambda_out - lambda_in) * color_line;
+}

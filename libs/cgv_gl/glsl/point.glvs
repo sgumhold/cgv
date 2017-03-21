@@ -1,0 +1,30 @@
+#version 150 compatibility
+
+uniform float point_size;
+uniform bool use_group_point_size;
+uniform bool use_group_color;
+uniform float group_point_sizes[256];
+uniform vec4 group_colors[256];
+
+in uint group_index;
+
+out vec3 normal_gs;
+out vec4 color_gs;
+
+void main()
+{
+	if (use_group_point_size) {
+		gl_PointSize = group_point_sizes[group_index];
+	}
+	else {
+		gl_PointSize = point_size;
+	}
+	if (use_group_color) {
+		color_gs = group_colors[group_index];
+	}
+	else {
+		color_gs = gl_Color;
+	}
+	normal_gs = gl_Normal;
+	gl_Position = gl_Vertex;
+}
