@@ -1,5 +1,6 @@
 #pragma once
 
+#include <set>
 #include "context.h"
 #include "shader_code.h"
 #include <cgv/math/vec.h>
@@ -13,107 +14,120 @@
 namespace cgv {
 	namespace render {
 
-/// different offsets for compound types
-enum UniformTypeIdOffset {
-	UTO_DIV         = 0x01000,
-	UTO_VEC         = 0x01000,
-	UTO_VECTOR      = 0x02000,
-	UTO_MAT         = 0x03000,
-	UTO_FVEC        = 0x04000, // offset for fvec<T,2 ..i.. 4>,   where i = (offset - UTO_FVEC) / UTO_DIV + 2
-	UTO_FMAT        = 0x07000,  // offset for fmat<T,2 ..i.. 4,i>, where i = (offset - UTO_FMAT) / UTO_DIV + 2
-	UTO_VECTOR_VEC  = 0x0A000,  // offset for std::vector<vec<T> >
-	UTO_VECTOR_FVEC = 0x0B000,  // offset for std::vector<fvec<T,2 ..i.. 4> >, where i = (offset - UTO_VECTOR_FVEC) / UTO_DIV + 2
-	UTO_VECTOR_MAT  = 0x0E000,  // offset for std::vector<mat<T> >
-	UTO_VECTOR_FMAT = 0x0F000,  // offset for std::vector<fmat<T,2 ..i.. 4,2 ..i.. 4> >, where i = (offset - UTO_VECTOR_FMAT) / UTO_DIV + 2
-};
+		/// different offsets for compound types
+		enum TypeIdOffset {
+			/// base types
+			TO_VEC = 0x01000, // cgv::math::vec<T> of standard type T
+			TO_FVEC2 = 0x02000, // cgv::math::vec2<T,2> of standard type T
+			TO_FVEC3 = 0x03000, // cgv::math::vec3<T,3> of standard type T
+			TO_FVEC4 = 0x04000, // cgv::math::vec4<T,4> of standard type T
+			TO_MAT = 0x05000, // cgv::math::mat<T> of standard type T
+			TO_FMAT2 = 0x06000, // cgv::math::fmat<T,2,2> of standard type T
+			TO_FMAT3 = 0x07000, // cgv::math::fmat<T,3,3> of standard type T
+			TO_FMAT4 = 0x08000, // cgv::math::fmat<T,4,4> of standard type T
+			TO_BASE_MASK = 0x0F000, // mask to filter out base type
+			TO_DIM_OFFSET = 0x01000,
 
-/// extend cgv::type::info::type_id<T> by vector and matrix types that can be used as arguments to set_uniform
-template <typename T>
-struct uniform_type_id : public cgv::type::info::type_id<T>
-{
-};
+			// array types
+			TO_VECTOR = 0x10000, // std::vector<T> where T is standard type or one of base types
+			TO_VEC_OF = 0x20000, // cgv::math::vec<T> where T is standard type or one of base types
+			TO_POINTER = 0x30000, // T*  where T is standard type or one of base types
+			TO_ARRAY_MASK = 0xF0000, // mask to filter out array type
+		};
 
-/// specialization for cgv::math::vec 
-template <typename T>
-struct uniform_type_id<cgv::math::vec<T> >
-{
-	static int get_id() {
-		return cgv::type::info::type_id<T>::get_id() + UTO_VEC;
-	}
-};
 
-/// specialization for std::vector
-template <typename T>
-struct uniform_type_id<std::vector<T> >
-{
-	static int get_id() {
-		return cgv::type::info::type_id<T>::get_id() + UTO_VECTOR;
-	}
-};
+		/// extend cgv::type::info::type_id<T> by vector and matrix types that can be used as arguments to set_uniform
+		template <typename T>
+		struct type_id_offset : public cgv::type::info::type_id<T>
+		{
+		};
 
-/// specialization for cgv::math::mat 
-template <typename T>
-struct uniform_type_id<cgv::math::mat<T> >
-{
-	static int get_id() {
-		return cgv::type::info::type_id<T>::get_id() + UTO_MAT;
-	}
-};
+		/// specialization for cgv::math::vec 
+		template <typename T>
+		struct type_id_offset<cgv::math::vec<T> >
+		{
+			static int get_id() {
+				return cgv::type::info::type_id<T>::get_id() + TO_VEC;
+			}
+		};
+		/// specialization for cgv::math::fvec
+		template <typename T, unsigned i>
+		struct type_id_offset<cgv::math::fvec<T, i> >
+		{
+			static int get_id() {
+				return cgv::type::info::type_id<T>::get_id() + TO_FVEC2 + (i - 2)*TO_DIM_OFFSET;
+			}
+		};
 
-/// specialization for std::vector<cgv::math::vec<T> >
-template <typename T>
-struct uniform_type_id<std::vector<cgv::math::vec<T> > >
-{
-	static int get_id() {
-		return cgv::type::info::type_id<T>::get_id() + UTO_VECTOR_VEC;
-	}
-};
+		/// specialization for cgv::math::mat 
+		template <typename T>
+		struct type_id_offset<cgv::math::mat<T> >
+		{
+			static int get_id() {
+				return cgv::type::info::type_id<T>::get_id() + TO_MAT;
+			}
+		};
 
-/// specialization for std::vector<cgv::math::mat>
-template <typename T>
-struct uniform_type_id<std::vector<cgv::math::mat<T> > >
-{
-	static int get_id() {
-		return cgv::type::info::type_id<T>::get_id() + UTO_VECTOR_MAT;
-	}
-};
+		/// specialization for cgv::math::fmat
+		template <typename T, unsigned i>
+		struct type_id_offset<cgv::math::fmat<T, i, i> >
+		{
+			static int get_id() {
+				return cgv::type::info::type_id<T>::get_id() + TO_FMAT2 + (i - 2)*TO_DIM_OFFSET;
+			}
+		};
 
-/// specialization for cgv::math::fvec
-template <typename T, unsigned i>
-struct uniform_type_id<cgv::math::fvec<T,i> >
-{
-	static int get_id() {
-		return cgv::type::info::type_id<T>::get_id() + UTO_FVEC + (i - 2)*UTO_DIV;
-	}
-};
+		/// specialization for std::vector
+		template <typename T>
+		struct type_id_offset<std::vector<T> >
+		{
+			static int get_id() {
+				return type_id_offset<T>::get_id() + TO_VECTOR;
+			}
+		};
 
-/// specialization for cgv::math::fmat
-template <typename T, unsigned i>
-struct uniform_type_id<cgv::math::fmat<T,i,i> >
-{
-	static int get_id() {
-		return cgv::type::info::type_id<T>::get_id() + UTO_FMAT + (i - 2)*UTO_DIV;
-	}
-};
+		/// specialization for nested cgv::math::vec types [cgv::math::vec]
+		template <typename T>
+		struct type_id_offset<cgv::math::vec<cgv::math::vec<T> > >
+		{
+			static int get_id() {
+				return type_id_offset<cgv::math::vec<T> >::get_id() + TO_VEC_OF;
+			}
+		};
+		/// specialization for nested cgv::math::vec types [cgv::math::fvec]
+		template <typename T, unsigned i>
+		struct type_id_offset<cgv::math::vec<cgv::math::fvec<T, i> > >
+		{
+			static int get_id() {
+				return type_id_offset<cgv::math::fvec<T, i> >::get_id() + TO_VEC_OF;
+			}
+		};
 
-/// specialization for std::vector<cgv::math::fvec<T,i> >
-template <typename T, unsigned i>
-struct uniform_type_id<std::vector<cgv::math::fvec<T, i> > >
-{
-	static int get_id() {
-		return cgv::type::info::type_id<T>::get_id() + UTO_VECTOR_FVEC + (i - 2)*UTO_DIV;
-	}
-};
+		/// specialization for nested cgv::math::vec types [cgv::math::vec]
+		template <typename T>
+		struct type_id_offset<cgv::math::vec<cgv::math::mat<T> > >
+		{
+			static int get_id() {
+				return type_id_offset<cgv::math::mat<T> >::get_id() + TO_VEC_OF;
+			}
+		};
+		/// specialization for nested cgv::math::vec types [cgv::math::fvec]
+		template <typename T, unsigned i>
+		struct type_id_offset<cgv::math::vec<cgv::math::fmat<T, i, i> > >
+		{
+			static int get_id() {
+				return type_id_offset<cgv::math::fmat<T, i, i> >::get_id() + TO_VEC_OF;
+			}
+		};
 
-/// specialization for std::vector<cgv::math::fmat<T,i,i> >
-template <typename T, unsigned i>
-struct uniform_type_id<std::vector<cgv::math::fmat<T,i,i> > >
-{
-	static int get_id() {
-		return cgv::type::info::type_id<T>::get_id() + UTO_VECTOR_FMAT + (i - 2)*UTO_DIV;
-	}
-};
-
+		/// specialization for pointer
+		template <typename T>
+		struct type_id_offset<T*>
+		{
+			static int get_id() {
+				return type_id_offset<T>::get_id() + TO_POINTER;
+			}
+		};
 
 /** a shader program combines several shader code fragments
     to a complete definition of the shading pipeline. */
@@ -123,9 +137,13 @@ protected:
 	bool show_code_errors : 1;
 	bool linked : 1;
 	bool state_out_of_date : 1;
+	bool is_enabled : 1;
 	int  nr_attached_geometry_shaders : 13;
 
 	std::vector<shader_code*> managed_codes;
+	std::set<unsigned> attribute_locations;
+	///
+	bool add_attribute_location(context& ctx, int loc);
 	/// attach a list of files
 	bool attach_files(context& ctx, const std::vector<std::string>& file_names);
 	/// ensure that the state has been set in the context
@@ -197,12 +215,32 @@ public:
 	void set_geometry_shader_info(PrimitiveType input_type, PrimitiveType output_type, int max_output_count = 0);
 	/// enable the shader program
 	bool enable(context& ctx);
-	/** Set the value of a uniform by name, where the type can be any of int, float, vec<int>, 
-		 vec<float>, mat<float> and the vectors are of dimension 2, 
-		 3 or 4 and the matrices of dimensions 2, 3 or 4. */
+	/** Set the value of a uniform by name, where the type can be any of int, unsigned, float, vec<int>, vec<unsigned>,
+	vec<float>, mat<float> and the vectors are of dimension 2,
+	3 or 4 and the matrices of dimensions 2, 3 or 4. */
 	template <typename T>
 	bool set_uniform(context& ctx, const std::string& name, const T& value, bool dimension_independent = false) {
-		return ctx.set_uniform_void(*this, name, uniform_type_id<T>::get_id(), dimension_independent, &value);
+		return ctx.set_uniform_void(*this, name, type_id_offset<T>::get_id(), dimension_independent, &value);
+	}
+	/// Set a vertex attribute to a single value or an array of values through the cgv::math::vec or std::vector classes.
+	template <typename T>
+	bool set_attribute(context& ctx, const std::string& name, const T& value, bool force_array = false) {
+		int loc = ctx.get_attribute_location(*this, name);
+		if (loc == -1) {
+			ctx.error(std::string("shader_program::set_attribute() attribute <") + name + "> not found", this);
+			return false;
+		}
+		return ctx.set_attribute_void(*this, loc, type_id_offset<T>::get_id(), force_array, &value) && add_attribute_location(ctx, loc);
+	}
+	/// Set a vertex attribute to a single value or an array of values through the cgv::math::vec or std::vector classes.
+	template <typename T>
+	bool set_attribute_array(context& ctx, const std::string& name, const T* value, unsigned size = 0, unsigned stride = 0) {
+		int loc = ctx.get_attribute_location(*this, name);
+		if (loc == -1) {
+			ctx.error(std::string("shader_program::set_attribute_array() attribute <") + name + "> not found", this);
+			return false;
+		}
+		return ctx.set_attribute_void(*this, loc, type_id_offset<T*>::get_id(), false, value, stride, size) && add_attribute_location(ctx, loc);
 	}
 	/// disable shader program and restore fixed functionality
 	bool disable(context& ctx);

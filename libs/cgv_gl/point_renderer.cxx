@@ -46,6 +46,14 @@ namespace cgv {
 			}
 			return true;
 		}
+		void point_renderer::set_group_index_attribute(cgv::render::context& ctx, const std::vector<unsigned>& group_indices)
+		{
+			point_prog.set_attribute(ctx, "group_index", group_indices);
+		}
+		void point_renderer::set_group_colors(cgv::render::context& ctx, const std::vector<cgv::math::fvec<float, 4> >& group_colors)
+		{
+			point_prog.set_uniform(ctx, "group_colors", group_colors);
+		}
 
 		void point_renderer::enable(cgv::render::context& ctx, const point_render_style& prs, float reference_point_size, float y_view_angle, bool has_normals, bool has_colors, bool use_group_point_size, bool use_group_color)
 		{
@@ -78,8 +86,8 @@ namespace cgv {
 				point_prog.set_uniform(ctx, "smooth_points", prs.smooth_points);
 				point_prog.set_uniform(ctx, "illumination_mode", has_normals ? prs.illumination_mode : 0);
 				point_prog.set_uniform(ctx, "orient_splats", has_normals ? prs.orient_splats : false);
-				point_prog.set_uniform(ctx, "width", ctx.get_width());
-				point_prog.set_uniform(ctx, "height", ctx.get_height());
+//				point_prog.set_uniform(ctx, "my_width", ctx.get_width());
+//				point_prog.set_uniform(ctx, "my_height", ctx.get_height());
 				float pixel_extent_per_depth = (float)(2.0*tan(0.5*0.0174532925199*y_view_angle) / ctx.get_height());
 				point_prog.set_uniform(ctx, "pixel_extent_per_depth", pixel_extent_per_depth);
 				point_prog.set_uniform(ctx, "outline_width_from_pixel", prs.outline_width_from_pixel);

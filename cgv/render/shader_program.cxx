@@ -11,6 +11,19 @@ using namespace cgv::utils;
 namespace cgv {
 	namespace render {
 
+///
+bool shader_program::add_attribute_location(context& ctx, int loc)
+{
+	if (loc == -1)
+		return false;
+	if (attribute_locations.find(loc) == attribute_locations.end()) {
+		attribute_locations.insert(loc);
+		if (is_enabled)
+			ctx.enable_attribute_array(loc, true);
+	}
+	return true;
+}
+
 /// attach a list of files
 bool shader_program::attach_files(context& ctx, const std::vector<std::string>& file_names)
 {
@@ -114,6 +127,7 @@ shader_program::shader_program(bool _show_code_errors)
 	show_code_errors = _show_code_errors;
 	linked = false;
 	state_out_of_date = true;
+	is_enabled = false;
 	nr_attached_geometry_shaders = 0;
 }
 
@@ -402,21 +416,34 @@ void shader_program::set_geometry_shader_info(PrimitiveType input_type, Primitiv
 bool shader_program::enable(context& ctx)
 {
 	if (!is_created()) {
-		last_error = "attempt to enable shader_program that is not created";
+		ctx.error("attempt to enable shader_program that is not created", this);
 		return false;
 	}
 	if (!is_linked()) {
-		last_error = "attempt to enable shader_program that is not linked";
+		ctx.error("attempt to enable shader_program that is not linked", this);
+		return false;
+	}
+	if (is_enabled) {
+		ctx.error("attempt to enable shader_program that is already enabled or was not disabled properly", this);
 		return false;
 	}
 	update_state(ctx);
-	return ctx.shader_program_enable(*this);
+	for (auto loc : attribute_locations)
+		ctx.enable_attribute_array(loc, true);
+	return is_enabled = ctx.shader_program_enable(*this);
 }
 
 /// disable shader program and restore fixed functionality
 bool shader_program::disable(context& ctx)
 {
-	return ctx.shader_program_disable(*this);
+	if (!is_enabled) {
+		ctx.error("attempt to disable shader_program that is not enabled", this);
+		return false;
+	}
+	for (auto loc : attribute_locations)
+		ctx.enable_attribute_array(loc, false);
+	is_enabled = !ctx.shader_program_disable(*this);
+	return !is_enabled;
 }
 
 /// destruct shader program

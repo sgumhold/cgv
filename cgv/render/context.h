@@ -460,7 +460,10 @@ protected:
 	virtual bool shader_program_link     (shader_program_base& spb) = 0;
 	virtual bool shader_program_set_state(shader_program_base& spb) = 0;
 	virtual bool shader_program_enable   (shader_program_base& spb) = 0;
-	virtual bool set_uniform_void        (shader_program_base& spb, const std::string& name, int value_type, bool dimension_independent, const void* value_ptr) = 0;
+	virtual bool set_uniform_void        (shader_program_base& spb, const std::string& name, int value_type, bool force_array, const void* value_ptr) = 0;
+	virtual int  get_attribute_location  (shader_program_base& spb, const std::string& name) const = 0;
+	virtual bool set_attribute_void      (shader_program_base& spb, int loc, int value_type, bool force_array, const void* value_ptr, unsigned stride = 0, unsigned size = 0) = 0;
+	virtual void enable_attribute_array  (int loc, bool do_enable) = 0;
 	virtual bool shader_program_disable  (shader_program_base& spb) = 0;
 	virtual void shader_program_detach   (shader_program_base& spb, const render_component& sc) = 0;
 	virtual void shader_program_destruct (shader_program_base& spb) = 0;

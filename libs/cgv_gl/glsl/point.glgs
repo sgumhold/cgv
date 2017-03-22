@@ -8,8 +8,8 @@ uniform int culling_mode;
 uniform int map_color_to_material;
 uniform int illumination_mode;
 
-uniform uint width;
-uniform uint height;
+uniform uint my_width;
+uniform uint my_height;
 uniform bool orient_splats;
 uniform float outline_width_from_pixel;
 uniform float percentual_outline_width;
@@ -81,7 +81,7 @@ void main()
 	// transform point location to pixel coordinates
 	vec4 position_clip = gl_ModelViewProjectionMatrix * gl_PositionIn[0];
 	vec2 position_screen = position_clip.xy / position_clip.w;
-	position_pixel = 0.5*(position_screen + vec2(1.0, 1.0))*vec2(float(width), float(height));
+	position_pixel = 0.5*(position_screen + vec2(1.0, 1.0))*vec2(float(my_width), float(my_height));
 
 	// transform position to eye space
 	vec3 position_eye = (gl_ModelViewMatrix*gl_PositionIn[0]).xyz;

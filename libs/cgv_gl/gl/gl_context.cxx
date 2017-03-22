@@ -1959,35 +1959,92 @@ void gl_context::shader_program_destruct(shader_program_base& spb)
 	glDeleteProgram(get_gl_id(spb.handle));
 }
 
-bool gl_context::set_uniform_void(shader_program_base& spb,
-		const std::string& name, int value_type, bool dimension_independent, 
-		const void* value_ptr)
+std::string value_type_index_to_string(int value_type)
+{
+	std::string res, post_fix;
+	if ((value_type & TO_ARRAY_MASK) > 0) {
+		switch (value_type & TO_ARRAY_MASK) {
+		case TO_VECTOR:
+			res = "vector<";
+			post_fix = ">";
+			break;
+		case TO_VEC_OF:
+			res = "cgv::math::vec<";
+			post_fix = ">";
+			break;
+		case TO_POINTER:
+			post_fix = "*";
+			break;
+		}
+	}
+	value_type = value_type & ~TO_ARRAY_MASK;
+	if ((value_type & TO_BASE_MASK) > 0) {
+		switch (value_type & TO_BASE_MASK) {
+		case TO_VEC:
+			res += "cgv::math::vec<";
+			post_fix = std::string(">") + post_fix;
+			break;
+		case TO_FVEC2:
+			res += "cgv::math::fvec<";
+			post_fix = std::string(",2>") + post_fix;
+			break;
+		case TO_FVEC3:
+			res += "cgv::math::fvec<";
+			post_fix = std::string(",3>") + post_fix;
+			break;
+		case TO_FVEC4:
+			res += "cgv::math::fvec<";
+			post_fix = std::string(",4>") + post_fix;
+			break;
+		case TO_MAT:
+			res += "cgv::math::mat<";
+			post_fix = std::string(">") + post_fix;
+			break;
+		case TO_FMAT2:
+			res += "cgv::math::fmat<";
+			post_fix = std::string(",2>") + post_fix;
+			break;
+		case TO_FMAT3:
+			res += "cgv::math::fmat<";
+			post_fix = std::string(",3>") + post_fix;
+			break;
+		case TO_FMAT4:
+			res += "cgv::math::fmat<";
+			post_fix = std::string(",4>") + post_fix;
+			break;
+		}
+	}
+	value_type = value_type & ~TO_BASE_MASK;
+	return res + cgv::type::info::get_type_name(cgv::type::info::TypeId(value_type)) + post_fix;
+}
+
+bool gl_context::set_uniform_void(shader_program_base& spb, const std::string& name, int value_type, bool force_array, const void* value_ptr)
 {
 	GLuint p_id = get_gl_id(spb.handle);
 	GLint loc = glGetUniformLocation(p_id, name.c_str());
 	if (loc == -1) {
-		spb.last_error = std::string("Can not find uniform location ")+name;
+		error(std::string("gl_context::set_uniform_void(): Can not find uniform location ") + name, &spb);
 		return false;
 	}
 	GLint old_p_id;
 	glGetIntegerv(GL_CURRENT_PROGRAM, &old_p_id);
 	glUseProgram(p_id); 
 	switch (value_type) {
-	case TI_BOOL : glUniform1i(loc, *static_cast<const bool*>(value_ptr) ? 1 : 0); break;
-	case TI_UINT8 : glUniform1ui(loc, *static_cast<const uint8_type*>(value_ptr)); break;
-	case TI_UINT16 : glUniform1ui(loc, *static_cast<const uint16_type*>(value_ptr)); break;
-	case TI_UINT32 : glUniform1ui(loc, *static_cast<const uint32_type*>(value_ptr)); break;
-	case TI_INT8 : glUniform1i(loc, *static_cast<const int8_type*>(value_ptr)); break;
-	case TI_INT16 : glUniform1i(loc, *static_cast<const int16_type*>(value_ptr)); break;
-	case TI_INT32 : glUniform1i(loc, *static_cast<const int32_type*>(value_ptr)); break;
-	case TI_FLT32 : glUniform1f(loc, *static_cast<const flt32_type*>(value_ptr)); break;
+	case TI_BOOL : glUniform1i(loc, *reinterpret_cast<const bool*>(value_ptr) ? 1 : 0); break;
+	case TI_UINT8 : glUniform1ui(loc, *reinterpret_cast<const uint8_type*>(value_ptr)); break;
+	case TI_UINT16 : glUniform1ui(loc, *reinterpret_cast<const uint16_type*>(value_ptr)); break;
+	case TI_UINT32 : glUniform1ui(loc, *reinterpret_cast<const uint32_type*>(value_ptr)); break;
+	case TI_INT8 : glUniform1i(loc, *reinterpret_cast<const int8_type*>(value_ptr)); break;
+	case TI_INT16 : glUniform1i(loc, *reinterpret_cast<const int16_type*>(value_ptr)); break;
+	case TI_INT32 : glUniform1i(loc, *reinterpret_cast<const int32_type*>(value_ptr)); break;
+	case TI_FLT32 : glUniform1f(loc, *reinterpret_cast<const flt32_type*>(value_ptr)); break;
 
 #include "gl_context_switch.h"
 
-	case TI_FLT32 + UTO_VECTOR_VEC:
+	case TI_FLT32 + TO_VECTOR + TO_VEC:
 	{
 		unsigned i;
-		const std::vector<vec<flt32_type> >& vm = *static_cast<const std::vector<vec<flt32_type> >*>(value_ptr);
+		const std::vector<vec<flt32_type> >& vm = *reinterpret_cast<const std::vector<vec<flt32_type> >*>(value_ptr);
 		for (i = 0; i<vm.size(); ++i) {
 			GLint loc = glGetUniformLocation(p_id, (name + "[" + cgv::utils::to_string(i) + "]").c_str());
 			if (loc == -1) {
@@ -2002,29 +2059,29 @@ bool gl_context::set_uniform_void(shader_program_base& spb,
 		}
 		break;
 	}
-	case TI_FLT32 + UTO_VECTOR_FVEC:
+	case TI_FLT32 + TO_VECTOR + TO_FVEC2:
 	{
-		const std::vector<fvec<flt32_type, 2> >& vm = *static_cast<const std::vector<fvec<flt32_type, 2> >*>(value_ptr);
+		const std::vector<fvec<flt32_type, 2> >& vm = *reinterpret_cast<const std::vector<fvec<flt32_type, 2> >*>(value_ptr);
 		glUniform2fv(loc, (GLsizei)vm.size(), &vm[0](0));
 		break;
 	}
-	case TI_FLT32 + UTO_VECTOR_FVEC + UTO_DIV:
+	case TI_FLT32 + TO_VECTOR + TO_FVEC3:
 	{
-		const std::vector<fvec<flt32_type, 3> >& vm = *static_cast<const std::vector<fvec<flt32_type, 3> >*>(value_ptr);
+		const std::vector<fvec<flt32_type, 3> >& vm = *reinterpret_cast<const std::vector<fvec<flt32_type, 3> >*>(value_ptr);
 		glUniform3fv(loc, (GLsizei)vm.size(), &vm[0](0));
 		break;
 	}
-	case TI_FLT32 + UTO_VECTOR_FVEC + 2 * UTO_DIV:
+	case TI_FLT32 + TO_VECTOR + TO_FVEC4:
 	{
-		const std::vector<fvec<flt32_type, 4> >& vm = *static_cast<const std::vector<fvec<flt32_type, 4> >*>(value_ptr);
+		const std::vector<fvec<flt32_type, 4> >& vm = *reinterpret_cast<const std::vector<fvec<flt32_type, 4> >*>(value_ptr);
 		glUniform4fv(loc, (GLsizei)vm.size(), &vm[0](0));
 		break;
 	}
 
-	case TI_FLT32 + UTO_VECTOR_MAT:
+	case TI_FLT32 + TO_VECTOR + TO_MAT:
 		{
 			unsigned i;
-			const std::vector<mat<flt32_type> >& vm = *static_cast<const std::vector<mat<flt32_type> >*>(value_ptr);
+			const std::vector<mat<flt32_type> >& vm = *reinterpret_cast<const std::vector<mat<flt32_type> >*>(value_ptr);
 			for (i=0; i<vm.size(); ++i) {
 				GLint loc = glGetUniformLocation(p_id, (name + "[" + cgv::utils::to_string(i) + "]").c_str());
 				if (loc == -1) {
@@ -2039,31 +2096,223 @@ bool gl_context::set_uniform_void(shader_program_base& spb,
 			}
 			break;
 		}
-	case TI_FLT32+UTO_VECTOR_FMAT : 
+	case TI_FLT32 + TO_VECTOR + TO_FMAT2:
 		{
-			const std::vector<fmat<flt32_type,2,2> >& vm = *static_cast<const std::vector<fmat<flt32_type,2,2> >*>(value_ptr);
+			const std::vector<fmat<flt32_type,2,2> >& vm = *reinterpret_cast<const std::vector<fmat<flt32_type,2,2> >*>(value_ptr);
 			glUniformMatrix2fv(loc, (GLsizei)vm.size(), 0, &vm[0](0,0)); 
 			break;
 		}
-	case TI_FLT32+UTO_VECTOR_FMAT + UTO_DIV: 
+	case TI_FLT32 + TO_VECTOR + TO_FMAT3:
 		{
-			const std::vector<fmat<flt32_type,3,3> >& vm = *static_cast<const std::vector<fmat<flt32_type,3,3> >*>(value_ptr);
+			const std::vector<fmat<flt32_type,3,3> >& vm = *reinterpret_cast<const std::vector<fmat<flt32_type,3,3> >*>(value_ptr);
 			glUniformMatrix3fv(loc, (GLsizei)vm.size(), 0, &vm[0](0, 0));
 			break;
 		}
-	case TI_FLT32+UTO_VECTOR_FMAT + 2*UTO_DIV: 
+	case TI_FLT32 + TO_VECTOR + TO_FMAT4:
 		{
-			const std::vector<fmat<flt32_type,4,4> >& vm = *static_cast<const std::vector<fmat<flt32_type,4,4> >*>(value_ptr);
+			const std::vector<fmat<flt32_type,4,4> >& vm = *reinterpret_cast<const std::vector<fmat<flt32_type,4,4> >*>(value_ptr);
 			glUniformMatrix4fv(loc, (GLsizei)vm.size(), 0, &vm[0](0, 0));
 			break;
 		}
 	default: 
-		std::cerr << "uniform of type " << value_type << " not supported!" << std::endl;
-		spb.last_error = "uniform type not supported";
+		error(std::string("gl_context::set_uniform_void() uniform of type ") + value_type_index_to_string(value_type) + " not supported!", &spb);
 		glUseProgram(old_p_id); 
 		return false;
 	}
 	glUseProgram(old_p_id); 
+	check_gl_error("gl_context::set_uniform_void()", &spb);
+	return true;
+}
+void gl_context::enable_attribute_array(int loc, bool do_enable)
+{
+	if (do_enable)
+		glEnableVertexAttribArray(loc);
+	else
+		glDisableVertexAttribArray(loc);
+	check_gl_error("gl_context::enable_attribute_array()");
+}
+
+int  gl_context::get_attribute_location(shader_program_base& spb, const std::string& name) const
+{
+	GLuint p_id = get_gl_id(spb.handle);
+	return glGetAttribLocation(p_id, name.c_str());
+}
+
+bool gl_context::set_attribute_void(shader_program_base& spb, int loc, int value_type, bool force_array, const void* value_ptr, unsigned stride, unsigned size)
+{
+	if ((value_type & TO_ARRAY_MASK) == 0) {
+		if ((value_type & TO_BASE_MASK) == 0) {
+			switch (value_type) {
+			case TI_INT8:   glVertexAttrib1s(loc, *reinterpret_cast<const int8_type*>(value_ptr)); break;
+			case TI_INT16:  glVertexAttrib1s(loc, *reinterpret_cast<const int16_type*>(value_ptr)); break;
+			case TI_INT32:  glVertexAttribI1i(loc, *reinterpret_cast<const int32_type*>(value_ptr)); break;
+			case TI_UINT8:  glVertexAttrib1s(loc, *reinterpret_cast<const uint8_type*>(value_ptr)); break;
+			case TI_UINT16: glVertexAttrib1s(loc, *reinterpret_cast<const uint16_type*>(value_ptr)); break;
+			case TI_UINT32: glVertexAttribI1ui(loc, *reinterpret_cast<const uint32_type*>(value_ptr)); break;
+			case TI_FLT32:  glVertexAttrib1f(loc, *reinterpret_cast<const flt32_type*>(value_ptr)); break;
+			default:
+				error(std::string("gl_context::set_attribute_void() attribute of type ") + value_type_index_to_string(value_type) + " not supported!", &spb);
+				return false;
+			}
+		}
+		else {
+			switch (value_type & TO_BASE_MASK) {
+			case TO_FVEC2:
+				switch (value_type & ~TO_BASE_MASK) {
+				case TI_INT16:  glVertexAttrib2sv(loc, &(*reinterpret_cast<const cgv::math::fvec<int16_type, 2>*>(value_ptr))(0)); break;
+				case TI_INT32:  glVertexAttribI2iv(loc, &(*reinterpret_cast<const cgv::math::fvec<int32_type, 2>*>(value_ptr))(0)); break;
+				case TI_UINT32: glVertexAttribI2uiv(loc, &(*reinterpret_cast<const cgv::math::fvec<uint32_type, 2>*>(value_ptr))(0)); break;
+				case TI_FLT32:  glVertexAttrib2fv(loc, &(*reinterpret_cast<const cgv::math::fvec<flt32_type, 2>*>(value_ptr))(0)); break;
+				default: error(std::string("gl_context::set_attribute_void() attribute of type ") + value_type_index_to_string(value_type) + " not supported!", &spb); return false;
+				}
+				break;
+			case TO_FVEC3:
+				switch (value_type & ~TO_BASE_MASK) {
+				case TI_INT16:  glVertexAttrib3sv(loc, &(*reinterpret_cast<const cgv::math::fvec<int16_type, 3>*>(value_ptr))(0)); break;
+				case TI_INT32:  glVertexAttribI3iv(loc, &(*reinterpret_cast<const cgv::math::fvec<int32_type, 3>*>(value_ptr))(0)); break;
+				case TI_UINT32: glVertexAttribI3uiv(loc, &(*reinterpret_cast<const cgv::math::fvec<uint32_type, 3>*>(value_ptr))(0)); break;
+				case TI_FLT32:  glVertexAttrib3fv(loc, &(*reinterpret_cast<const cgv::math::fvec<flt32_type, 3>*>(value_ptr))(0)); break;
+				default: error(std::string("gl_context::set_attribute_void() attribute of type ") + value_type_index_to_string(value_type) + " not supported!", &spb); return false;
+				}
+				break;
+			case TO_FVEC4:
+				switch (value_type & ~TO_BASE_MASK) {
+				case TI_INT16:  glVertexAttrib4sv(loc, &(*reinterpret_cast<const cgv::math::fvec<int16_type, 4>*>(value_ptr))(0)); break;
+				case TI_INT32:  glVertexAttribI4iv(loc, &(*reinterpret_cast<const cgv::math::fvec<int32_type, 4>*>(value_ptr))(0)); break;
+				case TI_UINT32: glVertexAttribI4uiv(loc, &(*reinterpret_cast<const cgv::math::fvec<uint32_type, 4>*>(value_ptr))(0)); break;
+				case TI_FLT32:  glVertexAttrib4fv(loc, &(*reinterpret_cast<const cgv::math::fvec<flt32_type, 4>*>(value_ptr))(0)); break;
+				default: error(std::string("gl_context::set_attribute_void() attribute of type ") + value_type_index_to_string(value_type) + " not supported!", &spb); return false;
+				}
+				break;
+			case TO_VEC: // consider force_array flag here
+			case TO_MAT:
+			case TO_FMAT2:
+			case TO_FMAT3:
+			case TO_FMAT4:
+			default:
+				error(std::string("gl_context::set_attribute_void() attribute of type ") + value_type_index_to_string(value_type) + " not supported!", &spb);
+				return false;
+			}
+		}
+	}
+	else {
+		switch (value_type & TO_ARRAY_MASK) {
+		case TO_VECTOR :
+			if ((value_type & TO_BASE_MASK) == 0) {
+				switch (value_type & ~(TO_BASE_MASK + TO_ARRAY_MASK)) {
+				case TI_INT8:   glVertexAttribIPointer(loc, 1, GL_BYTE, 0, &reinterpret_cast<const std::vector<int8_type>*>(value_ptr)->front()); break;
+				case TI_INT16:  glVertexAttribIPointer(loc, 1, GL_SHORT, 0, &reinterpret_cast<const std::vector<int16_type>*>(value_ptr)->front()); break;
+				case TI_INT32:  glVertexAttribIPointer(loc, 1, GL_INT, 0, &reinterpret_cast<const std::vector<int32_type>*>(value_ptr)->front()); break;
+				case TI_UINT8:  glVertexAttribIPointer(loc, 1, GL_UNSIGNED_BYTE, 0, &reinterpret_cast<const std::vector<uint8_type>*>(value_ptr)->front()); break;
+				case TI_UINT16: glVertexAttribIPointer(loc, 1, GL_UNSIGNED_SHORT, 0, &reinterpret_cast<const std::vector<uint16_type>*>(value_ptr)->front()); break;
+				case TI_UINT32: glVertexAttribIPointer(loc, 1, GL_UNSIGNED_INT, 0, &reinterpret_cast<const std::vector<uint32_type>*>(value_ptr)->front()); break;
+				case TI_FLT32:  glVertexAttribPointer(loc, 1, GL_FLOAT, GL_FALSE, 0, &reinterpret_cast<const std::vector<flt32_type>*>(value_ptr)->front()); break;
+				default:
+					error(std::string("gl_context::set_attribute_void() attribute of type ") + value_type_index_to_string(value_type) + " not supported!", &spb);
+					return false;
+				}
+			}
+			else {
+				switch (value_type & TO_BASE_MASK) {
+				case TO_FVEC2:
+					switch (value_type & ~(TO_BASE_MASK + TO_ARRAY_MASK)) {
+					case TI_INT16:  glVertexAttribIPointer(loc, 2, GL_SHORT, 0, &reinterpret_cast<const std::vector<cgv::math::fvec<int16_type, 2> >*>(value_ptr)->front()); break;
+					case TI_INT32:  glVertexAttribIPointer(loc, 2, GL_INT, 0, &reinterpret_cast<const std::vector<cgv::math::fvec<int32_type,2> >*>(value_ptr)->front()); break;
+					case TI_UINT32: glVertexAttribIPointer(loc, 2, GL_UNSIGNED_INT, 0, &reinterpret_cast<const std::vector<cgv::math::fvec<uint32_type, 2> >*>(value_ptr)->front()); break;
+					case TI_FLT32:  glVertexAttribPointer(loc, 2, GL_FLOAT, GL_FALSE, 0, &reinterpret_cast<const std::vector<cgv::math::fvec<flt32_type,2> >*>(value_ptr)->front()); break;
+					default: error(std::string("gl_context::set_attribute_void() attribute of type ") + value_type_index_to_string(value_type) + " not supported!", &spb); return false;
+					}
+					break;
+				case TO_FVEC3:
+					switch (value_type & ~(TO_BASE_MASK+TO_ARRAY_MASK)) {
+					case TI_INT16:  glVertexAttribIPointer(loc, 3, GL_SHORT, 0, &reinterpret_cast<const std::vector<cgv::math::fvec<int16_type, 3> >*>(value_ptr)->front()); break;
+					case TI_INT32:  glVertexAttribIPointer(loc, 3, GL_INT, 0, &reinterpret_cast<const std::vector<cgv::math::fvec<int32_type, 3> >*>(value_ptr)->front()); break;
+					case TI_UINT32: glVertexAttribIPointer(loc, 3, GL_UNSIGNED_INT, 0, &reinterpret_cast<const std::vector<cgv::math::fvec<uint32_type, 3> >*>(value_ptr)->front()); break;
+					case TI_FLT32:  glVertexAttribPointer(loc, 3, GL_FLOAT, GL_FALSE, 0, &reinterpret_cast<const std::vector<cgv::math::fvec<flt32_type, 3> >*>(value_ptr)->front()); break;
+					default: error(std::string("gl_context::set_attribute_void() attribute of type ") + value_type_index_to_string(value_type) + " not supported!", &spb); return false;
+					}
+					break;
+				case TO_FVEC4:
+					switch (value_type & ~(TO_BASE_MASK + TO_ARRAY_MASK)) {
+					case TI_INT16:  glVertexAttribIPointer(loc, 4, GL_SHORT, 0, &reinterpret_cast<const std::vector<cgv::math::fvec<int16_type, 4> >*>(value_ptr)->front()); break;
+					case TI_INT32:  glVertexAttribIPointer(loc, 4, GL_INT, 0, &reinterpret_cast<const std::vector<cgv::math::fvec<int32_type, 4> >*>(value_ptr)->front()); break;
+					case TI_UINT32: glVertexAttribIPointer(loc, 4, GL_UNSIGNED_INT, 0, &reinterpret_cast<const std::vector<cgv::math::fvec<uint32_type, 4> >*>(value_ptr)->front()); break;
+					case TI_FLT32:  glVertexAttribPointer(loc, 4, GL_FLOAT, GL_FALSE, 0, &reinterpret_cast<const std::vector<cgv::math::fvec<flt32_type, 4> >*>(value_ptr)->front()); break;
+					default: error(std::string("gl_context::set_attribute_void() attribute of type ") + value_type_index_to_string(value_type) + " not supported!", &spb); return false;
+					}
+					break;
+				case TO_VEC:
+				case TO_MAT:
+				case TO_FMAT2:
+				case TO_FMAT3:
+				case TO_FMAT4:
+				default:
+					error(std::string("gl_context::set_attribute_void() attribute of type ") + value_type_index_to_string(value_type) + " not supported!", &spb);
+					return false;
+				}
+			}
+			break;
+		case TO_POINTER:
+			if ((value_type & TO_BASE_MASK) == 0) {
+				switch (value_type & ~(TO_BASE_MASK + TO_ARRAY_MASK)) {
+				case TI_INT8:   glVertexAttribIPointer(loc, 1, GL_BYTE, stride, reinterpret_cast<const int8_type*>(value_ptr)); break;
+				case TI_INT16:  glVertexAttribIPointer(loc, 1, GL_SHORT, stride, reinterpret_cast<const int16_type*>(value_ptr)); break;
+				case TI_INT32:  glVertexAttribIPointer(loc, 1, GL_INT, stride, reinterpret_cast<const int32_type*>(value_ptr)); break;
+				case TI_UINT8:  glVertexAttribIPointer(loc, 1, GL_UNSIGNED_BYTE, stride, reinterpret_cast<const uint8_type*>(value_ptr)); break;
+				case TI_UINT16: glVertexAttribIPointer(loc, 1, GL_UNSIGNED_SHORT, stride, reinterpret_cast<const uint16_type*>(value_ptr)); break;
+				case TI_UINT32: glVertexAttribIPointer(loc, 1, GL_UNSIGNED_INT, stride, reinterpret_cast<const uint32_type*>(value_ptr)); break;
+				case TI_FLT32:  glVertexAttribPointer(loc, 1, GL_FLOAT, GL_FALSE, stride, reinterpret_cast<const flt32_type*>(value_ptr)); break;
+				default:
+					error(std::string("gl_context::set_attribute_void() attribute of type ") + value_type_index_to_string(value_type) + " not supported!", &spb);
+					return false;
+				}
+			}
+			else {
+				switch (value_type & TO_BASE_MASK) {
+				case TO_FVEC2:
+					switch (value_type & ~(TO_BASE_MASK + TO_ARRAY_MASK)) {
+					case TI_INT16:  glVertexAttribIPointer(loc, 2, GL_SHORT, stride, reinterpret_cast<const int16_type*>(value_ptr)); break;
+					case TI_INT32:  glVertexAttribIPointer(loc, 2, GL_INT, stride, reinterpret_cast<const int32_type*>(value_ptr)); break;
+					case TI_UINT32: glVertexAttribIPointer(loc, 2, GL_UNSIGNED_INT, stride, reinterpret_cast<const uint32_type*>(value_ptr)); break;
+					case TI_FLT32:  glVertexAttribPointer(loc, 2, GL_FLOAT, GL_FALSE, stride, reinterpret_cast<const flt32_type*>(value_ptr)); break;
+					default: error(std::string("gl_context::set_attribute_void() attribute of type ") + value_type_index_to_string(value_type) + " not supported!", &spb); return false;
+					}
+					break;
+				case TO_FVEC3:
+					switch (value_type & ~(TO_BASE_MASK + TO_ARRAY_MASK)) {
+					case TI_INT16:  glVertexAttribIPointer(loc, 3, GL_SHORT, stride, reinterpret_cast<const int16_type*>(value_ptr)); break;
+					case TI_INT32:  glVertexAttribIPointer(loc, 3, GL_INT, stride, reinterpret_cast<const int32_type*>(value_ptr)); break;
+					case TI_UINT32: glVertexAttribIPointer(loc, 3, GL_UNSIGNED_INT, stride, reinterpret_cast<const uint32_type*>(value_ptr)); break;
+					case TI_FLT32:  glVertexAttribPointer(loc, 3, GL_FLOAT, GL_FALSE, stride, reinterpret_cast<const flt32_type*>(value_ptr)); break;
+					default: error(std::string("gl_context::set_attribute_void() attribute of type ") + value_type_index_to_string(value_type) + " not supported!", &spb); return false;
+					}
+					break;
+				case TO_FVEC4:
+					switch (value_type & ~(TO_BASE_MASK + TO_ARRAY_MASK)) {
+					case TI_INT16:  glVertexAttribIPointer(loc, 4, GL_SHORT, stride, reinterpret_cast<const int16_type*>(value_ptr)); break;
+					case TI_INT32:  glVertexAttribIPointer(loc, 4, GL_INT, stride, reinterpret_cast<const int32_type*>(value_ptr)); break;
+					case TI_UINT32: glVertexAttribIPointer(loc, 4, GL_UNSIGNED_INT, stride, reinterpret_cast<const uint32_type*>(value_ptr)); break;
+					case TI_FLT32:  glVertexAttribPointer(loc, 4, GL_FLOAT, GL_FALSE, stride, reinterpret_cast<const flt32_type*>(value_ptr)); break;
+					default: error(std::string("gl_context::set_attribute_void() attribute of type ") + value_type_index_to_string(value_type) + " not supported!", &spb); return false;
+					}
+					break;
+				case TO_VEC:
+				case TO_MAT:
+				case TO_FMAT2:
+				case TO_FMAT3:
+				case TO_FMAT4:
+				default:
+					error(std::string("gl_context::set_attribute_void() attribute of type ") + value_type_index_to_string(value_type) + " not supported!", &spb);
+					return false;
+				}
+			}
+			break;
+		default:
+			error(std::string("gl_context::set_attribute_void() attribute of type ") + value_type_index_to_string(value_type) + " not supported!", &spb);
+			return false;
+		}
+	}
+	check_gl_error("gl_context::set_attribute_void()", &spb);
 	return true;
 }
 

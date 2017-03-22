@@ -72,8 +72,11 @@ namespace cgv {
 			point_renderer();
 			bool init(cgv::render::context& ctx);
 			void enable(cgv::render::context& ctx, const point_render_style& prs, float reference_point_size, float y_view_angle, bool has_normals, bool has_colors, bool use_group_point_size = false, bool use_group_color = false);
+			void set_group_index_attribute(cgv::render::context& ctx, const std::vector<unsigned>& group_indices);
+			void set_group_colors(cgv::render::context& ctx, const std::vector<cgv::math::fvec<float,4> >& group_colors);
 			void disable(cgv::render::context& ctx, const point_render_style& prs, bool has_normals);
 			void clear(cgv::render::context& ctx);
+			cgv::render::shader_program& ref_prog() { return point_prog; }
 		};
 	}
 }

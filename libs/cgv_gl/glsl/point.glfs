@@ -2,8 +2,6 @@
 
 uniform bool smooth_points = true;
 uniform int illumination_mode = 1;
-uniform uint width;
-uniform uint height;
 in vec3 normal;
 in vec2 uv;
 in vec4 color;
@@ -39,7 +37,7 @@ void main()
 	// illumination
 	vec4 color_in = color;
 	if (illumination_mode > 0) {
-		color_in = vec4(doLighting(position, normal, color_in).rgb, 1.0);
+		color_in = vec4(doLighting(position, normal, color_in).rgb, color_in.a);
 	}
 	vec4 color_line = vec4(color_in.rgb, lambda_line);
 	gl_FragColor = lambda_in * color_in + (1.0 - lambda_out - lambda_in) * color_line;

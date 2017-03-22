@@ -70,7 +70,10 @@ protected:
 	bool shader_program_link(shader_program_base& spb);
 	bool shader_program_set_state(shader_program_base& spb);
 	bool shader_program_enable(shader_program_base& spb);
-	bool set_uniform_void(shader_program_base& spb, const std::string& name, int value_type, bool dimension_independent, const void* value_ptr);
+	bool set_uniform_void(shader_program_base& spb, const std::string& name, int value_type, bool force_array, const void* value_ptr);
+	int  get_attribute_location(shader_program_base& spb, const std::string& name) const;
+	bool set_attribute_void(shader_program_base& spb, int loc, int value_type, bool force_array, const void* value_ptr, unsigned stride, unsigned size);
+	void enable_attribute_array(int loc, bool do_enable);
 	bool shader_program_disable(shader_program_base& spb);
 	void shader_program_detach(shader_program_base& spb, const render_component& sc);
 	void shader_program_destruct(shader_program_base& spb);
