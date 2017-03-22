@@ -958,7 +958,7 @@ void stereo_view_interactor::draw_mouse_pointer_as_arrow(cgv::render::context& c
 	int dy = center_y - y;
 	float fx = (float)dx / vp_width;
 	float fy = (float)dy / vp_height;
-	float fmax = max(fabs(fx), fabs(fy));
+	float fmax = std::max(fabs(fx), fabs(fy));
 	if (fmax < 0.25f) {
 		dx = 1;
 		dy = 0;
