@@ -35,7 +35,7 @@ int main(int argc, char** argv)
 	unsigned ai;
 	for (ai = 1; (int)ai < argc; ++ai) {
 		command_info info;
-		cgv::base::analyze_command(cgv::utils::token(argv[ai], argv[ai] + strlen(argv[ai])), true, &info);
+		cgv::base::analyze_command(cgv::utils::token(argv[ai], argv[ai] + std::string((const char*)argv[ai]).length()), true, &info);
 		switch (info.command_type) {
 		case CT_UNKNOWN:
 			unknown.push_back(ai);

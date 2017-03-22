@@ -393,11 +393,11 @@ double stereo_view_interactor::get_z_and_unproject(cgv::render::context& ctx, in
 	double z_other = ctx.get_z_D(x_other, y_other);
 
 	if (z <= z_other) {
-		p = (double*)ctx.get_point_W(x, y, z, *DPV_ptr);
+		p = (const double*)ctx.get_point_W(x, y, z, *DPV_ptr);
 		return z;
 	}
 	else {
-		p = (double*)ctx.get_point_W(x_other, y_other, z_other, *DPV_other_ptr);
+		p = (const double*)ctx.get_point_W(x_other, y_other, z_other, *DPV_other_ptr);
 		return z_other;
 	}
 }
@@ -980,8 +980,8 @@ void stereo_view_interactor::draw_mouse_pointer_as_arrow(cgv::render::context& c
 	float ds_begin = 1.5f / len;
 	int dx_begin = int(dx*ds_begin);
 	int dy_begin = int(dy*ds_begin);
-	cgv::math::fvec<double, 3> p_end = ctx.get_point_W(x + dx_begin, y + dy_begin, z0_D, DPV);
-	cgv::math::fvec<double, 3> p_begin = ctx.get_point_W(x + dx_end, y + dy_end, z0_D, DPV);
+	cgv::math::fvec<double, 3> p_end((const double*)ctx.get_point_W(x + dx_begin, y + dy_begin, z0_D, DPV));
+	cgv::math::fvec<double, 3> p_begin((const double*)ctx.get_point_W(x + dx_end, y + dy_end, z0_D, DPV));
 	p_begin -= 0.3f*(p_begin - p_end).length()*get_view_dir();
 
 	if (visible) {
