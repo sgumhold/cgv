@@ -2,8 +2,7 @@
 
 #include <cgv/reflect/reflection_handler.h>
 #include <cgv/reflect/reflect_extern.h>
-#include <cgv/reflect/reflect_enum.h>
-#include <cgv/render/context.h>
+#include <cgv_reflect_types/render/context.h>
 #include <cgv/render/shader_program.h>
 #include <cgv/media/illum/phong_material.hh>
 
@@ -12,13 +11,6 @@
 namespace cgv {
 	namespace render {
 		
-		enum IlluminationMode {
-			IM_OFF, IM_ONE_SIDED, IM_TWO_SIDED
-		};
-		enum CullingMode {
-			CM_OFF, CM_BACKFACE, CM_FRONTFACE
-		};
-
 		/** style of a point */
 		struct CGV_API point_render_style
 		{
@@ -90,9 +82,6 @@ namespace cgv {
 			};
 		}
 		extern CGV_API cgv::reflect::extern_reflection_traits<cgv::render::point_render_style, cgv::reflect::render::point_render_style> get_reflection_traits(const cgv::render::point_render_style&);
-		extern CGV_API cgv::reflect::enum_reflection_traits<cgv::render::IlluminationMode> get_reflection_traits(const cgv::render::IlluminationMode&);
-		extern CGV_API cgv::reflect::enum_reflection_traits<cgv::render::CullingMode> get_reflection_traits(const cgv::render::CullingMode&);
-		extern CGV_API cgv::reflect::enum_reflection_traits<cgv::render::MaterialSide> get_reflection_traits(const cgv::render::MaterialSide&);
 	}
 }
 

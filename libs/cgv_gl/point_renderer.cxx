@@ -21,14 +21,14 @@ namespace cgv {
 
 			map_color_to_material = cgv::render::MS_FRONT_AND_BACK;
 
-			front_material.set_ambient(cgv::media::illum::phong_material::color_type(0.2f, 0.2f, 0.2f));
-			front_material.set_diffuse(cgv::media::illum::phong_material::color_type(0.6f, 0.4f, 0.4f));
-			front_material.set_specular(cgv::media::illum::phong_material::color_type(0.4f, 0.4f, 0.4f));
+			front_material.set_ambient(cgv::media::illum::phong_material::color_type(0.2f, 0.2f, 0.2f, 1.0f));
+			front_material.set_diffuse(cgv::media::illum::phong_material::color_type(0.6f, 0.4f, 0.4f, 1.0f));
+			front_material.set_specular(cgv::media::illum::phong_material::color_type(0.4f, 0.4f, 0.4f, 1.0f));
 			front_material.set_shininess(20.0f);
 
-			back_material.set_ambient(cgv::media::illum::phong_material::color_type(0.1f, 0.1f, 0.1f));
-			back_material.set_diffuse(cgv::media::illum::phong_material::color_type(0.3f, 0.2f, 0.2f));
-			back_material.set_specular(cgv::media::illum::phong_material::color_type(0.2f, 0.2f, 0.2f));
+			back_material.set_ambient(cgv::media::illum::phong_material::color_type(0.1f, 0.1f, 0.1f, 1.0f));
+			back_material.set_diffuse(cgv::media::illum::phong_material::color_type(0.3f, 0.2f, 0.2f, 1.0f));
+			back_material.set_specular(cgv::media::illum::phong_material::color_type(0.2f, 0.2f, 0.2f, 1.0f));
 			back_material.set_shininess(20.0f);
 		}
 
@@ -147,7 +147,6 @@ namespace cgv {
 namespace cgv {
 	namespace reflect {
 		namespace render {
-
 			bool point_render_style::self_reflect(cgv::reflect::reflection_handler& rh)
 			{
 				return
@@ -171,19 +170,6 @@ namespace cgv {
 		{
 			return cgv::reflect::extern_reflection_traits<cgv::render::point_render_style, cgv::reflect::render::point_render_style>();
 		}
-		cgv::reflect::enum_reflection_traits<cgv::render::IlluminationMode> get_reflection_traits(const cgv::render::IlluminationMode&)
-		{
-			return cgv::reflect::enum_reflection_traits<cgv::render::IlluminationMode>("OFF,ONESIDED,TWOSIDED");
-		}
-		cgv::reflect::enum_reflection_traits<cgv::render::CullingMode> get_reflection_traits(const cgv::render::CullingMode&)
-		{
-			return cgv::reflect::enum_reflection_traits<cgv::render::CullingMode>("OFF,BACKFACE,FRONTFACE");
-		}
-		cgv::reflect::enum_reflection_traits<cgv::render::MaterialSide> get_reflection_traits(const cgv::render::MaterialSide&)
-		{
-			return cgv::reflect::enum_reflection_traits<cgv::render::MaterialSide>("NONE,BACK,FRONT,FRONT_AND_BACK");
-		}
-
 	}
 }
 

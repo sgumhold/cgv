@@ -37,7 +37,7 @@ void main()
 	// illumination
 	vec4 color_in = color;
 	if (illumination_mode > 0) {
-		color_in = vec4(doLighting(position, normal, color_in).rgb, color_in.a);
+		color_in.rgb = doLighting(position, normal, color_in).rgb;
 	}
 	vec4 color_line = vec4(color_in.rgb, lambda_line);
 	gl_FragColor = lambda_in * color_in + (1.0 - lambda_out - lambda_in) * color_line;

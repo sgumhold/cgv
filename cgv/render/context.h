@@ -75,6 +75,17 @@ enum RenderPassFlags {
 /// different sides of a material
 enum MaterialSide { MS_NONE, MS_FRONT, MS_BACK, MS_FRONT_AND_BACK };
 
+/// different illumination modes
+enum IlluminationMode {
+	IM_OFF, IM_ONE_SIDED, IM_TWO_SIDED
+};
+
+/// different culling modes
+enum CullingMode {
+	CM_OFF, CM_BACKFACE, CM_FRONTFACE
+};
+
+
 /// different texture wrap modes
 enum TextureWrap { 
 	TW_REPEAT = 0, 
