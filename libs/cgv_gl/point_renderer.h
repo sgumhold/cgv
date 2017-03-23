@@ -18,6 +18,8 @@ namespace cgv {
 			//@{
 			/// default value assigned to point size attribute in \c enable method of point renderer, set to 1 in constructor
 			float point_size;
+			/// whether to measure point size in pixels or in world space relative to reference_pixel_size passed to enable method, defaults to true
+			bool measure_point_size_in_pixel;
 			/// default value assigned to point color attribute in \c enable method of point renderer, set to (0,0,0,1) in constructor
 			cgv::media::illum::phong_material::color_type point_color;
 			//@}
@@ -63,9 +65,11 @@ namespace cgv {
 		public:
 			point_renderer();
 			bool init(cgv::render::context& ctx);
-			void enable(cgv::render::context& ctx, const point_render_style& prs, float reference_point_size, float y_view_angle, bool has_normals, bool has_colors, bool use_group_point_size = false, bool use_group_color = false);
+			void enable(cgv::render::context& ctx, const point_render_style& prs, float reference_point_size, float y_view_angle, bool has_normals, bool has_colors, bool use_group_point_size = false, bool use_group_color = false, bool use_group_transformation = false);
 			void set_group_index_attribute(cgv::render::context& ctx, const std::vector<unsigned>& group_indices);
-			void set_group_colors(cgv::render::context& ctx, const std::vector<cgv::math::fvec<float,4> >& group_colors);
+			void set_group_colors(cgv::render::context& ctx, const std::vector<cgv::math::fvec<float, 4> >& group_colors);
+			void set_group_translations(cgv::render::context& ctx, const std::vector<cgv::math::fvec<float, 3> >& group_translations);
+			void set_group_rotations(cgv::render::context& ctx, const std::vector<cgv::math::fvec<float, 4> >& group_rotations);
 			void disable(cgv::render::context& ctx, const point_render_style& prs, bool has_normals);
 			void clear(cgv::render::context& ctx);
 			cgv::render::shader_program& ref_prog() { return point_prog; }

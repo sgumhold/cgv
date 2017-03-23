@@ -4,12 +4,12 @@
 layout(points) in;
 layout(triangle_strip, max_vertices = 4) out;
 
+uniform bool measure_point_size_in_pixel;
+uniform float reference_point_size;
 uniform int culling_mode;
 uniform int map_color_to_material;
 uniform int illumination_mode;
 
-uniform uint my_width;
-uniform uint my_height;
 uniform bool orient_splats;
 uniform float outline_width_from_pixel;
 uniform float percentual_outline_width;
@@ -22,12 +22,11 @@ out vec3 normal;
 out vec2 uv;
 out vec4 color;
 out vec3 position;
-out vec2 position_pixel;
 
 out float percentual_outline_start;
 out float percentual_pixel_extent;
 out float percentual_splat_size;
-out int   side;
+flat out int   side; // 0 is back facing and 1 is front facing
 
 void emit_corner(in vec3 corner, in float u, in float v)
 {
@@ -45,22 +44,31 @@ void main()
 {
 	// transform normal to eye space
 	normal = gl_NormalMatrix*(normal_gs[0]);
+	// transform position to eye space
+	vec3 position_eye = (gl_ModelViewMatrix*gl_PositionIn[0]).xyz;
+	// sign of dot product between normal and view vector tells us side that we see
+	float sign_indicator = dot(normal, position_eye);
+	// determine side (0 ... back side, 1 ... front side)
+	side = (sign_indicator < 0.0) ? 1 : 0;
 
 	// perform splat culling
-	if (culling_mode > 0) {
-		// check for culling
-		if ( ( (culling_mode == 1) && (normal.z <  0.00001) ) ||
-			 ( (culling_mode == 2) && (normal.z > -0.00001) ) ) {
+	switch (culling_mode) {
+	case 1: // backface culling
+		if (sign_indicator > 0.0) {
 			return;
 		}
+		break;
+	case 2: // frontface culling
+		if (sign_indicator < 0.0) {
+			return;
+		}
+		break;
 	}
 	// set color to color attribute
 	color = color_gs[0];
 
 	// compute side, overwrite color with material color if needed, and overwrite normal with negated normal if needed
 	if (illumination_mode > 0) {
-		// determine side
-		side = normal.z > 0.0 ? 1 : 0;
 
 		// negate normal for back faces in double sided illumination
 		if (illumination_mode == 2 && side == 0) {
@@ -68,30 +76,29 @@ void main()
 		}
 		// overwrite color with diffuse material color if no color mapping turned on
 		if (side == 1) {
-			if (map_color_to_material < 2) {
+			if ((map_color_to_material & 1) == 0) {
 				color = gl_FrontMaterial.diffuse;
 			}
 		}
 		else {
-			if ((map_color_to_material & 1) == 0) {
+			if ((map_color_to_material & 2) == 0) {
 				color = gl_BackMaterial.diffuse;
 			}
 		}
 	}
-	// transform point location to pixel coordinates
-	vec4 position_clip = gl_ModelViewProjectionMatrix * gl_PositionIn[0];
-	vec2 position_screen = position_clip.xy / position_clip.w;
-	position_pixel = 0.5*(position_screen + vec2(1.0, 1.0))*vec2(float(my_width), float(my_height));
-
-	// transform position to eye space
-	vec3 position_eye = (gl_ModelViewMatrix*gl_PositionIn[0]).xyz;
-
 	// compute percentual size of splat and its radius
 	float depth = abs(position_eye.z);
 	float point_radius = 0.5 * gl_PointSizeIn[0];
+	if (measure_point_size_in_pixel) {
+		point_radius *= pixel_extent_per_depth * depth;
+	}
+	else {
+		point_radius *= reference_point_size;
+	}
+	// compute percentage of one pixel with respect to point radius
 	percentual_pixel_extent = pixel_extent_per_depth * depth / point_radius;
 	float percentual_outline_width_final = max(percentual_outline_width, outline_width_from_pixel * percentual_pixel_extent);
-
+	// compute splat size to be one pixel larger than point plus outline
 	percentual_splat_size    = 1.0 + 0.5 * (percentual_outline_width_final + percentual_pixel_extent);
 	percentual_outline_start = 1.0 - 0.5 * (percentual_outline_width_final + percentual_pixel_extent);
 	float splat_radius = point_radius * percentual_splat_size;

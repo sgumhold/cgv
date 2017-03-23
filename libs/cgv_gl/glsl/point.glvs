@@ -3,8 +3,11 @@
 uniform float point_size;
 uniform bool use_group_point_size;
 uniform bool use_group_color;
-uniform float group_point_sizes[256];
-uniform vec4 group_colors[256];
+uniform bool use_group_transformation;
+uniform float group_point_sizes[250];
+uniform vec4 group_colors[250];
+uniform vec3 group_translations[250];
+uniform vec4 group_rotations[250];
 
 in vec4 position;
 in vec3 normal;
@@ -17,17 +20,25 @@ out vec4 color_gs;
 void main()
 {
 	if (use_group_point_size) {
-		gl_PointSize = group_point_sizes[int(group_index)];
+		gl_PointSize = group_point_sizes[group_index];
 	}
 	else {
 		gl_PointSize = point_size;
 	}
 	if (use_group_color) {
-		color_gs = group_colors[int(group_index)];
+		color_gs = group_colors[group_index];
 	}
 	else {
 		color_gs = color;
 	}
 	normal_gs = normal;
-	gl_Position = position;
+	if (use_group_transformation) {
+		vec4 q = group_rotations[group_index];
+		vec3 p = position.xyz;
+		vec3 image = cross(q.xyz, p);
+		gl_Position = vec4(dot(p, q.xyz)*q.xyz + q.w*(q.w*p + 2.0 * image) + cross(q.xyz, image) + group_translations[group_index], position.w);
+	}
+	else {
+		gl_Position = position;
+	}
 }

@@ -9,6 +9,7 @@ namespace cgv {
 		point_render_style::point_render_style() : point_color(0,0,0,1)
 		{
 			point_size = 1.0f;
+			measure_point_size_in_pixel = true;
 
 			smooth_points = true;
 			blend_points = true;
@@ -54,8 +55,16 @@ namespace cgv {
 		{
 			point_prog.set_uniform(ctx, "group_colors", group_colors);
 		}
+		void point_renderer::set_group_translations(cgv::render::context& ctx, const std::vector<cgv::math::fvec<float, 3> >& group_translations)
+		{
+			point_prog.set_uniform(ctx, "group_translations", group_translations);
+		}
+		void point_renderer::set_group_rotations(cgv::render::context& ctx, const std::vector<cgv::math::fvec<float, 4> >& group_rotations)
+		{
+			point_prog.set_uniform(ctx, "group_rotations", group_rotations);
+		}
 
-		void point_renderer::enable(cgv::render::context& ctx, const point_render_style& prs, float reference_point_size, float y_view_angle, bool has_normals, bool has_colors, bool use_group_point_size, bool use_group_color)
+		void point_renderer::enable(cgv::render::context& ctx, const point_render_style& prs, float reference_point_size, float y_view_angle, bool has_normals, bool has_colors, bool use_group_point_size, bool use_group_color, bool use_group_transformation)
 		{
 			ctx.enable_material(prs.front_material, cgv::render::MS_FRONT);
 			ctx.enable_material(prs.back_material, cgv::render::MS_BACK);
@@ -78,16 +87,17 @@ namespace cgv {
 
 			if (prs.use_point_shader && point_prog.is_linked()) {
 				cgv::render::gl::set_lighting_parameters(ctx, point_prog);
-				point_prog.set_uniform(ctx, "point_size", prs.point_size * reference_point_size);
+				point_prog.set_uniform(ctx, "point_size", prs.point_size);
+				point_prog.set_uniform(ctx, "measure_point_size_in_pixel", prs.measure_point_size_in_pixel);
+				point_prog.set_uniform(ctx, "reference_point_size", reference_point_size);
 				point_prog.set_uniform(ctx, "use_group_point_size", use_group_point_size);
 				point_prog.set_uniform(ctx, "use_group_color", use_group_color);
+				point_prog.set_uniform(ctx, "use_group_transformation", use_group_transformation);
 				point_prog.set_uniform(ctx, "map_color_to_material", has_colors ? int(prs.map_color_to_material) : 0);
 				point_prog.set_uniform(ctx, "culling_mode", has_normals ? prs.culling_mode : 0);
 				point_prog.set_uniform(ctx, "smooth_points", prs.smooth_points);
 				point_prog.set_uniform(ctx, "illumination_mode", has_normals ? prs.illumination_mode : 0);
 				point_prog.set_uniform(ctx, "orient_splats", has_normals ? prs.orient_splats : false);
-//				point_prog.set_uniform(ctx, "my_width", ctx.get_width());
-//				point_prog.set_uniform(ctx, "my_height", ctx.get_height());
 				float pixel_extent_per_depth = (float)(2.0*tan(0.5*0.0174532925199*y_view_angle) / ctx.get_height());
 				point_prog.set_uniform(ctx, "pixel_extent_per_depth", pixel_extent_per_depth);
 				point_prog.set_uniform(ctx, "outline_width_from_pixel", prs.outline_width_from_pixel);
@@ -151,6 +161,7 @@ namespace cgv {
 			{
 				return
 					rh.reflect_member("point_size", point_size) &&
+					rh.reflect_member("measure_point_size_in_pixel", measure_point_size_in_pixel) &&
 					rh.reflect_member("point_color", point_color) &&
 					rh.reflect_member("smooth_points", smooth_points) &&
 					rh.reflect_member("blend_points", blend_points) &&
@@ -191,16 +202,17 @@ namespace cgv {
 				cgv::base::base* b = dynamic_cast<cgv::base::base*>(p);
 
 				p->add_member_control(b, "point_size", prs_ptr->point_size, "value_slider", "min=1;max=20;log=true;ticks=true");
+				p->add_member_control(b, "measure_point_size_in_pixel", prs_ptr->measure_point_size_in_pixel, "toggle");
 				p->add_member_control(b, "point_color", prs_ptr->point_color);
-				p->add_member_control(b, "smooth", prs_ptr->smooth_points, "check");
-				p->add_member_control(b, "blend", prs_ptr->blend_points, "check");
+				p->add_member_control(b, "smooth", prs_ptr->smooth_points, "toggle");
+				p->add_member_control(b, "blend", prs_ptr->blend_points, "toggle");
 				p->add_member_control(b, "culling_mode", prs_ptr->culling_mode, "dropdown", "enums='off,backface,frontface'");
 				p->add_member_control(b, "illumination_mode", prs_ptr->illumination_mode, "dropdown", "enums='off,onesided,twosided'");
 				p->add_member_control(b, "use_shader", prs_ptr->use_point_shader, "check");
 				p->add_member_control(b, "orient_splats", prs_ptr->orient_splats, "check");
 				p->add_member_control(b, "outline_width_from_pixel", prs_ptr->outline_width_from_pixel, "value_slider", "min=0;max=10;ticks=true");
 				p->add_member_control(b, "percentual_outline_width", prs_ptr->percentual_outline_width, "value_slider", "min=0;max=100;ticks=true");
-				p->add_member_control(b, "map_color_to_material", (cgv::type::DummyEnum&)prs_ptr->map_color_to_material, "dropdown", "enums='OFF,BACK,FRONT,FRONT_AND_BACK'");
+				p->add_member_control(b, "map_color_to_material", (cgv::type::DummyEnum&)prs_ptr->map_color_to_material, "dropdown", "enums='OFF,FRONT,BACK,FRONT_AND_BACK'");
 				p->add_gui("front_material", prs_ptr->front_material);
 				p->add_gui("back_material", prs_ptr->back_material);
 				return true;

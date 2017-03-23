@@ -1,3 +1,0 @@
-files:pc
-fragment_file:lighting.glsl
-geometry_shader_info:points;triangle_strip;4

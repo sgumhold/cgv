@@ -10,11 +10,12 @@ in vec2 position_pixel;
 in float percentual_outline_start;
 in float percentual_pixel_extent;
 in float percentual_splat_size;
-in int  side;
+flat in int  side;
 
 //layout pixel_center_integer in vec4 gl_FragCoord;
 
 vec4 doLighting(vec3 position, vec3 normal, vec4 diffuseMaterial);
+vec4 doTwoSidedLighting(vec3 position, vec3 normal, vec4 diffuseMaterial, int side);
 
 void main()
 {
@@ -36,9 +37,10 @@ void main()
 
 	// illumination
 	vec4 color_in = color;
-	if (illumination_mode > 0) {
-		color_in.rgb = doLighting(position, normal, color_in).rgb;
+	switch (illumination_mode) {
+	case 1: color_in.rgb = doLighting(position, normal, color_in).rgb; break;
+	case 2: color_in.rgb = doTwoSidedLighting(position, normal, color_in, side).rgb; break;
 	}
-	vec4 color_line = vec4(color_in.rgb, lambda_line);
+	vec4 color_line = vec4(color_in.rgb, lambda_line*color_in.a);
 	gl_FragColor = lambda_in * color_in + (1.0 - lambda_out - lambda_in) * color_line;
 }
