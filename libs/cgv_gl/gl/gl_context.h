@@ -18,12 +18,22 @@ extern CGV_API void set_gl_format(texture& tex, GLuint gl_format, const std::str
 /// return the texture format used for a given texture. If called before texture has been created, the function returns, which format would be chosen by the automatic format selection process.
 extern CGV_API GLuint get_gl_format(const texture& tex);
 
+extern CGV_API GLuint map_to_gl(PrimitiveType pt);
+
+extern CGV_API GLuint map_to_gl(MaterialSide ms);
+
+
 /** implementation of the context API for the OpenGL API excluding methods for font selection, redraw and
     initiation of render passes. */
 class CGV_API gl_context : public render::context
 {
 private:
 	std::stack<void*> frame_buffer_stack;
+	/// currently enabled shader program
+	shader_program_base* enabled_program;
+	/// currently enabled attribute array binding
+	attribute_array_binding_base* enabled_aab;
+
 	int query_integer_constant(ContextIntegerConstant cic) const;
 	GLuint texture_bind(TextureType tt, GLuint tex_id);
 	void texture_unbind(TextureType tt, GLuint tmp_id);
@@ -70,13 +80,29 @@ protected:
 	bool shader_program_link(shader_program_base& spb);
 	bool shader_program_set_state(shader_program_base& spb);
 	bool shader_program_enable(shader_program_base& spb);
-	bool set_uniform_void(shader_program_base& spb, const std::string& name, int value_type, bool force_array, const void* value_ptr);
-	int  get_attribute_location(shader_program_base& spb, const std::string& name) const;
-	bool set_attribute_void(shader_program_base& spb, int loc, int value_type, bool force_array, const void* value_ptr, unsigned stride, unsigned size);
-	void enable_attribute_array(int loc, bool do_enable);
 	bool shader_program_disable(shader_program_base& spb);
 	void shader_program_detach(shader_program_base& spb, const render_component& sc);
 	void shader_program_destruct(shader_program_base& spb);
+
+	int  get_uniform_location(const shader_program_base& spb, const std::string& name) const;
+	bool set_uniform_void(shader_program_base& spb, int loc, type_descriptor value_type, const void* value_ptr);
+	bool set_uniform_array_void(shader_program_base& spb, int loc, type_descriptor value_type, const void* value_ptr, size_t nr_elements);
+	int  get_attribute_location(const shader_program_base& spb, const std::string& name) const;
+	bool set_attribute_void(shader_program_base& spb, int loc, type_descriptor value_type, const void* value_ptr);
+
+	bool attribute_array_binding_create(attribute_array_binding_base& aab);
+	bool attribute_array_binding_destruct(attribute_array_binding_base& aab);
+	bool attribute_array_binding_enable(attribute_array_binding_base& aab);
+	bool attribute_array_binding_disable(attribute_array_binding_base& aab);
+	bool set_attribute_array_void(attribute_array_binding_base* aab, int loc, type_descriptor value_type, const vertex_buffer_base* vbb, const void* ptr, size_t nr_elements, unsigned stride_in_bytes);
+	bool enable_attribute_array(attribute_array_binding_base* aab, int loc, bool do_enable);
+	bool is_attribute_array_enabled(const attribute_array_binding_base* aab, int loc) const;
+
+	bool vertex_buffer_create(vertex_buffer_base& vbb, const void* array_ptr, size_t size_in_bytes);
+	bool vertex_buffer_replace(vertex_buffer_base& vbb, size_t offset, size_t size_in_bytes, const void* array_ptr);
+	bool vertex_buffer_copy(const vertex_buffer_base& src, size_t src_offset, vertex_buffer_base& target, size_t target_offset, size_t size_in_bytes);
+	bool vertex_buffer_copy_back(vertex_buffer_base& vbb, size_t offset, size_t size_in_bytes, void* array_ptr);
+	bool vertex_buffer_destruct(vertex_buffer_base& vbb);
 
 	bool check_gl_error(const std::string& where, const cgv::render::render_component* rc = 0);
 	bool check_texture_support(TextureType tt, const std::string& where, const cgv::render::render_component* rc = 0);

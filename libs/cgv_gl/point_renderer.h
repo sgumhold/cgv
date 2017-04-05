@@ -1,10 +1,6 @@
 #pragma once
 
-#include <cgv/reflect/reflection_handler.h>
-#include <cgv/reflect/reflect_extern.h>
-#include <cgv_reflect_types/render/context.h>
-#include <cgv/render/shader_program.h>
-#include <cgv/media/illum/phong_material.hh>
+#include "surface_renderer.h"
 
 #include "gl/lib_begin.h"
 
@@ -12,22 +8,20 @@ namespace cgv {
 	namespace render {
 		
 		/** style of a point */
-		struct CGV_API point_render_style
+		struct CGV_API point_render_style : public surface_render_style
 		{
 			/*@name point rendering attributes*/
 			//@{
 			/// default value assigned to point size attribute in \c enable method of point renderer, set to 1 in constructor
 			float point_size;
+			/// whether to use the 
+			bool use_group_point_size;
 			/// whether to measure point size in pixels or in world space relative to reference_pixel_size passed to enable method, defaults to true
 			bool measure_point_size_in_pixel;
-			/// default value assigned to point color attribute in \c enable method of point renderer, set to (0,0,0,1) in constructor
-			cgv::media::illum::phong_material::color_type point_color;
 			//@}
 
 			/*@name global point rendering options*/
 			//@{
-			/// culling mode for point splats, set to CM_OFF in constructor
-			CullingMode culling_mode;
 			/// set to 1 in constructor 
 			float outline_width_from_pixel;
 			/// set to 0 in constructor
@@ -39,16 +33,6 @@ namespace cgv {
 			/// set to false in constructor
 			bool blend_points;
 			
-			/// illumination mode defaults to \c IM_ONE_SIDED
-			IlluminationMode illumination_mode;
-			//! material side[s] where color is to be mapped to the diffuse material component, defaults to MS_FRONT_AND_BACK
-			/*! */
-			cgv::render::MaterialSide map_color_to_material;
-			///
-			cgv::media::illum::phong_material front_material;
-			///
-			cgv::media::illum::phong_material back_material;
-
 			//! whether to use the framework shader, set to true in constructor
 			/*! If framework shader is not used, standard OpenGL 1.0 is used and \c use_point_size_array, 
 			    \c backface_culling, \c outline_width_from_pixel, \c percentual_outline_width, \c orient_splats are ignored */
@@ -58,21 +42,36 @@ namespace cgv {
 		};
 
 		/// renderer that supports point splatting
-		class CGV_API point_renderer
+		class CGV_API point_renderer : public surface_renderer
 		{
 		protected:
-			cgv::render::shader_program point_prog;
+			bool has_point_sizes;
+			bool has_group_point_sizes;
+			float reference_point_size;
+			float y_view_angle;
+			/// overload to allow instantiation of point_renderer
+			render_style* create_render_style() const;
 		public:
+			///
 			point_renderer();
+			///
 			bool init(cgv::render::context& ctx);
-			void enable(cgv::render::context& ctx, const point_render_style& prs, float reference_point_size, float y_view_angle, bool has_normals, bool has_colors, bool use_group_point_size = false, bool use_group_color = false, bool use_group_transformation = false);
-			void set_group_index_attribute(cgv::render::context& ctx, const std::vector<unsigned>& group_indices);
-			void set_group_colors(cgv::render::context& ctx, const std::vector<cgv::math::fvec<float, 4> >& group_colors);
-			void set_group_translations(cgv::render::context& ctx, const std::vector<cgv::math::fvec<float, 3> >& group_translations);
-			void set_group_rotations(cgv::render::context& ctx, const std::vector<cgv::math::fvec<float, 4> >& group_rotations);
-			void disable(cgv::render::context& ctx, const point_render_style& prs, bool has_normals);
-			void clear(cgv::render::context& ctx);
-			cgv::render::shader_program& ref_prog() { return point_prog; }
+			///
+			void set_reference_point_size(float _reference_point_size);
+			///
+			void set_y_view_angle(float y_view_angle);
+			///
+			template <typename T = float>
+			void set_point_size_attribute(cgv::render::context& ctx, const std::vector<T>& point_sizes) { has_point_sizes = true; ref_prog().set_attribute_array(ctx, "point_size", point_sizes); }
+			///
+			template <typename T = float>
+			void set_group_point_sizes(cgv::render::context& ctx, const std::vector<T>& group_point_sizes) { has_group_point_sizes = true; ref_prog().set_uniform(ctx, "group_point_sizes", group_point_sizes); }
+			///
+			bool validate_attributes(context& ctx);
+			///
+			bool enable(cgv::render::context& ctx);
+			///
+			bool disable(cgv::render::context& ctx);
 		};
 	}
 }

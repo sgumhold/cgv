@@ -102,7 +102,7 @@ void set_lighting_parameters(context& ctx, shader_program& prog)
 	cgv::math::vec<int> enabled(n); 
 	for (unsigned i=0; i<n; ++i)
 		glGetIntegerv(GL_LIGHT0+i, &enabled(i));
-	prog.set_uniform(ctx, "lights_enabled", enabled);
+	prog.set_uniform_array(ctx, "lights_enabled", enabled);
 }
 
 std::vector<shader_program*>& ref_shader_prog_stack()
