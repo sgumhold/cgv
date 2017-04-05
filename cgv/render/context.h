@@ -22,11 +22,41 @@ namespace cgv {
 class CGV_API drawable;
 class CGV_API textured_material;
 
+/// different compond types for data elements
+enum ElementType {
+	ET_VALUE,
+	ET_VECTOR,
+	ET_MATRIX
+};
+
+/// compact type description of data that can be sent to the context; convertible to int
+struct type_descriptor
+{
+	cgv::type::info::TypeId coordinate_type : 8;
+	ElementType element_type : 4;
+	unsigned nr_rows : 4;
+	unsigned nr_columns : 4;
+	bool is_row_major : 1;
+	bool is_array : 1;
+	bool normalize : 1;
+	/// construct from int
+	type_descriptor(int td) { *reinterpret_cast<int*>(this) = td; }
+	/// construct descriptor for values
+	type_descriptor(cgv::type::info::TypeId _coordinate_type, bool _normalize = false) : coordinate_type(_coordinate_type), element_type(ET_VALUE), nr_rows(1), nr_columns(1), is_row_major(false), is_array(false), normalize(_normalize) {}
+	/// construct descriptor for vectors
+	type_descriptor(cgv::type::info::TypeId _coordinate_type, unsigned _nr_entries, bool _normalize = false) : coordinate_type(_coordinate_type), element_type(ET_VECTOR), nr_rows(_nr_entries), nr_columns(1), is_row_major(false), is_array(false), normalize(_normalize) {}
+	/// construct descriptor for matrices
+	type_descriptor(const type_descriptor& td, bool _is_array) : coordinate_type(td.coordinate_type), element_type(td.element_type), nr_rows(td.nr_rows), nr_columns(td.nr_columns), is_row_major(td.is_row_major), normalize(td.normalize), is_array(_is_array) {}
+	/// cast to int
+	operator int() const { return *reinterpret_cast<const int*>(this); }
+};
+
 /// enumeration of rendering APIs which can be queried from the context
 enum RenderAPI {
 	RA_OPENGL,
 	RA_DIRECTX
 };
+
 
 /// enumeration of different render passes, which can be queried from the context and used to specify a new render pass
 enum RenderPass {
@@ -233,6 +263,9 @@ public:
 /// base interface for shader programs
 class CGV_API shader_program_base : public render_component
 {
+protected:
+	bool is_enabled;
+	friend class context;
 public:
 	PrimitiveType geometry_shader_input_type;
 	PrimitiveType geometry_shader_output_type;
@@ -241,7 +274,15 @@ public:
 	shader_program_base();
 };
 
-/*
+/// base class for attribute_array_bindings
+class CGV_API attribute_array_binding_base : public render_component
+{
+public:
+	/// nothing to be done heremembers
+	attribute_array_binding_base();
+};
+
+
 /// different vertex buffer types
 enum VertexBufferType {
 	VBT_VERTICES,
@@ -251,14 +292,23 @@ enum VertexBufferType {
 	VBT_FEEDBACK
 };
 
+/// different vertex buffer usages as defined in OpenGL
+enum VertexBufferUsage {
+	VBU_STREAM_DRAW, VBU_STREAM_READ, VBU_STREAM_COPY, VBU_STATIC_DRAW, VBU_STATIC_READ, VBU_STATIC_COPY, VBU_DYNAMIC_DRAW, VBU_DYNAMIC_READ, VBU_DYNAMIC_COPY
+};
+
 /// base interface for a vertex buffer
 class CGV_API vertex_buffer_base : public render_component
 {
 public:
+	/// buffer type defaults to VBT_VERTICES
 	VertexBufferType type;
+	/// usage defaults to VBU_STATIC_DRAW
+	VertexBufferUsage usage;
+	/// initialize members
 	vertex_buffer_base();
 };
-*/
+
 
 /// base interface for framebuffer
 class CGV_API frame_buffer_base : public render_component
@@ -326,6 +376,8 @@ struct CGV_API context_creation_config : public cgv::base::base
 	int  stencil_bits;
 	/// default: false
 	bool forward_compatible;
+	/// default: false in release and true in debug version
+	bool debug;
 	/// default: false
 	bool core_profile;
 	/// default: 0
@@ -467,24 +519,42 @@ protected:
 	virtual void shader_code_destruct(render_component& sc) = 0;
 
 	virtual bool shader_program_create   (shader_program_base& spb) = 0;
-	virtual void shader_program_attach   (shader_program_base& spb, const render_component& sc) = 0;
-	virtual bool shader_program_link     (shader_program_base& spb) = 0;
+	virtual void shader_program_destruct(shader_program_base& spb) = 0;
+	virtual void shader_program_attach(shader_program_base& spb, const render_component& sc) = 0;
+	virtual void shader_program_detach(shader_program_base& spb, const render_component& sc) = 0;
+	virtual bool shader_program_link(shader_program_base& spb) = 0;
 	virtual bool shader_program_set_state(shader_program_base& spb) = 0;
 	virtual bool shader_program_enable   (shader_program_base& spb) = 0;
-	virtual bool set_uniform_void        (shader_program_base& spb, const std::string& name, int value_type, bool force_array, const void* value_ptr) = 0;
-	virtual int  get_attribute_location  (shader_program_base& spb, const std::string& name) const = 0;
-	virtual bool set_attribute_void      (shader_program_base& spb, int loc, int value_type, bool force_array, const void* value_ptr, unsigned stride = 0, unsigned size = 0) = 0;
-	virtual void enable_attribute_array  (int loc, bool do_enable) = 0;
-	virtual bool shader_program_disable  (shader_program_base& spb) = 0;
-	virtual void shader_program_detach   (shader_program_base& spb, const render_component& sc) = 0;
-	virtual void shader_program_destruct (shader_program_base& spb) = 0;
+	virtual bool shader_program_disable(shader_program_base& spb) = 0;
+	virtual int  get_uniform_location(const shader_program_base& spb, const std::string& name) const = 0;
+	virtual bool set_uniform_void(shader_program_base& spb, int loc, type_descriptor value_type, const void* value_ptr) = 0;
+	virtual bool set_uniform_array_void(shader_program_base& spb, int loc, type_descriptor value_type, const void* value_ptr, size_t nr_elements) = 0;
+	virtual int  get_attribute_location(const shader_program_base& spb, const std::string& name) const = 0;
+	virtual bool set_attribute_void(shader_program_base& spb, int loc, type_descriptor value_type, const void* value_ptr) = 0;
+
+	virtual bool attribute_array_binding_create  (attribute_array_binding_base& aab) = 0;
+	virtual bool attribute_array_binding_destruct(attribute_array_binding_base& aab) = 0;
+	virtual bool attribute_array_binding_enable  (attribute_array_binding_base& aab) = 0;
+	virtual bool attribute_array_binding_disable (attribute_array_binding_base& aab) = 0;
+	virtual bool set_attribute_array_void(attribute_array_binding_base* aab, int loc, type_descriptor value_type, const vertex_buffer_base* vbb, const void* ptr, size_t nr_elements = 0, unsigned stride_in_bytes = 0) = 0;
+	virtual bool enable_attribute_array(attribute_array_binding_base* aab, int loc, bool do_enable) = 0;
+	virtual bool is_attribute_array_enabled(const attribute_array_binding_base* aab, int loc) const = 0;
+
+	virtual bool vertex_buffer_create(vertex_buffer_base& vbb, const void* array_ptr, size_t size_in_bytes) = 0;
+	virtual bool vertex_buffer_replace(vertex_buffer_base& vbb, size_t offset, size_t size_in_bytes, const void* array_ptr) = 0;
+	virtual bool vertex_buffer_copy(const vertex_buffer_base& src, size_t src_offset, vertex_buffer_base& target, size_t target_offset, size_t size_in_bytes) = 0;
+	virtual bool vertex_buffer_copy_back(vertex_buffer_base& vbb, size_t offset, size_t size_in_bytes, void* array_ptr) = 0;
+	virtual bool vertex_buffer_destruct(vertex_buffer_base& vbb) = 0;
 public:
+	friend class CGV_API attribute_array_manager;
 	friend class CGV_API render_component;
 	friend class CGV_API texture;
 	friend class CGV_API render_buffer;
 	friend class CGV_API frame_buffer;
 	friend class CGV_API shader_code;
 	friend class CGV_API shader_program;
+	friend class CGV_API attribute_array_binding;
+	friend class CGV_API vertex_buffer;
 	/// declare type of matrices
 	typedef cgv::math::mat<double> mat_type;
 	/// declare type of vectors

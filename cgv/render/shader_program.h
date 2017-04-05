@@ -1,133 +1,13 @@
 #pragma once
 
 #include <set>
-#include "context.h"
+#include "element_traits.h"
 #include "shader_code.h"
-#include <cgv/math/vec.h>
-#include <cgv/math/mat.h>
-#include <cgv/math/fvec.h>
-#include <cgv/math/fmat.h>
-#include <cgv/type/info/type_id.h>
 
 #include "lib_begin.h"
 
 namespace cgv {
 	namespace render {
-
-		/// different offsets for compound types
-		enum TypeIdOffset {
-			/// base types
-			TO_VEC = 0x01000, // cgv::math::vec<T> of standard type T
-			TO_FVEC2 = 0x02000, // cgv::math::vec2<T,2> of standard type T
-			TO_FVEC3 = 0x03000, // cgv::math::vec3<T,3> of standard type T
-			TO_FVEC4 = 0x04000, // cgv::math::vec4<T,4> of standard type T
-			TO_MAT = 0x05000, // cgv::math::mat<T> of standard type T
-			TO_FMAT2 = 0x06000, // cgv::math::fmat<T,2,2> of standard type T
-			TO_FMAT3 = 0x07000, // cgv::math::fmat<T,3,3> of standard type T
-			TO_FMAT4 = 0x08000, // cgv::math::fmat<T,4,4> of standard type T
-			TO_BASE_MASK = 0x0F000, // mask to filter out base type
-			TO_DIM_OFFSET = 0x01000,
-
-			// array types
-			TO_VECTOR = 0x10000, // std::vector<T> where T is standard type or one of base types
-			TO_VEC_OF = 0x20000, // cgv::math::vec<T> where T is standard type or one of base types
-			TO_POINTER = 0x30000, // T*  where T is standard type or one of base types
-			TO_ARRAY_MASK = 0xF0000, // mask to filter out array type
-		};
-
-
-		/// extend cgv::type::info::type_id<T> by vector and matrix types that can be used as arguments to set_uniform
-		template <typename T>
-		struct type_id_offset : public cgv::type::info::type_id<T>
-		{
-		};
-
-		/// specialization for cgv::math::vec 
-		template <typename T>
-		struct type_id_offset<cgv::math::vec<T> >
-		{
-			static int get_id() {
-				return cgv::type::info::type_id<T>::get_id() + TO_VEC;
-			}
-		};
-		/// specialization for cgv::math::fvec
-		template <typename T, unsigned i>
-		struct type_id_offset<cgv::math::fvec<T, i> >
-		{
-			static int get_id() {
-				return cgv::type::info::type_id<T>::get_id() + TO_FVEC2 + (i - 2)*TO_DIM_OFFSET;
-			}
-		};
-
-		/// specialization for cgv::math::mat 
-		template <typename T>
-		struct type_id_offset<cgv::math::mat<T> >
-		{
-			static int get_id() {
-				return cgv::type::info::type_id<T>::get_id() + TO_MAT;
-			}
-		};
-
-		/// specialization for cgv::math::fmat
-		template <typename T, unsigned i>
-		struct type_id_offset<cgv::math::fmat<T, i, i> >
-		{
-			static int get_id() {
-				return cgv::type::info::type_id<T>::get_id() + TO_FMAT2 + (i - 2)*TO_DIM_OFFSET;
-			}
-		};
-
-		/// specialization for std::vector
-		template <typename T>
-		struct type_id_offset<std::vector<T> >
-		{
-			static int get_id() {
-				return type_id_offset<T>::get_id() + TO_VECTOR;
-			}
-		};
-
-		/// specialization for nested cgv::math::vec types [cgv::math::vec]
-		template <typename T>
-		struct type_id_offset<cgv::math::vec<cgv::math::vec<T> > >
-		{
-			static int get_id() {
-				return type_id_offset<cgv::math::vec<T> >::get_id() + TO_VEC_OF;
-			}
-		};
-		/// specialization for nested cgv::math::vec types [cgv::math::fvec]
-		template <typename T, unsigned i>
-		struct type_id_offset<cgv::math::vec<cgv::math::fvec<T, i> > >
-		{
-			static int get_id() {
-				return type_id_offset<cgv::math::fvec<T, i> >::get_id() + TO_VEC_OF;
-			}
-		};
-
-		/// specialization for nested cgv::math::vec types [cgv::math::vec]
-		template <typename T>
-		struct type_id_offset<cgv::math::vec<cgv::math::mat<T> > >
-		{
-			static int get_id() {
-				return type_id_offset<cgv::math::mat<T> >::get_id() + TO_VEC_OF;
-			}
-		};
-		/// specialization for nested cgv::math::vec types [cgv::math::fvec]
-		template <typename T, unsigned i>
-		struct type_id_offset<cgv::math::vec<cgv::math::fmat<T, i, i> > >
-		{
-			static int get_id() {
-				return type_id_offset<cgv::math::fmat<T, i, i> >::get_id() + TO_VEC_OF;
-			}
-		};
-
-		/// specialization for pointer
-		template <typename T>
-		struct type_id_offset<T*>
-		{
-			static int get_id() {
-				return type_id_offset<T>::get_id() + TO_POINTER;
-			}
-		};
 
 /** a shader program combines several shader code fragments
     to a complete definition of the shading pipeline. */
@@ -137,13 +17,9 @@ protected:
 	bool show_code_errors : 1;
 	bool linked : 1;
 	bool state_out_of_date : 1;
-	bool is_enabled : 1;
 	int  nr_attached_geometry_shaders : 13;
 
 	std::vector<shader_code*> managed_codes;
-	std::set<unsigned> attribute_locations;
-	///
-	bool add_attribute_location(context& ctx, int loc);
 	/// attach a list of files
 	bool attach_files(context& ctx, const std::vector<std::string>& file_names);
 	/// ensure that the state has been set in the context
@@ -187,6 +63,8 @@ public:
 	~shader_program();
 	/// create the shader program
 	bool create(context& ctx);
+	/// destruct shader program
+	void destruct(context& ctx);
 	/// attach a compiled shader code instance that is managed outside of program
 	bool attach_code(context& ctx, const shader_code& code);
 	/// detach a shader code 
@@ -215,37 +93,76 @@ public:
 	void set_geometry_shader_info(PrimitiveType input_type, PrimitiveType output_type, int max_output_count = 0);
 	/// enable the shader program
 	bool enable(context& ctx);
+	/// disable shader program and restore fixed functionality
+	bool disable(context& ctx);
+	/// query location index of an uniform
+	int get_uniform_location(context& ctx, const std::string& name) const;
 	/** Set the value of a uniform by name, where the type can be any of int, unsigned, float, vec<int>, vec<unsigned>,
 	vec<float>, mat<float> and the vectors are of dimension 2,
 	3 or 4 and the matrices of dimensions 2, 3 or 4. */
 	template <typename T>
-	bool set_uniform(context& ctx, const std::string& name, const T& value, bool dimension_independent = false) {
-		return ctx.set_uniform_void(*this, name, type_id_offset<T>::get_id(), dimension_independent, &value);
+	bool set_uniform(context& ctx, const std::string& name, const T& value) {
+		int loc = ctx.get_uniform_location(*this, name);
+		if (loc == -1) {
+			ctx.error(std::string("shader_program::set_uniform() uniform <") + name + "> not found", this);
+			return false;
+		}
+		return ctx.set_uniform_void(*this, loc, element_descriptor_traits<T>::get_type_descriptor(value), element_descriptor_traits<T>::get_address(value));
 	}
-	/// Set a vertex attribute to a single value or an array of values through the cgv::math::vec or std::vector classes.
+	/// set uniform array from array \c array where number elements can be derived from array through \c array_descriptor_traits; supported array types include cgv::math::vec and std::vector
 	template <typename T>
-	bool set_attribute(context& ctx, const std::string& name, const T& value, bool force_array = false) {
+	bool set_uniform_array(context& ctx, const std::string& name, const T& array) {
+		int loc = ctx.get_uniform_location(*this, name);
+		if (loc == -1) {
+			ctx.error(std::string("shader_program::set_uniform_array() uniform <") + name + "> not found", this);
+			return false;
+		}
+		return ctx.set_uniform_array_void(*this, loc, array_descriptor_traits<T>::get_type_descriptor(array), array_descriptor_traits<T>::get_address(array), array_descriptor_traits<T>::get_nr_elements(array));
+	}
+	/// set uniform array from an array with \c nr_elements elements of type T pointed to by \c array
+	template <typename T>
+	bool set_uniform_array(context& ctx, const std::string& name, const T* array, size_t nr_elements) {
+		int loc = ctx.get_uniform_location(*this, name);
+		if (loc == -1) {
+			ctx.error(std::string("shader_program::set_uniform_array() uniform <") + name + "> not found", this);
+			return false;
+		}
+		return ctx.set_uniform_array_void(*this, loc, type_descriptor(element_descriptor_traits<T>::get_type_descriptor(array), true), array, nr_elements);
+	}
+	/** Set the value of a uniform by name, where the type can be any of int, unsigned, float, vec<int>, vec<unsigned>,
+	vec<float>, mat<float> and the vectors are of dimension 2,
+	3 or 4 and the matrices of dimensions 2, 3 or 4. */
+	template <typename T>
+	bool set_uniform(context& ctx, int loc, const T& value) {
+		return ctx.set_uniform_void(*this, loc, element_descriptor_traits<T>::get_type_descriptor(value), element_descriptor_traits<T>::get_address(value));
+	}
+	/// set uniform array from array \c array where number elements can be derived from array through \c array_descriptor_traits; supported array types include cgv::math::vec and std::vector
+	template <typename T>
+	bool set_uniform_array(context& ctx, int loc, const T& array) {
+		return ctx.set_uniform_array_void(*this, loc, array_descriptor_traits<T>::get_type_descriptor(), array_descriptor_traits<T>::get_address(array), array_descriptor_traits<T>::get_nr_elements(array));
+	}
+	/// set uniform array from an array with \c nr_elements elements of type T pointed to by \c array
+	template <typename T>
+	bool set_uniform_array(context& ctx, int loc, const T* array, size_t nr_elements) {
+		return ctx.set_uniform_array_void(*this, loc, type_descriptor(element_descriptor_traits<T>::get_type_descriptor(array), true), array, nr_elements);
+	}
+	/// query location index of an attribute
+	int get_attribute_location(context& ctx, const std::string& name) const;
+	/// set constant default value of a vertex attribute by attribute name, if name does not specify an attribute, an error message is generated
+	template <typename T>
+	bool set_attribute(context& ctx, const std::string& name, const T& value) {
 		int loc = ctx.get_attribute_location(*this, name);
 		if (loc == -1) {
 			ctx.error(std::string("shader_program::set_attribute() attribute <") + name + "> not found", this);
 			return false;
 		}
-		return ctx.set_attribute_void(*this, loc, type_id_offset<T>::get_id(), force_array, &value) && add_attribute_location(ctx, loc);
+		return ctx.set_attribute_void(*this, loc, element_descriptor_traits<T>::get_type_descriptor(value), element_descriptor_traits<T>::get_address(value));
 	}
-	/// Set a vertex attribute to a single value or an array of values through the cgv::math::vec or std::vector classes.
+	/// set constant default value of a vertex attribute by location index
 	template <typename T>
-	bool set_attribute_array(context& ctx, const std::string& name, const T* value, unsigned size = 0, unsigned stride = 0) {
-		int loc = ctx.get_attribute_location(*this, name);
-		if (loc == -1) {
-			ctx.error(std::string("shader_program::set_attribute_array() attribute <") + name + "> not found", this);
-			return false;
-		}
-		return ctx.set_attribute_void(*this, loc, type_id_offset<T*>::get_id(), false, value, stride, size) && add_attribute_location(ctx, loc);
+	bool set_attribute(context& ctx, int loc, const T& value) {
+		return ctx.set_attribute_void(*this, loc, element_descriptor_traits<T>::get_type_descriptor(value), element_descriptor_traits<T>::get_address(value));
 	}
-	/// disable shader program and restore fixed functionality
-	bool disable(context& ctx);
-	/// destruct shader program
-	void destruct(context& ctx);
 };
 
 	}

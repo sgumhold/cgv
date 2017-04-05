@@ -11,19 +11,6 @@ using namespace cgv::utils;
 namespace cgv {
 	namespace render {
 
-///
-bool shader_program::add_attribute_location(context& ctx, int loc)
-{
-	if (loc == -1)
-		return false;
-	if (attribute_locations.find(loc) == attribute_locations.end()) {
-		attribute_locations.insert(loc);
-		if (is_enabled)
-			ctx.enable_attribute_array(loc, true);
-	}
-	return true;
-}
-
 /// attach a list of files
 bool shader_program::attach_files(context& ctx, const std::vector<std::string>& file_names)
 {
@@ -127,7 +114,6 @@ shader_program::shader_program(bool _show_code_errors)
 	show_code_errors = _show_code_errors;
 	linked = false;
 	state_out_of_date = true;
-	is_enabled = false;
 	nr_attached_geometry_shaders = 0;
 }
 
@@ -428,9 +414,10 @@ bool shader_program::enable(context& ctx)
 		return false;
 	}
 	update_state(ctx);
-	for (auto loc : attribute_locations)
-		ctx.enable_attribute_array(loc, true);
-	return is_enabled = ctx.shader_program_enable(*this);
+	bool res = ctx.shader_program_enable(*this);
+	if (res)
+		is_enabled = true;
+	return res;
 }
 
 /// disable shader program and restore fixed functionality
@@ -440,10 +427,21 @@ bool shader_program::disable(context& ctx)
 		ctx.error("attempt to disable shader_program that is not enabled", this);
 		return false;
 	}
-	for (auto loc : attribute_locations)
-		ctx.enable_attribute_array(loc, false);
-	is_enabled = !ctx.shader_program_disable(*this);
-	return !is_enabled;
+	bool res = ctx.shader_program_disable(*this);
+	is_enabled = false;
+	return res;
+}
+
+/// query location index of an uniform
+int shader_program::get_uniform_location(context& ctx, const std::string& name) const
+{
+	return ctx.get_uniform_location(*this, name);
+}
+
+/// query location index of an attribute
+int shader_program::get_attribute_location(context& ctx, const std::string& name) const
+{
+	return ctx.get_attribute_location(*this, name);
 }
 
 /// destruct shader program

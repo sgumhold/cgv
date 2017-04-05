@@ -32,6 +32,12 @@ context_creation_config::context_creation_config()
 	stencil_bits = 0;
 	/// default: false
 	forward_compatible = false;
+	/// default: false in release and true in debug version
+#ifdef _DEBUG
+	debug = true;
+#else
+	debug = false;
+#endif
 	/// default: false
 	core_profile = false;
 	/// default: 0
@@ -155,6 +161,7 @@ void context::error(const std::string& message, const render_component* rc) cons
 /// virtual destructor
 context::~context()
 {
+
 }
 
 void context::init_render_pass()
@@ -1264,10 +1271,22 @@ texture_base::texture_base(TextureType _tt)
 
 shader_program_base::shader_program_base()
 {
+	is_enabled = false;
 	geometry_shader_input_type = PT_POINTS;
 	geometry_shader_output_type = PT_POINTS;
 	geometry_shader_output_count = 1;
 }
+
+attribute_array_binding_base::attribute_array_binding_base()
+{
+}
+
+vertex_buffer_base::vertex_buffer_base()
+{
+	type = VBT_VERTICES;
+	usage = VBU_STATIC_DRAW;
+}
+
 
 /// initialize members
 frame_buffer_base::frame_buffer_base()
