@@ -6,13 +6,14 @@ sourceDirs=[CGV_DIR."/3rd/fltk"];
 excludeSourceFiles=[CGV_DIR."/3rd/fltk/src/dlload_osx.cxx", CGV_DIR."/3rd/fltk/src/dump_compose.c", CGV_DIR."/3rd/fltk/src/colormap.cxx"];
 excludeSourceDirs=[CGV_DIR."/3rd/fltk/src/win32",CGV_DIR."/3rd/fltk/src/osx",CGV_DIR."/3rd/fltk/src/x11"];
 addSharedDefines=[ ["FL_SHARED","all"],"FL_LIBRARY","FL_GL_LIBRARY","FL_GLUT_LIBRARY","FL_IMAGES_LIBRARY"];
-addProjectDirs=[CGV_DIR."/3rd/jpeg",CGV_DIR."/3rd/png"];
-addProjectDeps=["jpeg","png"];
+addDefines=["USE_GLEW"];
+addProjectDirs=[CGV_DIR."/3rd/jpeg",CGV_DIR."/3rd/png",CGV_DIR."/3rd/glew"];
+addProjectDeps=["jpeg","png", "glew"];
 addDependencies=["opengl"];
 addIncDirs=[ [CGV_DIR."/3rd/fltk/include","all"], CGV_DIR."/3rd/fltk/visualc",CGV_DIR."/3rd/fltk/compat",CGV_DIR."/3rd/jpeg",CGV_DIR."/3rd/png",CGV_DIR."/3rd/zlib"];
 if (SYSTEM=="windows") {
 	addDependencies=addDependencies.[["user32", "all"], ["gdi32", "all"],["ws2_32","all"],["msimg32","all"]];
-	addDefines=["_WIN32","WIN32_LEAN_AND_MEAN","VC_EXTRA_LEAN","WIN32_EXTRA_LEAN"];
+	addDefines=addDefines.["_WIN32","WIN32_LEAN_AND_MEAN","VC_EXTRA_LEAN","WIN32_EXTRA_LEAN"];
 	if (CGV_COMPILER=="gcc") {
 		addDependencies = addDependencies.[["kernel32","all"], ["Ole32","all"], ["uuid","all"]];
 	}
