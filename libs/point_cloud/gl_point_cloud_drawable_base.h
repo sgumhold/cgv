@@ -38,6 +38,7 @@ protected:
 	cgv::render::box_wire_renderer bw_renderer;
 
 	bool show_points;
+	bool show_box;
 	bool show_boxes;
 	bool show_nmls;
 	bool sort_points;

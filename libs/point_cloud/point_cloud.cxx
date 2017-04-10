@@ -206,9 +206,8 @@ void point_cloud::append(const point_cloud& pc)
 void point_cloud::clip(const Box clip_box)
 {
 	Idx j=0;
-	Idx ci = 0;
 	for (Idx i=0; i<(Idx)get_nr_points(); ++i) {
-		if (clip_box.inside(pnt(i))) {
+		if (clip_box.inside(transformed_pnt(i))) {
 			if (j < i) {
 				pnt(j) = pnt(i);
 				if (has_colors())
@@ -224,18 +223,6 @@ void point_cloud::clip(const Box clip_box)
 			}
 			++j;
 		}
-		else {
-			if (has_components()) {
-				--components[component_index(i)].nr_points;
-				comp_box_out_of_date[component_index(i)] = true;
-				if (has_pixel_coordinates())
-					comp_pixrng_out_of_date[component_index(i)] = true;
-				while (int(component_index(i)) > ci) {
-					++ci;
-					components[ci].index_of_first_point = j;
-				}
-			}
-		}
 	}
 	if (j != get_nr_points()) {
 		if (has_colors())
@@ -246,8 +233,20 @@ void point_cloud::clip(const Box clip_box)
 			T.resize(j);
 		if (has_pixel_coordinates())
 			I.resize(j);
-		if (has_components())
+		if (has_components()) {
 			component_indices.resize(j);
+			if (get_nr_components() > 0) {
+				// recompute components
+				Idx ci = -1;
+				for (Idx i = 0; i < j; ++i) {
+					while (ci < int(component_index(i)))
+						components[++ci] = component_info(i, 0);
+					++components[ci].nr_points;
+				}
+				while (ci+1 < int(get_nr_components()))
+					components[++ci] = component_info(j, 0);
+			}
+		}
 		P.resize(j);
 	}
 	box_out_of_date = true;
@@ -1316,7 +1315,6 @@ void point_cloud::estimate_normals(const index_image& img, Idx ci, int* nr_isola
 	static int di[8] = { -1, 0, 1, 1, 1, 0, -1, -1 };
 	static int dj[8] = { -1, -1, -1, 0, 1, 1, 1, 0 };
 	std::vector<int> Ni;
-	//unsigned cnts[9] = { 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 	for (Idx e = end_index(ci), i = begin_index(ci); i < e; ++i) {
 		int j;
 		Ni.clear();
@@ -1325,7 +1323,6 @@ void point_cloud::estimate_normals(const index_image& img, Idx ci, int* nr_isola
 			if (ni != -1)
 				Ni.push_back(ni);
 		}
-		//++cnts[Ni.size()];
 		if (Ni.size() < 3) {
 			if (Ni.size() == 0)
 				isolated_normals.push_back(i);
@@ -1338,18 +1335,12 @@ void point_cloud::estimate_normals(const index_image& img, Idx ci, int* nr_isola
 		int prev = Ni.back();
 		Nml nml(0, 0, 0);
 		for (j = 0; j < int(Ni.size()); ++j) {
-			nml += cross(P[prev] - P[i], P[Ni[j]] - P[i]);
+			nml += cross(P[Ni[j]] - P[i], P[prev] - P[i]);
 			prev = Ni[j];
 		}
 		nml.normalize();
 		N[i] = nml;
 	}
-	/*
-	std::cout << "neighbor cnts:";
-	for (unsigned k = 0; k <= 8; ++k)
-		std::cout << " " << k << "=" << cnts[k];
-	std::cout << std::endl;
-	*/
 	if (nr_isolated)
 		*nr_isolated = isolated_normals.size();
 

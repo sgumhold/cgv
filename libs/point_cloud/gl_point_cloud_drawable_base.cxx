@@ -17,10 +17,12 @@ gl_point_cloud_drawable_base::gl_point_cloud_drawable_base()
 	show_point_begin = 0;
 	show_point_end = 0;
 
-	sort_points = true;
+	sort_points = false;
 	show_points = true;
 	show_nmls = true;
-	show_boxes = true;
+	show_boxes = false;
+	show_box = true;
+	point_style.blend_points = false;
 
 	box_color = color_type(0.5f, 0.5f, 0.5f, 1.0f);
 	box_style.illumination_mode = cgv::render::IM_TWO_SIDED;
@@ -140,10 +142,12 @@ void gl_point_cloud_drawable_base::draw_box(cgv::render::context& ctx, const Box
 
 void gl_point_cloud_drawable_base::draw_boxes(context& ctx)
 {
+
+	if (show_box)
+		draw_box(ctx, pc.box(), box_color);
+
 	if (!show_boxes)
 		return;
-
-	draw_box(ctx, pc.box(), box_color);
 
 	if (pc.has_components()) {
 		Box b;
