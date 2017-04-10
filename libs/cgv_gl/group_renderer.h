@@ -40,15 +40,26 @@ namespace cgv { // @<
 			bool enable(context& ctx);
 			/// method to set the group index attribute
 			void set_group_index_attribute(cgv::render::context& ctx, const std::vector<unsigned>& group_indices);
+			/// method to set the group index attribute
+			void set_group_index_attribute(cgv::render::context& ctx, const unsigned* group_indices, size_t nr_elements);
 			/// template method to set the group colors from a vector of colors of type T
 			template <typename T>
 			void set_group_colors(cgv::render::context& ctx, const std::vector<T>& colors) { has_group_colors = true;  ref_prog().set_uniform_array(ctx, "group_colors", colors); }
+			/// template method to set the group colors from a vector of colors of type T
+			template <typename T>
+			void set_group_colors(cgv::render::context& ctx, const T* colors, size_t nr_elements) { has_group_colors = true;  ref_prog().set_uniform_array(ctx, "group_colors", colors, nr_elements); }
 			/// template method to set the group translations from a vector of vectors of type T, which should have 3 components
 			template <typename T>
 			void set_group_translations(cgv::render::context& ctx, const std::vector<T>& group_translations) { has_group_translations = true; ref_prog().set_uniform_array(ctx, "group_translations", group_translations); }
+			/// template method to set the group translations from a vector of vectors of type T, which should have 3 components
+			template <typename T>
+			void set_group_translations(cgv::render::context& ctx, const T* group_translations, size_t nr_elements) { has_group_translations = true; ref_prog().set_uniform_array(ctx, "group_translations", group_translations, nr_elements); }
 			/// template method to set the group rotation from a vector of quaternions of type T, which should have 4 components
 			template <typename T>
 			void set_group_rotations(cgv::render::context& ctx, const std::vector<T>& group_rotations) { has_group_rotations = true; ref_prog().set_uniform_array(ctx, "group_rotations", group_rotations); }
+			/// template method to set the group rotation from a vector of quaternions of type T, which should have 4 components
+			template <typename T>
+			void set_group_rotations(cgv::render::context& ctx, const T* group_rotations, size_t nr_elements) { has_group_rotations = true; ref_prog().set_uniform_array(ctx, "group_rotations", group_rotations, nr_elements); }
 		};
 	}
 }

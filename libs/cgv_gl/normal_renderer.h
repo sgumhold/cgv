@@ -19,11 +19,15 @@ namespace cgv {
 		{
 		protected:
 			bool has_normals;
+			/// scaling of normal length
+			float normal_scale;
 			/// overload to allow instantiation of box_wire_renderer
 			render_style* create_render_style() const;
 			bool validate_attributes(context& ctx);
 		public:
 			normal_renderer();
+			/// the normal scale is multiplied to the normal length of the normal render style
+			void set_normal_scale(float _normal_scale);
 			bool init(context& ctx);
 			bool enable(context& ctx);
 			/// templated method to set the normal attribute from a vector of normals of type T, which should have 3 components

@@ -30,7 +30,7 @@ namespace cgv {
 		template <typename T>
 		struct element_descriptor_traits < cgv::math::quaternion<T> >
 		{
-			static type_descriptor get_type_descriptor(const cgv::math::quaternion<T>&) { return type_descriptor(cgv::type::info::type_id<T>::get_id(), 4); }
+			static type_descriptor get_type_descriptor(const cgv::math::quaternion<T>&) { return type_descriptor(cgv::type::info::type_id<T>::get_id(), cgv::type::uint32_type(4)); }
 			static const void* get_address(const cgv::math::quaternion<T>& element) { return &element; }
 			static       void* get_address(cgv::math::quaternion<T>& element) { return &element; }
 		};

@@ -25,6 +25,13 @@ namespace cgv {
 			has_group_indices = true;
 			set_attribute_array(ctx, ref_prog().get_attribute_location(ctx, "group_index"), group_indices);
 		}
+		/// method to set the group index attribute
+		void group_renderer::set_group_index_attribute(cgv::render::context& ctx, const unsigned* group_indices, size_t nr_elements)
+		{
+			has_group_indices = true;
+			set_attribute_array(ctx, ref_prog().get_attribute_location(ctx, "group_index"), group_indices, nr_elements, 0);
+		}
+
 		bool group_renderer::validate_attributes(context& ctx) const
 		{
 			// validate set attributes

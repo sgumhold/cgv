@@ -34,7 +34,7 @@ namespace cgv { // @<
 			bool has_normals;
 		public:
 			surface_renderer();
-			/// overload to activate group style
+			/// 
 			bool enable(context& ctx);
 			///
 			bool disable(context& ctx);

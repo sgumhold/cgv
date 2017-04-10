@@ -13,7 +13,14 @@ namespace cgv {
 		normal_renderer::normal_renderer()
 		{
 			has_normals = false;
+			normal_scale = 1.0f;
 		}
+		/// the normal scale is multiplied to the normal length of the normal render style
+		void normal_renderer::set_normal_scale(float _normal_scale)
+		{
+			normal_scale = _normal_scale;
+		}
+
 		render_style* normal_renderer::create_render_style() const
 		{
 			return new line_render_style();
@@ -45,7 +52,7 @@ namespace cgv {
 			const normal_render_style& nrs = get_style<normal_render_style>();
 			if (!line_renderer::enable(ctx))
 				return false;
-			ref_prog().set_uniform(ctx, "normal_length", nrs.normal_length);
+			ref_prog().set_uniform(ctx, "normal_length", nrs.normal_length * normal_scale);
 			return true;
 		}
 	}

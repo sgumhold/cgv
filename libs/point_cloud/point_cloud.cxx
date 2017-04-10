@@ -42,20 +42,81 @@ public:
 
 };
 
+index_image::Idx index_image::get_index(const PixCrd& pixcrd) const
+{
+	return (pixcrd(1) - pixel_range.get_min_pnt()(1))*width + pixcrd(0) - pixel_range.get_min_pnt()(0);
+}
+
+index_image::index_image()
+{
+
+}
+
+void index_image::create(const PixRng& _pixel_range, Idx _initial_value)
+{
+	pixel_range = _pixel_range;
+	PixRng::fvec_type extent = pixel_range.get_extent();
+	indices.resize((extent(0)+1)*(extent(1)+1));
+	width = extent(0)+1;
+	std::fill(indices.begin(), indices.end(), _initial_value);
+}
+
+index_image::Idx  index_image::operator () (const PixCrd& pixcrd) const
+{
+	return indices[get_index(pixcrd)];
+}
+
+index_image::Idx& index_image::operator () (const PixCrd& pixcrd)
+{
+	return indices[get_index(pixcrd)];
+}
+
+/// return begin point index for iteration
+point_cloud::Idx point_cloud::begin_index(Idx component_index) const
+{
+	if (component_index == -1 || !has_components())
+		return 0;
+	else
+		return component_point_range(component_index).index_of_first_point;
+}
+/// return end point index for iteration
+point_cloud::Idx point_cloud::end_index(Idx component_index) const
+{
+	if (component_index == -1 || !has_components())
+		return get_nr_points();
+	else
+		return component_point_range(component_index).index_of_first_point + component_point_range(component_index).nr_points;
+}
+
 point_cloud::point_cloud()
 { 
 	has_clrs = false;
 	has_nmls = false;
+	has_texcrds = false;
+	has_pixcrds = false;
+	has_comps = false;
+	has_comp_trans = false;
+	has_comp_clrs = false;
+
 	no_normals_contained = false;
 	box_out_of_date = false;
+	pixel_range_out_of_date = false;
 }
 
 point_cloud::point_cloud(const string& file_name)
 {
 	has_clrs = false;
 	has_nmls = false;
+	has_texcrds = false;
+	has_pixcrds = false;
+	has_comps = false;
+	has_comp_trans = false;
+	has_comp_clrs = false;
+
 	no_normals_contained = false;
 	box_out_of_date = false;
+	pixel_range_out_of_date = false;
+
 	read(file_name);
 }
 
@@ -64,7 +125,19 @@ void point_cloud::clear()
 	P.clear();
 	N.clear();
 	C.clear();
+	T.clear();
+	I.clear();
+	/// container to store  one component index per point
+	component_indices.clear();
+	components.clear();
+	component_colors.clear();
+	component_rotations.clear();
+	component_translations.clear();
+	component_boxes.clear();
+	component_pixel_ranges.clear();
+
 	box_out_of_date = true;
+	pixel_range_out_of_date = true;
 }
 /// append another point cloud
 void point_cloud::append(const point_cloud& pc)
@@ -77,12 +150,55 @@ void point_cloud::append(const point_cloud& pc)
 		N.resize(n);
 	if (has_colors())
 		C.resize(n);
+	if (has_texture_coordinates())
+		T.resize(n);
+	if (has_pixel_coordinates())
+		I.resize(n);
+	if (has_components())
+		component_indices.resize(n);
 	P.resize(n);
 	if (has_normals() && pc.has_normals())
 		std::copy(pc.N.begin(), pc.N.end(), N.begin()+old_n);
 	if (has_colors() && pc.has_colors())
-		std::copy(pc.C.begin(), pc.C.end(), C.begin()+old_n);
-	std::copy(pc.P.begin(), pc.P.end(), P.begin()+old_n);
+		std::copy(pc.C.begin(), pc.C.end(), C.begin() + old_n);
+	if (has_texture_coordinates() && pc.has_texture_coordinates())
+		std::copy(pc.T.begin(), pc.T.end(), T.begin() + old_n);
+	if (has_pixel_coordinates() && pc.has_pixel_coordinates()) {
+		std::copy(pc.I.begin(), pc.I.end(), I.begin() + old_n);
+		pixel_range_out_of_date = true;
+	}
+	if (has_components()) {
+		if (pc.has_components()) {
+			int old_nc = get_nr_components();
+			for (unsigned ci = 0; ci < pc.get_nr_components(); ++ci) {
+				components.push_back(pc.component_point_range(ci));
+				components.back().index_of_first_point += old_n;
+				if (has_component_colors())
+					component_colors.push_back(pc.has_component_colors() ? pc.component_color(ci) : Clr(1,1,1,1));
+				if (has_component_transformations()) {
+					component_rotations.push_back(pc.has_component_transformations() ? pc.component_rotation(ci) : Qat(1, 0, 0, 0));
+					component_translations.push_back(pc.has_component_transformations() ? pc.component_translation(ci) : Dir(0, 0, 0));
+				}
+				comp_box_out_of_date.push_back(pc.comp_box_out_of_date[ci]);
+				component_boxes.push_back(comp_box_out_of_date.back() ? Box() : pc.box(ci));
+				if (has_pixel_coordinates()) {
+					comp_pixrng_out_of_date.push_back(pc.comp_pixrng_out_of_date[ci]);
+					component_pixel_ranges.push_back(comp_pixrng_out_of_date.back() ? PixRng() : pc.pixel_range(ci));
+				}
+			}
+			for (unsigned i = 0; i < pc.get_nr_points(); ++i)
+				component_indices[i + old_n] = pc.component_index(i) + old_nc;
+		}
+		else {
+			Idx ci = components.empty() ? 0 : get_nr_components() - 1;
+			std::fill(component_indices.begin() + old_n, component_indices.end(), ci);
+			components[ci].nr_points += pc.get_nr_points();
+			comp_box_out_of_date[ci] = true;
+			if (has_pixel_coordinates())
+				comp_pixrng_out_of_date[ci] = true;
+		}
+	}
+	std::copy(pc.P.begin(), pc.P.end(), P.begin() + old_n);
 	box_out_of_date = true;
 }
 
@@ -90,6 +206,7 @@ void point_cloud::append(const point_cloud& pc)
 void point_cloud::clip(const Box clip_box)
 {
 	Idx j=0;
+	Idx ci = 0;
 	for (Idx i=0; i<(Idx)get_nr_points(); ++i) {
 		if (clip_box.inside(pnt(i))) {
 			if (j < i) {
@@ -98,8 +215,26 @@ void point_cloud::clip(const Box clip_box)
 					clr(j) = clr(i);
 				if (has_normals())
 					nml(j) = nml(i);
+				if (has_texture_coordinates())
+					texcrd(j) = texcrd(i);
+				if (has_pixel_coordinates())
+					pixcrd(j) = pixcrd(i);
+				if (has_components())
+					component_index(j) = component_index(i);
 			}
 			++j;
+		}
+		else {
+			if (has_components()) {
+				--components[component_index(i)].nr_points;
+				comp_box_out_of_date[component_index(i)] = true;
+				if (has_pixel_coordinates())
+					comp_pixrng_out_of_date[component_index(i)] = true;
+				while (int(component_index(i)) > ci) {
+					++ci;
+					components[ci].index_of_first_point = j;
+				}
+			}
 		}
 	}
 	if (j != get_nr_points()) {
@@ -107,19 +242,47 @@ void point_cloud::clip(const Box clip_box)
 			C.resize(j);
 		if (has_normals())
 			N.resize(j);
+		if (has_texture_coordinates())
+			T.resize(j);
+		if (has_pixel_coordinates())
+			I.resize(j);
+		if (has_components())
+			component_indices.resize(j);
 		P.resize(j);
 	}
 	box_out_of_date = true;
+	if (has_pixel_coordinates())
+		pixel_range_out_of_date = true;
 }
 
 /// translate by direction
-void point_cloud::translate(const Dir& dir)
+void point_cloud::translate(const Dir& dir, Idx ci)
 {
-	for (Idx i=0; i<(Idx)get_nr_points(); ++i) {
+	for (Idx e = end_index(ci), i = begin_index(ci); i < e; ++i)
 		pnt(i) += dir;
+	if (ci == -1 || !has_components()) {
+		B.ref_min_pnt() += dir;
+		B.ref_max_pnt() += dir;
 	}
-	B.ref_min_pnt() += dir;
-	B.ref_max_pnt() += dir;
+	else {
+		component_boxes[ci].ref_min_pnt() += dir;
+		component_boxes[ci].ref_max_pnt() += dir;
+		box_out_of_date = true;
+	}
+}
+
+/// translate by direction
+void point_cloud::rotate(const Qat& qat, Idx ci)
+{
+	for (Idx e = end_index(ci), i = begin_index(ci); i < e; ++i)
+		pnt(i) = qat.apply(pnt(i));
+	if (has_normals()) {
+		for (Idx e = end_index(ci), i = begin_index(ci); i < e; ++i)
+			nml(i) = qat.apply(nml(i));
+	}
+	box_out_of_date = true;
+	if (ci != -1 && has_components())
+		comp_box_out_of_date[ci] = true;
 }
 
 /// transform with linear transform 
@@ -160,7 +323,17 @@ point_cloud::Idx point_cloud::add_point(const Pnt& p)
 	if (has_normals())
 		N.resize(N.size()+1);
 	if (has_colors())
-		C.resize(P.size()+1);
+		C.resize(P.size() + 1);
+	if (has_texture_coordinates())
+		T.resize(P.size() + 1);
+	if (has_pixel_coordinates())
+		I.resize(P.size() + 1);
+	if (has_components()) {
+		if (components.empty())
+			components.push_back(component_info(0, p.size()));
+		component_indices.push_back(components.size() - 1);
+		++components.back().nr_points;
+	}
 	P.push_back(p);
 	return (Idx)P.size()-1;
 }
@@ -172,6 +345,12 @@ void point_cloud::resize(unsigned nr_points)
 		N.resize(nr_points);
 	if (has_colors())
 		C.resize(nr_points);
+	if (has_texture_coordinates())
+		T.resize(nr_points);
+	if (has_pixel_coordinates())
+		I.resize(nr_points);
+	if (has_components())
+		component_indices.resize(nr_points);
 	P.resize(nr_points);
 }
 
@@ -207,18 +386,53 @@ bool point_cloud::read(const string& _file_name)
 		else if (P.size() > 0)
 			has_clrs = false;
 
+		if (T.size() > 0)
+			has_texcrds = true;
+		else if (P.size() > 0)
+			has_texcrds = false;
+
+		if (I.size() > 0)
+			has_pixcrds = true;
+		else if (P.size() > 0)
+			has_pixcrds = false;
+
+		if (has_comps = components.size() > 0) {
+			has_comp_clrs = component_colors.size() > 0;
+			has_comp_trans = component_rotations.size() > 0;
+			component_boxes.resize(get_nr_components());
+			component_pixel_ranges.resize(get_nr_components());
+			comp_box_out_of_date.resize(get_nr_components());
+			std::fill(comp_box_out_of_date.begin(), comp_box_out_of_date.end(), true);
+			comp_pixrng_out_of_date.resize(get_nr_components());
+			std::fill(comp_pixrng_out_of_date.begin(), comp_pixrng_out_of_date.end(), true);
+		}
+
 		box_out_of_date = true;
+		if (has_pixel_coordinates())
+			pixel_range_out_of_date = true;
 	}
 	else {
 		cerr << "unknown extension <." << ext << ">." << endl;
 	}
-	if (N.size() > 0 && P.size() != N.size()) {
+	if (has_normals() && P.size() != N.size()) {
 		cerr << "ups different number of normals: " << N.size() << " instead of " << P.size() << endl;
 		N.resize(P.size());
 	}
-	if (C.size() > 0 && P.size() != C.size()) {
+	if (has_colors() && P.size() != C.size()) {
 		cerr << "ups different number of colors: " << C.size() << " instead of " << P.size() << endl;
 		C.resize(P.size());
+	}
+	if (has_texture_coordinates() && P.size() != T.size()) {
+		cerr << "ups different number of texture coordinates: " << T.size() << " instead of " << P.size() << endl;
+		T.resize(P.size());
+	}
+	if (has_pixel_coordinates() && P.size() != I.size()) {
+		cerr << "ups different number of pixel coordinates: " << I.size() << " instead of " << P.size() << endl;
+		I.resize(P.size());
+	}
+	if (has_components() && P.size() != component_indices.size()) {
+		cerr << "ups different number of component indices: " << component_indices.size() << " instead of " << P.size() << endl;
+		component_indices.resize(P.size());
 	}
 	return success;
 }
@@ -242,16 +456,16 @@ bool point_cloud::write(const string& _file_name)
 bool point_cloud::read_pct(const std::string& file_name)
 {
 	string content;
-	double time;
-	{
-		cgv::utils::stopwatch watch(&time);
+	// double time;
+	// {
+		// cgv::utils::stopwatch watch(&time);
 		if (!cgv::utils::file::read(file_name, content, true))
 			return false;
-		std::cout << "read from disk in " << watch.get_elapsed_time() << " sec" << std::endl; watch.restart();
+		// std::cout << "read from disk in " << watch.get_elapsed_time() << " sec" << std::endl; watch.restart();
 		clear();
 		vector<line> lines;
 		split_to_lines(content, lines);
-		std::cout << "split to " << lines.size() << " lines in " << watch.get_elapsed_time() << " sec" << std::endl; watch.restart();
+		// std::cout << "split to " << lines.size() << " lines in " << watch.get_elapsed_time() << " sec" << std::endl; watch.restart();
 
 		bool do_parse = false;
 		float scale = 1.0f / 255;
@@ -259,19 +473,20 @@ bool point_cloud::read_pct(const std::string& file_name)
 			if (lines[li].empty())
 				continue;
 			Pnt p;
-			int i, j, I;
+			int i, j, Intensity;
 			char tmp = lines[li].end[0];
 			content[lines[li].end - content.c_str()] = 0;
-			sscanf(lines[li].begin, "%d %d %f %f %f %d", &i, &j, &p[0], &p[1], &p[2], &I);
+			sscanf(lines[li].begin, "%d %d %f %f %f %d", &i, &j, &p[0], &p[1], &p[2], &Intensity);
 			content[lines[li].end - content.c_str()] = tmp;
 			P.push_back(p);
-			C.push_back(Clr(scale*I, scale*I, scale*I));
+			C.push_back(Clr(scale*Intensity, scale*Intensity, scale*Intensity));
+			I.push_back(PixCrd(i, j));
+
 			if ((P.size() % 100000) == 0)
 				cout << "read " << P.size() << " points" << endl;
-
 		}
-		std::cout << "parsed in " << watch.get_elapsed_time() << " sec" << std::endl;
-	}
+		// std::cout << "parsed in " << watch.get_elapsed_time() << " sec" << std::endl;
+	// }
 	return true;
 }
 
@@ -452,6 +667,16 @@ bool point_cloud::read_wrl(const std::string& file_name)
 	return true;
 }
 
+enum BPCFlags
+{
+	BPC_HAS_CLRS = 1,
+	BPC_HAS_NMLS = 2,
+	BPC_HAS_TCS = 4,
+	BPC_HAS_PIXCRDS = 8,
+	BPC_HAS_COMPS = 16,
+	BPC_HAS_COMP_CLRS = 32,
+	BPC_HAS_COMP_TRANS = 64
+};
 
 bool point_cloud::read_bin(const string& file_name)
 {
@@ -459,23 +684,68 @@ bool point_cloud::read_bin(const string& file_name)
 	if (!fp)
 		return false;
 	Cnt n, m;
-	bool success = 
+	cgv::type::uint32_type flags = 0;
+
+	bool success =
 		fread(&n,sizeof(Cnt),1,fp) == 1 &&
 		fread(&m,sizeof(Cnt),1,fp) == 1;
+
 	if (success) {
 		clear();
-		bool has_clrs = m >= 2*n;
-		P.resize(n);
-		if (has_clrs) {
-			m = m-2*n;
-			C.resize(n);
+		if (n == 0) {
+			n = m;
+			success = fread(&flags, sizeof(flags), 1, fp) == 1;
 		}
-		N.resize(m);
-		success = fread(&P[0][0],sizeof(Pnt),n,fp) == n;
-		if (m > 0)
-			success = success && (fread(&N[0][0],sizeof(Nml),m,fp) == m);
-		if (has_clrs)
-			success = success && fread(&C[0][0],sizeof(Clr),n,fp) == n;
+		else {
+			flags += (m >= 2 * n) ? BPC_HAS_CLRS : 0;
+			if (flags & BPC_HAS_CLRS) {
+				m = m - 2 * n;
+			}
+			flags += (m > 0) ? BPC_HAS_NMLS : 0;
+		}
+	}
+
+	if (success) {
+		P.resize(n);
+		success = fread(&P[0][0], sizeof(Pnt), n, fp) == n;
+		if (flags & BPC_HAS_NMLS) {
+			N.resize(m);
+			success = success && (fread(&N[0][0], sizeof(Nml), m, fp) == m);
+		}
+		if (flags & BPC_HAS_CLRS) {
+			C.resize(n);
+			success = success && fread(&C[0][0], sizeof(Clr), n, fp) == n;
+		}
+		if (flags & BPC_HAS_TCS) {
+			T.resize(n);
+			success = success && fread(&T[0][0], sizeof(TexCrd), n, fp) == n;
+		}
+		if (flags & BPC_HAS_PIXCRDS) {
+			I.resize(n);
+			success = success && fread(&I[0][0], sizeof(PixCrd), n, fp) == n;
+		}
+		if (flags & BPC_HAS_COMPS) {
+			cgv::type::uint32_type nr_comps;
+			success = success && fread(&nr_comps, sizeof(nr_comps), 1, fp) == 1;
+			if (success) {
+				components.resize(nr_comps);
+				success = success && fread(&components[0], sizeof(component_info), nr_comps, fp) == nr_comps;
+				component_indices.resize(n);
+				for (unsigned i = 0; i < nr_comps; ++i)
+					for (unsigned j = components[i].index_of_first_point; j < components[i].index_of_first_point + components[i].nr_points; ++j)
+						component_indices[j] = i;
+				if (flags & BPC_HAS_COMP_CLRS) {
+					component_colors.resize(nr_comps);
+					success = success && fread(&component_colors[0], sizeof(Rgba), nr_comps, fp) == nr_comps;
+				}
+				if (flags & BPC_HAS_COMP_TRANS) {
+					component_rotations.resize(nr_comps);
+					component_translations.resize(nr_comps);
+					success = success && fread(&component_rotations[0], sizeof(Qat), nr_comps, fp) == nr_comps;
+					success = success && fread(&component_translations[0], sizeof(Dir), nr_comps, fp) == nr_comps;
+				}
+			}
+		}
 	}
 	return fclose(fp) == 0 && success;
 }
@@ -649,16 +919,54 @@ bool point_cloud::write_bin(const std::string& file_name) const
 	Cnt n = (Cnt)P.size();
 	Cnt m = (Cnt)N.size();
 	Cnt m1 = m;
+	Cnt flags = has_colors() ? BPC_HAS_CLRS : 0;
+	flags += has_normals() ? BPC_HAS_NMLS : 0;
+	flags += has_texture_coordinates() ? BPC_HAS_TCS : 0;
+	flags += has_pixel_coordinates() ? BPC_HAS_PIXCRDS : 0;
+	flags += has_components() ? BPC_HAS_COMPS : 0;
+	flags += has_component_colors() ? BPC_HAS_COMP_CLRS : 0;
+	flags += has_component_transformations() ? BPC_HAS_COMP_TRANS : 0;
 	if (has_colors() && C.size() == n)
 		m1 = 2*n+m;
-	bool success = 
-		fwrite(&n, sizeof(Cnt),1,fp) == 1 &&
-		fwrite(&m1,sizeof(Cnt),1,fp) == 1 &&
-		fwrite(&P[0][0],sizeof(Pnt),n,fp) == n;
-	if (has_normals())
-		success = success && (fwrite(&N[0][0],sizeof(Nml),m,fp) == m);
-	if (has_colors() && C.size() == n)
-		success = success && (fwrite(&C[0][0],sizeof(Clr),n,fp) == n);
+	bool success;
+	if (false) {
+		success =
+			fwrite(&n, sizeof(Cnt), 1, fp) == 1 &&
+			fwrite(&m1, sizeof(Cnt), 1, fp) == 1 &&
+			fwrite(&P[0][0], sizeof(Pnt), n, fp) == n;
+		if (has_normals())
+			success = success && (fwrite(&N[0][0], sizeof(Nml), m, fp) == m);
+		if (has_colors() && C.size() == n)
+			success = success && (fwrite(&C[0][0], sizeof(Clr), n, fp) == n);
+	}
+	else {
+		m = n;
+		m1 = 0;
+		success =
+			fwrite(&m1, sizeof(Cnt), 1, fp) == 1 &&
+			fwrite(&m, sizeof(Cnt), 1, fp) == 1 &&
+			fwrite(&flags, sizeof(Cnt), 1, fp) == 1 &&
+			fwrite(&P[0][0], sizeof(Pnt), n, fp) == n;
+		if (has_normals())
+			success = success && (fwrite(&N[0][0], sizeof(Nml), m, fp) == m);
+		if (has_colors() && C.size() == n)
+			success = success && (fwrite(&C[0][0], sizeof(Clr), n, fp) == n);
+
+		if (has_texture_coordinates()) 
+			success = success && (fwrite(&T[0][0], sizeof(TexCrd), n, fp) == n);
+		if (has_pixel_coordinates())
+			success = success && (fwrite(&I[0][0], sizeof(PixCrd), n, fp) == n);
+		if (has_components()) {
+			Cnt nr_comps = get_nr_components();
+			success = success && (fwrite(&nr_comps, sizeof(Cnt), 1, fp) == 1) && (fwrite(&components[0], sizeof(component_info), nr_comps, fp) == nr_comps);
+		}
+		if (has_component_colors())
+			success = success && (fwrite(&component_colors[0][0], sizeof(Rgba), get_nr_components(), fp) == get_nr_components());
+		if (has_component_transformations()) {
+			success = success && (fwrite(&component_rotations[0][0], sizeof(Qat), get_nr_components(), fp) == get_nr_components());
+			success = success && (fwrite(&component_translations[0][0], sizeof(Dir), get_nr_components(), fp) == get_nr_components());
+		}
+	}
 	return fclose(fp) == 0 && success;
 }
 
@@ -698,6 +1006,59 @@ void point_cloud::destruct_colors()
 	C.clear();
 }
 
+/// return whether the point cloud has texture coordinates
+bool point_cloud::has_texture_coordinates() const
+{
+	return has_texcrds;
+}
+/// allocate texture coordinates if not already allocated
+void point_cloud::create_texture_coordinates()
+{
+	if (has_texture_coordinates())
+		return;
+
+	T.resize(get_nr_points());
+
+	has_texcrds = true;
+}
+/// deallocate texture coordinates
+void point_cloud::destruct_texture_coordinates()
+{
+	if (!has_texture_coordinates())
+		return;
+
+	T.clear();
+
+	has_texcrds = false;
+}
+
+/// return whether the point cloud has pixel coordinates
+bool point_cloud::has_pixel_coordinates() const
+{
+	return has_pixcrds;
+}
+/// allocate pixel coordinates if not already allocated
+void point_cloud::create_pixel_coordinates()
+{
+	if (has_pixel_coordinates())
+		return;
+	
+	I.resize(get_nr_points());
+
+	has_pixcrds = true;
+}
+/// deallocate pixel coordinates
+void point_cloud::destruct_pixel_coordinates()
+{
+	if (!has_pixel_coordinates())
+		return;
+
+	I.clear();
+
+	has_pixcrds = false;
+}
+
+
 bool point_cloud::has_normals() const 
 {
 	return has_nmls; 
@@ -717,14 +1078,306 @@ void point_cloud::destruct_normals()
 	N.clear();
 }
 
-/// return box
-const point_cloud::Box& point_cloud::box() const
+/// return number of components
+size_t point_cloud::get_nr_components() const
 {
-	if (box_out_of_date) {
-		B.invalidate();
-		for (Idx i = 0; i < (Idx)get_nr_points(); ++i)
-			B.add_point(pnt(i));
-		box_out_of_date = false;
+	return components.size();
+}
+
+/// add a new component
+point_cloud::Idx point_cloud::add_component()
+{
+	if (!has_components())
+		create_components();
+	components.push_back(component_info(get_nr_points(), 0));
+	if (has_component_colors())
+		component_colors.push_back(Rgba(1, 1, 1, 1));
+	if (has_component_transformations()) {
+		component_translations.push_back(Dir(0, 0, 0));
+		component_rotations.push_back(Qat(1, 0, 0, 0));
 	}
-	return B;
+	comp_box_out_of_date.push_back(true);
+	component_boxes.push_back(Box());
+	if (has_pixel_coordinates()) {
+		comp_pixrng_out_of_date.push_back(true);
+		component_pixel_ranges.push_back(PixRng());
+	}
+	return components.size() - 1;
+}
+
+/// return whether the point cloud has component indices and point ranges
+bool point_cloud::has_components() const
+{
+	return has_comps;
+}
+
+/// allocate component indices and point ranges if not already allocated
+void point_cloud::create_components()
+{
+	if (has_components())
+		return;
+	component_indices.resize(get_nr_points());
+	std::fill(component_indices.begin(), component_indices.end(), 0);
+	components.resize(1);
+	components[0] = component_info(0, get_nr_points());
+	has_comps = true;
+	if (has_component_colors()) {
+		component_colors.resize(1);
+		component_colors[0] = Rgba(1, 1, 1, 1);
+	}
+	if (has_component_transformations()) {
+		component_rotations.resize(1);
+		component_rotation(0) = Qat(1, 0, 0, 0);
+		component_translations.resize(1);
+		component_translation(0) = Dir(0, 0, 0);
+	}
+	component_boxes.resize(1);
+	component_pixel_ranges.resize(1);
+	comp_box_out_of_date.resize(1);
+	comp_box_out_of_date[0] = true;
+	comp_pixrng_out_of_date.resize(1);
+	comp_pixrng_out_of_date[0] = true;
+}
+
+/// deallocate component indices and point ranges
+void point_cloud::destruct_components()
+{
+	component_colors.clear();
+	component_rotations.clear();
+	component_translations.clear();
+	components.clear();
+	component_boxes.clear();
+	component_pixel_ranges.clear();
+	comp_box_out_of_date.clear();
+	comp_pixrng_out_of_date.clear();
+	has_comps = false;
+	has_comp_clrs = false;
+	has_comp_trans = false;
+}
+
+/// return whether the point cloud has component colors
+bool point_cloud::has_component_colors() const
+{
+	return has_comp_clrs;
+}
+/// allocate component colors if not already allocated
+void point_cloud::create_component_colors()
+{
+	if (has_component_colors())
+		return;
+	if (!has_components())
+		create_components();
+	
+	component_colors.resize(get_nr_components());
+	std::fill(component_colors.begin(), component_colors.end(), Rgba(1, 1, 1, 1));
+	has_comp_clrs = true;
+}
+
+/// deallocate colors
+void point_cloud::destruct_component_colors()
+{
+	if (!has_component_colors())
+		return;
+	component_colors.clear();
+	has_comp_clrs = false;
+}
+
+/// return whether the point cloud has component tranformations
+bool point_cloud::has_component_transformations() const
+{
+	return has_comp_trans;
+}
+
+/// allocate component tranformations if not already allocated
+void point_cloud::create_component_tranformations()
+{
+	if (has_component_transformations())
+		return;
+	if (!has_components())
+		create_components();
+	component_translations.resize(get_nr_components());
+	component_rotations.resize(get_nr_components());
+	has_comp_trans = true;
+	reset_component_transformation();
+}
+/// deallocate tranformations
+void point_cloud::destruct_component_tranformations()
+{
+	if (!has_component_transformations())
+		return;
+
+	component_translations.clear();
+	component_rotations.clear();
+
+	has_comp_trans = false;
+}
+/// apply transformation of given component (or all of component index is -1) to influenced points
+void point_cloud::apply_component_transformation(Idx component_index)
+{
+	if (!has_component_transformations())
+		return;
+}
+
+/// set the component transformation of given component (or all of component index is -1) to identity
+void point_cloud::reset_component_transformation(Idx component_index)
+{
+	if (!has_component_transformations())
+		return;
+	if (component_index == -1) {
+		std::fill(component_translations.begin(), component_translations.end(), Dir(0, 0, 0));
+		std::fill(component_rotations.begin(), component_rotations.end(), Qat(1, 0, 0, 0));
+	}
+	else {
+		component_translations[component_index] = Dir(0, 0, 0);
+		component_rotations[component_index] = Qat(1, 0, 0, 0);
+	}
+}
+
+/// return the i_th point, in case components and component transformations are created, transform point with its compontent's transformation before returning it 
+point_cloud::Pnt point_cloud::transformed_pnt(Idx i) const
+{
+	if (!has_components() || !has_component_transformations())
+		return pnt(i);
+	Idx ci = component_index(i);
+	return component_rotation(ci).apply(pnt(i)) + component_translation(ci);
+}
+
+/// return box
+const point_cloud::Box& point_cloud::box(Idx ci) const
+{
+	if (ci == -1) {
+		if (box_out_of_date) {
+			B.invalidate();
+			for (Idx i = 0; i < (Idx)get_nr_points(); ++i)
+				B.add_point(transformed_pnt(i));
+			box_out_of_date = false;
+		}
+		return B;
+	}
+	else {
+		if (comp_box_out_of_date[ci]) {
+			component_boxes[ci].invalidate();
+			for (Idx e = end_index(ci), i = begin_index(ci); i < e; ++i)
+				component_boxes[ci].add_point(pnt(i));
+			comp_box_out_of_date[ci] = false;
+		}
+		return component_boxes[ci];
+	}
+}
+
+/// return the range of the stored pixel coordinates
+const point_cloud::PixRng& point_cloud::pixel_range(Idx ci) const
+{
+	if (ci == -1) {
+		if (pixel_range_out_of_date) {
+			PR.invalidate();
+			for (Idx i = 0; i < (Idx)get_nr_points(); ++i)
+				PR.add_point(pixcrd(i));
+			pixel_range_out_of_date = false;
+		}
+		return PR;
+	}
+	else {
+		if (comp_pixrng_out_of_date[ci]) {
+			component_pixel_ranges[ci].invalidate();
+			for (Idx e = end_index(ci), i = begin_index(ci); i < e; ++i)
+				component_pixel_ranges[ci].add_point(pixcrd(i));
+			comp_pixrng_out_of_date[ci] = false;
+		}
+		return component_pixel_ranges[ci];
+	}
+}
+
+/// compute an image with a point index stored per pixel
+void point_cloud::compute_index_image(index_image& img, unsigned border_size, Idx ci)
+{
+	if (!has_pixel_coordinates())
+		return;
+
+	PixRng rng = pixel_range(ci);
+	rng.add_point(rng.get_max_pnt() + PixCrd(border_size, border_size));
+	rng.add_point(rng.get_min_pnt() - PixCrd(border_size, border_size));
+	img.create(rng);
+	for (Idx e = end_index(ci), i = begin_index(ci); i < e; ++i) 
+		img(pixcrd(i)) = i;
+}
+
+void point_cloud::estimate_normals(const index_image& img, Idx ci, int* nr_isolated, int* nr_iterations, int* nr_left_over)
+{
+	if (!has_pixel_coordinates())
+		return;
+
+	if (!has_normals())
+		create_normals();
+	
+	// computing normals
+	std::vector<int> not_set_normals;
+	std::vector<int> isolated_normals;
+	static int di[8] = { -1, 0, 1, 1, 1, 0, -1, -1 };
+	static int dj[8] = { -1, -1, -1, 0, 1, 1, 1, 0 };
+	std::vector<int> Ni;
+	//unsigned cnts[9] = { 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+	for (Idx e = end_index(ci), i = begin_index(ci); i < e; ++i) {
+		int j;
+		Ni.clear();
+		for (j = 0; j < 8; ++j) {
+			int ni = img(pixcrd(i) + PixCrd(di[j], dj[j]));
+			if (ni != -1)
+				Ni.push_back(ni);
+		}
+		//++cnts[Ni.size()];
+		if (Ni.size() < 3) {
+			if (Ni.size() == 0)
+				isolated_normals.push_back(i);
+			else
+				not_set_normals.push_back(i);
+			N[i].set(0, 0, 0);
+			continue;
+		}
+		// compute cross product normal relative to current point
+		int prev = Ni.back();
+		Nml nml(0, 0, 0);
+		for (j = 0; j < int(Ni.size()); ++j) {
+			nml += cross(P[prev] - P[i], P[Ni[j]] - P[i]);
+			prev = Ni[j];
+		}
+		nml.normalize();
+		N[i] = nml;
+	}
+	/*
+	std::cout << "neighbor cnts:";
+	for (unsigned k = 0; k <= 8; ++k)
+		std::cout << " " << k << "=" << cnts[k];
+	std::cout << std::endl;
+	*/
+	if (nr_isolated)
+		*nr_isolated = isolated_normals.size();
+
+	int iter = 1;
+	if (!not_set_normals.empty()) {
+		std::vector<int> not_set_normals_old;
+		do {
+			not_set_normals_old = not_set_normals;
+			not_set_normals.clear();
+			for (int i = 0; i < int(not_set_normals_old.size()); ++i) {
+				for (int j = 0; j < 8; ++j) {
+					int ni = img(pixcrd(not_set_normals_old[i])+PixCrd(di[j],dj[j]));
+					if (ni != -1) {
+						if (N[ni].length() > 0)
+							N[not_set_normals_old[i]] += N[ni];
+					}
+				}
+				if (N[not_set_normals_old[i]].length() == 0) {
+					not_set_normals.push_back(not_set_normals[i]);
+					continue;
+				}
+				N[not_set_normals_old[i]].normalize();
+			}
+			++iter;
+		} while (not_set_normals_old.size() > not_set_normals.size());
+	}
+	if (nr_iterations)
+		*nr_iterations = iter;
+	if (nr_left_over)
+		*nr_left_over = not_set_normals.size();
 }

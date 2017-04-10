@@ -1,5 +1,6 @@
 #include "normal_estimator.h"
 #include "normal_estimation.h"
+#include <cmath>
 #include <cgv/math/functions.h>
 #include <algorithm>
 

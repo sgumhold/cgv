@@ -3,6 +3,7 @@
 #include <vector>
 #include <cgv/math/fvec.h>
 #include <cgv/math/fmat.h>
+#include <cgv/math/quaternion.h>
 #include <cgv/media/color.h>
 #include <cgv/media/axis_aligned_box.h>
 
@@ -18,11 +19,15 @@ struct point_cloud_types
 	/// 3d normal type
 	typedef cgv::math::fvec<Crd,3> Nml;
 	/// 3d direction type
-	typedef cgv::math::fvec<Crd,3> Dir;
+	typedef cgv::math::fvec<Crd, 3> Dir;
+	/// 2d texture coordinate type
+	typedef cgv::math::fvec<Crd, 2> TexCrd;
 	/// 4d homogeneous vector type
 	typedef cgv::math::fvec<Crd,4> HVec;
 	/// colors are rgb with floating point coordinates
 	typedef cgv::media::color<float> Clr;
+	/// rgba colors used for components
+	typedef cgv::media::color<float,cgv::media::RGB,cgv::media::OPACITY> Rgba;
 	/// 3x3 matrix type used for linear transformations
 	typedef cgv::math::fmat<Crd,3,3> Mat;
 	/// 3x4 matrix type used for affine transformations in reduced homogeneous form
@@ -35,7 +40,46 @@ struct point_cloud_types
 	typedef cgv::type::uint32_type Cnt;
 	/// singed index type used for interation variables
 	typedef cgv::type::int32_type Idx;
+	/// 2d pixel position type
+	typedef cgv::math::fvec<Idx, 2> PixCrd;
+	/// type of pixel coordinate range
+	typedef cgv::media::axis_aligned_box<Idx, 2> PixRng;
+	/// type of texture coordinate box
+	typedef cgv::media::axis_aligned_box<Crd, 2> TexBox;
+	/// quaternions used to represent rotations
+	typedef cgv::math::quaternion<Crd> Qat;
+	/// simple structure to store the point range of a point cloud component
+	struct component_info
+	{
+		size_t index_of_first_point;
+		size_t nr_points;
+		component_info(size_t _first = 0, size_t _nr = 0) : index_of_first_point(_first), nr_points(_nr) {}
+	};
 };
+
+class CGV_API index_image : public point_cloud_types
+{
+	Idx width;
+	PixRng pixel_range;
+	std::vector<Idx> indices;
+	Idx get_index(const PixCrd& pixcrd) const;
+public:
+	/// construct empty index image
+	index_image();
+	/// return pixel range of image
+	const PixRng& get_pixel_range() const  { return pixel_range;  }
+	/// return image width
+	Idx get_width() const { return width;  }
+	/// return image height
+	Idx get_height() const { return pixel_range.get_extent()(1); }
+	/// construct image of given dimensions and initialize indices to given value
+	void create(const PixRng& _pixel_range, Idx _initial_value = -1);
+	/// read access pixel index through pixel coordinates
+	Idx operator () (const PixCrd& pixcrd) const;
+	/// write access pixel index through pixel coordinates
+	Idx& operator () (const PixCrd& pixcrd);
+};
+
 
 /** simple point cloud data structure with dynamic containers for positions, normals and colors. 
     Normals and colors are optional and can be dynamically allocated and deallocated. */
@@ -48,12 +92,46 @@ protected:
 	std::vector<Nml> N;
 	/// container for point colors
 	std::vector<Clr> C;
+	/// container for point texture coordinates 
+	std::vector<TexCrd> T;
+	/// container for point pixel coordinates 
+	std::vector<PixCrd> I;
+
+	/// container to store  one component index per point
+	std::vector<unsigned> component_indices;
+
+	/// container to store point range per component
+	std::vector<component_info> components;
+	/// return begin point index for iteration
+	Idx begin_index(Idx component_index) const;
+	/// return end point index for iteration
+	Idx end_index(Idx component_index) const;
+	/// container storing component colors
+	std::vector<Rgba> component_colors;
+	/// container storing component rotationa
+	std::vector<Qat> component_rotations;
+	/// container storing component translations
+	std::vector<Dir> component_translations;
+
+	/// container storing component bounding boxes
+	mutable std::vector<Box> component_boxes;
+	/// container storing component pixel ranges
+	mutable std::vector<PixRng> component_pixel_ranges;
 
 	/// bounding box of all points
 	mutable Box B;
+	/// range of pixel coordinates
+	mutable PixRng PR;
+	///
+	friend struct point_cloud_viewer;
+	friend struct gl_point_cloud_drawable_base;
 private:
-	/// flag to remember whether bounding box is out of date and will be recomputed in the get_box() method
+	mutable std::vector<bool> comp_box_out_of_date;
+	mutable std::vector<bool> comp_pixrng_out_of_date;
+	/// flag to remember whether bounding box is out of date and will be recomputed in the box() method
 	mutable bool box_out_of_date;
+	/// flag to remember whether pixel coordinate range is out of date and will be recomputed in the pixel_range() method
+	mutable bool pixel_range_out_of_date;
 protected:
 	/// when true, second vector is interpreted as normals when reading an ascii format
 	bool no_normals_contained;
@@ -61,6 +139,16 @@ protected:
 	bool has_nmls;
 	/// flag that tells whether colors are allocated
 	bool has_clrs;
+	/// flag that tells whether texture coordinates are allocated
+	bool has_texcrds;
+	/// flag that tells whether pixel coordinates are allocated
+	bool has_pixcrds;
+	/// flag that tells whether components are allocated
+	bool has_comps;
+	/// flag that tells whether component transformations are allocated
+	bool has_comp_trans;
+	/// flag that tells whether component colors are allocated
+	bool has_comp_clrs;
 	/// read obj-file. Ignores all except of v, vn and vc lines. v lines can be extended by 3 rgb color components
 	bool read_obj(const std::string& file_name);
 	/// read ascii file with lines of the form x y z r g b I colors and intensity values, where intensity values are ignored
@@ -106,7 +194,9 @@ public:
 	/// remove all points (including normals and colors) outside of the given box 
 	void clip(const Box clip_box);
 	/// translate by adding direction vector dir to point positions and update bounding box
-	void translate(const Dir& dir);
+	void translate(const Dir& dir, Idx component_index = -1);
+	/// rotate points and normals with quaternion
+	void rotate(const Qat& qat, Idx component_index = -1);
 	/// transform points with linear transform and mark bounding box outdated (careful: normals are not yet transformed!)
 	void transform(const Mat& mat);
 	/// transform with affine transform and mark bounding box outdated (careful: normals are not yet transformed!)
@@ -140,6 +230,9 @@ public:
 	const Pnt& pnt(Idx i) const { return P[i]; }
 	/// return the i-th point as reference
 	Pnt& pnt(Idx i) { return P[i]; }
+	/// return the i_th point, in case components and component transformations are created, transform point with its compontent's transformation before returning it 
+	Pnt transformed_pnt(Idx i) const;
+
 	/// return whether the point cloud has normals
 	bool has_normals() const;
 	/// allocate normals if not already allocated
@@ -150,6 +243,7 @@ public:
 	const Nml& nml(Idx i) const { return N[i]; }
 	/// return i-th normal as reference
 	Nml& nml(Idx i) { return N[i]; }
+
 	/// return whether the point cloud has colors
 	bool has_colors() const;
 	/// allocate colors if not already allocated
@@ -160,8 +254,88 @@ public:
 	const Clr& clr(Idx i) const { return C[i]; }
 	/// return i-th color as reference
 	Clr& clr(Idx i) { return C[i]; }
-	/// return the current bounding box recomputing it in case it is marked as outdated
-	const Box& box() const;
+
+	/// return whether the point cloud has texture coordinates
+	bool has_texture_coordinates() const;
+	/// allocate texture coordinates if not already allocated
+	void create_texture_coordinates();
+	/// deallocate texture coordinates
+	void destruct_texture_coordinates();
+	/// return i-th texture coordinate as const reference
+	const TexCrd& texcrd(Idx i) const { return T[i]; }
+	/// return i-th texture coordinate as reference
+	TexCrd& texcrd(Idx i) { return T[i]; }
+
+	/// return whether the point cloud has pixel coordinates
+	bool has_pixel_coordinates() const;
+	/// allocate pixel coordinates if not already allocated
+	void create_pixel_coordinates();
+	/// deallocate pixel coordinates
+	void destruct_pixel_coordinates();
+	/// return i-th pixel coordinate as const reference
+	const PixCrd& pixcrd(Idx i) const { return I[i]; }
+	/// return i-th pixel coordinate as reference
+	PixCrd& pixcrd(Idx i) { return I[i]; }
+
+	/// return number of components
+	size_t get_nr_components() const;
+	/// add a new component
+	Idx add_component();
+	/// return whether the point cloud has component indices and point ranges
+	bool has_components() const;
+	/// allocate component indices and point ranges if not already allocated
+	void create_components();
+	/// deallocate component indices and point ranges
+	void destruct_components();
+	/// return i-th component index as const reference
+	unsigned component_index(Idx i) const { return component_indices[i]; }
+	/// return i-th component index as reference
+	unsigned& component_index(Idx i) { return component_indices[i]; }
+	/// return the point range of a component as const reference
+	const component_info& component_point_range(Idx ci) const { return components[ci]; }
+	/// return the point range of a component as reference
+	component_info& component_point_range(Idx ci) { return components[ci]; }
+
+	/// return whether the point cloud has component colors
+	bool has_component_colors() const;
+	/// allocate component colors if not already allocated
+	void create_component_colors();
+	/// deallocate colors
+	void destruct_component_colors();
+	/// return i-th component colors as const reference
+	const Rgba& component_color(Idx i) const { return component_colors[i]; }
+	/// return i-th component color as reference
+	Rgba& component_color(Idx i) { return component_colors[i]; }
+
+	/// return whether the point cloud has component tranformations
+	bool has_component_transformations() const;
+	/// allocate component tranformations if not already allocated
+	void create_component_tranformations();
+	/// deallocate tranformations
+	void destruct_component_tranformations();
+	/// return i-th component rotation as const reference
+	const Qat& component_rotation(Idx i) const { return component_rotations[i]; }
+	/// return i-th component rotation as reference
+	Qat& component_rotation(Idx i) { return component_rotations[i]; }
+	/// return i-th component translation as const reference
+	const Dir& component_translation(Idx i) const { return component_translations[i]; }
+	/// return i-th component translation as reference
+	Dir& component_translation(Idx i) { return component_translations[i]; }
+	/// apply transformation of given component (or all of component index is -1) to influenced points
+	void apply_component_transformation(Idx component_index = -1);
+	/// set the component transformation of given component (or all of component index is -1) to identity
+	void reset_component_transformation(Idx component_index = -1);
+
+	/// return the current bounding box of a component (or the whole point cloud if given component_index is -1)
+	const Box& box(Idx component_index = -1) const;
+	/// return the range of the stored pixel coordinates of a component (or the whole point cloud if given component_index is -1)
+	const PixRng& pixel_range(Idx component_index = -1) const;
+	/// compute an image with a point index stored per pixel, store indices in the pixel range of the point cloud with a border of the given size
+	void compute_index_image(index_image& img, unsigned border_size = 0, Idx component_index = -1);
+	/// detect outliers based on neighborhood in pixel coordinates
+	void detect_outliers(const index_image& img, std::vector<Idx>& outliers) const;
+	/// compute the normals with the help of pixel coordinates
+	void estimate_normals(const index_image& img, Idx component_idx = -1, int* nr_isolated = 0, int* nr_iterations = 0, int* nr_left_over = 0);
 	//}
 };
 

@@ -13,6 +13,13 @@ namespace cgv {
 		box_renderer::box_renderer()
 		{
 			has_extents = false;
+			position_is_center = true;
+		}
+
+		/// set the flag, whether the position is interpreted as the box center
+		void box_renderer::set_position_is_center(bool _position_is_center)
+		{
+			position_is_center = _position_is_center;
 		}
 
 		bool box_renderer::validate_attributes(context& ctx)
@@ -36,6 +43,15 @@ namespace cgv {
 				}
 			}
 			return res;
+		}
+
+		/// 
+		bool box_renderer::enable(context& ctx)
+		{
+			if (!surface_renderer::enable(ctx))
+				return false;
+			ref_prog().set_uniform(ctx, "position_is_center", position_is_center);
+			return true;
 		}
 
 	}

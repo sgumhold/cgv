@@ -14,7 +14,14 @@ namespace cgv {
 		box_wire_renderer::box_wire_renderer()
 		{
 			has_extents = false;
+			position_is_center = true;
 		}
+		/// set the flag, whether the position is interpreted as the box center
+		void box_wire_renderer::set_position_is_center(bool _position_is_center)
+		{
+			position_is_center = _position_is_center;
+		}
+
 
 		bool box_wire_renderer::init(context& ctx)
 		{
@@ -36,6 +43,14 @@ namespace cgv {
 				res = false;
 			}
 			return res;
+		}
+		/// 
+		bool box_wire_renderer::enable(context& ctx)
+		{
+			if (!line_renderer::enable(ctx))
+				return false;
+			ref_prog().set_uniform(ctx, "position_is_center", position_is_center);
+			return true;
 		}
 	}
 }
