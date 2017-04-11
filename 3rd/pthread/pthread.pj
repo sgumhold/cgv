@@ -1,11 +1,14 @@
-@exclude<cgv/config/make.ppp>
-@define(projectName="pthread")
-@define(projectType="library")
-@define(projectGUID="1ACE23F3-4A6C-47e7-B7E3-FA9DD18EE913")
-@define(sourceFiles=[INPUT_DIR."/pthread.c"])
-@define(addStaticDefines=[ ["PTW32_STATIC_LIB","all"] ])
-@define(addDefines=["PTW32_BUILD"])
-@define(addIncDirs=[INPUT_DIR])
-@if(SYSTEM=="windows")@{
-	@define(addDependencies=addDependencies.[ ["ws2_32", "all"] ])
-@}
+@=
+projectName="pthread";
+projectType="library";
+projectGUID="1ACE23F3-4A6C-47e7-B7E3-FA9DD18EE913";
+sourceFiles=[INPUT_DIR."/pthread.c"];
+addStaticDefines=[ ["PTW32_STATIC_LIB","all"] ];
+addDefines=["PTW32_BUILD"];
+addIncDirs=[INPUT_DIR];
+if(SYSTEM=="windows") {
+	addDependencies=addDependencies.[ ["ws2_32", "all"] ];
+	if(cgv_compiler_version==14) {
+		addDefines=addDefines.["HAVE_STRUCT_TIMESPEC"];
+	}
+}

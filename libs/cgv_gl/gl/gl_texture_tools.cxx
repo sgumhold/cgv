@@ -693,7 +693,7 @@ void main()\n\
 bool render_to_texture3D(context& ctx, shader_program& prog, TextureSampling texture_sampling, texture& target_tex, texture* target_tex2, texture* target_tex3, texture* target_tex4)
 {
 	// extract texture resolution
-	int tex_res[3] = { target_tex.get_width(), target_tex.get_height(), target_tex.get_depth() };
+	unsigned tex_res[3] = { target_tex.get_width(), target_tex.get_height(), target_tex.get_depth() };
 
 	// check consistency of all texture resolutions
 	if (target_tex2) {

@@ -284,7 +284,7 @@ void fair_split(
 			max_length = length;
 	}
 										// consider most extreme splits
-	ANNcoord small_piece = max_length / FS_ASPECT_RATIO;
+	ANNcoord small_piece = ANNcoord(max_length / FS_ASPECT_RATIO);
 	ANNcoord lo_cut = bnds.lo[cut_dim] + small_piece;// lowest legal cut
 	ANNcoord hi_cut = bnds.hi[cut_dim] - small_piece;// highest legal cut
 
@@ -390,7 +390,7 @@ void sl_fair_split(
 			max_length = length;
 	}
 										// consider most extreme splits
-	ANNcoord small_piece = max_length / FS_ASPECT_RATIO;
+	ANNcoord small_piece = ANNcoord(max_length / FS_ASPECT_RATIO);
 	ANNcoord lo_cut = bnds.lo[cut_dim] + small_piece;// lowest legal cut
 	ANNcoord hi_cut = bnds.hi[cut_dim] - small_piece;// highest legal cut
 										// find min and max along cut_dim

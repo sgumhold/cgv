@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include <cgv/utils/statistics.h>
 #include <cgv/math/fvec.h>
 #include <cgv/math/fmat.h>
 #include <cgv/math/quaternion.h>
@@ -68,6 +69,8 @@ public:
 	index_image();
 	/// return pixel range of image
 	const PixRng& get_pixel_range() const  { return pixel_range;  }
+	/// 
+	static PixCrd image_neighbor_offset(int i);
 	/// return image width
 	Idx get_width() const { return width;  }
 	/// return image height
@@ -334,8 +337,12 @@ public:
 	void compute_index_image(index_image& img, unsigned border_size = 0, Idx component_index = -1);
 	/// detect outliers based on neighborhood in pixel coordinates
 	void detect_outliers(const index_image& img, std::vector<Idx>& outliers) const;
+	/// compute the range of direct neighbor distances
+	void compute_image_neighbor_distance_statistic(const index_image& img, cgv::utils::statistics& distance_stats, Idx component_idx = -1);
+	/// collect the indices of the neighbor points of point pi
+	Cnt collect_valid_image_neighbors(Idx pi, const index_image& img, std::vector<Idx>& Ni, Crd distance_threshold = 0.0f) const;
 	/// compute the normals with the help of pixel coordinates
-	void estimate_normals(const index_image& img, Idx component_idx = -1, int* nr_isolated = 0, int* nr_iterations = 0, int* nr_left_over = 0);
+	void estimate_normals(const index_image& img, Crd distance_threshold = 0.0f, Idx component_idx = -1, int* nr_isolated = 0, int* nr_iterations = 0, int* nr_left_over = 0);
 	//}
 };
 

@@ -1,5 +1,3 @@
-#pragma once
-
 #include "point_cloud.h"
 #include <cgv/utils/file.h>
 #include <cgv/utils/stopwatch.h>
@@ -1301,28 +1299,56 @@ void point_cloud::compute_index_image(index_image& img, unsigned border_size, Id
 		img(pixcrd(i)) = i;
 }
 
-void point_cloud::estimate_normals(const index_image& img, Idx ci, int* nr_isolated, int* nr_iterations, int* nr_left_over)
+index_image::PixCrd index_image::image_neighbor_offset(int i) 
+{
+	static int di[8] = { -1, 0, 1, 1, 1, 0, -1, -1 };
+	static int dj[8] = { -1, -1, -1, 0, 1, 1, 1, 0 };
+	return PixCrd(di[i], dj[i]);
+}
+
+/// compute the range of direct neighbor distances
+void point_cloud::compute_image_neighbor_distance_statistic(const index_image& img, cgv::utils::statistics& distance_stats, Idx ci)
+{
+	if (!has_pixel_coordinates())
+		return;
+
+	// computing normals
+	for (Idx e = end_index(ci), i = begin_index(ci); i < e; ++i) {
+		for (int j = 1; j < 8; j += 2) {
+			int ni = img(pixcrd(i) + img.image_neighbor_offset(j));
+			if (ni != -1)
+				distance_stats.update((pnt(i) - pnt(ni)).length());
+		}
+	}
+}
+/// collect the indices of the neighbor points of point pi
+point_cloud::Cnt point_cloud::collect_valid_image_neighbors(Idx pi, const index_image& img, std::vector<Idx>& Ni, Crd distance_threshold) const
+{
+	Ni.clear();
+	for (int j = 0; j < 8; ++j) {
+		int ni = img(pixcrd(pi) + img.image_neighbor_offset(j));
+		if (ni != -1) {
+			if (distance_threshold == 0.0f || (pnt(pi) - pnt(ni)).length() < distance_threshold)
+				Ni.push_back(ni);
+		}
+	}
+	return Ni.size();
+}
+
+void point_cloud::estimate_normals(const index_image& img, Crd distance_threshold, Idx ci, int* nr_isolated, int* nr_iterations, int* nr_left_over)
 {
 	if (!has_pixel_coordinates())
 		return;
 
 	if (!has_normals())
 		create_normals();
-	
+
 	// computing normals
 	std::vector<int> not_set_normals;
 	std::vector<int> isolated_normals;
-	static int di[8] = { -1, 0, 1, 1, 1, 0, -1, -1 };
-	static int dj[8] = { -1, -1, -1, 0, 1, 1, 1, 0 };
 	std::vector<int> Ni;
 	for (Idx e = end_index(ci), i = begin_index(ci); i < e; ++i) {
-		int j;
-		Ni.clear();
-		for (j = 0; j < 8; ++j) {
-			int ni = img(pixcrd(i) + PixCrd(di[j], dj[j]));
-			if (ni != -1)
-				Ni.push_back(ni);
-		}
+		collect_valid_image_neighbors(i, img, Ni, distance_threshold);
 		if (Ni.size() < 3) {
 			if (Ni.size() == 0)
 				isolated_normals.push_back(i);
@@ -1331,10 +1357,11 @@ void point_cloud::estimate_normals(const index_image& img, Idx ci, int* nr_isola
 			N[i].set(0, 0, 0);
 			continue;
 		}
+
 		// compute cross product normal relative to current point
 		int prev = Ni.back();
 		Nml nml(0, 0, 0);
-		for (j = 0; j < int(Ni.size()); ++j) {
+		for (int j = 0; j < int(Ni.size()); ++j) {
 			nml += cross(P[Ni[j]] - P[i], P[prev] - P[i]);
 			prev = Ni[j];
 		}
@@ -1352,7 +1379,7 @@ void point_cloud::estimate_normals(const index_image& img, Idx ci, int* nr_isola
 			not_set_normals.clear();
 			for (int i = 0; i < int(not_set_normals_old.size()); ++i) {
 				for (int j = 0; j < 8; ++j) {
-					int ni = img(pixcrd(not_set_normals_old[i])+PixCrd(di[j],dj[j]));
+					int ni = img(pixcrd(not_set_normals_old[i]) + img.image_neighbor_offset(j));
 					if (ni != -1) {
 						if (N[ni].length() > 0)
 							N[not_set_normals_old[i]] += N[ni];

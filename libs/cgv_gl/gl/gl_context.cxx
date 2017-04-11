@@ -35,7 +35,7 @@ namespace cgv {
 GLuint map_to_gl(PrimitiveType pt)
 {
 	static GLuint pt_to_gl[] = {
-		-1,
+		GLuint (-1),
 		GL_POINTS,
 		GL_LINES,
 		GL_LINES_ADJACENCY,

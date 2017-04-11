@@ -22,8 +22,8 @@
 //                       environment variable not defined
 // - CGV_COMPILER    ... from environment variable CGV_COMPILER or if not defined 
 //                       the defaults are "vs9" for "windows" and "gcc" for "linux"
-// - CGV_COMPILER_VERSION ... 8, 9 or 10 for the visual studio compilers 
-//                            "vs8", "vs9" or "vs10"
+// - CGV_COMPILER_VERSION ... 8, 9, 10, 12, 14 for the visual studio compilers 
+//                            "vs8", "vs9", "vs10", "vs12", "vs14"
 // - CGV_IDE         ... from environment variable CGV_IDE or from command line
 //                       argument to ppp. Defaults to "visual studio" for vs compilers.
 //                       For gcc also "eclipse" is allowed.
