@@ -1,6 +1,7 @@
 #include <cgv/base/base_generator.h>
 #include <cgv/gui/gui_creator.h>
 #include <cgv/gui/provider.h>
+#include <cgv/gui/event.h>
 #include <cgv/utils/scan.h>
 #include <cgv/type/info/type_id.h>
 #include <cgv/math/fvec.h>
@@ -31,7 +32,7 @@ struct ensure_normalized_functor : public cgv::gui::control<T>::value_change_sig
 	unsigned n;
 	ensure_normalized_functor(cgv::gui::provider* _p, cgv::base::base_ptr _b, T* _member_ptr, int _i, unsigned _n) : p(_p), b(_b), member_ptr(_member_ptr), i(_i), n(_n) {}
 	void put_pointers(const void* &p1, const void* &p2) const { p1 = &(*b); p2 = member_ptr; }
-	functor_base* clone() const                               { return new ensure_normalized_functor(*this); }
+	functor_base* clone() const                               { return new ensure_normalized_functor<T>(*this); }
 	void operator() (control<T>&) const
 	{ 
 		unsigned j;
@@ -58,6 +59,35 @@ struct ensure_normalized_functor : public cgv::gui::control<T>::value_change_sig
 
 		if (b)
 			b->on_set(member_ptr); 
+	}
+};
+
+template <typename T>
+struct ensure_ascending_functor : public cgv::gui::control<T>::value_change_signal_type::functor_type, public cgv::signal::tacker
+{
+	cgv::gui::provider* p;
+	cgv::base::base_ptr b;
+	T* member_ptr;
+	int i;
+	unsigned n;
+	T min_size;
+	ensure_ascending_functor(cgv::gui::provider* _p, cgv::base::base_ptr _b, T* _member_ptr, double _min_size, int _i, unsigned _n) : p(_p), b(_b), member_ptr(_member_ptr), min_size(T(_min_size)), i(_i), n(_n) {}
+	void put_pointers(const void* &p1, const void* &p2) const { p1 = &(*b); p2 = member_ptr; }
+	functor_base* clone() const { return new ensure_ascending_functor<T>(*this); }
+	void operator() (control<T>& ctrl) const
+	{
+		if ((ref_current_modifiers() & EM_SHIFT) != 0)
+			std::cout << "shift pressed" << std::endl;
+		if (i > 0) {
+			if (member_ptr[i - 1] + min_size > member_ptr[i])
+				member_ptr[i] = member_ptr[i - 1] + min_size;
+		}
+		if (i + 1 < int(n)) {
+			if (member_ptr[i] + min_size > member_ptr[i + 1])
+				member_ptr[i] = member_ptr[i + 1] - min_size;
+		}
+		if (b)
+			b->on_set(member_ptr);
 	}
 };
 
@@ -126,12 +156,15 @@ struct vec_gui_creator : public cgv::gui::gui_creator
 		unsigned crd_type_size = cgv::type::info::get_type_size(type_id);
 
 		// analyze gui type
-		bool ensure_normalized;
-		if (gui_type.empty() || gui_type == "vector")
-			ensure_normalized = false;
+		bool ensure_normalized = false, ascending = false;
+		if (gui_type.empty() || gui_type == "vector") {
+		}
 		else if (gui_type == "direction") {
-			if (type_id == cgv::type::info::TI_FLT32 || type_id == cgv::type::info::TI_FLT64)					
+			if (type_id == cgv::type::info::TI_FLT32 || type_id == cgv::type::info::TI_FLT64)
 				ensure_normalized = true; // normalization only makes sense for floating point types
+		}
+		else if (gui_type == "ascending") {
+			ascending = true;
 		}
 		else
 			return false;
@@ -143,6 +176,7 @@ struct vec_gui_creator : public cgv::gui::gui_creator
 		bool long_label;
 		std::string main_label; // none,first,heading
 		std::string components; 
+		double min_size;
 
 		std::string proposed_child_options;
 		if (ensure_normalized)
@@ -154,6 +188,8 @@ struct vec_gui_creator : public cgv::gui::gui_creator
 			components = "xyzw";
 		if (!cgv::base::has_property(options, "long_label", long_label, false))
 			long_label = false;
+		if (!cgv::base::has_property(options, "min_size", min_size, false))
+			min_size = 0.0;
 
 		if (!cgv::base::has_property(options, "gui_type", child_gui_type, false))
 			child_gui_type = "value_slider";
@@ -188,6 +224,20 @@ struct vec_gui_creator : public cgv::gui::gui_creator
 						f = new ensure_normalized_functor<float>(p, b, reinterpret_cast<float*>(crd_ptr), i, dim);
 					else
 						f = new ensure_normalized_functor<double>(p, b, reinterpret_cast<double*>(crd_ptr), i, dim);
+				}
+				else if (ascending) {
+					switch (type_id) {
+					case cgv::type::info::TI_INT8:   f = new ensure_ascending_functor<cgv::type::int8_type>  (p, b, reinterpret_cast<cgv::type::int8_type*>  (crd_ptr), min_size, i, dim); break;
+					case cgv::type::info::TI_INT16:  f = new ensure_ascending_functor<cgv::type::int16_type> (p, b, reinterpret_cast<cgv::type::int16_type*> (crd_ptr), min_size, i, dim); break;
+					case cgv::type::info::TI_INT32:  f = new ensure_ascending_functor<cgv::type::int32_type> (p, b, reinterpret_cast<cgv::type::int32_type*> (crd_ptr), min_size, i, dim); break;
+					case cgv::type::info::TI_INT64:  f = new ensure_ascending_functor<cgv::type::int64_type> (p, b, reinterpret_cast<cgv::type::int64_type*> (crd_ptr), min_size, i, dim); break;
+					case cgv::type::info::TI_UINT8 : f = new ensure_ascending_functor<cgv::type::uint8_type> (p, b, reinterpret_cast<cgv::type::uint8_type*> (crd_ptr), min_size, i, dim); break;
+					case cgv::type::info::TI_UINT16: f = new ensure_ascending_functor<cgv::type::uint16_type>(p, b, reinterpret_cast<cgv::type::uint16_type*>(crd_ptr), min_size, i, dim); break;
+					case cgv::type::info::TI_UINT32: f = new ensure_ascending_functor<cgv::type::uint32_type>(p, b, reinterpret_cast<cgv::type::uint32_type*>(crd_ptr), min_size, i, dim); break;
+					case cgv::type::info::TI_UINT64: f = new ensure_ascending_functor<cgv::type::uint64_type>(p, b, reinterpret_cast<cgv::type::uint64_type*>(crd_ptr), min_size, i, dim); break;
+					case cgv::type::info::TI_FLT32:  f = new ensure_ascending_functor<float>(p, b, reinterpret_cast<float*>(crd_ptr), min_size, i, dim); break;
+					case cgv::type::info::TI_FLT64:  f = new ensure_ascending_functor<double>(p, b, reinterpret_cast<double*>(crd_ptr), min_size, i, dim); break;
+					}
 				}
 				else if (b)
 					f = new call_on_set_functor(b, member_ptr);
