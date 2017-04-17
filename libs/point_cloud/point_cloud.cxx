@@ -252,6 +252,43 @@ void point_cloud::clip(const Box clip_box)
 		pixel_range_out_of_date = true;
 }
 
+template <typename T, typename I>
+void permute_vector(std::vector<T>& vals, std::vector<I>& perm)
+{
+	for (I i = 0; i < I(vals.size()); ++i) {
+		if (perm[i] < 0) {
+			// unmark permutation index
+			perm[i] = -perm[i] - 1;
+			continue;
+		}
+		T v = vals[i];
+		I j = perm[i];
+		while (j != i) {
+			std::swap(vals[j], v);
+			I old_j = j;
+			j = perm[j];
+			perm[old_j] = -perm[old_j]-1;
+		}
+		vals[i] = v;
+	}
+}
+
+/// permute points
+void point_cloud::permute(std::vector<Idx>& perm, bool permute_component_indices)
+{
+	permute_vector(P, perm);
+	if (has_normals())
+		permute_vector(N, perm);
+	if (has_colors())
+		permute_vector(C, perm);
+	if (has_texture_coordinates())
+		permute_vector(T, perm);
+	if (has_pixel_coordinates())
+		permute_vector(I, perm);
+	if (permute_component_indices && has_components())
+		permute_vector(component_indices, perm);
+}
+
 /// translate by direction
 void point_cloud::translate(const Dir& dir, Idx ci)
 {

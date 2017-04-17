@@ -126,8 +126,8 @@ protected:
 	/// range of pixel coordinates
 	mutable PixRng PR;
 	///
-	friend struct point_cloud_viewer;
-	friend struct gl_point_cloud_drawable_base;
+	friend class point_cloud_viewer;
+	friend class gl_point_cloud_drawable_base;
 private:
 	mutable std::vector<bool> comp_box_out_of_date;
 	mutable std::vector<bool> comp_pixrng_out_of_date;
@@ -196,6 +196,8 @@ public:
 	void append(const point_cloud& pc);
 	/// remove all points (including normals and colors) outside of the given box 
 	void clip(const Box clip_box);
+	/// permute points
+	void permute(std::vector<Idx>& perm, bool permute_component_indices);
 	/// translate by adding direction vector dir to point positions and update bounding box
 	void translate(const Dir& dir, Idx component_index = -1);
 	/// rotate points and normals with quaternion

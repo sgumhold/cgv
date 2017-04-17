@@ -1,3 +1,4 @@
+#include <cgv/render/shader_program.h>
 #include "gl_point_cloud_drawable_base.h"
 #include <cgv/utils/file.h>
 #include <cgv/utils/scan.h>
@@ -27,6 +28,11 @@ gl_point_cloud_drawable_base::gl_point_cloud_drawable_base()
 	box_color = color_type(0.5f, 0.5f, 0.5f, 1.0f);
 	box_style.illumination_mode = cgv::render::IM_TWO_SIDED;
 	box_style.culling_mode = cgv::render::CM_FRONTFACE;
+
+	use_these_point_colors = 0;
+	use_these_component_colors = 0;
+	use_these_point_palette = 0;
+	use_these_point_color_indices = 0;
 }
 
 bool gl_point_cloud_drawable_base::read(const std::string& _file_name)
@@ -79,8 +85,6 @@ bool gl_point_cloud_drawable_base::append(const std::string& _file_name, bool ad
 			pc.add_component();
 	}
 	pc.append(pc1);
-	component_show_flags.resize(pc.get_nr_components());
-	std::fill(component_show_flags.begin(), component_show_flags.end(), true);
 
 	show_point_begin = 0;
 	show_point_end = pc.get_nr_points();
@@ -171,17 +175,33 @@ void gl_point_cloud_drawable_base::draw_points(context& ctx)
 		return;
 
 	if (pc.has_components()) {
-		p_renderer.set_group_colors(ctx, &pc.component_color(0), pc.get_nr_components());
+		if (use_these_component_colors)
+			p_renderer.set_group_colors(ctx, &use_these_component_colors->front(), use_these_component_colors->size());
+		else
+			p_renderer.set_group_colors(ctx, &pc.component_color(0), pc.get_nr_components());
 		p_renderer.set_group_rotations(ctx, &pc.component_rotation(0), pc.get_nr_components());
 		p_renderer.set_group_translations(ctx, &pc.component_translation(0), pc.get_nr_components());
 		p_renderer.set_group_index_attribute(ctx, &pc.component_index(0), pc.get_nr_points());
 	}
 	p_renderer.set_position_array(ctx, &pc.pnt(0), pc.get_nr_points(), sizeof(Pnt)*show_point_step);
-	if (pc.has_colors())
-		p_renderer.set_color_array(ctx, &pc.clr(0), pc.get_nr_points(), sizeof(Clr)*show_point_step);
+	if (pc.has_colors() || use_these_point_colors || (use_these_point_color_indices && use_these_point_palette)) {
+		if (use_these_point_colors)
+			p_renderer.set_color_array(ctx, &use_these_point_colors->front(), pc.get_nr_points(), sizeof(Clr)*show_point_step);
+		else if (use_these_point_color_indices && use_these_point_palette)
+			p_renderer.set_indexed_color_attribute(ctx, *use_these_point_color_indices, *use_these_point_palette);
+		else
+			p_renderer.set_color_array(ctx, &pc.clr(0), pc.get_nr_points(), sizeof(Clr)*show_point_step);
+	}
 	if (pc.has_normals())
 		p_renderer.set_normal_array(ctx, &pc.nml(0), pc.get_nr_points(), sizeof(Nml)*show_point_step);
+	
+	bool tmp = point_style.use_group_color;
+	if (pc.has_components() && use_these_component_colors)
+		point_style.use_group_color = true;
+	else if (use_these_point_colors || (use_these_point_color_indices && use_these_point_palette))
+		point_style.use_group_color = false;
 	p_renderer.validate_and_enable(ctx);
+	point_style.use_group_color = tmp;
 
 	std::size_t n = (show_point_end - show_point_begin) / show_point_step;
 	GLint offset = show_point_begin / show_point_step;

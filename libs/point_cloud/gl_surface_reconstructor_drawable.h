@@ -39,7 +39,7 @@ enum EdgeColorMode {
 };
 
 
-struct CGV_API gl_surface_reconstructor_drawable :
+class CGV_API gl_surface_reconstructor_drawable :
 	public cgv::render::drawable, 
 	public point_cloud_types
 {
