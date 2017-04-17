@@ -74,20 +74,63 @@ struct ensure_ascending_functor : public cgv::gui::control<T>::value_change_sign
 	ensure_ascending_functor(cgv::gui::provider* _p, cgv::base::base_ptr _b, T* _member_ptr, double _min_size, int _i, unsigned _n) : p(_p), b(_b), member_ptr(_member_ptr), min_size(T(_min_size)), i(_i), n(_n) {}
 	void put_pointers(const void* &p1, const void* &p2) const { p1 = &(*b); p2 = member_ptr; }
 	functor_base* clone() const { return new ensure_ascending_functor<T>(*this); }
-	void operator() (control<T>& ctrl) const
+	void operator() (control<T>& c) const
 	{
-		if ((ref_current_modifiers() & EM_SHIFT) != 0)
-			std::cout << "shift pressed" << std::endl;
-		if (i > 0) {
-			if (member_ptr[i - 1] + min_size > member_ptr[i])
-				member_ptr[i] = member_ptr[i - 1] + min_size;
+		if ((ref_current_modifiers() & EM_SHIFT) != 0) {
+			// check if value decreased
+			if (member_ptr[i] < c.get_old_value()) {
+				T diff = c.get_old_value() - member_ptr[i];
+				T min_value = c.get<T>("min");
+				if (i > 0) {
+					if (member_ptr[0] < min_value + diff) {
+						T new_diff = member_ptr[0] - min_value;
+						member_ptr[i] += diff - new_diff;
+						diff = new_diff;
+					}
+				}
+				if (b)
+					b->on_set(member_ptr + i);
+				for (unsigned j = 0; j < n; ++j)
+					if (j != i) {
+						member_ptr[j] -= diff;
+						p->update_member(member_ptr + j);
+						if (b)
+							b->on_set(member_ptr + j);
+					}
+			}
+			else {
+				T diff = member_ptr[i] - c.get_old_value();
+				T max_value = c.get<T>("max");
+				if (i < n-1) {
+					if (member_ptr[n-1] > max_value - diff) {
+						T new_diff = max_value - member_ptr[n-1];
+						member_ptr[i] -= diff - new_diff;
+						diff = new_diff;
+					}
+				}
+				if (b)
+					b->on_set(member_ptr + i);
+				for (unsigned j = 0; j < n; ++j)
+					if (j != i) {
+						member_ptr[j] += diff;
+						p->update_member(member_ptr + j);
+						if (b)
+							b->on_set(member_ptr + j);
+					}
+			}
 		}
-		if (i + 1 < int(n)) {
-			if (member_ptr[i] + min_size > member_ptr[i + 1])
-				member_ptr[i] = member_ptr[i + 1] - min_size;
+		else {
+			if (i > 0) {
+				if (member_ptr[i - 1] + min_size > member_ptr[i])
+					member_ptr[i] = member_ptr[i - 1] + min_size;
+			}
+			if (i + 1 < int(n)) {
+				if (member_ptr[i] + min_size > member_ptr[i + 1])
+					member_ptr[i] = member_ptr[i + 1] - min_size;
+			}
+			if (b)
+				b->on_set(member_ptr+i);
 		}
-		if (b)
-			b->on_set(member_ptr);
 	}
 };
 

@@ -47,6 +47,7 @@ namespace cgv {
 		protected:
 			bool has_point_sizes;
 			bool has_group_point_sizes;
+			bool has_indexed_colors;
 			float reference_point_size;
 			float y_view_angle;
 			/// overload to allow instantiation of point_renderer
@@ -62,12 +63,15 @@ namespace cgv {
 			void set_y_view_angle(float y_view_angle);
 			///
 			template <typename T = float>
-			void set_point_size_attribute(cgv::render::context& ctx, const std::vector<T>& point_sizes) { has_point_sizes = true; ref_prog().set_attribute_array(ctx, "point_size", point_sizes); }
+			void set_point_size_attribute(cgv::render::context& ctx, const std::vector<T>& point_sizes) { has_point_sizes = true; set_attribute_array(ctx, ref_prog().get_attribute_location(ctx, "point_size"), point_sizes); }
+			///
+			template <typename T = unsigned, typename C = cgv::media::color<float,cgv::media::RGB,cgv::media::OPACITY> >
+			void set_indexed_color_attribute(cgv::render::context& ctx, const std::vector<T>& color_indices, const std::vector<C>& palette) { has_indexed_colors = true; set_attribute_array(ctx, ref_prog().get_attribute_location(ctx, "color_index"), color_indices); ref_prog().set_uniform_array(ctx, "palette", palette); }
 			///
 			template <typename T = float>
-			void set_group_point_sizes(cgv::render::context& ctx, const std::vector<T>& group_point_sizes) { has_group_point_sizes = true; ref_prog().set_uniform(ctx, "group_point_sizes", group_point_sizes); }
+			void set_group_point_sizes(cgv::render::context& ctx, const std::vector<T>& group_point_sizes) { has_group_point_sizes = true; ref_prog().set_uniform_array(ctx, "group_point_sizes", group_point_sizes); }
 			///
-			bool validate_attributes(context& ctx);
+			bool validate_attributes(context& ctx) const;
 			///
 			bool enable(cgv::render::context& ctx);
 			///

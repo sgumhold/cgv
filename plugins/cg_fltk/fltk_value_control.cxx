@@ -1,4 +1,5 @@
 #include "fltk_value_control.h"
+#include "fltk_event.h"
 #include "fltk_driver_registry.h"
 #include <cgv/type/variant.h>
 #include <cgv/type/info/type_id.h>
@@ -8,6 +9,7 @@
 #include <fltk/Slider.h>
 #include <fltk/ValueSlider.h>
 #include <fltk/Adjuster.h>
+#include <fltk/events.h>
 #include <fltk/ThumbWheel.h>
 #include <fltk/Dial.h>
 #include <fltk/ValueInput.h>
@@ -151,6 +153,7 @@ void configure(T&, fltk::ValueSlider* vs)
 
 void valuator_cb(fltk::Widget* w, void* valuator_ptr)
 {
+	ref_current_modifiers() = cgv_modifiers(fltk::event_state());
 	abst_fltk_value_callback* fvc = dynamic_cast<abst_fltk_value_callback*>(
 		static_cast<cgv::base::base*>(valuator_ptr));
 	if (fvc)

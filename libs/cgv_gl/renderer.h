@@ -97,15 +97,17 @@ namespace cgv { // @<
 			/// current render style, can be set by user
 			const render_style* rs;
 		protected:
+			/// return whether attributes persist after a call to disable
+			bool attributes_persist() const { return aam_ptr != 0; }
 			/// derived renderer classes have access to shader program
 			shader_program& ref_prog() { return prog; }
 			/// access to style
 			template <typename T>
 			const T& get_style() const { return *static_cast<const T*>(rs);  }
 			/// track whether color attribute is defined
-			bool has_colors;
+			mutable bool has_colors;
 			/// track whether position attribute is defined
-			bool has_positions;
+			mutable bool has_positions;
 			/// virtual method that creates a default render style
 			virtual render_style* create_render_style() const = 0;
 

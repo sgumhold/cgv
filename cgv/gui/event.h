@@ -98,6 +98,8 @@ extern CGV_API unsigned char stream_in_modifiers(std::istream& is);
 /// read toggle keys in string format from a stream and set the passed reference to EventToggleKeys ored together. 
 extern CGV_API void stream_in_toggle_keys(std::istream& is, unsigned char& toggle_keys);
 
+extern CGV_API unsigned char& ref_current_modifiers();
+
 	}
 }
 

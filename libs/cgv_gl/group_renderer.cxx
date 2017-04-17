@@ -68,6 +68,13 @@ namespace cgv {
 				res = false;
 			return res;
 		}
+		bool group_renderer::disable(cgv::render::context& ctx)
+		{
+			bool res = renderer::disable(ctx);
+			if (!attributes_persist())
+				has_group_indices;
+			return res;
+		}
 	}
 }
 

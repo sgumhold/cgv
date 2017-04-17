@@ -62,8 +62,6 @@ namespace cgv {
 			}
 			if (ref_prog().is_linked()) {
 				cgv::render::gl::set_lighting_parameters(ctx, ref_prog());
-				ref_prog().set_uniform(ctx, "use_group_color", srs.use_group_color);
-				ref_prog().set_uniform(ctx, "use_group_transformation", srs.use_group_transformation);
 				ref_prog().set_uniform(ctx, "map_color_to_material", has_colors ? int(srs.map_color_to_material) : 0);
 				ref_prog().set_uniform(ctx, "culling_mode", int(srs.culling_mode));
 				ref_prog().set_uniform(ctx, "illumination_mode", int(srs.illumination_mode));
@@ -78,6 +76,8 @@ namespace cgv {
 			const surface_render_style& srs = get_style<surface_render_style>();
 			if (srs.culling_mode != CM_OFF)
 				glDisable(GL_CULL_FACE);
+			if (!attributes_persist())
+				has_normals = false;
 			return group_renderer::disable(ctx);
 		}
 	}

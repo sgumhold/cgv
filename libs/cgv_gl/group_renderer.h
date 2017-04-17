@@ -38,6 +38,8 @@ namespace cgv { // @<
 			bool validate_attributes(context& ctx) const;
 			/// overload to activate group style
 			bool enable(context& ctx);
+			///
+			bool disable(cgv::render::context& ctx);
 			/// method to set the group index attribute
 			void set_group_index_attribute(cgv::render::context& ctx, const std::vector<unsigned>& group_indices);
 			/// method to set the group index attribute

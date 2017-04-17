@@ -40,6 +40,29 @@ struct ensure_order_functor : public cgv::gui::control<T>::value_change_signal_t
 						*other_ptr = max_value;
 					else
 						*other_ptr += diff;
+					if (ref_current_modifiers() & EM_SHIFT) {
+						for (int j = 0; j < n; ++j) {
+							if (j == i)
+								continue;
+							T min_value = c.get<T>("min");
+							T* my_ptr_j = my_ptr - i + j;
+							if (*my_ptr_j < min_value + diff)
+								*my_ptr_j = min_value;
+							else
+								*my_ptr_j -= diff;
+							T* other_ptr_j = other_ptr - i + j;
+							if (*other_ptr_j > max_value - diff)
+								*other_ptr_j = max_value;
+							else
+								*other_ptr_j += diff;
+							p->update_member(my_ptr_j);
+							p->update_member(other_ptr_j);
+							if (b) {
+								b->on_set(my_ptr_j);
+								b->on_set(other_ptr_j);
+							}
+						}
+					}
 				}
 				else {
 					T diff = *my_ptr - c.get_old_value();
@@ -50,6 +73,29 @@ struct ensure_order_functor : public cgv::gui::control<T>::value_change_signal_t
 					}
 					else
 						*other_ptr -= diff;
+					if (ref_current_modifiers() & EM_SHIFT) {
+						for (int j = 0; j < n; ++j) {
+							if (j == i)
+								continue;
+							T* my_ptr_j = my_ptr - i + j;
+							T* other_ptr_j = other_ptr - i + j;
+							if (*my_ptr_j + diff > *other_ptr_j - diff - min_size) {
+								T over_shoot = *my_ptr_j + diff - (*other_ptr_j - diff - min_size);
+								*my_ptr_j += diff - over_shoot / 2;
+								*other_ptr_j -= diff - (over_shoot - over_shoot / 2);
+							}
+							else {
+								*my_ptr_j  += diff;
+								*other_ptr_j -= diff;
+							}
+							p->update_member(my_ptr_j);
+							p->update_member(other_ptr_j);
+							if (b) {
+								b->on_set(my_ptr_j);
+								b->on_set(other_ptr_j);
+							}
+						}
+					}
 				}
 			}
 			else {
@@ -61,6 +107,29 @@ struct ensure_order_functor : public cgv::gui::control<T>::value_change_signal_t
 						*other_ptr = min_value;
 					else
 						*other_ptr -= diff;
+					if (ref_current_modifiers() & EM_SHIFT) {
+						for (int j = 0; j < n; ++j) {
+							if (j == i)
+								continue;
+							T max_value = c.get<T>("max");
+							T* my_ptr_j = my_ptr - i + j;
+							if (*my_ptr_j > max_value - diff)
+								*my_ptr_j = max_value;
+							else
+								*my_ptr_j += diff;
+							T* other_ptr_j = other_ptr - i + j;
+							if (*other_ptr_j < min_value + diff)
+								*other_ptr_j = min_value;
+							else
+								*other_ptr_j -= diff;
+							p->update_member(my_ptr_j);
+							p->update_member(other_ptr_j);
+							if (b) {
+								b->on_set(my_ptr_j);
+								b->on_set(other_ptr_j);
+							}
+						}
+					}
 				}
 				else {
 					T diff = c.get_old_value() - *my_ptr;
@@ -71,6 +140,29 @@ struct ensure_order_functor : public cgv::gui::control<T>::value_change_signal_t
 					}
 					else
 						*other_ptr += diff;
+					if (ref_current_modifiers() & EM_SHIFT) {
+						for (int j = 0; j < n; ++j) {
+							if (j == i)
+								continue;
+							T* my_ptr_j = my_ptr - i + j;
+							T* other_ptr_j = other_ptr - i + j;
+							if (*my_ptr_j - min_size - diff < *other_ptr_j + diff) {
+								T over_shoot = *other_ptr_j + 2 * diff + min_size - *my_ptr_j;
+								*my_ptr_j -= diff - over_shoot / 2;
+								*other_ptr_j += diff - (over_shoot - over_shoot / 2);
+							}
+							else {
+								*my_ptr_j -= diff;
+								*other_ptr_j += diff;
+							}
+							p->update_member(my_ptr_j);
+							p->update_member(other_ptr_j);
+							if (b) {
+								b->on_set(my_ptr_j);
+								b->on_set(other_ptr_j);
+							}
+						}
+					}
 				}
 
 			}
@@ -234,15 +326,18 @@ struct axis_aligned_box_gui_creator : public cgv::gui::gui_creator
 				std::swap(my_ptr, other_ptr);
 			const std::string& child_align = k == (2*dim-1) ? child_align_end : (k%nr_cols+1 < nr_cols ? child_align_col : child_align_row);
 
-			std::string lab_prefix;
 			std::string lab_suffix;
-			if (long_label || (main_label == "first" && k == 0))
-				lab_prefix = label+"|";
 			if (dim > (int)components.size())
 				lab_suffix = cgv::utils::to_string(i);
 			else
 				lab_suffix = components[i];
-			std::string ctrl_label = lab_prefix + (is_min ? "min_" : "max_") + lab_suffix;
+
+			std::string lab_prefix(is_min ? "min." : "max.");
+			if (long_label || (main_label == "first" && (k%nr_cols == 0)))
+				lab_prefix = label+ (label.empty()?"":".") + lab_prefix;
+			if (!long_label && (main_label == "first") && (k%nr_cols != 0))
+				lab_prefix = "";
+			std::string ctrl_label = lab_prefix + lab_suffix;
 
 			cgv::gui::control_ptr cp = p->add_control_void(ctrl_label, my_ptr, 0, coordinate_type, child_gui_type, child_options, child_align, 0);
 			if (cp) {

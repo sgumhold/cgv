@@ -28,6 +28,7 @@ namespace cgv {
 		{
 			has_point_sizes = false;
 			has_group_point_sizes = false;
+			has_indexed_colors = false;
 			///
 			reference_point_size = 0.01f;
 			y_view_angle = 45;
@@ -55,12 +56,26 @@ namespace cgv {
 			return res;
 		}
 		
-		bool point_renderer::validate_attributes(context& ctx)
+		bool point_renderer::validate_attributes(context& ctx) const
 		{
 			const point_render_style& prs = get_style<point_render_style>();
-			bool res = surface_renderer::validate_attributes(ctx);
+			bool res;
+			if (!prs.use_group_color) {
+				if (has_indexed_colors) {
+					if (has_colors)
+						ctx.error("point_renderer::validate_attributes() both point color and color index attributes set, using color index");
+					bool tmp = has_colors;
+					has_colors = true;
+					res = surface_renderer::validate_attributes(ctx);
+					has_colors = tmp;
+				}
+				else
+					res = surface_renderer::validate_attributes(ctx);
+			}
+			else
+				res = surface_renderer::validate_attributes(ctx);
 			if (!has_group_point_sizes && prs.use_group_point_size) {
-				ctx.error("group_renderer::enable() group_point_sizes not set");
+				ctx.error("point_renderer::validate_attributes() group_point_sizes not set");
 				res = false;
 			}
 			return res;
@@ -68,7 +83,17 @@ namespace cgv {
 		bool point_renderer::enable(cgv::render::context& ctx)
 		{
 			const point_render_style& prs = get_style<point_render_style>();
-			bool res = surface_renderer::enable(ctx);
+
+			bool res;
+			if (!prs.use_group_color && has_indexed_colors) {
+				bool tmp = has_colors;
+				has_colors = true;
+				res = surface_renderer::enable(ctx);
+				has_colors = tmp;
+			}
+			else
+				res = surface_renderer::enable(ctx);
+
 			if (!prs.use_point_shader)
 				ref_prog().disable(ctx);
 
@@ -80,6 +105,7 @@ namespace cgv {
 			if (prs.use_point_shader && ref_prog().is_linked()) {
 				if (!has_point_sizes)
 					ref_prog().set_attribute(ctx, "point_size", prs.point_size);
+				ref_prog().set_uniform(ctx, "use_color_index", has_indexed_colors);
 				ref_prog().set_uniform(ctx, "measure_point_size_in_pixel", prs.measure_point_size_in_pixel);
 				ref_prog().set_uniform(ctx, "reference_point_size", reference_point_size);
 				ref_prog().set_uniform(ctx, "use_group_point_size", prs.use_group_point_size);
@@ -131,6 +157,10 @@ namespace cgv {
 			}
 			if (prs.culling_mode != CM_OFF) {
 				glDisable(GL_CULL_FACE);
+			}
+			if (!attributes_persist()) {
+				has_indexed_colors = false;
+				has_point_sizes = false;
 			}
 			return surface_renderer::disable(ctx);
 		}

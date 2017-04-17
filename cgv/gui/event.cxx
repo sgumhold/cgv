@@ -226,6 +226,13 @@ double event::get_time() const
 	return time;
 }
 
+unsigned char& ref_current_modifiers()
+{
+	static unsigned char mods = 0;
+	return mods;
+}
+
+
 	}
 }
 

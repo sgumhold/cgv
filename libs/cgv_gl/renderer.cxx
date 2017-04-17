@@ -135,6 +135,8 @@ namespace cgv {
 				for (int loc : enabled_attribute_arrays)
 					res = attribute_array_binding::disable_global_array(ctx, loc) && res;
 				enabled_attribute_arrays.clear();
+				has_colors = false;
+				has_positions = false;
 			}
 			return ref_prog().disable(ctx) && res;
 		}
