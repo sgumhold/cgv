@@ -4,7 +4,10 @@
 #include <cgv/math/eig.h>
 #include <cgv/math/point_operations.h>
 
-void estimate_normal_ls(unsigned nr_points, const float* _points, float* _normal, float* _evs)
+namespace cgv {
+	namespace math {
+
+void estimate_normal_ls(unsigned nr_points, const float* _points, float* _normal, float* _evals, float* _evecs)
 {
 	cgv::math::mat<float> points;
 	points.set_extern_data(3, nr_points, const_cast<float*>(_points));
@@ -21,14 +24,25 @@ void estimate_normal_ls(unsigned nr_points, const float* _points, float* _normal
 	cgv::math::eig_sym(dcovmat,v,d);
 
 	normal = cgv::math::vec<float>(normalize(v.col(2)));
-	if (_evs) {
-		_evs[0] = (float)d(0);		
-		_evs[1] = (float)d(1);		
-		_evs[2] = (float)d(2);
+	if (_evals) {
+		_evals[0] = (float)d(0);		
+		_evals[1] = (float)d(1);		
+		_evals[2] = (float)d(2);
+	}
+	if (_evecs) {
+		_evecs[0] = (float)v(0, 0);
+		_evecs[1] = (float)v(1, 0);
+		_evecs[2] = (float)v(2, 0);
+		_evecs[3] = (float)v(0, 1);
+		_evecs[4] = (float)v(1, 1);
+		_evecs[5] = (float)v(2, 1);
+		_evecs[6] = (float)v(0, 2);
+		_evecs[7] = (float)v(1, 2);
+		_evecs[8] = (float)v(2, 2);
 	}
 }
 
-void estimate_normal_wls(unsigned nr_points, const float* _points, const float* _weights, float* _normal, float* _evs)
+void estimate_normal_wls(unsigned nr_points, const float* _points, const float* _weights, float* _normal, float* _evals, float* _evecs)
 {
 	cgv::math::mat<float> points;
 	points.set_extern_data(3, nr_points, const_cast<float*>(_points));
@@ -49,9 +63,23 @@ void estimate_normal_wls(unsigned nr_points, const float* _points, const float* 
 
 	normal = cgv::math::vec<float>(normalize(v.col(2)));
 
-	if (_evs) {
-		_evs[0] = (float)d(0);		
-		_evs[1] = (float)d(1);		
-		_evs[2] = (float)d(2);
+	if (_evals) {
+		_evals[0] = (float)d(0);		
+		_evals[1] = (float)d(1);		
+		_evals[2] = (float)d(2);
+	}
+	if (_evecs) {
+		_evecs[0] = (float)v(0, 0);
+		_evecs[1] = (float)v(1, 0);
+		_evecs[2] = (float)v(2, 0);
+		_evecs[3] = (float)v(0, 1);
+		_evecs[4] = (float)v(1, 1);
+		_evecs[5] = (float)v(2, 1);
+		_evecs[6] = (float)v(0, 2);
+		_evecs[7] = (float)v(1, 2);
+		_evecs[8] = (float)v(2, 2);
+	}
+}
+
 	}
 }

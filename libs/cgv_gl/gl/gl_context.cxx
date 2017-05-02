@@ -2228,7 +2228,7 @@ bool gl_context::set_uniform_void(shader_program_base& spb, int loc, type_descri
 	if (enabled_program != &spb)
 		glUseProgram(enabled_program ? get_gl_id(enabled_program->handle) : 0);
 
-	if (!check_gl_error("gl_context::set_uniform_array_void()", &spb))
+	if (check_gl_error("gl_context::set_uniform_array_void()", &spb))
 		res = false;
 	return res;
 }

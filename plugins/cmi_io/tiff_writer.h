@@ -10,6 +10,12 @@ using namespace cgv::media::image;
 
 #include "lib_begin.h"
 
+enum TiffCompression {
+	TC_NONE,
+	TC_LZW,
+	TC_JPEG
+};
+
 /// implements the image reader interface for bmp files
 class tiff_writer : public abst_image_writer
 {
@@ -18,12 +24,17 @@ protected:
 	bool allows_row_based;
 	unsigned row;
 	unsigned nr_images;
+	TiffCompression tiff_compression;
+	int  jpeg_quality;
+	bool jpeg_raw_color;
 	std::string last_error;
 public:
 	/// default constructor
 	tiff_writer();
 	/// close file in destructor
 	~tiff_writer();
+	/// reflect options
+	bool self_reflect(cgv::reflect::reflection_handler& srh);
 	/// return the last error message
 	const std::string& get_last_error() const;
 	/// overload to return the type name of this object

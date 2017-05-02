@@ -471,6 +471,43 @@ bool point_cloud::read(const string& _file_name)
 	return success;
 }
 
+/// read component transformations from ascii file with 12 numbers per line (9 for rotation matrix and 3 for translation vector)
+bool point_cloud::read_component_transformations(const std::string& file_name)
+{
+	if (!has_components()) {
+		std::cerr << "ERROR in point_cloud::read_component_transformations: no components available" << std::endl;
+		return false;
+	}
+	string content;
+	if (!cgv::utils::file::read(file_name, content, true)) {
+		std::cerr << "ERROR in point_cloud::read_component_transformations: could not read file " << file_name << std::endl;
+		return false;
+	}
+	vector<line> lines;
+	split_to_lines(content, lines);
+	Cnt ci = 0;
+	for (unsigned li = 0; li < lines.size(); ++li) {
+		if (lines[li].empty())
+			continue;
+		Mat R;
+		Dir t;
+		char tmp = lines[li].end[0];
+		content[lines[li].end - content.c_str()] = 0;
+		if (sscanf(lines[li].begin, "%f %f %f %f %f %f %f %f %f %f %f %f",
+			&R(0, 0), &R(0, 1), &R(0, 2), &R(1, 0), &R(1, 1), &R(1, 2), &R(2, 0), &R(2, 1), &R(2, 2),
+			&t(0), &t(1), &t(2)) == 12) {
+			//R.transpose();
+			component_rotation(ci) = Qat(R);
+			component_translation(ci) = t;
+			if (++ci >= get_nr_components())
+				break;
+		}
+		content[lines[li].end - content.c_str()] = tmp;
+	}
+	std::cout << "read " << ci << " transformation (have " << get_nr_components() << " components)" << std::endl;
+	return true;
+}
+
 bool point_cloud::write(const string& _file_name)
 {
 	string ext = to_lower(get_extension(_file_name));
@@ -485,6 +522,15 @@ bool point_cloud::write(const string& _file_name)
 	cerr << "unknown extension <." << ext << ">." << endl;
 	return false;
 }
+
+/// write component transformations to ascii file with 12 numbers per line (9 for rotation matrix and 3 for translation vector)
+bool point_cloud::write_component_transformations(const std::string& file_name) const
+{
+	std::cerr << "write_component_transformations not implemented" << std::endl;
+	return false;
+}
+
+
 
 /// read ascii file with lines of the form i j x y z I, where ij are pixel coordinates, xyz coordinates and I the intensity
 bool point_cloud::read_pct(const std::string& file_name)
@@ -510,7 +556,7 @@ bool point_cloud::read_pct(const std::string& file_name)
 			int i, j, Intensity;
 			char tmp = lines[li].end[0];
 			content[lines[li].end - content.c_str()] = 0;
-			sscanf(lines[li].begin, "%d %d %f %f %f %d", &i, &j, &p[0], &p[1], &p[2], &Intensity);
+			sscanf(lines[li].begin, "%d %d %f %f %f %d", &i, &j, &p[2], &p[0], &p[1], &Intensity);
 			content[lines[li].end - content.c_str()] = tmp;
 			P.push_back(p);
 			C.push_back(Clr(scale*Intensity, scale*Intensity, scale*Intensity));

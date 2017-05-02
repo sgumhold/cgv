@@ -9,6 +9,6 @@ addIncDirs=[INPUT_DIR];
 if(SYSTEM=="windows") {
 	addDependencies=addDependencies.[ ["ws2_32", "all"] ];
 	if(cgv_compiler_version==14) {
-		addDefines=addDefines.["HAVE_STRUCT_TIMESPEC"];
+		addDefines=addDefines.[ ["HAVE_STRUCT_TIMESPEC", "all"] ];
 	}
 }

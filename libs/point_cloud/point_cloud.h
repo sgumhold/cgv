@@ -224,8 +224,12 @@ public:
 		- read_obj:   *.obj
 		- read_points:*.points */
 	bool read(const std::string& file_name);
+	/// read component transformations from ascii file with 12 numbers per line (9 for rotation matrix and 3 for translation vector)
+	bool read_component_transformations(const std::string& file_name);
 	/// determine format from extension (see read method for extension mapping) and write with corresponding format
 	bool write(const std::string& file_name);
+	/// write component transformations to ascii file with 12 numbers per line (9 for rotation matrix and 3 for translation vector)
+	bool write_component_transformations(const std::string& file_name) const;
 	//@}
 
 	/**@name access to geometry*/
