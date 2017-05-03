@@ -52,8 +52,8 @@ namespace cgv {
 		struct element_descriptor_traits < cgv::math::fmat<T, N, M> >
 		{
 			static type_descriptor get_type_descriptor(const cgv::math::fmat<T, N, M>&) { return type_descriptor(cgv::type::info::type_id<T>::get_id(), N, M); }
-			static const void* get_address(const cgv::math::fmat<T, N, M>& element) { return ptr; }
-			static       void* get_address(cgv::math::fmat<T, N, M>& element) { return ptr; }
+			static const void* get_address(const cgv::math::fmat<T, N, M>& element) { return &element(0,0); }
+			static       void* get_address(cgv::math::fmat<T, N, M>& element) { return &element(0,0); }
 		};
 		template <typename T>
 		struct element_descriptor_traits < cgv::math::mat<T> >
