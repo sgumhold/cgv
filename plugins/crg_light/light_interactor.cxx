@@ -85,7 +85,7 @@ bool light_interactor::init(context& ctx)
 		intensities[i] = 1;
 		for (unsigned j=0; j<7; ++j)
 			toggles[7*i+j] = j!=0;
-		show[i] = enabled[i];
+		enabled[i];
 	}
     ctx.set_default_render_pass_flags(
 		(RenderPassFlags)(ctx.get_default_render_pass_flags() & ~(RPF_SET_LIGHTS|RPF_SET_LIGHTS_ON))

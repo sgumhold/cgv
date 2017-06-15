@@ -62,7 +62,7 @@ namespace cgv {
 			}
 			if (ref_prog().is_linked()) {
 				cgv::render::gl::set_lighting_parameters(ctx, ref_prog());
-				ref_prog().set_uniform(ctx, "map_color_to_material", has_colors ? int(srs.map_color_to_material) : 0);
+				ref_prog().set_uniform(ctx, "map_color_to_material", (has_colors || srs.use_group_color) ? int(srs.map_color_to_material) : 0);
 				ref_prog().set_uniform(ctx, "culling_mode", int(srs.culling_mode));
 				ref_prog().set_uniform(ctx, "illumination_mode", int(srs.illumination_mode));
 			}

@@ -101,9 +101,9 @@ public:
 	vec<float>, mat<float> and the vectors are of dimension 2,
 	3 or 4 and the matrices of dimensions 2, 3 or 4. */
 	template <typename T>
-	bool set_uniform(context& ctx, const std::string& name, const T& value) {
+	bool set_uniform(context& ctx, const std::string& name, const T& value, bool generate_error = false) {
 		int loc = ctx.get_uniform_location(*this, name);
-		if (loc == -1) {
+		if (loc == -1 && generate_error) {
 			ctx.error(std::string("shader_program::set_uniform() uniform <") + name + "> not found", this);
 			return false;
 		}
@@ -121,9 +121,9 @@ public:
 	}
 	/// set uniform array from an array with \c nr_elements elements of type T pointed to by \c array
 	template <typename T>
-	bool set_uniform_array(context& ctx, const std::string& name, const T* array, size_t nr_elements) {
+	bool set_uniform_array(context& ctx, const std::string& name, const T* array, size_t nr_elements, bool generate_error = false) {
 		int loc = ctx.get_uniform_location(*this, name);
-		if (loc == -1) {
+		if (loc == -1 && generate_error) {
 			ctx.error(std::string("shader_program::set_uniform_array() uniform <") + name + "> not found", this);
 			return false;
 		}

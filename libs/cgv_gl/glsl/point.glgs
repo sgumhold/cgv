@@ -44,7 +44,7 @@ void main()
 	// set color to color attribute
 	color = color_gs[0];
 	// transform normal to eye space
-	normal = gl_NormalMatrix*(normal_gs[0]);
+	normal = normalize(gl_NormalMatrix*(normal_gs[0]));
 	// transform position to eye space
 	vec3 position_eye = (gl_ModelViewMatrix*gl_PositionIn[0]).xyz;
 	// sign of dot product between normal and view vector tells us side that we see

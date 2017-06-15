@@ -29,7 +29,7 @@ public:
 		 the complete data set defined in the format. */
 	data_view_base(const data_format* _format = 0);
 	/// delete format if it is owned
-	~data_view_base();
+	virtual ~data_view_base();
 	/// whether to manage the data format pointer
 	void manage_format(bool enable = true);
 	/// return the component format

@@ -476,7 +476,6 @@ void fltk_gl_view::draw()
 	in_draw_method = true;
 	bool last_redraw_request = redraw_request;
 	redraw_request = false;
-
 	if (!valid()) {
 		if (get_context(this) != last_context) {
 			last_width = get_width();
