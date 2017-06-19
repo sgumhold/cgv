@@ -10,7 +10,7 @@ scene_viewer::scene_viewer(int x, int y, int  w, int h): GlWindow(x, y, w, h)
 	set_initial_position();
 
 	// make some randomized colors for the faces
-	srand(time(NULL));
+	srand((unsigned)time(NULL));
 	for (int i=0; i<6; i++) {
 		colors[i] = new double[3];
 		for (int j=0; j<3; j++)
@@ -19,9 +19,6 @@ scene_viewer::scene_viewer(int x, int y, int  w, int h): GlWindow(x, y, w, h)
 
 	// no transformation update yet, so the last time one happend is zero
 	last_time = 0;
-
-	// add a drawing callback that draws as much as it can when the system is idle
-	fltk::add_idle((TimeoutHandler)draw_callback, this);
 }
 
 
@@ -39,10 +36,6 @@ void scene_viewer::draw()
 	// check if the current window is valid and setup openGL if neccessary
 	if (!valid())
 		configure_gl();
-
-	// still no valid drawing context? nothing we can do here
-	if (!valid())
-		return;
 
 	// reset the modelview matrix, set the translation and then our
 	// transformation (which is a rotation matrix)
@@ -184,6 +177,8 @@ void scene_viewer::on_sensor()
 		last_time = cur_time;
 	else
 		last_time = 0;
+
+	redraw();
 }
 
 
@@ -193,6 +188,8 @@ void scene_viewer::on_keydown()
 	// set to initial coords if the FIT button was pressed
 	if ((get_keys() & 1<<30))
 		set_initial_position();
+
+	redraw();
 }
 
 
@@ -245,6 +242,8 @@ void scene_viewer::set_initial_position()
 	cur_position[0] = 0;
 	cur_position[1] = 0;
 	cur_position[2] = -5;
+
+	redraw();
 }
 
 
@@ -333,13 +332,4 @@ void scene_viewer::matrix_rotation(double *dest, double *axis, double angle)
 	for (int i=0; i<3; i++)
 		for (int j=0; j<3; j++)
 			dest[i+j*4] = axisproduct[i+j*3] + coslayer[i+j*3] + sinlayer[i+j*3];	
-}
-
-
-
-
-void scene_viewer::draw_callback(scene_viewer *self) 
-{
-	// redraw the scene
-	self->redraw();
 }
