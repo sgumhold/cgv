@@ -1,9 +1,9 @@
-#include <cgv/utils/display.h>
-#include <cgv/media/text/scan.h>
-#include <cgv/media/text/tokenizer.h>
+#include <cgv/os/display.h>
+#include <cgv/utils/scan.h>
+#include <cgv/utils/tokenizer.h>
 
+using namespace cgv::os;
 using namespace cgv::utils;
-using namespace cgv::media::text;
 
 void show_usage()
 {
