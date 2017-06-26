@@ -1,0 +1,10 @@
+digraph "traits" {
+  bgcolor=transparent;
+  compound=true
+  node [ fontsize="10", fontname="Helvetica"];
+  edge [ labelfontsize="10", labelfontname="Helvetica"];
+  subgraph clusterdir_6e3689650c6effb3b07875eecab1ea11 {
+    graph [ bgcolor="#ddddee", pencolor="black", label="type" fontname="Helvetica", fontsize="10", URL="dir_6e3689650c6effb3b07875eecab1ea11.html"]
+  dir_29bd7aeda03faff261d61715803a0d39 [shape=box, label="traits", style="filled", fillcolor="#eeeeff", pencolor="black", URL="dir_29bd7aeda03faff261d61715803a0d39.html"];
+  }
+}

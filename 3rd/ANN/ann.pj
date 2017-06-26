@@ -1,8 +1,0 @@
-@exclude<cgv/config/make.ppp>
-@define(projectName="ann")
-@define(projectType="library")
-@define(projectGUID="fc06cef0-fc2f-11dd-87af-0800200c9a66")
-@define(addIncDirs=[[CGV_DIR."/3rd","all"]])
-@define(addDefines=["ANN_NO_RANDOM"])
-@define(addSharedDefines=["DLL_EXPORTS","ANN_PERF"])
-@define(addStaticDefines=["ANN_STATIC"])

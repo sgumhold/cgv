@@ -1,0 +1,8 @@
+digraph "Graphical Class Hierarchy"
+{
+  bgcolor="transparent";
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node1 [label="cgv::gui::base_provider\l_generator::gui_definition",height=0.2,width=0.4,color="black",URL="$a00082.html",tooltip="each gui definition consists of the textual definition as well as an options string ..."];
+}

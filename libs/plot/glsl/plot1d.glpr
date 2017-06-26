@@ -1,3 +1,0 @@
-vertex_file:plot1d.glvs
-fragment_file:plot1d.glfs
-vertex_file:plot1d_lib.glsl

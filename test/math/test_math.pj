@@ -1,7 +1,0 @@
-@exclude<cgv/config/make.ppp>
-@define(projectType="test")
-@define(projectName="test_math")
-@define(projectGUID="EEA9308A-AD6D-40a5-881D-C41765C6BB54")
-@define(addProjectDeps=["cgv"])
-@define(addSharedDefines=["CGV_TEST_EXPORTS"])
-@define(excludeSourceFiles=[INPUT_DIR."/main.cxx"])

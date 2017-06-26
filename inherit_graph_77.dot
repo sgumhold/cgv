@@ -1,0 +1,8 @@
+digraph "Graphical Class Hierarchy"
+{
+  bgcolor="transparent";
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node1 [label="cgv::media::extinction\l_alpha_interface\< ta_derived \>",height=0.2,width=0.4,color="black",URL="$a00130.html",tooltip="the extinction_alpha_interface adds access function to the opacity, where write access is only grante..."];
+}

@@ -1,0 +1,8 @@
+digraph "Graphical Class Hierarchy"
+{
+  bgcolor="transparent";
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node1 [label="cgv::math::fibo_heap\l\< key_type, value_type,\l max_degrees \>",height=0.2,width=0.4,color="black",URL="$a00107.html"];
+}

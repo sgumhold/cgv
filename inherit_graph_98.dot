@@ -1,0 +1,8 @@
+digraph "Graphical Class Hierarchy"
+{
+  bgcolor="transparent";
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node1 [label="cgv::media::rgb_color\l_interface\< color\< T,\l RGB, am \> \>",height=0.2,width=0.4,color="black",URL="$a00170.html",tooltip="read and write access implementation of rgb color interface "];
+}

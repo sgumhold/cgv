@@ -1,6 +1,0 @@
-@=
-include (INPUT_DIR."/shader_test.pj")
-projectType="application";
-projectName="shader_test_app";
-projectGUID="D120F525-7A7E-4b3f-8D71-08FF29349578";
-addCommandLineArguments=[env::CGV_PROJECT_DIR."/sphere_shader/geometry/sphere_shader_geom_120.glpr", "sphere_shader_geom_120.log"];

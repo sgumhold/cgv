@@ -1,8 +1,0 @@
-@exclude<cgv/config/make.ppp>
-@define(projectName="glew")
-@define(projectType="library")
-@define(projectGUID="DAE9F54B-3777-4fb7-9231-73451E00E197")
-@define(addIncDirs=[ [CGV_DIR."/3rd/glew","all"] ])
-@define(addDependencies=[ ["opengl","all"], ["glu", "all"] ])
-@define(addStaticDefines=[ ["GLEW_STATIC","all"] ])
-@define(addSharedDefines=["GLEW_BUILD"])

@@ -1,5 +1,0 @@
-vertex_file:plot1d_empty.glvs
-geometry_file:plot1d_bar_outline.glgs
-fragment_file:plot1d.glfs
-geometry_file:plot1d_lib.glsl
-geometry_shader_info:points;line_strip;5

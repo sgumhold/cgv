@@ -1,0 +1,27 @@
+var a00069 =
+[
+    [ "data_view_impl", "a00069.html#aea0344a232b1aeb7b3d9dfc26e83059c", null ],
+    [ "data_view_impl", "a00069.html#aa70a4c99b0ca58fe7ee3f1ff955135e2", null ],
+    [ "empty", "a00069.html#a8abd492b32392019a8ae02d73e0b5432", null ],
+    [ "get", "a00069.html#a64950a868494386485c7ec3bb67c1bc9", null ],
+    [ "get", "a00069.html#a423b38d850f79e8225e5aec7d87e0e1b", null ],
+    [ "get", "a00069.html#a08433c1d1e3cb7c427662521d7f7cb58", null ],
+    [ "get", "a00069.html#a2395d092ed329cfb6bc1b20a071c57cf", null ],
+    [ "get", "a00069.html#a7dbea28392e23db583b21a9a424185cf", null ],
+    [ "get_ptr", "a00069.html#a320af9a76c88d06b27f93e3eeb06c96e", null ],
+    [ "get_ptr", "a00069.html#a6b9c476e8ea22073d242a8658a256fae", null ],
+    [ "get_ptr", "a00069.html#a52ac51116a053f9a7d3ccc86b8e43f99", null ],
+    [ "get_ptr", "a00069.html#ae2edd0f741b1f18c0c4d37bb8dd41ba0", null ],
+    [ "get_ptr", "a00069.html#af30d3dae39a90440e73077ea802c67b7", null ],
+    [ "operator()", "a00069.html#a613a08d8fc9be0968ec726e960fcf0fc", null ],
+    [ "operator()", "a00069.html#a23bf0a68bb66e397affda97659137f60", null ],
+    [ "operator()", "a00069.html#a58bb25cc5dc18a985b1c27fb1178ec9d", null ],
+    [ "operator()", "a00069.html#aaa98b312d16d00092436228da6ee216f", null ],
+    [ "permute", "a00069.html#ad4aac1f89064b2a6e13bf452c8802e9e", null ],
+    [ "step_i", "a00069.html#abdf12b0847ece95bb6213fe70fe189d7", null ],
+    [ "step_j", "a00069.html#ab1320ed97a8d3d8403e55788340b4a8e", null ],
+    [ "step_k", "a00069.html#adfda8847208173bcc76cdd6c8f86b9b5", null ],
+    [ "step_l", "a00069.html#a3690117a3ac7aa5028641bd41a8a7a69", null ],
+    [ "transpose", "a00069.html#a2cc0a6814adb77f93c9b69985fceb8c2", null ],
+    [ "data_ptr", "a00069.html#a15abb7739604f07d2dd9608dd7377928", null ]
+];

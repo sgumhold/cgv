@@ -1,0 +1,8 @@
+digraph "Graphical Class Hierarchy"
+{
+  bgcolor="transparent";
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node1 [label="cgv::media::fourcc",height=0.2,width=0.4,color="black",URL="$a00136.html",tooltip="represents fourcc ids as used in the riff format to identify chunks "];
+}

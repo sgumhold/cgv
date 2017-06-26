@@ -1,0 +1,8 @@
+digraph "Graphical Class Hierarchy"
+{
+  bgcolor="transparent";
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node1 [label="cgv::reflect::reflection\l_traits_impl\< T, B, base\l_is_abst \>",height=0.2,width=0.4,color="black",URL="$a00215.html",tooltip="implementation of the reflection traits providing type specific interface for variable base class ..."];
+}

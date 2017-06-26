@@ -1,0 +1,8 @@
+digraph "Graphical Class Hierarchy"
+{
+  bgcolor="transparent";
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node1 [label="cgv::media::hls_color\l_interface\< ta_derived \>",height=0.2,width=0.4,color="black",URL="$a00137.html",tooltip="the hls_color_interface adds access function to the H, L, and S-channels of the color, where write access is only granted for an HLS-color "];
+}

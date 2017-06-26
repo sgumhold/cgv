@@ -1,8 +1,0 @@
-@exclude<cgv/config/make.ppp>
-@define(projectType="plugin")
-@define(projectName="cmv_avi")
-@define(projectGUID="64a12dd0-fc2f-11dd-87af-0800200c9a66")
-@define(addProjectDeps=["cgv_media","cgv_base","cgv_data", "cgv_type", "cgv_reflect", "cgv_utils"])
-@define(addSharedDefines=["CGV_MEDIA_VIDEO_WIN_EXPORTS"])
-@define(addDependencies=[["Vfw32","static"]])
-

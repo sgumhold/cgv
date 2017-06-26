@@ -1,5 +1,0 @@
-files:box
-vertex_file:group.glsl
-geometry_file:group.glsl
-geometry_file:side.glsl
-fragment_file:lighting.glsl

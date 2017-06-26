@@ -1,1 +1,0 @@
-#include "simple_cube_9.h"

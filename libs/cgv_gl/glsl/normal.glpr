@@ -1,3 +1,0 @@
-files:normal
-vertex_file:group.glsl
-geometry_shader_info:points;line_strip;2
