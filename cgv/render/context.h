@@ -46,6 +46,8 @@ struct type_descriptor
 	/// construct descriptor for vectors
 	type_descriptor(cgv::type::info::TypeId _coordinate_type, unsigned _nr_entries, bool _normalize = false) : coordinate_type(_coordinate_type), element_type(ET_VECTOR), nr_rows(_nr_entries), nr_columns(1), is_row_major(false), is_array(false), normalize(_normalize) {}
 	/// construct descriptor for matrices
+	type_descriptor(cgv::type::info::TypeId _coordinate_type, unsigned _nr_rows, unsigned _nr_cols, bool _is_row_major, bool _normalize = false) : coordinate_type(_coordinate_type), element_type(ET_MATRIX), nr_rows(_nr_rows), nr_columns(_nr_cols), is_row_major(_is_row_major), is_array(false), normalize(_normalize) {}
+	/// construct descriptor for an array
 	type_descriptor(const type_descriptor& td, bool _is_array) : coordinate_type(td.coordinate_type), element_type(td.element_type), nr_rows(td.nr_rows), nr_columns(td.nr_columns), is_row_major(td.is_row_major), normalize(td.normalize), is_array(_is_array) {}
 	/// cast to int
 	operator int() const { return *reinterpret_cast<const int*>(this); }

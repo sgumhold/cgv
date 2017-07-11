@@ -7,6 +7,19 @@ namespace cgv {
 	/// namespace with classes and algorithms for mathematics
 	namespace math {
 
+//!matrix of fixed size dimensions
+/*!Template arguments are
+   - \c T ... coordinate type
+   - \c N ... number of rows
+   - \c M ... number of columns
+   Matrix elements can be accessed with the \c (i,j)-\c operator with 0-based
+   indices. For example \c A(i,j) accesses the matrix element in the (i+1)th 
+   row and the (j+1)th column.
+
+   The matrix inherits the functionality of a \c N*M dimensional vector
+   and is stored in row major format. This means that \c A(i,j)=A(j*M+i).
+   Similarly, the constructor for type const T* assumes an array in row
+   major format. */
 template <typename T, cgv::type::uint32_type N, cgv::type::uint32_type M>
 class fmat : public fvec<T,N*M>
 {
@@ -19,9 +32,9 @@ public:
 	fmat() {}
 	///construct a matrix with all elements set to c
 	fmat(const T& c) : base_type(c) {}
-	///creates a matrix from an array 
+	///creates a matrix from an array in row major format
 	fmat(const T* a) : base_type(a) {} 
-	///creates a matrix from an array of different type
+	///creates a matrix from an array of different type in row major format
 	template <typename S>
 	fmat(const S* a) : base_type(a) {} 
 	///copy constructor for matrix with different element type

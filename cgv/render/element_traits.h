@@ -51,14 +51,14 @@ namespace cgv {
 		template <typename T, cgv::type::uint32_type N, cgv::type::uint32_type M>
 		struct element_descriptor_traits < cgv::math::fmat<T, N, M> >
 		{
-			static type_descriptor get_type_descriptor(const cgv::math::fmat<T, N, M>&) { return type_descriptor(cgv::type::info::type_id<T>::get_id(), N, M); }
+			static type_descriptor get_type_descriptor(const cgv::math::fmat<T, N, M>&) { return type_descriptor(cgv::type::info::type_id<T>::get_id(), N, M, true); }
 			static const void* get_address(const cgv::math::fmat<T, N, M>& element) { return &element(0,0); }
 			static       void* get_address(cgv::math::fmat<T, N, M>& element) { return &element(0,0); }
 		};
 		template <typename T>
 		struct element_descriptor_traits < cgv::math::mat<T> >
 		{
-			static type_descriptor get_type_descriptor(const cgv::math::mat<T>& mat) { return type_descriptor(cgv::type::info::type_id<T>::get_id(), mat.nrows(), mat.ncols()); }
+			static type_descriptor get_type_descriptor(const cgv::math::mat<T>& mat) { return type_descriptor(cgv::type::info::type_id<T>::get_id(), mat.nrows(), mat.ncols(), true); }
 			static const void* get_address(const cgv::math::mat<T>& element) { return &element(0, 0); }
 			static       void* get_address(cgv::math::mat<T>& element) { return &element(0, 0); }
 		};

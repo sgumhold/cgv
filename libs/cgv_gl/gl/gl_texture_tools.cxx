@@ -754,7 +754,7 @@ bool render_to_texture3D(context& ctx, shader_program& prog, TextureSampling tex
 	glLoadIdentity();
 
 	// go through slices
-	for (int i = 0; i < tex_res[2]; i++) {
+	for (int i = 0; i < (int) tex_res[2]; i++) {
 		// attach textures to fbo
 		fbo.attach(ctx, target_tex, i, 0, 0);
 		if (target_tex2)
