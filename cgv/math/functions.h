@@ -19,7 +19,7 @@ namespace cgv{
 		else
 			return std::abs(a);
 	}
-
+/*
 		namespace detail {
 			template <typename T>
 			T erf_fitting_function(const T& u)
@@ -48,7 +48,7 @@ namespace cgv{
 		{
 			return 1-erf(x);
 		}
-
+		*/
 		/// evaluate the cummulative normal distribution function
 		template <typename T>
 		T Phi(const T& x)

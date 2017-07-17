@@ -3,6 +3,7 @@
 #include <cgv/type/traits/min.h>
 #include <cgv/type/traits/max.h>
 #include <iostream>
+#include <algorithm>
 
 namespace cgv {
 	namespace math {
