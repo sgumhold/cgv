@@ -5,6 +5,7 @@
 #include <cgv/media/image/image_writer.h>
 #include <cgv/utils/tokenizer.h>
 #include <cgv/utils/file.h>
+#include <cgv/utils/statistics.h>
 
 using namespace cgv::utils;
 using namespace cgv::utils::file;
@@ -158,6 +159,32 @@ float texture::get_priority() const
 {
 	return priority;
 }
+/// set the texture compare mode and function
+void texture::set_compare_mode(bool _use_compare_function)
+{
+	use_compare_function = _use_compare_function;
+	state_out_of_date = true;
+}
+/// get the texture compare mode and function
+bool texture::get_compare_mode() const
+{
+	return use_compare_function;
+}
+
+/// set the texture compare function
+void texture::set_compare_function(CompareFunction _compare_function)
+{
+	compare_function = _compare_function;
+	state_out_of_date = true;
+}
+
+/// get the texture compare function
+CompareFunction texture::get_compare_function() const
+{
+	return compare_function;
+}
+
+
 //@}
 
 /**@name methods that can be called only with a context */
@@ -376,7 +403,7 @@ bool texture::create_from_images(context& ctx, const std::string& file_names, in
 }
 
 /// write the content of the texture to a file. This method needs support for frame buffer objects.
-bool texture::write_to_file(context& ctx, const std::string& file_name, unsigned int z_or_cube_size) const
+bool texture::write_to_file(context& ctx, const std::string& file_name, unsigned int z_or_cube_size, float depth_map_gamma) const
 {
 	std::string& last_error = static_cast<const cgv::render::texture_base*>(this)->last_error;
 	if (!is_created()) {
@@ -405,7 +432,7 @@ bool texture::write_to_file(context& ctx, const std::string& file_name, unsigned
 	render_buffer rb("[D]");
 	if (is_depth) {
 		rb = render_buffer("[R,G,B]");
-		df = data_format("uint8[D]");
+		df = data_format("uint32[D]");
 	}
 	rb.create(ctx,get_width(), get_height());
 	if (!fb.attach(ctx, rb)) {
@@ -421,8 +448,31 @@ bool texture::write_to_file(context& ctx, const std::string& file_name, unsigned
 		df.set_width(get_width());
 		df.set_height(get_height());
 		data_view dv(&df);
-		ctx.read_frame_buffer(dv);
+		ctx.read_frame_buffer(dv, 0, 0, cgv::render::FB_0);
 	fb.disable(ctx);
+
+	if (is_depth) {
+		cgv::utils::statistics stats;
+		unsigned i, n = get_width()*get_height();
+		for (i = 0; i < n; ++i)
+			stats.update(dv.get_ptr<cgv::type::uint32_type>()[i]);
+		cgv::type::uint32_type min_val = cgv::type::uint32_type(stats.get_min());
+		cgv::type::uint32_type max_val = cgv::type::uint32_type(stats.get_max());
+		data_format df2(get_width(), get_height(), cgv::type::info::TI_UINT8, cgv::data::CF_RGB);
+		data_view dv2(&df2);
+		for (i = 0; i < n; ++i) {
+			double mapped_value = pow(double(dv.get_ptr<cgv::type::uint32_type>()[i] - min_val) / (max_val - min_val), depth_map_gamma);
+			cgv::type::uint8_type v = cgv::type::uint8_type(255 * mapped_value);
+			dv2.get_ptr<cgv::math::fvec<cgv::type::uint8_type, 3> >()[i].set(v, v, v);
+		}
+		image_writer w(file_name);
+		if (!w.write_image(dv2)) {
+			last_error = "could not write image file ";
+			last_error += file_name;
+			return false;
+		}
+		return true;
+	}
 	image_writer w(file_name);
 	if (!w.write_image(dv)) {
 		last_error = "could not write image file ";

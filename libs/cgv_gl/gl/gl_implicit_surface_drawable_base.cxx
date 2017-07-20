@@ -30,7 +30,7 @@ gl_implicit_surface_drawable_base::gl_implicit_surface_drawable_base() : box(vec
 	contouring_type = DUAL_CONTOURING;
 	show_sampling_grid = false;
 	show_sampling_locations = false;
-	normal_computation_type = CORNER_NORMALS;
+	normal_computation_type = FACE_NORMALS;
 	consistency_threshold = 0.01;
 	max_nr_iters = 8;
 	normal_threshold = 0.73;

@@ -10,6 +10,7 @@ uniform float reference_point_size;
 uniform bool orient_splats;
 uniform float outline_width_from_pixel;
 uniform float percentual_outline_width;
+uniform float percentual_halo;
 uniform float pixel_extent_per_depth;
 
 in vec3 normal_gs[];
@@ -21,6 +22,7 @@ out vec4 color;
 out vec3 position;
 
 out float percentual_outline_start;
+out float percentual_halo_start;
 out float percentual_pixel_extent;
 out float percentual_splat_size;
 flat out int   side; // 0 is back facing and 1 is front facing
@@ -67,9 +69,13 @@ void main()
 	// compute percentage of one pixel with respect to point radius
 	percentual_pixel_extent = pixel_extent_per_depth * depth / point_radius;
 	float percentual_outline_width_final = max(percentual_outline_width, outline_width_from_pixel * percentual_pixel_extent);
+	float percentual_halo_width_final = max(percentual_halo, outline_width_from_pixel * percentual_pixel_extent);
 	// compute splat size to be one pixel larger than point plus outline
 	percentual_splat_size    = 1.0 + 0.5 * (percentual_outline_width_final + percentual_pixel_extent);
 	percentual_outline_start = 1.0 - 0.5 * (percentual_outline_width_final + percentual_pixel_extent);
+	percentual_halo_start = 2.0;
+	if (percentual_halo > 0.0)
+		percentual_halo_start = 1.0 - 0.5 * (percentual_halo_width_final + percentual_pixel_extent);
 	float splat_radius = point_radius * percentual_splat_size;
 
 	// compute splat base vectors and scale by splat radius

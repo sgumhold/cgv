@@ -1266,6 +1266,8 @@ texture_base::texture_base(TextureType _tt)
 	border_color[2] = 1;
 	border_color[3] = 1;
 	tt = _tt;
+	compare_function = CF_LEQUAL;
+	use_compare_function = false;
 	have_mipmaps = false;
 }
 

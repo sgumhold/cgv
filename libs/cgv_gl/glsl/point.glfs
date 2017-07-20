@@ -2,12 +2,15 @@
 
 uniform bool smooth_points = true;
 uniform int illumination_mode = 1;
+uniform vec4 halo_color;
+
 in vec3 normal;
 in vec2 uv;
 in vec4 color;
 in vec3 position;
 in vec2 position_pixel;
 in float percentual_outline_start;
+in float percentual_halo_start;
 in float percentual_pixel_extent;
 in float percentual_splat_size;
 flat in int  side;
@@ -37,6 +40,8 @@ void main()
 
 	// illumination
 	vec4 color_in = color;
+	if (l > percentual_halo_start)
+		color_in = halo_color;
 	switch (illumination_mode) {
 	case 1: color_in.rgb = doLighting(position, normal, color_in).rgb; break;
 	case 2: color_in.rgb = doTwoSidedLighting(position, normal, color_in, side).rgb; break;

@@ -26,6 +26,10 @@ namespace cgv {
 			float outline_width_from_pixel;
 			/// set to 0 in constructor
 			float percentual_outline_width;
+			///
+			float percentual_halo;
+			///
+			cgv::media::illum::phong_material::color_type halo_color;
 			/// set to true in constructor
 			bool smooth_points;
 			/// set to true in constructor

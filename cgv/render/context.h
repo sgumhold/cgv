@@ -193,6 +193,19 @@ enum TextureSampling
 	TS_VERTEX = 1  /// \c tex_coord ranges from [0,0,0] to [1,1,1]
 };
 
+/// different sampling strategies for rendering to textures that steer the computation of the \c tex_coord input to the fragment shader
+enum CompareFunction
+{
+	CF_LEQUAL,
+	CF_GEQUAL,
+	CF_LESS,
+	CF_GREATER,
+	CF_EQUAL,
+	CF_NOTEQUAL,
+	CF_ALWAYS,
+	CF_NEVER
+};
+
 /// different text alignments
 enum TextAlignment {
 	TA_NONE = 0,
@@ -255,6 +268,8 @@ public:
 	float anisotropy;
 	float priority;
 	float border_color[4];
+	CompareFunction compare_function;
+	bool use_compare_function;
 	TextureType  tt;
 	bool have_mipmaps;
 	/// initialize members

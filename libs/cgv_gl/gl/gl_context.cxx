@@ -259,7 +259,7 @@ void gl_context::init_render_pass()
 	}
 	if (get_render_pass_flags()&RPF_SET_LIGHTS_ON) {
 		// enable lighting calculations
-		glEnable(GL_LIGHTING);
+		//glEnable(GL_LIGHTING);
 		// turn the 4 lights on
 		glEnable(GL_LIGHT0);
 		glEnable(GL_LIGHT1);
@@ -432,8 +432,11 @@ struct format_callback_handler : public traverse_callback_handler
 void gl_context::draw_textual_info()
 {
 	if (show_help || show_stats) {
-		glPushAttrib(GL_CURRENT_BIT|GL_ENABLE_BIT);
-		glDisable(GL_LIGHTING);
+		glPushAttrib(GL_CURRENT_BIT | GL_ENABLE_BIT);
+		GLboolean is_lighting;
+		glGetBooleanv(GL_LIGHTING, &is_lighting);
+		if (is_lighting)
+			glDisable(GL_LIGHTING);
 		glDisable(GL_DEPTH_TEST);
 		   if (bg_r+bg_g+bg_b < 1.5f)
 				glColor4f(1,1,1,1);
@@ -464,8 +467,8 @@ void gl_context::draw_textual_info()
 			}
 			pop_pixel_coords();
 		// turn lighting back on for the next frame
-		glEnable(GL_DEPTH_TEST);
-		glEnable(GL_LIGHTING);
+		//glEnable(GL_DEPTH_TEST);
+		//glEnable(GL_LIGHTING);
 		glPopAttrib();
 	}
 }
@@ -501,7 +504,8 @@ void gl_context::enable_material(const cgv::media::illum::phong_material& mat, M
 		return;
 	if (ms != MS_BACK) {
 		glPushAttrib(GL_LIGHTING_BIT | GL_ENABLE_BIT);
-		glEnable(GL_LIGHTING);
+		if (enabled_program == 0)
+			glEnable(GL_LIGHTING);
 		glDisable(GL_COLOR_MATERIAL);
 	}
 	unsigned side = map_to_gl(ms);
@@ -539,7 +543,8 @@ void gl_context::enable_material(const textured_material& mat, MaterialSide ms, 
 			flags |= GL_TEXTURE_BIT;
 		flags |= GL_LIGHTING_BIT | GL_ENABLE_BIT;
 		glPushAttrib(flags);
-		glEnable(GL_LIGHTING);
+		if (enabled_program == 0)
+			glEnable(GL_LIGHTING);
 		glDisable(GL_COLOR_MATERIAL);
 	}
 
@@ -864,7 +869,7 @@ bool gl_context::read_frame_buffer(data::data_view& dv,
 	}
 	GLenum gl_buffer = GL_BACK;
 	if (buffer_type < FB_BACK)
-		gl_buffer = GL_AUX0+buffer_type;
+		gl_buffer = GL_COLOR_ATTACHMENT0+buffer_type;
 	else {
 		switch (buffer_type) {
 		case FB_FRONT :       gl_buffer = GL_FRONT; break;
@@ -1086,12 +1091,27 @@ unsigned int map_to_gl(TextureWrap wrap)
 unsigned int map_to_gl(TextureFilter filter_type)
 {
 	static const GLenum gl_texture_filter[] = {
-		GL_NEAREST, GL_LINEAR, 
-		GL_NEAREST_MIPMAP_NEAREST, GL_LINEAR_MIPMAP_NEAREST, 
+		GL_NEAREST, GL_LINEAR,
+		GL_NEAREST_MIPMAP_NEAREST, GL_LINEAR_MIPMAP_NEAREST,
 		GL_NEAREST_MIPMAP_LINEAR, GL_LINEAR_MIPMAP_LINEAR,
 		GL_TEXTURE_MAX_ANISOTROPY_EXT
 	};
 	return gl_texture_filter[filter_type];
+}
+
+unsigned int map_to_gl(CompareFunction cf)
+{
+	static const GLenum gl_cfs[] = {
+		GL_LEQUAL,
+		GL_GEQUAL,
+		GL_LESS,
+		GL_GREATER,
+		GL_EQUAL,
+		GL_NOTEQUAL,
+		GL_ALWAYS,
+		GL_NEVER
+	};
+	return gl_cfs[cf];
 }
 
 cgv::data::component_format gl_context::texture_find_best_format(
@@ -1511,6 +1531,8 @@ bool gl_context::texture_set_state(const texture_base& tb)
 
 	glTexParameteri(get_tex_dim(tb.tt), GL_TEXTURE_MIN_FILTER, map_to_gl(tb.min_filter));
 	glTexParameteri(get_tex_dim(tb.tt), GL_TEXTURE_MAG_FILTER, map_to_gl(tb.mag_filter));
+	glTexParameteri(get_tex_dim(tb.tt), GL_TEXTURE_COMPARE_FUNC, map_to_gl(tb.compare_function));
+	glTexParameteri(get_tex_dim(tb.tt), GL_TEXTURE_COMPARE_MODE, (tb.use_compare_function ? GL_COMPARE_REF_TO_TEXTURE : GL_NONE));
 	glTexParameterf(get_tex_dim(tb.tt), GL_TEXTURE_PRIORITY, tb.priority);
 	if (tb.min_filter == TF_ANISOTROP)
 		glTexParameterf(get_tex_dim(tb.tt), GL_TEXTURE_MAX_ANISOTROPY_EXT, tb.anisotropy);

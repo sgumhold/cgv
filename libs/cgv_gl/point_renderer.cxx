@@ -10,7 +10,7 @@ namespace cgv {
 			return new point_render_style();
 		}
 
-		point_render_style::point_render_style()
+		point_render_style::point_render_style() : halo_color(1,1,1,1)
 		{
 			point_size = 1.0f;
 			use_group_point_size = false;
@@ -22,6 +22,7 @@ namespace cgv {
 			orient_splats = true;
 			outline_width_from_pixel = 1;
 			percentual_outline_width = 0.0f;
+			percentual_halo = 0.0f;			
 		}
 
 		point_renderer::point_renderer()
@@ -115,6 +116,8 @@ namespace cgv {
 				ref_prog().set_uniform(ctx, "pixel_extent_per_depth", pixel_extent_per_depth);
 				ref_prog().set_uniform(ctx, "outline_width_from_pixel", prs.outline_width_from_pixel);
 				ref_prog().set_uniform(ctx, "percentual_outline_width", 0.01f*prs.percentual_outline_width);
+				ref_prog().set_uniform(ctx, "percentual_halo", 0.01f*prs.percentual_halo);
+				ref_prog().set_uniform(ctx, "halo_color", prs.halo_color);
 			}
 			else {
 				if (prs.point_size > 1 && prs.smooth_points) {
@@ -182,6 +185,8 @@ namespace cgv {
 					rh.reflect_member("use_point_shader", use_point_shader) &&
 					rh.reflect_member("orient_splats", orient_splats) &&
 					rh.reflect_member("outline_width_from_pixel", outline_width_from_pixel) &&
+					rh.reflect_member("percentual_halo", percentual_halo) &&
+					rh.reflect_member("halo_color", halo_color) &&
 					rh.reflect_member("percentual_outline_width", percentual_outline_width);
 			}
 
@@ -218,6 +223,8 @@ namespace cgv {
 				p->add_member_control(b, "orient_splats", prs_ptr->orient_splats, "check");
 				p->add_member_control(b, "outline_width_from_pixel", prs_ptr->outline_width_from_pixel, "value_slider", "min=0;max=10;ticks=true");
 				p->add_member_control(b, "percentual_outline_width", prs_ptr->percentual_outline_width, "value_slider", "min=0;max=100;ticks=true");
+				p->add_member_control(b, "percentual_halo", prs_ptr->percentual_halo, "value_slider", "min=0;max=100;ticks=true");
+				p->add_member_control(b, "halo_color", prs_ptr->halo_color);
 				p->add_gui("surface_render_style", *static_cast<cgv::render::surface_render_style*>(prs_ptr));
 				return true;
 			}
