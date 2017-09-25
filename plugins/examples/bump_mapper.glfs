@@ -1,3 +1,5 @@
+#version 150 compatibility
+
 // bump map texture
 uniform sampler2D bump_map;
 // whether to use diffuse map
@@ -8,11 +10,11 @@ uniform bool use_bump_map;
 uniform bool use_diffuse_map;
 
 // interpolated surface normal in eye space
-varying vec3 N;
+in vec3 N;
 // interpolated surface point in eye space
-varying vec3 s;
+in vec3 s;
 // interpolated texture coordinates
-varying vec2 tc;
+in vec2 tc;
 
 vec3 bump_map_normal(vec3 s, vec2 tc, vec3 N);
 

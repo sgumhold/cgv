@@ -149,6 +149,7 @@ void shape::draw_shape(context& c)
 	case DISK: c.tesselate_unit_disk(resolution); break;
 	case SPHERE: c.tesselate_unit_sphere(resolution); break;
 	case ARROW: 
+		glPushMatrix();
 		glTranslated(0,0,2);
 		glScaled(0.5,0.5,1);
 		c.tesselate_unit_disk(resolution);
@@ -160,10 +161,13 @@ void shape::draw_shape(context& c)
 		glRotated(180,1,0,0);
 		glTranslated(0,0,1);
 		c.tesselate_unit_cone(resolution);
+		glPopMatrix();
 		break;
 	case STRIP :
 		if (no_flat)
 			glShadeModel(GL_SMOOTH);
+		else
+			glShadeModel(GL_FLAT);
 		glDisable(GL_LIGHTING);
 		glEnable(GL_POINT_SMOOTH);
 		glPointSize(15);
@@ -204,20 +208,22 @@ void shape::draw(context& c)
 	glPushAttrib(GL_LIGHTING_BIT|GL_POLYGON_BIT);
 	if (show_edges) {
 		glColor3f(1,1,0);
-		glDisable(GL_LIGHTING);
+		//glDisable(GL_LIGHTING);
 		glDisable(GL_CULL_FACE);
-		glLineWidth(3);
+		//glLineWidth(3);
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 		draw_shape(c);
 	}
 	if (show_faces) {
-		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);	
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+		static cgv::media::illum::phong_material def_mat;
+		def_mat.set_diffuse(cgv::media::illum::phong_material::color_type(0, 0.1f, 1));
+		c.enable_material(def_mat);
 		glEnable(GL_CULL_FACE);
-		glEnable(GL_LIGHTING);
 		if (shp < CYL || shp == STRIP)
 			glShadeModel(GL_FLAT);
-		glColor3f(0,0.1f,1);
 		draw_shape(c);
+		c.disable_material(def_mat);
 	}
 
 	glPopAttrib();
@@ -304,7 +310,7 @@ void shape::create_gui()
 
 	/// use a selection gui element to directly manipulate the shape enum
 	connect_copy(add_control("shape", shp, 
-		"CUBE,PRI,TET,OCT,DOD,ICO,CYL,CONE,DISK,ARROW,SPHERE,STRIP")->value_change,
+		"dropdown", "enums='CUBE,PRI,TET,OCT,DOD,ICO,CYL,CONE,DISK,ARROW,SPHERE,STRIP'")->value_change,
 		rebind(static_cast<drawable*>(this), &drawable::post_redraw));
 	/// store rotation angle
 	cgv::data::ref_ptr<control<double> > e =

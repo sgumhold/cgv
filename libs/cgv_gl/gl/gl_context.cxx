@@ -502,33 +502,42 @@ void gl_context::enable_material(const cgv::media::illum::phong_material& mat, M
 {
 	if (ms == MS_NONE)
 		return;
-	if (ms != MS_BACK) {
-		glPushAttrib(GL_LIGHTING_BIT | GL_ENABLE_BIT);
-		if (enabled_program == 0)
-			glEnable(GL_LIGHTING);
-		glDisable(GL_COLOR_MATERIAL);
-	}
+
 	unsigned side = map_to_gl(ms);
 	enable_material_color(side, mat.get_ambient(),alpha,GL_AMBIENT);
 	enable_material_color(side, mat.get_diffuse(),alpha,GL_DIFFUSE);
 	enable_material_color(side, mat.get_specular(),alpha,GL_SPECULAR);
 	enable_material_color(side, mat.get_emission(),alpha,GL_EMISSION);
 	glMaterialf(side, GL_SHININESS, mat.get_shininess());
-	if (phong_shading && (ms != MS_BACK)) {
-		shader_program& prog = ref_textured_material_prog(*this);
-		prog.enable(*this);
-		prog.set_uniform(*this, "use_bump_map", false);
-		prog.set_uniform(*this, "use_diffuse_map", false);
-		set_lighting_parameters(*this, prog);
+
+	if (ms != MS_BACK && enabled_program == 0) {
+		if (phong_shading) {
+			shader_program& prog = ref_textured_material_prog(*this);
+			prog.enable(*this);
+			prog.set_uniform(*this, "use_bump_map", false);
+			prog.set_uniform(*this, "use_diffuse_map", false);
+			set_lighting_parameters(*this, prog);
+		}
+		else {
+			glPushAttrib(GL_LIGHTING_BIT | GL_ENABLE_BIT);
+			if (enabled_program == 0)
+				glEnable(GL_LIGHTING);
+			glDisable(GL_COLOR_MATERIAL);
+		}
 	}
 }
 
 /// disable phong material
 void gl_context::disable_material(const cgv::media::illum::phong_material& mat)
 {
-	if (phong_shading)
-		ref_textured_material_prog(*this).disable(*this);
-	glPopAttrib();
+	if (phong_shading) {
+		if (enabled_program == &ref_textured_material_prog(*this))
+			ref_textured_material_prog(*this).disable(*this);
+	}
+	else {
+		if (enabled_program == 0)
+			glPopAttrib();
+	}
 }
 
 /// enable a material with textures

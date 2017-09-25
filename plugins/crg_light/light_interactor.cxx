@@ -125,30 +125,33 @@ void light_interactor::init_frame(context& ctx)
 	}
 }
 
+
 void light_interactor::draw(context& ctx)
 {
-	glPushAttrib(GL_LIGHTING_BIT);
-	glEnable(GL_LIGHTING);
-	glEnable(GL_COLOR_MATERIAL);
-	size_t i, n = lights.size();
-	GLint matrix_mode;
-	glGetIntegerv(GL_MATRIX_MODE, &matrix_mode);
-	glMatrixMode(GL_MODELVIEW);
-	glPushMatrix();
-	glLoadIdentity();
-	for (i=0; i<n; ++i) {
-		if (show[i] && lights[i].is_local_to_eye())
-			ctx.draw_light_source(lights[i], enabled[i] != 0 ? intensities[i] : 0.0f, light_scale);
-	}
-	glPopMatrix();
-	glMatrixMode(matrix_mode);
-	for (i=0; i<n; ++i) {
-		if (show[i] && !lights[i].is_local_to_eye())
-			ctx.draw_light_source(lights[i], enabled[i] != 0 ? intensities[i] : 0.0f, light_scale);
-	}
-	glPopAttrib();
-}
+	static phong_material default_mat;
 
+	ctx.enable_material(default_mat);
+		glPushAttrib(GL_LIGHTING_BIT);
+			glEnable(GL_COLOR_MATERIAL);
+			size_t i, n = lights.size();
+			GLint matrix_mode;
+			glGetIntegerv(GL_MATRIX_MODE, &matrix_mode);
+			glMatrixMode(GL_MODELVIEW);
+			glPushMatrix();
+				glLoadIdentity();
+				for (i = 0; i < n; ++i) {
+					if (show[i] && lights[i].is_local_to_eye())
+						ctx.draw_light_source(lights[i], enabled[i] != 0 ? intensities[i] : 0.0f, light_scale);
+				}
+			glPopMatrix();
+			glMatrixMode(matrix_mode);
+			for (i = 0; i < n; ++i) {
+				if (show[i] && !lights[i].is_local_to_eye())
+					ctx.draw_light_source(lights[i], enabled[i] != 0 ? intensities[i] : 0.0f, light_scale);
+			}
+		glPopAttrib();
+	ctx.disable_material(default_mat);
+}
 
 void light_interactor::finish_frame(context& ctx)
 {
@@ -158,6 +161,14 @@ void light_interactor::finish_frame(context& ctx)
 			ctx.disable_light(handles[i]);
 			handles[i] = 0;
 		}
+}
+
+/// correct default render flags
+void light_interactor::clear(context& ctx)
+{
+	ctx.set_default_render_pass_flags(
+		(RenderPassFlags)(ctx.get_default_render_pass_flags() |  (RPF_SET_LIGHTS | RPF_SET_LIGHTS_ON))
+	);
 }
 
 /// save light_interactor to file

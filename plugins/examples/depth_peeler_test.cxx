@@ -7,6 +7,7 @@
 #include <cgv/utils/convert.h>
 #include <cgv_gl/gl/gl.h>
 #include <cgv_gl/gl/gl_transparent_renderer.h>
+#include <cgv_gl/gl/gl_mesh_drawable_base.h>
 #include <cgv_gl/gl/gl_tools.h>
 
 using namespace cgv::base;
@@ -20,7 +21,7 @@ using namespace cgv::gui;
 
 class depth_peeler_test : 
 	public base,
-	public drawable,
+	public cgv::render::gl::gl_mesh_drawable_base,
 	public provider
 {
 protected:
@@ -47,6 +48,7 @@ public:
 		epsilon = 0.00002;
 		write_images = false;
 		file_name_prefix = "e:/temp/dbg";
+		read_mesh("S:/data/surface/x_Gumhold/pial_DK_ply/assembled/Brain.obj");
 	}
 	std::string get_type_name() const 
 	{
@@ -59,7 +61,7 @@ public:
 			exit(0);
 		}
 		connect(transparent_renderer.render_callback, this, &depth_peeler_test::render_scene);
-		return true;
+		return cgv::render::gl::gl_mesh_drawable_base::init(ctx);
 	}
 	void init_frame(context& ctx) 
 	{
@@ -69,11 +71,21 @@ public:
 		else
 			transparent_renderer.set_back_to_front();
 		transparent_renderer.init_frame(ctx);
+		cgv::render::gl::gl_mesh_drawable_base::init_frame(ctx);
 	}
 	void render_scene(context& ctx)
 	{
-		glPushMatrix();
-			glRotated(90,0,1,0);
+//		glPushMatrix();
+		GLfloat color[4] = { 1 - transparency,0,0,transparency };
+		GLfloat spec[4] = { 1 - transparency,1 - transparency,1 - transparency,transparency };
+		/*glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, color);
+		glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, color);
+		glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, spec);
+		glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, 50);*/
+		glColor4d((1 - transparency)*0.07*5 + 0.3, 0, (1 - transparency)*(1 - 0.07*5) + 0.3, transparency);
+		draw_mesh(ctx, false);
+//		cgv::render::gl::gl_mesh_drawable_base::draw(ctx);
+/*			glRotated(90,0,1,0);
 			glScaled(0.2,0.2,0.2);
 			glTranslated(-15.0,0,0);
 			for (int i=0; i<=10; ++i) {
@@ -81,8 +93,8 @@ public:
 				glColor4d((1-transparency)*0.07*j+0.3,0,(1-transparency)*(1-0.07*j)+0.3,transparency);
 				ctx.tesselate_unit_cube();
 				glTranslated(3.0,0,0);
-			}
-		glPopMatrix();
+			}*/
+//		glPopMatrix();
 	}
 
 	int peel_depth_layers(context& ctx)

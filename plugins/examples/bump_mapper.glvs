@@ -1,9 +1,11 @@
+#version 150 compatibility
+
 // interpolated surface normal in eye space
-varying vec3 N;
+out vec3 N;
 // interpolated surface point in eye space
-varying vec3 s;
+out vec3 s;
 // interpolated texture coordinates
-varying vec2 tc;
+out vec2 tc;
 
 void main()
 {

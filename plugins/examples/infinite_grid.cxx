@@ -67,7 +67,7 @@ public:
 			         GL_COLOR_BUFFER_BIT | GL_ENABLE_BIT | GL_TEXTURE_BIT);
 
 		glDisable(GL_CULL_FACE);
-		glDisable(GL_LIGHTING);
+		//glDisable(GL_LIGHTING);
 		glEnable(GL_ALPHA_TEST);
 		glAlphaFunc(GL_GREATER,0);
 		glEnable(GL_BLEND);
@@ -75,6 +75,7 @@ public:
 
 		glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 		glMatrixMode(GL_TEXTURE);
+		glPushMatrix();
 		glLoadIdentity();
 		glScaled(scale,scale,scale);
 		t.enable(ctx);
@@ -92,6 +93,9 @@ public:
 			glTexCoord4f( 1, 0, 0, 0); glVertex4f( 1, 0, 0, 0);
 		glEnd();
 
+		glMatrixMode(GL_TEXTURE);
+		glPopMatrix();
+		glMatrixMode(GL_MODELVIEW);
 		glPopMatrix();
 		t.disable(ctx);
 		glPopAttrib();
@@ -109,6 +113,7 @@ public:
 	/// you must overload this for gui creation
 	void create_gui() 
 	{	
+		add_decorator("infinite grid", "heading");
 		connect_copy(add_control("scale", scale, "value_slider","min=0.1;max=100;ticks=true;log=true")
 			->value_change,rebind(static_cast<drawable*>(this),&drawable::post_redraw));
 		connect_copy(add_control("resolution", resolution, "value_slider","min=1;max=10;ticks=true;log=true")
