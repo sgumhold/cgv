@@ -1306,6 +1306,8 @@ void* load_plugin(const std::string& file_name)
 #endif
 			if (result)
 				break;
+/*			DWORD last_error = GetLastError();
+			std::cerr << "error " << last_error << " when loading plugin " << fn << std::endl;*/
 			fn = extend_plugin_name(fn);
 		}
 	}
