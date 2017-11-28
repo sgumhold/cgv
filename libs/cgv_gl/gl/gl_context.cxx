@@ -516,6 +516,10 @@ void gl_context::enable_material(const cgv::media::illum::phong_material& mat, M
 			prog.enable(*this);
 			prog.set_uniform(*this, "use_bump_map", false);
 			prog.set_uniform(*this, "use_diffuse_map", false);
+			GLboolean cm;
+			glGetBooleanv(GL_COLOR_MATERIAL, &cm);
+			bool cmb = cm != 0;
+			prog.set_uniform(*this, "use_color_material", cmb);
 			set_lighting_parameters(*this, prog);
 		}
 		else {
@@ -2158,15 +2162,15 @@ bool gl_context::set_uniform_void(shader_program_base& spb, int loc, type_descri
 			break;
 		case 4:
 			switch (value_type.coordinate_type) {
-			case TI_BOOL:   glUniform4i(loc, reinterpret_cast<const bool*>(value_ptr)[0] ? 1 : 0, reinterpret_cast<const bool*>(value_ptr)[2] ? 1 : 0, reinterpret_cast<const bool*>(value_ptr)[1] ? 1 : 0, reinterpret_cast<const bool*>(value_ptr)[3] ? 1 : 0); break;
-			case TI_UINT8:  glUniform4ui(loc, reinterpret_cast<const uint8_type*> (value_ptr)[0], reinterpret_cast<const uint8_type*> (value_ptr)[2], reinterpret_cast<const uint8_type*> (value_ptr)[1], reinterpret_cast<const uint8_type*> (value_ptr)[3]); break;
-			case TI_UINT16: glUniform4ui(loc, reinterpret_cast<const uint16_type*>(value_ptr)[0], reinterpret_cast<const uint16_type*>(value_ptr)[2], reinterpret_cast<const uint16_type*>(value_ptr)[1], reinterpret_cast<const uint16_type*>(value_ptr)[3]); break;
-			case TI_UINT32: glUniform4ui(loc, reinterpret_cast<const uint32_type*>(value_ptr)[0], reinterpret_cast<const uint32_type*>(value_ptr)[2], reinterpret_cast<const uint32_type*>(value_ptr)[1], reinterpret_cast<const uint32_type*>(value_ptr)[3]); break;
-			case TI_INT8:   glUniform4i(loc, reinterpret_cast<const int8_type*>  (value_ptr)[0], reinterpret_cast<const int8_type*>  (value_ptr)[2], reinterpret_cast<const int8_type*>  (value_ptr)[1], reinterpret_cast<const int8_type*>  (value_ptr)[3]); break;
-			case TI_INT16:  glUniform4i(loc, reinterpret_cast<const int16_type*> (value_ptr)[0], reinterpret_cast<const int16_type*> (value_ptr)[2], reinterpret_cast<const int16_type*> (value_ptr)[1], reinterpret_cast<const int16_type*> (value_ptr)[3]); break;
-			case TI_INT32:  glUniform4i(loc, reinterpret_cast<const int32_type*> (value_ptr)[0], reinterpret_cast<const int32_type*> (value_ptr)[2], reinterpret_cast<const int32_type*> (value_ptr)[1], reinterpret_cast<const int32_type*> (value_ptr)[3]); break;
-			case TI_FLT32:  glUniform4f(loc, reinterpret_cast<const flt32_type*> (value_ptr)[0], reinterpret_cast<const flt32_type*> (value_ptr)[2], reinterpret_cast<const flt32_type*> (value_ptr)[1], reinterpret_cast<const flt32_type*> (value_ptr)[3]); break;
-			case TI_FLT64:  glUniform4d(loc, reinterpret_cast<const flt64_type*> (value_ptr)[0], reinterpret_cast<const flt64_type*> (value_ptr)[2], reinterpret_cast<const flt64_type*> (value_ptr)[1], reinterpret_cast<const flt64_type*> (value_ptr)[3]); break;
+			case TI_BOOL:   glUniform4i(loc, reinterpret_cast<const bool*>(value_ptr)[0] ? 1 : 0, reinterpret_cast<const bool*>(value_ptr)[1] ? 1 : 0, reinterpret_cast<const bool*>(value_ptr)[2] ? 1 : 0, reinterpret_cast<const bool*>(value_ptr)[3] ? 1 : 0); break;
+			case TI_UINT8:  glUniform4ui(loc, reinterpret_cast<const uint8_type*> (value_ptr)[0], reinterpret_cast<const uint8_type*> (value_ptr)[1], reinterpret_cast<const uint8_type*> (value_ptr)[2], reinterpret_cast<const uint8_type*> (value_ptr)[3]); break;
+			case TI_UINT16: glUniform4ui(loc, reinterpret_cast<const uint16_type*>(value_ptr)[0], reinterpret_cast<const uint16_type*>(value_ptr)[1], reinterpret_cast<const uint16_type*>(value_ptr)[2], reinterpret_cast<const uint16_type*>(value_ptr)[3]); break;
+			case TI_UINT32: glUniform4ui(loc, reinterpret_cast<const uint32_type*>(value_ptr)[0], reinterpret_cast<const uint32_type*>(value_ptr)[1], reinterpret_cast<const uint32_type*>(value_ptr)[2], reinterpret_cast<const uint32_type*>(value_ptr)[3]); break;
+			case TI_INT8:   glUniform4i(loc, reinterpret_cast<const int8_type*>  (value_ptr)[0], reinterpret_cast<const int8_type*>  (value_ptr)[1], reinterpret_cast<const int8_type*>  (value_ptr)[2], reinterpret_cast<const int8_type*>  (value_ptr)[3]); break;
+			case TI_INT16:  glUniform4i(loc, reinterpret_cast<const int16_type*> (value_ptr)[0], reinterpret_cast<const int16_type*> (value_ptr)[1], reinterpret_cast<const int16_type*> (value_ptr)[2], reinterpret_cast<const int16_type*> (value_ptr)[3]); break;
+			case TI_INT32:  glUniform4i(loc, reinterpret_cast<const int32_type*> (value_ptr)[0], reinterpret_cast<const int32_type*> (value_ptr)[1], reinterpret_cast<const int32_type*> (value_ptr)[2], reinterpret_cast<const int32_type*> (value_ptr)[3]); break;
+			case TI_FLT32:  glUniform4f(loc, reinterpret_cast<const flt32_type*> (value_ptr)[0], reinterpret_cast<const flt32_type*> (value_ptr)[1], reinterpret_cast<const flt32_type*> (value_ptr)[2], reinterpret_cast<const flt32_type*> (value_ptr)[3]); break;
+			case TI_FLT64:  glUniform4d(loc, reinterpret_cast<const flt64_type*> (value_ptr)[0], reinterpret_cast<const flt64_type*> (value_ptr)[1], reinterpret_cast<const flt64_type*> (value_ptr)[2], reinterpret_cast<const flt64_type*> (value_ptr)[3]); break;
 			default:
 				error(std::string("gl_context::set_uniform_void(") + value_type_index_to_string(value_type) + ") unsupported coordinate type.", &spb);
 				res = false; break;

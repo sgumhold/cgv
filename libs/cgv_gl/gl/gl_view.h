@@ -47,7 +47,7 @@ public:
 	///
 	box_type get_scene_extent() const;
 	///
-	void set_default_view();
+	virtual void set_default_view();
 	//@}
 };
 		}
