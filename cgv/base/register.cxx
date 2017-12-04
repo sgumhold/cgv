@@ -1232,6 +1232,10 @@ resource_string_registration::resource_string_registration(const std::string& st
 std::string extend_plugin_name(const std::string& fn)
 {
 	std::string n = cgv::utils::file::drop_extension(fn);
+#ifdef _WIN64
+	n += "64";
+#endif // _WIN64
+
 #if defined(_WIN32) || !defined(NDEBUG)
 	n += "_";
 #endif
