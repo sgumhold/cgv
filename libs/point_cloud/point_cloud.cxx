@@ -861,19 +861,54 @@ bool point_cloud::read_ply(const string& _file_name)
 		int nrVertices;
 		char* elem_name = setup_element_read_ply (ply_in, elementType, &nrVertices);
 		if (strcmp("vertex", elem_name) == 0) {
+			PlyElement* elem = ply_in->elems[elementType];
+			bool has_P[3] = { false, false, false };
+			bool has_N[3] = { false, false, false };
+			bool has_C[4] = { false, false, false, false };
+			for (int pi = 0; pi < elem->nprops; ++pi) {
+				if (strcmp("x", elem->props[pi]->name) == 0)
+					has_P[0] = true;
+				if (strcmp("y", elem->props[pi]->name) == 0)
+					has_P[1] = true;
+				if (strcmp("z", elem->props[pi]->name) == 0)
+					has_P[2] = true;
+				if (strcmp("nx", elem->props[pi]->name) == 0)
+					has_N[0] = true;
+				if (strcmp("ny", elem->props[pi]->name) == 0)
+					has_N[1] = true;
+				if (strcmp("nz", elem->props[pi]->name) == 0)
+					has_N[2] = true;
+				if (strcmp("red", elem->props[pi]->name) == 0)
+					has_C[0] = true;
+				if (strcmp("green", elem->props[pi]->name) == 0)
+					has_C[1] = true;
+				if (strcmp("blue", elem->props[pi]->name) == 0)
+					has_C[2] = true;
+				if (strcmp("alpha", elem->props[pi]->name) == 0)
+					has_C[3] = true;
+			}
+			if (!(has_P[0] && has_P[1] && has_P[2]))
+				std::cerr << "ply file " << _file_name << " has no complete position property!" << std::endl;
 			P.resize(nrVertices);
-			N.resize(nrVertices);
-			C.resize(nrVertices);
+			has_nmls = has_N[0] && has_N[1] && has_N[2];
+			has_clrs = has_C[0] && has_C[1] && has_C[2];
+			if (has_nmls)
+				N.resize(nrVertices);
+			if (has_clrs)
+				C.resize(nrVertices);
 			for (int p=0; p<10; ++p) 
 				setup_property_ply(ply_in, &vert_props[p]);
 			for (int j = 0; j < nrVertices; j++) {
 				PlyVertex vertex;
 				get_element_ply(ply_in, (void *)&vertex);
 				P[j].set(vertex.x, vertex.y, vertex.z);
-				N[j].set(vertex.nx, vertex.ny, vertex.nz);
-				C[j][0] = vertex.red*1.0f/255;
-				C[j][1] = vertex.green*1.0f/255;
-				C[j][2] = vertex.blue*1.0f/255;
+				if (has_nmls)
+					N[j].set(vertex.nx, vertex.ny, vertex.nz);
+				if (has_clrs) {
+					C[j][0] = vertex.red*1.0f / 255;
+					C[j][1] = vertex.green*1.0f / 255;
+					C[j][2] = vertex.blue*1.0f / 255;
+				}
 			}
 		}
 	}
