@@ -6,6 +6,8 @@ uniform sampler2D diffuse_map;
 uniform bool use_diffuse_map;
 // whether to use the bump map
 uniform bool use_bump_map;
+///
+uniform bool use_color_material = true;
 
 // interpolated surface normal in eye space
 in vec3 N;
@@ -13,6 +15,8 @@ in vec3 N;
 in vec3 s;
 // interpolated texture coordinates
 in vec2 tc;
+
+in vec4 clr;
 
 vec3 bump_map_normal(vec3 s, vec2 tc, vec3 N);
 
@@ -22,6 +26,9 @@ void main()
 {
 	// compute bump mapped normal
 	vec4 diff = gl_FrontMaterial.diffuse;
+	if (use_color_material) {
+		diff = clr;
+	}
 	if (use_diffuse_map) {
 		diff = texture2D(diffuse_map, tc);
 	}

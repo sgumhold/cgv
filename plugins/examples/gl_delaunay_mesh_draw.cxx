@@ -502,7 +502,7 @@ void gl_delaunay_mesh_draw::create_gui()
 			add_control("sampling", sample_sampling, "dropdown", "enums='regular,random,stratified'");
 			add_control("distribution", sample_distribution, "dropdown", "enums='uniform,normal'");
 			add_control("generator", sample_generator, "dropdown", "enums='random,pseudo random default,mt'");
-			add_control("shape", sample_shape, "dropdown", "enums='square,triangle,circle,spiral'");
+			add_control("shape", sample_shape, "dropdown", "enums='square,triangle,circle,spiral,terrain'");
 			add_control("strategy", sample_strategy, "dropdown", "enums='refection,transform'");
 			add_control("shuffle", sample_shuffle, "check");
 			connect_copy(add_button("generate")->click, rebind(this, &gl_delaunay_mesh_draw::init_mesh, _r(sample_size)));

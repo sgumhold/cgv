@@ -56,6 +56,21 @@ void mesh_geometry<C,P>::generate_sample_data_set(unsigned int n, SamplingType s
 
 	std::mt19937 rand_gen;
 	std::uniform_real_distribution<double> uni_dist(0.0, 1.0);
+
+	if (shape == ST_TERRAIN) {
+		for (unsigned i = 0; i<n; ++i) {
+			while (true) {
+				double x = uni_dist(rand_gen);
+				double y = uni_dist(rand_gen);
+				if (uni_dist(rand_gen) < fabs(sin(11 * x)*cos(7 * y))) {
+					p_of_vi(N + i) = point_type(x, y);
+					break;
+				}
+			}
+		}
+		return;
+	}
+
 	for (unsigned i=0; i<n; ++i) {
 		double x = uni_dist(rand_gen);
 		double y = uni_dist(rand_gen);

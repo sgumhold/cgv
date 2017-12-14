@@ -1527,14 +1527,35 @@ void stereo_view_interactor::on_set(void* m)
 {
 	if (m == &stereo_enabled || m == &stereo_mode)
 		on_stereo_change();
-	if (find_control_void(m,0))
-		find_control_void(m,0)->update();
-	if (m == &write_images) {
+	update_member(m);
+	if (m == &write_images)
 		write_images_to_file();
-	}
-	else {
+	else
 		post_redraw();
+}
+
+void stereo_view_interactor::set_z_near(double z)
+{
+	cgv::render::gl::gl_view::set_z_near(z);
+	update_member(&z_near);
+	post_redraw();
+}
+void stereo_view_interactor::set_z_far(double z)
+{
+	cgv::render::gl::gl_view::set_z_far(z);
+	update_member(&z_far);
+	post_redraw();
+}
+void stereo_view_interactor::set_default_view()
+{
+	cgv::render::gl::gl_view::set_default_view();
+	for (unsigned c = 0; c < 3; ++c) {
+		update_member(&view_dir[c]);
+		update_member(&view_up_dir[c]);
+		update_member(&cgv::render::view::focus[c]);
 	}
+	update_member(&y_extent_at_focus);
+	post_redraw();
 }
 
 /// you must overload this for gui creation

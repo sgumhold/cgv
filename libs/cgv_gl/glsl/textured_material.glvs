@@ -7,6 +7,8 @@ out vec3 s;
 // interpolated texture coordinates
 out vec2 tc;
 
+out vec4 clr;
+
 void main()
 {
 	// transform vertex to clip space
@@ -20,4 +22,6 @@ void main()
 	tc          = h_tc.xy / h_tc.w;
 	// transform normal to eye space
 	N      = normalize(gl_NormalMatrix * gl_Normal);
+
+	clr = gl_Color;
 }

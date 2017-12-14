@@ -101,7 +101,7 @@ struct ensure_ascending_functor : public cgv::gui::control<T>::value_change_sign
 			else {
 				T diff = member_ptr[i] - c.get_old_value();
 				T max_value = c.get<T>("max");
-				if (i < n-1) {
+				if (i < (int)n-1) {
 					if (member_ptr[n-1] > max_value - diff) {
 						T new_diff = max_value - member_ptr[n-1];
 						member_ptr[i] -= diff - new_diff;
@@ -259,7 +259,9 @@ struct vec_gui_creator : public cgv::gui::gui_creator
 				else
 					lab_i = (long_label ? label+"|" : std::string()) + components[i];
 			}
-			cgv::gui::control_ptr cp = p->add_control_void(lab_i, member_ptr, 0, coordinate_type, child_gui_type, child_options, child_align, 0);
+			cgv::gui::control_ptr cp;
+			if (child_gui_type != "view")
+				cp = p->add_control_void(lab_i, member_ptr, 0, coordinate_type, child_gui_type, child_options, child_align, 0);
 			if (cp) {
 				cgv::signal::functor_base* f = 0;
 				if (ensure_normalized) {

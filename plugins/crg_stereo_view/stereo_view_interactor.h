@@ -219,6 +219,10 @@ public:
 	void roll(cgv::render::view& view, double angle);
 	///
 	void rotate_image_plane(cgv::render::view& view, double ax, double ay);
+
+	void set_z_near(double z);
+	void set_z_far(double z);
+	void set_default_view();
 private:
 	double check_for_click;
 	

@@ -131,8 +131,12 @@ struct valuator_property_interface<fltk::ValueSlider>
 };
 
 template <typename T, class FC>
-void configure(T&, FC*)
+void configure(T&, FC* vi)
 {
+	if (cgv::type::info::type_id<T>::get_id() < cgv::type::info::TI_FLT16) {
+		vi->step(1.0);
+		vi->type(fltk::FloatInput::INT);
+	}
 }
 
 template <typename T>

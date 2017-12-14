@@ -218,7 +218,7 @@ bool tiff_reader::read_image(const data_format& df, const data_view& dv)
 	else {
 		bool success = true;
 		for (unsigned int y = 0; success && y < df.get_height(); ++y) {
-			success = read_line(df, dv(df.get_height()-y-1));
+			success = read_line(df, dv(y));
 		}
 		return success;
 	}
