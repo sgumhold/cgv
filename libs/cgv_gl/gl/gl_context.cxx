@@ -99,6 +99,29 @@ GLuint get_gl_format(const texture& tex)
 	return gl_format;
 }
 
+
+void enable_material_color(GLenum side, const cgv::media::illum::phong_material::color_type& c, float alpha, GLenum type)
+{
+	GLfloat v[4] = { c[0],c[1],c[2],c[3] * alpha };
+	glMaterialfv(side, type, v);
+}
+
+
+/// enable a material without textures
+void set_material(const cgv::media::illum::phong_material& mat, MaterialSide ms, float alpha)
+{
+	if (ms == MS_NONE)
+		return;
+
+	unsigned side = map_to_gl(ms);
+	enable_material_color(side, mat.get_ambient(), alpha, GL_AMBIENT);
+	enable_material_color(side, mat.get_diffuse(), alpha, GL_DIFFUSE);
+	enable_material_color(side, mat.get_specular(), alpha, GL_SPECULAR);
+	enable_material_color(side, mat.get_emission(), alpha, GL_EMISSION);
+	glMaterialf(side, GL_SHININESS, mat.get_shininess());
+}
+
+
 /// construct gl_context and attach signals
 gl_context::gl_context()
 {
@@ -489,13 +512,13 @@ void gl_context::perform_screen_shot()
 	if (wr.is_format_supported(*dv.get_format()))
 		wr.write_image(dv);
 }
-
+/*
 void enable_material_color(GLenum side, const textured_material::color_type& c, float alpha, GLenum type)
 {
 	GLfloat v[4] = {c[0],c[1],c[2],c[3]*alpha};
 	glMaterialfv(side, type, v);
 }
-
+*/
 
 /// enable a material without textures
 void gl_context::enable_material(const cgv::media::illum::phong_material& mat, MaterialSide ms, float alpha)
@@ -503,13 +526,15 @@ void gl_context::enable_material(const cgv::media::illum::phong_material& mat, M
 	if (ms == MS_NONE)
 		return;
 
+	set_material(mat, ms, alpha);
+/*
 	unsigned side = map_to_gl(ms);
 	enable_material_color(side, mat.get_ambient(),alpha,GL_AMBIENT);
 	enable_material_color(side, mat.get_diffuse(),alpha,GL_DIFFUSE);
 	enable_material_color(side, mat.get_specular(),alpha,GL_SPECULAR);
 	enable_material_color(side, mat.get_emission(),alpha,GL_EMISSION);
 	glMaterialf(side, GL_SHININESS, mat.get_shininess());
-
+	*/
 	if (ms != MS_BACK && enabled_program == 0) {
 		if (phong_shading) {
 			shader_program& prog = ref_textured_material_prog(*this);
@@ -520,6 +545,9 @@ void gl_context::enable_material(const cgv::media::illum::phong_material& mat, M
 			glGetBooleanv(GL_COLOR_MATERIAL, &cm);
 			bool cmb = cm != 0;
 			prog.set_uniform(*this, "use_color_material", cmb);
+			glGetBooleanv(GL_LIGHT_MODEL_TWO_SIDE, &cm);
+			cmb = cm != 0;
+			prog.set_uniform(*this, "two_sided", cmb);
 			set_lighting_parameters(*this, prog);
 		}
 		else {
@@ -561,12 +589,14 @@ void gl_context::enable_material(const textured_material& mat, MaterialSide ms, 
 		glDisable(GL_COLOR_MATERIAL);
 	}
 
-	unsigned side = map_to_gl(ms);
-	enable_material_color(side, mat.get_ambient(), alpha, GL_AMBIENT);
+	set_material(mat, ms, alpha);
+	/*
+	enable_material_color(side, mat.get_ambient(),alpha,GL_AMBIENT);
 	enable_material_color(side, mat.get_diffuse(),alpha,GL_DIFFUSE);
 	enable_material_color(side, mat.get_specular(),alpha,GL_SPECULAR);
 	enable_material_color(side, mat.get_emission(),alpha,GL_EMISSION);
 	glMaterialf(side, GL_SHININESS, mat.get_shininess());
+	*/
 
 	if (ms != MS_BACK) {
 		if ((mat.get_bump_texture() || phong_shading) && ref_textured_material_prog(*this).is_linked()) {
@@ -592,7 +622,8 @@ void gl_context::enable_material(const textured_material& mat, MaterialSide ms, 
 			set_lighting_parameters(*this, prog);
 		}
 		else if (mat.get_diffuse_texture()) {
-			enable_material_color(side, textured_material::color_type(1, 1, 1, 1), alpha, GL_DIFFUSE);
+			unsigned side = map_to_gl(ms);
+//			enable_material_color(side, textured_material::color_type(1, 1, 1, 1), alpha, GL_DIFFUSE);
 			mat.get_diffuse_texture()->enable(*this);
 			glTexEnvi(GL_TEXTURE_2D, GL_TEXTURE_ENV, GL_MODULATE);
 		}
@@ -1278,7 +1309,7 @@ bool gl_context::texture_create(texture_base& tb, cgv::data::data_format& df)
 			break;
 		}
 	case TT_3D :
-		glTexImage3D(GL_TEXTURE_3D, 0, 
+		glTexImage3D(GL_TEXTURE_3D, 0,
 			gl_format, df.get_width(), df.get_height(), df.get_depth(), 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
 		break;
 	case TT_CUBEMAP :

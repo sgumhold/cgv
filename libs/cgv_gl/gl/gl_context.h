@@ -22,6 +22,9 @@ extern CGV_API GLuint map_to_gl(PrimitiveType pt);
 
 extern CGV_API GLuint map_to_gl(MaterialSide ms);
 
+/// set material in opengl state to given material
+extern CGV_API void set_material(const cgv::media::illum::phong_material& mat, MaterialSide ms, float alpha);
+
 
 /** implementation of the context API for the OpenGL API excluding methods for font selection, redraw and
     initiation of render passes. */

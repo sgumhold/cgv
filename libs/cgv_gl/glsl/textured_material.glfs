@@ -8,6 +8,8 @@ uniform bool use_diffuse_map;
 uniform bool use_bump_map;
 ///
 uniform bool use_color_material = true;
+///
+uniform bool two_sided = false;
 
 // interpolated surface normal in eye space
 in vec3 N;
@@ -32,11 +34,18 @@ void main()
 	if (use_diffuse_map) {
 		diff = texture2D(diffuse_map, tc);
 	}
+	vec3 normal;
 	if (use_bump_map) {
-		gl_FragColor = doLighting(s, normalize(bump_map_normal(s,tc,N)),diff);
+		normal = normalize(bump_map_normal(s,tc,N));
 	}
 	else {
-		gl_FragColor = doLighting(s, N, diff);
+		normal = N;
 	}
+	if (two_sided) {
+		if (dot(s, normal) > 0.0) {
+			normal = -normal;
+		}
+	}
+	gl_FragColor = doLighting(s, normal, diff);
 	gl_FragColor.a = diff.a;
 }
