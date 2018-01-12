@@ -49,7 +49,7 @@ void gl_view::set_default_view()
 	set_view_dir(0, 0, -1);
 	set_view_up_dir(0, 1, 0);
 	set_focus(get_scene_extent().get_center());
-	set_y_extent_at_focus(0.75*get_scene_extent().get_extent()(1));
+	set_y_extent_at_focus(1.5*get_scene_extent().get_extent()(1));
 }
 
 /// transform a z value in eye-coordinates (should be negative!) to device coordinate
@@ -79,9 +79,7 @@ void gl_view::compute_clipping_planes(const cgv::render::view& view, double& z_n
 	z_far_derived = z_far;
 	if (scene_extent.is_valid()) {
 		box_type B = scene_extent;
-		pnt_type offset = B.get_extent().length()*pnt_type(1,1,1);
-		B.add_point(B.get_corner(7) + offset);
-		B.add_point(B.get_corner(0) - offset);
+		B.scale(1.25);
 		double z_min = dot(B.get_corner(0), view_dir);
 		double z_max = z_min;
 		for (unsigned int i = 1; i<8; ++i) {

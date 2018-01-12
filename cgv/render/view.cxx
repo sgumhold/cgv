@@ -10,6 +10,13 @@ view::view()
 	: focus(0,0,0), view_up_dir(0,1,0), view_dir(0,0,-1), y_view_angle(0), y_extent_at_focus(2)
 {
 }
+
+/// compute tan of half of y field of view angle
+double view::get_tan_of_half_of_fovy() const
+{
+	return tan(.008726646260*(y_view_angle <= 0.01 ? 0.01 : y_view_angle));
+}
+
 ///
 view::pnt_type view::get_focus() const
 {
@@ -35,6 +42,13 @@ double view::get_y_extent_at_focus() const
 {
 	return y_extent_at_focus;
 }
+
+///
+double view::get_y_extent_at_depth(double depth) const
+{
+	return 2.0*depth*get_tan_of_half_of_fovy();
+}
+
 /// 
 void view::set_focus(const pnt_type& foc) 
 {
@@ -76,14 +90,14 @@ bool view::is_parallel() const
 /// return the eye point, which is only valid if the view is not parallel
 const view::pnt_type view::get_eye() const
 {
-	return focus - (y_extent_at_focus / tan(.008726646260*(y_view_angle <= 0.1 ? 0.1 : y_view_angle)))*view_dir;
+	return focus - (0.5*y_extent_at_focus / get_tan_of_half_of_fovy())*view_dir;
 }
 
 /// set the view dir and y-extent at focus such that get_eye() returns the passed point. This does not work in case that the eye point is identical to the focus point.
 void view::set_eye_keep_view_angle(const pnt_type& eye)
 {
 	view_dir = focus-eye;
-	y_extent_at_focus = tan(.008726646260*(y_view_angle <= 0.1 ? 0.1 : y_view_angle))*view_dir.length();
+	y_extent_at_focus = get_y_extent_at_depth(view_dir.length());
 	view_dir.normalize();
 }
 
@@ -91,7 +105,7 @@ void view::set_eye_keep_view_angle(const pnt_type& eye)
 void view::set_eye_keep_extent(const pnt_type& eye)
 {
 	view_dir = focus-eye;
-	y_view_angle = atan(y_extent_at_focus/view_dir.length())*114.5915590;
+	y_view_angle = atan(0.5*y_extent_at_focus/view_dir.length())*114.5915590;
 	view_dir.normalize();
 }
 
@@ -174,6 +188,29 @@ double view::get_z_and_unproject(cgv::render::context& ctx, int x, int y, pnt_ty
 {
 	return 0.0;
 }
+
+/// fill the given vector with four points covering the screen rectangle
+void view::compute_screen_rectangle(std::vector<pnt_type>& rect, double depth, double aspect) const
+{
+	// compute view aligned coordinate system
+	vec_type x, y, z;
+	put_coordinate_system(x, y, z);
+
+	// compute center of screen covering rectangle
+	pnt_type c = get_eye() - z*depth;
+
+	// scale x- and y-direction vectors to cover screen rectangle
+	double y_scale = 0.5*get_y_extent_at_depth(depth);
+	y *= y_scale;
+	x *= y_scale*aspect;
+
+	// construct rectangle corners
+	rect.push_back(c + x + y);
+	rect.push_back(c - x + y);
+	rect.push_back(c - x - y);
+	rect.push_back(c + x - y);
+}
+
 
 	}
 }

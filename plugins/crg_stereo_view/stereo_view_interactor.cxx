@@ -716,15 +716,15 @@ bool stereo_view_interactor::handle(event& e)
 				return true;
 			}
 			if (me.get_button_state() == MB_RIGHT_BUTTON && me.get_modifiers() == 0) {
-				view_ptr->set_focus(view_ptr->get_focus() - 2 * (view_ptr->get_y_extent_at_focus()*me.get_dx() / width)*x
-					+ 2 * (view_ptr->get_y_extent_at_focus()*me.get_dy() / height)*y);
+				view_ptr->set_focus(view_ptr->get_focus() - (view_ptr->get_y_extent_at_focus()*me.get_dx() / width)*x
+					+ (view_ptr->get_y_extent_at_focus()*me.get_dy() / height)*y);
 				update_vec_member(view::focus);
 				post_redraw();
 				return true;
 			}
 			if (me.get_button_state() == MB_MIDDLE_BUTTON && me.get_modifiers() == 0) {
 				view_ptr->set_focus(view_ptr->get_focus() -
-					10 * view_ptr->get_y_extent_at_focus()*me.get_dy() / height*z / zoom_sensitivity);
+					5 * view_ptr->get_y_extent_at_focus()*me.get_dy() / height*z / zoom_sensitivity);
 				update_vec_member(view::focus);
 				post_redraw();
 				return true;
@@ -1118,9 +1118,9 @@ void stereo_view_interactor::gl_set_projection_matrix(GlsuEye e, double aspect)
 		glOrtho(-aspect*y_extent_at_focus, aspect*y_extent_at_focus, -y_extent_at_focus, y_extent_at_focus, z_near_derived, z_far_derived);
 	else {
 		if (stereo_translate_in_model_view)
-			glsuStereoFrustumScreen(e, eye_distance, 2 * y_extent_at_focus*aspect, 2 * y_extent_at_focus, get_parallax_zero_z(), z_near_derived, z_far_derived);
+			glsuStereoFrustumScreen(e, eye_distance, y_extent_at_focus*aspect, y_extent_at_focus, get_parallax_zero_z(), z_near_derived, z_far_derived);
 		else
-			glsuStereoPerspectiveScreen(e, eye_distance, 2 * y_extent_at_focus*aspect, 2 * y_extent_at_focus, get_parallax_zero_z(), z_near_derived, z_far_derived);
+			glsuStereoPerspectiveScreen(e, eye_distance, y_extent_at_focus*aspect, y_extent_at_focus, get_parallax_zero_z(), z_near_derived, z_far_derived);
 	}
 	glMatrixMode(GL_MODELVIEW);
 }
@@ -1269,17 +1269,17 @@ void stereo_view_interactor::draw_focus()
 	glColor3f(0.5f,0.5f,0.5f);
 	glBegin(GL_LINES);
 	glVertex3dv(get_focus());
-	glVertex3dv(get_focus()+vec_type(get_y_extent_at_focus(),0,0));
+	glVertex3dv(get_focus()+vec_type(0.5*get_y_extent_at_focus(),0,0));
 	glVertex3dv(get_focus());
-	glVertex3dv(get_focus()+vec_type(0,get_y_extent_at_focus(),0));
+	glVertex3dv(get_focus()+vec_type(0, 0.5*get_y_extent_at_focus(),0));
 	glVertex3dv(get_focus());
-	glVertex3dv(get_focus()+vec_type(0,0,get_y_extent_at_focus()));
+	glVertex3dv(get_focus()+vec_type(0,0, 0.5*get_y_extent_at_focus()));
 	glVertex3dv(get_focus());
-	glVertex3dv(get_focus()+vec_type(-get_y_extent_at_focus(),0,0));
+	glVertex3dv(get_focus()+vec_type(-0.5*get_y_extent_at_focus(),0,0));
 	glVertex3dv(get_focus());
-	glVertex3dv(get_focus()+vec_type(0,-get_y_extent_at_focus(),0));
+	glVertex3dv(get_focus()+vec_type(0,-0.5*get_y_extent_at_focus(),0));
 	glVertex3dv(get_focus());
-	glVertex3dv(get_focus()+vec_type(0,0,-get_y_extent_at_focus()));
+	glVertex3dv(get_focus()+vec_type(0,0,-0.5*get_y_extent_at_focus()));
 	glEnd();
 }
 

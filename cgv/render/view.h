@@ -33,6 +33,8 @@ protected:
 	double y_view_angle;
 	///
 	double y_extent_at_focus;
+	/// compute tan of half of y field of view angle
+	double get_tan_of_half_of_fovy() const;
 public:
 	/// construct a parallel view with focus in the world origin looking in negative z-direction and the y-direction as up-direction with an extent of +-1
 	view();
@@ -48,6 +50,8 @@ public:
 	double get_y_view_angle() const;
 	///
 	double get_y_extent_at_focus() const;
+	///
+	double get_y_extent_at_depth(double depth) const;
 	/// 
 	virtual void set_focus(const pnt_type& foc);
 	void set_focus(double x, double y, double z);
@@ -129,6 +133,8 @@ public:
 	/*! in case of stereo rendering two z-values exist that can be unprojected to two points in world
 	coordinates. In this case the possibility with smaller z value is selected. */
 	virtual double get_z_and_unproject(cgv::render::context& ctx, int x, int y, pnt_type& p);
+	/// fill \c rect with four points covering the screen rectangle at given depth from eye with given aspect ratio
+	void compute_screen_rectangle(std::vector<pnt_type>& rect, double depth, double aspect) const;
 	//@}
 
 };
