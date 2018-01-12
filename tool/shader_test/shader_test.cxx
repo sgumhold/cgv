@@ -178,6 +178,7 @@ int perform_test()
 			std::cout << "shader program ok (" << g_argv[1] << ")" << std::endl;
 		}
 		else {
+			std::cout << "build program failed" << std::endl;
 			std::cerr << g_argv[1] << " (1) : glsl program error" << std::endl;
 			if (!shader_developer)
 				write(g_argv[2], "error", 2, true);
@@ -188,7 +189,7 @@ int perform_test()
 //		if (ext[0] != 'p') {
 			// otherwise read and compile code
 			shader_code code;
-			if (code.read_and_compile(*g_ctx_ptr, g_argv[1])) {
+			if (code.read_and_compile(*g_ctx_ptr, g_argv[1], cgv::render::ST_DETECT, true)) {
 				// convert the input file to a string declaration with the string
 				convert_to_string(g_argv[1],g_argv[2]);
 				//write(g_argv[2], "ok", 2, true);

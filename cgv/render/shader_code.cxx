@@ -49,9 +49,9 @@ shader_config_ptr get_shader_config()
 
 /** query the last error in a way that developer environments can 
     locate errors in the source file */
-std::string shader_code::get_last_error(const std::string& file_name) const
+std::string shader_code::get_last_error(const std::string& file_name, const std::string& last_error)
 {
-	std::string fn = find_file(file_name);
+	std::string fn = shader_code::find_file(file_name);
 	std::vector<line> lines;
 	split_to_lines(last_error, lines);
 	std::string formated_error;
@@ -267,7 +267,7 @@ bool shader_code::read_and_compile(context& ctx, const std::string &file_name, S
 		return false;
 	if (!compile(ctx)) {
 		if (show_error)
-			std::cerr << get_last_error(file_name).c_str() << std::endl;
+			std::cerr << get_last_error(file_name, last_error).c_str() << std::endl;
 		return false;
 	}
 	return true;

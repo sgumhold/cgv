@@ -346,8 +346,24 @@ bool shader_program::build_dir(context& ctx, const std::string& dir_name, bool r
 /// successively calls create, attach_program and link.
 bool shader_program::build_program(context& ctx, const std::string& file_name, bool show_error)
 {
-	return (is_created() || create(ctx)) && 
-			 attach_program(ctx, file_name, show_error) && link(ctx, show_error);
+	if (!(is_created() || create(ctx)))
+		return false;
+	if (!attach_program(ctx, file_name, show_error))
+		return false;
+	if (!link(ctx, false)) {
+		if (show_error) {
+			std::string fn = shader_code::find_file(file_name);
+			std::vector<line> lines;
+			split_to_lines(last_error, lines);
+			std::string formated_error;
+			for (unsigned int i = 0; i < lines.size(); ++i) {
+				formated_error += fn + "(1) : error G0002: " + to_string(lines[i]) + "\n";
+			}
+			std::cerr << formated_error.c_str() << std::endl;
+		}
+		return false;
+	}
+	return true;
 }
 
 /// return the maximum number of output vertices of a geometry shader

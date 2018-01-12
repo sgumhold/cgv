@@ -2055,6 +2055,7 @@ bool gl_context::shader_program_link(shader_program_base& spb)
 		GLsizei charsWritten = 0;
 		char *infoLog = (char *)malloc(infologLength);
 		glGetProgramInfoLog(p_id, infologLength, &charsWritten, infoLog);
+		spb.last_error = infoLog;
 		error(std::string("gl_context::shader_program_link\n")+infoLog, &spb);
 		free(infoLog);
 	}
