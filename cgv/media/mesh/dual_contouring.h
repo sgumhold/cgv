@@ -119,8 +119,8 @@ public:
 			info_ptr->index(i,j) = -1;
 			return;
 		}
-		pnt_type p_ref = info_ptr->center(i,j) / info_ptr->count(i,j);
-		pnt_type q = (X*)info_ptr->get_qem(i,j).minarg(p_ref.to_vec(), 0.1, d.length());
+		pnt_type p_ref = info_ptr->center(i,j) / X(info_ptr->count(i,j));
+		pnt_type q = (X*)info_ptr->get_qem(i,j).minarg(p_ref.to_vec(), X(0.1), d.length());
 		info_ptr->index(i,j) = this->new_vertex(q);
 	}
 	/// construct a quadrilateral
@@ -186,8 +186,12 @@ public:
 		} while (!finished);
 		if (nr_iters > 15)
 			std::cout << "not converged after " << nr_iters << " iterations" << std::endl;
-		if (n.length() < 1e-6)
-			std::cout << "degenerate gradient" << n << std::endl;
+		// if gradient does not define normal
+		if (n.length() < 1e-6) {
+			// define normal from edge direction
+			n = vec_type(0, 0, 0);
+			n(e) = T((v_1 < v_2) ? 1 : 0);
+		}
 		else 
 			n.normalize();
 	}
