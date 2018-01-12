@@ -70,11 +70,11 @@ public:
 	/// place a corner (0 .. lower left, 1 .. lower right, 2 .. upper left, 3 .. upper right) to a given 3D location ((this might can change the current origin / center location) 
 	void place_corner(unsigned corner_index, const P3D& new_corner_location);
 	/// return the current origin in 3D coordinates
-	const P3D& get_origin() const;
+	P3D get_origin() const;
 	/// return the current plot center in 3D coordinates
 	const P3D& get_center() const;
 	/// return the i-th plot corner in 3D coordinates
-	const P3D& get_corner(unsigned i) const;
+	P3D get_corner(unsigned i) const;
 	/// set the direction of x or y axis
 	const V3D& get_axis_direction(unsigned ai) const;
 

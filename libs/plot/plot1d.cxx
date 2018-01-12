@@ -186,7 +186,7 @@ void plot1d::place_corner(unsigned corner_index, const P3D& new_corner_location)
 }
 
 /// return the current origin in 3D coordinates
-const plot1d::P3D& plot1d::get_origin() const
+plot1d::P3D plot1d::get_origin() const
 {
 	V2D delta = - domain.get_center();
 	delta /= domain.get_extent();
@@ -201,7 +201,7 @@ const plot1d::P3D& plot1d::get_center() const
 }
 
 /// return the i-th plot corner in 3D coordinates
-const plot1d::P3D& plot1d::get_corner(unsigned i) const
+plot1d::P3D plot1d::get_corner(unsigned i) const
 {
 	V2D delta = domain.get_corner(i) - domain.get_center();
 	delta /= domain.get_extent();
