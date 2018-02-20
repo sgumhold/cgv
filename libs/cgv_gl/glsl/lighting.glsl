@@ -1,6 +1,6 @@
 #version 150 compatibility
 
-uniform bool local_viewer;
+uniform bool local_viewer = false;
 uniform int lights_enabled[gl_MaxLights]; // tells about the state of the lights (whether they are enabled or not)
 
 /**
