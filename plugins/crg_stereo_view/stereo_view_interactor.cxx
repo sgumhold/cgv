@@ -4,6 +4,7 @@
 #include <cgv/utils/scan_enum.h>
 #include <cgv/utils/ostream_printf.h>
 #include <cgv/gui/trigger.h>
+#include <cgv/gui/animate.h>
 #include <cgv/signal/rebind.h>
 #include <cgv/gui/key_event.h>
 #include <cgv/gui/mouse_event.h>
@@ -655,9 +656,16 @@ bool stereo_view_interactor::handle(event& e)
 								pnt_type e = view_ptr->get_eye();
 								double l_old = (e-view_ptr->get_focus()).length();
 								double l_new = dot(p-e,view_ptr->get_view_dir());
-								view_ptr->set_y_extent_at_focus(view_ptr->get_y_extent_at_focus() * l_new / l_old);
+								
+								cgv::gui::animation_ptr a_ptr = cgv::gui::animate(view_ptr->y_extent_at_focus, view_ptr->get_y_extent_at_focus() * l_new / l_old, 0.5);
+								a_ptr->set_base_ptr(this);
+								a_ptr->set_parameter_mapping(cgv::gui::APM_SIN_SQUARED);
 							}
-							view_ptr->set_focus(p);
+							
+							cgv::gui::animation_ptr a_ptr = cgv::gui::animate(view_ptr->focus, p, 0.5);
+							a_ptr->set_base_ptr(this);
+							a_ptr->set_parameter_mapping(cgv::gui::APM_SIN_SQUARED);
+
 							update_vec_member(view::focus);
 							post_redraw();
 							return true;

@@ -22,7 +22,7 @@ class CGV_API view
 public:
 	typedef cgv::math::fvec<double,3> pnt_type;
 	typedef cgv::math::fvec<double,3> vec_type;
-protected:
+public:
 	/// focus of the view
 	pnt_type focus;
 	/// 
