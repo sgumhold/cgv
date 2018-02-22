@@ -99,10 +99,6 @@ stereo_view_interactor::stereo_view_interactor(const char* name) : node(name)
 	check_for_click = -1;
 	mono_mode = GLSU_CENTER;
 	zoom_sensitivity = rotate_sensitivity = 1;
-
-	animate_view = false;
-	connect(cgv::gui::get_animation_trigger().shoot, this, &stereo_view_interactor::timer_event);
-
 	last_x = last_y = -1;
 }
 /// return the type name 
@@ -397,46 +393,6 @@ double stereo_view_interactor::get_z_and_unproject(cgv::render::context& ctx, in
 	}
 }
 
-void stereo_view_interactor::timer_event(double t, double dt)
-{
-	if (!animate_view)
-		return;
-	/*
-	cgv::render::view::pnt_type z = normalize(target_view_ptr->get_view_dir());
-	cgv::render::view::pnt_type x = normalize(cross(target_view_ptr->get_view_up_dir(), z));
-	cgv::render::view::pnt_type y = cross(z,x);
-	cgv::math::fmat<cgv::render::view::pnt_type::value_type, 3, 3> R1, R2;
-	R1.set_col(0, x);
-	R1.set_col(1, y);
-	R1.set_col(2, z);
-	cgv::math::quaternion<cgv::render::view::pnt_type::value_type> q1(R1);
-
-	R2.set_col(0, cross(target_view_up_dir, target_view_dir));
-	R2.set_col(1, target_view_up_dir);
-	R2.set_col(2, target_view_dir);
-	cgv::math::quaternion<cgv::render::view::pnt_type::value_type> q2(R2);
-
-	q1.affin*/
-	int nr_reached = 0;
-	cgv::render::view::pnt_type dv = target_view_dir - get_view_dir();
-	cgv::render::view::pnt_type up = get_view_up_dir();
-	//		std::cout << "v[" << target_view_ptr->get_view_dir() << "], dv:(" << dv;
-	nr_reached += correct_anim_dir_vector(dv, get_view_dir(), &up);
-	//		std::cout << "->" << dv << "), tv[" << target_view_dir << "]" << std::endl;
-	set_view_dir(normalize(get_view_dir() + dv));
-
-	dv = target_view_up_dir - get_view_up_dir();
-	//		std::cout << "u[" << target_view_ptr->get_view_up_dir() << "], du:(" << dv;
-	nr_reached += correct_anim_dir_vector(dv, get_view_up_dir(), 0);
-	//		std::cout << "->" << dv << "), tv[" << target_view_up_dir << "]" << std::endl;
-	set_view_up_dir(normalize(get_view_up_dir() + dv));
-
-	if (nr_reached == 2)
-		animate_view = false;
-
-	post_redraw();
-}
-
 cgv::render::view::pnt_type unpack_dir(char c)
 {
 	switch (c) {
@@ -452,135 +408,11 @@ cgv::render::view::pnt_type unpack_dir(char c)
 
 void stereo_view_interactor::set_view_orientation(const std::string& axes)
 {
-	target_view_dir = unpack_dir(axes[0]);
-	target_view_up_dir = unpack_dir(axes[1]);
-
-	cgv::math::fmat<double, 3, 3> R = cgv::math::build_orthogonal_frame(view_dir, view_up_dir); 
-	R.transpose();
-	R = cgv::math::build_orthogonal_frame(target_view_dir, target_view_up_dir)*R;
-
 	pnt_type axis;
-	double angle = 0.0f;
-
-	cgv::math::decompose_rotation_to_axis_and_angle(R, axis, angle);
-
+	double angle;
+	compute_axis_and_angle(unpack_dir(axes[0]), unpack_dir(axes[1]), axis, angle);
 	cgv::gui::animate_with_axis_rotation(view_dir, axis, angle, 0.5)->set_base_ptr(this);
 	cgv::gui::animate_with_axis_rotation(view_up_dir, axis, angle, 0.5)->set_base_ptr(this);
-
-	/*
-
-	pnt_type nml_v = target_view_dir - view_dir;
-	pnt_type nml_u = target_view_up_dir - view_up_dir;
-
-	double l_v = nml_v.length();
-	double l_u = nml_u.length();
-
-	const double eps = 0.05;
-	if (l_v < eps && l_u < eps) {
-		std::cout << "l_v=" << l_v << ", l_u=" << l_u << " ==> set directly." << std::endl;
-	}
-	else if (l_v < eps) {
-		axis = cross(view_up_dir, target_view_up_dir);
-		double s = axis.length();
-		axis *= 1.0 / s;
-		angle = atan2(s, dot(view_up_dir, target_view_up_dir));
-		std::cout << "l_v=" << l_v << ", set from up_dir: " << axis << "|" << angle << std::endl;
-	}
-	else if (l_u < eps) {
-		axis = cross(view_dir, target_view_dir);
-		double s = axis.length();
-		axis *= 1.0 / s;
-		angle = atan2(s, dot(view_dir, target_view_dir));
-		std::cout << "l_u=" << l_u << ", set from view_dir: " << axis << "|" << angle << std::endl;
-	}
-	else {
-		axis = cross(nml_v, nml_u)*(1.0 / (l_u*l_v));
-		double s = axis.length();
-		if (s < eps) {
-			std::cout << "cross product axis=" << axis << ", set directly." << std::endl;
-		}
-		else {
-			axis *= 1.0 / s;
-			angle = atan2(cross(view_dir, target_view_dir).length(), dot(view_dir, target_view_dir));
-			double angle_u = atan2(cross(view_up_dir, target_view_up_dir).length(), dot(view_up_dir, target_view_up_dir));
-			if (fabs(angle - angle_u) > eps) {
-				std::cout << "different angles a_v=" << angle << ", a_u=" << angle_u << ", set directly." << std::endl;
-				angle = 0;
-			}
-		}
-	}
-
-	if (fabs(angle) < eps) {
-		view_dir = target_view_dir;
-		view_up_dir = target_view_up_dir;
-		on_set(&view_dir);
-		on_set(&view_up_dir);
-		std::cout << "angle=" << angle << " ==> set directly." << std::endl;
-	}
-	else {
-		double time = cgv::gui::trigger::get_current_time();
-
-		auto* a_ptr = new cgv::gui::rotation_animation<double>(view_dir, axis, angle, time, time + 0.5);
-		cgv::gui::add_animation(a_ptr);
-		a_ptr->set_base_ptr(this);
-
-		auto* b_ptr = new cgv::gui::rotation_animation<double>(view_up_dir, axis, angle, time, time + 0.5);
-		cgv::gui::add_animation(b_ptr);
-		b_ptr->set_base_ptr(this);
-	}
-	/*
-	auto* a_ptr = new cgv::gui::rotation_animation<double>(view_dir, target_view_dir, time, time + 0.5);
-	cgv::gui::add_animation(a_ptr);
-	a_ptr->set_base_ptr(this);
-	
-	auto* b_ptr = new cgv::gui::rotation_animation<double>(view_up_dir, a_ptr->axis, a_ptr->angle, time, time + 0.5);
-	cgv::gui::add_animation(b_ptr);
-	b_ptr->set_base_ptr(this);
-	
-	pnt_type tmp = view_up_dir;
-	view_up_dir = b_ptr->end_value;
-	auto* c_ptr = new cgv::gui::rotation_animation<double>(view_up_dir, target_view_up_dir, time+0.6, time + 1.1);
-	cgv::gui::add_animation(c_ptr, false);
-	c_ptr->set_base_ptr(this);
-	view_up_dir = tmp;
-
-	tmp = view_dir;
-	view_dir = target_view_dir;
-	auto* d_ptr = new cgv::gui::rotation_animation<double>(view_dir, c_ptr->axis, c_ptr->angle, time+0.6, time + 1.1);
-	cgv::gui::add_animation(d_ptr, false);
-	d_ptr->set_base_ptr(this);
-	view_dir = tmp;
-	*/
-
-	// animate_view = true;
-}
-
-int stereo_view_interactor::correct_anim_dir_vector(cgv::render::view::pnt_type& dv, const cgv::render::view::pnt_type& v, const cgv::render::view::pnt_type* up) const
-{
-	float dir_anim_step = 0.05f;
-	if (dv.length() > 2.0f - 0.1*dir_anim_step) {
-		if (up) {
-			dv = cross(dv, *up);
-		}
-		else {
-			if (fabs(dv(0)) < 1.5f)
-				dv = cgv::render::view::pnt_type(1, 0, 0);
-			else if (fabs(dv(1)) < 1.5f)
-				dv = cgv::render::view::pnt_type(0, 1, 0);
-			else
-				dv = cgv::render::view::pnt_type(0, 0, 1);
-		}
-	}
-
-	if (dv.length() > dir_anim_step) {
-		// orthogonalize dv to v
-		dv = cross(v, cross(dv, v));
-		dv.normalize();
-		dv *= dir_anim_step;
-	}
-	else
-		return 1;
-	return 0;
 }
 
 /// overload and implement this method to handle events

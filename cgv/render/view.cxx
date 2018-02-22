@@ -1,4 +1,5 @@
 #include <cgv/render/view.h>
+#include <cgv/math/geom.h>
 
 using namespace cgv::math;
 
@@ -21,6 +22,15 @@ view::vec_type& view::ref_view_dir() { return view_dir; }
 double& view::ref_y_view_angle() { return y_view_angle; }
 /// write access to extent at focus
 double& view::ref_y_extent_at_focus() { return y_extent_at_focus; }
+
+/// compute axis and angle of a rotation that the current view_dir and view_up_dir to the given target_view_dir and target_view_up_dir
+int view::compute_axis_and_angle(const vec_type& target_view_dir, const vec_type& target_view_up_dir, vec_type& axis, double& angle)
+{
+	cgv::math::fmat<double, 3, 3> R = cgv::math::build_orthogonal_frame(view_dir, view_up_dir);
+	R.transpose();
+	R = cgv::math::build_orthogonal_frame(target_view_dir, target_view_up_dir)*R;
+	return cgv::math::decompose_rotation_to_axis_and_angle(R, axis, angle);
+}
 
 /// compute tan of half of y field of view angle
 double view::get_tan_of_half_of_fovy() const

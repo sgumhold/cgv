@@ -26,7 +26,13 @@ namespace cgv {
 			angle = atan2(len, dot(v0, v1));
 		}
 		//! decompose a rotation matrix into axis angle representation
-		/*! the implementation assumes that R is orthonormal and that det(R) = 1, thus no reflections are handled .*/
+		/*! The implementation assumes that R is orthonormal and that det(R) = 1, thus no reflections are handled.
+		    Negation of axis and angle yield another solution.
+		    The function returns three possible status values:
+			- 0 ... axis and angle where unique up to joined negation
+			- 1 ... angle is M_PI can be negated independently of axis yielding another solution
+			- 2 ... angle is 0 and axis can be choosen arbitrarily.
+			*/
 		template <typename T>
 		int decompose_rotation_to_axis_and_angle(const cgv::math::fmat<T, 3, 3>& R, cgv::math::fvec<T, 3>& axis, T& angle)
 		{

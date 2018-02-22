@@ -81,6 +81,10 @@ public:
 	///
 	virtual void set_y_view_angle(double angle);
 	void put_coordinate_system(vec_type& x, vec_type& y, vec_type& z) const;
+	//! compute axis and angle of a rotation that the current view_dir and view_up_dir to the given target_view_dir and target_view_up_dir
+	/*! returns the result of the function cgv::math::decompose_rotation_to_axis_and_angle()*/
+	int compute_axis_and_angle(const vec_type& target_view_dir, const vec_type& target_view_up_dir, vec_type& axis, double& angle);
+
 	//@}
 
 	/**@name derived quantities*/
