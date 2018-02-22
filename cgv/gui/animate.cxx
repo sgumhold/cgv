@@ -15,6 +15,12 @@ namespace cgv {
 		{
 			bp = _bp;
 		}
+		void animation::configure(AnimationParameterMapping _parameter_mapping, cgv::base::base_ptr _bp)
+		{
+			parameter_mapping = _parameter_mapping;
+			bp = _bp;
+		}
+
 		void animation::set_parameter_mapping(AnimationParameterMapping _parameter_mapping)
 		{
 			parameter_mapping = _parameter_mapping;
@@ -53,7 +59,11 @@ namespace cgv {
 		}
 		bool animation::overlaps(const char* value_ptr, size_t value_size) const
 		{
-			return (value_ptr + value_size > get_ptr()) || (get_ptr() + get_value_size() > value_ptr);
+			if (value_ptr + value_size <= get_ptr())
+				return false;
+			if (get_ptr() + get_value_size() <= value_ptr)
+				return false;
+			return true;
 		}
 
 		bool animation::set_time(double time)

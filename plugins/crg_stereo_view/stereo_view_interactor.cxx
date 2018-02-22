@@ -1,4 +1,5 @@
 #include "stereo_view_interactor.h"
+#include <cgv/math/geom.h>
 #include <cgv_reflect_types/math/fvec.h>
 #include <cgv/utils/scan.h>
 #include <cgv/utils/scan_enum.h>
@@ -44,13 +45,6 @@ cgv::reflect::enum_reflection_traits<GlsuAnaglyphConfiguration> get_reflection_t
 cgv::reflect::enum_reflection_traits<GlsuEye> get_reflection_traits(const GlsuEye&)
 {
 	return cgv::reflect::enum_reflection_traits<GlsuEye>(EYE_ENUMS);
-}
-
-template <typename T>
-fvec<T,3> rotate(const fvec<T,3>& v, const fvec<T,3>& n, T a) 
-{
-	fvec<T,3> vn = dot(n,v)*n;
-	return vn + cos(a)*(v-vn) + sin(a)*cross(n,v);
 }
 
 ext_view::ext_view()
@@ -460,7 +454,105 @@ void stereo_view_interactor::set_view_orientation(const std::string& axes)
 {
 	target_view_dir = unpack_dir(axes[0]);
 	target_view_up_dir = unpack_dir(axes[1]);
-	animate_view = true;
+
+	cgv::math::fmat<double, 3, 3> R = cgv::math::build_orthogonal_frame(view_dir, view_up_dir); 
+	R.transpose();
+	R = cgv::math::build_orthogonal_frame(target_view_dir, target_view_up_dir)*R;
+
+	pnt_type axis;
+	double angle = 0.0f;
+
+	cgv::math::decompose_rotation_to_axis_and_angle(R, axis, angle);
+
+	cgv::gui::animate_with_axis_rotation(view_dir, axis, angle, 0.5)->set_base_ptr(this);
+	cgv::gui::animate_with_axis_rotation(view_up_dir, axis, angle, 0.5)->set_base_ptr(this);
+
+	/*
+
+	pnt_type nml_v = target_view_dir - view_dir;
+	pnt_type nml_u = target_view_up_dir - view_up_dir;
+
+	double l_v = nml_v.length();
+	double l_u = nml_u.length();
+
+	const double eps = 0.05;
+	if (l_v < eps && l_u < eps) {
+		std::cout << "l_v=" << l_v << ", l_u=" << l_u << " ==> set directly." << std::endl;
+	}
+	else if (l_v < eps) {
+		axis = cross(view_up_dir, target_view_up_dir);
+		double s = axis.length();
+		axis *= 1.0 / s;
+		angle = atan2(s, dot(view_up_dir, target_view_up_dir));
+		std::cout << "l_v=" << l_v << ", set from up_dir: " << axis << "|" << angle << std::endl;
+	}
+	else if (l_u < eps) {
+		axis = cross(view_dir, target_view_dir);
+		double s = axis.length();
+		axis *= 1.0 / s;
+		angle = atan2(s, dot(view_dir, target_view_dir));
+		std::cout << "l_u=" << l_u << ", set from view_dir: " << axis << "|" << angle << std::endl;
+	}
+	else {
+		axis = cross(nml_v, nml_u)*(1.0 / (l_u*l_v));
+		double s = axis.length();
+		if (s < eps) {
+			std::cout << "cross product axis=" << axis << ", set directly." << std::endl;
+		}
+		else {
+			axis *= 1.0 / s;
+			angle = atan2(cross(view_dir, target_view_dir).length(), dot(view_dir, target_view_dir));
+			double angle_u = atan2(cross(view_up_dir, target_view_up_dir).length(), dot(view_up_dir, target_view_up_dir));
+			if (fabs(angle - angle_u) > eps) {
+				std::cout << "different angles a_v=" << angle << ", a_u=" << angle_u << ", set directly." << std::endl;
+				angle = 0;
+			}
+		}
+	}
+
+	if (fabs(angle) < eps) {
+		view_dir = target_view_dir;
+		view_up_dir = target_view_up_dir;
+		on_set(&view_dir);
+		on_set(&view_up_dir);
+		std::cout << "angle=" << angle << " ==> set directly." << std::endl;
+	}
+	else {
+		double time = cgv::gui::trigger::get_current_time();
+
+		auto* a_ptr = new cgv::gui::rotation_animation<double>(view_dir, axis, angle, time, time + 0.5);
+		cgv::gui::add_animation(a_ptr);
+		a_ptr->set_base_ptr(this);
+
+		auto* b_ptr = new cgv::gui::rotation_animation<double>(view_up_dir, axis, angle, time, time + 0.5);
+		cgv::gui::add_animation(b_ptr);
+		b_ptr->set_base_ptr(this);
+	}
+	/*
+	auto* a_ptr = new cgv::gui::rotation_animation<double>(view_dir, target_view_dir, time, time + 0.5);
+	cgv::gui::add_animation(a_ptr);
+	a_ptr->set_base_ptr(this);
+	
+	auto* b_ptr = new cgv::gui::rotation_animation<double>(view_up_dir, a_ptr->axis, a_ptr->angle, time, time + 0.5);
+	cgv::gui::add_animation(b_ptr);
+	b_ptr->set_base_ptr(this);
+	
+	pnt_type tmp = view_up_dir;
+	view_up_dir = b_ptr->end_value;
+	auto* c_ptr = new cgv::gui::rotation_animation<double>(view_up_dir, target_view_up_dir, time+0.6, time + 1.1);
+	cgv::gui::add_animation(c_ptr, false);
+	c_ptr->set_base_ptr(this);
+	view_up_dir = tmp;
+
+	tmp = view_dir;
+	view_dir = target_view_dir;
+	auto* d_ptr = new cgv::gui::rotation_animation<double>(view_dir, c_ptr->axis, c_ptr->angle, time+0.6, time + 1.1);
+	cgv::gui::add_animation(d_ptr, false);
+	d_ptr->set_base_ptr(this);
+	view_dir = tmp;
+	*/
+
+	// animate_view = true;
 }
 
 int stereo_view_interactor::correct_anim_dir_vector(cgv::render::view::pnt_type& dv, const cgv::render::view::pnt_type& v, const cgv::render::view::pnt_type* up) const
@@ -656,15 +748,10 @@ bool stereo_view_interactor::handle(event& e)
 								pnt_type e = view_ptr->get_eye();
 								double l_old = (e-view_ptr->get_focus()).length();
 								double l_new = dot(p-e,view_ptr->get_view_dir());
-								
-								cgv::gui::animation_ptr a_ptr = cgv::gui::animate(view_ptr->y_extent_at_focus, view_ptr->get_y_extent_at_focus() * l_new / l_old, 0.5);
-								a_ptr->set_base_ptr(this);
-								a_ptr->set_parameter_mapping(cgv::gui::APM_SIN_SQUARED);
+
+								cgv::gui::animate_with_geometric_blend(view_ptr->ref_y_extent_at_focus(), view_ptr->get_y_extent_at_focus() * l_new / l_old, 0.5)->set_base_ptr(this);
 							}
-							
-							cgv::gui::animation_ptr a_ptr = cgv::gui::animate(view_ptr->focus, p, 0.5);
-							a_ptr->set_base_ptr(this);
-							a_ptr->set_parameter_mapping(cgv::gui::APM_SIN_SQUARED);
+							cgv::gui::animate_with_linear_blend(view_ptr->ref_focus(), p, 0.5)->configure(cgv::gui::APM_SIN_SQUARED, this);
 
 							update_vec_member(view::focus);
 							post_redraw();
@@ -793,7 +880,7 @@ bool stereo_view_interactor::handle(event& e)
 ///
 void stereo_view_interactor::roll(cgv::render::view& view, double angle)
 {
-	view.set_view_up_dir(rotate(view.get_view_up_dir(), view.get_view_dir(), angle*.1745329252e-1));
+	view.set_view_up_dir(cgv::math::rotate(view.get_view_up_dir(), view.get_view_dir(), angle*.1745329252e-1));
 	on_rotation_change();
 }
 ///
@@ -808,8 +895,8 @@ void stereo_view_interactor::rotate_image_plane(cgv::render::view& view, double 
 		return;
 	z = (1/a) * z;
 	a *= .1745329252e-1;
-	view.set_view_dir(rotate(view.get_view_dir(), z, a));
-	view.set_view_up_dir(rotate(view.get_view_up_dir(), z, a));
+	view.set_view_dir(cgv::math::rotate(view.get_view_dir(), z, a));
+	view.set_view_up_dir(cgv::math::rotate(view.get_view_up_dir(), z, a));
 	on_rotation_change();
 }
 

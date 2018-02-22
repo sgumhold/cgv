@@ -22,7 +22,7 @@ class CGV_API view
 public:
 	typedef cgv::math::fvec<double,3> pnt_type;
 	typedef cgv::math::fvec<double,3> vec_type;
-public:
+protected:
 	/// focus of the view
 	pnt_type focus;
 	/// 
@@ -38,6 +38,18 @@ public:
 public:
 	/// construct a parallel view with focus in the world origin looking in negative z-direction and the y-direction as up-direction with an extent of +-1
 	view();
+
+	/// write access to focus point
+	pnt_type& ref_focus();
+	/// write access to view up direction
+	vec_type& ref_view_up_dir();
+	/// write access to view dir
+	vec_type& ref_view_dir();
+	/// write access to view angle
+	double& ref_y_view_angle();
+	/// write access to extent at focus
+	double& ref_y_extent_at_focus();
+
 	/**@name getter and setter methods*/
 	//@{
 	///

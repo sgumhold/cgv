@@ -11,6 +11,17 @@ view::view()
 {
 }
 
+/// write access to focus point
+view::pnt_type& view::ref_focus() { return focus; }
+/// write access to view up direction
+view::vec_type& view::ref_view_up_dir() { return view_up_dir; }
+/// write access to view dir
+view::vec_type& view::ref_view_dir() { return view_dir; }
+/// write access to view angle
+double& view::ref_y_view_angle() { return y_view_angle; }
+/// write access to extent at focus
+double& view::ref_y_extent_at_focus() { return y_extent_at_focus; }
+
 /// compute tan of half of y field of view angle
 double view::get_tan_of_half_of_fovy() const
 {

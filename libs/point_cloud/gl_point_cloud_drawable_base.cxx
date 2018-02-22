@@ -218,18 +218,39 @@ void gl_point_cloud_drawable_base::draw_points(context& ctx)
 		};
 		Pnt view_dir = view_ptr->get_view_dir();
 		std::vector<GLint> indices;
-		indices.resize(n);
-		size_t i;
-		for (i = 0; i < indices.size(); ++i)
-			indices[i] = (GLint)i + offset;
+		if (pc.has_components() && use_these_component_colors) {
+			unsigned nr = 0;
+			for (unsigned ci = 0; ci < pc.get_nr_components(); ++ci) {
+				if ((*use_these_component_colors)[ci][3] > 0.0f) {
+					unsigned off = pc.components[ci].index_of_first_point;
+					for (unsigned i = 0; i < pc.components[ci].nr_points; ++i)
+						indices.push_back((GLint)(off + i));
+				}
+			}
+		}
+		else {
+			indices.resize(n);
+			size_t i;
+			for (i = 0; i < indices.size(); ++i)
+				indices[i] = (GLint)i + offset;
+		}
 		std::sort(indices.begin(), indices.end(), sort_pred(pc, view_dir, show_point_step));
 
 		glDepthFunc(GL_ALWAYS);
-		glDrawElements(GL_POINTS, n, GL_UNSIGNED_INT, &indices[0]);
+		glDrawElements(GL_POINTS, indices.size(), GL_UNSIGNED_INT, &indices[0]);
 		glDepthFunc(GL_LESS);
 	}
 	else {
-		glDrawArrays(GL_POINTS, offset, n);
+		if (pc.has_components() && use_these_component_colors) {
+			for (unsigned ci = 0; ci < pc.get_nr_components(); ++ci) {
+				if ((*use_these_component_colors)[ci][3] > 0.0f) {
+					glDrawArrays(GL_POINTS, pc.components[ci].index_of_first_point, pc.components[ci].nr_points);
+				}
+			}
+		}
+		else {
+			glDrawArrays(GL_POINTS, offset, n);
+		}
 	}
 
 	p_renderer.disable(ctx);
