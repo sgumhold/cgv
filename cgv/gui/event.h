@@ -12,7 +12,8 @@ enum EventId
 {
 	EID_NONE, //!< undefined %event id
 	EID_KEY,  //!< id for key %event
-	EID_MOUSE //!< id for mouse %event
+	EID_MOUSE, //!< id for mouse %event
+	EID_PAD	   //!< id for game pad %event
 };
 
 /// flags
