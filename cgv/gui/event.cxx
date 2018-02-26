@@ -27,6 +27,12 @@ event::~event()
 {
 }
 
+/// return the device id, by default returns 0
+void* event::get_device_id() const
+{
+	return 0;
+}
+
 // convert a modifier combination into a readable string. 
 std::string get_modifier_string(unsigned char modifiers)
 {
@@ -135,8 +141,9 @@ void event::stream_out(std::ostream& os) const
 	const char* flag_strs[] = {
 		"", "Multi", "Drag&Drop", "Multi+Drag&Drop"
 	};
+	const char* kind_strs[] = { "none", "key", "mouse", "pad" };
 
-	os << "[" << time << "] ";
+	os << kind_strs[kind] << "[" << time << "] ";
 	if (get_toggle_keys() != 0) {
 		os << "(";
 		bool last = false;
@@ -159,8 +166,6 @@ void event::stream_out(std::ostream& os) const
 		os << ") ";
 	}
 	os << get_modifier_string(get_modifiers()).c_str();
-	if (kind != EID_KEY && kind != EID_MOUSE)
-		os << kind;
 	if (get_flags() != EF_NONE)
 		os << flag_strs[get_flags()] << " ";
 }

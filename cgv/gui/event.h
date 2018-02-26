@@ -1,5 +1,6 @@
 #pragma once
 
+#include <string>
 #include <iostream>
 
 #include "lib_begin.h"
@@ -65,10 +66,13 @@ public:
 	virtual void stream_out(std::ostream& os) const;
 	/// read from stream
 	virtual void stream_in(std::istream& is);
+	/// return the device id, by default returns 0
+	virtual void* get_device_id() const;
 	/// set the kind of the %event
 	void set_kind(unsigned char _kind);
 	/// return, what kind of %event this is, typically a value from the #EventId enum
 	unsigned get_kind() const;
+	/// return the 
 	/// set the event flags
 	void set_flags(unsigned char _flags);
 	/// return the event flags

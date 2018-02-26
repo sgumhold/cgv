@@ -64,7 +64,7 @@ protected:
 	bool auto_view_images;
 	bool show_focus;
 	bool clip_relative_to_extent;
-	double zoom_sensitivity, rotate_sensitivity;
+	double pan_sensitivity, zoom_sensitivity, rotate_sensitivity;
 
 
 	// members for screen shots
@@ -122,6 +122,15 @@ protected:
 	/// ensure sufficient number of viewport views
 	unsigned get_viewport_index(unsigned col_index, unsigned row_index) const;
 	void ensure_viewport_view_number(unsigned nr);
+
+	/**@name gamepad support*/
+	//@{
+	float deadzone;
+	unsigned gamepad_flags;
+	cgv::math::fvec<float,2> left_stick, right_stick, trigger;
+	bool gamepad_active;
+	void timer_event(double t, double dt);
+	//@}
 public:
 	///
 	stereo_view_interactor(const char* name);

@@ -1,5 +1,6 @@
 #include "stereo_view_interactor.h"
 #include <cgv/math/geom.h>
+#include <libs/cg_gamepad/gamepad_server.h>
 #include <cgv_reflect_types/math/fvec.h>
 #include <cgv/utils/scan.h>
 #include <cgv/utils/scan_enum.h>
@@ -72,10 +73,44 @@ double ext_view::get_parallax_zero_z() const
 	return (1.0 / (1.0 - parallax_zero_scale) - 1.0) * dot(get_focus() - get_eye(), view_dir);
 }
 
+void stereo_view_interactor::timer_event(double t, double dt)
+{
+	if (!gamepad_active)
+		return;
+	if (right_stick.length() > deadzone)
+		rotate_image_plane(*this, 5/rotate_sensitivity*right_stick[0], 5/rotate_sensitivity*right_stick[1]);
+	vec_type x, y, z;
+	put_coordinate_system(x, y, z);
+	if (left_stick.length() > deadzone) {
+		set_focus(get_focus() + 
+			 - 0.02f*(get_y_extent_at_focus()/pan_sensitivity*left_stick[0])*x
+			- 0.02f*(get_y_extent_at_focus()/pan_sensitivity*left_stick[1])*y);
+		update_vec_member(view::focus);
+		post_redraw();
+	}
+	float dtrig = trigger[1] - trigger[0];
+	if (fabs(dtrig) > deadzone) {
+		if ((gamepad_flags & gamepad::GBF_Y) != 0) {
+			set_focus(get_focus() - 0.2f*get_y_extent_at_focus()*dtrig*z / zoom_sensitivity);
+			update_vec_member(view::focus);
+		}
+		else {
+			set_y_extent_at_focus(get_y_extent_at_focus()*pow(2.0f, -0.5f*dtrig / zoom_sensitivity));
+			update_member(&y_extent_at_focus);
+		}
+		post_redraw();
+	}
+}
+
 ///
 stereo_view_interactor::stereo_view_interactor(const char* name) : node(name)
 {
 	last_do_viewport_splitting = do_viewport_splitting = false;
+	deadzone = 0.1f;
+	left_stick = right_stick = trigger = cgv::math::fvec<float, 2>(0, 0);
+	gamepad_active = false;
+	gamepad_flags = 0;
+	connect(cgv::gui::get_animation_trigger().shoot, this, &stereo_view_interactor::timer_event);
 
 	write_depth = false;
 	write_color = true;
@@ -98,7 +133,7 @@ stereo_view_interactor::stereo_view_interactor(const char* name) : node(name)
 	stereo_mouse_pointer = SMP_ARROW;
 	check_for_click = -1;
 	mono_mode = GLSU_CENTER;
-	zoom_sensitivity = rotate_sensitivity = 1;
+	pan_sensitivity = zoom_sensitivity = rotate_sensitivity = 1;
 	last_x = last_y = -1;
 }
 /// return the type name 
@@ -418,9 +453,21 @@ void stereo_view_interactor::set_view_orientation(const std::string& axes)
 /// overload and implement this method to handle events
 bool stereo_view_interactor::handle(event& e)
 {
-	if (e.get_kind() == EID_KEY) {
-		key_event ke = (key_event&) e;
-		if (ke.get_action() == KA_PRESS) {
+	if (e.get_kind() == EID_PAD) {
+		cgv::gui::gamepad_event& ge = (cgv::gui::gamepad_event&)e;
+		left_stick = cgv::math::fvec<float, 2>(ge.state.left_stick_position);
+		right_stick = cgv::math::fvec<float, 2>(ge.state.right_stick_position);
+		trigger = cgv::math::fvec<float, 2>(ge.state.trigger_position);
+		gamepad_flags = ge.state.button_flags;
+		if (left_stick.length() > deadzone || right_stick.length() > deadzone || fabs(trigger[1]-trigger[0]) > deadzone)
+			gamepad_active = true;
+		else
+			gamepad_active = false;
+		return true;
+	}
+	else if (e.get_kind() == EID_KEY) {
+			key_event ke = (key_event&) e;
+		if (ke.get_action() != KA_RELEASE) {
 			switch (ke.get_key()) {
 			case KEY_Space :
 				if (ke.get_modifiers() == EM_CTRL) {
@@ -429,6 +476,11 @@ bool stereo_view_interactor::handle(event& e)
 					return true;
 				}
 				break;
+			case gamepad::GPK_A :
+				show_focus = !show_focus;
+				update_member(&show_focus);
+				post_redraw();
+				return true;
 			case 'F' :
 				if (ke.get_modifiers() == EM_SHIFT)
 					z_far /= 1.05;
@@ -1317,8 +1369,9 @@ void stereo_view_interactor::create_gui()
 {
 	if (begin_tree_node("View Configuration", zoom_sensitivity, false)) {
 		align("\a");
-			add_member_control(this, "zoom_sensitivity", zoom_sensitivity, "value_slider", "min=0.1;max=10;ticks=true;step=0.01;log=true");
-			add_member_control(this, "rotate_sensitivity", rotate_sensitivity, "value_slider", "min=0.1;max=10;ticks=true;step=0.01;log=true");
+		add_member_control(this, "pan_sensitivity", pan_sensitivity, "value_slider", "min=0.1;max=10;ticks=true;step=0.01;log=true");
+		add_member_control(this, "zoom_sensitivity", zoom_sensitivity, "value_slider", "min=0.1;max=10;ticks=true;step=0.01;log=true");
+		add_member_control(this, "rotate_sensitivity", rotate_sensitivity, "value_slider", "min=0.1;max=10;ticks=true;step=0.01;log=true");
 			add_member_control(this, "show_focus", show_focus, "check");
 		align("\b");
 		end_tree_node(zoom_sensitivity);

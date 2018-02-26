@@ -16,11 +16,18 @@ void key_event::stream_out(std::ostream& os) const
 {
 	event::stream_out(os);
 	os << get_key_string(key).c_str();
-	if (action == KA_RELEASE)
-		os << " up";
-	else
+	switch (action) {
+	case KA_RELEASE: 
+		os << " up"; 
+		break;
+	case KA_PRESS:
 		if (get_char())
 			os << " = '" << get_char() << "'";
+		break;
+	case KA_REPEAT:
+		os << " repeat ";
+		break;
+	}
 }
 
 // read from stream

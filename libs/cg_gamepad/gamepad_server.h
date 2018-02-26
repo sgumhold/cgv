@@ -31,16 +31,14 @@ namespace cgv {
 		/// the gamepad event is triggered whenever a gamepad state changes
 		class CGV_API gamepad_event : public cgv::gui::event
 		{
-		protected:
+		public:
 			/// store id of gamepad
 			void* device_id;
-			/// 
+			/// public access to game state allows skipping of library dependency
 			gamepad::gamepad_state state;
 		public:
 			/// construct a gamepad event
 			gamepad_event(void* _device_id, const gamepad::gamepad_state& state);
-			/// return reference to game stae
-			const gamepad::gamepad_state& get_state() const;
 			/// return the device id, by default returns 0
 			void* get_device_id() const;
 			/// write to stream

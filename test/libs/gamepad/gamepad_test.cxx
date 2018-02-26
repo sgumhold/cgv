@@ -40,7 +40,8 @@ int main(int argc, char** argv)
 		std::cout << std::endl;
 		++device_index;
 	}
-	unsigned last_time_stamp = 0;
+	// keep one time stamp per device
+	std::vector<unsigned> last_time_stamps(device_infos.size(), 0);
 	gamepad_key_event gpk;
 	gamepad_state state;
 	while (true) {
@@ -49,11 +50,12 @@ int main(int argc, char** argv)
 			// if state query unsuccessful rescan devices and stop this for loop
 			if (!get_state(device_index, state)) {
 				scan_devices();
+				last_time_stamps.resize(device_infos.size());
 				break;
 			}
 			// only show state in case of time stamp change
-			if (state.time_stamp != last_time_stamp) {
-				last_time_stamp = state.time_stamp;
+			if (state.time_stamp != last_time_stamps[device_index]) {
+				last_time_stamps[device_index] = state.time_stamp;
 				std::cout << "state[" << device_index << "] LS("
 					<< state.left_stick_position[0] << "x" << state.left_stick_position[1] << ") RS("
 					<< state.right_stick_position[0] << "x" << state.right_stick_position[1] << ") T("

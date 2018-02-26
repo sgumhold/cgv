@@ -2,6 +2,7 @@
 #include <cgv/gui/application.h>
 #include <cgv/signal/rebind.h>
 #include <cgv/gui/trigger.h>
+#include <iomanip>
 
 namespace cgv {
 	namespace gui {
@@ -49,11 +50,6 @@ namespace cgv {
 		{
 			flags = EF_MULTI;
 		}
-		/// return reference to game stae
-		const gamepad::gamepad_state& gamepad_event::get_state() const
-		{
-			return state;
-		}
 		/// return the device id, by default returns 0
 		void* gamepad_event::get_device_id() const
 		{
@@ -63,10 +59,17 @@ namespace cgv {
 		void gamepad_event::stream_out(std::ostream& os) const
 		{
 			event::stream_out(os);
-			os << " pad[" << device_id << "] LS("
-				<< state.left_stick_position[0] << "x" << state.left_stick_position[1] << ") RS("
-				<< state.right_stick_position[0] << "x" << state.right_stick_position[1] << ") T("
-				<< state.trigger_position[0] << "|" << state.trigger_position[1] << ")";
+			unsigned i = (unsigned&)device_id;
+
+			os << "id=" << i << " ";
+			os << std::setprecision(2) << std::fixed
+			   << state.trigger_position[0] << "|"
+			   << std::showpos << state.left_stick_position[0] << "x"
+			   << state.left_stick_position[1] << " <-> "
+			   << std::noshowpos << state.trigger_position[1] << "|"
+			   << std::showpos << state.right_stick_position[0] << "x"
+			   << state.right_stick_position[1] << std::noshowpos
+			   << std::setprecision(6) << std::resetiosflags(std::ios::fixed);
 			if (state.button_flags > 0)
 				os << " flags=" << convert_flags_to_string(gamepad::GamepadButtonStateFlags(state.button_flags));
 		}
