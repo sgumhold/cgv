@@ -15,7 +15,7 @@ float convert(WORD value) { return (float)value / 65535; }
 // encode user index in handle
 void* get_handle(int user_index)
 {
-	void* device_handle;
+	void* device_handle = 0;
 	(int&)device_handle = user_index;
 	return device_handle;
 }

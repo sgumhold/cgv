@@ -48,7 +48,8 @@ namespace gamepad {
 			"RIGHT_STICK_DOWNRIGHT",
 			"RIGHT_STICK_DOWNLEFT"
 		};
-		return key < 33 ? gamepad_key_names[key] : "UNKNOWN";
+		int index = key - (int)GPK_UNKNOWN;
+		return index < 33 ? gamepad_key_names[index] : "UNKNOWN";
 	}
 
 	/// convert flags to string

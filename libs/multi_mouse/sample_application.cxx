@@ -54,17 +54,17 @@ void sample_application::init_mice(int w, int h)
 	int r = 20;
 	for (unsigned i=0; i<mice.size(); ++i) {
 		double a = 2*3.14*i/mice.size();
-		set_mouse_rectangle(mice[i].id,0,w,0,h);
-		set_mouse_position(mice[i].id,(int)(w/2+r*cos(a)),(int)(h/2+r*sin(a)));
+		set_mouse_rectangle(mice[i].device_id,0,w,0,h);
+		set_mouse_position(mice[i].device_id,(int)(w/2+r*cos(a)),(int)(h/2+r*sin(a)));
 	}
 }
 
-void sample_application::process_mouse_change_event(bool attach, void* id, int w, int h)
+void sample_application::process_mouse_change_event(bool attach, void* device_id, int w, int h)
 {
 	if (attach)
-		cout << "attached " << id << endl;
+		cout << "attached " << device_id << endl;
 	else
-		cout << "detached " << id << endl;
+		cout << "detached " << device_id << endl;
 	mice.clear();
 	mice_drawings.clear();
 	init_mice(w, h);
@@ -74,10 +74,10 @@ bool sample_application::handle_mouse_event(const multi_mouse_event& mme)
 {
 	switch (mme.get_action()) {
 	case MA_PRESS:
-		mice_drawings[mme.get_id()].add_point(mme.get_x(),mme.get_y());
+		mice_drawings[mme.get_device_id()].add_point(mme.get_x(),mme.get_y());
 		break;
 	case MA_DRAG:
-		mice_drawings[mme.get_id()].add_line(mme.get_x(),mme.get_y(),mme.get_dx(),mme.get_dy());
+		mice_drawings[mme.get_device_id()].add_line(mme.get_x(),mme.get_y(),mme.get_dx(),mme.get_dy());
 		break;
 	default:
 		return false;
@@ -102,14 +102,14 @@ void sample_application::draw_scene(double time)
 	unsigned i;
 	for (i=0; i<mice.size(); ++i) {
 		glColor3fv(colors+3*(i%7));
-		mice_drawings[mice[i].id].render();
+		mice_drawings[mice[i].device_id].render();
 	}
 	// draw mouse pointers in different colors
 	glPushAttrib(GL_DEPTH_BUFFER_BIT);
 	glDisable(GL_DEPTH_TEST);
 	for (i=0; i<mice.size(); ++i) {
 		int x,y;
-		get_mouse_position(mice[i].id, x, y);
+		get_mouse_position(mice[i].device_id, x, y);
 		glColor3fv(colors+3*(i%7));
 		c.draw(x,y,true,c.get_step_frame(c.find_step_index(time)));
 	}

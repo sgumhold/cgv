@@ -68,7 +68,7 @@ namespace gamepad {
 	//@{
 	/// see https://upload.wikimedia.org/wikipedia/commons/2/2c/360_controller.svg for an explanation of the keys
 	enum GamepadKeys {
-		GPK_UNKNOWN,
+		GPK_UNKNOWN = 512,
 
 		GPK_A,
 		GPK_B,

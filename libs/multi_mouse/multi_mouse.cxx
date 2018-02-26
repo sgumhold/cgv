@@ -65,13 +65,13 @@ multi_mouse_event::multi_mouse_event(int x, int y, MouseAction _action, unsigned
 									 short _dx, short _dy, unsigned char _modifiers, unsigned char _toggle_keys, double _time)
 									 : mouse_event(x,y,_action,_button_state,_button,_dx,_dy,_modifiers,_toggle_keys,_time)
 {
-	id = 0;
+	device_id = 0;
 }
 /// write to stream
 void multi_mouse_event::stream_out(std::ostream& os) const
 {
 	mouse_event::stream_out(os);
-	os << "{" << id << "}";
+	os << "{" << device_id << "}";
 }
 
 /// read from stream
@@ -79,20 +79,20 @@ void multi_mouse_event::stream_in(std::istream& is)
 {
 	mouse_event::stream_in(is);
 	is.get();
-	is >> id;
+	is >> device_id;
 	is.get();
 }
 
 /// return id of mouse
-void* multi_mouse_event::get_id() const
+void* multi_mouse_event::get_device_id() const
 {
-	return id;
+	return device_id;
 }
 
 /// set the id
-void multi_mouse_event::set_id(void* _id)
+void multi_mouse_event::set_device_id(void* _device_id)
 {
-	id = _id;
+	device_id = _device_id;
 }
 
 std::vector<multi_mouse_handler*>& ref_multi_mouse_handlers()
@@ -122,10 +122,10 @@ void emit_multi_mouse_event(const multi_mouse_event& mme)
 		ref_multi_mouse_handlers()[i]->handle_multi_mouse(mme);
 }
 
-void emit_multi_mouse_device_change_event(bool attach, void* id)
+void emit_multi_mouse_device_change_event(bool attach, void* device_id)
 {
 	for (unsigned i=0; i<ref_multi_mouse_handlers().size(); ++i)
-		ref_multi_mouse_handlers()[i]->on_mouse_device_change(attach,id);
+		ref_multi_mouse_handlers()[i]->on_mouse_device_change(attach, device_id);
 }
 
 
@@ -176,7 +176,7 @@ bool scan_mouse_devices(std::vector<mouse_info>& mis)
 		std::string type;
 		if (device_list[i].dwType == RIM_TYPEMOUSE) {
 			mis.push_back(mouse_info());
-			mis.back().id = device_list[i].hDevice;
+			mis.back().device_id = device_list[i].hDevice;
 
 			RID_DEVICE_INFO info;
 			info.cbSize = size = sizeof(RID_DEVICE_INFO);
