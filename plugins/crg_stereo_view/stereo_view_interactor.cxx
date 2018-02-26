@@ -77,14 +77,14 @@ void stereo_view_interactor::timer_event(double t, double dt)
 {
 	if (!gamepad_active)
 		return;
-	if (right_stick.length() > deadzone)
-		rotate_image_plane(*this, 5/rotate_sensitivity*right_stick[0], 5/rotate_sensitivity*right_stick[1]);
+	if (left_stick.length() > deadzone)
+		rotate_image_plane(*this, 5/rotate_sensitivity*left_stick[0], 5/rotate_sensitivity*left_stick[1]);
 	vec_type x, y, z;
 	put_coordinate_system(x, y, z);
-	if (left_stick.length() > deadzone) {
+	if (right_stick.length() > deadzone) {
 		set_focus(get_focus() + 
-			 - 0.02f*(get_y_extent_at_focus()/pan_sensitivity*left_stick[0])*x
-			- 0.02f*(get_y_extent_at_focus()/pan_sensitivity*left_stick[1])*y);
+			 - 0.02f*(get_y_extent_at_focus()/pan_sensitivity*right_stick[0])*x
+			- 0.02f*(get_y_extent_at_focus()/pan_sensitivity*right_stick[1])*y);
 		update_vec_member(view::focus);
 		post_redraw();
 	}
@@ -95,7 +95,7 @@ void stereo_view_interactor::timer_event(double t, double dt)
 			update_vec_member(view::focus);
 		}
 		else {
-			set_y_extent_at_focus(get_y_extent_at_focus()*pow(2.0f, -0.5f*dtrig / zoom_sensitivity));
+			set_y_extent_at_focus(get_y_extent_at_focus()*pow(2.0f, -0.1f*dtrig / zoom_sensitivity));
 			update_member(&y_extent_at_focus);
 		}
 		post_redraw();
@@ -531,6 +531,22 @@ bool stereo_view_interactor::handle(event& e)
 					post_redraw();
 					return true;
 				}
+				break;
+			case gamepad::GPK_DPAD_RIGHT:
+				set_view_orientation("xy"); 
+				return true;
+				break;
+			case gamepad::GPK_DPAD_LEFT:
+				set_view_orientation("Xy"); 
+				return true;
+				break;
+			case gamepad::GPK_DPAD_UP:
+				set_view_orientation("yz"); 
+				return true;
+				break;
+			case gamepad::GPK_DPAD_DOWN:
+				set_view_orientation("Yz"); 
+				return true;
 				break;
 			case 'X':
 				if (ke.get_modifiers() == (cgv::gui::EM_SHIFT | cgv::gui::EM_CTRL))
