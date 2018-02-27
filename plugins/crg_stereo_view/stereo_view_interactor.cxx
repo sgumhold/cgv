@@ -77,29 +77,55 @@ void stereo_view_interactor::timer_event(double t, double dt)
 {
 	if (!gamepad_active)
 		return;
-	if (left_stick.length() > deadzone)
-		rotate_image_plane(*this, 5/rotate_sensitivity*left_stick[0], 5/rotate_sensitivity*left_stick[1]);
 	vec_type x, y, z;
 	put_coordinate_system(x, y, z);
-	if (right_stick.length() > deadzone) {
-		set_focus(get_focus() + 
-			 - 0.02f*(get_y_extent_at_focus()/pan_sensitivity*right_stick[0])*x
-			- 0.02f*(get_y_extent_at_focus()/pan_sensitivity*right_stick[1])*y);
-		update_vec_member(view::focus);
-		post_redraw();
-	}
-	float dtrig = trigger[1] - trigger[0];
-	if (fabs(dtrig) > deadzone) {
-		if ((gamepad_flags & gamepad::GBF_Y) != 0) {
-			set_focus(get_focus() - 0.2f*get_y_extent_at_focus()*dtrig*z / zoom_sensitivity);
+	if (left_stick.length() > deadzone) {
+		if ((gamepad_flags & gamepad::GBF_LEFT_STICK) != 0) {
+			set_focus(get_focus() +
+				-dt*(get_y_extent_at_focus() / pan_sensitivity*left_stick[0])*x
+				- dt*(get_y_extent_at_focus() / pan_sensitivity*left_stick[1])*y);
 			update_vec_member(view::focus);
 		}
 		else {
-			set_y_extent_at_focus(get_y_extent_at_focus()*pow(2.0f, -0.1f*dtrig / zoom_sensitivity));
-			update_member(&y_extent_at_focus);
+			rotate_image_plane(*this, 200 * dt / rotate_sensitivity*left_stick[0], 200 * dt / rotate_sensitivity*left_stick[1]);
 		}
 		post_redraw();
 	}
+	if (right_stick.length() > deadzone) {
+		if ((gamepad_flags & gamepad::GBF_RIGHT_STICK) != 0) {
+			if (fabs(right_stick[0]) > fabs(right_stick[1])) {
+				set_y_view_angle(get_y_view_angle() + 200 * dt / zoom_sensitivity*right_stick[0]);
+				if (get_y_view_angle() < 1)
+					set_y_view_angle(1);
+				if (get_y_view_angle() > 160)
+					set_y_view_angle(160);
+				update_member(&y_view_angle);
+			}
+			else {
+				set_focus(get_focus() - 20 * dt*get_y_extent_at_focus()*right_stick[1] * z / zoom_sensitivity);
+				update_vec_member(view::focus);
+			}
+		}
+		else {
+			if (fabs(right_stick[0]) > fabs(right_stick[1])) {
+				roll(*this, -200 * dt / rotate_sensitivity*right_stick[0]);
+				update_member(&view_up_dir);
+			}
+			else {
+				set_y_extent_at_focus(get_y_extent_at_focus()*pow(2.0f, -10 * dt*right_stick[1] / zoom_sensitivity));
+				update_member(&y_extent_at_focus);
+			}
+		}
+		post_redraw();
+	}
+	/*
+	float dtrig = trigger[1] - trigger[0];
+	if (fabs(dtrig) > deadzone) {
+		set_focus(get_focus() - 20*dt*get_y_extent_at_focus()*dtrig*z / zoom_sensitivity);
+		update_vec_member(view::focus);
+		post_redraw();
+	}
+	*/
 }
 
 ///
@@ -147,7 +173,7 @@ void stereo_view_interactor::stream_help(std::ostream& os)
 {
 	os << "stereo_view_interactor:\n\a"
 		<< "stereo[F4], stereo mode[s-F4], z_near<s-N,N>, z_far<s-F,F>, select view dir{c-X|Y|Z,sc-X|Y|Z}\n"
-		<< "view all{c-Spc}, set focus{click LMB}, move<RMB>, move forward<MMB>, rotate<LMB>, roll<s-LMB>";
+		<< "view all{c-Spc}, set focus{click LMB}, pan<RMB>, zoom<MMB>, rotate<LMB>, roll<s-LMB>";
 	if (fix_view_up_dir)
 		os << " disabled";
 	os << "\n";
@@ -469,7 +495,11 @@ bool stereo_view_interactor::handle(event& e)
 			key_event ke = (key_event&) e;
 		if (ke.get_action() != KA_RELEASE) {
 			switch (ke.get_key()) {
-			case KEY_Space :
+			case gamepad::GPK_START:
+				set_default_view();
+				post_redraw();
+				return true;
+			case KEY_Space:
 				if (ke.get_modifiers() == EM_CTRL) {
 					set_default_view();
 					post_redraw();
@@ -541,11 +571,19 @@ bool stereo_view_interactor::handle(event& e)
 				return true;
 				break;
 			case gamepad::GPK_DPAD_UP:
-				set_view_orientation("yz"); 
+				set_view_orientation("yz");
 				return true;
 				break;
 			case gamepad::GPK_DPAD_DOWN:
-				set_view_orientation("Yz"); 
+				set_view_orientation("Yz");
+				return true;
+				break;
+			case gamepad::GPK_LEFT_BUMPER:
+				set_view_orientation("zy");
+				return true;
+				break;
+			case gamepad::GPK_RIGHT_BUMPER:
+				set_view_orientation("Zy");
 				return true;
 				break;
 			case 'X':
