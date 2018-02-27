@@ -126,6 +126,8 @@ protected:
 	/**@name gamepad support*/
 	//@{
 	float deadzone;
+	int left_mode, right_mode;
+	bool gamepad_attached;
 	unsigned gamepad_flags;
 	cgv::math::fvec<float,2> left_stick, right_stick, trigger;
 	bool gamepad_active;

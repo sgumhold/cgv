@@ -103,7 +103,9 @@ namespace gamepad {
 		GPK_RIGHT_STICK_UPLEFT,
 		GPK_RIGHT_STICK_UPRIGHT,
 		GPK_RIGHT_STICK_DOWNRIGHT,
-		GPK_RIGHT_STICK_DOWNLEFT
+		GPK_RIGHT_STICK_DOWNLEFT,
+		GPK_END,
+		GPK_BEGIN = GPK_A
 	};
 	/// convert key to string
 	extern CGV_API std::string convert_key_to_string(unsigned short key);

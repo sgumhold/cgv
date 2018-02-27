@@ -89,7 +89,7 @@ namespace cgv {
 			void try_to_connect()
 			{
 				if (!is_connected) {
-					if (get_animation_trigger().is_scheduled()) {
+					if (get_trigger_server()) {
 						is_connected = true;
 						cgv::signal::connect(get_animation_trigger().shoot, this, &animation_manager::timer_event);
 					}
