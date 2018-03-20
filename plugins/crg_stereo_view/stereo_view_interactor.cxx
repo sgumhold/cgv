@@ -73,22 +73,103 @@ double ext_view::get_parallax_zero_z() const
 	return (1.0 / (1.0 - parallax_zero_scale) - 1.0) * dot(get_focus() - get_eye(), view_dir);
 }
 
+void stereo_view_interactor::check_emulation_active()
+{
+	emulation_active = false;
+	for (unsigned i = 0; i < 6; ++i) {
+		if (plus_key_values[i] > 0 || plus_key_down[i] || minus_key_values[i] > 0 || minus_key_down[i]) {
+			emulation_active = true;
+			return;
+		}
+	}
+}
+
+void stereo_view_interactor::plus_key_action(int i, cgv::gui::KeyAction action)
+{
+	switch (action) {
+	case cgv::gui::KA_RELEASE :
+		plus_key_toggle_time[i] = cgv::gui::trigger::get_current_time();
+		plus_key_down[i] = false;
+		break;
+	case cgv::gui::KA_PRESS:
+		plus_key_toggle_time[i] = cgv::gui::trigger::get_current_time();
+		plus_key_down[i] = true;
+		break;
+	case cgv::gui::KA_REPEAT:
+		plus_key_down[i] = true;
+		break;
+	}
+	check_emulation_active();
+}
+void stereo_view_interactor::minus_key_action(int i, cgv::gui::KeyAction action)
+{
+	switch (action) {
+	case cgv::gui::KA_RELEASE:
+		minus_key_toggle_time[i] = cgv::gui::trigger::get_current_time();
+		minus_key_down[i] = false;
+		break;
+	case cgv::gui::KA_PRESS:
+		minus_key_toggle_time[i] = cgv::gui::trigger::get_current_time();
+		minus_key_down[i] = true;
+		break;
+	case cgv::gui::KA_REPEAT:
+		minus_key_down[i] = true;
+		break;
+	}
+	check_emulation_active();
+}
+
 void stereo_view_interactor::timer_event(double t, double dt)
 {
-	if (!gamepad_active)
-		return;
+	if (emulation_active) {
+		unsigned i;
+		// update key values
+		for (i = 0; i < 6; ++i) {
+			if (plus_key_down[i] || plus_key_values[i] > 0) {
+				double dt = t - plus_key_toggle_time[i];
+				if (!plus_key_down[i])
+					dt = -dt;
+				plus_key_values[i] += (float)(0.2*dt);
+				if (plus_key_values[i] > 1)
+					plus_key_values[i] = 1;
+				if (plus_key_values[i] < 0)
+					plus_key_values[i] = 0;
+			}
+			if (minus_key_down[i] || minus_key_values[i] > 0) {
+				double dt = t - minus_key_toggle_time[i];
+				if (!minus_key_down[i])
+					dt = -dt;
+				minus_key_values[i] += (float)(0.2*dt);
+				if (minus_key_values[i] > 1)
+					minus_key_values[i] = 1;
+				if (minus_key_values[i] < 0)
+					minus_key_values[i] = 0;
+			}
+			emulation_axes[i] = plus_key_values[i] - minus_key_values[i];
+		}
+		left_stick[0] = emulation_axes[0];
+		left_stick[1] = emulation_axes[1];
+		right_stick[0] = emulation_axes[2];
+		right_stick[1] = emulation_axes[3];
+		check_emulation_active();
+	}
+	else {
+		if (!gamepad_active)
+			return;
+	}
 	vec_type x, y, z;
 	put_coordinate_system(x, y, z);
 	if (left_stick.length() > deadzone) {
 		float mode_sign = (right_mode == 1 ? -1.0f : 1.0f);
 		switch (left_mode) {
 		case 0:
-			rotate_image_plane(*this, 200 * dt / rotate_sensitivity*left_stick[0], mode_sign*200 * dt / rotate_sensitivity*left_stick[1]);
+			rotate(4 * mode_sign*dt / rotate_sensitivity*left_stick[1], 
+				  -4 *           dt / rotate_sensitivity*left_stick[0], right_mode == 1 ? 0.0 : get_depth_of_focus());
+			on_rotation_change();
 			break;
 		case 1:
-			set_focus(get_focus() +
-				-mode_sign*5*dt*(get_y_extent_at_focus() / pan_sensitivity*left_stick[0])*x
-				- mode_sign*5*dt*(get_y_extent_at_focus() / pan_sensitivity*left_stick[1])*y);
+			pan(-5 * mode_sign*dt*get_y_extent_at_focus() / pan_sensitivity*left_stick[0],
+				-5 * mode_sign*dt*get_y_extent_at_focus() / pan_sensitivity*left_stick[1] );
 			update_vec_member(view::focus);
 			break;
 		}
@@ -98,11 +179,11 @@ void stereo_view_interactor::timer_event(double t, double dt)
 		switch (right_mode) {
 		case 0 :
 			if (fabs(right_stick[0]) > fabs(right_stick[1])) {
-				roll(*this, -200 * dt / rotate_sensitivity*right_stick[0]);
-				update_member(&view_up_dir);
+				roll(-4 * dt / rotate_sensitivity*right_stick[0]);
+				on_rotation_change();
 			}
 			else {
-				set_y_extent_at_focus(get_y_extent_at_focus()*pow(2.0f, -10 * dt*right_stick[1] / zoom_sensitivity));
+				zoom(pow(2.0f, -10 * dt*right_stick[1] / zoom_sensitivity));
 				update_member(&y_extent_at_focus);
 			}
 			break;
@@ -128,6 +209,18 @@ void stereo_view_interactor::timer_event(double t, double dt)
 ///
 stereo_view_interactor::stereo_view_interactor(const char* name) : node(name)
 {
+	gamepad_emulation = false;
+	emulation_active = false;
+	for (unsigned i = 0; i < 6; ++i) {
+		emulation_axes[i] = 0;
+		plus_key_values[i] = 0;
+		plus_key_down[i] = false;
+		plus_key_toggle_time[i] = 0;
+		minus_key_values[i] = 0;
+		minus_key_toggle_time[i] = 0;
+		minus_key_down[i] = false;
+	}
+
 	last_do_viewport_splitting = do_viewport_splitting = false;
 	deadzone = 0.03f;
 	gamepad_attached = false;
@@ -208,6 +301,12 @@ void stereo_view_interactor::stream_stats(std::ostream& os)
 		get_element(SM_ENUMS, stereo_mode, ',').c_str(), eye_distance);
 	if (gamepad_attached) {
 		oprintf(os, "\nleft:%s, right:%s", (left_mode == 0 ? "rotate" : "pan"), (right_mode == 0 ? "roll|zoom" : "move|dolly"));
+	}
+	if (emulation_active) {
+		os << "\nEMU:";
+		for (unsigned i = 0; i < 6; ++i) {
+			os << " " << emulation_axes[i];
+		}
 	}
 	os << "\b\n";
 }
@@ -514,13 +613,43 @@ bool stereo_view_interactor::handle(event& e)
 				}
 			}
 		}
+		if (gamepad_emulation) {
+			switch (ke.get_key()) {
+			case 'A':
+				plus_key_action(0, ke.get_action());
+				return true;
+			case 'D':
+				minus_key_action(0, ke.get_action());
+				return true;
+			case 'W':
+				plus_key_action(1, ke.get_action());
+				return true;
+			case 'X':
+				minus_key_action(1, ke.get_action());
+				return true;
+			case 'H':
+				plus_key_action(2, ke.get_action());
+				return true;
+			case 'K':
+				minus_key_action(2, ke.get_action());
+				return true;
+			case 'U':
+				plus_key_action(3, ke.get_action());
+				return true;
+			case 'M':
+				minus_key_action(3, ke.get_action());
+				return true;
+			}
+		}
 		if (ke.get_action() != KA_RELEASE) {
 			switch (ke.get_key()) {
+			case 'S':
 			case gamepad::GPK_LEFT_STICK_PRESS:
 				left_mode = 1 - left_mode;
 				update_member(&left_mode);
 				post_redraw();
 				return true;
+			case 'J' :
 			case gamepad::GPK_RIGHT_STICK_PRESS:
 				right_mode = 1 - right_mode;
 				update_member(&right_mode);
@@ -537,6 +666,7 @@ bool stereo_view_interactor::handle(event& e)
 					return true;
 				}
 				break;
+			case 'G':
 			case gamepad::GPK_A :
 				show_focus = !show_focus;
 				update_member(&show_focus);
@@ -760,7 +890,7 @@ bool stereo_view_interactor::handle(event& e)
 			if (me.get_button_state() == MB_LEFT_BUTTON && me.get_modifiers() == 0) {
 				if(!two_d_enabled)
 				{
-					rotate_image_plane(*view_ptr, 360.0*me.get_dx() / width / rotate_sensitivity, -360.0*me.get_dy() / height / rotate_sensitivity);
+					view_ptr->rotate(-6.0*me.get_dy() / height / rotate_sensitivity, -6.0*me.get_dx() / width / rotate_sensitivity, view_ptr->get_depth_of_focus());
 					update_vec_member(view_up_dir);
 					update_vec_member(view_dir);
 					post_redraw();
@@ -774,7 +904,7 @@ bool stereo_view_interactor::handle(event& e)
 								 ((double)rx*(double)rx+(double)ry*(double)ry));
 				if (rx*me.get_dy() > ry*me.get_dx())
 					ds = -ds;
-				roll(*view_ptr, 56.3*ds/rotate_sensitivity);
+				view_ptr->roll(ds/rotate_sensitivity);
 				update_vec_member(view_up_dir);
 				post_redraw();
 				return true;
@@ -844,29 +974,6 @@ bool stereo_view_interactor::handle(event& e)
 		}
 	}
 	return false;
-}
-
-///
-void stereo_view_interactor::roll(cgv::render::view& view, double angle)
-{
-	view.set_view_up_dir(cgv::math::rotate(view.get_view_up_dir(), view.get_view_dir(), angle*.1745329252e-1));
-	on_rotation_change();
-}
-///
-void stereo_view_interactor::rotate_image_plane(cgv::render::view& view, double ax, double ay)
-{
-	
-	vec_type x,y,z;
-	view.put_coordinate_system(x,y,z);
-	z = ay*x-ax*y;
-	double a = z.length();
-	if (a < 1e-6)
-		return;
-	z = (1/a) * z;
-	a *= .1745329252e-1;
-	view.set_view_dir(cgv::math::rotate(view.get_view_dir(), z, a));
-	view.set_view_up_dir(cgv::math::rotate(view.get_view_up_dir(), z, a));
-	on_rotation_change();
 }
 
 void stereo_view_interactor::on_rotation_change()
@@ -1454,6 +1561,7 @@ void stereo_view_interactor::create_gui()
 {
 	if (begin_tree_node("View Configuration", zoom_sensitivity, false)) {
 		align("\a");
+		add_member_control(this, "gamepad_emulation", gamepad_emulation, "toggle");
 		add_member_control(this, "pan_sensitivity", pan_sensitivity, "value_slider", "min=0.1;max=10;ticks=true;step=0.01;log=true");
 		add_member_control(this, "zoom_sensitivity", zoom_sensitivity, "value_slider", "min=0.1;max=10;ticks=true;step=0.01;log=true");
 		add_member_control(this, "rotate_sensitivity", rotate_sensitivity, "value_slider", "min=0.1;max=10;ticks=true;step=0.01;log=true");

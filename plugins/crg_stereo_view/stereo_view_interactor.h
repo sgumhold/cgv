@@ -3,6 +3,7 @@
 #include <cgv/render/drawable.h>
 #include <cgv_gl/gl/gl_view.h>
 #include <cgv/gui/event_handler.h>
+#include <cgv/gui/key_event.h>
 #include <cgv/gui/provider.h>
 #include <cgv/reflect/reflect_enum.h>
 #include <cgv_gl/gl/gl.h>
@@ -131,6 +132,21 @@ protected:
 	unsigned gamepad_flags;
 	cgv::math::fvec<float,2> left_stick, right_stick, trigger;
 	bool gamepad_active;
+
+	bool gamepad_emulation;
+	bool emulation_active;
+	float emulation_axes[6];
+	float plus_key_values[6];
+	bool plus_key_down[6];
+	double plus_key_toggle_time[6];
+	float minus_key_values[6];
+	double minus_key_toggle_time[6];
+	bool minus_key_down[6];
+	void check_emulation_active();
+	void plus_key_action(int i, cgv::gui::KeyAction action);
+	void minus_key_action(int i, cgv::gui::KeyAction action);
+
+
 	void timer_event(double t, double dt);
 	//@}
 public:
@@ -220,10 +236,6 @@ public:
 	std::string get_menu_path() const;
 	/// you must overload this for gui creation
 	void create_gui();
-	///
-	void roll(cgv::render::view& view, double angle);
-	///
-	void rotate_image_plane(cgv::render::view& view, double ax, double ay);
 
 	void set_z_near(double z);
 	void set_z_far(double z);

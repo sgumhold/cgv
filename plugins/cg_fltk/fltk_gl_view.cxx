@@ -822,7 +822,7 @@ int fltk_gl_view::handle(int ei)
 	case fltk::UNFOCUS: 
 		return 1;
 	case fltk::KEY :
-		if (dispatch_event(cgv_key_event(fltk::event_key_repeated() ? KA_PRESS : KA_REPEAT)))
+		if (dispatch_event(cgv_key_event(fltk::event_key_repeated() ? KA_REPEAT : KA_PRESS)))
 			return 1;
 		break;
 	case fltk::KEYUP :

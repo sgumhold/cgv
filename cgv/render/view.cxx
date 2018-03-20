@@ -32,10 +32,10 @@ int view::compute_axis_and_angle(const vec_type& target_view_dir, const vec_type
 	return cgv::math::decompose_rotation_to_axis_and_angle(R, axis, angle);
 }
 
-/// compute tan of half of y field of view angle
-double view::get_tan_of_half_of_fovy() const
+/// compute tan of half of y view angle, if ensure_non_zero is true, replace y view angles < 0.1 with 0.1
+double view::get_tan_of_half_of_fovy(bool ensure_non_zero) const
 {
-	return tan(.008726646260*(y_view_angle <= 0.01 ? 0.01 : y_view_angle));
+	return tan(.008726646260*((ensure_non_zero && (y_view_angle <= 0.01)) ? 0.01 : y_view_angle));
 }
 
 ///
@@ -63,11 +63,16 @@ double view::get_y_extent_at_focus() const
 {
 	return y_extent_at_focus;
 }
+/// return the depth of the focus point
+double view::get_depth_of_focus() const
+{
+	return 0.5*y_extent_at_focus / get_tan_of_half_of_fovy(true);
+}
 
 ///
-double view::get_y_extent_at_depth(double depth) const
+double view::get_y_extent_at_depth(double depth, bool ensure_non_zero) const
 {
-	return 2.0*depth*get_tan_of_half_of_fovy();
+	return 2.0*depth*get_tan_of_half_of_fovy(ensure_non_zero);
 }
 
 /// 
@@ -108,26 +113,45 @@ bool view::is_parallel() const
 {
 	return y_view_angle == 0;
 }
-/// return the eye point, which is only valid if the view is not parallel
+
+//! query the eye point, which is computed from focus, view dir, y extent at focus and y view angle
+/*! With the y view angle approaching 0, the eye point moves infinitely far away. To avoid
+numerical problems, the eye point is computed with an y view angle no less than 0.1.*/
 const view::pnt_type view::get_eye() const
 {
-	return focus - (0.5*y_extent_at_focus / get_tan_of_half_of_fovy())*view_dir;
+	return focus - (0.5*y_extent_at_focus / get_tan_of_half_of_fovy(true))*view_dir;
 }
 
-/// set the view dir and y-extent at focus such that get_eye() returns the passed point. This does not work in case that the eye point is identical to the focus point.
-void view::set_eye_keep_view_angle(const pnt_type& eye)
+//! set the view dir and y extent at focus keeping focus and y view angle such that get_eye() returns the passed point, return whether this was successful.
+/*! Recomputes view up direction to make it orthogonal to view direction.
+In the case that the eye point is identical to the current focus point the function fails and returns false.
+If the current view angle is < 0.1, the view anlge 0.1 is used for eye point calculation */
+bool view::set_eye_keep_view_angle(const pnt_type& eye)
 {
-	view_dir = focus-eye;
-	y_extent_at_focus = get_y_extent_at_depth(view_dir.length());
-	view_dir.normalize();
+	pnt_type new_view_dir = focus - eye;
+	pnt_type::value_type l = new_view_dir.length();
+	if (l < 10 * std::numeric_limits<pnt_type::value_type>::epsilon())
+		return false;
+	pnt_type::value_type inv_l = pnt_type::value_type(1) / l;
+	view_dir = inv_l*new_view_dir;
+	y_extent_at_focus = get_y_extent_at_depth(l, true);
+	return true;
 }
 
-/// set the view dir and angle such the get_eye() returns the passed point. This does not work in case that the eye point is identical to the focus point.
-void view::set_eye_keep_extent(const pnt_type& eye)
+//! set view dir and y view angle keeping focus and y extent such that get_eye() returns the passed point, return whether this was successful.
+/*! Recomputes view up direction to make it orthogonal to view direction.
+In the case that the eye point is identical to the current focus point the function fails and returns false.
+*/
+bool view::set_eye_keep_extent(const pnt_type& eye)
 {
-	view_dir = focus-eye;
-	y_view_angle = atan(0.5*y_extent_at_focus/view_dir.length())*114.5915590;
-	view_dir.normalize();
+	pnt_type new_view_dir = focus - eye;
+	pnt_type::value_type l = new_view_dir.length();
+	if (l < 10 * std::numeric_limits<pnt_type::value_type>::epsilon())
+		return false;
+	pnt_type::value_type inv_l = pnt_type::value_type(1) / l;
+	view_dir = inv_l*new_view_dir;
+	y_view_angle = atan(0.5*y_extent_at_focus*inv_l)*114.5915590;
+	return true;
 }
 
 /// set the view according to the standard view lookat definition from eye, focus and view up direction.
@@ -190,6 +214,49 @@ void view::put_coordinate_system(vec_type& x, vec_type& y, vec_type& z) const
 	y = cross(z, x);
 }
 
+/// roll view around view direction by angle
+void view::roll(double angle)
+{
+	view_up_dir = cgv::math::rotate(view_up_dir, view_dir, angle);
+}
+
+//! rotated view around axis by angle
+/*! Axis is given by point and direction, where the point is in the image center and the given depth
+and the axis points into a direction in image plane given through its screen x and screen y
+coordinate. The length of the axis vector gives the rotation angle in radians.
+Rotation around screen x direction corresponds to yaw and around screen y direction
+to gear rotations. */
+void view::rotate(double axis_direction_x, double axis_direction_y, double axis_point_depth)
+{
+	pnt_type x, y, z;
+	put_coordinate_system(x, y, z);
+	pnt_type axis_dir = axis_direction_x*x + axis_direction_y*y;
+	double angle = axis_dir.length();
+	if (angle < 10 * std::numeric_limits<double>::epsilon())
+		return;
+	axis_dir *= 1 / angle;
+	pnt_type axis_point = get_eye() + axis_point_depth*view_dir;
+	focus = cgv::math::rotate(focus - axis_point, axis_dir, angle) + axis_point;
+	view_dir = cgv::math::rotate(view_dir, axis_dir, angle);
+	view_up_dir = cgv::math::rotate(view_up_dir, axis_dir, angle);
+}
+/// move along view direction by given step length in world coordinates
+void view::move(double step)
+{
+	focus += step*view_dir;
+}
+/// move in screen x and screen y directions by given step lengths in world coordinates
+void view::pan(double step_x, double step_y)
+{
+	pnt_type x, y, z;
+	put_coordinate_system(x, y, z);
+	focus += step_x*x + step_y*y;
+}
+/// zoom by given factor
+void view::zoom(double factor)
+{
+	y_extent_at_focus *= factor;
+}
 
 
 int view::get_DPVs(int x, int y, int width, int height,
@@ -221,7 +288,7 @@ void view::compute_screen_rectangle(std::vector<pnt_type>& rect, double depth, d
 	pnt_type c = get_eye() - z*depth;
 
 	// scale x- and y-direction vectors to cover screen rectangle
-	double y_scale = 0.5*get_y_extent_at_depth(depth);
+	double y_scale = 0.5*get_y_extent_at_depth(depth, true);
 	y *= y_scale;
 	x *= y_scale*aspect;
 
