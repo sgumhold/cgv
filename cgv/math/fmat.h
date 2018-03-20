@@ -119,12 +119,12 @@ public:
 	}
 	///multiplication with a ncols x M matrix m2
 	template <typename S, cgv::type::uint32_type L>
-	const fmat<T,N,M> operator*(const fmat<S,M,L>& m2) const
+	const fmat<T,N,L> operator*(const fmat<S,M,L>& m2) const
 	{
 		fmat<T,N,L> r; r.zeros();	
 		for(unsigned i = 0; i < N; i++)
 			for(unsigned j = 0; j < L;j++)
-				for(unsigned k = 0; k < N; k++)
+				for(unsigned k = 0; k < M; k++)
 					r(i,j) += operator()(i,k) * (T)(m2(k,j)); 
 		return r;
 	}
