@@ -43,8 +43,12 @@ public:
 	unsigned get_nr_axes() const;
 	/// adjust the domain with respect to \c ai th axis to the data
 	void adjust_domain_axis_to_data(unsigned ai, bool adjust_min = true, bool adjust_max = true);
+	/// adjust the domain with respect to \c ai th axis to the data in the currently visible plots
+	void adjust_domain_axis_to_visible_data(unsigned ai, bool adjust_min = true, bool adjust_max = true);
 	/// adjust selected axes of domain to data
 	void adjust_domain_to_data(bool adjust_x_axis = true, bool adjust_y_axis = true);
+	/// adjust selected axes of domain to data in the currently visible plots
+	void adjust_domain_to_visible_data(bool adjust_x_axis = true, bool adjust_y_axis = true);
 	/// extend domain such that given axis is included
 	void include_axis_to_domain(unsigned ai);
 	/// adjust tick marks

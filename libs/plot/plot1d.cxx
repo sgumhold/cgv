@@ -65,8 +65,8 @@ void plot1d::adjust_domain_axis_to_data(unsigned ai, bool adjust_min, bool adjus
 		domain.ref_min_pnt()(ai) = samples.front().front()(ai);
 	if (adjust_max)
 		domain.ref_max_pnt()(ai) = samples.front().front()(ai);
-	for (unsigned i=0; i<samples.size(); ++i) {
-		for (unsigned j=0; j<samples[i].size(); ++j) {
+	for (unsigned i = 0; i<samples.size(); ++i) {
+		for (unsigned j = 0; j<samples[i].size(); ++j) {
 			if (adjust_min) {
 				if (samples[i][j](ai) < domain.ref_min_pnt()(ai))
 					domain.ref_min_pnt()(ai) = samples[i][j](ai);
@@ -77,6 +77,35 @@ void plot1d::adjust_domain_axis_to_data(unsigned ai, bool adjust_min, bool adjus
 			}
 		}
 	}
+	if (domain.ref_min_pnt()(ai) == domain.ref_max_pnt()(ai))
+		domain.ref_max_pnt()(ai) += 1;
+}
+
+/// adjust the domain with respect to \c ai th axis to the data
+void plot1d::adjust_domain_axis_to_visible_data(unsigned ai, bool adjust_min, bool adjust_max)
+{
+	// compute bounding box
+	bool found_sample = false;
+	Crd min_value, max_value;
+	for (unsigned i = 0; i<samples.size(); ++i) {
+		if (ref_sub_plot1d_config(i).show_plot) {
+			for (unsigned j = 0; j < samples[i].size(); ++j) {
+				if (found_sample) {
+					min_value = std::min(min_value, samples[i][j](ai));
+					max_value = std::max(max_value, samples[i][j](ai));
+				}
+				else {
+					min_value = samples[i][j](ai);
+					max_value = samples[i][j](ai);
+					found_sample = true;
+				}
+			}
+		}
+	}
+	if (adjust_min)
+		domain.ref_min_pnt()(ai) = found_sample?min_value:0;
+	if (adjust_max)
+		domain.ref_max_pnt()(ai) = found_sample ? max_value:1;
 	if (domain.ref_min_pnt()(ai) == domain.ref_max_pnt()(ai))
 		domain.ref_max_pnt()(ai) += 1;
 }
@@ -125,8 +154,17 @@ void plot1d::adjust_domain_to_data(bool adjust_x_axis, bool adjust_y_axis)
 {
 	if (adjust_x_axis)
 		adjust_domain_axis_to_data(0);
-	if (adjust_y_axis) 
+	if (adjust_y_axis)
 		adjust_domain_axis_to_data(1);
+}
+
+/// adjust all axes of domain to data
+void plot1d::adjust_domain_to_visible_data(bool adjust_x_axis, bool adjust_y_axis)
+{
+	if (adjust_x_axis)
+		adjust_domain_axis_to_visible_data(0);
+	if (adjust_y_axis)
+		adjust_domain_axis_to_visible_data(1);
 }
 
 /// query the plot extend in 2D coordinates
@@ -341,10 +379,70 @@ void plot1d::draw(cgv::render::context& ctx)
 	}
 	glEnable(GL_LINE_SMOOTH);
 	glEnable(GL_POINT_SMOOTH);
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	glDepthFunc(GL_LEQUAL);
+//	glEnable(GL_BLEND);
+//	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+//	glDepthFunc(GL_LEQUAL);
 
+	for (unsigned i = 0; i<samples.size(); ++i) {
+		if (!ref_sub_plot1d_config(i).show_plot || samples[i].size() == 0)
+			continue;
+		glVertexPointer(2, GL_FLOAT, 0, &samples[i].front());
+		glEnableClientState(GL_VERTEX_ARRAY);
+
+		if (ref_sub_plot_config(i).show_bars) {
+			set_uniforms(ctx, bar_prog, i);
+			glColor3fv(&ref_sub_plot1d_config(i).bar_color[0]);
+			glDisable(GL_CULL_FACE);
+
+			bar_prog.enable(ctx);
+			glDrawArrays(GL_POINTS, 0, samples[i].size());
+			bar_prog.disable(ctx);
+
+			glEnable(GL_CULL_FACE);
+
+			if (ref_sub_plot1d_config(i).bar_outline_width > 0) {
+				glLineWidth(ref_sub_plot1d_config(i).bar_outline_width);
+				set_uniforms(ctx, bar_outline_prog, i);
+				glColor3fv(&ref_sub_plot1d_config(i).bar_outline_color[0]);
+
+				bar_outline_prog.enable(ctx);
+				glDrawArrays(GL_POINTS, 0, samples[i].size());
+				bar_outline_prog.disable(ctx);
+			}
+		}
+
+		if (ref_sub_plot_config(i).show_sticks) {
+			set_uniforms(ctx, stick_prog, i);
+			glColor3fv(&ref_sub_plot1d_config(i).stick_color[0]);
+			glLineWidth(ref_sub_plot1d_config(i).stick_width);
+			stick_prog.enable(ctx);
+			glDrawArrays(GL_POINTS, 0, samples[i].size());
+			stick_prog.disable(ctx);
+		}
+
+		if (ref_sub_plot1d_config(i).show_points || ref_sub_plot1d_config(i).show_lines) {
+			set_uniforms(ctx, prog, i);
+			prog.enable(ctx);
+		}
+
+		if (ref_sub_plot1d_config(i).show_lines) {
+			glColor3fv(&ref_sub_plot1d_config(i).line_color[0]);
+			glLineWidth(ref_sub_plot1d_config(i).line_width);
+			glDrawArrays(GL_LINE_STRIP, 0, samples[i].size());
+		}
+
+		if (ref_sub_plot1d_config(i).show_points) {
+			glColor3fv(&ref_sub_plot1d_config(i).point_color[0]);
+			glPointSize(ref_sub_plot1d_config(i).point_size);
+			glDrawArrays(GL_POINTS, 0, samples[i].size());
+		}
+
+		if (ref_sub_plot1d_config(i).show_points || ref_sub_plot1d_config(i).show_lines)
+			prog.disable(ctx);
+
+		glDisableClientState(GL_VERTEX_ARRAY);
+		glVertexPointer(2, GL_FLOAT, 0, 0);
+	}
 
 	if (show_axes) {
 		glColor3fv(&axis_color[0]);
@@ -498,68 +596,10 @@ void plot1d::draw(cgv::render::context& ctx)
 		}
 	}
 
-	for (unsigned i=0; i<samples.size(); ++i) {
-		glVertexPointer(2, GL_FLOAT, 0, &samples[i].front());
-		glEnableClientState(GL_VERTEX_ARRAY);
-
-		if (ref_sub_plot_config(i).show_bars) {
-			set_uniforms(ctx, bar_prog, i);			
-			glColor3fv(&ref_sub_plot1d_config(i).bar_color[0]);
-			glDisable(GL_CULL_FACE);
-
-			bar_prog.enable(ctx);
-			glDrawArrays(GL_POINTS, 0, samples[i].size());
-			bar_prog.disable(ctx);
-
-			glEnable(GL_CULL_FACE);
-
-			if (ref_sub_plot1d_config(i).bar_outline_width > 0) {
-				glLineWidth(ref_sub_plot1d_config(i).bar_outline_width);
-				set_uniforms(ctx, bar_outline_prog, i);			
-				glColor3fv(&ref_sub_plot1d_config(i).bar_outline_color[0]);
-
-				bar_outline_prog.enable(ctx);
-				glDrawArrays(GL_POINTS, 0, samples[i].size());
-				bar_outline_prog.disable(ctx);
-			}
-		}
-
-		if (ref_sub_plot_config(i).show_sticks) {
-			set_uniforms(ctx, stick_prog, i);
-			glColor3fv(&ref_sub_plot1d_config(i).stick_color[0]);
-			glLineWidth(ref_sub_plot1d_config(i).stick_width);
-			stick_prog.enable(ctx);
-			glDrawArrays(GL_POINTS, 0, samples[i].size());
-			stick_prog.disable(ctx);
-		}
-
-		if (ref_sub_plot1d_config(i).show_points || ref_sub_plot1d_config(i).show_lines) {
-			set_uniforms(ctx, prog, i);
-			prog.enable(ctx);
-		}
-		
-		if (ref_sub_plot1d_config(i).show_lines) {
-			glColor3fv(&ref_sub_plot1d_config(i).line_color[0]);
-			glLineWidth(ref_sub_plot1d_config(i).line_width);
-			glDrawArrays(GL_LINE_STRIP, 0, samples[i].size());
-		}
-
-		if (ref_sub_plot1d_config(i).show_points) {
-			glColor3fv(&ref_sub_plot1d_config(i).point_color[0]);
-			glPointSize(ref_sub_plot1d_config(i).point_size);
-			glDrawArrays(GL_POINTS, 0, samples[i].size());
-		}
-
-		if (ref_sub_plot1d_config(i).show_points || ref_sub_plot1d_config(i).show_lines) 
-			prog.disable(ctx);
-
-		glDisableClientState(GL_VERTEX_ARRAY);
-		glVertexPointer(2, GL_FLOAT, 0, 0);
-	}
-	glDisable(GL_BLEND);
+//	glDisable(GL_BLEND);
 	glDisable(GL_POINT_SMOOTH);
 	glDisable(GL_LINE_SMOOTH);
-	glDepthFunc(GL_LESS);
+//	glDepthFunc(GL_LESS);
 }
 
 	}
