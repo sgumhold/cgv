@@ -72,8 +72,8 @@ namespace cgv {
 		{
 		protected:
 			void set_value(double time) {
-				double lambda = get_parameter(time);
-				*value_ptr = (1.0 - lambda)*start_value + lambda*end_value;
+				double lambda = this->get_parameter(time);
+				*this->value_ptr = (1.0 - lambda)*this->start_value + lambda*this->end_value;
 			}
 		public:
 			linear_blend_animation(T& value, const T& _end_value, double _start_time, double _end_time, AnimationParameterMapping _parameter_mapping = APM_SIN_SQUARED) :
@@ -86,8 +86,8 @@ namespace cgv {
 		{
 		protected:
 			void set_value(double time) {
-				double lambda = get_parameter(time);
-				*value_ptr = pow(start_value,(1.0 - lambda))*pow(end_value, lambda);
+				double lambda = this->get_parameter(time);
+				*this->value_ptr = pow(this->start_value,(1.0 - lambda))*pow(this->end_value, lambda);
 			}
 		public:
 			geometric_blend_animation(T& value, const T& _end_value, double _start_time, double _end_time, AnimationParameterMapping _parameter_mapping = APM_SIN_SQUARED) :
@@ -101,14 +101,14 @@ namespace cgv {
 			double Omega;
 		protected:
 			void set_value(double time) {
-				double lambda = get_parameter(time);
-				*value_ptr = pow(start_value, (1.0 - lambda))*pow(end_value, lambda);
+				double lambda = this->get_parameter(time);
+				*this->value_ptr = pow(this->start_value, (1.0 - lambda))*pow(this->end_value, lambda);
 			}
 		public:
 			slerp_animation(T& value, const T& _end_value, double _start_time, double _end_time, AnimationParameterMapping _parameter_mapping = APM_LINEAR) :
 				value_animation<T>(value, _end_value, _start_time, _end_time, _parameter_mapping)
 			{
-				Omega = acos(dot(start_value, end_value) / sqrt(dot(start_value,start_value)*dot(end_value,end_value)));
+				Omega = acos(dot(this->start_value, this->end_value) / sqrt(dot(this->start_value,this->start_value)*dot(this->end_value,this->end_value)));
 			}
 		};
 
@@ -121,8 +121,8 @@ namespace cgv {
 			T angle;
 		protected:
 			void set_value(double time) {
-				double lambda = get_parameter(time);
-				*value_ptr = cgv::math::rotate(start_value, axis, lambda*angle);
+				double lambda = this->get_parameter(time);
+				*this->value_ptr = cgv::math::rotate(this->start_value, axis, lambda * angle);
 			}
 		public:
 			rotation_animation(cgv::math::fvec<T, 3>& value, const cgv::math::fvec<T, 3>& _axis, double _angle, double _start_time, double _end_time, AnimationParameterMapping _parameter_mapping = APM_SIN_SQUARED) :
@@ -131,7 +131,7 @@ namespace cgv {
 			rotation_animation(cgv::math::fvec<T, 3>& value, const cgv::math::fvec<T, 3>& _end_value, double _start_time, double _end_time, AnimationParameterMapping _parameter_mapping = APM_SIN_SQUARED) :
 				value_animation<cgv::math::fvec<T, 3> >(value, _end_value, _start_time, _end_time, _parameter_mapping)
 			{
-				compute_rotation_axis_and_angle_from_vector_pair(start_value, end_value, axis, angle);
+				compute_rotation_axis_and_angle_from_vector_pair(this->start_value, this->end_value, axis, angle);
 			}
 		};
 

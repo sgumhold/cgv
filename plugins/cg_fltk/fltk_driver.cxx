@@ -1,9 +1,27 @@
 #include "fltk_driver.h"
 
+#include "fltk_button.h"
+#include "fltk_viewer_window.h"
+#include "fltk_generic_window.h"
+#include "fltk_align_group.h"
+#include "fltk_tab_group.h"
+#include "fltk_tree_group.h"
+#include "fltk_dockable_group.h"
+#include "fltk_layout_group.h"
+#include "fltk_driver_registry.h"
+#include "fltk_text_editor.h"
+
+#include <fltk/events.h>
+#include <fltk/run.h>
+
+#include <cgv/gui/base_provider_generator.h>
+#include <cgv/gui/menu_provider.h>
+
 #ifdef _WIN32
 #include <windows.h>
 #define USE_WIN32
 #else
+#include <fltk/file_chooser.h>
 #define USE_FLTK
 #endif
 
@@ -284,7 +302,7 @@ std::string fltk_driver::file_save_dialog(const std::string& title, const std::s
 
 
 #include <cgv_gl/gl/wgl.h>
-#include <fltk/../../OpenGL/GlChoice.h>
+/*#include <fltk/../../OpenGL/GlChoice.h>
 
 #ifdef _WIN32
 #undef TA_LEFT
@@ -309,7 +327,7 @@ std::string fltk_driver::file_save_dialog(const std::string& title, const std::s
 #include <cgv/base/named.h>
 #include <cgv/render/context.h>
 #include <cgv/gui/menu_provider.h>
-#include <cgv/gui/base_provider_generator.h>
+#include <cgv/gui/base_provider_generator.h>*/
 
 using namespace cgv::base;
 
@@ -347,6 +365,8 @@ std::string fltk_driver::get_type_name() const
 /// create a window of the given type. Currently only the types "viewer with gui", "viewer" and "gui" are supported
 window_ptr fltk_driver::create_window(int w, int h, const std::string& title, const std::string& window_type)
 {
+	//TODO: make platform-independent
+#ifdef _WIN32
 	static std::vector<int> context_creation_attrib_list;
 
 	cgv::render::render_config_ptr rcp = cgv::render::get_render_config();
@@ -369,6 +389,7 @@ window_ptr fltk_driver::create_window(int w, int h, const std::string& title, co
 		context_creation_attrib_list.push_back(0);
 		fltk::GlChoice::ref_attrib_list() = &context_creation_attrib_list.front();
 	}
+#endif
 	ensure_lock();
 	window_ptr wp;
 	if (window_type == "viewer")

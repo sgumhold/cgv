@@ -35,7 +35,7 @@ struct ensure_order_functor : public cgv::gui::control<T>::value_change_signal_t
 				// if min not became larger
 				if (*my_ptr <= c.get_old_value()) {
 					T diff = c.get_old_value() - *my_ptr;
-					T max_value = c.get<T>("max");
+					T max_value = c.template get<T>("max");
 					if (*other_ptr > max_value - diff)
 						*other_ptr = max_value;
 					else
@@ -44,7 +44,7 @@ struct ensure_order_functor : public cgv::gui::control<T>::value_change_signal_t
 						for (int j = 0; j < n; ++j) {
 							if (j == i)
 								continue;
-							T min_value = c.get<T>("min");
+							T min_value = c.template get<T>("min");
 							T* my_ptr_j = my_ptr - i + j;
 							if (*my_ptr_j < min_value + diff)
 								*my_ptr_j = min_value;
@@ -102,7 +102,7 @@ struct ensure_order_functor : public cgv::gui::control<T>::value_change_signal_t
 				// if max not became smaller
 				if (*my_ptr >= c.get_old_value()) {
 					T diff = *my_ptr - c.get_old_value();
-					T min_value = c.get<T>("min");
+					T min_value = c.template get<T>("min");
 					if (*other_ptr < min_value + diff)
 						*other_ptr = min_value;
 					else
@@ -111,7 +111,7 @@ struct ensure_order_functor : public cgv::gui::control<T>::value_change_signal_t
 						for (int j = 0; j < n; ++j) {
 							if (j == i)
 								continue;
-							T max_value = c.get<T>("max");
+							T max_value = c.template get<T>("max");
 							T* my_ptr_j = my_ptr - i + j;
 							if (*my_ptr_j > max_value - diff)
 								*my_ptr_j = max_value;
@@ -184,7 +184,7 @@ struct ensure_order_functor : public cgv::gui::control<T>::value_change_signal_t
 				// if min became bigger
 				else {
 					T size = *other_ptr - c.get_old_value();
-					T max_value = c.get<T>("max");
+					T max_value = c.template get<T>("max");
 					T max_min_value = max_value - size;
 					if (*my_ptr > max_min_value) {
 						*other_ptr = max_value;
@@ -207,7 +207,7 @@ struct ensure_order_functor : public cgv::gui::control<T>::value_change_signal_t
 				// if max became smaller
 				else {
 					T size = c.get_old_value() - *other_ptr;
-					T min_value = c.get<T>("min");
+					T min_value = c.template get<T>("min");
 					T min_max_value = min_value + size;
 					if (*my_ptr < min_max_value) {
 						*other_ptr = min_value;
