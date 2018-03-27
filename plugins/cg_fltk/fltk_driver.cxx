@@ -16,9 +16,11 @@
 
 #include <cgv/gui/base_provider_generator.h>
 #include <cgv/gui/menu_provider.h>
+#include <cgv_gl/gl/wgl.h>
 
 #ifdef _WIN32
 #include <windows.h>
+#include <fltk/../../OpenGL/GlChoice.h>
 #define USE_WIN32
 #else
 #include <fltk/file_chooser.h>
@@ -27,6 +29,7 @@
 
 #ifdef USE_WIN32
 #include <Windows.h>
+#include <commdlg.h>
 #include <cgv/utils/convert.h>
 #include <cgv/utils/scan.h>
 #include <cgv/utils/file.h>
@@ -289,22 +292,8 @@ std::string fltk_driver::file_save_dialog(const std::string& title, const std::s
 	return "";
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-#include <cgv_gl/gl/wgl.h>
-/*#include <fltk/../../OpenGL/GlChoice.h>
-
-#ifdef _WIN32
+//TODO: Remove?
+/*#ifdef _WIN32
 #undef TA_LEFT
 #undef TA_TOP
 #undef TA_RIGHT
