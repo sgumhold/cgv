@@ -7,14 +7,28 @@
 normal_estimator::normal_estimator(point_cloud& _pc, neighbor_graph& _ng) : pc(_pc), ng(_ng) 
 {
 	normal_quality_exp = 5.0f;
-	smoothing_scale = 1.0f;
+
+	localization_scale = 0.5f;
+	plane_distance_scale = 0.1f;
+	normal_sigma = 0.2f;
+
 	noise_to_sampling_ratio = 0.1f;
 	use_orientation = true;
 }
 
 /// compute geometric quality of a triangle
-normal_estimator::Crd normal_estimator::compute_normal_quality(const Nml& n1, const Nml& n2) const
+normal_estimator::Crd normal_estimator::compute_normal_quality(const Pnt& p1, const Nml& n1, const Pnt& p2, const Nml& n2, Crd l0) const
 {
+	switch (bw_type) {
+	case BWT_GAUSS_ON_NORMALS:
+		return exp(-(n1 - n2).sqr_length() / (normal_sigma*normal_sigma));
+	case BWT_GAUSS_ON_PLANE_DISTANCE:
+	{
+		Crd d = dot(n2, p1 - p2)/(plane_distance_scale*l0);
+		return exp(-(d*d));
+	}
+	}
+
 	Crd nml_comp;
 	if (use_orientation)
 		nml_comp = 0.5f*(dot(n1,n2)+1);
@@ -25,6 +39,13 @@ normal_estimator::Crd normal_estimator::compute_normal_quality(const Nml& n1, co
 	return 0.5f*(cgv::math::erf(normal_quality_exp*(nml_comp-0.5f))+1.0f);
 }
 
+normal_estimator::Crd normal_estimator::estimate_scale(Idx vi) const
+{
+	const Pnt& pi = pc.pnt(vi);
+	const std::vector<Idx> &Ni = ng.at(vi);
+	unsigned ni = (unsigned)Ni.size();
+	return length(pc.pnt(Ni[ni/2]) - pi)*localization_scale;
+}
 
 /// compute normals from neighbor graph and distance and normal weights
 void normal_estimator::smooth_normals()
@@ -47,7 +68,8 @@ void normal_estimator::smooth_normals()
 		const Nml& nml_i = pc.nml(vi);
 		const std::vector<Idx> &Ni = ng.at(vi);
 		unsigned ni = (unsigned) Ni.size();
-		Crd l0_sqr = sqr_length(pc.pnt(Ni[std::min((int)ni-1,6)]) - pi)*smoothing_scale*smoothing_scale;
+		Crd l0 = estimate_scale(vi);
+		Crd l0_sqr = l0*l0;
 		Pnt center(0,0,0);
 		Crd weight_sum = 0;
 		Dir nml_avg(0,0,0);
@@ -58,7 +80,7 @@ void normal_estimator::smooth_normals()
 			Dir dij = pc.pnt(vj)-pc.pnt(vi);
 			Crd lij_sqr = sqr_length(dij);
 			Crd w_x = exp(-lij_sqr/l0_sqr);
-			Crd w_n = compute_normal_quality(nml_i,pc.nml(vj));
+			Crd w_n = compute_normal_quality(pc.pnt(vi), nml_i, pc.pnt(vj), pc.nml(vj), l0);
 			Crd w   = w_x*w_n;
 
 			// compute area weighted normal
@@ -85,6 +107,31 @@ void normal_estimator::smooth_normals()
 }
 
 /// recompute normals from neighbor graph and distance and normal weights
+void normal_estimator::compute_weights(Idx vi, std::vector<Crd>& weights, std::vector<Pnt>* points_ptr) const
+{
+	const Pnt& pi = pc.pnt(vi);
+	const std::vector<Idx> &Ni = ng.at(vi);
+	unsigned ni = (unsigned)Ni.size();
+	weights.resize(ni + 1);
+	weights[0] = 1;
+	if (points_ptr) {
+		points_ptr->resize(ni + 1);
+		(*points_ptr)[0] = pi;
+	}
+	Crd l0 = estimate_scale(vi);
+	Crd l0_sqr = l0*l0;
+	for (unsigned j = 0; j < ni; ++j) {
+		Idx vj = Ni[j];
+		Dir dij = pc.pnt(vj) - pc.pnt(vi);
+		Crd lij_sqr = sqr_length(dij);
+		Crd w_x = exp(-lij_sqr / l0_sqr);
+		weights[j + 1] = w_x;
+		if (points_ptr)
+			points_ptr->at(j + 1) = pc.pnt(vj);
+	}
+}
+
+/// recompute normals from neighbor graph and distance and normal weights
 void normal_estimator::compute_weighted_normals(bool reorient)
 {
 	if (!pc.has_normals()) {
@@ -94,27 +141,41 @@ void normal_estimator::compute_weighted_normals(bool reorient)
 	std::vector<Crd> weights;
 	std::vector<Pnt> points;
 	for (Idx vi = 0; vi < (Idx)pc.get_nr_points(); ++vi) {
-		const Pnt& pi = pc.pnt(vi);
-		const std::vector<Idx> &Ni = ng.at(vi);
-		unsigned ni = (unsigned) Ni.size();
-		weights.resize(ni+1);
-		points.resize(ni+1);
-		weights[0] = 1;
-		points[0] = pi;
-		Crd l0_sqr = sqr_length(pc.pnt(Ni[std::min((int)ni-1,6)]) - pi)*smoothing_scale*smoothing_scale;
-		for (unsigned j=0; j < ni; ++j) {
-			Idx vj = Ni[j];
-			Dir dij = pc.pnt(vj)-pc.pnt(vi);
-			Crd lij_sqr = sqr_length(dij);
-			Crd w_x = exp(-lij_sqr/l0_sqr);
-			weights[j+1] = w_x;
-			points[j+1] = pc.pnt(vj);
-		}
+		compute_weights(vi, weights, &points);
 		Nml new_nml;
 		cgv::math::estimate_normal_wls((unsigned)points.size(), points[0], &weights[0], new_nml);
 		if (reorient && (dot(new_nml,pc.nml(vi)) < 0))
 			new_nml = -new_nml;
 		pc.nml(vi) = new_nml;
+	}
+}
+
+/// recompute normals from neighbor graph and distance and normal weights
+void normal_estimator::compute_bilateral_weights(Idx vi, std::vector<Crd>& weights, std::vector<Pnt>* points_ptr) const
+{
+	const Pnt& pi = pc.pnt(vi);
+	const Nml& nml_i = pc.nml(vi);
+	const std::vector<Idx> &Ni = ng.at(vi);
+	unsigned ni = (unsigned)Ni.size();
+	weights.resize(ni + 1);
+	weights[0] = 1;
+	if (points_ptr) {
+		points_ptr->resize(ni + 1);
+		points_ptr->at(0) = pi;
+	}
+	Crd l0 = estimate_scale(vi);
+	Crd l0_sqr = l0*l0;
+	for (unsigned j = 0; j < ni; ++j) {
+		Idx vj = Ni[j];
+		Dir dij = pc.pnt(vj) - pc.pnt(vi);
+		Crd lij_sqr = sqr_length(dij);
+		Crd w_x = exp(-lij_sqr / l0_sqr);
+		Crd w_n = compute_normal_quality(pc.pnt(vi), nml_i, pc.pnt(vj), pc.nml(vj), l0);
+		Crd w = w_x*w_n;
+		weights[j + 1] = w;
+		if (points_ptr) {
+			points_ptr->at(j + 1) = pc.pnt(vj);
+		}
 	}
 }
 
@@ -135,25 +196,9 @@ void normal_estimator::compute_bilateral_weighted_normals(bool reorient)
 		NS[i] = pc.nml(i);
 
 	for (Idx vi = 0; vi < (Idx)pc.get_nr_points(); ++vi) {
-		const Pnt& pi = pc.pnt(vi);
-		const Nml& nml_i = pc.nml(vi);
-		const std::vector<Idx> &Ni = ng.at(vi);
-		unsigned ni = (unsigned) Ni.size();
-		weights.resize(ni+1);
-		points.resize(ni+1);
-		weights[0] = 1;
-		points[0] = pi;
-		Crd l0_sqr = sqr_length(pc.pnt(Ni[std::min((int)ni-1,6)]) - pi)*smoothing_scale*smoothing_scale;
-		for (unsigned j=0; j < ni; ++j) {
-			Idx vj = Ni[j];
-			Dir dij = pc.pnt(vj)-pc.pnt(vi);
-			Crd lij_sqr = sqr_length(dij);
-			Crd w_x = exp(-lij_sqr/l0_sqr);
-			Crd w_n = compute_normal_quality(nml_i,pc.nml(vj));
-			Crd w   = w_x*w_n;
-			weights[j+1] = w;
-			points[j+1] = pc.pnt(vj);
-		}
+
+		compute_bilateral_weights(vi, weights, &points);
+
 		cgv::math::estimate_normal_wls((unsigned)points.size(), points[0], &weights[0], NS[vi]);
 		if (reorient && (dot(NS[vi],pc.nml(vi)) < 0))
 			NS[vi] = -NS[vi];
@@ -187,7 +232,8 @@ void normal_estimator::compute_plane_bilateral_weighted_normals(bool reorient)
 		points.resize(ni+1);
 		weights[0] = 1;
 		points[0] = pi;
-		Crd l0_sqr = sqr_length(pc.pnt(Ni[std::min((int)ni-1,6)]) - pi)*smoothing_scale*smoothing_scale;
+		Crd l0 = estimate_scale(vi);
+		Crd l0_sqr = l0*l0;
 		Crd err0_sqr = l0_sqr*noise_to_sampling_ratio*noise_to_sampling_ratio;
 		for (unsigned j=0; j < ni; ++j) {
 			Idx vj = Ni[j];
