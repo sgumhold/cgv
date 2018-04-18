@@ -295,7 +295,6 @@ public:
 		return angle;
 	}
 	/// exponential map
-	template <typename T>
 	quaternion<T> exp() const
 	{
 		T m = im().length();
@@ -304,10 +303,9 @@ public:
 		return quat;
 	}
 	/// logarithmic map
-	template <typename T>
 	quaternion<T> log() const
 	{
-		T R = length();
+		T R = this->length();
 		typename quaternion<T>::vec_type v(im());
 		T sinTimesR = v.length();
 		if (sinTimesR < EPSILON)

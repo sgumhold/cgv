@@ -53,7 +53,7 @@ bool svd(const mat<T> &a, mat<T> &u, diag_mat<T> &w,  mat<T> &v,bool ordering=tr
 						s += u(k,i)*u(k,i);
 					}
 					f=u(i,i);
-					g = -sign((T)sqrt(s),f);
+					g = -sign(std::sqrt(s),f);
 					h=f*g-s;
 					u(i,i)=f-g;
 					for (j=l-1;j<n;j++) {
@@ -74,7 +74,7 @@ bool svd(const mat<T> &a, mat<T> &u, diag_mat<T> &w,  mat<T> &v,bool ordering=tr
 						s += u(i,k)*u(i,k);
 					}
 					f=u(i,l-1);
-					g = -sign(sqrt(s),f);
+					g = -sign(std::sqrt(s),f);
 					h=f*g-s;
 					u(i,l-1)=f-g;
 					for (k=l-1;k<n;k++) rv1[k]=u(i,k)/h;

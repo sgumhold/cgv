@@ -141,8 +141,10 @@ macro(build_core_components_finish)
 					${CGV_BASE}/cmake/FindPkg.cmake.in
 					${CGV_BASE}/cmake/PkgBinConfig.cmake.in
 					${CGV_BASE}/cmake/PkgLibConfig.cmake.in
-					${CGV_BASE}/cmake/launcher.sh.in
 			DESTINATION "${INSTALL_BASE}/cmake")
+			
+	install(FILES ${CGV_BASE}/cmake/launcher.sh.in
+			DESTINATION "${INSTALL_BASE}/${OS_PREFIX}/cmake")
 	
 	# TODO: Comment this
 	set(LOCAL_BUILD_ANNOUNCED TRUE)

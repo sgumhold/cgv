@@ -4,7 +4,6 @@ include("${BASE_PATH}/../CMakeMacroParseArguments.cmake")
 
 
 function(cgv_add_viewer name)
-
 	# We only support linux and shared library builds
 	if (WIN32)
 		message("Viewer starters can only be generated under Linux at the moment")
@@ -29,11 +28,11 @@ function(_cgv_add_shared_viewer name)
 		set(CONFIG "Release")
 	endif()
 
-	parse_arguments(VDEFS "PLUGINS;ARGS" "" ${ARGN})
+	cmake_parse_arguments(VDEFS "" "" "PLUGINS;ARGS" ${ARGN})
 
 	# If the command was not invoked with PLUGINS and CMDLINE sub lists
 	# then treat all arguments as plugins
-	if (VDEFS_PLUGINS STREQUAL "" AND VDEFS_ARGS STREQUAL "")
+	if (NOT VDEFS_PLUGINS AND NOT VDEFS_ARGS)
 		set(VDEFS_PLUGINS ${ARGN})
 		set(VDEFS_ARGS "")
 	endif()

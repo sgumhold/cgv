@@ -66,7 +66,8 @@ namespace cgv {
 		template <typename T>
 		struct array_descriptor_traits
 		{
-			enum dummy { d = (sizeof(struct this_type_is_not_an_array_type_or_was_not_detected_as_an_array_type) == sizeof(T)) };
+			//TODO: What is this supposed to do; prevents compilation under Linux
+			//enum dummy { d = (sizeof(struct this_type_is_not_an_array_type_or_was_not_detected_as_an_array_type) == sizeof(T)) };
 		};
 
 		template <typename T>
