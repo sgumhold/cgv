@@ -80,7 +80,7 @@ struct ensure_ascending_functor : public cgv::gui::control<T>::value_change_sign
 			// check if value decreased
 			if (member_ptr[i] < c.get_old_value()) {
 				T diff = c.get_old_value() - member_ptr[i];
-				T min_value = c.get<T>("min");
+				T min_value = c.template get<T>("min");
 				if (i > 0) {
 					if (member_ptr[0] < min_value + diff) {
 						T new_diff = member_ptr[0] - min_value;
@@ -100,7 +100,7 @@ struct ensure_ascending_functor : public cgv::gui::control<T>::value_change_sign
 			}
 			else {
 				T diff = member_ptr[i] - c.get_old_value();
-				T max_value = c.get<T>("max");
+				T max_value = c.template get<T>("max");
 				if (i < (int)n-1) {
 					if (member_ptr[n-1] > max_value - diff) {
 						T new_diff = max_value - member_ptr[n-1];
