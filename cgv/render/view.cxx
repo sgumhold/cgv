@@ -258,14 +258,13 @@ void view::zoom(double factor)
 	y_extent_at_focus *= factor;
 }
 
-
 int view::get_DPVs(int x, int y, int width, int height,
-	cgv::math::mat<double>** DPV_pptr,
-	cgv::math::mat<double>** DPV_other_pptr, int* x_other_ptr, int* y_other_ptr,
+	const cgv::math::mat<double>** DPV_pptr,
+	const cgv::math::mat<double>** DPV_other_pptr, int* x_other_ptr, int* y_other_ptr,
 	int* vp_col_idx_ptr, int* vp_row_idx_ptr,
 	int* vp_width_ptr, int *vp_height_ptr,
 	int* vp_center_x_ptr, int* vp_center_y_ptr,
-	int* vp_center_x_other_ptr, int* vp_center_y_other_ptr)
+	int* vp_center_x_other_ptr, int* vp_center_y_other_ptr) const
 {
 	return 0;
 }

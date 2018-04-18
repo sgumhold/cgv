@@ -179,12 +179,12 @@ public:
 
 	All pointer arguments starting with DPV_other_ptr can be set to the null pointer.*/
 	virtual int get_DPVs(int x, int y, int width, int height,
-		cgv::math::mat<double>** DPV_pptr,
-		cgv::math::mat<double>** DPV_other_pptr = 0, int* x_other_ptr = 0, int* y_other_ptr = 0,
+		const cgv::math::mat<double>** DPV_pptr,
+		const cgv::math::mat<double>** DPV_other_pptr = 0, int* x_other_ptr = 0, int* y_other_ptr = 0,
 		int* vp_col_idx_ptr = 0, int* vp_row_idx_ptr = 0,
 		int* vp_width_ptr = 0, int *vp_height_ptr = 0,
 		int* vp_center_x_ptr = 0, int* vp_center_y_ptr = 0,
-		int* vp_center_x_other_ptr = 0, int* vp_center_y_other_ptr = 0);
+		int* vp_center_x_other_ptr = 0, int* vp_center_y_other_ptr = 0) const;
 	//! given a pixel location x,y return the z-value from the depth buffer, which ranges from 0.0 at z_near to 1.0 at z_far and a point in world coordinates
 	/*! in case of stereo rendering two z-values exist that can be unprojected to two points in world
 	coordinates. In this case the possibility with smaller z value is selected. */

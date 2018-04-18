@@ -422,14 +422,15 @@ bool stereo_view_interactor::init(context& ctx)
 
 //! given a mouse location and the pixel extent of the context, return the DPV matrix for unprojection
 int stereo_view_interactor::get_DPVs(int x, int y, int width, int height,
-	cgv::render::context::mat_type** DPV_pptr, 
-	cgv::render::context::mat_type** DPV_other_pptr, int* x_other_ptr, int* y_other_ptr,
+	const cgv::render::context::mat_type** DPV_pptr,
+	const cgv::render::context::mat_type** DPV_other_pptr, int* x_other_ptr, int* y_other_ptr,
 	int* vp_col_idx_ptr, int* vp_row_idx_ptr,
 	int* vp_width_ptr, int *vp_height_ptr,
 	int* vp_center_x_ptr, int* vp_center_y_ptr,
-	int* vp_center_x_other_ptr, int* vp_center_y_other_ptr)
+	int* vp_center_x_other_ptr, int* vp_center_y_other_ptr) const
 {
-	cgv::render::context::mat_type* DPV_other_ptr_local = *DPV_pptr = &DPV;
+	*DPV_pptr = &DPV;
+	const cgv::render::context::mat_type* DPV_other_ptr_local = &DPV;
 	int vp_width = width;
 	int vp_height = height;
 	int eye_panel = 0;
@@ -536,14 +537,14 @@ int stereo_view_interactor::get_DPVs(int x, int y, int width, int height,
 
 void stereo_view_interactor::get_vp_col_and_row_indices(cgv::render::context& ctx, int x, int y, int& vp_col_idx, int& vp_row_idx)
 {
-	cgv::render::context::mat_type* DPV_ptr, *DPV_other_ptr;
+	const cgv::render::context::mat_type* DPV_ptr, *DPV_other_ptr;
 	int x_other, y_other, vp_width, vp_height;
 	int eye_panel = get_DPVs(x, y, ctx.get_width(), ctx.get_height(), &DPV_ptr, &DPV_other_ptr, &x_other, &y_other, &vp_col_idx, &vp_row_idx, &vp_width, &vp_height);
 }
 
 double stereo_view_interactor::get_z_and_unproject(cgv::render::context& ctx, int x, int y, pnt_type& p)
 {
-	cgv::render::context::mat_type* DPV_ptr, *DPV_other_ptr;
+	const cgv::render::context::mat_type* DPV_ptr, *DPV_other_ptr;
 	int x_other, y_other, vp_col_idx, vp_row_idx, vp_width, vp_height;
 	int eye_panel = get_DPVs(x, y, ctx.get_width(), ctx.get_height(), &DPV_ptr, &DPV_other_ptr, &x_other, &y_other, &vp_col_idx, &vp_row_idx, &vp_width, &vp_height);
 	ctx.make_current();
@@ -1031,7 +1032,7 @@ void stereo_view_interactor::finish_frame(cgv::render::context& ctx)
 }
 
 ///
-void stereo_view_interactor::draw_mouse_pointer_as_bitmap(cgv::render::context& ctx, int x, int y, int center_x, int center_y, int vp_width, int vp_height, bool visible, cgv::render::context::mat_type &DPV)
+void stereo_view_interactor::draw_mouse_pointer_as_bitmap(cgv::render::context& ctx, int x, int y, int center_x, int center_y, int vp_width, int vp_height, bool visible, const cgv::render::context::mat_type &DPV)
 {
 	static unsigned char bitmap_data[] = {
 		0x40, 0x00,
@@ -1065,7 +1066,7 @@ void stereo_view_interactor::draw_mouse_pointer_as_bitmap(cgv::render::context& 
 //	glEnable(GL_LIGHTING);
 }
 ///
-void stereo_view_interactor::draw_mouse_pointer_as_pixels(cgv::render::context& ctx, int x, int y, int center_x, int center_y, int vp_width, int vp_height, bool visible, cgv::render::context::mat_type &DPV)
+void stereo_view_interactor::draw_mouse_pointer_as_pixels(cgv::render::context& ctx, int x, int y, int center_x, int center_y, int vp_width, int vp_height, bool visible, const cgv::render::context::mat_type &DPV)
 {
 	static unsigned char pixel_data[] = {
 		0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -1115,7 +1116,7 @@ void stereo_view_interactor::draw_mouse_pointer_as_pixels(cgv::render::context& 
 }
 
 ///
-void stereo_view_interactor::draw_mouse_pointer_as_arrow(cgv::render::context& ctx, int x, int y, int center_x, int center_y, int vp_width, int vp_height, bool visible, cgv::render::context::mat_type &DPV)
+void stereo_view_interactor::draw_mouse_pointer_as_arrow(cgv::render::context& ctx, int x, int y, int center_x, int center_y, int vp_width, int vp_height, bool visible, const cgv::render::context::mat_type &DPV)
 {
 	static cgv::media::illum::phong_material smp_mat_visible;
 	static cgv::media::illum::phong_material smp_mat_hidden;
@@ -1180,7 +1181,7 @@ void stereo_view_interactor::draw_mouse_pointer_as_arrow(cgv::render::context& c
 
 void stereo_view_interactor::draw_mouse_pointer(cgv::render::context& ctx, bool visible)
 {
-	cgv::render::context::mat_type* DPV_ptr, *DPV_other_ptr;
+	const cgv::render::context::mat_type* DPV_ptr, *DPV_other_ptr;
 	int x, y, center_x, center_y;
 	int x_other, y_other, vp_col_idx, vp_row_idx, vp_width, vp_height, vp_center_x, vp_center_y, vp_center_x_other, vp_center_y_other;
 	int eye_panel = get_DPVs(last_x, last_y, ctx.get_width(), ctx.get_height(), 

@@ -1,4 +1,5 @@
 #include "gl_view.h"
+#include <cgv/render/context.h>
 
 namespace cgv {
 	namespace render {

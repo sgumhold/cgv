@@ -6,6 +6,9 @@
 
 namespace cgv {
 	namespace render {
+		
+		class context;
+
 		namespace gl {
 
 
@@ -32,21 +35,21 @@ public:
 
 	/**@name getter and setter methods*/
 	//@{
-	///
+	/// return the currently set z-value for the z-near clipping plane
 	double get_z_near() const;
-	///
+	///set the z-value for the z-near clipping plane
 	virtual void set_z_near(double z);
-	///
+	/// return the currently set z-value for the z-far clipping plane
 	double get_z_far() const;
-	///
+	/// set the z-value for the z-far clipping plane
 	virtual void set_z_far(double z);
 	/// transform a z value in eye-coordinates (should be negative!) to device coordinate
 	static double get_z_D(double z_eye, double z_near, double z_far);
-	///
+	/// set the extent of the scene in world coordinates used by the compute_clipping_planes functions to adapt the clipping planes to the scene
 	virtual void set_scene_extent(const box_type& _box);
-	///
+	/// return the currently set scene extent
 	box_type get_scene_extent() const;
-	///
+	/// reset view with focus and y-extent based on current scene extent
 	virtual void set_default_view();
 	//@}
 };
