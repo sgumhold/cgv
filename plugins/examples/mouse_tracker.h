@@ -26,9 +26,17 @@ protected:
 	int x,y;
 	/// store list of font names
 	std::vector<const char*> font_names;
+	///
+	cgv::math::fvec<double, 3> picked_point;
+	///
+	bool have_picked_point;
+	///
+	cgv::render::view* view_ptr;
 public:
 	/// construct from name which is necessary construction argument to node
 	mouse_tracker(const char* name);
+	/// find view ptr
+	bool init(cgv::render::context& ctx);
 	/// necessary method of event_handler
 	bool handle(cgv::gui::event& e);
 	/// show internal values

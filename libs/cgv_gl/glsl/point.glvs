@@ -3,7 +3,7 @@
 uniform bool use_group_point_size;
 uniform float group_point_sizes[250];
 uniform bool use_color_index;
-uniform vec3 palette[16];
+uniform vec4 palette[16];
 
 in float point_size;
 in vec4 position;
@@ -29,7 +29,7 @@ void main()
 		gl_PointSize = point_size;
 	}
 	if (use_color_index)
-		color_gs = group_color(vec4(palette[color_index],1), group_index);
+		color_gs = group_color(vec4(palette[color_index]), group_index);
 	else
 		color_gs = group_color(color, group_index);
 	normal_gs = group_transformed_normal(normal, group_index);

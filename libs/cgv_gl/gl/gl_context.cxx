@@ -135,10 +135,7 @@ gl_context::gl_context()
 		}
 	}
 	if (!info_font.empty())
-//		std::cerr << "could not find a font" << std::endl;
-//	else {
 		info_font_face = info_font->get_font_face(FFA_REGULAR);
-//	}
 
 	show_help = false;
 	show_stats = true;
@@ -260,6 +257,20 @@ void gl_context::resize_gl()
 	}
 }
 
+/// overwrite function to return info font size in case no font is currently selected
+float gl_context::get_current_font_size() const
+{
+	if (current_font_size == 0)
+		return info_font_size;
+	return current_font_size;
+}
+/// overwrite function to return info font face in case no font is currently selected
+media::font::font_face_ptr gl_context::get_current_font_face() const
+{
+	if (current_font_face.empty())
+		return info_font_face;
+	return current_font_face;
+}
 
 void gl_context::init_render_pass()
 {
@@ -281,8 +292,6 @@ void gl_context::init_render_pass()
 		glLightfv(GL_LIGHT3, GL_SPECULAR, white);
 	}
 	if (get_render_pass_flags()&RPF_SET_LIGHTS_ON) {
-		// enable lighting calculations
-		//glEnable(GL_LIGHTING);
 		// turn the 4 lights on
 		glEnable(GL_LIGHT0);
 		glEnable(GL_LIGHT1);
@@ -456,10 +465,10 @@ void gl_context::draw_textual_info()
 {
 	if (show_help || show_stats) {
 		glPushAttrib(GL_CURRENT_BIT | GL_ENABLE_BIT);
-		GLboolean is_lighting;
-		glGetBooleanv(GL_LIGHTING, &is_lighting);
-		if (is_lighting)
-			glDisable(GL_LIGHTING);
+		//GLboolean is_lighting;
+		//glGetBooleanv(GL_LIGHTING, &is_lighting);
+		//if (is_lighting)
+		//	glDisable(GL_LIGHTING);
 		glDisable(GL_DEPTH_TEST);
 		   if (bg_r+bg_g+bg_b < 1.5f)
 				glColor4f(1,1,1,1);

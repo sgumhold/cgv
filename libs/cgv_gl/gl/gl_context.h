@@ -126,6 +126,10 @@ public:
 	/// ensure that glew is initialized, define lighting mode, viewing pyramid and the rendering mode and return whether gl configuration was successful
 	bool configure_gl();
 	void resize_gl();
+	/// overwrite function to return info font size in case no font is currently selected
+	float get_current_font_size() const;
+	/// overwrite function to return info font face in case no font is currently selected
+	media::font::font_face_ptr get_current_font_face() const;
 	///
 	void perform_screen_shot();
 	/// return the used rendering API
@@ -134,7 +138,6 @@ public:
 	void init_render_pass();
 	///
 	void finish_render_pass();
-
 	/**@name light and materials management*/
 	//@{
 	/// enable a material without textures

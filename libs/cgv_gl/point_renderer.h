@@ -70,7 +70,11 @@ namespace cgv {
 			void set_point_size_attribute(cgv::render::context& ctx, const std::vector<T>& point_sizes) { has_point_sizes = true; set_attribute_array(ctx, ref_prog().get_attribute_location(ctx, "point_size"), point_sizes); }
 			///
 			template <typename T = unsigned, typename C = cgv::media::color<float,cgv::media::RGB,cgv::media::OPACITY> >
-			void set_indexed_color_attribute(cgv::render::context& ctx, const std::vector<T>& color_indices, const std::vector<C>& palette) { has_indexed_colors = true; set_attribute_array(ctx, ref_prog().get_attribute_location(ctx, "color_index"), color_indices); ref_prog().set_uniform_array(ctx, "palette", palette); }
+			void set_indexed_color_attribute(cgv::render::context& ctx, const std::vector<T>& color_indices, const std::vector<C>& palette) {
+				has_indexed_colors = true; 
+				set_attribute_array(ctx, ref_prog().get_attribute_location(ctx, "color_index"), color_indices); 
+				ref_prog().set_uniform_array(ctx, "palette", palette); 
+			}
 			///
 			template <typename T = float>
 			void set_group_point_sizes(cgv::render::context& ctx, const std::vector<T>& group_point_sizes) { has_group_point_sizes = true; ref_prog().set_uniform_array(ctx, "group_point_sizes", group_point_sizes); }

@@ -48,11 +48,16 @@ public:
 		epsilon = 0.00002;
 		write_images = false;
 		file_name_prefix = "e:/temp/dbg";
-		read_mesh("S:/data/surface/x_Gumhold/pial_DK_ply/assembled/Brain.obj");
+		read_mesh("S:/data/surface/x_Gumhold/pial_DK_ply/assembled/Brain3.obj");
 	}
 	std::string get_type_name() const 
 	{
 		return "depth_peeler_test"; 
+	}
+	void on_set(void* member_ptr)
+	{
+		update_member(member_ptr);
+		post_redraw();
 	}
 	bool init(context& ctx)
 	{
@@ -61,6 +66,7 @@ public:
 			exit(0);
 		}
 		connect(transparent_renderer.render_callback, this, &depth_peeler_test::render_scene);
+		ctx.set_bg_clr_idx(0);
 		return cgv::render::gl::gl_mesh_drawable_base::init(ctx);
 	}
 	void init_frame(context& ctx) 
@@ -76,8 +82,8 @@ public:
 	void render_scene(context& ctx)
 	{
 //		glPushMatrix();
-		GLfloat color[4] = { 1 - transparency,0,0,transparency };
-		GLfloat spec[4] = { 1 - transparency,1 - transparency,1 - transparency,transparency };
+		GLfloat color[4] = { 1 - GLfloat(transparency),0,0,GLfloat(transparency) };
+		GLfloat spec[4] = { 1 - GLfloat(transparency),1 - GLfloat(transparency),1 - GLfloat(transparency),GLfloat(transparency) };
 		/*glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, color);
 		glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, color);
 		glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, spec);
@@ -158,49 +164,28 @@ public:
 	
 	void create_gui()
 	{
-		add_decorator("Peeling Configuration", "heading");
-		connect_copy(
-			add_control("peeling_mode", peeling_mode, "show nth layer,order independent transparency")->value_change,
-							rebind(static_cast<drawable*>(this), 
-							&drawable::post_redraw)
-		);
-		connect_copy(
-			add_control("transparency", transparency, "value_slider", 
-			            "min=0;max=1;ticks=true")->value_change,
-							rebind(static_cast<drawable*>(this), 
-							&drawable::post_redraw)
-		);
-		connect_copy(
-			add_control("max_nr_layers", max_nr_layers, "value_slider", 
-			            "min=0;max=22;ticks=true")->value_change,
-							rebind(static_cast<drawable*>(this), 
-							&drawable::post_redraw)
-		);
-		add_decorator("Depth Peeler Configuration", "heading");
-		connect_copy(
-			add_control("front_to_back", front_to_back, "check")->value_change,
-							rebind(static_cast<drawable*>(this), 
-							&drawable::post_redraw)
-		);
-		connect_copy(
-			add_control("two_sided", two_sided, "check")->value_change,
-							rebind(static_cast<drawable*>(this), 
-							&drawable::post_redraw)
-		);
-		connect_copy(
-			add_control("epsilon", epsilon, "value_slider", 
-			            "min=0.00001;max=0.1;step=0.00001;ticks=true;log=true")->value_change,
-							rebind(static_cast<drawable*>(this), 
-							&drawable::post_redraw)
-		);
-		add_decorator("Debugging", "heading");
-		connect_copy(
-			add_control("write_images", write_images, "toggle")->value_change,
-							rebind(static_cast<drawable*>(this), 
-							&drawable::post_redraw)
-		);
-		add_control("file_name_prefix", file_name_prefix);
+		add_decorator("Peeling Configuration", "heading", "level=2");
+		add_member_control(this, "peeling_mode", peeling_mode, "dropdown", "enums='show nth layer,order independent transparency'");
+		add_member_control(this, "transparency", transparency, "value_slider", "min=0;max=1;ticks=true");
+		add_member_control(this, "max_nr_layers", max_nr_layers, "value_slider", "min=0;max=22;ticks=true");
+
+		if (begin_tree_node("Depth Peeler Configuration", peeling_mode, true, "level=3")) {
+			align("\a");
+				add_member_control(this, "front_to_back", front_to_back, "check");
+				add_member_control(this, "two_sided", two_sided, "check");
+				add_member_control(this, "epsilon", epsilon, "value_slider", "min=0.00001;max=0.1;step=0.00001;ticks=true;log=true");
+			align("\b");
+			end_tree_node(peeling_mode);
+		}
+		if (begin_tree_node("Debugging", write_images, true, "level=3")) {
+			align("\a");
+				add_member_control(this, "write_images", write_images, "toggle");
+				add_member_control(this, "file_name_prefix", file_name_prefix);
+			align("\b");
+			end_tree_node(peeling_mode);
+		}
 	}
 };
 
-factory_registration<depth_peeler_test> fr_depth_peeler_test("new/depth_peeler_test", 'D', true);
+factory_registration<depth_peeler_test> fr_depth_peeler_test("depth_peeler_test", "shortcut='Shift-Ctrl-D';menu_text='new/depth peeler'", true);
+
