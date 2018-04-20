@@ -1,7 +1,7 @@
 #include <sample_application.h>
 #include <cgv/base/node.h>
 #include <cgv/render/drawable.h>
-#include <cgv/render/gl/gl.h>
+#include <libs/cgv_gl/gl/gl.h>
 #include <cgv/gui/event_handler.h>
 #include <cgv/gui/trigger.h>
 #include <cgv/gui/window.h>
@@ -17,7 +17,7 @@ struct multi_mouse_test :
 	public drawable, 
 	public event_handler, 
 	public multi_mouse_handler,
-	public tacker,
+	public cgv::signal::tacker,
 	public sample_application
 {
 	// default constructor 

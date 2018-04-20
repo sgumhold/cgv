@@ -95,7 +95,7 @@ struct fltk_gl_context : public gl::gl_context, public fltk::GlWindow
 };
 #endif
 
-bool convert_to_string(const std::string& in_fn, const std::string& out_fn)
+bool convert_to_string(const std::string& in_fn, const std::string& out_fn, bool skip_comments = true)
 {
 	std::string content = shader_code::read_code_file(in_fn);
 	if (content.empty())
@@ -109,14 +109,45 @@ bool convert_to_string(const std::string& in_fn, const std::string& out_fn)
 	std::string sn = get_file_name(in_fn);
 	replace(sn, '.', '_');
 	os << "const char* " << sn.c_str() << " =\"\\\n";
-
+	bool last_is_slash = false;
 	for (unsigned int i=0; i<content.size(); ++i) {
+		bool new_last_is_slash = false;
 		switch (content[i]) {
-		case '\n' : os << "\\n\\\n"; break;
-		case '\t' : os << "\\t"; break;
-		case '"' : os << "\\\""; break;
-		default: os << content[i]; break;
+		case '/':
+			// in case of single line comment
+			if (last_is_slash)
+				// skip till end of line or end of content
+				do { ++i; } while (i < content.size() && content[i] != '\n');
+			else
+				new_last_is_slash = true;
+			break;
+		case '*':
+			// in case of single line comment
+			if (last_is_slash) {
+				// skip till end of line or end of content
+				bool last_is_star = false;
+				if (++i < content.size()) {
+					do {
+						last_is_star = content[i] == '*';
+						++i;
+					} while (i < content.size() && !(last_is_star && content[i] == '/'));
+				}
+			}
+			else
+				os << content[i];
+			break;
+		default:
+			if (last_is_slash)
+				os << '/';
+			switch (content[i]) {
+			case '\\': os << "\\\\"; break;
+			case '\n': os << "\\n\\\n"; break;
+			case '\t': os << "\\t"; break;
+			case '"': os << "\\\""; break;
+			default: os << content[i]; break;
+			}
 		}
+		last_is_slash = new_last_is_slash ;
 	}
 	os << "\";\n";
 	return true;
@@ -142,10 +173,12 @@ int perform_test()
 		// in case of shader program, build it from the file
 		shader_program prog(true);
 		if (prog.build_program(*g_ctx_ptr, g_argv[1], true)) {
-			write(g_argv[2], "ok", 2, true);
+			convert_to_string(g_argv[1], g_argv[2]);
+			//write(g_argv[2], "ok", 2, true);
 			std::cout << "shader program ok (" << g_argv[1] << ")" << std::endl;
 		}
 		else {
+			std::cout << "build program failed" << std::endl;
 			std::cerr << g_argv[1] << " (1) : glsl program error" << std::endl;
 			if (!shader_developer)
 				write(g_argv[2], "error", 2, true);
@@ -156,7 +189,7 @@ int perform_test()
 //		if (ext[0] != 'p') {
 			// otherwise read and compile code
 			shader_code code;
-			if (code.read_and_compile(*g_ctx_ptr, g_argv[1])) {
+			if (code.read_and_compile(*g_ctx_ptr, g_argv[1], cgv::render::ST_DETECT, true)) {
 				// convert the input file to a string declaration with the string
 				convert_to_string(g_argv[1],g_argv[2]);
 				//write(g_argv[2], "ok", 2, true);

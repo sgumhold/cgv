@@ -1,8 +1,8 @@
 cmake_minimum_required(VERSION 2.6)
 project(glsu)
 
-# Include base definitions
-include("../../cmake/buildCoreComponents.cmake")
+# Needed for cgv_ commands
+find_package(cgv COMPONENTS)
 
 cgv_find_package(OpenGL)
 

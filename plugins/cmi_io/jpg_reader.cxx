@@ -149,7 +149,7 @@ bool jpg_reader::read_image(const data_format& df, const data_view& dv)
 	if (setjmp(jerr.setjmp_buffer))
 		return false;
 	for (unsigned int y = 0; success && y < df.get_height(); ++y) {
-		success = read_line(df, dv(df.get_height()-y-1));
+		success = read_line(df, dv(y));
 	}
 	return success;
 }

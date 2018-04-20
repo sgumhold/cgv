@@ -196,10 +196,12 @@ bool gl_image_drawable_base::save_images(const std::string& output_file_name)
 	return true;
 }
 
-void gl_image_drawable_base::draw(context& )
+void gl_image_drawable_base::draw(context& ctx)
 {
+	//static cgv::media::illum::phong_material def_mat;
+	//ctx.enable_material(def_mat);
 	glPushAttrib(GL_LIGHTING_BIT | GL_TEXTURE_BIT | GL_CURRENT_BIT);
-	glDisable(GL_LIGHTING);
+	//glDisable(GL_LIGHTING);
 	glColor3d(1,0,0);
 	glPushMatrix();
 	glScaled(aspect,1,1);

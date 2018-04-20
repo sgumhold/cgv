@@ -107,6 +107,8 @@ void gl_depth_peeler::init_frame(context& ctx)
 			depth_texture.destruct(ctx);
 		depth_texture.set_width(vp[2]);
 		depth_texture.set_height(vp[3]);
+		depth_texture.set_compare_mode(true);
+		depth_texture.set_compare_function(CF_GREATER);
 		depth_texture.create(ctx);
 	}
 }

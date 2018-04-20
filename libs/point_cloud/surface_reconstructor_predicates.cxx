@@ -3,7 +3,7 @@
 #define _USE_MATH_DEFINES
 #include <cmath>
 #include "surface_reconstructor.h"
-#include "normal_estimation.h"
+#include <cgv/math/normal_estimation.h>
 
 
 /// check if the edge opposite to the given corner is locally delaunay

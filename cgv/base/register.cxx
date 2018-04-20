@@ -7,6 +7,7 @@
 
 #include <algorithm>
 #include <vector>
+#include <set>
 
 using namespace cgv::utils;
 
@@ -29,6 +30,22 @@ struct registration_info
 		permanent_registration = true;
 		registration_event_cleanup = false;
 		nr_events_before_disable = 0;
+	}
+};
+
+struct registration_order_info
+{
+	std::string partial_order;
+	bool before_contructor_execution;
+	std::string when;
+	registration_order_info() : before_contructor_execution(false) 
+	{
+	}
+	registration_order_info(const std::string& _partial_order, bool _before_contructor_execution, const std::string& _when) :
+		partial_order(_partial_order),
+		before_contructor_execution(_before_contructor_execution),
+		when(_when)
+	{
 	}
 };
 
@@ -83,10 +100,22 @@ object_collection& ref_object_collection()
 	return oc;
 }
 
+std::vector<registration_order_info>& ref_registration_order_infos()
+{
+	static std::vector<registration_order_info> roi;
+	return roi;
+}
+
 std::string& ref_prog_name()
 {
 	static std::string prog_name;
 	return prog_name;
+}
+
+std::string& ref_prog_path_prefix()
+{
+	static std::string prog_path_prefix;
+	return prog_path_prefix;
 }
 
 std::string& ref_plugin_name()
@@ -135,24 +164,45 @@ void show_split_lines(const std::string& s)
 
 bool& ref_registration_debugging_enabled()
 {
+#if defined CGV_FORCE_STATIC && defined _DEBUG
+	static bool is_debug = true;
+#else
 	static bool is_debug = false;
+#endif
 	return is_debug;
 }
+
+void show_object_debug_info(cgv::base::base_ptr o)
+{
+	std::cout << o->get_type_name();
+	if (o->get_named())
+		std::cout << "<" << o->get_named()->get_name() << ">";
+	bool is_c = o->get_interface<object_constructor>() != 0;
+	bool is_s = o->get_interface<server>() != 0;
+	bool is_d = o->get_interface<driver>() != 0;
+	bool is_l = o->get_interface<registration_listener>() != 0;
+
+	if (is_c || is_s || is_d || is_l) {
+		std::cout << " [";
+		if (is_c)
+			std::cout << "C";
+		if (is_s)
+			std::cout << "S";
+		if (is_d)
+			std::cout << "D";
+		if (is_l)
+			std::cout << "L";
+		std::cout << "]";
+	}
+}
+
 
 /// register an object and send event to all current registration ref_listeners()
 void register_object_internal(base_ptr object, const std::string& options)
 {
 	if (is_registration_debugging_enabled()) {
-		std::cout << "REG OBJECT(";
-		if (object->get_named())
-			std::cout << object->get_named()->get_name();
-		else
-			std::cout << "unnamed";
-		std::cout << ":" << object->get_type_name() << ", " << "'" << options << "')";
-		if (object->get_interface<object_constructor>())
-			std::cout << " [constructor]";
-		if (object->get_interface<registration_listener>())
-			std::cout << " [listener]";
+		std::cout << "REG OBJECT ('" << options << "') ";
+		show_object_debug_info(object);
 		std::cout << std::endl;
 
 		static std::map<cgv::base::base*, int> is_registered;
@@ -178,6 +228,118 @@ void register_object_internal(base_ptr object, const std::string& options)
 
 /****************** implementation of exported functions **************/
 
+void define_registration_order(const std::string& partial_order, bool before_contructor_execution, const std::string& when)
+{
+	ref_registration_order_infos().push_back(registration_order_info(partial_order, before_contructor_execution, when));
+}
+
+void add_partially_ordered(const std::vector<std::set<unsigned> >& combined_partial_order, std::vector<unsigned>& permutation, std::vector<bool>& appended, std::vector<bool>& delayed, unsigned i)
+{
+	if (delayed[i]) {
+		std::cout << "REG ORDER cyclic dependency of registration event <" << ref_registration_events()[i].first->get_type_name() << ">" << std::endl;
+		return;
+	}
+	delayed[i] = true;
+	// ensure that indices that have to come before i, are also added before i
+	for (auto j : combined_partial_order[i]) {
+		if (!appended[j])
+			add_partially_ordered(combined_partial_order, permutation, appended, delayed, j);
+	}
+	delayed[i] = false;
+	appended[i] = true;
+	permutation.push_back(i);
+}
+
+void sort_registration_events(bool before_contructor_execution)
+{
+	// initialized combined partial order
+	unsigned N = ref_registration_events().size();
+	std::vector<std::set<unsigned> > combined_partial_order;
+	combined_partial_order.resize(N);
+	unsigned nr_partial_orders = 0;
+
+	// iterate all registration order infos
+	for (auto roi : ref_registration_order_infos()) {
+		// ignore if before_contructor_execution does not match
+		if (roi.before_contructor_execution != before_contructor_execution)
+			continue;
+
+		// ignore if "when" does not match
+		if (roi.when == "plugins") {
+			if (ref_plugin_name().empty())
+				continue;
+		}
+		else if (roi.when == "program") {
+			if (!ref_plugin_name().empty())
+				continue;
+		}
+		else if (roi.when != "always") {
+			if (ref_plugin_name() != roi.when)
+				continue;
+		}
+
+		// extract partial order
+		std::vector<cgv::utils::token> toks;
+		cgv::utils::tokenizer(roi.partial_order).set_ws(";").bite_all(toks);
+
+		// first construct a vector with indices of registration events
+		std::vector<unsigned> event_indices;
+		unsigned nr_matched = 0;
+		for (auto t : toks) {
+			bool found = false;
+			for (unsigned i = 0; i < N; ++i) {
+				std::string tn = ref_registration_events()[i].first->get_type_name();
+				if (t == tn) {
+					event_indices.push_back(i);
+					++nr_matched;
+					found = true;
+					break;
+				}
+			}
+			if (!found) {
+				std::cout << "REG ORDER: could not find event <" << t << ">" << std::endl;
+			}
+		}
+		if (nr_matched < 2) {
+			std::cout << "REG ORDER: partial order <" << roi.partial_order << "> did match only " << nr_matched << " object" << std::endl;
+			continue;
+		}
+
+		// extend combined partial order by current partial order
+		for (unsigned i = 1; i < event_indices.size(); ++i)
+			combined_partial_order[event_indices[i]].insert(event_indices[i - 1]);
+		++nr_partial_orders;
+	}
+	if (nr_partial_orders == 0)
+		return;
+
+	// compute permutation
+	std::vector<unsigned> permutation;
+	std::vector<bool> appended(N, false);
+	std::vector<bool> delayed(N, false);
+	unsigned i;
+	for (i = 0; i < N; ++i) {
+		if (!appended[i])
+			add_partially_ordered(combined_partial_order, permutation, appended, delayed, i);
+	}
+	if (permutation.size() != N) {
+		std::cerr << "ERROR: could not compute valid permutation of registration events" << std::endl;
+		abort();
+	}
+
+	// permute registration events
+	std::vector<std::pair<base_ptr, std::string> > permuted_registration_events;
+	permuted_registration_events.resize(N);
+	for (i = 0; i < N; ++i)
+		permuted_registration_events[i] = ref_registration_events()[permutation[i]];
+	ref_registration_events() = permuted_registration_events;
+}
+
+registration_order_definition::registration_order_definition(const std::string& partial_order, bool before_contructor_execution, const std::string& when)
+{
+	define_registration_order(partial_order, before_contructor_execution, when);
+}
+
 
 void enable_registration_debugging()
 {
@@ -194,48 +356,39 @@ bool is_registration_debugging_enabled()
 {
 	return ref_registration_debugging_enabled();
 }
-
 /// enable registration and send all registration events that where emitted during disabled registration
 void enable_registration()
 {
 	if (is_registration_enabled())
 		return;
 
-	if (is_registration_debugging_enabled()) {
-		std::cout << "ENABLE REGISTRATION" << std::endl;
-	}
+	if (is_registration_debugging_enabled())
+		std::cout << "REG ENABLE <" << (ref_plugin_name().empty() ? ref_prog_name() : ref_plugin_name()) << "> Begin" << std::endl;
+	
 	unsigned i, i0 = ref_info().nr_events_before_disable;
+
+	sort_registration_events(true);
 
 	// first execute delayed registrations by replacing constructor objects with constructed objects
 	for (i=i0; i<ref_registration_events().size(); ++i) {
 		base_ptr o = ref_registration_events()[i].first;
 		object_constructor* obr = o->get_interface<object_constructor>();
 		if (obr) {
-			if (is_registration_debugging_enabled()) {
-				std::cout << "CONSTRUCT (";
-				if (o->get_named())
-					std::cout << o->get_named()->get_name();
-				else
-					std::cout << "unnamed";
-				std::cout << ":" << o->get_type_name() << ", " << "'" << ref_registration_events()[i].second << "')";
-				if (o->get_interface<registration_listener>())
-					std::cout << " [listener]";
-				std::cout << std::endl;
-			}
+			if (is_registration_debugging_enabled())
+				std::cout << "REG CONSTRUCT " << obr->get_constructed_type_name() << "('" << ref_registration_events()[i].second << "')";
+			
 			ref_registration_events()[i].first = obr->construct_object();
+			
 			if (is_registration_debugging_enabled()) {
-				std::cout << "       -> (";
-				if (ref_registration_events()[i].first->get_named())
-					std::cout << ref_registration_events()[i].first->get_named()->get_name();
-				else
-					std::cout << "unnamed";
-				std::cout << ":" << ref_registration_events()[i].first->get_type_name() << ")";
-				if (ref_registration_events()[i].first->get_interface<registration_listener>())
-					std::cout << " [listener]";
+				std::cout << " -> ";
+				show_object_debug_info(ref_registration_events()[i].first);
 				std::cout << std::endl;
 			}
 		}
 	}
+
+	sort_registration_events(false);
+
 	// next register all servers
 	const std::vector<base_ptr>& L = ref_listeners();
 	for (i=i0; i<ref_registration_events().size(); ++i) {
@@ -280,17 +433,21 @@ void enable_registration()
 	// remove registration events
 	if (is_registration_event_cleanup_enabled())
 		ref_registration_events().clear();
+
 	ref_info().nr_events_before_disable = (unsigned) ref_registration_events().size();
 	ref_info().registration_enabled = true;
+
+	if (is_registration_debugging_enabled())
+		std::cout << "REG ENABLE <" << (ref_plugin_name().empty() ? ref_prog_name() : ref_plugin_name()) << "> End" << std::endl;
 }
 
 void disable_registration()
 {
 	if (!is_registration_enabled())
 		return;
-	if (is_registration_debugging_enabled()) {
-		std::cout << "DISABLE REGISTRATION" << std::endl;
-	}
+	if (is_registration_debugging_enabled())
+		std::cout << "REG DISABLE <" << (ref_plugin_name().empty() ? ref_prog_name() : ref_plugin_name()) << ">" << std::endl;
+
 	ref_info().nr_events_before_disable = (unsigned)ref_registration_events().size();
 	ref_info().registration_enabled = false;
 }
@@ -387,20 +544,10 @@ void register_object(base_ptr object, const std::string& options)
 		ref_registration_events().push_back(std::pair<base_ptr, std::string>(object, options));
 		
 		if (is_registration_debugging_enabled()) {
-			std::cout << "REG EVENT(";
-			if (object->get_named())
-				std::cout << object->get_named()->get_name();
-			else
-				std::cout << "unnamed";
-			std::cout << ":" << object->get_type_name() << ", " << "'" << options << "')";
-
-			if (object->get_interface<object_constructor>())
-				std::cout << " [constructor]";
-			if (object->get_interface<registration_listener>())
-				std::cout << " [listener]";
+			std::cout << "REG EVENT ('" << options << "') ";
+			show_object_debug_info(object);
 			std::cout << std::endl;
 		}
-
 	}
 	if (!is_registration_enabled())
 		return;
@@ -485,7 +632,8 @@ std::string get_config_file_name(const std::string& _file_name)
 	return file_name;
 }
 
-bool process_command_ext(const token& cmd, bool eliminate_quotes, bool* persistent = 0, config_file_observer* cfo = 0, const char* begin = 0);
+//bool process_command_ext(const token& cmd, bool eliminate_quotes, bool* persistent = 0, config_file_observer* cfo = 0, const char* begin = 0);
+bool process_command_ext(const command_info& info, bool* persistent = 0, config_file_observer* cfo = 0, const char* begin = 0);
 
 config_file_driver*& ref_config_file_driver()
 {
@@ -535,9 +683,12 @@ bool process_config_file_ext(const std::string& _file_name, bool* persistent = 0
 
 	// interpret each line as a command
 	unsigned int i;
-	for (i=0; i<lines.size(); ++i)
-		process_command_ext((token&)(lines[i]), false, persistent, cfo, &content[0]);
-
+	for (i = 0; i < lines.size(); ++i) {
+		command_info info;
+		analyze_command((token&)(lines[i]), false, &info);
+		process_command_ext(info, persistent, cfo, &content[0]);
+		// process_command_ext((token&)(lines[i]), false, persistent, cfo, &content[0]);
+	}
 	return true;
 }
 
@@ -681,8 +832,12 @@ void register_factory_object(base_ptr fo, const char* item_text, char shortcut)
 }
 
 void register_prog_name(const char* _prog_name)
-{
-	ref_prog_name() = _prog_name;
+{	
+	ref_prog_name() = cgv::utils::file::get_file_name(_prog_name);
+	std::string prog_path_prefix = cgv::utils::file::clean_path(cgv::utils::file::get_path(_prog_name));
+	if (!prog_path_prefix.empty())
+		prog_path_prefix += '/';
+	ref_prog_path_prefix() = prog_path_prefix;
 }
 
 resource_file_info::resource_file_info(
@@ -698,6 +853,11 @@ resource_file_info::resource_file_info(
 void register_resource_file(const std::string& file_path, unsigned int file_offset, unsigned int file_length, const char* file_data, const std::string& source_file)
 {
 	ref_resource_file_map()[file_path] = resource_file_info(file_offset, file_length, file_data, source_file);
+}
+
+void register_resource_string(const std::string& string_name, const char* string_data)
+{
+	ref_resource_file_map()[string_name] = resource_file_info(-1, std::string(string_data).size(), string_data);
 }
 
 void show_implementation(bool& implements_shown, const std::string& type_name)
@@ -739,7 +899,158 @@ void show_all()
 	return;
 }
 
+CommandType update_info(command_info* info_ptr, CommandType cmd, cgv::utils::token* args_tok_ptr = 0)
+{
 
+	if (info_ptr) {
+		info_ptr->command_type = cmd;
+		if (args_tok_ptr)
+			info_ptr->parameters.push_back(*args_tok_ptr);
+	}
+	return cmd;
+}
+
+CommandType analyze_command(const cgv::utils::token& cmd, bool eliminate_quotes, command_info* info_ptr)
+{
+	// remove unnecessary stuff
+	token cmd_tok = cmd;
+	cmd_tok.begin = skip_spaces(cmd_tok.begin, cmd_tok.end);
+	cmd_tok.end = cutoff_spaces(cmd_tok.begin, cmd_tok.end);
+
+	// detect empty lines and comments
+	if (cmd_tok.empty())
+		return update_info(info_ptr, CT_EMPTY);
+
+	// detect comments
+	if (cmd_tok.get_length() > 1 && cmd_tok[0] == '/' && cmd_tok[1] == '/')
+		return update_info(info_ptr, CT_COMMENT);
+
+	// detect predefined commands
+	if (cmd_tok == "show all")
+		return update_info(info_ptr, CT_SHOW);
+	if (cmd_tok == "persistent")
+		return update_info(info_ptr, CT_PERSISTENT);
+	if (cmd_tok == "initial")
+		return update_info(info_ptr, CT_INITIAL);
+
+	// determine command header
+	token cmd_header = tokenizer(cmd_tok).set_sep(":").set_ws("").set_skip("\"'", "\"'").bite();
+	if (cmd_header.end == cmd_tok.end)
+		return update_info(info_ptr, CT_INITIAL);
+
+	// and command arguments
+	token args_tok(cmd_header.end + 1, cmd_tok.end);
+
+	// eliminate quotes around argument, which need to be used in commands specified on the command line
+	if (eliminate_quotes && args_tok.get_length() >= 2 &&
+		((args_tok[0] == '"'  && args_tok[(int)args_tok.get_length() - 1] == '"') ||
+		(args_tok[0] == '\'' && args_tok[(int)args_tok.get_length() - 1] == '\''))) {
+		++args_tok.begin;
+		--args_tok.end;
+	}
+	std::string args(to_string(args_tok));
+
+	// detect direct commands
+	if (cmd_header == "plugin")
+		return update_info(info_ptr, CT_PLUGIN, &args_tok);
+	if (cmd_header == "config")
+		return update_info(info_ptr, CT_CONFIG, &args_tok);
+	if (cmd_header == "gui")
+		return update_info(info_ptr, CT_GUI, &args_tok);
+
+	// split composed commands into head and argument
+	std::vector<token> toks;
+	tokenizer(cmd_header).set_sep("()").set_ws("").bite_all(toks);
+
+	// check for name or type command
+	if (toks.size() == 4 && toks[1] == "(" && toks[3] == ")" &&
+		(toks[0] == "name" || toks[0] == "type")) {
+
+		std::string identifier = to_string(toks[2]);
+		if (info_ptr)
+			info_ptr->parameters.push_back(toks[2]);
+		return update_info(info_ptr, toks[0] == "name"  ? CT_NAME : CT_TYPE, &args_tok);
+	}
+	return update_info(info_ptr, CT_UNKNOWN);
+}
+
+bool process_command_ext(const command_info& info, bool* persistent, config_file_observer* cfo, const char* begin)
+{
+	switch (info.command_type) {
+	case CT_SHOW:
+		show_all();
+		return true;
+	case CT_PERSISTENT:
+		if (persistent)
+			*persistent = true;
+		return true;
+	case CT_INITIAL:
+		if (persistent)
+			*persistent = false;
+		return true;
+	case CT_PLUGIN:
+		if (load_plugin(to_string(info.parameters[0]))) {
+			std::cout << "read plugin " << info.parameters[0] << std::endl;
+			return true;
+		}
+		std::cerr << "error reading plugin " << info.parameters[0] << std::endl;
+		return false;
+	case CT_CONFIG:
+		if (process_config_file_ext(to_string(info.parameters[0]), persistent)) {
+			std::cout << "read config file " << get_config_file_name(to_string(info.parameters[0])) << std::endl;
+			return true;
+		}
+		std::cerr << "error reading config file " << info.parameters[0] << std::endl;
+		return false;
+	case CT_GUI:
+		if (process_gui_file(to_string(info.parameters[0]))) {
+			std::cout << "read gui file " << info.parameters[0] << std::endl;
+			return true;
+		}
+		std::cerr << "error reading gui file " << info.parameters[0] << std::endl;
+		return false;
+	case CT_NAME:
+	case CT_TYPE:
+		{
+			base_ptr bp;
+			if (info.command_type == CT_NAME) {
+				named_ptr np = find_object_by_name(to_string(info.parameters[0]));
+				if (np) {
+					std::cout << "name(" << np->get_name().c_str() << ")";
+					bp = np;
+				}
+				else
+					std::cerr << "could not find object of name '" << info.parameters[0] << "'" << std::endl;
+			}
+			else {
+				bp = find_object_by_type(to_string(info.parameters[0]));
+				if (bp)
+					std::cout << "type(" << bp->get_type_name() << ")";
+				else
+					std::cerr << "could not find object of type <" << info.parameters[0] << ">" << std::endl;
+			}
+			if (bp) {
+				std::string args = to_string(info.parameters[1]);
+				// replace single quotes by double quotes
+				for (unsigned int x = 0; x < args.size(); ++x)
+					if (args[x] == '\'')
+						args[x] = '"';
+
+				show_split_lines(args);
+				std::cout << "\n" << std::endl;
+				if (persistent && *persistent && cfo)
+					cfo->multi_observe(bp, args, info.parameters[1].begin - begin);
+				else
+					bp->multi_set(to_string(info.parameters[1]), true);
+				return true;
+			}
+			return false;
+		}
+	}
+	return false;
+}
+
+/*
 bool process_command_ext(const token& cmd, bool eliminate_quotes, bool* persistent, config_file_observer* cfo, const char* begin)
 {
 	// remove unnecessary stuff
@@ -844,6 +1155,10 @@ bool process_command_ext(const token& cmd, bool eliminate_quotes, bool* persiste
 				else
 					np->multi_set(args, true);
 			}
+			else {
+				std::cerr << "could not find object of name '" << identifier << "'" << std::endl;
+				return false;
+			}
 		}
 		else {
 			base_ptr bp = find_object_by_type(identifier);
@@ -856,6 +1171,10 @@ bool process_command_ext(const token& cmd, bool eliminate_quotes, bool* persiste
 				else
 					bp->multi_set(args, true);
 			}
+			else {
+				std::cerr << "could not find object of type <" << identifier << ">" << std::endl;
+				return false;
+			}
 		}
 		return true;
 	}
@@ -864,10 +1183,19 @@ bool process_command_ext(const token& cmd, bool eliminate_quotes, bool* persiste
 		return false;
 	}
 }
+*/
+
+bool process_command(const command_info& info)
+{
+	return process_command_ext(info);
+}
 
 bool process_command(const std::string& cmd, bool eliminate_quotes)
 {
-	return process_command_ext(token(cmd), eliminate_quotes);
+	command_info info;
+	analyze_command(cmd, eliminate_quotes, &info);
+	return process_command_ext(info);
+	//	return process_command_ext(token(cmd), eliminate_quotes);
 }
 
 /// process the command line arguments: extract program name and load all plugins
@@ -896,9 +1224,18 @@ resource_file_registration::resource_file_registration(const char* symbol)
 	register_resource_file(file_path, file_offset,file_size,file_data,source_file);
 }
 
+resource_string_registration::resource_string_registration(const std::string& string_name, const char* string_data)
+{
+	register_resource_string(string_name, string_data);
+}
+
 std::string extend_plugin_name(const std::string& fn)
 {
 	std::string n = cgv::utils::file::drop_extension(fn);
+#ifdef _WIN64
+	n += "64";
+#endif // _WIN64
+
 #if defined(_WIN32) || !defined(NDEBUG)
 	n += "_";
 #endif
@@ -914,8 +1251,10 @@ std::string extend_plugin_name(const std::string& fn)
 	n += "10";
 #elif defined(_MSC_VER) && _MSC_VER < 1800
 	n += "11";
-#elif defined(_MSC_VER)
+#elif defined(_MSC_VER) && _MSC_VER < 1900
 	n += "12";
+#elif defined(_MSC_VER)
+	n += "14";
 #endif
 	n += ".dll";
 #else
@@ -971,12 +1310,14 @@ void* load_plugin(const std::string& file_name)
 #endif
 			if (result)
 				break;
+/*			DWORD last_error = GetLastError();
+			std::cerr << "error " << last_error << " when loading plugin " << fn << std::endl;*/
 			fn = extend_plugin_name(fn);
 		}
-		ref_plugin_name().clear();
 	}
 	if (enabled)
 		enable_registration();
+	ref_plugin_name().clear();
 	return result;
 }
 bool unload_plugin(void* handle)

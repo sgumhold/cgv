@@ -13,18 +13,18 @@ from https://141.76.62.199/svn/cgv/release
 
 In order to be able to work with the cgv framework, the following environment
 variables need to be set
-- CGV_DIR ... (obligatory) the path, into which the framework is exported or checked out
-- CGV_INSTALL ... (obligatory) the path, where the compiled libraries and applications are installed.
-If not defined the Windows build rules for resource files and shaders wont find the corresponding
+- obligatory: CGV_DIR ... path of cgv framework
+- obligatory: CGV_INSTALL ... path, where compiled libraries and applications are installed.
+If not defined the Windows build rules for resource files and shaders won't find the corresponding
 tools and therefore fail. If these are not needed, CGV_INSTALL defaults to CGV_DIR. Executables
 and shared libraries / dlls are copied to "$(CGV_INSTALL)/bin" and libraries to "$(CGV_INSTALL)/lib"
-- PATH ... (optional) the directories "$(CGV_INSTALL)/bin" and "$(CGV_DIR)/bin" should be added to the path variable
-- CGV_BUILD ... (optional) the path, where the intermediate files are created. For example 
+- optional: PATH ... the directories "$(CGV_INSTALL)/bin" and "$(CGV_DIR)/bin" should be added to the path variable
+- optional: CGV_BUILD ... path, where the intermediate files are created. For example 
 "c:/temp/build_cgv" under windows or "~/temp" under linux. If not set,
 CGV_BUILD defaults to CGV_DIR/build.
-- CGV_DATA ... (optional) the root path for datasets.
-- CGV_PROJECT_DIR ... (optional) for shared development of projects
-- CGV_SUPPORT_DIR ... (optional) for development with 3rd party libraries that do not come with a free license
+- optional: CGV_DATA ... the root paths for datasets which are used in the cgv_data to find files.
+- optional: CGV_PROJECT_DIR ... path to repository with further common projects that build on the cgv core libraries
+- optional: CGV_SUPPORT_DIR ... path to repository with libraries and plugins the build on 3rd party libraries that do not come with a free license
 
 Under windows the following six scripts - located in the root directory
 of the cgv framework - help to manage the necessary environment variables. 
@@ -99,7 +99,7 @@ on most platforms
 - glu
 
 In order for the framework to find headers and libraries of libraries, which 
-not included in the framework, one has to add the paths to one of the following 
+are not included in the framework, one has to add the paths to one of the following 
 environment variables, that store lists of paths as semicolon separated strings:
 - INCLUDE ... for additional include directories
 - LIBRARY (windows) / LD_LIBRARY_PATH (linux) ... for additional 
@@ -115,18 +115,22 @@ are supported
 - Visual Studio 2008 (vs9)
 - Visual Studio 2008 Express (vs9e)
 - Visual Studio 2010 (vs10)
-
+- Visual Studio 2012
+- Visual Studio 2013
+- Visual Studio 2015
 Under development is the support for gcc under linux (gcc).
 vs8, vs9, vs9e, vs10 and gcc are the shortcuts for the target compiler /
 development environment. If one only uses one target, one can
 set the environment variable
-- CGV_COMPILER ... one out of vs8, vs9, vs9e, vs10 and gcc
+- CGV_COMPILER ... one out of vs8, vs9, vs9e, vs10, vs12, vs14 and gcc
 
 \a Hint: A template project file is located at \c CGV_DIR/make/ppp/templates/pj.ppp.
 It documents all possible entries to a project file. To write a new
 project file, one typically copies this template, renames it to something
 like "my_project.pj" and edits it with a favorite text editor. The current
 version of this file is inserted to the end of this page
+
+Furthermore, CMakeFiles are provided to build the framework under linux.
 
 \subsection windows Creating Target Files on Windows
 
@@ -145,7 +149,7 @@ with the script define_system_variables.bat. It calls \c "generate_makefile.bat"
 the examples plugin pj-File as argument. This allows you to get started very
 easily.
 
-\a Careful! For Visual Studio 2008 and 2010 ppp also generates \c "*.user" files, which
+\a Careful! Since Visual Studio 2008 ppp also generates \c "*.user" files, which
 define the to be executed application and the command line arguments when starting
 the application from Visual Studio. If a project is opened in Visual Studio while ppp
 is used to generate project, solution and user files, Visual Studio only reloads the

@@ -1,0 +1,9 @@
+@=
+projectName="opencl_opengl_interop";
+projectType="application_plugin";
+projectGUID="6461A8F5-98FD-4D9F-A909-8243333DFA04";
+addProjectDirs=addProjectDirs.[CGV_DIR."/libs", CGV_DIR."/plugins"];
+addProjectDeps=["opencl",
+				"cgv_utils","cgv_type", "cgv_reflect", "cgv_signal", "cgv_data", "cgv_base", "cgv_render", "cgv_gui",
+				"cgv_viewer",
+				"cg_fltk", "cgv_gl", "glew"];

@@ -1,5 +1,4 @@
 #include "bit_field_controler.h"
-
 #include <cgv/utils/scan_enum.h>
 #include <cgv/base/base_generator.h>
 
@@ -28,15 +27,15 @@ void bit_field_controler::value_change_callback(cgv::gui::control<bool>&)
 void bit_field_controler::set_value(const bool& new_value, void* user_data) 
 {
 	if (new_value)
-		value |= bit_values[(int) user_data];
+		value |= bit_values[reinterpret_cast<size_t>(user_data)];
 	else
-		value &= ~bit_values[(int) user_data];
+		value &= ~bit_values[reinterpret_cast<size_t>(user_data)];
 }
 
 /// overload to get the value
 const bool bit_field_controler::get_value(void* user_data) const 
 {
-	return (value & bit_values[(int) user_data]) != 0; 
+	return (value & bit_values[reinterpret_cast<size_t>(user_data)]) != 0;
 }
 
 /// the default implementation compares ptr to &get_value().
@@ -48,8 +47,8 @@ bool bit_field_controler::controls(const void* ptr, void* user_data) const
 /// 
 void bit_field_controler::add_bit_controls(cgv::gui::provider* p, const std::string& gui_type, const std::string& options, const std::string& align)
 {
-	for (unsigned i = 0; i < bit_names.size(); ++i) {
-		connect(p->add_control(bit_names[i], this, gui_type, options, align, (void*)i)->value_change, this, &bit_field_controler::value_change_callback);
+	for (size_t i = 0; i < bit_names.size(); ++i) {
+		connect(p->add_control(bit_names[i], this, gui_type, options, align, reinterpret_cast<void*>(i))->value_change, this, &bit_field_controler::value_change_callback);
 	}
 }
 

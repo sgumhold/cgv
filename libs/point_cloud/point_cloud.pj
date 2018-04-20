@@ -5,4 +5,7 @@ projectGUID="CCE7A84F-97ED-4e53-A60C-4FD2CDECA156";
 addSharedDefines=["POINT_CLOUD_EXPORTS"];
 addProjectDirs=[CGV_DIR."/3rd/ANN", CGV_DIR."/libs"];
 addProjectDeps=["cgv_utils","cgv_type","cgv_reflect", "cgv_data","cgv_base", "cgv_media", "cgv_os", "cgv_gui", "cgv_render", "cgv_gl", "annf"];
-addIncDirs=[CGV_DIR."/3rd"];
+addIncDirs=[CGV_DIR."/3rd", CGV_BUILD_DIR."/".projectName];
+if(SYSTEM=="windows") {
+	addStaticDefines=["REGISTER_SHADER_FILES"];
+}

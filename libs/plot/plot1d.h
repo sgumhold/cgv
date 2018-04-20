@@ -43,8 +43,12 @@ public:
 	unsigned get_nr_axes() const;
 	/// adjust the domain with respect to \c ai th axis to the data
 	void adjust_domain_axis_to_data(unsigned ai, bool adjust_min = true, bool adjust_max = true);
+	/// adjust the domain with respect to \c ai th axis to the data in the currently visible plots
+	void adjust_domain_axis_to_visible_data(unsigned ai, bool adjust_min = true, bool adjust_max = true);
 	/// adjust selected axes of domain to data
 	void adjust_domain_to_data(bool adjust_x_axis = true, bool adjust_y_axis = true);
+	/// adjust selected axes of domain to data in the currently visible plots
+	void adjust_domain_to_visible_data(bool adjust_x_axis = true, bool adjust_y_axis = true);
 	/// extend domain such that given axis is included
 	void include_axis_to_domain(unsigned ai);
 	/// adjust tick marks
@@ -55,6 +59,8 @@ public:
 	B2D& ref_domain() { return domain; }
 	/// set the plot extend in 2D coordinates
 	void set_extent(const V2D& new_extent);
+	/// query the plot extend in 2D coordinates
+	const V2D& get_extent() const;
 	/// set the plot width to given value and if constrained == true the height, such that the aspect ration is the same as the aspect ratio of the domain
 	void set_width(Crd new_width, bool constrained = true);
 	/// set the plot height to given value and if constrained == true the width, such that the aspect ration is the same as the aspect ratio of the domain
@@ -68,11 +74,11 @@ public:
 	/// place a corner (0 .. lower left, 1 .. lower right, 2 .. upper left, 3 .. upper right) to a given 3D location ((this might can change the current origin / center location) 
 	void place_corner(unsigned corner_index, const P3D& new_corner_location);
 	/// return the current origin in 3D coordinates
-	const P3D& get_origin() const;
+	P3D get_origin() const;
 	/// return the current plot center in 3D coordinates
 	const P3D& get_center() const;
 	/// return the i-th plot corner in 3D coordinates
-	const P3D& get_corner(unsigned i) const;
+	P3D get_corner(unsigned i) const;
 	/// set the direction of x or y axis
 	const V3D& get_axis_direction(unsigned ai) const;
 
@@ -96,6 +102,7 @@ public:
 
 	bool init(cgv::render::context& ctx);
 	void draw(cgv::render::context& ctx);
+	void clear(cgv::render::context& ctx);
 };
 
 	}

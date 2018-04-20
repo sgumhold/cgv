@@ -1,4 +1,6 @@
-get_filename_component(MACROS_BASE "${CMAKE_CURRENT_LIST_FILE}" PATH)
+get_filename_component(BASE_CM_PATH "${CMAKE_CURRENT_LIST_FILE}" PATH)
+include("${BASE_CM_PATH}/CMakePackageConfigHelpers.cmake")
+
 
 macro(cgv_find_package)
 
@@ -28,6 +30,8 @@ endmacro()
 
 
 macro(cgv_write_find_file target)
+
+	set(MACROS_BASE "${BASE_CM_PATH}")
 
 	# Parse the argument list
 	parse_arguments(FIND "ADDITIONAL_INCLUDES;SHARED_DEFINITIONS;STATIC_DEFINITIONS;DEFINITIONS;CMAKE_SRC_BASE;CMAKE_SRC_FILES" "CMAKE_REPLACE;IS_MODULE" ${ARGN})
@@ -105,8 +109,6 @@ macro(cgv_write_find_file target)
 	if (TARGET_TYPE STREQUAL "EXECUTABLE")
 		set(INPUT_FILE "PkgBinConfig.cmake.in")
 	endif()
-
-	include("${MACROS_BASE}/CMakePackageConfigHelpers.cmake")
 
 	configure_package_config_file("${MACROS_BASE}/${INPUT_FILE}"
 		"${CMAKE_BINARY_DIR}/${BUILD_BASE}/${INSTALL_CMAKE_PATH}/${target}Config.cmake"

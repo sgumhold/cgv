@@ -2,6 +2,7 @@
 
 #include <string>
 #include <cgv/data/data_view.h>
+#include <cgv/render/context.h>
 
 #include "lib_begin.h"
 
@@ -9,6 +10,8 @@ namespace cgv {
 	namespace render {
 		class context;
 		class shader_program;
+		class texture;
+		enum TextureSampling;
 
 		namespace gl {
 
@@ -20,6 +23,9 @@ extern CGV_API unsigned map_to_gl(TypeId ti);
 
 /// map a component format to a gl enum
 extern CGV_API unsigned map_to_gl(cgv::data::ComponentFormat cf);
+
+/// return OpenGL material side constant
+extern CGV_API unsigned map_to_gl(MaterialSide ms);
 
 /// return one of the six cube map sides gl enums
 extern CGV_API unsigned get_gl_cube_map_target(unsigned side);
@@ -77,8 +83,22 @@ extern CGV_API void push_textured_material_prog(shader_program& prog);
 /// pop a shader program from the textured material stack
 extern CGV_API void pop_textured_material_prog();
 
+//! complete the given shader program that is assumed to have a working fragment shader.
+/*! The function adds the rest of the pipeline and provides the input <in vec3 tex_coord>
+    to the fragment shader. The output of the fragment shader is stored in the 3D texture
+	passed to \c render_to_texture3D(). After this call the shader program is managed by
+	the caller and can be used once or several times in the function \c render_to_texture3D().
+	In case of failure, false is returned and in case the \c error_message string is provided 
+	an error message is assigned to \c error_message. */
+extern CGV_API bool complete_program_form_render_to_texture3D(cgv::render::context& ctx, cgv::render::shader_program& prog, std::string* error_message = 0);
 
-
+//! Render to the given target 3D texture with the given shader program that must be completed with the function \c complete_program_form_render_to_texture3D().
+/*! The program needs to be enabled before calling this function and all uniforms necessary to the fragment shader implementation of the caller should be 
+    set. The fragment shader is called once per texel with input \c tex_coord of type \c vec3 and the result is stored in the given texture, which cannot be 
+	enabled and used as input to the fragment shader. The \c texture_sampling parameter steers the computation of the \c tex_coord input. If additional textures
+	are provided, they are attached as additional targets during render to texture. Then the fragment shader should access the different targets through the
+	\c gl_FragData[] array. All target textures must have the same resolution. */
+extern CGV_API bool render_to_texture3D(context& ctx, shader_program& prog, TextureSampling texture_sampling, texture& target_tex, texture* target_tex2 = 0, texture* target_tex3 = 0, texture* target_tex4 = 0);
 
 		}
 	}

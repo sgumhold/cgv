@@ -18,9 +18,9 @@ TypeId get_new_type_id()
 unsigned int get_type_size(TypeId tid)
 {
 	static unsigned int type_size_table[] = {
-		-1, 
-		-1,
-		-1, 
+		unsigned(-1), 
+		unsigned(-1),
+		unsigned(-1), 
 		sizeof(bool), 
 		sizeof(int8_type), 
 		sizeof(int16_type), 
@@ -39,7 +39,7 @@ unsigned int get_type_size(TypeId tid)
 		sizeof(DummyEnum)
 	};
 	if (tid > TI_ENUM)
-		return -1;
+		return unsigned(-1);
 	return type_size_table[tid];
 }
 

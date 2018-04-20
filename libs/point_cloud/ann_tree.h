@@ -21,12 +21,16 @@ public:
 	void clear();
 	/// check whether the tree has been built
 	bool is_empty() const;
-	/// build from point cloud
+	/// build from complete point cloud
 	void build(const point_cloud& pc);
+	/// build from given components
+	void build(const point_cloud& pc, const std::vector<Idx>& component_indices);
 	/// provide necessary method for building a neighbor graph
 	void extract_neighbors(Idx i, Idx k, std::vector<Idx>& N) const;
 	/// addition query method to find the closest neighbor
 	Idx find_closest(const Pnt& p) const;
+	/// knn query that returns pointers to points
+	void find_closest_points(const Pnt& p, Idx k, std::vector<const Pnt*>& knn) const;
 };
 
 #include <cgv/config/lib_end.h>

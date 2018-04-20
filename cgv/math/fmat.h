@@ -7,6 +7,19 @@ namespace cgv {
 	/// namespace with classes and algorithms for mathematics
 	namespace math {
 
+//!matrix of fixed size dimensions
+/*!Template arguments are
+   - \c T ... coordinate type
+   - \c N ... number of rows
+   - \c M ... number of columns
+   Matrix elements can be accessed with the \c (i,j)-\c operator with 0-based
+   indices. For example \c A(i,j) accesses the matrix element in the (i+1)th 
+   row and the (j+1)th column.
+
+   The matrix inherits the functionality of a \c N*M dimensional vector
+   and is stored in row major format. This means that \c A(i,j)=A(j*M+i).
+   Similarly, the constructor for type const T* assumes an array in row
+   major format. */
 template <typename T, cgv::type::uint32_type N, cgv::type::uint32_type M>
 class fmat : public fvec<T,N*M>
 {
@@ -19,9 +32,9 @@ public:
 	fmat() {}
 	///construct a matrix with all elements set to c
 	fmat(const T& c) : base_type(c) {}
-	///creates a matrix from an array 
+	///creates a matrix from an array in row major format
 	fmat(const T* a) : base_type(a) {} 
-	///creates a matrix from an array of different type
+	///creates a matrix from an array of different type in row major format
 	template <typename S>
 	fmat(const S* a) : base_type(a) {} 
 	///copy constructor for matrix with different element type
@@ -106,19 +119,19 @@ public:
 	}
 	///multiplication with a ncols x M matrix m2
 	template <typename S, cgv::type::uint32_type L>
-	const fmat<T,N,M> operator*(const fmat<S,M,L>& m2) const
+	const fmat<T,N,L> operator*(const fmat<S,M,L>& m2) const
 	{
 		fmat<T,N,L> r; r.zeros();	
 		for(unsigned i = 0; i < N; i++)
 			for(unsigned j = 0; j < L;j++)
-				for(unsigned k = 0; k < N; k++)
+				for(unsigned k = 0; k < M; k++)
 					r(i,j) += operator()(i,k) * (T)(m2(k,j)); 
 		return r;
 	}
 
 	///matrix vector multiplication
 	template < typename S>
-	const fvec<T,N> operator*(const fvec<S,M>& v) const {
+	const fvec<T,N> operator * (const fvec<S,M>& v) const {
 		fvec<T,N> r;
 		for(unsigned i = 0; i < N; i++)
 			r(i) = dot(row(i),v);
@@ -189,7 +202,15 @@ fmat<T,N,M> operator * (const T& s, const fmat<T,N,M>& m)
 	return m*s; 
 }
 
-
+/// multiply a row vector from the left to matrix m and return a row vector
+template <typename T, cgv::type::uint32_type N, cgv::type::uint32_type M>
+fvec<T, M> operator * (const fvec<T, N>& v_row, const fmat<T, N, M>& m)
+{
+	fvec<T, M> r_row;
+	for (unsigned i = 0; i < M; i++)
+		r_row(i) = dot(m.col(i), v_row);
+	return r_row;
+}
 
 ///output of a matrix onto an ostream
 template <typename T, cgv::type::uint32_type N, cgv::type::uint32_type M>

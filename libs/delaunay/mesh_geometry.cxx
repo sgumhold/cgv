@@ -56,15 +56,30 @@ void mesh_geometry<C,P>::generate_sample_data_set(unsigned int n, SamplingType s
 
 	std::mt19937 rand_gen;
 	std::uniform_real_distribution<double> uni_dist(0.0, 1.0);
+
+	if (shape == ST_TERRAIN) {
+		for (unsigned i = 0; i<n; ++i) {
+			while (true) {
+				double x = uni_dist(rand_gen);
+				double y = uni_dist(rand_gen);
+				if (uni_dist(rand_gen) < fabs(sin(11 * x)*cos(7 * y))) {
+					p_of_vi(N + i) = point_type(x, y);
+					break;
+				}
+			}
+		}
+		return;
+	}
+
 	for (unsigned i=0; i<n; ++i) {
 		double x = uni_dist(rand_gen);
 		double y = uni_dist(rand_gen);
 		p_of_vi(N+i) = point_type(x,y);
 	}
 
-/*
-	if (sampling == UNIFORM) {
-		if (shape == SPIRAL) {
+
+	if (sampling == DT_UNIFORM) {
+		if (shape == ST_SPIRAL) {
 			double scale = 20.0/n;
 			for (unsigned i=0; i<n; ++i) {
 				coord_type a = scale*i-10;
@@ -83,22 +98,22 @@ void mesh_geometry<C,P>::generate_sample_data_set(unsigned int n, SamplingType s
 		}
 	}
 	else {
-		if (shape == SPIRAL) {
+		if (shape == ST_SPIRAL) {
 			double scale = 10.0/n;
 			for (unsigned i=0; i<n; ++i) {
-				coord_type a = 10.0*(coord_type)(sampling == RANDOM ? gen_rand() : gen_rand_high_res());
+				coord_type a = 10.0*(coord_type)(sampling == GT_RANDOM ? gen_rand() : gen_rand_high_res());
 				coord_type r = 0.1*a;
 				p_of_vi(N+i) = point_type(r*cos(a), r*sin(a));
 			}
 		}
 		else {
 			for (unsigned int i=0; i<n; ++i) {
-				point_type p((coord_type)(sampling == RANDOM ? gen_rand() : gen_rand_high_res()),(coord_type)(sampling == RANDOM ? gen_rand() : gen_rand_high_res()));
+				point_type p((coord_type)(sampling == GT_RANDOM ? gen_rand() : gen_rand_high_res()),(coord_type)(sampling == GT_RANDOM ? gen_rand() : gen_rand_high_res()));
 				p_of_vi(N+i) = transform(p,shape);
 			}
 		}
 	}
-	*/
+
 	if (do_random_shuffle)
 		std::random_shuffle(P.begin()+N, P.end());
 }

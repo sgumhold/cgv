@@ -335,10 +335,10 @@ context* create_win32_gl_context(RenderAPI api, unsigned int w, unsigned int h,
 	if (api != RA_OPENGL)
 		return 0;
 	win32_gl_context* ctx_ptr = new win32_gl_context(w,h);
-	if (!ctx_ptr->create(title, show)) {
+	if (!ctx_ptr->create(title, show) || !ctx_ptr->make_current() || !ensure_glew_initialized()) {
 		delete ctx_ptr;
 		return 0;
-	}
+	}	
 	return ctx_ptr;
 }
 

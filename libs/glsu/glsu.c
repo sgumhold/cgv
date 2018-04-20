@@ -43,8 +43,8 @@ void APIENTRY glsuConfigureStereo(enum GlsuEye eye,
 			glEnable(GL_SCISSOR_TEST);
 			break;
 		case GLSU_SPLIT_HORIZONTALLY:
-			glViewport(vp[0],vp[1],vp[2],vp[3]/2); 
-			glScissor(vp[0],vp[1],vp[2],vp[3]/2); 
+			glViewport(vp[0], vp[1] + vp[3]/2, vp[2], vp[3]/2);
+			glScissor(vp[0], vp[1] + vp[3]/2, vp[2], vp[3]/2);
 			glEnable(GL_SCISSOR_TEST);
 			break;
 		case GLSU_ANAGLYPH:
@@ -63,8 +63,8 @@ void APIENTRY glsuConfigureStereo(enum GlsuEye eye,
 			glEnable(GL_SCISSOR_TEST);
 			break;
 		case GLSU_SPLIT_HORIZONTALLY :
-			glViewport(vp[0],vp[1]+vp[3],vp[2],vp[3]); 
-			glScissor(vp[0],vp[1]+vp[3],vp[2],vp[3]); 
+			glViewport(vp[0], vp[1] - vp[3], vp[2], vp[3]);
+			glScissor(vp[0], vp[1] - vp[3], vp[2], vp[3]);
 			glEnable(GL_SCISSOR_TEST);
 			break;
 		case GLSU_ANAGLYPH :
@@ -83,8 +83,8 @@ void APIENTRY glsuConfigureStereo(enum GlsuEye eye,
 			glDisable(GL_SCISSOR_TEST);
 			break;
 		case GLSU_SPLIT_HORIZONTALLY:
-			glViewport(vp[0],vp[1]-vp[3],vp[2],2*vp[3]); 
-			glScissor(vp[0],vp[1]-vp[3],vp[2],2*vp[3]); 
+			glViewport(vp[0],vp[1],vp[2],2*vp[3]); 
+			glScissor(vp[0],vp[1],vp[2],2*vp[3]); 
 			glDisable(GL_SCISSOR_TEST);
 			break;
 		case GLSU_ANAGLYPH:

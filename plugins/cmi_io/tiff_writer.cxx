@@ -1,9 +1,20 @@
 #include "tiff_writer.h"
 #include <cgv/base/register.h>
+#include <cgv/reflect/reflect_enum.h>
 #include <iostream>
 #include <memory.h>
 
 #pragma warning (disable:4996)
+
+namespace cgv {
+	namespace reflect {
+
+		cgv::reflect::enum_reflection_traits<TiffCompression> get_reflection_traits(const TiffCompression&)
+		{
+			return cgv::reflect::enum_reflection_traits<TiffCompression>("none,lzw,jpeg");
+		}
+	}
+}
 
 /// default constructor
 tiff_writer::tiff_writer() : fp(0)
@@ -11,6 +22,9 @@ tiff_writer::tiff_writer() : fp(0)
 	allows_row_based = false;
 	row = 0;
 	nr_images = 0;
+	tiff_compression = TC_LZW;
+	jpeg_quality = 75;
+	jpeg_raw_color = false;
 }
 
 /// close file in destructor
@@ -20,6 +34,16 @@ tiff_writer::~tiff_writer()
 		TIFFClose(fp);
 	fp = 0;
 }
+
+/// reflect options
+bool tiff_writer::self_reflect(cgv::reflect::reflection_handler& srh)
+{
+	return
+		srh.reflect_member("jpeg_quality", jpeg_quality) &&
+		srh.reflect_member("jpeg_raw_color", jpeg_raw_color) &&
+		srh.reflect_member("tiff_compression", tiff_compression);
+}
+
 /// overload to return the type name of this object
 std::string tiff_writer::get_type_name() const
 {
@@ -93,7 +117,22 @@ bool tiff_writer::write_image(const const_data_view& dv, const std::vector<const
 	TIFFSetField(fp, TIFFTAG_IMAGEWIDTH, (uint32) dv.get_format()->get_width());
 	TIFFSetField(fp, TIFFTAG_IMAGELENGTH, (uint32) dv.get_format()->get_height());
 	TIFFSetField(fp, TIFFTAG_BITSPERSAMPLE, (uint32) 8*get_type_size(dv.get_format()->get_component_type()));
-	TIFFSetField(fp, TIFFTAG_COMPRESSION, COMPRESSION_LZW);
+	switch (tiff_compression)
+	{
+	case TC_NONE:
+		TIFFSetField(fp, TIFFTAG_COMPRESSION, COMPRESSION_NONE);
+		break;
+	case TC_LZW:
+		TIFFSetField(fp, TIFFTAG_COMPRESSION, COMPRESSION_LZW);
+		break;
+	case TC_JPEG:
+		TIFFSetField(fp, TIFFTAG_COMPRESSION, COMPRESSION_JPEG);
+		TIFFSetField(fp, TIFFTAG_JPEGQUALITY, jpeg_quality);
+		TIFFSetField(fp, TIFFTAG_JPEGCOLORMODE, jpeg_raw_color ? JPEGCOLORMODE_RAW : JPEGCOLORMODE_RGB);
+		break;
+	default:
+		break;
+	}
 	uint32 format;
 	switch (dv.get_format()->get_component_type()) {
 	case TI_UINT8 :

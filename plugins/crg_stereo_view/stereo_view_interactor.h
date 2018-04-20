@@ -3,9 +3,15 @@
 #include <cgv/render/drawable.h>
 #include <cgv_gl/gl/gl_view.h>
 #include <cgv/gui/event_handler.h>
+#include <cgv/gui/key_event.h>
 #include <cgv/gui/provider.h>
+#include <cgv/reflect/reflect_enum.h>
 #include <cgv_gl/gl/gl.h>
 #include <glsu/GL/glsu.h>
+#if defined(_WINDOWS) || defined(WIN32) || defined(WIN64)
+#undef max
+#undef min
+#endif
 
 #include "lib_begin.h"
 
@@ -16,20 +22,19 @@ protected:
 	double parallax_zero_scale;
 	GlsuStereoMode stereo_mode;
 	GlsuEye mono_mode;
-	GlsuAnaglyphConfiguration ac;
+	GlsuAnaglyphConfiguration anaglyph_config;
 	bool stereo_enabled;
 	bool stereo_translate_in_model_view;
 	bool two_d_enabled;
 	bool fix_view_up_dir;
 public:
 	ext_view();
-	void set_default_view();
 	void set_default_values();
 	GlsuStereoMode get_stereo_mode() const { return stereo_mode; }
 	virtual void set_stereo_mode(GlsuStereoMode sm) { stereo_mode = sm; }
 	GlsuEye get_mono_mode() const { return mono_mode; }
 	virtual void set_mono_mode(GlsuEye mm) { mono_mode = mm; }
-	virtual void set_anaglyph_config(GlsuAnaglyphConfiguration _ac) { ac = _ac; }
+	virtual void set_anaglyph_config(GlsuAnaglyphConfiguration _ac) { anaglyph_config = _ac; }
 	bool is_stereo_enabled() const { return stereo_enabled; }
 	virtual void enable_stereo(bool e = true) { stereo_enabled = e; }
 	double get_eye_distance() const { return eye_distance; }
@@ -37,8 +42,15 @@ public:
 	double get_parallax_zero_scale() const { return parallax_zero_scale; }
 	double get_parallax_zero_z() const;
 	virtual void set_parallax_zero_scale(double pzs) { parallax_zero_scale = pzs; }
-	void put_coordinate_system(vec_type& x, vec_type& y, vec_type& z) const;
 };
+
+enum StereoMousePointer {
+	SMP_BITMAP,
+	SMP_PIXELS,
+	SMP_ARROW
+};
+
+extern CGV_API cgv::reflect::enum_reflection_traits<StereoMousePointer> get_reflection_traits(const StereoMousePointer&);
 
 class CGV_API stereo_view_interactor : 
 	public cgv::base::node, 
@@ -53,7 +65,7 @@ protected:
 	bool auto_view_images;
 	bool show_focus;
 	bool clip_relative_to_extent;
-	double zoom_sensitivity, rotate_sensitivity;
+	double pan_sensitivity, zoom_sensitivity, rotate_sensitivity;
 
 
 	// members for screen shots
@@ -84,6 +96,18 @@ protected:
 
 	/// overload to set local lights before modelview matrix is set
 	virtual void on_set_local_lights();
+
+	///
+	StereoMousePointer stereo_mouse_pointer;
+	///
+	void draw_mouse_pointer_as_bitmap(cgv::render::context& ctx, int x, int y, int center_x, int center_y, int vp_width, int vp_height, bool visible, const cgv::render::context::mat_type &DPV);
+	///
+	void draw_mouse_pointer_as_pixels(cgv::render::context& ctx, int x, int y, int center_x, int center_y, int vp_width, int vp_height, bool visible, const cgv::render::context::mat_type &DPV);
+	///
+	void draw_mouse_pointer_as_arrow(cgv::render::context& ctx, int x, int y, int center_x, int center_y, int vp_width, int vp_height, bool visible, const cgv::render::context::mat_type &DPV);
+	///
+	void draw_mouse_pointer(cgv::render::context& ctx, bool visible);
+	///
 	void draw_focus();
 	bool self_reflect(cgv::reflect::reflection_handler& srh);
 	std::string get_property_declarations();
@@ -91,10 +115,94 @@ protected:
 	bool get_void(const std::string& property, const std::string& value_type, void* value_ptr);
 	void on_set(void* m);
 	void on_rotation_change();
+
+	void set_view_orientation(const std::string& axes);
+	/// set the current projection matrix
+	void gl_set_projection_matrix(GlsuEye e, double aspect);
+	void gl_set_modelview_matrix(GlsuEye e, double aspect, const cgv::render::view& view);
+	/// ensure sufficient number of viewport views
+	unsigned get_viewport_index(unsigned col_index, unsigned row_index) const;
+	void ensure_viewport_view_number(unsigned nr);
+
+	/**@name gamepad support*/
+	//@{
+	float deadzone;
+	int left_mode, right_mode;
+	bool gamepad_attached;
+	unsigned gamepad_flags;
+	cgv::math::fvec<float,2> left_stick, right_stick, trigger;
+	bool gamepad_active;
+
+	bool gamepad_emulation;
+	bool emulation_active;
+	float emulation_axes[6];
+	float plus_key_values[6];
+	bool plus_key_down[6];
+	double plus_key_toggle_time[6];
+	float minus_key_values[6];
+	double minus_key_toggle_time[6];
+	bool minus_key_down[6];
+	void check_emulation_active();
+	void plus_key_action(int i, cgv::gui::KeyAction action);
+	void minus_key_action(int i, cgv::gui::KeyAction action);
+
+
+	void timer_event(double t, double dt);
+	//@}
 public:
 	///
 	stereo_view_interactor(const char* name);
+	/**@name viewport splitting*/
+	//@{
+	/// call this function before a drawing process to support viewport splitting inside the draw call via the activate/deactivate functions
+	void enable_viewport_splitting(unsigned nr_cols, unsigned nr_rows);
+	/// check whether viewport splitting is activated and optionally set the number of columns and rows if corresponding pointers are passed
+	bool is_viewport_splitting_enabled(unsigned* nr_cols_ptr = 0, unsigned* nr_rows_ptr = 0) const;
+	/// disable viewport splitting
+	void disable_viewport_splitting();
+	/// inside the drawing process activate the sub-viewport with the given column and row indices, always terminate an activated viewport with deactivate_split_viewport
+	void activate_split_viewport(cgv::render::context& ctx, unsigned col_index, unsigned row_index);
+	/// deactivate the previously split viewport
+	void deactivate_split_viewport();
+	/// make a viewport manage its own view
+	void viewport_use_individual_view(unsigned col_index, unsigned row_index);
+	/// check whether viewport manage its own view
+	bool does_viewport_use_individual_view(unsigned col_index, unsigned row_index) const { 
+		unsigned i = get_viewport_index(col_index, row_index);
+		return i >= use_individual_view.size() ? false : use_individual_view[i];
+	}
+	/// access the view of a given viewport
+	cgv::render::view& ref_viewport_view(unsigned col_index, unsigned row_index);
+	//@}
+	//! given a mouse location and the pixel extent of the context, return the DPV matrix for unprojection
+	/*! In stereo modes with split viewport, the returned DPV is the one the mouse pointer is on.
+	The return value is in this case -1 or 1 and tells if DPV corresponds to the left (-1) or right (1) viewport.
+	Furthermore, the DPV of the corresponding mouse location in the other eye is returned through DPV_other_ptr
+	and the mouse location in x_other_ptr and y_other_ptr. In anaglyph or quad buffer stereo mode the other
+	mouse location is identical to the incoming x and y location and 0 is returned. In mono mode,
+	the other DPV and mouse locations are set to values identical to DPV and x,y and also 0 is returned.
 
+	In case the viewport splitting was enabled during the last drawing process, the DPV and
+	DPV_other matrices are set to the one valid in the panel that the mouse position x,y is
+	in. The panel column and row indices are passed to the vp_col_idx and vp_row_idx pointers.
+	In case that viewport splitting was disabled, 0 is passed to the panel location index pointers.
+
+	Finally, the vp_width, vp_height, vp_center_x, and vp_center_y pointers are set to the viewport size 
+	and center mouse location of the panel panel that the mouse pointer is in.
+
+	All pointer arguments starting with DPV_other_ptr can be set to the null pointer.*/
+	int get_DPVs(int x, int y, int width, int height,
+		const cgv::math::mat<double>** DPV_pptr,
+		const cgv::math::mat<double>** DPV_other_pptr = 0, int* x_other_ptr = 0, int* y_other_ptr = 0,
+		int* vp_col_idx_ptr = 0, int* vp_row_idx_ptr = 0,
+		int* vp_width_ptr = 0, int *vp_height_ptr = 0,
+		int* vp_center_x_ptr = 0, int* vp_center_y_ptr = 0,
+		int* vp_center_x_other_ptr = 0, int* vp_center_y_other_ptr = 0) const;
+	//! given a pixel location x,y return the z-value from the depth buffer, which ranges from 0.0 at z_near to 1.0 at z_far and a point in world coordinates
+	/*! in case of stereo rendering two z-values exist that can be unprojected to two points in world
+	    coordinates. In this case the possibility with smaller z value is selected. */
+	void get_vp_col_and_row_indices(cgv::render::context& ctx, int x, int y, int& vp_col_idx, int& vp_row_idx);
+	double get_z_and_unproject(cgv::render::context& ctx, int x, int y, pnt_type& p);
 	void set_focus(const pnt_type& foc) { ext_view::set_focus(foc); update_vec_member(view::focus); }
 	void set_view_up_dir(const vec_type& vud) { ext_view::set_view_up_dir(vud); update_vec_member(view_up_dir); }
 	void set_view_dir(const vec_type& vd) { ext_view::set_view_dir(vd); update_vec_member(view_dir); }
@@ -104,7 +212,7 @@ public:
 	void enable_stereo(bool e = true) { ext_view::enable_stereo(e); update_member(&stereo_enabled); }
 	void set_eye_distance(double e) { ext_view::set_eye_distance(e); update_member(&eye_distance); }
 	void set_parallax_zero_scale(double pzs) { ext_view::set_parallax_zero_scale(pzs); update_member(&parallax_zero_scale); }
-	void set_anaglyph_config(GlsuAnaglyphConfiguration _ac) { ext_view::set_anaglyph_config(_ac); update_member(&ac); }
+	void set_anaglyph_config(GlsuAnaglyphConfiguration _ac) { ext_view::set_anaglyph_config(_ac); update_member(&anaglyph_config); }
 	/// return the type name 
 	std::string get_type_name() const;
 	/// overload to show the content of this object
@@ -128,14 +236,31 @@ public:
 	std::string get_menu_path() const;
 	/// you must overload this for gui creation
 	void create_gui();
-	///
-	void roll(double angle);
-	///
-	void rotate_image_plane(double ax, double ay);
+
+	void set_z_near(double z);
+	void set_z_far(double z);
+	void set_default_view();
 private:
 	double check_for_click;
-	cgv::render::context::mat_type DPV;
-	cgv::render::context::mat_type V,P;
+	
+	cgv::render::context::mat_type DPV, DPV_right;
+	cgv::render::context::mat_type V, P;
+
+	GlsuEye current_e;
+	int current_vp[4], current_sb[4];
+
+	bool do_viewport_splitting;
+	unsigned nr_viewport_columns;
+	unsigned nr_viewport_rows;
+	std::vector<cgv::render::context::mat_type> DPVs, DPVs_right;
+	std::vector<cgv::render::view> views;
+	std::vector<bool> use_individual_view;
+
+	bool last_do_viewport_splitting;
+	unsigned last_nr_viewport_columns;
+	unsigned last_nr_viewport_rows;
+
+	int last_x, last_y;
 };
 
 #include <cgv/config/lib_end.h>

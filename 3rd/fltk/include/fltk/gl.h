@@ -42,6 +42,7 @@
 
 #if USE_GLEW
 # include <GL/glew.h>
+# include <GL/wglew.h>
 #elif defined(__GLEW_H__)
   /* do nothing if they included glew.h */
 #else

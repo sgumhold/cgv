@@ -65,6 +65,8 @@ public:
 		 environment variable CGV_SHADER_PATH or empty if that is not 
 		 defined. */
 	static std::string find_file(const std::string& file_name);
+	/** format given last error in a way that developer environments can locate errors in the source file */
+	static std::string get_last_error(const std::string& file_name, const std::string& last_error);
 	/// read shader code from file and return string with content or empty string if read failed
 	static std::string read_code_file(const std::string &file_name, std::string* _last_error = 0);
 	/** detect the shader type from the extension of the given
@@ -74,9 +76,6 @@ public:
 		 - glfs ... ST_FRAGMENT
 	*/
 	static ShaderType detect_shader_type(const std::string& file_name);
-	/** query the last error in a way that developer environments can 
-	    locate errors in the source file */
-	std::string get_last_error(const std::string& file_name) const;
 	/// destruct shader code
 	void destruct(context& ctx);
 	/** read shader code from file that is searched for with find_file.

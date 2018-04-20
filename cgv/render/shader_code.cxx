@@ -49,9 +49,9 @@ shader_config_ptr get_shader_config()
 
 /** query the last error in a way that developer environments can 
     locate errors in the source file */
-std::string shader_code::get_last_error(const std::string& file_name) const
+std::string shader_code::get_last_error(const std::string& file_name, const std::string& last_error)
 {
-	std::string fn = find_file(file_name);
+	std::string fn = shader_code::find_file(file_name);
 	std::vector<line> lines;
 	split_to_lines(last_error, lines);
 	std::string formated_error;
@@ -132,23 +132,41 @@ void shader_code::destruct(context& ctx)
 {
 	if (!handle)
 		return;
-	ctx.shader_code_destruct(handle);
+	ctx.shader_code_destruct(*this);
 	handle = 0;
 }
 
 std::string shader_code::find_file(const std::string& file_name)
 {
+	if (file_name.substr(0, 6) == "str://" || file_name.substr(0, 6) == "res://") {
+		std::map<std::string, resource_file_info>::const_iterator it = ref_resource_file_map().find(file_name.substr(6));
+		if (it != ref_resource_file_map().end())
+			return file_name;
+		else
+			return "";
+	}
 	if (exists(file_name))
 		return file_name;
+	
+	std::string try_name = cgv::utils::file::get_path(ref_prog_name()) + "/" + file_name;
+	if (exists(try_name))
+		return try_name;
 
 	std::map<std::string, resource_file_info>::const_iterator it = 
 		ref_resource_file_map().find(file_name);
-	if (it != ref_resource_file_map().end())
-		return std::string("res://")+file_name;
-
+	if (it != ref_resource_file_map().end()) {
+		if (it->second.file_offset == -1)
+			return std::string("str://") + file_name;
+		else
+			return std::string("res://") + file_name;
+	}
 	if (get_shader_config()->shader_path.empty()) {
-		if (exists(std::string("glsl/") + file_name))
-			return std::string("glsl/") + file_name;
+		try_name = std::string("glsl/") + file_name;
+		if (exists(try_name))
+			return try_name;
+		try_name = cgv::utils::file::get_path(ref_prog_name()) + "/glsl/" + file_name;
+		if (exists(try_name))
+			return try_name;
 		return "";
 	}
 	return find_in_paths(file_name, get_shader_config()->shader_path, true);
@@ -227,14 +245,13 @@ bool shader_code::set_code(context& ctx, const std::string &source, ShaderType _
 	st = _st;
 	destruct(ctx);
 	ctx_ptr = &ctx;
-	handle = ctx.shader_code_create(source, st, last_error);
-	return handle != 0;
+	return ctx.shader_code_create(*this, st, source);
 }
 
 ///compile attached source; returns true if successful
 bool shader_code::compile(context& ctx)
 {
-	if (!ctx.shader_code_compile(handle,last_error)) {
+	if (!ctx.shader_code_compile(*this)) {
 		user_data = 0;
 		return false;
 	}
@@ -250,7 +267,7 @@ bool shader_code::read_and_compile(context& ctx, const std::string &file_name, S
 		return false;
 	if (!compile(ctx)) {
 		if (show_error)
-			std::cerr << get_last_error(file_name).c_str() << std::endl;
+			std::cerr << get_last_error(file_name, last_error).c_str() << std::endl;
 		return false;
 	}
 	return true;

@@ -21,7 +21,7 @@ public:
 	/// different sampling types for sample data set generation
 	enum GeneratorType { GT_RANDOM, GT_PSEUDO_RANDOM_DEFAULT, GT_PSEUDO_RANDOM_MT };
 	/// different shape types for sample data set generation
-	enum ShapeType { ST_SQUARE, ST_TRIANGLE, ST_CIRCLE, ST_SPIRAL };
+	enum ShapeType { ST_SQUARE, ST_TRIANGLE, ST_CIRCLE, ST_SPIRAL, ST_TERRAIN };
 	/// different sampling strategies
 	enum SamplingStrategy { SS_REJECTION, SS_TRANSFORM };
 protected:

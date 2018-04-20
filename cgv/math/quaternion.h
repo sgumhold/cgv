@@ -294,6 +294,28 @@ public:
 		}*/
 		return angle;
 	}
+	/// exponential map
+	quaternion<T> exp() const
+	{
+		T m = im().length();
+		quaternion<T> quat(cos(m), im()*(sin(m) / m));
+		(typename quaternion<T>::base_type&) quat *= exp(re());
+		return quat;
+	}
+	/// logarithmic map
+	quaternion<T> log() const
+	{
+		T R = this->length();
+		typename quaternion<T>::vec_type v(im());
+		T sinTimesR = v.length();
+		if (sinTimesR < EPSILON)
+			v /= sinTimesR;
+		else {
+			v = typename quaternion<T>::vec_type(0, 0, 0);
+			sinTimesR = 0;
+		}
+		return quaternion<T>(::log(R), atan2(sinTimesR, re()*v));
+	}
 	//@}
 };
 
@@ -305,29 +327,5 @@ quaternion<T> operator * (const T& s, const quaternion<T>& v)
 }
 
 
-/// exponential map
-template <typename T>
-quaternion<T> exp(const quaternion<T>& q)
-{
-	T m = q.im().length();
-	quaternion<T> quat(cos(m),q.im()*(sin(m)/m));
-	(typename quaternion<T>::base_type&) quat *= exp(q.re());
-	return quat;
-}
-/// logarithmic map
-template <typename T>
-quaternion<T> log(const quaternion<T>& q)
-{
-	T R = q.length();
-	typename quaternion<T>::vec_type v(q.im());
-	T sinTimesR = v.length();
-	if (sinTimesR < EPSILON) 
-		v /= sinTimesR;
-	else {
-		v = typename quaternion<T>::vec_type(0,0,0);
-		sinTimesR = 0;
-	}
-	return quaternion<T>(::log(R),atan2(sinTimesR, q.re()*v));
-}
 	}
 }

@@ -1,4 +1,5 @@
 #include "mouse_tracker.h"
+#include <cgv/base/find_action.h>
 #include <cgv/gui/key_event.h>
 #include <cgv/gui/mouse_event.h>
 #include <sstream>
@@ -7,14 +8,26 @@ using namespace cgv::gui;
 using namespace cgv::render;
 
 /// construct from name which is necessary construction argument to node
-mouse_tracker::mouse_tracker(const char* name) : node(name)
+mouse_tracker::mouse_tracker(const char* name) : node(name), picked_point(0, 0, 0)
 {
 	font_size = 20;
 	bold = false;
 	italic = false;
 	font_idx = 0;
-	x = y = 0;
+	view_ptr = 0;
+	x = y = 0;	
+	have_picked_point = false;
 	cgv::media::font::enumerate_font_names(font_names);
+}
+
+/// find view ptr
+bool mouse_tracker::init(cgv::render::context& ctx)
+{
+	std::vector<cgv::render::view*> view_ptrs;
+	cgv::base::find_interface<cgv::render::view>(this, view_ptrs);
+	if (!view_ptrs.empty())
+		view_ptr = view_ptrs.front();
+	return true;
 }
 
 /// show internal values
@@ -87,11 +100,17 @@ bool mouse_tracker::handle(event& e)
 		case MA_MOVE :
 			x = me.get_x();
 			y = me.get_y();
+			have_picked_point = false;
+			if (view_ptr)
+				have_picked_point = get_world_location(x, y, *view_ptr, picked_point);
 			post_redraw();
 			return false;
 		case MA_DRAG :
 			x = me.get_x();
 			y = me.get_y();
+			have_picked_point = false;
+			if (view_ptr)
+				have_picked_point = get_world_location(x, y, *view_ptr, picked_point);
 			post_redraw();
 			return false;
 		default:
@@ -127,6 +146,8 @@ void mouse_tracker::draw(context& ctx)
 		ctx.enable_font_face(ff, font_size);
 		std::stringstream ss;
 		ss << "(" << x << "," << y << ")";
+		if (have_picked_point)
+			ss << "->[" << picked_point << "]";
 		std::string s = ss.str();
 		float f = (float)x/ctx.get_width();
 		ctx.set_cursor(x-(int)(f*ff->measure_text_width(s,font_size)),y-4);

@@ -1,9 +1,6 @@
 cmake_minimum_required(VERSION 2.6)
 project(cgv_reflect_types)
 
-# Include base definitions
-include("../../cmake/buildCoreComponents.cmake")
-
 # The CGV framework is needed!
 find_package(cgv COMPONENTS  utils type reflect media math render)
 

@@ -1,0 +1,8 @@
+@=
+projectName="gamepad_test";
+projectType="application";
+addProjectDirs=[CGV_DIR."/libs"];
+addProjectDeps=["gamepad"];
+addIncDirs=[CGV_DIR."/libs"];
+projectGUID="FAC74B26-79F3-4549-B35D-B3CB792BB8D1";
+

@@ -1,6 +1,8 @@
 #include "gl_tools.h"
 
 #include <cgv_gl/gl/gl.h>
+#include <cgv/render/frame_buffer.h>
+#include <cgv/render/shader_program.h>
 #include <iostream>
 
 #ifndef GL_CLAMP_TO_EDGE
@@ -100,11 +102,13 @@ GLuint gl_tex_dim[] = { GL_TEXTURE_1D, GL_TEXTURE_2D, GL_TEXTURE_3D, GL_TEXTURE_
 bool generate_mipmaps(unsigned int dim, std::string* last_error)
 {
 	if (dim == 0 || dim > 3) {
-		*last_error = "wrong dimension of texture";
+		if (last_error)
+			*last_error = "wrong dimension of texture";
 		return false;
 	}
 	if (!(ensure_glew_initialized() && GLEW_EXT_framebuffer_object)) {
-		*last_error = "automatic generation of mipmaps not supported";
+		if (last_error)
+			*last_error = "automatic generation of mipmaps not supported";
 		return false;
 	}
 	glGenerateMipmapEXT(gl_tex_dim[dim-1]);
@@ -158,89 +162,6 @@ static const GLenum gl_std_texture_format_ids[] =
 	GL_RGBA16
 };
 
-static const GLenum gl_float_texture_format_ids[] = 
-{
-	GL_RGBA32F_ARB,
-	GL_RGB32F_ARB,
-	GL_ALPHA32F_ARB,
-	GL_INTENSITY32F_ARB,
-	GL_LUMINANCE32F_ARB,
-	GL_LUMINANCE_ALPHA32F_ARB,
-	GL_RGBA16F_ARB,
-	GL_RGB16F_ARB,
-	GL_ALPHA16F_ARB,
-	GL_INTENSITY16F_ARB,
-	GL_LUMINANCE16F_ARB,
-	GL_LUMINANCE_ALPHA16F_ARB,
-	GL_TEXTURE_RED_TYPE_ARB,
-	GL_TEXTURE_GREEN_TYPE_ARB,
-	GL_TEXTURE_BLUE_TYPE_ARB,
-//	GL_TEXTURE_ALPHA_TYPE_ARB,
-//	GL_TEXTURE_LUMINANCE_TYPE_ARB,
-//	GL_TEXTURE_INTENSITY_TYPE_ARB,
-	GL_TEXTURE_DEPTH_TYPE_ARB,
-//	GL_UNSIGNED_NORMALIZED_ARB
-};
-
-static const GLenum gl_int_texture_format_ids[] = 
-{
-	GL_RGBA32UI_EXT,
-	GL_RGB32UI_EXT,
-	GL_ALPHA32UI_EXT,
-	GL_INTENSITY32UI_EXT,
-	GL_LUMINANCE32UI_EXT,
-	GL_LUMINANCE_ALPHA32UI_EXT,
-	GL_RGBA16UI_EXT,
-	GL_RGB16UI_EXT,
-	GL_ALPHA16UI_EXT,
-	GL_INTENSITY16UI_EXT,
-	GL_LUMINANCE16UI_EXT,
-	GL_LUMINANCE_ALPHA16UI_EXT,
-	GL_RGBA8UI_EXT,
-	GL_RGB8UI_EXT,
-	GL_ALPHA8UI_EXT,
-	GL_INTENSITY8UI_EXT,
-	GL_LUMINANCE8UI_EXT,
-	GL_LUMINANCE_ALPHA8UI_EXT,
-	GL_RGBA32I_EXT,
-	GL_RGB32I_EXT,
-	GL_ALPHA32I_EXT,
-	GL_INTENSITY32I_EXT,
-	GL_LUMINANCE32I_EXT,
-	GL_LUMINANCE_ALPHA32I_EXT,
-	GL_RGBA16I_EXT,
-	GL_RGB16I_EXT,
-	GL_ALPHA16I_EXT,
-	GL_INTENSITY16I_EXT,
-	GL_LUMINANCE16I_EXT,
-	GL_LUMINANCE_ALPHA16I_EXT,
-	GL_RGBA8I_EXT,
-	GL_RGB8I_EXT,
-	GL_ALPHA8I_EXT,
-	GL_INTENSITY8I_EXT,
-	GL_LUMINANCE8I_EXT,
-	GL_LUMINANCE_ALPHA8I_EXT,
-
-/*	GL_RED_INTEGER_EXT,
-	GL_GREEN_INTEGER_EXT,
-	GL_BLUE_INTEGER_EXT,
-	GL_ALPHA_INTEGER_EXT,
-	GL_RGB_INTEGER_EXT,
-	GL_RGBA_INTEGER_EXT,
-	GL_BGR_INTEGER_EXT,
-	GL_BGRA_INTEGER_EXT,
-	GL_LUMINANCE_INTEGER_EXT,
-	GL_LUMINANCE_ALPHA_INTEGER_EXT*/
-};
-
-static const GLenum gl_depth_format_ids[] = 
-{
-	GL_DEPTH_COMPONENT,
-	GL_DEPTH_COMPONENT16,
-	GL_DEPTH_COMPONENT24,
-	GL_DEPTH_COMPONENT32
-};
-
 static const char* std_texture_formats[] = {
 	"[A]",
 	"uint8:4[A]",
@@ -287,6 +208,23 @@ static const char* std_texture_formats[] = {
 	"uint16[R,G,B,A]",
 	0
 };
+static const GLenum gl_float_texture_format_ids[] = 
+{
+	GL_RGBA32F_ARB,
+	GL_RGB32F_ARB,
+	GL_ALPHA32F_ARB,
+	GL_INTENSITY32F_ARB,
+	GL_LUMINANCE32F_ARB,
+	GL_LUMINANCE_ALPHA32F_ARB,
+
+	GL_RGBA16F_ARB,
+	GL_RGB16F_ARB,
+	GL_ALPHA16F_ARB,
+	GL_INTENSITY16F_ARB,
+	GL_LUMINANCE16F_ARB,
+	GL_LUMINANCE_ALPHA16F_ARB,
+};
+
 
 static const char* float_texture_formats[] = {
 	"flt32[R,G,B,A]",
@@ -302,12 +240,52 @@ static const char* float_texture_formats[] = {
 	"flt16[I]",
 	"flt16[L]",
 	"flt16[L,A]",
-
-	"flt32[R]",
-	"flt32[G]",
-	"flt32[B]",
-	"flt32[D]",
 	0
+};
+
+static const GLenum gl_int_texture_format_ids[] = 
+{
+	GL_RGBA32UI_EXT,
+	GL_RGB32UI_EXT,
+	GL_ALPHA32UI_EXT,
+	GL_INTENSITY32UI_EXT,
+	GL_LUMINANCE32UI_EXT,
+	GL_LUMINANCE_ALPHA32UI_EXT,
+
+	GL_RGBA16UI_EXT,
+	GL_RGB16UI_EXT,
+	GL_ALPHA16UI_EXT,
+	GL_INTENSITY16UI_EXT,
+	GL_LUMINANCE16UI_EXT,
+	GL_LUMINANCE_ALPHA16UI_EXT,
+	
+	GL_RGBA8UI_EXT,
+	GL_RGB8UI_EXT,
+	GL_ALPHA8UI_EXT,
+	GL_INTENSITY8UI_EXT,
+	GL_LUMINANCE8UI_EXT,
+	GL_LUMINANCE_ALPHA8UI_EXT,
+	
+	GL_RGBA32I_EXT,
+	GL_RGB32I_EXT,
+	GL_ALPHA32I_EXT,
+	GL_INTENSITY32I_EXT,
+	GL_LUMINANCE32I_EXT,
+	GL_LUMINANCE_ALPHA32I_EXT,
+	
+	GL_RGBA16I_EXT,
+	GL_RGB16I_EXT,
+	GL_ALPHA16I_EXT,
+	GL_INTENSITY16I_EXT,
+	GL_LUMINANCE16I_EXT,
+	GL_LUMINANCE_ALPHA16I_EXT,
+	
+	GL_RGBA8I_EXT,
+	GL_RGB8I_EXT,
+	GL_ALPHA8I_EXT,
+	GL_INTENSITY8I_EXT,
+	GL_LUMINANCE8I_EXT,
+	GL_LUMINANCE_ALPHA8I_EXT
 };
 
 static const char* int_texture_formats[] = {
@@ -355,6 +333,14 @@ static const char* int_texture_formats[] = {
 	0
 };
 
+static const GLenum gl_depth_format_ids[] = 
+{
+	GL_DEPTH_COMPONENT,
+	GL_DEPTH_COMPONENT16_ARB,
+	GL_DEPTH_COMPONENT24_ARB,
+	GL_DEPTH_COMPONENT32_ARB
+};
+
 static const char* depth_formats[] = 
 {
 	"[D]",
@@ -363,6 +349,60 @@ static const char* depth_formats[] =
 	"uint32[D]",
 	0
 };
+
+static const GLenum gl_rg_texture_format_ids[] =
+{
+	GL_RED,
+	GL_RG,
+
+	GL_R16F,    
+	GL_R32F,   
+
+	GL_RG16F,   
+	GL_RG32F,  
+
+	GL_R8I,   
+	GL_R8UI,    
+	GL_R16I,    
+	GL_R16UI,   
+	GL_R32I,  
+	GL_R32UI,   
+
+	GL_RG8I, 
+	GL_RG8UI,   
+	GL_RG16I,   
+	GL_RG16UI,  
+	GL_RG32I, 
+	GL_RG32UI
+};
+
+
+static const char* rg_texture_formats[] = {
+	"[R]",
+	"[R,G]",
+
+	"flt16[R]",
+	"flt32[R]",
+
+	"flt16[R,G]",
+	"flt32[R,G]",
+
+	"int8[R]",
+	"uint8[R]",
+	"int16[R]",
+	"uint16[R]",
+	"int32[R]",
+	"uint32[R]",
+
+	"int8[R,G]",
+	"uint8[R,G]",
+	"int16[R,G]",
+	"uint16[R,G]",
+	"int32[R,G]",
+	"uint32[R,G]",
+	0
+};
+
 
 unsigned find_best_texture_format(const cgv::data::component_format& _cf, cgv::data::component_format* best_cf, const std::vector<data_view>* palettes)
 {
@@ -394,11 +434,19 @@ unsigned find_best_texture_format(const cgv::data::component_format& _cf, cgv::d
 		}
 	}
 	if (ensure_glew_initialized() && GLEW_ARB_texture_float) {
-		i = find_best_match(cf,float_texture_formats, best_cf);
+		i = find_best_match(cf, float_texture_formats, best_cf);
 		if (i != -1) {
 			if (best_cf)
 				*best_cf = cgv::data::component_format(float_texture_formats[i]);
 			gl_format = gl_float_texture_format_ids[i];
+		}
+	}
+	if (ensure_glew_initialized() && GLEW_ARB_texture_rg) {
+		i = find_best_match(cf, rg_texture_formats, best_cf);
+		if (i != -1) {
+			if (best_cf)
+				*best_cf = cgv::data::component_format(rg_texture_formats[i]);
+			gl_format = gl_rg_texture_format_ids[i];
 		}
 	}
 	return gl_format;
@@ -609,6 +657,135 @@ void gl_1D_texture_to_screen(bool vary_along_x, float xmin, float ymin, float xm
 		glPopMatrix();
 	
 	glMatrixMode(mm);
+}
+
+bool complete_program_form_render_to_texture3D(cgv::render::context& ctx, cgv::render::shader_program& prog, std::string* error_message)
+{
+	const char* vertex_shader_source = "\
+#version 150 compatibility\n\
+\n\
+uniform float slice_coord;\n\
+\n\
+out vec3 tex_coord;\n\
+\n\
+void main()\n\
+{\n\
+	tex_coord.xy = gl_MultiTexCoord0.xy;\n\
+	tex_coord.z = slice_coord;\n\
+	gl_Position = gl_Vertex;\n\
+}";
+
+	if (!prog.attach_code(ctx, vertex_shader_source, cgv::render::ST_VERTEX)) {
+		if (error_message)
+			*error_message = "could not attach vertex shader source";
+		return false;
+	}
+	if (!prog.link(ctx)) {
+		if (error_message)
+			*error_message = "could not link render to texture 3D program";
+		return false;
+	}
+
+	return true;
+}
+
+
+bool render_to_texture3D(context& ctx, shader_program& prog, TextureSampling texture_sampling, texture& target_tex, texture* target_tex2, texture* target_tex3, texture* target_tex4)
+{
+	// extract texture resolution
+	unsigned tex_res[3] = { target_tex.get_width(), target_tex.get_height(), target_tex.get_depth() };
+
+	// check consistency of all texture resolutions
+	if (target_tex2) {
+		if (target_tex2->get_width() != tex_res[0] || target_tex2->get_height() != tex_res[1] || target_tex2->get_depth() != tex_res[2]) {
+			std::cerr << "ERROR in cgv:render::gl::render_to_texture3D: texture resolution of target_tex2 does not match resolution of target_tex" << std::endl;
+			return false;
+		}
+	}
+	if (target_tex3) {
+		if (target_tex3->get_width() != tex_res[0] || target_tex3->get_height() != tex_res[1] || target_tex3->get_depth() != tex_res[2]) {
+			std::cerr << "ERROR in cgv:render::gl::render_to_texture3D: texture resolution of target_tex3 does not match resolution of target_tex" << std::endl;
+			return false;
+		}
+	}
+	if (target_tex4) {
+		if (target_tex4->get_width() != tex_res[0] || target_tex4->get_height() != tex_res[1] || target_tex4->get_depth() != tex_res[2]) {
+			std::cerr << "ERROR in cgv:render::gl::render_to_texture3D: texture resolution of target_tex4 does not match resolution of target_tex" << std::endl;
+			return false;
+		}
+	}
+	// create fbo with resolution of slices
+	cgv::render::frame_buffer fbo;
+	fbo.create(ctx, tex_res[0], tex_res[1]);
+
+	fbo.attach(ctx, target_tex, 0, 0, 0);
+	if (!fbo.is_complete(ctx)) {
+		std::cerr << "fbo to update volume gradient not complete" << std::endl;
+		return false;
+	}
+
+	static double V[4 * 3] = {
+		-1, -1, 0, +1, -1, 0,
+		+1, +1, 0, -1, +1, 0
+	};
+	static int F[1 * 4] = {
+		0, 1, 2, 3
+	};
+	double T[4 * 2] = {
+		0, 0, 1, 0,
+		1, 1, 0, 1
+	};
+	if (texture_sampling == TS_VERTEX) {
+		T[0] = T[6] = -0.5 / tex_res[0];
+		T[2] = T[4] = 1.0 + 0.5 / tex_res[0];
+		T[1] = T[3] = -0.5 / tex_res[1];
+		T[5] = T[7] = 1.0 + 0.5 / tex_res[1];
+	}
+
+	// store transformation matrices and reset them to identity
+	glMatrixMode(GL_MODELVIEW);
+	glPushMatrix();
+	glLoadIdentity();
+	glMatrixMode(GL_TEXTURE);
+	glPushMatrix();
+	glLoadIdentity();
+	glMatrixMode(GL_PROJECTION);
+	glPushMatrix();
+	glLoadIdentity();
+
+	// go through slices
+	for (int i = 0; i < (int) tex_res[2]; i++) {
+		// attach textures to fbo
+		fbo.attach(ctx, target_tex, i, 0, 0);
+		if (target_tex2)
+			fbo.attach(ctx, *target_tex2, i, 0, 1);
+		if (target_tex3)
+			fbo.attach(ctx, *target_tex3, i, 0, 2);
+		if (target_tex4)
+			fbo.attach(ctx, *target_tex4, i, 0, 3);
+		fbo.enable(ctx, 0);
+		
+		// draw square
+		if (texture_sampling == TS_CELL)
+			prog.set_uniform(ctx, "slice_coord", (i + 0.5f) / tex_res[2]);
+		else
+			prog.set_uniform(ctx, "slice_coord", (float)i / (tex_res[2]-1));
+
+		ctx.draw_faces(V, 0, T, F, 0, F, 1, 4);
+
+		fbo.disable(ctx);
+	}
+
+	// restore transformation matrices
+	glMatrixMode(GL_MODELVIEW);
+	glPopMatrix();
+	glMatrixMode(GL_TEXTURE);
+	glPopMatrix();
+	glMatrixMode(GL_PROJECTION);
+	glPopMatrix();
+	glMatrixMode(GL_MODELVIEW);
+
+	return true;
 }
 
 

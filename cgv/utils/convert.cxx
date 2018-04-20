@@ -29,7 +29,7 @@ std::string wstr2str(const std::wstring& ws)
 	s.resize(4*ws.size());
 #ifdef _WIN32
 	if (!ws.empty()) {
-		BOOL default_char_used;
+		// BOOL default_char_used;
 		char default_char = '#';
 		int n = WideCharToMultiByte(CP_UTF8,0,ws.c_str(), (int)ws.size(),&s[0],(int)s.size(),NULL/*&default_char*/, NULL/*&default_char_used*/);
 		if (n == 0) {

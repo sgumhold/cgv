@@ -11,16 +11,19 @@ several plugins that can be loaded when starting the viewer by specifying them
 in the command line arguments. All plugin interfaces and the registration is
 handled by the cgv libraries.
 
-The cgv libraries are
+The cgv libraries (dependencies) are
 - cgv_os ... basic operating system support (threads, sockets)
-- cgv_utils ... helps to work with files and text
+- cgv_signal ... signal mechanism and binding of functions to signals
+- cgv_utils ... helps to work with files and text and has functionality to parse text
 - cgv_type (cgv_utils) ... standardized type declaration and type reflection support
-- cgv_data (cgv_type/utils) ... data management such as smart pointers and data views
+- cgv_reflect (cgv_utils/type)
+- cgv_data (cgv_utils/type) ... data management such as smart pointers and data views
 - cgv_base (cgv_data/type/utils) ... registration mechanism, communication and hierarchical structures
 - cgv_math (cgv_base/type/utils) ... large collection of mostly templated math functions and solvers
 - cgv_media (cgv_base/data/type/utils) ... support for fonts, images, video and 3D data
 - cgv_gui (cgv_media/base/data/type/utils) ... abstraction of gui
 - cgv_render (cgv_gui/media/base/data/type/utils) ... rendering support with OpenGL specialization
+
 
 Deprecated is the cgv library that includes all of the above components in one library.
 
@@ -34,25 +37,27 @@ Currently the following system configurations are supported
     - Visual Studio 2008 (abbreviated by vs9)
     - Visual Studio 2008 Express (abbreviated by vs9e)
     - Visual Studio 2010 (abbreviated by vs10)
+    - Visual Studio 2013 (abbreviated by vs12)
+    - Visual Studio 2015 (abbreviated by vs14)
 - Linux
   - gcc is in preparation
 
 Under windows all compilers can be used at the same time. The
-postfix "_8", "_9", "_9e", "_10" is used for applications and libraries to distinguish
-the versions. For example "cgv_viewer_8.exe" loads "cgv_8.dll" and "cgv_viewer_9.exe"
-loads "cgv_9.dll" on startup.
+postfix "_8", "_9", "_9e", "_10", "_12", "_14" is used for applications and libraries to distinguish
+the versions. For example "cgv_viewer_12.exe" loads "cgv_12.dll" and "cgv_viewer_14.exe"
+loads "cgv_14.dll" on startup.
   
 \section configs Configurations
 
 For building libraries and viewer there are four configurations, which are 
 distinguished by extending the compiler postfix. In the following list the
 cgv internal name of the configuration is given followed by configuration
-name in vs9 and the full name of the cgv dll with all postfixes that
+name in vs14 and the full name of the cgv dll with all postfixes that
 are used in the same way for all other libraries and applications
-- shared release (Release Dll) cgv_9.dll
-- shared debug (Debug Dll) cgv_d9.dll
-- static release (Release) cgv_s9.dll
-- static debug (Debug) cgv_ds9.dll
+- shared release (Release Dll) cgv_14.dll
+- shared debug (Debug Dll) cgv_d14.dll
+- static release (Release) cgv_s14.dll
+- static debug (Debug) cgv_ds14.dll
 
 \section plugins Plugins
 
@@ -69,13 +74,13 @@ The framework is managed in a svn repository located at
 https://cgv.inf.tu-dresden.de/svn/cgv/release . It consists of the following tree of 
 sub directories:
 - 3rd ... 3rd party libraries conditioned for the cgv framework currently 
-including fltk, libjpeg, libpng, libtiff, zlib and headers for some microsoft
-specific COM APIs.
-- apps ... applications currently including the cgv_viewer and tools for 
-the compilation: res_prep (conversion of resource files into source files),
-soon also ppp (preprocessing of header files and makefile generation)
+including ANN, fltk, glew, jpeg, png, pthread (deprecated), tiff, webserver, zlib.
+- apps ... applications currently including the cgv_viewer
+- tool ... different tools necessary for compilation: res_prep (conversion of resource files into source files),
+ppp_tool (preprocessing of header files and makefile generation), shader_test (compilation of shader codes and programs), 
+display (tool to adjust display settings - Windows only)
 - bin ... binaries and scripts (ppp, generate_makefile)
-- cgv ... the core library
+- cgv ... set of core libraries
   - base ... basic class hierarchy, support for plugin framework, basic communication
              classes for signals and rebinding of functions
   - config ... configuration for ppp and different platforms
@@ -85,27 +90,44 @@ soon also ppp (preprocessing of header files and makefile generation)
             driver is available in the plugin cg_fltk.
   - math ... template classes for math, mostly linear algebra 
   - media ... support for different media types
-    - font
-    - image
-    - video
-    - text
-  - render ... abstracted interface for GPU programming
-    - gl ... OpenGL specific implementations
+    - font ... interface for font server and font faces (use gui plugin like cg_fltk)
+    - image ... interfaces and driver plugin mechanism for image reader and writer with bmp support (use the cmi_io plugin)
+	- illum ... light source and material data structures
+    - video ... interfaces and driver plugin mechanism for video reader and writer (use the cmv_avi plugin under windows)
+    - text (deprecated, use cgv_utils instead)
+  - os ... support for threads, mutexes, system clipboard, display, sockets and simple webserver
+  - reflect ... simple to use self reflection mechanism (use library cgv/libs/cgv_reflect_types for implementation of self for most important types defined in cgv core libraries)
+  - render ... abstracted interface for GPU programming (use with library cgv/libs/cgv_gl for OpenGL implementation of interfaces)
+  - signal ... signal mechanism and binding of functions to signals
   - type ... support for compile time information about types
-  - utils ... some further utility functions and class that don't fit somewhere else like
-              file handling and statistics.
-- doc ... documentation source files
-- lib ... precompiled libraries (fltk)
-- make ... makefiles, currently only for vs8 and vs9. It is planed to have a 
-makefile generation facility based on ppp soon, that replaces all current
-makefiles.
+  - utils ... utility functions for handling files, processing text, bit operations, simple progression on the console, stop watch and incremental statistics computation
+- doc ... source for related pages of documentation 
+- make ... makefiles, currently support for cmake and different versions of visual studio.
 - plugins ... commonly used plugins
   - cg_fltk ... plugin that implements the abstract gui framework
+  - cg_icons ... icon resources
+  - cg_multi_mouse ... adds multi-mouse events to handle cg_fltk gui
   - cmi_io ... support for image io
+  - cmv_avi ... support for video io through avi files
   - crg_view ... provides mouse interaction for the opengl view in the cgv_viewer
   - crg_planar_view ... variant of crg_view where only 2d navigation is possible
   - crg_spherical_view ... variant of crg_view with a spherical coordinate system
+  - crg_grid ... renders a grid
+  - crg_antialias ... supports jitter based antialiasing
+  - crg_depth_of_field ... supports rendering with depth of field
+  - crg_light ... provides gui to adjust light sources
   - examples ... different example classes that illustrate the cgv framework
+- libs
+  - ann_wrapper ... C++-wrapper to ann library
+  - cgv_gl ... implementation of interfaces in cgv_render for OpenGL
+  - cgv_reflect_types ... implementation of type reflection according to cgv_reflect for most important types of cgv core libraries
+  - cgv_win32 .. preliminary implementation of some windows specific gui features
+  - delaunay ... template based implementation of point insertion algorithm for computation of delaunay triangulations
+  - glsu ... support library to set up stereo renderung
+  - multi_mouse ... support to access several mouse devices in parallel (windows only)
+  - plot ... library to draw plots of 1D and 2D functions
+  - ppp ... script engine used for ppp source and makefile file processing tool
+  - space_pilot ... library to access space pilot devices
 - test ... test sources for different parts of the framework that also serve as examples
 
 \section viewer Usage of the cgv_viewer

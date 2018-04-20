@@ -15,6 +15,12 @@ namespace cgv {
 			{
 				typedef const S type;
 			};
+			// specialize for const pointer types
+			template <typename T, typename S>
+			struct transfer_const<const T*, S*>
+			{
+				typedef const S* type;
+			};
 		}
 	}
 }

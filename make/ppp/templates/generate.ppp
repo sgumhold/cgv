@@ -129,6 +129,9 @@ func(::extend_project_info; :>project_name = "", :>return = 1)
 	// init plugin list to dependent plugins
 	if (pj::all_dep_projects_by_type::plugin) {
 		pj::plugin_list = pj::all_dep_projects_by_type::plugin;
+		if (pj::all_dep_projects_by_type::application_plugin) {
+			pj::plugin_list = pj::plugin_list . pj::all_dep_projects_by_type::application_plugin;
+		}
 	}
 	// determine name of application and extend plugin_list
 	if (pj::projectType == "plugin" || pj::projectType == "application_plugin" || pj::projectType == "test") {
@@ -184,8 +187,9 @@ func(generate_makefile; :>project_name="", :>return = 1)
 		transform("vs89.user.tm"; build_path.".vcproj.".env::USERDOMAIN.".".env::USERNAME.".user");
 		transform("vs89.sln.tm"; build_path.".sln");
 		transform("vs_rules.tm"; build_path.".rules");
+		transform("shader_inc.tm";   build_path."_shader_inc.h");
 	}
-	elif (CGV_COMPILER == "vs10" || CGV_COMPILER == "vs11" || CGV_COMPILER == "vs12") {
+	elif (CGV_COMPILER == "vs10" || CGV_COMPILER == "vs11" || CGV_COMPILER == "vs12" || CGV_COMPILER == "vs14") {
 		extend_project_info_vs(project_name);
 		current_project = project_name;
 		:>build_path = projects[project_name]::build_dir."/".project_name;
@@ -196,6 +200,7 @@ func(generate_makefile; :>project_name="", :>return = 1)
 		transform("vs10_vcxproj.tm"; build_path.".vcxproj");
 		transform("vs10_vcxproj.user.tm"; build_path.".vcxproj.user");
 		transform("vs10_vcxproj.filters.tm"; build_path.".vcxproj.filters");
+		transform("shader_inc.tm";   build_path."_shader_inc.h");
 	}
 	elif (CGV_COMPILER == "cmake") {
 		current_project = project_name;

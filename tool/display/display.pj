@@ -4,11 +4,11 @@
 @define(projectGUID="7D42441D-5B9C-495b-9092-44AF67FB7DEF")
 @define(sourceDirs=[INPUT_DIR])
 @define(addIncDirs=[CGV_DIR."/3rd"])
-@define(sourceFiles=[CGV_DIR."/cgv/utils/display.cxx", 
-				     CGV_DIR."/cgv/media/text/scan.cxx", 
-				     CGV_DIR."/cgv/media/text/tokenizer.cxx", 
-				     CGV_DIR."/cgv/media/text/token.cxx", 
-				     CGV_DIR."/cgv/media/text/convert.cxx"])
+@define(sourceFiles=[CGV_DIR."/cgv/os/display.cxx", 
+				     CGV_DIR."/cgv/utils/scan.cxx", 
+				     CGV_DIR."/cgv/utils/tokenizer.cxx", 
+				     CGV_DIR."/cgv/utils/token.cxx", 
+				     CGV_DIR."/cgv/utils/convert.cxx"])
 @define(addDefines=["CGV_FORCE_STATIC"])
 @if(SYSTEM=="windows")@{
 	@//define(addDependencies=addDependencies."ws2_32.lib msimg32")

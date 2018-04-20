@@ -1,19 +1,20 @@
 #pragma once
 
-#include <cgv/base/named.h>
+#include <cgv/base/node.h>
 #include <cgv/gui/event_handler.h>
 #include <cgv/gui/provider.h>
 #include <cgv/render/drawable.h>
+#include <cgv/render/view.h>
 
 /// example for the implementation of a cgv node that handles events and renders a cube
 class grid : 
-	public cgv::base::base,          
+	public cgv::base::node,          
 	public cgv::gui::event_handler,  /// derive from handler to receive events and to be asked for a help string
 	public cgv::render::drawable,     /// derive from drawable for drawing the cube
 	public cgv::gui::provider
 {
 protected:
-	
+	cgv::render::view* view_ptr;
 	int minX,maxX,minZ,maxZ;
 	void render_grid_lines(float alpha);
 	cgv::math::vec<float> zaxis;
@@ -41,11 +42,15 @@ public:
 	bool handle(cgv::gui::event& e);
 	/// necessary method of event_handler
 	void stream_help(std::ostream& os);
-	/// overload to set the view
+	/// 
 	bool init(cgv::render::context&);
+	/// 
+	void init_frame(cgv::render::context&);
 	/// optional method of drawable
 	void finish_frame(cgv::render::context&);
-	void draw(cgv::render::context&);	
+	void draw_lines(cgv::render::context& ctx);
+	void draw_grid(cgv::render::context&);
+	void draw(cgv::render::context&);
 	/// return a path in the main menu to select the gui
 	std::string get_menu_path() const;
 	/// you must overload this for gui creation

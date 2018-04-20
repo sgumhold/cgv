@@ -1,0 +1,208 @@
+// This file is for Doxygen input. It is not compiled.
+
+#include <cgv/signal/signal.h>
+
+using namespace cgv::signal;
+
+/*! \page signalNS Namespace cgv::signal
+
+\section commSEC Communication with Signals and Actions
+
+There are two main communication helpers in the cgv framework: signals 
+and actions. A signal is a callback manager that can be used like a 
+function. It has a signature and can be called like a function. It manages
+a list of callbacks to which functions, methods and instances with ()-operator
+can be added. An action on the other hand tells how to call the method
+of a given class. It stores the arguments that are passed to the method.
+An action is typically passed to a traversal algorithm or class that 
+traverses a tree or acyclic graph built out of cgv::base::group instances.
+On every instance it checks whether it has the type needed to call the
+method of the action and if yes calls this method with the arguments stored
+in the action.
+
+Signals are often used in the gui framework to notify of events such as
+value change events or button press events. Actions are typically applied
+to a scene graph or the tree of drawables in the 3d view of the cgv_viewer, 
+for example to init or draw the drawables or pass events to the drawables.
+
+\subsection sigTut Tutorial on the Usage of Signals
+
+We start with a very simple example of using a signal that takes a single
+integer parameter. One declares the signal according to 
+\code
+#include <iostream>
+#include <cgv/base/signal.h>
+
+signal<int> int_sig;
+\endcode
+Next we want to attach callbacks to the signal, where in the simplest version
+the functions, methods or functors have the same signature (same number and type
+of parameters). Let us declare the following function and class type
+\code
+void int_func(int i) { std::cout << "f(" << i << ")" << std::endl; }
+
+class X : public cgv::base::tacker
+{
+public:
+	void int_method(int i)   { std::cout << "X::m(" << i << ")" << std::endl; }
+	void operator () (int i) { std::cout << "X(" << i << ")" << std::endl; }
+};
+
+X x;
+\endcode
+Now we have a function and a method that take one integer argument exactly like the signal.
+Instances of class \c X like \c x in our example also have the ()-operator overloaded
+with one integer argument. Thus these instances are at the same time functors and can 
+be used as a function with one integer argument, i.e. \c x(17).
+
+Note that the class \c X is derived from cgv::base::tacker, which is important to avoid
+invalid pointers as explained below.
+
+Next we want to attach our three different callbacks to the signal:
+\code
+connect(int_sig, int_func);
+connect(int_sig, &x, &X::int_method);
+connect(int_sig, x);
+\endcode
+Note that when attaching a method of an instance to a signal, one has to provide
+the this pointer of the instance and the method pointer, which is specified in C++
+with a leading &-symbol followed by the class name, two colons and the method name.
+
+After the attachment of callbacks we can send out a signal what can be interpreted
+as emitting an event. This is done by using the signal in exactly the same way as a
+function with an integer argument:
+\code
+int_sig(13);
+\endcode
+what generates the following output to the std::cout stream
+\code
+f(13)
+X::m(13)
+X(13)
+\endcode
+
+Similar to the attachment of callbacks with the cgv::base::connect function, one can
+detach a callback with cgv::base::disconnect according to
+\code
+disconnect(int_sig, int_func);
+disconnect(int_sig, &x, &X::int_method);
+disconnect(int_sig, x);
+\endcode
+Note that when disconnecting a functor instance, all methods of the same instance 
+attached to the signal as callback are detached as well.
+
+Callbacks to methods of instances or functors bear the danger that the instance
+to which the signal was connected is destructed before the signal is emitted. In
+this case the signal would call a method or the ()-operator with an invalid this
+pointer. 
+
+To avoid this problem, all class that can be attached with a method or as functor
+to a signal, have to be derived from the cgv::base::tacker class, which registers
+all connections of the class instance to any signals and removes these connections 
+on destruction of the instance. When a signal is then emitted it wont do a callback
+with invalid this pointer as the tacker class removed the callback from the signal.
+
+Here a short example that relies on this functionality:
+\code
+{
+   X x1;
+   connect(int_sig, x1);
+}
+int_sig(11);
+\endcode
+Signals with more than one argument work in exactly the same way. More difficult
+is the support for return values as these have to be combined from the return
+values of the different callbacks. The only return values supported in the cgv
+framework are of type bool. For boolean return values one can use logical operators
+to combine the return values of the callbacks. In the framework logical AND and OR 
+are supported. One can further select between short circuit evaluation and full
+evaluation. The short circuit evaluation stopps performing callbacks as soon as
+the final return value cannot change anymore, i.e. as soon as the first callback
+returns false when logical AND is used for combining.
+
+The support for signals with boolean return values is provided by the 
+cgv::base::bool_signal template. The logical operator and whether short circuit
+evaluation should be used is specified as string argument in the constructor of 
+the signal. The default choise is logical AND in the short circuit version. It 
+follows a code example, where a boolean signal is used to check the validity of
+a value with the full boolean AND combining option.
+\code
+bool_signal<int> check_valid("+&"); // use '+'/'*' for full/short circuit eval
+                                    // and '&'/'|' for logical AND/OR combination
+bool up_check(int i)   { return i < 10; } 
+bool down_check(int i) { return i > 3; }
+
+connect(check_valid, up_check);
+connect(check_valid, down_check);
+
+if (check_valid(7))
+	std::cout << "7 is valid" << std::endl;
+\endcode
+
+The final feature supported in the signal mechanism of cgv is argument rebinding
+of the callbacks. Suppose you have a callback that has a different number or 
+different types of arguments as the signal to which you want to attach the callback.
+This would typically require the implementation of an interface function with a
+signature matching that of the signal and an implementation that calls the callback
+with parameters derived from the parameters retrieved from the signal.
+
+In cases where this conversion of parameters is simply the exclusion of one or several
+parameters, a rearrangement or the addition of a constant or reference to a variable, 
+one can use the functions cgv::gui::rebind to generate a functor implementing the 
+parameter conversion without the need for the declaration of a new function.
+
+The functors returned by cgv::base::rebind overload the ()-operator with all 
+possible signatures such that they can be attached to any signal. Currently,
+rebinding is only supported for function and methods and not for functors.
+In case of a function the first parameter to the rebind function is the function 
+itself. In case of a method the first two 
+parameters are the this pointer and the method pointer. Depending on the number of
+arguments in the signature of the rebound function / method, the rebind() functions 
+takes one further parameter for each function / method argument. This argument can
+be one out of
+- cgv::base::_0, _1, ..., _9 ... to specify the i-th parameter from the signal
+- cgv::base::_c(value)       ... to specify a constant value
+- cgv::base::_r(variable)    ... to specify a reference to a variable
+
+Here are some examples for rebinding with respect to the integer signal used in 
+the examples before.
+\code
+// ignore parameter from signal when calling a procedure without parameters 
+rebind(proc,    int_sig);
+
+// use constant string value for first argument and first parameter from
+// signal for second parameter when calling a method from an instance y
+// of type Y that takes a string and an int as parameters.
+rebind(y, &Y::str_int_method, int_sig, _c(std::string("string argument")), _0);
+\endcode
+
+The rebind function finally returns a functor instance that could be attached to
+an arbitrary signal. As the returned functor is a temporary object, it would be 
+destroyed after the connect function call has been evaluated. To avoid this, one 
+uses the cgv::base::connect_copy() function instead of the cgv::base::connect() 
+function when attaching a functor resulting from the cgv::base::rebind() function 
+to the signals. This will cause the creation of a permanent copy of the functor.
+
+One final pitfall should be mentioned: when rebinding to a
+method \c m() which is implemented in a base class \c B of the class \c A, the
+this pointer of type \c A has to be cast to the base type \c B when used in the
+rebind method, i.e. 
+\code
+class B {
+   void m(int i);
+};
+class A : public B {
+};
+
+A a;
+
+connect_copy(int_sig, rebind(static_cast<B*>(&a), &B::m)
+\endcode
+Thus you need to use type \c B to cast the this pointer as well as for specifying the
+method pointer.
+
+Finally, one must note that the error messages generated by the compiler, when using
+signals are especially unreadable in case of wrong usage of the rebind functions. Please
+check your code against the explanation here to try to eliminate the error and dont
+try to understand the error message - or rather huge number of error messages.
+*/

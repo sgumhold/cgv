@@ -5,12 +5,12 @@ endif()
 set(BUILD_CORE_COMPONENTS TRUE)
 
 # Set build settings for the standard elements of the framework bundle
-get_filename_component(BASE_PATH "${CMAKE_CURRENT_LIST_FILE}" PATH)
-include("${BASE_PATH}/buildSettings.cmake")
-include("${BASE_PATH}/cgvConfigMacros.cmake")
+get_filename_component(BASE_CORE_PATH "${CMAKE_CURRENT_LIST_FILE}" PATH)
+include("${BASE_CORE_PATH}/buildSettings.cmake")
+include("${BASE_CORE_PATH}/cgvConfigMacros.cmake")
 
 # define macros to build core components
-include("${BASE_PATH}/CMakeMacroParseArguments.cmake")
+include("${BASE_CORE_PATH}/CMakeMacroParseArguments.cmake")
 
 macro(_cgv_define_source_group basename)
 	foreach(source ${ARGN})
@@ -30,7 +30,7 @@ endmacro()
 
 macro(_cgv_add_core_library target_name)
 	# Parse the argument list
-	parse_arguments(COMPONENT "SOURCES;HEADERS;PUBLIC_HEADERS;CGV_DEPENDENCIES;SHARED_DEFINITIONS;STATIC_DEFINITIONS" "HEADERS_ONLY" ${ARGN})
+	parse_arguments(COMPONENT "SOURCES;HEADERS;PUBLIC_HEADERS;CGV_DEPENDENCIES;SHARED_DEFINITIONS;STATIC_DEFINITIONS;SHADERS" "HEADERS_ONLY" ${ARGN})
 
 	# Do nothing if this component only consists of headers
 	if (NOT COMPONENT_HEADERS_ONLY)
@@ -83,28 +83,6 @@ macro(_cgv_add_core_library target_name)
 endmacro()
 
 
-macro(_cgv_install_public_headers base)
-	set(HEADERS ${ARGN})
-	if (HEADERS)
-		foreach(header ${HEADERS})
-			if (IS_ABSOLUTE ${header})
-				# The header path is absolute. Check if this header is inside the build folder
-				set(HB_PATH "${CMAKE_BINARY_DIR}/${BUILD_BASE}/${INSTALL_HEADER_PATH}/${base}")
-				file(RELATIVE_PATH PUBH_REL "${HB_PATH}" "${header}")
-
-				if (IS_ABSOLUTE "${PUBH_REL}")
-					message(FATAL_ERROR "Cannot install header ${header} as it has an absolute path that is outside of the project binaries dir!")
-				endif()
-				get_filename_component(PUBH_REL "${PUBH_REL}" PATH)
-
-			else()
-				get_filename_component(PUBH_REL "${header}" PATH)			
-			endif()
-			install(FILES ${header} DESTINATION "${INSTALL_BASE}/${INSTALL_HEADER_PATH}/${base}/${PUBH_REL}")
-		endforeach()		
-	endif()
-endmacro()
-
 
 macro(cgv_add_core_component target_name)
 
@@ -116,79 +94,6 @@ macro(cgv_add_core_component target_name)
 	_cgv_install_public_headers("cgv/${target_name}" ${COMPONENT_PUBLIC_HEADERS})
 endmacro()
 
-
-macro(cgv_add_executable target_name)
-	add_executable(${target_name} ${ARGN})
-	_cgv_set_definitions(${target_name}
-		COMMON UNICODE _UNICODE
-		STATIC CGV_FORCE_STATIC)
-	install(TARGETS ${target_name} DESTINATION "${INSTALL_BASE}/${INSTALL_BIN_PATH}" EXPORT ${target_name}Depends)
-	
-	# There is a bug in CMake in which postfixes are not automatically added.
-	set_target_properties(${target_name} PROPERTIES
-		OUTPUT_NAME ${target_name}
-		RELEASE_OUTPUT_NAME ${target_name}
-		DEBUG_OUTPUT_NAME ${target_name}${DEBUG_POSTFIX})	
-
-	# Set the relative path of needed dynamic libraries directly inside
-	# the binary on supported plattforms
-	file(RELATIVE_PATH REL_BIN_TO_LIB "/${INSTALL_BASE}/${INSTALL_BIN_PATH}" "/${INSTALL_BASE}/${INSTALL_LIB_PATH}")
-	set_target_properties(${target_name} PROPERTIES INSTALL_RPATH "\$ORIGIN/${REL_BIN_TO_LIB}")
-
-    # Set the language standard
-    _cgv_set_cxx_standard(${target_name})	
-
-
-	# Remember the type for later config generation
-	set_target_properties(${target_name} PROPERTIES HEADER_LOCAL_PATH "apps")
-endmacro()
-
-
-macro(_cgv_add_custom_library target_name folder)
-	# Parse the argument list
-	parse_arguments(CONF "SOURCES;HEADERS;PUBLIC_HEADERS;SHARED_DEFINITIONS;STATIC_DEFINITIONS;DEFINITIONS;INSTALL_NAME" "" ${ARGN})
-
-	if (NOT CONF_INSTALL_NAME)
-		set(CONF_INSTALL_NAME ${target_name})
-	endif()	
-
-	# Add a library
-	add_library(${target_name} ${CONF_SOURCES} ${CONF_HEADERS} ${CONF_PUBLIC_HEADERS})
-
-	# Set include directories
-	include_directories(${CMAKE_CURRENT_SOURCE_DIR})
-	
-	# Create installation rules for the target
-	install(TARGETS ${target_name} DESTINATION "${INSTALL_BASE}/${INSTALL_LIB_PATH}")
-	_cgv_install_public_headers("libs/${CONF_INSTALL_NAME}" ${CONF_PUBLIC_HEADERS})
-
-	# Remember the type and install name for later config generation
-	set_target_properties(${target_name} PROPERTIES 
-		HEADER_LOCAL_PATH "libs"
-		HEADER_LOCAL_NAME ${CONF_INSTALL_NAME})
-
-    # Set the language standard
-    _cgv_set_cxx_standard(${target_name})	
-
-
-	# Set a source folder for VisualStudio
-	set_target_properties(${target_name} PROPERTIES FOLDER "${folder}")
-	
-	_cgv_set_definitions(${target_name}
-		COMMON "${CONF_DEFINITIONS}"
-		SHARED "${CONF_SHARED_DEFINITIONS}"
-		STATIC "${CONF_STATIC_DEFINITIONS};CGV_FORCE_STATIC")
-endmacro()
-
-
-macro(cgv_add_library target_name)
-	_cgv_add_custom_library(${target_name} "${FOLDER_NAME_LIBS}" "${ARGN}")
-endmacro()
-
-	
-macro(cgv_add_3rd_library target_name)
-	_cgv_add_custom_library(${target_name} "${FOLDER_NAME_3RD}" "${ARGN}")
-endmacro()
 
 
 
@@ -231,11 +136,15 @@ macro(build_core_components_finish)
 					${CGV_BASE}/cmake/cgvConfigVersion.cmake
 					${CGV_BASE}/cmake/cgvTargetsConfig.cmake.in
 					${CGV_BASE}/cmake/CMakeMacroParseArguments.cmake
+					${CGV_BASE}/cmake/CMakePackageConfigHelpers.cmake
 					${CGV_BASE}/cmake/createConfigScript.cmake
 					${CGV_BASE}/cmake/FindPkg.cmake.in
 					${CGV_BASE}/cmake/PkgBinConfig.cmake.in
 					${CGV_BASE}/cmake/PkgLibConfig.cmake.in
 			DESTINATION "${INSTALL_BASE}/cmake")
+			
+	install(FILES ${CGV_BASE}/cmake/launcher.sh.in
+			DESTINATION "${INSTALL_BASE}/${OS_PREFIX}/cmake")
 	
 	# TODO: Comment this
 	set(LOCAL_BUILD_ANNOUNCED TRUE)
@@ -247,29 +156,5 @@ macro(build_core_components_finish)
 	set_directory_properties(PROPERTIES ADDITIONAL_MAKE_CLEAN_FILES
 		"${CGV_BASE}/cmake/local_build_dir.cmake")	
 endmacro()
-
-
-
-
-# Macro to export the find-File
-#macro(cgv_export_package_file target)
-#
-#	set(EXPORT_PATH "${CMAKE_CURRENT_SOURCE_DIR}")
-#	set(EXPORT_FILE "${EXPORT_PATH}/${target}Config.cmake")
-#
-#	# Install this file for the installation target
-#	install(FILES "${EXPORT_FILE}" 
-#			DESTINATION "${INSTALL_BASE}/${INSTALL_CMAKE_PATH}")
-#
-#	# It might be possible that this find-file is a sub project of a larger
-#	# project where other sub project already require the file. Make it
-#	# accessible in the source directory through the ${target}_DIR variable
-#	# (which is automatically checked by cmake)
-#	# set(${target}_DIR "${CMAKE_CURRENT_SOURCE_DIR}" PARENT_SCOPE)
-#	set(${target}_DIR "${EXPORT_PATH}" CACHE INTERNAL "" FORCE)
-#
-#	file(APPEND "${CMAKE_BINARY_DIR}/${BUILD_BASE}/${INSTALL_CMAKE_PATH}/local_config.cmake" 
-#		 "set(${target}_DIR \"${EXPORT_PATH}\")\n")
-#endmacro()
 
 

@@ -314,7 +314,9 @@ void fltk_align_group::align(const std::string& _align)
 				if (++i < _align.size()) {
 					switch (_align[i]) {
 					case 'X' : parse_variable_change(_align, i, x_spacing, 12); break;
-					case 'Y' : parse_variable_change(_align, i, y_spacing, 8); break;
+					case 'Y' : 
+						parse_variable_change(_align, i, y_spacing, 8);
+						break;
 					case 'x' : parse_variable_change(_align, i, current_x, -1); break;
 					case 'y' : parse_variable_change(_align, i, current_y, -1); break;
 					case 't' : parse_variable_change(_align, i, tab_size, 50); break;

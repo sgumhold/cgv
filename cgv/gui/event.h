@@ -1,5 +1,6 @@
 #pragma once
 
+#include <string>
 #include <iostream>
 
 #include "lib_begin.h"
@@ -12,7 +13,8 @@ enum EventId
 {
 	EID_NONE, //!< undefined %event id
 	EID_KEY,  //!< id for key %event
-	EID_MOUSE //!< id for mouse %event
+	EID_MOUSE, //!< id for mouse %event
+	EID_PAD	   //!< id for game pad %event
 };
 
 /// flags
@@ -64,10 +66,13 @@ public:
 	virtual void stream_out(std::ostream& os) const;
 	/// read from stream
 	virtual void stream_in(std::istream& is);
+	/// return the device id, by default returns 0
+	virtual void* get_device_id() const;
 	/// set the kind of the %event
 	void set_kind(unsigned char _kind);
 	/// return, what kind of %event this is, typically a value from the #EventId enum
 	unsigned get_kind() const;
+	/// return the 
 	/// set the event flags
 	void set_flags(unsigned char _flags);
 	/// return the event flags
@@ -97,6 +102,8 @@ extern CGV_API unsigned char stream_in_modifiers(std::istream& is);
 
 /// read toggle keys in string format from a stream and set the passed reference to EventToggleKeys ored together. 
 extern CGV_API void stream_in_toggle_keys(std::istream& is, unsigned char& toggle_keys);
+
+extern CGV_API unsigned char& ref_current_modifiers();
 
 	}
 }

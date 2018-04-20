@@ -102,6 +102,8 @@ bool tokenizer::handle_skip(token& result)
 			++result.end;
 		}
 	}
+	if (is_element(end_skip[i], whitespaces))
+		--result.end;
 	return true;
 }
 
@@ -132,6 +134,8 @@ bool tokenizer::reverse_handle_skip(token& result)
 			--result.begin;
 		}
 	}
+	if (is_element(begin_skip[i], whitespaces))
+		++result.end;
 	return true;
 }
 

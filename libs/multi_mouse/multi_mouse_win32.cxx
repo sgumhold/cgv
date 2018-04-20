@@ -4,9 +4,9 @@
 namespace cgv {
 	namespace gui {
 
-void process_raw_input(void* id, const RAWMOUSE& ri)
+void process_raw_input(void* device_id, const RAWMOUSE& ri)
 {
-	mouse_pointer_info& mpi = ref_mouse_pointer_map()[id];
+	mouse_pointer_info& mpi = ref_mouse_pointer_map()[device_id];
 
 	// clip movement at rectangle
 	int dx = ri.lLastX, dy = ri.lLastY;
@@ -23,7 +23,7 @@ void process_raw_input(void* id, const RAWMOUSE& ri)
 	mpi.x += dx;
 	mpi.y += dy;
 	multi_mouse_event mme(mpi.x, mpi.y);
-	mme.set_id(id);
+	mme.set_device_id(device_id);
 	mme.set_flags(EF_MULTI);
 	mme.set_button_state(mpi.button_state);
 	mme.set_dx((short)dx);

@@ -29,10 +29,17 @@
 #include "GlChoice.h"
 #include <fltk/visual.h>
 #include <stdlib.h>
+#include <iostream>
 
 using namespace fltk;
 
 static GlChoice* first;
+
+int*& GlChoice::ref_attrib_list()
+{
+	static int* attrib_list = 0;
+	return attrib_list;
+}
 
 GlChoice* GlChoice::find(int mode) {
   GlChoice* g;
@@ -287,16 +294,58 @@ GLContext fltk::create_gl_context(XVisualInfo* vis) {
 }
 
 #elif defined(_WIN32)
-
 GLContext fltk::create_gl_context(const Window* window, const GlChoice* g, int layer) {
   CreatedWindow* i = CreatedWindow::find(window);
   SetPixelFormat(i->dc, g->pixelFormat, &g->pfd);
-  GLContext context =
-    layer ? wglCreateLayerContext(i->dc, layer) : wglCreateContext(i->dc);
-  if (context) {
-    if (first_context) wglShareLists(first_context, context);
-    else first_context = context;
+
+  GLContext context = 0;
+  if (GlChoice::ref_attrib_list()) {
+	  HGLRC tempRC = wglCreateContext(i->dc);
+	  wglMakeCurrent(i->dc, tempRC);
+	  GLenum err = glewInit();
+	  if (err != GLEW_OK) {
+		  std::cerr << "GLEW init error: " << glewGetErrorString(err) << std::endl;
+	  }
+	  else {
+		  bool is_first_context = first_context == 0;
+		  if (layer != 0) {
+			  int n = 0;
+			  while (GlChoice::ref_attrib_list()[n] != 0)
+				  n += 2;
+			  int* new_attribs = new int[n + 3];
+			  for (int j = 0; j < n; ++j)
+				  new_attribs[j] = GlChoice::ref_attrib_list()[j];
+			  new_attribs[n] = WGL_CONTEXT_LAYER_PLANE_ARB;
+			  new_attribs[n + 1] = layer;
+			  new_attribs[n + 2] = 0;
+			  context = wglCreateContextAttribsARB(i->dc, first_context, new_attribs);
+			  delete[] new_attribs;
+		  }
+		  else
+			  context = wglCreateContextAttribsARB(i->dc, first_context, GlChoice::ref_attrib_list());
+		  if (!context) {
+			  int err = glGetError();
+			  std::cerr << "WGL error: " << glewGetErrorString(err) << std::endl;
+			  context = tempRC;
+		  }
+		  else {
+			  wglMakeCurrent(NULL, NULL);
+			  wglDeleteContext(tempRC);
+		  }
+		  if (is_first_context)
+			  first_context = context;
+	  }
   }
+  else {
+	  context = layer ? wglCreateLayerContext(i->dc, layer) : wglCreateContext(i->dc);
+	  if (context) {
+		  if (first_context) 
+			  wglShareLists(first_context, context);
+		  else 
+			  first_context = context;
+	  }
+  }
+
   return context;
 }
 

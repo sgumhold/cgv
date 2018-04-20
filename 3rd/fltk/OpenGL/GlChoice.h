@@ -52,7 +52,7 @@
 #ifndef fltk_GlChoice_h
 #define fltk_GlChoice_h
 
-#include <config.h>
+#include "../visualc/config.h"
 #include <fltk/Window.h> // force CreatedWindow to be defined by x.h
 
 // Warning: whatever GLContext is defined to must take exactly the same
@@ -97,6 +97,7 @@ public:
 #endif
   // Return one of these structures for a given gl mode, or null if impossible:
   static GlChoice *find(int mode);
+  static int*& ref_attrib_list();
 };
 
 class Window;

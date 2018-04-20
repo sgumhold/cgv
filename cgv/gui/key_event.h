@@ -10,8 +10,9 @@ namespace cgv {
 
 /// different actions that a key can perform
 enum KeyAction { 
+	KA_RELEASE, //!< key release action
 	KA_PRESS, //!< key press action
-	KA_RELEASE //!< key release action
+	KA_REPEAT //!< key repeated press action
 };
 
 /// class to represent all possible keyboard events with the EID_KEY

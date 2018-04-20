@@ -1,0 +1,8 @@
+@=
+projectName="rect_pack_test";
+projectType="application";
+addProjectDirs=[CGV_DIR."/libs"];
+addProjectDeps=["rect_pack"];
+addIncDirs=[CGV_DIR."/libs"];
+projectGUID="63CFE89F-245E-4516-B86F-0D90A0681271";
+

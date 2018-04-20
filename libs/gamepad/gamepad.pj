@@ -1,0 +1,8 @@
+@=
+projectType="library";
+projectName="gamepad";
+projectGUID="27EF021E-33BA-42DC-ABB5-F5B6A9725E21";
+addSharedDefines=["GAMEPAD_EXPORTS"];
+if (SYSTEM=="windows") {
+	addDependencies=[["Xinput", "all"]];
+}

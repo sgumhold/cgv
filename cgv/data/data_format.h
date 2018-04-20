@@ -146,7 +146,7 @@ Some examples of valid data format description strings:
 	/// return the resolution in the highest dimension, or 1 if not defined
 	unsigned int get_nr_time_steps() const;
 	/// return the total number of data entries 
-	unsigned int get_size() const;
+	unsigned int get_nr_entries() const;
 	/// return the total number of bytes necessary to store the data
 	unsigned int get_nr_bytes() const;
 	/// set the resolution in the i-th dimension, add dimensions if necessary

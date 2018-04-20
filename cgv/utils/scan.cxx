@@ -228,6 +228,30 @@ bool is_element(const std::string& e, const std::string& s, char sep)
 	return get_element_index(e,s,sep) != -1;
 }
 
+/** interpret s as a list separated by sep and return the element with the given element index. If index is out of range, return empty string. */
+std::string get_element(const std::string& s, int element_index, char sep)
+{
+	size_t end_pos, start_pos = 0;
+	int ei = -1;
+	do {
+		++ei;
+		if (ei > 0) {
+			start_pos = end_pos + 1;
+			if (start_pos == s.size())
+				return "";
+		}
+		end_pos = s.find_first_of(sep, start_pos);
+		if (end_pos == std::string::npos) {
+			end_pos = s.size();
+			break;
+		}
+	} while (ei < element_index);
+	if (ei < element_index)
+		return "";
+	return s.substr(start_pos, end_pos - start_pos);
+}
+
+
 /// check if the string e is contained as element in the string s, which is a list separated by sep
 int get_element_index(const std::string& e, const std::string& s, char sep)
 {

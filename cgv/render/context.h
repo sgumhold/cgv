@@ -4,6 +4,7 @@
 #include <cgv/base/group.h>
 #include <cgv/data/data_view.h>
 #include <cgv/media/font/font.h>
+#include <cgv/media/axis_aligned_box.h>
 #include <cgv/media/illum/phong_material.hh>
 #include <cgv/media/illum/light_source.hh>
 #include <cgv/signal/callback_stream.h>
@@ -21,11 +22,43 @@ namespace cgv {
 class CGV_API drawable;
 class CGV_API textured_material;
 
+/// different compond types for data elements
+enum ElementType {
+	ET_VALUE,
+	ET_VECTOR,
+	ET_MATRIX
+};
+
+/// compact type description of data that can be sent to the context; convertible to int
+struct type_descriptor
+{
+	cgv::type::info::TypeId coordinate_type : 8;
+	ElementType element_type : 4;
+	unsigned nr_rows : 4;
+	unsigned nr_columns : 4;
+	bool is_row_major : 1;
+	bool is_array : 1;
+	bool normalize : 1;
+	/// construct from int
+	type_descriptor(int td) { *reinterpret_cast<int*>(this) = td; }
+	/// construct descriptor for values
+	type_descriptor(cgv::type::info::TypeId _coordinate_type, bool _normalize = false) : coordinate_type(_coordinate_type), element_type(ET_VALUE), nr_rows(1), nr_columns(1), is_row_major(false), is_array(false), normalize(_normalize) {}
+	/// construct descriptor for vectors
+	type_descriptor(cgv::type::info::TypeId _coordinate_type, unsigned _nr_entries, bool _normalize = false) : coordinate_type(_coordinate_type), element_type(ET_VECTOR), nr_rows(_nr_entries), nr_columns(1), is_row_major(false), is_array(false), normalize(_normalize) {}
+	/// construct descriptor for matrices
+	type_descriptor(cgv::type::info::TypeId _coordinate_type, unsigned _nr_rows, unsigned _nr_cols, bool _is_row_major, bool _normalize = false) : coordinate_type(_coordinate_type), element_type(ET_MATRIX), nr_rows(_nr_rows), nr_columns(_nr_cols), is_row_major(_is_row_major), is_array(false), normalize(_normalize) {}
+	/// construct descriptor for an array
+	type_descriptor(const type_descriptor& td, bool _is_array) : coordinate_type(td.coordinate_type), element_type(td.element_type), nr_rows(td.nr_rows), nr_columns(td.nr_columns), is_row_major(td.is_row_major), normalize(td.normalize), is_array(_is_array) {}
+	/// cast to int
+	operator int() const { return *reinterpret_cast<const int*>(this); }
+};
+
 /// enumeration of rendering APIs which can be queried from the context
 enum RenderAPI {
 	RA_OPENGL,
 	RA_DIRECTX
 };
+
 
 /// enumeration of different render passes, which can be queried from the context and used to specify a new render pass
 enum RenderPass {
@@ -73,6 +106,17 @@ enum RenderPassFlags {
 
 /// different sides of a material
 enum MaterialSide { MS_NONE, MS_FRONT, MS_BACK, MS_FRONT_AND_BACK };
+
+/// different illumination modes
+enum IlluminationMode {
+	IM_OFF, IM_ONE_SIDED, IM_TWO_SIDED
+};
+
+/// different culling modes
+enum CullingMode {
+	CM_OFF, CM_BACKFACE, CM_FRONTFACE
+};
+
 
 /// different texture wrap modes
 enum TextureWrap { 
@@ -142,6 +186,26 @@ enum PrimitiveType {
 	PT_LAST
 };
 
+/// different sampling strategies for rendering to textures that steer the computation of the \c tex_coord input to the fragment shader
+enum TextureSampling
+{
+	TS_CELL = 0,   /// for texture resulution N x M x L the \c tex_coord ranges from [1/2N, 1/2M, 1/2L] to [1-1/2N, 1-1/2M, 1-1/2P]
+	TS_VERTEX = 1  /// \c tex_coord ranges from [0,0,0] to [1,1,1]
+};
+
+/// different sampling strategies for rendering to textures that steer the computation of the \c tex_coord input to the fragment shader
+enum CompareFunction
+{
+	CF_LEQUAL,
+	CF_GEQUAL,
+	CF_LESS,
+	CF_GREATER,
+	CF_EQUAL,
+	CF_NOTEQUAL,
+	CF_ALWAYS,
+	CF_NEVER
+};
+
 /// different text alignments
 enum TextAlignment {
 	TA_NONE = 0,
@@ -204,6 +268,8 @@ public:
 	float anisotropy;
 	float priority;
 	float border_color[4];
+	CompareFunction compare_function;
+	bool use_compare_function;
 	TextureType  tt;
 	bool have_mipmaps;
 	/// initialize members
@@ -214,6 +280,9 @@ public:
 /// base interface for shader programs
 class CGV_API shader_program_base : public render_component
 {
+protected:
+	bool is_enabled;
+	friend class context;
 public:
 	PrimitiveType geometry_shader_input_type;
 	PrimitiveType geometry_shader_output_type;
@@ -221,6 +290,42 @@ public:
 	/// initializes members
 	shader_program_base();
 };
+
+/// base class for attribute_array_bindings
+class CGV_API attribute_array_binding_base : public render_component
+{
+public:
+	/// nothing to be done heremembers
+	attribute_array_binding_base();
+};
+
+
+/// different vertex buffer types
+enum VertexBufferType {
+	VBT_VERTICES,
+	VBT_INDICES,
+	VBT_TEXTURE,
+	VBT_UNIFORM,
+	VBT_FEEDBACK
+};
+
+/// different vertex buffer usages as defined in OpenGL
+enum VertexBufferUsage {
+	VBU_STREAM_DRAW, VBU_STREAM_READ, VBU_STREAM_COPY, VBU_STATIC_DRAW, VBU_STATIC_READ, VBU_STATIC_COPY, VBU_DYNAMIC_DRAW, VBU_DYNAMIC_READ, VBU_DYNAMIC_COPY
+};
+
+/// base interface for a vertex buffer
+class CGV_API vertex_buffer_base : public render_component
+{
+public:
+	/// buffer type defaults to VBT_VERTICES
+	VertexBufferType type;
+	/// usage defaults to VBU_STATIC_DRAW
+	VertexBufferUsage usage;
+	/// initialize members
+	vertex_buffer_base();
+};
+
 
 /// base interface for framebuffer
 class CGV_API frame_buffer_base : public render_component
@@ -235,7 +340,7 @@ public:
 };
 
 /// different shader types
-enum ShaderType { ST_DETECT, ST_VERTEX, ST_GEOMETRY, ST_FRAGMENT };
+enum ShaderType { ST_DETECT, ST_COMPUTE, ST_VERTEX, ST_TESS_CONTROL, ST_TESS_EVALUTION, ST_GEOMETRY, ST_FRAGMENT };
 
 /// different frame buffer types which can be combined together with or
 enum FrameBufferType {
@@ -272,6 +377,84 @@ class CGV_API shader_program;
 // declare some colors by name
 extern CGV_API float black[4], white[4], gray[4], green[4], brown[4], dark_red[4];
 extern CGV_API float cyan[4], yellow[4], red[4], blue[4];
+
+/** configuration object used to define default creation parameters for contexts */
+struct CGV_API context_creation_config : public cgv::base::base
+{
+	/**@name context creation parameters*/
+	//@{
+	/// default: false
+	bool stereo_mode;
+	/// default: true
+	bool double_buffer;
+	/// default: false
+	bool alpha_buffer;
+	/// default: 0
+	int  stencil_bits;
+	/// default: false
+	bool forward_compatible;
+	/// default: false in release and true in debug version
+	bool debug;
+	/// default: false
+	bool core_profile;
+	/// default: 0
+	int  accumulation_bits;
+	/// default: -1 ... major version of maximum supported OpenGL version
+	int  version_major;
+	/// default: -1 ... minor version of maximum supported OpenGL version
+	int  version_minor;
+	/// default: 0
+	int  nr_multi_samples;
+	//@}
+	/// construct config with default parameters
+	context_creation_config();
+	/// return "context_creation_config"
+	std::string get_type_name() const;
+	/// reflect the shader_path member
+	bool self_reflect(cgv::reflect::reflection_handler& srh);
+};
+
+/// type of ref counted pointer to context creation configuration
+typedef cgv::data::ref_ptr<context_creation_config> context_creation_config_ptr;
+
+/** configuration object used to define default creation parameters for contexts and to configure error handling */
+struct CGV_API render_config : public context_creation_config
+{
+	/**@name window creation parameters*/
+	//@{
+	/// default: -1 ... no fullscreen
+	int fullscreen_monitor;
+	/// default: 640
+	int window_width;
+	/// default: 480
+	int window_height;
+	//@}
+
+	/**@name error handling */
+	//@{
+	/// default: false
+	bool abort_on_error;
+	/// default: true (only in case a gui_driver, which supports this, is loaded)
+	bool dialog_on_error;
+	/// default: true
+	bool show_error_on_console;
+	//@}
+
+	/// construct config with default parameters
+	render_config();
+	/// return "render_config"
+	std::string get_type_name() const;
+	/// reflect the shader_path member
+	bool self_reflect(cgv::reflect::reflection_handler& srh);
+};
+
+/// type of ref counted pointer to render configuration
+typedef cgv::data::ref_ptr<render_config> render_config_ptr;
+
+/// return a pointer to the current shader configuration
+extern CGV_API render_config_ptr get_render_config();
+
+
 
 /** base class for all drawables, which is independent of the used rendering API. */
 class CGV_API context 
@@ -323,103 +506,72 @@ protected:
 
 	virtual void put_id(void* handle, void* ptr) const = 0;
 
-	virtual cgv::data::component_format texture_find_best_format(
-							const cgv::data::component_format& cf, 
-							render_component& rc, const std::vector<cgv::data::data_view>* palettes = 0) const = 0;
-	
-	virtual bool texture_create(
-							texture_base& tb, 
-							cgv::data::data_format& df) = 0;
-	
-	virtual bool texture_create(
-							texture_base& tb, 
-							cgv::data::data_format& target_format, 
-							const cgv::data::const_data_view& data, 
-							int level, int cube_side = -1, const std::vector<cgv::data::data_view>* palettes = 0) = 0;
-	
-	virtual bool texture_create_from_buffer(
-							texture_base& tb, 
-							cgv::data::data_format& df, 
-							int x, int y, int level) = 0;
-	
-	virtual bool texture_replace(
-							texture_base& tb, 
-							int x, int y, int z_or_cube_side, 
-							const cgv::data::const_data_view& data, 
-							int level, const std::vector<cgv::data::data_view>* palettes = 0) = 0;
+	virtual cgv::data::component_format texture_find_best_format(const cgv::data::component_format& cf, render_component& rc, const std::vector<cgv::data::data_view>* palettes = 0) const = 0;
+	virtual bool texture_create				(texture_base& tb, cgv::data::data_format& df) = 0;
+	virtual bool texture_create				(texture_base& tb, cgv::data::data_format& target_format, const cgv::data::const_data_view& data, int level, int cube_side = -1, const std::vector<cgv::data::data_view>* palettes = 0) = 0;
+	virtual bool texture_create_from_buffer (texture_base& tb, cgv::data::data_format& df, int x, int y, int level) = 0;
+	virtual bool texture_replace			(texture_base& tb, int x, int y, int z_or_cube_side, const cgv::data::const_data_view& data, int level, const std::vector<cgv::data::data_view>* palettes = 0) = 0;
+	virtual bool texture_replace_from_buffer(texture_base& tb, int x, int y, int z_or_cube_side, int x_buffer, int y_buffer, unsigned int width, unsigned int height, int level) = 0;
+	virtual bool texture_generate_mipmaps	(texture_base& tb, unsigned int dim) = 0;
+	virtual bool texture_destruct           (texture_base& tb) = 0;
+	virtual bool texture_set_state			(const texture_base& tb) = 0;
+	virtual bool texture_enable				(texture_base& tb, int tex_unit, unsigned int nr_dims) = 0;
+	virtual bool texture_disable			(texture_base& tb, int tex_unit, unsigned int nr_dims) = 0;
 
-	virtual bool texture_replace_from_buffer(
-							texture_base& tb, 
-							int x, int y, int z_or_cube_side, 
-							int x_buffer, int y_buffer, 
-							unsigned int width, unsigned int height, 
-							int level) = 0;
+	virtual bool render_buffer_create       (render_component& rc, cgv::data::component_format& cf, int& _width, int& _height) = 0;
+	virtual bool render_buffer_destruct     (render_component& rc) = 0;
 
-	virtual bool texture_generate_mipmaps(
-							texture_base& tb, 
-							unsigned int dim) = 0;
-
-	virtual bool texture_destruct(render_component& rc) = 0;
-
-	virtual bool texture_set_state(const texture_base& ts) = 0;
-	
-	virtual bool texture_enable(
-							texture_base& tb, 
-							int tex_unit, unsigned int nr_dims) = 0;
-
-	virtual bool texture_disable(
-							const texture_base& tb, 
-							int tex_unit, unsigned int nr_dims) = 0;
-
-	virtual bool render_buffer_create(
-							render_component& rc, 
-							cgv::data::component_format& cf, 
-							int& _width, int& _height) = 0;
-
-	virtual bool render_buffer_destruct(render_component& rc) = 0;
-
-	virtual bool frame_buffer_create(frame_buffer_base& fbb) = 0;
-
-	virtual bool frame_buffer_attach(frame_buffer_base& fbb, 
-									 const render_component& rb, bool is_depth, int i) = 0;
-
-	virtual bool frame_buffer_attach(frame_buffer_base& fbb, 
-												 const texture_base& t, bool is_depth, 
-												 int level, int i, int z) = 0;
-
+	virtual bool frame_buffer_create		   (frame_buffer_base& fbb) = 0;
+	virtual bool frame_buffer_attach		   (frame_buffer_base& fbb, const render_component& rb, bool is_depth, int i) = 0;
+	virtual bool frame_buffer_attach		   (frame_buffer_base& fbb, const texture_base& t, bool is_depth, int level, int i, int z) = 0;
 	virtual bool frame_buffer_is_complete(const frame_buffer_base& fbb) const = 0;
-
-	virtual bool frame_buffer_enable(frame_buffer_base& fbb) = 0;
-
-	virtual bool frame_buffer_disable(frame_buffer_base& fbb) = 0;
-
-	virtual bool frame_buffer_destruct(frame_buffer_base& fbb) = 0;
-
+	virtual bool frame_buffer_enable		   (frame_buffer_base& fbb) = 0;
+	virtual bool frame_buffer_disable		   (frame_buffer_base& fbb) = 0;
+	virtual bool frame_buffer_destruct		   (frame_buffer_base& fbb) = 0;
 	virtual int frame_buffer_get_max_nr_color_attachments() = 0;
-
 	virtual int frame_buffer_get_max_nr_draw_buffers() = 0;
 
-	virtual void* shader_code_create(const std::string& source, ShaderType st, std::string& last_error) = 0;
-	virtual bool shader_code_compile(void* handle, std::string& last_error) = 0;
-	virtual void shader_code_destruct(void* handle) = 0;
+	virtual bool shader_code_create  (render_component& sc, ShaderType st, const std::string& source) = 0;
+	virtual bool shader_code_compile (render_component& sc) = 0;
+	virtual void shader_code_destruct(render_component& sc) = 0;
 
-	virtual bool shader_program_create(void* &handle, std::string& last_error) = 0;
-	virtual void shader_program_attach(void* handle, void* code_handle) = 0;
-	virtual bool shader_program_link(void* handle, std::string& last_error) = 0;
+	virtual bool shader_program_create   (shader_program_base& spb) = 0;
+	virtual void shader_program_destruct(shader_program_base& spb) = 0;
+	virtual void shader_program_attach(shader_program_base& spb, const render_component& sc) = 0;
+	virtual void shader_program_detach(shader_program_base& spb, const render_component& sc) = 0;
+	virtual bool shader_program_link(shader_program_base& spb) = 0;
 	virtual bool shader_program_set_state(shader_program_base& spb) = 0;
-	virtual bool shader_program_enable(render_component& rc) = 0;
-	virtual bool set_uniform_void(void* handle, const std::string& name, int value_type, bool dimension_independent, const void* value_ptr, std::string& last_error) = 0;
-	virtual bool shader_program_disable(render_component& rc) = 0;
-	virtual void shader_program_detach(void* handle, void* code_handle) = 0;
-	virtual void shader_program_destruct(void* handle) = 0;
+	virtual bool shader_program_enable   (shader_program_base& spb) = 0;
+	virtual bool shader_program_disable(shader_program_base& spb) = 0;
+	virtual int  get_uniform_location(const shader_program_base& spb, const std::string& name) const = 0;
+	virtual bool set_uniform_void(shader_program_base& spb, int loc, type_descriptor value_type, const void* value_ptr) = 0;
+	virtual bool set_uniform_array_void(shader_program_base& spb, int loc, type_descriptor value_type, const void* value_ptr, size_t nr_elements) = 0;
+	virtual int  get_attribute_location(const shader_program_base& spb, const std::string& name) const = 0;
+	virtual bool set_attribute_void(shader_program_base& spb, int loc, type_descriptor value_type, const void* value_ptr) = 0;
 
+	virtual bool attribute_array_binding_create  (attribute_array_binding_base& aab) = 0;
+	virtual bool attribute_array_binding_destruct(attribute_array_binding_base& aab) = 0;
+	virtual bool attribute_array_binding_enable  (attribute_array_binding_base& aab) = 0;
+	virtual bool attribute_array_binding_disable (attribute_array_binding_base& aab) = 0;
+	virtual bool set_attribute_array_void(attribute_array_binding_base* aab, int loc, type_descriptor value_type, const vertex_buffer_base* vbb, const void* ptr, size_t nr_elements = 0, unsigned stride_in_bytes = 0) = 0;
+	virtual bool enable_attribute_array(attribute_array_binding_base* aab, int loc, bool do_enable) = 0;
+	virtual bool is_attribute_array_enabled(const attribute_array_binding_base* aab, int loc) const = 0;
+
+	virtual bool vertex_buffer_create(vertex_buffer_base& vbb, const void* array_ptr, size_t size_in_bytes) = 0;
+	virtual bool vertex_buffer_replace(vertex_buffer_base& vbb, size_t offset, size_t size_in_bytes, const void* array_ptr) = 0;
+	virtual bool vertex_buffer_copy(const vertex_buffer_base& src, size_t src_offset, vertex_buffer_base& target, size_t target_offset, size_t size_in_bytes) = 0;
+	virtual bool vertex_buffer_copy_back(vertex_buffer_base& vbb, size_t offset, size_t size_in_bytes, void* array_ptr) = 0;
+	virtual bool vertex_buffer_destruct(vertex_buffer_base& vbb) = 0;
 public:
+	friend class CGV_API attribute_array_manager;
 	friend class CGV_API render_component;
 	friend class CGV_API texture;
 	friend class CGV_API render_buffer;
 	friend class CGV_API frame_buffer;
 	friend class CGV_API shader_code;
 	friend class CGV_API shader_program;
+	friend class CGV_API attribute_array_binding;
+	friend class CGV_API vertex_buffer;
 	/// declare type of matrices
 	typedef cgv::math::mat<double> mat_type;
 	/// declare type of vectors
@@ -432,6 +584,8 @@ public:
 	context();
 	/// virtual destructor
 	virtual ~context();
+	/// error handling
+	virtual void error(const std::string& message, const render_component* rc = 0) const;
 
 	/**@name interface for implementation of specific contexts*/
 	//@{
@@ -663,6 +817,8 @@ public:
 	void tesselate_unit_square(bool flip_normals = false);
 	/// tesselate a unit cube with extent from [-1,-1,-1] to [1,1,1] with face normals that can be flipped
 	void tesselate_unit_cube(bool flip_normals = false);
+	/// tesselate an axis aligned box
+	virtual void tesselate_box(const cgv::media::axis_aligned_box<double, 3>& B, bool flip_normals) const;
 	/// tesselate a prism 
 	void tesselate_unit_prism(bool flip_normals = false);
 	/// tesselate a circular disk of radius 1
@@ -691,9 +847,9 @@ public:
 		@param[in] rel_tip_radius is defined as r/R
 		@param[in] tip_aspect is defined as r/l
 	*/
-	virtual void tesselate_arrow(double length = 1, double aspect = 0.1, double rel_tip_radius = 2.0, double tip_aspect = 0.3);
+	virtual void tesselate_arrow(double length = 1, double aspect = 0.1, double rel_tip_radius = 2.0, double tip_aspect = 0.3, int res = 25);
 	/// define length and direction from start and end point and draw an arrow
-	virtual void tesselate_arrow(const cgv::math::fvec<double,3>& start, const cgv::math::fvec<double,3>& end, double aspect = 0.1f, double rel_tip_radius = 2.0f, double tip_aspect = 0.3f);
+	virtual void tesselate_arrow(const cgv::math::fvec<double, 3>& start, const cgv::math::fvec<double, 3>& end, double aspect = 0.1f, double rel_tip_radius = 2.0f, double tip_aspect = 0.3f, int res = 25);
 	//! draw a light source with an emissive material 
 	/*! @param[in] l to be rendered light source
 	    @param[in] intensity_scale used to multiply with the light source values

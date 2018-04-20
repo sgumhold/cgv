@@ -6,6 +6,7 @@
 #include <cgv/gui/key_event.h>
 #include <cgv/utils/ostream_printf.h>
 #include <cgv/gui/provider.h>
+#include <cgv/media/illum/phong_material.hh>
 
 using namespace cgv::base;
 using namespace cgv::reflect;
@@ -33,12 +34,15 @@ protected:
 	unsigned int rec_depth;
 	/// resolution of smooth shapes
 	int resolution;
+	///
+	cgv::media::illum::phong_material material;
 	/// different shape types
 	enum Shape { CUBE, PRI, TET, OCT, DOD, ICO, CYL, CONE, DISK, ARROW, SPHERE } shp;
 public:
 	/// initialize rotation angle
 	simple_cube() : toggle(false), angle(0), speed(90), rec_depth(4), animate(true), resolution(25), shp(CUBE)
 	{
+		material.set_diffuse(cgv::media::illum::phong_material::color_type(0.7f, 0.2f, 0.4f));
 		connect(get_animation_trigger().shoot, this, &simple_cube::timer_event);
 	}
 	/// self reflection allows to change values in the config file
@@ -160,10 +164,12 @@ public:
 	/// setting the view transform yourself
 	void draw(context& ctx)
 	{
+		ctx.enable_material(material);
 		glRotated(angle,0,1,0);
 		glScaled(0.5,0.5,0.5);
 		glColor3f(0,1,0.2f);
 		draw_cube_tree(ctx, 0, 4);
+		ctx.disable_material(material);
 	}
 	/// overload the create gui method
 	void create_gui()
