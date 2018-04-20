@@ -28,7 +28,7 @@ protected:
 	/// depth peeler used for visibility sorting
 	gl_depth_peeler peeler;
 	// depth texture used as depth buffer used in offline rendering
-	texture depth_tex;
+	texture depth_buffer;
 	// texture to store the peeled layers, which is used as color buffer in offline rendering and as texture during blending
 	texture layer_tex;
 	/// texture used as color buffer in front to back mode to blend together all transparent layers before blending the result over the current color buffer
@@ -42,8 +42,10 @@ protected:
 public:
 	/// a string that contains the last error, which is only set by the init method
 	mutable std::string last_error;
-	/// attach methods that render the transparent content to this signal
+	/// signal called to render the transparent content for first layer without additional depth test
 	cgv::signal::signal<context&> render_callback;
+	/// signal called to render the transparent content for second and further layers with additional depth test against texture given in second argument
+	cgv::signal::signal<context&,texture&> render_callback_2;
 	/// construct uninitialized depth peeler
 	gl_transparent_renderer(bool front_to_back = true, float _depth_bias = 0.001);
 	/// checks for extensions and init depth peeler, return success

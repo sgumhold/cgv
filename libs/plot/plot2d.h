@@ -68,6 +68,7 @@ public:
 	void create_config_gui(cgv::base::base* bp, cgv::gui::provider& p, unsigned i);
 	bool init(cgv::render::context& ctx);
 	void draw(cgv::render::context& ctx);
+	void clear(cgv::render::context& ctx);
 };
 
 	}

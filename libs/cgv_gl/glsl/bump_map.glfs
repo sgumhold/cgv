@@ -1,3 +1,5 @@
+#version 150 compatibility
+
 // bump map texture
 uniform sampler2D bump_map;
 // bump map texture resolution

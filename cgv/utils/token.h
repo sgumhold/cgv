@@ -18,6 +18,8 @@ struct CGV_API token
 	const char* begin, *end;
 	/// construct with both pointers set to 0
 	token();
+	/// construct from c-string
+	token(const char* _str);
 	/// construct from character range
 	token(const char* _b, const char* _e);
 	/// construct from string

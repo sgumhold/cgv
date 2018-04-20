@@ -48,7 +48,7 @@ namespace cgv{
 		{
 			return 1-erf(x);
 		}
-
+		
 		/// evaluate the cummulative normal distribution function
 		template <typename T>
 		T Phi(const T& x)

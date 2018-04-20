@@ -62,6 +62,7 @@ image_writer::image_writer(const std::string& _file_name) : file_name(_file_name
 			return;
 		}
 	}
+	wr = 0;
 	last_error  = "no image image_writer found for extension: ";
 	last_error += ext;
 }

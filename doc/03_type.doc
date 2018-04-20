@@ -4,7 +4,7 @@
 
 using namespace cgv::type;
 
-/*! \page baseNS Modules of the type namespace
+/*! \page typeNS Namespace cgv::type
 
 \subsection typeTR Type Reflection
 

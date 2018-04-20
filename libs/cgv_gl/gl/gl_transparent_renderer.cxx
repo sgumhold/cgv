@@ -13,7 +13,7 @@ gl_transparent_renderer::gl_transparent_renderer(bool front_to_back, float _dept
 	: gl_depth_peeler(front_to_back, _depth_bias), 
 	  layer_tex("uint8[R,G,B,A]",TF_NEAREST,TF_NEAREST), 
 	  color_tex("uint8[R,G,B,A]",TF_NEAREST,TF_NEAREST), 
-	  depth_tex("[D]", TF_NEAREST, TF_NEAREST)
+	  depth_buffer("[D]", TF_NEAREST, TF_NEAREST)
 {
 }
 
@@ -50,11 +50,6 @@ void gl_transparent_renderer::create_and_attach_texture(context& ctx, texture& t
 /// configure frame buffer and textures
 void gl_transparent_renderer::init_frame(context& ctx)
 {
-	// ensure alpha channel to be initialized to 1
-	float bg[4];
-	ctx.put_bg_color(bg);
-	if (bg[3] != 1)
-		ctx.set_bg_color(bg[0],bg[1],bg[2],1);
 	// init the peeler for the frame
 	GLint vp[4];
 	glGetIntegerv(GL_VIEWPORT, vp);
@@ -69,7 +64,7 @@ void gl_transparent_renderer::init_frame(context& ctx)
 			fb.destruct(ctx);
 		fb.create(ctx,w,h);
 	}
-	create_and_attach_texture(ctx, depth_tex, w, h);
+	create_and_attach_texture(ctx, depth_buffer, w, h);
 	create_and_attach_texture(ctx, layer_tex, w, h, 0);
 	if (is_front_to_back())
 		create_and_attach_texture(ctx, color_tex, w, h, 1);
@@ -77,7 +72,7 @@ void gl_transparent_renderer::init_frame(context& ctx)
 		color_tex.destruct(ctx);
 	if (!fb.is_complete(ctx)) {
 		std::cerr << "gl_transparent_renderer::init_frame -> framebuffer not complete" << std::endl;
-		exit(0);
+		abort();
 	}
 	gl_depth_peeler::init_frame(ctx);
 }
@@ -134,13 +129,19 @@ int gl_transparent_renderer::render_transparent(context& ctx, int max_nr_layers,
 	if (front_to_back) {
 		glDepthFunc(GL_LESS);
 		glClearDepth(1);
-		// use current depth buffer to initialize depth buffer of first layer
-		depth_tex.replace_from_buffer(ctx,0,0,vp[0],vp[1],vp[2],vp[3],0);
+		// use current depth buffer to initialize depth buffer of fbo
+		depth_buffer.replace_from_buffer(ctx,0,0,vp[0],vp[1],vp[2],vp[3],0);
+		// render first layer to layer texture
+		glClearColor(0, 0, 0, 1);
 		fb.enable(ctx, 0);
 			// render without a shadow test
 			glClear(GL_COLOR_BUFFER_BIT);
 			render_callback(ctx);
 		fb.disable(ctx);
+
+//		layer_tex.write_to_file(ctx, "S:/temp/debug/layer_ 0.bmp");
+//		depth_buffer.write_to_file(ctx, "S:/temp/debug/depth_buffer_ 0.bmp", -1, 2.0f);
+
 		// iterate layers
 		do {
 			fb.enable(ctx,1);
@@ -148,6 +149,7 @@ int gl_transparent_renderer::render_transparent(context& ctx, int max_nr_layers,
 					glClear(GL_COLOR_BUFFER_BIT);
 				blend_texture_over_viewport(ctx, layer_tex);
 			fb.disable(ctx);
+//			color_tex.write_to_file(ctx, "S:/temp/debug/color_" + cgv::utils::to_string(nr_layers, 2) + ".bmp");
 
 			// check for termination
 			if (++nr_layers > max_nr_layers)
@@ -157,20 +159,34 @@ int gl_transparent_renderer::render_transparent(context& ctx, int max_nr_layers,
 			fb.enable(ctx, 0);
 				copy_depth_buffer(ctx);
 			fb.disable(ctx);
+			depth_buffer.replace_from_buffer(ctx,0,0,vp[0],vp[1],vp[2],vp[3],0);
 
-			depth_tex.replace_from_buffer(ctx,0,0,vp[0],vp[1],vp[2],vp[3],0);
 			fb.enable(ctx, 0);				
 				// draw and use first layer (no depth peeling necessary)
 				glClear(GL_COLOR_BUFFER_BIT);
-				begin_layer(ctx);
-					render_callback(ctx);
-				nr_fragments = end_layer(ctx);
-			fb.disable(ctx);
-		} while (nr_fragments > 0);
+				// create occlusion query, that counts the number of rendered fragments
+				glGenQueriesARB(1, &query);
+				glBeginQueryARB(GL_SAMPLES_PASSED_ARB, query);
 
+				render_callback_2(ctx, depth_texture);
+				glEndQueryARB(GL_SAMPLES_PASSED_ARB);
+				// evaluation of occlusion query
+				GLuint nr_drawn_fragments;
+				glGetQueryObjectuivARB(query, GL_QUERY_RESULT_ARB, &nr_drawn_fragments);
+				glDeleteQueriesARB(1, &query);
+				query = -1;
+				nr_fragments = nr_drawn_fragments;
+
+			fb.disable(ctx);
+//			layer_tex.write_to_file(ctx, "S:/temp/debug/layer_"+cgv::utils::to_string(nr_layers,2)+".bmp");
+//			depth_buffer.write_to_file(ctx, "S:/temp/debug/depth_buffer_" + cgv::utils::to_string(nr_layers,2) + ".bmp", -1, 2.0f);
+//			std::cout << "layer " << nr_layers << " : " << nr_fragments << std::endl;
+		} while (nr_fragments > 0);
+		
 		front_to_back = false;
 		blend_texture_over_viewport(ctx, color_tex);
 		front_to_back = true;
+		
 	}
 	else {
 		glDepthFunc(GL_GREATER);
@@ -216,7 +232,7 @@ void gl_transparent_renderer::destruct(context& ctx)
 	fb.destruct(ctx);
 	layer_tex.destruct(ctx);
 	color_tex.destruct(ctx);
-	depth_tex.destruct(ctx);
+	depth_buffer.destruct(ctx);
 }
 
 		}

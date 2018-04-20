@@ -17,6 +17,13 @@ namespace cgv {
 	namespace render {
 		namespace gl {
 
+unsigned map_material_side(MaterialSide ms)
+{
+	static unsigned material_side_mapping[] = { GL_FALSE, GL_FRONT, GL_BACK, GL_FRONT_AND_BACK };
+	return material_side_mapping[ms];
+}
+
+
 unsigned int read_image_to_texture(const std::string& file_name, bool mipmaps, double* aspect_ptr, bool* has_alpha_ptr)
 {
 	std::vector<data_format> palette_formats;
@@ -95,7 +102,7 @@ void set_lighting_parameters(context& ctx, shader_program& prog)
 	cgv::math::vec<int> enabled(n); 
 	for (unsigned i=0; i<n; ++i)
 		glGetIntegerv(GL_LIGHT0+i, &enabled(i));
-	prog.set_uniform(ctx, "lights_enabled", enabled);
+	prog.set_uniform_array(ctx, "lights_enabled", enabled);
 }
 
 std::vector<shader_program*>& ref_shader_prog_stack()
@@ -125,7 +132,7 @@ shader_program& ref_textured_material_prog(context& ctx)
 	if (!prog.is_created()) {
 		if (!prog.build_program(ctx, "textured_material.glpr")) {
 			std::cerr << "could not build textured material shader program" << std::endl;
-			//exit(0);
+			exit(0);
 		}
 		else {
 			std::cout << "successfully built textured material shader program" << std::endl;

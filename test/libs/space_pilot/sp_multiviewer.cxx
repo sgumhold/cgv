@@ -53,6 +53,7 @@ void multi_viewer::view1_callback(Widget *w, multi_viewer *self)
 	// and mark it as active
 	self->first_active = true;
 	self->view[0]->grab_focus();
+	self->redraw();
 }
 
 
@@ -63,4 +64,5 @@ void multi_viewer::view2_callback(Widget *w, multi_viewer *self)
 	// and mark the left canvas as inactive
 	self->first_active = false;
 	self->view[1]->grab_focus();
+	self->redraw();
 }

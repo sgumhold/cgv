@@ -138,7 +138,7 @@ bool shader_program::create(context& ctx)
 		if (handle)
 			destruct(ctx);
 	ctx_ptr = &ctx;
-	return ctx.shader_program_create(handle, last_error);
+	return ctx.shader_program_create(*this);
 }
 
 /// attach a compiled shader code instance that is managed outside of program
@@ -156,7 +156,7 @@ bool shader_program::attach_code(context& ctx, const shader_code& code)
 		last_error = "attempt to attach_code that is not compiled to shader program";
 		return false;
 	}
-	ctx.shader_program_attach(handle, code.handle);
+	ctx.shader_program_attach(*this, code);
 	if (code.get_shader_type() == ST_GEOMETRY)
 		++nr_attached_geometry_shaders;
 	return true;
@@ -173,7 +173,7 @@ bool shader_program::detach_code(context& ctx, const shader_code& code)
 		last_error = "attempt to detach_code that is not created to shader program";
 		return false;
 	}
-	ctx.shader_program_detach(handle, code.handle);
+	ctx.shader_program_detach(*this, code);
 	if (code.get_shader_type() == ST_GEOMETRY)
 		--nr_attached_geometry_shaders;
 	return true;
@@ -346,8 +346,24 @@ bool shader_program::build_dir(context& ctx, const std::string& dir_name, bool r
 /// successively calls create, attach_program and link.
 bool shader_program::build_program(context& ctx, const std::string& file_name, bool show_error)
 {
-	return (is_created() || create(ctx)) && 
-			 attach_program(ctx, file_name, show_error) && link(ctx, show_error);
+	if (!(is_created() || create(ctx)))
+		return false;
+	if (!attach_program(ctx, file_name, show_error))
+		return false;
+	if (!link(ctx, false)) {
+		if (show_error) {
+			std::string fn = shader_code::find_file(file_name);
+			std::vector<line> lines;
+			split_to_lines(last_error, lines);
+			std::string formated_error;
+			for (unsigned int i = 0; i < lines.size(); ++i) {
+				formated_error += fn + "(1) : error G0002: " + to_string(lines[i]) + "\n";
+			}
+			std::cerr << formated_error.c_str() << std::endl;
+		}
+		return false;
+	}
+	return true;
 }
 
 /// return the maximum number of output vertices of a geometry shader
@@ -372,7 +388,7 @@ void shader_program::update_state(context& ctx)
 bool shader_program::link(context& ctx, bool show_error)
 {
 	update_state(ctx);
-	if (ctx.shader_program_link(handle,last_error)) {
+	if (ctx.shader_program_link(*this)) {
 		linked = true;
 		return true;
 	}
@@ -402,21 +418,46 @@ void shader_program::set_geometry_shader_info(PrimitiveType input_type, Primitiv
 bool shader_program::enable(context& ctx)
 {
 	if (!is_created()) {
-		last_error = "attempt to enable shader_program that is not created";
+		ctx.error("attempt to enable shader_program that is not created", this);
 		return false;
 	}
 	if (!is_linked()) {
-		last_error = "attempt to enable shader_program that is not linked";
+		ctx.error("attempt to enable shader_program that is not linked", this);
+		return false;
+	}
+	if (is_enabled) {
+		ctx.error("attempt to enable shader_program that is already enabled or was not disabled properly", this);
 		return false;
 	}
 	update_state(ctx);
-	return ctx.shader_program_enable(*this);
+	bool res = ctx.shader_program_enable(*this);
+	if (res)
+		is_enabled = true;
+	return res;
 }
 
 /// disable shader program and restore fixed functionality
 bool shader_program::disable(context& ctx)
 {
-	return ctx.shader_program_disable(*this);
+	if (!is_enabled) {
+		ctx.error("attempt to disable shader_program that is not enabled", this);
+		return false;
+	}
+	bool res = ctx.shader_program_disable(*this);
+	is_enabled = false;
+	return res;
+}
+
+/// query location index of an uniform
+int shader_program::get_uniform_location(context& ctx, const std::string& name) const
+{
+	return ctx.get_uniform_location(*this, name);
+}
+
+/// query location index of an attribute
+int shader_program::get_attribute_location(context& ctx, const std::string& name) const
+{
+	return ctx.get_attribute_location(*this, name);
 }
 
 /// destruct shader program
@@ -427,7 +468,7 @@ void shader_program::destruct(context& ctx)
 		managed_codes.pop_back();
 	}
 	if (handle) {
-		ctx.shader_program_destruct(handle);
+		ctx.shader_program_destruct(*this);
 		handle = 0;
 	}
 	linked = false;

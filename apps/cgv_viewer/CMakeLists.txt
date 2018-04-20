@@ -15,16 +15,7 @@ target_link_libraries(cgv_viewer ${cgv_LIBRARIES})
 
 set_target_properties(cgv_viewer PROPERTIES FOLDER "${FOLDER_NAME_APPS}")
 
-
-# For the package file we need functions to generate launchers. Try to find the
-# needed files
-if (EXISTS "${CGV_DIR}/cmake/rpavlik")
-	file(GLOB_RECURSE cgv_viewer_cmake_files "${CGV_DIR}/cmake/rpavlik/*")
-endif()
-cgv_write_find_file(cgv_viewer
-	CMAKE_SRC_BASE "${CGV_DIR}/cmake"
-	CMAKE_SRC_FILES ${cgv_viewer_cmake_files}
-)
+cgv_write_find_file(cgv_viewer)
 
 # We need to install the main file for the binary distribution
 install(FILES main.cxx 

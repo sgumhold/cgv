@@ -95,7 +95,7 @@ T norm_pdf(const T x,const T mu=0,const T sig=1)
 template <typename T>
 T norm_cdf(const T x,const T mu=0,const T sig=1)
 {
-	return 0.5*erfc(-0.707106781186547524*(x-mu)/sig);
+	return T(0.5)*erfc(T(-0.707106781186547524*(x-mu)/sig));
 }
 
 ///inverse normal cumulative distribution function

@@ -62,15 +62,18 @@ public:
 		glMatrixMode(GL_MODELVIEW);
 		glPopMatrix();
 	}
+	void on_set(void* member_ptr)
+	{
+		post_redraw();
+	}
 	void draw(context& ctx)
 	{
 		if (test_type == TT_NONE)
 			return;
 
 		glPushAttrib(GL_LIGHTING_BIT|GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT|GL_STENCIL_BUFFER_BIT);
-		glDisable(GL_LIGHTING);
+
 		glDisable(GL_DEPTH_TEST);
-		
 		switch (test_type) {
 		case TT_STENCIL : 
 			glEnable(GL_STENCIL_TEST);
@@ -102,9 +105,9 @@ public:
 	void create_gui()
 	{
 		add_decorator("buffer test", "heading");
-		connect_copy(add_control("test", test_type, "NONE,STENCIL,ALPHA,ACCUM")->value_change, rebind(static_cast<drawable*>(this), &drawable::post_redraw));
+		add_member_control(this, "test", test_type, "dropdown", "enums='NONE,STENCIL,ALPHA,ACCUM'");
 	}
 };
  
+factory_registration<buffer_test> bt_fac("buffer_test", "shortcut='Shift-Ctrl-B';menu_text='new/buffer test'", true);
 
-factory_registration<buffer_test> fr_buffer_test("new/buffer_test", 'Y', true);

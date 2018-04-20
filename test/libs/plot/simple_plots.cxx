@@ -36,16 +36,65 @@ void sample_plot2d_rectangle(std::function<T(T,T)> f, T xmin, T xmax, T ymin, T 
 void configure_simple_plots(cgv::plot::plot1d& p1)
 {
 	p1.add_sub_plot("cos");
-	sample_plot1d_interval<float>([&](float x) { return cos(x); },-3,3,100,p1.ref_sub_plot_samples(0));
-	p1.set_sub_plot_colors(0, cgv::plot::plot1d::Clr(1,0,0));
+	sample_plot1d_interval<float>([&](float x) { return cos(x); }, -3, 3, 100, p1.ref_sub_plot_samples(0));
+	p1.set_sub_plot_colors(0, cgv::plot::plot1d::Clr(1, 0, 0));
 
 	p1.add_sub_plot("sin");
-	sample_plot1d_interval<float>([&](float x) { return sin(x); },-3,3,100,p1.ref_sub_plot_samples(1));
-	p1.set_sub_plot_colors(1, cgv::plot::plot1d::Clr(1,1,0));
-		
+	sample_plot1d_interval<float>([&](float x) { return sin(x); }, -3, 3, 100, p1.ref_sub_plot_samples(1));
+	p1.set_sub_plot_colors(1, cgv::plot::plot1d::Clr(1, 1, 0));
+
 	p1.add_sub_plot("sinc");
-	sample_plot1d_interval<float>([&](float x) { return (float)(sin(10*x)/(10*x+0.000001)); },-3,3,1000,p1.ref_sub_plot_samples(2));
-	p1.set_sub_plot_colors(2, cgv::plot::plot1d::Clr(0,1,1));
+	sample_plot1d_interval<float>([&](float x) { return (float)(sin(10 * x) / (10 * x + 0.000001)); }, -3, 3, 1000, p1.ref_sub_plot_samples(2));
+	p1.set_sub_plot_colors(2, cgv::plot::plot1d::Clr(0, 1, 1));
+}
+
+
+float sqr(float x) { return x*x; }
+
+void configure_ribbon_plots(cgv::plot::plot1d& p1, float beta)
+{
+	float cb2 = cos(beta)*cos(beta);
+	float sb2 = sin(beta)*sin(beta);
+
+	p1.add_sub_plot("cos");
+	sample_plot1d_interval<float>([&](float x) { return sqrt(sb2 + cb2*sqr(cos(x))); }, -M_PI, M_PI, 1000, p1.ref_sub_plot_samples(0));
+	p1.set_sub_plot_colors(0, cgv::plot::plot1d::Clr(1, 0, 0));
+
+	p1.add_sub_plot("slerp");
+	sample_plot1d_interval<float>([&](float x) { 
+		return
+			sqrt(sb2+cb2*
+			sqr(
+				cos(x)*sin(fabs(cos(x))*M_PI_2) + 
+				sin(x)*sin((1.0 - fabs(cos(x)))*M_PI_2)
+			)); 
+	}, -M_PI, M_PI, 1000, p1.ref_sub_plot_samples(1));
+	p1.set_sub_plot_colors(1, cgv::plot::plot1d::Clr(1, 1, 0));
+
+	p1.add_sub_plot("lerp");
+	sample_plot1d_interval<float>([&](float x) {
+		return
+			sqrt(sb2+cb2*
+			sqr(
+				cos(x)*fabs(cos(x)) +
+				sin(x)*(1.0 - fabs(cos(x)))
+			));
+	}, -M_PI, M_PI, 1000, p1.ref_sub_plot_samples(2));
+	p1.set_sub_plot_colors(2, cgv::plot::plot1d::Clr(0, 1, 1));
+
+	for (int s = 0; s<3; ++s) {
+		p1.ref_sub_plot1d_config(s).line_width = 3;
+		if (s != 2) {
+			p1.ref_sub_plot1d_config(s).show_sticks = true;
+			p1.ref_sub_plot1d_config(s).stick_width = 1;
+		}
+	}
+
+/*
+	p1.add_sub_plot("sin");
+	sample_plot1d_interval<float>([&](float x) { return fabs(sin(x)); }, -M_PI, M_PI, 1000, p1.ref_sub_plot_samples(3));
+	p1.set_sub_plot_colors(3, cgv::plot::plot1d::Clr(1, 0, 1));
+	*/
 }
 
 
@@ -214,20 +263,22 @@ public:
 class simple_plots : public cgv::base::node, public cgv::render::drawable, public cgv::gui::provider
 {
 	cgv::plot::plot1d p1;
-
-	integrator_analizer ia;
+	float beta;
+	//integrator_analizer ia;
 public:
 	simple_plots()
 	{
 		set_name("simple plot example");
-
-		// configure_simple_plots(p1);
+		beta = 0;
+		configure_ribbon_plots(p1, beta);
+		//configure_simple_plots(p1);
 		// configure_plots_montecarlo(p1);
-		ia.create_plots(p1);
-		ia.compute_plots(p1);
+		//ia.create_plots(p1);
+		//ia.compute_plots(p1);
 
 		p1.adjust_domain_to_data();
-		p1.set_extent(p1.get_domain().get_extent());
+		//p1.set_extent(p1.get_domain().get_extent());
+		p1.set_extent(cgv::plot::plot1d::V2D(2 * M_PI, 3.0));
 		//p1.set_width(1, false);
 		//p1.set_height(1, false);
 		p1.adjust_tick_marks_to_domain();
@@ -245,8 +296,15 @@ public:
 	}
 	void on_set(void* member_ptr)
 	{
-		if (member_ptr >= &ia && member_ptr < &ia+1)
-			ia.compute_plots(p1);
+//		if (member_ptr >= &ia && member_ptr < &ia+1)
+	//		ia.compute_plots(p1);
+		if (member_ptr == &beta) {
+			p1.delete_sub_plot(2);
+			p1.delete_sub_plot(1);
+			p1.delete_sub_plot(0);
+			configure_ribbon_plots(p1, beta);
+		}
+
 		post_redraw();
 	}
 	void on_register()
@@ -287,7 +345,8 @@ public:
 	void create_gui()
 	{
 		connect_copy(add_button("adjust domain")->click, cgv::signal::rebind(this, &simple_plots::on_adjust_domain));
-		ia.create_gui(this, *this);
+		add_member_control(this, "beta", beta, "value_slider", "min=0;max=1.5;ticks=true;step=0.01");
+//		ia.create_gui(this, *this);
 		p1.create_gui(this, *this);
 
 	//	cgv::gui::gui_group_ptr gg = get_parent_group();

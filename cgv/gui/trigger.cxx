@@ -67,7 +67,7 @@ void trigger::stop()
 }
 
 /// return the current time
-double trigger::get_current_time() const
+double trigger::get_current_time()
 {
 	trigger_server_ptr ts = get_trigger_server();
 	if (ts)

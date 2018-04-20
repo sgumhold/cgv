@@ -31,7 +31,7 @@ public:
 	/// stop a recuring trigger
 	void stop();
 	/// return the current time
-	double get_current_time() const;
+	static double get_current_time();
 	/// the shoot signal is called when the trigger is pulled and takes the current time and delay as argument
 	signal::signal<double,double> shoot;
 };

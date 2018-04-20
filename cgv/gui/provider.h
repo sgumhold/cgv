@@ -209,9 +209,9 @@ if (begin_tree_node("Node", vec)) {
 	template <typename T>
 	void set_tree_node_visibility(const T& value, bool is_visible) { set_tree_node_visibility_void(wi_get_value_ptr(value), wi_get_index(value), is_visible); }
 	/// void version of the templated functions
-	bool begin_tree_node_void(const std::string& label, const void* value_ptr, int index, bool initial_visibility = false, const std::string& options = "", gui_group_ptr ggp = gui_group_ptr());
+	bool begin_tree_node_void(const std::string& label, const void* value_ptr, int index = -1, bool initial_visibility = false, const std::string& options = "", gui_group_ptr ggp = gui_group_ptr());
 	///
-	void end_tree_node_void(const void* value_ptr, int index);
+	void end_tree_node_void(const void* value_ptr, int index = -1);
 	///
 	bool is_tree_node_visible_void(const void* value_ptr, int index) const;
 	///

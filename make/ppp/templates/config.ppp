@@ -121,6 +121,10 @@ elif (CGV_COMPILER == "vs12") {
 	cgv_compiler_version = 12;
 	project_folder_support=1
 }
+elif (CGV_COMPILER == "vs14") {
+	cgv_compiler_version = 14;
+	project_folder_support=1
+}
 
 rules = [
 	MAP.[ 
@@ -181,7 +185,7 @@ rules = [
 		]
 	],
 	MAP.[ 
-		["extensions",["h", "hh"]],
+		["extensions",["h", "hh", "hxx"]],
 		["folder","headers"] 
 	],
 	MAP.[ 

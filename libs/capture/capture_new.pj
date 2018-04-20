@@ -1,0 +1,7 @@
+@=
+projectName="capture";
+projectType="library";
+projectGUID="CDB2530F-1992-4F30-BEA7-FC71FFDCD355";
+addSharedDefines=["CAPTURE_EXPORTS"];
+// addProjectDeps=["cgv_utils", "cgv_type", "cgv_data"];
+

@@ -21,7 +21,7 @@ void thread::start(bool _delete_after_termination)
 		delete_after_termination = _delete_after_termination;
 		stop_request=false;
 		std::thread*& t_ptr = (std::thread*&) pthread;
-		t_ptr = new std::thread(&cgv::os::thread::run, this);
+		t_ptr = new std::thread(&cgv::os::thread::execute, this);
 		running=true;
 	}
 }

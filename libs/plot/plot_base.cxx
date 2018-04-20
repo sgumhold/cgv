@@ -81,8 +81,10 @@ void plot_base::ensure_font_names()
 {
 	if (font_names.empty()) {
 		cgv::media::font::enumerate_font_names(font_names);
+		if (font_names.empty())
+			return;
 		font_name_enum_def = std::string("enums='") + font_names[0];
-		for (unsigned i=1; i<font_names.size(); ++i) {
+		for (unsigned i = 1; i < font_names.size(); ++i) {
 			font_name_enum_def += ',';
 			font_name_enum_def += font_names[i];
 		}
@@ -219,3 +221,8 @@ void plot_base::create_gui(cgv::base::base* bp, cgv::gui::provider& p)
 
 	}
 }
+
+#ifdef REGISTER_SHADER_FILES
+#include <cgv/base/register.h>
+#include <plot_shader_inc.h>
+#endif

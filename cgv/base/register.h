@@ -2,6 +2,8 @@
 
 #include <cgv/base/base.h>
 #include <cgv/base/named.h>
+#include <cgv/utils/token.h>
+#include <cgv/type/info/type_name.h>
 #include <string>
 #include <iostream>
 #include <map>
@@ -29,6 +31,23 @@ extern void CGV_API enable_registration();
 extern void CGV_API disable_registration();
 /// check whether registration is enabled
 extern bool CGV_API is_registration_enabled();
+//! specify a partial order of objects for registration
+/*! \c partial_order is a semicolon separated list of type names that can ignore name spaces.
+    \c before_contructor_execution tells whether the reordering should happen before constructors of delayed registration events are called.
+	\c when specifies in which call to \c enable_registration the reordering should happen. Possible values are 
+	- "always" 
+	- "program" only once for the enable event of the executed program
+	- "plugins" for enable events of all loaded plugins
+	- <plugin_name> only for the enable event of the plugin with the given name
+	If several partial orders are defined for an enable call, a combined partial order is computed and used to find the order closest to the actual
+	registration order that is in accordance to the combined partial order. */
+extern void CGV_API define_registration_order(const std::string& partial_order, bool before_contructor_execution = false, const std::string& when = "always");
+
+/// helper class whose constructor calls the \c define_registration_order() function
+struct CGV_API registration_order_definition
+{
+	registration_order_definition(const std::string& partial_order, bool before_contructor_execution = false, const std::string& when = "always");
+};
 
 /// enable registration debugging
 extern void CGV_API enable_registration_debugging();
@@ -72,11 +91,15 @@ extern void CGV_API register_object(base_ptr object, const std::string& options 
 /// unregister an object and send event to all currently registered registration listeners
 extern void CGV_API unregister_object(base_ptr object, const std::string& options = "");
 
-// abstract base class of helpers to perform delayed registration and creation of objects in case that the registration is currently disabled
+/// abstract base class of helpers to perform delayed registration and creation of objects in case that the registration is currently disabled
 struct CGV_API object_constructor : public cgv::base::base
 {
 public:
-	// creation function
+	/// return the type name of the object constructor class
+	std::string get_type_name() const { return cgv::type::info::type_name<object_constructor>::get_name(); }
+	/// return the type name of the to be constructed object
+	virtual std::string get_constructed_type_name() const = 0;
+	/// creation function
 	virtual base_ptr construct_object() const = 0;
 };
 	
@@ -85,6 +108,10 @@ template <class T>
 class object_constructor_impl : public object_constructor
 {
 public:
+	/// return the type name of the object constructor class
+	std::string get_type_name() const { return cgv::type::info::type_name<object_constructor_impl<T> >::get_name(); }
+	/// return the type name of the to be constructed object
+	std::string get_constructed_type_name() const { return cgv::type::info::type_name<T>::get_name(); }
 	// creation function
 	base_ptr construct_object() const { return base_ptr(new T()); }
 };
@@ -98,6 +125,10 @@ class object_constructor_impl_1 : public object_constructor
 public:
 	// construct from option
 	object_constructor_impl_1(const CA& _ca) : ca(_ca) {}
+	/// return the type name of the object constructor class
+	std::string get_type_name() const { return cgv::type::info::type_name<object_constructor_impl_1<T, CA> >::get_name(); }
+	/// return the type name of the to be constructed object
+	std::string get_constructed_type_name() const { return cgv::type::info::type_name<T>::get_name(); }
 	// creation function
 	base_ptr construct_object() const { return base_ptr(new T(ca)); }
 };
@@ -112,6 +143,10 @@ class object_constructor_impl_2 : public object_constructor
 public:
 	// construct from option
 	object_constructor_impl_2(const CA1& _ca1, const CA2& _ca2) : ca1(_ca1), ca2(_ca2) {}
+	/// return the type name of the object constructor class
+	std::string get_type_name() const { return cgv::type::info::type_name<object_constructor_impl_2<T,CA1,CA2> >::get_name(); }
+	/// return the type name of the to be constructed object
+	std::string get_constructed_type_name() const { return cgv::type::info::type_name<T>::get_name(); }
 	// creation function
 	base_ptr construct_object() const { return base_ptr(new T(ca1,ca2)); }
 };
@@ -404,17 +439,67 @@ extern CGV_API std::map<std::string, resource_file_info>& ref_resource_file_map(
 extern CGV_API void register_resource_file(const std::string& file_path, unsigned int file_offset, unsigned int file_length, const char* file_data, const std::string& source_file = "");
 
 /// convenience class to register a resource file
-struct CGV_API resource_file_registration 
+struct CGV_API resource_file_registration
 {
 	/// builds a resource file info and registers it with the register_resource_file function
-	resource_file_registration(const char* symbol);
+	resource_file_registration(const char* file_data);
 };
+
+/// register a resource string
+extern CGV_API void register_resource_string(const std::string& string_name, const char* string_data);
+
+/// convenience class to register a resource string
+struct CGV_API resource_string_registration
+{
+	/// builds a resource file info and registers it with the register_resource_file function
+	resource_string_registration(const std::string& string_name, const char* string_data);
+};
+
 //@}
+
+
+/// interface for objects that process unknown command line arguments
+struct argument_handler
+{
+	/// this function is called on registered objects with the list of unknown command line parameters
+	virtual void handle_args(std::vector<std::string>& args) = 0;
+};
+
+/// enumerate type for all command types supported in configuration files
+enum CommandType
+{
+	CT_UNKNOWN,    // command is not known to framework
+	CT_EMPTY,      // command specification was empty
+	CT_COMMENT,    // a comment was given starting with '/'
+	CT_SHOW,       // a show command was specified, currently only show all is supported
+	CT_PERSISTENT, // the persistent command means that all successive value set commands in a config file should be updated during execution when the user changes one of them
+	CT_INITIAL,    // reverts a persistent command
+	CT_PLUGIN,     // loads a plugin
+	CT_CONFIG,     // executes a config file
+	CT_GUI,        // loads a gui description file
+	CT_NAME,       // sets a value of a registered object of the given name
+	CT_TYPE        // sets a value of a registered object of the given type
+};
+
+/// a structure to store an analized command
+struct command_info
+{
+	/// the command type
+	CommandType command_type;
+	/// the parameters, one file name parameter for PLUGIN, CONFIG, GUI and two parameters (name/type, declarations) for NAME or TYPE commands
+	std::vector<cgv::utils::token> parameters;
+};
+
+/// parse a command and optionally store result in the command info, returns the command type
+extern CommandType CGV_API analyze_command(const cgv::utils::token& cmd, bool eliminate_quotes = true, command_info* info_ptr = 0);
+
+/// process a command given by a command info structure, return whether command was processed correctly
+extern bool CGV_API process_command(const command_info& info);
 
 /**@name processing of commands*/
 //@{
 
-//! process a command.
+//! process a command given as string.
 /*! Return whether the command was processed correctly. If eliminate_quotes is 
     set to true, quotes around the command arguments are eliminated. This feature
 	is used for commands specified on the command line, where spaces in the command
@@ -447,6 +532,8 @@ extern void CGV_API show_all();
 extern CGV_API void register_prog_name(const char* prog_name);
 /// return a refence to the name of the started executable
 extern CGV_API std::string& ref_prog_name();
+/// return a refence to the path prefix of the started executable, this can be prepended for example to dll names
+extern CGV_API std::string& ref_prog_path_prefix();
 /// process the command line arguments: extract program name and load all plugins
 extern CGV_API void process_command_line_args(int argc, char** argv);
 //@}

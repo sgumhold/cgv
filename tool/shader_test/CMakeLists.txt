@@ -46,6 +46,8 @@ set(SOURCES
     "${CGV_BASE}/cgv/os/clipboard.cxx"
     "${CGV_BASE}/cgv/render/context.cxx"
     "${CGV_BASE}/cgv/render/drawable.cxx"
+    "${CGV_BASE}/cgv/render/frame_buffer.cxx"
+    "${CGV_BASE}/cgv/render/render_buffer.cxx"
     "${CGV_BASE}/libs/cgv_gl/gl/gl.cxx"
     "${CGV_BASE}/libs/cgv_gl/gl/gl_texture_tools.cxx"
     "${CGV_BASE}/libs/cgv_gl/gl/gl_context.cxx"

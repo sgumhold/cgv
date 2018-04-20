@@ -2,6 +2,7 @@
 
 #include <cgv/base/traverser.h>
 #include <cgv/render/context.h>
+#include <cgv/render/view.h>
 
 #include "lib_begin.h"
 
@@ -29,6 +30,10 @@ public:
 	context* get_context() const;
 	/// set the current focus context, this should only be called by the context itself
 	void set_context(context* _ctx);
+	//! use given view together with depth buffer of context in order to compute the world location of the point at mouse pointer location (x,y)
+	/*! returns true if a world location could be computed which is the case when the context pointer of the drawable has been set and when 
+	    the mouse location points inside a valid view panel. */
+	bool get_world_location(int x, int y, const cgv::render::view& V, cgv::math::fvec<double, 3>& world_location) const;
 	/// posts a redraw event to the current context if one is available
 	void post_redraw();
 	/// forces a redraw right now. This cannot be called from init, init_frame, draw, finish_draw, finish_frame and clear

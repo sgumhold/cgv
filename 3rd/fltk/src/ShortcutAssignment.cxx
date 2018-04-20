@@ -226,11 +226,13 @@ class keyCompareFunctor : public AssociationFunctor {
       char c = event_text()[0];
       // this does not work for letters (as it would make different
       // shortcuts for shift and unshifted not work) and not for UTF-8:
-      if (c && !isalpha(c) && !(c&0x80)) {
-        mismatch = shortcut ^ (unsigned(c) | event_state());
-        if (!(mismatch & (0xffffu|shortcut|META|ALT|CTRL)))
-          return true;
-      }
+	  if (c > -1) {
+		  if (c && !isalpha(c) && !(c & 0x80)) {
+			  mismatch = shortcut ^ (unsigned(c) | event_state());
+			  if (!(mismatch & (0xffffu | shortcut | META | ALT | CTRL)))
+				  return true;
+		  }
+	  }
 
       return false;
     }

@@ -2,10 +2,10 @@
 projectName="tiff";
 projectType="library";
 projectGUID="04047bf0-fc32-11dd-87af-0800200c9a66";
-addIncDirs=[CGV_DIR."/3rd/tiff",CGV_DIR."/3rd/jpeg"];
+addIncDirs=[CGV_DIR."/3rd/tiff",CGV_DIR."/3rd/jpeg",CGV_DIR."/3rd/zlib"];
 defFile= CGV_DIR."/3rd/tiff/libtiff.def";
-addProjectDirs=[CGV_DIR."/3rd/jpeg"];
-addProjectDeps=["jpeg"];
+addProjectDirs=[CGV_DIR."/3rd/jpeg", CGV_DIR."/3rd/zlib"];
+addProjectDeps=["jpeg", "zlib"];
 addDefines=["_CRT_SECURE_NO_DEPRECATE",
 			"AVOID_WIN32_FILEIO",
 			"CHECK_JPEG_YCBCR_SUBSAMPLING",
@@ -16,6 +16,8 @@ addDefines=["_CRT_SECURE_NO_DEPRECATE",
 			"NEXT_SUPPORT",
 			"THUNDER_SUPPORT",
 			"LZW_SUPPORT",
+			"JPEG_SUPPORT",
+			"ZIP_SUPPORT",
 			"PACKBITS_SUPPORT",
 			"CCITT_SUPPORT",
 			"TIF_PLATFORM_CONSOLE",

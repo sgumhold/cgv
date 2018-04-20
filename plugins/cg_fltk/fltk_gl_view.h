@@ -190,7 +190,10 @@ private:
 	bool started_frame_pm;
 	///
 	int last_mouse_x, last_mouse_y;
-
+	/// remember the last active context to detect context changes
+	void* last_context;
+	/// remember the last size of the window to detect resize events
+	unsigned int last_width, last_height;
 };
 
 typedef cgv::data::ref_ptr<fltk_gl_view> fltk_gl_view_ptr;

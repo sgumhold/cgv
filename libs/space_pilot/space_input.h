@@ -39,7 +39,7 @@
 
 	If there are problems please read the section Trouble Shooting or contact the author 
 
-	\author Joachim Staib (s2458101@mail.inf.tu-dresden.de)
+	\author Joachim Staib (joachim.staib@tu-dresden.de)
 
  \section example_sec Examples
  	Using space_input is fairly easy. Generally you have to do 5 steps:

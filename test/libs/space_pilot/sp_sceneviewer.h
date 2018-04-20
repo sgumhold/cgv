@@ -72,9 +72,6 @@ private:
 	// creates a rotation matrix from a rotation axis and a rotation angle
 	// and stores the result in dest
 	void matrix_rotation(double *dest, double *axis, double angle);
-
-	// the drawing callback. will be called every 1/30 sec
-	static void draw_callback(scene_viewer *self);
 };
 
 

@@ -85,8 +85,19 @@ void bump_mapper::init_frame(context& ctx)
 
 void bump_mapper::draw(context& ctx)
 {
+	// setup bump mapping
+	bump_map.enable(ctx, 0);
+	prog.enable(ctx);
+	prog.set_uniform(ctx, "bump_map", 0);
+	prog.set_uniform(ctx, "use_bump_map", use_bump_map);
+	prog.set_uniform(ctx, "use_phong", use_phong);
+	prog.set_uniform(ctx, "use_diffuse_map", use_diffuse_map);
+	prog.set_uniform(ctx, "bump_map_res", (int)texture_resolution);
+	prog.set_uniform(ctx, "bump_scale", bump_scale);
+	gl::set_lighting_parameters(ctx, prog);
+
 	// apply surface material
-	glDisable(GL_COLOR_MATERIAL);
+	//glDisable(GL_COLOR_MATERIAL);
 	ctx.enable_material(surface_material);
 
 	// apply texture transformation
@@ -96,16 +107,6 @@ void bump_mapper::draw(context& ctx)
 	glRotated(texture_rotation, 0, 0, 1);
 	glScaled(texture_scale,texture_scale/texture_aspect,texture_scale);
 
-	// setup bump mapping
-	bump_map.enable(ctx,0);
-	prog.enable(ctx);
-	prog.set_uniform(ctx, "bump_map", 0);
-	prog.set_uniform(ctx, "use_bump_map", use_bump_map);
-	prog.set_uniform(ctx, "use_phong", use_phong);
-	prog.set_uniform(ctx, "use_diffuse_map", use_diffuse_map);
-	prog.set_uniform(ctx, "bump_map_res", (int)texture_resolution);
-	prog.set_uniform(ctx, "bump_scale", bump_scale);
-	gl::set_lighting_parameters(ctx, prog);
 	if (wire_frame) {
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 		glDisable(GL_CULL_FACE);
@@ -120,12 +121,13 @@ void bump_mapper::draw(context& ctx)
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 		glEnable(GL_CULL_FACE);
 	}
-	prog.disable(ctx);
-	bump_map.disable(ctx);
-
 	glPopMatrix();
 	glMatrixMode(GL_MODELVIEW);
+
 	ctx.disable_material(surface_material);
+
+	prog.disable(ctx);
+	bump_map.disable(ctx);
 }
 
 void bump_mapper::clear(context& ctx)

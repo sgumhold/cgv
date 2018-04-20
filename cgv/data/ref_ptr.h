@@ -44,6 +44,8 @@ protected:
 template <typename T, bool is_ref_counted = false>
 class ref_ptr_impl
 {
+protected:
+	friend class ref_ptr_impl<const T, is_ref_counted>;
 	/// struct to store the pointer with a count
 	struct counter_type 
 	{
@@ -52,8 +54,7 @@ class ref_ptr_impl
 		int count;
 	};
 	/// store pointer to counter struct
-	counter_type* counter;
-protected:
+	mutable counter_type* counter;
 	/// decrement the count, delete if it is 0
 	void release()
 	{
@@ -88,7 +89,7 @@ protected:
 		// and T has a virtual destructor
 		CGV_DEFINES_ASSERT(type::cond::has_virtual_destructor<T>::value);
 		// after validity checks, set pointer 
-		counter = static_cast<counter_type*>(s.counter);
+		counter = reinterpret_cast<counter_type*>(s.counter);
 		// and increment reference count
 		if (counter)
 			++counter->count;

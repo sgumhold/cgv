@@ -34,6 +34,8 @@ extern CGV_API bool is_element(const std::string& e, const std::string& s, char 
 /** check if the string e is contained as element in the string s, which is a list separated 
 	by sep and return the index of the element. If not contained, return -1. */
 extern CGV_API int get_element_index(const std::string& e, const std::string& s, char sep = ';');
+/** interpret s as a list separated by sep and return the element with the given element index. If index is out of range, return empty string. */
+extern CGV_API std::string get_element(const std::string& s, int element_index, char sep = ';');
 /// check if the text range (begin,end( defines an integer value. If yes, store the value in the passed reference.
 extern CGV_API bool is_integer(const char* begin, const char* end, int& value);
 /// check if the passed string defines an integer value. If yes, store the value in the passed reference.

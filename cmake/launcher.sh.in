@@ -1,0 +1,17 @@
+#!/bin/sh
+
+# Viewer executable
+viewer_exe='@VIEWER_EXE@'
+
+# library paths neccessary for LD_LIBRARY_PATH
+library_paths='@LIB_PATHS@'
+
+# Plugins
+plugins='@LIB_FILES@'
+
+# Command line arguments
+args='@VDEFS_ARGS@'
+
+# Invoke command
+LD_LIBRARY_PATH=.:$library_paths $viewer_exe $plugins $args
+

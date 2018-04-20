@@ -1,0 +1,48 @@
+#version 150 compatibility
+
+uniform bool position_is_center;
+
+in vec4 position;
+in vec3 extent;
+in vec4 color;
+in int group_index;
+
+out mat3 NM;
+out mat4 PM;
+out vec4 color_gs;
+
+vec4 group_color(in vec4 color, int group_index);
+void group_transform_normal_matrix(inout mat3 NM, int group_index);
+void group_transform_position_matrix(inout mat4 PM, int group_index);
+
+void main()
+{
+	// compute normal transformation matrix
+	NM = gl_NormalMatrix;
+	group_transform_normal_matrix(NM, group_index);
+	// compute position transformation matrix
+
+	// compute box transformation
+	mat4 BM = mat4(0.0);
+	if (position_is_center) {
+		BM[0][0] = extent[0];
+		BM[1][1] = extent[1];
+		BM[2][2] = extent[2];
+		BM[3] = position;
+	}
+	else {
+		vec3 E = extent - position.xyz;
+		vec3 C = 0.5*(position.xyz + extent);
+		BM[0][0] = E[0];
+		BM[1][1] = E[1];
+		BM[2][2] = E[2];
+		BM[3] = vec4(C, 1.0);
+	}
+
+	PM = gl_ModelViewMatrix;
+	group_transform_position_matrix(PM, group_index);
+	PM = PM * BM;
+
+	color_gs = group_color(color, group_index);
+	gl_Position = position;
+}

@@ -23,9 +23,12 @@ class cube_demo : public node, public drawable, public provider
 	double aspect;
 	double s;
 	double ax, ay, az;
+	cgv::media::illum::phong_material axes_mat, cube_mat;
 public:
 	cube_demo()
 	{
+		set_name("cube_demo");
+
 		angle = 0;
 		s = 0.4;
 		aspect = 0.02;
@@ -34,6 +37,17 @@ public:
 		ax=1;
 		ay=1;
 		az = 0;
+
+		axes_mat.set_ambient(cgv::media::illum::phong_material::color_type(0.1f, 0.1f, 0.1f, 1));
+		axes_mat.set_diffuse(cgv::media::illum::phong_material::color_type(0, 0, 0, 1));
+		axes_mat.set_specular(cgv::media::illum::phong_material::color_type(0.5f, 0.5f, 0.5f, 1));
+		axes_mat.set_shininess(80);
+
+		cube_mat.set_ambient(cgv::media::illum::phong_material::color_type(0.2f, 0.2f, 0.2f, 1));
+		cube_mat.set_diffuse(cgv::media::illum::phong_material::color_type(0.6f, 0.5f, 0.4f, 1));
+		cube_mat.set_specular(cgv::media::illum::phong_material::color_type(0.5f, 0.5f, 0.5f, 1));
+		cube_mat.set_shininess(40);
+
 		connect(get_animation_trigger().shoot, this, &cube_demo::timer_event);
 	}
 	void create_gui()
@@ -83,24 +97,34 @@ public:
 	void draw(context& c)
 	{
 		glPushMatrix();
-		draw_axes(c, false);
-		glColor3d(0.6,0.6,0.6);
-		c.tesselate_arrow(fvec<double,3>(0,0,0), fvec<double,3>(ax,ay,az), aspect);
-		glRotated(angle,ax,ay,az);
-		draw_axes(c, true);
+		
+		// enable material and lighting with standard shader program
+		glEnable(GL_COLOR_MATERIAL); // tell framework to use color material in shader program
+		c.enable_material(axes_mat);
+			draw_axes(c, false);
+			glColor3d(0.6,0.6,0.6);
+			c.tesselate_arrow(fvec<double,3>(0,0,0), fvec<double,3>(ax,ay,az), aspect);
+			glRotated(angle,ax,ay,az);
+			draw_axes(c, true);
+		// disable standard shader program
+		c.disable_material(axes_mat);
+
 		glScaled(s,s,s);
 		glTranslated(1,1,-1);
+
+		// without material / shader program active, draw without illumination
 		glColor3d(0,0,0);
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 		glLineWidth(3);
-		glDisable(GL_LIGHTING);
 		c.tesselate_unit_cube();
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-		glEnable(GL_LIGHTING);
-		glColor3d(0.6,0.5,0.4);
+
 		glEnable(GL_POLYGON_OFFSET_FILL);
-		glPolygonOffset(1,0);
-		c.tesselate_unit_cube();
+		glPolygonOffset(1,0);		
+			glDisable(GL_COLOR_MATERIAL); // tell framework not to use color material in shader program
+			c.enable_material(cube_mat);
+				c.tesselate_unit_cube();
+			c.disable_material(cube_mat);	
 		glDisable(GL_POLYGON_OFFSET_FILL);
 		glPopMatrix();
 	}

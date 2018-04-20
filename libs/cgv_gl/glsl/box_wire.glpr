@@ -1,0 +1,4 @@
+files:box_wire
+vertex_file:group.glsl
+geometry_file:group.glsl
+geometry_shader_info:points;line_strip;16

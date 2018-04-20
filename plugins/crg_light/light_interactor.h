@@ -60,6 +60,8 @@ public:
 	void draw(context&);
 	/// deactivate light sources
 	void finish_frame(context&);
+	/// correct default render flags
+	void clear(context&);
 	//@}
 
 	/// gui creation
