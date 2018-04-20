@@ -647,14 +647,12 @@ bool stereo_view_interactor::handle(event& e)
 			case 'S':
 			case gamepad::GPK_LEFT_STICK_PRESS:
 				left_mode = 1 - left_mode;
-				update_member(&left_mode);
-				post_redraw();
+				on_set(&left_mode);
 				return true;
 			case 'J' :
 			case gamepad::GPK_RIGHT_STICK_PRESS:
 				right_mode = 1 - right_mode;
-				update_member(&right_mode);
-				post_redraw();
+				on_set(&right_mode);
 				return true;
 			case gamepad::GPK_START:
 				set_default_view();
@@ -669,10 +667,12 @@ bool stereo_view_interactor::handle(event& e)
 				break;
 			case 'G':
 			case gamepad::GPK_A :
-				show_focus = !show_focus;
-				update_member(&show_focus);
-				post_redraw();
-				return true;
+				if (ke.get_modifiers() == 0) {
+					show_focus = !show_focus;
+					on_set(&show_focus);
+					return true;
+				}
+				break;
 			case 'F' :
 				if (ke.get_modifiers() == EM_SHIFT)
 					z_far /= 1.05;
@@ -680,8 +680,7 @@ bool stereo_view_interactor::handle(event& e)
 					z_far *= 1.05;
 				else
 					break;
-				update_member(&z_far);
-				post_redraw();
+				on_set(&z_far);
 				return true;
 			case 'N' :
 				if (ke.get_modifiers() == EM_SHIFT)
@@ -690,64 +689,54 @@ bool stereo_view_interactor::handle(event& e)
 					z_near *= 1.05;
 				else 
 					break;
-				update_member(&z_near);
-				post_redraw();
+				on_set(&z_near);
 				return true;
 			case KEY_F4:
 				if (ke.get_modifiers() == 0) {
 					stereo_enabled = !stereo_enabled;
-					update_member(&stereo_enabled);
+					on_set(&stereo_enabled);
 				}
 				else if (ke.get_modifiers() == EM_SHIFT) {
 					stereo_mode = GlsuStereoMode(stereo_mode+1);
 					if (stereo_mode == GLSU_STEREO_MODE_END)
 						stereo_mode = GLSU_STEREO_MODE_BEGIN;
-					update_member(&stereo_mode);
+					on_set(&stereo_mode);
 				}
 				else
 					break;
-				on_stereo_change();
 				return true;
 			case KEY_Page_Up:
 				if (ke.get_modifiers() == 0) {
 					y_extent_at_focus /= pow(1.2, 1 / zoom_sensitivity);
-					update_member(&y_extent_at_focus);
-					post_redraw();
+					on_set(&y_extent_at_focus);
 					return true;
 				}
 				break;
 			case KEY_Page_Down:
 				if (ke.get_modifiers() == 0) {
 					y_extent_at_focus *= pow(1.2, 1 / zoom_sensitivity);
-					update_member(&y_extent_at_focus);
-					post_redraw();
+					on_set(&y_extent_at_focus);
 					return true;
 				}
 				break;
 			case gamepad::GPK_DPAD_RIGHT:
 				set_view_orientation("xy"); 
 				return true;
-				break;
 			case gamepad::GPK_DPAD_LEFT:
 				set_view_orientation("Xy"); 
 				return true;
-				break;
 			case gamepad::GPK_DPAD_UP:
 				set_view_orientation("yz");
 				return true;
-				break;
 			case gamepad::GPK_DPAD_DOWN:
 				set_view_orientation("Yz");
 				return true;
-				break;
 			case gamepad::GPK_LEFT_BUMPER:
 				set_view_orientation("zy");
 				return true;
-				break;
 			case gamepad::GPK_RIGHT_BUMPER:
 				set_view_orientation("Zy");
 				return true;
-				break;
 			case 'X':
 				if (ke.get_modifiers() == (cgv::gui::EM_SHIFT | cgv::gui::EM_CTRL))
 					set_view_orientation("Xy");

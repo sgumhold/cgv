@@ -67,7 +67,6 @@ public:
 			         GL_COLOR_BUFFER_BIT | GL_ENABLE_BIT | GL_TEXTURE_BIT);
 
 		glDisable(GL_CULL_FACE);
-		//glDisable(GL_LIGHTING);
 		glEnable(GL_ALPHA_TEST);
 		glAlphaFunc(GL_GREATER,0);
 		glEnable(GL_BLEND);

@@ -43,7 +43,7 @@ gl_implicit_surface_drawable_base::gl_implicit_surface_drawable_base() : box(vec
 	grid_epsilon = 0.01;
 	ix=iy=iz=0;
 	show_mini_box = false;
-	material.set_diffuse(cgv::media::illum::phong_material::color_type(0.8f,0.0f,0.0f));
+	material.set_diffuse(cgv::media::illum::phong_material::color_type(0.3f,0.1f,0.7f));
 	material.set_specular(cgv::media::illum::phong_material::color_type(0.7f,0.7f,0.7f));
 	material.set_shininess(80);
 }
@@ -401,7 +401,9 @@ void gl_implicit_surface_drawable_base::build_display_list()
 /// overload to draw the content of this drawable
 void gl_implicit_surface_drawable_base::draw(context& ctx)
 {
-	glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, 120);
+	glEnable(GL_COLOR_MATERIAL);
+	ctx.enable_material(material);
+	//glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, 120);
 	if (show_box) {
 		glColor3f(0.8f,0.7f,0.0f);
 		glPushMatrix();
@@ -431,6 +433,9 @@ void gl_implicit_surface_drawable_base::draw(context& ctx)
 		glDisable(GL_CULL_FACE);
 		glPopMatrix();
 	}
+	ctx.disable_material(material);
+
+	glDisable(GL_COLOR_MATERIAL);
 
 	ctx.enable_material(material);
 	draw_implicit_surface(ctx);

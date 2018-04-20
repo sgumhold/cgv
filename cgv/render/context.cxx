@@ -1136,7 +1136,7 @@ void context::set_cursor(const cgv::math::vec<double>& pos,
 {
 	int x,y;
 	put_cursor_coords(pos, x, y);
-	if (!text.empty()) {
+	if (!text.empty() && get_current_font_face()) {
 		float h = get_current_font_size();
 		float w = get_current_font_face()->measure_text_width(text, h);
 		switch (ta&3) {
