@@ -289,6 +289,11 @@ public:
 	}
 	void draw_triangles()
 	{
+		//clr_type c0(0.5f, 0.8f, 0.6f);
+		//clr_type c1(1.0f, 0.3f, 1.0f);
+		clr_type c0(0.0f, 0.0f, 1.0f);
+		clr_type c1(1.0f, 1.0f, 0.0f);
+		float scale = 1.0f / (polygon.size() - 2);
 		if (wireframe) {
 			glColor3f(0,0,0);
 			for (const auto& t : triangles) {
@@ -302,7 +307,11 @@ public:
 		else {
 			glColor3f(0.5f, 0.8f, 0.6f);
 			glBegin(GL_TRIANGLES);
-			for (const auto& t : triangles) {
+			for (unsigned ti = 0; ti < triangles.size(); ++ti) {
+				const auto& t = triangles[ti];
+				float lambda_c = scale*ti;
+				clr_type c = (1 - lambda_c)*c0 + lambda_c*c1;
+				glColor3fv(&c[0]);
 				vec2 ctr = 0.3333333333333f*(polygon[t[0]] + polygon[t[1]] + polygon[t[2]]);
 				for (unsigned i = 0; i < 3; ++i)
 					glVertex2fv((1 - lambda)*polygon[t[i]] + lambda*ctr);
@@ -483,6 +492,10 @@ public:
 						on_set(&selected_index);
 						if (find_control(nr_steps))
 							find_control(nr_steps)->set("max", polygon.size() - 2);
+						if (nr_steps >= polygon.size() / 2) {
+							++nr_steps;
+							on_set(&nr_steps);
+						}
 					}
 					return true;
 				}
@@ -497,9 +510,16 @@ public:
 							on_set(&selected_index);
 							if (find_control(nr_steps))
 								find_control(nr_steps)->set("max", polygon.size() - 2);
-							if (nr_steps >= polygon.size() - 2) {
+							if (nr_steps > polygon.size() - 2) {
 								nr_steps = polygon.size() - 2;
 								on_set(&nr_steps);
+							}
+							else {
+								if (nr_steps >= polygon.size() / 2) {
+									--nr_steps;
+									on_set(&nr_steps);
+								}
+
 							}
 						}
 						return true;
