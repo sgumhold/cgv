@@ -209,11 +209,11 @@ bool read(const std::string& file_name, std::string& content, bool ascii)
 	return true;
 }
 
-char* read(const std::string& file_name, bool ascii, size_t* size_ptr)
+char* read(const std::string& file_name, bool ascii, size_t* size_ptr, size_t add_nr_bytes_to_buffer)
 {
 	size_t l = size(file_name);
 	if (l == (size_t)-1) return 0;
-	char* buffer = new char[l];
+	char* buffer = new char[l+ add_nr_bytes_to_buffer];
 	FILE* fp = ::fopen(file_name.c_str(), ascii ? "r" : "rb");
 	l = ::fread(buffer, 1, l, fp);
 	::fclose(fp);
