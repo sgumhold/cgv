@@ -27,9 +27,12 @@ class image_drawable :
 	public cgv::render::gl::gl_image_drawable_base,     /// derive from drawable for drawing the cube
 	public provider
 {
+protected:
+	cgv::math::fvec<float,2> range;
 public:
-	image_drawable() : node("image drawable")
+	image_drawable() : node("image drawable"), range(0,1)
 	{
+		use_shader_program = true;
 		connect(get_animation_trigger().shoot, this, &image_drawable::timer_event);
 	}
 	void timer_event(double t, double dt)
@@ -40,6 +43,27 @@ public:
 			update_member(&current_image);
 			post_redraw();
 		}
+	}
+	void on_set(void* member_ptr)
+	{
+		if (member_ptr == &range[0]) {
+			if (find_control(min_value[0])) {
+				for (unsigned i = 0; i < 4; ++i) {
+					find_control(min_value[i])->set("min", range[0]);
+					find_control(max_value[i])->set("min", range[0]);
+				}
+			}
+		}
+		if (member_ptr == &range[1]) {
+			if (find_control(max_value[0])) {
+				for (unsigned i = 0; i < 4; ++i) {
+					find_control(min_value[i])->set("max", range[1]);
+					find_control(max_value[i])->set("max", range[1]);
+				}
+			}
+		}
+		update_member(member_ptr);
+		post_redraw();
 	}
 	void configure_gui()
 	{
@@ -65,30 +89,42 @@ public:
 	void create_gui()
 	{
 		add_decorator("image drawable", "heading");
-		add_view("file_name", file_name);
-		connect_copy(add_button("&open", "shortcut='O'")->click, rebind(this, &image_drawable::open));
-		connect_copy(add_button("o&pen files", "shortcut='P'")->click, rebind(this, &image_drawable::open_files));
-		
-		connect_copy(add_control("use_blending", use_blending, "check")->value_change,
-			rebind(static_cast<drawable*>(this), &drawable::post_redraw));
-		
+
 		add_control("&animate", animate, "check", "shortcut='A'");
-		connect_copy(add_control("current_image", current_image, "value_slider", "min=0;max=0;ticks=true")->value_change,
-			rebind(static_cast<drawable*>(this), &drawable::post_redraw));
+		add_member_control(this, "current_image", current_image, "value_slider", "min=0;max=0;ticks=true");
 
-		connect_copy(add_button("&save", "shortcut='S'")->click, rebind(this, &image_drawable::save));
+		if (begin_tree_node("file io", file_name, true)) {
+			align("\a");
+			add_view("file_name", file_name);
+			connect_copy(add_button("&open", "shortcut='O'")->click, rebind(this, &image_drawable::open));
+			connect_copy(add_button("o&pen files", "shortcut='P'")->click, rebind(this, &image_drawable::open_files));
+			connect_copy(add_button("&save", "shortcut='S'")->click, rebind(this, &image_drawable::save));
+			align("\b");
+			end_tree_node(file_name);
+		}
 
-		connect_copy(add_control("show_rectangle", show_rectangle, "check", "shortcut='R'")->value_change,
-			rebind(static_cast<drawable*>(this), &drawable::post_redraw));
-		connect_copy(add_control("x", x, "value_slider", "min=0;ticks=true")->value_change,
-			rebind(static_cast<drawable*>(this), &drawable::post_redraw));
-		connect_copy(add_control("y", y, "value_slider", "min=0;ticks=true")->value_change,
-			rebind(static_cast<drawable*>(this), &drawable::post_redraw));
-		connect_copy(add_control("w", w, "value_slider", "min=0;ticks=true")->value_change,
-			rebind(static_cast<drawable*>(this), &drawable::post_redraw));
-		connect_copy(add_control("h", h, "value_slider", "min=0;ticks=true")->value_change,
-			rebind(static_cast<drawable*>(this), &drawable::post_redraw));
+		if (begin_tree_node("rendering", use_blending)) {
+			align("\a");
+			add_member_control(this, "use_blending", use_blending, "check");
+			add_member_control(this, "use_shader_program", use_shader_program, "check");
+			add_gui("gamma", gamma, "vector", "main_label='heading';components='rgba';options='min=0.01;max=100;ticks=true;log=true'");
+			add_gui("min_value", min_value, "vector", "main_label='heading';components='rgba';options='min=0;max=1;ticks=true;step=0.00001;log=true'");
+			add_gui("max_value", max_value, "vector", "main_label='heading';components='rgba';options='min=0;max=1;ticks=true;step=0.00001;log=true'");
+			add_gui("range", range, "ascending", "main_label='heading';components='nx';options='min=0;max=1;ticks=true;step=0.00001;log=true'");
+			align("\b");
+			end_tree_node(use_blending);
+		}
 
+		if (begin_tree_node("selection", show_rectangle)) {
+			align("\a");	
+			add_member_control(this, "show_rectangle", show_rectangle, "check", "shortcut='R'");
+			add_member_control(this, "x", x, "value_slider", "min=0;ticks=true");
+			add_member_control(this, "y", y, "value_slider", "min=0;ticks=true");
+			add_member_control(this, "w", w, "value_slider", "min=0;ticks=true");
+			add_member_control(this, "h", h, "value_slider", "min=0;ticks=true");
+			align("\b");
+			end_tree_node(show_rectangle);
+		}
 		configure_gui();
 	}
 	std::string get_type_name() const 
@@ -139,9 +175,9 @@ public:
 			if (save_images(file_name))
 				std::cout << "successfully saved " << this->file_name << " to " << file_name << std::endl;			
 	}
-	bool init(context& )
+	bool init(context& ctx)
 	{		
-		return read_image("res://tree.gif");
+		return gl_image_drawable_base::init(ctx) && read_image("res://alhambra.png");
 	}
 };
 
