@@ -17,8 +17,9 @@ namespace cgv {
 	namespace render {
 		namespace gl {
 
-gl_image_drawable_base::gl_image_drawable_base()
+gl_image_drawable_base::gl_image_drawable_base() : min_value(0,0,0,0), max_value(1,1,1,1), gamma(1,1,1,1)
 {
+	use_shader_program = false;
 	aspect = 1;
 	start_time = -2;
 	use_blending = false;
@@ -64,6 +65,19 @@ void gl_image_drawable_base::timer_event(double t, double dt)
 		else 
 			start_time = -1;
 	}
+}
+
+bool gl_image_drawable_base::init(context& ctx)
+{
+	return prog.build_program(ctx, "image.glpr");
+}
+
+/// destruct textures and shader program
+void gl_image_drawable_base::clear(context& ctx)
+{
+	prog.destruct(ctx);
+	if (!tex_ids.empty())
+		glDeleteTextures(tex_ids.size(), &tex_ids.front());
 }
 
 bool gl_image_drawable_base::read_image(const std::string& _file_name)
@@ -198,33 +212,39 @@ bool gl_image_drawable_base::save_images(const std::string& output_file_name)
 
 void gl_image_drawable_base::draw(context& ctx)
 {
-	//static cgv::media::illum::phong_material def_mat;
-	//ctx.enable_material(def_mat);
-	glPushAttrib(GL_LIGHTING_BIT | GL_TEXTURE_BIT | GL_CURRENT_BIT);
-	//glDisable(GL_LIGHTING);
-	glColor3d(1,0,0);
+	glColor3d(1, 0, 0);
 	glPushMatrix();
-	glScaled(aspect,1,1);
+	glScaled(aspect, 1, 1);
 	if (show_rectangle) {
 		glPushMatrix();
-			glTranslated(-1,-1,0);
-			glScaled(2.0/W, 2.0/H, 1);
-			glBegin(GL_LINE_STRIP);
-			glVertex2i(x,y);
-			glVertex2i(x+w,y);
-			glVertex2i(x+w,y+h);
-			glVertex2i(x,y+h);
-			glVertex2i(x,y);
-			glEnd();
+		glTranslated(-1, -1, 0);
+		glScaled(2.0 / W, 2.0 / H, 1);
+		glBegin(GL_LINE_STRIP);
+		glVertex2i(x, y);
+		glVertex2i(x + w, y);
+		glVertex2i(x + w, y + h);
+		glVertex2i(x, y + h);
+		glVertex2i(x, y);
+		glEnd();
 		glPopMatrix();
 	}
-	glColor3d(1,1,0);
+
+	glColor3d(1, 1, 0);
 	if (tex_ids.size()>0) {
+		glActiveTexture(GL_TEXTURE0);
 		glEnable(GL_TEXTURE_2D);
-		glBindTexture(GL_TEXTURE_2D,tex_ids[current_image]);
+		glBindTexture(GL_TEXTURE_2D, tex_ids[current_image]);
 		glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
 		if (start_time == -2)
 			start_time = -1;
+	}
+	if (use_shader_program && prog.is_linked()) {
+		prog.enable(ctx);
+		prog.set_uniform(ctx, "min_value", min_value);
+		prog.set_uniform(ctx, "max_value", max_value);
+		prog.set_uniform(ctx, "gamma", gamma);
+		prog.set_uniform(ctx, "image", 0);
+		prog.set_uniform(ctx, "use_texture", tex_ids.size() > 0);
 	}
 	if (use_blending) {
 		glEnable(GL_BLEND);
@@ -232,7 +252,6 @@ void gl_image_drawable_base::draw(context& ctx)
 	}
 	glDisable(GL_CULL_FACE);
 		glBegin(GL_QUADS);
-			glNormal3d(0,0,1);
 			glTexCoord2d(0,1);
 			glVertex3d(-1,-1,0);
 			glTexCoord2d(1,1);
@@ -246,8 +265,9 @@ void gl_image_drawable_base::draw(context& ctx)
 		glDisable(GL_BLEND);
 	glEnable(GL_CULL_FACE);
 	glDisable(GL_TEXTURE_2D);
+	if (use_shader_program && prog.is_linked())
+		prog.disable(ctx);
 	glPopMatrix();
-	glPopAttrib();
 }
 		}
 	}

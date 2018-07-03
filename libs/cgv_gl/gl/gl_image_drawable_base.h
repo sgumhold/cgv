@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cgv/render/drawable.h>
+#include <cgv/render/shader_program.h>
 
 #include "lib_begin.h"
 
@@ -11,6 +12,8 @@ namespace cgv {
 //! base class of drawables that show static or animated images
 class CGV_API gl_image_drawable_base : public drawable
 {
+public:
+	typedef cgv::math::fvec<float, 4> vec4;
 protected:
 	std::vector<unsigned> tex_ids;
 	std::vector<float> durations;
@@ -24,6 +27,7 @@ protected:
 
 	bool animate;
 	bool use_blending;
+	bool use_shader_program;
 
 	/// extent of rectangle of pixel selection
 	int x,y,w,h;
@@ -33,6 +37,11 @@ protected:
 	/// extent of image
 	int W,H;
 
+	vec4 min_value;
+	vec4 max_value;
+	vec4 gamma;
+
+	cgv::render::shader_program prog;
 public:
 	/// construct base image drawable
 	gl_image_drawable_base();
@@ -46,8 +55,12 @@ public:
 	bool save_images(const std::string& output_file_name);
 	/// return the number of loaded subimages
 	unsigned get_nr_images() const { return (unsigned) tex_ids.size(); }
+	/// construct shader program
+	bool init(context&);
 	/// draw the image
 	void draw(context&);
+	/// destruct textures and shader program
+	void clear(context&);
 };
 
 		}
