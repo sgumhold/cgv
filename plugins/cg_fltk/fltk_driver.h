@@ -28,6 +28,8 @@ public:
 	std::string get_type_name() const;
 	/**@name application management*/
 	//@{
+	/// fill list of monitor descriptions
+	bool enumerate_monitors(std::vector<monitor_description>& monitor_descriptions);
 	/// create a window of the given type. Currently only the types "viewer with gui", "viewer" and "gui" are supported
 	window_ptr create_window(int w, int h, const std::string& title, const std::string& window_type);
 	/// set the input focus to the given window

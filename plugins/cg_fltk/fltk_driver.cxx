@@ -11,6 +11,7 @@
 #include "fltk_driver_registry.h"
 #include "fltk_text_editor.h"
 
+#include <fltk/Monitor.h>
 #include <fltk/events.h>
 #include <fltk/run.h>
 
@@ -349,6 +350,24 @@ void fltk_driver::remove_window(window_ptr w)
 std::string fltk_driver::get_type_name() const
 {
 	return "fltk_driver";
+}
+
+/// fill list of monitor descriptions
+bool fltk_driver::enumerate_monitors(std::vector<monitor_description>& monitor_descriptions)
+{
+	const fltk::Monitor* mons;
+	int n = fltk::Monitor::list(&mons);
+	for (int i = 0; i < n; ++i) {
+		monitor_description md;
+		md.x = mons[i].x();
+		md.y = mons[i].y();
+		md.w = mons[i].w();
+		md.h = mons[i].h();
+		md.dpi_x = mons[i].dpi_x();
+		md.dpi_y = mons[i].dpi_y();
+		monitor_descriptions.push_back(md);
+	}
+	return true;
 }
 
 /// create a window of the given type. Currently only the types "viewer with gui", "viewer" and "gui" are supported
