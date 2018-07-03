@@ -5,7 +5,7 @@
 #include <cgv/render/drawable.h>
 #include <cgv/utils/ostream_printf.h>
 #include <cgv_gl/gl/gl.h>
-#include <cgv/render/texture.h>
+#include <cgv/render/textured_material.h>
 #include <cgv/media/color.h> 
 
 using namespace cgv::base;
@@ -23,7 +23,7 @@ class textured_shape :
 public:
 	typedef cgv::media::color<float,cgv::media::RGB,cgv::media::OPACITY> color_type;
 	int n;
-	texture t;
+	texture* t_ptr;
 	bool boost_animation;
 	// support for different objects
 	enum Object { 
@@ -35,11 +35,11 @@ public:
 	float texture_rotation;
 	float texture_scale,  texture_aspect;
 	color_type border_color;
-	color_type current_color;
 	color_type frame_color;
 	float frame_width;
+	cgv::render::textured_material mat;
 
-	textured_shape(int _n = 1024) : node("textured primitiv"), n(_n), t("uint8[L]"), border_color(1,0,0,0), frame_color(1,1,1,1), current_color(1,1,0,0)
+	textured_shape(int _n = 1024) : node("textured primitiv"), n(_n), border_color(1,0,0,0), frame_color(1,1,1,1)
 	{
 		frame_width = 2;
 		object = SQUARE;
@@ -53,6 +53,10 @@ public:
 		texture_v_offset = 0;
 		texture_selection = ALHAMBRA;
 		boost_animation = false;
+		mat.set_ambient(cgv::media::illum::phong_material::color_type(0.2f, 0.2f, 0.2f, 1.0f));
+		mat.set_diffuse(cgv::media::illum::phong_material::color_type(0.5f, 0.5f, 0.5f, 1.0f));
+		mat.set_specular(cgv::media::illum::phong_material::color_type(0.5f, 0.5f, 0.5f, 1.0f));
+		mat.set_shininess(80.0f);
 	}
 
 	std::string get_type_name() const 
@@ -67,14 +71,39 @@ public:
 	{
 //		os << "select object: <1> ... cube, <2> ... sphere, <3> ... square" << std::endl;
 	}
+	void on_set(void* member_ptr)
+	{
+		if (member_ptr == &texture_selection ||
+			member_ptr == &texture_frequency ||
+			member_ptr == &texture_frequency_aspect ||
+			member_ptr == &n)
+			on_texture_change();
+		if (member_ptr == &t_ptr->mag_filter ||
+			member_ptr == &t_ptr->min_filter ||
+			member_ptr == &t_ptr->anisotropy ||
+			member_ptr == &t_ptr->wrap_s ||
+			member_ptr == &t_ptr->wrap_t ||
+			member_ptr == &t_ptr->priority)
+			update_texture_state();
+
+		update_member(member_ptr);
+		post_redraw();
+	}
+	bool init(context& ctx)
+	{
+		mat.ref_diffuse_texture_name() = "res://alhambra.png";
+		mat.ensure_textures(ctx);
+		t_ptr = mat.get_diffuse_texture();
+		return true;
+	}
 	void init_frame(context& ctx)
 	{
-		if (t.is_created())
+		if (t_ptr->is_created())
 			return;
 
 		if (texture_selection == ALHAMBRA) {
 			std::cout << "before read bump texture" << std::endl;		
-			if (!t.create_from_image(ctx,"res://alhambra.png", (int*)&n)) {
+			if (!t_ptr->create_from_image(ctx,"res://alhambra.png", (int*)&n)) {
 				std::cout << "could not read" << std::endl ;
 				exit(0);
 			}
@@ -83,7 +112,7 @@ public:
 		}
 	
 		if (texture_selection == CARTUJA) {
-			t.create_from_image(ctx,"res://cartuja.png", (int*)&n);
+			t_ptr->create_from_image(ctx,"res://cartuja.png", (int*)&n);
 			update_member(&n);
 			return;
 		}
@@ -100,7 +129,7 @@ public:
 					ptr[i*n+j] = 
 					   (float)(0.5*(pow(cos(M_PI*texture_frequency/texture_frequency_aspect*i/(n-1)),3)*
 								   sin(M_PI*texture_frequency*j/(n-1))+1));
-		t.create(ctx, dv);
+		t_ptr->create(ctx, dv);
 	}
 	void draw_scene(context& ctx)
 	{
@@ -129,35 +158,35 @@ public:
 	void draw(context& ctx)
 	{
 		if (frame_width > 0) {
+			glColor4fv(&frame_color[0]);
+			glLineWidth(frame_width);
+			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+			/*
 			glPushMatrix();
 			glScaled(1.0/texture_scale,texture_aspect/texture_scale,1.0/texture_scale);
 			glRotated(-texture_rotation, 0, 0, 1);
 			glTranslated(-texture_u_offset, -texture_v_offset,0);
-			glColor4fv(&frame_color[0]);
-			glLineWidth(frame_width);
-			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 			glDisable(GL_LIGHTING);
+			*/
 			draw_scene(ctx);
-			glEnable(GL_LIGHTING);
+			//glEnable(GL_LIGHTING);
 			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);				
-			glPopMatrix();
+			//glPopMatrix();
 		}
-
-		glColor4fv(&current_color[0]);
-		t.set_border_color(border_color[0],border_color[1],border_color[2],border_color[3]);
+		ctx.enable_material(mat);
+		t_ptr->set_border_color(border_color[0],border_color[1],border_color[2],border_color[3]);
 		glMatrixMode(GL_TEXTURE);
 		glPushMatrix();
 		glTranslated(texture_u_offset, texture_v_offset,0);
 		glRotated(texture_rotation, 0, 0, 1);
 		glScaled(texture_scale,texture_scale/texture_aspect,texture_scale);
-		t.enable(ctx);
-		glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+		t_ptr->enable(ctx);
+		//glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 		draw_scene(ctx);
-		t.disable(ctx);
+		t_ptr->disable(ctx);
 		glPopMatrix();
+		ctx.disable_material(mat);
 		
-		std::cout << ".";
-		std::cout.flush();
 		if (boost_animation) {
 			post_redraw();
 		}
@@ -165,8 +194,8 @@ public:
 	///
 	void update_texture_state()
 	{
-		t.set_wrap_s(t.get_wrap_s());
-		t.set_wrap_t(t.get_wrap_t());
+		t_ptr->set_wrap_s(t_ptr->get_wrap_s());
+		t_ptr->set_wrap_t(t_ptr->get_wrap_t());
 		post_redraw();
 	}
 	/// return a path in the main menu to select the gui
@@ -177,66 +206,40 @@ public:
 		if (!get_context())
 			return;
 		get_context()->make_current();
-		t.destruct(*get_context());
+		t_ptr->destruct(*get_context());
 		post_redraw();
 	}
 
 	/// you must overload this for gui creation
 	void create_gui() 
 	{	
-		connect_copy(add_control("boost_animation", boost_animation, "check")
-			->value_change,rebind(static_cast<drawable*>(this),&drawable::post_redraw));
-		connect_copy(add_control("shape", object, "cube,sphere,square")
-			->value_change,rebind(static_cast<drawable*>(this),&drawable::post_redraw));
-		connect_copy(add_control("mag filter", t.mag_filter, "nearest,linear")
-			->value_change,rebind(this,&textured_shape::update_texture_state));
-		connect_copy(add_control("min filter", t.min_filter, 
-			"nearest,linear,nearest mp nearest,linear mp nearest,nearest mp linear,linear mp linear,anisotropy")
-			->value_change,rebind(this,&textured_shape::update_texture_state));
-		connect_copy(add_control("anisotropy", t.anisotropy, "value_slider",
-			"min=1;max=16;ticks=true;log=true")
-			->value_change,rebind(this,&textured_shape::update_texture_state));
-		connect_copy(add_control("wrap s", t.wrap_s,
-			"repeat,clamp,clamp to edge,clamp to border,mirror clamp,mirror clamp to edge,mirror clamp to border,mirrored repeat")
-			->value_change,rebind(this,&textured_shape::update_texture_state));
-		connect_copy(add_control("wrap t", t.wrap_t,
-			"repeat,clamp,clamp to edge,clamp to border,mirror clamp,mirror clamp to edge,mirror clamp to border,mirrored repeat")
-			->value_change,rebind(this,&textured_shape::update_texture_state));
-		connect_copy(add_control("border_color", border_color)
-			->value_change,rebind(static_cast<drawable*>(this),&drawable::post_redraw));
-		connect_copy(add_control("priority", t.priority, "value_slider",
-			"min=0;max=1;ticks=true")
-			->value_change,rebind(this,&textured_shape::update_texture_state));
-		connect_copy(add_control("current_color", current_color)
-			->value_change,rebind(static_cast<drawable*>(this),&drawable::post_redraw));
+		add_member_control(this, "boost_animation", boost_animation, "check");
+		add_member_control(this, "shape", object, "dropdown", "enums='cube,sphere,square'");
+		add_member_control(this, "mag filter", t_ptr->mag_filter, "dropdown", "enums='nearest,linear'");
+		add_member_control(this, "min filter", t_ptr->min_filter, "dropdown", "enums='nearest,linear,nearest mp nearest,linear mp nearest,nearest mp linear,linear mp linear,anisotropy'");
+		add_member_control(this, "anisotropy", t_ptr->anisotropy, "value_slider", "min=1;max=16;ticks=true;log=true");
+		add_member_control(this, "wrap s", t_ptr->wrap_s, "dropdown", "enums='repeat,clamp,clamp to edge,clamp to border,mirror clamp,mirror clamp to edge,mirror clamp to border,mirrored repeat'");
+		add_member_control(this, "wrap t", t_ptr->wrap_t, "dropdown", "enums='repeat,clamp,clamp to edge,clamp to border,mirror clamp,mirror clamp to edge,mirror clamp to border,mirrored repeat'");
+		add_member_control(this, "border_color", border_color);
+		add_member_control(this, "priority", t_ptr->priority, "value_slider", "min=0;max=1;ticks=true");
 
 		add_decorator("Texture Properties", "heading");
-		connect_copy(add_control("texture", texture_selection, "checker,waves,alhambra,cartuja")
-			->value_change,rebind(this,&textured_shape::on_texture_change));
-		connect_copy(add_control("frequency", texture_frequency, "value_slider", "min=0;max=200;log=true;ticks=true")
-			->value_change,rebind(this,&textured_shape::on_texture_change));
-		connect_copy(add_control("frequency aspect", texture_frequency_aspect, "value_slider", "min=0.1;max=10;log=true;ticks=true")
-			->value_change,rebind(this,&textured_shape::on_texture_change));
-		connect_copy(add_control("texture resolution", n, "value_slider", "min=4;max=1024;log=true;ticks=true")
-			->value_change,rebind(this,&textured_shape::on_texture_change));
+		add_member_control(this, "texture", texture_selection, "dropdown", "enums='checker,waves,alhambra,cartuja'");
+		add_member_control(this, "frequency", texture_frequency, "value_slider", "min=0;max=200;log=true;ticks=true");
+		add_member_control(this, "frequency aspect", texture_frequency_aspect, "value_slider", "min=0.1;max=10;log=true;ticks=true");
+		add_member_control(this, "texture resolution", n, "value_slider", "min=4;max=1024;log=true;ticks=true");
 
 		add_decorator("Transformation", "heading", "level=2");
-		connect_copy(add_control("texture u offset", texture_u_offset, "value_slider", "min=-1;max=1;ticks=true")
-			->value_change,rebind(static_cast<drawable*>(this),&drawable::post_redraw));
-		connect_copy(add_control("texture v offset", texture_v_offset, "value_slider", "min=-1;max=1;ticks=true")
-			->value_change,rebind(static_cast<drawable*>(this),&drawable::post_redraw));
-		connect_copy(add_control("texture rotation", texture_rotation, "value_slider", "min=-180;max=180;ticks=true")
-			->value_change,rebind(static_cast<drawable*>(this),&drawable::post_redraw));
-		connect_copy(add_control("texture scale", texture_scale, "value_slider", "min=0.01;max=100;log=true;ticks=true")
-			->value_change,rebind(static_cast<drawable*>(this),&drawable::post_redraw));
-		connect_copy(add_control("texture aspect", texture_aspect, "value_slider", "min=0.1;max=10;log=true;ticks=true")
-			->value_change,rebind(static_cast<drawable*>(this),&drawable::post_redraw));
+		add_member_control(this, "texture u offset", texture_u_offset, "value_slider", "min=-1;max=1;ticks=true");
+		add_member_control(this, "texture v offset", texture_v_offset, "value_slider", "min=-1;max=1;ticks=true");
+		add_member_control(this, "texture rotation", texture_rotation, "value_slider", "min=-180;max=180;ticks=true");
+		add_member_control(this, "texture scale", texture_scale, "value_slider", "min=0.01;max=100;log=true;ticks=true");
+		add_member_control(this, "texture aspect", texture_aspect, "value_slider", "min=0.1;max=10;log=true;ticks=true");
 
-		add_decorator("Frame", "heading", "level=2");
-		connect_copy(add_control("width", frame_width, "value_slider", "min=0;max=20;ticks=true")
-			->value_change,rebind(static_cast<drawable*>(this),&drawable::post_redraw));
-		connect_copy(add_control("color", frame_color)
-			->value_change,rebind(static_cast<drawable*>(this),&drawable::post_redraw));
+		add_decorator("Colors", "heading", "level=2");
+		add_member_control(this, "width", frame_width, "value_slider", "min=0;max=20;ticks=true");
+		add_member_control(this, "color", frame_color);
+		add_gui("material", static_cast<cgv::media::illum::phong_material&>(mat));
 	}
 
 };
