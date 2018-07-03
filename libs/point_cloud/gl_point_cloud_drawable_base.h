@@ -48,13 +48,13 @@ protected:
 	
 	std::vector<Clr>* use_these_point_colors;
 	std::vector<cgv::type::uint8_type>* use_these_point_color_indices;
-	std::vector<Rgba>* use_these_point_palette;
-	std::vector<Rgba>* use_these_component_colors;
+	std::vector<RGBA>* use_these_point_palette;
+	std::vector<RGBA>* use_these_component_colors;
 
 	// reduction to subset 
 	unsigned show_point_step;
 	std::size_t show_point_begin, show_point_end;
-	
+	unsigned nr_draw_calls;
 	cgv::render::view* view_ptr;
 	bool ensure_view_pointer();
 
