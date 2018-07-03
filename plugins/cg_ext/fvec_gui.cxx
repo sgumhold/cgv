@@ -15,11 +15,30 @@ using namespace cgv::math;
 struct call_on_set_functor : public cgv::gui::control<int>::value_change_signal_type::functor_type, public cgv::signal::tacker
 {
 	cgv::base::base_ptr b;
+	unsigned dim;
+	unsigned i;
+	size_t element_size;
 	void* member_ptr;
-	call_on_set_functor(cgv::base::base_ptr _b, void* _member_ptr) : b(_b), member_ptr(_member_ptr) {}
+	call_on_set_functor(cgv::base::base_ptr _b, void* _member_ptr, unsigned _dim, unsigned _i, size_t _element_size) 
+		: b(_b), member_ptr(_member_ptr), dim(_dim), i(_i), element_size(_element_size) {}
 	void put_pointers(const void* &p1, const void* &p2) const { p1 = &(*b); p2 = member_ptr; }
-	void operator() (control<int>&) const		              { b->on_set(member_ptr); }
-	functor_base* clone() const                               { return new call_on_set_functor(*this); }
+	void operator() (control<int>&) const		              
+	{
+		b->on_set(member_ptr);
+		if ((ref_current_modifiers() & EM_SHIFT) != 0) {
+			char* base_ptr = static_cast<char*>(member_ptr)-i*element_size;
+			for (unsigned j = 0; j < dim; ++j) {
+				if (j != i) {
+					memcpy(base_ptr + j*element_size, member_ptr, element_size);
+					b->on_set(base_ptr + j*element_size);
+				}
+			}
+		}
+	}
+	functor_base* clone() const                               
+	{
+		return new call_on_set_functor(*this); 
+	}
 };
 
 template <typename T>
@@ -285,7 +304,7 @@ struct vec_gui_creator : public cgv::gui::gui_creator
 					}
 				}
 				else if (b)
-					f = new call_on_set_functor(b, member_ptr);
+					f = new call_on_set_functor(b, member_ptr, dim, i, cgv::type::info::get_type_size(type_id));
 				cp->attach_to_value_change(f);
 			}
 			else 
