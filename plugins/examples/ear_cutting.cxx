@@ -8,6 +8,8 @@
 #include <cgv/gui/application.h>
 #include <cgv/render/drawable.h>
 #include <cgv/render/view.h>
+#include <cgv/render/texture.h>
+#include <cgv/data/data_view.h>
 #include <cgv_gl/point_renderer.h>
 #include <cgv/math/vec.h>
 #include <cgv/utils/ostream_printf.h>
@@ -73,6 +75,29 @@ public:
 	std::vector<ivec3> triangles;
 	std::vector<polygon_node> nodes;
 	cgv::render::view* view_ptr;
+
+	// polygon rasterization
+	typedef cgv::media::color<cgv::type::uint8_type> rgb_type;
+	typedef cgv::math::fvec<int, 2> vec2i;
+	bool tex_outofdate;
+	cgv::render::texture tex;
+	std::vector<rgb_type> img;
+	rgb_type background_color;
+	size_t img_width, img_height;
+	box2 img_extent;
+	bool synch_img_dimensions;
+	bool validate_pixel_location(const vec2i& p) const { return p(0) >= 0 && p(0) < img_width && p(1) >= 0 && p(1) < img_height; }
+	size_t linear_index(const vec2i& p) const { return img_width*p(1) + p(0); }
+	static vec2i round(const vec2& p) { return vec2i(int(floor(p(0)+0.5f)), int(floor(p(1)+0.5f))); }
+	void set_pixel(const vec2i& p, const rgb_type& c) { if (validate_pixel_location(p)) img[linear_index(p)] = c; }
+	const rgb_type& get_pixel(const vec2i& p) const { return img[linear_index(p)]; }
+	vec2 pixel_from_world(const vec2& p) const { return vec2(img_width, img_height)*(p - img_extent.get_min_pnt()) / img_extent.get_extent(); }
+	vec2 world_from_pixel(const vec2& p) const { return p*img_extent.get_extent() / vec2(img_width, img_height) + img_extent.get_min_pnt(); }
+	void clear_image(const rgb_type& c) { std::fill(img.begin(), img.end(), c); }
+	void rasterize_polygon(const std::vector<vec2>& polygon, const rgb_type& c) {
+		for (const auto& p : polygon)
+			set_pixel(pixel_from_world(p), c);
+	}
 	bool read_polygon(const std::string& file_name)
 	{
 		std::ifstream is(file_name.c_str());
@@ -223,9 +248,23 @@ public:
 			nodes.clear();
 	}
 
+	void reallocate_image()
+	{
+		img.resize(img_width*img_height);
+		clear_image(background_color);
+		tex_outofdate = true;
+	}
 	ear_cutting() : node("ear_cutting")
 	{
-		if (!read_polygon("S:/develop/projects/git/cgv/plugins/examples/poly.txt"))
+		tex.set_mag_filter(cgv::render::TF_NEAREST);
+		img_width = img_height = 64;
+		img_extent.ref_min_pnt() = vec2(-2, -2);
+		img_extent.ref_max_pnt() = vec2( 2,  2);
+		synch_img_dimensions = true;
+		background_color = rgb_type(255, 255, 128);
+		reallocate_image();
+
+		//if (!read_polygon("S:/develop/projects/git/cgv/plugins/examples/poly.txt"))
 			generate_circle(8);
 
 		init_ear_cutting();
@@ -341,6 +380,19 @@ public:
 			colors.pop_back();
 		}
 	}
+	void init_frame(context& ctx)
+	{
+		if (tex_outofdate) {
+			if (tex.is_created())
+				tex.destruct(ctx);
+			cgv::data::data_format df("uint8[R,G,B]");
+			df.set_width(img_width);
+			df.set_height(img_height);
+			cgv::data::data_view dv(&df, &img[0]);
+			tex.create(ctx, dv);
+			tex_outofdate = false;
+		}
+	}
 	void draw(context& ctx)
 	{
 		draw_points(ctx);
@@ -356,7 +408,10 @@ public:
 		glColor3f(0.9f, 1, 1);
 		glPushMatrix();
 		glScaled(2, 2, 2);
+		glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+		tex.enable(ctx);
 		ctx.tesselate_unit_square();
+		tex.disable(ctx);
 		glPopMatrix();
 	}
 	bool handle(event& e)
@@ -539,6 +594,21 @@ public:
 	}
 	void on_set(void* member_ptr)
 	{
+		if (member_ptr == &img_height || member_ptr == &img_width) {
+			if (synch_img_dimensions) {
+				if (member_ptr == &img_width) {
+					img_height = img_width;
+					update_member(&img_height);
+				}
+				else {
+					img_width = img_height;
+					update_member(&img_width);
+				}
+			}
+			reallocate_image();
+			rasterize_polygon(polygon, rgb_type(255, 0, 0));
+			tex_outofdate = true;
+		}
 		if (member_ptr == &nr_steps) {
 			perform_ear_cutting();
 			classify_nodes();
@@ -550,6 +620,9 @@ public:
 			classify_nodes();
 			find_ears();
 			set_colors();
+			clear_image(background_color);
+			rasterize_polygon(polygon, rgb_type(255, 0, 0));
+			tex_outofdate = true;
 		}
 		update_member(member_ptr);
 		post_redraw();
@@ -562,10 +635,20 @@ public:
 		find_control(nr_steps)->set("max", polygon.size() - 2);
 		add_member_control(this, "lambda", lambda, "value_slider", "min=0;max=0.5;ticks=true");
 		add_member_control(this, "wireframe", wireframe, "check");
+		if (begin_tree_node("rasterization", synch_img_dimensions)) {
+			align("\a");
+			add_member_control(this, "synch_img_dimensions", synch_img_dimensions, "toggle");
+			add_member_control(this, "img_width", img_width, "value_slider", "min=2;max=1024;log=true;ticks=true");
+			add_member_control(this, "img_height", img_height, "value_slider", "min=2;max=1024;log=true;ticks=true");
+			add_member_control(this, "background_color", background_color);
+			align("\b");
+			end_tree_node(synch_img_dimensions);
+		}
 		if (begin_tree_node("point rendering", prs)) {
 			align("\a");
 			add_gui("points", prs);
 			align("\b");
+			end_tree_node(prs);
 		}
 	}
 
