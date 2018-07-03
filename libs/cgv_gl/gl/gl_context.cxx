@@ -755,7 +755,13 @@ void rotate(const cgv::math::fvec<T,3>& src, const cgv::math::fvec<T,3>& dest)
 	T c = dot(src,dest);
 	cgv::math::fvec<T,3> axis = cross(src,dest);
 	T s = axis.length();
-	T a = atan2(s,c)*180/(float)M_PI;
+	if (s < 10 * std::numeric_limits<T>::epsilon()) {
+		axis = cross(src, cgv::math::fvec<T, 3>(1, 0, 0));
+		if (axis.length() < 10 * std::numeric_limits<T>::epsilon())
+			axis = cross(src, cgv::math::fvec<T, 3>(0, 1, 0));
+	}
+	T a = atan2(s, c) * 180 / (float)M_PI;
+	axis.normalize();
 	gl_rotate(a, axis);
 }
 
