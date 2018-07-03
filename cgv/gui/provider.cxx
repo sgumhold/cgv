@@ -38,6 +38,26 @@ void provider::align(const std::string& _align)
 	if (!parent_group.empty())
 		parent_group->align(_align);
 }
+
+/// concatenate names in string to enum declaration and optionally prepend or append given additional names 
+std::string provider::concat_enum_def(const std::vector<std::string>& names, const std::string& additional_first_name, const std::string& additional_last_name)
+{
+	std::string result = "enums='";
+	if (!additional_first_name.empty())
+		result += additional_first_name + "=-1,";
+	for (unsigned i = 0; i < names.size(); ++i) {
+		if (i > 0)
+			result += ',';
+		result += names[i];
+	}
+	if (!additional_last_name.empty()) {
+		result += ',';
+		result += additional_last_name;
+	}
+	result += "'";
+	return result;
+}
+
 /*
 // add a new group to the given parent group, not supported yet
 gui_group_ptr provider::add_group(const std::string& label, const std::string& group_type, const std::string& options, const std::string& align)
@@ -119,9 +139,11 @@ void provider::inline_object_gui(base_ptr object)
 	provider* p = object->get_interface<provider>();
 	if (!p)
 		return;
+	//gui_group_ptr pg = p->get_parent_group();
 	p->set_parent(parent_group);
 	p->parent_provider = this;
 	p->create_gui();
+	//p->set_parent(pg);
 }
 
 /// add a newly created subgroup to the group

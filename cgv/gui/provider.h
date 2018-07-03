@@ -92,6 +92,9 @@ public:
 	/*! Add a new group, where the group elements are defined by another object that
 		must be derived from provider. You can use the same group types as in the add_group
 		method. */
+	/// concatenate names in string to enum declaration and optionally prepend or append given additional names 
+	std::string concat_enum_def(const std::vector<std::string>& names, const std::string& additional_first_name = "", const std::string& additional_last_name = "");
+
 	gui_group_ptr add_object_gui(base_ptr object, const std::string& label, const std::string& group_type, const std::string& options, const std::string& align);
 	/// inline the gui of another object that must be derived from provider.
 	void inline_object_gui(base_ptr object);
