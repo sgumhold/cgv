@@ -10,11 +10,26 @@
 
 #include "lib_begin.h"
 
+#define BYTE_COLORS
+
 /** define all point cloud relevant types in this helper class */
 struct point_cloud_types
 {
 	/// common type for point, texture und normal coordinates
 	typedef float Crd;
+#ifdef BYTE_COLORS
+	/// type of color components
+	typedef cgv::type::uint8_type ClrComp;
+	static ClrComp byte_to_color_component(cgv::type::uint8_type c) { return c; }
+	static ClrComp float_to_color_component(double c) { return cgv::type::uint8_type(255 * c); }
+#else
+	/// type of color components
+	typedef float ClrComp;
+	static ClrComp byte_to_color_component(cgv::type::uint8_type c) { return c*1.0f/255; }
+	static ClrComp float_to_color_component(double c) { return float(c); }
+#endif // BYTE_COLORS
+	/// floating point color type
+	typedef cgv::media::color<float, cgv::media::RGB, cgv::media::OPACITY> RGBA;
 	/// 3d point type
 	typedef cgv::math::fvec<Crd,3> Pnt;
 	/// 3d normal type
@@ -26,9 +41,9 @@ struct point_cloud_types
 	/// 4d homogeneous vector type
 	typedef cgv::math::fvec<Crd,4> HVec;
 	/// colors are rgb with floating point coordinates
-	typedef cgv::media::color<float> Clr;
+	typedef cgv::media::color<ClrComp> Clr;
 	/// rgba colors used for components
-	typedef cgv::media::color<float,cgv::media::RGB,cgv::media::OPACITY> Rgba;
+	typedef cgv::media::color<ClrComp,cgv::media::RGB,cgv::media::OPACITY> Rgba;
 	/// 3x3 matrix type used for linear transformations
 	typedef cgv::math::fmat<Crd,3,3> Mat;
 	/// 3x4 matrix type used for affine transformations in reduced homogeneous form
@@ -110,7 +125,7 @@ protected:
 	/// return end point index for iteration
 	Idx end_index(Idx component_index) const;
 	/// container storing component colors
-	std::vector<Rgba> component_colors;
+	std::vector<RGBA> component_colors;
 	/// container storing component rotationa
 	std::vector<Qat> component_rotations;
 	/// container storing component translations
@@ -312,9 +327,9 @@ public:
 	/// deallocate colors
 	void destruct_component_colors();
 	/// return i-th component colors as const reference
-	const Rgba& component_color(Idx i) const { return component_colors[i]; }
+	const RGBA& component_color(Idx i) const { return component_colors[i]; }
 	/// return i-th component color as reference
-	Rgba& component_color(Idx i) { return component_colors[i]; }
+	RGBA& component_color(Idx i) { return component_colors[i]; }
 
 	/// return whether the point cloud has component tranformations
 	bool has_component_transformations() const;

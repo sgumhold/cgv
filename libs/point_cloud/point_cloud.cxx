@@ -126,6 +126,7 @@ void point_cloud::clear()
 	C.clear();
 	T.clear();
 	I.clear();
+
 	/// container to store  one component index per point
 	component_indices.clear();
 	components.clear();
@@ -134,6 +135,14 @@ void point_cloud::clear()
 	component_translations.clear();
 	component_boxes.clear();
 	component_pixel_ranges.clear();
+
+	has_clrs = false;
+	has_nmls = false;
+	has_texcrds = false;
+	has_pixcrds = false;
+	has_comps = false;
+	has_comp_trans = false;
+	has_comp_clrs = false;
 
 	box_out_of_date = true;
 	pixel_range_out_of_date = true;
@@ -173,7 +182,7 @@ void point_cloud::append(const point_cloud& pc)
 				components.push_back(pc.component_point_range(ci));
 				components.back().index_of_first_point += old_n;
 				if (has_component_colors())
-					component_colors.push_back(pc.has_component_colors() ? pc.component_color(ci) : Clr(1,1,1,1));
+					component_colors.push_back(pc.has_component_colors() ? pc.component_color(ci) : RGBA(1,1,1,1));
 				if (has_component_transformations()) {
 					component_rotations.push_back(pc.has_component_transformations() ? pc.component_rotation(ci) : Qat(1, 0, 0, 0));
 					component_translations.push_back(pc.has_component_transformations() ? pc.component_translation(ci) : Dir(0, 0, 0));
@@ -528,7 +537,6 @@ bool point_cloud::read_pct(const std::string& file_name)
 		// std::cout << "split to " << lines.size() << " lines in " << watch.get_elapsed_time() << " sec" << std::endl; watch.restart();
 
 		bool do_parse = false;
-		float scale = 1.0f / 255;
 		for (unsigned li = 1; li < lines.size(); ++li) {
 			if (lines[li].empty())
 				continue;
@@ -539,7 +547,7 @@ bool point_cloud::read_pct(const std::string& file_name)
 			sscanf(lines[li].begin, "%d %d %f %f %f %d", &i, &j, &p[2], &p[0], &p[1], &Intensity);
 			content[lines[li].end - content.c_str()] = tmp;
 			P.push_back(p);
-			C.push_back(Clr(scale*Intensity, scale*Intensity, scale*Intensity));
+			C.push_back(Clr(byte_to_color_component(Intensity), byte_to_color_component(Intensity), byte_to_color_component(Intensity)));
 			I.push_back(PixCrd(i, j));
 
 			if ((P.size() % 100000) == 0)
@@ -566,7 +574,6 @@ bool point_cloud::read_xyz(const std::string& file_name)
 
 	bool do_parse = false;
 	unsigned i;
-	float scale = 1.0f / 255;
 	for (i = 0; i<lines.size(); ++i) {
 		if (lines[i].empty())
 			continue;
@@ -579,7 +586,7 @@ bool point_cloud::read_xyz(const std::string& file_name)
 			sscanf(lines[i].begin, "%f %f %f %d %d %d %d", &p[0], &p[1], &p[2], c, c + 1, c + 2, &I);
 			content[lines[i].end - content.c_str()] = tmp;
 			P.push_back(p);
-			C.push_back(Clr(scale*c[0], scale*c[1], scale*c[2]));
+			C.push_back(Clr(byte_to_color_component(c[0]), byte_to_color_component(c[1]), byte_to_color_component(c[2])));
 		}
 		else {
 
@@ -595,7 +602,7 @@ bool point_cloud::read_xyz(const std::string& file_name)
 			if (j >= 3)
 				P.push_back(Pnt((Crd)values[0], (Crd)values[1], (Crd)values[2]));
 			if (j >= 6)
-				C.push_back(Clr((Crd)(values[3] / 255.0), (Crd)(values[4] / 255.0), (Crd)(values[5] / 255.0)));
+				C.push_back(Clr(float_to_color_component(values[3]), float_to_color_component(values[4]), float_to_color_component(values[5])));
 		}
 		if ((P.size() % 100000) == 0)
 			cout << "read " << P.size() << " points" << endl;
@@ -632,7 +639,7 @@ bool point_cloud::read_points(const std::string& file_name)
 			if (j >= 6)
 				N.push_back(Nml((Crd)values[3],(Crd)values[4],(Crd)values[5]));
 			if (j >= 9)
-				C.push_back(Clr((Crd)values[6],(Crd)values[7],(Crd)values[8]));
+				C.push_back(Clr(float_to_color_component(values[6]), float_to_color_component(values[7]), float_to_color_component(values[8])));
 
 			if ( (P.size() % 10000) == 0)
 				cout << "read " << P.size() << " points" << endl;
@@ -713,7 +720,7 @@ bool point_cloud::read_wrl(const std::string& file_name)
 									cout << "read " << N.size() << " normals" << endl;
 								break;
 							case 7 : 
-								C.push_back(Clr((Crd)x,(Crd)y,(Crd)z)); 
+								C.push_back(Clr(float_to_color_component(x), float_to_color_component(y), float_to_color_component(z)));
 								if ( (C.size() % 10000) == 0)
 									cout << "read " << C.size() << " colors" << endl;
 								break;
@@ -856,7 +863,9 @@ static char* propNames[] = { "vertex", "face" };
 bool point_cloud::read_ply(const string& _file_name) 
 {
 	PlyFile* ply_in =  open_ply_for_read(const_cast<char*>(_file_name.c_str()));
-  
+	if (!ply_in)
+		return false;
+	clear();
 	for (int elementType = 0; elementType < ply_in->num_elem_types; ++elementType) {
 		int nrVertices;
 		char* elem_name = setup_element_read_ply (ply_in, elementType, &nrVertices);
@@ -905,9 +914,9 @@ bool point_cloud::read_ply(const string& _file_name)
 				if (has_nmls)
 					N[j].set(vertex.nx, vertex.ny, vertex.nz);
 				if (has_clrs) {
-					C[j][0] = vertex.red*1.0f / 255;
-					C[j][1] = vertex.green*1.0f / 255;
-					C[j][2] = vertex.blue*1.0f / 255;
+					C[j][0] = byte_to_color_component(vertex.red);
+					C[j][1] = byte_to_color_component(vertex.green);
+					C[j][2] = byte_to_color_component(vertex.blue);
 				}
 			}
 		}
@@ -981,12 +990,12 @@ bool point_cloud::read_ascii(const string& file_name)
 			P.push_back(Pnt(x,y,z));
 		if (n == 6) {
 			if (no_normals_contained)
-				C.push_back(Clr(nx,ny,nz));
+				C.push_back(Clr(float_to_color_component(nx), float_to_color_component(ny), float_to_color_component(nz)));
 			else
 				N.push_back(Nml(nx,ny,nz));
 		}
 		if (n == 9)
-			C.push_back(Clr(r,g,b));
+			C.push_back(Clr(float_to_color_component(r), float_to_color_component(g), float_to_color_component(b)));
 	}
 	return true;
 }
@@ -1186,7 +1195,7 @@ point_cloud::Idx point_cloud::add_component()
 		create_components();
 	components.push_back(component_info(get_nr_points(), 0));
 	if (has_component_colors())
-		component_colors.push_back(Rgba(1, 1, 1, 1));
+		component_colors.push_back(RGBA(1, 1, 1, 1));
 	if (has_component_transformations()) {
 		component_translations.push_back(Dir(0, 0, 0));
 		component_rotations.push_back(Qat(1, 0, 0, 0));
@@ -1218,7 +1227,7 @@ void point_cloud::create_components()
 	has_comps = true;
 	if (has_component_colors()) {
 		component_colors.resize(1);
-		component_colors[0] = Rgba(1, 1, 1, 1);
+		component_colors[0] = RGBA(1, 1, 1, 1);
 	}
 	if (has_component_transformations()) {
 		component_rotations.resize(1);
@@ -1264,7 +1273,7 @@ void point_cloud::create_component_colors()
 		create_components();
 	
 	component_colors.resize(get_nr_components());
-	std::fill(component_colors.begin(), component_colors.end(), Rgba(1, 1, 1, 1));
+	std::fill(component_colors.begin(), component_colors.end(), RGBA(1, 1, 1, 1));
 	has_comp_clrs = true;
 }
 

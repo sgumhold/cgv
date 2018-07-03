@@ -20,7 +20,7 @@ namespace cgv {
 			blend_points = true;
 			use_point_shader = true;
 			orient_splats = true;
-			outline_width_from_pixel = 1;
+			outline_width_from_pixel = 0.0f;
 			percentual_outline_width = 0.0f;
 			percentual_halo = 0.0f;			
 		}

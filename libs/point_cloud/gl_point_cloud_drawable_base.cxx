@@ -2,7 +2,7 @@
 #include "gl_point_cloud_drawable_base.h"
 #include <cgv/utils/file.h>
 #include <cgv/utils/scan.h>
-#include <cgv_gl/gl/gl.h>
+#include <cgv_gl/gl/wgl.h>
 #include <cgv_gl/gl/gl_tools.h>
 #include <cgv/base/import.h>
 
@@ -13,6 +13,8 @@ using namespace cgv::utils::file;
 gl_point_cloud_drawable_base::gl_point_cloud_drawable_base() 
 {
 	view_ptr = 0;
+
+	nr_draw_calls = 1;
 
 	show_point_step = 1;
 	show_point_begin = 0;
@@ -237,7 +239,10 @@ void gl_point_cloud_drawable_base::draw_points(context& ctx)
 		std::sort(indices.begin(), indices.end(), sort_pred(pc, view_dir, show_point_step));
 
 		glDepthFunc(GL_ALWAYS);
-		glDrawElements(GL_POINTS, indices.size(), GL_UNSIGNED_INT, &indices[0]);
+		size_t nn = indices.size() / nr_draw_calls;
+		for (unsigned i = 1; i<nr_draw_calls; ++i)
+			glDrawElements(GL_POINTS, nn, GL_UNSIGNED_INT, &indices[(i - 1)*nn]);
+		glDrawElements(GL_POINTS, indices.size() - (nr_draw_calls - 1)*nn, GL_UNSIGNED_INT, &indices[(nr_draw_calls - 1)*nn]);
 		glDepthFunc(GL_LESS);
 	}
 	else {
@@ -249,10 +254,12 @@ void gl_point_cloud_drawable_base::draw_points(context& ctx)
 			}
 		}
 		else {
-			glDrawArrays(GL_POINTS, offset, n);
+			size_t nn = n / nr_draw_calls;
+			for (unsigned i=1; i<nr_draw_calls; ++i)
+				glDrawArrays(GL_POINTS, offset + (i-1)*nn, nn);
+			glDrawArrays(GL_POINTS, offset + (nr_draw_calls - 1)*nn, n-(nr_draw_calls - 1)*nn);
 		}
 	}
-
 	p_renderer.disable(ctx);
 }
 
