@@ -4,10 +4,41 @@ using namespace cgv;
 
 /*! \page install Installation and Conventions
 
-\section download Download
+\section download Download and Fast Start
 
-The current version of the framework can be exported or checked out with svn
-from https://141.76.62.199/svn/cgv/release
+The current version of the framework can be found on github https://github.com/sgumhold/cgv.
+To get the most recent features you should switch to the develop branch after check out.
+
+For a fast start under windows with visual studio do the following:
+- Choose directory (avoid the desktop or library paths in windows) into which to clone the cgv source tree and run the following commands:
+\code
+git clone https://github.com/sgumhold/cgv.git
+cd cgv
+git checkout develop
+\endcode
+- create a build directory where the temporary files should be stored
+- use 2 explorer windows to drag build directory onto cgv/define_system_variables.bat 
+  alternatively you can run the following command in the command prompt:
+\code
+define_system_variables.bat <global-path-to-build-directory>
+\endcode
+- select your configuration, typically [e] for MS VS 2015
+- close the command prompt and optionally open a new to ensure that the systems variables have been updated 
+- run cgv\build_example_solution.bat by double clicking it in explorer window or 
+  starting it in command prompt:
+\code
+build_example_solution.bat
+\endcode
+- open the generated solution under <build-directory>\vs14\examples\examples.sln
+  (if you use a different VS version, replace vs14 with vs12 etc)
+- after visual studio started, select configuration "Debug Dll" or "Release Dll"
+- ensure that examples plugin is the active project
+- build solution
+- run examples project and select example from menu (try bump mapper, which can also be created by <Ctrl-B>)
+- press <F1> to blend in help on shortcuts and mouse control of the view
+- try out to mouse control of the view by rotating the view, translating it and zooming in and out
+- try out the shortcuts
+- click through the user interface
 
 \section system System Configuration
 
@@ -65,7 +96,7 @@ libraries with completely free licenses
 - fltk
 - ann
 - glew
-- pthread
+- pthread (deprecated since the introduction of threads to the C++-standard)
 - webserver (pretty unknown little lib)
 
 Sources of the standard libraries are included primarily for the windows 

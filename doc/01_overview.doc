@@ -16,7 +16,7 @@ The cgv libraries (dependencies) are
 - cgv_signal ... signal mechanism and binding of functions to signals
 - cgv_utils ... helps to work with files and text and has functionality to parse text
 - cgv_type (cgv_utils) ... standardized type declaration and type reflection support
-- cgv_reflect (cgv_utils/type)
+- cgv_reflect (cgv_utils/type) ... mechanism to reflect types in C++
 - cgv_data (cgv_utils/type) ... data management such as smart pointers and data views
 - cgv_base (cgv_data/type/utils) ... registration mechanism, communication and hierarchical structures
 - cgv_math (cgv_base/type/utils) ... large collection of mostly templated math functions and solvers
@@ -49,7 +49,7 @@ loads "cgv_14.dll" on startup.
   
 \section configs Configurations
 
-For building libraries and viewer there are four configurations, which are 
+For building libraries, plugins, and applications there are four configurations, which are 
 distinguished by extending the compiler postfix. In the following list the
 cgv internal name of the configuration is given followed by configuration
 name in vs14 and the full name of the cgv dll with all postfixes that
@@ -58,6 +58,14 @@ are used in the same way for all other libraries and applications
 - shared debug (Debug Dll) cgv_d14.dll
 - static release (Release) cgv_s14.dll
 - static debug (Debug) cgv_ds14.dll
+
+The build system also allows to build an executable from a plugin which is then
+typed application_plugin. In this case there are two more build configurations 
+"Release Exe" and "Debug Exe", which both build a statically linked  executable.
+The project of an application_plugin must have an application - typically the
+cgv_viewer - as dependent project. The source files of the dependent application 
+project are added to the project of the application_plugin and built only in the
+"Exe"-configurations. 
 
 \section plugins Plugins
 
