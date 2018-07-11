@@ -383,7 +383,10 @@ vec4 doLighting(vec3 position, vec3 normal, vec4 diffuseMaterial)
 	// 'Ecm' == gl_FrontMaterial.emission
 	// 'Acm' == gl_FrontMaterial.ambient
 	// 'Acs' = ambient color of scene (set through 'glLightModelfv(GL_LIGHT_MODEL_AMBIENT, sceneAmbient);')
-	return gl_FrontLightModelProduct.sceneColor + ambient + diffuseMaterial * diffuse + specular;
+	return 
+		//gl_FrontLightModelProduct.sceneColor + 
+		ambient + 
+		diffuseMaterial * diffuse + specular;
 }
 /**
  * Does the lighting calculation with the Phong Illumination model.
@@ -426,5 +429,7 @@ vec4 doPhongLighting(vec3 position, vec3 normal, vec4 diffuseMaterial)
 	// 'Ecm' == gl_FrontMaterial.emission
 	// 'Acm' == gl_FrontMaterial.ambient
 	// 'Acs' = ambient color of scene (set through 'glLightModelfv(GL_LIGHT_MODEL_AMBIENT, sceneAmbient);')
-	return gl_FrontLightModelProduct.sceneColor + ambient + diffuseMaterial * diffuse + specular;
+	return 
+		//gl_FrontLightModelProduct.sceneColor + 
+		ambient + diffuseMaterial * diffuse + specular;
 }
