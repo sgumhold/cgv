@@ -4,8 +4,13 @@ projectType="library";
 projectGUID="8A717941-3E46-459c-B967-C6AAF214D9EA";
 addIncDirs=[CGV_DIR."/3rd/pthread"];
 addProjectDirs=[CGV_DIR."/3rd/pthread", CGV_DIR."/3rd/glew"];
-addProjectDeps=["pthread","cgv_utils", "cgv_data"];
+if (CGV_COMPILER == "vs14" || CGV_COMPILER == "vs141") {
+	addProjectDeps=["cgv_utils", "cgv_data"];
+}
+else {
+	addProjectDeps=["pthread","cgv_utils", "cgv_data"];
+}
 if(SYSTEM=="windows") {
-	addDependencies=addDependencies.[["user32", "static"]];
+	addDependencies=addDependencies.[["user32", "static"], "Ws2_32"];
 }
 addSharedDefines=["CGV_OS_EXPORTS"];

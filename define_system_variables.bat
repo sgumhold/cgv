@@ -38,22 +38,24 @@ echo [4] ... Microsoft Visual Studio 2010
 echo [5] ... Microsoft Visual Studio 2012
 echo [6] ... Microsoft Visual Studio 2013
 echo [7] ... Microsoft Visual Studio 2015
+echo [8] ... Microsoft Visual Studio 2017
 echo.
 echo automatic mode:
-echo [8] ... Microsoft Visual Studio 2005 
-echo [9] ... Microsoft Visual Studio 2008 
-echo [a] ... Microsoft Visual Studio 2008 Express
-echo [b] ... Microsoft Visual Studio 2010
-echo [c] ... Microsoft Visual Studio 2012
-echo [d] ... Microsoft Visual Studio 2013
-echo [e] ... Microsoft Visual Studio 2015
+echo [9] ... Microsoft Visual Studio 2005 
+echo [a] ... Microsoft Visual Studio 2008 
+echo [b] ... Microsoft Visual Studio 2008 Express
+echo [c] ... Microsoft Visual Studio 2010
+echo [d] ... Microsoft Visual Studio 2012
+echo [e] ... Microsoft Visual Studio 2013
+echo [f] ... Microsoft Visual Studio 2015
+echo [g] ... Microsoft Visual Studio 2017
 echo.
 echo [q] ... quit script
 echo.
 :ask_again
-set /P selection=choose 1-9 or a-e or q^>
+set /P selection=choose 1-9 or a-g or q^>
 if [%selection%] == [] (
-   echo please enter a number in [1-9] or a letter in [a-e] or q for quit
+   echo please enter a number in [1-9] or a letter in [a-g] or q for quit
    goto:ask_again
 )
 if "%selection%" == "q" (
@@ -77,22 +79,30 @@ if "%selection%" == "a" (
 			  if "%selection%" == "e" (
 				 call set /A selection=14
 			  ) else (
+				  if "%selection%" == "f" (
+					 call set /A selection=15
+				  ) else (
+					  if "%selection%" == "g" (
+						 call set /A selection=16
+					  ) else (
 	call set /A selection=%selection%
 	if %selection% LSS 1 (set valid_number=false)
 	if %selection% GTR 9 (set valid_number=false)
+					  )
+				  )
 			  )
 		  )
       )
    )
 )
 if %valid_number% == false (
-   echo invalid number outside range [1-9,a-e], please try again
+   echo invalid number outside range [1-9,a-g], please try again
    goto:ask_again
 )
 set interactive_mode=true
-if %selection% GTR 6 (
+if %selection% GTR 8 (
    set interactive_mode=false
-   set /A selection=selection-7
+   set /A selection=selection-8
 )
 set cgvcompiler=undefined
 call set condition=%selection%==1
@@ -109,6 +119,8 @@ call set condition=%selection%==6
 if %condition% (set cgvcompiler=vs12)
 call set condition=%selection%==7
 if %condition% (set cgvcompiler=vs14)
+call set condition=%selection%==8
+if %condition% (set cgvcompiler=vs141)
 if %interactive_mode%==true (
    echo.
    echo selected interactive mode
