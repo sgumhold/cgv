@@ -39,11 +39,12 @@ Currently the following system configurations are supported
     - Visual Studio 2010 (abbreviated by vs10)
     - Visual Studio 2013 (abbreviated by vs12)
     - Visual Studio 2015 (abbreviated by vs14)
+    - Visual Studio 2017 (abbreviated by vs141)
 - Linux
   - gcc is in preparation
 
 Under windows all compilers can be used at the same time. The
-postfix "_8", "_9", "_9e", "_10", "_12", "_14" is used for applications and libraries to distinguish
+postfix "_8", "_9", "_9e", "_10", "_12", "_14", "_141" is used for applications and libraries to distinguish
 the versions. For example "cgv_viewer_12.exe" loads "cgv_12.dll" and "cgv_viewer_14.exe"
 loads "cgv_14.dll" on startup.
   
