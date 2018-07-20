@@ -754,9 +754,9 @@ public:
 	/// disable phong shading
 	virtual void disable_phong_shading();
 	/// enable a material without textures
-	virtual void enable_material(const cgv::media::illum::phong_material& mat, MaterialSide ms = MS_FRONT_AND_BACK, float alpha = 1) = 0;
+	virtual void enable_material(const cgv::media::illum::phong_material& mat = cgv::media::illum::default_material(), MaterialSide ms = MS_FRONT_AND_BACK, float alpha = 1) = 0;
 	/// disable phong material
-	virtual void disable_material(const cgv::media::illum::phong_material& mat) = 0;
+	virtual void disable_material(const cgv::media::illum::phong_material& mat = cgv::media::illum::default_material()) = 0;
 	/// enable a material with textures
 	virtual void enable_material(const textured_material& mat, MaterialSide ms = MS_FRONT_AND_BACK, float alpha = 1) = 0;
 	/// disable phong material
