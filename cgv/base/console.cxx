@@ -50,7 +50,25 @@ bool console::set_void(const std::string& property, const std::string& value_typ
 		HWND console = GetConsoleWindow();
 		RECT rect;
 		GetWindowRect(console, &rect);
-		SetWindowPos(console,HWND_BOTTOM,rect.left,y,0,0,SWP_NOSIZE|SWP_NOZORDER);
+		SetWindowPos(console, HWND_BOTTOM, rect.left, y, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
+		return true;
+	}
+	if (property == "w") {
+		int32_type w;
+		get_variant(w, value_type, value_ptr);
+		HWND console = GetConsoleWindow();
+		RECT rect;
+		GetWindowRect(console, &rect);
+		SetWindowPos(console, HWND_BOTTOM, 0, 0, w, rect.bottom - rect.top, SWP_NOMOVE | SWP_NOZORDER);
+		return true;
+	}
+	if (property == "h") {
+		int32_type h;
+		get_variant(h, value_type, value_ptr);
+		HWND console = GetConsoleWindow();
+		RECT rect;
+		GetWindowRect(console, &rect);
+		SetWindowPos(console, HWND_BOTTOM, 0, 0, rect.right - rect.left, h, SWP_NOMOVE | SWP_NOZORDER);
 		return true;
 	}
 #endif
