@@ -1,7 +1,18 @@
 #include <cgv/signal/abst_signal.h>
+#include "signal.h"
 
 namespace cgv {
 	namespace signal {
+
+void connect(signal<>& s, void(*fp)()) 
+{
+	s.connect(function_functor<0>(fp)); 
+}
+
+void disconnect(signal<>& s, void(*fp)()) 
+{
+	s.disconnect(function_functor<0>(fp)); 
+}
 
 signal_base::~signal_base()
 {
