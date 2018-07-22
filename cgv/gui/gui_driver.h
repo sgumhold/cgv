@@ -1,6 +1,5 @@
 #pragma once
 
-#include <string>
 #include <cgv/base/base.h>
 #include <cgv/signal/signal.h>
 #include <cgv/data/ref_counted.h>

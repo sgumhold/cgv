@@ -1,8 +1,19 @@
 #include <iostream>
 #include <cgv/signal/bool_combiner.h>
+#include "bool_signal.h"
 
 namespace cgv {
 	namespace signal {
+
+void connect(bool_signal<>& s, bool(*fp)()) 
+{
+	s.connect(bool_function_functor<0>(fp)); 
+}
+
+void disconnect(bool_signal<>& s, bool(*fp)()) 
+{
+	s.disconnect(bool_function_functor<0>(fp));
+}
 
 /// base class for signals that combine the boolean result of the attached functors with boolean and/or operations
 bool bool_combiner::combine_result(bool new_value, bool& value) const

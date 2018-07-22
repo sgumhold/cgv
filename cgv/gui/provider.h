@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cgv/base/base.h>
 #include <cgv/type/info/type_name.h>
 #include <cgv/signal/rebind.h>
 #include <cgv/utils/convert.h>

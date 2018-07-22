@@ -79,7 +79,7 @@ public:
 template <int i, @["typename T1 = type::invalid_type"; ", "; "typename T".N_ARG." = type::invalid_type"]>
 struct signature;
 
-@for (i=1; i<=N_ARG; i=i+1) @{
+@for (i=0; i<=N_ARG; i=i+1) @{
 
 template <@["typename T1"; ", "; "typename T".N_ARG]>
 struct signature<@(i),@["T1"; ", "; "T".N_ARG]>
