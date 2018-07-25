@@ -1,3 +1,4 @@
+#include <cgv/base/group.h>
 #include "context.h"
 #include <cgv/media/image/image_writer.h>
 #include <cgv/base/traverser.h>
@@ -166,12 +167,6 @@ context::~context()
 
 void context::init_render_pass()
 {
-}
-
-///
-group* context::get_group_interface()
-{
-	return dynamic_cast<group*>(this);
 }
 
 /// 
@@ -376,7 +371,7 @@ void context::render_pass(RenderPass rp, RenderPassFlags rpf, void* user_data)
 
 	init_render_pass();
 
-	group* grp = get_group_interface();
+	group* grp = dynamic_cast<group*>(this);
 	if (grp && (rpf&RPF_DRAWABLES_DRAW)) {
 		matched_method_action<drawable,void,void,context&> 
 			mma(*this, &drawable::draw, &drawable::finish_draw, true, true);

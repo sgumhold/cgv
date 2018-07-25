@@ -1,3 +1,4 @@
+#include <cgv/base/base.h>
 #include "shader_code.h"
 #include <cgv/base/register.h>
 #include <cgv/base/import.h>

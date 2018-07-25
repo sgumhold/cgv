@@ -1,3 +1,4 @@
+#include <cgv/base/group.h>
 #include <cgv_gl/gl/wgl.h>
 #ifdef _WIN32
 #undef TA_LEFT
@@ -236,7 +237,7 @@ bool gl_context::configure_gl()
 	if (check_gl_error("gl_context::configure_gl before init of children"))
 		return false;
 	
-	group_ptr grp(get_group_interface());
+	group_ptr grp(dynamic_cast<group*>(this));
 	single_method_action<cgv::render::drawable, bool, cgv::render::context&> sma(*this, &drawable::init, false, false);
 	for (unsigned i = 0; i<grp->get_nr_children(); ++i)
 		traverser(sma, "nc").traverse(grp->get_child(i));
@@ -249,7 +250,7 @@ bool gl_context::configure_gl()
 
 void gl_context::resize_gl()
 {
-	group_ptr grp(get_group_interface());
+	group_ptr grp(dynamic_cast<group*>(this));
 	glViewport(0, 0, get_width(), get_height());
 	if (grp) {
 		single_method_action_2<drawable, void, unsigned int, unsigned int> sma(get_width(), get_height(), &drawable::resize);
@@ -340,7 +341,7 @@ void gl_context::init_render_pass()
 	if (check_gl_error("gl_context::init_render_pass before init_frame"))
 		return;
 
-	group* grp = get_group_interface();
+	group* grp = dynamic_cast<group*>(this);
 	if (grp && (get_render_pass_flags()&RPF_DRAWABLES_INIT_FRAME)) {
 		single_method_action<drawable,void,cgv::render::context&> sma(*this, &drawable::init_frame, true, true);
 		traverser(sma).traverse(group_ptr(grp));
@@ -479,7 +480,7 @@ void gl_context::draw_textual_info()
 			enable_font_face(info_font_face, info_font_size);
 			format_callback_handler fch(output_stream());
 			set_cursor(20,20);
-			group_ptr grp(get_group_interface());
+			group_ptr grp(dynamic_cast<group*>(this));
 			if (grp && show_stats) {
 				single_method_action<cgv::base::base,void,std::ostream&> sma(output_stream(), &cgv::base::base::stream_stats, false, false);
 				traverser(sma,"nc").traverse(grp,&fch);

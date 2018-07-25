@@ -1,7 +1,6 @@
 #pragma once
 
 #define _USE_MATH_DEFINES
-#include <cgv/base/group.h>
 #include <cgv/data/data_view.h>
 #include <cgv/media/font/font.h>
 #include <cgv/media/axis_aligned_box.h>
@@ -591,8 +590,6 @@ public:
 	//@{
 	///
 	virtual void init_render_pass();
-	///
-	virtual cgv::base::group* get_group_interface();
 	/// 
 	virtual void draw_textual_info();
 	///
