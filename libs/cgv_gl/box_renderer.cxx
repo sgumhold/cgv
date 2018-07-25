@@ -14,6 +14,8 @@ namespace cgv {
 		{
 			has_extents = false;
 			position_is_center = true;
+			has_translations = false;
+			has_rotations = false;
 		}
 
 		/// set the flag, whether the position is interpreted as the box center
