@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cgv/base/base.h>
 #include "point_cloud.h"
 #include "neighbor_graph.h"
 #include <vector>
