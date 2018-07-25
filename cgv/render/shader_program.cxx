@@ -1,3 +1,4 @@
+#include <cgv/base/base.h>
 #include "shader_program.h"
 #include <cgv/utils/file.h>
 #include <cgv/utils/dir.h>

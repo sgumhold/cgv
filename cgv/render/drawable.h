@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cgv/base/base.h>
 #include <cgv/base/traverser.h>
 #include <cgv/render/context.h>
 #include <cgv/render/view.h>

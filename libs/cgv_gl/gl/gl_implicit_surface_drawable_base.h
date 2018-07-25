@@ -90,12 +90,6 @@ protected: //@<
 
 	void add_normal(const pnt_type& p, const vec_type& n, std::vector<float>& nml_gradient_geometry) const;
 
-	/// marching cubes callback handling for new vertices
-	void new_mc_vertex(unsigned int vi);
-	/// marching cubes callback handling for new triangles
-	void triangle_callback(unsigned int vi, unsigned int vj, 
-											 unsigned int vk);
-
 	/// allows to augment a newly computed vertex by additional data
 	void new_vertex(unsigned int vi);
 	/// announces a new quad
