@@ -16,7 +16,7 @@
 
 
 /** drawable for a point cloud that manages a neighbor graph and a normal estimator and supports rendering of point cloud and bounding box. */
-class CGV_API gl_point_cloud_drawable_base : public cgv::render::drawable, public point_cloud_types
+class CGV_API gl_point_cloud_drawable : public cgv::render::drawable, public point_cloud_types
 {
 public:
 	typedef cgv::media::illum::phong_material::color_type color_type;
@@ -59,7 +59,7 @@ protected:
 	bool ensure_view_pointer();
 
 public:
-	gl_point_cloud_drawable_base();
+	gl_point_cloud_drawable();
 
 	bool read(const std::string& file_name);
 	bool append(const std::string& file_name, bool add_component = true);

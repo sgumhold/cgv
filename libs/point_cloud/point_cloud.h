@@ -141,8 +141,8 @@ protected:
 	/// range of pixel coordinates
 	mutable PixRng PR;
 	///
-	friend class point_cloud_viewer;
-	friend class gl_point_cloud_drawable_base;
+	friend class point_cloud_interactable;
+	friend class gl_point_cloud_drawable;
 private:
 	mutable std::vector<bool> comp_box_out_of_date;
 	mutable std::vector<bool> comp_pixrng_out_of_date;
@@ -326,10 +326,10 @@ public:
 	void create_component_colors();
 	/// deallocate colors
 	void destruct_component_colors();
-	/// return i-th component colors as const reference
-	const RGBA& component_color(Idx i) const { return component_colors[i]; }
-	/// return i-th component color as reference
-	RGBA& component_color(Idx i) { return component_colors[i]; }
+	/// return ci-th component colors as const reference
+	const RGBA& component_color(Idx ci) const { return component_colors[ci]; }
+	/// return ci-th component color as reference
+	RGBA& component_color(Idx ci) { return component_colors[ci]; }
 
 	/// return whether the point cloud has component tranformations
 	bool has_component_transformations() const;
@@ -337,14 +337,14 @@ public:
 	void create_component_tranformations();
 	/// deallocate tranformations
 	void destruct_component_tranformations();
-	/// return i-th component rotation as const reference
-	const Qat& component_rotation(Idx i) const { return component_rotations[i]; }
-	/// return i-th component rotation as reference
-	Qat& component_rotation(Idx i) { return component_rotations[i]; }
-	/// return i-th component translation as const reference
-	const Dir& component_translation(Idx i) const { return component_translations[i]; }
-	/// return i-th component translation as reference
-	Dir& component_translation(Idx i) { return component_translations[i]; }
+	/// return ci-th component rotation as const reference
+	const Qat& component_rotation(Idx ci) const { return component_rotations[ci]; }
+	/// return ci-th component rotation as reference
+	Qat& component_rotation(Idx ci) { return component_rotations[ci]; }
+	/// return ci-th component translation as const reference
+	const Dir& component_translation(Idx ci) const { return component_translations[ci]; }
+	/// return ci-th component translation as reference
+	Dir& component_translation(Idx ci) { return component_translations[ci]; }
 	/// apply transformation of given component (or all of component index is -1) to influenced points
 	void apply_component_transformation(Idx component_index = -1);
 	/// set the component transformation of given component (or all of component index is -1) to identity
