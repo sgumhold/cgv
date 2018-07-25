@@ -106,16 +106,6 @@ protected:
 	} interact_state;
 	//@}
 
-	/**@name internal access to data structures*/
-	//@{
-	/// return reference to point cloud
-	point_cloud& ref_point_cloud() { return pc; }
-	/// return reference to neighbor graph
-	neighbor_graph& ref_neighbor_graph() { return ng; }
-	/// return reference to normal estimator
-	normal_estimator& ref_normal_estimator() { return ne; }
-	//@}
-
 	/**@name ann tree, neighbor graph and picking*/
 	//@{
 	/// whether ann tree needs rebuild
