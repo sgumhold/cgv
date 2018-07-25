@@ -120,6 +120,7 @@ void gl_point_cloud_drawable::render_boxes(context& ctx, group_renderer& R, cgv:
 
 void gl_point_cloud_drawable::draw_box(cgv::render::context& ctx, const Box& box, const color_type& clr)
 {
+	b_renderer.set_render_style(box_style);
 	b_renderer.set_position_array(ctx, &box.get_min_pnt(), 1);
 	b_renderer.set_extent_array(ctx, &box.get_max_pnt(), 1);
 	b_renderer.set_color_array(ctx, &clr, 1);
