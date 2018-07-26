@@ -1,4 +1,5 @@
 files:point
 vertex_file:group.glsl
+vertex_file:quaternion.glsl
 geometry_file:side.glsl
 fragment_file:lighting.glsl

@@ -24,9 +24,6 @@ public:
 protected:
 	point_cloud pc;
 
-	std::string data_path;
-	std::string file_name;
-
 	cgv::render::point_render_style point_style;
 	cgv::render::normal_render_style normal_style;
 	cgv::render::surface_render_style box_style;

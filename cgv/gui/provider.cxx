@@ -244,9 +244,15 @@ bool provider::begin_tree_node_void(const std::string& label, const void* value_
 }
 
 ///
-bool& provider::ref_tree_node_visible_flag_void(const void* value_ptr, int index) const
+bool& provider::ref_tree_node_visible_flag_void(const void* value_ptr, int index)
 {
-	return get_tree_node_toggle_map()[std::pair<const void*, int>(value_ptr, index)];
+	auto& map = get_tree_node_toggle_map();
+	std::pair<const void*, int> key(value_ptr, index);
+	auto iter = map.find(key);
+	if (iter == map.end())
+		return map[key] = false;
+	else
+		return iter->second;
 }
 
 ///

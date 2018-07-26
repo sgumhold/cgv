@@ -17,10 +17,29 @@
 #include <cgv_gl/gl/gl.h>
 #include <cgv/utils/tokenizer.h>
 
-#define FILE_SAVE_TITLE "Save Point Cloud"
 #define FILE_OPEN_TITLE "Open Point Cloud"
 #define FILE_APPEND_TITLE "Append Point Cloud"
 #define FILE_OPEN_FILTER "Point Clouds (apc,bpc):*.apc;*.bpc|Mesh Files (obj,ply,pct):*.obj;*.ply;*.pct|All Files:*.*"
+
+#define FILE_SAVE_TITLE "Save Point Cloud"
+#define FILE_SAVE_FILTER "Point Clouds (apc,bpc):*.apc;*.bpc|Mesh Files (obj,ply):*.obj;*.ply|All Files:*.*"
+
+void point_cloud_interactable::update_file_name(const std::string& ffn, bool append)
+{
+	std::string new_path = cgv::utils::file::get_path(ffn);
+	if (!new_path.empty()) {
+		data_path = new_path;
+		update_member(&data_path);
+	}
+	std::string new_name = cgv::utils::file::get_file_name(cgv::utils::file::drop_extension(ffn));
+	if (append && !file_name.empty()) {
+		file_name += std::string("#")+ new_name;
+	}
+	else
+		file_name = new_name;
+	new_file_name = file_name;
+	update_member(&new_file_name);
+}
 
 // file io
 bool point_cloud_interactable::save(const std::string& fn)
@@ -29,6 +48,7 @@ bool point_cloud_interactable::save(const std::string& fn)
 		cgv::gui::message(std::string("could not write ") + fn);
 		return false;
 	}
+	update_file_name(fn);
 	return true;
 }
 bool point_cloud_interactable::open(const std::string& fn)
@@ -37,9 +57,8 @@ bool point_cloud_interactable::open(const std::string& fn)
 		cgv::gui::message(std::string("could not read ") + fn);
 		return false;
 	}
-	file_name = fn;
-	update_member(&file_name);
 	on_point_cloud_change_callback(PCC_NEW_POINT_CLOUD);
+	update_file_name(fn);
 	return true;
 }
 bool point_cloud_interactable::open_directory(const std::string& dn)
@@ -72,6 +91,7 @@ bool point_cloud_interactable::open_directory(const std::string& dn)
 	update_member(&use_component_colors);
 	if (!do_append)
 		on_point_cloud_change_callback(PCC_NEW_POINT_CLOUD);
+	update_file_name(dn);
 	return true;
 }
 bool point_cloud_interactable::open_and_append(const std::string& fn)
@@ -81,6 +101,7 @@ bool point_cloud_interactable::open_and_append(const std::string& fn)
 		return false;
 	}
 	on_point_cloud_change_callback(PointCloudChangeEvent(PCC_POINTS_RESIZE + PCC_COMPONENTS_RESIZE));
+	update_file_name(fn, true);
 	return true;
 }
 bool point_cloud_interactable::open_or_append(cgv::gui::event& e, const std::string& file_name)
@@ -259,9 +280,6 @@ point_cloud_interactable::point_cloud_interactable() : ne(pc, ng)
 	k = 30;
 	do_symmetrize = false;
 	reorient_normals = true;
-
-	use_component_transformations = false;
-	point_style.use_group_transformation = false;
 }
 void point_cloud_interactable::auto_set_view()
 {
@@ -274,9 +292,6 @@ void point_cloud_interactable::auto_set_view()
 		cgv::gui::message("could not find a view to adjust!!");
 		return;
 	}
-	//	view_ptrs[0]->set_view_dir(0,0,-1);
-	//	view_ptrs[0]->set_focus(pc.box().get_center());
-	//	view_ptrs[0]->set_y_extent_at_focus(1.5f*pc.box().get_extent()(1));
 	cgv::gui::animate_with_rotation(view_ptrs[0]->ref_view_up_dir(), cgv::render::view::pnt_type(0, 1, 0), 0.5)->set_base_ptr(this);
 	cgv::gui::animate_with_geometric_blend(view_ptrs[0]->ref_y_extent_at_focus(), 1.5*pc.box().get_extent()(1), 0.5)->set_base_ptr(this);
 	cgv::gui::animate_with_linear_blend(view_ptrs[0]->ref_focus(), cgv::render::view::pnt_type(pc.box().get_center()), 0.5)->set_base_ptr(this);
@@ -291,9 +306,11 @@ std::string point_cloud_interactable::get_type_name() const
 bool point_cloud_interactable::self_reflect(cgv::reflect::reflection_handler& srh)
 {
 	if (srh.reflect_member("do_append", do_append) &&
+		srh.reflect_member("use_component_colors", use_component_colors) &&
+		srh.reflect_member("use_component_transformations", use_component_transformations) &&
 		srh.reflect_member("do_auto_view", do_auto_view) &&
 		srh.reflect_member("data_path", data_path) &&
-		srh.reflect_member("file_name", file_name) &&
+		srh.reflect_member("file_name", new_file_name) &&
 		srh.reflect_member("directory_name", directory_name) &&
 		srh.reflect_member("interact_point_step", interact_point_step) &&
 		srh.reflect_member("point_style", point_style) &&
@@ -649,12 +666,16 @@ void point_cloud_interactable::on_set(void* member_ptr)
 	if (member_ptr == &ne.localization_scale || member_ptr == &ne.normal_sigma || member_ptr == &ne.bw_type || member_ptr == &ne.plane_distance_scale) {
 		on_point_cloud_change_callback(PCC_WEIGHTS);
 	}
-	if (member_ptr == &file_name) {
-		std::cout << "file_name set to " << file_name << std::endl;
-		if (!do_append)
-			open(file_name);
-		else
-			open_and_append(file_name);
+	if (member_ptr == &new_file_name) {
+		if (ref_tree_node_visible_flag(new_file_name)) {
+			save(new_file_name);
+		}
+		else {
+			if (!do_append)
+				open(new_file_name);
+			else
+				open_and_append(new_file_name);
+		}
 	}
 	if (member_ptr == &directory_name) {
 		open_directory(directory_name);
@@ -696,18 +717,10 @@ void point_cloud_interactable::on_set(void* member_ptr)
 	if (member_ptr == &use_component_colors) {
 		point_style.use_group_color = use_component_colors;
 		update_member(&point_style.use_group_color);
-		box_style.use_group_color = use_component_colors;
-		update_member(&box_style.use_group_color);
-		box_wire_style.use_group_color = use_component_colors;
-		update_member(&box_wire_style.use_group_color);
 	}
 	if (member_ptr == &use_component_transformations) {
 		point_style.use_group_transformation = use_component_transformations;
 		update_member(&point_style.use_group_transformation);
-		box_style.use_group_transformation = use_component_transformations;
-		update_member(&box_style.use_group_transformation);
-		box_wire_style.use_group_transformation = use_component_transformations;
-		update_member(&box_wire_style.use_group_transformation);
 	}
 	update_member(member_ptr);
 	post_redraw();
@@ -715,19 +728,23 @@ void point_cloud_interactable::on_set(void* member_ptr)
 void point_cloud_interactable::create_gui()
 {
 	add_decorator(get_name(), "heading", "level=2");
-	bool show = begin_tree_node("IO", file_name, true, "level=3;options='w=40';align=' '");
+	bool show = begin_tree_node("IO", data_path, true, "level=3;options='w=40';align=' '");
 	add_member_control(this, "append", do_append, "toggle", "w=60", " ");
 	add_member_control(this, "auto_view", do_auto_view, "toggle", "w=80");
 
 	if (show) {
 		align("\a");
-		add_gui("data_path", data_path, "directory", "title='Select Data Directory'");
-		add_gui("file_name", file_name, "file_name", "title='" FILE_OPEN_TITLE "';filter='" FILE_OPEN_FILTER "'");
-		add_gui("directory_name", directory_name, "directory", "title='Select Data Directory';tooltip='read all point clouds from a directory'");
+		add_gui("data_path", data_path, "directory", "w=170;title='Select Data Directory'");
+		add_gui("file_name", new_file_name, "file_name",
+			"w=130;"
+			"open=true;open_title='" FILE_OPEN_TITLE "';open_filter='" FILE_OPEN_FILTER "';"
+			"save=true;save_title='" FILE_SAVE_TITLE "';save_filter='" FILE_SAVE_FILTER "'"
+		);
+		add_gui("directory_name", directory_name, "directory", "w=170;title='Select Data Directory';tooltip='read all point clouds from a directory'");
 		align("\b");
-		end_tree_node(file_name);
+		end_tree_node(data_path);
 	}
-	show = begin_tree_node("points", show_points, false, "level=3;w=100;align=' '");
+	show = begin_tree_node("points", show_points, false, "level=3;options='w=160';align=' '");
 	add_member_control(this, "show", show_points, "toggle", "w=50");
 	if (show) {
 		align("\a");
@@ -753,11 +770,12 @@ void point_cloud_interactable::create_gui()
 		align("\b");
 		end_tree_node(show_points);
 	}
-	show = begin_tree_node("components", pc.components, false, "level=3;w=100;align=' '");
-	add_member_control(this, "show", point_style.use_group_color, "toggle", "w=50");
+	show = begin_tree_node("components", pc.components, false, "level=3;options='w=140';align=' '");
+	add_member_control(this, "clr", use_component_colors, "toggle", "w=30", " ");
+	add_member_control(this, "tra", use_component_transformations, "toggle", "w=30");
 	if (show) {
 		align("\a");
-		if (begin_tree_node("component colors", pc.component_colors, false)) {
+		if (begin_tree_node("component colors", pc.component_colors, false, "level=3")) {
 			align("\a");
 			for (unsigned i = 0; i < pc.component_colors.size(); ++i) {
 				add_member_control(this, std::string("C") + cgv::utils::to_string(i), pc.component_colors[i]);
@@ -765,7 +783,7 @@ void point_cloud_interactable::create_gui()
 			align("\b");
 			end_tree_node(pc.component_colors);
 		}
-		if (begin_tree_node("group transformations", pc.component_translations, false)) {
+		if (begin_tree_node("group transformations", pc.component_translations, false, "level=3")) {
 			align("\a");
 			for (unsigned i = 0; i < pc.component_translations.size(); ++i) {
 				add_gui(std::string("T") + cgv::utils::to_string(i), pc.component_translations[i]);
@@ -777,7 +795,7 @@ void point_cloud_interactable::create_gui()
 		align("\b");
 		end_tree_node(pc.components);
 	}
-	show = begin_tree_node("neighbor graph", show_neighbor_graph, false, "level=3;w=150;align=' '");
+	show = begin_tree_node("neighbor graph", show_neighbor_graph, false, "level=3;options='w=160';align=' '");
 	add_member_control(this, "show", show_neighbor_graph, "toggle", "w=50");
 	if (show) {
 		add_member_control(this, "k", k, "value_slider", "min=3;max=50;log=true;ticks=true");
@@ -786,7 +804,7 @@ void point_cloud_interactable::create_gui()
 		end_tree_node(show_neighbor_graph);
 	}
 
-	show = begin_tree_node("normals", show_nmls, false, "level=3;w=100;align=' '");
+	show = begin_tree_node("normals", show_nmls, false, "level=3;options='w=160';align=' '");
 	add_member_control(this, "show", show_nmls, "toggle", "w=50");
 	if (show) {
 		cgv::signal::connect_copy(add_button("toggle orientation")->click, cgv::signal::rebind(this, &point_cloud_interactable::toggle_normal_orientations));
@@ -810,10 +828,10 @@ void point_cloud_interactable::create_gui()
 		end_tree_node(show_surfrec);
 	}
 	*/
-	show = begin_tree_node("box", show_box, false, "level=3;w=100;align=' '");
-	add_member_control(this, "show", show_box, "toggle", "w=50");
+	show = begin_tree_node("box", show_box, false, "level=3;options='w=140';align=' '");
+	add_member_control(this, "main", show_box, "toggle", "w=30", " ");
+	add_member_control(this, "com", show_boxes, "toggle", "w=30");
 	if (show) {
-		add_member_control(this, "show", show_boxes, "toggle", "w=50");
 		add_gui("color", box_color);
 		add_gui("box_style", box_style);
 		add_gui("box_wire_style", box_wire_style);

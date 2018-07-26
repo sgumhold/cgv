@@ -15,6 +15,8 @@ namespace cgv {
 		{
 			has_extents = false;
 			position_is_center = true;
+			has_translations = false;
+			has_rotations = false;
 		}
 		/// set the flag, whether the position is interpreted as the box center
 		void box_wire_renderer::set_position_is_center(bool _position_is_center)
@@ -50,7 +52,19 @@ namespace cgv {
 			if (!line_renderer::enable(ctx))
 				return false;
 			ref_prog().set_uniform(ctx, "position_is_center", position_is_center);
+			ref_prog().set_uniform(ctx, "has_rotations", has_rotations);
+			ref_prog().set_uniform(ctx, "has_translations", has_translations);
 			return true;
+		}
+		///
+		bool box_wire_renderer::disable(context& ctx)
+		{
+			if (!attributes_persist()) {
+				has_rotations = false;
+				has_translations = false;
+			}
+
+			return line_renderer::disable(ctx);
 		}
 	}
 }

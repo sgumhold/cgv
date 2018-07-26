@@ -1,3 +1,4 @@
 files:normal
 vertex_file:group.glsl
+vertex_file:quaternion.glsl
 geometry_shader_info:points;line_strip;2
