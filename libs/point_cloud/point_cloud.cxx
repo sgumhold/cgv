@@ -742,7 +742,8 @@ enum BPCFlags
 	BPC_HAS_PIXCRDS = 8,
 	BPC_HAS_COMPS = 16,
 	BPC_HAS_COMP_CLRS = 32,
-	BPC_HAS_COMP_TRANS = 64
+	BPC_HAS_COMP_TRANS = 64,
+	BPC_HAS_BYTE_CLRS = 128
 };
 
 bool point_cloud::read_bin(const string& file_name)
@@ -780,8 +781,36 @@ bool point_cloud::read_bin(const string& file_name)
 			success = success && (fread(&N[0][0], sizeof(Nml), m, fp) == m);
 		}
 		if (flags & BPC_HAS_CLRS) {
+			bool byte_colors_in_file = (flags & BPC_HAS_BYTE_CLRS) != 0;
+#ifdef BYTE_COLORS
+			bool byte_colors_in_pc = true;
+#else
+			bool byte_colors_in_pc = false;
+#endif
 			C.resize(n);
-			success = success && fread(&C[0][0], sizeof(Clr), n, fp) == n;
+			if (byte_colors_in_file == byte_colors_in_pc)
+				success = success && fread(&C[0][0], sizeof(Clr), n, fp) == n;
+			else {
+				if (byte_colors_in_file) {
+					std::vector<cgv::media::color<cgv::type::uint8_type> > tmp;
+					tmp.resize(n);
+					success = success && fread(&tmp[0][0], sizeof(cgv::media::color<cgv::type::uint8_type>), n, fp) == n;
+					if (success) {
+						for (size_t i = 0; i < n; ++i)
+							C[i] = Clr(byte_to_color_component(tmp[i][0]), byte_to_color_component(tmp[i][1]), byte_to_color_component(tmp[i][2]));
+					}
+				}
+				else {
+					std::vector<cgv::media::color<float> > tmp;
+					tmp.resize(n);
+					success = success && fread(&tmp[0][0], sizeof(cgv::media::color<float>), n, fp) == n;
+					if (success) {
+						for (size_t i = 0; i < n; ++i)
+							C[i] = Clr(float_to_color_component(tmp[i][0]), float_to_color_component(tmp[i][1]), float_to_color_component(tmp[i][2]));
+					}
+
+				}
+			}
 		}
 		if (flags & BPC_HAS_TCS) {
 			T.resize(n);
@@ -803,7 +832,7 @@ bool point_cloud::read_bin(const string& file_name)
 						component_indices[j] = i;
 				if (flags & BPC_HAS_COMP_CLRS) {
 					component_colors.resize(nr_comps);
-					success = success && fread(&component_colors[0], sizeof(Rgba), nr_comps, fp) == nr_comps;
+					success = success && fread(&component_colors[0], sizeof(RGBA), nr_comps, fp) == nr_comps;
 				}
 				if (flags & BPC_HAS_COMP_TRANS) {
 					component_rotations.resize(nr_comps);
@@ -1030,6 +1059,9 @@ bool point_cloud::write_bin(const std::string& file_name) const
 	flags += has_components() ? BPC_HAS_COMPS : 0;
 	flags += has_component_colors() ? BPC_HAS_COMP_CLRS : 0;
 	flags += has_component_transformations() ? BPC_HAS_COMP_TRANS : 0;
+#ifdef BYTE_COLORS
+	flags += BPC_HAS_BYTE_CLRS;
+#endif
 	if (has_colors() && C.size() == n)
 		m1 = 2*n+m;
 	bool success;
@@ -1044,15 +1076,14 @@ bool point_cloud::write_bin(const std::string& file_name) const
 			success = success && (fwrite(&C[0][0], sizeof(Clr), n, fp) == n);
 	}
 	else {
-		m = n;
-		m1 = 0;
+		m = 0;
 		success =
-			fwrite(&m1, sizeof(Cnt), 1, fp) == 1 &&
 			fwrite(&m, sizeof(Cnt), 1, fp) == 1 &&
+			fwrite(&n, sizeof(Cnt), 1, fp) == 1 &&
 			fwrite(&flags, sizeof(Cnt), 1, fp) == 1 &&
 			fwrite(&P[0][0], sizeof(Pnt), n, fp) == n;
 		if (has_normals())
-			success = success && (fwrite(&N[0][0], sizeof(Nml), m, fp) == m);
+			success = success && (fwrite(&N[0][0], sizeof(Nml), n, fp) == n);
 		if (has_colors() && C.size() == n)
 			success = success && (fwrite(&C[0][0], sizeof(Clr), n, fp) == n);
 
@@ -1065,7 +1096,7 @@ bool point_cloud::write_bin(const std::string& file_name) const
 			success = success && (fwrite(&nr_comps, sizeof(Cnt), 1, fp) == 1) && (fwrite(&components[0], sizeof(component_info), nr_comps, fp) == nr_comps);
 		}
 		if (has_component_colors())
-			success = success && (fwrite(&component_colors[0][0], sizeof(Rgba), get_nr_components(), fp) == get_nr_components());
+			success = success && (fwrite(&component_colors[0][0], sizeof(RGBA), get_nr_components(), fp) == get_nr_components());
 		if (has_component_transformations()) {
 			success = success && (fwrite(&component_rotations[0][0], sizeof(Qat), get_nr_components(), fp) == get_nr_components());
 			success = success && (fwrite(&component_translations[0][0], sizeof(Dir), get_nr_components(), fp) == get_nr_components());

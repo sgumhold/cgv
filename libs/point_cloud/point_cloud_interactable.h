@@ -67,12 +67,22 @@ class CGV_API point_cloud_interactable :
 protected:
 	/**@name file io */
 	//@{
+	/// path of last opened or saved file
+	std::string data_path;
+	/// file name without path nor extension of current file
+	std::string file_name;
+private:
+	/// helper member for updating the file name without overwriting the current one. This is needed for concatenation of file names when appending them
+	std::string new_file_name;
+protected:
 	/// directory_name is used to support reading all point clouds from a directory by setting directory_path in the config file
 	std::string directory_name;
 	/// flag that tells whether reading a point cloud will append it to current or replace current
 	bool do_append;
 	/// whether to automatically set the view after reading new points
 	bool do_auto_view;
+	/// update data_path and file_name members from full file name
+	void update_file_name(const std::string& ffn, bool append = false);
 	/// save current point cloud to file with name fn
 	bool save(const std::string& fn);
 	/// open a new point cloud

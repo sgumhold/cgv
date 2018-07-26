@@ -26,6 +26,7 @@ gl_point_cloud_drawable::gl_point_cloud_drawable()
 	show_nmls = true;
 	show_boxes = false;
 	show_box = true;
+
 	point_style.blend_points = false;
 
 	box_color = color_type(0.5f, 0.5f, 0.5f, 1.0f);
@@ -36,6 +37,9 @@ gl_point_cloud_drawable::gl_point_cloud_drawable()
 	use_these_component_colors = 0;
 	use_these_point_palette = 0;
 	use_these_point_color_indices = 0;
+
+	use_component_colors = false;
+	use_component_transformations = false;
 }
 
 bool gl_point_cloud_drawable::read(const std::string& _file_name)
@@ -49,13 +53,8 @@ bool gl_point_cloud_drawable::read(const std::string& _file_name)
 		cerr << "could not read point cloud " << fn << endl;
 		return false;
 	}
-	file_name = drop_extension(_file_name);
 	show_point_begin = 0;
 	show_point_end = pc.get_nr_points();
-
-	// clear component info
-	use_component_colors = pc.has_component_colors();
-	use_component_transformations = pc.has_component_transformations();
 
 	post_redraw();
 	return true;
@@ -73,9 +72,6 @@ bool gl_point_cloud_drawable::append(const std::string& _file_name, bool add_com
 		cerr << "could not read point cloud " << fn << endl;
 		return false;
 	}
-	if (!file_name.empty())
-		file_name += " and "; 
-	file_name += drop_extension(fn);
 
 	// construct component if necessary
 	if (add_component) {
@@ -100,22 +96,17 @@ bool gl_point_cloud_drawable::write(const std::string& fn)
 		cerr << "could not write point cloud " << fn << endl;
 		return false;
 	}
-	file_name = drop_extension(fn);
 	return true;
 }
 
 void gl_point_cloud_drawable::render_boxes(context& ctx, group_renderer& R, cgv::render::group_render_style& RS)
 {
 	R.set_position_array(ctx, &pc.box(0).get_min_pnt(), pc.get_nr_components(), sizeof(Box));
-	R.set_color_array(ctx, &pc.component_color(0), pc.get_nr_components());
-	R.set_group_rotations(ctx, &pc.component_rotation(0), pc.get_nr_components());
-	R.set_group_translations(ctx, &pc.component_translation(0), pc.get_nr_components());
-	bool tmp1 = RS.use_group_color;
-	RS.use_group_color = false;
+	if (use_component_colors)
+		R.set_color_array(ctx, &pc.component_color(0), pc.get_nr_components());
 	R.validate_and_enable(ctx);
 	glDrawArrays(GL_POINTS, 0, pc.get_nr_components());
 	R.disable(ctx);
-	RS.use_group_color = tmp1;
 }
 
 void gl_point_cloud_drawable::draw_box(cgv::render::context& ctx, const Box& box, const color_type& clr)
@@ -124,28 +115,16 @@ void gl_point_cloud_drawable::draw_box(cgv::render::context& ctx, const Box& box
 	b_renderer.set_position_array(ctx, &box.get_min_pnt(), 1);
 	b_renderer.set_extent_array(ctx, &box.get_max_pnt(), 1);
 	b_renderer.set_color_array(ctx, &clr, 1);
-	bool tmp1 = box_style.use_group_color;
-	bool tmp2 = box_style.use_group_transformation;
-	box_style.use_group_color = false;
-	box_style.use_group_transformation = false;
 	b_renderer.validate_and_enable(ctx);
 	glDrawArrays(GL_POINTS, 0, 1);
 	b_renderer.disable(ctx);
-	box_style.use_group_color = tmp1;
-	box_style.use_group_transformation = tmp2;
 
 	bw_renderer.set_position_array(ctx, &box.get_min_pnt(), 1);
 	bw_renderer.set_extent_array(ctx, &box.get_max_pnt(), 1);
 	bw_renderer.set_color_array(ctx, &clr, 1);
-	tmp1 = box_wire_style.use_group_color;
-	tmp2 = box_wire_style.use_group_transformation;
-	box_wire_style.use_group_color = false;
-	box_wire_style.use_group_transformation = false;
 	bw_renderer.validate_and_enable(ctx);
 	glDrawArrays(GL_POINTS, 0, 1);
 	bw_renderer.disable(ctx);
-	box_style.use_group_color = tmp1;
-	box_style.use_group_transformation = tmp2;
 }
 
 void gl_point_cloud_drawable::draw_boxes(context& ctx)
@@ -163,10 +142,19 @@ void gl_point_cloud_drawable::draw_boxes(context& ctx)
 			b.add_axis_aligned_box(pc.box(ci));
 
 		b_renderer.set_render_style(box_style);
+		if (use_component_transformations) {
+			b_renderer.set_rotations(ctx, &static_cast<HVec&>(pc.component_rotation(0)), pc.get_nr_components(), sizeof(HVec));
+			b_renderer.set_translations(ctx, &pc.component_translation(0), pc.get_nr_components(), sizeof(Dir));
+		}
 		b_renderer.set_extent_array(ctx, &pc.box(0).get_max_pnt(), pc.get_nr_components(), sizeof(Box));
 		render_boxes(ctx, b_renderer, box_style);
 
 		bw_renderer.set_render_style(box_wire_style);
+		if (use_component_transformations) {
+			bw_renderer.set_rotations(ctx, &static_cast<HVec&>(pc.component_rotation(0)), pc.get_nr_components(), sizeof(HVec));
+			bw_renderer.set_translations(ctx, &pc.component_translation(0), pc.get_nr_components(), sizeof(Dir));
+		}
+		
 		bw_renderer.set_extent_array(ctx, &pc.box(0).get_max_pnt(), pc.get_nr_components(), sizeof(Box));
 		render_boxes(ctx, bw_renderer, box_wire_style);
 	}

@@ -53,7 +53,19 @@ namespace cgv {
 			if (!surface_renderer::enable(ctx))
 				return false;
 			ref_prog().set_uniform(ctx, "position_is_center", position_is_center);
+			ref_prog().set_uniform(ctx, "has_rotations", has_rotations);
+			ref_prog().set_uniform(ctx, "has_translations", has_translations);
 			return true;
+		}
+		///
+		bool box_renderer::disable(context& ctx)
+		{
+			if (!attributes_persist()) {
+				has_rotations = false;
+				has_translations = false;
+			}
+
+			return surface_renderer::disable(ctx);
 		}
 
 	}

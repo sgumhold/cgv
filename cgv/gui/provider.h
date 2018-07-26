@@ -209,7 +209,7 @@ if (begin_tree_node("Node", vec)) {
 	/*! T can be with_index(v,i) as in the begin_tree_node function. You typically need this function in an on_set callback to check whether the user
 	    has toggled a tree node */
 	template <typename T>
-	bool& ref_tree_node_visible_flag(const T& value) const { return ref_tree_node_visible_flag_void(wi_get_value_ptr(value), wi_get_index(value)); }
+	static bool& ref_tree_node_visible_flag(const T& value) { return ref_tree_node_visible_flag_void(wi_get_value_ptr(value), wi_get_index(value)); }
 	/// template specialization that allows to specify value reference plus node_instance by using the result of the function with_instance(value,idx) for the value argument
 	//! finish a sub tree begun with begin_tree_node 
 	/*! This functions should be called only if the corresponding call to begin_tree_node returned true. */
@@ -224,7 +224,7 @@ if (begin_tree_node("Node", vec)) {
 	/// void version of the templated functions
 	bool begin_tree_node_void(const std::string& label, const void* value_ptr, int index = -1, bool initial_visibility = false, const std::string& options = "", gui_group_ptr ggp = gui_group_ptr());
 	///
-	bool& ref_tree_node_visible_flag_void(const void* value_ptr, int index = -1) const;
+	static bool& ref_tree_node_visible_flag_void(const void* value_ptr, int index = -1);
 	///
 	void end_tree_node_void(const void* value_ptr, int index = -1);
 	///
