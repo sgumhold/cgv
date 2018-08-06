@@ -215,17 +215,34 @@ namespace cgv {
 				cgv::render::point_render_style* prs_ptr = reinterpret_cast<cgv::render::point_render_style*>(value_ptr);
 				cgv::base::base* b = dynamic_cast<cgv::base::base*>(p);
 
-				p->add_member_control(b, "point_size", prs_ptr->point_size, "value_slider", "min=1;max=20;log=true;ticks=true");
-				p->add_member_control(b, "measure_point_size_in_pixel", prs_ptr->measure_point_size_in_pixel, "toggle");
-				p->add_member_control(b, "smooth", prs_ptr->smooth_points, "toggle");
-				p->add_member_control(b, "blend", prs_ptr->blend_points, "toggle");
-				p->add_member_control(b, "use_shader", prs_ptr->use_point_shader, "check");
-				p->add_member_control(b, "orient_splats", prs_ptr->orient_splats, "check");
-				p->add_member_control(b, "outline_width_from_pixel", prs_ptr->outline_width_from_pixel, "value_slider", "min=0;max=10;ticks=true");
-				p->add_member_control(b, "percentual_outline_width", prs_ptr->percentual_outline_width, "value_slider", "min=0;max=100;ticks=true");
-				p->add_member_control(b, "percentual_halo", prs_ptr->percentual_halo, "value_slider", "min=0;max=100;ticks=true");
-				p->add_member_control(b, "halo_color", prs_ptr->halo_color);
-				p->add_gui("surface_render_style", *static_cast<cgv::render::surface_render_style*>(prs_ptr));
+				bool show = p->begin_tree_node("splatting", prs_ptr->point_size, false, "options='w=60';level=3;align=''");
+				p->add_member_control(b, "point_size", prs_ptr->point_size, "value_slider", "label='';w=130;min=1;max=50;log=true;ticks=true", "");
+				p->add_member_control(b, "px", prs_ptr->measure_point_size_in_pixel, "toggle", "w=16");
+				if (show) {
+					p->align("\a");
+					p->add_member_control(b, "smooth", prs_ptr->smooth_points, "toggle", "w=60", " ");
+					p->add_member_control(b, "blend", prs_ptr->blend_points, "toggle", "w=50", " ");
+					p->add_member_control(b, "orient", prs_ptr->orient_splats, "toggle", "w=60");
+					p->align("\b");
+					p->end_tree_node(prs_ptr->point_size);
+				}
+				show = p->begin_tree_node("halo", prs_ptr->halo_color, false, "options='w=120';level=3;align=''");
+				p->add_member_control(b, "color", prs_ptr->halo_color, "", "w=50");
+				if (show) {
+					p->align("\a");
+					p->add_member_control(b, "outline_width_from_pixel", prs_ptr->outline_width_from_pixel, "value_slider", "min=0;max=10;ticks=true");
+					p->add_member_control(b, "percentual_outline_width", prs_ptr->percentual_outline_width, "value_slider", "min=0;max=100;ticks=true");
+					p->add_member_control(b, "percentual_halo", prs_ptr->percentual_halo, "value_slider", "min=0;max=100;ticks=true");
+					p->align("\b");
+					p->end_tree_node(prs_ptr->halo_color);
+				}
+				if (p->begin_tree_node("surface rendering", prs_ptr->outline_width_from_pixel, false, "level=3")) {
+					p->align("\a");
+					p->add_gui("surface_render_style", *static_cast<cgv::render::surface_render_style*>(prs_ptr));
+					p->align("\b");
+					p->end_tree_node(prs_ptr->outline_width_from_pixel);
+				}
+				p->add_member_control(b, "use_shader", prs_ptr->outline_width_from_pixel, "check");
 				return true;
 			}
 		};

@@ -90,10 +90,10 @@ namespace cgv {
 			{
 				return
 					rh.reflect_base<group_render_style>(*this) &&
-					rh.reflect_member("surface_color", surface_color) &&
 					rh.reflect_member("culling_mode", culling_mode) &&
 					rh.reflect_member("illumination_mode", illumination_mode) &&
 					rh.reflect_member("map_color_to_material", map_color_to_material) &&
+					rh.reflect_member("surface_color", surface_color) &&
 					rh.reflect_member("front_material", front_material) &&
 					rh.reflect_member("back_material", back_material);
 			}
@@ -122,13 +122,33 @@ namespace cgv {
 					return false;
 				cgv::render::surface_render_style* srs_ptr = reinterpret_cast<cgv::render::surface_render_style*>(value_ptr);
 				cgv::base::base* b = dynamic_cast<cgv::base::base*>(p);
-				p->add_member_control(b, "surface_color", srs_ptr->surface_color);
-				p->add_member_control(b, "culling_mode", srs_ptr->culling_mode, "dropdown", "enums='off,backface,frontface'");
-				p->add_member_control(b, "illumination_mode", srs_ptr->illumination_mode, "dropdown", "enums='off,onesided,twosided'");
 				p->add_member_control(b, "map_color_to_material", (cgv::type::DummyEnum&)srs_ptr->map_color_to_material, "dropdown", "enums='OFF,FRONT,BACK,FRONT_AND_BACK'");
-				p->add_gui("front_material", srs_ptr->front_material);
-				p->add_gui("back_material", srs_ptr->back_material);
-				p->add_gui("group render style", *static_cast<cgv::render::group_render_style*>(srs_ptr));
+				p->add_member_control(b, "illumination_mode", srs_ptr->illumination_mode, "dropdown", "enums='off,onesided,twosided'");
+				p->add_member_control(b, "culling_mode", srs_ptr->culling_mode, "dropdown", "enums='off,backface,frontface'");
+				if (p->begin_tree_node("color and materials", srs_ptr->surface_color, false, "level=3")) {
+					p->align("\a");
+					p->add_member_control(b, "surface_color", srs_ptr->surface_color);
+					if (p->begin_tree_node("front_material", srs_ptr->front_material, false, "level=3")) {
+						p->align("\a");
+						p->add_gui("front_material", srs_ptr->front_material);
+						p->align("\b");
+						p->end_tree_node(srs_ptr->front_material);
+					}
+					if (p->begin_tree_node("back_material", srs_ptr->back_material, false, "level=3")) {
+						p->align("\a");
+						p->add_gui("back_material", srs_ptr->back_material);
+						p->align("\b");
+						p->end_tree_node(srs_ptr->back_material);
+					}
+					p->align("\b");
+					p->end_tree_node(srs_ptr->surface_color);
+				}
+				if (p->begin_tree_node("use of group information", srs_ptr->illumination_mode, false, "level=3")) {
+					p->align("\a");
+					p->add_gui("group render style", *static_cast<cgv::render::group_render_style*>(srs_ptr));
+					p->align("\b");
+					p->end_tree_node(srs_ptr->illumination_mode);
+				}
 				return true;
 			}
 		};
