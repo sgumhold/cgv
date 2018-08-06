@@ -744,11 +744,13 @@ void point_cloud_interactable::create_gui()
 		align("\b");
 		end_tree_node(data_path);
 	}
-	show = begin_tree_node("points", show_points, false, "level=3;options='w=160';align=' '");
-	add_member_control(this, "show", show_points, "toggle", "w=50");
+	show = begin_tree_node("points", show_points, false, "level=3;options='w=70';align=' '");
+	add_member_control(this, "show", show_points, "toggle", "w=40", " ");
+	add_member_control(this, "sort", sort_points, "toggle", "w=40", " ");
+	add_member_control(this, "blnd", point_style.blend_points, "toggle", "w=40");
 	if (show) {
 		align("\a");
-		add_member_control(this, "accelerate_picking", accelerate_picking, "check");
+		add_gui("point_style", point_style);
 		if (begin_tree_node("subsample", show_point_step, false, "level=3")) {
 			align("\a");
 			add_member_control(this, "nr_draw_calls", nr_draw_calls, "value_slider", "min=1;max=100;log=true;ticks=true");
@@ -765,8 +767,7 @@ void point_cloud_interactable::create_gui()
 			align("\b");
 			end_tree_node(show_point_step);
 		}
-		add_member_control(this, "sort_points", sort_points, "check");
-		add_gui("point_style", point_style);
+		add_member_control(this, "accelerate_picking", accelerate_picking, "check");
 		align("\b");
 		end_tree_node(show_points);
 	}
