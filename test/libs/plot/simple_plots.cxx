@@ -471,6 +471,7 @@ public:
 		auto_x = auto_y = true;
 		selection_mode = BSM_DIRECTORY;
 		p1.set_extent(cgv::plot::plot_types::P2D(3.0f, 2.0f));
+		p1.tick_length[0] = 5;
 		set_name("plot_explorer");
 	}
 	/// overload and implement this method to handle events
@@ -891,18 +892,25 @@ public:
 
 	void create_dynamic_gui()
 	{
-		add_decorator("plot", "heading", "level=3");
+		add_decorator("plot", "heading", "level=3;w=100", " ");
+		add_member_control(this, "adjust_min", adjust_min, "toggle", "w=70");
+
+		add_member_control(this, "x axis", auto_x, "check", "w=10;align='L'", " ");
+		connect(add_button("adj", "w=30", " ")->click, this, &browser_test::adjust_x);
+		add_member_control(this, "log", p1.ref_axis_config(0).log_scale, "toggle", "w=30", " ");
+
+		add_member_control(this, "y axis", auto_y, "check", "w=10;align='L'", " ");
+		connect(add_button("adj", "w=30", " ")->click, this, &browser_test::adjust_y);
+		add_member_control(this, "log", p1.ref_axis_config(1).log_scale, "toggle", "w=30", " ");
+		add_member_control(this, "", p1.tick_length[0], "value", "w=40;step=1;max=20;min=1");
+
 		add_member_control(this, "dataset", selected_dataset, "value_slider", "min=0");
 		find_control(selected_dataset)->set("max", datasets.size() == 0 ? 0 : datasets.size() - 1);
 		for (size_t c = 0; c < 6; ++c) {
 			add_member_control(this, c < headers.size() ? headers[c] : "", (bool&)column_selection[c], "check");
 		}
-		add_member_control(this, "adjust_min", adjust_min, "check");
 		
-		connect(add_button("adjust x", "w=100", " ")->click, this, &browser_test::adjust_x);
-		add_member_control(this, "auto", auto_x, "toggle", "w=70");
-		connect(add_button("adjust y", "w=100", " ")->click, this, &browser_test::adjust_y);
-		add_member_control(this, "auto", auto_y, "toggle", "w=70");
+
 		p1.create_gui(this, *this);
 	}
 /*
