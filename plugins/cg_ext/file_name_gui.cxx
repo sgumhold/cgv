@@ -103,7 +103,7 @@ struct directory_gui_creator : public cgv::gui::gui_creator
 		cgv::base::has_property(options, "path", path, true);
 		if (path.empty()) {
 			if (value_ptr && !value_ptr->empty())
-				path = cgv::utils::file::get_path(*value_ptr);
+				path = *value_ptr;
 		}
 		std::string fn;
 		bool save = false;
