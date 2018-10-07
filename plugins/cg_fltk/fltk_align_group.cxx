@@ -106,7 +106,10 @@ public:
 		case fltk::ENTER :
 		case fltk::MOVE :
 		case fltk::RELEASE :
-			cursor(inside() ? fltk::CURSOR_WE : fltk::CURSOR_DEFAULT);
+			if (inside())
+				cursor(fltk::CURSOR_WE);
+			else
+				cursor(fltk::CURSOR_DEFAULT);
 			return res;
 		case fltk::LEAVE :
 			cursor(fltk::CURSOR_DEFAULT);
@@ -175,6 +178,14 @@ bool fltk_align_group::set_void(const std::string& property, const std::string& 
 			return true;
 		}
 	}
+	if (property == "current_x") {
+		cgv::type::get_variant(current_x, value_type, value_ptr);
+		return true;
+	}
+	if (property == "current_y") {
+		cgv::type::get_variant(current_y, value_type, value_ptr);
+		return true;
+	}
 	return fltk_base::set_void(scroll_group, this, property, value_type, value_ptr);
 
 }
@@ -188,13 +199,19 @@ bool fltk_align_group::get_void(const std::string& property, const std::string& 
 			return true;
 		}
 	}
-	else if (property == "H") {
+	if (property == "H") {
 		cgv::type::set_variant(current_y, value_type, value_ptr);
 		return true;
 	}
-	else 
-		return fltk_base::get_void(scroll_group, this, property, value_type, value_ptr);
-	return false;
+	if (property == "current_x") {
+		cgv::type::set_variant(current_x, value_type, value_ptr);
+		return true;
+	}
+	if (property == "current_y") {
+		cgv::type::set_variant(current_y, value_type, value_ptr);
+		return true;
+	}
+	return fltk_base::get_void(scroll_group, this, property, value_type, value_ptr);
 }
 
 /// return a fltk::Widget pointer that can be cast into a fltk::Group
