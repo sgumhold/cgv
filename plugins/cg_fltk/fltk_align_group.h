@@ -1,7 +1,6 @@
 #pragma once
 
 #include "fltk_gui_group.h"
-#include "fltk_dragger.h"
 
 #include "lib_begin.h"
 

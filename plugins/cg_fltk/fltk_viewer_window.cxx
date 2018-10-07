@@ -1,7 +1,6 @@
 #include "fltk_viewer_window.h"
 #include "fltk_driver.h"
 #include "fltk_event.h"
-#include "fltk_dragger.h"
 #include <cgv/gui/provider.h>
 #include <cgv/signal/rebind.h>
 #include <cgv/base/base_generator.h>
