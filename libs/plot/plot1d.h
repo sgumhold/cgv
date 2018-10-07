@@ -27,6 +27,7 @@ class CGV_API plot1d : public plot_base
 	cgv::render::shader_program bar_prog, bar_outline_prog;
 protected:
 	std::vector<std::vector<P2D> > samples;
+	std::vector <std::vector<unsigned> > strips;
 	B2D domain;
 	axis_config axes[2];
 	V2D extent;
@@ -34,9 +35,9 @@ protected:
 	P3D center_location;
 
 	P3D transform_to_world(const P2D& domain_point) const;
-	axis_config& ref_axis_config(unsigned ai);
 	void set_uniforms(cgv::render::context& ctx, cgv::render::shader_program& prog, unsigned i);
 public:
+	axis_config& ref_axis_config(unsigned ai);
 	/// construct empty plot with default domain [0..1,0..1]
 	plot1d();
 	/// return number of axis
@@ -94,6 +95,8 @@ public:
 	void set_sub_plot_colors(unsigned i, const Clr& base_color);
 	/// return the samples of the i-th sub plot
 	std::vector<P2D>& ref_sub_plot_samples(unsigned i = 0);
+	/// return the strip definition of the i-th sub plot
+	std::vector<unsigned>& ref_sub_plot_strips(unsigned i = 0);
 	//@}
 	/// create the gui for the plot independent of the sub plots
 	void create_plot_gui(cgv::base::base* bp, cgv::gui::provider& p);
