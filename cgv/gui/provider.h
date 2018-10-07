@@ -291,7 +291,7 @@ public:
 		to be destroyed before the callback triggering the recreate_gui method
 		has been completely finished, what might make the program crash. Use the
 		post_recreate_gui method instead. */
-	void recreate_gui();
+	virtual void recreate_gui();
 	//! delayed recreation of gui
 	/*! schedule the recreation of the gui for the next time the program is idle.
 	    This mechanism is implemented in a thread save way. */
