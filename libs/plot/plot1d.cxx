@@ -62,14 +62,20 @@ void plot1d::adjust_domain_axis_to_data(unsigned ai, bool adjust_min, bool adjus
 {
 	if (samples.empty())
 		return;
-	if (samples.front().empty())
-		return;
-	// compute bounding box
-	if (adjust_min)
-		domain.ref_min_pnt()(ai) = samples.front().front()(ai);
-	if (adjust_max)
-		domain.ref_max_pnt()(ai) = samples.front().front()(ai);
+	bool found_samples = false;
+
 	for (unsigned i = 0; i<samples.size(); ++i) {
+		if (samples[i].empty())
+			continue;
+		if (!found_samples) {
+			found_samples = true;
+			// compute bounding box
+			if (adjust_min)
+				domain.ref_min_pnt()(ai) = samples[i].front()(ai);
+			if (adjust_max)
+				domain.ref_max_pnt()(ai) = samples[i].front()(ai);
+
+		}
 		for (unsigned j = 0; j<samples[i].size(); ++j) {
 			if (adjust_min) {
 				if (samples[i][j](ai) < domain.ref_min_pnt()(ai))
@@ -81,8 +87,10 @@ void plot1d::adjust_domain_axis_to_data(unsigned ai, bool adjust_min, bool adjus
 			}
 		}
 	}
-	if (domain.ref_min_pnt()(ai) == domain.ref_max_pnt()(ai))
-		domain.ref_max_pnt()(ai) += 1;
+	if (found_samples) {
+		if (domain.ref_min_pnt()(ai) == domain.ref_max_pnt()(ai))
+			domain.ref_max_pnt()(ai) += 1;
+	}
 }
 
 /// adjust the domain with respect to \c ai th axis to the data
@@ -512,9 +520,9 @@ void plot1d::draw(cgv::render::context& ctx)
 					int max_i = (int) ((max_val - fmod(max_val, axes[ai].ticks[ti].step) ) / axes[ai].ticks[ti].step);
 
 					// ignore ticks on domain boundary
-					if (fabs(min_i * axes[ai].ticks[ti].step - min_val) < std::numeric_limits<Crd>::epsilon())
+					if (min_i * axes[ai].ticks[ti].step - min_val < std::numeric_limits<Crd>::epsilon())
 						++min_i;
-					if (fabs(max_i * axes[ai].ticks[ti].step - max_val) < std::numeric_limits<Crd>::epsilon())
+					if (max_i * axes[ai].ticks[ti].step - max_val > -std::numeric_limits<Crd>::epsilon())
 						--max_i;
 					
 					glLineWidth(tick_line_width[ti]);
@@ -595,6 +603,11 @@ void plot1d::draw(cgv::render::context& ctx)
 					}
 					int min_i = (int) ((min_val - fmod(min_val, axes[ai].ticks[ti].step) ) / axes[ai].ticks[ti].step);
 					int max_i = (int) ((max_val - fmod(max_val, axes[ai].ticks[ti].step) ) / axes[ai].ticks[ti].step);
+
+					if (min_i * axes[ai].ticks[ti].step - min_val < -std::numeric_limits<Crd>::epsilon())
+						++min_i;
+					if (max_i * axes[ai].ticks[ti].step - max_val > std::numeric_limits<Crd>::epsilon())
+						--max_i;
 
 					glLineWidth(tick_line_width[ti]);
 					Crd dash_length = tick_length[0]*0.01f*domain.get_extent()(1-domain.get_max_extent_coord_index());
