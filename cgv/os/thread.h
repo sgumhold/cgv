@@ -38,7 +38,7 @@ t1.stop();
 class CGV_API thread
 {
 protected:
-	void *pthread;
+	void *thread_ptr;
 	bool stop_request;
 	bool running;
 	bool delete_after_termination;

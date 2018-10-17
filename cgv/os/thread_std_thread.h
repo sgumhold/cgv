@@ -8,7 +8,7 @@ namespace cgv {
 ///create the thread
 thread::thread()
 { 
-	pthread = 0;	
+	thread_ptr = 0;	
 	stop_request = false;
 	running = false;
 	delete_after_termination = false;
@@ -20,8 +20,10 @@ void thread::start(bool _delete_after_termination)
 	if(!running) {
 		delete_after_termination = _delete_after_termination;
 		stop_request=false;
-		std::thread*& t_ptr = (std::thread*&) pthread;
-		t_ptr = new std::thread(&cgv::os::thread::execute, this);
+		std::thread*& std_thread_ptr = reinterpret_cast<std::thread*&>(thread_ptr);
+		//if (std_thread_ptr)
+			//delete std_thread_ptr;
+		std_thread_ptr = new std::thread(&cgv::os::thread::execute_s, this);
 		running=true;
 	}
 }
@@ -85,8 +87,8 @@ void thread::stop()
 {
 	if(running) {
 		stop_request=true;
-		std::thread& t = *((std::thread*&) pthread);
-		t.join();
+		std::thread* std_thread_ptr = reinterpret_cast<std::thread*>(thread_ptr);
+		std_thread_ptr->join();
 		stop_request=false;
 	}
 }
@@ -95,9 +97,10 @@ void thread::stop()
 void thread::kill()
 {
 	if (running) {
-		std::thread*& t_ptr = (std::thread*&) pthread;
-		delete t_ptr;
-		t_ptr = 0;
+		std::thread*& std_thread_ptr = reinterpret_cast<std::thread*&>(thread_ptr);
+		std_thread_ptr->detach();
+		delete std_thread_ptr;
+		std_thread_ptr = 0;
 		stop_request=false;
 		running=false;
 	}
@@ -107,7 +110,7 @@ void thread::kill()
 void thread::wait_for_completion()
 {
 	if (running) {
-		std::thread& t = *((std::thread*&) pthread);
+		std::thread& t = *((std::thread*&) thread_ptr);
 		t.join();
 	}
 }
@@ -117,9 +120,11 @@ thread::~thread()
 {
 	if(running)
 		kill();
-	if (pthread) {
-		std::thread*& t_ptr = (std::thread*&) pthread;
-		delete t_ptr;
+	if (thread_ptr) {
+		std::thread* std_thread_ptr = reinterpret_cast<std::thread*>(thread_ptr);
+		std_thread_ptr->detach();
+		delete std_thread_ptr;
+		std_thread_ptr = 0;
 	}
 }
 
@@ -133,8 +138,8 @@ thread_id_type thread::get_current_thread_id()
 /// return id of this thread
 thread_id_type thread::get_id() const
 {
-	std::thread& t = *((std::thread*&) pthread);
-	std::thread::id id = t.get_id();
+	std::thread* std_thread_ptr = reinterpret_cast<std::thread*>(thread_ptr);
+	std::thread::id id = std_thread_ptr->get_id();
 	return (long long&) id;
 }
 
