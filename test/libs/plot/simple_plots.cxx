@@ -652,4 +652,6 @@ public:
 
 cgv::base::object_registration<browser_test> sp_or("");
 
+#ifdef CGV_FORCE_STATIC
 cgv::base::registration_order_definition ro_def("stereo_view_interactor;browser_test");
+#endif
