@@ -40,5 +40,20 @@ void find_interface(base_ptr start, std::vector<X*>& result) {
 	traverser(fa).traverse(start);
 }
 
+/// traverse the hierarchy to find the i-th instance of type T and set pointer to it but only in case pointer is the nullptr, returns false if pointer was nullptr and no instance of type T was found
+template <class X, typename T>
+bool ensure_by_find(X* start, T*& pointer, unsigned i = 0)
+{
+	if (pointer)
+		return true;
+
+	std::vector<T*> instances;
+	cgv::base::find_interface<T>(base_ptr(start), instances);
+	if (instances.empty())
+		return false;
+	pointer = instances[i < instances.size() ? i : instances.size() - 1];
+	return true;
+}
+
 	}
 }
