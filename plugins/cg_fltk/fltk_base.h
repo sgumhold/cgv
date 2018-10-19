@@ -1,7 +1,7 @@
 #pragma once
 
-#include <string>
 #include <cgv/base/named.h>
+#include <string>
 
 namespace fltk {
 	class Widget;

@@ -55,7 +55,8 @@ protected:
 	virtual void set_index(int idx) = 0;
 	// get the selected index
 	virtual int get_index(fltk::Widget *w) = 0;
-
+	/// this is called if the user sets a new enum definition
+	virtual void update_enums();
 	// Parse the enum declarations and fille the list enum_strings
 	void parse_enum_declarations(const std::string& enum_declarations);
 	
@@ -75,6 +76,7 @@ public:
 protected:
 	void set_index(int idx);
 	int get_index(fltk::Widget* w);
+	void update_enums();
 };
 
 

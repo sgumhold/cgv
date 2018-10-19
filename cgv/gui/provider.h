@@ -274,6 +274,8 @@ public:
 	/*! The default is to use a group of type "align_group". Overload this virtual method to use a 
 	    different group type, such as layout group. */
 	virtual std::string get_parent_type() const;
+	/// ensure that my UI is selected in the parent group in case this is a tab group, otherwise return false
+	virtual bool ensure_selected_in_tab_group_parent();
 	/// call this to update all views and controls of a member
 	virtual void update_member(void* member_ptr);
 	/// call this to update all views and controls of all member
