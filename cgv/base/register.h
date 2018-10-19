@@ -33,7 +33,7 @@ extern void CGV_API disable_registration();
 extern bool CGV_API is_registration_enabled();
 //! specify a partial order of objects for registration
 /*! \c partial_order is a semicolon separated list of type names that can ignore name spaces.
-    \c before_contructor_execution tells whether the reordering should happen before constructors of delayed registration events are called.
+    \c before_constructor_execution tells whether the reordering should happen before constructors of delayed registration events are called.
 	\c when specifies in which call to \c enable_registration the reordering should happen. Possible values are 
 	- "always" 
 	- "program" only once for the enable event of the executed program
