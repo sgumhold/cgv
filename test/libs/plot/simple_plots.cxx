@@ -165,21 +165,6 @@ public:
 		os << "drag and drop file or directory";
 	}
 
-	void init_frame(cgv::render::context& ctx)
-	{
-		static bool my_tab_selected = false;
-		if (!my_tab_selected) {
-			my_tab_selected = true;
-			cgv::gui::gui_group_ptr gg = ((provider*)this)->get_parent_group();
-			if (gg) {
-				cgv::gui::gui_group_ptr tab_group = gg->get_parent()->cast<cgv::gui::gui_group>();
-				if (tab_group) {
-					cgv::base::base_ptr c = gg;
-					tab_group->select_child(c, true);
-				}
-			}
-		}
-	}
 	void handle_args(std::vector<std::string>& args)
 	{
 		consider_path_or_file(args[0]);
@@ -429,7 +414,7 @@ public:
 		}
 		if (recompute_plots) {
 			if (datasets.size() == 1 || selected_dataset != -1)
-				construct_plot(datasets[selected_dataset]);
+				construct_plot(datasets[selected_dataset == -1 ? 0 : selected_dataset]);
 			else
 				construct_multi_plot(datasets);
 		}
@@ -666,3 +651,5 @@ public:
 #include <cgv/base/register.h>
 
 cgv::base::object_registration<browser_test> sp_or("");
+
+cgv::base::registration_order_definition ro_def("stereo_view_interactor;browser_test");

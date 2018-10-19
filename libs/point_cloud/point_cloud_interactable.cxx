@@ -252,11 +252,18 @@ void point_cloud_interactable::orient_normals_to_view_point()
 	}
 }
 
+/// call this before using the view ptr for the first time
+bool point_cloud_interactable::ensure_view_pointer()
+{
+	return cgv::base::ensure_by_find(this, view_ptr);
+}
 
 
 point_cloud_interactable::point_cloud_interactable() : ne(pc, ng)
 {
 	set_name("Point Cloud Viewer");
+
+	view_ptr = 0;
 
 	accelerate_picking = true;
 	tree_ds_out_of_date = true;

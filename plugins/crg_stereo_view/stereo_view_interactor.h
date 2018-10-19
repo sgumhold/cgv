@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cgv/base/base.h>
 #include <cgv/render/drawable.h>
 #include <cgv_gl/gl/gl_view.h>
 #include <cgv/gui/event_handler.h>

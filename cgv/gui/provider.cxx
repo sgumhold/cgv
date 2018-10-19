@@ -393,6 +393,22 @@ std::string provider::get_parent_type() const
 {
 	return "align_group";
 }
+/// ensure that my UI is selected in the closest parent that is a tab group
+bool provider::ensure_selected_in_tab_group_parent()
+{
+	cgv::gui::gui_group_ptr my_group = get_parent_group();
+	if (my_group) {
+		cgv::gui::gui_group_ptr tab_group = my_group->get_parent()->cast<cgv::gui::gui_group>();
+		if (tab_group) {
+			cgv::base::base_ptr c = my_group;
+			if (c) {
+				tab_group->select_child(c, true);
+				return true;
+			}
+		}
+	}
+	return false;
+}
 
 // return a path in the main menu to select the gui
 std::string provider::get_menu_path() const

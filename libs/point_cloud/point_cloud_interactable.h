@@ -150,6 +150,11 @@ protected:
 	void orient_normals_to_view_point();
 	//@}
 
+	/// pointer to instance that defines the view
+	cgv::render::view* view_ptr;
+	/// call this before using the view ptr for the first time
+	bool ensure_view_pointer();
+
 public:
 	/// construct viewer with default configuration
 	point_cloud_interactable();
