@@ -132,6 +132,8 @@ protected:
 	neighbor_graph ng;
 	/// build the neighbor graph
 	void build_neighbor_graph();
+	/// build the neighbor graph
+	void build_neighbor_graph_componentwise();
 	/// normal estimation member
 	normal_estimator ne;
 	/// whether to use ann_tree to acceleration picking

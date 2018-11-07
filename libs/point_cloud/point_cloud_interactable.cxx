@@ -150,6 +150,12 @@ void point_cloud_interactable::ensure_tree_ds()
 }
 void point_cloud_interactable::build_neighbor_graph()
 {
+	// use component wise implementation if we do have more than one component 
+	if (pc.has_components() && pc.get_nr_components() > 1) {
+		build_neighbor_graph_componentwise();
+		return;
+	}
+
 	ng.clear();
 	ensure_tree_ds();
 	cgv::utils::statistics he_stats;
@@ -163,6 +169,53 @@ void point_cloud_interactable::build_neighbor_graph()
 		<< ", he = " << ng.nr_half_edges
 		<< " ==> " << (float)ng.nr_half_edges / ((unsigned)(pc.get_nr_points())) << " half edges per vertex" << std::endl;
 }
+
+void point_cloud_interactable::build_neighbor_graph_componentwise()
+{
+	// prepare neighbor graph data structure
+	ng.clear();
+	ng.resize(pc.get_nr_points());
+
+	// iterate components
+	std::cout << "build_neighbor_graph_componentwise(" << pc.get_nr_components() << "):"; std::cout.flush();
+	for (size_t ci = 0; ci < pc.get_nr_components(); ++ci) {
+		std::cout << " " << ci << ":"; std::cout.flush();
+		ann_tree* T = new ann_tree;
+		std::vector<Idx> C(1, Idx(ci));
+		T->build(pc, C);
+		size_t n = pc.component_point_range(ci).nr_points;
+		size_t offset = pc.component_point_range(ci).index_of_first_point;
+		for (size_t l = 0; l < n; ++l) {
+			size_t i = l + offset;
+			std::vector<Idx>& Ni = ng[i];
+			T->extract_neighbors(i, k, Ni);
+			for (auto& ni : Ni) 
+				ni += offset;
+			ng.nr_half_edges += k;
+		}
+		delete T;
+		std::cout << "*"; std::cout.flush();
+
+		if (do_symmetrize) {
+			for (size_t l = 0; l < n; ++l) {
+				size_t i = l + offset;
+				std::vector<Idx>& Ni = ng[i];
+				for (size_t o = 0; o < Ni.size(); ++o) {
+					std::vector<Idx>& Nj = ng[Ni[o]];
+					if (std::find(Nj.begin(), Nj.end(), i) == Nj.end()) {
+						Nj.push_back(i);
+						++ng.nr_half_edges;
+					}
+				}
+			}
+			std::cout << "s"; std::cout.flush();
+		}
+	}
+	std::cout << std::endl;
+
+	on_point_cloud_change_callback(PCC_NEIGHBORGRAPH_CREATE);
+}
+
 bool point_cloud_interactable::get_picked_point(int x, int y, unsigned& index)
 {
 	cgv::math::fvec<double, 3> world_location;
