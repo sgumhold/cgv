@@ -66,6 +66,8 @@ public:
 		angle *= (coord_type)0.5;
 		set(cos(angle), sin(angle)*axis);
 	}
+	/// setter from quaternion
+	void set(const quaternion<T>& quat) { *this = quat; }
 	/// initialize quaternion from 3x3 rotation matrix
 	void set(const coord_type* M)
 	{
