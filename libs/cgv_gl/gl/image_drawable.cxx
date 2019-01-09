@@ -25,11 +25,9 @@ image_drawable::image_drawable() : min_value(0,0,0,0), max_value(1,1,1,1), gamma
 	start_time = -2;
 	use_blending = false;
 	animate = false;
-	show_rectangle = false;
-	x = 100;
-	y = 50;
-	w = 200;
-	h = 100;
+	show_selection = false;
+	selection.add_point(vec2i(100, 50));
+	selection.add_point(vec2i(300, 150));
 	W = 1;
 	H = 1;
 
@@ -94,10 +92,9 @@ bool image_drawable::read_image(const std::string& _file_name)
 	ir.open(_file_name);
 	W = df.get_width();
 	H = df.get_height();
-	x = 0;
-	y = 0;
-	w = W;
-	h = H;
+	selection.invalidate();
+	selection.add_point(vec2i(0, 0));
+	selection.add_point(vec2i(W, H));
 	current_image = 0;
 	start_time = -2;
 	file_name = _file_name;
@@ -123,10 +120,9 @@ bool image_drawable::read_images(const std::string& _file_name, const std::vecto
 		ir.open(_file_name+"/"+_files[0]);
 		W = df.get_width();
 		H = df.get_height();
-		w = W;
-		h = H;
-		x = 0;
-		y = 0;
+		selection.invalidate();
+		selection.add_point(vec2i(0, 0));
+		selection.add_point(vec2i(W, H));
 	}
 	current_image = 0;
 	start_time = -2;
@@ -138,12 +134,9 @@ bool image_drawable::read_images(const std::string& _file_name, const std::vecto
 
 bool image_drawable::save_images(const std::string& output_file_name)
 {
-	// crop update rectangle
-	if (x+w > W)
-		w = W-x;
-	if (y+h > H)
-		h = H-y;
-	bool crop = (w > 0 && h > 0 && (w < W || h < H));
+	bool crop = (selection.get_min_pnt() != vec2i(0) || selection.get_max_pnt() != vec2i(W,H));
+	int w = selection.get_extent()(0);
+	int h = selection.get_extent()(1);
 
 	// prepare output
 	image_writer iw(output_file_name);
@@ -194,7 +187,10 @@ bool image_drawable::save_images(const std::string& output_file_name)
 				return false;
 			}
 			if (crop) {
-				unsigned char* src_ptr = dv.get_ptr<unsigned char>() + x*dv.get_step_size(1) + y*dv.get_step_size(0);
+				unsigned char* src_ptr = dv.get_ptr<unsigned char>() + 
+					selection.get_min_pnt()(0)*dv.get_step_size(1) + 
+					selection.get_min_pnt()(1)*dv.get_step_size(0);
+				
 				unsigned char* dst_ptr = dv_out->get_ptr<unsigned char>();
 				for (int j=0; j<h; ++j) {
 					memcpy(dst_ptr, src_ptr, dv_out->get_step_size(0));
@@ -219,9 +215,13 @@ void image_drawable::draw(context& ctx)
 {
 	ctx.push_modelview_matrix();
 		ctx.mul_modelview_matrix(cgv::math::scale4<double>(aspect, 1, 1));
-		if (show_rectangle) {
+		if (show_selection) {
 			ctx.push_modelview_matrix();
 				ctx.mul_modelview_matrix(cgv::math::translate4<double>(-1,-1,0)*cgv::math::scale4<double>(2.0 / W, 2.0 / H, 1));
+				float x = (float)selection.get_min_pnt()(0);
+				float y = (float)selection.get_min_pnt()(1);
+				float w = (float)selection.get_extent()(0);
+				float h = (float)selection.get_extent()(1);
 				std::vector<vec2> P;
 				P.push_back(vec2(x, y,0));
 				P.push_back(vec2(x+w, y,0));

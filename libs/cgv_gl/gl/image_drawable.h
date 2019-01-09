@@ -31,10 +31,11 @@ protected:
 	bool animate;
 	bool use_blending;
 
-	/// extent of rectangle of pixel selection
-	int x,y,w,h;
+	/// extent selection box
+	box2i selection;
+
 	/// whether to show the selection rectangle
-	bool show_rectangle;
+	bool show_selection;
 	
 	/// extent of image
 	int W,H;
