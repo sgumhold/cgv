@@ -141,7 +141,7 @@ public:
 	void disable_material(const textured_material& mat);
 
 	/// set the current color
-	void set_color(const rgba_type& clr);
+	void set_color(const rgba& clr);
 	/// set the current material 
 	void set_material(const cgv::media::illum::surface_material& mat);
 	/// enable a material with textures

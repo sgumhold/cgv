@@ -4,6 +4,7 @@
 #include <cgv/math/vec.h>
 #include <cgv/gui/event_handler.h>
 #include <cgv/render/drawable.h>
+#include <cgv_gl/point_renderer.h>
 
 /// the picker allows to place points on a square and to remove them again
 class picker : 
@@ -11,10 +12,15 @@ class picker :
 	public cgv::gui::event_handler,  /// derive from handler to receive events and to be asked for a help string
 	public cgv::render::drawable     /// derive from drawable for drawing the cube
 {
-	typedef cgv::math::fvec<double, 2> vec2;
 protected:
 	/// store list of picked points
 	std::vector<vec2> pnts;
+	/// store a point render style
+	cgv::render::point_render_style prs;
+	///
+	cgv::render::point_renderer pr;
+	///
+	cgv::render::view* view_ptr;
 	/// check if a world point is close enough to the drawing square
 	bool is_inside(const vec3& p3d) const;
 	/// transform from 3d world to 2d parametric space
@@ -37,6 +43,8 @@ public:
 	void stream_stats(std::ostream& os);
 	/// necessary method of event_handler
 	void stream_help(std::ostream& os);
+	/// init renderer
+	bool init(cgv::render::context&);
 	/// optional method of drawable
 	void draw(cgv::render::context&);
 };

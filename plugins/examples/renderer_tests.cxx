@@ -12,8 +12,6 @@
 #include <cgv_gl/box_renderer.h>
 #include <cgv_gl/box_wire_renderer.h>
 #include <cgv_gl/gl/gl.h>
-#include <cgv/base/find_action.h>
-#include <cgv/render/view.h>
 #include <random>
 
 class renderer_tests :
@@ -131,19 +129,11 @@ public:
 
 	bool init(cgv::render::context& ctx)
 	{
-		/*
-		cgv::media::illum::light_source L;
-		L.set_position(cgv::media::illum::light_source::vec_type(0.0f, 0.3f, 0.9f));
-		L.set_emission(cgv::media::illum::light_source::color_type(0.1f, 0.1f, 0.1f));
-		ctx.add_light_source(L);
-		*/
-		std::vector<cgv::render::view*> views;
-		cgv::base::find_interface<cgv::render::view>(cgv::base::base_ptr(this), views);
-		if (views.empty())
-			return false;
-		view_ptr = views[0];
-		view_ptr->set_focus(0.5, 0.5, 0.5);
-		view_ptr->set_y_extent_at_focus(1.0);
+		
+		if (view_ptr = find_view_as_node()) {
+			view_ptr->set_focus(0.5, 0.5, 0.5);
+			view_ptr->set_y_extent_at_focus(1.0);
+		}
 		ctx.set_bg_clr_idx(4);
 
 		if (!p_renderer.init(ctx))

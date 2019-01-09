@@ -1,4 +1,7 @@
+#include <cgv/base/base.h>
+#include <cgv/base/node.h>
 #include <cgv/render/drawable.h>
+#include <cgv/base/find_action.h>
 
 namespace cgv {
 	namespace render {
@@ -40,6 +43,16 @@ void drawable::post_redraw()
 {
 	if (ctx)
 		ctx->post_redraw();
+}
+
+cgv::render::view* drawable::find_view_as_node(size_t view_idx) const
+{
+	cgv::base::node* node_ptr = const_cast<cgv::base::node*>(dynamic_cast<const cgv::base::node*>(this));
+	std::vector<cgv::render::view*> views;
+	cgv::base::find_interface<cgv::render::view>(cgv::base::base_ptr(node_ptr), views);
+	if (views.empty() || view_idx > views.size())
+		return 0;
+	return views[view_idx];
 }
 
 bool drawable::get_world_location(int x, int y, const cgv::render::view& V, cgv::math::fvec<double, 3>& world_location) const

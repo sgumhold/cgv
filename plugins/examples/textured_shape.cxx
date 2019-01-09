@@ -28,8 +28,8 @@ public:
 	float texture_u_offset, texture_v_offset;
 	float texture_rotation;
 	float texture_scale,  texture_aspect;
-	rgba_type border_color;
-	rgba_type frame_color;
+	rgba border_color;
+	rgba frame_color;
 	float frame_width;
 
 	cgv::render::textured_material mat;

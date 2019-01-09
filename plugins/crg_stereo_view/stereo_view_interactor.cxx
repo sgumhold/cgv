@@ -1104,9 +1104,9 @@ void stereo_view_interactor::draw_mouse_pointer_as_arrow(cgv::render::context& c
 {
 	static cgv::media::illum::surface_material smp_mat_visible;
 	static cgv::media::illum::surface_material smp_mat_hidden;
-	smp_mat_visible.set_diffuse_reflectance(rgb_type(1, 1, 1));
-	smp_mat_hidden.set_diffuse_reflectance(rgb_type(0.3f, 0.3f, 0.3f));
-	smp_mat_hidden.set_emission(rgb_type(0.3f, 0.3f, 0.3f));
+	smp_mat_visible.set_diffuse_reflectance(rgb(1, 1, 1));
+	smp_mat_hidden.set_diffuse_reflectance(rgb(0.3f, 0.3f, 0.3f));
+	smp_mat_hidden.set_emission(rgb(0.3f, 0.3f, 0.3f));
 
 	double z0_D = get_z_D(-get_parallax_zero_z(), z_near_derived, z_far_derived);
 

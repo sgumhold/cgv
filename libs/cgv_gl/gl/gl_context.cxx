@@ -626,7 +626,7 @@ void gl_context::enumerate_program_uniforms(shader_program& prog, std::vector<st
 }
 
 /// set the current color
-void gl_context::set_color(const rgba_type& clr)
+void gl_context::set_color(const rgba& clr)
 {
 	if (support_compatibility_mode) {
 		glColor4fv(&clr[0]);

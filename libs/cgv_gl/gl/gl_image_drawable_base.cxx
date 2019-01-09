@@ -229,7 +229,7 @@ void gl_image_drawable_base::draw(context& ctx)
 				P.push_back(x); P.push_back(y+h);
 				shader_program& prog = ctx.ref_default_shader_program();
 				prog.enable(ctx);
-					ctx.set_color(rgb_type(1, 0, 0));
+					ctx.set_color(rgb(1, 0, 0));
 					attribute_array_binding::set_global_attribute_array(ctx, prog.get_position_index(), P);
 					attribute_array_binding::enable_global_array(ctx, prog.get_position_index());
 						glDrawArrays(GL_LINE_STRIP, 0, 4);
