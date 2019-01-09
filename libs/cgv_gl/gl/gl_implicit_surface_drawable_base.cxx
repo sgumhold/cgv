@@ -45,8 +45,8 @@ gl_implicit_surface_drawable_base::gl_implicit_surface_drawable_base() : box(dve
 	grid_epsilon = 0.01;
 	ix=iy=iz=0;
 	show_mini_box = false;
-	material.set_diffuse_reflectance(rgb_type(0.3f,0.1f,0.7f));
-	material.set_specular_reflectance(rgb_type(0.7f,0.7f,0.7f));
+	material.set_diffuse_reflectance(rgb(0.3f,0.1f,0.7f));
+	material.set_specular_reflectance(rgb(0.7f,0.7f,0.7f));
 	material.set_roughness(0.1f);
 }
 
@@ -414,11 +414,11 @@ void gl_implicit_surface_drawable_base::draw(context& ctx)
 	glEnable(GL_CULL_FACE);
 	glCullFace(GL_FRONT);
 	if (show_box) {
-		ctx.set_color(rgb_type(0.8f,0.7f,0.0f));
+		ctx.set_color(rgb(0.8f,0.7f,0.0f));
 		ctx.tesselate_box(box,true);
 	}
 	if (show_mini_box) {
-		ctx.set_color(rgb_type(0.8f, 0.6f, 1.0f));
+		ctx.set_color(rgb(0.8f, 0.6f, 1.0f));
 		dvec3 d = box.get_extent();
 		d /= (res-1);
 		dvec3 b0 = box.get_corner(0);

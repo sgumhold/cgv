@@ -3,6 +3,7 @@
 #include "picker.h"
 #include <cgv/gui/key_event.h>
 #include <cgv/gui/mouse_event.h>
+#include <cgv/render/shader_program.h>
 
 using namespace cgv::gui;
 using namespace cgv::render;
@@ -12,6 +13,8 @@ picker::picker(const char* name) : node(name)
 {
 	drag_pnt_idx = -1;
 	is_drag_action = false;
+	prs.point_size = 10;
+	pnts.push_back(vec2(0.0f));
 }
 
 /// show internal values
@@ -57,6 +60,7 @@ bool picker::handle(event& e)
 			if (me.get_button() == MB_LEFT_BUTTON && me.get_modifiers() == EM_CTRL) {
 				vec3 p = get_context()->get_point_W(me.get_x(), me.get_y(), MVPD);
 				if (is_inside(p)) {
+					std::cout << p << std::endl;
 					vec2 q = transform_2_local(p);
 					drag_pnt_idx = -1;
 					int i = find_closest(q);
@@ -111,34 +115,42 @@ void picker::stream_help(std::ostream& os)
 
 #include <cgv_gl/gl/gl.h>
 
+/// init renderer
+bool picker::init(cgv::render::context& ctx)
+{
+	view_ptr = find_view_as_node();
+	pr.set_render_style(prs);
+	return pr.init(ctx);
+}
+
 /// optional method of drawable
 void picker::draw(context& ctx)
 {
-	glDisable(GL_LIGHTING);
-	glColor3d(1,1,0.7);
+	ctx.ref_default_shader_program().enable(ctx);
+	ctx.set_color(rgb(1,0.8f,0.7f));
 	MVPD = ctx.get_modelview_projection_device_matrix();
-	glPolygonOffset(1,1);
 	glDisable(GL_CULL_FACE);
+	glPolygonOffset(1,1);
 	glEnable(GL_POLYGON_OFFSET_FILL);
-	glBegin(GL_QUADS);
-	glVertex2d(-1,-1);
-	glVertex2d(1,-1);
-	glVertex2d(1,1);
-	glVertex2d(-1,1);
-	glEnd();
+	ctx.tesselate_unit_square();
 	glEnable(GL_CULL_FACE);
 	glDisable(GL_POLYGON_OFFSET_FILL);
-	glColor3d(1,0,0);
-	glPointSize(5);
+	ctx.set_color(rgb(0.8f, 0.2f, 0.4f));
+	ctx.ref_default_shader_program().disable(ctx);
+
+	if (pnts.empty())
+		return;
+
 	glPolygonOffset(-1,-1);
 	glEnable(GL_POLYGON_OFFSET_POINT);
-	glEnable(GL_POINT_SMOOTH);
-	glBegin(GL_POINTS);
-	for (unsigned int i = 0; i<pnts.size(); ++i)
-		glVertex2d(pnts[i](0),pnts[i](1));
-	glEnd();
+		pr.set_position_array(ctx, pnts);
+		pr.set_y_view_angle(float(view_ptr->get_y_view_angle()));
+		if (pr.validate_and_enable(ctx)) {
+			ctx.set_color(rgb(1.0f, 0, 0));
+			glDrawArrays(GL_POINTS, 0, pnts.size());
+			pr.disable(ctx);
+		}
 	glDisable(GL_POLYGON_OFFSET_POINT);
-	glEnable(GL_LIGHTING);
 }
 
 #include <cgv/base/register.h>

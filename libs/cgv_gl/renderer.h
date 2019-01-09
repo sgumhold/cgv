@@ -83,7 +83,7 @@ namespace cgv { // @<
 			void destruct(const context& ctx);
 		};
 		/// abstract base class for all renderers that handles a shader program and position / color attribute
-		class CGV_API renderer
+		class CGV_API renderer : public render_types
 		{
 		private:
 			/// shader program

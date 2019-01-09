@@ -9,6 +9,7 @@
 #include <cgv/media/illum/phong_material.hh>
 #include <cgv/media/illum/light_source.hh>
 #include <cgv/signal/callback_stream.h>
+#include <cgv/render/render_types.h>
 #include <cgv/math/vec.h>
 #include <cgv/math/inv.h>
 #include <stack>
@@ -492,7 +493,7 @@ extern CGV_API render_config_ptr get_render_config();
 
 
 /** base class for all drawables, which is independent of the used rendering API. */
-class CGV_API context 
+class CGV_API context : public render_types
 {
 public:
 	friend class CGV_API attribute_array_manager;
@@ -508,39 +509,10 @@ public:
 	typedef cgv::math::vec<float> vec_type;
 	/// dimension independent type of matrices
 	typedef cgv::math::mat<float> mat_type;
-	/// declare type of 2x2 matrices
-	typedef cgv::math::fmat<float, 2, 2> mat2;
-	/// declare type of 3x3 matrices
-	typedef cgv::math::fmat<float, 3, 3> mat3;
-	/// declare type of 4x4 matrices
-	typedef cgv::math::fmat<float, 4, 4> mat4;
-	/// declare type of 2d vectors
-	typedef cgv::math::fvec<float, 2> vec2;
-	/// declare type of 3d vectors
-	typedef cgv::math::fvec<float, 3> vec3;
-	/// declare type of homogeneous vectors
-	typedef cgv::math::fvec<float, 4> vec4;
-	/// declare rgb color type
-	typedef cgv::media::color<float, cgv::media::RGB> rgba_type;
-	/// declare rgba color type
-	typedef cgv::media::color<float, cgv::media::RGB, cgv::media::OPACITY> rgb_type;
-
 	/// dimension independent type of vectors
 	typedef cgv::math::vec<double> dvec_type;
 	/// dimension independent type of matrices
 	typedef cgv::math::mat<double> dmat_type;
-	/// declare type of 2x2 matrices
-	typedef cgv::math::fmat<double, 2, 2> dmat2;
-	/// declare type of 3x3 matrices
-	typedef cgv::math::fmat<double, 3, 3> dmat3;
-	/// declare type of 4x4 matrices
-	typedef cgv::math::fmat<double, 4, 4> dmat4;
-	/// declare type of 2d vectors
-	typedef cgv::math::fvec<double, 2> dvec2;
-	/// declare type of 3d vectors
-	typedef cgv::math::fvec<double, 3> dvec3;
-	/// declare type of homogeneous vectors
-	typedef cgv::math::fvec<double, 4> dvec4;
 protected:
 	friend class shader_program_base;
 	/// whether to automatically set viewing matrixes in current shader program, defaults to true 
@@ -871,9 +843,9 @@ public:
 	DEPRECATED("deprecated, use enable_material(textured_surface_material) instead.") virtual void enable_material(const textured_material& mat, MaterialSide ms = MS_FRONT_AND_BACK, float alpha = 1) = 0;
 	DEPRECATED("deprecated, use disable_material(textured_surface_material) instead.") virtual void disable_material(const textured_material& mat) = 0;
 	/// set the current color
-	virtual void set_color(const rgba_type& clr) = 0;
+	virtual void set_color(const rgba& clr) = 0;
 	/// set the current color
-	virtual void set_color(const rgb_type& clr, float opacity = 1.0f) { set_color(rgba_type(clr[0], clr[1], clr[2], opacity)); }
+	virtual void set_color(const rgb& clr, float opacity = 1.0f) { set_color(rgba(clr[0], clr[1], clr[2], opacity)); }
 	/// set the current material 
 	virtual void set_material(const cgv::media::illum::surface_material& mat);
 	/// enable a material with textures
