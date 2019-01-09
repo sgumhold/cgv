@@ -20,18 +20,18 @@ namespace cgv {
 class CGV_API gl_view : public view
 {
 public:
-	typedef media::axis_aligned_box<double,3> box_type;
+	typedef media::axis_aligned_box<double,3> dbox3;
 protected:
 	double z_near;
 	double z_far;
-	box_type scene_extent;
+	dbox3 scene_extent;
 public:
 	/// construct a parallel view with focus in the world origin looking in negative z-direction and the y-direction as up-direction with an extent of +-1
 	gl_view();
 	/// compute clipping planes adapted to the current scene extent, z_near_derived is at least z_near and as large as possible to include the scene, similarly z_far_derived is as small as possible  
 	void compute_clipping_planes(double& z_near_derived, double& z_far_derived, bool clip_relative_to_extent = false) const;
 	/// compute clipping planes according to given view adapted to the current scene extent, z_near_derived is at least z_near and as large as possible to include the scene, similarly z_far_derived is as small as possible  
-	void compute_clipping_planes(const cgv::render::view& view, double& z_near_derived, double& z_far_derived, bool clip_relative_to_extent = false) const;
+	void compute_clipping_planes(const view& view, double& z_near_derived, double& z_far_derived, bool clip_relative_to_extent = false) const;
 
 	/**@name getter and setter methods*/
 	//@{
@@ -46,9 +46,9 @@ public:
 	/// transform a z value in eye-coordinates (should be negative!) to device coordinate
 	static double get_z_D(double z_eye, double z_near, double z_far);
 	/// set the extent of the scene in world coordinates used by the compute_clipping_planes functions to adapt the clipping planes to the scene
-	virtual void set_scene_extent(const box_type& _box);
+	virtual void set_scene_extent(const dbox3& _box);
 	/// return the currently set scene extent
-	box_type get_scene_extent() const;
+	dbox3 get_scene_extent() const;
 	/// reset view with focus and y-extent based on current scene extent
 	virtual void set_default_view();
 	//@}

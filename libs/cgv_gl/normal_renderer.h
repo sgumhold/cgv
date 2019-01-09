@@ -23,7 +23,7 @@ namespace cgv {
 			float normal_scale;
 			/// overload to allow instantiation of box_wire_renderer
 			render_style* create_render_style() const;
-			bool validate_attributes(context& ctx);
+			bool validate_attributes(const context& ctx);
 		public:
 			normal_renderer();
 			/// the normal scale is multiplied to the normal length of the normal render style
@@ -32,10 +32,10 @@ namespace cgv {
 			bool enable(context& ctx);
 			/// templated method to set the normal attribute from a vector of normals of type T, which should have 3 components
 			template <typename T>
-			void set_normal_array(context& ctx, const std::vector<T>& normals) { has_normals = true;  set_attribute_array(ctx, ref_prog().get_attribute_location(ctx, "normal"), normals); }
+			void set_normal_array(const context& ctx, const std::vector<T>& normals) { has_normals = true;  set_attribute_array(ctx, ref_prog().get_attribute_location(ctx, "normal"), normals); }
 			/// templated method to set the normal attribute from an array of normals of type T, which should have 3 components
 			template <typename T>
-			void set_normal_array(context& ctx, const T* normals, size_t nr_elements, size_t stride_in_bytes = 0) { has_normals = true;  set_attribute_array(ctx, ref_prog().get_attribute_location(ctx, "normal"), normals, nr_elements, stride_in_bytes); }
+			void set_normal_array(const context& ctx, const T* normals, size_t nr_elements, size_t stride_in_bytes = 0) { has_normals = true;  set_attribute_array(ctx, ref_prog().get_attribute_location(ctx, "normal"), normals, nr_elements, stride_in_bytes); }
 		};
 
 	}

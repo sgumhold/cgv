@@ -1,6 +1,5 @@
+#include <cgv/base/base.h>
 #include "textured_material.h"
-
-//#include <cgv_gl/gl/gl.h>
 
 namespace cgv {
 	namespace render {
@@ -8,55 +7,46 @@ namespace cgv {
 /// initialize textures
 textured_material::textured_material()
 {
-	ambient_texture = 0;
-	diffuse_texture = 0;
-	specular_texture = 0;
-	emission_texture = 0;
-	bump_texture = 0;
+	ctx_ptr = 0;
 	alpha_test_func = AT_GREATER;
 	alpha_threshold = 0.0f;
 
 }
 
 /// construct from obj_material
-textured_material::textured_material(const media::illum::obj_material& mtl)
-	: media::illum::obj_material(mtl)
+textured_material::textured_material(const media::illum::textured_surface_material& mtl)
+	: media::illum::textured_surface_material(mtl)
 {
-	ambient_texture = 0;
-	diffuse_texture = 0;
-	specular_texture = 0;
-	emission_texture = 0;
-	bump_texture = 0;
 	alpha_test_func = AT_GREATER;
 	alpha_threshold = 0.0f;
 }
 
-void ensure_texture(context& ctx, texture*& T, const std::string& file_name)
+/// destruct textures
+textured_material::~textured_material()
 {
-	if (T)
-		return;
-	if (file_name.empty())
-		return;
-	T = new texture("uint8[L]");
-	if (!T->create_from_image(ctx, file_name)) {
-		std::cerr << "could not create texture from file '" << file_name << "': " << T->get_last_error() << std::endl;
-		delete T;
-		T = 0;
-	}
-	else {
-		T->set_wrap_s(TW_REPEAT);
-		T->set_wrap_t(TW_REPEAT);
-	}
+	if (ctx_ptr && ctx_ptr->make_current())
+		destruct_textures(*ctx_ptr);
 }
 
 /// call this to ensure that the textures are loaded - typically done in the init_frame method of a drawable
-void textured_material::ensure_textures(context& ctx)
+bool textured_material::ensure_textures(context& ctx)
 {
-	ensure_texture(ctx, ambient_texture, ambient_texture_name);
-	ensure_texture(ctx, diffuse_texture, diffuse_texture_name);
-	ensure_texture(ctx, specular_texture, specular_texture_name);
-	ensure_texture(ctx, emission_texture, emission_texture_name);
-	ensure_texture(ctx, bump_texture, bump_texture_name);
+	bool success = true;
+	for (size_t ti = 0; ti < image_file_names.size(); ++ti) {
+		texture* T = new texture();
+		if (!T->create_from_image(ctx, image_file_names[ti])) {
+			std::cerr << "could not create texture from file '" << image_file_names[ti] << "': " << T->get_last_error() << std::endl;
+			delete T;
+			T = 0;
+			success = false;
+		}
+		else {
+			T->set_wrap_s(TW_REPEAT);
+			T->set_wrap_t(TW_REPEAT);
+		}
+		textures.push_back(T);
+	}
+	return success;
 }
 
 /// configure the alpha test that is performed in case alpha values are given in the textures
@@ -101,56 +91,41 @@ void destruct_texture(context& ctx, texture*& T)
 }
 
 /// destruct textures
-void textured_material::destruct_textures(context& ctx, TextureType textures)
+void textured_material::destruct_textures(context& ctx)
 {
-	if (textures & TT_AMBIENT_TEXTURE)
-		destruct_texture(ctx, ambient_texture);
-	if (textures & TT_DIFFUSE_TEXTURE)
-		destruct_texture(ctx, diffuse_texture);
-	if (textures & TT_SPECULAR_TEXTURE)
-		destruct_texture(ctx, specular_texture);
-	if (textures & TT_EMISSION_TEXTURE)
-		destruct_texture(ctx, emission_texture);
-	if (textures & TT_BUMP_TEXTURE)
-		destruct_texture(ctx, bump_texture);
+	for (size_t ti = 0; ti < textures.size(); ++ti) {
+		if (textures[ti]) {
+			textures[ti]->destruct(ctx);
+			delete textures[ti];
+			textures[ti] = 0;
+		}
+	}
+	textures.clear();
 }
 
 /// enable by modulating opacities of material with given opacity value
-void textured_material::enable(context& ctx, float alpha)
+void textured_material::enable_textures(context& ctx)
 {
-	ctx.enable_material(*this, MS_FRONT_AND_BACK, alpha*opacity);
+	for (size_t ti = 0; ti < textures.size(); ++ti) {
+		if (textures[ti])
+			textures[ti]->enable(ctx, ti);
+	}
 }
 
 /// disable material
-void textured_material::disable(context& ctx)
+void textured_material::disable_textures(context& ctx)
 {
-	ctx.disable_material(*this);
+	for (size_t ti = 0; ti < textures.size(); ++ti) {
+		if (textures[ti])
+			textures[ti]->disable(ctx);
+	}
 }
 
 /// return pointer to ambient texture or 0 if non created
-texture* textured_material::get_ambient_texture() const
+texture* textured_material::get_texture(size_t ti) const
 {
-	return ambient_texture;
-}
-/// return pointer to diffuse texture or 0 if non created
-texture* textured_material::get_diffuse_texture() const
-{
-	return diffuse_texture;
-}
-/// return pointer to specular texture or 0 if non created
-texture* textured_material::get_specular_texture() const
-{
-	return specular_texture;
-}
-/// return pointer to emission texture or 0 if non created
-texture* textured_material::get_emission_texture() const
-{
-	return emission_texture;
-}
-/// return pointer to bump map texture or 0 if non created
-texture* textured_material::get_bump_texture() const
-{
-	return bump_texture;
+	assert(ti < textures.size());
+	return textures[ti];
 }
 
 	}

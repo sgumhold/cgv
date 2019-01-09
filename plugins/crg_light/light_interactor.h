@@ -20,6 +20,7 @@ public:
 protected:
 	std::vector<light_source> lights;
 	std::vector<void*> handles;
+	std::vector<void*> new_handles;
 	std::vector<float> intensities;
 	std::vector<int> enabled;
 	std::vector<int> show;

@@ -221,7 +221,7 @@ void grid::draw(context &ctx)
 			for (unsigned r = 0; r < nr_rows; ++r) {
 				view_ptr->activate_split_viewport(ctx, c, r);
 				draw_grid(ctx);
-				view_ptr->deactivate_split_viewport();
+				view_ptr->deactivate_split_viewport(ctx);
 			}
 		}
 	}
@@ -240,7 +240,7 @@ void grid::finish_frame(context& ctx)
 			for (unsigned r = 0; r < nr_rows; ++r) {
 				view_ptr->activate_split_viewport(ctx, c, r);
 				draw_lines(ctx);
-				view_ptr->deactivate_split_viewport();
+				view_ptr->deactivate_split_viewport(ctx);
 			}
 		}
 	}

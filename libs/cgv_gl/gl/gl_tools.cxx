@@ -105,6 +105,7 @@ void set_lighting_parameters(context& ctx, shader_program& prog)
 	prog.set_uniform_array(ctx, "lights_enabled", enabled);
 }
 
+
 std::vector<shader_program*>& ref_shader_prog_stack()
 {
 	static std::vector<shader_program*> sps;

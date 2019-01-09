@@ -1,9 +1,11 @@
 #include "light_interactor.h"
 #include <cgv/utils/convert.h>
 #include <cgv/signal/rebind.h>
+#include <cgv/math/ftransform.h>
 #include <cgv/gui/file_dialog.h>
 #include <cgv_gl/gl/gl.h>
 #include <cgv/render/context.h>
+#include <cgv/render/shader_program.h>
 #include <stdio.h>
 
 using namespace cgv::gui;
@@ -38,10 +40,20 @@ std::string light_interactor::get_type_name() const
 void light_interactor::on_set(void* member_ptr)
 {
 	size_t n = lights.size();
-	for (size_t i=0; i<n; ++i) {
-		if (member_ptr == &lights[i].ref_type()) {
-			post_recreate_gui();
-			break;
+	if (get_context()) {
+		cgv::render::context& ctx = *get_context();
+		for (size_t i = 0; i < n; ++i) {
+			if (member_ptr >= &lights[i] && member_ptr < &lights[i] + 1 || member_ptr == &intensities[i]) {
+				light_source L = lights[i];
+				L.set_emission(intensities[i] * L.get_emission());
+				ctx.set_light_source(new_handles[i], L);
+			}
+			if (member_ptr == &enabled[i]) {
+				if (enabled[i])
+					ctx.enable_light_source(new_handles[i]);
+				else
+					ctx.disable_light_source(new_handles[i]);
+			}
 		}
 	}
 	if (member_ptr == &file_name) {
@@ -74,18 +86,20 @@ bool light_interactor::init(context& ctx)
 	unsigned n = ctx.get_max_nr_lights();
 	lights.resize(n);
 	handles.resize(n);
+	new_handles.resize(n);
 	intensities.resize(n);
 	toggles.resize(7*n);
 	enabled.resize(n);
 	show.resize(n);
 	for (unsigned i = 0; i < n; ++i) {
-		lights[i].set_location(light_source::hvec_type(2*(float)((i+6)&1)-1,(float)((i+6)&2)-1,(float)((i+6)&4)/2-1,0));
+		lights[i].set_position(light_source::vec_type(2*(float)((i+6)&1)-1,(float)((i+6)&2)-1,(float)((i+6)&4)/2-1));
 		enabled[i] = i < 2 ? 1 : 0;
 		handles[i] = 0;
 		intensities[i] = 1;
 		for (unsigned j=0; j<7; ++j)
 			toggles[7*i+j] = j!=0;
 		enabled[i];
+		new_handles[i] = ctx.add_light_source(lights[i], enabled[i]);
 	}
     ctx.set_default_render_pass_flags(
 		(RenderPassFlags)(ctx.get_default_render_pass_flags() & ~(RPF_SET_LIGHTS|RPF_SET_LIGHTS_ON))
@@ -96,31 +110,17 @@ bool light_interactor::init(context& ctx)
 void light_interactor::init_frame(context& ctx)
 {
 	size_t i, n = lights.size();
-	GLint matrix_mode;
-	glGetIntegerv(GL_MATRIX_MODE, &matrix_mode);
-	glMatrixMode(GL_MODELVIEW);
-	glPushMatrix();
-	glLoadIdentity();
+	ctx.push_modelview_matrix();
+	ctx.set_modelview_matrix(cgv::math::identity4<double>());
 	for (i=0; i<n; ++i) {
 		if (enabled[i] && lights[i].is_local_to_eye()) {
-			light_source l = lights[i];
-			l.ref_ambient() *= intensities[i];
-			l.ref_diffuse() *= intensities[i];
-			l.ref_specular() *= intensities[i];
-			if ((handles[i] = ctx.enable_light(l)) == 0)
-				enabled[i] = 0;
+			ctx.place_light_source(new_handles[i]);
 		}		
 	}
-	glPopMatrix();
-	glMatrixMode(matrix_mode);
+	ctx.pop_modelview_matrix();
 	for (i=0; i<n; ++i) {
 		if (enabled[i] && !lights[i].is_local_to_eye()) {
-			light_source l = lights[i];
-			l.ref_ambient() *= intensities[i];
-			l.ref_diffuse() *= intensities[i];
-			l.ref_specular() *= intensities[i];
-			if ((handles[i] = ctx.enable_light(l)) == 0)
-				enabled[i] = 0;
+			ctx.place_light_source(new_handles[i]);
 		}		
 	}
 }
@@ -128,39 +128,27 @@ void light_interactor::init_frame(context& ctx)
 
 void light_interactor::draw(context& ctx)
 {
-	static phong_material default_mat;
-
-	ctx.enable_material(default_mat);
-		glPushAttrib(GL_LIGHTING_BIT);
-			glEnable(GL_COLOR_MATERIAL);
-			size_t i, n = lights.size();
-			GLint matrix_mode;
-			glGetIntegerv(GL_MATRIX_MODE, &matrix_mode);
-			glMatrixMode(GL_MODELVIEW);
-			glPushMatrix();
-				glLoadIdentity();
-				for (i = 0; i < n; ++i) {
-					if (show[i] && lights[i].is_local_to_eye())
-						ctx.draw_light_source(lights[i], enabled[i] != 0 ? intensities[i] : 0.0f, light_scale);
-				}
-			glPopMatrix();
-			glMatrixMode(matrix_mode);
+	static surface_material default_mat;
+	ctx.ref_surface_shader_program().enable(ctx);
+	ctx.ref_surface_shader_program().set_uniform(ctx, "map_color_to_material", int(3));
+	ctx.set_material(default_mat);
+		size_t i, n = lights.size();
+		ctx.push_modelview_matrix();
+		ctx.set_modelview_matrix(cgv::math::identity4<double>());
 			for (i = 0; i < n; ++i) {
-				if (show[i] && !lights[i].is_local_to_eye())
+				if (show[i] && lights[i].is_local_to_eye())
 					ctx.draw_light_source(lights[i], enabled[i] != 0 ? intensities[i] : 0.0f, light_scale);
 			}
-		glPopAttrib();
-	ctx.disable_material(default_mat);
+		ctx.pop_modelview_matrix();
+		for (i = 0; i < n; ++i) {
+			if (show[i] && !lights[i].is_local_to_eye())
+				ctx.draw_light_source(lights[i], enabled[i] != 0 ? intensities[i] : 0.0f, light_scale);
+		}
+	ctx.ref_surface_shader_program().disable(ctx);
 }
 
 void light_interactor::finish_frame(context& ctx)
 {
-	size_t n = lights.size();
-	for (size_t i = 0; i<n; ++i)
-		if (enabled[i]) {
-			ctx.disable_light(handles[i]);
-			handles[i] = 0;
-		}
 }
 
 /// correct default render flags
@@ -245,28 +233,23 @@ void light_interactor::create_gui()
 	connect_copy(add_button("save", "w=90"," ")->click, rebind(this, &light_interactor::save_cb));
 	connect_copy(add_button("load", "w=90")->click, rebind(this, &light_interactor::load_cb));
 	add_decorator("Rendering", "heading");
-	connect_copy(add_control("light_scale", light_scale, "value_slider", "min=0;max=10;ticks=true;log=true")->value_change,
-		rebind(static_cast<drawable*>(this), &drawable::post_redraw));
+	add_member_control(this, "light_scale", light_scale, "value_slider", "min=0;max=10;ticks=true;log=true");
 	for (i = 0; i < n; ++i)
-		connect_copy(add_control(i==0?"show":"", (bool&)show[i], "check", i==0?"w=20;align=\"L\"":"w=20", i==n-1?"\n":" ")->value_change,
-			rebind(static_cast<drawable*>(this), &drawable::post_redraw));
+		add_member_control(this, i == 0 ? "show" : "", (bool&)show[i], "check", i == 0 ? "w=20;align=\"L\"" : "w=20", i == n - 1 ? "\n" : " ");
 
 	add_decorator("Switches", "heading");
 	for (i = 0; i < n; ++i)
-		connect_copy(add_control(i==0?"enable":"", (bool&)enabled[i], "check", i==0?"w=20;align=\"L\"":"w=20", i==n-1?"\n":" ")->value_change,
-			rebind(static_cast<drawable*>(this), &drawable::post_redraw));
+		add_member_control(this, i==0?"enable":"", (bool&)enabled[i], "check", i==0?"w=20;align=\"L\"":"w=20", i==n-1?"\n":" ");
 	for (i = 0; i < n; ++i)
-		connect_copy(add_control(i==0?"local":"", lights[i].ref_local_to_eye(), "check", i==0?"w=20;align=\"L\"":"w=20", i==n-1?"\n":" ")->value_change,
-			rebind(static_cast<drawable*>(this), &drawable::post_redraw));
+		add_member_control(this, i==0?"local":"", lights[i].ref_local_to_eye(), "check", i==0?"w=20;align=\"L\"":"w=20", i==n-1?"\n":" ");
+			
 	add_decorator("Light Parameters", "heading");
 	for (i = 0; i < n; ++i) {
 		if (!add_tree_node(std::string("light ")+to_string(i), (bool&)(toggles[7*i]),2))
 			continue;
 		align("\a");
-		connect_copy(add_control("on", (bool&)enabled[i], "check")->value_change,
-			rebind(static_cast<drawable*>(this), &drawable::post_redraw));
-		connect_copy(add_control("intensity", intensities[i], "value_slider", "min=0;max=1")->value_change,
-			rebind(static_cast<drawable*>(this), &drawable::post_redraw));
+		add_member_control(this, "on", (bool&)enabled[i], "check");
+		add_member_control(this, "intensity", intensities[i], "value_slider", "min=0;max=1");
 
 		add_gui(std::string("light ")+to_string(i), lights[i], "", "");
 		align("\b");

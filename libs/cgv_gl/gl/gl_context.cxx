@@ -12,12 +12,13 @@
 #include <cgv/base/action.h>
 #include <cgv/render/drawable.h>
 #include <cgv/render/shader_program.h>
+#include <cgv/render/attribute_array_binding.h>
 #include <cgv/render/textured_material.h>
 #include <cgv/utils/scan.h>
 #include <cgv/media/image/image_writer.h>
 #include <cgv/gui/event_handler.h>
-#include <cgv/math/vec.h>
-#include <cgv/math/mat.h>
+#include <cgv/math/ftransform.h>
+#include <cgv/math/inv.h>
 #include <cgv/type/standard_types.h>
 #include <cgv/os/clipboard.h>
 
@@ -101,27 +102,24 @@ GLuint get_gl_format(const texture& tex)
 }
 
 
-void enable_material_color(GLenum side, const cgv::media::illum::phong_material::color_type& c, float alpha, GLenum type)
+void gl_set_material_color(GLenum side, const cgv::media::illum::phong_material::color_type& c, float alpha, GLenum type)
 {
 	GLfloat v[4] = { c[0],c[1],c[2],c[3] * alpha };
 	glMaterialfv(side, type, v);
 }
 
-
 /// enable a material without textures
-void set_material(const cgv::media::illum::phong_material& mat, MaterialSide ms, float alpha)
+void gl_set_material(const cgv::media::illum::phong_material& mat, MaterialSide ms, float alpha)
 {
 	if (ms == MS_NONE)
 		return;
-
 	unsigned side = map_to_gl(ms);
-	enable_material_color(side, mat.get_ambient(), alpha, GL_AMBIENT);
-	enable_material_color(side, mat.get_diffuse(), alpha, GL_DIFFUSE);
-	enable_material_color(side, mat.get_specular(), alpha, GL_SPECULAR);
-	enable_material_color(side, mat.get_emission(), alpha, GL_EMISSION);
+	gl_set_material_color(side, mat.get_ambient(), alpha, GL_AMBIENT);
+	gl_set_material_color(side, mat.get_diffuse(), alpha, GL_DIFFUSE);
+	gl_set_material_color(side, mat.get_specular(), alpha, GL_SPECULAR);
+	gl_set_material_color(side, mat.get_emission(), alpha, GL_EMISSION);
 	glMaterialf(side, GL_SHININESS, mat.get_shininess());
 }
-
 
 /// construct gl_context and attach signals
 gl_context::gl_context()
@@ -140,9 +138,6 @@ gl_context::gl_context()
 
 	show_help = false;
 	show_stats = true;
-
-	enabled_program = 0;
-	enabled_aab = 0;
 }
 
 /// return the used rendering API
@@ -277,36 +272,18 @@ void gl_context::init_render_pass()
 {
 	glPushAttrib(GL_ALL_ATTRIB_BITS);
 
-	glEnable(GL_NORMALIZE);
-
 	if (get_render_pass_flags()&RPF_SET_LIGHTS) {
-		// define diffuse and specular components of 4 light sources to gray and white
-		// if the diffuse components where also white the 4 light contributions would
-		// generate colors larger than one
-		glLightfv(GL_LIGHT0, GL_DIFFUSE, white);
-		glLightfv(GL_LIGHT1, GL_DIFFUSE, white);
-		glLightfv(GL_LIGHT2, GL_DIFFUSE, white);
-		glLightfv(GL_LIGHT3, GL_DIFFUSE, white);
-		glLightfv(GL_LIGHT0, GL_SPECULAR, white);
-		glLightfv(GL_LIGHT1, GL_SPECULAR, white);
-		glLightfv(GL_LIGHT2, GL_SPECULAR, white);
-		glLightfv(GL_LIGHT3, GL_SPECULAR, white);
+		for (unsigned i = 0; i < nr_default_light_sources; ++i)
+			set_light_source(default_light_source_handles[i], default_light_source[i], false);
 	}
-	if (get_render_pass_flags()&RPF_SET_LIGHTS_ON) {
-		// turn the 4 lights on
-		glEnable(GL_LIGHT0);
-		glEnable(GL_LIGHT1);
-		glDisable(GL_LIGHT2);
-		glDisable(GL_LIGHT3);
-	}
+	for (unsigned i = 0; i < nr_default_light_sources; ++i)
+		if (get_render_pass_flags()&RPF_SET_LIGHTS_ON)
+			enable_light_source(default_light_source_handles[i]);
+		else
+			disable_light_source(default_light_source_handles[i]);
+
 	if (get_render_pass_flags()&RPF_SET_MATERIAL) {
-		// set the surface material colors and the specular exponent,
-		// which is between 0 and 128 and generates sharpest highlights for 128 and no
-		// distinguished highlight for 0
-		glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, black);
-		glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, white);
-		glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, black);
-		glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, 80);
+		set_material(default_material);
 	}
 	if (get_render_pass_flags()&RPF_ENABLE_MATERIAL) {
 		// this mode allows to define the ambient and diffuse color of the surface material
@@ -314,30 +291,19 @@ void gl_context::init_render_pass()
 		glEnable(GL_COLOR_MATERIAL);
 	}
 	if (get_render_pass_flags()&RPF_SET_STATE_FLAGS) {
-		// enable the depth test in order to show only the front most elements of the scene in 
-		// each pixel
+		// set some default settings
 		glEnable(GL_DEPTH_TEST);
-		// cull away the faces whose orientation points away from the observer
 		glCullFace(GL_BACK);
 		glEnable(GL_CULL_FACE);
+		glEnable(GL_NORMALIZE);
 	}
 	if ((get_render_pass_flags()&RPF_SET_PROJECTION) != 0) {
-		glMatrixMode(GL_PROJECTION);
-		glLoadIdentity();
-		gluPerspective(45,(double)get_width()/get_height(),0.001,1000.0);
+		set_projection_matrix(cgv::math::perspective4<double>(45.0, (double)get_width()/get_height(),0.001,1000.0));
 	}
 	glMatrixMode(GL_MODELVIEW);
-	if ((get_render_pass_flags()&RPF_SET_MODELVIEW) != 0) {
-		glLoadIdentity();
-		gluLookAt(0,0,10, 0,0,0, 0,1,0);
-	}
-	if (get_render_pass_flags()&RPF_SET_LIGHTS) {
-		float lps[] = { 0,1,1,0, 1,1,0,0, 0,0,1,0, 0,1,0,0 };
-		glLightfv(GL_LIGHT0, GL_POSITION, lps);
-		glLightfv(GL_LIGHT1, GL_POSITION, lps+4);
-		glLightfv(GL_LIGHT2, GL_POSITION, lps+8);
-		glLightfv(GL_LIGHT3, GL_POSITION, lps+12);
-	}
+	if ((get_render_pass_flags()&RPF_SET_MODELVIEW) != 0)
+		set_modelview_matrix(cgv::math::look_at4<double>(vec3(0,0,10), vec3(0,0,0), vec3(0,1,0)));
+	
 	if (check_gl_error("gl_context::init_render_pass before init_frame"))
 		return;
 
@@ -533,58 +499,28 @@ void enable_material_color(GLenum side, const textured_material::color_type& c, 
 /// enable a material without textures
 void gl_context::enable_material(const cgv::media::illum::phong_material& mat, MaterialSide ms, float alpha)
 {
-	if (ms == MS_NONE)
-		return;
-
-	set_material(mat, ms, alpha);
-/*
-	unsigned side = map_to_gl(ms);
-	enable_material_color(side, mat.get_ambient(),alpha,GL_AMBIENT);
-	enable_material_color(side, mat.get_diffuse(),alpha,GL_DIFFUSE);
-	enable_material_color(side, mat.get_specular(),alpha,GL_SPECULAR);
-	enable_material_color(side, mat.get_emission(),alpha,GL_EMISSION);
-	glMaterialf(side, GL_SHININESS, mat.get_shininess());
-	*/
-	if (ms != MS_BACK && enabled_program == 0) {
-		if (phong_shading) {
-			shader_program& prog = ref_textured_material_prog(*this);
-			prog.enable(*this);
-			prog.set_uniform(*this, "use_bump_map", false);
-			prog.set_uniform(*this, "use_diffuse_map", false);
-			GLboolean cm;
-			glGetBooleanv(GL_COLOR_MATERIAL, &cm);
-			bool cmb = cm != 0;
-			prog.set_uniform(*this, "use_color_material", cmb);
-			glGetBooleanv(GL_LIGHT_MODEL_TWO_SIDE, &cm);
-			cmb = cm != 0;
-			prog.set_uniform(*this, "two_sided", cmb);
-			set_lighting_parameters(*this, prog);
-		}
-		else {
-			glPushAttrib(GL_LIGHTING_BIT | GL_ENABLE_BIT);
-			if (enabled_program == 0)
-				glEnable(GL_LIGHTING);
-			glDisable(GL_COLOR_MATERIAL);
-		}
-	}
+	if (support_compatibility_mode)
+		gl_set_material(mat, ms, alpha);
+	cgv::media::illum::surface_material M(
+		cgv::media::illum::BrdfType(cgv::media::illum::BT_LAMBERTIAN + cgv::media::illum::BT_PHONG),
+		mat.get_diffuse(), 1.0f / mat.get_shininess() - 1.0f / 128.0f, 0.0f, 0.5f,
+		mat.get_emission(), mat.get_diffuse().transparency(), std::complex<float>(1.5f, 0.0f),
+		0.0f, 0.0f, mat.get_specular());
+	bool tmp = support_compatibility_mode;
+	support_compatibility_mode = false;
+	set_material(M);
+	support_compatibility_mode = tmp;
 }
 
 /// disable phong material
 void gl_context::disable_material(const cgv::media::illum::phong_material& mat)
 {
-	if (phong_shading) {
-		if (enabled_program == &ref_textured_material_prog(*this))
-			ref_textured_material_prog(*this).disable(*this);
-	}
-	else {
-		if (enabled_program == 0)
-			glPopAttrib();
-	}
 }
 
 /// enable a material with textures
 void gl_context::enable_material(const textured_material& mat, MaterialSide ms, float alpha)
 {
+	/*
 	if (ms == MS_NONE)
 		return;
 	bool do_alpha = (mat.get_diffuse_texture() != 0) && mat.get_diffuse_texture()->get_component_name(mat.get_diffuse_texture()->get_nr_components() - 1)[0] == 'A';
@@ -594,19 +530,12 @@ void gl_context::enable_material(const textured_material& mat, MaterialSide ms, 
 			flags |= GL_TEXTURE_BIT;
 		flags |= GL_LIGHTING_BIT | GL_ENABLE_BIT;
 		glPushAttrib(flags);
-		if (enabled_program == 0)
+		if (shader_program_stack.empty())
 			glEnable(GL_LIGHTING);
 		glDisable(GL_COLOR_MATERIAL);
 	}
 
-	set_material(mat, ms, alpha);
-	/*
-	enable_material_color(side, mat.get_ambient(),alpha,GL_AMBIENT);
-	enable_material_color(side, mat.get_diffuse(),alpha,GL_DIFFUSE);
-	enable_material_color(side, mat.get_specular(),alpha,GL_SPECULAR);
-	enable_material_color(side, mat.get_emission(),alpha,GL_EMISSION);
-	glMaterialf(side, GL_SHININESS, mat.get_shininess());
-	*/
+	gl_set_material(mat, ms, alpha);
 
 	if (ms != MS_BACK) {
 		if ((mat.get_bump_texture() || phong_shading) && ref_textured_material_prog(*this).is_linked()) {
@@ -649,10 +578,13 @@ void gl_context::enable_material(const textured_material& mat, MaterialSide ms, 
 		else
 			glColor4f(1, 1, 1, alpha);
 	}
+	*/
 }
+
 /// disable phong material
 void gl_context::disable_material(const textured_material& mat)
 {
+	/*
 	if ((mat.get_bump_texture() || phong_shading) && ref_textured_material_prog(*this).is_linked()) {
 		shader_program& prog = ref_textured_material_prog(*this);
 		prog.disable(*this);
@@ -665,75 +597,184 @@ void gl_context::disable_material(const textured_material& mat)
 		mat.get_diffuse_texture()->disable(*this);
 	}
 	glPopAttrib();
+*/
 }
 
-
-/// return maximum number of supported light sources
-unsigned gl_context::get_max_nr_lights() const
+/// get list of program uniforms
+void gl_context::enumerate_program_uniforms(shader_program& prog, std::vector<std::string>& names, std::vector<int>* locations_ptr, std::vector<int>* sizes_ptr, std::vector<int>* types_ptr, bool show) const
 {
-	GLint max_nr_lights;
-	glGetIntegerv(GL_MAX_LIGHTS, &max_nr_lights);
-	return (unsigned) max_nr_lights;
+	GLint count;
+	glGetProgramiv(get_gl_id(prog.handle), GL_ACTIVE_UNIFORMS, &count);
+	for (int i = 0; i < count; ++i) {
+		GLchar name[1000];
+		GLsizei length;
+		GLint size;
+		GLenum type;
+		glGetActiveUniform(get_gl_id(prog.handle), i, 1000, &length, &size, &type, name);
+		std::string name_str(name, length);
+		names.push_back(name_str);
+		if (sizes_ptr)
+			sizes_ptr->push_back(size);
+		if (types_ptr)
+			types_ptr->push_back(type);
+		int loc = glGetUniformLocation(get_gl_id(prog.handle), name_str.c_str());
+		if (locations_ptr)
+			locations_ptr->push_back(loc);
+		if (show)
+			std::cout << i << " at " << loc << " = " << name_str << ":" << type << "[" << size << "]" << std::endl;
+	}
 }
 
-/// enable a light source and return a handled to be used for disabling, if no more light source unit available 0 is returned
-void* gl_context::enable_light(const cgv::media::illum::light_source& light)
+/// set the current color
+void gl_context::set_color(const rgba_type& clr)
 {
-	unsigned max_nr_lights = get_max_nr_lights();
-	unsigned light_idx = 0;
-	GLboolean flag;
-	do {
-		if (light_idx >= max_nr_lights)
-			return 0;
-		glGetBooleanv(GL_LIGHT0+light_idx, &flag);
-		if (flag)
-			++light_idx;
-	} while (flag);
-	
-	GLfloat col[4] = {1,1,1,1};
-	(cgv::media::illum::light_source::color_type&)(col[0]) = light.get_ambient();
-	glLightfv(GL_LIGHT0+light_idx, GL_AMBIENT, col);
-	(cgv::media::illum::light_source::color_type&)(col[0]) = light.get_diffuse();
-	glLightfv(GL_LIGHT0+light_idx, GL_DIFFUSE, col);
-	(cgv::media::illum::light_source::color_type&)(col[0]) = light.get_specular();
-	glLightfv(GL_LIGHT0+light_idx, GL_SPECULAR, col);
-	glLightfv(GL_LIGHT0+light_idx, GL_POSITION, light.get_location());
-	if (light.get_type() != cgv::media::illum::LT_DIRECTIONAL) {
-		glLightf(GL_LIGHT0+light_idx, GL_CONSTANT_ATTENUATION, light.get_attenuation()(0));
-		glLightf(GL_LIGHT0+light_idx, GL_LINEAR_ATTENUATION, light.get_attenuation()(1));
-		glLightf(GL_LIGHT0+light_idx, GL_QUADRATIC_ATTENUATION, light.get_attenuation()(2));
+	if (support_compatibility_mode) {
+		glColor4fv(&clr[0]);
 	}
-	else {
-		glLightf(GL_LIGHT0+light_idx, GL_CONSTANT_ATTENUATION, 1);
-		glLightf(GL_LIGHT0+light_idx, GL_LINEAR_ATTENUATION, 0);
-		glLightf(GL_LIGHT0+light_idx, GL_QUADRATIC_ATTENUATION, 0);
-	}
-	if (light.get_type() == cgv::media::illum::LT_SPOT) {
-		glLightf(GL_LIGHT0+light_idx, GL_SPOT_CUTOFF, light.get_spot_cutoff());
-		glLightf(GL_LIGHT0+light_idx, GL_SPOT_EXPONENT, light.get_spot_exponent());
-		glLightfv(GL_LIGHT0+light_idx, GL_SPOT_DIRECTION, light.get_spot_direction());
-	}
-	else {
-		glLightf(GL_LIGHT0+light_idx, GL_SPOT_CUTOFF, 180.0f);
-		glLightf(GL_LIGHT0+light_idx, GL_SPOT_EXPONENT, 0.0f);
-		static float dir[3] = {0,0,1};
-		glLightfv(GL_LIGHT0+light_idx, GL_SPOT_DIRECTION, dir);
-	}
-
-	glEnable(GL_LIGHT0+light_idx);
-
-	void* handle = 0;
-	(unsigned&) handle = light_idx+1;
-	return handle;
-}
-
-/// disable a previously enabled light
-void gl_context::disable_light(void* handle)
-{
-	if (handle == 0)
+	if (shader_program_stack.empty())
 		return;
-	unsigned light_idx = (unsigned&)handle - 1;
-	glDisable(GL_LIGHT0+light_idx);
+
+	cgv::render::shader_program& prog = *static_cast<cgv::render::shader_program*>(shader_program_stack.top());
+	int clr_loc = prog.get_color_index();
+	if (clr_loc == -1)
+		return;
+
+	prog.set_attribute(*this, clr_loc, clr);
+}
+
+/// set the current material 
+void gl_context::set_material(const cgv::media::illum::surface_material& material)
+{
+	if (support_compatibility_mode) {
+		unsigned side = map_to_gl(MS_FRONT_AND_BACK);
+		float alpha = 1.0f - material.get_transparency();
+		gl_set_material_color(side, material.get_ambient_occlusion()*material.get_diffuse_reflectance(), alpha, GL_AMBIENT);
+		gl_set_material_color(side, material.get_diffuse_reflectance(), alpha, GL_DIFFUSE);
+		gl_set_material_color(side, material.get_specular_reflectance(), alpha, GL_SPECULAR);
+		gl_set_material_color(side, material.get_emission(), alpha, GL_EMISSION);
+		glMaterialf(side, GL_SHININESS, 1.0f/(material.get_roughness()+1.0f/128.0f));
+	}
+	context::set_material(material);
+}
+
+/// enable a material with textures
+void gl_context::enable_material(const cgv::media::illum::textured_surface_material& mat)
+{
+	set_material(mat);
+	current_material_is_textured = true;
+}
+
+/// disable a material with textures
+void gl_context::disable_material(const cgv::media::illum::textured_surface_material& mat)
+{
+	current_material_ptr = 0;
+	current_material_is_textured = false;
+}
+
+/// return a reference to a shader program used to render without illumination
+shader_program& gl_context::ref_default_shader_program(bool texture_support)
+{
+	static shader_program prog;
+	static shader_program prog_texture;
+
+	if (!texture_support) {
+		if (!prog.is_created()) {
+			if (!prog.build_program(*this, "default.glpr")) {
+				error("could not build default shader program from default.glpr");
+				exit(0);
+			}
+			prog.specify_standard_uniforms(true, false, false);
+			prog.specify_standard_vertex_attribute_names(*this, true, false, false);
+		}
+		return prog;
+	}
+	if (!prog_texture.is_created()) {
+		if (!prog_texture.build_program(*this, "textured_default.glpr")) {
+			error("could not build default shader program with texture support from textured_default.glpr");
+			exit(0);
+		}
+		prog_texture.set_uniform(*this, "texture", 0);
+		prog_texture.specify_standard_uniforms(true, false, false);
+		prog_texture.specify_standard_vertex_attribute_names(*this, true, false, true);
+	}
+	return prog_texture;
+}
+
+/// return a reference to the default shader program used to render surfaces without textures
+shader_program& gl_context::ref_surface_shader_program(bool texture_support)
+{
+	static shader_program prog;
+	static shader_program prog_texture;
+
+	if (!texture_support) {
+		if (!prog.is_created()) {
+			if (!prog.build_program(*this, "default_surface.glpr")) {
+				error("could not build surface shader program from default_surface.glpr");
+				exit(0);
+			}
+			prog.specify_standard_uniforms(true, true, true);
+			prog.specify_standard_vertex_attribute_names(*this, true, true, false);
+		}
+		return prog;
+	}
+	if (!prog_texture.is_created()) {
+		if (!prog_texture.build_program(*this, "textured_surface.glpr")) {
+			error("could not build surface shader program with texture support from textured_surface.glpr");
+			exit(0);
+		}
+		prog_texture.specify_standard_uniforms(true, true, true);
+		prog_texture.specify_standard_vertex_attribute_names(*this, true, true, true);
+	}
+	return prog_texture;
+}
+
+void gl_context::on_lights_changed()
+{
+	if (support_compatibility_mode) {
+		GLint max_nr_lights;
+		glGetIntegerv(GL_MAX_LIGHTS, &max_nr_lights);
+		for (GLint light_idx = 0; light_idx < max_nr_lights; ++light_idx) {
+			if (light_idx >= int(get_nr_enabled_light_sources())) {
+				glDisable(GL_LIGHT0 + light_idx);
+				continue;
+			}
+			GLfloat col[4] = { 1,1,1,1 };
+			const cgv::media::illum::light_source& light = get_light_source(get_enabled_light_source_handle(light_idx));
+			(cgv::media::illum::light_source::color_type&)(col[0]) = light.get_emission()*light.get_ambient_scale();
+			glLightfv(GL_LIGHT0 + light_idx, GL_AMBIENT, col);
+			(cgv::media::illum::light_source::color_type&)(col[0]) = light.get_emission();
+			glLightfv(GL_LIGHT0 + light_idx, GL_DIFFUSE, col);
+			(cgv::media::illum::light_source::color_type&)(col[0]) = light.get_emission();
+			glLightfv(GL_LIGHT0 + light_idx, GL_SPECULAR, col);
+
+			GLfloat pos[4] = { 0,0,0,light.get_type() == cgv::media::illum::LT_DIRECTIONAL ? 0.0f : 1.0f };
+			(cgv::media::illum::light_source::vec_type&)(pos[0]) = light.get_position();
+			glLightfv(GL_LIGHT0 + light_idx, GL_POSITION, pos);
+			if (light.get_type() != cgv::media::illum::LT_DIRECTIONAL) {
+				glLightf(GL_LIGHT0 + light_idx, GL_CONSTANT_ATTENUATION, light.get_constant_attenuation());
+				glLightf(GL_LIGHT0 + light_idx, GL_LINEAR_ATTENUATION, light.get_linear_attenuation());
+				glLightf(GL_LIGHT0 + light_idx, GL_QUADRATIC_ATTENUATION, light.get_quadratic_attenuation());
+			}
+			else {
+				glLightf(GL_LIGHT0 + light_idx, GL_CONSTANT_ATTENUATION, 1);
+				glLightf(GL_LIGHT0 + light_idx, GL_LINEAR_ATTENUATION, 0);
+				glLightf(GL_LIGHT0 + light_idx, GL_QUADRATIC_ATTENUATION, 0);
+			}
+			if (light.get_type() == cgv::media::illum::LT_SPOT) {
+				glLightf(GL_LIGHT0 + light_idx, GL_SPOT_CUTOFF, light.get_spot_cutoff());
+				glLightf(GL_LIGHT0 + light_idx, GL_SPOT_EXPONENT, light.get_spot_exponent());
+				glLightfv(GL_LIGHT0 + light_idx, GL_SPOT_DIRECTION, light.get_spot_direction());
+			}
+			else {
+				glLightf(GL_LIGHT0 + light_idx, GL_SPOT_CUTOFF, 180.0f);
+				glLightf(GL_LIGHT0 + light_idx, GL_SPOT_EXPONENT, 0.0f);
+				static float dir[3] = { 0,0,1 };
+				glLightfv(GL_LIGHT0 + light_idx, GL_SPOT_DIRECTION, dir);
+			}
+			glEnable(GL_LIGHT0 + light_idx);
+		}
+	}
+	context::on_lights_changed();
 }
 
 template <typename T>
@@ -766,68 +807,68 @@ void rotate(const cgv::math::fvec<T,3>& src, const cgv::math::fvec<T,3>& dest)
 	gl_rotate(a, axis);
 }
 
-void gl_context::tesselate_arrow(double length, double aspect, double rel_tip_radius, double tip_aspect, int res)
+void gl_context::tesselate_arrow(double length, double aspect, double rel_tip_radius, double tip_aspect, int res, bool edges)
 {
 	double cyl_radius = length*aspect;
 	double cone_radius = rel_tip_radius*cyl_radius;
 	double cone_length = cone_radius/tip_aspect;
 	double cyl_length = length - cone_length;
-	push_V();
-	glScaled(cyl_radius,cyl_radius,0.5*cyl_length);
-		push_V();
-			glRotatef(180,1,0,0);
-			tesselate_unit_disk(res);
-		pop_V();
+	push_modelview_matrix();
+	mul_modelview_matrix(cgv::math::scale4(cyl_radius,cyl_radius,0.5*cyl_length));
+		push_modelview_matrix();
+			mul_modelview_matrix(cgv::math::rotate4(180.0,1.0,0.0,0.0));
+			tesselate_unit_disk(res, false, edges);
+		pop_modelview_matrix();
 
-	glTranslated(0,0,1);
-		tesselate_unit_cylinder(res);
+		mul_modelview_matrix(cgv::math::translate4(0.0,0.0,1.0));
+		tesselate_unit_cylinder(res, false, edges);
 
-	glTranslated(0,0,1);
-	glScaled(rel_tip_radius,rel_tip_radius,cone_length/cyl_length);
-		push_V();
-			glRotatef(180,1,0,0);
-				tesselate_unit_disk(res);
-		pop_V();
-	glTranslated(0,0,1);
-		tesselate_unit_cone(res);
-	pop_V();
+	mul_modelview_matrix(cgv::math::translate4(0.0, 0.0, 1.0));
+	mul_modelview_matrix(cgv::math::scale4(rel_tip_radius, rel_tip_radius, cone_length / cyl_length));
+		push_modelview_matrix();
+			mul_modelview_matrix(cgv::math::rotate4(180.0, 1.0, 0.0, 0.0));
+				tesselate_unit_disk(res, false, edges);
+		pop_modelview_matrix();
+	mul_modelview_matrix(cgv::math::translate4(0.0, 0.0, 1.0));
+		tesselate_unit_cone(res, false, edges);
+	pop_modelview_matrix();
 }
 
 ///
-void gl_context::tesselate_arrow(const cgv::math::fvec<double, 3>& start, const cgv::math::fvec<double, 3>& end, double aspect, double rel_tip_radius, double tip_aspect, int res)
+void gl_context::tesselate_arrow(const cgv::math::fvec<double, 3>& start, const cgv::math::fvec<double, 3>& end, double aspect, double rel_tip_radius, double tip_aspect, int res, bool edges)
 {
-	push_V();
+	push_modelview_matrix();
 	glTranslated(start(0),start(1),start(2));
 	rotate(cgv::math::fvec<double,3>(0,0,1), end-start);
-	tesselate_arrow((end-start).length(), aspect, rel_tip_radius, tip_aspect, res);
-	pop_V();
+	tesselate_arrow((end-start).length(), aspect, rel_tip_radius, tip_aspect, res, edges);
+	pop_modelview_matrix();
 }
 
 void gl_context::draw_light_source(const light_source& l, float i, float light_scale)
 {
 	glPushAttrib(GL_LIGHTING_BIT|GL_CURRENT_BIT);
 
-	GLfloat e[] = { l.get_diffuse()[0]*i,l.get_diffuse()[1]*i,l.get_diffuse()[2]*i, 1 };
+	GLfloat e[] = { l.get_emission()[0]*i,l.get_emission()[1]*i,l.get_emission()[2]*i, 1 };
 	GLfloat s[] = { 0.5f,0.5f,0.5f,1 };
 	glColor3f(0,0,0);
 	glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, e);
 	glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, s);
 	glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, 40);
 
-	push_V();
+	push_modelview_matrix();
 	switch (l.get_type()) {
 	case LT_DIRECTIONAL : 
 		glScalef(light_scale, light_scale, light_scale);
-		rotate(light_source::vec_type(0,0,-1),(const light_source::vec_type&)l.get_location());
+		rotate(light_source::vec_type(0,0,-1),(const light_source::vec_type&)l.get_position());
 		tesselate_arrow(2,0.1f,2,0.5);
 		break;
 	case LT_POINT :
-		glTranslatef(l.get_location()(0)/l.get_location()(3), l.get_location()(1)/l.get_location()(3), l.get_location()(2)/l.get_location()(3));
+		glTranslatef(l.get_position()(0)/l.get_position()(3), l.get_position()(1)/l.get_position()(3), l.get_position()(2)/l.get_position()(3));
 		glScalef(0.3f*light_scale, 0.3f*light_scale, 0.3f*light_scale);
 		tesselate_unit_sphere();
 		break;
 	case LT_SPOT :
-		glTranslatef(l.get_location()(0)/l.get_location()(3), l.get_location()(1)/l.get_location()(3), l.get_location()(2)/l.get_location()(3));
+		glTranslatef(l.get_position()(0)/l.get_position()(3), l.get_position()(1)/l.get_position()(3), l.get_position()(2)/l.get_position()(3));
 		glScalef(light_scale, light_scale, light_scale);
 		rotate(light_source::vec_type(0,0,-1),l.get_spot_direction());
 		{
@@ -845,7 +886,7 @@ void gl_context::draw_light_source(const light_source& l, float i, float light_s
 				glEnable(GL_CULL_FACE);
 		}
 	}
-	pop_V();
+	pop_modelview_matrix();
 
 	glPopAttrib();
 }
@@ -854,37 +895,34 @@ void gl_context::draw_light_source(const light_source& l, float i, float light_s
 /// use this to push transformation matrices on the stack such that x and y coordinates correspond to window coordinates
 void gl_context::push_pixel_coords()
 {
-	push_P();
-	push_V();
-	// push projection matrix
-	glMatrixMode(GL_PROJECTION);
-	// set orthogonal projection
-	glLoadIdentity();
+	push_projection_matrix();
+	push_modelview_matrix();
+
 	GLint vp[4];
 	glGetIntegerv(GL_VIEWPORT, vp);
-	gluOrtho2D(0,vp[2],vp[3],0);
-	// push modelview matrix
-	glMatrixMode(GL_MODELVIEW);
-	// use identity for modelview
-	glLoadIdentity();
-}
-/// transform point p into cursor coordinates and put x and y coordinates into the passed variables
-void gl_context::put_cursor_coords(const vec_type& p, int& x, int& y) const
-{
-	vec_type p4(0,0,0,1);
-	for (unsigned int c=0; c<p.size(); ++c)
-		p4(c) = p(c);
-	p4 = get_DPV()*p4;
-	x = (int)(p4(0)/p4(3));
-	y = (int)(p4(1)/p4(3));
-}
 
+	if (support_compatibility_mode) {
+		// push projection matrix
+		glMatrixMode(GL_PROJECTION);
+		// set orthogonal projection
+		glLoadIdentity();
+		gluOrtho2D(0, vp[2], vp[3], 0);
+		// push modelview matrix
+		glMatrixMode(GL_MODELVIEW);
+		// use identity for modelview
+		glLoadIdentity();
+	}
+	else {
+		set_modelview_matrix(cgv::math::identity4<double>());
+		set_projection_matrix(cgv::math::ortho4<double>(0, vp[2], vp[3], 0, -1, 1));
+	}
+}
 
 /// pop previously changed transformation matrices 
 void gl_context::pop_pixel_coords()
 {
-	pop_V();
-	pop_P();
+	pop_modelview_matrix();
+	pop_projection_matrix();
 }
 
 /// implement according to specification in context class
@@ -964,108 +1002,283 @@ bool gl_context::read_frame_buffer(data::data_view& dv,
 }
 
 
-void render_vertex(int k, const double* vertices, const double* normals, const double* tex_coords, 
+void render_vertex(int k, const float* vertices, const float* normals, const float* tex_coords,
 						  const int* vertex_indices, const int* normal_indices, const int* tex_coord_indices, bool flip_normals)
 {
 	if (normals && normal_indices) {
 		if (flip_normals) {
-			double n[3] = { -normals[3*normal_indices[k]],-normals[3*normal_indices[k]+1],-normals[3*normal_indices[k]+2] };
-			glNormal3dv(n);
+			float n[3] = { -normals[3*normal_indices[k]],-normals[3*normal_indices[k]+1],-normals[3*normal_indices[k]+2] };
+			glNormal3fv(n);
 		}
 		else
-			glNormal3dv(normals+3*normal_indices[k]);
+			glNormal3fv(normals+3*normal_indices[k]);
 	}
 	if (tex_coords && tex_coord_indices)
-		glTexCoord2dv(tex_coords+2*tex_coord_indices[k]);
-	glVertex3dv(vertices+3*vertex_indices[k]);
+		glTexCoord2fv(tex_coords+2*tex_coord_indices[k]);
+	glVertex3fv(vertices+3*vertex_indices[k]);
+}
+
+bool gl_context::release_attributes(const float* normals, const float* tex_coords, const int* normal_indices, const int* tex_coord_indices) const
+{
+	shader_program* prog_ptr = static_cast<shader_program*>(get_current_program());
+	if (!prog_ptr || prog_ptr->get_position_index() == -1)
+		return false;
+	attribute_array_binding::disable_global_array(*this, prog_ptr->get_position_index());
+	if (prog_ptr->get_normal_index() != -1 && normals && normal_indices)
+		attribute_array_binding::disable_global_array(*this, prog_ptr->get_normal_index());
+	if (prog_ptr->get_texcoord_index() != -1 && tex_coords && tex_coord_indices)
+		attribute_array_binding::disable_global_array(*this, prog_ptr->get_texcoord_index());
+	return true;
+}
+
+bool gl_context::prepare_attributes(std::vector<vec3>& P, std::vector<vec3>& N, std::vector<vec2>& T, unsigned nr_vertices,
+	const float* vertices, const float* normals, const float* tex_coords,
+	const int* vertex_indices, const int* normal_indices, const int* tex_coord_indices, bool flip_normals) const
+{
+	unsigned i;
+	shader_program* prog_ptr = static_cast<shader_program*>(get_current_program());
+	if (!prog_ptr || prog_ptr->get_position_index() == -1)
+		return false;
+	P.resize(nr_vertices);
+	for (i = 0; i < nr_vertices; ++i)
+		P[i] = *reinterpret_cast<const vec3*>(vertices + 3 * vertex_indices[i]);
+	attribute_array_binding::set_global_attribute_array<>(*this, prog_ptr->get_position_index(), P);
+	attribute_array_binding::enable_global_array(*this, prog_ptr->get_position_index());
+	if (prog_ptr->get_normal_index() != -1) {
+		if (normals && normal_indices) {
+			N.resize(nr_vertices);
+			for (i = 0; i < nr_vertices; ++i) {
+				N[i] = *reinterpret_cast<const vec3*>(normals + 3 * normal_indices[i]);
+				if (flip_normals)
+					N[i] = -N[i];
+			}
+			attribute_array_binding::set_global_attribute_array<>(*this, prog_ptr->get_normal_index(), N);
+			attribute_array_binding::enable_global_array(*this, prog_ptr->get_normal_index());
+		}
+		else
+			attribute_array_binding::disable_global_array(*this, prog_ptr->get_normal_index());
+	}
+	if (prog_ptr->get_texcoord_index() != -1) {
+		if (tex_coords && tex_coord_indices) {
+			T.resize(nr_vertices);
+			for (i = 0; i < nr_vertices; ++i)
+				T[i] = *reinterpret_cast<const vec2*>(tex_coords + 2 * tex_coord_indices[i]);
+			attribute_array_binding::set_global_attribute_array<>(*this, prog_ptr->get_texcoord_index(), T);
+			attribute_array_binding::enable_global_array(*this, prog_ptr->get_texcoord_index());
+		}
+		else
+			attribute_array_binding::disable_global_array(*this, prog_ptr->get_texcoord_index());
+	}
+	return true;
+}
+
+/// pass geometry of given faces to current shader program and generate draw calls to render lines for the edges
+void gl_context::draw_edges_of_faces(
+	const float* vertices, const float* normals, const float* tex_coords,
+	const int* vertex_indices, const int* normal_indices, const int* tex_coord_indices,
+	int nr_faces, int face_degree, bool flip_normals) const
+{
+	if (draw_in_compatibility_mode) {
+		int k = 0;
+		for (int i = 0; i < nr_faces; ++i) {
+			glBegin(GL_LINE_LOOP);
+			for (int j = 0; j < face_degree; ++j, ++k)
+				render_vertex(k, vertices, normals, tex_coords, vertex_indices, normal_indices, tex_coord_indices, flip_normals);
+			glEnd();
+		}
+		return;
+	}
+	unsigned nr_vertices = face_degree * nr_faces;
+	std::vector<vec3> P, N;
+	std::vector<vec2> T;
+	if (!prepare_attributes(P, N, T, nr_vertices, vertices, normals, tex_coords, vertex_indices, normal_indices, tex_coord_indices, flip_normals))
+		return;
+	for (int i = 0; i < nr_faces; ++i)
+		glDrawArrays(GL_LINE_LOOP, i*face_degree, face_degree);
+	release_attributes(normals, tex_coords, normal_indices, tex_coord_indices);
+}
+
+/// pass geometry of given strip or fan to current shader program and generate draw calls to render lines for the edges
+void gl_context::draw_edges_of_strip_or_fan(
+	const float* vertices, const float* normals, const float* tex_coords,
+	const int* vertex_indices, const int* normal_indices, const int* tex_coord_indices,
+	int nr_faces, int face_degree, bool is_fan, bool flip_normals) const
+{
+	int s = face_degree - 2;
+	int i, k = 2;
+	std::vector<GLuint> I;
+	I.push_back(0);	I.push_back(1);
+	for (i = 0; i < nr_faces; ++i) {
+		if (is_fan) {
+			I.push_back(k - 1);	I.push_back(k);
+			I.push_back(0);	I.push_back(k);
+			continue;
+		}
+		if (s == 1) {
+			I.push_back(k - 1);	I.push_back(k);
+			I.push_back(k - 2);	I.push_back(k);
+		}
+		else {
+			I.push_back(k - 1);	I.push_back(k + 1);
+			I.push_back(k - 2);	I.push_back(k);
+			I.push_back(k);	I.push_back(k + 1);
+		}
+		k += 2;
+	}
+
+	if (draw_in_compatibility_mode) {
+		glBegin(GL_LINES);
+		for (GLuint j:I)
+			render_vertex(j, vertices, normals, tex_coords, vertex_indices, normal_indices, tex_coord_indices, flip_normals);
+		glEnd();
+		return;
+	}
+	unsigned nr_vertices = 2 + (face_degree - 2) * nr_faces;
+	std::vector<vec3> P, N;
+	std::vector<vec2> T;
+	if (!prepare_attributes(P, N, T, nr_vertices, vertices, normals, tex_coords, vertex_indices, normal_indices, tex_coord_indices, flip_normals))
+		return;
+	glDrawElements(GL_LINES, I.size(), GL_UNSIGNED_INT, &I[0]);
+	release_attributes(normals, tex_coords, normal_indices, tex_coord_indices);
 }
 
 
 void gl_context::draw_faces(
-	const double* vertices, const double* normals, const double* tex_coords, 
+	const float* vertices, const float* normals, const float* tex_coords, 
 	const int* vertex_indices, const int* normal_indices, const int* tex_coord_indices, 
 	int nr_faces, int face_degree, bool flip_normals) const
 {
-	int k = 0;
-	if (face_degree < 5)
-		glBegin( face_degree == 3 ? GL_TRIANGLES : GL_QUADS);
-	for (int i = 0; i<nr_faces; ++i) {
-		if (face_degree >= 5)
-			glBegin(GL_POLYGON);
-		for (int j=0; j<face_degree; ++j, ++k)
-			render_vertex(k, vertices, normals, tex_coords, vertex_indices, normal_indices,tex_coord_indices,flip_normals);
-		if (face_degree >= 5)
-			glEnd();		
+	if (draw_in_compatibility_mode) {
+		int k = 0;
+		if (face_degree < 5)
+			glBegin(face_degree == 3 ? GL_TRIANGLES : GL_QUADS);
+		for (int i = 0; i < nr_faces; ++i) {
+			if (face_degree >= 5)
+				glBegin(GL_POLYGON);
+			for (int j = 0; j < face_degree; ++j, ++k)
+				render_vertex(k, vertices, normals, tex_coords, vertex_indices, normal_indices, tex_coord_indices, flip_normals);
+			if (face_degree >= 5)
+				glEnd();
+		}
+		if (face_degree < 5)
+			glEnd();
+		return;
 	}
-	if (face_degree < 5)
-		glEnd();
+	unsigned nr_vertices = face_degree * nr_faces;
+	std::vector<vec3> P, N;
+	std::vector<vec2> T;
+	if (!prepare_attributes(P, N, T, nr_vertices, vertices, normals, tex_coords, vertex_indices, normal_indices, tex_coord_indices, flip_normals))
+		return;
+	/*
+	for (unsigned x = 0; x < nr_vertices; ++x) {
+		std::cout << x << ": [" << P[x] << "]";
+		if (N.size() > 0)
+			std::cout << ", <" << N[x] << ">";
+		if (T.size() > 0) 
+			std::cout << ", {" << T[x] << "}";
+		std::cout << std::endl;
+	}
+	*/
+	if (face_degree == 3)
+		glDrawArrays(GL_TRIANGLES, 0, nr_vertices);
+	else {
+		for (int i = 0; i < nr_faces; ++i) {
+			glDrawArrays(GL_TRIANGLE_FAN, i*face_degree, face_degree);
+		}
+	}
+	release_attributes(normals, tex_coords, normal_indices, tex_coord_indices);
 }
 
 void gl_context::draw_strip_or_fan(
-		const double* vertices, const double* normals, const double* tex_coords, 
+		const float* vertices, const float* normals, const float* tex_coords, 
 		const int* vertex_indices, const int* normal_indices, const int* tex_coord_indices, 
 		int nr_faces, int face_degree, bool is_fan, bool flip_normals) const
 {
-	glBegin( face_degree == 3 ? (is_fan ? GL_TRIANGLE_FAN : GL_TRIANGLE_STRIP) : GL_QUAD_STRIP);
-	render_vertex(0, vertices, normals, tex_coords, vertex_indices, normal_indices,tex_coord_indices,flip_normals);
-	render_vertex(1, vertices, normals, tex_coords, vertex_indices, normal_indices,tex_coord_indices,flip_normals);
-	int s = face_degree-2;
+	int s = face_degree - 2;
 	int k = 2;
-	for (int i = 0; i<nr_faces; ++i)
-		for (int j=0; j<s; ++j, ++k)
-			render_vertex(k, vertices, normals, tex_coords, vertex_indices, normal_indices,tex_coord_indices,flip_normals);
-	glEnd();
-}	
-
-/// return homogeneous 4x4 viewing matrix, which transforms from world to eye space
-gl_context::mat_type gl_context::get_V() const
-{
-	GLdouble V[16];
-	glGetDoublev(GL_MODELVIEW_MATRIX, V);
-	return mat_type(4,4,V);
+	if (draw_in_compatibility_mode) {
+		glBegin(face_degree == 3 ? (is_fan ? GL_TRIANGLE_FAN : GL_TRIANGLE_STRIP) : GL_QUAD_STRIP);
+		render_vertex(0, vertices, normals, tex_coords, vertex_indices, normal_indices, tex_coord_indices, flip_normals);
+		render_vertex(1, vertices, normals, tex_coords, vertex_indices, normal_indices, tex_coord_indices, flip_normals);
+		for (int i = 0; i < nr_faces; ++i)
+			for (int j = 0; j < s; ++j, ++k)
+				render_vertex(k, vertices, normals, tex_coords, vertex_indices, normal_indices, tex_coord_indices, flip_normals);
+		glEnd();
+		return;
+	}
+	unsigned nr_vertices = 2 + (face_degree-2) * nr_faces;
+	std::vector<vec3> P, N;
+	std::vector<vec2> T;
+	if (!prepare_attributes(P, N, T, nr_vertices, vertices, normals, tex_coords, vertex_indices, normal_indices, tex_coord_indices, flip_normals))
+		return;
+	glDrawArrays(is_fan ? GL_TRIANGLE_FAN : GL_TRIANGLE_STRIP, 0, nr_vertices);
+	release_attributes(normals, tex_coords, normal_indices, tex_coord_indices);
 }
 
-void gl_context::set_V(const mat_type& V) const
+/// return homogeneous 4x4 viewing matrix, which transforms from world to eye space
+gl_context::dmat4 gl_context::get_modelview_matrix() const
 {
-	GLint mm;
-	glGetIntegerv(GL_MATRIX_MODE, &mm);
-	glMatrixMode(GL_MODELVIEW);
-	glLoadMatrixd(V);
-	glMatrixMode(mm);
+	if (support_compatibility_mode) {
+		GLdouble V[16];
+		glGetDoublev(GL_MODELVIEW_MATRIX, V);
+		return dmat4(4,4,V);
+	}
+	if (modelview_matrix_stack.empty())
+		return identity4<double>();
+	return modelview_matrix_stack.top();
 }
 
 /// return homogeneous 4x4 projection matrix, which transforms from eye to clip space
-gl_context::mat_type gl_context::get_P() const
+gl_context::dmat4 gl_context::get_projection_matrix() const
 {
-	GLdouble P[16];
-	glGetDoublev(GL_PROJECTION_MATRIX, P);
-	return mat_type(4,4,P);
+	if (support_compatibility_mode) {
+		GLdouble P[16];
+		glGetDoublev(GL_PROJECTION_MATRIX, P);
+		return dmat4(4,4,P);
+	}
+	if (projection_matrix_stack.empty())
+		return identity4<double>();
+	return projection_matrix_stack.top();
 }
-
-void gl_context::set_P(const mat_type& P) const
-{
-	GLint mm;
-	glGetIntegerv(GL_MATRIX_MODE, &mm);
-	glMatrixMode(GL_PROJECTION);
-	glLoadMatrixd(P);
-	glMatrixMode(mm);
-}
-
 
 /// return homogeneous 4x4 projection matrix, which transforms from clip to device space
-gl_context::mat_type gl_context::get_D() const
+gl_context::dmat4 gl_context::get_device_matrix() const
 {
 	GLint vp[4];
 	glGetIntegerv(GL_VIEWPORT, vp);
-	mat_type D(4,4,0.0);
-	D(0,0) =  0.5*vp[2];
+	dmat4 D; D.zeros();
+	D(0, 0) = 0.5*vp[2];
 	D(0, 3) = 0.5*vp[2] + vp[0];
-	D(1,1) = -0.5*vp[3]; // flip y-coordinate
+	D(1, 1) = -0.5*vp[3]; // flip y-coordinate
 	D(1, 3) = get_height() - 0.5*vp[3] - vp[1];
-	D(2,2) =  0.5;
-	D(2,3) =  0.5;
-	D(3,3) =  1.0;
+	D(2, 2) = 0.5;
+	D(2, 3) = 0.5;
+	D(3, 3) = 1.0;
 	return D;
+}
+
+void gl_context::set_modelview_matrix(const dmat4& V)
+{
+	if (support_compatibility_mode) {
+		GLint mm;
+		glGetIntegerv(GL_MATRIX_MODE, &mm);
+		glMatrixMode(GL_MODELVIEW);
+		glLoadMatrixd(V);
+		glMatrixMode(mm);
+	}
+	context::set_modelview_matrix(V);
+}
+
+void gl_context::set_projection_matrix(const dmat4& P)
+{
+	if (support_compatibility_mode) {
+		GLint mm;
+		glGetIntegerv(GL_MATRIX_MODE, &mm);
+		glMatrixMode(GL_PROJECTION);
+		glLoadMatrixd(P);
+		glMatrixMode(mm);
+	}
+	context::set_projection_matrix(P);
 }
 
 /// read the device z-coordinate from the z-buffer for the given device x- and y-coordinates
@@ -1189,7 +1402,7 @@ std::string gl_error() {
 	return std::string((const char*)gluErrorString(eid));
 }
 
-bool gl_context::check_gl_error(const std::string& where, const cgv::render::render_component* rc)
+bool gl_context::check_gl_error(const std::string& where, const cgv::render::render_component* rc) const
 {
 	GLenum eid = glGetError();
 	if (eid == GL_NO_ERROR)
@@ -1199,7 +1412,7 @@ bool gl_context::check_gl_error(const std::string& where, const cgv::render::ren
 	return true;
 }
 
-bool gl_context::check_texture_support(TextureType tt, const std::string& where, const cgv::render::render_component* rc)
+bool gl_context::check_texture_support(TextureType tt, const std::string& where, const cgv::render::render_component* rc) const
 {
 	switch (tt) {
 	case TT_3D:
@@ -1218,7 +1431,7 @@ bool gl_context::check_texture_support(TextureType tt, const std::string& where,
 	return true;
 }
 
-bool gl_context::check_shader_support(ShaderType st, const std::string& where, const cgv::render::render_component* rc)
+bool gl_context::check_shader_support(ShaderType st, const std::string& where, const cgv::render::render_component* rc) const
 {
 	switch (st) {
 	case ST_COMPUTE:
@@ -1253,7 +1466,7 @@ bool gl_context::check_shader_support(ShaderType st, const std::string& where, c
 	}
 }
 
-bool gl_context::check_fbo_support(const std::string& where, const cgv::render::render_component* rc)
+bool gl_context::check_fbo_support(const std::string& where, const cgv::render::render_component* rc) const
 {
 	if (!GLEW_VERSION_3_0) {
 		error(where + ": framebuffer objects not supported", rc);
@@ -1262,7 +1475,7 @@ bool gl_context::check_fbo_support(const std::string& where, const cgv::render::
 	return true;
 }
 
-GLuint gl_context::texture_generate(texture_base& tb)
+GLuint gl_context::texture_generate(texture_base& tb) const
 {
 	if (!check_texture_support(tb.tt, "gl_context::texture_generate", &tb))
 		return get_gl_id(0);
@@ -1286,7 +1499,7 @@ int gl_context::query_integer_constant(ContextIntegerConstant cic) const
 	return value;
 }
 
-GLuint gl_context::texture_bind(TextureType tt, GLuint tex_id)
+GLuint gl_context::texture_bind(TextureType tt, GLuint tex_id) const
 {
 	GLint tmp_id;
 	glGetIntegerv(get_tex_bind(tt), &tmp_id);
@@ -1294,12 +1507,12 @@ GLuint gl_context::texture_bind(TextureType tt, GLuint tex_id)
 	return tmp_id;
 }
 
-void gl_context::texture_unbind(TextureType tt, GLuint tmp_id)
+void gl_context::texture_unbind(TextureType tt, GLuint tmp_id) const
 {
 	glBindTexture(get_tex_dim(tt), tmp_id);
 }
 
-bool gl_context::texture_create(texture_base& tb, cgv::data::data_format& df)
+bool gl_context::texture_create(texture_base& tb, cgv::data::data_format& df) const
 {
 	GLuint gl_format = (const GLuint&) tb.internal_format;
 	
@@ -1359,7 +1572,7 @@ bool gl_context::texture_create(
 							texture_base& tb, 
 							cgv::data::data_format& target_format, 
 							const cgv::data::const_data_view& data, 
-							int level, int cube_side, const std::vector<cgv::data::data_view>* palettes)
+							int level, int cube_side, const std::vector<cgv::data::data_view>* palettes) const
 {
 	// query the format to be used for the texture
 	GLuint gl_tex_format = (const GLuint&) tb.internal_format;
@@ -1394,7 +1607,7 @@ bool gl_context::texture_create(
 bool gl_context::texture_create_from_buffer(
 						texture_base& tb, 
 						cgv::data::data_format& df, 
-						int x, int y, int level)
+						int x, int y, int level) const
 {
 	GLuint gl_format = (const GLuint&) tb.internal_format;
 
@@ -1455,7 +1668,7 @@ bool gl_context::texture_replace(
 						texture_base& tb, 
 						int x, int y, int z, 
 						const cgv::data::const_data_view& data, 
-						int level, const std::vector<cgv::data::data_view>* palettes)
+						int level, const std::vector<cgv::data::data_view>* palettes) const
 {
 	if (!tb.is_created()) {
 		error("gl_context::texture_replace: attempt to replace in not created texture", &tb);
@@ -1499,7 +1712,7 @@ bool gl_context::texture_replace_from_buffer(
 							int x, int y, int z, 
 							int x_buffer, int y_buffer, 
 							unsigned int width, unsigned int height, 
-							int level)
+							int level) const
 {
 	if (!tb.is_created()) {
 		error("gl_context::texture_replace_from_buffer: attempt to replace in not created texture", &tb);
@@ -1548,7 +1761,7 @@ bool gl_context::texture_replace_from_buffer(
 	return result;
 }
 
-bool gl_context::texture_generate_mipmaps(texture_base& tb, unsigned int dim)
+bool gl_context::texture_generate_mipmaps(texture_base& tb, unsigned int dim) const
 {
 	GLuint tmp_id = texture_bind(tb.tt,get_gl_id(tb.handle));
 
@@ -1563,7 +1776,7 @@ bool gl_context::texture_generate_mipmaps(texture_base& tb, unsigned int dim)
 	return result;
 }
 
-bool gl_context::texture_destruct(texture_base& tb)
+bool gl_context::texture_destruct(texture_base& tb) const
 {
 	if (!is_created()) {
 		error("gl_context::texture_destruct: attempt to destruct not created texture", &tb);
@@ -1576,7 +1789,7 @@ bool gl_context::texture_destruct(texture_base& tb)
 	return result;
 }
 
-bool gl_context::texture_set_state(const texture_base& tb)
+bool gl_context::texture_set_state(const texture_base& tb) const
 {
 	if (tb.tt == TT_UNDEF) {
 		error("gl_context::texture_set_state: attempt to set state on texture without type", &tb);
@@ -1613,7 +1826,7 @@ bool gl_context::texture_set_state(const texture_base& tb)
 
 bool gl_context::texture_enable(
 						texture_base& tb, 
-						int tex_unit, unsigned int dim)
+						int tex_unit, unsigned int dim) const
 {
 	if (dim < 1 || dim > 3) {
 		error("gl_context::texture_enable: invalid texture dimension", &tb);
@@ -1644,7 +1857,7 @@ bool gl_context::texture_enable(
 
 bool gl_context::texture_disable(
 						texture_base& tb, 
-						int tex_unit, unsigned int dim)
+						int tex_unit, unsigned int dim) const
 {
 	if (dim < 1 || dim > 3) {
 		error("gl_context::texture_disable: invalid texture dimension", &tb);
@@ -1669,7 +1882,7 @@ bool gl_context::texture_disable(
 bool gl_context::render_buffer_create(
 	render_component& rc,
 	cgv::data::component_format& cf,
-	int& _width, int& _height)
+	int& _width, int& _height) const
 {
 	if (!GLEW_VERSION_3_0) {
 		error("gl_context::render_buffer_create: frame buffer objects not supported", &rc);
@@ -1705,7 +1918,7 @@ bool gl_context::render_buffer_create(
 	return true;
 }
 
-bool gl_context::render_buffer_destruct(render_component& rc)
+bool gl_context::render_buffer_destruct(render_component& rc) const
 {
 	if (!GLEW_VERSION_3_0) {
 		error("gl_context::render_buffer_destruct: frame buffer objects not supported", &rc);
@@ -1719,15 +1932,13 @@ bool gl_context::render_buffer_destruct(render_component& rc)
 	return true;
 }
 
-bool gl_context::frame_buffer_create(frame_buffer_base& fbb)
+bool gl_context::frame_buffer_create(frame_buffer_base& fbb) const
 {
 	if (!check_fbo_support("gl_context::frame_buffer_create", &fbb))
 		return false;
-
-	if (fbb.width == -1)
-		fbb.width = get_width();
-	if (fbb.height == -1)
-		fbb.height = get_height();
+	
+	if (!context::frame_buffer_create(fbb))
+		return false;
 
 	// allocate framebuffer object
 	GLuint fbo_id = 0;
@@ -1740,167 +1951,92 @@ bool gl_context::frame_buffer_create(frame_buffer_base& fbb)
 	return true;
 }
 
-void gl_context::frame_buffer_bind(const frame_buffer_base& fbb, void*& user_data) const
-{
-	if (fbb.handle == 0)
-		return;
-	GLuint fbo_id = get_gl_id(fbb.handle);
-	GLint old_binding;
-	glGetIntegerv(GL_FRAMEBUFFER_BINDING, &old_binding);
-	user_data = get_handle(old_binding);
-	glBindFramebuffer(GL_FRAMEBUFFER, fbo_id);
-}
-
-void gl_context::frame_buffer_unbind(const frame_buffer_base& fbb, void*& user_data) const
-{
-	GLuint old_binding = get_gl_id(user_data);
-	glBindFramebuffer(GL_FRAMEBUFFER, old_binding);
-	user_data = 0;
-}
-
-void gl_context::frame_buffer_bind(frame_buffer_base& fbb) const
-{
-	frame_buffer_bind(fbb, fbb.user_data);
-}
-
-void gl_context::frame_buffer_unbind(frame_buffer_base& fbb) const
-{
-	frame_buffer_unbind(fbb, fbb.user_data);
-}
-
 bool gl_context::frame_buffer_enable(frame_buffer_base& fbb)
 {
-	if (fbb.handle == 0) {
-		error("gl_context::frame_buffer_enable: attempt to enable not created frame buffer", &fbb);
+	if (!context::frame_buffer_enable(fbb))
 		return false;
-	}
-	GLuint fbo_id = get_gl_id(fbb.handle);
-	int i;
-	int n = 0;
-	GLenum draw_buffers[16];
-	if (fbb.enabled_color_attachments.size() == 0) {
-		for (i = 0; i < 16; ++i)
-			if (fbb.attached[i]) {
-				draw_buffers[n] = GL_COLOR_ATTACHMENT0+i;
-				++n;
-			}
-	}
-	else {
-		for (i = 0; i < (int)fbb.enabled_color_attachments.size(); ++i) {
-			if (fbb.attached[fbb.enabled_color_attachments[i]]) {
-				draw_buffers[n] = GL_COLOR_ATTACHMENT0+fbb.enabled_color_attachments[i];
-				++n;
-			}
-		}
-	}
-	frame_buffer_stack.push(0);
-	frame_buffer_bind(fbb, frame_buffer_stack.top());
-	glPushAttrib(GL_COLOR_BUFFER_BIT|GL_VIEWPORT_BIT);
-	if (n == 1)
-		glDrawBuffer(draw_buffers[0]);
-	else if (n > 1) {
-		glDrawBuffers(n, draw_buffers);
+	std::vector<int> buffers;
+	get_buffer_list(fbb, buffers, GL_COLOR_ATTACHMENT0);
+	frame_buffer_stack.push(&fbb);
+	glBindFramebuffer(GL_FRAMEBUFFER, get_gl_id(fbb.handle));
+
+	if (buffers.size() == 1)
+		glDrawBuffer(buffers[0]);
+	else if (buffers.size() > 1) {
+		glDrawBuffers(buffers.size(), reinterpret_cast<GLenum*>(&buffers[0]));
 	}
 	else {
 		error("gl_context::frame_buffer_enable: no attached draw buffer selected!!", &fbb);
 		return false;
 	}
-	glViewport(0,0,fbb.width, fbb.height);
 	return true;
 }
 
 /// disable the framebuffer object
 bool gl_context::frame_buffer_disable(frame_buffer_base& fbb)
 {
-	glPopAttrib();
-	frame_buffer_unbind(fbb, frame_buffer_stack.top());
-	frame_buffer_stack.pop();
+	if (!context::frame_buffer_disable(fbb))
+		return false;
+	if (frame_buffer_stack.empty())
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	else
+		glBindFramebuffer(GL_FRAMEBUFFER, get_gl_id(frame_buffer_stack.top()->handle));
 	return true;
 }
 
 bool gl_context::frame_buffer_destruct(frame_buffer_base& fbb)
 {
-	if (fbb.handle == 0) {
-		error("gl_context::frame_buffer_destruct: attempt to destruct not created frame buffer", &fbb);
+	if (!context::frame_buffer_destruct(fbb))
 		return false;
-	}
 	GLuint fbo_id = get_gl_id(fbb.handle);
 	glDeleteFramebuffers(1, &fbo_id);
 	fbb.handle = 0;
-	fbb.user_data = 0;
 	return true;
 }
 
-bool gl_context::frame_buffer_attach(frame_buffer_base& fbb, const render_component& rb, bool is_depth, int i)
+bool gl_context::frame_buffer_attach(frame_buffer_base& fbb, const render_component& rb, bool is_depth, int i) const
 {
-	if (fbb.handle == 0) {
-		error("gl_context::frame_buffer_attach: attempt to attach to frame buffer that is not created", &fbb);
+	if (!context::frame_buffer_attach(fbb, rb, is_depth, i))
 		return false;
-	}
-	if (rb.handle == 0) {
-		error("gl_context::frame_buffer_attach: attempt to attach empty render buffer", &fbb);
-		return false;
-	}
-	GLuint rb_id = get_gl_id(rb.handle);
-	void* user_data;
-	frame_buffer_bind(fbb, user_data);
-	if (is_depth) {
+	GLint old_binding;
+	glGetIntegerv(GL_FRAMEBUFFER_BINDING, &old_binding);
+	glBindFramebuffer(GL_FRAMEBUFFER, get_gl_id(fbb.handle));
 		glFramebufferRenderbuffer(GL_FRAMEBUFFER, 
-			GL_DEPTH_ATTACHMENT,
+			is_depth ? GL_DEPTH_ATTACHMENT : GL_COLOR_ATTACHMENT0 + i,
 			GL_RENDERBUFFER, 
-			rb_id);
-	}
-	else {
-		glFramebufferRenderbuffer(GL_FRAMEBUFFER, 
-			GL_COLOR_ATTACHMENT0+i,
-			GL_RENDERBUFFER, 
-			rb_id);
-		fbb.attached[i] = true;
-	}
-	frame_buffer_unbind(fbb, user_data);
+			get_gl_id(rb.handle));
+	glBindFramebuffer(GL_FRAMEBUFFER, old_binding);
 	return true;
 }
 
 /// attach 2d texture to depth buffer if it is a depth texture, to stencil if it is a stencil texture or to the i-th color attachment if it is a color texture
 bool gl_context::frame_buffer_attach(frame_buffer_base& fbb, 
 												 const texture_base& t, bool is_depth,
-												 int level, int i, int z_or_cube_side)
+												 int level, int i, int z_or_cube_side) const
 {
-	if (fbb.handle == 0) {
-		error("gl_context::frame_buffer_attach: attempt to attach to frame buffer that is not created", &fbb);
+	if (!context::frame_buffer_attach(fbb, t, is_depth, level, i, z_or_cube_side))
 		return false;
-	}
-	void* user_data;
-	frame_buffer_bind(fbb, user_data);
-	GLuint tex_id = get_gl_id(t.handle);
+	GLint old_binding;
+	glGetIntegerv(GL_FRAMEBUFFER_BINDING, &old_binding);
 	if (z_or_cube_side == -1) {
-		if (is_depth) {
-			glFramebufferTexture2D(GL_FRAMEBUFFER, 
-				GL_DEPTH_ATTACHMENT,
-				GL_TEXTURE_2D, tex_id, level);
-		}
-		else {
-			glFramebufferTexture2D(GL_FRAMEBUFFER, 
-				GL_COLOR_ATTACHMENT0+i, 
-				GL_TEXTURE_2D, tex_id, level);
-			fbb.attached[i] = true;
-		}
+		glFramebufferTexture2D(GL_FRAMEBUFFER, 
+			is_depth ? GL_DEPTH_ATTACHMENT : GL_COLOR_ATTACHMENT0+i,
+			GL_TEXTURE_2D, get_gl_id(t.handle), level);
 	}
 	else {
 		if (t.tt == TT_CUBEMAP) {
 			glFramebufferTexture2D(GL_FRAMEBUFFER, 
 				GL_COLOR_ATTACHMENT0+i, 
-				get_gl_cube_map_target(z_or_cube_side), tex_id, level);
+				get_gl_cube_map_target(z_or_cube_side), get_gl_id(t.handle), level);
 		}
 		else {
 			glFramebufferTexture3D(GL_FRAMEBUFFER, 
 				GL_COLOR_ATTACHMENT0+i, 
-				GL_TEXTURE_3D, tex_id, level, z_or_cube_side);
+				GL_TEXTURE_3D, get_gl_id(t.handle), level, z_or_cube_side);
 		}
-		fbb.attached[i] = true;
 	}
 	bool result = !check_gl_error("gl_context::frame_buffer_attach", &fbb);
-	frame_buffer_unbind(fbb, user_data);
+	glBindFramebuffer(GL_FRAMEBUFFER, old_binding);
 	return result;
 }
 
@@ -1911,10 +2047,10 @@ bool gl_context::frame_buffer_is_complete(const frame_buffer_base& fbb) const
 		error("gl_context::frame_buffer_is_complete: attempt to check completeness on frame buffer that is not created", &fbb);
 		return false;
 	}
-	void* user_data;
-	frame_buffer_bind(fbb,user_data);
+	GLint old_binding;
+	glGetIntegerv(GL_FRAMEBUFFER_BINDING, &old_binding);
 	GLenum error = glCheckFramebufferStatus(GL_FRAMEBUFFER);
-	frame_buffer_unbind(fbb,user_data);
+	glBindFramebuffer(GL_FRAMEBUFFER, old_binding);
 	switch (error) {
 	case GL_FRAMEBUFFER_COMPLETE:
 		return true;
@@ -1947,7 +2083,7 @@ bool gl_context::frame_buffer_is_complete(const frame_buffer_base& fbb) const
 	return false;
 }
 
-int gl_context::frame_buffer_get_max_nr_color_attachments()
+int gl_context::frame_buffer_get_max_nr_color_attachments() const
 {
 	if (!check_fbo_support("gl_context::frame_buffer_get_max_nr_color_attachments"))
 		return 0;
@@ -1957,7 +2093,7 @@ int gl_context::frame_buffer_get_max_nr_color_attachments()
 	return nr;
 }
 
-int gl_context::frame_buffer_get_max_nr_draw_buffers()
+int gl_context::frame_buffer_get_max_nr_draw_buffers() const
 {
 	if (!check_fbo_support("gl_context::frame_buffer_get_max_nr_draw_buffers"))
 		return 0;
@@ -1972,7 +2108,7 @@ GLuint gl_shader_type[] =
 	0, GL_COMPUTE_SHADER, GL_VERTEX_SHADER, GL_TESS_CONTROL_SHADER, GL_TESS_EVALUATION_SHADER, GL_GEOMETRY_SHADER, GL_FRAGMENT_SHADER
 };
 
-void gl_context::shader_code_destruct(render_component& sc)
+void gl_context::shader_code_destruct(render_component& sc) const
 {
 	if (sc.handle == 0) {
 		error("gl_context::shader_code_destruct: shader not created", &sc);
@@ -1982,7 +2118,7 @@ void gl_context::shader_code_destruct(render_component& sc)
 	check_gl_error("gl_context::shader_code_destruct", &sc);
 }
 
-bool gl_context::shader_code_create(render_component& sc, ShaderType st, const std::string& source)
+bool gl_context::shader_code_create(render_component& sc, ShaderType st, const std::string& source) const
 {
 	if (!check_shader_support(st, "gl_context::shader_code_create", &sc))
 		return false;
@@ -2002,7 +2138,7 @@ bool gl_context::shader_code_create(render_component& sc, ShaderType st, const s
 	return true;
 }
 
-bool gl_context::shader_code_compile(render_component& sc)
+bool gl_context::shader_code_compile(render_component& sc) const
 {
 	if (sc.handle == 0) {
 		error("gl_context::shader_code_compile: shader not created", &sc);
@@ -2027,7 +2163,7 @@ bool gl_context::shader_code_compile(render_component& sc)
 	return false;
 }
 
-bool gl_context::shader_program_create(shader_program_base& spb)
+bool gl_context::shader_program_create(shader_program_base& spb) const
 {
 	if (!check_shader_support(ST_VERTEX, "gl_context::shader_program_create", &spb))
 		return false;
@@ -2035,7 +2171,7 @@ bool gl_context::shader_program_create(shader_program_base& spb)
 	return true;
 }
 
-void gl_context::shader_program_attach(shader_program_base& spb, const render_component& sc)
+void gl_context::shader_program_attach(shader_program_base& spb, const render_component& sc) const
 {
 	if (spb.handle == 0) {
 		error("gl_context::shader_program_attach: shader program not created", &spb);
@@ -2044,7 +2180,7 @@ void gl_context::shader_program_attach(shader_program_base& spb, const render_co
 	glAttachShader(get_gl_id(spb.handle), get_gl_id(sc.handle));
 }
 
-void gl_context::shader_program_detach(shader_program_base& spb, const render_component& sc)
+void gl_context::shader_program_detach(shader_program_base& spb, const render_component& sc) const
 {
 	if (spb.handle == 0) {
 		error("gl_context::shader_program_detach: shader program not created", &spb);
@@ -2053,7 +2189,7 @@ void gl_context::shader_program_detach(shader_program_base& spb, const render_co
 	glDetachShader(get_gl_id(spb.handle), get_gl_id(sc.handle));
 }
 
-bool gl_context::shader_program_link(shader_program_base& spb)
+bool gl_context::shader_program_link(shader_program_base& spb) const
 {
 	if (spb.handle == 0) {
 		error("gl_context::shader_program_link: shader program not created", &spb);
@@ -2078,7 +2214,7 @@ bool gl_context::shader_program_link(shader_program_base& spb)
 	return false;
 }
 
-bool gl_context::shader_program_set_state(shader_program_base& spb)
+bool gl_context::shader_program_set_state(shader_program_base& spb) const
 {
 	if (spb.handle == 0) {
 		error("gl_context::shader_program_set_state: shader program not created", &spb);
@@ -2093,32 +2229,37 @@ bool gl_context::shader_program_set_state(shader_program_base& spb)
 
 bool gl_context::shader_program_enable(shader_program_base& spb)
 {
-	if (enabled_program) {
-		if (enabled_program == &spb)
-			return true;
-		error("gl_context::shader_program_enable() called while other program was enabled. Nested program enabling not allowed!", &spb);
+	if (!context::shader_program_enable(spb))
 		return false;
-	}
 	glUseProgram(get_gl_id(spb.handle));
-	enabled_program = &spb;
+	
+	shader_program& prog = static_cast<shader_program&>(spb);
+	if (auto_set_lights_in_current_shader_program && spb.does_use_lights())
+		set_current_lights(prog);
+	if (auto_set_material_in_current_shader_program && spb.does_use_material())
+		set_current_material(prog);
+	if (auto_set_view_in_current_shader_program && spb.does_use_view())
+		set_current_view(prog);
 	return true;
 }
 
 bool gl_context::shader_program_disable(shader_program_base& spb)
 {
-	if (enabled_program != &spb) {
-		error("gl_context::shader_program_disable() called while program was not enabled.", &spb);
+	if (!context::shader_program_disable(spb)) 
 		return false;
-	}
-	glUseProgram(0);
-	enabled_program = 0;
+	if (shader_program_stack.empty())
+		glUseProgram(0);
+	else
+		glUseProgram(get_gl_id(shader_program_stack.top()->handle));
 	return true;
 }
-void gl_context::shader_program_destruct(shader_program_base& spb)
+
+bool gl_context::shader_program_destruct(shader_program_base& spb)
 {
-	if (enabled_program == &spb)
-		shader_program_disable(spb);
+	if (!context::shader_program_destruct(spb))
+		return false;
 	glDeleteProgram(get_gl_id(spb.handle));
+	return true;
 }
 
 int  gl_context::get_uniform_location(const shader_program_base& spb, const std::string& name) const
@@ -2144,7 +2285,7 @@ std::string value_type_index_to_string(type_descriptor td)
 	return res;
 }
 
-bool gl_context::set_uniform_void(shader_program_base& spb, int loc, type_descriptor value_type, const void* value_ptr)
+bool gl_context::set_uniform_void(shader_program_base& spb, int loc, type_descriptor value_type, const void* value_ptr) const
 {
 	if (value_type.is_array) {
 		error(std::string("gl_context::set_uniform_void(") + value_type_index_to_string(value_type) + ") array type not supported, please use set_uniform_array instead.", &spb);
@@ -2154,7 +2295,8 @@ bool gl_context::set_uniform_void(shader_program_base& spb, int loc, type_descri
 		error("gl_context::set_uniform_void() called on not created program", &spb);
 		return false;
 	}
-	if (enabled_program != &spb)
+	bool not_current = shader_program_stack.empty() || shader_program_stack.top() != &spb;
+	if (not_current)
 		glUseProgram(get_gl_id(spb.handle));
 	bool res = true;
 	switch (value_type.element_type) {
@@ -2308,15 +2450,15 @@ bool gl_context::set_uniform_void(shader_program_base& spb, int loc, type_descri
 		}
 		break;
 	}
-	if (enabled_program != &spb)
-		glUseProgram(enabled_program ? get_gl_id(enabled_program->handle) : 0);
+	if (not_current)
+		glUseProgram(shader_program_stack.empty() ? 0 : get_gl_id(shader_program_stack.top()->handle));
 
 	if (check_gl_error("gl_context::set_uniform_void()", &spb))
 		res = false;
 	return res;
 }
 
-bool gl_context::set_uniform_array_void(shader_program_base& spb, int loc, type_descriptor value_type, const void* value_ptr, size_t nr_elements)
+bool gl_context::set_uniform_array_void(shader_program_base& spb, int loc, type_descriptor value_type, const void* value_ptr, size_t nr_elements) const
 {
 	if (!value_type.is_array) {
 		error(std::string("gl_context::set_uniform_array_void(") + value_type_index_to_string(value_type) + ") non array type not allowed.", &spb);
@@ -2326,7 +2468,8 @@ bool gl_context::set_uniform_array_void(shader_program_base& spb, int loc, type_
 		error("gl_context::set_uniform_array_void() called on not created program", &spb);
 		return false;
 	}
-	if (enabled_program != &spb)
+	bool not_current = shader_program_stack.empty() || shader_program_stack.top() != &spb;
+	if (not_current)
 		glUseProgram(get_gl_id(spb.handle));
 	bool res = true;
 	switch (value_type.coordinate_type) {
@@ -2441,8 +2584,8 @@ bool gl_context::set_uniform_array_void(shader_program_base& spb, int loc, type_
 	if (check_gl_error("gl_context::set_uniform_array_void()", &spb))
 		res = false;
 
-	if (enabled_program != &spb)
-		glUseProgram(enabled_program ? get_gl_id(enabled_program->handle) : 0);
+	if (not_current)
+		glUseProgram(shader_program_stack.empty() ? 0 : get_gl_id(shader_program_stack.top()->handle));
 
 	return res;
 }
@@ -2452,13 +2595,14 @@ int  gl_context::get_attribute_location(const shader_program_base& spb, const st
 	return glGetAttribLocation(get_gl_id(spb.handle), name.c_str());
 }
 
-bool gl_context::set_attribute_void(shader_program_base& spb, int loc, type_descriptor value_type, const void* value_ptr)
+bool gl_context::set_attribute_void(shader_program_base& spb, int loc, type_descriptor value_type, const void* value_ptr) const
 {
 	if (!spb.handle) {
 		error("gl_context::set_attribute_void() called on not created program", &spb);
 		return false;
 	}
-	if (enabled_program != &spb)
+	bool not_current = shader_program_stack.empty() || shader_program_stack.top() != &spb;
+	if (not_current)
 		glUseProgram(get_gl_id(spb.handle));
 	bool res = true;
 	switch (value_type.element_type) {
@@ -2542,15 +2686,15 @@ bool gl_context::set_attribute_void(shader_program_base& spb, int loc, type_desc
 		res = false;
 		break;
 	}
-	if (enabled_program != &spb)
-		glUseProgram(enabled_program ? get_gl_id(enabled_program->handle) : 0);
+	if (not_current)
+		glUseProgram(shader_program_stack.empty() ? 0 : get_gl_id(shader_program_stack.top()->handle));
 
 	if (check_gl_error("gl_context::set_uniform_array_void()", &spb))
 		res = false;
 	return res;
 }
 
-bool gl_context::attribute_array_binding_create(attribute_array_binding_base& aab)
+bool gl_context::attribute_array_binding_create(attribute_array_binding_base& aab) const
 {
 	if (!GLEW_VERSION_3_0) {
 		error("gl_context::attribute_array_binding_create() array attribute bindings not supported", &aab);
@@ -2568,51 +2712,39 @@ bool gl_context::attribute_array_binding_create(attribute_array_binding_base& aa
 
 bool gl_context::attribute_array_binding_destruct(attribute_array_binding_base& aab)
 {
-	if (aab.handle) {
-		if (&aab == enabled_aab) {
-			enabled_aab = 0;
-			glBindVertexArray(0);
-			error("gl_context::attribute_array_binding_destruct(): called on active attribute array binding; you should disable binding before destruction", &aab);
-		}
-		GLuint a_id = get_gl_id(aab.handle);
-		glDeleteVertexArrays(1, &a_id);
-		return !check_gl_error("gl_context::attribute_array_binding_destruct");
-	}
-	else {
+	if (&aab == attribute_array_binding_stack.top())
+		glBindVertexArray(0);
+	if (!context::attribute_array_binding_destruct(aab))
+		return false;
+	if (!aab.handle) {
 		error("gl_context::attribute_array_binding_destruct(): called on not created attribute array binding", &aab);
 		return false;
 	}
+	GLuint a_id = get_gl_id(aab.handle);
+	glDeleteVertexArrays(1, &a_id);
+	return !check_gl_error("gl_context::attribute_array_binding_destruct");
 }
 
 bool gl_context::attribute_array_binding_enable(attribute_array_binding_base& aab)
 {
-	if (!aab.handle) {
-		error("gl_context::attribute_array_binding_enable() called in not created attribute array binding.", &aab);
+	if (!context::attribute_array_binding_enable(aab))
 		return false;
-	}
-	if (enabled_aab) {
-		if (enabled_aab == &aab)
-			return true;
-		error("gl_context::attribute_array_binding_enable() called while other attribute array binding was enabled. Nested attribute array binding enabling not allowed!", &aab);
-		return false;
-	}
 	glBindVertexArray(get_gl_id(aab.handle));
-	enabled_aab = &aab;
 	return !check_gl_error("gl_context::attribute_array_binding_enable");
 }
 
 bool gl_context::attribute_array_binding_disable(attribute_array_binding_base& aab)
 {
-	if (enabled_aab != &aab) {
-		error("gl_context::attribute_array_binding_disable() called while attribute array binding was not enabled.", &aab);
+	if (!context::attribute_array_binding_disable(aab))
 		return false;
-	}
-	glBindVertexArray(0);
-	enabled_aab = 0;
+	if (attribute_array_binding_stack.empty())
+		glBindVertexArray(0);
+	else
+		glBindVertexArray(get_gl_id(attribute_array_binding_stack.top()->handle));
 	return true;
 }
 
-bool gl_context::set_attribute_array_void(attribute_array_binding_base* aab, int loc, type_descriptor value_type, const vertex_buffer_base* vbb, const void* ptr, size_t nr_elements, unsigned stride)
+bool gl_context::set_attribute_array_void(attribute_array_binding_base* aab, int loc, type_descriptor value_type, const vertex_buffer_base* vbb, const void* ptr, size_t nr_elements, unsigned stride) const
 {
 	if (value_type == ET_MATRIX) {
 		error("gl_context::set_attribute_array_void(): called with matrix elements not supported", aab);
@@ -2634,7 +2766,8 @@ bool gl_context::set_attribute_array_void(attribute_array_binding_base* aab, int
 	if (vbb)
 		glBindBuffer(GL_ARRAY_BUFFER, get_gl_id(vbb->handle));
 
-	if (aab && (enabled_aab != aab))
+	bool not_current = attribute_array_binding_stack.empty() || attribute_array_binding_stack.top() != aab;
+	if (aab && not_current)
 		glBindVertexArray(get_gl_id(aab->handle));
 
 	bool res = true;
@@ -2663,8 +2796,8 @@ bool gl_context::set_attribute_array_void(attribute_array_binding_base* aab, int
 	if (res)
 		glEnableVertexAttribArray(loc);
 
-	if (aab && (enabled_aab != aab))
-		glBindVertexArray(enabled_aab ? get_gl_id(enabled_aab->handle) : 0);
+	if (aab && not_current)
+		glBindVertexArray(attribute_array_binding_stack.empty() ? 0 : get_gl_id(attribute_array_binding_stack.top()->handle));
 
 	if (vbb)
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -2672,14 +2805,15 @@ bool gl_context::set_attribute_array_void(attribute_array_binding_base* aab, int
 	return res && !check_gl_error("gl_context::set_attribute_array_void()", aab);
 }
 
-bool gl_context::enable_attribute_array(attribute_array_binding_base* aab, int loc, bool do_enable)
+bool gl_context::enable_attribute_array(attribute_array_binding_base* aab, int loc, bool do_enable) const
 {
+	bool not_current = attribute_array_binding_stack.empty() || attribute_array_binding_stack.top() != aab;
 	if (aab) {
 		if (!aab->handle) {
 			error("gl_context::enable_attribute_array(): called on not created attribute array binding", aab);
 			return false;
 		}
-		if (enabled_aab != aab)
+		if (not_current)
 			glBindVertexArray(get_gl_id(aab->handle));
 	}
 
@@ -2688,28 +2822,29 @@ bool gl_context::enable_attribute_array(attribute_array_binding_base* aab, int l
 	else
 		glDisableVertexAttribArray(loc);
 
-	if (aab && (enabled_aab != aab))
-		glBindVertexArray(enabled_aab ? get_gl_id(enabled_aab->handle) : 0);
-	
+	if (aab && not_current)
+		glBindVertexArray(attribute_array_binding_stack.empty() ? 0 : get_gl_id(attribute_array_binding_stack.top()->handle));
+
 	return !check_gl_error("gl_context::enable_attribute_array()");
 }
 
 bool gl_context::is_attribute_array_enabled(const attribute_array_binding_base* aab, int loc) const
 {
+	bool not_current = attribute_array_binding_stack.empty() || attribute_array_binding_stack.top() != aab;
 	if (aab) {
 		if (!aab->handle) {
 			error("gl_context::is_attribute_array_enabled(): called on not created attribute array binding", aab);
 			return false;
 		}
-		if (enabled_aab != aab)
+		if (not_current)
 			glBindVertexArray(get_gl_id(aab->handle));
 	}
 
 	GLint res;
 	glGetVertexAttribiv(loc, GL_VERTEX_ATTRIB_ARRAY_ENABLED, &res);
 
-	if (aab && (enabled_aab != aab))
-		glBindVertexArray(enabled_aab ? get_gl_id(enabled_aab->handle) : 0);
+	if (aab && not_current)
+		glBindVertexArray(attribute_array_binding_stack.empty() ? 0 : get_gl_id(attribute_array_binding_stack.top()->handle));
 
 	return res == GL_TRUE;
 }
@@ -2726,7 +2861,7 @@ GLenum buffer_usage(VertexBufferUsage vbu)
 	return buffer_usages[vbu];
 }
 
-bool gl_context::vertex_buffer_create(vertex_buffer_base& vbb, const void* array_ptr, size_t size_in_bytes)
+bool gl_context::vertex_buffer_create(vertex_buffer_base& vbb, const void* array_ptr, size_t size_in_bytes) const
 {
 	if (!GLEW_VERSION_2_0) {
 		error("gl_context::vertex_buffer_create() vertex buffer objects not supported", &vbb);
@@ -2745,7 +2880,7 @@ bool gl_context::vertex_buffer_create(vertex_buffer_base& vbb, const void* array
 	return !check_gl_error("gl_context::vertex_buffer_create", &vbb);
 }
 
-bool gl_context::vertex_buffer_replace(vertex_buffer_base& vbb, size_t offset, size_t size_in_bytes, const void* array_ptr)
+bool gl_context::vertex_buffer_replace(vertex_buffer_base& vbb, size_t offset, size_t size_in_bytes, const void* array_ptr) const
 {
 	if (!vbb.handle) {
 		error("gl_context::vertex_buffer_replace() vertex buffer object must be created before", &vbb);
@@ -2758,7 +2893,7 @@ bool gl_context::vertex_buffer_replace(vertex_buffer_base& vbb, size_t offset, s
 	return !check_gl_error("gl_context::vertex_buffer_replace", &vbb);
 }
 
-bool gl_context::vertex_buffer_copy(const vertex_buffer_base& src, size_t src_offset, vertex_buffer_base& target, size_t target_offset, size_t size_in_bytes)
+bool gl_context::vertex_buffer_copy(const vertex_buffer_base& src, size_t src_offset, vertex_buffer_base& target, size_t target_offset, size_t size_in_bytes) const
 {
 	if (!src.handle || !target.handle) {
 		error("gl_context::vertex_buffer_copy() source and destination vertex buffer objects must have been created before", &src);
@@ -2774,7 +2909,7 @@ bool gl_context::vertex_buffer_copy(const vertex_buffer_base& src, size_t src_of
 
 }
 
-bool gl_context::vertex_buffer_copy_back(vertex_buffer_base& vbb, size_t offset, size_t size_in_bytes, void* array_ptr)
+bool gl_context::vertex_buffer_copy_back(vertex_buffer_base& vbb, size_t offset, size_t size_in_bytes, void* array_ptr) const
 {
 	if (!vbb.handle) {
 		error("gl_context::vertex_buffer_copy_back() vertex buffer object must be created", &vbb);
@@ -2787,7 +2922,7 @@ bool gl_context::vertex_buffer_copy_back(vertex_buffer_base& vbb, size_t offset,
 	return !check_gl_error("gl_context::vertex_buffer_copy_back", &vbb);
 }
 
-bool gl_context::vertex_buffer_destruct(vertex_buffer_base& vbb)
+bool gl_context::vertex_buffer_destruct(vertex_buffer_base& vbb) const
 {
 	if (vbb.handle) {
 		GLuint b_id = get_gl_id(vbb.handle);

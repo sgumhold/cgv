@@ -903,7 +903,7 @@ void* to_void_ptr(int i) {
 /// enable phong shading with the help of a shader (enabled by default)
 void fltk_gl_view::enable_phong_shading()
 {
-	gl_context::enable_phong_shading();
+	cgv::render::context::enable_phong_shading();
 	update_member(&phong_shading);
 }
 /// disable phong shading
@@ -916,28 +916,78 @@ void fltk_gl_view::disable_phong_shading()
 ///  
 void fltk_gl_view::create_gui()
 {
-	add_decorator("gl view","heading");
-	add_decorator("background", "heading", "level=3");
-	connect_copy(add_control("color", (cgv::media::color<float>&) bg_r)->value_change,
-		rebind(static_cast<cgv::render::context*>(this), &cgv::render::context::post_redraw));
-	connect_copy(add_control("phong_shading", phong_shading, "check")->value_change,
-		rebind(static_cast<cgv::render::context*>(this), &cgv::render::context::post_redraw));
-	connect_copy(add_control("alpha", bg_a, "value_slider", "min=0;max=1;ticks=true;step=0.001")->value_change,
-		rebind(static_cast<cgv::render::context*>(this), &cgv::render::context::post_redraw));
-	connect_copy(add_control("accum color", (cgv::media::color<float>&) bg_accum_r)->value_change,
-		rebind(static_cast<cgv::render::context*>(this), &cgv::render::context::post_redraw));
-	connect_copy(add_control("accum alpha", bg_accum_a, "value_slider", "min=0;max=1;ticks=true;step=0.001")->value_change,
-		rebind(static_cast<cgv::render::context*>(this), &cgv::render::context::post_redraw));
-	connect_copy(add_control("stencil", bg_s, "value_slider", "min=0;max=1;ticks=true;step=0.001")->value_change,
-		rebind(static_cast<cgv::render::context*>(this), &cgv::render::context::post_redraw));
-	connect_copy(add_control("depth", bg_d, "value_slider", "min=0;max=1;ticks=true;step=0.001")->value_change,
-		rebind(static_cast<cgv::render::context*>(this), &cgv::render::context::post_redraw));
-	add_decorator("buffers", "heading", "level=3");
-	add_control("alpha buffer", this, "check", "", "\n", to_void_ptr(1));
-	add_control("stencil buffer", this, "check", "", "\n", to_void_ptr(2));
-	add_control("accum buffer", this, "check", "", "\n", to_void_ptr(3));
-	add_control("quad buffer", this, "check", "", "\n", to_void_ptr(4));
-	add_control("multisample", this, "check", "", "\n", to_void_ptr(5));
-	add_decorator("performance monitor", "heading", "level=3");
-	add_member_control(this, "performance monitoring", enabled, "check");
+	add_decorator("gl view", "heading");
+
+	if (begin_tree_node("debug", enabled, false, "level=3")) {
+		provider::align("\a");
+		add_member_control(this, "show_help", show_help, "check");
+		add_member_control(this, "show_stats", show_stats, "check");
+		add_member_control(this, "performance monitoring", enabled, "check");
+		provider::align("\b");
+		end_tree_node(enabled);
+	}
+
+	if (begin_tree_node("background", bg_r, false, "level=3")) {
+		provider::align("\a");
+		add_member_control(this, "color", (cgv::media::color<float>&) bg_r);
+		add_member_control(this, "alpha", bg_a, "value_slider", "min=0;max=1;ticks=true;step=0.001");
+		add_member_control(this, "accum color", (cgv::media::color<float>&) bg_accum_r);
+		add_member_control(this, "accum alpha", bg_accum_a, "value_slider", "min=0;max=1;ticks=true;step=0.001");
+		add_member_control(this, "stencil", bg_s, "value_slider", "min=0;max=1;ticks=true;step=0.001");
+		add_member_control(this, "depth", bg_d, "value_slider", "min=0;max=1;ticks=true;step=0.001");
+		provider::align("\b");
+		end_tree_node(bg_r);
+	}
+	if (begin_tree_node("buffers", bg_g, false, "level=3")) {
+		provider::align("\a");
+		add_control("alpha buffer", this, "check", "", "\n", to_void_ptr(1));
+		add_control("stencil buffer", this, "check", "", "\n", to_void_ptr(2));
+		add_control("accum buffer", this, "check", "", "\n", to_void_ptr(3));
+		add_control("quad buffer", this, "check", "", "\n", to_void_ptr(4));
+		add_control("multisample", this, "check", "", "\n", to_void_ptr(5));
+		provider::align("\b");
+		end_tree_node(bg_g);
+	}
+	if (begin_tree_node("compatibility", support_compatibility_mode, false, "level=3")) {
+		provider::align("\a");
+		add_member_control(this, "auto_set_view_in_current_shader_program", auto_set_view_in_current_shader_program, "check");
+		add_member_control(this, "auto_set_lights_in_current_shader_program", auto_set_lights_in_current_shader_program, "check");
+		add_member_control(this, "auto_set_material_in_current_shader_program", auto_set_material_in_current_shader_program, "check");
+		add_member_control(this, "support_compatibility_mode", support_compatibility_mode, "check");
+		add_member_control(this, "draw_in_compatibility_mode", draw_in_compatibility_mode, "check");
+		provider::align("\b");
+		end_tree_node(support_compatibility_mode);
+	}
+	if (begin_tree_node("defaults", current_material_is_textured, false, "level=3")) {
+		provider::align("\a");
+		if (begin_tree_node("default_render_flags", default_render_flags, false, "level=4")) {
+			add_gui("default_render_flags", default_render_flags, "bit_field_control",
+			"enums='RPF_SET_PROJECTION = 1,RPF_SET_MODELVIEW = 2,RPF_SET_LIGHTS = 4,RPF_SET_MATERIAL = 8,\
+RPF_SET_LIGHTS_ON=16,RPF_ENABLE_MATERIAL=32,RPF_CLEAR_COLOR=64,RPF_CLEAR_DEPTH=128,\
+RPF_CLEAR_STENCIL=256,RPF_CLEAR_ACCUM=512,\
+RPF_DRAWABLES_INIT_FRAME=1024,RPF_SET_STATE_FLAGS=2048,\
+RPF_SET_CLEAR_COLOR=4096,RPF_SET_CLEAR_DEPTH=8192,RPF_SET_CLEAR_STENCIL=16384,RPF_SET_CLEAR_ACCUM=32768,\
+RPF_DRAWABLES_DRAW=65536,RPF_DRAWABLES_FINISH_FRAME=131072,\
+RPF_DRAW_TEXTUAL_INFO=262144,RPF_DRAWABLES_AFTER_FINISH=524288,RPF_HANDLE_SCREEN_SHOT=1048576");
+			end_tree_node(default_render_flags);
+		}
+
+
+		if (begin_tree_node("material", default_material, false, "level=4")) {
+			provider::align("\a");
+			add_gui("material", default_material);
+			provider::align("\b");
+			end_tree_node(default_material);
+		}
+		for (int i = 0; i < nr_default_light_sources; ++i) {
+			if (begin_tree_node("light[" + cgv::utils::to_string(i) + "]", default_light_source[i], false, "level=4")) {
+				provider::align("\a");
+				add_gui("light", default_light_source[i]);
+				provider::align("\b");
+				end_tree_node(default_light_source[i]);
+			}
+		}
+		provider::align("\b");
+		end_tree_node(current_material_is_textured);
+	}
 }

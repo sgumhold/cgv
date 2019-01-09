@@ -1,3 +1,4 @@
+#include <cgv/base/base.h>
 #include "gl_mesh_drawable_base.h"
 
 #include <cgv/base/attach_slot.h>
@@ -11,8 +12,10 @@
 
 #include <cgv_gl/gl/gl.h>
 #include <cgv/render/view.h>
+#include <cgv/render/shader_program.h>
 #include <cgv/utils/file.h>
 #include <cgv/base/import.h>
+#include <cgv/media/mesh/obj_loader.h>
 
 using namespace cgv::base;
 using namespace cgv::gui; 
@@ -27,6 +30,7 @@ namespace cgv {
 	namespace render {
 		namespace gl {
 
+/*
 struct vertex_data
 {
 	cgv::math::fvec<double,3> v;
@@ -118,7 +122,7 @@ unsigned render_faces_with_glu(const cgv::media::mesh::obj_loader& loader, const
 	gluDeleteTess(tobj);
 	return nr;
 }
-
+*/
 
 unsigned render_faces(const cgv::media::mesh::obj_loader& loader, const std::vector<unsigned>& fis, 
 				  GLenum type, unsigned min_d)
@@ -171,27 +175,74 @@ unsigned render_faces(const cgv::media::mesh::obj_loader& loader, const std::vec
 	return nr;
 }
 
-/// construct from mtl info
-material_info::material_info(const cgv::media::illum::obj_material& i) : 
-	cgv::render::textured_material(i)
+/// construct from textured material
+material_info::material_info(const cgv::render::textured_material& mat) :
+	cgv::render::textured_material(mat)
 {
 }
 
 /// standard constructor
-mesh_group_info::mesh_group_info(const group_info& g) : group_info(g), number_faces(0) 
+group_info::group_info(const std::string& _name, const std::string& _params, unsigned _nr_faces) : 
+	name(_name), parameters(_params), number_faces(_nr_faces)
 {
 }
 
 /// construct from name which is necessary construction argument to node
 gl_mesh_drawable_base::gl_mesh_drawable_base()
 {
+	rebuild_vbo = false;
 }
 
 /// init textures
 void gl_mesh_drawable_base::init_frame(context &ctx)
 {
-	for (unsigned i=0; i<materials.size(); ++i)
+	if (!rebuild_vbo)
+		return;
+	/*
+	for (unsigned i = 0; i < materials.size(); ++i)
 		materials[i].ensure_textures(ctx);
+
+	vbo.destruct(ctx);
+	aab.destruct(ctx);
+
+	// construct vertex data
+	std::vector<mesh_type::idx_type> indices;
+	std::vector<mesh_type::vec3i> unique_triples;
+	mesh.merge_indices(indices, unique_triples);
+
+	std::vector<float> attrib_buffer;
+	mesh.merge_indices(mesh.has_tex_coords(),mesh.has_normals(),mesh.has_colors(), attrib_buffer)
+	// iterate materials
+	for (const auto& m : materials) {
+		std::vector<std::vector<unsigned> > grp_faces;
+		grp_faces.resize(G);
+		bool found_face = false;
+		for (unsigned fi = 0; fi < loader.faces.size(); ++fi) {
+			// extract material faces sorted by group
+			if (loader.faces[fi].material_index == mi) {
+				gi = loader.faces[fi].group_index;
+				grp_faces[gi].push_back(fi);
+				found_face = true;
+			}
+		}
+		if (!found_face)
+			continue;
+
+		materials.push_back(material_info(loader.materials[mi]));
+		// compile display lists
+		for (gi = 0; gi < G; ++gi) {
+			if (grp_faces[gi].size() == 0)
+				continue;
+			GLuint dl = glGenLists(1);
+			materials.back().group_list_ids.push_back(
+				std::pair<unsigned, unsigned>((unsigned)gi, dl));
+			glNewList(dl, GL_COMPILE);
+			groups[gi].number_faces = render_faces(loader, grp_faces[gi], GL_TRIANGLES, 3);
+			groups[gi].number_faces += render_faces_with_glu(loader, grp_faces[gi], 4);
+			glEndList();
+		}
+	}
+	*/
 }
 
 /// clear all objects living in the context like textures or display lists
@@ -210,50 +261,59 @@ void gl_mesh_drawable_base::clear(context& ctx)
 	materials.clear();
 	// destruct group info
 	groups.clear();
-	loader.clear();
 }
 
 void gl_mesh_drawable_base::draw_mesh_group(context &ctx, unsigned gi, bool use_materials)
 {
+	shader_program& prog = ctx.ref_surface_shader_program(true);
+	prog.enable(ctx);
 	for (unsigned i=0; i<materials.size(); ++i) {
 		material_info& m = materials[i];
 
-		if (use_materials)
-			ctx.enable_material(m, MS_FRONT_AND_BACK);
+		if (use_materials) {
+			ctx.set_material(m);
+			m.enable_textures(ctx);
+		}
 
+		size_t offset = 0;
 		for (unsigned j=0; j<m.group_list_ids.size(); ++j) {
 			unsigned gj = m.group_list_ids[j].first;
-			if (gj != gi)
-				continue;
-			unsigned dl = m.group_list_ids[j].second;
-			if (dl != -1)
-				glCallList(dl);
+			if (gj == gi) {
+				glDrawElements(GL_TRIANGLES, m.group_list_ids[j].second, GL_UNSIGNED_INT,
+					reinterpret_cast<GLvoid*>(offset * sizeof(GLuint)));
+			}
+			offset += m.group_list_ids[j].second;
 		}
 	
 		if (use_materials)
-			ctx.disable_material(m);
+			m.disable_textures(ctx);
 	}
+	prog.disable(ctx);
 }
 
 void gl_mesh_drawable_base::draw_mesh(context &ctx, bool use_materials)
 {
+	shader_program& prog = ctx.ref_surface_shader_program(true);
+	prog.enable(ctx);
 	for (unsigned i=0; i<materials.size(); ++i) {
 		material_info& m = materials[i];
 
-		if (use_materials)
-			ctx.enable_material(m, MS_FRONT_AND_BACK);
-
+		if (use_materials) {
+			ctx.set_material(m);
+			m.enable_textures(ctx);
+		}
+		size_t offset = 0;
 		for (unsigned j=0; j<m.group_list_ids.size(); ++j) {
 			unsigned gi = m.group_list_ids[j].first;
-			unsigned dl = m.group_list_ids[j].second;
-			if (dl != -1) {
-				glCallList(dl);
-			}
+			glDrawElements(GL_TRIANGLES, m.group_list_ids[j].second, GL_UNSIGNED_INT,
+				reinterpret_cast<GLvoid*>(offset * sizeof(GLuint)));
+			offset += m.group_list_ids[j].second;
 		}
 	
 		if (use_materials)
-			ctx.disable_material(m);
+			m.disable_textures(ctx);
 	}
+	prog.disable(ctx);
 }
 
 void gl_mesh_drawable_base::draw(context &ctx)
@@ -261,7 +321,6 @@ void gl_mesh_drawable_base::draw(context &ctx)
 	draw_mesh(ctx);
 }
 
-/// load obj
 bool gl_mesh_drawable_base::read_mesh(const std::string& _file_name)
 {
 	std::string fn = cgv::base::find_data_file(_file_name, "cpMD", "", model_path);
@@ -270,7 +329,18 @@ bool gl_mesh_drawable_base::read_mesh(const std::string& _file_name)
 		return false;
 	}
 	file_name = _file_name;
+	mesh.clear();
+	if (mesh.read(file_name)) {
+		rebuild_vbo = true;
+		return true;
+	}
+	else {
+		std::cerr << "could not read mesh " << file_name << std::endl;
+		return false;
+	}
+	box = mesh.compute_box();
 
+	/*
 	cgv::base::push_file_parent(fn);
 
 	loader.clear();
@@ -333,6 +403,7 @@ bool gl_mesh_drawable_base::read_mesh(const std::string& _file_name)
 		}
 	}
 	return true;
+	*/
 }
 
 void gl_mesh_drawable_base::center_view()

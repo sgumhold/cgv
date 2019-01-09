@@ -36,7 +36,7 @@ namespace cgv {
 			}
 			return res;
 		}
-		bool box_wire_renderer::validate_attributes(context& ctx)
+		bool box_wire_renderer::validate_attributes(const context& ctx)
 		{
 			// validate set attributes
 			bool res = line_renderer::validate_attributes(ctx);

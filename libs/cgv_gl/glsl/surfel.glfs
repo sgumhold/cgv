@@ -1,0 +1,43 @@
+#version 150
+
+uniform vec4 halo_color;
+uniform float halo_color_strength = 0.5;
+
+in vec3 normal;
+in vec2 uv;
+in vec4 color;
+in vec3 position;
+
+in float percentual_blend_width;
+in float percentual_splat_size;
+in float percentual_core_size;
+in float percentual_point_size;
+
+flat in int  side;
+
+out vec4 frag_color;
+
+//***** begin interface of surface.glsl ***********************************
+vec4 compute_reflected_appearance(vec3 position_eye, vec3 normal_eye, vec4 color, int side);
+vec4 compute_reflected_appearance_texture(vec3 position_eye, vec3 normal_eye, vec2 texcoords, vec4 color, int side);
+//***** end interface of surface.glsl ***********************************
+
+//***** begin interface of splat.glsl ***********************************
+vec4 compute_blended_color_with_halo(
+	in float percentual_radial_position,
+	in vec4 core_color, in float percentual_core_size,
+	in vec4 halo_color, in float percentual_point_size,
+	in float percentual_blend_width);
+//***** end interface of surface.glsl ***********************************
+
+void main()
+{
+	float percentual_radial_position = length(uv);
+	if (percentual_radial_position > percentual_splat_size)
+		discard;
+
+	frag_color = compute_blended_color_with_halo(
+		percentual_radial_position, compute_reflected_appearance_texture(position, normal, uv, color, side), percentual_core_size,
+		vec4(mix(color.rgb, halo_color.rgb, halo_color_strength), halo_color.a), percentual_point_size, percentual_blend_width
+	);
+}

@@ -1,42 +1,46 @@
-#version 150 compatibility
+#version 150
 #extension GL_EXT_geometry_shader4 : enable
 
 layout(points) in;
 layout(triangle_strip, max_vertices = 4) out;
 
-uniform bool measure_point_size_in_pixel;
-uniform float reference_point_size;
-
-uniform bool orient_splats;
-uniform float outline_width_from_pixel;
-uniform float percentual_outline_width;
-uniform float percentual_halo;
+uniform bool measure_point_size_in_pixel = true;
+uniform float reference_point_size = 1.0;
 uniform float pixel_extent_per_depth;
 
-in vec3 normal_gs[];
 in vec4 color_gs[];
 
-out vec3 normal;
 out vec2 uv;
 out vec4 color;
-out vec3 position;
 
-out float percentual_outline_start;
-out float percentual_halo_start;
-out float percentual_pixel_extent;
+out float percentual_blend_width;
+out float percentual_core_size;
+out float percentual_point_size;
 out float percentual_splat_size;
-flat out int   side; // 0 is back facing and 1 is front facing
 
-int surface_side_handling(in vec3 position, inout vec3 normal, inout vec4 color);
+//***** begin interface of view.glsl ***********************************
+mat4 get_modelview_matrix();
+mat4 get_projection_matrix();
+mat4 get_modelview_projection_matrix();
+mat4 get_inverse_modelview_matrix();
+mat4 get_inverse_modelview_projection_matrix();
+mat3 get_normal_matrix();
+mat3 get_inverse_normal_matrix();
+//***** end interface of view.glsl ***********************************
+
+//***** begin interface of splat.glsl ***********************************
+void prepare_splat(
+	in float reference_point_radius, in float pixel_extent,
+	out float percentual_core_size, out float percentual_point_size,
+	out float percentual_blend_width, out float percentual_splat_size);
+//***** end interface of surface.glsl ***********************************
 
 void emit_corner(in vec3 corner, in float u, in float v)
 {
-	position = corner;
-
 	uv = vec2(u,v);
 
 	// compute position in clip space
-	gl_Position	   = gl_ProjectionMatrix * vec4(position,1.0);
+	gl_Position	   = get_projection_matrix() * vec4(corner,1.0);
 
 	EmitVertex();
 }
@@ -45,50 +49,24 @@ void main()
 {
 	// set color to color attribute
 	color = color_gs[0];
-	// transform normal to eye space
-	normal = normalize(gl_NormalMatrix*(normal_gs[0]));
 	// transform position to eye space
-	vec3 position_eye = (gl_ModelViewMatrix*gl_PositionIn[0]).xyz;
-	// sign of dot product between normal and view vector tells us side that we see
-	float sign_indicator = dot(normal, position_eye);
-
-	// determine side in eye space
-	side = surface_side_handling(position_eye, normal, color);
-	if (side == -1)
-		return;
-
-	// compute percentual size of splat and its radius
-	float depth = abs(position_eye.z);
-	float point_radius = 0.5 * gl_PointSizeIn[0];
-	if (measure_point_size_in_pixel) {
-		point_radius *= pixel_extent_per_depth * depth;
-	}
-	else {
-		point_radius *= reference_point_size;
-	}
-	// compute percentage of one pixel with respect to point radius
-	percentual_pixel_extent = pixel_extent_per_depth * depth / point_radius;
-	float percentual_outline_width_final = max(percentual_outline_width, outline_width_from_pixel * percentual_pixel_extent);
-	float percentual_halo_width_final = max(percentual_halo, outline_width_from_pixel * percentual_pixel_extent);
-	// compute splat size to be one pixel larger than point plus outline
-	percentual_splat_size    = 1.0 + 0.5 * (percentual_outline_width_final + percentual_pixel_extent);
-	percentual_outline_start = 1.0 - 0.5 * (percentual_outline_width_final + percentual_pixel_extent);
-	percentual_halo_start = 2.0;
-	if (percentual_halo > 0.0)
-		percentual_halo_start = 1.0 - 0.5 * (percentual_halo_width_final + percentual_pixel_extent);
-	float splat_radius = point_radius * percentual_splat_size;
-
-	// compute splat base vectors and scale by splat radius
+	vec3 position_eye = (get_modelview_matrix()*gl_PositionIn[0]).xyz;
+	// compute extent of a pixel at point depth in eye coordinates
+	float pixel_extent = pixel_extent_per_depth * abs(position_eye.z);
+	// compute point radius from input point size
+	float reference_point_radius = 0.5 * gl_PointSizeIn[0] * (measure_point_size_in_pixel ?  pixel_extent : reference_point_size);
+	// compute splat parameters for fragment shader
+	prepare_splat(reference_point_radius, pixel_extent,
+		percentual_core_size, percentual_point_size,
+		percentual_blend_width, percentual_splat_size);
+	// compute radius of splat
+	float splat_radius = reference_point_radius * percentual_splat_size;
+	// compute splat base vectors
 	vec3 dx = vec3(1.0 ,0.0, 0.0);
 	vec3 dy = vec3(0.0, 1.0, 0.0);
-
-	if (orient_splats) {
-		dx = normalize(cross(dy, normal));
-		dy = cross(normal, dx);
-	}
+	// scale by splat radius
 	dx *= splat_radius;
 	dy *= splat_radius;
-
 	// generate splat vertices
 	emit_corner(position_eye + dx - dy,  percentual_splat_size, -percentual_splat_size);
 	emit_corner(position_eye + dx + dy,  percentual_splat_size,  percentual_splat_size);

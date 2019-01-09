@@ -3,17 +3,12 @@
 #include <cgv/data/data_view.h>
 #include <cgv/gui/provider.h>
 #include <cgv/render/drawable.h>
+#include <cgv/render/texture.h>
+#include <cgv/render/shader_program.h>
+#include <cgv/render/textured_material.h>
 #include <cgv/utils/ostream_printf.h>
 #include <cgv_gl/gl/gl.h>
-#include <cgv/render/textured_material.h>
 #include <cgv/media/color.h> 
-
-using namespace cgv::base;
-using namespace cgv::gui;
-using namespace cgv::data;
-using namespace cgv::render;
-using namespace cgv::signal;
-using namespace cgv::utils;
 
 class textured_shape : 
 	public cgv::base::node,          /// derive from node to integrate into global tree structure and to store a name
@@ -21,9 +16,8 @@ class textured_shape :
 	public cgv::render::drawable     /// derive from drawable for drawing the cube
 {
 public:
-	typedef cgv::media::color<float,cgv::media::RGB,cgv::media::OPACITY> color_type;
 	int n;
-	texture* t_ptr;
+	cgv::render::texture* t_ptr;
 	bool boost_animation;
 	// support for different objects
 	enum Object { 
@@ -34,12 +28,17 @@ public:
 	float texture_u_offset, texture_v_offset;
 	float texture_rotation;
 	float texture_scale,  texture_aspect;
-	color_type border_color;
-	color_type frame_color;
+	rgba_type border_color;
+	rgba_type frame_color;
 	float frame_width;
+
 	cgv::render::textured_material mat;
 
-	textured_shape(int _n = 1024) : node("textured primitiv"), n(_n), border_color(1,0,0,0), frame_color(1,1,1,1)
+	textured_shape(int _n = 1024) : 
+		node("textured primitiv"), 
+		n(_n), 
+		border_color(1,0,0,0), 
+		frame_color(1,1,1,1)
 	{
 		frame_width = 2;
 		object = SQUARE;
@@ -53,10 +52,6 @@ public:
 		texture_v_offset = 0;
 		texture_selection = ALHAMBRA;
 		boost_animation = false;
-		mat.set_ambient(cgv::media::illum::phong_material::color_type(0.2f, 0.2f, 0.2f, 1.0f));
-		mat.set_diffuse(cgv::media::illum::phong_material::color_type(0.5f, 0.5f, 0.5f, 1.0f));
-		mat.set_specular(cgv::media::illum::phong_material::color_type(0.5f, 0.5f, 0.5f, 1.0f));
-		mat.set_shininess(80.0f);
 	}
 
 	std::string get_type_name() const 
@@ -65,7 +60,7 @@ public:
 	}
 	void stream_stats(std::ostream& os)
 	{
-//		oprintf(os, "min_filter: %s [edit:<F>], anisotropy: %f [edit:<A>]\n", filter_names[min_filter], anisotropy);
+	//	cgv::utils::oprintf(os, "min_filter: %s [edit:<F>], anisotropy: %f [edit:<A>]\n", filter_names[min_filter], anisotropy);
 	}
 	void stream_help(std::ostream& os)
 	{
@@ -89,14 +84,17 @@ public:
 		update_member(member_ptr);
 		post_redraw();
 	}
-	bool init(context& ctx)
+	bool init(cgv::render::context& ctx)
 	{
-		mat.ref_diffuse_texture_name() = "res://alhambra.png";
-		mat.ensure_textures(ctx);
-		t_ptr = mat.get_diffuse_texture();
+		size_t di = mat.add_image_file("res://alhambra.png");
+		mat.set_diffuse_index(di);
+		if (mat.ensure_textures(ctx))
+			t_ptr = mat.get_texture(di);
+		else
+			return false;
 		return true;
 	}
-	void init_frame(context& ctx)
+	void init_frame(cgv::render::context& ctx)
 	{
 		if (t_ptr->is_created())
 			return;
@@ -117,8 +115,8 @@ public:
 			return;
 		}
 	
-		data_format df(n,n,TI_FLT32,CF_L);
-		data_view dv(&df);
+		cgv::data::data_format df(n,n, cgv::type::info::TI_FLT32, cgv::data::CF_L);
+		cgv::data::data_view dv(&df);
 		int i,j;
 		float* ptr = (float*)dv.get_ptr<unsigned char>();
 		for (i=0; i<n; ++i)
@@ -131,7 +129,7 @@ public:
 								   sin(M_PI*texture_frequency*j/(n-1))+1));
 		t_ptr->create(ctx, dv);
 	}
-	void draw_scene(context& ctx)
+	void draw_scene(cgv::render::context& ctx)
 	{
 		switch (object) {
 		case CUBE :	ctx.tesselate_unit_cube(); break;
@@ -155,10 +153,11 @@ public:
 		default: break;
 		}
 	}
-	void draw(context& ctx)
+	void draw(cgv::render::context& ctx)
 	{
 		if (frame_width > 0) {
-			glColor4fv(&frame_color[0]);
+			ctx.ref_default_shader_program().enable(ctx);
+			ctx.set_color(frame_color);
 			glLineWidth(frame_width);
 			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 			/*
@@ -172,21 +171,28 @@ public:
 			//glEnable(GL_LIGHTING);
 			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);				
 			//glPopMatrix();
+			ctx.ref_default_shader_program().enable(ctx);
 		}
-		ctx.enable_material(mat);
+		cgv::render::shader_program& prog = ctx.ref_surface_shader_program();
+		prog.enable(ctx);
+		ctx.set_material(mat);
+		mat.enable_textures(ctx);
 		t_ptr->set_border_color(border_color[0],border_color[1],border_color[2],border_color[3]);
+		/*
 		glMatrixMode(GL_TEXTURE);
 		glPushMatrix();
 		glTranslated(texture_u_offset, texture_v_offset,0);
 		glRotated(texture_rotation, 0, 0, 1);
 		glScaled(texture_scale,texture_scale/texture_aspect,texture_scale);
+		*/
 		t_ptr->enable(ctx);
 		//glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 		draw_scene(ctx);
 		t_ptr->disable(ctx);
-		glPopMatrix();
-		ctx.disable_material(mat);
-		
+		//glPopMatrix();
+		//ctx.disable_material(mat);
+		mat.disable_textures(ctx);
+
 		if (boost_animation) {
 			post_redraw();
 		}
@@ -239,12 +245,12 @@ public:
 		add_decorator("Colors", "heading", "level=2");
 		add_member_control(this, "width", frame_width, "value_slider", "min=0;max=20;ticks=true");
 		add_member_control(this, "color", frame_color);
-		add_gui("material", static_cast<cgv::media::illum::phong_material&>(mat));
+		add_gui("material", static_cast<cgv::media::illum::surface_material&>(mat));
 	}
 
 };
 
 #include <cgv/base/register.h>
 
-extern factory_registration_1<textured_shape,int> tp_fac("new/textured primitive", 'T', 1024, true);
+extern cgv::base::factory_registration_1<textured_shape,int> tp_fac("new/textured primitive", 'T', 1024, true);
 

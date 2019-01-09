@@ -4,17 +4,13 @@ in vec3 normal;
 in vec4 color;
 in vec3 position;
 flat in int side;
-uniform int illumination_mode = 1;
 
-vec4 doLighting(vec3 position, vec3 normal, vec4 diffuseMaterial);
-vec4 doTwoSidedLighting(vec3 position, vec3 normal, vec4 diffuseMaterial, int side);
+//***** begin interface of surface.glsl ***********************************
+vec4 compute_reflected_appearance(vec3 position_eye, vec3 normal_eye, vec4 color, int side);
+//***** end interface of surface.glsl ***********************************
 
 void main()
 {
 	// illumination
-	gl_FragColor = color;
-	switch (illumination_mode) {
-	case 1: gl_FragColor.rgb = doLighting(position, normal, color).rgb; break;
-	case 2: gl_FragColor.rgb = doTwoSidedLighting(position, normal, color, side).rgb; break;
-	}
+	gl_FragColor = compute_reflected_appearance(position, normal, color, side);
 }

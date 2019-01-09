@@ -25,7 +25,7 @@ namespace cgv {
 		{
 			return new line_render_style();
 		}
-		bool normal_renderer::validate_attributes(context& ctx)
+		bool normal_renderer::validate_attributes(const context& ctx)
 		{
 			// validate set attributes
 			bool res = line_renderer::validate_attributes(ctx);

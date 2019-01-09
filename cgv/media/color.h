@@ -669,8 +669,8 @@ void convert_color_model(const color<T1,XYZ>& _c1, color<T2,RGB>& c2) {
 template <typename T1, typename T2>
 void convert_color_model(const color<T1,RGB>& rgb, color<T2,HLS>& hls) {
 	double mx, mn;
-	convert_color_component(max(rgb[0],max(rgb[1],rgb[2])), mx);
-	convert_color_component(min(rgb[0],min(rgb[1],rgb[2])), mn);
+	convert_color_component(std::max(rgb[0], std::max(rgb[1],rgb[2])), mx);
+	convert_color_component(std::min(rgb[0], std::min(rgb[1],rgb[2])), mn);
 	double LL = (mx+mn)/2;
 	if (mn == mx) {
 		hls[0] = hls[2] = 0;

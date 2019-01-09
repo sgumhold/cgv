@@ -11,25 +11,23 @@ class picker :
 	public cgv::gui::event_handler,  /// derive from handler to receive events and to be asked for a help string
 	public cgv::render::drawable     /// derive from drawable for drawing the cube
 {
-public:
-	/// define point type
-	typedef cgv::math::vec<double> Pnt;
+	typedef cgv::math::fvec<double, 2> vec2;
 protected:
 	/// store list of picked points
-	std::vector<Pnt> pnts;
+	std::vector<vec2> pnts;
 	/// check if a world point is close enough to the drawing square
-	bool is_inside(const Pnt& p3d) const;
+	bool is_inside(const vec3& p3d) const;
 	/// transform from 3d world to 2d parametric space
-	Pnt transform_2_local(const Pnt& p3d) const;
+	vec2 transform_2_local(const vec3& p3d) const;
 	/// find closest point and return index or -1 if we do not have any points yet
-	int find_closest(const Pnt& p2d) const;
+	int find_closest(const vec2& p2d) const;
 private:
 	/// store index of to be tracked point
 	int drag_pnt_idx;
 	///
 	bool is_drag_action;
 	/// store the last transformation matrix
-	cgv::render::context::mat_type DPV;
+	mat4 MVPD;
 public:
 	/// construct from name which is necessary construction argument to node
 	picker(const char* name);

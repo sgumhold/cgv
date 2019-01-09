@@ -1,7 +1,9 @@
 #pragma once
 
 #include <cgv/render/textured_material.h>
-#include <cgv/media/mesh/obj_loader.h>
+#include <cgv/render/vertex_buffer.h>
+#include <cgv/render/attribute_array_binding.h>
+#include <cgv/media/mesh/simple_mesh.h>
 #include <cgv/media/axis_aligned_box.h>
 #include <cgv/render/drawable.h>
 
@@ -13,22 +15,27 @@ namespace cgv {
 		/// namespace for opengl specific GPU programming
 		namespace gl {
 
+
 /// extend textured_material with group-material assignments
 struct CGV_API material_info : public cgv::render::textured_material
 {
-	/// for each group that uses this material the group index and the display list id
+	/// for each group that uses this material the group index and the number of vertex elements to be drawn
 	std::vector<std::pair<unsigned,unsigned> > group_list_ids;
-	/// construct from mtl info
-	material_info(const cgv::media::illum::obj_material& i);
+	/// construct from textured material
+	material_info(const cgv::render::textured_material& mat);
 };
 
 /// extend group_info by the total number of faces in the group
-struct CGV_API mesh_group_info : public cgv::media::mesh::group_info
+struct CGV_API group_info
 {
+	/// name of the group
+	std::string name;
+	/// parameters string
+	std::string parameters;
 	/// total number of faces in the group
 	unsigned number_faces;
 	/// standard constructor
-	mesh_group_info(const group_info& g);
+	group_info(const std::string& _name="", const std::string& _params="", unsigned _nr_faces=0);
 };
 
 /// simple implementation of a drawable for a polygonal mesh with support for materials
@@ -37,19 +44,27 @@ class CGV_API gl_mesh_drawable_base : public cgv::render::drawable
 public:
 	/// type of bounding box
 	typedef cgv::media::axis_aligned_box<float,3> box_type;
+	/// type of mesh
+	typedef cgv::media::mesh::simple_mesh<float> mesh_type;
 protected:
 	/// default path to file names
 	std::string model_path;
 	/// currently loaded file name
 	std::string file_name;
+	///
+	mesh_type mesh;
+	///
+	bool rebuild_vbo;
+	/// 
+	vertex_buffer vbo;
+	///
+	attribute_array_binding aab;
 	/// face material info
 	std::vector<material_info> materials;
 	/// group information
-	std::vector<mesh_group_info> groups;
+	std::vector<group_info> groups;
 	/// the bounding box of the mesh is computed in the read_mesh method
 	box_type box;
-	/// the loader stores the mesh data in publicly accessible fields
-	cgv::media::mesh::obj_loader loader;
 	/// draw all faces belonging to the given group, optionally turn off the specification of materials
 	void draw_mesh_group(cgv::render::context &ctx, unsigned gi, bool use_materials = true);
 	/// draw the complete mesh, optionally turn off the specification of materials
