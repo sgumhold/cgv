@@ -67,7 +67,7 @@ protected:
 public:
 	std::vector<vec2> polygon;
 	std::vector<vec3> points;
-	std::vector<rgba_type> colors;
+	std::vector<rgba> colors;
 	PolygonOrientation orientation;
 	std::vector<ivec3> triangles;
 	std::vector<polygon_node> nodes;
@@ -218,14 +218,13 @@ public:
 	void set_colors()
 	{
 		colors.resize(polygon.size());
-		std::fill(colors.begin(), colors.end(), rgb_type(0.5f, 0.5f, 0.5f));
+		std::fill(colors.begin(), colors.end(), rgb(0.5f, 0.5f, 0.5f));
 		for (unsigned ni = 0; ni < nodes.size(); ++ni)
 			switch (nodes[ni].status) {
-			case PCS_CONVEX: colors[nodes[ni].idx] = rgb_type(0, 0, 1); break;
-			case PCS_CONCAVE: colors[nodes[ni].idx] = rgb_type(1, 0, 0); break;
-			case PCS_EAR: colors[nodes[ni].idx] = rgb_type(0, 1, 0); break;
+			case PCS_CONVEX: colors[nodes[ni].idx] = rgb(0, 0, 1); break;
+			case PCS_CONCAVE: colors[nodes[ni].idx] = rgb(1, 0, 0); break;
+			case PCS_EAR: colors[nodes[ni].idx] = rgb(0, 1, 0); break;
 			}
-//		colors[nodes[0].idx] = rgb_type(0, 0, 0);
 	}
 	void perform_ear_cutting()
 	{
@@ -341,19 +340,19 @@ public:
 		attribute_array_binding::set_global_attribute_array(ctx, prog.get_position_index(), P);
 
 		if (wireframe) {
-			ctx.set_color(rgb_type(0, 0, 0));
+			ctx.set_color(rgb(0, 0, 0));
 			for (size_t vi = 0; vi < P.size(); vi += 3)
 				glDrawArrays(GL_LINE_LOOP, vi, 3);
 		}
 		else {
 			// compute vector C of vertex colors
-			std::vector<rgb_type> C;
-			rgb_type c0(0.0f, 0.0f, 1.0f);
-			rgb_type c1(1.0f, 1.0f, 0.0f);
+			std::vector<rgb> C;
+			rgb c0(0.0f, 0.0f, 1.0f);
+			rgb c1(1.0f, 1.0f, 0.0f);
 			float scale = 1.0f / (polygon.size() - 2);
 			for (unsigned ti = 0; ti < triangles.size(); ++ti) {
 				float lambda_c = scale * ti;
-				rgb_type c = (1 - lambda_c)*c0 + lambda_c * c1;
+				rgb c = (1 - lambda_c)*c0 + lambda_c * c1;
 				C.push_back(c);
 				C.push_back(c);
 				C.push_back(c);
@@ -367,7 +366,7 @@ public:
 	}
 	void draw_points(context& ctx)
 	{
-		rgba_type tmp(1,0,1);
+		rgba tmp(1.0f,0.0f,1.0f, 1.0f);
 		if (selected_index != -1)
 			std::swap(tmp, colors[selected_index]);
 		else if (edge_index != -1) {
@@ -402,16 +401,25 @@ public:
 	}
 	void draw(context& ctx)
 	{
-		draw_points(ctx);
+		ctx.push_modelview_matrix();
+		ctx.mul_modelview_matrix(scale4<double>(2, 2, 2) * translate4<double>(0,0,-0.0005));
+		ctx.ref_default_shader_program(true).enable(ctx);
+		ctx.set_color(rgb(1, 1, 1));
+		tex.enable(ctx);
+		ctx.tesselate_unit_square();
+		tex.disable(ctx);
+		ctx.ref_default_shader_program(true).disable(ctx);
+		ctx.pop_modelview_matrix();
+
 		shader_program& prog = ctx.ref_default_shader_program();
 		prog.enable(ctx);
 			attribute_array_binding::enable_global_array(ctx, prog.get_position_index());
 			attribute_array_binding::set_global_attribute_array(ctx, prog.get_position_index(), polygon);
 				glLineWidth(2);
-				ctx.set_color(rgb_type(0.8f, 0, 0.7f));
+				ctx.set_color(rgb(0.8f, 0, 0.7f));
 				draw_unprocessed_polygon();
 				glLineWidth(5);
-				ctx.set_color(rgb_type(0.8f, 0.5f, 0));
+				ctx.set_color(rgb(0.8f, 0.5f, 0));
 				draw_polygon();
 				glLineWidth(1);
 				draw_triangles(ctx, prog);
@@ -419,13 +427,8 @@ public:
 		prog.disable(ctx);
 
 		ctx.push_modelview_matrix();
-			ctx.mul_modelview_matrix(scale4<double>(2, 2, 2));
-			ctx.ref_default_shader_program(true).enable(ctx);
-				ctx.set_color(rgb_type(1, 1, 1));
-				tex.enable(ctx);
-					ctx.tesselate_unit_square();
-				tex.disable(ctx);
-			ctx.ref_default_shader_program(true).disable(ctx);
+		ctx.mul_modelview_matrix(translate4<double>(0.0, 0.0, 0.001));
+		draw_points(ctx);
 		ctx.pop_modelview_matrix();
 	}
 	bool handle(event& e)
@@ -547,12 +550,12 @@ public:
 						if (edge_index == points.size() - 1) {
 							points.push_back(p_edge);
 							polygon.push_back(vec2(p_edge(0),p_edge(1)));
-							colors.push_back(rgb_type(0.5f, 0.5f, 0.5f));
+							colors.push_back(rgb(0.5f, 0.5f, 0.5f));
 						}
 						else {
 							points.insert(points.begin() + edge_index + 1, p_edge);
 							polygon.insert(polygon.begin() + edge_index + 1, vec2(p_edge(0), p_edge(1)));
-							colors.insert(colors.begin() + edge_index + 1, rgb_type(0.5f, 0.5f, 0.5f));
+							colors.insert(colors.begin() + edge_index + 1, rgb(0.5f, 0.5f, 0.5f));
 						}
 						selected_index = edge_index + 1;
 						edge_index = -1;
