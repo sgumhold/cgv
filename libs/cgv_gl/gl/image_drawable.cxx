@@ -1,4 +1,4 @@
-#include "gl_image_drawable_base.h"
+#include "image_drawable.h"
 
 #include <cgv/media/image/image_reader.h>
 #include <cgv/media/image/image_writer.h>
@@ -19,7 +19,7 @@ namespace cgv {
 	namespace render {
 		namespace gl {
 
-gl_image_drawable_base::gl_image_drawable_base() : min_value(0,0,0,0), max_value(1,1,1,1), gamma(1,1,1,1)
+image_drawable::image_drawable() : min_value(0,0,0,0), max_value(1,1,1,1), gamma(1,1,1,1)
 {
 	aspect = 1;
 	start_time = -2;
@@ -38,7 +38,7 @@ gl_image_drawable_base::gl_image_drawable_base() : min_value(0,0,0,0), max_value
 	mix_param = 0.0f;
 }
 
-void gl_image_drawable_base::timer_event(double t, double dt)
+void image_drawable::timer_event(double t, double dt)
 {
 	if (tex_ids.size() > 1 && start_time != -2) {
 		if (animate) {
@@ -72,20 +72,20 @@ void gl_image_drawable_base::timer_event(double t, double dt)
 	}
 }
 
-bool gl_image_drawable_base::init(context& ctx)
+bool image_drawable::init(context& ctx)
 {
 	return prog.build_program(ctx, "image.glpr");
 }
 
 /// destruct textures and shader program
-void gl_image_drawable_base::clear(context& ctx)
+void image_drawable::clear(context& ctx)
 {
 	prog.destruct(ctx);
 	if (!tex_ids.empty())
 		glDeleteTextures(tex_ids.size(), &tex_ids.front());
 }
 
-bool gl_image_drawable_base::read_image(const std::string& _file_name)
+bool image_drawable::read_image(const std::string& _file_name)
 {
 	if (!cgv::render::gl::read_image_to_textures(_file_name, tex_ids, durations, true, &aspect, &use_blending))
 		return false;
@@ -106,7 +106,7 @@ bool gl_image_drawable_base::read_image(const std::string& _file_name)
 	return true;
 }
 
-bool gl_image_drawable_base::read_images(const std::string& _file_name, const std::vector<std::string>& _files)
+bool image_drawable::read_images(const std::string& _file_name, const std::vector<std::string>& _files)
 {
 	for (unsigned i=0; i<_files.size(); ++i) {
 		unsigned tex_id = cgv::render::gl::read_image_to_texture(_file_name+"/"+_files[i],
@@ -136,7 +136,7 @@ bool gl_image_drawable_base::read_images(const std::string& _file_name, const st
 	return true;
 }
 
-bool gl_image_drawable_base::save_images(const std::string& output_file_name)
+bool image_drawable::save_images(const std::string& output_file_name)
 {
 	// crop update rectangle
 	if (x+w > W)
@@ -215,24 +215,24 @@ bool gl_image_drawable_base::save_images(const std::string& output_file_name)
 	return true;
 }
 
-void gl_image_drawable_base::draw(context& ctx)
+void image_drawable::draw(context& ctx)
 {
 	ctx.push_modelview_matrix();
 		ctx.mul_modelview_matrix(cgv::math::scale4<double>(aspect, 1, 1));
 		if (show_rectangle) {
 			ctx.push_modelview_matrix();
 				ctx.mul_modelview_matrix(cgv::math::translate4<double>(-1,-1,0)*cgv::math::scale4<double>(2.0 / W, 2.0 / H, 1));
-				std::vector<GLint> P;
-				P.push_back(x); P.push_back(y);
-				P.push_back(x+w); P.push_back(y);
-				P.push_back(x+w); P.push_back(y+h);
-				P.push_back(x); P.push_back(y+h);
+				std::vector<vec2> P;
+				P.push_back(vec2(x, y,0));
+				P.push_back(vec2(x+w, y,0));
+				P.push_back(vec2(x+w, y+h,0));
+				P.push_back(vec2(x, y+h,0));
 				shader_program& prog = ctx.ref_default_shader_program();
 				prog.enable(ctx);
 					ctx.set_color(rgb(1, 0, 0));
 					attribute_array_binding::set_global_attribute_array(ctx, prog.get_position_index(), P);
 					attribute_array_binding::enable_global_array(ctx, prog.get_position_index());
-						glDrawArrays(GL_LINE_STRIP, 0, 4);
+						glDrawArrays(GL_LINE_LOOP, 0, 4);
 					attribute_array_binding::disable_global_array(ctx, prog.get_position_index());
 				prog.disable(ctx);
 			ctx.pop_modelview_matrix();

@@ -12,7 +12,7 @@
 #include <cgv/base/import.h>
 #include <cgv_gl/gl/gl_tools.h>
 #include <cgv_gl/gl/gl.h>
-#include <cgv_gl/gl/gl_image_drawable_base.h>
+#include <cgv_gl/gl/image_drawable.h>
 
 using namespace cgv::base;
 using namespace cgv::signal;
@@ -22,22 +22,22 @@ using namespace cgv::render;
 using namespace cgv::utils;
 using namespace cgv::media::image;
 
-class image_drawable : 
+class image_view : 
 	public cgv::base::node,          /// derive from node to integrate into global tree structure and to store a name
-	public cgv::render::gl::gl_image_drawable_base,     /// derive from drawable for drawing the cube
+	public cgv::render::gl::image_drawable,     /// derive from drawable for drawing the cube
 	public provider
 {
 protected:
 	cgv::math::fvec<float,2> range;
 public:
-	image_drawable() : node("image drawable"), range(0,1)
+	image_view() : node("image view"), range(0,1)
 	{
-		connect(get_animation_trigger().shoot, this, &image_drawable::timer_event);
+		connect(get_animation_trigger().shoot, this, &image_view::timer_event);
 	}
 	void timer_event(double t, double dt)
 	{
 		unsigned old_current_image = current_image;
-		gl_image_drawable_base::timer_event(t, dt);
+		image_drawable::timer_event(t, dt);
 		if (old_current_image != current_image) {
 			update_member(&current_image);
 			post_redraw();
@@ -87,7 +87,7 @@ public:
 	}
 	void create_gui()
 	{
-		add_decorator("image drawable", "heading");
+		add_decorator("image view", "heading");
 
 		add_control("&animate", animate, "check", "shortcut='A'");
 		add_member_control(this, "current_image", current_image, "value_slider", "min=0;max=0;ticks=true");
@@ -95,9 +95,9 @@ public:
 		if (begin_tree_node("file io", file_name, true)) {
 			align("\a");
 			add_view("file_name", file_name);
-			connect_copy(add_button("&open", "shortcut='O'")->click, rebind(this, &image_drawable::open));
-			connect_copy(add_button("o&pen files", "shortcut='P'")->click, rebind(this, &image_drawable::open_files));
-			connect_copy(add_button("&save", "shortcut='S'")->click, rebind(this, &image_drawable::save));
+			connect_copy(add_button("&open", "shortcut='O'")->click, rebind(this, &image_view::open));
+			connect_copy(add_button("o&pen files", "shortcut='P'")->click, rebind(this, &image_view::open_files));
+			connect_copy(add_button("&save", "shortcut='S'")->click, rebind(this, &image_view::save));
 			align("\b");
 			end_tree_node(file_name);
 		}
@@ -175,11 +175,11 @@ public:
 	}
 	bool init(context& ctx)
 	{		
-		return gl_image_drawable_base::init(ctx) && read_image("res://alhambra.png");
+		return image_drawable::init(ctx) && read_image("res://alhambra.png");
 	}
 };
 
 #include <cgv/base/register.h>
 
-extern factory_registration<image_drawable> image_drawable_factory_registration("new/image drawable", 'I', true);
+extern factory_registration<image_view> image_drawable_factory_registration("new/image view", 'I', true);
 
