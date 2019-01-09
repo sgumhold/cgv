@@ -1,0 +1,7 @@
+files:default_surface
+fragment_file:lights.glsl
+fragment_file:brdf.glsl
+vertex_file:brdf.glsl
+vertex_file:view.glsl
+fragment_file:side.glsl
+fragment_file:surface.glsl

@@ -17,12 +17,12 @@ plot1d_config::plot1d_config()
 /// construct empty plot with default domain [0..1,0..1]
 plot1d::plot1d()
 {
-	domain.ref_min_pnt() = P2D(0,0);
-	domain.ref_max_pnt() = P2D(1,1);
-	extent               = V2D(1,1);
-	axis_directions[0]   = V3D(1,0,0);
-	axis_directions[1]   = V3D(0,1,0);
-	center_location      = P3D(0,0,0);
+	domain.ref_min_pnt() = P2D(0.0f,0.0f);
+	domain.ref_max_pnt() = P2D(1.0f,1.0f);
+	extent               = V2D(1.0f,1.0f);
+	axis_directions[0]   = V3D(1.0f,0.0f,0.0f);
+	axis_directions[1]   = V3D(0.0f,1.0f,0.0f);
+	center_location      = P3D(0.0f,0.0f,0.0f);
 	tick_line_width[1]   = 1;
 	axes[0].ticks[1].type = TT_LINE;
 	axes[1].ticks[1].type = TT_LINE;

@@ -13,6 +13,35 @@ namespace cgv {
 /** base class for all drawables, which is independent of the used rendering API. */
 class CGV_API drawable : public base::traverse_policy
 {
+public:
+	/// declare rgb color type
+	typedef cgv::media::color<float, cgv::media::RGB> rgba_type;
+	/// declare rgba color type
+	typedef cgv::media::color<float, cgv::media::RGB, cgv::media::OPACITY> rgb_type;
+	/// declare type of 2d vectors
+	typedef cgv::math::fvec<float, 2> vec2;
+	/// declare type of 3d vectors
+	typedef cgv::math::fvec<float, 3> vec3;
+	/// declare type of homogeneous vectors
+	typedef cgv::math::fvec<float, 4> vec4;
+	/// declare type of 2x2 matrices
+	typedef cgv::math::fmat<float, 2, 2> mat2;
+	/// declare type of 3x3 matrices
+	typedef cgv::math::fmat<float, 3, 3> mat3;
+	/// declare type of 4x4 matrices
+	typedef cgv::math::fmat<float, 4, 4> mat4;
+	/// declare type of 2d vectors
+	typedef cgv::math::fvec<double, 2> dvec2;
+	/// declare type of 3d vectors
+	typedef cgv::math::fvec<double, 3> dvec3;
+	/// declare type of homogeneous vectors
+	typedef cgv::math::fvec<double, 4> dvec4;
+	/// declare type of 2x2 matrices
+	typedef cgv::math::fmat<double, 2, 2> dmat2;
+	/// declare type of 3x3 matrices
+	typedef cgv::math::fmat<double, 3, 3> dmat3;
+	/// declare type of 4x4 matrices
+	typedef cgv::math::fmat<double, 4, 4> dmat4;
 private:
 	/// store the context
 	context* ctx;

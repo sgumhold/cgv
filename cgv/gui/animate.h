@@ -73,7 +73,7 @@ namespace cgv {
 		protected:
 			void set_value(double time) {
 				double lambda = this->get_parameter(time);
-				*this->value_ptr = (1.0 - lambda)*this->start_value + lambda*this->end_value;
+				*this->value_ptr = (T)(1.0 - lambda)*this->start_value + (T)lambda*this->end_value;
 			}
 		public:
 			linear_blend_animation(T& value, const T& _end_value, double _start_time, double _end_time, AnimationParameterMapping _parameter_mapping = APM_SIN_SQUARED) :

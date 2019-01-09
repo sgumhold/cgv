@@ -1,6 +1,5 @@
 #include <cgv/base/named.h>
 #include <cgv/gui/provider.h>
-#include <cgv/render/drawable.h>
 #include <cgv/media/color.h>
 #include <cgv/utils/scan.h>
 #include <cgv_gl/gl/gl.h>
@@ -8,7 +7,6 @@
 
 using namespace cgv::base;
 using namespace cgv::reflect;
-using namespace cgv::render;
 using namespace cgv::gui;
 using namespace cgv::media;
 using namespace cgv::utils;

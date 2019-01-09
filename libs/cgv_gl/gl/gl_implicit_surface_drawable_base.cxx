@@ -3,6 +3,8 @@
 #include <cgv/media/mesh/dual_contouring.h>
 
 #include <cgv/render/drawable.h>
+#include <cgv/render/shader_program.h>
+#include <cgv/math/ftransform.h>
 #include <cgv_gl/gl/gl.h>
 
 #include <fstream>
@@ -14,7 +16,7 @@ namespace cgv {
 	namespace render {
 		namespace gl {
 
-gl_implicit_surface_drawable_base::gl_implicit_surface_drawable_base() : box(vec_type(-1.2f,-1.2f,-1.2f),vec_type(1.2f,1.2f,1.2f))
+gl_implicit_surface_drawable_base::gl_implicit_surface_drawable_base() : box(dvec3(-1.2f,-1.2f,-1.2f),dvec3(1.2f,1.2f,1.2f))
 {
 	obj_out = 0;
 	triangulate = false;
@@ -43,9 +45,9 @@ gl_implicit_surface_drawable_base::gl_implicit_surface_drawable_base() : box(vec
 	grid_epsilon = 0.01;
 	ix=iy=iz=0;
 	show_mini_box = false;
-	material.set_diffuse(cgv::media::illum::phong_material::color_type(0.3f,0.1f,0.7f));
-	material.set_specular(cgv::media::illum::phong_material::color_type(0.7f,0.7f,0.7f));
-	material.set_shininess(80);
+	material.set_diffuse_reflectance(rgb_type(0.3f,0.1f,0.7f));
+	material.set_specular_reflectance(rgb_type(0.7f,0.7f,0.7f));
+	material.set_roughness(0.1f);
 }
 
 /// callback used to save to obj file
@@ -176,13 +178,13 @@ double gl_implicit_surface_drawable_base::get_grid_epsilon() const
 }
 
 
-void gl_implicit_surface_drawable_base::set_box(const box_type& _box)
+void gl_implicit_surface_drawable_base::set_box(const dbox3& _box)
 {
 	box = _box;
 	post_rebuild();
 }
 
-const gl_implicit_surface_drawable_base::box_type& gl_implicit_surface_drawable_base::get_box() const
+const gl_implicit_surface_drawable_base::dbox3& gl_implicit_surface_drawable_base::get_box() const
 {
 	return box;
 }
@@ -198,7 +200,7 @@ unsigned int gl_implicit_surface_drawable_base::get_nr_vertices_of_last_extracti
 }
 
 
-void gl_implicit_surface_drawable_base::add_normal(const pnt_type& p, const vec_type& n, std::vector<float>& nml_gradient_geometry) const
+void gl_implicit_surface_drawable_base::add_normal(const dvec3& p, const dvec3& n, std::vector<float>& nml_gradient_geometry) const
 {
 	nml_gradient_geometry.push_back((float)p(0));
 	nml_gradient_geometry.push_back((float)p(1));
@@ -214,8 +216,8 @@ void gl_implicit_surface_drawable_base::new_polygon(const std::vector<unsigned i
 	unsigned int n = (unsigned int) vertex_indices.size();
 
 	if (normal_computation_type == FACE_NORMALS) {
-		pnt_type ctr;
-		vec_type nml = compute_face_normal(vertex_indices, &ctr);
+		dvec3 ctr;
+		dvec3 nml = compute_face_normal(vertex_indices, &ctr);
 		if (obj_out) {
 			++normal_index;
 			(*obj_out) << "vn " << nml(0) << " " << nml(1) << " " << nml(2) << std::endl;
@@ -272,8 +274,10 @@ void gl_implicit_surface_drawable_base::new_polygon(const std::vector<unsigned i
 void gl_implicit_surface_drawable_base::new_vertex(unsigned int vi)
 {
 	if (normal_computation_type != FACE_NORMALS) {
-		pnt_type p = sm_ptr->vertex_location(vi);
-		vec_type n = (double*)normalize(func_ptr->evaluate_gradient(p.to_vec()));
+		dvec3 p = sm_ptr->vertex_location(vi);
+		vec_type grad = func_ptr->evaluate_gradient(p.to_vec());
+		dvec3 n(grad.size(), grad);
+		n.normalize();
 		sm_ptr->vertex_normal(vi) = n;
 		if (obj_out)
 			(*obj_out) << "v "  << p(0) << " " << p(1) << " " << p(2) << "\n"
@@ -283,20 +287,20 @@ void gl_implicit_surface_drawable_base::new_vertex(unsigned int vi)
 	}
 	else {
 		if (obj_out) {
-			pnt_type p = sm_ptr->vertex_location(vi);
+			dvec3 p = sm_ptr->vertex_location(vi);
 			(*obj_out) << "v "  << p(0) << " " << p(1) << " " << p(2) << std::endl;
 		}
 	}
 	++nr_vertices;
 }
 
-gl_implicit_surface_drawable_base::vec_type gl_implicit_surface_drawable_base::compute_face_normal(const std::vector<unsigned int> &vis, pnt_type* _c) const
+gl_implicit_surface_drawable_base::dvec3 gl_implicit_surface_drawable_base::compute_face_normal(const std::vector<unsigned int> &vis, dvec3* _c) const
 {
-	std::vector<const pnt_type*> p_pis;
+	std::vector<const dvec3*> p_pis;
 	for (unsigned int i=0; i<vis.size(); ++i)
 		p_pis.push_back(&sm_ptr->vertex_location(vis[i]));
-	pnt_type c(0,0,0);
-	vec_type n(0,0,0);
+	dvec3 c(0,0,0);
+	dvec3 n(0,0,0);
 	for (unsigned int i=0; i<p_pis.size(); ++i) {
 		c += *p_pis[i];
 		n += cross(*p_pis[i], *p_pis[(i+1)%p_pis.size()]);
@@ -313,7 +317,7 @@ void gl_implicit_surface_drawable_base::before_drop_vertex(unsigned int vertex_i
 {
 }
 
-void gl_implicit_surface_drawable_base::render_corner_normal(const pnt_type& pj, const pnt_type& pi, const pnt_type& pk, const vec_type& ni)
+void gl_implicit_surface_drawable_base::render_corner_normal(const dvec3& pj, const dvec3& pi, const dvec3& pk, const dvec3& ni)
 {
 	if (normal_computation_type == FACE_NORMALS)
 		return;
@@ -323,15 +327,17 @@ void gl_implicit_surface_drawable_base::render_corner_normal(const pnt_type& pj,
 		return;
 	}
 
-	vec_type n = cross(pk-pi, pj-pi);
+	dvec3 n = cross(pk-pi, pj-pi);
 	double l  = n.length();
 	if ((l > 1e-6) && (dot(n,ni) > l*normal_threshold))
 		glNormal3dv(ni);
 	else {
-		pnt_type p = pi;
+		dvec3 p = pi;
 		if (normal_computation_type == CORNER_GRADIENTS) {
 			p = (2.0/3)*pi+(1.0/6)*(pj+pk);
-			n = vec_type(normalize(func_ptr->evaluate_gradient(p.to_vec())));
+			vec_type grad = func_ptr->evaluate_gradient(p.to_vec());
+			n = dvec3(grad.size(),grad);
+			n.normalize();
 		}
 		else {
 			if (l < 1e-6) {
@@ -401,46 +407,32 @@ void gl_implicit_surface_drawable_base::build_display_list()
 /// overload to draw the content of this drawable
 void gl_implicit_surface_drawable_base::draw(context& ctx)
 {
-	glEnable(GL_COLOR_MATERIAL);
-	ctx.enable_material(material);
-	//glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, 120);
+	shader_program& prog = ctx.ref_surface_shader_program();
+	prog.enable(ctx);
+	ctx.set_material(material);
+	prog.set_uniform(ctx, "map_color_to_material", (int)3);
+	glEnable(GL_CULL_FACE);
+	glCullFace(GL_FRONT);
 	if (show_box) {
-		glColor3f(0.8f,0.7f,0.0f);
-		glPushMatrix();
-		glTranslated(box.get_center()(0),box.get_center()(1),box.get_center()(2));
-		glScaled(0.5*box.get_extent()(0), 0.5*box.get_extent()(1), 0.5*box.get_extent()(2));
-		glEnable(GL_CULL_FACE);
-		glCullFace(GL_FRONT);
-		ctx.tesselate_unit_cube(true);
-		glDisable(GL_CULL_FACE);
-		glPopMatrix();
+		ctx.set_color(rgb_type(0.8f,0.7f,0.0f));
+		ctx.tesselate_box(box,true);
 	}
-
 	if (show_mini_box) {
-		glColor3f(0.8f,0.6f,4.0f);
-		glPushMatrix();
-		vec_type d = box.get_extent();
+		ctx.set_color(rgb_type(0.8f, 0.6f, 1.0f));
+		dvec3 d = box.get_extent();
 		d /= (res-1);
-		vec_type c = box.get_corner(0);
-		c(0) += (ix+0.5)*d(0);
-		c(1) += (iy+0.5)*d(1);
-		c(2) += (iz+0.5)*d(2);
-		glTranslated(c(0),c(1),c(2));
-		glScaled(0.5*d(0), 0.5*d(1), 0.5*d(2));
-		glEnable(GL_CULL_FACE);
-		glCullFace(GL_FRONT);
-		ctx.tesselate_unit_cube(true);
-		glDisable(GL_CULL_FACE);
-		glPopMatrix();
+		dvec3 b0 = box.get_corner(0);
+		b0(0) += ix*d(0);
+		b0(1) += iy*d(1);
+		b0(2) += iz*d(2);
+		dbox3 B(b0, b0 + d);
+		ctx.tesselate_box(B, true);
 	}
-	ctx.disable_material(material);
+	glDisable(GL_CULL_FACE);
+	prog.disable(ctx);
 
-	glDisable(GL_COLOR_MATERIAL);
-
-	ctx.enable_material(material);
 	draw_implicit_surface(ctx);
-	ctx.disable_material(material);
-	
+
 	if (show_gradient_normals || show_mesh_normals) {
 		glLineWidth(1);
 		glDisable(GL_LIGHTING);

@@ -1,4 +1,4 @@
-@if(nr_lights~~UNDEF)@{@define(nr_lights=4)@}
+	@if(nr_lights~~UNDEF)@{@define(nr_lights=4)@}
 varying vec3 q_tilde;
 varying vec3 inv_T_square_v;
 varying vec3 inv_T_square_e_c;

@@ -10,45 +10,99 @@
 namespace cgv{
 	namespace math {
 
-	//returns the abs(a)*sign(b)
-	template<typename T> 
-	T sign(const T&a, const T&b)
-	{
-		if(b < 0)
-		 return -std::abs(a) ;
-		else
-			return std::abs(a);
-	}
-
+		/// returns the abs(a)*sign(b)
+		template<typename T>
+		T sign(const T&a, const T&b) { return (b < 0) ? -std::abs(a) : std::abs(a); }
+		/// if v >= 0 returns 1 and otherwise -1
+		template<typename T>
+		T sign(const T&v) { return (v >= T(0)) ? T(1) : T(-1); }
+		/// if v >= 0 returns v or 0 otherwise
+		template<typename T>
+		T plus(const T& v) { return v >= T(0) ? v : T(0); }
+		/// clamp v at [a,b]
+		template<typename T>
+		T clamp(const T& v, const T& a, const T& b) { return v > b ? b : (v < a ? a : v); }
 		namespace detail {
+			//helper function to compute cheb approximation of erf functions
 			template <typename T>
-			T erf_fitting_function(const T& u)
+			T erfccheb(const T z)
 			{
-				 return (T) (
-					  - 1.26551223 + u*(1.00002368 + u*(0.37409196 + u*(0.09678418 + 
-					  u*(-0.18628806 + u*(0.27886807 + u*(-1.13520398 + u*(1.48851587 +
-					  u*(-0.82215223 + u*0.17087277)))))))));
+				static const int ncof = 28;
+				static const double cof[28] = { -1.3026537197817094, 6.4196979235649026e-1,
+				1.9476473204185836e-2,-9.561514786808631e-3,-9.46595344482036e-4,
+				3.66839497852761e-4,4.2523324806907e-5,-2.0278578112534e-5,
+				-1.624290004647e-6,1.303655835580e-6,1.5626441722e-8,-8.5238095915e-8,
+				6.529054439e-9,5.059343495e-9,-9.91364156e-10,-2.27365122e-10,
+				9.6467911e-11, 2.394038e-12,-6.886027e-12,8.94487e-13, 3.13092e-13,
+				-1.12708e-13,3.81e-16,7.106e-15,-1.523e-15,-9.4e-17,1.21e-16,-2.8e-17 };
+
+				int j;
+				double t, ty, tmp, d = 0., dd = 0.;
+				assert(z >= 0.);
+
+				t = 2. / (2. + z);
+				ty = 4.*t - 2.;
+				for (j = ncof - 1; j > 0; j--)
+				{
+					tmp = d;
+					d = ty * d - dd + cof[j];
+					dd = tmp;
+				}
+				return (T)(t*exp(-z * z + 0.5*(cof[0] + ty * d) - dd));
 			}
 		}
-
-		/// evaluate the error function erf(x) = 2/sqrt(Pi)*int(exp(-y^2),y=0..x)
+		///error function
 		template <typename T>
-		T erf(const T& x)
+		T erf(const T x)
 		{
-			if (x < 0)
-				return -erf(-x);
-			T u = 1/(1 + (T)0.5*x);
-			T ans = u*exp(-x*x + detail::erf_fitting_function(u));
-			return 1 - ans;
+			if (x >= 0.)
+				return 1.0 - detail::erfccheb(x);
+			else
+				return detail::erfccheb(-x) - 1.0;
 		}
 
-		/// evaluate the complementary error function erfc(x) = 1-erf(x)
+		///complementary error function
 		template <typename T>
-		T erfc(const T& x)
+		T erfc(const T x)
 		{
-			return 1-erf(x);
+			if (x >= 0.)
+				return detail::erfccheb(x);
+			else
+				return 2.0 - detail::erfccheb(-x);
 		}
-		
+
+		///scaled complementary error function
+		template <typename T>
+		T erfcx(const T x)
+		{
+			return exp(x*x)* erfccheb(x);
+		}
+
+		///inverse complementary error function
+		template <typename T>
+		T erfc_inv(const T p)
+		{
+			double x, err, t, pp;
+			if (p >= 2.0) return -100.;
+			if (p <= 0.0) return 100.;
+			pp = (p < 1.0) ? p : 2. - p;
+			t = sqrt(-2.*log(pp / 2.));
+			x = -0.70711*((2.30753 + t * 0.27061) / (1. + t * (0.99229 + t * 0.04481)) - t);
+			for (int j = 0; j < 2; j++) {
+				err = erfc(x) - pp;
+				x += err / (1.12837916709551257*exp(-sqr(x)) - x * err);
+			}
+			return (p < 1.0 ? x : -x);
+		}
+
+		///inverse error function
+		template <typename T>
+		T erf_inv(const T p)
+		{
+			return erfc_inv(1. - p);
+		}
+
+
 		/// evaluate the cummulative normal distribution function
 		template <typename T>
 		T Phi(const T& x)
@@ -88,14 +142,6 @@ namespace cgv{
 			}
 			return x;
 		}
-
-		//return -1 if v is negative and 1 if v >= 0
-		template <typename T>
-		T sign(const T& v)
-		{
-			return (v < 0) ?  (T)-1 : (T)1;
-		}
-
 		/// compute volume of unit n-ball living in n-dimensional space with n>=1; results are cached for O(1) runtime
 		extern CGV_API double compute_unit_ball_volume(unsigned n);
 		/// compute volume of n-ball of radius R living in n-dimensional space with n>=1; results are cached for O(1) runtime

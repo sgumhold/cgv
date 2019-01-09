@@ -1,2 +1,13 @@
-vertex_file:sphere.glvs
-fragment_file:sphere.glfs
+vertex_file:sphere_shader_geom.glvs
+geometry_file:sphere_shader_geom.glgs
+vertex_file:view.glsl
+vertex_file:quaternion.glsl
+fragment_file:sphere_shader_geom.glfs
+fragment_file:side.glsl
+fragment_file:lights.glsl
+fragment_file:brdf.glsl
+fragment_file:surface.glsl
+geometry_shader_info:points;triangle_strip;4
+vertex_file:group.glsl
+geometry_file:splat.glsl
+fragment_file:splat.glsl

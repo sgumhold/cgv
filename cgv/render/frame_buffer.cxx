@@ -21,14 +21,14 @@ frame_buffer::~frame_buffer()
 }
 
 /// destruct the framebuffer objext
-void frame_buffer::destruct(context& ctx)
+void frame_buffer::destruct(const context& ctx)
 {
 	if (handle)
 		ctx.frame_buffer_destruct(*this);
 }
 
 /// create framebuffer of extension is supported, otherwise return false.
-bool frame_buffer::create(context& ctx, int _width, int _height)
+bool frame_buffer::create(const context& ctx, int _width, int _height)
 {
 	if (ctx_ptr)
 		destruct(*ctx_ptr);
@@ -59,13 +59,13 @@ void frame_buffer::set_size(int _width, int _height)
 }
 
 /// attach render buffer to depth buffer if it is a depth buffer, to stencil if it is a stencil buffer or to the i-th color attachment if it is a color buffer
-bool frame_buffer::attach(context& ctx, const render_buffer& rb, int i)
+bool frame_buffer::attach(const context& ctx, const render_buffer& rb, int i)
 {
 	return ctx.frame_buffer_attach(*this, rb, rb.is_depth_buffer(), i);
 }
 
 /// attach 2d texture to depth buffer if it is a depth texture, to stencil if it is a stencil texture or to the i-th color attachment if it is a color texture
-bool frame_buffer::attach(context& ctx, const texture& tex2d, int level, int i)
+bool frame_buffer::attach(const context& ctx, const texture& tex2d, int level, int i)
 {
 	if (tex2d.get_nr_dimensions() != 2) {
 		last_error = "can only attach 2d textures to a frame buffer";
@@ -76,7 +76,7 @@ bool frame_buffer::attach(context& ctx, const texture& tex2d, int level, int i)
 		tex2d.get_standard_component_format() == cgv::data::CF_D, level, i, -1);
 }
 /// attach the j-th slice of a 3d texture to the i-th color attachment
-bool frame_buffer::attach(context& ctx, const texture& tex3d, int z_or_cube_side, int level, int i)
+bool frame_buffer::attach(const context& ctx, const texture& tex3d, int z_or_cube_side, int level, int i)
 {
 	if (tex3d.get_nr_dimensions() != 3) {
 		if (tex3d.tt != TT_CUBEMAP) {
@@ -90,7 +90,7 @@ bool frame_buffer::attach(context& ctx, const texture& tex3d, int z_or_cube_side
 }
 
 /// check for completeness, if not complete, get the reason in last_error
-bool frame_buffer::is_complete(context& ctx) const
+bool frame_buffer::is_complete(const context& ctx) const
 {
 	return ctx.frame_buffer_is_complete(*this);
 }
@@ -152,12 +152,12 @@ bool frame_buffer::disable(context& ctx)
 	return ctx.frame_buffer_disable(*this);
 }
 
-int frame_buffer::get_max_nr_color_attachments(context& ctx)
+int frame_buffer::get_max_nr_color_attachments(const context& ctx)
 {
 	return ctx.frame_buffer_get_max_nr_color_attachments();
 }
 
-int frame_buffer::get_max_nr_draw_buffers(context& ctx)
+int frame_buffer::get_max_nr_draw_buffers(const context& ctx)
 {
 	return ctx.frame_buffer_get_max_nr_draw_buffers();
 }

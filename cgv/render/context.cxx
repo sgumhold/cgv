@@ -1,8 +1,10 @@
 #include <cgv/base/group.h>
 #include "context.h"
 #include <cgv/media/image/image_writer.h>
+#include <cgv/math/ftransform.h>
 #include <cgv/base/traverser.h>
 #include <cgv/render/drawable.h>
+#include <cgv/render/shader_program.h>
 
 using namespace cgv::base;
 using namespace cgv::media::image;
@@ -19,6 +21,7 @@ float background_colors[] = {
 	0.5f, 0.5f, 1,0,
 	1,1,1,0,
 };
+
 
 /// construct config with default parameters
 context_creation_config::context_creation_config()
@@ -126,6 +129,8 @@ render_config_ptr get_render_config()
 
 context::context()
 {
+	modelview_matrix_stack.push(cgv::math::identity4<double>());
+	projection_matrix_stack.push(cgv::math::identity4<double>());
 	x_offset = 10;
 	y_offset = 20;
 	tab_size = 5;
@@ -145,6 +150,23 @@ context::context()
 	phong_shading = true;
 
 	do_screen_shot = false;
+	light_source_handle = 1;
+
+	auto_set_view_in_current_shader_program = true;
+	auto_set_lights_in_current_shader_program = true;
+	auto_set_material_in_current_shader_program = true;
+	support_compatibility_mode = true;
+	draw_in_compatibility_mode = false;
+
+	default_light_source[0].set_local_to_eye(true);
+	default_light_source[0].set_position(vec3(-0.4f, 0.3f, 0.8f));
+	default_light_source[1].set_local_to_eye(true);
+	default_light_source[1].set_position(vec3(0.0f, 1.0f, 0.0f));
+	default_light_source_handles[0] = 0;
+	default_light_source_handles[1] = 0;
+
+	current_material_ptr = 0;
+	current_material_is_textured = false;
 }
 
 /// error handling
@@ -162,7 +184,6 @@ void context::error(const std::string& message, const render_component* rc) cons
 /// virtual destructor
 context::~context()
 {
-
 }
 
 void context::init_render_pass()
@@ -324,6 +345,232 @@ void context::disable_phong_shading()
 	phong_shading = false;
 }
 
+/// check for current program, prepare it for rendering and return pointer to it
+shader_program_base* context::get_current_program() const
+{
+	if (shader_program_stack.empty()) {
+		error("context::get_current_program() called in core profile without current shader program");
+		return 0;
+	}
+	shader_program_base& prog = *shader_program_stack.top();
+	return &prog;
+}
+
+/// return the number of light sources
+size_t context::get_nr_light_sources() const 
+{
+	return light_sources.size(); 
+}
+
+/// helper function to place lights 
+context::vec3 context::get_light_eye_position(const cgv::media::illum::light_source& light, bool place_now) const
+{
+	vec3 Le = light.get_position();
+	if (place_now && !light.is_local_to_eye()) {
+		dvec4 hL(Le(0), Le(1), Le(2), light.get_type() == cgv::media::illum::LT_DIRECTIONAL ? 0.0f : 1.0f);
+		hL = get_modelview_matrix()*hL;
+		Le = (const dvec3&)hL;
+		if (light.get_type() != cgv::media::illum::LT_DIRECTIONAL)
+			Le /= float(hL(3));
+	}
+	return Le;
+}
+
+/// add a new light source, enable it if \c enable is true and place it relative to current model view transformation if \c place_now is true; return handle to light source
+void* context::add_light_source(const cgv::media::illum::light_source& light, bool enabled, bool place_now)
+{
+	// construct new light source handle
+	++light_source_handle;
+	void* handle = reinterpret_cast<void*>(light_source_handle);
+	// determine light source position
+	vec3 Le = get_light_eye_position(light, place_now); 
+	//
+	int idx = -1;
+	if (enabled) {
+		idx = enabled_light_source_handles.size();
+		enabled_light_source_handles.push_back(handle);
+	}
+	// store new light source in map
+	light_sources[handle] = std::pair<cgv::media::illum::light_source, light_source_status>(light, { enabled, Le, idx });
+	// set light sources in shader code if necessary
+	if (enabled)
+		on_lights_changed();
+	// return handle of new light source
+	return handle;
+}
+/// remove a light source by handle and whether it existed
+bool context::remove_light_source(void* handle)
+{
+	// find handle in map
+	auto iter = light_sources.find(handle);
+	if (iter == light_sources.end())
+		return false;
+	// check if light source was enabled
+	if (iter->second.second.enabled) {
+		// then remove from list of enabled light sources
+		enabled_light_source_handles.erase(enabled_light_source_handles.begin() + iter->second.second.light_source_index);
+		// and correct indices of moved light sources
+		for (int i = iter->second.second.light_source_index; i < (int)enabled_light_source_handles.size(); ++i)
+			light_sources[enabled_light_source_handles[i]].second.light_source_index = i;
+		on_lights_changed();
+	}
+	// remove from map
+	light_sources.erase(iter);
+	return true;
+}
+/// read access to light source
+const cgv::media::illum::light_source& context::get_light_source(void* handle) const
+{
+	const auto iter = light_sources.find(handle);
+	return iter->second.first;
+}
+
+/// read access to light source status
+const context::light_source_status& context::get_light_source_status(void* handle) const
+{
+	const auto iter = light_sources.find(handle);
+	return iter->second.second;
+}
+
+
+/// set light source newly
+void context::set_light_source(void* handle, const cgv::media::illum::light_source& light, bool place_now)
+{
+	auto iter = light_sources.find(handle);
+	iter->second.first = light;
+	if (iter->second.second.enabled)
+		on_lights_changed();
+}
+
+/// set the shader program view matrices to the currently enabled view matrices
+void context::set_current_view(shader_program& prog, bool modelview_deps, bool projection_deps) const
+{
+	if (modelview_deps) {
+		cgv::math::fmat<float, 4, 4> V(modelview_matrix_stack.top());
+		prog.set_uniform(*this, "modelview_matrix", V);
+		cgv::math::fmat<float, 3, 3> NM;
+		NM(0, 0) = V(0, 0);
+		NM(0, 1) = V(0, 1);
+		NM(0, 2) = V(0, 2);
+		NM(1, 0) = V(1, 0);
+		NM(1, 1) = V(1, 1);
+		NM(1, 2) = V(1, 2);
+		NM(2, 0) = V(2, 0);
+		NM(2, 1) = V(2, 1);
+		NM(2, 2) = V(2, 2);
+		NM.transpose();
+		NM = inv(NM);
+		prog.set_uniform(*this, "normal_matrix", NM);
+	}
+	if (projection_deps) {
+		cgv::math::fmat<float, 4, 4> P(projection_matrix_stack.top());
+		prog.set_uniform(*this, "projection_matrix", P);
+	}
+}
+
+/// set the shader program material to the currently enabled material
+void context::set_current_material(shader_program& prog) const
+{
+	if (!current_material_ptr)
+		return;
+
+	prog.set_material_uniform(*this, "material", *current_material_ptr);
+	if (current_material_is_textured) {
+
+	}
+}
+
+/// set the shader program lights to the currently enabled lights
+void context::set_current_lights(shader_program& prog) const
+{
+	size_t nr_lights = get_nr_enabled_light_sources();
+	for (size_t i = 0; i < nr_lights; ++i) {
+		std::string prefix = std::string("light_sources[") + cgv::utils::to_string(i) + "]";
+		void* light_source_handle = get_enabled_light_source_handle(i);
+		const auto iter = light_sources.find(light_source_handle);
+		if (prog.set_light_uniform(*this, prefix, iter->second.first))
+			prog.set_uniform(*this, prefix + ".position", iter->second.second.eye_position);
+	}
+	prog.set_uniform(*this, "nr_light_sources", (int)nr_lights);
+}
+
+void context::on_lights_changed()
+{
+	if (!auto_set_lights_in_current_shader_program)
+		return;
+
+	if (shader_program_stack.empty())
+		return;
+
+	cgv::render::shader_program& prog = *static_cast<cgv::render::shader_program*>(shader_program_stack.top());
+	if (!prog.does_use_lights())
+		return;
+
+	set_current_lights(prog);
+}
+
+/// place the given light source relative to current model viel transformation
+void context::place_light_source(void* handle)
+{
+	auto iter = light_sources.find(handle);
+	// determine light source position
+	iter->second.second.eye_position = get_light_eye_position(iter->second.first, true);
+	if (iter->second.second.enabled)
+		on_lights_changed();
+}
+
+/// return maximum number of light sources, that can be enabled in parallel 
+unsigned context::get_max_nr_enabled_light_sources() const
+{
+	return 8;
+}
+
+/// return the number of light sources
+size_t context::get_nr_enabled_light_sources() const
+{
+	return enabled_light_source_handles.size();
+}
+
+/// access to handle of i-th light source
+void* context::get_enabled_light_source_handle(size_t i) const
+{
+	return enabled_light_source_handles[i];
+}
+
+/// enable a given light source and return whether there existed a light source with given handle
+bool context::enable_light_source(void* handle)
+{
+	auto iter = light_sources.find(handle);
+	if (iter == light_sources.end())
+		return false;
+	if (iter->second.second.enabled)
+		return true;
+	iter->second.second.enabled = true;
+	iter->second.second.light_source_index = enabled_light_source_handles.size();
+	enabled_light_source_handles.push_back(handle);
+	on_lights_changed();
+	return true;
+}
+
+/// disable a given light source and return whether there existed a light source with given handle
+bool context::disable_light_source(void* handle)
+{
+	auto iter = light_sources.find(handle);
+	if (iter == light_sources.end())
+		return false;
+	if (!iter->second.second.enabled)
+		return true;
+	iter->second.second.enabled = false;
+	enabled_light_source_handles.erase(enabled_light_source_handles.begin()+iter->second.second.light_source_index);
+	for (int i= iter->second.second.light_source_index; i < (int)enabled_light_source_handles.size(); ++i)
+		light_sources[enabled_light_source_handles[i]].second.light_source_index = i;
+	iter->second.second.light_source_index = -1;
+	on_lights_changed();
+	return true;
+
+}
+
+
 /// return the current render pass
 RenderPass context::get_render_pass() const
 {
@@ -362,6 +609,11 @@ void* context::get_render_pass_user_data() const
 /// perform the given render task
 void context::render_pass(RenderPass rp, RenderPassFlags rpf, void* user_data)
 {
+	// ensure that default light sources are created
+	if (default_light_source_handles[0] == 0) {
+		for (unsigned i=0; i<nr_default_light_sources; ++i)
+			default_light_source_handles[i] = add_light_source(default_light_source[i], false, false);
+	}
 	render_info ri;
 	ri.pass  = rp;
 	ri.flags = rpf;
@@ -370,6 +622,11 @@ void context::render_pass(RenderPass rp, RenderPassFlags rpf, void* user_data)
 	render_pass_stack.push(ri);
 
 	init_render_pass();
+
+	if (get_render_pass_flags()&RPF_SET_LIGHTS) {
+		for (unsigned i = 0; i < nr_default_light_sources; ++i)
+			place_light_source(default_light_source_handles[i]);
+	}
 
 	group* grp = dynamic_cast<group*>(this);
 	if (grp && (rpf&RPF_DRAWABLES_DRAW)) {
@@ -575,38 +832,29 @@ float yellow[4]    = { 1, 1, 0, 1 };
 float red[4]       = { 1, 0, 0, 1 };
 float blue[4]      = { 0, 0, 1, 1 };
 
-void normalize(double* n)
-{
-	double in = 1.0/sqrt(n[0]*n[0]+n[1]*n[1]+n[2]*n[2]);
-	n[0] *= in;
-	n[1] *= in;
-	n[2] *= in;
-}
-
-void compute_normal(double* n, const double* v0, const double* v1, const double* v2)
-{
-	n[0] = (v1[1]-v0[1])*(v2[2]-v0[2])-(v1[2]-v0[2])*(v2[1]-v0[1]);
-	n[1] = (v1[2]-v0[2])*(v2[0]-v0[0])-(v1[0]-v0[0])*(v2[2]-v0[2]);
-	n[2] = (v1[0]-v0[0])*(v2[1]-v0[1])-(v1[1]-v0[1])*(v2[0]-v0[0]);
-	normalize(n);
-}
-
-void compute_face_normals(const double* vertices, double* normals, const int* vertex_indices, int* normal_indices, int nr_faces, int face_degree)
+void compute_face_normals(const float* vertices, float* normals, const int* vertex_indices, int* normal_indices, int nr_faces, int face_degree)
 {
 	for (int i = 0; i < nr_faces; ++i) {
-		compute_normal(normals+3*i, 
-					   vertices+3*vertex_indices[face_degree*i],
-					   vertices+3*vertex_indices[face_degree*i+1],
-					   vertices+3*vertex_indices[face_degree*i+2]);
+		context::vec3& normal = reinterpret_cast<context::vec3&>(normals[3 * i]);
+		normal.zeros();
+		context::vec3 reference_pnt = *reinterpret_cast<const context::vec3*>(vertices + 3 * vertex_indices[face_degree*i + face_degree - 1]);
+		context::vec3 last_difference;
+		last_difference.zeros();
+		for (int j = 0; j < face_degree; ++j) {
+			context::vec3 new_difference = *reinterpret_cast<const context::vec3*>(vertices + 3 * vertex_indices[face_degree*i + j]) - reference_pnt;
+			normal += cross(last_difference, new_difference);
+			last_difference = new_difference;
+		}
+		normal.normalize();
 		for (int j = 0; j<face_degree; ++j)
 			normal_indices[face_degree*i+j] = i;
 	}
 }
 
 /// tesselate a unit cube with extent from [-1,-1,-1] to [1,1,1] with face normals that can be flipped
-void context::tesselate_unit_cube(bool flip_normals)
+void context::tesselate_unit_cube(bool flip_normals, bool edges)
 {
-	static double V[8*3] = {
+	static float V[8*3] = {
 		-1,-1,+1,
 		+1,-1,+1,
 		-1,+1,+1,
@@ -616,19 +864,21 @@ void context::tesselate_unit_cube(bool flip_normals)
 		-1,+1,-1,
 		+1,+1,-1
 	};
-	static double N[6*3] = {
+	static float N[6*3] = {
 		-1,0,0, +1,0,0, 
 		0,-1,0, 0,+1,0,
 		0,0,-1, 0,0,+1
 	};
-	static double T[14*2] = { 
-		 0,1.0/3 , 0,2.0/3 ,
-		 0.25,0 , 0.25,1.0/3 ,
-		 0.25,2.0/3 , 0.25,1 ,
-		 0.5,0 , 0.5,1.0/3 ,
-		 0.5,2.0/3 , 0.5,1 ,
-		 0.75,1.0/3 , 0.75,2.0/3 ,
-		 1,1.0/3 , 1,2.0/3 
+	static const float ot = float(1.0 / 3);
+	static const float tt = float(2.0 / 3);
+	static float T[14*2] = {
+		 0,ot , 0,tt ,
+		 0.25f,0 , 0.25f,ot ,
+		 0.25f,tt , 0.25f,1 ,
+		 0.5f,0 , 0.5f,ot ,
+		 0.5f,tt , 0.5f,1 ,
+		 0.75f,ot , 0.75f,tt ,
+		 1,ot , 1,tt 
 	};
 	static int F[6*4] = {
 		0,2,6,4,
@@ -648,13 +898,16 @@ void context::tesselate_unit_cube(bool flip_normals)
 		3,2,6,7 ,4,8,9,5 ,
 		12,13,11,10 ,3,7,8,4 
 	};
-	draw_faces(V,N,T,F,FN,FT,6,4, flip_normals);
+	if (edges)
+		draw_edges_of_faces(V, N, T, F, FN, FT, 6, 4, flip_normals);
+	else
+		draw_faces(V,N,T,F,FN,FT,6,4, flip_normals);
 }
 
 /// tesselate an axis aligned box in single precision
-void context::tesselate_box(const cgv::media::axis_aligned_box<double, 3>& B, bool flip_normals) const
+void context::tesselate_box(const cgv::media::axis_aligned_box<double, 3>& B, bool flip_normals, bool edges) const
 {
-	static double N[6 * 3] = {
+	static float N[6 * 3] = {
 		-1, 0, 0, +1, 0, 0,
 		0, -1, 0, 0, +1, 0,
 		0, 0, -1, 0, 0, +1
@@ -672,20 +925,23 @@ void context::tesselate_box(const cgv::media::axis_aligned_box<double, 3>& B, bo
 		2, 2, 2, 2, 3, 3, 3, 3,
 		4, 4, 4, 4, 5, 5, 5, 5
 	};
-	double V[8 * 3];
+	float V[8 * 3];
 
 	for (unsigned i = 0; i < 8; ++i) {
-		V[3 * i] = (i & 1) == 0 ? B.get_min_pnt()(0) : B.get_max_pnt()(0);
-		V[3 * i + 1] = (i & 2) == 0 ? B.get_min_pnt()(1) : B.get_max_pnt()(1);
-		V[3 * i + 2] = (i & 4) != 0 ? B.get_min_pnt()(2) : B.get_max_pnt()(2);
+		V[3 * i]	 = float((i & 1) == 0 ? B.get_min_pnt()(0) : B.get_max_pnt()(0));
+		V[3 * i + 1] = float((i & 2) == 0 ? B.get_min_pnt()(1) : B.get_max_pnt()(1));
+		V[3 * i + 2] = float((i & 4) != 0 ? B.get_min_pnt()(2) : B.get_max_pnt()(2));
 	}
-	draw_faces(V, N, 0, F, FN, 0, 6, 4, flip_normals);
+	if (edges)
+		draw_edges_of_faces(V, N, 0, F, FN, 0, 6, 4, flip_normals);
+	else
+		draw_faces(V, N, 0, F, FN, 0, 6, 4, flip_normals);
 }
 
 /// tesselate a prism 
-void context::tesselate_unit_prism(bool flip_normals)
+void context::tesselate_unit_prism(bool flip_normals, bool edges)
 {
-	static const double V[6*3] = {
+	static const float V[6*3] = {
 		-1, -1, -1,
 		 1, -1, -1,
 		 0, -1,  1,
@@ -693,9 +949,9 @@ void context::tesselate_unit_prism(bool flip_normals)
 		 1,  1, -1,
 		 0,  1,  1
 	};
-	static double a = 1.0/sqrt(5.0);
-	static double b = 2*a;
-	static const double N[5*3] = {
+	static float a = 1.0f/sqrt(5.0f);
+	static float b = 2*a;
+	static const float N[5*3] = {
 		 0,-1, 0,
 		 0, 1, 0,
 		 0, 0,-1,
@@ -707,60 +963,69 @@ void context::tesselate_unit_prism(bool flip_normals)
 	static const int FTN[2*3] = { 0,0,0, 1,1,1 };
 	static const int FQN[8] = { 2,2, 2,2, 3,3, 4,4, };
 
-	draw_faces(V, N, 0, FT, FTN, 0, 2, 3, flip_normals);
-	draw_strip_or_fan(V, N, 0, FQ, FQN, 0, 3, 4, flip_normals);
+	if (edges) {
+		draw_edges_of_faces(V, N, 0, FT, FTN, 0, 2, 3, flip_normals);
+		draw_edges_of_strip_or_fan(V, N, 0, FQ, FQN, 0, 3, 4, flip_normals);
+	}
+	else {
+		draw_faces(V, N, 0, FT, FTN, 0, 2, 3, flip_normals);
+		draw_strip_or_fan(V, N, 0, FQ, FQN, 0, 3, 4, flip_normals);
+	}
 }
 
 /// tesselate a circular disk of radius 1
-void context::tesselate_unit_disk(int resolution, bool flip_normals)
+void context::tesselate_unit_disk(int resolution, bool flip_normals, bool edges)
 {
-	std::vector<double> V; V.reserve(3*(resolution+1));
-	std::vector<double> N; N.reserve(3*(resolution+1));
-	std::vector<double> T; T.reserve(2*(resolution+1));
+	std::vector<float> V; V.reserve(3*(resolution+1));
+	std::vector<float> N; N.reserve(3*(resolution+1));
+	std::vector<float> T; T.reserve(2*(resolution+1));
 
 	std::vector<int> F; F.resize(resolution+1);
 	int i;
 	for (i = 0; i <= resolution; ++i)
 		F[i] = i;
 
-	double step = 2*M_PI/resolution;
-	double phi   = 0;
+	float step = float(2*M_PI/resolution);
+	float phi   = 0;
 	for (i = 0; i <= resolution; ++i, phi += step) {
-		double cp = cos(phi); 
-		double sp = sin(phi);
+		float cp = cos(phi);
+		float sp = sin(phi);
 		N.push_back(0);
 		N.push_back(0);
 		N.push_back(1);
-		T.push_back((double)i/resolution);
+		T.push_back((float)i/resolution);
 		T.push_back(1);
 		V.push_back(cp);
 		V.push_back(sp);
 		V.push_back(0);
 	}
-	draw_faces(&V[0],&N[0],&T[0],&F[0],&F[0],&F[0],1,resolution+1,flip_normals);
+	if (edges)
+		draw_edges_of_faces(&V[0], &N[0], &T[0], &F[0], &F[0], &F[0], 1, resolution + 1, flip_normals);
+	else
+		draw_faces(&V[0], &N[0], &T[0], &F[0], &F[0], &F[0], 1, resolution + 1, flip_normals);
 }
 
 /// tesselate a cone of radius 1
-void context::tesselate_unit_cone(int resolution, bool flip_normals)
+void context::tesselate_unit_cone(int resolution, bool flip_normals, bool edges)
 {
-	std::vector<double> V; V.reserve(6*(resolution+1));
-	std::vector<double> N; N.reserve(6*(resolution+1));
-	std::vector<double> T; T.reserve(4*(resolution+1));
+	std::vector<float> V; V.reserve(6*(resolution+1));
+	std::vector<float> N; N.reserve(6*(resolution+1));
+	std::vector<float> T; T.reserve(4*(resolution+1));
 
 	std::vector<int> F; F.resize(2*resolution+2);
 	int i;
 	for (i = 0; i <= 2*resolution+1; ++i)
 		F[i] = i;
 
-	static double a = 1.0/sqrt(5.0);
-	static double b = 2*a;
-	double step = 2*M_PI/resolution;
-	double phi   = 0;
-	double u = 0;
-	double duv = 1.0/resolution;
+	static float a = 1.0f/sqrt(5.0f);
+	static float b = 2*a;
+	float step = float(2*M_PI/resolution);
+	float phi   = 0;
+	float u = 0;
+	float duv = float(1.0/resolution);
 	for (int i = 0; i <= resolution; ++i, u += duv, phi += step) {
-		double cp = cos(phi); 
-		double sp = sin(phi);
+		float cp = cos(phi); 
+		float sp = sin(phi);
 		N.push_back(b*cp);
 		N.push_back(b*sp);
 		N.push_back(a);
@@ -778,28 +1043,31 @@ void context::tesselate_unit_cone(int resolution, bool flip_normals)
 		V.push_back(sp);
 		V.push_back(-1);
 	}
-	draw_strip_or_fan(&V[0],&N[0],&T[0],&F[0],&F[0],&F[0],resolution,4,false,flip_normals);
+	if (edges)
+		draw_edges_of_strip_or_fan(&V[0], &N[0], &T[0], &F[0], &F[0], &F[0], resolution, 4, false, flip_normals);
+	else
+		draw_strip_or_fan(&V[0], &N[0], &T[0], &F[0], &F[0], &F[0], resolution, 4, false, flip_normals);
 }
 
 /// tesselate a cylinder of radius 1
-void context::tesselate_unit_cylinder(int resolution, bool flip_normals)
+void context::tesselate_unit_cylinder(int resolution, bool flip_normals, bool edges)
 {
-	std::vector<double> V; V.reserve(6*(resolution+1));
-	std::vector<double> N; N.reserve(6*(resolution+1));
-	std::vector<double> T; T.reserve(4*(resolution+1));
+	std::vector<float> V; V.reserve(6*(resolution+1));
+	std::vector<float> N; N.reserve(6*(resolution+1));
+	std::vector<float> T; T.reserve(4*(resolution+1));
 
 	std::vector<int> F; F.resize(2*(resolution+1));
 	int i;
 	for (i = 0; i <= 2*resolution+1; ++i)
 		F[i] = i;
 
-	double step = 2*M_PI/resolution;
-	double phi   = 0;
-	double u = 0;
-	double duv = 1.0/resolution;
+	float step = float(2*M_PI/resolution);
+	float phi   = 0;
+	float u = 0;
+	float duv = float(1.0/resolution);
 	for (int i = 0; i <= resolution; ++i, u += duv, phi += step) {
-		double cp = cos(phi); 
-		double sp = sin(phi);
+		float cp = cos(phi);
+		float sp = sin(phi);
 		N.push_back(cp);
 		N.push_back(sp);
 		N.push_back(0);
@@ -817,36 +1085,39 @@ void context::tesselate_unit_cylinder(int resolution, bool flip_normals)
 		V.push_back(sp);
 		V.push_back(-1);
 	}
-	draw_strip_or_fan(&V[0],&N[0],&T[0],&F[0],&F[0],&F[0],resolution,4,false,flip_normals);
+	if (edges)
+		draw_edges_of_strip_or_fan(&V[0], &N[0], &T[0], &F[0], &F[0], &F[0], resolution, 4, false, flip_normals);
+	else
+		draw_strip_or_fan(&V[0], &N[0], &T[0], &F[0], &F[0], &F[0], resolution, 4, false, flip_normals);
 }
 
 /// tesselate a torus with major radius of one and given minor radius
-void context::tesselate_unit_torus(float minor_radius, int resolution, bool flip_normals)
+void context::tesselate_unit_torus(float minor_radius, int resolution, bool flip_normals, bool edges)
 {
-	std::vector<double> V; V.resize(6*(resolution+1));
-	std::vector<double> N; N.resize(6*(resolution+1));
-	std::vector<double> T; T.resize(4*(resolution+1));
+	std::vector<float> V; V.resize(6*(resolution+1));
+	std::vector<float> N; N.resize(6*(resolution+1));
+	std::vector<float> T; T.resize(4*(resolution+1));
 	std::vector<int> F; F.resize(2*(resolution+1));
 	int i;
 	for (int i = 0; i <= resolution; ++i) {
 		F[2*i] = 2*i;
 		F[2*i+1] = 2*i+1;
 	}
-	double step  = 2*M_PI/resolution;
-	double phi   = 0;
-	double cp1   = 1, sp1 = 0;
-	double u = 0;
-	double duv = 1.0/resolution;
+	float step  = float(2*M_PI/resolution);
+	float phi   = 0;
+	float cp1   = 1, sp1 = 0;
+	float u = 0;
+	float duv = float(1.0/resolution);
 	for (i = 0; i < resolution; ++i, u += duv) {
-		double cp0 = cp1, sp0 = sp1;
+		float cp0 = cp1, sp0 = sp1;
 		phi += step;
 		cp1 = cos(phi); 
 		sp1 = sin(phi);
-		double theta = 0;
-		double v = 0;
+		float theta = 0;
+		float v = 0;
 		int kv=0, kn=0, kt=0;
 		for (int j = 0; j <= resolution; ++j, theta += step, v += duv) {
-			double ct = cos(theta), st = sin(theta);
+			float ct = cos(theta), st = sin(theta);
 			N[kn++] = ct*cp0;
 			N[kn++] = ct*sp0;
 			N[kn++] = st;
@@ -864,36 +1135,39 @@ void context::tesselate_unit_torus(float minor_radius, int resolution, bool flip
 			V[kv++] = sp1+minor_radius*sp1*ct;
 			V[kv++] = minor_radius*st;
 		}
-		draw_strip_or_fan(&V[0],&N[0],&T[0],&F[0],&F[0],&F[0],resolution,4,false, flip_normals);
+		if (edges)
+			draw_edges_of_strip_or_fan(&V[0], &N[0], &T[0], &F[0], &F[0], &F[0], resolution, 4, false, flip_normals);
+		else
+			draw_strip_or_fan(&V[0],&N[0],&T[0],&F[0],&F[0],&F[0],resolution,4,false, flip_normals);
 	}
 }
 /// tesselate a sphere of radius 1
-void context::tesselate_unit_sphere(int resolution, bool flip_normals)
+void context::tesselate_unit_sphere(int resolution, bool flip_normals, bool edges)
 {
-	std::vector<double> V; V.resize(6*(resolution+1));
-	std::vector<double> N; N.resize(6*(resolution+1));
-	std::vector<double> T; T.resize(4*(resolution+1));
+	std::vector<float> V; V.resize(6*(resolution+1));
+	std::vector<float> N; N.resize(6*(resolution+1));
+	std::vector<float> T; T.resize(4*(resolution+1));
 	std::vector<int> F; F.resize(2*(resolution+1));
 	int i;
 	for (int i = 0; i <= resolution; ++i) {
 		F[2*i] = 2*i;
 		F[2*i+1] = 2*i+1;
 	}
-	double step = M_PI/resolution;
-	double phi   = 0;
-	double cp1   = 1, sp1 = 0;
-	double u = 0;
-	double duv = 1.0/resolution;
+	float step = float(M_PI/resolution);
+	float phi   = 0;
+	float cp1   = 1, sp1 = 0;
+	float u = 0;
+	float duv = float(1.0/resolution);
 	for (i = 0; i < resolution; ++i, u += duv) {
-		double cp0 = cp1, sp0 = sp1;
+		float cp0 = cp1, sp0 = sp1;
 		phi += 2*step;
 		cp1 = cos(phi); 
 		sp1 = sin(phi);
-		double theta = -0.5*M_PI;
-		double v = 0;
+		float theta = float(-0.5*M_PI);
+		float v = 0;
 		int kv=0, kn=0, kt=0;
 		for (int j = 0; j <= resolution; ++j, theta += step, v += duv) {
-			double ct = cos(theta), st = sin(theta);
+			float ct = cos(theta), st = sin(theta);
 			N[kn++] = ct*cp0;
 			N[kn++] = ct*sp0;
 			N[kn++] = st;
@@ -911,16 +1185,19 @@ void context::tesselate_unit_sphere(int resolution, bool flip_normals)
 			V[kv++] = ct*sp1;
 			V[kv++] = st;
 		}
-		draw_strip_or_fan(&V[0],&N[0],&T[0],&F[0],&F[0],&F[0],resolution,4,false, flip_normals);
+		if (edges)
+			draw_edges_of_strip_or_fan(&V[0], &N[0], &T[0], &F[0], &F[0], &F[0], resolution, 4, false, flip_normals);
+		else
+			draw_strip_or_fan(&V[0], &N[0], &T[0], &F[0], &F[0], &F[0], resolution, 4, false, flip_normals);
 	}
 
 }
 /// tesselate a tetrahedron
-void context::tesselate_unit_tetrahedron(bool flip_normals)
+void context::tesselate_unit_tetrahedron(bool flip_normals, bool edges)
 {
-	static const double a = 1.0/(2*sqrt(3.0));
-	static const double b = 1.0/(3*sqrt(3.0/2));
-	static const double V[4*3] = {
+	static const float a = float(1.0/(2*sqrt(3.0)));
+	static const float b = float(1.0/(3*sqrt(3.0/2)));
+	static const float V[4*3] = {
 		 -0.5, -a, -b,
 		  0.5, -a, -b,
 		    0,2*a, -b,
@@ -930,27 +1207,30 @@ void context::tesselate_unit_tetrahedron(bool flip_normals)
 		0,2,1,3,2,0,3,0,1,3,1,2
 	};
 	static int FN[4*3];
-	static double N[4*3];
+	static float N[4*3];
 	static bool computed = false;
 	if (!computed) {
 		compute_face_normals(V, N, F, FN, 4, 3);
 		computed = true;
 	}
-	draw_faces(V, N, 0, F, FN, 0, 4, 3, flip_normals);
+	if (edges)
+		draw_edges_of_faces(V, N, 0, F, FN, 0, 4, 3, flip_normals);
+	else
+		draw_faces(V, N, 0, F, FN, 0, 4, 3, flip_normals);
 }
 
 
 /// tesselate a unit square 
-void context::tesselate_unit_square(bool flip_normals)
+void context::tesselate_unit_square(bool flip_normals, bool edges)
 {
-	static double N[1*3] = {
+	static float N[1*3] = {
 		0,0,+1
 	};
-	static double V[4*3] = {
+	static float V[4*3] = {
 		-1,-1,0, +1,-1,0,
 		+1,+1,0, -1,+1,0
 	};
-	static double T[4*2] = {
+	static float T[4*2] = {
 		0,0, 1,0,
 		1,1, 0,1
 	};
@@ -960,18 +1240,21 @@ void context::tesselate_unit_square(bool flip_normals)
 	static int F[1*4] = {
 		0,1,2,3
 	};
-	draw_faces(V, N, T, F, FN, F, 1, 4, flip_normals);
+	if (edges)
+		draw_edges_of_faces(V, N, T, F, FN, F, 1, 4, flip_normals);
+	else
+		draw_faces(V, N, T, F, FN, F, 1, 4, flip_normals);
 }
 
 
 /// tesselate a octahedron
-void context::tesselate_unit_octahedron(bool flip_normals)
+void context::tesselate_unit_octahedron(bool flip_normals, bool edges)
 {
-	static double N[8*3] = {
+	static float N[8*3] = {
 		-1,-1,+1, +1,-1,+1, -1,+1,+1, +1,+1,+1,
 		-1,-1,-1, +1,-1,-1, -1,+1,-1, +1,+1,-1
 	};
-	static double V[6*3] = {
+	static float V[6*3] = {
 		-1,0,0, +1,0,0,
 		0,-1,0, 0,+1,0,
 		0,0,-1, 0,0,+1
@@ -996,17 +1279,20 @@ void context::tesselate_unit_octahedron(bool flip_normals)
 		3,4,0,
 		1,4,3
 	};
-	draw_faces(V, N, 0, F, FN, 0, 8, 3, flip_normals);
+	if (edges)
+		draw_edges_of_faces(V, N, 0, F, FN, 0, 8, 3, flip_normals);
+	else
+		draw_faces(V, N, 0, F, FN, 0, 8, 3, flip_normals);
 }
 
 /// render an icosahedron at a given center.
-void tesselate_unit_dodecahedron_or_icosahedron(context& c, bool dual, bool flip_normals)
+void tesselate_unit_dodecahedron_or_icosahedron(context& c, bool dual, bool flip_normals, bool edges)
 {
-	static const double h = 0.4472135956;
-	static const double r = 0.8944271912;
-	static const double s = M_PI/2.5;
-	static const double o = M_PI/5;
-	static const double V[13*3] = {
+	static const float h = 0.4472135956f;
+	static const float r = 0.8944271912f;
+	static const float s = float(M_PI/2.5);
+	static const float o = float(M_PI/5);
+	static const float V[13*3] = {
 		0,0,-1,
 		r*sin(1*s),r*cos(1*s),-h,
 		r*sin(2*s),r*cos(2*s),-h,
@@ -1040,7 +1326,7 @@ void tesselate_unit_dodecahedron_or_icosahedron(context& c, bool dual, bool flip
 		15,19,6,5,14,
 		15,16,17,18,19
 	};
-	static double N[20*3];
+	static float N[20*3];
 	static int FN[20*3];
 	static int DFN[12*5] = {
 		0,0,0,0,0,
@@ -1062,46 +1348,125 @@ void tesselate_unit_dodecahedron_or_icosahedron(context& c, bool dual, bool flip
 		compute_face_normals(V, N, F, FN, 20, 3);
 		computed = true;
 	}
-	if (!dual)
-		c.draw_faces(V, N, 0, F, FN, 0, 20, 3, flip_normals);
-	else
-		c.draw_faces(N, V, 0, DF, DFN, 0, 12, 5, flip_normals);
+	if (!dual) {
+		if (edges)
+			c.draw_edges_of_faces(V, N, 0, F, FN, 0, 20, 3, flip_normals);
+		else
+			c.draw_faces(V, N, 0, F, FN, 0, 20, 3, flip_normals);
+	}
+	else {
+		if (edges)
+			c.draw_edges_of_faces(N, V, 0, DF, DFN, 0, 12, 5, flip_normals);
+		else
+			c.draw_faces(N, V, 0, DF, DFN, 0, 12, 5, flip_normals);
+	}
 }
 
 /// tesselate a dodecahedron
-void context::tesselate_unit_dodecahedron(bool flip_normals)
+void context::tesselate_unit_dodecahedron(bool flip_normals, bool edges)
 {
-	tesselate_unit_dodecahedron_or_icosahedron(*this, true, flip_normals);
+	tesselate_unit_dodecahedron_or_icosahedron(*this, true, flip_normals, edges);
 }
 /// tesselate an icosahedron
-void context::tesselate_unit_icosahedron(bool flip_normals)
+void context::tesselate_unit_icosahedron(bool flip_normals, bool edges)
 {
-	tesselate_unit_dodecahedron_or_icosahedron(*this, false, flip_normals);
+	tesselate_unit_dodecahedron_or_icosahedron(*this, false, flip_normals, edges);
 }
 
-void context::push_V()
+/// set the current material 
+void context::set_material(const cgv::media::illum::surface_material& material)
 {
-	V_stack.push(get_V());
+	current_material_ptr = &material;
+	current_material_is_textured = false;
+
+	if (!auto_set_material_in_current_shader_program)
+		return;
+
+	if (shader_program_stack.empty())
+		return;
+
+	cgv::render::shader_program& prog = *static_cast<cgv::render::shader_program*>(shader_program_stack.top());
+	if (!prog.does_use_material())
+		return;
+
+	prog.set_material_uniform(*this, "material", material);
+}
+
+void context::push_modelview_matrix()
+{
+	modelview_matrix_stack.push(get_modelview_matrix());
+}
+
+/// multiply given matrix from right to current modelview matrix
+void context::mul_modelview_matrix(const dmat4& V)
+{
+	set_modelview_matrix(get_modelview_matrix()*V);
 }
 
 /// see push_V for an explanation
-void context::pop_V()
+void context::pop_modelview_matrix()
 {
-	set_V(V_stack.top());
-	V_stack.pop();
+	if (modelview_matrix_stack.size() == 1) {
+		std::cerr << "attempt to completely empty modelview stack avoided." << std::endl;
+		return;
+	}
+	modelview_matrix_stack.pop();
+	set_modelview_matrix(modelview_matrix_stack.top());
 }
 /// same as push_V but for the projection matrix - a different matrix stack is used.
-void context::push_P() 
+void context::push_projection_matrix() 
 {
-	P_stack.push(get_P());
+	projection_matrix_stack.push(get_projection_matrix());
 }
 /// see push_P for an explanation
-void context::pop_P()
+void context::pop_projection_matrix()
 {
-	set_P(P_stack.top());
-	P_stack.pop();
+	if (projection_matrix_stack.size() == 1) {
+		std::cerr << "attempt to completely empty projection stack avoided." << std::endl;
+		return;
+	}
+	projection_matrix_stack.pop();
+	set_projection_matrix(projection_matrix_stack.top());
+}
+/// multiply given matrix from right to current projection matrix
+void context::mul_projection_matrix(const dmat4& P)
+{
+	set_projection_matrix(get_projection_matrix()*P);
 }
 
+void context::set_modelview_matrix(const dmat4& V)
+{
+	// set new modelview matrix on matrix stack
+	modelview_matrix_stack.top() = V;
+
+	// update in current shader
+	if (!auto_set_view_in_current_shader_program)
+		return;
+
+	if (shader_program_stack.empty())
+		return;
+	cgv::render::shader_program& prog = *static_cast<cgv::render::shader_program*>(shader_program_stack.top());
+	if (!prog.does_use_view())
+		return;
+	set_current_view(prog, true, false);
+}
+
+void context::set_projection_matrix(const dmat4& P)
+{
+	// set new projection matrix on matrix stack
+	projection_matrix_stack.top() = P;
+
+	// update in current shader
+	if (!auto_set_view_in_current_shader_program)
+		return;
+
+	if (shader_program_stack.empty())
+		return;
+	cgv::render::shader_program& prog = *static_cast<cgv::render::shader_program*>(shader_program_stack.top());
+	if (!prog.does_use_view())
+		return;
+	set_current_view(prog, false, true);
+}
 
 /// set a new cursor position, which is only valid between calls of push_pixel_coords and pop_pixel_coords
 void context::set_cursor(int x, int y)
@@ -1115,17 +1480,19 @@ void context::set_cursor(int x, int y)
 	at_line_begin = true;
 }
 
-/// sets the current text ouput position
-void context::set_cursor(const cgv::math::vec<float>& pos, 
-		const std::string& text, TextAlignment ta,
-		int x_offset, int y_offset)
+/// transform point p into cursor coordinates and put x and y coordinates into the passed variables
+void context::put_cursor_coords(const vec_type& p, int& x, int& y) const
 {
-	vec_type p = pos;
-	set_cursor(p,text,ta,x_offset,y_offset);
+	dvec4 p4(0, 0, 0, 1);
+	for (unsigned int c = 0; c < p.size(); ++c)
+		p4(c) = p(c);
+	p4 = get_modelview_projection_device_matrix()*p4;
+	x = (int)(p4(0) / p4(3));
+	y = (int)(p4(1) / p4(3));
 }
 
 /// sets the current text ouput position
-void context::set_cursor(const cgv::math::vec<double>& pos, 
+void context::set_cursor(const vec_type& pos, 
 		const std::string& text, TextAlignment ta,
 		int x_offset, int y_offset)
 {
@@ -1158,61 +1525,54 @@ void context::get_cursor(int& x, int& y) const
 }
 
 /// return homogeneous 4x4 matrix, which transforms from world to device space
-context::mat_type context::get_DPV() const
+context::dmat4 context::get_modelview_projection_device_matrix() const
 {
-	return get_D()*get_P()*get_V();
+	return get_device_matrix()*get_projection_matrix()*get_modelview_matrix();
 }
 
 /// compute a the location in world space of a device x/y-location. For this the device point is extended with the device z-coordinate currently stored in depth buffer.
-context::vec_type context::get_point_W(int x_D, int y_D) const
+context::vec3 context::get_point_W(int x_D, int y_D) const
 {
 	return get_point_W(x_D, y_D, get_z_D(x_D,y_D));
 }
 
-context::vec_type context::get_point_W(int x_D, int y_D, const mat_type& DPV) const
+context::vec3 context::get_point_W(int x_D, int y_D, const dmat4& MVPD) const
 {
-	return get_point_W(x_D, y_D, get_z_D(x_D,y_D), DPV);
+	return get_point_W(x_D, y_D, get_z_D(x_D,y_D), MVPD);
 }
 /// compute a the location in world space of a device point.
-context::vec_type context::get_point_W(int x_D, int y_D, double z_D) const
+context::vec3 context::get_point_W(int x_D, int y_D, double z_D) const
 {
-	return get_point_W(x_D, y_D, z_D, get_DPV());
-}
-
-/// compute a the location in world space of a device point.
-context::vec_type context::get_point_W(const vec_type& p_D) const
-{
-	return get_point_W(p_D, get_DPV());
+	return get_point_W(x_D, y_D, z_D, get_modelview_projection_device_matrix());
 }
 
 /// compute a the location in world space of a device point.
-context::vec_type context::get_point_W(const vec_type& p_D, const mat_type& DPV) const
+context::vec3 context::get_point_W(const vec3& p_D) const
 {
-	vec_type x(4);
-	vec_type b(4);
-	b(0) = p_D(0);
-	b(1) = p_D(1);
-	b(2) = p_D(2);
-	b(3) = 1;
-	svd_solve(DPV,b,x);
-	vec_type p(3);
-	p(0) = x(0)/x(3);
-	p(1) = x(1)/x(3);
-	p(2) = x(2)/x(3);
-	return p;
+	return get_point_W(p_D, get_modelview_projection_device_matrix());
 }
 
-context::vec_type context::get_point_W(int x_D, int y_D, double z_D, const mat_type& MPD) const
+/// compute a the location in world space of a device point.
+context::vec3 context::get_point_W(const vec3& p_D, const dmat4& MVPD) const
 {
-	return get_point_W(vec_type(x_D+0.5f,y_D+0.5f,z_D),MPD);
+	dmat_type A(4, 4, &MVPD(0, 0));
+	dvec_type x;
+	dvec_type b(p_D(0),p_D(1),p_D(2),1.0);
+	svd_solve(A,b,x);
+	return vec3(float(x(0)/x(3)), float(x(1)/x(3)), float(x(2)/x(3)));
 }
 
-void context::tesselate_arrow(double length, double aspect, double rel_tip_radius, double tip_aspect, int res)
+context::vec3 context::get_point_W(int x_D, int y_D, double z_D, const dmat4& MVPD) const
+{
+	return get_point_W(vec3(x_D+0.5f,y_D+0.5f,(float)z_D),MVPD);
+}
+
+void context::tesselate_arrow(double length, double aspect, double rel_tip_radius, double tip_aspect, int res, bool edges)
 {
 	std::cout << "tesselate_arrow not implemented in cgv::render::context" << std::endl;
 }
 
-void context::tesselate_arrow(const cgv::math::fvec<double, 3>& start, const cgv::math::fvec<double, 3>& end, double aspect, double rel_tip_radius, double tip_aspect, int res)
+void context::tesselate_arrow(const cgv::math::fvec<double, 3>& start, const cgv::math::fvec<double, 3>& end, double aspect, double rel_tip_radius, double tip_aspect, int res, bool edges)
 {
 	std::cout << "tesselate_arrow not implemented in cgv::render::context" << std::endl;
 }
@@ -1272,10 +1632,192 @@ shader_program_base::shader_program_base()
 	geometry_shader_input_type = PT_POINTS;
 	geometry_shader_output_type = PT_POINTS;
 	geometry_shader_output_count = 1;
+
+	auto_detect_uniforms = true;
+	auto_detect_vertex_attributes = true;
+
+	uses_view = false;
+	uses_material = false;
+	uses_lights = false;
+
+	position_index = -1;
+	normal_index = -1;
+	color_index = -1;
+	texcoord_index = -1;
+}
+
+// configure program
+void shader_program_base::specify_standard_uniforms(bool view, bool material, bool lights)
+{
+	auto_detect_uniforms = false;
+	uses_view = view;
+	uses_material = material;
+	uses_lights = lights;
+}
+
+void shader_program_base::specify_standard_vertex_attribute_names(context& ctx, bool color, bool normal, bool texcoord)
+{
+	auto_detect_vertex_attributes = false;
+	position_index = ctx.get_attribute_location(*this, "position");
+	color_index = color ? ctx.get_attribute_location(*this, "color") : -1;
+	normal_index = normal ? ctx.get_attribute_location(*this, "normal") : -1;
+	texcoord_index = texcoord ? ctx.get_attribute_location(*this, "texcoord") : -1;
+}
+
+void shader_program_base::specify_vertex_attribute_names(context& ctx, const std::string& position, const std::string& color, const std::string& normal, const std::string& texcoord)
+{
+	auto_detect_vertex_attributes = false;
+	position_index = position.empty() ? -1 : ctx.get_attribute_location(*this, position);
+	color_index = color.empty() ? -1 : ctx.get_attribute_location(*this, color);
+	normal_index = normal.empty() ? -1 : ctx.get_attribute_location(*this, normal);
+	texcoord_index = texcoord.empty() ? -1 : ctx.get_attribute_location(*this, texcoord);
+}
+
+bool context::shader_program_enable(shader_program_base& spb)
+{
+	if (spb.is_enabled) {
+		if (shader_program_stack.top() == &spb) {
+			error("context::shader_program_enable() called with program that is currently active", &spb);
+			return false;
+		}
+		error("context::shader_program_enable() called with program that is recursively reactivated", &spb);
+		return false;
+	}
+	shader_program_stack.push(&spb);
+	spb.is_enabled = true;
+
+	if (spb.auto_detect_vertex_attributes) {
+		spb.position_index = get_attribute_location(spb, "position");
+		spb.color_index = get_attribute_location(spb, "color");
+		spb.normal_index = get_attribute_location(spb, "normal");
+		spb.texcoord_index = get_attribute_location(spb, "texcoord");
+		spb.auto_detect_vertex_attributes = false;
+	}
+	if (spb.auto_detect_uniforms) {
+		spb.uses_lights = get_uniform_location(spb, "nr_light_sources") != -1;
+		spb.uses_material = get_uniform_location(spb, "material.brdf_type") != -1;
+		spb.uses_view = get_uniform_location(spb, "modelview_matrix") != -1;
+		spb.auto_detect_uniforms = false;
+	}
+	return true;
+}
+
+bool context::shader_program_disable(shader_program_base& spb)
+{
+	if (shader_program_stack.empty()) {
+		error("context::shader_program_disable() called with empty stack", &spb);
+		return false;
+	}
+	if (!spb.is_enabled) {
+		error("context::shader_program_disable() called with disabled program", &spb);
+		return false;
+	}
+	if (shader_program_stack.top() != &spb) {
+		error("context::shader_program_disable() called with program that was not on top of shader program stack", &spb);
+		return false;
+	}
+	shader_program_stack.pop();
+	spb.is_enabled = false;
+	return true;
+}
+
+bool context::shader_program_destruct(shader_program_base& spb) const
+{
+	if (spb.is_enabled) {
+		error("context::shader_program_destruct() on shader program that was still enabled", &spb);
+/*		if (shader_program_stack.top() == &spb)
+			shader_program_disable(spb);
+		else {
+			error("context::shader_program_destruct() on shader program that was still enabled", &spb);
+			// remove destructed program from stack
+			std::vector<shader_program_base*> tmp;
+			while (!shader_program_stack.empty()) {
+				shader_program_base* t = shader_program_stack.top();
+				shader_program_stack.pop();
+				if (t == &spb)
+					break;
+				tmp.push_back(t);
+			}
+			while (!tmp.empty()) {
+				shader_program_stack.push(tmp.back());
+				tmp.pop_back();
+			}
+		}*/
+		return false;
+	}
+	return true;
 }
 
 attribute_array_binding_base::attribute_array_binding_base()
 {
+	is_enabled = false;
+}
+
+
+bool context::attribute_array_binding_destruct(attribute_array_binding_base& aab) const
+{
+	if (aab.is_enabled) {
+		error("context::attribute_array_binding_destruct() on array binding that was still enabled", &aab);
+		/*
+		if (attribute_array_binding_stack.top() == &aab)
+			attribute_array_binding_disable(aab);
+		else {
+			// remove destructed binding from stack
+			std::vector<attribute_array_binding_base*> tmp;
+			while (!attribute_array_binding_stack.empty()) {
+				attribute_array_binding_base* t = attribute_array_binding_stack.top();
+				attribute_array_binding_stack.pop();
+				if (t == &aab)
+					break;
+				tmp.push_back(t);
+			}
+			while (!tmp.empty()) {
+				attribute_array_binding_stack.push(tmp.back());
+				tmp.pop_back();
+			}
+		}
+		*/
+		return false;
+	}
+	return true;
+}
+
+bool context::attribute_array_binding_enable(attribute_array_binding_base& aab)
+{
+	if (!aab.handle) {
+		error("context::attribute_array_binding_enable() called in not created attribute array binding.", &aab);
+		return false;
+	}
+	if (aab.is_enabled) {
+		if (attribute_array_binding_stack.top() == &aab) {
+			error("context::attribute_array_binding_enable() called with array binding that is currently active", &aab);
+			return false;
+		}
+		error("context::attribute_array_binding_enable() called with array binding that is recursively reactivated", &aab);
+		return false;
+	}
+	attribute_array_binding_stack.push(&aab);
+	aab.is_enabled = true;
+	return true;
+}
+
+bool context::attribute_array_binding_disable(attribute_array_binding_base& aab)
+{
+	if (attribute_array_binding_stack.empty()) {
+		error("context::attribute_array_binding_disable() called with empty stack", &aab);
+		return false;
+	}
+	if (!aab.is_enabled) {
+		error("context::attribute_array_binding_disable() called with disabled array binding", &aab);
+		return false;
+	}
+	if (attribute_array_binding_stack.top() != &aab) {
+		error("context::attribute_array_binding_disable() called with array binding that was not on top of array binding stack", &aab);
+		return false;
+	}
+	attribute_array_binding_stack.pop();
+	aab.is_enabled = false;
+	return true;
 }
 
 vertex_buffer_base::vertex_buffer_base()
@@ -1288,9 +1830,130 @@ vertex_buffer_base::vertex_buffer_base()
 /// initialize members
 frame_buffer_base::frame_buffer_base()
 {
+	is_enabled = false;
 	width = -1;
 	height = -1;
 	std::fill(attached, attached+16,false);
+}
+
+void context::get_buffer_list(frame_buffer_base& fbb, std::vector<int>& buffers, int offset)
+{
+	if (fbb.enabled_color_attachments.size() == 0) {
+		for (int i = 0; i < 16; ++i)
+			if (fbb.attached[i])
+				buffers.push_back(i + offset);
+	}
+	else {
+		for (int i = 0; i < (int)fbb.enabled_color_attachments.size(); ++i)
+			if (fbb.attached[fbb.enabled_color_attachments[i]])
+				buffers.push_back(fbb.enabled_color_attachments[i]+offset);
+	}
+}
+
+bool context::frame_buffer_create(frame_buffer_base& fbb) const
+{
+	if (fbb.width == -1)
+		fbb.width = get_width();
+	if (fbb.height == -1)
+		fbb.height = get_height();
+	return true;
+}
+
+bool context::frame_buffer_attach(frame_buffer_base& fbb, const render_component& rb, bool is_depth, int i) const
+{
+	if (fbb.handle == 0) {
+		error("gl_context::frame_buffer_attach: attempt to attach to frame buffer that is not created", &fbb);
+		return false;
+	}
+	if (rb.handle == 0) {
+		error("gl_context::frame_buffer_attach: attempt to attach empty render buffer", &fbb);
+		return false;
+	}
+	if (!is_depth)
+		fbb.attached[i] = true;
+
+	return true;
+}
+
+bool context::frame_buffer_attach(frame_buffer_base& fbb, const texture_base& t, bool is_depth, int level, int i, int z_or_cube_side) const
+{
+	if (fbb.handle == 0) {
+		error("context::frame_buffer_attach: attempt to attach to frame buffer that is not created", &fbb);
+		return false;
+	}
+	if (t.handle == 0) {
+		error("context::frame_buffer_attach: attempt to attach texture that is not created", &fbb);
+		return false;
+	}
+	if (!is_depth)
+		fbb.attached[i] = true;
+	
+	return true;
+}
+
+bool context::frame_buffer_enable(frame_buffer_base& fbb)
+{
+	if (fbb.handle == 0) {
+		error("context::frame_buffer_enable: attempt to enable not created frame buffer", &fbb);
+		return false;
+	}
+	if (fbb.is_enabled) {
+		if (frame_buffer_stack.top() == &fbb) {
+			error("context::frame_buffer_enable() called with frame buffer that is currently active", &fbb);
+			return false;
+		}
+		error("context::frame_buffer_enable() called with frame buffer that is recursively reactivated", &fbb);
+		return false;
+	}
+	frame_buffer_stack.push(&fbb);
+	fbb.is_enabled = true;
+	return true;
+}
+
+bool context::frame_buffer_disable(frame_buffer_base& fbb)
+{
+	if (frame_buffer_stack.empty()) {
+		error("gl_context::frame_buffer_disable called with empty stack", &fbb);
+		return false;
+	}
+	if (frame_buffer_stack.top() != &fbb) {
+		error("gl_context::frame_buffer_disable called with different frame buffer enabled", &fbb);
+		return false;
+	}
+	frame_buffer_stack.pop();
+	return true;
+}
+
+bool context::frame_buffer_destruct(frame_buffer_base& fbb) const
+{
+	if (fbb.handle == 0) {
+		error("context::frame_buffer_destruct: attempt to destruct not created frame buffer", &fbb);
+		return false;
+	}
+	if (fbb.is_enabled) {
+		error("context::frame_buffer_destruct() on frame buffer that was still enabled", &fbb);
+/*
+		if (frame_buffer_stack.top() == &fbb)
+			frame_buffer_disable(fbb);
+		else {
+			// remove destructed program from stack
+			std::vector<frame_buffer_base*> tmp;
+			while (!frame_buffer_stack.empty()) {
+				frame_buffer_base* t = frame_buffer_stack.top();
+				frame_buffer_stack.pop();
+				if (t == &fbb)
+					break;
+				tmp.push_back(t);
+			}
+			while (!tmp.empty()) {
+				frame_buffer_stack.push(tmp.back());
+				tmp.pop_back();
+			}
+		}
+		*/
+		return false;
+	}
+	return true;
 }
 
 std::vector<context_creation_function_type>& ref_context_creation_functions()

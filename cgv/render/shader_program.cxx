@@ -13,7 +13,7 @@ namespace cgv {
 	namespace render {
 
 /// attach a list of files
-bool shader_program::attach_files(context& ctx, const std::vector<std::string>& file_names)
+bool shader_program::attach_files(const context& ctx, const std::vector<std::string>& file_names)
 {
 	bool no_error = true;
 	for (unsigned int i = 0; i < file_names.size(); ++i)
@@ -121,7 +121,7 @@ shader_program::shader_program(bool _show_code_errors)
 /// call destruct method
 shader_program::~shader_program()
 {
-	if (ctx_ptr)
+	if (ctx_ptr && ctx_ptr->make_current())
 		destruct(*ctx_ptr);
 	else
 		if (handle != 0)
@@ -129,7 +129,7 @@ shader_program::~shader_program()
 }
 
 /// create the shader program
-bool shader_program::create(context& ctx)
+bool shader_program::create(const context& ctx)
 {
 	state_out_of_date = true;
 	nr_attached_geometry_shaders = 0;
@@ -143,7 +143,7 @@ bool shader_program::create(context& ctx)
 }
 
 /// attach a compiled shader code instance that is managed outside of program
-bool shader_program::attach_code(context& ctx, const shader_code& code)
+bool shader_program::attach_code(const context& ctx, const shader_code& code)
 {
 	if (!handle) {
 		last_error = "attach_code to shader program that was not created";
@@ -164,7 +164,7 @@ bool shader_program::attach_code(context& ctx, const shader_code& code)
 }
 
 /// detach a shader code 
-bool shader_program::detach_code(context& ctx, const shader_code& code)
+bool shader_program::detach_code(const context& ctx, const shader_code& code)
 {
 	if (!handle) {
 		last_error = "detach_code from shader program that was not created";
@@ -182,7 +182,7 @@ bool shader_program::detach_code(context& ctx, const shader_code& code)
 
 
 /// attach a shader code given as string and managed the created shader code object
-bool shader_program::attach_code(context& ctx, const std::string& source, ShaderType st)
+bool shader_program::attach_code(const context& ctx, const std::string& source, ShaderType st)
 {
 	shader_code* code_ptr = new shader_code;
 	if (code_ptr->set_code(ctx,source,st) && code_ptr->compile(ctx)) {
@@ -196,7 +196,7 @@ bool shader_program::attach_code(context& ctx, const std::string& source, Shader
 
 
 /// read shader code from file, compile and attach to program
-bool shader_program::attach_file(context& ctx, const std::string& file_name, ShaderType st)
+bool shader_program::attach_file(const context& ctx, const std::string& file_name, ShaderType st)
 {
 	shader_code* code_ptr = new shader_code;
 	if (!code_ptr->read_and_compile(ctx,file_name,st,show_code_errors)) {
@@ -209,7 +209,7 @@ bool shader_program::attach_file(context& ctx, const std::string& file_name, Sha
 }
 
 /// read shader code from files with the given base name, compile and attach them
-bool shader_program::attach_files(context& ctx, const std::string& base_name)
+bool shader_program::attach_files(const context& ctx, const std::string& base_name)
 {
 	std::vector<std::string> file_names;
 	if (!collect_files(base_name,file_names))
@@ -217,7 +217,7 @@ bool shader_program::attach_files(context& ctx, const std::string& base_name)
 	return attach_files(ctx, file_names);
 }
 /// collect shader code files from directory, compile and attach.
-bool shader_program::attach_dir(context& ctx, const std::string& dir_name, bool recursive)
+bool shader_program::attach_dir(const context& ctx, const std::string& dir_name, bool recursive)
 {
 	std::vector<std::string> file_names;
 	if (!collect_dir(dir_name,recursive,file_names))
@@ -226,7 +226,7 @@ bool shader_program::attach_dir(context& ctx, const std::string& dir_name, bool 
 }
 
 /// collect shader code files declared in shader program file, compile and attach them
-bool shader_program::attach_program(context& ctx, const std::string& file_name, bool show_error)
+bool shader_program::attach_program(const context& ctx, const std::string& file_name, bool show_error)
 {
 	std::string fn = shader_code::find_file(file_name);
 	if (fn.empty()) {
@@ -332,20 +332,20 @@ bool shader_program::attach_program(context& ctx, const std::string& file_name, 
 }
 
 /// successively calls create, attach_files and link.
-bool shader_program::build_files(context& ctx, const std::string& base_name, bool show_error)
+bool shader_program::build_files(const context& ctx, const std::string& base_name, bool show_error)
 {
 	return (is_created() || create(ctx)) && 
 		    attach_files(ctx, base_name) && link(ctx, show_error);
 }
 /// successively calls create, attach_dir and link.
-bool shader_program::build_dir(context& ctx, const std::string& dir_name, bool recursive, bool show_error)
+bool shader_program::build_dir(const context& ctx, const std::string& dir_name, bool recursive, bool show_error)
 {
 	return (is_created() || create(ctx)) && 
 			 attach_dir(ctx, dir_name, recursive) && link(ctx, show_error);
 }
 
 /// successively calls create, attach_program and link.
-bool shader_program::build_program(context& ctx, const std::string& file_name, bool show_error)
+bool shader_program::build_program(const context& ctx, const std::string& file_name, bool show_error)
 {
 	if (!(is_created() || create(ctx)))
 		return false;
@@ -368,13 +368,13 @@ bool shader_program::build_program(context& ctx, const std::string& file_name, b
 }
 
 /// return the maximum number of output vertices of a geometry shader
-unsigned int shader_program::get_max_nr_geometry_shader_output_vertices(context& ctx)
+unsigned int shader_program::get_max_nr_geometry_shader_output_vertices(const context& ctx)
 {
 	return ctx.query_integer_constant(MAX_NR_GEOMETRY_SHADER_OUTPUT_VERTICES);
 }
 
 /// ensure that the state has been set in the context
-void shader_program::update_state(context& ctx)
+void shader_program::update_state(const context& ctx)
 {
 	if (state_out_of_date) {
 		if (nr_attached_geometry_shaders > 0) {
@@ -386,7 +386,7 @@ void shader_program::update_state(context& ctx)
 	}
 }
 ///link shaders to an executable program
-bool shader_program::link(context& ctx, bool show_error)
+bool shader_program::link(const context& ctx, bool show_error)
 {
 	update_state(ctx);
 	if (ctx.shader_program_link(*this)) {
@@ -450,19 +450,61 @@ bool shader_program::disable(context& ctx)
 }
 
 /// query location index of an uniform
-int shader_program::get_uniform_location(context& ctx, const std::string& name) const
+int shader_program::get_uniform_location(const context& ctx, const std::string& name) const
 {
 	return ctx.get_uniform_location(*this, name);
 }
+/// set a uniform of type material
+bool shader_program::set_material_uniform(const context& ctx, const std::string& name, const cgv::media::illum::surface_material& material, bool generate_error)
+{
+	return
+		set_uniform(ctx, name + ".brdf_type", (int)material.get_brdf_type(), generate_error) &&
+		set_uniform(ctx, name + ".diffuse_reflectance", material.get_diffuse_reflectance(), generate_error) &&
+		set_uniform(ctx, name + ".roughness", material.get_roughness(), generate_error) &&
+		set_uniform(ctx, name + ".ambient_occlusion", material.get_ambient_occlusion(), generate_error) &&
+		set_uniform(ctx, name + ".emission", material.get_emission(), generate_error) &&
+		set_uniform(ctx, name + ".specular_reflectance", material.get_specular_reflectance(), generate_error) &&
+		set_uniform(ctx, name + ".roughness_anisotropy", material.get_roughness_anisotropy(), generate_error) &&
+		set_uniform(ctx, name + ".roughness_orientation", material.get_roughness_orientation(), generate_error) &&
+		set_uniform(ctx, name + ".propagation_slow_down", cgv::math::fvec<float, 2>(material.get_propagation_slow_down().real(), material.get_propagation_slow_down().imag()), generate_error) &&
+		set_uniform(ctx, name + ".transparency", material.get_transparency(), generate_error) &&
+		set_uniform(ctx, name + ".metalness", material.get_metalness(), generate_error);
+}
+
+/// set a uniform of type light source
+bool shader_program::set_light_uniform(const context& ctx, const std::string& name, const cgv::media::illum::light_source& L, bool generate_error)
+{
+	if (!set_uniform(ctx, name + ".light_source_type", static_cast<int>(L.get_type()), generate_error))
+		return false;
+	if (!set_uniform(ctx, name + ".position", L.get_position(), generate_error))
+		return false;
+	if (!set_uniform(ctx, name + ".emission", L.get_emission(), generate_error))
+		return false;
+	if (!set_uniform(ctx, name + ".ambient_scale", L.get_ambient_scale(), generate_error))
+		return false;
+	if (!set_uniform(ctx, name + ".spot_direction", L.get_spot_direction(), generate_error))
+		return false;
+	if (!set_uniform(ctx, name + ".spot_exponent", L.get_spot_exponent(), generate_error))
+		return false;
+	if (!set_uniform(ctx, name + ".spot_cos_cutoff", cos(0.01745329252f*L.get_spot_cutoff()), generate_error))
+		return false;
+	if (!set_uniform(ctx, name + ".constant_attenuation", L.get_constant_attenuation(), generate_error))
+		return false;
+	if (!set_uniform(ctx, name + ".linear_attenuation", L.get_linear_attenuation(), generate_error))
+		return false;
+	if (!set_uniform(ctx, name + ".quadratic_attenuation", L.get_quadratic_attenuation(), generate_error))
+		return false;
+	return true;
+}
 
 /// query location index of an attribute
-int shader_program::get_attribute_location(context& ctx, const std::string& name) const
+int shader_program::get_attribute_location(const context& ctx, const std::string& name) const
 {
 	return ctx.get_attribute_location(*this, name);
 }
 
 /// destruct shader program
-void shader_program::destruct(context& ctx)
+void shader_program::destruct(const context& ctx)
 {
 	while (managed_codes.size() > 0) {
 		delete managed_codes.back();

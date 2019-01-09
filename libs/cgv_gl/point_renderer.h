@@ -1,6 +1,6 @@
 #pragma once
 
-#include "surface_renderer.h"
+#include "group_renderer.h"
 
 #include "gl/lib_begin.h"
 
@@ -8,7 +8,7 @@ namespace cgv {
 	namespace render {
 		
 		/** style of a point */
-		struct CGV_API point_render_style : public surface_render_style
+		struct CGV_API point_render_style : public group_render_style
 		{
 			/*@name point rendering attributes*/
 			//@{
@@ -23,30 +23,23 @@ namespace cgv {
 			/*@name global point rendering options*/
 			//@{
 			/// set to 1 in constructor 
-			float outline_width_from_pixel;
+			float blend_width_in_pixel;
 			/// set to 0 in constructor
-			float percentual_outline_width;
-			///
-			float percentual_halo;
-			///
-			cgv::media::illum::phong_material::color_type halo_color;
+			float halo_width_in_pixel;
+			/// set to 0 in constructor
+			float percentual_halo_width;
+			/// color of halo with opacity channel
+			cgv::media::color<float, cgv::media::RGB, cgv::media::OPACITY> halo_color;
+			/// strength in [0,1] of halo color with respect to color of primitive
+			float halo_color_strength;
 			/// set to true in constructor
-			bool smooth_points;
-			/// set to true in constructor
-			bool orient_splats;
-			/// set to false in constructor
 			bool blend_points;
-			
-			//! whether to use the framework shader, set to true in constructor
-			/*! If framework shader is not used, standard OpenGL 1.0 is used and \c use_point_size_array, 
-			    \c backface_culling, \c outline_width_from_pixel, \c percentual_outline_width, \c orient_splats are ignored */
-			bool use_point_shader;
 			/// construct with default values
 			point_render_style();
 		};
 
 		/// renderer that supports point splatting
-		class CGV_API point_renderer : public surface_renderer
+		class CGV_API point_renderer : public group_renderer
 		{
 		protected:
 			bool has_point_sizes;
@@ -60,30 +53,30 @@ namespace cgv {
 			///
 			point_renderer();
 			///
-			bool init(cgv::render::context& ctx);
+			bool init(context& ctx);
 			///
 			void set_reference_point_size(float _reference_point_size);
 			///
 			void set_y_view_angle(float y_view_angle);
 			///
 			template <typename T = float>
-			void set_point_size_attribute(cgv::render::context& ctx, const std::vector<T>& point_sizes) { has_point_sizes = true; set_attribute_array(ctx, ref_prog().get_attribute_location(ctx, "point_size"), point_sizes); }
+			void set_point_size_array(const context& ctx, const std::vector<T>& point_sizes) { has_point_sizes = true; set_attribute_array(ctx, ref_prog().get_attribute_location(ctx, "point_size"), point_sizes); }
 			///
 			template <typename T = unsigned, typename C = cgv::media::color<float,cgv::media::RGB,cgv::media::OPACITY> >
-			void set_indexed_color_attribute(cgv::render::context& ctx, const std::vector<T>& color_indices, const std::vector<C>& palette) {
+			void set_indexed_color_array(const context& ctx, const std::vector<T>& color_indices, const std::vector<C>& palette) {
 				has_indexed_colors = true; 
 				set_attribute_array(ctx, ref_prog().get_attribute_location(ctx, "color_index"), color_indices); 
 				ref_prog().set_uniform_array(ctx, "palette", palette); 
 			}
 			///
 			template <typename T = float>
-			void set_group_point_sizes(cgv::render::context& ctx, const std::vector<T>& group_point_sizes) { has_group_point_sizes = true; ref_prog().set_uniform_array(ctx, "group_point_sizes", group_point_sizes); }
+			void set_group_point_sizes(const context& ctx, const std::vector<T>& group_point_sizes) { has_group_point_sizes = true; ref_prog().set_uniform_array(ctx, "group_point_sizes", group_point_sizes); }
 			///
-			bool validate_attributes(context& ctx) const;
+			bool validate_attributes(const context& ctx) const;
 			///
-			bool enable(cgv::render::context& ctx);
+			bool enable(context& ctx);
 			///
-			bool disable(cgv::render::context& ctx);
+			bool disable(context& ctx);
 		};
 	}
 }

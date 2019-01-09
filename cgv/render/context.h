@@ -1,9 +1,11 @@
 #pragma once
 
 #define _USE_MATH_DEFINES
+#include <cgv/defines/deprecated.h>
 #include <cgv/data/data_view.h>
 #include <cgv/media/font/font.h>
 #include <cgv/media/axis_aligned_box.h>
+#include <cgv/media/illum/textured_surface_material.h>
 #include <cgv/media/illum/phong_material.hh>
 #include <cgv/media/illum/light_source.hh>
 #include <cgv/signal/callback_stream.h>
@@ -100,7 +102,7 @@ enum RenderPassFlags {
 	RPF_DRAWABLES_AFTER_FINISH = 1 << 19, // whether to call after finish method of drawables
 	RPF_HANDLE_SCREEN_SHOT = 1 << 20,    // whether to perform a screen shot if this was scheduled
 	RPF_ALL = (1 << 21) - 1,            // all flags set, defines default render pass
-	RPF_DEFAULT = RPF_ALL & ~ (RPF_SET_LIGHTS|RPF_CLEAR_ACCUM|RPF_SET_CLEAR_ACCUM|RPF_CLEAR_STENCIL|RPF_SET_CLEAR_STENCIL)  // all flags set, defines default render pass
+	RPF_DEFAULT = RPF_ALL & ~ (RPF_CLEAR_ACCUM|RPF_SET_CLEAR_ACCUM|RPF_CLEAR_STENCIL|RPF_SET_CLEAR_STENCIL)  // all flags set, defines default render pass
 };
 
 /// different sides of a material
@@ -240,7 +242,7 @@ public:
 	void* internal_format;
 	void* user_data;
 	/// keep pointer to my context
-	context* ctx_ptr;
+	const context* ctx_ptr;
 	/// a string that contains the last error
 	mutable std::string last_error;
 	/// initialize members
@@ -282,17 +284,49 @@ class CGV_API shader_program_base : public render_component
 protected:
 	bool is_enabled;
 	friend class context;
+
+	bool auto_detect_uniforms;
+	bool auto_detect_vertex_attributes;
+
+	// uniforms
+	bool uses_view;
+	bool uses_material;
+	bool uses_lights;
+	
+	// vertex attribute names
+	int position_index;
+	int color_index;
+	int normal_index;
+	int texcoord_index;
+
 public:
 	PrimitiveType geometry_shader_input_type;
 	PrimitiveType geometry_shader_output_type;
 	int geometry_shader_output_count;
 	/// initializes members
 	shader_program_base();
+	// configure program
+	void specify_standard_uniforms(bool view, bool material, bool lights);
+	void specify_standard_vertex_attribute_names(context& ctx, bool color = true, bool normal = true, bool texcoord = true);
+	void specify_vertex_attribute_names(context& ctx, const std::string& position, const std::string& color = "", const std::string& normal = "", const std::string& texcoord = "");
+	// uniforms
+	bool does_use_view() const { return uses_view; }
+	bool does_use_material() const { return uses_material; }
+	bool does_use_lights() const { return uses_lights; }
+
+	// vertex attribute names
+	int get_position_index() const { return position_index; }
+	int get_color_index() const { return color_index; }
+	int get_normal_index() const { return normal_index; }
+	int get_texcoord_index() const { return texcoord_index; }
 };
 
 /// base class for attribute_array_bindings
 class CGV_API attribute_array_binding_base : public render_component
 {
+protected:
+	bool is_enabled;
+	friend class context;
 public:
 	/// nothing to be done heremembers
 	attribute_array_binding_base();
@@ -329,11 +363,13 @@ public:
 /// base interface for framebuffer
 class CGV_API frame_buffer_base : public render_component
 {
-public:
-	int width, height;
+protected:
+	friend class context;
+	bool is_enabled;
 	std::vector<int> enabled_color_attachments;
 	bool attached[16];
-	int old_vp[4];
+	int width, height;
+public:
 	/// initialize members
 	frame_buffer_base();
 };
@@ -458,7 +494,105 @@ extern CGV_API render_config_ptr get_render_config();
 /** base class for all drawables, which is independent of the used rendering API. */
 class CGV_API context 
 {
+public:
+	friend class CGV_API attribute_array_manager;
+	friend class CGV_API render_component;
+	friend class CGV_API texture;
+	friend class CGV_API render_buffer;
+	friend class CGV_API frame_buffer;
+	friend class CGV_API shader_code;
+	friend class CGV_API shader_program;
+	friend class CGV_API attribute_array_binding;
+	friend class CGV_API vertex_buffer;
+	/// dimension independent type of vectors
+	typedef cgv::math::vec<float> vec_type;
+	/// dimension independent type of matrices
+	typedef cgv::math::mat<float> mat_type;
+	/// declare type of 2x2 matrices
+	typedef cgv::math::fmat<float, 2, 2> mat2;
+	/// declare type of 3x3 matrices
+	typedef cgv::math::fmat<float, 3, 3> mat3;
+	/// declare type of 4x4 matrices
+	typedef cgv::math::fmat<float, 4, 4> mat4;
+	/// declare type of 2d vectors
+	typedef cgv::math::fvec<float, 2> vec2;
+	/// declare type of 3d vectors
+	typedef cgv::math::fvec<float, 3> vec3;
+	/// declare type of homogeneous vectors
+	typedef cgv::math::fvec<float, 4> vec4;
+	/// declare rgb color type
+	typedef cgv::media::color<float, cgv::media::RGB> rgba_type;
+	/// declare rgba color type
+	typedef cgv::media::color<float, cgv::media::RGB, cgv::media::OPACITY> rgb_type;
+
+	/// dimension independent type of vectors
+	typedef cgv::math::vec<double> dvec_type;
+	/// dimension independent type of matrices
+	typedef cgv::math::mat<double> dmat_type;
+	/// declare type of 2x2 matrices
+	typedef cgv::math::fmat<double, 2, 2> dmat2;
+	/// declare type of 3x3 matrices
+	typedef cgv::math::fmat<double, 3, 3> dmat3;
+	/// declare type of 4x4 matrices
+	typedef cgv::math::fmat<double, 4, 4> dmat4;
+	/// declare type of 2d vectors
+	typedef cgv::math::fvec<double, 2> dvec2;
+	/// declare type of 3d vectors
+	typedef cgv::math::fvec<double, 3> dvec3;
+	/// declare type of homogeneous vectors
+	typedef cgv::math::fvec<double, 4> dvec4;
 protected:
+	friend class shader_program_base;
+	/// whether to automatically set viewing matrixes in current shader program, defaults to true 
+	bool auto_set_view_in_current_shader_program;
+	/// whether to automatically set lights in current shader program, defaults to true 
+	bool auto_set_lights_in_current_shader_program;
+	/// whether to automatically set material in current shader program, defaults to true 
+	bool auto_set_material_in_current_shader_program;
+	/// whether to support view and lighting management of compatibility mode, defaults to true
+	bool support_compatibility_mode;
+	/// whether to do all drawing in compatibility mode, only possible if support_compatibility_mode is true, , defaults to false
+	bool draw_in_compatibility_mode;
+
+	/// keep two matrix stacks for model view and projection matrices
+	std::stack<dmat4> modelview_matrix_stack, projection_matrix_stack;
+	/// stack of currently enabled frame buffers
+	std::stack<frame_buffer_base*> frame_buffer_stack;
+	/// stack of currently enabled shader programs
+	std::stack<shader_program_base*> shader_program_stack;
+	/// check for current program, prepare it for rendering and return pointer to it
+	shader_program_base* get_current_program() const;
+	/// stack of currently enabled attribute array binding
+	std::stack<attribute_array_binding_base*> attribute_array_binding_stack;
+	/// status information of light sources
+	struct light_source_status
+	{
+		bool enabled;
+		vec3 eye_position;
+		int light_source_index;
+	};
+	/// keep track of enabled light source handles
+	std::vector<void*> enabled_light_source_handles;
+	/// counter to construct light source handles
+	size_t light_source_handle;
+	/// map handle to light source and light source status information
+	std::map<void*, std::pair<cgv::media::illum::light_source, light_source_status> > light_sources;
+	/// helper function to place lights 
+	vec3 get_light_eye_position(const cgv::media::illum::light_source& light, bool place_now) const;
+	/// helper function to send light update events
+	virtual void on_lights_changed();
+	/// number of default light sources
+	static const unsigned nr_default_light_sources = 2;
+	/// default light sources
+	cgv::media::illum::light_source default_light_source[nr_default_light_sources];
+	/// handles of default light sources
+	void* default_light_source_handles[nr_default_light_sources];
+	/// store a default material
+	cgv::media::illum::surface_material default_material;
+	/// store pointer to current material
+	const cgv::media::illum::surface_material* current_material_ptr;
+	/// store flag to tell whether current material is textured
+	bool current_material_is_textured;
 	/// information necessary for a rendering pass
 	struct render_info
 	{
@@ -506,78 +640,62 @@ protected:
 	virtual void put_id(void* handle, void* ptr) const = 0;
 
 	virtual cgv::data::component_format texture_find_best_format(const cgv::data::component_format& cf, render_component& rc, const std::vector<cgv::data::data_view>* palettes = 0) const = 0;
-	virtual bool texture_create				(texture_base& tb, cgv::data::data_format& df) = 0;
-	virtual bool texture_create				(texture_base& tb, cgv::data::data_format& target_format, const cgv::data::const_data_view& data, int level, int cube_side = -1, const std::vector<cgv::data::data_view>* palettes = 0) = 0;
-	virtual bool texture_create_from_buffer (texture_base& tb, cgv::data::data_format& df, int x, int y, int level) = 0;
-	virtual bool texture_replace			(texture_base& tb, int x, int y, int z_or_cube_side, const cgv::data::const_data_view& data, int level, const std::vector<cgv::data::data_view>* palettes = 0) = 0;
-	virtual bool texture_replace_from_buffer(texture_base& tb, int x, int y, int z_or_cube_side, int x_buffer, int y_buffer, unsigned int width, unsigned int height, int level) = 0;
-	virtual bool texture_generate_mipmaps	(texture_base& tb, unsigned int dim) = 0;
-	virtual bool texture_destruct           (texture_base& tb) = 0;
-	virtual bool texture_set_state			(const texture_base& tb) = 0;
-	virtual bool texture_enable				(texture_base& tb, int tex_unit, unsigned int nr_dims) = 0;
-	virtual bool texture_disable			(texture_base& tb, int tex_unit, unsigned int nr_dims) = 0;
+	virtual bool texture_create				(texture_base& tb, cgv::data::data_format& df) const = 0;
+	virtual bool texture_create				(texture_base& tb, cgv::data::data_format& target_format, const cgv::data::const_data_view& data, int level, int cube_side = -1, const std::vector<cgv::data::data_view>* palettes = 0) const = 0;
+	virtual bool texture_create_from_buffer (texture_base& tb, cgv::data::data_format& df, int x, int y, int level) const = 0;
+	virtual bool texture_replace			(texture_base& tb, int x, int y, int z_or_cube_side, const cgv::data::const_data_view& data, int level, const std::vector<cgv::data::data_view>* palettes = 0) const = 0;
+	virtual bool texture_replace_from_buffer(texture_base& tb, int x, int y, int z_or_cube_side, int x_buffer, int y_buffer, unsigned int width, unsigned int height, int level) const = 0;
+	virtual bool texture_generate_mipmaps	(texture_base& tb, unsigned int dim) const = 0;
+	virtual bool texture_destruct           (texture_base& tb) const = 0;
+	virtual bool texture_set_state			(const texture_base& tb) const = 0;
+	virtual bool texture_enable				(texture_base& tb, int tex_unit, unsigned int nr_dims) const = 0;
+	virtual bool texture_disable			(texture_base& tb, int tex_unit, unsigned int nr_dims) const = 0;
 
-	virtual bool render_buffer_create       (render_component& rc, cgv::data::component_format& cf, int& _width, int& _height) = 0;
-	virtual bool render_buffer_destruct     (render_component& rc) = 0;
+	virtual bool render_buffer_create       (render_component& rc, cgv::data::component_format& cf, int& _width, int& _height) const = 0;
+	virtual bool render_buffer_destruct     (render_component& rc) const = 0;
 
-	virtual bool frame_buffer_create		   (frame_buffer_base& fbb) = 0;
-	virtual bool frame_buffer_attach		   (frame_buffer_base& fbb, const render_component& rb, bool is_depth, int i) = 0;
-	virtual bool frame_buffer_attach		   (frame_buffer_base& fbb, const texture_base& t, bool is_depth, int level, int i, int z) = 0;
+	static void get_buffer_list(frame_buffer_base& fbb, std::vector<int>& buffers, int offset = 0);
+	virtual bool frame_buffer_create		   (frame_buffer_base& fbb) const;
+	virtual bool frame_buffer_attach		   (frame_buffer_base& fbb, const render_component& rb, bool is_depth, int i) const;
+	virtual bool frame_buffer_attach		   (frame_buffer_base& fbb, const texture_base& t, bool is_depth, int level, int i, int z) const;
 	virtual bool frame_buffer_is_complete(const frame_buffer_base& fbb) const = 0;
-	virtual bool frame_buffer_enable		   (frame_buffer_base& fbb) = 0;
-	virtual bool frame_buffer_disable		   (frame_buffer_base& fbb) = 0;
-	virtual bool frame_buffer_destruct		   (frame_buffer_base& fbb) = 0;
-	virtual int frame_buffer_get_max_nr_color_attachments() = 0;
-	virtual int frame_buffer_get_max_nr_draw_buffers() = 0;
+	virtual bool frame_buffer_enable		   (frame_buffer_base& fbb);
+	virtual bool frame_buffer_disable		   (frame_buffer_base& fbb);
+	virtual bool frame_buffer_destruct		   (frame_buffer_base& fbb) const;
+	virtual int frame_buffer_get_max_nr_color_attachments() const = 0;
+	virtual int frame_buffer_get_max_nr_draw_buffers() const = 0;
 
-	virtual bool shader_code_create  (render_component& sc, ShaderType st, const std::string& source) = 0;
-	virtual bool shader_code_compile (render_component& sc) = 0;
-	virtual void shader_code_destruct(render_component& sc) = 0;
+	virtual bool shader_code_create  (render_component& sc, ShaderType st, const std::string& source) const = 0;
+	virtual bool shader_code_compile (render_component& sc) const = 0;
+	virtual void shader_code_destruct(render_component& sc) const = 0;
 
-	virtual bool shader_program_create   (shader_program_base& spb) = 0;
-	virtual void shader_program_destruct(shader_program_base& spb) = 0;
-	virtual void shader_program_attach(shader_program_base& spb, const render_component& sc) = 0;
-	virtual void shader_program_detach(shader_program_base& spb, const render_component& sc) = 0;
-	virtual bool shader_program_link(shader_program_base& spb) = 0;
-	virtual bool shader_program_set_state(shader_program_base& spb) = 0;
-	virtual bool shader_program_enable   (shader_program_base& spb) = 0;
-	virtual bool shader_program_disable(shader_program_base& spb) = 0;
+	virtual bool shader_program_create   (shader_program_base& spb) const = 0;
+	virtual void shader_program_attach(shader_program_base& spb, const render_component& sc) const = 0;
+	virtual void shader_program_detach(shader_program_base& spb, const render_component& sc) const = 0;
+	virtual bool shader_program_link(shader_program_base& spb) const = 0;
+	virtual bool shader_program_set_state(shader_program_base& spb) const = 0;
+	virtual bool shader_program_enable   (shader_program_base& spb);
+	virtual bool shader_program_disable(shader_program_base& spb);
+	virtual bool shader_program_destruct(shader_program_base& spb) const;
 	virtual int  get_uniform_location(const shader_program_base& spb, const std::string& name) const = 0;
-	virtual bool set_uniform_void(shader_program_base& spb, int loc, type_descriptor value_type, const void* value_ptr) = 0;
-	virtual bool set_uniform_array_void(shader_program_base& spb, int loc, type_descriptor value_type, const void* value_ptr, size_t nr_elements) = 0;
+	virtual bool set_uniform_void(shader_program_base& spb, int loc, type_descriptor value_type, const void* value_ptr) const = 0;
+	virtual bool set_uniform_array_void(shader_program_base& spb, int loc, type_descriptor value_type, const void* value_ptr, size_t nr_elements) const = 0;
 	virtual int  get_attribute_location(const shader_program_base& spb, const std::string& name) const = 0;
-	virtual bool set_attribute_void(shader_program_base& spb, int loc, type_descriptor value_type, const void* value_ptr) = 0;
+	virtual bool set_attribute_void(shader_program_base& spb, int loc, type_descriptor value_type, const void* value_ptr) const = 0;
 
-	virtual bool attribute_array_binding_create  (attribute_array_binding_base& aab) = 0;
-	virtual bool attribute_array_binding_destruct(attribute_array_binding_base& aab) = 0;
-	virtual bool attribute_array_binding_enable  (attribute_array_binding_base& aab) = 0;
-	virtual bool attribute_array_binding_disable (attribute_array_binding_base& aab) = 0;
-	virtual bool set_attribute_array_void(attribute_array_binding_base* aab, int loc, type_descriptor value_type, const vertex_buffer_base* vbb, const void* ptr, size_t nr_elements = 0, unsigned stride_in_bytes = 0) = 0;
-	virtual bool enable_attribute_array(attribute_array_binding_base* aab, int loc, bool do_enable) = 0;
+	virtual bool attribute_array_binding_create  (attribute_array_binding_base& aab) const = 0;
+	virtual bool attribute_array_binding_destruct(attribute_array_binding_base& aab) const;
+	virtual bool attribute_array_binding_enable  (attribute_array_binding_base& aab);
+	virtual bool attribute_array_binding_disable (attribute_array_binding_base& aab);
+	virtual bool set_attribute_array_void(attribute_array_binding_base* aab, int loc, type_descriptor value_type, const vertex_buffer_base* vbb, const void* ptr, size_t nr_elements = 0, unsigned stride_in_bytes = 0) const = 0;
+	virtual bool enable_attribute_array(attribute_array_binding_base* aab, int loc, bool do_enable) const = 0;
 	virtual bool is_attribute_array_enabled(const attribute_array_binding_base* aab, int loc) const = 0;
 
-	virtual bool vertex_buffer_create(vertex_buffer_base& vbb, const void* array_ptr, size_t size_in_bytes) = 0;
-	virtual bool vertex_buffer_replace(vertex_buffer_base& vbb, size_t offset, size_t size_in_bytes, const void* array_ptr) = 0;
-	virtual bool vertex_buffer_copy(const vertex_buffer_base& src, size_t src_offset, vertex_buffer_base& target, size_t target_offset, size_t size_in_bytes) = 0;
-	virtual bool vertex_buffer_copy_back(vertex_buffer_base& vbb, size_t offset, size_t size_in_bytes, void* array_ptr) = 0;
-	virtual bool vertex_buffer_destruct(vertex_buffer_base& vbb) = 0;
-public:
-	friend class CGV_API attribute_array_manager;
-	friend class CGV_API render_component;
-	friend class CGV_API texture;
-	friend class CGV_API render_buffer;
-	friend class CGV_API frame_buffer;
-	friend class CGV_API shader_code;
-	friend class CGV_API shader_program;
-	friend class CGV_API attribute_array_binding;
-	friend class CGV_API vertex_buffer;
-	/// declare type of matrices
-	typedef cgv::math::mat<double> mat_type;
-	/// declare type of vectors
-	typedef cgv::math::vec<double> vec_type;
-protected:
-	/// keep two matrix stacks for view and projection matrices
-	std::stack<mat_type> V_stack, P_stack;
+	virtual bool vertex_buffer_create(vertex_buffer_base& vbb, const void* array_ptr, size_t size_in_bytes) const = 0;
+	virtual bool vertex_buffer_replace(vertex_buffer_base& vbb, size_t offset, size_t size_in_bytes, const void* array_ptr) const = 0;
+	virtual bool vertex_buffer_copy(const vertex_buffer_base& src, size_t src_offset, vertex_buffer_base& target, size_t target_offset, size_t size_in_bytes) const = 0;
+	virtual bool vertex_buffer_copy_back(vertex_buffer_base& vbb, size_t offset, size_t size_in_bytes, void* array_ptr) const = 0;
+	virtual bool vertex_buffer_destruct(vertex_buffer_base& vbb) const = 0;
 public:
 	/// init the cursor position to (0,0)
 	context();
@@ -744,26 +862,68 @@ public:
 	virtual media::font::font_face_ptr get_current_font_face() const;
 	//@}
 
-	/**@name light and materials management*/
+	/**@name surface rendering and material management*/
 	//@{
-	/// enable phong shading with the help of a shader (enabled by default)
-	virtual void enable_phong_shading();
-	/// disable phong shading
-	virtual void disable_phong_shading();
-	/// enable a material without textures
-	virtual void enable_material(const cgv::media::illum::phong_material& mat = cgv::media::illum::default_material(), MaterialSide ms = MS_FRONT_AND_BACK, float alpha = 1) = 0;
-	/// disable phong material
-	virtual void disable_material(const cgv::media::illum::phong_material& mat = cgv::media::illum::default_material()) = 0;
+	DEPRECATED("deprecated and ignored.") virtual void enable_phong_shading();
+	DEPRECATED("deprecated and ignored.") virtual void disable_phong_shading();
+	DEPRECATED("deprecated, use set_material instead.") virtual void enable_material(const cgv::media::illum::phong_material& mat = cgv::media::illum::default_material(), MaterialSide ms = MS_FRONT_AND_BACK, float alpha = 1) = 0;
+	DEPRECATED("deprecated and ignored.") virtual void disable_material(const cgv::media::illum::phong_material& mat = cgv::media::illum::default_material()) = 0;
+	DEPRECATED("deprecated, use enable_material(textured_surface_material) instead.") virtual void enable_material(const textured_material& mat, MaterialSide ms = MS_FRONT_AND_BACK, float alpha = 1) = 0;
+	DEPRECATED("deprecated, use disable_material(textured_surface_material) instead.") virtual void disable_material(const textured_material& mat) = 0;
+	/// set the current color
+	virtual void set_color(const rgba_type& clr) = 0;
+	/// set the current color
+	virtual void set_color(const rgb_type& clr, float opacity = 1.0f) { set_color(rgba_type(clr[0], clr[1], clr[2], opacity)); }
+	/// set the current material 
+	virtual void set_material(const cgv::media::illum::surface_material& mat);
 	/// enable a material with textures
-	virtual void enable_material(const textured_material& mat, MaterialSide ms = MS_FRONT_AND_BACK, float alpha = 1) = 0;
-	/// disable phong material
-	virtual void disable_material(const textured_material& mat) = 0;
-	/// return maximum number of supported light sources
-	virtual unsigned get_max_nr_lights() const = 0;
-	/// enable a light source and return a handled to be used for disabling, if no more light source unit available 0 is returned
-	virtual void* enable_light(const cgv::media::illum::light_source& light) = 0;
-	/// disable a previously enabled light
-	virtual void disable_light(void* handle) = 0;
+	virtual void enable_material(const cgv::media::illum::textured_surface_material& mat) = 0;
+	/// disable a material with textures
+	virtual void disable_material(const cgv::media::illum::textured_surface_material& mat) = 0;
+	/// set the shader program view matrices to the currently enabled view matrices
+	void set_current_view(shader_program& prog, bool modelview_deps = true, bool projection_deps = true) const;
+	/// set the shader program material to the currently enabled material
+	void set_current_material(shader_program& prog) const;
+	/// set the shader program lights to the currently enabled lights
+	void set_current_lights(shader_program& prog) const;
+	/// return a reference to a shader program used to render without illumination
+	virtual shader_program& ref_default_shader_program(bool texture_support = false) = 0;
+	/// return a reference to the default shader program used to render surfaces 
+	virtual shader_program& ref_surface_shader_program(bool texture_support = false) = 0;
+	/// get list of program uniforms
+	virtual	void enumerate_program_uniforms(shader_program& prog, std::vector<std::string>& names, std::vector<int>* locations_ptr = 0, std::vector<int>* sizes_ptr = 0, std::vector<int>* types_ptr = 0, bool show = false) const = 0;
+	//@}
+
+	/**@name lights */
+	//@{
+	DEPRECATED("deprecated, use add_light_source instead.") void* enable_light(const cgv::media::illum::light_source& light) { return add_light_source(light); }
+	DEPRECATED("deprecated, use enable_light_source instead.") void disable_light(void* handle) { disable_light_source(handle); }
+	DEPRECATED("deprecated, use enable_light_source instead.") unsigned get_max_nr_lights() const { return get_max_nr_enabled_light_sources(); }
+	/// return the number of light sources
+	size_t get_nr_light_sources() const;
+	/// add a new light source, enable it if \c enable is true and place it relative to current model view transformation if \c place_now is true; return handle to light source
+	void* add_light_source(const cgv::media::illum::light_source& light, bool enabled = true, bool place_now = false);
+	/// remove a light source by handle and whether it existed
+	bool remove_light_source(void* handle);
+	/// read access to light source
+	const cgv::media::illum::light_source& get_light_source(void* handle) const;
+	/// read access to light source status
+	const light_source_status& get_light_source_status(void* handle) const;
+	/// set light source newly
+	void set_light_source(void* handle, const cgv::media::illum::light_source& light, bool place_now = true);
+	/// place the given light source relative to current model viel transformation
+	void place_light_source(void* handle);
+
+	/// return maximum number of light sources, that can be enabled in parallel 
+	virtual unsigned get_max_nr_enabled_light_sources() const;
+	/// return the number of light sources
+	size_t get_nr_enabled_light_sources() const;
+	/// access to handle of i-th light source
+	void* get_enabled_light_source_handle(size_t i) const;
+	/// enable a given light source and return whether there existed a light source with given handle
+	bool enable_light_source(void* handle);
+	/// disable a given light source and return whether there existed a light source with given handle
+	bool disable_light_source(void* handle);
 	//@}
 
 	/**@name text output*/
@@ -782,60 +942,66 @@ public:
 	virtual void get_cursor(int& x, int& y) const;
 	/** transform point p in current world coordinates into cursor coordinates 
 		 and put x and y coordinates into the passed variables */
-	virtual void put_cursor_coords(const vec_type& p, int& x, int& y) const = 0;
+	virtual void put_cursor_coords(const vec_type& p, int& x, int& y) const;
 	/** flush output_stream and set the current text position from a 3D or 4D
 		 location in current world coordinates. These are transformed to mouse
 		 coordinates with the put_cursor_coords method. If the optional parameters
 		 are given, update the cursor location such that the given text alignment
 		 is achieved. */
-	virtual void set_cursor(const cgv::math::vec<float>& pos, 
-		const std::string& text = "", TextAlignment ta = TA_BOTTOM_LEFT,
-		int x_offset=0, int y_offset=0);
-	/// same as with float version of vec
-	virtual void set_cursor(const cgv::math::vec<double>& pos, 
+	virtual void set_cursor(const vec_type& pos, 
 		const std::string& text = "", TextAlignment ta = TA_BOTTOM_LEFT,
 		int x_offset=0, int y_offset=0);
 	//@}
 
-	/**@name tesselation*/
+	/**@name drawing*/
 	//@{
-	/// tesselate with independent faces
-	virtual void draw_faces(
-		const double* vertices, const double* normals, const double* tex_coords, 
+	/// pass geometry of given faces to current shader program and generate draw calls to render lines for the edges
+	virtual void draw_edges_of_faces(
+		const float* vertices, const float* normals, const float* tex_coords,
 		const int* vertex_indices, const int* normal_indices, const int* tex_coord_indices, 
 		int nr_faces, int face_degree, bool flip_normals = false) const = 0;
-	/// tesselate with one face strip
-	virtual void draw_strip_or_fan(
-		const double* vertices, const double* normals, const double* tex_coords, 
+	/// pass geometry of given strip or fan to current shader program and generate draw calls to render lines for the edges
+	virtual void draw_edges_of_strip_or_fan(
+		const float* vertices, const float* normals, const float* tex_coords,
 		const int* vertex_indices, const int* normal_indices, const int* tex_coord_indices, 
+		int nr_faces, int face_degree, bool is_fan, bool flip_normals = false) const = 0;
+	/// pass geometry of given faces to current shader program and generate draw calls to render triangles
+	virtual void draw_faces(
+		const float* vertices, const float* normals, const float* tex_coords,
+		const int* vertex_indices, const int* normal_indices, const int* tex_coord_indices,
+		int nr_faces, int face_degree, bool flip_normals = false) const = 0;
+	/// pass geometry of given strip or fan to current shader program and generate draw calls to render triangles
+	virtual void draw_strip_or_fan(
+		const float* vertices, const float* normals, const float* tex_coords,
+		const int* vertex_indices, const int* normal_indices, const int* tex_coord_indices,
 		int nr_faces, int face_degree, bool is_fan, bool flip_normals = false) const = 0;
 
 	/// tesselate a unit square in the xy-plane with texture coordinates
-	void tesselate_unit_square(bool flip_normals = false);
+	void tesselate_unit_square(bool flip_normals = false, bool edges = false);
 	/// tesselate a unit cube with extent from [-1,-1,-1] to [1,1,1] with face normals that can be flipped
-	void tesselate_unit_cube(bool flip_normals = false);
+	void tesselate_unit_cube(bool flip_normals = false, bool edges = false);
 	/// tesselate an axis aligned box
-	virtual void tesselate_box(const cgv::media::axis_aligned_box<double, 3>& B, bool flip_normals) const;
+	virtual void tesselate_box(const cgv::media::axis_aligned_box<double, 3>& B, bool flip_normals, bool edges = false) const;
 	/// tesselate a prism 
-	void tesselate_unit_prism(bool flip_normals = false);
+	void tesselate_unit_prism(bool flip_normals = false, bool edges = false);
 	/// tesselate a circular disk of radius 1
-	void tesselate_unit_disk(int resolution = 25, bool flip_normals = false);
+	void tesselate_unit_disk(int resolution = 25, bool flip_normals = false, bool edges = false);
 	/// tesselate a cone of radius 1
-	void tesselate_unit_cone(int resolution = 25, bool flip_normals = false);
+	void tesselate_unit_cone(int resolution = 25, bool flip_normals = false, bool edges = false);
 	/// tesselate a cylinder of radius 1
-	void tesselate_unit_cylinder(int resolution = 25, bool flip_normals = false);
+	void tesselate_unit_cylinder(int resolution = 25, bool flip_normals = false, bool edges = false);
 	/// tesselate a sphere of radius 1
-	void tesselate_unit_sphere(int resolution = 25, bool flip_normals = false);
+	void tesselate_unit_sphere(int resolution = 25, bool flip_normals = false, bool edges = false);
 	/// tesselate a tetrahedron
-	void tesselate_unit_tetrahedron(bool flip_normals = false);
+	void tesselate_unit_tetrahedron(bool flip_normals = false, bool edges = false);
 	/// tesselate a octahedron
-	void tesselate_unit_octahedron(bool flip_normals = false);
+	void tesselate_unit_octahedron(bool flip_normals = false, bool edges = false);
 	/// tesselate a dodecahedron
-	void tesselate_unit_dodecahedron(bool flip_normals = false);
+	void tesselate_unit_dodecahedron(bool flip_normals = false, bool edges = false);
 	/// tesselate an icosahedron
-	void tesselate_unit_icosahedron(bool flip_normals = false);
+	void tesselate_unit_icosahedron(bool flip_normals = false, bool edges = false);
 	/// tesselate a torus with major radius of one and given minor radius
-	void tesselate_unit_torus(float minor_radius = 0.2f, int resolution = 25, bool flip_normals = false);
+	void tesselate_unit_torus(float minor_radius = 0.2f, int resolution = 25, bool flip_normals = false, bool edges = false);
 	//! tesselate an arrow from the origin in z-direction
 	/*! An arrow of length L is composed of a cylinder of radius R and a cone of radius r.
 	    The parameters are
@@ -844,9 +1010,9 @@ public:
 		@param[in] rel_tip_radius is defined as r/R
 		@param[in] tip_aspect is defined as r/l
 	*/
-	virtual void tesselate_arrow(double length = 1, double aspect = 0.1, double rel_tip_radius = 2.0, double tip_aspect = 0.3, int res = 25);
+	virtual void tesselate_arrow(double length = 1, double aspect = 0.1, double rel_tip_radius = 2.0, double tip_aspect = 0.3, int res = 25, bool edges = false);
 	/// define length and direction from start and end point and draw an arrow
-	virtual void tesselate_arrow(const cgv::math::fvec<double, 3>& start, const cgv::math::fvec<double, 3>& end, double aspect = 0.1f, double rel_tip_radius = 2.0f, double tip_aspect = 0.3f, int res = 25);
+	virtual void tesselate_arrow(const cgv::math::fvec<double, 3>& start, const cgv::math::fvec<double, 3>& end, double aspect = 0.1f, double rel_tip_radius = 2.0f, double tip_aspect = 0.3f, int res = 25, bool edges = false);
 	//! draw a light source with an emissive material 
 	/*! @param[in] l to be rendered light source
 	    @param[in] intensity_scale used to multiply with the light source values
@@ -856,16 +1022,28 @@ public:
 
 	/**@name transformations*/
 	//@{
-	/** use this to push transformation matrices on the stack such that 
+	DEPRECATED("deprecated: use get_modelview_matrix() instead.") dmat_type get_V() const { return dmat_type(4,4,&get_modelview_matrix()(0,0)); }
+	DEPRECATED("deprecated: use set_modelview_matrix() instead.") void set_V(const dmat_type& V) const { const_cast<context*>(this)->set_modelview_matrix(dmat4(4,4,&V(0,0))); }
+	DEPRECATED("deprecated: use push_modelview_matrix() instead.") void push_V() { push_modelview_matrix(); }
+	DEPRECATED("deprecated: use pop_modelview_matrix() instead.") void pop_V() { pop_modelview_matrix(); }
+	DEPRECATED("deprecated: use get_projection_matrix() instead.") dmat_type get_P() const { return dmat_type(4, 4, &get_projection_matrix()(0, 0)); }
+	DEPRECATED("deprecated: use set_projection_matrix() instead.") void set_P(const dmat_type& P) const { const_cast<context*>(this)->set_projection_matrix(dmat4(4,4,&P(0, 0))); }
+	DEPRECATED("deprecated: use push_projection_matrix() instead.") void push_P() { push_projection_matrix(); }
+	DEPRECATED("deprecated: use pop_projection_matrix() instead.") void pop_P() { pop_projection_matrix(); }
+	DEPRECATED("deprecated: use get_device_matrix() instead.") 	dmat_type get_D() const { return dmat_type(4, 4, &get_device_matrix()(0, 0)); }
+	DEPRECATED("deprecated: use get_modelview_projection_device_matrix() instead.")	mat_type get_DPV() const { return dmat_type(4, 4, &get_modelview_projection_device_matrix()(0, 0)); }
+	/** use this to push transformation matrices on the stack such that
 	    x and y coordinates correspond to window coordinates, i.e. the 
 		 coordinates of the mouse pointer and the cursor for text output. */
 	virtual void push_pixel_coords() = 0;
 	/// pop previously changed transformation matrices 
 	virtual void pop_pixel_coords() = 0;
 	/// return homogeneous 4x4 viewing matrix, which transforms from world to eye space
-	virtual mat_type get_V() const = 0;
-	/// set the current viewing matrix, which transforms from world to eye space
-	virtual void set_V(const mat_type& V) const = 0;
+	virtual dmat4 get_modelview_matrix() const = 0;
+	/// set the current modelview matrix, which transforms from world to eye space
+	virtual void set_modelview_matrix(const dmat4& MV);
+	/// multiply given matrix from right to current modelview matrix
+	virtual void mul_modelview_matrix(const dmat4& MV);
 	//! push the current viewing matrix onto a matrix stack for viewing matrices.
 	/*! A software implementation is used for the matrix stack as some hardware 
 	    stacks - i.e. in opengl - have strong limitations on their maximum size. 
@@ -873,35 +1051,37 @@ public:
 		the glPushMatrix function. Use pop_V() to restore the pushed viewing matrix
 		into the current viewing matrix. Don't intermix these methods with the 
 		correspondong opengl or directx functions.*/
-	void push_V();
+	void push_modelview_matrix();
 	/// see push_V for an explanation
-	void pop_V();
+	void pop_modelview_matrix();
 	/// return homogeneous 4x4 projection matrix, which transforms from eye to clip space
-	virtual mat_type get_P() const = 0;
+	virtual dmat4 get_projection_matrix() const = 0;
 	/// set the current projection matrix, which transforms from eye to clip space
-	virtual void set_P(const mat_type& P) const = 0;
+	virtual void set_projection_matrix(const dmat4& P);
+	/// multiply given matrix from right to current projection matrix
+	virtual void mul_projection_matrix(const dmat4& P);
 	/// same as push_V but for the projection matrix - a different matrix stack is used.
-	void push_P();
+	void push_projection_matrix();
 	/// see push_P for an explanation
-	void pop_P();
+	void pop_projection_matrix();
 	/// return homogeneous 4x4 projection matrix, which transforms from clip to device space
-	virtual mat_type get_D() const = 0;
-	/// return homogeneous 4x4 matrix, which transforms from world to device space
-	virtual mat_type get_DPV() const;
+	virtual dmat4 get_device_matrix() const = 0;
+	/// return matrix to transfrom from model to device coordinates, i.e. the product of modelview, projection and device matrix in reversed order (device_matrix*projection_matrix*modelview_matrix)
+	dmat4 get_modelview_projection_device_matrix() const;
 	/// read the device z-coordinate from the z-buffer for the given device x- and y-coordinates
 	virtual double get_z_D(int x_D, int y_D) const = 0;
 	/// compute the location in world space of a device x/y-location. For this the device point is extended with the device z-coordinate currently stored in the displayed depth buffer.
-	vec_type get_point_W(int x_D, int y_D) const;
+	vec3 get_point_W(int x_D, int y_D) const;
 	/// compute the location in world space of a device x/y-location by inversion of the given transformation from world to device space. For this the device point is extended with the device z-coordinate currently stored in the displayed depth buffer.
-	vec_type get_point_W(int x_D, int y_D, const mat_type& DPV) const;
-	/// compute the location in world space of a device point. For this the current world to device transformation get_DPV is inverted.
-	vec_type get_point_W(int x_D, int y_D, double z_D) const;
+	vec3 get_point_W(int x_D, int y_D, const dmat4& modelview_projection_device_matrix) const;
+	/// compute the location in world space of a device point. For this the current world to device transformation is inverted.
+	vec3 get_point_W(int x_D, int y_D, double z_D) const;
 	/// compute the location in world space of a device point by inversion of the given world to device transformation.
-	vec_type get_point_W(int x_D, int y_D, double z_D, const mat_type& DPV) const;
+	vec3 get_point_W(int x_D, int y_D, double z_D, const dmat4& modelview_projection_device_matrix) const;
 	/// compute a the location in world space of a device point.
-	vec_type get_point_W(const vec_type& p_D) const;
+	vec3 get_point_W(const vec3& p_D) const;
 	/// compute a the location in world space of a device point.
-	virtual vec_type get_point_W(const vec_type& p_D, const mat_type& MPD) const;
+	virtual vec3 get_point_W(const vec3& p_D, const dmat4& modelview_projection_device_matrix) const;
 	//@}
 };
 

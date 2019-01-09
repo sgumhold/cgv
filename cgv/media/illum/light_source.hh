@@ -19,8 +19,6 @@ class CGV_API light_source
 public: //@<
 	///@>used color type
 	typedef color<float,RGB> color_type;
-	///@>type of homogeneous locations
-	typedef cgv::math::fvec<float,4> hvec_type;
 	///@>type of vector used for directions
 	typedef cgv::math::fvec<float,3> vec_type;
 protected: //@<
@@ -28,21 +26,23 @@ protected: //@<
 	LightType type;
 	///@>whether location is relative to eye coordinate system, i.e. model view is identity
 	bool local_to_eye_coordinates;
-	///@>homogeneous location of light source
-	hvec_type location;
-	///@>ambient color component
-	color_type ambient;
-	///@>diffuse color component
-	color_type diffuse;
-	///@>specular color component
-	color_type specular;
-	///@>attenuation coefficients used for positional light sources only
-	vec_type attenuation;
+	///@> direction to light source for directional light sources and location of light source for point or spot light sources
+	vec_type position;
+	///@> radiance for directional light sources and intensity for point light sources
+	color_type emission;
+	///@> scale to use on emission to retrieve ambient illumination caused by light source
+	float ambient_scale;
+	///@>constant attenuation coefficients used for positional light sources only
+	float constant_attenuation;
+	///@>linear attenuation coefficients used for positional light sources only
+	float linear_attenuation;
+	///@>quadratic attenuation coefficients used for positional light sources only
+	float quadratic_attenuation;
 	///@>direction of spot light
 	vec_type spot_direction;
 	///@>splot exponent
 	float spot_exponent;
-	///@>spot cutoff
+	///@>spot cutoff in degrees
 	float spot_cutoff;
 public: //@<
 	/// init with default values
@@ -64,39 +64,46 @@ public: //@<
 	bool& ref_local_to_eye()      { return local_to_eye_coordinates; }
 
 	///
-	void set_location(const hvec_type& loc) { location = loc; }
+	void set_position(const vec_type& loc) { position = loc; }
 	///
-	const hvec_type& get_location() const   { return location; }
+	const vec_type& get_position() const   { return position; }
 	///
-	hvec_type& ref_location()   { return location; }
+	vec_type& ref_position()   { return position; }
 
 	///
-	void set_ambient(const color_type& c) { ambient = c; }
+	void set_emission(const color_type& c) { emission = c; }
 	///
-	const color_type& get_ambient() const { return ambient; }
+	const color_type& get_emission() const { return emission; }
 	///
-	color_type& ref_ambient() { return ambient; }
+	color_type& ref_emission() { return emission; }
 
 	///
-	void set_diffuse(const color_type& c) { diffuse = c; }
+	void set_ambient_scale(float c) { ambient_scale = c; }
 	///
-	const color_type& get_diffuse() const { return diffuse; }
+	float get_ambient_scale() const { return ambient_scale; }
 	///
-	color_type& ref_diffuse() { return diffuse; }
+	float& ref_ambient_scale() { return ambient_scale; }
 
 	///
-	void set_specular(const color_type& c) { specular = c; }
+	void set_constant_attenuation(float c) { constant_attenuation = c; }
 	///
-	const color_type& get_specular() const { return specular; }
+	float get_constant_attenuation() const { return constant_attenuation; }
 	///
-	color_type& ref_specular() { return specular; }
+	float& ref_constant_attenuation() { return constant_attenuation; }
 
 	///
-	void set_attenuation(const vec_type& a) { attenuation = a; }
+	void set_linear_attenuation(float c) { linear_attenuation = c; }
 	///
-	const vec_type& get_attenuation() const { return attenuation; }
+	float get_linear_attenuation() const { return linear_attenuation; }
 	///
-	vec_type& ref_attenuation() { return attenuation; }
+	float& ref_linear_attenuation() { return linear_attenuation; }
+
+	///
+	void set_quadratic_attenuation(float c) { quadratic_attenuation = c; }
+	///
+	float get_quadratic_attenuation() const { return quadratic_attenuation; }
+	///
+	float& ref_quadratic_attenuation() { return quadratic_attenuation; }
 
 	///
 	void set_spot_direction(const vec_type& d) { spot_direction = d; }
@@ -118,6 +125,7 @@ public: //@<
 	float get_spot_cutoff() const { return spot_cutoff; }
 	///
 	float& ref_spot_cutoff() { return spot_cutoff; }
+
 }; //@<
 
 		} //@<

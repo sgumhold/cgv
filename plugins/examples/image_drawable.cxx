@@ -32,7 +32,6 @@ protected:
 public:
 	image_drawable() : node("image drawable"), range(0,1)
 	{
-		use_shader_program = true;
 		connect(get_animation_trigger().shoot, this, &image_drawable::timer_event);
 	}
 	void timer_event(double t, double dt)
@@ -106,7 +105,6 @@ public:
 		if (begin_tree_node("rendering", use_blending)) {
 			align("\a");
 			add_member_control(this, "use_blending", use_blending, "check");
-			add_member_control(this, "use_shader_program", use_shader_program, "check");
 			add_gui("gamma", gamma, "vector", "main_label='heading';components='rgba';options='min=0.01;max=100;ticks=true;log=true'");
 			add_gui("min_value", min_value, "vector", "main_label='heading';components='rgba';options='min=0;max=1;ticks=true;step=0.00001;log=true'");
 			add_gui("max_value", max_value, "vector", "main_label='heading';components='rgba';options='min=0;max=1;ticks=true;step=0.00001;log=true'");

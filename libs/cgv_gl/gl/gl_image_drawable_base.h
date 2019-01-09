@@ -12,8 +12,6 @@ namespace cgv {
 //! base class of drawables that show static or animated images
 class CGV_API gl_image_drawable_base : public drawable
 {
-public:
-	typedef cgv::math::fvec<float, 4> vec4;
 protected:
 	std::vector<unsigned> tex_ids;
 	std::vector<float> durations;
@@ -27,7 +25,6 @@ protected:
 
 	bool animate;
 	bool use_blending;
-	bool use_shader_program;
 
 	/// extent of rectangle of pixel selection
 	int x,y,w,h;
@@ -40,6 +37,11 @@ protected:
 	vec4 min_value;
 	vec4 max_value;
 	vec4 gamma;
+
+	// mixing 
+	bool use_mixing;
+	unsigned mix_with;
+	float mix_param;
 
 	cgv::render::shader_program prog;
 public:

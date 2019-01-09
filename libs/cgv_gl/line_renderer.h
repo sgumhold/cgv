@@ -1,7 +1,7 @@
 #pragma once
 
 #include "group_renderer.h"
-#include <cgv/media/illum/phong_material.hh>
+#include <cgv/media/color.h>
 
 #include "gl/lib_begin.h"
 
@@ -11,8 +11,9 @@ namespace cgv { // @<
 		/** style of a line */
 		struct CGV_API line_render_style : public group_render_style
 		{
+			typedef cgv::media::color<float, cgv::media::RGB, cgv::media::OPACITY> color_type;
 			float line_width;
-			cgv::media::illum::phong_material::color_type line_color;
+			color_type line_color;
 			line_render_style();
 		};
 

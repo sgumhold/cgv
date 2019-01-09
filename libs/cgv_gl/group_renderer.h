@@ -4,8 +4,6 @@
 #include <cgv/reflect/reflect_extern.h>
 #include <cgv/render/shader_program.h>
 #include <cgv_reflect_types/render/context.h>
-#include <cgv_reflect_types/media/illum/phong_material.h>
-#include <cgv/media/illum/phong_material.hh>
 
 #include "gl/lib_begin.h"
 
@@ -35,33 +33,38 @@ namespace cgv { // @<
 			///
 			group_renderer();
 			/// check additionally the group attributes
-			bool validate_attributes(context& ctx) const;
+			bool validate_attributes(const context& ctx) const;
 			/// overload to activate group style
 			bool enable(context& ctx);
 			///
-			bool disable(cgv::render::context& ctx);
+			bool disable(context& ctx);
 			/// method to set the group index attribute
-			void set_group_index_attribute(cgv::render::context& ctx, const std::vector<unsigned>& group_indices);
+			void set_group_index_array(const context& ctx, const std::vector<unsigned>& group_indices);
 			/// method to set the group index attribute
-			void set_group_index_attribute(cgv::render::context& ctx, const unsigned* group_indices, size_t nr_elements);
+			void set_group_index_array(const context& ctx, const unsigned* group_indices, size_t nr_elements);
+			/// method to set the group index attribute from a vertex buffer object, the element type must be given as explicit template parameter
+			void set_group_index_array(const context& ctx, type_descriptor element_type, const vertex_buffer& vbo, size_t offset_in_bytes, size_t nr_elements, size_t stride_in_bytes = 0);
+			/// template method to set the group index color attribute from a vertex buffer object, the element type must be given as explicit template parameter
+			template <typename ElementType>
+			void set_group_index_array(const context& ctx, const vertex_buffer& vbo, size_t offset_in_bytes, size_t nr_elements, size_t stride_in_bytes = 0) { set_group_index_array(ctx, type_descriptor(element_descriptor_traits<T>::get_type_descriptor(T()), true), vbo, offset_in_bytes, nr_elements, stride_in_bytes); }
 			/// template method to set the group colors from a vector of colors of type T
 			template <typename T>
-			void set_group_colors(cgv::render::context& ctx, const std::vector<T>& colors) { has_group_colors = true;  ref_prog().set_uniform_array(ctx, "group_colors", colors); }
+			void set_group_colors(const context& ctx, const std::vector<T>& colors) { has_group_colors = true;  ref_prog().set_uniform_array(ctx, "group_colors", colors); }
 			/// template method to set the group colors from a vector of colors of type T
 			template <typename T>
-			void set_group_colors(cgv::render::context& ctx, const T* colors, size_t nr_elements) { has_group_colors = true;  ref_prog().set_uniform_array(ctx, "group_colors", colors, nr_elements); }
+			void set_group_colors(const context& ctx, const T* colors, size_t nr_elements) { has_group_colors = true;  ref_prog().set_uniform_array(ctx, "group_colors", colors, nr_elements); }
 			/// template method to set the group translations from a vector of vectors of type T, which should have 3 components
 			template <typename T>
-			void set_group_translations(cgv::render::context& ctx, const std::vector<T>& group_translations) { has_group_translations = true; ref_prog().set_uniform_array(ctx, "group_translations", group_translations); }
+			void set_group_translations(const context& ctx, const std::vector<T>& group_translations) { has_group_translations = true; ref_prog().set_uniform_array(ctx, "group_translations", group_translations); }
 			/// template method to set the group translations from a vector of vectors of type T, which should have 3 components
 			template <typename T>
-			void set_group_translations(cgv::render::context& ctx, const T* group_translations, size_t nr_elements) { has_group_translations = true; ref_prog().set_uniform_array(ctx, "group_translations", group_translations, nr_elements); }
+			void set_group_translations(const context& ctx, const T* group_translations, size_t nr_elements) { has_group_translations = true; ref_prog().set_uniform_array(ctx, "group_translations", group_translations, nr_elements); }
 			/// template method to set the group rotation from a vector of quaternions of type T, which should have 4 components
 			template <typename T>
-			void set_group_rotations(cgv::render::context& ctx, const std::vector<T>& group_rotations) { has_group_rotations = true; ref_prog().set_uniform_array(ctx, "group_rotations", group_rotations); }
+			void set_group_rotations(const context& ctx, const std::vector<T>& group_rotations) { has_group_rotations = true; ref_prog().set_uniform_array(ctx, "group_rotations", group_rotations); }
 			/// template method to set the group rotation from a vector of quaternions of type T, which should have 4 components
 			template <typename T>
-			void set_group_rotations(cgv::render::context& ctx, const T* group_rotations, size_t nr_elements) { has_group_rotations = true; ref_prog().set_uniform_array(ctx, "group_rotations", group_rotations, nr_elements); }
+			void set_group_rotations(const context& ctx, const T* group_rotations, size_t nr_elements) { has_group_rotations = true; ref_prog().set_uniform_array(ctx, "group_rotations", group_rotations, nr_elements); }
 		};
 	}
 }

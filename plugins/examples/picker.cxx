@@ -21,18 +21,18 @@ void picker::stream_stats(std::ostream& os)
 }
 
 /// check if a world point is close enough to the drawing square
-bool picker::is_inside(const Pnt& p) const
+bool picker::is_inside(const vec3& p) const
 {
 	return fabs(p(2)) < 0.1 && fabs(p(0)) <= 1 && fabs(p(1)) <= 1;
 }
 
 /// transform from 3d world to 2d parametric space
-picker::Pnt picker::transform_2_local(const Pnt& p3d) const
+picker::vec2 picker::transform_2_local(const vec3& p3d) const
 {
-	return Pnt(p3d(0),p3d(1));
+	return vec2(p3d(0),p3d(1));
 }
 /// find closest point and return index or -1 if we do not have any points yet
-int picker::find_closest(const Pnt& p2d) const
+int picker::find_closest(const vec2& p2d) const
 {
 	if (pnts.empty())
 		return -1;
@@ -55,9 +55,9 @@ bool picker::handle(event& e)
 		switch (me.get_action()) {
 		case MA_PRESS :
 			if (me.get_button() == MB_LEFT_BUTTON && me.get_modifiers() == EM_CTRL) {
-				Pnt p = get_context()->get_point_W(me.get_x(), me.get_y(), DPV);
+				vec3 p = get_context()->get_point_W(me.get_x(), me.get_y(), MVPD);
 				if (is_inside(p)) {
-					Pnt q = transform_2_local(p);
+					vec2 q = transform_2_local(p);
 					drag_pnt_idx = -1;
 					int i = find_closest(q);
 					if (i != -1) {
@@ -85,7 +85,7 @@ bool picker::handle(event& e)
 			break;
 		case MA_DRAG :
 			if (drag_pnt_idx != -1) {
-				Pnt p = get_context()->get_point_W(me.get_x(), me.get_y(), DPV);
+				vec3 p = get_context()->get_point_W(me.get_x(), me.get_y(), MVPD);
 				if (!is_inside(p)) {
 					pnts.erase(pnts.begin()+drag_pnt_idx);
 					drag_pnt_idx = -1;
@@ -116,7 +116,7 @@ void picker::draw(context& ctx)
 {
 	glDisable(GL_LIGHTING);
 	glColor3d(1,1,0.7);
-	DPV = ctx.get_DPV();
+	MVPD = ctx.get_modelview_projection_device_matrix();
 	glPolygonOffset(1,1);
 	glDisable(GL_CULL_FACE);
 	glEnable(GL_POLYGON_OFFSET_FILL);

@@ -352,9 +352,9 @@ void point_cloud_interactable::auto_set_view()
 		cgv::gui::message("could not find a view to adjust!!");
 		return;
 	}
-	cgv::gui::animate_with_rotation(view_ptrs[0]->ref_view_up_dir(), cgv::render::view::pnt_type(0, 1, 0), 0.5)->set_base_ptr(this);
+	cgv::gui::animate_with_rotation(view_ptrs[0]->ref_view_up_dir(), dvec3(0, 1, 0), 0.5)->set_base_ptr(this);
 	cgv::gui::animate_with_geometric_blend(view_ptrs[0]->ref_y_extent_at_focus(), 1.5*pc.box().get_extent()(1), 0.5)->set_base_ptr(this);
-	cgv::gui::animate_with_linear_blend(view_ptrs[0]->ref_focus(), cgv::render::view::pnt_type(pc.box().get_center()), 0.5)->set_base_ptr(this);
+	cgv::gui::animate_with_linear_blend(view_ptrs[0]->ref_focus(), dvec3(pc.box().get_center()), 0.5)->set_base_ptr(this);
 	post_redraw();
 }
 
@@ -373,7 +373,7 @@ bool point_cloud_interactable::self_reflect(cgv::reflect::reflection_handler& sr
 		srh.reflect_member("file_name", new_file_name) &&
 		srh.reflect_member("directory_name", directory_name) &&
 		srh.reflect_member("interact_point_step", interact_point_step) &&
-		srh.reflect_member("point_style", point_style) &&
+		srh.reflect_member("surfel_style", surfel_style) &&
 		srh.reflect_member("normal_style", normal_style) &&
 		srh.reflect_member("box_style", box_style) &&
 		srh.reflect_member("box_wire_style", box_wire_style) &&
@@ -449,7 +449,6 @@ bool point_cloud_interactable::init(cgv::render::context& ctx)
 	if (!gl_point_cloud_drawable::init(ctx))
 		return false;
 
-	ctx.disable_phong_shading();
 	get_root()->set("bg_index", 4);
 
 	return true;
@@ -526,15 +525,15 @@ bool point_cloud_interactable::handle(cgv::gui::event& e)
 			switch (ke.get_key()) {
 			case '=' :
 			case '+' :
-				point_style.point_size += 1;
-				on_set(&point_style.point_size); 
+				surfel_style.point_size += 1;
+				on_set(&surfel_style.point_size); 
 				return true;
 			case '-' :
-				if (point_style.point_size > 0) {
-					point_style.point_size -= 1;
-					if (point_style.point_size < 1)
-						point_style.point_size = 1;
-					on_set(&point_style.point_size); 
+				if (surfel_style.point_size > 0) {
+					surfel_style.point_size -= 1;
+					if (surfel_style.point_size < 1)
+						surfel_style.point_size = 1;
+					on_set(&surfel_style.point_size); 
 				}
 				return true;
 			case 'P' :
@@ -543,24 +542,24 @@ bool point_cloud_interactable::handle(cgv::gui::event& e)
 				return true;
 			case 'C' :
 				if (ke.get_modifiers() == 0) {
-					if (point_style.map_color_to_material == cgv::render::MS_FRONT_AND_BACK)
-						point_style.map_color_to_material = cgv::render::MS_NONE;
+					if (surfel_style.map_color_to_material == cgv::render::MS_FRONT_AND_BACK)
+						surfel_style.map_color_to_material = cgv::render::MS_NONE;
 					else
-						++(int&)point_style.map_color_to_material;
-					on_set(&point_style.map_color_to_material);
+						++(int&)surfel_style.map_color_to_material;
+					on_set(&surfel_style.map_color_to_material);
 				}
 				else if (ke.get_modifiers() == cgv::gui::EM_SHIFT) {
-					if (point_style.culling_mode == cgv::render::CM_FRONTFACE)
-						point_style.culling_mode = cgv::render::CM_OFF;
+					if (surfel_style.culling_mode == cgv::render::CM_FRONTFACE)
+						surfel_style.culling_mode = cgv::render::CM_OFF;
 					else
-						++(int&)point_style.culling_mode;
-					on_set(&point_style.culling_mode);
+						++(int&)surfel_style.culling_mode;
+					on_set(&surfel_style.culling_mode);
 				}
 				return true;
 			case 'B' :
 				if (ke.get_modifiers() == 0) {
-					point_style.blend_points = !point_style.blend_points;
-					on_set(&point_style.blend_points);
+					surfel_style.blend_points = !surfel_style.blend_points;
+					on_set(&surfel_style.blend_points);
 				}
 				else if (ke.get_modifiers() == cgv::gui::EM_SHIFT) {
 					show_boxes = !show_boxes;
@@ -585,11 +584,11 @@ bool point_cloud_interactable::handle(cgv::gui::event& e)
 				}
 				return true;
 			case 'I' :
-				if (point_style.illumination_mode == cgv::render::IM_TWO_SIDED)
-					point_style.illumination_mode = cgv::render::IM_OFF;
+				if (surfel_style.illumination_mode == cgv::render::IM_TWO_SIDED)
+					surfel_style.illumination_mode = cgv::render::IM_OFF;
 				else
-					++(int&)point_style.illumination_mode;
-				on_set(&point_style.illumination_mode);
+					++(int&)surfel_style.illumination_mode;
+				on_set(&surfel_style.illumination_mode);
 				return true;
 			case 'G' :
 				show_neighbor_graph = !show_neighbor_graph;
@@ -597,8 +596,8 @@ bool point_cloud_interactable::handle(cgv::gui::event& e)
 				return true;
 			case 'O' :
 				if (ke.get_modifiers() == 0) {
-					point_style.orient_splats = !point_style.orient_splats;
-					on_set(&point_style.orient_splats);
+					surfel_style.orient_splats = !surfel_style.orient_splats;
+					on_set(&surfel_style.orient_splats);
 				}
 				else if (ke.get_modifiers() == cgv::gui::EM_SHIFT) {
 					orient_normals();
@@ -649,11 +648,6 @@ bool point_cloud_interactable::handle(cgv::gui::event& e)
 					on_set(&sort_points);
 					return true;
 				}
-				else if (ke.get_modifiers() == 0) {
-					point_style.smooth_points = !point_style.smooth_points;
-					on_set(&point_style.smooth_points);
-					return true;
-				}
 				return false;
 			case cgv::gui::KEY_Space :
 				if (pc.get_nr_points() == 0)
@@ -686,12 +680,12 @@ void point_cloud_interactable::on_point_cloud_change_callback(PointCloudChangeEv
 		use_component_colors = pc.has_component_colors();
 		on_set(&use_component_colors);
 	}
-	if (!pc.has_normals() != point_style.illumination_mode == cgv::render::IM_OFF) {
+	if (!pc.has_normals() != surfel_style.illumination_mode == cgv::render::IM_OFF) {
 		if (pc.has_normals())
-			point_style.illumination_mode = cgv::render::IM_ONE_SIDED;
+			surfel_style.illumination_mode = cgv::render::IM_ONE_SIDED;
 		else
-			point_style.illumination_mode = cgv::render::IM_OFF;
-		update_member(&point_style.illumination_mode);
+			surfel_style.illumination_mode = cgv::render::IM_OFF;
+		update_member(&surfel_style.illumination_mode);
 	}
 	if (((pcc_event & PCC_POINTS_MASK) == PCC_POINTS_RESIZE) || ((pcc_event & PCC_POINTS_MASK) == PCC_NEW_POINT_CLOUD)) {
 		tree_ds_out_of_date = true;
@@ -775,12 +769,12 @@ void point_cloud_interactable::on_set(void* member_ptr)
 		interact_trigger.schedule_recuring(interact_delay);
 	}
 	if (member_ptr == &use_component_colors) {
-		point_style.use_group_color = use_component_colors;
-		update_member(&point_style.use_group_color);
+		surfel_style.use_group_color = use_component_colors;
+		update_member(&surfel_style.use_group_color);
 	}
 	if (member_ptr == &use_component_transformations) {
-		point_style.use_group_transformation = use_component_transformations;
-		update_member(&point_style.use_group_transformation);
+		surfel_style.use_group_transformation = use_component_transformations;
+		update_member(&surfel_style.use_group_transformation);
 	}
 	update_member(member_ptr);
 	post_redraw();
@@ -807,10 +801,10 @@ void point_cloud_interactable::create_gui()
 	show = begin_tree_node("points", show_points, false, "level=3;options='w=70';align=' '");
 	add_member_control(this, "show", show_points, "toggle", "w=40", " ");
 	add_member_control(this, "sort", sort_points, "toggle", "w=40", " ");
-	add_member_control(this, "blnd", point_style.blend_points, "toggle", "w=40");
+	add_member_control(this, "blnd", surfel_style.blend_points, "toggle", "w=40");
 	if (show) {
 		align("\a");
-		add_gui("point_style", point_style);
+		add_gui("surfel_style", surfel_style);
 		if (begin_tree_node("subsample", show_point_step, false, "level=3")) {
 			align("\a");
 			add_member_control(this, "nr_draw_calls", nr_draw_calls, "value_slider", "min=1;max=100;log=true;ticks=true");

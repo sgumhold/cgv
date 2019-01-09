@@ -1,6 +1,9 @@
 #include <cgv/base/named.h>
+#include <cgv/math/ftransform.h>
 #include <cgv/gui/base_provider.h>
 #include <cgv/render/drawable.h>
+#include <cgv/render/shader_program.h>
+#include <cgv/render/attribute_array_binding.h>
 #include <cgv_reflect_types/media/color.h>
 #include <cgv_gl/gl/gl.h>
 
@@ -43,21 +46,26 @@ public:
 	}
 	void draw(context& ctx)
 	{
-		glPushAttrib(GL_LINE_BIT|GL_CURRENT_BIT|GL_LIGHTING_BIT);
-		glDisable(GL_LIGHTING);
-		glPushMatrix();
-		glScaled(aspect, 1, 1);
-		glColor3fv(&col[0]);
-		glLineWidth(line_width);
-
-		glBegin(GL_LINES);
-		for (unsigned i=0; i<nr_lines; ++i) {
-			glVertex2f((float)i/(nr_lines-1),0);	
-			glVertex2f((float)i/(nr_lines-1),1);	
+		static std::vector<vec2> P;
+		if (P.size() != 2 * nr_lines) {
+			P.resize(2 * nr_lines);
+			for (unsigned i = 0; i < nr_lines; ++i) {
+				P[2 * i] = vec2((float)i / (nr_lines - 1), 0);
+				P[2 * i + 1] = vec2((float)i / (nr_lines - 1), 1);
+			}
 		}
-		glEnd();
-		glPopMatrix();
-		glPopAttrib();
+		ctx.push_modelview_matrix();
+			ctx.mul_modelview_matrix(cgv::math::scale4<double>(aspect, 1, 1));
+			shader_program& prog = ctx.ref_default_shader_program();
+			prog.enable(ctx);
+				ctx.set_color(col);
+				attribute_array_binding::set_global_attribute_array(ctx, prog.get_position_index(), P);
+				attribute_array_binding::enable_global_array(ctx, prog.get_position_index());
+					glLineWidth(line_width);
+					glDrawArrays(GL_LINES, 0, 2 * nr_lines);
+				attribute_array_binding::disable_global_array(ctx, prog.get_position_index());
+			prog.disable(ctx);
+		ctx.pop_modelview_matrix();
 	}
 	void on_set(void* member_ptr)
 	{

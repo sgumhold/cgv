@@ -22,23 +22,19 @@ protected:
 	/// resolution of smooth shapes
 	int resolution;
 	/// different shape types
-	enum Shape { CUBE, PRI, TET, OCT, DOD, ICO, CYL, CONE, DISK, ARROW, SPHERE, STRIP } shp;
+	enum Shape { CUBE, PRI, TET, OCT, DOD, ICO, CYL, CONE, DISK, ARROW, SPHERE } shp;
 	/// store rotation angle
 	double ax, ay;
 	/// store location along x-axis
 	double x;
-	bool no_flat;
-	/// directly select the cube shape
-	void select_cube(cgv::gui::button&);
-	/// directly select the prism shape
-	void select_prism(cgv::gui::button&);
-	/// directly select the tet shape
-	void select_tet(cgv::gui::button&);
-	/// directly select the oct shape
-	void select_oct(cgv::gui::button&);
-	/// directly select the sphere shape
-	void select_sphere(cgv::gui::button&);
-	void select_strip(cgv::gui::button&);
+	///
+	cgv::media::illum::surface_material mat;
+	///
+	cgv::media::illum::surface_material::color_type col;
+	/// whether to flip the normals
+	bool flip_normals;
+	/// select a shape
+	void select_shape(Shape s);
 public:
 	void on_set(void*);
 	/// construct from name which is necessary construction argument to node
@@ -50,7 +46,7 @@ public:
 	/// necessary method of event_handler
 	void stream_help(std::ostream& os);
 	/// optional method of drawable
-	void draw_shape(cgv::render::context&);
+	void draw_shape(cgv::render::context&, bool);
 	/// optional method of drawable
 	void draw(cgv::render::context&);
 	/// return a path in the main menu to select the gui

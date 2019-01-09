@@ -1,14 +1,14 @@
 #include "line_renderer.h"
+#include <cgv_reflect_types/media/color.h>
 #include <cgv_gl/gl/gl.h>
 #include <cgv_gl/gl/gl_tools.h>
 
 namespace cgv {
 	namespace render {
 
-		line_render_style::line_render_style()
+		line_render_style::line_render_style() : line_color(0, 1, 1, 1)
 		{
 			line_width = 1.0f;
-			line_color = cgv::media::illum::phong_material::color_type(0, 1, 1);
 		}
 
 		line_renderer::line_renderer()

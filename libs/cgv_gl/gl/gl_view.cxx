@@ -1,3 +1,4 @@
+#include <cgv/base/base.h>
 #include "gl_view.h"
 #include <cgv/render/context.h>
 
@@ -32,17 +33,17 @@ void gl_view::set_z_far(double z)
 }
 
 ///
-void gl_view::set_scene_extent(const box_type& _box)
+void gl_view::set_scene_extent(const dbox3& _box)
 {
 	scene_extent = _box;
 }
 
 ///
-gl_view::box_type gl_view::get_scene_extent() const
+gl_view::dbox3 gl_view::get_scene_extent() const
 {
 	if (scene_extent.is_valid())
 		return scene_extent;
-	return box_type(box_type::pnt_type(-1, -1, -1), box_type::pnt_type(1, 1, 1));
+	return dbox3(dbox3::pnt_type(-1, -1, -1), dbox3::pnt_type(1, 1, 1));
 }
 
 void gl_view::set_default_view()
@@ -70,16 +71,16 @@ void gl_view::compute_clipping_planes(double& z_near_derived, double& z_far_deri
 void gl_view::compute_clipping_planes(const cgv::render::view& view, double& z_near_derived, double& z_far_derived, bool clip_relative_to_extent) const
 {
 	// compute eye and focus point
-	pnt_type foc = view.get_focus();
-	pnt_type eye = view.get_eye();
-	pnt_type view_dir = view.get_view_dir();
+	dvec3 foc = view.get_focus();
+	dvec3 eye = view.get_eye();
+	dvec3 view_dir = view.get_view_dir();
 	double z_eye = dot(eye, view_dir);
 
 	// compute the clipping planes based on the eye and scene extent
 	z_near_derived = z_near;
 	z_far_derived = z_far;
 	if (scene_extent.is_valid()) {
-		box_type B = scene_extent;
+		dbox3 B = scene_extent;
 		B.scale(1.25);
 		double z_min = dot(B.get_corner(0), view_dir);
 		double z_max = z_min;

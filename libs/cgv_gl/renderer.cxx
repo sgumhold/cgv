@@ -17,7 +17,7 @@ namespace cgv {
 			if (aab.is_created() && aab.ctx_ptr && aab.ctx_ptr->make_current())
 				destruct(*aab.ctx_ptr);
 		}
-		bool attribute_array_manager::set_attribute_array(context& ctx, int loc, type_descriptor element_type, const vertex_buffer& vbo, size_t offset_in_bytes, size_t nr_elements, size_t stride_in_bytes)
+		bool attribute_array_manager::set_attribute_array(const context& ctx, int loc, type_descriptor element_type, const vertex_buffer& vbo, size_t offset_in_bytes, size_t nr_elements, size_t stride_in_bytes)
 		{
 			return ctx.set_attribute_array_void(&aab, loc, element_type, &vbo, reinterpret_cast<const void*>(offset_in_bytes), nr_elements, stride_in_bytes);
 		}
@@ -37,7 +37,7 @@ namespace cgv {
 			return aab.disable(ctx);
 		}
 		///
-		void attribute_array_manager::destruct(context& ctx)
+		void attribute_array_manager::destruct(const context& ctx)
 		{
 			for (auto& p : vbos) {
 				p.second->destruct(ctx);
@@ -68,25 +68,25 @@ namespace cgv {
 			aam_ptr = _aam_ptr;
 		}
 
-		bool renderer::set_attribute_array(context& ctx, int loc, type_descriptor element_type, const vertex_buffer& vbo, size_t offset_in_bytes, size_t nr_elements, size_t stride_in_bytes)
+		bool renderer::set_attribute_array(const context& ctx, int loc, type_descriptor element_type, const vertex_buffer& vbo, size_t offset_in_bytes, size_t nr_elements, size_t stride_in_bytes)
 		{
 			if (aam_ptr)
 				return aam_ptr->set_attribute_array(ctx, loc, element_type, vbo, offset_in_bytes, nr_elements, stride_in_bytes);
 			enabled_attribute_arrays.insert(loc);
 			return attribute_array_binding::set_global_attribute_array(ctx, loc, vbo, offset_in_bytes, nr_elements, stride_in_bytes);
 		}
-		void renderer::set_position_array(context& ctx, type_descriptor element_type, const vertex_buffer& vbo, size_t offset_in_bytes, size_t nr_elements, size_t stride_in_bytes)
+		void renderer::set_position_array(const context& ctx, type_descriptor element_type, const vertex_buffer& vbo, size_t offset_in_bytes, size_t nr_elements, size_t stride_in_bytes)
 		{
 			has_positions = true;
 			set_attribute_array(ctx, ref_prog().get_attribute_location(ctx, "position"), element_type, vbo, offset_in_bytes, nr_elements, stride_in_bytes);
 		}
-		void renderer::set_color_array(context& ctx, type_descriptor element_type, const vertex_buffer& vbo, size_t offset_in_bytes, size_t nr_elements, size_t stride_in_bytes)
+		void renderer::set_color_array(const context& ctx, type_descriptor element_type, const vertex_buffer& vbo, size_t offset_in_bytes, size_t nr_elements, size_t stride_in_bytes)
 		{
 			has_colors = true;
 			set_attribute_array(ctx, ref_prog().get_attribute_location(ctx, "color"), element_type, vbo, offset_in_bytes, nr_elements, stride_in_bytes);
 		}
 
-		bool renderer::validate_attributes(context& ctx) const
+		bool renderer::validate_attributes(const context& ctx) const
 		{
 			// validate set attributes
 			if (!has_positions) {
@@ -141,7 +141,7 @@ namespace cgv {
 			return ref_prog().disable(ctx) && res;
 		}
 
-		void renderer::clear(cgv::render::context& ctx)
+		void renderer::clear(const cgv::render::context& ctx)
 		{
 			prog.destruct(ctx);
 		}

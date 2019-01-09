@@ -41,7 +41,7 @@ bool obj_reader_generic<T>::is_double(const char* begin, const char* end, crd_ty
 template <typename T>
 typename obj_reader_generic<T>::v2d_type obj_reader_generic<T>::parse_v2d(const std::vector<token>& t) const
 {
-	v2d_type v(0,0);
+	v2d_type v(0.0);
 	t.size() > 2 && 
 	is_double(t[1].begin,t[1].end, v(0)) && 
 	is_double(t[2].begin,t[2].end, v(1));

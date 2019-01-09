@@ -1,51 +1,34 @@
-#version 150 compatibility
+#version 150
 
-uniform bool smooth_points = true;
-uniform int illumination_mode = 1;
 uniform vec4 halo_color;
+uniform float halo_color_strength = 0.5;
 
-in vec3 normal;
 in vec2 uv;
 in vec4 color;
-in vec3 position;
-in vec2 position_pixel;
-in float percentual_outline_start;
-in float percentual_halo_start;
-in float percentual_pixel_extent;
+in float percentual_blend_width;
 in float percentual_splat_size;
-flat in int  side;
+in float percentual_core_size;
+in float percentual_point_size;
 
-//layout pixel_center_integer in vec4 gl_FragCoord;
+out vec4 frag_color;
 
-vec4 doLighting(vec3 position, vec3 normal, vec4 diffuseMaterial);
-vec4 doTwoSidedLighting(vec3 position, vec3 normal, vec4 diffuseMaterial, int side);
+//***** begin interface of splat.glsl ***********************************
+vec4 compute_blended_color_with_halo(
+	in float percentual_radial_position,
+	in vec4 core_color, in float percentual_core_size,
+	in vec4 halo_color, in float percentual_point_size,
+	in float percentual_blend_width);
+//***** end interface of surface.glsl ***********************************
 
 void main()
 {
 
-	float l = length(uv);
-	
-	if (smooth_points && (l > percentual_splat_size))
+	float percentual_radial_position = length(uv);
+	if (percentual_radial_position > percentual_splat_size)
 		discard;
 
-	float pixel_scale = 1.0 / percentual_pixel_extent;
-	float outline_width = percentual_splat_size - percentual_outline_start - percentual_pixel_extent;
-	if (outline_width < 0.01) {
-		outline_width = 0.01;
-	}
-
-	float lambda_in   = clamp(pixel_scale*(percentual_outline_start + percentual_pixel_extent - l), 0.0, 1.0);
-	float lambda_out  = clamp(pixel_scale*(l - percentual_splat_size), 0.0, 1.0);
-	float lambda_line =  clamp((percentual_splat_size - 0.5*percentual_pixel_extent - l)/outline_width, 0.0, 1.0);
-
-	// illumination
-	vec4 color_in = color;
-	if (l > percentual_halo_start)
-		color_in = halo_color;
-	switch (illumination_mode) {
-	case 1: color_in.rgb = doLighting(position, normal, color_in).rgb; break;
-	case 2: color_in.rgb = doTwoSidedLighting(position, normal, color_in, side).rgb; break;
-	}
-	vec4 color_line = vec4(color_in.rgb, lambda_line*color_in.a);
-	gl_FragColor = lambda_in * color_in + (1.0 - lambda_out - lambda_in) * color_line;
+	frag_color = compute_blended_color_with_halo(
+		percentual_radial_position, color, percentual_core_size,
+		vec4(mix(color.rgb, halo_color.rgb,halo_color_strength), halo_color.a), percentual_point_size, percentual_blend_width
+	);
 }

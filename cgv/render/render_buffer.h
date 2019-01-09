@@ -19,18 +19,18 @@ public:
 	/// construct from description of component format, where the default format specifies a color buffer with alpha channel
 	render_buffer(const std::string& description = "[R,G,B,A]");
 	/// destruct the render buffer
-	void destruct(context& ctx);
+	void destruct(const context& ctx);
 	/** create a render buffer. 
 	    If no extent is specified it is copied from the current viewport. */
-	void create(context& ctx, int width = -1, int height = -1);
+	void create(const context& ctx, int width = -1, int height = -1);
 	/// check whether the buffer has been created
 	bool is_created() const;
 	/// calls the destruct method if necessary
 	~render_buffer();
 	/// return the width in pixels of the buffer
-	int get_width() const;
+	int get_width() const { return width; }
 	/// return the height in pixels of the buffer
-	int get_height() const;
+	int get_height() const { return height; }
 	/// return whether the component format corresponds to a depth buffer format
 	bool is_depth_buffer() const;
 	/// return whether the component format corresponds to a color buffer format

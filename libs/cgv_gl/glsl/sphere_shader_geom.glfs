@@ -1,0 +1,99 @@
+#version 150 
+
+uniform vec4 halo_color;
+uniform float halo_color_strength = 0.5;
+
+in vec2 q_tilde;
+in float inv_e;
+in vec3 inv_T_square_v;
+in vec3 inv_T_square_e_c;
+in vec2 e_zw_clip;
+in vec2 v_zw_clip;
+in vec3 v;
+in vec3 v_eye;
+in vec4 color;
+
+in float percentual_blend_width;
+in float percentual_point_size;
+in float percentual_core_size;
+in float percentual_splat_size;
+
+out vec4 frag_color;
+
+//***** begin interface of splat.glsl ***********************************
+vec4 compute_blended_color_with_halo(
+	in float percentual_radial_position,
+	in vec4 core_color, in float percentual_core_size,
+	in vec4 halo_color, in float percentual_point_size,
+	in float percentual_blend_width);
+//***** end interface of surface.glsl ***********************************
+
+//***** begin interface of side.glsl ***********************************
+bool keep_this_side(in vec3 position, in vec3 normal, out int side);
+void update_material_color_and_transparency(inout vec3 mat_color, inout float transparency, in int side, in vec4 color);
+void update_normal(inout vec3 normal, in int side);
+//***** end interface of side.glsl ***********************************
+
+//***** begin interface of surface.glsl ***********************************
+struct Material {
+	int brdf_type;
+	vec3 diffuse_reflectance;
+	float roughness;
+	float metalness;
+	float ambient_occlusion;
+	vec3 emission;
+	float transparency;
+	vec2 propagation_slow_down;
+	float roughness_anisotropy;
+	float roughness_orientation;
+	vec3 specular_reflectance;
+};
+
+vec4 compute_reflected_radiance(in Material M, vec3 position_eye, vec3 normal_eye);
+vec4 compute_reflected_appearance(vec3 position_eye, vec3 normal_eye, vec4 color, int side);
+vec4 compute_reflected_appearance_texture(vec3 position_eye, vec3 normal_eye, vec2 texcoords, vec4 color, int side);
+//***** end interface of surface.glsl ***********************************
+
+void main()
+{
+	// ray-sphere intersection	
+	
+	// check for intersection with q_tilde parameterization of unit circle
+	float q_tilde_squared_length = dot(q_tilde.xy,q_tilde.xy);
+	float percentual_radial_position = sqrt(q_tilde_squared_length);
+	if (percentual_radial_position > percentual_splat_size)
+		discard;
+	if (q_tilde_squared_length > 1.0)
+		q_tilde_squared_length = 1.0;
+
+	// compute ray parameter of intersection
+	float beta = inv_e*sqrt(1.0-q_tilde_squared_length);
+	float lambda = 1.0/(1.0+beta);
+
+	// culling 
+
+	// compute sphere position in eye coordinates and normal
+	vec3 p_eye = lambda*v_eye;
+	vec3 n_eye = normalize(inv_T_square_e_c + lambda * inv_T_square_v);
+
+	// determine side in eye space
+	int side;
+	if (!keep_this_side(p_eye, n_eye, side)) {
+		lambda= 1.0 / (1.0 - beta);
+		p_eye = lambda * v_eye;
+		n_eye = normalize(inv_T_square_e_c + lambda* inv_T_square_v);
+		//side = 1-side;
+	}
+	frag_color = compute_reflected_appearance_texture(p_eye, n_eye, 0.5*(q_tilde + vec2(1.0)), color, side);
+	frag_color = compute_blended_color_with_halo(
+		percentual_radial_position, frag_color, percentual_core_size,
+		vec4(mix(color.rgb, halo_color.rgb, halo_color_strength), halo_color.a), percentual_point_size, percentual_blend_width
+	);
+	// depth correction
+
+	// compute the depth value in clip coordinates
+	vec2 zw = e_zw_clip + lambda * v_zw_clip;
+	float z_clip = zw.x / zw.y;
+	// transform from [-1,1] to [0,1]
+	gl_FragDepth = 0.5*(z_clip + 1);
+}

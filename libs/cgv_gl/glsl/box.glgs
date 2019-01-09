@@ -13,7 +13,21 @@ out vec4 color;
 out vec3 position;
 flat out int side;
 
-int surface_side_handling(in vec3 position, inout vec3 normal, inout vec4 color);
+//***** begin interface of side.glsl ***********************************
+bool keep_this_side(in vec3 position, in vec3 normal, out int side);
+void update_material_color_and_transparency(inout vec3 mat_color, inout float transparency, in int side, in vec4 color);
+void update_normal(inout vec3 normal, in int side);
+//***** end interface of side.glsl ***********************************
+
+//***** begin interface of view.glsl ***********************************
+mat4 get_modelview_matrix();
+mat4 get_projection_matrix();
+mat4 get_modelview_projection_matrix();
+mat4 get_inverse_modelview_matrix();
+mat4 get_inverse_modelview_projection_matrix();
+mat3 get_normal_matrix();
+mat3 get_inverse_normal_matrix();
+//***** end interface of view.glsl ***********************************
 
 void emit_face(in vec3 normal_in, in vec4 c0, in vec4 c1, in vec4 c2, in vec4 c3)
 {
@@ -22,22 +36,21 @@ void emit_face(in vec3 normal_in, in vec4 c0, in vec4 c1, in vec4 c2, in vec4 c3
 	normal = normal_in;
 	position = c0.xyz;
 
-	// determine side in eye space
-	side = surface_side_handling(position, normal, color);
-	if (side == -1)
+	// determine side in eye space and check for culling
+	if (!keep_this_side(position, normal, side))
 		return;
 
 	// emit face
-	gl_Position = gl_ProjectionMatrix * c0;
+	gl_Position = get_projection_matrix() * c0;
 	EmitVertex();
 	position = c1.xyz;
-	gl_Position = gl_ProjectionMatrix * c1;
+	gl_Position = get_projection_matrix() * c1;
 	EmitVertex();
 	position = c2.xyz;
-	gl_Position = gl_ProjectionMatrix * c2;
+	gl_Position = get_projection_matrix() * c2;
 	EmitVertex();
 	position = c3.xyz;
-	gl_Position = gl_ProjectionMatrix * c3;
+	gl_Position = get_projection_matrix() * c3;
 	EmitVertex();
 	EndPrimitive();
 }

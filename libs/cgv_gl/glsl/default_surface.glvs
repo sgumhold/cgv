@@ -1,0 +1,26 @@
+#version 150 
+
+//***** begin interface of view.glsl ***********************************
+mat4 get_modelview_matrix();
+mat4 get_modelview_projection_matrix();
+mat3 get_normal_matrix();
+//***** end interface of view.glsl ***********************************
+
+in vec4 position;
+in vec3 normal;
+in vec4 color;
+
+out vec3 normal_eye;
+out vec3 position_eye;
+out vec4 color_fs;
+
+void main()
+{
+	// transform vertex to clip space
+	gl_Position = get_modelview_projection_matrix()*position;
+	vec4 p = get_modelview_matrix()*position;
+	position_eye = p.xyz / p.w;
+
+	normal_eye = get_normal_matrix()*normal;
+	color_fs = color;
+}
