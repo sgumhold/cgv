@@ -28,7 +28,7 @@ class image_view :
 	public provider
 {
 protected:
-	cgv::math::fvec<float,2> range;
+	vec2 range;
 public:
 	image_view() : node("image view"), range(0,1)
 	{
@@ -71,16 +71,16 @@ public:
 			find_control(animate)->set("active", tex_ids.size() > 1);
 			find_control(current_image)->set("active", tex_ids.size() > 1);
 		}
-		if (find_control(x)) {
-			find_control(x)->set("max", W);
-			find_control(y)->set("max", H);
-			find_control(w)->set("max", W);
-			find_control(h)->set("max", H);
+		if (find_control(selection.ref_min_pnt()(0))) {
+			find_control(selection.ref_min_pnt()(0))->set("max", W);
+			find_control(selection.ref_max_pnt()(0))->set("max", W);
+			find_control(selection.ref_min_pnt()(1))->set("max", H);
+			find_control(selection.ref_max_pnt()(1))->set("max", H);
 		}
-		update_member(&x);
-		update_member(&y);
-		update_member(&w);
-		update_member(&h);
+		update_member(&selection.ref_min_pnt()(0));
+		update_member(&selection.ref_max_pnt()(0));
+		update_member(&selection.ref_min_pnt()(1));
+		update_member(&selection.ref_max_pnt()(1));
 		update_member(&file_name);
 		update_member(&current_image);
 		update_member(&use_blending);
@@ -113,15 +113,12 @@ public:
 			end_tree_node(use_blending);
 		}
 
-		if (begin_tree_node("selection", show_rectangle)) {
+		if (begin_tree_node("selection", show_selection)) {
 			align("\a");	
-			add_member_control(this, "show_rectangle", show_rectangle, "check", "shortcut='R'");
-			add_member_control(this, "x", x, "value_slider", "min=0;ticks=true");
-			add_member_control(this, "y", y, "value_slider", "min=0;ticks=true");
-			add_member_control(this, "w", w, "value_slider", "min=0;ticks=true");
-			add_member_control(this, "h", h, "value_slider", "min=0;ticks=true");
+			add_member_control(this, "show", show_selection, "check", "shortcut='R'");
+			add_gui("rectangle", selection, "", "min_size=0.1;main_label='first';gui_type='value_slider';options='min=0;max=1;ticks=true;step=1'");
 			align("\b");
-			end_tree_node(show_rectangle);
+			end_tree_node(show_selection);
 		}
 		configure_gui();
 	}

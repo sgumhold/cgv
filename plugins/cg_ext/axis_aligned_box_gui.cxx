@@ -389,13 +389,13 @@ struct axis_aligned_box_gui_creator : public cgv::gui::gui_creator
 				std::swap(my_ptr, other_ptr);
 			const std::string& child_align = k == (2*dim-1) ? child_align_end : (k%nr_cols+1 < nr_cols ? child_align_col : child_align_row);
 
-			std::string lab_suffix;
+			std::string lab_suffix(is_min ? "min." : "max.");
 			if (dim > (int)components.size())
-				lab_suffix = cgv::utils::to_string(i);
+				lab_suffix += cgv::utils::to_string(i);
 			else
-				lab_suffix = components[i];
+				lab_suffix += components[i];
 
-			std::string lab_prefix(is_min ? "min." : "max.");
+			std::string lab_prefix;
 			if (long_label || (main_label == "first" && (k%nr_cols == 0)))
 				lab_prefix = label+ (label.empty()?"":".") + lab_prefix;
 			if (!long_label && (main_label == "first") && (k%nr_cols != 0))
