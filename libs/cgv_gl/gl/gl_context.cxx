@@ -1957,7 +1957,6 @@ bool gl_context::frame_buffer_enable(frame_buffer_base& fbb)
 		return false;
 	std::vector<int> buffers;
 	get_buffer_list(fbb, buffers, GL_COLOR_ATTACHMENT0);
-	frame_buffer_stack.push(&fbb);
 	glBindFramebuffer(GL_FRAMEBUFFER, get_gl_id(fbb.handle));
 
 	if (buffers.size() == 1)
@@ -2018,6 +2017,8 @@ bool gl_context::frame_buffer_attach(frame_buffer_base& fbb,
 		return false;
 	GLint old_binding;
 	glGetIntegerv(GL_FRAMEBUFFER_BINDING, &old_binding);
+	glBindFramebuffer(GL_FRAMEBUFFER, get_gl_id(fbb.handle));
+
 	if (z_or_cube_side == -1) {
 		glFramebufferTexture2D(GL_FRAMEBUFFER, 
 			is_depth ? GL_DEPTH_ATTACHMENT : GL_COLOR_ATTACHMENT0+i,
@@ -2049,6 +2050,7 @@ bool gl_context::frame_buffer_is_complete(const frame_buffer_base& fbb) const
 	}
 	GLint old_binding;
 	glGetIntegerv(GL_FRAMEBUFFER_BINDING, &old_binding);
+	glBindFramebuffer(GL_FRAMEBUFFER, get_gl_id(fbb.handle));
 	GLenum error = glCheckFramebufferStatus(GL_FRAMEBUFFER);
 	glBindFramebuffer(GL_FRAMEBUFFER, old_binding);
 	switch (error) {
