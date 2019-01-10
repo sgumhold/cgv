@@ -1,16 +1,31 @@
-varying vec3 N; 
-varying vec4 l; 
-varying vec4 h; 
+#version 150
 
-vec4 my_color_transform(in vec4 c);
+in vec4 position;
+in vec3 normal;
+in vec2 texcoord; 
+in vec4 color;
+
+out vec3 p_eye;
+out vec3 n_eye;
+out vec4 col;
+out vec2 tc;
+
+//***** begin interface of view.glsl ***********************************
+mat4 get_modelview_matrix();
+mat4 get_projection_matrix();
+mat4 get_modelview_projection_matrix();
+mat4 get_inverse_modelview_matrix();
+mat4 get_inverse_modelview_projection_matrix();
+mat3 get_normal_matrix();
+mat3 get_inverse_normal_matrix();
+//***** end interface of view.glsl ***********************************
 
 void main()
 {
-	gl_Position = ftransform();
-	gl_FrontColor = my_color_transform(gl_Color); 
-	gl_FrontColor = gl_Color; 
-	N = gl_NormalMatrix * gl_Normal;
-	l = gl_LightSource[0].position;
-	h = gl_LightSource[0].halfVector;
-	gl_TexCoord[0] = gl_MultiTexCoord0;
+	gl_Position = get_modelview_projection_matrix()*position;
+	vec4 hp = get_modelview_matrix()*position;
+	p_eye = hp.xyz / hp.w;
+	n_eye = get_normal_matrix() * normal;
+	col   = color;
+	tc    = texcoord;
 }

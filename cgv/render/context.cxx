@@ -1921,6 +1921,7 @@ bool context::frame_buffer_disable(frame_buffer_base& fbb)
 		return false;
 	}
 	frame_buffer_stack.pop();
+	fbb.is_enabled = false;
 	return true;
 }
 

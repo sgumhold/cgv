@@ -8,6 +8,7 @@
 #include <cgv/render/shader_program.h>
 #include <cgv_gl/gl/gl.h>
 #include <cgv/media/font/font.h>
+#include <cgv/math/ftransform.h>
 
 using namespace cgv::base;
 using namespace cgv::data;
@@ -38,7 +39,6 @@ protected:
 	bool  show_tex, show_img_tex;
 	bool do_shader_setup_by_hand;
 	bool use_depth_texture;
-	float ambient;
 public:
 	/// define format and texture filters in constructor
 	gpu_test() : 
@@ -49,7 +49,6 @@ public:
 	{
 		font_face = find_font("Arial")->get_font_face(FFA_ITALIC);
 		angle = 0;
-		ambient = 0.2f;
 		show_tex = show_img_tex = true;
 		use_depth_texture = true;
 		do_shader_setup_by_hand = false;
@@ -129,40 +128,45 @@ public:
 			glClearColor(0,1,1,1);
 			glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 			// draw text
-			glColor3f(0,0,0);
-			ctx.push_pixel_coords();
-				ctx.set_cursor(200,400);
-				ctx.enable_font_face(font_face, 40);
-				ctx.output_stream() << "test\ntext" << std::endl;
-			ctx.pop_pixel_coords();
+			ctx.ref_default_shader_program().enable(ctx);
+				ctx.set_color(rgb(0.0f));
+				ctx.push_pixel_coords();
+					ctx.set_cursor(200,400);
+					ctx.enable_font_face(font_face, 40);
+					ctx.output_stream() << "test\ntext" << std::endl;
+				ctx.pop_pixel_coords();
+			ctx.ref_default_shader_program().disable(ctx);
+
 			// draw rotating cube
-			glColor3f(1,0,0);
-			glPushMatrix();
-			glRotated(angle, 1, 0, 0);
-			ctx.tesselate_unit_cube();
-			glPopMatrix();
+			ctx.ref_surface_shader_program().enable(ctx);
+				ctx.set_color(rgb(1.0f,0.0f,0.0f));
+				ctx.push_modelview_matrix();
+					ctx.mul_modelview_matrix(cgv::math::rotate4<double>(angle, 1, 0, 0));
+					ctx.tesselate_unit_cube();
+				ctx.pop_modelview_matrix();
+			ctx.ref_surface_shader_program().disable(ctx);
 		glPopAttrib();
 		fb.disable(ctx);
 	}
 	void draw(context& ctx)
 	{
-		glColor3d(1,1,1);
 		// enable textures in different texture units
 		tex.enable(ctx, 0);
 		img_tex.enable(ctx, 1);
-		// enable shader program
-		prog.enable(ctx);
-		// set uniform variables including texture units
-		prog.set_uniform(ctx,"ambient", ambient);
-		prog.set_uniform(ctx,"show_tex", show_tex);
-		prog.set_uniform(ctx,"show_img_tex", show_img_tex);
-		prog.set_uniform(ctx,"tex", 0);
-		prog.set_uniform(ctx,"img_tex", 1);
-		// draw scene
-		ctx.tesselate_unit_cube();
-		// disable shader program
-		prog.disable(ctx);
-		// and textures
+			// enable shader program
+			prog.enable(ctx);
+				ctx.set_color(rgb(1.0f));
+				// set uniform variables including texture units
+				prog.set_uniform(ctx,"show_tex", show_tex);
+				prog.set_uniform(ctx,"show_img_tex", show_img_tex);
+				prog.set_uniform(ctx,"tex", 0);
+				prog.set_uniform(ctx,"img_tex", 1);
+				prog.set_uniform(ctx, "map_color_to_material", 3);
+				// draw scene
+				ctx.tesselate_unit_cube();
+			// disable shader program
+			prog.disable(ctx);
+			// and textures
 		img_tex.disable(ctx);
 		tex.disable(ctx);
 	}
@@ -183,12 +187,8 @@ public:
 	void create_gui()
 	{
 		add_view("angle", angle);
-		add_control("ambient", ambient, "value_slider", "min=0;max=1;ticks=true"),
-		add_control("show_tex", show_tex, "check");
-		add_control("show_img_tex", show_img_tex, "check");
-
-		connect_copy(find_control(ambient)->value_change,
-			rebind(static_cast<drawable*>(this), &drawable::post_redraw));
+		add_member_control(this, "show_tex", show_tex, "check");
+		add_member_control(this, "show_img_tex", show_img_tex, "check");
 	}
 };
 
