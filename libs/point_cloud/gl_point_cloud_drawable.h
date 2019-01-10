@@ -37,7 +37,7 @@ protected:
 	bool sort_points;
 	bool use_component_colors;
 	bool use_component_transformations;
-	rgba_type box_color;
+	rgba box_color;
 	
 	std::vector<Clr>* use_these_point_colors;
 	std::vector<cgv::type::uint8_type>* use_these_point_color_indices;
@@ -59,7 +59,7 @@ public:
 	bool write(const std::string& file_name);
 	
 	void render_boxes(cgv::render::context& ctx, cgv::render::group_renderer& R, cgv::render::group_render_style& RS);
-	void draw_box(cgv::render::context& ctx, const Box& box, const rgba_type& clr);
+	void draw_box(cgv::render::context& ctx, const Box& box, const rgba& clr);
 	void draw_boxes(cgv::render::context& ctx);
 	void draw_points(cgv::render::context& ctx);
 	void draw_normals(cgv::render::context& ctx);

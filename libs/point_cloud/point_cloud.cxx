@@ -473,6 +473,8 @@ bool point_cloud::read_component_transformations(const std::string& file_name)
 		std::cerr << "ERROR in point_cloud::read_component_transformations: could not read file " << file_name << std::endl;
 		return false;
 	}
+	string ext = cgv::utils::file::get_extension(file_name);
+
 	vector<line> lines;
 	split_to_lines(content, lines);
 	Cnt ci = 0;
@@ -498,12 +500,14 @@ bool point_cloud::read_component_transformations(const std::string& file_name)
 			if (fabs(fabs(D) - 1.0f) > 0.0001f) {
 				std::cerr << "C" << ci << "(" << component_name(ci) << "): rotation matrix not normalized, det = " << D << std::endl;
 			}
-			if (D < 0) {
-				std::cerr << "C" << ci << "(" << component_name(ci) << "): negative determinant of rotation matrix = " << D << std::endl;
-				R.transpose();
-				t = R * t;
-				R.transpose();
-				R = -R;
+			if (ext == "som") {
+				if (D < 0) {
+					std::cerr << "C" << ci << "(" << component_name(ci) << "): negative determinant of rotation matrix = " << D << std::endl;
+					R.transpose();
+					t = R * t;
+					R.transpose();
+					R = -R;
+				}
 			}
 			Qat q(R);
 			if (fabs(q.length() - 1.0f) > 0.0001f) {

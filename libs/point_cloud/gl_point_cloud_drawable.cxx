@@ -29,7 +29,7 @@ gl_point_cloud_drawable::gl_point_cloud_drawable()
 
 	surfel_style.blend_points = false;
 	surfel_style.blend_width_in_pixel = 0.0f;
-	box_color = rgba_type(0.5f, 0.5f, 0.5f, 1.0f);
+	box_color = rgba(0.5f, 0.5f, 0.5f, 1.0f);
 	box_style.illumination_mode = cgv::render::IM_TWO_SIDED;
 	box_style.culling_mode = cgv::render::CM_FRONTFACE;
 
@@ -110,7 +110,7 @@ void gl_point_cloud_drawable::render_boxes(context& ctx, group_renderer& R, cgv:
 	R.disable(ctx);
 }
 
-void gl_point_cloud_drawable::draw_box(cgv::render::context& ctx, const Box& box, const rgba_type& clr)
+void gl_point_cloud_drawable::draw_box(cgv::render::context& ctx, const Box& box, const rgba& clr)
 {
 	bool tmp_use_color = box_style.use_group_color;
 	bool tmp_use_transformation = box_style.use_group_transformation;
