@@ -15,6 +15,8 @@ picker::picker(const char* name) : node(name)
 	is_drag_action = false;
 	prs.point_size = 10;
 	pnts.push_back(vec2(0.0f));
+	pnts.push_back(vec2(0.5f));
+	pnts.push_back(vec2(-0.5f));
 }
 
 /// show internal values
