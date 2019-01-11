@@ -321,5 +321,12 @@ float& textured_material::ref_alpha_threshold()
 	return alpha_threshold;
 }
 
+void textured_material::enable_textures(context&)
+{
+}
+void textured_material::disable_textures(context&)
+{
+}
+
 	}
 }

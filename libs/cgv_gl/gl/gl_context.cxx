@@ -581,10 +581,10 @@ void gl_context::enable_material(const textured_material& mat, MaterialSide ms, 
 	*/
 }
 
+/*
 /// disable phong material
 void gl_context::disable_material(const textured_material& mat)
 {
-	/*
 	if ((mat.get_bump_texture() || phong_shading) && ref_textured_material_prog(*this).is_linked()) {
 		shader_program& prog = ref_textured_material_prog(*this);
 		prog.disable(*this);
@@ -597,8 +597,8 @@ void gl_context::disable_material(const textured_material& mat)
 		mat.get_diffuse_texture()->disable(*this);
 	}
 	glPopAttrib();
-*/
 }
+*/
 
 /// get list of program uniforms
 void gl_context::enumerate_program_uniforms(shader_program& prog, std::vector<std::string>& names, std::vector<int>* locations_ptr, std::vector<int>* sizes_ptr, std::vector<int>* types_ptr, bool show) const
@@ -658,15 +658,16 @@ void gl_context::set_material(const cgv::media::illum::surface_material& materia
 }
 
 /// enable a material with textures
-void gl_context::enable_material(const cgv::media::illum::textured_surface_material& mat)
+void gl_context::enable_material(textured_material& mat)
 {
-	set_material(mat);
-	current_material_is_textured = true;
+	set_textured_material(mat);
+	mat.enable_textures(*this);	
 }
 
 /// disable a material with textures
-void gl_context::disable_material(const cgv::media::illum::textured_surface_material& mat)
+void gl_context::disable_material(textured_material& mat)
 {
+	mat.disable_textures(*this);
 	current_material_ptr = 0;
 	current_material_is_textured = false;
 }

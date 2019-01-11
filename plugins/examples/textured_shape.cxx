@@ -1,4 +1,5 @@
 #include <cgv/base/node.h>
+#include <cgv/math/ftransform.h>
 #include <cgv/signal/rebind.h>
 #include <cgv/data/data_view.h>
 #include <cgv/gui/provider.h>
@@ -16,22 +17,32 @@ class textured_shape :
 	public cgv::render::drawable     /// derive from drawable for drawing the cube
 {
 public:
-	int n;
 	cgv::render::texture* t_ptr;
+
+	// animation
 	bool boost_animation;
-	// support for different objects
+
+	// shape selection
 	enum Object { 
 		CUBE, SPHERE, SQUARE, LAST_OBJECT 
 	} object;
+	
+	// texture generation
 	enum TextureSelection { CHECKER, WAVES, ALHAMBRA, CARTUJA } texture_selection;
 	float texture_frequency, texture_frequency_aspect;
+	int n; // resolution
+
+	// texture transformation
 	float texture_u_offset, texture_v_offset;
 	float texture_rotation;
 	float texture_scale,  texture_aspect;
+	
+	// texture parameters
 	rgba border_color;
+
+	// appearance parameters
 	rgba frame_color;
 	float frame_width;
-
 	cgv::render::textured_material mat;
 
 	textured_shape(int _n = 1024) : 
@@ -41,7 +52,7 @@ public:
 		frame_color(1,1,1,1)
 	{
 		frame_width = 2;
-		object = SQUARE;
+		object = CUBE;
 		texture_selection = CHECKER;
 		texture_frequency = 50;
 		texture_frequency_aspect = 1;
@@ -129,25 +140,15 @@ public:
 								   sin(M_PI*texture_frequency*j/(n-1))+1));
 		t_ptr->create(ctx, dv);
 	}
-	void draw_scene(cgv::render::context& ctx)
+	void draw_scene(cgv::render::context& ctx, bool wireframe)
 	{
 		switch (object) {
-		case CUBE :	ctx.tesselate_unit_cube(); break;
+		case CUBE :	ctx.tesselate_unit_cube(false, wireframe); break;
 		case SPHERE : 
-			ctx.tesselate_unit_sphere(100); break;
+			ctx.tesselate_unit_sphere(25, false, wireframe); break;
 		case SQUARE :
 			glDisable(GL_CULL_FACE);
-				glBegin(GL_QUADS);
-					glNormal3d(0,0,1);
-					glTexCoord2d(0,0);
-					glVertex3d(0,0,0);
-					glTexCoord2d(1,0);
-					glVertex3d(1,0,0);
-					glTexCoord2d(1,1);
-					glVertex3d(1,1,0);
-					glTexCoord2d(0,1);
-					glVertex3d(0,1,0);
-				glEnd();
+			ctx.tesselate_unit_square(false, wireframe); break;
 			glEnable(GL_CULL_FACE);
 			break;
 		default: break;
@@ -160,38 +161,24 @@ public:
 			ctx.set_color(frame_color);
 			glLineWidth(frame_width);
 			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-			/*
-			glPushMatrix();
-			glScaled(1.0/texture_scale,texture_aspect/texture_scale,1.0/texture_scale);
-			glRotated(-texture_rotation, 0, 0, 1);
-			glTranslated(-texture_u_offset, -texture_v_offset,0);
-			glDisable(GL_LIGHTING);
-			*/
-			draw_scene(ctx);
-			//glEnable(GL_LIGHTING);
+			draw_scene(ctx, true);
 			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);				
-			//glPopMatrix();
-			ctx.ref_default_shader_program().enable(ctx);
+			ctx.ref_default_shader_program().disable(ctx);
 		}
-		cgv::render::shader_program& prog = ctx.ref_surface_shader_program();
+		cgv::render::shader_program& prog = ctx.ref_surface_shader_program(true);
 		prog.enable(ctx);
-		ctx.set_material(mat);
-		mat.enable_textures(ctx);
-		t_ptr->set_border_color(border_color[0],border_color[1],border_color[2],border_color[3]);
-		/*
-		glMatrixMode(GL_TEXTURE);
-		glPushMatrix();
-		glTranslated(texture_u_offset, texture_v_offset,0);
-		glRotated(texture_rotation, 0, 0, 1);
-		glScaled(texture_scale,texture_scale/texture_aspect,texture_scale);
-		*/
-		t_ptr->enable(ctx);
-		//glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-		draw_scene(ctx);
-		t_ptr->disable(ctx);
-		//glPopMatrix();
-		//ctx.disable_material(mat);
-		mat.disable_textures(ctx);
+			t_ptr->set_border_color(border_color[0], border_color[1], border_color[2], border_color[3]);
+			ctx.enable_material(mat);
+				prog.set_uniform(ctx, "use_texture_matrix", true);
+				prog.set_uniform(ctx, "texture_matrix", 
+					cgv::math::translate4<float>(texture_u_offset, texture_v_offset, 0.0f)*
+					cgv::math::rotate4<float>(texture_rotation, 0, 0, 1)*
+					cgv::math::scale4<float>(texture_scale, texture_scale / texture_aspect, texture_scale)
+				);
+				draw_scene(ctx, false);
+				prog.set_uniform(ctx, "use_texture_matrix", false);
+			ctx.disable_material(mat);
+		prog.disable(ctx);
 
 		if (boost_animation) {
 			post_redraw();
