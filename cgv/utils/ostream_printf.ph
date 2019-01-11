@@ -34,20 +34,22 @@ public:
 
   inline ostream_printf& operator<<(bool  value_)                   { parseFormatString(); m_stream << value_; return *this; }
   inline ostream_printf& operator<<(void* value_)                   { parseFormatString(); m_stream << value_; return *this; }
-                                                                  
-  inline ostream_printf& operator<<(char  value_)                   { parseFormatString(); m_stream << value_; return *this; }
-  inline ostream_printf& operator<<(short value_)                   { parseFormatString(); m_stream << value_; return *this; }
-  inline ostream_printf& operator<<(int   value_)                   { parseFormatString(); m_stream << value_; return *this; }
-  inline ostream_printf& operator<<(long  value_)                   { parseFormatString(); m_stream << value_; return *this; }
-                                                                  
-  inline ostream_printf& operator<<(unsigned char   value_)         { parseFormatString(); m_stream << value_; return *this; }
-  inline ostream_printf& operator<<(unsigned short  value_)         { parseFormatString(); m_stream << value_; return *this; }
-  inline ostream_printf& operator<<(unsigned int    value_)         { parseFormatString(); m_stream << value_; return *this; }
-  inline ostream_printf& operator<<(unsigned long   value_)         { parseFormatString(); m_stream << value_; return *this; }
-                                                                  
+
+  inline ostream_printf& operator<<(char      value_)               { parseFormatString(); m_stream << value_; return *this; }
+  inline ostream_printf& operator<<(short     value_)               { parseFormatString(); m_stream << value_; return *this; }
+  inline ostream_printf& operator<<(int       value_)               { parseFormatString(); m_stream << value_; return *this; }
+  inline ostream_printf& operator<<(long      value_)               { parseFormatString(); m_stream << value_; return *this; }
+  inline ostream_printf& operator<<(long long value_)               { parseFormatString(); m_stream << value_; return *this; }
+
+  inline ostream_printf& operator<<(unsigned char      value_)      { parseFormatString(); m_stream << value_; return *this; }
+  inline ostream_printf& operator<<(unsigned short     value_)      { parseFormatString(); m_stream << value_; return *this; }
+  inline ostream_printf& operator<<(unsigned int       value_)      { parseFormatString(); m_stream << value_; return *this; }
+  inline ostream_printf& operator<<(unsigned long      value_)      { parseFormatString(); m_stream << value_; return *this; }
+  inline ostream_printf& operator<<(unsigned long long value_)      { parseFormatString(); m_stream << value_; return *this; }
+
   inline ostream_printf& operator<<(float  value_)                  { parseFormatString(); m_stream << value_; return *this; }
   inline ostream_printf& operator<<(double value_)                  { parseFormatString(); m_stream << value_; return *this; }
-                                                                  
+
   inline ostream_printf& operator<<(const char*           value_)   { parseFormatString(); m_stream << value_; return *this; }
   inline ostream_printf& operator<<(const unsigned char*  value_)   { parseFormatString(); m_stream << value_; return *this; }
      
