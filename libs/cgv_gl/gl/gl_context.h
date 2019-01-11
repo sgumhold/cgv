@@ -138,16 +138,15 @@ public:
 	void enable_material(const cgv::media::illum::phong_material& mat, MaterialSide ms = MS_FRONT_AND_BACK, float alpha = 1);
 	void disable_material(const cgv::media::illum::phong_material& mat);
 	void enable_material(const textured_material& mat, MaterialSide ms = MS_FRONT_AND_BACK, float alpha = 1);
-	void disable_material(const textured_material& mat);
 
 	/// set the current color
 	void set_color(const rgba& clr);
 	/// set the current material 
 	void set_material(const cgv::media::illum::surface_material& mat);
 	/// enable a material with textures
-	void enable_material(const cgv::media::illum::textured_surface_material& mat);
+	void enable_material(textured_material& mat);
 	/// disable a material with textures
-	void disable_material(const cgv::media::illum::textured_surface_material& mat);
+	void disable_material(textured_material& mat);
 	/// return a reference to a shader program used to render without illumination
 	shader_program& ref_default_shader_program(bool texture_support = false);
 	/// return a reference to the default shader program used to render surfaces 

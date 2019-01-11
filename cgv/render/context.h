@@ -5,8 +5,8 @@
 #include <cgv/data/data_view.h>
 #include <cgv/media/font/font.h>
 #include <cgv/media/axis_aligned_box.h>
-#include <cgv/media/illum/textured_surface_material.h>
 #include <cgv/media/illum/phong_material.hh>
+#include <cgv/media/illum/textured_surface_material.h>
 #include <cgv/media/illum/light_source.hh>
 #include <cgv/signal/callback_stream.h>
 #include <cgv/render/render_types.h>
@@ -841,17 +841,19 @@ public:
 	DEPRECATED("deprecated, use set_material instead.") virtual void enable_material(const cgv::media::illum::phong_material& mat = cgv::media::illum::default_material(), MaterialSide ms = MS_FRONT_AND_BACK, float alpha = 1) = 0;
 	DEPRECATED("deprecated and ignored.") virtual void disable_material(const cgv::media::illum::phong_material& mat = cgv::media::illum::default_material()) = 0;
 	DEPRECATED("deprecated, use enable_material(textured_surface_material) instead.") virtual void enable_material(const textured_material& mat, MaterialSide ms = MS_FRONT_AND_BACK, float alpha = 1) = 0;
-	DEPRECATED("deprecated, use disable_material(textured_surface_material) instead.") virtual void disable_material(const textured_material& mat) = 0;
+	//DEPRECATED("deprecated, use disable_material(textured_surface_material) instead.") virtual void disable_material(const textured_material& mat) = 0;
 	/// set the current color
 	virtual void set_color(const rgba& clr) = 0;
 	/// set the current color
 	virtual void set_color(const rgb& clr, float opacity = 1.0f) { set_color(rgba(clr[0], clr[1], clr[2], opacity)); }
 	/// set the current material 
 	virtual void set_material(const cgv::media::illum::surface_material& mat);
+	/// set the current material 
+	virtual void set_textured_material(const textured_material& mat);
 	/// enable a material with textures
-	virtual void enable_material(const cgv::media::illum::textured_surface_material& mat) = 0;
+	virtual void enable_material(textured_material& mat) = 0;
 	/// disable a material with textures
-	virtual void disable_material(const cgv::media::illum::textured_surface_material& mat) = 0;
+	virtual void disable_material(textured_material& mat) = 0;
 	/// set the shader program view matrices to the currently enabled view matrices
 	void set_current_view(shader_program& prog, bool modelview_deps = true, bool projection_deps = true) const;
 	/// set the shader program material to the currently enabled material

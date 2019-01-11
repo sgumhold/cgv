@@ -471,6 +471,28 @@ bool shader_program::set_material_uniform(const context& ctx, const std::string&
 		set_uniform(ctx, name + ".metalness", material.get_metalness(), generate_error);
 }
 
+/// set a uniform of type textured_material
+bool shader_program::set_textured_material_uniform(const context& ctx, const std::string& name, const textured_material& material, bool generate_error)
+{
+	const char* texture_names[] = {
+		"tex0", "tex1", "tex2", "tex3"
+	};
+	for (int i = 0; i < (int)material.get_nr_image_files(); ++i)
+		if (!set_uniform(ctx, texture_names[i], i, generate_error))
+			return false;
+	return
+		set_material_uniform(ctx, name, material, generate_error) &&
+		set_uniform(ctx, "diffuse_index", material.get_diffuse_index(), generate_error) &&
+		set_uniform(ctx, "roughness_index", material.get_roughness_index(), generate_error) &&
+		set_uniform(ctx, "metalness_index", material.get_metalness_index(), generate_error) &&
+		set_uniform(ctx, "ambient_index", material.get_ambient_index(), generate_error) &&
+		set_uniform(ctx, "emission_index", material.get_emission_index(), generate_error) &&
+		set_uniform(ctx, "transparency_index", material.get_transparency_index(), generate_error) &&
+		set_uniform(ctx, "specular_index", material.get_specular_index(), generate_error);
+}
+
+
+
 /// set a uniform of type light source
 bool shader_program::set_light_uniform(const context& ctx, const std::string& name, const cgv::media::illum::light_source& L, bool generate_error)
 {

@@ -3,6 +3,7 @@
 #include <set>
 #include "element_traits.h"
 #include "shader_code.h"
+#include "textured_material.h"
 
 namespace cgv {
 	namespace media {
@@ -108,6 +109,8 @@ public:
 	int get_uniform_location(const context& ctx, const std::string& name) const;
 	/// set a uniform of type material
 	bool set_material_uniform(const context& ctx, const std::string& name, const cgv::media::illum::surface_material& material, bool generate_error = false);
+	/// set a uniform of type textured_material
+	bool set_textured_material_uniform(const context& ctx, const std::string& name, const textured_material& material, bool generate_error = false);
 	/// set a uniform of type light source
 	bool set_light_uniform(const context& ctx, const std::string& name, const cgv::media::illum::light_source& light, bool generate_error = false);
 	/** Set the value of a uniform by name, where the type can be any of int, unsigned, float, vec<int>, vec<unsigned>,

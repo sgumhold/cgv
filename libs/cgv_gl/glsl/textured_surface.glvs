@@ -1,5 +1,14 @@
 #version 150
 
+uniform mat4 texture_matrix = mat4(
+	vec4(1.0, 0.0, 0.0, 0.0), 
+	vec4(0.0, 1.0, 0.0, 0.0), 
+	vec4(0.0, 0.0, 1.0, 0.0), 
+	vec4(0.0, 0.0, 0.0, 1.0) 
+);
+
+uniform bool use_texture_matrix = false;
+
 //***** begin interface of view.glsl ***********************************
 mat4 get_modelview_matrix();
 mat4 get_modelview_projection_matrix();
@@ -25,5 +34,10 @@ void main()
 
 	normal_eye = get_normal_matrix()*normal;
 	color_fs = color;
-	texcoord_fs = texcoord;
+	if (use_texture_matrix) {
+		vec4 ht = texture_matrix * vec4(texcoord, 0.0, 1.0);
+		texcoord_fs = ht.xy / ht.w;
+	}
+	else
+		texcoord_fs = texcoord;
 }

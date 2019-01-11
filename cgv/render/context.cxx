@@ -1392,6 +1392,25 @@ void context::set_material(const cgv::media::illum::surface_material& material)
 	prog.set_material_uniform(*this, "material", material);
 }
 
+/// set the current material 
+void context::set_textured_material(const textured_material& material)
+{
+	current_material_ptr = &material;
+	current_material_is_textured = true;
+
+	if (!auto_set_material_in_current_shader_program)
+		return;
+
+	if (shader_program_stack.empty())
+		return;
+
+	cgv::render::shader_program& prog = *static_cast<cgv::render::shader_program*>(shader_program_stack.top());
+	if (!prog.does_use_material())
+		return;
+
+	prog.set_textured_material_uniform(*this, "material", material);
+}
+
 void context::push_modelview_matrix()
 {
 	modelview_matrix_stack.push(get_modelview_matrix());
