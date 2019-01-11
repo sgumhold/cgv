@@ -6,6 +6,7 @@
 #include <cgv/utils/tokenizer.h>
 #include <cgv/render/drawable.h>
 #include <cgv/render/context.h>
+#include <cgv/render/shader_program.h>
 #include <cgv_gl/gl/gl.h>
 
 using namespace cgv::base;
@@ -27,7 +28,7 @@ protected:
 	vec3   t1,t2;
 	vec3   r;
 	double aspect;
-	cgv::media::illum::phong_material axes_mat, surface_mat;
+	cgv::media::illum::surface_material axes_mat, surface_mat;
 public:
 	void compute_rt()
 	{
@@ -51,7 +52,17 @@ public:
 		post_redraw();
 		return;
 	}
-	snell_demo()
+	snell_demo() : 
+		axes_mat(
+			cgv::media::illum::BrdfType(cgv::media::illum::BT_OREN_NAYAR + cgv::media::illum::BT_COOK_TORRANCE),
+			rgb(0.1f, 0.1f, 0.1f), 
+			0.1f, 0.5f, 0.2f
+		),
+		surface_mat(
+			cgv::media::illum::BT_OREN_NAYAR,
+			rgb(0.3f, 0.6f, 0.3f),
+			0.1f, 0.0f, 0.2f
+		)
 	{
 		set_name("snell_demo");
 
@@ -62,16 +73,6 @@ public:
 		n = vec3(0,0,1);
 		compute_rt();
 		aspect = 0.02;
-
-		axes_mat.set_ambient(cgv::media::illum::phong_material::color_type(0.1f, 0.1f, 0.1f, 1));
-		axes_mat.set_diffuse(cgv::media::illum::phong_material::color_type(0, 0, 0, 1));
-		axes_mat.set_specular(cgv::media::illum::phong_material::color_type(0.5f, 0.5f, 0.5f, 1));
-		axes_mat.set_shininess(80);
-
-		surface_mat.set_ambient(cgv::media::illum::phong_material::color_type(0.2f, 0.2f, 0.2f, 1));
-		surface_mat.set_diffuse(cgv::media::illum::phong_material::color_type(0.6f, 0.5f, 0.4f, 1));
-		surface_mat.set_specular(cgv::media::illum::phong_material::color_type(0.5f, 0.5f, 0.5f, 1));
-		surface_mat.set_shininess(40);
 	}
 	void create_gui()
 	{
@@ -88,37 +89,35 @@ public:
 	}
 	void draw(context& c)
 	{
-		glPushMatrix();
-		
-		// enable material and lighting with standard shader program
-		glEnable(GL_COLOR_MATERIAL); // tell framework to use color material in shader program
-		c.enable_material(axes_mat);
-			glColor3d(0.6, 0.6, 0.6);
+		cgv::render::shader_program& prog = c.ref_surface_shader_program();
+		prog.enable(c);
+			prog.set_uniform(c, "map_color_to_material", 3);
+			prog.set_uniform(c, "illumination_mode", 1);
+			c.set_material(axes_mat);
+			c.set_color(rgb(0.6f, 0.6f, 0.6f));
 			c.tesselate_arrow(vec3(0, 0, 0), n, aspect);
-			glColor3d(0.9, 0.8, 0.3);
+			c.set_color(rgb(0.9f, 0.8f, 0.3f));
 			c.tesselate_arrow(-v, vec3(0, 0, 0), aspect);
-			glColor3d(1.0, 0.5, 0.1);
+			c.set_color(rgb(1.0f, 0.5f, 0.1f));
 			c.tesselate_arrow(vec3(0, 0, 0), t, aspect);
-			glColor3d(1.0, 0.1, 0.1);
-			//c.tesselate_arrow(vec3(0, 0, 0), t1, aspect);
+			c.set_color(rgb(1.0f, 0.1f, 0.1f));
 			c.tesselate_arrow(t2, t, aspect);
-			glColor3d(0.1, 1.0, 0.1);
+			c.set_color(rgb(0.1f, 1.0f, 0.1f));
 			if (dot(t2,n) < 0)
 				c.tesselate_arrow(vec3(0, 0, 0), t2, aspect);
 			else
 				c.tesselate_arrow(t1, t, aspect);
-			glColor3d(0.1, 0.5, 1.0);
+			c.set_color(rgb(0.1f, 0.5f, 1.0f));
 			c.tesselate_arrow(vec3(0, 0, 0), r, aspect);
-		// disable standard shader program
-		c.disable_material(axes_mat);
-		glDisable(GL_COLOR_MATERIAL); // tell framework to use color material in shader program
-		glDisable(GL_CULL_FACE);
-		glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, 1);
-		c.enable_material(surface_mat);
-			c.tesselate_unit_disk(50);
-		c.disable_material(surface_mat);
-		glDisable(GL_CULL_FACE);
-		glPopMatrix();
+
+			prog.set_uniform(c, "map_color_to_material", 0);
+			prog.set_uniform(c, "illumination_mode", 2);
+			c.set_material(surface_mat);
+			glDisable(GL_CULL_FACE);
+				c.tesselate_unit_disk(50);
+			glDisable(GL_CULL_FACE);
+
+		c.ref_surface_shader_program().disable(c);
 	}
 };
 
