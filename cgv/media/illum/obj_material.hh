@@ -18,7 +18,9 @@ protected: //@<
 	///@> file name of ambient texture
 	std::string ambient_texture_name; 
 	///@> file name of diffuse texture
-	std::string diffuse_texture_name; 
+	std::string diffuse_texture_name;
+	///@> file name of opacity texture
+	std::string opacity_texture_name;
 	///@> file name of specular texture
 	std::string specular_texture_name; 
 	///@> file name of emission texture
@@ -32,10 +34,11 @@ public: //@<
 	enum TextureType { 
 		TT_AMBIENT_TEXTURE = 1,
 		TT_DIFFUSE_TEXTURE = 2,
-		TT_SPECULAR_TEXTURE = 4,
-		TT_EMISSION_TEXTURE = 8,
-		TT_BUMP_TEXTURE = 16,
-		TT_ALL_TEXTURES = 31 
+		TT_OPACITY_TEXTURE = 4,
+		TT_SPECULAR_TEXTURE = 8,
+		TT_EMISSION_TEXTURE = 16,
+		TT_BUMP_TEXTURE = 32,
+		TT_ALL_TEXTURES = 63
 	};
 	/// define default material
 	obj_material() : name("default"), opacity(1), bump_scale(1) {}
@@ -63,6 +66,12 @@ public: //@<
 	const std::string& get_diffuse_texture_name() const  { return diffuse_texture_name; }
 	/// return reference to diffuse_texture_name value
 	std::string&       ref_diffuse_texture_name()        { return diffuse_texture_name; }
+	/// set opacity_texture_name value
+	virtual void set_opacity_texture_name(std::string o) { opacity_texture_name = o; }
+	/// return opacity_texture_name value
+	const std::string& get_opacity_texture_name() const { return opacity_texture_name; }
+	/// return reference to opacity_texture_name value
+	std::string&       ref_opacity_texture_name() { return opacity_texture_name; }
 	/// set specular_texture_name value
 	virtual void set_specular_texture_name(std::string o) { specular_texture_name = o; }
 	/// return specular_texture_name value

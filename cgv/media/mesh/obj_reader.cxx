@@ -280,7 +280,7 @@ bool obj_reader_generic<T>::read_obj(const std::string& file_name)
 template <typename T>
 bool obj_reader_generic<T>::read_mtl(const std::string& file_name)
 {
-	std::string fn = cgv::base::find_data_file(file_name, "cpD");
+	std::string fn = cgv::base::find_data_file(file_name, "McpD", "", path_name);
 	if (path_name.empty()) {
 		path_name = file::get_path(file_name);
 		if (!path_name.empty())
@@ -324,20 +324,22 @@ bool obj_reader_generic<T>::read_mtl(const std::string& file_name)
 			if (tokens.size() > 1)
 				mtl.set_name(to_string(tokens[1]));
 		}
-		else if (tokens[0] == "map_Ka")
-			mtl.set_ambient_texture_name(path_name+to_string(tokens.back()));
+		else if (tokens[0] == "map_Ka" && tokens.size() > 1)
+			mtl.set_ambient_texture_name(path_name+to_string(tokens[1]));
+		else if (tokens[0] == "map_Kd" && tokens.size() > 1)
+			mtl.set_diffuse_texture_name(path_name + to_string(tokens[1]));
+		else if (tokens[0] == "map_d" && tokens.size() > 1)
+			mtl.set_opacity_texture_name(path_name + to_string(tokens[1]));
+		else if (tokens[0] == "map_Ks" && tokens.size() > 1)
+			mtl.set_specular_texture_name(path_name + to_string(tokens[1]));
+		else if (tokens[0] == "map_Ke" && tokens.size() > 1)
+			mtl.set_emission_texture_name(path_name + to_string(tokens[1]));
 		else if (tokens[0] == "Ka")
 			mtl.set_ambient(parse_color(tokens));
-		else if (tokens[0] == "map_Kd")
-			mtl.set_diffuse_texture_name(path_name+to_string(tokens.back()));
 		else if (tokens[0] == "Kd")
 			mtl.set_diffuse(parse_color(tokens));
-		else if (tokens[0] == "map_Ks")
-			mtl.set_specular_texture_name(path_name+to_string(tokens.back()));
 		else if (tokens[0] == "Ks")
 			mtl.set_specular(parse_color(tokens));
-		else if (tokens[0] == "map_Ke")
-			mtl.set_emission_texture_name(path_name+to_string(tokens.back()));
 		else if (tokens[0] == "Ke")
 			mtl.set_emission(parse_color(tokens));
 		else if (tokens[0] == "Ns")

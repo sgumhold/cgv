@@ -1,25 +1,42 @@
 #include "simple_mesh.h"
 #include <cgv/media/mesh/obj_reader.h>
+#include <cgv/math/bucket_sort.h>
 
 namespace cgv {
 	namespace media {
 		namespace mesh {
 
+/// sort faces by group and material indices with two bucket sorts
+void simple_mesh_base::sort_faces(std::vector<idx_type>& perm, bool by_group, bool by_material)
+{
+	if (by_group && by_material) {
+		std::vector<idx_type> perm0;
+		cgv::math::bucket_sort(group_indices, get_nr_groups(), perm0);
+		cgv::math::bucket_sort(material_indices, get_nr_materials(), perm, &perm0);
+	}
+	else if (by_group)
+		cgv::math::bucket_sort(group_indices, get_nr_groups(), perm);
+	else
+		cgv::math::bucket_sort(material_indices, get_nr_materials(), perm);
+}
+
 /// merge the three indices into one index into a vector of unique index triples
 void simple_mesh_base::merge_indices(std::vector<idx_type>& indices, std::vector<vec3i>& unique_triples, bool* include_tex_coords_ptr, bool* include_normals_ptr) const
 {
-	bool include_tex_coords = tex_coord_indices.size() == position_indices.size();
+	bool include_tex_coords = false;
 	if (include_tex_coords_ptr)
-		*include_tex_coords_ptr = include_tex_coords = include_tex_coords && *include_tex_coords_ptr;
+		*include_tex_coords_ptr = include_tex_coords = (tex_coord_indices.size() > 0) && *include_tex_coords_ptr;
 
-	bool include_normals    = normal_indices.size() == position_indices.size();
+	bool include_normals    = false;
 	if (include_normals_ptr)
-		*include_normals_ptr = include_normals = include_normals && *include_normals_ptr;
+		*include_normals_ptr = include_normals = (normal_indices.size() > 0) && *include_normals_ptr;
 
 	std::map<std::tuple<idx_type, idx_type, idx_type>, idx_type> corner_to_index;
 	for (idx_type ci = 0; ci < position_indices.size(); ++ci) {
 		// construct corner
-		vec3i c(position_indices[ci], include_tex_coords ? tex_coord_indices[ci] : 0, include_normals ? normal_indices[ci] : 0);
+		vec3i c(position_indices[ci], 
+			    (include_tex_coords && ci < tex_coord_indices.size()) ? tex_coord_indices[ci] : 0, 
+			    (include_normals && ci < normal_indices.size()) ? normal_indices[ci] : 0);
 		std::tuple<idx_type, idx_type, idx_type> triple(c(0),c(1),c(2));
 		// look corner up in map
 		auto iter = corner_to_index.find(triple);
@@ -38,18 +55,30 @@ void simple_mesh_base::merge_indices(std::vector<idx_type>& indices, std::vector
 }
 
 /// extract element array buffers for triangulation
-void simple_mesh_base::extract_triangle_element_buffer(const std::vector<idx_type>& vertex_indices, std::vector<idx_type>& triangle_element_buffer)
+void simple_mesh_base::extract_triangle_element_buffer(
+	const std::vector<idx_type>& vertex_indices, std::vector<idx_type>& triangle_element_buffer, 
+	const std::vector<idx_type>* face_perm_ptr, std::vector<vec3i>* material_group_start_ptr)
 {
+	idx_type mi = idx_type(-1);
+	idx_type gi = idx_type(-1);
 	// construct triangle element buffer
 	for (idx_type fi = 0; fi < faces.size(); ++fi) {
-		if (face_degree(fi) == 3) {
-			for (idx_type ci = begin_corner(fi); ci < end_corner(fi); ++ci)
+		idx_type fj = face_perm_ptr ? face_perm_ptr->at(fi) : fi;
+		if (material_group_start_ptr) {
+			if (mi != material_indices[fj] || gi != group_indices[fj]) {
+				mi = material_indices[fj];
+				gi = group_indices[fj];
+				material_group_start_ptr->push_back(vec3i(mi, gi, triangle_element_buffer.size()));
+			}
+		}
+		if (face_degree(fj) == 3) {
+			for (idx_type ci = begin_corner(fj); ci < end_corner(fj); ++ci)
 				triangle_element_buffer.push_back(vertex_indices.at(ci));
 		}
 		else {
 			// in case of non triangular faces do simplest triangulation approach that assumes convexity of faces
-			for (idx_type ci = begin_corner(fi) + 2; ci < end_corner(fi); ++ci) {
-				triangle_element_buffer.push_back(vertex_indices.at(begin_corner(fi)));
+			for (idx_type ci = begin_corner(fj) + 2; ci < end_corner(fj); ++ci) {
+				triangle_element_buffer.push_back(vertex_indices.at(begin_corner(fj)));
 				triangle_element_buffer.push_back(vertex_indices.at(ci - 1));
 				triangle_element_buffer.push_back(vertex_indices.at(ci));
 			}
@@ -63,12 +92,12 @@ void simple_mesh_base::extract_wireframe_element_buffer(const std::vector<idx_ty
 	// map stores for each halfedge the number of times it has been seen before
 	std::map<std::tuple<idx_type, idx_type>, idx_type> halfedge_to_count;
 	for (idx_type fi = 0; fi < faces.size(); ++fi) {
-		idx_type last_ci = end_corner(fi) - 1;
+		idx_type last_vi = vertex_indices.at(end_corner(fi) - 1);
 		for (idx_type ci = begin_corner(fi); ci < end_corner(fi); ++ci) {
-			last_ci = ci;
 			// construct halfedge with sorted vertex indices
-			std::tuple<idx_type, idx_type> halfedge(last_ci, ci);
-			if (ci < last_ci)
+			idx_type vi = vertex_indices.at(ci);
+			std::tuple<idx_type, idx_type> halfedge(last_vi, vi);
+			if (vi < last_vi)
 				std::swap(std::get<0>(halfedge), std::get<1>(halfedge));
 
 			// lookup corner in map
@@ -77,11 +106,12 @@ void simple_mesh_base::extract_wireframe_element_buffer(const std::vector<idx_ty
 			// determine vertex index
 			if (iter == halfedge_to_count.end()) {
 				halfedge_to_count[halfedge] = 1;
-				edge_element_buffer.push_back(vertex_indices.at(last_ci));
-				edge_element_buffer.push_back(vertex_indices.at(ci));
+				edge_element_buffer.push_back(last_vi);
+				edge_element_buffer.push_back(vi);
 			}
 			else
 				++halfedge_to_count[halfedge];
+			last_vi = vi;
 		}
 	}
 }
@@ -98,7 +128,7 @@ public:
 	/// overide this function to process a vertex
 	void process_vertex(const v3d_type& p) { mesh.positions.push_back(p); }
 	/// overide this function to process a texcoord
-	void process_texcoord(const v2d_type& t) { mesh.tex_coords.push_back(t); }
+	void process_texcoord(const v2d_type& t) { mesh.tex_coords.push_back(v2d_type(t(0),t(1))); }
 	/// overide this function to process a color (this called for vc prefixes which is is not in the standard but for example used in pobj-files)
 	void process_color(const color_type& c) { mesh.resize_colors(mesh.get_nr_colors() + 1); mesh.set_color(mesh.get_nr_colors()-1, c); }
 	/// overide this function to process a normal
@@ -170,13 +200,15 @@ template <typename T>
 void simple_mesh<T>::extract_vertex_attribute_buffer(
 	const std::vector<idx_type>& vertex_indices, 
 	const std::vector<vec3i>& unique_triples, 
-	bool include_tex_coords, bool include_normals, bool include_colors, 
-	std::vector<T>& attrib_buffer)
+	bool include_tex_coords, bool include_normals, 
+	std::vector<T>& attrib_buffer, bool* include_colors_ptr)
 {
 	// correct inquiry in case data is missing
 	include_tex_coords = include_tex_coords && !tex_coord_indices.empty() && !tex_coords.empty();
 	include_normals = include_normals && !normal_indices.empty() && !normals.empty();
-	include_colors = include_colors && has_colors();
+	bool include_colors = false;
+	if (include_colors_ptr)
+		*include_colors_ptr = include_colors = has_colors() && *include_colors_ptr;
 
 	// determine number floats per vertex
 	unsigned nr_floats = 3;

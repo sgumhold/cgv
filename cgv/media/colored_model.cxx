@@ -4,6 +4,20 @@
 namespace cgv {
 	namespace media {
 
+		/// construct colored model
+		colored_model::colored_model()
+		{
+			color_storage_ptr = 0;
+		}
+		/// destruct colored model
+		colored_model::~colored_model()
+		{
+			if (color_storage_ptr) {
+				delete color_storage_ptr;
+				color_storage_ptr = 0;
+			}
+		}
+
 		bool colored_model::has_colors() const
 		{
 			return color_storage_ptr != 0;
