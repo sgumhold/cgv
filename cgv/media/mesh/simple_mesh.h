@@ -22,6 +22,8 @@ class CGV_API simple_mesh_base : public colored_model
 public:
 	/// define index type
 	typedef cgv::type::uint32_type idx_type;
+	/// define index pair type
+	typedef typename cgv::math::fvec<idx_type, 2> vec2i;
 	/// define index triple type
 	typedef typename cgv::math::fvec<idx_type, 3> vec3i;
 	/// define material type
@@ -41,10 +43,19 @@ public:
 	idx_type begin_corner(idx_type fi) const { return faces[fi]; }
 	idx_type end_corner(idx_type fi) const { return fi + 1 == faces.size() ? position_indices.size() : faces[fi + 1]; }
 	idx_type face_degree(idx_type fi) const { return end_corner(fi) - begin_corner(fi); }
+	/// access to materials
+	size_t get_nr_materials() const { return materials.size(); }
+	const mat_type& get_material(size_t i) const { return materials[i]; }
+	///
+	size_t get_nr_groups() const { return group_names.size(); }
+	const std::string& get_group_name(size_t i) const { return group_names[i]; }
+	/// sort faces by group and material indices with two bucket sorts
+	void sort_faces(std::vector<idx_type>& perm, bool by_group = true, bool by_material = true);
 	/// merge the three indices into one index into a vector of unique index triples
-	void merge_indices(std::vector<idx_type>& indices, std::vector<vec3i>& unique_triples, bool* include_tex_coords_ptr = 0, bool* include_normals_ptr = 0) const;
+	void merge_indices(std::vector<idx_type>& vertex_indices, std::vector<vec3i>& unique_triples, bool* include_tex_coords_ptr = 0, bool* include_normals_ptr = 0) const;
 	/// extract element array buffers for triangulation
-	void extract_triangle_element_buffer(const std::vector<idx_type>& vertex_indices, std::vector<idx_type>& triangle_element_buffer);
+	void extract_triangle_element_buffer(const std::vector<idx_type>& vertex_indices, std::vector<idx_type>& triangle_element_buffer, 
+		const std::vector<idx_type>* face_perm_ptr = 0, std::vector<vec3i>* material_group_start_ptr = 0);
 	/// extract element array buffers for edges in wireframe
 	void extract_wireframe_element_buffer(const std::vector<idx_type>& vertex_indices, std::vector<idx_type>& edge_element_buffer);
 };
@@ -87,8 +98,8 @@ public:
 	void extract_vertex_attribute_buffer(
 		const std::vector<idx_type>& vertex_indices,
 		const std::vector<vec3i>& unique_triples,
-		bool include_tex_coords, bool include_normals, bool include_colors, 
-		std::vector<T>& attrib_buffer);
+		bool include_tex_coords, bool include_normals, 
+		std::vector<T>& attrib_buffer, bool *include_colors_ptr = 0);
 };
 
 		}

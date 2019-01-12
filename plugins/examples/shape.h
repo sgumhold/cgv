@@ -4,7 +4,10 @@
 #include <cgv/signal/abst_signal.h>	/// the tacker class is declared in abst_signal 
 #include <cgv/gui/event_handler.h>
 #include <cgv/render/drawable.h>
+#include <cgv/render/vertex_buffer.h>
+#include <cgv/render/attribute_array_binding.h>
 #include <cgv/gui/provider.h>
+#include <cgv/media/mesh/simple_mesh.h>
 
 /// example for the implementation of a cgv node that handles events and renders a selectable shape
 class shape : 
@@ -22,7 +25,7 @@ protected:
 	/// resolution of smooth shapes
 	int resolution;
 	/// different shape types
-	enum Shape { CUBE, PRI, TET, OCT, DOD, ICO, CYL, CONE, DISK, ARROW, SPHERE } shp;
+	enum Shape { CUBE, PRI, TET, OCT, DOD, ICO, CYL, CONE, DISK, ARROW, SPHERE, MESH } shp;
 	/// store rotation angle
 	double ax, ay;
 	/// store location along x-axis
@@ -31,6 +34,26 @@ protected:
 	cgv::media::illum::surface_material mat;
 	///
 	cgv::media::illum::surface_material::color_type col;
+	///
+	typedef cgv::media::mesh::simple_mesh<float> mesh_type;
+	typedef mesh_type::idx_type idx_type;
+	typedef mesh_type::vec3i vec3i;
+	mesh_type mesh;
+	///
+	std::vector<cgv::render::textured_material*> mesh_mats;
+	///
+	std::vector<mesh_type::vec3i> material_group_start;
+	///
+	cgv::render::vertex_buffer vbo; //vbt, vbe;
+	///
+	std::vector<idx_type> triangle_element_buffer;
+	///
+	std::vector<idx_type> edge_element_buffer;
+	/// 
+	cgv::render::attribute_array_binding aab;
+	///
+	void render_material_part(cgv::render::context& c, size_t i, bool opaque);
+
 	/// whether to flip the normals
 	bool flip_normals;
 	/// select a shape
@@ -47,6 +70,8 @@ public:
 	void stream_help(std::ostream& os);
 	/// optional method of drawable
 	void draw_shape(cgv::render::context&, bool);
+	///
+	bool init(cgv::render::context&);
 	/// optional method of drawable
 	void draw(cgv::render::context&);
 	/// return a path in the main menu to select the gui

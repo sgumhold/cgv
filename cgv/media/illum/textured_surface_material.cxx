@@ -37,6 +37,16 @@ textured_surface_material::textured_surface_material(
 /// convert obj material
 textured_surface_material::textured_surface_material(const obj_material& obj_mat)
 {
+	diffuse_index = -1;
+	roughness_index = -1;
+	metalness_index = -1;
+	ambient_index = -1;
+	emission_index = -1;
+	transparency_index = -1;
+	propagation_slow_down_index = -1;
+	normal_index = -1;
+	bump_index = -1;
+	specular_index = -1;
 	set_name(obj_mat.get_name());
 	set_brdf_type(BrdfType(BT_LAMBERTIAN + BT_PHONG));
 	obj_material::color_type a = obj_mat.get_ambient(), d = obj_mat.get_diffuse();
@@ -48,25 +58,36 @@ textured_surface_material::textured_surface_material(const obj_material& obj_mat
 	set_transparency(1.0f - obj_mat.get_opacity());
 	set_bump_scale(obj_mat.get_bump_scale());
 	std::map<std::string, size_t> file_name_map;
-	if (file_name_map.find(obj_mat.get_ambient_texture_name()) != file_name_map.end())
-		file_name_map[obj_mat.get_ambient_texture_name()] = add_image_file(obj_mat.get_ambient_texture_name());
-	set_ambient_index(file_name_map[obj_mat.get_ambient_texture_name()]);
-
-	if (file_name_map.find(obj_mat.get_diffuse_texture_name()) != file_name_map.end())
-		file_name_map[obj_mat.get_diffuse_texture_name()] = add_image_file(obj_mat.get_diffuse_texture_name());
-	set_diffuse_index(file_name_map[obj_mat.get_diffuse_texture_name()]);
-
-	if (file_name_map.find(obj_mat.get_specular_texture_name()) != file_name_map.end())
-		file_name_map[obj_mat.get_specular_texture_name()] = add_image_file(obj_mat.get_specular_texture_name());
-	set_specular_index(file_name_map[obj_mat.get_specular_texture_name()]);
-
-	if (file_name_map.find(obj_mat.get_emission_texture_name()) != file_name_map.end())
-		file_name_map[obj_mat.get_emission_texture_name()] = add_image_file(obj_mat.get_emission_texture_name());
-	set_emission_index(file_name_map[obj_mat.get_emission_texture_name()]);
-
-	if (file_name_map.find(obj_mat.get_bump_texture_name()) != file_name_map.end())
-		file_name_map[obj_mat.get_bump_texture_name()] = add_image_file(obj_mat.get_bump_texture_name());
-	set_bump_index(file_name_map[obj_mat.get_bump_texture_name()]);
+	if (!obj_mat.get_ambient_texture_name().empty()) {
+		if (file_name_map.find(obj_mat.get_ambient_texture_name()) == file_name_map.end())
+			file_name_map[obj_mat.get_ambient_texture_name()] = add_image_file(obj_mat.get_ambient_texture_name());
+		set_ambient_index(file_name_map[obj_mat.get_ambient_texture_name()]);
+	}
+	if (!obj_mat.get_diffuse_texture_name().empty()) {
+		if (file_name_map.find(obj_mat.get_diffuse_texture_name()) == file_name_map.end())
+			file_name_map[obj_mat.get_diffuse_texture_name()] = add_image_file(obj_mat.get_diffuse_texture_name());
+		set_diffuse_index(file_name_map[obj_mat.get_diffuse_texture_name()]);
+	}
+	if (!obj_mat.get_opacity_texture_name().empty()) {
+		if (file_name_map.find(obj_mat.get_opacity_texture_name()) == file_name_map.end())
+			file_name_map[obj_mat.get_opacity_texture_name()] = add_image_file(obj_mat.get_opacity_texture_name());
+		set_transparency_index(file_name_map[obj_mat.get_opacity_texture_name()]);
+	}
+	if (!obj_mat.get_specular_texture_name().empty()) {
+		if (file_name_map.find(obj_mat.get_specular_texture_name()) == file_name_map.end())
+			file_name_map[obj_mat.get_specular_texture_name()] = add_image_file(obj_mat.get_specular_texture_name());
+		set_specular_index(file_name_map[obj_mat.get_specular_texture_name()]);
+	}
+	if (!obj_mat.get_emission_texture_name().empty()) {
+		if (file_name_map.find(obj_mat.get_emission_texture_name()) == file_name_map.end())
+			file_name_map[obj_mat.get_emission_texture_name()] = add_image_file(obj_mat.get_emission_texture_name());
+		set_emission_index(file_name_map[obj_mat.get_emission_texture_name()]);
+	}
+	if (!obj_mat.get_bump_texture_name().empty()) {
+		if (file_name_map.find(obj_mat.get_bump_texture_name()) == file_name_map.end())
+			file_name_map[obj_mat.get_bump_texture_name()] = add_image_file(obj_mat.get_bump_texture_name());
+		set_bump_index(file_name_map[obj_mat.get_bump_texture_name()]);
+	}
 }
 
 /// add a new image and return its index

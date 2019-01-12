@@ -14,6 +14,10 @@ namespace cgv {
 			/// pointer to color storage
 			abst_color_storage* color_storage_ptr;
 		public:
+			/// construct colored model
+			colored_model();
+			/// destruct colored model
+			virtual ~colored_model();
 			/**@name access to colors*/
 			//@{
 			/// check whether colors have been allocated
