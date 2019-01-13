@@ -11,6 +11,22 @@ namespace cgv {
 			nr_edge_elements = 0;
 		}
 		///
+		void mesh_render_info::destruct(cgv::render::context& ctx)
+		{
+			while (mesh_mats.size() > 0) {
+				mesh_mats.back()->destruct_textures(ctx);
+				delete mesh_mats.back();
+				mesh_mats.pop_back();
+			}
+			vbo.destruct(ctx);
+			vbe.destruct(ctx);
+			aab.destruct(ctx);
+			material_group_start.clear();
+			nr_triangle_elements = 0;
+			nr_edge_elements = 0;
+		}
+
+		///
 		void mesh_render_info::construct_base(cgv::render::context& ctx, const cgv::media::mesh::simple_mesh_base& mesh,
 			std::vector<idx_type>& vertex_indices, std::vector<vec3i>& unique_triples,
 			bool& include_tex_coords, bool& include_normals, bool& include_colors,
@@ -35,18 +51,20 @@ namespace cgv {
 		void mesh_render_info::finish_construct_base(cgv::render::context& ctx, size_t element_size,
 			bool include_tex_coords, bool include_normals,
 			const std::vector<idx_type>& triangle_element_buffer, const std::vector<idx_type>& edge_element_buffer,
-			cgv::render::type_descriptor vec3_descr, cgv::render::type_descriptor vec2_descr, size_t nr_vertices)
+			cgv::render::type_descriptor vec3_descr, cgv::render::type_descriptor vec2_descr, size_t nr_vertices, 
+			unsigned color_increment, cgv::media::colored_model::ColorType ct)
 		{
 			unsigned stride = 3;
 			if (include_tex_coords)
 				stride += 2;
 			if (include_normals)
 				stride += 3;
+			stride += color_increment;
 			if (stride == 3)
 				stride = 0;
 			else
 				stride *= element_size;
-
+			
 			cgv::render::shader_program& prog = ctx.ref_surface_shader_program(true);
 			vbe.create(ctx, (nr_triangle_elements + nr_edge_elements) * sizeof(idx_type));
 			vbe.replace(ctx, 0, &triangle_element_buffer.front(), triangle_element_buffer.size());
@@ -72,6 +90,15 @@ namespace cgv {
 					vec3_descr,
 					vbo, offset, nr_vertices, stride);
 				offset += 3 * element_size;
+			}
+			if (color_increment > 0) {
+				static int nr_comps[] = { 4,4,3,4 };
+				static cgv::type::info::TypeId type_ids[] = { cgv::type::info::TI_UINT8,cgv::type::info::TI_UINT8,cgv::type::info::TI_FLT32,cgv::type::info::TI_FLT32 };
+				aab.set_attribute_array(ctx,
+					prog.get_color_index(),
+					cgv::render::type_descriptor(type_ids[ct], nr_comps[ct], true),
+					vbo, offset, nr_vertices, stride);
+				offset += color_increment * element_size;
 			}
 		}
 
