@@ -9,8 +9,13 @@ namespace cgv {
 
 		class vertex_buffer;
 
-/** a shader program combines several shader code fragments
-    to a complete definition of the shading pipeline. */
+/** the attribute_array_binding allows to define vertex attributes (i.e. the inputs to the
+    vertex shader as well as an element array that stores element indices in indexed rendering.
+	The vertex attributes can be set from instances of std::vector, pointers to arrays and 
+    vertex_buffer objects. Each individual vertex attribute can be enabled and disabled. Each 
+	vertex attribute is attached to a program location that can be queried from a shader_program
+	with the get_attribute_location() function. The element array can only be set to a vertex_buffer
+	object of type VBT_INDICES with the function set_element_array(). */
 class CGV_API attribute_array_binding : public attribute_array_binding_base
 {
 public:
@@ -36,6 +41,8 @@ public:
 	}
 	/// point array of vertex attribute at location \c loc to elements of given type in vertex buffer object at given offset spaced with given stride; in case of success also enable vertex attribute array
 	static bool set_global_attribute_array(const context& ctx, int loc, type_descriptor element_type, const vertex_buffer& vbo, size_t offset_in_bytes, size_t nr_elements, size_t stride_in_bytes = 0);
+	/// set the global elment array to the given vertex buffer object which must me of type VBT_INDICES
+	static bool set_global_element_array(const context& ctx, const vertex_buffer& vbe);
 	//@}
 	/// default constructor does not create attribute array binding
 	attribute_array_binding();
@@ -67,6 +74,8 @@ public:
 	}
 	/// point array of vertex attribute at location \c loc to elements of given type in vertex buffer object at given offset spaced with given stride; in case of success also enable vertex attribute array
 	bool set_attribute_array(const context& ctx, int loc, type_descriptor element_type, const vertex_buffer& vbo, size_t offset_in_bytes, size_t nr_elements, size_t stride_in_bytes = 0);
+	/// set the elment array to the given vertex buffer object which must me of type VBT_INDICES
+	bool set_element_array(const context& ctx, const vertex_buffer& vbe);
 };
 
 	}

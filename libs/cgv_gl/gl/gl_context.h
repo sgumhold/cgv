@@ -93,6 +93,7 @@ protected:
 	bool attribute_array_binding_enable(attribute_array_binding_base& aab);
 	bool attribute_array_binding_disable(attribute_array_binding_base& aab);
 	bool set_attribute_array_void(attribute_array_binding_base* aab, int loc, type_descriptor value_type, const vertex_buffer_base* vbb, const void* ptr, size_t nr_elements, unsigned stride_in_bytes) const;
+	bool set_element_array(attribute_array_binding_base* aab, const vertex_buffer_base* vbb) const;
 	bool enable_attribute_array(attribute_array_binding_base* aab, int loc, bool do_enable) const;
 	bool is_attribute_array_enabled(const attribute_array_binding_base* aab, int loc) const;
 

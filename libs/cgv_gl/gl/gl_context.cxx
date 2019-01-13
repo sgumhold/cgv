@@ -2747,6 +2747,41 @@ bool gl_context::attribute_array_binding_disable(attribute_array_binding_base& a
 	return true;
 }
 
+bool gl_context::set_element_array(attribute_array_binding_base* aab, const vertex_buffer_base* vbb) const
+{
+	if (!vbb) {
+		error("gl_context::set_element_array(): called without a vertex buffer object", aab);
+		return false;
+	}
+	if (!vbb->handle) {
+		error("gl_context::set_element_array(): called with not created vertex buffer object", vbb);
+		return false;
+	}
+	if (vbb->type != VBT_INDICES) {
+		error("gl_context::set_element_array(): called on vertex buffer object that is not of type VBT_INDICES", vbb);
+		return false;
+	}
+	if (aab) {
+		if (!aab->handle) {
+			error("gl_context::set_element_array(): called on not created attribute array binding", aab);
+			return false;
+		}
+	}
+	// enable vertex array
+	bool not_current = attribute_array_binding_stack.empty() || attribute_array_binding_stack.top() != aab;
+	if (aab && not_current)
+		glBindVertexArray(get_gl_id(aab->handle));
+
+	// bind buffer to element array
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, get_gl_id(vbb->handle));
+
+	if (aab && not_current)
+		glBindVertexArray(attribute_array_binding_stack.empty() ? 0 : get_gl_id(attribute_array_binding_stack.top()->handle));
+
+	return !check_gl_error("gl_context::set_element_array_void()", aab);
+}
+
+
 bool gl_context::set_attribute_array_void(attribute_array_binding_base* aab, int loc, type_descriptor value_type, const vertex_buffer_base* vbb, const void* ptr, size_t nr_elements, unsigned stride) const
 {
 	if (value_type == ET_MATRIX) {
@@ -2766,12 +2801,12 @@ bool gl_context::set_attribute_array_void(attribute_array_binding_base* aab, int
 		}
 	}
 
-	if (vbb)
-		glBindBuffer(GL_ARRAY_BUFFER, get_gl_id(vbb->handle));
-
 	bool not_current = attribute_array_binding_stack.empty() || attribute_array_binding_stack.top() != aab;
 	if (aab && not_current)
 		glBindVertexArray(get_gl_id(aab->handle));
+
+	if (vbb)
+		glBindBuffer(GL_ARRAY_BUFFER, get_gl_id(vbb->handle));
 
 	bool res = true;
 	unsigned n = value_type.element_type == ET_VALUE ? 1 : value_type.nr_rows;
@@ -2799,11 +2834,12 @@ bool gl_context::set_attribute_array_void(attribute_array_binding_base* aab, int
 	if (res)
 		glEnableVertexAttribArray(loc);
 
+	if (vbb)
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+
 	if (aab && not_current)
 		glBindVertexArray(attribute_array_binding_stack.empty() ? 0 : get_gl_id(attribute_array_binding_stack.top()->handle));
 
-	if (vbb)
-		glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 	return res && !check_gl_error("gl_context::set_attribute_array_void()", aab);
 }
