@@ -144,98 +144,8 @@ void shape::draw_shape(context& c, bool edges)
 ///
 bool shape::init(cgv::render::context& ctx)
 {
-	// load material textures
-	for (unsigned i = 0; i < mesh.get_nr_materials(); ++i) {
-		mesh_mats.push_back(new cgv::render::textured_material(mesh.get_material(i)));
-		mesh_mats.back()->ensure_textures(ctx);
-	}
-	
-	// construct render buffers
-	std::vector<idx_type> vertex_indices;
-	std::vector<vec3i> unique_triples;
-	std::vector<float> attrib_buffer;
-	bool include_tex_coords = true;
-	bool include_normals = true;
-	bool include_colors = true;
-
-	std::vector<idx_type> perm;
-	mesh.sort_faces(perm);
-	mesh.merge_indices(vertex_indices, unique_triples, &include_tex_coords, &include_normals);
-	mesh.extract_triangle_element_buffer(vertex_indices, triangle_element_buffer, &perm, &material_group_start);
-	mesh.extract_wireframe_element_buffer(vertex_indices, edge_element_buffer);
-	mesh.extract_vertex_attribute_buffer(vertex_indices, unique_triples, include_tex_coords, include_normals, attrib_buffer, &include_colors);
-
-	unsigned stride = 3;
-	if (include_tex_coords)
-		stride += 2;
-	if (include_normals)
-		stride += 3;
-	if (stride == 3)
-		stride = 0;
-	else
-		stride *= sizeof(float);
-
-	cgv::render::shader_program& prog = ctx.ref_surface_shader_program(true);
-	vbo.create(ctx, attrib_buffer);
-	//vbt.create(ctx, triangle_element_buffer);
-	//vbe.create(ctx, edge_element_buffer);
-	aab.create(ctx);
-	aab.set_attribute_array(ctx,
-		prog.get_position_index(),
-		cgv::render::element_descriptor_traits<vec3>::get_type_descriptor(mesh.position(0)),
-		vbo, 0, unique_triples.size(), stride);
-
-	unsigned offset = 3 * sizeof(float);
-	if (include_tex_coords) {
-		aab.set_attribute_array(ctx,
-			prog.get_texcoord_index(),
-			cgv::render::element_descriptor_traits<vec2>::get_type_descriptor(mesh.tex_coord(0)),
-			vbo, offset, unique_triples.size(), stride);
-		offset += 2 * sizeof(float);
-	}
-	if (include_normals) {
-		aab.set_attribute_array(ctx,
-			prog.get_normal_index(),
-			cgv::render::element_descriptor_traits<vec3>::get_type_descriptor(mesh.normal(0)),
-			vbo, offset, unique_triples.size(), stride);
-		offset += 3 * sizeof(float);
-	}
+	mesh_info.contruct(ctx, mesh);
 	return true;
-}
-
-void shape::render_material_part(context& c, size_t i, bool opaque)
-{
-	cgv::render::textured_material& mat = *mesh_mats[material_group_start[i](0)];
-	if (mat.get_transparency_index() != -1) {
-		if (opaque)
-			return;
-	}
-	else {
-		if ((mat.get_transparency() < 0.01f) != opaque)
-			return;
-	}
-	size_t offset = material_group_start[i](2);
-	size_t count = (i + 1 == material_group_start.size() ? triangle_element_buffer.size() : material_group_start[i + 1](2)) - offset;
-
-	cgv::render::shader_program& prog = c.ref_surface_shader_program(true);
-	if (!opaque) {
-		glEnable(GL_BLEND);
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-		glEnable(GL_ALPHA_TEST);
-		glAlphaFunc(GL_GREATER, 0.1f);
-	}
-	prog.enable(c);
-	prog.set_uniform(c, "illumination_mode", 2);
-	c.enable_material(mat);
-	aab.enable(c);
-	glDrawElements(GL_TRIANGLES, count, GL_UNSIGNED_INT, &triangle_element_buffer[offset]);
-	aab.disable(c);
-	c.disable_material(mat);
-	prog.disable(c);
-	if (!opaque) {
-		glDisable(GL_BLEND);
-		glDisable(GL_ALPHA_TEST);
-	}
 }
 
 void shape::draw(context& c)
@@ -251,22 +161,16 @@ void shape::draw(context& c)
 		c.ref_default_shader_program().enable(c);
 		c.set_color(col);
 		glLineWidth(3);
-		if (shp == MESH) {
-			aab.enable(c);
-				glDrawElements(GL_LINES, edge_element_buffer.size(), GL_UNSIGNED_INT, &edge_element_buffer.front());
-			aab.disable(c);
-		}
-		else {
+		if (shp == MESH)
+			mesh_info.render_wireframe(c);
+		else
 			draw_shape(c, true);
-		}
+
 		c.ref_default_shader_program().disable(c);
 	}
 	if (show_faces) {
 		if (shp == MESH) {
-			for (size_t i = 0; i < material_group_start.size(); ++i)
-				render_material_part(c, i, true);
-			for (size_t i = 0; i < material_group_start.size(); ++i)
-				render_material_part(c, i, false);
+			mesh_info.render_mesh(c);
 		}
 		else {
 			c.ref_surface_shader_program().enable(c);

@@ -10,10 +10,22 @@ bool attribute_array_binding::set_global_attribute_array(const context& ctx, int
 	return ctx.set_attribute_array_void(0, loc, element_type, &vbo, reinterpret_cast<const void*>(offset_in_bytes), nr_elements, stride_in_bytes);
 }
 
+/// set the global elment array to the given vertex buffer object which must me of type VBT_INDICES
+bool attribute_array_binding::set_global_element_array(const context& ctx, const vertex_buffer& vbe)
+{
+	return ctx.set_element_array(0, &vbe);
+}
+
 /// point array of vertex attribute at location \c loc to elements of given type in vertex buffer object at given offset spaced with given stride; in case of success also enable vertex attribute array
 bool attribute_array_binding::set_attribute_array(const context& ctx, int loc, type_descriptor element_type, const vertex_buffer& vbo, size_t offset_in_bytes, size_t nr_elements, size_t stride_in_bytes) 
 {
 	return ctx.set_attribute_array_void(this, loc, element_type, &vbo, reinterpret_cast<const void*>(offset_in_bytes), nr_elements, stride_in_bytes);
+}
+
+/// set the elment array to the given vertex buffer object which must me of type VBT_INDICES
+bool attribute_array_binding::set_element_array(const context& ctx, const vertex_buffer& vbe)
+{
+	return ctx.set_element_array(this, &vbe);
 }
 
 /// check whether an attribute array is enabled

@@ -4,10 +4,12 @@
 #include <cgv/signal/abst_signal.h>	/// the tacker class is declared in abst_signal 
 #include <cgv/gui/event_handler.h>
 #include <cgv/render/drawable.h>
-#include <cgv/render/vertex_buffer.h>
+#include <cgv_gl/gl/mesh_render_info.h>
 #include <cgv/render/attribute_array_binding.h>
 #include <cgv/gui/provider.h>
 #include <cgv/media/mesh/simple_mesh.h>
+
+
 
 /// example for the implementation of a cgv node that handles events and renders a selectable shape
 class shape : 
@@ -39,20 +41,7 @@ protected:
 	typedef mesh_type::idx_type idx_type;
 	typedef mesh_type::vec3i vec3i;
 	mesh_type mesh;
-	///
-	std::vector<cgv::render::textured_material*> mesh_mats;
-	///
-	std::vector<mesh_type::vec3i> material_group_start;
-	///
-	cgv::render::vertex_buffer vbo; //vbt, vbe;
-	///
-	std::vector<idx_type> triangle_element_buffer;
-	///
-	std::vector<idx_type> edge_element_buffer;
-	/// 
-	cgv::render::attribute_array_binding aab;
-	///
-	void render_material_part(cgv::render::context& c, size_t i, bool opaque);
+	cgv::render::mesh_render_info mesh_info;
 
 	/// whether to flip the normals
 	bool flip_normals;

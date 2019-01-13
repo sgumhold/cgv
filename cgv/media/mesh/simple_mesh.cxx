@@ -7,7 +7,7 @@ namespace cgv {
 		namespace mesh {
 
 /// sort faces by group and material indices with two bucket sorts
-void simple_mesh_base::sort_faces(std::vector<idx_type>& perm, bool by_group, bool by_material)
+void simple_mesh_base::sort_faces(std::vector<idx_type>& perm, bool by_group, bool by_material) const
 {
 	if (by_group && by_material) {
 		std::vector<idx_type> perm0;
@@ -57,7 +57,7 @@ void simple_mesh_base::merge_indices(std::vector<idx_type>& indices, std::vector
 /// extract element array buffers for triangulation
 void simple_mesh_base::extract_triangle_element_buffer(
 	const std::vector<idx_type>& vertex_indices, std::vector<idx_type>& triangle_element_buffer, 
-	const std::vector<idx_type>* face_perm_ptr, std::vector<vec3i>* material_group_start_ptr)
+	const std::vector<idx_type>* face_perm_ptr, std::vector<vec3i>* material_group_start_ptr) const
 {
 	idx_type mi = idx_type(-1);
 	idx_type gi = idx_type(-1);
@@ -87,7 +87,7 @@ void simple_mesh_base::extract_triangle_element_buffer(
 }
 
 /// extract element array buffers for edges in wireframe
-void simple_mesh_base::extract_wireframe_element_buffer(const std::vector<idx_type>& vertex_indices, std::vector<idx_type>& edge_element_buffer)
+void simple_mesh_base::extract_wireframe_element_buffer(const std::vector<idx_type>& vertex_indices, std::vector<idx_type>& edge_element_buffer) const
 {
 	// map stores for each halfedge the number of times it has been seen before
 	std::map<std::tuple<idx_type, idx_type>, idx_type> halfedge_to_count;
@@ -201,7 +201,7 @@ void simple_mesh<T>::extract_vertex_attribute_buffer(
 	const std::vector<idx_type>& vertex_indices, 
 	const std::vector<vec3i>& unique_triples, 
 	bool include_tex_coords, bool include_normals, 
-	std::vector<T>& attrib_buffer, bool* include_colors_ptr)
+	std::vector<T>& attrib_buffer, bool* include_colors_ptr) const
 {
 	// correct inquiry in case data is missing
 	include_tex_coords = include_tex_coords && !tex_coord_indices.empty() && !tex_coords.empty();
