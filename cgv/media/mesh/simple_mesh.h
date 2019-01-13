@@ -94,8 +94,8 @@ public:
 	void clear();
 	/// read simple mesh from file
 	bool read(const std::string& file_name);
-	/// extract vertex attribute array
-	void extract_vertex_attribute_buffer(
+	/// extract vertex attribute array, return size of color in bytes
+	unsigned extract_vertex_attribute_buffer(
 		const std::vector<idx_type>& vertex_indices,
 		const std::vector<vec3i>& unique_triples,
 		bool include_tex_coords, bool include_normals, 

@@ -32,6 +32,8 @@ namespace cgv {
 			/// set vbo and vbe types
 			mesh_render_info();
 			///
+			void destruct(cgv::render::context& ctx);
+			///
 			void construct_base(cgv::render::context& c, const cgv::media::mesh::simple_mesh_base& mesh,
 				std::vector<idx_type>& vertex_indices, std::vector<vec3i>& unique_triples,
 				bool& include_tex_coords, bool& include_normals, bool& include_colors,
@@ -39,10 +41,11 @@ namespace cgv {
 			///
 			void finish_construct_base(cgv::render::context& ctx, size_t element_size, bool include_tex_coords, bool include_normals,
 				const std::vector<idx_type>& triangle_element_buffer, const std::vector<idx_type>& edge_element_buffer,
-				cgv::render::type_descriptor vec3_descr, cgv::render::type_descriptor vec2_descr, size_t nr_vertices);
+				cgv::render::type_descriptor vec3_descr, cgv::render::type_descriptor vec2_descr, size_t nr_vertices, 
+				unsigned color_increment, cgv::media::colored_model::ColorType ct);
 			///
 			template <typename T>
-			void contruct(cgv::render::context& ctx, cgv::media::mesh::simple_mesh<T>& mesh)
+			void construct(cgv::render::context& ctx, cgv::media::mesh::simple_mesh<T>& mesh)
 			{
 				// construct render buffers
 				std::vector<idx_type> vertex_indices;
@@ -54,11 +57,12 @@ namespace cgv {
 				std::vector<idx_type> edge_element_buffer;
 				construct_base(ctx, mesh, vertex_indices, unique_triples, include_tex_coords, include_normals, include_colors, triangle_element_buffer, edge_element_buffer);
 				std::vector<T> attrib_buffer;
-				mesh.extract_vertex_attribute_buffer(vertex_indices, unique_triples, include_tex_coords, include_normals, attrib_buffer, &include_colors);
+				unsigned color_increment = mesh.extract_vertex_attribute_buffer(vertex_indices, unique_triples, include_tex_coords, include_normals, attrib_buffer, &include_colors);
 				vbo.create(ctx, attrib_buffer);
 				finish_construct_base(ctx, sizeof(T), include_tex_coords, include_normals, triangle_element_buffer, edge_element_buffer,
 					cgv::render::element_descriptor_traits<typename cgv::media::mesh::simple_mesh<T>::vec3>::get_type_descriptor(mesh.position(0)),
-					cgv::render::element_descriptor_traits<typename cgv::media::mesh::simple_mesh<T>::vec2>::get_type_descriptor(mesh.tex_coord(0)), unique_triples.size());
+					cgv::render::element_descriptor_traits<typename cgv::media::mesh::simple_mesh<T>::vec2>::get_type_descriptor(mesh.tex_coord(0)), unique_triples.size(), 
+					color_increment, mesh.get_color_storage_type());
 
 			}
 			///

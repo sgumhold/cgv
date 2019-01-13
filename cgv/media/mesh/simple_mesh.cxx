@@ -197,7 +197,7 @@ typename simple_mesh<T>::box_type simple_mesh<T>::compute_box() const
 
 /// extract vertex attribute array and element array buffers for triangulation and edges in wireframe
 template <typename T>
-void simple_mesh<T>::extract_vertex_attribute_buffer(
+unsigned simple_mesh<T>::extract_vertex_attribute_buffer(
 	const std::vector<idx_type>& vertex_indices, 
 	const std::vector<vec3i>& unique_triples, 
 	bool include_tex_coords, bool include_normals, 
@@ -238,6 +238,7 @@ void simple_mesh<T>::extract_vertex_attribute_buffer(
 			data_ptr += color_increment;
 		}
 	}
+	return color_increment;
 }
 
 template class simple_mesh<float>;

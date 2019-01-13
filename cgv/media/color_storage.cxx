@@ -20,7 +20,7 @@ namespace cgv {
 		/// return size of a single color in byte
 		size_t abst_color_storage::get_color_size() const
 		{
-			size_t sizes[] = { sizeof(rgb),sizeof(rgba), sizeof(rgb8), sizeof(rgba8) };
+			size_t sizes[] = { sizeof(rgb8), sizeof(rgba8), sizeof(rgb),sizeof(rgba)};
 			return sizes[color_type];
 		}
 	}

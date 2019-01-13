@@ -7,7 +7,7 @@
 #include <cgv/utils/convert.h>
 #include <cgv_gl/gl/gl.h>
 #include <cgv_gl/gl/gl_transparent_renderer.h>
-#include <cgv_gl/gl/gl_mesh_drawable_base.h>
+#include <cgv_gl/gl/mesh_drawable.h>
 #include <cgv_gl/gl/gl_tools.h>
 
 using namespace cgv::base;
@@ -21,7 +21,7 @@ using namespace cgv::gui;
 
 class depth_peeler_test : 
 	public base,
-	public cgv::render::gl::gl_mesh_drawable_base,
+	public cgv::render::gl::mesh_drawable,
 	public provider
 {
 protected:
@@ -67,7 +67,7 @@ public:
 		}
 		connect(transparent_renderer.render_callback, this, &depth_peeler_test::render_scene);
 		ctx.set_bg_clr_idx(0);
-		return cgv::render::gl::gl_mesh_drawable_base::init(ctx);
+		return cgv::render::gl::mesh_drawable::init(ctx);
 	}
 	void init_frame(context& ctx) 
 	{
@@ -77,7 +77,7 @@ public:
 		else
 			transparent_renderer.set_back_to_front();
 		transparent_renderer.init_frame(ctx);
-		cgv::render::gl::gl_mesh_drawable_base::init_frame(ctx);
+		cgv::render::gl::mesh_drawable::init_frame(ctx);
 	}
 	void render_scene(context& ctx)
 	{
@@ -90,7 +90,7 @@ public:
 		glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, 50);*/
 		glColor4d((1 - transparency)*0.07*5 + 0.3, 0, (1 - transparency)*(1 - 0.07*5) + 0.3, transparency);
 		draw_mesh(ctx, false);
-//		cgv::render::gl::gl_mesh_drawable_base::draw(ctx);
+//		cgv::render::gl::mesh_drawable::draw(ctx);
 /*			glRotated(90,0,1,0);
 			glScaled(0.2,0.2,0.2);
 			glTranslated(-15.0,0,0);
