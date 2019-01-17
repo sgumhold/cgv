@@ -20,9 +20,6 @@ class renderer_tests :
 	public cgv::gui::provider
 {
 public:
-	typedef cgv::math::fvec<float, 3> vec3;
-	typedef cgv::math::fvec<float, 4> vec4;
-	typedef cgv::media::color<float,cgv::media::RGB,cgv::media::OPACITY> clr4;
 	enum RenderMode { RM_POINTS, RM_SURFELS, RM_BOXES, RM_BOX_WIRES, RM_NORMALS, RM_SPHERES };
 	struct vertex {
 		vec3 point;
@@ -305,7 +302,7 @@ public:
 			if (begin_tree_node("group colors", group_colors, false)) {
 				align("\a");
 				for (unsigned i = 0; i < group_colors.size(); ++i) {
-					add_member_control(this, std::string("C") + cgv::utils::to_string(i), reinterpret_cast<clr4&>(group_colors[i]));
+					add_member_control(this, std::string("C") + cgv::utils::to_string(i), reinterpret_cast<rgba&>(group_colors[i]));
 				}
 				align("\b");
 				end_tree_node(group_colors);
