@@ -1,0 +1,73 @@
+#version 150
+
+uniform int mode = 0;
+uniform int w = 256;
+uniform int h = 256;
+uniform float threshold = 0.5;
+uniform int rule[18];
+
+uniform sampler2D tex;
+
+in vec2 texcrd;
+
+out vec4 frag_color;
+
+vec2 compute_delta()
+{
+	return vec2(1.0 / float(w), 1.0 / float(h));
+}
+
+vec4 smoothing(in vec2 tc)
+{
+	vec2 d = compute_delta();
+	return
+		0.25 * texture(tex, tc) +
+		0.125*(
+			texture(tex, vec2(tc.x + d.x, tc.y)) +
+			texture(tex, vec2(tc.x - d.x, tc.y)) +
+			texture(tex, vec2(tc.x, tc.y + d.y)) +
+			texture(tex, vec2(tc.x, tc.y - d.y))
+		) +
+		0.0625*(
+			texture(tex, tc + d) + 
+			texture(tex, tc - d) + 
+			texture(tex, vec2(tc.x + d.x, tc.y - d.y)) +
+			texture(tex, vec2(tc.x - d.x, tc.y + d.y)) 
+		);
+}
+
+ivec3 quantize(in vec4 rgba)
+{
+	return ivec3(rgba.r < threshold ? 0 : 1, rgba.g < threshold ? 0 : 1, rgba.b < threshold ? 0 : 1);
+}
+
+vec4 GameOfLife(in vec2 tc)
+{
+	vec2 d = compute_delta();
+	ivec3 index =
+		quantize(texture(tex, vec2(tc.x + d.x, tc.y))) +
+		quantize(texture(tex, vec2(tc.x - d.x, tc.y))) +
+		quantize(texture(tex, vec2(tc.x, tc.y + d.y))) +
+		quantize(texture(tex, vec2(tc.x, tc.y - d.y))) +
+		quantize(texture(tex, tc + d)) +
+		quantize(texture(tex, tc - d)) +
+		quantize(texture(tex, vec2(tc.x + d.x, tc.y - d.y))) +
+		quantize(texture(tex, vec2(tc.x - d.x, tc.y + d.y))) +
+	9 * quantize(texture(tex, tc));
+	return vec4(float(rule[index.r]), float(rule[index.g]), float(rule[index.b]), 1.0);
+}
+
+void main()
+{
+	switch (mode) {
+	case 0 :
+		frag_color = texture(tex, texcrd);
+		break;
+	case 1:
+		frag_color = smoothing(texcrd);
+		break;
+	case 2:
+		frag_color = GameOfLife(texcrd);
+		break;
+	}
+}
