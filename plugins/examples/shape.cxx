@@ -29,8 +29,8 @@ shape::shape(const char* name) : group(name), node_flag(true), ax(0), ay(0),
 	shp = CUBE;
 	flip_normals = false;
 	resolution = 25;
-	if (mesh.read("S:/data/surface/x_Gumhold/pial_DK_ply/assembled/Brain.obj")) {
-//	if (mesh.read("S:/data/surface/meshes/obj/horse/horse.obj")) {
+//if (mesh.read("S:/data/surface/x_Gumhold/pial_DK_ply/assembled/Brain.obj")) {
+	if (mesh.read("S:/data/surface/meshes/obj/horse/horse.obj")) {
 		shp = MESH;
 	}
 	else

@@ -47,7 +47,7 @@ namespace cgv { // @<
 			template <typename T>
 			void set_rotation_array(const context& ctx, const T* rotations, size_t nr_elements, size_t stride) { has_rotations = true; set_attribute_array(ctx, ref_prog().get_attribute_location(ctx, "rotation"), rotations, nr_elements, stride); }
 			///
-			bool validate_attributes(const context& ctx);
+			bool validate_attributes(const context& ctx) const;
 			///
 			bool disable(context& ctx);
 		};

@@ -24,7 +24,7 @@ namespace cgv {
 			position_is_center = _position_is_center;
 		}
 
-		bool box_renderer::validate_attributes(const context& ctx)
+		bool box_renderer::validate_attributes(const context& ctx) const
 		{
 			// validate set attributes
 			const surface_render_style& srs = get_style<surface_render_style>();

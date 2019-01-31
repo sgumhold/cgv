@@ -137,7 +137,7 @@ gl_context::gl_context()
 		info_font_face = info_font->get_font_face(FFA_REGULAR);
 
 	show_help = false;
-	show_stats = true;
+	show_stats = false;
 }
 
 /// return the used rendering API
