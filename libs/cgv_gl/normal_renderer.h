@@ -23,7 +23,7 @@ namespace cgv {
 			float normal_scale;
 			/// overload to allow instantiation of box_wire_renderer
 			render_style* create_render_style() const;
-			bool validate_attributes(const context& ctx);
+			bool validate_attributes(const context& ctx) const;
 		public:
 			normal_renderer();
 			/// the normal scale is multiplied to the normal length of the normal render style

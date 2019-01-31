@@ -56,9 +56,9 @@ namespace cgv{
 		T erf(const T x)
 		{
 			if (x >= 0.)
-				return 1.0 - detail::erfccheb(x);
+				return T(1.0) - detail::erfccheb(x);
 			else
-				return detail::erfccheb(-x) - 1.0;
+				return detail::erfccheb(-x) - T(1.0);
 		}
 
 		///complementary error function

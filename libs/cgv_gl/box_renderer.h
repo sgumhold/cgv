@@ -30,6 +30,9 @@ namespace cgv { // @<
 			bool init(context& ctx);
 			/// 
 			bool enable(context& ctx);
+			/// specify a single extent for all boxes
+			template <typename T>
+			void set_extent(const context& ctx, const T& extent) { has_extents = true;  ref_prog().set_attribute(ctx, ref_prog().get_attribute_location(ctx, "extent"), extent); }
 			/// extent array specifies box extends in case of position_is_center=true, otherwise the maximum point of each box
 			template <typename T>
 			void set_extent_array(const context& ctx, const std::vector<T>& extents) { has_extents = true;  set_attribute_array(ctx, ref_prog().get_attribute_location(ctx, "extent"), extents); }
@@ -56,7 +59,7 @@ namespace cgv { // @<
 			template <typename T>
 			void set_rotation_array(const context& ctx, const T* rotations, size_t nr_elements, size_t stride) { has_rotations = true; set_attribute_array(ctx, ref_prog().get_attribute_location(ctx, "rotation"), rotations, nr_elements, stride); }
 			///
-			bool validate_attributes(const context& ctx);
+			bool validate_attributes(const context& ctx) const;
 			///
 			bool disable(context& ctx);
 		};
