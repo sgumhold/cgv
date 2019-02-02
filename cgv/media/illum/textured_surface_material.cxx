@@ -57,7 +57,7 @@ textured_surface_material::textured_surface_material(const obj_material& obj_mat
 	set_roughness(1.0f/obj_mat.get_shininess() - 1.0f/128.0f);
 	set_transparency(1.0f - obj_mat.get_opacity());
 	set_bump_scale(obj_mat.get_bump_scale());
-	std::map<std::string, size_t> file_name_map;
+	std::map<std::string, int> file_name_map;
 	if (!obj_mat.get_ambient_texture_name().empty()) {
 		if (file_name_map.find(obj_mat.get_ambient_texture_name()) == file_name_map.end())
 			file_name_map[obj_mat.get_ambient_texture_name()] = add_image_file(obj_mat.get_ambient_texture_name());
@@ -91,9 +91,9 @@ textured_surface_material::textured_surface_material(const obj_material& obj_mat
 }
 
 /// add a new image and return its index
-size_t textured_surface_material::add_image_file(const std::string& file_name)
+int textured_surface_material::add_image_file(const std::string& file_name)
 {
-	size_t idx = image_file_names.size();
+	int idx = int(image_file_names.size());
 	image_file_names.push_back(file_name);
 	return idx;
 }

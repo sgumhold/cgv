@@ -106,7 +106,7 @@ void textured_material::destruct_textures(context& ctx)
 /// enable by modulating opacities of material with given opacity value
 void textured_material::enable_textures(context& ctx)
 {
-	for (size_t ti = 0; ti < textures.size(); ++ti) {
+	for (unsigned ti = 0; ti < textures.size(); ++ti) {
 		if (textures[ti])
 			textures[ti]->enable(ctx, ti);
 	}
@@ -115,14 +115,14 @@ void textured_material::enable_textures(context& ctx)
 /// disable material
 void textured_material::disable_textures(context& ctx)
 {
-	for (size_t ti = 0; ti < textures.size(); ++ti) {
+	for (unsigned ti = 0; ti < textures.size(); ++ti) {
 		if (textures[ti])
 			textures[ti]->disable(ctx);
 	}
 }
 
 /// return pointer to ambient texture or 0 if non created
-texture* textured_material::get_texture(size_t ti) const
+texture* textured_material::get_texture(int ti) const
 {
 	assert(ti < textures.size());
 	return textures[ti];
