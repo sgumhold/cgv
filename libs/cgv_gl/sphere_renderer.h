@@ -62,7 +62,7 @@ namespace cgv {
 			/// use this function if you store spheres in vec4 with the 4th component the radius
 			template <typename T = float>
 			void set_sphere_array(const context& ctx, const std::vector<cgv::math::fvec<T, 4> >& spheres) {
-				set_position_array(ctx, &(reinterpret_cast<cgv::math::fvec<T, 3>&>(spheres[0]), spheres.size(), sizeof(cgv::math::fvec<T, 4>)));
+				set_position_array(ctx, &(reinterpret_cast<const cgv::math::fvec<T, 3>&>(spheres[0])), spheres.size(), sizeof(cgv::math::fvec<T, 4>));
 				set_radius_array(ctx, &spheres[0][3], spheres.size(), sizeof(cgv::math::fvec<T, 4>));
 			}
 			///
