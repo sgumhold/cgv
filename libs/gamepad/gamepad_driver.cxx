@@ -4,7 +4,7 @@ namespace gamepad {
 	/// register a new driver
 	void register_driver(gamepad_driver* gpd)
 	{
-		gpd->driver_index = ref_drivers().size();
+		gpd->driver_index = unsigned(ref_drivers().size());
 		ref_drivers().push_back(gpd);
 		ref_driver_infos().resize(ref_driver_infos().size() + 1);
 		ref_driver_infos().back().name = gpd->get_name();

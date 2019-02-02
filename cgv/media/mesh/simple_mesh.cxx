@@ -43,7 +43,7 @@ void simple_mesh_base::merge_indices(std::vector<idx_type>& indices, std::vector
 		// determine vertex index
 		idx_type vi;
 		if (iter == corner_to_index.end()) {
-			vi = unique_triples.size();
+			vi = idx_type(unique_triples.size());
 			corner_to_index[triple] = vi;
 			unique_triples.push_back(c);
 		}
@@ -68,7 +68,7 @@ void simple_mesh_base::extract_triangle_element_buffer(
 			if (mi != material_indices[fj] || gi != group_indices[fj]) {
 				mi = material_indices[fj];
 				gi = group_indices[fj];
-				material_group_start_ptr->push_back(vec3i(mi, gi, triangle_element_buffer.size()));
+				material_group_start_ptr->push_back(vec3i(mi, gi, idx_type(triangle_element_buffer.size())));
 			}
 		}
 		if (face_degree(fj) == 3) {
@@ -136,8 +136,8 @@ public:
 	/// overide this function to process a face, the indices start with 0
 	void process_face(unsigned vcount, int *vertices, int *texcoords, int *normals)
 	{
-		convert_to_positive(vcount, vertices, texcoords, normals, mesh.positions.size(), mesh.normals.size(), mesh.tex_coords.size());
-		mesh.faces.push_back(mesh.position_indices.size());
+		convert_to_positive(vcount, vertices, texcoords, normals, unsigned(mesh.positions.size()), unsigned(mesh.normals.size()), unsigned(mesh.tex_coords.size()));
+		mesh.faces.push_back(idx_type(mesh.position_indices.size()));
 		if (get_current_group() != -1)
 			mesh.group_indices.push_back(get_current_group());
 		if (get_current_material() != -1)

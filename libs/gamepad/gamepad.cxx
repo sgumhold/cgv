@@ -129,7 +129,7 @@ namespace gamepad {
 		// check if device_index is valid
 		if (device_index >= ref_device_handles().size())
 			return false;
-		driver_index = ref_device_infos()[device_index].driver_index;
+		driver_index = unsigned(ref_device_infos()[device_index].driver_index);
 		if (driver_index >= ref_drivers().size())
 			return false;
 		return true;

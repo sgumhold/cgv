@@ -37,7 +37,7 @@ public:
 	size_t get_size_in_bytes() const;
 	/// replace part (starting at byte offset \c buffer_offset_in_bytes) or whole vertex buffer content from \c nr_elements of CPU array \c array_ptr
 	template <typename T>
-	bool replace(const context& ctx, size_t buffer_offset_in_bytes, const T* array_ptr, unsigned nr_elements) {
+	bool replace(const context& ctx, size_t buffer_offset_in_bytes, const T* array_ptr, size_t nr_elements) {
 		return ctx.vertex_buffer_replace(*this, buffer_offset_in_bytes, nr_elements* sizeof(T), array_ptr);
 	}
 	/// copy \c size_in_bytes number bytes from this vertex buffer starting at byte offset \c start_offset_in_bytes to vertex buffer \c dst starting at offest \c dst_offset_in_bytes
