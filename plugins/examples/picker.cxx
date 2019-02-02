@@ -149,7 +149,7 @@ void picker::draw(context& ctx)
 		pr.set_y_view_angle(float(view_ptr->get_y_view_angle()));
 		if (pr.validate_and_enable(ctx)) {
 			ctx.set_color(rgb(1.0f, 0, 0));
-			glDrawArrays(GL_POINTS, 0, pnts.size());
+			glDrawArrays(GL_POINTS, 0, GLsizei(pnts.size()));
 			pr.disable(ctx);
 		}
 	glDisable(GL_POLYGON_OFFSET_POINT);

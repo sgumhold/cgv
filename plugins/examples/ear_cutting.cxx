@@ -92,8 +92,8 @@ public:
 	vec2 world_from_pixel(const vec2& p) const { return p*img_extent.get_extent() / vec2(float(img_width), float(img_height)) + img_extent.get_min_pnt(); }
 	void clear_image(const brgb_type& c) { std::fill(img.begin(), img.end(), c); }
 	void clear_image(const brgb_type& c1, const brgb_type& c2) {
-		for (size_t y = 0; y < img_height; ++y)
-			for (size_t x = 0; x < img_width; ++x)
+		for (unsigned y = 0; y < img_height; ++y)
+			for (unsigned x = 0; x < img_width; ++x)
 				set_pixel(vec2i(x, y), ((x & 1) == (y & 1)) ? c1 : c2);
 	}
 	void rasterize_polygon(const std::vector<vec2>& polygon, const brgb_type& c) {
@@ -314,7 +314,7 @@ public:
 	void draw_polygon()
 	{
 		if (polygon.size() > 0)
-			glDrawArrays(GL_LINE_LOOP, 0, polygon.size());
+			glDrawArrays(GL_LINE_LOOP, 0, GLsizei(polygon.size()));
 	}
 	void draw_unprocessed_polygon()
 	{
@@ -323,7 +323,7 @@ public:
 		std::vector<GLuint> I;
 		for (const auto& n : nodes)
 			I.push_back(n.idx);
-		glDrawElements(GL_LINE_LOOP, I.size(), GL_UNSIGNED_INT, &I[0]);
+		glDrawElements(GL_LINE_LOOP, GLsizei(I.size()), GL_UNSIGNED_INT, &I[0]);
 	}
 	void draw_triangles(context& ctx, shader_program& prog)
 	{
@@ -341,7 +341,7 @@ public:
 
 		if (wireframe) {
 			ctx.set_color(rgb(0, 0, 0));
-			for (size_t vi = 0; vi < P.size(); vi += 3)
+			for (int vi = 0; vi < P.size(); vi += 3)
 				glDrawArrays(GL_LINE_LOOP, vi, 3);
 		}
 		else {
@@ -360,7 +360,7 @@ public:
 			// bind and enable color array
 			attribute_array_binding::set_global_attribute_array(ctx, prog.get_color_index(), C);
 			attribute_array_binding::enable_global_array(ctx, prog.get_color_index());
-			glDrawArrays(GL_TRIANGLES, 0, C.size());
+			glDrawArrays(GL_TRIANGLES, 0, GLsizei(C.size()));
 			attribute_array_binding::disable_global_array(ctx, prog.get_color_index());
 		}
 	}
@@ -376,7 +376,7 @@ public:
 		pnt_renderer.set_color_array(ctx, colors);
 		pnt_renderer.set_position_array(ctx, points);
 		pnt_renderer.validate_and_enable(ctx);
-			glDrawArrays(GL_POINTS, 0, points.size());
+			glDrawArrays(GL_POINTS, 0, GLsizei(points.size()));
 		pnt_renderer.disable(ctx);
 
 		if (selected_index != -1)
@@ -392,8 +392,8 @@ public:
 			if (tex.is_created())
 				tex.destruct(ctx);
 			cgv::data::data_format df("uint8[R,G,B]");
-			df.set_width(img_width);
-			df.set_height(img_height);
+			df.set_width(unsigned(img_width));
+			df.set_height(unsigned(img_height));
 			cgv::data::data_view dv(&df, &img[0]);
 			tex.create(ctx, dv);
 			tex_outofdate = false;
@@ -583,7 +583,7 @@ public:
 							if (find_control(nr_steps))
 								find_control(nr_steps)->set("max", polygon.size() - 2);
 							if (nr_steps > polygon.size() - 2) {
-								nr_steps = polygon.size() - 2;
+								nr_steps = unsigned(polygon.size() - 2);
 								on_set(&nr_steps);
 							}
 							else {

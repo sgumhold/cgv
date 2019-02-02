@@ -206,10 +206,10 @@ public:
 			};
 			vec3 view_dir = view_ptr->get_view_dir();
 			std::sort(indices.begin(), indices.end(), sort_pred(points, view_dir));
-			glDrawElements(GL_POINTS, points.size(), GL_UNSIGNED_INT, &indices.front());
+			glDrawElements(GL_POINTS, GLsizei(points.size()), GL_UNSIGNED_INT, &indices.front());
 		}
 		else
-			glDrawArrays(GL_POINTS, 0, points.size());
+			glDrawArrays(GL_POINTS, 0, GLsizei(points.size()));
 	}
 	void draw(cgv::render::context& ctx)
 	{

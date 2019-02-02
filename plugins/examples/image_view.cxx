@@ -134,7 +134,7 @@ public:
 	{
 		get_context()->make_current();
 		if (tex_ids.size() > 0) {
-			glDeleteTextures(tex_ids.size(),&tex_ids.front());
+			glDeleteTextures(GLsizei(tex_ids.size()),&tex_ids.front());
 			durations.clear();
 			tex_ids.clear();
 		}
@@ -150,7 +150,7 @@ public:
 	{
 		get_context()->make_current();
 		if (tex_ids.size() > 0) {
-			glDeleteTextures(tex_ids.size(),&tex_ids.front());
+			glDeleteTextures(GLsizei(tex_ids.size()),&tex_ids.front());
 			durations.clear();
 			tex_ids.clear();
 		}

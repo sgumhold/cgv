@@ -74,15 +74,15 @@ public: //@<
 	std::string& ref_name() { return name; }
 
 	/// return number of image files
-	size_t get_nr_image_files() const { return image_file_names.size(); }
+	unsigned get_nr_image_files() const { return unsigned(image_file_names.size()); }
 	/// add a new image and return its index
-	size_t add_image_file(const std::string& file_name);
+	int add_image_file(const std::string& file_name);
 	/// return the name of the i-th image file
-	std::string get_image_file_name(size_t i) const { return image_file_names[i]; }
+	std::string get_image_file_name(int i) const { return image_file_names[i]; }
 	/// set the image file name of i-th image file
-	void set_image_file_name(size_t i, std::string image_file_name) { image_file_names[i] = image_file_name; }
+	void set_image_file_name(int i, std::string image_file_name) { image_file_names[i] = image_file_name; }
 	/// return reference to image file name of i-th image file
-	std::string& ref_image_file_name(size_t i) { return image_file_names[i]; }
+	std::string& ref_image_file_name(int i) { return image_file_names[i]; }
 
 	void set_diffuse_index(int i) { diffuse_index = i; }
 	int  get_diffuse_index() const { return diffuse_index; }
