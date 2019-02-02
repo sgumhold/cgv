@@ -41,7 +41,7 @@ public:
 	/// call this to ensure that the textures are loaded - typically done in the init_frame method of a drawable
 	bool ensure_textures(context& ctx);
 	/// return pointer to ambient texture or 0 if non created
-	texture* get_texture(size_t texture_index) const;
+	texture* get_texture(int texture_index) const;
 	/// enable all textures with their indices as texture unit
 	void enable_textures(context& ctx);
 	/// disable material textures

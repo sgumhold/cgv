@@ -387,7 +387,7 @@ void* context::add_light_source(const cgv::media::illum::light_source& light, bo
 	//
 	int idx = -1;
 	if (enabled) {
-		idx = enabled_light_source_handles.size();
+		idx = int(enabled_light_source_handles.size());
 		enabled_light_source_handles.push_back(handle);
 	}
 	// store new light source in map
@@ -546,7 +546,7 @@ bool context::enable_light_source(void* handle)
 	if (iter->second.second.enabled)
 		return true;
 	iter->second.second.enabled = true;
-	iter->second.second.light_source_index = enabled_light_source_handles.size();
+	iter->second.second.light_source_index = int(enabled_light_source_handles.size());
 	enabled_light_source_handles.push_back(handle);
 	on_lights_changed();
 	return true;
