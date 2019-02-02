@@ -292,7 +292,7 @@ void texture::set_component_format(const std::string& description)
 }
 
 /// return pointer to diffuse texture or 0 if non created
-texture* textured_material::get_texture(size_t ti) const
+texture* textured_material::get_texture(int ti) const
 {
 	return 0;
 }

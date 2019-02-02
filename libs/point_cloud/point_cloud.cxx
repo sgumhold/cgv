@@ -77,7 +77,7 @@ point_cloud::Idx point_cloud::begin_index(Idx component_index) const
 	if (component_index == -1 || !has_components())
 		return 0;
 	else
-		return component_point_range(component_index).index_of_first_point;
+		return Idx(component_point_range(component_index).index_of_first_point);
 }
 /// return end point index for iteration
 point_cloud::Idx point_cloud::end_index(Idx component_index) const
@@ -85,7 +85,7 @@ point_cloud::Idx point_cloud::end_index(Idx component_index) const
 	if (component_index == -1 || !has_components())
 		return get_nr_points();
 	else
-		return component_point_range(component_index).index_of_first_point + component_point_range(component_index).nr_points;
+		return Idx(component_point_range(component_index).index_of_first_point + component_point_range(component_index).nr_points);
 }
 
 point_cloud::point_cloud()
@@ -178,7 +178,7 @@ void point_cloud::append(const point_cloud& pc)
 	}
 	if (has_components()) {
 		if (pc.has_components()) {
-			int old_nc = get_nr_components();
+			int old_nc = int(get_nr_components());
 			for (unsigned ci = 0; ci < pc.get_nr_components(); ++ci) {
 				components.push_back(pc.component_point_range(ci));
 				components.back().index_of_first_point += old_n;
@@ -199,7 +199,7 @@ void point_cloud::append(const point_cloud& pc)
 				component_indices[i + old_n] = pc.component_index(i) + old_nc;
 		}
 		else {
-			Idx ci = components.empty() ? 0 : get_nr_components() - 1;
+			Idx ci = Idx(components.empty() ? 0 : get_nr_components() - 1);
 			std::fill(component_indices.begin() + old_n, component_indices.end(), ci);
 			components[ci].nr_points += pc.get_nr_points();
 			comp_box_out_of_date[ci] = true;
@@ -355,7 +355,7 @@ point_cloud::Idx point_cloud::add_point(const Pnt& p)
 	if (has_components()) {
 		if (components.empty())
 			components.push_back(component_info(0, p.size()));
-		component_indices.push_back(components.size() - 1);
+		component_indices.push_back(unsigned(components.size() - 1));
 		++components.back().nr_points;
 	}
 	P.push_back(p);
@@ -567,7 +567,7 @@ bool point_cloud::write_component_transformations(const std::string& file_name, 
 	if (os.fail())
 		return false;
 
-	for (size_t ci = 0; ci < get_nr_components(); ++ci) {
+	for (Idx ci = 0; ci < get_nr_components(); ++ci) {
 		const Qat& q = component_rotation(ci);
 		const Dir& t = component_translation(ci);
 		if (as_matrices) {
@@ -895,7 +895,7 @@ bool point_cloud::read_bin(const string& file_name)
 				success = success && fread(&components[0], sizeof(component_info), nr_comps, fp) == nr_comps;
 				component_indices.resize(n);
 				for (unsigned i = 0; i < nr_comps; ++i)
-					for (unsigned j = components[i].index_of_first_point; j < components[i].index_of_first_point + components[i].nr_points; ++j)
+					for (unsigned j = unsigned(components[i].index_of_first_point); j < components[i].index_of_first_point + components[i].nr_points; ++j)
 						component_indices[j] = i;
 				if (flags & BPC_HAS_COMP_CLRS) {
 					component_colors.resize(nr_comps);
@@ -1173,7 +1173,7 @@ bool point_cloud::write_bin(const std::string& file_name) const
 		if (has_pixel_coordinates())
 			success = success && (fwrite(&I[0][0], sizeof(PixCrd), n, fp) == n);
 		if (has_components()) {
-			Cnt nr_comps = get_nr_components();
+			Cnt nr_comps = Cnt(get_nr_components());
 			success = success && (fwrite(&nr_comps, sizeof(Cnt), 1, fp) == 1) && (fwrite(&components[0], sizeof(component_info), nr_comps, fp) == nr_comps);
 		}
 		if (has_component_colors())
@@ -1318,7 +1318,7 @@ point_cloud::Idx point_cloud::add_component()
 		comp_pixrng_out_of_date.push_back(true);
 		component_pixel_ranges.push_back(PixRng());
 	}
-	return components.size() - 1;
+	return Idx(components.size() - 1);
 }
 
 /// return whether the point cloud has component indices and point ranges
@@ -1551,7 +1551,7 @@ point_cloud::Cnt point_cloud::collect_valid_image_neighbors(Idx pi, const index_
 				Ni.push_back(ni);
 		}
 	}
-	return Ni.size();
+	return Cnt(Ni.size());
 }
 
 void point_cloud::estimate_normals(const index_image& img, Crd distance_threshold, Idx ci, int* nr_isolated, int* nr_iterations, int* nr_left_over)
@@ -1588,7 +1588,7 @@ void point_cloud::estimate_normals(const index_image& img, Crd distance_threshol
 		N[i] = nml;
 	}
 	if (nr_isolated)
-		*nr_isolated = isolated_normals.size();
+		*nr_isolated = int(isolated_normals.size());
 
 	int iter = 1;
 	if (!not_set_normals.empty()) {
@@ -1616,5 +1616,5 @@ void point_cloud::estimate_normals(const index_image& img, Crd distance_threshol
 	if (nr_iterations)
 		*nr_iterations = iter;
 	if (nr_left_over)
-		*nr_left_over = not_set_normals.size();
+		*nr_left_over = int(not_set_normals.size());
 }

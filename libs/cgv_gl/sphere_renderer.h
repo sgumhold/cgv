@@ -55,7 +55,7 @@ namespace cgv {
 			void set_radius_array(const context& ctx, const std::vector<T>& radii) { has_radii = true; set_attribute_array(ctx, ref_prog().get_attribute_location(ctx, "radius"), radii); }
 			/// 
 			template <typename T = float>
-			void set_radius_array(const context& ctx, const T* radii, size_t nr_elements, size_t stride_in_bytes = 0) { has_radii = true;  set_attribute_array(ctx, ref_prog().get_attribute_location(ctx, "radius"), radii, nr_elements, stride_in_bytes); }
+			void set_radius_array(const context& ctx, const T* radii, size_t nr_elements, unsigned stride_in_bytes = 0) { has_radii = true;  set_attribute_array(ctx, ref_prog().get_attribute_location(ctx, "radius"), radii, nr_elements, stride_in_bytes); }
 			///
 			template <typename T = float>
 			void set_group_radii(const context& ctx, const std::vector<T>& group_radii) { has_group_radii = true; ref_prog().set_uniform_array(ctx, "group_radii", group_radii); }
