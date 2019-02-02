@@ -39,9 +39,9 @@ protected:
 	std::vector<mat_type> materials;
 public:
 	/// return the number of faces
-	idx_type get_nr_faces() const { return faces.size(); }
+	idx_type get_nr_faces() const { return idx_type(faces.size()); }
 	idx_type begin_corner(idx_type fi) const { return faces[fi]; }
-	idx_type end_corner(idx_type fi) const { return fi + 1 == faces.size() ? position_indices.size() : faces[fi + 1]; }
+	idx_type end_corner(idx_type fi) const { return fi + 1 == faces.size() ? idx_type(position_indices.size()) : faces[fi + 1]; }
 	idx_type face_degree(idx_type fi) const { return end_corner(fi) - begin_corner(fi); }
 	/// access to materials
 	size_t get_nr_materials() const { return materials.size(); }
@@ -82,9 +82,9 @@ public:
 	const vec3& normal(idx_type ni) const { return normals[ni]; }
 	vec2& tex_coord(idx_type ti) { return tex_coords[ti]; }
 	const vec2& tex_coord(idx_type ti) const { return tex_coords[ti]; }
-	idx_type get_nr_positions() const { return positions.size(); }
-	idx_type get_nr_normals() const { return normals.size(); }
-	idx_type get_nr_tex_coords() const { return tex_coords.size(); }
+	idx_type get_nr_positions() const { return idx_type(positions.size()); }
+	idx_type get_nr_normals() const { return idx_type(normals.size()); }
+	idx_type get_nr_tex_coords() const { return idx_type(tex_coords.size()); }
 	bool has_tex_coords() const { return get_nr_tex_coords() > 0; }
 	bool has_normals() const { return get_nr_normals() > 0; }
 	/// compute the axis aligned bounding box

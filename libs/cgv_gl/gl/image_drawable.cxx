@@ -80,7 +80,7 @@ void image_drawable::clear(context& ctx)
 {
 	prog.destruct(ctx);
 	if (!tex_ids.empty())
-		glDeleteTextures(tex_ids.size(), &tex_ids.front());
+		glDeleteTextures(GLsizei(tex_ids.size()), &tex_ids.front());
 }
 
 bool image_drawable::read_image(const std::string& _file_name)

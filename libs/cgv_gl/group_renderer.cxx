@@ -32,7 +32,7 @@ namespace cgv {
 			set_attribute_array(ctx, ref_prog().get_attribute_location(ctx, "group_index"), group_indices, nr_elements, 0);
 		}
 		/// template method to set the group index attribute from a vertex buffer object, the element type must be given as explicit template parameter
-		void group_renderer::set_group_index_array(const context& ctx, type_descriptor element_type, const vertex_buffer& vbo, size_t offset_in_bytes, size_t nr_elements, size_t stride_in_bytes)
+		void group_renderer::set_group_index_array(const context& ctx, type_descriptor element_type, const vertex_buffer& vbo, size_t offset_in_bytes, size_t nr_elements, unsigned stride_in_bytes)
 		{
 			has_group_indices = true;
 			set_attribute_array(ctx, ref_prog().get_attribute_location(ctx, "group_index"), element_type, vbo, offset_in_bytes, nr_elements, stride_in_bytes);

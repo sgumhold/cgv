@@ -47,7 +47,7 @@ namespace cgv { // @<
 			}
 			///
 			template <typename T>
-			bool set_attribute_array(const context& ctx, int loc, const T* array_ptr, unsigned nr_elements, unsigned stride) {
+			bool set_attribute_array(const context& ctx, int loc, const T* array_ptr, size_t nr_elements, unsigned stride) {
 				bool res;
 				vertex_buffer*& vbo_ptr = vbos[loc];
 				if (vbo_ptr) {
@@ -67,7 +67,7 @@ namespace cgv { // @<
 				return res;
 			}
 			///
-			bool set_attribute_array(const context& ctx, int loc, type_descriptor element_type, const vertex_buffer& vbo, size_t offset_in_bytes, size_t nr_elements, size_t stride_in_bytes);
+			bool set_attribute_array(const context& ctx, int loc, type_descriptor element_type, const vertex_buffer& vbo, size_t offset_in_bytes, size_t nr_elements, unsigned stride_in_bytes);
 		public:
 			/// default initialization
 			attribute_array_manager();
@@ -119,13 +119,13 @@ namespace cgv { // @<
 				return attribute_array_binding::set_global_attribute_array(ctx, loc, array);
 			}
 			template <typename T>
-			bool set_attribute_array(const context& ctx, int loc, const T* array_ptr, unsigned nr_elements, unsigned stride) {
+			bool set_attribute_array(const context& ctx, int loc, const T* array_ptr, size_t nr_elements, unsigned stride) {
 				if (aam_ptr)
 					return aam_ptr->set_attribute_array(ctx, loc, array_ptr, nr_elements, stride);
 				enabled_attribute_arrays.insert(loc);
 				return attribute_array_binding::set_global_attribute_array(ctx, loc, array_ptr, nr_elements, stride);
 			}
-			bool set_attribute_array(const context& ctx, int loc, type_descriptor element_type, const vertex_buffer& vbo, size_t offset_in_bytes, size_t nr_elements, size_t stride_in_bytes);
+			bool set_attribute_array(const context& ctx, int loc, type_descriptor element_type, const vertex_buffer& vbo, size_t offset_in_bytes, size_t nr_elements, unsigned stride_in_bytes);
 		public:
 			/// construct and init attribute tracking flags
 			renderer();
@@ -142,23 +142,23 @@ namespace cgv { // @<
 			void set_position_array(const context& ctx, const std::vector<T>& positions) { has_positions = true; set_attribute_array(ctx, ref_prog().get_attribute_location(ctx, "position"), positions); }
 			/// templated method to set the position attribute from a vector of positions of type T
 			template <typename T>
-			void set_position_array(const context& ctx, const T* positions, size_t nr_elements, size_t stride_in_bytes = 0) { has_positions = true; set_attribute_array(ctx, ref_prog().get_attribute_location(ctx, "position"), positions, nr_elements, stride_in_bytes); }
+			void set_position_array(const context& ctx, const T* positions, size_t nr_elements, unsigned stride_in_bytes = 0) { has_positions = true; set_attribute_array(ctx, ref_prog().get_attribute_location(ctx, "position"), positions, nr_elements, stride_in_bytes); }
 			/// method to set the position attribute from a vertex buffer object
-			void set_position_array(const context& ctx, type_descriptor element_type, const vertex_buffer& vbo, size_t offset_in_bytes, size_t nr_elements, size_t stride_in_bytes);
+			void set_position_array(const context& ctx, type_descriptor element_type, const vertex_buffer& vbo, size_t offset_in_bytes, size_t nr_elements, unsigned stride_in_bytes);
 			/// template method to set the position attribute from a vertex buffer object, the element type must be given as explicit template parameter
 			template <typename ElementType>
-			void set_position_array(const context& ctx, const vertex_buffer& vbo, size_t offset_in_bytes, size_t nr_elements, size_t stride_in_bytes = 0) { set_position_array(ctx, type_descriptor(element_descriptor_traits<T>::get_type_descriptor(T()), true), vbo, offset_in_bytes, nr_elements, stride_in_bytes); }
+			void set_position_array(const context& ctx, const vertex_buffer& vbo, size_t offset_in_bytes, size_t nr_elements, unsigned stride_in_bytes = 0) { set_position_array(ctx, type_descriptor(element_descriptor_traits<T>::get_type_descriptor(T()), true), vbo, offset_in_bytes, nr_elements, stride_in_bytes); }
 			/// template method to set the color attribute from a vector of colors of type T
 			template <typename T>
 			void set_color_array(const context& ctx, const std::vector<T>& colors) { has_colors = true;  set_attribute_array(ctx, ref_prog().get_attribute_location(ctx, "color"), colors); }
 			/// template method to set the color attribute from a vector of colors of type T
 			template <typename T>
-			void set_color_array(const context& ctx, const T* colors, size_t nr_elements, size_t stride_in_bytes = 0) { has_colors = true;  set_attribute_array(ctx, ref_prog().get_attribute_location(ctx, "color"), colors, nr_elements, stride_in_bytes); }
+			void set_color_array(const context& ctx, const T* colors, size_t nr_elements, unsigned stride_in_bytes = 0) { has_colors = true;  set_attribute_array(ctx, ref_prog().get_attribute_location(ctx, "color"), colors, nr_elements, stride_in_bytes); }
 			/// method to set the color attribute from a vertex buffer object, the element type must be given as explicit template parameter
-			void set_color_array(const context& ctx, type_descriptor element_type, const vertex_buffer& vbo, size_t offset_in_bytes, size_t nr_elements, size_t stride_in_bytes = 0);
+			void set_color_array(const context& ctx, type_descriptor element_type, const vertex_buffer& vbo, size_t offset_in_bytes, size_t nr_elements, unsigned stride_in_bytes = 0);
 			/// template method to set the color attribute from a vertex buffer object, the element type must be given as explicit template parameter
 			template <typename ElementType>
-			void set_color_array(const context& ctx, const vertex_buffer& vbo, size_t offset_in_bytes, size_t nr_elements, size_t stride_in_bytes = 0) { set_color_array(ctx, type_descriptor(element_descriptor_traits<T>::get_type_descriptor(T()), true), vbo, offset_in_bytes, nr_elements, stride_in_bytes); }
+			void set_color_array(const context& ctx, const vertex_buffer& vbo, size_t offset_in_bytes, size_t nr_elements, unsigned stride_in_bytes = 0) { set_color_array(ctx, type_descriptor(element_descriptor_traits<T>::get_type_descriptor(T()), true), vbo, offset_in_bytes, nr_elements, stride_in_bytes); }
 			/// call to validate, whether essential position attribute is defined
 			virtual bool validate_attributes(const context& ctx) const;
 			/// validate attributes and if successful, enable renderer

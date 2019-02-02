@@ -5,7 +5,7 @@
 namespace cgv {
 	namespace render {
 
-bool attribute_array_binding::set_global_attribute_array(const context& ctx, int loc, type_descriptor element_type, const vertex_buffer& vbo, size_t offset_in_bytes, size_t nr_elements, size_t stride_in_bytes) 
+bool attribute_array_binding::set_global_attribute_array(const context& ctx, int loc, type_descriptor element_type, const vertex_buffer& vbo, size_t offset_in_bytes, size_t nr_elements, unsigned stride_in_bytes) 
 {
 	return ctx.set_attribute_array_void(0, loc, element_type, &vbo, reinterpret_cast<const void*>(offset_in_bytes), nr_elements, stride_in_bytes);
 }
@@ -17,7 +17,7 @@ bool attribute_array_binding::set_global_element_array(const context& ctx, const
 }
 
 /// point array of vertex attribute at location \c loc to elements of given type in vertex buffer object at given offset spaced with given stride; in case of success also enable vertex attribute array
-bool attribute_array_binding::set_attribute_array(const context& ctx, int loc, type_descriptor element_type, const vertex_buffer& vbo, size_t offset_in_bytes, size_t nr_elements, size_t stride_in_bytes) 
+bool attribute_array_binding::set_attribute_array(const context& ctx, int loc, type_descriptor element_type, const vertex_buffer& vbo, size_t offset_in_bytes, size_t nr_elements, unsigned stride_in_bytes) 
 {
 	return ctx.set_attribute_array_void(this, loc, element_type, &vbo, reinterpret_cast<const void*>(offset_in_bytes), nr_elements, stride_in_bytes);
 }
@@ -46,7 +46,7 @@ bool attribute_array_binding::disable_global_array(const context& ctx, int loc)
 }
 
 /// point array of vertex attribute at location \c loc to vertex buffer array \c array stored in CPU memory; in case of success also enable vertex attribute array
-bool attribute_array_binding::set_global_attribute_array(const context& ctx, int loc, const vertex_buffer& vbo, type_descriptor td, size_t size, size_t offset, size_t stride) 
+bool attribute_array_binding::set_global_attribute_array(const context& ctx, int loc, const vertex_buffer& vbo, type_descriptor td, size_t size, size_t offset, unsigned stride) 
 {
 	const void* ptr = 0;
 	reinterpret_cast<size_t&>(ptr) = offset;

@@ -35,7 +35,7 @@ namespace cgv {
 			void set_normal_array(const context& ctx, const std::vector<T>& normals) { has_normals = true;  set_attribute_array(ctx, ref_prog().get_attribute_location(ctx, "normal"), normals); }
 			/// templated method to set the normal attribute from an array of normals of type T, which should have 3 components
 			template <typename T>
-			void set_normal_array(const context& ctx, const T* normals, size_t nr_elements, size_t stride_in_bytes = 0) { has_normals = true;  set_attribute_array(ctx, ref_prog().get_attribute_location(ctx, "normal"), normals, nr_elements, stride_in_bytes); }
+			void set_normal_array(const context& ctx, const T* normals, size_t nr_elements, unsigned stride_in_bytes = 0) { has_normals = true;  set_attribute_array(ctx, ref_prog().get_attribute_location(ctx, "normal"), normals, nr_elements, stride_in_bytes); }
 		};
 
 	}

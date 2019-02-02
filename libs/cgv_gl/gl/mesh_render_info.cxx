@@ -63,7 +63,7 @@ namespace cgv {
 			if (stride == 3)
 				stride = 0;
 			else
-				stride *= element_size;
+				stride *= unsigned(element_size);
 			
 			cgv::render::shader_program& prog = ctx.ref_surface_shader_program(true);
 			vbe.create(ctx, (nr_triangle_elements + nr_edge_elements) * sizeof(idx_type));
@@ -76,20 +76,20 @@ namespace cgv {
 				vec3_descr,
 				vbo, 0, nr_vertices, stride);
 
-			unsigned offset = 3 * element_size;
+			unsigned offset = 3 * unsigned(element_size);
 			if (include_tex_coords) {
 				aab.set_attribute_array(ctx,
 					prog.get_texcoord_index(),
 					vec2_descr,
 					vbo, offset, nr_vertices, stride);
-				offset += 2 * element_size;
+				offset += 2 * unsigned(element_size);
 			}
 			if (include_normals) {
 				aab.set_attribute_array(ctx,
 					prog.get_normal_index(),
 					vec3_descr,
 					vbo, offset, nr_vertices, stride);
-				offset += 3 * element_size;
+				offset += 3 * unsigned(element_size);
 			}
 			if (color_increment > 0) {
 				static int nr_comps[] = { 4,4,3,4 };
@@ -98,7 +98,7 @@ namespace cgv {
 					prog.get_color_index(),
 					cgv::render::type_descriptor(type_ids[ct], nr_comps[ct], true),
 					vbo, offset, nr_vertices, stride);
-				offset += color_increment * element_size;
+				offset += color_increment * unsigned(element_size);
 			}
 		}
 
@@ -107,7 +107,7 @@ namespace cgv {
 		{
 			if (nr_edge_elements > 0) {
 				aab.enable(c);
-				glDrawElements(GL_LINES, nr_edge_elements, GL_UNSIGNED_INT, (void*)(nr_triangle_elements * sizeof(idx_type)));
+				glDrawElements(GL_LINES, GLsizei(nr_edge_elements), GL_UNSIGNED_INT, (void*)(nr_triangle_elements * sizeof(idx_type)));
 				aab.disable(c);
 			}
 		}
@@ -138,7 +138,7 @@ namespace cgv {
 			prog.set_uniform(c, "illumination_mode", 2);
 			c.enable_material(mat);
 			aab.enable(c);
-			glDrawElements(GL_TRIANGLES, count, GL_UNSIGNED_INT, (void*)(offset * sizeof(idx_type)));
+			glDrawElements(GL_TRIANGLES, GLsizei(count), GL_UNSIGNED_INT, (void*)(offset * sizeof(idx_type)));
 			aab.disable(c);
 			c.disable_material(mat);
 			prog.disable(c);

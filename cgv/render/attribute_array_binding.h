@@ -28,7 +28,7 @@ public:
 	/// disable attribute array of given location
 	static bool disable_global_array(const context& ctx, int loc);
 	/// point array of vertex attribute at location \c loc to vertex buffer array \c array stored in CPU memory; in case of success also enable vertex attribute array
-	static bool set_global_attribute_array(const context& ctx, int loc, const vertex_buffer& vbo, type_descriptor td, size_t size, size_t offset, size_t stride = 0);
+	static bool set_global_attribute_array(const context& ctx, int loc, const vertex_buffer& vbo, type_descriptor td, size_t size, size_t offset, unsigned stride = 0);
 	/// point array of vertex attribute at location \c loc to array \c array stored in CPU memory; in case of success also enable vertex attribute array
 	template <typename T>
 	static bool set_global_attribute_array(const context& ctx, int loc, const T& array) {
@@ -36,11 +36,11 @@ public:
 	}
 	/// point array of vertex attribute at location \c loc to array with \c nr_elements elements pointed to by \c array_ptr in CPU memory; in case of success also enable vertex attribute array
 	template <typename T>
-	static bool set_global_attribute_array(const context& ctx, int loc, const T* array_ptr, unsigned nr_elements, unsigned stride = 0) {
+	static bool set_global_attribute_array(const context& ctx, int loc, const T* array_ptr, size_t nr_elements, unsigned stride = 0) {
 		return ctx.set_attribute_array_void(0, loc, element_descriptor_traits<T>::get_type_descriptor(*array_ptr), 0, array_ptr, nr_elements, stride);
 	}
 	/// point array of vertex attribute at location \c loc to elements of given type in vertex buffer object at given offset spaced with given stride; in case of success also enable vertex attribute array
-	static bool set_global_attribute_array(const context& ctx, int loc, type_descriptor element_type, const vertex_buffer& vbo, size_t offset_in_bytes, size_t nr_elements, size_t stride_in_bytes = 0);
+	static bool set_global_attribute_array(const context& ctx, int loc, type_descriptor element_type, const vertex_buffer& vbo, size_t offset_in_bytes, size_t nr_elements, unsigned stride_in_bytes = 0);
 	/// set the global elment array to the given vertex buffer object which must me of type VBT_INDICES
 	static bool set_global_element_array(const context& ctx, const vertex_buffer& vbe);
 	//@}
@@ -73,7 +73,7 @@ public:
 		return ctx.set_attribute_array_void(this, loc, element_descriptor_traits<T>::get_type_descriptor(*value_ptr), 0, value_ptr, nr_elements, stride);
 	}
 	/// point array of vertex attribute at location \c loc to elements of given type in vertex buffer object at given offset spaced with given stride; in case of success also enable vertex attribute array
-	bool set_attribute_array(const context& ctx, int loc, type_descriptor element_type, const vertex_buffer& vbo, size_t offset_in_bytes, size_t nr_elements, size_t stride_in_bytes = 0);
+	bool set_attribute_array(const context& ctx, int loc, type_descriptor element_type, const vertex_buffer& vbo, size_t offset_in_bytes, size_t nr_elements, unsigned stride_in_bytes = 0);
 	/// set the elment array to the given vertex buffer object which must me of type VBT_INDICES
 	bool set_element_array(const context& ctx, const vertex_buffer& vbe);
 };

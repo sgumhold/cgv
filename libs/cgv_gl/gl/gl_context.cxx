@@ -124,6 +124,8 @@ void gl_set_material(const cgv::media::illum::phong_material& mat, MaterialSide 
 /// construct gl_context and attach signals
 gl_context::gl_context()
 {
+	max_nr_indices = 0;
+	max_nr_vertices = 0;
 	info_font_size = 14;
 	// check if a new context has been created or if the size of the viewport has been changed
 	font_ptr info_font = find_font("Courier New");
@@ -1099,6 +1101,30 @@ void gl_context::draw_edges_of_faces(
 	release_attributes(normals, tex_coords, normal_indices, tex_coord_indices);
 }
 
+
+void gl_context::draw_elements_void(GLenum mode, size_t total_count, GLenum type, size_t type_size, const void* indices) const
+{
+	ensure_configured();
+	size_t drawn = 0;
+	const cgv::type::uint8_type* index_ptr = static_cast<const cgv::type::uint8_type*>(indices);
+	while (drawn < total_count) {
+		size_t count = total_count - drawn;
+		if (count > max_nr_indices)
+			count = max_nr_indices;
+		glDrawElements(mode, GLsizei(count), type, index_ptr + drawn * type_size);
+		drawn += count;
+	}
+}
+
+size_t max_nr_indices, max_nr_vertices;
+void gl_context::ensure_configured() const
+{
+	if (max_nr_indices != 0)
+		return;
+	glGetInteger64v(GL_MAX_ELEMENTS_INDICES, reinterpret_cast<GLint64*>(&max_nr_indices));
+	glGetInteger64v(GL_MAX_ELEMENTS_VERTICES, reinterpret_cast<GLint64*>(&max_nr_vertices));
+}
+
 /// pass geometry of given strip or fan to current shader program and generate draw calls to render lines for the edges
 void gl_context::draw_edges_of_strip_or_fan(
 	const float* vertices, const float* normals, const float* tex_coords,
@@ -1139,10 +1165,9 @@ void gl_context::draw_edges_of_strip_or_fan(
 	std::vector<vec2> T;
 	if (!prepare_attributes(P, N, T, nr_vertices, vertices, normals, tex_coords, vertex_indices, normal_indices, tex_coord_indices, flip_normals))
 		return;
-	glDrawElements(GL_LINES, I.size(), GL_UNSIGNED_INT, &I[0]);
+	draw_elements(GL_LINES, I.size(), &I[0]);
 	release_attributes(normals, tex_coords, normal_indices, tex_coord_indices);
 }
-
 
 void gl_context::draw_faces(
 	const float* vertices, const float* normals, const float* tex_coords, 
@@ -1963,7 +1988,7 @@ bool gl_context::frame_buffer_enable(frame_buffer_base& fbb)
 	if (buffers.size() == 1)
 		glDrawBuffer(buffers[0]);
 	else if (buffers.size() > 1) {
-		glDrawBuffers(buffers.size(), reinterpret_cast<GLenum*>(&buffers[0]));
+		glDrawBuffers(GLsizei(buffers.size()), reinterpret_cast<GLenum*>(&buffers[0]));
 	}
 	else {
 		error("gl_context::frame_buffer_enable: no attached draw buffer selected!!", &fbb);
@@ -2479,13 +2504,13 @@ bool gl_context::set_uniform_array_void(shader_program_base& spb, int loc, type_
 	case TI_INT32:
 		switch (value_type.element_type) {
 		case ET_VALUE:
-			glUniform1iv(loc, nr_elements, reinterpret_cast<const int32_type*>(value_ptr));
+			glUniform1iv(loc, GLsizei(nr_elements), reinterpret_cast<const int32_type*>(value_ptr));
 			break;
 		case ET_VECTOR:
 			switch (value_type.nr_rows) {
-			case 2: glUniform2iv(loc, nr_elements, reinterpret_cast<const int32_type*>(value_ptr)); break;
-			case 3: glUniform3iv(loc, nr_elements, reinterpret_cast<const int32_type*>(value_ptr)); break;
-			case 4: glUniform4iv(loc, nr_elements, reinterpret_cast<const int32_type*>(value_ptr)); break;
+			case 2: glUniform2iv(loc, GLsizei(nr_elements), reinterpret_cast<const int32_type*>(value_ptr)); break;
+			case 3: glUniform3iv(loc, GLsizei(nr_elements), reinterpret_cast<const int32_type*>(value_ptr)); break;
+			case 4: glUniform4iv(loc, GLsizei(nr_elements), reinterpret_cast<const int32_type*>(value_ptr)); break;
 			default:
 				error(std::string("gl_context::set_uniform_array_void(") + value_type_index_to_string(value_type) + ") vector dimension outside [2,..4].", &spb);
 				res = false;
@@ -2501,13 +2526,13 @@ bool gl_context::set_uniform_array_void(shader_program_base& spb, int loc, type_
 	case TI_UINT32:
 		switch (value_type.element_type) {
 		case ET_VALUE:
-			glUniform1uiv(loc, nr_elements, reinterpret_cast<const uint32_type*>(value_ptr));
+			glUniform1uiv(loc, GLsizei(nr_elements), reinterpret_cast<const uint32_type*>(value_ptr));
 			break;
 		case ET_VECTOR:
 			switch (value_type.nr_rows) {
-			case 2: glUniform2uiv(loc, nr_elements, reinterpret_cast<const uint32_type*>(value_ptr)); break;
-			case 3:	glUniform3uiv(loc, nr_elements, reinterpret_cast<const uint32_type*>(value_ptr)); break;
-			case 4:	glUniform4uiv(loc, nr_elements, reinterpret_cast<const uint32_type*>(value_ptr)); break;
+			case 2: glUniform2uiv(loc, GLsizei(nr_elements), reinterpret_cast<const uint32_type*>(value_ptr)); break;
+			case 3:	glUniform3uiv(loc, GLsizei(nr_elements), reinterpret_cast<const uint32_type*>(value_ptr)); break;
+			case 4:	glUniform4uiv(loc, GLsizei(nr_elements), reinterpret_cast<const uint32_type*>(value_ptr)); break;
 			default:
 				error(std::string("gl_context::set_uniform_array_void(") + value_type_index_to_string(value_type) + ") vector dimension outside [2,..4].", &spb);
 				res = false;
@@ -2523,13 +2548,13 @@ bool gl_context::set_uniform_array_void(shader_program_base& spb, int loc, type_
 	case TI_FLT32:
 		switch (value_type.element_type) {
 		case ET_VALUE:
-			glUniform1fv(loc, nr_elements, reinterpret_cast<const flt32_type*>(value_ptr));
+			glUniform1fv(loc, GLsizei(nr_elements), reinterpret_cast<const flt32_type*>(value_ptr));
 			break;
 		case ET_VECTOR:
 			switch (value_type.nr_rows) {
-			case 2: glUniform2fv(loc, nr_elements, reinterpret_cast<const flt32_type*>(value_ptr)); break;
-			case 3:	glUniform3fv(loc, nr_elements, reinterpret_cast<const flt32_type*>(value_ptr)); break;
-			case 4:	glUniform4fv(loc, nr_elements, reinterpret_cast<const flt32_type*>(value_ptr)); break;
+			case 2: glUniform2fv(loc, GLsizei(nr_elements), reinterpret_cast<const flt32_type*>(value_ptr)); break;
+			case 3:	glUniform3fv(loc, GLsizei(nr_elements), reinterpret_cast<const flt32_type*>(value_ptr)); break;
+			case 4:	glUniform4fv(loc, GLsizei(nr_elements), reinterpret_cast<const flt32_type*>(value_ptr)); break;
 			default:
 				error(std::string("gl_context::set_uniform_array_void(") + value_type_index_to_string(value_type) + ") vector dimension outside [2,..4].", &spb);
 				res = false;
@@ -2540,9 +2565,9 @@ bool gl_context::set_uniform_array_void(shader_program_base& spb, int loc, type_
 			switch (value_type.nr_rows) {
 			case 2:
 				switch (value_type.nr_columns) {
-				case 2: glUniformMatrix2fv(loc, nr_elements, value_type.is_row_major, reinterpret_cast<const flt32_type*>(value_ptr)); break;
-				case 3: glUniformMatrix2x3fv(loc, nr_elements, value_type.is_row_major, reinterpret_cast<const flt32_type*>(value_ptr)); break;
-				case 4: glUniformMatrix2x4fv(loc, nr_elements, value_type.is_row_major, reinterpret_cast<const flt32_type*>(value_ptr)); break;
+				case 2: glUniformMatrix2fv(loc, GLsizei(nr_elements), value_type.is_row_major, reinterpret_cast<const flt32_type*>(value_ptr)); break;
+				case 3: glUniformMatrix2x3fv(loc, GLsizei(nr_elements), value_type.is_row_major, reinterpret_cast<const flt32_type*>(value_ptr)); break;
+				case 4: glUniformMatrix2x4fv(loc, GLsizei(nr_elements), value_type.is_row_major, reinterpret_cast<const flt32_type*>(value_ptr)); break;
 				default:
 					error(std::string("gl_context::set_uniform_array_void(") + value_type_index_to_string(value_type) + ") matrix number of columns outside [2,..4].", &spb);
 					res = false;
@@ -2551,9 +2576,9 @@ bool gl_context::set_uniform_array_void(shader_program_base& spb, int loc, type_
 				break;
 			case 3:
 				switch (value_type.nr_columns) {
-				case 2: glUniformMatrix3x2fv(loc, nr_elements, value_type.is_row_major, reinterpret_cast<const flt32_type*>(value_ptr)); break;
-				case 3:	glUniformMatrix3fv(loc, nr_elements, value_type.is_row_major, reinterpret_cast<const flt32_type*>(value_ptr));	break;
-				case 4:	glUniformMatrix3x4fv(loc, nr_elements, value_type.is_row_major, reinterpret_cast<const flt32_type*>(value_ptr)); break;
+				case 2: glUniformMatrix3x2fv(loc, GLsizei(nr_elements), value_type.is_row_major, reinterpret_cast<const flt32_type*>(value_ptr)); break;
+				case 3:	glUniformMatrix3fv(loc, GLsizei(nr_elements), value_type.is_row_major, reinterpret_cast<const flt32_type*>(value_ptr));	break;
+				case 4:	glUniformMatrix3x4fv(loc, GLsizei(nr_elements), value_type.is_row_major, reinterpret_cast<const flt32_type*>(value_ptr)); break;
 				default:
 					error(std::string("gl_context::set_uniform_array_void(") + value_type_index_to_string(value_type) + ") matrix number of columns outside [2,..4].", &spb);
 					res = false;
@@ -2562,9 +2587,9 @@ bool gl_context::set_uniform_array_void(shader_program_base& spb, int loc, type_
 				break;
 			case 4:
 				switch (value_type.nr_columns) {
-				case 2: glUniformMatrix4x2fv(loc, nr_elements, value_type.is_row_major, reinterpret_cast<const flt32_type*>(value_ptr)); break;
-				case 3:	glUniformMatrix4x3fv(loc, nr_elements, value_type.is_row_major, reinterpret_cast<const flt32_type*>(value_ptr)); break;
-				case 4:	glUniformMatrix4fv(loc, nr_elements, value_type.is_row_major, reinterpret_cast<const flt32_type*>(value_ptr));	break;
+				case 2: glUniformMatrix4x2fv(loc, GLsizei(nr_elements), value_type.is_row_major, reinterpret_cast<const flt32_type*>(value_ptr)); break;
+				case 3:	glUniformMatrix4x3fv(loc, GLsizei(nr_elements), value_type.is_row_major, reinterpret_cast<const flt32_type*>(value_ptr)); break;
+				case 4:	glUniformMatrix4fv(loc,   GLsizei(nr_elements), value_type.is_row_major, reinterpret_cast<const flt32_type*>(value_ptr));	break;
 				default:
 					error(std::string("gl_context::set_uniform_array_void(") + value_type_index_to_string(value_type) + ") matrix number of columns outside [2,..4].", &spb);
 					res = false;

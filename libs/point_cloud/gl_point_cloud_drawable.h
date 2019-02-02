@@ -50,6 +50,7 @@ protected:
 	unsigned nr_draw_calls;
 	cgv::render::view* view_ptr;
 	bool ensure_view_pointer();
+	void set_arrays(cgv::render::context& ctx, size_t offset = 0);
 
 public:
 	gl_point_cloud_drawable();

@@ -22,8 +22,8 @@ namespace cgv {
 			}
 			// construct permutation
 			perm.resize(keys.size());
-			i = keys.size();
-			for (key_type k = nr_keys; k > 0; ) {
+			i = idx_type(keys.size());
+			for (key_type k = key_type(nr_keys); k > 0; ) {
 				idx_type j = lookup[--k];
 				while (j != idx_type(-1)) {
 					perm[--i] = perm_in_ptr ? perm_in_ptr->at(j) : j;

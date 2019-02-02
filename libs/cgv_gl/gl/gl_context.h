@@ -42,7 +42,17 @@ private:
 	void frame_buffer_unbind(frame_buffer_base& fbb) const;
 	*/
 protected:
+	mutable cgv::type::uint64_type max_nr_indices, max_nr_vertices;
+	void ensure_configured() const;
 	void put_id(void* handle, void* ptr) const;
+	void draw_elements_void(GLenum mode, size_t count, GLenum type, size_t type_size, const void* indices) const;
+	template <typename T>
+	void draw_elements(GLenum mode, size_t count, const T* indices) const {
+		if (!gl_traits<T>::valid_index)
+			error("called draw_elements with invalid index type");
+		else
+			draw_elements_void(mode, count, gl_traits<T>::type, sizeof(T), indices);
+	}
 
 	cgv::data::component_format texture_find_best_format(const cgv::data::component_format& cf, render_component& rc, const std::vector<cgv::data::data_view>* palettes = 0) const;
 	bool texture_create(texture_base& tb, cgv::data::data_format& df) const;
