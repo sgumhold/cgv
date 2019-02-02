@@ -943,6 +943,7 @@ static PlyProperty vert_props[] = { /* list of property information for a vertex
   {"green", Uint8, Uint8, offsetof(PlyVertex,green), 0, 0, 0, 0},
   {"blue", Uint8, Uint8, offsetof(PlyVertex,blue), 0, 0, 0, 0},
   {"alpha", Uint8, Uint8, offsetof(PlyVertex,alpha), 0, 0, 0, 0},
+  {"intensity", Uint8, Uint8, offsetof(PlyVertex,red), 0, 0, 0, 0},
 };
 
 typedef struct PlyFace {
@@ -970,6 +971,7 @@ bool point_cloud::read_ply(const string& _file_name)
 			bool has_P[3] = { false, false, false };
 			bool has_N[3] = { false, false, false };
 			bool has_C[4] = { false, false, false, false };
+			bool is_intensity = false;
 			for (int pi = 0; pi < elem->nprops; ++pi) {
 				if (strcmp("x", elem->props[pi]->name) == 0)
 					has_P[0] = true;
@@ -991,6 +993,10 @@ bool point_cloud::read_ply(const string& _file_name)
 					has_C[2] = true;
 				if (strcmp("alpha", elem->props[pi]->name) == 0)
 					has_C[3] = true;
+				if (strcmp("intensity", elem->props[pi]->name) == 0) {
+					has_C[0] = has_C[1] = has_C[2] = true;
+					is_intensity = true;
+				}
 			}
 			if (!(has_P[0] && has_P[1] && has_P[2]))
 				std::cerr << "ply file " << _file_name << " has no complete position property!" << std::endl;
@@ -1001,8 +1007,16 @@ bool point_cloud::read_ply(const string& _file_name)
 				N.resize(nrVertices);
 			if (has_clrs)
 				C.resize(nrVertices);
-			for (int p=0; p<10; ++p) 
+			int p;
+			for (p=0; p<6; ++p) 
 				setup_property_ply(ply_in, &vert_props[p]);
+			if (is_intensity)
+				setup_property_ply(ply_in, &vert_props[10]);
+			else {
+				for (p = 0; p < 4; ++p)
+					if (has_C[p])
+						setup_property_ply(ply_in, &vert_props[6+p]);
+			}
 			for (int j = 0; j < nrVertices; j++) {
 				PlyVertex vertex;
 				get_element_ply(ply_in, (void *)&vertex);
@@ -1011,8 +1025,8 @@ bool point_cloud::read_ply(const string& _file_name)
 					N[j].set(vertex.nx, vertex.ny, vertex.nz);
 				if (has_clrs) {
 					C[j][0] = byte_to_color_component(vertex.red);
-					C[j][1] = byte_to_color_component(vertex.green);
-					C[j][2] = byte_to_color_component(vertex.blue);
+					C[j][1] = byte_to_color_component(is_intensity ? vertex.red : vertex.green);
+					C[j][2] = byte_to_color_component(is_intensity ? vertex.red : vertex.blue);
 				}
 			}
 		}
