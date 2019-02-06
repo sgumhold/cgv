@@ -95,7 +95,7 @@ void gl_view::compute_clipping_planes(const cgv::render::view& view, double& z_n
 		z_max -= z_eye;
 		if (z_min > z_near)
 			z_near_derived = z_min;
-		if (z_max > z_near && z_max < z_far)
+		if (z_max > z_near)
 			z_far_derived = z_max;
 	}
 	else if (clip_relative_to_extent) {
