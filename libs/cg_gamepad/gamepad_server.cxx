@@ -10,7 +10,7 @@ namespace cgv {
 		gamepad_key_event::gamepad_key_event(void* _device_id, unsigned short _key, KeyAction _action, unsigned char _char, double _time)
 			: key_event(_key, _action, _char, 0, 0, _time), device_id(_device_id)
 		{
-			flags = EF_MULTI;
+			flags = EF_PAD;
 		}
 
 
@@ -24,7 +24,7 @@ namespace cgv {
 		void gamepad_key_event::stream_out(std::ostream& os) const
 		{
 			event::stream_out(os);
-			os << gamepad::convert_key_to_string(key);
+			os << gamepad::get_key_string(key);
 			switch (action) {
 			case KA_RELEASE:
 				os << " up";
@@ -44,7 +44,6 @@ namespace cgv {
 		{
 			std::cerr << "key_event::stream_in not implemented yet" << std::endl;
 		}
-
 
 		gamepad_event::gamepad_event(void* _device_id, const gamepad::gamepad_state& _state) : event(EID_PAD), device_id(_device_id), state(_state)
 		{
@@ -103,7 +102,8 @@ namespace cgv {
 					on_device_change(0);
 				}
 			}
-			gamepad::gamepad_key_event gpk;
+			gamepad::GamepadKeys key;
+			gamepad::KeyAction action;
 			gamepad::gamepad_state state;
 			// loop all devices
 			for (unsigned device_index = 0; device_index < gamepad::get_device_infos().size(); ++device_index) {
@@ -124,12 +124,12 @@ namespace cgv {
 					on_event(gpe);
 				}
 
-				while (query_key_event(device_index, gpk)) {
+				while (query_key_event(device_index, key, action)) {
 					char c = 0;
-					if (gpk.key >= gamepad::GPK_A && gpk.key <= gamepad::GPK_Y)
-						c = std::string("ABXY")[gpk.key - gamepad::GPK_A];
-					gamepad_key_event gp_k(device_handle, gpk.key, KeyAction(gpk.action - gamepad::GPA_RELEASE + KA_RELEASE), c, time);
-					on_event(gp_k);
+					if (key >= gamepad::GPK_A && key <= gamepad::GPK_Y)
+						c = std::string("ABXY")[key - gamepad::GPK_A];
+					gamepad_key_event gp_ke(device_handle, key, KeyAction(action - gamepad::KA_RELEASE + KA_RELEASE), c, time);
+					on_event(gp_ke);
 				}
 			}
 		}

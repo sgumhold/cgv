@@ -607,6 +607,9 @@ bool stereo_view_interactor::handle(event& e)
 	}
 	else if (e.get_kind() == EID_KEY) {
 		key_event ke = (key_event&) e;
+
+//		e.stream_out(std::cout); std::cout << std::endl;
+		
 		if (ke.get_key() >= gamepad::GPK_BEGIN) {
 			if (ke.get_key() < gamepad::GPK_END) {
 				if (!gamepad_attached) {

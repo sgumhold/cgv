@@ -20,7 +20,6 @@ const char* key_strings[] = {
 	"F10", 
 	"F11", 
 	"F12",
-
 	"Space", 
 	"Enter", 
 	"Tab", 
@@ -28,7 +27,6 @@ const char* key_strings[] = {
 	"Pause",
 	"Break", 
 	"Escape", 
-
 	"Left_Shift", 
 	"Right_Shift", 
 	"Left_Alt", 
@@ -37,7 +35,6 @@ const char* key_strings[] = {
 	"Right_Ctrl", 
 	"Left_Meta", 
 	"Right_Meta",
-
 	"Left", 
 	"Right", 
 	"Up", 
@@ -46,15 +43,12 @@ const char* key_strings[] = {
 	"End", 
 	"Page_Up", 
 	"Page_Down",
-
 	"Back_Space", 
 	"Delete", 
 	"Insert",
-
 	"Caps_Lock",
 	"Num_Lock",
 	"Scroll_Lock",
-
 	"Num_0",
 	"Num_1",
 	"Num_2",
@@ -75,8 +69,12 @@ const char* key_strings[] = {
 
 std::string get_key_string(unsigned short key)
 {
-	if (key > 255)
-		return key_strings[key-256];
+	if (key > 255) {
+		unsigned idx = key - 256;
+		if (idx < 57)
+			return key_strings[key - 256];
+		return "";
+	}
 	else {
 		if (key == 0)
 			return "";
@@ -103,7 +101,7 @@ void shortcut::validate()
 /// write to stream
 void shortcut::stream_out(std::ostream& os) const
 {
-	os << get_modifier_string(modifiers) << get_key_string(key);
+	os << get_modifier_string(EventModifier(modifiers)) << get_key_string(key);
 }
 
 /// read from stream
