@@ -173,19 +173,21 @@ void gl_point_cloud_drawable::draw_boxes(context& ctx)
 	}
 }
 
-void gl_point_cloud_drawable::set_arrays(context& ctx, size_t offset)
+void gl_point_cloud_drawable::set_arrays(context& ctx, size_t offset, size_t count)
 {
-	s_renderer.set_position_array(ctx, &pc.pnt(0), pc.get_nr_points(), sizeof(Pnt)*show_point_step);
+	if (count == -1)
+		count = pc.get_nr_points();
+	s_renderer.set_position_array(ctx, &pc.pnt(unsigned(offset)), pc.get_nr_points(), unsigned(sizeof(Pnt))*show_point_step);
 	if (pc.has_colors() || use_these_point_colors || (use_these_point_color_indices && use_these_point_palette)) {
 		if (use_these_point_colors)
-			s_renderer.set_color_array(ctx, &use_these_point_colors->front(), pc.get_nr_points(), sizeof(Clr)*show_point_step);
+			s_renderer.set_color_array(ctx, &use_these_point_colors->at(offset), count, unsigned(sizeof(Clr))*show_point_step);
 		else if (use_these_point_color_indices && use_these_point_palette)
-			s_renderer.set_indexed_color_array(ctx, *use_these_point_color_indices, *use_these_point_palette);
+			s_renderer.set_indexed_color_array(ctx, &use_these_point_color_indices->at(offset), count, *use_these_point_palette, show_point_step);
 		else
-			s_renderer.set_color_array(ctx, &pc.clr(0), pc.get_nr_points(), sizeof(Clr)*show_point_step);
+			s_renderer.set_color_array(ctx, &pc.clr(unsigned(offset)), count, unsigned(sizeof(Clr))*show_point_step);
 	}
 	if (pc.has_normals())
-		s_renderer.set_normal_array(ctx, &pc.nml(0), pc.get_nr_points(), sizeof(Nml)*show_point_step);
+		s_renderer.set_normal_array(ctx, &pc.nml(unsigned(offset)), count, unsigned(sizeof(Nml))*show_point_step);
 
 }
 void gl_point_cloud_drawable::draw_points(context& ctx)
@@ -205,7 +207,9 @@ void gl_point_cloud_drawable::draw_points(context& ctx)
 		s_renderer.set_group_translations(ctx, &pc.component_translation(0), pc.get_nr_components());
 		s_renderer.set_group_index_array(ctx, &pc.component_index(0), pc.get_nr_points());
 	}
+
 	set_arrays(ctx);
+
 	bool tmp = surfel_style.use_group_color;
 	if (pc.has_components() && use_these_component_colors)
 		surfel_style.use_group_color = true;
@@ -257,7 +261,8 @@ void gl_point_cloud_drawable::draw_points(context& ctx)
 		if (pc.has_components() && use_these_component_colors) {
 			for (unsigned ci = 0; ci < pc.get_nr_components(); ++ci) {
 				if ((*use_these_component_colors)[ci][3] > 0.0f) {
-					glDrawArrays(GL_POINTS, GLint(pc.components[ci].index_of_first_point), GLsizei(pc.components[ci].nr_points));
+					set_arrays(ctx, pc.components[ci].index_of_first_point, pc.components[ci].nr_points);
+					glDrawArrays(GL_POINTS, 0, GLsizei(pc.components[ci].nr_points));
 				}
 			}
 		}
