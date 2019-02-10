@@ -4,7 +4,7 @@
 
 namespace gamepad {
 
-	std::string convert_key_to_string(unsigned short key)
+	std::string get_key_string(unsigned short key)
 	{
 		static const char* gamepad_key_names[] = {
 			"UNKNOWN",
@@ -49,7 +49,7 @@ namespace gamepad {
 			"RIGHT_STICK_DOWNLEFT"
 		};
 		int index = key - (int)GPK_UNKNOWN;
-		return index < 33 ? gamepad_key_names[index] : "UNKNOWN";
+		return index < 33 ? gamepad_key_names[index] : "";
 	}
 
 	/// convert flags to string
@@ -72,7 +72,7 @@ namespace gamepad {
 			"Y"
 		};
 		static const GamepadButtonStateFlags flag_values[] = {
-			GBF_DPAD_UP      ,
+		GBF_DPAD_UP      ,
 		GBF_DPAD_DOWN	 ,
 		GBF_DPAD_LEFT	 ,
 		GBF_DPAD_RIGHT	 ,
@@ -161,12 +161,12 @@ namespace gamepad {
 			return false;
 		return ref_drivers()[driver_index]->get_device_battery_info(ref_device_handles()[device_index], battery_type, fill_state);
 	}
-	bool query_key_event(unsigned device_index, gamepad_key_event& gke)
+	bool query_key_event(unsigned device_index, GamepadKeys& gk, KeyAction& action)
 	{
 		unsigned driver_index;
 		if (!get_driver_index(device_index, driver_index))
 			return false;
-		return ref_drivers()[driver_index]->query_device_key_event(ref_device_handles()[device_index], gke);
+		return ref_drivers()[driver_index]->query_device_key_event(ref_device_handles()[device_index], gk, action);
 	}
 	/// retrieve the current state of gamepad stick and trigger positions, return false if device is not connected anymore
 	bool get_state(unsigned device_index, gamepad_state& state)

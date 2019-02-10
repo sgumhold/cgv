@@ -5,6 +5,17 @@ namespace cgv {
 	namespace gui {
 
 
+/// convert a key action into a readable string
+std::string get_key_action_string(KeyAction action)
+{
+	switch (action) {
+	case KA_PRESS: return "press";
+	case KA_RELEASE: return "release";
+	case KA_REPEAT: return "repeat";
+	default: return "unknown";
+	}
+}
+
 // construct a key event from its textual description 
 key_event::key_event(unsigned short _key, KeyAction _action, unsigned char _char, unsigned char _modifiers, unsigned char _toggle_keys, double _time) 
 	: event(EID_KEY,_modifiers, _toggle_keys, _time), key(_key), action(_action), character(_char)

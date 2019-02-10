@@ -23,7 +23,7 @@ namespace gamepad {
 		/// return the battery type and state of a device, fill_state in [0,1] is only given for alkaline or nickel metal hydide batteries
 		virtual bool get_device_battery_info(void* device_handle, BatteryType& battery_type, float& fill_state) = 0;
 		/// query event queue of given device for single gamepad key event
-		virtual bool query_device_key_event(void* device_handle, gamepad_key_event& gke) = 0;
+		virtual bool query_device_key_event(void* device_handle, GamepadKeys& gk, KeyAction& action) = 0;
 		/// retrieve the current state of gamepad stick and trigger positions
 		virtual bool get_device_state(void* device_handle, gamepad_state& state) = 0;
 		/// set the vibration strength between 0 and 1 of low and high frequency motors, return false if device is not connected 

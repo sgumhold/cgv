@@ -107,30 +107,19 @@ namespace gamepad {
 		GPK_END,
 		GPK_BEGIN = GPK_A
 	};
+	/// repeated definition from cgv/gui/key_event.h
+	enum KeyAction {
+		KA_RELEASE, //!< key release action
+		KA_PRESS, //!< key press action
+		KA_REPEAT //!< key repeated press action
+	};
 	/// convert key to string
-	extern CGV_API std::string convert_key_to_string(unsigned short key);
-	/// different key actions
-	enum GamepadAction {
-		GPA_UNKNOWN,
-		GPA_RELEASE,
-		GPA_PRESS,
-		GPA_REPEAT
-	};
-
-	/// gamepad key event
-	struct gamepad_key_event
-	{
-		/// one out of GamepadKey enum
-		unsigned short key;
-		/// one out of GamepadAction
-		unsigned short action;
-	};
+	extern CGV_API std::string get_key_string(unsigned short key);
 
 	//! retrieve next key event from given device, return false if device's event queue is empty
 	/*!Typically you use this function in the following way:
-		while (query_key_event(i,gke)) { process(gke); }
-	*/
-	extern CGV_API bool query_key_event(unsigned device_index, gamepad_key_event& gke);
+		while (query_key_event(i,gk,action)) { process(gk,action); }	*/
+	extern CGV_API bool query_key_event(unsigned device_index, GamepadKeys& gk, KeyAction& action);
 	
 	/// one flag for for each gamepad button
 	enum GamepadButtonStateFlags
