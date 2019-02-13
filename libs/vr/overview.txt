@@ -1,0 +1,33 @@
+scan_devices
+
+vr_driver
+	is_installed
+	scan_devices
+	get_interaction_zone
+	get_up_direction
+	get_floor_level
+	
+vr_kit[idx]
+	get_driver
+	hmd
+		get_id
+		get_status (detached, attached, tracked)
+		put_state
+			time_stamp
+			pose
+		init(context)
+		get_hmd_to_eye_matrix(eye)
+		get_projection_matrix(eye)
+		enable(context, eye, transform (none, middle, left_right))
+		disable(context, eye, transform);
+		compose(context)
+	controler[idx]
+		get_id
+		get_status (detached, attached, tracked)
+		set_vibration
+		put_state
+			time_stamp
+			pose
+			button_flags
+			axes[4] // VIVE: 0..x, 1..y, 2..trigger
+			
