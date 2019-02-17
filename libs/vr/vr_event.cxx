@@ -99,8 +99,8 @@ namespace vr {
 			VRF_BUTTON1,
 			VRF_BUTTON2,
 			VRF_BUTTON3,
-			VRF_TOUCH,
-			VRF_PRESS
+			VRF_STICK_TOUCH,
+			VRF_STICK
 		};
 		std::string result;
 		for (unsigned i = 0; i < 7; ++i)

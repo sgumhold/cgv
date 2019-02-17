@@ -61,10 +61,14 @@ namespace cgv {
 		protected:
 			double last_device_scan;
 			double device_scan_interval;
+			std::vector<void*> vr_kit_handles;
+			std::vector<vr::vr_kit_state> last_states;
 			std::vector<unsigned> last_time_stamps;
 		public:
 			/// construct server with default configuration
 			vr_server();
+			/// 
+			void on_set(void* member_ptr);
 			/// set time interval in seconds to check for device connection changes
 			void set_device_scan_interval(double duration);
 			/// check enabled gamepad devices for new events and dispatch them through the on_event signal
@@ -73,6 +77,8 @@ namespace cgv {
 			cgv::signal::bool_signal<cgv::gui::event&> on_event;
 			/// signal emitted to notify about device changes, first argument is handle and second a flag telling whether device got connected or if false disconnected
 			cgv::signal::signal<void*, bool> on_device_change;
+			/// signal emitted to notify about status changes of trackables, first argument is handle, second -1 for hmd + 0|1 for left|right controller, third is old status and fourth new status
+			cgv::signal::signal<void*, int, vr::VRStatus, vr::VRStatus> on_status_change;
 		};
 
 		/// return a reference to vr server singleton

@@ -75,9 +75,9 @@ void extract_controller_state(const VRControllerState_t& input, vr_controller_st
 		((input.ulButtonPressed & ButtonMaskFromId(k_EButton_DPad_Up)) != 0) ||
 		((input.ulButtonPressed & ButtonMaskFromId(k_EButton_DPad_Left)) != 0) ||
 		((input.ulButtonPressed & ButtonMaskFromId(k_EButton_DPad_Right)) != 0))
-		output.button_flags += VRF_PRESS;
+		output.button_flags += VRF_STICK;
 	if ((input.ulButtonPressed & ButtonMaskFromId(k_EButton_ProximitySensor)) != 0)
-		output.button_flags += VRF_TOUCH;
+		output.button_flags += VRF_STICK_TOUCH;
 	if ((input.ulButtonPressed & ButtonMaskFromId(k_EButton_Axis1)) != 0)
 		output.button_flags += VRF_BUTTON3;
 

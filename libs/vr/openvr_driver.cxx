@@ -78,7 +78,7 @@ struct openvr_driver : public vr_driver
 		return installed;
 	}
 	/// return name of driver
-	std::string get_name()
+	std::string get_driver_name()
 	{
 		return driver_name.empty() ? "OpenVR Driver" : driver_name;
 	}

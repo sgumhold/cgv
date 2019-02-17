@@ -21,34 +21,36 @@ namespace vr {
 		VR_LEFT_BUTTON1,
 		VR_LEFT_BUTTON2,
 		VR_LEFT_BUTTON3,
-		VR_LEFT_TRIGGER,
 
-		VR_LEFT_STICK_PRESS,
-		VR_LEFT_STICK_UP,
-		VR_LEFT_STICK_DOWN,
-		VR_LEFT_STICK_RIGHT,
-		VR_LEFT_STICK_LEFT,
-		VR_LEFT_STICK_UPLEFT,
-		VR_LEFT_STICK_UPRIGHT,
-		VR_LEFT_STICK_DOWNRIGHT,
+		VR_LEFT_STICK_TOUCH,
+
 		VR_LEFT_STICK_DOWNLEFT,
+		VR_LEFT_STICK_DOWN,
+		VR_LEFT_STICK_DOWNRIGHT,
+		VR_LEFT_STICK_LEFT,
+		VR_LEFT_STICK,
+		VR_LEFT_STICK_RIGHT,
+		VR_LEFT_STICK_UPLEFT,
+		VR_LEFT_STICK_UP,
+		VR_LEFT_STICK_UPRIGHT,
 
 		VR_RIGHT_MENU,
 		VR_RIGHT_BUTTON0,
 		VR_RIGHT_BUTTON1,
 		VR_RIGHT_BUTTON2,
 		VR_RIGHT_BUTTON3,
-		VR_RIGHT_TRIGGER,
 
-		VR_RIGHT_STICK_PRESS,
-		VR_RIGHT_STICK_UP,
-		VR_RIGHT_STICK_DOWN,
-		VR_RIGHT_STICK_RIGHT,
-		VR_RIGHT_STICK_LEFT,
-		VR_RIGHT_STICK_UPLEFT,
-		VR_RIGHT_STICK_UPRIGHT,
-		VR_RIGHT_STICK_DOWNRIGHT,
+		VR_RIGHT_STICK_TOUCH,
+
 		VR_RIGHT_STICK_DOWNLEFT,
+		VR_RIGHT_STICK_DOWN,
+		VR_RIGHT_STICK_DOWNRIGHT,
+		VR_RIGHT_STICK_LEFT,
+		VR_RIGHT_STICK,
+		VR_RIGHT_STICK_RIGHT,
+		VR_RIGHT_STICK_UPLEFT,
+		VR_RIGHT_STICK_UP,
+		VR_RIGHT_STICK_UPRIGHT,
 
 		VR_END,
 		VR_BEGIN = VR_LEFT_MENU
@@ -56,13 +58,13 @@ namespace vr {
 	/// one flag for each vr controler button
 	enum VRButtonStateFlags
 	{
-		VRF_MENU     = 0x0001,
-		VRF_BUTTON0  = 0x0002,
-		VRF_BUTTON1  = 0x0004,
-		VRF_BUTTON2  = 0x0008,
-		VRF_BUTTON3  = 0x0010,
-		VRF_TOUCH    = 0x0020,
-		VRF_PRESS    = 0x0040
+		VRF_MENU        = 0x0001,
+		VRF_BUTTON0     = 0x0002,
+		VRF_BUTTON1     = 0x0004,
+		VRF_BUTTON2     = 0x0008,
+		VRF_BUTTON3     = 0x0010,
+		VRF_STICK_TOUCH = 0x0020,
+		VRF_STICK       = 0x0040
 	};
 	/// different status values for a trackable
 	enum VRStatus
@@ -72,7 +74,7 @@ namespace vr {
 		VRS_tracked
 	};
 	/// a trackable knows whether it is tracked and its 6d pose stored as 3x4 matrix in column major format
-	struct vr_trackable_state
+	struct CGV_API vr_trackable_state
 	{
 		/// whether trackable is currently tracked, only in case of true, the pose member contains useful information
 		VRStatus status;
@@ -86,7 +88,7 @@ namespace vr {
 		bool operator == (const vr_trackable_state& state) const;
 	};
 	/// the controller state extends the trackable state by information on the buttons, input axes and vibration strengths
-	struct vr_controller_state : public vr_trackable_state
+	struct CGV_API vr_controller_state : public vr_trackable_state
 	{
 		/// a unique time stamp for fast test whether state changed
 		unsigned time_stamp;
@@ -100,7 +102,7 @@ namespace vr {
 		bool operator == (const vr_controller_state& state) const;
 	};
 	/// structure that stores all information describing the state of the VR kit
-	struct vr_kit_state
+	struct CGV_API vr_kit_state
 	{
 		/// status and pose of hmd
 		vr_trackable_state hmd;

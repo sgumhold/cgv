@@ -85,66 +85,113 @@ namespace cgv {
 			key_event::stream_in(is);
 		}
 
-			double last_device_scan;
-			double device_scan_interval;
-			std::vector<vr::vr_kit_state> last_states;
-			std::vector<void*> vr_kit_handles;
-			/// construct server with default configuration
-			vr_server::vr_server()
-			{
-				last_device_scan = 0;
-				device_scan_interval = 5;
-				vr_kit_handles = vr::scan_vr_kits();
-				last_time_stamps.resize(vr_kit_handles.size(), 0);
-			}
-			/// set time interval in seconds to check for device connection changes
-			void vr_server::set_device_scan_interval(double duration)
-			{
-				device_scan_interval = duration;
-			}
-			/// check enabled gamepad devices for new events and dispatch them through the on_event signal
-			void vr_server::check_and_emit_events(double time)
-			{
-				std::vector<bool> is_first_state(vr_kit_handles.size(), false);
-				if (time > last_device_scan + device_scan_interval) {
-					last_device_scan = time;
-					std::vector<void*> new_handles = vr::scan_vr_kits();
-					std::vector<vr::vr_kit_state> new_last_states;
-					new_last_states.resize(new_handles.size());
-					is_first_state.resize(new_handles.size(), false);
-					for (void* h1 : vr_kit_handles)
-						if (std::find(new_handles.begin(), new_handles.end(), h1) == new_handles.end())
-							on_device_change(h1, false);
-					unsigned i = 0;
-					for (void* h2 : new_handles) {
-						auto iter = std::find(vr_kit_handles.begin(), vr_kit_handles.end(), h2);
-						if (iter == vr_kit_handles.end()) {
-							on_device_change(h2, true);
-							is_first_state.at(i) = true;
-						}
-						else {
-							new_last_states[i] = last_states.at(iter - vr_kit_handles.begin());
-						}
-						++i;
+		/// construct server with default configuration
+		vr_server::vr_server()
+		{
+			last_device_scan = -1;
+			device_scan_interval = 5;
+			last_time_stamps.resize(vr_kit_handles.size(), 0);
+		}
+		/// set time interval in seconds to check for device connection changes
+		void vr_server::set_device_scan_interval(double duration)
+		{
+			device_scan_interval = duration;
+		}
+		struct button_mapping
+		{
+			vr::VRButtonStateFlags flag;
+			vr::VRKeys key[2];
+		};
+		/// check enabled gamepad devices for new events and dispatch them through the on_event signal
+		void vr_server::check_and_emit_events(double time)
+		{
+			static button_mapping buttons[7] = {
+				{ vr::VRF_MENU, vr::VR_LEFT_MENU, vr::VR_RIGHT_MENU},
+				{ vr::VRF_BUTTON0, vr::VR_LEFT_BUTTON0, vr::VR_RIGHT_BUTTON0},
+				{ vr::VRF_BUTTON1, vr::VR_LEFT_BUTTON1, vr::VR_RIGHT_BUTTON1},
+				{ vr::VRF_BUTTON2, vr::VR_LEFT_BUTTON2, vr::VR_RIGHT_BUTTON2},
+				{ vr::VRF_BUTTON3, vr::VR_LEFT_BUTTON3, vr::VR_RIGHT_BUTTON3},
+				{ vr::VRF_STICK_TOUCH, vr::VR_LEFT_STICK_TOUCH, vr::VR_RIGHT_STICK_TOUCH},
+				{ vr::VRF_STICK, vr::VR_LEFT_STICK, vr::VR_RIGHT_STICK}
+			};
+
+			std::vector<bool> is_first_state(vr_kit_handles.size(), false);
+			if (last_device_scan < 0 || 
+				((device_scan_interval > 0) && (time > last_device_scan + device_scan_interval))) {
+				last_device_scan = time;
+				std::vector<void*> new_handles = vr::scan_vr_kits();
+				std::vector<vr::vr_kit_state> new_last_states;
+				new_last_states.resize(new_handles.size());
+				is_first_state.resize(new_handles.size(), false);
+				for (void* h1 : vr_kit_handles)
+					if (std::find(new_handles.begin(), new_handles.end(), h1) == new_handles.end())
+						on_device_change(h1, false);
+				unsigned i = 0;
+				for (void* h2 : new_handles) {
+					auto iter = std::find(vr_kit_handles.begin(), vr_kit_handles.end(), h2);
+					if (iter == vr_kit_handles.end()) {
+						on_device_change(h2, true);
+						is_first_state.at(i) = true;
 					}
-					vr_kit_handles = new_handles;
-					last_states = new_last_states;
-				}
-				// loop all devices
-				unsigned i;
-				for (i = 0; i < vr_kit_handles.size(); ++i) {
-					vr::vr_kit* kit = vr::get_vr_kit(vr_kit_handles[i]);
-					if (!kit)
-						continue;
-					vr::vr_kit_state state;
-					kit->query_state(state, 1);
-					if (!(state == last_states[i])) {
-						cgv::gui::vr_event vre(vr_kit_handles[i], state, time);
-						on_event(vre);
+					else {
+						new_last_states[i] = last_states.at(iter - vr_kit_handles.begin());
 					}
-					last_states[i] = state;
+					++i;
 				}
+				vr_kit_handles = new_handles;
+				last_states = new_last_states;
 			}
+			// loop all devices
+			unsigned i;
+			for (i = 0; i < vr_kit_handles.size(); ++i) {
+				vr::vr_kit* kit = vr::get_vr_kit(vr_kit_handles[i]);
+				if (!kit)
+					continue;
+				// get current state
+				vr::vr_kit_state state;
+				kit->query_state(state, 1);
+				// check for change
+				if (!(state == last_states[i])) {
+					// check for status changes and emit signal for found status changes					
+					if (state.hmd.status != last_states[i].hmd.status)
+						on_status_change(vr_kit_handles[i], -1, last_states[i].hmd.status, state.hmd.status);
+					if (state.controller[0].status != last_states[i].controller[0].status)
+						on_status_change(vr_kit_handles[i], 0, last_states[i].controller[0].status, state.controller[0].status);
+					if (state.controller[1].status != last_states[i].controller[1].status)
+						on_status_change(vr_kit_handles[i], 1, last_states[i].controller[1].status, state.controller[1].status);
+					// check for key changes and emit key_event 
+					for (int c = 0; c < 2; ++c) {
+						if (state.controller[c].status != vr::VRS_detached &&
+							last_states[i].controller[c].status != vr::VRS_detached &&
+							state.controller[c].button_flags != last_states[i].controller[c].button_flags) {
+							for (unsigned j = 0; j < 7; ++j) {
+								if ((state.controller[c].button_flags & buttons[j].flag) !=
+									(last_states[i].controller[c].button_flags & buttons[j].flag)) {
+									short key_offset = 0;
+									// in case of pressed stick, refine key from direction
+									if (j == 6) {
+										int x = state.controller[c].axes[0] > 0.5f ? 1 :
+											(state.controller[c].axes[0] < -0.5f ? -1 : 0);
+										int y = state.controller[c].axes[1] > 0.5f ? 1 :
+											(state.controller[c].axes[1] < -0.5f ? -1 : 0);
+										key_offset = 3 * (y + 1) + x + 1;
+									}
+									// construct and emit event
+									vr_key_event vrke(vr_kit_handles[i], c, buttons[j].key[c] + key_offset, 
+										(state.controller[c].button_flags & buttons[j].flag) != 0 ? KA_PRESS : KA_RELEASE, 0, time);
+
+									on_event(vrke);
+								}
+							}
+						}
+					}
+					// finally emit general state change event
+					cgv::gui::vr_event vre(vr_kit_handles[i], state, time);
+					on_event(vre);
+				}
+				last_states[i] = state;
+			}
+		}
 		/// return a reference to gamepad server singleton
 		vr_server& ref_vr_server()
 		{
