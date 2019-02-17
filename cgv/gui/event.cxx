@@ -142,7 +142,7 @@ void event::stream_out(std::ostream& os) const
 		"", "Multi", "Drag&Drop", "Multi+Drag&Drop", "Gamepad","Gamepad","Gamepad","Gamepad", 
 		"VR","VR","VR","VR","VR","VR","VR","VR"
 	};
-	const char* kind_strs[] = { "none", "key", "mouse", "pad" };
+	const char* kind_strs[] = { "none", "key", "mouse", "pad", "vr" };
 
 	os << kind_strs[kind] << "[" << time << "] ";
 	if (get_toggle_keys() != 0) {
@@ -166,9 +166,10 @@ void event::stream_out(std::ostream& os) const
 		}
 		os << ") ";
 	}
-	os << get_modifier_string(EventModifier(get_modifiers())).c_str();
+	if ((get_flags() & EF_VR) == 0)
+		os << get_modifier_string(EventModifier(get_modifiers())).c_str();
 	if (get_flags() != EF_NONE)
-		os << flag_strs[get_flags()] << " ";
+		os << "{" << flag_strs[get_flags()] << "} ";
 }
 // read from stream
 void event::stream_in(std::istream&)

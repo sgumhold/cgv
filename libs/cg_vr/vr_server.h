@@ -22,6 +22,8 @@ namespace cgv {
 			vr::vr_kit_state state;
 			/// 
 			void stream_out_trackable(std::ostream& os, const vr::vr_trackable_state& trackable) const;
+			/// 
+			void stream_out_controller(std::ostream& os, const vr::vr_controller_state& controller) const;
 		public:
 			/// construct a gamepad event
 			vr_event(void* _device_handle, const vr::vr_kit_state& _state, double _time = 0);
@@ -45,7 +47,9 @@ namespace cgv {
 			void* device_handle;
 		public:
 			/// construct a key event from its textual description 
-			vr_key_event(void* _device_handle, int _controller_index, unsigned short _key = 0, KeyAction _action = KA_PRESS, unsigned char _char = 0, double _time = 0);
+			vr_key_event(void* _device_handle, int _controller_index, 
+				unsigned short _key = 0, KeyAction _action = KA_PRESS, unsigned char _char = 0, 
+				unsigned char _modifiers = 0, double _time = 0);
 			/// return controller index (0 .. left, 1.. right) of vr kit
 			int get_controller_index() const;
 			/// return the device id, by default returns 0

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "gl_vr_display.h"
+#include <vr/gl_vr_display.h>
 #include "openvr.h"
 
 #include <vector>

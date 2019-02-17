@@ -69,9 +69,9 @@ namespace vr {
 	/// different status values for a trackable
 	enum VRStatus
 	{
-		VRS_detached,
-		VRS_attached,
-		VRS_tracked
+		VRS_DETACHED,
+		VRS_ATTACHED,
+		VRS_TRACKED
 	};
 	/// a trackable knows whether it is tracked and its 6d pose stored as 3x4 matrix in column major format
 	struct CGV_API vr_trackable_state
@@ -86,6 +86,8 @@ namespace vr {
 		float pose[12];
 		///
 		bool operator == (const vr_trackable_state& state) const;
+		/// standard constructor for initialization of members
+		vr_trackable_state();
 	};
 	/// the controller state extends the trackable state by information on the buttons, input axes and vibration strengths
 	struct CGV_API vr_controller_state : public vr_trackable_state
@@ -100,6 +102,8 @@ namespace vr {
 		float vibration[2];
 		///
 		bool operator == (const vr_controller_state& state) const;
+		/// standard constructor for initialization of members
+		vr_controller_state();
 	};
 	/// structure that stores all information describing the state of the VR kit
 	struct CGV_API vr_kit_state
@@ -110,6 +114,8 @@ namespace vr {
 		vr_controller_state controller[2];
 		/// check for equality
 		bool operator == (const vr_kit_state& state) const;
+		/// standard constructor for initialization of members
+		vr_kit_state();
 	};
 	/// convert key to string
 	extern CGV_API std::string get_key_string(unsigned short key);

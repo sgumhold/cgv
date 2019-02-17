@@ -19,15 +19,16 @@ namespace vr {
 	/// call this method during scanning of vr kits but only in case vr kit id does not yield vr kit through global get_vr_kit function
 	void vr_driver::register_vr_kit(void* handle, vr_kit* kit)
 	{
-		auto iter = ref_vr_kit_map().find(handle);
-		if (iter != ref_vr_kit_map().end()) {
+		auto& kit_map = ref_vr_kit_map();
+		auto iter = kit_map.find(handle);
+		if (iter != kit_map.end()) {
 			std::cerr << "WARNING: vr kit <" << kit->get_name() << "> recreated. Deleted copy <" 
 				<< iter->second->get_name() << "> might be still in use." << std::endl;
 			delete iter->second;
 			iter->second = kit;
 		}
 		else {
-			ref_vr_kit_map()[handle] = kit;
+			kit_map[handle] = kit;
 		}
 	}
 
@@ -58,7 +59,6 @@ namespace vr {
 	/// scan all registered vr drivers for vr kits and return vector of vr kit ids
 	std::vector<void*> scan_vr_kits()
 	{
-		ref_vr_kit_map().clear();
 		std::vector<void*> kit_handles;
 		for (auto driver_ptr : ref_drivers()) {
 			auto new_ids = driver_ptr->scan_vr_kits();
