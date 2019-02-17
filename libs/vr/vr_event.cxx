@@ -1,6 +1,28 @@
 #include "vr_event.h"
 
 namespace vr {
+	/// standard constructor for initialization of members
+	vr_trackable_state::vr_trackable_state()
+	{
+		status = VRS_DETACHED;
+		pose[0] = pose[4] = pose[8] = 1;
+		pose[1] = pose[2] = pose[3] = pose[5] = pose[6] = pose[7] = 0;
+		pose[9] = pose[10] = pose[11] = 0;
+	}
+	/// standard constructor for initialization of members
+	vr_controller_state::vr_controller_state()
+	{
+		time_stamp = 0;
+		button_flags = 0;
+		for (unsigned i = 0; i < 8; ++i)
+			axes[i] = 0;
+		vibration[0] = vibration[1] = 0;
+	}
+
+	vr_kit_state::vr_kit_state()
+	{
+
+	}
 	/// check for equality
 	bool vr_kit_state::operator == (const vr_kit_state& state) const
 	{
@@ -117,9 +139,9 @@ namespace vr {
 	std::string get_status_string(VRStatus status)
 	{
 		switch (status) {
-		case VRS_detached: return "detached";
-		case VRS_attached: return "attached";
-		case VRS_tracked: return "tracked";
+		case VRS_DETACHED: return "detached";
+		case VRS_ATTACHED: return "attached";
+		case VRS_TRACKED: return "tracked";
 		default: return "unknown status";
 		}
 	}

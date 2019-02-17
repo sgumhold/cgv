@@ -90,12 +90,12 @@ void extract_controller_state(const VRControllerState_t& input, vr_controller_st
 void extract_trackable_state(const vr::TrackedDevicePose_t& tracked_pose, vr_trackable_state& trackable)
 {
 	if (!tracked_pose.bDeviceIsConnected)
-		trackable.status = VRS_detached;
+		trackable.status = VRS_DETACHED;
 	else {
 		if (!tracked_pose.bPoseIsValid)
-			trackable.status = VRS_attached;
+			trackable.status = VRS_ATTACHED;
 		else {
-			trackable.status = VRS_tracked;
+			trackable.status = VRS_TRACKED;
 			put_pose_matrix(tracked_pose.mDeviceToAbsoluteTracking, trackable.pose);
 		}
 	}

@@ -1,5 +1,5 @@
 #include <cassert>
-#include "vr_driver.h"
+#include <vr/vr_driver.h>
 #include "openvr_kit.h"
 #include <cgv/type/standard_types.h>
 #include "openvr.h"
@@ -86,6 +86,8 @@ struct openvr_driver : public vr_driver
 	std::vector<void*> scan_vr_kits()
 	{
 		std::vector<void*> handles;
+		if (!is_installed())
+			return handles;
 		if (VR_IsHmdPresent() && hmd_ptr) {
 			bool do_register = true;
 			vr_kit* kit = get_vr_kit(hmd_ptr);

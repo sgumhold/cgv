@@ -1,0 +1,17 @@
+@=
+projectType="plugin";
+projectName="openvr_driver";
+projectGUID="2B39897C-4340-4C2A-8657-308FF82E71BB";
+addSharedDefines=["OPENVR_DRIVER_EXPORTS"];
+addIncDirs=[CGV_DIR."/3rd/glew", CGV_DIR."/libs"];
+addProjectDirs=[CGV_DIR."/3rd/glew", CGV_DIR."/libs/vr"];
+addProjectDeps=["glew", "vr"];
+if (SYSTEM=="windows") {
+	addDependencies=["openvr_api"];
+	if (CGV_PLATFORM=="WIN32") {
+		addLibDirs=[INPUT_DIR."/win32"];
+	}
+	else {
+		addLibDirs=[INPUT_DIR."/win64"];
+	}
+}

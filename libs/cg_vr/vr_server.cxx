@@ -7,9 +7,16 @@
 
 namespace cgv {
 	namespace gui {
+		// some helper function to compare arrays
+		bool array_unequal(float* a1, float* a2, unsigned n) {
+			for (unsigned i = 0; i < n; ++i)
+				if (a1[i] != a2[i])
+					return true;
+			return false;
+		}
 		/// construct a gamepad event
 		vr_event::vr_event(void* _device_handle, const vr::vr_kit_state& _state, double _time) :
-			device_handle(_device_handle), state(_state), cgv::gui::event(cgv::gui::EID_VR, 0, 0, time)
+			device_handle(_device_handle), state(_state), cgv::gui::event(cgv::gui::EID_VR, 0, 0, _time)
 		{
 		}
 		/// return the device id, by default returns 0
@@ -27,17 +34,23 @@ namespace cgv {
 			for (unsigned i = 0; i < 12; ++i)
 				os << " " << trackable.pose[i];
 		}
+		/// 
+		void vr_event::stream_out_controller(std::ostream& os, const vr::vr_controller_state& controller) const
+		{
+			os << " [" << std::hex << controller.time_stamp << "] <" 
+			   << controller.button_flags << ">:";
+			for (unsigned i = 0; i < 8; ++i)
+				os << " " << controller.axes[i];
+			os << "\n     ";
+			stream_out_trackable(os, controller);
+		}
 		/// write to stream
 		void vr_event::stream_out(std::ostream& os) const {
 			cgv::gui::event::stream_out(os);
 			os << " handle[" << device_handle << "]\n" << "   hmd: ";
 			stream_out_trackable(os, state.hmd);
-			os << "\n   left controller [" << std::hex << state.controller[0].time_stamp
-				<< "] <" << state.controller[0].button_flags << ">: ";
-			stream_out_trackable(os, state.controller[0]);
-			os << "\n  right controller [" << std::hex << state.controller[1].time_stamp
-				<< "] <" << state.controller[1].button_flags << ">: ";
-			stream_out_trackable(os, state.controller[1]);
+			os << "\n   left controller"; stream_out_controller(os, state.controller[0]);
+			os << "\n  right controller"; stream_out_controller(os, state.controller[1]);
 			os << std::endl;
 		}
 		/// read from stream
@@ -46,9 +59,13 @@ namespace cgv {
 			cgv::gui::event::stream_in(is);
 		}
 		/// construct a key event from its textual description 
-		vr_key_event::vr_key_event(void* _device_handle, int _controller_index, unsigned short _key, KeyAction _action, unsigned char _char, double _time)
-			: device_handle(_device_handle), controller_index(_controller_index), key_event(_key, _action, _char, 0, 0, time)
+		vr_key_event::vr_key_event(void* _device_handle, int _controller_index, 
+			unsigned short _key, KeyAction _action, unsigned char _char, 
+			unsigned char _modifiers, double _time)
+			: device_handle(_device_handle), controller_index(_controller_index), 
+			key_event(_key, _action, _char, _modifiers, 0, _time)
 		{
+			flags = EF_VR;
 		}
 		/// return controller index (0 .. left, 1.. right) of vr kit
 		int vr_key_event::get_controller_index() const
@@ -78,6 +95,9 @@ namespace cgv {
 				break;
 			}
 			os << "[" << device_handle << "]";
+			if (get_modifiers() != 0) {
+				os << " {" << vr::get_state_flag_string(vr::VRButtonStateFlags(get_modifiers())) << "}";
+			}
 		}
 		/// read from stream
 		void vr_key_event::stream_in(std::istream& is)
@@ -89,7 +109,7 @@ namespace cgv {
 		vr_server::vr_server()
 		{
 			last_device_scan = -1;
-			device_scan_interval = 5;
+			device_scan_interval = 1;
 			last_time_stamps.resize(vr_kit_handles.size(), 0);
 		}
 		/// set time interval in seconds to check for device connection changes
@@ -102,6 +122,7 @@ namespace cgv {
 			vr::VRButtonStateFlags flag;
 			vr::VRKeys key[2];
 		};
+
 		/// check enabled gamepad devices for new events and dispatch them through the on_event signal
 		void vr_server::check_and_emit_events(double time)
 		{
@@ -150,42 +171,48 @@ namespace cgv {
 				// get current state
 				vr::vr_kit_state state;
 				kit->query_state(state, 1);
-				// check for change
-				if (!(state == last_states[i])) {
-					// check for status changes and emit signal for found status changes					
-					if (state.hmd.status != last_states[i].hmd.status)
-						on_status_change(vr_kit_handles[i], -1, last_states[i].hmd.status, state.hmd.status);
-					if (state.controller[0].status != last_states[i].controller[0].status)
-						on_status_change(vr_kit_handles[i], 0, last_states[i].controller[0].status, state.controller[0].status);
-					if (state.controller[1].status != last_states[i].controller[1].status)
-						on_status_change(vr_kit_handles[i], 1, last_states[i].controller[1].status, state.controller[1].status);
-					// check for key changes and emit key_event 
-					for (int c = 0; c < 2; ++c) {
-						if (state.controller[c].status != vr::VRS_detached &&
-							last_states[i].controller[c].status != vr::VRS_detached &&
-							state.controller[c].button_flags != last_states[i].controller[c].button_flags) {
-							for (unsigned j = 0; j < 7; ++j) {
-								if ((state.controller[c].button_flags & buttons[j].flag) !=
-									(last_states[i].controller[c].button_flags & buttons[j].flag)) {
-									short key_offset = 0;
-									// in case of pressed stick, refine key from direction
-									if (j == 6) {
-										int x = state.controller[c].axes[0] > 0.5f ? 1 :
-											(state.controller[c].axes[0] < -0.5f ? -1 : 0);
-										int y = state.controller[c].axes[1] > 0.5f ? 1 :
-											(state.controller[c].axes[1] < -0.5f ? -1 : 0);
-										key_offset = 3 * (y + 1) + x + 1;
-									}
-									// construct and emit event
-									vr_key_event vrke(vr_kit_handles[i], c, buttons[j].key[c] + key_offset, 
-										(state.controller[c].button_flags & buttons[j].flag) != 0 ? KA_PRESS : KA_RELEASE, 0, time);
-
-									on_event(vrke);
+				// check for status changes and emit signal for found status changes					
+				if (state.hmd.status != last_states[i].hmd.status)
+					on_status_change(vr_kit_handles[i], -1, last_states[i].hmd.status, state.hmd.status);
+				if (state.controller[0].status != last_states[i].controller[0].status)
+					on_status_change(vr_kit_handles[i], 0, last_states[i].controller[0].status, state.controller[0].status);
+				if (state.controller[1].status != last_states[i].controller[1].status)
+					on_status_change(vr_kit_handles[i], 1, last_states[i].controller[1].status, state.controller[1].status);
+				// check for key changes and emit key_event 
+				for (int c = 0; c < 2; ++c) {
+					if (state.controller[c].status != vr::VRS_DETACHED &&
+						last_states[i].controller[c].status != vr::VRS_DETACHED &&
+						state.controller[c].button_flags != last_states[i].controller[c].button_flags) {
+						for (unsigned j = 0; j < 7; ++j) {
+							if ((state.controller[c].button_flags & buttons[j].flag) !=
+								(last_states[i].controller[c].button_flags & buttons[j].flag)) {
+								short key_offset = 0;
+								// in case of pressed stick, refine key from direction
+								if (j == 6) {
+									int x = state.controller[c].axes[0] > 0.5f ? 1 :
+										(state.controller[c].axes[0] < -0.5f ? -1 : 0);
+									int y = state.controller[c].axes[1] > 0.5f ? 1 :
+										(state.controller[c].axes[1] < -0.5f ? -1 : 0);
+									key_offset = 3 * (y + 1) + x + 1;
 								}
+								// construct and emit event
+								vr_key_event vrke(vr_kit_handles[i], c, 
+									buttons[j].key[c] + key_offset, (state.controller[c].button_flags & buttons[j].flag) != 0 ? KA_PRESS : KA_RELEASE, 0,
+									state.controller[c].button_flags, time);
+
+								on_event(vrke);
 							}
 						}
 					}
-					// finally emit general state change event
+				}
+				// finally check for pose, axis or vibration changes and emit general state change if necessary
+				if (array_unequal(state.hmd.pose, last_states[i].hmd.pose, 12) ||
+					array_unequal(state.controller[0].pose, last_states[i].controller[0].pose, 12) ||
+					array_unequal(state.controller[1].pose, last_states[i].controller[1].pose, 12) ||
+					array_unequal(state.controller[0].axes, last_states[i].controller[0].axes, 8) ||
+					array_unequal(state.controller[1].axes, last_states[i].controller[1].axes, 8) ||
+					array_unequal(state.controller[0].vibration, last_states[i].controller[0].vibration, 2) ||
+					array_unequal(state.controller[1].vibration, last_states[i].controller[1].vibration, 2)) {
 					cgv::gui::vr_event vre(vr_kit_handles[i], state, time);
 					on_event(vre);
 				}
