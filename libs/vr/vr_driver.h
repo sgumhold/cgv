@@ -20,7 +20,7 @@ namespace vr {
 		/// declare destructor virtual to ensure it being called also for derived classes
 		virtual ~vr_driver();
 		/// return name of driver
-		virtual std::string get_name() = 0;
+		virtual std::string get_driver_name() = 0;
 		/// return whether driver is installed
 		virtual bool is_installed() const = 0;
 		/// scan all connected vr kits and return a vector with their ids
