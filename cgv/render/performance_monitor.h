@@ -61,7 +61,7 @@ protected:
 	std::vector<PerformanceMonitoringBar> bar_config;
 
 	cgv::utils::stopwatch watch;
-
+	float time_scale;
 	std::vector<Pos> positions;
 	std::vector<Col> colors;
 
