@@ -17,6 +17,18 @@ gl_vr_display::gl_vr_display(unsigned _width, unsigned _height, vr_driver* _driv
 		fbo_id[i] = 0;
 	}
 }
+
+/// return width in pixel of view
+int gl_vr_display::get_width() const
+{
+	return width;
+}
+/// return height in pixel of view
+int gl_vr_display::get_height() const
+{
+	return height;
+}
+
 /// declare virtual destructor
 gl_vr_display::~gl_vr_display()
 {

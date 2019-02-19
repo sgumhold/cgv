@@ -13,6 +13,8 @@
 #include <string>
 #include <fstream>
 #include <cgv/utils/stopwatch.h>
+#include <cg_vr/vr_server.h>
+#include <plugins/crg_vr_view/vr_view_interactor.h>
 
 class vr_test : 
 	public cgv::base::node,
@@ -82,9 +84,17 @@ public:
 
 	bool init(cgv::render::context& ctx)
 	{
+		cgv::gui::connect_vr_server(true);
+
 		auto view_ptr = find_view_as_node();
-		if (view_ptr)
+		if (view_ptr) {
 			view_ptr->set_eye_keep_view_angle(dvec3(0, 4, -4));
+			vr_view_interactor* vr_view_ptr = dynamic_cast<vr_view_interactor*>(view_ptr);
+			if (vr_view_ptr) {
+				vr_view_ptr->set_event_type_flags(cgv::gui::VREventTypeFlags(cgv::gui::VRE_KEY));
+			}
+		}
+
 		return renderer.init(ctx);
 	}
 	void draw(cgv::render::context& ctx)

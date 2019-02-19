@@ -56,6 +56,10 @@ namespace vr {
 		/// virtual bool query_key_event(VRKeys& key, KeyAction& action) = 0;
 		/// set the vibration strength between 0 and 1 of low and high frequency motors, return false if device is not connected anymore
 		virtual bool set_vibration(unsigned controller_index, float low_frequency_strength, float high_frequency_strength) = 0;
+		/// return width in pixel of view
+		virtual int get_width() const = 0;
+		/// return height in pixel of view
+		virtual int get_height() const = 0;
 		/// initialize render targets and framebuffer objects in current opengl context
 		virtual bool init_fbos() = 0;
 		/// initialize render targets and framebuffer objects in current opengl context

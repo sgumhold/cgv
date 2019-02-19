@@ -28,6 +28,10 @@ namespace vr {
 	public:
 		/// declare virtual destructor
 		~gl_vr_display();
+		/// return width in pixel of view
+		int get_width() const;
+		/// return height in pixel of view
+		int get_height() const;
 		/// initialize render targets and framebuffer objects in current opengl context
 		bool init_fbos();
 		/// initialize render targets and framebuffer objects in current opengl context
