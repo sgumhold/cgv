@@ -1,12 +1,17 @@
 #include "vr_emulator.h"
 #include <cgv/math/ftransform.h>
+#include <cgv/gui/key_event.h>
+#include <cgv/gui/trigger.h>
 
 const float Body_height = 1740.0f;
 const float Eye_height = 1630.0f;
+const float Chin_height = 1530.0f;
 const float Shoulder_height = 1425.0f;
-const float Shoulder_width = 465.0f;
+const float Shoulder_breadth = 485.0f;
 const float Arm_span = 1790.0f;
+const float Arm_length = 790.0f;
 const float Hip_width = 360.0f;
+const float Hip_height = 935.0f;
 const float Elbow_height = 1090.0f;
 const float Hand_height = 755.0f;
 const float Reach_Upwards = 2060.0f;
@@ -36,19 +41,69 @@ vr_emulated_kit::mat4 vr_emulated_kit::construct_homogeneous_matrix(const quat& 
 	return H;
 }
 
-vr_emulated_kit::vr_emulated_kit(const quat& _body_orientation, const vec3& _body_position, float _body_height, unsigned _width, unsigned _height, vr::vr_driver* _driver, void* _handle, const std::string& _name, bool _ffb_support, bool _wireless)
-	: gl_vr_display(_width, _height, _driver, _handle, _name, _ffb_support, _wireless)
+vr_emulated_kit::vec3 vr_emulated_kit::get_body_direction() const
 {
 	vec3 up_dir;
+	vec3 x_dir, y_dir;
+	driver->put_x_direction(&x_dir(0));
 	driver->put_up_direction(&up_dir(0));
-	vec3 x_dir = _body_orientation.apply(vec3(1, 0, 0));
-	head_position = _body_position + (0.75f*_body_height)*up_dir;
-	hand_position[0] = _body_position + (0.5f*_body_height)*up_dir - (0.2f*_body_height)*x_dir;
-	hand_position[1] = _body_position + (0.5f*_body_height)*up_dir + (0.2f*_body_height)*x_dir;
-	head_orientation = hand_orientation[0] = hand_orientation[1] = _body_orientation;
+	y_dir = cross(up_dir, x_dir);
+	return -sin(body_direction)*x_dir + cos(body_direction)*y_dir;
+}
+
+void vr_emulated_kit::compute_state_poses()
+{
+	float scale = body_height / Body_height;
+	vec3 up_dir;
+	vec3 x_dir, y_dir;
+	driver->put_x_direction(&x_dir(0));
+	driver->put_up_direction(&up_dir(0));
+	y_dir = cross(up_dir, x_dir);
+	mat4 T_body;
+	T_body.set_col(0, vec4(cos(body_direction)*x_dir + sin(body_direction)*y_dir, 0));
+	T_body.set_col(1, vec4(-sin(body_direction)*x_dir + cos(body_direction)*y_dir,0));
+	T_body.set_col(2, vec4(up_dir,0));
+	T_body.set_col(3, vec4(body_position, 1));
+	mat4 T_hip = 
+		cgv::math::translate4<float>(vec3(0,0,scale*Hip_height))*
+		cgv::math::rotate4<float>(-60*hip_parameter, vec3(1, 0, 0));
+	mat4 T_head =
+		cgv::math::translate4<float>(vec3(0, 0, scale*(Chin_height - Hip_height)))*
+		cgv::math::rotate4<float>(-90*gear_parameter, vec3(0, 0, 1));
+
+	mat4 T_left =
+		cgv::math::translate4<float>(
+			scale*vec3(-(Shoulder_breadth + Arm_length * hand_position[0](0)),
+				Arm_length*hand_position[0](1),
+				Shoulder_height - Hip_height + Arm_length * hand_position[0](2)));
+	mat4 T_right =
+		cgv::math::translate4<float>(
+			scale*vec3(+(Shoulder_breadth + Arm_length * hand_position[1](0)),
+				Arm_length*hand_position[1](1),
+				Shoulder_height - Hip_height + Arm_length * hand_position[1](2)));
+
+	set_pose_matrix(T_body*T_hip*T_head, state.hmd.pose);
+	set_pose_matrix(T_body*T_hip*T_left, state.controller[0].pose);
+	set_pose_matrix(T_body*T_hip*T_right, state.controller[1].pose);
+}
+
+
+vr_emulated_kit::vr_emulated_kit(float _body_direction, const vec3& _body_position, float _body_height, unsigned _width, unsigned _height, vr::vr_driver* _driver, void* _handle, const std::string& _name, bool _ffb_support, bool _wireless)
+	: gl_vr_display(_width, _height, _driver, _handle, _name, _ffb_support, _wireless)
+{
+
+	body_position = _body_position;
+	body_direction=_body_direction;
+	body_height = _body_height;
+	hip_parameter= 0;
+	gear_parameter = 0;
+	hand_position[0] = vec3(0, 0, -0.5f);
+	hand_position[1] = vec3(0, 0, -0.5f);
 	state.hmd.status = vr::VRS_TRACKED;
 	state.controller[0].status = vr::VRS_TRACKED;
 	state.controller[1].status = vr::VRS_TRACKED;
+	
+	compute_state_poses();
 }
 
 void vr_emulated_kit::set_pose_matrix(const mat4& H, float* pose)
@@ -69,9 +124,7 @@ void vr_emulated_kit::set_pose_matrix(const mat4& H, float* pose)
 
 bool vr_emulated_kit::query_state(vr::vr_kit_state& state, int pose_query)
 {
-	set_pose_matrix(construct_homogeneous_matrix(head_orientation, head_position), state.hmd.pose);
-	set_pose_matrix(construct_homogeneous_matrix(hand_orientation[0], hand_position[0]), state.controller[0].pose);
-	set_pose_matrix(construct_homogeneous_matrix(hand_orientation[1], hand_position[1]), state.controller[1].pose);
+	compute_state_poses();
 	state = this->state;
 	return true;
 }
@@ -85,8 +138,14 @@ bool vr_emulated_kit::set_vibration(unsigned controller_index, float low_frequen
 
 void vr_emulated_kit::put_eye_to_head_matrix(int eye, float* pose_matrix)
 {
-	set_pose_matrix(cgv::math::translate4<float>(-float(2*eye-1)*0.04f, -0.03f, 0.05f), pose_matrix);
+	float scale = body_height / Body_height;
+	set_pose_matrix(
+		cgv::math::translate4<float>(
+			scale*vec3(float(2 * eye - 1)*Pupillary_distance, Pupillary_distance, Eye_height - Chin_height)
+		), pose_matrix
+	);
 }
+
 void vr_emulated_kit::put_projection_matrix(int eye, float z_near, float z_far, float* projection_matrix)
 {
 	reinterpret_cast<mat4&>(*projection_matrix) = 
@@ -101,20 +160,49 @@ void vr_emulated_kit::submit_frame()
 ///
 vr_emulator::vr_emulator() : cgv::base::node("vr_emulator")
 {
+	left_ctrl = right_ctrl = up_ctrl = down_ctrl = false;
+	current_kit_ctrl = 0;
 	installed = true;
 	body_speed = 1.0f;
-	body_position.zeros();
+	body_position = vec3(0,0,1);
 	body_height = 1.75f;
-	body_orientation.set(vec3(1, 0, 0), 0);
+	body_direction = 0;
 	screen_width = 640;
 	screen_height = 480;
 	ffb_support = true;
 	wireless = false;
 	counter = 0;
+	add_new_kit();
+	connect(cgv::gui::get_animation_trigger().shoot, this, &vr_emulator::timer_event);
+}
+
+void vr_emulator::timer_event(double t, double dt)
+{
+	if (current_kit_ctrl < (int)kits.size()) {
+		if (left_ctrl || right_ctrl) {
+			kits[current_kit_ctrl]->body_direction -= 3*(float)(left_ctrl ? -dt : dt);
+			update_member(&kits[current_kit_ctrl]->body_direction);
+			post_redraw();
+		}
+		if (up_ctrl || down_ctrl) {
+			kits[current_kit_ctrl]->body_position += 3*(float)(down_ctrl ? -dt : dt) * kits[current_kit_ctrl]->get_body_direction();
+			update_member(&kits[current_kit_ctrl]->body_direction);
+			for (unsigned c = 0; c < 3; ++c)
+				update_member(&kits[current_kit_ctrl]->body_position[c]);
+			post_redraw();
+		}
+	}
+}
+
+///
+void vr_emulator::on_set(void* member_ptr)
+{
+	update_member(member_ptr);
+	post_redraw();
 }
 
 /// return name of driver
-std::string vr_emulator::get_driver_name()
+std::string vr_emulator::get_driver_name() const
 {
 	return name;
 }
@@ -130,7 +218,7 @@ void vr_emulator::add_new_kit()
 	++counter;
 	void* handle = 0;
 	(unsigned&)handle = counter;
-	vr_emulated_kit* new_kit = new vr_emulated_kit(body_orientation, body_position, body_height,
+	vr_emulated_kit* new_kit = new vr_emulated_kit(body_direction, body_position, body_height,
 		screen_width, screen_height, this, handle, 
 		std::string("vr_emulated_kit[") + cgv::utils::to_string(counter) + "]", ffb_support, wireless);
 	kits.push_back(new_kit);
@@ -150,30 +238,30 @@ std::vector<void*> vr_emulator::scan_vr_kits()
 }
 
 /// put a 3d up direction into passed array
-void vr_emulator::put_up_direction(float* up_dir)
+void vr_emulator::put_up_direction(float* up_dir) const
 {
 	reinterpret_cast<vec3&>(*up_dir) = vec3(0, 1, 0);
 }
 
 /// return the floor level relativ to the world origin
-float vr_emulator::get_floor_level()
+float vr_emulator::get_floor_level() const
 {
 	return 0;
 }
 
-/// return height of interaction zone in meters
-float vr_emulator::get_interaction_zone_height()
+/// return height of action zone in meters
+float vr_emulator::get_action_zone_height() const
 {
 	return 2.5f;
 }
 
-/// return a vector of floor points defining the interaction zone boundary as a closed polygon
-void vr_emulator::put_interaction_zone_bounary(std::vector<float>& boundary)
+/// return a vector of floor points defining the action zone boundary as a closed polygon
+void vr_emulator::put_action_zone_bounary(std::vector<float>& boundary) const
 {
-	boundary.resize(24);
+	boundary.resize(18);
 	for (unsigned i = 0; i < 6; ++i) {
 		float angle = float(2 * M_PI*i / 6);
-		vec3 pi(cos(angle), 0, sin(angle));
+		vec3 pi(1.5f*cos(angle), 0, 2.5f*sin(angle));
 		reinterpret_cast<vec3&>(boundary[3 * i]) = pi;
 	}
 }
@@ -181,6 +269,37 @@ void vr_emulator::put_interaction_zone_bounary(std::vector<float>& boundary)
 /// overload and implement this method to handle events
 bool vr_emulator::handle(cgv::gui::event& e)
 {
+	if (e.get_kind() != cgv::gui::EID_KEY)
+		return false;
+	cgv::gui::key_event& ke = static_cast<cgv::gui::key_event&>(e);
+	switch (ke.get_key()) {
+	case '0':
+	case '1':
+	case '2':
+	case '3':
+		if (ke.get_modifiers() == cgv::gui::EM_CTRL) {
+			current_kit_ctrl = ke.get_key()-'0';
+			update_member(&current_kit_ctrl);
+			return true;
+		}
+		break;
+	case cgv::gui::KEY_Left:
+		left_ctrl = (ke.get_action() != cgv::gui::KA_RELEASE); 
+		update_member(&left_ctrl);
+		return true;
+	case cgv::gui::KEY_Right: 
+		right_ctrl = (ke.get_action() != cgv::gui::KA_RELEASE); 
+		update_member(&right_ctrl);
+		return true;
+	case cgv::gui::KEY_Up: 
+		up_ctrl = (ke.get_action() != cgv::gui::KA_RELEASE); 
+		update_member(&up_ctrl);
+		return true;
+	case cgv::gui::KEY_Down: 
+		down_ctrl = (ke.get_action() != cgv::gui::KA_RELEASE); 
+		update_member(&down_ctrl);
+		return true;
+	}
 	return false;
 }
 /// overload to stream help information to the given output stream
@@ -225,6 +344,9 @@ bool vr_emulator::self_reflect(cgv::reflect::reflection_handler& srh)
 {
 	return
 		srh.reflect_member("installed", installed) &&
+		srh.reflect_member("body_direction", body_direction) &&
+		srh.reflect_member("body_position", body_position) &&
+		srh.reflect_member("body_height", body_height) &&
 		srh.reflect_member("screen_height", screen_height) &&
 		srh.reflect_member("screen_width", screen_width) &&
 		srh.reflect_member("wireless", wireless) &&
@@ -277,12 +399,49 @@ void vr_emulator::create_gui()
 	add_member_control(this, "screen_height", screen_height, "value_slider", "min=240;max=1920;ticks=true");
 	add_member_control(this, "ffb_support", ffb_support, "toggle");
 	add_member_control(this, "wireless", wireless, "toggle");
+	add_gui("body_position", body_position, "", "options='min=-1;max=1'");
+	add_member_control(this, "body_direction", body_direction, "min=0;max=6.3;ticks=true");
+	add_member_control(this, "body_height", body_height, "min=1.2;max=2.0;ticks=true");
 	connect_copy(add_button("create new kit")->click, cgv::signal::rebind(this, &vr_emulator::add_new_kit));
+
+	add_member_control(this, "current_kit_ctrl", current_kit_ctrl, "value", "min=0");
+	add_member_control(this, "left", left_ctrl, "toggle", "w=50", " ");
+	add_member_control(this, "right", right_ctrl, "toggle", "w=50", " ");
+	add_member_control(this, "up", up_ctrl, "toggle", "w=50", " ");
+	add_member_control(this, "down", down_ctrl, "toggle", "w=50");
+
 	for (unsigned i = 0; i < kits.size(); ++i) {
-		add_decorator(kits[i]->get_name(), "heading", "level=3");
-		create_trackable_gui("hmd", kits[i]->state.hmd);
-		create_controller_gui(0, kits[i]->state.controller[0]);
-		create_controller_gui(1, kits[i]->state.controller[1]);
+		if (begin_tree_node(kits[i]->get_name(), *kits[i], false, "level=3")) {
+			align("\a");
+			add_gui("body_position", kits[i]->body_position, "", "options='min=-5;max=5;ticks=true'");
+			add_member_control(this, "body_direction", kits[i]->body_direction, "value_slider", "min=0;max=6.3;ticks=true");
+			add_member_control(this, "body_height", kits[i]->body_height, "value_slider", "min=1.2;max=2.0;ticks=true");
+			add_member_control(this, "hip_parameter", kits[i]->hip_parameter, "value_slider", "min=-1;max=1;ticks=true");
+			add_member_control(this, "gear_parameter", kits[i]->gear_parameter, "value_slider", "min=-1;max=1;ticks=true");
+			add_gui("left_hand", kits[i]->hand_position[0], "", "options='min=-1;max=1;ticks=true'");
+			add_gui("right_hand", kits[i]->hand_position[1], "", "options='min=-1;max=1;ticks=true'");
+			if (begin_tree_node("state", kits[i]->state.controller[0].pose[1], false, "level=3")) {
+				align("\a");
+				if (begin_tree_node("hmd", kits[i]->state.hmd.pose[0], false, "level=3")) {
+					align("\a");
+						create_trackable_gui("hmd", kits[i]->state.hmd);
+					align("\b");
+					end_tree_node(kits[i]->state.hmd.pose[1]);
+				}
+				for (unsigned ci = 0; ci < 2; ++ci) {
+					if (begin_tree_node((ci==0?"controller[0]":"controller[1]"), kits[i]->state.controller[ci], false, "level=3")) {
+						align("\a");
+						create_controller_gui(ci, kits[i]->state.controller[ci]);
+						align("\b");
+						end_tree_node(kits[i]->state.controller[ci]);
+					}
+				}
+				align("\b");
+				end_tree_node(kits[i]->state.controller[0].pose[1]);
+			}
+			align("\b");
+			end_tree_node(*kits[i]);
+		}
 	}
 }
 

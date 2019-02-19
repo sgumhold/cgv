@@ -88,6 +88,9 @@ public:
 	///copies a column vector of a different type
 	template <typename S>
 	fvec(const fvec<S,N>& fv) { for (unsigned i=0; i<N; ++i) v[i] = (T)fv(i); }
+	/// construct from vector of one dimension less plus a scalar
+	template <typename S1, typename S2>
+	fvec(const fvec<S1, N - 1>& fv, S2 w) { for (unsigned i = 0; i < N - 1; ++i) v[i] = (T)fv(i); v[N - 1] = (T)w; }
 	///assign vector rhs, if vector and rhs have different sizes, vector has been resized to match the size of
 	fvec & operator = (const fvec<T,N> &rhs) { if (this != &rhs) std::copy(rhs.v, rhs.v+N, v); return *this; }
 	/// set all components of vector to constant value a

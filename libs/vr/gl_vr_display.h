@@ -28,6 +28,10 @@ namespace vr {
 		~gl_vr_display();
 		/// initialize render targets and framebuffer objects in current opengl context
 		bool init_fbos();
+		/// check whether fbos have been initialized
+		bool fbos_initialized() const;
+		/// destruct render targets and framebuffer objects in current opengl context
+		void destruct_fbos();
 		/// enable the framebuffer object of given eye (0..left, 1..right) 
 		void enable_fbo(int eye);
 		/// disable the framebuffer object of given eye

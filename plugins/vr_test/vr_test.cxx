@@ -35,6 +35,7 @@ protected:
 		boxes.push_back(box3(vec3(-0.5f*w, -W, -0.5f*d), vec3(0.5f*w, 0, 0.5f*d)));
 		box_colors.push_back(rgb(0.5f, 0.5f, 0.5f));
 
+		/*
 		// construct walls
 		boxes.push_back(box3(vec3(-0.5f*w, -W, -0.5f*d - W), vec3(0.5f*w, h, -0.5f*d)));
 		box_colors.push_back(rgb(0.8f, 0.5f, 0.5f));
@@ -47,7 +48,7 @@ protected:
 		// construct ceiling
 		boxes.push_back(box3(vec3(-0.5f*w-W, h, -0.5f*d-W), vec3(0.5f*w+W, h+W, 0.5f*d+W)));
 		box_colors.push_back(rgb(0.5f, 0.5f, 0.8f));
-
+		*/
 		// construct table
 		boxes.push_back(box3(vec3(-0.5f*tw - tW, th, -0.5f*td - tW), vec3(0.5f*tw + tW, th + tW, 0.5f*td + tW)));
 		box_colors.push_back(rgb(0.5f, 0.4f, 0.0f));
@@ -81,6 +82,9 @@ public:
 
 	bool init(cgv::render::context& ctx)
 	{
+		auto view_ptr = find_view_as_node();
+		if (view_ptr)
+			view_ptr->set_eye_keep_view_angle(dvec3(0, 4, -4));
 		return renderer.init(ctx);
 	}
 	void draw(cgv::render::context& ctx)
