@@ -23,6 +23,7 @@ vr_view_interactor::vr_view_interactor(const char* name) : stereo_view_interacto
 
 	rendered_kit_ptr = 0;
 	rendered_eye = 0;
+	rendered_kit_index = -1;
 
 	fence_frequency = 5;
 	fence_line_width = 3;
@@ -139,7 +140,10 @@ void vr_view_interactor::after_finish(cgv::render::context& ctx)
 					x0 += blit_width+5;
 				}
 				y0 += blit_height + 5;
+				kit_ptr->submit_frame();
 			}
+			if (current_vr_handle)
+				post_redraw();
 		}
 	}
 }
@@ -185,6 +189,7 @@ void vr_view_interactor::configure_kits()
 		}
 		new_kits.pop_back();
 	}
+	kit_states.resize(kits.size());
 	// 
 	if (update_kits) {
 		kit_enum_definition = "enums='none=0";
@@ -237,11 +242,25 @@ void vr_view_interactor::init_frame(cgv::render::context& ctx)
 	if (ctx.get_render_pass() == cgv::render::RP_MAIN) {
 
 		configure_kits();
-
 		// perform rendering from the vr kits
 		if (kits.size() > 0) {
-			for (auto handle : kits) {
-				rendered_kit_ptr = vr::get_vr_kit(handle);
+			// query states
+			vr::vr_kit* current_kit_ptr = 0;
+			if (current_vr_handle_index >= 0) {
+				current_kit_ptr = vr::get_vr_kit(current_vr_handle);
+				if (current_kit_ptr)
+					current_kit_ptr->query_state(kit_states[current_vr_handle_index-1], 2);
+			}
+			for (unsigned i = 0; i < kits.size(); ++i) {
+				vr::vr_kit* kit_ptr = vr::get_vr_kit(kits[i]);
+				if (!kit_ptr)
+					continue;
+				if (kit_ptr == current_kit_ptr)
+					continue;
+				kit_ptr->query_state(kit_states[i], 1);
+			}
+			for (rendered_kit_index=0; rendered_kit_index<kits.size(); ++rendered_kit_index) {
+				rendered_kit_ptr = vr::get_vr_kit(kits[rendered_kit_index]);
 				if (!rendered_kit_ptr)
 					continue;
 				for (rendered_eye = 0; rendered_eye < 2; ++rendered_eye) {
@@ -251,14 +270,13 @@ void vr_view_interactor::init_frame(cgv::render::context& ctx)
 				}
 			}
 			rendered_kit_ptr = 0;
+			rendered_kit_index = -1;
 		}
 	}
 	if (ctx.get_render_pass() == cgv::render::RP_USER_DEFINED) {
-		vr::vr_kit_state state;
-		rendered_kit_ptr->query_state(state, 1);
 		float eye_to_head[12];
 		rendered_kit_ptr->put_eye_to_head_matrix(rendered_eye, eye_to_head);
-		ctx.set_modelview_matrix(inv(hmat_from_pose(state.hmd.pose)*hmat_from_pose(eye_to_head)));
+		ctx.set_modelview_matrix(inv(hmat_from_pose(kit_states[rendered_kit_index].hmd.pose)*hmat_from_pose(eye_to_head)));
 
 		mat4 P;
 		rendered_kit_ptr->put_projection_matrix(rendered_eye, z_near_derived, z_far_derived, &P(0, 0));

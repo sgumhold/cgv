@@ -22,7 +22,7 @@ protected:
 
 	int rendered_eye;
 	vr::vr_kit* rendered_kit_ptr;
-
+	int rendered_kit_index;
 	static dmat4 hmat_from_pose(float pose_matrix[12]);
 
 	// debugging of vr events on console
@@ -39,7 +39,8 @@ protected:
 	void* current_vr_handle;
 	int current_vr_handle_index;
 	std::string kit_enum_definition;
-
+	// list of vr kit states
+	std::vector<vr::vr_kit_state> kit_states;
 	// list of to be initialized vr kits
 	std::vector<void*> new_kits;
 	// list of vr kits
