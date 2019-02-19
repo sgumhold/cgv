@@ -15,6 +15,12 @@ namespace vr {
 	{
 
 	}
+	/// put a 3d x direction into passed array
+	void vr_driver::put_x_direction(float* x_dir) const
+	{
+		x_dir[0] = 1;
+		x_dir[1] = x_dir[2] = 0;
+	}
 
 	/// call this method during scanning of vr kits but only in case vr kit id does not yield vr kit through global get_vr_kit function
 	void vr_driver::register_vr_kit(void* handle, vr_kit* kit)
@@ -73,5 +79,16 @@ namespace vr {
 		if (iter == ref_vr_kit_map().end())
 			return NULL;
 		return iter->second;
+	}
+	/// unregister a previously registered vr kit by handle and pointer
+	bool unregister_vr_kit(void* handle, vr_kit* vr_kit_ptr)
+	{
+		auto iter = ref_vr_kit_map().find(handle);
+		if (iter == ref_vr_kit_map().end())
+			return false;
+		if (iter->second != vr_kit_ptr)
+			return false;
+		ref_vr_kit_map().erase(handle);
+		return true;
 	}
 }

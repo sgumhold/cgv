@@ -58,6 +58,10 @@ namespace vr {
 		virtual bool set_vibration(unsigned controller_index, float low_frequency_strength, float high_frequency_strength) = 0;
 		/// initialize render targets and framebuffer objects in current opengl context
 		virtual bool init_fbos() = 0;
+		/// check whether fbos have been initialized
+		virtual bool fbos_initialized() const = 0;
+		/// destruct render targets and framebuffer objects in current opengl context
+		virtual void destruct_fbos() = 0;
 		/// access to 3x4 matrix in column major format for transformation from eye (0..left, 1..right) to head coordinates
 		virtual void put_eye_to_head_matrix(int eye, float* pose_matrix) = 0;
 		/// access to 4x4 matrix in column major format for perspective transformation from eye (0..left, 1..right)

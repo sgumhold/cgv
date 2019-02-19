@@ -20,18 +20,21 @@ protected:
 	friend class vr_emulator;
 	vr::vr_kit_state state;
 	typedef cgv::math::quaternion<float> quat;
-	vec3 head_position;
-	quat head_orientation;
+	float body_direction;
+	float body_height;
+	float hip_parameter;
+	float gear_parameter;
+	vec3 body_position;
 	vec3 hand_position[2];
-	quat hand_orientation[2];
 
 	/// helper functions to construct matrices
 	mat3x4 construct_pos_matrix(const quat& orientation, const vec3& position);
 	mat4 construct_homogeneous_matrix(const quat& orientation, const vec3& position);
 	void set_pose_matrix(const mat4& H, float* pose);
-
+	void compute_state_poses();
 public:
-	vr_emulated_kit(const quat& _body_orientation, const vec3& _body_position, float _body_height, unsigned _width, unsigned _height, vr::vr_driver* _driver, void* _handle, const std::string& _name, bool _ffb_support, bool _wireless);
+	vr_emulated_kit(float _body_direction, const vec3& _body_position, float _body_height, unsigned _width, unsigned _height, vr::vr_driver* _driver, void* _handle, const std::string& _name, bool _ffb_support, bool _wireless);
+	vec3 get_body_direction() const;
 	bool query_state(vr::vr_kit_state& state, int pose_query = 2);
 	bool set_vibration(unsigned controller_index, float low_frequency_strength, float high_frequency_strength);
 	void put_eye_to_head_matrix(int eye, float* pose_matrix);
@@ -50,34 +53,39 @@ public:
 	bool ffb_support, wireless;
 	unsigned counter;
 	vec3 body_position;
-	quat body_orientation;
+	float body_direction;
 	float body_height;
 protected:
 	// emulation
 	bool installed;
 	float body_speed;
 
+	bool left_ctrl, right_ctrl, up_ctrl, down_ctrl;
+	int current_kit_ctrl;
 	void create_trackable_gui(const std::string& name, vr::vr_trackable_state& ts);
 	void create_controller_gui(int i, vr::vr_controller_state& cs);
 
 	void add_new_kit();
+	void timer_event(double t, double dt);
 public:
 	///
 	vr_emulator();
+	///
+	void on_set(void* member_ptr);
 	/// return name of driver
-	std::string get_driver_name();
+	std::string get_driver_name() const;
 	/// return whether driver is installed
 	bool is_installed() const;
 	/// scan all connected vr kits and return a vector with their ids
 	std::vector<void*> scan_vr_kits();
 	/// put a 3d up direction into passed array
-	void put_up_direction(float* up_dir);
+	void put_up_direction(float* up_dir) const;
 	/// return the floor level relativ to the world origin
-	float get_floor_level();
-	/// return height of interaction zone in meters
-	float get_interaction_zone_height();
-	/// return a vector of floor points defining the interaction zone boundary as a closed polygon
-	void put_interaction_zone_bounary(std::vector<float>& boundary);
+	float get_floor_level() const;
+	/// return height of action zone in meters
+	float get_action_zone_height() const;
+	/// return a vector of floor points defining the action zone boundary as a closed polygon
+	void put_action_zone_bounary(std::vector<float>& boundary) const;
 	/// overload and implement this method to handle events
 	bool handle(cgv::gui::event& e);
 	/// overload to stream help information to the given output stream

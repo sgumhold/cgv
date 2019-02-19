@@ -78,7 +78,7 @@ struct openvr_driver : public vr_driver
 		return installed;
 	}
 	/// return name of driver
-	std::string get_driver_name()
+	std::string get_driver_name() const
 	{
 		return driver_name.empty() ? "OpenVR Driver" : driver_name;
 	}
@@ -104,24 +104,24 @@ struct openvr_driver : public vr_driver
 		return handles;
 	}
 	/// put a 3d up direction into passed array
-	void put_up_direction(float* up_dir)
+	void put_up_direction(float* up_dir) const
 	{
 		up_dir[0] = 0;
 		up_dir[1] = 1.0f;
 		up_dir[2] = 0;
 	}
 	/// return the floor level relativ to the world origin
-	float get_floor_level()
+	float get_floor_level() const
 	{
 		return 0;
 	}
-	/// return height of interaction zone
-	float get_interaction_zone_height()
+	/// return height of action zone
+	float get_action_zone_height() const
 	{
 		return 2.5f;
 	}
-	/// return a vector of floor points defining the interaction zone boundary as a closed polygon
-	void put_interaction_zone_bounary(std::vector<float>& boundary)
+	/// return a vector of floor points defining the action zone boundary as a closed polygon
+	void put_action_zone_bounary(std::vector<float>& boundary) const
 	{
 		boundary.resize(12);
 		boundary[0] = -1;

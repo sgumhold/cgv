@@ -20,18 +20,38 @@ gl_vr_display::gl_vr_display(unsigned _width, unsigned _height, vr_driver* _driv
 /// declare virtual destructor
 gl_vr_display::~gl_vr_display()
 {
-	for (unsigned i = 0; i < 2; ++i) {
-		if (multi_depth_buffer_id[i] != 0)
-			glDeleteRenderbuffers(1, &multi_depth_buffer_id[i]);
+}
 
-		if (multi_tex_id[i] != 0)
+/// check whether fbos have been initialized
+bool gl_vr_display::fbos_initialized() const
+{
+	return fbo_id[0] != 0 && fbo_id[1] != 0 && multi_fbo_id[0] != 0 && multi_fbo_id[1] != 0;
+}
+
+/// destruct render targets and framebuffer objects in current opengl context
+void gl_vr_display::destruct_fbos()
+{
+	for (unsigned i = 0; i < 2; ++i) {
+		if (multi_depth_buffer_id[i] != 0) {
+			glDeleteRenderbuffers(1, &multi_depth_buffer_id[i]);
+			multi_depth_buffer_id[i] = 0;
+		}
+		if (multi_tex_id[i] != 0) {
 			glDeleteTextures(1, &multi_tex_id[i]);
-		if (multi_fbo_id[i] != 0)
+			multi_tex_id[i] = 0;
+		}
+		if (multi_fbo_id[i] != 0) {
 			glDeleteFramebuffers(1, &multi_fbo_id[i]);
-		if (tex_id[i] != 0)
+			multi_fbo_id[i] = 0;
+		}
+		if (tex_id[i] != 0) {
 			glDeleteTextures(1, &tex_id[i]);
-		if (fbo_id[i] != 0)
+			tex_id[i] = 0;
+		}
+		if (fbo_id[i] != 0) {
 			glDeleteFramebuffers(1, &fbo_id[i]);
+			fbo_id[i] = 0;
+		}
 	}
 }
 
@@ -53,6 +73,8 @@ bool gl_vr_display::init_fbos()
 		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D_MULTISAMPLE, multi_tex_id[i], 0);
 
 		if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
+			destruct_fbos();
+			glBindFramebuffer(GL_FRAMEBUFFER, 0);
 			last_error = "check status of multi framebuffer failed";
 			return false;
 		}
@@ -68,6 +90,8 @@ bool gl_vr_display::init_fbos()
 		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, tex_id[i], 0);
 
 		if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
+			destruct_fbos();
+			glBindFramebuffer(GL_FRAMEBUFFER, 0);
 			last_error = "check status of framebuffer failed";
 			return false;
 		}

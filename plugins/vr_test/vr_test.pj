@@ -11,5 +11,7 @@ addProjectDeps=["cgv_utils", "cgv_type", "cgv_data", "cgv_base", "cgv_math",
 				"cg_gamepad", "gamepad"
 				];
 addIncDirs=[INPUT_DIR, CGV_DIR."/libs", CGV_DIR."/test"];
-addCommandLineArguments=[after("type(shader_config;:shader_path='".INPUT_DIR.";".CGV_DIR."/cgv/render/glsl'","cgv_render")];
+addCommandLineArguments=[
+	after("type(shader_config):shader_path='".INPUT_DIR.";".CGV_DIR."/libs/cgv_gl/glsl'","cg_fltk")
+];
 addSharedDefines=["VR_TEST_EXPORTS"];

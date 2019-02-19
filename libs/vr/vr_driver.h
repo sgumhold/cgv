@@ -20,19 +20,21 @@ namespace vr {
 		/// declare destructor virtual to ensure it being called also for derived classes
 		virtual ~vr_driver();
 		/// return name of driver
-		virtual std::string get_driver_name() = 0;
+		virtual std::string get_driver_name() const = 0;
 		/// return whether driver is installed
 		virtual bool is_installed() const = 0;
 		/// scan all connected vr kits and return a vector with their ids
 		virtual std::vector<void*> scan_vr_kits() = 0;
+		/// put a 3d x direction into passed array
+		void put_x_direction(float* x_dir) const;
 		/// put a 3d up direction into passed array
-		virtual void put_up_direction(float* up_dir) = 0;
+		virtual void put_up_direction(float* up_dir) const = 0;
 		/// return the floor level relativ to the world origin
-		virtual float get_floor_level() = 0;
-		/// return height of interaction zone in meters
-		virtual float get_interaction_zone_height() = 0;
-		/// return a vector of floor points defining the interaction zone boundary as a closed polygon
-		virtual void put_interaction_zone_bounary(std::vector<float>& boundary) = 0;
+		virtual float get_floor_level() const = 0;
+		/// return height of action zone in meters
+		virtual float get_action_zone_height() const = 0;
+		/// return a vector of floor points defining the action zone boundary as a closed polygon
+		virtual void put_action_zone_bounary(std::vector<float>& boundary) const = 0;
 	};
 
 	/// return a vector with all registered vr drivers
@@ -41,6 +43,8 @@ namespace vr {
 	extern CGV_API std::vector<void*> scan_vr_kits();
 	/// query a pointer to a vr kit by its handle, function can return null pointer in case that no vr kit exists for given handle
 	extern CGV_API vr_kit* get_vr_kit(void* vr_kit_handle);
+	/// unregister a previously registered vr kit by handle and pointer
+	extern CGV_API bool unregister_vr_kit(void* vr_kit_handle, vr_kit* vr_kit_ptr);
 
 	/// register a new driver
 	extern CGV_API void register_driver(vr_driver* vrd);
