@@ -44,43 +44,43 @@ vr_emulated_kit::mat4 vr_emulated_kit::construct_homogeneous_matrix(const quat& 
 vr_emulated_kit::vec3 vr_emulated_kit::get_body_direction() const
 {
 	vec3 up_dir;
-	vec3 x_dir, y_dir;
+	vec3 x_dir, z_dir;
 	driver->put_x_direction(&x_dir(0));
 	driver->put_up_direction(&up_dir(0));
-	y_dir = cross(up_dir, x_dir);
-	return -sin(body_direction)*x_dir + cos(body_direction)*y_dir;
+	z_dir = cross(x_dir, up_dir);
+	return -sin(body_direction)*x_dir + cos(body_direction)*z_dir;
 }
 
 void vr_emulated_kit::compute_state_poses()
 {
 	float scale = body_height / Body_height;
 	vec3 up_dir;
-	vec3 x_dir, y_dir;
+	vec3 x_dir, z_dir;
 	driver->put_x_direction(&x_dir(0));
 	driver->put_up_direction(&up_dir(0));
-	y_dir = cross(up_dir, x_dir);
+	z_dir = cross(x_dir, up_dir);
 	mat4 T_body;
-	T_body.set_col(0, vec4(cos(body_direction)*x_dir + sin(body_direction)*y_dir, 0));
-	T_body.set_col(1, vec4(-sin(body_direction)*x_dir + cos(body_direction)*y_dir,0));
-	T_body.set_col(2, vec4(up_dir,0));
+	T_body.set_col(0, vec4(cos(body_direction)*x_dir + sin(body_direction)*z_dir, 0));
+	T_body.set_col(1, vec4(up_dir, 0));
+	T_body.set_col(2, vec4(-sin(body_direction)*x_dir + cos(body_direction)*z_dir,0));
 	T_body.set_col(3, vec4(body_position, 1));
 	mat4 T_hip = 
-		cgv::math::translate4<float>(vec3(0,0,scale*Hip_height))*
+		cgv::math::translate4<float>(vec3(0,scale*Hip_height,0))*
 		cgv::math::rotate4<float>(-60*hip_parameter, vec3(1, 0, 0));
 	mat4 T_head =
-		cgv::math::translate4<float>(vec3(0, 0, scale*(Chin_height - Hip_height)))*
-		cgv::math::rotate4<float>(-90*gear_parameter, vec3(0, 0, 1));
+		cgv::math::translate4<float>(vec3(0, scale*(Chin_height - Hip_height), 0))*
+		cgv::math::rotate4<float>(90*gear_parameter, vec3(0, 1, 0));
 
 	mat4 T_left =
 		cgv::math::translate4<float>(
 			scale*vec3(-(Shoulder_breadth + Arm_length * hand_position[0](0)),
-				Arm_length*hand_position[0](1),
-				Shoulder_height - Hip_height + Arm_length * hand_position[0](2)));
+				Shoulder_height - Hip_height + Arm_length * hand_position[0](1),
+				Arm_length*hand_position[0](2)));
 	mat4 T_right =
 		cgv::math::translate4<float>(
 			scale*vec3(+(Shoulder_breadth + Arm_length * hand_position[1](0)),
-				Arm_length*hand_position[1](1),
-				Shoulder_height - Hip_height + Arm_length * hand_position[1](2)));
+				Shoulder_height - Hip_height + Arm_length * hand_position[1](1),
+				Arm_length*hand_position[1](2)));
 
 	set_pose_matrix(T_body*T_hip*T_head, state.hmd.pose);
 	set_pose_matrix(T_body*T_hip*T_left, state.controller[0].pose);
@@ -97,8 +97,9 @@ vr_emulated_kit::vr_emulated_kit(float _body_direction, const vec3& _body_positi
 	body_height = _body_height;
 	hip_parameter= 0;
 	gear_parameter = 0;
-	hand_position[0] = vec3(0, 0, -0.5f);
-	hand_position[1] = vec3(0, 0, -0.5f);
+	fovy = 90;
+	hand_position[0] = vec3(0, -0.5f, -0.2f);
+	hand_position[1] = vec3(0, -0.5f, -0.2f);
 	state.hmd.status = vr::VRS_TRACKED;
 	state.controller[0].status = vr::VRS_TRACKED;
 	state.controller[1].status = vr::VRS_TRACKED;
@@ -141,7 +142,7 @@ void vr_emulated_kit::put_eye_to_head_matrix(int eye, float* pose_matrix)
 	float scale = body_height / Body_height;
 	set_pose_matrix(
 		cgv::math::translate4<float>(
-			scale*vec3(float(2 * eye - 1)*Pupillary_distance, Pupillary_distance, Eye_height - Chin_height)
+			scale*vec3(float(2 * eye - 1)*Pupillary_distance, Eye_height - Chin_height, -Pupillary_distance)
 		), pose_matrix
 	);
 }
@@ -149,7 +150,7 @@ void vr_emulated_kit::put_eye_to_head_matrix(int eye, float* pose_matrix)
 void vr_emulated_kit::put_projection_matrix(int eye, float z_near, float z_far, float* projection_matrix)
 {
 	reinterpret_cast<mat4&>(*projection_matrix) = 
-		cgv::math::perspective4<float>(45.0f, float(width)/height, z_near, z_far);
+		cgv::math::perspective4<float>(fovy, float(width)/height, z_near, z_far);
 }
 
 void vr_emulated_kit::submit_frame()
@@ -161,7 +162,7 @@ void vr_emulated_kit::submit_frame()
 vr_emulator::vr_emulator() : cgv::base::node("vr_emulator")
 {
 	left_ctrl = right_ctrl = up_ctrl = down_ctrl = false;
-	current_kit_ctrl = 0;
+	current_kit_ctrl = -1;
 	installed = true;
 	body_speed = 1.0f;
 	body_position = vec3(0,0,1);
@@ -178,14 +179,14 @@ vr_emulator::vr_emulator() : cgv::base::node("vr_emulator")
 
 void vr_emulator::timer_event(double t, double dt)
 {
-	if (current_kit_ctrl < (int)kits.size()) {
+	if (current_kit_ctrl >= 0 && current_kit_ctrl < (int)kits.size()) {
 		if (left_ctrl || right_ctrl) {
-			kits[current_kit_ctrl]->body_direction -= 3*(float)(left_ctrl ? -dt : dt);
+			kits[current_kit_ctrl]->body_direction += 3*(float)(left_ctrl ? -dt : dt);
 			update_member(&kits[current_kit_ctrl]->body_direction);
 			post_redraw();
 		}
 		if (up_ctrl || down_ctrl) {
-			kits[current_kit_ctrl]->body_position += 3*(float)(down_ctrl ? -dt : dt) * kits[current_kit_ctrl]->get_body_direction();
+			kits[current_kit_ctrl]->body_position -= 3*(float)(down_ctrl ? -dt : dt) * kits[current_kit_ctrl]->get_body_direction();
 			update_member(&kits[current_kit_ctrl]->body_direction);
 			for (unsigned c = 0; c < 3; ++c)
 				update_member(&kits[current_kit_ctrl]->body_position[c]);
@@ -277,28 +278,40 @@ bool vr_emulator::handle(cgv::gui::event& e)
 	case '1':
 	case '2':
 	case '3':
-		if (ke.get_modifiers() == cgv::gui::EM_CTRL) {
-			current_kit_ctrl = ke.get_key()-'0';
-			update_member(&current_kit_ctrl);
+		if (ke.get_action() != cgv::gui::KA_RELEASE)
+			current_kit_ctrl = ke.get_key() - '0';
+		else
+			current_kit_ctrl = -1;
+		update_member(&current_kit_ctrl);
+		break;
+	case cgv::gui::KEY_Left:
+		if (current_kit_ctrl != -1) {
+			left_ctrl = (ke.get_action() != cgv::gui::KA_RELEASE);
+			update_member(&left_ctrl);
 			return true;
 		}
 		break;
-	case cgv::gui::KEY_Left:
-		left_ctrl = (ke.get_action() != cgv::gui::KA_RELEASE); 
-		update_member(&left_ctrl);
-		return true;
 	case cgv::gui::KEY_Right: 
-		right_ctrl = (ke.get_action() != cgv::gui::KA_RELEASE); 
-		update_member(&right_ctrl);
-		return true;
-	case cgv::gui::KEY_Up: 
-		up_ctrl = (ke.get_action() != cgv::gui::KA_RELEASE); 
-		update_member(&up_ctrl);
-		return true;
-	case cgv::gui::KEY_Down: 
-		down_ctrl = (ke.get_action() != cgv::gui::KA_RELEASE); 
-		update_member(&down_ctrl);
-		return true;
+		if (current_kit_ctrl != -1) {
+			right_ctrl = (ke.get_action() != cgv::gui::KA_RELEASE);
+			update_member(&right_ctrl);
+			return true;
+		}
+		break;
+	case cgv::gui::KEY_Up:
+		if (current_kit_ctrl != -1) {
+			up_ctrl = (ke.get_action() != cgv::gui::KA_RELEASE);
+			update_member(&up_ctrl);
+			return true;
+		}
+		break;
+	case cgv::gui::KEY_Down:
+		if (current_kit_ctrl != -1) {
+			down_ctrl = (ke.get_action() != cgv::gui::KA_RELEASE);
+			update_member(&down_ctrl);
+			return true;
+		}
+		break;
 	}
 	return false;
 }
@@ -413,6 +426,7 @@ void vr_emulator::create_gui()
 	for (unsigned i = 0; i < kits.size(); ++i) {
 		if (begin_tree_node(kits[i]->get_name(), *kits[i], false, "level=3")) {
 			align("\a");
+			add_member_control(this, "fovy", kits[i]->fovy, "value_slider", "min=30;max=180;ticks=true;log=true");
 			add_gui("body_position", kits[i]->body_position, "", "options='min=-5;max=5;ticks=true'");
 			add_member_control(this, "body_direction", kits[i]->body_direction, "value_slider", "min=0;max=6.3;ticks=true");
 			add_member_control(this, "body_height", kits[i]->body_height, "value_slider", "min=1.2;max=2.0;ticks=true");

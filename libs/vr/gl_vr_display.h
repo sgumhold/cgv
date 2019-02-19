@@ -10,10 +10,12 @@ namespace vr {
 	/// information provided per vr device
 	class CGV_API gl_vr_display : public vr_kit
 	{
+	private:
+		int vp[4];
 	protected:
 		/// pixel dimensions of render targets
 		unsigned width, height, nr_multi_samples;
-
+		
 		/// ids of gl render objects
 		unsigned multi_depth_buffer_id[2];
 		unsigned multi_tex_id[2];
@@ -28,6 +30,8 @@ namespace vr {
 		~gl_vr_display();
 		/// initialize render targets and framebuffer objects in current opengl context
 		bool init_fbos();
+		/// initialize render targets and framebuffer objects in current opengl context
+		bool blit_fbo(int eye, int x, int y, int w, int h);
 		/// check whether fbos have been initialized
 		bool fbos_initialized() const;
 		/// destruct render targets and framebuffer objects in current opengl context
