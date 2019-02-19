@@ -368,20 +368,25 @@ bool vr_emulator::self_reflect(cgv::reflect::reflection_handler& srh)
 
 void vr_emulator::create_trackable_gui(const std::string& name, vr::vr_trackable_state& ts)
 {
-	add_decorator(name, "heading", "level=4");
+	add_decorator(name, "heading", "level=3");
 	add_member_control(this, "status", ts.status, "dropdown", "enums='detached,attached,tracked'");
-	add_view("x.x", ts.pose[0], "value", "w=50", " ");
-	add_view("x.y", ts.pose[1], "value", "w=50", " ");
-	add_view("x.z", ts.pose[2], "value", "w=50");
-	add_view("y.x", ts.pose[3], "value", "w=50", " ");
-	add_view("y.y", ts.pose[4], "value", "w=50", " ");
-	add_view("y.z", ts.pose[5], "value", "w=50");
-	add_view("z.x", ts.pose[6], "value", "w=50", " ");
-	add_view("z.y", ts.pose[7], "value", "w=50", " ");
-	add_view("z.z", ts.pose[8], "value", "w=50");
-	add_view("0.x", ts.pose[9], "value", "w=50", " ");
-	add_view("0.y", ts.pose[10], "value", "w=50", " ");
-	add_view("0.z", ts.pose[11], "value", "w=50");
+	if (begin_tree_node("pose", ts.pose[0], false, "level=3")) {
+		align("\a");
+		add_view("x.x", ts.pose[0], "value", "w=50", " ");
+		add_view("x.y", ts.pose[1], "value", "w=50", " ");
+		add_view("x.z", ts.pose[2], "value", "w=50");
+		add_view("y.x", ts.pose[3], "value", "w=50", " ");
+		add_view("y.y", ts.pose[4], "value", "w=50", " ");
+		add_view("y.z", ts.pose[5], "value", "w=50");
+		add_view("z.x", ts.pose[6], "value", "w=50", " ");
+		add_view("z.y", ts.pose[7], "value", "w=50", " ");
+		add_view("z.z", ts.pose[8], "value", "w=50");
+		add_view("0.x", ts.pose[9], "value", "w=50", " ");
+		add_view("0.y", ts.pose[10], "value", "w=50", " ");
+		add_view("0.z", ts.pose[11], "value", "w=50");
+		align("\b");
+		end_tree_node(ts.pose[0]);
+	}
 }
 
 void vr_emulator::create_controller_gui(int i, vr::vr_controller_state& cs)
@@ -389,7 +394,8 @@ void vr_emulator::create_controller_gui(int i, vr::vr_controller_state& cs)
 	create_trackable_gui(std::string("controller") + cgv::utils::to_string(i), cs);
 	/// a unique time stamp for fast test whether state changed
 	add_view("time_stamp", cs.time_stamp);
-	add_gui("button_flags", cs.button_flags, "bit_field_control", "enums='menu=1,button0=2,button1=4,button2=8,button3=16,touch=32,stick=64'");
+	add_gui("button_flags", cs.button_flags, "bit_field_control", 
+		"enums='menu=1,but0=2,but1=4,but2=8,but3=16,touch=32,stick=64';options='w=35';align='';gui_type='toggle'");
 	add_member_control(this, "touch.x", cs.axes[0], "value_slider", "min=-1;max=1;ticks=true");
 	add_member_control(this, "touch.y", cs.axes[1], "value_slider", "min=-1;max=1;ticks=true");
 	add_member_control(this, "trigger", cs.axes[2], "value_slider", "min=0;max=1;ticks=true");
@@ -407,24 +413,27 @@ void vr_emulator::create_gui()
 {
 	add_decorator("vr emulator", "heading", "level=2");
 	add_member_control(this, "installed", installed, "check");
-	add_decorator("create", "heading", "level=3");
-	add_member_control(this, "screen_width", screen_width, "value_slider", "min=320;max=1920;ticks=true");
-	add_member_control(this, "screen_height", screen_height, "value_slider", "min=240;max=1920;ticks=true");
-	add_member_control(this, "ffb_support", ffb_support, "toggle");
-	add_member_control(this, "wireless", wireless, "toggle");
-	add_gui("body_position", body_position, "", "options='min=-1;max=1'");
-	add_member_control(this, "body_direction", body_direction, "min=0;max=6.3;ticks=true");
-	add_member_control(this, "body_height", body_height, "min=1.2;max=2.0;ticks=true");
-	connect_copy(add_button("create new kit")->click, cgv::signal::rebind(this, &vr_emulator::add_new_kit));
-
-	add_member_control(this, "current_kit_ctrl", current_kit_ctrl, "value", "min=0");
-	add_member_control(this, "left", left_ctrl, "toggle", "w=50", " ");
-	add_member_control(this, "right", right_ctrl, "toggle", "w=50", " ");
-	add_member_control(this, "up", up_ctrl, "toggle", "w=50", " ");
-	add_member_control(this, "down", down_ctrl, "toggle", "w=50");
+	if (begin_tree_node("create kit", screen_width, false, "level=2")) {
+		align("\a");
+		add_member_control(this, "screen_width", screen_width, "value_slider", "min=320;max=1920;ticks=true");
+		add_member_control(this, "screen_height", screen_height, "value_slider", "min=240;max=1920;ticks=true");
+		add_member_control(this, "ffb_support", ffb_support, "toggle", "w=90", " ");
+		add_member_control(this, "wireless", wireless, "toggle", "w=90");
+		add_gui("body_position", body_position, "", "options='min=-1;max=1'");
+		add_member_control(this, "body_direction", body_direction, "min=0;max=6.3;ticks=true");
+		add_member_control(this, "body_height", body_height, "min=1.2;max=2.0;ticks=true");
+		connect_copy(add_button("create new kit")->click, cgv::signal::rebind(this, &vr_emulator::add_new_kit));
+		align("\b");
+		end_tree_node(screen_width);
+	}
+	add_view("current_kit_ctrl", current_kit_ctrl, "", "w=50", " ");
+	add_member_control(this, "left", left_ctrl, "toggle", "w=35", " ");
+	add_member_control(this, "right", right_ctrl, "toggle", "w=35", " ");
+	add_member_control(this, "up", up_ctrl, "toggle", "w=35", " ");
+	add_member_control(this, "down", down_ctrl, "toggle", "w=35");
 
 	for (unsigned i = 0; i < kits.size(); ++i) {
-		if (begin_tree_node(kits[i]->get_name(), *kits[i], false, "level=3")) {
+		if (begin_tree_node(kits[i]->get_name(), *kits[i], false, "level=2")) {
 			align("\a");
 			add_member_control(this, "fovy", kits[i]->fovy, "value_slider", "min=30;max=180;ticks=true;log=true");
 			add_gui("body_position", kits[i]->body_position, "", "options='min=-5;max=5;ticks=true'");

@@ -1,7 +1,6 @@
 #include "vr_view_interactor.h"
 #include <cgv/render/attribute_array_binding.h>
 #include <cgv/render/shader_program.h>
-#include <cg_vr/vr_server.h>
 #include <cgv/gui/trigger.h>
 #include <cgv/signal/rebind.h>
 #include <cgv/math/ftransform.h>
@@ -19,8 +18,7 @@ vr_view_interactor::vr_view_interactor(const char* name) : stereo_view_interacto
 	separate_view = true;
 	blit_vr_views = true;
 	blit_width = 160;
-	blit_height = 120;
-
+	event_flags = cgv::gui::VREventTypeFlags(cgv::gui::VRE_STATUS + cgv::gui::VRE_KEY + cgv::gui::VRE_POSE);
 	rendered_kit_ptr = 0;
 	rendered_eye = 0;
 	rendered_kit_index = -1;
@@ -39,7 +37,25 @@ vr_view_interactor::vr_view_interactor(const char* name) : stereo_view_interacto
 
 	cgv::signal::connect(cgv::gui::ref_vr_server().on_device_change, this, &vr_view_interactor::on_device_change);
 	cgv::signal::connect(cgv::gui::ref_vr_server().on_status_change, this, &vr_view_interactor::on_status_change);
-	cgv::gui::connect_vr_server();
+}
+
+/// return a pointer to the state of the current vr kit
+const vr::vr_kit_state* vr_view_interactor::get_current_vr_state() const
+{
+	if (current_vr_handle_index >= 0 && current_vr_handle_index < int(kit_states.size()))
+		return &kit_states[current_vr_handle_index];
+	return 0;
+}
+/// query the currently set event type flags
+cgv::gui::VREventTypeFlags vr_view_interactor::get_event_type_flags() const
+{
+	return event_flags;
+}
+/// set the event type flags of to be emitted events
+void vr_view_interactor::set_event_type_flags(cgv::gui::VREventTypeFlags flags)
+{
+	event_flags = flags;
+	on_set(&event_flags);
 }
 
 ///
@@ -135,6 +151,7 @@ void vr_view_interactor::after_finish(cgv::render::context& ctx)
 				if (!kit_ptr)
 					continue;
 				int x0 = 0;
+				int blit_height = blit_width * kit_ptr->get_height() / kit_ptr->get_width();
 				for (int eye = 0; eye < 2; ++eye) {
 					kit_ptr->blit_fbo(eye, x0, y0, blit_width, blit_height);
 					x0 += blit_width+5;
@@ -248,8 +265,10 @@ void vr_view_interactor::init_frame(cgv::render::context& ctx)
 			vr::vr_kit* current_kit_ptr = 0;
 			if (current_vr_handle_index >= 0) {
 				current_kit_ptr = vr::get_vr_kit(current_vr_handle);
-				if (current_kit_ptr)
-					current_kit_ptr->query_state(kit_states[current_vr_handle_index-1], 2);
+				if (current_kit_ptr) {
+					current_kit_ptr->query_state(kit_states[current_vr_handle_index - 1], 2);
+					cgv::gui::ref_vr_server().check_new_state(current_vr_handle, kit_states[current_vr_handle_index - 1], cgv::gui::trigger::get_current_time(), event_flags);
+				}
 			}
 			for (unsigned i = 0; i < kits.size(); ++i) {
 				vr::vr_kit* kit_ptr = vr::get_vr_kit(kits[i]);
@@ -258,8 +277,9 @@ void vr_view_interactor::init_frame(cgv::render::context& ctx)
 				if (kit_ptr == current_kit_ptr)
 					continue;
 				kit_ptr->query_state(kit_states[i], 1);
+				cgv::gui::ref_vr_server().check_new_state(current_vr_handle, kit_states[i], cgv::gui::trigger::get_current_time(), event_flags);
 			}
-			for (rendered_kit_index=0; rendered_kit_index<kits.size(); ++rendered_kit_index) {
+			for (rendered_kit_index=0; rendered_kit_index<int(kits.size()); ++rendered_kit_index) {
 				rendered_kit_ptr = vr::get_vr_kit(kits[rendered_kit_index]);
 				if (!rendered_kit_ptr)
 					continue;
@@ -279,7 +299,7 @@ void vr_view_interactor::init_frame(cgv::render::context& ctx)
 		ctx.set_modelview_matrix(inv(hmat_from_pose(kit_states[rendered_kit_index].hmd.pose)*hmat_from_pose(eye_to_head)));
 
 		mat4 P;
-		rendered_kit_ptr->put_projection_matrix(rendered_eye, z_near_derived, z_far_derived, &P(0, 0));
+		rendered_kit_ptr->put_projection_matrix(rendered_eye, float(z_near_derived), float(z_far_derived), &P(0, 0));
 		compute_clipping_planes(z_near_derived, z_far_derived, clip_relative_to_extent);
 		ctx.set_projection_matrix(P);
 	}
@@ -402,36 +422,38 @@ void vr_view_interactor::draw(cgv::render::context& ctx)
 /// you must overload this for gui creation
 void vr_view_interactor::create_gui()
 {
-	add_member_control(this, "separate_view", separate_view, "check");
-	add_member_control(this, "blit_vr_views", blit_vr_views, "check");
-	add_member_control(this, "blit_width", blit_width, "value_slider", "min=120;max=640;ticks=true;log=true");
-	add_member_control(this, "blit_height", blit_height, "value_slider", "min=120;max=640;ticks=true;log=true");
-	
-	add_member_control(this, "debug_vr_events", debug_vr_events, "check");
-	add_member_control(this, "show_vr_kits", show_vr_kits, "check");
-	add_member_control(this, "show_action_zone", show_action_zone, "check");
 	add_member_control(this, "current vr kit", (cgv::type::DummyEnum&)current_vr_handle_index, "dropdown", kit_enum_definition);
-	if (begin_tree_node("render styles", show_vr_kits)) {
+	if (begin_tree_node("VR rendering", separate_view, false, "level=2")) {
 		align("\a");
-		add_member_control(this, "fence_color1", fence_color1);
-		add_member_control(this, "fence_color2", fence_color2);
-		add_member_control(this, "fence_line_width", fence_line_width, "value_slider", "min=1;max=20;ticks=true;log=true");
-		add_member_control(this, "fence_frequency", fence_frequency, "value_slider", "min=0.1;max=10;ticks=true;log=true");
-
-		if (begin_tree_node("box styles", brs)) {
+		//	add_member_control(this, "separate_view", separate_view, "check");
+		add_member_control(this, "blit_vr_views", blit_vr_views, "check");
+		add_member_control(this, "blit_width", blit_width, "value_slider", "min=120;max=640;ticks=true;log=true");
+		add_member_control(this, "show_action_zone", show_action_zone, "check");
+		if (begin_tree_node("fence styles", fence_color1, false, "level=3")) {
 			align("\a");
-			add_gui("box style", brs);
+			add_member_control(this, "fence_color1", fence_color1);
+			add_member_control(this, "fence_color2", fence_color2);
+			add_member_control(this, "fence_line_width", fence_line_width, "value_slider", "min=1;max=20;ticks=true;log=true");
+			add_member_control(this, "fence_frequency", fence_frequency, "value_slider", "min=0.1;max=10;ticks=true;log=true");
 			align("\b");
-			end_tree_node(brs);
+			end_tree_node(fence_color1);
 		}
-		if (begin_tree_node("sphere styles", srs)) {
+		add_member_control(this, "show_vr_kits", show_vr_kits, "check");
+		if (begin_tree_node("sphere styles", srs, false, "level=3")) {
 			align("\a");
 			add_gui("sphere style", srs);
 			align("\b");
 			end_tree_node(srs);
 		}
 		align("\b");
-		end_tree_node(show_vr_kits);
+		end_tree_node(separate_view);
+	}
+	if (begin_tree_node("VR events", event_flags, false, "level=2")) {
+		align("\a");
+		add_member_control(this, "debug_vr_events", debug_vr_events, "check");
+		add_gui("event_flags", event_flags, "bit_field_control", "enums='device=1,status=2,key=4,mouse=8,pose=16';gui_type='toggle';options='w=40';align=''");
+		align("\n\b");
+		end_tree_node(event_flags);
 	}
 	stereo_view_interactor::create_gui();
 }

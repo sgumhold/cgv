@@ -3,9 +3,10 @@
 #include <cgv/base/base.h>
 #include <vr/vr_event.h>
 #include <vr/vr_kit.h>
+#include <cg_vr/vr_server.h>
 #include <cgv_gl/box_renderer.h>
 #include <cgv_gl/sphere_renderer.h>
-#include <stereo_view_interactor.h>
+#include <plugins/crg_stereo_view/stereo_view_interactor.h>
 
 #include "lib_begin.h"
 
@@ -18,11 +19,12 @@ protected:
 	/// whether to blit in the views of the vr kits
 	bool blit_vr_views;
 	// extent of blitting
-	int blit_width, blit_height;
+	int blit_width;
 
 	int rendered_eye;
 	vr::vr_kit* rendered_kit_ptr;
 	int rendered_kit_index;
+	cgv::gui::VREventTypeFlags event_flags;
 	static dmat4 hmat_from_pose(float pose_matrix[12]);
 
 	// debugging of vr events on console
@@ -56,17 +58,24 @@ protected:
 
 	//
 	void configure_kits();
+	///
+	void on_status_change(void* device_handle, int controller_index, vr::VRStatus old_status, vr::VRStatus new_status);
+	///
+	void on_device_change(void* device_handle, bool attach);
 public:
 	///
 	vr_view_interactor(const char* name);
 	/// return the type name 
 	std::string get_type_name() const;
+
+	/// query the currently set event type flags
+	cgv::gui::VREventTypeFlags get_event_type_flags() const;
+	/// set the event type flags of to be emitted events
+	void set_event_type_flags(cgv::gui::VREventTypeFlags flags);
+	/// return a pointer to the state of the current vr kit
+	const vr::vr_kit_state* get_current_vr_state() const;
 	/// 
 	void on_set(void* member_ptr);
-	///
-	void on_status_change(void* device_handle, int controller_index, vr::VRStatus old_status, vr::VRStatus new_status);
-	///
-	void on_device_change(void* device_handle, bool attach);
 	/// overload to show the content of this object
 	void stream_stats(std::ostream&);
 	///
