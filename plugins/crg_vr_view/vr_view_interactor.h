@@ -2,6 +2,7 @@
 
 #include <cgv/base/base.h>
 #include <vr/vr_event.h>
+#include <vr/vr_kit.h>
 #include <cgv_gl/box_renderer.h>
 #include <cgv_gl/sphere_renderer.h>
 #include <stereo_view_interactor.h>
@@ -12,16 +13,33 @@ class CGV_API vr_view_interactor :
 	public stereo_view_interactor	
 {
 protected:
+	/// whether the window shows a separate view onto the scene or the one of the current vr kit
+	bool separate_view;
+	/// whether to blit in the views of the vr kits
+	bool blit_vr_views;
+	// extent of blitting
+	int blit_width, blit_height;
+
+	int rendered_eye;
+	vr::vr_kit* rendered_kit_ptr;
+
+	static dmat4 hmat_from_pose(float pose_matrix[12]);
+
+	// debugging of vr events on console
 	bool debug_vr_events;
 
+	// visualization of kits and action zone
 	bool show_vr_kits;
 	bool show_action_zone;
-	void* current_vr_handle;
-	int current_vr_handle_index;
 	rgb fence_color1, fence_color2;
 	float fence_frequency;
 	float fence_line_width;
+	
+	// current vr kit handle is selected by an integer cast into an enum whos names correspond to the vr kit names
+	void* current_vr_handle;
+	int current_vr_handle_index;
 	std::string kit_enum_definition;
+
 	// list of to be initialized vr kits
 	std::vector<void*> new_kits;
 	// list of vr kits
@@ -29,10 +47,14 @@ protected:
 	// list of to be destructed vr kits
 	std::vector<void*> old_kits;
 
+	// render objects
 	cgv::render::box_renderer br;
 	cgv::render::surface_render_style brs;
 	cgv::render::sphere_renderer sr;
 	cgv::render::sphere_render_style srs;
+
+	//
+	void configure_kits();
 public:
 	///
 	vr_view_interactor(const char* name);
@@ -58,6 +80,8 @@ public:
 	void draw(cgv::render::context&);
 	/// this method is called in one pass over all drawables after drawing
 	void finish_frame(cgv::render::context&);
+	/// this method is called in one pass over all drawables after finish frame
+	void after_finish(cgv::render::context& ctx);
 	///
 	bool self_reflect(cgv::reflect::reflection_handler& srh);
 	/// you must overload this for gui creation

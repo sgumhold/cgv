@@ -58,6 +58,8 @@ namespace vr {
 		virtual bool set_vibration(unsigned controller_index, float low_frequency_strength, float high_frequency_strength) = 0;
 		/// initialize render targets and framebuffer objects in current opengl context
 		virtual bool init_fbos() = 0;
+		/// initialize render targets and framebuffer objects in current opengl context
+		virtual bool blit_fbo(int eye, int x, int y, int w, int h) = 0;
 		/// check whether fbos have been initialized
 		virtual bool fbos_initialized() const = 0;
 		/// destruct render targets and framebuffer objects in current opengl context

@@ -1314,13 +1314,6 @@ void stereo_view_interactor::init_frame(context& ctx)
 			last_do_viewport_splitting = do_viewport_splitting;
 			last_nr_viewport_columns = nr_viewport_columns;
 			last_nr_viewport_rows = nr_viewport_rows;
-			/*
-			if (do_viewport_splitting) {
-				std::cout << "slit vp in " << nr_viewport_columns << "x" << nr_viewport_rows << std::endl;
-			}
-			else
-				std::cout << "no viewport splitting " << std::endl;
-				*/
 		}
 		else {
 			glsuConfigureStereo(GLSU_LEFT,stereo_mode,anaglyph_config);
@@ -1345,11 +1338,6 @@ void stereo_view_interactor::init_frame(context& ctx)
 	if (rpf & RPF_SET_PROJECTION)
 		gl_set_projection_matrix(ctx, current_e, aspect);
 	
-	glMatrixMode(GL_MODELVIEW);
-	if (rpf & RPF_SET_MODELVIEW) {
-		// switch back to the modelview transformation stack
-		glLoadIdentity();
-	}
 	if (rpf & RPF_SET_MODELVIEW) {
 		gl_set_modelview_matrix(ctx, current_e, aspect, *this);
 

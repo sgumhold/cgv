@@ -106,12 +106,25 @@ void gl_vr_display::enable_fbo(int eye)
 	glEnable(GL_MULTISAMPLE);
 	// Left Eye
 	glBindFramebuffer(GL_FRAMEBUFFER, multi_fbo_id[eye]);
+	glGetIntegerv(GL_VIEWPORT, vp);
 	glViewport(0, 0, width, height);
+}
+
+/// initialize render targets and framebuffer objects in current opengl context
+bool gl_vr_display::blit_fbo(int eye, int x, int y, int w, int h)
+{
+	glBindFramebuffer(GL_READ_FRAMEBUFFER, fbo_id[eye]);
+	glBlitFramebuffer(0, 0, width, height, x, y, x+w, y+h,
+		GL_COLOR_BUFFER_BIT, GL_NEAREST);
+	glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
+	return true;
 }
 
 /// disable the framebuffer object of given eye
 void gl_vr_display::disable_fbo(int eye)
 {
+	glViewport(vp[0], vp[1], vp[2], vp[3]);
+
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	glDisable(GL_MULTISAMPLE);
 	glBindFramebuffer(GL_READ_FRAMEBUFFER, multi_fbo_id[eye]);

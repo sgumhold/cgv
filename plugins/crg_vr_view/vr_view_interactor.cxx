@@ -4,6 +4,8 @@
 #include <cg_vr/vr_server.h>
 #include <cgv/gui/trigger.h>
 #include <cgv/signal/rebind.h>
+#include <cgv/math/ftransform.h>
+#include <cgv/math/inv.h>
 #include <iostream>
 #include <sstream>
 #include <vr/vr_kit.h>
@@ -14,6 +16,13 @@ vr_view_interactor::vr_view_interactor(const char* name) : stereo_view_interacto
 	fence_color1(0,0,1), fence_color2(1,1,0)
 {
 	debug_vr_events = false;
+	separate_view = true;
+	blit_vr_views = true;
+	blit_width = 160;
+	blit_height = 120;
+
+	rendered_kit_ptr = 0;
+	rendered_eye = 0;
 
 	fence_frequency = 5;
 	fence_line_width = 3;
@@ -25,6 +34,7 @@ vr_view_interactor::vr_view_interactor(const char* name) : stereo_view_interacto
 
 	brs.map_color_to_material = cgv::render::MS_FRONT_AND_BACK;
 	srs.map_color_to_material = cgv::render::MS_FRONT_AND_BACK;
+	srs.blend_width_in_pixel = 0;
 
 	cgv::signal::connect(cgv::gui::ref_vr_server().on_device_change, this, &vr_view_interactor::on_device_change);
 	cgv::signal::connect(cgv::gui::ref_vr_server().on_status_change, this, &vr_view_interactor::on_status_change);
@@ -69,6 +79,7 @@ void vr_view_interactor::on_set(void* member_ptr)
 			if (current_vr_handle_index - 1 < int(kits.size()))
 				current_vr_handle = kits[current_vr_handle_index - 1];
 	}
+	stereo_view_interactor::on_set(member_ptr);
 }
 
 /// overload to stream help information to the given output stream
@@ -111,9 +122,29 @@ void vr_view_interactor::finish_frame(cgv::render::context& ctx)
 	stereo_view_interactor::finish_frame(ctx);
 }
 
+void vr_view_interactor::after_finish(cgv::render::context& ctx)
+{
+	stereo_view_interactor::after_finish(ctx);
+	if (ctx.get_render_pass() == cgv::render::RP_MAIN) {
+		// blit vr kit views in main framebuffer
+		if (kits.size() > 0 && blit_vr_views) {
+			int y0 = 0;
+			for (auto handle : kits) {
+				vr::vr_kit* kit_ptr = vr::get_vr_kit(handle);
+				if (!kit_ptr)
+					continue;
+				int x0 = 0;
+				for (int eye = 0; eye < 2; ++eye) {
+					kit_ptr->blit_fbo(eye, x0, y0, blit_width, blit_height);
+					x0 += blit_width+5;
+				}
+				y0 += blit_height + 5;
+			}
+		}
+	}
+}
 
-/// this method is called in one pass over all drawables before the draw method
-void vr_view_interactor::init_frame(cgv::render::context& ctx)
+void vr_view_interactor::configure_kits()
 {
 	bool update_kits = false;
 	void* last_current_vr_handle = current_vr_handle;
@@ -146,7 +177,7 @@ void vr_view_interactor::init_frame(cgv::render::context& ctx)
 			if (!kit_ptr->fbos_initialized())
 				if (kit_ptr->init_fbos()) {
 					std::cout << "initialized fbos of " << kit_ptr->get_name() << std::endl;
-					if (current_vr_handle == 0) 
+					if (current_vr_handle == 0)
 						current_vr_handle = new_kits.back();
 				}
 			kits.push_back(new_kits.back());
@@ -187,7 +218,55 @@ void vr_view_interactor::init_frame(cgv::render::context& ctx)
 		}
 		update_member(&current_vr_handle_index);
 	}
-	stereo_view_interactor::init_frame(ctx);
+}
+
+vr_view_interactor::dmat4 vr_view_interactor::hmat_from_pose(float pose_matrix[12])
+{
+	dmat4 M;
+	M.set_col(0, dvec4(reinterpret_cast<vec3&>(pose_matrix[0]), 0));
+	M.set_col(1, dvec4(reinterpret_cast<vec3&>(pose_matrix[3]), 0));
+	M.set_col(2, dvec4(reinterpret_cast<vec3&>(pose_matrix[6]), 0));
+	M.set_col(3, dvec4(reinterpret_cast<vec3&>(pose_matrix[9]), 1));
+	return M;
+}
+
+/// this method is called in one pass over all drawables before the draw method
+void vr_view_interactor::init_frame(cgv::render::context& ctx)
+{
+	cgv::render::RenderPassFlags rpf = ctx.get_render_pass_flags();
+	if (ctx.get_render_pass() == cgv::render::RP_MAIN) {
+
+		configure_kits();
+
+		// perform rendering from the vr kits
+		if (kits.size() > 0) {
+			for (auto handle : kits) {
+				rendered_kit_ptr = vr::get_vr_kit(handle);
+				if (!rendered_kit_ptr)
+					continue;
+				for (rendered_eye = 0; rendered_eye < 2; ++rendered_eye) {
+					rendered_kit_ptr->enable_fbo(rendered_eye);
+					ctx.render_pass(cgv::render::RP_USER_DEFINED, cgv::render::RenderPassFlags(rpf&~cgv::render::RPF_HANDLE_SCREEN_SHOT));
+					rendered_kit_ptr->disable_fbo(rendered_eye);
+				}
+			}
+			rendered_kit_ptr = 0;
+		}
+	}
+	if (ctx.get_render_pass() == cgv::render::RP_USER_DEFINED) {
+		vr::vr_kit_state state;
+		rendered_kit_ptr->query_state(state, 1);
+		float eye_to_head[12];
+		rendered_kit_ptr->put_eye_to_head_matrix(rendered_eye, eye_to_head);
+		ctx.set_modelview_matrix(inv(hmat_from_pose(state.hmd.pose)*hmat_from_pose(eye_to_head)));
+
+		mat4 P;
+		rendered_kit_ptr->put_projection_matrix(rendered_eye, z_near_derived, z_far_derived, &P(0, 0));
+		compute_clipping_planes(z_near_derived, z_far_derived, clip_relative_to_extent);
+		ctx.set_projection_matrix(P);
+	}
+	else
+		stereo_view_interactor::init_frame(ctx);
 }
 
 /// 
@@ -222,11 +301,14 @@ void vr_view_interactor::draw(cgv::render::context& ctx)
 			reinterpret_cast<vec3&>(s_l) = R_w_h * p_h_l + p_w_h;
 			reinterpret_cast<vec3&>(s_r) = R_w_h * p_h_r + p_w_h;
 
-			spheres.push_back(s_l);
-			sphere_colors.push_back(rgb(1, 0, 0));
-			spheres.push_back(s_r);
-			sphere_colors.push_back(rgb(0, 0, 1));
-
+			if (kit_ptr != rendered_kit_ptr || rendered_eye != 0) {
+				spheres.push_back(s_l);
+				sphere_colors.push_back(rgb(1, 0, 0));
+			}
+			if (kit_ptr != rendered_kit_ptr || rendered_eye != 1) {
+				spheres.push_back(s_r);
+				sphere_colors.push_back(rgb(0, 0, 1));
+			}
 			for (unsigned i = 0; i < 2; ++i) {
 				const mat3& R_ci = reinterpret_cast<const mat3&>(state.controller[i].pose[0]);
 				const vec3& p_ci = reinterpret_cast<const vec3&>(state.controller[i].pose[9]);
@@ -302,6 +384,11 @@ void vr_view_interactor::draw(cgv::render::context& ctx)
 /// you must overload this for gui creation
 void vr_view_interactor::create_gui()
 {
+	add_member_control(this, "separate_view", separate_view, "check");
+	add_member_control(this, "blit_vr_views", blit_vr_views, "check");
+	add_member_control(this, "blit_width", blit_width, "value_slider", "min=120;max=640;ticks=true;log=true");
+	add_member_control(this, "blit_height", blit_height, "value_slider", "min=120;max=640;ticks=true;log=true");
+	
 	add_member_control(this, "debug_vr_events", debug_vr_events, "check");
 	add_member_control(this, "show_vr_kits", show_vr_kits, "check");
 	add_member_control(this, "show_action_zone", show_action_zone, "check");

@@ -24,6 +24,7 @@ protected:
 	float body_height;
 	float hip_parameter;
 	float gear_parameter;
+	float fovy;
 	vec3 body_position;
 	vec3 hand_position[2];
 
