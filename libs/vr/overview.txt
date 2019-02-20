@@ -1,29 +1,98 @@
 VR support
 
 cgv/libs/vr
-	vr_event.h              // defines types to store the state of a vr kit
-		vr::vr_trackable_state    // status[detached|attached|tracked]; pose:float[12]
-		  vr::vr_controller_state // time_stamp; button_flags; axes[8]; vibration[2]
-		vr::vr_kit_state          // hmd + controllers[2] (0=left, 1=right)
+  basic interface to implement vr apps that is independent of cgv framework and specific
+  vr api. It builds on the concept of a driver that provides instances of vr kits. There
+  can be several drivers in use at the same time. A simple registry is used to manage 
+  drivers and vr kits. The vr_kit class provides access to the display and the controllers
+  with a simple state polling api.
 
-	vr_kit.h                // defines vr_kit class
-		vr::vr_kit                // query_state, init_fbos, enable_fbos, submit_frame
+#include <vr/vr_event.h>
+  defines types to store the state of a vr kit which is split into sub states for
+  the hmd and the two controllers
 
-	vr_driver.h             // defines vr_driver class and provides registry for drivers and kits
-		vr::vr_driver             // installed, get_driver_name, scan_vr_kits, x|up_dir, action zone
-        vr::scan_vr_kits()        // scan vr kits with all drivers
-		vr::get_vr_kit(void*)     // resolve vr_kit pointer from handle
+  class vr::vr_trackable_state    
+    provides status as vr::VRStatus and pose:float[12] of a trackable sub device
+	where the pose is stored in a 3x4 column major format
 
-	gl_vr_display.h			// defines gl_vr_display class that implements offscreen rendering
-		vr::gl_vr_display		  // opengl implementation of init_fbos, enable_fbos, ...
+  class vr::vr_controller_state
+    extends the trackable state by a time_stamp, button_flags, axes[8], and vibration[2]
+	There are 7 buttons as listed in vr::VRButtonStateFlags, where vr::VRF_STICK_TOUCH 
+	corresponds to touching of the stick/touch pad and vr::VRF_STICK to pressing it. The
+	controller provides up to 8 axes, where the first two correspond to the stick/touch pad
+	position and the third (axe[2]) to the trigger.
+
+  class vr::vr_kit_state
+    simply combines state information on the hmd:vr::vr_trackable_state and the two controllers
+	controllers[2]:vr::vr_controller_state. The controllers are always enumerated such that
+	controller index 0 is the left and 1 the right controller.
+
+#include <vr/vr_driver.h>
+  defines the vr_driver class and gives access to the driver and vr kit registries
+
+  class vr::vr_driver
+    a vr driver has a name [get_driver_name()] and can be installed or not [installed()].
+	It allows to scan for vr kits [scan_vr_kits()] and returns a vector of device handles.
+	The 
+	get_driver_name, scan_vr_kits, x|up_dir, action zone
+
+  std::vector<void*> vr::scan_vr_kits()
+    scan vr kits with all registered drivers and return vector of device handles
+
+  vr::vr_kit* vr::get_vr_kit(void*)
+    query the pointer to the vr kit correspoinding to a vr kit handle. If the vr kit
+	has been detached before, the function can return a nullptr.
+
+#include <vr/vr_kit.h>
+  defines the class vr_kit that is used to access a vr kit and created by vr_drivers
+
+  class vr::vr_kit
+    each vr_kit is uniquely specified by a device handle that is represented as void* and 
+	can be access via get_device_handle(). Furthermore, each kit has a name [get_name()].
+	The corresponding driver is access through get_driver(). In case of an error, the error
+	message can be accessed via get_last_error(). 
+	
+	query_state(state, 0..2) gives access to the state of the kit and comes in three variants:
+	0 ... query controller state only
+	1 ... query most recent controller state and poses of hmd and controller
+	2 ... wait for the optimal time to start a rendering process and query state and future poses 
+	
+	TODO: support for vibration based force feedback
+	
+	rendering to the hmd is done in current opengl context via init_fbos(), enable_fbo(eye),
+	disable_fbo(eye) and submit_frame() [after rendering both eyes]. The crg_vr_view plugin
+	uses these functions and completely handles the rendering process. If you want to use
+	the functions yourself, you need to ensure to make the opengl context current.
+	In order to debug the vr views, the function blit_fbo(eye,x,y,w,h) allows to blit a vr view
+	into the framebuffer currently bound to the draw framebuffer.
+	
+	In order to build the modelview and projection matrix for rendering, the functions
+	put_eye_to_head_matrix(eye,float[12]) provides a 3x4 pose matrix for each eye. 
+	Multiplying to the hmd pose matrix and inverting the matrix product yields the modelview
+	matrix. The projection matrix can be accessed per eye via 
+	put_projection_matrix(eye,z_near,z_far,float[16]).
+
+	best The core to access the and can access  the // query_state, init_fbos, enable_fbos, submit_frame
+
+#include <vr/gl_vr_display.h>
+  the gl_vr_display class implements offscreen rendering and is used by the openvr driver
+  as well as by the vr_emulated_kit of the vr_emulator
+
+ class vr::gl_vr_display
+   implements the init_fbos, enable_fbos, disable_fbos, destruct_fbos functions with opengl and glew
+
 
 cgv/plugins/openvr_driver
-	openvr.h				// original header with openvr api
-	openvr_kit.h			// vr_kit implementation for openvr
-	openvr_driver.cxx		// openvr driver implementation
+  implements the vr interface for the openvr api. The api header, libs and windows dlls are
+  included. The dlls are provided in the path cgv/bin/win32 and cgv/bin/win64. The platform
+  specific path is added when executing the script cgv/define_system_variables.bat.
+  The only thing that needs to be done is to add the openvr_driver plugin as dependent project
+  in the .pj-file.
 
 cgv/plugins/vr_emulator
-	vr_emulator.h			// vr kit and driver emulator with multi kit support and own gui
+  implements the vr interface for emulated vr kits and supports multiple kits at the same time
+
+#include <vr_emulator.h>
 
 cgv/plugins/crg_vr_view
 
@@ -34,4 +103,3 @@ cgv/plugins/cg_vr
 		cgv::gui::vr_server
 
 cgv/plugins/vr_test
-
