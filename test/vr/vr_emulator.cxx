@@ -107,6 +107,18 @@ vr_emulated_kit::vr_emulated_kit(float _body_direction, const vec3& _body_positi
 	compute_state_poses();
 }
 
+const std::vector<std::pair<int, int> >& vr_emulated_kit::get_controller_throttles_and_sticks(int controller_index) const
+{
+	static std::vector<std::pair<int, int> > throttles_and_sticks;
+	if (throttles_and_sticks.empty()) {
+		// add stick
+		throttles_and_sticks.push_back(std::pair<int, int>(0, 1));
+		// add trigger throttle
+		throttles_and_sticks.push_back(std::pair<int, int>(2, -1));
+	}
+	return throttles_and_sticks;
+}
+
 void vr_emulated_kit::set_pose_matrix(const mat4& H, float* pose)
 {
 	pose[0]  = H(0, 0);

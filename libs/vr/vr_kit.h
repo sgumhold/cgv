@@ -44,6 +44,11 @@ namespace vr {
 		bool has_force_feedback() const;
 		/// declare virtual destructor
 		virtual ~vr_kit();
+		//! provide information per controller throttles and sticks and their axes
+		/*! each entry of the returned vector is either
+		    - a throttle if second pair entry is -1 mapped to axis with index in first pair entry
+			- or a stick with the two pair entries being indices of x and y axes */
+		virtual const std::vector<std::pair<int, int> >& get_controller_throttles_and_sticks(int controller_index) const = 0;
 		//! query current state of vr kit and return whether this was successful
 		/*! if pose_query is 
 			0 ... no poses are queried
