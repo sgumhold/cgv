@@ -12,8 +12,8 @@ addProjectDirs=[
 	CGV_DIR."/plugins/crg_stereo_view"
 ];
 addIncDirs=[
-	CGV_DIR."/libs", CGV_DIR."/plugins/crg_stereo_view", 
-	[ CGV_DIR."/libs/glsu", "all" ], 
+	CGV_DIR."/libs", 
+	[INPUT_DIR, "all"],  
 	[ CGV_DIR."/libs/vr_kit", "all" ]
 ];
 addSharedDefines=["CGV_VR_VIEW_EXPORTS"];

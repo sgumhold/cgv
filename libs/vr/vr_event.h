@@ -104,6 +104,8 @@ namespace vr {
 		bool operator == (const vr_controller_state& state) const;
 		/// standard constructor for initialization of members
 		vr_controller_state();
+		/// place the 3d ray origin and the 3d ray direction into the given arrays
+		void put_ray(float* ray_origin, float* ray_direction) const;
 	};
 	/// structure that stores all information describing the state of the VR kit
 	struct CGV_API vr_kit_state

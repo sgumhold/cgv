@@ -1,76 +1,60 @@
 #include <cgv/base/node.h>
 #include <cgv/signal/rebind.h>
 #include <cgv/base/register.h>
+#include <cgv/gui/event_handler.h>
 #include <cgv/gui/provider.h>
-#include <cgv/gui/trigger.h>
-#include <cgv/gui/file_dialog.h>
-#include <cgv/utils/file.h>
-#include <cgv/utils/scan.h>
-#include <cgv/utils/tokenizer.h>
 #include <cgv/render/drawable.h>
+#include <cgv/render/shader_program.h>
+#include <cgv/render/attribute_array_binding.h>
 #include <cgv_gl/box_renderer.h>
-#include <cgv_gl/gl/gl.h>
-#include <string>
-#include <fstream>
-#include <cgv/utils/stopwatch.h>
-#include <cg_vr/vr_server.h>
-#include <plugins/crg_vr_view/vr_view_interactor.h>
 
+// these are the vr specific headers
+#include <cg_vr/vr_server.h>
+#include <vr_view_interactor.h>
+
+/// the plugin class vr_test inherits like other plugins from node, drawable and provider
 class vr_test : 
 	public cgv::base::node,
 	public cgv::render::drawable,
+	public cgv::gui::event_handler,
 	public cgv::gui::provider
 {
-private:
-	cgv::render::box_renderer renderer;
 protected:
+	// store the scene as colored boxes
 	std::vector<box3> boxes;
 	std::vector<rgb> box_colors;
-
+	
+	// rendering style and renderer
 	cgv::render::surface_render_style style;
+	cgv::render::box_renderer renderer;
 
-	void build_scene(
-		float w, float d, float h, float W,
-		float tw, float td, float th, float tW)
+	// length of to be rendered rays
+	float ray_length;
+
+	// keep reference to vr_view_interactor
+	vr_view_interactor* vr_view_ptr;
+	
+	/// construct boxes that represent a table of dimensions tw,td,th and leg width tW
+	void construct_table(float tw, float td, float th, float tW);
+	/// construct boxes that represent a room of dimensions w,d,h and wall width W
+	void construct_room(float w, float d, float h, float W, bool walls, bool ceiling);
+	/// construct boxes for environment
+	void construct_environment(float s, float ew, float ed, float eh, float w, float d, float h);
+	/// construct a scene with a table
+	void build_scene(float w, float d, float h, float W,
+					 float tw, float td, float th, float tW)
 	{
-		// construct floor
-		boxes.push_back(box3(vec3(-0.5f*w, -W, -0.5f*d), vec3(0.5f*w, 0, 0.5f*d)));
-		box_colors.push_back(rgb(0.5f, 0.5f, 0.5f));
-
-		/*
-		// construct walls
-		boxes.push_back(box3(vec3(-0.5f*w, -W, -0.5f*d - W), vec3(0.5f*w, h, -0.5f*d)));
-		box_colors.push_back(rgb(0.8f, 0.5f, 0.5f));
-		boxes.push_back(box3(vec3(-0.5f*w, -W, 0.5f*d), vec3(0.5f*w, h, 0.5f*d + W)));
-		box_colors.push_back(rgb(0.8f, 0.5f, 0.5f));
-
-		boxes.push_back(box3(vec3(0.5f*w, -W, -0.5f*d - W), vec3(0.5f*w+W, h, 0.5f*d+W)));
-		box_colors.push_back(rgb(0.5f, 0.8f, 0.5f));
-
-		// construct ceiling
-		boxes.push_back(box3(vec3(-0.5f*w-W, h, -0.5f*d-W), vec3(0.5f*w+W, h+W, 0.5f*d+W)));
-		box_colors.push_back(rgb(0.5f, 0.5f, 0.8f));
-		*/
-		// construct table
-		boxes.push_back(box3(vec3(-0.5f*tw - tW, th, -0.5f*td - tW), vec3(0.5f*tw + tW, th + tW, 0.5f*td + tW)));
-		box_colors.push_back(rgb(0.5f, 0.4f, 0.0f));
-
-		boxes.push_back(box3(vec3(-0.5f*tw, 0, -0.5f*td), vec3(-0.5f*tw + tW, th, -0.5f*td + tW)));
-		boxes.push_back(box3(vec3(-0.5f*tw, 0,  0.5f*td), vec3(-0.5f*tw + tW, th,  0.5f*td + tW)));
-		boxes.push_back(box3(vec3( 0.5f*tw, 0, -0.5f*td), vec3( 0.5f*tw + tW, th, -0.5f*td + tW)));
-		boxes.push_back(box3(vec3( 0.5f*tw, 0,  0.5f*td), vec3( 0.5f*tw + tW, th,  0.5f*td + tW)));
-		box_colors.push_back(rgb(0.5f, 0.4f, 0.0f));
-		box_colors.push_back(rgb(0.5f, 0.4f, 0.0f));
-		box_colors.push_back(rgb(0.5f, 0.4f, 0.0f));
-		box_colors.push_back(rgb(0.5f, 0.4f, 0.0f));
-
-		// construct chair
+		construct_room(w, d, h, W, false, false);
+		construct_table(tw, td, th, tW);
+		construct_environment(0.2f, 3 * w, 3 * d, h, w, d, h);
 	}
 public:
 	vr_test() 
 	{
 		set_name("vr_test");
 		build_scene(5,7,3,0.2f, 1.6f, 0.8f, 1.2f, 0.03f);
+		vr_view_ptr = 0;
+		ray_length = 2;
 	}
 	std::string get_type_name() const 
 	{
@@ -79,9 +63,38 @@ public:
 	void create_gui()
 	{
 		add_decorator("vr_test", "heading", "level=2");
+		add_member_control(this, "ray_length", ray_length, "value_slider", "min=0.1;max=10;log=true;ticks=true");
 		add_gui("boxes", style);
 	}
-
+	void on_set(void* member_ptr)
+	{
+		update_member(member_ptr);
+		post_redraw();
+	}
+	void stream_help(std::ostream& os)
+	{
+		os << "vr_test: no shortcuts defined" << std::endl;
+	}
+	bool handle(cgv::gui::event& e)
+	{
+		// check for vr event
+		if (e.get_kind() == cgv::gui::EID_VR) {
+			cgv::gui::vr_event& vre = static_cast<cgv::gui::vr_event&>(e);
+			std::cout << "trigger values = [" 
+				<< vre.state.controller[0].axes[2] << ", "
+				<< vre.state.controller[1].axes[2] << "]" << std::endl;
+			return true;
+		}
+		// check for vr key event
+		if (e.get_kind() == cgv::gui::EID_KEY && ((e.get_flags() & cgv::gui::EF_VR) != 0)) {
+			cgv::gui::vr_key_event& vrke = static_cast<cgv::gui::vr_key_event&>(e);
+			std::cout << "vr key: " << vr::get_key_string(vrke.get_key()) << " "
+				<< (vrke.get_action() == cgv::gui::KA_RELEASE ? "released" : "pressed")
+				<< std::endl;
+			return true;
+		}
+		return false;
+	}
 	bool init(cgv::render::context& ctx)
 	{
 		cgv::gui::connect_vr_server(true);
@@ -89,16 +102,63 @@ public:
 		auto view_ptr = find_view_as_node();
 		if (view_ptr) {
 			view_ptr->set_eye_keep_view_angle(dvec3(0, 4, -4));
-			vr_view_interactor* vr_view_ptr = dynamic_cast<vr_view_interactor*>(view_ptr);
+			// if the view points to a vr_view_interactor
+			vr_view_ptr = dynamic_cast<vr_view_interactor*>(view_ptr);
 			if (vr_view_ptr) {
-				vr_view_ptr->set_event_type_flags(cgv::gui::VREventTypeFlags(cgv::gui::VRE_KEY));
+				// configure vr event processing
+				vr_view_ptr->set_event_type_flags(
+					cgv::gui::VREventTypeFlags(
+						cgv::gui::VRE_KEY +
+						cgv::gui::VRE_POSE
+					));
+				vr_view_ptr->enable_vr_event_debugging(false);
+				// configure vr rendering
+				vr_view_ptr->draw_action_zone(false);
+				vr_view_ptr->draw_vr_kits(true);
+				vr_view_ptr->enable_blit_vr_views(true);
+				vr_view_ptr->set_blit_vr_view_width(200);
+
 			}
 		}
-
+		// ensure that the box renderer is initialized
 		return renderer.init(ctx);
 	}
+
 	void draw(cgv::render::context& ctx)
 	{
+		if (vr_view_ptr) {
+			std::vector<vec3> P;
+			std::vector<rgb> C;
+			const vr::vr_kit_state* state_ptr = vr_view_ptr->get_current_vr_state();
+			if (state_ptr) {
+				for (int i = 0; i < 2; ++i) {
+					vec3 ray_origin, ray_direction;
+					state_ptr->controller[i].put_ray(&ray_origin(0), &ray_direction(0));
+					P.push_back(ray_origin);
+					P.push_back(ray_origin + ray_length * ray_direction);
+					rgb c(float(1 - i), 0, float(i));
+					C.push_back(c);
+					C.push_back(c);
+				}
+			}
+			if (P.size() > 0) {
+				cgv::render::shader_program& prog = ctx.ref_default_shader_program();
+				int pi = prog.get_position_index();
+				int ci = prog.get_color_index();
+				cgv::render::attribute_array_binding::set_global_attribute_array(ctx, pi, P);
+				cgv::render::attribute_array_binding::enable_global_array(ctx, pi);
+				cgv::render::attribute_array_binding::set_global_attribute_array(ctx, ci, C);
+				cgv::render::attribute_array_binding::enable_global_array(ctx, ci);
+				glLineWidth(3);
+				prog.enable(ctx);
+				glDrawArrays(GL_LINES, 0, P.size());
+				prog.disable(ctx);
+				cgv::render::attribute_array_binding::disable_global_array(ctx, pi);
+				cgv::render::attribute_array_binding::disable_global_array(ctx, ci);
+				glLineWidth(1);
+			}
+		}
+		// just draw boxes here
 		renderer.set_render_style(style);
 		renderer.set_box_array(ctx, boxes);
 		renderer.set_color_array(ctx, box_colors);
@@ -108,6 +168,68 @@ public:
 		renderer.disable(ctx);
 	}
 };
+
+/// construct boxes that represent a table of dimensions tw,td,th and leg width tW
+void vr_test::construct_table(float tw, float td, float th, float tW)
+{
+	// construct table
+	boxes.push_back(box3(vec3(-0.5f*tw - tW, th, -0.5f*td - tW), vec3(0.5f*tw + tW, th + tW, 0.5f*td + tW)));
+	box_colors.push_back(rgb(0.5f, 0.4f, 0.0f));
+
+	boxes.push_back(box3(vec3(-0.5f*tw, 0, -0.5f*td), vec3(-0.5f*tw + tW, th, -0.5f*td + tW)));
+	boxes.push_back(box3(vec3(-0.5f*tw, 0, 0.5f*td), vec3(-0.5f*tw + tW, th, 0.5f*td + tW)));
+	boxes.push_back(box3(vec3(0.5f*tw, 0, -0.5f*td), vec3(0.5f*tw + tW, th, -0.5f*td + tW)));
+	boxes.push_back(box3(vec3(0.5f*tw, 0, 0.5f*td), vec3(0.5f*tw + tW, th, 0.5f*td + tW)));
+	box_colors.push_back(rgb(0.5f, 0.4f, 0.0f));
+	box_colors.push_back(rgb(0.5f, 0.4f, 0.0f));
+	box_colors.push_back(rgb(0.5f, 0.4f, 0.0f));
+	box_colors.push_back(rgb(0.5f, 0.4f, 0.0f));
+}
+/// construct boxes that represent a room of dimensions w,d,h and wall width W
+void vr_test::construct_room(float w, float d, float h, float W, bool walls, bool ceiling)
+{
+	// construct floor
+	boxes.push_back(box3(vec3(-0.5f*w, -W, -0.5f*d), vec3(0.5f*w, 0, 0.5f*d)));
+	box_colors.push_back(rgb(0.5f, 0.5f, 0.5f));
+
+	if (walls) {
+		// construct walls
+		boxes.push_back(box3(vec3(-0.5f*w, -W, -0.5f*d - W), vec3(0.5f*w, h, -0.5f*d)));
+		box_colors.push_back(rgb(0.8f, 0.5f, 0.5f));
+		boxes.push_back(box3(vec3(-0.5f*w, -W, 0.5f*d), vec3(0.5f*w, h, 0.5f*d + W)));
+		box_colors.push_back(rgb(0.8f, 0.5f, 0.5f));
+
+		boxes.push_back(box3(vec3(0.5f*w, -W, -0.5f*d - W), vec3(0.5f*w + W, h, 0.5f*d + W)));
+		box_colors.push_back(rgb(0.5f, 0.8f, 0.5f));
+	}
+	if (ceiling) {
+		// construct ceiling
+		boxes.push_back(box3(vec3(-0.5f*w - W, h, -0.5f*d - W), vec3(0.5f*w + W, h + W, 0.5f*d + W)));
+		box_colors.push_back(rgb(0.5f, 0.5f, 0.8f));
+	}
+}
+
+#include <random>
+
+/// construct boxes for environment
+void vr_test::construct_environment(float s, float ew, float ed, float eh, float w, float d, float h)
+{
+	std::default_random_engine generator;
+	std::uniform_real_distribution<float> distribution(0, 1);
+	unsigned n = unsigned(ew / s);
+	unsigned m = unsigned(ed / s);
+	for (unsigned i = 0; i < n; ++i) {
+		float x = i * s - 0.5f*ew;
+		for (unsigned j = 0; j < m; ++j) {
+			float z = j * s - 0.5f*ed;
+			if ( (x + s > -0.5f*w && x < 0.5f*w) && (z + s > -0.5f*d && z < 0.5f*d) )
+				continue;
+			float h = 0.2f*(std::max(abs(x)-0.5f*w,0.0f)+std::max(abs(z)-0.5f*d,0.0f))*distribution(generator)+0.1f;
+			boxes.push_back(box3(vec3(x, 0, z), vec3(x+s, h, z+s)));
+			box_colors.push_back(rgb(0.2f*distribution(generator)+0.1f, 0.4f*distribution(generator)+0.2f, 0.2f*distribution(generator)+0.1f));
+		}
+	}
+}
 
 #include <cgv/base/register.h>
 
