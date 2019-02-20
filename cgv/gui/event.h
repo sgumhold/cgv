@@ -14,8 +14,9 @@ enum EventId
 	EID_NONE, //!< undefined event id
 	EID_KEY,  //!< id for key event
 	EID_MOUSE,//!< id for mouse event
-	EID_PAD,  //!< id for game pad state change events (gamepad key events are marked with EID_KEY and get the event flag EF_PAD)
-	EID_VR    //!< id for vr state change events (vr key events are marked with EID_KEY and get the event flag EF_VR)
+	EID_THROTTLE, //!< id of throttle event describing a one axis controller
+	EID_STICK,//!< id of a stick event describing a two axis controller that optionally can be touched and pressed 
+	EID_POSE  //!< id for a 6D pose change events
 };
 
 /// flags
@@ -24,8 +25,8 @@ enum EventFlags
 	EF_NONE = 0,
 	EF_MULTI = 1, //!< whether event is tagged with id of the device that generated the event
 	EF_DND = 2,   //!< whether mouse has a drag and drop target attached
-	EF_PAD = 4,   //!< whether key event is from gamepad
-	EF_VR = 8     //!< whether key event is from VR kit 
+	EF_PAD = 4,   //!< whether event is from gamepad
+	EF_VR = 8     //!< whether event is from VR kit 
 };
 
 /// define constants for event modifiers

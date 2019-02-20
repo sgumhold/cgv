@@ -139,10 +139,15 @@ unsigned char stream_in_modifiers(std::istream& is)
 void event::stream_out(std::ostream& os) const
 {
 	const char* flag_strs[] = {
-		"", "Multi", "Drag&Drop", "Multi+Drag&Drop", "Gamepad","Gamepad","Gamepad","Gamepad", 
-		"VR","VR","VR","VR","VR","VR","VR","VR"
+		"Multi", "Drag&Drop", "Gamepad", "VR"
 	};
-	const char* kind_strs[] = { "none", "key", "mouse", "pad", "vr" };
+	EventFlags flags[] = {
+		EF_MULTI,
+		EF_DND, 
+		EF_PAD,
+		EF_VR
+	};
+	const char* kind_strs[] = { "none", "key", "mouse", "throttle", "stick", "pose" };
 
 	os << kind_strs[kind] << "[" << time << "] ";
 	if (get_toggle_keys() != 0) {
@@ -166,10 +171,21 @@ void event::stream_out(std::ostream& os) const
 		}
 		os << ") ";
 	}
-	if ((get_flags() & EF_VR) == 0)
-		os << get_modifier_string(EventModifier(get_modifiers())).c_str();
-	if (get_flags() != EF_NONE)
-		os << "{" << flag_strs[get_flags()] << "} ";
+	os << get_modifier_string(EventModifier(get_modifiers())).c_str();
+	if (get_flags() != EF_NONE) {
+		os << "{";
+		bool first = true;
+		for (unsigned i = 0; i < 4; ++i) {
+			if ((get_flags()&flags[i]) != 0) {
+				if (first)
+					first = false;
+				else
+					os << '|';
+				os << flag_strs[i];
+			}
+		}
+		os << "}";
+	}
 }
 // read from stream
 void event::stream_in(std::istream&)
