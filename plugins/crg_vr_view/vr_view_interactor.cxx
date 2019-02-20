@@ -39,11 +39,53 @@ vr_view_interactor::vr_view_interactor(const char* name) : stereo_view_interacto
 	cgv::signal::connect(cgv::gui::ref_vr_server().on_status_change, this, &vr_view_interactor::on_status_change);
 }
 
+/// set whether vr events should be printed to the console window
+void vr_view_interactor::enable_vr_event_debugging(bool enable)
+{
+	if (debug_vr_events != enable) {
+		debug_vr_events = enable;
+		on_set(&debug_vr_events);
+	}
+}
+
+/// whether to draw vr kits
+void vr_view_interactor::draw_vr_kits(bool do_draw)
+{
+	if (show_vr_kits != do_draw) {
+		show_vr_kits = do_draw;
+		on_set(&show_vr_kits);
+	}
+}
+/// whether to draw action zone
+void vr_view_interactor::draw_action_zone(bool do_draw)
+{
+	if (show_action_zone != do_draw) {
+		show_action_zone = do_draw;
+		on_set(&show_action_zone);
+	}
+}
+/// enable vr view blitting
+void vr_view_interactor::enable_blit_vr_views(bool enable)
+{
+	if (blit_vr_views != enable) {
+		blit_vr_views = enable;
+		on_set(&blit_vr_views);
+	}
+}
+/// set the width with which vr views are blit
+void vr_view_interactor::set_blit_vr_view_width(int width)
+{
+	if (blit_width != width) {
+		blit_width = width;
+		on_set(&blit_width);
+	}
+}
+
 /// return a pointer to the state of the current vr kit
 const vr::vr_kit_state* vr_view_interactor::get_current_vr_state() const
 {
-	if (current_vr_handle_index >= 0 && current_vr_handle_index < int(kit_states.size()))
-		return &kit_states[current_vr_handle_index];
+	if (current_vr_handle_index > 0 && current_vr_handle_index-1 < int(kit_states.size()))
+		return &kit_states[current_vr_handle_index-1];
 	return 0;
 }
 /// query the currently set event type flags
@@ -263,7 +305,7 @@ void vr_view_interactor::init_frame(cgv::render::context& ctx)
 		if (kits.size() > 0) {
 			// query states
 			vr::vr_kit* current_kit_ptr = 0;
-			if (current_vr_handle_index >= 0) {
+			if (current_vr_handle_index > 0) {
 				current_kit_ptr = vr::get_vr_kit(current_vr_handle);
 				if (current_kit_ptr) {
 					current_kit_ptr->query_state(kit_states[current_vr_handle_index - 1], 2);

@@ -17,7 +17,17 @@ namespace vr {
 		for (unsigned i = 0; i < 8; ++i)
 			axes[i] = 0;
 		vibration[0] = vibration[1] = 0;
+	}		/// place the 3d ray origin and the 3d ray direction into the given arrays
+	void vr_controller_state::put_ray(float* ray_origin, float* ray_direction) const
+	{
+		ray_origin[0] = pose[9];
+		ray_origin[1] = pose[10];
+		ray_origin[2] = pose[11];
+		ray_direction[0] = -pose[6];
+		ray_direction[1] = -pose[7];
+		ray_direction[2] = -pose[8];
 	}
+
 
 	vr_kit_state::vr_kit_state()
 	{

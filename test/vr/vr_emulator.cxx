@@ -69,7 +69,7 @@ void vr_emulated_kit::compute_state_poses()
 		cgv::math::rotate4<float>(-60*hip_parameter, vec3(1, 0, 0));
 	mat4 T_head =
 		cgv::math::translate4<float>(vec3(0, scale*(Chin_height - Hip_height), 0))*
-		cgv::math::rotate4<float>(90*gear_parameter, vec3(0, 1, 0));
+		cgv::math::rotate4<float>(-90*gear_parameter, vec3(0, 1, 0));
 
 	mat4 T_left =
 		cgv::math::translate4<float>(
@@ -396,6 +396,7 @@ void vr_emulator::create_controller_gui(int i, vr::vr_controller_state& cs)
 	add_view("time_stamp", cs.time_stamp);
 	add_gui("button_flags", cs.button_flags, "bit_field_control", 
 		"enums='menu=1,but0=2,but1=4,but2=8,but3=16,touch=32,stick=64';options='w=35';align='';gui_type='toggle'");
+	align("\n");
 	add_member_control(this, "touch.x", cs.axes[0], "value_slider", "min=-1;max=1;ticks=true");
 	add_member_control(this, "touch.y", cs.axes[1], "value_slider", "min=-1;max=1;ticks=true");
 	add_member_control(this, "trigger", cs.axes[2], "value_slider", "min=0;max=1;ticks=true");
@@ -436,13 +437,21 @@ void vr_emulator::create_gui()
 		if (begin_tree_node(kits[i]->get_name(), *kits[i], false, "level=2")) {
 			align("\a");
 			add_member_control(this, "fovy", kits[i]->fovy, "value_slider", "min=30;max=180;ticks=true;log=true");
-			add_gui("body_position", kits[i]->body_position, "", "options='min=-5;max=5;ticks=true'");
-			add_member_control(this, "body_direction", kits[i]->body_direction, "value_slider", "min=0;max=6.3;ticks=true");
-			add_member_control(this, "body_height", kits[i]->body_height, "value_slider", "min=1.2;max=2.0;ticks=true");
-			add_member_control(this, "hip_parameter", kits[i]->hip_parameter, "value_slider", "min=-1;max=1;ticks=true");
-			add_member_control(this, "gear_parameter", kits[i]->gear_parameter, "value_slider", "min=-1;max=1;ticks=true");
-			add_gui("left_hand", kits[i]->hand_position[0], "", "options='min=-1;max=1;ticks=true'");
-			add_gui("right_hand", kits[i]->hand_position[1], "", "options='min=-1;max=1;ticks=true'");
+			if (begin_tree_node("body pose", kits[i]->body_position, false, "level=3")) {
+				align("\a");
+				add_decorator("body position", "heading", "level=3");
+				add_gui("body_position", kits[i]->body_position, "", "options='min=-5;max=5;ticks=true'");
+				add_member_control(this, "body_direction", kits[i]->body_direction, "value_slider", "min=0;max=6.3;ticks=true");
+				add_member_control(this, "body_height", kits[i]->body_height, "value_slider", "min=1.2;max=2.0;ticks=true");
+				add_member_control(this, "hip_parameter", kits[i]->hip_parameter, "value_slider", "min=-1;max=1;ticks=true");
+				add_member_control(this, "gear_parameter", kits[i]->gear_parameter, "value_slider", "min=-1;max=1;ticks=true");
+				add_decorator("left hand", "heading", "level=3");
+				add_gui("left_hand", kits[i]->hand_position[0], "", "options='min=-1;max=1;ticks=true'");
+				add_decorator("right hand", "heading", "level=3");
+				add_gui("right_hand", kits[i]->hand_position[1], "", "options='min=-1;max=1;ticks=true'");
+				align("\b");
+				end_tree_node(kits[i]->body_position);
+			}
 			if (begin_tree_node("state", kits[i]->state.controller[0].pose[1], false, "level=3")) {
 				align("\a");
 				if (begin_tree_node("hmd", kits[i]->state.hmd.pose[0], false, "level=3")) {

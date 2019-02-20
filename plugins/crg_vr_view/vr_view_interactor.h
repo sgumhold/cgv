@@ -6,7 +6,7 @@
 #include <cg_vr/vr_server.h>
 #include <cgv_gl/box_renderer.h>
 #include <cgv_gl/sphere_renderer.h>
-#include <plugins/crg_stereo_view/stereo_view_interactor.h>
+#include <stereo_view_interactor.h>
 
 #include "lib_begin.h"
 
@@ -68,12 +68,39 @@ public:
 	/// return the type name 
 	std::string get_type_name() const;
 
+	/**@name vr event processing*/
+	//@{
 	/// query the currently set event type flags
 	cgv::gui::VREventTypeFlags get_event_type_flags() const;
 	/// set the event type flags of to be emitted events
 	void set_event_type_flags(cgv::gui::VREventTypeFlags flags);
+	/// check whether vr events are printed to the console window
+	bool vr_event_debugging_enabled() const { return debug_vr_events; }
+	/// set whether vr events should be printed to the console window
+	void enable_vr_event_debugging(bool enable = true);
 	/// return a pointer to the state of the current vr kit
 	const vr::vr_kit_state* get_current_vr_state() const;
+	//@}
+
+	/**@name vr rendering*/
+	//@{
+	/// check whether vr kits are drawn
+	bool vr_kits_drawn() const { return show_vr_kits; }
+	/// whether to draw vr kits
+	void draw_vr_kits(bool do_draw);
+	/// check whether action zone is drawn 
+	bool action_zone_drawn() const { return show_action_zone; }
+	/// whether to draw action zone
+	void draw_action_zone(bool do_draw);
+	/// check whether vr views are blitted
+	bool blit_vr_views_enabled() const { return blit_vr_views; }
+	/// enable vr view blitting
+	void enable_blit_vr_views(bool enable);
+	/// return width of vr view blitting
+	int get_blit_vr_view_width() const { return blit_width; }
+	/// set the width with which vr views are blit
+	void set_blit_vr_view_width(int width);
+	//@}
 	/// 
 	void on_set(void* member_ptr);
 	/// overload to show the content of this object

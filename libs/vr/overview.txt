@@ -1,33 +1,37 @@
-scan_devices
+VR support
 
-vr_driver
-	is_installed
-	scan_devices
-	get_interaction_zone
-	get_up_direction
-	get_floor_level
-	
-vr_kit[idx]
-	get_driver
-	hmd
-		get_id
-		get_status (detached, attached, tracked)
-		put_state
-			time_stamp
-			pose
-		init(context)
-		get_hmd_to_eye_matrix(eye)
-		get_projection_matrix(eye)
-		enable(context, eye, transform (none, middle, left_right))
-		disable(context, eye, transform);
-		compose(context)
-	controler[idx]
-		get_id
-		get_status (detached, attached, tracked)
-		set_vibration
-		put_state
-			time_stamp
-			pose
-			button_flags
-			axes[4] // VIVE: 0..x, 1..y, 2..trigger
-			
+cgv/libs/vr
+	vr_event.h              // defines types to store the state of a vr kit
+		vr::vr_trackable_state    // status[detached|attached|tracked]; pose:float[12]
+		  vr::vr_controller_state // time_stamp; button_flags; axes[8]; vibration[2]
+		vr::vr_kit_state          // hmd + controllers[2] (0=left, 1=right)
+
+	vr_kit.h                // defines vr_kit class
+		vr::vr_kit                // query_state, init_fbos, enable_fbos, submit_frame
+
+	vr_driver.h             // defines vr_driver class and provides registry for drivers and kits
+		vr::vr_driver             // installed, get_driver_name, scan_vr_kits, x|up_dir, action zone
+        vr::scan_vr_kits()        // scan vr kits with all drivers
+		vr::get_vr_kit(void*)     // resolve vr_kit pointer from handle
+
+	gl_vr_display.h			// defines gl_vr_display class that implements offscreen rendering
+		vr::gl_vr_display		  // opengl implementation of init_fbos, enable_fbos, ...
+
+cgv/plugins/openvr_driver
+	openvr.h				// original header with openvr api
+	openvr_kit.h			// vr_kit implementation for openvr
+	openvr_driver.cxx		// openvr driver implementation
+
+cgv/plugins/vr_emulator
+	vr_emulator.h			// vr kit and driver emulator with multi kit support and own gui
+
+cgv/plugins/crg_vr_view
+
+cgv/plugins/cg_vr
+	vr_server.h
+		cgv::gui::vr_event
+		cgv::gui::vr_key_event
+		cgv::gui::vr_server
+
+cgv/plugins/vr_test
+
