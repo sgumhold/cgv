@@ -588,7 +588,7 @@ void stereo_view_interactor::set_view_orientation(const std::string& axes)
 /// overload and implement this method to handle events
 bool stereo_view_interactor::handle(event& e)
 {
-	if (e.get_kind() == EID_PAD) {
+	if ((e.get_flags() & EF_PAD) != 0) {
 		if (!gamepad_attached) {
 			gamepad_attached = true;
 			update_member(&gamepad_attached);

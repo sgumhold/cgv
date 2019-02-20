@@ -1,7 +1,9 @@
 #pragma once
 
-#include <cgv/gui/event.h>
 #include <cgv/gui/key_event.h>
+#include <cgv/gui/throttle_event.h>
+#include <cgv/gui/stick_event.h>
+#include <cgv/gui/pose_event.h>
 #include <vr/vr_event.h>
 #include <cgv/gui/window.h>
 #include <cgv/signal/signal.h>
@@ -12,52 +14,92 @@
 namespace cgv {
 	namespace gui {
 
-		/// the vr event is triggered whenever a vr_kit state changes
-		class CGV_API vr_event : public cgv::gui::event
+		/// vr key events use the key codes defined in vr::VRKeys
+		class CGV_API vr_key_event : public cgv::gui::key_event
 		{
-		public:
-			/// store id of gamepad
+		protected:
+			/// store device handle
 			void* device_handle;
-			/// public access to game state allows skipping of library dependency
-			vr::vr_kit_state state;
-			/// 
-			void stream_out_trackable(std::ostream& os, const vr::vr_trackable_state& trackable) const;
-			/// 
-			void stream_out_controller(std::ostream& os, const vr::vr_controller_state& controller) const;
+			/// store controller index (0 .. left, 1.. right) of vr kit
+			int controller_index;
+			/// access to current vr state 
+			const vr::vr_kit_state& state;
 		public:
-			/// construct a gamepad event
-			vr_event(void* _device_handle, const vr::vr_kit_state& _state, double _time = 0);
+			/// construct a key event from its textual description 
+			vr_key_event(void* _device_handle, int _controller_index, const vr::vr_kit_state& _state,
+				unsigned short _key = 0, KeyAction _action = KA_PRESS, unsigned char _char = 0,
+				unsigned char _modifiers = 0, double _time = 0);
 			/// return the device id, by default returns 0
-			void* get_device_handle() const;
+			void* get_device_handle() const { return device_handle; }
+			/// return controller index (0 .. left, 1.. right) of vr kit
+			int get_controller_index() const { return controller_index; }
 			/// return the state
-			const vr::vr_kit_state& get_state() const;
+			const vr::vr_kit_state& get_state() const { return state; }
 			/// write to stream
 			void stream_out(std::ostream& os) const;
 			/// read from stream
 			void stream_in(std::istream& is);
 		};
 
-		/// vr key events use the key codes defined in vr::GamepadKeys
-		class CGV_API vr_key_event : public cgv::gui::key_event
+		/// vr extension of throttle event
+		class CGV_API vr_throttle_event : public throttle_event
 		{
 		protected:
-			/// store controller index (0 .. left, 1.. right) of vr kit
-			int controller_index;
 			/// store device handle
 			void* device_handle;
+			/// access to current vr state 
+			const vr::vr_kit_state& state;
 		public:
-			/// construct a key event from its textual description 
-			vr_key_event(void* _device_handle, int _controller_index, 
-				unsigned short _key = 0, KeyAction _action = KA_PRESS, unsigned char _char = 0, 
-				unsigned char _modifiers = 0, double _time = 0);
-			/// return controller index (0 .. left, 1.. right) of vr kit
-			int get_controller_index() const;
+			/// construct a throttle event from value and value change
+			vr_throttle_event(void* _device_handle, unsigned _controller_index, const vr::vr_kit_state& _state, 
+				float _x, float _dx, unsigned _player_index = 0, unsigned _throttle_index = 0, double _time = 0);
 			/// return the device id, by default returns 0
-			void* get_device_handle() const;
+			void* get_device_handle() const { return device_handle; }
+			/// return the state
+			const vr::vr_kit_state& get_state() const { return state; }
 			/// write to stream
 			void stream_out(std::ostream& os) const;
-			/// read from stream
-			void stream_in(std::istream& is);
+		};
+
+		/// vr extension of stick event
+		class CGV_API vr_stick_event : public stick_event
+		{
+		protected:
+			/// store device handle
+			void* device_handle;
+			/// access to current vr state 
+			const vr::vr_kit_state& state;
+		public:
+			/// construct a key event from its textual description 
+			vr_stick_event(void* _device_handle, unsigned _controller_index, const vr::vr_kit_state& _state, 
+				StickAction _action, float _x, float _y, float _dx, float _dy,
+				unsigned _player_index = 0, unsigned _stick_index = 0, double _time = 0);
+			/// return the device id, by default returns 0
+			void* get_device_handle() const { return device_handle; }
+			/// return the state
+			const vr::vr_kit_state& get_state() const { return state; }
+			/// write to stream
+			void stream_out(std::ostream& os) const;
+		};
+
+		/// vr extension of pose events
+		class CGV_API vr_pose_event : public pose_event
+		{
+		protected:
+			/// store device handle
+			void* device_handle;
+			/// access to current vr state 
+			const vr::vr_kit_state& state;
+		public:
+			/// construct a key event from its textual description 
+			vr_pose_event(void* _device_handle, short _trackable_index, const vr::vr_kit_state& _state,
+				const float *_pose, unsigned short _player_index, double _time = 0);
+			/// return the device id, by default returns 0
+			void* get_device_handle() const { return device_handle; }
+			/// return the state
+			const vr::vr_kit_state& get_state() const { return state; }
+			/// write to stream
+			void stream_out(std::ostream& os) const;
 		};
 
 		/// flags to define which events should be generated by server
@@ -67,9 +109,11 @@ namespace cgv {
 			VRE_DEVICE = 1,
 			VRE_STATUS = 2,
 			VRE_KEY = 4,
-			VRE_MOUSE = 8, // not implemented yet
-			VRE_POSE = 16,
-			VRE_ALL = 31
+			VRE_THROTTLE = 8, 
+			VRE_STICK = 16,
+			VRE_STICK_KEY = 32, // whether stick touch and press actions should be translated to key events
+			VRE_POSE = 64,
+			VRE_ALL = 127
 		};
 
 		/// server for vr events

@@ -45,9 +45,9 @@ namespace cgv {
 			std::cerr << "key_event::stream_in not implemented yet" << std::endl;
 		}
 
-		gamepad_event::gamepad_event(void* _device_id, const gamepad::gamepad_state& _state) : event(EID_PAD), device_id(_device_id), state(_state)
+		gamepad_event::gamepad_event(void* _device_id, const gamepad::gamepad_state& _state) : event(EID_POSE), device_id(_device_id), state(_state)
 		{
-			flags = EF_MULTI;
+			flags = EventFlags(EF_MULTI + EF_PAD);
 		}
 		/// return the device id, by default returns 0
 		void* gamepad_event::get_device_id() const

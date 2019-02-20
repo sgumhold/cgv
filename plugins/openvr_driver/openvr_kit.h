@@ -20,6 +20,8 @@ namespace vr {
 		openvr_kit(unsigned _width, unsigned _height, vr_driver* _driver, vr::IVRSystem* _hmd, const std::string& _name, bool _ffb_support, bool _wireless);
 		/// declare virtual destructor
 		~openvr_kit();
+		///
+		const std::vector<std::pair<int, int> >& get_controller_throttles_and_sticks(int controller_index) const;
 		//! query current state of vr kit and return whether this was successful
 		bool query_state(vr_kit_state& state, int pose_query);
 		/// set the vibration strength between 0 and 1 of low and high frequency motors, return false if device is not connected anymore

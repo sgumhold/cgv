@@ -157,7 +157,8 @@ bool vr_view_interactor::init(cgv::render::context& ctx)
 {
 	sr.set_render_style(srs);
 	if (!sr.init(ctx)) {
-		exit(0);
+		std::cerr << "could not initialize sphere renderer" << std::endl;
+		show_vr_kits = false;
 	}
 	return stereo_view_interactor::init(ctx);
 }
@@ -166,7 +167,7 @@ bool vr_view_interactor::init(cgv::render::context& ctx)
 bool vr_view_interactor::handle(cgv::gui::event& e)
 {
 	if (debug_vr_events) {
-		if (e.get_kind() == cgv::gui::EID_VR || ((e.get_flags() & cgv::gui::EF_VR) != 0)) {
+		if ((e.get_flags() & cgv::gui::EF_VR) != 0) {
 			e.stream_out(std::cout);
 			std::cout << std::endl;
 		}
@@ -493,7 +494,7 @@ void vr_view_interactor::create_gui()
 	if (begin_tree_node("VR events", event_flags, false, "level=2")) {
 		align("\a");
 		add_member_control(this, "debug_vr_events", debug_vr_events, "check");
-		add_gui("event_flags", event_flags, "bit_field_control", "enums='device=1,status=2,key=4,mouse=8,pose=16';gui_type='toggle';options='w=40';align=''");
+		add_gui("event_flags", event_flags, "bit_field_control", "enums='dev=1,sta=2,key=4,thr=8,stk=16,skk=32,pos=64';gui_type='toggle';options='w=30';align=''");
 		align("\n\b");
 		end_tree_node(event_flags);
 	}

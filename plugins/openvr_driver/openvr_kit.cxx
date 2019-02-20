@@ -44,6 +44,18 @@ vr::IVRSystem* openvr_kit::get_hmd()
 }
 
 
+const std::vector<std::pair<int, int> >& openvr_kit::get_controller_throttles_and_sticks(int controller_index) const
+{
+	static std::vector<std::pair<int, int> > throttles_and_sticks;
+	if (throttles_and_sticks.empty()) {
+		// add stick
+		throttles_and_sticks.push_back(std::pair<int, int>(0, 1));
+		// add trigger throttle
+		throttles_and_sticks.push_back(std::pair<int, int>(2, -1));
+	}
+	return throttles_and_sticks;
+}
+
 
 /// construct
 openvr_kit::openvr_kit(unsigned _width, unsigned _height, 
