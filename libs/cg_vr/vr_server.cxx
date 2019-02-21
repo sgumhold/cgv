@@ -15,10 +15,11 @@ namespace cgv {
 			return false;
 		}
 		/// construct a key event from its textual description 
-		vr_key_event::vr_key_event(void* _device_handle, int _controller_index, const vr::vr_kit_state& _state,
+		vr_key_event::vr_key_event(void* _device_handle, unsigned _player_index, unsigned _controller_index, const vr::vr_kit_state& _state,
 			unsigned short _key, KeyAction _action, unsigned char _char, 
 			unsigned char _modifiers, double _time)
-			: device_handle(_device_handle), controller_index(_controller_index), state(_state),
+			: device_handle(_device_handle), controller_index(_controller_index), 
+			player_index(_player_index), state(_state),
 			key_event(_key, _action, _char, _modifiers, 0, _time)
 		{
 			flags = EF_VR;
@@ -43,6 +44,7 @@ namespace cgv {
 			if (get_modifiers() != 0) {
 				os << " {" << vr::get_state_flag_string(vr::VRButtonStateFlags(get_modifiers())) << "}";
 			}
+			os << "<" << (unsigned)player_index << ":" << (unsigned)controller_index << ">";
 			os << "*" << device_handle << "*";
 		}
 		/// read from stream
@@ -125,7 +127,7 @@ namespace cgv {
 			event_type_flags = flags;
 		}
 		///
-		void vr_server::emit_events_and_update_state(void* kit_handle, const vr::vr_kit_state& new_state, vr::vr_kit_state& last_state, VREventTypeFlags flags, double time)
+		void vr_server::emit_events_and_update_state(void* kit_handle, const vr::vr_kit_state& new_state, int kit_index, VREventTypeFlags flags, double time)
 		{
 			static button_mapping button_keys[5] = {
 				{ vr::VRF_MENU, vr::VR_LEFT_MENU, vr::VR_RIGHT_MENU},
@@ -138,7 +140,7 @@ namespace cgv {
 				{ vr::VRF_STICK_TOUCH, vr::VR_LEFT_STICK_TOUCH, vr::VR_RIGHT_STICK_TOUCH},
 				{ vr::VRF_STICK, vr::VR_LEFT_STICK, vr::VR_RIGHT_STICK}
 			};
-
+			vr::vr_kit_state& last_state = last_states[kit_index];
 			// check for status changes and emit signal for found status changes					
 			if ((flags & VRE_STATUS) != 0) {
 				if (new_state.hmd.status != last_state.hmd.status)
@@ -159,7 +161,7 @@ namespace cgv {
 								if ((new_state.controller[c].button_flags & button_keys[j].flag) !=
 									(last_state.controller[c].button_flags & button_keys[j].flag)) {
 									// construct and emit event
-									vr_key_event vrke(kit_handle, c, new_state,
+									vr_key_event vrke(kit_handle, kit_index, c, new_state,
 										button_keys[j].key[c],
 										(new_state.controller[c].button_flags & button_keys[j].flag) != 0 ? KA_PRESS : KA_RELEASE,
 										0, 0, time);
@@ -181,7 +183,7 @@ namespace cgv {
 										key_offset = 3 * y + x;
 									}
 									// construct and emit event
-									vr_key_event vrke(kit_handle, c, new_state,
+									vr_key_event vrke(kit_handle, kit_index, c, new_state,
 										stick_keys[j].key[c] + key_offset,
 										(new_state.controller[c].button_flags & stick_keys[j].flag) != 0 ? KA_PRESS : KA_RELEASE, 0,
 										0, time);
@@ -221,7 +223,7 @@ namespace cgv {
 										float x = new_state.controller[c].axes[ai];
 										float y = new_state.controller[c].axes[aj];
 										vr_stick_event vrse(kit_handle, c, new_state,
-											action, x, y, 0, 0, 0, 0, time);
+											action, x, y, 0, 0, kit_index, 0, time);
 										on_event(vrse);
 									}
 								}
@@ -251,7 +253,7 @@ namespace cgv {
 										float dx = x - last_state.controller[c].axes[ai];
 										if (dx != 0) {
 											/// construct a throttle event from value and value change
-											vr_throttle_event vrte(kit_handle, c, new_state, x, dx, 0, ti, time);
+											vr_throttle_event vrte(kit_handle, c, new_state, x, dx, kit_index, ti, time);
 											on_event(vrte);
 										}
 									}
@@ -272,7 +274,7 @@ namespace cgv {
 											if ((new_state.controller[c].button_flags & vr::VRF_STICK) != 0)
 												action = SA_DRAG;
 											vr_stick_event vrse(kit_handle, c, new_state, 
-												action, x, y, dx, dy, 0, si, time);
+												action, x, y, dx, dy, kit_index, si, time);
 											on_event(vrse);
 										}
 									}
@@ -286,12 +288,12 @@ namespace cgv {
 			// finally check for pose, axis or vibration changes and emit general new_state change if necessary
 			if ((flags & VRE_POSE) != 0) {
 				if (array_unequal(new_state.hmd.pose, last_state.hmd.pose, 12)) {
-					vr_pose_event vrpe(kit_handle, -1, new_state, new_state.hmd.pose, 0, time);
+					vr_pose_event vrpe(kit_handle, -1, new_state, new_state.hmd.pose, kit_index, time);
 					on_event(vrpe);
 				}
 				for (int c = 0; c < 2; ++c) {
 					if (array_unequal(new_state.controller[c].pose, last_state.controller[c].pose, 12)) {
-						vr_pose_event vrpe(kit_handle, c, new_state, new_state.controller[c].pose, 0, time);
+						vr_pose_event vrpe(kit_handle, c, new_state, new_state.controller[c].pose, kit_index, time);
 						on_event(vrpe);
 					}
 				}
@@ -344,7 +346,7 @@ namespace cgv {
 				// query current state
 				vr::vr_kit_state state;
 				kit->query_state(state, 1);
-				emit_events_and_update_state(vr_kit_handles[i], state, last_states[i], event_type_flags, time);
+				emit_events_and_update_state(vr_kit_handles[i], state, i, event_type_flags, time);
 			}
 		}
 
@@ -360,7 +362,7 @@ namespace cgv {
 			if (iter == vr_kit_handles.end())
 				return false;
 			size_t i = iter - vr_kit_handles.begin();
-			emit_events_and_update_state(kit_handle, new_state, last_states[i], flags, time);
+			emit_events_and_update_state(kit_handle, new_state, i, flags, time);
 			return true;
 		}
 		/// return a reference to gamepad server singleton

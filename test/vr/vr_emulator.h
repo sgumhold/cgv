@@ -5,6 +5,7 @@
 #include <cgv/math/quaternion.h>
 #include <cgv/gui/provider.h>
 #include <cgv/gui/event_handler.h>
+#include <cgv/gui/key_event.h>
 #include <vr/gl_vr_display.h>
 #include <vr/vr_driver.h>
 
@@ -88,6 +89,8 @@ public:
 	float get_action_zone_height() const;
 	/// return a vector of floor points defining the action zone boundary as a closed polygon
 	void put_action_zone_bounary(std::vector<float>& boundary) const;
+	///
+	bool check_for_button_toggle(cgv::gui::key_event& ke, int controller_index, vr::VRButtonStateFlags button);
 	/// overload and implement this method to handle events
 	bool handle(cgv::gui::event& e);
 	/// overload to stream help information to the given output stream
