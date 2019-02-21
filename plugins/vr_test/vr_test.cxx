@@ -10,6 +10,7 @@
 
 // these are the vr specific headers
 #include <cg_vr/vr_server.h>
+#include <cg_gamepad/gamepad_server.h>
 #include <vr_view_interactor.h>
 
 /// the plugin class vr_test inherits like other plugins from node, drawable and provider
@@ -55,6 +56,7 @@ public:
 		build_scene(5,7,3,0.2f, 1.6f, 0.8f, 1.2f, 0.03f);
 		vr_view_ptr = 0;
 		ray_length = 2;
+		cgv::gui::connect_gamepad_server();
 	}
 	std::string get_type_name() const 
 	{

@@ -134,7 +134,6 @@ protected:
 	bool gamepad_attached;
 	unsigned gamepad_flags;
 	cgv::math::fvec<float,2> left_stick, right_stick, trigger;
-	bool gamepad_active;
 
 	bool gamepad_emulation;
 	bool emulation_active;

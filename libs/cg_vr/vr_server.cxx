@@ -30,7 +30,7 @@ namespace cgv {
 			os << vr::get_key_string(key);
 			switch (action) {
 			case KA_RELEASE:
-				os << " up";
+				os << " up ";
 				break;
 			case KA_PRESS:
 				if (get_char())
@@ -40,10 +40,10 @@ namespace cgv {
 				os << " repeat ";
 				break;
 			}
-			os << "[" << device_handle << "]";
 			if (get_modifiers() != 0) {
 				os << " {" << vr::get_state_flag_string(vr::VRButtonStateFlags(get_modifiers())) << "}";
 			}
+			os << "*" << device_handle << "*";
 		}
 		/// read from stream
 		void vr_key_event::stream_in(std::istream& is)
@@ -63,7 +63,7 @@ namespace cgv {
 		void vr_throttle_event::stream_out(std::ostream& os) const
 		{
 			throttle_event::stream_out(os);
-			os << "->" << device_handle;
+			os << "*" << device_handle << "*";
 		}
 		/// construct a key event from its textual description 
 		vr_stick_event::vr_stick_event(void* _device_handle, unsigned _controller_index, const vr::vr_kit_state& _state,
@@ -78,7 +78,7 @@ namespace cgv {
 		void vr_stick_event::stream_out(std::ostream& os) const
 		{
 			stick_event::stream_out(os);
-			os << "->" << device_handle;
+			os << "*" << device_handle << "*";
 		}
 		/// construct a key event from its textual description 
 		vr_pose_event::vr_pose_event(void* _device_handle, short _trackable_index, const vr::vr_kit_state& _state,
@@ -92,7 +92,7 @@ namespace cgv {
 		void vr_pose_event::stream_out(std::ostream& os) const
 		{
 			pose_event::stream_out(os);
-			os << "->" << device_handle;
+			os << "*" << device_handle << "*";
 		}
 
 		/// construct server with default configuration

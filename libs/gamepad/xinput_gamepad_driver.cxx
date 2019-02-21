@@ -5,6 +5,10 @@
 #include <Windows.h>
 #include <Xinput.h>
 
+#ifdef WIN32
+#pragma warning (disable:4995)
+#endif
+
 using namespace gamepad;
 
 ///
@@ -48,7 +52,7 @@ struct xinput_gamepad_driver : public gamepad_driver
 		XInputEnable(enabled ? TRUE : FALSE);
 	}
 	/// scan all connected devices found by driver
-	void scan_devices(std::vector<device_info>& infos, std::vector<void*>& device_handles)
+	void scan_devices(std::vector<device_info>& infos)
 	{
 		XINPUT_CAPABILITIES caps;
 		unsigned nr_devices = 0;
@@ -60,6 +64,7 @@ struct xinput_gamepad_driver : public gamepad_driver
 			}
 			enabled[user_index] = true;
 			infos.resize(infos.size() + 1);
+			infos.back().device_handle = get_handle(user_index);
 			infos.back().enabled = true;
 			infos.back().force_feedback_support = (caps.Flags | XINPUT_CAPS_FFB_SUPPORTED) != 0;
 			infos.back().is_wireless = (caps.Flags | XINPUT_CAPS_WIRELESS) != 0;
@@ -68,13 +73,12 @@ struct xinput_gamepad_driver : public gamepad_driver
 			infos.back().name += '0' + user_index;
 			infos.back().vibration_strength[0] = convert(caps.Vibration.wLeftMotorSpeed);
 			infos.back().vibration_strength[1] = convert(caps.Vibration.wRightMotorSpeed);
-			device_handles.push_back(get_handle(user_index));
 		}
 	}
 	/// set the state of a device to enabled or disabled
-	void set_device_state(void* device_handle, bool enabled)
+	void set_device_state(void* device_handle, bool _enabled)
 	{
-		this->enabled[get_user_index(device_handle)] = enabled;
+		enabled[get_user_index(device_handle)] = _enabled;
 	}
 	/// return the battery type and state of a device, fill_state in [0,1] is only given for alkaline or nickel metal hydide batteries
 	bool get_device_battery_info(void* device_handle, BatteryType& battery_type, float& fill_state)

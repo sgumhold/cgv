@@ -15,7 +15,7 @@ namespace gamepad {
 		/// return name of driver
 		virtual std::string get_name() = 0;
 		/// scan all connected devices found by driver
-		virtual void scan_devices(std::vector<device_info>& infos, std::vector<void*>& device_handles) = 0;
+		virtual void scan_devices(std::vector<device_info>& infos) = 0;
 		/// set the state to enabled or disabled
 		virtual void set_driver_state(bool enabled) = 0;
 		/// set the state of a device to enabled or disabled
@@ -31,8 +31,8 @@ namespace gamepad {
 	};
 	/// return reference to device info structures
 	extern CGV_API std::vector<device_info>& ref_device_infos();
-	/// return reference to device info structures
-	extern CGV_API std::vector<void*>& ref_device_handles();
+	/// return pointer to device info structure of given device handle or 0 if device handle not found
+	extern CGV_API device_info* ref_device_info(void* device_handle);
 	/// return information on the registered drivers
 	extern CGV_API std::vector<driver_info>& ref_driver_infos();
 	/// return registered drivers

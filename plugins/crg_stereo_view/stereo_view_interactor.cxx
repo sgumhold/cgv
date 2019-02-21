@@ -156,7 +156,7 @@ void stereo_view_interactor::timer_event(double t, double dt)
 		check_emulation_active();
 	}
 	else {
-		if (!gamepad_active)
+		if (!(left_stick.length() > deadzone || right_stick.length() > deadzone || fabs(trigger[1] - trigger[0]) > deadzone))
 			return;
 	}
 	dvec3 x, y, z;
@@ -228,7 +228,6 @@ stereo_view_interactor::stereo_view_interactor(const char* name) : node(name)
 	gamepad_attached = false;
 	left_mode = right_mode = 0;
 	left_stick = right_stick = trigger = cgv::math::fvec<float, 2>(0.0f);
-	gamepad_active = false;
 	gamepad_flags = 0;
 	connect(cgv::gui::get_animation_trigger().shoot, this, &stereo_view_interactor::timer_event);
 
@@ -594,31 +593,27 @@ bool stereo_view_interactor::handle(event& e)
 			update_member(&gamepad_attached);
 			post_redraw();
 		}
-		cgv::gui::gamepad_event& ge = (cgv::gui::gamepad_event&)e;
-		left_stick = cgv::math::fvec<float, 2>(2, ge.state.left_stick_position);
-		right_stick = cgv::math::fvec<float, 2>(2, ge.state.right_stick_position);
-		trigger = cgv::math::fvec<float, 2>(2, ge.state.trigger_position);
-		gamepad_flags = ge.state.button_flags;
-		if (left_stick.length() > deadzone || right_stick.length() > deadzone || fabs(trigger[1]-trigger[0]) > deadzone)
-			gamepad_active = true;
+	}
+	if (e.get_kind() == EID_THROTTLE) {
+		cgv::gui::throttle_event& te = static_cast<cgv::gui::throttle_event&>(e);
+		trigger[te.get_throttle_index()] = te.get_value();
+		return true;
+	}
+	else if (e.get_kind() == EID_STICK) {
+		cgv::gui::stick_event& se = static_cast<cgv::gui::stick_event&>(e);
+		cgv::math::fvec<float, 2> p(se.get_x(), se.get_y());
+		if (se.get_stick_index() == 0)
+			left_stick = p;
 		else
-			gamepad_active = false;
+			right_stick = p;
+		if ((e.get_flags() & EF_PAD) != 0) {
+			cgv::gui::gamepad_stick_event& gse = static_cast<cgv::gui::gamepad_stick_event&>(e);
+			gamepad_flags = gse.get_state().button_flags;
+		}
 		return true;
 	}
 	else if (e.get_kind() == EID_KEY) {
 		key_event ke = (key_event&) e;
-
-//		e.stream_out(std::cout); std::cout << std::endl;
-		
-		if (ke.get_key() >= gamepad::GPK_BEGIN) {
-			if (ke.get_key() < gamepad::GPK_END) {
-				if (!gamepad_attached) {
-					gamepad_attached = true;
-					update_member(&gamepad_attached);
-					post_redraw();
-				}
-			}
-		}
 		if (gamepad_emulation) {
 			switch (ke.get_key()) {
 			case 'A':
