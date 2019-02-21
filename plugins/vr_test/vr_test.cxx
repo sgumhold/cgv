@@ -154,7 +154,7 @@ public:
 						cgv::gui::VRE_STICK_KEY +
 						cgv::gui::VRE_POSE
 					));
-				vr_view_ptr->enable_vr_event_debugging(true);
+				vr_view_ptr->enable_vr_event_debugging(false);
 				// configure vr rendering
 				vr_view_ptr->draw_action_zone(false);
 				vr_view_ptr->draw_vr_kits(true);

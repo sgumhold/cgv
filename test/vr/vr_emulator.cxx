@@ -309,11 +309,14 @@ bool vr_emulator::handle(cgv::gui::event& e)
 	case '1':
 	case '2':
 	case '3':
-		if (ke.get_action() != cgv::gui::KA_RELEASE)
-			current_kit_ctrl = ke.get_key() - '0';
-		else
-			current_kit_ctrl = -1;
-		update_member(&current_kit_ctrl);
+		if (ke.get_modifiers() == 0) {
+			if (ke.get_action() != cgv::gui::KA_RELEASE)
+				current_kit_ctrl = ke.get_key() - '0';
+			else
+				current_kit_ctrl = -1;
+			update_member(&current_kit_ctrl);
+			return true;
+		}
 		break;
 	case 'Q': return check_for_button_toggle(ke, 0, vr::VRF_MENU);
 	case 'A': return check_for_button_toggle(ke, 0, vr::VRF_BUTTON0);
@@ -364,7 +367,7 @@ bool vr_emulator::handle(cgv::gui::event& e)
 /// overload to stream help information to the given output stream
 void vr_emulator::stream_help(std::ostream& os)
 {
-	os << "vr_emulator: Ctrl-Alt-N to create vr kit; <0|1|2|3>+direction to move vr kit";
+	os << "vr_emulator:\n   Ctrl-Alt-N to create vr kit\n   press and hold <0|1|2|3> to select vr kit and use arrow keys to move or\n      Q,A,W,D,X,C,S|O,L,I,J,M,K,N to toggle left|right controller buttons";
 }
 /// return the type name 
 std::string vr_emulator::get_type_name() const
