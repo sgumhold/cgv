@@ -320,7 +320,7 @@ void vr_view_interactor::init_frame(cgv::render::context& ctx)
 				if (kit_ptr == current_kit_ptr)
 					continue;
 				kit_ptr->query_state(kit_states[i], 1);
-				cgv::gui::ref_vr_server().check_new_state(current_vr_handle, kit_states[i], cgv::gui::trigger::get_current_time(), event_flags);
+				cgv::gui::ref_vr_server().check_new_state(kits[i], kit_states[i], cgv::gui::trigger::get_current_time(), event_flags);
 			}
 			for (rendered_kit_index=0; rendered_kit_index<int(kits.size()); ++rendered_kit_index) {
 				rendered_kit_ptr = vr::get_vr_kit(kits[rendered_kit_index]);

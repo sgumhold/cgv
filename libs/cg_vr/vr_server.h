@@ -21,18 +21,22 @@ namespace cgv {
 			/// store device handle
 			void* device_handle;
 			/// store controller index (0 .. left, 1.. right) of vr kit
-			int controller_index;
+			unsigned short controller_index;
+			/// store player index
+			unsigned short player_index;
 			/// access to current vr state 
 			const vr::vr_kit_state& state;
 		public:
 			/// construct a key event from its textual description 
-			vr_key_event(void* _device_handle, int _controller_index, const vr::vr_kit_state& _state,
+			vr_key_event(void* _device_handle, unsigned _player_index, unsigned _controller_index, const vr::vr_kit_state& _state,
 				unsigned short _key = 0, KeyAction _action = KA_PRESS, unsigned char _char = 0,
 				unsigned char _modifiers = 0, double _time = 0);
 			/// return the device id, by default returns 0
 			void* get_device_handle() const { return device_handle; }
 			/// return controller index (0 .. left, 1.. right) of vr kit
-			int get_controller_index() const { return controller_index; }
+			unsigned get_controller_index() const { return controller_index; }
+			/// return player index
+			unsigned get_player_index() const { return player_index; }
 			/// return the state
 			const vr::vr_kit_state& get_state() const { return state; }
 			/// write to stream
@@ -127,7 +131,7 @@ namespace cgv {
 			std::vector<unsigned> last_time_stamps;
 			VREventTypeFlags event_type_flags;
 			///
-			void emit_events_and_update_state(void* kit_handle, const vr::vr_kit_state& new_state, vr::vr_kit_state& last_state, VREventTypeFlags flags, double time);
+			void emit_events_and_update_state(void* kit_handle, const vr::vr_kit_state& new_state, int kit_index, VREventTypeFlags flags, double time);
 		public:
 			/// construct server with default configuration
 			vr_server();

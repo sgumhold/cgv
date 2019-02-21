@@ -185,7 +185,6 @@ vr_emulator::vr_emulator() : cgv::base::node("vr_emulator")
 	ffb_support = true;
 	wireless = false;
 	counter = 0;
-	add_new_kit();
 	connect(cgv::gui::get_animation_trigger().shoot, this, &vr_emulator::timer_event);
 }
 
@@ -194,6 +193,7 @@ void vr_emulator::timer_event(double t, double dt)
 	if (current_kit_ctrl >= 0 && current_kit_ctrl < (int)kits.size()) {
 		if (left_ctrl || right_ctrl) {
 			kits[current_kit_ctrl]->body_direction += 3*(float)(left_ctrl ? -dt : dt);
+			update_all_members();
 			update_member(&kits[current_kit_ctrl]->body_direction);
 			post_redraw();
 		}
@@ -202,6 +202,7 @@ void vr_emulator::timer_event(double t, double dt)
 			update_member(&kits[current_kit_ctrl]->body_direction);
 			for (unsigned c = 0; c < 3; ++c)
 				update_member(&kits[current_kit_ctrl]->body_position[c]);
+			update_all_members();
 			post_redraw();
 		}
 	}
@@ -278,7 +279,18 @@ void vr_emulator::put_action_zone_bounary(std::vector<float>& boundary) const
 		reinterpret_cast<vec3&>(boundary[3 * i]) = pi;
 	}
 }
-
+bool vr_emulator::check_for_button_toggle(cgv::gui::key_event& ke, int controller_index, vr::VRButtonStateFlags button)
+{
+	if (current_kit_ctrl == -1)
+		return false;
+	if (current_kit_ctrl >= (int)kits.size())
+		return false;
+	if (ke.get_action() != cgv::gui::KA_PRESS)
+		return false;
+	kits[current_kit_ctrl]->state.controller[0].button_flags ^= button;
+	update_all_members();
+	return true;
+}
 /// overload and implement this method to handle events
 bool vr_emulator::handle(cgv::gui::event& e)
 {
@@ -286,6 +298,13 @@ bool vr_emulator::handle(cgv::gui::event& e)
 		return false;
 	cgv::gui::key_event& ke = static_cast<cgv::gui::key_event&>(e);
 	switch (ke.get_key()) {
+	case 'N' :
+		if (ke.get_action() == cgv::gui::KA_PRESS && 
+			ke.get_modifiers() == cgv::gui::EM_CTRL + cgv::gui::EM_ALT) {
+			add_new_kit();
+			return true;
+		}
+		return check_for_button_toggle(ke, 1, vr::VRF_STICK_TOUCH);
 	case '0':
 	case '1':
 	case '2':
@@ -296,6 +315,21 @@ bool vr_emulator::handle(cgv::gui::event& e)
 			current_kit_ctrl = -1;
 		update_member(&current_kit_ctrl);
 		break;
+	case 'Q': return check_for_button_toggle(ke, 0, vr::VRF_MENU);
+	case 'A': return check_for_button_toggle(ke, 0, vr::VRF_BUTTON0);
+	case 'D': return check_for_button_toggle(ke, 0, vr::VRF_BUTTON1);
+	case 'W': return check_for_button_toggle(ke, 0, vr::VRF_BUTTON2);
+	case 'X': return check_for_button_toggle(ke, 0, vr::VRF_BUTTON3);
+	case 'C': return check_for_button_toggle(ke, 0, vr::VRF_STICK_TOUCH);
+	case 'S': return check_for_button_toggle(ke, 0, vr::VRF_STICK);
+
+	case 'O': return check_for_button_toggle(ke, 1, vr::VRF_MENU);
+	case 'L': return check_for_button_toggle(ke, 1, vr::VRF_BUTTON0);
+	case 'I': return check_for_button_toggle(ke, 1, vr::VRF_BUTTON1);
+	case 'J': return check_for_button_toggle(ke, 1, vr::VRF_BUTTON2);
+	case 'M': return check_for_button_toggle(ke, 1, vr::VRF_BUTTON3);
+	case 'K': return check_for_button_toggle(ke, 1, vr::VRF_STICK);
+
 	case cgv::gui::KEY_Left:
 		if (current_kit_ctrl != -1) {
 			left_ctrl = (ke.get_action() != cgv::gui::KA_RELEASE);
@@ -330,7 +364,7 @@ bool vr_emulator::handle(cgv::gui::event& e)
 /// overload to stream help information to the given output stream
 void vr_emulator::stream_help(std::ostream& os)
 {
-
+	os << "vr_emulator: Ctrl-Alt-N to create vr kit; <0|1|2|3>+direction to move vr kit";
 }
 /// return the type name 
 std::string vr_emulator::get_type_name() const

@@ -593,24 +593,24 @@ bool stereo_view_interactor::handle(event& e)
 			update_member(&gamepad_attached);
 			post_redraw();
 		}
-	}
-	if (e.get_kind() == EID_THROTTLE) {
-		cgv::gui::throttle_event& te = static_cast<cgv::gui::throttle_event&>(e);
-		trigger[te.get_throttle_index()] = te.get_value();
-		return true;
-	}
-	else if (e.get_kind() == EID_STICK) {
-		cgv::gui::stick_event& se = static_cast<cgv::gui::stick_event&>(e);
-		cgv::math::fvec<float, 2> p(se.get_x(), se.get_y());
-		if (se.get_stick_index() == 0)
-			left_stick = p;
-		else
-			right_stick = p;
-		if ((e.get_flags() & EF_PAD) != 0) {
-			cgv::gui::gamepad_stick_event& gse = static_cast<cgv::gui::gamepad_stick_event&>(e);
-			gamepad_flags = gse.get_state().button_flags;
+		if (e.get_kind() == EID_THROTTLE) {
+			cgv::gui::throttle_event& te = static_cast<cgv::gui::throttle_event&>(e);
+			trigger[te.get_throttle_index()] = te.get_value();
+			return true;
 		}
-		return true;
+		else if (e.get_kind() == EID_STICK) {
+			cgv::gui::stick_event& se = static_cast<cgv::gui::stick_event&>(e);
+			cgv::math::fvec<float, 2> p(se.get_x(), se.get_y());
+			if (se.get_stick_index() == 0)
+				left_stick = p;
+			else
+				right_stick = p;
+			if ((e.get_flags() & EF_PAD) != 0) {
+				cgv::gui::gamepad_stick_event& gse = static_cast<cgv::gui::gamepad_stick_event&>(e);
+				gamepad_flags = gse.get_state().button_flags;
+			}
+			return true;
+		}
 	}
 	else if (e.get_kind() == EID_KEY) {
 		key_event ke = (key_event&) e;

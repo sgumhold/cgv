@@ -90,19 +90,20 @@ public:
 			if (vrke.get_action() != cgv::gui::KA_RELEASE) {
 				switch (vrke.get_key()) {
 				case vr::VR_LEFT_BUTTON0:
-					std::cout << "button 0 of left controller pressed" << std::endl;
+	//				std::cout << "button 0 of left controller pressed" << std::endl;
 					return true;
 				case vr::VR_RIGHT_STICK_RIGHT:
-					std::cout << "touch pad of right controller pressed at right direction" << std::endl;
+	//				std::cout << "touch pad of right controller pressed at right direction" << std::endl;
 					return true;
 				}
 			}
+			break;
 		}
 		case cgv::gui::EID_THROTTLE:
 		{
 			cgv::gui::vr_throttle_event& vrte = static_cast<cgv::gui::vr_throttle_event&>(e);
-			std::cout << "throttle " << vrte.get_throttle_index() << " of controller " << vrte.get_controller_index()
-				<< " adjusted from " << vrte.get_last_value() << " to " << vrte.get_value() << std::endl;
+//			std::cout << "throttle " << vrte.get_throttle_index() << " of controller " << vrte.get_controller_index()
+//				<< " adjusted from " << vrte.get_last_value() << " to " << vrte.get_value() << std::endl;
 			return true;
 		}
 		case cgv::gui::EID_STICK:
@@ -113,18 +114,18 @@ public:
 			case cgv::gui::SA_PRESS:
 			case cgv::gui::SA_UNPRESS:
 			case cgv::gui::SA_RELEASE:
-				std::cout << "stick " << vrse.get_stick_index() 
-					<< " of controller " << vrse.get_controller_index()
-					<< " " << cgv::gui::get_stick_action_string(vrse.get_action())
-					<< " at " << vrse.get_x() << ", " << vrse.get_y() << std::endl;
+//				std::cout << "stick " << vrse.get_stick_index() 
+//					<< " of controller " << vrse.get_controller_index()
+//					<< " " << cgv::gui::get_stick_action_string(vrse.get_action())
+//					<< " at " << vrse.get_x() << ", " << vrse.get_y() << std::endl;
 				return true;
 			case cgv::gui::SA_MOVE:
 			case cgv::gui::SA_DRAG:
-				std::cout << "stick " << vrse.get_stick_index()
-					<< " of controller " << vrse.get_controller_index()
-					<< " " << cgv::gui::get_stick_action_string(vrse.get_action())
-					<< " from " << vrse.get_last_x() << ", " << vrse.get_last_y() 
-					<< " to " << vrse.get_x() << ", " << vrse.get_y() << std::endl;
+	//			std::cout << "stick " << vrse.get_stick_index()
+	//				<< " of controller " << vrse.get_controller_index()
+	//				<< " " << cgv::gui::get_stick_action_string(vrse.get_action())
+	//				<< " from " << vrse.get_last_x() << ", " << vrse.get_last_y() 
+	//				<< " to " << vrse.get_x() << ", " << vrse.get_y() << std::endl;
 				return true;
 			}
 			return true;
@@ -153,7 +154,7 @@ public:
 						cgv::gui::VRE_STICK_KEY +
 						cgv::gui::VRE_POSE
 					));
-				vr_view_ptr->enable_vr_event_debugging(false);
+				vr_view_ptr->enable_vr_event_debugging(true);
 				// configure vr rendering
 				vr_view_ptr->draw_action_zone(false);
 				vr_view_ptr->draw_vr_kits(true);
