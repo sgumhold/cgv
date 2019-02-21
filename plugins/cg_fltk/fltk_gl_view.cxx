@@ -824,6 +824,9 @@ int fltk_gl_view::handle(int ei)
 	case fltk::KEY :
 		if (dispatch_event(cgv_key_event(fltk::event_key_repeated() ? KA_REPEAT : KA_PRESS)))
 			return 1;
+		if (fltk::event_key() >= fltk::HomeKey &&
+			fltk::event_key() <= fltk::EndKey)
+			return 1;
 		break;
 	case fltk::KEYUP :
 		if (dispatch_event(cgv_key_event(KA_RELEASE)))
