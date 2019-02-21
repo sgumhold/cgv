@@ -144,6 +144,7 @@ void vr_view_interactor::on_set(void* member_ptr)
 /// overload to stream help information to the given output stream
 void vr_view_interactor::stream_help(std::ostream& os)
 {
+	os << "vr_view_interactor: Ctrl-0|1|2|3 to select player\n";
 	stereo_view_interactor::stream_help(os);
 }
 
@@ -170,6 +171,21 @@ bool vr_view_interactor::handle(cgv::gui::event& e)
 		if ((e.get_flags() & cgv::gui::EF_VR) != 0) {
 			e.stream_out(std::cout);
 			std::cout << std::endl;
+		}
+	}
+	if (e.get_kind() == cgv::gui::EID_KEY) {
+		cgv::gui::key_event& ke = static_cast<cgv::gui::key_event&>(e);
+		if ((ke.get_action() == cgv::gui::KA_PRESS) && 
+			(ke.get_modifiers() == cgv::gui::EM_CTRL)) {
+			if (ke.get_key() >= '0' && ke.get_key() < '4') {
+				unsigned player_index = ke.get_key() - '0';
+				if (player_index < kits.size()) {
+					current_vr_handle_index = player_index + 1;
+					current_vr_handle = kits[player_index];
+					update_member(&current_vr_handle_index);
+					return true;
+				}
+			}
 		}
 	}
 	return stereo_view_interactor::handle(e);
