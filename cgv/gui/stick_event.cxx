@@ -21,7 +21,7 @@ std::string get_stick_action_string(StickAction action)
 /// construct a key event from its textual description 
 stick_event::stick_event(StickAction _action, float _x, float _y, float _dx, float _dy, 
 	unsigned _player_index, unsigned _controller_index, unsigned _stick_index, double _time)
-	: event(EID_STICK, 0,0,_time), action(_action), x(_x), y(_y), dx(_dx), dy(_dy),
+	: event(EID_STICK, 0,0,_time), action(_action), position(_x, _y), difference(_dx, _dy),
 	player_index(_player_index), controller_index(_controller_index), stick_index(_stick_index)
 {}
 
@@ -45,13 +45,13 @@ unsigned stick_event::get_stick_index() const
 void stick_event::stream_out(std::ostream& os) const
 {
 	event::stream_out(os);
-	os << get_stick_action_string(StickAction(action)) << "(" << x << "," << y << ")[";
-	if (dx > 0)
+	os << get_stick_action_string(StickAction(action)) << "(" << position[0] << "," << position[1] << ")[";
+	if (difference[0] > 0)
 		os << "+";
-	os << dx << ",";
-	if (dy > 0)
+	os << difference[0] << ",";
+	if (difference[1] > 0)
 		os << "+";
-	os << dy << "]";
+	os << difference[1] << "]";
 	os << "<" << (int)player_index << ":" << (int)controller_index << ":" << (int)stick_index << ">";
 }
 /// read from stream
@@ -68,32 +68,50 @@ StickAction stick_event::get_action() const
 /// return the current x value of the stick
 float stick_event::get_x() const
 {
-	return x;
+	return position[0];
 }
 /// return the current y value of the stick
 float stick_event::get_y() const
 {
-	return y;
+	return position[1];
 }
 /// return the current change in x value of the stick
 float stick_event::get_dx() const
 {
-	return dx;
+	return difference[0];
 }
 /// return the current change in y value of the stick
 float stick_event::get_dy() const
 {
-	return dy;
+	return difference[1];
 }
+/// return current position
+const stick_event::vec2& stick_event::get_position() const
+{
+	return position;
+}
+
+/// return the vector of coordinate differences (dx,dy)
+const stick_event::vec2& stick_event::get_difference() const
+{
+	return difference;
+}
+
+/// return last position
+stick_event::vec2 stick_event::get_last_position() const
+{
+	return position - difference;
+}
+
 /// return the last x value of the stick
 float stick_event::get_last_x() const
 {
-	return x - dx;
+	return position[0] - difference[0];
 }
 /// return the last y value of the stick
 float stick_event::get_last_y() const
 {
-	return y - dy;
+	return position[1] - difference[1];
 }
 
 	}

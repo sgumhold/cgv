@@ -600,11 +600,11 @@ bool stereo_view_interactor::handle(event& e)
 		}
 		else if (e.get_kind() == EID_STICK) {
 			cgv::gui::stick_event& se = static_cast<cgv::gui::stick_event&>(e);
-			cgv::math::fvec<float, 2> p(se.get_x(), se.get_y());
 			if (se.get_stick_index() == 0)
-				left_stick = p;
+				left_stick = se.get_position();
 			else
-				right_stick = p;
+				right_stick = se.get_position();
+
 			if ((e.get_flags() & EF_PAD) != 0) {
 				cgv::gui::gamepad_stick_event& gse = static_cast<cgv::gui::gamepad_stick_event&>(e);
 				gamepad_flags = gse.get_state().button_flags;

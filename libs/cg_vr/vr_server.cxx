@@ -1,3 +1,4 @@
+#include <cgv/base/base.h>
 #include <vr/vr_driver.h>
 #include "vr_server.h"
 #include <cgv/gui/application.h>
@@ -84,8 +85,8 @@ namespace cgv {
 		}
 		/// construct a key event from its textual description 
 		vr_pose_event::vr_pose_event(void* _device_handle, short _trackable_index, const vr::vr_kit_state& _state,
-			const float *_pose, unsigned short _player_index, double _time)
-			: pose_event(_pose, _player_index, _trackable_index, _time),
+			const float *_pose, const float *_last_pose, unsigned short _player_index, double _time)
+			: pose_event(_pose, _last_pose, _player_index, _trackable_index, _time),
 			device_handle(_device_handle), state(_state)
 		{
 			flags = EF_VR;
@@ -288,12 +289,12 @@ namespace cgv {
 			// finally check for pose, axis or vibration changes and emit general new_state change if necessary
 			if ((flags & VRE_POSE) != 0) {
 				if (array_unequal(new_state.hmd.pose, last_state.hmd.pose, 12)) {
-					vr_pose_event vrpe(kit_handle, -1, new_state, new_state.hmd.pose, kit_index, time);
+					vr_pose_event vrpe(kit_handle, -1, new_state, new_state.hmd.pose, last_state.hmd.pose, kit_index, time);
 					on_event(vrpe);
 				}
 				for (int c = 0; c < 2; ++c) {
 					if (array_unequal(new_state.controller[c].pose, last_state.controller[c].pose, 12)) {
-						vr_pose_event vrpe(kit_handle, c, new_state, new_state.controller[c].pose, kit_index, time);
+						vr_pose_event vrpe(kit_handle, c, new_state, new_state.controller[c].pose, last_state.controller[c].pose, kit_index, time);
 						on_event(vrpe);
 					}
 				}
