@@ -2,6 +2,7 @@
 
 #include "event.h"
 #include "shortcut.h"
+#include <cgv/math/fvec.h>
 
 #include "lib_begin.h"
 
@@ -24,14 +25,17 @@ extern CGV_API std::string get_stick_action_string(StickAction action);
 /// class to represent stick events with the EID_STICK
 class CGV_API stick_event : public event
 {
+public:
+	/// declare 2d vector type 
+	typedef cgv::math::fvec<float, 2> vec2;
 protected:
 	unsigned char player_index, controller_index, stick_index;
 	/// store stick action
 	unsigned char action;
 	/// current stick location
-	float x, y;
+	vec2 position;
 	/// change in stick location
-	float dx, dy;
+	vec2 difference;
 public:
 	/// construct a key event from its textual description 
 	stick_event(StickAction _action, float _x, float _y, float _dx, float _dy, 
@@ -52,14 +56,20 @@ public:
 	float get_x() const;
 	/// return the current y value of the stick
 	float get_y() const;
+	/// return current position
+	const vec2& get_position() const;
 	/// return the current change in x value of the stick
 	float get_dx() const;
 	/// return the current change in y value of the stick
 	float get_dy() const;
+	/// return the vector of coordinate differences (dx,dy)
+	const vec2& get_difference() const;
 	/// return the last x value of the stick
 	float get_last_x() const;
 	/// return the last y value of the stick
 	float get_last_y() const;
+	/// return last position
+	vec2 get_last_position() const;
 };
 
 	}

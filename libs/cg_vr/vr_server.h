@@ -97,7 +97,7 @@ namespace cgv {
 		public:
 			/// construct a key event from its textual description 
 			vr_pose_event(void* _device_handle, short _trackable_index, const vr::vr_kit_state& _state,
-				const float *_pose, unsigned short _player_index, double _time = 0);
+				const float *_pose, const float *_last_pose, unsigned short _player_index, double _time = 0);
 			/// return the device id, by default returns 0
 			void* get_device_handle() const { return device_handle; }
 			/// return the state

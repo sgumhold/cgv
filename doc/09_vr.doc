@@ -1,4 +1,14 @@
-VR support
+// This file is for Doxygen input. It is not compiled.
+
+#include <libs/vr/vr_event.h>
+#include <libs/vr/vr_driver.h>
+#include <libs/vr/vr_kit.h>
+#include <libs/vr/gl_vr_display.h>
+#include <plugins/vr_emulator/vr_emulator.h>
+#include <plugins/cg_vr/vr_server.h>
+#include <plugins/crg_vr_view/vr_view_interactor.h>
+
+/*! \page VR VR support
 
 cgv/libs/vr
   basic interface to implement vr apps that is independent of cgv framework and specific
@@ -103,3 +113,4 @@ cgv/plugins/cg_vr
 		cgv::gui::vr_server
 
 cgv/plugins/vr_test
+*/
