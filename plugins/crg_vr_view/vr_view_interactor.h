@@ -10,6 +10,48 @@
 
 #include "lib_begin.h"
 
+///@ingroup VR
+///@{
+
+//! extends the stereo view interactor for vr support
+/*! Besides adding the crg_vr_view plugin to your project, you can configure
+    the vr_view_interactor in your cgv::render::drawable::init() function similar
+	to the following example:
+~~~~~~~~~~~~~~~~~~~~~~~~
+#include <vr_view_interactor.h>
+
+bool your_class::init(cgv::render::context& ctx)
+{
+	cgv::gui::connect_vr_server(true);
+
+	auto view_ptr = find_view_as_node();
+	if (view_ptr) {
+		// if the view points to a vr_view_interactor
+		vr_view_ptr = dynamic_cast<vr_view_interactor*>(view_ptr);
+		if (vr_view_ptr) {
+			// configure vr event processing
+			vr_view_ptr->set_event_type_flags(
+				cgv::gui::VREventTypeFlags(
+					cgv::gui::VRE_KEY +
+					cgv::gui::VRE_THROTTLE+
+					cgv::gui::VRE_STICK +
+					cgv::gui::VRE_STICK_KEY +
+					cgv::gui::VRE_POSE
+				));
+			vr_view_ptr->enable_vr_event_debugging(false);
+			// configure vr rendering
+			vr_view_ptr->draw_action_zone(false);
+			vr_view_ptr->draw_vr_kits(true);
+			vr_view_ptr->enable_blit_vr_views(true);
+			vr_view_ptr->set_blit_vr_view_width(200);
+		}
+	}
+	// more application specific init here
+
+	return true;
+}
+~~~~~~~~~~~~~~~~~~~~~~~~
+*/
 class CGV_API vr_view_interactor : 
 	public stereo_view_interactor	
 {
@@ -124,5 +166,6 @@ public:
 	/// you must overload this for gui creation
 	void create_gui();
 };
+///@}
 
 #include <cgv/config/lib_end.h>

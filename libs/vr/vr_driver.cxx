@@ -62,7 +62,7 @@ namespace vr {
 		return ref_drivers();
 	}
 
-	/// scan all registered vr drivers for vr kits and return vector of vr kit ids
+	/// iterate all registered vr drivers to scan for vr kits and return vector of vr kit handles
 	std::vector<void*> scan_vr_kits()
 	{
 		std::vector<void*> kit_handles;
@@ -72,7 +72,7 @@ namespace vr {
 		}
 		return kit_handles;
 	}
-	/// query a pointer to a vr kit by its id, function can return null pointer in case that no vr kit exists for given id
+	/// query a pointer to a vr kit by its device handle, function can return null pointer in case that no vr kit exists for given handle
 	vr_kit* get_vr_kit(void* handle)
 	{
 		auto iter = ref_vr_kit_map().find(handle);

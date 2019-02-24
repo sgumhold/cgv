@@ -192,16 +192,30 @@ void vr_emulator::timer_event(double t, double dt)
 {
 	if (current_kit_ctrl >= 0 && current_kit_ctrl < (int)kits.size()) {
 		if (left_ctrl || right_ctrl) {
-			kits[current_kit_ctrl]->body_direction += 3*(float)(left_ctrl ? -dt : dt);
+			kits[current_kit_ctrl]->body_direction += 3 * (float)(left_ctrl ? -dt : dt);
 			update_all_members();
-			update_member(&kits[current_kit_ctrl]->body_direction);
 			post_redraw();
 		}
 		if (up_ctrl || down_ctrl) {
-			kits[current_kit_ctrl]->body_position -= 3*(float)(down_ctrl ? -dt : dt) * kits[current_kit_ctrl]->get_body_direction();
-			update_member(&kits[current_kit_ctrl]->body_direction);
-			for (unsigned c = 0; c < 3; ++c)
-				update_member(&kits[current_kit_ctrl]->body_position[c]);
+			kits[current_kit_ctrl]->body_position -= 3 * (float)(down_ctrl ? -dt : dt) * kits[current_kit_ctrl]->get_body_direction();
+			update_all_members();
+			post_redraw();
+		}
+		if (home_ctrl || end_ctrl) {
+			kits[current_kit_ctrl]->gear_parameter += (float)(home_ctrl ? -dt : dt);
+			if (kits[current_kit_ctrl]->gear_parameter < -1)
+				kits[current_kit_ctrl]->gear_parameter = -1;
+			else if (kits[current_kit_ctrl]->gear_parameter > 1)
+				kits[current_kit_ctrl]->gear_parameter = 1;
+			update_all_members();
+			post_redraw();
+		}
+		if (pgup_ctrl || pgdn_ctrl) {
+			kits[current_kit_ctrl]->hip_parameter += (float)(pgup_ctrl ? -dt : dt) ;
+			if (kits[current_kit_ctrl]->hip_parameter < -1)
+				kits[current_kit_ctrl]->hip_parameter = -1;
+			else if (kits[current_kit_ctrl]->hip_parameter > 1)
+				kits[current_kit_ctrl]->hip_parameter = 1;
 			update_all_members();
 			post_redraw();
 		}
@@ -361,6 +375,34 @@ bool vr_emulator::handle(cgv::gui::event& e)
 			return true;
 		}
 		break;
+	case cgv::gui::KEY_Home:
+		if (current_kit_ctrl != -1) {
+			home_ctrl = (ke.get_action() != cgv::gui::KA_RELEASE);
+			update_member(&home_ctrl);
+			return true;
+		}
+		break;
+	case cgv::gui::KEY_End:
+		if (current_kit_ctrl != -1) {
+			end_ctrl = (ke.get_action() != cgv::gui::KA_RELEASE);
+			update_member(&end_ctrl);
+			return true;
+		}
+		break;
+	case cgv::gui::KEY_Page_Up:
+		if (current_kit_ctrl != -1) {
+			pgup_ctrl = (ke.get_action() != cgv::gui::KA_RELEASE);
+			update_member(&pgup_ctrl);
+			return true;
+		}
+		break;
+	case cgv::gui::KEY_Page_Down:
+		if (current_kit_ctrl != -1) {
+			pgdn_ctrl = (ke.get_action() != cgv::gui::KA_RELEASE);
+			update_member(&pgdn_ctrl);
+			return true;
+		}
+		break;
 	}
 	return false;
 }
@@ -481,6 +523,11 @@ void vr_emulator::create_gui()
 	add_member_control(this, "right", right_ctrl, "toggle", "w=35", " ");
 	add_member_control(this, "up", up_ctrl, "toggle", "w=35", " ");
 	add_member_control(this, "down", down_ctrl, "toggle", "w=35");
+	align("       ");
+	add_member_control(this, "home", home_ctrl, "toggle", "w=35", " ");
+	add_member_control(this, "end", end_ctrl, "toggle", "w=35", " ");
+	add_member_control(this, "pgup", pgup_ctrl, "toggle", "w=35", " ");
+	add_member_control(this, "pgdn", pgdn_ctrl, "toggle", "w=35");
 
 	for (unsigned i = 0; i < kits.size(); ++i) {
 		if (begin_tree_node(kits[i]->get_name(), *kits[i], false, "level=2")) {

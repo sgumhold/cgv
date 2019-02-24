@@ -12,17 +12,17 @@ in the command line arguments. All plugin interfaces and the registration is
 handled by the cgv libraries.
 
 The cgv libraries (dependencies) are
-- cgv_os ... basic operating system support (threads, sockets)
 - cgv_signal ... signal mechanism and binding of functions to signals
 - cgv_utils ... helps to work with files and text and has functionality to parse text
 - cgv_type (cgv_utils) ... standardized type declaration and type reflection support
 - cgv_reflect (cgv_utils/type) ... mechanism to reflect types in C++
 - cgv_data (cgv_utils/type) ... data management such as smart pointers and data views
-- cgv_base (cgv_data/type/utils) ... registration mechanism, communication and hierarchical structures
+- cgv_base (cgv_reflect(data/type/utils) ... registration mechanism, communication and hierarchical structures
 - cgv_math (cgv_base/type/utils) ... large collection of mostly templated math functions and solvers
 - cgv_media (cgv_base/data/type/utils) ... support for fonts, images, video and 3D data
 - cgv_gui (cgv_media/base/data/type/utils) ... abstraction of gui
 - cgv_render (cgv_gui/media/base/data/type/utils) ... rendering support with OpenGL specialization
+- cgv_os ... basic operating system support (threads, sockets)
 
 
 Deprecated is the cgv library that includes all of the above components in one library.
@@ -79,8 +79,8 @@ the registration code is executed when the dll is loaded.
 
 \section directories Directory Tree
 
-The framework is managed in a svn repository located at
-https://cgv.inf.tu-dresden.de/svn/cgv/release . It consists of the following tree of 
+The framework is provided through https://github.com/sgumhold/cgv.git. The current 
+branch is called develop_core. The framework consists of the following tree of 
 sub directories:
 - 3rd ... 3rd party libraries conditioned for the cgv framework currently 
 including ANN, fltk, glew, jpeg, png, pthread (deprecated), tiff, webserver, zlib.
@@ -103,7 +103,6 @@ display (tool to adjust display settings - Windows only)
     - image ... interfaces and driver plugin mechanism for image reader and writer with bmp support (use the cmi_io plugin)
 	- illum ... light source and material data structures
     - video ... interfaces and driver plugin mechanism for video reader and writer (use the cmv_avi plugin under windows)
-    - text (deprecated, use cgv_utils instead)
   - os ... support for threads, mutexes, system clipboard, display, sockets and simple webserver
   - reflect ... simple to use self reflection mechanism (use library cgv/libs/cgv_reflect_types for implementation of self for most important types defined in cgv core libraries)
   - render ... abstracted interface for GPU programming (use with library cgv/libs/cgv_gl for OpenGL implementation of interfaces)
@@ -112,20 +111,6 @@ display (tool to adjust display settings - Windows only)
   - utils ... utility functions for handling files, processing text, bit operations, simple progression on the console, stop watch and incremental statistics computation
 - doc ... source for related pages of documentation 
 - make ... makefiles, currently support for cmake and different versions of visual studio.
-- plugins ... commonly used plugins
-  - cg_fltk ... plugin that implements the abstract gui framework
-  - cg_icons ... icon resources
-  - cg_multi_mouse ... adds multi-mouse events to handle cg_fltk gui
-  - cmi_io ... support for image io
-  - cmv_avi ... support for video io through avi files
-  - crg_view ... provides mouse interaction for the opengl view in the cgv_viewer
-  - crg_planar_view ... variant of crg_view where only 2d navigation is possible
-  - crg_spherical_view ... variant of crg_view with a spherical coordinate system
-  - crg_grid ... renders a grid
-  - crg_antialias ... supports jitter based antialiasing
-  - crg_depth_of_field ... supports rendering with depth of field
-  - crg_light ... provides gui to adjust light sources
-  - examples ... different example classes that illustrate the cgv framework
 - libs
   - ann_wrapper ... C++-wrapper to ann library
   - cgv_gl ... implementation of interfaces in cgv_render for OpenGL
@@ -136,9 +121,31 @@ display (tool to adjust display settings - Windows only)
   - multi_mouse ... support to access several mouse devices in parallel (windows only)
   - plot ... library to draw plots of 1D and 2D functions
   - ppp ... script engine used for ppp source and makefile file processing tool
+  - gamepad ... library to access gamepad devices
+  - cg_gamepad ... library that provides a gamepad_server that emits events from gamepad devices
   - space_pilot ... library to access space pilot devices
+  - vr ... basic vr support without further dependencies
+  - cg_vr ... library that provides a vr_server that emits events from vr devices
+- plugins ... commonly used plugins
+  - cg_fltk ... plugin that implements the abstract gui framework
+  - cg_icons ... icon resources
+  - cg_multi_mouse ... adds multi-mouse events to handle cg_fltk gui
+  - cmi_io ... support for image io
+  - cmv_avi ... support for video io through avi files
+  - crg_view ... provides mouse interaction for the opengl view in the cgv_viewer
+  - crg_planar_view ... variant of crg_view where only 2d navigation is possible
+  - crg_spherical_view ... variant of crg_view with a spherical coordinate system
+  - crg_stereo_view ... provides mouse interaction for a stereoscopic opengl view
+  - crg_grid ... renders a grid
+  - crg_antialias ... supports jitter based antialiasing
+  - crg_depth_of_field ... supports rendering with depth of field
+  - crg_light ... provides gui to adjust light sources
+  - examples ... different example classes that illustrate the cgv framework
+  - openvr_driver ... openvr api driver for the vr library
+  - crg_vr_view ... extends crg_stereo_view with support to render to vr_kit hmds
+  - vr_test ... sample plugin that shows how to use vr kits 
 - test ... test sources for different parts of the framework that also serve as examples
-
+  - vr_emulator ... plugin that provides vr_kit emulation
 \section viewer Usage of the cgv_viewer
 
 The cgv_viewer can load plugins after start up. It parses the command line arguments

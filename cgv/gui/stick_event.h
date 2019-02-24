@@ -6,7 +6,9 @@
 
 #include "lib_begin.h"
 
+///
 namespace cgv {
+	///
 	namespace gui {
 
 /// different actions that a stick can perform
@@ -29,6 +31,7 @@ public:
 	/// declare 2d vector type 
 	typedef cgv::math::fvec<float, 2> vec2;
 protected:
+	// store different indices to uniquely define stick
 	unsigned char player_index, controller_index, stick_index;
 	/// store stick action
 	unsigned char action;

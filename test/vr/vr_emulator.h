@@ -11,6 +11,12 @@
 
 #include "lib_begin.h"
 
+///@ingroup VR
+///@{
+
+/**@file 
+provides vr_emulator and vr_emulated_kit classes.
+*/
 class CGV_API vr_emulator;
 
 class CGV_API vr_emulated_kit : public vr::gl_vr_display, public cgv::render::render_types
@@ -64,6 +70,7 @@ protected:
 	float body_speed;
 
 	bool left_ctrl, right_ctrl, up_ctrl, down_ctrl;
+	bool home_ctrl, end_ctrl, pgup_ctrl, pgdn_ctrl;
 	int current_kit_ctrl;
 	void create_trackable_gui(const std::string& name, vr::vr_trackable_state& ts);
 	void create_controller_gui(int i, vr::vr_controller_state& cs);

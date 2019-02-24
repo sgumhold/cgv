@@ -6,12 +6,44 @@
 
 #include "lib_begin.h"
 
+///@ingroup VR
+///@{
+
+///
 namespace vr {
 	/// forward declaration of vr driver class
 	class CGV_API vr_driver;
-	/**@name vr device management */
+	/**@name vr kit management */
 	//@{
-	/// information provided per vr device
+	//! information provided per vr device
+	/*! each vr_kit is uniquely specified by a device handle that is represented as void* and
+	can be access via get_device_handle(). Furthermore, each kit has a human readable
+	name [get_name()].
+	The corresponding driver is access through get_driver(). In case of an error, the error
+	message can be accessed via get_last_error().
+
+	query_state(vr_kit_state& state, int pose_query) gives access to the state of the kit and comes in 
+	three variants distinguished by the pose_query parameter:
+	- 0 ... query controller state only
+	- 1 ... query most recent controller state and poses of hmd and controller
+	- 2 ... wait for the optimal time to start a rendering process and query state and future poses
+
+	TODO: support for vibration based force feedback
+
+	rendering to the hmd is done in current opengl context via init_fbos(), enable_fbo(eye),
+	disable_fbo(eye) and submit_frame() (after rendering both eyes). The crg_vr_view plugin
+	uses these functions and completely handles the rendering process. If you want to use
+	the functions yourself, you need to ensure to make the opengl context current before calling
+	them.
+	In order to debug the vr views, the function blit_fbo(eye,x,y,w,h) allows to blit a vr view
+	into the framebuffer currently bound to GL_DRAW_FRAMEBUFFER.
+
+	In order to build the modelview and projection matrices for rendering, the functions
+	put_eye_to_head_matrix(eye,float[12]) provides a 3x4 pose matrix for each eye.
+	Multiplying to the hmd pose matrix and inverting the matrix product yields the modelview
+	matrix. The projection matrix can be accessed per eye via
+	put_projection_matrix(eye,z_near,z_far,float[16]).
+	*/
 	class CGV_API vr_kit
 	{
 	protected:
@@ -85,5 +117,7 @@ namespace vr {
 		virtual void submit_frame() = 0;
 	};
 }
+
+///@}
 
 #include <cgv/config/lib_end.h>

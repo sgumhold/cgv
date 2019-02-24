@@ -114,7 +114,7 @@ plugins/examples/simple_cube_8.h.
 Instances of the classes derived from \ref cgv::base::base "base" can be published to the application and to previously 
 registered listeners by plugins through the registration facility describe in section \ref Plugins. The following
 two methods allow an instance to react to registration and unregistration:
-- \ref cgv::base::base::register() "register()" ... called by registration facility after instance has been registered at all listeners.
+- \ref cgv::base::base::on_register() "on_register()" ... called by registration facility after instance has been registered at all listeners.
 - \ref cgv::base::base::unregister() "unregister()" ... called by registration facility after instance has been unregistered completely
 
 \section Plugins Registration Mechanism for Plugins

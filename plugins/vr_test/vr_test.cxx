@@ -7,10 +7,17 @@
 #include <cgv/render/shader_program.h>
 #include <cgv/render/attribute_array_binding.h>
 #include <cgv_gl/box_renderer.h>
+#include <cg_gamepad/gamepad_server.h>
+
+///@ingroup VR
+///@{
+
+/**@file
+   example plugin for vr usage
+*/
 
 // these are the vr specific headers
 #include <cg_vr/vr_server.h>
-#include <cg_gamepad/gamepad_server.h>
 #include <vr_view_interactor.h>
 
 /// the plugin class vr_test inherits like other plugins from node, drawable and provider
@@ -277,3 +284,5 @@ void vr_test::construct_environment(float s, float ew, float ed, float eh, float
 #include <cgv/base/register.h>
 
 cgv::base::object_registration<vr_test> vr_test_reg("");
+
+///@}

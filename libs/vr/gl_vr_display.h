@@ -6,8 +6,16 @@
 
 #include "lib_begin.h"
 
+///@ingroup VR
+///@{
+
+
+///
 namespace vr {
-	/// information provided per vr device
+	//! implements offscreen rendering
+	/*! gl_vr_display is used by the openvr driver as well as by the vr_emulated_kit
+	    of the vr_emulator. Implements the init_fbos(), enable_fbos(), disable_fbos(), 
+		destruct_fbos() functions with opengl and glew */
 	class CGV_API gl_vr_display : public vr_kit
 	{
 	private:
@@ -46,5 +54,7 @@ namespace vr {
 		void disable_fbo(int eye);
 	};
 }
+
+///@}
 
 #include <cgv/config/lib_end.h>
