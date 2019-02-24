@@ -6,7 +6,7 @@ using namespace cgv::type;
 
 /*! \page typeNS Namespace cgv::type
 
-\subsection typeTR Type Reflection
+\section typeTR Type Reflection
 
 C++ does not allow to enumerate the members and methods of a class and get their names. This
 functionality has to be provided by the programmer and is typically refered to as \a type \a reflection.

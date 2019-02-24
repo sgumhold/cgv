@@ -11,7 +11,7 @@
 namespace cgv {
 	namespace gui {
 
-/// class to represent all possible keyboard events with the EID_KEY
+/// class to represent all pose events from tracking systems with the EID_POSE
 class CGV_API pose_event : public event
 {
 public:
@@ -24,6 +24,7 @@ public:
 	/// declare quaternion type
 	typedef cgv::math::quaternion<float> quat;
 protected:
+	// store different indices to uniquely define trackable
 	short player_index, trackable_index;
 	/// pose stored as 3x4 matrix in column major format
 	float pose[12];

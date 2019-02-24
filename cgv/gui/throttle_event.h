@@ -5,13 +5,16 @@
 
 #include "lib_begin.h"
 
+///
 namespace cgv {
+	///
 	namespace gui {
 
 /// class to represent events that inform on a change in a one axis controller with the EID_THROTTLE
 class CGV_API throttle_event : public event
 {
 protected:
+	// store different indices to uniquely define throttle
 	unsigned char player_index, controller_index, throttle_index;
 	// current value of throttle
 	float x;

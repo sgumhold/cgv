@@ -10,107 +10,92 @@
 
 /*! \page VR VR support
 
-cgv/libs/vr
+\section VRIntro Introduction to VR Support in CGV Framework
+
+The VR support distributed over several libraries and plugins. 
+The following list gives a brief overview:
+
+- cgv/libs/vr \ref VR
+
   basic interface to implement vr apps that is independent of cgv framework and specific
   vr api. It builds on the concept of a driver that provides instances of vr kits. There
   can be several drivers in use at the same time. A simple registry is used to manage 
   drivers and vr kits. The vr_kit class provides access to the display and the controllers
   with a simple state polling api.
 
-#include <vr/vr_event.h>
-  defines types to store the state of a vr kit which is split into sub states for
-  the hmd and the two controllers
+- cgv/plugins/openvr_driver
 
-  class vr::vr_trackable_state    
-    provides status as vr::VRStatus and pose:float[12] of a trackable sub device
-	where the pose is stored in a 3x4 column major format
-
-  class vr::vr_controller_state
-    extends the trackable state by a time_stamp, button_flags, axes[8], and vibration[2]
-	There are 7 buttons as listed in vr::VRButtonStateFlags, where vr::VRF_STICK_TOUCH 
-	corresponds to touching of the stick/touch pad and vr::VRF_STICK to pressing it. The
-	controller provides up to 8 axes, where the first two correspond to the stick/touch pad
-	position and the third (axe[2]) to the trigger.
-
-  class vr::vr_kit_state
-    simply combines state information on the hmd:vr::vr_trackable_state and the two controllers
-	controllers[2]:vr::vr_controller_state. The controllers are always enumerated such that
-	controller index 0 is the left and 1 the right controller.
-
-#include <vr/vr_driver.h>
-  defines the vr_driver class and gives access to the driver and vr kit registries
-
-  class vr::vr_driver
-    a vr driver has a name [get_driver_name()] and can be installed or not [installed()].
-	It allows to scan for vr kits [scan_vr_kits()] and returns a vector of device handles.
-	The 
-	get_driver_name, scan_vr_kits, x|up_dir, action zone
-
-  std::vector<void*> vr::scan_vr_kits()
-    scan vr kits with all registered drivers and return vector of device handles
-
-  vr::vr_kit* vr::get_vr_kit(void*)
-    query the pointer to the vr kit correspoinding to a vr kit handle. If the vr kit
-	has been detached before, the function can return a nullptr.
-
-#include <vr/vr_kit.h>
-  defines the class vr_kit that is used to access a vr kit and created by vr_drivers
-
-  class vr::vr_kit
-    each vr_kit is uniquely specified by a device handle that is represented as void* and 
-	can be access via get_device_handle(). Furthermore, each kit has a name [get_name()].
-	The corresponding driver is access through get_driver(). In case of an error, the error
-	message can be accessed via get_last_error(). 
-	
-	query_state(state, 0..2) gives access to the state of the kit and comes in three variants:
-	0 ... query controller state only
-	1 ... query most recent controller state and poses of hmd and controller
-	2 ... wait for the optimal time to start a rendering process and query state and future poses 
-	
-	TODO: support for vibration based force feedback
-	
-	rendering to the hmd is done in current opengl context via init_fbos(), enable_fbo(eye),
-	disable_fbo(eye) and submit_frame() [after rendering both eyes]. The crg_vr_view plugin
-	uses these functions and completely handles the rendering process. If you want to use
-	the functions yourself, you need to ensure to make the opengl context current.
-	In order to debug the vr views, the function blit_fbo(eye,x,y,w,h) allows to blit a vr view
-	into the framebuffer currently bound to the draw framebuffer.
-	
-	In order to build the modelview and projection matrix for rendering, the functions
-	put_eye_to_head_matrix(eye,float[12]) provides a 3x4 pose matrix for each eye. 
-	Multiplying to the hmd pose matrix and inverting the matrix product yields the modelview
-	matrix. The projection matrix can be accessed per eye via 
-	put_projection_matrix(eye,z_near,z_far,float[16]).
-
-	best The core to access the and can access  the // query_state, init_fbos, enable_fbos, submit_frame
-
-#include <vr/gl_vr_display.h>
-  the gl_vr_display class implements offscreen rendering and is used by the openvr driver
-  as well as by the vr_emulated_kit of the vr_emulator
-
- class vr::gl_vr_display
-   implements the init_fbos, enable_fbos, disable_fbos, destruct_fbos functions with opengl and glew
-
-
-cgv/plugins/openvr_driver
   implements the vr interface for the openvr api. The api header, libs and windows dlls are
-  included. The dlls are provided in the path cgv/bin/win32 and cgv/bin/win64. The platform
+  included. The dlls are provided in the paths cgv/bin/win32 and cgv/bin/win64. The platform
   specific path is added when executing the script cgv/define_system_variables.bat.
   The only thing that needs to be done is to add the openvr_driver plugin as dependent project
   in the .pj-file.
 
-cgv/plugins/vr_emulator
-  implements the vr interface for emulated vr kits and supports multiple kits at the same time
+- cgv/plugins/vr_emulator
+  
+  implements the vr interface for emulated vr kits and supports multiple kits at the same time.
+  When added to the .pj-file, the vr_emulator defines a new tabgroup in the user interface and
+  handles some key events:
+  
+  - Ctrl-Alt-N ... creates a new vr_kit
+  
+  Each vr_kit is controlled by a very simple model of the human body that can move and turn,
+  bend the hip forward/backward, turn the head left or right (gear) and move each hand a local
+  3D coordinate system with origin in the corresponding shoulder and oriented as the hip 
+  coordinate system.
 
-#include <vr_emulator.h>
+  To control the body model the vr_emulator allows to use the keys <0>, <1>, <2>, and <3> as 
+  modifier keys to control up to 4 vr_kits with the keyboard. The arrow keys allow to move and
+  rotate. <PgUp> and <PgDn> correspond to the hip bending and <Home> and <End> to gearing.
+  
+  The controller keys of each kit are emulated with the following keys pressed with the vr_kit
+  modifier key (<0>,...,<3>) hold down:
 
-cgv/plugins/crg_vr_view
+  - Q ... left menu
+  - A ... left button 0
+  - W ... left button 1
+  - D ... left button 2
+  - X ... left button 3
+  - C ... left touch
+  - S ... left press
+  - O ... right menu
+  - L ... right button 0
+  - I ... right button 1
+  - J ... right button 2
+  - M ... right button 3
+  - K ... right touch
+  - N ... right press
+  
+  To make sure that all keys are dispatched by the vr_emulator, select it for keyboard focus
+  with the tab key or by selecting its tab group.
 
-cgv/plugins/cg_vr
-	vr_server.h
-		cgv::gui::vr_event
-		cgv::gui::vr_key_event
-		cgv::gui::vr_server
+- cgv/plugins/cg_vr
 
-cgv/plugins/vr_test
+  This plugin connects the vr library to the cgv/gui library by translating changes in the
+  vr kit states into events. The central class for this is cgv::gui::vr_server. Please see
+  its documentation.
+  
+- cgv/plugins/crg_vr_view
+
+  This plugin extends the stereo_view_interactor class of the crg_stereo_view plugin with
+  vr support to the vr_view_interactor class. It connects to the on_device_change 
+  signal of the cgv::gui::vr_server singelton and keeps track of device changes in order 
+  to initialize and destruct their framebuffers in the opengl context of the vr_view_interactor.
+  
+  It keeps a current vr_kit which can be selected with Ctrl-Alt-<0..3> or through the 
+  user interface. It can render the VR kits in a very simplistic way by some spheres 
+  representing the eyes and hands. Furthermore, it can render the action zone boundaries
+  as a dashed fence. It can also debug all emitted vr events in the text console window.
+  The vr_view_interactor manages its own view which can be controlled with the mouse as in the
+  case of the stereo_view_interactor. Further rendering passes are issued to render from the
+  views of the hmds of the present vr kits. The current vr kit states are queried with
+  pose_query=2 for the currently selected vr kit and with pose_query=1 for the others.
+  The rendered vr views are submitted to the hmds and can optionally blit in the current 
+  framebuffer. The queried states are transfered to the cgv::gui::vr_server singleton with the
+  check_new_state() function such that you should use the second or third option descripted in
+  the detailed documentation of the cgv::gui::vr_server.
+
+- cgv/plugins/vr_test
+
+  a very simple example of how to use the vr support of the cgv framework
 */

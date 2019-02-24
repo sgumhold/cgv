@@ -85,7 +85,20 @@ WARN_LOGFILE           =
 #---------------------------------------------------------------------------
 # configuration options related to the input files
 #---------------------------------------------------------------------------
-INPUT                  = $(CGV_DIR)/cgv/base $(CGV_DIR)/cgv/type $(CGV_DIR)/cgv/data $(CGV_DIR)/cgv/utils $(CGV_DIR)/cgv/math $(CGV_DIR)/cgv/media $(CGV_DIR)/cgv/gui $(CGV_DIR)/cgv/render $(CGV_DIR)/doc $(CGV_DIR)/plugins/examples
+INPUT = \
+$(CGV_DIR)/doc \
+$(CGV_DIR)/cgv/config \
+$(CGV_DIR)/cgv/defines \
+$(CGV_DIR)/cgv/type \
+$(CGV_DIR)/cgv/utils \
+$(CGV_DIR)/cgv/data \
+$(CGV_DIR)/cgv/signal \
+$(CGV_DIR)/cgv/reflect \
+$(CGV_DIR)/cgv/base
+INCLUDE_PATH = \
+$(CGV_DIR) \
+$(CGV_DIR)/libs \
+$(CGV_DIR)/plugins
 INPUT_ENCODING         = UTF-8
 FILE_PATTERNS          = *.c \
                          *.cc \

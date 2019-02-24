@@ -29,7 +29,7 @@ define_system_variables.bat <global-path-to-build-directory>
 \code
 build_example_solution.bat
 \endcode
-- open the generated solution under <build-directory>\vs14\examples\examples.sln
+- open the generated solution under <build-directory>/vs14/examples/examples.sln
   (if you use a different VS version, replace vs14 with vs12 etc)
 - after visual studio started, select configuration "Debug Dll" or "Release Dll"
 - ensure that examples plugin is the active project
