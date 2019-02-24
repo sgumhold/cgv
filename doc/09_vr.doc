@@ -1,6 +1,6 @@
 // This file is for Doxygen input. It is not compiled.
 
-#include <libs/vr/vr_event.h>
+#include <libs/vr/vr_state.h>
 #include <libs/vr/vr_driver.h>
 #include <libs/vr/vr_kit.h>
 #include <libs/vr/gl_vr_display.h>

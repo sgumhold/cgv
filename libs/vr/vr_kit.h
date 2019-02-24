@@ -1,6 +1,6 @@
 #pragma once
 
-#include "vr_event.h"
+#include "vr_state.h"
 
 #include <vector>
 
@@ -76,11 +76,27 @@ namespace vr {
 		bool has_force_feedback() const;
 		/// declare virtual destructor
 		virtual ~vr_kit();
-		//! provide information per controller throttles and sticks and their axes
+		//! for each controller provide information on throttles and sticks and how they map to state axes
 		/*! each entry of the returned vector is either
 		    - a throttle if second pair entry is -1 mapped to axis with index in first pair entry
 			- or a stick with the two pair entries being indices of x and y axes */
 		virtual const std::vector<std::pair<int, int> >& get_controller_throttles_and_sticks(int controller_index) const = 0;
+		//! for each controller provide information on throttles' and sticks' deadzone and precision values
+		/*! The pairs in the returned vector correspond to the pairs in the vector returned by get_controller_throttles_and_sticks().
+		    For each throttle or stick two float values are provided:
+			- the first value is the deadzone of the throttle or stick, i.e. a deadzone of 0.1 means that all stick positions p
+			  with |p| < 0.1 are treated as (0,0). For throttles all values below 0.1 are treated as 0. For deadzone values 
+			  of 0, no deadzone is generated.
+			- the second value is the precision as a floating point number. I.e. for a precision od 0.1 the coordinates
+			  of a stick position and the throttle values can only assume multiples of 0.1 values. This is achieved by
+			  rounding the axis values to the next multiple of the precision value. If the precision value 
+			  is 0, no rounding is done and the raw axis values are passed on.
+			The deadzone and precision information is used by the cgv::gui::vr_server for detection and creation of
+			events. The values stored in the events are deadzone corrected and rounded to the precision of the throttles
+			and sticks. The cgv::gui::vr_server allows to replace the deadzone and precision values of a device with 
+			two user defined vectors of float pairs (which can be identical) through the function 
+			cgv::gui::vr_server::provide_controller_throttles_and_sticks_deadzone_and_precision(). */
+		virtual const std::vector<std::pair<float, float> >& get_controller_throttles_and_sticks_deadzone_and_precision(int controller_index) const = 0;
 		//! query current state of vr kit and return whether this was successful
 		/*! if pose_query is 
 			0 ... no poses are queried

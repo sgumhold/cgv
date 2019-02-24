@@ -1,7 +1,6 @@
 #pragma once
 
 #include <cgv/base/base.h>
-#include <vr/vr_event.h>
 #include <vr/vr_kit.h>
 #include <cg_vr/vr_server.h>
 #include <cgv_gl/box_renderer.h>
