@@ -17,6 +17,7 @@
 */
 
 // these are the vr specific headers
+#include <vr/vr_driver.h>
 #include <cg_vr/vr_server.h>
 #include <vr_view_interactor.h>
 
@@ -36,12 +37,38 @@ protected:
 	cgv::render::surface_render_style style;
 	cgv::render::box_renderer renderer;
 
+	// keep deadzone and precision vector for left controller
+	cgv::gui::vr_server::vec_flt_flt left_deadzone_and_precision;
+	// store handle to vr kit of which left deadzone and precision is configured
+	void* last_kit_handle;
+
 	// length of to be rendered rays
 	float ray_length;
 
 	// keep reference to vr_view_interactor
 	vr_view_interactor* vr_view_ptr;
 	
+	/// register on device change events
+	void on_device_change(void* kit_handle, bool attach)
+	{
+		if (attach) {
+			if (last_kit_handle == 0) {
+				vr::vr_kit* kit_ptr = vr::get_vr_kit(kit_handle);
+				if (kit_ptr) {
+					last_kit_handle = kit_handle;
+					left_deadzone_and_precision = kit_ptr->get_controller_throttles_and_sticks_deadzone_and_precision(0);
+					cgv::gui::ref_vr_server().provide_controller_throttles_and_sticks_deadzone_and_precision(kit_handle, 0, &left_deadzone_and_precision);
+					post_recreate_gui();
+				}
+			}
+		}
+		else {
+			if (kit_handle == last_kit_handle) {
+				last_kit_handle = 0;
+				post_recreate_gui();
+			}
+		}
+	}
 	/// construct boxes that represent a table of dimensions tw,td,th and leg width tW
 	void construct_table(float tw, float td, float th, float tW);
 	/// construct boxes that represent a room of dimensions w,d,h and wall width W
@@ -63,6 +90,8 @@ public:
 		build_scene(5,7,3,0.2f, 1.6f, 0.8f, 1.2f, 0.03f);
 		vr_view_ptr = 0;
 		ray_length = 2;
+		last_kit_handle = 0;
+		connect(cgv::gui::ref_vr_server().on_device_change, this, &vr_test::on_device_change);
 		cgv::gui::connect_gamepad_server();
 	}
 	std::string get_type_name() const 
@@ -73,6 +102,26 @@ public:
 	{
 		add_decorator("vr_test", "heading", "level=2");
 		add_member_control(this, "ray_length", ray_length, "value_slider", "min=0.1;max=10;log=true;ticks=true");
+		if (last_kit_handle) {
+			vr::vr_kit* kit_ptr = vr::get_vr_kit(last_kit_handle);
+			const std::vector<std::pair<int, int> >* t_and_s_ptr = 0;
+			if (kit_ptr)
+				t_and_s_ptr = &kit_ptr->get_controller_throttles_and_sticks(0);
+			add_decorator("deadzone and precisions", "heading", "level=3");
+			int ti = 0;
+			int si = 0;
+			for (unsigned i = 0; i < left_deadzone_and_precision.size(); ++i) {
+				std::string prefix = std::string("unknown[") + cgv::utils::to_string(i) + "]";
+				if (t_and_s_ptr) {
+					if (t_and_s_ptr->at(i).second == -1)
+						prefix = std::string("throttle[") + cgv::utils::to_string(ti++) + "]";
+					else
+						prefix = std::string("stick[") + cgv::utils::to_string(si++) + "]";
+				}
+				add_member_control(this, prefix + ".deadzone", left_deadzone_and_precision[i].first, "value_slider", "min=0;max=1;ticks=true;log=true");
+				add_member_control(this, prefix + ".precision", left_deadzone_and_precision[i].second, "value_slider", "min=0;max=1;ticks=true;log=true");
+			}
+		}
 		add_gui("boxes", style);
 	}
 	void on_set(void* member_ptr)
@@ -97,10 +146,10 @@ public:
 			if (vrke.get_action() != cgv::gui::KA_RELEASE) {
 				switch (vrke.get_key()) {
 				case vr::VR_LEFT_BUTTON0:
-	//				std::cout << "button 0 of left controller pressed" << std::endl;
+					std::cout << "button 0 of left controller pressed" << std::endl;
 					return true;
 				case vr::VR_RIGHT_STICK_RIGHT:
-	//				std::cout << "touch pad of right controller pressed at right direction" << std::endl;
+					std::cout << "touch pad of right controller pressed at right direction" << std::endl;
 					return true;
 				}
 			}
@@ -109,8 +158,8 @@ public:
 		case cgv::gui::EID_THROTTLE:
 		{
 			cgv::gui::vr_throttle_event& vrte = static_cast<cgv::gui::vr_throttle_event&>(e);
-//			std::cout << "throttle " << vrte.get_throttle_index() << " of controller " << vrte.get_controller_index()
-//				<< " adjusted from " << vrte.get_last_value() << " to " << vrte.get_value() << std::endl;
+			std::cout << "throttle " << vrte.get_throttle_index() << " of controller " << vrte.get_controller_index()
+				<< " adjusted from " << vrte.get_last_value() << " to " << vrte.get_value() << std::endl;
 			return true;
 		}
 		case cgv::gui::EID_STICK:
@@ -121,18 +170,18 @@ public:
 			case cgv::gui::SA_PRESS:
 			case cgv::gui::SA_UNPRESS:
 			case cgv::gui::SA_RELEASE:
-//				std::cout << "stick " << vrse.get_stick_index() 
-//					<< " of controller " << vrse.get_controller_index()
-//					<< " " << cgv::gui::get_stick_action_string(vrse.get_action())
-//					<< " at " << vrse.get_x() << ", " << vrse.get_y() << std::endl;
+				std::cout << "stick " << vrse.get_stick_index() 
+					<< " of controller " << vrse.get_controller_index()
+					<< " " << cgv::gui::get_stick_action_string(vrse.get_action())
+					<< " at " << vrse.get_x() << ", " << vrse.get_y() << std::endl;
 				return true;
 			case cgv::gui::SA_MOVE:
 			case cgv::gui::SA_DRAG:
-	//			std::cout << "stick " << vrse.get_stick_index()
-	//				<< " of controller " << vrse.get_controller_index()
-	//				<< " " << cgv::gui::get_stick_action_string(vrse.get_action())
-	//				<< " from " << vrse.get_last_x() << ", " << vrse.get_last_y() 
-	//				<< " to " << vrse.get_x() << ", " << vrse.get_y() << std::endl;
+				std::cout << "stick " << vrse.get_stick_index()
+					<< " of controller " << vrse.get_controller_index()
+					<< " " << cgv::gui::get_stick_action_string(vrse.get_action())
+					<< " from " << vrse.get_last_x() << ", " << vrse.get_last_y() 
+					<< " to " << vrse.get_x() << ", " << vrse.get_y() << std::endl;
 				return true;
 			}
 			return true;

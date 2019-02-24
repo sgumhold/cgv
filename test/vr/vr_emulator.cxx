@@ -119,6 +119,17 @@ const std::vector<std::pair<int, int> >& vr_emulated_kit::get_controller_throttl
 	return throttles_and_sticks;
 }
 
+const std::vector<std::pair<float, float> >& vr_emulated_kit::get_controller_throttles_and_sticks_deadzone_and_precision(int controller_index) const
+{
+	static std::vector<std::pair<float, float> > deadzone_and_precision;
+	if (deadzone_and_precision.empty()) {
+		deadzone_and_precision.push_back(std::pair<float, float>(0.1f, 0.01f));
+		deadzone_and_precision.push_back(std::pair<float, float>(0.0f, 0.2f));
+	}
+	return deadzone_and_precision;
+}
+
+
 void vr_emulated_kit::set_pose_matrix(const mat4& H, float* pose)
 {
 	pose[0]  = H(0, 0);
@@ -174,6 +185,7 @@ void vr_emulated_kit::submit_frame()
 vr_emulator::vr_emulator() : cgv::base::node("vr_emulator")
 {
 	left_ctrl = right_ctrl = up_ctrl = down_ctrl = false;
+	home_ctrl = end_ctrl = pgup_ctrl = pgdn_ctrl = false;
 	current_kit_ctrl = -1;
 	installed = true;
 	body_speed = 1.0f;

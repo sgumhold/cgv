@@ -56,6 +56,16 @@ const std::vector<std::pair<int, int> >& openvr_kit::get_controller_throttles_an
 	return throttles_and_sticks;
 }
 
+/// for each controller provide information on throttles' and sticks' deadzone and precision values
+const std::vector<std::pair<float, float> >& openvr_kit::get_controller_throttles_and_sticks_deadzone_and_precision(int controller_index) const
+{
+	static std::vector<std::pair<float, float> > deadzone_and_precision;
+	if (deadzone_and_precision.empty()) {
+		deadzone_and_precision.push_back(std::pair<float, float>(0.0f, 0.0f));
+		deadzone_and_precision.push_back(std::pair<float, float>(0.0f, 0.0f));
+	}
+	return deadzone_and_precision;
+}
 
 /// construct
 openvr_kit::openvr_kit(unsigned _width, unsigned _height, 

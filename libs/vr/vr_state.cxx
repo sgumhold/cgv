@@ -1,4 +1,4 @@
-#include "vr_event.h"
+#include "vr_state.h"
 
 namespace vr {
 	/// standard constructor for initialization of members

@@ -44,6 +44,7 @@ public:
 	vr_emulated_kit(float _body_direction, const vec3& _body_position, float _body_height, unsigned _width, unsigned _height, vr::vr_driver* _driver, void* _handle, const std::string& _name, bool _ffb_support, bool _wireless);
 	vec3 get_body_direction() const;
 	const std::vector<std::pair<int, int> >& get_controller_throttles_and_sticks(int controller_index) const;
+	const std::vector<std::pair<float, float> >& get_controller_throttles_and_sticks_deadzone_and_precision(int controller_index) const;
 	bool query_state(vr::vr_kit_state& state, int pose_query = 2);
 	bool set_vibration(unsigned controller_index, float low_frequency_strength, float high_frequency_strength);
 	void put_eye_to_head_matrix(int eye, float* pose_matrix);
