@@ -1,4 +1,5 @@
 #include "openvr_kit.h"
+#include <iostream>
 
 namespace vr {
 
@@ -85,23 +86,14 @@ void extract_controller_state(const VRControllerState_t& input, vr_controller_st
 {
 	output.time_stamp = input.unPacketNum;
 	output.button_flags = 0;
-	if ((input.ulButtonPressed & ButtonMaskFromId(k_EButton_System)) != 0)
-		output.button_flags += VRF_BUTTON0;
 	if ((input.ulButtonPressed & ButtonMaskFromId(k_EButton_ApplicationMenu)) != 0)
 		output.button_flags += VRF_MENU;
 	if ((input.ulButtonPressed & ButtonMaskFromId(k_EButton_Grip)) != 0)
-		output.button_flags += VRF_BUTTON1;
-	if ((input.ulButtonPressed & ButtonMaskFromId(k_EButton_A)) != 0)
-		output.button_flags += VRF_BUTTON2;
-	if (((input.ulButtonPressed & ButtonMaskFromId(k_EButton_DPad_Down)) != 0) ||
-		((input.ulButtonPressed & ButtonMaskFromId(k_EButton_DPad_Up)) != 0) ||
-		((input.ulButtonPressed & ButtonMaskFromId(k_EButton_DPad_Left)) != 0) ||
-		((input.ulButtonPressed & ButtonMaskFromId(k_EButton_DPad_Right)) != 0))
+		output.button_flags += VRF_BUTTON0;
+	if ((input.ulButtonPressed & ButtonMaskFromId(k_EButton_Axis0)) != 0)
 		output.button_flags += VRF_STICK;
-	if ((input.ulButtonPressed & ButtonMaskFromId(k_EButton_ProximitySensor)) != 0)
+	if ((input.ulButtonTouched & ButtonMaskFromId(k_EButton_Axis0)) != 0)
 		output.button_flags += VRF_STICK_TOUCH;
-	if ((input.ulButtonPressed & ButtonMaskFromId(k_EButton_Axis1)) != 0)
-		output.button_flags += VRF_BUTTON3;
 
 	for (unsigned i = 0; i < 4; ++i) {
 		output.axes[2 * i] = input.rAxis[i].x;
@@ -125,35 +117,37 @@ void extract_trackable_state(const vr::TrackedDevicePose_t& tracked_pose, vr_tra
 /// retrieve the current state of vr kit and optionally wait for poses optimal for rendering, return false if vr_kit is not connected anymore
 bool openvr_kit::query_state(vr_kit_state& state, int pose_query)
 {
-	if (pose_query == 1) {
+	vr::TrackedDeviceIndex_t left_index = get_hmd()->GetTrackedDeviceIndexForControllerRole(TrackedControllerRole_LeftHand);
+	vr::TrackedDeviceIndex_t right_index = get_hmd()->GetTrackedDeviceIndexForControllerRole(TrackedControllerRole_RightHand);
+//	if (pose_query == 1) {
 		VRControllerState_t controller_state;
 		vr::TrackedDevicePose_t tracked_pose;
-		get_hmd()->GetControllerStateWithPose(TrackingUniverseRawAndUncalibrated,
-			get_hmd()->GetTrackedDeviceIndexForControllerRole(TrackedControllerRole_LeftHand),
-			&controller_state, sizeof(controller_state), &tracked_pose);
+		get_hmd()->GetControllerStateWithPose(TrackingUniverseRawAndUncalibrated, left_index, &controller_state, sizeof(controller_state), &tracked_pose);
+		//std::cout << controller_state.rAxis[0].x << "," << controller_state.rAxis[0].y << "  " << controller_state.ulButtonPressed << ";" << controller_state.ulButtonTouched << " <" << controller_state.unPacketNum << ">" << std::endl;
+		//std::cout << controller_state.ulButtonPressed << ";" << controller_state.ulButtonTouched << "   <->    ";
 		extract_controller_state(controller_state, state.controller[0]);
-		extract_trackable_state(tracked_pose, state.controller[0]);
+		//if (pose_query == 1)
+			extract_trackable_state(tracked_pose, state.controller[0]);
 
-		get_hmd()->GetControllerStateWithPose(TrackingUniverseRawAndUncalibrated,
-			get_hmd()->GetTrackedDeviceIndexForControllerRole(TrackedControllerRole_RightHand),
-			&controller_state, sizeof(controller_state), &tracked_pose);
+		get_hmd()->GetControllerStateWithPose(TrackingUniverseRawAndUncalibrated, right_index, &controller_state, sizeof(controller_state), &tracked_pose);
+		//std::cout << controller_state.ulButtonPressed << ";" << controller_state.ulButtonTouched << std::endl;
 		extract_controller_state(controller_state, state.controller[1]);
-		extract_trackable_state(tracked_pose, state.controller[1]);
-		return true;
-	}
+//		if (pose_query == 1)
+			extract_trackable_state(tracked_pose, state.controller[1]);
+		//return true;
+	/*	}
 
 	VRControllerState_t controller_state;
-	get_hmd()->GetControllerState(
-		get_hmd()->GetTrackedDeviceIndexForControllerRole(TrackedControllerRole_LeftHand),
-		&controller_state, sizeof(VRControllerState_t));
+	if (!get_hmd()->IsInputAvailable()) {
+		std::cerr << "no input" << std::endl;
+	}
+	get_hmd()->GetControllerState( left_index, &controller_state, sizeof(VRControllerState_t));
 	extract_controller_state(controller_state, state.controller[0]);
 
-	get_hmd()->GetControllerState(
-		get_hmd()->GetTrackedDeviceIndexForControllerRole(TrackedControllerRole_RightHand),
-		&controller_state, sizeof(VRControllerState_t));
-
+	get_hmd()->GetControllerState(right_index, &controller_state, sizeof(VRControllerState_t));
 	extract_controller_state(controller_state, state.controller[1]);
-	if (pose_query == 0) 
+	*/
+	if (pose_query != 2) 
 		return true;
 
 	static vr::TrackedDevicePose_t tracked_poses[vr::k_unMaxTrackedDeviceCount];
@@ -172,6 +166,7 @@ bool openvr_kit::query_state(vr_kit_state& state, int pose_query)
 					tracked_pose_ptr = &state.controller[1];
 					break;
 				}
+				break;
 			case TrackedDeviceClass_HMD:
 				tracked_pose_ptr = &state.hmd;
 				break;
