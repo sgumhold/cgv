@@ -378,14 +378,18 @@ void vr_view_interactor::draw(cgv::render::context& ctx)
 			if (!kit_ptr)
 				continue;
 			vr::vr_kit_state state;
-			if (!kit_ptr->query_state(state, 1))
+			vr::vr_kit_state* state_ptr = &state;
+			if (handle == current_vr_handle)
+				state_ptr = &kit_states[current_vr_handle_index-1];
+			else if (!kit_ptr->query_state(state, 1))
 				continue;
 			float left_eye_to_head[12];
 			float right_eye_to_head[12];
 			kit_ptr->put_eye_to_head_matrix(0, left_eye_to_head);
 			kit_ptr->put_eye_to_head_matrix(1, right_eye_to_head);
-			const mat3& R_w_h = reinterpret_cast<const mat3&>(state.hmd.pose[0]);
-			const vec3& p_w_h = reinterpret_cast<const vec3&>(state.hmd.pose[9]);
+			const mat3& R_w_h = reinterpret_cast<const mat3&>(state_ptr->hmd.pose[0]);
+			const vec3& p_w_h = reinterpret_cast<const vec3&>(state_ptr->hmd.pose[9]);
+
 
 			const mat3& R_h_l = reinterpret_cast<const mat3&>(left_eye_to_head[0]);
 			const vec3& p_h_l = reinterpret_cast<const vec3&>(left_eye_to_head[9]);
@@ -407,8 +411,8 @@ void vr_view_interactor::draw(cgv::render::context& ctx)
 				sphere_colors.push_back(rgb(0, 0, 1));
 			}
 			for (unsigned i = 0; i < 2; ++i) {
-				const mat3& R_ci = reinterpret_cast<const mat3&>(state.controller[i].pose[0]);
-				const vec3& p_ci = reinterpret_cast<const vec3&>(state.controller[i].pose[9]);
+				const mat3& R_ci = reinterpret_cast<const mat3&>(state_ptr->controller[i].pose[0]);
+				const vec3& p_ci = reinterpret_cast<const vec3&>(state_ptr->controller[i].pose[9]);
 				spheres.push_back(vec4(p_ci, 0.04f));
 				spheres.push_back(vec4(p_ci + 0.05f*R_ci.col(0), 0.01f));
 				spheres.push_back(vec4(p_ci - 0.05f*R_ci.col(0), 0.01f));
