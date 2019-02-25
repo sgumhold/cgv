@@ -25,9 +25,9 @@ namespace vr {
 	enum VRKeys {
 		VR_UNKNOWN = 1024,
 		VR_LEFT_MENU,           //!< <em>left controller</em> VIVE: menu button; occulus: start button
-		VR_LEFT_BUTTON0,        //!< <em>left controller</em> VIVE: system button; occulus: X button
-		VR_LEFT_BUTTON1,        //!< <em>left controller</em> VIVE: grip button; occulus: Y button 
-		VR_LEFT_BUTTON2,        //!< <em>left controller</em> VIVE: other grip button; occulus: not used
+		VR_LEFT_BUTTON0,        //!< <em>left controller</em> VIVE: grip button; occulus: X button
+		VR_LEFT_BUTTON1,        //!< <em>left controller</em> VIVE: not used; occulus: Y button 
+		VR_LEFT_BUTTON2,        //!< <em>left controller</em> VIVE: not used; occulus: not used
 		VR_LEFT_BUTTON3,        //!< <em>left controller</em> not used
 		VR_LEFT_STICK_TOUCH,    //!< <em>left controller</em> VIVE: touch sensor; occulus: not used
 		VR_LEFT_STICK_DOWNLEFT, //!< <em>left controller</em> press key events (VIVE-touch pad|occulus stick): down left
@@ -40,9 +40,9 @@ namespace vr {
 		VR_LEFT_STICK_UP,       //!< <em>left controller</em> press key events (VIVE-touch pad|occulus stick): up
 		VR_LEFT_STICK_UPRIGHT,  //!< <em>left controller</em> press key events (VIVE-touch pad|occulus stick): up right
 		VR_RIGHT_MENU,           //!< <em>right controller</em> VIVE: menu button; occulus: start button
-		VR_RIGHT_BUTTON0,		 //!< <em>right controller</em> VIVE: system button; occulus: X button
-		VR_RIGHT_BUTTON1,		 //!< <em>right controller</em> VIVE: grip button; occulus: Y button 
-		VR_RIGHT_BUTTON2,		 //!< <em>right controller</em> VIVE: other grip button; occulus: not used
+		VR_RIGHT_BUTTON0,		 //!< <em>right controller</em> VIVE: grip button; occulus: X button
+		VR_RIGHT_BUTTON1,		 //!< <em>right controller</em> VIVE: not used; occulus: Y button 
+		VR_RIGHT_BUTTON2,		 //!< <em>right controller</em> VIVE: not used; occulus: not used
 		VR_RIGHT_BUTTON3,		 //!< <em>right controller</em> not used
 		VR_RIGHT_STICK_TOUCH,	 //!< <em>right controller</em> VIVE: touch sensor; occulus: not used
 		VR_RIGHT_STICK_DOWNLEFT,  //!< <em>right controller</em> press key events (VIVE-touch pad|occulus stick): down left

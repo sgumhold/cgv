@@ -87,7 +87,7 @@ public:
 	vr_test() 
 	{
 		set_name("vr_test");
-		build_scene(5,7,3,0.2f, 1.6f, 0.8f, 1.2f, 0.03f);
+		build_scene(5,7,3,0.2f, 1.6f, 0.8f, 0.9f, 0.03f);
 		vr_view_ptr = 0;
 		ray_length = 2;
 		last_kit_handle = 0;
