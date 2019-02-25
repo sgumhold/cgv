@@ -91,7 +91,7 @@ struct openvr_driver : public vr_driver
 		if (VR_IsHmdPresent() && hmd_ptr) {
 			bool do_register = true;
 			vr_kit* kit = get_vr_kit(hmd_ptr);
-			if (kit) {
+			if (!kit) {
 				uint32_t width, height;
 				hmd_ptr->GetRecommendedRenderTargetSize(&width, &height);
 				bool ffb_support = true;
@@ -113,7 +113,14 @@ struct openvr_driver : public vr_driver
 	/// return the floor level relativ to the world origin
 	float get_floor_level() const
 	{
-		return 0;
+		std::vector<float> boundary;
+		put_action_zone_bounary(boundary);
+		unsigned n = boundary.size() / 3;
+		float y;
+		for (unsigned i = 0; i < n; ++i)
+			y += boundary[3 * i + 1];
+		y /= (float)n;
+		return y;
 	}
 	/// return height of action zone
 	float get_action_zone_height() const
@@ -123,22 +130,22 @@ struct openvr_driver : public vr_driver
 	/// return a vector of floor points defining the action zone boundary as a closed polygon
 	void put_action_zone_bounary(std::vector<float>& boundary) const
 	{
+		if (!installed)
+			return;
+
+		auto* chap = vr::VRChaperone();
+		if (!chap)
+			return;
+
+		vr::HmdQuad_t rect;
+		chap->GetPlayAreaRect(&rect);
+
 		boundary.resize(12);
-		boundary[0] = -1;
-		boundary[1] = 0;
-		boundary[2] = -1;
-
-		boundary[3] = 1;
-		boundary[4] = 0;
-		boundary[5] = -1;
-
-		boundary[6] = 1;
-		boundary[7] = 0;
-		boundary[8] = 1;
-
-		boundary[9] = -1;
-		boundary[10] = 0;
-		boundary[11] = 1;
+		for (unsigned i = 0; i < 4; ++i) {
+			boundary[3 * i] = rect.vCorners[i].v[0];
+			boundary[3 * i + 1] = rect.vCorners[i].v[1];
+			boundary[3 * i + 2] = rect.vCorners[i].v[2];
+		}
 	}
 
 };
