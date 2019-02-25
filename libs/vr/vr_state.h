@@ -85,10 +85,12 @@ namespace vr {
 		/// whether trackable is currently tracked, only in case of true, the pose member contains useful information
 		VRStatus status;
 		//! pose as 3x4 matrix in column major format, where each column is a vector in world coordinates
-		/*!  - pose[0..2]  ... x-axis pointing to the right
-			 - pose[3..5]  ... y-axis pointing up
-			 - pose[6..8]  ... z-axis pointing backwards
-			 - pose[9..11] ... location of trackable's origin */
+		/*!
+		- pose[0..2]  ... x-axis pointing to the right
+		- pose[3..5]  ... y-axis pointing up
+		- pose[6..8]  ... z-axis pointing backwards
+		- pose[9..11] ... location of trackable's origin
+		*/
 		float pose[12];
 		/// equality check
 		bool operator == (const vr_trackable_state& state) const;
@@ -120,8 +122,8 @@ namespace vr {
 		void put_ray(float* ray_origin, float* ray_direction) const;
 	};
 	//! structure that stores all information describing the state of a VR kit
-	/*! simply combines state information on the vr_kit_state#	hmd (vr::vr_trackable_state) and the two controllers
-		vr_kit_state#controller[2] (vr::vr_controller_state).The controllers are always enumerated such that
+	/*! simply combines state information on the vr_kit_state::hmd (vr::vr_trackable_state) and the two controllers
+		vr_kit_state::controller[2] (vr::vr_controller_state).The controllers are always enumerated such that
 		controller index 0 is the left and 1 the right controller.*/
 	struct CGV_API vr_kit_state
 	{
