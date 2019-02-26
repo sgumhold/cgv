@@ -125,9 +125,13 @@ public:
 
 	/**@name vr rendering*/
 	//@{
+	/// check whether separate view is rendered
+	bool seperate_view_drawn() const { return separate_view; }
+	/// set whether to draw separate view
+	void draw_separate_view(bool do_draw);
 	/// check whether vr kits are drawn
 	bool vr_kits_drawn() const { return show_vr_kits; }
-	/// whether to draw vr kits
+	/// set whether to draw vr kits
 	void draw_vr_kits(bool do_draw);
 	/// check whether action zone is drawn 
 	bool action_zone_drawn() const { return show_action_zone; }
