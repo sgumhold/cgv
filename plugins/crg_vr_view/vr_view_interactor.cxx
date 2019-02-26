@@ -15,7 +15,7 @@ vr_view_interactor::vr_view_interactor(const char* name) : stereo_view_interacto
 	fence_color1(0,0,1), fence_color2(1,1,0)
 {
 	debug_vr_events = false;
-	separate_view = true;
+	separate_view = false;
 	blit_vr_views = true;
 	blit_width = 160;
 	event_flags = cgv::gui::VREventTypeFlags(cgv::gui::VRE_STATUS + cgv::gui::VRE_KEY + cgv::gui::VRE_POSE);
@@ -45,6 +45,15 @@ void vr_view_interactor::enable_vr_event_debugging(bool enable)
 	if (debug_vr_events != enable) {
 		debug_vr_events = enable;
 		on_set(&debug_vr_events);
+	}
+}
+
+/// set whether to draw separate view
+void vr_view_interactor::draw_separate_view(bool do_draw)
+{
+	if (separate_view != do_draw) {
+		separate_view = do_draw;
+		on_set(&separate_view);
 	}
 }
 
@@ -132,8 +141,13 @@ std::string vr_view_interactor::get_type_name() const
 void vr_view_interactor::on_set(void* member_ptr)
 {
 	if (member_ptr == &current_vr_handle_index) {
-		if (current_vr_handle_index == 0)
+		if (current_vr_handle_index == 0) {
 			current_vr_handle = 0;
+			if (!separate_view) {
+				separate_view = true;
+				update_member(&separate_view);
+			}
+		}
 		else
 			if (current_vr_handle_index - 1 < int(kits.size()))
 				current_vr_handle = kits[current_vr_handle_index - 1];
@@ -202,10 +216,25 @@ void vr_view_interactor::after_finish(cgv::render::context& ctx)
 {
 	stereo_view_interactor::after_finish(ctx);
 	if (ctx.get_render_pass() == cgv::render::RP_MAIN) {
+		if (rendered_kit_ptr) {
+			rendered_kit_ptr->disable_fbo(rendered_eye);
+			int width = ctx.get_width() / 2;
+			int x0 = 0;
+			int blit_height = width * rendered_kit_ptr->get_height() / rendered_kit_ptr->get_width();
+			for (int eye = 0; eye < 2; ++eye) {
+				rendered_kit_ptr->blit_fbo(eye, x0, 0, width, ctx.get_height());
+				x0 += width;
+			}
+			rendered_eye = 0;
+			rendered_kit_ptr = 0;
+			rendered_kit_index = -1;
+		}
 		// blit vr kit views in main framebuffer
-		if (kits.size() > 0 && blit_vr_views) {
+		if (kits.size() > unsigned(separate_view?0:1) && blit_vr_views) {
 			int y0 = 0;
 			for (auto handle : kits) {
+				if (!separate_view && handle == current_vr_handle)
+					continue;
 				vr::vr_kit* kit_ptr = vr::get_vr_kit(handle);
 				if (!kit_ptr)
 					continue;
@@ -338,7 +367,10 @@ void vr_view_interactor::init_frame(cgv::render::context& ctx)
 				kit_ptr->query_state(kit_states[i], 1);
 				cgv::gui::ref_vr_server().check_new_state(kits[i], kit_states[i], cgv::gui::trigger::get_current_time(), event_flags);
 			}
-			for (rendered_kit_index=0; rendered_kit_index<int(kits.size()); ++rendered_kit_index) {
+			// render all but current vr kit views
+			for (rendered_kit_index = 0; rendered_kit_index<int(kits.size()); ++rendered_kit_index) {
+				if (rendered_kit_index + 1 == current_vr_handle_index)
+					continue;
 				rendered_kit_ptr = vr::get_vr_kit(kits[rendered_kit_index]);
 				if (!rendered_kit_ptr)
 					continue;
@@ -348,11 +380,25 @@ void vr_view_interactor::init_frame(cgv::render::context& ctx)
 					rendered_kit_ptr->disable_fbo(rendered_eye);
 				}
 			}
-			rendered_kit_ptr = 0;
-			rendered_kit_index = -1;
+			// render current vr kit 
+			rendered_kit_index = current_vr_handle_index - 1;
+			rendered_kit_ptr = vr::get_vr_kit(kits[rendered_kit_index]);
+			if (rendered_kit_ptr) {
+				for (rendered_eye = 0; rendered_eye < 2; ++rendered_eye) {
+					rendered_kit_ptr->enable_fbo(rendered_eye);
+					if (rendered_eye == 1 && !separate_view)
+						break;
+					ctx.render_pass(cgv::render::RP_USER_DEFINED, cgv::render::RenderPassFlags(rpf&~cgv::render::RPF_HANDLE_SCREEN_SHOT));
+					rendered_kit_ptr->disable_fbo(rendered_eye);
+				}
+			}
+			if (separate_view) {
+				rendered_kit_ptr = 0;
+				rendered_kit_index = -1;
+			}
 		}
 	}
-	if (ctx.get_render_pass() == cgv::render::RP_USER_DEFINED) {
+	if (rendered_kit_ptr) {
 		float eye_to_head[12];
 		rendered_kit_ptr->put_eye_to_head_matrix(rendered_eye, eye_to_head);
 		ctx.set_modelview_matrix(inv(hmat_from_pose(kit_states[rendered_kit_index].hmd.pose)*hmat_from_pose(eye_to_head)));
@@ -362,8 +408,10 @@ void vr_view_interactor::init_frame(cgv::render::context& ctx)
 		compute_clipping_planes(z_near_derived, z_far_derived, clip_relative_to_extent);
 		ctx.set_projection_matrix(P);
 	}
-	else
-		stereo_view_interactor::init_frame(ctx);
+	else {
+		if (kits.empty() || separate_view)
+			stereo_view_interactor::init_frame(ctx);
+	}
 }
 
 /// 
@@ -488,7 +536,7 @@ void vr_view_interactor::create_gui()
 	add_member_control(this, "current vr kit", (cgv::type::DummyEnum&)current_vr_handle_index, "dropdown", kit_enum_definition);
 	if (begin_tree_node("VR rendering", separate_view, false, "level=2")) {
 		align("\a");
-		//	add_member_control(this, "separate_view", separate_view, "check");
+		add_member_control(this, "separate_view", separate_view, "check");
 		add_member_control(this, "blit_vr_views", blit_vr_views, "check");
 		add_member_control(this, "blit_width", blit_width, "value_slider", "min=120;max=640;ticks=true;log=true");
 		add_member_control(this, "show_action_zone", show_action_zone, "check");
