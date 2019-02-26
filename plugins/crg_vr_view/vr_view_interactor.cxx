@@ -158,7 +158,7 @@ void vr_view_interactor::on_set(void* member_ptr)
 /// overload to stream help information to the given output stream
 void vr_view_interactor::stream_help(std::ostream& os)
 {
-	os << "vr_view_interactor: Ctrl-0|1|2|3 to select player\n";
+	os << "vr_view_interactor: Ctrl-0|1|2|3 to select player; Ctrl-Space to toggle draw separate view\n";
 	stereo_view_interactor::stream_help(os);
 }
 
@@ -199,6 +199,11 @@ bool vr_view_interactor::handle(cgv::gui::event& e)
 					update_member(&current_vr_handle_index);
 					return true;
 				}
+			}
+			if (ke.get_key() == cgv::gui::KEY_Space) {
+				separate_view = !separate_view;
+				on_set(&separate_view);
+				return true;
 			}
 		}
 	}
