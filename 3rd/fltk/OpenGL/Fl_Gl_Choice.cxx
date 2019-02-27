@@ -30,7 +30,7 @@
 #include <fltk/visual.h>
 #include <stdlib.h>
 #include <iostream>
-
+#include <vector>
 using namespace fltk;
 
 static GlChoice* first;
@@ -307,6 +307,72 @@ GLContext fltk::create_gl_context(const Window* window, const GlChoice* g, int l
 		  std::cerr << "GLEW init error: " << glewGetErrorString(err) << std::endl;
 	  }
 	  else {
+		// attempt to choose another pixel format
+		  
+		//// try to choose better pixel format
+		//std::vector<int> attribList;
+		//attribList.push_back(WGL_DRAW_TO_WINDOW_ARB); attribList.push_back(GL_TRUE);
+		//attribList.push_back(WGL_SUPPORT_OPENGL_ARB); attribList.push_back(GL_TRUE);
+		//attribList.push_back(WGL_DOUBLE_BUFFER_ARB);  attribList.push_back((g->get_mode() & DOUBLE_BUFFER) != 0 ? GL_TRUE : GL_FALSE);
+		//attribList.push_back(WGL_STEREO_ARB);         attribList.push_back((g->get_mode() & STEREO) != 0 ? GL_TRUE : GL_FALSE);
+		//attribList.push_back(WGL_DEPTH_BITS_ARB);     attribList.push_back((g->get_mode() & DEPTH_BUFFER) != 0 ? 24 : 0);
+		//attribList.push_back(WGL_STENCIL_BITS_ARB);   attribList.push_back((g->get_mode() & STENCIL_BUFFER) != 0 ? 8 : 0);
+		//attribList.push_back(WGL_ACCUM_BITS_ARB);     attribList.push_back((g->get_mode() & ACCUM_BUFFER) != 0 ? 32 : 0);
+		//attribList.push_back(WGL_ACCUM_BITS_ARB);     attribList.push_back(0);
+		//if ((g->get_mode() & INDEXED_COLOR) != 0) {
+		//	attribList.push_back(WGL_PIXEL_TYPE_ARB);     attribList.push_back(WGL_TYPE_COLORINDEX_ARB);
+		//	attribList.push_back(WGL_COLOR_BITS_ARB);     attribList.push_back(8);
+		//}
+		//else if ((g->get_mode() & ALPHA_BUFFER) != 0) {
+		//	attribList.push_back(WGL_PIXEL_TYPE_ARB);     attribList.push_back(WGL_TYPE_RGBA_ARB);
+		//	attribList.push_back(WGL_COLOR_BITS_ARB);     attribList.push_back(64);
+		//	attribList.push_back(WGL_ALPHA_BITS_ARB);     attribList.push_back(8);
+		//}
+		//else {
+		//	attribList.push_back(WGL_COLOR_BITS_ARB);     attribList.push_back((g->get_mode() & RGB24_COLOR) != 0 ? 24 : 32);
+		//}
+		//if (g->get_mode() & MULTISAMPLE) {
+		//	attribList.push_back(WGL_SAMPLE_BUFFERS_ARB); attribList.push_back(1);
+		//	attribList.push_back(WGL_SAMPLES_ARB); attribList.push_back(4);
+		//}
+		//attribList.push_back(0);
+		//int formats[200];
+		//UINT nr_formats;
+		//if (wglChoosePixelFormatARB(i->dc, &attribList[0], 0, 200, formats, &nr_formats)) {
+		//	if (nr_formats > 0) {
+		//		PIXELFORMATDESCRIPTOR pfd;
+		//		int format = formats[0];
+		//		//format = g->pixelFormat;
+		//		DescribePixelFormat(i->dc, format, sizeof(PIXELFORMATDESCRIPTOR), &pfd);
+		//		if (SetPixelFormat(i->dc, format, &pfd) == TRUE) {
+		//			std::cout << "FL_Gl_Choice::successfully chose pixel format " << format << std::endl;
+		//			const_cast<GlChoice*>(g)->pixelFormat = format;
+		//			const_cast<GlChoice*>(g)->pfd = pfd;
+		//		}
+		//		else {
+		//			LPVOID lpMsgBuf;
+		//			DWORD dw = GetLastError();
+
+		//			FormatMessage(
+		//				FORMAT_MESSAGE_ALLOCATE_BUFFER |
+		//				FORMAT_MESSAGE_FROM_SYSTEM |
+		//				FORMAT_MESSAGE_IGNORE_INSERTS,
+		//				NULL,
+		//				dw,
+		//				MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
+		//				(LPTSTR)&lpMsgBuf,
+		//				0, NULL);
+		//			std::cerr << (LPCTSTR)lpMsgBuf << std::endl;
+		//			LocalFree(lpMsgBuf);
+		//			std::cerr << "FL_Gl_Choice::could not set pixel format to " << format << " (keep " << g->pixelFormat << ")" << std::endl;
+		//		}
+		//	}
+		//	else
+		//		std::cerr << "FL_Gl_Choice::no pixel formats found" << std::endl;
+		//}
+		//else
+		//	std::cerr << "FL_Gl_Choice::wglChoosePixelFormatARB failed" << std::endl;
+
 		  bool is_first_context = first_context == 0;
 		  if (layer != 0) {
 			  int n = 0;

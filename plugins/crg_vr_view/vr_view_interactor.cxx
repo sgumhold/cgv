@@ -252,9 +252,9 @@ void vr_view_interactor::after_finish(cgv::render::context& ctx)
 				y0 += blit_height + 5;
 				kit_ptr->submit_frame();
 			}
-			if (current_vr_handle)
-				post_redraw();
 		}
+		if (current_vr_handle)
+			post_redraw();
 	}
 }
 

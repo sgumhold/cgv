@@ -20,6 +20,7 @@ namespace vr {
 	{
 	private:
 		int vp[4];
+		int old_msaa;
 	protected:
 		/// pixel dimensions of render targets
 		unsigned width, height, nr_multi_samples;

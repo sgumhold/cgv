@@ -138,6 +138,7 @@ context::context()
 	cursor_y = y_offset;
 	nr_identations = 0;
 	at_line_begin = true;
+	enable_vsynch = true;
 
 	default_render_flags = RenderPassFlags(RPF_DEFAULT);
 	current_background = 0;
