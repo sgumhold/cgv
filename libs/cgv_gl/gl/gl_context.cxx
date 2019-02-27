@@ -272,6 +272,11 @@ media::font::font_face_ptr gl_context::get_current_font_face() const
 
 void gl_context::init_render_pass()
 {
+#ifdef WIN32
+	wglSwapIntervalEXT(enable_vsynch ? 1 : 0);
+#else
+	glXSwapIntervalEXT(enable_vsynch ? 1 : 0);
+#endif
 	glPushAttrib(GL_ALL_ATTRIB_BITS);
 
 	if (get_render_pass_flags()&RPF_SET_LIGHTS) {

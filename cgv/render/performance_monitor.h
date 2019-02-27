@@ -51,6 +51,8 @@ private:
 	unsigned frame_id;
 protected:
 	bool enabled;
+	double fps_alpha;
+	double fps;
 	Rec placement;
 	int nr_display_cycles;
 	int bar_line_width;

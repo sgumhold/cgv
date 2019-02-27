@@ -18,6 +18,8 @@ void performance_monitor::add_measurement(const performance_measurement& pm)
 
 performance_monitor::performance_monitor() : plot_color(0.3f,1,1)
 {
+	fps = -1;
+	fps_alpha = 0.1;
 	time_scale = 60;
 	enabled = true;
 	frame_finished = true;
@@ -35,7 +37,7 @@ performance_monitor::performance_monitor() : plot_color(0.3f,1,1)
 /// enable performance monitoring
 void performance_monitor::enable() 
 {
-	enabled = true; 
+	enabled = true;
 }
 /// disable performance monitoring
 void performance_monitor::disable() 
@@ -102,6 +104,7 @@ void performance_monitor::start_frame()
 		return;
 	if (!frame_finished)
 		finish_frame();
+
 	while (data.size() >= get_buffer_size())
 		data.pop_front();
 	data.push_back(frame_data());
@@ -136,6 +139,11 @@ void performance_monitor::finish_frame()
 	const char* start_or_finish[] = { "start", "finish" };
 	performance_measurement pm(watch.get_elapsed_time(), 0, false);
 	add_measurement(pm);
+	double new_fps = 1.0 / (data.back().back().time - data.back().front().time);
+	if (fps < 0)
+		fps = new_fps;
+	else
+		fps = fps_alpha * new_fps + (1.0 - fps_alpha)*fps;
 	frame_finished = true;
 	if (file_name.empty())
 		return;

@@ -499,6 +499,7 @@ void fltk_gl_view::draw()
 
 	if (enabled) {
 		finish_frame();
+		update_member(&fps);
 		if (redraw_request) {
 			start_frame();
 			started_frame_pm = true;
@@ -920,7 +921,14 @@ void fltk_gl_view::disable_phong_shading()
 void fltk_gl_view::create_gui()
 {
 	add_decorator("gl view", "heading");
-
+	if (begin_tree_node("fps", fps, false, "level=3")) {
+		provider::align("\a");
+		add_view("fps", fps);
+		add_member_control(this, "fps_alpha", fps_alpha, "value_slider", "min=0;max=1;ticks=true");
+		add_member_control(this, "vsynch", enable_vsynch, "check");
+		provider::align("\b");
+		end_tree_node(fps);
+	}
 	if (begin_tree_node("debug", enabled, false, "level=3")) {
 		provider::align("\a");
 		add_member_control(this, "show_help", show_help, "check");

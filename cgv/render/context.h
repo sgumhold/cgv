@@ -525,6 +525,8 @@ protected:
 	bool support_compatibility_mode;
 	/// whether to do all drawing in compatibility mode, only possible if support_compatibility_mode is true, , defaults to false
 	bool draw_in_compatibility_mode;
+	/// whether vsynch should be enabled
+	bool enable_vsynch;
 
 	/// keep two matrix stacks for model view and projection matrices
 	std::stack<dmat4> modelview_matrix_stack, projection_matrix_stack;
