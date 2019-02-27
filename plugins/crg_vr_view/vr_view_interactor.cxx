@@ -15,7 +15,7 @@ vr_view_interactor::vr_view_interactor(const char* name) : stereo_view_interacto
 	fence_color1(0,0,1), fence_color2(1,1,0)
 {
 	debug_vr_events = false;
-	separate_view = false;
+	separate_view = true;
 	blit_vr_views = true;
 	blit_width = 160;
 	event_flags = cgv::gui::VREventTypeFlags(cgv::gui::VRE_STATUS + cgv::gui::VRE_KEY + cgv::gui::VRE_POSE);

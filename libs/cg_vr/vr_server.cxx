@@ -240,6 +240,9 @@ namespace cgv {
 									SA_RELEASE, SA_UNPRESS, SA_MOVE
 								};
 								StickAction action = actions[new_p_or_t + 3 * old_p_or_t];
+								if (action == SA_MOVE) {
+									std::cerr << "error" << std::endl;
+								}
 								vr::vr_kit* kit_ptr = vr::get_vr_kit(kit_handle);
 								if (kit_ptr) {
 									const auto& throttles_and_sticks = kit_ptr->get_controller_throttles_and_sticks(c);
@@ -294,21 +297,26 @@ namespace cgv {
 								else {
 									// stick case
 									if ((flags & VRE_STICK) != 0) {
-										int ai = throttle_or_stick.first;
-										int aj = throttle_or_stick.second;
-										vec2 p(new_state.controller[c].axes[ai], new_state.controller[c].axes[aj]);
-										p = correct_deadzone_and_precision(p, deadzone_and_precision);
-										vec2 last_p(last_state.controller[c].axes[ai], last_state.controller[c].axes[aj]);
-										last_p = correct_deadzone_and_precision(last_p, deadzone_and_precision);
-										vec2 diff = p - last_p;
-										if (diff(0) != 0 || diff(1) != 0) {
-											/// construct a throttle event from value and value change
-											StickAction action = SA_MOVE;
-											if ((new_state.controller[c].button_flags & vr::VRF_STICK) != 0)
-												action = SA_DRAG;
-											vr_stick_event vrse(kit_handle, c, new_state, 
-												action, p(0), p(1), diff(0), diff(1), kit_index, si, time);
-											on_event(vrse);
+										if (((new_state.controller[c].button_flags & (vr::VRF_STICK_TOUCH+vr::VRF_STICK)) == 0) ||
+											((last_state.controller[c].button_flags & (vr::VRF_STICK_TOUCH + vr::VRF_STICK)) == 0)) {
+										}
+										else {
+											int ai = throttle_or_stick.first;
+											int aj = throttle_or_stick.second;
+											vec2 p(new_state.controller[c].axes[ai], new_state.controller[c].axes[aj]);
+											p = correct_deadzone_and_precision(p, deadzone_and_precision);
+											vec2 last_p(last_state.controller[c].axes[ai], last_state.controller[c].axes[aj]);
+											last_p = correct_deadzone_and_precision(last_p, deadzone_and_precision);
+											vec2 diff = p - last_p;
+											if (diff(0) != 0 || diff(1) != 0) {
+												/// construct a throttle event from value and value change
+												StickAction action = SA_MOVE;
+												if ((new_state.controller[c].button_flags & vr::VRF_STICK) != 0)
+													action = SA_DRAG;
+												vr_stick_event vrse(kit_handle, c, new_state,
+													action, p(0), p(1), diff(0), diff(1), kit_index, si, time);
+												on_event(vrse);
+											}
 										}
 									}
 									++si;
