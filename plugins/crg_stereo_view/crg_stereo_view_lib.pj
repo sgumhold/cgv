@@ -4,8 +4,7 @@ projectName="crg_stereo_view_lib";
 projectGUID="D8838BBA-E0D6-4249-93FE-F61874DC604D";
 addProjectDeps=[
 	"cgv_render", "cgv_gui", "cgv_reflect", "cgv_utils", "cgv_gl", "cgv_type", "glsu","cgv_data",
-	"cgv_base","cgv_signal",
-	"cg_gamepad"
+	"cgv_base","cgv_signal"
 ];
 addProjectDirs=[CGV_DIR."/libs"];
 addIncDirs=[ [CGV_DIR."/libs/glsu", "all"], [INPUT_DIR, "all"] ];

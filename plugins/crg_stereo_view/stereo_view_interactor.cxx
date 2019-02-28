@@ -211,6 +211,7 @@ void stereo_view_interactor::timer_event(double t, double dt)
 ///
 stereo_view_interactor::stereo_view_interactor(const char* name) : node(name)
 {
+	use_gamepad = true;
 	gamepad_emulation = false;
 	emulation_active = false;
 	for (unsigned i = 0; i < 6; ++i) {
@@ -228,7 +229,6 @@ stereo_view_interactor::stereo_view_interactor(const char* name) : node(name)
 	gamepad_attached = false;
 	left_mode = right_mode = 0;
 	left_stick = right_stick = trigger = cgv::math::fvec<float, 2>(0.0f);
-	gamepad_flags = 0;
 	connect(cgv::gui::get_animation_trigger().shoot, this, &stereo_view_interactor::timer_event);
 
 	write_depth = false;
@@ -587,7 +587,7 @@ void stereo_view_interactor::set_view_orientation(const std::string& axes)
 /// overload and implement this method to handle events
 bool stereo_view_interactor::handle(event& e)
 {
-	if ((e.get_flags() & EF_PAD) != 0) {
+	if (use_gamepad && ((e.get_flags() & EF_PAD) != 0)) {
 		if (!gamepad_attached) {
 			gamepad_attached = true;
 			update_member(&gamepad_attached);
@@ -604,15 +604,10 @@ bool stereo_view_interactor::handle(event& e)
 				left_stick = se.get_position();
 			else
 				right_stick = se.get_position();
-
-			if ((e.get_flags() & EF_PAD) != 0) {
-				cgv::gui::gamepad_stick_event& gse = static_cast<cgv::gui::gamepad_stick_event&>(e);
-				gamepad_flags = gse.get_state().button_flags;
-			}
 			return true;
 		}
 	}
-	else if (e.get_kind() == EID_KEY) {
+	if (e.get_kind() == EID_KEY) {
 		key_event ke = (key_event&) e;
 		if (gamepad_emulation) {
 			switch (ke.get_key()) {
@@ -1499,6 +1494,7 @@ void stereo_view_interactor::create_gui()
 {
 	if (begin_tree_node("View Configuration", zoom_sensitivity, false)) {
 		align("\a");
+		add_member_control(this, "use_gamepad", use_gamepad, "toggle");
 		add_member_control(this, "gamepad_emulation", gamepad_emulation, "toggle");
 		add_member_control(this, "pan_sensitivity", pan_sensitivity, "value_slider", "min=0.1;max=10;ticks=true;step=0.01;log=true");
 		add_member_control(this, "zoom_sensitivity", zoom_sensitivity, "value_slider", "min=0.1;max=10;ticks=true;step=0.01;log=true");

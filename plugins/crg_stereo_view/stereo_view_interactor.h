@@ -127,12 +127,12 @@ protected:
 	unsigned get_viewport_index(unsigned col_index, unsigned row_index) const;
 	void ensure_viewport_view_number(unsigned nr);
 
-	/**@name gamepad support*/
+	/**@name gamepad control*/
 	//@{
+	bool use_gamepad;
+	bool gamepad_attached;
 	float deadzone;
 	int left_mode, right_mode;
-	bool gamepad_attached;
-	unsigned gamepad_flags;
 	cgv::math::fvec<float,2> left_stick, right_stick, trigger;
 
 	bool gamepad_emulation;
@@ -147,7 +147,6 @@ protected:
 	void check_emulation_active();
 	void plus_key_action(int i, cgv::gui::KeyAction action);
 	void minus_key_action(int i, cgv::gui::KeyAction action);
-
 
 	void timer_event(double t, double dt);
 	//@}
