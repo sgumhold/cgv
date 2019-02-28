@@ -55,6 +55,7 @@ namespace cgv {
 			: stick_event(_action, _x, _y, _dx, _dy, _player_index, _controller_index, _stick_index, _time),
 			device_handle(_device_handle), state(_state)
 		{
+			flags = EF_PAD;
 		}
 		/// return the device id, by default returns 0
 		void* gamepad_stick_event::get_device_handle() const { return device_handle; }
