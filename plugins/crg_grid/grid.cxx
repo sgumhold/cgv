@@ -6,7 +6,9 @@
 #include <cgv/utils/ostream_printf.h>
 #include <cgv/utils/tokenizer.h>
 #include <cgv/render/view.h>
+#include <cgv/render/shader_program.h>
 #include <cgv/math/det.h>
+#include <cgv/math/ftransform.h>
 #include <cgv/math/point_operations.h>
 #include <cgv/math/functions.h>
 #include <cgv/type/variant.h>
@@ -23,10 +25,11 @@ grid::grid() : minX(-50),minZ(-50),maxX(50),maxZ(50)
 {
 	view_ptr = 0;
 	set_name("grid");
-
-	show_grid=true;
+	threshold = 5;
+	alpha = 0.5;
+	show_grid = true;
 	factor=0;
-	adaptive_grid=false;
+	adaptive_grid=true;
 	show_axes = true;
 	show_lines = true;
 
@@ -86,17 +89,8 @@ void grid::stream_stats(std::ostream& os)
 /// overload to set the view
 bool grid::init(cgv::render::context&)
 {
+	view_ptr = find_view_as_node();
 	return true;
-}
-/// 
-void grid::init_frame(cgv::render::context& ctx)
-{
-	// find the view by traversing the base hierarchy, we assume there is only one
-	std::vector<cgv::render::view*> views;
-	cgv::base::find_interface(base_ptr(this), views);
-	if (views.size() == 0)
-		abort();
-	view_ptr = views[0];
 }
 
 void grid::render_grid_lines(float alpha)
@@ -153,61 +147,59 @@ void grid::render_grid_lines(float alpha)
 
 void grid::draw_grid(context &ctx)
 {
-	using namespace cgv::math;
+	// transform coordinate frame to clip space
+	dmat4 P;
+	P(0, 0) = 1.0; P(0, 1) = 0.0; P(0, 2) = 0.0; P(0, 3) = 0.0;
+	P(1, 0) = 0.0; P(1, 1) = 1.0; P(1, 2) = 0.0; P(1, 3) = 0.0;
+	P(2, 0) = 0.0; P(2, 1) = 0.0; P(2, 2) = 1.0; P(2, 3) = 0.0;
+	P(3, 0) = 1.0; P(3, 1) = 1.0; P(3, 2) = 1.0; P(3, 3) = 1.0;
+	P = ctx.get_modelview_projection_device_matrix()*P;
 
-	zaxis = normalize(ctx.get_V().row(2).sub_vec(0, 3));
+	// compute clip space origin
+	dvec3 l, O_clip = 1 / P(3, 3)*reinterpret_cast<const dvec3&>(P.col(3));
+	
+	// compute length of each coordinate axes in screen space and set z_axis
+	for (unsigned i = 0; i < 3; ++i) {
+		l(i) = (1 / P(3, i)*reinterpret_cast<const dvec3&>(P.col(i)) - O_clip).length();
+		z_axis(i) = ((l(i) < threshold) ? 1.0f : 0.0f);
+	}
 
-	mat<double> p(4, 4);
-
-	p(0, 0) = 1.0; p(0, 1) = 0.0; p(0, 2) = 0.0; p(0, 3) = 0.0;
-	p(1, 0) = 0.0; p(1, 1) = 1.0; p(1, 2) = 0.0; p(1, 3) = 0.0;
-	p(2, 0) = 0.0; p(2, 1) = 0.0; p(2, 2) = 1.0; p(2, 3) = 0.0;
-	p(3, 0) = 1.0; p(3, 1) = 1.0; p(3, 2) = 1.0; p(3, 3) = 1.0;
-
-	p = ctx.get_DPV()*p;
-	cgv::math::unhomog(p);
-
-	double v = cgv::math::maximum(length(p.col(0) - p.col(3)), length(p.col(1) - p.col(3)), length(p.col(2) - p.col(3)));
-	//std::cout << v <<":"<< pow(2.0,ceil(log(40.0)-log(v))/log(2.0)) << std::endl;
+	double v = cgv::math::maximum(l(0),l(1),l(2));
 	factor = (float)pow(2.0, ceil(log(20.0) - log(v)) / log(2.0));
 
-	glPushAttrib(GL_LIGHTING_BIT | GL_CURRENT_BIT);
-	glEnable(GL_LIGHTING);
-	glEnable(GL_COLOR_MATERIAL);
-	glColor3f(0.5f, 0.5f, 0.5f);
+	cgv::render::shader_program& prog = ctx.ref_surface_shader_program();
+	prog.enable(ctx);
+	prog.set_uniform(ctx, "map_color_to_material", 3);
+	ctx.set_color(rgb(0.5f, 0.5f, 0.5f));
 	float r = arrow_length * arrow_aspect;
-	ctx.push_V();
-	glScalef(r, r, r);
+	ctx.push_modelview_matrix();
+	ctx.mul_modelview_matrix(cgv::math::scale4<double>(r, r, r));
 	ctx.tesselate_unit_sphere(40);
-	ctx.pop_V();
+	ctx.pop_modelview_matrix();
 
 	if (show_axes) {
-		ctx.push_V();
+		ctx.push_modelview_matrix();
 		//z-axis
-		if (fabs(fabs(zaxis(2)) - 1.0)> 0.001)
-		{
-			glColor3f(0, 0, 1);
+		if (fabs(fabs(z_axis(2)) - 1.0)> 0.01) {
+			ctx.set_color(rgb(0, 0, 1));
 			ctx.tesselate_arrow((double)arrow_length, (double)arrow_aspect, (double)arrow_rel_tip_radius, (double)arrow_tip_aspect);
 		}
 		//x-axis
-		if (fabs(fabs(zaxis(0)) - 1.0)> 0.001)
-		{
-			glRotatef(90, 0, 1, 0);
-			glColor3f(1, 0, 0);
+		if (fabs(fabs(z_axis(0)) - 1.0)> 0.01) {
+			ctx.set_color(rgb(1, 0, 0));
+			ctx.mul_modelview_matrix(cgv::math::rotate4<double>(90, vec3(0, 1, 0)));
 			ctx.tesselate_arrow((double)arrow_length, (double)arrow_aspect, (double)arrow_rel_tip_radius, (double)arrow_tip_aspect);
 		}
 
 		//y-axis
-		if (fabs(fabs(zaxis(1)) - 1.0)> 0.001)
-		{
-
-			glRotatef(-90, 1, 0, 0);
-			glColor4f(0, 1, 0, 1);
+		if (fabs(fabs(z_axis(1)) - 1.0)> 0.01) {
+			ctx.set_color(rgb(0, 1, 0));
+			ctx.mul_modelview_matrix(cgv::math::rotate4<double>(-90, vec3(1, 0, 0)));
 			ctx.tesselate_arrow((double)arrow_length, (double)arrow_aspect, (double)arrow_rel_tip_radius, (double)arrow_tip_aspect);
 		}
-		ctx.pop_V();
+		ctx.pop_modelview_matrix();
 	}
-	glPopAttrib();
+	prog.disable(ctx);
 }
 
 void grid::draw(context &ctx)
@@ -250,37 +242,36 @@ void grid::finish_frame(context& ctx)
 
 void grid::draw_lines(context& ctx)
 {
-	glPushAttrib(GL_COLOR_BUFFER_BIT | GL_LIGHTING_BIT | GL_DEPTH_BUFFER_BIT | GL_LINE_BIT);
-	using namespace cgv::math;
+	glPushAttrib(GL_DEPTH_BUFFER_BIT | GL_LINE_BIT);
+
 	glEnable (GL_BLEND); 
 	glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glEnable(GL_LINE_SMOOTH);
-		
-	glDisable(GL_LIGHTING);
 	glEnable(GL_DEPTH_TEST);
 	glDepthMask(GL_FALSE);
-	glPushMatrix();
-	if(adaptive_grid)
-		glScaled(factor,factor,factor);
-	{
-		glPushMatrix();
-		::glRotated(90,0,0,1);
-		render_grid_lines(fabs(zaxis(0)));
-		glPopMatrix();
-	}
 
+	cgv::render::shader_program& prog = ctx.ref_default_shader_program();
+	prog.enable(ctx);
 
-	render_grid_lines(fabs(zaxis(1)));
-
-	{
-		glPushMatrix();
-		::glRotated(90,0,0,1);
-		::glRotated(90,1,0,0);
-		render_grid_lines(fabs(zaxis(2)));
-		glPopMatrix();
-	}
-	glPopMatrix();
+	ctx.set_color(rgba(0.5f, 0.5f, 0.5f, alpha));
+	ctx.push_modelview_matrix();
 	
+		if(adaptive_grid)
+			ctx.mul_modelview_matrix(cgv::math::scale4<double>(factor, factor, factor));
+
+		ctx.push_modelview_matrix();
+			render_grid_lines(fabs(z_axis(1)));
+		
+			ctx.mul_modelview_matrix(cgv::math::rotate4<double>(90, vec3(0, 0, 1)));
+			render_grid_lines(fabs(z_axis(0)));
+
+			ctx.mul_modelview_matrix(cgv::math::rotate4<double>(90, vec3(1, 0, 0)));
+			render_grid_lines(fabs(z_axis(2)));
+		ctx.pop_modelview_matrix();
+	ctx.pop_modelview_matrix();
+
+	prog.disable(ctx);
+
 	glPopAttrib();
 }
 
@@ -291,6 +282,7 @@ bool grid::self_reflect(cgv::reflect::reflection_handler& srh)
 		srh.reflect_member("show_axes", show_axes) &&
 		srh.reflect_member("adaptive_grid", adaptive_grid) &&
 		srh.reflect_member("show_grid", show_grid) &&
+		srh.reflect_member("opacity", alpha) &&
 		srh.reflect_member("show_lines", show_lines) &&
 		srh.reflect_member("arrow_length", arrow_length) &&
 		srh.reflect_member("arrow_aspect", arrow_aspect) &&
@@ -315,20 +307,14 @@ std::string grid::get_menu_path() const
 void grid::create_gui()
 {
 	add_decorator("Grid", "heading");
-	connect_copy(add_control("grid", show_grid, "check")->value_change,
-		rebind(static_cast<drawable*>(this), &drawable::post_redraw));
-	connect_copy(add_control("grid_lines", show_lines, "check")->value_change,
-		rebind(static_cast<drawable*>(this), &drawable::post_redraw));
-	connect_copy(add_control("adaptive", adaptive_grid, "check")->value_change,
-		rebind(static_cast<drawable*>(this), &drawable::post_redraw));
-	connect_copy(add_control("axes", show_axes, "check")->value_change,
-		rebind(static_cast<drawable*>(this), &drawable::post_redraw));
-	connect_copy(add_control("arrow_length", arrow_length, "value_slider", "min=0;max=100;log=true;ticks=true")->value_change,
-		rebind(static_cast<drawable*>(this), &drawable::post_redraw));
-	connect_copy(add_control("arrow_aspect", arrow_aspect, "value_slider", "min=0.001;max=1;step=0.0005;log=true;ticks=true")->value_change,
-		rebind(static_cast<drawable*>(this), &drawable::post_redraw));
-	connect_copy(add_control("arrow_rel_tip_radius", arrow_rel_tip_radius, "value_slider", "min=1;max=10;log=true;ticks=true")->value_change,
-		rebind(static_cast<drawable*>(this), &drawable::post_redraw));
-	connect_copy(add_control("arrow_tip_aspect", arrow_tip_aspect, "value_slider", "min=0.1;max=10;log=true;ticks=true")->value_change,
-		rebind(static_cast<drawable*>(this), &drawable::post_redraw));
+	add_member_control(this, "grid", show_grid, "check");
+	add_member_control(this, "grid_lines", show_lines, "check");
+	add_member_control(this, "adaptive", adaptive_grid, "check");
+	add_member_control(this, "threshold", threshold, "value_slider", "min=0;max=20;ticks=true;log=false");
+	add_member_control(this, "opacity", alpha, "value_slider", "min=0;max=1;ticks=true");
+	add_member_control(this, "axes", show_axes, "check");
+	add_member_control(this, "arrow_length", arrow_length, "value_slider", "min=0;max=100;log=true;ticks=true");
+	add_member_control(this, "arrow_aspect", arrow_aspect, "value_slider", "min=0.001;max=1;step=0.0005;log=true;ticks=true");
+	add_member_control(this, "arrow_rel_tip_radius", arrow_rel_tip_radius, "value_slider", "min=1;max=10;log=true;ticks=true");
+	add_member_control(this, "arrow_tip_aspect", arrow_tip_aspect, "value_slider", "min=0.1;max=10;log=true;ticks=true");
 }
