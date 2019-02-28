@@ -27,7 +27,8 @@ void test_det()
 	m3(0,0) = 1.0; m3(0,1) = 2.0;	m3(0,2) = 3.0;
 	m3(1,0) = 4.0; m3(1,1) = 5.0;	m3(1,2) = 6.0;
 	m3(2,0) = 1.0; m3(2,1) = 8.0;	m3(2,2) = 9.0;
-	assert(fabs(det(m3) - 18) < 1e-10);
+	double D = det(m3);
+	assert(fabs(D - 18) < 1e-10);
 	
 
 	//determinant of  diagonal matrix

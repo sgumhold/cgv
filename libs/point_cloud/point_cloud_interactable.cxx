@@ -178,7 +178,7 @@ void point_cloud_interactable::build_neighbor_graph_componentwise()
 
 	// iterate components
 	std::cout << "build_neighbor_graph_componentwise(" << pc.get_nr_components() << "):"; std::cout.flush();
-	for (Idx ci = 0; ci < pc.get_nr_components(); ++ci) {
+	for (Idx ci = 0; ci < (Idx)pc.get_nr_components(); ++ci) {
 		std::cout << " " << ci << ":"; std::cout.flush();
 		ann_tree* T = new ann_tree;
 		std::vector<Idx> C(1, Idx(ci));
@@ -396,7 +396,8 @@ void point_cloud_interactable::stream_stats(std::ostream& os)
 {
 	os << "PC: #P=" << pc.get_nr_points()
 		<< ", #N=" << (pc.has_normals() ? pc.get_nr_points() : 0)
-		<< ", #C=" << (pc.has_colors() ? pc.get_nr_points() : 0) << std::endl;
+		<< ", #C=" << (pc.has_colors() ? pc.get_nr_points() : 0) 
+		<< ", B=" << pc.box() << std::endl;
 }
 
 

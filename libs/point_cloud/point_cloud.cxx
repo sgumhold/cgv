@@ -395,70 +395,70 @@ bool point_cloud::read(const string& _file_name)
 		success = read_wrl(_file_name);
 	if (ext == "apc" || ext == "pnt")
 		success = read_ascii(_file_name);
-if (ext == "obj" || ext == "pobj")
-success = read_obj(_file_name);
-if (ext == "ply")
-success = read_ply(_file_name);
-if (success) {
-	if (N.size() > 0)
-		has_nmls = true;
-	else if (P.size() > 0)
-		has_nmls = false;
+	if (ext == "obj" || ext == "pobj")
+	success = read_obj(_file_name);
+	if (ext == "ply")
+	success = read_ply(_file_name);
+	if (success) {
+		if (N.size() > 0)
+			has_nmls = true;
+		else if (P.size() > 0)
+			has_nmls = false;
 
-	if (C.size() > 0)
-		has_clrs = true;
-	else if (P.size() > 0)
-		has_clrs = false;
+		if (C.size() > 0)
+			has_clrs = true;
+		else if (P.size() > 0)
+			has_clrs = false;
 
-	if (T.size() > 0)
-		has_texcrds = true;
-	else if (P.size() > 0)
-		has_texcrds = false;
+		if (T.size() > 0)
+			has_texcrds = true;
+		else if (P.size() > 0)
+			has_texcrds = false;
 
-	if (I.size() > 0)
-		has_pixcrds = true;
-	else if (P.size() > 0)
-		has_pixcrds = false;
+		if (I.size() > 0)
+			has_pixcrds = true;
+		else if (P.size() > 0)
+			has_pixcrds = false;
 
-	if (has_comps = components.size() > 0) {
-		has_comp_clrs = component_colors.size() > 0;
-		has_comp_trans = component_rotations.size() > 0;
-		component_boxes.resize(get_nr_components());
-		component_pixel_ranges.resize(get_nr_components());
-		comp_box_out_of_date.resize(get_nr_components());
-		std::fill(comp_box_out_of_date.begin(), comp_box_out_of_date.end(), true);
-		comp_pixrng_out_of_date.resize(get_nr_components());
-		std::fill(comp_pixrng_out_of_date.begin(), comp_pixrng_out_of_date.end(), true);
+		if (has_comps = components.size() > 0) {
+			has_comp_clrs = component_colors.size() > 0;
+			has_comp_trans = component_rotations.size() > 0;
+			component_boxes.resize(get_nr_components());
+			component_pixel_ranges.resize(get_nr_components());
+			comp_box_out_of_date.resize(get_nr_components());
+			std::fill(comp_box_out_of_date.begin(), comp_box_out_of_date.end(), true);
+			comp_pixrng_out_of_date.resize(get_nr_components());
+			std::fill(comp_pixrng_out_of_date.begin(), comp_pixrng_out_of_date.end(), true);
+		}
+
+		box_out_of_date = true;
+		if (has_pixel_coordinates())
+			pixel_range_out_of_date = true;
 	}
-
-	box_out_of_date = true;
-	if (has_pixel_coordinates())
-		pixel_range_out_of_date = true;
-}
-else {
-	cerr << "unknown extension <." << ext << ">." << endl;
-}
-if (has_normals() && P.size() != N.size()) {
-	cerr << "ups different number of normals: " << N.size() << " instead of " << P.size() << endl;
-	N.resize(P.size());
-}
-if (has_colors() && P.size() != C.size()) {
-	cerr << "ups different number of colors: " << C.size() << " instead of " << P.size() << endl;
-	C.resize(P.size());
-}
-if (has_texture_coordinates() && P.size() != T.size()) {
-	cerr << "ups different number of texture coordinates: " << T.size() << " instead of " << P.size() << endl;
-	T.resize(P.size());
-}
-if (has_pixel_coordinates() && P.size() != I.size()) {
-	cerr << "ups different number of pixel coordinates: " << I.size() << " instead of " << P.size() << endl;
-	I.resize(P.size());
-}
-if (has_components() && P.size() != component_indices.size()) {
-	cerr << "ups different number of component indices: " << component_indices.size() << " instead of " << P.size() << endl;
-	component_indices.resize(P.size());
-}
-return success;
+	else {
+		cerr << "unknown extension <." << ext << ">." << endl;
+	}
+	if (has_normals() && P.size() != N.size()) {
+		cerr << "ups different number of normals: " << N.size() << " instead of " << P.size() << endl;
+		N.resize(P.size());
+	}
+	if (has_colors() && P.size() != C.size()) {
+		cerr << "ups different number of colors: " << C.size() << " instead of " << P.size() << endl;
+		C.resize(P.size());
+	}
+	if (has_texture_coordinates() && P.size() != T.size()) {
+		cerr << "ups different number of texture coordinates: " << T.size() << " instead of " << P.size() << endl;
+		T.resize(P.size());
+	}
+	if (has_pixel_coordinates() && P.size() != I.size()) {
+		cerr << "ups different number of pixel coordinates: " << I.size() << " instead of " << P.size() << endl;
+		I.resize(P.size());
+	}
+	if (has_components() && P.size() != component_indices.size()) {
+		cerr << "ups different number of component indices: " << component_indices.size() << " instead of " << P.size() << endl;
+		component_indices.resize(P.size());
+	}
+	return success;
 }
 
 /// read component transformations from ascii file with 12 numbers per line (9 for rotation matrix and 3 for translation vector)
@@ -505,7 +505,6 @@ bool point_cloud::read_component_transformations(const std::string& file_name)
 					std::cerr << "C" << ci << "(" << component_name(ci) << "): negative determinant of rotation matrix = " << D << std::endl;
 					R.transpose();
 					t = R * t;
-					R.transpose();
 					R = -R;
 				}
 			}
@@ -567,7 +566,7 @@ bool point_cloud::write_component_transformations(const std::string& file_name, 
 	if (os.fail())
 		return false;
 
-	for (Idx ci = 0; ci < get_nr_components(); ++ci) {
+	for (Idx ci = 0; ci < (Idx)get_nr_components(); ++ci) {
 		const Qat& q = component_rotation(ci);
 		const Dir& t = component_translation(ci);
 		if (as_matrices) {

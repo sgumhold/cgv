@@ -83,7 +83,7 @@ bool light_interactor::self_reflect(reflection_handler& rh)
 
 bool light_interactor::init(context& ctx)
 {
-	unsigned n = ctx.get_max_nr_lights();
+	unsigned n = ctx.get_max_nr_enabled_light_sources();
 	lights.resize(n);
 	handles.resize(n);
 	new_handles.resize(n);
