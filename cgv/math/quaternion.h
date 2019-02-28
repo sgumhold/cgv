@@ -79,24 +79,24 @@ public:
 		this->y() = sqrt(plus(T(0.25)*(-M(0, 0) + M(1, 1) - M(2, 2) + T(1))));
 		this->z() = sqrt(plus(T(0.25)*(-M(0, 0) - M(1, 1) + M(2, 2) + T(1))));
 		if (this->w() >= this->x() && this->w() >= this->y() && this->w() >= this->z()) {
-			this->x() *= sign(M(1, 2) - M(2, 1));
-			this->y() *= sign(M(2, 0) - M(0, 2));
-			this->z() *= sign(M(0, 1) - M(1, 0));
+			this->x() *= sign(M(2, 1) - M(1, 2));
+			this->y() *= sign(M(0, 2) - M(2, 0));
+			this->z() *= sign(M(1, 0) - M(0, 1));
 		}
 		else if (this->x() >= this->y() && this->x() >= this->z()) {
-			this->w() *= sign(M(1, 2) - M(2, 1));
-			this->y() *= sign(M(1, 0) + M(0, 1));
-			this->z() *= sign(M(0, 2) + M(2, 0));
+			this->w() *= sign(M(2, 1) - M(1, 2));
+			this->y() *= sign(M(0, 1) + M(1, 0));
+			this->z() *= sign(M(2, 0) + M(0, 2));
 		}
 		else if (this->y() >= this->z()) {
-			this->w() *= sign(M(2, 0) - M(0, 2));
-			this->x() *= sign(M(1, 0) + M(0, 1));
-			this->z() *= sign(M(2, 1) + M(1, 2));
+			this->w() *= sign(M(0, 2) - M(2, 0));
+			this->x() *= sign(M(0, 1) + M(1, 0));
+			this->z() *= sign(M(1, 2) + M(2, 1));
 		}
 		else {
-			this->w() *= sign(M(0, 1) - M(1, 0));
-			this->x() *= sign(M(2, 0) + M(0, 2));
-			this->y() *= sign(M(2, 1) + M(1, 2));
+			this->w() *= sign(M(1, 0) - M(0, 1));
+			this->x() *= sign(M(0, 2) + M(2, 0));
+			this->y() *= sign(M(1, 2) + M(2, 1));
 		}
 	}
 	/// initialize quaternion directly
@@ -119,26 +119,26 @@ public:
 	void put_matrix(mat_type& M) const
 	{
 		M(0, 0) = 1 - 2 * this->y()*this->y() - 2 * this->z()*this->z();
-		M(1, 0) = 2 * this->x()*this->y() - 2 * this->w()*this->z();
-		M(2, 0) = 2 * this->x()*this->z() + 2 * this->w()*this->y();
-		M(0, 1) = 2 * this->x()*this->y() + 2 * this->w()*this->z();
+		M(0, 1) = 2 * this->x()*this->y() - 2 * this->w()*this->z();
+		M(0, 2) = 2 * this->x()*this->z() + 2 * this->w()*this->y();
+		M(1, 0) = 2 * this->x()*this->y() + 2 * this->w()*this->z();
 		M(1, 1) = 1 - 2 * this->x()*this->x() - 2 * this->z()*this->z();
-		M(2, 1) = 2 * this->y()*this->z() - 2 * this->w()*this->x();
-		M(0, 2) = 2 * this->x()*this->z() - 2 * this->w()*this->y();
-		M(1, 2) = 2 * this->y()*this->z() + 2 * this->w()*this->x();
+		M(1, 2) = 2 * this->y()*this->z() - 2 * this->w()*this->x();
+		M(2, 0) = 2 * this->x()*this->z() - 2 * this->w()*this->y();
+		M(2, 1) = 2 * this->y()*this->z() + 2 * this->w()*this->x();
 		M(2, 2) = 1-2*this->x()*this->x()-2*this->y()*this->y();
 	}
 	/// compute equivalent homogeneous 4x4 rotation matrix
 	void put_homogeneous_matrix(hmat_type& M) const
 	{
 		M(0, 0) = 1 - 2 * this->y()*this->y() - 2 * this->z()*this->z();
-		M(1, 0) = 2 * this->x()*this->y() - 2 * this->w()*this->z();
-		M(2, 0) = 2 * this->x()*this->z() + 2 * this->w()*this->y();
-		M(0, 1) = 2 * this->x()*this->y() + 2 * this->w()*this->z();
+		M(0, 1) = 2 * this->x()*this->y() - 2 * this->w()*this->z();
+		M(0, 2) = 2 * this->x()*this->z() + 2 * this->w()*this->y();
+		M(1, 0) = 2 * this->x()*this->y() + 2 * this->w()*this->z();
 		M(1, 1) = 1 - 2 * this->x()*this->x() - 2 * this->z()*this->z();
-		M(2, 1) = 2 * this->y()*this->z() - 2 * this->w()*this->x();
-		M(0, 2) = 2 * this->x()*this->z() - 2 * this->w()*this->y();
-		M(1, 2) = 2 * this->y()*this->z() + 2 * this->w()*this->x();
+		M(1, 2) = 2 * this->y()*this->z() - 2 * this->w()*this->x();
+		M(2, 0) = 2 * this->x()*this->z() - 2 * this->w()*this->y();
+		M(2, 1) = 2 * this->y()*this->z() + 2 * this->w()*this->x();
 		M(2, 2) = 1 - 2 * this->x()*this->x() - 2 * this->y()*this->y();
 		M(3,0) = M(3,1) = M(3,2) = M(0,3) = M(1, 3) = M(2, 3) = M(3, 3) = 0;
 		M(3,3) = 1;

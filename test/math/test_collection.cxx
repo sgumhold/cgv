@@ -50,7 +50,7 @@ bool test_collection()
 	test_eig();//complete
 	test_mat();//complete
 	test_gaussj();//
-	test_statistics();
+//	test_statistics();
 	test_align<float>(100, 100, true, true);
 	test_align<float, double>(100, 100, true, true);
 	test_align<double, float>(100, 100, true, true);

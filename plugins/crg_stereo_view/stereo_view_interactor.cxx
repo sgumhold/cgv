@@ -284,8 +284,10 @@ void stereo_view_interactor::stream_stats(std::ostream& os)
 
 	oprintf(os, "y_view_angle=%.1fº, y_extent=%.1f, inp_z_range:[%.2f,%.2f]",
 		y_view_angle, y_extent_at_focus, z_near, z_far);
-	if (scene_extent.is_valid())
+	if (scene_extent.is_valid()) {
 		oprintf(os, " adapted to scene: [%.2f,%.2f]\n", z_near_derived, z_far_derived);
+		os << "current scene extent: " << scene_extent << std::endl;
+	}
 	else if (clip_relative_to_extent)
 		oprintf(os, " adapted to extent: [%.2f,%.2f]\n", z_near_derived, z_far_derived);
 	else
