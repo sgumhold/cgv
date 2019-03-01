@@ -139,6 +139,8 @@ context::context()
 	nr_identations = 0;
 	at_line_begin = true;
 	enable_vsynch = true;
+	sRGB_framebuffer = true;
+	gamma = 1;
 
 	default_render_flags = RenderPassFlags(RPF_DEFAULT);
 	current_background = 0;
@@ -154,6 +156,7 @@ context::context()
 	light_source_handle = 1;
 
 	auto_set_view_in_current_shader_program = true;
+	auto_set_gamma_in_current_shader_program = true;
 	auto_set_lights_in_current_shader_program = true;
 	auto_set_material_in_current_shader_program = true;
 	support_compatibility_mode = true;
@@ -339,11 +342,32 @@ unsigned int context::get_bg_clr_idx() const
 void context::enable_phong_shading()
 {
 	phong_shading = true;
+	error("context::enable_phong_shading() deprecated");
 }
 
 void context::disable_phong_shading()
 {
 	phong_shading = false;
+	error("context::disable_phong_shading() deprecated");
+}
+
+void context::enable_material(const cgv::media::illum::phong_material& mat, MaterialSide ms, float alpha)
+{
+	error("context::enable_material(phong_material) deprecated");
+
+}
+void context::disable_material(const cgv::media::illum::phong_material& mat)
+{
+	error("context::disable_material(phong_material) deprecated");
+}
+void context::enable_material(const textured_material& mat, MaterialSide ms, float alpha)
+{
+	error("context::enable_material(textured_material) deprecated");
+}
+
+void context::enable_sRGB_framebuffer(bool do_enable)
+{
+	sRGB_framebuffer = do_enable;
 }
 
 /// check for current program, prepare it for rendering and return pointer to it
@@ -1374,6 +1398,21 @@ void context::tesselate_unit_icosahedron(bool flip_normals, bool edges)
 	tesselate_unit_dodecahedron_or_icosahedron(*this, false, flip_normals, edges);
 }
 
+void context::set_gamma(float _gamma)
+{
+	if (!auto_set_gamma_in_current_shader_program)
+		return;
+
+	if (shader_program_stack.empty())
+		return;
+
+	cgv::render::shader_program& prog = *static_cast<cgv::render::shader_program*>(shader_program_stack.top());
+	if (!prog.does_use_gamma())
+		return;
+
+	prog.set_uniform(*this, "gamma", gamma);
+}
+
 /// set the current material 
 void context::set_material(const cgv::media::illum::surface_material& material)
 {
@@ -1659,6 +1698,7 @@ shader_program_base::shader_program_base()
 	uses_view = false;
 	uses_material = false;
 	uses_lights = false;
+	uses_gamma = false;
 
 	position_index = -1;
 	normal_index = -1;
@@ -1667,12 +1707,13 @@ shader_program_base::shader_program_base()
 }
 
 // configure program
-void shader_program_base::specify_standard_uniforms(bool view, bool material, bool lights)
+void shader_program_base::specify_standard_uniforms(bool view, bool material, bool lights, bool gamma)
 {
 	auto_detect_uniforms = false;
 	uses_view = view;
 	uses_material = material;
 	uses_lights = lights;
+	uses_gamma = gamma;
 }
 
 void shader_program_base::specify_standard_vertex_attribute_names(context& ctx, bool color, bool normal, bool texcoord)
@@ -1717,6 +1758,7 @@ bool context::shader_program_enable(shader_program_base& spb)
 		spb.uses_lights = get_uniform_location(spb, "nr_light_sources") != -1;
 		spb.uses_material = get_uniform_location(spb, "material.brdf_type") != -1;
 		spb.uses_view = get_uniform_location(spb, "modelview_matrix") != -1;
+		spb.uses_gamma = get_uniform_location(spb, "gamma") != -1;
 		spb.auto_detect_uniforms = false;
 	}
 	return true;

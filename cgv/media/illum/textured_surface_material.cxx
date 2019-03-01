@@ -32,6 +32,13 @@ textured_surface_material::textured_surface_material(
 	normal_index = -1;
 	bump_index = -1;
 	specular_index = -1;
+	sRGBA_textures = true;
+}
+
+/// set whether textures are interpreted in sRGB format
+void textured_surface_material::set_sRGBA_textures(bool do_set)
+{
+	sRGBA_textures = do_set;
 }
 
 /// convert obj material

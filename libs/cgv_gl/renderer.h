@@ -9,6 +9,7 @@
 
 namespace cgv { // @<
 	namespace render { // @<
+		
 		/// base class for all render styles
 		struct CGV_API render_style
 		{
@@ -131,6 +132,8 @@ namespace cgv { // @<
 			renderer();
 			/// destructor deletes default renderer style
 			virtual ~renderer();
+			/// used by derived classes to manage singeltons
+			void manage_singelton(context& ctx, const std::string& renderer_name, int& ref_count, int ref_count_change);
 			/// provide an attribute manager that is used in successive calls to attribute array setting methods and in the enable and disable method, if a nullptr is provided attributes are managed through deprecated VertexAttributePointers - in this case a call to disable deattaches all attribute arrays which have to be set before the next enable call again
 			void set_attribute_array_manager(attribute_array_manager* aam_ptr = 0);
 			/// reference given render style

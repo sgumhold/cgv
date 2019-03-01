@@ -4,6 +4,13 @@
 
 namespace cgv {
 	namespace render {
+		sphere_renderer& ref_sphere_renderer(context& ctx, int ref_count_change)
+		{
+			static int ref_count = 0;
+			static sphere_renderer r;
+			r.manage_singelton(ctx, "sphere_renderer", ref_count, ref_count_change);
+			return r;
+		}
 
 		render_style* sphere_renderer::create_render_style() const
 		{

@@ -4,6 +4,13 @@
 
 namespace cgv {
 	namespace render {
+		box_wire_renderer& ref_box_wire_renderer(context& ctx, int ref_count_change)
+		{
+			static int ref_count = 0;
+			static box_wire_renderer r;
+			r.manage_singelton(ctx, "box_wire_renderer", ref_count, ref_count_change);
+			return r;
+		}
 
 		/// overload to allow instantiation of box_wire_renderer
 		render_style* box_wire_renderer::create_render_style() const

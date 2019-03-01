@@ -4,6 +4,13 @@
 
 namespace cgv {
 	namespace render {
+		surfel_renderer& ref_surfel_renderer(context& ctx, int ref_count_change)
+		{
+			static int ref_count = 0;
+			static surfel_renderer r;
+			r.manage_singelton(ctx, "surfel_renderer", ref_count, ref_count_change);
+			return r;
+		}
 
 		render_style* surfel_renderer::create_render_style() const
 		{

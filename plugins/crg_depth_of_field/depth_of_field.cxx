@@ -51,36 +51,30 @@ void depth_of_field::generate_samples()
 	}
 }
 
-void depth_of_field::update_view(int i)
+void depth_of_field::update_view(cgv::render::context& ctx, int i)
 {
-	cgv::math::fmat<double,4,4> m;
+	dmat4 m;
 	m.identity();
 	double dx,dy;
 	put_sample(i,dx,dy);
-//	std::cout << "update view " << i << " : " << dx << "," << dy << std::endl;
 	m(0,2) = -dx/z_focus;
 	m(1,2) = -dy/z_focus;
 	m(0,3) = -dx;
 	m(1,3) = -dy;
-	glMatrixMode(GL_PROJECTION);
-	glMultMatrixd(m);
-	glMatrixMode(GL_MODELVIEW);
+	ctx.mul_projection_matrix(m);
 }
 
-void depth_of_field::restore_view(int i)
+void depth_of_field::restore_view(cgv::render::context& ctx, int i)
 {
-	cgv::math::fmat<double,4,4> m;
+	dmat4 m;
 	m.identity();
 	double dx,dy;
 	put_sample(i,dx,dy);
-//	std::cout << "restore view " << i << " : " << dx << "," << dy << std::endl;
 	m(0,2) = dx/z_focus;
 	m(1,2) = dy/z_focus;
 	m(0,3) = dx;
 	m(1,3) = dy;
-	glMatrixMode(GL_PROJECTION);
-	glMultMatrixd(m);
-	glMatrixMode(GL_MODELVIEW);
+	ctx.mul_projection_matrix(m);
 }
 
 
@@ -139,7 +133,7 @@ void depth_of_field::init_frame(context& ctx)
 	}
 	// avoid infinite recursion
 	if (ctx.get_render_pass() == RP_USER_DEFINED && ctx.get_render_pass_user_data() == this) {
-		update_view(iter);
+		update_view(ctx, iter);
 		return;
 	}
 	glClearAccum(0,0,0,0);
@@ -149,11 +143,11 @@ void depth_of_field::init_frame(context& ctx)
 		cgv::render::RenderPassFlags rpf = ctx.get_render_pass_flags();
 		iter = i;
 		ctx.render_pass(RP_USER_DEFINED,RenderPassFlags(rpf & ~(RPF_HANDLE_SCREEN_SHOT|RPF_CLEAR_ACCUM)), this);
-		restore_view(i);
+		restore_view(ctx, i);
 	}
 	// finally start rendering the view sample in main render pass
 	iter = 0;
-	update_view(0);
+	update_view(ctx, 0);
 }
 
 /// this method is called in one pass over all drawables after drawing
@@ -171,7 +165,7 @@ void depth_of_field::after_finish(cgv::render::context& ctx)
 	if (ctx.get_render_pass() == RP_USER_DEFINED && ctx.get_render_pass_user_data() == this)
 		return;
 	glAccum(GL_RETURN, 1.0f);
-	restore_view(0);
+	restore_view(ctx, 0);
 }
 
 /// return a shortcut to activate the gui without menu navigation

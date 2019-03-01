@@ -1,6 +1,7 @@
 files:textured_surface
 fragment_file:lights.glsl
 fragment_file:brdf.glsl
+fragment_file:bump_map.glfs
 vertex_file:brdf.glsl
 vertex_file:view.glsl
 fragment_file:side.glsl

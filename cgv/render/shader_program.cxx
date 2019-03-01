@@ -482,12 +482,14 @@ bool shader_program::set_textured_material_uniform(const context& ctx, const std
 			return false;
 	return
 		set_material_uniform(ctx, name, material, generate_error) &&
+		set_uniform(ctx, "sRGBA_textures", material.get_sRGBA_textures(), generate_error) &&
 		set_uniform(ctx, "diffuse_index", material.get_diffuse_index(), generate_error) &&
 		set_uniform(ctx, "roughness_index", material.get_roughness_index(), generate_error) &&
 		set_uniform(ctx, "metalness_index", material.get_metalness_index(), generate_error) &&
 		set_uniform(ctx, "ambient_index", material.get_ambient_index(), generate_error) &&
 		set_uniform(ctx, "emission_index", material.get_emission_index(), generate_error) &&
 		set_uniform(ctx, "transparency_index", material.get_transparency_index(), generate_error) &&
+		set_uniform(ctx, "bump_index", material.get_bump_index(), generate_error) &&
 		set_uniform(ctx, "specular_index", material.get_specular_index(), generate_error);
 }
 

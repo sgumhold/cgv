@@ -1,6 +1,7 @@
 #version 150
 
 uniform int illumination_mode = 2;
+uniform bool sRGBA_textures = true;
 
 uniform sampler2D tex0;
 uniform sampler2D tex1;
@@ -17,9 +18,6 @@ uniform int emission_index = -1;
 uniform int transparency_index = -1;
 // not yet implemented: uniform int propagation_slow_down_index = -1;
 uniform int specular_index = -1;
-// not yet implemented: uniform int normal_index = -1;
-// not yet implemented: uniform int bump_index = -1;
-uniform float bump_scale = 1.0;
 
 /*
 The following interface is implemented in this shader:
@@ -39,6 +37,7 @@ struct Material {
 };
 
 Material get_material();
+vec4 lookup_texture(int ti, vec2 texcoords, bool is_color);
 vec4 compute_reflected_radiance(in Material M, vec3 position_eye, vec3 normal_eye);
 vec4 compute_reflected_appearance(vec3 position_eye, vec3 normal_eye, vec4 color, int side);
 vec4 compute_reflected_appearance_texture(vec3 position_eye, vec3 normal_eye, vec2 texcoords, vec4 color, int side);
@@ -93,6 +92,11 @@ void update_material_color_and_transparency(inout vec3 mat_color, inout float tr
 void update_normal(inout vec3 normal, in int side);
 //***** end interface of side.glsl ***********************************
 
+//***** begin interface of bump_map.glsl ***********************************
+void update_normal_from_material(in vec3 s, inout vec3 N, in Material M, in vec2 tc);
+//***** end interface of bump_map.glsl ***********************************
+
+
 uniform Material material;
 
 Material get_material()
@@ -129,18 +133,22 @@ vec4 compute_reflected_appearance(vec3 position_eye, vec3 normal_eye, vec4 color
 	return compute_reflected_radiance(M, position_eye, normal_eye);
 }
 
-vec4 lookup_texture(int ti, vec2 texcoords)
+vec4 lookup_texture(int ti, vec2 texcoords, bool is_color)
 {
+	vec4 rgba = vec4(0.0);
 	switch (ti) {
-	case 0: return texture(tex0, texcoords);
-	case 1: return texture(tex1, texcoords);
-	case 2: return texture(tex2, texcoords);
-	case 3: return texture(tex3, texcoords);
-	case 4: return texture(tex4, texcoords);
-	case 5: return texture(tex5, texcoords);
+	case 0: rgba = texture(tex0, texcoords); break;
+	case 1: rgba = texture(tex1, texcoords); break;
+	case 2: rgba = texture(tex2, texcoords); break;
+	case 3: rgba = texture(tex3, texcoords); break;
+	case 4: rgba = texture(tex4, texcoords); break;
+	case 5: rgba = texture(tex5, texcoords); break;
 	}
-	return vec4(0.0);
+	if (is_color && sRGBA_textures)
+		rgba.rgb = pow(rgba.rgb, vec3(2.2));
+	return rgba;
 }
+
 void update_material_from_texture(inout Material M, in vec2 texcoords)
 {
 	int trans_idx = transparency_index;
@@ -148,7 +156,7 @@ void update_material_from_texture(inout Material M, in vec2 texcoords)
 	int ambie_idx = ambient_index;
 
 	if (diffuse_index > -1) {
-		vec4 col = lookup_texture(diffuse_index, texcoords);
+		vec4 col = lookup_texture(diffuse_index, texcoords, true);
 		M.diffuse_reflectance = col.rgb;
 		if (trans_idx == diffuse_index) {
 			M.transparency = 1.0-col.a;
@@ -160,7 +168,7 @@ void update_material_from_texture(inout Material M, in vec2 texcoords)
 		}
 	}
 	if (emission_index > -1) {
-		vec4 col = lookup_texture(emission_index, texcoords);
+		vec4 col = lookup_texture(emission_index, texcoords, true);
 		M.emission = col.rgb;
 		if (trans_idx == emission_index) {
 			M.transparency = 1.0 - col.a;
@@ -172,7 +180,7 @@ void update_material_from_texture(inout Material M, in vec2 texcoords)
 		}
 	}
 	if (specular_index > -1) {
-		vec4 col = lookup_texture(specular_index, texcoords);
+		vec4 col = lookup_texture(specular_index, texcoords, true);
 		M.specular_reflectance = col.rgb;
 		if (trans_idx == specular_index) {
 			M.transparency = 1.0 - col.a;
@@ -184,7 +192,7 @@ void update_material_from_texture(inout Material M, in vec2 texcoords)
 		}
 	}
 	if (roughness_index > -1) {
-		vec4 col = lookup_texture(roughness_index, texcoords);
+		vec4 col = lookup_texture(roughness_index, texcoords, false);
 		M.roughness = col.r;
 		if (roughness_index == metal_idx) {
 			M.metalness = col.g;
@@ -206,7 +214,7 @@ void update_material_from_texture(inout Material M, in vec2 texcoords)
 		}
 	}
 	if (metal_idx > -1) {
-		vec4 col = lookup_texture(metal_idx, texcoords);
+		vec4 col = lookup_texture(metal_idx, texcoords, false);
 		M.metalness = col.r;
 		if (metal_idx == ambie_idx) {
 			M.ambient_occlusion = col.g;
@@ -224,15 +232,14 @@ void update_material_from_texture(inout Material M, in vec2 texcoords)
 		}
 	}
 	if (ambie_idx > -1) {
-		vec4 col = lookup_texture(ambie_idx, texcoords);
+		vec4 col = lookup_texture(ambie_idx, texcoords, true);
 		M.ambient_occlusion = col.r;
 	}
 	if (trans_idx > -1) {
-		vec4 col = lookup_texture(trans_idx, texcoords);
+		vec4 col = lookup_texture(trans_idx, texcoords, false);
 		M.transparency = 1.0 - col.r;
 	}
 }
-
 
 vec4 compute_reflected_appearance_texture(vec3 position_eye, vec3 normal_eye, vec2 texcoords, vec4 color, int side)
 {
@@ -240,8 +247,11 @@ vec4 compute_reflected_appearance_texture(vec3 position_eye, vec3 normal_eye, ve
 		return color;
 	Material M = material;
 	update_material_color_and_transparency(M.diffuse_reflectance, M.transparency, side, color);
-	update_normal(normal_eye, side);
 	update_material_from_texture(M, texcoords);
+	update_normal_from_material(position_eye, normal_eye, M, texcoords);
+	update_normal(normal_eye, side);
 	return compute_reflected_radiance(M, position_eye, normal_eye);
+	//return vec4(1.0, 0.0, 0.0, 1.0);
+
 }
 

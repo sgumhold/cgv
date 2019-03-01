@@ -46,22 +46,19 @@ protected:
 	RenderMode mode;
 	cgv::render::view* view_ptr;
 	bool p_vbos_out_of_date, sl_vbos_out_of_date, b_vbos_out_of_date;
+
+	// declare render styles
 	cgv::render::point_render_style point_style;
 	cgv::render::surfel_render_style surfel_style;
-	cgv::render::surface_render_style box_style;
-	cgv::render::line_render_style box_wire_style;
+	cgv::render::box_render_style box_style;
+	cgv::render::box_wire_render_style box_wire_style;
 	cgv::render::normal_render_style normal_style;
 	cgv::render::sphere_render_style sphere_style;
 
-	cgv::render::point_renderer p_renderer;
+	// declare attribute managers
 	cgv::render::attribute_array_manager p_manager;
-	cgv::render::surfel_renderer sl_renderer;
 	cgv::render::attribute_array_manager sl_manager;
-	cgv::render::box_renderer b_renderer;
 	cgv::render::attribute_array_manager b_manager;
-	cgv::render::box_wire_renderer bw_renderer;
-	cgv::render::normal_renderer n_renderer;
-	cgv::render::sphere_renderer s_renderer;
 public:
 	/// define format and texture filters in constructor
 	renderer_tests() : cgv::base::node("renderer_test")
@@ -133,42 +130,21 @@ public:
 		}
 		ctx.set_bg_clr_idx(4);
 
-		if (!p_renderer.init(ctx))
-			return false;
-		p_renderer.set_reference_point_size(0.005f);
-		p_renderer.set_y_view_angle(float(view_ptr->get_y_view_angle()));
-		p_renderer.set_render_style(point_style);
+		// create attribute managers
 		if (!p_manager.init(ctx))
 			return false;
-		p_renderer.set_attribute_array_manager(&p_manager);
-
-		if (!sl_renderer.init(ctx))
-			return false;
-		sl_renderer.set_reference_point_size(0.005f);
-		sl_renderer.set_y_view_angle(float(view_ptr->get_y_view_angle()));
-		sl_renderer.set_render_style(surfel_style);
 		if (!sl_manager.init(ctx))
 			return false;
-		sl_renderer.set_attribute_array_manager(&sl_manager);
-
-		if (!b_renderer.init(ctx))
-			return false;
-
-		b_renderer.set_render_style(box_style);
 		if (!b_manager.init(ctx))
 			return false;
 
-		b_renderer.set_attribute_array_manager(&b_manager);
-		if (!bw_renderer.init(ctx))
-			return false;
-		bw_renderer.set_render_style(box_wire_style);
-		if (!n_renderer.init(ctx))
-			return false;
-		n_renderer.set_render_style(normal_style);
-		if (!s_renderer.init(ctx))
-			return false;
-		s_renderer.set_y_view_angle(float(view_ptr->get_y_view_angle()));
-		s_renderer.set_render_style(sphere_style);
+		// increase reference counts of used renderer singeltons
+		cgv::render::ref_point_renderer   (ctx, 1);
+		cgv::render::ref_surfel_renderer  (ctx, 1);
+		cgv::render::ref_box_renderer     (ctx, 1);
+		cgv::render::ref_box_wire_renderer(ctx, 1);
+		cgv::render::ref_normal_renderer  (ctx, 1);
+		cgv::render::ref_sphere_renderer  (ctx, 1);
 		return true;
 	}
 
@@ -220,7 +196,12 @@ public:
 		if (disable_depth)
 			glDepthFunc(GL_ALWAYS);
 		switch (mode) {
-		case RM_POINTS:
+		case RM_POINTS: {
+			cgv::render::point_renderer& p_renderer = cgv::render::ref_point_renderer(ctx);
+			p_renderer.set_reference_point_size(0.005f);
+			p_renderer.set_y_view_angle(float(view_ptr->get_y_view_angle()));
+			p_renderer.set_render_style(point_style);
+			p_renderer.set_attribute_array_manager(&p_manager);
 			set_group_geometry(ctx, p_renderer);
 			if (p_vbos_out_of_date) {
 				set_geometry(ctx, p_renderer);
@@ -229,8 +210,13 @@ public:
 			p_renderer.validate_and_enable(ctx);
 			draw_points();
 			p_renderer.disable(ctx);
-			break;
-		case RM_SURFELS:
+		}	break;
+		case RM_SURFELS: {
+			cgv::render::surfel_renderer& sl_renderer = cgv::render::ref_surfel_renderer(ctx);
+			sl_renderer.set_reference_point_size(0.005f);
+			sl_renderer.set_y_view_angle(float(view_ptr->get_y_view_angle()));
+			sl_renderer.set_render_style(surfel_style);
+			sl_renderer.set_attribute_array_manager(&sl_manager);
 			set_group_geometry(ctx, sl_renderer);
 			if (sl_vbos_out_of_date) {
 				set_geometry(ctx, sl_renderer);
@@ -243,8 +229,11 @@ public:
 			sl_renderer.validate_and_enable(ctx);
 			draw_points();
 			sl_renderer.disable(ctx);
-			break;
-		case RM_BOXES :
+		}	break;
+		case RM_BOXES: {
+			cgv::render::box_renderer& b_renderer = cgv::render::ref_box_renderer(ctx);
+			b_renderer.set_render_style(box_style);
+			b_renderer.set_attribute_array_manager(&b_manager);
 			set_group_geometry(ctx, b_renderer);
 			if (b_vbos_out_of_date) {
 				set_geometry(ctx, b_renderer);
@@ -254,31 +243,39 @@ public:
 			b_renderer.validate_and_enable(ctx);
 			draw_points();
 			b_renderer.disable(ctx);
-			break;
-		case RM_BOX_WIRES :
+		}	break;
+		case RM_BOX_WIRES: {
+			cgv::render::box_wire_renderer& bw_renderer = cgv::render::ref_box_wire_renderer(ctx);
+			bw_renderer.set_render_style(box_wire_style);
 			set_group_geometry(ctx, bw_renderer);
 			set_geometry(ctx, bw_renderer);
 			bw_renderer.set_extent_array(ctx, sizes);
 			bw_renderer.validate_and_enable(ctx);
 			draw_points();
 			bw_renderer.disable(ctx);
-			break;
-		case RM_NORMALS :
+		} break;
+		case RM_NORMALS: {
+			cgv::render::normal_renderer& n_renderer = cgv::render::ref_normal_renderer(ctx);
+			n_renderer.set_render_style(normal_style);
 			set_group_geometry(ctx, n_renderer);
 			set_geometry(ctx, n_renderer);
 			n_renderer.set_normal_array(ctx, normals);
 			n_renderer.validate_and_enable(ctx);
 			draw_points();
 			n_renderer.disable(ctx);
-			break;
-		case RM_SPHERES:
+		}	break;
+		case RM_SPHERES: {
+			cgv::render::sphere_renderer& s_renderer = cgv::render::ref_sphere_renderer(ctx);
+			s_renderer.set_y_view_angle(float(view_ptr->get_y_view_angle()));
+			s_renderer.set_render_style(sphere_style);
+
 			set_group_geometry(ctx, s_renderer);
 			set_geometry(ctx, s_renderer);
 			s_renderer.set_radius_array(ctx, &sizes[0][0], sizes.size(), sizeof(vec3));
 			s_renderer.validate_and_enable(ctx);
 			draw_points();
 			s_renderer.disable(ctx);
-			break;
+		}	break;
 		}
 		if (disable_depth)
 			glDepthFunc(GL_LESS);
@@ -288,8 +285,18 @@ public:
 	}
 	void clear(cgv::render::context& ctx)
 	{
-		p_renderer.clear(ctx);
-		b_renderer.clear(ctx);
+		// clear attribute managers
+		p_manager. destruct(ctx);
+		sl_manager.destruct(ctx);
+		b_manager. destruct(ctx);
+
+		// decrease reference counts of used renderer singeltons
+		cgv::render::ref_point_renderer   (ctx, -1);
+		cgv::render::ref_surfel_renderer  (ctx, -1);
+		cgv::render::ref_box_renderer     (ctx, -1);
+		cgv::render::ref_box_wire_renderer(ctx, -1);
+		cgv::render::ref_normal_renderer  (ctx, -1);
+		cgv::render::ref_sphere_renderer  (ctx, -1);
 	}
 	void create_gui()
 	{

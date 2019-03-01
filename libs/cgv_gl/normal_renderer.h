@@ -6,6 +6,13 @@
 
 namespace cgv {
 	namespace render {
+		class CGV_API normal_renderer;
+
+		//! reference to a singleton normal renderer that can be shared among drawables
+		/*! the second parameter is used for reference counting. Use +1 in your init method,
+			-1 in your clear method and default 0 argument otherwise. If internal reference
+			counter decreases to 0, singelton renderer is destructed. */
+		extern CGV_API normal_renderer& ref_normal_renderer(context& ctx, int ref_count_change = 0);
 
 
 		struct CGV_API normal_render_style : public line_render_style

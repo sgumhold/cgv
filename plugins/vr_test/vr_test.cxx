@@ -22,7 +22,7 @@
 #include <vr_view_interactor.h>
 
 /// the plugin class vr_test inherits like other plugins from node, drawable and provider
-class vr_test : 
+class vr_test :
 	public cgv::base::node,
 	public cgv::render::drawable,
 	public cgv::gui::event_handler,
@@ -32,10 +32,9 @@ protected:
 	// store the scene as colored boxes
 	std::vector<box3> boxes;
 	std::vector<rgb> box_colors;
-	
+
 	// rendering style and renderer
-	cgv::render::surface_render_style style;
-	cgv::render::box_renderer renderer;
+	cgv::render::box_render_style style;
 
 	// keep deadzone and precision vector for left controller
 	cgv::gui::vr_server::vec_flt_flt left_deadzone_and_precision;
@@ -47,7 +46,7 @@ protected:
 
 	// keep reference to vr_view_interactor
 	vr_view_interactor* vr_view_ptr;
-	
+
 	/// register on device change events
 	void on_device_change(void* kit_handle, bool attach)
 	{
@@ -77,26 +76,26 @@ protected:
 	void construct_environment(float s, float ew, float ed, float eh, float w, float d, float h);
 	/// construct a scene with a table
 	void build_scene(float w, float d, float h, float W,
-					 float tw, float td, float th, float tW)
+		float tw, float td, float th, float tW)
 	{
 		construct_room(w, d, h, W, false, false);
 		construct_table(tw, td, th, tW);
 		construct_environment(0.2f, 3 * w, 3 * d, h, w, d, h);
 	}
 public:
-	vr_test() 
+	vr_test()
 	{
 		set_name("vr_test");
-		build_scene(5,7,3,0.2f, 1.6f, 0.8f, 0.9f, 0.03f);
+		build_scene(5, 7, 3, 0.2f, 1.6f, 0.8f, 0.9f, 0.03f);
 		vr_view_ptr = 0;
 		ray_length = 2;
 		last_kit_handle = 0;
 		connect(cgv::gui::ref_vr_server().on_device_change, this, &vr_test::on_device_change);
 		cgv::gui::connect_gamepad_server();
 	}
-	std::string get_type_name() const 
+	std::string get_type_name() const
 	{
-		return "vr_test"; 
+		return "vr_test";
 	}
 	void create_gui()
 	{
@@ -170,7 +169,7 @@ public:
 			case cgv::gui::SA_PRESS:
 			case cgv::gui::SA_UNPRESS:
 			case cgv::gui::SA_RELEASE:
-				std::cout << "stick " << vrse.get_stick_index() 
+				std::cout << "stick " << vrse.get_stick_index()
 					<< " of controller " << vrse.get_controller_index()
 					<< " " << cgv::gui::get_stick_action_string(vrse.get_action())
 					<< " at " << vrse.get_x() << ", " << vrse.get_y() << std::endl;
@@ -180,7 +179,7 @@ public:
 				std::cout << "stick " << vrse.get_stick_index()
 					<< " of controller " << vrse.get_controller_index()
 					<< " " << cgv::gui::get_stick_action_string(vrse.get_action())
-					<< " from " << vrse.get_last_x() << ", " << vrse.get_last_y() 
+					<< " from " << vrse.get_last_x() << ", " << vrse.get_last_y()
 					<< " to " << vrse.get_x() << ", " << vrse.get_y() << std::endl;
 				return true;
 			}
@@ -205,7 +204,7 @@ public:
 				vr_view_ptr->set_event_type_flags(
 					cgv::gui::VREventTypeFlags(
 						cgv::gui::VRE_KEY +
-						cgv::gui::VRE_THROTTLE+
+						cgv::gui::VRE_THROTTLE +
 						cgv::gui::VRE_STICK +
 						cgv::gui::VRE_STICK_KEY +
 						cgv::gui::VRE_POSE
@@ -219,10 +218,15 @@ public:
 
 			}
 		}
-		// ensure that the box renderer is initialized
-		return renderer.init(ctx);
-	}
+		cgv::render::ref_box_renderer(ctx, 1);
 
+		// ensure that the box renderer is initialized
+		return true;
+	}
+	void clear(cgv::render::context& ctx)
+	{
+		cgv::render::ref_box_renderer(ctx, -1);
+	}
 	void draw(cgv::render::context& ctx)
 	{
 		if (vr_view_ptr) {
@@ -258,6 +262,7 @@ public:
 			}
 		}
 		// just draw boxes here
+		cgv::render::box_renderer& renderer = cgv::render::ref_box_renderer(ctx);
 		renderer.set_render_style(style);
 		renderer.set_box_array(ctx, boxes);
 		renderer.set_color_array(ctx, box_colors);

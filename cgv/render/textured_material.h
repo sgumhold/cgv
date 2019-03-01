@@ -38,8 +38,15 @@ public:
 	AlphaTestFunc& ref_alpha_test_func();
 	/// return reference to currently used alpha threshold used by the comparison alpha test functions
 	float& ref_alpha_threshold();
-	/// call this to ensure that the textures are loaded - typically done in the init_frame method of a drawable
+	/// call this to ensure that the textures specified by image files are loaded - typically done in the init_frame method of a drawable
 	bool ensure_textures(context& ctx);
+	//! add a reference to a new texture that is managed outside of this class and return its index
+	/*! all image file based textures need to be added with add_image_file before calling
+	    this function. */
+	int add_texture_reference(cgv::render::texture& tex);
+	/// virtual method to query number of textures
+	unsigned get_nr_textures() const { return textures.size(); }
+
 	/// return pointer to ambient texture or 0 if non created
 	texture* get_texture(int texture_index) const;
 	/// enable all textures with their indices as texture unit

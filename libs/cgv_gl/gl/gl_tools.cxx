@@ -98,7 +98,7 @@ void set_lighting_parameters(context& ctx, shader_program& prog)
 	GLint lv;
 	glGetIntegerv(GL_LIGHT_MODEL_LOCAL_VIEWER, &lv);
 	prog.set_uniform(ctx, "local_viewer", (bool)(lv != 0));
-	unsigned n = ctx.get_max_nr_lights();
+	unsigned n = ctx.get_max_nr_enabled_light_sources();
 	cgv::math::vec<int> enabled(n); 
 	for (unsigned i=0; i<n; ++i)
 		glGetIntegerv(GL_LIGHT0+i, &enabled(i));

@@ -1,5 +1,7 @@
 #version 150
 
+uniform float gamma = 2.2;
+
 in vec4 color_fs;
 
 out vec4 frag_color;
@@ -7,4 +9,6 @@ out vec4 frag_color;
 void main()
 {
 	frag_color = color_fs;
+
+	frag_color.rgb = pow(frag_color.rgb, vec3(1.0 / gamma));
 }

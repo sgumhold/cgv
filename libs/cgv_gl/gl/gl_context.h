@@ -146,10 +146,6 @@ public:
 	void finish_render_pass();
 	/**@name light and materials management*/
 	//@{
-	void enable_material(const cgv::media::illum::phong_material& mat, MaterialSide ms = MS_FRONT_AND_BACK, float alpha = 1);
-	void disable_material(const cgv::media::illum::phong_material& mat);
-	void enable_material(const textured_material& mat, MaterialSide ms = MS_FRONT_AND_BACK, float alpha = 1);
-
 	/// set the current color
 	void set_color(const rgba& clr);
 	/// set the current material 

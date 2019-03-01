@@ -91,7 +91,6 @@ bool fltk_gl_view::self_reflect(cgv::reflect::reflection_handler& srh)
 	srh.reflect_member("show_stats", show_stats) &&
 	srh.reflect_member("font_size", info_font_size) &&
 	srh.reflect_member("tab_size", tab_size) &&
-	srh.reflect_member("phong_shading", phong_shading) &&
 	srh.reflect_member("performance_monitoring", enabled) &&
 	srh.reflect_member("bg_r", bg_r) &&
 	srh.reflect_member("bg_g", bg_g) &&
@@ -921,11 +920,13 @@ void fltk_gl_view::disable_phong_shading()
 void fltk_gl_view::create_gui()
 {
 	add_decorator("gl view", "heading");
-	if (begin_tree_node("fps", fps, false, "level=3")) {
+	if (begin_tree_node("Frames", fps, false, "level=3")) {
 		provider::align("\a");
 		add_view("fps", fps);
 		add_member_control(this, "fps_alpha", fps_alpha, "value_slider", "min=0;max=1;ticks=true");
 		add_member_control(this, "vsynch", enable_vsynch, "check");
+		add_member_control(this, "gamma", gamma, "value_slider", "min=0.2;max=5;ticks=true;log=true");
+		add_member_control(this, "sRGB_framebuffer", sRGB_framebuffer, "check");
 		provider::align("\b");
 		end_tree_node(fps);
 	}
