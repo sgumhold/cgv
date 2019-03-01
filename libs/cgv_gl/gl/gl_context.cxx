@@ -18,6 +18,7 @@
 #include <cgv/media/image/image_writer.h>
 #include <cgv/gui/event_handler.h>
 #include <cgv/math/ftransform.h>
+#include <cgv/math/geom.h>
 #include <cgv/math/inv.h>
 #include <cgv/type/standard_types.h>
 #include <cgv/os/clipboard.h>
@@ -357,67 +358,7 @@ void gl_context::init_render_pass()
 void gl_context::finish_render_pass()
 {
 	glPopAttrib();
-/*	if (get_render_pass_flags()&RPF_SET_LIGHTS) {
-		// undo change in lights
-		glLightfv(GL_LIGHT0, GL_DIFFUSE, black);
-		glLightfv(GL_LIGHT1, GL_DIFFUSE, black);
-		glLightfv(GL_LIGHT2, GL_DIFFUSE, black);
-		glLightfv(GL_LIGHT3, GL_DIFFUSE, black);
-		glLightfv(GL_LIGHT0, GL_SPECULAR, black);
-		glLightfv(GL_LIGHT1, GL_SPECULAR, black);
-		glLightfv(GL_LIGHT2, GL_SPECULAR, black);
-		glLightfv(GL_LIGHT3, GL_SPECULAR, black);
-	}
-	if (get_render_pass_flags()&RPF_SET_LIGHTS_ON) {
-		// enable lighting calculations
-		glDisable(GL_LIGHTING);
-		// turn the 4 lights on
-		glDisable(GL_LIGHT0);
-		glDisable(GL_LIGHT1);
-		glDisable(GL_LIGHT2);
-		glDisable(GL_LIGHT3);
-	}
-	if (get_render_pass_flags()&RPF_SET_MATERIAL) {
-		// set the surface material colors and the specular exponent,
-		// which is between 0 and 128 and generates sharpest highlights for 128 and no
-		// distinguished highlight for 0
-		glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, black);
-		glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, black);
-		glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, black);
-		glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, 0);
-	}
-	if (get_render_pass_flags()&RPF_ENABLE_MATERIAL) {
-		// this mode allows to define the ambient and diffuse color of the surface material
-		// via the glColor commands
-		glDisable(GL_COLOR_MATERIAL);
-	}
-	if (get_render_pass_flags()&RPF_SET_STATE_FLAGS) {
-		glDisable(GL_DEPTH_TEST);
-		glDisable(GL_CULL_FACE);
-	}
-	if ((get_render_pass_flags()&RPF_SET_PROJECTION) != 0) {
-		glMatrixMode(GL_PROJECTION);
-		glLoadIdentity();
-	}
-	glMatrixMode(GL_MODELVIEW);
-	if ((get_render_pass_flags()&RPF_SET_MODELVIEW) != 0) {
-		glLoadIdentity();
-	}
-	// this defines the background color to which the frame buffer is set by glClear
-	if (get_render_pass_flags()&RPF_SET_CLEAR_COLOR)
-		glClearColor(0,0,0,0);
-	// this defines the background color to which the accum buffer is set by glClear
-	if (get_render_pass_flags()&RPF_SET_CLEAR_ACCUM)
-		glClearAccum(0,0,0,0);
-	// this defines the background depth buffer value set by glClear
-	if (get_render_pass_flags()&RPF_SET_CLEAR_DEPTH)
-		glClearDepth(1);
-	// this defines the background depth buffer value set by glClear
-	if (get_render_pass_flags()&RPF_SET_CLEAR_STENCIL)
-		glClearStencil(0);
-		*/
 }
-
 
 struct format_callback_handler : public traverse_callback_handler
 {
@@ -642,15 +583,15 @@ void gl_context::on_lights_changed()
 			}
 			GLfloat col[4] = { 1,1,1,1 };
 			const cgv::media::illum::light_source& light = get_light_source(get_enabled_light_source_handle(light_idx));
-			(cgv::media::illum::light_source::color_type&)(col[0]) = light.get_emission()*light.get_ambient_scale();
+			(rgb&)(col[0]) = light.get_emission()*light.get_ambient_scale();
 			glLightfv(GL_LIGHT0 + light_idx, GL_AMBIENT, col);
-			(cgv::media::illum::light_source::color_type&)(col[0]) = light.get_emission();
+			(rgb&)(col[0]) = light.get_emission();
 			glLightfv(GL_LIGHT0 + light_idx, GL_DIFFUSE, col);
-			(cgv::media::illum::light_source::color_type&)(col[0]) = light.get_emission();
+			(rgb&)(col[0]) = light.get_emission();
 			glLightfv(GL_LIGHT0 + light_idx, GL_SPECULAR, col);
 
 			GLfloat pos[4] = { 0,0,0,light.get_type() == cgv::media::illum::LT_DIRECTIONAL ? 0.0f : 1.0f };
-			(cgv::media::illum::light_source::vec_type&)(pos[0]) = light.get_position();
+			(vec3&)(pos[0]) = light.get_position();
 			glLightfv(GL_LIGHT0 + light_idx, GL_POSITION, pos);
 			if (light.get_type() != cgv::media::illum::LT_DIRECTIONAL) {
 				glLightf(GL_LIGHT0 + light_idx, GL_CONSTANT_ATTENUATION, light.get_constant_attenuation());
@@ -677,36 +618,6 @@ void gl_context::on_lights_changed()
 		}
 	}
 	context::on_lights_changed();
-}
-
-template <typename T>
-void gl_rotate(const T& a, const cgv::math::fvec<T,3>& axis);
-
-template <> void gl_rotate<float>(const float& a, const cgv::math::fvec<float,3>& axis)
-{
-	glRotatef(a, axis(0), axis(1), axis(2));
-}
-
-template <> void gl_rotate<double>(const double& a, const cgv::math::fvec<double,3>& axis)
-{
-	glRotated(a, axis(0), axis(1), axis(2));
-}
-
-
-template <typename T>
-void rotate(const cgv::math::fvec<T,3>& src, const cgv::math::fvec<T,3>& dest)
-{
-	T c = dot(src,dest);
-	cgv::math::fvec<T,3> axis = cross(src,dest);
-	T s = axis.length();
-	if (s < 10 * std::numeric_limits<T>::epsilon()) {
-		axis = cross(src, cgv::math::fvec<T, 3>(1, 0, 0));
-		if (axis.length() < 10 * std::numeric_limits<T>::epsilon())
-			axis = cross(src, cgv::math::fvec<T, 3>(0, 1, 0));
-	}
-	T a = atan2(s, c) * 180 / (float)M_PI;
-	axis.normalize();
-	gl_rotate(a, axis);
 }
 
 void gl_context::tesselate_arrow(double length, double aspect, double rel_tip_radius, double tip_aspect, int res, bool edges)
@@ -736,52 +647,58 @@ void gl_context::tesselate_arrow(double length, double aspect, double rel_tip_ra
 	pop_modelview_matrix();
 }
 
-///
-void gl_context::tesselate_arrow(const cgv::math::fvec<double, 3>& start, const cgv::math::fvec<double, 3>& end, double aspect, double rel_tip_radius, double tip_aspect, int res, bool edges)
+/// helper function that multiplies a rotation to modelview matrix such that vector is rotated onto target
+void gl_context::rotate_vector_to_target(const dvec3& vector, const dvec3& target)
 {
+	double angle;
+	dvec3 axis;
+	compute_rotation_axis_and_angle_from_vector_pair(vector, target, axis, angle);
+	mul_modelview_matrix(cgv::math::rotate4<double>(180.0 / M_PI * angle, axis));
+}
+
+///
+void gl_context::tesselate_arrow(const dvec3& start, const dvec3& end, double aspect, double rel_tip_radius, double tip_aspect, int res, bool edges)
+{
+	if ((start - end).length() < 1e-8) {
+		error("ignored tesselate arrow called with start and end closer then 1e-8");
+		return;
+	}
 	push_modelview_matrix();
-	glTranslated(start(0),start(1),start(2));
-	rotate(cgv::math::fvec<double,3>(0,0,1), end-start);
-	tesselate_arrow((end-start).length(), aspect, rel_tip_radius, tip_aspect, res, edges);
+		mul_modelview_matrix(cgv::math::translate4<double>(start));
+		rotate_vector_to_target(dvec3(0, 0, 1), end - start);
+		tesselate_arrow((end-start).length(), aspect, rel_tip_radius, tip_aspect, res, edges);
 	pop_modelview_matrix();
 }
 
 void gl_context::draw_light_source(const light_source& l, float i, float light_scale)
-{
-	glPushAttrib(GL_LIGHTING_BIT|GL_CURRENT_BIT);
-
-	GLfloat e[] = { l.get_emission()[0]*i,l.get_emission()[1]*i,l.get_emission()[2]*i, 1 };
-	GLfloat s[] = { 0.5f,0.5f,0.5f,1 };
-	glColor3f(0,0,0);
-	glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, e);
-	glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, s);
-	glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, 40);
-
+{	
+	set_color(i*l.get_emission());
 	push_modelview_matrix();
 	switch (l.get_type()) {
-	case LT_DIRECTIONAL : 
-		glScalef(light_scale, light_scale, light_scale);
-		rotate(light_source::vec_type(0,0,-1),(const light_source::vec_type&)l.get_position());
-		tesselate_arrow(2,0.1f,2,0.5);
+	case LT_DIRECTIONAL :
+		mul_modelview_matrix(cgv::math::scale4<double>(light_scale, light_scale, light_scale));
+		tesselate_arrow(vec3(0.0f), l.get_position(), 0.1f,2.0f,0.5f);
 		break;
 	case LT_POINT :
-		glTranslatef(l.get_position()(0)/l.get_position()(3), l.get_position()(1)/l.get_position()(3), l.get_position()(2)/l.get_position()(3));
-		glScalef(0.3f*light_scale, 0.3f*light_scale, 0.3f*light_scale);
+		mul_modelview_matrix(
+			cgv::math::translate4<double>(l.get_position())*
+			cgv::math::scale4<double>(vec3(0.3f*light_scale)));
 		tesselate_unit_sphere();
 		break;
 	case LT_SPOT :
-		glTranslatef(l.get_position()(0)/l.get_position()(3), l.get_position()(1)/l.get_position()(3), l.get_position()(2)/l.get_position()(3));
-		glScalef(light_scale, light_scale, light_scale);
-		rotate(light_source::vec_type(0,0,-1),l.get_spot_direction());
+		mul_modelview_matrix(
+			cgv::math::translate4<double>(l.get_position())*
+			cgv::math::scale4<double>(vec3(light_scale))
+		);
+		rotate_vector_to_target(dvec3(0, 0, -1), l.get_spot_direction());
 		{
 			float t = tan(l.get_spot_cutoff()*(float)M_PI/180);
 			if (l.get_spot_cutoff() > 45.0f)
-				glScalef(1,1,0.5f/t);
+				mul_modelview_matrix(cgv::math::scale4<double>(1, 1, 0.5f / t));
 			else
-				glScalef(t,t,0.5);
-			glTranslatef(0,0,-1);
-			GLboolean cull;
-			glGetBooleanv(GL_CULL_FACE, &cull);
+				mul_modelview_matrix(cgv::math::scale4<double>(t, t, 0.5f));
+			mul_modelview_matrix(cgv::math::translate4<double>(0, 0, -1));
+			GLboolean cull = glIsEnabled(GL_CULL_FACE);
 			glDisable(GL_CULL_FACE);
 			tesselate_unit_cone();
 			if (cull)
@@ -789,8 +706,6 @@ void gl_context::draw_light_source(const light_source& l, float i, float light_s
 		}
 	}
 	pop_modelview_matrix();
-
-	glPopAttrib();
 }
 
 

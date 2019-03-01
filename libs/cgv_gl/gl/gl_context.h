@@ -126,6 +126,8 @@ protected:
 	/// 
 	bool show_help;
 	bool show_stats;
+	/// helper function that multiplies a rotation to modelview matrix such that vector is rotated onto target
+	void rotate_vector_to_target(const dvec3& vector, const dvec3& target);
 public:
 	/// construct context and attach signals
 	gl_context();
@@ -165,7 +167,7 @@ public:
 	///
 	void tesselate_arrow(double length = 1, double aspect = 0.1, double rel_tip_radius = 2.0, double tip_aspect = 0.3, int res = 25, bool edges = false);
 	/// 
-	void tesselate_arrow(const cgv::math::fvec<double, 3>& start, const cgv::math::fvec<double, 3>& end, double aspect = 0.1f, double rel_tip_radius = 2.0f, double tip_aspect = 0.3f, int res = 25, bool edges = false);
+	void tesselate_arrow(const dvec3& start, const dvec3& end, double aspect = 0.1f, double rel_tip_radius = 2.0f, double tip_aspect = 0.3f, int res = 25, bool edges = false);
 	///
 	void draw_light_source(const cgv::media::illum::light_source& l, float intensity_scale, float light_scale); 
 	//@}

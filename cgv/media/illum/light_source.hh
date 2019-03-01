@@ -2,7 +2,6 @@
 
 #include <cgv/math/fvec.h>
 #include <cgv/media/color.h> //@<
-//#include <cgv/gui/provider.h>
 
 #include "lib_begin.h" //@<
 
@@ -18,18 +17,18 @@ class CGV_API light_source
 {
 public: //@<
 	///@>used color type
-	typedef color<float,RGB> color_type;
+	typedef color<float,RGB> rgb;
 	///@>type of vector used for directions
-	typedef cgv::math::fvec<float,3> vec_type;
+	typedef cgv::math::fvec<float,3> vec3;
 protected: //@<
 	///@>type of light source
 	LightType type;
 	///@>whether location is relative to eye coordinate system, i.e. model view is identity
 	bool local_to_eye_coordinates;
 	///@> direction to light source for directional light sources and location of light source for point or spot light sources
-	vec_type position;
+	vec3 position;
 	///@> radiance for directional light sources and intensity for point light sources
-	color_type emission;
+	rgb emission;
 	///@> scale to use on emission to retrieve ambient illumination caused by light source
 	float ambient_scale;
 	///@>constant attenuation coefficients used for positional light sources only
@@ -39,7 +38,7 @@ protected: //@<
 	///@>quadratic attenuation coefficients used for positional light sources only
 	float quadratic_attenuation;
 	///@>direction of spot light
-	vec_type spot_direction;
+	vec3 spot_direction;
 	///@>splot exponent
 	float spot_exponent;
 	///@>spot cutoff in degrees
@@ -64,18 +63,18 @@ public: //@<
 	bool& ref_local_to_eye()      { return local_to_eye_coordinates; }
 
 	///
-	void set_position(const vec_type& loc) { position = loc; }
+	void set_position(const vec3& loc) { position = loc; }
 	///
-	const vec_type& get_position() const   { return position; }
+	const vec3& get_position() const   { return position; }
 	///
-	vec_type& ref_position()   { return position; }
+	vec3& ref_position()   { return position; }
 
 	///
-	void set_emission(const color_type& c) { emission = c; }
+	void set_emission(const rgb& c) { emission = c; }
 	///
-	const color_type& get_emission() const { return emission; }
+	const rgb& get_emission() const { return emission; }
 	///
-	color_type& ref_emission() { return emission; }
+	rgb& ref_emission() { return emission; }
 
 	///
 	void set_ambient_scale(float c) { ambient_scale = c; }
@@ -106,11 +105,11 @@ public: //@<
 	float& ref_quadratic_attenuation() { return quadratic_attenuation; }
 
 	///
-	void set_spot_direction(const vec_type& d) { spot_direction = d; }
+	void set_spot_direction(const vec3& d) { spot_direction = d; }
 	///
-	const vec_type& get_spot_direction() const { return spot_direction; }
+	const vec3& get_spot_direction() const { return spot_direction; }
 	///
-	vec_type& ref_spot_direction() { return spot_direction; }
+	vec3& ref_spot_direction() { return spot_direction; }
 
 	///
 	void set_spot_exponent(float e) { spot_exponent = e; }
