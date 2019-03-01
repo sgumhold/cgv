@@ -6,6 +6,16 @@
 
 namespace cgv { // @<
 	namespace render { // @<
+		class CGV_API box_wire_renderer;
+
+		//! reference to a singleton box_wire renderer that can be shared among drawables
+		/*! the second parameter is used for reference counting. Use +1 in your init method,
+			-1 in your clear method and default 0 argument otherwise. If internal reference
+			counter decreases to 0, singelton renderer is destructed. */
+		extern CGV_API box_wire_renderer& ref_box_wire_renderer(context& ctx, int ref_count_change = 0);
+
+		/// boxes use surface render styles
+		typedef line_render_style box_wire_render_style;
 
 		/// renderer that supports point splatting
 		class CGV_API box_wire_renderer : public line_renderer

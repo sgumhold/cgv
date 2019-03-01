@@ -7,6 +7,8 @@ in vec2 texcoord_fs;
 
 out vec4 frag_color;
 
+uniform float gamma = 2.2;
+
 //***** begin interface of surface.glsl ***********************************
 struct Material {
 	int brdf_type;
@@ -40,5 +42,8 @@ void main()
 	int side;
 	if (!keep_this_side(position_eye, normal, side))
 		discard;
+
 	frag_color = compute_reflected_appearance_texture(position_eye, normal, texcoord_fs, color_fs, side);
+
+	frag_color.rgb = pow(frag_color.rgb, vec3(1.0/gamma));
 }

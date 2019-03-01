@@ -4,10 +4,17 @@
 
 #include "gl/lib_begin.h"
 
-namespace cgv {
-	namespace render {
-		
-		/** style of a point */
+namespace cgv { // @<
+	namespace render { // @<
+		class CGV_API sphere_renderer;
+
+		//! reference to a singleton sphere renderer that can be shared among drawables
+		/*! the second parameter is used for reference counting. Use +1 in your init method,
+			-1 in your clear method and default 0 argument otherwise. If internal reference
+			counter decreases to 0, singelton renderer is destructed. */
+		extern CGV_API sphere_renderer& ref_sphere_renderer(context& ctx, int ref_count_change = 0);
+
+		/** render style for sphere rendere */
 		struct CGV_API sphere_render_style : public surface_render_style
 		{
 			/*@name sphere rendering attributes*/
@@ -34,7 +41,7 @@ namespace cgv {
 			sphere_render_style();
 		};
 
-		/// renderer that supports point splatting
+		/// renderer that supports splatting of spheres
 		class CGV_API sphere_renderer : public surface_renderer
 		{
 		protected:

@@ -277,6 +277,11 @@ void gl_context::init_render_pass()
 #else
 	glXSwapIntervalEXT(enable_vsynch ? 1 : 0);
 #endif
+	if (sRGB_framebuffer)
+		glEnable(GL_FRAMEBUFFER_SRGB);
+	else
+		glDisable(GL_FRAMEBUFFER_SRGB);
+
 	glPushAttrib(GL_ALL_ATTRIB_BITS);
 
 	if (get_render_pass_flags()&RPF_SET_LIGHTS) {
@@ -495,117 +500,6 @@ void gl_context::perform_screen_shot()
 	if (wr.is_format_supported(*dv.get_format()))
 		wr.write_image(dv);
 }
-/*
-void enable_material_color(GLenum side, const textured_material::color_type& c, float alpha, GLenum type)
-{
-	GLfloat v[4] = {c[0],c[1],c[2],c[3]*alpha};
-	glMaterialfv(side, type, v);
-}
-*/
-
-/// enable a material without textures
-void gl_context::enable_material(const cgv::media::illum::phong_material& mat, MaterialSide ms, float alpha)
-{
-	if (support_compatibility_mode)
-		gl_set_material(mat, ms, alpha);
-	cgv::media::illum::surface_material M(
-		cgv::media::illum::BrdfType(cgv::media::illum::BT_LAMBERTIAN + cgv::media::illum::BT_PHONG),
-		mat.get_diffuse(), 1.0f / mat.get_shininess() - 1.0f / 128.0f, 0.0f, 0.5f,
-		mat.get_emission(), mat.get_diffuse().transparency(), std::complex<float>(1.5f, 0.0f),
-		0.0f, 0.0f, mat.get_specular());
-	bool tmp = support_compatibility_mode;
-	support_compatibility_mode = false;
-	set_material(M);
-	support_compatibility_mode = tmp;
-}
-
-/// disable phong material
-void gl_context::disable_material(const cgv::media::illum::phong_material& mat)
-{
-}
-
-/// enable a material with textures
-void gl_context::enable_material(const textured_material& mat, MaterialSide ms, float alpha)
-{
-	/*
-	if (ms == MS_NONE)
-		return;
-	bool do_alpha = (mat.get_diffuse_texture() != 0) && mat.get_diffuse_texture()->get_component_name(mat.get_diffuse_texture()->get_nr_components() - 1)[0] == 'A';
-	if (ms != MS_BACK) {
-		GLuint flags = do_alpha ? GL_COLOR_BUFFER_BIT : GL_CURRENT_BIT;
-		if (mat.get_bump_texture() != 0 || mat.get_diffuse_texture() != 0)
-			flags |= GL_TEXTURE_BIT;
-		flags |= GL_LIGHTING_BIT | GL_ENABLE_BIT;
-		glPushAttrib(flags);
-		if (shader_program_stack.empty())
-			glEnable(GL_LIGHTING);
-		glDisable(GL_COLOR_MATERIAL);
-	}
-
-	gl_set_material(mat, ms, alpha);
-
-	if (ms != MS_BACK) {
-		if ((mat.get_bump_texture() || phong_shading) && ref_textured_material_prog(*this).is_linked()) {
-			shader_program& prog = ref_textured_material_prog(*this);
-			bool use_bump_map = mat.get_bump_texture() != 0;
-			if (use_bump_map)
-				mat.get_bump_texture()->enable(*this, 0);
-
-			bool use_diffuse_map = mat.get_diffuse_texture() != 0;
-			if (use_diffuse_map)
-				mat.get_diffuse_texture()->enable(*this, 1);
-
-			prog.enable(*this);
-			prog.set_uniform(*this, "use_bump_map", use_bump_map);
-			if (use_bump_map) {
-				prog.set_uniform(*this, "bump_map", 0);
-				prog.set_uniform(*this, "bump_map_res", (int)(mat.get_bump_texture()->get_width()));
-				prog.set_uniform(*this, "bump_scale", 400 * mat.get_bump_scale());
-			}
-			prog.set_uniform(*this, "use_diffuse_map", use_diffuse_map);
-			if (use_diffuse_map)
-				prog.set_uniform(*this, "diffuse_map", 1);
-			set_lighting_parameters(*this, prog);
-		}
-		else if (mat.get_diffuse_texture()) {
-			unsigned side = map_to_gl(ms);
-//			enable_material_color(side, textured_material::color_type(1, 1, 1, 1), alpha, GL_DIFFUSE);
-			mat.get_diffuse_texture()->enable(*this);
-			glTexEnvi(GL_TEXTURE_2D, GL_TEXTURE_ENV, GL_MODULATE);
-		}
-		if (do_alpha) {
-			glEnable(GL_ALPHA_TEST);
-			switch (mat.get_alpha_test_func()) {
-			case textured_material::AT_ALWAYS: glAlphaFunc(GL_ALWAYS, mat.get_alpha_threshold()); break;
-			case textured_material::AT_LESS: glAlphaFunc(GL_LESS, mat.get_alpha_threshold()); break;
-			case textured_material::AT_EQUAL: glAlphaFunc(GL_EQUAL, mat.get_alpha_threshold()); break;
-			case textured_material::AT_GREATER: glAlphaFunc(GL_GREATER, mat.get_alpha_threshold()); break;
-			}
-		}
-		else
-			glColor4f(1, 1, 1, alpha);
-	}
-	*/
-}
-
-/*
-/// disable phong material
-void gl_context::disable_material(const textured_material& mat)
-{
-	if ((mat.get_bump_texture() || phong_shading) && ref_textured_material_prog(*this).is_linked()) {
-		shader_program& prog = ref_textured_material_prog(*this);
-		prog.disable(*this);
-		if (mat.get_diffuse_texture())
-			mat.get_diffuse_texture()->disable(*this);
-		if (mat.get_bump_texture())
-			mat.get_bump_texture()->disable(*this);
-	}
-	else if (mat.get_diffuse_texture()) {
-		mat.get_diffuse_texture()->disable(*this);
-	}
-	glPopAttrib();
-}
-*/
 
 /// get list of program uniforms
 void gl_context::enumerate_program_uniforms(shader_program& prog, std::vector<std::string>& names, std::vector<int>* locations_ptr, std::vector<int>* sizes_ptr, std::vector<int>* types_ptr, bool show) const
@@ -691,7 +585,7 @@ shader_program& gl_context::ref_default_shader_program(bool texture_support)
 				error("could not build default shader program from default.glpr");
 				exit(0);
 			}
-			prog.specify_standard_uniforms(true, false, false);
+			prog.specify_standard_uniforms(true, false, false, true);
 			prog.specify_standard_vertex_attribute_names(*this, true, false, false);
 		}
 		return prog;
@@ -702,7 +596,7 @@ shader_program& gl_context::ref_default_shader_program(bool texture_support)
 			exit(0);
 		}
 		prog_texture.set_uniform(*this, "texture", 0);
-		prog_texture.specify_standard_uniforms(true, false, false);
+		prog_texture.specify_standard_uniforms(true, false, false, true);
 		prog_texture.specify_standard_vertex_attribute_names(*this, true, false, true);
 	}
 	return prog_texture;
@@ -720,7 +614,7 @@ shader_program& gl_context::ref_surface_shader_program(bool texture_support)
 				error("could not build surface shader program from default_surface.glpr");
 				exit(0);
 			}
-			prog.specify_standard_uniforms(true, true, true);
+			prog.specify_standard_uniforms(true, true, true, true);
 			prog.specify_standard_vertex_attribute_names(*this, true, true, false);
 		}
 		return prog;
@@ -730,7 +624,7 @@ shader_program& gl_context::ref_surface_shader_program(bool texture_support)
 			error("could not build surface shader program with texture support from textured_surface.glpr");
 			exit(0);
 		}
-		prog_texture.specify_standard_uniforms(true, true, true);
+		prog_texture.specify_standard_uniforms(true, true, true, true);
 		prog_texture.specify_standard_vertex_attribute_names(*this, true, true, true);
 	}
 	return prog_texture;
@@ -1115,7 +1009,7 @@ void gl_context::draw_elements_void(GLenum mode, size_t total_count, GLenum type
 	while (drawn < total_count) {
 		size_t count = total_count - drawn;
 		if (count > max_nr_indices)
-			count = max_nr_indices;
+			count = size_t(max_nr_indices);
 		glDrawElements(mode, GLsizei(count), type, index_ptr + drawn * type_size);
 		drawn += count;
 	}
@@ -2273,6 +2167,8 @@ bool gl_context::shader_program_enable(shader_program_base& spb)
 		set_current_material(prog);
 	if (auto_set_view_in_current_shader_program && spb.does_use_view())
 		set_current_view(prog);
+	if (auto_set_gamma_in_current_shader_program && spb.does_use_gamma())
+		prog.set_uniform(*this, "gamma", gamma);
 	return true;
 }
 

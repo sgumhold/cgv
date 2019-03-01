@@ -88,19 +88,20 @@ Lambert+Strauss,OrenNayar+Strauss,Strauss+Strauss,+Strauss'");
 		if (textured_mat) {
 			for (unsigned i=0; i<textured_mat->get_nr_image_files(); ++i)
 				p->add_view("image", textured_mat->get_image_file_name(i));
+			p->add_member_control(b, "sRGB textures", textured_mat->ref_sRGBA_textures(), "check");
 			std::string opt = "min=-1;max=";
-			opt += cgv::utils::to_string((int)textured_mat->get_nr_image_files() - 1);
+			opt += cgv::utils::to_string((int)textured_mat->get_nr_textures() - 1);
 			opt += ";ticks=true";
 			p->add_member_control(b, "diffuse_index", textured_mat->ref_diffuse_index(), "value_slider", opt);
-			p->add_member_control(b, "roughness_index", textured_mat->ref_diffuse_index(), "value_slider", opt);
-			p->add_member_control(b, "metalness_index", textured_mat->ref_diffuse_index(), "value_slider", opt);
-			p->add_member_control(b, "ambient_index", textured_mat->ref_diffuse_index(), "value_slider", opt);
-			p->add_member_control(b, "emission_index", textured_mat->ref_diffuse_index(), "value_slider", opt);
-			p->add_member_control(b, "transparency_index", textured_mat->ref_diffuse_index(), "value_slider", opt);
-			p->add_member_control(b, "propagation_slow_down_index", textured_mat->ref_diffuse_index(), "value_slider", opt);
-			p->add_member_control(b, "specular_index", textured_mat->ref_diffuse_index(), "value_slider", opt);
-			p->add_member_control(b, "normal_index", textured_mat->ref_diffuse_index(), "value_slider", opt);
-			p->add_member_control(b, "bump_index", textured_mat->ref_diffuse_index(), "value_slider", opt);
+			p->add_member_control(b, "roughness_index", textured_mat->ref_roughness_index(), "value_slider", opt);
+			p->add_member_control(b, "metalness_index", textured_mat->ref_metalness_index(), "value_slider", opt);
+			p->add_member_control(b, "ambient_index", textured_mat->ref_ambient_index(), "value_slider", opt);
+			p->add_member_control(b, "emission_index", textured_mat->ref_emission_index(), "value_slider", opt);
+			p->add_member_control(b, "transparency_index", textured_mat->ref_transparency_index(), "value_slider", opt);
+//			p->add_member_control(b, "propagation_slow_down_index", textured_mat->ref_propagation_slow_down(), "value_slider", opt);
+			p->add_member_control(b, "specular_index", textured_mat->ref_specular_index(), "value_slider", opt);
+			p->add_member_control(b, "normal_index", textured_mat->ref_normal_index(), "value_slider", opt);
+			p->add_member_control(b, "bump_index", textured_mat->ref_bump_index(), "value_slider", opt);
 			p->add_member_control(b, "bump_scale", textured_mat->ref_bump_scale(), "value_slider", "min=0;max=10;log=true;ticks=true");
 		}
 		return true;

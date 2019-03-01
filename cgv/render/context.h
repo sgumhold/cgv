@@ -293,6 +293,7 @@ protected:
 	bool uses_view;
 	bool uses_material;
 	bool uses_lights;
+	bool uses_gamma;
 	
 	// vertex attribute names
 	int position_index;
@@ -307,13 +308,14 @@ public:
 	/// initializes members
 	shader_program_base();
 	// configure program
-	void specify_standard_uniforms(bool view, bool material, bool lights);
+	void specify_standard_uniforms(bool view, bool material, bool lights, bool gamma);
 	void specify_standard_vertex_attribute_names(context& ctx, bool color = true, bool normal = true, bool texcoord = true);
 	void specify_vertex_attribute_names(context& ctx, const std::string& position, const std::string& color = "", const std::string& normal = "", const std::string& texcoord = "");
 	// uniforms
 	bool does_use_view() const { return uses_view; }
 	bool does_use_material() const { return uses_material; }
 	bool does_use_lights() const { return uses_lights; }
+	bool does_use_gamma() const { return uses_gamma; }
 
 	// vertex attribute names
 	int get_position_index() const { return position_index; }
@@ -521,12 +523,18 @@ protected:
 	bool auto_set_lights_in_current_shader_program;
 	/// whether to automatically set material in current shader program, defaults to true 
 	bool auto_set_material_in_current_shader_program;
+	/// whether to automatically set gamma in current shader program, defaults to true 
+	bool auto_set_gamma_in_current_shader_program;
 	/// whether to support view and lighting management of compatibility mode, defaults to true
 	bool support_compatibility_mode;
 	/// whether to do all drawing in compatibility mode, only possible if support_compatibility_mode is true, , defaults to false
 	bool draw_in_compatibility_mode;
 	/// whether vsynch should be enabled
 	bool enable_vsynch;
+	/// whether to use opengl option to support sRGB framebuffer
+	bool sRGB_framebuffer;
+	/// gamma value passed to shader programs that have gamma uniform
+	float gamma;
 
 	/// keep two matrix stacks for model view and projection matrices
 	std::stack<dmat4> modelview_matrix_stack, projection_matrix_stack;
@@ -841,10 +849,18 @@ public:
 	//@{
 	DEPRECATED("deprecated and ignored.") virtual void enable_phong_shading();
 	DEPRECATED("deprecated and ignored.") virtual void disable_phong_shading();
-	DEPRECATED("deprecated, use set_material instead.") virtual void enable_material(const cgv::media::illum::phong_material& mat = cgv::media::illum::default_material(), MaterialSide ms = MS_FRONT_AND_BACK, float alpha = 1) = 0;
-	DEPRECATED("deprecated and ignored.") virtual void disable_material(const cgv::media::illum::phong_material& mat = cgv::media::illum::default_material()) = 0;
-	DEPRECATED("deprecated, use enable_material(textured_surface_material) instead.") virtual void enable_material(const textured_material& mat, MaterialSide ms = MS_FRONT_AND_BACK, float alpha = 1) = 0;
+	DEPRECATED("deprecated, use set_material instead.") virtual void enable_material(const cgv::media::illum::phong_material& mat = cgv::media::illum::default_material(), MaterialSide ms = MS_FRONT_AND_BACK, float alpha = 1);
+	DEPRECATED("deprecated and ignored.") virtual void disable_material(const cgv::media::illum::phong_material& mat = cgv::media::illum::default_material());
+	DEPRECATED("deprecated, use enable_material(textured_surface_material) instead.") virtual void enable_material(const textured_material& mat, MaterialSide ms = MS_FRONT_AND_BACK, float alpha = 1);
 	//DEPRECATED("deprecated, use disable_material(textured_surface_material) instead.") virtual void disable_material(const textured_material& mat) = 0;
+	/// set the current gamma values
+	virtual void set_gamma(float _gamma);
+	/// query current gamma
+	float get_gamma() const { return gamma; }
+	/// enable or disable sRGB framebuffer
+	virtual void enable_sRGB_framebuffer(bool do_enable = true);
+	/// check whether sRGB framebuffer is enabled
+	bool sRGB_framebuffer_enabled() { return sRGB_framebuffer; }
 	/// set the current color
 	virtual void set_color(const rgba& clr) = 0;
 	/// set the current color
@@ -875,7 +891,7 @@ public:
 	//@{
 	DEPRECATED("deprecated, use add_light_source instead.") void* enable_light(const cgv::media::illum::light_source& light) { return add_light_source(light); }
 	DEPRECATED("deprecated, use enable_light_source instead.") void disable_light(void* handle) { disable_light_source(handle); }
-	DEPRECATED("deprecated, use enable_light_source instead.") unsigned get_max_nr_lights() const { return get_max_nr_enabled_light_sources(); }
+	DEPRECATED("deprecated, use get_max_nr_enabled_light_sources instead.") unsigned get_max_nr_lights() const { return get_max_nr_enabled_light_sources(); }
 	/// return the number of light sources
 	size_t get_nr_light_sources() const;
 	/// add a new light source, enable it if \c enable is true and place it relative to current model view transformation if \c place_now is true; return handle to light source

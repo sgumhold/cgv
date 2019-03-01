@@ -26,8 +26,8 @@ protected:
 
 	void put_sample(int i, double& dx, double& dy);
 	void generate_samples();
-	void update_view(int i);
-	void restore_view(int i);
+	void update_view(cgv::render::context& ctx, int i);
+	void restore_view(cgv::render::context& ctx, int i);
 public:
 	///
 	depth_of_field();

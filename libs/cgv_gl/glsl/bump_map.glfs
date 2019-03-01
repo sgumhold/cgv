@@ -1,43 +1,73 @@
-#version 150 compatibility
+#version 150
 
-// bump map texture
-uniform sampler2D bump_map;
-// bump map texture resolution
-uniform int bump_map_res;
-// scaling of height function
-uniform float bump_scale;
+// not yet implemented: uniform int normal_index = -1;
+uniform int bump_index = -1;
+uniform float bump_scale = 1.0;
 
-vec3 bump_map_normal(vec3 s, vec2 tc, vec3 N)
+/*
+The following interface is implemented in this shader:
+//***** begin interface of bump_map.glsl ***********************************
+void update_normal_from_material(in vec3 s, inout vec3 N, in Material M, in vec2 tc);
+//***** end interface of bump_map.glsl ***********************************
+*/
+
+//***** begin interface of surface.glsl ***********************************
+struct Material {
+	int brdf_type;
+	vec3 diffuse_reflectance;
+	float roughness;
+	float metalness;
+	float ambient_occlusion;
+	vec3 emission;
+	float transparency;
+	vec2 propagation_slow_down;
+	float roughness_anisotropy;
+	float roughness_orientation;
+	vec3 specular_reflectance;
+};
+
+Material get_material();
+vec4 lookup_texture(int ti, vec2 texcoords, bool is_color);
+vec4 compute_reflected_radiance(in Material M, vec3 position_eye, vec3 normal_eye);
+vec4 compute_reflected_appearance(vec3 position_eye, vec3 normal_eye, vec4 color, int side);
+vec4 compute_reflected_appearance_texture(vec3 position_eye, vec3 normal_eye, vec2 texcoords, vec4 color, int side);
+//***** end interface of surface.glsl ***********************************
+
+void update_normal_from_material(in vec3 s, inout vec3 N, in Material M, in vec2 tc)
 {
+	if (bump_index == -1)
+		return;
+
 	// lookup height value
-	float h_0 = texture2D(bump_map,tc).x;
+	float h_0 = lookup_texture(bump_index, tc, false).x;
 
 	// derivatives in image space
-	mat2 tc_i = mat2(dFdx(tc),dFdy(tc));
-	vec2 h_i  = vec2(texture2D(bump_map,tc+tc_i[0]).x - h_0,
-		             texture2D(bump_map,tc+tc_i[1]).x - h_0);
+	mat2 tc_i = mat2(dFdx(tc), dFdy(tc));
+	vec2 h_i = vec2(lookup_texture(bump_index, tc + tc_i[0], false).x - h_0,
+		lookup_texture(bump_index, tc + tc_i[1], false).x - h_0);
 	vec3 s_x = dFdx(s);
 	vec3 s_y = dFdy(s);
 
 	// compute T_i^(-1)
-	float det_tc_i = tc_i[0][0]*tc_i[1][1] - tc_i[1][0]*tc_i[0][1];
-	mat2  i_tc     = mat2(tc_i[1][1], -tc_i[1][0], 
-		                 -tc_i[0][1], tc_i[0][0])/det_tc_i;
+	float det_tc_i = tc_i[0][0] * tc_i[1][1] - tc_i[1][0] * tc_i[0][1];
+	mat2  i_tc = mat2(tc_i[1][1], -tc_i[1][0],
+		-tc_i[0][1], tc_i[0][0]) / det_tc_i;
 
 	// transform derivatives to texture space
-	vec2 h_tc   = i_tc*h_i;
-	vec2 s_tc0  = i_tc * vec2(s_x[0],s_y[0]);
-	vec2 s_tc1  = i_tc * vec2(s_x[1],s_y[1]);
-	vec2 s_tc2  = i_tc * vec2(s_x[2],s_y[2]);
-	vec3 s_u  = vec3(s_tc0.x,s_tc1.x,s_tc2.x);
-	vec3 s_v  = vec3(s_tc0.y,s_tc1.y,s_tc2.y);
+	vec2 h_tc = i_tc * h_i;
+	vec2 s_tc0 = i_tc * vec2(s_x[0], s_y[0]);
+	vec2 s_tc1 = i_tc * vec2(s_x[1], s_y[1]);
+	vec2 s_tc2 = i_tc * vec2(s_x[2], s_y[2]);
+	vec3 s_u = vec3(s_tc0.x, s_tc1.x, s_tc2.x);
+	vec3 s_v = vec3(s_tc0.y, s_tc1.y, s_tc2.y);
 
 	// compute scaling factor for original normal
-	float f = length(cross(s_u,s_v));
+	float f = length(cross(s_u, s_v));
 
 	// compute bump mapped normal
 	vec3 n = normalize(N);
-	float height_scale = bump_scale / float(bump_map_res);
-	n = f*n + cross(height_scale*(h_tc[1]*s_u-h_tc[0]*s_v),n);
-	return normalize(n);
+	float height_scale = bump_scale;
+	n = f * n + cross(height_scale*(h_tc[1] * s_u - h_tc[0] * s_v), n);
+	N = normalize(n);
 }
+

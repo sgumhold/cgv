@@ -1,6 +1,7 @@
 #version 150
 
 uniform sampler2D texture;
+uniform float gamma = 2.2;
 
 in vec4 color_fs;
 in vec2 texcoord_fs;
@@ -10,4 +11,6 @@ out vec4 frag_color;
 void main()
 {
 	frag_color = texture2D(texture, texcoord_fs)*color_fs;
+
+	frag_color.rgb = pow(frag_color.rgb, vec3(1.0 / gamma));
 }

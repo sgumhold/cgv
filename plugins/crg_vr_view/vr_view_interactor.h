@@ -94,7 +94,6 @@ protected:
 	// render objects
 	cgv::render::box_renderer br;
 	cgv::render::surface_render_style brs;
-	cgv::render::sphere_renderer sr;
 	cgv::render::sphere_render_style srs;
 
 	//
@@ -152,6 +151,8 @@ public:
 	void stream_stats(std::ostream&);
 	///
 	bool init(cgv::render::context& ctx);
+	/// 
+	void destruct(cgv::render::context& ctx);
 	/// overload and implement this method to handle events
 	bool handle(cgv::gui::event& e);
 	/// overload to stream help information to the given output stream

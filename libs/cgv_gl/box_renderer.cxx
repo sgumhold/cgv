@@ -4,6 +4,13 @@
 
 namespace cgv {
 	namespace render {
+		box_renderer& ref_box_renderer(context& ctx, int ref_count_change)
+		{
+			static int ref_count = 0;
+			static box_renderer r;
+			r.manage_singelton(ctx, "box_renderer", ref_count, ref_count_change);
+			return r;
+		}
 
 		render_style* box_renderer::create_render_style() const
 		{

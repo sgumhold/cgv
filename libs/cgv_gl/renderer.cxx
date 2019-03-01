@@ -2,7 +2,6 @@
 
 namespace cgv {
 	namespace render {
-
 		render_style::~render_style()
 		{
 		}
@@ -54,6 +53,30 @@ namespace cgv {
 			has_positions = false;
 			rs = default_render_style = 0;
 			aam_ptr = 0;
+		}
+		void renderer::manage_singelton(context& ctx, const std::string& renderer_name, int& ref_count, int ref_count_change)
+		{
+			switch (ref_count_change) {
+			case 1:
+				if (ref_count == 0) {
+					if (!init(ctx))
+						ctx.error(std::string("unable to initialize ") + renderer_name + " singelton");
+				}
+				++ref_count;
+				break;
+			case 0:
+				break;
+			case -1:
+				if (ref_count == 0)
+					ctx.error(std::string("attempt to decrease reference count of ") + renderer_name + " singelton below 0");
+				else {
+					if (--ref_count == 0)
+						clear(ctx);
+				}
+				break;
+			default:
+				ctx.error(std::string("invalid change reference count outside {-1,0,1} for ") + renderer_name + " singelton");
+			}
 		}
 		/// destructor deletes default renderer style
 		renderer::~renderer()

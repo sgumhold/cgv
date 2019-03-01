@@ -5,6 +5,13 @@
 
 namespace cgv {
 	namespace render {
+		point_renderer& ref_point_renderer(context& ctx, int ref_count_change)
+		{
+			static int ref_count = 0;
+			static point_renderer r;
+			r.manage_singelton(ctx, "point_renderer", ref_count, ref_count_change);
+			return r;
+		}
 
 		render_style* point_renderer::create_render_style() const
 		{

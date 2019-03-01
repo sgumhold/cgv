@@ -4,6 +4,13 @@
 
 namespace cgv {
 	namespace render {
+		normal_renderer& ref_normal_renderer(context& ctx, int ref_count_change)
+		{
+			static int ref_count = 0;
+			static normal_renderer r;
+			r.manage_singelton(ctx, "normal_renderer", ref_count, ref_count_change);
+			return r;
+		}
 
 		normal_render_style::normal_render_style()
 		{

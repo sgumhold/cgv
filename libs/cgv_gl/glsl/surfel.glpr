@@ -4,6 +4,7 @@ vertex_file:quaternion.glsl
 geometry_file:side.glsl
 fragment_file:side.glsl
 geometry_file:view.glsl
+fragment_file:bump_map.glfs
 fragment_file:surface.glsl
 fragment_file:lights.glsl
 fragment_file:brdf.glsl

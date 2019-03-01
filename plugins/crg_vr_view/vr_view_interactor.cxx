@@ -170,12 +170,13 @@ void vr_view_interactor::stream_stats(std::ostream& os)
 
 bool vr_view_interactor::init(cgv::render::context& ctx)
 {
-	sr.set_render_style(srs);
-	if (!sr.init(ctx)) {
-		std::cerr << "could not initialize sphere renderer" << std::endl;
-		show_vr_kits = false;
-	}
+	cgv::render::ref_sphere_renderer(ctx, 1);
 	return stereo_view_interactor::init(ctx);
+}
+
+void vr_view_interactor::destruct(cgv::render::context& ctx)
+{
+	cgv::render::ref_sphere_renderer(ctx, -1);
 }
 
 /// overload and implement this method to handle events
@@ -483,6 +484,9 @@ void vr_view_interactor::draw(cgv::render::context& ctx)
 			}
 		}
 		if (!spheres.empty()) {
+			cgv::render::sphere_renderer& sr = cgv::render::ref_sphere_renderer(ctx);
+			sr.set_y_view_angle(float(get_y_view_angle()));
+			sr.set_render_style(srs);
 			sr.set_sphere_array(ctx, spheres);
 			sr.set_color_array(ctx, sphere_colors);
 			sr.validate_and_enable(ctx);

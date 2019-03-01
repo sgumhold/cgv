@@ -341,7 +341,7 @@ public:
 
 		if (wireframe) {
 			ctx.set_color(rgb(0, 0, 0));
-			for (int vi = 0; vi < P.size(); vi += 3)
+			for (int vi = 0; vi < int(P.size()); vi += 3)
 				glDrawArrays(GL_LINE_LOOP, vi, 3);
 		}
 		else {
