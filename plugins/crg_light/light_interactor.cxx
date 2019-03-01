@@ -92,7 +92,7 @@ bool light_interactor::init(context& ctx)
 	enabled.resize(n);
 	show.resize(n);
 	for (unsigned i = 0; i < n; ++i) {
-		lights[i].set_position(light_source::vec_type(2*(float)((i+6)&1)-1,(float)((i+6)&2)-1,(float)((i+6)&4)/2-1));
+		lights[i].set_position(vec3(2*(float)((i+6)&1)-1,(float)((i+6)&2)-1,(float)((i+6)&4)/2-1));
 		enabled[i] = i < 2 ? 1 : 0;
 		handles[i] = 0;
 		intensities[i] = 1;
