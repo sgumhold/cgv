@@ -2,7 +2,9 @@
 
 #include <cgv/render/drawable.h>
 #include <cgv/media/illum/light_source.hh>
+#include <cgv/gui/event_handler.h>
 #include <cgv/gui/provider.h>
+#include <random>
 
 #include "lib_begin.h"
 
@@ -13,10 +15,14 @@ using namespace cgv::render;
 using namespace cgv::media::illum;
 
 /// interaction class for light sources
-class CGV_API light_interactor : public base, public provider, public drawable
+class CGV_API light_interactor : public node, public event_handler, public provider, public drawable
 {
 public:
 	typedef cgv::media::color<float> color_type;
+	typedef std::pair<vec3, vec3> ray;
+private:
+	int current_light_index;
+	std::default_random_engine RE;
 protected:
 	std::vector<light_source> lights;
 	std::vector<void*> handles;
@@ -30,6 +36,20 @@ protected:
 	void save_cb();
 	void load_cb();
 	void on_load();
+	vec3 delta_pos;
+	float speed;
+	unsigned nr_light_rays;
+	cgv::render::view* view_ptr;
+	std::vector<vec3> light_rays;
+	std::vector<int> current_ray_indices;
+	float color_lambda;
+	rgb default_color;
+	dmat4 last_modelview_matrix;
+	float ray_width;
+	float opacity;
+	void sample_light_rays(context& ctx, unsigned decrease_count = 0);
+	void draw_light_rays(context& ctx, size_t i);
+	void timer_event(double t, double dt);
 public:
 	/// construct default light interactor
 	light_interactor();
@@ -65,8 +85,10 @@ public:
 	void clear(context&);
 	//@}
 
-	/// gui creation
+	/// gui 
 	void create_gui();
+	bool handle(event& e);
+	void stream_help(std::ostream& os);
 };
 
 typedef cgv::data::ref_ptr<light_interactor> light_interactor_ptr;

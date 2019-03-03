@@ -551,6 +551,7 @@ protected:
 	{
 		bool enabled;
 		vec3 eye_position;
+		vec3 eye_spot_direction;
 		int light_source_index;
 	};
 	/// keep track of enabled light source handles
@@ -559,8 +560,6 @@ protected:
 	size_t light_source_handle;
 	/// map handle to light source and light source status information
 	std::map<void*, std::pair<cgv::media::illum::light_source, light_source_status> > light_sources;
-	/// helper function to place lights 
-	vec3 get_light_eye_position(const cgv::media::illum::light_source& light, bool place_now) const;
 	/// helper function to send light update events
 	virtual void on_lights_changed();
 	/// number of default light sources
@@ -879,6 +878,10 @@ public:
 	void set_current_material(shader_program& prog) const;
 	/// set the shader program lights to the currently enabled lights
 	void set_current_lights(shader_program& prog) const;
+	/// helper function to place lights 
+	vec3 get_light_eye_position(const cgv::media::illum::light_source& light, bool place_now) const;
+	/// helper function to place spot lights 
+	vec3 get_light_eye_spot_direction(const cgv::media::illum::light_source& light, bool place_now) const;
 	/// return a reference to a shader program used to render without illumination
 	virtual shader_program& ref_default_shader_program(bool texture_support = false) = 0;
 	/// return a reference to the default shader program used to render surfaces 

@@ -392,13 +392,28 @@ context::vec3 context::get_light_eye_position(const cgv::media::illum::light_sou
 {
 	vec3 Le = light.get_position();
 	if (place_now && !light.is_local_to_eye()) {
-		dvec4 hL(Le(0), Le(1), Le(2), light.get_type() == cgv::media::illum::LT_DIRECTIONAL ? 0.0f : 1.0f);
+		dvec4 hL(Le, light.get_type() == cgv::media::illum::LT_DIRECTIONAL ? 0.0f : 1.0f);
 		hL = get_modelview_matrix()*hL;
 		Le = (const dvec3&)hL;
 		if (light.get_type() != cgv::media::illum::LT_DIRECTIONAL)
 			Le /= float(hL(3));
 	}
 	return Le;
+}
+
+/// helper function to place lights 
+context::vec3 context::get_light_eye_spot_direction(const cgv::media::illum::light_source& light, bool place_now) const
+{
+	vec3 sd = light.get_spot_direction();
+	if (place_now && !light.is_local_to_eye()) {
+		dvec4 hSd(sd, 0.0f);
+		hSd = get_modelview_matrix()*hSd;
+		sd = (const dvec3&)hSd;
+	}
+	float norm = sd.length();
+	if (norm > 1e-8f)
+		sd /= norm;
+	return sd;
 }
 
 /// add a new light source, enable it if \c enable is true and place it relative to current model view transformation if \c place_now is true; return handle to light source
@@ -408,7 +423,8 @@ void* context::add_light_source(const cgv::media::illum::light_source& light, bo
 	++light_source_handle;
 	void* handle = reinterpret_cast<void*>(light_source_handle);
 	// determine light source position
-	vec3 Le = get_light_eye_position(light, place_now); 
+	vec3 Le = get_light_eye_position(light, place_now);
+	vec3 sd = get_light_eye_spot_direction(light, place_now);
 	//
 	int idx = -1;
 	if (enabled) {
@@ -416,7 +432,8 @@ void* context::add_light_source(const cgv::media::illum::light_source& light, bo
 		enabled_light_source_handles.push_back(handle);
 	}
 	// store new light source in map
-	light_sources[handle] = std::pair<cgv::media::illum::light_source, light_source_status>(light, { enabled, Le, idx });
+	light_sources[handle] = std::pair<cgv::media::illum::light_source, light_source_status>(
+		light, { enabled, Le, sd, idx });
 	// set light sources in shader code if necessary
 	if (enabled)
 		on_lights_changed();
@@ -513,8 +530,10 @@ void context::set_current_lights(shader_program& prog) const
 		std::string prefix = std::string("light_sources[") + cgv::utils::to_string(i) + "]";
 		void* light_source_handle = get_enabled_light_source_handle(i);
 		const auto iter = light_sources.find(light_source_handle);
-		if (prog.set_light_uniform(*this, prefix, iter->second.first))
+		if (prog.set_light_uniform(*this, prefix, iter->second.first)) {
 			prog.set_uniform(*this, prefix + ".position", iter->second.second.eye_position);
+			prog.set_uniform(*this, prefix + ".spot_direction", iter->second.second.eye_spot_direction);
+		}
 	}
 	prog.set_uniform(*this, "nr_light_sources", (int)nr_lights);
 }
@@ -540,6 +559,7 @@ void context::place_light_source(void* handle)
 	auto iter = light_sources.find(handle);
 	// determine light source position
 	iter->second.second.eye_position = get_light_eye_position(iter->second.first, true);
+	iter->second.second.eye_spot_direction = get_light_eye_spot_direction(iter->second.first, true);
 	if (iter->second.second.enabled)
 		on_lights_changed();
 }
