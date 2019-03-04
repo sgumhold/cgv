@@ -19,8 +19,9 @@ using namespace cgv::signal;
 light_interactor::light_interactor() : node("light_interactor")
 {
 	last_modelview_matrix.identity();
-	opacity = 0.6f;
-	ray_width = 2.0f;
+	min_opacity = 0.2f;
+	max_opacity = 1.0f;
+	ray_width = 4.0f;
 	color_lambda = 0.2f;
 	default_color = rgb(1, 1, 0);
 	nr_light_rays = 100;
@@ -159,6 +160,10 @@ bool light_interactor::init(context& ctx)
     ctx.set_default_render_pass_flags(
 		(RenderPassFlags)(ctx.get_default_render_pass_flags() & ~(RPF_SET_LIGHTS|RPF_SET_LIGHTS_ON))
 	);
+	if (!prog.build_program(ctx, "light_ray.glpr", true)) {
+		std::cerr << "could not build light_ray.glpr" << std::endl;
+		return false;
+	}
 	return true;
 }
 
@@ -264,8 +269,14 @@ void light_interactor::sample_light_rays(context& ctx, unsigned decrease_count)
 
 void light_interactor::draw_light_rays(context& ctx, size_t i)
 {
-	rgb clr = color_lambda * lights[i].get_emission() + (1.0f - color_lambda)*default_color;
-	ctx.set_color(rgba(clr[0],clr[1],clr[2],opacity));
+	int light_index = int(i);
+	prog.set_uniform(ctx, "default_color", default_color);
+	prog.set_uniform(ctx, "color_lambda", color_lambda);
+	prog.set_uniform(ctx, "min_opacity", min_opacity);
+	prog.set_uniform(ctx, "max_opacity", max_opacity);
+	prog.set_uniform(ctx, "light_index", light_index);
+//	rgb clr = color_lambda * lights[i].get_emission() + (1.0f - color_lambda)*default_color;
+//	ctx.set_color(rgba(clr[0],clr[1],clr[2],opacity));
 	glDrawArrays(GL_LINES, 2 * i*nr_light_rays, 2 * nr_light_rays);
 }
 
@@ -280,14 +291,14 @@ void light_interactor::finish_frame(context& ctx)
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	size_t i, n = lights.size();
-	shader_program& prog = ctx.ref_default_shader_program();
+	prog.enable(ctx);
 	attribute_array_binding::set_global_attribute_array(ctx, prog.get_position_index(), light_rays);
 	attribute_array_binding::enable_global_array(ctx, prog.get_position_index());
-	prog.enable(ctx);
 	ctx.push_modelview_matrix();
 	ctx.set_modelview_matrix(cgv::math::identity4<double>());
 	for (i = 0; i < n; ++i)
-		draw_light_rays(ctx, i);
+		if (show[i])
+			draw_light_rays(ctx, i);
 	ctx.pop_modelview_matrix();
 	attribute_array_binding::disable_global_array(ctx, prog.get_position_index());
 	prog.disable(ctx);
@@ -381,9 +392,10 @@ void light_interactor::create_gui()
 	connect_copy(add_button("load", "w=90")->click, rebind(this, &light_interactor::load_cb));
 	add_decorator("Rendering", "heading");
 	add_member_control(this, "ray_width", ray_width, "value_slider", "min=1;max=10;ticks=true");
-	add_member_control(this, "opacity", opacity, "value_slider", "min=0;max=1;ticks=true");
-	add_member_control(this, "color_lambda", color_lambda, "value_slider", "min=0;max=1;ticks=true");
 	add_member_control(this, "default_color", default_color);
+	add_member_control(this, "color_lambda", color_lambda, "value_slider", "min=0;max=1;ticks=true");
+	add_member_control(this, "min_opacity", min_opacity, "value_slider", "min=0;max=1;ticks=true");
+	add_member_control(this, "max_opacity", max_opacity, "value_slider", "min=0;max=1;ticks=true");
 	add_member_control(this, "nr_light_rays", nr_light_rays, "value_slider", "min=1;max=100;ticks=true;log=true");
 	add_member_control(this, "light_scale", light_scale, "value_slider", "min=0;max=10;ticks=true;log=true");
 	for (i = 0; i < n; ++i)
