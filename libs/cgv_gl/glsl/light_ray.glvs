@@ -1,0 +1,23 @@
+#version 330
+
+//***** begin interface of view.glsl ***********************************
+mat4 get_modelview_matrix();
+mat4 get_projection_matrix();
+mat4 get_modelview_projection_matrix();
+mat4 get_inverse_modelview_matrix();
+mat4 get_inverse_modelview_projection_matrix();
+mat3 get_normal_matrix();
+mat3 get_inverse_normal_matrix();
+//***** end interface of view.glsl ***********************************
+
+layout(location = 0) in vec4 position;
+
+out vec3 position_eye;
+
+void main()
+{
+	// transform vertex to clip space
+	gl_Position = get_modelview_projection_matrix()*position;
+	vec4 p = get_modelview_matrix()*position;
+	position_eye = p.xyz / p.w;
+}

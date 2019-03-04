@@ -1,0 +1,3 @@
+files:light_ray
+fragment_file:lights.glsl
+vertex_file:view.glsl

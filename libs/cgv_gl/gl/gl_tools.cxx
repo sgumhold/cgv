@@ -129,16 +129,7 @@ shader_program& ref_textured_material_prog(context& ctx)
 	static shader_program prog;
 	if (!ref_shader_prog_stack().empty())
 		return *ref_shader_prog_stack().back();
-
-	if (!prog.is_created()) {
-		if (!prog.build_program(ctx, "textured_material.glpr")) {
-			std::cerr << "could not build textured material shader program" << std::endl;
-			exit(0);
-		}
-		else {
-			std::cout << "successfully built textured material shader program" << std::endl;
-		}
-	}
+	std::cerr << "call to deprecated function ref_textured_material_prog()" << std::endl;
 	return prog;
 }
 
