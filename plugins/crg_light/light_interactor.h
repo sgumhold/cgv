@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cgv/render/drawable.h>
+#include <cgv/render/shader_program.h>
 #include <cgv/media/illum/light_source.hh>
 #include <cgv/gui/event_handler.h>
 #include <cgv/gui/provider.h>
@@ -38,15 +39,19 @@ protected:
 	void on_load();
 	vec3 delta_pos;
 	float speed;
+
 	unsigned nr_light_rays;
 	cgv::render::view* view_ptr;
 	std::vector<vec3> light_rays;
 	std::vector<int> current_ray_indices;
-	float color_lambda;
-	rgb default_color;
 	dmat4 last_modelview_matrix;
+
 	float ray_width;
-	float opacity;
+	rgb default_color;
+	float color_lambda;
+	float min_opacity, max_opacity;
+	cgv::render::shader_program prog;
+
 	void sample_light_rays(context& ctx, unsigned decrease_count = 0);
 	void draw_light_rays(context& ctx, size_t i);
 	void timer_event(double t, double dt);
