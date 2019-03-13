@@ -1,13 +1,13 @@
+#include <cgv/base/base.h>
 #include <cgv/data/ascii_io_reflection_handlers.h>
 #include <cgv/data/binary_io_reflection_handlers.h>
 #include <cgv/base/register.h>
 #include <iostream>
-#include <cgv/type/reflect/debug_reflection_handler.h>
-#include <cgv/type/reflect/set_reflection_handler.h>
-#include <cgv/type/reflect/get_reflection_handler.h>
-#include <cgv/type/reflect/reflect_enum.h>
-#include <cgv/type/reflect/reflect_string.h>
-#include <cgv/type/reflect/reflect_extern.h>
+#include <cgv/reflect/debug_reflection_handler.h>
+#include <cgv/reflect/set_reflection_handler.h>
+#include <cgv/reflect/get_reflection_handler.h>
+#include <cgv/reflect/reflect_enum.h>
+#include <cgv/reflect/reflect_extern.h>
 #include <cgv/utils/scan_enum.h>
 #include <cgv/type/info/type_name.h>
 
@@ -18,7 +18,7 @@
 #include <cgv/media/color.h>
 
 
-using namespace cgv::type::reflect;
+using namespace cgv::reflect;
 
 template <typename T, cgv::type::uint32_type N>
 struct fvec_reflect : public cgv::math::fvec<T,N>

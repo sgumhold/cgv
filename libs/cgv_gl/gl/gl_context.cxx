@@ -283,7 +283,7 @@ void gl_context::init_render_pass()
 	else
 		glDisable(GL_FRAMEBUFFER_SRGB);
 
-	glPushAttrib(GL_ALL_ATTRIB_BITS);
+//	glPushAttrib(GL_ALL_ATTRIB_BITS);
 
 	if (get_render_pass_flags()&RPF_SET_LIGHTS) {
 		for (unsigned i = 0; i < nr_default_light_sources; ++i)
@@ -357,7 +357,7 @@ void gl_context::init_render_pass()
 ///
 void gl_context::finish_render_pass()
 {
-	glPopAttrib();
+//	glPopAttrib();
 }
 
 struct format_callback_handler : public traverse_callback_handler

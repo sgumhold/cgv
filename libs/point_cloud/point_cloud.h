@@ -22,11 +22,15 @@ struct point_cloud_types
 	typedef cgv::type::uint8_type ClrComp;
 	static ClrComp byte_to_color_component(cgv::type::uint8_type c) { return c; }
 	static ClrComp float_to_color_component(double c) { return cgv::type::uint8_type(255 * c); }
+	static cgv::type::uint8_type color_component_to_byte(ClrComp c) { return c; }
+	static float color_component_to_float(ClrComp c) { return 1.0f/255 * c; }
 #else
 	/// type of color components
 	typedef float ClrComp;
 	static ClrComp byte_to_color_component(cgv::type::uint8_type c) { return c*1.0f/255; }
 	static ClrComp float_to_color_component(double c) { return float(c); }
+	static cgv::type::uint8_type color_component_to_byte(ClrComp c) { return cgv::type::uint8_type(255*c); }
+	static float color_component_to_float(ClrComp c) { return c; }
 #endif // BYTE_COLORS
 	/// floating point color type
 	typedef cgv::media::color<float, cgv::media::RGB, cgv::media::OPACITY> RGBA;

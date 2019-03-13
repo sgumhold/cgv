@@ -397,7 +397,7 @@ void point_cloud_interactable::stream_stats(std::ostream& os)
 	os << "PC: #P=" << pc.get_nr_points()
 		<< ", #N=" << (pc.has_normals() ? pc.get_nr_points() : 0)
 		<< ", #C=" << (pc.has_colors() ? pc.get_nr_points() : 0) 
-		<< ", B=" << pc.box() << std::endl;
+		<< ", B=" << pc.box().get_center() << "<" << pc.box().get_extent() << ">" << std::endl;
 }
 
 

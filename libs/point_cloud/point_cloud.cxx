@@ -1193,7 +1193,8 @@ bool point_cloud::write_obj(const std::string& file_name) const
 	unsigned int i;
 	for (i=0; i<P.size(); ++i) {
 		if (has_colors())
-			os << "v " << P[i][0] << " " << P[i][1] << " " << P[i][2] << " " << C[i][0] << " " << C[i][1] << " " << C[i][2] << endl;
+			os << "v " << P[i][0] << " " << P[i][1] << " " << P[i][2] << " " << color_component_to_float(C[i][0]) 
+			<< " " << color_component_to_float(C[i][1]) << " " << color_component_to_float(C[i][2]) << endl;
 		else
 			os << "v " << P[i][0] << " " << P[i][1] << " " << P[i][2] << endl;
 	}

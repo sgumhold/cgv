@@ -382,7 +382,7 @@ void vr_view_interactor::init_frame(cgv::render::context& ctx)
 					continue;
 				for (rendered_eye = 0; rendered_eye < 2; ++rendered_eye) {
 					rendered_kit_ptr->enable_fbo(rendered_eye);
-					ctx.render_pass(cgv::render::RP_USER_DEFINED, cgv::render::RenderPassFlags(rpf&~cgv::render::RPF_HANDLE_SCREEN_SHOT));
+					ctx.render_pass(cgv::render::RP_USER_DEFINED, cgv::render::RenderPassFlags(rpf&~cgv::render::RPF_HANDLE_SCREEN_SHOT), this);
 					rendered_kit_ptr->disable_fbo(rendered_eye);
 				}
 			}
