@@ -1,14 +1,14 @@
-#version 150 compatibility
+#version 150
 #extension GL_EXT_geometry_shader4 : enable
 
-in vec4 colors[];
-out vec4 color;
+in vec4 color_gs[];
+out vec4 color_fs;
 
 vec4 map_plot_to_screen(in vec2 pnt);
 
 void main()
 {
-	color = colors[0];
+	color_fs = color_gs[0];
 
 	gl_Position = map_plot_to_screen(vec2(gl_PositionIn[0].x, 0.0));
 	EmitVertex();

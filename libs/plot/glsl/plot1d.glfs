@@ -1,8 +1,14 @@
-#version 150 compatibility
+#version 150
 
-in vec4 color;
+uniform float gamma = 2.2;
+
+in vec4 color_fs;
+
+out vec4 frag_color;
 
 void main()
 {
-	gl_FragColor = color;
+	frag_color = color_fs;
+
+	frag_color.rgb = pow(frag_color.rgb, vec3(1.0 / gamma));
 }

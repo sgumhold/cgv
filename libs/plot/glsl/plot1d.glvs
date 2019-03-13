@@ -1,12 +1,15 @@
-#version 150 compatibility
+#version 330 
 
-out vec4 color;
+layout(location = 0) in vec4 position;
+layout(location = 1) in vec4 color;
+
+out vec4 color_fs;
 
 vec4 map_plot_to_screen(in vec2 pnt);
 
 void main()
 {
 	// transform vertex to clip space
-	gl_Position = map_plot_to_screen(gl_Vertex.xy);
-	color = gl_Color;
+	gl_Position = map_plot_to_screen(position.xy);
+	color_fs = color;
 }
