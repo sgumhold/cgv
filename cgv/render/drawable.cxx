@@ -126,5 +126,51 @@ void drawable::clear(context&)
 {
 }
 
+/// construct to be not inside of a render pass
+multi_pass_drawable::multi_pass_drawable()
+{
+	current_render_pass = -1;
+	render_pass_recursion_depth = 0;
+}
+/// call in init_frame method to check whether the recursive render passes need to be initiated
+bool multi_pass_drawable::initiate_render_pass_recursion(context& ctx)
+{
+	if (current_render_pass != -1)
+		return false;
+	render_pass_recursion_depth = ctx.get_render_pass_recursion_depth();
+	return true;
+}
+/// call to initiate a render pass in the init_frame method after initiate_render_pass_recursion() has succeeded
+void multi_pass_drawable::perform_render_pass(context& ctx, int rp_idx, RenderPass rp, int excluded_flags, int included_flags)
+{
+	current_render_pass = rp_idx;
+	unsigned rpf = (ctx.get_render_pass_flags() & ~excluded_flags) | included_flags;
+	ctx.render_pass(rp, RenderPassFlags(rpf), this);
+}
+/// call after last recursive render pass to use current render pass for last render pass
+void multi_pass_drawable::initiate_terminal_render_pass(int rp_idx)
+{
+	current_render_pass = rp_idx;
+}
+/// check in after_finish method, whether this should be directly exited with a return statement
+bool multi_pass_drawable::multi_pass_ignore_finish(const context& ctx)
+{
+	if (current_render_pass == -1)
+		return true;
+	if (ctx.get_render_pass_user_data() != this)
+		if (render_pass_recursion_depth != ctx.get_render_pass_recursion_depth())
+			return true;
+	return false;
+}
+/// check in after_finish method, whether this was the terminating render pass
+bool multi_pass_drawable::multi_pass_terminate(const context& ctx)
+{
+	if (render_pass_recursion_depth != ctx.get_render_pass_recursion_depth())
+		return false;
+	current_render_pass = -1;
+	return true;
+}
+
+
 	}
 }

@@ -50,29 +50,13 @@ cgv::reflect::enum_reflection_traits<GlsuEye> get_reflection_traits(const GlsuEy
 	return cgv::reflect::enum_reflection_traits<GlsuEye>(EYE_ENUMS);
 }
 
-ext_view::ext_view()
+void stereo_view_interactor::set_default_values()
 {
-	set_default_values();
-}
-
-void ext_view::set_default_values()
-{
-	set_default_view();
-	set_y_view_angle(45);
-	set_z_near(0.01);
-	set_z_far(10000.0);
-	set_eye_distance(0.03);
-	set_parallax_zero_scale(0.5);
+	stereo_view::set_default_values();
 	enable_stereo(false);
 	set_stereo_mode(GLSU_ANAGLYPH);
 	set_anaglyph_config(GLSU_RED_CYAN);
 	two_d_enabled=false;
-}
-
-
-double ext_view::get_parallax_zero_z() const
-{
-	return (1.0 / (1.0 - parallax_zero_scale) - 1.0) * dot(get_focus() - get_eye(), view_dir);
 }
 
 void stereo_view_interactor::check_emulation_active()
@@ -415,12 +399,6 @@ cgv::render::view& stereo_view_interactor::ref_viewport_view(unsigned col_index,
 	unsigned view_index = get_viewport_index(col_index, row_index);
 	ensure_viewport_view_number(view_index + 1);
 	return views[view_index];
-}
-
-
-bool stereo_view_interactor::init(context& ctx)
-{
-	return drawable::init(ctx);
 }
 
 //! given a mouse location and the pixel extent of the context, return the DPV matrix for unprojection
@@ -860,7 +838,7 @@ bool stereo_view_interactor::handle(event& e)
 					double z_dev = get_z_and_unproject(ctx, me.get_x(), me.get_y(), p);
 					double z_eyea = dot(view_dir, p - get_eye());
 					double z_eyeb = z_dev*(z_far_derived - z_near_derived) + z_near_derived;
-					double z0_eye = get_parallax_zero_z();
+					double z0_eye = get_parallax_zero_depth();
 					double z0_dev = (z0_eye - z_near_derived) / z_dev*(z_far_derived - z_near_derived);
 					std::cout << "z_dev =" << z_dev << ", z_eye=(" << z_eyea << "|" << z_eyeb << ") [" << z_near_derived << "," << z_far_derived << "]" << std::endl;
 					std::cout << "z0_dev=" << z0_dev << ", z0_eye=" << z0_eye << std::endl;
@@ -1039,7 +1017,7 @@ void stereo_view_interactor::draw_mouse_pointer_as_bitmap(cgv::render::context& 
 		0x07, 0xE0
 	};
 
-	double z0_D = get_z_D(-get_parallax_zero_z(), z_near_derived, z_far_derived);
+	double z0_D = get_z_D(-get_parallax_zero_depth(), z_near_derived, z_far_derived);
 	vec3 p = ctx.get_point_W(x, y, z0_D, DPV);
 	glRasterPos3d(p(0), p(1), p(2));
 	if (visible)
@@ -1077,7 +1055,7 @@ void stereo_view_interactor::draw_mouse_pointer_as_pixels(cgv::render::context& 
 	static GLfloat  map_i_to_l_values_hidden[] = { 0.0f, 0.0f, 1.0f, 1.0f };
 	static GLfloat  map_i_to_a_values_hidden[] = { 0.0f, 1.0f, 0.0f, 1.0f };
 
-	double z0_D = get_z_D(-get_parallax_zero_z(), z_near_derived, z_far_derived);
+	double z0_D = get_z_D(-get_parallax_zero_depth(), z_near_derived, z_far_derived);
 
 	vec3 p = ctx.get_point_W(x, y, z0_D, DPV);
 	glRasterPos3d(p(0), p(1), p(2));
@@ -1103,7 +1081,7 @@ void stereo_view_interactor::draw_mouse_pointer_as_arrow(cgv::render::context& c
 	smp_mat_hidden.set_diffuse_reflectance(rgb(0.3f, 0.3f, 0.3f));
 	smp_mat_hidden.set_emission(rgb(0.3f, 0.3f, 0.3f));
 
-	double z0_D = get_z_D(-get_parallax_zero_z(), z_near_derived, z_far_derived);
+	double z0_D = get_z_D(-get_parallax_zero_depth(), z_near_derived, z_far_derived);
 
 	int dx = center_x - x;
 	int dy = center_y - y;
@@ -1136,6 +1114,7 @@ void stereo_view_interactor::draw_mouse_pointer_as_arrow(cgv::render::context& c
 	p_begin -= 0.3f*(p_begin - p_end).length()*get_view_dir();
 
 	shader_program& prog = ctx.ref_surface_shader_program();
+	prog.set_uniform(ctx, "map_color_to_material", 0);
 	prog.enable(ctx);
 	if (visible) {
 		ctx.set_material(smp_mat_visible);
@@ -1215,11 +1194,10 @@ void stereo_view_interactor::draw_mouse_pointer(cgv::render::context& ctx, bool 
 /// this method is called in one pass over all drawables after finish frame
 void stereo_view_interactor::after_finish(cgv::render::context& ctx)
 {
-	if (ctx.get_render_pass() == RP_MAIN) {
-		if (is_stereo_enabled()) 
-			glsuConfigureStereo(GLSU_CENTER, stereo_mode, anaglyph_config);
+	if (is_stereo_enabled() && !multi_pass_ignore_finish(ctx) && multi_pass_terminate(ctx))
+		glsuConfigureStereo(current_e = GLSU_CENTER, stereo_mode, anaglyph_config);
+	if (ctx.get_render_pass() == RP_MAIN)
 		check_write_image(ctx, (is_stereo_enabled()&&stereo_mode==GLSU_QUAD_BUFFER)?"_r":"");
-	}
 }
 
 static unsigned int cms[8][2][3] = { 
@@ -1262,9 +1240,9 @@ void stereo_view_interactor::gl_set_projection_matrix(cgv::render::context& ctx,
 		P = ortho4<double>(-aspect * y_extent_at_focus, aspect*y_extent_at_focus, -y_extent_at_focus, y_extent_at_focus, z_near_derived, z_far_derived);
 	else {
 		if (stereo_translate_in_model_view)
-			P = cgv::math::stereo_frustum_screen4<double>(e, eye_distance, y_extent_at_focus*aspect, y_extent_at_focus, get_parallax_zero_z(), z_near_derived, z_far_derived);
+			P = cgv::math::stereo_frustum_screen4<double>(e, eye_distance, y_extent_at_focus*aspect, y_extent_at_focus, get_parallax_zero_depth(), z_near_derived, z_far_derived);
 		else
-			P = cgv::math::stereo_perspective_screen4<double>(e, eye_distance, y_extent_at_focus*aspect, y_extent_at_focus, get_parallax_zero_z(), z_near_derived, z_far_derived);
+			P = cgv::math::stereo_perspective_screen4<double>(e, eye_distance, y_extent_at_focus*aspect, y_extent_at_focus, get_parallax_zero_depth(), z_near_derived, z_far_derived);
 	}
 	ctx.set_projection_matrix(P);
 }
@@ -1295,29 +1273,29 @@ void stereo_view_interactor::ensure_viewport_view_number(unsigned nr)
 void stereo_view_interactor::init_frame(context& ctx)
 {
 	cgv::render::RenderPassFlags rpf = ctx.get_render_pass_flags();
-	if ((rpf & RPF_SET_MODELVIEW_PROJECTION) == 0)
-		return;
 
-	// determine the current eye and stear multi pass rendering
-	current_e = mono_mode;
-	if (is_stereo_enabled()) {
-		if (ctx.get_render_pass() == RP_STEREO) {
-			current_e = GLSU_LEFT;
-			last_do_viewport_splitting = do_viewport_splitting;
-			last_nr_viewport_columns = nr_viewport_columns;
-			last_nr_viewport_rows = nr_viewport_rows;
-		}
-		else {
-			glsuConfigureStereo(GLSU_LEFT,stereo_mode,anaglyph_config);
-			ctx.render_pass(RP_STEREO,RenderPassFlags(rpf&~RPF_HANDLE_SCREEN_SHOT));
-			glsuConfigureStereo(GLSU_RIGHT,stereo_mode,anaglyph_config);
-			current_e = GLSU_RIGHT;
-		}
-	}
-	else {
+	// determine the current eye and store last viewport splitting
+	
+	// check mono rendering case 
+	if (!is_stereo_enabled()) {
+		current_e = mono_mode;
 		last_do_viewport_splitting = do_viewport_splitting;
 		last_nr_viewport_columns = nr_viewport_columns;
 		last_nr_viewport_rows = nr_viewport_rows;
+	}
+	// stereo rendering
+	else {
+		if (initiate_render_pass_recursion(ctx)) {
+			last_do_viewport_splitting = do_viewport_splitting;
+			last_nr_viewport_columns = nr_viewport_columns;
+			last_nr_viewport_rows = nr_viewport_rows;
+			perform_render_pass(ctx, 0, RP_STEREO);
+			initiate_terminal_render_pass(1);
+		}
+		if (!multi_pass_ignore_finish(ctx)) {
+			current_e = current_render_pass == 0 ? GLSU_LEFT : GLSU_RIGHT;
+			glsuConfigureStereo(current_e, stereo_mode, anaglyph_config);
+		}
 	}
 
 	// determine aspect ratio from opengl settings
@@ -1646,19 +1624,19 @@ void stereo_view_interactor::on_set(void* m)
 
 void stereo_view_interactor::set_z_near(double z)
 {
-	cgv::render::gl::gl_view::set_z_near(z);
+	cgv::render::clipped_view::set_z_near(z);
 	update_member(&z_near);
 	post_redraw();
 }
 void stereo_view_interactor::set_z_far(double z)
 {
-	cgv::render::gl::gl_view::set_z_far(z);
+	cgv::render::clipped_view::set_z_far(z);
 	update_member(&z_far);
 	post_redraw();
 }
 void stereo_view_interactor::set_default_view()
 {
-	cgv::render::gl::gl_view::set_default_view();
+	cgv::render::clipped_view::set_default_view();
 	for (unsigned c = 0; c < 3; ++c) {
 		update_member(&view_dir[c]);
 		update_member(&view_up_dir[c]);

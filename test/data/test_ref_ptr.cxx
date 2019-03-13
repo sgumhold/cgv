@@ -12,7 +12,7 @@ typedef ref_ptr<T,true> T_ptr;
 class T : public ref_counted
 {
 protected:
-	friend class ref_ptr<T,true>;
+	friend class ref_ptr_impl<T,true>;
 	~T()
 	{
 		std::cout << "T::~T()" << std::endl;
@@ -35,7 +35,7 @@ typedef ref_ptr<B,true> B_ptr;
 class A : public ref_counted
 {
 protected:
-	friend class ref_ptr<A,true>;
+	friend class ref_ptr_impl<A,true>;
 	int index;
 	B_ptr b_ptr;
 	~A() 
@@ -64,7 +64,7 @@ void A::clear_B()
 class B : public ref_counted
 {
 protected:
-	friend class ref_ptr<B,true>;
+	friend class ref_ptr_impl<B,true>;
 	std::string str;
 	A_ptr a_ptr;
 	~B() 

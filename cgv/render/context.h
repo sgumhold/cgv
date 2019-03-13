@@ -75,6 +75,9 @@ enum RenderPass {
 	RP_USER_DEFINED
 };
 
+/// convert render pass type into string
+extern CGV_API std::string get_render_pass_name(RenderPass rp);
+
 /// available flags that can be queried from the context and set for a new render pass
 enum RenderPassFlags {
 	RPF_NONE = 0,                      // no frame initialization is performed
@@ -529,6 +532,8 @@ protected:
 	bool support_compatibility_mode;
 	/// whether to do all drawing in compatibility mode, only possible if support_compatibility_mode is true, , defaults to false
 	bool draw_in_compatibility_mode;
+	/// whether to debug render passes
+	bool debug_render_passes;
 	/// whether vsynch should be enabled
 	bool enable_vsynch;
 	/// whether to use opengl option to support sRGB framebuffer
@@ -704,6 +709,8 @@ public:
 	virtual void configure_new_child(cgv::base::base_ptr child);
 	/// return the used rendering API
 	virtual RenderAPI get_render_api() const = 0;
+	/// return current render pass recursion depth
+	unsigned get_render_pass_recursion_depth() const;
 	/// return the current render pass
 	virtual RenderPass get_render_pass() const;
 	/// return the current render pass flags
@@ -718,6 +725,10 @@ public:
 	virtual void render_pass(RenderPass render_pass = RP_MAIN, 
 							 RenderPassFlags render_pass_flags = RPF_ALL,
 							 void* user_data = 0);
+	/// set flag whether to debug render passes
+	void set_debug_render_passes(bool _debug);
+	/// check whether render passes are debugged
+	bool get_debug_render_passes() const { return debug_render_passes; }
 	/// return whether the context is currently in process of rendering
 	virtual bool in_render_process() const = 0;
 	/// return whether the context is created

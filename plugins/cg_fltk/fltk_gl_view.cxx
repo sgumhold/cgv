@@ -934,6 +934,7 @@ void fltk_gl_view::create_gui()
 		provider::align("\a");
 		add_member_control(this, "show_help", show_help, "check");
 		add_member_control(this, "show_stats", show_stats, "check");
+		add_member_control(this, "debug_render_passes", debug_render_passes, "check");
 		add_member_control(this, "performance monitoring", enabled, "check");
 		add_member_control(this, "time scale", time_scale, "value_slider", "min=1;max=90;ticks=true;log=true");
 		add_gui("placement", placement, "", "options='min=0;max=500'");

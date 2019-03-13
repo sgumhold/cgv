@@ -161,6 +161,7 @@ context::context()
 	auto_set_material_in_current_shader_program = true;
 	support_compatibility_mode = true;
 	draw_in_compatibility_mode = false;
+	debug_render_passes = false;
 
 	default_light_source[0].set_local_to_eye(true);
 	default_light_source[0].set_position(vec3(-0.4f, 0.3f, 0.8f));
@@ -615,6 +616,27 @@ bool context::disable_light_source(void* handle)
 
 }
 
+std::string get_render_pass_name(RenderPass rp)
+{
+	const char* render_pass_names[] = {
+	"RP_NONE",
+	"RP_MAIN",                 /// the main rendering pass triggered by the redraw event
+	"RP_STEREO",               /// rendering of second eye
+	"RP_SHADOW_MAP",           /// construction of shadow map
+	"RP_SHADOW_VOLUME",        /// construction of shadow map
+	"RP_OPAQUE_SURFACES",      /// opaque surface rendering using z-Buffer
+	"RP_TRANSPARENT_SURFACES", /// transparent surface rendering using depth peeling
+	"RP_PICK",                 /// in picking pass a small rectangle around the mouse is rendered 
+	"RP_USER_DEFINED"
+	};
+	return render_pass_names[rp];
+};
+
+/// return the current render pass
+unsigned context::get_render_pass_recursion_depth() const
+{
+	return (unsigned)render_pass_stack.size();
+}
 
 /// return the current render pass
 RenderPass context::get_render_pass() const
@@ -650,6 +672,11 @@ void* context::get_render_pass_user_data() const
 	return render_pass_stack.top().user_data;
 }
 
+/// set flag whether to debug render passes
+void context::set_debug_render_passes(bool _debug)
+{
+	debug_render_passes = _debug;
+}
 
 /// perform the given render task
 void context::render_pass(RenderPass rp, RenderPassFlags rpf, void* user_data)
@@ -663,7 +690,9 @@ void context::render_pass(RenderPass rp, RenderPassFlags rpf, void* user_data)
 	ri.pass  = rp;
 	ri.flags = rpf;
 	ri.user_data = user_data;
-
+	if (debug_render_passes) {
+		std::cout << std::string(2 * render_pass_stack.size(), ' ') << get_render_pass_name(rp) << " <" << user_data << ">" << std::endl;
+	}
 	render_pass_stack.push(ri);
 
 	init_render_pass();
@@ -1775,7 +1804,7 @@ bool context::shader_program_enable(shader_program_base& spb)
 		spb.auto_detect_vertex_attributes = false;
 	}
 	if (spb.auto_detect_uniforms) {
-		spb.uses_lights = get_uniform_location(spb, "nr_light_sources") != -1;
+		spb.uses_lights = get_uniform_location(spb, "light_sources[0].light_source_type") != -1;
 		spb.uses_material = get_uniform_location(spb, "material.brdf_type") != -1;
 		spb.uses_view = get_uniform_location(spb, "modelview_matrix") != -1;
 		spb.uses_gamma = get_uniform_location(spb, "gamma") != -1;
