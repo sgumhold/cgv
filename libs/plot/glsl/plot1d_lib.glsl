@@ -1,4 +1,14 @@
-#version 150 compatibility
+#version 150
+
+//***** begin interface of view.glsl ***********************************
+mat4 get_modelview_matrix();
+mat4 get_projection_matrix();
+mat4 get_modelview_projection_matrix();
+mat4 get_inverse_modelview_matrix();
+mat4 get_inverse_modelview_projection_matrix();
+mat3 get_normal_matrix();
+mat3 get_inverse_normal_matrix();
+//***** end interface of view.glsl ***********************************
 
 uniform float plot_scale;
 uniform vec3 x_axis;
@@ -31,10 +41,10 @@ vec4 map_plot_to_world(in vec2 pnt)
 
 vec4 map_plot_to_eye(in vec2 pnt)
 {
-	return gl_ModelViewMatrix * map_plot_to_world(pnt);
+	return get_modelview_matrix() * map_plot_to_world(pnt);
 }
 
 vec4 map_plot_to_screen(in vec2 pnt)
 {
-	return gl_ModelViewProjectionMatrix * map_plot_to_world(pnt);
+	return get_modelview_projection_matrix() * map_plot_to_world(pnt);
 }

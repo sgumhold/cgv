@@ -1,5 +1,6 @@
 #include "plot1d.h"
 #include <libs/cgv_gl/gl/gl.h>
+#include <cgv/render/attribute_array_binding.h>
 #include <libs/cgv_gl/gl/gl_tools.h>
 
 namespace cgv {
@@ -404,35 +405,42 @@ void plot1d::draw(cgv::render::context& ctx)
 			return;
 		}
 	}
-	glEnable(GL_LINE_SMOOTH);
-	glEnable(GL_POINT_SMOOTH);
-	glEnable(GL_BLEND);
+	GLboolean line_smooth = glIsEnabled(GL_LINE_SMOOTH); glEnable(GL_LINE_SMOOTH);
+	GLboolean point_smooth = glIsEnabled(GL_POINT_SMOOTH); glEnable(GL_POINT_SMOOTH);
+	GLboolean blend = glIsEnabled(GL_BLEND); glEnable(GL_BLEND);
+	GLenum blend_src, blend_dst, depth;
+	glGetIntegerv(GL_BLEND_DST, reinterpret_cast<GLint*>(&blend_dst));
+	glGetIntegerv(GL_BLEND_SRC, reinterpret_cast<GLint*>(&blend_src));
+	glGetIntegerv(GL_DEPTH_FUNC, reinterpret_cast<GLint*>(&depth));
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glDepthFunc(GL_LEQUAL);
 
 	for (unsigned i = 0; i<samples.size(); ++i) {
+		// skip unvisible and empty sub plots
 		if (!ref_sub_plot1d_config(i).show_plot || samples[i].size() == 0)
 			continue;
-		glVertexPointer(2, GL_FLOAT, 0, &samples[i].front());
-		glEnableClientState(GL_VERTEX_ARRAY);
+
+		cgv::render::attribute_array_binding::set_global_attribute_array(ctx, 0, samples[i]);
+		cgv::render::attribute_array_binding::enable_global_array(ctx, 0);
 
 		if (ref_sub_plot_config(i).show_bars) {
 			set_uniforms(ctx, bar_prog, i);
-			glColor3fv(&ref_sub_plot1d_config(i).bar_color[0]);
 			glDisable(GL_CULL_FACE);
 
 			bar_prog.enable(ctx);
+			ctx.set_color(ref_sub_plot1d_config(i).bar_color);
 			glDrawArrays(GL_POINTS, 0, samples[i].size());
 			bar_prog.disable(ctx);
 
 			glEnable(GL_CULL_FACE);
 
 			if (ref_sub_plot1d_config(i).bar_outline_width > 0) {
+
 				glLineWidth(ref_sub_plot1d_config(i).bar_outline_width);
 				set_uniforms(ctx, bar_outline_prog, i);
-				glColor3fv(&ref_sub_plot1d_config(i).bar_outline_color[0]);
 
 				bar_outline_prog.enable(ctx);
+				ctx.set_color(ref_sub_plot1d_config(i).bar_outline_color);
 				glDrawArrays(GL_POINTS, 0, samples[i].size());
 				bar_outline_prog.disable(ctx);
 			}
@@ -440,9 +448,9 @@ void plot1d::draw(cgv::render::context& ctx)
 
 		if (ref_sub_plot_config(i).show_sticks) {
 			set_uniforms(ctx, stick_prog, i);
-			glColor3fv(&ref_sub_plot1d_config(i).stick_color[0]);
 			glLineWidth(ref_sub_plot1d_config(i).stick_width);
 			stick_prog.enable(ctx);
+			ctx.set_color(ref_sub_plot1d_config(i).stick_color);
 			glDrawArrays(GL_POINTS, 0, samples[i].size());
 			stick_prog.disable(ctx);
 		}
@@ -453,7 +461,7 @@ void plot1d::draw(cgv::render::context& ctx)
 		}
 
 		if (ref_sub_plot1d_config(i).show_lines) {
-			glColor3fv(&ref_sub_plot1d_config(i).line_color[0]);
+			ctx.set_color(ref_sub_plot1d_config(i).line_color);
 			glLineWidth(ref_sub_plot1d_config(i).line_width);
 			if (strips[i].empty())
 				glDrawArrays(GL_LINE_STRIP, 0, samples[i].size());
@@ -467,7 +475,7 @@ void plot1d::draw(cgv::render::context& ctx)
 		}
 
 		if (ref_sub_plot1d_config(i).show_points) {
-			glColor3fv(&ref_sub_plot1d_config(i).point_color[0]);
+			ctx.set_color(ref_sub_plot1d_config(i).point_color);
 			glPointSize(ref_sub_plot1d_config(i).point_size);
 			glDrawArrays(GL_POINTS, 0, samples[i].size());
 		}
@@ -475,40 +483,44 @@ void plot1d::draw(cgv::render::context& ctx)
 		if (ref_sub_plot1d_config(i).show_points || ref_sub_plot1d_config(i).show_lines)
 			prog.disable(ctx);
 
-		glDisableClientState(GL_VERTEX_ARRAY);
-		glVertexPointer(2, GL_FLOAT, 0, 0);
+		cgv::render::attribute_array_binding::disable_global_array(ctx, 0);
 	}
 
 	if (show_axes) {
-		glColor3fv(&axis_color[0]);
 		glLineWidth(axis_line_width);
 		set_uniforms(ctx, prog, 0);
 		prog.enable(ctx);
-		glBegin(GL_LINE_LOOP);
-		glVertex2fv(domain.get_corner(0));
-		glVertex2fv(domain.get_corner(1));
-		glVertex2fv(domain.get_corner(3));
-		glVertex2fv(domain.get_corner(2));
-		glEnd();
+		ctx.set_color(axis_color);
+		cgv::render::attribute_array_binding::enable_global_array(ctx, 0);
+		std::vector<vec2> P;
+		P.push_back(domain.get_corner(0));
+		P.push_back(domain.get_corner(1));
+		P.push_back(domain.get_corner(3));
+		P.push_back(domain.get_corner(2));
+		cgv::render::attribute_array_binding::set_global_attribute_array(ctx, 0, P);
+		glDrawArrays(GL_LINE_LOOP, 0, 4);
 
 		bool axis_inside[2] = { false, false };
+		P.clear();
 		if (domain.get_min_pnt()(0) < 0 && domain.get_max_pnt()(0) > 0) {
-			glBegin(GL_LINES);
-			glVertex2f(0,domain.get_min_pnt()(1));
-			glVertex2f(0,domain.get_max_pnt()(1));
-			glEnd();
+			P.push_back(vec2(0,domain.get_min_pnt()(1)));
+			P.push_back(vec2(0,domain.get_max_pnt()(1)));
 			axis_inside[1] = true;
 		}
 		if (domain.get_min_pnt()(1) < 0 && domain.get_max_pnt()(1) > 0) {
-			glBegin(GL_LINES);
-			glVertex2f(domain.get_min_pnt()(0),0);
-			glVertex2f(domain.get_max_pnt()(0),0);
-			glEnd();
+			P.push_back(vec2(domain.get_min_pnt()(0),0));
+			P.push_back(vec2(domain.get_max_pnt()(0),0));
 			axis_inside[0] = true;
 		}
+		if (!P.empty()) {
+			cgv::render::attribute_array_binding::set_global_attribute_array(ctx, 0, P);
+			glDrawArrays(GL_LINES, 0, GLsizei(P.size()));
+		}
 		int ai;
-		for (ai = 0; ai < 2; ++ai) {
-			for (int ti = 0; ti < 2; ++ti) {
+		for (int ti = 0; ti < 2; ++ti) {
+			glLineWidth(tick_line_width[ti]);
+			P.clear();
+			for (ai = 0; ai < 2; ++ai) {
 				if (axes[ai].ticks[ti].type != TT_NONE) {
 					Crd min_val = domain.get_min_pnt()(ai);
 					Crd max_val = domain.get_max_pnt()(ai);
@@ -525,7 +537,6 @@ void plot1d::draw(cgv::render::context& ctx)
 					if (max_i * axes[ai].ticks[ti].step - max_val > -std::numeric_limits<Crd>::epsilon())
 						--max_i;
 					
-					glLineWidth(tick_line_width[ti]);
 					Crd dash_length = tick_length[ti]*0.01f*domain.get_extent()(1-domain.get_max_extent_coord_index());
 					if (extent(0) < extent(1)) {
 						if (ai == 1)
@@ -542,9 +553,8 @@ void plot1d::draw(cgv::render::context& ctx)
 					Crd s_min = domain.get_min_pnt()(1-ai);
 					Crd s_max = domain.get_max_pnt()(1-ai);
 
-					glBegin(GL_LINES);
 					for (int i=min_i; i<=max_i; ++i) {
-						Crd c[2];
+						vec2 c;
 						c[ai] = (Crd) (i*axes[ai].ticks[ti].step);
 						if (axes[ai].log_scale)
 							c[ai] = pow(10.0f, c[ai]);
@@ -555,42 +565,46 @@ void plot1d::draw(cgv::render::context& ctx)
 						switch (axes[ai].ticks[ti].type) {
 						case TT_DASH :
 							c[1-ai] = s_min; 
-							glVertex2fv(c);
+							P.push_back(c);
 							c[1 - ai] = s_min + dash_length;
 							if (axes[1 - ai].log_scale) {
 								float q = (c[1 - ai] - domain.get_center()(1 - ai)) / domain.get_extent()(1 - ai);
 								c[1 - ai] = pow(10.0f, (q*(log(domain.get_max_pnt()(1-ai)) - log(domain.get_min_pnt()(1-ai))) + 0.5f*(log(domain.get_min_pnt()(1-ai)) + log(domain.get_max_pnt()(1-ai)))) / log(10.0f));
 							}
-							glVertex2fv(c);
-							c[1-ai] = s_max; 
-							glVertex2fv(c);
+							P.push_back(c);
+							c[1-ai] = s_max;
+							P.push_back(c);
 							c[1 - ai] = s_max - dash_length;
 							if (axes[1 - ai].log_scale) {
 								float q = (c[1 - ai] - domain.get_center()(1 - ai)) / domain.get_extent()(1 - ai);
 								c[1 - ai] = pow(10.0f, (q*(log(domain.get_max_pnt()(1 - ai)) - log(domain.get_min_pnt()(1 - ai))) + 0.5f*(log(domain.get_min_pnt()(1 - ai)) + log(domain.get_max_pnt()(1 - ai)))) / log(10.0f));
 							}
-							glVertex2fv(c);
-							
+							P.push_back(c);
+
 							// draw tick mark on axis
 							if (!axes[1-ai].log_scale && s_min + dash_length < 0 && s_max - dash_length > 0) {
 								c[1-ai] = -dash_length; 
-								glVertex2fv(c);
-								c[1-ai] =  dash_length; 
-								glVertex2fv(c);
+								P.push_back(c);
+								c[1-ai] =  dash_length;
+								P.push_back(c);
 							}
 							break;
 						case TT_LINE : 
 						case TT_PLANE : 
-							c[1-ai] = s_min; glVertex2fv(c);
-							c[1-ai] = s_max; glVertex2fv(c);
+							c[1-ai] = s_min; P.push_back(c);
+							c[1-ai] = s_max; P.push_back(c);
 							break;
 						}
 					}
-					glEnd();
 				}
+			}
+			if (!P.empty()) {
+				cgv::render::attribute_array_binding::set_global_attribute_array(ctx, 0, P);
+				glDrawArrays(GL_LINES, 0, GLsizei(P.size()));
 			}
 		}
 		prog.disable(ctx);
+		cgv::render::attribute_array_binding::disable_global_array(ctx, 0);
 		for (ai = 0; ai < 2; ++ai) {
 			for (int ti = 0; ti < 2; ++ti) if (label_ticks[ti]) {
 				ctx.enable_font_face(label_font_face, label_font_size);
@@ -609,7 +623,6 @@ void plot1d::draw(cgv::render::context& ctx)
 					if (max_i * axes[ai].ticks[ti].step - max_val > std::numeric_limits<Crd>::epsilon())
 						--max_i;
 
-					glLineWidth(tick_line_width[ti]);
 					Crd dash_length = tick_length[0]*0.01f*domain.get_extent()(1-domain.get_max_extent_coord_index());
 					if (extent(0) < extent(1)) {
 						if (ai == 1)
@@ -679,10 +692,14 @@ void plot1d::draw(cgv::render::context& ctx)
 		}
 	}
 
-//	glDisable(GL_BLEND);
-	glDisable(GL_POINT_SMOOTH);
-	glDisable(GL_LINE_SMOOTH);
-//	glDepthFunc(GL_LESS);
+	if (!line_smooth)
+		glDisable(GL_LINE_SMOOTH);
+	if (!point_smooth)
+		glDisable(GL_POINT_SMOOTH);
+	if (!blend)
+		glDisable(GL_BLEND);
+	glDepthFunc(depth);
+	glBlendFunc(blend_src, blend_dst);
 }
 
 	}
