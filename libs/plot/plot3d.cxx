@@ -1,11 +1,11 @@
-#include "plot2d.h"
+#include "plot3d.h"
 #include <libs/cgv_gl/gl/gl.h>
 #include <libs/cgv_gl/gl/gl_tools.h>
 
 namespace cgv {
 	namespace plot {
 
-plot2d_config::plot2d_config()
+plot3d_config::plot3d_config(const std::string& _name) : plot_base_config(_name)
 {
 	samples_per_row = 0;
 
@@ -15,16 +15,16 @@ plot2d_config::plot2d_config()
 	face_illumination = PFI_PER_FACE;
 }
 
-void plot2d::set_uniforms(cgv::render::context& ctx, cgv::render::shader_program& prog, unsigned i)
+void plot3d::set_uniforms(cgv::render::context& ctx, cgv::render::shader_program& prog, unsigned i)
 {
 	plot_base::set_uniforms(ctx, prog, i);
-	prog.set_uniform(ctx, "face_color", ref_sub_plot2d_config(i).face_color);
-	prog.set_uniform(ctx, "N", ref_sub_plot2d_config(i).samples_per_row);
-	prog.set_uniform(ctx, "face_illumination", (int&) ref_sub_plot2d_config(i).face_illumination);
+	prog.set_uniform(ctx, "face_color", ref_sub_plot3d_config(i).face_color);
+	prog.set_uniform(ctx, "N", ref_sub_plot3d_config(i).samples_per_row);
+	prog.set_uniform(ctx, "face_illumination", (int&) ref_sub_plot3d_config(i).face_illumination);
 }
 
 /// construct empty plot with default domain [0..1,0..1,0..1]
-plot2d::plot2d()
+plot3d::plot3d() : plot_base(3)
 {
 	domain.ref_min_pnt() = vec3(0,0,0);
 	domain.ref_max_pnt() = vec3(1,1,1);
@@ -33,20 +33,10 @@ plot2d::plot2d()
 	axis_directions[1] = vec3(0, 1, 0);
 	axis_directions[2] = vec3(0, 0, 2);
 	center_location = vec3(0,0,0);
-
-	axes[0].ticks[1].type = TT_LINE;
-	axes[1].ticks[1].type = TT_LINE;
-	axes[2].ticks[1].type = TT_LINE;
-}
-
-/// return number of axis
-unsigned plot2d::get_nr_axes() const
-{
-	return 3;
 }
 
 /// adjust domain to data
-void plot2d::adjust_domain_to_data(bool include_xy_plane)
+void plot3d::adjust_domain_to_data(bool include_xy_plane)
 {
 	// compute bounding box
 	domain = box3(samples.front().front(),samples.front().front());
@@ -63,17 +53,18 @@ void plot2d::adjust_domain_to_data(bool include_xy_plane)
 	}
 }
 
-unsigned plot2d::add_sub_plot(const std::string& name)
+unsigned plot3d::add_sub_plot(const std::string& name)
 {
 	// determine index of new sub plot
 	unsigned i = get_nr_sub_plots();
 
 	// create new config
 	if (i == 0)
-		configs.push_back(new plot2d_config());
-	else
-		configs.push_back(new plot2d_config(ref_sub_plot2d_config(i-1)));
-	ref_sub_plot_config(i).name = name;
+		configs.push_back(new plot3d_config(name));
+	else {
+		configs.push_back(new plot3d_config(ref_sub_plot3d_config(i - 1)));
+		ref_sub_plot_config(i).name = name;
+	}
 
 	// create new point container
 	samples.push_back(std::vector<vec3>());
@@ -82,7 +73,7 @@ unsigned plot2d::add_sub_plot(const std::string& name)
 	return i;
 }
 
-void plot2d::delete_sub_plot(unsigned i)
+void plot3d::delete_sub_plot(unsigned i)
 {
 	delete configs[i];
 	configs[i] = 0;
@@ -91,61 +82,61 @@ void plot2d::delete_sub_plot(unsigned i)
 }
 
 /// set the number of samples of the i-th sub plot to N
-void plot2d::set_samples_per_row(unsigned N, unsigned i)
+void plot3d::set_samples_per_row(unsigned N, unsigned i)
 {
-	ref_sub_plot2d_config(i).samples_per_row = N;
+	ref_sub_plot3d_config(i).samples_per_row = N;
 }
 
 /// return the number of samples per row
-unsigned plot2d::get_samples_per_row(unsigned i) const
+unsigned plot3d::get_samples_per_row(unsigned i) const
 {
-	return const_cast<plot2d*>(this)->ref_sub_plot2d_config(i).samples_per_row;
+	return const_cast<plot3d*>(this)->ref_sub_plot3d_config(i).samples_per_row;
 }
 
 /// return a reference to the plot base configuration of the i-th plot
-plot2d_config& plot2d::ref_sub_plot2d_config(unsigned i)
+plot3d_config& plot3d::ref_sub_plot3d_config(unsigned i)
 {
-	return static_cast<plot2d_config&>(ref_sub_plot_config(i));
+	return static_cast<plot3d_config&>(ref_sub_plot_config(i));
 }
 
 
 /// return the samples of the i-th sub plot
-std::vector<plot2d::vec3>& plot2d::ref_sub_plot_samples(unsigned i)
+std::vector<plot3d::vec3>& plot3d::ref_sub_plot_samples(unsigned i)
 {
 	return samples[i];
 }
 
 
-bool plot2d::init(cgv::render::context& ctx)
+bool plot3d::init(cgv::render::context& ctx)
 {
 	return true;
 }
 
 
-void plot2d::draw(cgv::render::context& ctx)
+void plot3d::draw(cgv::render::context& ctx)
 {
 	if (!point_prog.is_created()) {
-		if (!point_prog.build_program(ctx, "plot2d_point.glpr")) {
-			std::cerr << "could not build GLSL program from plot2d_point.glpr" << std::endl;
+		if (!point_prog.build_program(ctx, "plot3d_point.glpr")) {
+			std::cerr << "could not build GLSL program from plot3d_point.glpr" << std::endl;
 		}
 	}
 	if (!line_prog.is_created()) {
-		if (!line_prog.build_program(ctx, "plot2d_line.glpr")) {
-			std::cerr << "could not build GLSL program from plot2d_line.glpr" << std::endl;
+		if (!line_prog.build_program(ctx, "plot3d_line.glpr")) {
+			std::cerr << "could not build GLSL program from plot3d_line.glpr" << std::endl;
 		}
 	}
-/*	if (!stick_prog.build_program(ctx, "plot2d_stick.glpr")) {
-		std::cerr << "could not build GLSL program from plot2d_stick.glpr" << std::endl;
+/*	if (!stick_prog.build_program(ctx, "plot3d_stick.glpr")) {
+		std::cerr << "could not build GLSL program from plot3d_stick.glpr" << std::endl;
 		return false;
 	}
-	if (!stick_prog.build_program(ctx, "plot2d_bar.glpr")) {
-		std::cerr << "could not build GLSL program from plot2d_bar.glpr" << std::endl;
+	if (!stick_prog.build_program(ctx, "plot3d_bar.glpr")) {
+		std::cerr << "could not build GLSL program from plot3d_bar.glpr" << std::endl;
 		return false;
 	}
 	*/
 	if (!face_prog.is_created()) {
-		if (!face_prog.build_program(ctx, "plot2d_face.glpr")) {
-			std::cerr << "could not build GLSL program from plot2d_face.glpr" << std::endl;
+		if (!face_prog.build_program(ctx, "plot3d_face.glpr")) {
+			std::cerr << "could not build GLSL program from plot3d_face.glpr" << std::endl;
 		}
 	}
 	for (unsigned i=0; i<samples.size(); ++i) {
@@ -188,7 +179,7 @@ void plot2d::draw(cgv::render::context& ctx)
 			bar_prog.disable(ctx);
 		}
 		*/
-		if (ref_sub_plot2d_config(i).show_faces) {
+		if (ref_sub_plot3d_config(i).show_faces) {
 			glDisable(GL_CULL_FACE);
 //			glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, 1);
 			set_uniforms(ctx, face_prog, i);
@@ -213,16 +204,16 @@ void plot2d::draw(cgv::render::context& ctx)
 	}
 }
 
-void plot2d::clear(cgv::render::context& ctx)
+void plot3d::clear(cgv::render::context& ctx)
 {
 	point_prog.destruct(ctx);
 	line_prog.destruct(ctx);
 	face_prog.destruct(ctx);
 }
 
-void plot2d::create_config_gui(cgv::base::base* bp, cgv::gui::provider& p, unsigned i)
+void plot3d::create_config_gui(cgv::base::base* bp, cgv::gui::provider& p, unsigned i)
 {
-	plot2d_config& pbc = ref_sub_plot2d_config(i);
+	plot3d_config& pbc = ref_sub_plot3d_config(i);
 
 	p.add_decorator("faces", "heading", "level=3;w=100", " ");
 	p.add_member_control(bp, "show",  pbc.show_faces, "toggle", "w=50");

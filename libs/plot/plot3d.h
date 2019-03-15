@@ -17,7 +17,7 @@ enum PlotFaceIllumination
 };
 
 /** extend common plot configuration with parameters specific to 2d plot */
-struct CGV_API plot2d_config : public plot_base_config
+struct CGV_API plot3d_config : public plot_base_config
 {
 	unsigned samples_per_row;
 	bool show_faces;
@@ -25,11 +25,11 @@ struct CGV_API plot2d_config : public plot_base_config
 
 	PlotFaceIllumination face_illumination;
 
-	plot2d_config();
+	plot3d_config(const std::string& _name);
 };
 
-/** The \c plot2d class draws 2d plots with potentially several sub plots of different plot configuration */
-class CGV_API plot2d : public plot_base
+/** The \c plot3d class draws 2d plots with potentially several sub plots of different plot configuration */
+class CGV_API plot3d : public plot_base
 {
 	cgv::render::shader_program point_prog;
 	cgv::render::shader_program line_prog;
@@ -46,13 +46,10 @@ protected:
 	vec3 center_location;
 
 	axis_config axes[3];
-	axis_config& ref_axis_config(unsigned ai) = 0;
 
 public:
 	/// construct empty plot with default domain [0..1,0..1,0..1]
-	plot2d();
-	/// return number of axis
-	unsigned get_nr_axes() const;
+	plot3d();
 	/// adjust domain to data
 	void adjust_domain_to_data(bool include_xy_plane = true);
 	/// reference the shown domain
@@ -67,8 +64,8 @@ public:
 	unsigned get_samples_per_row(unsigned i) const;
 	/// delete the i-th sub plot
 	void delete_sub_plot(unsigned i);
-	/// return a reference to the plot2d configuration of the i-th plot
-	plot2d_config& ref_sub_plot2d_config(unsigned i = 0);
+	/// return a reference to the plot3d configuration of the i-th plot
+	plot3d_config& ref_sub_plot3d_config(unsigned i = 0);
 	/// return the samples of the i-th sub plot
 	std::vector<vec3>& ref_sub_plot_samples(unsigned i = 0);
 	//@}
