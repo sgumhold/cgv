@@ -132,7 +132,54 @@ struct CGV_API plot_base_config : public cgv::render::render_types
 /** base class for plot2d and plot3d, which can have several sub plots each */
 class CGV_API plot_base : public cgv::render::drawable
 {
+	/**@name tick render information management */
+	//@{
+private:
+	/// domain configuration of last time that tick render information has been computed, initialized with 0 number of axis_configs to ensure tick render information computation for first time 
+	domain_config last_dom_cfg;
 protected:
+	/// render information stored per label
+	struct label_info
+	{
+		vec2 position;
+		std::string label;
+		cgv::render::TextAlignment align;
+		label_info(const vec2& _position, const std::string& _label, cgv::render::TextAlignment _align)
+			: position(_position), label(_label), align(_align) {}
+	};
+	/// 
+	struct tick_batch_info
+	{
+		/// indices of coordinate axis used for definition of 2d points
+		int ai, aj;
+		///
+		bool primary;
+		/// index of first tick vertex in batch
+		unsigned first_vertex;
+		///
+		unsigned vertex_count;
+		///
+		unsigned first_label;
+		///
+		unsigned label_count;
+		///
+		tick_batch_info(int _ai, int _aj, bool _primary, unsigned _first_vertex = 0, unsigned _first_label = 0);
+	};
+	/// all vertex locations of tick lines
+	std::vector<vec2> tick_vertices;
+	/// all tick labels 
+	std::vector<label_info> tick_labels;
+	/// twice number of axis pairs with index of first tick label and number of tick labels for primary and secondary ticks
+	std::vector<tick_batch_info> tick_batches;
+	/// check whether tick information has to be updated
+	bool tick_render_information_outofdate() const;
+	/// ensure that tick render information is current
+	void ensure_tick_render_information();
+	/// overloaded in derived classes to compute complete tick render information
+	virtual void compute_tick_render_information() = 0;
+	/// used in implementation of compute_tick_render_information() in derived class to collect for given axis combination the primary and secondary tick render information batches
+	void collect_tick_geometry(int ai, int aj, const float* dom_min_pnt, const float* dom_max_pnt, const float* extent);
+
 	/**@name font name handleing*/
 	//@{
 	/// store a vector with all fonts on the system
@@ -164,7 +211,7 @@ protected:
 	/// callback to change font face
 	void on_font_face_selection();
 	/// set the uniforms for the i-th sub plot, overloaded by derived classes to set uniforms of derived configuration classes
-	virtual void set_uniforms(cgv::render::context& ctx, cgv::render::shader_program& prog, unsigned i);
+	virtual void set_uniforms(cgv::render::context& ctx, cgv::render::shader_program& prog, unsigned i = -1);
 public:
 	/// construct with default parameters
 	plot_base(unsigned nr_axes);
@@ -191,6 +238,10 @@ public:
 	/// return a reference to the plot base configuration of the i-th plot
 	plot_base_config& ref_sub_plot_config(unsigned i);
 	//@}
+
+
+	/// ensure tick computation
+	void init_frame(cgv::render::context& ctx);
 
 	/**@name gui support*/
 	//@{

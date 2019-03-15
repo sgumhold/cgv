@@ -8,13 +8,19 @@ namespace cgv {
 std::vector<const char*> plot_base::font_names;
 std::string plot_base::font_name_enum_def;
 
+///
+plot_base::tick_batch_info::tick_batch_info(int _ai, int _aj, bool _primary, unsigned _first_vertex, unsigned _first_label) 
+	: ai(_ai), aj(_aj), primary(_primary), first_vertex(_first_vertex), first_label(_first_label)
+{
+}
+
 /// set tick config defaults
 tick_config::tick_config(bool primary)
 {
 	step = primary ? 5.0f : 1.0f;
-	type = TT_DASH;
-	line_width = primary ? 4.0f : 2.0f;
-	length = primary ? 2.5f : 1.5f;
+	type = TT_LINE;
+	line_width = primary ? 1.5f : 1.0f;
+	length = primary ? 2.0f : 1.0f;
 	label = primary;
 	precision = -1;
 }
@@ -25,10 +31,10 @@ axis_config::axis_config() : primary_ticks(true), secondary_ticks(false), color(
 	line_width = 3.0f;
 }
 
-domain_config::domain_config(unsigned nr_axes) : color(0.7f,0.7f,0.7f), axis_configs(nr_axes)
+domain_config::domain_config(unsigned nr_axes) : color(0.85f,0.85f,0.85f), axis_configs(nr_axes)
 {
 	show_domain = true;
-	fill = false;
+	fill = true;
 	label_font_index = -1;
 	label_font_size = 16.0f;
 	label_ffa = cgv::media::font::FFA_BOLD_ITALIC;
@@ -75,6 +81,171 @@ plot_base_config::~plot_base_config()
 {
 }
 
+/// check whether tick information has to be updated
+bool plot_base::tick_render_information_outofdate() const
+{
+	if (last_dom_cfg.axis_configs.size() != get_domain_config_ptr()->axis_configs.size())
+		return true;
+	for (unsigned ai = 0; ai < last_dom_cfg.axis_configs.size(); ++ai) {
+		const axis_config& ac = last_dom_cfg.axis_configs[ai];
+		const axis_config& ao = get_domain_config_ptr()->axis_configs[ai];
+		if (ac.log_scale != ao.log_scale)
+			return true;
+		for (unsigned ti = 0; ti < 2; ++ti) {
+			const tick_config& tc = ti == 0 ? ac.primary_ticks : ac.secondary_ticks;
+			const tick_config& to = ti == 0 ? ao.primary_ticks : ao.secondary_ticks;
+			if (tc.length != to.length)
+				return true;
+			if (tc.step != to.step)
+				return true;
+			if (tc.type != to.type)
+				return true;
+			if (tc.label != to.label)
+				return true;
+			if (tc.precision != to.precision)
+				return true;
+		}
+	}
+	if (last_dom_cfg.label_font_size!= get_domain_config_ptr()->label_font_size)
+		return true;
+	if (last_dom_cfg.label_font_index != get_domain_config_ptr()->label_font_index)
+		return true;
+	if (last_dom_cfg.label_ffa != get_domain_config_ptr()->label_ffa)
+		return true;
+	return false;
+}
+
+/// ensure that tick render information is current
+void plot_base::ensure_tick_render_information()
+{
+	if (tick_render_information_outofdate()) {
+		tick_vertices.clear();
+		tick_labels.clear();
+		tick_batches.clear();
+		compute_tick_render_information();
+		last_dom_cfg = *get_domain_config_ptr();
+	}
+}
+
+float log_conform_add(float v0, float v1, bool log_scale, float v_min, float v_max)
+{
+	if (!log_scale)
+		return v0 + v1;
+	float q = (v0 - 0.5f*(v_min+v_max)) / (v_max - v_min);
+	return pow(10.0f, (q*(log(v_max) - log(v_min)) + 0.5f*(log(v_min) + log(v_max))) / log(10.0f));
+}
+
+void plot_base::collect_tick_geometry(int ai, int aj, const float* dom_min_pnt, const float* dom_max_pnt, const float* extent)
+{
+	axis_config& ac = get_domain_config_ptr()->axis_configs[ai];
+	for (unsigned ti=0; ti<2; ++ti) {
+		tick_config& tc = ti == 0 ? ac.primary_ticks : ac.secondary_ticks;
+		if (tc.type == TT_NONE)
+			return;
+		tick_batches.push_back(tick_batch_info(ai, aj, ti == 0, tick_vertices.size(), tick_labels.size()));
+
+		axis_config& ao = get_domain_config_ptr()->axis_configs[aj];
+		// compute domain extent in both coordinate directions
+		float dei = dom_max_pnt[ai] - dom_min_pnt[ai];
+		float dej = dom_max_pnt[aj] - dom_min_pnt[aj];
+		float dci = dom_min_pnt[ai] + 0.5f*dei;
+		float dcj = dom_min_pnt[aj] + 0.5f*dej;
+
+		float min_val = dom_min_pnt[ai];
+		float max_val = dom_max_pnt[ai];
+		if (ac.log_scale) {
+			min_val = log10(min_val);
+			max_val = log10(max_val);
+		}
+		int min_i = (int)((min_val - fmod(min_val, tc.step)) / tc.step);
+		int max_i = (int)((max_val - fmod(max_val, tc.step)) / tc.step);
+
+		// ignore ticks on domain boundary
+		if (min_i * tc.step - min_val < std::numeric_limits<float>::epsilon())
+			++min_i;
+		if (max_i * tc.step - max_val > -std::numeric_limits<float>::epsilon())
+			--max_i;
+
+		float dash_length = tc.length*0.01f*dej;
+		if (extent[ai] < extent[aj])
+			dash_length *= extent[ai] / extent[aj];
+
+		float s_min = dom_min_pnt[aj];
+		float s_max = dom_max_pnt[aj];
+
+		for (int i = min_i; i <= max_i; ++i) {
+			vec2 c;
+			c[ai] = (float)(i*tc.step);
+			if (ac.log_scale)
+				c[ai] = pow(10.0f, c[ai]);
+			else // ignore ticks on axes
+				if (fabs(c[ai]) < std::numeric_limits<float>::epsilon())
+					continue;
+
+			std::string label_str;
+			if (tc.label)
+				label_str = cgv::utils::to_string(c(ai));
+			switch (tc.type) {
+			case TT_DASH:
+				// generate label
+				if (!label_str.empty()) {
+					// left label
+					c[aj] = log_conform_add(s_min, -0.5f*dash_length, ao.log_scale, dom_min_pnt[aj], dom_max_pnt[aj]);
+					tick_labels.push_back(label_info(c, label_str, ai == 0 ? cgv::render::TA_TOP : cgv::render::TA_RIGHT));
+					// right label
+					c[aj] = log_conform_add(s_max,  0.5f*dash_length, ao.log_scale, dom_min_pnt[aj], dom_max_pnt[aj]);
+					tick_labels.push_back(label_info(c, label_str, ai == 0 ? cgv::render::TA_BOTTOM : cgv::render::TA_LEFT));
+				}
+				// left tick
+				c[aj] = s_min;
+				tick_vertices.push_back(c);
+				c[aj] = log_conform_add(s_min,  dash_length, ao.log_scale, dom_min_pnt[aj], dom_max_pnt[aj]);
+				tick_vertices.push_back(c);
+
+				// right tick
+				c[aj] = s_max;
+				tick_vertices.push_back(c);
+				c[aj] = log_conform_add(s_max, -dash_length, ao.log_scale, dom_min_pnt[aj], dom_max_pnt[aj]);
+				tick_vertices.push_back(c);
+
+				// non log axis tick
+				if (!ao.log_scale && s_min + 0.5f*dash_length < 0 && s_max - 0.5f*dash_length > 0) {
+					c[aj] = -0.5f*dash_length;
+					tick_vertices.push_back(c);
+					c[aj] = 0.5f*dash_length;
+					tick_vertices.push_back(c);
+				}
+				break;
+			case TT_LINE:
+			case TT_PLANE:
+				// generate label
+				if (!label_str.empty()) {
+					// left label
+					c[aj] = log_conform_add(s_min, -0.5f*dash_length, ao.log_scale, dom_min_pnt[aj], dom_max_pnt[aj]);
+					tick_labels.push_back(label_info(c, label_str, ai == 0 ? cgv::render::TA_TOP : cgv::render::TA_RIGHT));
+					// right label
+					c[aj] = log_conform_add(s_max, 0.5f*dash_length, ao.log_scale, dom_min_pnt[aj], dom_max_pnt[aj]);
+					tick_labels.push_back(label_info(c, label_str, ai == 0 ? cgv::render::TA_BOTTOM : cgv::render::TA_LEFT));
+				}
+				c[aj] = s_min; tick_vertices.push_back(c);
+				if (tc.label) {
+					c(aj) -= 0.5f*dash_length;
+					if (ao.log_scale) {
+						float q = (c[aj] - dcj) / dej;
+						c[aj] = pow(10.0f, (q*(log(dom_max_pnt[aj]) - log(dom_min_pnt[aj])) + 0.5f*(log(dom_min_pnt[aj]) + log(dom_max_pnt[aj]))) / log(10.0f));
+					}
+					tick_labels.push_back(label_info(c, label_str, ai == 0 ? cgv::render::TA_TOP : cgv::render::TA_RIGHT));
+				}
+				c[aj] = s_max; tick_vertices.push_back(c);
+				break;
+			}
+		}
+		tick_batches.back().vertex_count = tick_vertices.size() - tick_batches.back().first_vertex;
+		tick_batches.back().label_count = tick_labels.size() - tick_batches.back().first_label;
+	}
+}
+
+
 void plot_base::ensure_font_names()
 {
 	if (font_names.empty()) {
@@ -118,7 +289,7 @@ void plot_base::set_uniforms(cgv::render::context& ctx, cgv::render::shader_prog
 	prog.set_uniform(ctx, "bar_outline_color", ref_sub_plot_config(i).bar_outline_color);
 }
 
-plot_base::plot_base(unsigned nr_axes) : dom_cfg(nr_axes)
+plot_base::plot_base(unsigned nr_axes) : dom_cfg(nr_axes), last_dom_cfg(0)
 {
 	dom_cfg_ptr = &dom_cfg;
 }
@@ -170,6 +341,12 @@ unsigned plot_base::get_nr_sub_plots() const
 plot_base_config& plot_base::ref_sub_plot_config(unsigned i)
 {
 	return *configs[i];
+}
+
+/// ensure tick computation
+void plot_base::init_frame(cgv::render::context& ctx)
+{
+	ensure_tick_render_information();
 }
 
 void plot_base::create_plot_gui(cgv::base::base* bp, cgv::gui::provider& p)
