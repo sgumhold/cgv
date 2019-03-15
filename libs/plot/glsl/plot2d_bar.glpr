@@ -1,0 +1,6 @@
+vertex_file:plot2d_empty.glvs
+geometry_file:plot2d_bar.glgs
+fragment_file:plot2d.glfs
+geometry_file:plot2d_lib.glsl
+geometry_file:view.glsl
+geometry_shader_info:points;triangle_strip;4
