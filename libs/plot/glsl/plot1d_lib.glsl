@@ -10,7 +10,6 @@ mat3 get_normal_matrix();
 mat3 get_inverse_normal_matrix();
 //***** end interface of view.glsl ***********************************
 
-uniform float plot_scale;
 uniform vec3 x_axis;
 uniform vec3 y_axis;
 uniform bool x_axis_log_scale;

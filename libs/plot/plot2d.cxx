@@ -7,10 +7,10 @@ namespace cgv {
 
 plot2d_config::plot2d_config()
 {
-	N = 0;
+	samples_per_row = 0;
 
 	show_faces = true;
-	face_color = Clr(0.7f,0.4f,0);
+	face_color = rgb(0.7f,0.4f,0);
 
 	face_illumination = PFI_PER_FACE;
 }
@@ -18,23 +18,38 @@ plot2d_config::plot2d_config()
 void plot2d::set_uniforms(cgv::render::context& ctx, cgv::render::shader_program& prog, unsigned i)
 {
 	plot_base::set_uniforms(ctx, prog, i);
-	prog.set_uniform(ctx, "face_color", (cgv::math::fvec<Clr::component_type, Clr::nr_components>&) ref_sub_plot2d_config(i).face_color);
-	prog.set_uniform(ctx, "N", ref_sub_plot2d_config(i).N);
+	prog.set_uniform(ctx, "face_color", ref_sub_plot2d_config(i).face_color);
+	prog.set_uniform(ctx, "N", ref_sub_plot2d_config(i).samples_per_row);
 	prog.set_uniform(ctx, "face_illumination", (int&) ref_sub_plot2d_config(i).face_illumination);
 }
 
 /// construct empty plot with default domain [0..1,0..1,0..1]
 plot2d::plot2d()
 {
-	domain.ref_min_pnt() = P3D(0,0,0);
-	domain.ref_max_pnt() = P3D(1,1,1);
+	domain.ref_min_pnt() = vec3(0,0,0);
+	domain.ref_max_pnt() = vec3(1,1,1);
+
+	axis_directions[0] = vec3(1,0,0);
+	axis_directions[1] = vec3(0, 1, 0);
+	axis_directions[2] = vec3(0, 0, 2);
+	center_location = vec3(0,0,0);
+
+	axes[0].ticks[1].type = TT_LINE;
+	axes[1].ticks[1].type = TT_LINE;
+	axes[2].ticks[1].type = TT_LINE;
+}
+
+/// return number of axis
+unsigned plot2d::get_nr_axes() const
+{
+	return 3;
 }
 
 /// adjust domain to data
 void plot2d::adjust_domain_to_data(bool include_xy_plane)
 {
 	// compute bounding box
-	domain = B3D(samples.front().front(),samples.front().front());
+	domain = box3(samples.front().front(),samples.front().front());
 	for (unsigned i=0; i<samples.size(); ++i) {
 		for (unsigned j=0; j<samples[i].size(); ++j) {
 			domain.add_point(samples[i][j]);
@@ -61,7 +76,7 @@ unsigned plot2d::add_sub_plot(const std::string& name)
 	ref_sub_plot_config(i).name = name;
 
 	// create new point container
-	samples.push_back(std::vector<P3D>());
+	samples.push_back(std::vector<vec3>());
 
 	// return sub plot index
 	return i;
@@ -78,13 +93,13 @@ void plot2d::delete_sub_plot(unsigned i)
 /// set the number of samples of the i-th sub plot to N
 void plot2d::set_samples_per_row(unsigned N, unsigned i)
 {
-	ref_sub_plot2d_config(i).N = N;
+	ref_sub_plot2d_config(i).samples_per_row = N;
 }
 
 /// return the number of samples per row
 unsigned plot2d::get_samples_per_row(unsigned i) const
 {
-	return const_cast<plot2d*>(this)->ref_sub_plot2d_config(i).N;
+	return const_cast<plot2d*>(this)->ref_sub_plot2d_config(i).samples_per_row;
 }
 
 /// return a reference to the plot base configuration of the i-th plot
@@ -95,7 +110,7 @@ plot2d_config& plot2d::ref_sub_plot2d_config(unsigned i)
 
 
 /// return the samples of the i-th sub plot
-std::vector<plot2d::P3D>& plot2d::ref_sub_plot_samples(unsigned i)
+std::vector<plot2d::vec3>& plot2d::ref_sub_plot_samples(unsigned i)
 {
 	return samples[i];
 }

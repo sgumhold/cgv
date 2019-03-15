@@ -19,10 +19,9 @@ enum PlotFaceIllumination
 /** extend common plot configuration with parameters specific to 2d plot */
 struct CGV_API plot2d_config : public plot_base_config
 {
-	unsigned N;
-
+	unsigned samples_per_row;
 	bool show_faces;
-	Clr face_color;
+	rgb face_color;
 
 	PlotFaceIllumination face_illumination;
 
@@ -39,16 +38,25 @@ class CGV_API plot2d : public plot_base
 
 	void set_uniforms(cgv::render::context& ctx, cgv::render::shader_program& prog, unsigned i);
 protected:
-	std::vector<std::vector<P3D> > samples;
-	B3D domain;
+	std::vector<std::vector<vec3> > samples;
+	box3 domain;
+
+	vec3 extent;
+	vec3 axis_directions[2];
+	vec3 center_location;
+
+	axis_config axes[3];
+	axis_config& ref_axis_config(unsigned ai) = 0;
 
 public:
 	/// construct empty plot with default domain [0..1,0..1,0..1]
 	plot2d();
+	/// return number of axis
+	unsigned get_nr_axes() const;
 	/// adjust domain to data
 	void adjust_domain_to_data(bool include_xy_plane = true);
 	/// reference the shown domain
-	B3D& ref_domain() { return domain; }
+	box3& ref_domain() { return domain; }
 	/**@name management of sub plots*/
 	//@{
 	/// add sub plot and return reference to samples
@@ -62,7 +70,7 @@ public:
 	/// return a reference to the plot2d configuration of the i-th plot
 	plot2d_config& ref_sub_plot2d_config(unsigned i = 0);
 	/// return the samples of the i-th sub plot
-	std::vector<P3D>& ref_sub_plot_samples(unsigned i = 0);
+	std::vector<vec3>& ref_sub_plot_samples(unsigned i = 0);
 	//@}
 
 	void create_config_gui(cgv::base::base* bp, cgv::gui::provider& p, unsigned i);

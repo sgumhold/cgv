@@ -13,106 +13,173 @@
 namespace cgv {
 	namespace plot {
 
-/** common plot types */
-struct CGV_API plot_types
-{
-	typedef float Crd;
-	typedef cgv::media::color<float> Clr;
-
-	typedef cgv::math::fvec<Crd,2> V2D;
-	typedef cgv::math::fvec<Crd,2> P2D;
-	typedef cgv::math::fvec<Crd,3> V3D;
-	typedef cgv::math::fvec<Crd,3> P3D;
-
-	typedef cgv::media::axis_aligned_box<Crd,2> B2D;
-	typedef cgv::media::axis_aligned_box<Crd,3> B3D;
-};
-
-/** common plot configuration parameters */
-struct CGV_API plot_base_config : public plot_types
-{
-	bool show_plot;
-
-	bool show_points;
-	float point_size;
-	Clr point_color;
-	
-	bool show_sticks;
-	float stick_width;
-	Clr stick_color;
-
-	bool show_bars;
-	float bar_outline_width;
-	float bar_percentual_width;
-	Clr bar_color;
-	Clr bar_outline_color;
-
-	std::string name;
-
-	plot_base_config();
-	virtual ~plot_base_config();
-};
-
+		/// different tickmark types
 enum TickType
 {
-	TT_NONE,
-	TT_DASH,
-	TT_LINE,
-	TT_PLANE
+	TT_NONE, //! no tick at all
+	TT_DASH, //! short line at the axis
+	TT_LINE, //! line that spans the domain
+	TT_PLANE //! used for 3D plots only
 };
 
-struct tick_config : public plot_types
+/// tickmark configuration of one tickmark type
+struct tick_config
 {
+	/// type of tick
 	TickType type;
+	/// step width between two ticks along axis
 	float    step;
+	/// line width
+	float    line_width;
+	/// tick length relative to domain extent
+	float    length;
+	/// whether to show text labels at tick
+	bool     label;
+	/// number of digits after decimal point, defaults to -1 which gives adaptive precision
+	int      precision;
+	/// set tick config defaults
+	tick_config(bool primary);
 };
 
-struct axis_config : public plot_types
+/// configuration information stored per domain axis
+struct axis_config 
 {
-	tick_config ticks[2];
-	bool        log_scale;
+	/// whether axis is drawn with logarithmic scale
+	bool log_scale;
+	/// line width
+	float line_width;
+	/// color of axis
+	cgv::render::render_types::rgb color;
+	/// configuration of primary tickmarks
+	tick_config primary_ticks;
+	/// configuration of secondary tickmarks
+	tick_config secondary_ticks;
+	/// set default values
 	axis_config();
 };
 
-/** base class for plot1d and plot2d */
-class CGV_API plot_base : public cgv::render::drawable, public plot_types
+struct domain_config
+{
+	/// whether to show the coordinate axes including tickmarks and labels
+	bool show_domain;
+	/// whether to fill the domain
+	bool fill;
+	/// color of the domain fill
+	cgv::render::render_types::rgb color;
+	/// store a vector of axis configurations (2/3 for plot2/3d)
+	std::vector<axis_config> axis_configs;
+	/// store index of selected font
+	unsigned label_font_index;
+	/// store selected font size
+	float label_font_size;
+	/// store selected font face attributes
+	cgv::media::font::FontFaceAttributes label_ffa;
+	/// set default values
+	domain_config(unsigned nr_axes);
+};
+
+/// different chart types
+enum ChartType
+{
+	CT_POINT,
+	CT_LINE_CHART,
+	CT_BAR_CHART
+};
+
+/** plot independent configuration parameters of one sub plot in a 2d or 3d plot */
+struct CGV_API plot_base_config : public cgv::render::render_types
+{
+	/// name of sub plot
+	std::string name;
+
+	/// whether to show plot, ac
+	bool show_plot;
+
+	/// whether to show data points
+	bool show_points;
+	/// point size in pixels
+	float point_size;
+	/// point color
+	rgb point_color;
+	
+	/// whether to show straight lines to the bottom of the plot, which are called sticks
+	bool show_sticks;
+	/// line width of stick
+	float stick_width;
+	/// color of the stick line
+	rgb stick_color;
+
+	/// whether to show bars
+	bool show_bars;
+	/// line width of bar outlines
+	float bar_outline_width;
+	/// percentual width of bar computed assuming a uniform y-sampling distance
+	float bar_percentual_width;
+	/// bar fill color
+	rgb bar_color;
+	/// bar outline color
+	rgb bar_outline_color;
+
+	/// set default values
+	plot_base_config(const std::string& _name);
+	/// configure the sub plot to a specific chart type
+	virtual void configure_chart(ChartType chart_type);
+	/// virtual constructor in order to allow to extend the configuration for derived classes
+	virtual ~plot_base_config();
+};
+
+
+/** base class for plot2d and plot3d, which can have several sub plots each */
+class CGV_API plot_base : public cgv::render::drawable
 {
 protected:
-	/// set uniforms for the i-th plot config
-	virtual void set_uniforms(cgv::render::context& ctx, cgv::render::shader_program& prog, unsigned i);
-
-public:
-	float plot_scale;
-
-	bool show_axes;
-	Clr axis_color;
-	float axis_line_width;
-	float tick_line_width[2];
-	float tick_length[2];
-	bool  label_ticks[2];
-
+	/**@name font name handleing*/
+	//@{
+	/// store a vector with all fonts on the system
 	static std::vector<const char*> font_names;
+	/// concatenate font names to enum definition for dropdown control
 	static std::string font_name_enum_def;
-
-	unsigned label_font_index;
-	cgv::media::font::font_ptr label_font;
-	cgv::media::font::font_face_ptr label_font_face;
+	/// ensure that font names have been enumerate
 	void ensure_font_names();
-	void on_font_selection();
-	void on_font_face_selection();
-	float label_font_size;
-	cgv::media::font::FontFaceAttributes label_ffa;
+	//@}
 
-protected:
+	/**@name configuration parameters of plot */
+	//@{
+	/// domain configuration
+	domain_config dom_cfg;
+	/// pointer to currently used domain config
+	domain_config* dom_cfg_ptr;
+
+	/// store one configuration per sub plot
 	std::vector<plot_base_config*> configs;
-	virtual axis_config& ref_axis_config(unsigned ai) = 0;
+	//@}
+
+	/// store pointer to current font
+	cgv::media::font::font_ptr label_font;
+	/// store pointer to current font face
+	cgv::media::font::font_face_ptr label_font_face;
+
+	/// callback to change fonts
+	void on_font_selection();
+	/// callback to change font face
+	void on_font_face_selection();
+	/// set the uniforms for the i-th sub plot, overloaded by derived classes to set uniforms of derived configuration classes
+	virtual void set_uniforms(cgv::render::context& ctx, cgv::render::shader_program& prog, unsigned i);
 public:
 	/// construct with default parameters
-	plot_base();
-	/// return number of axis
-	virtual unsigned get_nr_axes() const = 0;
+	plot_base(unsigned nr_axes);
+	/**@name management of domain configuration */
+	//@{
 	/// configure the label font
 	void set_label_font(float font_size, cgv::media::font::FontFaceAttributes ffa = cgv::media::font::FFA_REGULAR, const std::string& font_name = "");
+	/// return const pointer to domain configuration
+	const domain_config* get_domain_config_ptr() const;
+	/// return pointer to domain configuration
+	domain_config* get_domain_config_ptr();
+	/// set the domain configuration to an external configuration in order to synch several plots, if set to null, the internal domain config is used again
+	void set_domain_config_ptr(domain_config* _new_ptr);
+	//@}
+
 	/**@name management of sub plots*/
 	//@{
 	/// return current number of sub plots
@@ -127,7 +194,7 @@ public:
 
 	/**@name gui support*/
 	//@{
-	/// create the gui for the plot independent of the sub plots
+	/// create the gui for the plot without gui for sub plots
 	virtual void create_plot_gui(cgv::base::base* bp, cgv::gui::provider& p);
 	/// create the gui for a configuration, overload to specialize for extended configs
 	virtual void create_config_gui(cgv::base::base* bp, cgv::gui::provider& p, unsigned i);
