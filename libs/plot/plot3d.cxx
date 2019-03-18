@@ -1,56 +1,83 @@
 #include "plot3d.h"
 #include <libs/cgv_gl/gl/gl.h>
-#include <libs/cgv_gl/gl/gl_tools.h>
+#include <cgv/render/attribute_array_binding.h>
 
 namespace cgv {
 	namespace plot {
 
+/// overloaded in derived classes to compute complete tick render information
+void plot3d::compute_tick_render_information()
+{
+	collect_tick_geometry(0, 1, &domain_min(0), &domain_max(0), &extent(0));
+	collect_tick_geometry(0, 2, &domain_min(0), &domain_max(0), &extent(0));
+	collect_tick_geometry(1, 0, &domain_min(0), &domain_max(0), &extent(0));
+	collect_tick_geometry(1, 2, &domain_min(0), &domain_max(0), &extent(0));
+	collect_tick_geometry(2, 0, &domain_min(0), &domain_max(0), &extent(0));
+	collect_tick_geometry(2, 1, &domain_min(0), &domain_max(0), &extent(0));
+}
+
 plot3d_config::plot3d_config(const std::string& _name) : plot_base_config(_name)
 {
+	show_bars = true;
 	samples_per_row = 0;
-
-	show_faces = true;
-	face_color = rgb(0.7f,0.4f,0);
-
+	show_surface = true;
+	wireframe = false;
+	surface_color = rgb(0.7f,0.4f,0);
 	face_illumination = PFI_PER_FACE;
+
 }
 
 void plot3d::set_uniforms(cgv::render::context& ctx, cgv::render::shader_program& prog, unsigned i)
 {
 	plot_base::set_uniforms(ctx, prog, i);
-	prog.set_uniform(ctx, "face_color", ref_sub_plot3d_config(i).face_color);
-	prog.set_uniform(ctx, "N", ref_sub_plot3d_config(i).samples_per_row);
-	prog.set_uniform(ctx, "face_illumination", (int&) ref_sub_plot3d_config(i).face_illumination);
+	if (i >= 0 && i < get_nr_sub_plots()) {
+		const plot3d_config& spc = ref_sub_plot3d_config(i);
+		if (spc.show_bars) {
+			prog.set_uniform(ctx, "percentual_width", spc.bar_percentual_width);
+			prog.set_uniform(ctx, "N", (int&)spc.samples_per_row);
+		}
+		if (spc.show_surface) {
+			prog.set_uniform(ctx, "surface_color", spc.surface_color);
+			prog.set_uniform(ctx, "N", (int&)spc.samples_per_row);
+			prog.set_uniform(ctx, "face_illumination", (int&)spc.face_illumination);
+		}
+	}
+}
+
+bool plot3d::compute_sample_coordinate_interval(int ai, float& samples_min, float& samples_max, bool only_visible)
+{
+	// compute bounding box
+	bool found_sample = false;
+	float min_value, max_value;
+	for (unsigned i = 0; i < samples.size(); ++i) {
+		if (!only_visible || ref_sub_plot_config(i).show_plot) {
+			for (unsigned j = 0; j < samples[i].size(); ++j) {
+				if (found_sample) {
+					min_value = std::min(min_value, samples[i][j](ai));
+					max_value = std::max(max_value, samples[i][j](ai));
+				}
+				else {
+					min_value = samples[i][j](ai);
+					max_value = samples[i][j](ai);
+					found_sample = true;
+				}
+			}
+		}
+	}
+	if (found_sample) {
+		samples_min = min_value;
+		samples_max = max_value;
+		return true;
+	}
+	return false;
 }
 
 /// construct empty plot with default domain [0..1,0..1,0..1]
 plot3d::plot3d() : plot_base(3)
 {
-	domain.ref_min_pnt() = vec3(0,0,0);
-	domain.ref_max_pnt() = vec3(1,1,1);
-
-	axis_directions[0] = vec3(1,0,0);
-	axis_directions[1] = vec3(0, 1, 0);
-	axis_directions[2] = vec3(0, 0, 2);
-	center_location = vec3(0,0,0);
-}
-
-/// adjust domain to data
-void plot3d::adjust_domain_to_data(bool include_xy_plane)
-{
-	// compute bounding box
-	domain = box3(samples.front().front(),samples.front().front());
-	for (unsigned i=0; i<samples.size(); ++i) {
-		for (unsigned j=0; j<samples[i].size(); ++j) {
-			domain.add_point(samples[i][j]);
-		}
-	}
-	if (include_xy_plane)  {
-		if (domain.get_min_pnt()(2) > 0)
-			domain.ref_min_pnt()(2) = 0;
-		if (domain.get_max_pnt()(2) < 0)
-			domain.ref_max_pnt()(2) = 0;
-	}
+	brs.culling_mode = cgv::render::CM_FRONTFACE;
+	brs.map_color_to_material = cgv::render::MS_FRONT_AND_BACK;
+	brs.illumination_mode = cgv::render::IM_TWO_SIDED;
 }
 
 unsigned plot3d::add_sub_plot(const std::string& name)
@@ -82,7 +109,7 @@ void plot3d::delete_sub_plot(unsigned i)
 }
 
 /// set the number of samples of the i-th sub plot to N
-void plot3d::set_samples_per_row(unsigned N, unsigned i)
+void plot3d::set_samples_per_row(unsigned i, unsigned N)
 {
 	ref_sub_plot3d_config(i).samples_per_row = N;
 }
@@ -109,116 +136,258 @@ std::vector<plot3d::vec3>& plot3d::ref_sub_plot_samples(unsigned i)
 
 bool plot3d::init(cgv::render::context& ctx)
 {
+	cgv::render::ref_box_renderer(ctx, 1);
 	return true;
 }
+void plot3d::draw_sub_plot(cgv::render::context& ctx, unsigned i)
+{
+	cgv::render::attribute_array_binding::set_global_attribute_array(ctx, 0, samples[i]);
+	const plot3d_config& spc = ref_sub_plot3d_config(i);
 
+	/*if (spc.show_points) {
+		set_uniforms(ctx, sphere_prog, i);
+		sphere_prog.enable(ctx);
+		ctx.set_color(spc.point_color);
+		glDrawArrays(GL_POINTS, 0, samples[i].size());
+		sphere_prog.disable(ctx);
+	}
+	*/
+	if (spc.show_bars) {
+		set_uniforms(ctx, box_prog, i);
+		box_prog.enable(ctx);
+		ctx.set_color(spc.bar_color);
+		box_prog.set_uniform(ctx, "map_color_to_material", 3);
+		glDrawArrays(GL_POINTS, 0, samples[i].size());
+		box_prog.disable(ctx);
+		//if (spc.bar_outline_width > 0) {
+		//	glLineWidth(spc.bar_outline_width);
+		//	set_uniforms(ctx, wirebox_prog, i);
+
+		//	wirebox_prog.enable(ctx);
+		//	ctx.set_color(spc.bar_outline_color);
+		//	glDrawArrays(GL_POINTS, 0, samples[i].size());
+		//	wirebox_prog.disable(ctx);
+		//}
+	}
+
+	if (spc.show_sticks) {
+		set_uniforms(ctx, stick_prog, i);
+		glLineWidth(spc.stick_width);
+		stick_prog.enable(ctx);
+		ctx.set_color(spc.stick_color);
+		glDrawArrays(GL_POINTS, 0, samples[i].size());
+		stick_prog.disable(ctx);
+	}
+}
+
+void plot3d::draw_domain(cgv::render::context& ctx)
+{
+	std::vector<vec3> P;
+	const domain_config& dc = *get_domain_config_ptr();
+	if (dc.fill) {
+		cgv::render::box_renderer& br = cgv::render::ref_box_renderer(ctx);
+		br.set_position_array(ctx, &center_location, 1);
+		br.set_position_is_center(true);
+		br.set_extent(ctx, extent);
+		br.set_render_style(brs);
+		if (br.validate_and_enable(ctx)) {
+			ctx.set_color(dc.color);
+			glDrawArrays(GL_POINTS, 0, 1);
+			br.disable(ctx);
+		}
+	}
+}
+
+void plot3d::draw_axes(cgv::render::context& ctx)
+{
+	std::vector<vec3> P;
+	for (unsigned ai = 0; ai < 3; ++ai) {
+		unsigned aj = (ai + 1) % 3;
+		unsigned ak = (ai + 2) % 3;
+		axis_config& ac = get_domain_config_ptr()->axis_configs[ai];
+		axis_config& ao = get_domain_config_ptr()->axis_configs[aj];
+		axis_config& ap = get_domain_config_ptr()->axis_configs[ak];
+		ctx.set_color(ac.color);
+		glLineWidth(ac.line_width);
+		// 4 lines 
+		vec3 p(domain_min.size(), &domain_min(0)); P.push_back(p);
+		p(ai) = domain_max(ai); P.push_back(p);
+		p(aj) = domain_max(aj); P.push_back(p);
+		p(ai) = domain_min(ai); P.push_back(p);
+		p(ak) = domain_max(ak); P.push_back(p);
+		p(ai) = domain_max(ai); P.push_back(p);
+		p(aj) = domain_min(aj); P.push_back(p);
+		p(ai) = domain_min(ai); P.push_back(p);
+		// axis line
+		if (domain_min(aj) < 0 && domain_max(aj) > 0) {
+			p(aj) = 0.0f; P.push_back(p);
+			p(ai) = domain_max(ai); P.push_back(p);
+			p(ak) = domain_min(ak); P.push_back(p);
+			p(ai) = domain_min(ai); P.push_back(p);
+		}
+		if (domain_min(ak) < 0 && domain_max(ak) > 0) {
+			p(ak) = 0.0f;
+			p(aj) = domain_min(aj); P.push_back(p);
+			p(ai) = domain_max(ai); P.push_back(p);
+			p(aj) = domain_max(aj); P.push_back(p);
+			p(ai) = domain_min(ai); P.push_back(p);
+		}
+		if (!P.empty()) {
+			cgv::render::attribute_array_binding::set_global_attribute_array(ctx, 0, P);
+			glDrawArrays(GL_LINES, 0, GLsizei(P.size()));
+			P.clear();
+		}
+	}
+}
+
+void plot3d::draw_ticks(cgv::render::context& ctx)
+{
+	if (tick_vertices.empty())
+		return;
+	tick_label_prog.enable(ctx);
+	set_uniforms(ctx, tick_label_prog, -1);
+	cgv::render::attribute_array_binding::set_global_attribute_array(ctx, 0, tick_vertices);
+	for (const auto& tbc : tick_batches) if (tbc.vertex_count > 0) {
+		tick_label_prog.set_uniform(ctx, "ai", tbc.ai);
+		tick_label_prog.set_uniform(ctx, "aj", tbc.aj);
+		const axis_config& ac = get_domain_config_ptr()->axis_configs[tbc.ai];
+		const tick_config& tc = tbc.primary ? ac.primary_ticks : ac.secondary_ticks;
+		glLineWidth(tc.line_width);
+		ctx.set_color(ac.color);
+		glDrawArrays(GL_LINES, tbc.first_vertex, tbc.vertex_count);
+	}
+	tick_label_prog.disable(ctx);
+}
+
+void plot3d::draw_tick_labels(cgv::render::context& ctx)
+{
+	if (tick_labels.empty())
+		return;
+	cgv::render::attribute_array_binding::set_global_attribute_array(ctx, 0, tick_vertices);
+	for (const auto& tbc : tick_batches) if (tbc.label_count > 0) {
+		ctx.set_color(get_domain_config_ptr()->axis_configs[tbc.ai].color);
+		for (unsigned i = tbc.first_label; i < tbc.first_label + tbc.label_count; ++i) {
+			int a0 = tbc.ai;
+			int a1 = tbc.aj;
+			if (a0 == 2)
+				a0 = 1 - a1;
+			if (a1 == 2)
+				a1 = 1 - a0;
+			const label_info& li = tick_labels[i];
+			vec3 p(0.0f);
+			p(tbc.ai) = li.position(a0);
+			p(tbc.aj) = li.position(a1);
+			ctx.set_cursor(transform_to_world(p.to_vec()).to_vec(), li.label, li.align);
+			ctx.output_stream() << li.label;
+			ctx.output_stream().flush();
+		}
+	}
+}
 
 void plot3d::draw(cgv::render::context& ctx)
 {
-	if (!point_prog.is_created()) {
-		if (!point_prog.build_program(ctx, "plot3d_point.glpr")) {
-			std::cerr << "could not build GLSL program from plot3d_point.glpr" << std::endl;
+	if (!prog.is_created()) {
+		if (!prog.build_program(ctx, "plot3d.glpr")) {
+			std::cerr << "could not build GLSL program from plot3d.glpr" << std::endl;
 		}
 	}
-	if (!line_prog.is_created()) {
-		if (!line_prog.build_program(ctx, "plot3d_line.glpr")) {
-			std::cerr << "could not build GLSL program from plot3d_line.glpr" << std::endl;
+	if (!stick_prog.is_created()) {
+		if (!stick_prog.build_program(ctx, "plot3d_stick.glpr")) {
+			std::cerr << "could not build GLSL program from plot3d_stick.glpr" << std::endl;
 		}
 	}
-/*	if (!stick_prog.build_program(ctx, "plot3d_stick.glpr")) {
-		std::cerr << "could not build GLSL program from plot3d_stick.glpr" << std::endl;
-		return false;
-	}
-	if (!stick_prog.build_program(ctx, "plot3d_bar.glpr")) {
-		std::cerr << "could not build GLSL program from plot3d_bar.glpr" << std::endl;
-		return false;
-	}
-	*/
-	if (!face_prog.is_created()) {
-		if (!face_prog.build_program(ctx, "plot3d_face.glpr")) {
-			std::cerr << "could not build GLSL program from plot3d_face.glpr" << std::endl;
+	if (!tick_label_prog.is_created()) {
+		if (!tick_label_prog.build_program(ctx, "plot3d_tick_label.glpr")) {
+			std::cerr << "could not build GLSL program from plot3d_tick_label.glpr" << std::endl;
 		}
 	}
-	for (unsigned i=0; i<samples.size(); ++i) {
-		glVertexPointer(3, GL_FLOAT, 0, &samples[i].front());
-		glEnableClientState(GL_VERTEX_ARRAY);
+	
+	if (!box_prog.is_created()) {
+		if (!box_prog.build_program(ctx, "plot3d_box.glpr")) {
+			std::cerr << "could not build GLSL program from plot3d_box.glpr" << std::endl;
+		}
+	}
+	/*if (!wirebox_prog.is_created()) {
+		if (!wirebox_prog.build_program(ctx, "plot3d_wirebox.glpr")) {
+			std::cerr << "could not build GLSL program from plot3d_wirebox.glpr" << std::endl;
+		}
+	}
+	if (!stick_prog.is_created()) {
+		if (!stick_prog.build_program(ctx, "plot3d_stick.glpr")) {
+			std::cerr << "could not build GLSL program from plot3d_stick.glpr" << std::endl;
+		}
+	}*/
+	//if (!surface_prog.is_created()) {
+	//	if (!surface_prog.build_program(ctx, "plot3d_surface.glpr")) {
+	//		std::cerr << "could not build GLSL program from plot3d_surface.glpr" << std::endl;
+	//	}
+	//}
 
-		if (ref_sub_plot_config(i).show_points) {
-			set_uniforms(ctx, point_prog, i);
-			glPointSize(ref_sub_plot_config(i).point_size);
-			if (ref_sub_plot_config(i).point_size > 1)
-				glEnable(GL_POINT_SMOOTH);
-			point_prog.enable(ctx);
-			glDrawArrays(GL_POINTS, 0, samples[i].size());
-			point_prog.disable(ctx);
-			if (ref_sub_plot_config(i).point_size > 1)
-				glDisable(GL_POINT_SMOOTH);
-		}
-		
-		if (ref_sub_plot_config(i).show_sticks) {
-			set_uniforms(ctx, line_prog, i);
-			glLineWidth(ref_sub_plot_config(i).stick_width);
-			line_prog.enable(ctx);
-			unsigned M = samples[i].size() / get_samples_per_row(i);
-			for (unsigned v=0; v<M; ++v)
-				glDrawArrays(GL_LINE_STRIP, v*get_samples_per_row(i), get_samples_per_row(i));
-			line_prog.disable(ctx);
-		}
-		
-/*		if (ref_plot_config(i).show_sticks) {
-			set_uniforms(ctx, stick_prog, i);
-			stick_prog.enable(ctx);
-			glDrawArrays(GL_POINTS, 0, samples[i].size());
-			stick_prog.disable(ctx);
-		}
-		
-		if (ref_plot_config(i).show_bars) {
-			set_uniforms(ctx, bar_prog, i);
-			bar_prog.enable(ctx);
-			glDrawArrays(GL_POINTS, 0, samples[i].size());
-			bar_prog.disable(ctx);
-		}
-		*/
-		if (ref_sub_plot3d_config(i).show_faces) {
-			glDisable(GL_CULL_FACE);
-//			glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, 1);
-			set_uniforms(ctx, face_prog, i);
-			cgv::render::gl::set_lighting_parameters(ctx, face_prog);
-			std::vector<unsigned> indices;
-			indices.resize(2*get_samples_per_row(i));
-			unsigned M = samples[i].size() / get_samples_per_row(i);
-			face_prog.enable(ctx);
-			for (unsigned v=1; v<M; ++v) {
-				for (unsigned u=0; u<get_samples_per_row(i); ++u) {
-					indices[2*u] = u+(v-1)*get_samples_per_row(i);
-					indices[2*u+1] = u+v*get_samples_per_row(i);
-				}
-				glDrawElements(GL_TRIANGLE_STRIP, 2*get_samples_per_row(i), GL_UNSIGNED_INT, &indices.front());
-			}
-			face_prog.disable(ctx);
-			glEnable(GL_CULL_FACE);
-		}
-		
-		glDisableClientState(GL_VERTEX_ARRAY);
-		glVertexPointer(2, GL_FLOAT, 0, 0);
+	GLboolean line_smooth = glIsEnabled(GL_LINE_SMOOTH); glEnable(GL_LINE_SMOOTH);
+	GLboolean point_smooth = glIsEnabled(GL_POINT_SMOOTH); glEnable(GL_POINT_SMOOTH);
+	GLboolean blend = glIsEnabled(GL_BLEND); glEnable(GL_BLEND);
+	GLenum blend_src, blend_dst, depth;
+	glGetIntegerv(GL_BLEND_DST, reinterpret_cast<GLint*>(&blend_dst));
+	glGetIntegerv(GL_BLEND_SRC, reinterpret_cast<GLint*>(&blend_src));
+	glGetIntegerv(GL_DEPTH_FUNC, reinterpret_cast<GLint*>(&depth));
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glDepthFunc(GL_LEQUAL);
+
+	cgv::render::attribute_array_binding::enable_global_array(ctx, 0);
+	set_uniforms(ctx, prog, -1);
+	prog.enable(ctx);
+	if (get_domain_config_ptr()->show_domain)
+		draw_domain(ctx);
+	draw_axes(ctx);
+	prog.disable(ctx);
+	
+	draw_ticks(ctx);
+	cgv::render::attribute_array_binding::disable_global_array(ctx, 0);
+
+	ctx.enable_font_face(label_font_face, get_domain_config_ptr()->label_font_size);
+	draw_tick_labels(ctx);
+
+	cgv::render::attribute_array_binding::enable_global_array(ctx, 0);
+	for (unsigned i = 0; i < samples.size(); ++i) {
+		// skip unvisible and empty sub plots
+		if (!ref_sub_plot3d_config(i).show_plot || samples[i].size() == 0)
+			continue;
+		draw_sub_plot(ctx, i);
 	}
+
+	if (!line_smooth)
+		glDisable(GL_LINE_SMOOTH);
+	if (!point_smooth)
+		glDisable(GL_POINT_SMOOTH);
+	if (!blend)
+		glDisable(GL_BLEND);
+	glDepthFunc(depth);
+	glBlendFunc(blend_src, blend_dst);
 }
 
 void plot3d::clear(cgv::render::context& ctx)
 {
-	point_prog.destruct(ctx);
-	line_prog.destruct(ctx);
-	face_prog.destruct(ctx);
+	sphere_prog.destruct(ctx);
+	box_prog.destruct(ctx);
+	wirebox_prog.destruct(ctx);
+	stick_prog.destruct(ctx);
+	surface_prog.destruct(ctx);
+	cgv::render::ref_box_renderer(ctx, -1);
+
 }
 
 void plot3d::create_config_gui(cgv::base::base* bp, cgv::gui::provider& p, unsigned i)
 {
 	plot3d_config& pbc = ref_sub_plot3d_config(i);
-
-	p.add_decorator("faces", "heading", "level=3;w=100", " ");
-	p.add_member_control(bp, "show",  pbc.show_faces, "toggle", "w=50");
-	p.add_member_control(bp, "illum", pbc.face_illumination, "dropdown", "enums='none,per face,per vertex'");
-	p.add_member_control(bp, "color", pbc.face_color);
+	bool show = p.begin_tree_node("lines", pbc.show_surface, false, "level=3;w=100;align=' '");
+	p.add_member_control(bp, "show", pbc.show_surface, "toggle", "w=50");
+	if (show) {
+		p.align("\a");
+		p.add_view("samples per row", pbc.samples_per_row);
+		p.add_member_control(bp, "wireframe", pbc.wireframe, "check");
+		p.add_member_control(bp, "color", pbc.surface_color);
+		p.add_member_control(bp, "wireframe", pbc.face_illumination, "dropdown", "enums='none,face,vertex'");
+	}
 
 	plot_base::create_config_gui(bp, p, i);
 }

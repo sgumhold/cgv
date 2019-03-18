@@ -1,4 +1,4 @@
-#version 150 compatibility
+#version 330
 #extension GL_EXT_geometry_shader4 : enable
 
 layout(points) in;

@@ -1,9 +1,13 @@
-#version 150 compatibility
+#version 150
+
+uniform float gamma = 2.2;
 
 in vec4 color;
+out vec4 frag_color;
 
 void main()
 {
-	// illumination
-	gl_FragColor = color;
+	frag_color = color;
+	// perform inverse gamma correction
+	frag_color.rgb = pow(frag_color.rgb, vec3(gamma));
 }

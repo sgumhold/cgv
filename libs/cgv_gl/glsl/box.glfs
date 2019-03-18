@@ -1,9 +1,13 @@
-#version 150 compatibility
+#version 150 
 
 in vec3 normal;
 in vec4 color;
 in vec3 position;
 flat in int side;
+
+out vec4 frag_color;
+
+uniform float gamma = 2.2;
 
 //***** begin interface of surface.glsl ***********************************
 vec4 compute_reflected_appearance(vec3 position_eye, vec3 normal_eye, vec4 color, int side);
@@ -12,5 +16,7 @@ vec4 compute_reflected_appearance(vec3 position_eye, vec3 normal_eye, vec4 color
 void main()
 {
 	// illumination
-	gl_FragColor = compute_reflected_appearance(position, normalize(normal), color, side);
+	frag_color = compute_reflected_appearance(position, normalize(normal), color, side);
+	// perform inverse gamma correction
+	frag_color.rgb = pow(frag_color.rgb, vec3(gamma));
 }

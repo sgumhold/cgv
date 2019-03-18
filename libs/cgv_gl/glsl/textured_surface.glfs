@@ -44,6 +44,6 @@ void main()
 		discard;
 
 	frag_color = compute_reflected_appearance_texture(position_eye, normal, texcoord_fs, color_fs, side);
-
-	frag_color.rgb = pow(frag_color.rgb, vec3(1.0/gamma));
+	// perform inverse gamma correction
+	frag_color.rgb = pow(frag_color.rgb, vec3(gamma));
 }

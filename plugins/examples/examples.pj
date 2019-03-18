@@ -6,8 +6,8 @@ addProjectDirs=[CGV_DIR."/libs", CGV_DIR."/plugins", CGV_DIR."/3rd"];
 addIncDirs=[CGV_DIR."/libs", CGV_DIR."/libs/delaunay"];
 addProjectDeps=["cgv_utils", "cgv_type", "cgv_reflect", "cgv_data", "cgv_signal", "cgv_base", "cgv_media", "cgv_gui", 
 "cgv_render","cgv_os","fltk", "cgv_viewer","cg_fltk", "crg_stereo_view", "crg_antialias", "crg_depth_of_field", 
-"crg_light", "cg_meta", "cmi_io","cmv_avi","crg_grid","co_web", "delaunay","cgv_gl", "glew"];
+"crg_light", "cg_meta", "cmi_io","cmv_avi","crg_grid","co_web", "delaunay","cgv_gl", "glew","plot"];
 addCommandLineArguments=[
 	'gui:"'.CGV_DIR.'/plugins/examples/examples.gui"',
 	'config:"'.CGV_DIR.'/plugins/examples/config.def"',
-	'"type(shader_config):shader_path='."'".CGV_DIR."/plugins/examples;".CGV_DIR."/libs/cgv_gl/glsl'".'"'];
+	'"type(shader_config):shader_path='."'".CGV_DIR."/plugins/examples;".CGV_DIR."/libs/plot/glsl;".CGV_DIR."/libs/cgv_gl/glsl'".'"'];
