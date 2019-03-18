@@ -1,0 +1,88 @@
+#version 150
+#extension GL_EXT_geometry_shader4 : enable
+
+//***** begin interface of splat.glsl ***********************************
+void prepare_splat(
+	in float reference_point_radius, in float pixel_extent,
+	out float percentual_core_size, out float percentual_point_size,
+	out float percentual_blend_width, out float percentual_splat_size);
+//***** end interface of surface.glsl ***********************************
+
+uniform float pixel_extent_per_depth;
+
+out vec2 q_tilde;
+out vec3 inv_T_square_v;
+out vec3 inv_T_square_e_c;
+out float inv_e;
+out vec2 e_zw_clip;
+out vec2 v_zw_clip;
+out vec3 v;
+out vec3 v_eye;
+out vec4  color;
+
+out float percentual_blend_width;
+out float percentual_point_size;
+out float percentual_core_size;
+out float percentual_splat_size;
+
+in mat3 NM[];
+in mat4 MV[];
+in mat4 MVP[];
+in vec3  m_tilde[];
+in vec3  x_tilde[];
+in vec3  y_tilde[];
+in vec3  e_tilde[];
+in float inv_e_vs[];
+in vec3  inv_T_square_e_c_vs[];
+in vec2  e_zw_clip_vs[];
+in vec4  color_gs[];
+
+
+void generate_vertex(in vec2 t)
+{
+	// compute the corner point in homogeneous object coordinates
+	vec3 V_tilde = m_tilde[0]+t.x*x_tilde[0]+t.y*y_tilde[0];
+	vec3 v_tilde = V_tilde - e_tilde[0];
+
+	vec4 V;
+	V.xyz = gl_PositionIn[0].w*V_tilde+gl_PositionIn[0].xyz;
+	V.w = 1.0;
+ 
+	q_tilde = t;
+
+	// compute vector from eye to vertex in eye space
+	v_eye = (MV[0] *V).xyz;
+
+	// compute components to compute normal in eye space
+	inv_T_square_v   = NM[0]*(v_tilde);
+
+	v = -normalize(v_eye);
+
+	gl_Position	   = MVP[0] * V;
+
+	v_zw_clip      = gl_Position.zw - e_zw_clip;
+
+	EmitVertex();
+}
+
+void main()
+{
+	inv_e            = inv_e_vs[0];
+	inv_T_square_e_c = inv_T_square_e_c_vs[0];
+	e_zw_clip        = e_zw_clip_vs[0];
+	color		     = color_gs[0];
+	// compute depth of sphere center
+	float depth = abs((MV[0] * vec4(gl_PositionIn[0].xyz, 1.0)).z);
+	// compute extent of a pixel at sphere center depth 
+	float pixel_extent = pixel_extent_per_depth * depth;
+	// compute splat parameters for fragment shader
+	prepare_splat(gl_PositionIn[0].w, pixel_extent,
+		percentual_core_size, percentual_point_size,
+		percentual_blend_width, percentual_splat_size);
+
+	generate_vertex(vec2(-percentual_splat_size,-percentual_splat_size));
+	generate_vertex(vec2( percentual_splat_size,-percentual_splat_size));
+	generate_vertex(vec2(-percentual_splat_size, percentual_splat_size));
+	generate_vertex(vec2( percentual_splat_size, percentual_splat_size));
+	EndPrimitive();
+}

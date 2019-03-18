@@ -1,0 +1,11 @@
+files:plot3d_box
+vertex_file:quaternion.glsl
+vertex_file:plot2d_lib.glsl
+vertex_file:view.glsl
+geometry_file:view.glsl
+geometry_file:side.glsl
+fragment_file:side.glsl
+fragment_file:lights.glsl
+fragment_file:bump_map.glfs
+fragment_file:surface.glsl
+fragment_file:brdf.glsl

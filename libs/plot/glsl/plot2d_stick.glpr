@@ -1,6 +1,7 @@
 vertex_file:plot2d_empty.glvs
 geometry_file:plot2d_stick.glgs
 fragment_file:plot2d.glfs
+geometry_file:quaternion.glsl
 geometry_file:plot2d_lib.glsl
 geometry_file:view.glsl
 geometry_shader_info:points;line_strip;2

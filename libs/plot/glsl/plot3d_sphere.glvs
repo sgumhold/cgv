@@ -1,0 +1,93 @@
+#version 150
+
+//***** begin interface of view.glsl ***********************************
+mat4 get_modelview_matrix();
+mat4 get_projection_matrix();
+mat4 get_modelview_projection_matrix();
+mat4 get_inverse_modelview_matrix();
+mat4 get_inverse_modelview_projection_matrix();
+mat3 get_normal_matrix();
+mat3 get_inverse_normal_matrix();
+//***** end interface of view.glsl ***********************************
+
+uniform float radius_scale;
+
+in vec4  position;
+in float radius;
+in vec4  color;
+in int   group_index;
+
+out mat3  NM;
+out mat4  MV;
+out mat4  MVP;
+out vec3  m_tilde;
+out vec3  x_tilde;
+out vec3  y_tilde;
+out vec3  e_tilde;
+out float inv_e_vs;
+out vec3  inv_T_square_e_c_vs;
+out vec2  e_zw_clip_vs;
+out vec4  color_gs;
+
+//***** begin interface of group.glsl ***********************************
+vec4 group_color(in vec4 color, int group_index);
+vec3 group_transformed_position(in vec3 position, int group_index);
+vec3 group_transformed_normal(in vec3 nml, int group_index);
+void right_multiply_group_normal_matrix(inout mat3 NM, int group_index);
+void right_multiply_group_position_matrix(inout mat4 MV, int group_index);
+void right_multiply_group_normal_matrix_and_rotation(inout mat3 NM, int group_index, vec4 rotation);
+void right_multiply_group_position_matrix_and_rigid(inout mat4 MV, int group_index, vec4 rotation, vec3 translation);
+//***** end interface of group.glsl ***********************************
+
+void main()
+{
+	vec4 sphere;
+	sphere.xyz = position.xyz / position.w;
+	sphere.w = radius_scale * radius;
+//	sphere.w = 0.01;
+
+	// compute normal transformation matrix
+	NM = get_normal_matrix();
+	right_multiply_group_normal_matrix(NM, group_index);
+	// compute position transformation matrix
+	MV = get_modelview_matrix();
+	right_multiply_group_position_matrix(MV, group_index);
+	MVP = get_modelview_projection_matrix();
+	right_multiply_group_position_matrix(MVP, group_index);
+	// compute sphere color
+	color_gs = group_color(color, group_index);
+
+	// compute radius and reciprocal radius
+	float inv_R = 1.0/sphere.w;
+
+	// determine eye point in parameter space
+	mat4 iPM = inverse(MV);
+	vec3 e = iPM[3].xyz;
+	e_tilde = inv_R*(e - sphere.xyz);
+
+	// compute helper
+	float inv_e_square = 1.0/dot(e_tilde,e_tilde);
+
+	// determine silhoutte center in parameter space
+	m_tilde = inv_e_square*e_tilde;
+
+	// determine radius of silhouette in parameter space
+	float r = sqrt(1.0-inv_e_square);
+
+	// compute vector x of length r orthogonal to e in parameter space
+	x_tilde = r*normalize(cross(iPM[1].xyz,e_tilde));
+
+	// compute vector y of length r orthogonal to x and e in parameter space
+	y_tilde = r*normalize(cross(e_tilde,x_tilde));
+
+	inv_e_vs = sqrt(inv_e_square);
+
+	// compute components to compute normal in eye space
+	inv_T_square_e_c_vs = NM*(e_tilde);
+
+	// constant part of depth value
+	e_zw_clip_vs    = (MVP * iPM[3]).zw;
+
+	// hand on sphere definition to geometry shader
+	gl_Position = sphere;
+}
