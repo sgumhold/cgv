@@ -140,7 +140,7 @@ context::context()
 	at_line_begin = true;
 	enable_vsynch = true;
 	sRGB_framebuffer = true;
-	gamma = 1;
+	gamma = 2.2f;
 
 	default_render_flags = RenderPassFlags(RPF_DEFAULT);
 	current_background = 0;

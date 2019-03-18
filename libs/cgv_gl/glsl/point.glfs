@@ -2,6 +2,7 @@
 
 uniform vec4 halo_color;
 uniform float halo_color_strength = 0.5;
+uniform float gamma = 2.2;
 
 in vec2 uv;
 in vec4 color;
@@ -31,4 +32,7 @@ void main()
 		percentual_radial_position, color, percentual_core_size,
 		vec4(mix(color.rgb, halo_color.rgb,halo_color_strength), halo_color.a), percentual_point_size, percentual_blend_width
 	);
+	frag_color = color;
+	// perform inverse gamma correction
+	frag_color.rgb = pow(frag_color.rgb, vec3(gamma));
 }

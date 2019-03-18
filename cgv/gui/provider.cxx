@@ -427,10 +427,12 @@ void provider::recreate_gui()
 {
 	if (!parent_group)
 		return;
+	int xscroll = parent_group->get<int>("xscroll");
 	int yscroll = parent_group->get<int>("yscroll");
 	remove_all_elements();
 	create_gui();
 	parent_group->set("dolayout", true);
+	parent_group->set("xscroll", xscroll);
 	parent_group->set("yscroll", yscroll);
 }
 

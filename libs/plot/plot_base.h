@@ -124,6 +124,8 @@ struct CGV_API plot_base_config : public cgv::render::render_types
 	plot_base_config(const std::string& _name);
 	/// configure the sub plot to a specific chart type
 	virtual void configure_chart(ChartType chart_type);
+	/// set all colors from a common color
+	virtual void set_colors(const rgb& base_color);
 	/// virtual constructor in order to allow to extend the configuration for derived classes
 	virtual ~plot_base_config();
 };
@@ -137,6 +139,8 @@ class CGV_API plot_base : public cgv::render::drawable
 private:
 	/// domain configuration of last time that tick render information has been computed, initialized with 0 number of axis_configs to ensure tick render information computation for first time 
 	domain_config last_dom_cfg;
+	///
+	vecn last_dom_min, last_dom_max;
 protected:
 	/// render information stored per label
 	struct label_info
@@ -180,7 +184,7 @@ protected:
 	/// used in implementation of compute_tick_render_information() in derived class to collect for given axis combination the primary and secondary tick render information batches
 	void collect_tick_geometry(int ai, int aj, const float* dom_min_pnt, const float* dom_max_pnt, const float* extent);
 
-	/**@name font name handleing*/
+	/**@name font name handling*/
 	//@{
 	/// store a vector with all fonts on the system
 	static std::vector<const char*> font_names;
@@ -196,9 +200,26 @@ protected:
 	domain_config dom_cfg;
 	/// pointer to currently used domain config
 	domain_config* dom_cfg_ptr;
-
+	/// helper function to convert value to log space
+	static float convert_to_log_space(float val, float min_val, float max_val);
+	static float convert_from_log_space(float val, float min_val, float max_val);
+	static float log_conform_add(float v0, float v1, bool log_scale, float v_min, float v_max);
 	/// store one configuration per sub plot
 	std::vector<plot_base_config*> configs;
+	//@}
+
+	/**@name placement of plot*/
+	//@{
+	/// orientiation quaternion mapping from domain to world coordinates
+	quat orientation;
+	/// center location of domain in world coordinates
+	vec3 center_location;
+	/// dimension independent specification of domain box by min and max coordinate vectors
+	vecn domain_min, domain_max;
+	/// extent vector with dimension of plot to specify plot extent in world coordinates
+	vecn extent;
+	/// transform to world
+	vec3 transform_to_world(const vecn& domain_point) const;
 	//@}
 
 	/// store pointer to current font
@@ -212,9 +233,13 @@ protected:
 	void on_font_face_selection();
 	/// set the uniforms for the i-th sub plot, overloaded by derived classes to set uniforms of derived configuration classes
 	virtual void set_uniforms(cgv::render::context& ctx, cgv::render::shader_program& prog, unsigned i = -1);
+	///
+	virtual bool compute_sample_coordinate_interval(int ai, float& samples_min, float& samples_max, bool only_visible) = 0;
 public:
 	/// construct with default parameters
 	plot_base(unsigned nr_axes);
+	/// return nr dimensions of plot
+	unsigned get_dim() const { return extent.size(); }
 	/**@name management of domain configuration */
 	//@{
 	/// configure the label font
@@ -225,6 +250,62 @@ public:
 	domain_config* get_domain_config_ptr();
 	/// set the domain configuration to an external configuration in order to synch several plots, if set to null, the internal domain config is used again
 	void set_domain_config_ptr(domain_config* _new_ptr);
+	/// adjust tick marks of single axis based on maximum number of secondary ticks and domain min and max in coordinate of axis
+	void adjust_tick_marks_to_domain_axis(unsigned ai, unsigned max_nr_secondary_ticks, float dom_min, float dom_max);
+	//@}
+
+	/**@name configure domain to world transform*/
+	//@{
+	/// return 2d domain shown in plot
+	const box2 get_domain() const;
+	/// return 3d domain shown in plot
+	const box3 get_domain3() const;
+	/// set the domain for 2d plots
+	void set_domain(const box2& dom);
+	/// set the domain for 3d plots
+	void set_domain3(const box3& dom);
+	/// reference the domain min point
+	vecn& ref_domain_min();
+	/// reference the domain max point
+	vecn& ref_domain_max();
+	/// set the plot extend in 2D coordinates
+	void set_extent(const vecn& new_extent);
+	/// query the plot extend in 2D coordinates
+	const vecn& get_extent() const;
+	/// set the plot width to given value and if constrained == true the height, such that the aspect ration is the same as the aspect ratio of the domain
+	void set_width(float new_width, bool constrained = true);
+	/// set the plot height to given value and if constrained == true the width, such that the aspect ration is the same as the aspect ratio of the domain
+	void set_height(float new_height, bool constrained = true);
+	/// set new orientation quaternion
+	void set_orientation(const quat& _orientation);
+	/// place the origin of the plot in 3D to the given location
+	void place_origin(const vec3& new_origin_location);
+	/// place the plot extent center in 3D to the given location (this might can change the current origin location) 
+	void place_center(const vec3& new_center_location);
+	/// place a corner (0 .. lower left, 1 .. lower right, 2 .. upper left, 3 .. upper right) to a given 3D location ((this might can change the current origin / center location) 
+	void place_corner(unsigned corner_index, const vec3& new_corner_location);
+	/// return the current origin in 3D coordinates
+	vec3 get_origin() const;
+	/// return the current plot center in 3D coordinates
+	const vec3& get_center() const;
+	/// return the i-th plot corner in 3D coordinates
+	vec3 get_corner(unsigned i) const;
+	/// return true world direction of x, y or z axis
+	const vec3 get_axis_direction(unsigned ai) const;
+	//@}
+
+	/**@name helper functions to adjust axes*/
+	//@{
+	/// adjust the domain with respect to \c ai th axis to the visible or all data depending on last parameter
+	void adjust_domain_axis_to_data(unsigned ai, bool adjust_min = true, bool adjust_max = true, bool only_visible = true);
+	/// adjust selected axes of domain to the visible or all data depending on last parameter
+	void adjust_domain_to_data(bool only_visible = true, bool adjust_x_axis = true, bool adjust_y_axis = true, bool adjust_z_axis = true);
+	/// extend domain such that given axis is included
+	void include_axis_to_domain(unsigned ai);
+	/// adjust tick marks of all axes based on maximum number of secondary ticks and domain min and max in coordinate of axis
+	void adjust_tick_marks_to_domain(unsigned max_nr_secondary_ticks = 20);
+	/// adjust the extent such that it has same aspect ration as domain
+	void adjust_extent_to_domain_aspect_ratio(int preserve_ai = 0);
 	//@}
 
 	/**@name management of sub plots*/
@@ -237,6 +318,8 @@ public:
 	virtual void delete_sub_plot(unsigned i) = 0;
 	/// return a reference to the plot base configuration of the i-th plot
 	plot_base_config& ref_sub_plot_config(unsigned i);
+	/// set the colors for all plot features of the i-th sub plot as variation of the given color
+	void set_sub_plot_colors(unsigned i, const rgb& base_color);
 	//@}
 
 
