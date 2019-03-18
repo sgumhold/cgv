@@ -2,7 +2,7 @@
 #extension GL_EXT_geometry_shader4 : enable
 
 uniform float bar_width;
-uniform vec2 domain_min_pnt;
+uniform vec3 domain_min_pnt;
 
 in vec4 color_gs[];
 

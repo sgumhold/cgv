@@ -1,4 +1,4 @@
-vertex_file:plot2d.glvs
+vertex_file:plot3d_tick_label.glvs
 vertex_file:view.glsl
 vertex_file:quaternion.glsl
 fragment_file:plot2d.glfs
