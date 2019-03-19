@@ -2,10 +2,12 @@
 
 in vec3 position_eye;
 
-out vec4 frag_color;
+//***** begin interface of fragment.glfs ***********************************
+uniform float gamma = 2.2;
+void finish_fragment(vec4 color);
+//***** end interface of fragment.glfs ***********************************
 
 uniform int light_index = 0;
-uniform float gamma = 2.2;
 
 uniform vec3 default_color = vec3(0.0);
 uniform float color_lambda = 0.0;
@@ -40,8 +42,6 @@ void main()
 	if (scale > 1.0)
 		scale = 1.0;
 
-	frag_color.rgb = (1.0-color_lambda)*radiance_in + color_lambda*default_color;
-	frag_color.a = min_opacity + (max_opacity-min_opacity)*scale;
-
-	frag_color.rgb = pow(frag_color.rgb, vec3(1.0 / gamma));
+	finish_fragment(vec4((1.0-color_lambda)*radiance_in + color_lambda*default_color,
+					     min_opacity + (max_opacity-min_opacity)*scale));
 }

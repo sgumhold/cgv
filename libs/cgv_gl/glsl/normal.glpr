@@ -1,4 +1,7 @@
-files:normal
+vertex_file:normal.glvs
 vertex_file:group.glsl
 vertex_file:quaternion.glsl
 geometry_shader_info:points;line_strip;2
+geometry_file:normal.glgs
+fragment_file:default.glfs
+fragment_file:fragment.glfs

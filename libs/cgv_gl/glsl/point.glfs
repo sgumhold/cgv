@@ -2,16 +2,19 @@
 
 uniform vec4 halo_color;
 uniform float halo_color_strength = 0.5;
-uniform float gamma = 2.2;
 
 in vec2 uv;
-in vec4 color;
+in vec4 color_fs;
 in float percentual_blend_width;
 in float percentual_splat_size;
 in float percentual_core_size;
 in float percentual_point_size;
 
-out vec4 frag_color;
+//***** begin interface of fragment.glfs ***********************************
+uniform float gamma = 2.2;
+void finish_fragment(vec4 color);
+//***** end interface of fragment.glfs ***********************************
+
 
 //***** begin interface of splat.glsl ***********************************
 vec4 compute_blended_color_with_halo(
@@ -28,11 +31,8 @@ void main()
 	if (percentual_radial_position > percentual_splat_size)
 		discard;
 
-	frag_color = compute_blended_color_with_halo(
-		percentual_radial_position, color, percentual_core_size,
-		vec4(mix(color.rgb, halo_color.rgb,halo_color_strength), halo_color.a), percentual_point_size, percentual_blend_width
-	);
-	frag_color = color;
-	// perform inverse gamma correction
-	frag_color.rgb = pow(frag_color.rgb, vec3(gamma));
+	finish_fragment(compute_blended_color_with_halo(
+		percentual_radial_position, color_fs, percentual_core_size,
+		vec4(mix(color_fs.rgb, halo_color.rgb,halo_color_strength), halo_color.a), percentual_point_size, percentual_blend_width
+	));
 }

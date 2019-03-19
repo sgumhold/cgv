@@ -5,7 +5,21 @@ layout(location = 1) in vec4 color;
 
 out vec4 color_fs;
 
+//***** begin interface of plot_lib.glsl ***********************************
+uniform vec3 domain_min_pnt;
+uniform vec3 domain_max_pnt;
+uniform vec3 extent;
+uniform vec4 orientation;
+uniform vec3 center_location;
+vec3 map_plot_to_plot3(in vec2 pnt);
+vec4 map_plot_to_world(in vec2 pnt);
+vec4 map_plot_to_eye(in vec2 pnt);
 vec4 map_plot_to_screen(in vec2 pnt);
+vec3 map_plot_to_plot3(in vec3 pnt);
+vec4 map_plot_to_world3(in vec3 pnt);
+vec4 map_plot_to_eye3(in vec3 pnt);
+vec4 map_plot_to_screen3(in vec3 pnt);
+//***** end interface of plot_lib.glsl ***********************************
 
 void main()
 {

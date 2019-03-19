@@ -3,4 +3,5 @@ vertex_file:group.glsl
 vertex_file:quaternion.glsl
 geometry_file:view.glsl
 geometry_file:splat.glsl
+fragment_file:fragment.glfs
 fragment_file:splat.glsl

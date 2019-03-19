@@ -1,5 +1,25 @@
 #version 150
 
+/*
+The following interface is implemented in this shader:
+//***** begin interface of plot_lib.glsl ***********************************
+uniform vec3 domain_min_pnt;
+uniform vec3 domain_max_pnt;
+uniform vec3 extent;
+uniform vec4 orientation;
+uniform vec3 center_location;
+vec3 map_plot_to_plot3(in vec2 pnt);
+vec4 map_plot_to_world(in vec2 pnt);
+vec4 map_plot_to_eye(in vec2 pnt);
+vec4 map_plot_to_screen(in vec2 pnt);
+vec3 map_plot_to_plot3(in vec3 pnt);
+vec4 map_plot_to_world3(in vec3 pnt);
+vec4 map_plot_to_eye3(in vec3 pnt);
+vec4 map_plot_to_screen3(in vec3 pnt);
+//***** end interface of plot_lib.glsl ***********************************
+*/
+
+
 //***** begin interface of view.glsl ***********************************
 mat4 get_modelview_matrix();
 mat4 get_projection_matrix();
@@ -19,13 +39,13 @@ void quaternion_to_matrix(in vec4 q, out mat3 M);
 void rigid_to_matrix(in vec4 q, in vec3 t, out mat4 M);
 //***** end interface of quaternion.glsl ***********************************
 
-uniform vec4 orientation = vec4(0.0,0.0,0.0,1.0);
 uniform bool x_axis_log_scale = false;
 uniform bool y_axis_log_scale = false;
 uniform bool z_axis_log_scale = false;
-uniform vec3 extent;
 uniform vec3 domain_min_pnt;
 uniform vec3 domain_max_pnt;
+uniform vec3 extent;
+uniform vec4 orientation = vec4(0.0, 0.0, 0.0, 1.0);
 uniform vec3 center_location;
 
 float convert_to_log_space(float val, float min_val, float max_val)
@@ -45,14 +65,16 @@ float compute_delta(float val, float min_val, float max_val, bool log_scale)
 		return (val - 0.5*(min_val+max_val)) / (max_val - min_val);
 }
 
-vec4 map_plot_to_world(in vec2 pnt)
+vec3 map_plot_to_plot3(in vec2 pnt)
 {
-	vec3 delta = extent*vec3(
+	return extent * vec3(
 		compute_delta(pnt.x, domain_min_pnt.x, domain_max_pnt.x, x_axis_log_scale),
 		compute_delta(pnt.y, domain_min_pnt.y, domain_max_pnt.y, y_axis_log_scale), 0.0);
-	delta = rotate_vector_with_quaternion(delta, orientation);
-	vec3 p     = center_location + delta;
-	return vec4(p,1.0);
+}
+
+vec4 map_plot_to_world(in vec2 pnt)
+{
+	return vec4(center_location + rotate_vector_with_quaternion(map_plot_to_plot3(pnt), orientation), 1.0);
 }
 
 vec4 map_plot_to_eye(in vec2 pnt)
@@ -75,10 +97,7 @@ vec3 map_plot_to_plot3(in vec3 pnt)
 
 vec4 map_plot_to_world3(in vec3 pnt)
 {
-	vec3 delta = map_plot_to_plot3(pnt);
-	delta = rotate_vector_with_quaternion(delta, orientation);
-	vec3 p = center_location + delta;
-	return vec4(p, 1.0);
+	return vec4(center_location + rotate_vector_with_quaternion(map_plot_to_plot3(pnt), orientation), 1.0);
 }
 
 vec4 map_plot_to_eye3(in vec3 pnt)
@@ -90,3 +109,4 @@ vec4 map_plot_to_screen3(in vec3 pnt)
 {
 	return get_modelview_projection_matrix() * map_plot_to_world3(pnt);
 }
+
