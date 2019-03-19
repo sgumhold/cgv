@@ -1,6 +1,5 @@
 #include "plot3d.h"
 #include <libs/cgv_gl/gl/gl.h>
-#include <cgv/render/attribute_array_binding.h>
 
 namespace cgv {
 	namespace plot {
@@ -18,7 +17,8 @@ void plot3d::compute_tick_render_information()
 
 plot3d_config::plot3d_config(const std::string& _name) : plot_base_config(_name)
 {
-	show_bars = true;
+	show_points = true;
+	show_bars = false;
 	samples_per_row = 0;
 	show_surface = true;
 	wireframe = false;
@@ -32,15 +32,6 @@ void plot3d::set_uniforms(cgv::render::context& ctx, cgv::render::shader_program
 	plot_base::set_uniforms(ctx, prog, i);
 	if (i >= 0 && i < get_nr_sub_plots()) {
 		const plot3d_config& spc = ref_sub_plot3d_config(i);
-		if (spc.show_bars) {
-			prog.set_uniform(ctx, "percentual_width", spc.bar_percentual_width);
-			prog.set_uniform(ctx, "N", (int&)spc.samples_per_row);
-		}
-		if (spc.show_surface) {
-			prog.set_uniform(ctx, "surface_color", spc.surface_color);
-			prog.set_uniform(ctx, "N", (int&)spc.samples_per_row);
-			prog.set_uniform(ctx, "face_illumination", (int&)spc.face_illumination);
-		}
 	}
 }
 
@@ -141,20 +132,27 @@ bool plot3d::init(cgv::render::context& ctx)
 }
 void plot3d::draw_sub_plot(cgv::render::context& ctx, unsigned i)
 {
-	cgv::render::attribute_array_binding::set_global_attribute_array(ctx, 0, samples[i]);
+	set_attributes(ctx, samples[i]);
 	const plot3d_config& spc = ref_sub_plot3d_config(i);
 
-	/*if (spc.show_points) {
+	if (spc.show_points) {
 		set_uniforms(ctx, sphere_prog, i);
+		sphere_prog.set_uniform(ctx, "radius_scale", spc.point_size*(extent(0)+extent(1))/(500.0f));
+		sphere_prog.set_uniform(ctx, "map_color_to_material", 3);
 		sphere_prog.enable(ctx);
 		ctx.set_color(spc.point_color);
+		sphere_prog.set_attribute(ctx, "att0", 1.0f);
 		glDrawArrays(GL_POINTS, 0, samples[i].size());
 		sphere_prog.disable(ctx);
 	}
-	*/
+	
 	if (spc.show_bars) {
 		set_uniforms(ctx, box_prog, i);
+		box_prog.set_uniform(ctx, "percentual_width", spc.bar_percentual_width);
+		box_prog.set_uniform(ctx, "N", (int&)spc.samples_per_row);
 		box_prog.enable(ctx);
+		set_default_attributes(ctx, box_prog, 3);
+
 		ctx.set_color(spc.bar_color);
 		box_prog.set_uniform(ctx, "map_color_to_material", 3);
 		glDrawArrays(GL_POINTS, 0, samples[i].size());
@@ -174,6 +172,8 @@ void plot3d::draw_sub_plot(cgv::render::context& ctx, unsigned i)
 		set_uniforms(ctx, stick_prog, i);
 		glLineWidth(spc.stick_width);
 		stick_prog.enable(ctx);
+		set_default_attributes(ctx, stick_prog, 3);
+
 		ctx.set_color(spc.stick_color);
 		glDrawArrays(GL_POINTS, 0, samples[i].size());
 		stick_prog.disable(ctx);
@@ -233,7 +233,7 @@ void plot3d::draw_axes(cgv::render::context& ctx)
 			p(ai) = domain_min(ai); P.push_back(p);
 		}
 		if (!P.empty()) {
-			cgv::render::attribute_array_binding::set_global_attribute_array(ctx, 0, P);
+			set_attributes(ctx, P);
 			glDrawArrays(GL_LINES, 0, GLsizei(P.size()));
 			P.clear();
 		}
@@ -244,9 +244,10 @@ void plot3d::draw_ticks(cgv::render::context& ctx)
 {
 	if (tick_vertices.empty())
 		return;
+	enable_attributes(ctx, 2);
 	tick_label_prog.enable(ctx);
 	set_uniforms(ctx, tick_label_prog, -1);
-	cgv::render::attribute_array_binding::set_global_attribute_array(ctx, 0, tick_vertices);
+	set_attributes(ctx, tick_vertices);
 	for (const auto& tbc : tick_batches) if (tbc.vertex_count > 0) {
 		tick_label_prog.set_uniform(ctx, "ai", tbc.ai);
 		tick_label_prog.set_uniform(ctx, "aj", tbc.aj);
@@ -257,13 +258,14 @@ void plot3d::draw_ticks(cgv::render::context& ctx)
 		glDrawArrays(GL_LINES, tbc.first_vertex, tbc.vertex_count);
 	}
 	tick_label_prog.disable(ctx);
+	disable_attributes(ctx, 2);
 }
 
 void plot3d::draw_tick_labels(cgv::render::context& ctx)
 {
 	if (tick_labels.empty())
 		return;
-	cgv::render::attribute_array_binding::set_global_attribute_array(ctx, 0, tick_vertices);
+	set_attributes(ctx, tick_vertices);
 	for (const auto& tbc : tick_batches) if (tbc.label_count > 0) {
 		ctx.set_color(get_domain_config_ptr()->axis_configs[tbc.ai].color);
 		for (unsigned i = tbc.first_label; i < tbc.first_label + tbc.label_count; ++i) {
@@ -289,6 +291,11 @@ void plot3d::draw(cgv::render::context& ctx)
 	if (!prog.is_created()) {
 		if (!prog.build_program(ctx, "plot3d.glpr")) {
 			std::cerr << "could not build GLSL program from plot3d.glpr" << std::endl;
+		}
+	}
+	if (!sphere_prog.is_created()) {
+		if (!sphere_prog.build_program(ctx, "plot3d_sphere.glpr")) {
+			std::cerr << "could not build GLSL program from plot3d_sphere.glpr" << std::endl;
 		}
 	}
 	if (!stick_prog.is_created()) {
@@ -333,26 +340,29 @@ void plot3d::draw(cgv::render::context& ctx)
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glDepthFunc(GL_LEQUAL);
 
-	cgv::render::attribute_array_binding::enable_global_array(ctx, 0);
-	set_uniforms(ctx, prog, -1);
-	prog.enable(ctx);
-	if (get_domain_config_ptr()->show_domain)
-		draw_domain(ctx);
-	draw_axes(ctx);
-	prog.disable(ctx);
-	
-	draw_ticks(ctx);
-	cgv::render::attribute_array_binding::disable_global_array(ctx, 0);
-
-	ctx.enable_font_face(label_font_face, get_domain_config_ptr()->label_font_size);
-	draw_tick_labels(ctx);
-
-	cgv::render::attribute_array_binding::enable_global_array(ctx, 0);
+	enable_attributes(ctx, 3);
 	for (unsigned i = 0; i < samples.size(); ++i) {
 		// skip unvisible and empty sub plots
 		if (!ref_sub_plot3d_config(i).show_plot || samples[i].size() == 0)
 			continue;
 		draw_sub_plot(ctx, i);
+	}
+	disable_attributes(ctx, 3);
+
+	if (get_domain_config_ptr()->show_domain) {
+		draw_domain(ctx);
+
+		enable_attributes(ctx, 3);
+		set_uniforms(ctx, prog, -1);
+		prog.enable(ctx);
+		draw_axes(ctx);
+		prog.disable(ctx);
+		disable_attributes(ctx, 3);
+
+		draw_ticks(ctx);
+
+		ctx.enable_font_face(label_font_face, get_domain_config_ptr()->label_font_size);
+		draw_tick_labels(ctx);
 	}
 
 	if (!line_smooth)
@@ -369,9 +379,9 @@ void plot3d::clear(cgv::render::context& ctx)
 {
 	sphere_prog.destruct(ctx);
 	box_prog.destruct(ctx);
-	wirebox_prog.destruct(ctx);
+//	wirebox_prog.destruct(ctx);
 	stick_prog.destruct(ctx);
-	surface_prog.destruct(ctx);
+//	surface_prog.destruct(ctx);
 	cgv::render::ref_box_renderer(ctx, -1);
 
 }

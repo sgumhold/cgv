@@ -41,9 +41,9 @@ class CGV_API plot3d : public plot_base
 	cgv::render::shader_program tick_label_prog;
 	cgv::render::shader_program sphere_prog;
 	cgv::render::shader_program box_prog;
-	cgv::render::shader_program wirebox_prog;
+	//cgv::render::shader_program wirebox_prog;
 	cgv::render::shader_program stick_prog;
-	cgv::render::shader_program surface_prog;
+	//cgv::render::shader_program surface_prog;
 	cgv::render::box_render_style brs;
 	void set_uniforms(cgv::render::context& ctx, cgv::render::shader_program& prog, unsigned i);
 	bool compute_sample_coordinate_interval(int ai, float& samples_min, float& samples_max, bool only_visible);
