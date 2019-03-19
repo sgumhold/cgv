@@ -130,6 +130,39 @@ struct CGV_API plot_base_config : public cgv::render::render_types
 	virtual ~plot_base_config();
 };
 
+/// different attribute sources
+enum AttributeSource
+{
+	AS_NONE,
+	AS_SAMPLE_CONTAINER,
+	AS_POINTER,
+	AS_VBO
+};
+
+/// store source of a single plot attribute (one coordinate axis or one float attribute)
+struct CGV_API attribute_source
+{
+	AttributeSource source;
+	union {
+		int sub_plot_index;                  // index of other subplot or -1 for current subplot
+		const float* pointer;                      // pointer to external data
+		const cgv::render::vertex_buffer* vbo_ptr; // pointer to vbo
+	};
+	size_t offset;                           // offset into vbo or coordinate axis into sample container 
+	size_t count;
+	size_t stride;                           // stride in all representations
+	/// constructor for empty sources
+	attribute_source();
+	/// constructor for source from sample container
+	attribute_source(int sub_plot_index, size_t ai, size_t _count, size_t _stride);
+	/// constructor for source from external data
+	attribute_source(const float* _pointer, size_t _count, size_t _stride);
+	/// constructor for source from vbo
+	attribute_source(const cgv::render::vertex_buffer* _vbo_ptr, size_t _offset, size_t _count, size_t _stride);
+	/// copy constructor has no magic inside
+	attribute_source(const attribute_source& as);
+};
+
 
 /** base class for plot2d and plot3d, which can have several sub plots each */
 class CGV_API plot_base : public cgv::render::drawable
@@ -227,12 +260,19 @@ protected:
 	/// store pointer to current font face
 	cgv::media::font::font_face_ptr label_font_face;
 
+	/// attribute sources
+	std::vector<std::vector<attribute_source> > attribute_sources;
+
 	/// callback to change fonts
 	void on_font_selection();
 	/// callback to change font face
 	void on_font_face_selection();
 	/// set the uniforms for the i-th sub plot, overloaded by derived classes to set uniforms of derived configuration classes
 	virtual void set_uniforms(cgv::render::context& ctx, cgv::render::shader_program& prog, unsigned i = -1);
+	/// set vertex shader input attributes based on attribute source information
+	size_t set_attributes(cgv::render::context& ctx, int i, const std::vector< std::vector<vec2> >& samples);
+	/// set vertex shader input attributes based on attribute source information
+	size_t set_attributes(cgv::render::context& ctx, int i, const std::vector< std::vector<vec3> >& samples);
 	/// set vertex shader input attributes 
 	void set_attributes(cgv::render::context& ctx, const std::vector<vec2>& points);
 	/// set vertex shader input attributes 
@@ -245,7 +285,7 @@ protected:
 	/// 
 	void disable_attributes(cgv::render::context& ctx, unsigned count);
 	///
-	virtual bool compute_sample_coordinate_interval(int ai, float& samples_min, float& samples_max, bool only_visible) = 0;
+	virtual bool compute_sample_coordinate_interval(int i, int ai, float& samples_min, float& samples_max) = 0;
 public:
 	/// construct with default parameters
 	plot_base(unsigned nr_axes);
@@ -331,6 +371,12 @@ public:
 	plot_base_config& ref_sub_plot_config(unsigned i);
 	/// set the colors for all plot features of the i-th sub plot as variation of the given color
 	void set_sub_plot_colors(unsigned i, const rgb& base_color);
+	/// define a sub plot attribute ai from coordinate aj of the i-th internal sample container
+	void set_sub_plot_attribute(unsigned i, unsigned ai, int subplot_index, size_t aj);
+	/// define a sub plot attribute from an external pointer
+	void set_sub_plot_attribute(unsigned i, unsigned ai, const float* _pointer, size_t count, size_t stride);
+	/// define a sub plot attribute from a vbo (attribute must be stored in float type in vbo)
+	void set_sub_plot_attribute(unsigned i, unsigned ai, const cgv::render::vertex_buffer* _vbo_ptr, size_t _offset, size_t _count, size_t _stride);
 	//@}
 
 

@@ -76,18 +76,25 @@ class test_plot2d : public cgv::base::node, public cgv::render::drawable, public
 {
 protected:
 	cgv::plot::plot2d plot;
+	std::vector<vec3> P;
 public:
 	test_plot2d() : cgv::base::node("2d plot tester")
 	{
 		unsigned i;
-		std::vector<vec2>& C = plot.ref_sub_plot_samples(plot.add_sub_plot("cos"));
-		for (i = 0; i < 50; ++i)
-			C.push_back(vec2(0.1f*i, cos(0.1f*i)));
-		std::vector<vec2>& S = plot.ref_sub_plot_samples(plot.add_sub_plot("sin"));
-		for (i = 0; i < 50; ++i)
-			S.push_back(vec2(0.1f*i, sin(0.1f*i)));
-		plot.set_sub_plot_colors(0, rgb(1.0f, 0.0f, 0.1f));
-		plot.set_sub_plot_colors(1, rgb(0.1f, 0.0f, 1.0f));
+		for (i = 0; i < 50; ++i) {
+			float x = 0.1f*i;
+			P.push_back(vec3(x, cos(x), sin(x)));
+		}
+		unsigned p1 = plot.add_sub_plot("cos");
+		unsigned p2 = plot.add_sub_plot("sin");
+
+		plot.set_sub_plot_colors(p1, rgb(1.0f, 0.0f, 0.1f));
+		plot.set_sub_plot_colors(p2, rgb(0.1f, 0.0f, 1.0f));
+
+		plot.set_sub_plot_attribute(p1, 0, &P[0][0], P.size(), sizeof(vec3));
+		plot.set_sub_plot_attribute(p1, 1, &P[0][1], P.size(), sizeof(vec3));
+		plot.set_sub_plot_attribute(p2, 0, &P[0][0], P.size(), sizeof(vec3));
+		plot.set_sub_plot_attribute(p2, 1, &P[0][2], P.size(), sizeof(vec3));
 
 		plot.adjust_domain_to_data();
 		plot.adjust_tick_marks_to_domain();

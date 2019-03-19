@@ -43,7 +43,7 @@ protected:
 	void draw_tick_labels(cgv::render::context& ctx);
 protected:
 	void set_uniforms(cgv::render::context& ctx, cgv::render::shader_program& prog, unsigned i = -1);
-	bool compute_sample_coordinate_interval(int ai, float& samples_min, float& samples_max, bool only_visible);
+	bool compute_sample_coordinate_interval(int i, int ai, float& samples_min, float& samples_max);
 
 	/// store 2d samples for data series
 	std::vector<std::vector<vec2> > samples;

@@ -90,6 +90,35 @@ plot_base_config::~plot_base_config()
 {
 }
 
+
+/// constructor for empty sources
+attribute_source::attribute_source() : source(AS_NONE), pointer(0), offset(0), count(0), stride(0)
+{}
+
+/// constructor for source from sample container
+attribute_source::attribute_source(int _sub_plot_index, size_t ai, size_t _count, size_t _stride) :
+	source(AS_SAMPLE_CONTAINER), sub_plot_index(_sub_plot_index), offset(ai), count(_count), stride(_stride) {}
+/// constructor for source from external data
+attribute_source::attribute_source(const float* _pointer, size_t _count, size_t _stride) :
+	source(AS_POINTER), pointer(_pointer), offset(0), count(_count), stride(_stride) {}
+/// constructor for source from vbo
+attribute_source::attribute_source(const cgv::render::vertex_buffer* _vbo_ptr, size_t _offset, size_t _count, size_t _stride) :
+source(AS_VBO), vbo_ptr(_vbo_ptr), offset(_offset), count(_count), stride(_stride) {}
+/// copy constructor has no magic inside
+attribute_source::attribute_source(const attribute_source& as)
+{
+	source = as.source;
+	switch (source) {
+	case AS_NONE: pointer = 0; offset = count = stride = 0; break;
+	case AS_SAMPLE_CONTAINER: sub_plot_index = as.sub_plot_index; break;
+	case AS_POINTER: pointer = as.pointer; break;
+	case AS_VBO: vbo_ptr = as.vbo_ptr; break;
+	}
+	offset = as.offset;
+	count  = as.count;
+	stride = as.stride;
+}
+
 /// check whether tick information has to be updated
 bool plot_base::tick_render_information_outofdate() const
 {
@@ -348,6 +377,70 @@ void plot_base::set_uniforms(cgv::render::context& ctx, cgv::render::shader_prog
 	}
 }
 
+/// set vertex shader input attributes based on attribute source information
+size_t plot_base::set_attributes(cgv::render::context& ctx, int i, const std::vector< std::vector<vec2> >& samples)
+{
+	const auto& ass = attribute_sources[i];
+	unsigned ai = 0;
+	size_t count = -1;
+	for (const auto& as : ass) {
+		switch (as.source) {
+		case AS_SAMPLE_CONTAINER: {
+			int j = as.sub_plot_index == -1 ? i : as.sub_plot_index;
+			cgv::render::attribute_array_binding::set_global_attribute_array(ctx, ai,
+				&samples[j][0][as.offset], samples[j].size(), sizeof(vec2));
+			count = std::min(samples[j].size(), count);
+			break;
+		}
+		case AS_POINTER:
+			cgv::render::attribute_array_binding::set_global_attribute_array(ctx, ai,
+				as.pointer, as.count, as.stride);
+			count = std::min(as.count, count);
+			break;
+		case AS_VBO:
+			cgv::render::attribute_array_binding::set_global_attribute_array(ctx, ai, *as.vbo_ptr,
+				cgv::render::element_descriptor_traits<float>::get_type_descriptor(*as.pointer),
+				as.count, as.offset, as.stride);
+			count = std::min(as.count, count);
+			break;
+		}
+		++ai;
+	}
+	return count;
+}
+
+//// set vertex shader input attributes based on attribute source information
+size_t plot_base::set_attributes(cgv::render::context& ctx, int i, const std::vector< std::vector<vec3> >& samples)
+{
+	const auto& ass = attribute_sources[i];
+	unsigned ai = 0;
+	size_t count = -1;
+	for (const auto& as : ass) {
+		switch (as.source) {
+		case AS_SAMPLE_CONTAINER: {
+			int j = as.sub_plot_index == -1 ? i : as.sub_plot_index;
+			cgv::render::attribute_array_binding::set_global_attribute_array(ctx, ai,
+				&samples[j][0][as.offset], samples[j].size(), sizeof(vec3));
+			count = std::min(samples[j].size(), count);
+			break;
+		}
+		case AS_POINTER:
+			cgv::render::attribute_array_binding::set_global_attribute_array(ctx, ai,
+				as.pointer, as.count, as.stride);
+			count = std::min(as.count, count);
+			break;
+		case AS_VBO:
+			cgv::render::attribute_array_binding::set_global_attribute_array(ctx, ai, *as.vbo_ptr,
+				cgv::render::element_descriptor_traits<float>::get_type_descriptor(*as.pointer),
+				as.count, as.offset, as.stride);
+			count = std::min(as.count, count);
+			break;
+		}
+		++ai;
+	}
+	return count;
+}
+
 /// set vertex shader input attributes 
 void plot_base::set_attributes(cgv::render::context& ctx, const std::vector<vec2>& points)
 {
@@ -361,6 +454,34 @@ void plot_base::set_attributes(cgv::render::context& ctx, const std::vector<vec3
 	cgv::render::attribute_array_binding::set_global_attribute_array(ctx, 0, &points[0][0], points.size(), 3*sizeof(float));
 	cgv::render::attribute_array_binding::set_global_attribute_array(ctx, 1, &points[0][1], points.size(), 3*sizeof(float));
 	cgv::render::attribute_array_binding::set_global_attribute_array(ctx, 2, &points[0][2], points.size(), 3*sizeof(float));
+}
+
+/// define a sub plot attribute ai from coordinate aj of the i-th internal sample container
+void plot_base::set_sub_plot_attribute(unsigned i, unsigned ai, int subplot_index, size_t aj)
+{
+	assert(attribute_sources.size() > i);
+	auto& ass = attribute_sources[i];
+	while (ass.size() <= ai)
+		ass.resize(ai + 1);
+	ass[ai] = attribute_source(subplot_index, aj, 0, get_dim() * sizeof(float));
+}
+/// define a sub plot attribute from an external pointer
+void plot_base::set_sub_plot_attribute(unsigned i, unsigned ai, const float* _pointer, size_t count, size_t stride)
+{
+	assert(attribute_sources.size() > i);
+	auto& ass = attribute_sources[i];
+	while (ass.size() <= ai)
+		ass.resize(ai + 1);
+	ass[ai] = attribute_source(_pointer, count, stride);
+}
+/// define a sub plot attribute from a vbo (attribute must be stored in float type in vbo)
+void plot_base::set_sub_plot_attribute(unsigned i, unsigned ai, const cgv::render::vertex_buffer* _vbo_ptr, size_t _offset, size_t _count, size_t _stride)
+{
+	assert(attribute_sources.size() > i);
+	auto& ass = attribute_sources[i];
+	while (ass.size() <= ai)
+		ass.resize(ai + 1);
+	ass[ai] = attribute_source(_vbo_ptr, _offset, _count, _stride);
 }
 
 void plot_base::set_default_attributes(cgv::render::context& ctx, cgv::render::shader_program& prog, unsigned count_others)
@@ -540,8 +661,60 @@ const plot_base::vec3 plot_base::get_axis_direction(unsigned ai) const
 /// adjust the domain with respect to \c ai th axis to the data
 void plot_base::adjust_domain_axis_to_data(unsigned ai, bool adjust_min, bool adjust_max, bool only_visible)
 {
+	bool found_sample = false;
 	float samples_min, samples_max;
-	if (!compute_sample_coordinate_interval(ai, samples_min, samples_max, only_visible)) {
+	for (unsigned i = 0; i < configs.size(); ++i) {
+		if (only_visible && !ref_sub_plot_config(i).show_plot)
+			continue;
+		if (attribute_sources.size() <= i)
+			continue;
+		if (attribute_sources[i].size() <= ai)
+			continue;
+		const attribute_source& as = attribute_sources[i][ai];
+		if (as.source == AS_NONE)
+			continue;
+		bool new_found_sample = false;
+		float new_samples_min, new_samples_max;
+		switch (as.source) {
+		case AS_SAMPLE_CONTAINER:
+		{
+			int j = as.sub_plot_index == -1 ? i : as.sub_plot_index;
+			new_found_sample = compute_sample_coordinate_interval(j, as.offset, new_samples_min, new_samples_max);
+			break;
+		}
+		case AS_POINTER:
+		{
+			const float* ptr = as.pointer;
+			for (unsigned j = 0; j < as.count; ++j) {
+				if (new_found_sample) {
+					new_samples_min = std::min(new_samples_min, *ptr);
+					new_samples_max = std::max(new_samples_max, *ptr);
+				}
+				else {
+					new_samples_min = new_samples_max = *ptr;
+					new_found_sample = true;
+				}
+				reinterpret_cast<const char*&>(ptr) += as.stride;
+			}
+			break;
+		}
+		case AS_VBO:
+			std::cerr << "VBO case not implemented for adjustment of domain axes." << std::endl;
+			break;
+		}
+		if (new_found_sample) {
+			if (found_sample) {
+				samples_min = std::min(samples_min, new_samples_min);
+				samples_max = std::max(samples_max, new_samples_max);
+			}
+			else {
+				samples_min = new_samples_min;
+				samples_max = new_samples_max;
+				found_sample = true;
+			}
+		}
+	}
+	if (!found_sample) {
 		if (adjust_min)
 			domain_min(ai) = 0.0f;
 		if (adjust_max)
