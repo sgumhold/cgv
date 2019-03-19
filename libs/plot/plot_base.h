@@ -233,6 +233,17 @@ protected:
 	void on_font_face_selection();
 	/// set the uniforms for the i-th sub plot, overloaded by derived classes to set uniforms of derived configuration classes
 	virtual void set_uniforms(cgv::render::context& ctx, cgv::render::shader_program& prog, unsigned i = -1);
+	/// set vertex shader input attributes 
+	void set_attributes(cgv::render::context& ctx, const std::vector<vec2>& points);
+	/// set vertex shader input attributes 
+	void set_attributes(cgv::render::context& ctx, const std::vector<vec3>& points);
+	///
+	void set_default_attributes(cgv::render::context& ctx, cgv::render::shader_program& prog, unsigned count_others);
+
+	/// 
+	void enable_attributes(cgv::render::context& ctx, unsigned count);
+	/// 
+	void disable_attributes(cgv::render::context& ctx, unsigned count);
 	///
 	virtual bool compute_sample_coordinate_interval(int ai, float& samples_min, float& samples_max, bool only_visible) = 0;
 public:

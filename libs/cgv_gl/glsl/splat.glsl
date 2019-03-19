@@ -18,7 +18,7 @@ void prepare_splat(
 	in float reference_point_radius, in float pixel_extent,
 	out float percentual_core_size, out float percentual_point_size,
 	out float percentual_blend_width, out float percentual_splat_size);
-//***** end interface of surface.glsl ***********************************
+//***** end interface of splat.glsl ***********************************
 */
 
 float add_color(

@@ -1,6 +1,7 @@
 #include "plot_base.h"
 #include <cgv/render/shader_program.h>
 #include <cgv/signal/rebind.h>
+#include <cgv/render/attribute_array_binding.h>
 
 namespace cgv {
 	namespace plot {
@@ -345,6 +346,57 @@ void plot_base::set_uniforms(cgv::render::context& ctx, cgv::render::shader_prog
 		prog.set_uniform(ctx, "bar_color", ref_sub_plot_config(i).bar_color);
 		prog.set_uniform(ctx, "bar_outline_color", ref_sub_plot_config(i).bar_outline_color);
 	}
+}
+
+/// set vertex shader input attributes 
+void plot_base::set_attributes(cgv::render::context& ctx, const std::vector<vec2>& points)
+{
+	cgv::render::attribute_array_binding::set_global_attribute_array(ctx, 0, &points[0][0], points.size(), 2*sizeof(float));
+	cgv::render::attribute_array_binding::set_global_attribute_array(ctx, 1, &points[0][1], points.size(), 2 * sizeof(float));
+}
+
+/// set vertex shader input attributes 
+void plot_base::set_attributes(cgv::render::context& ctx, const std::vector<vec3>& points)
+{
+	cgv::render::attribute_array_binding::set_global_attribute_array(ctx, 0, &points[0][0], points.size(), 3*sizeof(float));
+	cgv::render::attribute_array_binding::set_global_attribute_array(ctx, 1, &points[0][1], points.size(), 3*sizeof(float));
+	cgv::render::attribute_array_binding::set_global_attribute_array(ctx, 2, &points[0][2], points.size(), 3*sizeof(float));
+}
+
+void plot_base::set_default_attributes(cgv::render::context& ctx, cgv::render::shader_program& prog, unsigned count_others)
+{
+	return;
+	if (count_others < 3)
+		prog.set_attribute(ctx, 2, 0.0f);
+	if (count_others < 4)
+		prog.set_attribute(ctx, 3, 0.0f);
+	if (count_others < 5)
+		prog.set_attribute(ctx, 4, 0.0f);
+}
+
+/// 
+void plot_base::enable_attributes(cgv::render::context& ctx, unsigned count)
+{
+	cgv::render::attribute_array_binding::enable_global_array(ctx, 0);
+	cgv::render::attribute_array_binding::enable_global_array(ctx, 1);
+	if (count > 2)
+		cgv::render::attribute_array_binding::enable_global_array(ctx, 2);
+	if (count > 3)
+		cgv::render::attribute_array_binding::enable_global_array(ctx, 3);
+	if (count > 4)
+		cgv::render::attribute_array_binding::enable_global_array(ctx, 4);
+}
+/// 
+void plot_base::disable_attributes(cgv::render::context& ctx, unsigned count)
+{
+	cgv::render::attribute_array_binding::disable_global_array(ctx, 0);
+	cgv::render::attribute_array_binding::disable_global_array(ctx, 1);
+	if (count > 2)
+		cgv::render::attribute_array_binding::disable_global_array(ctx, 2);
+	if (count > 3)
+		cgv::render::attribute_array_binding::disable_global_array(ctx, 3);
+	if (count > 4)
+		cgv::render::attribute_array_binding::disable_global_array(ctx, 4);
 }
 
 plot_base::plot_base(unsigned nr_axes) : dom_cfg(nr_axes), last_dom_cfg(0)

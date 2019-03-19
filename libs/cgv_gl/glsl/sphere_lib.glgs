@@ -15,6 +15,7 @@ struct sphere_parameter_space
 	vec2  e_zw_clip_vs;
 };
 
+void generate_sphere_cover_splat(in vec4 sphere, in sphere_parameter_space sps, in float splat_size = 1.0);
 void generate_sphere_cover_splat(in vec4 sphere, in sphere_parameter_space sps, in mat4 MV, in mat4 MVP, in mat3 NM, in float splat_size = 1.0);
 //***** end interface of sphere_lib.glgs ***********************************
 */
@@ -43,6 +44,16 @@ struct sphere_splat_info
 };
 
 out sphere_splat_info ssi;
+
+//***** begin interface of view.glsl ***********************************
+mat4 get_modelview_matrix();
+mat4 get_projection_matrix();
+mat4 get_modelview_projection_matrix();
+mat4 get_inverse_modelview_matrix();
+mat4 get_inverse_modelview_projection_matrix();
+mat3 get_normal_matrix();
+mat3 get_inverse_normal_matrix();
+//***** end interface of view.glsl ***********************************
 
 void generate_sphere_splat_vertex(in vec4 sphere, in vec2 t, in sphere_parameter_space sps, in mat4 MV, in mat4 MVP, in mat3 NM)
 {
@@ -82,4 +93,9 @@ void generate_sphere_cover_splat(in vec4 sphere, in sphere_parameter_space sps, 
 	generate_sphere_splat_vertex(sphere, vec2(-splat_size,  splat_size), sps, MV, MVP, NM);
 	generate_sphere_splat_vertex(sphere, vec2( splat_size,  splat_size), sps, MV, MVP, NM);
 	EndPrimitive();
+}
+
+void generate_sphere_cover_splat(in vec4 sphere, in sphere_parameter_space sps, in float splat_size)
+{
+	generate_sphere_cover_splat(sphere, sps, get_modelview_matrix(), get_modelview_projection_matrix(), get_normal_matrix(), splat_size);
 }

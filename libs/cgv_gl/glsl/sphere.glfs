@@ -21,7 +21,7 @@ vec4 compute_blended_color_with_halo(
 	in vec4 core_color, in float percentual_core_size,
 	in vec4 halo_color, in float percentual_point_size,
 	in float percentual_blend_width);
-//***** end interface of surface.glsl ***********************************
+//***** end interface of splat.glsl ***********************************
 
 //***** begin interface of surface.glsl ***********************************
 struct Material {

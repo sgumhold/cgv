@@ -1,6 +1,5 @@
 #include "plot2d.h"
 #include <libs/cgv_gl/gl/gl.h>
-#include <cgv/render/attribute_array_binding.h>
 
 namespace cgv {
 	namespace plot {
@@ -178,13 +177,15 @@ void plot2d::clear(cgv::render::context& ctx)
 
 void plot2d::draw_sub_plot(cgv::render::context& ctx, unsigned i)
 {
-	cgv::render::attribute_array_binding::set_global_attribute_array(ctx, 0, samples[i]);
+	set_attributes(ctx, samples[i]);
 
 	if (ref_sub_plot_config(i).show_bars) {
 		set_uniforms(ctx, bar_prog, i);
 		glDisable(GL_CULL_FACE);
 
 		bar_prog.enable(ctx);
+		set_default_attributes(ctx, bar_prog, 2);
+
 		ctx.set_color(ref_sub_plot2d_config(i).bar_color);
 		glDrawArrays(GL_POINTS, 0, samples[i].size());
 		bar_prog.disable(ctx);
@@ -197,6 +198,8 @@ void plot2d::draw_sub_plot(cgv::render::context& ctx, unsigned i)
 			set_uniforms(ctx, bar_outline_prog, i);
 
 			bar_outline_prog.enable(ctx);
+			set_default_attributes(ctx, bar_outline_prog, 2);
+
 			ctx.set_color(ref_sub_plot2d_config(i).bar_outline_color);
 			glDrawArrays(GL_POINTS, 0, samples[i].size());
 			bar_outline_prog.disable(ctx);
@@ -207,6 +210,7 @@ void plot2d::draw_sub_plot(cgv::render::context& ctx, unsigned i)
 		set_uniforms(ctx, stick_prog, i);
 		glLineWidth(ref_sub_plot2d_config(i).stick_width);
 		stick_prog.enable(ctx);
+		set_default_attributes(ctx, stick_prog, 2);
 		ctx.set_color(ref_sub_plot2d_config(i).stick_color);
 		glDrawArrays(GL_POINTS, 0, samples[i].size());
 		stick_prog.disable(ctx);
@@ -215,6 +219,7 @@ void plot2d::draw_sub_plot(cgv::render::context& ctx, unsigned i)
 	if (ref_sub_plot2d_config(i).show_points || ref_sub_plot2d_config(i).show_lines) {
 		set_uniforms(ctx, prog, i);
 		prog.enable(ctx);
+		set_default_attributes(ctx, prog, 2);
 	}
 
 	if (ref_sub_plot2d_config(i).show_lines) {
@@ -251,7 +256,7 @@ void plot2d::draw_domain(cgv::render::context& ctx)
 		P.push_back(domain.get_corner(1));
 		P.push_back(domain.get_corner(3));
 		P.push_back(domain.get_corner(2));
-		cgv::render::attribute_array_binding::set_global_attribute_array(ctx, 0, P);
+		set_attributes(ctx, P);
 		glDrawArrays(GL_QUADS, 0, 4);
 		P.clear();
 	}
@@ -264,7 +269,7 @@ void plot2d::draw_domain(cgv::render::context& ctx)
 			P.push_back(domain.get_corner(1 + ai));
 			P.push_back(domain.get_corner(2 - ai));
 			P.push_back(domain.get_corner(3));
-			cgv::render::attribute_array_binding::set_global_attribute_array(ctx, 0, P);
+			set_attributes(ctx, P);
 			glDrawArrays(GL_LINES, 0, 4);
 			P.clear();
 		}
@@ -293,7 +298,7 @@ void plot2d::draw_axes(cgv::render::context& ctx)
 			p(aj) = domain_max(aj); P.push_back(p);
 		}
 		if (!P.empty()) {
-			cgv::render::attribute_array_binding::set_global_attribute_array(ctx, 0, P);
+			set_attributes(ctx, P);
 			glDrawArrays(GL_LINES, 0, GLsizei(P.size()));
 			P.clear();
 		}
@@ -304,7 +309,7 @@ void plot2d::draw_ticks(cgv::render::context& ctx)
 {
 	if (tick_vertices.empty())
 		return;
-	cgv::render::attribute_array_binding::set_global_attribute_array(ctx, 0, tick_vertices);
+	set_attributes(ctx, tick_vertices);
 	for (const auto& tbc : tick_batches) if (tbc.vertex_count > 0) {
 		const axis_config& ac = get_domain_config_ptr()->axis_configs[tbc.ai];
 		const tick_config& tc = tbc.primary ? ac.primary_ticks : ac.secondary_ticks;
@@ -318,7 +323,7 @@ void plot2d::draw_tick_labels(cgv::render::context& ctx)
 {
 	if (tick_labels.empty())
 		return;
-	cgv::render::attribute_array_binding::set_global_attribute_array(ctx, 0, tick_vertices);
+	set_attributes(ctx, tick_vertices);
 	for (const auto& tbc : tick_batches) if (tbc.label_count > 0) {
 		ctx.set_color(get_domain_config_ptr()->axis_configs[tbc.ai].color);
 		for (unsigned i = tbc.first_label; i < tbc.first_label + tbc.label_count; ++i) {
@@ -342,26 +347,28 @@ void plot2d::draw(cgv::render::context& ctx)
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glDepthFunc(GL_LEQUAL);
 
-	cgv::render::attribute_array_binding::enable_global_array(ctx, 0);
+	enable_attributes(ctx, 2);
 	set_uniforms(ctx, prog);
 	prog.enable(ctx);
+	set_default_attributes(ctx, prog, 2);
 	if (get_domain_config_ptr()->show_domain)
 		draw_domain(ctx);
 	draw_axes(ctx);
 	draw_ticks(ctx);
 	prog.disable(ctx);
+	disable_attributes(ctx, 2);
 
-	cgv::render::attribute_array_binding::disable_global_array(ctx, 0);
 	ctx.enable_font_face(label_font_face, get_domain_config_ptr()->label_font_size);
 	draw_tick_labels(ctx);
 
-	cgv::render::attribute_array_binding::enable_global_array(ctx, 0);
+	enable_attributes(ctx, 2);
 	for (unsigned i = 0; i<samples.size(); ++i) {
 		// skip unvisible and empty sub plots
 		if (!ref_sub_plot2d_config(i).show_plot || samples[i].size() == 0)
 			continue;
 		draw_sub_plot(ctx, i);
 	}
+	disable_attributes(ctx, 2);
 
 	if (!line_smooth)
 		glDisable(GL_LINE_SMOOTH);

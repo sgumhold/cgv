@@ -1,11 +1,12 @@
 #version 330 
 
-layout(location = 0) in vec4 position;
-layout(location = 1) in vec4 color;
-
 uniform int ai;
 uniform int aj;
 uniform float default_value = 0.0;
+
+layout(location = 0) in float xpos;
+layout(location = 1) in float ypos;
+in vec4 color;
 
 out vec4 color_fs;
 
@@ -20,6 +21,7 @@ void main()
 	if (a1 == 2)
 		a1 = 1 - a0;
 	// transform vertex to clip space
+	vec2 position = vec2(xpos, ypos);
 	vec3 p = vec3(default_value);
 	p[ai] = position[a0];
 	p[aj] = position[a1];

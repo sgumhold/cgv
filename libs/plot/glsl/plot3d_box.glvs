@@ -1,4 +1,4 @@
-#version 150
+#version 330
 
 uniform float percentual_width;
 uniform int N;
@@ -8,7 +8,9 @@ uniform vec3 extent;
 uniform vec4 orientation;
 uniform vec3 center_location;
 
-in vec4 position;
+layout(location = 0) in float xpos;
+layout(location = 1) in float ypos;
+layout(location = 2) in float zpos;
 in vec4 color;
 
 out mat3 NM;
@@ -46,7 +48,7 @@ void main()
 	vec3 plot_min = map_plot_to_plot3(domain_min);
 	vec3 box_extent;
 	box_extent.xy = (percentual_width / float(N - 1)) *extent.xy;
-	vec4 p = vec4(map_plot_to_plot3(position.xyz), 1.0);
+	vec4 p = vec4(map_plot_to_plot3(vec3(xpos,ypos,zpos)),1.0);
 	box_extent.z = p.z - plot_min.z;
 	// compute box transformation
 	mat4 BM = mat4(0.0);
