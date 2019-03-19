@@ -11,7 +11,9 @@ mat3 get_inverse_normal_matrix();
 //***** end interface of view.glsl ***********************************
 
 //***** begin interface of sphere_lib.glvs ***********************************
-void output_sphere_parameter_space(in vec4 sphere, in mat4 MV, in mat4 iMV, in mat4 MVP, in mat3 NM);
+void output_sphere_parameter_space(in vec4 sphere);
+void output_sphere_parameter_space(in vec4 sphere, in mat4 MV, in mat4 MVP, in mat3 NM);
+void output_sphere_parameter_space(in vec4 sphere, in mat4 MV, in mat4 MVP, in mat3 NM, in mat4 iMV);
 //***** end interface of sphere_lib.glvs ***********************************
 
 uniform float radius_scale;
@@ -38,11 +40,6 @@ void right_multiply_group_position_matrix_and_rigid(inout mat4 MV, int group_ind
 
 void main()
 {
-	vec4 sphere;
-	sphere.xyz = position.xyz / position.w;
-	sphere.w = radius_scale * radius;
-	//	sphere.w = 0.01;
-
 	// compute normal transformation matrix
 	NM = get_normal_matrix();
 	right_multiply_group_normal_matrix(NM, group_index);
@@ -53,9 +50,9 @@ void main()
 	right_multiply_group_position_matrix(MVP, group_index);
 	// compute sphere color
 	color_gs = group_color(color, group_index);
-	
-	mat4 iMV = inverse(MV);
-	output_sphere_parameter_space(sphere, MV, iMV, MVP, NM);
-
-	gl_Position = sphere;
+	// output sphere parameter space for geometry shader
+	gl_Position = position;
+	gl_Position.xyz = gl_Position.xyz / gl_Position.w;
+	gl_Position.w = radius_scale * radius;
+	output_sphere_parameter_space(gl_Position, MV, MVP, NM);
 }

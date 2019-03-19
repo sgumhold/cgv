@@ -42,7 +42,7 @@ protected:
 
 	vec4 min_value;
 	vec4 max_value;
-	vec4 gamma;
+	vec4 gamma4;
 
 	// mixing 
 	bool use_mixing;
