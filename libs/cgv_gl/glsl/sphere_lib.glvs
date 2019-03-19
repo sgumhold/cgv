@@ -3,9 +3,21 @@
 /*
 The following interface is implemented in this shader:
 //***** begin interface of sphere_lib.glvs ***********************************
-void output_sphere_parameter_space(in vec4 sphere, in mat4 MV, in mat4 iMV, in mat4 MVP, in mat3 NM);
+void output_sphere_parameter_space(in vec4 sphere);
+void output_sphere_parameter_space(in vec4 sphere, in mat4 MV, in mat4 MVP, in mat3 NM);
+void output_sphere_parameter_space(in vec4 sphere, in mat4 MV, in mat4 MVP, in mat3 NM, in mat4 iMV);
 //***** end interface of sphere_lib.glvs ***********************************
 */
+
+//***** begin interface of view.glsl ***********************************
+mat4 get_modelview_matrix();
+mat4 get_projection_matrix();
+mat4 get_modelview_projection_matrix();
+mat4 get_inverse_modelview_matrix();
+mat4 get_inverse_modelview_projection_matrix();
+mat3 get_normal_matrix();
+mat3 get_inverse_normal_matrix();
+//***** end interface of view.glsl ***********************************
 
 struct sphere_parameter_space
 {
@@ -20,7 +32,7 @@ struct sphere_parameter_space
 
 out sphere_parameter_space sps;
 
-void output_sphere_parameter_space(in vec4 sphere, in mat4 MV, in mat4 iMV, in mat4 MVP, in mat3 NM)
+void output_sphere_parameter_space(in vec4 sphere, in mat4 MV, in mat4 MVP, in mat3 NM, in mat4 iMV)
 {
 	// compute radius and reciprocal radius
 	float inv_R = 1.0 / sphere.w;
@@ -51,4 +63,14 @@ void output_sphere_parameter_space(in vec4 sphere, in mat4 MV, in mat4 iMV, in m
 
 	// constant part of depth value
 	sps.e_zw_clip_vs = (MVP * iMV[3]).zw;
+}
+
+void output_sphere_parameter_space(in vec4 sphere, in mat4 MV, in mat4 MVP, in mat3 NM)
+{
+	output_sphere_parameter_space(sphere, MV, MVP, NM, inverse(MV));
+}
+
+void output_sphere_parameter_space(in vec4 sphere)
+{
+	output_sphere_parameter_space(sphere, get_modelview_matrix(), get_modelview_projection_matrix(), get_normal_matrix(), get_inverse_modelview_matrix());
 }

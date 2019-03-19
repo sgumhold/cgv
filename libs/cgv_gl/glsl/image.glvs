@@ -5,7 +5,7 @@ in vec4 color;
 in vec2 texcoord;
 
 out vec2 tc;
-out vec4 clr;
+out vec4 color_fs;
 
 //***** begin interface of view.glsl ***********************************
 mat4 get_modelview_matrix();
@@ -20,7 +20,7 @@ mat3 get_inverse_normal_matrix();
 void main()
 {
 	tc = texcoord;
-	clr = color;
+	color_fs = color;
 	
 	gl_Position = get_modelview_projection_matrix()*position;
 }

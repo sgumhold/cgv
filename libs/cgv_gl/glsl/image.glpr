@@ -1,2 +1,3 @@
 files:image
 vertex_file:view.glsl
+fragment_file:fragment.glfs

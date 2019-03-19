@@ -253,8 +253,18 @@ bool shader_program::attach_program(const context& ctx, const std::string& file_
 	bool no_error = true;
 	std::string error = "2 : attach command failed";
 	for (unsigned int i=0; i<lines.size(); ++i) {
-		std::string l = to_string((const token&)lines[i]);
+		token tok = lines[i];
+		while (tok.begin < tok.end && cgv::utils::is_space(*tok.begin))
+			++tok.begin;
+		std::string l = to_string(tok);
+
 		bool success = true;
+		// ignore empty lines
+		if (l.empty())
+			continue;
+		// ignore comments
+		if (l[0] == '/')
+			continue;
 		if (l.substr(0,5) == "file:")
 			success = attach_file(ctx, l.substr(5));
 		else if (l.substr(0,12) == "vertex_file:")

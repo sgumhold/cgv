@@ -4,7 +4,8 @@ uniform vec4 halo_color;
 uniform float halo_color_strength = 0.5;
 
 //***** begin interface of sphere_lib.glfs ***********************************
-bool computer_ray_sphere_intersection(in float percentual_splat_size, out vec3 p_eye, out vec3 n_eye, out vec2 tc, out int side, out float percentual_radial_position, out float clip_depth);
+bool computer_ray_sphere_intersection(out vec3 p_eye, out vec3 n_eye, out vec2 splat_tc, out float clip_depth, out int side);
+bool computer_ray_sphere_intersection(in float percentual_splat_size, out vec3 p_eye, out vec3 n_eye, out vec2 splat_tc, out float clip_depth, out int side, out float percentual_radial_position);
 //***** end interface of sphere_lib.glfs ***********************************
 
 in vec4 color_fs;
@@ -56,7 +57,7 @@ void main()
 	vec2 tc;
 	float percentual_radial_position;
 
-	if (!computer_ray_sphere_intersection(percentual_splat_size, p_eye, n_eye, tc, side, percentual_radial_position, gl_FragDepth))
+	if (!computer_ray_sphere_intersection(percentual_splat_size, p_eye, n_eye, tc, gl_FragDepth, side, percentual_radial_position))
 		discard;
 
 	vec4 color = compute_reflected_appearance_texture(p_eye, n_eye, tc, color_fs, side);

@@ -3,7 +3,7 @@
 uniform bool use_texture = true;
 uniform bool use_mixing = false;
 
-uniform vec4 gamma = vec4(1.0, 1.0, 1.0, 1.0);
+uniform vec4 gamma4 = vec4(1.0, 1.0, 1.0, 1.0);
 uniform vec4 min_value = vec4(0.0, 0.0, 0.0, 0.0);
 uniform vec4 max_value = vec4(1.0, 1.0, 1.0, 1.0);
 
@@ -13,22 +13,24 @@ uniform sampler2D mix_with;
 uniform float mix_param = 0.0;
 
 in vec2 tc;
-in vec4 clr;
+in vec4 color_fs;
 
-out vec4 frag_color;
+//***** begin interface of fragment.glfs ***********************************
+uniform float gamma = 2.2;
+void finish_fragment(vec4 color);
+//***** end interface of fragment.glfs ***********************************
 
 void main()
 {
 	if (use_texture) {
-		vec4 rgba = pow(clamp((texture2D(image, tc) - min_value) / (max_value - min_value),vec4(0.0,0.0,0.0,0.0),vec4(1.0,1.0,1.0,1.0)), gamma);
+		vec4 rgba = pow(clamp((texture2D(image, tc) - min_value) / (max_value - min_value),vec4(0.0,0.0,0.0,0.0),vec4(1.0,1.0,1.0,1.0)), gamma4);
 		if (use_mixing) {
-			vec4 rgba_mix = pow(clamp((texture2D(mix_with, tc) - min_value) / (max_value - min_value), vec4(0.0, 0.0, 0.0, 0.0), vec4(1.0, 1.0, 1.0, 1.0)), gamma);
+			vec4 rgba_mix = pow(clamp((texture2D(mix_with, tc) - min_value) / (max_value - min_value), vec4(0.0, 0.0, 0.0, 0.0), vec4(1.0, 1.0, 1.0, 1.0)), gamma4);
 			rgba = (1.0 - mix_param)*rgba + mix_param * rgba_mix;
 		}
-		frag_color = rgba;
+		finish_fragment(rgba);
 	}
 	else {
-		frag_color = clr;
+		finish_fragment(color_fs);
 	}
-	frag_color.rgb = pow(frag_color.rgb, vec3(2.2));
 }

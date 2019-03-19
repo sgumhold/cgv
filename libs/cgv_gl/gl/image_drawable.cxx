@@ -19,7 +19,7 @@ namespace cgv {
 	namespace render {
 		namespace gl {
 
-image_drawable::image_drawable() : min_value(0,0,0,0), max_value(1,1,1,1), gamma(1,1,1,1)
+image_drawable::image_drawable() : min_value(0,0,0,0), max_value(1,1,1,1), gamma4(1,1,1,1)
 {
 	aspect = 1;
 	start_time = -2;
@@ -258,7 +258,7 @@ void image_drawable::draw(context& ctx)
 			prog.enable(ctx);
 			prog.set_uniform(ctx, "min_value", min_value);
 			prog.set_uniform(ctx, "max_value", max_value);
-			prog.set_uniform(ctx, "gamma", gamma);
+			prog.set_uniform(ctx, "gamma4", gamma4);
 			prog.set_uniform(ctx, "image", 0);
 			prog.set_uniform(ctx, "use_texture", tex_ids.size() > 0);
 			prog.set_uniform(ctx, "use_mixing", use_mixing);
