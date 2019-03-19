@@ -1,0 +1,28 @@
+#version 330 
+#extension GL_EXT_geometry_shader4 : enable
+
+uniform float bar_width;
+uniform vec3 domain_min_pnt;
+
+in vec4 color_gs[];
+
+out vec4 color_fs;
+
+vec4 map_plot_to_screen(in vec2 pnt);
+
+void main()
+{
+	color_fs = color_gs[0];
+
+	gl_Position = map_plot_to_screen(vec2(gl_PositionIn[0].x - 0.5*bar_width, domain_min_pnt.y));
+	EmitVertex();
+
+	gl_Position = map_plot_to_screen(vec2(gl_PositionIn[0].x + 0.5*bar_width, domain_min_pnt.y));
+	EmitVertex();
+
+	gl_Position = map_plot_to_screen(vec2(gl_PositionIn[0].x - 0.5*bar_width, gl_PositionIn[0].y));
+	EmitVertex();
+
+	gl_Position = map_plot_to_screen(vec2(gl_PositionIn[0].x + 0.5*bar_width, gl_PositionIn[0].y));
+	EmitVertex();
+}

@@ -79,12 +79,12 @@ void ann_tree::build(const point_cloud& _pc, const std::vector<Idx>& component_i
 	// build point array
 	Cnt n = 0;
 	for (Idx ci : component_indices)
-		n += pc->component_point_range(ci).nr_points;
+		n += Cnt(pc->component_point_range(ci).nr_points);
 	ann->pa = new ANNpoint[n];
 	Idx i = 0;
 	for (Idx ci : component_indices) {
-		Idx pi_end = pc->component_point_range(ci).index_of_first_point + pc->component_point_range(ci).nr_points;
-		for (Idx pi = pc->component_point_range(ci).index_of_first_point; pi < pi_end; ++pi) {
+		Idx pi_end = Idx(pc->component_point_range(ci).index_of_first_point + pc->component_point_range(ci).nr_points);
+		for (Idx pi = Idx(pc->component_point_range(ci).index_of_first_point); pi < pi_end; ++pi) {
 			ann->pa[i] = const_cast<ANNpoint>(&pc->pnt(pi)[0]);
 			++i;
 		}

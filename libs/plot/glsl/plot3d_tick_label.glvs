@@ -1,0 +1,30 @@
+#version 330 
+
+uniform int ai;
+uniform int aj;
+uniform float default_value = 0.0;
+
+layout(location = 0) in float xpos;
+layout(location = 1) in float ypos;
+in vec4 color;
+
+out vec4 color_fs;
+
+vec4 map_plot_to_screen3(in vec3 pnt);
+
+void main()
+{
+	int a0 = ai;
+	int a1 = aj;
+	if (a0 == 2)
+		a0 = 1 - a1;
+	if (a1 == 2)
+		a1 = 1 - a0;
+	// transform vertex to clip space
+	vec2 position = vec2(xpos, ypos);
+	vec3 p = vec3(default_value);
+	p[ai] = position[a0];
+	p[aj] = position[a1];
+	gl_Position = map_plot_to_screen3(p.xyz);
+	color_fs = color;
+}

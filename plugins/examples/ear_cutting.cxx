@@ -7,11 +7,12 @@
 #include <cgv/gui/provider.h>
 #include <cgv/gui/application.h>
 #include <cgv/render/drawable.h>
+#include <cgv/render/attribute_array_binding.h>
 #include <cgv/render/view.h>
 #include <cgv/render/texture.h>
 #include <cgv/data/data_view.h>
 #include <cgv_gl/point_renderer.h>
-#include <cgv/math/vec.h>
+#include <cgv/math/ftransform.h>
 #include <cgv/utils/ostream_printf.h>
 #include <cgv_gl/gl/gl.h>
 #include <vector>
@@ -51,11 +52,7 @@ class ear_cutting :
 	public cgv::render::drawable     /// derive from drawable for drawing the cube
 {
 public:
-	typedef cgv::math::fvec<float, 2> vec2;
-	typedef cgv::math::fvec<float, 3> vec3;
-	typedef cgv::math::fvec<double, 3> vec3d;
 	typedef cgv::math::fvec<unsigned, 3> ivec3;
-	typedef cgv::media::color<float> clr_type;
 	typedef cgv::media::axis_aligned_box<float, 2> box2;
 protected:
 	vec3 last_pos;
@@ -70,31 +67,36 @@ protected:
 public:
 	std::vector<vec2> polygon;
 	std::vector<vec3> points;
-	std::vector<clr_type> colors;
+	std::vector<rgba> colors;
 	PolygonOrientation orientation;
 	std::vector<ivec3> triangles;
 	std::vector<polygon_node> nodes;
 	cgv::render::view* view_ptr;
 
 	// polygon rasterization
-	typedef cgv::media::color<cgv::type::uint8_type> rgb_type;
+	typedef cgv::media::color<cgv::type::uint8_type> brgb_type;
 	typedef cgv::math::fvec<int, 2> vec2i;
 	bool tex_outofdate;
 	cgv::render::texture tex;
-	std::vector<rgb_type> img;
-	rgb_type background_color;
+	std::vector<brgb_type> img;
+	brgb_type background_color, background_color2;
 	size_t img_width, img_height;
 	box2 img_extent;
 	bool synch_img_dimensions;
-	bool validate_pixel_location(const vec2i& p) const { return p(0) >= 0 && p(0) < img_width && p(1) >= 0 && p(1) < img_height; }
+	bool validate_pixel_location(const vec2i& p) const { return p(0) >= 0 && p(0) < int(img_width) && p(1) >= 0 && p(1) < int(img_height); }
 	size_t linear_index(const vec2i& p) const { return img_width*p(1) + p(0); }
 	static vec2i round(const vec2& p) { return vec2i(int(floor(p(0)+0.5f)), int(floor(p(1)+0.5f))); }
-	void set_pixel(const vec2i& p, const rgb_type& c) { if (validate_pixel_location(p)) img[linear_index(p)] = c; }
-	const rgb_type& get_pixel(const vec2i& p) const { return img[linear_index(p)]; }
-	vec2 pixel_from_world(const vec2& p) const { return vec2(img_width, img_height)*(p - img_extent.get_min_pnt()) / img_extent.get_extent(); }
-	vec2 world_from_pixel(const vec2& p) const { return p*img_extent.get_extent() / vec2(img_width, img_height) + img_extent.get_min_pnt(); }
-	void clear_image(const rgb_type& c) { std::fill(img.begin(), img.end(), c); }
-	void rasterize_polygon(const std::vector<vec2>& polygon, const rgb_type& c) {
+	void set_pixel(const vec2i& p, const brgb_type& c) { if (validate_pixel_location(p)) img[linear_index(p)] = c; }
+	const brgb_type& get_pixel(const vec2i& p) const { return img[linear_index(p)]; }
+	vec2 pixel_from_world(const vec2& p) const { return vec2(float(img_width), float(img_height))*(p - img_extent.get_min_pnt()) / img_extent.get_extent(); }
+	vec2 world_from_pixel(const vec2& p) const { return p*img_extent.get_extent() / vec2(float(img_width), float(img_height)) + img_extent.get_min_pnt(); }
+	void clear_image(const brgb_type& c) { std::fill(img.begin(), img.end(), c); }
+	void clear_image(const brgb_type& c1, const brgb_type& c2) {
+		for (unsigned y = 0; y < img_height; ++y)
+			for (unsigned x = 0; x < img_width; ++x)
+				set_pixel(vec2i(x, y), ((x & 1) == (y & 1)) ? c1 : c2);
+	}
+	void rasterize_polygon(const std::vector<vec2>& polygon, const brgb_type& c) {
 		for (const auto& p : polygon)
 			set_pixel(pixel_from_world(p), c);
 	}
@@ -216,14 +218,13 @@ public:
 	void set_colors()
 	{
 		colors.resize(polygon.size());
-		std::fill(colors.begin(), colors.end(), clr_type(0.5f, 0.5f, 0.5f));
+		std::fill(colors.begin(), colors.end(), rgb(0.5f, 0.5f, 0.5f));
 		for (unsigned ni = 0; ni < nodes.size(); ++ni)
 			switch (nodes[ni].status) {
-			case PCS_CONVEX: colors[nodes[ni].idx] = clr_type(0, 0, 1); break;
-			case PCS_CONCAVE: colors[nodes[ni].idx] = clr_type(1, 0, 0); break;
-			case PCS_EAR: colors[nodes[ni].idx] = clr_type(0, 1, 0); break;
+			case PCS_CONVEX: colors[nodes[ni].idx] = rgb(0, 0, 1); break;
+			case PCS_CONCAVE: colors[nodes[ni].idx] = rgb(1, 0, 0); break;
+			case PCS_EAR: colors[nodes[ni].idx] = rgb(0, 1, 0); break;
 			}
-//		colors[nodes[0].idx] = clr_type(0, 0, 0);
 	}
 	void perform_ear_cutting()
 	{
@@ -251,7 +252,7 @@ public:
 	void reallocate_image()
 	{
 		img.resize(img_width*img_height);
-		clear_image(background_color);
+		clear_image(background_color, background_color2);
 		tex_outofdate = true;
 	}
 	ear_cutting() : node("ear_cutting")
@@ -261,7 +262,8 @@ public:
 		img_extent.ref_min_pnt() = vec2(-2, -2);
 		img_extent.ref_max_pnt() = vec2( 2,  2);
 		synch_img_dimensions = true;
-		background_color = rgb_type(255, 255, 128);
+		background_color = brgb_type(255, 255, 128);
+		background_color2 = brgb_type(255, 128, 255);
 		reallocate_image();
 
 		//if (!read_polygon("S:/develop/projects/git/cgv/plugins/examples/poly.txt"))
@@ -273,9 +275,6 @@ public:
 		set_colors();
 		nr_steps = 0;
 		lambda = 0.1f;
-		prs.illumination_mode = IM_OFF;
-		prs.culling_mode = CM_OFF;
-		prs.orient_splats = false;
 		prs.point_size = 16;
 		view_ptr = 0;
 		selected_index = -1;
@@ -314,53 +313,60 @@ public:
 	}
 	void draw_polygon()
 	{
-		glBegin(GL_LINE_LOOP);
-		for (const auto& p : polygon)
-			glVertex2fv(p);
-		glEnd();
+		if (polygon.size() > 0)
+			glDrawArrays(GL_LINE_LOOP, 0, GLsizei(polygon.size()));
 	}
 	void draw_unprocessed_polygon()
 	{
-		glBegin(GL_LINE_LOOP);
+		if (nodes.empty())
+			return;
+		std::vector<GLuint> I;
 		for (const auto& n : nodes)
-			glVertex2fv(polygon[n.idx]);
-		glEnd();
+			I.push_back(n.idx);
+		glDrawElements(GL_LINE_LOOP, GLsizei(I.size()), GL_UNSIGNED_INT, &I[0]);
 	}
-	void draw_triangles()
+	void draw_triangles(context& ctx, shader_program& prog)
 	{
-		//clr_type c0(0.5f, 0.8f, 0.6f);
-		//clr_type c1(1.0f, 0.3f, 1.0f);
-		clr_type c0(0.0f, 0.0f, 1.0f);
-		clr_type c1(1.0f, 1.0f, 0.0f);
-		float scale = 1.0f / (polygon.size() - 2);
+		if (triangles.empty())
+			return;
+		// compute vertices of shrinked triangles
+		std::vector<vec2> P;
+		for (const auto& t : triangles) {
+			vec2 ctr = 0.3333333333333f*(polygon[t[0]] + polygon[t[1]] + polygon[t[2]]);
+			for (unsigned i = 0; i < 3; ++i)
+				P.push_back((1 - lambda)*polygon[t[i]] + lambda * ctr);
+		}
+		// set position vertex attribute pointer
+		attribute_array_binding::set_global_attribute_array(ctx, prog.get_position_index(), P);
+
 		if (wireframe) {
-			glColor3f(0,0,0);
-			for (const auto& t : triangles) {
-				vec2 ctr = 0.3333333333333f*(polygon[t[0]] + polygon[t[1]] + polygon[t[2]]);
-				glBegin(GL_LINE_LOOP);
-				for (unsigned i = 0; i<3; ++i)
-					glVertex2fv((1 - lambda)*polygon[t[i]] + lambda*ctr);
-				glEnd();
-			}
+			ctx.set_color(rgb(0, 0, 0));
+			for (int vi = 0; vi < int(P.size()); vi += 3)
+				glDrawArrays(GL_LINE_LOOP, vi, 3);
 		}
 		else {
-			glColor3f(0.5f, 0.8f, 0.6f);
-			glBegin(GL_TRIANGLES);
+			// compute vector C of vertex colors
+			std::vector<rgb> C;
+			rgb c0(0.0f, 0.0f, 1.0f);
+			rgb c1(1.0f, 1.0f, 0.0f);
+			float scale = 1.0f / (polygon.size() - 2);
 			for (unsigned ti = 0; ti < triangles.size(); ++ti) {
-				const auto& t = triangles[ti];
-				float lambda_c = scale*ti;
-				clr_type c = (1 - lambda_c)*c0 + lambda_c*c1;
-				glColor3fv(&c[0]);
-				vec2 ctr = 0.3333333333333f*(polygon[t[0]] + polygon[t[1]] + polygon[t[2]]);
-				for (unsigned i = 0; i < 3; ++i)
-					glVertex2fv((1 - lambda)*polygon[t[i]] + lambda*ctr);
+				float lambda_c = scale * ti;
+				rgb c = (1 - lambda_c)*c0 + lambda_c * c1;
+				C.push_back(c);
+				C.push_back(c);
+				C.push_back(c);
 			}
-			glEnd();
+			// bind and enable color array
+			attribute_array_binding::set_global_attribute_array(ctx, prog.get_color_index(), C);
+			attribute_array_binding::enable_global_array(ctx, prog.get_color_index());
+			glDrawArrays(GL_TRIANGLES, 0, GLsizei(C.size()));
+			attribute_array_binding::disable_global_array(ctx, prog.get_color_index());
 		}
 	}
 	void draw_points(context& ctx)
 	{
-		clr_type tmp(1,0,1);
+		rgba tmp(1.0f,0.0f,1.0f, 1.0f);
 		if (selected_index != -1)
 			std::swap(tmp, colors[selected_index]);
 		else if (edge_index != -1) {
@@ -370,7 +376,7 @@ public:
 		pnt_renderer.set_color_array(ctx, colors);
 		pnt_renderer.set_position_array(ctx, points);
 		pnt_renderer.validate_and_enable(ctx);
-		glDrawArrays(GL_POINTS, 0, points.size());
+			glDrawArrays(GL_POINTS, 0, GLsizei(points.size()));
 		pnt_renderer.disable(ctx);
 
 		if (selected_index != -1)
@@ -386,8 +392,8 @@ public:
 			if (tex.is_created())
 				tex.destruct(ctx);
 			cgv::data::data_format df("uint8[R,G,B]");
-			df.set_width(img_width);
-			df.set_height(img_height);
+			df.set_width(unsigned(img_width));
+			df.set_height(unsigned(img_height));
 			cgv::data::data_view dv(&df, &img[0]);
 			tex.create(ctx, dv);
 			tex_outofdate = false;
@@ -395,24 +401,35 @@ public:
 	}
 	void draw(context& ctx)
 	{
-		draw_points(ctx);
-		glLineWidth(2);
-		glColor3f(0.8f, 0, 0.7f);
-		draw_unprocessed_polygon();
-		glLineWidth(5);
-		glColor3f(0.8f, 0.5f, 0);
-		draw_polygon();
-		glLineWidth(1);
-		glColor3f(0, 0, 0);
-		draw_triangles();
-		glColor3f(0.9f, 1, 1);
-		glPushMatrix();
-		glScaled(2, 2, 2);
-		glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+		ctx.push_modelview_matrix();
+		ctx.mul_modelview_matrix(scale4<double>(2, 2, 2) * translate4<double>(0,0,-0.0005));
+		ctx.ref_default_shader_program(true).enable(ctx);
+		ctx.set_color(rgb(1, 1, 1));
 		tex.enable(ctx);
 		ctx.tesselate_unit_square();
 		tex.disable(ctx);
-		glPopMatrix();
+		ctx.ref_default_shader_program(true).disable(ctx);
+		ctx.pop_modelview_matrix();
+
+		shader_program& prog = ctx.ref_default_shader_program();
+		prog.enable(ctx);
+			attribute_array_binding::enable_global_array(ctx, prog.get_position_index());
+			attribute_array_binding::set_global_attribute_array(ctx, prog.get_position_index(), polygon);
+				glLineWidth(2);
+				ctx.set_color(rgb(0.8f, 0, 0.7f));
+				draw_unprocessed_polygon();
+				glLineWidth(5);
+				ctx.set_color(rgb(0.8f, 0.5f, 0));
+				draw_polygon();
+				glLineWidth(1);
+				draw_triangles(ctx, prog);
+			attribute_array_binding::disable_global_array(ctx, prog.get_position_index());
+		prog.disable(ctx);
+
+		ctx.push_modelview_matrix();
+		ctx.mul_modelview_matrix(translate4<double>(0.0, 0.0, 0.001));
+		draw_points(ctx);
+		ctx.pop_modelview_matrix();
 	}
 	bool handle(event& e)
 	{
@@ -443,7 +460,7 @@ public:
 			case MA_MOVE :
 				if (view_ptr) {
 					float epsilon = (float)(prs.point_size * view_ptr->get_y_extent_at_focus() / get_context()->get_height());
-					vec3d p_d;
+					dvec3 p_d;
 					if (get_world_location(me.get_x(), me.get_y(), *view_ptr, p_d)) {
 						vec3 p = p_d;
 						int last_selected_index = selected_index;
@@ -500,13 +517,13 @@ public:
 			case MA_DRAG :
 				if (me.get_button_state() == MB_LEFT_BUTTON) {
 					if (selected_index != -1) {
-						vec3d p_d;
+						dvec3 p_d;
 						if (get_world_location(me.get_x(), me.get_y(), *view_ptr, p_d)) {
 							vec3 new_pos = p_d;
 							vec3 diff = new_pos - last_pos;
 							diff(2) = 0;
 							points[selected_index] += diff;
-							polygon[selected_index] += vec2(diff);
+							polygon[selected_index] += vec2(diff(0),diff(1));
 							on_set(polygon[selected_index]);
 							last_pos = new_pos;
 						}
@@ -517,13 +534,13 @@ public:
 			case MA_PRESS:
 				if (me.get_button() == MB_LEFT_BUTTON) {
 					if (selected_index != -1) {
-						vec3d p_d;
+						dvec3 p_d;
 						if (get_world_location(me.get_x(), me.get_y(), *view_ptr, p_d)) {
 							last_pos = p_d;
 						}
 					}
 					else if (edge_index != -1) {
-						vec3d p_d;
+						dvec3 p_d;
 						if (get_world_location(me.get_x(), me.get_y(), *view_ptr, p_d)) {
 							p_edge = last_pos = p_d;
 						}
@@ -532,13 +549,13 @@ public:
 
 						if (edge_index == points.size() - 1) {
 							points.push_back(p_edge);
-							polygon.push_back(vec2(p_edge));
-							colors.push_back(clr_type(0.5f, 0.5f, 0.5f));
+							polygon.push_back(vec2(p_edge(0),p_edge(1)));
+							colors.push_back(rgb(0.5f, 0.5f, 0.5f));
 						}
 						else {
 							points.insert(points.begin() + edge_index + 1, p_edge);
-							polygon.insert(polygon.begin() + edge_index + 1, vec2(p_edge));
-							colors.insert(colors.begin() + edge_index + 1, clr_type(0.5f, 0.5f, 0.5f));
+							polygon.insert(polygon.begin() + edge_index + 1, vec2(p_edge(0), p_edge(1)));
+							colors.insert(colors.begin() + edge_index + 1, rgb(0.5f, 0.5f, 0.5f));
 						}
 						selected_index = edge_index + 1;
 						edge_index = -1;
@@ -566,7 +583,7 @@ public:
 							if (find_control(nr_steps))
 								find_control(nr_steps)->set("max", polygon.size() - 2);
 							if (nr_steps > polygon.size() - 2) {
-								nr_steps = polygon.size() - 2;
+								nr_steps = unsigned(polygon.size() - 2);
 								on_set(&nr_steps);
 							}
 							else {
@@ -606,7 +623,7 @@ public:
 				}
 			}
 			reallocate_image();
-			rasterize_polygon(polygon, rgb_type(255, 0, 0));
+			rasterize_polygon(polygon, brgb_type(255, 0, 0));
 			tex_outofdate = true;
 		}
 		if (member_ptr == &nr_steps) {
@@ -620,8 +637,8 @@ public:
 			classify_nodes();
 			find_ears();
 			set_colors();
-			clear_image(background_color);
-			rasterize_polygon(polygon, rgb_type(255, 0, 0));
+			clear_image(background_color, background_color2);
+			rasterize_polygon(polygon, brgb_type(255, 0, 0));
 			tex_outofdate = true;
 		}
 		update_member(member_ptr);
@@ -641,6 +658,7 @@ public:
 			add_member_control(this, "img_width", img_width, "value_slider", "min=2;max=1024;log=true;ticks=true");
 			add_member_control(this, "img_height", img_height, "value_slider", "min=2;max=1024;log=true;ticks=true");
 			add_member_control(this, "background_color", background_color);
+			add_member_control(this, "background_color2", background_color2);
 			align("\b");
 			end_tree_node(synch_img_dimensions);
 		}

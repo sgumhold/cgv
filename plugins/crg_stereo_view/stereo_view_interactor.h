@@ -2,7 +2,7 @@
 
 #include <cgv/base/base.h>
 #include <cgv/render/drawable.h>
-#include <cgv_gl/gl/gl_view.h>
+#include <cgv/render/stereo_view.h>
 #include <cgv/gui/event_handler.h>
 #include <cgv/gui/key_event.h>
 #include <cgv/gui/provider.h>
@@ -16,35 +16,6 @@
 
 #include "lib_begin.h"
 
-class CGV_API ext_view : public cgv::render::gl::gl_view
-{
-protected:
-	double eye_distance;
-	double parallax_zero_scale;
-	GlsuStereoMode stereo_mode;
-	GlsuEye mono_mode;
-	GlsuAnaglyphConfiguration anaglyph_config;
-	bool stereo_enabled;
-	bool stereo_translate_in_model_view;
-	bool two_d_enabled;
-	bool fix_view_up_dir;
-public:
-	ext_view();
-	void set_default_values();
-	GlsuStereoMode get_stereo_mode() const { return stereo_mode; }
-	virtual void set_stereo_mode(GlsuStereoMode sm) { stereo_mode = sm; }
-	GlsuEye get_mono_mode() const { return mono_mode; }
-	virtual void set_mono_mode(GlsuEye mm) { mono_mode = mm; }
-	virtual void set_anaglyph_config(GlsuAnaglyphConfiguration _ac) { anaglyph_config = _ac; }
-	bool is_stereo_enabled() const { return stereo_enabled; }
-	virtual void enable_stereo(bool e = true) { stereo_enabled = e; }
-	double get_eye_distance() const { return eye_distance; }
-	virtual void set_eye_distance(double e) { eye_distance = e; }
-	double get_parallax_zero_scale() const { return parallax_zero_scale; }
-	double get_parallax_zero_z() const;
-	virtual void set_parallax_zero_scale(double pzs) { parallax_zero_scale = pzs; }
-};
-
 enum StereoMousePointer {
 	SMP_BITMAP,
 	SMP_PIXELS,
@@ -56,18 +27,40 @@ extern CGV_API cgv::reflect::enum_reflection_traits<StereoMousePointer> get_refl
 class CGV_API stereo_view_interactor : 
 	public cgv::base::node, 
 	public cgv::gui::event_handler, 
-	public cgv::render::drawable,
+	public cgv::render::multi_pass_drawable,
 	public cgv::gui::provider,
-	public ext_view
+	public cgv::render::stereo_view
 {
+public:
+	typedef cgv::math::fvec<float, 3>      vec3;
+	typedef cgv::math::fvec<double, 3>    dvec3;
+	typedef cgv::math::fmat<double, 3, 3> dmat3;
+	typedef cgv::math::fmat<double, 4, 4> dmat4;
+	typedef cgv::media::axis_aligned_box<double, 3> dbox3;
 protected:
+	GlsuStereoMode stereo_mode;
+	GlsuEye mono_mode;
+	GlsuAnaglyphConfiguration anaglyph_config;
+	bool stereo_enabled;
+	bool stereo_translate_in_model_view;
+	bool two_d_enabled;
+	bool fix_view_up_dir;
+
+	void set_default_values();
+	GlsuStereoMode get_stereo_mode() const { return stereo_mode; }
+	virtual void set_stereo_mode(GlsuStereoMode sm) { stereo_mode = sm; on_set(&stereo_mode); }
+	GlsuEye get_mono_mode() const { return mono_mode; }
+	virtual void set_mono_mode(GlsuEye mm) { mono_mode = mm; on_set(&mono_mode); }
+	virtual void set_anaglyph_config(GlsuAnaglyphConfiguration _ac) { anaglyph_config = _ac; on_set(&anaglyph_config); }
+	bool is_stereo_enabled() const { return stereo_enabled; }
+	virtual void enable_stereo(bool e = true) { stereo_enabled = e; on_set(&stereo_enabled); }
+	
 	double z_near_derived, z_far_derived;
 	float depth_offset, depth_scale;
 	bool auto_view_images;
 	bool show_focus;
 	bool clip_relative_to_extent;
 	double pan_sensitivity, zoom_sensitivity, rotate_sensitivity;
-
 
 	// members for screen shots
 	bool write_images;
@@ -90,22 +83,18 @@ protected:
 		for (unsigned int i=0; i<N; ++i)
 			update_member(&v(i));
 	}
-	void dir_gui_cb(vec_type& dir, int i);
-	void add_dir_control(const std::string& name, vec_type& dir);
+	void dir_gui_cb(dvec3& dir, int i);
+	void add_dir_control(const std::string& name, dvec3& dir);
 	void check_write_image(cgv::render::context& ctx, const char* post_fix = "", bool done = true);
-
-
-	/// overload to set local lights before modelview matrix is set
-	virtual void on_set_local_lights();
 
 	///
 	StereoMousePointer stereo_mouse_pointer;
 	///
-	void draw_mouse_pointer_as_bitmap(cgv::render::context& ctx, int x, int y, int center_x, int center_y, int vp_width, int vp_height, bool visible, const cgv::render::context::mat_type &DPV);
+	void draw_mouse_pointer_as_bitmap(cgv::render::context& ctx, int x, int y, int center_x, int center_y, int vp_width, int vp_height, bool visible, const dmat4 &DPV);
 	///
-	void draw_mouse_pointer_as_pixels(cgv::render::context& ctx, int x, int y, int center_x, int center_y, int vp_width, int vp_height, bool visible, const cgv::render::context::mat_type &DPV);
+	void draw_mouse_pointer_as_pixels(cgv::render::context& ctx, int x, int y, int center_x, int center_y, int vp_width, int vp_height, bool visible, const dmat4 &DPV);
 	///
-	void draw_mouse_pointer_as_arrow(cgv::render::context& ctx, int x, int y, int center_x, int center_y, int vp_width, int vp_height, bool visible, const cgv::render::context::mat_type &DPV);
+	void draw_mouse_pointer_as_arrow(cgv::render::context& ctx, int x, int y, int center_x, int center_y, int vp_width, int vp_height, bool visible, const dmat4 &DPV);
 	///
 	void draw_mouse_pointer(cgv::render::context& ctx, bool visible);
 	///
@@ -119,20 +108,19 @@ protected:
 
 	void set_view_orientation(const std::string& axes);
 	/// set the current projection matrix
-	void gl_set_projection_matrix(GlsuEye e, double aspect);
-	void gl_set_modelview_matrix(GlsuEye e, double aspect, const cgv::render::view& view);
+	void gl_set_projection_matrix(cgv::render::context& ctx, GlsuEye e, double aspect);
+	void gl_set_modelview_matrix(cgv::render::context& ctx, GlsuEye e, double aspect, const cgv::render::view& view);
 	/// ensure sufficient number of viewport views
 	unsigned get_viewport_index(unsigned col_index, unsigned row_index) const;
 	void ensure_viewport_view_number(unsigned nr);
 
-	/**@name gamepad support*/
+	/**@name gamepad control*/
 	//@{
+	bool use_gamepad;
+	bool gamepad_attached;
 	float deadzone;
 	int left_mode, right_mode;
-	bool gamepad_attached;
-	unsigned gamepad_flags;
 	cgv::math::fvec<float,2> left_stick, right_stick, trigger;
-	bool gamepad_active;
 
 	bool gamepad_emulation;
 	bool emulation_active;
@@ -146,7 +134,6 @@ protected:
 	void check_emulation_active();
 	void plus_key_action(int i, cgv::gui::KeyAction action);
 	void minus_key_action(int i, cgv::gui::KeyAction action);
-
 
 	void timer_event(double t, double dt);
 	//@}
@@ -164,7 +151,7 @@ public:
 	/// inside the drawing process activate the sub-viewport with the given column and row indices, always terminate an activated viewport with deactivate_split_viewport
 	void activate_split_viewport(cgv::render::context& ctx, unsigned col_index, unsigned row_index);
 	/// deactivate the previously split viewport
-	void deactivate_split_viewport();
+	void deactivate_split_viewport(cgv::render::context& ctx);
 	/// make a viewport manage its own view
 	void viewport_use_individual_view(unsigned col_index, unsigned row_index);
 	/// check whether viewport manage its own view
@@ -192,9 +179,9 @@ public:
 	and center mouse location of the panel panel that the mouse pointer is in.
 
 	All pointer arguments starting with DPV_other_ptr can be set to the null pointer.*/
-	int get_DPVs(int x, int y, int width, int height,
-		const cgv::math::mat<double>** DPV_pptr,
-		const cgv::math::mat<double>** DPV_other_pptr = 0, int* x_other_ptr = 0, int* y_other_ptr = 0,
+	int get_modelview_projection_device_matrices(int x, int y, int width, int height,
+		const dmat4** MVPD_pptr,
+		const dmat4** MVPD_other_pptr = 0, int* x_other_ptr = 0, int* y_other_ptr = 0,
 		int* vp_col_idx_ptr = 0, int* vp_row_idx_ptr = 0,
 		int* vp_width_ptr = 0, int *vp_height_ptr = 0,
 		int* vp_center_x_ptr = 0, int* vp_center_y_ptr = 0,
@@ -203,22 +190,18 @@ public:
 	/*! in case of stereo rendering two z-values exist that can be unprojected to two points in world
 	    coordinates. In this case the possibility with smaller z value is selected. */
 	void get_vp_col_and_row_indices(cgv::render::context& ctx, int x, int y, int& vp_col_idx, int& vp_row_idx);
-	double get_z_and_unproject(cgv::render::context& ctx, int x, int y, pnt_type& p);
-	void set_focus(const pnt_type& foc) { ext_view::set_focus(foc); update_vec_member(view::focus); }
-	void set_view_up_dir(const vec_type& vud) { ext_view::set_view_up_dir(vud); update_vec_member(view_up_dir); }
-	void set_view_dir(const vec_type& vd) { ext_view::set_view_dir(vd); update_vec_member(view_dir); }
-	void set_y_extent_at_focus(double ext) { ext_view::set_y_extent_at_focus(ext); update_member(&y_extent_at_focus); }
-	void set_y_view_angle(double angle) { ext_view::set_y_view_angle(angle); update_member(&y_view_angle); }
-	void set_stereo_mode(GlsuStereoMode sm) { ext_view::set_stereo_mode(sm); update_member(&stereo_mode); }
-	void enable_stereo(bool e = true) { ext_view::enable_stereo(e); update_member(&stereo_enabled); }
-	void set_eye_distance(double e) { ext_view::set_eye_distance(e); update_member(&eye_distance); }
-	void set_parallax_zero_scale(double pzs) { ext_view::set_parallax_zero_scale(pzs); update_member(&parallax_zero_scale); }
-	void set_anaglyph_config(GlsuAnaglyphConfiguration _ac) { ext_view::set_anaglyph_config(_ac); update_member(&anaglyph_config); }
+	double get_z_and_unproject(cgv::render::context& ctx, int x, int y, dvec3& p);
+	void set_focus(const dvec3& foc) { stereo_view::set_focus(foc); update_vec_member(view::focus); }
+	void set_view_up_dir(const dvec3& vud) { stereo_view::set_view_up_dir(vud); update_vec_member(view_up_dir); }
+	void set_view_dir(const dvec3& vd) { stereo_view::set_view_dir(vd); update_vec_member(view_dir); }
+	void set_y_extent_at_focus(double ext) { stereo_view::set_y_extent_at_focus(ext); on_set(&y_extent_at_focus); }
+	void set_y_view_angle(double angle) { stereo_view::set_y_view_angle(angle); on_set(&y_view_angle); }
+	void set_eye_distance(double e) { stereo_view::set_eye_distance(e); on_set(&eye_distance); }
+	void set_parallax_zero_scale(double pzs) { stereo_view::set_parallax_zero_scale(pzs); on_set(&parallax_zero_scale); }
 	/// return the type name 
 	std::string get_type_name() const;
 	/// overload to show the content of this object
 	void stream_stats(std::ostream&);
-	bool init(cgv::render::context& ctx);
 	/// overload and implement this method to handle events
 	bool handle(cgv::gui::event& e);
 	/// overload to stream help information to the given output stream
@@ -244,8 +227,8 @@ public:
 private:
 	double check_for_click;
 	
-	cgv::render::context::mat_type DPV, DPV_right;
-	cgv::render::context::mat_type V, P;
+	dmat4 DPV, DPV_right;
+	dmat4 V, P;
 
 	GlsuEye current_e;
 	int current_vp[4], current_sb[4];
@@ -253,7 +236,7 @@ private:
 	bool do_viewport_splitting;
 	unsigned nr_viewport_columns;
 	unsigned nr_viewport_rows;
-	std::vector<cgv::render::context::mat_type> DPVs, DPVs_right;
+	std::vector<dmat4> DPVs, DPVs_right;
 	std::vector<cgv::render::view> views;
 	std::vector<bool> use_individual_view;
 

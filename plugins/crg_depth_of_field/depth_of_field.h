@@ -2,32 +2,27 @@
 
 #include <cgv/base/node.h>
 #include <cgv/render/drawable.h>
-#include <cgv/gui/event_handler.h>
 #include <cgv/gui/provider.h>
 
 #include "lib_begin.h"
 
 class CGV_API depth_of_field : 
 	public cgv::base::node, 
-	public cgv::gui::event_handler, 
-	public cgv::render::drawable,
+	public cgv::render::multi_pass_drawable,
 	public cgv::gui::provider
 {
-private:
-	int iter;
 protected:
 	double z_focus;
 	double aperture;
 	int nr_samples;
-	bool enabled;
 	bool copy_z_focus;
 
 	std::vector<double> samples;
 
 	void put_sample(int i, double& dx, double& dy);
 	void generate_samples();
-	void update_view(int i);
-	void restore_view(int i);
+	void update_view(cgv::render::context& ctx, int i);
+	void restore_view(cgv::render::context& ctx, int i);
 public:
 	///
 	depth_of_field();
@@ -41,10 +36,6 @@ public:
 	void stream_stats(std::ostream&);
 	///
 	bool init(cgv::render::context& ctx);
-	/// overload and implement this method to handle events
-	bool handle(cgv::gui::event& e);
-	/// overload to stream help information to the given output stream
-	void stream_help(std::ostream& os);
 	/// this method is called in one pass over all drawables before the draw method
 	void init_frame(cgv::render::context&);
 	/// this method is called in one pass over all drawables after drawing

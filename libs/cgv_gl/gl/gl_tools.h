@@ -72,16 +72,16 @@ extern CGV_API void gl_texture_to_screen(float xmin = -1.0f, float ymin = -1.0f,
 										 float umin =  0.0f, float vmin =  0.0f, float umax = 1.0f, float vmax = 1.0f);
 
 /// set the program variables needed by the lighting.glsl shader
-extern CGV_API void set_lighting_parameters(context& ctx, shader_program& prog);
+DEPRECATED("deprecated, use cgv::render::context based light management.") extern CGV_API void set_lighting_parameters(context& ctx, shader_program& prog);
 
 /// return a reference to the singleton textured material shader program, which is constructed on demand only
-extern CGV_API shader_program& ref_textured_material_prog(context& ctx);
+DEPRECATED("deprecated, use cgv::render::context::ref_surface_shader_prog() instead.") extern CGV_API shader_program& ref_textured_material_prog(context& ctx);
 
 /// push a shader program onto the textured material stack
-extern CGV_API void push_textured_material_prog(shader_program& prog);
+DEPRECATED("deprecated, use automatic cgv::render::context based shader_program stack.") extern CGV_API void push_textured_material_prog(shader_program& prog);
 
 /// pop a shader program from the textured material stack
-extern CGV_API void pop_textured_material_prog();
+DEPRECATED("deprecated, use automatic cgv::render::context based shader_program stack.") extern CGV_API void pop_textured_material_prog();
 
 //! complete the given shader program that is assumed to have a working fragment shader.
 /*! The function adds the rest of the pipeline and provides the input <in vec3 tex_coord>

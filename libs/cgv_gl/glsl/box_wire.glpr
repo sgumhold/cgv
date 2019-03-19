@@ -1,5 +1,9 @@
-files:box_wire
+vertex_file:box.glvs
+vertex_file:view.glsl
 vertex_file:group.glsl
 vertex_file:quaternion.glsl
-geometry_file:group.glsl
 geometry_shader_info:points;line_strip;16
+geometry_file:box_wire.glgs
+geometry_file:group.glsl
+fragment_file:default.glfs
+fragment_file:fragment.glfs

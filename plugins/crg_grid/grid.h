@@ -4,6 +4,7 @@
 #include <cgv/gui/event_handler.h>
 #include <cgv/gui/provider.h>
 #include <cgv/render/drawable.h>
+#include <cgv_gl/surface_renderer.h>
 #include <cgv/render/view.h>
 
 /// example for the implementation of a cgv node that handles events and renders a cube
@@ -17,7 +18,7 @@ protected:
 	cgv::render::view* view_ptr;
 	int minX,maxX,minZ,maxZ;
 	void render_grid_lines(float alpha);
-	cgv::math::vec<float> zaxis;
+	vec3 z_axis;
 	bool show_grid;
 	bool show_lines;
 	bool adaptive_grid;
@@ -27,6 +28,8 @@ protected:
 	float arrow_aspect;
 	float arrow_rel_tip_radius;
 	float arrow_tip_aspect;
+	float alpha;
+	float threshold;
 public:
 	/// construct from name which is necessary construction argument to node
 	grid();
@@ -44,8 +47,6 @@ public:
 	void stream_help(std::ostream& os);
 	/// 
 	bool init(cgv::render::context&);
-	/// 
-	void init_frame(cgv::render::context&);
 	/// optional method of drawable
 	void finish_frame(cgv::render::context&);
 	void draw_lines(cgv::render::context& ctx);

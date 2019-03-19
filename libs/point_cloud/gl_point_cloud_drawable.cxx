@@ -27,9 +27,9 @@ gl_point_cloud_drawable::gl_point_cloud_drawable()
 	show_boxes = false;
 	show_box = true;
 
-	point_style.blend_points = false;
-
-	box_color = color_type(0.5f, 0.5f, 0.5f, 1.0f);
+	surfel_style.blend_points = false;
+	surfel_style.blend_width_in_pixel = 0.0f;
+	box_color = rgba(0.5f, 0.5f, 0.5f, 1.0f);
 	box_style.illumination_mode = cgv::render::IM_TWO_SIDED;
 	box_style.culling_mode = cgv::render::CM_FRONTFACE;
 
@@ -84,7 +84,8 @@ bool gl_point_cloud_drawable::append(const std::string& _file_name, bool add_com
 			pc.add_component();
 	}
 	pc.append(pc1);
-
+	pc.component_name(cgv::type::int32_type(pc.get_nr_components() - 1)) = 
+		cgv::utils::file::drop_extension(cgv::utils::file::get_file_name(_file_name));
 	show_point_begin = 0;
 	show_point_end = pc.get_nr_points();
 	return true;
@@ -105,12 +106,16 @@ void gl_point_cloud_drawable::render_boxes(context& ctx, group_renderer& R, cgv:
 	if (use_component_colors)
 		R.set_color_array(ctx, &pc.component_color(0), pc.get_nr_components());
 	R.validate_and_enable(ctx);
-	glDrawArrays(GL_POINTS, 0, pc.get_nr_components());
+	glDrawArrays(GL_POINTS, 0, GLsizei(pc.get_nr_components()));
 	R.disable(ctx);
 }
 
-void gl_point_cloud_drawable::draw_box(cgv::render::context& ctx, const Box& box, const color_type& clr)
+void gl_point_cloud_drawable::draw_box(cgv::render::context& ctx, const Box& box, const rgba& clr)
 {
+	bool tmp_use_color = box_style.use_group_color;
+	bool tmp_use_transformation = box_style.use_group_transformation;
+	box_style.use_group_color = false;
+	box_style.use_group_transformation = false;
 	b_renderer.set_render_style(box_style);
 	b_renderer.set_position_array(ctx, &box.get_min_pnt(), 1);
 	b_renderer.set_extent_array(ctx, &box.get_max_pnt(), 1);
@@ -118,13 +123,21 @@ void gl_point_cloud_drawable::draw_box(cgv::render::context& ctx, const Box& box
 	b_renderer.validate_and_enable(ctx);
 	glDrawArrays(GL_POINTS, 0, 1);
 	b_renderer.disable(ctx);
+	box_style.use_group_color = tmp_use_color;
+	box_style.use_group_transformation = tmp_use_transformation;
 
+	tmp_use_color = box_wire_style.use_group_color;
+	tmp_use_transformation = box_wire_style.use_group_transformation;
+	box_wire_style.use_group_color = false;
+	box_wire_style.use_group_transformation = false;
 	bw_renderer.set_position_array(ctx, &box.get_min_pnt(), 1);
 	bw_renderer.set_extent_array(ctx, &box.get_max_pnt(), 1);
 	bw_renderer.set_color_array(ctx, &clr, 1);
 	bw_renderer.validate_and_enable(ctx);
 	glDrawArrays(GL_POINTS, 0, 1);
 	bw_renderer.disable(ctx);
+	box_wire_style.use_group_color = tmp_use_color;
+	box_wire_style.use_group_transformation = tmp_use_transformation;
 }
 
 void gl_point_cloud_drawable::draw_boxes(context& ctx)
@@ -143,16 +156,16 @@ void gl_point_cloud_drawable::draw_boxes(context& ctx)
 
 		b_renderer.set_render_style(box_style);
 		if (use_component_transformations) {
-			b_renderer.set_rotations(ctx, &static_cast<HVec&>(pc.component_rotation(0)), pc.get_nr_components(), sizeof(HVec));
-			b_renderer.set_translations(ctx, &pc.component_translation(0), pc.get_nr_components(), sizeof(Dir));
+			b_renderer.set_rotation_array(ctx, &static_cast<HVec&>(pc.component_rotation(0)), pc.get_nr_components(), sizeof(HVec));
+			b_renderer.set_translation_array(ctx, &pc.component_translation(0), pc.get_nr_components(), sizeof(Dir));
 		}
 		b_renderer.set_extent_array(ctx, &pc.box(0).get_max_pnt(), pc.get_nr_components(), sizeof(Box));
 		render_boxes(ctx, b_renderer, box_style);
 
 		bw_renderer.set_render_style(box_wire_style);
 		if (use_component_transformations) {
-			bw_renderer.set_rotations(ctx, &static_cast<HVec&>(pc.component_rotation(0)), pc.get_nr_components(), sizeof(HVec));
-			bw_renderer.set_translations(ctx, &pc.component_translation(0), pc.get_nr_components(), sizeof(Dir));
+			bw_renderer.set_rotation_array(ctx, &static_cast<HVec&>(pc.component_rotation(0)), pc.get_nr_components(), sizeof(HVec));
+			bw_renderer.set_translation_array(ctx, &pc.component_translation(0), pc.get_nr_components(), sizeof(Dir));
 		}
 		
 		bw_renderer.set_extent_array(ctx, &pc.box(0).get_max_pnt(), pc.get_nr_components(), sizeof(Box));
@@ -160,6 +173,23 @@ void gl_point_cloud_drawable::draw_boxes(context& ctx)
 	}
 }
 
+void gl_point_cloud_drawable::set_arrays(context& ctx, size_t offset, size_t count)
+{
+	if (count == -1)
+		count = pc.get_nr_points();
+	s_renderer.set_position_array(ctx, &pc.pnt(unsigned(offset)), pc.get_nr_points(), unsigned(sizeof(Pnt))*show_point_step);
+	if (pc.has_colors() || use_these_point_colors || (use_these_point_color_indices && use_these_point_palette)) {
+		if (use_these_point_colors)
+			s_renderer.set_color_array(ctx, &use_these_point_colors->at(offset), count, unsigned(sizeof(Clr))*show_point_step);
+		else if (use_these_point_color_indices && use_these_point_palette)
+			s_renderer.set_indexed_color_array(ctx, &use_these_point_color_indices->at(offset), count, *use_these_point_palette, show_point_step);
+		else
+			s_renderer.set_color_array(ctx, &pc.clr(unsigned(offset)), count, unsigned(sizeof(Clr))*show_point_step);
+	}
+	if (pc.has_normals())
+		s_renderer.set_normal_array(ctx, &pc.nml(unsigned(offset)), count, unsigned(sizeof(Nml))*show_point_step);
+
+}
 void gl_point_cloud_drawable::draw_points(context& ctx)
 {
 	if (!ensure_view_pointer())
@@ -170,55 +200,45 @@ void gl_point_cloud_drawable::draw_points(context& ctx)
 
 	if (pc.has_components()) {
 		if (use_these_component_colors)
-			p_renderer.set_group_colors(ctx, &use_these_component_colors->front(), use_these_component_colors->size());
+			s_renderer.set_group_colors(ctx, &use_these_component_colors->front(), use_these_component_colors->size());
 		else
-			p_renderer.set_group_colors(ctx, &pc.component_color(0), pc.get_nr_components());
-		p_renderer.set_group_rotations(ctx, &pc.component_rotation(0), pc.get_nr_components());
-		p_renderer.set_group_translations(ctx, &pc.component_translation(0), pc.get_nr_components());
-		p_renderer.set_group_index_attribute(ctx, &pc.component_index(0), pc.get_nr_points());
+			s_renderer.set_group_colors(ctx, &pc.component_color(0), pc.get_nr_components());
+		s_renderer.set_group_rotations(ctx, &pc.component_rotation(0), pc.get_nr_components());
+		s_renderer.set_group_translations(ctx, &pc.component_translation(0), pc.get_nr_components());
+		s_renderer.set_group_index_array(ctx, &pc.component_index(0), pc.get_nr_points());
 	}
-	p_renderer.set_position_array(ctx, &pc.pnt(0), pc.get_nr_points(), sizeof(Pnt)*show_point_step);
-	if (pc.has_colors() || use_these_point_colors || (use_these_point_color_indices && use_these_point_palette)) {
-		if (use_these_point_colors)
-			p_renderer.set_color_array(ctx, &use_these_point_colors->front(), pc.get_nr_points(), sizeof(Clr)*show_point_step);
-		else if (use_these_point_color_indices && use_these_point_palette)
-			p_renderer.set_indexed_color_attribute(ctx, *use_these_point_color_indices, *use_these_point_palette);
-		else
-			p_renderer.set_color_array(ctx, &pc.clr(0), pc.get_nr_points(), sizeof(Clr)*show_point_step);
-	}
-	if (pc.has_normals())
-		p_renderer.set_normal_array(ctx, &pc.nml(0), pc.get_nr_points(), sizeof(Nml)*show_point_step);
-	
-	bool tmp = point_style.use_group_color;
+
+	set_arrays(ctx);
+
+	bool tmp = surfel_style.use_group_color;
 	if (pc.has_components() && use_these_component_colors)
-		point_style.use_group_color = true;
+		surfel_style.use_group_color = true;
 	else if (use_these_point_colors || (use_these_point_color_indices && use_these_point_palette))
-		point_style.use_group_color = false;
-	p_renderer.validate_and_enable(ctx);
-	point_style.use_group_color = tmp;
+		surfel_style.use_group_color = false;
+	s_renderer.validate_and_enable(ctx);
+	surfel_style.use_group_color = tmp;
 
 	std::size_t n = (show_point_end - show_point_begin) / show_point_step;
-	GLint offset = show_point_begin / show_point_step;
+	GLint offset = GLint(show_point_begin / show_point_step);
 
 	if (sort_points && ensure_view_pointer()) {
 		struct sort_pred {
 			const point_cloud& pc;
 			const Pnt& view_dir;
-			unsigned show_point_step;
-			bool operator () (GLint i, GLint j) const {
-				return dot(pc.pnt(show_point_step*i), view_dir) > dot(pc.pnt(show_point_step*j), view_dir);
+			bool operator () (GLuint i, GLuint j) const {
+				return dot(pc.pnt(i), view_dir) > dot(pc.pnt(j), view_dir);
 			}
-			sort_pred(const point_cloud& _pc, const Pnt& _view_dir, unsigned _show_point_step) : pc(_pc), view_dir(_view_dir), show_point_step(_show_point_step) {}
+			sort_pred(const point_cloud& _pc, const Pnt& _view_dir) : pc(_pc), view_dir(_view_dir) {}
 		};
 		Pnt view_dir = view_ptr->get_view_dir();
-		std::vector<GLint> indices;
+		std::vector<GLuint> indices;
 		if (pc.has_components() && use_these_component_colors) {
 			unsigned nr = 0;
 			for (unsigned ci = 0; ci < pc.get_nr_components(); ++ci) {
 				if ((*use_these_component_colors)[ci][3] > 0.0f) {
-					unsigned off = pc.components[ci].index_of_first_point;
+					unsigned off = unsigned(pc.components[ci].index_of_first_point);
 					for (unsigned i = 0; i < pc.components[ci].nr_points; ++i)
-						indices.push_back((GLint)(off + i));
+						indices.push_back((GLuint)(off + i));
 				}
 			}
 		}
@@ -226,33 +246,34 @@ void gl_point_cloud_drawable::draw_points(context& ctx)
 			indices.resize(n);
 			size_t i;
 			for (i = 0; i < indices.size(); ++i)
-				indices[i] = (GLint)i + offset;
+				indices[i] = (GLuint)(show_point_step*i) + offset;
 		}
-		std::sort(indices.begin(), indices.end(), sort_pred(pc, view_dir, show_point_step));
+		std::sort(indices.begin(), indices.end(), sort_pred(pc, view_dir));
 
 		glDepthFunc(GL_ALWAYS);
 		size_t nn = indices.size() / nr_draw_calls;
 		for (unsigned i = 1; i<nr_draw_calls; ++i)
-			glDrawElements(GL_POINTS, nn, GL_UNSIGNED_INT, &indices[(i - 1)*nn]);
-		glDrawElements(GL_POINTS, indices.size() - (nr_draw_calls - 1)*nn, GL_UNSIGNED_INT, &indices[(nr_draw_calls - 1)*nn]);
+			glDrawElements(GL_POINTS, GLsizei(nn), GL_UNSIGNED_INT, &indices[(i - 1)*nn]);
+		glDrawElements(GL_POINTS, GLsizei(indices.size() - (nr_draw_calls - 1)*nn), GL_UNSIGNED_INT, &indices[(nr_draw_calls - 1)*nn]);
 		glDepthFunc(GL_LESS);
 	}
 	else {
 		if (pc.has_components() && use_these_component_colors) {
 			for (unsigned ci = 0; ci < pc.get_nr_components(); ++ci) {
 				if ((*use_these_component_colors)[ci][3] > 0.0f) {
-					glDrawArrays(GL_POINTS, pc.components[ci].index_of_first_point, pc.components[ci].nr_points);
+					set_arrays(ctx, pc.components[ci].index_of_first_point, pc.components[ci].nr_points);
+					glDrawArrays(GL_POINTS, 0, GLsizei(pc.components[ci].nr_points));
 				}
 			}
 		}
 		else {
 			size_t nn = n / nr_draw_calls;
 			for (unsigned i=1; i<nr_draw_calls; ++i)
-				glDrawArrays(GL_POINTS, offset + (i-1)*nn, nn);
-			glDrawArrays(GL_POINTS, offset + (nr_draw_calls - 1)*nn, n-(nr_draw_calls - 1)*nn);
+				glDrawArrays(GL_POINTS, GLint(offset + (i-1)*nn), GLsizei(nn));
+			glDrawArrays(GL_POINTS, GLint(offset + (nr_draw_calls - 1)*nn), GLsizei(n-(nr_draw_calls - 1)*nn));
 		}
 	}
-	p_renderer.disable(ctx);
+	s_renderer.disable(ctx);
 }
 
 void gl_point_cloud_drawable::draw_normals(context& ctx)
@@ -267,17 +288,17 @@ void gl_point_cloud_drawable::draw_normals(context& ctx)
 		n_renderer.set_normal_array(ctx, &pc.nml(0), pc.get_nr_points(), sizeof(Nml)*show_point_step);
 	n_renderer.validate_and_enable(ctx);
 	std::size_t n = (show_point_end - show_point_begin) / show_point_step;
-	GLint offset = show_point_begin / show_point_step;
-	glDrawArrays(GL_POINTS, offset, n);
+	GLint offset = GLint(show_point_begin / show_point_step);
+	glDrawArrays(GL_POINTS, offset, GLsizei(n));
 	n_renderer.disable(ctx);
 }
 
 
 bool gl_point_cloud_drawable::init(cgv::render::context& ctx)
 {
-	if (!p_renderer.init(ctx))
+	if (!s_renderer.init(ctx))
 		return false;
-	p_renderer.set_render_style(point_style);
+	s_renderer.set_render_style(surfel_style);
 	if (!n_renderer.init(ctx))
 		return false;
 	n_renderer.set_render_style(normal_style);
@@ -294,7 +315,7 @@ bool gl_point_cloud_drawable::init(cgv::render::context& ctx)
 
 void gl_point_cloud_drawable::clear(cgv::render::context& ctx)
 {
-	p_renderer.clear(ctx);
+	s_renderer.clear(ctx);
 	n_renderer.clear(ctx);
 	b_renderer.clear(ctx);
 	bw_renderer.clear(ctx);

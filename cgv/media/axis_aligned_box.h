@@ -139,6 +139,14 @@ public:
 	}
 };
 
+/// stream out of a box
+template<typename T, cgv::type::uint32_type N>
+std::ostream& operator<<(std::ostream& out, const axis_aligned_box<T, N>& box)
+{
+	return out << box.get_min_pnt() << "->" << box.get_max_pnt();
+}
+
+
 	}
 }
 

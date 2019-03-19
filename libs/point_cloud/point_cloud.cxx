@@ -1,4 +1,5 @@
 #include <cgv/math/permute.h>
+#include <cgv/math/det.h>
 #include "point_cloud.h"
 #include <cgv/utils/file.h>
 #include <cgv/utils/stopwatch.h>
@@ -76,7 +77,7 @@ point_cloud::Idx point_cloud::begin_index(Idx component_index) const
 	if (component_index == -1 || !has_components())
 		return 0;
 	else
-		return component_point_range(component_index).index_of_first_point;
+		return Idx(component_point_range(component_index).index_of_first_point);
 }
 /// return end point index for iteration
 point_cloud::Idx point_cloud::end_index(Idx component_index) const
@@ -84,7 +85,7 @@ point_cloud::Idx point_cloud::end_index(Idx component_index) const
 	if (component_index == -1 || !has_components())
 		return get_nr_points();
 	else
-		return component_point_range(component_index).index_of_first_point + component_point_range(component_index).nr_points;
+		return Idx(component_point_range(component_index).index_of_first_point + component_point_range(component_index).nr_points);
 }
 
 point_cloud::point_cloud()
@@ -177,7 +178,7 @@ void point_cloud::append(const point_cloud& pc)
 	}
 	if (has_components()) {
 		if (pc.has_components()) {
-			int old_nc = get_nr_components();
+			int old_nc = int(get_nr_components());
 			for (unsigned ci = 0; ci < pc.get_nr_components(); ++ci) {
 				components.push_back(pc.component_point_range(ci));
 				components.back().index_of_first_point += old_n;
@@ -198,7 +199,7 @@ void point_cloud::append(const point_cloud& pc)
 				component_indices[i + old_n] = pc.component_index(i) + old_nc;
 		}
 		else {
-			Idx ci = components.empty() ? 0 : get_nr_components() - 1;
+			Idx ci = Idx(components.empty() ? 0 : get_nr_components() - 1);
 			std::fill(component_indices.begin() + old_n, component_indices.end(), ci);
 			components[ci].nr_points += pc.get_nr_points();
 			comp_box_out_of_date[ci] = true;
@@ -354,7 +355,7 @@ point_cloud::Idx point_cloud::add_point(const Pnt& p)
 	if (has_components()) {
 		if (components.empty())
 			components.push_back(component_info(0, p.size()));
-		component_indices.push_back(components.size() - 1);
+		component_indices.push_back(unsigned(components.size() - 1));
 		++components.back().nr_points;
 	}
 	P.push_back(p);
@@ -395,9 +396,9 @@ bool point_cloud::read(const string& _file_name)
 	if (ext == "apc" || ext == "pnt")
 		success = read_ascii(_file_name);
 	if (ext == "obj" || ext == "pobj")
-		success = read_obj(_file_name);
+	success = read_obj(_file_name);
 	if (ext == "ply")
-		success = read_ply(_file_name);
+	success = read_ply(_file_name);
 	if (success) {
 		if (N.size() > 0)
 			has_nmls = true;
@@ -472,6 +473,8 @@ bool point_cloud::read_component_transformations(const std::string& file_name)
 		std::cerr << "ERROR in point_cloud::read_component_transformations: could not read file " << file_name << std::endl;
 		return false;
 	}
+	string ext = cgv::utils::file::get_extension(file_name);
+
 	vector<line> lines;
 	split_to_lines(content, lines);
 	Cnt ci = 0;
@@ -482,17 +485,59 @@ bool point_cloud::read_component_transformations(const std::string& file_name)
 		Dir t;
 		char tmp = lines[li].end[0];
 		content[lines[li].end - content.c_str()] = 0;
-		if (sscanf(lines[li].begin, "%f %f %f %f %f %f %f %f %f %f %f %f",
-			&R(0, 0), &R(0, 1), &R(0, 2), &R(1, 0), &R(1, 1), &R(1, 2), &R(2, 0), &R(2, 1), &R(2, 2),
-			&t(0), &t(1), &t(2)) == 12) {
-			//R.transpose();
-			component_rotation(ci) = Qat(R);
+		int count = sscanf(lines[li].begin, "%f %f %f %f %f %f %f %f %f %f %f %f",
+			&R(0, 0), &R(1, 0), &R(2, 0),
+			&R(0, 1), &R(1, 1), &R(2, 1),
+			&R(0, 2), &R(1, 2), &R(2, 2),
+			&t(0), &t(1), &t(2));
+
+		if (count == 12) {
+			float D = cgv::math::det_33(
+				R(0, 0), R(1, 0), R(2, 0),
+				R(0, 1), R(1, 1), R(2, 1),
+				R(0, 2), R(1, 2), R(2, 2)
+			);
+			if (fabs(fabs(D) - 1.0f) > 0.0001f) {
+				std::cerr << "C" << ci << "(" << component_name(ci) << "): rotation matrix not normalized, det = " << D << std::endl;
+			}
+			if (ext == "som") {
+				if (D < 0) {
+					std::cerr << "C" << ci << "(" << component_name(ci) << "): negative determinant of rotation matrix = " << D << std::endl;
+					R.transpose();
+					t = R * t;
+					R = -R;
+				}
+			}
+			Qat q(R);
+			if (fabs(q.length() - 1.0f) > 0.0001f) {
+				std::cerr << "C" << ci << "(" << component_name(ci) << "): quaternion of not unit length " << q.length() << std::endl;
+			}
+			Mat R1;
+			q.put_matrix(R1);
+			if ((R-R1).frobenius_norm() > 0.0001f) {
+				std::cerr << "C" << ci << "(" << component_name(ci) << "): matrix could not be reconstructed " << R << " vs " << R1 << std::endl;
+				q = Qat(R);
+			}
+
+			if (fabs(q.length() - 1.0f) > 0.0001f) {
+				std::cerr << "C" << ci << "(" << component_name(ci) << "): quaternion of not unit length " << q.length() << std::endl;
+			}
+			component_rotation(ci) = q;
 			component_translation(ci) = t;
-			if (++ci >= get_nr_components())
-				break;
+			comp_box_out_of_date[ci] = true;
+			++ci;
 		}
+		else if (count == 7) {
+			component_rotation(ci) = Qat(R(0,0), R(1, 0), R(2, 0), R(0, 1));
+			component_translation(ci) = Dir(R(1, 1), R(2, 1), R(0, 2));
+			comp_box_out_of_date[ci] = true;
+			++ci;
+		}
+		if (ci >= get_nr_components())
+			break;
 		content[lines[li].end - content.c_str()] = tmp;
 	}
+	box_out_of_date = true;
 	std::cout << "read " << ci << " transformation (have " << get_nr_components() << " components)" << std::endl;
 	return true;
 }
@@ -513,8 +558,29 @@ bool point_cloud::write(const string& _file_name)
 }
 
 /// write component transformations to ascii file with 12 numbers per line (9 for rotation matrix and 3 for translation vector)
-bool point_cloud::write_component_transformations(const std::string& file_name) const
+bool point_cloud::write_component_transformations(const std::string& file_name, bool as_matrices) const
 {
+	if (!has_components())
+		return false;
+	std::ofstream os(file_name);
+	if (os.fail())
+		return false;
+
+	for (Idx ci = 0; ci < (Idx)get_nr_components(); ++ci) {
+		const Qat& q = component_rotation(ci);
+		const Dir& t = component_translation(ci);
+		if (as_matrices) {
+			Mat R;
+			q.put_matrix(R);
+			os << R(0, 0) << " " << R(1, 0) << " " << R(2, 0) << " " 
+			   << R(0, 1) << " " << R(1, 1) << " " << R(2, 1) << " " 
+			   << R(0, 2) << " " << R(1, 2) << " " << R(2, 2);
+		}
+		else
+			os << q.re() << " " << q.x() << " " << q.y() << " " << q.z();
+		os << " " << t(0) << " " << t(1) << " " << t(2) << std::endl;
+	}
+	return true;
 	std::cerr << "write_component_transformations not implemented" << std::endl;
 	return false;
 }
@@ -828,7 +894,7 @@ bool point_cloud::read_bin(const string& file_name)
 				success = success && fread(&components[0], sizeof(component_info), nr_comps, fp) == nr_comps;
 				component_indices.resize(n);
 				for (unsigned i = 0; i < nr_comps; ++i)
-					for (unsigned j = components[i].index_of_first_point; j < components[i].index_of_first_point + components[i].nr_points; ++j)
+					for (unsigned j = unsigned(components[i].index_of_first_point); j < components[i].index_of_first_point + components[i].nr_points; ++j)
 						component_indices[j] = i;
 				if (flags & BPC_HAS_COMP_CLRS) {
 					component_colors.resize(nr_comps);
@@ -876,6 +942,7 @@ static PlyProperty vert_props[] = { /* list of property information for a vertex
   {"green", Uint8, Uint8, offsetof(PlyVertex,green), 0, 0, 0, 0},
   {"blue", Uint8, Uint8, offsetof(PlyVertex,blue), 0, 0, 0, 0},
   {"alpha", Uint8, Uint8, offsetof(PlyVertex,alpha), 0, 0, 0, 0},
+  {"intensity", Uint8, Uint8, offsetof(PlyVertex,red), 0, 0, 0, 0},
 };
 
 typedef struct PlyFace {
@@ -903,6 +970,7 @@ bool point_cloud::read_ply(const string& _file_name)
 			bool has_P[3] = { false, false, false };
 			bool has_N[3] = { false, false, false };
 			bool has_C[4] = { false, false, false, false };
+			bool is_intensity = false;
 			for (int pi = 0; pi < elem->nprops; ++pi) {
 				if (strcmp("x", elem->props[pi]->name) == 0)
 					has_P[0] = true;
@@ -924,6 +992,10 @@ bool point_cloud::read_ply(const string& _file_name)
 					has_C[2] = true;
 				if (strcmp("alpha", elem->props[pi]->name) == 0)
 					has_C[3] = true;
+				if (strcmp("intensity", elem->props[pi]->name) == 0) {
+					has_C[0] = has_C[1] = has_C[2] = true;
+					is_intensity = true;
+				}
 			}
 			if (!(has_P[0] && has_P[1] && has_P[2]))
 				std::cerr << "ply file " << _file_name << " has no complete position property!" << std::endl;
@@ -934,8 +1006,16 @@ bool point_cloud::read_ply(const string& _file_name)
 				N.resize(nrVertices);
 			if (has_clrs)
 				C.resize(nrVertices);
-			for (int p=0; p<10; ++p) 
+			int p;
+			for (p=0; p<6; ++p) 
 				setup_property_ply(ply_in, &vert_props[p]);
+			if (is_intensity)
+				setup_property_ply(ply_in, &vert_props[10]);
+			else {
+				for (p = 0; p < 4; ++p)
+					if (has_C[p])
+						setup_property_ply(ply_in, &vert_props[6+p]);
+			}
 			for (int j = 0; j < nrVertices; j++) {
 				PlyVertex vertex;
 				get_element_ply(ply_in, (void *)&vertex);
@@ -944,8 +1024,8 @@ bool point_cloud::read_ply(const string& _file_name)
 					N[j].set(vertex.nx, vertex.ny, vertex.nz);
 				if (has_clrs) {
 					C[j][0] = byte_to_color_component(vertex.red);
-					C[j][1] = byte_to_color_component(vertex.green);
-					C[j][2] = byte_to_color_component(vertex.blue);
+					C[j][1] = byte_to_color_component(is_intensity ? vertex.red : vertex.green);
+					C[j][2] = byte_to_color_component(is_intensity ? vertex.red : vertex.blue);
 				}
 			}
 		}
@@ -1092,7 +1172,7 @@ bool point_cloud::write_bin(const std::string& file_name) const
 		if (has_pixel_coordinates())
 			success = success && (fwrite(&I[0][0], sizeof(PixCrd), n, fp) == n);
 		if (has_components()) {
-			Cnt nr_comps = get_nr_components();
+			Cnt nr_comps = Cnt(get_nr_components());
 			success = success && (fwrite(&nr_comps, sizeof(Cnt), 1, fp) == 1) && (fwrite(&components[0], sizeof(component_info), nr_comps, fp) == nr_comps);
 		}
 		if (has_component_colors())
@@ -1113,7 +1193,8 @@ bool point_cloud::write_obj(const std::string& file_name) const
 	unsigned int i;
 	for (i=0; i<P.size(); ++i) {
 		if (has_colors())
-			os << "v " << P[i][0] << " " << P[i][1] << " " << P[i][2] << " " << C[i][0] << " " << C[i][1] << " " << C[i][2] << endl;
+			os << "v " << P[i][0] << " " << P[i][1] << " " << P[i][2] << " " << color_component_to_float(C[i][0]) 
+			<< " " << color_component_to_float(C[i][1]) << " " << color_component_to_float(C[i][2]) << endl;
 		else
 			os << "v " << P[i][0] << " " << P[i][1] << " " << P[i][2] << endl;
 	}
@@ -1237,7 +1318,7 @@ point_cloud::Idx point_cloud::add_component()
 		comp_pixrng_out_of_date.push_back(true);
 		component_pixel_ranges.push_back(PixRng());
 	}
-	return components.size() - 1;
+	return Idx(components.size() - 1);
 }
 
 /// return whether the point cloud has component indices and point ranges
@@ -1470,7 +1551,7 @@ point_cloud::Cnt point_cloud::collect_valid_image_neighbors(Idx pi, const index_
 				Ni.push_back(ni);
 		}
 	}
-	return Ni.size();
+	return Cnt(Ni.size());
 }
 
 void point_cloud::estimate_normals(const index_image& img, Crd distance_threshold, Idx ci, int* nr_isolated, int* nr_iterations, int* nr_left_over)
@@ -1507,7 +1588,7 @@ void point_cloud::estimate_normals(const index_image& img, Crd distance_threshol
 		N[i] = nml;
 	}
 	if (nr_isolated)
-		*nr_isolated = isolated_normals.size();
+		*nr_isolated = int(isolated_normals.size());
 
 	int iter = 1;
 	if (!not_set_normals.empty()) {
@@ -1535,5 +1616,5 @@ void point_cloud::estimate_normals(const index_image& img, Crd distance_threshol
 	if (nr_iterations)
 		*nr_iterations = iter;
 	if (nr_left_over)
-		*nr_left_over = not_set_normals.size();
+		*nr_left_over = int(not_set_normals.size());
 }

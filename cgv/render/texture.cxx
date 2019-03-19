@@ -190,7 +190,7 @@ CompareFunction texture::get_compare_function() const
 /**@name methods that can be called only with a context */
 //@{
 /// find the format that matches the one specified in the component format best
-void texture::find_best_format(context& ctx, const std::vector<data_view>* palettes)
+void texture::find_best_format(const context& ctx, const std::vector<data_view>* palettes)
 {
 	cgv::data::component_format cf = ctx.texture_find_best_format(*this, *this, palettes);
 	void* tmp = internal_format;
@@ -198,7 +198,7 @@ void texture::find_best_format(context& ctx, const std::vector<data_view>* palet
 	internal_format = tmp;
 }
 
-void texture::ensure_state(context& ctx) const
+void texture::ensure_state(const context& ctx) const
 {
 	if (state_out_of_date) {
 		ctx.texture_set_state(*this);
@@ -208,7 +208,7 @@ void texture::ensure_state(context& ctx) const
 
 /** create the texture of dimension and resolution specified in 
     the data format base class */
-bool texture::create(context& ctx, TextureType _tt, unsigned width, unsigned height, unsigned depth)
+bool texture::create(const context& ctx, TextureType _tt, unsigned width, unsigned height, unsigned depth)
 {
 	if (is_created())
 		destruct(ctx);
@@ -246,7 +246,7 @@ unsigned int power_of_two_ub(unsigned int i)
 	return res;
 }
 
-bool texture::create_from_image(cgv::data::data_format& df, cgv::data::data_view& dv, context& ctx, 
+bool texture::create_from_image(cgv::data::data_format& df, cgv::data::data_view& dv, const context& ctx,
 								const std::string& file_name, unsigned char* clear_color_ptr, int level, int cube_side)
 {
 	bool ensure_power_of_two = clear_color_ptr != 0;
@@ -305,7 +305,7 @@ bool texture::create_from_image(cgv::data::data_format& df, cgv::data::data_view
 
 
 /** create the texture from an image file*/
-bool texture::create_from_image(context& ctx, 
+bool texture::create_from_image(const context& ctx,
 	const std::string& file_name, int* image_width_ptr, int* image_height_ptr,
 	unsigned char* clear_color_ptr, int level, int cube_side)
 {
@@ -386,7 +386,7 @@ bool texture::deduce_file_names(const std::string& file_names, std::vector<std::
 	return true;
 }
 
-bool texture::create_from_images(context& ctx, const std::string& file_names, int level)
+bool texture::create_from_images(const context& ctx, const std::string& file_names, int level)
 {
 	std::vector<std::string> deduced_names;
 	if (!deduce_file_names(file_names, deduced_names))
@@ -485,12 +485,12 @@ bool texture::write_to_file(context& ctx, const std::string& file_name, unsigned
 
 /** generate mipmaps automatically, only supported if 
     framebuffer objects are supported by the GPU */
-bool texture::generate_mipmaps(context& ctx)
+bool texture::generate_mipmaps(const context& ctx)
 {
 	return ctx.texture_generate_mipmaps(*this, get_nr_dimensions());
 }
 
-bool texture::complete_create(context& ctx, bool created)
+bool texture::complete_create(const context& ctx, bool created)
 {
 	state_out_of_date = true;
 	ctx_ptr = &ctx;
@@ -505,7 +505,7 @@ bool texture::complete_create(context& ctx, bool created)
 	 the read buffer. The dimension and resolution of the texture
 	 format are updated automatically. If level is not specified 
 	 or set to -1 mipmaps are generated. */
-bool texture::create_from_buffer(context& ctx, int x, int y, int width, int height, int level)
+bool texture::create_from_buffer(const context& ctx, int x, int y, int width, int height, int level)
 {
 	if (is_created() && level < 1)
 		return replace_from_buffer(ctx, 0, 0, x, y, width, height, level);
@@ -524,7 +524,7 @@ bool texture::create_from_buffer(context& ctx, int x, int y, int width, int heig
 /** create texture from data view. Use dimension and resolution
     of data view but the component format of the texture.
     If level is not specified or set to -1 mipmaps are generated. */
-bool texture::create(context& ctx, const cgv::data::const_data_view& data, int level, int cube_side, const std::vector<data_view>* palettes)
+bool texture::create(const context& ctx, const cgv::data::const_data_view& data, int level, int cube_side, const std::vector<data_view>* palettes)
 {
 	const data_format& f = *data.get_format();
 	TextureType tt = (TextureType)f.get_nr_dimensions();
@@ -560,7 +560,7 @@ bool texture::create(context& ctx, const cgv::data::const_data_view& data, int l
 /** replace a block within a 1d texture with the given data. 
     If level is not specified, level 0 is set and if a mipmap 
 	 has been created before, coarser levels are updated also. */
-bool texture::replace(context& ctx, int x, const cgv::data::const_data_view& data, int level, const std::vector<data_view>* palettes)
+bool texture::replace(const context& ctx, int x, const cgv::data::const_data_view& data, int level, const std::vector<data_view>* palettes)
 {
 	if (!is_created()) {
 		render_component::last_error = "attempt to replace in a not created 1d texture";
@@ -576,7 +576,7 @@ bool texture::replace(context& ctx, int x, const cgv::data::const_data_view& dat
 /** replace a block within a 2d texture with the given data. 
     If level is not specified, level 0 is set and if a mipmap 
 	 has been created before, coarser levels are updated also. */
-bool texture::replace(context& ctx, int x, int y, const cgv::data::const_data_view& data, int level, const std::vector<data_view>* palettes)
+bool texture::replace(const context& ctx, int x, int y, const cgv::data::const_data_view& data, int level, const std::vector<data_view>* palettes)
 {
 	if (!is_created()) {
 		render_component::last_error = "attempt to replace in a not created 1d texture";
@@ -593,7 +593,7 @@ bool texture::replace(context& ctx, int x, int y, const cgv::data::const_data_vi
     with the given data. 
     If level is not specified, level 0 is set and if a mipmap 
 	 has been created before, coarser levels are updated also. */
-bool texture::replace(context& ctx, int x, int y, int z_or_cube_side, const cgv::data::const_data_view& data, int level, const std::vector<data_view>* palettes)
+bool texture::replace(const context& ctx, int x, int y, int z_or_cube_side, const cgv::data::const_data_view& data, int level, const std::vector<data_view>* palettes)
 {
 	if (!is_created()) {
 		render_component::last_error = "attempt to replace in a not created 1d texture";
@@ -606,7 +606,7 @@ bool texture::replace(context& ctx, int x, int y, int z_or_cube_side, const cgv:
 }
 
 /// replace a block within a 2d texture from the current read buffer.
-bool texture::replace_from_buffer(context& ctx, int x, int y, int x_buffer, 
+bool texture::replace_from_buffer(const context& ctx, int x, int y, int x_buffer,
 	int y_buffer, int width, int height, int level)
 {
 	if (!is_created()) {
@@ -621,7 +621,7 @@ bool texture::replace_from_buffer(context& ctx, int x, int y, int x_buffer,
 }
 
 /// replace a block within a 2d texture from the current read buffer.
-bool texture::replace_from_buffer(context& ctx, int x, int y, int z_or_cube_side, int x_buffer, 
+bool texture::replace_from_buffer(const context& ctx, int x, int y, int z_or_cube_side, int x_buffer,
 		int y_buffer, int width, int height, int level)
 {
 	if (!is_created()) {
@@ -636,7 +636,7 @@ bool texture::replace_from_buffer(context& ctx, int x, int y, int z_or_cube_side
 }
 
 /// replace within a slice of a volume or a side of a cube map from the given image
-bool texture::replace_from_image(context& ctx, const std::string& file_name, int x, int y, int z_or_cube_side, int level)
+bool texture::replace_from_image(const context& ctx, const std::string& file_name, int x, int y, int z_or_cube_side, int level)
 {
 	data_format df;
 	data_view dv;
@@ -645,7 +645,7 @@ bool texture::replace_from_image(context& ctx, const std::string& file_name, int
 
 /** same as previous method but use the passed data format and data view to
     store the content of the image. */
-bool texture::replace_from_image(cgv::data::data_format& df, cgv::data::data_view& dv, context& ctx, 
+bool texture::replace_from_image(cgv::data::data_format& df, cgv::data::data_view& dv, const context& ctx,
 								 const std::string& file_name, int x, int y, int z_or_cube_side, 
 								 int level)
 {
@@ -672,7 +672,7 @@ bool texture::replace_from_image(cgv::data::data_format& df, cgv::data::data_vie
 
 
 /// destruct the texture and free texture memory and handle
-bool texture::destruct(context& ctx)
+bool texture::destruct(const context& ctx)
 {
 	state_out_of_date = true;
 	return ctx.texture_destruct(*this);
@@ -684,7 +684,7 @@ bool texture::destruct(context& ctx)
 //@{
 /** enable this texture in the given texture unit, -1 corresponds to 
     the current unit. */
-bool texture::enable(context& ctx, int _tex_unit)
+bool texture::enable(const context& ctx, int _tex_unit)
 {
 	if (!handle) {
 		render_component::last_error = "attempt to enable texture that is not created";
@@ -695,7 +695,7 @@ bool texture::enable(context& ctx, int _tex_unit)
 	return ctx.texture_enable(*this, tex_unit, get_nr_dimensions());
 }
 /// disable texture and restore state before last enable call
-bool texture::disable(context& ctx)
+bool texture::disable(const context& ctx)
 {
 	return ctx.texture_disable(*this, tex_unit, get_nr_dimensions());
 }

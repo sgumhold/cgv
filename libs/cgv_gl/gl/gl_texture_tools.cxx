@@ -724,22 +724,22 @@ bool render_to_texture3D(context& ctx, shader_program& prog, TextureSampling tex
 		return false;
 	}
 
-	static double V[4 * 3] = {
+	static float V[4 * 3] = {
 		-1, -1, 0, +1, -1, 0,
 		+1, +1, 0, -1, +1, 0
 	};
 	static int F[1 * 4] = {
 		0, 1, 2, 3
 	};
-	double T[4 * 2] = {
+	float T[4 * 2] = {
 		0, 0, 1, 0,
 		1, 1, 0, 1
 	};
 	if (texture_sampling == TS_VERTEX) {
-		T[0] = T[6] = -0.5 / tex_res[0];
-		T[2] = T[4] = 1.0 + 0.5 / tex_res[0];
-		T[1] = T[3] = -0.5 / tex_res[1];
-		T[5] = T[7] = 1.0 + 0.5 / tex_res[1];
+		T[0] = T[6] = float(-0.5 / tex_res[0]);
+		T[2] = T[4] = float(1.0 + 0.5 / tex_res[0]);
+		T[1] = T[3] = float(-0.5 / tex_res[1]);
+		T[5] = T[7] = float(1.0 + 0.5 / tex_res[1]);
 	}
 
 	// store transformation matrices and reset them to identity

@@ -180,9 +180,6 @@ inline data::ref_ptr<T,true> cast_helper_base::cast_of_base(base* b)
 }
 
 #if _MSC_VER > 1400
-#pragma warning(disable:4275)
-#pragma warning(disable:4231)
-#pragma warning(disable:4251)
 CGV_TEMPLATE template class CGV_API cgv::data::ref_ptr<cgv::base::base>;
 CGV_TEMPLATE template class CGV_API std::vector<cgv::data::ref_ptr<cgv::base::base> >;
 #endif

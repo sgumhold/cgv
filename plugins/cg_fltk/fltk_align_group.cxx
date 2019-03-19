@@ -165,11 +165,19 @@ fltk_align_group::~fltk_align_group()
 /// only uses the implementation of fltk_base
 std::string fltk_align_group::get_property_declarations()
 {
-	return fltk_base::get_property_declarations();
+	return fltk_base::get_property_declarations()+";xscroll:int;yscroll:int";
 }
 /// abstract interface for the setter
 bool fltk_align_group::set_void(const std::string& property, const std::string& value_type, const void* value_ptr)
 {
+	if (property == "xscroll") {
+		if (scroll_group) {
+			int xscroll = 0;
+			cgv::type::get_variant(xscroll, value_type, value_ptr);
+			scroll_group->scrollTo(xscroll, scroll_group->yposition());
+			return true;
+		}
+	}
 	if (property == "yscroll") {
 		if (scroll_group) {
 			int yscroll = 0;
@@ -192,6 +200,13 @@ bool fltk_align_group::set_void(const std::string& property, const std::string& 
 /// abstract interface for the getter
 bool fltk_align_group::get_void(const std::string& property, const std::string& value_type, void* value_ptr)
 {
+	if (property == "xscroll") {
+		if (scroll_group) {
+			int xscroll = scroll_group->xposition();
+			cgv::type::set_variant(xscroll, value_type, value_ptr);
+			return true;
+		}
+	}
 	if (property == "yscroll") {
 		if (scroll_group) {
 			int yscroll = scroll_group->yposition();

@@ -1,0 +1,17 @@
+@=
+projectType="application_plugin";
+projectName="vr_test";
+//referenceDeps = 0;
+projectGUID="8FFA22FA-141A-4BC8-8731-5D1A29BFD1E5";
+addProjectDirs=[CGV_DIR."/plugins", CGV_DIR."/libs", CGV_DIR."/test"];
+addProjectDeps=["cgv_utils", "cgv_type", "cgv_data", "cgv_base", "cgv_math",
+				"cgv_media", "cgv_gui", "cgv_render", 
+				"cgv_viewer", "cg_fltk", "crg_grid", "cg_ext", "cgv_gl", 
+				"crg_vr_view", "cg_vr", "vr_emulator", "openvr_driver",
+				"cg_gamepad", "gamepad"
+				];
+addIncDirs=[INPUT_DIR, CGV_DIR."/libs", CGV_DIR."/test"];
+addCommandLineArguments=[
+	after("type(shader_config):shader_path='".INPUT_DIR.";".CGV_DIR."/libs/cgv_gl/glsl'","cg_fltk")
+];
+addSharedDefines=["VR_TEST_EXPORTS"];

@@ -2,6 +2,7 @@
 projectName="test_plot";
 projectType="application_plugin";
 projectGUID="99575C61-E251-49DE-B66E-D25336758495";
+excludeSourceDirs = ["releases"];
 addProjectDirs=[CGV_DIR."/libs", CGV_DIR."/plugins", CGV_DIR."/3rd"];
 addProjectDeps=[
 	"cgv_utils","cgv_type","cgv_reflect", "cgv_data","cgv_base", "cgv_media", "cgv_os", "cgv_gui", "cgv_render", "cgv_gl", "plot",

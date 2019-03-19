@@ -1,0 +1,101 @@
+#version 150
+#extension GL_EXT_geometry_shader4 : enable
+
+/*
+The following interface is implemented in this shader:
+//***** begin interface of sphere_lib.glgs ***********************************
+struct sphere_parameter_space
+{
+	vec3  m_tilde;
+	vec3  x_tilde;
+	vec3  y_tilde;
+	vec3  e_tilde;
+	float inv_e_vs;
+	vec3  inv_T_square_e_c_vs;
+	vec2  e_zw_clip_vs;
+};
+
+void generate_sphere_cover_splat(in vec4 sphere, in sphere_parameter_space sps, in float splat_size = 1.0);
+void generate_sphere_cover_splat(in vec4 sphere, in sphere_parameter_space sps, in mat4 MV, in mat4 MVP, in mat3 NM, in float splat_size = 1.0);
+//***** end interface of sphere_lib.glgs ***********************************
+*/
+
+struct sphere_parameter_space
+{
+	vec3  m_tilde;
+	vec3  x_tilde;
+	vec3  y_tilde;
+	vec3  e_tilde;
+	float inv_e_vs;
+	vec3  inv_T_square_e_c_vs;
+	vec2  e_zw_clip_vs;
+};
+
+struct sphere_splat_info
+{
+	vec2 q_tilde;
+	vec3 inv_T_square_v;
+	vec3 inv_T_square_e_c;
+	float inv_e;
+	vec2 e_zw_clip;
+	vec2 v_zw_clip;
+	vec3 v;
+	vec3 v_eye;
+};
+
+out sphere_splat_info ssi;
+
+//***** begin interface of view.glsl ***********************************
+mat4 get_modelview_matrix();
+mat4 get_projection_matrix();
+mat4 get_modelview_projection_matrix();
+mat4 get_inverse_modelview_matrix();
+mat4 get_inverse_modelview_projection_matrix();
+mat3 get_normal_matrix();
+mat3 get_inverse_normal_matrix();
+//***** end interface of view.glsl ***********************************
+
+void generate_sphere_splat_vertex(in vec4 sphere, in vec2 t, in sphere_parameter_space sps, in mat4 MV, in mat4 MVP, in mat3 NM)
+{
+	// compute the corner point in homogeneous object coordinates
+	vec3 V_tilde = sps.m_tilde + t.x*sps.x_tilde + t.y*sps.y_tilde;
+	vec3 v_tilde = V_tilde - sps.e_tilde;
+
+	vec4 V;
+	V.xyz = sphere.w*V_tilde + sphere.xyz;
+	V.w = 1.0;
+
+	ssi.q_tilde = t;
+
+	// compute vector from eye to vertex in eye space
+	ssi.v_eye = (MV * V).xyz;
+
+	// compute components to compute normal in eye space
+	ssi.inv_T_square_v = NM * (v_tilde);
+
+	ssi.v = -normalize(ssi.v_eye);
+
+	gl_Position = MVP * V;
+
+	ssi.v_zw_clip = gl_Position.zw - ssi.e_zw_clip;
+
+	EmitVertex();
+}
+
+void generate_sphere_cover_splat(in vec4 sphere, in sphere_parameter_space sps, in mat4 MV, in mat4 MVP, in mat3 NM, in float splat_size = 1.0)
+{
+	ssi.inv_e = sps.inv_e_vs;
+	ssi.inv_T_square_e_c = sps.inv_T_square_e_c_vs;
+	ssi.e_zw_clip = sps.e_zw_clip_vs;
+
+	generate_sphere_splat_vertex(sphere, vec2(-splat_size, -splat_size), sps, MV, MVP, NM);
+	generate_sphere_splat_vertex(sphere, vec2( splat_size, -splat_size), sps, MV, MVP, NM);
+	generate_sphere_splat_vertex(sphere, vec2(-splat_size,  splat_size), sps, MV, MVP, NM);
+	generate_sphere_splat_vertex(sphere, vec2( splat_size,  splat_size), sps, MV, MVP, NM);
+	EndPrimitive();
+}
+
+void generate_sphere_cover_splat(in vec4 sphere, in sphere_parameter_space sps, in float splat_size)
+{
+	generate_sphere_cover_splat(sphere, sps, get_modelview_matrix(), get_modelview_projection_matrix(), get_normal_matrix(), splat_size);
+}

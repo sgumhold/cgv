@@ -6,7 +6,7 @@
 DOXYFILE_ENCODING      = UTF-8
 PROJECT_NAME           = cgv
 PROJECT_NUMBER         = 
-OUTPUT_DIRECTORY       = $(CGV_BUILD)/doc
+OUTPUT_DIRECTORY       = $(CGV_BUILD)/cgv_doc
 CREATE_SUBDIRS         = NO
 OUTPUT_LANGUAGE        = English
 BRIEF_MEMBER_DESC      = YES
@@ -31,7 +31,6 @@ SHORT_NAMES            = YES
 JAVADOC_AUTOBRIEF      = NO
 QT_AUTOBRIEF           = NO
 MULTILINE_CPP_IS_BRIEF = NO
-DETAILS_AT_TOP         = NO
 INHERIT_DOCS           = YES
 SEPARATE_MEMBER_PAGES  = NO
 TAB_SIZE               = 8
@@ -72,7 +71,6 @@ GENERATE_DEPRECATEDLIST= YES
 ENABLED_SECTIONS       = 
 MAX_INITIALIZER_LINES  = 30
 SHOW_USED_FILES        = YES
-SHOW_DIRECTORIES       = YES
 FILE_VERSION_FILTER    = 
 #---------------------------------------------------------------------------
 # configuration options related to warning and progress messages
@@ -87,7 +85,35 @@ WARN_LOGFILE           =
 #---------------------------------------------------------------------------
 # configuration options related to the input files
 #---------------------------------------------------------------------------
-INPUT                  = $(CGV_DIR)/cgv $(CGV_DIR)/doc
+INPUT = \
+$(CGV_DIR)/doc \
+$(CGV_DIR)/libs/vr \
+$(CGV_DIR)/libs/cg_vr \
+$(CGV_DIR)/test/vr \
+$(CGV_DIR)/plugins/crg_vr_view \
+$(CGV_DIR)/plugins/vr_test \
+$(CGV_DIR)/cgv/config \
+$(CGV_DIR)/cgv/defines \
+$(CGV_DIR)/cgv/type \
+$(CGV_DIR)/cgv/utils \
+$(CGV_DIR)/cgv/data \
+$(CGV_DIR)/cgv/signal \
+$(CGV_DIR)/cgv/reflect \
+$(CGV_DIR)/cgv/base \
+$(CGV_DIR)/cgv/os \
+$(CGV_DIR)/cgv/math \
+$(CGV_DIR)/cgv/media \
+$(CGV_DIR)/cgv/render \
+$(CGV_DIR)/cgv/gui \
+$(CGV_DIR)/libs/cgv_gl \
+$(CGV_DIR)/libs/plot \
+$(CGV_DIR)/libs/ppp \
+$(CGV_DIR)/libs/gamepad \
+$(CGV_DIR)/libs/cg_gamepad
+INCLUDE_PATH = \
+$(CGV_DIR) \
+$(CGV_DIR)/libs \
+$(CGV_DIR)/plugins
 INPUT_ENCODING         = UTF-8
 FILE_PATTERNS          = *.c \
                          *.cc \
@@ -122,7 +148,7 @@ EXCLUDE                =
 EXCLUDE_SYMLINKS       = NO
 EXCLUDE_PATTERNS       = */.svn* */vis/*
 EXCLUDE_SYMBOLS        = 
-EXAMPLE_PATH           = $(CGV_DIR)/cgv/base $(CGV_DIR)/cgv/config $(CGV_DIR)/plugins/examples $(CGV_DIR)/tool/ppp $(CGV_DIR)/make/ppp/templates
+EXAMPLE_PATH           = $(CGV_DIR)/cgv $(CGV_DIR)/cgv/config $(CGV_DIR)/plugins/examples $(CGV_DIR)/tool/ppp_tool $(CGV_DIR)/libs/ppp $(CGV_DIR)/make/ppp/templates
 EXAMPLE_PATTERNS       = *.ph \
                          *.ppp \
                          *.cxx \
@@ -159,7 +185,6 @@ HTML_FILE_EXTENSION    = .html
 HTML_HEADER            = 
 HTML_FOOTER            = 
 HTML_STYLESHEET        = 
-HTML_ALIGN_MEMBERS     = YES
 GENERATE_HTMLHELP      = NO
 HTML_DYNAMIC_SECTIONS  = NO
 CHM_FILE               = 
@@ -207,8 +232,6 @@ MAN_LINKS              = NO
 #---------------------------------------------------------------------------
 GENERATE_XML           = NO
 XML_OUTPUT             = xml
-XML_SCHEMA             = 
-XML_DTD                = 
 XML_PROGRAMLISTING     = YES
 #---------------------------------------------------------------------------
 # configuration options for the AutoGen Definitions output
@@ -247,7 +270,7 @@ PERL_PATH              = /usr/bin/perl
 CLASS_DIAGRAMS         = YES
 MSCGEN_PATH            = 
 HIDE_UNDOC_RELATIONS   = YES
-HAVE_DOT               = YES
+HAVE_DOT               = NO
 CLASS_GRAPH            = YES
 COLLABORATION_GRAPH    = YES
 GROUP_GRAPHS           = YES

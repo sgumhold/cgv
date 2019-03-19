@@ -3,11 +3,10 @@
 #include <cgv/render/drawable.h>
 #include <cgv/render/shader_program.h>
 #include <cgv/render/view.h>
-#include <cgv/media/illum/phong_material.hh>
 
 #include "point_cloud.h"
 
-#include <cgv_gl/point_renderer.h>
+#include <cgv_gl/surfel_renderer.h>
 #include <cgv_gl/normal_renderer.h>
 #include <cgv_gl/box_renderer.h>
 #include <cgv_gl/box_wire_renderer.h>
@@ -18,18 +17,15 @@
 /** drawable for a point cloud that manages a neighbor graph and a normal estimator and supports rendering of point cloud and bounding box. */
 class CGV_API gl_point_cloud_drawable : public cgv::render::drawable, public point_cloud_types
 {
-public:
-	typedef cgv::media::illum::phong_material::color_type color_type;
-
 protected:
 	point_cloud pc;
 
-	cgv::render::point_render_style point_style;
+	cgv::render::surfel_render_style surfel_style;
 	cgv::render::normal_render_style normal_style;
 	cgv::render::surface_render_style box_style;
 	cgv::render::line_render_style box_wire_style;
 
-	cgv::render::point_renderer p_renderer;
+	cgv::render::surfel_renderer s_renderer;
 	cgv::render::normal_renderer n_renderer;
 	cgv::render::box_renderer b_renderer;
 	cgv::render::box_wire_renderer bw_renderer;
@@ -41,7 +37,7 @@ protected:
 	bool sort_points;
 	bool use_component_colors;
 	bool use_component_transformations;
-	color_type box_color;
+	rgba box_color;
 	
 	std::vector<Clr>* use_these_point_colors;
 	std::vector<cgv::type::uint8_type>* use_these_point_color_indices;
@@ -54,6 +50,7 @@ protected:
 	unsigned nr_draw_calls;
 	cgv::render::view* view_ptr;
 	bool ensure_view_pointer();
+	void set_arrays(cgv::render::context& ctx, size_t offset = 0, size_t count = -1);
 
 public:
 	gl_point_cloud_drawable();
@@ -63,7 +60,7 @@ public:
 	bool write(const std::string& file_name);
 	
 	void render_boxes(cgv::render::context& ctx, cgv::render::group_renderer& R, cgv::render::group_render_style& RS);
-	void draw_box(cgv::render::context& ctx, const Box& box, const color_type& clr);
+	void draw_box(cgv::render::context& ctx, const Box& box, const rgba& clr);
 	void draw_boxes(cgv::render::context& ctx);
 	void draw_points(cgv::render::context& ctx);
 	void draw_normals(cgv::render::context& ctx);

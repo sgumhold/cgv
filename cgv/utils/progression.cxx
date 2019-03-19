@@ -13,13 +13,13 @@ progression::progression()
 }
 
 /// create from total enumerations and number of times to print progression
-progression::progression(const std::string& process, unsigned int total, int count) 
+progression::progression(const std::string& process, size_t total, int count) 
 {
 	init(process, total, count); 
 }
 
 /// reinitialize
-void progression::init(const std::string& process, unsigned int total, int count) 
+void progression::init(const std::string& process, size_t total, int count) 
 {
 	if (count > 0) {
 		std::cout << process << ":"; std::cout.flush();

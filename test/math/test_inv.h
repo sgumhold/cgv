@@ -28,7 +28,8 @@ void test_inv()
 	m3(1,0) = 4.0; m3(1,1) = 5.0;	m3(1,2) = 6.0;
 	m3(2,0) = 1.0; m3(2,1) = 8.0;	m3(2,2) = 9.0;
 	mat<double> mr3 = m3*inv(m3);
-	assert(mr3 == identity<double>(3));
+	double fn = (mr3 - identity<double>(3)).frobenius_norm();
+	assert(fn < 1e-10);
 
 	//invert diagonal matrix
 	diag_mat<double> m4(3);

@@ -3,6 +3,7 @@ projectName="plot";
 projectType="library";
 projectGUID="7E87717C-DED5-4C5C-ABC9-AB09A12E92D0";
 addSharedDefines=["PLOT_EXPORTS"];
+addProjectDirs=[CGV_DIR."/libs"];
 addProjectDeps=["cgv_utils","cgv_type","cgv_reflect", "cgv_data","cgv_base", "cgv_media", "cgv_os", "cgv_gui", "cgv_render", "cgv_gl"];
 addIncDirs=[CGV_DIR."/libs", CGV_BUILD_DIR."/".projectName];
 if(SYSTEM=="windows") {

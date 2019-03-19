@@ -1,0 +1,75 @@
+#version 150
+
+struct sphere_splat_info
+{
+	vec2 q_tilde;
+	vec3 inv_T_square_v;
+	vec3 inv_T_square_e_c;
+	float inv_e;
+	vec2 e_zw_clip;
+	vec2 v_zw_clip;
+	vec3 v;
+	vec3 v_eye;
+};
+
+in sphere_splat_info ssi;
+
+/*
+The following interface is implemented in this shader:
+//***** begin interface of sphere_lib.glfs ***********************************
+bool computer_ray_sphere_intersection(out vec3 p_eye, out vec3 n_eye, out vec2 splat_tc, out float clip_depth, out int side);
+bool computer_ray_sphere_intersection(in float percentual_splat_size, out vec3 p_eye, out vec3 n_eye, out vec2 splat_tc, out float clip_depth, out int side, out float percentual_radial_position);
+//***** end interface of sphere_lib.glfs ***********************************
+*/
+
+//***** begin interface of side.glsl ***********************************
+bool keep_this_side(in vec3 position, in vec3 normal, out int side);
+void update_material_color_and_transparency(inout vec3 mat_color, inout float transparency, in int side, in vec4 color_fs);
+void update_normal(inout vec3 normal, in int side);
+//***** end interface of side.glsl ***********************************
+
+bool computer_ray_sphere_intersection(in float percentual_splat_size, out vec3 p_eye, out vec3 n_eye, out vec2 splat_tc, out float clip_depth, out int side, out float percentual_radial_position)
+{
+	// ray-sphere intersection	
+
+	// check for intersection with q_tilde parameterization of unit circle
+	float q_tilde_squared_length = dot(ssi.q_tilde.xy, ssi.q_tilde.xy);
+	percentual_radial_position = sqrt(q_tilde_squared_length);
+	if (percentual_radial_position > percentual_splat_size)
+		return false;
+	if (q_tilde_squared_length > 1.0)
+		q_tilde_squared_length = 1.0;
+
+	splat_tc = 0.5*(ssi.q_tilde + vec2(1.0));
+	// compute ray parameter of intersection
+	float beta = ssi.inv_e*sqrt(1.0 - q_tilde_squared_length);
+	float lambda = 1.0 / (1.0 + beta);
+
+	// culling 
+
+	// compute sphere position in eye coordinates and normal
+	p_eye = lambda * ssi.v_eye;
+	n_eye = normalize(ssi.inv_T_square_e_c + lambda * ssi.inv_T_square_v);
+
+	// determine side in eye space
+	if (!keep_this_side(p_eye, n_eye, side)) {
+		lambda = 1.0 / (1.0 - beta);
+		p_eye = lambda * ssi.v_eye;
+		n_eye = normalize(ssi.inv_T_square_e_c + lambda * ssi.inv_T_square_v);
+	}
+
+	// depth correction
+
+	// compute the depth value in clip coordinates
+	vec2 zw = ssi.e_zw_clip + lambda * ssi.v_zw_clip;
+	float z_clip = zw.x / zw.y;
+	// transform from [-1,1] to [0,1]
+	clip_depth = 0.5*(z_clip + 1);
+	return true;
+}
+
+bool computer_ray_sphere_intersection(out vec3 p_eye, out vec3 n_eye, out vec2 splat_tc, out float clip_depth, out int side)
+{
+	float tmp;
+	return computer_ray_sphere_intersection(1.0, p_eye, n_eye, splat_tc, clip_depth, side, tmp);
+}

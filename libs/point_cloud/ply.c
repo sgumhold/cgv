@@ -1996,8 +1996,8 @@ char **get_words(FILE *fp, int *nwords, char **orig_line)
       words[num_words++] = ptr;
 
       /* jump over non-spaces */
-      while (*ptr != ' ')
-	ptr++;
+      while (*ptr != 0 && *ptr != ' ')
+		  ptr++;
 
       /* place a null character here to mark the end of the word */
       *ptr++ = '\0';

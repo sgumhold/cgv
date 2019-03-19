@@ -4,10 +4,6 @@
 #include <limits> 
 #include <cassert>
 
-#ifdef _MSC_VER
-#pragma warning(disable : 4996)   //checked iterators   
-#endif
-
 namespace cgv {
 	/// namespace with classes and algorithms for mathematics
 	namespace math {

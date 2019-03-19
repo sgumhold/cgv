@@ -21,7 +21,7 @@ render_buffer::~render_buffer()
 	}
 }
 
-void render_buffer::destruct(context& ctx)
+void render_buffer::destruct(const context& ctx)
 {
 	if (handle) {
 		ctx.render_buffer_destruct(*this);
@@ -33,7 +33,7 @@ bool render_buffer::is_created() const
 	return handle != 0;
 }
 
-void render_buffer::create(context& ctx, int _width, int _height)
+void render_buffer::create(const context& ctx, int _width, int _height)
 {
 	if (ctx_ptr)
 		destruct(*ctx_ptr);

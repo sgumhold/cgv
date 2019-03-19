@@ -4,7 +4,12 @@
 #include <cgv/signal/abst_signal.h>	/// the tacker class is declared in abst_signal 
 #include <cgv/gui/event_handler.h>
 #include <cgv/render/drawable.h>
+#include <cgv_gl/gl/mesh_render_info.h>
+#include <cgv/render/attribute_array_binding.h>
 #include <cgv/gui/provider.h>
+#include <cgv/media/mesh/simple_mesh.h>
+
+
 
 /// example for the implementation of a cgv node that handles events and renders a selectable shape
 class shape : 
@@ -22,23 +27,26 @@ protected:
 	/// resolution of smooth shapes
 	int resolution;
 	/// different shape types
-	enum Shape { CUBE, PRI, TET, OCT, DOD, ICO, CYL, CONE, DISK, ARROW, SPHERE, STRIP } shp;
+	enum Shape { CUBE, PRI, TET, OCT, DOD, ICO, CYL, CONE, DISK, ARROW, SPHERE, MESH } shp;
 	/// store rotation angle
 	double ax, ay;
 	/// store location along x-axis
 	double x;
-	bool no_flat;
-	/// directly select the cube shape
-	void select_cube(cgv::gui::button&);
-	/// directly select the prism shape
-	void select_prism(cgv::gui::button&);
-	/// directly select the tet shape
-	void select_tet(cgv::gui::button&);
-	/// directly select the oct shape
-	void select_oct(cgv::gui::button&);
-	/// directly select the sphere shape
-	void select_sphere(cgv::gui::button&);
-	void select_strip(cgv::gui::button&);
+	///
+	cgv::media::illum::surface_material mat;
+	///
+	cgv::media::illum::surface_material::color_type col;
+	///
+	typedef cgv::media::mesh::simple_mesh<float> mesh_type;
+	typedef mesh_type::idx_type idx_type;
+	typedef mesh_type::vec3i vec3i;
+	mesh_type mesh;
+	cgv::render::mesh_render_info mesh_info;
+
+	/// whether to flip the normals
+	bool flip_normals;
+	/// select a shape
+	void select_shape(Shape s);
 public:
 	void on_set(void*);
 	/// construct from name which is necessary construction argument to node
@@ -50,7 +58,9 @@ public:
 	/// necessary method of event_handler
 	void stream_help(std::ostream& os);
 	/// optional method of drawable
-	void draw_shape(cgv::render::context&);
+	void draw_shape(cgv::render::context&, bool);
+	///
+	bool init(cgv::render::context&);
 	/// optional method of drawable
 	void draw(cgv::render::context&);
 	/// return a path in the main menu to select the gui
