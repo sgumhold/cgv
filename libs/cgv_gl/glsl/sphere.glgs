@@ -1,0 +1,56 @@
+#version 150
+#extension GL_EXT_geometry_shader4 : enable
+
+//***** begin interface of splat.glsl ***********************************
+void prepare_splat(
+	in float reference_point_radius, in float pixel_extent,
+	out float percentual_core_size, out float percentual_point_size,
+	out float percentual_blend_width, out float percentual_splat_size);
+//***** end interface of surface.glsl ***********************************
+
+//***** begin interface of sphere_lib.glgs ***********************************
+struct sphere_parameter_space
+{
+	vec3  m_tilde;
+	vec3  x_tilde;
+	vec3  y_tilde;
+	vec3  e_tilde;
+	float inv_e_vs;
+	vec3  inv_T_square_e_c_vs;
+	vec2  e_zw_clip_vs;
+};
+
+void generate_sphere_cover_splat(in vec4 sphere, in sphere_parameter_space sps, in mat4 MV, in mat4 MVP, in mat3 NM, in float splat_size = 1.0);
+//***** end interface of sphere_lib.glgs ***********************************
+
+uniform float pixel_extent_per_depth;
+
+in mat3 NM[];
+in mat4 MV[];
+in mat4 MVP[];
+
+in sphere_parameter_space sps[];
+in vec4  color_gs[];
+
+out vec4  color_fs;
+
+out float percentual_blend_width;
+out float percentual_point_size;
+out float percentual_core_size;
+out float percentual_splat_size;
+
+void main()
+{
+
+	color_fs		     = color_gs[0];
+	// compute depth of sphere center
+	float depth = abs((MV[0] * vec4(gl_PositionIn[0].xyz, 1.0)).z);
+	// compute extent of a pixel at sphere center depth 
+	float pixel_extent = pixel_extent_per_depth * depth;
+	// compute splat parameters for fragment shader
+	prepare_splat(gl_PositionIn[0].w, pixel_extent,
+		percentual_core_size, percentual_point_size,
+		percentual_blend_width, percentual_splat_size);
+
+	generate_sphere_cover_splat(gl_PositionIn[0], sps[0], MV[0], MVP[0], NM[0], percentual_splat_size);
+}

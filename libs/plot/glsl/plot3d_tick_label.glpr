@@ -1,0 +1,6 @@
+vertex_file:plot3d_tick_label.glvs
+vertex_file:view.glsl
+vertex_file:quaternion.glsl
+vertex_file:plot_lib.glsl
+fragment_file:default.glfs
+fragment_file:fragment.glfs

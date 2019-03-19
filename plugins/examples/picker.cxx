@@ -3,6 +3,7 @@
 #include "picker.h"
 #include <cgv/gui/key_event.h>
 #include <cgv/gui/mouse_event.h>
+#include <cgv/render/shader_program.h>
 
 using namespace cgv::gui;
 using namespace cgv::render;
@@ -12,6 +13,10 @@ picker::picker(const char* name) : node(name)
 {
 	drag_pnt_idx = -1;
 	is_drag_action = false;
+	prs.point_size = 10;
+	pnts.push_back(vec2(0.0f));
+	pnts.push_back(vec2(0.5f));
+	pnts.push_back(vec2(-0.5f));
 }
 
 /// show internal values
@@ -21,18 +26,18 @@ void picker::stream_stats(std::ostream& os)
 }
 
 /// check if a world point is close enough to the drawing square
-bool picker::is_inside(const Pnt& p) const
+bool picker::is_inside(const vec3& p) const
 {
 	return fabs(p(2)) < 0.1 && fabs(p(0)) <= 1 && fabs(p(1)) <= 1;
 }
 
 /// transform from 3d world to 2d parametric space
-picker::Pnt picker::transform_2_local(const Pnt& p3d) const
+picker::vec2 picker::transform_2_local(const vec3& p3d) const
 {
-	return Pnt(p3d(0),p3d(1));
+	return vec2(p3d(0),p3d(1));
 }
 /// find closest point and return index or -1 if we do not have any points yet
-int picker::find_closest(const Pnt& p2d) const
+int picker::find_closest(const vec2& p2d) const
 {
 	if (pnts.empty())
 		return -1;
@@ -55,9 +60,10 @@ bool picker::handle(event& e)
 		switch (me.get_action()) {
 		case MA_PRESS :
 			if (me.get_button() == MB_LEFT_BUTTON && me.get_modifiers() == EM_CTRL) {
-				Pnt p = get_context()->get_point_W(me.get_x(), me.get_y(), DPV);
+				vec3 p = get_context()->get_point_W(me.get_x(), me.get_y(), MVPD);
 				if (is_inside(p)) {
-					Pnt q = transform_2_local(p);
+					std::cout << p << std::endl;
+					vec2 q = transform_2_local(p);
 					drag_pnt_idx = -1;
 					int i = find_closest(q);
 					if (i != -1) {
@@ -85,7 +91,7 @@ bool picker::handle(event& e)
 			break;
 		case MA_DRAG :
 			if (drag_pnt_idx != -1) {
-				Pnt p = get_context()->get_point_W(me.get_x(), me.get_y(), DPV);
+				vec3 p = get_context()->get_point_W(me.get_x(), me.get_y(), MVPD);
 				if (!is_inside(p)) {
 					pnts.erase(pnts.begin()+drag_pnt_idx);
 					drag_pnt_idx = -1;
@@ -111,34 +117,42 @@ void picker::stream_help(std::ostream& os)
 
 #include <cgv_gl/gl/gl.h>
 
+/// init renderer
+bool picker::init(cgv::render::context& ctx)
+{
+	view_ptr = find_view_as_node();
+	pr.set_render_style(prs);
+	return pr.init(ctx);
+}
+
 /// optional method of drawable
 void picker::draw(context& ctx)
 {
-	glDisable(GL_LIGHTING);
-	glColor3d(1,1,0.7);
-	DPV = ctx.get_DPV();
-	glPolygonOffset(1,1);
+	ctx.ref_default_shader_program().enable(ctx);
+	ctx.set_color(rgb(1,0.8f,0.7f));
+	MVPD = ctx.get_modelview_projection_device_matrix();
 	glDisable(GL_CULL_FACE);
+	glPolygonOffset(1,1);
 	glEnable(GL_POLYGON_OFFSET_FILL);
-	glBegin(GL_QUADS);
-	glVertex2d(-1,-1);
-	glVertex2d(1,-1);
-	glVertex2d(1,1);
-	glVertex2d(-1,1);
-	glEnd();
+	ctx.tesselate_unit_square();
 	glEnable(GL_CULL_FACE);
 	glDisable(GL_POLYGON_OFFSET_FILL);
-	glColor3d(1,0,0);
-	glPointSize(5);
+	ctx.set_color(rgb(0.8f, 0.2f, 0.4f));
+	ctx.ref_default_shader_program().disable(ctx);
+
+	if (pnts.empty())
+		return;
+
 	glPolygonOffset(-1,-1);
 	glEnable(GL_POLYGON_OFFSET_POINT);
-	glEnable(GL_POINT_SMOOTH);
-	glBegin(GL_POINTS);
-	for (unsigned int i = 0; i<pnts.size(); ++i)
-		glVertex2d(pnts[i](0),pnts[i](1));
-	glEnd();
+		pr.set_position_array(ctx, pnts);
+		pr.set_y_view_angle(float(view_ptr->get_y_view_angle()));
+		if (pr.validate_and_enable(ctx)) {
+			ctx.set_color(rgb(1.0f, 0, 0));
+			glDrawArrays(GL_POINTS, 0, GLsizei(pnts.size()));
+			pr.disable(ctx);
+		}
 	glDisable(GL_POLYGON_OFFSET_POINT);
-	glEnable(GL_LIGHTING);
 }
 
 #include <cgv/base/register.h>

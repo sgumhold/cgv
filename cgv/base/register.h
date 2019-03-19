@@ -324,8 +324,7 @@ struct factory_registration_1
 	/*! parameters:
         - \c _ca ... argument passed to the constructor of the created instances
 		- \c _created_type_name ... name of the type of the instances created by the factory
-	    - \c _options ... semicolon separated options used to register the factory. For gui 
-		                  integration these can include assignments to "menu_path" and "shortcut"
+	    - \c _options ... semicolon separated options used to register the factory. For gui integration these can include assignments to "menu_path" and "shortcut"
 	    - \c _is_singleton ... whether the factory can create only one instance
 		- \c _object_options ... options used to register created instances
 	*/
@@ -348,8 +347,7 @@ struct factory_registration_2
 	/*! parameters:
         - \c _ca1, \c _ca2 ... arguments passed to the constructor of the created instances
 		- \c _created_type_name ... name of the type of the instances created by the factory
-	    - \c _options ... semicolon separated options used to register the factory. For gui 
-		                  integration these can include assignments to "menu_path" and "shortcut"
+	    - \c _options ... semicolon separated options used to register the factory. For gui integration these can include assignments to "menu_path" and "shortcut"
 	    - \c _is_singleton ... whether the factory can create only one instance
 		- \c _object_options ... options used to register created instances
 	*/

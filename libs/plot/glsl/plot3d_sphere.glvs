@@ -1,0 +1,44 @@
+#version 330
+
+//***** begin interface of view.glsl ***********************************
+mat4 get_modelview_matrix();
+mat4 get_projection_matrix();
+mat4 get_modelview_projection_matrix();
+mat4 get_inverse_modelview_matrix();
+mat4 get_inverse_modelview_projection_matrix();
+mat3 get_normal_matrix();
+mat3 get_inverse_normal_matrix();
+//***** end interface of view.glsl ***********************************
+
+//***** begin interface of sphere_lib.glvs ***********************************
+void output_sphere_parameter_space(in vec4 sphere);
+//***** end interface of sphere_lib.glvs ***********************************
+
+uniform float radius_scale;
+
+uniform vec3 domain_min;
+uniform vec3 domain_max;
+uniform vec3 extent;
+uniform vec4 orientation;
+uniform vec3 center_location;
+
+layout(location = 0) in float xpos;
+layout(location = 1) in float ypos;
+layout(location = 2) in float zpos;
+layout(location = 3) in float att0;
+
+in vec4 color;
+
+out vec4  color_gs;
+
+vec3 map_plot_to_plot3(in vec3 pnt);
+vec4 map_plot_to_world3(in vec3 pnt);
+
+void main()
+{
+	// compute sphere color
+	color_gs = color;
+	// output sphere parameter space for geometry shader
+	gl_Position = vec4(map_plot_to_plot3(vec3(xpos, ypos, zpos)), radius_scale*att0);
+	output_sphere_parameter_space(gl_Position);
+}

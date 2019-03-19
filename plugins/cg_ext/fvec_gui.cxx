@@ -169,39 +169,33 @@ struct vec_gui_creator : public cgv::gui::gui_creator
 			vec_prefix = vec_prefix.substr(0, vec_prefix.find_first_of('<'));
 		}
 	}
-	/// attempt to create a gui and return whether this was successful
-	bool create(provider* p, const std::string& label, 
-		void* value_ptr, const std::string& value_type, 
-		const std::string& gui_type, const std::string& options, bool*)
+	bool is_vec_type(void* value_ptr, const std::string& value_type, cgv::type::info::TypeId& type_id, int& dim, unsigned char*& crd_ptr) const
 	{
-		std::string coordinate_type;
-		cgv::type::info::TypeId type_id;
-		unsigned char* crd_ptr;
-		int dim;
+#if _MSC_VER >= 1400
 		// first check against prefixes
-		if (value_type.size() > fvec_prefix.size()+2 && (value_type.substr(0,fvec_prefix.size()) == fvec_prefix)) {
+		if (value_type.size() > fvec_prefix.size() + 2 && (value_type.substr(0, fvec_prefix.size()) == fvec_prefix)) {
 			// split off into coordinate type and dimension
-			std::string::size_type p0 = fvec_prefix.size()+1;
+			std::string::size_type p0 = fvec_prefix.size() + 1;
 			std::string::size_type p1 = value_type.find_first_of(',', p0);
 			if (p1 == std::string::npos)
 				return false;
 
 			// determine coordinate type
-			coordinate_type = value_type.substr(p0,p1-p0);
+			std::string coordinate_type = value_type.substr(p0, p1 - p0);
 			type_id = cgv::type::info::get_type_id(coordinate_type);
 			if (!cgv::type::info::is_number(type_id))
 				return false;
-			crd_ptr = (unsigned char*) value_ptr;
+			crd_ptr = (unsigned char*)value_ptr;
 
 			// determine dimension
-			std::string dimension = value_type.substr(p1+1,value_type.size()-2-p1);
+			std::string dimension = value_type.substr(p1 + 1, value_type.size() - 2 - p1);
 			if (!cgv::utils::is_integer(dimension, dim))
 				return false;
 		}
-		else if (value_type.size() > vec_prefix.size()+2 && (value_type.substr(0,vec_prefix.size()) == vec_prefix)) {
+		else if (value_type.size() > vec_prefix.size() + 2 && (value_type.substr(0, vec_prefix.size()) == vec_prefix)) {
 			// determine coordinate type
-			std::string::size_type p0 = vec_prefix.size()+1;
-			coordinate_type = value_type.substr(p0,value_type.size()-1-p0);
+			std::string::size_type p0 = vec_prefix.size() + 1;
+			std::string coordinate_type = value_type.substr(p0, value_type.size() - 1 - p0);
 			type_id = cgv::type::info::get_type_id(coordinate_type);
 			if (!cgv::type::info::is_number(type_id))
 				return false;
@@ -212,9 +206,96 @@ struct vec_gui_creator : public cgv::gui::gui_creator
 		}
 		else
 			return false;
-
+		return true;
+#else
+		type_id = cgv::type::info::type_id<float>::get_id();
+		crd_ptr = reinterpret_cast<unsigned char*>(value_ptr);
+		if (value_type == cgv::type::info::type_name<fvec<float, 2> >::get_name()) {
+			dim = 2;
+			return true;
+		}
+		if (value_type == cgv::type::info::type_name<fvec<float, 3> >::get_name()) {
+			dim = 3;
+			return true;
+		}
+		if (value_type == cgv::type::info::type_name<fvec<float, 4> >::get_name()) {
+			dim = 4;
+			return true;
+		}
+		if (value_type == cgv::type::info::type_name<vec<float> >::get_name()) {
+			dim = (int)reinterpret_cast<vec<float>*>(value_ptr)->size();
+			crd_ptr = reinterpret_cast<unsigned char*>(&(*reinterpret_cast<vec<float>*>(value_ptr))(0));
+			return true;
+		}
+		type_id = cgv::type::info::type_id<double>::get_id();
+		if (value_type == cgv::type::info::type_name<fvec<double, 2> >::get_name()) {
+			dim = 2;
+			return true;
+		}
+		if (value_type == cgv::type::info::type_name<fvec<double, 3> >::get_name()) {
+			dim = 3;
+			return true;
+		}
+		if (value_type == cgv::type::info::type_name<fvec<double, 4> >::get_name()) {
+			dim = 4;
+			return true;
+		}
+		if (value_type == cgv::type::info::type_name<vec<double> >::get_name()) {
+			dim = (int)reinterpret_cast<vec<double>*>(value_ptr)->size();
+			crd_ptr = reinterpret_cast<unsigned char*>(&(*reinterpret_cast<vec<double>*>(value_ptr))(0));
+			return true;
+		}
+		type_id = cgv::type::info::type_id<cgv::type::int32_type>::get_id();
+		if (value_type == cgv::type::info::type_name<fvec<cgv::type::int32_type, 2> >::get_name()) {
+			dim = 2;
+			return true;
+		}
+		if (value_type == cgv::type::info::type_name<fvec<cgv::type::int32_type, 3> >::get_name()) {
+			dim = 3;
+			return true;
+		}
+		if (value_type == cgv::type::info::type_name<fvec<cgv::type::int32_type, 4> >::get_name()) {
+			dim = 4;
+			return true;
+		}
+		if (value_type == cgv::type::info::type_name<vec<cgv::type::int32_type> >::get_name()) {
+			dim = (int)reinterpret_cast<vec<cgv::type::int32_type>*>(value_ptr)->size();
+			crd_ptr = reinterpret_cast<unsigned char*>(&(*reinterpret_cast<vec<cgv::type::int32_type>*>(value_ptr))(0));
+			return true;
+		}
+		type_id = cgv::type::info::type_id<cgv::type::uint32_type>::get_id();
+		if (value_type == cgv::type::info::type_name<fvec<cgv::type::uint32_type, 2> >::get_name()) {
+			dim = 2;
+			return true;
+		}
+		if (value_type == cgv::type::info::type_name<fvec<cgv::type::uint32_type, 3> >::get_name()) {
+			dim = 3;
+			return true;
+		}
+		if (value_type == cgv::type::info::type_name<fvec<cgv::type::uint32_type, 4> >::get_name()) {
+			dim = 4;
+			return true;
+		}
+		if (value_type == cgv::type::info::type_name<vec<cgv::type::uint32_type> >::get_name()) {
+			dim = (int)reinterpret_cast<vec<cgv::type::uint32_type>*>(value_ptr)->size();
+			crd_ptr = reinterpret_cast<unsigned char*>(&(*reinterpret_cast<vec<cgv::type::uint32_type>*>(value_ptr))(0));
+			return true;
+		}
+		return false;
+#endif
+	}
+	/// attempt to create a gui and return whether this was successful
+	bool create(provider* p, const std::string& label, 
+		void* value_ptr, const std::string& value_type, 
+		const std::string& gui_type, const std::string& options, bool*)
+	{
+		cgv::type::info::TypeId type_id;
+		int dim;
+		unsigned char* crd_ptr;
+		if (!is_vec_type(value_ptr, value_type, type_id, dim, crd_ptr))
+			return false;
 		// reconstruct coordinate type name for which controls are registered
-		coordinate_type = cgv::type::info::get_type_name(type_id);
+		std::string coordinate_type = cgv::type::info::get_type_name(type_id);
 		unsigned crd_type_size = cgv::type::info::get_type_size(type_id);
 
 		// analyze gui type

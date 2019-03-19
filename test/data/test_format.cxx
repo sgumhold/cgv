@@ -1,11 +1,11 @@
 #include <cgv/base/register.h>
 #include <cgv/data/component_format.h>
 #include <cgv/data/data_format.h>
-#include <cgv/media/text/convert.h>
+#include <cgv/utils/convert.h>
 
 using namespace cgv::base;
 using namespace cgv::data;
-using cgv::media::text::to_string;
+using cgv::utils::to_string;
 
 bool test_packing_info()
 { 
@@ -100,6 +100,99 @@ bool test_data_format()
 	return true;
 }
 
+enum Endian
+{
+	E_LITTLE = 0,
+	E_BIG_32 = 1,
+	E_BIG_64 = 2
+};
+
+Endian get_endian()
+{
+	uint64_t i = 0x0200000001000000L;
+	return Endian(reinterpret_cast<uint8_t&>(i));
+}
+
+template <Endian src, Endian tar, typename T>
+void convert_endian(T& value)
+{
+	if (src == tar)
+		return;
+	if (src > E_LITTLE && tar > E_LITTLE) {
+		if (sizeof(T) == 8) {
+			uint32_t* ui32_ptr = reinterpret_cast<uint32_t*>(&value);
+			std::swap(ui32_ptr[0], ui32_ptr[1]);
+		}
+	}
+	else {
+		if ((src == E_BIG_32 || tar == E_BIG_32) && (sizeof(T) == 8)) {
+			uint32_t* ui32_ptr = reinterpret_cast<uint32_t*>(&value);
+			convert_endian<src,tar>(ui32_ptr[0]);
+			convert_endian<src,tar>(ui32_ptr[1]);
+		}
+		else {
+			uint8_t* byte_ptr = reinterpret_cast<uint8_t*>(&value);
+			for (size_t i = 0; 2 * i < sizeof(T); ++i)
+				std::swap(byte_ptr[i], byte_ptr[sizeof(T) - i - 1]);
+		}
+	}
+}
+
+template <typename T>
+void show_byte_order(T& value)
+{
+	uint8_t* byte_ptr = reinterpret_cast<uint8_t*>(&value);
+	for (size_t i = 0; i < sizeof(T); ++i) {
+		if (i > 0)
+			std::cout << ", ";
+		std::cout << int(byte_ptr[i]);
+	}
+	std::cout << std::endl;
+}
+
+bool test_data_endian()
+{
+	uint16_t i16 = 0x0201;
+	uint32_t i32 = 0x04030201;
+	uint64_t i64 = 0x0807060504030201L;
+	/*
+	show_byte_order(i16);
+	swap_endian(i16);
+	show_byte_order(i16);
+	swap_endian(i16);
+	show_byte_order(i16);
+
+	show_byte_order(i32);
+	swap_endian(i32);
+	show_byte_order(i32);
+	swap_endian(i32);
+	show_byte_order(i32);
+
+	show_byte_order(i64);
+	swap_endian(i64);
+	show_byte_order(i64);
+	swap_endian(i64);
+	show_byte_order(i64);
+	*/
+
+	std::cout << "\n";
+	show_byte_order(i64);
+	convert_endian<E_LITTLE, E_BIG_32>(i64); show_byte_order(i64);
+	convert_endian<E_BIG_32, E_LITTLE>(i64); show_byte_order(i64);
+	convert_endian<E_LITTLE, E_BIG_64>(i64); show_byte_order(i64);
+	convert_endian<E_BIG_64, E_LITTLE>(i64); show_byte_order(i64);
+	convert_endian<E_BIG_32, E_BIG_64>(i64); show_byte_order(i64);
+	convert_endian<E_BIG_64, E_BIG_32>(i64); show_byte_order(i64);
+
+	Endian e = get_endian();
+	switch (e) {
+	case E_LITTLE: std::cout << "have little" << std::endl; break;
+	case E_BIG_32: std::cout << "have big 32" << std::endl; break;
+	case E_BIG_64: std::cout << "have big 64" << std::endl; break;
+	}
+	return true;
+}
+
 #include <test/lib_begin.h>
 
 extern CGV_API test_registration packing_info_test_registration(
@@ -110,3 +203,6 @@ extern CGV_API test_registration component_format_test_registration(
 
 extern CGV_API test_registration data_format_test_registration(
 	"cgv::base::data_format", test_data_format);
+
+extern CGV_API test_registration data_endian_test_registration(
+	"cgv::base::data_format", test_data_endian);

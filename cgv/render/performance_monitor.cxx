@@ -18,6 +18,9 @@ void performance_monitor::add_measurement(const performance_measurement& pm)
 
 performance_monitor::performance_monitor() : plot_color(0.3f,1,1)
 {
+	fps = -1;
+	fps_alpha = 0.1;
+	time_scale = 60;
 	enabled = true;
 	frame_finished = true;
 	placement.ref_min_pnt().set(10,10);
@@ -34,7 +37,7 @@ performance_monitor::performance_monitor() : plot_color(0.3f,1,1)
 /// enable performance monitoring
 void performance_monitor::enable() 
 {
-	enabled = true; 
+	enabled = true;
 }
 /// disable performance monitoring
 void performance_monitor::disable() 
@@ -57,9 +60,11 @@ void performance_monitor::init_tasks()
 	add_task("main", Col(0.8f,0.2f,0.2f));
 	add_task("stereo", Col(0.2f,0.2f,0.8f));
 	add_task("shadow_map", Col(0.1f, 0.1f, 0.1f));
+	add_task("shadow_volume", Col(0.2f, 0.2f, 0.2f));
 	add_task("opaque_surface", Col(1,1,0));
 	add_task("transparent_surfaces", Col(0.9f,0.7f,0.5f));
-	add_task("pick", Col(0,0,1));
+	add_task("pick", Col(0, 0, 1));
+	add_task("user", Col(0, 1, 0));
 }
 
 /// removes all items of the bar config and hides the bar
@@ -99,6 +104,7 @@ void performance_monitor::start_frame()
 		return;
 	if (!frame_finished)
 		finish_frame();
+
 	while (data.size() >= get_buffer_size())
 		data.pop_front();
 	data.push_back(frame_data());
@@ -133,6 +139,11 @@ void performance_monitor::finish_frame()
 	const char* start_or_finish[] = { "start", "finish" };
 	performance_measurement pm(watch.get_elapsed_time(), 0, false);
 	add_measurement(pm);
+	double new_fps = 1.0 / (data.back().back().time - data.back().front().time);
+	if (fps < 0)
+		fps = new_fps;
+	else
+		fps = fps_alpha * new_fps + (1.0 - fps_alpha)*fps;
 	frame_finished = true;
 	if (file_name.empty())
 		return;
@@ -177,8 +188,8 @@ void performance_monitor::compute_colors(const frame_data& fdata)
 void performance_monitor::compute_positions(int x0, int y0, int dx, int dy, const frame_data& fdata)
 {
 	positions.resize(2*fdata.size()-2);
-	double scale_x = 60.0*dx;
-	double scale_y = 60.0*dy;
+	double scale_x = time_scale*dx;
+	double scale_y = time_scale*dy;
 	int x = x0, y = y0;
 	for (unsigned t=0; t < fdata.size()-1; ++t) {
 		positions[2*t].set(x,y);

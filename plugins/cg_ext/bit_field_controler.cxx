@@ -72,7 +72,7 @@ struct bit_field_controler_gui_creator : public cgv::gui::gui_creator
 			std::cerr << "WARNING: bit_field_controler needs definition of bit fields in option called 'enums'" << std::endl;
 			return false;
 		}
-		std::string align;
+		std::string align = "\n";
 		std::string _options;
 		std::string _gui_type("check");
 		int heading_size = 0;

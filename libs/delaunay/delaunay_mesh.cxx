@@ -11,7 +11,7 @@ delaunay_mesh<T>::delaunay_mesh()
 
 /// return index of the nearest neighbor of the given point
 template <class T>
-unsigned int delaunay_mesh<T>::find_nearest_neighbor(const point_type& p, unsigned int ci_start = 0) const
+unsigned int delaunay_mesh<T>::find_nearest_neighbor(const point_type& p, unsigned int ci_start) const
 {
 	if (this->C.empty()) {
 		std::cerr << "cannot find a nearest neighbor because no triangle has been specified" << std::endl;

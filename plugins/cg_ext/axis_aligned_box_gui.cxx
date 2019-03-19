@@ -251,6 +251,86 @@ struct axis_aligned_box_gui_creator : public cgv::gui::gui_creator
 {
 	static std::string name_prefix;
 
+	bool is_axis_aligned_box(const std::string value_type, cgv::type::info::TypeId& type_id, int& dim) const
+	{
+#if _MSC_VER >= 1400
+		// ensure that value type is axis_aligned_box<T,dim>
+		if (value_type.size() <= name_prefix.size() + 2 || (value_type.substr(0, name_prefix.size()) != name_prefix))
+			return false;
+
+		// find and ensure location of coordinate type and dimension
+		std::string::size_type p0 = name_prefix.size() + 1;
+		std::string::size_type p1 = value_type.find_first_of(',', p0);
+		if (p1 == std::string::npos)
+			return false;
+
+		// extract coordinate type and ensure that it is a number type from type id
+		std::string coordinate_type = value_type.substr(p0, p1 - p0);
+		type_id = cgv::type::info::get_type_id(coordinate_type);
+		if (!cgv::type::info::is_number(type_id))
+			return false;
+
+		// determine dimension and ensure that it is an integer type
+		std::string dimension = value_type.substr(p1 + 1, value_type.size() - 2 - p1);
+		if (!cgv::utils::is_integer(dimension, dim))
+			return false;
+		return true;
+#else
+		type_id = cgv::type::info::type_id<float>::get_id();
+		if (value_type == cgv::type::info::type_name<axis_aligned_box<float, 2> >::get_name()) {
+			dim = 2;
+			return true;
+		}
+		if (value_type == cgv::type::info::type_name<axis_aligned_box<float, 3> >::get_name()) {
+			dim = 3;
+			return true;
+		}
+		if (value_type == cgv::type::info::type_name<axis_aligned_box<float, 4> >::get_name()) {
+			dim = 4;
+			return true;
+		}
+		type_id = cgv::type::info::type_id<double>::get_id();
+		if (value_type == cgv::type::info::type_name<axis_aligned_box<double, 2> >::get_name()) {
+			dim = 2;
+			return true;
+		}
+		if (value_type == cgv::type::info::type_name<axis_aligned_box<double, 3> >::get_name()) {
+			dim = 3;
+			return true;
+		}
+		if (value_type == cgv::type::info::type_name<axis_aligned_box<double, 4> >::get_name()) {
+			dim = 4;
+			return true;
+		}
+		type_id = cgv::type::info::TI_INT32;
+		if (value_type == cgv::type::info::type_name<axis_aligned_box<cgv::type::int32_type, 2> >::get_name()) {
+			dim = 2;
+			return true;
+		}
+		if (value_type == cgv::type::info::type_name<axis_aligned_box<cgv::type::int32_type, 3> >::get_name()) {
+			dim = 3;
+			return true;
+		}
+		if (value_type == cgv::type::info::type_name<axis_aligned_box<cgv::type::int32_type, 4> >::get_name()) {
+			dim = 4;
+			return true;
+		}
+		type_id = cgv::type::info::TI_UINT32;
+		if (value_type == cgv::type::info::type_name<axis_aligned_box<cgv::type::uint32_type, 2> >::get_name()) {
+			dim = 2;
+			return true;
+		}
+		if (value_type == cgv::type::info::type_name<axis_aligned_box<cgv::type::uint32_type, 3> >::get_name()) {
+			dim = 3;
+			return true;
+		}
+		if (value_type == cgv::type::info::type_name<axis_aligned_box<cgv::type::uint32_type, 4> >::get_name()) {
+			dim = 4;
+			return true;
+		}
+		return false;
+#endif
+	}
 	axis_aligned_box_gui_creator()
 	{
 		// determine prefixes of fvec and vec template types
@@ -264,30 +344,13 @@ struct axis_aligned_box_gui_creator : public cgv::gui::gui_creator
 		void* value_ptr, const std::string& value_type, 
 		const std::string& gui_type, const std::string& options, bool*)
 	{
-		// ensure that value type is axis_aligned_box<T,dim>
-		if (value_type.size() <= name_prefix.size() + 2 || (value_type.substr(0, name_prefix.size()) != name_prefix))
-			return false;
-
-		// find and ensure location of coordinate type and dimension
-		std::string::size_type p0 = name_prefix.size() + 1;
-		std::string::size_type p1 = value_type.find_first_of(',', p0);
-		if (p1 == std::string::npos)
-			return false;
-
-		// extract coordinate type and ensure that it is a number type from type id
-		std::string coordinate_type = value_type.substr(p0, p1 - p0);
-		cgv::type::info::TypeId type_id = cgv::type::info::get_type_id(coordinate_type);
-		if (!cgv::type::info::is_number(type_id))
-			return false;
-
-		// determine dimension and ensure that it is an integer type
-		std::string dimension = value_type.substr(p1+1,value_type.size()-2-p1);
+		cgv::type::info::TypeId type_id;
 		int dim;
-		if (!cgv::utils::is_integer(dimension, dim))
+		if (!is_axis_aligned_box(value_type, type_id, dim))
 			return false;
 
 		// reconstruct coordinate type name for which controls are registered
-		coordinate_type = cgv::type::info::get_type_name(type_id);
+		std::string coordinate_type = cgv::type::info::get_type_name(type_id);
 		unsigned char* crd_ptr = (unsigned char*)value_ptr;
 		unsigned crd_type_size = cgv::type::info::get_type_size(type_id);
 
@@ -326,13 +389,13 @@ struct axis_aligned_box_gui_creator : public cgv::gui::gui_creator
 				std::swap(my_ptr, other_ptr);
 			const std::string& child_align = k == (2*dim-1) ? child_align_end : (k%nr_cols+1 < nr_cols ? child_align_col : child_align_row);
 
-			std::string lab_suffix;
+			std::string lab_suffix(is_min ? "min." : "max.");
 			if (dim > (int)components.size())
-				lab_suffix = cgv::utils::to_string(i);
+				lab_suffix += cgv::utils::to_string(i);
 			else
-				lab_suffix = components[i];
+				lab_suffix += components[i];
 
-			std::string lab_prefix(is_min ? "min." : "max.");
+			std::string lab_prefix;
 			if (long_label || (main_label == "first" && (k%nr_cols == 0)))
 				lab_prefix = label+ (label.empty()?"":".") + lab_prefix;
 			if (!long_label && (main_label == "first") && (k%nr_cols != 0))

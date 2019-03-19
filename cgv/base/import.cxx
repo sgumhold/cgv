@@ -40,16 +40,15 @@ std::string find_data_file_rec(const std::string& path, const std::string& file_
 std::string find_data_file_1(const std::string& base_path, const std::string& sub_path, const std::string& file_name, bool recurse)
 {
 	std::string base_path_prefix = base_path;
-	if (!base_path_prefix.empty())
+	if (!base_path_prefix.empty() && base_path_prefix.back() != '/')
 		base_path_prefix += "/";
 	std::string dir_name = base_path_prefix+sub_path;
 	if (!dir_name.empty()) {
 		if (!dir::exists(dir_name))
 			return "";
-		dir_name += "/";
+		if (dir_name.back() != '/')
+			dir_name += "/";
 	}
-	if (!dir_name.empty())
-		dir_name += "/";
 	if (exists(dir_name+file_name))
 		return dir_name+file_name;
 	if (!recurse)

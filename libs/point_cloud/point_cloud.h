@@ -22,11 +22,15 @@ struct point_cloud_types
 	typedef cgv::type::uint8_type ClrComp;
 	static ClrComp byte_to_color_component(cgv::type::uint8_type c) { return c; }
 	static ClrComp float_to_color_component(double c) { return cgv::type::uint8_type(255 * c); }
+	static cgv::type::uint8_type color_component_to_byte(ClrComp c) { return c; }
+	static float color_component_to_float(ClrComp c) { return 1.0f/255 * c; }
 #else
 	/// type of color components
 	typedef float ClrComp;
 	static ClrComp byte_to_color_component(cgv::type::uint8_type c) { return c*1.0f/255; }
 	static ClrComp float_to_color_component(double c) { return float(c); }
+	static cgv::type::uint8_type color_component_to_byte(ClrComp c) { return cgv::type::uint8_type(255*c); }
+	static float color_component_to_float(ClrComp c) { return c; }
 #endif // BYTE_COLORS
 	/// floating point color type
 	typedef cgv::media::color<float, cgv::media::RGB, cgv::media::OPACITY> RGBA;
@@ -67,6 +71,7 @@ struct point_cloud_types
 	/// simple structure to store the point range of a point cloud component
 	struct component_info
 	{
+		std::string name;
 		size_t index_of_first_point;
 		size_t nr_points;
 		component_info(size_t _first = 0, size_t _nr = 0) : index_of_first_point(_first), nr_points(_nr) {}
@@ -245,7 +250,7 @@ public:
 	/// determine format from extension (see read method for extension mapping) and write with corresponding format
 	bool write(const std::string& file_name);
 	/// write component transformations to ascii file with 12 numbers per line (9 for rotation matrix and 3 for translation vector)
-	bool write_component_transformations(const std::string& file_name) const;
+	bool write_component_transformations(const std::string& file_name, bool as_matrices = true) const;
 	//@}
 
 	/**@name access to geometry*/
@@ -320,7 +325,10 @@ public:
 	const component_info& component_point_range(Idx ci) const { return components[ci]; }
 	/// return the point range of a component as reference
 	component_info& component_point_range(Idx ci) { return components[ci]; }
-
+	/// return name of i-th component
+	const std::string& component_name(Idx ci) const { return components[ci].name; }
+	/// return name of i-th component
+	std::string& component_name(Idx ci) { return components[ci].name; }
 	/// return whether the point cloud has component colors
 	bool has_component_colors() const;
 	/// allocate component colors if not already allocated

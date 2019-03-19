@@ -7,7 +7,7 @@ layout(line_strip, max_vertices = 24) out;
 in mat4 PM[];
 in vec4 color_gs[];
 
-out vec4 color;
+out vec4 color_fs;
 
 int surface_side_handling(in vec3 position, inout vec3 normal, inout vec4 color);
 
@@ -19,7 +19,7 @@ void emit_vertex(in vec4 p)
 
 void main()
 {
-	color = color_gs[0];
+	color_fs = color_gs[0];
 	vec4 C0 = PM[0] * vec4(-0.5, -0.5, -0.5, 1.0);
 	vec4 C1 = PM[0] * vec4(0.5, -0.5, -0.5, 1.0);
 	vec4 C2 = PM[0] * vec4(-0.5, 0.5, -0.5, 1.0);

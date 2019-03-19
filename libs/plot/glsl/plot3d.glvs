@@ -1,0 +1,17 @@
+#version 330 
+
+layout(location = 0) in float xpos;
+layout(location = 1) in float ypos;
+layout(location = 2) in float zpos;
+in vec4 color;
+
+out vec4 color_fs;
+
+vec4 map_plot_to_screen3(in vec3 pnt);
+
+void main()
+{
+	// transform vertex to clip space
+	gl_Position = map_plot_to_screen3(vec3(xpos,ypos,zpos));
+	color_fs = color;
+}

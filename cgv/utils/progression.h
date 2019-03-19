@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <cgv/type/standard_types.h>
 
 #include "lib_begin.h"
 
@@ -15,14 +16,14 @@ struct CGV_API progression
 	double next_step;
 	double percent;
 	double percent_step;
-	int   enumerations;
+	cgv::type::int64_type enumerations;
 public:
 	/// create empty progression
 	progression();
 	/// create from total enumerations and number of times to print progression
-	progression(const std::string& process, unsigned int total, int count);
+	progression(const std::string& process, size_t total, int count);
 	/// reinitialize
-	void init(const std::string& process, unsigned int total, int count);
+	void init(const std::string& process, size_t total, int count);
 	/// next iteration
 	void step();
 };

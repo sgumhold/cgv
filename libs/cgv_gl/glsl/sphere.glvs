@@ -1,73 +1,58 @@
-uniform int nr_lights;
+#version 150
 
-varying vec3 q_tilde;
-varying vec3 inv_T_square_v;
-varying vec3 inv_T_square_e_c;
-varying vec4 ev_clip;
-varying vec3 v;
-//varying vec3 h[4];
-//varying vec3 l[4];
-varying vec4 a;
-//varying vec4 d;
-varying vec4 s;
+//***** begin interface of view.glsl ***********************************
+mat4 get_modelview_matrix();
+mat4 get_projection_matrix();
+mat4 get_modelview_projection_matrix();
+mat4 get_inverse_modelview_matrix();
+mat4 get_inverse_modelview_projection_matrix();
+mat3 get_normal_matrix();
+mat3 get_inverse_normal_matrix();
+//***** end interface of view.glsl ***********************************
+
+//***** begin interface of sphere_lib.glvs ***********************************
+void output_sphere_parameter_space(in vec4 sphere);
+void output_sphere_parameter_space(in vec4 sphere, in mat4 MV, in mat4 MVP, in mat3 NM);
+void output_sphere_parameter_space(in vec4 sphere, in mat4 MV, in mat4 MVP, in mat3 NM, in mat4 iMV);
+//***** end interface of sphere_lib.glvs ***********************************
+
+uniform float radius_scale;
+
+in vec4  position;
+in float radius;
+in vec4  color;
+in int   group_index;
+
+out mat3  NM;
+out mat4  MV;
+out mat4  MVP;
+out vec4  color_gs;
+
+//***** begin interface of group.glsl ***********************************
+vec4 group_color(in vec4 color, int group_index);
+vec3 group_transformed_position(in vec3 position, int group_index);
+vec3 group_transformed_normal(in vec3 nml, int group_index);
+void right_multiply_group_normal_matrix(inout mat3 NM, int group_index);
+void right_multiply_group_position_matrix(inout mat4 MV, int group_index);
+void right_multiply_group_normal_matrix_and_rotation(inout mat3 NM, int group_index, vec4 rotation);
+void right_multiply_group_position_matrix_and_rigid(inout mat4 MV, int group_index, vec4 rotation, vec3 translation);
+//***** end interface of group.glsl ***********************************
 
 void main()
 {
-	// decompress the matrix T
-	float R = gl_Vertex.w;
-	float inv_R = 1.0/R;
-
-	// determine eye point in parameter space
-	vec3 e = gl_ModelViewMatrixInverse[3].xyz;
-	vec3 e_tilde = inv_R*(e - gl_Vertex.xyz);
-
-	// compute helper
-	float inv_e_square = 1.0/dot(e_tilde,e_tilde);
-
-	// determine silhoutte center in parameter space
-	vec3 m_tilde = inv_e_square*e_tilde;
-
-	// determine radius of silhouette in parameter space
-	float r = sqrt(1.0-inv_e_square);
-
-	// compute vector x of length r orthogonal to e in parameter space
-	vec3 x_tilde = r*normalize(cross(gl_ModelViewMatrixInverse[1].xyz,e_tilde));
-
-	// compute vector y of length r orthogonal to x and e in parameter space
-	vec3 y_tilde = r*normalize(cross(e_tilde,x_tilde));
-
-	// compute the corner point in homogeneous object coordinates
-	vec3 V_tilde = m_tilde+gl_MultiTexCoord2.x*x_tilde+gl_MultiTexCoord2.y*y_tilde;
-	vec3 v_tilde = V_tilde - e_tilde;
-
-	vec4 V;
-	V.xyz = R*V_tilde+gl_Vertex.xyz;
-	V.w = 1.0;
- 
-	q_tilde.xy = gl_MultiTexCoord2.xy;
-	q_tilde.z = sqrt(inv_e_square);
-
-	// compute vector from eye to vertex in eye space
-	v = (gl_ModelViewMatrix*V).xyz;
-
-	// compute components to compute normal in eye space
-	inv_T_square_e_c = gl_NormalMatrix*(e_tilde);
-	inv_T_square_v   = gl_NormalMatrix*(v_tilde);
-
-	v = -normalize(v);
-
-	gl_Position	   = gl_ModelViewProjectionMatrix * V;
-	ev_clip.xy     = (gl_ModelViewProjectionMatrix * gl_ModelViewMatrixInverse[3]).zw;
-	ev_clip.zw     = gl_Position.zw - ev_clip.xy;
-	a = vec4(0.0,0.0,0.0,0.0);
-
-	vec4 lpos;
-
-	for (int i=0; i<nr_lights; ++i) {
-		a += gl_LightSource[i].ambient*gl_Color;
-	}
-
-	gl_FrontColor = gl_Color;
-	//d = gl_Color;
-	s = gl_FrontMaterial.specular;
+	// compute normal transformation matrix
+	NM = get_normal_matrix();
+	right_multiply_group_normal_matrix(NM, group_index);
+	// compute position transformation matrix
+	MV = get_modelview_matrix();
+	right_multiply_group_position_matrix(MV, group_index);
+	MVP = get_modelview_projection_matrix();
+	right_multiply_group_position_matrix(MVP, group_index);
+	// compute sphere color
+	color_gs = group_color(color, group_index);
+	// output sphere parameter space for geometry shader
+	gl_Position = position;
+	gl_Position.xyz = gl_Position.xyz / gl_Position.w;
+	gl_Position.w = radius_scale * radius;
+	output_sphere_parameter_space(gl_Position, MV, MVP, NM);
 }

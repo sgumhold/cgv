@@ -1,0 +1,29 @@
+#version 150
+#extension GL_EXT_geometry_shader4 : enable
+
+//***** begin interface of sphere_lib.glgs ***********************************
+struct sphere_parameter_space
+{
+	vec3  m_tilde;
+	vec3  x_tilde;
+	vec3  y_tilde;
+	vec3  e_tilde;
+	float inv_e_vs;
+	vec3  inv_T_square_e_c_vs;
+	vec2  e_zw_clip_vs;
+};
+
+void generate_sphere_cover_splat(in vec4 sphere, in sphere_parameter_space sps, in float splat_size = 1.0);
+//***** end interface of sphere_lib.glgs ***********************************
+
+in sphere_parameter_space sps[];
+
+in vec4  color_gs[];
+
+out vec4  color_fs;
+
+void main()
+{
+	color_fs = color_gs[0];
+	generate_sphere_cover_splat(gl_PositionIn[0], sps[0]);
+}

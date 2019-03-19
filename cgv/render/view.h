@@ -1,7 +1,7 @@
 #pragma once
 
 #include <cgv/math/fvec.h>
-#include <cgv/math/mat.h>
+#include <cgv/math/fmat.h>
 #include "lib_begin.h"
 
 namespace cgv {
@@ -20,15 +20,17 @@ namespace cgv {
 class CGV_API view
 {
 public:
-	typedef cgv::math::fvec<double,3> pnt_type;
-	typedef cgv::math::fvec<double,3> vec_type;
+	typedef cgv::math::fvec<float, 3>      vec3;
+	typedef cgv::math::fvec<double, 3>    dvec3;
+	typedef cgv::math::fmat<double, 3, 3> dmat3;
+	typedef cgv::math::fmat<double, 4, 4> dmat4;
 protected:
 	/// focus of the view
-	pnt_type focus;
+	dvec3 focus;
 	/// 
-	vec_type view_up_dir;
+	dvec3 view_up_dir;
 	///
-	vec_type view_dir;
+	dvec3 view_dir;
 	///
 	double y_view_angle;
 	///
@@ -41,37 +43,34 @@ public:
 	//@{
 
 	/// query focus point
-	pnt_type get_focus() const;
+	const dvec3& get_focus() const;
 	/// set a new focus point keeping y extent at focus and y view angle fix, such that the eye position is also changed
-	virtual void set_focus(const pnt_type& foc);
+	virtual void set_focus(const dvec3& foc);
+	void set_focus(const vec3& foc) { set_focus(dvec3(foc)); }
 	/// set focus from coordinates
 	void set_focus(double x, double y, double z);
-	/// set focus from coordinate array
-	void set_focus(const double* foc);
 	/// write access to focus point
-	pnt_type& ref_focus();
+	dvec3& ref_focus();
 
 	/// query current view direction
-	vec_type get_view_dir() const;
+	const dvec3& get_view_dir() const;
 	/// set view direction without ensuring orthogonality to view up direction
-	virtual void set_view_dir(const vec_type& vd);
+	virtual void set_view_dir(const dvec3& vd);
+	void set_view_dir(const vec3& vd) { set_view_dir(dvec3(vd)); }
 	/// set view direction from coordinates
 	void set_view_dir(double x, double y, double z);
-	/// set view direction from coordinate array
-	void set_view_dir(const double* vd);
 	/// write access to view dir
-	vec_type& ref_view_dir();
+	dvec3& ref_view_dir();
 
 	/// query current view up direction
-	vec_type get_view_up_dir() const;
+	const dvec3& get_view_up_dir() const;
 	/// set view up direction without ensuring orthogonality to view direction
-	virtual void set_view_up_dir(const vec_type& vud);
+	virtual void set_view_up_dir(const dvec3& vud);
+	void set_view_up_dir(const vec3& vud) { set_view_up_dir(dvec3(vud)); }
 	/// set view up direction from coordinates
 	void set_view_up_dir(double x, double y, double z);
-	/// set view up direction coordinate array
-	void set_view_up_dir(const double* vud);
 	/// write access to view up direction
-	vec_type& ref_view_up_dir();
+	dvec3& ref_view_up_dir();
 	/// write access to extent at focus
 	double& ref_y_extent_at_focus();
 
@@ -98,30 +97,31 @@ public:
 	//! construct coordinate system with z in negative view direction and x and y aligned with the right and up direction of the viewed image
 	/*! If view direction and view up direction are not orthogonal, the y direction will point in the
 	component of the view up direction that is orthogonal to the view direction. */
-	void put_coordinate_system(vec_type& x, vec_type& y, vec_type& z) const;
+	void put_coordinate_system(dvec3& x, dvec3& y, dvec3& z) const;
+	void put_coordinate_system(vec3& x, vec3& y, vec3& z) const;
 	//! compute axis and angle of a rotation that the current view_dir and view_up_dir to the given target_view_dir and target_view_up_dir
 	/*! returns the result of the function cgv::math::decompose_rotation_to_axis_and_angle()*/
-	int compute_axis_and_angle(const vec_type& target_view_dir, const vec_type& target_view_up_dir, vec_type& axis, double& angle);
+	int compute_axis_and_angle(const dvec3& target_view_dir, const dvec3& target_view_up_dir, dvec3& axis, double& angle);
 	/// return whether the y view angle is zero
 	bool is_parallel() const;
 	//! query the eye point, which is computed from focus, view dir, y extent at focus and y view angle
 	/*! With the y view angle approaching 0, the eye point moves infinitely far away. To avoid
 	    numerical problems, the eye point is computed with an y view angle no less than 0.1.*/
-	const pnt_type get_eye() const;
+	const dvec3 get_eye() const;
 	//! set view dir and y view angle keeping focus and y extent such that get_eye() returns the passed point, return whether this was successful.
 	/*! Recomputes view up direction to make it orthogonal to view direction. 
 	    In the case that the eye point is identical to the current focus point the function fails and returns false. 
 		*/
-	bool set_eye_keep_extent(const pnt_type& eye);
+	bool set_eye_keep_extent(const dvec3& eye);
 	//! set the view dir and y extent at focus keeping focus and y view angle such that get_eye() returns the passed point, return whether this was successful.
 	/*! Recomputes view up direction to make it orthogonal to view direction. 
 		In the case that the eye point is identical to the current focus point the function fails and returns false.
 		If the current view angle is < 0.1, the view anlge 0.1 is used for eye point calculation */
-	bool set_eye_keep_view_angle(const pnt_type& eye);
+	bool set_eye_keep_view_angle(const dvec3& eye);
 	/// set the view according to the standard view lookat definition from eye, focus and view up direction keeping the y-extent at the focus point constant
-	void view_look_at_keep_view_angle(const pnt_type& eye, const pnt_type& foc, const vec_type& vud);
+	void view_look_at_keep_view_angle(const dvec3& eye, const dvec3& foc, const dvec3& vud);
 	/// set the view according to the standard view lookat definition from eye, focus and view up direction keeping the y-view angle constant
-	void view_look_at_keep_extent(const pnt_type& eye, const pnt_type& foc, const vec_type& vud);
+	void view_look_at_keep_extent(const dvec3& eye, const dvec3& foc, const dvec3& vud);
 	//@}
 
 	/**@name view control*/
@@ -152,15 +152,15 @@ public:
 	/// disable viewport splitting
 	virtual void disable_viewport_splitting();
 	/// inside the drawing process activate the sub-viewport with the given column and row indices, always terminate an activated viewport with deactivate_split_viewport
-	virtual void activate_split_viewport(cgv::render::context& ctx, unsigned col_index, unsigned row_index);
+	virtual void activate_split_viewport(context& ctx, unsigned col_index, unsigned row_index);
 	/// deactivate the previously split viewport
-	virtual void deactivate_split_viewport();
+	virtual void deactivate_split_viewport(context& ctx);
 	/// make a viewport manage its own view
 	virtual void viewport_use_individual_view(unsigned col_index, unsigned row_index);
 	/// check whether viewport manage its own view
 	virtual bool does_viewport_use_individual_view(unsigned col_index, unsigned row_index) const;
 	/// access the view of a given viewport
-	virtual cgv::render::view& ref_viewport_view(unsigned col_index, unsigned row_index);
+	virtual view& ref_viewport_view(unsigned col_index, unsigned row_index);
 	//! given a mouse location and the pixel extent of the context, return the DPV matrix for unprojection
 	/*! In stereo modes with split viewport, the returned DPV is the one the mouse pointer is on.
 	The return value is in this case -1 or 1 and tells if DPV corresponds to the left (-1) or right (1) viewport.
@@ -178,9 +178,9 @@ public:
 	and center mouse location of the panel panel that the mouse pointer is in.
 
 	All pointer arguments starting with DPV_other_ptr can be set to the null pointer.*/
-	virtual int get_DPVs(int x, int y, int width, int height,
-		const cgv::math::mat<double>** DPV_pptr,
-		const cgv::math::mat<double>** DPV_other_pptr = 0, int* x_other_ptr = 0, int* y_other_ptr = 0,
+	virtual int get_modelview_projection_device_matrices(int x, int y, int width, int height,
+		const dmat4** MVPD_pptr,
+		const dmat4** MVPD_other_pptr = 0, int* x_other_ptr = 0, int* y_other_ptr = 0,
 		int* vp_col_idx_ptr = 0, int* vp_row_idx_ptr = 0,
 		int* vp_width_ptr = 0, int *vp_height_ptr = 0,
 		int* vp_center_x_ptr = 0, int* vp_center_y_ptr = 0,
@@ -188,9 +188,11 @@ public:
 	//! given a pixel location x,y return the z-value from the depth buffer, which ranges from 0.0 at z_near to 1.0 at z_far and a point in world coordinates
 	/*! in case of stereo rendering two z-values exist that can be unprojected to two points in world
 	coordinates. In this case the possibility with smaller z value is selected. */
-	virtual double get_z_and_unproject(cgv::render::context& ctx, int x, int y, pnt_type& p);
+	virtual double get_z_and_unproject(context& ctx, int x, int y, dvec3& p);
+	double get_z_and_unproject(context& ctx, int x, int y, vec3& p);
 	/// fill \c rect with four points covering the screen rectangle at given depth from eye with given aspect ratio
-	void compute_screen_rectangle(std::vector<pnt_type>& rect, double depth, double aspect) const;
+	void compute_screen_rectangle(std::vector<dvec3>& rect, double depth, double aspect) const;
+	void compute_screen_rectangle(std::vector<vec3>& rect, double depth, double aspect) const;
 	//@}
 
 };

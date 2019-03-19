@@ -1,0 +1,46 @@
+#version 150
+
+//***** begin interface of sphere_lib.glfs ***********************************
+bool computer_ray_sphere_intersection(out vec3 p_eye, out vec3 n_eye, out vec2 splat_tc, out float clip_depth, out int side);
+//***** end interface of sphere_lib.glfs ***********************************
+
+in vec4 color_fs;
+
+//***** begin interface of surface.glsl ***********************************
+struct Material {
+	int brdf_type;
+	vec3 diffuse_reflectance;
+	float roughness;
+	float metalness;
+	float ambient_occlusion;
+	vec3 emission;
+	float transparency;
+	vec2 propagation_slow_down;
+	float roughness_anisotropy;
+	float roughness_orientation;
+	vec3 specular_reflectance;
+};
+
+vec4 compute_reflected_radiance(in Material M, vec3 position_eye, vec3 normal_eye);
+vec4 compute_reflected_appearance(vec3 position_eye, vec3 normal_eye, vec4 color_fs, int side);
+vec4 compute_reflected_appearance_texture(vec3 position_eye, vec3 normal_eye, vec2 texcoords, vec4 color_fs, int side);
+//***** end interface of surface.glsl ***********************************
+
+//***** begin interface of fragment.glfs ***********************************
+uniform float gamma = 2.2;
+void finish_fragment(vec4 color);
+//***** end interface of fragment.glfs ***********************************
+
+void main()
+{
+	vec3 p_eye;
+	vec3 n_eye;
+	int side;
+	vec2 tc;
+
+	if (!computer_ray_sphere_intersection(p_eye, n_eye, tc, gl_FragDepth, side))
+		discard;
+
+	vec4 color = compute_reflected_appearance(p_eye, n_eye, color_fs, side);
+	finish_fragment(color);
+}

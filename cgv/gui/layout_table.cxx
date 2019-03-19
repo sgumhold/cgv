@@ -21,7 +21,7 @@ Method "update":
 	    - Set hints for the column:
 		   - If one of the elements is expandable then the column is expandable
 		   - If one of the elements is shrinkable then the column is shrinkable
-      - Do the same for all rows
+     - Do the same for all rows
 
 - As long as the relayouting process is not finished:
    - Method "distribute_space":

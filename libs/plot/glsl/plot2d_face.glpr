@@ -1,3 +1,0 @@
-files:plot2d_face
-fragment_file:lighting.glsl
-geometry_shader_info:triangles;triangle_strip;3

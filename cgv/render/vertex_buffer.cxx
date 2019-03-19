@@ -28,7 +28,7 @@ size_t vertex_buffer::get_size_in_bytes() const
 }
 
 /// create empty vertex buffer of size \c size given in bytes
-bool vertex_buffer::create(context& ctx, size_t _size_in_bytes)
+bool vertex_buffer::create(const context& ctx, size_t _size_in_bytes)
 {
 	size_in_bytes = _size_in_bytes;
 	return ctx.vertex_buffer_create(*this, 0, size_in_bytes);
@@ -41,13 +41,13 @@ bool vertex_buffer::is_created() const
 }
 
 /// copy \c size_in_bytes number bytes from this vertex buffer starting at byte offset \c start_offset_in_bytes to vertex buffer \c dst starting at offest \c dst_offset_in_bytes
-bool vertex_buffer::copy(context& ctx, size_t src_offset_in_bytes, size_t size_in_bytes, vertex_buffer& dst, size_t dst_offset_in_bytes) const 
+bool vertex_buffer::copy(const context& ctx, size_t src_offset_in_bytes, size_t size_in_bytes, vertex_buffer& dst, size_t dst_offset_in_bytes) const
 {
 	return ctx.vertex_buffer_copy(*this, src_offset_in_bytes, dst, dst_offset_in_bytes, size_in_bytes);
 }
 
 /// destruct the render buffer
-void vertex_buffer::destruct(context& ctx)
+void vertex_buffer::destruct(const context& ctx)
 {
 	if (handle) {
 		ctx.vertex_buffer_destruct(*this);

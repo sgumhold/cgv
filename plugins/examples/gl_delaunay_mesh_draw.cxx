@@ -70,7 +70,7 @@ bool gl_delaunay_mesh_draw::init(context& ctx)
 	std::vector<cgv::render::view*> views;
 	cgv::base::find_interface(base_ptr(this),views);
 	for (unsigned i = 0; i < views.size(); ++i) {
-		views[i]->set_eye_keep_extent(cgv::render::view::pnt_type(0,0,10));
+		views[i]->set_eye_keep_extent(cgv::render::view::vec3(0,0,10));
 		views[i]->set_y_extent_at_focus(2);
 	}
 	return true;
@@ -170,8 +170,8 @@ void gl_delaunay_mesh_draw::draw_point_elements() const
 	glVertexPointer(2, gl_traits<coord_type>::type, 0, &(tm->p_of_vi(0).x()));
 	glEnableClientState(GL_VERTEX_ARRAY);
 	if (debug_next_insertion) {
-		glPointSize(2*(float)primitive_scale);
-		glColor3f(1.0f, 1.0f, 0.0f);
+		glPointSize(3*(float)primitive_scale);
+		glColor3f(0.8f, 0.0f, 0.6f);
 		glDrawArrays(GL_POINTS, vi, (tm->get_nr_triangles() == 0) ? 3 : 1);
 	}
 	if (debug_nearest_neighbor && tm->get_nr_triangles() > 0) {

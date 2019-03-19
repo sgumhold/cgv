@@ -7,27 +7,20 @@
 namespace cgv {
 	namespace gui {
 		/// construct a key event from its textual description 
-		gamepad_key_event::gamepad_key_event(void* _device_id, unsigned short _key, KeyAction _action, unsigned char _char, double _time)
-			: key_event(_key, _action, _char, 0, 0, _time), device_id(_device_id)
+		gamepad_key_event::gamepad_key_event(void* _device_handle, const gamepad::gamepad_state& _state, unsigned short _key, KeyAction _action, unsigned char _char, double _time)
+			: key_event(_key, _action, _char, 0, 0, _time), device_handle(_device_handle), state(_state)
 		{
-			flags = EF_MULTI;
-		}
-
-
-		/// return the device id, by default returns 0
-		void* gamepad_key_event::get_device_id() const
-		{
-			return device_id;
+			flags = EF_PAD;
 		}
 
 		/// write to stream
 		void gamepad_key_event::stream_out(std::ostream& os) const
 		{
 			event::stream_out(os);
-			os << gamepad::convert_key_to_string(key);
+			os << gamepad::get_key_string(key);
 			switch (action) {
 			case KA_RELEASE:
-				os << " up";
+				os << " up ";
 				break;
 			case KA_PRESS:
 				if (get_char())
@@ -37,99 +30,199 @@ namespace cgv {
 				os << " repeat ";
 				break;
 			}
-			os << "[" << device_id << "]";
-		}
-		// read from stream
-		void gamepad_key_event::stream_in(std::istream&)
-		{
-			std::cerr << "key_event::stream_in not implemented yet" << std::endl;
+			os << "*" << device_handle << "*";
 		}
 
-
-		gamepad_event::gamepad_event(void* _device_id, const gamepad::gamepad_state& _state) : event(EID_PAD), device_id(_device_id), state(_state)
+		/// construct a key event from its textual description 
+		gamepad_throttle_event::gamepad_throttle_event(void* _device_handle, gamepad::gamepad_state& _state,
+			float _x, float _dx, unsigned _player_index, unsigned _controller_index, unsigned _throttle_index, double _time)
+			: throttle_event(_x,_dx,_player_index,_controller_index,_throttle_index, _time),
+			device_handle(_device_handle), state(_state)
 		{
-			flags = EF_MULTI;
-		}
-		/// return the device id, by default returns 0
-		void* gamepad_event::get_device_id() const
-		{
-			return device_id;
+			flags = EF_PAD;
 		}
 		/// write to stream
-		void gamepad_event::stream_out(std::ostream& os) const
+		void gamepad_throttle_event::stream_out(std::ostream& os) const
 		{
-			event::stream_out(os);
-			unsigned i = (unsigned&)device_id;
-
-			os << "id=" << i << " ";
-			os << std::setprecision(2) << std::fixed
-			   << state.trigger_position[0] << "|"
-			   << std::showpos << state.left_stick_position[0] << "x"
-			   << state.left_stick_position[1] << " <-> "
-			   << std::noshowpos << state.trigger_position[1] << "|"
-			   << std::showpos << state.right_stick_position[0] << "x"
-			   << state.right_stick_position[1] << std::noshowpos
-			   << std::setprecision(6) << std::resetiosflags(std::ios::fixed);
-			if (state.button_flags > 0)
-				os << " flags=" << convert_flags_to_string(gamepad::GamepadButtonStateFlags(state.button_flags));
+			throttle_event::stream_out(os);
+			os << "*" << device_handle << "*";
 		}
-		// read from stream
-		void gamepad_event::stream_in(std::istream&)
+
+		/// construct a key event from its textual description 
+		gamepad_stick_event::gamepad_stick_event(void* _device_handle, gamepad::gamepad_state& _state,
+			StickAction _action, float _x, float _y, float _dx, float _dy,
+			unsigned _player_index, unsigned _controller_index, unsigned _stick_index, double _time)
+			: stick_event(_action, _x, _y, _dx, _dy, _player_index, _controller_index, _stick_index, _time),
+			device_handle(_device_handle), state(_state)
 		{
-			std::cerr << "event::stream_in not implemented yet" << std::endl;
+			flags = EF_PAD;
+		}
+		/// return the device id, by default returns 0
+		void* gamepad_stick_event::get_device_handle() const { return device_handle; }
+		/// access to current gamepad state
+		const gamepad::gamepad_state& gamepad_stick_event::get_state() const { return state; }
+
+		/// write to stream
+		void gamepad_stick_event::stream_out(std::ostream& os) const
+		{
+			stick_event::stream_out(os);
+			os << "*" << device_handle << "*";
 		}
 
 		gamepad_server::gamepad_server()
 		{
-			last_device_scan = 0;
+			last_device_scan = -1;
 			device_scan_interval = 2;
-			gamepad::scan_devices();
-			last_time_stamps.resize(gamepad::get_device_infos().size(), 0);
+			event_flags = GPE_ALL;
 		}
 		/// set time interval in seconds to check for device connection changes
 		void gamepad_server::set_device_scan_interval(double duration)
 		{
 			device_scan_interval = duration;
 		}
+		/// set the event type flags of to be emitted events
+		void gamepad_server::set_event_type_flags(GamepadEventTypeFlags flags)
+		{
+			event_flags = flags;
+		}
+
 		/// check enabled gamepad devices for new events and dispatch them through the on_event signal
 		void gamepad_server::check_and_emit_events(double time)
 		{
-			if (time > last_device_scan + device_scan_interval) {
+			if ((last_device_scan < 0) || (time > last_device_scan + device_scan_interval)) {
 				last_device_scan = time;
-				size_t old_nr_devices = gamepad::get_device_infos().size();
 				gamepad::scan_devices();
-				if (gamepad::get_device_infos().size() != old_nr_devices) {
-					last_time_stamps.resize(gamepad::get_device_infos().size());
-					on_device_change(0);
+				std::vector<void*> new_device_handles;
+				for (const auto& di : gamepad::get_device_infos())
+					new_device_handles.push_back(di.device_handle);
+				std::vector<gamepad::gamepad_state> new_states(new_device_handles.size());
+				for (void* dh : device_handles) {
+					auto iter = std::find(new_device_handles.begin(), new_device_handles.end(), dh);
+					if (iter == new_device_handles.end()) {
+						if ((event_flags&GPE_DEVICE) != 0)
+							on_device_change(dh, false);
+					}
+					else {
+						size_t i = iter - new_device_handles.begin();
+						new_states[i] = last_states[i];
+					}
 				}
+				for (void* ndh : new_device_handles) {
+					auto iter = std::find(device_handles.begin(), device_handles.end(), ndh);
+					if (iter == device_handles.end()) {
+						if ((event_flags&GPE_DEVICE) != 0)
+							on_device_change(ndh, true);
+					}
+				}
+				last_states = new_states;
+				device_handles = new_device_handles;
 			}
-			gamepad::gamepad_key_event gpk;
+			gamepad::GamepadKeys key;
+			gamepad::KeyAction action;
 			gamepad::gamepad_state state;
 			// loop all devices
-			for (unsigned device_index = 0; device_index < gamepad::get_device_infos().size(); ++device_index) {
-				// if state query unsuccessful rescan devices and stop this for loop
-				if (!get_state(device_index, state)) {
-					gamepad::scan_devices();
-					last_time_stamps.resize(gamepad::get_device_infos().size());
-					on_device_change(device_index);
-					break;
+			for (unsigned i = 0; i < device_handles.size(); ++i) {
+				// if state query unsuccessful continue loop
+				if (!get_state(device_handles[i], state))
+					continue;
+				// process key events
+				while (query_key_event(device_handles[i], key, action)) {
+					if ((event_flags&GPE_KEY) != 0) {
+						char c = 0;
+						if (key >= gamepad::GPK_A && key <= gamepad::GPK_Y)
+							c = std::string("ABXY")[key - gamepad::GPK_A];
+						gamepad_key_event gp_ke(device_handles[i], state, key, KeyAction(action - gamepad::KA_RELEASE + KA_RELEASE), c, time);
+						on_event(gp_ke);
+					}
 				}
-				void* device_handle = 0;
-				(int&)device_handle = device_index;
-				// only show state in case of time stamp change
-				if (state.time_stamp != last_time_stamps[device_index]) {
-					last_time_stamps[device_index] = state.time_stamp;
-					cgv::gui::gamepad_event gpe(device_handle, state);
-					gpe.set_time(time);
-					on_event(gpe);
-				}
+				// only check for events in case of time stamp change
+				if (state.time_stamp != last_states[i].time_stamp) {
+					// check for throttle events
+					if ((event_flags&GPE_THROTTLE) != 0) {
+						for (int ti = 0; ti < 2; ++ti) {
+							float x = state.trigger_position[ti];
+							float dx = x - last_states[i].trigger_position[ti];
+							if (dx != 0) {
+								gamepad_throttle_event gp_te(device_handles[i], state, x, dx,
+									i, 0, ti, time);
+								on_event(gp_te);
+							}
+						}
+					}
+					// check for stick press / release events
+					if ((event_flags&(GPE_STICK+GPE_STICK_KEY)) != 0) {
+						for (int si = 0; si < 2; ++si) {
+							unsigned stick_flag = (si == 0 ? gamepad::GBF_LEFT_STICK : gamepad::GBF_RIGHT_STICK);
+							if ((state.button_flags&stick_flag) != (last_states[i].button_flags&stick_flag)) {
+								float x = (si == 0 ? state.left_stick_position[0] : state.right_stick_position[0]);
+								float y = (si == 0 ? state.left_stick_position[1] : state.right_stick_position[1]);
+								if ((event_flags&GPE_STICK) != 0) {
+									StickAction action = ((state.button_flags&stick_flag) != 0 ? SA_PRESS : SA_RELEASE);
+									gamepad_stick_event gp_se(device_handles[i], state, action, x, y, 0, 0, i, 0, si, time);
+									on_event(gp_se);
+								}
+								if ((event_flags&GPE_STICK_KEY) != 0) {
+									int qx = x > 0.5f ? 1 : (x < -0.5f ? -1 : 0);
+									int qy = y > 0.5f ? 1 : (y < -0.5f ? -1 : 0);
+									short key_index = si*9 + 3 * (qy+1) + qx+1;
+									static gamepad::GamepadKeys key_lookup[18] = {
+										gamepad::GPK_LEFT_STICK_DOWNLEFT,
+										gamepad::GPK_LEFT_STICK_DOWN,
+										gamepad::GPK_LEFT_STICK_DOWNRIGHT,
+										gamepad::GPK_LEFT_STICK_LEFT,
+										gamepad::GPK_LEFT_STICK_PRESS,
+										gamepad::GPK_LEFT_STICK_RIGHT,
+										gamepad::GPK_LEFT_STICK_UPLEFT,
+										gamepad::GPK_LEFT_STICK_UP,
+										gamepad::GPK_LEFT_STICK_UPRIGHT,
+										gamepad::GPK_RIGHT_STICK_DOWNLEFT,
+										gamepad::GPK_RIGHT_STICK_DOWN,
+										gamepad::GPK_RIGHT_STICK_DOWNRIGHT,
+										gamepad::GPK_RIGHT_STICK_LEFT,
+										gamepad::GPK_RIGHT_STICK_PRESS,
+										gamepad::GPK_RIGHT_STICK_RIGHT,
+										gamepad::GPK_RIGHT_STICK_UPLEFT,
+										gamepad::GPK_RIGHT_STICK_UP,
+										gamepad::GPK_RIGHT_STICK_UPRIGHT
+									};
+									KeyAction action = ((state.button_flags&stick_flag) != 0 ? KA_PRESS : KA_RELEASE);
+									gamepad_key_event gp_ke(device_handles[i], state, 
+										key_lookup[key_index], action, 0, time);
+									on_event(gp_ke);
+								}
+							}
+						}
+					}
+					// check for stick move and drag events
+					if ((event_flags&GPE_STICK) != 0) {
+						float x = state.left_stick_position[0];
+						float y = state.left_stick_position[1];
+						float dx = x - last_states[i].left_stick_position[0];
+						float dy = y - last_states[i].left_stick_position[1];
+						if (dx != 0 || dy != 0) {
+							StickAction action = SA_MOVE;
+							if ((state.button_flags & gamepad::GBF_LEFT_STICK) != 0)
+								action = SA_DRAG;
 
-				while (query_key_event(device_index, gpk)) {
-					char c = 0;
-					if (gpk.key >= gamepad::GPK_A && gpk.key <= gamepad::GPK_Y)
-						c = std::string("ABXY")[gpk.key - gamepad::GPK_A];
-					gamepad_key_event gp_k(device_handle, gpk.key, KeyAction(gpk.action - gamepad::GPA_RELEASE + KA_RELEASE), c, time);
-					on_event(gp_k);
+							gamepad_stick_event gp_se(device_handles[i], state, 
+								action, x, y, dx, dy, i, 0, 0, time);
+							on_event(gp_se);
+						}
+						x = state.right_stick_position[0];
+						y = state.right_stick_position[1];
+						dx = x - last_states[i].right_stick_position[0];
+						dy = y - last_states[i].right_stick_position[1];
+						if (dx != 0 || dy != 0) {
+							StickAction action = SA_MOVE;
+							if ((state.button_flags & gamepad::GBF_RIGHT_STICK) != 0)
+								action = SA_DRAG;
+
+							gamepad_stick_event gp_se(device_handles[i], state,
+								action, x, y, dx, dy, i, 0, 1, time);
+							on_event(gp_se);
+						}
+					}
+					last_states[i] = state;
 				}
 			}
 		}

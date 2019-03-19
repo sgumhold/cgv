@@ -305,7 +305,7 @@ bool surface_reconstructor::delaunay_fan_filter(unsigned int vi, std::vector<Idx
 		int k = (unsigned int) N2d.size()-1;
 		for (j = 0; j < N2d.size(); ++j) {
 			if ((Ei[j]&2) == 0 &&
-				 !is_locally_delaunay(P2d(0,0),N2d[k],N2d[j],N2d[(j+1)%Mi.size()])) {
+				 !is_locally_delaunay(P2d(0.0f),N2d[k],N2d[j],N2d[(j+1)%Mi.size()])) {
 				
 				N2d.erase(N2d.begin()+j);
 				Mi.erase(Mi.begin()+j);

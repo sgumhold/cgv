@@ -1,4 +1,4 @@
-#version 150 compatibility
+#version 150 
 
 uniform bool position_is_center;
 uniform bool has_rotations;
@@ -34,10 +34,20 @@ void right_multiply_group_normal_matrix_and_rotation(inout mat3 NM, int group_in
 void right_multiply_group_position_matrix_and_rigid(inout mat4 PM, int group_index, vec4 rotation, vec3 translation);
 //***** end interface of group.glsl ***********************************
 
+//***** begin interface of view.glsl ***********************************
+mat4 get_modelview_matrix();
+mat4 get_projection_matrix();
+mat4 get_modelview_projection_matrix();
+mat4 get_inverse_modelview_matrix();
+mat4 get_inverse_modelview_projection_matrix();
+mat3 get_normal_matrix();
+mat3 get_inverse_normal_matrix();
+//***** end interface of view.glsl ***********************************
+
 void main()
 {
 	// compute normal transformation matrix
-	NM = gl_NormalMatrix;
+	NM = get_normal_matrix();
 	if (has_rotations) {
 		right_multiply_group_normal_matrix_and_rotation(NM, group_index, rotation);
 	}
@@ -63,7 +73,7 @@ void main()
 		BM[3] = vec4(C, 1.0);
 	}
 
-	PM = gl_ModelViewMatrix;
+	PM = get_modelview_matrix();
 
 	if (has_rotations || has_translations) {
 		vec4 q = unit_quaternion();

@@ -1,0 +1,8 @@
+vertex_file:plot_empty.glvs
+geometry_shader_info:points;triangle_strip;4
+geometry_file:plot2d_bar.glgs
+geometry_file:quaternion.glsl
+geometry_file:plot_lib.glsl
+geometry_file:view.glsl
+fragment_file:default.glfs
+fragment_file:fragment.glfs

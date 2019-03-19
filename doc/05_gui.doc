@@ -97,7 +97,7 @@ reference to the button as parameter. The \link cgv::gui::control control\endlin
 \link cgv::gui::control::check_value check_value\endlink and \link cgv::gui::control::value_change value_change\endlink
 that both take as parameter the reference to the control. Callbacks to functions, 
 methods or C++ functors can be attached
-to the signals with the \link cgv::base::connect connect\endlink functions as described in 
+to the signals with the \link cgv::signal::connect connect\endlink functions as described in 
 the \ref sigTut.
 
 Finally, one can structure the gui into a tree with collapsable nodes. For this the 
