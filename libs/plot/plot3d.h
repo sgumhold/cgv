@@ -46,7 +46,7 @@ class CGV_API plot3d : public plot_base
 	//cgv::render::shader_program surface_prog;
 	cgv::render::box_render_style brs;
 	void set_uniforms(cgv::render::context& ctx, cgv::render::shader_program& prog, unsigned i);
-	bool compute_sample_coordinate_interval(int ai, float& samples_min, float& samples_max, bool only_visible);
+	bool compute_sample_coordinate_interval(int i, int ai, float& samples_min, float& samples_max);
 	void draw_domain(cgv::render::context& ctx);
 	void draw_axes(cgv::render::context& ctx);
 	void draw_ticks(cgv::render::context& ctx);

@@ -35,24 +35,20 @@ void plot3d::set_uniforms(cgv::render::context& ctx, cgv::render::shader_program
 	}
 }
 
-bool plot3d::compute_sample_coordinate_interval(int ai, float& samples_min, float& samples_max, bool only_visible)
+bool plot3d::compute_sample_coordinate_interval(int i, int ai, float& samples_min, float& samples_max)
 {
 	// compute bounding box
 	bool found_sample = false;
 	float min_value, max_value;
-	for (unsigned i = 0; i < samples.size(); ++i) {
-		if (!only_visible || ref_sub_plot_config(i).show_plot) {
-			for (unsigned j = 0; j < samples[i].size(); ++j) {
-				if (found_sample) {
-					min_value = std::min(min_value, samples[i][j](ai));
-					max_value = std::max(max_value, samples[i][j](ai));
-				}
-				else {
-					min_value = samples[i][j](ai);
-					max_value = samples[i][j](ai);
-					found_sample = true;
-				}
-			}
+	for (unsigned j = 0; j < samples[i].size(); ++j) {
+		if (found_sample) {
+			min_value = std::min(min_value, samples[i][j](ai));
+			max_value = std::max(max_value, samples[i][j](ai));
+		}
+		else {
+			min_value = samples[i][j](ai);
+			max_value = samples[i][j](ai);
+			found_sample = true;
 		}
 	}
 	if (found_sample) {
@@ -86,6 +82,10 @@ unsigned plot3d::add_sub_plot(const std::string& name)
 
 	// create new point container
 	samples.push_back(std::vector<vec3>());
+	attribute_sources.push_back(std::vector<attribute_source>());
+	attribute_sources.back().push_back(attribute_source(i, 0, 0, 3 * sizeof(float)));
+	attribute_sources.back().push_back(attribute_source(i, 1, 0, 3 * sizeof(float)));
+	attribute_sources.back().push_back(attribute_source(i, 2, 0, 3 * sizeof(float)));
 
 	// return sub plot index
 	return i;
@@ -132,7 +132,9 @@ bool plot3d::init(cgv::render::context& ctx)
 }
 void plot3d::draw_sub_plot(cgv::render::context& ctx, unsigned i)
 {
-	set_attributes(ctx, samples[i]);
+	size_t count = set_attributes(ctx, i, samples);
+	if (count == 0)
+		return;
 	const plot3d_config& spc = ref_sub_plot3d_config(i);
 
 	if (spc.show_points) {
@@ -142,7 +144,7 @@ void plot3d::draw_sub_plot(cgv::render::context& ctx, unsigned i)
 		sphere_prog.enable(ctx);
 		ctx.set_color(spc.point_color);
 		sphere_prog.set_attribute(ctx, "att0", 1.0f);
-		glDrawArrays(GL_POINTS, 0, samples[i].size());
+		glDrawArrays(GL_POINTS, 0, count);
 		sphere_prog.disable(ctx);
 	}
 	
@@ -155,7 +157,7 @@ void plot3d::draw_sub_plot(cgv::render::context& ctx, unsigned i)
 
 		ctx.set_color(spc.bar_color);
 		box_prog.set_uniform(ctx, "map_color_to_material", 3);
-		glDrawArrays(GL_POINTS, 0, samples[i].size());
+		glDrawArrays(GL_POINTS, 0, count);
 		box_prog.disable(ctx);
 		//if (spc.bar_outline_width > 0) {
 		//	glLineWidth(spc.bar_outline_width);
@@ -163,7 +165,7 @@ void plot3d::draw_sub_plot(cgv::render::context& ctx, unsigned i)
 
 		//	wirebox_prog.enable(ctx);
 		//	ctx.set_color(spc.bar_outline_color);
-		//	glDrawArrays(GL_POINTS, 0, samples[i].size());
+		//	glDrawArrays(GL_POINTS, 0, count);
 		//	wirebox_prog.disable(ctx);
 		//}
 	}
@@ -175,7 +177,7 @@ void plot3d::draw_sub_plot(cgv::render::context& ctx, unsigned i)
 		set_default_attributes(ctx, stick_prog, 3);
 
 		ctx.set_color(spc.stick_color);
-		glDrawArrays(GL_POINTS, 0, samples[i].size());
+		glDrawArrays(GL_POINTS, 0, count);
 		stick_prog.disable(ctx);
 	}
 }
@@ -343,7 +345,7 @@ void plot3d::draw(cgv::render::context& ctx)
 	enable_attributes(ctx, 3);
 	for (unsigned i = 0; i < samples.size(); ++i) {
 		// skip unvisible and empty sub plots
-		if (!ref_sub_plot3d_config(i).show_plot || samples[i].size() == 0)
+		if (!ref_sub_plot3d_config(i).show_plot)
 			continue;
 		draw_sub_plot(ctx, i);
 	}

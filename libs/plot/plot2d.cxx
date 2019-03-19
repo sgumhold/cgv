@@ -53,24 +53,20 @@ plot2d::plot2d() : plot_base(2)
 {
 }
 
-bool plot2d::compute_sample_coordinate_interval(int ai, float& samples_min, float& samples_max, bool only_visible)
+bool plot2d::compute_sample_coordinate_interval(int i, int ai, float& samples_min, float& samples_max)
 {
 	// compute bounding box
 	bool found_sample = false;
 	float min_value, max_value;
-	for (unsigned i = 0; i < samples.size(); ++i) {
-		if (!only_visible || ref_sub_plot2d_config(i).show_plot) {
-			for (unsigned j = 0; j < samples[i].size(); ++j) {
-				if (found_sample) {
-					min_value = std::min(min_value, samples[i][j](ai));
-					max_value = std::max(max_value, samples[i][j](ai));
-				}
-				else {
-					min_value = samples[i][j](ai);
-					max_value = samples[i][j](ai);
-					found_sample = true;
-				}
-			}
+	for (unsigned j = 0; j < samples[i].size(); ++j) {
+		if (found_sample) {
+			min_value = std::min(min_value, samples[i][j](ai));
+			max_value = std::max(max_value, samples[i][j](ai));
+		}
+		else {
+			min_value = samples[i][j](ai);
+			max_value = samples[i][j](ai);
+			found_sample = true;
 		}
 	}
 	if (found_sample) {
@@ -98,7 +94,9 @@ unsigned plot2d::add_sub_plot(const std::string& name)
 	// create new point container
 	samples.push_back(std::vector<plot2d::vec2>());
 	strips.push_back(std::vector<unsigned>());
-
+	attribute_sources.push_back(std::vector<attribute_source>());
+	attribute_sources.back().push_back(attribute_source(i, 0, 0, 2 * sizeof(float)));
+	attribute_sources.back().push_back(attribute_source(i, 1, 0, 2 * sizeof(float)));
 	// return sub plot index
 	return i;
 }
@@ -177,56 +175,58 @@ void plot2d::clear(cgv::render::context& ctx)
 
 void plot2d::draw_sub_plot(cgv::render::context& ctx, unsigned i)
 {
-	set_attributes(ctx, samples[i]);
-
-	if (ref_sub_plot_config(i).show_bars) {
+	unsigned count = set_attributes(ctx, i, samples);
+	if (count == 0)
+		return;
+	const plot2d_config& spc = ref_sub_plot2d_config(i);
+	if (spc.show_bars) {
 		set_uniforms(ctx, bar_prog, i);
 		glDisable(GL_CULL_FACE);
 
 		bar_prog.enable(ctx);
 		set_default_attributes(ctx, bar_prog, 2);
 
-		ctx.set_color(ref_sub_plot2d_config(i).bar_color);
-		glDrawArrays(GL_POINTS, 0, samples[i].size());
+		ctx.set_color(spc.bar_color);
+		glDrawArrays(GL_POINTS, 0, count);
 		bar_prog.disable(ctx);
 
 		glEnable(GL_CULL_FACE);
 
-		if (ref_sub_plot2d_config(i).bar_outline_width > 0) {
+		if (spc.bar_outline_width > 0) {
 
-			glLineWidth(ref_sub_plot2d_config(i).bar_outline_width);
+			glLineWidth(spc.bar_outline_width);
 			set_uniforms(ctx, bar_outline_prog, i);
 
 			bar_outline_prog.enable(ctx);
 			set_default_attributes(ctx, bar_outline_prog, 2);
 
-			ctx.set_color(ref_sub_plot2d_config(i).bar_outline_color);
-			glDrawArrays(GL_POINTS, 0, samples[i].size());
+			ctx.set_color(spc.bar_outline_color);
+			glDrawArrays(GL_POINTS, 0, count);
 			bar_outline_prog.disable(ctx);
 		}
 	}
 
-	if (ref_sub_plot_config(i).show_sticks) {
+	if (spc.show_sticks) {
 		set_uniforms(ctx, stick_prog, i);
-		glLineWidth(ref_sub_plot2d_config(i).stick_width);
+		glLineWidth(spc.stick_width);
 		stick_prog.enable(ctx);
 		set_default_attributes(ctx, stick_prog, 2);
-		ctx.set_color(ref_sub_plot2d_config(i).stick_color);
-		glDrawArrays(GL_POINTS, 0, samples[i].size());
+		ctx.set_color(spc.stick_color);
+		glDrawArrays(GL_POINTS, 0, count);
 		stick_prog.disable(ctx);
 	}
 
-	if (ref_sub_plot2d_config(i).show_points || ref_sub_plot2d_config(i).show_lines) {
+	if (spc.show_points || spc.show_lines) {
 		set_uniforms(ctx, prog, i);
 		prog.enable(ctx);
 		set_default_attributes(ctx, prog, 2);
 	}
 
-	if (ref_sub_plot2d_config(i).show_lines) {
-		ctx.set_color(ref_sub_plot2d_config(i).line_color);
-		glLineWidth(ref_sub_plot2d_config(i).line_width);
+	if (spc.show_lines) {
+		ctx.set_color(spc.line_color);
+		glLineWidth(spc.line_width);
 		if (strips[i].empty())
-			glDrawArrays(GL_LINE_STRIP, 0, samples[i].size());
+			glDrawArrays(GL_LINE_STRIP, 0, count);
 		else {
 			unsigned fst = 0;
 			for (unsigned j = 0; j < strips[i].size(); ++j) {
@@ -236,13 +236,13 @@ void plot2d::draw_sub_plot(cgv::render::context& ctx, unsigned i)
 		}
 	}
 
-	if (ref_sub_plot2d_config(i).show_points) {
-		ctx.set_color(ref_sub_plot2d_config(i).point_color);
-		glPointSize(ref_sub_plot2d_config(i).point_size);
-		glDrawArrays(GL_POINTS, 0, samples[i].size());
+	if (spc.show_points) {
+		ctx.set_color(spc.point_color);
+		glPointSize(spc.point_size);
+		glDrawArrays(GL_POINTS, 0, count);
 	}
 
-	if (ref_sub_plot2d_config(i).show_points || ref_sub_plot2d_config(i).show_lines)
+	if (spc.show_points || spc.show_lines)
 		prog.disable(ctx);
 }
 
@@ -364,7 +364,7 @@ void plot2d::draw(cgv::render::context& ctx)
 	enable_attributes(ctx, 2);
 	for (unsigned i = 0; i<samples.size(); ++i) {
 		// skip unvisible and empty sub plots
-		if (!ref_sub_plot2d_config(i).show_plot || samples[i].size() == 0)
+		if (!ref_sub_plot2d_config(i).show_plot)
 			continue;
 		draw_sub_plot(ctx, i);
 	}
