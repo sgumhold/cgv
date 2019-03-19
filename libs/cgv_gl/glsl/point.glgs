@@ -11,7 +11,7 @@ uniform float pixel_extent_per_depth;
 in vec4 color_gs[];
 
 out vec2 uv;
-out vec4 color;
+out vec4 color_fs;
 
 out float percentual_blend_width;
 out float percentual_core_size;
@@ -48,7 +48,7 @@ void emit_corner(in vec3 corner, in float u, in float v)
 void main()
 {
 	// set color to color attribute
-	color = color_gs[0];
+	color_fs = color_gs[0];
 	// transform position to eye space
 	vec3 position_eye = (get_modelview_matrix()*gl_PositionIn[0]).xyz;
 	// compute extent of a pixel at point depth in eye coordinates

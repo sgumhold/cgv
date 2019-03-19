@@ -18,7 +18,7 @@ in vec4 color_gs[];
 
 out vec3 normal;
 out vec2 uv;
-out vec4 color;
+out vec4 color_fs;
 out vec3 position;
 
 out float percentual_blend_width;
@@ -66,7 +66,7 @@ void emit_corner(in vec3 corner, in float u, in float v)
 void main()
 {
 	// set color to color attribute
-	color = color_gs[0];
+	color_fs = color_gs[0];
 	// transform normal to eye space
 	normal = normalize(get_normal_matrix()*normal_gs[0]);
 	// transform position to eye space

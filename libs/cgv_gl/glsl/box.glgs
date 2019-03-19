@@ -9,7 +9,7 @@ in mat4 PM[];
 in vec4 color_gs[];
 
 out vec3 normal;
-out vec4 color;
+out vec4 color_fs;
 out vec3 position;
 flat out int side;
 
@@ -31,7 +31,7 @@ mat3 get_inverse_normal_matrix();
 
 void emit_face(in vec3 normal_in, in vec4 c0, in vec4 c1, in vec4 c2, in vec4 c3)
 {
-	color = color_gs[0];
+	color_fs = color_gs[0];
 	// compute eye space normal and first corner position
 	normal = normal_in;
 	position = c0.xyz;
