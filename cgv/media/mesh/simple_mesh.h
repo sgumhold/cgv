@@ -89,7 +89,8 @@ public:
 	bool has_normals() const { return get_nr_normals() > 0; }
 	/// compute the axis aligned bounding box
 	box_type compute_box() const;
-
+	/// compute vertex normals by averaging triangle normals
+	void compute_vertex_normals();
 	/// clear simple mesh
 	void clear();
 	/// read simple mesh from file

@@ -61,9 +61,8 @@ namespace cgv {
 				vbo.create(ctx, attrib_buffer);
 				finish_construct_base(ctx, sizeof(T), include_tex_coords, include_normals, triangle_element_buffer, edge_element_buffer,
 					cgv::render::element_descriptor_traits<typename cgv::media::mesh::simple_mesh<T>::vec3>::get_type_descriptor(mesh.position(0)),
-					cgv::render::element_descriptor_traits<typename cgv::media::mesh::simple_mesh<T>::vec2>::get_type_descriptor(mesh.tex_coord(0)), unique_triples.size(), 
+					cgv::render::element_descriptor_traits<typename cgv::media::mesh::simple_mesh<T>::vec2>::get_type_descriptor(typename cgv::media::mesh::simple_mesh<T>::vec2()), unique_triples.size(),
 					color_increment, mesh.get_color_storage_type());
-
 			}
 			///
 			void render_mesh(cgv::render::context& c);

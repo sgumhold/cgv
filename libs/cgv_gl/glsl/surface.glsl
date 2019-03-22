@@ -125,8 +125,12 @@ vec4 compute_reflected_radiance(in Material M, vec3 position_eye, vec3 normal_ey
 
 vec4 compute_reflected_appearance(vec3 position_eye, vec3 normal_eye, vec4 color, int side)
 {
-	if (illumination_mode == 0)
-		return color;
+	if (illumination_mode == 0) {
+		vec3 col = material.diffuse_reflectance;
+		float tra = material.transparency;
+		update_material_color_and_transparency(col, tra, side, color);
+		return vec4(col, 1.0-tra);
+	}
 	Material M = material;
 	update_material_color_and_transparency(M.diffuse_reflectance, M.transparency, side, color);
 	update_normal(normal_eye, side);
@@ -243,8 +247,12 @@ void update_material_from_texture(inout Material M, in vec2 texcoords)
 
 vec4 compute_reflected_appearance_texture(vec3 position_eye, vec3 normal_eye, vec2 texcoords, vec4 color, int side)
 {
-	if (illumination_mode == 0)
-		return color;
+	if (illumination_mode == 0) {
+		vec3 col = material.diffuse_reflectance;
+		float tra = material.transparency;
+		update_material_color_and_transparency(col, tra, side, color);
+		return vec4(col, 1.0 - tra);
+	}
 	Material M = material;
 	update_material_color_and_transparency(M.diffuse_reflectance, M.transparency, side, color);
 	update_material_from_texture(M, texcoords);
