@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 2.6)
 project(ppp_lib)
 
-include("../../cmake/buildCoreComponents.cmake")
+find_package(cgv COMPONENTS utils)
 
 set(HEADERS
 	command_token.h
@@ -20,13 +20,6 @@ set(SOURCES
 	ph_processor.cxx
 	ppp_variant.cxx
 	variables.cxx
-	${CGV_DIR}/cgv/utils/scan.cxx
-	${CGV_DIR}/cgv/utils/advanced_scan.cxx
-	${CGV_DIR}/cgv/utils/tokenizer.cxx
-	${CGV_DIR}/cgv/utils/token.cxx
-	${CGV_DIR}/cgv/utils/file.cxx
-	${CGV_DIR}/cgv/utils/dir.cxx
-	${CGV_DIR}/cgv/utils/date_time.cxx
 )
 
 cgv_add_library(ppp_lib
@@ -34,6 +27,8 @@ cgv_add_library(ppp_lib
 	PUBLIC_HEADERS ${HEADERS}
 	SHARED_DEFINITIONS CGV_MEDIA_TEXT_PPP_EXPORTS CGV_UTILS_EXPORTS
 	STATIC_DEFINITIONS CGV_MEDIA_TEXT_PPP_FORCE_STATIC CGV_UTILS_FORCE_STATIC)
+
+target_link_libraries(ppp_lib ${cgv_LIBRARIES})
 
 cgv_write_find_file(ppp_lib)
 
