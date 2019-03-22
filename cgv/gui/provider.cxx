@@ -38,6 +38,26 @@ void provider::align(const std::string& _align)
 	if (!parent_group.empty())
 		parent_group->align(_align);
 }
+
+/// concatenate names in string to enum declaration and optionally prepend or append given additional names 
+std::string provider::concat_enum_def(const std::vector<std::string>& names, const std::string& additional_first_name, const std::string& additional_last_name)
+{
+	std::string result = "enums='";
+	if (!additional_first_name.empty())
+		result += additional_first_name + "=-1,";
+	for (unsigned i = 0; i < names.size(); ++i) {
+		if (i > 0)
+			result += ',';
+		result += names[i];
+	}
+	if (!additional_last_name.empty()) {
+		result += ',';
+		result += additional_last_name;
+	}
+	result += "'";
+	return result;
+}
+
 /*
 // add a new group to the given parent group, not supported yet
 gui_group_ptr provider::add_group(const std::string& label, const std::string& group_type, const std::string& options, const std::string& align)
@@ -119,9 +139,11 @@ void provider::inline_object_gui(base_ptr object)
 	provider* p = object->get_interface<provider>();
 	if (!p)
 		return;
+	//gui_group_ptr pg = p->get_parent_group();
 	p->set_parent(parent_group);
 	p->parent_provider = this;
 	p->create_gui();
+	//p->set_parent(pg);
 }
 
 /// add a newly created subgroup to the group
@@ -195,10 +217,10 @@ bool provider::begin_tree_node_void(const std::string& label, const void* value_
 
 	bool& toggle = get_tree_node_toggle_map()[std::pair<const void*,int>(value_ptr,index)];
 
+	data::ref_ptr<control<bool> > control_ptr;
 	if (decorated) {
 		ggp->align(std::string("%x-=")+cgv::utils::to_string(off));
-		connect_copy(ggp->add_control(std::string(toggle?"-":"+"), toggle, "toggle", button_opt, " ")->value_change,
-			rebind(static_cast<provider*>(this), &provider::post_recreate_gui));		
+		control_ptr = ggp->add_control(std::string(toggle ? "-" : "+"), toggle, "toggle", button_opt, " ");
 
 		if (!child_opt.empty())
 			child_opt = std::string(";")+child_opt;
@@ -206,10 +228,31 @@ bool provider::begin_tree_node_void(const std::string& label, const void* value_
 		ggp->add_decorator(label, "heading", child_opt, align);
 	}
 	else {
-		connect_copy(ggp->add_control(std::string(toggle?"-":"+"), toggle, "toggle", button_opt, align)->value_change,
-			rebind(static_cast<provider*>(this), &provider::post_recreate_gui));
+		control_ptr = ggp->add_control(std::string(toggle ? "-" : "+"), toggle, "toggle", button_opt, align);
+	}
+
+	if (control_ptr) {
+		connect_copy(control_ptr->value_change,	rebind(static_cast<provider*>(this), &provider::post_recreate_gui));
+		// if this class is derived from cgv::base::base
+		cgv::base::base* bp = dynamic_cast<cgv::base::base*>(this);
+		// connect to on_set callback
+		if (bp) {
+			connect_copy(control_ptr->value_change, rebind(bp, &cgv::base::base::on_set, cgv::signal::_c((void*)(&toggle))));
+		}
 	}
 	return toggle;
+}
+
+///
+bool& provider::ref_tree_node_visible_flag_void(const void* value_ptr, int index)
+{
+	auto& map = get_tree_node_toggle_map();
+	std::pair<const void*, int> key(value_ptr, index);
+	auto iter = map.find(key);
+	if (iter == map.end())
+		return map[key] = false;
+	else
+		return iter->second;
 }
 
 ///
@@ -350,6 +393,22 @@ std::string provider::get_parent_type() const
 {
 	return "align_group";
 }
+/// ensure that my UI is selected in the closest parent that is a tab group
+bool provider::ensure_selected_in_tab_group_parent()
+{
+	cgv::gui::gui_group_ptr my_group = get_parent_group();
+	if (my_group) {
+		cgv::gui::gui_group_ptr tab_group = my_group->get_parent()->cast<cgv::gui::gui_group>();
+		if (tab_group) {
+			cgv::base::base_ptr c = my_group;
+			if (c) {
+				tab_group->select_child(c, true);
+				return true;
+			}
+		}
+	}
+	return false;
+}
 
 // return a path in the main menu to select the gui
 std::string provider::get_menu_path() const
@@ -368,10 +427,12 @@ void provider::recreate_gui()
 {
 	if (!parent_group)
 		return;
+	int xscroll = parent_group->get<int>("xscroll");
 	int yscroll = parent_group->get<int>("yscroll");
 	remove_all_elements();
 	create_gui();
 	parent_group->set("dolayout", true);
+	parent_group->set("xscroll", xscroll);
 	parent_group->set("yscroll", yscroll);
 }
 

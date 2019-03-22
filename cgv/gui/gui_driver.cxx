@@ -3,6 +3,12 @@
 namespace cgv {
 	namespace gui {
 
+/// fill list of monitor descriptions
+bool gui_driver::enumerate_monitors(std::vector<monitor_description>& monitor_descriptions)
+{
+	return false;
+}
+
 gui_driver_ptr& ref_gui_driver()
 {
 	static gui_driver_ptr current_driver;

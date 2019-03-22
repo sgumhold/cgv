@@ -2,20 +2,20 @@ cmake_minimum_required(VERSION 2.6)
 project(cgv_gl)
 
 # The CGV framework is needed
-find_package(cgv COMPONENTS  utils type data base signal math media render)
+find_package(cgv COMPONENTS  utils type data base signal math media render gui)
 
 # The PPP is needed
 find_package(ppp)
+find_package(cgv_reflect_types)
 
 # Find 3rd party dependencies
 cgv_find_package(GLEW)
 cgv_find_package(OpenGL REQUIRED)
 
 # Source files
-file(GLOB_RECURSE SOURCES RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "gl/*.cxx")
+file(GLOB_RECURSE SOURCES RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "*.cxx")
 # Header files
-file(GLOB_RECURSE HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "gl/*.h")
-
+file(GLOB_RECURSE HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "*.h")
 # Shader files
 file(GLOB_RECURSE SHADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "glsl/*.gl*")
 
@@ -41,7 +41,7 @@ cgv_add_library(cgv_gl
 	STATIC_DEFINITIONS CGV_RENDER_GL_FORCE_STATIC ${GLEW_STATIC_DEFINITIONS})
 
 	
-target_link_libraries(cgv_gl ${cgv_LIBRARIES} ${GLEW_LIBRARIES} ${OPENGL_LIBRARIES})
+target_link_libraries(cgv_gl ${cgv_reflect_types_LIBRARIES} ${cgv_LIBRARIES} ${GLEW_LIBRARIES} ${OPENGL_LIBRARIES})
 
 cgv_write_find_file(cgv_gl)
 

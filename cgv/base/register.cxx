@@ -936,7 +936,7 @@ CommandType analyze_command(const cgv::utils::token& cmd, bool eliminate_quotes,
 	// determine command header
 	token cmd_header = tokenizer(cmd_tok).set_sep(":").set_ws("").set_skip("\"'", "\"'").bite();
 	if (cmd_header.end == cmd_tok.end)
-		return update_info(info_ptr, CT_INITIAL);
+		return update_info(info_ptr, CT_UNKNOWN);
 
 	// and command arguments
 	token args_tok(cmd_header.end + 1, cmd_tok.end);
@@ -1253,8 +1253,10 @@ std::string extend_plugin_name(const std::string& fn)
 	n += "11";
 #elif defined(_MSC_VER) && _MSC_VER < 1900
 	n += "12";
-#elif defined(_MSC_VER)
+#elif defined(_MSC_VER) && _MSC_VER < 1910
 	n += "14";
+#elif defined(_MSC_VER)
+	n += "141";
 #endif
 	n += ".dll";
 #else

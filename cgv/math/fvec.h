@@ -70,7 +70,7 @@ public:
 	//@{
 	///creates a vector not initialized
 	fvec() {}
-	///creates a vector initialized to constant value a
+	///creates a vector, where all N components are initialized to the constant value a
 	fvec(const T &a) { std::fill(v, v+N, a); }
 	/// construct and init first two coordinates to the given values	
 	fvec(const T &x, const T &y) { set(x,y); }
@@ -78,19 +78,30 @@ public:
 	fvec(const T &x, const T &y, const T &z) { set(x,y,z); }
 	/// construct and init first four coordinates to the given values	
 	fvec(const T &x, const T &y, const T &z,const T &w) { set(x,y,z,w); }	
-	///creates a column vector initialized to array a
-	fvec(const T *a) { std::copy(a, a+N, v); }
-	///creates a column vector initialized to array of a different type
+	///creates a vector from a n-element array a, if n < N remaining N-n elements are set to zero
+	fvec(cgv::type::uint32_type n, const T *a) {
+		cgv::type::uint32_type i, min_n = n < N ? n : N;
+		std::copy(a, a+min_n, v);
+		for (i = min_n; i < N; ++i) v[i] = T(0);
+	}
+	///creates a column vector initialized to array of a different type with zeros filled to not copied components
 	template <typename S>
-	fvec(const S *a) { for (unsigned i=0; i<N; ++i) v[i] = (T)a[i]; }
+	fvec(cgv::type::uint32_type n, const S *a) { 
+		cgv::type::uint32_type i, min_n = n < N ? n : N;
+		for (i=0; i<min_n; ++i) v[i] = (T)a[i];
+		for (; i < N; ++i) v[i] = T(0);
+	}
 	///copy constructor
-	fvec(const fvec &rhs) { if (this != &rhs) std::copy(rhs.v, rhs.v+N, v); }
+	fvec(const fvec<T,N> &rhs) { if (this != &rhs) std::copy(rhs.v, rhs.v+N, v); }
 	///copies a column vector of a different type
 	template <typename S>
 	fvec(const fvec<S,N>& fv) { for (unsigned i=0; i<N; ++i) v[i] = (T)fv(i); }
+	/// construct from vector of one dimension less plus a scalar
+	template <typename S1, typename S2>
+	fvec(const fvec<S1, N - 1>& fv, S2 w) { for (unsigned i = 0; i < N - 1; ++i) v[i] = (T)fv(i); v[N - 1] = (T)w; }
 	///assign vector rhs, if vector and rhs have different sizes, vector has been resized to match the size of
-	fvec & operator = (const fvec &rhs) { if (this != &rhs) std::copy(rhs.v, rhs.v+N, v); return *this; }
-	///assign a to every element
+	fvec & operator = (const fvec<T,N> &rhs) { if (this != &rhs) std::copy(rhs.v, rhs.v+N, v); return *this; }
+	/// set all components of vector to constant value a
 	fvec & operator = (const T &a) { std::fill(v, v+N, a); return *this; }	
 	///set the first two components
 	void set(const T &x, const T &y) { v[0] = x; v[1] = y; }
@@ -133,7 +144,7 @@ public:
 	///access i'th element of const vector
 	const T & operator()(const int i) const { return v[i]; }
 	///return number of elements
-	static unsigned size() { return N; }
+	static cgv::type::uint32_type size() { return N; }
 	///cast into array. This allows calls like glVertex<N><T>v(p) instead of glVertex<N><T,N>(p.x(),p.y(),....)
 	operator T*() { return v; }
 	///cast into const array

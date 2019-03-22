@@ -51,6 +51,8 @@ private:
 	unsigned frame_id;
 protected:
 	bool enabled;
+	double fps_alpha;
+	double fps;
 	Rec placement;
 	int nr_display_cycles;
 	int bar_line_width;
@@ -61,7 +63,7 @@ protected:
 	std::vector<PerformanceMonitoringBar> bar_config;
 
 	cgv::utils::stopwatch watch;
-
+	float time_scale;
 	std::vector<Pos> positions;
 	std::vector<Col> colors;
 

@@ -5,16 +5,20 @@
 
 #include "lib_begin.h"
 
+///
 namespace cgv {
+	///
 	namespace gui {
 
 /// define the ids of the most common events
 enum EventId 
 {
-	EID_NONE, //!< undefined %event id
-	EID_KEY,  //!< id for key %event
-	EID_MOUSE, //!< id for mouse %event
-	EID_PAD	   //!< id for game pad %event
+	EID_NONE, //!< undefined event id
+	EID_KEY,  //!< id for key event
+	EID_MOUSE,//!< id for mouse event
+	EID_THROTTLE, //!< id of throttle event describing a one axis controller
+	EID_STICK,//!< id of a stick event describing a two axis controller that optionally can be touched and pressed 
+	EID_POSE  //!< id for a 6D pose change events
 };
 
 /// flags
@@ -22,7 +26,9 @@ enum EventFlags
 {
 	EF_NONE = 0,
 	EF_MULTI = 1, //!< whether event is tagged with id of the device that generated the event
-	EF_DND = 2    //!< whether mouse has a drag and drop target attached
+	EF_DND = 2,   //!< whether mouse has a drag and drop target attached
+	EF_PAD = 4,   //!< whether event is from gamepad
+	EF_VR = 8     //!< whether event is from VR kit 
 };
 
 /// define constants for event modifiers
@@ -55,7 +61,7 @@ protected:
 	unsigned char modifiers;
 	/// store the active toggle keys
 	unsigned char toggle_keys;
-	/// store the time of the event
+	/// store the time of the event in seconds
 	double time;
 public:
 	/// construct %event from its kind
@@ -92,10 +98,10 @@ public:
 };
 
 /// convert a modifier combination into a readable string ending on a '+' sign if not empty, i.e. "Shift+Ctrl+"
-extern CGV_API std::string get_modifier_string(unsigned char modifiers);
+extern CGV_API std::string get_modifier_string(EventModifier modifiers);
 
 /// convert a toggle key combination into a readable string separated by '+' signs, i.e. "CapsLock+NumLock"
-extern CGV_API std::string get_toggle_keys_string(unsigned char toggle_keys);
+extern CGV_API std::string get_toggle_keys_string(EventToggleKeys toggle_keys);
 
 /// read modifiers in string format from a stream and set the passed reference to EventModifier s ored together. 
 extern CGV_API unsigned char stream_in_modifiers(std::istream& is);
@@ -103,6 +109,7 @@ extern CGV_API unsigned char stream_in_modifiers(std::istream& is);
 /// read toggle keys in string format from a stream and set the passed reference to EventToggleKeys ored together. 
 extern CGV_API void stream_in_toggle_keys(std::istream& is, unsigned char& toggle_keys);
 
+/// read out the current modifiers
 extern CGV_API unsigned char& ref_current_modifiers();
 
 	}

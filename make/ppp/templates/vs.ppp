@@ -57,7 +57,7 @@ func(::append_library_dependencies_vs; :>project_name = "", :>return="")
 func(::extend_project_info_vs; :>project_name = "", :>return = 1)
 {
 	:>pj =& projects[project_name];
-	:>commonDefs=default_commonDefs.["WIN32", "INPUT_DIR=".(pj::INPUT_DIR*"|\\|/|")];
+	:>commonDefs=default_commonDefs.["WIN32", "_CRT_SECURE_NO_WARNINGS", "INPUT_DIR=".(pj::INPUT_DIR*"|\\|/|")];
 	:>configDefs=[ default_configDefs[0].["NDEBUG"], default_configDefs[1].["_DEBUG","CGV_FORCE_STATIC"], 
 		           default_configDefs[2].["NDEBUG"], default_configDefs[3].["_DEBUG"], 
 				   default_configDefs[4].["NDEBUG"], default_configDefs[5].["_DEBUG"] ];

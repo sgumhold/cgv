@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cgv/base/base.h>
 #include <cgv/base/traverser.h>
 #include <cgv/render/context.h>
 #include <cgv/render/view.h>
@@ -10,7 +11,7 @@ namespace cgv {
 	namespace render {
 
 /** base class for all drawables, which is independent of the used rendering API. */
-class CGV_API drawable : public base::traverse_policy
+class CGV_API drawable : public base::traverse_policy, public render_types
 {
 private:
 	/// store the context
@@ -30,6 +31,9 @@ public:
 	context* get_context() const;
 	/// set the current focus context, this should only be called by the context itself
 	void set_context(context* _ctx);
+	//! convenience function to find the view control in the current hierarchy
+	/*! this only works if your class inherits from the cgv::base::node class.*/
+	cgv::render::view* find_view_as_node(size_t view_idx = 0) const;
 	//! use given view together with depth buffer of context in order to compute the world location of the point at mouse pointer location (x,y)
 	/*! returns true if a world location could be computed which is the case when the context pointer of the drawable has been set and when 
 	    the mouse location points inside a valid view panel. */
@@ -55,6 +59,29 @@ public:
 	virtual void after_finish(cgv::render::context&);
 	/// clear all objects living in the context like textures or display lists
 	virtual void clear(context&);
+};
+
+/** helper class to control multiple render passes in init_frame and after_finish methods of drawable.  */
+class CGV_API multi_pass_drawable : public drawable
+{
+protected:
+	// mark current render pass
+	int current_render_pass;
+	// store recursion depth on which render passes are initiated
+	unsigned render_pass_recursion_depth;
+public:
+	/// construct to be not inside of a render pass
+	multi_pass_drawable();
+	/// call in init_frame method to check whether the recursive render passes need to be initiated
+	bool initiate_render_pass_recursion(context& ctx);
+	/// call to initiate a render pass in the init_frame method after initiate_render_pass_recursion() has succeeded
+	void perform_render_pass(context& ctx, int rp_idx, RenderPass rp = RP_USER_DEFINED, int excluded_flags = RPF_HANDLE_SCREEN_SHOT, int included_flags = 0);
+	/// call after last recursive render pass to use current render pass for last render pass
+	void initiate_terminal_render_pass(int rp_idx);
+	/// check in after_finish method, whether this should be directly exited with a return statement
+	bool multi_pass_ignore_finish(const context& ctx);
+	/// check in after_finish method, whether this was the terminating render pass
+	bool multi_pass_terminate(const context& ctx);
 };
 
 	}

@@ -1,4 +1,7 @@
+#include <cgv/base/base.h>
+#include <cgv/base/node.h>
 #include <cgv/render/drawable.h>
+#include <cgv/base/find_action.h>
 
 namespace cgv {
 	namespace render {
@@ -42,15 +45,25 @@ void drawable::post_redraw()
 		ctx->post_redraw();
 }
 
+cgv::render::view* drawable::find_view_as_node(size_t view_idx) const
+{
+	cgv::base::node* node_ptr = const_cast<cgv::base::node*>(dynamic_cast<const cgv::base::node*>(this));
+	std::vector<cgv::render::view*> views;
+	cgv::base::find_interface<cgv::render::view>(cgv::base::base_ptr(node_ptr), views);
+	if (views.empty() || view_idx > views.size())
+		return 0;
+	return views[view_idx];
+}
+
 bool drawable::get_world_location(int x, int y, const cgv::render::view& V, cgv::math::fvec<double, 3>& world_location) const
 {
 	if (!get_context())
 		return false;
 	// analyze the mouse location
 	cgv::render::context& ctx = *get_context();
-	const cgv::render::context::mat_type* DPV_ptr, *DPV_other_ptr;
+	const dmat4* DPV_ptr, *DPV_other_ptr;
 	int x_other, y_other, vp_col_idx, vp_row_idx, vp_width, vp_height;
-	int eye_panel = V.get_DPVs(x, y, ctx.get_width(), ctx.get_height(), &DPV_ptr, &DPV_other_ptr, &x_other, &y_other, &vp_col_idx, &vp_row_idx, &vp_width, &vp_height);
+	int eye_panel = V.get_modelview_projection_device_matrices(x, y, ctx.get_width(), ctx.get_height(), &DPV_ptr, &DPV_other_ptr, &x_other, &y_other, &vp_col_idx, &vp_row_idx, &vp_width, &vp_height);
 
 	// get the possibly two (if stereo is enabled) different device z-values
 	double z = ctx.get_z_D(x, y);
@@ -60,12 +73,12 @@ bool drawable::get_world_location(int x, int y, const cgv::render::view& V, cgv:
 		if (DPV_ptr->ncols() != 4)
 			return false;
 		// use conversion to (double*) operator to map cgv::math::vec<double> to cgv::math::fvec<float,3>
-		world_location = (double*)ctx.get_point_W(x, y, z, *DPV_ptr);
+		world_location = ctx.get_point_W(x, y, z, *DPV_ptr);
 	}
 	else {
 		if (DPV_other_ptr->ncols() != 4)
 			return false;
-		world_location = (double*)ctx.get_point_W(x_other, y_other, z_other, *DPV_other_ptr);
+		world_location = ctx.get_point_W(x_other, y_other, z_other, *DPV_other_ptr);
 	}
 	return true;
 }
@@ -112,6 +125,52 @@ void drawable::after_finish(context&)
 void drawable::clear(context&)
 {
 }
+
+/// construct to be not inside of a render pass
+multi_pass_drawable::multi_pass_drawable()
+{
+	current_render_pass = -1;
+	render_pass_recursion_depth = 0;
+}
+/// call in init_frame method to check whether the recursive render passes need to be initiated
+bool multi_pass_drawable::initiate_render_pass_recursion(context& ctx)
+{
+	if (current_render_pass != -1)
+		return false;
+	render_pass_recursion_depth = ctx.get_render_pass_recursion_depth();
+	return true;
+}
+/// call to initiate a render pass in the init_frame method after initiate_render_pass_recursion() has succeeded
+void multi_pass_drawable::perform_render_pass(context& ctx, int rp_idx, RenderPass rp, int excluded_flags, int included_flags)
+{
+	current_render_pass = rp_idx;
+	unsigned rpf = (ctx.get_render_pass_flags() & ~excluded_flags) | included_flags;
+	ctx.render_pass(rp, RenderPassFlags(rpf), this);
+}
+/// call after last recursive render pass to use current render pass for last render pass
+void multi_pass_drawable::initiate_terminal_render_pass(int rp_idx)
+{
+	current_render_pass = rp_idx;
+}
+/// check in after_finish method, whether this should be directly exited with a return statement
+bool multi_pass_drawable::multi_pass_ignore_finish(const context& ctx)
+{
+	if (current_render_pass == -1)
+		return true;
+	if (ctx.get_render_pass_user_data() != this)
+		if (render_pass_recursion_depth != ctx.get_render_pass_recursion_depth())
+			return true;
+	return false;
+}
+/// check in after_finish method, whether this was the terminating render pass
+bool multi_pass_drawable::multi_pass_terminate(const context& ctx)
+{
+	if (render_pass_recursion_depth != ctx.get_render_pass_recursion_depth())
+		return false;
+	current_render_pass = -1;
+	return true;
+}
+
 
 	}
 }

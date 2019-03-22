@@ -27,7 +27,7 @@ namespace cgv {
 			mat<T> _A(N, M, &A(0, 0)), _U, _V;
 			diag_mat<T> _D;
 			svd(_A, _U, _D, _V, ordering, maxiter);
-			U = fmat<T, N, N>(&_U(0, 0));
+			U = fmat<T, N, N>(N, N, &_U(0, 0));
 			cgv::type::uint32_type i, j;
 			for (j = 0; j < M; ++j) {
 				D(j) = _D(j);

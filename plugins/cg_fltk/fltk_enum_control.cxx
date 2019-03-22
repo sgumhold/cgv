@@ -108,6 +108,11 @@ void fltk_enum_control::public_set_value(int v)
 	set_value(v);
 }
 
+/// this is called if the user sets a new enum definition
+void fltk_enum_control::update_enums()
+{
+
+}
 
 
 bool fltk_enum_control::set_void(const std::string& property, const std::string& value_type, const void* value_ptr)
@@ -122,6 +127,12 @@ bool fltk_enum_control::set_void(const std::string& property, const std::string&
 			return true;
 		}
 		return false;
+	}
+	if (property == "enums") {
+		enum_values.clear();
+		enum_strings.clear();
+		parse_enum_declarations(variant<std::string>::get(value_type, value_ptr));
+		update_enums();
 	}
 	return fltk_base::set_void(container, this, property, value_type, value_ptr);
 }
@@ -142,10 +153,25 @@ void* fltk_enum_control::get_user_data() const
 
 
 
+void fltk_enum_dropdown_control::update_enums()
+{
+	fltk::Choice* C = static_cast<fltk::Choice*>(container);
+	int idx = C->value();
+	while (C->size() > 0)
+		C->remove(0);
+
+	for (unsigned int i = 0; i < enum_strings.size(); ++i)
+		C->add(enum_strings[i].c_str(), (void*)i);
+	
+	if (idx >= (int)enum_strings.size())
+		idx = (int)enum_strings.size() - 1;
+
+	C->value(idx);
+}
 
 
 fltk_enum_dropdown_control::fltk_enum_dropdown_control(const std::string& label, int& value, abst_control_provider* acp, const std::string& enum_declarations, int x, int y, int w, int h):
-fltk_enum_control(label, acp, value, enum_declarations)
+	fltk_enum_control(label, acp, value, enum_declarations)
 {
 	container = new CW<fltk::Choice>(x,y,w,h, get_name().c_str());
 	for (unsigned int i=0; i<enum_strings.size(); ++i) {

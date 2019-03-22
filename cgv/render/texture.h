@@ -16,7 +16,7 @@ class CGV_API texture : public texture_base, public cgv::data::data_format
 protected:
 	mutable bool state_out_of_date;
 	int  tex_unit;
-	bool complete_create(context& ctx, bool created);
+	bool complete_create(const context& ctx, bool created);
 public:
 	/**@name methods that can be called without context */
 	//@{
@@ -82,7 +82,7 @@ public:
 	/// check whether mipmaps have been created
 	bool mipmaps_created() const;
 	/// ensure the the texture state is synchronized with the GPU settings
-	void ensure_state(context& ctx) const;
+	void ensure_state(const context& ctx) const;
 	/// check whether textue is enabled
 	bool is_enabled() const;
 	/// return the currently used texture unit and -1 for current
@@ -92,12 +92,12 @@ public:
 	/**@name methods that can be called only with a context */
 	//@{
 	/// find the format that matches the one specified in the component format best
-	void find_best_format(context& ctx, const std::vector<cgv::data::data_view>* palettes = 0);
+	void find_best_format(const context& ctx, const std::vector<cgv::data::data_view>* palettes = 0);
 	/** create the texture of dimension and resolution specified in 
 	    the data format base class. If no type is given, determine it
 		from the format. If dimensions are given, they overwrite the
 		dimensions in the texture format. */
-	bool create(context& ctx, TextureType _tt = TT_UNDEF, unsigned width=-1, unsigned height=-1, unsigned depth=-1);
+	bool create(const context& ctx, TextureType _tt = TT_UNDEF, unsigned width=-1, unsigned height=-1, unsigned depth=-1);
 	/** create the texture from an image file. If the file_name is not
 	    given ask the user interactively for a file name. The image dimensions
 		are written to the optionally passed pointers image_width_ptr and 
@@ -107,13 +107,13 @@ public:
 		points to four bytes that specify a RGBA color used to fill texels that are inserted
 		to ensure dimensions of powers of two. For creation of a side of a cubemap specify
 		the cube_side parameter. */
-	bool create_from_image(context& ctx, const std::string& file_name = "", 
+	bool create_from_image(const context& ctx, const std::string& file_name = "",
 		                    int* image_width_ptr = 0, int* image_height_ptr = 0, 
 							unsigned char* clear_color_ptr = 0, int level = -1, int cube_side = -1);
 	/** same as previous method but use the passed data format and data view to
 	    store the content of the image. No pointers to width and height can be passed as
 		this information is available in the data_format after the call. */
-	bool create_from_image(cgv::data::data_format& df, cgv::data::data_view& dv, context& ctx, const std::string& file_name = "", 
+	bool create_from_image(cgv::data::data_format& df, cgv::data::data_view& dv, const context& ctx, const std::string& file_name = "",
 		                   unsigned char* clear_color_ptr = 0, int level = -1, int cube_side = -1);
 	//! Helper function that determins the individual file names for a cubemap.
 	/*! Returns whether the file_names specification was correct. See comment to create_from_images for
@@ -137,60 +137,60 @@ public:
 		a mipmap pyramid is built automatically. This method has no support for rescaling
 		to power of two dimensions. If a mipmap is used, the image files should already have
 		power of two dimensions. */  
-	bool create_from_images(context& ctx, const std::string& file_names, int level = -1);
+	bool create_from_images(const context& ctx, const std::string& file_names, int level = -1);
 	/// write the content of the texture to a file. This method needs support for frame buffer objects.
 	bool write_to_file(context& ctx, const std::string& file_name, unsigned int z_or_cube_side = -1, float depth_map_gamma = 1.0f) const;
 	/** generate mipmaps automatically, only supported if 
 	    framebuffer objects are supported by the GPU */
-	bool generate_mipmaps(context& ctx);
+	bool generate_mipmaps(const context& ctx);
 	/** create texture from the currently set read buffer, where
 	    x, y, width and height define the to be used rectangle of 
 		 the read buffer. The dimension and resolution of the texture
 		 format are updated automatically. If level is not specified 
 		 or set to -1 mipmaps are generated. */
-	bool create_from_buffer(context& ctx, int x, int y, int width, int height, int level = -1);
+	bool create_from_buffer(const context& ctx, int x, int y, int width, int height, int level = -1);
 	/** create texture from data view. Use dimension and resolution
 	    of data view but the component format of the texture.
 	    If level is not specified or set to -1 mipmaps are generated. 
 		If cube_side is specified, and data view is 2D, create one of
 		the six sides of a cubemap. */
-	bool create(context& ctx, const cgv::data::const_data_view& data, int level = -1, int cube_side = -1, const std::vector<cgv::data::data_view>* palettes = 0);
+	bool create(const context& ctx, const cgv::data::const_data_view& data, int level = -1, int cube_side = -1, const std::vector<cgv::data::data_view>* palettes = 0);
 	/** replace a block within a 1d texture with the given data. 
 	    If level is not specified, level 0 is set and if a mipmap 
 		 has been created before, coarser levels are updated also. */
-	bool replace(context& ctx, int x, const cgv::data::const_data_view& data, int level = -1, const std::vector<cgv::data::data_view>* palettes = 0);
+	bool replace(const context& ctx, int x, const cgv::data::const_data_view& data, int level = -1, const std::vector<cgv::data::data_view>* palettes = 0);
 	/** replace a block within a 2d texture with the given data. 
 	    If level is not specified, level 0 is set and if a mipmap 
 		 has been created before, coarser levels are updated also. */
-	bool replace(context& ctx, int x, int y, const cgv::data::const_data_view& data, int level = -1, const std::vector<cgv::data::data_view>* palettes = 0);
+	bool replace(const context& ctx, int x, int y, const cgv::data::const_data_view& data, int level = -1, const std::vector<cgv::data::data_view>* palettes = 0);
 	/** replace a block within a 3d texture or a side of a cube map
 	    with the given data. 
 	    If level is not specified, level 0 is set and if a mipmap 
 		has been created before, coarser levels are updated also. */
-	bool replace(context& ctx, int x, int y, int z_or_cube_side, const cgv::data::const_data_view& data, int level = -1, const std::vector<cgv::data::data_view>* palettes = 0);
+	bool replace(const context& ctx, int x, int y, int z_or_cube_side, const cgv::data::const_data_view& data, int level = -1, const std::vector<cgv::data::data_view>* palettes = 0);
 	/// replace a block within a 2d texture from the current read buffer.
-	bool replace_from_buffer(context& ctx, int x, int y, int x_buffer, 
+	bool replace_from_buffer(const context& ctx, int x, int y, int x_buffer,
 		int y_buffer, int width, int height, int level = -1);
 	/// replace a block within a 3d texture or a side from a cube map from the current read buffer.
-	bool replace_from_buffer(context& ctx, int x, int y, int z_or_cube_side, int x_buffer, 
+	bool replace_from_buffer(const context& ctx, int x, int y, int z_or_cube_side, int x_buffer,
 			int y_buffer, int width, int height, int level);
 	/// replace within a slice of a volume or a side of a cube map from the given image
-	bool replace_from_image(context& ctx, const std::string& file_name, int x, int y, int z_or_cube_side, int level);
+	bool replace_from_image(const context& ctx, const std::string& file_name, int x, int y, int z_or_cube_side, int level);
 	/** same as previous method but use the passed data format and data view to
 	    store the content of the image. */
-	bool replace_from_image(cgv::data::data_format& df, cgv::data::data_view& dv, context& ctx, 
+	bool replace_from_image(cgv::data::data_format& df, cgv::data::data_view& dv, const context& ctx,
 		                    const std::string& file_name, int x, int y, int z_or_cube_side, int level);
 	/// destruct the texture and free texture memory and handle
-	bool destruct(context& ctx);
+	bool destruct(const context& ctx);
 	//@}
 
 	/**@name methods that change the current gpu context */
 	//@{
 	/** enable this texture in the given texture unit, -1 corresponds to 
 	    the current unit. */
-	bool enable(context& ctx, int tex_unit = -1);
+	bool enable(const context& ctx, int tex_unit = -1);
 	/// disable texture and restore state before last enable call
-	bool disable(context& ctx);
+	bool disable(const context& ctx);
 	//@}
 };
 

@@ -1,0 +1,11 @@
+@=
+projectType="library";
+projectName="cg_vr";
+projectGUID="0E951770-638F-49FC-A28E-DF7930510AFC";
+addSharedDefines=["CG_VR_EXPORTS"];
+addIncDirs=[INPUT_DIR, CGV_DIR."/libs"];
+addProjectDeps=[
+	"cgv_utils", "cgv_type", "cgv_reflect", "cgv_reflect_types", "cgv_data", 
+	"cgv_signal", "cgv_os", "cgv_base", "cgv_math", "cgv_media", "cgv_gui", 
+	"vr"
+];

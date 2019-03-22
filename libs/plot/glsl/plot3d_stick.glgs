@@ -1,0 +1,22 @@
+#version 150
+#extension GL_EXT_geometry_shader4 : enable
+
+in vec4 color_gs[];
+out vec4 color_fs;
+
+uniform vec3 domain_min_pnt;
+
+vec4 map_plot_to_screen3(in vec3 pnt);
+
+void main()
+{
+	color_fs = color_gs[0];
+
+	gl_Position = map_plot_to_screen3(vec3(gl_PositionIn[0].xy, domain_min_pnt.z));
+	EmitVertex();
+
+	gl_Position = map_plot_to_screen3(gl_PositionIn[0].xyz);
+	EmitVertex();
+
+	EndPrimitive();
+}

@@ -1,7 +1,7 @@
 #pragma once
 
-#include <string>
 #include "group.h"
+#include <string>
 #include <cgv/type/cond/is_base_of.h>
 
 #include "lib_begin.h"

@@ -9,11 +9,11 @@ uniform float normal_length;
 in vec3 normal_gs[];
 in vec4 color_gs[];
 
-out vec4 color;
+out vec4 color_fs;
 
 void main()
 {
-	color = color_gs[0];
+	color_fs = color_gs[0];
 	gl_Position = gl_ModelViewProjectionMatrix * gl_PositionIn[0];
 	EmitVertex();
 	gl_Position = gl_ModelViewProjectionMatrix * (gl_PositionIn[0] + normal_length * vec4(normal_gs[0],0.0));

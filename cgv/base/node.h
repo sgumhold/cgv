@@ -1,7 +1,7 @@
 #pragma once
 
-#include <cgv/data/ref_ptr.h>
 #include "named.h"
+#include <cgv/data/ref_ptr.h>
 #include "lib_begin.h"
 
 namespace cgv {

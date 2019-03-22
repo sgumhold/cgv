@@ -6,11 +6,26 @@
 namespace cgv {
 	namespace gui {
 
+bool application::enumerate_monitors(std::vector<monitor_description>& monitor_descriptions)
+{
+	if (get_gui_driver().empty())
+		return window_ptr();
+	return get_gui_driver()->enumerate_monitors(monitor_descriptions);
+}
+
 window_ptr application::create_window(int w, int h, const std::string& title, const std::string& window_type)
 {
 	if (get_gui_driver().empty())
 		return window_ptr();
 	return get_gui_driver()->create_window(w,h,title,window_type);
+}
+
+bool application::remove_window(window_ptr w)
+{
+	if (get_gui_driver().empty())
+		return false;
+	get_gui_driver()->remove_window(w);
+	return true;
 }
 
 bool application::set_focus(const_window_ptr w)

@@ -1,4 +1,5 @@
 #include <cgv/render/drawable.h>
+#include <cgv/render/shader_program.h>
 #include <cgv_gl/gl/gl.h>
 #include <cgv/base/register.h>
 #include <cgv/gui/trigger.h>
@@ -6,7 +7,8 @@
 #include <cgv/gui/key_event.h>
 #include <cgv/utils/ostream_printf.h>
 #include <cgv/gui/provider.h>
-#include <cgv/media/illum/phong_material.hh>
+#include <cgv/math/ftransform.h>
+#include <cgv/media/illum/surface_material.h>
 
 using namespace cgv::base;
 using namespace cgv::reflect;
@@ -35,15 +37,21 @@ protected:
 	/// resolution of smooth shapes
 	int resolution;
 	///
-	cgv::media::illum::phong_material material;
+	cgv::media::illum::surface_material material;
 	/// different shape types
 	enum Shape { CUBE, PRI, TET, OCT, DOD, ICO, CYL, CONE, DISK, ARROW, SPHERE } shp;
 public:
 	/// initialize rotation angle
 	simple_cube() : toggle(false), angle(0), speed(90), rec_depth(4), animate(true), resolution(25), shp(CUBE)
 	{
-		material.set_diffuse(cgv::media::illum::phong_material::color_type(0.7f, 0.2f, 0.4f));
+		material.set_diffuse_reflectance(rgb(0.7f, 0.2f, 0.4f));
 		connect(get_animation_trigger().shoot, this, &simple_cube::timer_event);
+	}
+	/// 
+	void on_set(void* member_ptr)
+	{
+		update_member(member_ptr);
+		post_redraw();
 	}
 	/// self reflection allows to change values in the config file
 	bool self_reflect(reflection_handler& rh)
@@ -58,10 +66,6 @@ public:
 	std::string get_type_name() const 
 	{
 		return "simple_cube"; 
-	}
-	bool init(context& ctx)
-	{
-		return true;
 	}
 	/// show statistic information
 	void stream_stats(std::ostream& os)
@@ -110,89 +114,84 @@ public:
 		}
 	}
 	/// draw a cube tree of given depth in the current coordinate system
-	void draw_cube_tree(context& c, unsigned int depth, int nr_children = 3)
+	void draw_cube_tree(context& ctx, unsigned int depth, int nr_children = 3)
 	{
-		if (shp < CYL)
-			glShadeModel(GL_FLAT);
 		switch (shp) {
-		case CUBE: c.tesselate_unit_cube(); break;
-		case PRI: c.tesselate_unit_prism(); break;
-		case TET: c.tesselate_unit_tetrahedron(); break;
-		case OCT: c.tesselate_unit_octahedron(); break;
-		case DOD: c.tesselate_unit_dodecahedron(); break;
-		case ICO: c.tesselate_unit_icosahedron(); break;
-		case CYL: c.tesselate_unit_cylinder(resolution); break;
-		case CONE: c.tesselate_unit_cone(resolution); break;
-		case DISK: c.tesselate_unit_disk(resolution); break;
-		case SPHERE: c.tesselate_unit_sphere(resolution); break;
-		case ARROW: 
-			glTranslated(0,0,2);
-			glScaled(0.5,0.5,1);
-			c.tesselate_unit_disk(resolution);
-			glTranslated(0,0,-1);
-			c.tesselate_unit_cylinder(resolution);
-			glScaled(2,2,1);
-			glTranslated(0,0,-1);
-			c.tesselate_unit_disk(resolution);
-			glRotated(180,1,0,0);
-			glTranslated(0,0,1);
-			c.tesselate_unit_cone(resolution);
-			break;
+		case CUBE:   ctx.tesselate_unit_cube(); break;
+		case PRI:    ctx.tesselate_unit_prism(); break;
+		case TET:    ctx.tesselate_unit_tetrahedron(); break;
+		case OCT:    ctx.tesselate_unit_octahedron(); break;
+		case DOD:    ctx.tesselate_unit_dodecahedron(); break;
+		case ICO:    ctx.tesselate_unit_icosahedron(); break;
+		case CYL:    ctx.tesselate_unit_cylinder(resolution); break;
+		case CONE:   ctx.tesselate_unit_cone(resolution); break;
+		case DISK:   ctx.tesselate_unit_disk(resolution); break;
+		case SPHERE: ctx.tesselate_unit_sphere(resolution); break;
+		case ARROW:  ctx.tesselate_arrow(0.75, 1, 1.5, 2, resolution); break;
 		default:
 			std::cerr << "unknown shape" << std::endl;
 		}
-		if (shp < CYL)
-			glShadeModel(GL_SMOOTH);
-
 		if (depth < rec_depth)
 			// iterate children
 			for (int i=0; i<nr_children; ++i) {
 				// remember current coordinate system
-				glPushMatrix();
-					// rotate around z -axis by -90, 0, 90 or 180 degrees
-					glRotated(i*90-90, 0, 0, 1);
-					// move along x axis by 2 units
-					glTranslated(2,0,0);
-					// shrink child cube by a factor of 1/2
-					glScaled(0.5,0.5,0.5);
+				ctx.push_modelview_matrix();
+					ctx.mul_modelview_matrix(
+						// rotate around z -axis by -90, 0, 90 or 180 degrees
+						cgv::math::rotate4<double>(i * 90 - 90, 0, 0, 1)*
+						// move along x axis by 2 units
+						cgv::math::translate4<double>(2, 0, 0)*
+						// shrink child cube by a factor of 1/2
+						cgv::math::scale4<double>(0.5, 0.5, 0.5)
+					);
 					// recursively draw child cube
-					draw_cube_tree(c, depth+1);
+					draw_cube_tree(ctx, depth+1);
 				// restore coordinate system before moving on to next child cube
-				glPopMatrix();
+				ctx.pop_modelview_matrix();
 			}
 	}
 	/// setting the view transform yourself
 	void draw(context& ctx)
 	{
-		ctx.enable_material(material);
-		glRotated(angle,0,1,0);
-		glScaled(0.5,0.5,0.5);
-		glColor3f(0,1,0.2f);
-		draw_cube_tree(ctx, 0, 4);
-		ctx.disable_material(material);
+		GLboolean was_culling = glIsEnabled(GL_CULL_FACE);
+		glDisable(GL_CULL_FACE);
+		ctx.ref_surface_shader_program().enable(ctx);
+			ctx.set_material(material);
+			ctx.push_modelview_matrix();
+				ctx.mul_modelview_matrix(cgv::math::rotate4<double>(angle, 0, 1, 0)*cgv::math::scale4<double>(0.5, 0.5, 0.5));
+				ctx.set_color(rgb(0, 1, 0.2f));
+				draw_cube_tree(ctx, 0, 4);
+			ctx.pop_modelview_matrix();
+		ctx.ref_surface_shader_program().disable(ctx);
+		if (was_culling)
+			glEnable(GL_CULL_FACE);
 	}
 	/// overload the create gui method
 	void create_gui()
 	{
 		add_decorator("Simple Cube GUI", "heading", "level=1"); // level=1 is default and can be skipped
-		connect_copy(add_control("recursion depth", rec_depth, "value_slider", 
-				                 "min=1;max=8;ticks=true")->value_change,
-						 rebind(static_cast<drawable*>(this), 
-						        &drawable::post_redraw));
+		add_member_control(this, "recursion depth", rec_depth, "value_slider", "min=1;max=8;ticks=true");
 		/// use a selection gui element to directly manipulate the shape enum
-		connect_copy(add_control("shape", shp, 
-			"CUBE,PRI,TET,OCT,DOD,ICO,CYL,CONE,DISK,ARROW,SPHERE")->value_change,
-			rebind(static_cast<drawable*>(this), &drawable::post_redraw));
-		if (add_tree_node("Animation Settings", toggle, 2)) {
-			add_control("animate", animate, "check");
-			connect_copy(add_control("angle", angle, "value_slider", 
+		add_member_control(this, "shape", shp, "dropdown", "enums='CUBE,PRI,TET,OCT,DOD,ICO,CYL,CONE,DISK,ARROW,SPHERE'");
+		// start a tree node, where shp is used as unique reference 
+		if (begin_tree_node("Animation Settings", shp, false, "level=2")) {
+			align("\a"); // increases identation level
+				add_control("animate", animate, "check");
+				add_member_control(this, "angle", angle, "value_slider", 
 				                     "min=0;max=360;ticks=true;tooltip"\
-									 "=\"rotation angle\"")->value_change,
-						 rebind(static_cast<drawable*>(this),
-						        &drawable::post_redraw));
-			add_control("speed", speed, "value_slider", 
-				        "min=0;max=720;log=true;ticks=true;"\
-				        "tooltip=\"rotation speed in radians per second\"");
+									 "=\"rotation angle\"");
+				add_control("speed", speed, "value_slider", 
+							"min=0;max=720;log=true;ticks=true;"\
+							"tooltip=\"rotation speed in degree per second\"");
+			align("\b"); // decreases identation level
+			end_tree_node(shp); // ensure same unique reference passed as in corresponding begin_tree_node
+		}
+		// start a tree node, where shp is used as unique reference 
+		if (begin_tree_node("Material Settings", material, false, "level=2")) {
+			align("\a"); // increases identation level
+				add_gui("material", material); // use gui registered for surface_material type
+			align("\b"); // decreases identation level
+			end_tree_node(material); // ensure same unique reference passed as in corresponding begin_tree_node
 		}
 	}
 };

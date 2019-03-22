@@ -21,6 +21,13 @@ if NOT [%1] == [] (
       echo "%param%\..\%~n1" does not exist
    )
 )
+set platformsub=""
+if "%CGV_PLATFORM%" == "WIN32" (
+	set platformsub=WIN32
+)
+if "%CGV_PLATFORM%" == "x64" (
+	set platformsub=WIN64
+)
 echo Define System Variables for cgv Framework
 echo -------------------------------------------
 echo    please answer the following question by
@@ -38,22 +45,24 @@ echo [4] ... Microsoft Visual Studio 2010
 echo [5] ... Microsoft Visual Studio 2012
 echo [6] ... Microsoft Visual Studio 2013
 echo [7] ... Microsoft Visual Studio 2015
+echo [8] ... Microsoft Visual Studio 2017
 echo.
 echo automatic mode:
-echo [8] ... Microsoft Visual Studio 2005 
-echo [9] ... Microsoft Visual Studio 2008 
-echo [a] ... Microsoft Visual Studio 2008 Express
-echo [b] ... Microsoft Visual Studio 2010
-echo [c] ... Microsoft Visual Studio 2012
-echo [d] ... Microsoft Visual Studio 2013
-echo [e] ... Microsoft Visual Studio 2015
+echo [9] ... Microsoft Visual Studio 2005 
+echo [a] ... Microsoft Visual Studio 2008 
+echo [b] ... Microsoft Visual Studio 2008 Express
+echo [c] ... Microsoft Visual Studio 2010
+echo [d] ... Microsoft Visual Studio 2012
+echo [e] ... Microsoft Visual Studio 2013
+echo [f] ... Microsoft Visual Studio 2015
+echo [g] ... Microsoft Visual Studio 2017
 echo.
 echo [q] ... quit script
 echo.
 :ask_again
-set /P selection=choose 1-9 or a-e or q^>
+set /P selection=choose 1-9 or a-g or q^>
 if [%selection%] == [] (
-   echo please enter a number in [1-9] or a letter in [a-e] or q for quit
+   echo please enter a number in [1-9] or a letter in [a-g] or q for quit
    goto:ask_again
 )
 if "%selection%" == "q" (
@@ -77,22 +86,30 @@ if "%selection%" == "a" (
 			  if "%selection%" == "e" (
 				 call set /A selection=14
 			  ) else (
+				  if "%selection%" == "f" (
+					 call set /A selection=15
+				  ) else (
+					  if "%selection%" == "g" (
+						 call set /A selection=16
+					  ) else (
 	call set /A selection=%selection%
 	if %selection% LSS 1 (set valid_number=false)
 	if %selection% GTR 9 (set valid_number=false)
+					  )
+				  )
 			  )
 		  )
       )
    )
 )
 if %valid_number% == false (
-   echo invalid number outside range [1-9,a-e], please try again
+   echo invalid number outside range [1-9,a-g], please try again
    goto:ask_again
 )
 set interactive_mode=true
-if %selection% GTR 6 (
+if %selection% GTR 8 (
    set interactive_mode=false
-   set /A selection=selection-7
+   set /A selection=selection-8
 )
 set cgvcompiler=undefined
 call set condition=%selection%==1
@@ -109,6 +126,8 @@ call set condition=%selection%==6
 if %condition% (set cgvcompiler=vs12)
 call set condition=%selection%==7
 if %condition% (set cgvcompiler=vs14)
+call set condition=%selection%==8
+if %condition% (set cgvcompiler=vs141)
 if %interactive_mode%==true (
    echo.
    echo selected interactive mode
@@ -128,10 +147,19 @@ call :remove_from_list old_path target_path
 set old_path_1=%new_path%
 set target_path=%%CGV_DIR%%\bin
 call :remove_from_list old_path_1 target_path
+
+set old_path_2=%new_path%
+set target_path=%%CGV_DIR%%\bin\WIN32
+call :remove_from_list old_path_2 target_path
+
+set old_path_3=%new_path%
+set target_path=%%CGV_DIR%%\bin\WIN64
+call :remove_from_list old_path_3 target_path
+
 if "%new_path%" == "" (
-  set new_path=%%CGV_DIR%%\bin;%%CGV_INSTALL%%\bin
+  set new_path=%%CGV_DIR%%\bin;%%CGV_DIR%%\bin\%platformsub%;%%CGV_INSTALL%%\bin
 ) else (
-  set new_path=%%CGV_DIR%%\bin;%%CGV_INSTALL%%\bin;%new_path%
+  set new_path=%%CGV_DIR%%\bin;%%CGV_DIR%%\bin\%platformsub%;%%CGV_INSTALL%%\bin;%new_path%
 )
 set change=false
 if "%new_path%" NEQ "%old_path%" (

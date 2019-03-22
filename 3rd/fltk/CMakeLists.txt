@@ -8,6 +8,7 @@ include("../../cmake/buildCoreComponents.cmake")
 cgv_find_package(OpenGL)
 cgv_find_package(JPEG)
 cgv_find_package(PNG)
+cgv_find_package(GLEW)
 
 if (unix)
 	cgv_find_package(X11)
@@ -402,17 +403,20 @@ else()
 	set(ADD_DEFINITIONS "")
 endif()
 
-include_directories(include)
+include_directories(include 
+	${GLEW_INCLUDE_DIRS}
+)
 	
 cgv_add_3rd_library(FLTK2
 	SOURCES ${SOURCES} ${OPENGL_SOURCES} ${IMAGES_SOURCES}
 	PUBLIC_HEADERS ${HEADERS} ${COMPAT_HEADERS} ${CONFIG_HEADERS}
-	DEFINITIONS ${ADD_DEFINITIONS}
+	DEFINITIONS "USE_GLEW" ${ADD_DEFINITIONS}
 	SHARED_DEFINITIONS "FL_SHARED" "FL_LIBRARY" "FL_GL_LIBRARY" "FL_GLUT_LIBRARY" "FL_IMAGES_LIBRARY"
 	INSTALL_NAME "fltk"
 )
 	
 target_link_libraries(FLTK2
+	${GLEW_LIBRARIES}
 	${PNG_LIBRARIES}
 	${JPEG_LIBRARIES}
 	${OPENGL_LIBRARIES}

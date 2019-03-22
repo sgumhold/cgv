@@ -1,9 +1,0 @@
-#version 150 compatibility
-
-uniform vec3 point_color;
-
-void main()
-{
-	gl_FragColor.rgb = point_color;
-	gl_FragColor.a = 1.0;
-}

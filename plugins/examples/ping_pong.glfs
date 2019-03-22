@@ -1,0 +1,141 @@
+#version 150
+
+uniform int mode = 0;
+uniform int w = 256;
+uniform int h = 256;
+uniform float threshold = 0.5;
+uniform bool simulate_reverse = false;
+uniform int rule[18];
+uniform vec4 HPP_colors[16];
+
+uniform sampler2D tex;
+
+in vec2 texcrd;
+
+out vec4 frag_color;
+
+vec2 compute_delta()
+{
+	return vec2(1.0 / float(w), 1.0 / float(h));
+}
+
+vec4 smoothing(in vec2 tc)
+{
+	vec2 d = compute_delta();
+	return
+		0.25 * texture(tex, tc) +
+		0.125*(
+			texture(tex, vec2(tc.x + d.x, tc.y)) +
+			texture(tex, vec2(tc.x - d.x, tc.y)) +
+			texture(tex, vec2(tc.x, tc.y + d.y)) +
+			texture(tex, vec2(tc.x, tc.y - d.y))
+		) +
+		0.0625*(
+			texture(tex, tc + d) + 
+			texture(tex, tc - d) + 
+			texture(tex, vec2(tc.x + d.x, tc.y - d.y)) +
+			texture(tex, vec2(tc.x - d.x, tc.y + d.y)) 
+		);
+}
+
+ivec3 quantize(in vec4 rgba)
+{
+	return ivec3(rgba.r < threshold ? 0 : 1, rgba.g < threshold ? 0 : 1, rgba.b < threshold ? 0 : 1);
+}
+
+ivec4 quantize4(in vec4 rgba)
+{
+	return ivec4(rgba.r < threshold ? 0 : 1, rgba.g < threshold ? 0 : 1, rgba.b < threshold ? 0 : 1, rgba.a < threshold ? 0 : 1);
+}
+
+vec4 HPP_collision(in vec2 tc)
+{
+	ivec4 state = quantize4(texture(tex, tc));
+	if (state == ivec4(1, 1, 0, 0))
+		state = ivec4(0, 0, 1, 1);
+	else if (state == ivec4(0, 0, 1, 1))
+		state = ivec4(1, 1, 0, 0);
+	return vec4(state);
+}
+
+vec4 HPP_revert(in vec2 tc)
+{
+	vec4 state = vec4(quantize4(texture(tex, tc)));
+	return state.yxwz;
+}
+
+vec4 HPP_draw(in vec2 tc)
+{
+	ivec4 state = quantize4(texture(tex, tc));
+	return pow(HPP_colors[state.x + 2 * state.y + 4 * state.z + 8 * state.w],vec4(2.2));
+}
+
+vec4 HPP_transport(in vec2 tc)
+{
+	vec2 d = compute_delta();
+	return vec4(texture(tex, vec2(tc.x + d.x, tc.y))[0],
+		texture(tex, vec2(tc.x - d.x, tc.y))[1],
+		texture(tex, vec2(tc.x, tc.y + d.y))[2],
+		texture(tex, vec2(tc.x, tc.y - d.y))[3]);
+}
+
+vec4 roll_x(in vec2 tc)
+{
+	vec2 d = compute_delta();
+	return texture(tex, vec2(tc.x + (simulate_reverse ? -1 : 1)*d.x, tc.y));
+}
+vec4 roll_y(in vec2 tc)
+{
+	vec2 d = compute_delta();
+	return texture(tex, vec2(tc.x , tc.y + (simulate_reverse ? -1 : 1)*d.y));
+}
+
+vec4 GameOfLife(in vec2 tc)
+{
+	vec2 d = compute_delta();
+	ivec3 index =
+		quantize(texture(tex, vec2(tc.x + d.x, tc.y))) +
+		quantize(texture(tex, vec2(tc.x - d.x, tc.y))) +
+		quantize(texture(tex, vec2(tc.x, tc.y + d.y))) +
+		quantize(texture(tex, vec2(tc.x, tc.y - d.y))) +
+		quantize(texture(tex, tc + d)) +
+		quantize(texture(tex, tc - d)) +
+		quantize(texture(tex, vec2(tc.x + d.x, tc.y - d.y))) +
+		quantize(texture(tex, vec2(tc.x - d.x, tc.y + d.y))) +
+		9 * quantize(texture(tex, tc));
+	return vec4(float(rule[index.r]), float(rule[index.g]), float(rule[index.b]), 1.0);
+}
+
+void main()
+{
+	switch (mode) {
+	case 0 :
+		frag_color.rgb = texture(tex, texcrd).rgb;
+		frag_color.a = mix(frag_color.b, frag_color.g, 0.6);
+		break;
+	case 1:
+		frag_color = smoothing(texcrd);
+		break;
+	case 2:
+		frag_color = GameOfLife(texcrd);
+		break;
+	case 3:
+		frag_color = HPP_collision(texcrd);
+		break;
+	case 4:
+		frag_color = HPP_transport(texcrd);
+		break;
+	case 5:
+		frag_color = HPP_revert(texcrd);
+		break;
+	case 6:
+		frag_color = HPP_draw(texcrd);
+		break;
+	case 7:
+		frag_color = roll_x(texcrd);
+		break;
+	case 8:
+		frag_color = roll_y(texcrd);
+		break;
+	}
+}

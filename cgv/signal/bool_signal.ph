@@ -7,7 +7,7 @@
 #include <vector>
 #include <map>
 
-#include <cgv/signal/lib_begin.h>
+#include "lib_begin.h"
 
 namespace cgv {
 	namespace signal {
@@ -39,7 +39,7 @@ class const_bool_method_functor;
 template <int i, typename X, @["typename T1 = type::invalid_type"; ", "; "typename T".N_ARG." = type::invalid_type"]>
 class bool_object_functor;
 
-@for (i=1; i<=N_ARG; i=i+1) @{
+@for (i=0; i<=N_ARG; i=i+1) @{
 
 template <@["typename T1"; ", "; "typename T".N_ARG]>
 class bool_functor<@(i),@["T1"; ", "; "T".N_ARG]> : public functor_base, public signature<@(i),@["T1"; ", "; "T".N_ARG]>
@@ -84,12 +84,18 @@ public:
 };
 
 // connect bool_signal to a bool function
+@if(i > 0)@{@//
 template <@["typename T1"; ", "; "typename T".i]>
-void connect(bool_signal<@["T1"; ","; "T".i]>& s, bool (*fp)(@["T1"; ", "; "T".i])) { s.connect(bool_function_functor<@(i),@["T1"; ", "; "T".i]>(fp)); }
+void connect(bool_signal<@["T1"; ","; "T".i]>& s, bool (*fp)(@["T1"; ", "; "T".i])) { s.connect(bool_function_functor<@(i)@if(i>0)@{,@["T1"; ", "; "T".i]@}>(fp)); }
+@}@else@{@//
+extern CGV_API void connect(bool_signal<@["T1"; ","; "T".i]>& s, bool (*fp)(@["T1"; ", "; "T".i]));@}
 
 // disconnect bool_signal from a bool function
+@if(i > 0)@{@//
 template <@["typename T1"; ", "; "typename T".i]>
-void disconnect(bool_signal<@["T1"; ","; "T".i]>& s, bool (*fp)(@["T1"; ", "; "T".i])) { s.disconnect(bool_function_functor<@(i),@["T1"; ", "; "T".i]>(fp)); }
+void disconnect(bool_signal<@["T1"; ","; "T".i]>& s, bool (*fp)(@["T1"; ", "; "T".i])) { s.disconnect(bool_function_functor<@(i)@if(i>0)@{,@["T1"; ", "; "T".i]@}>(fp)); }
+@}@else@{@//
+extern void CGV_API disconnect(bool_signal<@["T1"; ","; "T".i]>& s, bool (*fp)(@["T1"; ", "; "T".i]));@}
 
 
 template <class X, @["typename T1"; ", "; "typename T".N_ARG]>
@@ -108,12 +114,12 @@ public:
 };
 
 // connect bool_signal to a bool method of an object
-template <class X, @["typename T1"; ", "; "typename T".i]>
-void connect(bool_signal<@["T1"; ", "; "T".i]>& s, X* ip, bool (X::*mp)(@["T1"; ", "; "T".i])) { s.connect(bool_method_functor<@(i),X,@["T1"; ", "; "T".i]>(ip,mp)); }
+template <class X@if(i>0)@{, @["typename T1"; ", "; "typename T".i]@}>
+void connect(bool_signal<@["T1"; ", "; "T".i]>& s, X* ip, bool (X::*mp)(@["T1"; ", "; "T".i])) { s.connect(bool_method_functor<@(i),X@if(i>0)@{,@["T1"; ", "; "T".i]@}>(ip,mp)); }
 
 // disconnect bool_signal from a bool method of an object
-template <class X, @["typename T1"; ", "; "typename T".i]>
-void disconnect(bool_signal<@["T1"; ", "; "T".i]>& s, X* ip, bool (X::*mp)(@["T1"; ", "; "T".i])) { s.disconnect(bool_method_functor<@(i),X,@["T1"; ", "; "T".i]>(ip,mp)); }
+template <class X@if(i>0)@{, @["typename T1"; ", "; "typename T".i]@}>
+void disconnect(bool_signal<@["T1"; ", "; "T".i]>& s, X* ip, bool (X::*mp)(@["T1"; ", "; "T".i])) { s.disconnect(bool_method_functor<@(i),X@if(i>0)@{,@["T1"; ", "; "T".i]@}>(ip,mp)); }
 
 template <class X, @["typename T1"; ", "; "typename T".N_ARG]>
 class const_bool_method_functor<@(i),X,@["T1"; ", "; "T".N_ARG]> : public bool_functor<@(i),@["T1"; ", "; "T".N_ARG]>
@@ -131,12 +137,12 @@ public:
 };
 
 // connect bool_signal to a bool method of an object
-template <class X, @["typename T1"; ", "; "typename T".i]>
+template <class X@if(i>0)@{, @["typename T1"; ", "; "typename T".i]@}>
 void connect(bool_signal<@["T1"; ", "; "T".i]>& s, X* ip, bool (X::*mp)(@["T1"; ", "; "T".i]) const) { s.connect(const_bool_method_functor<@(i),X,@["T1"; ", "; "T".i]>(ip,mp)); }
 
 // disconnect bool_signal from a bool method of an object
-template <class X, @["typename T1"; ", "; "typename T".i]>
-void disconnect(bool_signal<@["T1"; ", "; "T".i]>& s, X* ip, bool (X::*mp)(@["T1"; ", "; "T".i]) const) { s.disconnect(const_bool_method_functor<@(i),X,@["T1"; ", "; "T".i]>(ip,mp)); }
+template <class X@if(i>0)@{, @["typename T1"; ", "; "typename T".i]@}>
+void disconnect(bool_signal<@["T1"; ", "; "T".i]>& s, X* ip, bool (X::*mp)(@["T1"; ", "; "T".i]) const) { s.disconnect(const_bool_method_functor<@(i),X@if(i>0)@{,@["T1"; ", "; "T".i]@}>(ip,mp)); }
 
 template <typename X, @["typename T1"; ", "; "typename T".N_ARG]>
 class bool_object_functor<@(i),X,@["T1"; ", "; "T".N_ARG]> : public bool_functor<@(i),@["T1"; ", "; "T".N_ARG]>
@@ -152,22 +158,22 @@ public:
 };
 
 // connect signal to the ()-operator of a referenced object
-template <class X, @["typename T1"; ", "; "typename T".i]>
-void connect(bool_signal<@["T1"; ", "; "T".i]>& s, X& ip) { s.connect(bool_object_functor<@(i),X&,@["T1"; ", "; "T".i]>(ip)); }
+template <class X@if(i>0)@{, @["typename T1"; ", "; "typename T".i]@}>
+void connect(bool_signal<@["T1"; ", "; "T".i]>& s, X& ip) { s.connect(bool_object_functor<@(i),X&@if(i>0)@{,@["T1"; ", "; "T".i]@}>(ip)); }
 // disconnect signal from the ()-operator of a referenced object
-template <class X, @["typename T1"; ", "; "typename T".i]>
-void disconnect(bool_signal<@["T1"; ", "; "T".i]>& s, X& ip) { s.disconnect(bool_object_functor<@(i),X&,@["T1"; ", "; "T".i]>(ip)); }
+template <class X@if(i>0)@{, @["typename T1"; ", "; "typename T".i]@}>
+void disconnect(bool_signal<@["T1"; ", "; "T".i]>& s, X& ip) { s.disconnect(bool_object_functor<@(i),X&@if(i>0)@{,@["T1"; ", "; "T".i]@}>(ip)); }
 // connect signal to the const ()-operator of a referenced const object
-template <class X, @["typename T1"; ", "; "typename T".i]>
-void connect(bool_signal<@["T1"; ", "; "T".i]>& s, const X& ip) { s.connect(bool_object_functor<@(i),const X&,@["T1"; ", "; "T".i]>(ip)); }
+template <class X@if(i>0)@{, @["typename T1"; ", "; "typename T".i]@}>
+void connect(bool_signal<@["T1"; ", "; "T".i]>& s, const X& ip) { s.connect(bool_object_functor<@(i),const X&@if(i>0)@{,@["T1"; ", "; "T".i]@}>(ip)); }
 // disconnect signal from the const ()-operator of a referenced const object
-template <class X, @["typename T1"; ", "; "typename T".i]>
-void disconnect(bool_signal<@["T1"; ", "; "T".i]>& s, const X& ip) { s.disconnect(bool_object_functor<@(i),const X&,@["T1"; ", "; "T".i]>(ip)); }
+template <class X@if(i>0)@{, @["typename T1"; ", "; "typename T".i]@}>
+void disconnect(bool_signal<@["T1"; ", "; "T".i]>& s, const X& ip) { s.disconnect(bool_object_functor<@(i),const X&@if(i>0)@{,@["T1"; ", "; "T".i]@}>(ip)); }
 
 // connect signal to the ()-operator of a copy of a temporary object, a reference to the copy is returned for disconnection
-template <class X, @["typename T1"; ", "; "typename T".i]>
+template <class X@if(i>0)@{, @["typename T1"; ", "; "typename T".i]@}>
 X& connect_copy(bool_signal<@["T1"; ", "; "T".i]>& s, const X& ip) { 
-	return static_cast<const bool_object_functor<@(i),X,@["T1"; ", "; "T".i]>&>(s.connect(bool_object_functor<@(i),X,@["T1"; ", "; "T".i]>(ip))).ip; 
+	return static_cast<const bool_object_functor<@(i),X@if(i>0)@{,@["T1"; ", "; "T".i]@}>&>(s.connect(bool_object_functor<@(i),X@if(i>0)@{,@["T1"; ", "; "T".i]@}>(ip))).ip; 
 }
 
 @}

@@ -1,0 +1,8 @@
+vertex_file:plot_empty.glvs
+geometry_file:plot3d_stick.glgs
+geometry_file:quaternion.glsl
+geometry_file:plot_lib.glsl
+geometry_file:view.glsl
+geometry_shader_info:points;line_strip;2
+fragment_file:default.glfs
+fragment_file:fragment.glfs

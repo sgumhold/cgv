@@ -17,9 +17,7 @@ namespace cgv {
    row and the (j+1)th column.
 
    The matrix inherits the functionality of a \c N*M dimensional vector
-   and is stored in row major format. This means that \c A(i,j)=A(j*M+i).
-   Similarly, the constructor for type const T* assumes an array in row
-   major format. */
+   and is stored in column major format. This means that \c A(i,j)=A(j*M+i). */
 template <typename T, cgv::type::uint32_type N, cgv::type::uint32_type M>
 class fmat : public fvec<T,N*M>
 {
@@ -32,11 +30,19 @@ public:
 	fmat() {}
 	///construct a matrix with all elements set to c
 	fmat(const T& c) : base_type(c) {}
-	///creates a matrix from an array in row major format
-	fmat(const T* a) : base_type(a) {} 
-	///creates a matrix from an array of different type in row major format
+	///creates a matrix from an array a of given dimensions - by default in column major format
+	fmat(cgv::type::uint32_type n, cgv::type::uint32_type m, const T* a, bool column_major = true) {
+		for (cgv::type::uint32_type j = 0; j < std::min(m, M); ++j)
+			for (cgv::type::uint32_type i = 0; i < std::min(n, N); ++i)
+				(*this)(i, j) = a[column_major ? j * N + i : i * M + j];
+	}
+	///creates a matrix from an array a of given dimensions but different type - by default in column major format
 	template <typename S>
-	fmat(const S* a) : base_type(a) {} 
+	fmat(cgv::type::uint32_type n, cgv::type::uint32_type m, const S* a, bool column_major = true) {
+		for (cgv::type::uint32_type j = 0; j < std::min(m, M); ++j)
+			for (cgv::type::uint32_type i = 0; i < std::min(n, N); ++i)
+				(*this)(i, j) = (T)a[column_major ? j * N + i : i * M + j];
+	}
 	///copy constructor for matrix with different element type
 	template <typename S>
 	fmat(const fmat<S,N,M>& m) : base_type(m) {}
@@ -45,7 +51,7 @@ public:
 	fmat(const fvec<T1,N>& v, const fvec<T2,M>& w) { 
 		for(unsigned i = 0; i < N; i++)
 			for(unsigned j = 0; j < M; j++)
-				operator () (i,j) = (T)(v(i)*w(j)); 
+				(*this)(i,j) = (T)(v(i)*w(j)); 
 	}
 	///number of rows
 	static unsigned nrows() { return N; }
@@ -109,7 +115,7 @@ public:
 	const fmat<T,N,M> operator*=(const fmat<S,N,N>& m2) 
 	{
 		assert(N == M);
-		fmat<T,N,N> r(0);	
+		fmat<T,N,N> r(T(0));	
 		for(unsigned i = 0; i < N; i++)
 			for(unsigned j = 0; j < N;j++)
 				for(unsigned k = 0; k < N; k++)

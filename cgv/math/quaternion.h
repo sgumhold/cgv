@@ -1,7 +1,8 @@
 #pragma once
 
 #include "fvec.h"
-#include "mat.h"
+#include "fmat.h"
+#include "functions.h"
 
 namespace cgv {
 	namespace math {
@@ -23,8 +24,10 @@ public:
 	enum AxisEnum { X_AXIS, Y_AXIS, Z_AXIS };
 	/// type of 3d axis
 	typedef fvec<T,3> vec_type;
-	/// A frame
-	typedef mat<T> mat_type;
+	/// type of 3x3 matrix
+	typedef fmat<T, 3, 3> mat_type;
+	/// type of 4x4 matrix
+	typedef fmat<T, 4, 4> hmat_type;
 	//@}
 
 	/**@name{\large b) construction}*/
@@ -43,7 +46,7 @@ public:
 	/// construct quaternion from axis and rotation angle
 	quaternion(const vec_type& axis, coord_type angle)               { set(axis, angle); }
 	/// construct quaternion from 3x3 rotation matrix
-	quaternion(const coord_type* matrix)                             { set(matrix); }
+	quaternion(const mat_type& matrix)                             { set(matrix); }
 	/// construct quaternion directly
 	quaternion(coord_type w,coord_type x, coord_type y,coord_type z) { set(w,x,y,z); }
 	/// construct quaternion from real part and vector
@@ -66,27 +69,34 @@ public:
 		angle *= (coord_type)0.5;
 		set(cos(angle), sin(angle)*axis);
 	}
+	/// setter from quaternion
+	void set(const quaternion<T>& quat) { *this = quat; }
 	/// initialize quaternion from 3x3 rotation matrix
-	void set(const coord_type* M)
+	void set(const mat_type& M)
 	{
-		coord_type t = M[0]+M[4]+M[8]+1;
-		if (t > 0) {
-			coord_type s = (coord_type) (0.5/sqrt(t));
-			set((coord_type) (0.25/s), s*(M[7]-M[5]), s*(M[2]-M[6]), s*(M[3] - M[1]));
+		this->w() = sqrt(plus(T(0.25)*( M(0, 0) + M(1, 1) + M(2, 2) + T(1))));
+		this->x() = sqrt(plus(T(0.25)*( M(0, 0) - M(1, 1) - M(2, 2) + T(1))));
+		this->y() = sqrt(plus(T(0.25)*(-M(0, 0) + M(1, 1) - M(2, 2) + T(1))));
+		this->z() = sqrt(plus(T(0.25)*(-M(0, 0) - M(1, 1) + M(2, 2) + T(1))));
+		if (this->w() >= this->x() && this->w() >= this->y() && this->w() >= this->z()) {
+			this->x() *= sign(M(2, 1) - M(1, 2));
+			this->y() *= sign(M(0, 2) - M(2, 0));
+			this->z() *= sign(M(1, 0) - M(0, 1));
+		}
+		else if (this->x() >= this->y() && this->x() >= this->z()) {
+			this->w() *= sign(M(2, 1) - M(1, 2));
+			this->y() *= sign(M(0, 1) + M(1, 0));
+			this->z() *= sign(M(2, 0) + M(0, 2));
+		}
+		else if (this->y() >= this->z()) {
+			this->w() *= sign(M(0, 2) - M(2, 0));
+			this->x() *= sign(M(0, 1) + M(1, 0));
+			this->z() *= sign(M(1, 2) + M(2, 1));
 		}
 		else {
-			if ( (M[0] > M[4]) && (M[0] > M[8]) ) {
-				coord_type s  = (coord_type) (0.5/sqrt( 1.0 + M[0] - M[4] - M[8] ));
-				set((M[5]+M[7])*s, (coord_type) (0.5*s), (M[1]+M[3])*s, (M[2]+M[6])*s);
-			}
-			else if ( M[4] > M[8] ) {
-				coord_type s  = (coord_type) (0.5/sqrt( 1.0 + M[4] - M[0] - M[8] ));
-				set((M[2]+M[6])*s, (M[1]+M[3])*s, (coord_type) (0.5*s), (M[5] + M[7])*s);
-			}
-			else {
-				coord_type s = (coord_type) (0.5/sqrt( 1.0 + M[8] - M[0] - M[4] ) );
-				set((M[1]+M[3])*s, (M[2]+M[6])*s, (M[5]+M[7])*s, (coord_type) (0.5*s));
-			}
+			this->w() *= sign(M(1, 0) - M(0, 1));
+			this->x() *= sign(M(0, 2) + M(2, 0));
+			this->y() *= sign(M(1, 2) + M(2, 1));
 		}
 	}
 	/// initialize quaternion directly
@@ -106,34 +116,32 @@ public:
 	/**@name{\large d) conversions and application}*/
 	//@{
 	/// compute equivalent 3x3 rotation matrix
-	void put_matrix(coord_type* M) const
+	void put_matrix(mat_type& M) const
 	{
-		M[0] = 1-2*this->y()*this->y()-2*this->z()*this->z();
-		M[1] = 2*this->x()*this->y()-2*this->w()*this->z();
-		M[2] = 2*this->x()*this->z()+2*this->w()*this->y();
-		M[3] = 2*this->x()*this->y()+2*this->w()*this->z();
-		M[4] = 1-2*this->x()*this->x()-2*this->z()*this->z();
-		M[5] = 2*this->y()*this->z()-2*this->w()*this->x();
-		M[6] = 2*this->x()*this->z()-2*this->w()*this->y();
-		M[7] = 2*this->y()*this->z()+2*this->w()*this->x();
-		M[8] = 1-2*this->x()*this->x()-2*this->y()*this->y();
+		M(0, 0) = 1 - 2 * this->y()*this->y() - 2 * this->z()*this->z();
+		M(0, 1) = 2 * this->x()*this->y() - 2 * this->w()*this->z();
+		M(0, 2) = 2 * this->x()*this->z() + 2 * this->w()*this->y();
+		M(1, 0) = 2 * this->x()*this->y() + 2 * this->w()*this->z();
+		M(1, 1) = 1 - 2 * this->x()*this->x() - 2 * this->z()*this->z();
+		M(1, 2) = 2 * this->y()*this->z() - 2 * this->w()*this->x();
+		M(2, 0) = 2 * this->x()*this->z() - 2 * this->w()*this->y();
+		M(2, 1) = 2 * this->y()*this->z() + 2 * this->w()*this->x();
+		M(2, 2) = 1-2*this->x()*this->x()-2*this->y()*this->y();
 	}
 	/// compute equivalent homogeneous 4x4 rotation matrix
-	void put_homogeneous_matrix(coord_type* M) const
+	void put_homogeneous_matrix(hmat_type& M) const
 	{
-		M[0] = 1-2*this->y()*this->y()-2*this->z()*this->z();
-		M[1] = 2*this->x()*this->y()-2*this->w()*this->z();
-		M[2] = 2*this->x()*this->z()+2*this->w()*this->y();
-		M[3] = 0;
-		M[4] = 2*this->x()*this->y()+2*this->w()*this->z();
-		M[5] = 1-2*this->x()*this->x()-2*this->z()*this->z();
-		M[6] = 2*this->y()*this->z()-2*this->w()*this->x();
-		M[7] = 0;
-		M[8] = 2*this->x()*this->z()-2*this->w()*this->y();
-		M[9] = 2*this->y()*this->z()+2*this->w()*this->x();
-		M[10] = 1-2*this->x()*this->x()-2*this->y()*this->y();
-		M[11] = M[12] = M[13] = M[14] = 0;
-		M[15] = 1;
+		M(0, 0) = 1 - 2 * this->y()*this->y() - 2 * this->z()*this->z();
+		M(0, 1) = 2 * this->x()*this->y() - 2 * this->w()*this->z();
+		M(0, 2) = 2 * this->x()*this->z() + 2 * this->w()*this->y();
+		M(1, 0) = 2 * this->x()*this->y() + 2 * this->w()*this->z();
+		M(1, 1) = 1 - 2 * this->x()*this->x() - 2 * this->z()*this->z();
+		M(1, 2) = 2 * this->y()*this->z() - 2 * this->w()*this->x();
+		M(2, 0) = 2 * this->x()*this->z() - 2 * this->w()*this->y();
+		M(2, 1) = 2 * this->y()*this->z() + 2 * this->w()*this->x();
+		M(2, 2) = 1 - 2 * this->x()*this->x() - 2 * this->y()*this->y();
+		M(3,0) = M(3,1) = M(3,2) = M(0,3) = M(1, 3) = M(2, 3) = M(3, 3) = 0;
+		M(3,3) = 1;
 	}
 	/// initialize quaternion from normal vector
 	void set_normal(const vec_type& n)

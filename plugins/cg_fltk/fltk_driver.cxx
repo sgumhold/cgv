@@ -11,6 +11,7 @@
 #include "fltk_driver_registry.h"
 #include "fltk_text_editor.h"
 
+#include <fltk/Monitor.h>
 #include <fltk/events.h>
 #include <fltk/run.h>
 
@@ -107,10 +108,8 @@ int CALLBACK BrowseCallbackProc(HWND hwnd, UINT uMsg,
 			// otherwise use current folder als initial folder
 			GetCurrentDirectory(sizeof(initialPath) / sizeof(TCHAR), initialPath);
 		}
-
 		// set the initial folder in the folder dialog by a message
 		SendMessage(hwnd, BFFM_SETSELECTION, true, (LPARAM)initialPath);
-
 		break;
 	}
 
@@ -125,13 +124,15 @@ void prepare_bi_struct(BROWSEINFO& bi, _TCHAR *wszPath,
 	ZeroMemory(&bi, sizeof(bi));
 	bi.hwndOwner = GetForegroundWindow();
 	bi.ulFlags = BIF_USENEWUI;
-
+	bi.lParam = 0;
+	std::string windows_path(path);
+	cgv::utils::replace(windows_path, "/", "\\");
 #ifdef _UNICODE
 	wtitle = cgv::utils::str2wstr(title);
-	wpath = cgv::utils::str2wstr(path);
+	wpath = cgv::utils::str2wstr(windows_path);
 #else
 	wtitle = title;
-	wpath = path;
+	wpath = windows_path;
 #endif    
 
 	bi.pidlRoot = NULL;
@@ -172,10 +173,12 @@ std::string directory_open_dialog(const std::string& title, const std::string& p
 			CoTaskMemFree(item);
 			CoUninitialize();
 #ifdef _UNICODE
-			return cgv::utils::wstr2str(szPath);
+			std::string result = cgv::utils::wstr2str(szPath);
 #else
-			return szPath;
+			std::string result = szPath;
 #endif
+			cgv::utils::replace(result, "\\", "/");
+			return result;
 		}
 		else
 		{
@@ -349,6 +352,24 @@ void fltk_driver::remove_window(window_ptr w)
 std::string fltk_driver::get_type_name() const
 {
 	return "fltk_driver";
+}
+
+/// fill list of monitor descriptions
+bool fltk_driver::enumerate_monitors(std::vector<monitor_description>& monitor_descriptions)
+{
+	const fltk::Monitor* mons;
+	int n = fltk::Monitor::list(&mons);
+	for (int i = 0; i < n; ++i) {
+		monitor_description md;
+		md.x = mons[i].x();
+		md.y = mons[i].y();
+		md.w = mons[i].w();
+		md.h = mons[i].h();
+		md.dpi_x = mons[i].dpi_x();
+		md.dpi_y = mons[i].dpi_y();
+		monitor_descriptions.push_back(md);
+	}
+	return true;
 }
 
 /// create a window of the given type. Currently only the types "viewer with gui", "viewer" and "gui" are supported

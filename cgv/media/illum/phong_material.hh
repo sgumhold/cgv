@@ -25,24 +25,27 @@ protected: //@<
 	///@>exponent of the specular cosine term
 	float      shininess;
 public: //@<
-	/// define default material
-	phong_material() : ambient(0.1f,0.1f,0.1f,1), diffuse(0.5f,0.5f,0.5f,1), specular(1,1,1,1), emission(0,0,0,1), shininess(50.0f) {}
-	void set_ambient(const color_type& c) { ambient = c; }
-	void set_diffuse(const color_type& c) { diffuse = c; }
-	void set_specular(const color_type& c) { specular = c; }
-	void set_emission(const color_type& c) { emission = c; }
-	void set_shininess(float s) { shininess = s; }
-	const color_type& get_ambient() const { return ambient; }
-	const color_type& get_diffuse() const { return diffuse; }
-	const color_type& get_specular() const { return specular; }
-	const color_type& get_emission() const { return emission; }
-	float get_shininess() const { return shininess; }
-	color_type& ref_ambient() { return ambient; }
-	color_type& ref_diffuse() { return diffuse; }
-	color_type& ref_specular() { return specular; }
-	color_type& ref_emission() { return emission; }
-	float& ref_shininess() { return shininess; }
+	/// construct default material
+	phong_material();
+	void set_ambient(const color_type& c);
+	void set_diffuse(const color_type& c);
+	void set_specular(const color_type& c);
+	void set_emission(const color_type& c);
+	void set_shininess(float s);
+	const color_type& get_ambient() const;
+	const color_type& get_diffuse() const;
+	const color_type& get_specular() const;
+	const color_type& get_emission() const;
+	float get_shininess() const;
+	color_type& ref_ambient();
+	color_type& ref_diffuse();
+	color_type& ref_specular();
+	color_type& ref_emission();
+	float& ref_shininess();
 }; //@<
+
+/// provide reference to a standard material
+extern CGV_API const phong_material& default_material();
 
 		} //@<
 	} //@<

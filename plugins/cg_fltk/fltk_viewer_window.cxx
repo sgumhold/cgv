@@ -1,7 +1,6 @@
 #include "fltk_viewer_window.h"
 #include "fltk_driver.h"
 #include "fltk_event.h"
-#include "fltk_dragger.h"
 #include <cgv/gui/provider.h>
 #include <cgv/signal/rebind.h>
 #include <cgv/base/base_generator.h>
@@ -47,13 +46,25 @@ void destroy_callback(fltk::Widget* w)
 		v->get_view()->destroy();
 	v->destroy();
 
-	fltk_driver* d = cgv::gui::get_gui_driver()->get_interface<fltk_driver>();
-	if (!d) {
-		std::cerr << "could not notify driver!!" << std::endl;
-		return;
-	}
 	window_ptr wp(v);
-	d->remove_window(wp);
+/*
+	for (unsigned i = 0; i < wp->get_nr_children(); ++i) {
+		cgv::base::node_ptr np = wp->get_child(i)->get_node();
+		if (np) {
+			if (np->get_parent() == this) {}
+		}
+		cgv::base::unregister_object(, "");
+	}
+	*/
+	cgv::base::unregister_object(wp, "");
+
+	fltk_driver* d = cgv::gui::get_gui_driver()->get_interface<fltk_driver>();
+	if (d) {
+		d->remove_window(wp);
+	}
+	else {
+		std::cerr << "could not notify driver!!" << std::endl;
+	}
 	(void*&)wp = 0;
 }
 

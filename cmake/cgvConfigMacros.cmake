@@ -78,7 +78,6 @@ macro(_cgv_set_definitions target)
 	endif()
 endmacro()
 
-
 macro(cgv_add_export_definitions target)
 
 	set(SHARED_DEFS "")
@@ -115,7 +114,7 @@ macro(cgv_add_module target)
 	string(TOUPPER ${target} TARGET_UPPER)
 	_cgv_set_definitions(${target}
 		COMMON _UNICODE UNICODE
-		SHARED "_USRDLL"
+		SHARED "${TARGET_UPPER}_EXPORTS";"_USRDLL"
 		STATIC "${TARGET_UPPER}_FORCE_STATIC;CGV_FORCE_STATIC")
 		
 	set_target_properties(${target} PROPERTIES FOLDER "${FOLDER_NAME_PLUGINS}")

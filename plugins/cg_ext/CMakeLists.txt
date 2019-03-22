@@ -12,8 +12,7 @@ include_directories(${cgv_INCLUDE_DIRS})
 
 cgv_add_module(cg_ext ${SOURCES} ${HEADERS})
 
-# FIXME: do not use internal macros
-_cgv_set_definitions(cg_ext	SHARED CGV_GUI_EXT_EXPORTS)
+_cgv_set_definitions(cg_ext SHARED CGV_GUI_EXT_EXPORTS)
 
 target_link_libraries(cg_ext  ${cgv_LIBRARIES})
 set_target_properties(cg_ext PROPERTIES FOLDER "${FOLDER_NAME_PLUGINS}")

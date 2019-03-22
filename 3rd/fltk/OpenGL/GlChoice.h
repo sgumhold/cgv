@@ -98,6 +98,7 @@ public:
   // Return one of these structures for a given gl mode, or null if impossible:
   static GlChoice *find(int mode);
   static int*& ref_attrib_list();
+  int get_mode() const { return mode; }
 };
 
 class Window;

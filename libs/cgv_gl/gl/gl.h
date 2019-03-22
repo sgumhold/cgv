@@ -13,23 +13,23 @@ namespace cgv {
 
 /** traits structure that maps a fundamental type to the Type enum. */
 template <typename T>
-struct gl_traits { static const unsigned type = GL_FALSE; };
+struct gl_traits { static const unsigned type = GL_FALSE; static const bool valid_index = false; };
 template <> 
-struct gl_traits<unsigned char> { static const unsigned type = GL_UNSIGNED_BYTE; };
+struct gl_traits<unsigned char> { static const unsigned type = GL_UNSIGNED_BYTE; static const bool valid_index = true; };
 template <> 
-struct gl_traits<char> { static const unsigned type = GL_BYTE; };
+struct gl_traits<char> { static const unsigned type = GL_BYTE; static const bool valid_index = false; };
 template <> 
-struct gl_traits<unsigned short> { static const unsigned type = GL_UNSIGNED_SHORT; };
+struct gl_traits<unsigned short> { static const unsigned type = GL_UNSIGNED_SHORT; static const bool valid_index = true; };
 template <> 
-struct gl_traits<short> { static const unsigned type = GL_SHORT; };
+struct gl_traits<short> { static const unsigned type = GL_SHORT; static const bool valid_index = false; };
 template <> 
-struct gl_traits<unsigned int> { static const unsigned type = GL_UNSIGNED_INT; };
+struct gl_traits<unsigned int> { static const unsigned type = GL_UNSIGNED_INT; static const bool valid_index = true; };
 template <> 
-struct gl_traits<int> { static const unsigned type = GL_INT; };
+struct gl_traits<int> { static const unsigned type = GL_INT; static const bool valid_index = false; };
 template <> 
-struct gl_traits<float> { static const unsigned type = GL_FLOAT; };
+struct gl_traits<float> { static const unsigned type = GL_FLOAT; static const bool valid_index = false; };
 template <> 
-struct gl_traits<double> { static const unsigned type = GL_DOUBLE; };
+struct gl_traits<double> { static const unsigned type = GL_DOUBLE; static const bool valid_index = false; };
 
 
 /// initialize glew in the first call to this function and always return whether this was successful

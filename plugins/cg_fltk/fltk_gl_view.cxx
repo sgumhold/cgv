@@ -62,7 +62,7 @@ fltk_gl_view::fltk_gl_view(int x, int y, int w, int h, const std::string& name)
 
 	recreate_context = false;
 	no_more_context = false;
-
+	instant_redraw = false;
 	in_draw_method = false;
 	redraw_request = false;
 
@@ -91,7 +91,6 @@ bool fltk_gl_view::self_reflect(cgv::reflect::reflection_handler& srh)
 	srh.reflect_member("show_stats", show_stats) &&
 	srh.reflect_member("font_size", info_font_size) &&
 	srh.reflect_member("tab_size", tab_size) &&
-	srh.reflect_member("phong_shading", phong_shading) &&
 	srh.reflect_member("performance_monitoring", enabled) &&
 	srh.reflect_member("bg_r", bg_r) &&
 	srh.reflect_member("bg_g", bg_g) &&
@@ -499,6 +498,7 @@ void fltk_gl_view::draw()
 
 	if (enabled) {
 		finish_frame();
+		update_member(&fps);
 		if (redraw_request) {
 			start_frame();
 			started_frame_pm = true;
@@ -506,6 +506,9 @@ void fltk_gl_view::draw()
 		else 
 			started_frame_pm = false;
 	}
+	if (instant_redraw)
+		redraw_request = true;
+
 	in_draw_method = false;
 	if (redraw_request != last_redraw_request) {
 		if (redraw_request)
@@ -824,6 +827,9 @@ int fltk_gl_view::handle(int ei)
 	case fltk::KEY :
 		if (dispatch_event(cgv_key_event(fltk::event_key_repeated() ? KA_REPEAT : KA_PRESS)))
 			return 1;
+		if (fltk::event_key() >= fltk::HomeKey &&
+			fltk::event_key() <= fltk::EndKey)
+			return 1;
 		break;
 	case fltk::KEYUP :
 		if (dispatch_event(cgv_key_event(KA_RELEASE)))
@@ -903,7 +909,7 @@ void* to_void_ptr(int i) {
 /// enable phong shading with the help of a shader (enabled by default)
 void fltk_gl_view::enable_phong_shading()
 {
-	gl_context::enable_phong_shading();
+	cgv::render::context::enable_phong_shading();
 	update_member(&phong_shading);
 }
 /// disable phong shading
@@ -916,28 +922,91 @@ void fltk_gl_view::disable_phong_shading()
 ///  
 void fltk_gl_view::create_gui()
 {
-	add_decorator("gl view","heading");
-	add_decorator("background", "heading", "level=3");
-	connect_copy(add_control("color", (cgv::media::color<float>&) bg_r)->value_change,
-		rebind(static_cast<cgv::render::context*>(this), &cgv::render::context::post_redraw));
-	connect_copy(add_control("phong_shading", phong_shading, "check")->value_change,
-		rebind(static_cast<cgv::render::context*>(this), &cgv::render::context::post_redraw));
-	connect_copy(add_control("alpha", bg_a, "value_slider", "min=0;max=1;ticks=true;step=0.001")->value_change,
-		rebind(static_cast<cgv::render::context*>(this), &cgv::render::context::post_redraw));
-	connect_copy(add_control("accum color", (cgv::media::color<float>&) bg_accum_r)->value_change,
-		rebind(static_cast<cgv::render::context*>(this), &cgv::render::context::post_redraw));
-	connect_copy(add_control("accum alpha", bg_accum_a, "value_slider", "min=0;max=1;ticks=true;step=0.001")->value_change,
-		rebind(static_cast<cgv::render::context*>(this), &cgv::render::context::post_redraw));
-	connect_copy(add_control("stencil", bg_s, "value_slider", "min=0;max=1;ticks=true;step=0.001")->value_change,
-		rebind(static_cast<cgv::render::context*>(this), &cgv::render::context::post_redraw));
-	connect_copy(add_control("depth", bg_d, "value_slider", "min=0;max=1;ticks=true;step=0.001")->value_change,
-		rebind(static_cast<cgv::render::context*>(this), &cgv::render::context::post_redraw));
-	add_decorator("buffers", "heading", "level=3");
-	add_control("alpha buffer", this, "check", "", "\n", to_void_ptr(1));
-	add_control("stencil buffer", this, "check", "", "\n", to_void_ptr(2));
-	add_control("accum buffer", this, "check", "", "\n", to_void_ptr(3));
-	add_control("quad buffer", this, "check", "", "\n", to_void_ptr(4));
-	add_control("multisample", this, "check", "", "\n", to_void_ptr(5));
-	add_decorator("performance monitor", "heading", "level=3");
-	add_member_control(this, "performance monitoring", enabled, "check");
+	add_decorator("gl view", "heading");
+	if (begin_tree_node("rendering", fps, false, "level=3")) {
+		provider::align("\a");
+		add_view("fps", fps, "", "w=72", " ");
+		add_member_control(this, "EWMA", fps_alpha, "value_slider", "min=0;max=1;ticks=true;w=120;align='B';tooltip='coefficient of exponentially weighted moving average'");
+		add_member_control(this, "vsynch", enable_vsynch, "toggle", "w=92", " ");
+		add_member_control(this, "instant redraw", instant_redraw, "toggle", "w=100");
+		add_member_control(this, "gamma", gamma, "value_slider", "min=0.2;max=5;ticks=true;log=true;tooltip='default gamma used for inverse gamma correction of fragment color'");
+		add_member_control(this, "sRGB_framebuffer", sRGB_framebuffer, "check");
+		provider::align("\b");
+		end_tree_node(fps);
+	}
+	if (begin_tree_node("debug", enabled, false, "level=3")) {
+		provider::align("\a");
+		add_member_control(this, "show_help", show_help, "check");
+		add_member_control(this, "show_stats", show_stats, "check");
+		add_member_control(this, "debug_render_passes", debug_render_passes, "check");
+		add_member_control(this, "performance monitoring", enabled, "check");
+		add_member_control(this, "time scale", time_scale, "value_slider", "min=1;max=90;ticks=true;log=true");
+		add_gui("placement", placement, "", "options='min=0;max=500'");
+		provider::align("\b");
+		end_tree_node(enabled);
+	}
+
+	if (begin_tree_node("background", bg_r, false, "level=3")) {
+		provider::align("\a");
+		add_member_control(this, "color", (cgv::media::color<float>&) bg_r);
+		add_member_control(this, "alpha", bg_a, "value_slider", "min=0;max=1;ticks=true;step=0.001");
+		add_member_control(this, "accum color", (cgv::media::color<float>&) bg_accum_r);
+		add_member_control(this, "accum alpha", bg_accum_a, "value_slider", "min=0;max=1;ticks=true;step=0.001");
+		add_member_control(this, "stencil", bg_s, "value_slider", "min=0;max=1;ticks=true;step=0.001");
+		add_member_control(this, "depth", bg_d, "value_slider", "min=0;max=1;ticks=true;step=0.001");
+		provider::align("\b");
+		end_tree_node(bg_r);
+	}
+	if (begin_tree_node("buffers", bg_g, false, "level=3")) {
+		provider::align("\a");
+		add_control("alpha buffer", this, "check", "", "\n", to_void_ptr(1));
+		add_control("stencil buffer", this, "check", "", "\n", to_void_ptr(2));
+		add_control("accum buffer", this, "check", "", "\n", to_void_ptr(3));
+		add_control("quad buffer", this, "check", "", "\n", to_void_ptr(4));
+		add_control("multisample", this, "check", "", "\n", to_void_ptr(5));
+		provider::align("\b");
+		end_tree_node(bg_g);
+	}
+	if (begin_tree_node("compatibility", support_compatibility_mode, false, "level=3")) {
+		provider::align("\a");
+		add_member_control(this, "auto_set_view_in_current_shader_program", auto_set_view_in_current_shader_program, "check");
+		add_member_control(this, "auto_set_lights_in_current_shader_program", auto_set_lights_in_current_shader_program, "check");
+		add_member_control(this, "auto_set_material_in_current_shader_program", auto_set_material_in_current_shader_program, "check");
+		add_member_control(this, "support_compatibility_mode", support_compatibility_mode, "check");
+		add_member_control(this, "draw_in_compatibility_mode", draw_in_compatibility_mode, "check");
+		provider::align("\b");
+		end_tree_node(support_compatibility_mode);
+	}
+	if (begin_tree_node("defaults", current_material_is_textured, false, "level=3")) {
+		provider::align("\a");
+		if (begin_tree_node("default_render_flags", default_render_flags, false, "level=4")) {
+			add_gui("default_render_flags", default_render_flags, "bit_field_control",
+			"enums='RPF_SET_PROJECTION = 1,RPF_SET_MODELVIEW = 2,RPF_SET_LIGHTS = 4,RPF_SET_MATERIAL = 8,\
+RPF_SET_LIGHTS_ON=16,RPF_ENABLE_MATERIAL=32,RPF_CLEAR_COLOR=64,RPF_CLEAR_DEPTH=128,\
+RPF_CLEAR_STENCIL=256,RPF_CLEAR_ACCUM=512,\
+RPF_DRAWABLES_INIT_FRAME=1024,RPF_SET_STATE_FLAGS=2048,\
+RPF_SET_CLEAR_COLOR=4096,RPF_SET_CLEAR_DEPTH=8192,RPF_SET_CLEAR_STENCIL=16384,RPF_SET_CLEAR_ACCUM=32768,\
+RPF_DRAWABLES_DRAW=65536,RPF_DRAWABLES_FINISH_FRAME=131072,\
+RPF_DRAW_TEXTUAL_INFO=262144,RPF_DRAWABLES_AFTER_FINISH=524288,RPF_HANDLE_SCREEN_SHOT=1048576");
+			end_tree_node(default_render_flags);
+		}
+
+
+		if (begin_tree_node("material", default_material, false, "level=4")) {
+			provider::align("\a");
+			add_gui("material", default_material);
+			provider::align("\b");
+			end_tree_node(default_material);
+		}
+		for (int i = 0; i < nr_default_light_sources; ++i) {
+			if (begin_tree_node("light[" + cgv::utils::to_string(i) + "]", default_light_source[i], false, "level=4")) {
+				provider::align("\a");
+				add_gui("light", default_light_source[i]);
+				provider::align("\b");
+				end_tree_node(default_light_source[i]);
+			}
+		}
+		provider::align("\b");
+		end_tree_node(current_material_is_textured);
+	}
 }
