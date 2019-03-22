@@ -9,13 +9,13 @@ namespace cgv {
 	namespace render {
 		namespace gl {
 
-class CGV_API gl_performance_monitor : public performance_monitor
+class CGV_API gl_performance_monitor : public performance_monitor, public render_types
 {
 protected:
-	void draw_bar(int y, const frame_data& fdata);
-	void prepare_draw_lines();
-	void draw_lines();
-	void finish_draw_lines();
+	void draw_computed_bars(cgv::render::context& ctx, cgv::render::shader_program& prog);
+	void draw_bar(cgv::render::context& ctx, cgv::render::shader_program& prog, int y, const frame_data& fdata);
+	void draw_bars(cgv::render::context& ctx, cgv::render::shader_program& prog);
+	void draw_lines(cgv::render::context& ctx, cgv::render::shader_program& prog);
 public:
 	/// construct performance monitor with standard configuration
 	gl_performance_monitor();
