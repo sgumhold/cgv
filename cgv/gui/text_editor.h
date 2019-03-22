@@ -1,9 +1,9 @@
 #pragma once
 
-#include <string>
 #include <cgv/base/named.h>
 #include <cgv/data/ref_ptr.h>
 #include <cgv/media/font/font.h>
+
 #include "lib_begin.h"
 
 namespace cgv {

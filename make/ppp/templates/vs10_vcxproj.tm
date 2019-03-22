@@ -28,7 +28,11 @@
 @func(::gen_project; :>pj=MAP, :>return="")@{
   @define(:>cfg_ord  = [3,1,2,0,4,5])
   @define(:>cfg_ord1 = [3,2,1,0,4,5])@//
+@if(cgv_compiler_version > 14)@{@//
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+@}@else@{@//
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+@}
   <ItemGroup Label="ProjectConfigurations">
 @for(:>ci=0;ci<6;++ci)@{
     @define(:>cj=cfg_ord[ci])
@@ -44,6 +48,9 @@
     <ProjectGuid>{@(pj::projectGUID)}</ProjectGuid>
     <RootNamespace>@(pj::projectName)</RootNamespace>
     <Keyword>@(vs_platform)Proj</Keyword>
+	@if(cgv_compiler_version > 14)@{@//
+    <WindowsTargetPlatformVersion>10.0.17134.0</WindowsTargetPlatformVersion>
+	@}
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
 @for(:>ci=0;ci<6;++ci)@{
@@ -52,7 +59,11 @@
   <PropertyGroup Condition=@('"'."'")$(Configuration)|$(Platform)@("'=='")@(config_name[cj])|@(vs_platform)@("'".'"') Label="Configuration">
     <ConfigurationType>@(pj::config_type_vs10[cj])</ConfigurationType>
 @if(cgv_compiler_version > 10)@{
+	@if(cgv_compiler_version > 14)@{@//
+    <PlatformToolset>v@(cgv_compiler_version)</PlatformToolset>
+	@}@else@{@//
     <PlatformToolset>v@(cgv_compiler_version*10)</PlatformToolset>
+	@}
 @}
     <CharacterSet>Unicode</CharacterSet>
 @if(cj%4==0)@{@//

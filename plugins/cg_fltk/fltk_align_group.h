@@ -1,7 +1,6 @@
 #pragma once
 
 #include "fltk_gui_group.h"
-#include "fltk_dragger.h"
 
 #include "lib_begin.h"
 
@@ -27,7 +26,7 @@ protected:
 	int default_height;
 	fltk::ScrollGroup* scroll_group;
 //	fltk::Group* inner_group;
-	fltk_dragger* dragger;
+//	fltk_dragger* dragger;
 
 	void parse_variable_change(const std::string& align, unsigned int& i, int& var, int default_value);
 

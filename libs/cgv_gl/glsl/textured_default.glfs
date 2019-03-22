@@ -1,0 +1,16 @@
+#version 150
+
+uniform sampler2D texture;
+
+in vec4 color_fs;
+in vec2 texcoord_fs;
+
+//***** begin interface of fragment.glfs ***********************************
+uniform float gamma = 2.2;
+void finish_fragment(vec4 color);
+//***** end interface of fragment.glfs ***********************************
+
+void main()
+{
+	finish_fragment(texture2D(texture, texcoord_fs)*color_fs);
+}

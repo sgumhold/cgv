@@ -259,7 +259,7 @@ void set_lighting_parameters(context& ctx, shader_program& prog)
 {
 }
 		}
-void texture::ensure_state(context& ctx) const
+void texture::ensure_state(const context& ctx) const
 {
 	if (state_out_of_date) {
 		ctx.texture_set_state(*this);
@@ -267,7 +267,7 @@ void texture::ensure_state(context& ctx) const
 	}
 }
 
-bool texture::enable(context& ctx, int _tex_unit)
+bool texture::enable(const context& ctx, int _tex_unit)
 {
 	if (!handle) {
 		render_component::last_error = "attempt to enable texture that is not created";
@@ -278,7 +278,7 @@ bool texture::enable(context& ctx, int _tex_unit)
 	return ctx.texture_enable(*this, tex_unit, get_nr_dimensions());
 }
 /// disable texture and restore state before last enable call
-bool texture::disable(context& ctx)
+bool texture::disable(const context& ctx)
 {
 	return ctx.texture_disable(*this, tex_unit, get_nr_dimensions());
 }
@@ -292,17 +292,10 @@ void texture::set_component_format(const std::string& description)
 }
 
 /// return pointer to diffuse texture or 0 if non created
-texture* textured_material::get_diffuse_texture() const
+texture* textured_material::get_texture(int ti) const
 {
-	return diffuse_texture;
+	return 0;
 }
-
-/// return pointer to diffuse texture or 0 if non created
-texture* textured_material::get_bump_texture() const
-{
-	return bump_texture;
-}
-
 
 /// return the currently set alpha test function
 textured_material::AlphaTestFunc textured_material::get_alpha_test_func() const
@@ -326,6 +319,13 @@ textured_material::AlphaTestFunc& textured_material::ref_alpha_test_func()
 float& textured_material::ref_alpha_threshold()
 {
 	return alpha_threshold;
+}
+
+void textured_material::enable_textures(context&)
+{
+}
+void textured_material::disable_textures(context&)
+{
 }
 
 	}

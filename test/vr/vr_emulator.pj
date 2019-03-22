@@ -1,0 +1,16 @@
+@=
+projectType="plugin";
+projectName="vr_emulator";
+projectGUID="7F4EE25B-18EC-475C-8A90-1A1F5FFF4837";
+addProjectDeps=[
+	"cgv_type", "cgv_utils", "cgv_base", "cgv_data", "cgv_signal", "cgv_reflect", "cgv_render", 
+	"cgv_gui", "glsu", "cgv_gl", "vr"];
+addProjectDirs=[
+	CGV_DIR."/libs/glsu", 
+	CGV_DIR."/libs/cgv_gl"
+];
+addIncDirs=[
+	CGV_DIR."/libs", 
+	[INPUT_DIR, "all"]
+];
+addSharedDefines=["VR_EMULATOR_EXPORTS"];

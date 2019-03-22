@@ -5,6 +5,10 @@
 #include <Windows.h>
 #include <Xinput.h>
 
+#ifdef WIN32
+#pragma warning (disable:4995)
+#endif
+
 using namespace gamepad;
 
 ///
@@ -48,7 +52,7 @@ struct xinput_gamepad_driver : public gamepad_driver
 		XInputEnable(enabled ? TRUE : FALSE);
 	}
 	/// scan all connected devices found by driver
-	void scan_devices(std::vector<device_info>& infos, std::vector<void*>& device_handles)
+	void scan_devices(std::vector<device_info>& infos)
 	{
 		XINPUT_CAPABILITIES caps;
 		unsigned nr_devices = 0;
@@ -60,6 +64,7 @@ struct xinput_gamepad_driver : public gamepad_driver
 			}
 			enabled[user_index] = true;
 			infos.resize(infos.size() + 1);
+			infos.back().device_handle = get_handle(user_index);
 			infos.back().enabled = true;
 			infos.back().force_feedback_support = (caps.Flags | XINPUT_CAPS_FFB_SUPPORTED) != 0;
 			infos.back().is_wireless = (caps.Flags | XINPUT_CAPS_WIRELESS) != 0;
@@ -68,13 +73,12 @@ struct xinput_gamepad_driver : public gamepad_driver
 			infos.back().name += '0' + user_index;
 			infos.back().vibration_strength[0] = convert(caps.Vibration.wLeftMotorSpeed);
 			infos.back().vibration_strength[1] = convert(caps.Vibration.wRightMotorSpeed);
-			device_handles.push_back(get_handle(user_index));
 		}
 	}
 	/// set the state of a device to enabled or disabled
-	void set_device_state(void* device_handle, bool enabled)
+	void set_device_state(void* device_handle, bool _enabled)
 	{
-		this->enabled[get_user_index(device_handle)] = enabled;
+		enabled[get_user_index(device_handle)] = _enabled;
 	}
 	/// return the battery type and state of a device, fill_state in [0,1] is only given for alkaline or nickel metal hydide batteries
 	bool get_device_battery_info(void* device_handle, BatteryType& battery_type, float& fill_state)
@@ -101,7 +105,7 @@ struct xinput_gamepad_driver : public gamepad_driver
 		return true;
 	}
 	/// query event queue of given device for single gamepad key event
-	bool query_device_key_event(void* device_handle, gamepad_key_event& gke)
+	bool query_device_key_event(void* device_handle, GamepadKeys& gk, KeyAction& action)
 	{
 		XINPUT_KEYSTROKE keystroke;
 		DWORD result = XInputGetKeystroke(get_user_index(device_handle), 0, &keystroke);
@@ -110,45 +114,45 @@ struct xinput_gamepad_driver : public gamepad_driver
 		if (result == ERROR_EMPTY)
 			return false;
 		switch (keystroke.VirtualKey) {
-		case VK_PAD_A:                 gke.key = GPK_A;				 break;
-		case VK_PAD_B:				   gke.key = GPK_B;				 break;
-		case VK_PAD_X:				   gke.key = GPK_X;				 break;
-		case VK_PAD_Y:				   gke.key = GPK_Y;				 break;
-		case VK_PAD_RSHOULDER:		   gke.key = GPK_RIGHT_BUMPER;		 break;
-		case VK_PAD_LSHOULDER:		   gke.key = GPK_LEFT_BUMPER;		 break;
-		case VK_PAD_LTRIGGER:		   gke.key = GPK_LEFT_TRIGGER;			 break;
-		case VK_PAD_RTRIGGER:		   gke.key = GPK_RIGHT_TRIGGER;			 break;
-		case VK_PAD_DPAD_UP:		   gke.key = GPK_DPAD_UP;			 break;
-		case VK_PAD_DPAD_DOWN:		   gke.key = GPK_DPAD_DOWN;		 break;
-		case VK_PAD_DPAD_LEFT:		   gke.key = GPK_DPAD_LEFT;		 break;
-		case VK_PAD_DPAD_RIGHT:		   gke.key = GPK_DPAD_RIGHT;		 break;
-		case VK_PAD_START:			   gke.key = GPK_START;			 break;
-		case VK_PAD_BACK:			   gke.key = GPK_BACK;				 break;
-		case VK_PAD_LTHUMB_PRESS:	   gke.key = GPK_LEFT_STICK_PRESS;		 break;
-		case VK_PAD_RTHUMB_PRESS:	   gke.key = GPK_RIGHT_STICK_PRESS;		 break;
-		case VK_PAD_LTHUMB_UP:		   gke.key = GPK_LEFT_STICK_UP;		 break;
-		case VK_PAD_LTHUMB_DOWN:	   gke.key = GPK_LEFT_STICK_DOWN;		 break;
-		case VK_PAD_LTHUMB_RIGHT:	   gke.key = GPK_LEFT_STICK_RIGHT;		 break;
-		case VK_PAD_LTHUMB_LEFT:	   gke.key = GPK_LEFT_STICK_LEFT;		 break;
-		case VK_PAD_LTHUMB_UPLEFT:	   gke.key = GPK_LEFT_STICK_UPLEFT;	 break;
-		case VK_PAD_LTHUMB_UPRIGHT:	   gke.key = GPK_LEFT_STICK_UPRIGHT;	 break;
-		case VK_PAD_LTHUMB_DOWNRIGHT:  gke.key = GPK_LEFT_STICK_DOWNRIGHT;	 break;
-		case VK_PAD_LTHUMB_DOWNLEFT:   gke.key = GPK_LEFT_STICK_DOWNLEFT;	 break;
-		case VK_PAD_RTHUMB_UP:		   gke.key = GPK_RIGHT_STICK_UP;		 break;
-		case VK_PAD_RTHUMB_DOWN:	   gke.key = GPK_RIGHT_STICK_DOWN;		 break;
-		case VK_PAD_RTHUMB_RIGHT:	   gke.key = GPK_RIGHT_STICK_RIGHT;		 break;
-		case VK_PAD_RTHUMB_LEFT:	   gke.key = GPK_RIGHT_STICK_LEFT;		 break;
-		case VK_PAD_RTHUMB_UPLEFT:	   gke.key = GPK_RIGHT_STICK_UPLEFT;	 break;
-		case VK_PAD_RTHUMB_UPRIGHT:	   gke.key = GPK_RIGHT_STICK_UPRIGHT;	 break;
-		case VK_PAD_RTHUMB_DOWNRIGHT:  gke.key = GPK_RIGHT_STICK_DOWNRIGHT;	 break;
-		case VK_PAD_RTHUMB_DOWNLEFT:   gke.key = GPK_RIGHT_STICK_DOWNLEFT;   break;
-		default:                       gke.key = GPK_UNKNOWN; break;
+		case VK_PAD_A:                 gk = GPK_A;				 break;
+		case VK_PAD_B:				   gk = GPK_B;				 break;
+		case VK_PAD_X:				   gk = GPK_X;				 break;
+		case VK_PAD_Y:				   gk = GPK_Y;				 break;
+		case VK_PAD_RSHOULDER:		   gk = GPK_RIGHT_BUMPER;		 break;
+		case VK_PAD_LSHOULDER:		   gk = GPK_LEFT_BUMPER;		 break;
+		case VK_PAD_LTRIGGER:		   gk = GPK_LEFT_TRIGGER;			 break;
+		case VK_PAD_RTRIGGER:		   gk = GPK_RIGHT_TRIGGER;			 break;
+		case VK_PAD_DPAD_UP:		   gk = GPK_DPAD_UP;			 break;
+		case VK_PAD_DPAD_DOWN:		   gk = GPK_DPAD_DOWN;		 break;
+		case VK_PAD_DPAD_LEFT:		   gk = GPK_DPAD_LEFT;		 break;
+		case VK_PAD_DPAD_RIGHT:		   gk = GPK_DPAD_RIGHT;		 break;
+		case VK_PAD_START:			   gk = GPK_START;			 break;
+		case VK_PAD_BACK:			   gk = GPK_BACK;				 break;
+		case VK_PAD_LTHUMB_PRESS:	   gk = GPK_LEFT_STICK_PRESS;		 break;
+		case VK_PAD_RTHUMB_PRESS:	   gk = GPK_RIGHT_STICK_PRESS;		 break;
+		case VK_PAD_LTHUMB_UP:		   gk = GPK_LEFT_STICK_UP;		 break;
+		case VK_PAD_LTHUMB_DOWN:	   gk = GPK_LEFT_STICK_DOWN;		 break;
+		case VK_PAD_LTHUMB_RIGHT:	   gk = GPK_LEFT_STICK_RIGHT;		 break;
+		case VK_PAD_LTHUMB_LEFT:	   gk = GPK_LEFT_STICK_LEFT;		 break;
+		case VK_PAD_LTHUMB_UPLEFT:	   gk = GPK_LEFT_STICK_UPLEFT;	 break;
+		case VK_PAD_LTHUMB_UPRIGHT:	   gk = GPK_LEFT_STICK_UPRIGHT;	 break;
+		case VK_PAD_LTHUMB_DOWNRIGHT:  gk = GPK_LEFT_STICK_DOWNRIGHT;	 break;
+		case VK_PAD_LTHUMB_DOWNLEFT:   gk = GPK_LEFT_STICK_DOWNLEFT;	 break;
+		case VK_PAD_RTHUMB_UP:		   gk = GPK_RIGHT_STICK_UP;		 break;
+		case VK_PAD_RTHUMB_DOWN:	   gk = GPK_RIGHT_STICK_DOWN;		 break;
+		case VK_PAD_RTHUMB_RIGHT:	   gk = GPK_RIGHT_STICK_RIGHT;		 break;
+		case VK_PAD_RTHUMB_LEFT:	   gk = GPK_RIGHT_STICK_LEFT;		 break;
+		case VK_PAD_RTHUMB_UPLEFT:	   gk = GPK_RIGHT_STICK_UPLEFT;	 break;
+		case VK_PAD_RTHUMB_UPRIGHT:	   gk = GPK_RIGHT_STICK_UPRIGHT;	 break;
+		case VK_PAD_RTHUMB_DOWNRIGHT:  gk = GPK_RIGHT_STICK_DOWNRIGHT;	 break;
+		case VK_PAD_RTHUMB_DOWNLEFT:   gk = GPK_RIGHT_STICK_DOWNLEFT;   break;
+		default:                       gk = GPK_UNKNOWN; break;
 		}
 		switch (keystroke.Flags) {
-		case XINPUT_KEYSTROKE_KEYUP: gke.action = GPA_RELEASE; break;
-		case XINPUT_KEYSTROKE_KEYDOWN: gke.action = GPA_PRESS; break;
-		case XINPUT_KEYSTROKE_KEYDOWN + XINPUT_KEYSTROKE_REPEAT: gke.action = GPA_REPEAT; break;
-		default: gke.action = GPA_UNKNOWN; break;
+		case XINPUT_KEYSTROKE_KEYUP: action = KA_RELEASE; break;
+		case XINPUT_KEYSTROKE_KEYDOWN: action = KA_PRESS; break;
+		case XINPUT_KEYSTROKE_KEYDOWN + XINPUT_KEYSTROKE_REPEAT: action = KA_REPEAT; break;
+		default: action = KeyAction(-1); break;
 		}
 		return true;
 	}

@@ -12,11 +12,12 @@ bool light_source::self_reflect(cgv::reflect::reflection_handler& rh)
 	return 
 		rh.reflect_member("type", type) &&
 		rh.reflect_member("local_to_eye_coordinates", local_to_eye_coordinates) &&
-		rh.reflect_member("location", location) &&
-		rh.reflect_member("ambient", ambient) &&
-		rh.reflect_member("diffuse", diffuse) &&
-		rh.reflect_member("specular", specular) &&
-		rh.reflect_member("attenuation", attenuation) &&
+		rh.reflect_member("position", position) &&
+		rh.reflect_member("emission", emission) &&
+		rh.reflect_member("ambient_scale", ambient_scale) &&
+		rh.reflect_member("constant_attenuation", constant_attenuation) &&
+		rh.reflect_member("linear_attenuation", linear_attenuation) &&
+		rh.reflect_member("quadratic_attenuation", quadratic_attenuation) &&
 		rh.reflect_member("spot_direction", spot_direction) &&
 		rh.reflect_member("spot_exponent", spot_exponent) &&
 		rh.reflect_member("spot_cutoff", spot_cutoff);

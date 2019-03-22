@@ -2,42 +2,39 @@
 
 namespace cgv {
 	namespace render {
-
 		render_style::~render_style()
 		{
 		}
-
-		/// default initialization
 		attribute_array_manager::attribute_array_manager()
 		{
 		}
-		/// destructor calls destruct
+		bool attribute_array_manager::has_attribute(int loc) const
+		{
+			return vbos.find(loc) != vbos.end();
+		}
 		attribute_array_manager::~attribute_array_manager()
 		{
 			if (aab.is_created() && aab.ctx_ptr && aab.ctx_ptr->make_current())
 				destruct(*aab.ctx_ptr);
 		}
-		bool attribute_array_manager::set_attribute_array(context& ctx, int loc, type_descriptor element_type, const vertex_buffer& vbo, size_t offset_in_bytes, size_t nr_elements, size_t stride_in_bytes)
+		bool attribute_array_manager::set_attribute_array(const context& ctx, int loc, type_descriptor element_type, const vertex_buffer& vbo, size_t offset_in_bytes, size_t nr_elements, unsigned stride_in_bytes)
 		{
 			return ctx.set_attribute_array_void(&aab, loc, element_type, &vbo, reinterpret_cast<const void*>(offset_in_bytes), nr_elements, stride_in_bytes);
 		}
-		///
 		bool attribute_array_manager::init(context& ctx)
 		{
 			return aab.create(ctx);
 		}
-		///
 		bool attribute_array_manager::enable(context& ctx)
 		{
 			return aab.enable(ctx);
 		}
-		///
 		bool attribute_array_manager::disable(context& ctx)
 		{
 			return aab.disable(ctx);
 		}
 		///
-		void attribute_array_manager::destruct(context& ctx)
+		void attribute_array_manager::destruct(const context& ctx)
 		{
 			for (auto& p : vbos) {
 				p.second->destruct(ctx);
@@ -55,38 +52,69 @@ namespace cgv {
 			rs = default_render_style = 0;
 			aam_ptr = 0;
 		}
-		/// destructor deletes default renderer style
+		void renderer::manage_singelton(context& ctx, const std::string& renderer_name, int& ref_count, int ref_count_change)
+		{
+			switch (ref_count_change) {
+			case 1:
+				if (ref_count == 0) {
+					if (!init(ctx))
+						ctx.error(std::string("unable to initialize ") + renderer_name + " singelton");
+				}
+				++ref_count;
+				break;
+			case 0:
+				break;
+			case -1:
+				if (ref_count == 0)
+					ctx.error(std::string("attempt to decrease reference count of ") + renderer_name + " singelton below 0");
+				else {
+					if (--ref_count == 0)
+						clear(ctx);
+				}
+				break;
+			default:
+				ctx.error(std::string("invalid change reference count outside {-1,0,1} for ") + renderer_name + " singelton");
+			}
+		}
 		renderer::~renderer()
 		{
 			if (default_render_style)
 				delete default_render_style;
 			default_render_style = 0;
 		}
-		/// provide an attribute manager that is used in successive calls to attribute array setting methods and in the enable and disable method, if a nullptr is provided attributes are managed through deprecated VertexAttributePointers - in this case a call to disable deattaches all attribute arrays which have to be set before the next enable call again
-		void renderer::set_attribute_array_manager(attribute_array_manager* _aam_ptr)
+		void renderer::set_attribute_array_manager(const context& ctx, attribute_array_manager* _aam_ptr)
 		{
 			aam_ptr = _aam_ptr;
+			if (aam_ptr) {
+				if (aam_ptr->has_attribute(ref_prog().get_attribute_location(ctx, "position")))
+					has_positions = true;
+				if (aam_ptr->has_attribute(ref_prog().get_attribute_location(ctx, "color")))
+					has_colors = true;
+			}
+			else {
+				has_positions = false;
+				has_colors = false;
+			}
 		}
-
-		bool renderer::set_attribute_array(context& ctx, int loc, type_descriptor element_type, const vertex_buffer& vbo, size_t offset_in_bytes, size_t nr_elements, size_t stride_in_bytes)
+		bool renderer::set_attribute_array(const context& ctx, int loc, type_descriptor element_type, const vertex_buffer& vbo, size_t offset_in_bytes, size_t nr_elements, unsigned stride_in_bytes)
 		{
 			if (aam_ptr)
 				return aam_ptr->set_attribute_array(ctx, loc, element_type, vbo, offset_in_bytes, nr_elements, stride_in_bytes);
 			enabled_attribute_arrays.insert(loc);
-			return attribute_array_binding::set_global_attribute_array(ctx, loc, vbo, offset_in_bytes, nr_elements, stride_in_bytes);
+			return attribute_array_binding::set_global_attribute_array(ctx, loc, element_type, vbo, offset_in_bytes, nr_elements, stride_in_bytes);
 		}
-		void renderer::set_position_array(context& ctx, type_descriptor element_type, const vertex_buffer& vbo, size_t offset_in_bytes, size_t nr_elements, size_t stride_in_bytes)
+		void renderer::set_position_array(const context& ctx, type_descriptor element_type, const vertex_buffer& vbo, size_t offset_in_bytes, size_t nr_elements, unsigned stride_in_bytes)
 		{
 			has_positions = true;
 			set_attribute_array(ctx, ref_prog().get_attribute_location(ctx, "position"), element_type, vbo, offset_in_bytes, nr_elements, stride_in_bytes);
 		}
-		void renderer::set_color_array(context& ctx, type_descriptor element_type, const vertex_buffer& vbo, size_t offset_in_bytes, size_t nr_elements, size_t stride_in_bytes)
+		void renderer::set_color_array(const context& ctx, type_descriptor element_type, const vertex_buffer& vbo, size_t offset_in_bytes, size_t nr_elements, unsigned stride_in_bytes)
 		{
 			has_colors = true;
 			set_attribute_array(ctx, ref_prog().get_attribute_location(ctx, "color"), element_type, vbo, offset_in_bytes, nr_elements, stride_in_bytes);
 		}
 
-		bool renderer::validate_attributes(context& ctx) const
+		bool renderer::validate_attributes(const context& ctx) const
 		{
 			// validate set attributes
 			if (!has_positions) {
@@ -141,7 +169,7 @@ namespace cgv {
 			return ref_prog().disable(ctx) && res;
 		}
 
-		void renderer::clear(cgv::render::context& ctx)
+		void renderer::clear(const cgv::render::context& ctx)
 		{
 			prog.destruct(ctx);
 		}

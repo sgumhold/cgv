@@ -6,9 +6,10 @@ add_subdirectory(cgv_gl)
 add_subdirectory(glsu)
 add_subdirectory(cgv_reflect_types)
 add_subdirectory(plot)
+add_subdirectory(delaunay)
 
 add_custom_target(libs)
-add_dependencies(libs ppp_lib cgv_gl glsu plot)
+add_dependencies(libs ppp_lib cgv_gl glsu plot cgv_reflect_types delaunay)
 
 set_target_properties(libs PROPERTIES FOLDER "${FOLDER_NAME_LIBS}")
 

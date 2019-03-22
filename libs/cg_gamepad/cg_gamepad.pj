@@ -3,6 +3,7 @@ projectType="library";
 projectName="cg_gamepad";
 projectGUID="56618490-6EC6-4D84-8862-927F20E4C201";
 addSharedDefines=["CG_GAMEPAD_EXPORTS"];
+addIncDirs=[INPUT_DIR, CGV_DIR."/libs"];
 addProjectDeps=[
 	"cgv_utils", "cgv_type", "cgv_reflect", "cgv_reflect_types", "cgv_data", 
 	"cgv_signal", "cgv_os", "cgv_base", "cgv_math", "cgv_media", "cgv_gui", 

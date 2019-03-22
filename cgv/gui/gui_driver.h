@@ -1,6 +1,5 @@
 #pragma once
 
-#include <string>
 #include <cgv/base/base.h>
 #include <cgv/signal/signal.h>
 #include <cgv/data/ref_counted.h>
@@ -9,6 +8,7 @@
 #include "view.h"
 #include "control.h"
 #include "window.h"
+#include "application.h"
 #include "text_editor.h"
 #include "lib_begin.h"
 
@@ -21,8 +21,12 @@ class CGV_API gui_driver : public cgv::base::base, public cgv::base::driver
 public:
 	/**@name application management*/
 	//@{
+	/// fill list of monitor descriptions
+	virtual bool enumerate_monitors(std::vector<monitor_description>& monitor_descriptions);
 	/// create a window of the given type. Currently only the types "viewer with gui", "viewer" and "gui" are supported
 	virtual window_ptr create_window(int w, int h, const std::string& title, const std::string& window_type) = 0;
+	/// remove a window that has been destroyed
+	virtual void remove_window(window_ptr w) = 0;
 	/// set the input focus to the given window
 	virtual bool set_focus(const_window_ptr) = 0;
 	/// return the number of created windows

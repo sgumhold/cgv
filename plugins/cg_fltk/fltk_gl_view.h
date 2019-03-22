@@ -37,6 +37,7 @@ protected:
 private:
 	cgv::gui::mouse_event dnd_release_event;
 	bool dnd_release_event_queued;
+	bool instant_redraw;
 public:
 	/// construct application
 	fltk_gl_view(int x, int y, int w, int h, const std::string& name = "");

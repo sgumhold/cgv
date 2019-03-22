@@ -17,9 +17,5 @@ cgv_add_core_component(media
 	CGV_DEPENDENCIES utils type data base)
 
 # This component has multiple static and shared definitions
-cgv_add_export_definitions(cgv_media
-	CGV_MEDIA_FONT
-	CGV_MEDIA_ILLUM
-	CGV_MEDIA_IMAGE
-	CGV_MEDIA_VIDEO)
+cgv_add_export_definitions(cgv_media CGV_MEDIA_FONT CGV_MEDIA_ILLUM CGV_MEDIA_IMAGE CGV_MEDIA_VIDEO)
 

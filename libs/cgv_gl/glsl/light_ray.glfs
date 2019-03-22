@@ -1,0 +1,47 @@
+#version 150
+
+in vec3 position_eye;
+
+//***** begin interface of fragment.glfs ***********************************
+uniform float gamma = 2.2;
+void finish_fragment(vec4 color);
+//***** end interface of fragment.glfs ***********************************
+
+uniform int light_index = 0;
+
+uniform vec3 default_color = vec3(0.0);
+uniform float color_lambda = 0.0;
+uniform float min_opacity = 0.0;
+uniform float max_opacity = 1.0;
+
+//***** begin interface of lights.glsl ***********************************
+struct LightSource
+{
+	int light_source_type;
+	vec3 position;
+	vec3 emission;
+	float ambient_scale;
+	vec3 spot_direction;
+	float spot_exponent;
+	float spot_cos_cutoff;
+	float constant_attenuation;
+	float linear_attenuation;
+	float quadratic_attenuation;
+};
+int get_nr_light_sources();
+LightSource get_light_source(int i);
+void evaluate_light_scale(LightSource L, in vec3 p_eye, out vec3 omega_in, out vec3 radiance_in, out float scale);
+//***** end interface of lights.glsl ***********************************
+
+void main()
+{
+	vec3 omega_in;
+	vec3 radiance_in;
+	float scale;
+	evaluate_light_scale(get_light_source(light_index), position_eye, omega_in, radiance_in, scale);
+	if (scale > 1.0)
+		scale = 1.0;
+
+	finish_fragment(vec4((1.0-color_lambda)*radiance_in + color_lambda*default_color,
+					     min_opacity + (max_opacity-min_opacity)*scale));
+}

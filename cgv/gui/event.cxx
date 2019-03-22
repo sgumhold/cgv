@@ -34,7 +34,7 @@ void* event::get_device_id() const
 }
 
 // convert a modifier combination into a readable string. 
-std::string get_modifier_string(unsigned char modifiers)
+std::string get_modifier_string(EventModifier modifiers)
 {
 	std::string res;
 	for (int mi=0; mi<nr_mods; ++mi)
@@ -44,7 +44,7 @@ std::string get_modifier_string(unsigned char modifiers)
 }
 
 // convert a toggle key combination into a readable string separated by '+' signs, i.e. "CapsLock+NumLock"
-std::string get_toggle_keys_string(unsigned char toggle_keys)
+std::string get_toggle_keys_string(EventToggleKeys toggle_keys)
 {
 	std::string res;
 	for (int ti=0; ti<nr_togs; ++ti)
@@ -139,9 +139,15 @@ unsigned char stream_in_modifiers(std::istream& is)
 void event::stream_out(std::ostream& os) const
 {
 	const char* flag_strs[] = {
-		"", "Multi", "Drag&Drop", "Multi+Drag&Drop"
+		"Multi", "Drag&Drop", "Gamepad", "VR"
 	};
-	const char* kind_strs[] = { "none", "key", "mouse", "pad" };
+	EventFlags flags[] = {
+		EF_MULTI,
+		EF_DND, 
+		EF_PAD,
+		EF_VR
+	};
+	const char* kind_strs[] = { "none", "key", "mouse", "throttle", "stick", "pose" };
 
 	os << kind_strs[kind] << "[" << time << "] ";
 	if (get_toggle_keys() != 0) {
@@ -165,9 +171,21 @@ void event::stream_out(std::ostream& os) const
 		}
 		os << ") ";
 	}
-	os << get_modifier_string(get_modifiers()).c_str();
-	if (get_flags() != EF_NONE)
-		os << flag_strs[get_flags()] << " ";
+	os << get_modifier_string(EventModifier(get_modifiers())).c_str();
+	if (get_flags() != EF_NONE) {
+		os << "{";
+		bool first = true;
+		for (unsigned i = 0; i < 4; ++i) {
+			if ((get_flags()&flags[i]) != 0) {
+				if (first)
+					first = false;
+				else
+					os << '|';
+				os << flag_strs[i];
+			}
+		}
+		os << "}";
+	}
 }
 // read from stream
 void event::stream_in(std::istream&)

@@ -1,8 +1,8 @@
-@exclude<cgv/config/make.ppp>
-@define(projectType="plugin")
-@define(projectName="co_web")
-@define(projectGUID="E4A43954-D61F-4c2d-81B0-9230523FA9E1")
-@define(addProjectDirs=[CGV_DIR."/3rd/webserver"])
-@define(addProjectDeps=["cgv_os","webserver"])
-@define(addSharedDefines=["CGV_OS_WEB_EXPORTS"])
+@=
+projectType="plugin";
+projectName="co_web";
+projectGUID="E4A43954-D61F-4c2d-81B0-9230523FA9E1";
+addProjectDirs=[CGV_DIR."/3rd/webserver"];
+addProjectDeps=["cgv_os","webserver"];
+addSharedDefines=["CGV_OS_WEB_EXPORTS"];
 

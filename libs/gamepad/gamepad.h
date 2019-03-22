@@ -28,6 +28,8 @@ namespace gamepad {
 	/// information provided per gamepad device
 	struct device_info
 	{
+		/// unique device handle
+		void* device_handle;
 		/// name in case driver provides this information (not reliable)
 		std::string name;
 		/// whether force feedback is supported
@@ -48,10 +50,12 @@ namespace gamepad {
 	extern CGV_API void scan_devices();
 	/// return reference to device info structures
 	extern CGV_API const std::vector<device_info>& get_device_infos();
+	/// return pointer to device info structure of given device handle or 0 if device handle not found
+	extern CGV_API const device_info* get_device_info(void* device_handle);
 	/// check if device is still connected
-	extern CGV_API bool is_connected(unsigned device_index);
+	extern CGV_API bool is_connected(void* device_handle);
 	/// set the state of a device to enabled or disabled, return false in case device was not connected anymore
-	extern CGV_API bool set_device_state(unsigned device_index, bool enabled);
+	extern CGV_API bool set_device_state(void* device_handle, bool enabled);
 	
 	/// different battery types
 	enum BatteryType {
@@ -87,6 +91,7 @@ namespace gamepad {
 
 		GPK_LEFT_STICK_PRESS,
 		GPK_RIGHT_STICK_PRESS,
+
 		GPK_LEFT_STICK_UP,
 		GPK_LEFT_STICK_DOWN,
 		GPK_LEFT_STICK_RIGHT,
@@ -107,30 +112,19 @@ namespace gamepad {
 		GPK_END,
 		GPK_BEGIN = GPK_A
 	};
+	/// repeated definition from cgv/gui/key_event.h
+	enum KeyAction {
+		KA_RELEASE, //!< key release action
+		KA_PRESS, //!< key press action
+		KA_REPEAT //!< key repeated press action
+	};
 	/// convert key to string
-	extern CGV_API std::string convert_key_to_string(unsigned short key);
-	/// different key actions
-	enum GamepadAction {
-		GPA_UNKNOWN,
-		GPA_RELEASE,
-		GPA_PRESS,
-		GPA_REPEAT
-	};
-
-	/// gamepad key event
-	struct gamepad_key_event
-	{
-		/// one out of GamepadKey enum
-		unsigned short key;
-		/// one out of GamepadAction
-		unsigned short action;
-	};
+	extern CGV_API std::string get_key_string(unsigned short key);
 
 	//! retrieve next key event from given device, return false if device's event queue is empty
 	/*!Typically you use this function in the following way:
-		while (query_key_event(i,gke)) { process(gke); }
-	*/
-	extern CGV_API bool query_key_event(unsigned device_index, gamepad_key_event& gke);
+		while (query_key_event(i,gk,action)) { process(gk,action); }	*/
+	extern CGV_API bool query_key_event(void* device_handle, GamepadKeys& gk, KeyAction& action);
 	
 	/// one flag for for each gamepad button
 	enum GamepadButtonStateFlags
@@ -154,7 +148,7 @@ namespace gamepad {
 	extern CGV_API std::string convert_flags_to_string(GamepadButtonStateFlags flags);
 
 	/// see https://upload.wikimedia.org/wikipedia/commons/2/2c/360_controller.svg for an explanation of the positions in the state
-	struct gamepad_state
+	struct CGV_API gamepad_state
 	{
 		/// time stamp can be used whether a change has happened between two states
 		unsigned time_stamp;
@@ -166,12 +160,14 @@ namespace gamepad {
 		float right_stick_position[2];
 		/// values of left and right triggers in the range [0,1]
 		float trigger_position[2];
+		/// initialize state
+		gamepad_state();
 	};
 
 	/// retrieve the current state of gamepad stick and trigger positions, return false if device is not connected anymore
-	extern CGV_API bool get_state(unsigned device_index, gamepad_state& state);
+	extern CGV_API bool get_state(void* device_handle, gamepad_state& state);
 	/// set the vibration strength between 0 and 1 of low and high frequency motors, return false if device is not connected anymore
-	extern CGV_API bool set_vibration(unsigned device_index, float low_frequency_strength, float high_frequency_strength);
+	extern CGV_API bool set_vibration(void* device_handle, float low_frequency_strength, float high_frequency_strength);
 }
 
 #include <cgv/config/lib_end.h>

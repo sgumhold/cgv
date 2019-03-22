@@ -13,7 +13,7 @@ namespace cgv {
 ///create the thread
 thread::thread()
 { 
-	pthread = new pthread_t();	
+	thread_ptr = new pthread_t();	
 	stop_request = false;
 	running = false;
 	delete_after_termination = false;
@@ -28,7 +28,7 @@ void thread::start(bool _delete_after_termination)
 		pthread_attr_t attr;
 		pthread_attr_init(&attr);
 		pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_JOINABLE);
-		if(pthread_create((pthread_t*)pthread,&attr,execute_s,this))
+		if(pthread_create((pthread_t*)thread_ptr,&attr,execute_s,this))
 			std::cerr << "error: starting thread" <<std::endl;
 		pthread_attr_destroy(&attr);
 		running=true;
@@ -79,7 +79,7 @@ void thread::stop()
 {
 	if(running) {
 		stop_request=true;
-		pthread_join(*(pthread_t*)pthread,NULL);
+		pthread_join(*(pthread_t*)thread_ptr,NULL);
 		stop_request=false;
 	}
 }
@@ -88,7 +88,7 @@ void thread::stop()
 void thread::kill()
 {
 	if (running) {
-		pthread_cancel(*(pthread_t*)pthread);
+		pthread_cancel(*(pthread_t*)thread_ptr);
 		stop_request=false;
 		running=false;
 	}
@@ -98,7 +98,7 @@ void thread::kill()
 void thread::wait_for_completion()
 {
 	if (running)
-		pthread_join(*(pthread_t*)pthread,NULL);
+		pthread_join(*(pthread_t*)thread_ptr,NULL);
 	
 }
 
@@ -107,7 +107,7 @@ thread::~thread()
 {
 	if(running)
 		kill();
-	delete (pthread_t*)pthread;
+	delete (pthread_t*)thread_ptr;
 }
 
 thread_id_type to_id(const pthread_t& pt)
@@ -124,7 +124,7 @@ thread_id_type thread::get_current_thread_id()
 /// return id of this thread
 thread_id_type thread::get_id() const
 {
-	return *((const thread_id_type*)pthread);
+	return *((const thread_id_type*)thread_ptr);
 }
 
 class function_thread : public thread

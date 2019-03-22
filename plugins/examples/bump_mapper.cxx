@@ -21,9 +21,8 @@ bump_mapper::bump_mapper(unsigned _texture_resolution) :
 	surface_primitive = TORUS;
 	minor_radius = 0.5f;
 	surface_resolution = 50;
-	bump_scale = 1;
+	bump_scale = 0.1f;
 	wire_frame = false;
-	use_phong = false;
 	use_bump_map = true;
 	use_diffuse_map = true;
 	texture_frequency = 50;
@@ -35,13 +34,12 @@ bump_mapper::bump_mapper(unsigned _texture_resolution) :
 	texture_v_offset = 0;
 	texture_selection = ALHAMBRA;
 }
-
-bool bump_mapper::init(context& ctx)
+/// add custom texture to material
+bool bump_mapper::init(cgv::render::context& ctx)
 {
-	if (!prog.build_program(ctx, "bump_mapper.glpr")) {
-		std::cout << "link error\n" << prog.last_error.c_str() << std::endl;
-		return false;
-	}
+	tex_index = material.add_texture_reference(bump_map);
+	material.set_diffuse_index(tex_index);
+	material.set_bump_index(tex_index);
 	return true;
 }
 
@@ -51,7 +49,6 @@ void bump_mapper::init_frame(context& ctx)
 		return;
 
 	if (texture_selection == ALHAMBRA) {
-		std::cout << "before read bump texture" << std::endl;		
 		if (!bump_map.create_from_image(ctx,"res://alhambra.png", 
 			(int*)&texture_resolution)) {
 				std::cout << "could not read" << std::endl ;
@@ -85,63 +82,53 @@ void bump_mapper::init_frame(context& ctx)
 
 void bump_mapper::draw(context& ctx)
 {
-	// setup bump mapping
-	bump_map.enable(ctx, 0);
+	cgv::render::shader_program& prog = ctx.ref_surface_shader_program(true);
 	prog.enable(ctx);
-	prog.set_uniform(ctx, "bump_map", 0);
-	prog.set_uniform(ctx, "use_bump_map", use_bump_map);
-	prog.set_uniform(ctx, "use_phong", use_phong);
-	prog.set_uniform(ctx, "use_diffuse_map", use_diffuse_map);
-	prog.set_uniform(ctx, "bump_map_res", (int)texture_resolution);
-	prog.set_uniform(ctx, "bump_scale", bump_scale);
-	gl::set_lighting_parameters(ctx, prog);
+		ctx.enable_material(material);
+			if (!use_bump_map)
+				prog.set_uniform(ctx, "bump_index", -1);
+			if (!use_diffuse_map)
+				prog.set_uniform(ctx, "diffuse_index", -1);
+			prog.set_uniform(ctx, "bump_scale", bump_scale);
 
-	// apply surface material
-	//glDisable(GL_COLOR_MATERIAL);
-	ctx.enable_material(surface_material);
-
-	// apply texture transformation
-	glMatrixMode(GL_TEXTURE);
-	glPushMatrix();
-	glTranslated(texture_u_offset, texture_v_offset,0);
-	glRotated(texture_rotation, 0, 0, 1);
-	glScaled(texture_scale,texture_scale/texture_aspect,texture_scale);
-
-	if (wire_frame) {
-		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-		glDisable(GL_CULL_FACE);
-	}
-	switch (surface_primitive) {
-	case SQUARE : ctx.tesselate_unit_square(); break;
-	case CUBE : ctx.tesselate_unit_cube(); break;
-	case SPHERE : ctx.tesselate_unit_sphere(surface_resolution); break;
-	case TORUS : ctx.tesselate_unit_torus(minor_radius,surface_resolution); break;
-	}
-	if (wire_frame) {
-		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-		glEnable(GL_CULL_FACE);
-	}
-	glPopMatrix();
-	glMatrixMode(GL_MODELVIEW);
-
-	ctx.disable_material(surface_material);
-
+			if (wire_frame) {
+				glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+				glDisable(GL_CULL_FACE);
+			}
+			switch (surface_primitive) {
+			case SQUARE : ctx.tesselate_unit_square(); break;
+			case CUBE : ctx.tesselate_unit_cube(); break;
+			case SPHERE : ctx.tesselate_unit_sphere(surface_resolution); break;
+			case TORUS : ctx.tesselate_unit_torus(minor_radius,surface_resolution); break;
+			}
+			if (wire_frame) {
+				glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+				glEnable(GL_CULL_FACE);
+			}
+		ctx.disable_material(material);
 	prog.disable(ctx);
-	bump_map.disable(ctx);
 }
 
 void bump_mapper::clear(context& ctx)
 {
-	prog.destruct(ctx);
 	bump_map.destruct(ctx);
 }
 
-void bump_mapper::on_texture_change()
+///
+void bump_mapper::on_set(void* member_ptr)
 {
-	if (!get_context())
-		return;
-	get_context()->make_current();
-	bump_map.destruct(*get_context());
+	if ((member_ptr == &texture_selection) ||
+		(member_ptr == &texture_frequency) ||
+		(member_ptr == &texture_frequency_aspect) ||
+		(member_ptr == &texture_resolution)) {
+
+		cgv::render::context* ctx_ptr = get_context();
+		if (ctx_ptr) {
+			ctx_ptr->make_current();
+			bump_map.destruct(*ctx_ptr);
+		}
+	}
+	update_member(member_ptr);
 	post_redraw();
 }
 
@@ -149,58 +136,31 @@ void bump_mapper::on_texture_change()
 void bump_mapper::create_gui() 
 {	
 	add_decorator("Surface Properties", "heading");
-	connect_copy(add_control("primitive", surface_primitive, "dropdown", "enums='square,cube,sphere,torus'")
-		->value_change,rebind(static_cast<drawable*>(this),&drawable::post_redraw));
-	connect_copy(add_control("minor radius", minor_radius, "value_slider", "min=0.05;max=1;log=true;ticks=true")
-		->value_change,rebind(static_cast<drawable*>(this),&drawable::post_redraw));
-	connect_copy(add_control("resolution", surface_resolution, "value_slider", "min=4;max=100;log=true;ticks=true")
-		->value_change,rebind(static_cast<drawable*>(this),&drawable::post_redraw));
-	connect_copy(add_control("ambient", surface_material.ref_ambient())
-		->value_change,rebind(static_cast<drawable*>(this),&drawable::post_redraw));
-	connect_copy(add_control("diffuse", surface_material.ref_diffuse())
-		->value_change,rebind(static_cast<drawable*>(this),&drawable::post_redraw));
-	connect_copy(add_control("specular", surface_material.ref_specular())
-		->value_change,rebind(static_cast<drawable*>(this),&drawable::post_redraw));
-	connect_copy(add_control("emission", surface_material.ref_emission())
-		->value_change,rebind(static_cast<drawable*>(this),&drawable::post_redraw));
-	connect_copy(add_control("shininess", surface_material.ref_shininess(), "value_slider", "min=0;max=128;ticks=true;log=true")
-		->value_change,rebind(static_cast<drawable*>(this),&drawable::post_redraw));
-//	connect_copy(add_control("color", surface_color, "color<float,rgb>")
-//		->value_change,rebind(static_cast<drawable*>(this),&drawable::post_redraw));
+	add_member_control(this, "primitive", surface_primitive, "dropdown", "enums='square,cube,sphere,torus'");
+	add_member_control(this, "minor radius", minor_radius, "value_slider", "min=0.05;max=1;log=true;ticks=true");
+	add_member_control(this, "resolution", surface_resolution, "value_slider", "min=4;max=100;log=true;ticks=true");
 
 	add_decorator("Bump Map Properties", "heading");
-	connect_copy(add_control("wire_frame", wire_frame, "check")
-		->value_change,rebind(static_cast<drawable*>(this),&drawable::post_redraw));
-	connect_copy(add_control("use_diffuse_map", use_diffuse_map, "check")
-		->value_change,rebind(static_cast<drawable*>(this),&drawable::post_redraw));
-	connect_copy(add_control("use_bump_map", use_bump_map, "check")
-		->value_change,rebind(static_cast<drawable*>(this),&drawable::post_redraw));
-	connect_copy(add_control("bump_scale", bump_scale, "value_slider", "min=0.02;max=50;log=true;ticks=true")
-		->value_change,rebind(static_cast<drawable*>(this),&drawable::post_redraw));
-	connect_copy(add_control("use_phong", use_phong, "check")
-		->value_change,rebind(static_cast<drawable*>(this),&drawable::post_redraw));
+	add_member_control(this, "wire_frame", wire_frame, "check");
+	add_member_control(this, "use_diffuse_map", use_diffuse_map, "check");
+	add_member_control(this, "use_bump_map", use_bump_map, "check");
+	add_member_control(this, "bump_scale", bump_scale, "value_slider", "min=0.0001;max=1;log=true;ticks=true");
 
 	add_decorator("Texture Properties", "heading");
-	connect_copy(add_control("texture", texture_selection, "dropdown", "enums='checker,waves,alhambra,cartuja'")
-		->value_change,rebind(this,&bump_mapper::on_texture_change));
-	connect_copy(add_control("frequency", texture_frequency, "value_slider", "min=0;max=200;log=true;ticks=true")
-		->value_change,rebind(this,&bump_mapper::on_texture_change));
-	connect_copy(add_control("frequency aspect", texture_frequency_aspect, "value_slider", "min=0.1;max=10;log=true;ticks=true")
-		->value_change,rebind(this,&bump_mapper::on_texture_change));
-	connect_copy(add_control("texture resolution", texture_resolution, "value_slider", "min=4;max=1024;log=true;ticks=true")
-		->value_change,rebind(this,&bump_mapper::on_texture_change));
+	add_member_control(this, "texture", texture_selection, "dropdown", "enums='checker,waves,alhambra,cartuja'");
+	add_member_control(this, "frequency", texture_frequency, "value_slider", "min=0;max=200;log=true;ticks=true");
+	add_member_control(this, "frequency aspect", texture_frequency_aspect, "value_slider", "min=0.1;max=10;log=true;ticks=true");
+	add_member_control(this, "texture resolution", texture_resolution, "value_slider", "min=4;max=1024;log=true;ticks=true");
 
-	add_decorator("Transformation", "heading", "level=2");
-	connect_copy(add_control("texture u offset", texture_u_offset, "value_slider", "min=0;max=1;ticks=true")
-		->value_change,rebind(static_cast<drawable*>(this),&drawable::post_redraw));
-	connect_copy(add_control("texture v offset", texture_v_offset, "value_slider", "min=0;max=1;ticks=true")
-		->value_change,rebind(static_cast<drawable*>(this),&drawable::post_redraw));
-	connect_copy(add_control("texture rotation", texture_rotation, "value_slider", "min=-180;max=180;ticks=true")
-		->value_change,rebind(static_cast<drawable*>(this),&drawable::post_redraw));
-	connect_copy(add_control("texture scale", texture_scale, "value_slider", "min=0.01;max=100;log=true;ticks=true")
-		->value_change,rebind(static_cast<drawable*>(this),&drawable::post_redraw));
-	connect_copy(add_control("texture aspect", texture_aspect, "value_slider", "min=0.1;max=10;log=true;ticks=true")
-		->value_change,rebind(static_cast<drawable*>(this),&drawable::post_redraw));
+	add_decorator("Texture Transformation", "heading", "level=2");
+	add_member_control(this, "texture u offset", texture_u_offset, "value_slider", "min=0;max=1;ticks=true");
+	add_member_control(this, "texture v offset", texture_v_offset, "value_slider", "min=0;max=1;ticks=true");
+	add_member_control(this, "texture rotation", texture_rotation, "value_slider", "min=-180;max=180;ticks=true");
+	add_member_control(this, "texture scale", texture_scale, "value_slider", "min=0.01;max=100;log=true;ticks=true");
+	add_member_control(this, "texture aspect", texture_aspect, "value_slider", "min=0.1;max=10;log=true;ticks=true");
+
+	add_decorator("Surface Material", "heading", "level=2");
+	add_gui("material", static_cast<cgv::media::illum::textured_surface_material&>(material));
 }
 
 

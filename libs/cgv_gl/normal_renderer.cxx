@@ -4,6 +4,13 @@
 
 namespace cgv {
 	namespace render {
+		normal_renderer& ref_normal_renderer(context& ctx, int ref_count_change)
+		{
+			static int ref_count = 0;
+			static normal_renderer r;
+			r.manage_singelton(ctx, "normal_renderer", ref_count, ref_count_change);
+			return r;
+		}
 
 		normal_render_style::normal_render_style()
 		{
@@ -15,6 +22,18 @@ namespace cgv {
 			has_normals = false;
 			normal_scale = 1.0f;
 		}
+		void normal_renderer::set_attribute_array_manager(const context& ctx, attribute_array_manager* _aam_ptr)
+		{
+			line_renderer::set_attribute_array_manager(ctx, _aam_ptr);
+			if (aam_ptr) {
+				if (aam_ptr->has_attribute(ref_prog().get_attribute_location(ctx, "normal")))
+					has_normals = true;
+			}
+			else {
+				has_normals = false;
+			}
+		}
+
 		/// the normal scale is multiplied to the normal length of the normal render style
 		void normal_renderer::set_normal_scale(float _normal_scale)
 		{
@@ -25,7 +44,7 @@ namespace cgv {
 		{
 			return new line_render_style();
 		}
-		bool normal_renderer::validate_attributes(context& ctx)
+		bool normal_renderer::validate_attributes(const context& ctx) const
 		{
 			// validate set attributes
 			bool res = line_renderer::validate_attributes(ctx);

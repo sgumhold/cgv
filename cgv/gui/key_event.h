@@ -15,6 +15,9 @@ enum KeyAction {
 	KA_REPEAT //!< key repeated press action
 };
 
+/// convert a key action into a readable string
+extern CGV_API std::string get_key_action_string(KeyAction action);
+
 /// class to represent all possible keyboard events with the EID_KEY
 class CGV_API key_event : public event
 {

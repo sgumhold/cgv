@@ -26,5 +26,7 @@ target_link_libraries(crg_light
   ${cgv_gl_LIBRARIES}
 )
 
+cgv_add_export_definitions(crg_light CGV_RENDER_LIGHT)
+
 cgv_write_find_file(crg_light)
 

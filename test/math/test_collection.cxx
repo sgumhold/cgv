@@ -1,3 +1,4 @@
+#include <cgv/base/base.h>
 #include <test/math/test_chol.h>
 #include <test/math/test_det.h>
 #include <test/math/test_align.h>
@@ -35,6 +36,7 @@ using namespace cgv::base;
 bool test_collection()
 {
 
+	test_quat();
 	test_chol();//complete
 	test_det();//complete
 	test_inv();//complete	
@@ -48,7 +50,7 @@ bool test_collection()
 	test_eig();//complete
 	test_mat();//complete
 	test_gaussj();//
-	test_statistics();
+//	test_statistics();
 	test_align<float>(100, 100, true, true);
 	test_align<float, double>(100, 100, true, true);
 	test_align<double, float>(100, 100, true, true);

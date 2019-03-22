@@ -1,0 +1,17 @@
+#version 330
+
+//***** begin interface of view.glsl ***********************************
+mat4 get_modelview_projection_matrix();
+//***** end interface of view.glsl ***********************************
+
+layout(location = 0) in vec4 position;
+layout(location = 1) in vec4 color;
+
+out vec4 color_fs;
+
+void main()
+{
+	color_fs = color;
+	// transform vertex to clip space
+	gl_Position = get_modelview_projection_matrix()*position;
+}

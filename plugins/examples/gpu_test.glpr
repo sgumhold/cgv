@@ -1,4 +1,9 @@
 files:gpu_test
 vertex_file:my_support_functions.glsl
+vertex_file:view.glsl
 fragment_file:my_support_functions.glsl
+fragment_file:surface.glsl
+fragment_file:brdf.glsl
+fragment_file:lights.glsl
+fragment_file:side.glsl
 geometry_shader_info:quads;lines;7

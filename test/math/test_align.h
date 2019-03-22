@@ -22,7 +22,7 @@ void test_align(unsigned nr_points, unsigned nr_tests, bool test_reflection, boo
 		cgv::math::quaternion<T> q(normal_distribution(generator), normal_distribution(generator), normal_distribution(generator), normal_distribution(generator));
 		q.normalize();
 		cgv::math::fmat<T, 3, 3> O, _O;
-		q.put_matrix(&O(0, 0));
+		q.put_matrix(O);
 
 		// sample reflection
 		cgv::math::fmat<T, 3, 3> R;

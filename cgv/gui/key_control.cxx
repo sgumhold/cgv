@@ -219,7 +219,7 @@ void key_control<bool>::stream_help(std::ostream& os)
 }
 
 
-#include <cgv/gui/lib_begin.h>
+#include "lib_begin.h"
 template class CGV_API key_control<double>;
 template class CGV_API key_control<float>;
 #include <cgv/config/lib_end.h>

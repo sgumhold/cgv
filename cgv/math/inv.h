@@ -79,7 +79,7 @@ template <typename T, cgv::type::uint32_type N>
 fmat<T,N,N> inv(const fmat<T,N,N>& m)
 {
 	mat<T> M(N,N,&m(0,0));
-	return fmat<T,N,N>(&(inv(M)(0,0)));
+	return fmat<T,N,N>(N,N,&(inv(M)(0,0)));
 }
 
 template <typename T>

@@ -12,6 +12,9 @@
                      CGV_DIR."/cgv/gui/control.cxx",
                      CGV_DIR."/cgv/media/image/image_writer.cxx",
                      CGV_DIR."/cgv/media/font/font.cxx",
+                     CGV_DIR."/cgv/media/illum/phong_material.cxx",
+                     CGV_DIR."/cgv/media/illum/surface_material.cxx",
+                     CGV_DIR."/cgv/media/illum/light_source.cxx",
                      CGV_DIR."/cgv/media/font/font_server.cxx",
                      CGV_DIR."/cgv/os/clipboard.cxx",
                      CGV_DIR."/cgv/render/context.cxx",
@@ -22,6 +25,7 @@
                      CGV_DIR."/libs/cgv_gl/gl/gl_context_win32.cxx",
                      CGV_DIR."/cgv/render/shader_code.cxx",
                      CGV_DIR."/cgv/render/frame_buffer.cxx",
+                     CGV_DIR."/cgv/render/attribute_array_binding.cxx",
                      CGV_DIR."/cgv/render/render_buffer.cxx",
                      CGV_DIR."/cgv/render/shader_program.cxx"])
 @if(SYSTEM=="windows")@{

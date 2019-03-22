@@ -1,28 +1,41 @@
+#version 150
+
 uniform sampler2D tex;
 uniform sampler2D img_tex;
 uniform float ambient;
 uniform bool show_tex;
 uniform bool show_img_tex;
-varying vec3 N;
-varying vec4 l;
-varying vec4 h;
+
+in vec3 p_eye;
+in vec3 n_eye;
+in vec4 col;
+in vec2 tc;
+
+out vec4 frag_color;
+
+//***** begin interface of side.glsl ***********************************
+bool keep_this_side(in vec3 position, in vec3 normal, out int side);
+void update_material_color_and_transparency(inout vec3 mat_color, inout float transparency, in int side, in vec4 color);
+void update_normal(inout vec3 normal, in int side);
+//***** end interface of side.glsl ***********************************
+
+vec4 compute_reflected_appearance(vec3 position_eye, vec3 normal_eye, vec4 color, int side);
 
 vec4 my_color_transform(in vec4 c);
 
-void main (void) {
-	vec3  n = normalize(N);
-	float L_d =clamp(dot(l.xyz, n),0.0,1.0);
-	float L_s = pow(clamp(dot(h.xyz, n),
-			  0.0,1.0), gl_FrontMaterial.shininess);
-   vec4  c = gl_Color;
-	if (show_tex) 
-	   c = c*texture2D(tex, gl_TexCoord[0].xy); 
-	if (show_img_tex) 
-	   c = c*texture2D(img_tex, gl_TexCoord[0].xy); 
-	gl_FragColor = my_color_transform(L_d * c
-	             + L_s * vec4(1.0,1.0,1.0,1.0)
-					 + ambient * gl_Color);
-//	gl_FragColor = L_d * c
-//	             + L_s * vec4(1.0,1.0,1.0,1.0)
-//					 + ambient * gl_Color;
+void main() 
+{
+	vec4 c = col;
+	if (show_tex)
+		c *= texture2D(tex, tc);
+	if (show_img_tex)
+		c *= texture2D(img_tex, tc);
+
+	vec3  n = normalize(n_eye);
+	int side;
+	if (!keep_this_side(p_eye, n, side))
+		discard;
+
+	frag_color = compute_reflected_appearance(p_eye, n, c, side);
+	frag_color = c;
 }

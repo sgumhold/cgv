@@ -1,12 +1,8 @@
 #ifdef _WIN32
 #   if _MSC_VER >= 1400
 #		pragma warning(disable:4275)
-#		pragma warning(disable:4231)
 #		pragma warning(disable:4251)
 #	endif
-#   if _MSC_VER >= 1500
-#       pragma warning (disable:4996)
-#   endif
 #   if defined(CGV_FORCE_STATIC_LIB) || defined(CGV_FORCE_STATIC)
 #      define CGV_API
 #      define CGV_IS_STATIC

@@ -1,5 +1,5 @@
-@exclude<cgv/config/make.ppp>
-@define(projectType="application")
-@define(projectName="cgv_viewer")
-@define(projectGUID="8904414D-C452-4EC1-822E-8D6096B6EBFC")
-@define(addProjectDeps=["cgv_signal", "cgv_base", "cgv_gui"])
+@=
+projectType="application";
+projectName="cgv_viewer";
+projectGUID="8904414D-C452-4EC1-822E-8D6096B6EBFC";
+addProjectDeps=["cgv_signal", "cgv_base", "cgv_gui"];

@@ -23,11 +23,8 @@ mouse_tracker::mouse_tracker(const char* name) : node(name), picked_point(0, 0, 
 /// find view ptr
 bool mouse_tracker::init(cgv::render::context& ctx)
 {
-	std::vector<cgv::render::view*> view_ptrs;
-	cgv::base::find_interface<cgv::render::view>(this, view_ptrs);
-	if (!view_ptrs.empty())
-		view_ptr = view_ptrs.front();
-	return true;
+	view_ptr = find_view_as_node();
+	return view_ptr != 0;
 }
 
 /// show internal values
@@ -130,6 +127,7 @@ void mouse_tracker::stream_help(std::ostream& os)
 }
 
 #include <cgv_gl/gl/gl.h>
+#include <cgv/render/shader_program.h>
 
 /// optional method of drawable
 void mouse_tracker::draw(context& ctx)
@@ -139,23 +137,23 @@ void mouse_tracker::draw(context& ctx)
 		ff = f->get_font_face((bold?cgv::media::font::FFA_BOLD:0)+
 			                  (italic?cgv::media::font::FFA_ITALIC:0));
 	}
-	if (!ff.empty()) {
-		glDisable(GL_LIGHTING);
-		glColor3f(1,0,1);
+	if (ff.empty())
+		return;
+	ctx.ref_default_shader_program().enable(ctx);
+		ctx.set_color(rgb(1.0f, 0.0f, 1.0f));
 		ctx.push_pixel_coords();
-		ctx.enable_font_face(ff, font_size);
-		std::stringstream ss;
-		ss << "(" << x << "," << y << ")";
-		if (have_picked_point)
-			ss << "->[" << picked_point << "]";
-		std::string s = ss.str();
-		float f = (float)x/ctx.get_width();
-		ctx.set_cursor(x-(int)(f*ff->measure_text_width(s,font_size)),y-4);
-		ctx.output_stream() << s.c_str();
-		ctx.output_stream().flush();
+			ctx.enable_font_face(ff, font_size);
+			std::stringstream ss;
+			ss << "(" << x << "," << y << ")";
+			if (have_picked_point)
+				ss << "->[" << picked_point << "]";
+			std::string s = ss.str();
+			float f = (float)x/ctx.get_width();
+			ctx.set_cursor(x-(int)(f*ff->measure_text_width(s,font_size)),y-4);
+			ctx.output_stream() << s.c_str();
+			ctx.output_stream().flush();
 		ctx.pop_pixel_coords();
-		glEnable(GL_LIGHTING);
-	}
+	ctx.ref_default_shader_program().disable(ctx);
 }
 
 #include <cgv/base/register.h>

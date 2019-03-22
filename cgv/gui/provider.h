@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cgv/base/base.h>
 #include <cgv/type/info/type_name.h>
 #include <cgv/signal/rebind.h>
 #include <cgv/utils/convert.h>
@@ -92,6 +93,9 @@ public:
 	/*! Add a new group, where the group elements are defined by another object that
 		must be derived from provider. You can use the same group types as in the add_group
 		method. */
+	/// concatenate names in string to enum declaration and optionally prepend or append given additional names 
+	std::string concat_enum_def(const std::vector<std::string>& names, const std::string& additional_first_name = "", const std::string& additional_last_name = "");
+
 	gui_group_ptr add_object_gui(base_ptr object, const std::string& label, const std::string& group_type, const std::string& options, const std::string& align);
 	/// inline the gui of another object that must be derived from provider.
 	void inline_object_gui(base_ptr object);
@@ -169,8 +173,12 @@ if (begin_tree_node("Node", composed_value)) {
    end_tree_node(composed_value);
 }
 \endcode
-		The state of the toggle button is attached to a boolean variable that is globally managed by the provider. 
-		For this the reference to a value controlled by the tree node is specified. The pointer to the controlled value is 
+		The state of the toggle button is attached to a boolean flag that is globally managed by the provider.
+		If your this pointer can be converted to cgv::base::base, the on_set callback with a pointer to the flag
+		is called when the user toggles the tree node. To check in the on_set callback for the tree node toggle
+		one can get a reference to the boolean flag with the ref_tree_node_visible_flag method. 
+		
+		To allocate the boolean flag the reference to a value controlled by the tree node is specified. The pointer to the controlled value is 
 		used as key for a map that manages the toggle states of all tree node buttons. If there is no superior structure
 		whose value is controlled by the tree node, one can specify any of the values controled by the tree node. It is just
 		important that no two tree nodes use the same value and that the pointer to the value cannot change. The latter is
@@ -197,6 +205,11 @@ if (begin_tree_node("Node", vec)) {
 	*/
 	template <typename T>
 	bool begin_tree_node(const std::string& label, const T& value, bool initial_visibility = false, const std::string& options = "", gui_group_ptr ggp = gui_group_ptr()) { return begin_tree_node_void(label, wi_get_value_ptr(value), wi_get_index(value), initial_visibility, options, ggp); }
+	//! return a reference to the boolean flag, that tells whether the tree node for the passed value is visible
+	/*! T can be with_index(v,i) as in the begin_tree_node function. You typically need this function in an on_set callback to check whether the user
+	    has toggled a tree node */
+	template <typename T>
+	static bool& ref_tree_node_visible_flag(const T& value) { return ref_tree_node_visible_flag_void(wi_get_value_ptr(value), wi_get_index(value)); }
 	/// template specialization that allows to specify value reference plus node_instance by using the result of the function with_instance(value,idx) for the value argument
 	//! finish a sub tree begun with begin_tree_node 
 	/*! This functions should be called only if the corresponding call to begin_tree_node returned true. */
@@ -210,6 +223,8 @@ if (begin_tree_node("Node", vec)) {
 	void set_tree_node_visibility(const T& value, bool is_visible) { set_tree_node_visibility_void(wi_get_value_ptr(value), wi_get_index(value), is_visible); }
 	/// void version of the templated functions
 	bool begin_tree_node_void(const std::string& label, const void* value_ptr, int index = -1, bool initial_visibility = false, const std::string& options = "", gui_group_ptr ggp = gui_group_ptr());
+	///
+	static bool& ref_tree_node_visible_flag_void(const void* value_ptr, int index = -1);
 	///
 	void end_tree_node_void(const void* value_ptr, int index = -1);
 	///
@@ -259,6 +274,8 @@ public:
 	/*! The default is to use a group of type "align_group". Overload this virtual method to use a 
 	    different group type, such as layout group. */
 	virtual std::string get_parent_type() const;
+	/// ensure that my UI is selected in the parent group in case this is a tab group, otherwise return false
+	virtual bool ensure_selected_in_tab_group_parent();
 	/// call this to update all views and controls of a member
 	virtual void update_member(void* member_ptr);
 	/// call this to update all views and controls of all member
@@ -276,7 +293,7 @@ public:
 		to be destroyed before the callback triggering the recreate_gui method
 		has been completely finished, what might make the program crash. Use the
 		post_recreate_gui method instead. */
-	void recreate_gui();
+	virtual void recreate_gui();
 	//! delayed recreation of gui
 	/*! schedule the recreation of the gui for the next time the program is idle.
 	    This mechanism is implemented in a thread save way. */

@@ -1,0 +1,8 @@
+@=
+projectType="library";
+projectName="vr";
+projectGUID="2A781FEE-5FC9-431E-9A48-DD13D8C6B555";
+addSharedDefines=["VR_KIT_EXPORTS"];
+addIncDirs=[CGV_DIR."/3rd/glew"];
+addProjectDirs=[CGV_DIR."/3rd/glew"];
+addProjectDeps=["glew"];
