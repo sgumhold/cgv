@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 2.6)
 project(cgv_reflect_types)
 
 # The CGV framework is needed!
-find_package(cgv COMPONENTS  utils type reflect media math render)
+find_package(cgv COMPONENTS  utils type reflect media math render gui)
 
 
 # Source files
@@ -17,7 +17,8 @@ include_directories(
 cgv_add_library(cgv_reflect_types 
 	SOURCES ${SOURCES} 
 	PUBLIC_HEADERS ${PUBLIC_HEADERS}
-	DEFINITIONS UNICODE _UNICODE)
+	DEFINITIONS UNICODE _UNICODE
+	SHARED_DEFINITIONS CGV_REFLECT_TYPES_EXPORTS)
 
 	
 target_link_libraries(cgv_reflect_types ${cgv_LIBRARIES})
