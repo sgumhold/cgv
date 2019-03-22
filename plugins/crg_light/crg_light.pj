@@ -1,8 +1,8 @@
-@exclude<cgv/config/make.ppp>
-@define(projectType="plugin")
-@define(projectName="crg_light")
-@define(projectGUID="3533C86F-A2E8-4733-8057-E1260D4FF37B")
-@define(addProjectDeps=["cgv_utils", "cgv_type", "cgv_reflect","cgv_data","cgv_base", "cgv_signal", "cgv_media","cgv_render", "cgv_gui", "cgv_gl", "cg_ext"])
-@define(addProjectDirs=[CGV_DIR."/libs/cgv_gl", CGV_DIR."/plugins"])
-@define(addIncDirs=[CGV_DIR."/libs"])
-@define(addSharedDefines=["CGV_RENDER_LIGHT_EXPORTS"])
+@=
+projectType="plugin";
+projectName="crg_light";
+projectGUID="3533C86F-A2E8-4733-8057-E1260D4FF37B";
+addProjectDeps=["cgv_utils", "cgv_type", "cgv_reflect","cgv_data","cgv_base", "cgv_signal", "cgv_media","cgv_render", "cgv_gui", "cgv_gl", "cg_ext"];
+addProjectDirs=[CGV_DIR."/libs/cgv_gl", CGV_DIR."/plugins"];
+addIncDirs=[CGV_DIR."/libs"];
+addSharedDefines=["CGV_RENDER_LIGHT_EXPORTS"];
