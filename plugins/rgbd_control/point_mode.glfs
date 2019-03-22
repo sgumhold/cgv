@@ -1,0 +1,16 @@
+#version 330
+
+//***** begin interface of fragment.glfs ***********************************
+uniform float gamma = 2.2;
+void finish_fragment(vec4 color);
+//***** end interface of fragment.glfs ***********************************
+
+uniform sampler2D color_texture;
+uniform float     color_scale;
+
+in vec2 tc;
+
+void main()
+{
+	finish_fragment(fract(color_scale*texture2D(color_texture, tc)));
+}

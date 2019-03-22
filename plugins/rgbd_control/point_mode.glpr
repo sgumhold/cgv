@@ -1,0 +1,5 @@
+file:point_mode.glvs
+file:point_mode.glfs
+vertex_file:support.glsl
+vertex_file:view.glsl
+fragment_file:fragment.glfs

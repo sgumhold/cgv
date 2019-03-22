@@ -1,0 +1,43 @@
+#version 120 
+#extension GL_EXT_geometry_shader4 : enable
+
+float compute_height(in vec2 t);
+
+void constructVertex(in vec4 t)
+{
+	vec4 p             = t;
+	p.z               += compute_height(t.xy);
+	gl_Position        = gl_ModelViewProjectionMatrix * p;
+	gl_TexCoord[0]     = t;
+	gl_TexCoord[1].xyz = normalize(-(gl_ModelViewMatrix*p).xyz);
+	gl_TexCoord[2].xyz = normalize(vec3(gl_LightSource[0].position));
+	gl_TexCoord[3].xyz = normalize(gl_TexCoord[1].xyz+gl_TexCoord[2].xyz);
+	EmitVertex();
+}
+
+void main()
+{
+	vec4 t0  = gl_TexCoordIn[0][0];
+	vec4 t1  = gl_TexCoordIn[0][1];
+	vec4 t2  = gl_TexCoordIn[0][2];
+	vec4 t3  = gl_TexCoordIn[0][3];
+	vec4 dt0 = (1.0/7.0)*(t2 - t0);
+	vec4 dt1 = (1.0/7.0)*(t3 - t0);
+
+	for (int i=0; i<7; ++i) {
+		vec4 s0  = t0;
+		vec4 ds0 = (1.0/7.0)*(t1-t0);
+		t0 += dt0;
+		t1 += dt1;
+		vec4 s1  = t0;
+		vec4 ds1 = (1.0/7.0)*(t1-t0);
+
+		for (int j=0; j<8; ++j) {
+			constructVertex(s0);
+			constructVertex(s1);
+			s0 += ds0;
+			s1 += ds1;
+		}
+		EndPrimitive();
+	}
+}
