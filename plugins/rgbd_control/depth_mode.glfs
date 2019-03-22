@@ -1,0 +1,7 @@
+uniform sampler2D depth_texture;
+uniform float     depth_scale;
+
+void main()
+{
+	gl_FragColor = fract(depth_scale*texture2D(depth_texture, gl_TexCoord[0].xy));
+}
