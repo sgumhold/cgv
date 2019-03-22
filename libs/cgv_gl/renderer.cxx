@@ -5,12 +5,13 @@ namespace cgv {
 		render_style::~render_style()
 		{
 		}
-
-		/// default initialization
 		attribute_array_manager::attribute_array_manager()
 		{
 		}
-		/// destructor calls destruct
+		bool attribute_array_manager::has_attribute(int loc) const
+		{
+			return vbos.find(loc) != vbos.end();
+		}
 		attribute_array_manager::~attribute_array_manager()
 		{
 			if (aab.is_created() && aab.ctx_ptr && aab.ctx_ptr->make_current())
@@ -20,17 +21,14 @@ namespace cgv {
 		{
 			return ctx.set_attribute_array_void(&aab, loc, element_type, &vbo, reinterpret_cast<const void*>(offset_in_bytes), nr_elements, stride_in_bytes);
 		}
-		///
 		bool attribute_array_manager::init(context& ctx)
 		{
 			return aab.create(ctx);
 		}
-		///
 		bool attribute_array_manager::enable(context& ctx)
 		{
 			return aab.enable(ctx);
 		}
-		///
 		bool attribute_array_manager::disable(context& ctx)
 		{
 			return aab.disable(ctx);
@@ -78,19 +76,26 @@ namespace cgv {
 				ctx.error(std::string("invalid change reference count outside {-1,0,1} for ") + renderer_name + " singelton");
 			}
 		}
-		/// destructor deletes default renderer style
 		renderer::~renderer()
 		{
 			if (default_render_style)
 				delete default_render_style;
 			default_render_style = 0;
 		}
-		/// provide an attribute manager that is used in successive calls to attribute array setting methods and in the enable and disable method, if a nullptr is provided attributes are managed through deprecated VertexAttributePointers - in this case a call to disable deattaches all attribute arrays which have to be set before the next enable call again
-		void renderer::set_attribute_array_manager(attribute_array_manager* _aam_ptr)
+		void renderer::set_attribute_array_manager(const context& ctx, attribute_array_manager* _aam_ptr)
 		{
 			aam_ptr = _aam_ptr;
+			if (aam_ptr) {
+				if (aam_ptr->has_attribute(ref_prog().get_attribute_location(ctx, "position")))
+					has_positions = true;
+				if (aam_ptr->has_attribute(ref_prog().get_attribute_location(ctx, "color")))
+					has_colors = true;
+			}
+			else {
+				has_positions = false;
+				has_colors = false;
+			}
 		}
-
 		bool renderer::set_attribute_array(const context& ctx, int loc, type_descriptor element_type, const vertex_buffer& vbo, size_t offset_in_bytes, size_t nr_elements, unsigned stride_in_bytes)
 		{
 			if (aam_ptr)

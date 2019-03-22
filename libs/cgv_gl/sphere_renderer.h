@@ -53,6 +53,7 @@ namespace cgv { // @<
 		public:
 			///
 			sphere_renderer();
+			void set_attribute_array_manager(const context& ctx, attribute_array_manager* _aam_ptr);
 			///
 			bool init(context& ctx);
 			///

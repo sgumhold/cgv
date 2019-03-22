@@ -35,6 +35,17 @@ namespace cgv {
 			has_group_radii = false;
 			cull_per_primitive = false;
 		}
+		void sphere_renderer::set_attribute_array_manager(const context& ctx, attribute_array_manager* _aam_ptr)
+		{
+			surface_renderer::set_attribute_array_manager(ctx, _aam_ptr);
+			if (aam_ptr) {
+				if (aam_ptr->has_attribute(ref_prog().get_attribute_location(ctx, "radius")))
+					has_radii = true;
+			}
+			else {
+				has_radii = false;
+			}
+		}
 		///
 		void sphere_renderer::set_y_view_angle(float _y_view_angle)
 		{
