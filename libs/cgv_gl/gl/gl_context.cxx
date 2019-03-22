@@ -729,10 +729,8 @@ void gl_context::push_pixel_coords()
 		// use identity for modelview
 		glLoadIdentity();
 	}
-	else {
-		set_modelview_matrix(cgv::math::identity4<double>());
-		set_projection_matrix(cgv::math::ortho4<double>(0, vp[2], vp[3], 0, -1, 1));
-	}
+	set_modelview_matrix(cgv::math::identity4<double>());
+	set_projection_matrix(cgv::math::ortho4<double>(0, vp[2], vp[3], 0, -1, 1));
 }
 
 /// pop previously changed transformation matrices 
