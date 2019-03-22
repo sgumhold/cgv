@@ -25,12 +25,8 @@ include_directories(
 
 cgv_add_module(crg_stereo_view ${SOURCES} ${HEADERS})
 
-# FIXME: do not use internal macros
-_cgv_set_definitions(crg_stereo_view
-	SHARED CGV_RENDER_STEREO_VIEW_EXPORTS)
+cgv_add_export_definitions(crg_stereo_view CGV_RENDER_STEREO_VIEW)
 
-
-#target_link_libraries(crg_stereo_view  "-Wl,--start-group" ${cgv_LIBRARIES} ${glsu_LIBRARIES} ${cgv_gl_LIBRARIES} "-Wl,--end-group")
 target_link_libraries(crg_stereo_view  ${cgv_LIBRARIES} ${glsu_LIBRARIES} ${cgv_gl_LIBRARIES})
 
 #set_target_properties(crg_stereo_view PROPERTIES FOLDER "${FOLDER_NAME_PLUGINS}")

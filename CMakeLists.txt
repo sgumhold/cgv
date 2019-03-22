@@ -21,7 +21,6 @@ add_subdirectory(apps)
 
 # The framework depends on the tools and on 3rd libraries
 add_dependencies(cgv tools 3rd)
-add_dependencies(cgv 3rd)
 # The tools depend on the 3rd libraries
 add_dependencies(tools 3rd)
 # The apps depend on the CGV framework and 3rd party libs

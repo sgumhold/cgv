@@ -51,8 +51,13 @@ set(DEBUG_POSTFIX "_d")
 # Set CXX standard to c++11
 set(CXX_STANDARD 11)
 
-# Disable narrowing errors, because this is violated everywhere
-add_definitions(-Wno-narrowing)
+if (UNIX)
+	# Disable narrowing errors, because this is violated everywhere
+	add_definitions(-Wno-narrowing)
+elseif (WIN32)
+	add_definitions(/EHsc /D "WIN32")
+endif ()
+
 
 # Enable source folders
 # FIXME: Make this an option for VS Express?

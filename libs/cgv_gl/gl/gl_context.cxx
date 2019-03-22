@@ -1,4 +1,6 @@
 #include <cgv/base/group.h>
+#include "gl_context.h"
+#include "gl_tools.h"
 #include <cgv_gl/gl/wgl.h>
 #ifdef _WIN32
 #undef TA_LEFT
@@ -6,8 +8,6 @@
 #undef TA_RIGHT
 #undef TA_BOTTOM
 #endif
-#include "gl_context.h"
-#include "gl_tools.h"
 #include <cgv/base/base.h>
 #include <cgv/base/action.h>
 #include <cgv/render/drawable.h>

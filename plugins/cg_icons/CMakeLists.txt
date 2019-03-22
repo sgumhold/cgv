@@ -17,6 +17,9 @@ cgv_add_module(cg_icons
 	SOURCES ${SOURCES}
 	FILES ${IMAGES}
 )
+
+cgv_add_export_definitions(cg_icons ICON)
+
 target_link_libraries(cg_icons ${cgv_LIBRARIES})
 
 cgv_write_find_file(cg_icons)

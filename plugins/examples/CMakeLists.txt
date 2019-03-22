@@ -8,35 +8,30 @@ find_package(cgv
 	)
 	
 set(PLUGINS
-        cg_fltk
-        crg_grid
+    cg_fltk
+    crg_grid
 	crg_stereo_view
 )
 	
+cgv_find_package(delaunay)
+cgv_find_package(plot)
 cgv_find_package(cgv_gl)
 cgv_find_package(crg_grid)
 cgv_find_package(crg_stereo_view)
+
 find_package(shader_test)
 
-set(HEADERS 
-	shape.h
-)
+# Source files
+file(GLOB_RECURSE SOURCES RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "*.cxx")
+# Header files
+file(GLOB_RECURSE HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "*.h")
+# Shader files
+file(GLOB_RECURSE SHADER_SOURCES RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "*.gl*")
 
-set(SOURCES
-	shape.cxx
-	shader_test.cxx
-)
-
-set(SHADER_SOURCES
-	shader_test.glvs
-	shader_test.glfs
-#	shader_test.glpr
-)
-
-include_directories(${cgv_INCLUDE_DIRS} ../../libs ${cgv_gl_INCLUDE_DIRS})
+include_directories(${cgv_INCLUDE_DIRS} ../../libs ../../libs/delaunay ${cgv_gl_INCLUDE_DIRS})
 
 cgv_add_module(examples ${SOURCES} ${HEADERS} ${SHADER_SOURCES})
-target_link_libraries(examples ${cgv_LIBRARIES})
+target_link_libraries(examples ${cgv_LIBRARIES} ${delaunay_LIBRARIES} ${plot_LIBRARIES})
 cgv_test_shaders(examples ${SHADER_SOURCES})
 set_target_properties(examples PROPERTIES FOLDER "${FOLDER_NAME_PLUGINS}")
 
