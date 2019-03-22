@@ -49,7 +49,7 @@ void clipped_view::set_default_view()
 	set_view_dir(0, 0, -1);
 	set_view_up_dir(0, 1, 0);
 	set_focus(get_scene_extent().get_center());
-	set_y_extent_at_focus(1.5*get_scene_extent().get_extent()(1));
+	set_y_extent_at_focus(get_scene_extent().get_extent().length());
 }
 
 /// transform a z value in eye-coordinates (should be negative!) to device coordinate
