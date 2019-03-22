@@ -62,7 +62,7 @@ fltk_gl_view::fltk_gl_view(int x, int y, int w, int h, const std::string& name)
 
 	recreate_context = false;
 	no_more_context = false;
-
+	instant_redraw = false;
 	in_draw_method = false;
 	redraw_request = false;
 
@@ -506,6 +506,9 @@ void fltk_gl_view::draw()
 		else 
 			started_frame_pm = false;
 	}
+	if (instant_redraw)
+		redraw_request = true;
+
 	in_draw_method = false;
 	if (redraw_request != last_redraw_request) {
 		if (redraw_request)
@@ -920,12 +923,13 @@ void fltk_gl_view::disable_phong_shading()
 void fltk_gl_view::create_gui()
 {
 	add_decorator("gl view", "heading");
-	if (begin_tree_node("Frames", fps, false, "level=3")) {
+	if (begin_tree_node("rendering", fps, false, "level=3")) {
 		provider::align("\a");
-		add_view("fps", fps);
-		add_member_control(this, "fps_alpha", fps_alpha, "value_slider", "min=0;max=1;ticks=true");
-		add_member_control(this, "vsynch", enable_vsynch, "check");
-		add_member_control(this, "gamma", gamma, "value_slider", "min=0.2;max=5;ticks=true;log=true");
+		add_view("fps", fps, "", "w=72", " ");
+		add_member_control(this, "EWMA", fps_alpha, "value_slider", "min=0;max=1;ticks=true;w=120;align='B';tooltip='coefficient of exponentially weighted moving average'");
+		add_member_control(this, "vsynch", enable_vsynch, "toggle", "w=92", " ");
+		add_member_control(this, "instant redraw", instant_redraw, "toggle", "w=100");
+		add_member_control(this, "gamma", gamma, "value_slider", "min=0.2;max=5;ticks=true;log=true;tooltip='default gamma used for inverse gamma correction of fragment color'");
 		add_member_control(this, "sRGB_framebuffer", sRGB_framebuffer, "check");
 		provider::align("\b");
 		end_tree_node(fps);

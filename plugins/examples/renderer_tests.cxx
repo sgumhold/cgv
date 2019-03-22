@@ -201,7 +201,7 @@ public:
 			p_renderer.set_reference_point_size(0.005f);
 			p_renderer.set_y_view_angle(float(view_ptr->get_y_view_angle()));
 			p_renderer.set_render_style(point_style);
-			p_renderer.set_attribute_array_manager(&p_manager);
+			p_renderer.set_attribute_array_manager(ctx, &p_manager);
 			set_group_geometry(ctx, p_renderer);
 			if (p_vbos_out_of_date) {
 				set_geometry(ctx, p_renderer);
@@ -216,7 +216,7 @@ public:
 			sl_renderer.set_reference_point_size(0.005f);
 			sl_renderer.set_y_view_angle(float(view_ptr->get_y_view_angle()));
 			sl_renderer.set_render_style(surfel_style);
-			sl_renderer.set_attribute_array_manager(&sl_manager);
+			sl_renderer.set_attribute_array_manager(ctx, &sl_manager);
 			set_group_geometry(ctx, sl_renderer);
 			if (sl_vbos_out_of_date) {
 				set_geometry(ctx, sl_renderer);
@@ -233,7 +233,7 @@ public:
 		case RM_BOXES: {
 			cgv::render::box_renderer& b_renderer = cgv::render::ref_box_renderer(ctx);
 			b_renderer.set_render_style(box_style);
-			b_renderer.set_attribute_array_manager(&b_manager);
+			b_renderer.set_attribute_array_manager(ctx, &b_manager);
 			set_group_geometry(ctx, b_renderer);
 			if (b_vbos_out_of_date) {
 				set_geometry(ctx, b_renderer);

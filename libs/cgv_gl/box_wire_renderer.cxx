@@ -25,6 +25,23 @@ namespace cgv {
 			has_translations = false;
 			has_rotations = false;
 		}
+		void box_wire_renderer::set_attribute_array_manager(const context& ctx, attribute_array_manager* _aam_ptr)
+		{
+			line_renderer::set_attribute_array_manager(ctx, _aam_ptr);
+			if (aam_ptr) {
+				if (aam_ptr->has_attribute(ref_prog().get_attribute_location(ctx, "extent")))
+					has_extents = true;
+				if (aam_ptr->has_attribute(ref_prog().get_attribute_location(ctx, "translation")))
+					has_translations = true;
+				if (aam_ptr->has_attribute(ref_prog().get_attribute_location(ctx, "rotation")))
+					has_rotations = true;
+			}
+			else {
+				has_extents = false;
+				has_translations = false;
+				has_rotations = false;
+			}
+		}
 		/// set the flag, whether the position is interpreted as the box center
 		void box_wire_renderer::set_position_is_center(bool _position_is_center)
 		{

@@ -32,6 +32,7 @@ namespace cgv { // @<
 			render_style* create_render_style() const;
 		public:
 			box_wire_renderer();
+			void set_attribute_array_manager(const context& ctx, attribute_array_manager* _aam_ptr);
 			/// set the flag, whether the position is interpreted as the box center
 			void set_position_is_center(bool _position_is_center);
 			/// construct shader programs and return whether this was successful, call inside of init method of drawable

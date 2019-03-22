@@ -36,6 +36,20 @@ namespace cgv {
 			cull_per_primitive = true;
 			has_normals = false;
 		}
+		void surface_renderer::set_attribute_array_manager(const context& ctx, attribute_array_manager* _aam_ptr)
+		{
+			group_renderer::set_attribute_array_manager(ctx, _aam_ptr);
+			if (aam_ptr) {
+				if (aam_ptr->has_attribute(ref_prog().get_attribute_location(ctx, "normal")))
+					has_normals = true;
+				if (aam_ptr->has_attribute(ref_prog().get_attribute_location(ctx, "texcoord")))
+					has_texcoords = true;
+			}
+			else {
+				has_normals = false;
+				has_texcoords = false;
+			}
+		}
 
 		void set_gl_material_color(GLenum side, const cgv::media::illum::phong_material::color_type& c, float alpha, GLenum type)
 		{

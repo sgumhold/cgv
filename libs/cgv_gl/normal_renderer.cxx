@@ -22,6 +22,18 @@ namespace cgv {
 			has_normals = false;
 			normal_scale = 1.0f;
 		}
+		void normal_renderer::set_attribute_array_manager(const context& ctx, attribute_array_manager* _aam_ptr)
+		{
+			line_renderer::set_attribute_array_manager(ctx, _aam_ptr);
+			if (aam_ptr) {
+				if (aam_ptr->has_attribute(ref_prog().get_attribute_location(ctx, "normal")))
+					has_normals = true;
+			}
+			else {
+				has_normals = false;
+			}
+		}
+
 		/// the normal scale is multiplied to the normal length of the normal render style
 		void normal_renderer::set_normal_scale(float _normal_scale)
 		{

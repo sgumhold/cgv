@@ -32,6 +32,7 @@ namespace cgv { // @<
 		public:
 			///
 			group_renderer();
+			void set_attribute_array_manager(const context& ctx, attribute_array_manager* _aam_ptr);
 			/// check additionally the group attributes
 			bool validate_attributes(const context& ctx) const;
 			/// overload to activate group style

@@ -36,6 +36,7 @@ namespace cgv { // @<
 			bool cull_per_primitive;
 		public:
 			surface_renderer();
+			void set_attribute_array_manager(const context& ctx, attribute_array_manager* _aam_ptr);
 			/// 
 			bool enable(context& ctx);
 			///

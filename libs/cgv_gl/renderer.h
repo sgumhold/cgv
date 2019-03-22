@@ -74,6 +74,8 @@ namespace cgv { // @<
 			attribute_array_manager();
 			/// destructor calls destruct
 			~attribute_array_manager();
+			/// check whether the given attribute is available
+			bool has_attribute(int loc) const;
 			///
 			bool init(context& ctx);
 			///
@@ -89,8 +91,6 @@ namespace cgv { // @<
 		private:
 			/// shader program
 			shader_program prog;
-			/// if attribue array manager is set, use it for attribute management
-			attribute_array_manager* aam_ptr;
 			/// otherwise keep track of enabled arrays
 			std::set<int> enabled_attribute_arrays;
 			/// default render style
@@ -98,6 +98,8 @@ namespace cgv { // @<
 			/// current render style, can be set by user
 			const render_style* rs;
 		protected:
+			/// if attribue array manager is set, use it for attribute management
+			attribute_array_manager* aam_ptr;
 			/// return whether attributes persist after a call to disable
 			bool attributes_persist() const { return aam_ptr != 0; }
 			/// derived renderer classes have access to shader program
@@ -135,7 +137,7 @@ namespace cgv { // @<
 			/// used by derived classes to manage singeltons
 			void manage_singelton(context& ctx, const std::string& renderer_name, int& ref_count, int ref_count_change);
 			/// provide an attribute manager that is used in successive calls to attribute array setting methods and in the enable and disable method, if a nullptr is provided attributes are managed through deprecated VertexAttributePointers - in this case a call to disable deattaches all attribute arrays which have to be set before the next enable call again
-			void set_attribute_array_manager(attribute_array_manager* aam_ptr = 0);
+			virtual void set_attribute_array_manager(const context& ctx, attribute_array_manager* _aam_ptr = 0);
 			/// reference given render style
 			void set_render_style(const render_style& rs);
 			/// abstract initialize method creates default render style, derived renderers to load the shader program

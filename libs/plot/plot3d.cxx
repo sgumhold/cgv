@@ -139,12 +139,12 @@ void plot3d::draw_sub_plot(cgv::render::context& ctx, unsigned i)
 
 	if (spc.show_points) {
 		set_uniforms(ctx, sphere_prog, i);
-		sphere_prog.set_uniform(ctx, "radius_scale", spc.point_size*(extent(0)+extent(1))/(500.0f));
+		sphere_prog.set_uniform(ctx, "radius_scale", spc.point_size*(extent(0) + extent(1)) / (500.0f));
 		sphere_prog.set_uniform(ctx, "map_color_to_material", 3);
 		sphere_prog.enable(ctx);
-		ctx.set_color(spc.point_color);
-		sphere_prog.set_attribute(ctx, "att0", 1.0f);
-		glDrawArrays(GL_POINTS, 0, count);
+			ctx.set_color(spc.point_color);
+			sphere_prog.set_attribute(ctx, "att0", 1.0f);
+			glDrawArrays(GL_POINTS, 0, count);
 		sphere_prog.disable(ctx);
 	}
 	
@@ -153,11 +153,9 @@ void plot3d::draw_sub_plot(cgv::render::context& ctx, unsigned i)
 		box_prog.set_uniform(ctx, "percentual_width", spc.bar_percentual_width);
 		box_prog.set_uniform(ctx, "N", (int&)spc.samples_per_row);
 		box_prog.enable(ctx);
-		set_default_attributes(ctx, box_prog, 3);
-
-		ctx.set_color(spc.bar_color);
-		box_prog.set_uniform(ctx, "map_color_to_material", 3);
-		glDrawArrays(GL_POINTS, 0, count);
+			ctx.set_color(spc.bar_color);
+			box_prog.set_uniform(ctx, "map_color_to_material", 3);
+			glDrawArrays(GL_POINTS, 0, count);
 		box_prog.disable(ctx);
 		//if (spc.bar_outline_width > 0) {
 		//	glLineWidth(spc.bar_outline_width);
@@ -174,10 +172,8 @@ void plot3d::draw_sub_plot(cgv::render::context& ctx, unsigned i)
 		set_uniforms(ctx, stick_prog, i);
 		glLineWidth(spc.stick_width);
 		stick_prog.enable(ctx);
-		set_default_attributes(ctx, stick_prog, 3);
-
-		ctx.set_color(spc.stick_color);
-		glDrawArrays(GL_POINTS, 0, count);
+			ctx.set_color(spc.stick_color);
+			glDrawArrays(GL_POINTS, 0, count);
 		stick_prog.disable(ctx);
 	}
 }
@@ -188,6 +184,7 @@ void plot3d::draw_domain(cgv::render::context& ctx)
 	const domain_config& dc = *get_domain_config_ptr();
 	if (dc.fill) {
 		cgv::render::box_renderer& br = cgv::render::ref_box_renderer(ctx);
+		br.set_attribute_array_manager(ctx, 0);
 		br.set_position_array(ctx, &center_location, 1);
 		br.set_position_is_center(true);
 		br.set_extent(ctx, extent);
@@ -248,17 +245,17 @@ void plot3d::draw_ticks(cgv::render::context& ctx)
 		return;
 	enable_attributes(ctx, 2);
 	tick_label_prog.enable(ctx);
-	set_uniforms(ctx, tick_label_prog, -1);
-	set_attributes(ctx, tick_vertices);
-	for (const auto& tbc : tick_batches) if (tbc.vertex_count > 0) {
-		tick_label_prog.set_uniform(ctx, "ai", tbc.ai);
-		tick_label_prog.set_uniform(ctx, "aj", tbc.aj);
-		const axis_config& ac = get_domain_config_ptr()->axis_configs[tbc.ai];
-		const tick_config& tc = tbc.primary ? ac.primary_ticks : ac.secondary_ticks;
-		glLineWidth(tc.line_width);
-		ctx.set_color(ac.color);
-		glDrawArrays(GL_LINES, tbc.first_vertex, tbc.vertex_count);
-	}
+		set_uniforms(ctx, tick_label_prog, -1);
+		set_attributes(ctx, tick_vertices);
+		for (const auto& tbc : tick_batches) if (tbc.vertex_count > 0) {
+			tick_label_prog.set_uniform(ctx, "ai", tbc.ai);
+			tick_label_prog.set_uniform(ctx, "aj", tbc.aj);
+			const axis_config& ac = get_domain_config_ptr()->axis_configs[tbc.ai];
+			const tick_config& tc = tbc.primary ? ac.primary_ticks : ac.secondary_ticks;
+			glLineWidth(tc.line_width);
+			ctx.set_color(ac.color);
+			glDrawArrays(GL_LINES, tbc.first_vertex, tbc.vertex_count);
+		}
 	tick_label_prog.disable(ctx);
 	disable_attributes(ctx, 2);
 }
@@ -355,10 +352,10 @@ void plot3d::draw(cgv::render::context& ctx)
 		draw_domain(ctx);
 
 		enable_attributes(ctx, 3);
-		set_uniforms(ctx, prog, -1);
-		prog.enable(ctx);
-		draw_axes(ctx);
-		prog.disable(ctx);
+			set_uniforms(ctx, prog, -1);
+			prog.enable(ctx);
+				draw_axes(ctx);
+			prog.disable(ctx);
 		disable_attributes(ctx, 3);
 
 		draw_ticks(ctx);

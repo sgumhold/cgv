@@ -29,6 +29,20 @@ namespace cgv {
 			blend_points = true;
 			orient_splats = true;
 		}
+		void surfel_renderer::set_attribute_array_manager(const context& ctx, attribute_array_manager* _aam_ptr)
+		{
+			surface_renderer::set_attribute_array_manager(ctx, _aam_ptr);
+			if (aam_ptr) {
+				if (aam_ptr->has_attribute(ref_prog().get_attribute_location(ctx, "point_size")))
+					has_point_sizes = true;
+				if (aam_ptr->has_attribute(ref_prog().get_attribute_location(ctx, "color_index")))
+					has_indexed_colors = true;
+			}
+			else {
+				has_point_sizes = false;
+				has_indexed_colors = false;
+			}
+		}
 
 		surfel_renderer::surfel_renderer()
 		{

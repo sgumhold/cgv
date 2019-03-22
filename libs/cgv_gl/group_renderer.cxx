@@ -19,6 +19,17 @@ namespace cgv {
 			has_group_translations = false;
 			has_group_rotations = false;
 		}
+		void group_renderer::set_attribute_array_manager(const context& ctx, attribute_array_manager* _aam_ptr)
+		{
+			renderer::set_attribute_array_manager(ctx, _aam_ptr);
+			if (aam_ptr) {
+				if (aam_ptr->has_attribute(ref_prog().get_attribute_location(ctx, "group_index")))
+					has_group_indices = true;
+			}
+			else {
+				has_group_indices = false;
+			}
+		}
 
 		void group_renderer::set_group_index_array(const context& ctx, const std::vector<unsigned>& group_indices)
 		{

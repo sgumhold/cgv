@@ -40,6 +40,20 @@ namespace cgv {
 			reference_point_size = 0.01f;
 			y_view_angle = 45;
 		}
+		void point_renderer::set_attribute_array_manager(const context& ctx, attribute_array_manager* _aam_ptr)
+		{
+			group_renderer::set_attribute_array_manager(ctx, _aam_ptr);
+			if (aam_ptr) {
+				if (aam_ptr->has_attribute(ref_prog().get_attribute_location(ctx, "point_size")))
+					has_point_sizes = true;
+				if (aam_ptr->has_attribute(ref_prog().get_attribute_location(ctx, "color_index")))
+					has_indexed_colors = true;
+			}
+			else {
+				has_point_sizes = false;
+				has_indexed_colors = false;
+			}
+		}
 		///
 		void point_renderer::set_reference_point_size(float _reference_point_size)
 		{
