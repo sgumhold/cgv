@@ -4,6 +4,7 @@
 #include <cgv/gui/trigger.h>
 #include <cgv/signal/rebind.h>
 #include <cgv/math/ftransform.h>
+#include <cgv/base/import.h>
 #include <cgv/math/inv.h>
 #include <iostream>
 #include <sstream>
@@ -26,6 +27,9 @@ vr_view_interactor::vr_view_interactor(const char* name) : stereo_view_interacto
 	fence_frequency = 5;
 	fence_line_width = 3;
 	show_vr_kits = true;
+	show_vr_kits_as_spheres = false;
+	show_vr_kits_as_meshes = true;
+
 	show_action_zone = false;
 	current_vr_handle = 0;
 	current_vr_handle_index = 0;
@@ -171,6 +175,21 @@ void vr_view_interactor::stream_stats(std::ostream& os)
 bool vr_view_interactor::init(cgv::render::context& ctx)
 {
 	cgv::render::ref_sphere_renderer(ctx, 1);
+	cgv::media::mesh::simple_mesh<float> M;
+	if (M.read(cgv::base::find_data_file("vr_controller_vive_1_5.obj", "D")))
+		MI_controller.construct(ctx, M);
+	cgv::media::mesh::simple_mesh<float> M2;
+	if (M2.read(cgv::base::find_data_file("generic_hmd.obj", "D")))
+		MI_hmd.construct(ctx, M2);
+
+	if (!MI_hmd.is_constructed() && !MI_controller.is_constructed()) {
+		show_vr_kits_as_meshes = false;
+		on_set(&show_vr_kits_as_meshes);
+		if (!show_vr_kits_as_spheres) {
+			show_vr_kits_as_spheres = true;
+			on_set(&show_vr_kits_as_spheres);
+		}
+	}
 	return stereo_view_interactor::init(ctx);
 }
 
@@ -434,53 +453,75 @@ void vr_view_interactor::draw(cgv::render::context& ctx)
 			vr::vr_kit_state state;
 			vr::vr_kit_state* state_ptr = &state;
 			if (handle == current_vr_handle)
-				state_ptr = &kit_states[current_vr_handle_index-1];
+				state_ptr = &kit_states[current_vr_handle_index - 1];
 			else if (!kit_ptr->query_state(state, 1))
 				continue;
-			float left_eye_to_head[12];
-			float right_eye_to_head[12];
-			kit_ptr->put_eye_to_head_matrix(0, left_eye_to_head);
-			kit_ptr->put_eye_to_head_matrix(1, right_eye_to_head);
-			const mat3& R_w_h = reinterpret_cast<const mat3&>(state_ptr->hmd.pose[0]);
-			const vec3& p_w_h = reinterpret_cast<const vec3&>(state_ptr->hmd.pose[9]);
 
-
-			const mat3& R_h_l = reinterpret_cast<const mat3&>(left_eye_to_head[0]);
-			const vec3& p_h_l = reinterpret_cast<const vec3&>(left_eye_to_head[9]);
-
-			const mat3& R_h_r = reinterpret_cast<const mat3&>(right_eye_to_head[0]);
-			const vec3& p_h_r = reinterpret_cast<const vec3&>(right_eye_to_head[9]);
-
-			vec4 s_l(0, 0, 0, 0.012f);
-			vec4 s_r = s_l;
-			reinterpret_cast<vec3&>(s_l) = R_w_h * p_h_l + p_w_h;
-			reinterpret_cast<vec3&>(s_r) = R_w_h * p_h_r + p_w_h;
-
-			if (kit_ptr != rendered_kit_ptr || rendered_eye != 0) {
-				spheres.push_back(s_l);
-				sphere_colors.push_back(rgb(1, 0, 0));
+			if (show_vr_kits_as_meshes && MI_hmd.is_constructed()) {
+				if (kit_ptr != rendered_kit_ptr) {
+					ctx.push_modelview_matrix();
+					ctx.mul_modelview_matrix(
+						cgv::math::pose4<float>(reinterpret_cast<const mat34&>(state_ptr->hmd.pose[0]))*
+						cgv::math::translate4<float>(0, 0.1f, -0.1f)
+					);
+					MI_hmd.render_mesh(ctx);
+					ctx.pop_modelview_matrix();
+				}
 			}
-			if (kit_ptr != rendered_kit_ptr || rendered_eye != 1) {
-				spheres.push_back(s_r);
-				sphere_colors.push_back(rgb(0, 0, 1));
+			if (show_vr_kits_as_spheres || !MI_hmd.is_constructed()) {
+				float left_eye_to_head[12];
+				float right_eye_to_head[12];
+				kit_ptr->put_eye_to_head_matrix(0, left_eye_to_head);
+				kit_ptr->put_eye_to_head_matrix(1, right_eye_to_head);
+				const mat3& R_w_h = reinterpret_cast<const mat3&>(state_ptr->hmd.pose[0]);
+				const vec3& p_w_h = reinterpret_cast<const vec3&>(state_ptr->hmd.pose[9]);
+
+
+				const mat3& R_h_l = reinterpret_cast<const mat3&>(left_eye_to_head[0]);
+				const vec3& p_h_l = reinterpret_cast<const vec3&>(left_eye_to_head[9]);
+
+				const mat3& R_h_r = reinterpret_cast<const mat3&>(right_eye_to_head[0]);
+				const vec3& p_h_r = reinterpret_cast<const vec3&>(right_eye_to_head[9]);
+
+				vec4 s_l(0, 0, 0, 0.012f);
+				vec4 s_r = s_l;
+				reinterpret_cast<vec3&>(s_l) = R_w_h * p_h_l + p_w_h;
+				reinterpret_cast<vec3&>(s_r) = R_w_h * p_h_r + p_w_h;
+
+				if (kit_ptr != rendered_kit_ptr || rendered_eye != 0) {
+					spheres.push_back(s_l);
+					sphere_colors.push_back(rgb(1, 0, 0));
+				}
+				if (kit_ptr != rendered_kit_ptr || rendered_eye != 1) {
+					spheres.push_back(s_r);
+					sphere_colors.push_back(rgb(0, 0, 1));
+				}
 			}
 			for (unsigned i = 0; i < 2; ++i) {
-				const mat3& R_ci = reinterpret_cast<const mat3&>(state_ptr->controller[i].pose[0]);
-				const vec3& p_ci = reinterpret_cast<const vec3&>(state_ptr->controller[i].pose[9]);
-				spheres.push_back(vec4(p_ci, 0.04f));
-				spheres.push_back(vec4(p_ci + 0.05f*R_ci.col(0), 0.01f));
-				spheres.push_back(vec4(p_ci - 0.05f*R_ci.col(0), 0.01f));
-				spheres.push_back(vec4(p_ci + 0.05f*R_ci.col(1), 0.01f));
-				spheres.push_back(vec4(p_ci - 0.05f*R_ci.col(1), 0.01f));
-				spheres.push_back(vec4(p_ci + 0.05f*R_ci.col(2), 0.01f));
-				spheres.push_back(vec4(p_ci - 0.05f*R_ci.col(2), 0.01f));
-				sphere_colors.push_back(rgb(0.5f + (1 - i)*0.5f, 0.5f, 0.5f + 0.5f*i));
-				sphere_colors.push_back(rgb(1, 0, 0));
-				sphere_colors.push_back(rgb(1, 0.5f, 0.5f));
-				sphere_colors.push_back(rgb(0, 1, 0));
-				sphere_colors.push_back(rgb(0.5f, 1, 0.5f));
-				sphere_colors.push_back(rgb(0, 0, 1));
-				sphere_colors.push_back(rgb(0.5f, 0.5f, 1));
+				if (show_vr_kits_as_meshes && MI_controller.is_constructed()) {
+					ctx.push_modelview_matrix();
+					ctx.mul_modelview_matrix(cgv::math::pose4<float>(reinterpret_cast<const mat34&>(state_ptr->controller[i].pose[0])));
+					MI_controller.render_mesh(ctx);
+					ctx.pop_modelview_matrix();
+				}
+				if (show_vr_kits_as_spheres || !MI_controller.is_constructed()) {
+					const mat3& R_ci = reinterpret_cast<const mat3&>(state_ptr->controller[i].pose[0]);
+					const vec3& p_ci = reinterpret_cast<const vec3&>(state_ptr->controller[i].pose[9]);
+					spheres.push_back(vec4(p_ci, 0.04f));
+					spheres.push_back(vec4(p_ci + 0.05f*R_ci.col(0), 0.01f));
+					spheres.push_back(vec4(p_ci - 0.05f*R_ci.col(0), 0.01f));
+					spheres.push_back(vec4(p_ci + 0.05f*R_ci.col(1), 0.01f));
+					spheres.push_back(vec4(p_ci - 0.05f*R_ci.col(1), 0.01f));
+					spheres.push_back(vec4(p_ci + 0.05f*R_ci.col(2), 0.01f));
+					spheres.push_back(vec4(p_ci - 0.05f*R_ci.col(2), 0.01f));
+					sphere_colors.push_back(rgb(0.5f + (1 - i)*0.5f, 0.5f, 0.5f + 0.5f*i));
+					sphere_colors.push_back(rgb(1, 0, 0));
+					sphere_colors.push_back(rgb(1, 0.5f, 0.5f));
+					sphere_colors.push_back(rgb(0, 1, 0));
+					sphere_colors.push_back(rgb(0.5f, 1, 0.5f));
+					sphere_colors.push_back(rgb(0, 0, 1));
+					sphere_colors.push_back(rgb(0.5f, 0.5f, 1));
+				}
 			}
 		}
 		if (!spheres.empty()) {
@@ -558,7 +599,9 @@ void vr_view_interactor::create_gui()
 			align("\b");
 			end_tree_node(fence_color1);
 		}
-		add_member_control(this, "show_vr_kits", show_vr_kits, "check");
+		add_member_control(this, "show kits", show_vr_kits, "toggle", "w=62", " ");
+		add_member_control(this, "as meshes", show_vr_kits_as_meshes, "toggle", "w=61", " ");
+		add_member_control(this, "as spheres", show_vr_kits_as_spheres, "toggle", "w=61");
 		if (begin_tree_node("sphere styles", srs, false, "level=3")) {
 			align("\a");
 			add_gui("sphere style", srs);

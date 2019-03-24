@@ -21,7 +21,7 @@ if NOT [%1] == [] (
       goto:eof
    )
 ) else (
-   echo no cgv project directory dragged onto batch script
+   echo no cgv support directory dragged onto batch script
    pause
    goto:eof
 )

@@ -33,6 +33,8 @@ namespace cgv {
 			mesh_render_info();
 			///
 			void destruct(cgv::render::context& ctx);
+			/// check whether info is constructed
+			bool is_constructed() const { return vbo.is_created(); }
 			///
 			void construct_base(cgv::render::context& c, const cgv::media::mesh::simple_mesh_base& mesh,
 				std::vector<idx_type>& vertex_indices, std::vector<vec3i>& unique_triples,

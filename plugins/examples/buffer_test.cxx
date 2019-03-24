@@ -31,9 +31,6 @@ public:
 		ctx.set_bg_alpha(1);
 		return true;
 	}
-	void init_frame(context& ctx)
-	{
-	}
 	void small_square(context& ctx, const std::string& text)
 	{
 		ctx.push_projection_matrix();
@@ -42,24 +39,23 @@ public:
 				ctx.set_modelview_matrix(cgv::math::scale4<double>(0.25, 0.25, 0.25));
 				cgv::render::shader_program& prog = ctx.ref_default_shader_program();
 				prog.enable(ctx);
-					ctx.set_color(cgv::media::illum::surface_material::color_type(1,0,0));
+					ctx.set_color(rgb(1,0,0));
 					ctx.tesselate_unit_square();
-					ctx.set_color(cgv::media::illum::surface_material::color_type(1, 1, 1));
-					glColor3f(1, 1, 1);
-					ctx.enable_font_face(ctx.get_current_font_face(),20);
-					ctx.set_cursor(cgv::math::vec<float>(0,0,0), text, cgv::render::TA_BOTTOM);
-					ctx.output_stream() << text << std::endl;
+					//ctx.set_color(rgb(1, 1, 1));
+					//ctx.enable_font_face(ctx.get_current_font_face(),20);
+					//ctx.set_cursor(vec3(0,0,0).to_vec(), text, cgv::render::TA_BOTTOM);
+					//ctx.output_stream() << text << std::endl;
 	}
 	void large_square(context& ctx, const std::string& text)
 	{
 					ctx.mul_modelview_matrix(cgv::math::scale4<double>(2,2,2));
-					ctx.set_color(cgv::media::illum::surface_material::color_type(0, 1, 0));
+					ctx.set_color(rgb(0, 1, 0));
 					ctx.tesselate_unit_square();
-					ctx.set_color(cgv::media::illum::surface_material::color_type(0, 0, 0));
-					glColor3f(0, 0, 0);
-					ctx.enable_font_face(ctx.get_current_font_face(),20);
-					ctx.set_cursor(cgv::math::vec<float>(0,0,0), text, cgv::render::TA_BOTTOM);
-					ctx.output_stream() << text << std::endl;
+					//ctx.set_color(rgb(0, 0, 0));
+					//glColor3f(0, 0, 0);
+					//ctx.enable_font_face(ctx.get_current_font_face(),20);
+					//ctx.set_cursor(vec3(0,0,0).to_vec(), text, cgv::render::TA_BOTTOM);
+					//ctx.output_stream() << text << std::endl;
 				ctx.ref_default_shader_program().disable(ctx);
 			ctx.pop_modelview_matrix();
 		ctx.pop_projection_matrix();
@@ -111,5 +107,5 @@ public:
 	}
 };
  
-factory_registration<buffer_test> bt_fac("buffer_test", "shortcut='Shift-Ctrl-B';menu_text='new/buffer test'", true);
+factory_registration<buffer_test> bt_fac("buffer_test", "shortcut='u';menu_text='new/buffer test'", true);
 
