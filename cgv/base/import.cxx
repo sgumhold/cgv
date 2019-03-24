@@ -58,7 +58,6 @@ std::string find_data_file_1(const std::string& base_path, const std::string& su
 
 std::string find_data_file(const std::string& file_name, const std::string& strategy, const std::string& sub_directory, const std::string& master_path)
 {
-//	std::cout << "find " << file_name << " in " << std::endl;
 	for (unsigned i=0; i<strategy.size(); ++i) {
 		switch (strategy[i]) {
 		case 'r' :

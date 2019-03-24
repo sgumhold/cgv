@@ -94,7 +94,12 @@ void clipped_view::compute_clipping_planes(const cgv::render::view& view, double
 		if (z_min > z_near)
 			z_near_derived = z_min;
 		if (z_max > z_near)
-			z_far_derived = 1.2*z_max;
+			z_far_derived = z_max;
+
+		if (clip_relative_to_extent) {
+			z_near_derived *= z_near;
+			z_far_derived *= z_far;
+		}
 	}
 	else if (clip_relative_to_extent) {
 		z_near_derived = y_extent_at_focus*z_near;

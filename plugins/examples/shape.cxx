@@ -30,11 +30,6 @@ shape::shape(const char* name) : group(name), node_flag(true), ax(0), ay(0),
 	shp = CUBE;
 	flip_normals = false;
 	resolution = 25;
-	if (mesh.read(QUOTE_SYMBOL_VALUE(INPUT_DIR) "/example.obj")) {
-		shp = MESH;
-	}
-	else
-		std::cerr << "could not read mesh" << std::endl;
 
 	key_control<double>* kc = new key_control<double>("ax", ax, "speed=100;more='X';less='Shift-X'");
 	connect_copy(kc->value_change, rebind(static_cast<drawable*>(this), &shape::post_redraw)); 
@@ -141,13 +136,6 @@ void shape::draw_shape(context& c, bool edges)
 	}
 }
 
-///
-bool shape::init(cgv::render::context& ctx)
-{
-	mesh_info.construct(ctx, mesh);
-	return true;
-}
-
 void shape::draw(context& c)
 {
 	c.push_modelview_matrix();
@@ -161,23 +149,14 @@ void shape::draw(context& c)
 		c.ref_default_shader_program().enable(c);
 		c.set_color(col);
 		glLineWidth(3);
-		if (shp == MESH)
-			mesh_info.render_wireframe(c);
-		else
-			draw_shape(c, true);
-
+		draw_shape(c, true);
 		c.ref_default_shader_program().disable(c);
 	}
 	if (show_faces) {
-		if (shp == MESH) {
-			mesh_info.render_mesh(c);
-		}
-		else {
-			c.ref_surface_shader_program().enable(c);
-			c.set_material(mat);
-			draw_shape(c, false);
-			c.ref_surface_shader_program().disable(c);
-		}
+		c.ref_surface_shader_program().enable(c);
+		c.set_material(mat);
+		draw_shape(c, false);
+		c.ref_surface_shader_program().disable(c);
 	}
 
 	c.pop_modelview_matrix();
