@@ -93,7 +93,7 @@ namespace cgv {
 			return color_storage_ptr ? color_storage_ptr->get_color_size() : 0;
 		}
 
-		colored_model::ColorType colored_model::get_color_storage_type() const
+		ColorType colored_model::get_color_storage_type() const
 		{
 			return color_storage_ptr ? color_storage_ptr->get_color_type() : CT_RGBA8;
 		}
