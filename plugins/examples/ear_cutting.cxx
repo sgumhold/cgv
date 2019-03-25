@@ -674,5 +674,5 @@ public:
 
 #include <cgv/base/register.h>
 
-extern factory_registration<ear_cutting> ec_fac("new/ear_cutting", 'E', true);
+extern factory_registration<ear_cutting> ec_fac("new/algorithms/ear_cutting", 'E', true);
 

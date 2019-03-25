@@ -1,4 +1,6 @@
 #include <cgv/gui/provider.h>
+#include <cgv/gui/dialog.h>
+#include <cgv/gui/file_dialog.h>
 #include <cgv/data/data_format.h>
 #include <cgv/os/clipboard.h>
 #include <cgv/data/data_view.h>
@@ -58,11 +60,15 @@ public:
 	}
 	void save()
 	{
+		std::string file_name = file_save_dialog("save noise to file", 
+			"Image Files (bmp,png,jpg,tif):*.bmp;*.png;*.jpg;*.tif|All Files:*.*");
+		if (file_name.empty())
+			return;
 		std::vector<rgba8> data(w*h);
 		create_texture_data(data);
 		cgv::data::data_format df(w, h, cgv::type::info::TI_UINT8, cgv::data::CF_RGBA);
 		cgv::data::data_view dv(&df, &data.front());
-		cgv::media::image::image_writer ir("c:/temp/noise.png");
+		cgv::media::image::image_writer ir(file_name);
 		ir.write_image(dv);
 	}
 	void copy()
@@ -73,6 +79,7 @@ public:
 		for (size_t i = 0; i < data.size(); ++i)
 			rgb_data[i] = data[i];
 		cgv::os::copy_rgb_image_to_clipboard(w, h, &rgb_data.front()[0]);
+		cgv::gui::message("copied image to clipboard");
 	}
 	void create_gui()
 	{
@@ -81,8 +88,8 @@ public:
 		add_member_control(this, "mode", (DummyEnum&)mode, "dropdown", "enums='grey=0;white,brown'");
 		add_member_control(this, "density", density, "value_slider", "min=0;max=1;ticks=true");
 		add_member_control(this, "interpolate", interpolate, "toggle");
-		connect_copy(add_button("save")->click, cgv::signal::rebind(this, &noise::save));
-		connect_copy(add_button("copy")->click, cgv::signal::rebind(this, &noise::copy));
+		connect_copy(add_button("save to file")->click, cgv::signal::rebind(this, &noise::save));
+		connect_copy(add_button("copy to clipboard")->click, cgv::signal::rebind(this, &noise::copy));
 
 	}
 	bool init(context& ctx)
@@ -146,4 +153,4 @@ public:
 #include <cgv/base/register.h>
 
 /// register a factory to create new cubes
-extern cgv::base::factory_registration<noise> noise_fac("new/noise", 'N');
+extern cgv::base::factory_registration<noise> noise_fac("new/algorithms/noise", 'N');

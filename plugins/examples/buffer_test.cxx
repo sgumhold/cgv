@@ -107,5 +107,5 @@ public:
 	}
 };
  
-factory_registration<buffer_test> bt_fac("buffer_test", "shortcut='u';menu_text='new/buffer test'", true);
+factory_registration<buffer_test> bt_fac("buffer_test", "shortcut='u';menu_text='new/render/buffer test'", true);
 

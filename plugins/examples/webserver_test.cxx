@@ -254,9 +254,6 @@ public:
 	}
 };
 
-/// register web server test
-extern factory_registration<web_server_test> web_server_test_fac("new/web server test", 'W', true);
-
 
 
 /// function to generate a html page for the request
@@ -350,3 +347,7 @@ void process_request(http_request* r)
 	  r->answer += body;
 	  r->answer += "</body></html>";
 }
+
+/// register web server test
+extern factory_registration<web_server_test> web_server_test_fac("new/demo/web server test", 'W', true);
+

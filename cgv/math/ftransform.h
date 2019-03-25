@@ -1,6 +1,7 @@
 #pragma once
 
 #include "fmat.h"
+#include "quaternion.h"
 
 namespace cgv {
 	namespace math {

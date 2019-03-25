@@ -2,38 +2,28 @@ type(base_provider_test)
 {
 	decorator("Base Provider Test", heading, "level=1");
 	tree_node("line config", false, 2) {
-		control(line width,line_width,value_slider,"min=1;max=20;log=true;ticks=true");
-		control(nr lines,nr_lines,value_slider,"min=10;max=200;log=true;ticks=true");
+		control(count,nr_lines,value_slider,"min=10;max=200;log=true;ticks=true");
+		control(width,line_width,value_slider,"min=1;max=20;log=true;ticks=true");
+		control(color,line_color);
 	}
 	tree_node("rest", true, 2) {
-		control(aspect,aspect,value_slider,"min=0.1;max=2;ticks=true");
-		view(text,text);
-		control(color,color);
+		control(layout aspect,layout_aspect,value_slider,"min=0.1;max=2;ticks=true");
+		view(some text,some_text);
 	}
 }
 
-type(base_provider_test):parent_type="tree_group";parent_options="column_heading_0='first';column_width_0=100;column_heading_1='second';column_width_1=300"
+name(named_provider):parent_type="layout_group";parent_options="layout='table';rows=5;spacings='huge'"
 {
-	button("text	eins");
-	button("text	zwei");
-	group("group	g1", "") {
-		button("suba	eins");
-		button("subb	zwei");
-	}
-}
-
-name(test_the_provider):parent_type="layout_group";parent_options="layout='table';rows=5;spacings='huge'"
-{
-	decorator("Test The Provider", heading, "level=1;cursor='ns'", cX);
+	decorator("Named Provider Test", heading, "level=1;cursor='ns'", cX);
 	group(g2, layout_group, "layout='table';label='';cols=2", sfF) {
 		group(g3, layout_group, "layout='table';label='';rows=3;spacings='huge';cursor='hand'", fFs) {
-			control(line width,line_width,value_slider,"min=1;max=20;log=true;ticks=true;align='BC';cursor='we'",fs);
 			control(nr lines,nr_lines,value_slider,"min=10;max=200;log=true;ticks=true;align='BC'",fs);
-			control(aspect,aspect,value_slider,"min=0.1;max=2;ticks=true;align='BC'",fs);
+			control(line width,line_width,value_slider,"min=1;max=20;log=true;ticks=true;align='BC';cursor='we'",fs);
+			control(aspect,layout_aspect,value_slider,"min=0.1;max=2;ticks=true;align='BC'",fs);
 		}
-		control(color,color,"","align='BC';cursor='cross'",sfF);
+		control(color,line_color,"","align='BC';cursor='cross'",sfF);
 	}			
 	decorator("", separator, "cursor='move'", f);
-	view(text,text,"","align='TC';cursor='insert'",sf);
+	view(some_text,some_text,"","align='TC';cursor='insert'",sf);
 	decorator("", separator, "cursor='we'", sSf);
 }

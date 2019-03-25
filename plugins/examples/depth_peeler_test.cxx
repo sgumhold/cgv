@@ -7,6 +7,7 @@
 #include <cgv/utils/convert.h>
 #include <cgv_gl/gl/gl.h>
 #include <cgv_gl/gl/gl_transparent_renderer.h>
+#include <cgv_gl/box_renderer.h>
 #include <cgv_gl/gl/mesh_drawable.h>
 #include <cgv_gl/gl/gl_tools.h>
 
@@ -29,26 +30,35 @@ protected:
 	// peeling configuration
 	enum PeelingMode { PEEL_NTH_LAYER, ORDER_INDEPENDENT_TRANSPARENCY } peeling_mode;
 	int max_nr_layers;
-	double transparency;
+	float transparency;
 	// depth peeler configuration
 	bool front_to_back;
 	bool two_sided;
 	double epsilon;
+	// simple scene
+	std::vector<box3> boxes;
+	std::vector<rgba> box_colors;
+	box_render_style brs;
 	// debug helpers
 	bool write_images;
-	std::string file_name_prefix;
 public:
 	depth_peeler_test() 
 	{
 		max_nr_layers = 3;
-		transparency = 0.5;
+		transparency = 0.5f;
 		two_sided = false;
 		front_to_back = true;
-		peeling_mode = ORDER_INDEPENDENT_TRANSPARENCY;
+		peeling_mode = PEEL_NTH_LAYER; // ORDER_INDEPENDENT_TRANSPARENCY;
 		epsilon = 0.00002;
 		write_images = false;
-		file_name_prefix = "e:/temp/dbg";
-		read_mesh("S:/data/surface/x_Gumhold/pial_DK_ply/assembled/Brain3.obj");
+
+		unsigned n = 20;
+		float step = 1.0f / (n - 1);
+		for (unsigned i = 0; i < n; ++i) {
+			float v = i * step;
+			boxes.push_back(box3(vec3(-1, -1, v), vec3(1, 1, v + 0.5f*step)));
+			box_colors.push_back(cgv::media::color<float, cgv::media::HLS, cgv::media::OPACITY>(v, 0.5f, 1.0f, 0.5f));
+		}
 	}
 	std::string get_type_name() const 
 	{
@@ -65,6 +75,7 @@ public:
 			std::cerr << "could not init transparent renderer" << std::endl;
 			exit(0);
 		}
+		ref_box_renderer(ctx, 1);
 		connect(transparent_renderer.render_callback, this, &depth_peeler_test::render_scene);
 		ctx.set_bg_clr_idx(0);
 		return cgv::render::gl::mesh_drawable::init(ctx);
@@ -81,26 +92,17 @@ public:
 	}
 	void render_scene(context& ctx)
 	{
-//		glPushMatrix();
-		GLfloat color[4] = { 1 - GLfloat(transparency),0,0,GLfloat(transparency) };
-		GLfloat spec[4] = { 1 - GLfloat(transparency),1 - GLfloat(transparency),1 - GLfloat(transparency),GLfloat(transparency) };
-		/*glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, color);
-		glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, color);
-		glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, spec);
-		glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, 50);*/
-		glColor4d((1 - transparency)*0.07*5 + 0.3, 0, (1 - transparency)*(1 - 0.07*5) + 0.3, transparency);
-		draw_mesh(ctx, false);
-//		cgv::render::gl::mesh_drawable::draw(ctx);
-/*			glRotated(90,0,1,0);
-			glScaled(0.2,0.2,0.2);
-			glTranslated(-15.0,0,0);
-			for (int i=0; i<=10; ++i) {
-				int j = (43*i)%11;
-				glColor4d((1-transparency)*0.07*j+0.3,0,(1-transparency)*(1-0.07*j)+0.3,transparency);
-				ctx.tesselate_unit_cube();
-				glTranslated(3.0,0,0);
-			}*/
-//		glPopMatrix();
+		for (auto& c : box_colors)
+			c[3] = 1.0f - transparency;
+		auto& R = cgv::render::ref_box_renderer(ctx);
+		R.set_attribute_array_manager(ctx, 0);
+		R.set_render_style(brs);
+		R.set_box_array(ctx, boxes);
+		R.set_color_array(ctx, box_colors);
+		if (R.validate_and_enable(ctx)) {
+			glDrawArrays(GL_POINTS, 0, boxes.size());
+			R.disable(ctx);
+		}
 	}
 
 	int peel_depth_layers(context& ctx)
@@ -132,6 +134,7 @@ public:
 	void draw(context& ctx)
 	{
 		if (peeling_mode == PEEL_NTH_LAYER) {
+
 			glPushAttrib(GL_ENABLE_BIT);
 			if (two_sided)
 				glDisable(GL_CULL_FACE);
@@ -160,6 +163,7 @@ public:
 	{
 		// destruct all allocated objects
 		transparent_renderer.destruct(ctx);
+		ref_box_renderer(ctx, -1);
 	}
 	
 	void create_gui()
@@ -180,12 +184,17 @@ public:
 		if (begin_tree_node("Debugging", write_images, true, "level=3")) {
 			align("\a");
 				add_member_control(this, "write_images", write_images, "toggle");
-				add_member_control(this, "file_name_prefix", file_name_prefix);
 			align("\b");
 			end_tree_node(peeling_mode);
+		}
+		if (begin_tree_node("Render Style", brs)) {
+			align("\a");
+			add_gui("box rs", brs);
+			align("\b");
+			end_tree_node(brs);
 		}
 	}
 };
 
-factory_registration<depth_peeler_test> fr_depth_peeler_test("depth_peeler_test", "shortcut='Shift-Ctrl-D';menu_text='new/depth peeler'", true);
+factory_registration<depth_peeler_test> fr_depth_peeler_test("depth_peeler_test", "shortcut='Ctrl-P';menu_text='new/render/depth peeler'", true);
 

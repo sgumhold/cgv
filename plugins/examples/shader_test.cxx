@@ -149,5 +149,5 @@ public:
 
 #include <cgv/base/register.h>
 
-factory_registration<shader_test> shader_test_fac("new/shader test", 'X', true);
+factory_registration<shader_test> shader_test_fac("new/render/shader test", 'X', true);
 
