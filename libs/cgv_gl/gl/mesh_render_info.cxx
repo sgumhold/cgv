@@ -135,7 +135,7 @@ namespace cgv {
 				glAlphaFunc(GL_GREATER, 0.1f);
 			}
 			prog.enable(c);
-			prog.set_uniform(c, "illumination_mode", 2);
+			//prog.set_uniform(c, "illumination_mode", 2);
 			c.enable_material(mat);
 			aab.enable(c);
 			glDrawElements(GL_TRIANGLES, GLsizei(count), GL_UNSIGNED_INT, (void*)(offset * sizeof(idx_type)));

@@ -49,7 +49,7 @@ void clipped_view::set_default_view()
 	set_view_dir(0, 0, -1);
 	set_view_up_dir(0, 1, 0);
 	set_focus(get_scene_extent().get_center());
-	set_y_extent_at_focus(1.5*get_scene_extent().get_extent()(1));
+	set_y_extent_at_focus(get_scene_extent().get_extent().length());
 }
 
 /// transform a z value in eye-coordinates (should be negative!) to device coordinate
@@ -94,7 +94,12 @@ void clipped_view::compute_clipping_planes(const cgv::render::view& view, double
 		if (z_min > z_near)
 			z_near_derived = z_min;
 		if (z_max > z_near)
-			z_far_derived = 1.2*z_max;
+			z_far_derived = z_max;
+
+		if (clip_relative_to_extent) {
+			z_near_derived *= z_near;
+			z_far_derived *= z_far;
+		}
 	}
 	else if (clip_relative_to_extent) {
 		z_near_derived = y_extent_at_focus*z_near;

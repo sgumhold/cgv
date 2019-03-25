@@ -21,27 +21,27 @@ class infinite_grid :
 {
 public:
 	bool recreate_texture;
-	int resolution, width;
+	int exponent, width;
 	double scale;
 	texture t;
 
 	infinite_grid(int _r = 8) : 
-		resolution(_r), width(1), scale(1), recreate_texture(true),
+		exponent(_r), width(1), scale(1), recreate_texture(true),
 		t("[R,G,B,A]", TF_NEAREST, TF_LINEAR_MIPMAP_LINEAR, TW_REPEAT, TW_REPEAT) 
 	{}
 
 	void init_frame(context& ctx)
 	{
 		if (recreate_texture) {
-			int n = (int)pow(2.0,resolution);
+			int n = (int)pow(2.0,exponent);
 			data_format df(n,n,TI_UINT8,CF_RGBA);
 			data_view dv(&df);
 			int i,j;
 			unsigned char* ptr = dv.get_ptr<unsigned char>();
 			for (i=0; i<n; ++i)
 				for (j=0; j<n; ++j) {
-					ptr[0] = ptr[1] = ptr[2] = 255;
-					ptr[3] = ((i<width)||(j<width))?150:0;
+					ptr[0] = ptr[1] = ptr[2] = 128;
+					ptr[3] = ((i<width)||(j<width))?255:0;
 					ptr += 4;
 				}
 			t.destruct(ctx);
@@ -54,7 +54,7 @@ public:
 	}
 	void stream_stats(std::ostream& os)
 	{
-		oprintf(os, "infinite grid: resolution=%d, scale=%f\n", resolution, scale);
+		oprintf(os, "infinite grid: exponent=%d, scale=%f\n", exponent, scale);
 	}
 	void stream_help(std::ostream& os)
 	{
@@ -81,7 +81,7 @@ public:
 
 		glMatrixMode(GL_MODELVIEW);
 		glPushMatrix();
-		glTranslated(-0.5*width*pow(0.5,resolution), -width*0.5*pow(0.5,resolution), 0);
+		glTranslated(-0.5*width*pow(0.5,exponent), -width*0.5*pow(0.5,exponent), 0);
 
 		glBegin(GL_TRIANGLE_FAN);
 			glTexCoord4f( 0, 0, 0, 1); glVertex4f( 0, 0, 0, 1);
@@ -103,7 +103,7 @@ public:
 	void on_recreate_texture()
 	{
 		if (find_control(width))
-			find_control(width)->set("max", (int)pow(2.0,resolution));
+			find_control(width)->set("max", (int)pow(2.0,exponent));
 		recreate_texture = true;
 		post_redraw();
 	}
@@ -115,15 +115,15 @@ public:
 		add_decorator("infinite grid", "heading");
 		connect_copy(add_control("scale", scale, "value_slider","min=0.1;max=100;ticks=true;log=true")
 			->value_change,rebind(static_cast<drawable*>(this),&drawable::post_redraw));
-		connect_copy(add_control("resolution", resolution, "value_slider","min=1;max=10;ticks=true;log=true")
+		connect_copy(add_control("exponent", exponent, "value_slider","min=1;max=10;ticks=true;log=true")
 			->value_change,rebind(this,&infinite_grid::on_recreate_texture));
 		connect_copy(add_control("width", width, "value_slider","min=1;ticks=true;log=true")
 			->value_change,rebind(this,&infinite_grid::on_recreate_texture));
-		find_control(width)->set("max", (int)pow(2.0,resolution));
+		find_control(width)->set("max", (int)pow(2.0,exponent));
 	}
 };
 
 #include <cgv/base/register.h>
 
-extern factory_registration_1<infinite_grid,int> ig_fac("new/infinite grid", 'I', 8, true);
+extern factory_registration_1<infinite_grid,int> ig_fac("new/render/infinite grid", 'I', 8, true);
 

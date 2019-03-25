@@ -1,5 +1,6 @@
 #include "obj_reader.h"
 #include <cgv/utils/file.h>
+#include <cgv/base/import.h>
 #include <cgv/type/standard_types.h>
 #include <cgv/utils/advanced_scan.h>
 #include <cgv/utils/tokenizer.h>
@@ -177,7 +178,7 @@ template <typename T>
 bool obj_reader_generic<T>::read_obj(const std::string& file_name)
 {
 	std::string content;
-	if (!file::read(file_name, content, true))
+	if (!cgv::base::read_data_file(file_name, content, true))
 		return false;
 
 	path_name = file::get_path(file_name);

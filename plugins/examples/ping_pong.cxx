@@ -315,4 +315,4 @@ public:
 #include <cgv/base/register.h>
 
 /// register a factory to create new cubes
-extern cgv::base::factory_registration<ping_pong> ping_pong_fac("new/ping pong", 'W');
+extern cgv::base::factory_registration<ping_pong> ping_pong_fac("new/render/ping pong", 'W');

@@ -5,6 +5,7 @@
 #include <cg_vr/vr_server.h>
 #include <cgv_gl/box_renderer.h>
 #include <cgv_gl/sphere_renderer.h>
+#include <cgv_gl/gl/mesh_render_info.h>
 #include <stereo_view_interactor.h>
 
 #include "lib_begin.h"
@@ -54,6 +55,8 @@ bool your_class::init(cgv::render::context& ctx)
 class CGV_API vr_view_interactor : 
 	public stereo_view_interactor	
 {
+public:
+	typedef cgv::math::fmat<float,3,4> mat34;
 protected:
 	/// whether the window shows a separate view onto the scene or the one of the current vr kit
 	bool separate_view;
@@ -65,6 +68,8 @@ protected:
 	int rendered_eye;
 	vr::vr_kit* rendered_kit_ptr;
 	int rendered_kit_index;
+	cgv::render::mesh_render_info MI_controller, MI_hmd;
+
 	cgv::gui::VREventTypeFlags event_flags;
 	static dmat4 hmat_from_pose(float pose_matrix[12]);
 
@@ -73,6 +78,8 @@ protected:
 
 	// visualization of kits and action zone
 	bool show_vr_kits;
+	bool show_vr_kits_as_spheres;
+	bool show_vr_kits_as_meshes;
 	bool show_action_zone;
 	rgb fence_color1, fence_color2;
 	float fence_frequency;

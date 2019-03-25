@@ -32,7 +32,7 @@ textured_surface_material::textured_surface_material(
 	normal_index = -1;
 	bump_index = -1;
 	specular_index = -1;
-	sRGBA_textures = true;
+	sRGBA_textures = false;
 }
 
 /// set whether textures are interpreted in sRGB format
@@ -44,6 +44,7 @@ void textured_surface_material::set_sRGBA_textures(bool do_set)
 /// convert obj material
 textured_surface_material::textured_surface_material(const obj_material& obj_mat)
 {
+	sRGBA_textures = false;
 	diffuse_index = -1;
 	roughness_index = -1;
 	metalness_index = -1;
@@ -57,7 +58,9 @@ textured_surface_material::textured_surface_material(const obj_material& obj_mat
 	set_name(obj_mat.get_name());
 	set_brdf_type(BrdfType(BT_LAMBERTIAN + BT_PHONG));
 	obj_material::color_type a = obj_mat.get_ambient(), d = obj_mat.get_diffuse();
-	set_ambient_occlusion(sqrt(a[0] * a[0] + a[1] * a[1] + a[2] * a[2]) / sqrt(d[0] * d[0] + d[1] * d[1] + d[2] * d[2]));
+	float la = sqrt(a[0] * a[0] + a[1] * a[1] + a[2] * a[2]);
+	float ld = sqrt(d[0] * d[0] + d[1] * d[1] + d[2] * d[2]);
+	set_ambient_occlusion(la >= ld ? la : la/ld);
 	set_diffuse_reflectance(obj_mat.get_diffuse());
 	set_specular_reflectance(obj_mat.get_specular());
 	set_emission(obj_mat.get_emission());

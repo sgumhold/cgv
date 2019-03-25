@@ -194,6 +194,39 @@ typename simple_mesh<T>::box_type simple_mesh<T>::compute_box() const
 		box.add_point(p);
 	return box;
 }
+/// compute vertex normals by averaging triangle normals
+template <typename T>
+void simple_mesh<T>::compute_vertex_normals()
+{
+	// clear previous normal info
+	if (has_normals())
+		normals.clear();
+	// copy position indices to normals
+	normal_indices = position_indices;
+	// initialize normals to null vectors
+	normals.resize(positions.size(), vec3(0.0f));
+	// iterate faces
+	for (idx_type fi = 0; fi < get_nr_faces(); ++fi) {
+		idx_type c0 = begin_corner(fi);
+		idx_type ce = end_corner(fi);
+		vec3 p0 = position(position_indices[c0]);
+		vec3 dj = position(position_indices[c0 + 1]) - p0;
+		vec3 nml(0.0f);
+		for (idx_type ci = c0+2; ci < ce; ++ci) {
+			vec3 di = position(position_indices[ci]) - p0;
+			nml += cross(dj, di);
+			dj = di;
+		}
+		T nl = nml.length();
+		if (nl > 1e-8f) {
+			nml *= 1.0f/nl;
+			for (idx_type ci = c0; ci < ce; ++ci)
+				normal(normal_indices[ci]) += nml;
+		}
+	}
+	for (auto& n : normals)
+		n.normalize();
+}
 
 /// extract vertex attribute array and element array buffers for triangulation and edges in wireframe
 template <typename T>

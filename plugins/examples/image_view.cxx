@@ -178,5 +178,5 @@ public:
 
 #include <cgv/base/register.h>
 
-extern factory_registration<image_view> image_drawable_factory_registration("new/image view", 'I', true);
+extern factory_registration<image_view> image_drawable_factory_registration("new/media/image view", 'I', true);
 

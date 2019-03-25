@@ -61,7 +61,6 @@ bool bmp_reader::open(const std::string& file_name, data_format& df, std::vector
 	palette.clear();
 
 	fp = cgv::base::open_data_file(file_name.c_str(), "rb");
-//	fp = fopen(file_name.c_str(), "rb");
 	if (!fp) {
 		last_error  = "could not open file: ";
 		last_error += file_name;

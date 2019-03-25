@@ -158,5 +158,5 @@ void picker::draw(context& ctx)
 #include <cgv/base/register.h>
 
 /// register a factory to create new cubes
-extern cgv::base::factory_registration_1<picker,const char*> picker_fac("new/picker", 'P', "point picker", true);
+extern cgv::base::factory_registration_1<picker,const char*> picker_fac("new/events/picker", 'P', "point picker", true);
 //extern cgv::base::object_registration_1<picker,const char*> picker_reg("point picker", "");
