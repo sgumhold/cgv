@@ -7,25 +7,25 @@
 
 namespace cgv {
 	namespace media {
-		/// enumerate color types
-			enum ColorType {
-				CT_RGB8,
-				CT_RGBA8,
-				CT_RGB,
-				CT_RGBA
-			};
+		/// different color types used as defaults in the color storage
+		enum ColorType {
+			CT_RGB8,
+			CT_RGBA8,
+			CT_RGB,
+			CT_RGBA
+		};
 
-		// traits struct used to derive color type
+		/// traits struct used to derive color type (need to be declared on namespace level for specialization)
 		template <typename T> struct color_storage_traits {};
 		template <> struct color_storage_traits<color<float, RGB> > { static const ColorType color_type = CT_RGB; };
 		template <> struct color_storage_traits<color<float, RGB, OPACITY> > { static const ColorType color_type = CT_RGBA; };
 		template <> struct color_storage_traits<color<unsigned char, RGB> > { static const ColorType color_type = CT_RGB8; };
 		template <> struct color_storage_traits<color<unsigned char, RGB, OPACITY> > { static const ColorType color_type = CT_RGBA8; };
 
+		/// declaration of types for color storage  
 		struct color_storage_types
 		{
-		public:
-			
+		public:			
 			/// define supported color types
 			typedef color<float, RGB> rgb;
 			typedef color<float, RGB, OPACITY> rgba;
@@ -33,7 +33,7 @@ namespace cgv {
 			typedef color<unsigned char, RGB, OPACITY> rgba8;
 		};
 
-			/// interface for color storage of different internal types
+		/// interface for color storage of different internal types
 		class abst_color_storage : public color_storage_types
 		{
 		protected:
