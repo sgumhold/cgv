@@ -90,7 +90,7 @@ namespace cgv{
 			x = -0.70711*((2.30753 + t * 0.27061) / (1. + t * (0.99229 + t * 0.04481)) - t);
 			for (int j = 0; j < 2; j++) {
 				err = erfc(x) - pp;
-				x += err / (1.12837916709551257*exp(-sqr(x)) - x * err);
+				x += err / (1.12837916709551257*exp(-(x*x)) - x * err);
 			}
 			return (p < 1.0 ? x : -x);
 		}

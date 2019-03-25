@@ -13,6 +13,8 @@ file(GLOB_RECURSE PUBLIC_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "*.h")
 # Files to be preprocessed by PPP
 file(GLOB_RECURSE PPP_SOURCES RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "*.ph")
 
+message(STATUS ${PPP_SOURCES})
+
 # Schedule preprocessing commands
 ppp_compile("${CGV_DIR}"
 			PPP_FILES 

@@ -79,7 +79,7 @@ public:
 	function_ptr fp;
 	bool_function_functor(function_ptr _fp) : fp(_fp) {}
 	bool operator() (@["typename S::A1 v1"; ", "; "typename S::A".i." v".i]) const { return fp(@["v1";",";"v".i]); }
-	void put_pointers(const void* &p1, const void* &p2) const { p1 = 0; p2 = fp; }
+	void put_pointers(const void* &p1, const void* &p2) const { p1 = 0; p2 = (void*&)fp; }
 	virtual functor_base* clone() const { return new bool_function_functor(*this); }
 };
 
@@ -138,7 +138,7 @@ public:
 
 // connect bool_signal to a bool method of an object
 template <class X@if(i>0)@{, @["typename T1"; ", "; "typename T".i]@}>
-void connect(bool_signal<@["T1"; ", "; "T".i]>& s, X* ip, bool (X::*mp)(@["T1"; ", "; "T".i]) const) { s.connect(const_bool_method_functor<@(i),X,@["T1"; ", "; "T".i]>(ip,mp)); }
+void connect(bool_signal<@["T1"; ", "; "T".i]>& s, X* ip, bool (X::*mp)(@["T1"; ", "; "T".i]) const) { s.connect(const_bool_method_functor<@(i),X@if(i>0)@{,@["T1"; ", "; "T".i]@}>(ip,mp)); }
 
 // disconnect bool_signal from a bool method of an object
 template <class X@if(i>0)@{, @["typename T1"; ", "; "typename T".i]@}>

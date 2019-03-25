@@ -44,7 +44,9 @@ macro(ppp_command_add base infile outfile)
 		file(MAKE_DIRECTORY "${PH_PATH}")
 	endif()
 
-	get_filename_component(${outfile} "${PH_PATH}/${PH_NAME}.h" ABSOLUTE)
+#	get_filename_component(${outfile} "${PH_PATH}/${PH_NAME}.h" ABSOLUTE)
+	get_filename_component(PH_SRC_PATH "${infile}" DIRECTORY)
+    get_filename_component(${outfile} "${PH_SRC_PATH}/${PH_NAME}.h" ABSOLUTE)
 
 	# FIXME: Can we really do this?
 	include_directories(
