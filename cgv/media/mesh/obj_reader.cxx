@@ -60,41 +60,36 @@ typename obj_reader_generic<T>::v3d_type obj_reader_generic<T>::parse_v3d(const 
 	return v;
 }
 
-template <typename T>
-typename obj_reader_generic<T>::color_type obj_reader_generic<T>::parse_color(const std::vector<token>& t, unsigned off) const
+obj_reader_base::color_type obj_reader_base::parse_color(const std::vector<token>& t, unsigned off) const
 {
-	crd_type v[4] = {0,0,0,1};
+	float v[4] = {0,0,0,1};
 	(t.size() > 3+off) && 
-	is_double(t[1+off].begin,t[1+off].end, v[0]) && 
-	is_double(t[2+off].begin,t[2+off].end, v[1]) && 
-	is_double(t[3+off].begin,t[3+off].end, v[2]);
+	is_double_impl(t[1+off].begin,t[1+off].end, v[0]) && 
+	is_double_impl(t[2+off].begin,t[2+off].end, v[1]) && 
+	is_double_impl(t[3+off].begin,t[3+off].end, v[2]);
 	if (t.size() > 4+off)
-		is_double(t[4+off].begin,t[4+off].end, v[3]);
+		is_double_impl(t[4+off].begin,t[4+off].end, v[3]);
 	return color_type((float)v[0],(float)v[1],(float)v[2],(float)v[3]);
 }
 
 /// return the index of the currently selected group or -1 if no group is defined
-template <typename T>
-unsigned obj_reader_generic<T>::get_current_group() const
+unsigned obj_reader_base::get_current_group() const
 {
 	return group_index;
 }
 
 /// return the index of the currently selected material or -1 if no material is defined
-template <typename T>
-unsigned obj_reader_generic<T>::get_current_material() const
+unsigned obj_reader_base::get_current_material() const
 {
 	return material_index;
 }
 
-template <typename T>
-obj_reader_generic<T>::obj_reader_generic()
+obj_reader_base::obj_reader_base()
 {
 	clear();
 }
 
-template <typename T>
-void obj_reader_generic<T>::clear()
+void obj_reader_base::clear()
 {
 	mtl_lib_files.clear();
 	material_index_lut.clear();
@@ -106,9 +101,13 @@ void obj_reader_generic<T>::clear()
 	have_default_material = false;
 }
 
-/// overide this function to process a comment
 template <typename T>
-void obj_reader_generic<T>::process_comment(const std::string& comment)
+obj_reader_generic<T>::obj_reader_generic()
+{
+}
+
+/// overide this function to process a comment
+void obj_reader_base::process_comment(const std::string& comment)
 {
 }
 
@@ -131,14 +130,12 @@ void obj_reader_generic<T>::process_normal(const v3d_type& n)
 }
 
 /// overide this function to process a normal
-template <typename T>
-void obj_reader_generic<T>::process_color(const color_type& c)
+void obj_reader_base::process_color(const color_type& c)
 {
 }
 
 /// convert negative indices to positive ones by adding the number of elements
-template <typename T>
-void obj_reader_generic<T>::convert_to_positive(unsigned vcount, int *vertices,
+void obj_reader_base::convert_to_positive(unsigned vcount, int *vertices,
 						 int *texcoords, int *normals,
 						 unsigned v, unsigned n, unsigned t)
 {
@@ -157,25 +154,40 @@ void obj_reader_generic<T>::convert_to_positive(unsigned vcount, int *vertices,
 }
 
 /// overide this function to process a face
-template <typename T>
-void obj_reader_generic<T>::process_face(unsigned vcount, int *vertices, int *texcoords, int *normals)
+void obj_reader_base::process_face(unsigned vcount, int *vertices, int *texcoords, int *normals)
 {
 }
 
 /// overide this function to process a group given by name and parameter string
-template <typename T>
-void obj_reader_generic<T>::process_group(const std::string& name, const std::string& parameters)
+void obj_reader_base::process_group(const std::string& name, const std::string& parameters)
 {
 }
 
 /// process a material definition
-template <typename T>
-void obj_reader_generic<T>::process_material(const cgv::media::illum::obj_material& mtl, unsigned)
+void obj_reader_base::process_material(const cgv::media::illum::obj_material& mtl, unsigned)
 {
 }
 
+///
 template <typename T>
-bool obj_reader_generic<T>::read_obj(const std::string& file_name)
+void obj_reader_generic<T>::parse_and_process_vertex(const std::vector<cgv::utils::token>& tokens)
+{
+	process_vertex(parse_v3d(tokens));
+}
+///
+template <typename T>
+void obj_reader_generic<T>::parse_and_process_normal(const std::vector<cgv::utils::token>& tokens)
+{
+	process_normal(parse_v3d(tokens));
+}
+///
+template <typename T>
+void obj_reader_generic<T>::parse_and_process_texcoord(const std::vector<cgv::utils::token>& tokens)
+{
+	process_texcoord(parse_v2d(tokens));
+}
+
+bool obj_reader_base::read_obj(const std::string& file_name)
 {
 	std::string content;
 	if (!cgv::base::read_data_file(file_name, content, true))
@@ -206,18 +218,18 @@ bool obj_reader_generic<T>::read_obj(const std::string& file_name)
 		switch (tokens[0][0]) {
 		case 'v' :
 			if (tokens[0].size() == 1) {
-				process_vertex(parse_v3d(tokens));
+				parse_and_process_vertex(tokens);
 				if (tokens.size() >= 7)
 					process_color(parse_color(tokens, 3));
 			}
 			else {
 				switch (tokens[0][1]) {
 				case 'n' :
-					process_normal(parse_v3d(tokens));
+					parse_and_process_normal(tokens);
 					++nr_normals;
 					break;
 				case 't' : 
-					process_texcoord(parse_v2d(tokens));
+					parse_and_process_texcoord(tokens);
 					++nr_texcoords;
 					break;
 				case 'c' : 
@@ -278,8 +290,7 @@ bool obj_reader_generic<T>::read_obj(const std::string& file_name)
 	return true;
 }
 
-template <typename T>
-bool obj_reader_generic<T>::read_mtl(const std::string& file_name)
+bool obj_reader_base::read_mtl(const std::string& file_name)
 {
 	std::string fn = cgv::base::find_data_file(file_name, "McpD", "", path_name);
 	if (path_name.empty()) {
@@ -375,8 +386,7 @@ bool obj_reader_generic<T>::read_mtl(const std::string& file_name)
 	return true;
 }
 
-template <typename T>
-void obj_reader_generic<T>::parse_material(const std::vector<token>& tokens)
+void obj_reader_base::parse_material(const std::vector<token>& tokens)
 {
 	if (tokens.size() < 2)
 		return;
@@ -388,8 +398,7 @@ void obj_reader_generic<T>::parse_material(const std::vector<token>& tokens)
 		material_index = it->second;
 }
 
-template <typename T>
-void obj_reader_generic<T>::parse_face(const std::vector<token>& tokens)
+void obj_reader_base::parse_face(const std::vector<token>& tokens)
 {
 	std::vector<int> vertex_indices;
 	std::vector<int> normal_indices;
