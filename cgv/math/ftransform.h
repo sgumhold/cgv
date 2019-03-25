@@ -1,6 +1,7 @@
 #pragma once
 
 #include "fmat.h"
+#include "quaternion.h"
 
 namespace cgv {
 	namespace math {
@@ -62,6 +63,35 @@ namespace cgv {
 		/// construct 4x4 rotation matrix from angle in degrees and axis 
 		template <typename T> fmat<T, 4, 4>
 			rotate4(const T& A, const T& ax, const T& ay, const T& az) { return rotate4(A, fvec<T, 3>(ax, ay, az)); }
+
+		/// construct 4x4 pose matrix from a 3x4 matrix
+		template <typename T> fmat<T, 4, 4>
+			pose4(const fmat<T,3,4>& M) { 
+				fmat<T, 4, 4> M4;
+				M4.set_col(0, fvec<T, 4>(M.col(0), 0));
+				M4.set_col(1, fvec<T, 4>(M.col(1), 0));
+				M4.set_col(2, fvec<T, 4>(M.col(2), 0));
+				M4.set_col(3, fvec<T, 4>(M.col(3), 1));
+				return M4;
+			}
+		/// construct 4x4 pose matrix from a 3x3 rotation matrix and translation vector
+		template <typename T> fmat<T, 4, 4>
+			pose4(const fmat<T, 3, 3>& R, const fvec<T, 3>& t) {
+				fmat<T, 4, 4> M4;
+				M4.set_col(0, fvec<T, 4>(R.col(0), 0));
+				M4.set_col(1, fvec<T, 4>(R.col(1), 0));
+				M4.set_col(2, fvec<T, 4>(R.col(2), 0));
+				M4.set_col(3, fvec<T, 4>(t, 1));
+				return M4;
+			}
+
+		/// construct 4x4 pose matrix from quaternion and translation vector
+		template <typename T> fmat<T, 4, 4>
+			pose4(const quaternion<T>& q, const fvec<T, 3>& t) {
+				fmat<T, 3, 3> R;
+				q.put_matrix(R);
+				return pose4<T>(R, t);
+			}
 
 		/// return rigid body transformation that performs look at transformation
 		template <typename T> fmat<T, 4, 4>

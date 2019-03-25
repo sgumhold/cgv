@@ -27,7 +27,7 @@ protected:
 	/// resolution of smooth shapes
 	int resolution;
 	/// different shape types
-	enum Shape { CUBE, PRI, TET, OCT, DOD, ICO, CYL, CONE, DISK, ARROW, SPHERE, MESH } shp;
+	enum Shape { CUBE, PRI, TET, OCT, DOD, ICO, CYL, CONE, DISK, ARROW, SPHERE } shp;
 	/// store rotation angle
 	double ax, ay;
 	/// store location along x-axis
@@ -36,12 +36,6 @@ protected:
 	cgv::media::illum::surface_material mat;
 	///
 	cgv::media::illum::surface_material::color_type col;
-	///
-	typedef cgv::media::mesh::simple_mesh<float> mesh_type;
-	typedef mesh_type::idx_type idx_type;
-	typedef mesh_type::vec3i vec3i;
-	mesh_type mesh;
-	cgv::render::mesh_render_info mesh_info;
 
 	/// whether to flip the normals
 	bool flip_normals;
@@ -59,8 +53,6 @@ public:
 	void stream_help(std::ostream& os);
 	/// optional method of drawable
 	void draw_shape(cgv::render::context&, bool);
-	///
-	bool init(cgv::render::context&);
 	/// optional method of drawable
 	void draw(cgv::render::context&);
 	/// return a path in the main menu to select the gui

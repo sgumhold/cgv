@@ -19,6 +19,7 @@ textured_material::textured_material(const media::illum::textured_surface_materi
 {
 	alpha_test_func = AT_GREATER;
 	alpha_threshold = 0.0f;
+	ctx_ptr = 0;
 }
 
 /// destruct textures

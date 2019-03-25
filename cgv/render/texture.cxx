@@ -278,29 +278,42 @@ bool texture::create_from_image(cgv::data::data_format& df, cgv::data::data_view
 	}
 	if (cube_side < 1)
 		destruct(ctx);
-	unsigned int w = df.get_width();
-	unsigned int h = df.get_height();
-	if (ensure_power_of_two && (
-		 !is_power_of_two(w) ||
-		 !is_power_of_two(h))) {
-		unsigned int W = power_of_two_ub(df.get_width());
-		unsigned int H = power_of_two_ub(df.get_height());
-		float ext[2] = { (float)w/W, (float)h/H };
-		data_format df1(df);
+	unsigned w = df.get_width(), h = df.get_height();
+	unsigned W = w, H = h;
+	data_format df1(df);
+	if (ensure_power_of_two && (!is_power_of_two(w) || !is_power_of_two(h))) {
+		W = power_of_two_ub(df.get_width());
+		H = power_of_two_ub(df.get_height());
 		df1.set_width(W);
 		df1.set_height(H);
-		data_view dv1(&df1);
-		unsigned int es = df1.get_entry_size();
-		unsigned char* dest_ptr = dv1.get_ptr<unsigned char>();
-		const unsigned char* src_ptr = dv.get_ptr<unsigned char>();
-		unsigned char* dest_ptr_end = dest_ptr+es*W*H;
-		std::fill(dest_ptr, dest_ptr_end, clear_color_ptr?*clear_color_ptr:0);
-		for (unsigned int y=0; y<h; ++y, dest_ptr += es*W, src_ptr += es*w)
-			memcpy(dest_ptr, src_ptr, es*w);
-		return create(ctx, dv1, level, cube_side, &palettes);
 	}
-	else
-		return create(ctx, dv, level, cube_side, &palettes);
+	//float ext[2] = { (float)w/W, (float)h/H };
+	data_view dv1(&df1);
+	unsigned          entry_size = df.get_entry_size();
+	const unsigned char* src_ptr = dv.get_ptr<unsigned char>();
+	unsigned char*      dest_ptr = dv1.get_ptr<unsigned char>();
+	unsigned char*  dest_ptr_end = dest_ptr + entry_size * W*H;
+	for (unsigned y = 0; y < h; ++y) {
+		dest_ptr_end -= W * entry_size;
+		memcpy(dest_ptr_end, src_ptr, w*entry_size);
+		if (clear_color_ptr) {
+			for (unsigned x = w; x < W; ++x)
+				memcpy(dest_ptr_end + x * entry_size, clear_color_ptr, entry_size);
+		}
+		else
+			std::fill(dest_ptr_end + w * entry_size, dest_ptr_end + W*entry_size, 0);
+		src_ptr += w * entry_size;
+	}
+	if (H > h) {
+		unsigned N = (H - h)*W;
+		if (clear_color_ptr) {
+			for (unsigned i = 0; i < N; ++i)
+				memcpy(dest_ptr + i * entry_size, clear_color_ptr, entry_size);
+		}
+		else
+			std::fill(dest_ptr, dest_ptr + N*entry_size, 0);
+	}
+	return create(ctx, dv1, level, cube_side, &palettes);
 }
 
 

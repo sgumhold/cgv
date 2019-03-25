@@ -5,9 +5,10 @@ in vec3 position_eye;
 in vec4 color_fs;
 in vec2 texcoord_fs;
 
-out vec4 frag_color;
-
+//***** begin interface of fragment.glfs ***********************************
 uniform float gamma = 2.2;
+void finish_fragment(vec4 color);
+//***** end interface of fragment.glfs ***********************************
 
 //***** begin interface of surface.glsl ***********************************
 struct Material {
@@ -43,7 +44,5 @@ void main()
 	if (!keep_this_side(position_eye, normal, side))
 		discard;
 
-	frag_color = compute_reflected_appearance_texture(position_eye, normal, texcoord_fs, color_fs, side);
-	// perform inverse gamma correction
-	frag_color.rgb = pow(frag_color.rgb, vec3(gamma));
+	finish_fragment(compute_reflected_appearance_texture(position_eye, normal, texcoord_fs, color_fs, side));
 }

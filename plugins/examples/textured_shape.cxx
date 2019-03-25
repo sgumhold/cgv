@@ -239,5 +239,5 @@ public:
 
 #include <cgv/base/register.h>
 
-extern cgv::base::factory_registration_1<textured_shape,int> tp_fac("new/textured primitive", 'T', 1024, true);
+extern cgv::base::factory_registration_1<textured_shape,int> tp_fac("new/render/textured primitive", 'T', 1024, true);
 

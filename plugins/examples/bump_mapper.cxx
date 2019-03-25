@@ -164,5 +164,5 @@ void bump_mapper::create_gui()
 }
 
 
-factory_registration<bump_mapper> bump_mapper_fac("new/bump mapper", 'B', true);
+factory_registration<bump_mapper> bump_mapper_fac("new/render/bump mapper", 'B', true);
 
