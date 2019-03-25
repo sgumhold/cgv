@@ -120,6 +120,15 @@ template <typename T>
 class simple_mesh_obj_reader : public obj_reader_generic<T>
 {
 public:
+	/// type of coordinates
+	typedef T crd_type;
+	/// type used to store texture coordinates
+	typedef cgv::math::fvec<T,2> v2d_type;
+	/// type used to store positions and normal vectors
+	typedef cgv::math::fvec<T,3> v3d_type;
+	/// type used for rgba colors
+	typedef illum::obj_material::color_type color_type;
+
 	typedef typename simple_mesh<T>::idx_type idx_type;
 protected:
 	simple_mesh<T> &mesh;
@@ -136,12 +145,12 @@ public:
 	/// overide this function to process a face, the indices start with 0
 	void process_face(unsigned vcount, int *vertices, int *texcoords, int *normals)
 	{
-		convert_to_positive(vcount, vertices, texcoords, normals, unsigned(mesh.positions.size()), unsigned(mesh.normals.size()), unsigned(mesh.tex_coords.size()));
+		obj_reader_generic<T>::convert_to_positive(vcount, vertices, texcoords, normals, unsigned(mesh.positions.size()), unsigned(mesh.normals.size()), unsigned(mesh.tex_coords.size()));
 		mesh.faces.push_back(idx_type(mesh.position_indices.size()));
-		if (get_current_group() != -1)
-			mesh.group_indices.push_back(get_current_group());
-		if (get_current_material() != -1)
-			mesh.material_indices.push_back(get_current_material());
+		if (obj_reader_generic<T>::get_current_group() != -1)
+			mesh.group_indices.push_back(obj_reader_generic<T>::get_current_group());
+		if (obj_reader_generic<T>::get_current_material() != -1)
+			mesh.material_indices.push_back(obj_reader_generic<T>::get_current_material());
 		for (idx_type i = 0; i < vcount; ++i) {
 			mesh.position_indices.push_back(idx_type(vertices[i]));
 			if (texcoords)

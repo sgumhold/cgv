@@ -208,7 +208,7 @@ void disconnect(signal<@["T1"; ", "; "T".i]>& s, const X& ip) { s.disconnect(obj
 // connect signal to the ()-operator of a copy of a temporary object, a reference to the copy is returned for disconnection
 template <class X@if(i>0)@{, @["typename T1"; ", "; "typename T".i]@}>
 X& connect_copy(signal<@["T1"; ", "; "T".i]>& s, const X& ip) { 
-	return static_cast<const object_functor<@(i),X,@["T1"; ", "; "T".i]>&>(s.connect(object_functor<@(i),X@if(i>0)@{,@["T1"; ", "; "T".i]@}>(ip))).ip; 
+	return static_cast<const object_functor<@(i),X@if(i>0)@{,@["T1"; ", "; "T".i]@}>&>(s.connect(object_functor<@(i),X@if(i>0)@{,@["T1"; ", "; "T".i]@}>(ip))).ip; 
 }
 @}
 
