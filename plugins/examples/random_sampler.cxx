@@ -223,5 +223,5 @@ public:
 
 #include <cgv/base/register.h>
 
-extern factory_registration<random_sampler> rs_fac("new/random sampler", 'R', true);
+extern factory_registration<random_sampler> rs_fac("new/algorithms/random sampler", 'R', true);
 

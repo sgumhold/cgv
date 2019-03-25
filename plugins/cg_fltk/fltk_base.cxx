@@ -163,7 +163,7 @@ bool fltk_base::set_void(fltk::Widget* w, cgv::base::named* nam, const std::stri
 	}
 	else if (property == "shortcut") {
 		cgv::gui::shortcut sc;
-		if (value_type == "shortcut")
+		if (value_type == cgv::type::info::type_name<cgv::gui::shortcut>::get_name())
 			sc = * ( (cgv::gui::shortcut*) value_ptr);
 		else {
 			std::string sc_str;

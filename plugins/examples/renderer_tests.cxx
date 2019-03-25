@@ -368,4 +368,4 @@ public:
 	}
 };
 
-cgv::base::factory_registration<renderer_tests> fr_renderer_test("new/render_test", 'K', true);
+cgv::base::factory_registration<renderer_tests> fr_renderer_test("new/render/render_test", 'K', true);

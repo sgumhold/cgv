@@ -62,7 +62,7 @@ public:
 		connect(add_control("idx", idx, "value_slider", "min=0;max=10;color=0xffAA33")->value_change,this,&sub_gui_test::value_change_cb);
 		connect(add_control("idx", idx, "slider", "min=0;max=10;step=1")->value_change,this,&sub_gui_test::value_change_cb);
 		connect(add_control("text", text)->value_change,this,&sub_gui_test::text_change_cb);
-		connect(add_control("choice", choice, "one=1;three=3;four;five", "shortcut='Shift-Ctrl-X'")->value_change, this, &sub_gui_test::choice_change_cb);
+		connect(add_control("choice", choice, "dropdown", "enums='one=1;three=3;four;five';shortcut='Shift-Ctrl-X'")->value_change, this, &sub_gui_test::choice_change_cb);
 		connect_copy(add_control("shortcut", sc)->value_change, rebind(this, &sub_gui_test::shortcut_chance_cb));
 	}
 };
@@ -134,4 +134,4 @@ public:
 
 #include <cgv/base/register.h>
 
-extern factory_registration<gui_test> gp_fac("gui_test", "shortcut='Shift-Ctrl-G';menu_text='new/gui test'", true);
+extern factory_registration<gui_test> gp_fac("gui_test", "menu_text='new/gui/gui test'", true);

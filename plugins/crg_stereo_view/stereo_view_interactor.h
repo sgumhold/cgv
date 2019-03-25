@@ -215,7 +215,7 @@ public:
 	/// this method is called in one pass over all drawables after finish frame
 	void after_finish(cgv::render::context&);
 	/// return a shortcut to activate the gui without menu navigation
-	cgv::gui::shortcut get_shortcut() const;
+	//cgv::gui::shortcut get_shortcut() const;
 	/// return a path in the main menu to select the gui
 	std::string get_menu_path() const;
 	/// you must overload this for gui creation

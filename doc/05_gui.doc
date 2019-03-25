@@ -65,15 +65,23 @@ be found in examples plugin in the classes picker, mouse_tracker and
 simple_cube in simple_cube_8.h. The creation of a gui is illustrated in the 
 classes gui_test in gui_test.cxx, simple_cube or shape.
 
-\section createGUI Implementing the createGUI method
+\section createGUI Implementing the create_gui method
 
 After deriving from \link cgv::gui::provider provider\endlink one has to reimplement the
-\link cgv::gui::provider::create_gui createGUI\endlink-method. Here one uses the methods 
+\link cgv::gui::provider::create_gui create_gui\endlink-method. Here one uses the methods 
 \link cgv::gui::provider::add_decorator add_decorator\endlink, 
 \link cgv::gui::provider::add_button add_button\endlink, 
 \link cgv::gui::provider::add_view add_view\endlink, 
-\link cgv::gui::provider::add_control add_control\endlink.
+\link cgv::gui::provider::add_control add_control\endlink or
+\link cgv::gui::provider::add_member_control add_member_control\endlink
+\link cgv::gui::provider::add_tree_node add_tree_node\endlink or
+\link cgv::gui::provider::begin_tree_node begin_tree_node\endlink
+\link cgv::gui::provider::end_tree_node end_tree_node\endlink
+.
 These methods take the following arguments
+- in case of \link cgv::gui::provider::add_member_control add_member_control\endlink
+  a pointer to a cgv::base::base object that receives \link cgv::base::base::on_set on_set\endlink 
+  callbacks, whenever the control changes the value.
 - name of the gui element as string value
 - in case of views and controls a reference to a value
 - the type of the gui element as string (not for buttons), for example "slider" or "wheel" for numeric controls
@@ -81,7 +89,7 @@ These methods take the following arguments
   through the \link cgv::base::base::multi_set base::multi_set\endlink 
   method of the \ref propInt. 
 - optionally a string describing the alignment of the next gui element can be specified, which
-  defaults to "\n" such that by default gui elements are aligned in a vertical list.
+  defaults to "\n" such that by default gui elements are aligned line by line.
 The available gui element types, options for gui elements and alignment depend on 
 the used gui driver. For the \c cg_fltk plugin the options are described in the 
 next section.

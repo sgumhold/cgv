@@ -1369,10 +1369,10 @@ void stereo_view_interactor::draw_focus()
 
 
 /// return a shortcut to activate the gui without menu navigation
-cgv::gui::shortcut stereo_view_interactor::get_shortcut() const
-{
-	return cgv::gui::shortcut('V', EM_CTRL);
-}
+//cgv::gui::shortcut stereo_view_interactor::get_shortcut() const
+//{
+//	return cgv::gui::shortcut('V', EM_CTRL);
+//}
 
 
 /// return a path in the main menu to select the gui

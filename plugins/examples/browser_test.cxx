@@ -184,5 +184,5 @@ public:
 
 #include <cgv/base/register.h>
 
-cgv::base::factory_registration<browser_test> browser_test_1("browser_test", "menu_text=\"new/browser test\"");
+cgv::base::factory_registration<browser_test> browser_test_1("browser_test", "menu_text=\"new/gui/browser test\"");
 
