@@ -24,7 +24,7 @@ namespace cgv {
 
 		surface_render_style::surface_render_style() : material("default")
 		{
-			surface_color = cgv::media::illum::surface_material::color_type(0.7f, 0.1f, 0.4f);
+			surface_color = cgv::media::illum::surface_material::color_type(0.4f, 0.1f, 0.7f);
 			culling_mode = CM_OFF;
 			illumination_mode = IM_ONE_SIDED;
 			map_color_to_material = MS_FRONT_AND_BACK;
