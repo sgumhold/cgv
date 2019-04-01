@@ -45,6 +45,20 @@ namespace cgv { // @<
 			/// extent array specifies box extends in case of position_is_center=true, otherwise the maximum point of each box
 			template <typename T>
 			void set_extent_array(const context& ctx, const T* extents, size_t nr_elements, unsigned stride_in_bytes = 0) { has_extents = true;  set_attribute_array(ctx, ref_prog().get_attribute_location(ctx, "extent"), extents, nr_elements, stride_in_bytes); }
+			/// specify box array directly. This sets position_is_center to false as well as position and extent array
+			template <typename T>
+			void set_box_array(const context& ctx, const std::vector<cgv::media::axis_aligned_box<T, 3> >& boxes) {
+				set_position_array(ctx, &boxes[0].get_min_pnt(), boxes.size(), sizeof(cgv::media::axis_aligned_box<T, 3>));
+				set_extent_array(ctx, &boxes[0].get_max_pnt(), boxes.size(), sizeof(cgv::media::axis_aligned_box<T, 3>));
+				set_position_is_center(false);
+			}
+			/// specify box array directly. This sets position_is_center to false as well as position and extent array
+			template <typename T>
+			void set_box_array(const context& ctx, const cgv::media::axis_aligned_box<T, 3>* boxes, size_t count) {
+				set_position_array(ctx, &boxes->get_min_pnt(), count, sizeof(cgv::media::axis_aligned_box<T, 3>));
+				set_extent_array(ctx, &boxes->get_max_pnt(), count, sizeof(cgv::media::axis_aligned_box<T, 3>));
+				set_position_is_center(false);
+			}
 			/// template method to set the translations from a vector of vectors of type T, which should have 3 components
 			template <typename T>
 			void set_translation_array(const context& ctx, const std::vector<T>& translations) { has_translations = true; set_attribute_array(ctx, ref_prog().get_attribute_location(ctx, "translation"), translations); }

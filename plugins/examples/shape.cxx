@@ -19,10 +19,10 @@ using namespace cgv::utils;
 using namespace cgv::media::illum;
 
 shape::shape(const char* name) : group(name), node_flag(true), ax(0), ay(0),
-		mat(BT_OREN_NAYAR, surface_material::color_type(0, 0.1f, 1)), col(1, 1, 0, 1)
+		mat(BT_OREN_NAYAR, surface_material::color_type(0, 0.1f, 1)), col(0.4f, 0.1f, 0.5f, 1)
 {
 	show_edges = true;
-	show_faces = true;
+	show_faces = false;
 	
 	static double x0 = -2;
 	x = x0;
@@ -225,4 +225,4 @@ void shape::create_gui()
 #include <cgv/base/register.h>
 
 /// register a factory to create new cubes
-extern factory_registration_1<shape,const char*> shape_fac("new/render/shape", 'S', "shape");
+extern factory_registration_1<shape,const char*> shape_fac("new/render/shape", '4', "shape");

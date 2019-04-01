@@ -1,8 +1,10 @@
 #pragma once
 
 #include <cgv/render/drawable.h>
+#include "mesh_render_info.h"
 #include <cgv/math/mfunc.h>
 #include <cgv/media/axis_aligned_box.h>
+#include <cgv/media/mesh/simple_mesh.h>
 #include <cgv/media/mesh/streaming_mesh.h>
 #include <cgv/media/illum/surface_material.h>
 
@@ -31,12 +33,14 @@ public: //@<
 	///
 	typedef cgv::math::vec<double> vec_type;
 private:
-	unsigned int id;
 	bool outofdate;
 	cgv::media::mesh::streaming_mesh<double>* sm_ptr;
 
-	std::vector<float> nml_gradient_geometry;
-	std::vector<float> nml_mesh_geometry;
+	cgv::media::mesh::simple_mesh<float> mesh;
+	mesh_render_info mri;
+
+	std::vector<vec3> nml_gradient_geometry;
+	std::vector<vec3> nml_mesh_geometry;
 
 protected: //@<
 	//@>
@@ -86,7 +90,7 @@ protected: //@<
 	///
 	cgv::media::illum::surface_material material;
 
-	void add_normal(const dvec3& p, const dvec3& n, std::vector<float>& nml_gradient_geometry) const;
+	void add_normal(const dvec3& p, const dvec3& n, std::vector<vec3>& nml_gradient_geometry) const;
 
 	/// allows to augment a newly computed vertex by additional data
 	void new_vertex(unsigned int vi);
@@ -106,11 +110,11 @@ protected: //@<
 	virtual void surface_extraction();
 	/// compute the normal of a face
 	dvec3 compute_face_normal(const std::vector<unsigned int> &vis, dvec3* c = 0) const;
-	/// helper function to build a display list with the implicit surface
-	virtual void build_display_list();
+	/// helper function to extract mesh from implicit surface
+	virtual void extract_mesh();
 	/// helper function to tesselate the implicit surface
 	void draw_implicit_surface(context& ctx);
-	void render_corner_normal(const dvec3& pk, const dvec3& pi, const dvec3& pj, const dvec3& ni);
+	dvec3 compute_corner_normal(const dvec3& pk, const dvec3& pi, const dvec3& pj, const dvec3& ni);
 public:
 	/// standard constructor does not initialize the function pointer such that nothing is drawn
 	gl_implicit_surface_drawable_base();

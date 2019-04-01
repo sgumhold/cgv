@@ -28,6 +28,8 @@ struct CGV_API plot3d_config : public plot_base_config
 	bool wireframe;
 	/// color of faces
 	rgb surface_color;
+	/// 
+	float bar_percentual_depth;
 	/// how to illuminate the surface
 	PlotFaceIllumination face_illumination;
 	/// construct with default values

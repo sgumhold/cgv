@@ -70,6 +70,8 @@ namespace cgv {
 			void render_mesh(cgv::render::context& c);
 			///
 			void render_material_part(cgv::render::context& c, size_t mi, bool opaque);
+			/// render mesh with given surface material
+			void render_mesh(cgv::render::context& c, const cgv::media::illum::surface_material& material);
 			///
 			void render_wireframe(cgv::render::context& c);
 		};
