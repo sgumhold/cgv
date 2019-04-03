@@ -15,7 +15,6 @@ one with a different name ending up with the type based gui definition.
 
 #include <cgv/base/named.h>
 #include <cgv/math/ftransform.h>
-#include <cgv/gui/base_provider.h>
 #include <cgv/render/drawable.h>
 #include <cgv/render/shader_program.h>
 #include <cgv/render/attribute_array_binding.h>
