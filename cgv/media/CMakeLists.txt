@@ -9,6 +9,8 @@ file(GLOB_RECURSE SOURCES RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "*.cxx")
 file(GLOB_RECURSE PUBLIC_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "*.h")
 file(GLOB_RECURSE PUBLIC_HEADERS_HH RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "*.hh")
 
+set(CMAKE_CXX_FLAGS "-fpermissive")
+
 # Definition of the component
 cgv_add_core_component(media
 	SOURCES ${SOURCES}

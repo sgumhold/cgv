@@ -4,8 +4,8 @@ project(shader_test)
 # Needed for building components
 include("../../cmake/buildCoreComponents.cmake")
 
-# Find the PPP
-find_package(ppp)
+# Find the PPP lib
+# find_package(ppp_lib)
 
 # Find 3rd party dependencies
 find_package(GLEW REQUIRED)
@@ -77,20 +77,20 @@ if (WIN32)
 endif()
 	
 
-set(PH_SOURCES
-	../../libs/cgv_gl/gl/gl_context_switch.ph
-	../../cgv/type/traits/method_pointer.ph
-	../../cgv/type/invalid_type.ph
-	../../cgv/signal/signal.ph
-	../../cgv/signal/abst_signal.ph
-	../../cgv/signal/bool_signal.ph
-	../../cgv/utils/ostream_printf.ph)
+#set(PH_SOURCES
+#	../../libs/cgv_gl/gl/gl_context_switch.ph
+#	../../cgv/type/traits/method_pointer.ph
+#	../../cgv/type/invalid_type.ph
+#	../../cgv/signal/signal.ph
+#	../../cgv/signal/abst_signal.ph
+#	../../cgv/signal/bool_signal.ph
+#	../../cgv/utils/ostream_printf.ph)
 
-ppp_compile("${CGV_DIR}" 
-			PPP_FILES 
-			${PH_SOURCES})
+#ppp_compile("${CGV_DIR}" 
+#			PPP_FILES 
+#			${PH_SOURCES})
 
-cgv_add_executable(shader_test ${SOURCES} ${PPP_FILES})
+cgv_add_executable(shader_test ${SOURCES})
 
 # FIXME: do not use internal macros
 _cgv_set_definitions(shader_test
@@ -107,7 +107,7 @@ target_link_libraries(shader_test
 )
 
 if (NOT WIN32)
-	target_link_libraries(shader_test dl)
+	target_link_libraries(shader_test dl Xext)
 endif()
 
 set_target_properties(shader_test PROPERTIES FOLDER "${FOLDER_NAME_TOOL}")
