@@ -3,7 +3,7 @@ project(examples)
 
 # The CGV framework is needed
 find_package(cgv 
-	COMPONENTS render gui base type reflect utils signal data media gl
+	COMPONENTS render gui base type reflect utils signal data media
 	HINTS $ENV{CGV_DIR}
 	)
 	
@@ -33,7 +33,12 @@ file(GLOB_RECURSE IMAGES RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "*.png")
 
 cgv_prepare_resources(${CMAKE_SOURCE_DIR} IMG_SOURCES ${IMAGES})
 
-include_directories(${cgv_INCLUDE_DIRS} ../../libs ../../libs/delaunay ${cgv_gl_INCLUDE_DIRS})
+include_directories(
+	${cgv_INCLUDE_DIRS} 
+	../../libs 
+	../../libs/delaunay 
+	${cgv_gl_INCLUDE_DIRS}
+)
 
 cgv_add_module(examples ${SOURCES} ${IMG_SOURCES} ${HEADERS} ${SHADER_SOURCES} ${IMAGES})
 target_link_libraries(examples ${cgv_LIBRARIES} ${delaunay_LIBRARIES} ${plot_LIBRARIES})
