@@ -2,9 +2,9 @@ cmake_minimum_required(VERSION 2.6)
 project(libs)
 
 add_subdirectory(ppp)
-add_subdirectory(cgv_gl)
 add_subdirectory(glsu)
 add_subdirectory(cgv_reflect_types)
+add_subdirectory(cgv_gl)
 add_subdirectory(plot)
 add_subdirectory(delaunay)
 

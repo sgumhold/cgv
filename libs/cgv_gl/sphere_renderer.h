@@ -80,19 +80,14 @@ namespace cgv { // @<
 			///
 			bool disable(context& ctx);
 		};
+
+		struct CGV_API sphere_render_style_reflect : public sphere_render_style
+		{
+			bool self_reflect(cgv::reflect::reflection_handler& rh);
+		};
+		extern CGV_API cgv::reflect::extern_reflection_traits<sphere_render_style, sphere_render_style_reflect> get_reflection_traits(const sphere_render_style&);
 	}
 }
 
-namespace cgv {
-	namespace reflect {
-		namespace render {
-			struct CGV_API sphere_render_style : public cgv::render::sphere_render_style
-			{
-				bool self_reflect(cgv::reflect::reflection_handler& rh);
-			};
-		}
-		extern CGV_API cgv::reflect::extern_reflection_traits<cgv::render::sphere_render_style, cgv::reflect::render::sphere_render_style> get_reflection_traits(const cgv::render::sphere_render_style&);
-	}
-}
 
 #include <cgv/config/lib_end.h>

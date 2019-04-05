@@ -249,7 +249,7 @@ struct detail {
 	struct reflect_member_impl
 	{
 		static bool reflect(reflection_handler* rh, const std::string& member_name, T& member_ref, bool hard_cast) {
-			reflection_traits_info<T>::traits_type rt;
+			typename reflection_traits_info<T>::traits_type rt;
 			return rh->reflect_member_void(member_name, &member_ref, &rt);
 		}
 	};
@@ -257,8 +257,8 @@ struct detail {
 	template <typename T> struct reflect_member_impl<T,RTK_EXTERNAL_SELF_REFLECT> 
 	{
 		static bool reflect(reflection_handler* rh, const std::string& member_name, T& member_ref, bool hard_cast) {
-			reflection_traits_info<T>::traits_type rt;
-			return rh->self_reflect_member(member_name, member_ref, rt, static_cast<reflection_traits_info<T>::traits_type::external_self_reflect_type&>(member_ref), hard_cast);
+			typename reflection_traits_info<T>::traits_type rt;
+			return rh->self_reflect_member(member_name, member_ref, rt, static_cast<typename reflection_traits_info<T>::traits_type::external_self_reflect_type&>(member_ref), hard_cast);
 		}
 	};
 #endif
@@ -339,7 +339,7 @@ bool reflection_handler::reflect_method(const std::string& method_name, M m)
 template <typename B>
 bool reflection_handler::reflect_base(B& base_ref)
 {
-	reflection_traits_info<B>::traits_type rt;
+	typename reflection_traits_info<B>::traits_type rt;
 #else
 template <typename B, typename RB>
 bool reflection_handler::reflect_base_impl(B& base_ref, const RB&)
@@ -368,7 +368,7 @@ bool reflection_handler::reflect_base(B& base_ref)
 template <typename T, unsigned n>
 bool reflection_handler::reflect_member(const std::string& member_name, T (&member_ref)[n])
 {
-	reflection_traits_info<T>::traits_type rt;
+	typename reflection_traits_info<T>::traits_type rt;
 #else
 template <typename T, unsigned n, typename RT>
 bool reflection_handler::reflect_const_array_impl(const std::string& member_name, T (&member_ref)[n], const RT&)
@@ -402,7 +402,7 @@ bool reflection_handler::reflect_member(const std::string& member_name, T (&memb
 template <typename T>
 bool reflection_handler::reflect_member(const std::string& member_name, std::vector<T>& member_ref)
 {
-	reflection_traits_info<T>::traits_type rt;
+	typename reflection_traits_info<T>::traits_type rt;
 #else
 template <typename T, typename RT>
 bool reflection_handler::reflect_vector_impl(const std::string& member_name, std::vector<T>& member_ref, const RT&)

@@ -294,11 +294,9 @@ public:
 	}
 	bool init(context& ctx)
 	{
-		std::vector<cgv::render::view*> views;
-		cgv::base::find_interface<cgv::render::view>(cgv::base::base_ptr(this), views);
-		if (views.empty())
+		view_ptr = find_view_as_node();
+		if (!view_ptr)
 			return false;
-		view_ptr = views[0];
 		if (pnt_renderer.init(ctx)) {
 			pnt_renderer.set_reference_point_size(0.005f);
 			pnt_renderer.set_y_view_angle(float(view_ptr->get_y_view_angle()));
@@ -674,5 +672,5 @@ public:
 
 #include <cgv/base/register.h>
 
-extern factory_registration<ear_cutting> ec_fac("new/algorithms/ear_cutting", 'E', true);
+factory_registration<ear_cutting> ec_fac("new/algorithms/ear_cutting", 'E', true);
 
