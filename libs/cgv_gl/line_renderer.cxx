@@ -22,24 +22,18 @@ namespace cgv {
 			glColor4fv(&lrs.line_color[0]);
 			return group_renderer::enable(ctx);
 		}
-	}
-}
 
-namespace cgv {
-	namespace reflect {
-		namespace render {
-			bool line_render_style::self_reflect(cgv::reflect::reflection_handler& rh)
-			{
-				return
-					rh.reflect_base(*static_cast<group_render_style*>(this)) &&
-					rh.reflect_member("line_width", line_width) &&
-					rh.reflect_member("line_color", line_color);
-			}
-
-		}
-		cgv::reflect::extern_reflection_traits<cgv::render::line_render_style, cgv::reflect::render::line_render_style> get_reflection_traits(const cgv::render::line_render_style&)
+		bool line_render_style_reflect::self_reflect(cgv::reflect::reflection_handler& rh)
 		{
-			return cgv::reflect::extern_reflection_traits<cgv::render::line_render_style, cgv::reflect::render::line_render_style>();
+			return
+				rh.reflect_base(*static_cast<cgv::render::group_render_style*>(this)) &&
+				rh.reflect_member("line_width", line_width) &&
+				rh.reflect_member("line_color", line_color);
+		}
+
+		cgv::reflect::extern_reflection_traits<line_render_style, line_render_style_reflect> get_reflection_traits(const line_render_style&)
+		{
+			return cgv::reflect::extern_reflection_traits<line_render_style, line_render_style_reflect>();
 		}
 	}
 }
@@ -69,7 +63,7 @@ namespace cgv {
 
 #include "gl/lib_begin.h"
 
-		extern CGV_API cgv::gui::gui_creator_registration<line_render_style_gui_creator> frs_gc_reg("line_render_style_gui_creator");
+CGV_API cgv::gui::gui_creator_registration<line_render_style_gui_creator> line_rs_gc_reg("line_render_style_gui_creator");
 
 	}
 }

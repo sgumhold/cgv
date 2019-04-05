@@ -1229,6 +1229,17 @@ resource_string_registration::resource_string_registration(const std::string& st
 	register_resource_string(string_name, string_data);
 }
 
+#if defined(_WIN32)
+	#if defined(NDEBUG)
+	#define CGV_NDEBUG
+	#endif
+#else
+	#if defined(DEBUG)
+	#else
+		#define CGV_NDEBUG
+	#endif
+#endif
+
 std::string extend_plugin_name(const std::string& fn)
 {
 	std::string n = cgv::utils::file::drop_extension(fn);
@@ -1236,10 +1247,10 @@ std::string extend_plugin_name(const std::string& fn)
 	n += "64";
 #endif // _WIN64
 
-#if defined(_WIN32) || !defined(NDEBUG)
+#if defined(_WIN32) || !defined(CGV_NDEBUG)
 	n += "_";
 #endif
-#ifndef NDEBUG
+#ifndef CGV_NDEBUG
 	n += "d";
 #endif
 #ifdef _WIN32
@@ -1307,8 +1318,8 @@ void* load_plugin(const std::string& file_name)
 #endif
 #else
 			result = dlopen(fn.c_str(), RTLD_NOW);
-			if (result == NULL)
-			    std::cerr<<"Error loading library: "<<dlerror()<<std::endl;
+//			if (result == NULL)
+//			    std::cerr<<"Error loading library: "<<dlerror()<<std::endl;
 #endif
 			if (result)
 				break;

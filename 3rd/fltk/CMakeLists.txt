@@ -426,6 +426,8 @@ target_link_libraries(FLTK2
 	
 if (WIN32)
 	target_link_libraries(FLTK2 ws2_32)
+else()
+	target_link_libraries(FLTK2 Xext)
 endif()
 
 cgv_write_find_file(FLTK2 

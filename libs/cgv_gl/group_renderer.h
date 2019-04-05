@@ -67,21 +67,23 @@ namespace cgv { // @<
 			template <typename T>
 			void set_group_rotations(const context& ctx, const T* group_rotations, size_t nr_elements) { has_group_rotations = true; ref_prog().set_uniform_array(ctx, "group_rotations", group_rotations, nr_elements); }
 		};
+
+		struct CGV_API group_render_style_reflect : public group_render_style
+		{
+			bool self_reflect(cgv::reflect::reflection_handler& rh);
+		};
+		extern CGV_API cgv::reflect::extern_reflection_traits<group_render_style, group_render_style_reflect> get_reflection_traits(const group_render_style&);
+
 	}
 }
 
 
-namespace cgv {
-	namespace reflect {
-		namespace render {
-			struct CGV_API group_render_style : public cgv::render::group_render_style
-			{
-				bool self_reflect(cgv::reflect::reflection_handler& rh);
-			};
-		}
-		extern CGV_API cgv::reflect::extern_reflection_traits<cgv::render::group_render_style, cgv::reflect::render::group_render_style> get_reflection_traits(const cgv::render::group_render_style&);
-	}
-}
+//namespace cgv {
+//	namespace reflect {
+//		namespace render {
+//		}
+//	}
+//}
 
 
 #include <cgv/config/lib_end.h>

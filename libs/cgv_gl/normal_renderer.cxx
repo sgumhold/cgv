@@ -74,24 +74,16 @@ namespace cgv {
 			ref_prog().set_uniform(ctx, "normal_length", nrs.normal_length * normal_scale);
 			return true;
 		}
-	}
-}
-
-
-namespace cgv {
-	namespace reflect {
-		namespace render {
-			bool normal_render_style::self_reflect(cgv::reflect::reflection_handler& rh)
-			{
-				return
-					rh.reflect_base(*static_cast<line_render_style*>(this)) &&
-					rh.reflect_member("normal_length", normal_length);
-			}
-
-		}
-		cgv::reflect::extern_reflection_traits<cgv::render::normal_render_style, cgv::reflect::render::normal_render_style> get_reflection_traits(const cgv::render::normal_render_style&)
+		bool normal_render_style_reflect::self_reflect(cgv::reflect::reflection_handler& rh)
 		{
-			return cgv::reflect::extern_reflection_traits<cgv::render::normal_render_style, cgv::reflect::render::normal_render_style>();
+			return
+				rh.reflect_base(*static_cast<line_render_style*>(this)) &&
+				rh.reflect_member("normal_length", normal_length);
+		}
+
+		cgv::reflect::extern_reflection_traits<normal_render_style, normal_render_style_reflect> get_reflection_traits(const normal_render_style&)
+		{
+			return cgv::reflect::extern_reflection_traits<normal_render_style, normal_render_style_reflect>();
 		}
 	}
 }
@@ -120,7 +112,7 @@ namespace cgv {
 
 #include "gl/lib_begin.h"
 
-		extern CGV_API cgv::gui::gui_creator_registration<normal_render_style_gui_creator> nrs_gc_reg("normal_render_style_gui_creator");
+CGV_API cgv::gui::gui_creator_registration<normal_render_style_gui_creator> normal_rs_gc_reg("normal_render_style_gui_creator");
 
 	}
 }

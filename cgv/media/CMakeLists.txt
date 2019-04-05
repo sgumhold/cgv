@@ -9,14 +9,14 @@ file(GLOB_RECURSE SOURCES RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "*.cxx")
 file(GLOB_RECURSE PUBLIC_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "*.h")
 file(GLOB_RECURSE PUBLIC_HEADERS_HH RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "*.hh")
 
-set(CMAKE_CXX_FLAGS "-fpermissive")
-
 # Definition of the component
 cgv_add_core_component(media
 	SOURCES ${SOURCES}
 	HEADERS ${HEADERS} 
 	PUBLIC_HEADERS ${PUBLIC_HEADERS} ${PUBLIC_HEADERS_HH}
 	CGV_DEPENDENCIES utils type data base)
+
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fpermissive")
 
 # This component has multiple static and shared definitions
 cgv_add_export_definitions(cgv_media CGV_MEDIA_FONT CGV_MEDIA_ILLUM CGV_MEDIA_IMAGE CGV_MEDIA_VIDEO)
