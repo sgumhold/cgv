@@ -12,7 +12,7 @@ namespace cgv {
 		{
 		}
 
-		abst_color_storage::ColorType abst_color_storage::get_color_type() const
+		ColorType abst_color_storage::get_color_type() const
 		{
 			return color_type;
 		}

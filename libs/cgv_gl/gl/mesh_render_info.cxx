@@ -38,10 +38,17 @@ namespace cgv {
 				mesh_mats.back()->ensure_textures(ctx);
 			}
 
-			std::vector<idx_type> perm;
-			mesh.sort_faces(perm);
+			std::vector<idx_type>* perm_ptr = 0;
+			bool sort_by_groups = mesh.get_nr_groups() > 0;
+			bool sort_by_materials = mesh.get_nr_materials() > 0;
+			if (sort_by_groups || sort_by_materials) {
+				perm_ptr = new std::vector<idx_type>();
+				mesh.sort_faces(*perm_ptr, sort_by_groups, sort_by_materials);
+			}
 			mesh.merge_indices(vertex_indices, unique_triples, &include_tex_coords, &include_normals);
-			mesh.extract_triangle_element_buffer(vertex_indices, triangle_element_buffer, &perm, &material_group_start);
+			mesh.extract_triangle_element_buffer(vertex_indices, triangle_element_buffer, perm_ptr, mesh.get_nr_materials() > 0 ? &material_group_start : 0);
+			if (perm_ptr)
+				delete perm_ptr;
 			nr_triangle_elements = triangle_element_buffer.size();
 			mesh.extract_wireframe_element_buffer(vertex_indices, edge_element_buffer);
 			nr_edge_elements = edge_element_buffer.size();
@@ -52,7 +59,7 @@ namespace cgv {
 			bool include_tex_coords, bool include_normals,
 			const std::vector<idx_type>& triangle_element_buffer, const std::vector<idx_type>& edge_element_buffer,
 			cgv::render::type_descriptor vec3_descr, cgv::render::type_descriptor vec2_descr, size_t nr_vertices, 
-			unsigned color_increment, cgv::media::colored_model::ColorType ct)
+			unsigned color_increment, cgv::media::ColorType ct)
 		{
 			unsigned stride = 3;
 			if (include_tex_coords)
@@ -143,6 +150,28 @@ namespace cgv {
 			c.disable_material(mat);
 			prog.disable(c);
 			if (!opaque) {
+				glDisable(GL_BLEND);
+				glDisable(GL_ALPHA_TEST);
+			}
+		}
+		///
+		void mesh_render_info::render_mesh(cgv::render::context& c, const cgv::media::illum::surface_material& material)
+		{
+			cgv::render::shader_program& prog = c.ref_surface_shader_program(false);
+			if (material.get_transparency() > 0.0f) {
+				glEnable(GL_BLEND);
+				glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+				glEnable(GL_ALPHA_TEST);
+				glAlphaFunc(GL_GREATER, 0.1f);
+			}
+			prog.enable(c);
+			//prog.set_uniform(c, "illumination_mode", 2);
+			c.set_material(material);
+			aab.enable(c);
+			glDrawElements(GL_TRIANGLES, GLsizei(nr_triangle_elements), GL_UNSIGNED_INT, 0);
+			aab.disable(c);
+			prog.disable(c);
+			if (material.get_transparency() > 0.0f) {
 				glDisable(GL_BLEND);
 				glDisable(GL_ALPHA_TEST);
 			}

@@ -24,18 +24,12 @@ namespace cgv { // @<
 			line_renderer();
 			bool enable(context& ctx);
 		};
-	}
-}
-
-namespace cgv {
-	namespace reflect {
-		namespace render {
-			struct CGV_API line_render_style : public cgv::render::line_render_style
-			{
-				bool self_reflect(cgv::reflect::reflection_handler& rh);
-			};
-		}
-		extern CGV_API cgv::reflect::extern_reflection_traits<cgv::render::line_render_style, cgv::reflect::render::line_render_style> get_reflection_traits(const cgv::render::line_render_style&);
+	
+		struct CGV_API line_render_style_reflect : public line_render_style
+		{
+			bool self_reflect(cgv::reflect::reflection_handler& rh);
+		};
+		extern CGV_API cgv::reflect::extern_reflection_traits<line_render_style, line_render_style_reflect> get_reflection_traits(const line_render_style&);
 	}
 }
 

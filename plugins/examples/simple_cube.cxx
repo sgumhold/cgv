@@ -197,4 +197,4 @@ public:
 };
 
 // register a newly created cube without options 
-extern factory_registration<simple_cube> simp_cube_fac("new/simple cube", 'A', true);
+factory_registration<simple_cube> simp_cube_fac("new/simple cube", 'A', true);

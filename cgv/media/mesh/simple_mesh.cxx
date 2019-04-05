@@ -6,6 +6,23 @@ namespace cgv {
 	namespace media {
 		namespace mesh {
 
+/// create a new empty face to which new corners are added and return face index
+simple_mesh_base::idx_type simple_mesh_base::start_face()
+{
+	faces.push_back(position_indices.size());
+	return idx_type(faces.size() - 1);
+}
+/// create a new corner from position, optional normal and optional tex coordinate indices and return corner index
+simple_mesh_base::idx_type simple_mesh_base::new_corner(idx_type position_index, idx_type normal_index, idx_type tex_coord_index)
+{
+	position_indices.push_back(position_index);
+	if (normal_index != -1)
+		normal_indices.push_back(normal_index);
+	if (tex_coord_index != -1)
+		tex_coord_indices.push_back(tex_coord_index);
+	return idx_type(position_indices.size());
+}
+
 /// sort faces by group and material indices with two bucket sorts
 void simple_mesh_base::sort_faces(std::vector<idx_type>& perm, bool by_group, bool by_material) const
 {
@@ -120,6 +137,15 @@ template <typename T>
 class simple_mesh_obj_reader : public obj_reader_generic<T>
 {
 public:
+	/// type of coordinates
+	typedef T crd_type;
+	/// type used to store texture coordinates
+	typedef cgv::math::fvec<T,2> v2d_type;
+	/// type used to store positions and normal vectors
+	typedef cgv::math::fvec<T,3> v3d_type;
+	/// type used for rgba colors
+	typedef illum::obj_material::color_type color_type;
+
 	typedef typename simple_mesh<T>::idx_type idx_type;
 protected:
 	simple_mesh<T> &mesh;

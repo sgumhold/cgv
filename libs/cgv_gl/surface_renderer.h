@@ -50,7 +50,7 @@ namespace cgv { // @<
 			/// method to set the normal attribute from a vertex buffer object, the element type must be given as explicit template parameter
 			void set_normal_array(const context& ctx, type_descriptor element_type, const vertex_buffer& vbo, size_t offset_in_bytes, size_t nr_elements, unsigned stride_in_bytes = 0);
 			/// template method to set the normal attribute from a vertex buffer object, the element type must be given as explicit template parameter
-			template <typename ElementType>
+			template <typename T>
 			void set_normal_array(const context& ctx, const vertex_buffer& vbo, size_t offset_in_bytes, size_t nr_elements, unsigned stride_in_bytes = 0) { set_normal_array(ctx, type_descriptor(element_descriptor_traits<T>::get_type_descriptor(T()), true), vbo, offset_in_bytes, nr_elements, stride_in_bytes); }
 			/// templated method to set the texcoord attribute array from a vector of texcoords of type T
 			template <typename T>
@@ -61,21 +61,14 @@ namespace cgv { // @<
 			/// template method to set the texcoord attribute from a vertex buffer object, the element type must be given as explicit template parameter
 			void set_texcoord_array(const context& ctx, type_descriptor element_type, const vertex_buffer& vbo, size_t offset_in_bytes, size_t nr_elements, unsigned stride_in_bytes = 0);
 			/// template method to set the texcoord attribute from a vertex buffer object, the element type must be given as explicit template parameter
-			template <typename ElementType>
+			template <typename T>
 			void set_texcoord_array(const context& ctx, const vertex_buffer& vbo, size_t offset_in_bytes, size_t nr_elements, unsigned stride_in_bytes = 0) { set_texcoord_array(ctx, type_descriptor(element_descriptor_traits<T>::get_type_descriptor(T()), true), vbo, offset_in_bytes, nr_elements, stride_in_bytes); }
 		};
-	}
-}
-
-namespace cgv {
-	namespace reflect {
-		namespace render {
-			struct CGV_API surface_render_style : public cgv::render::surface_render_style
-			{
-				bool self_reflect(cgv::reflect::reflection_handler& rh);
-			};
-		}
-		extern CGV_API cgv::reflect::extern_reflection_traits<cgv::render::surface_render_style, cgv::reflect::render::surface_render_style> get_reflection_traits(const cgv::render::surface_render_style&);
+		struct CGV_API surface_render_style_reflect : public surface_render_style
+		{
+			bool self_reflect(cgv::reflect::reflection_handler& rh);
+		};
+		extern CGV_API cgv::reflect::extern_reflection_traits<surface_render_style, surface_render_style_reflect> get_reflection_traits(const surface_render_style&);
 	}
 }
 

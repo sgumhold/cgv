@@ -45,6 +45,7 @@ protected:
 	bool stereo_translate_in_model_view;
 	bool two_d_enabled;
 	bool fix_view_up_dir;
+	bool adapt_aspect_ratio_to_stereo_mode;
 
 	void set_default_values();
 	GlsuStereoMode get_stereo_mode() const { return stereo_mode; }

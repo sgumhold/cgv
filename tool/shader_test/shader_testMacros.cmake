@@ -1,3 +1,8 @@
+# Set CMake policy 11 to have included scripts push and pop policies
+cmake_policy(SET CMP0011 NEW)
+# Set CMake policy 53 for old expansion rules
+cmake_policy(SET CMP0053 OLD)
+
 file(RELATIVE_PATH SRC_NAME "${CMAKE_SOURCE_DIR}" "${CMAKE_CURRENT_SOURCE_DIR}")
 set(LOG_BASE "${CMAKE_BINARY_DIR}/@BUILD_BASE@/log/shader/${SRC_NAME}")
 

@@ -38,6 +38,10 @@ protected:
 	std::vector<idx_type> material_indices;
 	std::vector<mat_type> materials;
 public:
+	/// create a new empty face to which new corners are added and return face index
+	idx_type start_face();
+	/// create a new corner from position, optional normal and optional tex coordinate indices and return corner index
+	idx_type new_corner(idx_type position_index, idx_type normal_index = -1, idx_type tex_coord_index = -1);
 	/// return the number of faces
 	idx_type get_nr_faces() const { return idx_type(faces.size()); }
 	idx_type begin_corner(idx_type fi) const { return faces[fi]; }
@@ -76,23 +80,36 @@ protected:
 	std::vector<vec3>  normals;
 	std::vector<vec2>  tex_coords;
 public:
+	/// clear simple mesh
+	void clear();
+
+	/// add a new position and return position index
+	idx_type new_position(const vec3& p) { positions.push_back(p); return idx_type(positions.size()-1); }
+	/// access to positions
+	idx_type get_nr_positions() const { return idx_type(positions.size()); }
 	vec3& position(idx_type pi) { return positions[pi]; }
 	const vec3& position(idx_type pi) const { return positions[pi]; }
+
+	/// add a new normal and return normal index
+	idx_type new_normal(const vec3& n) { normals.push_back(n); return idx_type(normals.size()-1); }
+	/// access to normals
+	bool has_normals() const { return get_nr_normals() > 0; }
+	idx_type get_nr_normals() const { return idx_type(normals.size()); }
 	vec3& normal(idx_type ni) { return normals[ni]; }
 	const vec3& normal(idx_type ni) const { return normals[ni]; }
+
+	/// add a new normal and return normal index
+	idx_type new_tex_coord(const vec2& tc) { tex_coords.push_back(tc); return idx_type(tex_coords.size() - 1); }
+	/// access to texture coordinates
+	bool has_tex_coords() const { return get_nr_tex_coords() > 0; }
+	idx_type get_nr_tex_coords() const { return idx_type(tex_coords.size()); }
 	vec2& tex_coord(idx_type ti) { return tex_coords[ti]; }
 	const vec2& tex_coord(idx_type ti) const { return tex_coords[ti]; }
-	idx_type get_nr_positions() const { return idx_type(positions.size()); }
-	idx_type get_nr_normals() const { return idx_type(normals.size()); }
-	idx_type get_nr_tex_coords() const { return idx_type(tex_coords.size()); }
-	bool has_tex_coords() const { return get_nr_tex_coords() > 0; }
-	bool has_normals() const { return get_nr_normals() > 0; }
-	/// compute the axis aligned bounding box
+
+		/// compute the axis aligned bounding box
 	box_type compute_box() const;
 	/// compute vertex normals by averaging triangle normals
 	void compute_vertex_normals();
-	/// clear simple mesh
-	void clear();
 	/// read simple mesh from file
 	bool read(const std::string& file_name);
 	/// extract vertex attribute array, return size of color in bytes

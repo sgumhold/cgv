@@ -420,10 +420,14 @@ target_link_libraries(FLTK2
 	${PNG_LIBRARIES}
 	${JPEG_LIBRARIES}
 	${OPENGL_LIBRARIES}
-	${X11_Xi_LIB})
+	# ${X11_Xi_LIB}
+	${X11_LIBRARIES}
+)
 	
 if (WIN32)
 	target_link_libraries(FLTK2 ws2_32)
+else()
+	target_link_libraries(FLTK2 Xext)
 endif()
 
 cgv_write_find_file(FLTK2 

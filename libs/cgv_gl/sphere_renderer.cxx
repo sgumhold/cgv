@@ -108,30 +108,23 @@ namespace cgv {
 			}
 			return surface_renderer::disable(ctx);
 		}
-	}
-}
-
-namespace cgv {
-	namespace reflect {
-		namespace render {
-			bool sphere_render_style::self_reflect(cgv::reflect::reflection_handler& rh)
-			{
-				return
-					rh.reflect_base(*static_cast<cgv::render::surface_render_style*>(this)) &&
-					rh.reflect_member("radius", radius) &&
-					rh.reflect_member("use_group_radius", use_group_radius) &&
-					rh.reflect_member("radius_scale", radius_scale) &&
-					rh.reflect_member("blend_width_in_pixel", blend_width_in_pixel) &&
-					rh.reflect_member("halo_width_in_pixel", halo_width_in_pixel) &&
-					rh.reflect_member("halo_color", halo_color) &&
-					rh.reflect_member("halo_color_strength", halo_color_strength) &&
-					rh.reflect_member("percentual_halo_width", percentual_halo_width);
-			}
-
-		}
-		cgv::reflect::extern_reflection_traits<cgv::render::sphere_render_style, cgv::reflect::render::sphere_render_style> get_reflection_traits(const cgv::render::sphere_render_style&)
+		bool sphere_render_style_reflect::self_reflect(cgv::reflect::reflection_handler& rh)
 		{
-			return cgv::reflect::extern_reflection_traits<cgv::render::sphere_render_style, cgv::reflect::render::sphere_render_style>();
+			return
+				rh.reflect_base(*static_cast<surface_render_style*>(this)) &&
+				rh.reflect_member("radius", radius) &&
+				rh.reflect_member("use_group_radius", use_group_radius) &&
+				rh.reflect_member("radius_scale", radius_scale) &&
+				rh.reflect_member("blend_width_in_pixel", blend_width_in_pixel) &&
+				rh.reflect_member("halo_width_in_pixel", halo_width_in_pixel) &&
+				rh.reflect_member("halo_color", halo_color) &&
+				rh.reflect_member("halo_color_strength", halo_color_strength) &&
+				rh.reflect_member("percentual_halo_width", percentual_halo_width);
+		}
+
+		cgv::reflect::extern_reflection_traits<sphere_render_style, sphere_render_style_reflect> get_reflection_traits(const sphere_render_style&)
+		{
+			return cgv::reflect::extern_reflection_traits<sphere_render_style, sphere_render_style_reflect>();
 		}
 	}
 }
@@ -174,7 +167,7 @@ namespace cgv {
 
 #include "gl/lib_begin.h"
 
-		extern CGV_API cgv::gui::gui_creator_registration<sphere_render_style_gui_creator> prs_gc_reg("sphere_render_style_gui_creator");
+CGV_API cgv::gui::gui_creator_registration<sphere_render_style_gui_creator> sphere_rs_gc_reg("sphere_render_style_gui_creator");
 
 	}
 }

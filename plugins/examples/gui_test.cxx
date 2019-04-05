@@ -134,4 +134,4 @@ public:
 
 #include <cgv/base/register.h>
 
-extern factory_registration<gui_test> gp_fac("gui_test", "menu_text='new/gui/gui test'", true);
+factory_registration<gui_test> gui_test_fac("gui_test", "menu_text='new/gui/gui test'", true);

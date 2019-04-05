@@ -1,6 +1,7 @@
 #include "tiff_reader.h"
 #include <cgv/base/register.h>
 #include <iostream>
+#include <memory.h>
 
 #pragma warning (disable:4996)
 

@@ -7,37 +7,38 @@
 
 namespace cgv {
 	namespace media {
-
-		struct color_storage_types
-		{
-		public:
-			/// enumerate color types
-			enum ColorType {
-				CT_RGB8,
-				CT_RGBA8,
-				CT_RGB,
-				CT_RGBA
-			};
-
-			/// define supported color types
-			typedef typename color<float, RGB> rgb;
-			typedef typename color<float, RGB, OPACITY> rgba;
-			typedef typename color<unsigned char, RGB> rgb8;
-			typedef typename color<unsigned char, RGB, OPACITY> rgba8;
+		/// different color types used as defaults in the color storage
+		enum ColorType {
+			CT_RGB8,
+			CT_RGBA8,
+			CT_RGB,
+			CT_RGBA
 		};
 
-			/// interface for color storage of different internal types
+		/// traits struct used to derive color type (need to be declared on namespace level for specialization)
+		template <typename T> struct color_storage_traits {};
+		template <> struct color_storage_traits<color<float, RGB> > { static const ColorType color_type = CT_RGB; };
+		template <> struct color_storage_traits<color<float, RGB, OPACITY> > { static const ColorType color_type = CT_RGBA; };
+		template <> struct color_storage_traits<color<unsigned char, RGB> > { static const ColorType color_type = CT_RGB8; };
+		template <> struct color_storage_traits<color<unsigned char, RGB, OPACITY> > { static const ColorType color_type = CT_RGBA8; };
+
+		/// declaration of types for color storage  
+		struct color_storage_types
+		{
+		public:			
+			/// define supported color types
+			typedef color<float, RGB> rgb;
+			typedef color<float, RGB, OPACITY> rgba;
+			typedef color<unsigned char, RGB> rgb8;
+			typedef color<unsigned char, RGB, OPACITY> rgba8;
+		};
+
+		/// interface for color storage of different internal types
 		class abst_color_storage : public color_storage_types
 		{
 		protected:
 			// type of color stored in storage
 			ColorType color_type;
-			// traits struct used to derive color type
-			template <typename T> struct color_storage_traits {};
-			template <> struct color_storage_traits<rgb> { static const ColorType color_type = CT_RGB; };
-			template <> struct color_storage_traits<rgba> { static const ColorType color_type = CT_RGBA; };
-			template <> struct color_storage_traits<rgb8> { static const ColorType color_type = CT_RGB8; };
-			template <> struct color_storage_traits<rgba8> { static const ColorType color_type = CT_RGBA8; };
 		public:
 			/// construct from color type enumerate
 			abst_color_storage(ColorType _color_type);
