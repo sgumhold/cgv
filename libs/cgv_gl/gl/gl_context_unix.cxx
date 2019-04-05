@@ -1,5 +1,5 @@
-#ifndef WIN32
-#include <gl/wgl.h>
+#ifdef NEVER
+#include <cgv_gl/gl/wgl.h>
 #include "gl_context.h"
 #include <iostream>
 

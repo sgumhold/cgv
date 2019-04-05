@@ -86,18 +86,11 @@ namespace cgv {
 			///
 			bool disable(context& ctx);
 		};
-	}
-}
-
-namespace cgv {
-	namespace reflect {
-		namespace render {
-			struct CGV_API point_render_style : public cgv::render::point_render_style
-			{
-				bool self_reflect(cgv::reflect::reflection_handler& rh);
-			};
-		}
-		extern CGV_API cgv::reflect::extern_reflection_traits<cgv::render::point_render_style, cgv::reflect::render::point_render_style> get_reflection_traits(const cgv::render::point_render_style&);
+		struct CGV_API point_render_style_reflect : public point_render_style
+		{
+			bool self_reflect(cgv::reflect::reflection_handler& rh);
+		};
+		extern CGV_API cgv::reflect::extern_reflection_traits<point_render_style, point_render_style_reflect> get_reflection_traits(const point_render_style&);
 	}
 }
 

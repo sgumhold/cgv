@@ -48,7 +48,7 @@ macro(_cgv_set_cxx_standard target)
         # FIXME: The following will not work in windows. The correct approach would be
         # set_property(TARGET ${target_name} PROPERTY CXX_STANDARD ${CXX_STANDARD})	
         # which is not supported. So for now we hack this property in
-        set(CMAKE_CXX_FLAGS "-std=c++11")
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 endmacro()
 
 

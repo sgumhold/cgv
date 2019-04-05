@@ -5,7 +5,7 @@ project(cgv_gl)
 find_package(cgv COMPONENTS  utils type data base signal math media render gui)
 
 # The PPP is needed
-#find_package(ppp)
+find_package(ppp)
 find_package(cgv_reflect_types)
 
 # Find 3rd party dependencies
@@ -19,11 +19,11 @@ file(GLOB_RECURSE HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "*.h")
 # Shader files
 file(GLOB_RECURSE SHADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "glsl/*.gl*")
 
-#set(PH_SOURCES gl/gl_context_switch.ph)
+set(PH_SOURCES gl/gl_context_switch.ph)
 
-#ppp_compile("${CGV_DIR}"
-#		PPP_FILES 
-#		${PH_SOURCES})
+ppp_compile("${CGV_DIR}"
+		PPP_FILES 
+		${PH_SOURCES})
 
 include_directories(${GLEW_INCLUDE_PATH}
 	${OPENGL_INCLUDE_DIR} 
@@ -34,10 +34,9 @@ include_directories(${GLEW_INCLUDE_PATH}
 # set. Can we do this better?
 cgv_add_library(cgv_gl 
 	SOURCES ${SOURCES} 
-	PUBLIC_HEADERS ${HEADERS}
-#	${PPP_FILES}
+	PUBLIC_HEADERS ${HEADERS} ${PPP_FILES}
 	SHADERS ${SHADERS}
-	DEFINITIONS UNICODE _UNICODE
+	DEFINITIONS UNICODE _UNICODE REFLECT_TRAITS_WITH_DECLTYPE
 	SHARED_DEFINITIONS CGV_RENDER_GL_EXPORTS ${GLEW_SHARED_DEFINITIONS}
 	STATIC_DEFINITIONS CGV_RENDER_GL_FORCE_STATIC ${GLEW_STATIC_DEFINITIONS})
 

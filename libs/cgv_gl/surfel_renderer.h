@@ -95,18 +95,11 @@ namespace cgv {
 			///
 			bool disable(context& ctx);
 		};
-	}
-}
-
-namespace cgv {
-	namespace reflect {
-		namespace render {
-			struct CGV_API surfel_render_style : public cgv::render::surfel_render_style
-			{
-				bool self_reflect(cgv::reflect::reflection_handler& rh);
-			};
-		}
-		extern CGV_API cgv::reflect::extern_reflection_traits<cgv::render::surfel_render_style, cgv::reflect::render::surfel_render_style> get_reflection_traits(const cgv::render::surfel_render_style&);
+		struct CGV_API surfel_render_style_reflect : public surfel_render_style
+		{
+			bool self_reflect(cgv::reflect::reflection_handler& rh);
+		};
+		extern CGV_API cgv::reflect::extern_reflection_traits<surfel_render_style, surfel_render_style_reflect> get_reflection_traits(const surfel_render_style&);
 	}
 }
 

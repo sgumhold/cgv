@@ -35,13 +35,13 @@
 #define SIZEOF_LONG 4
 
 /* Signed 64-bit type formatter */
-#define TIFF_INT64_FORMAT "%"PRId64
+#define TIFF_INT64_FORMAT "%" PRId64
 
 /* Signed 64-bit type */
 #define TIFF_INT64_T int64_t
 
 /* Unsigned 64-bit type formatter */
-#define TIFF_UINT64_FORMAT "%"PRIu64
+#define TIFF_UINT64_FORMAT "%" PRIu64
 
 /* Unsigned 64-bit type */
 #define TIFF_UINT64_T uint64_t
