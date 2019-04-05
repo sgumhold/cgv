@@ -16,8 +16,8 @@ void output_sphere_parameter_space(in vec4 sphere);
 
 uniform float radius_scale;
 
-uniform vec3 domain_min;
-uniform vec3 domain_max;
+uniform vec3 domain_min_pnt;
+uniform vec3 domain_max_pnt;
 uniform vec3 extent;
 uniform vec4 orientation;
 uniform vec3 center_location;
