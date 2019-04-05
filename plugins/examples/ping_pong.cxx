@@ -298,7 +298,7 @@ public:
 	{
 		glDisable(GL_CULL_FACE);
 		ctx.push_modelview_matrix();
-		ctx.mul_modelview_matrix(cgv::math::scale4<double>(double(w) / h, -1.0, 1.0));
+		ctx.mul_modelview_matrix(cgv::math::scale4<double>(double(w) / h, 1.0, 1.0));
 		prog.enable(ctx);
 			T[3-current_target].enable(ctx, current_target);
 				prog.set_uniform_array(ctx, "HPP_colors", HPP_colors);

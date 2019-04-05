@@ -34,7 +34,7 @@ gl_implicit_surface_drawable_base::gl_implicit_surface_drawable_base() : box(dve
 	show_sampling_grid = false;
 	show_sampling_locations = false;
 	normal_computation_type = FACE_NORMALS;
-	normal_computation_type = GRADIENT_NORMALS;
+//	normal_computation_type = GRADIENT_NORMALS;
 	consistency_threshold = 0.01;
 	max_nr_iters = 8;
 	normal_threshold = 0.73;
