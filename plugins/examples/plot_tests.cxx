@@ -134,5 +134,5 @@ public:
 #include <cgv/base/register.h>
 
 /// register a factory to create new cubes
-extern cgv::base::factory_registration<test_plot2d> test_plot2d_fac("new/demo/test_plot2d", '2');
-extern cgv::base::factory_registration<test_plot3d> test_plot3d_fac("new/demo/test_plot3d", '3');
+cgv::base::factory_registration<test_plot2d> test_plot2d_fac("new/demo/test_plot2d", '2');
+cgv::base::factory_registration<test_plot3d> test_plot3d_fac("new/demo/test_plot3d", '3');

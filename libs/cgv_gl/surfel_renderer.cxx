@@ -17,7 +17,7 @@ namespace cgv {
 			return new surfel_render_style();
 		}
 
-		surfel_render_style::surfel_render_style() : halo_color(1,1,1,1)
+		surfel_render_style::surfel_render_style() : halo_color(1, 1, 1, 1)
 		{
 			point_size = 1.0f;
 			use_group_point_size = false;
@@ -75,7 +75,7 @@ namespace cgv {
 			}
 			return res;
 		}
-		
+
 		bool surfel_renderer::validate_attributes(const context& ctx) const
 		{
 			const surfel_render_style& srs = get_style<surfel_render_style>();
@@ -153,32 +153,25 @@ namespace cgv {
 			}
 			return surface_renderer::disable(ctx);
 		}
-	}
-}
-
-namespace cgv {
-	namespace reflect {
-		namespace render {
-			bool surfel_render_style::self_reflect(cgv::reflect::reflection_handler& rh)
-			{
-				return
-					rh.reflect_base(*static_cast<cgv::render::surface_render_style*>(this)) &&
-					rh.reflect_member("point_size", point_size) &&
-					rh.reflect_member("use_group_point_size", use_group_point_size) &&
-					rh.reflect_member("measure_point_size_in_pixel", measure_point_size_in_pixel) &&
-					rh.reflect_member("blend_points", blend_points) &&
-					rh.reflect_member("orient_splats", orient_splats) &&
-					rh.reflect_member("blend_width_in_pixel", blend_width_in_pixel) &&
-					rh.reflect_member("halo_width_in_pixel", halo_width_in_pixel) &&
-					rh.reflect_member("halo_color", halo_color) &&
-					rh.reflect_member("halo_color_strength", halo_color_strength) &&
-					rh.reflect_member("percentual_halo_width", percentual_halo_width);
-			}
-
-		}
-		cgv::reflect::extern_reflection_traits<cgv::render::surfel_render_style, cgv::reflect::render::surfel_render_style> get_reflection_traits(const cgv::render::surfel_render_style&)
+		bool surfel_render_style_reflect::self_reflect(cgv::reflect::reflection_handler& rh)
 		{
-			return cgv::reflect::extern_reflection_traits<cgv::render::surfel_render_style, cgv::reflect::render::surfel_render_style>();
+			return
+				rh.reflect_base(*static_cast<cgv::render::surface_render_style*>(this)) &&
+				rh.reflect_member("point_size", point_size) &&
+				rh.reflect_member("use_group_point_size", use_group_point_size) &&
+				rh.reflect_member("measure_point_size_in_pixel", measure_point_size_in_pixel) &&
+				rh.reflect_member("blend_points", blend_points) &&
+				rh.reflect_member("orient_splats", orient_splats) &&
+				rh.reflect_member("blend_width_in_pixel", blend_width_in_pixel) &&
+				rh.reflect_member("halo_width_in_pixel", halo_width_in_pixel) &&
+				rh.reflect_member("halo_color", halo_color) &&
+				rh.reflect_member("halo_color_strength", halo_color_strength) &&
+				rh.reflect_member("percentual_halo_width", percentual_halo_width);
+		}
+
+		cgv::reflect::extern_reflection_traits<surfel_render_style, surfel_render_style_reflect> get_reflection_traits(const surfel_render_style&)
+		{
+			return cgv::reflect::extern_reflection_traits<surfel_render_style, surfel_render_style_reflect>();
 		}
 	}
 }
@@ -233,7 +226,7 @@ namespace cgv {
 
 #include "gl/lib_begin.h"
 
-		extern CGV_API cgv::gui::gui_creator_registration<surfel_render_style_gui_creator> prs_gc_reg("surfel_render_style_gui_creator");
+CGV_API cgv::gui::gui_creator_registration<surfel_render_style_gui_creator> surfel_rs_gc_reg("surfel_render_style_gui_creator");
 
 	}
 }

@@ -4,7 +4,7 @@ project(shader_test)
 # Needed for building components
 include("../../cmake/buildCoreComponents.cmake")
 
-# Find the PPP
+# Find the PPP lib
 find_package(ppp)
 
 # Find 3rd party dependencies
@@ -84,6 +84,7 @@ set(PH_SOURCES
 	../../cgv/signal/signal.ph
 	../../cgv/signal/abst_signal.ph
 	../../cgv/signal/bool_signal.ph
+	../../cgv/signal/rebind.ph
 	../../cgv/utils/ostream_printf.ph)
 
 ppp_compile("${CGV_DIR}" 
@@ -107,7 +108,7 @@ target_link_libraries(shader_test
 )
 
 if (NOT WIN32)
-	target_link_libraries(shader_test dl)
+	target_link_libraries(shader_test dl Xext)
 endif()
 
 set_target_properties(shader_test PROPERTIES FOLDER "${FOLDER_NAME_TOOL}")

@@ -85,8 +85,8 @@ void ShapedWindow::draw() {
 					 (const char*)mask->array,
 					 mask->width(), mask->height());
     hide();
-    XShapeCombineMask(xdisplay, xid(this), ShapeBounding, 0, 0,
-                      pmask, ShapeSet);
+//    XShapeCombineMask(xdisplay, xid(this), ShapeBounding, 0, 0,
+//                      pmask, ShapeSet);
     show();
     if (pmask != None) XFreePixmap(xdisplay, pmask);
 #elif defined(_WIN32)

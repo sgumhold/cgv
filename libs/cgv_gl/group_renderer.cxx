@@ -91,26 +91,27 @@ namespace cgv {
 				has_group_indices;
 			return res;
 		}
-	}
-}
 
-namespace cgv {
-	namespace reflect {
-		namespace render {
-			bool group_render_style::self_reflect(cgv::reflect::reflection_handler& rh)
-			{
-				return
-					rh.reflect_member("use_group_color", use_group_color) &&
-					rh.reflect_member("use_group_transformation", use_group_transformation);
-			}
-
-		}
-		cgv::reflect::extern_reflection_traits<cgv::render::group_render_style, cgv::reflect::render::group_render_style> get_reflection_traits(const cgv::render::group_render_style&)
+		bool group_render_style_reflect::self_reflect(cgv::reflect::reflection_handler& rh)
 		{
-			return cgv::reflect::extern_reflection_traits<cgv::render::group_render_style, cgv::reflect::render::group_render_style>();
+			return
+				rh.reflect_member("use_group_color", use_group_color) &&
+				rh.reflect_member("use_group_transformation", use_group_transformation);
+		}
+
+		cgv::reflect::extern_reflection_traits<group_render_style, group_render_style_reflect> get_reflection_traits(const group_render_style&)
+		{
+			return cgv::reflect::extern_reflection_traits<group_render_style, group_render_style_reflect>();
 		}
 	}
 }
+
+//namespace cgv {
+//	namespace reflect {
+//		namespace render {
+//		}
+//	}
+//}
 
 #include <cgv/gui/provider.h>
 
@@ -137,7 +138,7 @@ namespace cgv {
 
 #include "gl/lib_begin.h"
 
-		extern CGV_API cgv::gui::gui_creator_registration<group_render_style_gui_creator> frs_gc_reg("group_render_style_gui_creator");
+CGV_API cgv::gui::gui_creator_registration<group_render_style_gui_creator> group_rs_gc_reg("group_render_style_gui_creator");
 
 	}
 }

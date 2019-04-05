@@ -48,7 +48,7 @@ macro(_cgv_set_cxx_standard target)
         # FIXME: The following will not work in windows. The correct approach would be
         # set_property(TARGET ${target_name} PROPERTY CXX_STANDARD ${CXX_STANDARD})	
         # which is not supported. So for now we hack this property in
-        set(CMAKE_CXX_FLAGS "-std=c++11")
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 endmacro()
 
 
@@ -114,7 +114,7 @@ macro(cgv_add_module target)
 	string(TOUPPER ${target} TARGET_UPPER)
 	_cgv_set_definitions(${target}
 		COMMON _UNICODE UNICODE
-		SHARED "${TARGET_UPPER}_EXPORTS";"_USRDLL"
+		SHARED "${TARGET_UPPER}_EXPORTS;_USRDLL"
 		STATIC "${TARGET_UPPER}_FORCE_STATIC;CGV_FORCE_STATIC")
 		
 	set_target_properties(${target} PROPERTIES FOLDER "${FOLDER_NAME_PLUGINS}")

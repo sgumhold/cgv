@@ -80,7 +80,8 @@ void light_interactor::on_set(void* member_ptr)
 					if (is_dir)
 						pos /= 1.0 / hpos(3);
 					lights[i].set_position(pos);
-					lights[i].set_spot_direction(reinterpret_cast<const dvec3&>(last_modelview_matrix * hdir));
+					dvec4 hspot_dir = last_modelview_matrix * hdir;
+					lights[i].set_spot_direction(reinterpret_cast<const dvec3&>(hspot_dir));
 				}
 				else {
 					dmat4 inv_mv = inv(last_modelview_matrix);
@@ -89,7 +90,8 @@ void light_interactor::on_set(void* member_ptr)
 					if (is_dir)
 						pos /= 1.0 / hpos(3);
 					lights[i].set_position(pos);
-					lights[i].set_spot_direction(reinterpret_cast<const dvec3&>(inv_mv * hdir));
+					dvec4 hspot_dir = inv_mv * hdir;
+					lights[i].set_spot_direction(reinterpret_cast<const dvec3&>(hspot_dir));
 				}
 				for (unsigned c = 0; c < 3; ++c) {
 					update_member(&lights[i].ref_position()[c]);

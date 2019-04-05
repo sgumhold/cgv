@@ -117,4 +117,4 @@ public:
 #include <cgv/base/register.h>
 
 /// register a factory to create new cubes
-extern cgv::base::factory_registration<cube_demo> cube_demo_fac("new/animate/cube_demo", 'D');
+cgv::base::factory_registration<cube_demo> cube_demo_fac("new/animate/cube_demo", 'D');

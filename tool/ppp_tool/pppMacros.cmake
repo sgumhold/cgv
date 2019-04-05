@@ -1,3 +1,8 @@
+# Set CMake policy 11 to have included scripts push and pop policies
+cmake_policy(SET CMP0011 NEW)
+# Set CMake policy 53 for old expansion rules
+cmake_policy(SET CMP0053 OLD)
+
 # Set output base
 set(PH_BASE "${CMAKE_BINARY_DIR}/@BUILD_BASE@/@INSTALL_HEADER_PATH@")
 

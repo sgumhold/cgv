@@ -151,7 +151,7 @@ namespace cgv { // @<
 			/// method to set the position attribute from a vertex buffer object
 			void set_position_array(const context& ctx, type_descriptor element_type, const vertex_buffer& vbo, size_t offset_in_bytes, size_t nr_elements, unsigned stride_in_bytes);
 			/// template method to set the position attribute from a vertex buffer object, the element type must be given as explicit template parameter
-			template <typename ElementType>
+			template <typename T>
 			void set_position_array(const context& ctx, const vertex_buffer& vbo, size_t offset_in_bytes, size_t nr_elements, unsigned stride_in_bytes = 0) { set_position_array(ctx, type_descriptor(element_descriptor_traits<T>::get_type_descriptor(T()), true), vbo, offset_in_bytes, nr_elements, stride_in_bytes); }
 			/// template method to set the color attribute from a vector of colors of type T
 			template <typename T>
@@ -162,7 +162,7 @@ namespace cgv { // @<
 			/// method to set the color attribute from a vertex buffer object, the element type must be given as explicit template parameter
 			void set_color_array(const context& ctx, type_descriptor element_type, const vertex_buffer& vbo, size_t offset_in_bytes, size_t nr_elements, unsigned stride_in_bytes = 0);
 			/// template method to set the color attribute from a vertex buffer object, the element type must be given as explicit template parameter
-			template <typename ElementType>
+			template <typename T>
 			void set_color_array(const context& ctx, const vertex_buffer& vbo, size_t offset_in_bytes, size_t nr_elements, unsigned stride_in_bytes = 0) { set_color_array(ctx, type_descriptor(element_descriptor_traits<T>::get_type_descriptor(T()), true), vbo, offset_in_bytes, nr_elements, stride_in_bytes); }
 			/// call to validate, whether essential position attribute is defined
 			virtual bool validate_attributes(const context& ctx) const;

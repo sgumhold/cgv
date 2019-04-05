@@ -4,6 +4,7 @@
 #include <vector>
 #include <cgv/media/axis_aligned_box.h>
 #include <cgv/render/drawable.h>
+#include <cgv/render/vertex_buffer.h>
 #include <cgv/media/color.h>
 #include <cgv/media/font/font.h>
 #include <cgv/gui/provider.h>
