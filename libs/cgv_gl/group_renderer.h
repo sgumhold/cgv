@@ -46,7 +46,7 @@ namespace cgv { // @<
 			/// method to set the group index attribute from a vertex buffer object, the element type must be given as explicit template parameter
 			void set_group_index_array(const context& ctx, type_descriptor element_type, const vertex_buffer& vbo, size_t offset_in_bytes, size_t nr_elements, unsigned stride_in_bytes = 0);
 			/// template method to set the group index color attribute from a vertex buffer object, the element type must be given as explicit template parameter
-			template <typename ElementType>
+			template <typename T>
 			void set_group_index_array(const context& ctx, const vertex_buffer& vbo, size_t offset_in_bytes, size_t nr_elements, unsigned stride_in_bytes = 0) { set_group_index_array(ctx, type_descriptor(element_descriptor_traits<T>::get_type_descriptor(T()), true), vbo, offset_in_bytes, nr_elements, stride_in_bytes); }
 			/// template method to set the group colors from a vector of colors of type T
 			template <typename T>
@@ -67,21 +67,23 @@ namespace cgv { // @<
 			template <typename T>
 			void set_group_rotations(const context& ctx, const T* group_rotations, size_t nr_elements) { has_group_rotations = true; ref_prog().set_uniform_array(ctx, "group_rotations", group_rotations, nr_elements); }
 		};
+
+		struct CGV_API group_render_style_reflect : public group_render_style
+		{
+			bool self_reflect(cgv::reflect::reflection_handler& rh);
+		};
+		extern CGV_API cgv::reflect::extern_reflection_traits<group_render_style, group_render_style_reflect> get_reflection_traits(const group_render_style&);
+
 	}
 }
 
 
-namespace cgv {
-	namespace reflect {
-		namespace render {
-			struct CGV_API group_render_style : public cgv::render::group_render_style
-			{
-				bool self_reflect(cgv::reflect::reflection_handler& rh);
-			};
-		}
-		extern CGV_API cgv::reflect::extern_reflection_traits<cgv::render::group_render_style, cgv::reflect::render::group_render_style> get_reflection_traits(const cgv::render::group_render_style&);
-	}
-}
+//namespace cgv {
+//	namespace reflect {
+//		namespace render {
+//		}
+//	}
+//}
 
 
 #include <cgv/config/lib_end.h>

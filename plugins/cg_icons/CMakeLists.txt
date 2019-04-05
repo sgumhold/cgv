@@ -3,18 +3,19 @@ project(cg_icons)
 
 # The CGV framework is needed
 find_package(cgv COMPONENTS base)
-	
-set(SOURCES
-    main.cxx
-)
+find_package(res_prep)
+
+set(SOURCES main.cxx)
 
 # Resource files
 file(GLOB_RECURSE IMAGES RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "*.png")
 
 include_directories(${cgv_INCLUDE_DIRS})
 
+cgv_prepare_resources(${CMAKE_SOURCE_DIR} IMG_SOURCES ${IMAGES})
+
 cgv_add_module(cg_icons 
-	SOURCES ${SOURCES}
+	SOURCES ${SOURCES} ${IMG_SOURCES}
 	FILES ${IMAGES}
 )
 

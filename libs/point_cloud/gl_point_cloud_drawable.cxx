@@ -117,8 +117,7 @@ void gl_point_cloud_drawable::draw_box(cgv::render::context& ctx, const Box& box
 	box_style.use_group_color = false;
 	box_style.use_group_transformation = false;
 	b_renderer.set_render_style(box_style);
-	b_renderer.set_position_array(ctx, &box.get_min_pnt(), 1);
-	b_renderer.set_extent_array(ctx, &box.get_max_pnt(), 1);
+	b_renderer.set_box_array(ctx, &box, 1);
 	b_renderer.set_color_array(ctx, &clr, 1);
 	b_renderer.validate_and_enable(ctx);
 	glDrawArrays(GL_POINTS, 0, 1);
@@ -130,8 +129,7 @@ void gl_point_cloud_drawable::draw_box(cgv::render::context& ctx, const Box& box
 	tmp_use_transformation = box_wire_style.use_group_transformation;
 	box_wire_style.use_group_color = false;
 	box_wire_style.use_group_transformation = false;
-	bw_renderer.set_position_array(ctx, &box.get_min_pnt(), 1);
-	bw_renderer.set_extent_array(ctx, &box.get_max_pnt(), 1);
+	bw_renderer.set_box_array(ctx, &box, 1);
 	bw_renderer.set_color_array(ctx, &clr, 1);
 	bw_renderer.validate_and_enable(ctx);
 	glDrawArrays(GL_POINTS, 0, 1);

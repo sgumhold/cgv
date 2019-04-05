@@ -46,17 +46,11 @@ namespace cgv {
 			void set_normal_array(const context& ctx, const T* normals, size_t nr_elements, unsigned stride_in_bytes = 0) { has_normals = true;  set_attribute_array(ctx, ref_prog().get_attribute_location(ctx, "normal"), normals, nr_elements, stride_in_bytes); }
 		};
 
-	}
-}
-namespace cgv {
-	namespace reflect {
-		namespace render {
-			struct CGV_API normal_render_style : public cgv::render::normal_render_style
-			{
-				bool self_reflect(cgv::reflect::reflection_handler& rh);
-			};
-		}
-		extern CGV_API cgv::reflect::extern_reflection_traits<cgv::render::normal_render_style, cgv::reflect::render::normal_render_style> get_reflection_traits(const cgv::render::normal_render_style&);
+		struct CGV_API normal_render_style_reflect : public normal_render_style
+		{
+			bool self_reflect(cgv::reflect::reflection_handler& rh);
+		};
+		extern CGV_API cgv::reflect::extern_reflection_traits<normal_render_style, normal_render_style_reflect> get_reflection_traits(const cgv::render::normal_render_style&);
 	}
 }
 

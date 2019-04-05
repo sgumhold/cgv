@@ -42,7 +42,9 @@
 
 #if USE_GLEW
 # include <GL/glew.h>
+# ifdef _WIN32
 # include <GL/wglew.h>
+# endif
 #elif defined(__GLEW_H__)
   /* do nothing if they included glew.h */
 #else

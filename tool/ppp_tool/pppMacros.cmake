@@ -1,3 +1,8 @@
+# Set CMake policy 11 to have included scripts push and pop policies
+cmake_policy(SET CMP0011 NEW)
+# Set CMake policy 53 for old expansion rules
+cmake_policy(SET CMP0053 OLD)
+
 # Set output base
 set(PH_BASE "${CMAKE_BINARY_DIR}/@BUILD_BASE@/@INSTALL_HEADER_PATH@")
 
@@ -44,7 +49,9 @@ macro(ppp_command_add base infile outfile)
 		file(MAKE_DIRECTORY "${PH_PATH}")
 	endif()
 
-	get_filename_component(${outfile} "${PH_PATH}/${PH_NAME}.h" ABSOLUTE)
+#	get_filename_component(${outfile} "${PH_PATH}/${PH_NAME}.h" ABSOLUTE)
+	get_filename_component(PH_SRC_PATH "${infile}" DIRECTORY)
+    get_filename_component(${outfile} "${PH_SRC_PATH}/${PH_NAME}.h" ABSOLUTE)
 
 	# FIXME: Can we really do this?
 	include_directories(

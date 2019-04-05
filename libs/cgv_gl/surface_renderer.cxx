@@ -17,14 +17,14 @@ namespace cgv {
 			prog.set_uniform(ctx, name + ".specular_reflectance", material.get_specular_reflectance());
 			prog.set_uniform(ctx, name + ".roughness_anisotropy", material.get_roughness_anisotropy());
 			prog.set_uniform(ctx, name + ".roughness_orientation", material.get_roughness_orientation());
-			prog.set_uniform(ctx, name + ".propagation_slow_down", cgv::math::fvec<float,2>(material.get_propagation_slow_down().real(), material.get_propagation_slow_down().imag()));
+			prog.set_uniform(ctx, name + ".propagation_slow_down", cgv::math::fvec<float, 2>(material.get_propagation_slow_down().real(), material.get_propagation_slow_down().imag()));
 			prog.set_uniform(ctx, name + ".transparency", material.get_transparency());
 			prog.set_uniform(ctx, name + ".metalness", material.get_metalness());
 		}
 
 		surface_render_style::surface_render_style() : material("default")
 		{
-			surface_color = cgv::media::illum::surface_material::color_type(0.7f, 0.1f, 0.4f);
+			surface_color = cgv::media::illum::surface_material::color_type(0.4f, 0.1f, 0.7f);
 			culling_mode = CM_OFF;
 			illumination_mode = IM_ONE_SIDED;
 			map_color_to_material = MS_FRONT_AND_BACK;
@@ -119,27 +119,20 @@ namespace cgv {
 				has_normals = false;
 			return group_renderer::disable(ctx);
 		}
-	}
-}
-
-namespace cgv {
-	namespace reflect {
-		namespace render {
-			bool surface_render_style::self_reflect(cgv::reflect::reflection_handler& rh)
-			{
-				return
-					rh.reflect_base<group_render_style>(*this) &&
-					rh.reflect_member("culling_mode", culling_mode) &&
-					rh.reflect_member("illumination_mode", illumination_mode) &&
-					rh.reflect_member("map_color_to_material", map_color_to_material) &&
-					rh.reflect_member("surface_color", surface_color) &&
-					rh.reflect_member("material", material);
-			}
-
-		}
-		cgv::reflect::extern_reflection_traits<cgv::render::surface_render_style, cgv::reflect::render::surface_render_style> get_reflection_traits(const cgv::render::surface_render_style&)
+		bool surface_render_style_reflect::self_reflect(cgv::reflect::reflection_handler& rh)
 		{
-			return cgv::reflect::extern_reflection_traits<cgv::render::surface_render_style, cgv::reflect::render::surface_render_style>();
+			return
+				rh.reflect_base<group_render_style>(*this) &&
+				rh.reflect_member("culling_mode", culling_mode) &&
+				rh.reflect_member("illumination_mode", illumination_mode) &&
+				rh.reflect_member("map_color_to_material", map_color_to_material) &&
+				rh.reflect_member("surface_color", surface_color) &&
+				rh.reflect_member("material", material);
+		}
+
+		cgv::reflect::extern_reflection_traits<surface_render_style, surface_render_style_reflect> get_reflection_traits(const surface_render_style&)
+		{
+			return cgv::reflect::extern_reflection_traits<surface_render_style, surface_render_style_reflect>();
 		}
 	}
 }
@@ -187,7 +180,7 @@ namespace cgv {
 
 #include "gl/lib_begin.h"
 
-		extern CGV_API cgv::gui::gui_creator_registration<surface_render_style_gui_creator> frs_gc_reg("surface_render_style_gui_creator");
+CGV_API cgv::gui::gui_creator_registration<surface_render_style_gui_creator> surface_rs_gc_reg("surface_render_style_gui_creator");
 
 	}
 }

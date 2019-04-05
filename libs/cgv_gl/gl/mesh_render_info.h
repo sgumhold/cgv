@@ -44,7 +44,7 @@ namespace cgv {
 			void finish_construct_base(cgv::render::context& ctx, size_t element_size, bool include_tex_coords, bool include_normals,
 				const std::vector<idx_type>& triangle_element_buffer, const std::vector<idx_type>& edge_element_buffer,
 				cgv::render::type_descriptor vec3_descr, cgv::render::type_descriptor vec2_descr, size_t nr_vertices, 
-				unsigned color_increment, cgv::media::colored_model::ColorType ct);
+				unsigned color_increment, cgv::media::ColorType ct);
 			///
 			template <typename T>
 			void construct(cgv::render::context& ctx, cgv::media::mesh::simple_mesh<T>& mesh)
@@ -70,6 +70,8 @@ namespace cgv {
 			void render_mesh(cgv::render::context& c);
 			///
 			void render_material_part(cgv::render::context& c, size_t mi, bool opaque);
+			/// render mesh with given surface material
+			void render_mesh(cgv::render::context& c, const cgv::media::illum::surface_material& material);
 			///
 			void render_wireframe(cgv::render::context& c);
 		};

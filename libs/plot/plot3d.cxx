@@ -24,7 +24,7 @@ plot3d_config::plot3d_config(const std::string& _name) : plot_base_config(_name)
 	wireframe = false;
 	surface_color = rgb(0.7f,0.4f,0);
 	face_illumination = PFI_PER_FACE;
-
+	bar_percentual_depth = 1.0f;
 }
 
 void plot3d::set_uniforms(cgv::render::context& ctx, cgv::render::shader_program& prog, unsigned i)
@@ -151,7 +151,9 @@ void plot3d::draw_sub_plot(cgv::render::context& ctx, unsigned i)
 	if (spc.show_bars) {
 		set_uniforms(ctx, box_prog, i);
 		box_prog.set_uniform(ctx, "percentual_width", spc.bar_percentual_width);
+		box_prog.set_uniform(ctx, "percentual_depth", spc.bar_percentual_depth);
 		box_prog.set_uniform(ctx, "N", (int&)spc.samples_per_row);
+		box_prog.set_uniform(ctx, "M", (int)(count/spc.samples_per_row));
 		box_prog.enable(ctx);
 			ctx.set_color(spc.bar_color);
 			box_prog.set_uniform(ctx, "map_color_to_material", 3);
@@ -397,7 +399,8 @@ void plot3d::create_config_gui(cgv::base::base* bp, cgv::gui::provider& p, unsig
 		p.add_member_control(bp, "color", pbc.surface_color);
 		p.add_member_control(bp, "wireframe", pbc.face_illumination, "dropdown", "enums='none,face,vertex'");
 	}
-
+	p.add_member_control(bp, "bar depth", pbc.bar_percentual_depth, "value_slider", "min=0.01;max=1;log=true;ticks=true");
+	
 	plot_base::create_config_gui(bp, p, i);
 }
 

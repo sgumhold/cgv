@@ -49,7 +49,7 @@ public:
 	// We need to repeat the typenames here, because gcc will not inherit them in templates
 	typedef typename obj_reader_generic<T>::v3d_type v3d_type;
 	typedef typename obj_reader_generic<T>::v2d_type v2d_type;
-	typedef typename obj_reader_generic<T>::color_type color_type;
+	typedef obj_reader_base::color_type color_type;
 	
 	std::vector<v3d_type> vertices; 
     std::vector<v3d_type> normals; 

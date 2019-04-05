@@ -207,7 +207,7 @@ stereo_view_interactor::stereo_view_interactor(const char* name) : node(name)
 		minus_key_toggle_time[i] = 0;
 		minus_key_down[i] = false;
 	}
-
+	adapt_aspect_ratio_to_stereo_mode = true;
 	last_do_viewport_splitting = do_viewport_splitting = false;
 	deadzone = 0.03f;
 	gamepad_attached = false;
@@ -1235,6 +1235,12 @@ void stereo_view_interactor::on_stereo_change()
 /// set the current projection matrix
 void stereo_view_interactor::gl_set_projection_matrix(cgv::render::context& ctx, GlsuEye e, double aspect)
 {
+	if (adapt_aspect_ratio_to_stereo_mode) {
+		if (stereo_mode == GLSU_SPLIT_HORIZONTALLY)
+			aspect *= 0.5;
+		if (stereo_mode == GLSU_SPLIT_VERTICALLY)
+			aspect *= 2;
+	}
 	dmat4 P;
 	if (y_view_angle <= 0.1)
 		P = ortho4<double>(-aspect * y_extent_at_focus, aspect*y_extent_at_focus, -y_extent_at_focus, y_extent_at_focus, z_near_derived, z_far_derived);
@@ -1249,6 +1255,12 @@ void stereo_view_interactor::gl_set_projection_matrix(cgv::render::context& ctx,
 
 void stereo_view_interactor::gl_set_modelview_matrix(cgv::render::context& ctx, GlsuEye e, double aspect, const cgv::render::view& view)
 {
+	if (adapt_aspect_ratio_to_stereo_mode) {
+		if (stereo_mode == GLSU_SPLIT_HORIZONTALLY)
+			aspect *= 0.5;
+		if (stereo_mode == GLSU_SPLIT_VERTICALLY)
+			aspect *= 2;
+	}
 	ctx.set_modelview_matrix(cgv::math::identity4<double>());
 	if (stereo_translate_in_model_view)
 		ctx.mul_modelview_matrix(cgv::math::stereo_translate_screen4<double>(e, eye_distance, view.get_y_extent_at_focus()*aspect));
@@ -1504,6 +1516,7 @@ void stereo_view_interactor::create_gui()
 			connect_copy(add_control("stereo", stereo_enabled, "check")->value_change, rebind(this, &stereo_view_interactor::on_stereo_change));
 			add_member_control(this, "mono_mode", mono_mode, "dropdown", "enums='left=-1,center,right'");
 			add_member_control(this, "stereo_mode", stereo_mode, "dropdown", "enums='vsplit,hsplit,anaglyph,quad buffer'");
+			add_member_control(this, "adapt_aspect_ratio", adapt_aspect_ratio_to_stereo_mode, "check");
 			add_member_control(this, "anaglyph_config", anaglyph_config, "dropdown", "enums='" AC_ENUMS "'");
 			add_member_control(this, "eye_distance", eye_distance, "value_slider", "min=0;max=0.1;ticks=true;step=0.001");
 			add_member_control(this, "parallax_zero_scale", parallax_zero_scale, "value_slider", "min=0.03;max=1;ticks=true;step=0.001;log=true");		

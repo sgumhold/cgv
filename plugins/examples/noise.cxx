@@ -153,4 +153,4 @@ public:
 #include <cgv/base/register.h>
 
 /// register a factory to create new cubes
-extern cgv::base::factory_registration<noise> noise_fac("new/algorithms/noise", 'N');
+cgv::base::factory_registration<noise> noise_fac("new/algorithms/noise", 'N');

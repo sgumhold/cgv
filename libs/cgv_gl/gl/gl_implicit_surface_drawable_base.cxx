@@ -4,6 +4,7 @@
 
 #include <cgv/render/drawable.h>
 #include <cgv/render/shader_program.h>
+#include <cgv/render/attribute_array_binding.h>
 #include <cgv/math/ftransform.h>
 #include <cgv_gl/gl/gl.h>
 
@@ -33,19 +34,19 @@ gl_implicit_surface_drawable_base::gl_implicit_surface_drawable_base() : box(dve
 	show_sampling_grid = false;
 	show_sampling_locations = false;
 	normal_computation_type = FACE_NORMALS;
+//	normal_computation_type = GRADIENT_NORMALS;
 	consistency_threshold = 0.01;
 	max_nr_iters = 8;
 	normal_threshold = 0.73;
 	show_box = true;
 	show_mesh_normals = false;
 	show_gradient_normals = false;
-	id = -1;
 	sm_ptr = 0;
 	epsilon = 1e-8;
 	grid_epsilon = 0.01;
 	ix=iy=iz=0;
 	show_mini_box = false;
-	material.set_diffuse_reflectance(rgb(0.3f,0.1f,0.7f));
+	material.set_diffuse_reflectance(rgb(0.1f, 0.6f, 1.0f));
 	material.set_specular_reflectance(rgb(0.7f,0.7f,0.7f));
 	material.set_roughness(0.1f);
 }
@@ -200,21 +201,19 @@ unsigned int gl_implicit_surface_drawable_base::get_nr_vertices_of_last_extracti
 }
 
 
-void gl_implicit_surface_drawable_base::add_normal(const dvec3& p, const dvec3& n, std::vector<float>& nml_gradient_geometry) const
+void gl_implicit_surface_drawable_base::add_normal(const dvec3& p, const dvec3& n, std::vector<vec3>& nml_gradient_geometry) const
 {
-	nml_gradient_geometry.push_back((float)p(0));
-	nml_gradient_geometry.push_back((float)p(1));
-	nml_gradient_geometry.push_back((float)p(2));
-	nml_gradient_geometry.push_back((float)(p(0)+n(0)/res));
-	nml_gradient_geometry.push_back((float)(p(1)+n(1)/res));
-	nml_gradient_geometry.push_back((float)(p(2)+n(2)/res));
+	nml_gradient_geometry.push_back(vec3(p));
+	nml_gradient_geometry.push_back(vec3(p+n/res));
 }
 
 /// announces a new quad
-void gl_implicit_surface_drawable_base::new_polygon(const std::vector<unsigned int> &vertex_indices)
+void gl_implicit_surface_drawable_base::new_polygon(const std::vector<unsigned> &vertex_indices)
 {
-	unsigned int n = (unsigned int) vertex_indices.size();
+	unsigned n = (unsigned)vertex_indices.size();
+	mesh.start_face();
 
+	// compute face normal
 	if (normal_computation_type == FACE_NORMALS) {
 		dvec3 ctr;
 		dvec3 nml = compute_face_normal(vertex_indices, &ctr);
@@ -222,59 +221,77 @@ void gl_implicit_surface_drawable_base::new_polygon(const std::vector<unsigned i
 			++normal_index;
 			(*obj_out) << "vn " << nml(0) << " " << nml(1) << " " << nml(2) << std::endl;
 			if (triangulate) {
-				for (unsigned i=0; i<n-2; ++i) {
-					(*obj_out) << "f " << vertex_indices[0]+1 << "//" << normal_index;
-					(*obj_out) <<  " " << vertex_indices[i+1]+1 << "//" << normal_index;
-					(*obj_out) <<  " " << vertex_indices[i+2]+1 << "//" << normal_index << std::endl;
+				for (unsigned i = 0; i < n - 2; ++i) {
+					(*obj_out) << "f " << vertex_indices[0] + 1 << "//" << normal_index;
+					(*obj_out) << " " << vertex_indices[i + 1] + 1 << "//" << normal_index;
+					(*obj_out) << " " << vertex_indices[i + 2] + 1 << "//" << normal_index << std::endl;
 				}
 			}
 			else {
 				(*obj_out) << "f";
-				for (unsigned i=0; i<n; ++i) {
-					(*obj_out) << " " << vertex_indices[i]+1 << "//" << normal_index;
+				for (unsigned i = 0; i < n; ++i) {
+					(*obj_out) << " " << vertex_indices[i] + 1 << "//" << normal_index;
 				}
 				(*obj_out) << std::endl;
 			}
-			return;
 		}
 		else {
+			int ni = mesh.new_normal(nml);
+			for (unsigned i = 0; i < n; ++i)
+				mesh.new_corner(vertex_indices[i], ni);
 			add_normal(ctr, nml, nml_mesh_geometry);
-			glNormal3dv(nml);
 		}
+		return;
 	}
 
 	if (obj_out) {
 		if (triangulate) {
-			for (unsigned i=0; i<n-2; ++i) {
-				(*obj_out) << "f " << vertex_indices[0]+1 << "//" << vertex_indices[0]+1;
-				(*obj_out) <<  " " << vertex_indices[i+1]+1 << "//" << vertex_indices[i+1]+1;
-				(*obj_out) <<  " " << vertex_indices[i+2]+1 << "//" << vertex_indices[i+2]+1 << std::endl;
+			for (unsigned i = 0; i < n - 2; ++i) {
+				(*obj_out) << "f " << vertex_indices[0] + 1 << "//" << vertex_indices[0] + 1;
+				(*obj_out) << " " << vertex_indices[i + 1] + 1 << "//" << vertex_indices[i + 1] + 1;
+				(*obj_out) << " " << vertex_indices[i + 2] + 1 << "//" << vertex_indices[i + 2] + 1 << std::endl;
 			}
 		}
 		else {
 			(*obj_out) << "f";
-			for (unsigned i=0; i<n; ++i) {
-				(*obj_out) << " " << vertex_indices[i]+1 << "//" << vertex_indices[i]+1;
+			for (unsigned i = 0; i < n; ++i) {
+				(*obj_out) << " " << vertex_indices[i] + 1 << "//" << vertex_indices[i] + 1;
 			}
 			(*obj_out) << std::endl;
 		}
 		return;
 	}
 
+	std::vector<int> nis;
 	for (unsigned i=0; i<n; ++i) {
-		render_corner_normal(sm_ptr->vertex_location(vertex_indices[(i+n-1)%n]),
+		// compute corner normal
+		vec3 nml = compute_corner_normal(sm_ptr->vertex_location(vertex_indices[(i+n-1)%n]),
 			                  sm_ptr->vertex_location(vertex_indices[i]),
 									sm_ptr->vertex_location(vertex_indices[(i+1)%n]),
 									sm_ptr->vertex_normal(vertex_indices[i]));
-		glVertex3dv(sm_ptr->vertex_location(vertex_indices[i]));
+
+		// check whether we saw it before
+		int ni = -1;
+		for (int nj : nis)
+			if ((nml - mesh.normal(nj)).length() < 1e-6f) {
+				ni = nj;
+				break;
+			}
+		// if not add new normal
+		if (ni == -1) {
+			ni = mesh.new_normal(nml);
+			nis.push_back(ni);
+		}
+		mesh.new_corner(vertex_indices[i], ni);
 	}
 }
 
 /// allows to augment a newly computed vertex by additional data
 void gl_implicit_surface_drawable_base::new_vertex(unsigned int vi)
 {
+	dvec3 p = sm_ptr->vertex_location(vi);
+	mesh.new_position(p);
 	if (normal_computation_type != FACE_NORMALS) {
-		dvec3 p = sm_ptr->vertex_location(vi);
 		vec_type grad = func_ptr->evaluate_gradient(p.to_vec());
 		dvec3 n(grad.size(), grad);
 		n.normalize();
@@ -317,20 +334,18 @@ void gl_implicit_surface_drawable_base::before_drop_vertex(unsigned int vertex_i
 {
 }
 
-void gl_implicit_surface_drawable_base::render_corner_normal(const dvec3& pj, const dvec3& pi, const dvec3& pk, const dvec3& ni)
+gl_implicit_surface_drawable_base::dvec3 gl_implicit_surface_drawable_base::compute_corner_normal(const dvec3& pj, const dvec3& pi, const dvec3& pk, const dvec3& ni)
 {
 	if (normal_computation_type == FACE_NORMALS)
-		return;
+		return dvec3(0.0);
 
-	if (normal_computation_type == GRADIENT_NORMALS) {
-		glNormal3dv(ni);
-		return;
-	}
+	if (normal_computation_type == GRADIENT_NORMALS)
+		return ni;
 
 	dvec3 n = cross(pk-pi, pj-pi);
 	double l  = n.length();
 	if ((l > 1e-6) && (dot(n,ni) > l*normal_threshold))
-		glNormal3dv(ni);
+		return ni;
 	else {
 		dvec3 p = pi;
 		if (normal_computation_type == CORNER_GRADIENTS) {
@@ -340,14 +355,12 @@ void gl_implicit_surface_drawable_base::render_corner_normal(const dvec3& pj, co
 			n.normalize();
 		}
 		else {
-			if (l < 1e-6) {
-				glNormal3dv(ni);
-				return;
-			}
+			if (l < 1e-6)
+				return ni;
 			n /= l;
 		}
 		add_normal(p, n, nml_mesh_geometry);
-		glNormal3dv(n);
+		return n;
 	}
 }
 
@@ -383,25 +396,17 @@ void gl_implicit_surface_drawable_base::surface_extraction()
 	}
 }
 
-void gl_implicit_surface_drawable_base::build_display_list()
+void gl_implicit_surface_drawable_base::extract_mesh()
 {
-	if (id != -1)
-		glDeleteLists(id, 1);
+
 	if (!func_ptr)
 		return;
-	id = glGenLists(1);
+
+	mesh.clear();
 	nml_gradient_geometry.clear();
 	nml_mesh_geometry.clear();
 
-	glNewList(id, GL_COMPILE_AND_EXECUTE);
-	switch (contouring_type) {
-	case MARCHING_CUBES :  glBegin(GL_TRIANGLES); break;
-	case DUAL_CONTOURING : glBegin(GL_QUADS); break;
-	}
 	surface_extraction();
-	glEnd();
-	glEndList();
-	outofdate = false;
 }
 
 /// overload to draw the content of this drawable
@@ -430,83 +435,92 @@ void gl_implicit_surface_drawable_base::draw(context& ctx)
 	}
 	glDisable(GL_CULL_FACE);
 	prog.disable(ctx);
+	prog.set_uniform(ctx, "map_color_to_material", 0);
 
 	draw_implicit_surface(ctx);
 
+	shader_program& dprog = ctx.ref_default_shader_program();
+	dprog.enable(ctx);
+	cgv::render::attribute_array_binding::enable_global_array(ctx, dprog.get_position_index());
 	if (show_gradient_normals || show_mesh_normals) {
 		glLineWidth(1);
-		glDisable(GL_LIGHTING);
-		glBegin(GL_LINES);
-		if (show_gradient_normals) {
-			glColor3f(1,0.5f,0);
-			for (unsigned int i=0; i < nml_gradient_geometry.size(); i += 3)
-				glVertex3f(nml_gradient_geometry[i],nml_gradient_geometry[i+1],nml_gradient_geometry[i+2]);
+		if (show_gradient_normals && !nml_gradient_geometry.empty()) {
+			ctx.set_color(rgb(1, 0.5f, 0));
+			cgv::render::attribute_array_binding::set_global_attribute_array(ctx, dprog.get_position_index(), nml_gradient_geometry);
+			glDrawArrays(GL_LINES, 0, (GLsizei)nml_gradient_geometry.size());
 		}
-		if (show_mesh_normals) {
-			glColor3f(1,0,1);
-			for (unsigned int i=0; i < nml_mesh_geometry.size(); i += 3)
-				glVertex3f(nml_mesh_geometry[i],nml_mesh_geometry[i+1],nml_mesh_geometry[i+2]);
+		if (show_mesh_normals && !nml_mesh_geometry.empty()) {
+			ctx.set_color(rgb(1, 0, 1));
+			cgv::render::attribute_array_binding::set_global_attribute_array(ctx, dprog.get_position_index(), nml_mesh_geometry);
+			glDrawArrays(GL_LINES, 0, (GLsizei)nml_mesh_geometry.size());
 		}
-		glEnd();
-		glEnable(GL_LIGHTING);
 	}
 
+	vec3 p = box.get_corner(0);
+	vec3 q = box.get_corner(7);
+	vec3 d = box.get_extent();
+	d /= float(res-1);
+	std::vector<vec3> G;
 	if (show_sampling_locations) {
-		glColor3f(1,1,1);
-		fvec<double,3> p = box.get_corner(0);
-		fvec<double,3> q = box.get_corner(7);
-		fvec<double,3> d = box.get_extent();
-		d /= (res-1);
+		std::vector<vec3> G_out;
+		for (unsigned int i=0; i<res; ++i)
+			for (unsigned int j=0; j<res; ++j)
+				for (unsigned int k = 0; k < res; ++k) {
+					vec3 r(p(0) + i * d(0), p(1) + j * d(1), p(2) + k * d(2));
+					if (func_ptr->evaluate(r.to_vec()) > 0)
+						G_out.push_back(r);
+					else
+						G.push_back(r);
+				}
+
 		glPointSize(2);
-		glDisable(GL_LIGHTING);
-		glBegin(GL_POINTS);
-			for (unsigned int i=0; i<res; ++i)
-				for (unsigned int j=0; j<res; ++j)
-					for (unsigned int k=0; k<res; ++k)
-						glVertex3d(p(0)+i*d(0),p(1)+j*d(1),p(2)+k*d(2));
-		glEnd();
-		glEnable(GL_LIGHTING);
+		ctx.set_color(rgb(0.3f, 0.3f, 1));
+		cgv::render::attribute_array_binding::set_global_attribute_array(ctx, dprog.get_position_index(), G_out);
+		glDrawArrays(GL_POINTS, 0, (GLsizei)G_out.size());
+		ctx.set_color(rgb(1, 0.3f, 0.3f));
+		cgv::render::attribute_array_binding::set_global_attribute_array(ctx, dprog.get_position_index(), G);
+		glDrawArrays(GL_POINTS, 0, (GLsizei)G.size());
 	}
 
 	if (show_sampling_grid) {
-		glColor4f(0.7f,0.7f,0.7f,0.4f);
-		fvec<double,3> p = box.get_corner(0);
-		fvec<double,3> q = box.get_corner(7);
-		fvec<double,3> d = box.get_extent();
-		d /= (res-1);
-		glDisable(GL_LIGHTING);
+		G.clear();
+		ctx.set_color(rgb(0.7f,0.7f,0.7f,0.4f));
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-		glBegin(GL_LINES);
-			for (unsigned int i=0; i<res; ++i)
-				for (unsigned int j=0; j<res; ++j) {
-					glVertex3d(p(0)+i*d(0),p(1)+j*d(1),p(2));
-					glVertex3d(p(0)+i*d(0),p(1)+j*d(1),q(2));
-
-					glVertex3d(p(0),p(1)+i*d(1),p(2)+j*d(2));
-					glVertex3d(q(0),p(1)+i*d(1),p(2)+j*d(2));
-
-					glVertex3d(p(0)+i*d(0),p(1),p(2)+j*d(2));
-					glVertex3d(p(0)+i*d(0),q(1),p(2)+j*d(2));
-				}
-		glEnd();
+		for (unsigned int i=0; i<res; ++i)
+			for (unsigned int j=0; j<res; ++j) {
+				G.push_back(vec3(p(0) + i * d(0), p(1) + j * d(1), p(2)));
+				G.push_back(vec3(p(0) + i * d(0), p(1) + j * d(1), q(2)));
+				G.push_back(vec3(p(0), p(1) + i * d(1), p(2) + j * d(2)));
+				G.push_back(vec3(q(0), p(1) + i * d(1), p(2) + j * d(2)));
+				G.push_back(vec3(p(0) + i * d(0), p(1), p(2) + j * d(2)));
+				G.push_back(vec3(p(0) + i * d(0), q(1), p(2) + j * d(2)));
+			}
+		cgv::render::attribute_array_binding::set_global_attribute_array(ctx, dprog.get_position_index(), G);
+		glDrawArrays(GL_LINES, 0, (GLsizei)G.size());
 		glDisable(GL_BLEND);
-		glEnable(GL_LIGHTING);
 	}
+	cgv::render::attribute_array_binding::disable_global_array(ctx, dprog.get_position_index());
+	dprog.disable(ctx);
 }
 
 void gl_implicit_surface_drawable_base::draw_implicit_surface(context& ctx)
 {
-	glColor3f(0.1f,0.2f,0.6f);
-	glDisable(GL_CULL_FACE);
-	if (wireframe)
-		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-	if (outofdate)
-		build_display_list();
-	else
-		glCallList(id);
-	if (wireframe)
-		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	if (outofdate) {
+		extract_mesh();
+		mri.destruct(ctx);
+		mri.construct(ctx, mesh);
+		outofdate = false;
+	}
+	if (wireframe) {
+		ctx.ref_default_shader_program().enable(ctx);
+		ctx.set_color(rgb(0.1f, 0.2f, 0.6f));
+		mri.render_wireframe(ctx);
+		ctx.ref_default_shader_program().disable(ctx);
+	}
+	else {
+		mri.render_mesh(ctx, material);
+	}
 }
 
 

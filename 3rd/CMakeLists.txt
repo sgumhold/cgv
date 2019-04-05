@@ -53,15 +53,19 @@ set(depslist "")
 
 check_3rd_package(ZLIB zlib depslist)
 check_3rd_package(GLEW glew depslist)
+check_3rd_package(PNG png depslist)
+check_3rd_package(JPEG jpeg depslist)
+check_3rd_package(TIFF tiff depslist)
+# check_3rd_package(FLTK2 fltk depslist)
 
 # Always use our modified bastard version
-#add_subdirectory(glew)
-add_subdirectory(png)
-add_subdirectory(jpeg)
+# add_subdirectory(glew)
+# add_subdirectory(png)
+# add_subdirectory(jpeg)
 add_subdirectory(fltk)
-add_subdirectory(tiff)
-#add_subdirectory(zlib)
-list(APPEND depslist "PNG" "JPEG" "FLTK2" "TIFF" "ZLIB" "GLEW")
+# add_subdirectory(tiff)
+# add_subdirectory(zlib)
+list(APPEND depslist "FLTK2")
 
 # Add a custom target for all 3rd packages
 add_custom_target(3rd)

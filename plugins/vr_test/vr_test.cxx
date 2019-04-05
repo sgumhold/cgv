@@ -121,7 +121,12 @@ public:
 				add_member_control(this, prefix + ".precision", left_deadzone_and_precision[i].second, "value_slider", "min=0;max=1;ticks=true;log=true");
 			}
 		}
-		add_gui("boxes", style);
+		if (begin_tree_node("box style", style)) {
+			align("\a");
+			add_gui("box style", style);
+			align("\b");
+			end_tree_node(style);
+		}
 	}
 	void on_set(void* member_ptr)
 	{
