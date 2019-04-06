@@ -126,5 +126,5 @@ public:
 
 #include <cgv/config/lib_begin.h>
 
-extern CGV_API cgv::base::factory_registration<object_browser> obt_1("object_browser", "menu_text=\"new/object browser\";shortcut='Ctrl-Alt-O");
+CGV_API cgv::base::factory_registration<object_browser> obt_1("object_browser", "menu_text=\"new/object browser\";shortcut='Ctrl-Alt-O");
 
