@@ -915,8 +915,8 @@ struct menu_listener : public cgv::base::base, public registration_listener
 	}
 };
 
-extern object_registration<fltk_driver> fltk_driver_registration("fltk driver");
-extern object_registration<menu_listener> fml_reg("fltk menu driver");
+object_registration<fltk_driver> fltk_driver_registration("fltk driver");
+object_registration<menu_listener> fml_reg("fltk menu driver");
 
-//extern object_registration<fltk_driver> fltk_driver_registration;
-//extern object_registration<menu_listener> fml_reg;
+//object_registration<fltk_driver> fltk_driver_registration;
+//object_registration<menu_listener> fml_reg;

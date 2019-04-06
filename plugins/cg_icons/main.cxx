@@ -7,5 +7,5 @@
 
 #include <cgv/config/lib_begin.h>
 
-extern CGV_API int dummy_export_icons = 5;
+CGV_API int dummy_export_icons = 5;
 

@@ -156,5 +156,5 @@ bool antialias::self_reflect(cgv::reflect::reflection_handler& srh)
 
 #include <cgv/base/register.h>
 
-extern cgv::base::factory_registration<antialias> anti_reg("antialias", "menu_text='new/antialias';shortcut='Ctrl-Alt-A'", true, 
+cgv::base::factory_registration<antialias> anti_reg("antialias", "menu_text='new/antialias';shortcut='Ctrl-Alt-A'", true, 
 														                "menu_text='&view/antialias';shortcut='Ctrl-A'");
