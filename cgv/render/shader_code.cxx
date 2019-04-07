@@ -4,7 +4,7 @@
 #include <cgv/base/import.h>
 #include <cgv/utils/advanced_scan.h>
 #include <cgv/utils/tokenizer.h>
-#include <libs/ppp/ph_processor.h>
+#include <cgv/ppp/ph_processor.h>
 #include <cgv/utils/file.h>
 #include <cgv/type/variant.h>
 
@@ -216,13 +216,13 @@ std::string shader_code::read_code_file(const std::string &file_name, std::strin
 		if (!get_shader_config()->shader_path.empty())
 			paths = paths+";"+get_shader_config()->shader_path;
 
-		cgv::media::text::ppp::ph_processor php(paths, true);
+		cgv::ppp::ph_processor php(paths, true);
 		php.configure_insert_to_shader(&get_shader_config()->inserted_shader_file_names);
 		if (!php.parse_string(source))
 			return "";
 		if (!php.process_to_string(code))
 			return "";
-		cgv::media::text::ppp::clear_variables();
+		cgv::ppp::clear_variables();
 		source = code;
 	}
 	return source;

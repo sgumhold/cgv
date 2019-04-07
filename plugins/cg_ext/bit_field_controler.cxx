@@ -91,7 +91,7 @@ struct bit_field_controler_gui_creator : public cgv::gui::gui_creator
 
 #include "lib_begin.h"
 
-extern CGV_API cgv::gui::gui_creator_registration<bit_field_controler_gui_creator> bfc_gc_reg("bit_field_gui_creator");
+CGV_API cgv::gui::gui_creator_registration<bit_field_controler_gui_creator> bfc_gc_reg("bit_field_gui_creator");
 	
 	}
 }

@@ -148,8 +148,8 @@ struct directory_gui_creator : public cgv::gui::gui_creator
 
 #include "lib_begin.h"
 
-extern CGV_API gui_creator_registration<file_name_gui_creator> file_name_gui_creator_reg("file_name_gui_creator");
-extern CGV_API gui_creator_registration<directory_gui_creator> directory_gui_creator_reg("directory_gui_creator");
+CGV_API gui_creator_registration<file_name_gui_creator> file_name_gui_creator_reg("file_name_gui_creator");
+CGV_API gui_creator_registration<directory_gui_creator> directory_gui_creator_reg("directory_gui_creator");
 
 	}
 }

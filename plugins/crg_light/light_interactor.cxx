@@ -559,5 +559,5 @@ void light_interactor:: stream_help(std::ostream& os)
 #include "lib_begin.h"
 
 /// register a light interactor factory
-extern cgv::base::factory_registration<light_interactor> li_reg("light_interactor", "menu_text='new/light interactor';shortcut='Ctrl-Alt-L'", true, 
+cgv::base::factory_registration<light_interactor> li_reg("light_interactor", "menu_text='new/light interactor';shortcut='Ctrl-Alt-L'", true, 
 														                "menu_text='&view/light interactor';shortcut='Ctrl-L'");

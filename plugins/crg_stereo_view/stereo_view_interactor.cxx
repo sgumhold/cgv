@@ -1698,7 +1698,7 @@ bool stereo_view_interactor::self_reflect(cgv::reflect::reflection_handler& srh)
 #include <cgv/base/register.h>
 
 /// register a newly created cube with the name "cube1" as constructor argument
-extern cgv::base::object_registration_1<stereo_view_interactor,const char*> 
+cgv::base::object_registration_1<stereo_view_interactor,const char*> 
  obj1("stereo interactor", "registration of stereo interactor");
 
 #endif

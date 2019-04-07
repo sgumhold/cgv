@@ -36,6 +36,8 @@ cgv_add_library(delaunay
         FILES ${FILES}
         SHARED_DEFINITIONS DELAUNAY_EXPORTS)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fpermissive")
+if (UNIX)
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fpermissive")
+endif()
 
 cgv_write_find_file(delaunay)

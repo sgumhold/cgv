@@ -16,7 +16,9 @@ cgv_add_core_component(media
 	PUBLIC_HEADERS ${PUBLIC_HEADERS} ${PUBLIC_HEADERS_HH}
 	CGV_DEPENDENCIES utils type data base)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fpermissive")
+if (UNIX)
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fpermissive")
+endif()
 
 # This component has multiple static and shared definitions
 cgv_add_export_definitions(cgv_media CGV_MEDIA_FONT CGV_MEDIA_ILLUM CGV_MEDIA_IMAGE CGV_MEDIA_VIDEO)

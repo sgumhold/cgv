@@ -35,7 +35,7 @@ file(GLOB SOURCES_REFLECT "${CGV_BASE}/cgv/reflect/*.cxx")
 file(GLOB SOURCES_DATA "${CGV_BASE}/cgv/data/*.cxx")
 file(GLOB SOURCES_BASE "${CGV_BASE}/cgv/base/*.cxx")
 file(GLOB SOURCES_SIGNAL "${CGV_BASE}/cgv/signal/*.cxx")
-file(GLOB SOURCES_PPP "${CGV_BASE}/libs/ppp/*.cxx")
+file(GLOB SOURCES_PPP "${CGV_BASE}/cgv/ppp/*.cxx")
 
 
 
@@ -91,7 +91,7 @@ ppp_compile("${CGV_DIR}"
 			PPP_FILES 
 			${PH_SOURCES})
 
-cgv_add_executable(shader_test ${SOURCES} ${PPP_FILES})
+cgv_add_tool(shader_test ${SOURCES} ${PPP_FILES})
 
 # FIXME: do not use internal macros
 _cgv_set_definitions(shader_test
@@ -110,8 +110,6 @@ target_link_libraries(shader_test
 if (NOT WIN32)
 	target_link_libraries(shader_test dl Xext)
 endif()
-
-set_target_properties(shader_test PROPERTIES FOLDER "${FOLDER_NAME_TOOL}")
 
 cgv_write_find_file(shader_test)
 

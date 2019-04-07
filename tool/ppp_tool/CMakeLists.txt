@@ -14,17 +14,14 @@ set(SOURCES
 	${CGV_DIR}/cgv/utils/file.cxx
 	${CGV_DIR}/cgv/utils/dir.cxx
 	${CGV_DIR}/cgv/utils/date_time.cxx
-	${CGV_DIR}/libs/ppp/command_token.cxx
-	${CGV_DIR}/libs/ppp/expression_processor.cxx
-	${CGV_DIR}/libs/ppp/operators.cxx
-	${CGV_DIR}/libs/ppp/ph_processor.cxx
-	${CGV_DIR}/libs/ppp/ppp_variant.cxx
-	${CGV_DIR}/libs/ppp/variables.cxx)
+	${CGV_DIR}/cgv/ppp/command_token.cxx
+	${CGV_DIR}/cgv/ppp/expression_processor.cxx
+	${CGV_DIR}/cgv/ppp/operators.cxx
+	${CGV_DIR}/cgv/ppp/ph_processor.cxx
+	${CGV_DIR}/cgv/ppp/ppp_variant.cxx
+	${CGV_DIR}/cgv/ppp/variables.cxx)
 	
 # Set the project target
-cgv_add_executable(ppp ${SOURCES})
-
-set_target_properties(ppp PROPERTIES COMPILE_DEFINITIONS CGV_FORCE_STATIC)
-set_target_properties(ppp PROPERTIES FOLDER "${FOLDER_NAME_TOOL}")
+cgv_add_tool(ppp ${SOURCES})
 
 cgv_write_find_file(ppp)
