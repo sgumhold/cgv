@@ -22,9 +22,6 @@ set(SOURCES
 	${CGV_DIR}/libs/ppp/variables.cxx)
 	
 # Set the project target
-cgv_add_executable(ppp ${SOURCES})
-
-set_target_properties(ppp PROPERTIES COMPILE_DEFINITIONS CGV_FORCE_STATIC)
-set_target_properties(ppp PROPERTIES FOLDER "${FOLDER_NAME_TOOL}")
+cgv_add_tool(ppp ${SOURCES})
 
 cgv_write_find_file(ppp)
