@@ -2,7 +2,7 @@
 projectType="tool";
 projectName="ppp";
 projectGUID="72C12B24-FA70-45B8-836C-BB4A58DA11BF";
-sourceDirs=[INPUT_DIR,CGV_DIR."/libs/ppp"];
+sourceDirs=[INPUT_DIR,CGV_DIR."/cgv/ppp"];
 sourceFiles=[CGV_DIR."/cgv/utils/scan.cxx",
              CGV_DIR."/cgv/utils/advanced_scan.cxx",
              CGV_DIR."/cgv/utils/tokenizer.cxx",

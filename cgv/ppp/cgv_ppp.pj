@@ -1,0 +1,6 @@
+@=
+projectName="cgv_ppp";
+projectType="library";
+projectGUID="4B407CE9-D1A4-449e-9A74-6EAD5D6DF93A";
+addProjectDeps=["cgv_utils", "cgv_type"];
+addSharedDefines=["CGV_PPP_EXPORTS"];

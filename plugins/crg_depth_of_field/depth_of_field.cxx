@@ -189,5 +189,5 @@ bool depth_of_field::self_reflect(cgv::reflect::reflection_handler& rh)
 
 #include <cgv/base/register.h>
 
-extern cgv::base::factory_registration<depth_of_field> dof_fac("depth_of_field", "menu_text='new/depth of field';shortcut='Ctrl-Alt-D'", true, 
+cgv::base::factory_registration<depth_of_field> dof_fac("depth_of_field", "menu_text='new/depth of field';shortcut='Ctrl-Alt-D'", true, 
 														                "menu_text='&view/depth of field';shortcut='Ctrl-D'");

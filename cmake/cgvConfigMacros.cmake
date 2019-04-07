@@ -140,8 +140,8 @@ macro(cgv_add_executable target_name)
 	# There is a bug in CMake in which postfixes are not automatically added.
 	set_target_properties(${target_name} PROPERTIES
 		OUTPUT_NAME ${target_name}
-		RELEASE_OUTPUT_NAME ${target_name}
-		DEBUG_OUTPUT_NAME ${target_name}${DEBUG_POSTFIX})	
+		RELEASE_OUTPUT_NAME ${target_name}${CMAKE_POSTFIX}
+		DEBUG_OUTPUT_NAME ${target_name}${CMAKE_DEBUG_POSTFIX})	
 
 	# Set the relative path of needed dynamic libraries directly inside
 	# the binary on supported plattforms
@@ -151,6 +151,27 @@ macro(cgv_add_executable target_name)
     # Set the language standard
     _cgv_set_cxx_standard(${target_name})	
 
+	# Remember the type for later config generation
+	set_target_properties(${target_name} PROPERTIES HEADER_LOCAL_PATH "apps")
+endmacro()
+
+macro(cgv_add_tool target_name)
+	add_executable(${target_name} ${ARGN})
+	_cgv_set_definitions(${target_name}
+		COMMON UNICODE _UNICODE
+		STATIC CGV_FORCE_STATIC)
+	install(TARGETS ${target_name} DESTINATION "${INSTALL_BASE}/${INSTALL_BIN_PATH}" EXPORT ${target_name}Depends)
+	
+	# Set the relative path of needed dynamic libraries directly inside
+	# the binary on supported plattforms
+	file(RELATIVE_PATH REL_BIN_TO_LIB "/${INSTALL_BASE}/${INSTALL_BIN_PATH}" "/${INSTALL_BASE}/${INSTALL_LIB_PATH}")
+	set_target_properties(${target_name} PROPERTIES INSTALL_RPATH "\$ORIGIN/${REL_BIN_TO_LIB}")
+
+    # Set the language standard
+    _cgv_set_cxx_standard(${target_name})	
+
+	set_target_properties(${target_name} PROPERTIES FOLDER "${FOLDER_NAME_TOOL}")
+	set_target_properties(${target_name} PROPERTIES COMPILE_DEFINITIONS CGV_FORCE_STATIC)
 
 	# Remember the type for later config generation
 	set_target_properties(${target_name} PROPERTIES HEADER_LOCAL_PATH "apps")

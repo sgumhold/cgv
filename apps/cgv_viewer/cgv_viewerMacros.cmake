@@ -1,12 +1,18 @@
 get_filename_component(BASE_PATH "${CMAKE_CURRENT_LIST_FILE}" PATH)
 
-include("${BASE_PATH}/../CMakeMacroParseArguments.cmake")
+include("../../cmake/CMakeMacroParseArguments.cmake")
 
+function(cgv_get_viewer_locations RELEASE_LOCATION DEBUG_LOCATION)
+	get_target_property(RELEASE_LOC ${cgv_viewer_EXECUTABLE} LOCATION_Release)
+	set(${RELEASE_LOCATION} ${RELEASE_LOC} PARENT_SCOPE)
+	get_target_property(DEBUG_LOC ${cgv_viewer_EXECUTABLE} LOCATION_Debug)
+	set(${DEBUG_LOCATION} ${DEBUG_LOC} PARENT_SCOPE)
+endfunction()
 
 function(cgv_add_viewer name)
 	# We only support linux and shared library builds
 	if (WIN32)
-		message("Viewer starters can only be generated under Linux at the moment")
+		message("Can only create a viewer for linux shared libraries at the moment")
 		return()
 	endif()
 
@@ -22,14 +28,11 @@ endfunction()
 
 
 function(_cgv_add_shared_viewer name)
-
 	set(CONFIG ${CMAKE_BUILD_TYPE})
 	if (NOT CONFIG)
 		set(CONFIG "Release")
 	endif()
-
 	cmake_parse_arguments(VDEFS "" "" "PLUGINS;ARGS" ${ARGN})
-
 	# If the command was not invoked with PLUGINS and CMDLINE sub lists
 	# then treat all arguments as plugins
 	if (NOT VDEFS_PLUGINS AND NOT VDEFS_ARGS)
@@ -77,6 +80,6 @@ function(_cgv_add_shared_viewer name)
 	configure_file(${BASE_PATH}/launcher.sh.in
 				   ${CMAKE_BINARY_DIR}/${name}.sh
 				   @ONLY)
-
 endfunction()
+
 

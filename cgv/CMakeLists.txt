@@ -13,6 +13,7 @@ set(CGV_COMPONENTS
 	math
 	media
 	os
+	ppp
 	reflect
 	render
 	signal

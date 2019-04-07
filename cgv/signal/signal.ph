@@ -6,7 +6,7 @@
 #include <vector>
 #include <map>
 
-#include "lib_begin.h"
+#include <cgv/signal/lib_begin.h>
 
 namespace cgv {
 	namespace signal {

@@ -1,12 +1,12 @@
 #include <stdlib.h>
 #include <iostream>
-#include <libs/ppp/ph_processor.h>
-#include <libs/ppp/command_token.h>
+#include <cgv/ppp/ph_processor.h>
+#include <cgv/ppp/command_token.h>
 #include <cgv/utils/tokenizer.h>
 #include <cgv/utils/scan.h>
 #include <cgv/utils/file.h>
 
-using namespace cgv::media::text::ppp;
+using namespace cgv::ppp;
 using namespace cgv::utils::file;
 using namespace cgv::utils;
 

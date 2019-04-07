@@ -109,8 +109,8 @@ Lambert+Strauss,OrenNayar+Strauss,Strauss+Strauss,+Strauss'");
 };
 #include "lib_begin.h"
 
-extern CGV_API cgv::gui::gui_creator_registration<phong_material_gui_creator> phong_material_gc_reg("phong_material_gui_creator");
-extern CGV_API cgv::gui::gui_creator_registration<surface_material_gui_creator> surface_material_gc_reg("surface_material_gui_creator");
+CGV_API cgv::gui::gui_creator_registration<phong_material_gui_creator> phong_material_gc_reg("phong_material_gui_creator");
+CGV_API cgv::gui::gui_creator_registration<surface_material_gui_creator> surface_material_gc_reg("surface_material_gui_creator");
 
 
 	}
