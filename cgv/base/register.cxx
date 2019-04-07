@@ -9,6 +9,17 @@
 #include <vector>
 #include <set>
 
+#if defined(_WIN32)
+#if defined(NDEBUG)
+#define CGV_NDEBUG
+#endif
+#else
+#if defined(DEBUG)
+#else
+#define CGV_NDEBUG
+#endif
+#endif
+
 using namespace cgv::utils;
 
 namespace cgv {
@@ -1229,17 +1240,6 @@ resource_string_registration::resource_string_registration(const std::string& st
 	register_resource_string(string_name, string_data);
 }
 
-#if defined(_WIN32)
-	#if defined(NDEBUG)
-	#define CGV_NDEBUG
-	#endif
-#else
-	#if defined(DEBUG)
-	#else
-		#define CGV_NDEBUG
-	#endif
-#endif
-
 std::string extend_plugin_name(const std::string& fn)
 {
 	std::string n = cgv::utils::file::drop_extension(fn);
@@ -1306,26 +1306,27 @@ void* load_plugin(const std::string& file_name)
 
 	void* result = 0;
 	for (unsigned i=0; i<names.size(); ++i) {
-		std::string fn = to_string(names[i]);
+		std::string fn[2];
+		fn[0] = to_string(names[i]);
+		fn[1] = extend_plugin_name(fn[0]);
+#ifdef NDEBUG
+#else
+		std::swap(fn[0], fn[1]);
+#endif
 		result = 0;
 		for (int j=0; j<2; ++j) {
-			ref_plugin_name() = fn;
+			ref_plugin_name() = fn[j];
 #ifdef _WIN32
 #ifdef _UNICODE
-			result = LoadLibrary(cgv::utils::str2wstr(fn).c_str());
+			result = LoadLibrary(cgv::utils::str2wstr(fn[j]).c_str());
 #else
-			result = LoadLibrary(fn.c_str());
+			result = LoadLibrary(fn[j].c_str());
 #endif
 #else
-			result = dlopen(fn.c_str(), RTLD_NOW);
-//			if (result == NULL)
-//			    std::cerr<<"Error loading library: "<<dlerror()<<std::endl;
+			result = dlopen(fn[j].c_str(), RTLD_NOW);
 #endif
 			if (result)
 				break;
-/*			DWORD last_error = GetLastError();
-			std::cerr << "error " << last_error << " when loading plugin " << fn << std::endl;*/
-			fn = extend_plugin_name(fn);
 		}
 	}
 	if (enabled)

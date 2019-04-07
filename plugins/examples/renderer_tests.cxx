@@ -64,6 +64,7 @@ public:
 	renderer_tests() : cgv::base::node("renderer_test")
 	{
 		sort_points = true;
+		blend = true;
 		disable_depth = false;
 		p_vbos_out_of_date = true;
 		sl_vbos_out_of_date = true;

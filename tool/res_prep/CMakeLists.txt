@@ -12,9 +12,6 @@ set(SOURCES
     ${CGV_DIR}/cgv/utils/file.cxx)
 	
 # Set the project target
-cgv_add_executable(res_prep ${SOURCES})
-
-set_target_properties(res_prep PROPERTIES COMPILE_DEFINITIONS CGV_FORCE_STATIC)
-set_target_properties(res_prep PROPERTIES FOLDER "${FOLDER_NAME_TOOL}")
+cgv_add_tool(res_prep ${SOURCES})
 
 cgv_write_find_file(res_prep)
