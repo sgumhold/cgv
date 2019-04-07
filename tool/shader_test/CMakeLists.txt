@@ -35,7 +35,7 @@ file(GLOB SOURCES_REFLECT "${CGV_BASE}/cgv/reflect/*.cxx")
 file(GLOB SOURCES_DATA "${CGV_BASE}/cgv/data/*.cxx")
 file(GLOB SOURCES_BASE "${CGV_BASE}/cgv/base/*.cxx")
 file(GLOB SOURCES_SIGNAL "${CGV_BASE}/cgv/signal/*.cxx")
-file(GLOB SOURCES_PPP "${CGV_BASE}/libs/ppp/*.cxx")
+file(GLOB SOURCES_PPP "${CGV_BASE}/cgv/ppp/*.cxx")
 
 
 

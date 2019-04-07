@@ -1,13 +1,13 @@
-@exclude<cgv/config/make.ppp>
-@define(projectType="tool")
-@define(projectName="shader_test")
-@define(projectGUID="D120F524-7A7E-4b3f-8D71-08FF29349578")
-@if(SYSTEM!="windows")@{
-	@define(addProjectDirs=[CGV_DIR."/3rd/fltk", CGV_DIR."/3rd/glew"])
-	@define(addProjectDeps=["glew","fltk"])
-@}
-@define(sourceDirs=[INPUT_DIR, CGV_DIR."/cgv/utils",CGV_DIR."/cgv/type",CGV_DIR."/cgv/reflect",CGV_DIR."/cgv/data",CGV_DIR."/cgv/base",CGV_DIR."/cgv/signal",CGV_DIR."/libs/ppp"])
-@define(sourceFiles=[CGV_DIR."/cgv/gui/file_dialog.cxx",
+@=
+projectType="tool";
+projectName="shader_test";
+projectGUID="D120F524-7A7E-4b3f-8D71-08FF29349578";
+if(SYSTEM!="windows") {
+	addProjectDirs=[CGV_DIR."/3rd/fltk", CGV_DIR."/3rd/glew"];
+	addProjectDeps=["glew","fltk"];
+}
+sourceDirs=[INPUT_DIR, CGV_DIR."/cgv/utils",CGV_DIR."/cgv/type",CGV_DIR."/cgv/reflect",CGV_DIR."/cgv/data",CGV_DIR."/cgv/base",CGV_DIR."/cgv/signal",CGV_DIR."/cgv/ppp"];
+sourceFiles=[CGV_DIR."/cgv/gui/file_dialog.cxx",
                      CGV_DIR."/cgv/gui/gui_driver.cxx",
                      CGV_DIR."/cgv/gui/control.cxx",
                      CGV_DIR."/cgv/media/image/image_writer.cxx",
@@ -27,15 +27,15 @@
                      CGV_DIR."/cgv/render/frame_buffer.cxx",
                      CGV_DIR."/cgv/render/attribute_array_binding.cxx",
                      CGV_DIR."/cgv/render/render_buffer.cxx",
-                     CGV_DIR."/cgv/render/shader_program.cxx"])
-@if(SYSTEM=="windows")@{
-	@define(sourceDirs=sourceDirs.[CGV_DIR."/3rd/glew"])
-	@define(addIncDirs=[CGV_DIR."/3rd/glew", CGV_DIR."/libs"])
-	@define(addDependencies=["opengl32","glu32", ["gdi32","static"]])
-	@define(addStaticDefines=["GLEW_STATIC"])
-@}
-@else@{
-	@define(addIncDirs=[CGV_DIR."/libs"])
-@}
-@define(addCommandLineArguments=[CGV_DIR."/plugins/examples/gpu_test.glpr", 
-		                           CGV_BUILD."/".CGV_COMPILER."/gpu_test.glsl.log"])
+                     CGV_DIR."/cgv/render/shader_program.cxx"];
+if(SYSTEM=="windows") {
+	sourceDirs=sourceDirs.[CGV_DIR."/3rd/glew"];
+	addIncDirs=[CGV_DIR."/3rd/glew", CGV_DIR."/libs"];
+	addDependencies=["opengl32","glu32", ["gdi32","static"]];
+	addStaticDefines=["GLEW_STATIC"];
+}
+else {
+	addIncDirs=[CGV_DIR."/libs"];
+}
+addCommandLineArguments=[CGV_DIR."/plugins/examples/gpu_test.glpr", 
+		                           CGV_BUILD."/".CGV_COMPILER."/gpu_test.glsl.log"];
