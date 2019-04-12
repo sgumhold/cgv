@@ -1821,7 +1821,7 @@ bool gl_context::frame_buffer_disable(frame_buffer_base& fbb)
 	return true;
 }
 
-bool gl_context::frame_buffer_destruct(frame_buffer_base& fbb)
+bool gl_context::frame_buffer_destruct(frame_buffer_base& fbb) const
 {
 	if (!context::frame_buffer_destruct(fbb))
 		return false;

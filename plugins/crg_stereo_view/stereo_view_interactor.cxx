@@ -1518,7 +1518,7 @@ void stereo_view_interactor::create_gui()
 			add_member_control(this, "stereo_mode", stereo_mode, "dropdown", "enums='vsplit,hsplit,anaglyph,quad buffer'");
 			add_member_control(this, "adapt_aspect_ratio", adapt_aspect_ratio_to_stereo_mode, "check");
 			add_member_control(this, "anaglyph_config", anaglyph_config, "dropdown", "enums='" AC_ENUMS "'");
-			add_member_control(this, "eye_distance", eye_distance, "value_slider", "min=0;max=0.1;ticks=true;step=0.001");
+			add_member_control(this, "eye_distance", eye_distance, "value_slider", "min=0.001;max=0.5;ticks=true;step=0.00001;log=true");
 			add_member_control(this, "parallax_zero_scale", parallax_zero_scale, "value_slider", "min=0.03;max=1;ticks=true;step=0.001;log=true");		
 			add_member_control(this, "stereo_translate_in_model_view", stereo_translate_in_model_view, "check");
 			add_member_control(this, "stereo_mouse_pointer", stereo_mouse_pointer, "dropdown", "enums='" SMP_ENUMS "'");

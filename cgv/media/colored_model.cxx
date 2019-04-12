@@ -92,6 +92,14 @@ namespace cgv {
 		{
 			return color_storage_ptr ? color_storage_ptr->get_color_size() : 0;
 		}
+		const void* colored_model::get_color_data_ptr() const
+		{
+			return color_storage_ptr->get_data_ptr();
+		}
+		const void* colored_model::get_color_data_vector_ptr() const
+		{
+			return color_storage_ptr->get_data_vector_ptr();
+		}
 
 		ColorType colored_model::get_color_storage_type() const
 		{

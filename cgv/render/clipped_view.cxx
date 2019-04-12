@@ -78,8 +78,10 @@ void clipped_view::compute_clipping_planes(const cgv::render::view& view, double
 	z_near_derived = z_near;
 	z_far_derived = z_far;
 	if (scene_extent.is_valid()) {
-		dbox3 B = scene_extent;
-		B.scale(1.25);
+		dvec3 sc = scene_extent.get_center();
+		dbox3 B(1.25*(scene_extent.get_min_pnt() - sc) + sc,
+			    1.25*(scene_extent.get_max_pnt() - sc) + sc);
+		
 		double z_min = dot(B.get_corner(0), view_dir);
 		double z_max = z_min;
 		for (unsigned int i = 1; i<8; ++i) {
@@ -95,7 +97,7 @@ void clipped_view::compute_clipping_planes(const cgv::render::view& view, double
 			z_near_derived = z_min;
 		if (z_max > z_near)
 			z_far_derived = z_max;
-
+		
 		if (clip_relative_to_extent) {
 			z_near_derived *= z_near;
 			z_far_derived *= z_far;

@@ -2,11 +2,14 @@
 #include <cgv/signal/rebind.h>
 #include <cgv/base/register.h>
 #include <cgv/gui/event_handler.h>
+#include <cgv/math/ftransform.h>
 #include <cgv/gui/provider.h>
 #include <cgv/render/drawable.h>
 #include <cgv/render/shader_program.h>
 #include <cgv/render/attribute_array_binding.h>
 #include <cgv_gl/box_renderer.h>
+#include <cgv/media/mesh/simple_mesh.h>
+#include <cgv_gl/gl/mesh_render_info.h>
 #include <cg_gamepad/gamepad_server.h>
 
 ///@ingroup VR
@@ -35,6 +38,11 @@ protected:
 
 	// rendering style and renderer
 	cgv::render::box_render_style style;
+
+	cgv::render::mesh_render_info MI;
+	double mesh_scale;
+	dvec3 mesh_location;
+	dquat mesh_orientation;
 
 	// keep deadzone and precision vector for left controller
 	cgv::gui::vr_server::vec_flt_flt left_deadzone_and_precision;
@@ -92,6 +100,9 @@ public:
 		last_kit_handle = 0;
 		connect(cgv::gui::ref_vr_server().on_device_change, this, &vr_test::on_device_change);
 		cgv::gui::connect_gamepad_server();
+		mesh_scale = 1;
+		mesh_location = dvec3(0, 0, 0);
+		mesh_orientation = dquat(1, 0, 0, 0);
 	}
 	std::string get_type_name() const
 	{
@@ -100,6 +111,9 @@ public:
 	void create_gui()
 	{
 		add_decorator("vr_test", "heading", "level=2");
+		add_member_control(this, "mesh_scale", mesh_scale, "value_slider", "min=0.1;max=10;log=true;ticks=true");
+		add_gui("mesh_location", mesh_location, "vector", "options='min=-3;max=3;ticks=true");
+		add_gui("mesh_orientation", static_cast<dvec4&>(mesh_orientation), "direction", "options='min=-1;max=1;ticks=true");
 		add_member_control(this, "ray_length", ray_length, "value_slider", "min=0.1;max=10;log=true;ticks=true");
 		if (last_kit_handle) {
 			vr::vr_kit* kit_ptr = vr::get_vr_kit(last_kit_handle);
@@ -197,6 +211,10 @@ public:
 	}
 	bool init(cgv::render::context& ctx)
 	{
+		cgv::media::mesh::simple_mesh<> M;
+		if (M.read("S:/data/surface/meshes/obj/elephant.obj")) {
+			MI.construct(ctx, M);
+		}
 		cgv::gui::connect_vr_server(true);
 
 		auto view_ptr = find_view_as_node();
@@ -234,6 +252,17 @@ public:
 	}
 	void draw(cgv::render::context& ctx)
 	{
+		if (MI.is_constructed()) {
+			dmat4 R;
+			mesh_orientation.put_homogeneous_matrix(R);
+			ctx.push_modelview_matrix();
+			ctx.mul_modelview_matrix(
+				cgv::math::translate4<double>(mesh_location)*
+				cgv::math::scale4<double>(mesh_scale, mesh_scale, mesh_scale) *
+				R);
+			MI.render_mesh(ctx);
+			ctx.pop_modelview_matrix();
+		}
 		if (vr_view_ptr) {
 			std::vector<vec3> P;
 			std::vector<rgb> C;
@@ -282,24 +311,27 @@ public:
 void vr_test::construct_table(float tw, float td, float th, float tW)
 {
 	// construct table
-	boxes.push_back(box3(vec3(-0.5f*tw - tW, th, -0.5f*td - tW), vec3(0.5f*tw + tW, th + tW, 0.5f*td + tW)));
-	box_colors.push_back(rgb(0.5f, 0.4f, 0.0f));
+	rgb table_clr(0.3f, 0.2f, 0.0f);
+	boxes.push_back(box3(
+		vec3(-0.5f*tw - 2*tW, th, -0.5f*td - 2*tW), 
+		vec3( 0.5f*tw + 2*tW, th + tW, 0.5f*td + 2*tW)));
+	box_colors.push_back(table_clr);
 
-	boxes.push_back(box3(vec3(-0.5f*tw, 0, -0.5f*td), vec3(-0.5f*tw + tW, th, -0.5f*td + tW)));
-	boxes.push_back(box3(vec3(-0.5f*tw, 0, 0.5f*td), vec3(-0.5f*tw + tW, th, 0.5f*td + tW)));
-	boxes.push_back(box3(vec3(0.5f*tw, 0, -0.5f*td), vec3(0.5f*tw + tW, th, -0.5f*td + tW)));
+	boxes.push_back(box3(vec3(-0.5f*tw, 0, -0.5f*td), vec3(-0.5f*tw - tW, th, -0.5f*td - tW)));
+	boxes.push_back(box3(vec3(-0.5f*tw, 0, 0.5f*td), vec3(-0.5f*tw - tW, th, 0.5f*td + tW)));
+	boxes.push_back(box3(vec3(0.5f*tw, 0, -0.5f*td), vec3(0.5f*tw + tW, th, -0.5f*td - tW)));
 	boxes.push_back(box3(vec3(0.5f*tw, 0, 0.5f*td), vec3(0.5f*tw + tW, th, 0.5f*td + tW)));
-	box_colors.push_back(rgb(0.5f, 0.4f, 0.0f));
-	box_colors.push_back(rgb(0.5f, 0.4f, 0.0f));
-	box_colors.push_back(rgb(0.5f, 0.4f, 0.0f));
-	box_colors.push_back(rgb(0.5f, 0.4f, 0.0f));
+	box_colors.push_back(table_clr);
+	box_colors.push_back(table_clr);
+	box_colors.push_back(table_clr);
+	box_colors.push_back(table_clr);
 }
 /// construct boxes that represent a room of dimensions w,d,h and wall width W
 void vr_test::construct_room(float w, float d, float h, float W, bool walls, bool ceiling)
 {
 	// construct floor
 	boxes.push_back(box3(vec3(-0.5f*w, -W, -0.5f*d), vec3(0.5f*w, 0, 0.5f*d)));
-	box_colors.push_back(rgb(0.5f, 0.5f, 0.5f));
+	box_colors.push_back(rgb(0.2f, 0.2f, 0.2f));
 
 	if (walls) {
 		// construct walls
@@ -335,7 +367,10 @@ void vr_test::construct_environment(float s, float ew, float ed, float eh, float
 				continue;
 			float h = 0.2f*(std::max(abs(x)-0.5f*w,0.0f)+std::max(abs(z)-0.5f*d,0.0f))*distribution(generator)+0.1f;
 			boxes.push_back(box3(vec3(x, 0, z), vec3(x+s, h, z+s)));
-			box_colors.push_back(rgb(0.2f*distribution(generator)+0.1f, 0.4f*distribution(generator)+0.2f, 0.2f*distribution(generator)+0.1f));
+			box_colors.push_back(
+				rgb(0.3f*distribution(generator)+0.3f, 
+					0.3f*distribution(generator)+0.2f, 
+					0.2f*distribution(generator)+0.1f));
 		}
 	}
 }

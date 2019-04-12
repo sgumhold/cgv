@@ -75,7 +75,7 @@ protected:
 	bool frame_buffer_is_complete(const frame_buffer_base& fbb) const;
 	bool frame_buffer_enable(frame_buffer_base& fbb);
 	bool frame_buffer_disable(frame_buffer_base& fbb);
-	bool frame_buffer_destruct(frame_buffer_base& fbb);
+	bool frame_buffer_destruct(frame_buffer_base& fbb) const;
 	int frame_buffer_get_max_nr_color_attachments() const;
 	int frame_buffer_get_max_nr_draw_buffers() const;
 
