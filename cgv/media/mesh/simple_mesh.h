@@ -89,6 +89,7 @@ public:
 	idx_type get_nr_positions() const { return idx_type(positions.size()); }
 	vec3& position(idx_type pi) { return positions[pi]; }
 	const vec3& position(idx_type pi) const { return positions[pi]; }
+	const std::vector<vec3>& get_positions() const { return positions; }
 
 	/// add a new normal and return normal index
 	idx_type new_normal(const vec3& n) { normals.push_back(n); return idx_type(normals.size()-1); }

@@ -4,10 +4,12 @@
 #include <cgv/render/drawable.h>
 #include <cgv/render/clipped_view.h>
 #include <cgv_gl/gl/gl.h>
+#include <cgv_gl/sphere_renderer.h>
 #include <cgv_gl/gl/mesh_render_info.h>
 #include <cgv_gl/gl/gl_context.h>
 #include <cgv/render/attribute_array_binding.h>
 #include <cgv/gui/provider.h>
+#include <cgv/media/color_scale.h>
 #include <cgv/media/mesh/simple_mesh.h>
 #include <cgv/gui/key_event.h>
 #include <cgv/gui/provider.h>
@@ -40,9 +42,13 @@ public:
 	float line_width;
 	rgb  line_color;
 
+	bool show_vertices;
+	cgv::render::sphere_render_style sphere_style;
+
 	std::string file_name;
 
 	mesh_type M;
+
 	cgv::render::mesh_render_info mesh_info;
 public:
 	mesh() : node("mesh")
@@ -56,7 +62,11 @@ public:
 		show_wireframe = false;
 		line_width = 2.0f;
 		line_color = rgb(0.6f,0.5f,0.4f);
+
+		show_vertices = false;
+		
 		M.read(QUOTE_SYMBOL_VALUE(INPUT_DIR) "/res/example.obj");
+		sphere_style.radius = float(0.05*sqrt(M.compute_box().get_extent().sqr_length() / M.get_nr_positions()));
 		file_name = "example.obj";
 		have_new_mesh = true;
 	}
@@ -66,11 +76,24 @@ public:
 			mesh_type tmp;
 			if (tmp.read(file_name)) {
 				M = tmp;
+				sphere_style.radius = float(0.05*sqrt(M.compute_box().get_extent().sqr_length() / M.get_nr_positions()));
+				on_set(&sphere_style.radius);
+				if (cgv::utils::file::get_file_name(file_name) == "Max-Planck_lowres.obj")
+					construct_mesh_colors();
 				have_new_mesh = true;
 			}
 		}
 		update_member(member_ptr);
 		post_redraw();
+	}
+	void construct_mesh_colors()
+	{
+		if (M.has_colors())
+			return;
+		M.ensure_colors(cgv::media::CT_RGB, M.get_nr_positions());
+		double int_part;
+		for (unsigned i = 0; i < M.get_nr_positions(); ++i)			
+			M.set_color(i, cgv::media::color_scale(modf(20*double(i)/(M.get_nr_positions() - 1),&int_part)));
 	}
 	void create_gui()
 	{
@@ -88,6 +111,13 @@ public:
 		add_member_control(this, "line width", line_width, "value_slider", "min=1;max=20;ticks=true;log=true");
 		add_member_control(this, "line color", line_color);
 
+		add_member_control(this, "vertices", show_vertices, "toggle", "shortcut='v'");
+		if (begin_tree_node("vertex style", sphere_style)) {
+			align("\a");
+			add_gui("style", sphere_style);
+			align("\b");
+			end_tree_node(sphere_style);
+		}
 		for (unsigned mi = 0; mi < mesh_info.mesh_mats.size(); ++mi) {
 			if (begin_tree_node(mesh_info.mesh_mats[mi]->get_name(), *mesh_info.mesh_mats[mi])) {
 				align("\a");
@@ -96,6 +126,15 @@ public:
 				end_tree_node(*mesh_info.mesh_mats[mi]);
 			}
 		}
+	}
+	bool init(context& ctx)
+	{
+		ref_sphere_renderer(ctx, 1);
+		return true;
+	}
+	void restruct(context& ctx)
+	{
+		ref_sphere_renderer(ctx, -1);
 	}
 	void init_frame(context& ctx)
 	{
@@ -115,6 +154,16 @@ public:
 	}
 	void draw(context& ctx)
 	{
+		if (show_vertices) {
+			sphere_renderer& sr = ref_sphere_renderer(ctx);
+			sr.set_render_style(sphere_style);
+			sr.set_position_array(ctx, M.get_positions());
+			if (M.has_colors())
+				sr.set_color_array(ctx, *reinterpret_cast<const std::vector<rgb>*>(M.get_color_data_vector_ptr()));
+			sr.validate_and_enable(ctx);
+			glDrawArrays(GL_POINTS, 0, (GLsizei)M.get_nr_positions());
+			sr.disable(ctx);
+		}
 		if (show_wireframe) {
 			GLfloat old_line_width;
 			glGetFloatv(GL_LINE_WIDTH, &old_line_width);
