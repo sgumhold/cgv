@@ -23,11 +23,11 @@ public:
 	/// define index type
 	typedef cgv::type::uint32_type idx_type;
 	/// define index pair type
-	typedef typename cgv::math::fvec<idx_type, 2> vec2i;
+	typedef cgv::math::fvec<idx_type, 2> vec2i;
 	/// define index triple type
-	typedef typename cgv::math::fvec<idx_type, 3> vec3i;
+	typedef cgv::math::fvec<idx_type, 3> vec3i;
 	/// define material type
-	typedef typename illum::textured_surface_material mat_type;
+	typedef illum::textured_surface_material mat_type;
 protected:
 	std::vector<idx_type> position_indices;
 	std::vector<idx_type> normal_indices;
