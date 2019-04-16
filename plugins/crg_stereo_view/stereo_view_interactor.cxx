@@ -1436,6 +1436,8 @@ void stereo_view_interactor::write_images_to_file()
 			ctx->resize(write_width, write_height);
 	}
 
+	float gamma = ctx->get_gamma();
+	ctx->set_gamma(1.0f);
 	if (!stereo_enabled && write_stereo) {
 		GlsuEye tmp = mono_mode;
 		mono_mode = GLSU_LEFT;
@@ -1446,6 +1448,7 @@ void stereo_view_interactor::write_images_to_file()
 	}
 	else
 		ctx->force_redraw();
+	ctx->set_gamma(gamma);
 
 	write_images = false;
 	update_member(&write_images);
