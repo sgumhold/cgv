@@ -78,6 +78,7 @@ public:
 	typedef cgv::math::fvec<int, 2> vec2i;
 	bool tex_outofdate;
 	cgv::render::texture tex;
+	bool show_rasterization;
 	std::vector<brgb_type> img;
 	brgb_type background_color, background_color2;
 	size_t img_width, img_height;
@@ -257,6 +258,7 @@ public:
 	}
 	ear_cutting() : node("ear_cutting")
 	{
+		show_rasterization = false;
 		tex.set_mag_filter(cgv::render::TF_NEAREST);
 		img_width = img_height = 64;
 		img_extent.ref_min_pnt() = vec2(-2, -2);
@@ -400,15 +402,17 @@ public:
 	void draw(context& ctx)
 	{
 		ctx.push_modelview_matrix();
-		ctx.mul_modelview_matrix(scale4<double>(2, 2, 2) * translate4<double>(0,0,-0.0005));
-		ctx.ref_default_shader_program(true).enable(ctx);
+		ctx.mul_modelview_matrix(scale4<double>(2, 2, 2) * translate4<double>(0, 0, -0.0005));
+		ctx.ref_default_shader_program(show_rasterization).enable(ctx);
 		ctx.set_color(rgb(1, 1, 1));
-		tex.enable(ctx);
+		if (show_rasterization)
+			tex.enable(ctx);
 		ctx.tesselate_unit_square();
-		tex.disable(ctx);
-		ctx.ref_default_shader_program(true).disable(ctx);
+		if (show_rasterization)
+			tex.disable(ctx);
+		ctx.ref_default_shader_program(show_rasterization).disable(ctx);
 		ctx.pop_modelview_matrix();
-
+		
 		shader_program& prog = ctx.ref_default_shader_program();
 		prog.enable(ctx);
 			attribute_array_binding::enable_global_array(ctx, prog.get_position_index());
@@ -650,8 +654,10 @@ public:
 		find_control(nr_steps)->set("max", polygon.size() - 2);
 		add_member_control(this, "lambda", lambda, "value_slider", "min=0;max=0.5;ticks=true");
 		add_member_control(this, "wireframe", wireframe, "check");
+
 		if (begin_tree_node("rasterization", synch_img_dimensions)) {
 			align("\a");
+			add_member_control(this, "show_rasterization", show_rasterization, "toggle");
 			add_member_control(this, "synch_img_dimensions", synch_img_dimensions, "toggle");
 			add_member_control(this, "img_width", img_width, "value_slider", "min=2;max=1024;log=true;ticks=true");
 			add_member_control(this, "img_height", img_height, "value_slider", "min=2;max=1024;log=true;ticks=true");
