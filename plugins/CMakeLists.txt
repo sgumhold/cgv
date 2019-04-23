@@ -8,7 +8,10 @@ add_subdirectory(cmi_io)
 add_subdirectory(cg_icons)
 add_subdirectory(cg_ext)
 add_subdirectory(crg_light)
-add_subdirectory(examples)
+
+if(${BUILD_EXAMPLE_PLUGIN})
+	add_subdirectory(examples)
+endif(${BUILD_EXAMPLE_PLUGIN})
 
 add_custom_target(plugins)
 add_dependencies(plugins cg_fltk crg_grid crg_stereo_view cmi_io cg_icons cg_ext crg_light examples)
