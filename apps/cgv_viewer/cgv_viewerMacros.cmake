@@ -1,6 +1,6 @@
 get_filename_component(BASE_PATH "${CMAKE_CURRENT_LIST_FILE}" PATH)
 
-include("../../cmake/CMakeMacroParseArguments.cmake")
+include("${cgv_DIR}/CMakeMacroParseArguments.cmake")
 
 function(cgv_get_viewer_locations RELEASE_LOCATION DEBUG_LOCATION)
 	get_target_property(RELEASE_LOC ${cgv_viewer_EXECUTABLE} LOCATION_Release)
