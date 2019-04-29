@@ -14,7 +14,6 @@ uniform sampler2D depth_texture;
 uniform float     depth_scale = 1.0;
 uniform int       w;
 uniform int       h;
-uniform vec3      flip  = vec3(1.0,1.0,1.0);
 out vec2 tc;
 
 
@@ -31,6 +30,5 @@ void main()
 	if (depth == 0.0)
 		depth = 1.0;
 	position.z = depth_scale * depth;
-	position.xyz *= flip;
 	gl_Position   = get_modelview_projection_matrix() * position;
 }

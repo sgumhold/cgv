@@ -6,6 +6,7 @@
 #include <cgv/base/node.h>
 #include <cgv/math/fvec.h>
 #include <cgv/media/color.h>
+#include <cgv/gui/event_handler.h>
 #include <cgv/gui/provider.h>
 #include <cgv/data/data_view.h>
 #include <cgv/render/drawable.h>
@@ -19,6 +20,7 @@
 class rgbd_control : 
 	public cgv::base::node,
 	public cgv::render::drawable,
+	public cgv::gui::event_handler,
 	public cgv::gui::provider
 {
 public:
@@ -47,6 +49,10 @@ public:
 	/// overload to draw the content of this drawable
 	void draw(cgv::render::context& ctx);
 
+	/// 
+	bool handle(cgv::gui::event& e);
+	/// 
+	void stream_help(std::ostream& os);
 	///
 	void create_gui();
 protected:
