@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 2.6)
 
 option(BUILD_SHARED_LIBS "Create shared libraries" TRUE)
+option(BUILD_EXAMPLE_PLUGIN "Build the example plugin" TRUE)
 
 # Load general build settings
 include("cmake/buildSettings.cmake")
