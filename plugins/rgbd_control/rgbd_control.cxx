@@ -3,6 +3,7 @@
 #include "rgbd_control.h"
 #include <cgv_gl/gl/gl.h>
 #include <cgv/gui/trigger.h>
+#include <cgv/gui/key_event.h>
 #include <cgv/gui/file_dialog.h>
 #include <cgv/utils/convert.h>
 #include <cgv/utils/file.h>
@@ -77,7 +78,8 @@ rgbd_control::rgbd_control() :
 {
 	set_name("rgbd_control");
 	do_protocol = false;
-	flip[0] = flip[1] = flip[2] = true;
+	flip[0] = flip[2] = true;
+	flip[1] = false;
 	nr_depth_frames = 0;
 	nr_color_frames = 0;
 	vis_mode = VM_POINTS;
@@ -129,6 +131,9 @@ void rgbd_control::on_set(void* member_ptr)
 	}
 	if (member_ptr == &near_mode)
 		kin.set_near_mode(near_mode);
+
+	update_member(member_ptr);
+	post_redraw();
 }
 
 /// overload to handle register events that is sent after the instance has been registered
@@ -225,16 +230,8 @@ void rgbd_control::draw(context& ctx)
 	*/
 	// transform to image coordinates
 	ctx.push_modelview_matrix();
-	ctx.mul_modelview_matrix(cgv::math::scale4<double>(aspect,-1,1) * cgv::math::translate4<double>(-aspect,0,0));
-	/*
-	// show tracked mouse locations
-	glColor3f(1,0,0);
-	glPointSize(5.0f);
-	glEnable(GL_POINT_SMOOTH);
-	glBegin(GL_POINTS);
-	glVertex2fv(mouse_pos);
-	glEnd();
-	*/
+	vec3 flip_vec(flip[0] ? -1.0f : 1.0f, flip[1] ? -1.0f : 1.0f, flip[2] ? -1.0f : 1.0f);
+	ctx.mul_modelview_matrix(cgv::math::scale4<double>(flip_vec[0]*aspect, flip_vec[1], flip_vec[2]));
 	// enable shader program
 	if (progs[vis_mode].is_created()) {
 		color.enable(ctx, 0);
@@ -247,7 +244,7 @@ void rgbd_control::draw(context& ctx)
 	}
 	// or standard texture mapping
 	else {
-		glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+		ctx.ref_default_shader_program(true).enable(ctx);
 		if (vis_mode == VM_COLOR)
 			color.enable(ctx);
 		else
@@ -258,12 +255,13 @@ void rgbd_control::draw(context& ctx)
 		glPointSize(point_size);
 		progs[vis_mode].set_uniform(ctx, "w", (int)kin.get_width());
 		progs[vis_mode].set_uniform(ctx, "h", (int)kin.get_height());
-		vec3 flip_vec(flip[0] ? -1.0f : 1.0f, flip[1] ? -1.0f : 1.0f, flip[2] ? -1.0f : 1.0f);
-		progs[vis_mode].set_uniform(ctx, "flip", flip_vec);
 		glDrawArraysInstanced(GL_POINTS, 0, 1, kin.get_width()*kin.get_height());
 	}
-	else
+	else {
+		glDisable(GL_CULL_FACE);
 		ctx.tesselate_unit_square();
+		glEnable(GL_CULL_FACE);
+	}
 
 	// disable shader program or texture
 	// enable shader program
@@ -278,12 +276,87 @@ void rgbd_control::draw(context& ctx)
 			color.disable(ctx);
 		else
 			depth.disable(ctx);
+		ctx.ref_default_shader_program(true).disable(ctx);
 	}
 
 	// restore gl state
 	ctx.pop_modelview_matrix();
 
 	//glPopAttrib();
+}
+
+/// 
+bool rgbd_control::handle(cgv::gui::event& e)
+{
+	if (e.get_kind() != cgv::gui::EID_KEY)
+		return false;
+	cgv::gui::key_event& ke = static_cast<cgv::gui::key_event&>(e);
+	if (ke.get_action() == cgv::gui::KA_RELEASE)
+		return false;
+	switch (ke.get_key()) {
+	case 'X':
+		if (ke.get_modifiers() == 0) {
+			flip[0] = !flip[0];
+			on_set(&flip[0]);
+			return true;
+		}
+		return false;
+	case 'Y':
+		if (ke.get_modifiers() == 0) {
+			flip[1] = !flip[1];
+			on_set(&flip[1]);
+			return true;
+		}
+		return false;
+	case 'Z':
+		if (ke.get_modifiers() == 0) {
+			flip[2] = !flip[2];
+			on_set(&flip[2]);
+			return true;
+		}
+		return false;
+	case 'N':
+		if (ke.get_modifiers() == 0) {
+			near_mode = !near_mode;
+			on_set(&near_mode);
+			return true;
+		}
+		return false;
+	case 'R':
+		if (ke.get_modifiers() == 0) {
+			remap_color = !remap_color;
+			on_set(&remap_color);
+			return true;
+		}
+		return false;
+	case 'C':
+		if (ke.get_modifiers() == 0) {
+			vis_mode = VM_COLOR;
+			on_set(&vis_mode);
+			return true;
+		}
+		return false;
+	case 'D':
+		if (ke.get_modifiers() == 0) {
+			vis_mode = VM_DEPTH;
+			on_set(&vis_mode);
+			return true;
+		}
+		return false;
+	case 'P':
+		if (ke.get_modifiers() == 0) {
+			vis_mode = VM_POINTS;
+			on_set(&vis_mode);
+			return true;
+		}
+		return false;
+	}
+	return false;
+}
+/// 
+void rgbd_control::stream_help(std::ostream& os)
+{
+	os << "rgbd_control: select vismode <C|D|P>; toggle <R>emapColor, <N>earMode, flip <X|Y|Z>" << std::endl;
 }
 
 ///

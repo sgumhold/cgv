@@ -4,6 +4,19 @@ uniform float     depth_scale;
 uniform sampler2D color_texture;
 uniform float     color_scale;
 
+vec4 scale_color(in float scale, in vec4 color)
+{
+	vec4 tmp = scale * color;
+	if (tmp[0] > 1.0)
+		tmp[0] = fract(tmp[0]);
+	if (tmp[1] > 1.0)
+		tmp[1] = fract(tmp[1]);
+	if (tmp[2] > 1.0)
+		tmp[2] = fract(tmp[2]);
+	if (tmp[3] > 1.0)
+		tmp[3] = fract(tmp[3]);
+	return tmp;
+}
 
 float RawDepthToMeters(float depthValue)
 {

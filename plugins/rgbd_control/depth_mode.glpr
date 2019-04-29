@@ -1,3 +1,4 @@
-file:depth_mode.glfs
-file:depth_mode.glvs
+files:depth_mode
+vertex_file:view.glsl
+fragment_file:fragment.glfs
 fragment_file:support.glsl
