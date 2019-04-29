@@ -82,7 +82,7 @@ void generate_sphere_splat_vertex(in vec4 sphere, in vec2 t, in sphere_parameter
 	EmitVertex();
 }
 
-void generate_sphere_cover_splat(in vec4 sphere, in sphere_parameter_space sps, in mat4 MV, in mat4 MVP, in mat3 NM, in float splat_size = 1.0)
+void generate_sphere_cover_splat(in vec4 sphere, in sphere_parameter_space sps, in mat4 MV, in mat4 MVP, in mat3 NM, in float splat_size)
 {
 	ssi.inv_e = sps.inv_e_vs;
 	ssi.inv_T_square_e_c = sps.inv_T_square_e_c_vs;

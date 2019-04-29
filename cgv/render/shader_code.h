@@ -27,6 +27,8 @@ struct CGV_API shader_config : public cgv::base::base
 	std::string shader_path;
 	/// whether to keep track of file names
 	bool trace_file_names;
+	/// whether to output full paths of read shaders
+	bool show_file_paths;
 	/// mapping of shader index to file name
 	std::vector<std::string> shader_file_names;
 	/// mapping of shader index to inserted files name

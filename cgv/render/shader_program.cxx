@@ -242,6 +242,8 @@ bool shader_program::attach_program(const context& ctx, const std::string& file_
 			std::cerr << last_error << std::endl;
 		return false;
 	}	
+	if (get_shader_config()->show_file_paths)
+		std::cout << "read shader program <" << fn << ">" << std::endl;
 	static std::vector<line> lines;
 	lines.clear();
 	split_to_lines(content, lines);

@@ -1449,6 +1449,7 @@ void context::tesselate_unit_icosahedron(bool flip_normals, bool edges)
 
 void context::set_gamma(float _gamma)
 {
+	gamma = _gamma;
 	if (!auto_set_gamma_in_current_shader_program)
 		return;
 

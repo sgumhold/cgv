@@ -1436,6 +1436,8 @@ void stereo_view_interactor::write_images_to_file()
 			ctx->resize(write_width, write_height);
 	}
 
+	float gamma = ctx->get_gamma();
+	ctx->set_gamma(1.0f);
 	if (!stereo_enabled && write_stereo) {
 		GlsuEye tmp = mono_mode;
 		mono_mode = GLSU_LEFT;
@@ -1446,6 +1448,7 @@ void stereo_view_interactor::write_images_to_file()
 	}
 	else
 		ctx->force_redraw();
+	ctx->set_gamma(gamma);
 
 	write_images = false;
 	update_member(&write_images);
@@ -1518,7 +1521,7 @@ void stereo_view_interactor::create_gui()
 			add_member_control(this, "stereo_mode", stereo_mode, "dropdown", "enums='vsplit,hsplit,anaglyph,quad buffer'");
 			add_member_control(this, "adapt_aspect_ratio", adapt_aspect_ratio_to_stereo_mode, "check");
 			add_member_control(this, "anaglyph_config", anaglyph_config, "dropdown", "enums='" AC_ENUMS "'");
-			add_member_control(this, "eye_distance", eye_distance, "value_slider", "min=0;max=0.1;ticks=true;step=0.001");
+			add_member_control(this, "eye_distance", eye_distance, "value_slider", "min=0.001;max=0.5;ticks=true;step=0.00001;log=true");
 			add_member_control(this, "parallax_zero_scale", parallax_zero_scale, "value_slider", "min=0.03;max=1;ticks=true;step=0.001;log=true");		
 			add_member_control(this, "stereo_translate_in_model_view", stereo_translate_in_model_view, "check");
 			add_member_control(this, "stereo_mouse_pointer", stereo_mouse_pointer, "dropdown", "enums='" SMP_ENUMS "'");
