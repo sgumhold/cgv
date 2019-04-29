@@ -23,6 +23,7 @@ namespace cgv {
 shader_config::shader_config()
 {
 	trace_file_names = false;
+	show_file_paths = false;
 }
 
 std::string shader_config::get_type_name() const
@@ -33,7 +34,9 @@ std::string shader_config::get_type_name() const
 /// reflect the shader_path member
 bool shader_config::self_reflect(cgv::reflect::reflection_handler& rh)
 {
-	return rh.reflect_member("shader_path", shader_path);
+	return 
+		rh.reflect_member("shader_path", shader_path) &&
+		rh.reflect_member("show_file_paths", show_file_paths);
 }
 
 /// return a reference to the current shader configuration
@@ -209,6 +212,8 @@ std::string shader_code::read_code_file(const std::string &file_name, std::strin
 		}
 		return "";
 	}
+	if (get_shader_config()->show_file_paths)
+		std::cout << "read shader code <" << fn << ">" << std::endl;
 	if (get_extension(file_name)[0] == 'p') {
 		std::string code;
 		get_shader_config()->inserted_shader_file_names.clear();
