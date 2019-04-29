@@ -16,7 +16,7 @@ namespace cgv {
 			/// define index type
 			typedef cgv::type::uint32_type idx_type;
 			///
-			typedef typename cgv::math::fvec<idx_type, 3> vec3i;
+			typedef cgv::math::fvec<idx_type, 3> vec3i;
 			///
 			std::vector<cgv::render::textured_material*> mesh_mats;
 			///

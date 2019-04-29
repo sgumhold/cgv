@@ -23,11 +23,11 @@ public:
 	/// define index type
 	typedef cgv::type::uint32_type idx_type;
 	/// define index pair type
-	typedef typename cgv::math::fvec<idx_type, 2> vec2i;
+	typedef cgv::math::fvec<idx_type, 2> vec2i;
 	/// define index triple type
-	typedef typename cgv::math::fvec<idx_type, 3> vec3i;
+	typedef cgv::math::fvec<idx_type, 3> vec3i;
 	/// define material type
-	typedef typename illum::textured_surface_material mat_type;
+	typedef illum::textured_surface_material mat_type;
 protected:
 	std::vector<idx_type> position_indices;
 	std::vector<idx_type> normal_indices;
@@ -89,6 +89,7 @@ public:
 	idx_type get_nr_positions() const { return idx_type(positions.size()); }
 	vec3& position(idx_type pi) { return positions[pi]; }
 	const vec3& position(idx_type pi) const { return positions[pi]; }
+	const std::vector<vec3>& get_positions() const { return positions; }
 
 	/// add a new normal and return normal index
 	idx_type new_normal(const vec3& n) { normals.push_back(n); return idx_type(normals.size()-1); }

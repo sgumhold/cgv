@@ -50,6 +50,10 @@ namespace cgv {
 			size_t get_color_size() const;
 			/// return storage type of colors, if no colors are allocated CT_RGBA8 is returned
 			ColorType get_color_storage_type() const;
+
+			const void* get_color_data_ptr() const;
+			const void* get_color_data_vector_ptr() const;
+
 			//! ensure that colors are allocated and of given storage type
 			/*! Only in case of new allocation, the second parameter is used to define the number of colors */
 			void ensure_colors(ColorType _color_type, size_t nr_colors = -1);

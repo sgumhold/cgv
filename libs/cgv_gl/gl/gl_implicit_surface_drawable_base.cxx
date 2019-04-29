@@ -48,7 +48,7 @@ gl_implicit_surface_drawable_base::gl_implicit_surface_drawable_base() : box(dve
 	show_mini_box = false;
 	material.set_diffuse_reflectance(rgb(0.1f, 0.6f, 1.0f));
 	material.set_specular_reflectance(rgb(0.7f,0.7f,0.7f));
-	material.set_roughness(0.1f);
+	material.set_roughness(0.6f);
 }
 
 /// callback used to save to obj file

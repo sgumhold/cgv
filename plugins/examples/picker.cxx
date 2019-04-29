@@ -1,5 +1,3 @@
-#pragma once
-
 #include "picker.h"
 #include <cgv/gui/key_event.h>
 #include <cgv/gui/mouse_event.h>

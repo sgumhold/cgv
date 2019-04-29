@@ -18,15 +18,13 @@ using namespace cgv::utils;
 
 class snell_demo : public node, public drawable, public provider
 {
-public:
-	typedef cgv::math::fvec<double, 3> vec3;
 protected:
 	double n1,n2;
-	vec3   v;
-	vec3   n;
-	vec3   t;
-	vec3   t1,t2;
-	vec3   r;
+	dvec3   v;
+	dvec3   n;
+	dvec3   t;
+	dvec3   t1,t2;
+	dvec3   r;
 	double aspect;
 	cgv::media::illum::surface_material axes_mat, surface_mat;
 public:
@@ -68,9 +66,9 @@ public:
 
 		n1 = 1.0;
 		n2 = 1.3333;
-		v = vec3(1,0,-1);
+		v = dvec3(1,0,-1);
 		v.normalize();
-		n = vec3(0,0,1);
+		n = dvec3(0,0,1);
 		compute_rt();
 		aspect = 0.02;
 	}
@@ -95,20 +93,20 @@ public:
 			prog.set_uniform(c, "illumination_mode", 1);
 			c.set_material(axes_mat);
 			c.set_color(rgb(0.6f, 0.6f, 0.6f));
-			c.tesselate_arrow(vec3(0, 0, 0), n, aspect);
+			c.tesselate_arrow(dvec3(0, 0, 0), n, aspect);
 			c.set_color(rgb(0.9f, 0.8f, 0.3f));
-			c.tesselate_arrow(-v, vec3(0, 0, 0), aspect);
+			c.tesselate_arrow(-v, dvec3(0, 0, 0), aspect);
 			c.set_color(rgb(1.0f, 0.5f, 0.1f));
-			c.tesselate_arrow(vec3(0, 0, 0), t, aspect);
+			c.tesselate_arrow(dvec3(0, 0, 0), t, aspect);
 			c.set_color(rgb(1.0f, 0.1f, 0.1f));
 			c.tesselate_arrow(t2, t, aspect);
 			c.set_color(rgb(0.1f, 1.0f, 0.1f));
 			if (dot(t2,n) < 0)
-				c.tesselate_arrow(vec3(0, 0, 0), t2, aspect);
+				c.tesselate_arrow(dvec3(0, 0, 0), t2, aspect);
 			else
 				c.tesselate_arrow(t1, t, aspect);
 			c.set_color(rgb(0.1f, 0.5f, 1.0f));
-			c.tesselate_arrow(vec3(0, 0, 0), r, aspect);
+			c.tesselate_arrow(dvec3(0, 0, 0), r, aspect);
 
 			prog.set_uniform(c, "map_color_to_material", 0);
 			prog.set_uniform(c, "illumination_mode", 2);
