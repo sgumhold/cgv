@@ -509,7 +509,8 @@ void gl_implicit_surface_drawable_base::draw_implicit_surface(context& ctx)
 	if (outofdate) {
 		extract_mesh();
 		mri.destruct(ctx);
-		mri.construct(ctx, mesh);
+		if (mesh.get_nr_faces() > 0)
+			mri.construct(ctx, mesh);
 		outofdate = false;
 	}
 	if (wireframe) {
@@ -519,7 +520,8 @@ void gl_implicit_surface_drawable_base::draw_implicit_surface(context& ctx)
 		ctx.ref_default_shader_program().disable(ctx);
 	}
 	else {
-		mri.render_mesh(ctx, material);
+		if (mesh.get_nr_faces() > 0)
+			mri.render_mesh(ctx, material);
 	}
 }
 
