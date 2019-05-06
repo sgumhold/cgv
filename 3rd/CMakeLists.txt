@@ -51,6 +51,7 @@ endmacro()
 
 set(depslist "")
 
+#check_3rd_package(ANN ann depslist)
 check_3rd_package(ZLIB zlib depslist)
 check_3rd_package(GLEW glew depslist)
 # check_3rd_package(PNG png depslist)
@@ -59,6 +60,7 @@ check_3rd_package(TIFF tiff depslist)
 # check_3rd_package(FLTK2 fltk depslist)
 
 # Always use our modified bastard version
+add_subdirectory(ANN)
 # add_subdirectory(glew)
 add_subdirectory(png)
 # add_subdirectory(jpeg)

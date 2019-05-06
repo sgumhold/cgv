@@ -9,16 +9,16 @@ add_subdirectory(cg_icons)
 add_subdirectory(cg_ext)
 add_subdirectory(crg_light)
 
-if(${BUILD_EXAMPLE_PLUGIN})
+if(BUILD_EXAMPLE_PLUGIN)
 	add_subdirectory(examples)
-endif(${BUILD_EXAMPLE_PLUGIN})
+endif()
 
 add_custom_target(plugins)
-if(${BUILD_EXAMPLE_PLUGIN})
+if(BUILD_EXAMPLE_PLUGIN)
 	add_dependencies(plugins cg_fltk crg_grid crg_stereo_view cmi_io cg_icons cg_ext crg_light examples)
-else(${BUILD_EXAMPLE_PLUGIN})
+else()
 	add_dependencies(plugins cg_fltk crg_grid crg_stereo_view cmi_io cg_icons cg_ext crg_light)
-endif(${BUILD_EXAMPLE_PLUGIN})
+endif()
 
 set_target_properties(plugins PROPERTIES FOLDER "${FOLDER_NAME_TOPLEVEL}")
 
