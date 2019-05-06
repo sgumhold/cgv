@@ -243,9 +243,13 @@ void grid::finish_frame(context& ctx)
 void grid::draw_lines(context& ctx)
 {
 	glPushAttrib(GL_DEPTH_BUFFER_BIT | GL_LINE_BIT);
+	GLboolean is_blend = glIsEnabled(GL_BLEND);
+	GLint blend_src, blend_dst;
+	glGetIntegerv(GL_BLEND_SRC_RGB, &blend_src);
+	glGetIntegerv(GL_BLEND_DST_RGB, &blend_dst);
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-	glEnable (GL_BLEND); 
-	glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glEnable(GL_LINE_SMOOTH);
 	glEnable(GL_DEPTH_TEST);
 	glDepthMask(GL_FALSE);
@@ -273,6 +277,9 @@ void grid::draw_lines(context& ctx)
 	prog.disable(ctx);
 
 	glPopAttrib();
+	if (!is_blend)
+		glDisable(GL_BLEND);
+	glBlendFunc(blend_src, blend_dst);
 }
 
 /// reflect adjustable members
