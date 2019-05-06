@@ -29,10 +29,11 @@ macro(shader_command_add target infile)
 	if (NOT EXISTS "${LOG_PATH}")
 		file(MAKE_DIRECTORY "${LOG_PATH}")
 	endif()
+	get_target_property(SHADER_TEST_COMMAND ${shader_test_EXECUTABLE} LOCATION_${CONFIG})
 	add_custom_target(shader_test_${LOG_NAME}
-		DEPENDS "${INFILE_ABS}"
+		DEPENDS ${shader_test_EXECUTABLE} "${INFILE_ABS}"
 		SOURCES "${INFILE_ABS}"
-		COMMAND ${shader_test_EXECUTABLE} "${INFILE_ABS}" "${outfile}"
+		COMMAND ${CMAKE_COMMAND} -E env "CGV_DIR=${CGV_DIR}" "CGV_OPTIONS=SHADER_DEVELOPER" ${SHADER_TEST_COMMAND} "${INFILE_ABS}" "${outfile}"
 		COMMENT "Testing shader code in ${LOG_NAME}")
 
 	add_dependencies(${target} shader_test_${LOG_NAME})
