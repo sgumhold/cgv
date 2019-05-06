@@ -85,7 +85,7 @@ rgbd_control::rgbd_control() :
 	vis_mode = VM_POINTS;
 	color_scale = 1;
 	depth_scale = 1;
-	near_mode = false;
+	near_mode = true;
 
 	point_size = 3;
 
