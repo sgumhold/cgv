@@ -180,7 +180,7 @@ public:
 	bool reflect_member(const std::string& member_name, T& member_ref, bool hard_cast = false);
 	/** call this to reflect a method by method name and reference to the member. The
 	    method type is deduced from the reference via templates. This only works, if you
-		additionally include the header <cgv/base/method_interface_impl.h>, where the 
+		additionally include the header <cgv/reflect/method_interface_impl.h>, where the 
 		template code is located. This header is not included automatically, because of 
 		its length. 
 		
