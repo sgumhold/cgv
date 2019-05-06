@@ -1,5 +1,6 @@
 #include <iostream>
 #include <fstream>
+#include <cgv/base/register.h>
 #include <cgv/render/context.h>
 #include <cgv/render/shader_code.h>
 #include <cgv/render/shader_program.h>
@@ -15,9 +16,21 @@
 #include <fltk/run.h>
 #endif
 
+using namespace cgv::base;
 using namespace cgv::render;
 using namespace cgv::utils::file;
 using namespace cgv::utils;
+
+
+// Disable registration debugging for more concise shader_test output
+struct global_regdebug_disabler
+{
+	global_regdebug_disabler()
+	{
+		disable_registration_debugging();
+	}
+} grdd_instance;
+
 
 int perform_test();
 
@@ -91,7 +104,7 @@ struct fltk_gl_context : public gl::gl_context, public fltk::GlWindow
 	void draw() 
 	{
 		int exit_code = perform_test();
-		exit(0);
+		exit(exit_code);
 	}
 };
 #endif
