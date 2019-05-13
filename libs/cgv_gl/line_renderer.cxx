@@ -19,8 +19,10 @@ namespace cgv {
 		{
 			const line_render_style& lrs = get_style<line_render_style>();
 			glLineWidth(lrs.line_width);
-			glColor4fv(&lrs.line_color[0]);
-			return group_renderer::enable(ctx);
+			if (!group_renderer::enable(ctx))
+				return false;
+			ctx.set_color(lrs.line_color);
+			return true;
 		}
 
 		bool line_render_style_reflect::self_reflect(cgv::reflect::reflection_handler& rh)
