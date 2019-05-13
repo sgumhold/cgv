@@ -28,6 +28,7 @@ gl_point_cloud_drawable::gl_point_cloud_drawable()
 	show_box = true;
 
 	surfel_style.blend_points = false;
+	surfel_style.measure_point_size_in_pixel = false;
 	surfel_style.blend_width_in_pixel = 0.0f;
 	box_color = rgba(0.5f, 0.5f, 0.5f, 1.0f);
 	box_style.illumination_mode = cgv::render::IM_TWO_SIDED;
@@ -248,7 +249,7 @@ void gl_point_cloud_drawable::draw_points(context& ctx)
 		}
 		std::sort(indices.begin(), indices.end(), sort_pred(pc, view_dir));
 
-		glDepthFunc(GL_ALWAYS);
+		glDepthFunc(GL_LEQUAL);
 		size_t nn = indices.size() / nr_draw_calls;
 		for (unsigned i = 1; i<nr_draw_calls; ++i)
 			glDrawElements(GL_POINTS, GLsizei(nn), GL_UNSIGNED_INT, &indices[(i - 1)*nn]);
