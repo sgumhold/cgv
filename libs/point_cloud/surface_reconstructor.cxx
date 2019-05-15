@@ -1,4 +1,3 @@
-#pragma once
 
 #include "surface_reconstructor.h"
 #include <cgv/reflect/reflect_enum.h>

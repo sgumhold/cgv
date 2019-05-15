@@ -1,8 +1,8 @@
-#pragma once
 
 #define _USE_MATH_DEFINES
 #include <cmath>
 #include "surface_reconstructor.h"
+#include <cgv/math/fvec.h>
 #include <cgv/math/normal_estimation.h>
 
 
@@ -237,7 +237,7 @@ void surface_reconstructor::smooth_normals()
 		const Nml& nml_i = pc->nml(vi);
 		const std::vector<Idx> &Ni = ng->at(vi);
 		unsigned int ni = (unsigned int) Ni.size();
-		Crd l0_sqr = sqr_length(pc->pnt(Ni[__min(ni-1,6)]) - pi);
+		Crd l0_sqr = cgv::math::sqr_length(pc->pnt(Ni[std::min(signed(ni)-1,6)]) - pi);
 		Pnt center(0,0,0);
 		Crd weight_sum = 0;
 		Vec nml_avg(0,0,0);
@@ -290,7 +290,7 @@ void surface_reconstructor::compute_weighted_normals(bool reorient)
 		points.resize(ni+1);
 		weights[0] = 1;
 		points[0] = pi;
-		Crd l0_sqr = sqr_length(pc->pnt(Ni[__min(ni-1,6)]) - pi);
+		Crd l0_sqr = cgv::math::sqr_length(pc->pnt(Ni[std::min(signed(ni)-1,6)]) - pi);
 		for (unsigned int j=0; j < ni; ++j) {
 			unsigned int vj = Ni[j];
 			Vec dij = pc->pnt(vj)-pc->pnt(vi);
@@ -329,7 +329,7 @@ void surface_reconstructor::compute_bilateral_weighted_normals(bool reorient)
 		points.resize(ni+1);
 		weights[0] = 1;
 		points[0] = pi;
-		Crd l0_sqr = sqr_length(pc->pnt(Ni[__min(ni-1,6)]) - pi);
+		Crd l0_sqr = cgv::math::sqr_length(pc->pnt(Ni[std::min(signed(ni)-1,6)]) - pi);
 		Crd err0_sqr = (Crd)(l0_sqr*noise_to_sampling_ratio*noise_to_sampling_ratio);
 		for (unsigned int j=0; j < ni; ++j) {
 			unsigned int vj = Ni[j];
