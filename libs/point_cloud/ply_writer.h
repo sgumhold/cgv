@@ -64,6 +64,7 @@ CGV_TEMPLATE template class CGV_API ply_writer<short>;
 CGV_TEMPLATE template class CGV_API ply_writer<int>;
 CGV_TEMPLATE template class CGV_API ply_writer<float>;
 CGV_TEMPLATE template class CGV_API ply_writer<double>;
+#define _PLY_WRITER__MSC_TEMPLATES_DEFINED 1
 #endif
 
 #include <cgv/config/lib_end.h>
