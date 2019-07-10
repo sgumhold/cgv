@@ -8,12 +8,15 @@ cgv_find_package(ZLIB)
 
 set(HEADERS
 	png.h
-	pngconf.h)
+	pngconf.h
+	pngdebug.h
+	pnginfo.h
+	pngpriv.h
+	pngstruct.h)
 	
 set(SOURCES
 	png.c
 	pngerror.c
-	pnggccrd.c
 	pngget.c
 	pngmem.c
 	pngpread.c
@@ -23,7 +26,6 @@ set(SOURCES
 	pngrutil.c
 	pngset.c
 	pngtrans.c
-	pngvcrd.c
 	pngwio.c
 	pngwrite.c
 	pngwtran.c
