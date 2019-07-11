@@ -7,7 +7,7 @@
 png_writer::png_writer() : fp(0)
 {
 	interlacing = false;
-	compression_level = Z_BEST_COMPRESSION;
+	compression_level =  Z_BEST_COMPRESSION;
 }
 /// close file in destructor
 png_writer::~png_writer()

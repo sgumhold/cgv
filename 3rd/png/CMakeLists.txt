@@ -11,6 +11,7 @@ set(HEADERS
 	pngconf.h
 	pngdebug.h
 	pnginfo.h
+	pnglibconf.h
 	pngpriv.h
 	pngstruct.h)
 	
