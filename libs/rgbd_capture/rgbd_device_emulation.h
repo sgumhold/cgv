@@ -33,7 +33,9 @@ public:
 	unsigned get_height(InputStreams) const;
 
 	bool get_frame(FrameFormat ff, void* data_ptr, int timeOut);
+	void map_depth_to_color_pixel(FrameFormat depth_ff, const void* depth_data_ptr, void* color_pixel_data_ptr) const;
 	void map_color_to_depth(FrameFormat depth_ff, const void* depth_data_ptr, FrameFormat color_ff, void* color_data_ptr) const;
+	bool map_pixel_to_point(int x, int y, unsigned depth, FrameFormat depth_ff, float point[3]);
 };
 
 }

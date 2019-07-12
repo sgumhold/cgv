@@ -281,6 +281,15 @@ bool rgbd_input::get_frame(FrameFormat ff, void* data_ptr, int time_out)
 	}
 	return false;
 }
+/// map a depth map to color pixel where color_pixel_data_ptr points to an array of short int pairs
+void rgbd_input::map_depth_to_color_pixel(FrameFormat depth_ff, const void* depth_data_ptr, void* color_pixel_data_ptr) const
+{
+	if (!is_attached()) {
+		cerr << "rgbd_input::map_depth_to_color_pixel called on device that has not been attached" << endl;
+		return;
+	}
+	rgbd->map_depth_to_color_pixel(depth_ff, depth_data_ptr, color_pixel_data_ptr);
+}
 
 /// map a color frame to the image coordinates of the depth image
 void rgbd_input::map_color_to_depth(FrameFormat depth_ff, const void* depth_data_ptr, FrameFormat color_ff, void* color_data_ptr) const
@@ -290,6 +299,16 @@ void rgbd_input::map_color_to_depth(FrameFormat depth_ff, const void* depth_data
 		return;
 	}
 	rgbd->map_color_to_depth(depth_ff, depth_data_ptr, color_ff, color_data_ptr);
+}
+/// map pixel coordinate and depth in given format to 3D point
+bool rgbd_input::map_pixel_to_point(int x, int y, unsigned depth, FrameFormat depth_ff, float point[3])
+{
+	if (!is_attached()) {
+		cerr << "rgbd_input::map_color_to_depth called on device that has not been attached" << endl;
+		return false;
+	}
+	return rgbd->map_pixel_to_point(x, y, depth, depth_ff, point);
+	return true;
 }
 
 }

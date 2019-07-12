@@ -101,9 +101,18 @@ namespace rgbd {
 			return false;
 		return true;
 	}
+	void rgbd_emulation::map_depth_to_color_pixel(FrameFormat depth_ff, const void* depth_data_ptr, void* color_pixel_data_ptr) const
+	{
+
+	}
 	void rgbd_emulation::map_color_to_depth(FrameFormat depth_ff, const void* depth_data_ptr, FrameFormat color_ff, void* color_data_ptr) const
 	{
 
 	}
+	bool rgbd_emulation::map_pixel_to_point(int x, int y, unsigned depth, FrameFormat depth_ff, float point[3])
+	{
+		return false;
+	}
+
 
 }

@@ -92,8 +92,12 @@ public:
 	unsigned get_frame_size(FrameFormat ff) const;
 	/// query a frame in the given format from color or depth camera
 	bool get_frame(FrameFormat ff, void* data_ptr, int timeOut = 2000);
+	/// map a depth map to color pixel where color_pixel_data_ptr points to an array of short int pairs
+	void map_depth_to_color_pixel(FrameFormat depth_ff, const void* depth_data_ptr, void* color_pixel_data_ptr) const;
 	/// map a color frame to the image coordinates of the depth image
 	void map_color_to_depth(FrameFormat depth_ff, const void* depth_data_ptr, FrameFormat color_ff, void* color_data_ptr) const;
+	/// map pixel coordinate and depth in given format to 3D point
+	bool map_pixel_to_point(int x, int y, unsigned depth, FrameFormat depth_ff, float point[3]);
 protected:
 	/// store whether camera has been started
 	bool started;

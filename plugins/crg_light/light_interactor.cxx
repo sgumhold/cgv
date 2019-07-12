@@ -77,7 +77,7 @@ void light_interactor::on_set(void* member_ptr)
 				if (lights[i].is_local_to_eye()) {
 					hpos = last_modelview_matrix * hpos;
 					dvec3 pos = reinterpret_cast<dvec3&>(hpos);
-					if (is_dir)
+					if (!is_dir)
 						pos /= 1.0 / hpos(3);
 					lights[i].set_position(pos);
 					dvec4 hspot_dir = last_modelview_matrix * hdir;
@@ -87,7 +87,7 @@ void light_interactor::on_set(void* member_ptr)
 					dmat4 inv_mv = inv(last_modelview_matrix);
 					hpos = inv_mv * hpos;
 					dvec3 pos = reinterpret_cast<dvec3&>(hpos);
-					if (is_dir)
+					if (!is_dir)
 						pos /= 1.0 / hpos(3);
 					lights[i].set_position(pos);
 					dvec4 hspot_dir = inv_mv * hdir;
