@@ -1,4 +1,3 @@
-#pragma once
 
 #include "surface_reconstructor.h"
 #include <libs/cgv_gl/gl/gl.h>

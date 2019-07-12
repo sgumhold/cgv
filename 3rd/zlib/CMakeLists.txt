@@ -9,7 +9,10 @@ set(SOURCES
 	compress.c
 	crc32.c
 	deflate.c
-	gzio.c
+	gzclose.c
+	gzlib.c
+	gzread.c
+	gzwrite.c
 	infback.c
 	inffast.c
 	inflate.c
@@ -21,6 +24,7 @@ set(SOURCES
 set(HEADERS
 	crc32.h
 	deflate.h
+	gzguts.h
 	inffast.h
 	inffixed.h
 	inflate.h

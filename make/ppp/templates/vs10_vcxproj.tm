@@ -49,7 +49,7 @@
     <RootNamespace>@(pj::projectName)</RootNamespace>
     <Keyword>@(vs_platform)Proj</Keyword>
 	@if(cgv_compiler_version > 14)@{@//
-    <WindowsTargetPlatformVersion>10.0.17134.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
 	@}
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
