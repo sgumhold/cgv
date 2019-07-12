@@ -117,7 +117,7 @@ bool png_reader::open(const std::string& file_name, data_format& df, std::vector
 		has_alpha = true;
 	}
 	if (color_type == PNG_COLOR_TYPE_GRAY && bit_depth < 8) 
-		png_set_gray_1_2_4_to_8(png_ptr);
+		png_set_expand_gray_1_2_4_to_8(png_ptr);
 
 	ComponentFormat cf;
 	if (has_alpha)
