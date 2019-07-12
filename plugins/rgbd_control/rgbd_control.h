@@ -12,8 +12,11 @@
 #include <cgv/render/drawable.h>
 #include <cgv/render/shader_program.h>
 #include <cgv/render/texture.h>
+#include <cgv_gl/point_renderer.h>
 
 #include <string>
+#include <mutex>
+#include <future>
 
 #include "lib_begin.h"
 
@@ -24,10 +27,7 @@ class rgbd_control :
 	public cgv::gui::provider
 {
 public:
-	typedef cgv::math::fvec<float,3> Pnt;
-	typedef cgv::math::fvec<float,2> Tex;
-	typedef cgv::media::color<float> Clr;
-	enum VisMode { VM_COLOR, VM_DEPTH, VM_POINTS };
+	enum VisMode { VM_COLOR, VM_DEPTH, VM_INFRARED };
 	enum DeviceMode { DM_DETACHED, DM_PROTOCOL, DM_DEVICE };
 	///
 	rgbd_control();
@@ -48,7 +48,8 @@ public:
 	void init_frame(cgv::render::context& ctx);
 	/// overload to draw the content of this drawable
 	void draw(cgv::render::context& ctx);
-
+	///
+	void clear(cgv::render::context& ctx);
 	/// 
 	bool handle(cgv::gui::event& e);
 	/// 
@@ -63,11 +64,11 @@ protected:
 
 	/// members for rgbd mouse
 	rgbd::rgbd_mouse km;
-	Tex mouse_pos;
+	vec2 mouse_pos;
 
-	/// point cloud
-	std::vector<Pnt> P;
-	std::vector<Clr> C;
+	/// raw point cloud
+	std::vector<vec3> P, P2;
+	std::vector<rgba8> C, C2;
 
 	/// processing parameters
 	bool remap_color;
@@ -77,14 +78,25 @@ protected:
 	VisMode vis_mode;
 	float color_scale;
 	float depth_scale;
-	float point_size;
+	float infrared_scale;
+	vec2 depth_range;
+	cgv::render::point_render_style prs;
 
 	/// texture, shaders and display lists
-	cgv::data::data_format color_fmt, depth_fmt;
-	cgv::render::texture color, depth;
+	cgv::data::data_format color_fmt, depth_fmt, infrared_fmt;
+	cgv::render::texture color, depth, infrared;
+	dmat4 T;
+	dvec2 ctr, f_p;
+	dvec3 transform_to_world(const dvec3& p_win) const;
 
+	dquat clr_rot;
+	dvec3 clr_tra;
+	dvec2 clr_ctr, clr_f_p;
+	unsigned plane_depth;
+	bool validate_color_camera;
+	void calibrate_device();
 	/// one shader program for each visualization mode
-	cgv::render::shader_program progs[3];
+	cgv::render::shader_program rgbd_prog;
 private:
 	/// internal members used to create gui
 	DeviceMode device_mode;
@@ -95,16 +107,21 @@ private:
 	float aspect;
 	bool stopped;
 	bool step_only;
-	unsigned nr_depth_frames, nr_color_frames;
+	unsigned nr_depth_frames, nr_color_frames, nr_infrared_frames;
 	/// internal members used for configuration
-	bool color_frame_changed, depth_frame_changed;
+	bool color_frame_changed, depth_frame_changed, infrared_frame_changed;
 	bool attachment_changed;
 
 	/// internal members used for data storage
-	cgv::data::data_view color_data, depth_data;
+	cgv::data::data_view color_data, depth_data, infrared_data;
+	cgv::data::data_view color2_data, depth2_data;
 
+	std::future<size_t> future_handle;
+	size_t construct_point_cloud();
+	void compute_homography(const std::vector<vec3>& P, const std::vector<vec3>& Q);
+	bool acquire_next;
+	bool always_acquire_next;
 protected:
-	void construct_point_cloud();
 	void timer_event(double t, double dt);
 	void on_start_cb();
 	void on_step_cb();

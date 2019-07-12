@@ -18,7 +18,9 @@ namespace rgbd {
 		FF_DEPTH_D8,
 		// depthCorrected12 = (2048*2048) / (2048-depthRaw), range [0, 2047]
 		FF_DEPTH_D12,
-		FF_DEPTH_RGB32
+		FF_DEPTH_RGB32,
+		// infrared comes single 16 bit channel
+		FF_INFRARED
 	};
 
 
@@ -173,8 +175,12 @@ namespace rgbd {
 		virtual unsigned get_frame_size(FrameFormat ff) const;
 		/// query a frame in the given format from color or depth camera
 		virtual bool get_frame(FrameFormat ff, void* data_ptr, int timeOut) = 0;
+		/// map a depth map to color pixel where color_pixel_data_ptr points to an array of short int pairs
+		virtual void map_depth_to_color_pixel(FrameFormat depth_ff, const void* depth_data_ptr, void* color_pixel_data_ptr) const = 0;
 		/// map a color frame to the image coordinates of the depth image
 		virtual void map_color_to_depth(FrameFormat depth_ff, const void* depth_data_ptr, FrameFormat color_ff, void* color_data_ptr) const = 0;
+		/// map pixel coordinate and depth in given format to 3D point
+		virtual bool map_pixel_to_point(int x, int y, unsigned depth, FrameFormat depth_ff, float point[3]) = 0;
 	};
 }
 

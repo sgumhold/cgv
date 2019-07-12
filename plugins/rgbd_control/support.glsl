@@ -20,12 +20,12 @@ vec4 scale_color(in float scale, in vec4 color)
 
 float RawDepthToMeters(float depthValue)
 {
-    if (depthValue < 0.03125) {
+//    if (depthValue < 0.03125) {
         return 1.0 / (depthValue * -201.2677144576 + 3.3309495161);
-    }
-	else {
-		return 0.0;
-	}
+ //   }
+//	else {
+//		return 0.0;
+//	}
 }
 
 vec3 DepthToWorld(vec2 tc, float depthValue)

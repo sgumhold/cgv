@@ -188,7 +188,7 @@ namespace cgv {
 				cgv::render::point_render_style* prs_ptr = reinterpret_cast<cgv::render::point_render_style*>(value_ptr);
 				cgv::base::base* b = dynamic_cast<cgv::base::base*>(p);
 
-				p->add_member_control(b, "point_size", prs_ptr->point_size, "value_slider", "label='';w=130;min=1;max=50;log=true;ticks=true", "");
+				p->add_member_control(b, "point_size", prs_ptr->point_size, "value_slider", "label='';w=130;min=0.01;max=50;log=true;ticks=true", "");
 				p->add_member_control(b, "px", prs_ptr->measure_point_size_in_pixel, "toggle", "w=16");
 				p->add_member_control(b, "blend", prs_ptr->blend_points, "toggle", "w=50");
 				bool show = p->begin_tree_node("halo", prs_ptr->halo_color, false, "options='w=120';level=3;align=''");

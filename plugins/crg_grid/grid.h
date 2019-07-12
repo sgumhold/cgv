@@ -23,6 +23,7 @@ protected:
 	bool show_lines;
 	bool adaptive_grid;
 	bool show_axes;
+	float auto_hide_axis_threshold;
 	float factor;
 	float arrow_length;
 	float arrow_aspect;

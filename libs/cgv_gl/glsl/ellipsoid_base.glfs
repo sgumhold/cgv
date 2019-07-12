@@ -10,7 +10,7 @@ in EllipsoidData {
 	vec3  v_eye;
 } Fin;
 
-bool compute_ellipsoid_intersection(out float depth, out vec3 p_eye, out vec3 n_eye, bool show_backside = false)
+bool compute_ellipsoid_intersection(out float depth, out vec3 p_eye, out vec3 n_eye, bool show_backside)
 {
 	// check for intersection
 	float q_tilde_squared_length = dot(Fin.q_tilde, Fin.q_tilde);
