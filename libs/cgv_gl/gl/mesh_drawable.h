@@ -37,9 +37,9 @@ protected:
 	/// the bounding box of the mesh is computed in the read_mesh method
 	box3 box;
 	/// draw all faces belonging to the given group, optionally turn off the specification of materials
-	void draw_mesh_group(cgv::render::context &ctx, unsigned gi, bool use_materials = true);
+	void render_mesh_group(cgv::render::context &ctx, cgv::render::shader_program& prog, unsigned gi, bool use_materials = true);
 	/// draw the complete mesh, optionally turn off the specification of materials
-	void draw_mesh(cgv::render::context &ctx, bool use_materials = true);
+	void render_mesh(cgv::render::context &ctx, cgv::render::shader_program& prog, bool use_materials = true);
 	//! call this to center the view after loading the mesh. 
 	/*! For this to work you need to derive from at least cgv::base::node and register
 	    an instance through the object registration mechanism defined in cgv/base/register.h */

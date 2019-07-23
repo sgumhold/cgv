@@ -19,7 +19,8 @@ void mesh_drawable::init_frame(context &ctx)
 		return;
 
 	mesh_info.destruct(ctx);
-	mesh_info.construct(ctx, mesh);
+	mesh_info.construct_vbos(ctx, mesh);
+	mesh_info.bind(ctx, ctx.ref_surface_shader_program(true));
 }
 
 /// clear all objects living in the context like textures or display lists
@@ -28,24 +29,24 @@ void mesh_drawable::clear(context& ctx)
 	mesh_info.destruct(ctx);
 }
 
-void mesh_drawable::draw_mesh_group(context &ctx, unsigned gi, bool use_materials)
+void mesh_drawable::render_mesh_group(context &ctx, shader_program& prog, unsigned gi, bool use_materials)
 {
-	for (size_t i = 0; i < mesh_info.material_group_start.size(); ++i)
-		if (mesh_info.material_group_start[i](1) == gi)
-			mesh_info.render_material_part(ctx, i, true);
-	for (size_t i = 0; i < mesh_info.material_group_start.size(); ++i)
-		if (mesh_info.material_group_start[i](1) == gi)
-			mesh_info.render_material_part(ctx, i, false);
+	for (size_t i = 0; i < mesh_info.get_nr_mesh_parts(); ++i)
+		if (mesh_info.get_group_index(i) == gi)
+			mesh_info.render_mesh_part(ctx, prog, i, true);
+	for (size_t i = 0; i < mesh_info.get_nr_mesh_parts(); ++i)
+		if (mesh_info.get_group_index(i) == gi)
+			mesh_info.render_mesh_part(ctx, prog, i, false);
 }
 
-void mesh_drawable::draw_mesh(context &ctx, bool use_materials)
+void mesh_drawable::render_mesh(context &ctx, shader_program& prog, bool use_materials)
 {
-	mesh_info.render_mesh(ctx);
+	mesh_info.render_mesh(ctx, prog);
 }
 
 void mesh_drawable::draw(context &ctx)
 {
-	draw_mesh(ctx);
+	render_mesh(ctx, ctx.ref_surface_shader_program(true));
 }
 
 bool mesh_drawable::read_mesh(const std::string& _file_name)
