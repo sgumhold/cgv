@@ -200,7 +200,12 @@ void simple_mesh<T>::clear()
 	position_indices.clear(); 
 	tex_coord_indices.clear(); 
 	normal_indices.clear(); 
-	faces.clear(); 
+	faces.clear();
+	group_indices.clear();
+	group_names.clear();
+	material_indices.clear();
+	materials.clear();
+	destruct_colors();
 }
 
 /// read simple mesh from file
