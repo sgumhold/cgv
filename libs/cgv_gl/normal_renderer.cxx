@@ -26,7 +26,7 @@ namespace cgv {
 		{
 			line_renderer::set_attribute_array_manager(ctx, _aam_ptr);
 			if (aam_ptr) {
-				if (aam_ptr->has_attribute(ref_prog().get_attribute_location(ctx, "normal")))
+				if (aam_ptr->has_attribute(ctx, ref_prog().get_attribute_location(ctx, "normal")))
 					has_normals = true;
 			}
 			else {

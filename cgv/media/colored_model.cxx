@@ -131,6 +131,14 @@ namespace cgv {
 				color_storage_ptr->resize(nr_colors);
 			}
 		}
+		/// destruct color storage
+		void colored_model::destruct_colors()
+		{
+			if (color_storage_ptr) {
+				delete color_storage_ptr;
+				color_storage_ptr = 0;
+			}
+		}
 
 	}
 }

@@ -2,8 +2,14 @@
 
 #include <stdio.h>
 #include <png.h>
+#include <zlib.h>
 
 #include <cgv/media/image/image_writer.h>
+
+#define png_infopp_NULL (png_infopp)NULL
+#define int_p_NULL (int*)NULL
+#define png_voidp_NULL (void*)NULL
+#define png_error_ptr_NULL (png_error_ptr)NULL
 
 using namespace cgv::media::image;
 

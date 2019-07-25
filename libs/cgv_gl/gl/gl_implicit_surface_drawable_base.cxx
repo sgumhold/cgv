@@ -509,19 +509,21 @@ void gl_implicit_surface_drawable_base::draw_implicit_surface(context& ctx)
 	if (outofdate) {
 		extract_mesh();
 		mri.destruct(ctx);
-		if (mesh.get_nr_faces() > 0)
-			mri.construct(ctx, mesh);
+		if (mesh.get_nr_faces() > 0) {
+			mri.construct_vbos(ctx, mesh);
+			mri.bind(ctx, ctx.ref_surface_shader_program(false));
+		}
 		outofdate = false;
 	}
 	if (wireframe) {
 		ctx.ref_default_shader_program().enable(ctx);
 		ctx.set_color(rgb(0.1f, 0.2f, 0.6f));
-		mri.render_wireframe(ctx);
+		mri.draw_wireframe(ctx);
 		ctx.ref_default_shader_program().disable(ctx);
 	}
 	else {
 		if (mesh.get_nr_faces() > 0)
-			mri.render_mesh(ctx, material);
+			mri.render_mesh(ctx, ctx.ref_surface_shader_program(false), material);
 	}
 }
 

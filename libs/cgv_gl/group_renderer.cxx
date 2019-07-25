@@ -23,7 +23,7 @@ namespace cgv {
 		{
 			renderer::set_attribute_array_manager(ctx, _aam_ptr);
 			if (aam_ptr) {
-				if (aam_ptr->has_attribute(ref_prog().get_attribute_location(ctx, "group_index")))
+				if (aam_ptr->has_attribute(ctx, ref_prog().get_attribute_location(ctx, "group_index")))
 					has_group_indices = true;
 			}
 			else {

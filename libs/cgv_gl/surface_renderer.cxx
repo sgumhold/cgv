@@ -40,9 +40,9 @@ namespace cgv {
 		{
 			group_renderer::set_attribute_array_manager(ctx, _aam_ptr);
 			if (aam_ptr) {
-				if (aam_ptr->has_attribute(ref_prog().get_attribute_location(ctx, "normal")))
+				if (aam_ptr->has_attribute(ctx, ref_prog().get_attribute_location(ctx, "normal")))
 					has_normals = true;
-				if (aam_ptr->has_attribute(ref_prog().get_attribute_location(ctx, "texcoord")))
+				if (aam_ptr->has_attribute(ctx, ref_prog().get_attribute_location(ctx, "texcoord")))
 					has_texcoords = true;
 			}
 			else {

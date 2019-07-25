@@ -57,6 +57,8 @@ namespace cgv {
 			//! ensure that colors are allocated and of given storage type
 			/*! Only in case of new allocation, the second parameter is used to define the number of colors */
 			void ensure_colors(ColorType _color_type, size_t nr_colors = -1);
+			/// destruct color storage
+			void destruct_colors();
 		};
 	}
 }

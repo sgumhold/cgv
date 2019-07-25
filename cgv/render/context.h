@@ -877,6 +877,8 @@ public:
 	virtual void set_color(const rgb& clr, float opacity = 1.0f) { set_color(rgba(clr[0], clr[1], clr[2], opacity)); }
 	/// set the current material 
 	virtual void set_material(const cgv::media::illum::surface_material& mat);
+	/// return pointer to current material or nullptr if no current material is available
+	const cgv::media::illum::surface_material* get_current_material() const;
 	/// set the current material 
 	virtual void set_textured_material(const textured_material& mat);
 	/// enable a material with textures
