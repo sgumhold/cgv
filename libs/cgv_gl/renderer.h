@@ -75,7 +75,7 @@ namespace cgv { // @<
 			/// destructor calls destruct
 			~attribute_array_manager();
 			/// check whether the given attribute is available
-			bool has_attribute(int loc) const;
+			bool has_attribute(const context& ctx, int loc) const;
 			///
 			bool init(context& ctx);
 			///

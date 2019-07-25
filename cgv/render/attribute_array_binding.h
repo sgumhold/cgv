@@ -18,6 +18,7 @@ namespace cgv {
 	object of type VBT_INDICES with the function set_element_array(). */
 class CGV_API attribute_array_binding : public attribute_array_binding_base
 {
+	int get_attribute_location(const context& ctx, const shader_program& prog, const std::string& attr_name) const;
 public:
 	/**@name static interface is used to access global attribute arrays of context*/
 	//@{
@@ -70,10 +71,31 @@ public:
 	/// set a vertex attribute to a single value or an array of values through the cgv::math::vec or std::vector classes.
 	template <typename T>
 	bool set_attribute_array(const context& ctx, int loc, const T* value_ptr, unsigned nr_elements, unsigned stride = 0) {
-		return ctx.set_attribute_array_void(this, loc, element_descriptor_traits<T>::get_type_descriptor(*value_ptr), 0, value_ptr, nr_elements, stride);
+		return ctx.set_attribute_array_void(this, loc, get_element_type(*value_ptr), 0, value_ptr, nr_elements, stride);
 	}
 	/// point array of vertex attribute at location \c loc to elements of given type in vertex buffer object at given offset spaced with given stride; in case of success also enable vertex attribute array
 	bool set_attribute_array(const context& ctx, int loc, type_descriptor element_type, const vertex_buffer& vbo, size_t offset_in_bytes, size_t nr_elements, unsigned stride_in_bytes = 0);
+	/// convenience function that determines attribute location in program by name and then uses set_attribute_array to set vertex attribute location to given array and enable array
+	template <typename T>
+	bool bind_attribute_array(const context& ctx, const shader_program& prog, const std::string& attribute_name, const T& array) {
+		int loc = get_attribute_location(ctx, prog, attribute_name);
+		if (loc == -1)
+			return false;
+		return ctx.set_attribute_array_void(this, loc, array_descriptor_traits<T>::get_type_descriptor(array), 0, array_descriptor_traits<T>::get_address(array), array_descriptor_traits<T>::get_nr_elements(array));
+	}
+	/// convenience function that determines attribute location in program by name and then uses set_attribute_array to set a vertex attribute to a single value or an array of values through the cgv::math::vec or std::vector classes.
+	template <typename T>
+	bool bind_attribute_array(const context& ctx, const shader_program& prog, const std::string& attribute_name, const T* value_ptr, unsigned nr_elements, unsigned stride = 0) {
+		int loc = get_attribute_location(ctx, prog, attribute_name);
+		if (loc == -1)
+			return false;
+		return ctx.set_attribute_array_void(this, loc, get_element_type(*value_ptr), 0, value_ptr, nr_elements, stride);
+	}
+	/// convenience function that determines attribute location in program by name and then uses set_attribute_array to point array of vertex attribute at location \c loc to elements of given type in vertex buffer object at given offset spaced with given stride
+	bool bind_attribute_array(const context& ctx, 
+		const shader_program& prog, const std::string& attribute_name, 
+		type_descriptor element_type, const vertex_buffer& vbo, 
+		size_t offset_in_bytes, size_t nr_elements, unsigned stride_in_bytes = 0);
 	/// set the elment array to the given vertex buffer object which must me of type VBT_INDICES
 	bool set_element_array(const context& ctx, const vertex_buffer& vbe);
 };

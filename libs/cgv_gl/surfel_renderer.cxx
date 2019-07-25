@@ -33,9 +33,9 @@ namespace cgv {
 		{
 			surface_renderer::set_attribute_array_manager(ctx, _aam_ptr);
 			if (aam_ptr) {
-				if (aam_ptr->has_attribute(ref_prog().get_attribute_location(ctx, "point_size")))
+				if (aam_ptr->has_attribute(ctx, ref_prog().get_attribute_location(ctx, "point_size")))
 					has_point_sizes = true;
-				if (aam_ptr->has_attribute(ref_prog().get_attribute_location(ctx, "color_index")))
+				if (aam_ptr->has_attribute(ctx, ref_prog().get_attribute_location(ctx, "color_index")))
 					has_indexed_colors = true;
 			}
 			else {

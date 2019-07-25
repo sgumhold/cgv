@@ -23,6 +23,57 @@ using namespace cgv::render;
 using namespace cgv::utils;
 using namespace cgv::media::illum;
 
+/*
+This example illustrates how to use cgv::mesh::simple_mesh<T> and cgv::render::mesh_render_info
+to render a polygonal mesh in potentially textured surface rendering mode and in wireframe mode.
+The mesh_render_info manages vertex buffers for position, normal, tex_coord and color attributes
+and an element index buffer for triangle based surface and edge based wireframe rendering. 
+Furthermore, an attribute_array_binding object is managed.
+
+The typical workflow is
+
+PREPARATION (implemented in init or init_frame method of drawable)
+- construct simple_mesh data structure with new_position(), new_normal(), new_tex_coord(), 
+  start_face() and new_corner() methods. If also per vertex colors are needed, allocate
+  them with dynamically choosable type through the ensure_colors() method of the base
+  class cgv::media::colored_model and the same number of colors as you have positions.
+  Then individual colors can be set with the set_color() functions and retreived later on
+  with the put_color() functions. 
+  An alternative is to read a simple mesh from an obj-file with the read() method.
+  Optionally, you can compute vertex normals with the compute_vertex_normals() method after
+  construction of positions, faces and corners.
+  [this step can be implemented also outside of the drawable methods as no render context is needed]
+- construct the vertex buffers of the mesh_render_info object from the simple_mesh with its 
+  construct_vbos() method
+- choose a shader program and bind the attribute_array_binding of the mesh_render_info struct to
+  the attribute locations of the program with the bind() method. This will also bind the element
+  index buffer.
+
+RENDERING PHASE (implemented in draw method)
+- configure uniforms and constant vertex attributes of shader program 
+- call render_mesh() method of mesh_render_info and pass chosen shader program to it.
+  This will enable and disable the shader program as needed. render_mesh() has two optional
+  boolean parameters that allow to ignore transparent or opaque mesh parts during rendering.
+  If the mesh has transparent parts, one typically renders first all opaque parts and in a 
+  second pass or in the finish_draw method all transparent parts. This will not produce a 
+  correct visibility ordering of the transparent parts but will blend over the transparent
+  parts over the opaque parts. If not done like this, transparent parts can occlude opaque
+  parts due to the z-buffer algorithm used for visibility sorting.
+
+The mesh_render_info class provides part based rendering methods for meshes with several
+materials and several groups as supported by the obj file format with the render_mesh_part()
+method. Furthermore, there are two draw methods draw_surface() and draw_wireframe(). Both 
+methods do not enable any shader program and assume the vertex attribute locations of the
+used shader program to be the same as of the shader program passed to the bind() method in
+the preparation stage. In this example the draw_wireframe() method is used for wireframe 
+rendering.
+
+The example furthermore supports reading of obj files and can serve as simple mesh viewer.
+Some image formats used for 3d models are not support by the cmi_io plugin used by default
+in the examples plugin. More image formats are provided by the the cmi_devIL plugin which is
+only part of the cgv_support project tree available on demand.
+*/
+
 class mesh : public node, public drawable, public provider
 {
 private:
@@ -92,7 +143,7 @@ public:
 			for (size_t j = 0; j < m; ++j) {
 				float x = (float)j / m;
 				float u = float(4.0f*M_PI)*x;
-				// add new position to the mesh (function returns position index, which is i*(m+1)+j in our case)
+				// add new position to the mesh (function returns position index, which is i*m+j in our case)
 				int vi = M.new_position(vec3(a*cos(u)*sin(v), a*sin(u)*sin(v), a*(cos(v) + log(tan(0.5f*v))) + b * u));
 				// set color
 				M.set_color(vi, rgb(x, y, 0.5f));
@@ -132,6 +183,7 @@ public:
 		update_member(member_ptr);
 		post_redraw();
 	}
+	// a hack that adds vertex colors to a mesh and used for illustration purposes only
 	void construct_mesh_colors()
 	{
 		if (M.has_colors())
@@ -187,6 +239,7 @@ public:
 			add_member_control(this, "color mapping", color_mapping, "dropdown", "enums='none,front,back,front+back'");
 			add_member_control(this, "surface color", surface_color);
 			add_member_control(this, "illumination", illumination_mode, "dropdown", "enums='none,one sided,two sided'");
+			// this is how to add a ui for the materials read from an obj material file
 			for (unsigned mi = 0; mi < mesh_info.ref_materials().size(); ++mi) {
 				if (begin_tree_node(mesh_info.ref_materials()[mi]->get_name(), *mesh_info.ref_materials()[mi])) {
 					align("\a");
@@ -227,8 +280,10 @@ public:
 			// focus view on new mesh
 			clipped_view* view_ptr = dynamic_cast<clipped_view*>(find_view_as_node());
 			if (view_ptr) {
-				view_ptr->set_scene_extent(M.compute_box());
-				view_ptr->set_default_view();
+				box3 box = M.compute_box();
+				view_ptr->set_scene_extent(box);
+				view_ptr->set_focus(box.get_center());
+				view_ptr->set_y_extent_at_focus(box.get_extent().length());
 			}
 		}
 	}
@@ -255,11 +310,12 @@ public:
 			glLineWidth(old_line_width);
 		}
 		if (show_surface) {
-			// ensure that opengl culling is identical to shader program based culling
+			// remember current culling setting
 			GLboolean is_culling = glIsEnabled(GL_CULL_FACE);
 			GLint cull_face;
 			glGetIntegerv(GL_CULL_FACE_MODE, &cull_face);
 
+			// ensure that opengl culling is identical to shader program based culling
 			if (cull_mode > 0) {
 				glEnable(GL_CULL_FACE);
 				glCullFace(cull_mode == CM_BACKFACE ? GL_BACK : GL_FRONT);
@@ -272,13 +328,10 @@ public:
 			prog.set_uniform(ctx, "culling_mode", (int)cull_mode);
 			prog.set_uniform(ctx, "map_color_to_material", (int)color_mapping);
 			prog.set_uniform(ctx, "illumination_mode", (int)illumination_mode);
-			
 			// set default surface color for color mapping which only affects 
 			// rendering if mesh does not have per vertex colors and color_mapping is on
-			prog.enable(ctx);
-			ctx.set_color(surface_color);
-			prog.disable(ctx);
-			
+			prog.set_attribute(ctx, prog.get_color_index(), surface_color);
+
 			// render the mesh from the vertex buffers with selected program
 			mesh_info.render_mesh(ctx, prog);
 			

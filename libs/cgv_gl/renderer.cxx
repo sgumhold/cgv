@@ -8,9 +8,9 @@ namespace cgv {
 		attribute_array_manager::attribute_array_manager()
 		{
 		}
-		bool attribute_array_manager::has_attribute(int loc) const
+		bool attribute_array_manager::has_attribute(const context& ctx, int loc) const
 		{
-			return vbos.find(loc) != vbos.end();
+			return aab.is_array_enabled(ctx, loc);
 		}
 		attribute_array_manager::~attribute_array_manager()
 		{
@@ -86,9 +86,9 @@ namespace cgv {
 		{
 			aam_ptr = _aam_ptr;
 			if (aam_ptr) {
-				if (aam_ptr->has_attribute(ref_prog().get_attribute_location(ctx, "position")))
+				if (aam_ptr->has_attribute(ctx, ref_prog().get_attribute_location(ctx, "position")))
 					has_positions = true;
-				if (aam_ptr->has_attribute(ref_prog().get_attribute_location(ctx, "color")))
+				if (aam_ptr->has_attribute(ctx, ref_prog().get_attribute_location(ctx, "color")))
 					has_colors = true;
 			}
 			else {
