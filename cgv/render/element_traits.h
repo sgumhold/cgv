@@ -64,6 +64,12 @@ namespace cgv {
 		};
 
 		template <typename T>
+		type_descriptor get_element_type(const T& element)
+		{
+			return typename element_descriptor_traits<T>::get_type_descriptor(element);
+		}
+
+		template <typename T>
 		struct array_descriptor_traits
 		{
 			//TODO: What is this supposed to do; prevents compilation under Linux
@@ -99,5 +105,11 @@ namespace cgv {
 			/// return size of array in bytes
 			static      size_t get_size(const cgv::math::vec<T>& vec) { return vec.size() * sizeof(T); }
 		};
+
+		template <typename T>
+		type_descriptor get_array_type(const T& arr)
+		{
+			return typename array_descriptor_traits<T>::get_type_descriptor(arr);
+		}
 	}
 }

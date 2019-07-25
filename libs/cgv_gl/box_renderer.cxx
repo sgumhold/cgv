@@ -28,11 +28,11 @@ namespace cgv {
 		{
 			surface_renderer::set_attribute_array_manager(ctx, _aam_ptr);
 			if (aam_ptr) {
-				if (aam_ptr->has_attribute(ref_prog().get_attribute_location(ctx, "extent")))
+				if (aam_ptr->has_attribute(ctx, ref_prog().get_attribute_location(ctx, "extent")))
 					has_extents = true;
-				if (aam_ptr->has_attribute(ref_prog().get_attribute_location(ctx, "translation")))
+				if (aam_ptr->has_attribute(ctx, ref_prog().get_attribute_location(ctx, "translation")))
 					has_translations= true;
-				if (aam_ptr->has_attribute(ref_prog().get_attribute_location(ctx, "rotation")))
+				if (aam_ptr->has_attribute(ctx, ref_prog().get_attribute_location(ctx, "rotation")))
 					has_rotations= true;
 			}
 			else {

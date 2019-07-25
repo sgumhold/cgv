@@ -178,5 +178,7 @@ void ply_writer<T>::close()
 	ply_file = 0;
 }
 
-template ply_writer<float>;
-template ply_writer<double>;
+#if (!defined _PLY_WRITER__MSC_TEMPLATES_DEFINED)
+	template<> class ply_writer<float>;
+	template<> class ply_writer<double>;
+#endif

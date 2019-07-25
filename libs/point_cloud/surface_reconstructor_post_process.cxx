@@ -1,4 +1,3 @@
-#pragma once
 
 #define _USE_MATH_DEFINES
 #include <cmath>
@@ -295,7 +294,7 @@ surface_reconstructor::Crd surface_reconstructor::compute_fan_quality(unsigned i
 		++m;
 		unsigned int vl = Ni[l];
 		const Pnt& pl = pc->pnt(vl);
-		l_max = __max(length(pl-pi),l_max);
+		l_max = std::max(length(pl-pi),l_max);
 		Crd a = (Crd)compute_corner_angle(vi,l,(l+1)%n);
 		a_sum += a;
 	}

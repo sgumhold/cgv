@@ -1463,6 +1463,12 @@ void context::set_gamma(float _gamma)
 	prog.set_uniform(*this, "gamma", gamma);
 }
 
+/// return pointer to current material or nullptr if no current material is available
+const cgv::media::illum::surface_material* context::get_current_material() const
+{
+	return current_material_ptr;
+}
+
 /// set the current material 
 void context::set_material(const cgv::media::illum::surface_material& material)
 {
