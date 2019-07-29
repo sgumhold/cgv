@@ -176,11 +176,15 @@ bool vr_view_interactor::init(cgv::render::context& ctx)
 {
 	cgv::render::ref_sphere_renderer(ctx, 1);
 	cgv::media::mesh::simple_mesh<float> M;
-	if (M.read(cgv::base::find_data_file("vr_controller_vive_1_5.obj", "D")))
-		MI_controller.construct(ctx, M);
+	if (M.read(cgv::base::find_data_file("vr_controller_vive_1_5.obj", "D"))) {
+		MI_controller.construct_vbos(ctx, M);
+		MI_controller.bind(ctx, ctx.ref_surface_shader_program(true));
+	}
 	cgv::media::mesh::simple_mesh<float> M2;
-	if (M2.read(cgv::base::find_data_file("generic_hmd.obj", "D")))
-		MI_hmd.construct(ctx, M2);
+	if (M2.read(cgv::base::find_data_file("generic_hmd.obj", "D"))) {
+		MI_hmd.construct_vbos(ctx, M2);
+		MI_hmd.bind(ctx, ctx.ref_surface_shader_program(true));
+	}
 
 	if (!MI_hmd.is_constructed() && !MI_controller.is_constructed()) {
 		show_vr_kits_as_meshes = false;
@@ -464,7 +468,7 @@ void vr_view_interactor::draw(cgv::render::context& ctx)
 						cgv::math::pose4<float>(reinterpret_cast<const mat34&>(state_ptr->hmd.pose[0]))*
 						cgv::math::translate4<float>(0, 0.1f, -0.1f)
 					);
-					MI_hmd.render_mesh(ctx);
+					MI_hmd.render_mesh(ctx, ctx.ref_surface_shader_program(true));
 					ctx.pop_modelview_matrix();
 				}
 			}
@@ -501,7 +505,7 @@ void vr_view_interactor::draw(cgv::render::context& ctx)
 				if (show_vr_kits_as_meshes && MI_controller.is_constructed()) {
 					ctx.push_modelview_matrix();
 					ctx.mul_modelview_matrix(cgv::math::pose4<float>(reinterpret_cast<const mat34&>(state_ptr->controller[i].pose[0])));
-					MI_controller.render_mesh(ctx);
+					MI_controller.render_mesh(ctx, ctx.ref_surface_shader_program(true));
 					ctx.pop_modelview_matrix();
 				}
 				if (show_vr_kits_as_spheres || !MI_controller.is_constructed()) {
