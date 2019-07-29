@@ -16,19 +16,19 @@ namespace cgv {
 		namespace gl {
 
 // declare some colors by name
-float black[4]     = { 0, 0, 0, 1 };
-float white[4]     = { 1, 1, 1, 1 };
-float gray[4]      = { 0.25f, 0.25f, 0.25f, 1 };
-float green[4]     = { 0, 1, 0, 1 };
-float brown[4]     = { 0.3f, 0.1f, 0, 1 };
-float dark_red[4]  = { 0.4f, 0, 0, 1 };
-float cyan[4]      = { 0, 1, 1, 1 };
-float yellow[4]    = { 1, 1, 0, 1 };
-float red[4]       = { 1, 0, 0, 1 };
-float blue[4]      = { 0, 0, 1, 1 };
+float black[4] = { 0, 0, 0, 1 };
+float white[4] = { 1, 1, 1, 1 };
+float gray[4] = { 0.25f, 0.25f, 0.25f, 1 };
+float green[4] = { 0, 1, 0, 1 };
+float brown[4] = { 0.3f, 0.1f, 0, 1 };
+float dark_red[4] = { 0.4f, 0, 0, 1 };
+float cyan[4] = { 0, 1, 1, 1 };
+float yellow[4] = { 1, 1, 0, 1 };
+float red[4] = { 1, 0, 0, 1 };
+float blue[4] = { 0, 0, 1, 1 };
 
 
-unsigned map_to_gl(cgv::data::ComponentFormat cf)
+unsigned map_to_gl(cgv::data::ComponentFormat cf, cgv::data::ComponentIntegerInterpretation cii)
 {
 	static unsigned cf_to_gl[] = {
 		0, /// undefinded format with no component
@@ -40,17 +40,37 @@ unsigned map_to_gl(cgv::data::ComponentFormat cf)
 		GL_LUMINANCE,     /// color format with intensity component I
 		GL_LUMINANCE_ALPHA,    /// color format with luminance and alpha components: L and A
 		GL_LUMINANCE_ALPHA,    /// color format with intensity and alpha components: I and A
+		GL_RG,   /// color format with components R, G
 		GL_RGB,   /// color format with components R, G and B
 		GL_RGBA,  /// color format with components R, G, B and A
-		GL_BGR_EXT,   /// color format with components B, G and R
-		GL_BGRA_EXT,  /// color format with components B, G, R and A
+		GL_BGR,   /// color format with components B, G and R
+		GL_BGRA,  /// color format with components B, G, R and A
 		GL_DEPTH_COMPONENT,     /// depth component
 		GL_STENCIL_INDEX,     /// stencil component
 	};
-	if (cf == 0 || cf > cgv::data::CF_S) {
-		std::cerr << "could not map component format " << cf << " to gl format" << std::endl;
-		return GL_RGB;
-	}
+	static unsigned cf_to_gl_integer[] = {
+		0, /// undefinded format with no component
+		GL_RED_INTEGER,		 /// red channel of color format
+		GL_GREEN_INTEGER,		 /// green channel of color format
+		GL_BLUE_INTEGER,		 /// blue channel of color format
+		GL_ALPHA_INTEGER,		 /// alpha format
+		GL_LUMINANCE_INTEGER_EXT,     /// color format with luminance component L
+		GL_LUMINANCE_INTEGER_EXT,     /// color format with intensity component I
+		GL_LUMINANCE_ALPHA_INTEGER_EXT,    /// color format with luminance and alpha components: L and A
+		GL_LUMINANCE_ALPHA_INTEGER_EXT,    /// color format with intensity and alpha components: I and A
+		GL_RG_INTEGER,   /// color format with components R, G
+		GL_RGB_INTEGER,   /// color format with components R, G and B
+		GL_RGBA_INTEGER,  /// color format with components R, G, B and A
+		GL_BGR_INTEGER,   /// color format with components B, G and R
+		GL_BGRA_INTEGER,  /// color format with components B, G, R and A
+		GL_DEPTH_COMPONENT,     /// depth component
+		GL_STENCIL_INDEX,     /// stencil component
+	};
+	if (cf == 0 || cf > cgv::data::CF_S)
+		return -1;
+
+	if (cii == CII_INTEGER)
+		return cf_to_gl_integer[cf];
 	return cf_to_gl[cf];
 }
 
@@ -111,54 +131,54 @@ bool generate_mipmaps(unsigned int dim, std::string* last_error)
 			*last_error = "automatic generation of mipmaps not supported";
 		return false;
 	}
-	glGenerateMipmapEXT(gl_tex_dim[dim-1]);
+	glGenerateMipmapEXT(gl_tex_dim[dim - 1]);
 	return true;
 }
 
-static const GLenum gl_std_texture_format_ids[] = 
+static const GLenum gl_std_texture_format_ids[] =
 {
-	GL_ALPHA, 
-	GL_ALPHA4, 
-	GL_ALPHA8, 
-	GL_ALPHA12, 
-	GL_ALPHA16, 
+	GL_ALPHA,
+	GL_ALPHA4,
+	GL_ALPHA8,
+	GL_ALPHA12,
+	GL_ALPHA16,
 
-	GL_LUMINANCE, 
-	GL_LUMINANCE4, 
-	GL_LUMINANCE8, 
-	GL_LUMINANCE12, 
+	GL_LUMINANCE,
+	GL_LUMINANCE4,
+	GL_LUMINANCE8,
+	GL_LUMINANCE12,
 	GL_LUMINANCE16,
 
-	GL_LUMINANCE_ALPHA, 
-	GL_LUMINANCE4_ALPHA4, 
-	GL_LUMINANCE6_ALPHA2, 
-	GL_LUMINANCE8_ALPHA8, 
-	GL_LUMINANCE12_ALPHA4, 
+	GL_LUMINANCE_ALPHA,
+	GL_LUMINANCE4_ALPHA4,
+	GL_LUMINANCE6_ALPHA2,
+	GL_LUMINANCE8_ALPHA8,
+	GL_LUMINANCE12_ALPHA4,
 	GL_LUMINANCE12_ALPHA12,
-	GL_LUMINANCE16_ALPHA16, 
+	GL_LUMINANCE16_ALPHA16,
 
-	GL_INTENSITY, 
-	GL_INTENSITY4, 
-	GL_INTENSITY8, 
-	GL_INTENSITY12, 
-	GL_INTENSITY16, 
+	GL_INTENSITY,
+	GL_INTENSITY4,
+	GL_INTENSITY8,
+	GL_INTENSITY12,
+	GL_INTENSITY16,
 
-	GL_R3_G3_B2, 
-	GL_RGB, 
-	GL_RGB4, 
-	GL_RGB5, 
-	GL_RGB8, 
-	GL_RGB10, 
-	GL_RGB12, 
-	GL_RGB16, 
+	GL_R3_G3_B2,
+	GL_RGB,
+	GL_RGB4,
+	GL_RGB5,
+	GL_RGB8,
+	GL_RGB10,
+	GL_RGB12,
+	GL_RGB16,
 
-	GL_RGBA, 
-	GL_RGBA2, 
-	GL_RGBA4, 
-	GL_RGB5_A1, 
-	GL_RGBA8, 
-	GL_RGB10_A2, 
-	GL_RGBA12, 
+	GL_RGBA,
+	GL_RGBA2,
+	GL_RGBA4,
+	GL_RGB5_A1,
+	GL_RGBA8,
+	GL_RGB10_A2,
+	GL_RGBA12,
 	GL_RGBA16
 };
 
@@ -208,7 +228,7 @@ static const char* std_texture_formats[] = {
 	"uint16[R,G,B,A]",
 	0
 };
-static const GLenum gl_float_texture_format_ids[] = 
+static const GLenum gl_float_texture_format_ids[] =
 {
 	GL_RGBA32F_ARB,
 	GL_RGB32F_ARB,
@@ -241,6 +261,61 @@ static const char* float_texture_formats[] = {
 	"flt16[L]",
 	"flt16[L,A]",
 	0
+};
+
+static const GLenum gl_snorm_texture_format_ids[] =
+{
+	GL_RED_SNORM,
+	GL_RG_SNORM,
+	GL_RGB_SNORM,
+	GL_RGBA_SNORM,
+	GL_ALPHA_SNORM,
+	GL_LUMINANCE_SNORM,
+	GL_LUMINANCE_ALPHA_SNORM,
+	GL_INTENSITY_SNORM,
+	GL_R8_SNORM,
+	GL_RG8_SNORM,
+	GL_RGB8_SNORM,
+	GL_RGBA8_SNORM,
+	GL_ALPHA8_SNORM,
+	GL_LUMINANCE8_SNORM,
+	GL_LUMINANCE8_ALPHA8_SNORM,
+	GL_INTENSITY8_SNORM,
+	GL_R16_SNORM,
+	GL_RG16_SNORM,
+	GL_RGB16_SNORM,
+	GL_RGBA16_SNORM,
+	GL_ALPHA16_SNORM,
+	GL_LUMINANCE16_SNORM,
+	GL_LUMINANCE16_ALPHA16_SNORM,
+	GL_INTENSITY16_SNORM
+};
+
+static const char* snorm_texture_formats[] = {
+	"s[R]",
+	"s[R,G]",
+	"s[R,G,B]",
+	"s[R,G,B,A]",
+	"s[A]",
+	"s[L]",
+	"s[L,A]",
+	"s[I]",
+	"sint8[R]",
+	"sint8[R,G]",
+	"sint8[R,G,B]",
+	"sint8[R,G,B,A]",
+	"sint8[A]",
+	"sint8[L]",
+	"sint8[L,A]",
+	"sint8[I]",
+	"sint16[R]",
+	"sint16[R,G]",
+	"sint16[R,G,B]",
+	"sint16[R,G,B,A]",
+	"sint16[A]",
+	"sint16[L]",
+	"sint16[L,A]",
+	"sint16[I]"
 };
 
 static const GLenum gl_int_texture_format_ids[] = 
@@ -289,19 +364,19 @@ static const GLenum gl_int_texture_format_ids[] =
 };
 
 static const char* int_texture_formats[] = {
-	"uint32[R,G,B,A]",
-	"uint32[R,G,B]",
-	"uint32[A]",
-	"uint32[I]",
-	"uint32[L]",
-	"uint32[L,A]",
+	"_uint32[R,G,B,A]",
+	"_uint32[R,G,B]",
+	"_uint32[A]",
+	"_uint32[I]",
+	"_uint32[L]",
+	"_uint32[L,A]",
 
-	"uint16[R,G,B,A]",
-	"uint16[R,G,B]",
-	"uint16[A]",
-	"uint16[I]",
-	"uint16[L]",
-	"uint16[L,A]",
+	"_uint16[R,G,B,A]",
+	"_uint16[R,G,B]",
+	"_uint16[A]",
+	"_uint16[I]",
+	"_uint16[L]",
+	"_uint16[L,A]",
 
 	"uint8[R,G,B,A]",
 	"uint8[R,G,B]",
@@ -387,19 +462,19 @@ static const char* rg_texture_formats[] = {
 	"flt16[R,G]",
 	"flt32[R,G]",
 
-	"int8[R]",
-	"uint8[R]",
-	"int16[R]",
-	"uint16[R]",
-	"int32[R]",
-	"uint32[R]",
+	"_int8[R]",
+	"_uint8[R]",
+	"_int16[R]",
+	"_uint16[R]",
+	"_int32[R]",
+	"_uint32[R]",
 
-	"int8[R,G]",
-	"uint8[R,G]",
-	"int16[R,G]",
-	"uint16[R,G]",
-	"int32[R,G]",
-	"uint32[R,G]",
+	"_int8[R,G]",
+	"_uint8[R,G]",
+	"_int16[R,G]",
+	"_uint16[R,G]",
+	"_int32[R,G]",
+	"_uint32[R,G]",
 	0
 };
 
@@ -423,6 +498,14 @@ unsigned find_best_texture_format(const cgv::data::component_format& _cf, cgv::d
 			if (best_cf)
 				*best_cf = cgv::data::component_format(depth_formats[i]);
 			gl_format = gl_depth_format_ids[i];
+		}
+	}
+	if (ensure_glew_initialized() && GLEW_EXT_texture_snorm) {
+		i = find_best_match(cf, snorm_texture_formats, best_cf);
+		if (i != -1) {
+			if (best_cf)
+				*best_cf = cgv::data::component_format(snorm_texture_formats[i]);
+			gl_format = gl_snorm_texture_format_ids[i];
 		}
 	}
 	if (ensure_glew_initialized() && GLEW_EXT_texture_integer) {
@@ -464,7 +547,7 @@ unsigned configure_src_format(const cgv::data::const_data_view& data, GLuint& sr
 	src_type = map_to_gl(data.get_format()->get_component_type());
 	ComponentFormat cf = data.get_format()->get_standard_component_format();
 	if (cf != CF_UNDEF)
-		src_fmt = map_to_gl(cf);
+		src_fmt = map_to_gl(cf, data.get_format()->get_integer_interpretation());
 	else {
 		if (palettes && palettes->size() > 0 && nr_comp == 1 && data.get_format()->get_component_name(0) == "0") {
 			src_fmt = GL_COLOR_INDEX;

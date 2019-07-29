@@ -25,17 +25,17 @@ public:
 	
 	bool check_input_stream_configuration(InputStreams is) const;
 	
-	bool start_device(InputStreams is);
+	bool start_device(InputStreams is, std::vector<stream_format>& stream_formats);
+	bool start_device(const std::vector<stream_format>& stream_formats);
 	bool is_running() const;
 	bool stop_device();
 	
 	unsigned get_width(InputStreams) const;
 	unsigned get_height(InputStreams) const;
 
-	bool get_frame(FrameFormat ff, void* data_ptr, int timeOut);
-	void map_depth_to_color_pixel(FrameFormat depth_ff, const void* depth_data_ptr, void* color_pixel_data_ptr) const;
-	void map_color_to_depth(FrameFormat depth_ff, const void* depth_data_ptr, FrameFormat color_ff, void* color_data_ptr) const;
-	bool map_pixel_to_point(int x, int y, unsigned depth, FrameFormat depth_ff, float point[3]);
+	bool get_frame(InputStreams is, frame_type& frame, int timeOut);
+	void map_color_to_depth(const frame_type& depth_frame, const frame_type& color_frame,
+		frame_type& warped_color_frame) const;
 };
 
 }

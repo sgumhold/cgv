@@ -61,6 +61,9 @@ protected:
 	rgbd::rgbd_input kin;
 	std::string protocol_path;
 	bool do_protocol;
+	bool stream_color;
+	bool stream_depth;
+	bool stream_infrared;
 
 	/// members for rgbd mouse
 	rgbd::rgbd_mouse km;

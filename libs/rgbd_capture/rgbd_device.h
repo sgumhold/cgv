@@ -7,6 +7,7 @@
 
 namespace rgbd {
 
+	/*
 	/// different frame formats
 	enum FrameFormat {
 		FF_COLOR_RAW,
@@ -22,51 +23,67 @@ namespace rgbd {
 		// infrared comes single 16 bit channel
 		FF_INFRARED
 	};
+	*/
 
-
-	struct image_size
+	/// frame size in pixels
+	struct frame_size
 	{
-		/// width of the image
+		/// width of frame in pixel
 		int width;
-		/// height of the image
+		/// height of frame in pixel 
 		int height;
 	};
 
+	/// format of individual pixels
 	enum PixelFormat {
-		PF_INFRARED,
-		PF_LONG_INFRARED,
-		PF_Y8,
-		PF_Y16,
-		PF_YUV,
-		PF_YUV2,
-		PF_NV12,
-		PF_RGB,
-		PF_BGR,
-		PF_RGBA,
-		PF_BGRA,
-		PF_BAYER,
-		PF_DEPTH8,
-		PF_DEPTH16,
-		PF_DEPTH_CONFIDENCE,
-		PF_RGBD32,
+		PF_I, // infrared
+
+		/* TODO: add color formats in other color spaces like YUV */
+
+		PF_RGB,   // 24 or 32 bit rgb format with byte alignment
+		PF_BGR,   // 24 or 24 bit bgr format with byte alignment
+		PF_RGBA,  // 32 bit rgba format
+		PF_BGRA,  // 32 bit brga format
+		PF_BAYER, // 32 bit raw bayer pattern values
+
+		PF_DEPTH,
+		PF_DEPTH_AND_PLAYER,
+		PF_CONFIDENCE
 	};
 
-	struct image_format : public image_size
+	/// format of a frame
+	struct frame_format : public frame_size
 	{
+		/// format of pixels
 		PixelFormat pixel_format;
+		// total number of bits per pixel
+		unsigned nr_bits_per_pixel; 
+		/// buffer size (normally width*height*bits_per_pixel)
+		unsigned buffer_size;
 	};
 
-	struct frame_info : public image_format
+	/// struct to store single frame
+	struct frame_info : public frame_format
 	{
-		/// The pointer to RAW data in the user-specified format
-		void* data_ptr;
-		/// Buffer size (normally width*height*bits_per_pixel)
-		int buffer_size;
-		/// 
-		long long time_stemp;
 		///
 		unsigned frame_index;
+		/// 
+		double time;
 	};
+	/// struct to store single frame
+	struct frame_type: public frame_info
+	{
+		/// vector with RAW frame data 
+		std::vector<char> frame_data;
+	};
+
+	/// steam format adds frames per second
+	struct stream_format : public frame_format
+	{
+		stream_format(int w = 640, int h = 480, PixelFormat pf = PF_RGB, unsigned _nr_bits = 32, unsigned _buffer_size = 640*480*4, float fps = 30);
+		float fps;
+	};
+
 
 	/// different input streams
 	enum InputStreams {
@@ -117,9 +134,9 @@ namespace rgbd {
 		unsigned long long time_stamp;
 	};
 	/// return the preferred extension for a given frame format
-	extern CGV_API const char* get_frame_extension(FrameFormat ff);
+	extern CGV_API std::string get_frame_extension(const frame_format& ff);
 	/// extent file name by frame index and format based extension
-	extern CGV_API std::string compose_file_name(const std::string& file_name, FrameFormat ff, unsigned idx);
+	extern CGV_API std::string compose_file_name(const std::string& file_name, const frame_format& ff, unsigned idx);
 
 	/// interface for rgbd devices provided by a driver (this class is used by driver implementors)
 	class CGV_API rgbd_device
@@ -159,28 +176,19 @@ namespace rgbd {
 
 		/// check whether the device supports the given combination of input streams
 		virtual bool check_input_stream_configuration(InputStreams is) const = 0;
-		/// start the rgbd device
-		virtual bool start_device(InputStreams is) = 0;
+		/// start the rgbd device with standard stream formats returned in second parameter
+		virtual bool start_device(InputStreams is, std::vector<stream_format>& stream_formats) = 0;
+		/// start the rgbd device with given stream formats 
+		virtual bool start_device(const std::vector<stream_format>& stream_formats) = 0;
 		/// stop the rgbd device
 		virtual bool stop_device() = 0;
 		/// return whether device has been started
 		virtual bool is_running() const = 0;
-		/// return the image width of the frames
-		virtual unsigned get_width(InputStreams is = IS_DEPTH) const = 0;
-		/// return the image width of the frames
-		virtual unsigned get_height(InputStreams is = IS_DEPTH) const = 0;
-		/// compute the frame size of the given format
-		virtual unsigned get_entry_size(FrameFormat ff) const;
-		/// compute the frame size of the given format
-		virtual unsigned get_frame_size(FrameFormat ff) const;
-		/// query a frame in the given format from color or depth camera
-		virtual bool get_frame(FrameFormat ff, void* data_ptr, int timeOut) = 0;
-		/// map a depth map to color pixel where color_pixel_data_ptr points to an array of short int pairs
-		virtual void map_depth_to_color_pixel(FrameFormat depth_ff, const void* depth_data_ptr, void* color_pixel_data_ptr) const = 0;
+		/// query a frame of the given input stream
+		virtual bool get_frame(InputStreams is, frame_type& frame, int timeOut) = 0;
 		/// map a color frame to the image coordinates of the depth image
-		virtual void map_color_to_depth(FrameFormat depth_ff, const void* depth_data_ptr, FrameFormat color_ff, void* color_data_ptr) const = 0;
-		/// map pixel coordinate and depth in given format to 3D point
-		virtual bool map_pixel_to_point(int x, int y, unsigned depth, FrameFormat depth_ff, float point[3]) = 0;
+		virtual void map_color_to_depth(const frame_type& depth_frame, const frame_type& color_frame, 
+			frame_type& warped_color_frame) const = 0;
 	};
 }
 

@@ -29,22 +29,32 @@ void rgbd_input::unregister_driver(rgbd_driver* drv)
 }
 
 
-bool rgbd_input::read_frame(const string& file_name, void* data_ptr, unsigned frame_size)
+bool rgbd_input::read_frame(const string& file_name, frame_type& frame)
 {
 	if (!cgv::utils::file::exists(file_name))
 		return false;
+
 	string data;
 	if (!cgv::utils::file::read(file_name, data, false))
 		return false;
-	if (data.size() != frame_size)
+	static_cast<frame_info&>(frame) = reinterpret_cast<frame_info&>(data.front());
+	if (data.size() != frame.buffer_size + sizeof(frame_info))
 		return false;
-	memcpy(data_ptr, data.c_str(), frame_size);
+	frame.frame_data.resize(frame.buffer_size);
+	memcpy(&frame.frame_data.front(), &data.at(sizeof(frame_info)), frame.buffer_size);
 	return true;
 }
 
-bool rgbd_input::write_frame(const string& file_name,const void* data_ptr, unsigned frame_size)
+bool rgbd_input::write_frame(const string& file_name,const frame_type& frame)
 {
-	return cgv::utils::file::write(file_name, (const char*) data_ptr, frame_size, false);
+	// ensure buffer size set
+	if (frame.buffer_size != frame.frame_data.size()) {
+		std::cerr << "UPS frame buffer size not set correctly" << std::endl;
+		const_cast<frame_type&>(frame).buffer_size = frame.frame_data.size();
+	}
+	return 
+		cgv::utils::file::write(file_name, reinterpret_cast<const char*>(&frame), sizeof(frame_info), false) &&
+		cgv::utils::file::append(file_name, &frame.frame_data.front(), frame.frame_data.size());
 }
 
 unsigned rgbd_input::get_nr_devices()
@@ -185,7 +195,7 @@ bool rgbd_input::check_input_stream_configuration(InputStreams is) const
 	return rgbd->check_input_stream_configuration(is);
 }
 
-bool rgbd_input::start(InputStreams is)
+bool rgbd_input::start(InputStreams is, std::vector<stream_format>& stream_formats)
 {
 	if (!is_attached()) {
 		cerr << "rgbd_input::start called on device that has not been attached" << endl;
@@ -193,7 +203,18 @@ bool rgbd_input::start(InputStreams is)
 	}
 	if (started)
 		return true;
-	return started = rgbd->start_device(is);
+	return started = rgbd->start_device(is, stream_formats);
+}
+
+bool rgbd_input::start(const std::vector<stream_format>& stream_formats)
+{
+	if (!is_attached()) {
+		cerr << "rgbd_input::start called on device that has not been attached" << endl;
+		return false;
+	}
+	if (started)
+		return true;
+	return started = rgbd->start_device(stream_formats);
 }
 
 bool rgbd_input::is_started() const
@@ -212,24 +233,6 @@ bool rgbd_input::stop()
 	return !started;
 }
 
-unsigned rgbd_input::get_width() const
-{
-	if (!is_attached()) {
-		cerr << "rgbd_input::get_width called on device that has not been attached" << endl;
-		return 640;
-	}
-	return rgbd->get_width();
-}
-
-unsigned rgbd_input::get_height() const
-{
-	if (!is_attached()) {
-		cerr << "rgbd_input::get_height called on device that has not been attached" << endl;
-		return 480;
-	}
-	return rgbd->get_height();
-}
-
 bool rgbd_input::set_near_mode(bool on)
 {
 	if (!is_attached()) {
@@ -239,20 +242,8 @@ bool rgbd_input::set_near_mode(bool on)
 	return rgbd->set_near_mode(on);
 }
 
-unsigned rgbd_input::get_frame_size(FrameFormat ff) const
-{
-	unsigned entry_size = 4;
-	switch (ff) {
-	case FF_COLOR_RAW :   entry_size = 4; break;
-	case FF_COLOR_RGB24 : entry_size = 3; break;
-	case FF_DEPTH_RAW :   entry_size = 2; break;
-	case FF_DEPTH_D8 :    entry_size = 1; break;
-	case FF_DEPTH_D12 :   entry_size = 2; break;
-	}
-	return get_width()*get_height()*entry_size;
-}
 
-bool rgbd_input::get_frame(FrameFormat ff, void* data_ptr, int time_out)
+bool rgbd_input::get_frame(InputStreams is, frame_type& frame, int timeOut)
 {
 	if (!is_attached()) {
 		cerr << "rgbd_input::get_frame called on device that has not been attached" << endl;
@@ -262,53 +253,26 @@ bool rgbd_input::get_frame(FrameFormat ff, void* data_ptr, int time_out)
 		cerr << "rgbd_input::get_frame called on attached device that has not been started" << endl;
 		return false;
 	}
-	if (rgbd->get_frame(ff, data_ptr, time_out)) {
+	if (rgbd->get_frame(is, frame, timeOut)) {
 		if (!protocol_path.empty()) {
-			unsigned flag = 2;
-			if (ff < FF_DEPTH_RAW)
-				flag = 1;
-			if (protocol_flags & flag) {
-				++protocol_idx;
-				protocol_flags = flag;
-			}
-			else
-				protocol_flags |= flag;
-			string fn = compose_file_name(protocol_path, ff, protocol_idx);
-			if (!cgv::utils::file::write(fn, (const char*) data_ptr, get_frame_size(ff), false))
+			string fn = compose_file_name(protocol_path, frame, frame.frame_index);
+			if (!cgv::utils::file::write(fn, &frame.frame_data.front(), frame.frame_data.size(), false))
 				std::cerr << "rgbd_input::get_frame: could not protocol frame to " << fn << std::endl;
 		}
 		return true;
 	}
 	return false;
 }
-/// map a depth map to color pixel where color_pixel_data_ptr points to an array of short int pairs
-void rgbd_input::map_depth_to_color_pixel(FrameFormat depth_ff, const void* depth_data_ptr, void* color_pixel_data_ptr) const
-{
-	if (!is_attached()) {
-		cerr << "rgbd_input::map_depth_to_color_pixel called on device that has not been attached" << endl;
-		return;
-	}
-	rgbd->map_depth_to_color_pixel(depth_ff, depth_data_ptr, color_pixel_data_ptr);
-}
 
 /// map a color frame to the image coordinates of the depth image
-void rgbd_input::map_color_to_depth(FrameFormat depth_ff, const void* depth_data_ptr, FrameFormat color_ff, void* color_data_ptr) const
+void rgbd_input::map_color_to_depth(const frame_type& depth_frame, const frame_type& color_frame,
+	frame_type& warped_color_frame) const
 {
 	if (!is_attached()) {
 		cerr << "rgbd_input::map_color_to_depth called on device that has not been attached" << endl;
 		return;
 	}
-	rgbd->map_color_to_depth(depth_ff, depth_data_ptr, color_ff, color_data_ptr);
-}
-/// map pixel coordinate and depth in given format to 3D point
-bool rgbd_input::map_pixel_to_point(int x, int y, unsigned depth, FrameFormat depth_ff, float point[3])
-{
-	if (!is_attached()) {
-		cerr << "rgbd_input::map_color_to_depth called on device that has not been attached" << endl;
-		return false;
-	}
-	return rgbd->map_pixel_to_point(x, y, depth, depth_ff, point);
-	return true;
+	rgbd->map_color_to_depth(depth_frame, color_frame, warped_color_frame);
 }
 
 }
