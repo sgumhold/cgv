@@ -213,7 +213,8 @@ public:
 	{
 		cgv::media::mesh::simple_mesh<> M;
 		if (M.read("S:/data/surface/meshes/obj/elephant.obj")) {
-			MI.construct(ctx, M);
+			MI.construct_vbos(ctx, M);
+			MI.bind(ctx, ctx.ref_surface_shader_program(true));
 		}
 		cgv::gui::connect_vr_server(true);
 
@@ -260,7 +261,7 @@ public:
 				cgv::math::translate4<double>(mesh_location)*
 				cgv::math::scale4<double>(mesh_scale, mesh_scale, mesh_scale) *
 				R);
-			MI.render_mesh(ctx);
+			MI.render_mesh(ctx, ctx.ref_surface_shader_program(true));
 			ctx.pop_modelview_matrix();
 		}
 		if (vr_view_ptr) {
