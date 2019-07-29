@@ -53,9 +53,9 @@ public:
 	/**@name file io */
 	//@{
 	/// read a frame from file
-	static bool read_frame(const std::string& file_name, void* data_ptr, unsigned frame_size);
+	static bool read_frame(const std::string& file_name, frame_type& frame);
 	/// write a frame to a file
-	static bool write_frame(const std::string& file_name, const void* data_ptr, unsigned frame_size);
+	static bool write_frame(const std::string& file_name, const frame_type& frame);
 	/// attach to a directory that contains saved frames
 	bool attach_path(const std::string& path);
 	/// enable protocolation of all frames acquired by the attached rgbd input device
@@ -78,26 +78,19 @@ public:
 	bool check_input_stream_configuration(InputStreams is) const;
 	///
 	bool set_near_mode(bool on = true);
-	/// start the rgbd input device
-	bool start(InputStreams);
+	/// start the rgbd input with standard stream formats returned in second parameter
+	bool start(InputStreams, std::vector<stream_format>& stream_formats);
+	/// start the rgbd input with given stream formats 
+	bool start(const std::vector<stream_format>& stream_formats);
 	/// check whether device is started
 	bool is_started() const;
 	/// stop the rgbd input device
 	bool stop();
-	/// return the image width of the frames
-	unsigned get_width() const;
-	/// return the image width of the frames
-	unsigned get_height() const;
-	/// compute the frame size of the given format
-	unsigned get_frame_size(FrameFormat ff) const;
-	/// query a frame in the given format from color or depth camera
-	bool get_frame(FrameFormat ff, void* data_ptr, int timeOut = 2000);
-	/// map a depth map to color pixel where color_pixel_data_ptr points to an array of short int pairs
-	void map_depth_to_color_pixel(FrameFormat depth_ff, const void* depth_data_ptr, void* color_pixel_data_ptr) const;
+	/// query a frame of the given input stream
+	bool get_frame(InputStreams is, frame_type& frame, int timeOut);
 	/// map a color frame to the image coordinates of the depth image
-	void map_color_to_depth(FrameFormat depth_ff, const void* depth_data_ptr, FrameFormat color_ff, void* color_data_ptr) const;
-	/// map pixel coordinate and depth in given format to 3D point
-	bool map_pixel_to_point(int x, int y, unsigned depth, FrameFormat depth_ff, float point[3]);
+	void map_color_to_depth(const frame_type& depth_frame, const frame_type& color_frame,
+		frame_type& warped_color_frame) const;
 protected:
 	/// store whether camera has been started
 	bool started;

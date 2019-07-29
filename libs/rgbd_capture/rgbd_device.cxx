@@ -8,21 +8,30 @@ using namespace std;
 
 namespace rgbd {
 
-	const char* get_frame_extension(FrameFormat ff)
+	std::string get_frame_extension(const frame_format& ff)
 	{
 		static const char* exts[] = {
-			"clr", "rgb24", "rgb32", "dep", "dep8", "dep12", "dep24"
+			"ir", "rgb", "bgr", "rgba", "bgra", "byr", "dep", "d_p"
 		};
-		return exts[ff];
+		return std::string(exts[ff.pixel_format]) + to_string(ff.nr_bits_per_pixel);
 	}
 
-	string compose_file_name(const string& file_name, FrameFormat ff, unsigned idx)
+	string compose_file_name(const string& file_name, const frame_format& ff, unsigned idx)
 	{
 		string fn = file_name;
 		fn += cgv::utils::to_string(idx);
 		return fn + '.' + get_frame_extension(ff);
 	}
 
+	stream_format::stream_format(int w, int h, PixelFormat pf, unsigned _nr_bits, unsigned _buffer_size, float _fps)
+	{
+		width = w;
+		height = h;
+		pixel_format = pf;
+		nr_bits_per_pixel = _nr_bits;
+		buffer_size = _buffer_size;
+		fps = _fps;
+	}
 
 	/// virtual destructor
 	rgbd_device::~rgbd_device()
@@ -83,22 +92,5 @@ namespace rgbd {
 	bool rgbd_device::put_IMU_measurement(IMU_measurement& m, unsigned time_out) const
 	{
 		return false;
-	}
-
-	unsigned rgbd_device::get_entry_size(FrameFormat ff) const
-	{
-		unsigned entry_size = 4;
-		switch (ff) {
-		case FF_COLOR_RAW:   entry_size = 4; break;
-		case FF_COLOR_RGB24: entry_size = 3; break;
-		case FF_DEPTH_RAW:   entry_size = 2; break;
-		case FF_DEPTH_D8:    entry_size = 1; break;
-		case FF_DEPTH_D12:   entry_size = 2; break;
-		}
-		return entry_size;
-	}
-	unsigned rgbd_device::get_frame_size(FrameFormat ff) const
-	{
-		return get_width()*get_height()*get_entry_size(ff);
 	}
 }

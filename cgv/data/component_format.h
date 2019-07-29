@@ -25,6 +25,7 @@ enum ComponentFormat {
 	CF_I,     /// color format with intensity component I
 	CF_LA,    /// color format with luminance and alpha components: L and A
 	CF_IA,    /// color format with intensity and alpha components: I and A
+	CF_RG,    /// color format with two components R and G
 	CF_RGB,   /// color format with components R, G and B
 	CF_RGBA,  /// color format with components R, G, B and A
 	CF_BGR,   /// color format with components B, G and R
@@ -42,6 +43,14 @@ enum ComponentFormat {
 	CF_LAST   /// this is always the last entry in the component formats and used for iteration
 };
 
+/** define different interpretations of integer components */
+enum ComponentIntegerInterpretation
+{
+	CII_DEFAULT, // default of used api such as opengl
+	CII_SNORM,   // map signed integers to [-1,1]
+	CII_INTEGER  // keep integer values even if api would map them to [0,1]
+};
+
 /** the component format inherits the information of a packing_info 
     and adds information on the component type, which components are 
 	 present in the data and in which order they appear */
@@ -50,6 +59,8 @@ class CGV_API component_format : public packing_info
 protected:
 	/// store the type id of the component type
 	TypeId component_type;
+	/// interpretation of integer typed components
+	ComponentIntegerInterpretation component_interpretation;
 	/// store all component names in one string separated with 0-chars
 	std::string component_string;
 	/// store the position of each component in the component string
@@ -73,9 +84,11 @@ component <- component_name [attributes]
 
 attributes <- [':' bit_depth]['|' alignment]
 
-type <- "undef" | "bool" | "int8" | "int16" | "int32" | "uint64" | 
-            "uint8" | "uint16" | "uint32" | "uint64" | 
-				"flt16" | "flt32" | "flt64" | "string"
+type <- "undef" | "bool" | 
+		"int8"  | "int16"  | "int32"  | "int64"  | "uint8"  | "uint16"  | "uint32"  | "uint64" |
+		"sint8" | "sint16" | "sint32" | "sint64" |                                                // same as int* types but in snorm interpretation
+		"_int8" | "_int16" | "_int32" | "_int64" | "_uint8" | "_uint16" | "_uint32" | "_uint64" | // same as [u]int* but in integer interpretation
+		"flt16" | "flt32"  | "flt64"  | "string"
 
 component_name : string ... name of component, i.e. "R", "Cb", "px", ...
 
@@ -85,12 +98,14 @@ alignment : unsigned int ... number of bits to which a component is aligned
 \endverbatim
 
 Some examples of valid component format description strings:
-- \c "uint8:3|4[R,G,B,A]" ... four components represented as unsigned integers
+- \c "uint8:3|4[R,G,B,A]" ...  four components represented as unsigned integers
                                with no more than 8 bits. Actually, each component is
 										 stored with 3 bits and aligned to a bit index which 
 										 is a multiple of 4
 - \c "uint8[R:5,G:6,B:5]" ... three components packed into 16 bits with 5 bits for R,
-                               6 for G and 5 for B.
+							   6 for G and 5 for B.
+- \c "sint8[R,G]"         ... two component format of type int8 in snorm interpretation,
+- \c "_uint16[R]"         ... one component format of type uint16 in integer interpretation,
 - \c "flt32[px,py]" ... two components of 32 bit floats
 
 - \c "[D]" ... one depth component without specified type, which defaults
@@ -116,6 +131,10 @@ Some examples of valid component format description strings:
 		unsigned int align = 1, 
 		unsigned int d0 = 0, unsigned int d1 = 0, 
 		unsigned int d2 = 0, unsigned int d3 = 0);
+	/// set the integer interpretation
+	void set_integer_interpretation(ComponentIntegerInterpretation cii);
+	/// return current integer interpretation
+	ComponentIntegerInterpretation get_integer_interpretation() const;
 	/// define stream out operator
 	friend FRIEND_MEMBER_API std::ostream& operator << (std::ostream& os, const component_format& cf);
 	/// constant access to the i-th component stored at the given location

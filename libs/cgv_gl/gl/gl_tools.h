@@ -21,8 +21,8 @@ extern CGV_API float black[4], white[4], gray[4], green[4], brown[4], dark_red[4
 /// map a type id to a gl enum
 extern CGV_API unsigned map_to_gl(TypeId ti);
 
-/// map a component format to a gl enum
-extern CGV_API unsigned map_to_gl(cgv::data::ComponentFormat cf);
+/// map a component format to a gl enum, return -1 of this was not possible
+extern CGV_API unsigned map_to_gl(cgv::data::ComponentFormat cf, cgv::data::ComponentIntegerInterpretation cii = cgv::data::CII_DEFAULT);
 
 /// return OpenGL material side constant
 extern CGV_API unsigned map_to_gl(MaterialSide ms);

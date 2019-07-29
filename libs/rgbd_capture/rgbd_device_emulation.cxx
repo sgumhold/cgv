@@ -59,7 +59,11 @@ namespace rgbd {
 	{
 		return true;
 	}
-	bool rgbd_emulation::start_device(InputStreams is)
+	bool rgbd_emulation::start_device(InputStreams is, std::vector<stream_format>& stream_formats)
+	{
+		return true;
+	}
+	bool start_device(const std::vector<stream_format>& stream_formats)
 	{
 		return true;
 	}
@@ -79,39 +83,21 @@ namespace rgbd {
 	{
 		return 480;
 	}
-	bool rgbd_emulation::get_frame(FrameFormat ff, void* data_ptr, int timeOut)
+	bool rgbd_emulation::get_frame(InputStreams is, frame_type& frame, int timeOut)
 	{	
-		unsigned flag = 2;
-		if (ff < FF_DEPTH_RAW)
-			flag = 1;
-		if (flags & flag) {
-			++idx;
-			flags = flag;
-		}
-		else
-			flags |= flag;
-
-		string fn = compose_file_name(file_name, ff, idx);
+		string fn = compose_file_name(file_name, frame, frame.frame_index);
 		if (!cgv::utils::file::exists(fn)) {
 			idx = 0;
-			flags = 0;
-			fn = compose_file_name(file_name, ff, 0);
+			fn = compose_file_name(file_name, frame, 0);
 		}
-		if (!rgbd_input::read_frame(fn, data_ptr, get_frame_size(ff)))
-			return false;
+//		if (!rgbd_input::read_frame(fn, data_ptr, get_frame_size(ff)))
+//			return false;
 		return true;
 	}
-	void rgbd_emulation::map_depth_to_color_pixel(FrameFormat depth_ff, const void* depth_data_ptr, void* color_pixel_data_ptr) const
+	void rgbd_emulation::map_color_to_depth(const frame_type& depth_frame, const frame_type& color_frame,
+		frame_type& warped_color_frame) const
 	{
 
-	}
-	void rgbd_emulation::map_color_to_depth(FrameFormat depth_ff, const void* depth_data_ptr, FrameFormat color_ff, void* color_data_ptr) const
-	{
-
-	}
-	bool rgbd_emulation::map_pixel_to_point(int x, int y, unsigned depth, FrameFormat depth_ff, float point[3])
-	{
-		return false;
 	}
 
 

@@ -1361,37 +1361,38 @@ bool gl_context::texture_create(texture_base& tb, cgv::data::data_format& df) co
 		return false;
 	GLuint tmp_id = texture_bind(tb.tt, tex_id);
 
+	// extract component type
+	unsigned int transfer_format = map_to_gl(df.get_standard_component_format(), df.get_integer_interpretation());
+	if (transfer_format == -1) {
+		error("could not determine transfer format", &tb);
+		return false;
+	}
 	switch (tb.tt) {
 	case TT_1D :
 		glTexImage1D(GL_TEXTURE_1D, 0, 
-			gl_format, df.get_width(), 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
+			gl_format, df.get_width(), 0, transfer_format, GL_UNSIGNED_BYTE, 0);
 		break;
 	case TT_2D :
-		{
-			unsigned int comp_type = GL_RGBA;
-			if (std::string(df.get_component_name(0)) == "D")
-				comp_type = GL_DEPTH_COMPONENT;
-			glTexImage2D(GL_TEXTURE_2D, 0, 
-				gl_format, df.get_width(), df.get_height(), 0, comp_type, GL_UNSIGNED_BYTE, 0);
-			break;
-		}
+		glTexImage2D(GL_TEXTURE_2D, 0, 
+			gl_format, df.get_width(), df.get_height(), 0, transfer_format, GL_UNSIGNED_BYTE, 0);
+		break;
 	case TT_3D :
 		glTexImage3D(GL_TEXTURE_3D, 0,
-			gl_format, df.get_width(), df.get_height(), df.get_depth(), 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
+			gl_format, df.get_width(), df.get_height(), df.get_depth(), 0, transfer_format, GL_UNSIGNED_BYTE, 0);
 		break;
 	case TT_CUBEMAP :
 		glTexImage2D( GL_TEXTURE_CUBE_MAP_POSITIVE_X, 0,
-			gl_format, df.get_width(), df.get_height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
+			gl_format, df.get_width(), df.get_height(), 0, transfer_format, GL_UNSIGNED_BYTE, 0);
 		glTexImage2D( GL_TEXTURE_CUBE_MAP_NEGATIVE_X, 0,
-			gl_format, df.get_width(), df.get_height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
+			gl_format, df.get_width(), df.get_height(), 0, transfer_format, GL_UNSIGNED_BYTE, 0);
 		glTexImage2D( GL_TEXTURE_CUBE_MAP_POSITIVE_Y, 0,
-			gl_format, df.get_width(), df.get_height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
+			gl_format, df.get_width(), df.get_height(), 0, transfer_format, GL_UNSIGNED_BYTE, 0);
 		glTexImage2D( GL_TEXTURE_CUBE_MAP_NEGATIVE_Y, 0,
-			gl_format, df.get_width(), df.get_height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
+			gl_format, df.get_width(), df.get_height(), 0, transfer_format, GL_UNSIGNED_BYTE, 0);
 		glTexImage2D( GL_TEXTURE_CUBE_MAP_POSITIVE_Z, 0,
-			gl_format, df.get_width(), df.get_height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
+			gl_format, df.get_width(), df.get_height(), 0, transfer_format, GL_UNSIGNED_BYTE, 0);
 		glTexImage2D( GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, 0,
-			gl_format, df.get_width(), df.get_height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
+			gl_format, df.get_width(), df.get_height(), 0, transfer_format, GL_UNSIGNED_BYTE, 0);
 		break;
 	}
 	if (check_gl_error("gl_context::texture_create", &tb)) {

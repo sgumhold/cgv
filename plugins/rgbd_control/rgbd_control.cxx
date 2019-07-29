@@ -3,6 +3,7 @@
 #include "rgbd_control.h"
 #include <cgv_gl/gl/gl.h>
 #include <cgv/gui/trigger.h>
+#include <cgv/gui/dialog.h>
 #include <cgv/gui/key_event.h>
 #include <cgv/gui/file_dialog.h>
 #include <cgv/utils/convert.h>
@@ -87,10 +88,10 @@ cgv::math::fvec<float,2> WorldToPixel(const cgv::math::fvec<float,3>& pt)
 ///
 rgbd_control::rgbd_control() : 
 	color_fmt("uint8[B,G,R,A]"),
-	infrared_fmt("uint16[R]"),
+	infrared_fmt("uint16[L]"),
 	depth_fmt("uint16[L]"), 
 	depth("uint16[L]", TF_NEAREST, TF_NEAREST),
-	infrared("uint16[R]"),
+	infrared("uint16[L]"),
 	depth_range(0.0f, 1.0f)
 {
 	ctr = dvec2(320, 224);
@@ -110,7 +111,7 @@ rgbd_control::rgbd_control() :
 	nr_depth_frames = 0;
 	nr_color_frames = 0;
 	nr_infrared_frames = 0;
-	vis_mode = VM_DEPTH;
+	vis_mode = VM_COLOR;
 	color_scale = 1;
 	depth_scale = 1;
 	infrared_scale = 1;
@@ -131,6 +132,10 @@ rgbd_control::rgbd_control() :
 	aspect = 1;
 	stopped = false;
 	step_only = false;
+
+	stream_color = true;
+	stream_depth = true;
+	stream_infrared = false;
 
 	color_frame_changed = false;
 	depth_frame_changed = false;
@@ -282,6 +287,7 @@ void rgbd_control::unregister()
 /// adjust view
 bool rgbd_control::init(cgv::render::context& ctx)
 {
+	ctx.set_bg_clr_idx(3);
 	cgv::render::view* view_ptr = find_view_as_node();
 	if (view_ptr) {
 		view_ptr->set_view_up_dir(vec3(0, -1, 0));
@@ -364,7 +370,7 @@ void rgbd_control::draw(context& ctx)
 	// transform to image coordinates
 	ctx.mul_modelview_matrix(cgv::math::scale4<double>(aspect, -1, 1));
 	// enable shader program
-	if (rgbd_prog.is_created()) {
+	if (rgbd_prog.is_created() && color.is_created()) {
 		color.enable(ctx, 0);
 		depth.enable(ctx, 1);
 		infrared.enable(ctx, 2);
@@ -727,6 +733,10 @@ void rgbd_control::timer_event(double t, double dt)
 						depth2_data.get_ptr<unsigned char>());
 					future_handle = std::async(&rgbd_control::construct_point_cloud, this);
 				}
+				else {
+					if (remap_color)
+						kin.map_color_to_depth(rgbd::FF_DEPTH_RAW, depth_data.get_ptr<unsigned char>(), rgbd::FF_COLOR_RGB32, color_data.get_ptr<unsigned char>());
+				}
 				post_redraw();
 			}
 		}
@@ -779,15 +789,25 @@ void rgbd_control::timer_event(double t, double dt)
 void rgbd_control::on_start_cb()
 {
 	kin.set_near_mode(near_mode);
-	kin.start(InputStreams(IS_COLOR_AND_DEPTH|IS_INFRARED));
+	InputStreams is = IS_NONE;
+	if (stream_color)
+		is = InputStreams(is + IS_COLOR);
+	if (stream_depth)
+		is = InputStreams(is + IS_DEPTH);
+	if (stream_infrared)
+		is = InputStreams(is + IS_INFRARED);
+	if (!kin.start(InputStreams(is))) {
+		cgv::gui::message("could not start kinect device");
+		return;
+	}
 	stopped = false;
 }
 
 void rgbd_control::on_step_cb()
 {
-	kin.start(InputStreams(IS_COLOR_AND_DEPTH | IS_INFRARED));
-	stopped = false;
-	step_only = true;
+	on_start_cb();
+	if (!stopped)
+		step_only = true;
 }
 
 void rgbd_control::on_stop_cb()

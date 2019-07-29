@@ -21,6 +21,7 @@ static const char* component_formats[] = {
 	"I",
 	"L,A",
 	"I,A",
+	"R,G",
 	"R,G,B",
 	"R,G,B,A",
 	"B,G,R",
@@ -67,6 +68,7 @@ component_format::component_format(TypeId _type_id,
 		unsigned int d0, unsigned int d1, unsigned int d2, unsigned int d3)
 	: packing_info(align, d0,d1,d2,d3), component_type(_type_id), component_string(_components) 
 {
+	component_interpretation = CII_DEFAULT;
 	extract_components();
 }
 
@@ -77,6 +79,7 @@ component_format::component_format(TypeId _type_id,
 	: packing_info(align, d0,d1,d2,d3), component_type(_type_id), 
 	  component_string(component_formats[cf])
 {
+	component_interpretation = CII_DEFAULT;
 	extract_components();
 }
 
@@ -84,6 +87,80 @@ component_format::component_format(TypeId _type_id,
 component_format::component_format(const std::string& description)
 {
 	set_component_format(description);
+}
+
+bool extract_special_type(const std::string& tok, TypeId& component_type, ComponentIntegerInterpretation& cii)
+{
+	if (tok.empty())
+		return false;
+	ComponentIntegerInterpretation ci = CII_DEFAULT;
+	if (tok[0] == '_')
+		ci = CII_INTEGER;
+	else if (tok[0] == 's')
+		ci = CII_SNORM;
+	else
+		return false;
+	if (tok.size() == 1) {
+		component_type = TI_UNDEF;
+		cii = ci;
+		return true;
+	}
+	if (tok.size() <= 4)
+		return false;
+	unsigned offset = 1;
+	bool is_signed = true;
+	if (ci == CII_INTEGER && tok[1] == 'u') {
+		is_signed = false;
+		offset = 2;
+	}
+	if (tok[offset] != 'i')
+		return false;
+	if (tok[offset + 1] != 'n')
+		return false;
+	if (tok[offset + 2] != 't')
+		return false;
+	unsigned bits = 8;
+	if (!((tok.size() == offset + 4) && (tok[offset + 3] == '8'))) {
+		if (tok.size() != offset + 5)
+			return false;
+		switch (tok[offset + 3]) {
+		case '1':
+			bits = 16;
+			if (tok[offset + 4] != '6')
+				return false;
+			break;
+		case '3':
+			bits = 32;
+			if (tok[offset + 4] != '2')
+				return false;
+			break;
+		case '6':
+			bits = 64;
+			if (tok[offset + 4] != '4')
+				return false;
+			break;
+		default:
+			return false;
+		}
+	}
+	cii = ci;
+	if (is_signed) {
+		switch (bits) {
+		case 8: component_type = cgv::type::info::TI_INT8; break;
+		case 16: component_type = cgv::type::info::TI_INT16; break;
+		case 32: component_type = cgv::type::info::TI_INT32; break;
+		case 64: component_type = cgv::type::info::TI_INT64; break;
+		}
+	}
+	else {
+		switch (bits) {
+		case 8: component_type = cgv::type::info::TI_UINT8; break;
+		case 16: component_type = cgv::type::info::TI_UINT16; break;
+		case 32: component_type = cgv::type::info::TI_UINT32; break;
+		case 64: component_type = cgv::type::info::TI_UINT64; break;
+		}
+	}
+	return true;
 }
 
 /// set the component format from a description string
@@ -100,6 +177,7 @@ bool component_format::set_component_format(const std::string& description)
 		return false;
 	}
 	unsigned int i=1;
+	component_interpretation = CII_DEFAULT;
 	if (to_string(toks[0]) == "[" || to_string(toks[0]) == ":" || 
 		 to_string(toks[0]) == "|") { 
 		component_type = TI_UNDEF;
@@ -108,10 +186,13 @@ bool component_format::set_component_format(const std::string& description)
 	else if (to_string(toks[0]) == "undef")
 		component_type = TI_UNDEF;
 	else {
-		component_type = get_type_id(to_string(toks[0]));
-		if (component_type == TI_UNDEF) {
-			last_error = to_string(toks[0])+" ... unknown type name";
-			return false;
+		if (extract_special_type(to_string(toks[0]), component_type, component_interpretation)) {}
+		else {
+			component_type = get_type_id(to_string(toks[0]));
+			if (component_type == TI_UNDEF) {
+				last_error = to_string(toks[0]) + " ... unknown type name";
+				return false;
+			}
 		}
 	}
 	if (toks.size() == i) {
@@ -202,6 +283,17 @@ bool component_format::set_component_format(const std::string& description)
 	}
 	extract_components();
 	return true;
+}
+
+void component_format::set_integer_interpretation(ComponentIntegerInterpretation cii)
+{
+	component_interpretation = cii;
+}
+
+/// return current integer interpretation
+ComponentIntegerInterpretation component_format::get_integer_interpretation() const
+{
+	return component_interpretation;
 }
 
 std::string component_format::last_error;
@@ -347,7 +439,13 @@ bool component_format::operator != (const component_format& cf) const
 /// define stream out operator
 std::ostream& operator << (std::ostream& os, const component_format& cf)
 {
-	os << get_type_name(cf.get_component_type());
+	switch (cf.get_integer_interpretation()) {
+	case CII_SNORM: os << 's'; break;
+	case CII_INTEGER: os << '_'; break;
+	default: break;
+	}
+	if (cf.get_component_type() != TI_UNDEF)
+		os << get_type_name(cf.get_component_type());
 	bool individual_bit_depth = false;
 	if (cf.is_packing()) {
 		if (cf.get_bit_depth(0) == cf.get_bit_depth(1) &&
@@ -375,7 +473,7 @@ bool fmt1_compares_better(const component_format& fmt,
 					           const component_format& fmt1,
 					           const component_format& fmt2)
 {
-	// check format
+	// check standard component format equality first
 	ComponentFormat cf  = fmt.get_standard_component_format();
 	if (cf != CF_UNDEF) {
 		ComponentFormat cf1 = fmt1.get_standard_component_format();
@@ -383,6 +481,7 @@ bool fmt1_compares_better(const component_format& fmt,
 		if ((cf1 == cf) != (cf2 == cf))
 			return cf1 == cf;
 	}
+	// check number components equality
 	unsigned int nc = fmt.get_nr_components();
 	unsigned int nc1 = fmt1.get_nr_components();
 	unsigned int nc2 = fmt2.get_nr_components();
@@ -391,18 +490,28 @@ bool fmt1_compares_better(const component_format& fmt,
 	if ((nc1 >= nc) != (nc2 >= nc))
 		return nc1 >= nc;
 
+	// check type equality
 	TypeId ti = fmt.get_component_type();
 	TypeId ti1 = fmt1.get_component_type();
 	TypeId ti2 = fmt2.get_component_type();
 	if ((ti1 == ti) != (ti2 == ti))
 		return ti1 == ti;
 
+	// check integer interpretation equality
+	ComponentIntegerInterpretation cii = fmt.get_integer_interpretation();
+	ComponentIntegerInterpretation cii1 = fmt1.get_integer_interpretation();
+	ComponentIntegerInterpretation cii2 = fmt2.get_integer_interpretation();
+	if ((cii1 == cii) != (cii2 == cii))
+		return cii1 == cii;
+
+	// check whether to pack equality
 	bool ip = fmt.is_packing();
 	bool ip1 = fmt1.is_packing();
 	bool ip2 = fmt2.is_packing();
 	if ((ip1 == ip) != (ip2 == ip))
 		return ip1 == ip;
 
+	// check component bit equality
 	unsigned int diff1 = 0;
 	unsigned int diff2 = 0;
 	for (unsigned int i=0; i<nc; ++i) {
