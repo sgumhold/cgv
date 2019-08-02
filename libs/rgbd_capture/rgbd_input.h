@@ -76,6 +76,8 @@ public:
 	//@{
 	/// check whether the device supports the given combination of input streams
 	bool check_input_stream_configuration(InputStreams is) const;
+	/// query the stream formats available for a given stream configuration
+	void query_stream_formats(InputStreams is, std::vector<stream_format>& stream_formats) const;
 	///
 	bool set_near_mode(bool on = true);
 	/// start the rgbd input with standard stream formats returned in second parameter

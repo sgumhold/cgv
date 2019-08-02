@@ -23,6 +23,17 @@ using namespace cgv::utils;
 using namespace cgv::render;
 using namespace rgbd;
 
+std::string get_stream_format_enum(const std::vector<rgbd::stream_format>& sfs)
+{
+	std::string enum_def = "enums='default=-1";
+	for (const auto& sf : sfs) {
+		enum_def += ",";
+		enum_def += to_string(sf);
+	}
+	return enum_def + "'";
+}
+
+
 rgbd_control::dvec3 transform(const rgbd_control::dmat4& T, const rgbd_control::dvec3& p)
 {
 	rgbd_control::dvec4 q = T * rgbd_control::dvec4(p, 1);
@@ -133,10 +144,13 @@ rgbd_control::rgbd_control() :
 	stopped = false;
 	step_only = false;
 
-	stream_color = true;
-	stream_depth = true;
-	stream_infrared = false;
-
+	stream_color = false;
+	stream_depth = false;
+	stream_infrared = true;
+	color_stream_format_idx = -1;
+	depth_stream_format_idx = -1;
+	ir_stream_format_idx = -1;
+	
 	color_frame_changed = false;
 	depth_frame_changed = false;
 	infrared_frame_changed = false;
@@ -165,6 +179,7 @@ void rgbd_control::on_set(void* member_ptr)
 	if (member_ptr >= &clr_rot && member_ptr < &clr_rot + 1) {
 		clr_rot(3) = sqrt(1 - reinterpret_cast<dvec3&>(clr_rot).sqr_length());
 	}
+	/*
 	if (member_ptr >= &T && member_ptr < &T + 1) {
 		P.clear();
 		C.clear();
@@ -181,9 +196,8 @@ void rgbd_control::on_set(void* member_ptr)
 						P.push_back(vec3((float)q(0), (float)q(1), (float)q(2)));
 						C.push_back(rgba8(0, 255, 0, 255));
 					}
-				}
+				}				
 	}
-
 	if ((member_ptr >= &ctr && member_ptr < &ctr + 1) || 
 		(member_ptr >= &f_p && member_ptr < &f_p + 1)) {
 		P.clear();
@@ -203,8 +217,6 @@ void rgbd_control::on_set(void* member_ptr)
 					}
 				}
 	}
-
-
 	if ((member_ptr == &plane_depth) || (member_ptr == &validate_color_camera) ||
 		(member_ptr >= &clr_rot && member_ptr < &clr_rot + 1) ||
 		(member_ptr >= &clr_tra && member_ptr < &clr_tra + 1) ||
@@ -257,6 +269,7 @@ void rgbd_control::on_set(void* member_ptr)
 				}
 		}
 	}
+	*/
 	if (member_ptr == &do_protocol) {
 		if (do_protocol)
 			kin.enable_protocol(protocol_path);
@@ -274,8 +287,8 @@ void rgbd_control::on_set(void* member_ptr)
 void rgbd_control::on_register()
 {
 	on_device_select_cb();
-	if (device_mode != DM_DETACHED)
-		on_start_cb();
+//	if (device_mode != DM_DETACHED)
+//		on_start_cb();
 }
 
 /// overload to handle unregistration of instances
@@ -301,9 +314,57 @@ bool rgbd_control::init(cgv::render::context& ctx)
 void rgbd_control::clear(cgv::render::context& ctx)
 {
 	color.destruct(ctx);
+	warped_color.destruct(ctx);
 	depth.destruct(ctx);
 	rgbd_prog.destruct(ctx);
 	cgv::render::ref_point_renderer(ctx, -1);
+}
+
+void rgbd_control::update_texture_from_frame(context& ctx, texture& tex, const frame_type& frame, bool recreate, bool replace)
+{
+	if (frame.is_allocated()) {
+		if (recreate)
+			tex.destruct(ctx);
+		string fmt_descr("uint");
+		switch (frame.pixel_format) {
+		case PF_I: // infrared
+		case PF_DEPTH:
+		case PF_DEPTH_AND_PLAYER:
+		case PF_CONFIDENCE:
+			fmt_descr += to_string(frame.nr_bits_per_pixel) + "[L]";
+			break;
+		case PF_RGB:   // 24 or 32 bit rgb format with byte alignment
+			fmt_descr += frame.nr_bits_per_pixel == 24 ? "8[R,G,B]" : "8[R,G,B,A]";
+			break;
+		case PF_BGR:   // 24 or 24 bit bgr format with byte alignment
+			fmt_descr += frame.nr_bits_per_pixel == 24 ? "8[B,G,R]" : "8[B,G,R,A]";
+			break;
+		case PF_RGBA:  // 32 bit rgba format
+			fmt_descr += "8[R,G,B,A]";
+			break;
+		case PF_BGRA:  // 32 bit brga format
+			fmt_descr += "8[B,G,R,A]";
+			break;
+		case PF_BAYER: // 32 bit raw bayer pattern values
+			fmt_descr += "8[R,G,B,A]";
+			break;
+		}
+		if (!tex.is_created()) {
+			tex.set_component_format(fmt_descr);
+			tex.create(ctx, TT_2D, frame.width, frame.height);
+			replace = true;
+		}
+		if (replace) {
+			data_format df(fmt_descr);
+			df.set_width(frame.width);
+			df.set_height(frame.height);
+			cgv::data::const_data_view dv(&df, &frame.frame_data.front());
+			tex.replace(ctx, 0, 0, dv);
+		}
+	}
+	else {
+		tex.destruct(ctx);
+	}
 }
 
 ///
@@ -313,37 +374,26 @@ void rgbd_control::init_frame(context& ctx)
 		rgbd_prog.build_program(ctx, "rgbd_shader.glpr");
 
 	if (device_mode != DM_DETACHED) {
-		unsigned w=kin.get_width(), h=kin.get_height();
-		if (!color.is_created() || attachment_changed)
-			color.create(ctx, TT_2D, w, h);
-		if (!depth.is_created() || attachment_changed)
-			depth.create(ctx, TT_2D, w, h);
-		if (!infrared.is_created() || attachment_changed)
-			infrared.create(ctx, TT_2D, w, h);
-		if (color_frame_changed) {
-			color.replace(ctx, 0, 0, color_data);
-			color_frame_changed = false;
-		}
-		if (infrared_frame_changed) {
-			infrared.replace(ctx, 0, 0, infrared_data);
-			infrared_frame_changed = false;
-		}
+		update_texture_from_frame(ctx, color, color_frame, attachment_changed, color_frame_changed);
+		update_texture_from_frame(ctx, depth, depth_frame, attachment_changed, depth_frame_changed);
+		update_texture_from_frame(ctx, infrared, ir_frame, attachment_changed, infrared_frame_changed);
+		update_texture_from_frame(ctx, warped_color, warped_color_frame, attachment_changed, (color_frame_changed|| depth_frame_changed) &&remap_color);
+		color_frame_changed = false;
+		infrared_frame_changed = false;
+		/*
 		if (depth_frame_changed) {
-			depth.replace(ctx, 0, 0, depth_data);
-			depth_frame_changed = false;
-
-			vec3 p = km.track(depth_data);
+			vec3 p = km.track(depth_frame);
 			mouse_pos(0) = p(0);
 			mouse_pos(1) = p(1);
 		}
+		*/
+		depth_frame_changed = false;
 	}
 	else {
-		if (color.is_created())
-			color.destruct(ctx);
-		if (infrared.is_created())
-			infrared.destruct(ctx);
-		if (depth.is_created())
-			depth.destruct(ctx);
+		color.destruct(ctx);
+		warped_color.destruct(ctx);
+		infrared.destruct(ctx);
+		depth.destruct(ctx);
 	}
 	attachment_changed = false;
 }
@@ -370,14 +420,24 @@ void rgbd_control::draw(context& ctx)
 	// transform to image coordinates
 	ctx.mul_modelview_matrix(cgv::math::scale4<double>(aspect, -1, 1));
 	// enable shader program
-	if (rgbd_prog.is_created() && color.is_created()) {
-		color.enable(ctx, 0);
-		depth.enable(ctx, 1);
-		infrared.enable(ctx, 2);
+	if (rgbd_prog.is_created()) {
+		if (stream_color && color.is_created()) {
+			color.enable(ctx, 0);
+			rgbd_prog.set_uniform(ctx, "color_texture", 0);
+			if (remap_color && warped_color.is_created()) {
+				warped_color.enable(ctx, 3);
+				rgbd_prog.set_uniform(ctx, "warped_color_texture", 3);
+			}
+		}
+		if (stream_depth && depth.is_created()) {
+			depth.enable(ctx, 1);
+			rgbd_prog.set_uniform(ctx, "depth_texture", 1);
+		}
+		if (stream_infrared && infrared.is_created()) {
+			infrared.enable(ctx, 2);
+			rgbd_prog.set_uniform(ctx, "infrared_texture", 2);
+		}
 		rgbd_prog.set_uniform(ctx, "rgbd_mode", (int) vis_mode);
-		rgbd_prog.set_uniform(ctx, "color_texture", 0);
-		rgbd_prog.set_uniform(ctx, "depth_texture", 1);
-		rgbd_prog.set_uniform(ctx, "infrared_texture", 2);
 		rgbd_prog.set_uniform(ctx, "color_scale", color_scale);
 		rgbd_prog.set_uniform(ctx, "infrared_scale", infrared_scale);
 		rgbd_prog.set_uniform(ctx, "depth_scale", depth_scale);
@@ -388,8 +448,15 @@ void rgbd_control::draw(context& ctx)
 		ctx.tesselate_unit_square();
 		glEnable(GL_CULL_FACE);
 		rgbd_prog.disable(ctx);
-		depth.disable(ctx);
-		color.disable(ctx);
+		if (stream_infrared&& infrared.is_created())
+			infrared.disable(ctx);
+		if (stream_depth && depth.is_created())
+			depth.disable(ctx);
+		if (stream_color && color.is_created()) {
+			color.disable(ctx);
+			if (remap_color&& warped_color.is_created())
+				warped_color.disable(ctx);
+		}
 	}
 	// restore gl state
 	ctx.pop_modelview_matrix();
@@ -404,6 +471,12 @@ bool rgbd_control::handle(cgv::gui::event& e)
 	if (ke.get_action() == cgv::gui::KA_RELEASE)
 		return false;
 	switch (ke.get_key()) {
+	case cgv::gui::KEY_Space :
+		if (stopped)
+			on_start_cb();
+		else
+			on_stop_cb();
+		break;
 	case 'X':
 		if (ke.get_modifiers() == 0) {
 			flip[0] = !flip[0];
@@ -475,6 +548,13 @@ bool rgbd_control::handle(cgv::gui::event& e)
 			return true;
 		}
 		return false;
+	case 'W':
+		if (ke.get_modifiers() == 0) {
+			vis_mode = VM_WARPED;
+			on_set(&vis_mode);
+			return true;
+		}
+		return false;
 	case 'P':
 		acquire_next = true;
 		return true;
@@ -500,67 +580,95 @@ void rgbd_control::create_gui()
 	device_def += "'";
 
 	connect_copy(add_control("device", (DummyEnum&) device_idx, "dropdown", device_def)->value_change, rebind(this, &rgbd_control::on_device_select_cb));
-	add_member_control(this, "plane_depth", plane_depth, "value_slider", "min=500;max=4000;ticks=true");
-	add_member_control(this, "validate_color_camera", validate_color_camera, "toggle");
 	add_member_control(this, "near_mode", near_mode, "toggle");
 	add_member_control(this, "remap_color", remap_color, "toggle");
 	add_member_control(this, "flip x", flip[0], "toggle", "w=66", " ");
 	add_member_control(this, "flip y", flip[1], "toggle", "w=66", " ");
 	add_member_control(this, "flip z", flip[2], "toggle", "w=66");
-	add_decorator("Calibration", "heading", "level=2");
-	add_member_control(this, "Dcx", ctr(0), "value_slider", "min=300;max=340;step=0.00001;ticks=true");
-	add_member_control(this, "Dcy", ctr(1), "value_slider", "min=210;max=250;step=0.00001;ticks=true");
-	add_member_control(this, "Dfx", f_p(0), "value_slider", "min=550;max=600;log=true;step=0.00001;ticks=true");
-	add_member_control(this, "Dfy", f_p(1), "value_slider", "min=550;max=600;log=true;step=0.00001;ticks=true");
-	add_member_control(this, "tx", clr_tra(0), "value_slider", "min=-0.05;max=0.05;step=0.00001;ticks=true");
-	add_member_control(this, "ty", clr_tra(1), "value_slider", "min=-0.05;max=0.05;step=0.00001;ticks=true");
-	add_member_control(this, "tz", clr_tra(2), "value_slider", "min=-0.05;max=0.05;step=0.00001;ticks=true");
-	add_member_control(this, "qx", clr_rot(0), "value_slider", "min=-0.05;max=0.05;step=0.00001;ticks=true");
-	add_member_control(this, "qy", clr_rot(1), "value_slider", "min=-0.05;max=0.05;step=0.00001;ticks=true");
-	add_member_control(this, "qz", clr_rot(2), "value_slider", "min=-0.05;max=0.05;step=0.00001;ticks=true");
-	add_member_control(this, "Ccx", clr_ctr(0), "value_slider", "min=300;max=340;step=0.00001;ticks=true");
-	add_member_control(this, "Ccy", clr_ctr(1), "value_slider", "min=210;max=250;step=0.00001;ticks=true");
-	add_member_control(this, "Cfx", clr_f_p(0), "value_slider", "min=550;max=600;log=true;step=0.00001;ticks=true");
-	add_member_control(this, "Cfy", clr_f_p(1), "value_slider", "min=550;max=600;log=true;step=0.00001;ticks=true");
-	add_decorator("Point Cloud", "heading", "level=2");
-	add_member_control(this, "always_acquire_next", always_acquire_next, "toggle");
-
-
-	for (unsigned i = 0; i < 4; ++i)
-		for (unsigned j = 0; j < 4; ++j)
-			add_member_control(this, std::string("T")+to_string(i)+to_string(j), T(i, j), 
-				"value_slider", "min=-1;max=1;log=true;step=0.00001;ticks=true");
-
-	if (begin_tree_node("point style", prs)) {
-		align("\a");
-		add_gui("point style", prs);
-		align("\b");
-		end_tree_node(prs);
-	}
-	add_decorator("Base", "heading", "level=2");
-	connect_copy(add_control("pitch", pitch, "value_slider", "min=-1;max=1;ticks=true")->value_change, rebind(this, &rgbd_control::on_pitch_cb));	
-	add_view("x",x);
-	add_view("y",y);
-	add_view("z",z);
-	add_decorator("Camera", "heading", "level=2");
-	connect_copy(add_control("vis_mode", vis_mode, "dropdown", "enums='color,depth,infrared'")->value_change, rebind(static_cast<drawable*>(this), &drawable::post_redraw));
-	connect_copy(add_control("color_scale", color_scale, "value_slider", "min=0.1;max=100;log=true;ticks=true")->value_change, rebind(static_cast<drawable*>(this), &drawable::post_redraw));
-	connect_copy(add_control("infrared_scale", infrared_scale, "value_slider", "min=0.1;max=100;log=true;ticks=true")->value_change, rebind(static_cast<drawable*>(this), &drawable::post_redraw));
-	connect_copy(add_control("depth_scale", depth_scale, "value_slider", "min=0.1;max=100;log=true;ticks=true")->value_change, rebind(static_cast<drawable*>(this), &drawable::post_redraw));
-	add_gui("depth_range", depth_range, "ascending", "options='min=0;max=1;ticks=true'");
 	add_view("nr_color_frames", nr_color_frames);
 	add_view("nr_infrared_frames", nr_infrared_frames);
 	add_view("nr_depth_frames", nr_depth_frames);
-	connect_copy(add_button("st&art", "shortcut='a'")->click, rebind(this, &rgbd_control::on_start_cb));
-	connect_copy(add_button("&step", "shortcut='s'")->click, rebind(this, &rgbd_control::on_step_cb));
-	connect_copy(add_button("st&op", "shortcut='o'")->click, rebind(this, &rgbd_control::on_stop_cb));
-	connect_copy(add_button("save")->click, rebind(this, &rgbd_control::on_save_cb));
-	connect_copy(add_button("save point cloud")->click, rebind(this, &rgbd_control::on_save_point_cloud_cb));
-	connect_copy(add_button("load")->click, rebind(this, &rgbd_control::on_load_cb));
+
+	if (begin_tree_node("Device", nr_color_frames, true, "level=2")) {
+		align("\a");
+		add_member_control(this, "stream_color", stream_color, "check");
+		add_member_control(this, "stream_depth", stream_depth, "check");
+		add_member_control(this, "stream_infrared", stream_infrared, "check");
+		add_member_control(this, "color_stream_format", (DummyEnum&)color_stream_format_idx, "dropdown", get_stream_format_enum(color_stream_formats));
+		add_member_control(this, "depth_stream_format", (DummyEnum&)depth_stream_format_idx, "dropdown", get_stream_format_enum(depth_stream_formats));
+		add_member_control(this, "ir_stream_format", (DummyEnum&)ir_stream_format_idx, "dropdown", get_stream_format_enum(ir_stream_formats));
+		connect_copy(add_button("st&art", "shortcut='a'")->click, rebind(this, &rgbd_control::on_start_cb));
+		connect_copy(add_button("&step", "shortcut='s'")->click, rebind(this, &rgbd_control::on_step_cb));
+		connect_copy(add_button("st&op", "shortcut='o'")->click, rebind(this, &rgbd_control::on_stop_cb));
+		connect_copy(add_button("save")->click, rebind(this, &rgbd_control::on_save_cb));
+		connect_copy(add_button("save point cloud")->click, rebind(this, &rgbd_control::on_save_point_cloud_cb));
+		connect_copy(add_button("load")->click, rebind(this, &rgbd_control::on_load_cb));
+		align("\b");
+		end_tree_node(nr_color_frames);
+	}
+	if (begin_tree_node("Base", pitch, false, "level=2")) {
+		align("\a");
+		connect_copy(add_control("pitch", pitch, "value_slider", "min=-1;max=1;ticks=true")->value_change, rebind(this, &rgbd_control::on_pitch_cb));
+		add_view("x", x);
+		add_view("y", y);
+		add_view("z", z);
+		align("\b");
+		end_tree_node(pitch);
+	}
+	if (begin_tree_node("Visualization", vis_mode, true, "level=2")) {
+		align("\a");
+		connect_copy(add_control("vis_mode", vis_mode, "dropdown", "enums='color,depth,infrared,warped_color'")->value_change, rebind(static_cast<drawable*>(this), &drawable::post_redraw));
+		connect_copy(add_control("color_scale", color_scale, "value_slider", "min=0.1;max=100;log=true;ticks=true")->value_change, rebind(static_cast<drawable*>(this), &drawable::post_redraw));
+		connect_copy(add_control("infrared_scale", infrared_scale, "value_slider", "min=0.1;max=100;log=true;ticks=true")->value_change, rebind(static_cast<drawable*>(this), &drawable::post_redraw));
+		connect_copy(add_control("depth_scale", depth_scale, "value_slider", "min=0.1;max=100;log=true;ticks=true")->value_change, rebind(static_cast<drawable*>(this), &drawable::post_redraw));
+		add_gui("depth_range", depth_range, "ascending", "options='min=0;max=1;ticks=true'");
+		align("\b");
+		end_tree_node(vis_mode);
+	}
+	if (begin_tree_node("Point Cloud", always_acquire_next, false, "level=2")) {
+		align("\a");
+		add_member_control(this, "always_acquire_next", always_acquire_next, "toggle");
+
+		for (unsigned i = 0; i < 4; ++i)
+			for (unsigned j = 0; j < 4; ++j)
+				add_member_control(this, std::string("T") + to_string(i) + to_string(j), T(i, j),
+					"value_slider", "min=-1;max=1;log=true;step=0.00001;ticks=true");
+
+		if (begin_tree_node("point style", prs)) {
+			align("\a");
+			add_gui("point style", prs);
+			align("\b");
+			end_tree_node(prs);
+		}
+		align("\b");
+		end_tree_node(always_acquire_next);
+	}
+	if (begin_tree_node("Calibration", ctr, false, "level=2")) {
+		align("\a");
+		add_member_control(this, "plane_depth", plane_depth, "value_slider", "min=500;max=4000;ticks=true");
+		add_member_control(this, "validate_color_camera", validate_color_camera, "toggle");
+		add_member_control(this, "Dcx", ctr(0), "value_slider", "min=300;max=340;step=0.00001;ticks=true");
+		add_member_control(this, "Dcy", ctr(1), "value_slider", "min=210;max=250;step=0.00001;ticks=true");
+		add_member_control(this, "Dfx", f_p(0), "value_slider", "min=550;max=600;log=true;step=0.00001;ticks=true");
+		add_member_control(this, "Dfy", f_p(1), "value_slider", "min=550;max=600;log=true;step=0.00001;ticks=true");
+		add_member_control(this, "tx", clr_tra(0), "value_slider", "min=-0.05;max=0.05;step=0.00001;ticks=true");
+		add_member_control(this, "ty", clr_tra(1), "value_slider", "min=-0.05;max=0.05;step=0.00001;ticks=true");
+		add_member_control(this, "tz", clr_tra(2), "value_slider", "min=-0.05;max=0.05;step=0.00001;ticks=true");
+		add_member_control(this, "qx", clr_rot(0), "value_slider", "min=-0.05;max=0.05;step=0.00001;ticks=true");
+		add_member_control(this, "qy", clr_rot(1), "value_slider", "min=-0.05;max=0.05;step=0.00001;ticks=true");
+		add_member_control(this, "qz", clr_rot(2), "value_slider", "min=-0.05;max=0.05;step=0.00001;ticks=true");
+		add_member_control(this, "Ccx", clr_ctr(0), "value_slider", "min=300;max=340;step=0.00001;ticks=true");
+		add_member_control(this, "Ccy", clr_ctr(1), "value_slider", "min=210;max=250;step=0.00001;ticks=true");
+		add_member_control(this, "Cfx", clr_f_p(0), "value_slider", "min=550;max=600;log=true;step=0.00001;ticks=true");
+		add_member_control(this, "Cfy", clr_f_p(1), "value_slider", "min=550;max=600;log=true;step=0.00001;ticks=true");
+		align("\b");
+		end_tree_node(ctr);
+	}
 }
 
 size_t rgbd_control::construct_point_cloud()
 {
+	/*
 	if (remap_color)
 		kin.map_color_to_depth(rgbd::FF_DEPTH_RAW, depth2_data.get_ptr<unsigned char>(), rgbd::FF_COLOR_RGB32, color2_data.get_ptr<unsigned char>());
 	P2.clear();
@@ -582,10 +690,12 @@ size_t rgbd_control::construct_point_cloud()
 			c_ptr += color_fmt.get_entry_size();
 		}
 	compute_homography(P2, Q);
+	*/
 	return P2.size();
 }
 void rgbd_control::calibrate_device()
 {
+	/*
 	std::vector<vec3> P_win;
 	std::vector<vec3> P_wrl;
 	for (unsigned d = 500; d < 4000; d+=100)
@@ -599,10 +709,12 @@ void rgbd_control::calibrate_device()
 			}
 	std::cout << "nr points = " << P_win.size() << " (expected " << 34 * depth_fmt.get_width()*depth_fmt.get_height() / 16 / 16 << ")" << std::endl;
 	compute_homography(P_win, P_wrl);
+	*/
 }
 
 void rgbd_control::compute_homography(const std::vector<vec3>& P, const std::vector<vec3>& Q)
 {
+	/*
 	dvecn m(16);
 	cgv::math::mat<double> M(16, 16, 0.0);
 	size_t k;
@@ -672,12 +784,11 @@ void rgbd_control::compute_homography(const std::vector<vec3>& P, const std::vec
 	}
 	error *= 1.0 / P.size();
 	std::cout << "avg errors: " << error << std::endl;
+	*/
 }
 
 void rgbd_control::timer_event(double t, double dt)
 {
-	unsigned w = kin.get_width();
-	unsigned h = kin.get_height();
 	// in case a point cloud is being constructed
 	if (future_handle.valid()) {
 		// check for termination of thread
@@ -699,45 +810,55 @@ void rgbd_control::timer_event(double t, double dt)
 			update_member(&y);
 			update_member(&z);
 		}
-		if (kin.is_started() && !attachment_changed) {
-			depth_frame_changed = kin.get_frame(rgbd::FF_DEPTH_RAW, depth_data.get_ptr<unsigned char>(), 0);
-			if (depth_frame_changed) {
-				++nr_depth_frames;
-				update_member(&nr_depth_frames);
-			}
-
-			color_frame_changed = kin.get_frame(rgbd::FF_COLOR_RGB32, color_data.get_ptr<unsigned char>(), 0);
-			if (color_frame_changed) {
-				++nr_color_frames;
-				update_member(&nr_color_frames);
-			}
-
-			infrared_frame_changed = kin.get_frame(rgbd::FF_INFRARED, infrared_data.get_ptr<unsigned char>(), 0);
-			if (infrared_frame_changed) {
-				++nr_infrared_frames;
-				update_member(&nr_infrared_frames);
-			}
-
-			if (color_frame_changed || depth_frame_changed) {
+		if (kin.is_started()) {
+			bool new_frame;
+			bool found_frame = false;
+			do {
+				new_frame = false;
+				if (stream_color) {
+					bool new_color_frame_changed = kin.get_frame(IS_COLOR, color_frame, 0);
+					if (new_color_frame_changed) {
+						++nr_color_frames;
+						color_frame_changed = new_color_frame_changed;
+						new_frame = true;
+						update_member(&nr_color_frames);
+					}
+				}
+				if (stream_depth) {
+					bool new_depth_frame_changed = kin.get_frame(IS_DEPTH, depth_frame, 0);
+					if (new_depth_frame_changed) {
+						++nr_depth_frames;
+						depth_frame_changed = new_depth_frame_changed;
+						new_frame = true;
+						update_member(&nr_depth_frames);
+					}
+				}
+				if (stream_infrared) {
+					bool new_infrared_frame_changed = kin.get_frame(IS_INFRARED, ir_frame, 0);
+					if (new_infrared_frame_changed) {
+						++nr_infrared_frames;
+						infrared_frame_changed = new_infrared_frame_changed;
+						new_frame = true;
+						update_member(&nr_infrared_frames);
+					}
+				}
+				if (new_frame)
+					found_frame = true;
+			} while (new_frame);
+			if (found_frame)
+				post_redraw();
+			if (stream_color && stream_depth && color_frame.is_allocated() && depth_frame.is_allocated() &&
+				(color_frame_changed || depth_frame_changed) ) {
 				if (!future_handle.valid() && (always_acquire_next || acquire_next)) {
 					acquire_next = false;
-					std::copy(
-						color_data.get_ptr<unsigned char>(),
-						color_data.get_ptr<unsigned char>() +
-						color_fmt.get_nr_bytes(),
-						color2_data.get_ptr<unsigned char>());
-					std::copy(
-						depth_data.get_ptr<unsigned char>(),
-						depth_data.get_ptr<unsigned char>() +
-						depth_fmt.get_nr_bytes(),
-						depth2_data.get_ptr<unsigned char>());
+					color_frame_2 = color_frame;
+					depth_frame_2 = depth_frame;
 					future_handle = std::async(&rgbd_control::construct_point_cloud, this);
 				}
 				else {
 					if (remap_color)
-						kin.map_color_to_depth(rgbd::FF_DEPTH_RAW, depth_data.get_ptr<unsigned char>(), rgbd::FF_COLOR_RGB32, color_data.get_ptr<unsigned char>());
+						kin.map_color_to_depth(depth_frame, color_frame, warped_color_frame);
 				}
-				post_redraw();
 			}
 		}
 	}
@@ -790,17 +911,72 @@ void rgbd_control::on_start_cb()
 {
 	kin.set_near_mode(near_mode);
 	InputStreams is = IS_NONE;
-	if (stream_color)
+	bool use_default = false;
+	std::vector<stream_format> sfs;
+	if (stream_color) {
 		is = InputStreams(is + IS_COLOR);
-	if (stream_depth)
-		is = InputStreams(is + IS_DEPTH);
-	if (stream_infrared)
-		is = InputStreams(is + IS_INFRARED);
-	if (!kin.start(InputStreams(is))) {
-		cgv::gui::message("could not start kinect device");
-		return;
+		if (color_stream_format_idx == -1)
+			use_default = true;
+		else
+			sfs.push_back(color_stream_formats[color_stream_format_idx]);
 	}
+	if (stream_depth) {
+		is = InputStreams(is + IS_DEPTH);
+		if (depth_stream_format_idx == -1)
+			use_default = true;
+		else
+			sfs.push_back(depth_stream_formats[depth_stream_format_idx]);
+	}
+	if (stream_infrared) {
+		is = InputStreams(is + IS_INFRARED);
+		if (ir_stream_format_idx == -1)
+			use_default = true;
+		else
+		sfs.push_back(ir_stream_formats[ir_stream_format_idx]);
+	}
+	if (use_default) {
+		sfs.clear();
+		if (!kin.start(InputStreams(is), sfs)) {
+			cgv::gui::message("could not start kinect device");
+			return;
+		}
+		else {
+			// TODO: update indices
+			for (const auto& sf : sfs) {
+				auto ci = std::find(color_stream_formats.begin(), color_stream_formats.end(), sf);
+				if (ci != color_stream_formats.end()) {
+					color_stream_format_idx = ci - color_stream_formats.begin();
+					update_member(&color_stream_format_idx);
+				}
+				auto di = std::find(depth_stream_formats.begin(), depth_stream_formats.end(), sf);
+				if (di != depth_stream_formats.end()) {
+					depth_stream_format_idx = di - depth_stream_formats.begin();
+					update_member(&depth_stream_format_idx);
+				}
+				auto ii = std::find(ir_stream_formats.begin(), ir_stream_formats.end(), sf);
+				if (ii != ir_stream_formats.end()) {
+					ir_stream_format_idx = ii - ir_stream_formats.begin();
+					update_member(&ir_stream_format_idx);
+				}
+			}
+		}
+	}
+	else {
+		if (!kin.start(sfs)) {
+			cgv::gui::message("could not start kinect device");
+			return;
+		}
+	}
+	if (stream_infrared)
+		aspect = float(ir_stream_formats[ir_stream_format_idx].width) / ir_stream_formats[ir_stream_format_idx].height;
+	if (stream_color)
+		aspect = float(color_stream_formats[color_stream_format_idx].width) / color_stream_formats[color_stream_format_idx].height;
+	if (stream_depth)
+		aspect = float(depth_stream_formats[depth_stream_format_idx].width) / depth_stream_formats[depth_stream_format_idx].height;
+
 	stopped = false;
+
+	post_redraw();
 }
 
 void rgbd_control::on_step_cb()
@@ -818,18 +994,24 @@ void rgbd_control::on_stop_cb()
 
 void rgbd_control::on_save_cb()
 {
-	std::string fn = cgv::gui::file_save_dialog("base file name", "Frame Files (rgb,dep):*.rgb;*.dep");
+	std::string fn = cgv::gui::file_save_dialog("base file name", "Frame Files (rgb,dep):*.rgb;*.dep;*.ir");
 	if (fn.empty())
 		return;
 	std::string fnc = fn+".rgb";
 	std::string fnd = fn + ".dep";
-	std::string fni = fn + ".inf";
-	if (!cgv::utils::file::write(fnc, color_data.get_ptr<char>(), color_data.get_format()->get_nr_bytes()*color_data.get_format()->get_entry_size(), false))
-		std::cerr << "could not write " << fnc << std::endl;
-	if (!cgv::utils::file::write(fnd, depth_data.get_ptr<char>(), depth_data.get_format()->get_nr_bytes()*depth_data.get_format()->get_entry_size(), false))
-		std::cerr << "could not write " << fnd << std::endl;
-	if (!cgv::utils::file::write(fni, infrared_data.get_ptr<char>(), infrared_data.get_format()->get_nr_bytes()*depth_data.get_format()->get_entry_size(), false))
-		std::cerr << "could not write " << fni << std::endl;
+	std::string fni = fn + ".ir";
+	if (stream_color && color_frame.is_allocated()) {
+		if (!color_frame.write(fnc))
+			std::cerr << "could not write " << fnc << std::endl;
+	}
+	if (stream_depth&& depth_frame.is_allocated()) {
+		if (!depth_frame.write(fnd))
+			std::cerr << "could not write " << fnd << std::endl;
+	}
+	if (stream_infrared && ir_frame.is_allocated()) {
+		if (!ir_frame.write(fni))
+			std::cerr << "could not write " << fni << std::endl;
+	}
 }
 
 void rgbd_control::on_save_point_cloud_cb()
@@ -863,21 +1045,41 @@ void rgbd_control::on_load_cb()
 		return;
 	fn = cgv::utils::file::drop_extension(fn);
 	std::string fnc = fn+".rgb";
-	std::string fnd = fn+".dep";
+	std::string fnd = fn + ".dep";
+	std::string fni = fn + ".ir";
 	std::string c, d;
-	if (cgv::utils::file::read(fnc, c, false)) {
-		memcpy(color_data.get_ptr<unsigned char>(), &c[0], color_data.get_format()->get_nr_bytes()*color_data.get_format()->get_entry_size());
+	if (color_frame.read(fnc))
 		color_frame_changed = true;
-	}
 	else
 		std::cerr << "could not read " << fnc << std::endl;
-	if (cgv::utils::file::read(fnd, d, false)) {
-		memcpy(depth_data.get_ptr<unsigned char>(), &d[0], depth_data.get_format()->get_nr_bytes()*depth_data.get_format()->get_entry_size());
+
+	if (depth_frame.read(fnd))
 		depth_frame_changed = true;
-	}
 	else
 		std::cerr << "could not read " << fnd << std::endl;
+
+	if (ir_frame.read(fni))
+		infrared_frame_changed = true;
+	else
+		std::cerr << "could not read " << fni << std::endl;
+
 	post_redraw();
+}
+
+void rgbd_control::update_stream_formats()
+{
+	color_stream_formats.clear();
+	kin.query_stream_formats(IS_COLOR, color_stream_formats);
+	if (find_control(color_stream_format_idx))
+		find_control(color_stream_format_idx)->multi_set(get_stream_format_enum(color_stream_formats));
+	depth_stream_formats.clear();
+	kin.query_stream_formats(IS_DEPTH, depth_stream_formats);
+	if (find_control(depth_stream_format_idx))
+		find_control(depth_stream_format_idx)->multi_set(get_stream_format_enum(depth_stream_formats));
+	ir_stream_formats.clear();
+	kin.query_stream_formats(IS_INFRARED, ir_stream_formats);
+	if (find_control(ir_stream_format_idx))
+		find_control(ir_stream_format_idx)->multi_set(get_stream_format_enum(ir_stream_formats));
 }
 
 void rgbd_control::on_device_select_cb()
@@ -899,28 +1101,20 @@ void rgbd_control::on_device_select_cb()
 				device_idx = 0;
 				update_member(&device_idx);
 			}
-			kin.attach(rgbd_input::get_serial(device_idx));
-			kin.set_pitch(pitch);
+			if (kin.attach(rgbd_input::get_serial(device_idx))) {
+				update_stream_formats();
+				kin.set_pitch(pitch);
+			}
+			else {
+				device_mode = DM_DETACHED;
+				update_member(&device_mode);
+			}
 		}
 	}
 	else if (device_mode == DM_PROTOCOL) {
 		kin.attach_path(protocol_path);
 		update_member(&device_idx);
 		// on_device_select_cb();
-	}
-	if (device_mode != DM_DETACHED) {
-		color_fmt.set_width(kin.get_width());
-		color_fmt.set_height(kin.get_height());
-		depth_fmt.set_width(kin.get_width());
-		depth_fmt.set_height(kin.get_height());
-		infrared_fmt.set_width(kin.get_width());
-		infrared_fmt.set_height(kin.get_height());
-		aspect = (float)kin.get_width()/kin.get_height();
-		color_data = data_view(&color_fmt);
-		infrared_data = data_view(&infrared_fmt);
-		depth_data = data_view(&depth_fmt);
-		color2_data = data_view(&color_fmt);
-		depth2_data = data_view(&depth_fmt);
 	}
 	attachment_changed = true;
 	post_redraw();

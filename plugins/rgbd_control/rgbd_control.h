@@ -27,7 +27,7 @@ class rgbd_control :
 	public cgv::gui::provider
 {
 public:
-	enum VisMode { VM_COLOR, VM_DEPTH, VM_INFRARED };
+	enum VisMode { VM_COLOR, VM_DEPTH, VM_INFRARED, VM_WARPED };
 	enum DeviceMode { DM_DETACHED, DM_PROTOCOL, DM_DEVICE };
 	///
 	rgbd_control();
@@ -57,6 +57,7 @@ public:
 	///
 	void create_gui();
 protected:
+	void update_texture_from_frame(cgv::render::context& ctx, cgv::render::texture& tex, const rgbd::frame_type& frame, bool recreate, bool replace);
 	/// members for rgbd input
 	rgbd::rgbd_input kin;
 	std::string protocol_path;
@@ -64,7 +65,14 @@ protected:
 	bool stream_color;
 	bool stream_depth;
 	bool stream_infrared;
+	std::vector<rgbd::stream_format> color_stream_formats;
+	std::vector<rgbd::stream_format> depth_stream_formats;
+	std::vector<rgbd::stream_format> ir_stream_formats;
+	int color_stream_format_idx;
+	int depth_stream_format_idx;
+	int ir_stream_format_idx;
 
+	void rgbd_control::update_stream_formats();
 	/// members for rgbd mouse
 	rgbd::rgbd_mouse km;
 	vec2 mouse_pos;
@@ -87,7 +95,7 @@ protected:
 
 	/// texture, shaders and display lists
 	cgv::data::data_format color_fmt, depth_fmt, infrared_fmt;
-	cgv::render::texture color, depth, infrared;
+	cgv::render::texture color, depth, infrared, warped_color;
 	dmat4 T;
 	dvec2 ctr, f_p;
 	dvec3 transform_to_world(const dvec3& p_win) const;
@@ -116,8 +124,8 @@ private:
 	bool attachment_changed;
 
 	/// internal members used for data storage
-	cgv::data::data_view color_data, depth_data, infrared_data;
-	cgv::data::data_view color2_data, depth2_data;
+	rgbd::frame_type color_frame, depth_frame, ir_frame, warped_color_frame;
+	rgbd::frame_type color_frame_2, depth_frame_2, ir_frame_2;
 
 	std::future<size_t> future_handle;
 	size_t construct_point_cloud();

@@ -24,7 +24,8 @@ public:
 	bool put_IMU_measurement(IMU_measurement& m, unsigned time_out) const;
 	
 	bool check_input_stream_configuration(InputStreams is) const;
-	
+	void query_stream_formats(InputStreams is, std::vector<stream_format>& stream_formats) const;
+
 	bool start_device(InputStreams is, std::vector<stream_format>& stream_formats);
 	bool start_device(const std::vector<stream_format>& stream_formats);
 	bool is_running() const;

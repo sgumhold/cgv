@@ -194,6 +194,15 @@ bool rgbd_input::check_input_stream_configuration(InputStreams is) const
 	}
 	return rgbd->check_input_stream_configuration(is);
 }
+/// query the stream formats available for a given stream configuration
+void rgbd_input::query_stream_formats(InputStreams is, std::vector<stream_format>& stream_formats) const
+{
+	if (!is_attached()) {
+		cerr << "rgbd_input::query_stream_formats called on device that has not been attached" << endl;
+		return;
+	}
+	rgbd->query_stream_formats(is, stream_formats);
+}
 
 bool rgbd_input::start(InputStreams is, std::vector<stream_format>& stream_formats)
 {
