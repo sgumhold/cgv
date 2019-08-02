@@ -52,7 +52,7 @@ namespace rgbd {
 	};
 
 	/// format of a frame
-	struct frame_format : public frame_size
+	struct CGV_API frame_format : public frame_size
 	{
 		/// format of pixels
 		PixelFormat pixel_format;
@@ -60,6 +60,8 @@ namespace rgbd {
 		unsigned nr_bits_per_pixel; 
 		/// buffer size (normally width*height*bits_per_pixel)
 		unsigned buffer_size;
+		/// standard computation of the buffer size member
+		void compute_buffer_size();
 	};
 
 	/// struct to store single frame
@@ -71,19 +73,29 @@ namespace rgbd {
 		double time;
 	};
 	/// struct to store single frame
-	struct frame_type: public frame_info
+	struct CGV_API frame_type: public frame_info
 	{
 		/// vector with RAW frame data 
 		std::vector<char> frame_data;
+		/// check whether frame data is allocated
+		bool is_allocated() const;
+		/// write to file
+		bool write(const std::string& fn) const;
+		/// read from file
+		bool read(const std::string& fn);
 	};
 
 	/// steam format adds frames per second
-	struct stream_format : public frame_format
+	struct CGV_API stream_format : public frame_format
 	{
-		stream_format(int w = 640, int h = 480, PixelFormat pf = PF_RGB, unsigned _nr_bits = 32, unsigned _buffer_size = 640*480*4, float fps = 30);
+		stream_format(int w = 640, int h = 480, PixelFormat pf = PF_RGB, float fps = 30, unsigned _nr_bits = 32, unsigned _buffer_size = -1);
+		bool operator == (const stream_format& sf) const;
 		float fps;
 	};
 
+	extern CGV_API std::ostream& operator << (std::ostream& os, const frame_size& fs);
+	extern CGV_API std::ostream& operator << (std::ostream& os, const frame_format& ff);
+	extern CGV_API std::ostream& operator << (std::ostream& os, const stream_format& sf);
 
 	/// different input streams
 	enum InputStreams {
@@ -176,6 +188,8 @@ namespace rgbd {
 
 		/// check whether the device supports the given combination of input streams
 		virtual bool check_input_stream_configuration(InputStreams is) const = 0;
+		/// query the stream formats available for a given stream configuration
+		virtual void query_stream_formats(InputStreams is, std::vector<stream_format>& stream_formats) const = 0;
 		/// start the rgbd device with standard stream formats returned in second parameter
 		virtual bool start_device(InputStreams is, std::vector<stream_format>& stream_formats) = 0;
 		/// start the rgbd device with given stream formats 

@@ -59,11 +59,15 @@ namespace rgbd {
 	{
 		return true;
 	}
+	void rgbd_emulation::query_stream_formats(InputStreams is, std::vector<stream_format>& stream_formats) const
+	{
+
+	}
 	bool rgbd_emulation::start_device(InputStreams is, std::vector<stream_format>& stream_formats)
 	{
 		return true;
 	}
-	bool start_device(const std::vector<stream_format>& stream_formats)
+	bool rgbd_emulation::start_device(const std::vector<stream_format>& stream_formats)
 	{
 		return true;
 	}

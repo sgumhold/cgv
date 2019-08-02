@@ -31,6 +31,8 @@ namespace cgv {
 			CGV_API bool read(const std::string& file_name, std::string& content, bool ascii = false);
 			/// read the file in a newly allocated returned buffer and set the file size
 			CGV_API char* read(const std::string& file_name, bool ascii = false, size_t* size_ptr = 0, size_t add_nr_bytes_to_buffer=0);
+			/// read from a file into a memory block, the optional argument \c ascii tells whether to write in ascii or binary (default) mode
+			CGV_API bool read(const std::string& filename, char* ptr, size_t size, bool ascii = false, size_t file_offset = 0);
 			/// write a file from a memory block, the optional argument \c ascii tells whether to write in ascii or binary (default) mode
 			CGV_API bool write(const std::string& filename, const char* ptr, size_t size, bool ascii = false);
 			/// append a memory block to a given file or create new file, the optional argument \c ascii tells whether to write in ascii or binary (default) mode
