@@ -27,7 +27,7 @@ namespace cgv {
 			surface_color = cgv::media::illum::surface_material::color_type(0.4f, 0.1f, 0.7f);
 			culling_mode = CM_OFF;
 			illumination_mode = IM_ONE_SIDED;
-			map_color_to_material = MS_FRONT_AND_BACK;
+			map_color_to_material = ColorMapping(CM_COLOR_FRONT | CM_COLOR_BACK);
 			material.ref_brdf_type() = cgv::media::illum::BrdfType(cgv::media::illum::BT_STRAUSS_DIFFUSE + cgv::media::illum::BT_STRAUSS);
 		}
 
@@ -153,7 +153,13 @@ namespace cgv {
 					return false;
 				cgv::render::surface_render_style* srs_ptr = reinterpret_cast<cgv::render::surface_render_style*>(value_ptr);
 				cgv::base::base* b = dynamic_cast<cgv::base::base*>(p);
-				p->add_member_control(b, "map_color_to_material", (cgv::type::DummyEnum&)srs_ptr->map_color_to_material, "dropdown", "enums='OFF,FRONT,BACK,FRONT_AND_BACK'");
+				if (p->begin_tree_node("color_mapping", srs_ptr->map_color_to_material)) {
+					p->align("\a");
+					p->add_gui("map_color_to_material", srs_ptr->map_color_to_material, "bit_field_control",
+						"enums='COLOR_FRONT=1,COLOR_BACK=2,OPACITY_FRONT=4,OPACITY_BACK=8'");
+					p->align("\b");
+					p->end_tree_node(srs_ptr->map_color_to_material);
+				}
 				p->add_member_control(b, "illumination_mode", srs_ptr->illumination_mode, "dropdown", "enums='off,onesided,twosided'");
 				p->add_member_control(b, "culling_mode", srs_ptr->culling_mode, "dropdown", "enums='off,backface,frontface'");
 				if (p->begin_tree_node("color and materials", srs_ptr->surface_color, false, "level=3")) {

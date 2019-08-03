@@ -9,6 +9,14 @@
 namespace cgv { // @<
 	namespace render { // @<
 
+		/// color and opacity can be mapped independently to surface material
+		enum ColorMapping {
+			CM_NONE = 0,
+			CM_COLOR_FRONT = 1,
+			CM_COLOR_BACK = 2,
+			CM_OPACITY_FRONT = 4,
+			CM_OPACITY_BACK = 8
+		};
 
 		/** style of a point */
 		struct CGV_API surface_render_style : public group_render_style
@@ -20,7 +28,7 @@ namespace cgv { // @<
 			/// illumination mode defaults to \c IM_ONE_SIDED
 			IlluminationMode illumination_mode;
 			/// material side[s] where color is to be mapped to the diffuse material component, defaults to MS_FRONT_AND_BACK
-			cgv::render::MaterialSide map_color_to_material;
+			ColorMapping map_color_to_material;
 			/// material of surface
 			cgv::media::illum::textured_surface_material material;
 			///
