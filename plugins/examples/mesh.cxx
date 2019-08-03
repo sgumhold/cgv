@@ -49,7 +49,7 @@ PREPARATION (implemented in init or init_frame method of drawable)
   the attribute locations of the program with the bind() method. This will also bind the element
   index buffer.
 
-RENDERING PHASE (implemented in draw method)
+RENDERING PHASE (implemented in draw and finish_draw method)
 - configure uniforms and constant vertex attributes of shader program 
 - call render_mesh() method of mesh_render_info and pass chosen shader program to it.
   This will enable and disable the shader program as needed. render_mesh() has two optional
@@ -85,7 +85,7 @@ public:
 
 	bool show_surface;
 	CullingMode cull_mode;
-	MaterialSide color_mapping;
+	ColorMapping color_mapping;
 	rgb  surface_color;
 	IlluminationMode illumination_mode;
 
@@ -111,7 +111,7 @@ public:
 	{
 		show_surface = true;
 		cull_mode = CM_BACKFACE;
-		color_mapping = MS_FRONT_AND_BACK;
+		color_mapping = cgv::render::ColorMapping(cgv::render::CM_COLOR_FRONT | cgv::render::CM_COLOR_BACK);
 		surface_color = rgb(0.7f, 0.2f, 1.0f);
 		illumination_mode = IM_ONE_SIDED;
 
@@ -236,7 +236,13 @@ public:
 		if (show) {
 			align("\a");
 			add_member_control(this, "cull mode", cull_mode, "dropdown", "enums='none,back,front'");
-			add_member_control(this, "color mapping", color_mapping, "dropdown", "enums='none,front,back,front+back'");
+			if (begin_tree_node("color_mapping", color_mapping)) {
+				align("\a");
+				add_gui("color mapping", color_mapping, "bit_field_control",
+					"enums='COLOR_FRONT=1,COLOR_BACK=2,OPACITY_FRONT=4,OPACITY_BACK=8'");
+				align("\b");
+				end_tree_node(color_mapping);
+			}
 			add_member_control(this, "surface color", surface_color);
 			add_member_control(this, "illumination", illumination_mode, "dropdown", "enums='none,one sided,two sided'");
 			// this is how to add a ui for the materials read from an obj material file
@@ -287,6 +293,41 @@ public:
 			}
 		}
 	}
+	void draw_surface(context& ctx, bool opaque_part)
+	{
+		// remember current culling setting
+		GLboolean is_culling = glIsEnabled(GL_CULL_FACE);
+		GLint cull_face;
+		glGetIntegerv(GL_CULL_FACE_MODE, &cull_face);
+
+		// ensure that opengl culling is identical to shader program based culling
+		if (cull_mode > 0) {
+			glEnable(GL_CULL_FACE);
+			glCullFace(cull_mode == CM_BACKFACE ? GL_BACK : GL_FRONT);
+		}
+		else
+			glDisable(GL_CULL_FACE);
+
+		// choose a shader program and configure it based on current settings
+		shader_program& prog = ctx.ref_surface_shader_program(true);
+		prog.set_uniform(ctx, "culling_mode", (int)cull_mode);
+		prog.set_uniform(ctx, "map_color_to_material", (int)color_mapping);
+		prog.set_uniform(ctx, "illumination_mode", (int)illumination_mode);
+		// set default surface color for color mapping which only affects 
+		// rendering if mesh does not have per vertex colors and color_mapping is on
+		prog.set_attribute(ctx, prog.get_color_index(), surface_color);
+
+		// render the mesh from the vertex buffers with selected program
+		mesh_info.render_mesh(ctx, prog, opaque_part, !opaque_part);
+
+		// recover opengl culling mode
+		if (is_culling)
+			glEnable(GL_CULL_FACE);
+		else
+			glDisable(GL_CULL_FACE);
+		glCullFace(cull_face);
+	}
+
 	void draw(context& ctx)
 	{
 		if (show_vertices) {
@@ -310,38 +351,13 @@ public:
 			glLineWidth(old_line_width);
 		}
 		if (show_surface) {
-			// remember current culling setting
-			GLboolean is_culling = glIsEnabled(GL_CULL_FACE);
-			GLint cull_face;
-			glGetIntegerv(GL_CULL_FACE_MODE, &cull_face);
-
-			// ensure that opengl culling is identical to shader program based culling
-			if (cull_mode > 0) {
-				glEnable(GL_CULL_FACE);
-				glCullFace(cull_mode == CM_BACKFACE ? GL_BACK : GL_FRONT);
-			}
-			else
-				glDisable(GL_CULL_FACE);
-
-			// choose a shader program and configure it based on current settings
-			shader_program& prog = ctx.ref_surface_shader_program(true);
-			prog.set_uniform(ctx, "culling_mode", (int)cull_mode);
-			prog.set_uniform(ctx, "map_color_to_material", (int)color_mapping);
-			prog.set_uniform(ctx, "illumination_mode", (int)illumination_mode);
-			// set default surface color for color mapping which only affects 
-			// rendering if mesh does not have per vertex colors and color_mapping is on
-			prog.set_attribute(ctx, prog.get_color_index(), surface_color);
-
-			// render the mesh from the vertex buffers with selected program
-			mesh_info.render_mesh(ctx, prog);
-			
-			// recover opengl culling mode
-			if (is_culling)
-				glEnable(GL_CULL_FACE);
-			else
-				glDisable(GL_CULL_FACE);
-			glCullFace(cull_face);
+			draw_surface(ctx, true);
 		}
+	}
+	void finish_frame(context& ctx)
+	{
+		if (show_surface)
+			draw_surface(ctx, false);
 	}
 };
 
