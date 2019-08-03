@@ -324,9 +324,11 @@ struct enum_control_factory : public abst_control_factory
 			return control_ptr(new fltk_enum_toggle_control(label, 
 				*static_cast<int*>(value_ptr), acp, enums, x, y, w, h)); 
 		else {
-			std::cerr<<"Unknown gui type "<<gui_type<<" for enumeration."<<std::endl;
+			return control_ptr();
+/*			std::cerr<<"Unknown gui type "<<gui_type<<" for enumeration."<<std::endl;
 			return control_ptr(new fltk_enum_dropdown_control(label, 
 				*static_cast<int*>(value_ptr), acp, enums, x, y, w, h));
+				*/
 		}
 	}
 

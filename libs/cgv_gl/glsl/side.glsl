@@ -23,16 +23,16 @@ void update_material_color_and_transparency(inout vec3 mat_color, inout float tr
 {
 	// overwrite material color with color if color mapping is turned on
 	if (side == 1) {
-		if ((map_color_to_material & 1) == 1) {
+		if ((map_color_to_material & 1) == 1)
 			mat_color = color.rgb;
+		if ((map_color_to_material & 4) == 4)
 			transparency = 1.0-color.a;
-		}
 	}
 	else {
-		if ((map_color_to_material & 2) == 2) {
+		if ((map_color_to_material & 2) == 2)
 			mat_color = color.rgb;
+		if ((map_color_to_material & 8) == 8)
 			transparency = 1.0-color.a;
-		}
 	}
 }
 

@@ -47,7 +47,9 @@ PREPARATION (implemented in init or init_frame method of drawable)
 - bind array pointers at location indices queried from program to vertex buffers
   in an attribute_array_binding struct
 
-RENDERING PHASE (implemented in draw method)
+RENDERING PHASE (implemented in draw and finish_draw method)
+- the following steps should be done for the opaque parts in the draw() and
+  for the transparent parts in the finish_draw() method
 - enable shader program and configure its uniforms
 - enable atribute array binding
 - draw elements
@@ -98,7 +100,7 @@ protected:
 public:
 	bool show_surface;
 	CullingMode cull_mode;
-	MaterialSide color_mapping;
+	ColorMapping color_mapping;
 	rgb  surface_color;
 	IlluminationMode illumination_mode;
 
@@ -119,7 +121,7 @@ public:
 	{
 		show_surface = true;
 		cull_mode = CM_BACKFACE;
-		color_mapping = MS_FRONT_AND_BACK;
+		color_mapping = cgv::render::ColorMapping(cgv::render::CM_COLOR_FRONT | cgv::render::CM_COLOR_BACK);
 		surface_color = rgb(0.7f, 0.2f, 1.0f);
 		illumination_mode = IM_ONE_SIDED;
 
@@ -287,7 +289,7 @@ public:
 	void create_gui()
 	{
 		add_decorator("vbo_aab", "heading", "level=2");
-		if (begin_tree_node("generate", a, true, "options='w=140';align=' '")) {
+		if (begin_tree_node("generate", a, true)) {
 			align("\a");
 			add_member_control(this, "a", a, "value_slider", "min=0.1;max=10;ticks=true;log=true");
 			add_member_control(this, "b", b, "value_slider", "min=0.1;max=10;ticks=true;log=true");
@@ -323,7 +325,13 @@ public:
 		if (show) {
 			align("\a");
 			add_member_control(this, "cull mode", cull_mode, "dropdown", "enums='none,back,front'");
-			add_member_control(this, "color mapping", color_mapping, "dropdown", "enums='none,front,back,front+back'");
+			if (begin_tree_node("color_mapping", color_mapping)) {
+				align("\a");
+				add_gui("color mapping", color_mapping, "bit_field_control",
+					"enums='COLOR_FRONT=1,COLOR_BACK=2,OPACITY_FRONT=4,OPACITY_BACK=8'");
+				align("\b");
+				end_tree_node(color_mapping);
+			}
 			add_member_control(this, "surface color", surface_color);
 			add_member_control(this, "illumination", illumination_mode, "dropdown", "enums='none,one sided,two sided'");
 			align("\b");
@@ -364,6 +372,48 @@ public:
 			}
 		}
 	}
+	void draw_surface(context& ctx)
+	{
+		// remember current culling setting
+		GLboolean is_culling = glIsEnabled(GL_CULL_FACE);
+		GLint cull_face;
+		glGetIntegerv(GL_CULL_FACE_MODE, &cull_face);
+
+		// ensure that opengl culling is identical to shader program based culling
+		if (cull_mode > 0) {
+			glEnable(GL_CULL_FACE);
+			glCullFace(cull_mode == CM_BACKFACE ? GL_BACK : GL_FRONT);
+		}
+		else
+			glDisable(GL_CULL_FACE);
+
+		// choose a shader program
+		shader_program& prog = ctx.ref_surface_shader_program(false);
+
+		// enable program and configure it based on current settings
+		prog.enable(ctx);
+		prog.set_uniform(ctx, "culling_mode", (int)cull_mode); // fragment culling mode
+		prog.set_uniform(ctx, "map_color_to_material", (int)color_mapping); // fragment color mapping mode
+		prog.set_uniform(ctx, "illumination_mode", (int)illumination_mode); // fragment illumination mode
+
+		// set default surface color for color mapping which only affects 
+		// rendering if mesh does not have per vertex colors and color_mapping is on
+		prog.set_attribute(ctx, prog.get_color_index(), surface_color);
+
+		aab_surface.enable(ctx);
+		glDrawElements(GL_TRIANGLE_STRIP, nr_triangle_elements, GL_UNSIGNED_INT, 0);
+		aab_surface.disable(ctx);
+
+		prog.disable(ctx);
+
+		// recover opengl culling mode
+		if (is_culling)
+			glEnable(GL_CULL_FACE);
+		else
+			glDisable(GL_CULL_FACE);
+		glCullFace(cull_face);
+	}
+
 	void draw(context& ctx)
 	{
 		if (show_vertices) {
@@ -418,51 +468,37 @@ public:
 			// recover old line width
 			glLineWidth(old_line_width);
 		}
+		// render opaque surfaces here without blending
+		if (show_surface && ctx.get_current_material()->get_transparency() < 0.01f)
+			draw_surface(ctx);
+		// recover restart settings
+		glPrimitiveRestartIndex(restart_index);
+		if (!is_restarting)
+			glDisable(GL_PRIMITIVE_RESTART);
+	}
+	void finish_draw(context& ctx)
+	{
+		// remember restart setting
+		GLboolean is_restarting = glIsEnabled(GL_PRIMITIVE_RESTART);
+		GLint restart_index;
+		glGetIntegerv(GL_PRIMITIVE_RESTART_INDEX, &restart_index);
 
-		if (show_surface) {
-			// remember current culling setting
-			GLboolean is_culling = glIsEnabled(GL_CULL_FACE);
-			GLint cull_face;
-			glGetIntegerv(GL_CULL_FACE_MODE, &cull_face);
+		// enable my own restart index
+		glPrimitiveRestartIndex(RESTART_INDEX);
+		glEnable(GL_PRIMITIVE_RESTART);
 
-			// ensure that opengl culling is identical to shader program based culling
-			if (cull_mode > 0) {
-				glEnable(GL_CULL_FACE);
-				glCullFace(cull_mode == CM_BACKFACE ? GL_BACK : GL_FRONT);
-			}
-			else
-				glDisable(GL_CULL_FACE);
-
-			// choose a shader program
-			shader_program& prog = ctx.ref_surface_shader_program(false);
-
-			// enable program and configure it based on current settings
-			prog.enable(ctx);
-			prog.set_uniform(ctx, "culling_mode", (int)cull_mode); // fragment culling mode
-			prog.set_uniform(ctx, "map_color_to_material", (int)color_mapping); // fragment color mapping mode
-			prog.set_uniform(ctx, "illumination_mode", (int)illumination_mode); // fragment illumination mode
-			
-			// set default surface color for color mapping which only affects 
-			// rendering if mesh does not have per vertex colors and color_mapping is on
-			prog.set_attribute(ctx, prog.get_color_index(), surface_color);
-
-			aab_surface.enable(ctx);
-			glDrawElements(GL_TRIANGLE_STRIP, nr_triangle_elements, GL_UNSIGNED_INT, 0);
-			aab_surface.disable(ctx);
-
-			prog.disable(ctx);
-
-			// recover opengl culling mode
-			if (is_culling)
-				glEnable(GL_CULL_FACE);
-			else
-				glDisable(GL_CULL_FACE);
-			glCullFace(cull_face);
+		// render surfaces with transparency here with blending enabled
+		if (show_surface && !(ctx.get_current_material()->get_transparency() < 0.01f)) {				
+			glEnable(GL_BLEND);
+			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+			draw_surface(ctx);
+			glDisable(GL_BLEND);
 		}
 		// recover restart settings
 		glPrimitiveRestartIndex(restart_index);
 		if (!is_restarting)
 			glDisable(GL_PRIMITIVE_RESTART);
+
 	}
 };
 
