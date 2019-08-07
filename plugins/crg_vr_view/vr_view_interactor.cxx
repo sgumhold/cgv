@@ -35,8 +35,8 @@ vr_view_interactor::vr_view_interactor(const char* name) : stereo_view_interacto
 	current_vr_handle_index = 0;
 	kit_enum_definition = "enums='none=0'";
 
-	brs.map_color_to_material = cgv::render::MS_FRONT_AND_BACK;
-	srs.map_color_to_material = cgv::render::MS_FRONT_AND_BACK;
+	brs.map_color_to_material = cgv::render::ColorMapping(cgv::render::CM_COLOR_FRONT| cgv::render::CM_COLOR_BACK);
+	srs.map_color_to_material = cgv::render::ColorMapping(cgv::render::CM_COLOR_FRONT | cgv::render::CM_COLOR_BACK);
 	srs.blend_width_in_pixel = 0;
 
 	cgv::signal::connect(cgv::gui::ref_vr_server().on_device_change, this, &vr_view_interactor::on_device_change);
