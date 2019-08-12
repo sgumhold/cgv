@@ -175,6 +175,7 @@ void vr_view_interactor::stream_stats(std::ostream& os)
 bool vr_view_interactor::init(cgv::render::context& ctx)
 {
 	cgv::render::ref_sphere_renderer(ctx, 1);
+#ifndef _DEBUG
 	cgv::media::mesh::simple_mesh<float> M;
 	if (M.read(cgv::base::find_data_file("vr_controller_vive_1_5.obj", "D"))) {
 		MI_controller.construct_vbos(ctx, M);
@@ -185,7 +186,7 @@ bool vr_view_interactor::init(cgv::render::context& ctx)
 		MI_hmd.construct_vbos(ctx, M2);
 		MI_hmd.bind(ctx, ctx.ref_surface_shader_program(true));
 	}
-
+#endif
 	if (!MI_hmd.is_constructed() && !MI_controller.is_constructed()) {
 		show_vr_kits_as_meshes = false;
 		on_set(&show_vr_kits_as_meshes);

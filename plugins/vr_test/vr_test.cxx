@@ -8,6 +8,7 @@
 #include <cgv/render/shader_program.h>
 #include <cgv/render/attribute_array_binding.h>
 #include <cgv_gl/box_renderer.h>
+#include <cgv_gl/sphere_renderer.h>
 #include <cgv/media/mesh/simple_mesh.h>
 #include <cgv_gl/gl/mesh_render_info.h>
 #include <cg_gamepad/gamepad_server.h>
@@ -23,6 +24,14 @@
 #include <vr/vr_driver.h>
 #include <cg_vr/vr_server.h>
 #include <vr_view_interactor.h>
+#include "intersection.h"
+
+enum InteractionState
+{
+	IS_NONE,
+	IS_OVER,
+	IS_GRAB
+};
 
 /// the plugin class vr_test inherits like other plugins from node, drawable and provider
 class vr_test :
@@ -39,6 +48,7 @@ protected:
 	// rendering style and renderer
 	cgv::render::box_render_style style;
 
+	// sample for rendering a mesh
 	cgv::render::mesh_render_info MI;
 	double mesh_scale;
 	dvec3 mesh_location;
@@ -55,6 +65,54 @@ protected:
 	// keep reference to vr_view_interactor
 	vr_view_interactor* vr_view_ptr;
 
+	// store the movable boxes
+	std::vector<box3> movable_boxes;
+	std::vector<rgb> movable_box_colors;
+	std::vector<vec3> movable_box_translations;
+	std::vector<quat> movable_box_rotations;
+
+	// intersection points
+	std::vector<vec3> intersection_points;
+	std::vector<rgb> intersection_colors;
+	std::vector<int> intersection_box_indices;
+	std::vector<int> intersection_controller_indices;
+
+	// state of current interaction with boxes for each controller
+	InteractionState state[2];
+
+	// render style for interaction
+	cgv::render::sphere_render_style srs;
+	cgv::render::box_render_style movable_style;
+
+	// compute intersection points of controller ray with movable boxes
+	void compute_intersections(const vec3& origin, const vec3& direction, int ci, const rgb& color)
+	{
+		for (size_t i = 0; i < movable_boxes.size(); ++i) {
+			vec3 origin_box_i = origin - movable_box_translations[i];
+			movable_box_rotations[i].inverse_rotate(origin_box_i);
+			vec3 direction_box_i = direction;
+			movable_box_rotations[i].inverse_rotate(direction_box_i);
+			float t_result;
+			vec3  p_result;
+			vec3  n_result;
+			if (cgv::media::ray_axis_aligned_box_intersection(
+				origin_box_i, direction_box_i,
+				movable_boxes[i],
+				t_result, p_result, n_result, 0.000001f)) {
+
+				// transform result back to world coordinates
+				movable_box_rotations[i].rotate(p_result);
+				p_result += movable_box_translations[i];
+				movable_box_rotations[i].rotate(n_result);
+
+				// store intersection information
+				intersection_points.push_back(p_result);
+				intersection_colors.push_back(color);
+				intersection_box_indices.push_back(i);
+				intersection_controller_indices.push_back(ci);
+			}
+		}
+	}
 	/// register on device change events
 	void on_device_change(void* kit_handle, bool attach)
 	{
@@ -82,6 +140,8 @@ protected:
 	void construct_room(float w, float d, float h, float W, bool walls, bool ceiling);
 	/// construct boxes for environment
 	void construct_environment(float s, float ew, float ed, float eh, float w, float d, float h);
+	/// construct boxes that represent a table of dimensions tw,td,th and leg width tW
+	void construct_movable_boxes(float tw, float td, float th, float tW, size_t nr);
 	/// construct a scene with a table
 	void build_scene(float w, float d, float h, float W,
 		float tw, float td, float th, float tW)
@@ -89,6 +149,7 @@ protected:
 		construct_room(w, d, h, W, false, false);
 		construct_table(tw, td, th, tW);
 		construct_environment(0.2f, 3 * w, 3 * d, h, w, d, h);
+		construct_movable_boxes(tw, td, th, tW, 20);
 	}
 public:
 	vr_test()
@@ -101,8 +162,11 @@ public:
 		connect(cgv::gui::ref_vr_server().on_device_change, this, &vr_test::on_device_change);
 		cgv::gui::connect_gamepad_server();
 		mesh_scale = 1;
+		srs.radius = 0.005f;
 		mesh_location = dvec3(0, 0, 0);
 		mesh_orientation = dquat(1, 0, 0, 0);
+
+		state[0] = state[1] = IS_NONE;
 	}
 	std::string get_type_name() const
 	{
@@ -140,6 +204,18 @@ public:
 			add_gui("box style", style);
 			align("\b");
 			end_tree_node(style);
+		}
+		if (begin_tree_node("movable box style", movable_style)) {
+			align("\a");
+			add_gui("movable box style", movable_style);
+			align("\b");
+			end_tree_node(movable_style);
+		}
+		if (begin_tree_node("intersections", srs)) {
+			align("\a");
+			add_gui("sphere style", srs);
+			align("\b");
+			end_tree_node(srs);
 		}
 	}
 	void on_set(void* member_ptr)
@@ -185,9 +261,15 @@ public:
 			cgv::gui::vr_stick_event& vrse = static_cast<cgv::gui::vr_stick_event&>(e);
 			switch (vrse.get_action()) {
 			case cgv::gui::SA_TOUCH:
+				if (state[vrse.get_controller_index()] == IS_OVER)
+					state[vrse.get_controller_index()] = IS_GRAB;
+				break;
+			case cgv::gui::SA_RELEASE:
+				if (state[vrse.get_controller_index()] == IS_GRAB)
+					state[vrse.get_controller_index()] = IS_OVER;
+				break;
 			case cgv::gui::SA_PRESS:
 			case cgv::gui::SA_UNPRESS:
-			case cgv::gui::SA_RELEASE:
 				std::cout << "stick " << vrse.get_stick_index()
 					<< " of controller " << vrse.get_controller_index()
 					<< " " << cgv::gui::get_stick_action_string(vrse.get_action())
@@ -205,17 +287,76 @@ public:
 			return true;
 		}
 		case cgv::gui::EID_POSE:
-			break;
+			cgv::gui::vr_pose_event& vrpe = static_cast<cgv::gui::vr_pose_event&>(e);
+			// check for controller pose events
+			int ci = vrpe.get_trackable_index();
+			if (ci != -1) {
+				if (state[ci] == IS_GRAB) {
+					// in grab mode apply relative transformation to grabbed boxes
+
+					// get previous and current controller position
+					vec3 last_pos = vrpe.get_last_position();
+					vec3 pos = vrpe.get_position();
+					// get rotation from previous to current orientation
+					// this is the current orientation matrix times the
+					// inverse (or transpose) of last orientation matrix:
+					// vrpe.get_orientation()*transpose(vrpe.get_last_orientation())
+					mat3 rotation = vrpe.get_rotation_matrix();
+					// iterate intersection points of current controller
+					for (size_t i = 0; i < intersection_points.size(); ++i) {
+						if (intersection_controller_indices[i] != ci)
+							continue;
+						// extract box index
+						unsigned bi = intersection_box_indices[i];
+						// update translation with position change and rotation
+						movable_box_translations[bi] = 
+							rotation * (movable_box_translations[bi] - last_pos) + pos;
+						// update orientation with rotation, note that quaternions
+						// need to be multiplied in oposite order. In case of matrices
+						// one would write box_orientation_matrix *= rotation
+						movable_box_rotations[bi] = quat(rotation) * movable_box_rotations[bi];
+					}
+				}
+				else {// not grab
+					// clear intersections of current controller 
+					size_t i = 0;
+					while (i < intersection_points.size()) {
+						if (intersection_controller_indices[i] == ci) {
+							intersection_points.erase(intersection_points.begin() + i);
+							intersection_colors.erase(intersection_colors.begin() + i);
+							intersection_box_indices.erase(intersection_box_indices.begin() + i);
+							intersection_controller_indices.erase(intersection_controller_indices.begin() + i);
+						}
+						else
+							++i;
+					}
+
+					// compute intersections
+					vec3 origin, direction;
+					vrpe.get_state().controller[ci].put_ray(&origin(0), &direction(0));
+					compute_intersections(origin, direction, ci, ci == 0 ? rgb(1, 0, 0) : rgb(0, 0, 1));
+
+					// update state based on whether we have found at least 
+					// one intersection with controller ray
+					if (intersection_points.size() == i)
+						state[ci] = IS_NONE;
+					else
+						if (state[ci] == IS_NONE)
+							state[ci] = IS_OVER;
+				}
+				post_redraw();
+			}
+			return true;
 		}
 		return false;
 	}
 	bool init(cgv::render::context& ctx)
 	{
 		cgv::media::mesh::simple_mesh<> M;
-		if (M.read("S:/data/surface/meshes/obj/elephant.obj")) {
+/*		if (M.read("S:/data/surface/meshes/obj/elephant.obj")) {
 			MI.construct_vbos(ctx, M);
 			MI.bind(ctx, ctx.ref_surface_shader_program(true));
-		}
+		}*/
 		cgv::gui::connect_vr_server(true);
 
 		auto view_ptr = find_view_as_node();
@@ -243,13 +384,13 @@ public:
 			}
 		}
 		cgv::render::ref_box_renderer(ctx, 1);
-
-		// ensure that the box renderer is initialized
+		cgv::render::ref_sphere_renderer(ctx, 1);
 		return true;
 	}
 	void clear(cgv::render::context& ctx)
 	{
 		cgv::render::ref_box_renderer(ctx, -1);
+		cgv::render::ref_sphere_renderer(ctx, -1);
 	}
 	void draw(cgv::render::context& ctx)
 	{
@@ -269,12 +410,12 @@ public:
 			std::vector<rgb> C;
 			const vr::vr_kit_state* state_ptr = vr_view_ptr->get_current_vr_state();
 			if (state_ptr) {
-				for (int i = 0; i < 2; ++i) {
+				for (int ci = 0; ci < 2; ++ci) {
 					vec3 ray_origin, ray_direction;
-					state_ptr->controller[i].put_ray(&ray_origin(0), &ray_direction(0));
+					state_ptr->controller[ci].put_ray(&ray_origin(0), &ray_direction(0));
 					P.push_back(ray_origin);
 					P.push_back(ray_origin + ray_length * ray_direction);
-					rgb c(float(1 - i), 0, float(i));
+					rgb c(float(1 - ci), 0.5f*(int)state[ci], float(ci));
 					C.push_back(c);
 					C.push_back(c);
 				}
@@ -296,7 +437,7 @@ public:
 				glLineWidth(1);
 			}
 		}
-		// just draw boxes here
+		// draw static boxes
 		cgv::render::box_renderer& renderer = cgv::render::ref_box_renderer(ctx);
 		renderer.set_render_style(style);
 		renderer.set_box_array(ctx, boxes);
@@ -305,6 +446,29 @@ public:
 			glDrawArrays(GL_POINTS, 0, boxes.size());
 		}
 		renderer.disable(ctx);
+
+		// draw dynamic boxes 
+		renderer.set_render_style(movable_style);
+		renderer.set_box_array(ctx, movable_boxes);
+		renderer.set_color_array(ctx, movable_box_colors);
+		renderer.set_translation_array(ctx, movable_box_translations);
+		renderer.set_rotation_array(ctx, movable_box_rotations);
+		if (renderer.validate_and_enable(ctx)) {
+			glDrawArrays(GL_POINTS, 0, movable_boxes.size());
+		}
+		renderer.disable(ctx);
+
+		// draw intersection points
+		if (!intersection_points.empty()) {
+			auto& sr = cgv::render::ref_sphere_renderer(ctx);
+			sr.set_position_array(ctx, intersection_points);
+			sr.set_color_array(ctx, intersection_colors);
+			sr.set_render_style(srs);
+			if (sr.validate_and_enable(ctx)) {
+				glDrawArrays(GL_POINTS, 0, intersection_points.size());
+				sr.disable(ctx);
+			}
+		}
 	}
 };
 
@@ -373,6 +537,29 @@ void vr_test::construct_environment(float s, float ew, float ed, float eh, float
 					0.3f*distribution(generator)+0.2f, 
 					0.2f*distribution(generator)+0.1f));
 		}
+	}
+}
+
+/// construct boxes that can be moved around
+void vr_test::construct_movable_boxes(float tw, float td, float th, float tW, size_t nr)
+{
+	std::default_random_engine generator;
+	std::uniform_real_distribution<float> distribution(0, 1);
+	std::uniform_real_distribution<float> signed_distribution(-1, 1);
+	for (size_t i = 0; i < nr; ++i) {
+		float x = distribution(generator);
+		float y = distribution(generator);
+		vec3 extent(distribution(generator), distribution(generator), distribution(generator));
+		extent += 0.1f;
+		extent *= std::min(tw, td)*0.2f;
+
+		vec3 center(-0.5f*tw + x * tw, th + tW, -0.5f*td + y * td);
+		movable_boxes.push_back(box3(-0.5f*extent, 0.5f*extent));
+		movable_box_colors.push_back(rgb(distribution(generator), distribution(generator), distribution(generator)));
+		movable_box_translations.push_back(center);
+		quat rot(signed_distribution(generator), signed_distribution(generator), signed_distribution(generator), signed_distribution(generator));
+		rot.normalize();
+		movable_box_rotations.push_back(rot);
 	}
 }
 
