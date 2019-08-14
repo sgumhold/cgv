@@ -313,7 +313,7 @@ bool vr_emulator::check_for_button_toggle(cgv::gui::key_event& ke, int controlle
 		return false;
 	if (ke.get_action() != cgv::gui::KA_PRESS)
 		return false;
-	kits[current_kit_ctrl]->state.controller[0].button_flags ^= button;
+	kits[current_kit_ctrl]->state.controller[controller_index].button_flags ^= button;
 	update_all_members();
 	return true;
 }
@@ -358,32 +358,57 @@ bool vr_emulator::handle(cgv::gui::event& e)
 	case 'J': return check_for_button_toggle(ke, 1, vr::VRF_BUTTON2);
 	case 'M': return check_for_button_toggle(ke, 1, vr::VRF_BUTTON3);
 	case 'K': return check_for_button_toggle(ke, 1, vr::VRF_STICK);
+	case 'B': return check_for_button_toggle(ke, 1, vr::VRF_STICK_TOUCH);
 
 	case cgv::gui::KEY_Left:
 		if (current_kit_ctrl != -1) {
-			left_ctrl = (ke.get_action() != cgv::gui::KA_RELEASE);
-			update_member(&left_ctrl);
+			if (ke.get_modifiers() == cgv::gui::EM_SHIFT) {
+				home_ctrl = (ke.get_action() != cgv::gui::KA_RELEASE);
+				update_member(&home_ctrl);
+			}
+			else {
+				left_ctrl = (ke.get_action() != cgv::gui::KA_RELEASE);
+				update_member(&left_ctrl);
+			}
 			return true;
 		}
 		break;
 	case cgv::gui::KEY_Right: 
 		if (current_kit_ctrl != -1) {
-			right_ctrl = (ke.get_action() != cgv::gui::KA_RELEASE);
-			update_member(&right_ctrl);
+			if (ke.get_modifiers() == cgv::gui::EM_SHIFT) {
+				end_ctrl = (ke.get_action() != cgv::gui::KA_RELEASE);
+				update_member(&end_ctrl);
+			}
+			else {
+				right_ctrl = (ke.get_action() != cgv::gui::KA_RELEASE);
+				update_member(&right_ctrl);
+			}
 			return true;
 		}
 		break;
 	case cgv::gui::KEY_Up:
 		if (current_kit_ctrl != -1) {
-			up_ctrl = (ke.get_action() != cgv::gui::KA_RELEASE);
-			update_member(&up_ctrl);
+			if (ke.get_modifiers() == cgv::gui::EM_SHIFT) {
+				pgup_ctrl = (ke.get_action() != cgv::gui::KA_RELEASE);
+				update_member(&pgup_ctrl);
+			}
+			else {
+				up_ctrl = (ke.get_action() != cgv::gui::KA_RELEASE);
+				update_member(&up_ctrl);
+			}
 			return true;
 		}
 		break;
 	case cgv::gui::KEY_Down:
 		if (current_kit_ctrl != -1) {
-			down_ctrl = (ke.get_action() != cgv::gui::KA_RELEASE);
-			update_member(&down_ctrl);
+			if (ke.get_modifiers() == cgv::gui::EM_SHIFT) {
+				pgdn_ctrl = (ke.get_action() != cgv::gui::KA_RELEASE);
+				update_member(&pgdn_ctrl);
+			}
+			else {
+				down_ctrl = (ke.get_action() != cgv::gui::KA_RELEASE);
+				update_member(&down_ctrl);
+			}
 			return true;
 		}
 		break;
@@ -421,7 +446,7 @@ bool vr_emulator::handle(cgv::gui::event& e)
 /// overload to stream help information to the given output stream
 void vr_emulator::stream_help(std::ostream& os)
 {
-	os << "vr_emulator:\n   Ctrl-Alt-N to create vr kit\n   press and hold <0|1|2|3> to select vr kit and use arrow keys to move or\n      Q,A,W,D,X,C,S|O,L,I,J,M,K,N to toggle left|right controller buttons";
+	os << "vr_emulator:\n   Ctrl-Alt-N to create vr kit\n   press and hold <0|1|2|3> to select vr kit and use arrow keys to move or\n      Q,A,W,D,X,C,S|O,L,I,J,M,K,B to toggle left|right controller buttons";
 }
 /// return the type name 
 std::string vr_emulator::get_type_name() const

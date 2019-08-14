@@ -544,7 +544,7 @@ bool point_cloud_interactable::handle(cgv::gui::event& e)
 			case 'C' :
 				if (ke.get_modifiers() == 0) {
 					if (surfel_style.map_color_to_material == cgv::render::MS_FRONT_AND_BACK)
-						surfel_style.map_color_to_material = cgv::render::MS_NONE;
+						surfel_style.map_color_to_material = cgv::render::CM_NONE;
 					else
 						++(int&)surfel_style.map_color_to_material;
 					on_set(&surfel_style.map_color_to_material);
