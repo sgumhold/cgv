@@ -44,7 +44,7 @@ namespace rgbd {
 		PF_BGR,   // 24 or 24 bit bgr format with byte alignment
 		PF_RGBA,  // 32 bit rgba format
 		PF_BGRA,  // 32 bit brga format
-		PF_BAYER, // 32 bit raw bayer pattern values
+		PF_BAYER, // 8 bit per pixel, raw bayer pattern values
 
 		PF_DEPTH,
 		PF_DEPTH_AND_PLAYER,

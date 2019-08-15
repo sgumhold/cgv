@@ -1,0 +1,4 @@
+files:rgbd_shader
+vertex_file:view.glsl
+fragment_file:fragment.glfs
+fragment_file:support.glsl
