@@ -59,7 +59,7 @@ public:
 protected:
 	void update_texture_from_frame(cgv::render::context& ctx, cgv::render::texture& tex, const rgbd::frame_type& frame, bool recreate, bool replace);
 	/// members for rgbd input
-	rgbd::rgbd_input kin;
+	rgbd::rgbd_input rgbd_inp;
 	std::string protocol_path;
 	bool do_protocol;
 	bool stream_color;

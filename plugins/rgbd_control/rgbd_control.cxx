@@ -144,9 +144,9 @@ rgbd_control::rgbd_control() :
 	stopped = false;
 	step_only = false;
 
-	stream_color = false;
-	stream_depth = false;
-	stream_infrared = true;
+	stream_color = true;
+	stream_depth = true;
+	stream_infrared = false;
 	color_stream_format_idx = -1;
 	depth_stream_format_idx = -1;
 	ir_stream_format_idx = -1;
@@ -189,7 +189,7 @@ void rgbd_control::on_set(void* member_ptr)
 			for (unsigned y = 0; y < depth_fmt.get_height(); y += 16)
 				for (unsigned x = 0; x < depth_fmt.get_width(); x += 16) {
 					float point[3];
-					if (kin.map_pixel_to_point(x, y, 8*d, FF_DEPTH_RAW, point)) {
+					if (rgbd_inp.map_pixel_to_point(x, y, 8*d, FF_DEPTH_RAW, point)) {
 						P.push_back(vec3(3, point));
 						C.push_back(rgba8(255, 0, 0, 255));
 						dvec3 q = transform(T, dvec3(x, y, d));
@@ -208,7 +208,7 @@ void rgbd_control::on_set(void* member_ptr)
 			for (unsigned y = 0; y < depth_fmt.get_height(); y += 16)
 				for (unsigned x = 0; x < depth_fmt.get_width(); x += 16) {
 					float point[3];
-					if (kin.map_pixel_to_point(x, y, 8 * d, FF_DEPTH_RAW, point)) {
+					if (rgbd_inp.map_pixel_to_point(x, y, 8 * d, FF_DEPTH_RAW, point)) {
 						P.push_back(vec3(3, point));
 						C.push_back(rgba8(255, 0, 0, 255));
 						dvec3 q = transform_to_world(dvec3(x, y, d));
@@ -227,11 +227,11 @@ void rgbd_control::on_set(void* member_ptr)
 		if (validate_color_camera) {
 			std::vector<short> pixel_coords;
 			pixel_coords.resize(depth_fmt.get_width() * depth_fmt.get_height() * 2, 0);
-			kin.map_depth_to_color_pixel(FF_DEPTH_RAW, depth2_data.get_ptr<unsigned char>(), &pixel_coords.front());
+			rgbd_inp.map_depth_to_color_pixel(FF_DEPTH_RAW, depth2_data.get_ptr<unsigned char>(), &pixel_coords.front());
 			for (unsigned y = 0; y < depth_fmt.get_height(); ++y)
 				for (unsigned x = 0; x < depth_fmt.get_width(); ++x) {
 					float point[3];
-					if (kin.map_pixel_to_point(x, y, 8 * plane_depth, FF_DEPTH_RAW, point)) {
+					if (rgbd_inp.map_pixel_to_point(x, y, 8 * plane_depth, FF_DEPTH_RAW, point)) {
 						vec3 p(3, point);
 						dvec3 Cp = clr_rot.apply(dvec3(p))+clr_tra;
 						dvec2 Cxy = clr_f_p*reinterpret_cast<dvec2&>(Cp) / Cp(2) + clr_ctr;
@@ -259,7 +259,7 @@ void rgbd_control::on_set(void* member_ptr)
 			for (unsigned y = 0; y < depth_fmt.get_height(); ++y)
 				for (unsigned x = 0; x < depth_fmt.get_width(); ++x) {
 					float point[3];
-					if (kin.map_pixel_to_point(x, y, 8 * plane_depth, FF_DEPTH_RAW, point)) {
+					if (rgbd_inp.map_pixel_to_point(x, y, 8 * plane_depth, FF_DEPTH_RAW, point)) {
 						P.push_back(vec3(3, point));
 						if (((x & 15) == 0) || ((y & 15) == 0))
 							C.push_back(rgba8(255, 0, 0, 255));
@@ -272,12 +272,12 @@ void rgbd_control::on_set(void* member_ptr)
 	*/
 	if (member_ptr == &do_protocol) {
 		if (do_protocol)
-			kin.enable_protocol(protocol_path);
+			rgbd_inp.enable_protocol(protocol_path);
 		else
-			kin.disable_protocol();
+			rgbd_inp.disable_protocol();
 	}
 	if (member_ptr == &near_mode)
-		kin.set_near_mode(near_mode);
+		rgbd_inp.set_near_mode(near_mode);
 
 	update_member(member_ptr);
 	post_redraw();
@@ -294,8 +294,8 @@ void rgbd_control::on_register()
 /// overload to handle unregistration of instances
 void rgbd_control::unregister()
 {
-	kin.stop();
-	kin.detach();
+	rgbd_inp.stop();
+	rgbd_inp.detach();
 }
 /// adjust view
 bool rgbd_control::init(cgv::render::context& ctx)
@@ -345,9 +345,12 @@ void rgbd_control::update_texture_from_frame(context& ctx, texture& tex, const f
 		case PF_BGRA:  // 32 bit brga format
 			fmt_descr += "8[B,G,R,A]";
 			break;
-		case PF_BAYER: // 32 bit raw bayer pattern values
-			fmt_descr += "8[R,G,B,A]";
+		case PF_BAYER: // 8 bit raw bayer pattern values
+			fmt_descr += "8[L]";
 			break;
+		}
+		if (tex.get_width() != frame.width || tex.get_height() != frame.height) {
+			tex.destruct(ctx);
 		}
 		if (!tex.is_created()) {
 			tex.set_component_format(fmt_descr);
@@ -670,7 +673,7 @@ size_t rgbd_control::construct_point_cloud()
 {
 	/*
 	if (remap_color)
-		kin.map_color_to_depth(rgbd::FF_DEPTH_RAW, depth2_data.get_ptr<unsigned char>(), rgbd::FF_COLOR_RGB32, color2_data.get_ptr<unsigned char>());
+		rgbd_inp.map_color_to_depth(rgbd::FF_DEPTH_RAW, depth2_data.get_ptr<unsigned char>(), rgbd::FF_COLOR_RGB32, color2_data.get_ptr<unsigned char>());
 	P2.clear();
 	C2.clear();
 	std::vector<vec3> Q;
@@ -679,7 +682,7 @@ size_t rgbd_control::construct_point_cloud()
 	for (unsigned y = 0; y < depth_fmt.get_height(); ++y)
 		for (unsigned x = 0; x < depth_fmt.get_width(); ++x) {
 			float point[3];
-			if (kin.map_pixel_to_point(x, y, *d_ptr++, FF_DEPTH_RAW, point)) {
+			if (rgbd_inp.map_pixel_to_point(x, y, *d_ptr++, FF_DEPTH_RAW, point)) {
 				P2.push_back(vec3(3, point));
 				C2.push_back(reinterpret_cast<rgba8&>(*c_ptr));
 				Q.push_back(vec3(float(x), float(y), (float)d_ptr[-1]));
@@ -702,7 +705,7 @@ void rgbd_control::calibrate_device()
 		for (unsigned y = 0; y < depth_fmt.get_height(); y += 16)
 			for (unsigned x = 0; x < depth_fmt.get_width(); x += 16) {
 				float point[3];
-				if (kin.map_pixel_to_point(x, y, 8*d, FF_DEPTH_RAW, point)) {
+				if (rgbd_inp.map_pixel_to_point(x, y, 8*d, FF_DEPTH_RAW, point)) {
 					P_wrl.push_back(vec3(3, point));
 					P_win.push_back(vec3((float)x, (float)y, (float)d));
 				}
@@ -800,9 +803,9 @@ void rgbd_control::timer_event(double t, double dt)
 			post_redraw();
 		}
 	}
-	if (kin.is_started()) {
+	if (rgbd_inp.is_started()) {
 		IMU_measurement m;
-		if (kin.put_IMU_measurement(m, 10)) {
+		if (rgbd_inp.put_IMU_measurement(m, 10)) {
 			x = m.linear_acceleration[0];
 			y = m.linear_acceleration[1];
 			z = m.linear_acceleration[2];
@@ -810,13 +813,13 @@ void rgbd_control::timer_event(double t, double dt)
 			update_member(&y);
 			update_member(&z);
 		}
-		if (kin.is_started()) {
+		if (rgbd_inp.is_started()) {
 			bool new_frame;
 			bool found_frame = false;
 			do {
 				new_frame = false;
 				if (stream_color) {
-					bool new_color_frame_changed = kin.get_frame(IS_COLOR, color_frame, 0);
+					bool new_color_frame_changed = rgbd_inp.get_frame(IS_COLOR, color_frame, 0);
 					if (new_color_frame_changed) {
 						++nr_color_frames;
 						color_frame_changed = new_color_frame_changed;
@@ -825,7 +828,7 @@ void rgbd_control::timer_event(double t, double dt)
 					}
 				}
 				if (stream_depth) {
-					bool new_depth_frame_changed = kin.get_frame(IS_DEPTH, depth_frame, 0);
+					bool new_depth_frame_changed = rgbd_inp.get_frame(IS_DEPTH, depth_frame, 0);
 					if (new_depth_frame_changed) {
 						++nr_depth_frames;
 						depth_frame_changed = new_depth_frame_changed;
@@ -834,7 +837,7 @@ void rgbd_control::timer_event(double t, double dt)
 					}
 				}
 				if (stream_infrared) {
-					bool new_infrared_frame_changed = kin.get_frame(IS_INFRARED, ir_frame, 0);
+					bool new_infrared_frame_changed = rgbd_inp.get_frame(IS_INFRARED, ir_frame, 0);
 					if (new_infrared_frame_changed) {
 						++nr_infrared_frames;
 						infrared_frame_changed = new_infrared_frame_changed;
@@ -857,7 +860,7 @@ void rgbd_control::timer_event(double t, double dt)
 				}
 				else {
 					if (remap_color)
-						kin.map_color_to_depth(depth_frame, color_frame, warped_color_frame);
+						rgbd_inp.map_color_to_depth(depth_frame, color_frame, warped_color_frame);
 				}
 			}
 		}
@@ -909,7 +912,7 @@ void rgbd_control::timer_event(double t, double dt)
 
 void rgbd_control::on_start_cb()
 {
-	kin.set_near_mode(near_mode);
+	rgbd_inp.set_near_mode(near_mode);
 	InputStreams is = IS_NONE;
 	bool use_default = false;
 	std::vector<stream_format> sfs;
@@ -936,12 +939,11 @@ void rgbd_control::on_start_cb()
 	}
 	if (use_default) {
 		sfs.clear();
-		if (!kin.start(InputStreams(is), sfs)) {
+		if (!rgbd_inp.start(InputStreams(is), sfs)) {
 			cgv::gui::message("could not start kinect device");
 			return;
 		}
 		else {
-			// TODO: update indices
 			for (const auto& sf : sfs) {
 				auto ci = std::find(color_stream_formats.begin(), color_stream_formats.end(), sf);
 				if (ci != color_stream_formats.end()) {
@@ -962,7 +964,7 @@ void rgbd_control::on_start_cb()
 		}
 	}
 	else {
-		if (!kin.start(sfs)) {
+		if (!rgbd_inp.start(sfs)) {
 			cgv::gui::message("could not start kinect device");
 			return;
 		}
@@ -988,7 +990,7 @@ void rgbd_control::on_step_cb()
 
 void rgbd_control::on_stop_cb()
 {
-	kin.stop();
+	rgbd_inp.stop();
 	stopped = true;
 }
 
@@ -1069,22 +1071,22 @@ void rgbd_control::on_load_cb()
 void rgbd_control::update_stream_formats()
 {
 	color_stream_formats.clear();
-	kin.query_stream_formats(IS_COLOR, color_stream_formats);
+	rgbd_inp.query_stream_formats(IS_COLOR, color_stream_formats);
 	if (find_control(color_stream_format_idx))
 		find_control(color_stream_format_idx)->multi_set(get_stream_format_enum(color_stream_formats));
 	depth_stream_formats.clear();
-	kin.query_stream_formats(IS_DEPTH, depth_stream_formats);
+	rgbd_inp.query_stream_formats(IS_DEPTH, depth_stream_formats);
 	if (find_control(depth_stream_format_idx))
 		find_control(depth_stream_format_idx)->multi_set(get_stream_format_enum(depth_stream_formats));
 	ir_stream_formats.clear();
-	kin.query_stream_formats(IS_INFRARED, ir_stream_formats);
+	rgbd_inp.query_stream_formats(IS_INFRARED, ir_stream_formats);
 	if (find_control(ir_stream_format_idx))
 		find_control(ir_stream_format_idx)->multi_set(get_stream_format_enum(ir_stream_formats));
 }
 
 void rgbd_control::on_device_select_cb()
 {
-	kin.detach();
+	rgbd_inp.detach();
 	if (device_idx == -1)
 		device_mode = DM_PROTOCOL;
 	else if (device_idx == -2)
@@ -1101,9 +1103,9 @@ void rgbd_control::on_device_select_cb()
 				device_idx = 0;
 				update_member(&device_idx);
 			}
-			if (kin.attach(rgbd_input::get_serial(device_idx))) {
+			if (rgbd_inp.attach(rgbd_input::get_serial(device_idx))) {
 				update_stream_formats();
-				kin.set_pitch(pitch);
+				rgbd_inp.set_pitch(pitch);
 			}
 			else {
 				device_mode = DM_DETACHED;
@@ -1112,7 +1114,7 @@ void rgbd_control::on_device_select_cb()
 		}
 	}
 	else if (device_mode == DM_PROTOCOL) {
-		kin.attach_path(protocol_path);
+		rgbd_inp.attach_path(protocol_path);
 		update_member(&device_idx);
 		// on_device_select_cb();
 	}
@@ -1122,8 +1124,8 @@ void rgbd_control::on_device_select_cb()
 
 void rgbd_control::on_pitch_cb()
 {
-	if (kin.is_attached())
-		kin.set_pitch(pitch);
+	if (rgbd_inp.is_attached())
+		rgbd_inp.set_pitch(pitch);
 }
 
 #include "lib_begin.h"

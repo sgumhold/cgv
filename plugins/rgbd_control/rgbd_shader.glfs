@@ -1,0 +1,45 @@
+#version 150
+
+uniform sampler2D color_texture;
+uniform sampler2D depth_texture;
+uniform sampler2D infrared_texture;
+uniform sampler2D warped_color_texture;
+uniform float     color_scale;
+uniform float     depth_scale;
+uniform float     infrared_scale;
+uniform float min_depth = 0.0;
+uniform float max_depth = 1.0;
+uniform int	 rgbd_mode = 0;
+
+in vec2 tc;
+
+//***** begin interface of fragment.glfs ***********************************
+uniform float gamma = 2.2;
+void finish_fragment(vec4 color);
+//***** end interface of fragment.glfs ***********************************
+
+vec4 scale_color(in float scale, in vec4 color);
+
+void main()
+{
+	float depth = texture(depth_texture, tc).x;
+	if (depth < min_depth || depth > max_depth)
+		discard;
+
+	vec4 color;
+	switch (rgbd_mode) {
+	case 0 : 
+		color = scale_color(color_scale, texture(color_texture, tc));
+		break;
+	case 1 :
+		color = scale_color(depth_scale, texture(depth_texture, tc));
+		break;
+	case 2 :
+		color = scale_color(infrared_scale, texture(infrared_texture, tc));
+		break;
+	case 3 :
+		color = scale_color(color_scale, texture(warped_color_texture, tc));
+		break;
+	}
+	finish_fragment(color);
+}

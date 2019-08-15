@@ -1,0 +1,22 @@
+#version 150
+
+in vec4 position;
+in vec2 texcoord;
+
+out vec2 tc;
+
+//***** begin interface of view.glsl ***********************************
+mat4 get_modelview_matrix();
+mat4 get_projection_matrix();
+mat4 get_modelview_projection_matrix();
+mat4 get_inverse_modelview_matrix();
+mat4 get_inverse_modelview_projection_matrix();
+mat3 get_normal_matrix();
+mat3 get_inverse_normal_matrix();
+//***** end interface of view.glsl ***********************************
+
+void main()
+{
+	tc = texcoord;
+	gl_Position = get_modelview_projection_matrix()*position;
+}
