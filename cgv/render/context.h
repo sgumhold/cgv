@@ -495,7 +495,14 @@ typedef cgv::data::ref_ptr<render_config> render_config_ptr;
 /// return a pointer to the current shader configuration
 extern CGV_API render_config_ptr get_render_config();
 
-
+/// parameters necessary to define window transformation
+struct window_transformation
+{
+	/// viewport parameters [x0,y0,width,height]
+	render_types::ivec4 viewport;
+	/// range of depth values [min_depth, max_depth]
+	render_types::dvec2 depth_range;
+};
 
 /** base class for all drawables, which is independent of the used rendering API. */
 class CGV_API context : public render_types
@@ -543,6 +550,8 @@ protected:
 
 	/// keep two matrix stacks for model view and projection matrices
 	std::stack<dmat4> modelview_matrix_stack, projection_matrix_stack;
+	/// keep stack of window transformations
+	std::stack<std::vector<window_transformation> > window_transformation_stack;
 	/// stack of currently enabled frame buffers
 	std::stack<frame_buffer_base*> frame_buffer_stack;
 	/// stack of currently enabled shader programs
@@ -1039,8 +1048,8 @@ public:
 	DEPRECATED("deprecated: use set_projection_matrix() instead.") void set_P(const dmat_type& P) const { const_cast<context*>(this)->set_projection_matrix(dmat4(4,4,&P(0, 0))); }
 	DEPRECATED("deprecated: use push_projection_matrix() instead.") void push_P() { push_projection_matrix(); }
 	DEPRECATED("deprecated: use pop_projection_matrix() instead.") void pop_P() { pop_projection_matrix(); }
-	DEPRECATED("deprecated: use get_device_matrix() instead.") 	dmat_type get_D() const { return dmat_type(4, 4, &get_device_matrix()(0, 0)); }
-	DEPRECATED("deprecated: use get_modelview_projection_device_matrix() instead.")	mat_type get_DPV() const { return dmat_type(4, 4, &get_modelview_projection_device_matrix()(0, 0)); }
+	DEPRECATED("deprecated: use get_device_matrix() instead.") 	dmat_type get_D() const { return dmat_type(4, 4, &get_window_matrix()(0, 0)); }
+	DEPRECATED("deprecated: use get_modelview_projection_device_matrix() instead.")	mat_type get_DPV() const { return dmat_type(4, 4, &get_modelview_projection_window_matrix()(0, 0)); }
 	/** use this to push transformation matrices on the stack such that
 	    x and y coordinates correspond to window coordinates, i.e. the 
 		 coordinates of the mouse pointer and the cursor for text output. */
@@ -1073,24 +1082,98 @@ public:
 	void push_projection_matrix();
 	/// see push_P for an explanation
 	void pop_projection_matrix();
+	/// push a copy of the current viewport and depth range arrays defining the window transformations
+	void push_window_transformation_array();
+	//! restore previous viewport and depth range arrays defining the window transformations
+	/*! An error is emitted when the method fails because the stack of window 
+	    transformations would become empty, which is not allowed. */
+	virtual void pop_window_transformation_array();
+	/// query the maximum number of supported window transformations, which is at least 1 
+	virtual unsigned get_max_window_transformation_array_size() const = 0;
+protected:
+	bool ensure_window_transformation_index(int& array_index);
+public:
+	//! set the current viewport or one of the viewports in the window transformation array
+	/*! If the parameter \c array_index is -1 (for example by not specifying it),
+	    the current window transformation array is resized to a single viewport and
+		depth range and the viewport is set to the integer vector of pixel values 
+		in the \c viewport parameter: [x0,y0,width,height]. If an \c array_index >= 0
+		is specified, the window transformation array is resized such that the 
+		specified \c array_index is valid and the corresponding viewport is set.
+		If resizing generates new viewports or depth ranges, the default values
+		are set, which are [0,0,widthOfContext, heightOfContext] for viewports
+		and [0.0,1.0] for depth ranges. If resizing increases the number of viewport
+		transformations over the allowed number, an error is issued. */
+	virtual void set_viewport(const ivec4& viewport, int array_index = -1);
+	//! set the current depth range or one of the depth ranges in the window transformation array
+	/*! The behaviour with respect to parameters \c array_index is the same as
+	    in the set_viewport() method.*/
+	virtual void set_depth_range(const dvec2& depth_range = dvec2(0, 1), int array_index = -1);
+	/// return the current window transformation array
+	const std::vector<window_transformation>& get_window_transformation_array() const;
+	//! return a homogeneous 4x4 matrix to transform clip to window coordinates
+	/*! In window coordinates x- and y-coordinates correspond to mouse pixel coordinates
+	    and z to depth value stored in the depth buffer. This is a different convention as
+		in OpenGL where the y-coordinates point from bottom to top instead from top to bottom. 
+		Optionally one can specify a window transformation index with the parameter \c array_index
+		for the case when an array of window transformations is used.*/
+	dmat4 get_window_matrix(unsigned array_index = 0) const;
+	/// return a homogeneous 4x4 matrix to transfrom from model to window coordinates, i.e. the product of modelview, projection and device matrix in reversed order (window_matrix*projection_matrix*modelview_matrix)
+	dmat4 get_modelview_projection_window_matrix(unsigned array_index = 0) const;
+	/// read the window z-coordinate from the depth buffer for the given window x- and y-coordinates
+	virtual double get_window_z(int x_window, int y_window) const = 0;
+	//! compute model space 3D point from the given window location
+	/*! the function queries the window z coordinate from the depth buffer and inversely transforms the
+		window space 3D point with the current modelview_projection_window matrix */
+	inline vec3 get_model_point(int x_window, int y_window) const { 
+		return get_model_point(x_window, y_window, get_window_z(x_window, y_window)); 
+	}
+	//! compute model space 3D point from the given window coordinates
+	/*! the function inversely transforms the window space 3D point with the current
+		modelview_projection_window matrix */
+	inline vec3 get_model_point(int x_window, int y_window, double z_window) const {
+		return get_model_point(x_window, y_window, z_window, get_modelview_projection_window_matrix());
+	}
+	//! compute model space 3D point from the given window location and modelview_projection_window matrix
+	/*! the function queries the window z coordinate from the depth buffer and inversely transforms the
+		window space 3D point with the given modelview_projection_window matrix */
+	inline vec3 get_model_point(int x_window, int y_window, const dmat4& modelview_projection_window_matrix) const {
+		return get_model_point(x_window, y_window, get_window_z(x_window, y_window), modelview_projection_window_matrix);
+	}
+	//! compute model space 3D point from the given window coordinates with the given modelview_projection_window matrix
+	/*! the function inversely transforms the window space 3D point with the given
+		modelview_projection_window matrix */
+	inline vec3 get_model_point(int x_window, int y_window, double z_window, const dmat4& modelview_projection_window_matrix) const {
+		return get_model_point(dvec3(x_window+0.5, y_window+0.5, z_window), modelview_projection_window_matrix);
+	}
+	//! compute model space 3D point from the given window space point
+	/*! the function inversely transforms the window space 3D point with the current
+		modelview_projection_window matrix */
+	inline vec3 get_model_point(const vec3& p_window) const {
+		return get_model_point(p_window, get_modelview_projection_window_matrix());
+	}
+	//! compute model space 3D point from the given window space point and the given modelview_projection_window matrix
+	/*! the function inversely transforms the window space point with the given
+		modelview_projection_window matrix */
+	vec3 get_model_point(const dvec3& p_window, const dmat4& modelview_projection_window_matrix) const;
 	/// return homogeneous 4x4 projection matrix, which transforms from clip to device space
-	virtual dmat4 get_device_matrix() const = 0;
+	DEPRECATED("use get_window_matrix() instead.") dmat4 get_device_matrix() const { return get_window_matrix(); }
 	/// return matrix to transfrom from model to device coordinates, i.e. the product of modelview, projection and device matrix in reversed order (device_matrix*projection_matrix*modelview_matrix)
-	dmat4 get_modelview_projection_device_matrix() const;
-	/// read the device z-coordinate from the z-buffer for the given device x- and y-coordinates
-	virtual double get_z_D(int x_D, int y_D) const = 0;
+	DEPRECATED("use get_modelview_projection_window_matrix() instead.") dmat4 get_modelview_projection_device_matrix() const;
+	/// read the window z-coordinate from the z-buffer for the given device x- and y-coordinates
+	DEPRECATED("use get_window_z()") double get_z_D(int x_D, int y_D) const { return get_window_z(x_D, y_D); }
 	/// compute the location in world space of a device x/y-location. For this the device point is extended with the device z-coordinate currently stored in the displayed depth buffer.
-	vec3 get_point_W(int x_D, int y_D) const;
+	DEPRECATED("use get_model_point()") vec3 get_point_W(int x_D, int y_D) const { return get_model_point(x_D, y_D); }
 	/// compute the location in world space of a device x/y-location by inversion of the given transformation from world to device space. For this the device point is extended with the device z-coordinate currently stored in the displayed depth buffer.
-	vec3 get_point_W(int x_D, int y_D, const dmat4& modelview_projection_device_matrix) const;
+	DEPRECATED("use get_model_point()") vec3 get_point_W(int x_D, int y_D, const dmat4& MPD) const { return get_model_point(x_D, y_D, MPD); }
 	/// compute the location in world space of a device point. For this the current world to device transformation is inverted.
-	vec3 get_point_W(int x_D, int y_D, double z_D) const;
+	DEPRECATED("use get_model_point()") vec3 get_point_W(int x_D, int y_D, double z_D) const { return get_model_point(x_D, y_D, z_D); }
 	/// compute the location in world space of a device point by inversion of the given world to device transformation.
-	vec3 get_point_W(int x_D, int y_D, double z_D, const dmat4& modelview_projection_device_matrix) const;
+	DEPRECATED("use get_model_point()") vec3 get_point_W(int x_D, int y_D, double z_D, const dmat4& MPD) const { return get_model_point(x_D, y_D, z_D, MPD); }
 	/// compute a the location in world space of a device point.
-	vec3 get_point_W(const vec3& p_D) const;
+	DEPRECATED("use get_model_point()") vec3 get_point_W(const vec3& p_D) const { return get_model_point(p_D); }
 	/// compute a the location in world space of a device point.
-	virtual vec3 get_point_W(const vec3& p_D, const dmat4& modelview_projection_device_matrix) const;
+	DEPRECATED("use get_model_point()") vec3 get_point_W(const vec3& p_D, const dmat4& MPD) const { return get_model_point(p_D, MPD); }
 	//@}
 };
 

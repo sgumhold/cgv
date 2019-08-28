@@ -274,7 +274,7 @@ void view::zoom(double factor)
 	y_extent_at_focus *= factor;
 }
 
-int view::get_modelview_projection_device_matrices(int x, int y, int width, int height,
+int view::get_modelview_projection_window_matrices(int x, int y, int width, int height,
 	const dmat4** DPV_pptr,
 	const dmat4** DPV_other_pptr, int* x_other_ptr, int* y_other_ptr,
 	int* vp_col_idx_ptr, int* vp_row_idx_ptr,

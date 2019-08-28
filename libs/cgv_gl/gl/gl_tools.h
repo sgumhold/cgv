@@ -67,8 +67,15 @@ extern CGV_API bool read_image_to_textures(const std::string& file_name, std::ve
 /// cover the current viewport or a rectangle with it with a quad textured by a 1D texture
 extern CGV_API void gl_1D_texture_to_screen(bool vary_along_x = true, float xmin = -1.0f, float ymin = -1.0f, float xmax = 1.0f, float ymax = 1.0f);
 
-/// cover the current viewport or a rectangle with a textured quad, where the texture coverage can be adjusted with [u|v][min|max]
-extern CGV_API void gl_texture_to_screen(float xmin = -1.0f, float ymin = -1.0f, float xmax = 1.0f, float ymax = 1.0f,
+//! cover the current viewport with a textured quad using the textured default shader program or the one passed in the third parameter
+/*! A shader program passed in the third parameter must have the vertex attributes
+    in vec4 position;
+	in vec2 texcoord
+*/
+extern CGV_API bool cover_screen(context& ctx, shader_program* prog_ptr = 0);
+
+
+DEPRECATED("deprecated, use cover_screen instead.") extern CGV_API void gl_texture_to_screen(float xmin = -1.0f, float ymin = -1.0f, float xmax = 1.0f, float ymax = 1.0f,
 										 float umin =  0.0f, float vmin =  0.0f, float umax = 1.0f, float vmax = 1.0f);
 
 /// set the program variables needed by the lighting.glsl shader

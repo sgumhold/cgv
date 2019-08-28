@@ -2,6 +2,8 @@
 
 #include <cgv_gl/gl/gl.h>
 #include <cgv/render/frame_buffer.h>
+#include <cgv/render/attribute_array_binding.h>
+#include <cgv/math/ftransform.h>
 #include <cgv/render/shader_program.h>
 #include <iostream>
 
@@ -669,6 +671,58 @@ unsigned int create_texture(const cgv::data::const_data_view& dv, unsigned level
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 	return tex_id;
+}
+
+/// cover the current viewport with a textured quad using the textured default shader program or the one passed in the third parameter
+bool cover_screen(context& ctx, shader_program* prog_ptr)
+{
+	shader_program& prog = prog_ptr ? *prog_ptr : ctx.ref_default_shader_program(true);
+	if (!prog.enable(ctx)) {
+		return false;
+	}
+	else
+		if (!prog_ptr)
+			ctx.set_color(render_types::rgba(1, 1, 1, 1));
+	int pos_idx = prog.get_position_index();
+	int tex_idx = prog.get_texcoord_index();
+	if (pos_idx == -1 || tex_idx == -1) {
+		ctx.error("cgv::render::gl::render_2d_texture_to_screen() passed program does not have position and texcoord vertex attributes", &prog);
+		prog.disable(ctx);
+		return false;
+	}
+	ctx.push_modelview_matrix();
+	ctx.set_modelview_matrix(cgv::math::identity4<double>());
+	ctx.push_projection_matrix();
+	ctx.set_projection_matrix(cgv::math::identity4<double>());
+	
+	static render_types::vec4 positions[4] = {
+		render_types::vec4(-1,-1, 0, 1),
+		render_types::vec4( 1,-1, 0, 1),
+		render_types::vec4(-1, 1, 0, 1),
+		render_types::vec4( 1, 1, 0, 1)
+	};
+	static render_types::vec2 texcoords[4] = {
+		render_types::vec2(0.0f, 0.0f),
+		render_types::vec2(1.0f, 0.0f),
+		render_types::vec2(0.0f, 1.0f),
+		render_types::vec2(1.0f, 1.0f)
+	};
+
+	attribute_array_binding::set_global_attribute_array(ctx, pos_idx, positions, 4);
+	attribute_array_binding::enable_global_array(ctx, pos_idx);
+	attribute_array_binding::set_global_attribute_array(ctx, tex_idx, texcoords, 4);
+	attribute_array_binding::enable_global_array(ctx, tex_idx);
+
+	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+
+	attribute_array_binding::disable_global_array(ctx, pos_idx);
+	attribute_array_binding::disable_global_array(ctx, tex_idx);
+
+	ctx.pop_projection_matrix();
+	ctx.pop_modelview_matrix();
+
+	prog.disable(ctx);
+	return true;
 }
 
 /// cover the current viewport with a textured quad
