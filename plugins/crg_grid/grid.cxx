@@ -153,7 +153,7 @@ void grid::draw_grid(context &ctx)
 	P(1, 0) = 0.0; P(1, 1) = 1.0; P(1, 2) = 0.0; P(1, 3) = 0.0;
 	P(2, 0) = 0.0; P(2, 1) = 0.0; P(2, 2) = 1.0; P(2, 3) = 0.0;
 	P(3, 0) = 1.0; P(3, 1) = 1.0; P(3, 2) = 1.0; P(3, 3) = 1.0;
-	P = ctx.get_modelview_projection_device_matrix()*P;
+	P = ctx.get_modelview_projection_window_matrix()*P;
 
 	// compute clip space origin
 	dvec3 l, O_clip = 1 / P(3, 3)*reinterpret_cast<const dvec3&>(P.col(3));

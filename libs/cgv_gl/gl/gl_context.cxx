@@ -231,7 +231,7 @@ bool gl_context::configure_gl()
 	// this makes opengl normalize all surface normals before lighting calculations,
 	// which is essential when using scaling to deform tesselated primities
 	glEnable(GL_NORMALIZE);
-	glViewport(0, 0, get_width(), get_height());
+	set_viewport(ivec4(0, 0, get_width(), get_height()));
 	if (check_gl_error("gl_context::configure_gl before init of children"))
 		return false;
 	
@@ -249,7 +249,7 @@ bool gl_context::configure_gl()
 void gl_context::resize_gl()
 {
 	group_ptr grp(dynamic_cast<group*>(this));
-	glViewport(0, 0, get_width(), get_height());
+	set_viewport(ivec4(0, 0, get_width(), get_height()));
 	if (grp) {
 		single_method_action_2<drawable, void, unsigned int, unsigned int> sma(get_width(), get_height(), &drawable::resize);
 		traverser(sma).traverse(grp);
@@ -1078,7 +1078,76 @@ gl_context::dmat4 gl_context::get_projection_matrix() const
 		return identity4<double>();
 	return projection_matrix_stack.top();
 }
+/// restore previous viewport and depth range arrays defining the window transformations
+void gl_context::pop_window_transformation_array()
+{
+	context::pop_window_transformation_array();
+	update_window_transformation_array();
+}
 
+void gl_context::update_window_transformation_array()
+{
+	const std::vector<window_transformation>& wta = window_transformation_stack.top();
+	if (wta.size() == 1) {
+		const ivec4& viewport = wta.front().viewport;
+		const dvec2& depth_range = wta.front().depth_range;
+		glViewport(viewport[0], viewport[1], (GLsizei)viewport[2], (GLsizei)viewport[3]);
+		glScissor(viewport[0], viewport[1], (GLsizei)viewport[2], (GLsizei)viewport[3]);
+		glDepthRange(depth_range[0], depth_range[1]);
+	}
+	else {
+		for (size_t array_index = 0; array_index < wta.size(); ++array_index) {
+			const ivec4& viewport    = wta[array_index].viewport;
+			const dvec2& depth_range = wta[array_index].depth_range;
+			glViewportIndexedf(array_index, (GLfloat)viewport[0], (GLfloat)viewport[1], (GLfloat)viewport[2], (GLfloat)viewport[3]);
+			glScissorIndexed(array_index, viewport[0], viewport[1], (GLsizei)viewport[2], (GLsizei)viewport[3]);
+			glDepthRangeIndexed(array_index, (GLclampd)depth_range[0], (GLclampd)depth_range[1]);
+		}
+	}
+}
+
+unsigned gl_context::get_max_window_transformation_array_size() const
+{
+	GLint max_value = 1;
+	if (GLEW_VERSION_4_1)
+		glGetIntegerv(GL_MAX_VIEWPORTS, &max_value);
+	return max_value;
+}
+
+/// set the current viewport or one of the viewports in the window transformation array
+void gl_context::set_viewport(const ivec4& viewport, int array_index)
+{
+	size_t nr = window_transformation_stack.top().size();
+	context::set_viewport(viewport, array_index);
+	if (nr != window_transformation_stack.top().size())
+		update_window_transformation_array();
+	else {
+		if (array_index < 1) {
+			glViewport(viewport[0], viewport[1], (GLsizei)viewport[2], (GLsizei)viewport[3]);
+			glScissor(viewport[0], viewport[1], (GLsizei)viewport[2], (GLsizei)viewport[3]);
+		}
+		else {
+			glViewportIndexedf(array_index, (GLfloat)viewport[0], (GLfloat)viewport[1], (GLfloat)viewport[2], (GLfloat)viewport[3]);
+			glScissorIndexed(array_index, viewport[0], viewport[1], (GLsizei)viewport[2], (GLsizei)viewport[3]);
+		}
+	}
+}
+
+/// set the current depth range or one of the depth ranges in the window transformation array
+void gl_context::set_depth_range(const dvec2& depth_range, int array_index)
+{
+	size_t nr = window_transformation_stack.top().size();
+	context::set_depth_range(depth_range, array_index);
+	if (nr != window_transformation_stack.top().size())
+		update_window_transformation_array();
+	else {
+		if (array_index < 1)
+			glDepthRange(depth_range[0], depth_range[1]);
+		else
+			glDepthRangeIndexed(array_index, (GLclampd)depth_range[0], (GLclampd)depth_range[1]);
+	}
+}
+/*
 /// return homogeneous 4x4 projection matrix, which transforms from clip to device space
 gl_context::dmat4 gl_context::get_device_matrix() const
 {
@@ -1094,7 +1163,7 @@ gl_context::dmat4 gl_context::get_device_matrix() const
 	D(3, 3) = 1.0;
 	return D;
 }
-
+*/
 void gl_context::set_modelview_matrix(const dmat4& V)
 {
 	if (support_compatibility_mode) {
@@ -1120,14 +1189,14 @@ void gl_context::set_projection_matrix(const dmat4& P)
 }
 
 /// read the device z-coordinate from the z-buffer for the given device x- and y-coordinates
-double gl_context::get_z_D(int x_D, int y_D) const
+double gl_context::get_window_z(int x_window, int y_window) const
 {
-	GLfloat z_D;
+	GLfloat z_window;
 
 	if (!in_render_process() && !is_current())
 		make_current();
 
-	glReadPixels(x_D, get_height()-y_D-1, 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &z_D);
+	glReadPixels(x_window, get_height()-y_window-1, 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &z_window);
 	/*
 	GLenum err = glGetError();
 	if (err != GL_NO_ERROR) {
@@ -1145,7 +1214,7 @@ double gl_context::get_z_D(int x_D, int y_D) const
 
 	}
 	*/
-	return z_D;
+	return z_window;
 }
 static const GLenum gl_depth_format_ids[] = 
 {
