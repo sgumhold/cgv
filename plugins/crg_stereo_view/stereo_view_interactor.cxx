@@ -342,14 +342,17 @@ void stereo_view_interactor::activate_split_viewport(cgv::render::context& ctx, 
 {
 	if (!do_viewport_splitting)
 		return;
-	glGetIntegerv(GL_VIEWPORT, current_vp);
-	glGetIntegerv(GL_SCISSOR_BOX, current_sb);
-	int new_vp[4], new_sb[4];
-
+	//glGetIntegerv(GL_VIEWPORT, current_vp);
+	//glGetIntegerv(GL_SCISSOR_BOX, current_sb);
+	//int new_vp[4], new_sb[4];
+	const ivec4& current_vp = ctx.get_window_transformation_array().front().viewport;
+	ivec4 new_vp;
 	new_vp[2] = current_vp[2] / nr_viewport_columns;
 	new_vp[0] = current_vp[0] + col_index * new_vp[2];
 	new_vp[3] = current_vp[3] / nr_viewport_rows;
 	new_vp[1] = current_vp[1] + (nr_viewport_rows - row_index - 1) * new_vp[3];
+
+	/*
 	new_sb[2] = current_sb[2] / nr_viewport_columns;
 	new_sb[0] = current_sb[0] + col_index * new_sb[2];
 	new_sb[3] = current_sb[3] / nr_viewport_rows;
@@ -357,6 +360,10 @@ void stereo_view_interactor::activate_split_viewport(cgv::render::context& ctx, 
 
 	glViewport(new_vp[0], new_vp[1], new_vp[2], new_vp[3]);
 	glScissor(new_sb[0], new_sb[1], new_sb[2], new_sb[3]);
+	*/
+
+	ctx.push_window_transformation_array();
+	ctx.set_viewport(new_vp);
 
 	double aspect = (double)new_vp[2] / new_vp[3];
 	unsigned view_index = get_viewport_index(col_index, row_index);
@@ -368,7 +375,7 @@ void stereo_view_interactor::activate_split_viewport(cgv::render::context& ctx, 
 		compute_clipping_planes(z_near_derived, z_far_derived, clip_relative_to_extent);
 		gl_set_modelview_matrix(ctx, current_e, aspect, views[view_index]);
 	}
-	((current_e == GLSU_RIGHT) ? DPVs_right : DPVs)[view_index] = ctx.get_modelview_projection_device_matrix();
+	((current_e == GLSU_RIGHT) ? MPWs_right : MPWs)[view_index] = ctx.get_modelview_projection_window_matrix();
 }
 
 /// deactivate the previously split viewport
@@ -377,9 +384,13 @@ void stereo_view_interactor::deactivate_split_viewport(cgv::render::context& ctx
 	if (!do_viewport_splitting)
 		return;
 
+	ctx.pop_window_transformation_array();
+	/*
 	glViewport(current_vp[0], current_vp[1], current_vp[2], current_vp[3]);
 	glScissor(current_sb[0], current_sb[1], current_sb[2], current_sb[3]);
+	*/
 
+	const ivec4& current_vp = ctx.get_window_transformation_array().front().viewport;
 	double aspect = (double)current_vp[2] / current_vp[3];
 	gl_set_projection_matrix(ctx, current_e, aspect);
 	gl_set_modelview_matrix(ctx, current_e, aspect, *this);
@@ -401,17 +412,17 @@ cgv::render::view& stereo_view_interactor::ref_viewport_view(unsigned col_index,
 	return views[view_index];
 }
 
-//! given a mouse location and the pixel extent of the context, return the DPV matrix for unprojection
-int stereo_view_interactor::get_modelview_projection_device_matrices(int x, int y, int width, int height,
-	const dmat4** DPV_pptr,
-	const dmat4** DPV_other_pptr, int* x_other_ptr, int* y_other_ptr,
+//! given a mouse location and the pixel extent of the context, return the MPW matrix for unprojection
+int stereo_view_interactor::get_modelview_projection_window_matrices(int x, int y, int width, int height,
+	const dmat4** MPW_pptr,
+	const dmat4** MPW_other_pptr, int* x_other_ptr, int* y_other_ptr,
 	int* vp_col_idx_ptr, int* vp_row_idx_ptr,
 	int* vp_width_ptr, int *vp_height_ptr,
 	int* vp_center_x_ptr, int* vp_center_y_ptr,
 	int* vp_center_x_other_ptr, int* vp_center_y_other_ptr) const
 {
-	*DPV_pptr = &DPV;
-	const dmat4* DPV_other_ptr_local = &DPV;
+	*MPW_pptr = &MPW;
+	const dmat4* MPW_other_ptr_local = &MPW;
 	int vp_width = width;
 	int vp_height = height;
 	int eye_panel = 0;
@@ -426,13 +437,13 @@ int stereo_view_interactor::get_modelview_projection_device_matrices(int x, int 
 			vp_height /= 2;
 			if (y > vp_height) {
 				eye_panel = 1;
-				*DPV_pptr = &DPV_right;
+				*MPW_pptr = &MPW_right;
 				y_other   = y - vp_height;
 				off_y     = vp_height;
 			}
 			else {
 				eye_panel = -1;
-				DPV_other_ptr_local = &DPV_right;
+				MPW_other_ptr_local = &MPW_right;
 				y_other   = y + vp_height;
 				off_y_other = vp_height;
 			}
@@ -441,19 +452,19 @@ int stereo_view_interactor::get_modelview_projection_device_matrices(int x, int 
 			vp_width /= 2;
 			if (x >= vp_width) {
 				eye_panel = 1;
-				*DPV_pptr = &DPV_right;
+				*MPW_pptr = &MPW_right;
 				x_other   = x - vp_width;
 				off_x     = vp_width;
 			}
 			else {
 				eye_panel = -1;
-				DPV_other_ptr_local = &DPV_right;
+				MPW_other_ptr_local = &MPW_right;
 				x_other   = x + vp_width;
 				off_x_other = vp_width;
 			}
 			break;
 		default:
-			DPV_other_ptr_local = &DPV_right;
+			MPW_other_ptr_local = &MPW_right;
 			break;
 		}
 	}
@@ -471,27 +482,27 @@ int stereo_view_interactor::get_modelview_projection_device_matrices(int x, int 
 		off_y_other += vp_row_idx * vp_height;
 		int vp_idx = vp_row_idx*last_nr_viewport_columns + vp_col_idx;
 		if (eye_panel == 1) {
-			if (vp_idx < (int)DPVs_right.size())
-				*DPV_pptr           = &DPVs_right[vp_idx];
-			if (vp_idx < (int)DPVs.size())
-				DPV_other_ptr_local = &DPVs[vp_idx];
+			if (vp_idx < (int)MPWs_right.size())
+				*MPW_pptr           = &MPWs_right[vp_idx];
+			if (vp_idx < (int)MPWs.size())
+				MPW_other_ptr_local = &MPWs[vp_idx];
 		}
 		else {
-			if (vp_idx < (int)DPVs.size())
-				*DPV_pptr = &DPVs[vp_idx];
+			if (vp_idx < (int)MPWs.size())
+				*MPW_pptr = &MPWs[vp_idx];
 			if (stereo_enabled) {
-				if (vp_idx < (int)DPVs_right.size())
-					DPV_other_ptr_local = &DPVs_right[vp_idx];
+				if (vp_idx < (int)MPWs_right.size())
+					MPW_other_ptr_local = &MPWs_right[vp_idx];
 			}
 			else {
-				if (vp_idx < (int)DPVs.size())
-					DPV_other_ptr_local = &DPVs[vp_idx];
+				if (vp_idx < (int)MPWs.size())
+					MPW_other_ptr_local = &MPWs[vp_idx];
 			}
 		}
 	}
 
-	if (DPV_other_pptr)
-		*DPV_other_pptr = DPV_other_ptr_local;
+	if (MPW_other_pptr)
+		*MPW_other_pptr = MPW_other_ptr_local;
 	if (x_other_ptr)
 		*x_other_ptr = x_other;
 	if (y_other_ptr)
@@ -518,26 +529,26 @@ int stereo_view_interactor::get_modelview_projection_device_matrices(int x, int 
 
 void stereo_view_interactor::get_vp_col_and_row_indices(cgv::render::context& ctx, int x, int y, int& vp_col_idx, int& vp_row_idx)
 {
-	const dmat4* DPV_ptr, *DPV_other_ptr;
+	const dmat4* MPW_ptr, *MPW_other_ptr;
 	int x_other, y_other, vp_width, vp_height;
-	int eye_panel = get_modelview_projection_device_matrices(x, y, ctx.get_width(), ctx.get_height(), &DPV_ptr, &DPV_other_ptr, &x_other, &y_other, &vp_col_idx, &vp_row_idx, &vp_width, &vp_height);
+	int eye_panel = get_modelview_projection_window_matrices(x, y, ctx.get_width(), ctx.get_height(), &MPW_ptr, &MPW_other_ptr, &x_other, &y_other, &vp_col_idx, &vp_row_idx, &vp_width, &vp_height);
 }
 
 double stereo_view_interactor::get_z_and_unproject(cgv::render::context& ctx, int x, int y, dvec3& p)
 {
-	const dmat4* DPV_ptr, *DPV_other_ptr;
+	const dmat4* MPW_ptr, *MPW_other_ptr;
 	int x_other, y_other, vp_col_idx, vp_row_idx, vp_width, vp_height;
-	int eye_panel = get_modelview_projection_device_matrices(x, y, ctx.get_width(), ctx.get_height(), &DPV_ptr, &DPV_other_ptr, &x_other, &y_other, &vp_col_idx, &vp_row_idx, &vp_width, &vp_height);
+	int eye_panel = get_modelview_projection_window_matrices(x, y, ctx.get_width(), ctx.get_height(), &MPW_ptr, &MPW_other_ptr, &x_other, &y_other, &vp_col_idx, &vp_row_idx, &vp_width, &vp_height);
 	ctx.make_current();
-	double z       = ctx.get_z_D(x, y);
-	double z_other = ctx.get_z_D(x_other, y_other);
+	double z       = ctx.get_window_z(x, y);
+	double z_other = ctx.get_window_z(x_other, y_other);
 
 	if (z <= z_other) {
-		p = ctx.get_point_W(x, y, z, *DPV_ptr);
+		p = ctx.get_model_point(x, y, z, *MPW_ptr);
 		return z;
 	}
 	else {
-		p = ctx.get_point_W(x_other, y_other, z_other, *DPV_other_ptr);
+		p = ctx.get_model_point(x_other, y_other, z_other, *MPW_other_ptr);
 		return z_other;
 	}
 }
@@ -996,7 +1007,7 @@ void stereo_view_interactor::finish_frame(cgv::render::context& ctx)
 }
 
 ///
-void stereo_view_interactor::draw_mouse_pointer_as_bitmap(cgv::render::context& ctx, int x, int y, int center_x, int center_y, int vp_width, int vp_height, bool visible, const dmat4 &DPV)
+void stereo_view_interactor::draw_mouse_pointer_as_bitmap(cgv::render::context& ctx, int x, int y, int center_x, int center_y, int vp_width, int vp_height, bool visible, const dmat4 &MPW)
 {
 	static unsigned char bitmap_data[] = {
 		0x40, 0x00,
@@ -1018,7 +1029,7 @@ void stereo_view_interactor::draw_mouse_pointer_as_bitmap(cgv::render::context& 
 	};
 
 	double z0_D = get_z_D(-get_parallax_zero_depth(), z_near_derived, z_far_derived);
-	vec3 p = ctx.get_point_W(x, y, z0_D, DPV);
+	vec3 p = ctx.get_model_point(x, y, z0_D, MPW);
 	glRasterPos3d(p(0), p(1), p(2));
 	if (visible)
 		glColor3f(1.0f, 1.0f, 1.0f);
@@ -1028,7 +1039,7 @@ void stereo_view_interactor::draw_mouse_pointer_as_bitmap(cgv::render::context& 
 	glBitmap(16, 16, 0, 0, 0, 0, bitmap_data);
 }
 ///
-void stereo_view_interactor::draw_mouse_pointer_as_pixels(cgv::render::context& ctx, int x, int y, int center_x, int center_y, int vp_width, int vp_height, bool visible, const dmat4 &DPV)
+void stereo_view_interactor::draw_mouse_pointer_as_pixels(cgv::render::context& ctx, int x, int y, int center_x, int center_y, int vp_width, int vp_height, bool visible, const dmat4 &MPW)
 {
 	static unsigned char pixel_data[] = {
 		0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -1057,7 +1068,7 @@ void stereo_view_interactor::draw_mouse_pointer_as_pixels(cgv::render::context& 
 
 	double z0_D = get_z_D(-get_parallax_zero_depth(), z_near_derived, z_far_derived);
 
-	vec3 p = ctx.get_point_W(x, y, z0_D, DPV);
+	vec3 p = ctx.get_model_point(x, y, z0_D, MPW);
 	glRasterPos3d(p(0), p(1), p(2));
 
 	glEnable(GL_ALPHA_TEST);
@@ -1073,7 +1084,7 @@ void stereo_view_interactor::draw_mouse_pointer_as_pixels(cgv::render::context& 
 }
 
 ///
-void stereo_view_interactor::draw_mouse_pointer_as_arrow(cgv::render::context& ctx, int x, int y, int center_x, int center_y, int vp_width, int vp_height, bool visible, const dmat4 &DPV)
+void stereo_view_interactor::draw_mouse_pointer_as_arrow(cgv::render::context& ctx, int x, int y, int center_x, int center_y, int vp_width, int vp_height, bool visible, const dmat4 &MPW)
 {
 	static cgv::media::illum::surface_material smp_mat_visible;
 	static cgv::media::illum::surface_material smp_mat_hidden;
@@ -1109,8 +1120,8 @@ void stereo_view_interactor::draw_mouse_pointer_as_arrow(cgv::render::context& c
 	float ds_begin = 1.5f / len;
 	int dx_begin = int(dx*ds_begin);
 	int dy_begin = int(dy*ds_begin);
-	dvec3 p_end   = ctx.get_point_W(x + dx_begin, y + dy_begin, z0_D, DPV);
-	dvec3 p_begin = ctx.get_point_W(x + dx_end, y + dy_end, z0_D, DPV);
+	dvec3 p_end   = ctx.get_model_point(x + dx_begin, y + dy_begin, z0_D, MPW);
+	dvec3 p_begin = ctx.get_model_point(x + dx_end, y + dy_end, z0_D, MPW);
 	p_begin -= 0.3f*(p_begin - p_end).length()*get_view_dir();
 
 	shader_program& prog = ctx.ref_surface_shader_program();
@@ -1139,11 +1150,11 @@ void stereo_view_interactor::draw_mouse_pointer_as_arrow(cgv::render::context& c
 
 void stereo_view_interactor::draw_mouse_pointer(cgv::render::context& ctx, bool visible)
 {
-	const dmat4* DPV_ptr, *DPV_other_ptr;
+	const dmat4* MPW_ptr, *MPW_other_ptr;
 	int x, y, center_x, center_y;
 	int x_other, y_other, vp_col_idx, vp_row_idx, vp_width, vp_height, vp_center_x, vp_center_y, vp_center_x_other, vp_center_y_other;
-	int eye_panel = get_modelview_projection_device_matrices(last_x, last_y, ctx.get_width(), ctx.get_height(), 
-							 &DPV_ptr, &DPV_other_ptr, &x_other, &y_other, 
+	int eye_panel = get_modelview_projection_window_matrices(last_x, last_y, ctx.get_width(), ctx.get_height(),
+							 &MPW_ptr, &MPW_other_ptr, &x_other, &y_other, 
 							 &vp_col_idx, &vp_row_idx, &vp_width, &vp_height,
 							 &vp_center_x, &vp_center_y, &vp_center_x_other, &vp_center_y_other);
 
@@ -1160,7 +1171,7 @@ void stereo_view_interactor::draw_mouse_pointer(cgv::render::context& ctx, bool 
 		y = y_other;
 		center_x = vp_center_x_other;
 		center_y = vp_center_y_other;
-		DPV_ptr = DPV_other_ptr;
+		MPW_ptr = MPW_other_ptr;
 	}
 	glPushAttrib(GL_DEPTH_BUFFER_BIT | GL_LINE_BIT | GL_POLYGON_BIT | GL_COLOR_BUFFER_BIT | GL_PIXEL_MODE_BIT);
 		if (is_viewport_splitting_enabled())
@@ -1177,13 +1188,13 @@ void stereo_view_interactor::draw_mouse_pointer(cgv::render::context& ctx, bool 
 		switch (stereo_mouse_pointer) {
 		case SMP_BITMAP:
 			if (visible)
-				draw_mouse_pointer_as_bitmap(ctx, x, y, center_x, center_y, vp_width, vp_height, visible, *DPV_ptr);
+				draw_mouse_pointer_as_bitmap(ctx, x, y, center_x, center_y, vp_width, vp_height, visible, *MPW_ptr);
 			break;
 		case SMP_PIXELS:
-				draw_mouse_pointer_as_pixels(ctx, x, y, center_x, center_y, vp_width, vp_height, visible, *DPV_ptr);
+				draw_mouse_pointer_as_pixels(ctx, x, y, center_x, center_y, vp_width, vp_height, visible, *MPW_ptr);
 			break;
 		case SMP_ARROW:
-				draw_mouse_pointer_as_arrow(ctx, x, y, center_x, center_y, vp_width, vp_height, visible, *DPV_ptr);
+				draw_mouse_pointer_as_arrow(ctx, x, y, center_x, center_y, vp_width, vp_height, visible, *MPW_ptr);
 			break;
 		}
 		if (is_viewport_splitting_enabled())
@@ -1324,14 +1335,14 @@ void stereo_view_interactor::init_frame(context& ctx)
 		gl_set_modelview_matrix(ctx, current_e, aspect, *this);
 
 		if (current_e == GLSU_RIGHT) {
-			DPV_right = ctx.get_modelview_projection_device_matrix();
+			MPW_right = ctx.get_modelview_projection_window_matrix();
 			if (do_viewport_splitting)
-				DPVs_right = std::vector<dmat4>(nr_viewport_rows*nr_viewport_columns, DPV_right);
+				MPWs_right = std::vector<dmat4>(nr_viewport_rows*nr_viewport_columns, MPW_right);
 		}
 		else {
-			DPV = ctx.get_modelview_projection_device_matrix();
+			MPW = ctx.get_modelview_projection_window_matrix();
 			if (do_viewport_splitting)
-				DPVs = std::vector<dmat4>(nr_viewport_rows*nr_viewport_columns, DPV);
+				MPWs = std::vector<dmat4>(nr_viewport_rows*nr_viewport_columns, MPW);
 		}
 	}
 }

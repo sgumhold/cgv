@@ -4,7 +4,7 @@
 #include <cgv/math/vec.h>
 #include <cgv/gui/event_handler.h>
 #include <cgv/render/drawable.h>
-#include <cgv_gl/point_renderer.h>
+#include <cgv_gl/sphere_renderer.h>
 
 /// the picker allows to place points on a square and to remove them again
 class picker : 
@@ -14,26 +14,22 @@ class picker :
 {
 protected:
 	/// store list of picked points
-	std::vector<vec2> pnts;
+	std::vector<vec3> pnts;
 	/// store a point render style
-	cgv::render::point_render_style prs;
-	///
-	cgv::render::point_renderer pr;
+	cgv::render::sphere_render_style srs;
 	///
 	cgv::render::view* view_ptr;
 	/// check if a world point is close enough to the drawing square
 	bool is_inside(const vec3& p3d) const;
-	/// transform from 3d world to 2d parametric space
-	vec2 transform_2_local(const vec3& p3d) const;
 	/// find closest point and return index or -1 if we do not have any points yet
-	int find_closest(const vec2& p2d) const;
+	int find_closest(const vec3& p3d) const;
 private:
 	/// store index of to be tracked point
 	int drag_pnt_idx;
 	///
 	bool is_drag_action;
 	/// store the last transformation matrix
-	mat4 MVPD;
+	mat4 MPW;
 public:
 	/// construct from name which is necessary construction argument to node
 	picker(const char* name);
@@ -45,6 +41,8 @@ public:
 	void stream_help(std::ostream& os);
 	/// init renderer
 	bool init(cgv::render::context&);
+	/// init renderer
+	void destruct(cgv::render::context&);
 	/// optional method of drawable
 	void draw(cgv::render::context&);
 };

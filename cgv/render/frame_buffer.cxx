@@ -145,6 +145,19 @@ bool frame_buffer::enable(context& ctx, std::vector<int>& indices)
 	return ctx.frame_buffer_enable(*this);
 }
 
+/// push a new window transformation to cover the fbo onto the window transformation stack
+void frame_buffer::push_viewport(context& ctx, const cgv::render::render_types::dvec2& depth_range)
+{
+	ctx.push_window_transformation_array();
+	ctx.set_viewport(render_types::ivec4(0, 0, get_width(), get_height()));
+	ctx.set_depth_range(depth_range);
+}
+
+/// recover the window transformation array active before the last call to push_viewport
+void frame_buffer::pop_viewport(context& ctx)
+{
+	ctx.pop_window_transformation_array();
+}
 
 /// disable the framebuffer object
 bool frame_buffer::disable(context& ctx)

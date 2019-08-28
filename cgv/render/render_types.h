@@ -69,6 +69,12 @@ namespace cgv {
 			typedef cgv::math::quaternion<float> quat;
 			/// declare type of double quaternion
 			typedef cgv::math::quaternion<double> dquat;
+			/// declare type of 2d integer vectors
+			typedef cgv::math::fvec<int, 2> ivec2;
+			/// declare type of 3d integer vectors
+			typedef cgv::math::fvec<int, 3> ivec3;
+			/// declare type of 4d integer vectors
+			typedef cgv::math::fvec<int, 4> ivec4;
 
 		};
 
