@@ -11,10 +11,12 @@ picker::picker(const char* name) : node(name)
 {
 	drag_pnt_idx = -1;
 	is_drag_action = false;
-	prs.point_size = 10;
-	pnts.push_back(vec2(0.0f));
-	pnts.push_back(vec2(0.5f));
-	pnts.push_back(vec2(-0.5f));
+	srs.radius = 0.02f;
+	srs.map_color_to_material = cgv::render::ColorMapping(cgv::render::CM_COLOR_FRONT + cgv::render::CM_COLOR_BACK);
+	srs.surface_color = rgb(1, 0, 0);
+	pnts.push_back(vec3(0.0f));
+	pnts.push_back(vec3(0.5f));
+	pnts.push_back(vec3(-0.5f));
 }
 
 /// show internal values
@@ -26,24 +28,19 @@ void picker::stream_stats(std::ostream& os)
 /// check if a world point is close enough to the drawing square
 bool picker::is_inside(const vec3& p) const
 {
-	return fabs(p(2)) < 0.1 && fabs(p(0)) <= 1 && fabs(p(1)) <= 1;
+	return fabs(p(2)) <= 1.001f && fabs(p(0)) <= 1.001f && fabs(p(1)) <= 1.001f;
 }
 
-/// transform from 3d world to 2d parametric space
-picker::vec2 picker::transform_2_local(const vec3& p3d) const
-{
-	return vec2(p3d(0),p3d(1));
-}
 /// find closest point and return index or -1 if we do not have any points yet
-int picker::find_closest(const vec2& p2d) const
+int picker::find_closest(const vec3& p3d) const
 {
 	if (pnts.empty())
 		return -1;
-	double min_dist = length(pnts[0]-p2d);
+	double min_dist = length(pnts[0]-p3d);
 	int res = 0;
 	for (int i = 1; i < (int)pnts.size(); ++i) {
-		if (length(pnts[i]-p2d) < min_dist) {
-			min_dist = length(pnts[i]-p2d);
+		if (length(pnts[i]-p3d) < min_dist) {
+			min_dist = length(pnts[i]-p3d);
 			res = i;
 		}
 	}
@@ -58,19 +55,18 @@ bool picker::handle(event& e)
 		switch (me.get_action()) {
 		case MA_PRESS :
 			if (me.get_button() == MB_LEFT_BUTTON && me.get_modifiers() == EM_CTRL) {
-				vec3 p = get_context()->get_point_W(me.get_x(), me.get_y(), MVPD);
+				vec3 p = get_context()->get_model_point(me.get_x(), me.get_y(), MPW);
 				if (is_inside(p)) {
 					std::cout << p << std::endl;
-					vec2 q = transform_2_local(p);
 					drag_pnt_idx = -1;
-					int i = find_closest(q);
+					int i = find_closest(p);
 					if (i != -1) {
-						if (length(pnts[i]-q) < 0.03)
+						if (length(pnts[i]-p) < 0.03f)
 							drag_pnt_idx = i;
 					}
 					is_drag_action = drag_pnt_idx == -1;
 					if (is_drag_action) {
-						pnts.push_back(q);
+						pnts.push_back(p);
 						drag_pnt_idx = (int)pnts.size()-1;
 					}
 					post_redraw();
@@ -89,14 +85,14 @@ bool picker::handle(event& e)
 			break;
 		case MA_DRAG :
 			if (drag_pnt_idx != -1) {
-				vec3 p = get_context()->get_point_W(me.get_x(), me.get_y(), MVPD);
+				vec3 p = get_context()->get_model_point(me.get_x(), me.get_y(), MPW);
 				if (!is_inside(p)) {
 					pnts.erase(pnts.begin()+drag_pnt_idx);
 					drag_pnt_idx = -1;
 				}
 				else {
 					is_drag_action = true;
-					pnts[drag_pnt_idx] = transform_2_local(p);
+					pnts[drag_pnt_idx] = p;
 				}
 				post_redraw();
 				return true;
@@ -119,38 +115,42 @@ void picker::stream_help(std::ostream& os)
 bool picker::init(cgv::render::context& ctx)
 {
 	view_ptr = find_view_as_node();
-	pr.set_render_style(prs);
-	return pr.init(ctx);
+	ref_sphere_renderer(ctx, 1);
+	return true;
+}
+
+/// init renderer
+void picker::destruct(cgv::render::context& ctx)
+{
+	ref_sphere_renderer(ctx, -1);
 }
 
 /// optional method of drawable
 void picker::draw(context& ctx)
 {
-	ctx.ref_default_shader_program().enable(ctx);
-	ctx.set_color(rgb(1,0.8f,0.7f));
-	MVPD = ctx.get_modelview_projection_device_matrix();
-	glDisable(GL_CULL_FACE);
-	glPolygonOffset(1,1);
-	glEnable(GL_POLYGON_OFFSET_FILL);
-	ctx.tesselate_unit_square();
-	glEnable(GL_CULL_FACE);
-	glDisable(GL_POLYGON_OFFSET_FILL);
-	ctx.set_color(rgb(0.8f, 0.2f, 0.4f));
-	ctx.ref_default_shader_program().disable(ctx);
+	MPW = ctx.get_modelview_projection_window_matrix();
+
+	auto& prog = ctx.ref_surface_shader_program();
+	prog.set_uniform(ctx, "map_color_to_material", 3);
+	prog.enable(ctx);
+	ctx.set_color(rgb(0.7f,0.5f,0.4f));
+	ctx.tesselate_unit_cube();
+	prog.disable(ctx);
 
 	if (pnts.empty())
 		return;
 
-	glPolygonOffset(-1,-1);
-	glEnable(GL_POLYGON_OFFSET_POINT);
-		pr.set_position_array(ctx, pnts);
-		pr.set_y_view_angle(float(view_ptr->get_y_view_angle()));
-		if (pr.validate_and_enable(ctx)) {
-			ctx.set_color(rgb(1.0f, 0, 0));
-			glDrawArrays(GL_POINTS, 0, GLsizei(pnts.size()));
-			pr.disable(ctx);
-		}
-	glDisable(GL_POLYGON_OFFSET_POINT);
+	glDepthMask(GL_FALSE);
+	auto& sr = ref_sphere_renderer(ctx);
+	sr.set_render_style(srs);
+	sr.set_position_array(ctx, pnts);
+	sr.set_y_view_angle(float(view_ptr->get_y_view_angle()));
+	if (sr.validate_and_enable(ctx)) {
+		ctx.set_color(rgb(1.0f, 0, 0));
+		glDrawArrays(GL_POINTS, 0, GLsizei(pnts.size()));
+		sr.disable(ctx);
+	}
+	glDepthMask(GL_TRUE);
 }
 
 #include <cgv/base/register.h>

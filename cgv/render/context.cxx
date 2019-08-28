@@ -131,6 +131,12 @@ context::context()
 {
 	modelview_matrix_stack.push(cgv::math::identity4<double>());
 	projection_matrix_stack.push(cgv::math::identity4<double>());
+	window_transformation_stack.push(std::vector<window_transformation>());
+	window_transformation wt;
+	wt.viewport = ivec4(0, 0, 640, 480);
+	wt.depth_range = dvec2(0, 1);
+	window_transformation_stack.top().push_back(wt);
+
 	x_offset = 10;
 	y_offset = 20;
 	tab_size = 5;
@@ -1522,7 +1528,7 @@ void context::mul_modelview_matrix(const dmat4& V)
 void context::pop_modelview_matrix()
 {
 	if (modelview_matrix_stack.size() == 1) {
-		std::cerr << "attempt to completely empty modelview stack avoided." << std::endl;
+		error("context::pop_modelview_matrix() ... attempt to completely empty modelview stack avoided.");
 		return;
 	}
 	modelview_matrix_stack.pop();
@@ -1537,7 +1543,7 @@ void context::push_projection_matrix()
 void context::pop_projection_matrix()
 {
 	if (projection_matrix_stack.size() == 1) {
-		std::cerr << "attempt to completely empty projection stack avoided." << std::endl;
+		error("context::pop_projection_matrix() ... attempt to completely empty projection stack avoided.");
 		return;
 	}
 	projection_matrix_stack.pop();
@@ -1583,6 +1589,104 @@ void context::set_projection_matrix(const dmat4& P)
 	set_current_view(prog, false, true);
 }
 
+void context::push_window_transformation_array()
+{
+	window_transformation_stack.push(window_transformation_stack.top());
+}
+/// recover the previous viewport and depth range settings; an error is emitted if the window_transformation stack becomes empty
+void context::pop_window_transformation_array()
+{
+	if (window_transformation_stack.size() <= 1)
+		error("context::pop_window_transformation_array() ... attempt to pop last window transformation array.");
+	else
+		window_transformation_stack.pop();
+}
+
+bool context::ensure_window_transformation_index(int& array_index)
+{
+	if (array_index == -1) {
+		window_transformation_stack.top().resize(1);
+		array_index = 0;
+		return true;
+	}
+	else {
+		if (array_index >= (int)window_transformation_stack.top().size()) {
+			if (array_index > (int)get_max_window_transformation_array_size()) {
+				std::string message("context::ensure_window_transformation_index() ... attempt to resize window transformation array larger than maximum allowed size of ");
+				message += cgv::utils::to_string(get_max_window_transformation_array_size());
+				error(message);
+				return false;
+			}
+			window_transformation_stack.top().resize(array_index + 1);
+		}
+	}
+	return true;
+}
+
+void context::set_viewport(const ivec4& viewport, int array_index)
+{
+	if (!ensure_window_transformation_index(array_index))
+		return;
+	window_transformation_stack.top().at(array_index).viewport = viewport;
+}
+
+void context::set_depth_range(const dvec2& depth_range, int array_index)
+{
+	if (!ensure_window_transformation_index(array_index))
+		return;
+	window_transformation_stack.top().at(array_index).depth_range = depth_range;
+}
+
+const std::vector<window_transformation>& context::get_window_transformation_array() const
+{
+	return window_transformation_stack.top();
+}
+
+/// return a homogeneous 4x4 matrix to transform clip to window coordinates, optionally specify for the case of multiple viewports/depth ranges
+context::dmat4 context::get_window_matrix(unsigned array_index) const
+{
+	if (array_index >= window_transformation_stack.size()) {
+		std::string message("context::get_window_matrix() ... attempt to query window matrix with array index ");
+		message += cgv::utils::to_string(array_index);
+		message += " out of range [0,";
+		message += cgv::utils::to_string(window_transformation_stack.size());
+		message += "[";
+		error(message);
+		return cgv::math::identity4<double>();
+	}
+	const window_transformation& wt = window_transformation_stack.top()[array_index];
+	dmat4 M = cgv::math::identity4<double>();
+	M(0, 0) = 0.5*wt.viewport[2];
+	M(0, 3) = M(0, 0) + wt.viewport[0];
+//	if (make_y_point_downwards) {
+		M(1, 1) = -0.5*wt.viewport[3];
+		M(1, 3) = get_height() + M(1, 1) - wt.viewport[1];
+/*	}
+	else {
+		M(1, 1) = 0.5*wt.viewport[3];
+		M(1, 3) = M(1, 1) + wt.viewport[1];
+	}
+	*/
+	M(2, 2) = 0.5*(wt.depth_range[1] - wt.depth_range[0]);
+	M(2, 3) = M(2, 2) + wt.depth_range[0];
+	return M;
+}
+/// return a homogeneous 4x4 matrix to transfrom from model to window coordinates, i.e. the product of modelview, projection and device matrix in reversed order (window_matrix*projection_matrix*modelview_matrix)
+context::dmat4 context::get_modelview_projection_window_matrix(unsigned array_index) const
+{
+	return get_window_matrix(array_index)*get_projection_matrix()*get_modelview_matrix();
+}
+
+//! compute model space 3D point from the given window space point and the given modelview_projection_window matrix
+context::vec3 context::get_model_point(const dvec3& p_window, const dmat4& modelview_projection_window_matrix) const
+{
+	dmat_type A(4, 4, &modelview_projection_window_matrix(0, 0));
+	dvec_type x;
+	dvec_type b(p_window(0), p_window(1), p_window(2), 1.0);
+	svd_solve(A, b, x);
+	return vec3(float(x(0) / x(3)), float(x(1) / x(3)), float(x(2) / x(3)));
+}
+
 /// set a new cursor position, which is only valid between calls of push_pixel_coords and pop_pixel_coords
 void context::set_cursor(int x, int y)
 {
@@ -1601,7 +1705,7 @@ void context::put_cursor_coords(const vec_type& p, int& x, int& y) const
 	dvec4 p4(0, 0, 0, 1);
 	for (unsigned int c = 0; c < p.size(); ++c)
 		p4(c) = p(c);
-	p4 = get_modelview_projection_device_matrix()*p4;
+	p4 = get_modelview_projection_window_matrix()*p4;
 	x = (int)(p4(0) / p4(3));
 	y = (int)(p4(1) / p4(3));
 }
@@ -1642,44 +1746,7 @@ void context::get_cursor(int& x, int& y) const
 /// return homogeneous 4x4 matrix, which transforms from world to device space
 context::dmat4 context::get_modelview_projection_device_matrix() const
 {
-	return get_device_matrix()*get_projection_matrix()*get_modelview_matrix();
-}
-
-/// compute a the location in world space of a device x/y-location. For this the device point is extended with the device z-coordinate currently stored in depth buffer.
-context::vec3 context::get_point_W(int x_D, int y_D) const
-{
-	return get_point_W(x_D, y_D, get_z_D(x_D,y_D));
-}
-
-context::vec3 context::get_point_W(int x_D, int y_D, const dmat4& MVPD) const
-{
-	return get_point_W(x_D, y_D, get_z_D(x_D,y_D), MVPD);
-}
-/// compute a the location in world space of a device point.
-context::vec3 context::get_point_W(int x_D, int y_D, double z_D) const
-{
-	return get_point_W(x_D, y_D, z_D, get_modelview_projection_device_matrix());
-}
-
-/// compute a the location in world space of a device point.
-context::vec3 context::get_point_W(const vec3& p_D) const
-{
-	return get_point_W(p_D, get_modelview_projection_device_matrix());
-}
-
-/// compute a the location in world space of a device point.
-context::vec3 context::get_point_W(const vec3& p_D, const dmat4& MVPD) const
-{
-	dmat_type A(4, 4, &MVPD(0, 0));
-	dvec_type x;
-	dvec_type b(p_D(0),p_D(1),p_D(2),1.0);
-	svd_solve(A,b,x);
-	return vec3(float(x(0)/x(3)), float(x(1)/x(3)), float(x(2)/x(3)));
-}
-
-context::vec3 context::get_point_W(int x_D, int y_D, double z_D, const dmat4& MVPD) const
-{
-	return get_point_W(vec3(x_D+0.5f,y_D+0.5f,(float)z_D),MVPD);
+	return get_window_matrix()*get_projection_matrix()*get_modelview_matrix();
 }
 
 void context::tesselate_arrow(double length, double aspect, double rel_tip_radius, double tip_aspect, int res, bool edges)

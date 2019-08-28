@@ -63,22 +63,22 @@ bool drawable::get_world_location(int x, int y, const cgv::render::view& V, cgv:
 	cgv::render::context& ctx = *get_context();
 	const dmat4* DPV_ptr, *DPV_other_ptr;
 	int x_other, y_other, vp_col_idx, vp_row_idx, vp_width, vp_height;
-	int eye_panel = V.get_modelview_projection_device_matrices(x, y, ctx.get_width(), ctx.get_height(), &DPV_ptr, &DPV_other_ptr, &x_other, &y_other, &vp_col_idx, &vp_row_idx, &vp_width, &vp_height);
+	int eye_panel = V.get_modelview_projection_window_matrices(x, y, ctx.get_width(), ctx.get_height(), &DPV_ptr, &DPV_other_ptr, &x_other, &y_other, &vp_col_idx, &vp_row_idx, &vp_width, &vp_height);
 
 	// get the possibly two (if stereo is enabled) different device z-values
-	double z = ctx.get_z_D(x, y);
-	double z_other = ctx.get_z_D(x_other, y_other);
+	double z = ctx.get_window_z(x, y);
+	double z_other = ctx.get_window_z(x_other, y_other);
 	//  unproject to world coordinates with smaller (closer to eye) z-value one	
 	if (z <= z_other) {
 		if (DPV_ptr->ncols() != 4)
 			return false;
 		// use conversion to (double*) operator to map cgv::math::vec<double> to cgv::math::fvec<float,3>
-		world_location = ctx.get_point_W(x, y, z, *DPV_ptr);
+		world_location = ctx.get_model_point(x, y, z, *DPV_ptr);
 	}
 	else {
 		if (DPV_other_ptr->ncols() != 4)
 			return false;
-		world_location = ctx.get_point_W(x_other, y_other, z_other, *DPV_other_ptr);
+		world_location = ctx.get_model_point(x_other, y_other, z_other, *DPV_other_ptr);
 	}
 	return true;
 }

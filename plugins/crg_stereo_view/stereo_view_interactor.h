@@ -91,11 +91,11 @@ protected:
 	///
 	StereoMousePointer stereo_mouse_pointer;
 	///
-	void draw_mouse_pointer_as_bitmap(cgv::render::context& ctx, int x, int y, int center_x, int center_y, int vp_width, int vp_height, bool visible, const dmat4 &DPV);
+	void draw_mouse_pointer_as_bitmap(cgv::render::context& ctx, int x, int y, int center_x, int center_y, int vp_width, int vp_height, bool visible, const dmat4 &MPW);
 	///
-	void draw_mouse_pointer_as_pixels(cgv::render::context& ctx, int x, int y, int center_x, int center_y, int vp_width, int vp_height, bool visible, const dmat4 &DPV);
+	void draw_mouse_pointer_as_pixels(cgv::render::context& ctx, int x, int y, int center_x, int center_y, int vp_width, int vp_height, bool visible, const dmat4 &MPW);
 	///
-	void draw_mouse_pointer_as_arrow(cgv::render::context& ctx, int x, int y, int center_x, int center_y, int vp_width, int vp_height, bool visible, const dmat4 &DPV);
+	void draw_mouse_pointer_as_arrow(cgv::render::context& ctx, int x, int y, int center_x, int center_y, int vp_width, int vp_height, bool visible, const dmat4 &MPW);
 	///
 	void draw_mouse_pointer(cgv::render::context& ctx, bool visible);
 	///
@@ -163,26 +163,10 @@ public:
 	/// access the view of a given viewport
 	cgv::render::view& ref_viewport_view(unsigned col_index, unsigned row_index);
 	//@}
-	//! given a mouse location and the pixel extent of the context, return the DPV matrix for unprojection
-	/*! In stereo modes with split viewport, the returned DPV is the one the mouse pointer is on.
-	The return value is in this case -1 or 1 and tells if DPV corresponds to the left (-1) or right (1) viewport.
-	Furthermore, the DPV of the corresponding mouse location in the other eye is returned through DPV_other_ptr
-	and the mouse location in x_other_ptr and y_other_ptr. In anaglyph or quad buffer stereo mode the other
-	mouse location is identical to the incoming x and y location and 0 is returned. In mono mode,
-	the other DPV and mouse locations are set to values identical to DPV and x,y and also 0 is returned.
-
-	In case the viewport splitting was enabled during the last drawing process, the DPV and
-	DPV_other matrices are set to the one valid in the panel that the mouse position x,y is
-	in. The panel column and row indices are passed to the vp_col_idx and vp_row_idx pointers.
-	In case that viewport splitting was disabled, 0 is passed to the panel location index pointers.
-
-	Finally, the vp_width, vp_height, vp_center_x, and vp_center_y pointers are set to the viewport size 
-	and center mouse location of the panel panel that the mouse pointer is in.
-
-	All pointer arguments starting with DPV_other_ptr can be set to the null pointer.*/
-	int get_modelview_projection_device_matrices(int x, int y, int width, int height,
-		const dmat4** MVPD_pptr,
-		const dmat4** MVPD_other_pptr = 0, int* x_other_ptr = 0, int* y_other_ptr = 0,
+	//! given a mouse location and the pixel extent of the context, return the MPW matrix for unprojection
+	int get_modelview_projection_window_matrices(int x, int y, int width, int height,
+		const dmat4** MPW_pptr,
+		const dmat4** MPW_other_pptr = 0, int* x_other_ptr = 0, int* y_other_ptr = 0,
 		int* vp_col_idx_ptr = 0, int* vp_row_idx_ptr = 0,
 		int* vp_width_ptr = 0, int *vp_height_ptr = 0,
 		int* vp_center_x_ptr = 0, int* vp_center_y_ptr = 0,
@@ -228,16 +212,16 @@ public:
 private:
 	double check_for_click;
 	
-	dmat4 DPV, DPV_right;
+	dmat4 MPW, MPW_right;
 	dmat4 V, P;
 
 	GlsuEye current_e;
-	int current_vp[4], current_sb[4];
+	//int current_vp[4], current_sb[4];
 
 	bool do_viewport_splitting;
 	unsigned nr_viewport_columns;
 	unsigned nr_viewport_rows;
-	std::vector<dmat4> DPVs, DPVs_right;
+	std::vector<dmat4> MPWs, MPWs_right;
 	std::vector<cgv::render::view> views;
 	std::vector<bool> use_individual_view;
 

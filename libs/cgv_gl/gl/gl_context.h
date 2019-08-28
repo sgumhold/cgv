@@ -228,10 +228,23 @@ public:
 	dmat4 get_projection_matrix() const;
 	/// set the current projection matrix, which transforms from eye to clip space
 	void set_projection_matrix(const dmat4& P);
-	/// return homogeneous 4x4 projection matrix, which transforms from clip to device space
-	dmat4 get_device_matrix() const;
+
+	/// restore previous viewport and depth range arrays defining the window transformations
+	void pop_window_transformation_array();
+	/// query the maximum number of supported window transformations, which is at least 1 
+	unsigned get_max_window_transformation_array_size() const;
+protected:
+	void update_window_transformation_array();
+public:
+	/// set the current viewport or one of the viewports in the window transformation array
+	void set_viewport(const ivec4& viewport, int array_index = -1);
+	/// set the current depth range or one of the depth ranges in the window transformation array
+	void set_depth_range(const dvec2& depth_range = dvec2(0, 1), int array_index = -1);
+
+	// return homogeneous 4x4 projection matrix, which transforms from clip to device space
+	// dmat4 get_device_matrix() const;
 	/// read the device z-coordinate from the z-buffer for the given device x- and y-coordinates
-	double get_z_D(int x_D, int y_D) const;
+	double get_window_z(int x_window, int y_window) const;
 	//@}
 };
 
