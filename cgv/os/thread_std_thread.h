@@ -122,7 +122,6 @@ thread::~thread()
 		kill();
 	if (thread_ptr) {
 		std::thread* std_thread_ptr = reinterpret_cast<std::thread*>(thread_ptr);
-		std_thread_ptr->detach();
 		delete std_thread_ptr;
 		std_thread_ptr = 0;
 	}

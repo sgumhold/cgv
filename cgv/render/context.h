@@ -910,6 +910,8 @@ public:
 	virtual shader_program& ref_surface_shader_program(bool texture_support = false) = 0;
 	/// get list of program uniforms
 	virtual	void enumerate_program_uniforms(shader_program& prog, std::vector<std::string>& names, std::vector<int>* locations_ptr = 0, std::vector<int>* sizes_ptr = 0, std::vector<int>* types_ptr = 0, bool show = false) const = 0;
+	/// get list of program attributes
+	virtual	void enumerate_program_attributes(shader_program& prog, std::vector<std::string>& names, std::vector<int>* locations_ptr = 0, std::vector<int>* sizes_ptr = 0, std::vector<int>* types_ptr = 0, bool show = false) const = 0;
 	//@}
 
 	/**@name lights */

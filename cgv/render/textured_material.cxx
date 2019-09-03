@@ -139,7 +139,7 @@ void textured_material::disable_textures(context& ctx)
 /// return pointer to ambient texture or 0 if non created
 texture* textured_material::get_texture(int ti) const
 {
-	assert(ti < textures.size());
+	assert(ti < (int)textures.size());
 	return textures[ti];
 }
 

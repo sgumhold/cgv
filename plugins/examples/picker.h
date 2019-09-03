@@ -15,21 +15,32 @@ class picker :
 protected:
 	/// store list of picked points
 	std::vector<vec3> pnts;
+	/// color of points
+	std::vector<rgb> clrs;
 	/// store a point render style
 	cgv::render::sphere_render_style srs;
+	///
+	unsigned n;
+	///
+	unsigned m;
+	///
+	int col_idx, row_idx;
+	bool mouse_over_panel;
 	///
 	cgv::render::view* view_ptr;
 	/// check if a world point is close enough to the drawing square
 	bool is_inside(const vec3& p3d) const;
 	/// find closest point and return index or -1 if we do not have any points yet
 	int find_closest(const vec3& p3d) const;
+	/// project point onto surface
+	vec3 project(const vec3& p3d) const;
 private:
 	/// store index of to be tracked point
 	int drag_pnt_idx;
 	///
 	bool is_drag_action;
 	/// store the last transformation matrix
-	mat4 MPW;
+	dmat4 MPW;
 public:
 	/// construct from name which is necessary construction argument to node
 	picker(const char* name);
