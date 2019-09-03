@@ -1,0 +1,115 @@
+#version 150
+#extension GL_EXT_geometry_shader4 : enable
+
+layout(points) in;
+layout(triangle_strip, max_vertices = 15) out;
+
+uniform int nr_subdivisions = 8;
+uniform float inner_outer_lambda = 0.5;
+
+in vec3 p0_gs[];
+in vec3 pm_gs[];
+in vec3 p1_gs[];
+in vec3 t_gs[];
+in vec4 color_gs[];
+in float radius_gs[];
+in float head_radius_gs[];
+in float head_length_gs[];
+in int i_gs[];
+
+out vec3 t;
+out vec3 p0_eye;
+out vec3 p1_eye;
+out vec3 p_eye;
+out vec3 n_eye;
+out vec4 color_fs;
+out float head_radius;
+out float head_length;
+out float recompute_normal;
+
+//***** begin interface of view.glsl ***********************************
+mat4 get_modelview_matrix();
+mat4 get_projection_matrix();
+mat4 get_modelview_projection_matrix();
+mat4 get_inverse_modelview_matrix();
+mat4 get_inverse_modelview_projection_matrix();
+mat3 get_normal_matrix();
+mat3 get_inverse_normal_matrix();
+//***** end interface of view.glsl ***********************************
+
+void generate_vertex(in vec3 p)
+{
+	vec4 hp = vec4(p, 1.0);
+	vec4 hp_eye = get_modelview_matrix() * hp;
+	p_eye = hp_eye.xyz / hp_eye.w;
+	gl_Position = get_modelview_projection_matrix() * hp;
+	EmitVertex();
+}
+
+void generate_vertex1(in vec3 p, in vec3 n)
+{
+	n_eye = get_normal_matrix() * n;
+	generate_vertex(p);
+}
+
+void generate_triangle1(in vec3 p0, in vec3 n0, in vec3 p1, in vec3 n1, in vec3 p2, in vec3 n2, in vec4 color)
+{
+	color_fs = color;
+	generate_vertex1(p0,n0);
+	generate_vertex1(p1,n1);
+	generate_vertex1(p2,n2);
+	EndPrimitive();
+}
+
+void generate_triangle(in vec3 p0, in vec3 p1, in vec3 p2, in vec3 n, in vec4 color)
+{
+	color_fs = color;
+	n_eye = get_normal_matrix() * n;
+	generate_vertex(p0);
+	generate_vertex(p1);
+	generate_vertex(p2);
+	EndPrimitive();
+}
+void generate_quad(in vec3 p0, in vec3 p1, in vec3 p2, in vec3 p3, in vec3 n0, in vec3 n1, in vec4 color)
+{
+	color_fs = color;
+	generate_vertex1(p0, n0);
+	generate_vertex1(p1, n1);
+	generate_vertex1(p2, n0);
+	generate_vertex1(p3, n1);
+	EndPrimitive();
+}
+
+void main()
+{
+	color_fs = color_gs[0];
+	float da = 6.283185308 / float(nr_subdivisions);
+	float a_1 = da*float(i_gs[0]);
+	float a_2 = a_1 + da;
+	vec4 hp0_eye = get_modelview_matrix() * vec4(p0_gs[0], 1.0);
+	vec4 hp1_eye = get_modelview_matrix() * vec4(p1_gs[0], 1.0);
+	p0_eye = hp0_eye.xyz / hp0_eye.w;
+	p1_eye = hp1_eye.xyz / hp1_eye.w;
+	head_radius = head_radius_gs[0];
+	head_length = head_length_gs[0];
+	t = t_gs[0];
+	vec3 x = normalize(cross(t, (dot(t.xy,t.xy) < 0.01) ? vec3(0.0, 1.0, 0.0) : vec3(0.0, 0.0, 1.0)));
+	vec3 y = cross(t, x);
+	vec3 v_1 = cos(a_1)*x + sin(a_1)*y;
+	vec3 v_2 = cos(a_2)*x + sin(a_2)*y;
+	float scale = mix(1.0, 1.0 / cos(0.5*da), inner_outer_lambda);
+	vec3 p_2 = p0_gs[0] + radius_gs[0]*scale*v_1;
+	vec3 p_3 = p0_gs[0] + radius_gs[0]*scale*v_2;
+	vec3 p_4 = pm_gs[0] + radius_gs[0]*scale*v_1;
+	vec3 p_5 = pm_gs[0] + radius_gs[0]*scale*v_2;
+	vec3 p_6 = pm_gs[0] + head_radius*scale*v_1;
+	vec3 p_7 = pm_gs[0] + head_radius*scale*v_2;
+	recompute_normal = -1.0;
+	generate_triangle(p0_gs[0], p_3, p_2, -t, color_gs[0]);
+	generate_quad(p_2, p_3, p_4, p_5, v_1, v_2, color_gs[0]);
+	generate_quad(p_4, p_5, p_6, p_7, -t, -t, color_gs[0]);
+	vec3 n_6 = head_radius*t + head_length*v_1;
+	vec3 n_7 = head_radius*t + head_length*v_2;
+	recompute_normal = 1.0;
+	generate_triangle(p_6, p_7, p1_gs[0], t, color_gs[0]);
+}

@@ -397,11 +397,11 @@ void stereo_view_interactor::deactivate_split_viewport(cgv::render::context& ctx
 }
 
 /// make a viewport manage its own view
-void stereo_view_interactor::viewport_use_individual_view(unsigned col_index, unsigned row_index)
+void stereo_view_interactor::enable_viewport_individual_view(unsigned col_index, unsigned row_index, bool enable)
 {
 	unsigned view_index = get_viewport_index(col_index, row_index);
 	ensure_viewport_view_number(view_index + 1);
-	use_individual_view[view_index] = true;
+	use_individual_view[view_index] = enable;
 }
 
 /// access the view of a given viewport
@@ -760,43 +760,22 @@ bool stereo_view_interactor::handle(event& e)
 			last_y = me.get_y();
 		}
 		int width = 640, height = 480;
-		int off_x = 0, off_y = 0;
+		int center_x = 320, center_y = 240;
 		int vp_col_idx, vp_row_idx;
 		cgv::render::view* view_ptr = this;
+		const dmat4* MPW_ptr = 0;
 		if (get_context()) {
-			width = get_context()->get_width();
-			height = get_context()->get_height();
-			if (stereo_enabled) {
-				switch (stereo_mode) {
-				case GLSU_SPLIT_HORIZONTALLY:
-					height /= 2;
-					if (me.get_y() > height)
-						off_y = height;
-					break;
-				case GLSU_SPLIT_VERTICALLY:
-					width /= 2;
-					if (me.get_x() > width)
-						off_x += width;
-					break;
-				}
-			}
-			if (last_do_viewport_splitting) {
-				width /= last_nr_viewport_columns;
-				height /= last_nr_viewport_rows;
-				off_x += ((me.get_x() - off_x) / width) * width;
-				off_y += ((me.get_y() - off_y) / height) * height;
-				get_vp_col_and_row_indices(*get_context(), me.get_x(), me.get_y(), vp_col_idx, vp_row_idx);
-				unsigned view_index = get_viewport_index(vp_col_idx, vp_row_idx);
-				if (use_individual_view[view_index]) {
-					view_ptr = &views[view_index];
-				}
+			int eye = get_modelview_projection_window_matrices(
+				me.get_x(), me.get_y(), 
+				get_context()->get_width(), get_context()->get_height(),
+				&MPW_ptr, 0, 0, 0, &vp_col_idx, &vp_row_idx, &width, &height, &center_x, &center_y);
+			unsigned view_index = get_viewport_index(vp_col_idx, vp_row_idx);
+			if (view_index != -1 && use_individual_view[view_index]) {
+				view_ptr = &views[view_index];
 			}
 		}
 		dvec3 x, y, z;
 		view_ptr->put_coordinate_system(x, y, z);
-
-		int center_x = off_x + width / 2;
-		int center_y = off_y + height / 2;
 
 		switch (me.get_action()) {
 		case MA_PRESS:

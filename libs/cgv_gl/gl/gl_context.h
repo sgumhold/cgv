@@ -162,6 +162,8 @@ public:
 	shader_program& ref_surface_shader_program(bool texture_support = false);
 	/// get list of program uniforms
 	void enumerate_program_uniforms(shader_program& prog, std::vector<std::string>& names, std::vector<int>* locations_ptr = 0, std::vector<int>* sizes_ptr = 0, std::vector<int>* types_ptr = 0, bool show = false) const;
+	/// get list of program attributes
+	void enumerate_program_attributes(shader_program& prog, std::vector<std::string>& names, std::vector<int>* locations_ptr = 0, std::vector<int>* sizes_ptr = 0, std::vector<int>* types_ptr = 0, bool show = false) const;
 	/// helper function to send light update events
 	void on_lights_changed();
 	///

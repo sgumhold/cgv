@@ -8,6 +8,7 @@
 #include <cgv_gl/point_renderer.h>
 #include <cgv_gl/surfel_renderer.h>
 #include <cgv_gl/sphere_renderer.h>
+#include <cgv_gl/arrow_renderer.h>
 #include <cgv_gl/normal_renderer.h>
 #include <cgv_gl/box_renderer.h>
 #include <cgv_gl/box_wire_renderer.h>
@@ -20,7 +21,7 @@ class renderer_tests :
 	public cgv::gui::provider
 {
 public:
-	enum RenderMode { RM_POINTS, RM_SURFELS, RM_BOXES, RM_BOX_WIRES, RM_NORMALS, RM_SPHERES };
+	enum RenderMode { RM_POINTS, RM_SURFELS, RM_BOXES, RM_BOX_WIRES, RM_NORMALS, RM_ARROWS, RM_SPHERES };
 	struct vertex {
 		vec3 point;
 		vec3 normal;
@@ -58,6 +59,7 @@ protected:
 	cgv::render::box_render_style box_style;
 	cgv::render::box_wire_render_style box_wire_style;
 	cgv::render::normal_render_style normal_style;
+	cgv::render::arrow_render_style arrow_style;
 	cgv::render::sphere_render_style sphere_style;
 
 	// declare attribute managers
@@ -110,14 +112,15 @@ public:
 			group_translations.push_back(vec3(0, 0, 0));
 			group_rotations.push_back(vec4(0, 0, 0, 1));
 		}
-		mode = RM_SPHERES;
 		point_style.point_size = 8;
 		point_style.blend_points = false;
 		point_style.blend_width_in_pixel = 0.0f;
+		mode = RM_ARROWS;
 		point_style.measure_point_size_in_pixel = false;
 		surfel_style.point_size = 15;
 		surfel_style.measure_point_size_in_pixel = false;
 		surfel_style.illumination_mode = cgv::render::IM_TWO_SIDED;
+		arrow_style.length_scale = 0.01f;
 		sphere_style.radius = 0.01f;
 		sphere_style.use_group_color = true;
 	}
@@ -171,7 +174,8 @@ public:
 		cgv::render::ref_surfel_renderer  (ctx, 1);
 		cgv::render::ref_box_renderer     (ctx, 1);
 		cgv::render::ref_box_wire_renderer(ctx, 1);
-		cgv::render::ref_normal_renderer  (ctx, 1);
+		cgv::render::ref_normal_renderer(ctx, 1);
+		cgv::render::ref_arrow_renderer(ctx, 1);
 		cgv::render::ref_sphere_renderer  (ctx, 1);
 		return true;
 	}
@@ -293,6 +297,17 @@ public:
 			draw_points();
 			n_renderer.disable(ctx);
 		}	break;
+		case RM_ARROWS: {
+			cgv::render::arrow_renderer& a_renderer = cgv::render::ref_arrow_renderer(ctx);
+			a_renderer.set_render_style(arrow_style);
+			a_renderer.set_position_array(ctx, points);
+			a_renderer.set_color_array(ctx, colors);
+			a_renderer.set_direction_array(ctx, normals);
+			if (a_renderer.validate_and_enable(ctx)) {
+				glDrawArraysInstanced(GL_POINTS, 0, GLsizei(points.size()), arrow_style.nr_subdivisions);
+				a_renderer.disable(ctx);
+			}
+		}	break;
 		case RM_SPHERES: {
 			cgv::render::sphere_renderer& s_renderer = cgv::render::ref_sphere_renderer(ctx);
 			s_renderer.set_y_view_angle(float(view_ptr->get_y_view_angle()));
@@ -324,13 +339,14 @@ public:
 		cgv::render::ref_surfel_renderer(ctx, -1);
 		cgv::render::ref_box_renderer(ctx, -1);
 		cgv::render::ref_box_wire_renderer(ctx, -1);
-		cgv::render::ref_normal_renderer(ctx, -1);
-		cgv::render::ref_sphere_renderer(ctx, -1);
+		cgv::render::ref_normal_renderer  (ctx, -1);
+		cgv::render::ref_arrow_renderer   (ctx, -1);
+		cgv::render::ref_sphere_renderer  (ctx, -1);
 	}
 	void create_gui()
 	{
 		add_decorator("renderer tests", "heading");
-		add_member_control(this, "mode", mode, "dropdown", "enums='points,surfels,boxes,box wires,normals,spheres'");
+		add_member_control(this, "mode", mode, "dropdown", "enums='points,surfels,boxes,box wires,normals,arrows,spheres'");
 		if (begin_tree_node("transformation", lambda, true)) {
 			align("\a");
 			add_member_control(this, "lambda", lambda, "value_slider", "min=0;max=1;ticks=true");
@@ -405,6 +421,12 @@ public:
 			add_gui("normal_style", normal_style);
 			align("\b");
 			end_tree_node(normal_style);
+		}
+		if (begin_tree_node("Arrow Rendering", arrow_style, false)) {
+			align("\a");
+			add_gui("arrow_style", arrow_style);
+			align("\b");
+			end_tree_node(arrow_style);
 		}
 		if (begin_tree_node("Sphere Rendering", sphere_style, false)) {
 			align("\a");
