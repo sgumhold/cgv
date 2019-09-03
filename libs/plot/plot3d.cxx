@@ -63,7 +63,7 @@ bool plot3d::compute_sample_coordinate_interval(int i, int ai, float& samples_mi
 plot3d::plot3d() : plot_base(3)
 {
 	brs.culling_mode = cgv::render::CM_FRONTFACE;
-	brs.map_color_to_material = cgv::render::ColorMapping(cgv::render::CM_COLOR_FRONT | cgv::render::CM_COLOR_BACK);
+	brs.map_color_to_material = cgv::render::CM_COLOR;
 	brs.illumination_mode = cgv::render::IM_TWO_SIDED;
 }
 

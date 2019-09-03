@@ -157,7 +157,7 @@ public:
 	/// deactivate the previously split viewport
 	virtual void deactivate_split_viewport(context& ctx);
 	/// make a viewport manage its own view
-	virtual void viewport_use_individual_view(unsigned col_index, unsigned row_index);
+	virtual void enable_viewport_individual_view(unsigned col_index, unsigned row_index, bool enable = true);
 	/// check whether viewport manage its own view
 	virtual bool does_viewport_use_individual_view(unsigned col_index, unsigned row_index) const;
 	/// access the view of a given viewport

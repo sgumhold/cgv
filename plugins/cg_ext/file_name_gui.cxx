@@ -58,9 +58,9 @@ struct file_name_gui_creator : public cgv::gui::gui_creator
 		bool save = false;
 		bool open = false;
 		int button_count = 0;
-		if (cgv::base::has_property(options, "save", save, true))
+		if (cgv::base::has_property(options, "save", save, true) && save)
 			++button_count;
-		if (cgv::base::has_property(options, "open", open, true))
+		if (cgv::base::has_property(options, "open", open, true) && open)
 			++button_count;
 		if (button_count == 0) {
 			open = true;
@@ -89,6 +89,9 @@ struct file_name_gui_creator : public cgv::gui::gui_creator
 				p->add_button(label, "image='res://save32.png';w=32;h=32;label=''", align_gui)->click,
 				rebind(this, &file_name_gui_creator::button_cb, &v, b, options, true)
 			);
+		if (!open && !save)
+			p->align(align_gui);
+
 		return true;
 	}
 };

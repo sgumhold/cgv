@@ -154,7 +154,7 @@ public:
 	/// deactivate the previously split viewport
 	void deactivate_split_viewport(cgv::render::context& ctx);
 	/// make a viewport manage its own view
-	void viewport_use_individual_view(unsigned col_index, unsigned row_index);
+	void enable_viewport_individual_view(unsigned col_index, unsigned row_index, bool enable = true);
 	/// check whether viewport manage its own view
 	bool does_viewport_use_individual_view(unsigned col_index, unsigned row_index) const { 
 		unsigned i = get_viewport_index(col_index, row_index);

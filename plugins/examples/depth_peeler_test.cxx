@@ -51,7 +51,7 @@ public:
 		peeling_mode = PEEL_NTH_LAYER; // ORDER_INDEPENDENT_TRANSPARENCY;
 		epsilon = 0.00002;
 		write_images = false;
-
+		brs.map_color_to_material = cgv::render::CM_COLOR_AND_OPACITY;
 		unsigned n = 20;
 		float step = 1.0f / (n - 1);
 		for (unsigned i = 0; i < n; ++i) {
@@ -196,5 +196,5 @@ public:
 	}
 };
 
-factory_registration<depth_peeler_test> fr_depth_peeler_test("depth_peeler_test", "shortcut='Ctrl-P';menu_text='new/render/depth peeler'", true);
+factory_registration<depth_peeler_test> fr_depth_peeler_test("depth_peeler_test", "shortcut='Ctrl-Shift-P';menu_text='new/render/depth peeler'", true);
 
