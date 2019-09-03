@@ -105,6 +105,8 @@ public:
 	bool enable(context& ctx);
 	/// disable shader program and restore fixed functionality
 	bool disable(context& ctx);
+	/// check whether program is currently enabled
+	bool is_enabled() const { return shader_program_base::is_enabled; }
 	/// query location index of an uniform
 	int get_uniform_location(const context& ctx, const std::string& name) const;
 	/// set a uniform of type material

@@ -467,6 +467,31 @@ void gl_context::enumerate_program_uniforms(shader_program& prog, std::vector<st
 	}
 }
 
+/// get list of program uniforms
+void gl_context::enumerate_program_attributes(shader_program& prog, std::vector<std::string>& names, std::vector<int>* locations_ptr, std::vector<int>* sizes_ptr, std::vector<int>* types_ptr, bool show) const
+{
+	GLint count;
+	glGetProgramiv(get_gl_id(prog.handle), GL_ACTIVE_ATTRIBUTES, &count);
+	for (int i = 0; i < count; ++i) {
+		GLchar name[1000];
+		GLsizei length;
+		GLint size;
+		GLenum type;
+		glGetActiveAttrib(get_gl_id(prog.handle), i, 1000, &length, &size, &type, name);
+		std::string name_str(name, length);
+		names.push_back(name_str);
+		if (sizes_ptr)
+			sizes_ptr->push_back(size);
+		if (types_ptr)
+			types_ptr->push_back(type);
+		int loc = glGetAttribLocation(get_gl_id(prog.handle), name_str.c_str());
+		if (locations_ptr)
+			locations_ptr->push_back(loc);
+		if (show)
+			std::cout << i << " at " << loc << " = " << name_str << ":" << type << "[" << size << "]" << std::endl;
+	}
+}
+
 /// set the current color
 void gl_context::set_color(const rgba& clr)
 {
@@ -2504,7 +2529,8 @@ bool gl_context::set_uniform_array_void(shader_program_base& spb, int loc, type_
 
 int  gl_context::get_attribute_location(const shader_program_base& spb, const std::string& name) const
 {
-	return glGetAttribLocation(get_gl_id(spb.handle), name.c_str());
+	GLint loc = glGetAttribLocation(get_gl_id(spb.handle), name.c_str());
+	return loc;
 }
 
 bool gl_context::set_attribute_void(shader_program_base& spb, int loc, type_descriptor value_type, const void* value_ptr) const

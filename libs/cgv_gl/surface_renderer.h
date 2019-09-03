@@ -14,8 +14,11 @@ namespace cgv { // @<
 			CM_NONE = 0,
 			CM_COLOR_FRONT = 1,
 			CM_COLOR_BACK = 2,
+			CM_COLOR = CM_COLOR_FRONT | CM_COLOR_BACK,
 			CM_OPACITY_FRONT = 4,
-			CM_OPACITY_BACK = 8
+			CM_OPACITY_BACK = 8,
+			CM_OPACITY = CM_OPACITY_FRONT | CM_OPACITY_BACK,
+			CM_COLOR_AND_OPACITY = CM_COLOR | CM_OPACITY
 		};
 
 		/** style of a point */

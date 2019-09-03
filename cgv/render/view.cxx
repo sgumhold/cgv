@@ -192,7 +192,7 @@ void view::deactivate_split_viewport(context& ctx)
 {}
 
 /// make a viewport manage its own view
-void view::viewport_use_individual_view(unsigned col_index, unsigned row_index)
+void view::enable_viewport_individual_view(unsigned col_index, unsigned row_index, bool enable)
 {
 }
 

@@ -121,7 +121,7 @@ public:
 	{
 		show_surface = true;
 		cull_mode = CM_BACKFACE;
-		color_mapping = cgv::render::ColorMapping(cgv::render::CM_COLOR_FRONT | cgv::render::CM_COLOR_BACK);
+		color_mapping = cgv::render::CM_COLOR;
 		surface_color = rgb(0.7f, 0.2f, 1.0f);
 		illumination_mode = IM_ONE_SIDED;
 

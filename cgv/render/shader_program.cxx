@@ -438,26 +438,26 @@ bool shader_program::enable(context& ctx)
 		ctx.error("attempt to enable shader_program that is not linked", this);
 		return false;
 	}
-	if (is_enabled) {
+	if (is_enabled()) {
 		ctx.error("attempt to enable shader_program that is already enabled or was not disabled properly", this);
 		return false;
 	}
 	update_state(ctx);
 	bool res = ctx.shader_program_enable(*this);
 	if (res)
-		is_enabled = true;
+		shader_program_base::is_enabled = true;
 	return res;
 }
 
 /// disable shader program and restore fixed functionality
 bool shader_program::disable(context& ctx)
 {
-	if (!is_enabled) {
+	if (!is_enabled()) {
 		ctx.error("attempt to disable shader_program that is not enabled", this);
 		return false;
 	}
 	bool res = ctx.shader_program_disable(*this);
-	is_enabled = false;
+	shader_program_base::is_enabled = false;
 	return res;
 }
 

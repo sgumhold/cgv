@@ -674,20 +674,24 @@ unsigned int create_texture(const cgv::data::const_data_view& dv, unsigned level
 }
 
 /// cover the current viewport with a textured quad using the textured default shader program or the one passed in the third parameter
-bool cover_screen(context& ctx, shader_program* prog_ptr)
+bool cover_screen(context& ctx, shader_program* prog_ptr, bool flip_tex_v_coord)
 {
 	shader_program& prog = prog_ptr ? *prog_ptr : ctx.ref_default_shader_program(true);
-	if (!prog.enable(ctx)) {
-		return false;
+	bool was_enabled = prog.is_enabled();
+	if (!was_enabled) {
+		if (!prog.enable(ctx)) {
+			return false;
+		}
+		else
+			if (!prog_ptr)
+				ctx.set_color(render_types::rgba(1, 1, 1, 1));
 	}
-	else
-		if (!prog_ptr)
-			ctx.set_color(render_types::rgba(1, 1, 1, 1));
 	int pos_idx = prog.get_position_index();
 	int tex_idx = prog.get_texcoord_index();
-	if (pos_idx == -1 || tex_idx == -1) {
-		ctx.error("cgv::render::gl::render_2d_texture_to_screen() passed program does not have position and texcoord vertex attributes", &prog);
-		prog.disable(ctx);
+	if (pos_idx == -1) {
+		ctx.error("cgv::render::gl::render_2d_texture_to_screen() passed program does not have position vertex attributes", &prog);
+		if (!was_enabled)
+			prog.disable(ctx);
 		return false;
 	}
 	ctx.push_modelview_matrix();
@@ -701,27 +705,34 @@ bool cover_screen(context& ctx, shader_program* prog_ptr)
 		render_types::vec4(-1, 1, 0, 1),
 		render_types::vec4( 1, 1, 0, 1)
 	};
-	static render_types::vec2 texcoords[4] = {
+	static render_types::vec2 texcoords[8] = {
 		render_types::vec2(0.0f, 0.0f),
 		render_types::vec2(1.0f, 0.0f),
 		render_types::vec2(0.0f, 1.0f),
-		render_types::vec2(1.0f, 1.0f)
+		render_types::vec2(1.0f, 1.0f),
+		render_types::vec2(0.0f, 1.0f),
+		render_types::vec2(1.0f, 1.0f),
+		render_types::vec2(0.0f, 0.0f),
+		render_types::vec2(1.0f, 0.0f)
 	};
 
 	attribute_array_binding::set_global_attribute_array(ctx, pos_idx, positions, 4);
 	attribute_array_binding::enable_global_array(ctx, pos_idx);
-	attribute_array_binding::set_global_attribute_array(ctx, tex_idx, texcoords, 4);
-	attribute_array_binding::enable_global_array(ctx, tex_idx);
-
+	if (tex_idx != -1) {
+		attribute_array_binding::set_global_attribute_array(ctx, tex_idx, &texcoords[flip_tex_v_coord?4:0], 4);
+		attribute_array_binding::enable_global_array(ctx, tex_idx);
+	}
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 
 	attribute_array_binding::disable_global_array(ctx, pos_idx);
-	attribute_array_binding::disable_global_array(ctx, tex_idx);
+	if (tex_idx != -1)
+		attribute_array_binding::disable_global_array(ctx, tex_idx);
 
 	ctx.pop_projection_matrix();
 	ctx.pop_modelview_matrix();
 
-	prog.disable(ctx);
+	if (!was_enabled)
+		prog.disable(ctx);
 	return true;
 }
 
