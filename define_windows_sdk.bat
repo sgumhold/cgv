@@ -37,6 +37,8 @@ setlocal
 set new_value=%1
 set new_value=%new_value:~1,-1%
 call reg ADD HKEY_CURRENT_USER\Environment /v CGV_WINDOWS_SDK /t REG_SZ /d "%new_value%" /f > nul 2> nul
+bin\setx CGV_DUMMY ""
+call reg DELETE HKEY_CURRENT_USER\Environment /v CGV_DUMMY /f  >nul 2> nul
 endlocal & call set CGV_WINDOWS_SDK=%new_value%
 echo ^(USER:CGV_WINDOWS_SDK=%CGV_WINDOWS_SDK%^)
 pause
