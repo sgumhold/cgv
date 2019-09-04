@@ -32,6 +32,8 @@ namespace cgv {
 			///
 			float length_scale;
 			///
+			float color_scale;
+			///
 			bool normalize_length;
 			/// 
 			float relative_location_of_position;
