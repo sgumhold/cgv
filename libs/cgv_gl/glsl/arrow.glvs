@@ -21,6 +21,7 @@ uniform float head_radius_scale = 2.0;
 uniform float head_length_relative_to_radius = 1.7;
 uniform float head_length_relative_to_length = 0.0;
 uniform float length_scale = 1.0;
+uniform float color_scale = 1.0;
 uniform bool normalize_length = false;
 uniform float relative_location_of_position = 0.0;
 uniform bool direction_is_end_point = false;
@@ -28,6 +29,7 @@ uniform bool direction_is_end_point = false;
 void main()
 {
 	color_gs = color;
+	color_gs.rgb *= color_scale;
 	i_gs = gl_InstanceID;
 	p0_gs  = position.xyz;
 	p1_gs  = direction;

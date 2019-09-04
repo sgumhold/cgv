@@ -23,9 +23,10 @@ namespace cgv {
 			inner_outer_lambda = 0.5f;
 			radius_relative_to_length = 0.1f;
 			head_radius_scale = 2.0f;
-			head_length_relative_to_radius = 1.5f;
-			head_length_relative_to_length = 0.2f;
+			head_length_relative_to_radius = 2.0f;
+			head_length_relative_to_length = 0.3f;
 			length_scale = 1.0f;
+			color_scale = 1.0f;
 			normalize_length = false;
 			relative_location_of_position = 0.0f;
 			length_eps = 0.000001f;
@@ -88,6 +89,7 @@ namespace cgv {
 				ref_prog().set_uniform(ctx, "head_length_relative_to_radius", ars.head_length_relative_to_radius);
 				ref_prog().set_uniform(ctx, "head_length_relative_to_length", ars.head_length_relative_to_length);
 				ref_prog().set_uniform(ctx, "length_scale", ars.length_scale);
+				ref_prog().set_uniform(ctx, "color_scale", ars.color_scale);
 				ref_prog().set_uniform(ctx, "length_eps", ars.length_eps);
 				ref_prog().set_uniform(ctx, "inner_outer_lambda", ars.inner_outer_lambda);
 				ref_prog().set_uniform(ctx, "normalize_length", ars.normalize_length);
@@ -116,6 +118,7 @@ namespace cgv {
 				rh.reflect_member("head_length_relative_to_radius", head_length_relative_to_radius) &&
 				rh.reflect_member("head_length_relative_to_length", head_length_relative_to_length) &&
 				rh.reflect_member("length_scale", length_scale) &&
+				rh.reflect_member("color_scale", color_scale) &&
 				rh.reflect_member("length_eps", length_eps) &&
 				rh.reflect_member("inner_outer_lambda", inner_outer_lambda) &&
 				rh.reflect_member("normalize_length", normalize_length) &&
@@ -147,21 +150,32 @@ namespace cgv {
 				cgv::render::arrow_render_style* srs_ptr = reinterpret_cast<cgv::render::arrow_render_style*>(value_ptr);
 				cgv::base::base* b = dynamic_cast<cgv::base::base*>(p);
 
-				if (p->begin_tree_node("arrow", srs_ptr->radius_lower_bound, false, "level=3")) {
+				p->add_member_control(b, "relative_location_of_position", srs_ptr->relative_location_of_position, "value_slider", "min=0;max=1;ticks=true");
+				p->add_member_control(b, "nr_subdivisions", srs_ptr->nr_subdivisions, "value_slider", "min=4;max=32;ticks=true");
+				p->add_member_control(b, "color_scale", srs_ptr->color_scale, "value_slider", "min=0.01;max=100;log=true;ticks=true");
+				if (p->begin_tree_node("length", srs_ptr->length_scale, true, "level=3")) {
 					p->align("\a");
-					p->add_member_control(b, "radius_lower_bound", srs_ptr->radius_lower_bound, "value_slider", "min=0;max=1;log=true;ticks=true");
-					p->add_member_control(b, "radius_relative_to_length", srs_ptr->radius_relative_to_length, "value_slider", "min=0;max=1;ticks=true");
-					p->add_member_control(b, "head_radius_scale", srs_ptr->head_radius_scale, "value_slider", "min=1;max=3;ticks=true");
-					p->add_member_control(b, "head_length_relative_to_radius", srs_ptr->head_length_relative_to_radius, "value_slider", "min=0.1;max=5;ticks=true");
-					p->add_member_control(b, "head_length_relative_to_length", srs_ptr->head_length_relative_to_length, "value_slider", "min=0;max=1;ticks=true");
-					p->add_member_control(b, "length_scale", srs_ptr->length_scale, "value_slider", "min=0.01;max=100;log=true;ticks=true");
-					p->add_member_control(b, "length_eps", srs_ptr->length_eps, "value_slider", "min=0.00000001;step=0.000000001;max=1;log=true;ticks=true");
 					p->add_member_control(b, "normalize_length", srs_ptr->normalize_length, "toggle");
+					p->add_member_control(b, "length_scale", srs_ptr->length_scale, "value_slider", "min=0.01;max=100;log=true;ticks=true");
+					p->add_member_control(b, "length_epsilon", srs_ptr->length_eps, "value_slider", "min=0.00000001;step=0.000000001;max=1;log=true;ticks=true");
+					p->align("\b");
+					p->end_tree_node(srs_ptr->length_scale);
+				}
+				if (p->begin_tree_node("radius", srs_ptr->radius_lower_bound, true, "level=3")) {
+					p->align("\a");
+					p->add_member_control(b, "radius_relative_to_length", srs_ptr->radius_relative_to_length, "value_slider", "min=0;max=1;ticks=true");
+					p->add_member_control(b, "radius_lower_bound", srs_ptr->radius_lower_bound, "value_slider", "min=0;max=1;log=true;ticks=true");
 					p->add_member_control(b, "inner_outer_lambda", srs_ptr->inner_outer_lambda, "value_slider", "min=0;max=1;ticks=true");
-					p->add_member_control(b, "relative_location_of_position", srs_ptr->relative_location_of_position, "value_slider", "min=0;max=1;ticks=true");
-					p->add_member_control(b, "nr_subdivisions", srs_ptr->nr_subdivisions, "value_slider", "min=4;max=32;ticks=true");
 					p->align("\b");
 					p->end_tree_node(srs_ptr->radius_lower_bound);
+				}
+				if (p->begin_tree_node("radius", srs_ptr->head_radius_scale, true, "level=3")) {
+					p->align("\a");
+					p->add_member_control(b, "head_length_relative_to_radius", srs_ptr->head_length_relative_to_radius, "value_slider", "min=0.1;max=5;ticks=true");
+					p->add_member_control(b, "head_length_relative_to_length", srs_ptr->head_length_relative_to_length, "value_slider", "min=0;max=1;ticks=true");
+					p->add_member_control(b, "head_radius_scale", srs_ptr->head_radius_scale, "value_slider", "min=1;max=3;ticks=true");
+					p->align("\b");
+					p->end_tree_node(srs_ptr->head_radius_scale);
 				}
 				if (p->begin_tree_node("surface rendering", srs_ptr->use_group_color, false, "level=3")) {
 					p->align("\a");
