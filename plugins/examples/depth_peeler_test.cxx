@@ -100,7 +100,7 @@ public:
 		R.set_box_array(ctx, boxes);
 		R.set_color_array(ctx, box_colors);
 		if (R.validate_and_enable(ctx)) {
-			glDrawArrays(GL_POINTS, 0, boxes.size());
+			glDrawArrays(GL_POINTS, 0, (GLsizei)boxes.size());
 			R.disable(ctx);
 		}
 	}

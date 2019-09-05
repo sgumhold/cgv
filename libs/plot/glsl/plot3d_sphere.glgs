@@ -13,7 +13,7 @@ struct sphere_parameter_space
 	vec2  e_zw_clip_vs;
 };
 
-void generate_sphere_cover_splat(in vec4 sphere, in sphere_parameter_space sps, in float splat_size = 1.0);
+void generate_sphere_cover_splat(in vec4 sphere, in sphere_parameter_space sps, in float splat_size);
 //***** end interface of sphere_lib.glgs ***********************************
 
 in sphere_parameter_space sps[];
@@ -25,5 +25,5 @@ out vec4  color_fs;
 void main()
 {
 	color_fs = color_gs[0];
-	generate_sphere_cover_splat(gl_PositionIn[0], sps[0]);
+	generate_sphere_cover_splat(gl_PositionIn[0], sps[0], 1.0);
 }
