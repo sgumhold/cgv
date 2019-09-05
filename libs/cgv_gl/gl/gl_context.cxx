@@ -1121,7 +1121,7 @@ void gl_context::update_window_transformation_array()
 		glDepthRange(depth_range[0], depth_range[1]);
 	}
 	else {
-		for (size_t array_index = 0; array_index < wta.size(); ++array_index) {
+		for (GLuint array_index = 0; array_index < (GLuint)wta.size(); ++array_index) {
 			const ivec4& viewport    = wta[array_index].viewport;
 			const dvec2& depth_range = wta[array_index].depth_range;
 			glViewportIndexedf(array_index, (GLfloat)viewport[0], (GLfloat)viewport[1], (GLfloat)viewport[2], (GLfloat)viewport[3]);

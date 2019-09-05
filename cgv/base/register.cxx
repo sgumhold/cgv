@@ -264,7 +264,7 @@ void add_partially_ordered(const std::vector<std::set<unsigned> >& combined_part
 void sort_registration_events(bool before_contructor_execution)
 {
 	// initialized combined partial order
-	unsigned N = ref_registration_events().size();
+	size_t N = ref_registration_events().size();
 	std::vector<std::set<unsigned> > combined_partial_order;
 	combined_partial_order.resize(N);
 	unsigned nr_partial_orders = 0;
@@ -868,7 +868,7 @@ void register_resource_file(const std::string& file_path, unsigned int file_offs
 
 void register_resource_string(const std::string& string_name, const char* string_data)
 {
-	ref_resource_file_map()[string_name] = resource_file_info(-1, std::string(string_data).size(), string_data);
+	ref_resource_file_map()[string_name] = resource_file_info(-1, (unsigned)std::string(string_data).size(), string_data);
 }
 
 void show_implementation(bool& implements_shown, const std::string& type_name)

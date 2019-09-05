@@ -72,7 +72,7 @@ public:
 		cgv::utils::file::write(file_name, new_content.c_str(), new_content.size(), true);
 		content = new_content;
 	}
-	void multi_observe(base_ptr bp, const std::string& property_assignments, unsigned off);
+	void multi_observe(base_ptr bp, const std::string& property_assignments, size_t off);
 };
 
 template <typename T>
@@ -151,13 +151,13 @@ public:
 	}
 };
 
-void gui_config_file_observer::multi_observe(base_ptr bp, const std::string& property_assignments, unsigned off)
+void gui_config_file_observer::multi_observe(base_ptr bp, const std::string& property_assignments, size_t off)
 {
 	// split into single assignments
 	std::vector<token> toks;
 	bite_all(tokenizer(property_assignments).set_skip("'\"","'\"","\\\\").set_ws(";"),toks);
 	// for each assignment
-	for (unsigned int i=0; i<toks.size(); ++i) {
+	for (size_t i=0; i<toks.size(); ++i) {
 		std::vector<token> sides;
 		bite_all(tokenizer(toks[i]).set_skip("'\"","'\"","\\\\").set_ws("="),sides);
 		if (sides.size() != 2) {
@@ -214,12 +214,12 @@ void gui_config_file_observer::multi_observe(base_ptr bp, const std::string& pro
 			}
 		}
 		else if (rhs[0] == '"' || rhs[0] == '\'') {
-			unsigned int n = (unsigned int) (rhs.size()-1);
+			size_t n = rhs.size()-1;
 			char open = rhs[0];
 			if (rhs[n] == rhs[0])
 				--n;
 			rhs = rhs.substr(1, n);
-			for (unsigned i=1; i<rhs.size(); ++i) {
+			for (size_t i=1; i<rhs.size(); ++i) {
 				if (rhs[i-1] == '\\' && (rhs[i] == '\\' || rhs[i] == open))
 					rhs.erase(i-1,1);
 			}
