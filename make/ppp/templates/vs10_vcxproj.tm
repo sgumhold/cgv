@@ -65,7 +65,7 @@
     <PlatformToolset>v@(cgv_compiler_version*10)</PlatformToolset>
 	@}
 @}
-    <CharacterSet>Unicode</CharacterSet>
+    <CharacterSet>MultiByte</CharacterSet>
 @if(cj%4==0)@{@//
     <WholeProgramOptimization>true</WholeProgramOptimization>
 @}@//
@@ -125,7 +125,9 @@
 @}@//
       <DebugInformationFormat>@(pj::debug_info_vs10[cj])</DebugInformationFormat>
 @if(is_dbg[cj] == "true")@{@//
+@if(cgv_compiler_version < 142)@{@//
       <MinimalRebuild>true</MinimalRebuild>
+@}@//
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
 @}
 @if(pj::use_ph)@{@//

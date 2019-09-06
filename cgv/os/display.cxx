@@ -147,17 +147,29 @@ public:
 	/// return the name of the display
 	std::string get_name() const 
 	{
+#ifdef UNICODE
 		return cgv::utils::wstr2str(dd.DeviceName);
+#else
+		return std::string(dd.DeviceName);
+#endif
 	}
 	/// return the description string of the display
 	std::string get_description() const
 	{
+#ifdef UNICODE
 		return cgv::utils::wstr2str(dd.DeviceString);
+#else
+		return std::string(dd.DeviceString);
+#endif
 	}
 	/// return the unique ID string of the display
 	std::string get_ID() const
 	{
+#ifdef UNICODE
 		return cgv::utils::wstr2str(dd.DeviceID);
+#else
+		return std::string(dd.DeviceID);
+#endif
 	}
 	/// return whether display is a mirrored display
 	bool is_mirror() const

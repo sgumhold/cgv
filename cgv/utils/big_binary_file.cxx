@@ -42,9 +42,12 @@ namespace cgv {
 
 			if (!file_name.empty())
 				filename = file_name;
-
+#ifdef UNICODE
 			std::wstring wfile_name = str2wstr(file_name);
 			const wchar_t* name = wfile_name.c_str();
+#else
+			const char* name = file_name.c_str();
+#endif
 
 			access_mode = m;
 			if(m == READ) {

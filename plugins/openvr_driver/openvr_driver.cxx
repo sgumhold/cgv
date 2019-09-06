@@ -115,9 +115,9 @@ struct openvr_driver : public vr_driver
 	{
 		std::vector<float> boundary;
 		put_action_zone_bounary(boundary);
-		unsigned n = boundary.size() / 3;
+		size_t n = boundary.size() / 3;
 		float y = 0.0f;
-		for (unsigned i = 0; i < n; ++i)
+		for (size_t i = 0; i < n; ++i)
 			y += boundary[3 * i + 1];
 		y /= (float)n;
 		return y;

@@ -101,7 +101,7 @@ int CALLBACK BrowseCallbackProc(HWND hwnd, UINT uMsg,
 		if (lpData)
 		{
 			// so set the initial folder
-			wcscpy(initialPath, (TCHAR *)lpData);
+			_tcscpy(initialPath, (TCHAR*)lpData);
 		}
 		else
 		{
