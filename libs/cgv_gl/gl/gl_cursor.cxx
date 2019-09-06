@@ -265,7 +265,13 @@ bool create_from_cursor(HCURSOR hc, gl_cursor* c)
 
 bool gl_cursor::create(const std::string& id)
 {
-	static struct { const char* id; LPCWSTR cid; } lookup[] =
+	static struct { const char* id; 
+#ifdef UNICODE
+	LPCWSTR cid; 
+#else
+	LPCSTR cid;
+#endif
+	} lookup[] =
 	{
 		{ "startup", IDC_APPSTARTING },
 		{ "arrow", IDC_ARROW },
@@ -280,7 +286,11 @@ bool gl_cursor::create(const std::string& id)
 		{ "nesw", IDC_SIZENESW },
 		{ "nwse", IDC_SIZENWSE }
 	};
+#ifdef UNICODE
 	LPCWSTR cid = 0;
+#else
+	LPCSTR cid = 0;
+#endif
 	for (unsigned i=0; i<10; ++i)
 		if (id == lookup[i].id) {
 			cid = lookup[i].cid;
@@ -378,7 +388,14 @@ bool gl_cursor::create_from_file(const std::string& file_name)
 
 	// load static cursors
 	if (ext == "CUR") {
-		return create_from_cursor(LoadCursorFromFile(str2wstr(file_name).c_str()), this);
+		return create_from_cursor(LoadCursorFromFile(
+#ifdef UNICODE
+			str2wstr(file_name).c_str()
+#else
+			file_name.c_str()
+#endif
+		), this);
+
 	}
 	else if (ext == "ANI") {
 		// open file and get seq and rate chunks
@@ -388,7 +405,13 @@ bool gl_cursor::create_from_file(const std::string& file_name)
 		if (!rr.read(file_name))
 			return false;
 		//
-		HCURSOR hc = LoadCursorFromFile(str2wstr(file_name).c_str());
+		HCURSOR hc = LoadCursorFromFile(
+#ifdef UNICODE
+			str2wstr(file_name).c_str()
+#else
+			file_name.c_str()
+#endif
+		);
 		if (!hc)
 			return false;
 		for (unsigned i = 0; i<get_nr_steps(); ++i) {

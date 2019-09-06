@@ -1,0 +1,8 @@
+@=
+projectName="openvr";
+projectType="library";
+projectGUID="CF48B6B6-6B9A-4282-AB7F-50A1D8641622";
+addIncDirs=[ CGV_DIR."/3rd/openvr/src", [CGV_DIR."/3rd/openvr/headers","all"], CGV_DIR."/3rd/openvr/src/vrcommon" ];
+addDefines=[ ["VR_API_PUBLIC","all"] ];
+addStaticDefines=[ "OPENVR_BUILD_STATIC" ];
+addSharedDefines=[ "OPENVR_API_EXPORTS"];

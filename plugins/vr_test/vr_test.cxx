@@ -108,7 +108,7 @@ protected:
 				// store intersection information
 				intersection_points.push_back(p_result);
 				intersection_colors.push_back(color);
-				intersection_box_indices.push_back(i);
+				intersection_box_indices.push_back((int)i);
 				intersection_controller_indices.push_back(ci);
 			}
 		}
@@ -430,7 +430,7 @@ public:
 				cgv::render::attribute_array_binding::enable_global_array(ctx, ci);
 				glLineWidth(3);
 				prog.enable(ctx);
-				glDrawArrays(GL_LINES, 0, P.size());
+				glDrawArrays(GL_LINES, 0, (GLsizei)P.size());
 				prog.disable(ctx);
 				cgv::render::attribute_array_binding::disable_global_array(ctx, pi);
 				cgv::render::attribute_array_binding::disable_global_array(ctx, ci);
@@ -443,7 +443,7 @@ public:
 		renderer.set_box_array(ctx, boxes);
 		renderer.set_color_array(ctx, box_colors);
 		if (renderer.validate_and_enable(ctx)) {
-			glDrawArrays(GL_POINTS, 0, boxes.size());
+			glDrawArrays(GL_POINTS, 0, (GLsizei)boxes.size());
 		}
 		renderer.disable(ctx);
 
@@ -454,7 +454,7 @@ public:
 		renderer.set_translation_array(ctx, movable_box_translations);
 		renderer.set_rotation_array(ctx, movable_box_rotations);
 		if (renderer.validate_and_enable(ctx)) {
-			glDrawArrays(GL_POINTS, 0, movable_boxes.size());
+			glDrawArrays(GL_POINTS, 0, (GLsizei)movable_boxes.size());
 		}
 		renderer.disable(ctx);
 
@@ -465,7 +465,7 @@ public:
 			sr.set_color_array(ctx, intersection_colors);
 			sr.set_render_style(srs);
 			if (sr.validate_and_enable(ctx)) {
-				glDrawArrays(GL_POINTS, 0, intersection_points.size());
+				glDrawArrays(GL_POINTS, 0, (GLsizei)intersection_points.size());
 				sr.disable(ctx);
 			}
 		}

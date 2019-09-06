@@ -550,12 +550,12 @@ void vr_view_interactor::draw(cgv::render::context& ctx)
 				driver_ptr->put_up_direction(&up_dir[0]);
 				std::vector<float> boundary;
 				driver_ptr->put_action_zone_bounary(boundary);
-				unsigned n = boundary.size() / 3;
+				size_t n = boundary.size() / 3;
 				std::vector<vec3> G;
 				G.resize(5 * n);
 				unsigned i;
 				for (i = 0; i < 5; ++i) {
-					for (unsigned j = 0; j < n; ++j) {
+					for (size_t j = 0; j < n; ++j) {
 						vec3 p = reinterpret_cast<const vec3&>(boundary[3 * j]);
 						p += 0.25f*i*h*up_dir;
 						G[i*n + j] = p;
