@@ -248,6 +248,7 @@ void vr_view_interactor::after_finish(cgv::render::context& ctx)
 	if (ctx.get_render_pass() == cgv::render::RP_MAIN) {
 		if (rendered_kit_ptr) {
 			rendered_kit_ptr->disable_fbo(rendered_eye);
+			ctx.swap_out_current_fbo_handle(fbo_handle);
 			int width = ctx.get_width() / 2;
 			int x0 = 0;
 			int blit_height = width * rendered_kit_ptr->get_height() / rendered_kit_ptr->get_width();
@@ -404,22 +405,30 @@ void vr_view_interactor::init_frame(cgv::render::context& ctx)
 				rendered_kit_ptr = vr::get_vr_kit(kits[rendered_kit_index]);
 				if (!rendered_kit_ptr)
 					continue;
+				void* fbo_handle;
 				for (rendered_eye = 0; rendered_eye < 2; ++rendered_eye) {
 					rendered_kit_ptr->enable_fbo(rendered_eye);
+					ctx.swap_in_current_fbo_handle(fbo_handle);
 					ctx.render_pass(cgv::render::RP_USER_DEFINED, cgv::render::RenderPassFlags(rpf&~cgv::render::RPF_HANDLE_SCREEN_SHOT), this);
 					rendered_kit_ptr->disable_fbo(rendered_eye);
+					ctx.swap_out_current_fbo_handle(fbo_handle);
 				}
 			}
 			// render current vr kit 
 			rendered_kit_index = current_vr_handle_index - 1;
 			rendered_kit_ptr = vr::get_vr_kit(kits[rendered_kit_index]);
-			if (rendered_kit_ptr) {
+			if (rendered_kit_ptr) {				
+				void* fbo_handle;
 				for (rendered_eye = 0; rendered_eye < 2; ++rendered_eye) {
 					rendered_kit_ptr->enable_fbo(rendered_eye);
-					if (rendered_eye == 1 && !separate_view)
+					ctx.swap_in_current_fbo_handle(fbo_handle);
+					if (rendered_eye == 1 && !separate_view) {
+						this->fbo_handle = fbo_handle;
 						break;
+					}
 					ctx.render_pass(cgv::render::RP_USER_DEFINED, cgv::render::RenderPassFlags(rpf&~cgv::render::RPF_HANDLE_SCREEN_SHOT));
 					rendered_kit_ptr->disable_fbo(rendered_eye);
+					ctx.swap_out_current_fbo_handle(fbo_handle);
 				}
 			}
 			if (separate_view) {
@@ -573,7 +582,7 @@ void vr_view_interactor::draw(cgv::render::context& ctx)
 				lambda *= lambda;
 				ctx.set_color((1 - lambda)*fence_color1 + lambda * fence_color2);
 				for (i = 0; i < 5; ++i)
-					glDrawArrays(GL_LINE_LOOP, i*n, n);
+					glDrawArrays(GL_LINE_LOOP, GLint(i*n), (GLsizei)n);
 				prog.disable(ctx);
 				cgv::render::attribute_array_binding::disable_global_array(ctx, pos_idx);
 				glDisable(GL_LINE_STIPPLE);

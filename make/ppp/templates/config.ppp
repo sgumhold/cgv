@@ -61,7 +61,11 @@ if(CGV_IDE ~~ UNDEF) {
 	}
 }
 // default windows sdk version to latest version
-CGV_WINDOWS_SDK="10.0.17763.0";
+if(CGV_COMPILER=="vs142") {
+	CGV_WINDOWS_SDK="10.0.18362.0";
+} else {
+	CGV_WINDOWS_SDK="10.0.17763.0";
+}
 if (env::CGV_WINDOWS_SDK !~ UNDEF) {
 	CGV_WINDOWS_SDK=env::CGV_WINDOWS_SDK;
 }

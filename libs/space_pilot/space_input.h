@@ -1,12 +1,12 @@
 /** 
- \mainpage space_input Description
+ \page space_input space_input class
 
  \section intro_sec What is this about?
 	This package contains a simple class for communicating with 3dconnexion devices that are handled by 3DxWare.
 	these are multi-axis and multi-button devices to retrieve relative or absolute motion information in a 3D space. 
 	See the official documentation on 3dconnexion.com for a more matured explanation on this type of controlling device.
 
-	To use the class in VisualC++ do the following:
+	To use the class in Visual C++ do the following:
 		- Copy the spacepilot.dll to the location of you executable
 		- Add the dependency "spacepilot.lib" in your project settings
 		- Add the files spacepilot.h, space_input.h and space_input.cpp to your project
