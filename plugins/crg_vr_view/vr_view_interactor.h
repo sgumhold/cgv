@@ -58,6 +58,7 @@ class CGV_API vr_view_interactor :
 public:
 	typedef cgv::math::fmat<float,3,4> mat34;
 protected:
+	void* fbo_handle;
 	/// whether the window shows a separate view onto the scene or the one of the current vr kit
 	bool separate_view;
 	/// whether to blit in the views of the vr kits

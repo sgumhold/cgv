@@ -68,7 +68,7 @@ GLuint map_to_gl(MaterialSide ms)
 	return ms_to_gl[ms];
 }
 
-GLuint get_gl_id(void* handle)
+GLuint get_gl_id(const void* handle)
 {
 	return (const GLuint&)handle - 1;
 }
@@ -731,6 +731,26 @@ void gl_context::draw_light_source(const light_source& l, float i, float light_s
 		}
 	}
 	pop_modelview_matrix();
+}
+
+// for only internal use only
+void gl_context::swap_in_current_fbo_handle(void*& fbo_handle)
+{
+	if (frame_buffer_stack.empty())
+		return;
+	GLint fbo_id = 0;
+	glGetIntegerv(GL_DRAW_FRAMEBUFFER_BINDING, &fbo_id);
+	fbo_handle = frame_buffer_stack.top()->handle;
+	frame_buffer_stack.top()->handle = get_handle(fbo_id);
+}
+
+// for only internal use only
+void gl_context::swap_out_current_fbo_handle(void* fbo_handle)
+{
+	if (frame_buffer_stack.empty())
+		return;
+	glBindFramebuffer(GL_FRAMEBUFFER, get_gl_id(fbo_handle));
+	frame_buffer_stack.top()->handle = fbo_handle;
 }
 
 

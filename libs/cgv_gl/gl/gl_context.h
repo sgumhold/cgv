@@ -174,6 +174,11 @@ public:
 	void draw_light_source(const cgv::media::illum::light_source& l, float intensity_scale, float light_scale); 
 	//@}
 
+	// for only internal use only
+	void swap_in_current_fbo_handle(void*& fbo_handle);
+	// for only internal use only
+	void swap_out_current_fbo_handle(void* fbo_handle);
+
 	/**@name text output*/
 	//@{
 	/// use this to push transformation matrices on the stack such that x and y coordinates correspond to window coordinates

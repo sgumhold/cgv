@@ -788,6 +788,10 @@ public:
 	virtual void enable_multisample() = 0;
 	/// disable multi sampling
 	virtual void disable_multisample() = 0;
+	// for only internal use only
+	virtual void swap_in_current_fbo_handle(void*& fbo_handle) = 0;
+	// for only internal use only
+	virtual void swap_out_current_fbo_handle(void* fbo_handle) = 0;
 
 	/** read the current frame buffer or a rectangular region of it into the given
 	    data view.
