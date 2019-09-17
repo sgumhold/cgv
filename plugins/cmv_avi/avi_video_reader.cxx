@@ -9,17 +9,12 @@ using namespace cgv::type;
 extern HWND get_main_window();
 //HWND AVIStreamBeginStreaming(int,int,int,int);
 
-avi_video_reader::avi_video_reader() : pfile(0), ps(0), psCompressed(0), getFrame(0)
+avi_video_reader::avi_video_reader() : pfile(0), ps(0), getFrame(0)
 {
 	_fmemset(&opts, 0, sizeof(opts));
 	opts.fccType = streamtypeVIDEO;
 	frame_index = 0;
 	n = 0;
-	/*
-	input_format = 0;
-	output_format = 0;
-	decompressor = 0;
-	*/
 }
 
 ///
@@ -69,25 +64,8 @@ bool avi_video_reader::set_void(const std::string& property, const std::string& 
 			last_error = "frame number larger or equal to nr of frames";
 			return false;
 		}
-		// close get frame 
-		if (getFrame) {
-			AVIStreamGetFrameClose(getFrame);
-			getFrame = 0;
-		}
-#ifdef _MSC_VER
-		HRESULT hr = AVIStreamBeginStreaming(ps, fi, nr_frames, 1000);
-		if (hr != AVIERR_OK) {
-			last_error = "streaming from given location not possible";
-			return false;
-		}
-#endif
-		getFrame = AVIStreamGetFrameOpen(ps, NULL);
-		if (getFrame == NULL) {
-			last_error = "no decompressor found";
-			return false;
-		}
-		frame_index = fi;
-		return true;
+		end_streaming();
+		return start_streaming(fi, nr_frames);
 	}
 	return false;
 }
@@ -102,20 +80,18 @@ const char* avi_video_reader::get_supported_extensions() const
 	return "avi";
 }
 /// open the file and read the header in order to determine the image format and the fps
-bool avi_video_reader::open(const std::string& file_name, 
-			 cgv::data::data_format& df, float& fps)
+bool avi_video_reader::open(const std::string& file_name,
+	cgv::data::data_format& df, float& fps)
 {
 	AVISTREAMINFO strhdr;
-	AVICOMPRESSOPTIONS FAR * aopts[1] = {&opts};
+	AVICOMPRESSOPTIONS FAR* aopts[1] = { &opts };
 	AVIFileInit();
-	frame_index = 0;
 	// read avi
-	HRESULT hr = AVIFileOpen(&pfile, file_name.c_str(), OF_READ | OF_SHARE_DENY_WRITE,NULL);
+	HRESULT hr = AVIFileOpen(&pfile, file_name.c_str(), OF_READ | OF_SHARE_DENY_WRITE, NULL);
 	if (hr != AVIERR_OK) {
-		last_error = std::string("couldn't open avi file ")+file_name;
+		last_error = std::string("couldn't open avi file ") + file_name;
 		return false;
 	}
-	psCompressed = 0;
 	// get the file info
 	AVIFILEINFO fileInfo;
 	hr = AVIFileInfo(pfile, &fileInfo, sizeof(fileInfo));
@@ -124,8 +100,8 @@ bool avi_video_reader::open(const std::string& file_name,
 		close();
 		return false;
 	}
-//	new (&df) cgv::data::data_format(fileInfo.dwWidth, fileInfo.dwHeight);
-	fps = float(fileInfo.dwRate)/fileInfo.dwScale;
+	//	new (&df) cgv::data::data_format(fileInfo.dwWidth, fileInfo.dwHeight);
+	fps = float(fileInfo.dwRate) / fileInfo.dwScale;
 	// get the stream
 	hr = AVIFileGetStream(pfile, &ps, streamtypeVIDEO, 0);
 	if (hr != AVIERR_OK) {
@@ -135,15 +111,17 @@ bool avi_video_reader::open(const std::string& file_name,
 	}
 	// get the stream info
 	hr = AVIStreamInfo(ps, &strhdr, sizeof(strhdr));
+	char fccType[4]; (DWORD&)(fccType[0]) = strhdr.fccType;
+	char fccHandler[4]; (DWORD&)(fccHandler[0]) = strhdr.fccHandler;
 	if (hr != AVIERR_OK) {
 		last_error = "no stream info provided";
 		close();
 		return false;
 	}
 	df.~data_format();
-	new (&df) cgv::data::data_format(strhdr.rcFrame.right-strhdr.rcFrame.left, 
-												strhdr.rcFrame.bottom-strhdr.rcFrame.top, 
-												cgv::type::info::TI_UINT8, CF_RGB);
+	new (&df) cgv::data::data_format(strhdr.rcFrame.right - strhdr.rcFrame.left,
+		strhdr.rcFrame.bottom - strhdr.rcFrame.top,
+		cgv::type::info::TI_UINT8, CF_RGB);
 	n = df.get_nr_entries();
 	nr_frames = AVIStreamLength(ps);
 	if (nr_frames == -1) {
@@ -151,92 +129,53 @@ bool avi_video_reader::open(const std::string& file_name,
 		close();
 		return false;
 	}
-	/*
-		char fmt[5];
-		fmt[4] = 0;
-		((DWORD&) fmt[0]) = strhdr.fccHandler;
-		std::cout << "format: " << fmt << std::endl;
-   */
+
+	info.biSize = sizeof(BITMAPINFOHEADER);
+	info.biBitCount = 24;
+	info.biWidth = df.get_width();
+	info.biHeight = df.get_height();
+	info.biPlanes = 1;
+	info.biCompression = BI_RGB;
+	info.biSizeImage = 0;
+	info.biXPelsPerMeter = 200;
+	info.biYPelsPerMeter = 200;
+	info.biClrUsed = 0;
+	info.biClrImportant = 0;
+	return start_streaming(0, nr_frames);
+}
+
+bool avi_video_reader::start_streaming(LONG start, LONG end)
+{
 #ifdef _MSC_VER
-	hr = AVIStreamBeginStreaming(ps, 0, nr_frames, 1000);
+	HRESULT hr = AVIStreamBeginStreaming(ps, start, end, 1000);
 	if (hr != AVIERR_OK) {
 		last_error = "start of streaming not possible";
 		close();
 		return false;
 	}
 #endif
-	return open_frame();
-}
-
-bool avi_video_reader::open_frame()
-{
-	getFrame = AVIStreamGetFrameOpen(ps, NULL);
-	if (getFrame != NULL) 
+	getFrame = AVIStreamGetFrameOpen(ps, &info);
+	if (getFrame != NULL) {
+		frame_index = start;
 		return true;
+	}
 	close();
 	return false;
-/*	HRESULT hr;
-	AVISTREAMINFO info;
-	hr = AVIStreamInfo(ps, &info, sizeof(info));
-	if (hr != AVIERR_OK) {
-		last_error = "no stream info provided";
-		close();
-		return false;
-	}
-	LONG format_size;
-	hr = AVIStreamReadFormat(ps,0,NULL,&format_size);
-	if (hr != AVIERR_OK) {
-		last_error = "could not determine size of format";
-		close();
-		return false;
-	}
-	input_format = (LPBITMAPINFOHEADER) new unsigned char[format_size];
-	hr = AVIStreamReadFormat(ps,0,input_format,&format_size);
-	if (hr != AVIERR_OK) {
-		last_error = "could not read input format";
-		close();
-		return false;
-	}
+}
 
-	int i;
-	ICINFO icinfo;
-	for (i=0; ICInfo(ICTYPE_VIDEO, i, &icinfo); i++) {
-		HIC hic = ICOpen(icinfo.fccType, icinfo.fccHandler, ICMODE_QUERY);
-		if (hic) {
-			ICGetInfo(hic, &icinfo, sizeof(icinfo));
-			std::string codec_name = cgv::utils::wstr2str(std::wstring(icinfo.szDescription));
-			std::cout << "query to codec " << codec_name.c_str() << std::endl;
-			DWORD hr = ICDecompressQuery(hic,input_format,NULL);
-			if (hr == ICERR_OK) {
-				std::cout << "query succeeded" << std::endl;
-			}
+void avi_video_reader::end_streaming()
+{
+	if (getFrame) {
+		HRESULT hr = AVIStreamGetFrameClose(getFrame);
+		if (hr != AVIERR_OK) {
+			last_error = "close frame not possible";
+		}
+		getFrame = 0;
+		hr = AVIStreamEndStreaming(ps);
+		if (hr != AVIERR_OK) {
+			last_error = "end of streaming not possible";
 		}
 	}
-
-
-	decompressor = ICDecompressOpen(
-		ICTYPE_VIDEO,info.fccHandler,input_format,NULL);
-	if (decompressor == NULL) {
-		last_error = "could not find decompressor";
-		close();
-		return false;
-	}
-	format_size = ICDecompressGetFormat(decompressor, input_format, NULL);
-	output_format = (LPBITMAPINFOHEADER) new unsigned char[format_size];
-	hr = ICDecompressGetFormat(decompressor, input_format, output_format);
-	if (hr != AVIERR_OK) {
-		last_error = "could not get output format";
-		close();
-		return false;
-	}
-	hr = ICDecompressBegin(decompressor,input_format,output_format);
-	if (hr != AVIERR_OK) {
-		last_error = "could not start decompression";
-		close();
-		return false;
-	}
-	return true;
-	*/
 }
 
 /// read a frame and return whether this was successful
@@ -249,7 +188,10 @@ bool avi_video_reader::read_frame(const cgv::data::data_view& dv)
 	// read frame
 	if (getFrame != NULL) {
 		unsigned char* buffer = (unsigned char*) AVIStreamGetFrame(getFrame, frame_index);
-		if (buffer == 0) return false;
+		if (buffer == 0) {
+			end_streaming();
+			return false;
+		}
 		// toggle red and blue components back
 		const BITMAPINFOHEADER& info = reinterpret_cast<const BITMAPINFOHEADER&>(*buffer);
 		unsigned stride = ((((info.biWidth * info.biBitCount) + 31) & ~31) >> 3) - (info.biWidth * info.biBitCount >> 3);
@@ -275,14 +217,13 @@ bool avi_video_reader::read_frame(const cgv::data::data_view& dv)
 /// close the video file
 bool avi_video_reader::close()
 {
-	if (ps) AVIStreamClose(ps);
-	if (psCompressed) AVIStreamClose(psCompressed);
-	if (pfile) AVIFileClose(pfile);
-	if (getFrame) AVIStreamGetFrameClose(getFrame);
+	end_streaming();
+	if (ps) 
+		AVIStreamClose(ps);
+	if (pfile) 
+		AVIFileClose(pfile);
 	ps = 0;
-	psCompressed = 0;
 	pfile = 0;
-	getFrame = 0;
 	AVIFileExit();
 	return true;
 }
