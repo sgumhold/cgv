@@ -27,18 +27,17 @@ protected:
 	PAVISTREAM psCompressed;
 	PGETFRAME  getFrame;
 	AVICOMPRESSOPTIONS opts;
-	/*
-	LPBITMAPINFOHEADER input_format;
-	LPBITMAPINFOHEADER output_format;
-	HIC decompressor;
-	*/
+	BITMAPINFOHEADER info;
+
 	unsigned int frame_index;
 	unsigned int nr_frames;
 	unsigned int n;
 	mutable std::string last_error;
 	bool get_void(const std::string& property, const std::string& type, void* value);
 	bool set_void(const std::string& property, const std::string& type, const void* value);
-	bool open_frame();
+	
+	bool start_streaming(LONG start, LONG end);
+	void end_streaming();
 
 public:
 	///
