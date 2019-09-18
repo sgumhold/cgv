@@ -23,11 +23,11 @@ ABBREVIATE_BRIEF       = "The $name class  " \
                          an \
                          the
 ALWAYS_DETAILED_SEC    = NO
-INLINE_INHERITED_MEMB  = NO
-FULL_PATH_NAMES        = NO
+INLINE_INHERITED_MEMB  = YES
+FULL_PATH_NAMES        = YES
 STRIP_FROM_PATH        = 
 STRIP_FROM_INC_PATH    = 
-SHORT_NAMES            = YES
+SHORT_NAMES            = NO
 JAVADOC_AUTOBRIEF      = NO
 QT_AUTOBRIEF           = NO
 MULTILINE_CPP_IS_BRIEF = NO
@@ -114,7 +114,7 @@ INCLUDE_PATH = \
 $(CGV_DIR) \
 $(CGV_DIR)/libs \
 $(CGV_DIR)/plugins
-INPUT_ENCODING         = UTF-8
+INPUT_ENCODING         = ISO-8859-1
 FILE_PATTERNS          = *.c \
                          *.cc \
                          *.cxx \
@@ -294,4 +294,4 @@ DOT_CLEANUP            = YES
 #---------------------------------------------------------------------------
 # Configuration::additions related to the search engine   
 #---------------------------------------------------------------------------
-SEARCHENGINE           = NO
+SEARCHENGINE           = YES

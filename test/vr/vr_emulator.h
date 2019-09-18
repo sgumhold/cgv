@@ -59,6 +59,7 @@ class CGV_API vr_emulator :
 public:
 	typedef cgv::math::quaternion<float> quat;
 	std::vector<vr_emulated_kit*> kits;
+	static bool gamepad_connected;
 	unsigned screen_width, screen_height;
 	bool ffb_support, wireless;
 	unsigned counter;

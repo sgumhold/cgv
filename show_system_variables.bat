@@ -19,6 +19,7 @@ echo CGV_PROJECT_DIR: %CGV_PROJECT_DIR%
 echo CGV_SUPPORT_DIR: %CGV_SUPPORT_DIR%
 echo CGV_DATA:        %CGV_DATA%
 echo CGV_CHARSET:     %CGV_CHARSET%
+echo CGV_OPTIONS:     %CGV_OPTIONS%
 pause
 goto:eof
 

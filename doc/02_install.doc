@@ -7,30 +7,27 @@ using namespace cgv;
 \section download Download and Fast Start
 
 The current version of the framework can be found on github https://github.com/sgumhold/cgv.
-To get the most recent features you should switch to the develop branch after check out.
 
 For a fast start under windows with visual studio do the following:
 - Choose directory (avoid the desktop or library paths in windows) into which to clone the cgv source tree and run the following commands:
 \code
 git clone https://github.com/sgumhold/cgv.git
-cd cgv
-git checkout develop
 \endcode
 - create a build directory where the temporary files should be stored
+- in case you want to use the x64 platform start the define_platform.bat script and follow instructions
+- in case you do not want to use the most current visual studio toolset start the define_windows_sdk.bat script and follow instructions
 - use 2 explorer windows to drag build directory onto cgv/define_system_variables.bat 
   alternatively you can run the following command in the command prompt:
 \code
 define_system_variables.bat <global-path-to-build-directory>
 \endcode
-- select your configuration, typically [e] for MS VS 2015
-- close the command prompt and optionally open a new to ensure that the systems variables have been updated 
-- run cgv\build_example_solution.bat by double clicking it in explorer window or 
-  starting it in command prompt:
-\code
-build_example_solution.bat
-\endcode
-- open the generated solution under <build-directory>/vs14/examples/examples.sln
-  (if you use a different VS version, replace vs14 with vs12 etc)
+- select your configuration, typically [i] for MS VS 2019
+- close the command prompt and optionally open a new to ensure that the systems variables have been updated
+- bind the extension .pj to cgv/bin/generate_makefile.bat by right clicking cgv/plugins/examples/examples.pj
+  and finding cgv/bin/generate_makefile.bat as the default application for .pj files. This generates
+  the solution of the examples plugin.
+- alternatively you can run cgv/build_example_solution.bat or drag and drop cgv/plugins/examples/examples.pj
+  onto cgv/bin/generate_makefile.bat
 - after visual studio started, select configuration "Debug Dll" or "Release Dll"
 - ensure that examples plugin is the active project
 - build solution
@@ -53,9 +50,13 @@ and shared libraries / dlls are copied to "$(CGV_INSTALL)/bin" and libraries to 
 - optional: CGV_BUILD ... path, where the intermediate files are created. For example 
 "c:/temp/build_cgv" under windows or "~/temp" under linux. If not set,
 CGV_BUILD defaults to CGV_DIR/build.
+- optional: CGV_PLATFORM ... only under windows; is WIN32 or x64 and can be defined with define_platform.bat script (defaults to WIN32)
+- optional: CGV_WINDOWS_SDK ... only under windows since VS 2017; is one of the installed toolsets of visual studio and can be defined with define_windows_sdk.bat (defaults to most current toolset version of selected visual studio version)
+- optional: CGV_CHARSET ... only for Visual Studio; can be MultiByte (char is 8 bit) or Unicode (char is 16 bit) and defaults to MultiByte. Use define_charset.bat to change the value.
+- optional: CGV_OPTIONS ... semicolon separated further options, where currently only NO_OPENVR is supported to avoid initialization of steam vr. Use define_options.bat to change the value.
 - optional: CGV_DATA ... the root paths for datasets which are used in the cgv_data to find files.
 - optional: CGV_PROJECT_DIR ... path to repository with further common projects that build on the cgv core libraries
-- optional: CGV_SUPPORT_DIR ... path to repository with libraries and plugins the build on 3rd party libraries that do not come with a free license
+- optional: CGV_SUPPORT_DIR ... path to repository with libraries and plugins that build on 3rd party libraries that do not come with a free license
 
 Under windows the following six scripts - located in the root directory
 of the cgv framework - help to manage the necessary environment variables. 
@@ -78,7 +79,11 @@ can be defined by dragging the project directory in the windows explorer onto th
 batch script.
 - define_support_dir.bat ... sets the system variable CGV_SUPPORT_DIR. The script
 is started with one parameter - the path to the cgv support directory. The parameter 
-can be defined by dragging the project directory in the windows explorer onto the 
+can be defined by dragging the support directory in the windows explorer onto the 
+batch script.
+- define_data_dir.bat ... sets the system variable CGV_DATA. The script
+is started with one parameter - the path to the cgv data directory. The parameter 
+can be defined by dragging the data directory in the windows explorer onto the 
 batch script.
 - undefine_system_variables.bat ... removes all cgv specific settings from the
 system variables.
