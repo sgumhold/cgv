@@ -65,7 +65,7 @@
     <PlatformToolset>v@(cgv_compiler_version*10)</PlatformToolset>
 	@}
 @}
-    <CharacterSet>MultiByte</CharacterSet>
+    <CharacterSet>@(CGV_CHARSET)</CharacterSet>
 @if(cj%4==0)@{@//
     <WholeProgramOptimization>true</WholeProgramOptimization>
 @}@//

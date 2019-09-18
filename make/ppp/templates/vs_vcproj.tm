@@ -15,6 +15,9 @@
 @//function call to <make/ppp/templates/extend_input.tm>
 @define(commonDefs=["WIN32", "INPUT_DIR=".(INPUT_DIR*"|\\|/|"), 
 		            "CGV_DIR=".(CGV_DIR*"|\\|/|"), ["_WINDOWS","_CONSOLE"][exec_idx] ])
+@if(CGV_PLATFORM=="x64")@{
+@define(commonDefs=commonDefs.["WIN64"])
+@}
 @define(configDefsAdd=[ [["_LIB"],[]][exec_idx], [["_USRDLL"],[]][exec_idx] ])
 @define(configDefs=[["NDEBUG","CGV_FORCE_STATIC"].configDefsAdd[0],
 		              ["_DEBUG","CGV_FORCE_STATIC"].configDefsAdd[0],

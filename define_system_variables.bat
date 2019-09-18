@@ -21,13 +21,6 @@ if NOT [%1] == [] (
       echo "%param%\..\%~n1" does not exist
    )
 )
-set platformsub=""
-if "%CGV_PLATFORM%" == "WIN32" (
-	set platformsub=WIN32
-)
-if "%CGV_PLATFORM%" == "x64" (
-	set platformsub=WIN64
-)
 echo Define System Variables for cgv Framework
 echo -------------------------------------------
 echo    please answer the following question by
@@ -169,9 +162,9 @@ set target_path=%%CGV_DIR%%\bin\WIN64
 call :remove_from_list old_path_3 target_path
 
 if "%new_path%" == "" (
-  set new_path=%%CGV_DIR%%\bin;%%CGV_DIR%%\bin\%platformsub%;%%CGV_INSTALL%%\bin
+  set new_path=%%CGV_DIR%%\bin;%%CGV_INSTALL%%\bin
 ) else (
-  set new_path=%%CGV_DIR%%\bin;%%CGV_DIR%%\bin\%platformsub%;%%CGV_INSTALL%%\bin;%new_path%
+  set new_path=%%CGV_DIR%%\bin;%%CGV_INSTALL%%\bin;%new_path%
 )
 set change=false
 if "%new_path%" NEQ "%old_path%" (
