@@ -396,6 +396,8 @@ public:
 						// need to be multiplied in oposite order. In case of matrices
 						// one would write box_orientation_matrix *= rotation
 						movable_box_rotations[bi] = quat(rotation) * movable_box_rotations[bi];
+						// update intersection points
+						intersection_points[i] = rotation * (intersection_points[i] - last_pos) + pos;
 					}
 				}
 				else {// not grab
