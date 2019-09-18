@@ -4,6 +4,7 @@
 #include <cgv/gui/event_handler.h>
 #include <cgv/math/ftransform.h>
 #include <cgv/utils/scan.h>
+#include <cgv/utils/options.h>
 #include <cgv/gui/provider.h>
 #include <cgv/render/drawable.h>
 #include <cgv/render/shader_program.h>
@@ -13,7 +14,6 @@
 #include <cgv_gl/sphere_renderer.h>
 #include <cgv/media/mesh/simple_mesh.h>
 #include <cgv_gl/gl/mesh_render_info.h>
-#include <cg_gamepad/gamepad_server.h>
 
 ///@ingroup VR
 ///@{
@@ -188,7 +188,6 @@ public:
 		ray_length = 2;
 		last_kit_handle = 0;
 		connect(cgv::gui::ref_vr_server().on_device_change, this, &vr_test::on_device_change);
-		cgv::gui::connect_gamepad_server();
 
 		mesh_scale = 0.001f;
 		mesh_location = dvec3(0, 1.1f, 0);
@@ -437,7 +436,8 @@ public:
 	}
 	bool init(cgv::render::context& ctx)
 	{
-		ctx.set_gamma(1.0f);
+		if (!cgv::utils::has_option("NO_OPENVR"))
+			ctx.set_gamma(1.0f);
 		cgv::media::mesh::simple_mesh<> M;
 #ifdef _DEBUG
 		if (M.read("D:/data/surface/meshes/obj/Max-Planck_lowres.obj")) {

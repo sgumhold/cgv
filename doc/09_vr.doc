@@ -23,19 +23,26 @@ The following list gives a brief overview:
   drivers and vr kits. The vr_kit class provides access to the display and the controllers
   with a simple state polling api.
 
+- cgv/3rd/openvr
+
+  a copy of the openvr library such that it compiles within the build system of the framework.
+  There is one change to support compilation with unicode characters under windows.
+
 - cgv/plugins/openvr_driver
 
-  implements the vr interface for the openvr api. The api header, libs and windows dlls are
-  included. The dlls are provided in the paths cgv/bin/win32 and cgv/bin/win64. The platform
-  specific path is added when executing the script cgv/define_system_variables.bat.
-  The only thing that needs to be done is to add the openvr_driver plugin as dependent project
-  in the .pj-file.
+  implements the vr interface for the openvr api. The only thing that needs to be done is to 
+  add the openvr_driver plugin as dependent project in the .pj-file.
+
+  Currently, under windows steam vr changes the framebuffer type to non sRGB. Then the gamma correction
+  needs to be set to 1.0f with cgv::render::context::set_gamma(1.0f) instead of the standard value of 2.2f. 
+  As this happens even if no vr device is attached. One can define the option CGV_OPTIONS=NO_OPENVR when one
+  is not using a vr_kit. Then openvr is not initialized by the openvr_driver.
 
 - cgv/plugins/vr_emulator
   
   implements the vr interface for emulated vr kits and supports multiple kits at the same time.
   When added to the .pj-file, the vr_emulator defines a new tabgroup in the user interface and
-  handles some key events:
+  handles some shortcuts:
   
   - Ctrl-Alt-N ... creates a new vr_kit
   
@@ -83,19 +90,38 @@ The following list gives a brief overview:
   to initialize and destruct their framebuffers in the opengl context of the vr_view_interactor.
   
   It keeps a current vr_kit which can be selected with Ctrl-Alt-<0..3> or through the 
-  user interface. It can render the VR kits in a very simplistic way by some spheres 
-  representing the eyes and hands. Furthermore, it can render the action zone boundaries
+  user interface. It can render the VR kits with meshes or in a some spheres 
+  representing the eyes and hands. If the meshes are not provided in the CGV_DATA path
+  and in Debug configuration the sphere rendering is used.
+  
+  Furthermore, the action zone boundaries can be rendered
   as a dashed fence. It can also debug all emitted vr events in the text console window.
   The vr_view_interactor manages its own view which can be controlled with the mouse as in the
-  case of the stereo_view_interactor. Further rendering passes are issued to render from the
+  case of the stereo_view_interactor. 
+  
+  Further rendering passes are issued to render from the
   views of the hmds of the present vr kits. The current vr kit states are queried with
   pose_query=2 for the currently selected vr kit and with pose_query=1 for the others.
   The rendered vr views are submitted to the hmds and can optionally blit in the current 
   framebuffer. The queried states are transfered to the cgv::gui::vr_server singleton with the
-  check_new_state() function such that you should use the second or third option descripted in
+  cgv::gui::vr_server::check_new_state() function such that you should use the second or third option descripted in
   the detailed documentation of the cgv::gui::vr_server.
 
+  The vr_view_interactor provides the following configuration methods:
+  - vr_view_interactor::set_event_type_flags() ... to specify which events should be
+    sent to the event handles. By default all events are sent.
+  - vr_view_interactor::enable_vr_event_debugging() ... allows to toggle debugging of vr events
+  - and several rendering configuration methods as documented in the vr_view_interactor class
+
+  All vr events provide information on the state of the vr_kit that generated the event. 
+  Further convenience functions that can be called also during the draw process are
+  - vr_view_interactor::get_current_vr_state() ... access to the vr_state of the active vr_kit
+  - vr_view_interactor::get_view_dir_of_kit(), vr_view_interactor::get_view_up_dir_of_kit(), vr_view_interactor::get_eye_of_kit() ... to access the view information of the attached vr_kits
+  
 - cgv/plugins/vr_test
 
-  a very simple example of how to use the vr support of the cgv framework
+  an advanced example of how to use the vr support of the cgv framework that includes picking and
+  grabbing of boxes through controller rays and a touch of the controller touchpad, offline rendering
+  of a textual info board and rendering a polygonal mesh (currently the file name is hard coded and
+  needs to be changed in the code to some local meshes)
 */

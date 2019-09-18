@@ -24,7 +24,6 @@ The cgv libraries (dependencies) are
 - cgv_render (cgv_gui/media/base/data/type/utils) ... rendering support with OpenGL specialization
 - cgv_os ... basic operating system support (threads, sockets)
 
-
 Deprecated is the cgv library that includes all of the above components in one library.
 
 
@@ -40,8 +39,10 @@ Currently the following system configurations are supported
     - Visual Studio 2013 (abbreviated by vs12)
     - Visual Studio 2015 (abbreviated by vs14)
     - Visual Studio 2017 (abbreviated by vs141)
+    - Visual Studio 2019 (abbreviated by vs142)
+  - cmake
 - Linux
-  - gcc is in preparation
+  - cmake
 
 Under windows all compilers can be used at the same time. The
 postfix "_8", "_9", "_9e", "_10", "_12", "_14", "_141" is used for applications and libraries to distinguish
@@ -79,11 +80,10 @@ the registration code is executed when the dll is loaded.
 
 \section directories Directory Tree
 
-The framework is provided through https://github.com/sgumhold/cgv.git. The current 
-branch is called develop_core. The framework consists of the following tree of 
-sub directories:
+The framework is provided through https://github.com/sgumhold/cgv.git. Use the master branch by default. 
+The framework consists of the following tree of sub directories:
 - 3rd ... 3rd party libraries conditioned for the cgv framework currently 
-including ANN, fltk, glew, jpeg, png, pthread (deprecated), tiff, webserver, zlib.
+including ANN, fltk, glew, jpeg, png, pthread (deprecated), tiff, openvr, webserver, zlib.
 - apps ... applications currently including the cgv_viewer
 - tool ... different tools necessary for compilation: res_prep (conversion of resource files into source files),
 ppp_tool (preprocessing of header files and makefile generation), shader_test (compilation of shader codes and programs), 
@@ -102,6 +102,7 @@ display (tool to adjust display settings - Windows only)
     - font ... interface for font server and font faces (use gui plugin like cg_fltk)
     - image ... interfaces and driver plugin mechanism for image reader and writer with bmp support (use the cmi_io plugin)
 	- illum ... light source and material data structures
+	- mesh ... simple mesh data structure for static and streaming meshes, marching cubes, dual contouring, obj reader
     - video ... interfaces and driver plugin mechanism for video reader and writer (use the cmv_avi plugin under windows)
   - os ... support for threads, mutexes, system clipboard, display, sockets and simple webserver
   - reflect ... simple to use self reflection mechanism (use library cgv/libs/cgv_reflect_types for implementation of self for most important types defined in cgv core libraries)
@@ -110,7 +111,7 @@ display (tool to adjust display settings - Windows only)
   - type ... support for compile time information about types
   - utils ... utility functions for handling files, processing text, bit operations, simple progression on the console, stop watch and incremental statistics computation
 - doc ... source for related pages of documentation 
-- make ... makefiles, currently support for cmake and different versions of visual studio.
+- make ... makefiles, currently support for cmake and different versions of visual studio via the built in ppp build chain
 - libs
   - ann_wrapper ... C++-wrapper to ann library
   - cgv_gl ... implementation of interfaces in cgv_render for OpenGL
@@ -142,10 +143,11 @@ display (tool to adjust display settings - Windows only)
   - crg_light ... provides gui to adjust light sources
   - examples ... different example classes that illustrate the cgv framework
   - openvr_driver ... openvr api driver for the vr library
+  - vr_emulator ... plugin that provides vr_kit emulation
   - crg_vr_view ... extends crg_stereo_view with support to render to vr_kit hmds
   - vr_test ... sample plugin that shows how to use vr kits 
 - test ... test sources for different parts of the framework that also serve as examples
-  - vr_emulator ... plugin that provides vr_kit emulation
+
 \section viewer Usage of the cgv_viewer
 
 The cgv_viewer can load plugins after start up. It parses the command line arguments

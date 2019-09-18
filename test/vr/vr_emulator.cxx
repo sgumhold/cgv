@@ -2,6 +2,7 @@
 #include <cgv/math/ftransform.h>
 #include <cgv/gui/key_event.h>
 #include <cgv/gui/trigger.h>
+#include <cg_gamepad/gamepad_server.h>
 
 const float Body_height = 1740.0f;
 const float Eye_height = 1630.0f;
@@ -253,8 +254,14 @@ bool vr_emulator::is_installed() const
 	return installed;
 }
 
+bool vr_emulator::gamepad_connected = false;
+
 void vr_emulator::add_new_kit()
 {
+	if (!gamepad_connected) {
+		gamepad_connected = true;
+		cgv::gui::connect_gamepad_server();
+	}
 	++counter;
 	void* handle = 0;
 	(unsigned&)handle = counter;

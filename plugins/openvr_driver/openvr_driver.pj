@@ -5,4 +5,4 @@ projectGUID="2B39897C-4340-4C2A-8657-308FF82E71BB";
 addSharedDefines=["OPENVR_DRIVER_EXPORTS"];
 addIncDirs=[CGV_DIR."/3rd/glew", CGV_DIR."/libs"];
 addProjectDirs=[CGV_DIR."/3rd/glew", CGV_DIR."/3rd/openvr", CGV_DIR."/libs/vr"];
-addProjectDeps=["glew", "vr", "openvr"];
+addProjectDeps=["glew", "vr", "openvr", "cgv_utils"];

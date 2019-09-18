@@ -2,6 +2,7 @@
 #include <vr/vr_driver.h>
 #include "openvr_kit.h"
 #include <cgv/type/standard_types.h>
+#include <cgv/utils/options.h>
 #include "openvr.h"
 #include <iostream>
 using namespace vr;
@@ -49,7 +50,9 @@ struct openvr_driver : public vr_driver
 	openvr_driver(const std::string& options)
 	{
 		installed = false;
-
+		if (cgv::utils::has_option("NO_OPENVR"))
+			return;
+			
 		// init SteamVR Runtime
 		vr::EVRInitError error = vr::VRInitError_None;
 		hmd_ptr = vr::VR_Init(&error, vr::VRApplication_Scene);
