@@ -435,6 +435,7 @@ public:
 	}
 	bool init(cgv::render::context& ctx)
 	{
+		ctx.set_gamma(1.0f);
 		cgv::media::mesh::simple_mesh<> M;
 #ifdef _DEBUG
 		if (M.read("D:/data/surface/meshes/obj/Max-Planck_lowres.obj")) {

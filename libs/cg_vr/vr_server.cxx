@@ -448,7 +448,7 @@ namespace cgv {
 			return server;
 		}
 
-		window_ptr& ref_dispatch_window_pointer()
+		window_ptr& ref_dispatch_window_pointer_vr()
 		{
 			static window_ptr w;
 			return w;
@@ -463,7 +463,7 @@ namespace cgv {
 		{
 			if (w.empty())
 				w = application::get_window(0);
-			ref_dispatch_window_pointer() = w;
+			ref_dispatch_window_pointer_vr() = w;
 			connect(ref_vr_server().on_event, dispatch_vr_event);
 			if (connect_device_change_only_to_animation_trigger)
 				connect_copy(get_animation_trigger().shoot, cgv::signal::rebind(&ref_vr_server(), &vr_server::check_device_changes, cgv::signal::_1));

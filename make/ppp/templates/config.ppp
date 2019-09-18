@@ -91,6 +91,11 @@ if (CGV_PLATFORM != "WIN32") {
 }
 cout("platform=".CGV_PLATFORM." with postfix ".platform_post."\n");
 
+CGV_CHARSET="Unicode";
+if (env::CGV_CHARSET !~ UNDEF) {
+	CGV_CHARSET=env::CGV_CHARSET;
+}
+
 //define output directory of the generated target files 
 CGV_BUILD_DIR = CGV_BUILD.'/'.CGV_COMPILER;
 if (CGV_IDE ~~ STRING) {

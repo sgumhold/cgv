@@ -6,20 +6,22 @@
 #include <iostream>
 using namespace vr;
 
-// encode user index in handle
-void* get_handle(int user_index)
-{
-	void* device_handle = 0;
-	(int&)device_handle = user_index;
-	return device_handle;
-}
+namespace vr {
+	// encode user index in handle
+	void* get_handle(int user_index)
+	{
+		void* device_handle = 0;
+		(int&)device_handle = user_index;
+		return device_handle;
+	}
 
-// decode user index from handle
-int get_user_index(void* device_handle)
-{
-	int user_index = (int&)device_handle;
-	assert(user_index >= 0 && user_index < 4);
-	return user_index;
+	// decode user index from handle
+	int get_user_index(void* device_handle)
+	{
+		int user_index = (int&)device_handle;
+		assert(user_index >= 0 && user_index < 4);
+		return user_index;
+	}
 }
 
 std::string GetTrackedDeviceString(vr::TrackedDeviceIndex_t unDevice, vr::TrackedDeviceProperty prop, vr::TrackedPropertyError *peError = NULL)
