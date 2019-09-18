@@ -173,11 +173,14 @@ public:
 	///
 	void draw_light_source(const cgv::media::illum::light_source& l, float intensity_scale, float light_scale); 
 	//@}
-
-	// for only internal use only
-	void swap_in_current_fbo_handle(void*& fbo_handle);
-	// for only internal use only
-	void swap_out_current_fbo_handle(void* fbo_handle);
+	/// announce an external viewport change performed with rendering API to the cgv framework providing space to temporarily store viewport of cgv framework
+	void announce_external_viewport_change(ivec4& cgv_viewport_storage);
+	/// restore cgv viewport to the state before the external change
+	void recover_from_external_viewport_change(const ivec4& cgv_viewport_storage);
+	/// announce an external frame buffer change performed with rendering API to the cgv framework providing space to temporarily store frame buffer of cgv framework
+	void announce_external_frame_buffer_change(void*& cgv_fbo_storage);
+	/// restore cgv frame buffer to the state before the external change
+	void recover_from_external_frame_buffer_change(void* cgv_fbo_storage);
 
 	/**@name text output*/
 	//@{

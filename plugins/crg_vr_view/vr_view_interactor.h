@@ -55,10 +55,11 @@ bool your_class::init(cgv::render::context& ctx)
 class CGV_API vr_view_interactor : 
 	public stereo_view_interactor	
 {
+	ivec4 cgv_viewport;
+	void* fbo_handle;
 public:
 	typedef cgv::math::fmat<float,3,4> mat34;
 protected:
-	void* fbo_handle;
 	/// whether the window shows a separate view onto the scene or the one of the current vr kit
 	bool separate_view;
 	/// whether to blit in the views of the vr kits
@@ -130,6 +131,29 @@ public:
 	const vr::vr_kit_state* get_current_vr_state() const;
 	//@}
 
+	/**@name vr viewing*/
+	//@{
+	//! query view direction of a vr kit
+	/*! if parameter vr_kit_idx defaults to -1, the view direction of the current vr kit is returned
+	    if there are not vr kits or the \c vr_kit_idx parameter is invalid the view direction of the 
+		\c vr_view_interactor is returned*/
+	dvec3 get_view_dir_of_kit(int vr_kit_idx = -1) const;
+	//! query view up direction of a vr kit
+	/*! if parameter vr_kit_idx defaults to -1, the view up direction of the current vr kit is returned
+		if there are not vr kits or the \c vr_kit_idx parameter is invalid the view up direction of the
+		\c vr_view_interactor is returned*/
+	dvec3 get_view_up_dir_of_kit(int vr_kit_idx = -1) const;
+	//! query the eye position of a vr kit.
+	/*! parameter \c eye is one of
+	    -1 .. left eye
+		 0 .. cyclopic eye
+		 1 .. right eye
+		if parameter vr_kit_idx defaults to -1, the eye position of the current vr kit is returned
+		if there are not vr kits or the \c vr_kit_idx parameter is invalid the eye position of the
+		\c vr_view_interactor is returned*/
+	dvec3 get_eye_of_kit(int eye = 0, int vr_kit_idx = -1) const;
+	//@}
+	
 	/**@name vr rendering*/
 	//@{
 	/// check whether separate view is rendered

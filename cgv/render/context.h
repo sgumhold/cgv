@@ -547,7 +547,6 @@ protected:
 	bool sRGB_framebuffer;
 	/// gamma value passed to shader programs that have gamma uniform
 	float gamma;
-
 	/// keep two matrix stacks for model view and projection matrices
 	std::stack<dmat4> modelview_matrix_stack, projection_matrix_stack;
 	/// keep stack of window transformations
@@ -788,10 +787,6 @@ public:
 	virtual void enable_multisample() = 0;
 	/// disable multi sampling
 	virtual void disable_multisample() = 0;
-	// for only internal use only
-	virtual void swap_in_current_fbo_handle(void*& fbo_handle) = 0;
-	// for only internal use only
-	virtual void swap_out_current_fbo_handle(void* fbo_handle) = 0;
 
 	/** read the current frame buffer or a rectangular region of it into the given
 	    data view.
@@ -857,6 +852,10 @@ public:
 	virtual void post_redraw() = 0;
 	/// the context will be redrawn right now. This method cannot be called inside the following methods of a drawable: init, init_frame, draw, finish_draw
 	virtual void force_redraw() = 0;
+	/// announce an external frame buffer change performed with rendering API to the cgv framework providing space to temporarily store frame buffer of cgv framework
+	virtual void announce_external_frame_buffer_change(void*& cgv_fbo_storage) = 0;
+	/// restore cgv frame buffer to the state before the external change
+	virtual void recover_from_external_frame_buffer_change(void* cgv_fbo_storage) = 0;
 
 	/**@name font selection and measure*/
 	//@{
@@ -1094,6 +1093,10 @@ public:
 	/*! An error is emitted when the method fails because the stack of window 
 	    transformations would become empty, which is not allowed. */
 	virtual void pop_window_transformation_array();
+	/// announce an external viewport change performed with rendering API to the cgv framework providing space to temporarily store viewport of cgv framework
+	virtual void announce_external_viewport_change(ivec4& cgv_viewport_storage) = 0;
+	/// restore cgv viewport to the state before the external change
+	virtual void recover_from_external_viewport_change(const ivec4& cgv_viewport_storage) = 0;
 	/// query the maximum number of supported window transformations, which is at least 1 
 	virtual unsigned get_max_window_transformation_array_size() const = 0;
 protected:

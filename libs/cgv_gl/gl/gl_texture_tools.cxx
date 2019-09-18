@@ -113,7 +113,7 @@ bool generate_mipmaps(unsigned int dim, std::string* last_error)
 			*last_error = "automatic generation of mipmaps not supported";
 		return false;
 	}
-	glGenerateMipmapEXT(gl_tex_dim[dim-1]);
+	glGenerateMipmap(gl_tex_dim[dim-1]);
 	return true;
 }
 

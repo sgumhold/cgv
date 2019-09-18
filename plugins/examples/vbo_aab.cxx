@@ -103,6 +103,7 @@ public:
 	ColorMapping color_mapping;
 	rgb  surface_color;
 	IlluminationMode illumination_mode;
+	surface_material material;
 
 	bool show_wireframe;
 	float line_width;
@@ -334,6 +335,12 @@ public:
 			}
 			add_member_control(this, "surface color", surface_color);
 			add_member_control(this, "illumination", illumination_mode, "dropdown", "enums='none,one sided,two sided'");
+			if (begin_tree_node("material", material)) {
+				align("\a");
+				add_gui("material", material);
+				align("\b");
+				end_tree_node(material);
+			}
 			align("\b");
 			end_tree_node(show_surface);
 		}
@@ -396,6 +403,10 @@ public:
 		prog.set_uniform(ctx, "map_color_to_material", (int)color_mapping); // fragment color mapping mode
 		prog.set_uniform(ctx, "illumination_mode", (int)illumination_mode); // fragment illumination mode
 
+		// the set_uniform method only supports basic types and no structs like the material, where you would have
+		// to set each member individually. Therefore the context provides a method that sets all material parameters
+		// of the currently enabled program as used here
+		ctx.set_material(material);
 		// set default surface color for color mapping which only affects 
 		// rendering if mesh does not have per vertex colors and color_mapping is on
 		prog.set_attribute(ctx, prog.get_color_index(), surface_color);
@@ -469,7 +480,7 @@ public:
 			glLineWidth(old_line_width);
 		}
 		// render opaque surfaces here without blending
-		if (show_surface && ctx.get_current_material()->get_transparency() < 0.01f)
+		if (show_surface && material.get_transparency() < 0.01f)
 			draw_surface(ctx);
 		// recover restart settings
 		glPrimitiveRestartIndex(restart_index);

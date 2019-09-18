@@ -125,6 +125,8 @@ void gl_set_material(const cgv::media::illum::phong_material& mat, MaterialSide 
 /// construct gl_context and attach signals
 gl_context::gl_context()
 {
+	frame_buffer_stack.top()->handle = get_handle(0);
+
 	max_nr_indices = 0;
 	max_nr_vertices = 0;
 	info_font_size = 14;
@@ -733,26 +735,45 @@ void gl_context::draw_light_source(const light_source& l, float i, float light_s
 	pop_modelview_matrix();
 }
 
-// for only internal use only
-void gl_context::swap_in_current_fbo_handle(void*& fbo_handle)
+void gl_context::announce_external_frame_buffer_change(void*& fbo_handle)
 {
-	if (frame_buffer_stack.empty())
+	if (frame_buffer_stack.empty()) {
+		error("gl_context::announce_external_frame_buffer_change() called with empty frame buffer stack");
 		return;
+	}
 	GLint fbo_id = 0;
 	glGetIntegerv(GL_DRAW_FRAMEBUFFER_BINDING, &fbo_id);
 	fbo_handle = frame_buffer_stack.top()->handle;
 	frame_buffer_stack.top()->handle = get_handle(fbo_id);
 }
 
-// for only internal use only
-void gl_context::swap_out_current_fbo_handle(void* fbo_handle)
+void gl_context::recover_from_external_frame_buffer_change(void* fbo_handle)
 {
+	glBindFramebuffer(GL_FRAMEBUFFER, get_gl_id(fbo_handle));
 	if (frame_buffer_stack.empty())
 		return;
-	glBindFramebuffer(GL_FRAMEBUFFER, get_gl_id(fbo_handle));
 	frame_buffer_stack.top()->handle = fbo_handle;
 }
 
+void gl_context::announce_external_viewport_change(ivec4& cgv_viewport_storage)
+{
+	if (window_transformation_stack.empty()) {
+		error("gl_context::announce_external_viewport_change() called with empty window transformation stack");
+		return;
+	}
+	GLint vp[4];
+	glGetIntegerv(GL_VIEWPORT, vp);
+	cgv_viewport_storage = window_transformation_stack.top().front().viewport;
+	window_transformation_stack.top().front().viewport = ivec4(vp[0], vp[1], vp[2], vp[3]);
+}
+
+void gl_context::recover_from_external_viewport_change(const ivec4& cgv_viewport_storage)
+{
+	glViewport(cgv_viewport_storage[0], cgv_viewport_storage[1], cgv_viewport_storage[2], cgv_viewport_storage[3]);
+	if (window_transformation_stack.empty())
+		return;
+	window_transformation_stack.top().front().viewport = cgv_viewport_storage;
+}
 
 /// use this to push transformation matrices on the stack such that x and y coordinates correspond to window coordinates
 void gl_context::push_pixel_coords()
@@ -1928,8 +1949,10 @@ bool gl_context::frame_buffer_disable(frame_buffer_base& fbb)
 {
 	if (!context::frame_buffer_disable(fbb))
 		return false;
-	if (frame_buffer_stack.empty())
-		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	if (frame_buffer_stack.empty()) {
+		error("gl_context::frame_buffer_disable called with empty frame buffer stack!!", &fbb);
+		return false;
+	}
 	else
 		glBindFramebuffer(GL_FRAMEBUFFER, get_gl_id(frame_buffer_stack.top()->handle));
 	return true;
