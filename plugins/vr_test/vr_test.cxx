@@ -3,9 +3,11 @@
 #include <cgv/base/register.h>
 #include <cgv/gui/event_handler.h>
 #include <cgv/math/ftransform.h>
+#include <cgv/utils/scan.h>
 #include <cgv/gui/provider.h>
 #include <cgv/render/drawable.h>
 #include <cgv/render/shader_program.h>
+#include <cgv/render/frame_buffer.h>
 #include <cgv/render/attribute_array_binding.h>
 #include <cgv_gl/box_renderer.h>
 #include <cgv_gl/sphere_renderer.h>
@@ -26,6 +28,7 @@
 #include <vr_view_interactor.h>
 #include "intersection.h"
 
+// different interaction states for the controllers
 enum InteractionState
 {
 	IS_NONE,
@@ -45,14 +48,39 @@ protected:
 	std::vector<box3> boxes;
 	std::vector<rgb> box_colors;
 
-	// rendering style and renderer
+	// rendering style for boxes
 	cgv::render::box_render_style style;
 
+
 	// sample for rendering a mesh
-	cgv::render::mesh_render_info MI;
 	double mesh_scale;
 	dvec3 mesh_location;
 	dquat mesh_orientation;
+
+	// render information for mesh
+	cgv::render::mesh_render_info MI;
+
+
+	// sample for rendering text labels
+	std::string label_text;
+	int label_font_idx;
+	bool label_upright;
+	float label_size;
+	rgb label_color;
+
+	bool label_outofdate; // whether label texture is out of date
+	unsigned label_resolution; // resolution of label texture
+	cgv::render::texture label_tex; // texture used for offline rendering of label
+	cgv::render::frame_buffer label_fbo; // fbo used for offline rendering of label
+
+	// general font information
+	std::vector<const char*> font_names;
+	std::string font_enum_decl;
+	
+	// current font face used
+	cgv::media::font::font_face_ptr label_font_face;
+	cgv::media::font::FontFaceAttributes label_face_type;
+
 
 	// keep deadzone and precision vector for left controller
 	cgv::gui::vr_server::vec_flt_flt left_deadzone_and_precision;
@@ -73,9 +101,9 @@ protected:
 
 	// intersection points
 	std::vector<vec3> intersection_points;
-	std::vector<rgb> intersection_colors;
-	std::vector<int> intersection_box_indices;
-	std::vector<int> intersection_controller_indices;
+	std::vector<rgb>  intersection_colors;
+	std::vector<int>  intersection_box_indices;
+	std::vector<int>  intersection_controller_indices;
 
 	// state of current interaction with boxes for each controller
 	InteractionState state[2];
@@ -161,11 +189,35 @@ public:
 		last_kit_handle = 0;
 		connect(cgv::gui::ref_vr_server().on_device_change, this, &vr_test::on_device_change);
 		cgv::gui::connect_gamepad_server();
-		mesh_scale = 1;
-		srs.radius = 0.005f;
-		mesh_location = dvec3(0, 0, 0);
+
+		mesh_scale = 0.001f;
+		mesh_location = dvec3(0, 1.1f, 0);
 		mesh_orientation = dquat(1, 0, 0, 0);
 
+		srs.radius = 0.005f;
+
+		label_outofdate = true;
+		label_text = "Info Board";
+		label_font_idx = 0;
+		label_upright = true;
+		label_face_type = cgv::media::font::FFA_BOLD;
+		label_resolution = 256;
+		label_size = 20.0f;
+		label_color = rgb(1, 1, 1);
+
+		cgv::media::font::enumerate_font_names(font_names);
+		font_enum_decl = "enums='";
+		for (unsigned i = 0; i < font_names.size(); ++i) {
+			if (i>0)
+				font_enum_decl += ";";
+			std::string fn(font_names[i]);
+			if (cgv::utils::to_lower(fn) == "calibri") {
+				label_font_face = cgv::media::font::find_font(fn)->get_font_face(label_face_type);
+				label_font_idx = i;
+			}
+			font_enum_decl += std::string(fn);
+		}
+		font_enum_decl += "'";
 		state[0] = state[1] = IS_NONE;
 	}
 	std::string get_type_name() const
@@ -217,9 +269,38 @@ public:
 			align("\b");
 			end_tree_node(srs);
 		}
+		if (begin_tree_node("mesh", mesh_scale)) {
+			align("\a");
+			add_member_control(this, "scale", mesh_scale, "value_slider", "min=0.0001;step=0.0000001;max=100;log=true;ticks=true");
+			add_gui("location", mesh_location, "", "main_label='';long_label=true;gui_type='value_slider';options='min=-2;max=2;step=0.001;ticks=true'");
+			add_gui("orientation", static_cast<dvec4&>(mesh_orientation), "direction", "main_label='';long_label=true;gui_type='value_slider';options='min=-1;max=1;step=0.001;ticks=true'");
+			align("\b");
+			end_tree_node(mesh_scale);
+		}
+
+		if (begin_tree_node("label", label_size)) {
+			align("\a");
+			add_member_control(this, "text", label_text);
+			add_member_control(this, "upright", label_upright);
+			add_member_control(this, "font", (cgv::type::DummyEnum&)label_font_idx, "dropdown", font_enum_decl);
+			add_member_control(this, "face", (cgv::type::DummyEnum&)label_face_type, "dropdown", "enums='regular,bold,italics,bold+italics'");
+			add_member_control(this, "size", label_size, "value_slider", "min=8;max=64;ticks=true");
+			add_member_control(this, "color", label_color);
+			add_member_control(this, "resolution", (cgv::type::DummyEnum&)label_resolution, "dropdown", "enums='256=256,512=512,1024=1024,2048=2048'");
+			align("\b");
+			end_tree_node(label_size);
+		}
 	}
 	void on_set(void* member_ptr)
 	{
+		if (member_ptr == &label_face_type || member_ptr == &label_font_idx) {
+			label_font_face = cgv::media::font::find_font(font_names[label_font_idx])->get_font_face(label_face_type);
+			label_outofdate = true;
+		}
+		if ((member_ptr >= &label_color && member_ptr < &label_color + 1) ||
+			member_ptr == &label_size || member_ptr == &label_text) {
+			label_outofdate = true;
+		}
 		update_member(member_ptr);
 		post_redraw();
 	}
@@ -335,6 +416,8 @@ public:
 					vec3 origin, direction;
 					vrpe.get_state().controller[ci].put_ray(&origin(0), &direction(0));
 					compute_intersections(origin, direction, ci, ci == 0 ? rgb(1, 0, 0) : rgb(0, 0, 1));
+					label_outofdate = true;
+
 
 					// update state based on whether we have found at least 
 					// one intersection with controller ray
@@ -353,10 +436,14 @@ public:
 	bool init(cgv::render::context& ctx)
 	{
 		cgv::media::mesh::simple_mesh<> M;
-/*		if (M.read("S:/data/surface/meshes/obj/elephant.obj")) {
+#ifdef _DEBUG
+		if (M.read("D:/data/surface/meshes/obj/Max-Planck_lowres.obj")) {
+#else
+		if (M.read("D:/data/surface/meshes/obj/Max-Planck_highres.obj")) {
+#endif
 			MI.construct_vbos(ctx, M);
 			MI.bind(ctx, ctx.ref_surface_shader_program(true));
-		}*/
+		}
 		cgv::gui::connect_vr_server(true);
 
 		auto view_ptr = find_view_as_node();
@@ -391,6 +478,52 @@ public:
 	{
 		cgv::render::ref_box_renderer(ctx, -1);
 		cgv::render::ref_sphere_renderer(ctx, -1);
+	}
+	void init_frame(cgv::render::context& ctx)
+	{
+		if (label_fbo.get_width() != label_resolution) {
+			label_tex.destruct(ctx);
+			label_fbo.destruct(ctx);
+		}
+		if (!label_fbo.is_created()) {
+			label_tex.create(ctx, cgv::render::TT_2D, label_resolution, label_resolution);
+			label_fbo.create(ctx, label_resolution, label_resolution);
+			label_tex.set_min_filter(cgv::render::TF_LINEAR_MIPMAP_LINEAR);
+			label_tex.set_mag_filter(cgv::render::TF_LINEAR);
+			label_fbo.attach(ctx, label_tex);
+			label_outofdate = true;
+		}
+		if (label_outofdate && label_fbo.is_complete(ctx)) {
+			glPushAttrib(GL_COLOR_BUFFER_BIT);
+			label_fbo.enable(ctx);
+			label_fbo.push_viewport(ctx);
+			ctx.push_pixel_coords();
+				glClearColor(0.5f,0.5f,0.5f,1.0f);
+				glClear(GL_COLOR_BUFFER_BIT);
+
+				glColor4f(label_color[0], label_color[1], label_color[2], 1);
+				ctx.set_cursor(20, (int)ceil(label_size) + 20);
+				ctx.enable_font_face(label_font_face, label_size);
+				ctx.output_stream() << label_text << "\n";
+				ctx.output_stream().flush(); // make sure to flush the stream before change of font size or font face
+
+				ctx.enable_font_face(label_font_face, 0.7f*label_size);
+				for (size_t i = 0; i < intersection_points.size(); ++i) {
+					ctx.output_stream()
+						<< "box " << intersection_box_indices[i]
+						<< " at (" << intersection_points[i]
+						<< ") with controller " << intersection_controller_indices[i] << "\n";
+				}
+				ctx.output_stream().flush();
+
+			ctx.pop_pixel_coords();
+			label_fbo.pop_viewport(ctx);
+			label_fbo.disable(ctx);
+			glPopAttrib();
+			label_outofdate = false;
+
+			label_tex.generate_mipmaps(ctx);
+		}
 	}
 	void draw(cgv::render::context& ctx)
 	{
@@ -468,6 +601,35 @@ public:
 				glDrawArrays(GL_POINTS, 0, (GLsizei)intersection_points.size());
 				sr.disable(ctx);
 			}
+		}
+
+		// draw label
+		if (label_tex.is_created()) {
+			cgv::render::shader_program& prog = ctx.ref_default_shader_program(true);
+			int pi = prog.get_position_index();
+			int ti = prog.get_texcoord_index();
+			vec3 p(0, 1.5f, 0);
+			vec3 y = label_upright ? vec3(0, 1.0f, 0) : normalize(vr_view_ptr->get_view_up_dir_of_kit());
+			vec3 x = normalize(cross(vec3(vr_view_ptr->get_view_dir_of_kit()), y));
+			float w = 0.5f, h = 0.5f;
+			std::vector<vec3> P;
+			std::vector<vec2> T;
+			P.push_back(p - 0.5f * w * x - 0.5f * h * y); T.push_back(vec2(0.0f, 0.0f));
+			P.push_back(p + 0.5f * w * x - 0.5f * h * y); T.push_back(vec2(1.0f, 0.0f));
+			P.push_back(p - 0.5f * w * x + 0.5f * h * y); T.push_back(vec2(0.0f, 1.0f));
+			P.push_back(p + 0.5f * w * x + 0.5f * h * y); T.push_back(vec2(1.0f, 1.0f));
+			cgv::render::attribute_array_binding::set_global_attribute_array(ctx, pi, P);
+			cgv::render::attribute_array_binding::enable_global_array(ctx, pi);
+			cgv::render::attribute_array_binding::set_global_attribute_array(ctx, ti, T);
+			cgv::render::attribute_array_binding::enable_global_array(ctx, ti);
+			prog.enable(ctx);
+			label_tex.enable(ctx);
+			ctx.set_color(rgb(1, 1, 1));
+			glDrawArrays(GL_TRIANGLE_STRIP, 0, (GLsizei)P.size());
+			label_tex.disable(ctx);
+			prog.disable(ctx);
+			cgv::render::attribute_array_binding::disable_global_array(ctx, pi);
+			cgv::render::attribute_array_binding::disable_global_array(ctx, ti);
 		}
 	}
 };

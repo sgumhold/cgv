@@ -342,7 +342,7 @@ void point_cloud::transform(const HMat& hmat)
 }
 
 /// add a point and allocate normal and color if necessary
-point_cloud::Idx point_cloud::add_point(const Pnt& p)
+size_t point_cloud::add_point(const Pnt& p)
 {
 	if (has_normals())
 		N.resize(N.size()+1);
@@ -358,12 +358,13 @@ point_cloud::Idx point_cloud::add_point(const Pnt& p)
 		component_indices.push_back(unsigned(components.size() - 1));
 		++components.back().nr_points;
 	}
+	size_t idx = P.size();
 	P.push_back(p);
-	return (Idx)P.size()-1;
+	return idx;
 }
 
 /// resize the point cloud
-void point_cloud::resize(unsigned nr_points)
+void point_cloud::resize(size_t nr_points)
 {
 	if (has_normals())
 		N.resize(nr_points);
@@ -1541,7 +1542,7 @@ void point_cloud::compute_image_neighbor_distance_statistic(const index_image& i
 	}
 }
 /// collect the indices of the neighbor points of point pi
-point_cloud::Cnt point_cloud::collect_valid_image_neighbors(Idx pi, const index_image& img, std::vector<Idx>& Ni, Crd distance_threshold) const
+point_cloud::Cnt point_cloud::collect_valid_image_neighbors(size_t pi, const index_image& img, std::vector<Idx>& Ni, Crd distance_threshold) const
 {
 	Ni.clear();
 	for (int j = 0; j < 8; ++j) {

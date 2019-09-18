@@ -129,6 +129,8 @@ render_config_ptr get_render_config()
 
 context::context()
 {
+	static frame_buffer_base fbb;
+	frame_buffer_stack.push(&fbb);
 	modelview_matrix_stack.push(cgv::math::identity4<double>());
 	projection_matrix_stack.push(cgv::math::identity4<double>());
 	window_transformation_stack.push(std::vector<window_transformation>());
@@ -2097,7 +2099,7 @@ bool context::frame_buffer_enable(frame_buffer_base& fbb)
 
 bool context::frame_buffer_disable(frame_buffer_base& fbb)
 {
-	if (frame_buffer_stack.empty()) {
+	if (frame_buffer_stack.size() == 1) {
 		error("gl_context::frame_buffer_disable called with empty stack", &fbb);
 		return false;
 	}
@@ -2118,25 +2120,6 @@ bool context::frame_buffer_destruct(frame_buffer_base& fbb) const
 	}
 	if (fbb.is_enabled) {
 		error("context::frame_buffer_destruct() on frame buffer that was still enabled", &fbb);
-/*
-		if (frame_buffer_stack.top() == &fbb)
-			frame_buffer_disable(fbb);
-		else {
-			// remove destructed program from stack
-			std::vector<frame_buffer_base*> tmp;
-			while (!frame_buffer_stack.empty()) {
-				frame_buffer_base* t = frame_buffer_stack.top();
-				frame_buffer_stack.pop();
-				if (t == &fbb)
-					break;
-				tmp.push_back(t);
-			}
-			while (!tmp.empty()) {
-				frame_buffer_stack.push(tmp.back());
-				tmp.pop_back();
-			}
-		}
-		*/
 		return false;
 	}
 	return true;
