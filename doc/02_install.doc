@@ -151,14 +151,17 @@ are supported
 - Visual Studio 2008 (vs9)
 - Visual Studio 2008 Express (vs9e)
 - Visual Studio 2010 (vs10)
-- Visual Studio 2012
-- Visual Studio 2013
-- Visual Studio 2015
+- Visual Studio 2012 (vs11)
+- Visual Studio 2013 (vs12)
+- Visual Studio 2015 (vs14)
+- Visual Studio 2017 (vs141)
+- Visual Studio 2019 (vs142)
+
 Under development is the support for gcc under linux (gcc).
-vs8, vs9, vs9e, vs10 and gcc are the shortcuts for the target compiler /
-development environment. If one only uses one target, one can
-set the environment variable
-- CGV_COMPILER ... one out of vs8, vs9, vs9e, vs10, vs12, vs14 and gcc
+vs8, vs9, vs9e, vs10, vs12, vs14, vs141, vs142 and gcc are the shortcuts 
+for the target compiler / development environment. The environment variable
+CGV_COMPILER is to be set to this shortcut (under windows with the script
+define_system_variables.bat)
 
 \a Hint: A template project file is located at \c CGV_DIR/make/ppp/templates/pj.ppp.
 It documents all possible entries to a project file. To write a new
@@ -166,7 +169,7 @@ project file, one typically copies this template, renames it to something
 like "my_project.pj" and edits it with a favorite text editor. The current
 version of this file is inserted to the end of this page
 
-Furthermore, CMakeFiles are provided to build the framework under linux.
+Furthermore, CMakeFiles are provided to build the framework under linux and windows.
 
 \subsection windows Creating Target Files on Windows
 
