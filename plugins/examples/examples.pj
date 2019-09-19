@@ -10,4 +10,5 @@ addProjectDeps=["cgv_utils", "cgv_type", "cgv_reflect", "cgv_data", "cgv_signal"
 addCommandLineArguments=[
 	'gui:"'.CGV_DIR.'/plugins/examples/examples.gui"',
 	'config:"'.CGV_DIR.'/plugins/examples/config.def"',
-	'"type(shader_config):shader_path='."'".CGV_DIR."/plugins/examples;".CGV_DIR."/libs/plot/glsl;".CGV_DIR."/libs/cgv_gl/glsl'".'"'];
+	after("type(shader_config):shader_path='".INPUT_DIR.";".CGV_DIR."/libs/plot/glsl;".CGV_DIR."/libs/cgv_gl/glsl'","cg_fltk")
+];
