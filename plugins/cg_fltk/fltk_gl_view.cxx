@@ -87,8 +87,10 @@ cgv::base::group* fltk_gl_view::get_group_interface()
 bool fltk_gl_view::self_reflect(cgv::reflect::reflection_handler& srh)
 {
 	return
-	srh.reflect_member("show_help", show_help) &&
-	srh.reflect_member("show_stats", show_stats) &&
+		srh.reflect_member("enable_vsynch", enable_vsynch) &&
+		srh.reflect_member("sRGB_framebuffer", sRGB_framebuffer) &&
+		srh.reflect_member("show_help", show_help) &&
+		srh.reflect_member("show_stats", show_stats) &&
 	srh.reflect_member("font_size", info_font_size) &&
 	srh.reflect_member("tab_size", tab_size) &&
 	srh.reflect_member("performance_monitoring", enabled) &&
@@ -97,6 +99,7 @@ bool fltk_gl_view::self_reflect(cgv::reflect::reflection_handler& srh)
 	srh.reflect_member("bg_b", bg_b) &&
 	srh.reflect_member("bg_a", bg_a) &&
 	srh.reflect_member("bg_index", current_background) &&
+	srh.reflect_member("gamma", gamma) &&
 	srh.reflect_member("nr_display_cycles", nr_display_cycles) &&
 	srh.reflect_member("bar_line_width", bar_line_width) &&
 	srh.reflect_member("file_name", file_name);
@@ -566,15 +569,13 @@ bool fltk_gl_view::handle(event& e)
 				}
 				break;
 			case KEY_Delete :
-				if (ke.get_modifiers() == 0) {
-					if (get_focused_child() != -1) {
-						cgv::base::unregister_object(get_child(get_focused_child()), "");
+				if (ke.get_modifiers() == 0 && get_nr_children() > 1 && get_focused_child() != -1) {
+					cgv::base::unregister_object(get_child(get_focused_child()), "");
 //						remove_child(get_child(get_focused_child()));
-						if (get_focused_child() >= (int)get_nr_children())
-							traverse_policy::set_focused_child(get_focused_child()-1);
-						redraw();
-						return true;
-					}
+					if (get_focused_child() >= (int)get_nr_children())
+						traverse_policy::set_focused_child(get_focused_child()-1);
+					redraw();
+					return true;
 				}
 				break;
 			case KEY_Tab :
