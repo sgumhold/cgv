@@ -165,7 +165,7 @@ namespace cgv { // @<
 				return attribute_array_binding::set_global_attribute_array(ctx, loc, array_ptr, nr_elements, stride);
 			}
 			bool set_attribute_array(const context& ctx, int loc, type_descriptor element_type, const vertex_buffer& vbo, size_t offset_in_bytes, size_t nr_elements, unsigned stride_in_bytes);
-
+			/// in case that several attributes are stored interleaved, call this function for the first and ref_composed_attribute_array() for all others
 			template <typename C, typename T>
 			bool set_composed_attribute_array(const context& ctx, int loc, const C* array_ptr, size_t nr_elements, const T& elem) {
 				if (aam_ptr)
@@ -173,6 +173,7 @@ namespace cgv { // @<
 				enabled_attribute_arrays.insert(loc);
 				return attribute_array_binding::set_global_attribute_array(ctx, loc, &elem, nr_elements, sizeof(C));
 			}
+			/// in case that several attributes are stored interleaved, call set_composed_attribute_array() for the first and this function for all others
 			template <typename C, typename T>
 			bool ref_composed_attribute_array(const context& ctx, int loc, int loc_ref, const C* array_ptr, size_t nr_elements, const T& elem) {
 				if (aam_ptr)
