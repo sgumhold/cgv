@@ -84,6 +84,8 @@ namespace cgv {
 		bool box_wire_renderer::disable(context& ctx)
 		{
 			if (!attributes_persist()) {
+				has_extents = false;
+				position_is_center = true;
 				has_rotations = false;
 				has_translations = false;
 			}
