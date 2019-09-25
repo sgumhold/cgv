@@ -129,8 +129,8 @@ namespace vr {
 	{
 		/// status and pose of hmd
 		vr_trackable_state hmd;
-		/// status, pose, button, axes, and vibration information of controlers
-		vr_controller_state controller[2];
+		/// status, pose, button, axes, and vibration information of up to 4 controllers (first two are for left and right hand)
+		vr_controller_state controller[4];
 		/// check for equality
 		bool operator == (const vr_kit_state& state) const;
 		/// standard constructor for initialization of members
