@@ -106,7 +106,7 @@ protected:
 	std::vector<int>  intersection_controller_indices;
 
 	// state of current interaction with boxes for each controller
-	InteractionState state[2];
+	InteractionState state[4];
 
 	// render style for interaction
 	cgv::render::sphere_render_style srs;
@@ -217,7 +217,7 @@ public:
 			font_enum_decl += std::string(fn);
 		}
 		font_enum_decl += "'";
-		state[0] = state[1] = IS_NONE;
+		state[0] = state[1] = state[2] = state[3] = IS_NONE;
 	}
 	std::string get_type_name() const
 	{
@@ -546,7 +546,7 @@ public:
 			std::vector<rgb> C;
 			const vr::vr_kit_state* state_ptr = vr_view_ptr->get_current_vr_state();
 			if (state_ptr) {
-				for (int ci = 0; ci < 2; ++ci) {
+				for (int ci = 0; ci < 4; ++ci) if (state_ptr->controller[ci].status == vr::VRS_TRACKED) {
 					vec3 ray_origin, ray_direction;
 					state_ptr->controller[ci].put_ray(&ray_origin(0), &ray_direction(0));
 					P.push_back(ray_origin);

@@ -152,6 +152,9 @@ bool openvr_kit::query_state(vr_kit_state& state, int pose_query)
 
 	static vr::TrackedDevicePose_t tracked_poses[vr::k_unMaxTrackedDeviceCount];
 	vr::VRCompositor()->WaitGetPoses(tracked_poses, vr::k_unMaxTrackedDeviceCount, NULL, 0);
+	int next_generic_controller_index = 2;
+	state.controller[2].status = vr::VRS_DETACHED;
+	state.controller[3].status = vr::VRS_DETACHED;
 	for (int device_index = 0; device_index < vr::k_unMaxTrackedDeviceCount; ++device_index)
 	{
 		if (tracked_poses[device_index].bPoseIsValid) {
@@ -169,6 +172,13 @@ bool openvr_kit::query_state(vr_kit_state& state, int pose_query)
 				break;
 			case TrackedDeviceClass_HMD:
 				tracked_pose_ptr = &state.hmd;
+				break;
+			case TrackedDeviceClass_GenericTracker :
+				if (next_generic_controller_index < 4) {
+					tracked_pose_ptr = &state.controller[next_generic_controller_index];
+					state.controller[next_generic_controller_index].status = vr::VRS_TRACKED;
+					++next_generic_controller_index;
+				}
 				break;
 			}
 			if (tracked_pose_ptr) {

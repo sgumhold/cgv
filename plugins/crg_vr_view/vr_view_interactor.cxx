@@ -17,6 +17,7 @@ vr_view_interactor::vr_view_interactor(const char* name) : stereo_view_interacto
 {
 	debug_vr_events = false;
 	separate_view = true;
+	dont_render_kits = false;
 	blit_vr_views = true;
 	blit_width = 160;
 	event_flags = cgv::gui::VREventTypeFlags(cgv::gui::VRE_STATUS + cgv::gui::VRE_KEY + cgv::gui::VRE_POSE);
@@ -429,49 +430,51 @@ void vr_view_interactor::init_frame(cgv::render::context& ctx)
 				kit_ptr->query_state(kit_states[i], 1);
 				cgv::gui::ref_vr_server().check_new_state(kits[i], kit_states[i], cgv::gui::trigger::get_current_time(), event_flags);
 			}
-			// render all but current vr kit views
-			for (rendered_kit_index = 0; rendered_kit_index<int(kits.size()); ++rendered_kit_index) {
-				if (rendered_kit_index + 1 == current_vr_handle_index)
-					continue;
-				rendered_kit_ptr = vr::get_vr_kit(kits[rendered_kit_index]);
-				if (!rendered_kit_ptr)
-					continue;
-				void* fbo_handle;
-				ivec4 cgv_viewport;
-				for (rendered_eye = 0; rendered_eye < 2; ++rendered_eye) {
-					rendered_kit_ptr->enable_fbo(rendered_eye);
-					ctx.announce_external_frame_buffer_change(fbo_handle);
-					ctx.announce_external_viewport_change(cgv_viewport);
-					ctx.render_pass(cgv::render::RP_USER_DEFINED, cgv::render::RenderPassFlags(rpf&~cgv::render::RPF_HANDLE_SCREEN_SHOT), this);
-					rendered_kit_ptr->disable_fbo(rendered_eye);
-					ctx.recover_from_external_viewport_change(cgv_viewport);
-					ctx.recover_from_external_frame_buffer_change(fbo_handle);
-				}
-			}
-			// render current vr kit 
-			rendered_kit_index = current_vr_handle_index - 1;
-			rendered_kit_ptr = vr::get_vr_kit(kits[rendered_kit_index]);
-			if (rendered_kit_ptr) {				
-				void* fbo_handle;
-				ivec4 cgv_viewport;
-				for (rendered_eye = 0; rendered_eye < 2; ++rendered_eye) {
-					rendered_kit_ptr->enable_fbo(rendered_eye);
-					ctx.announce_external_frame_buffer_change(fbo_handle);
-					ctx.announce_external_viewport_change(cgv_viewport);
-					if (rendered_eye == 1 && !separate_view) {
-						this->fbo_handle = fbo_handle;
-						this->cgv_viewport = cgv_viewport;
-						break;
+			if (!dont_render_kits) {
+				// render all but current vr kit views
+				for (rendered_kit_index = 0; rendered_kit_index<int(kits.size()); ++rendered_kit_index) {
+					if (rendered_kit_index + 1 == current_vr_handle_index)
+						continue;
+					rendered_kit_ptr = vr::get_vr_kit(kits[rendered_kit_index]);
+					if (!rendered_kit_ptr)
+						continue;
+					void* fbo_handle;
+					ivec4 cgv_viewport;
+					for (rendered_eye = 0; rendered_eye < 2; ++rendered_eye) {
+						rendered_kit_ptr->enable_fbo(rendered_eye);
+						ctx.announce_external_frame_buffer_change(fbo_handle);
+						ctx.announce_external_viewport_change(cgv_viewport);
+						ctx.render_pass(cgv::render::RP_USER_DEFINED, cgv::render::RenderPassFlags(rpf & ~cgv::render::RPF_HANDLE_SCREEN_SHOT), this);
+						rendered_kit_ptr->disable_fbo(rendered_eye);
+						ctx.recover_from_external_viewport_change(cgv_viewport);
+						ctx.recover_from_external_frame_buffer_change(fbo_handle);
 					}
-					ctx.render_pass(cgv::render::RP_USER_DEFINED, cgv::render::RenderPassFlags(rpf&~cgv::render::RPF_HANDLE_SCREEN_SHOT));
-					rendered_kit_ptr->disable_fbo(rendered_eye);
-					ctx.recover_from_external_viewport_change(cgv_viewport);
-					ctx.recover_from_external_frame_buffer_change(fbo_handle);
 				}
-			}
-			if (separate_view) {
-				rendered_kit_ptr = 0;
-				rendered_kit_index = -1;
+				// render current vr kit 
+				rendered_kit_index = current_vr_handle_index - 1;
+				rendered_kit_ptr = vr::get_vr_kit(kits[rendered_kit_index]);
+				if (rendered_kit_ptr) {
+					void* fbo_handle;
+					ivec4 cgv_viewport;
+					for (rendered_eye = 0; rendered_eye < 2; ++rendered_eye) {
+						rendered_kit_ptr->enable_fbo(rendered_eye);
+						ctx.announce_external_frame_buffer_change(fbo_handle);
+						ctx.announce_external_viewport_change(cgv_viewport);
+						if (rendered_eye == 1 && !separate_view) {
+							this->fbo_handle = fbo_handle;
+							this->cgv_viewport = cgv_viewport;
+							break;
+						}
+						ctx.render_pass(cgv::render::RP_USER_DEFINED, cgv::render::RenderPassFlags(rpf & ~cgv::render::RPF_HANDLE_SCREEN_SHOT));
+						rendered_kit_ptr->disable_fbo(rendered_eye);
+						ctx.recover_from_external_viewport_change(cgv_viewport);
+						ctx.recover_from_external_frame_buffer_change(fbo_handle);
+					}
+				}
+				if (separate_view) {
+					rendered_kit_ptr = 0;
+					rendered_kit_index = -1;
+				}
 			}
 		}
 	}
@@ -639,6 +642,7 @@ void vr_view_interactor::create_gui()
 	if (begin_tree_node("VR rendering", separate_view, false, "level=2")) {
 		align("\a");
 		add_member_control(this, "separate_view", separate_view, "check");
+		add_member_control(this, "dont_render_kits", dont_render_kits, "check");
 		add_member_control(this, "blit_vr_views", blit_vr_views, "check");
 		add_member_control(this, "blit_width", blit_width, "value_slider", "min=120;max=640;ticks=true;log=true");
 		add_member_control(this, "show_action_zone", show_action_zone, "check");

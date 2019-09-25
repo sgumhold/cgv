@@ -62,6 +62,8 @@ public:
 protected:
 	/// whether the window shows a separate view onto the scene or the one of the current vr kit
 	bool separate_view;
+	/// whether to not render for kits
+	bool dont_render_kits;
 	/// whether to blit in the views of the vr kits
 	bool blit_vr_views;
 	// extent of blitting
