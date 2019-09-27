@@ -56,6 +56,8 @@ struct openvr_driver : public vr_driver
 		// init SteamVR Runtime
 		vr::EVRInitError error = vr::VRInitError_None;
 		hmd_ptr = vr::VR_Init(&error, vr::VRApplication_Scene);
+		if (error != vr::VRInitError_None)
+			hmd_ptr = vr::VR_Init(&error, vr::VRApplication_Other);
 
 		if (error != vr::VRInitError_None) {
 			hmd_ptr = NULL;
