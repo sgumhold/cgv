@@ -57,6 +57,11 @@ class CGV_API vr_view_interactor :
 {
 	ivec4 cgv_viewport;
 	void* fbo_handle;
+	mat3 head_tracker_orientation;
+	vec3 head_tracker_position;
+	vec3 tracking_origin;
+	float tracking_rotation;
+	bool calibrate_rotation;
 public:
 	typedef cgv::math::fmat<float,3,4> mat34;
 protected:
@@ -69,6 +74,7 @@ protected:
 	// extent of blitting
 	int blit_width;
 
+	int head_tracker;
 	int rendered_eye;
 	vr::vr_kit* rendered_kit_ptr;
 	int rendered_kit_index;
