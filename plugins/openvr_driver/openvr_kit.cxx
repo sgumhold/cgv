@@ -151,10 +151,14 @@ bool openvr_kit::query_state(vr_kit_state& state, int pose_query)
 		return true;
 
 	static vr::TrackedDevicePose_t tracked_poses[vr::k_unMaxTrackedDeviceCount];
-	if (vr::VRCompositor())
+	if (vr::VRCompositor()) {
 		vr::VRCompositor()->WaitGetPoses(tracked_poses, vr::k_unMaxTrackedDeviceCount, NULL, 0);
-	else
+		state.hmd.status = vr::VRS_TRACKED;
+	}
+	else {
 		vr::VRSystem()->GetDeviceToAbsoluteTrackingPose(vr::TrackingUniverseRawAndUncalibrated, 0.01f, tracked_poses, vr::k_unMaxTrackedDeviceCount);
+		state.hmd.status = vr::VRS_DETACHED;
+	}
 	int next_generic_controller_index = 2;
 	state.controller[2].status = vr::VRS_DETACHED;
 	state.controller[3].status = vr::VRS_DETACHED;
