@@ -18,7 +18,7 @@ vr_view_interactor::vr_view_interactor(const char* name) : stereo_view_interacto
 	head_tracker_orientation.identity();
 	head_tracker_position = vec3(0.0f);
 	tracking_origin = vec3(0.0f);
-	calibrate_rotation = false;
+	tracking_rotation_origin = vec3(0.0f);
 	tracking_rotation = 0;
 	head_tracker = -1;
 	debug_vr_events = false;
@@ -216,7 +216,8 @@ void vr_view_interactor::on_set(void* member_ptr)
 /// overload to stream help information to the given output stream
 void vr_view_interactor::stream_help(std::ostream& os)
 {
-	os << "vr_view_interactor: Ctrl-0|1|2|3 to select player; Ctrl-Space to toggle draw separate view\n";
+	os << "vr_view_interactor: Ctrl-0|1|2|3 to select player; Ctrl-Space to toggle draw separate view\n"
+	   << "   Shift-Ctrl-0|1|2|3 to identify current focus point with conroller or tracker\n";
 	stereo_view_interactor::stream_help(os);
 }
 
@@ -308,10 +309,10 @@ bool vr_view_interactor::handle(cgv::gui::event& e)
 						vr::vr_kit_state& state = kit_states[current_vr_handle_index - 1];
 						if (state.controller[ci].status == vr::VRS_TRACKED) {
 							vec3& p = reinterpret_cast<vec3&>(state.controller[ci].pose[9]);
-							p -= tracking_origin;
-							tracking_origin = get_focus() - p;
-							std::cout << "identify " << p << " with " << get_focus() << std::endl;
-							p = tracking_origin;
+							mat3 invR = cgv::math::rotate3<float>(-tracking_rotation, vec3(0, 1, 0));
+							tracking_rotation_origin += invR* (p - tracking_origin);
+							tracking_origin = get_focus();
+							p = get_focus();
 							for (int c=0; c<3; ++c)
 								update_member(&tracking_origin[c]);
 						}
@@ -486,14 +487,14 @@ void vr_view_interactor::init_frame(cgv::render::context& ctx)
 						mat3& O = reinterpret_cast<mat3&>(state.hmd.pose[0]);
 						vec3& p = reinterpret_cast<vec3&>(state.hmd.pose[9]);
 						O = R * O;
-						p = R * p + tracking_origin;
+						p = R * (p - tracking_rotation_origin) + tracking_origin;
 					}					
 					for (int ci=0; ci<4; ++ci) {
 						if (state.controller[ci].status == vr::VRS_TRACKED) {
 							mat3& O = reinterpret_cast<mat3&>(state.controller[ci].pose[0]);
 							vec3& p = reinterpret_cast<vec3&>(state.controller[ci].pose[9]);
 							O = R * O;
-							p = R * p + tracking_origin;
+							p = R * (p - tracking_rotation_origin) + tracking_origin;
 						}
 					}
 					cgv::gui::ref_vr_server().check_new_state(current_vr_handle, state, cgv::gui::trigger::get_current_time(), event_flags);
@@ -725,14 +726,20 @@ void vr_view_interactor::draw(cgv::render::context& ctx)
 void vr_view_interactor::create_gui()
 {
 	add_member_control(this, "current vr kit", (cgv::type::DummyEnum&)current_vr_handle_index, "dropdown", kit_enum_definition);
-	if (begin_tree_node("VR calibration", calibrate_rotation, false, "level=2")) {
+	if (begin_tree_node("VR calibration", tracking_rotation, false, "level=2")) {
 		align("\a");
-		add_member_control(this, "calibrate_rotation", calibrate_rotation, "check");
 		add_member_control(this, "tracking_rotation", tracking_rotation, "value_slider", "min=-180;max=180;ticks=true");
-		add_decorator("origin", "heading", "level=3");
-		add_gui("tracking_origin", tracking_origin, "", "gui_type='value_slider';options='min=-2;max=2;ticks=true'");
+		if (begin_tree_node("translational", tracking_origin, false, "level=2")) {
+			align("\a");
+				add_decorator("origin", "heading", "level=3");
+				add_gui("tracking_origin", tracking_origin, "", "gui_type='value_slider';options='min=-2;max=2;ticks=true'");
+				add_decorator("rotation origin", "heading", "level=3");
+				add_gui("tracking_rotation_origin", tracking_rotation_origin, "", "gui_type='value_slider';options='min=-2;max=2;ticks=true'");
+			align("\b");
+			end_tree_node(tracking_origin);
+		}
 		align("\b");
-		end_tree_node(calibrate_rotation);
+		end_tree_node(tracking_rotation);
 	}
 	if (begin_tree_node("VR rendering", separate_view, false, "level=2")) {
 		align("\a");
