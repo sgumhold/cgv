@@ -52,16 +52,48 @@ bool your_class::init(cgv::render::context& ctx)
 }
 ~~~~~~~~~~~~~~~~~~~~~~~~
 */
-class CGV_API vr_view_interactor : 
-	public stereo_view_interactor	
+class CGV_API vr_view_interactor : public stereo_view_interactor	
 {
 	ivec4 cgv_viewport;
 	void* fbo_handle;
+	/**@name head tracking */
+	//@{
+	/// head orientation from tracker orientation
 	mat3 head_tracker_orientation;
+	/// head position from tracker location
 	vec3 head_tracker_position;
-	vec3 tracking_origin;
+	//@}
+
+	/**@name calibation of tracker coordinate system
+	
+	the calibration affects the tracked poses as follows:
+
+	mat3 rotation = cgv::math::rotate3<float>(tracking_rotation, vec3(0, 1, 0));
+	mat3 orientation_world = rotation * orientation_raw;
+	vec3 position_world = rotation * (position_raw - tracking_rotation_origin) + tracking_origin;
+
+	or more brief:
+	O = R*Q;
+	p = R*(q-q0) + o;
+
+	p = R*(q-q0) + o;
+	o = p - R*(q - q0);
+
+	to identify the current focus point f in world coordinates with the raw tracker position q and the rotation origin also with q we compute
+
+	q0 = q;
+	o  = p;
+
+	Now rotation will happen around calibration point.
+	*/
+	//@{
+	/// rotation angle around the y-axis
 	float tracking_rotation;
-	bool calibrate_rotation;
+	/// location in tracking coordinate system around which rotation is defined
+	vec3 tracking_rotation_origin;
+	/// origin of tracking coordinate system given in world coordinates
+	vec3 tracking_origin;
+	//@}
 public:
 	typedef cgv::math::fmat<float,3,4> mat34;
 protected:
