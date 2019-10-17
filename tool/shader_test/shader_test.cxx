@@ -10,6 +10,7 @@
 #include <cgv/utils/scan.h>
 #include <cgv/utils/advanced_scan.h>
 #include <cgv/utils/file.h>
+#include <cgv/utils/options.h>
 
 #ifndef WIN32
 #include <fltk/GlWindow.h>
@@ -116,13 +117,18 @@ bool convert_to_string(const std::string& in_fn, const std::string& out_fn, bool
 		return false;
 	if (to_upper(get_extension(in_fn)[0]) == 'P')
 		write(drop_extension(out_fn)+"."+get_extension(in_fn).substr(1), content.c_str(), content.length(), true);
-
+	// try to open output file
 	std::ofstream os(out_fn.c_str());
 	if (os.fail())
 		return false;
+	// encode in base64 if this a cgv option
+	if (cgv::utils::has_option("ENCODE_SHADER_BASE64"))
+		content = std::string("§") + cgv::utils::encode_base64(content);
+	// stream out the string declaration
 	std::string sn = get_file_name(in_fn);
 	replace(sn, '.', '_');
 	os << "const char* " << sn.c_str() << " =\"\\\n";
+	// write out the content in form of a string
 	bool last_is_slash = false;
 	for (unsigned int i=0; i<content.size(); ++i) {
 		bool new_last_is_slash = false;
@@ -173,12 +179,8 @@ context* g_ctx_ptr;
 
 int perform_test()
 {
-	bool shader_developer = false;
+	bool shader_developer = cgv::utils::has_option("SHADER_DEVELOPER");
 	bool exit_code = 0;
-	char* options = getenv("CGV_OPTIONS");
-	if (options)
-		shader_developer = is_element("SHADER_DEVELOPER", to_upper(options), ';');
-
 	if (getenv("CGV_DIR") != 0)
 		get_shader_config()->shader_path = std::string(getenv("CGV_DIR"))+"/libs/cgv_gl/glsl";
 	// check input file extension
