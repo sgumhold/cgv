@@ -188,24 +188,25 @@ int perform_test()
 	if (ext == "glpr") {
 		// in case of shader program, build it from the file
 		shader_program prog(true);
-		if (prog.build_program(*g_ctx_ptr, g_argv[1], true)) {
+		if (prog.build_program(*g_ctx_ptr, g_argv[1], shader_developer)) {
 			convert_to_string(g_argv[1], g_argv[2]);
 			//write(g_argv[2], "ok", 2, true);
 			std::cout << "shader program ok (" << g_argv[1] << ")" << std::endl;
 		}
 		else {
-			std::cout << "build program failed" << std::endl;
-			std::cerr << g_argv[1] << " (1) : glsl program error" << std::endl;
 			if (!shader_developer)
-				write(g_argv[2], "error", 2, true);
-			exit_code = 1;
+				convert_to_string(g_argv[1], g_argv[2]);
+			else {
+				std::cout << "error:" << g_argv[1] << " (1) : glsl program error" << std::endl;
+				exit_code = 1;
+			}
 		}
 	}
 	else {
 //		if (ext[0] != 'p') {
 			// otherwise read and compile code
 			shader_code code;
-			if (code.read_and_compile(*g_ctx_ptr, g_argv[1], cgv::render::ST_DETECT, true)) {
+			if (code.read_and_compile(*g_ctx_ptr, g_argv[1], cgv::render::ST_DETECT, shader_developer)) {
 				// convert the input file to a string declaration with the string
 				convert_to_string(g_argv[1],g_argv[2]);
 				//write(g_argv[2], "ok", 2, true);
@@ -214,7 +215,8 @@ int perform_test()
 			else {
 				if (!shader_developer)
 					convert_to_string(g_argv[1],g_argv[2]);
-				exit_code = 1;
+				else
+					exit_code = 1;
 			}
 //		}
 /*		else {
@@ -231,13 +233,12 @@ int perform_test()
 int main(int argc, char** argv)
 {
 	int exit_code = 0;
-
+	get_render_config()->show_error_on_console = false;
 	// check command line arguments
 	if (argc != 3) {
 		std::cout << "usage: shader_test.exe input_file log_file" << std::endl;
 		return -1;
 	}
-
 	// create a context without window
 #ifdef WIN32
 	context* ctx_ptr = create_context();
@@ -245,7 +246,7 @@ int main(int argc, char** argv)
 	context* ctx_ptr = new fltk_gl_context(200,200);
 #endif
 	if (!ctx_ptr) {
-		std::cerr << "could not create context!" << std::endl;
+		std::cout << "error: could not create context!" << std::endl;
 		return -1;
 	}
 	g_argc= argc;
@@ -258,7 +259,7 @@ int main(int argc, char** argv)
 #endif
 	// destroy context
 	delete ctx_ptr;
-	return 0;
+	return exit_code;
 }
 
 namespace cgv {
