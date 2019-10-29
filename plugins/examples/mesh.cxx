@@ -103,7 +103,7 @@ public:
 	cgv::render::mesh_render_info mesh_info;
 
 	// mesh generation parameters
-	size_t n, m;
+	int n, m;
 	float a, b;
 	float lb, ub;
 public:
@@ -137,10 +137,10 @@ public:
 		// allocate per vertex colors of type rgb with float components
 		M.ensure_colors(cgv::media::CT_RGB, (n+1)*m);
 
-		for (size_t i = 0; i <= n; ++i) {
+		for (int i = 0; i <= n; ++i) {
 			float y = (float)i / n;
 			float v = (ub-lb)*y + lb;
-			for (size_t j = 0; j < m; ++j) {
+			for (int j = 0; j < m; ++j) {
 				float x = (float)j / m;
 				float u = float(4.0f*M_PI)*x;
 				// add new position to the mesh (function returns position index, which is i*m+j in our case)
@@ -149,7 +149,7 @@ public:
 				M.set_color(vi, rgb(x, y, 0.5f));
 				// add quad connecting current vertex with previous ones
 				if (i > 0) {
-					int vi = (i-1) * m + j;
+					int vi = ((i-1) * m + j);
 					int delta_j = -1;
 					if (j == 0)
 						delta_j = m - 1;

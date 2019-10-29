@@ -2,24 +2,27 @@
 #include <vr/vr_driver.h>
 #include "openvr_kit.h"
 #include <cgv/type/standard_types.h>
+#include <cgv/utils/options.h>
 #include "openvr.h"
 #include <iostream>
 using namespace vr;
 
-// encode user index in handle
-void* get_handle(int user_index)
-{
-	void* device_handle = 0;
-	(int&)device_handle = user_index;
-	return device_handle;
-}
+namespace vr {
+	// encode user index in handle
+	void* get_handle(int user_index)
+	{
+		void* device_handle = 0;
+		(int&)device_handle = user_index;
+		return device_handle;
+	}
 
-// decode user index from handle
-int get_user_index(void* device_handle)
-{
-	int user_index = (int&)device_handle;
-	assert(user_index >= 0 && user_index < 4);
-	return user_index;
+	// decode user index from handle
+	int get_user_index(void* device_handle)
+	{
+		int user_index = (int&)device_handle;
+		assert(user_index >= 0 && user_index < 4);
+		return user_index;
+	}
 }
 
 std::string GetTrackedDeviceString(vr::TrackedDeviceIndex_t unDevice, vr::TrackedDeviceProperty prop, vr::TrackedPropertyError *peError = NULL)
@@ -47,10 +50,14 @@ struct openvr_driver : public vr_driver
 	openvr_driver(const std::string& options)
 	{
 		installed = false;
-
+		if (cgv::utils::has_option("NO_OPENVR"))
+			return;
+			
 		// init SteamVR Runtime
 		vr::EVRInitError error = vr::VRInitError_None;
 		hmd_ptr = vr::VR_Init(&error, vr::VRApplication_Scene);
+		if (error != vr::VRInitError_None)
+			hmd_ptr = vr::VR_Init(&error, vr::VRApplication_Other);
 
 		if (error != vr::VRInitError_None) {
 			hmd_ptr = NULL;
@@ -115,9 +122,9 @@ struct openvr_driver : public vr_driver
 	{
 		std::vector<float> boundary;
 		put_action_zone_bounary(boundary);
-		unsigned n = boundary.size() / 3;
+		size_t n = boundary.size() / 3;
 		float y = 0.0f;
-		for (unsigned i = 0; i < n; ++i)
+		for (size_t i = 0; i < n; ++i)
 			y += boundary[3 * i + 1];
 		y /= (float)n;
 		return y;

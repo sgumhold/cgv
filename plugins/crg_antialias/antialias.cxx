@@ -87,7 +87,7 @@ void antialias::stream_stats(std::ostream& os)
 
 bool antialias::init(context& ctx)
 {
-	ctx.attach_accum_buffer();
+	ctx.attach_accumulation_buffer();
 	return true;
 }
 

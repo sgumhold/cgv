@@ -2,6 +2,7 @@
 
 #include <cgv/base/base.h>
 #include <cgv/gui/gui_driver.h>
+#include <cgv/render/context.h>
 
 #include "lib_begin.h"
 
@@ -15,10 +16,13 @@ namespace fltk {
 class CGV_API fltk_driver : public gui_driver
 {
 protected:
+	friend class fltk_gl_view;
 	/// keep track of the created windows
 	std::vector<window_ptr> windows;
 	/// store the last wakeup message
 	std::string wakeup_message;
+	///
+	static void set_context_creation_attrib_list(cgv::render::context_config& cc);
 public:
 	/// remove a window that has been destroyed
 	void remove_window(window_ptr w);

@@ -279,7 +279,7 @@ void light_interactor::draw_light_rays(context& ctx, size_t i)
 	prog.set_uniform(ctx, "light_index", light_index);
 //	rgb clr = color_lambda * lights[i].get_emission() + (1.0f - color_lambda)*default_color;
 //	ctx.set_color(rgba(clr[0],clr[1],clr[2],opacity));
-	glDrawArrays(GL_LINES, 2 * i*nr_light_rays, 2 * nr_light_rays);
+	glDrawArrays(GL_LINES, (GLint)(2 * i*nr_light_rays), (GLsizei)(2 * nr_light_rays));
 }
 
 void light_interactor::finish_frame(context& ctx)

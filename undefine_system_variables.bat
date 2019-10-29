@@ -27,6 +27,11 @@ if "%new_path%" == "" (
 )
 reg DELETE HKEY_CURRENT_USER\Environment /v CGV_DIR /f >nul 2> nul
 reg DELETE HKEY_CURRENT_USER\Environment /v CGV_BUILD /f  >nul 2> nul
+reg DELETE HKEY_CURRENT_USER\Environment /v CGV_DATA /f  >nul 2> nul
+reg DELETE HKEY_CURRENT_USER\Environment /v CGV_WINDOWS_SDK /f  >nul 2> nul
+reg DELETE HKEY_CURRENT_USER\Environment /v CGV_PLATFORM /f  >nul 2> nul
+reg DELETE HKEY_CURRENT_USER\Environment /v CGV_CHARSET /f  >nul 2> nul
+reg DELETE HKEY_CURRENT_USER\Environment /v CGV_OPTIONS /f  >nul 2> nul
 reg DELETE HKEY_CURRENT_USER\Environment /v CGV_INSTALL /f  >nul 2> nul
 reg DELETE HKEY_CURRENT_USER\Environment /v CGV_COMPILER /f  >nul 2> nul
 reg DELETE HKEY_CURRENT_USER\Environment /v CGV_PROJECT_DIR /f  >nul 2> nul
@@ -34,7 +39,7 @@ reg DELETE HKEY_CURRENT_USER\Environment /v CGV_SUPPORT_DIR /f  >nul 2> nul
 bin\setx CGV_DUMMY ""
 call reg DELETE HKEY_CURRENT_USER\Environment /v CGV_DUMMY /f  >nul 2> nul
 echo.
-echo undefined the variables CGV_DIR, CGV_BUILD, CGV_INSTALL, CGV_COMPILER, CGV_PROJECT_DIR and CGV_SUPPORT_DIR
+echo undefined the variables CGV_DIR, CGV_BUILD, CGV_INSTALL, CGV_COMPILER, CGV_PLATFORM, CGV_WINDOWS_SDK, CGV_OPTIONS, CGV_DATA, CGV_PROJECT_DIR and CGV_SUPPORT_DIR
 echo.
 pause
 goto:eof

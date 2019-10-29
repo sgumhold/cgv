@@ -210,6 +210,7 @@ bool fltk_base::set_void(fltk::Widget* w, cgv::base::named* nam, const std::stri
 			fltk::CURSOR_NONE
 		};
 		cursor = cursors[ei];
+		w->cursor(cursor);
 	}
 	else
 		return false;

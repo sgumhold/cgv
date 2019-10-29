@@ -82,10 +82,11 @@ public:
 
   virtual int handle( int event );
 
-private:
+protected:
 
   int mode_;
   GlChoice *gl_choice;
+private:
   GLContext context_;
   void _context(void*, bool destroy_flag);
   char valid_;

@@ -223,7 +223,7 @@ void plot_base::collect_tick_geometry(int ai, int aj, const float* dom_min_pnt, 
 		tick_config& tc = ti == 0 ? ac.primary_ticks : ac.secondary_ticks;
 		if (tc.type == TT_NONE)
 			return;
-		tick_batches.push_back(tick_batch_info(ai, aj, ti == 0, tick_vertices.size(), tick_labels.size()));
+		tick_batches.push_back(tick_batch_info(ai, aj, ti == 0, (unsigned)tick_vertices.size(), (unsigned)tick_labels.size()));
 
 		axis_config& ao = get_domain_config_ptr()->axis_configs[aj];
 		// compute domain extent in both coordinate directions
@@ -317,8 +317,8 @@ void plot_base::collect_tick_geometry(int ai, int aj, const float* dom_min_pnt, 
 				break;
 			}
 		}
-		tick_batches.back().vertex_count = tick_vertices.size() - tick_batches.back().first_vertex;
-		tick_batches.back().label_count = tick_labels.size() - tick_batches.back().first_label;
+		tick_batches.back().vertex_count = (unsigned)(tick_vertices.size() - tick_batches.back().first_vertex);
+		tick_batches.back().label_count = (unsigned)(tick_labels.size() - tick_batches.back().first_label);
 	}
 }
 
@@ -340,7 +340,7 @@ void plot_base::ensure_font_names()
 		get_domain_config_ptr()->label_font_index = 0;
 		for (auto iter = font_names.begin(); iter != font_names.end(); ++iter)
 			if (std::string(*iter) == "Times New Roman") {
-				get_domain_config_ptr()->label_font_index = iter - font_names.begin();
+				get_domain_config_ptr()->label_font_index = (unsigned)(iter - font_names.begin());
 				break;
 			}
 		on_font_selection();
@@ -394,13 +394,13 @@ size_t plot_base::set_attributes(cgv::render::context& ctx, int i, const std::ve
 		}
 		case AS_POINTER:
 			cgv::render::attribute_array_binding::set_global_attribute_array(ctx, ai,
-				as.pointer, as.count, as.stride);
+				as.pointer, as.count, (unsigned) as.stride);
 			count = std::min(as.count, count);
 			break;
 		case AS_VBO:
 			cgv::render::attribute_array_binding::set_global_attribute_array(ctx, ai, *as.vbo_ptr,
 				cgv::render::element_descriptor_traits<float>::get_type_descriptor(*as.pointer),
-				as.count, as.offset, as.stride);
+				as.count, as.offset, (unsigned) as.stride);
 			count = std::min(as.count, count);
 			break;
 		}
@@ -426,13 +426,13 @@ size_t plot_base::set_attributes(cgv::render::context& ctx, int i, const std::ve
 		}
 		case AS_POINTER:
 			cgv::render::attribute_array_binding::set_global_attribute_array(ctx, ai,
-				as.pointer, as.count, as.stride);
+				as.pointer, as.count, (unsigned) as.stride);
 			count = std::min(as.count, count);
 			break;
 		case AS_VBO:
 			cgv::render::attribute_array_binding::set_global_attribute_array(ctx, ai, *as.vbo_ptr,
 				cgv::render::element_descriptor_traits<float>::get_type_descriptor(*as.pointer),
-				as.count, as.offset, as.stride);
+				as.count, as.offset, (unsigned)as.stride);
 			count = std::min(as.count, count);
 			break;
 		}
@@ -679,7 +679,7 @@ void plot_base::adjust_domain_axis_to_data(unsigned ai, bool adjust_min, bool ad
 		case AS_SAMPLE_CONTAINER:
 		{
 			int j = as.sub_plot_index == -1 ? i : as.sub_plot_index;
-			new_found_sample = compute_sample_coordinate_interval(j, as.offset, new_samples_min, new_samples_max);
+			new_found_sample = compute_sample_coordinate_interval(j, (int)as.offset, new_samples_min, new_samples_max);
 			break;
 		}
 		case AS_POINTER:
@@ -780,7 +780,7 @@ void plot_base::set_label_font(float font_size, cgv::media::font::FontFaceAttrib
 	if (!font_name.empty()) {
 		for (auto iter = font_names.begin(); iter != font_names.end(); ++iter)
 			if (font_name == *iter) {
-				get_domain_config_ptr()->label_font_index = iter - font_names.begin();
+				get_domain_config_ptr()->label_font_index = (unsigned)(iter - font_names.begin());
 				on_font_selection();
 				break;
 			}
@@ -837,7 +837,7 @@ void plot_base::adjust_tick_marks_to_domain_axis(unsigned ai, unsigned max_nr_se
 
 unsigned plot_base::get_nr_sub_plots() const
 {
-	return configs.size();
+	return (unsigned) configs.size();
 }
 
 plot_base_config& plot_base::ref_sub_plot_config(unsigned i)

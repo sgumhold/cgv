@@ -33,6 +33,8 @@ protected:
 	std::vector<unsigned> group_indices;
 	std::vector<vec3> normals;
 	std::vector<vec4> colors;
+	std::vector<box3> boxes;
+	bool use_box_array;
 
 	mat4 T;
 	vec3 t;
@@ -105,6 +107,7 @@ public:
 			vertices.back().normal = normals.back();
 			vertices.back().color = colors.back();
 			sizes.push_back(vec3(0.03f*d(g) + 0.001f, 0.03f*d(g) + 0.001f, 0.03f*d(g) + 0.001f));
+			boxes.push_back(box3(points.back() - 0.5f * sizes.back(), points.back() + 0.5f * sizes.back()));
 		}
 		compute_transformed_points();
 		for (i = 0; i < 8; ++i) {
@@ -112,10 +115,7 @@ public:
 			group_translations.push_back(vec3(0, 0, 0));
 			group_rotations.push_back(vec4(0, 0, 0, 1));
 		}
-		point_style.point_size = 8;
-		point_style.blend_points = false;
-		point_style.blend_width_in_pixel = 0.0f;
-		mode = RM_ARROWS;
+		mode = RM_BOXES;
 		point_style.measure_point_size_in_pixel = false;
 		surfel_style.point_size = 15;
 		surfel_style.measure_point_size_in_pixel = false;
@@ -201,7 +201,7 @@ public:
 	}
 	void draw_points()
 	{
-		if (sort_points) {
+		if (sort_points && view_ptr) {
 			indices.resize(points.size());
 			for (unsigned i = 0; i < indices.size(); ++i)
 				indices[i] = i;
@@ -269,8 +269,15 @@ public:
 			b_renderer.set_attribute_array_manager(ctx, &b_manager);
 			set_group_geometry(ctx, b_renderer);
 			if (b_vbos_out_of_date) {
-				set_geometry(ctx, b_renderer);
-				b_renderer.set_extent_array(ctx, sizes);
+				if (use_box_array) {
+					b_renderer.set_color_array(ctx, colors);
+					b_renderer.set_group_index_array(ctx, group_indices);
+					b_renderer.set_box_array(ctx, boxes);
+				}
+				else {
+					set_geometry(ctx, b_renderer);
+					b_renderer.set_extent_array(ctx, sizes);
+				}
 				b_vbos_out_of_date = false;
 			}
 			b_renderer.validate_and_enable(ctx);
@@ -281,8 +288,15 @@ public:
 			cgv::render::box_wire_renderer& bw_renderer = cgv::render::ref_box_wire_renderer(ctx);
 			bw_renderer.set_render_style(box_wire_style);
 			set_group_geometry(ctx, bw_renderer);
-			set_geometry(ctx, bw_renderer);
-			bw_renderer.set_extent_array(ctx, sizes);
+			if (use_box_array) {
+				bw_renderer.set_color_array(ctx, colors);
+				bw_renderer.set_group_index_array(ctx, group_indices);
+				bw_renderer.set_box_array(ctx, boxes);
+			}
+			else {
+				set_geometry(ctx, bw_renderer);
+				bw_renderer.set_extent_array(ctx, sizes);
+			}
 			bw_renderer.validate_and_enable(ctx);
 			draw_points();
 			bw_renderer.disable(ctx);
@@ -406,12 +420,14 @@ public:
 		}
 		if (begin_tree_node("Box Rendering", box_style, false)) {
 			align("\a");
+			add_member_control(this, "use_box_array", use_box_array, "toggle");
 			add_gui("box_style", box_style);
 			align("\b");
 			end_tree_node(box_style);
 		}
 		if (begin_tree_node("Box Wire Rendering", box_wire_style, false)) {
 			align("\a");
+			add_member_control(this, "use_box_array", use_box_array, "toggle");
 			add_gui("box_wire_style", box_wire_style);
 			align("\b");
 			end_tree_node(box_wire_style);

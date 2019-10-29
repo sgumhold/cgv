@@ -103,6 +103,7 @@ public:
 	ColorMapping color_mapping;
 	rgb  surface_color;
 	IlluminationMode illumination_mode;
+	surface_material material;
 
 	bool show_wireframe;
 	float line_width;
@@ -113,7 +114,7 @@ public:
 	cgv::render::sphere_render_style sphere_style;
 
 	// mesh generation parameters
-	size_t n, m;
+	int n, m;
 	float a, b;
 	float lb, ub;
 public:
@@ -154,13 +155,13 @@ public:
 		std::vector<cgv::type::uint32_type> indices;
 
 		// allocate per vertex colors of type rgb with float components
-		size_t i;
+		int i;
 		for (i = 0; i <= n; ++i) {
 			float y = (float)i / n;
 			float v = (ub - lb)*y + lb;
 			if (i > 1)
 				indices.push_back(RESTART_INDEX);
-			for (size_t j = 0; j < m; ++j) {
+			for (int j = 0; j < m; ++j) {
 				float x = (float)j / m;
 				float u = float(4.0f*M_PI)*x;
 				// add new position to the mesh (function returns position index, which is i*m+j in our case)
@@ -215,13 +216,13 @@ public:
 		for (i = 0; i <= n; ++i) {
 			if (i > 0)
 				indices.push_back(RESTART_INDEX);
-			for (size_t j = 0; j < m; ++j) 
+			for (int j = 0; j < m; ++j) 
 				indices.push_back(i*m + j);
 			indices.push_back(i*m);
 		}
 		for (i = 0; i < m; ++i) {
 			indices.push_back(RESTART_INDEX);
-			for (size_t j = 0; j <= n; ++j)
+			for (int j = 0; j <= n; ++j)
 				indices.push_back(j*m + i);
 		}
 		nr_line_elements = indices.size() - nr_triangle_elements;
@@ -334,6 +335,12 @@ public:
 			}
 			add_member_control(this, "surface color", surface_color);
 			add_member_control(this, "illumination", illumination_mode, "dropdown", "enums='none,one sided,two sided'");
+			if (begin_tree_node("material", material)) {
+				align("\a");
+				add_gui("material", material);
+				align("\b");
+				end_tree_node(material);
+			}
 			align("\b");
 			end_tree_node(show_surface);
 		}
@@ -396,12 +403,16 @@ public:
 		prog.set_uniform(ctx, "map_color_to_material", (int)color_mapping); // fragment color mapping mode
 		prog.set_uniform(ctx, "illumination_mode", (int)illumination_mode); // fragment illumination mode
 
+		// the set_uniform method only supports basic types and no structs like the material, where you would have
+		// to set each member individually. Therefore the context provides a method that sets all material parameters
+		// of the currently enabled program as used here
+		ctx.set_material(material);
 		// set default surface color for color mapping which only affects 
 		// rendering if mesh does not have per vertex colors and color_mapping is on
 		prog.set_attribute(ctx, prog.get_color_index(), surface_color);
 
 		aab_surface.enable(ctx);
-		glDrawElements(GL_TRIANGLE_STRIP, nr_triangle_elements, GL_UNSIGNED_INT, 0);
+		glDrawElements(GL_TRIANGLE_STRIP, (GLsizei) nr_triangle_elements, GL_UNSIGNED_INT, 0);
 		aab_surface.disable(ctx);
 
 		prog.disable(ctx);
@@ -421,7 +432,7 @@ public:
 			sr.set_attribute_array_manager(ctx, &aam_sphere);
 			sr.set_render_style(sphere_style);
 			sr.validate_and_enable(ctx);
-			glDrawArrays(GL_POINTS, 0, nr_positions);
+			glDrawArrays(GL_POINTS, 0, (GLsizei) nr_positions);
 			sr.disable(ctx);
 		}
 
@@ -458,7 +469,7 @@ public:
 				}
 				// draw all line strips with one draw call where the last pointer casted argument 
 				// is the offset in the element buffer, where the line strips begin
-				glDrawElements(GL_LINE_STRIP, nr_line_elements, GL_UNSIGNED_INT, 
+				glDrawElements(GL_LINE_STRIP, (GLsizei) nr_line_elements, GL_UNSIGNED_INT,
 					(void*)(sizeof(cgv::type::uint32_type)*nr_triangle_elements));
 
 			// disable program and aab - again order is unimportant
@@ -469,7 +480,7 @@ public:
 			glLineWidth(old_line_width);
 		}
 		// render opaque surfaces here without blending
-		if (show_surface && ctx.get_current_material()->get_transparency() < 0.01f)
+		if (show_surface && material.get_transparency() < 0.01f)
 			draw_surface(ctx);
 		// recover restart settings
 		glPrimitiveRestartIndex(restart_index);

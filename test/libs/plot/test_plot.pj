@@ -12,6 +12,6 @@ addProjectDeps=[
 ];
 addIncDirs=[CGV_DIR."/libs"];
 addCommandLineArguments=[
-	"type(shader_config):shader_path='".CGV_DIR."/libs/plot/glsl;".CGV_DIR."/libs/cgv_gl/glsl'"
+	after("type(shader_config):shader_path='".CGV_DIR."/libs/plot/glsl;".CGV_DIR."/libs/cgv_gl/glsl'","cg_fltk")
 ];
 
