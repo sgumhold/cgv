@@ -367,7 +367,7 @@ bool shader_program::build_program(const context& ctx, const std::string& file_n
 		return false;
 	if (!attach_program(ctx, file_name, show_error))
 		return false;
-	if (!link(ctx, false)) {
+	if (!link(ctx, show_error)) {
 		if (show_error) {
 			std::string fn = shader_code::find_file(file_name);
 			std::vector<line> lines;
