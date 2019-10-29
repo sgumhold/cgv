@@ -211,39 +211,63 @@ bool gl_context::configure_gl()
 		error("gl_context::configure_gl could not initialize glew");
 		return false;
 	}
-#ifdef _DEBUG
-	GLint major_version, minor_version, context_flags;
-	glGetIntegerv(GL_MAJOR_VERSION, &major_version);
-	glGetIntegerv(GL_MINOR_VERSION, &minor_version);
-	glGetIntegerv(GL_CONTEXT_FLAGS, &context_flags);
-	std::cout << "OpenGL version " << major_version << "." << minor_version << std::endl;
-	if ((context_flags & WGL_CONTEXT_DEBUG_BIT_ARB) == 0)
-		glEnable(GL_DEBUG_OUTPUT);
-	glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
-	if (!check_gl_error("gl_context::configure() debug output"))
-		glDebugMessageCallback(debug_callback, this);
+	const GLubyte* version_string = glGetString(GL_VERSION);
+	version_major = version_string[0] - '0';
+	version_minor = version_string[2] - '0';
+	if (version_major >= 3) {
+		GLint context_flags;
+		glGetIntegerv(GL_CONTEXT_FLAGS, &context_flags);
+#ifdef WIN32
+		// weird behavior under windows or just nvidia or just my laptop (Stefan)??
+		debug = (context_flags & WGL_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB) != 0;
+		forward_compatible = (context_flags & WGL_CONTEXT_DEBUG_BIT_ARB) != 0;
+#else
+		debug = (context_flags & WGL_CONTEXT_DEBUG_BIT_ARB) != 0;
+		forward_compatible = (context_flags & WGL_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB) != 0;
 #endif
+	}
+	else {
+		debug = false;
+		forward_compatible = false;
+	}
+	int version = 10 * version_major * version_minor;
+	if (version >= 32) {
+		GLint context_profile;
+		glGetIntegerv(GL_CONTEXT_PROFILE_MASK, &context_profile);
+		core_profile = (context_profile & WGL_CONTEXT_CORE_PROFILE_BIT_ARB) != 0;
+	}
+	else
+		core_profile = false;
+#ifdef _DEBUG
+	std::cout << "OpenGL version " << version_major << "." << version_minor << (core_profile?" (core)":"") << (debug?" (debug)":"") << (forward_compatible?" (forward_compatible)":"") << std::endl;
+#endif
+	if (debug) {
+		glEnable(GL_DEBUG_OUTPUT);
+		if (version >= 43) {
+			glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
+			if (!check_gl_error("gl_context::configure() debug output"))
+				glDebugMessageCallback(debug_callback, this);
+		}
+	}
 	enable_font_face(info_font_face, info_font_size);
-	/*
-	GLint context_flags;
-	glGetIntegerv(GL_CONTEXT_FLAGS, &context_flags);
-	*/
 	// use the eye location to compute the specular lighting
-	glLightModelf(GL_LIGHT_MODEL_LOCAL_VIEWER, 0);
-	// this makes opengl normalize all surface normals before lighting calculations,
-	// which is essential when using scaling to deform tesselated primities
-	glEnable(GL_NORMALIZE);
+	if (!core_profile) {
+		glLightModelf(GL_LIGHT_MODEL_LOCAL_VIEWER, 0);
+		// this makes opengl normalize all surface normals before lighting calculations,
+		// which is essential when using scaling to deform tesselated primities
+		glEnable(GL_NORMALIZE);
+	}
 	set_viewport(ivec4(0, 0, get_width(), get_height()));
-	if (check_gl_error("gl_context::configure_gl before init of children"))
-		return false;
+//	if (check_gl_error("gl_context::configure_gl before init of children"))
+//		return false;
 	
 	group_ptr grp(dynamic_cast<group*>(this));
 	single_method_action<cgv::render::drawable, bool, cgv::render::context&> sma(*this, &drawable::init, false, false);
 	for (unsigned i = 0; i<grp->get_nr_children(); ++i)
 		traverser(sma, "nc").traverse(grp->get_child(i));
 
-	if (check_gl_error("gl_context::configure_gl after init of children."))
-		return false;
+//	if (check_gl_error("gl_context::configure_gl after init of children."))
+//		return false;
 
 	return true;
 }
@@ -300,7 +324,7 @@ void gl_context::init_render_pass()
 	if (get_render_pass_flags()&RPF_SET_MATERIAL) {
 		set_material(default_material);
 	}
-	if (get_render_pass_flags()&RPF_ENABLE_MATERIAL) {
+	if ((get_render_pass_flags()&RPF_ENABLE_MATERIAL) && !core_profile) {
 		// this mode allows to define the ambient and diffuse color of the surface material
 		// via the glColor commands
 		glEnable(GL_COLOR_MATERIAL);
@@ -310,12 +334,13 @@ void gl_context::init_render_pass()
 		glEnable(GL_DEPTH_TEST);
 		glCullFace(GL_BACK);
 		glEnable(GL_CULL_FACE);
-		glEnable(GL_NORMALIZE);
+		if (!core_profile)
+			glEnable(GL_NORMALIZE);
 	}
 	if ((get_render_pass_flags()&RPF_SET_PROJECTION) != 0) {
 		set_projection_matrix(cgv::math::perspective4<double>(45.0, (double)get_width()/get_height(),0.001,1000.0));
 	}
-	glMatrixMode(GL_MODELVIEW);
+	//glMatrixMode(GL_MODELVIEW);
 	if ((get_render_pass_flags()&RPF_SET_MODELVIEW) != 0)
 		set_modelview_matrix(cgv::math::look_at4<double>(vec3(0,0,10), vec3(0,0,0), vec3(0,1,0)));
 	
@@ -386,44 +411,37 @@ struct format_callback_handler : public traverse_callback_handler
 void gl_context::draw_textual_info()
 {
 	if (show_help || show_stats) {
-		glPushAttrib(GL_CURRENT_BIT | GL_ENABLE_BIT);
-		//GLboolean is_lighting;
-		//glGetBooleanv(GL_LIGHTING, &is_lighting);
-		//if (is_lighting)
-		//	glDisable(GL_LIGHTING);
-		glDisable(GL_DEPTH_TEST);
-		   if (bg_r+bg_g+bg_b < 1.5f)
-				glColor4f(1,1,1,1);
+		if (!core_profile) {
+			glPushAttrib(GL_CURRENT_BIT | GL_ENABLE_BIT);
+			glDisable(GL_DEPTH_TEST);
+			if (bg_r + bg_g + bg_b < 1.5f)
+				glColor4f(1, 1, 1, 1);
 			else
-				glColor4f(0,0,0,1);
+				glColor4f(0, 0, 0, 1);
 
 			push_pixel_coords();
 			enable_font_face(info_font_face, info_font_size);
 			format_callback_handler fch(output_stream());
-			set_cursor(20,20);
+			set_cursor(20, 20);
 			group_ptr grp(dynamic_cast<group*>(this));
 			if (grp && show_stats) {
-				single_method_action<cgv::base::base,void,std::ostream&> sma(output_stream(), &cgv::base::base::stream_stats, false, false);
-				traverser(sma,"nc").traverse(grp,&fch);
-//				traverser(make_action<std::ostream&>(output_stream(), &base::stream_stats, false),"nc").traverse(base_ptr(this),&fch);
+				single_method_action<cgv::base::base, void, std::ostream&> sma(output_stream(), &cgv::base::base::stream_stats, false, false);
+				traverser(sma, "nc").traverse(grp, &fch);
 				output_stream() << std::endl;
 			}
-		    if (bg_r+bg_g+bg_b < 1.5f)
-				glColor4f(1,1,0,1);
+			if (bg_r + bg_g + bg_b < 1.5f)
+				glColor4f(1, 1, 0, 1);
 			else
-				glColor4f(0.4f,0.3f,0,1);
+				glColor4f(0.4f, 0.3f, 0, 1);
 			if (grp && show_help) {
 				// collect help from myself and all children
-				single_method_action<event_handler,void,std::ostream&> sma(output_stream(), &event_handler::stream_help, false, false);
-				traverser(sma,"nc").traverse(grp,&fch);
-//				traverser(make_action<std::ostream&>(output_stream(), &event_handler::stream_help, false),"nc").traverse(base_ptr(this),&fch);
+				single_method_action<event_handler, void, std::ostream&> sma(output_stream(), &event_handler::stream_help, false, false);
+				traverser(sma, "nc").traverse(grp, &fch);
 				output_stream().flush();
 			}
 			pop_pixel_coords();
-		// turn lighting back on for the next frame
-		//glEnable(GL_DEPTH_TEST);
-		//glEnable(GL_LIGHTING);
-		glPopAttrib();
+			glPopAttrib();
+		}
 	}
 }
 
@@ -497,7 +515,7 @@ void gl_context::enumerate_program_attributes(shader_program& prog, std::vector<
 /// set the current color
 void gl_context::set_color(const rgba& clr)
 {
-	if (support_compatibility_mode) {
+	if (support_compatibility_mode && !core_profile) {
 		glColor4fv(&clr[0]);
 	}
 	if (shader_program_stack.empty())
@@ -514,7 +532,7 @@ void gl_context::set_color(const rgba& clr)
 /// set the current material 
 void gl_context::set_material(const cgv::media::illum::surface_material& material)
 {
-	if (support_compatibility_mode) {
+	if (support_compatibility_mode && !core_profile) {
 		unsigned side = map_to_gl(MS_FRONT_AND_BACK);
 		float alpha = 1.0f - material.get_transparency();
 		gl_set_material_color(side, material.get_ambient_occlusion()*material.get_diffuse_reflectance(), alpha, GL_AMBIENT);
@@ -541,66 +559,66 @@ void gl_context::disable_material(textured_material& mat)
 	current_material_is_textured = false;
 }
 
+void gl_context::destruct_render_objects()
+{
+	for (unsigned i = 0; i < 4; ++i)
+		progs[i].destruct(*this);
+}
+
 /// return a reference to a shader program used to render without illumination
 shader_program& gl_context::ref_default_shader_program(bool texture_support)
 {
-	static shader_program prog;
-	static shader_program prog_texture;
-
 	if (!texture_support) {
-		if (!prog.is_created()) {
-			if (!prog.build_program(*this, "default.glpr")) {
+		if (!progs[0].is_created()) {
+			if (!progs[0].build_program(*this, "default.glpr")) {
 				error("could not build default shader program from default.glpr");
 				exit(0);
 			}
-			prog.specify_standard_uniforms(true, false, false, true);
-			prog.specify_standard_vertex_attribute_names(*this, true, false, false);
+			progs[0].specify_standard_uniforms(true, false, false, true);
+			progs[0].specify_standard_vertex_attribute_names(*this, true, false, false);
 		}
-		return prog;
+		return progs[0];
 	}
-	if (!prog_texture.is_created()) {
-		if (!prog_texture.build_program(*this, "textured_default.glpr")) {
+	if (!progs[1].is_created()) {
+		if (!progs[1].build_program(*this, "textured_default.glpr")) {
 			error("could not build default shader program with texture support from textured_default.glpr");
 			exit(0);
 		}
-		prog_texture.set_uniform(*this, "texture", 0);
-		prog_texture.specify_standard_uniforms(true, false, false, true);
-		prog_texture.specify_standard_vertex_attribute_names(*this, true, false, true);
+		progs[1].set_uniform(*this, "texture", 0);
+		progs[1].specify_standard_uniforms(true, false, false, true);
+		progs[1].specify_standard_vertex_attribute_names(*this, true, false, true);
 	}
-	return prog_texture;
+	return progs[1];
 }
 
 /// return a reference to the default shader program used to render surfaces without textures
 shader_program& gl_context::ref_surface_shader_program(bool texture_support)
 {
-	static shader_program prog;
-	static shader_program prog_texture;
-
 	if (!texture_support) {
-		if (!prog.is_created()) {
-			if (!prog.build_program(*this, "default_surface.glpr")) {
+		if (!progs[2].is_created()) {
+			if (!progs[2].build_program(*this, "default_surface.glpr")) {
 				error("could not build surface shader program from default_surface.glpr");
 				exit(0);
 			}
-			prog.specify_standard_uniforms(true, true, true, true);
-			prog.specify_standard_vertex_attribute_names(*this, true, true, false);
+			progs[2].specify_standard_uniforms(true, true, true, true);
+			progs[2].specify_standard_vertex_attribute_names(*this, true, true, false);
 		}
-		return prog;
+		return progs[2];
 	}
-	if (!prog_texture.is_created()) {
-		if (!prog_texture.build_program(*this, "textured_surface.glpr")) {
+	if (!progs[3].is_created()) {
+		if (!progs[3].build_program(*this, "textured_surface.glpr")) {
 			error("could not build surface shader program with texture support from textured_surface.glpr");
 			exit(0);
 		}
-		prog_texture.specify_standard_uniforms(true, true, true, true);
-		prog_texture.specify_standard_vertex_attribute_names(*this, true, true, true);
+		progs[3].specify_standard_uniforms(true, true, true, true);
+		progs[3].specify_standard_vertex_attribute_names(*this, true, true, true);
 	}
-	return prog_texture;
+	return progs[3];
 }
 
 void gl_context::on_lights_changed()
 {
-	if (support_compatibility_mode) {
+	if (support_compatibility_mode && !core_profile) {
 		GLint max_nr_lights;
 		glGetIntegerv(GL_MAX_LIGHTS, &max_nr_lights);
 		for (GLint light_idx = 0; light_idx < max_nr_lights; ++light_idx) {
@@ -784,7 +802,7 @@ void gl_context::push_pixel_coords()
 	GLint vp[4];
 	glGetIntegerv(GL_VIEWPORT, vp);
 
-	if (support_compatibility_mode) {
+	if (support_compatibility_mode && !core_profile) {
 		// push projection matrix
 		glMatrixMode(GL_PROJECTION);
 		// set orthogonal projection
@@ -1122,7 +1140,7 @@ void gl_context::draw_strip_or_fan(
 /// return homogeneous 4x4 viewing matrix, which transforms from world to eye space
 gl_context::dmat4 gl_context::get_modelview_matrix() const
 {
-	if (support_compatibility_mode) {
+	if (support_compatibility_mode && !core_profile) {
 		GLdouble V[16];
 		glGetDoublev(GL_MODELVIEW_MATRIX, V);
 		return dmat4(4,4,V);
@@ -1135,7 +1153,7 @@ gl_context::dmat4 gl_context::get_modelview_matrix() const
 /// return homogeneous 4x4 projection matrix, which transforms from eye to clip space
 gl_context::dmat4 gl_context::get_projection_matrix() const
 {
-	if (support_compatibility_mode) {
+	if (support_compatibility_mode && !core_profile) {
 		GLdouble P[16];
 		glGetDoublev(GL_PROJECTION_MATRIX, P);
 		return dmat4(4,4,P);
@@ -1232,7 +1250,7 @@ gl_context::dmat4 gl_context::get_device_matrix() const
 */
 void gl_context::set_modelview_matrix(const dmat4& V)
 {
-	if (support_compatibility_mode) {
+	if (support_compatibility_mode && !core_profile) {
 		GLint mm;
 		glGetIntegerv(GL_MATRIX_MODE, &mm);
 		glMatrixMode(GL_MODELVIEW);
@@ -1244,7 +1262,7 @@ void gl_context::set_modelview_matrix(const dmat4& V)
 
 void gl_context::set_projection_matrix(const dmat4& P)
 {
-	if (support_compatibility_mode) {
+	if (support_compatibility_mode && !core_profile) {
 		GLint mm;
 		glGetIntegerv(GL_MATRIX_MODE, &mm);
 		glMatrixMode(GL_PROJECTION);

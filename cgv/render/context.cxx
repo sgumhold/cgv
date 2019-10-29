@@ -24,55 +24,58 @@ float background_colors[] = {
 
 
 /// construct config with default parameters
-context_creation_config::context_creation_config()
+context_config::context_config()
 {
-	/// default: false
-	stereo_mode = false;
-	/// default: true
+	depth_buffer = true;
 	double_buffer = true;
-	/// default: false
 	alpha_buffer = true;
-	/// default: 0
-	stencil_bits = 0;
-	/// default: false
+	stencil_bits = -1;
+	accumulation_bits = -1;
+	depth_bits = -1;
 	forward_compatible = false;
+	stencil_buffer = false;
+	accumulation_buffer = false;
+	multi_sample_buffer = false;
+	stereo_buffer = false;
+
 	/// default: false in release and true in debug version
 #ifdef _DEBUG
 	debug = true;
 #else
 	debug = false;
 #endif
-	/// default: false
 	core_profile = false;
-	/// default: 0
 	accumulation_bits = 0;
-	/// default: -1 ... major version of maximum supported OpenGL version
 	version_major = -1;
-	/// default: -1 ... minor version of maximum supported OpenGL version
 	version_minor = -1;
-	/// default: 0
-	nr_multi_samples = 0;
+	nr_multi_samples = -1;
 }
 
-/// return "render_config"
-std::string context_creation_config::get_type_name() const
+/// recreate context based on current context config settings
+bool context::recreate_context()
 {
-	return "context_creation_config";
+	return false;
 }
 
 /// reflect the shader_path member
-bool context_creation_config::self_reflect(cgv::reflect::reflection_handler& srh)
+bool context_config::self_reflect(cgv::reflect::reflection_handler& srh)
 {
 	return
-		srh.reflect_member("stereo_mode", stereo_mode) &&
-		srh.reflect_member("double_buffer", double_buffer) &&
-		srh.reflect_member("alpha_buffer", alpha_buffer) &&
-		srh.reflect_member("stencil_bits", stencil_bits) &&
-		srh.reflect_member("forward_compatible", forward_compatible) &&
-		srh.reflect_member("accumulation_bits", accumulation_bits) &&
 		srh.reflect_member("version_major", version_major) &&
 		srh.reflect_member("version_minor", version_minor) &&
-		srh.reflect_member("nr_multi_samples", nr_multi_samples);
+		srh.reflect_member("core_profile", core_profile) &&
+		srh.reflect_member("debug", debug) &&
+		srh.reflect_member("double_buffer", context_config::double_buffer) &&
+		srh.reflect_member("alpha_buffer", alpha_buffer) &&
+		srh.reflect_member("stencil_buffer", stencil_buffer) &&
+		srh.reflect_member("depth_buffer", depth_buffer) &&
+		srh.reflect_member("depth_bits", depth_bits) &&
+		srh.reflect_member("stencil_bits", stencil_bits) &&
+		srh.reflect_member("accumulation_buffer", accumulation_buffer) &&
+		srh.reflect_member("accumulation_bits", accumulation_bits) &&
+		srh.reflect_member("multi_sample_buffer", multi_sample_buffer) &&
+		srh.reflect_member("nr_multi_samples", nr_multi_samples) &&
+		srh.reflect_member("stereo_buffer", stereo_buffer);
 }
 
 /// construct config with default parameters
@@ -102,16 +105,7 @@ std::string render_config::get_type_name() const
 bool render_config::self_reflect(cgv::reflect::reflection_handler& srh)
 {
 	return
-		context_creation_config::self_reflect(srh) &&
-		srh.reflect_member("stereo_mode", stereo_mode) &&
-		srh.reflect_member("double_buffer", double_buffer) &&
-		srh.reflect_member("alpha_buffer", alpha_buffer) &&
-		srh.reflect_member("stencil_bits", stencil_bits) &&
-		srh.reflect_member("forward_compatible", forward_compatible) &&
-		srh.reflect_member("accumulation_bits", accumulation_bits) &&
-		srh.reflect_member("version_major", version_major) &&
-		srh.reflect_member("version_minor", version_minor) &&
-		srh.reflect_member("nr_multi_samples", nr_multi_samples) &&
+		context_config::self_reflect(srh) &&
 		srh.reflect_member("fullscreen_monitor", fullscreen_monitor) &&
 		srh.reflect_member("window_width", window_width) &&
 		srh.reflect_member("window_height", window_height) &&
@@ -129,6 +123,8 @@ render_config_ptr get_render_config()
 
 context::context()
 {
+	*static_cast<context_config*>(this) = *get_render_config();
+
 	static frame_buffer_base fbb;
 	frame_buffer_stack.push(&fbb);
 	modelview_matrix_stack.push(cgv::math::identity4<double>());
@@ -211,6 +207,11 @@ void context::draw_textual_info()
 ///
 void context::perform_screen_shot()
 {
+}
+
+void context::destruct_render_objects()
+{
+
 }
 
 ///

@@ -372,34 +372,31 @@ bool fltk_driver::enumerate_monitors(std::vector<monitor_description>& monitor_d
 	return true;
 }
 
+void fltk_driver::set_context_creation_attrib_list(cgv::render::context_config& cc)
+{
+	static std::vector<int> context_creation_attrib_list;
+	context_creation_attrib_list.clear();
+	if (cc.forward_compatible || cc.debug) {
+		context_creation_attrib_list.push_back(WGL_CONTEXT_FLAGS_ARB);
+		context_creation_attrib_list.push_back((cc.forward_compatible ? WGL_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB : 0) + (cc.debug ? WGL_CONTEXT_DEBUG_BIT_ARB : 0));
+	}
+	if (cc.version_major > 0) {
+		context_creation_attrib_list.push_back(WGL_CONTEXT_MAJOR_VERSION_ARB);
+		context_creation_attrib_list.push_back(cc.version_major);
+	}
+	if (cc.version_minor > 0) {
+		context_creation_attrib_list.push_back(WGL_CONTEXT_MINOR_VERSION_ARB);
+		context_creation_attrib_list.push_back(cc.version_minor);
+	}
+	context_creation_attrib_list.push_back(WGL_CONTEXT_PROFILE_MASK_ARB);
+	context_creation_attrib_list.push_back(cc.core_profile ? WGL_CONTEXT_CORE_PROFILE_BIT_ARB : WGL_CONTEXT_COMPATIBILITY_PROFILE_BIT_ARB);
+	context_creation_attrib_list.push_back(0);
+	fltk::GlChoice::ref_attrib_list() = &context_creation_attrib_list.front();
+}
+
 /// create a window of the given type. Currently only the types "viewer with gui", "viewer" and "gui" are supported
 window_ptr fltk_driver::create_window(int w, int h, const std::string& title, const std::string& window_type)
 {
-	//TODO: make platform-independent
-#ifdef _WIN32
-	static std::vector<int> context_creation_attrib_list;
-
-	cgv::render::render_config_ptr rcp = cgv::render::get_render_config();
-	if (rcp) {
-		context_creation_attrib_list.clear();
-		if (rcp->forward_compatible || rcp->debug) {
-			context_creation_attrib_list.push_back(WGL_CONTEXT_FLAGS_ARB);
-			context_creation_attrib_list.push_back((rcp->forward_compatible ? WGL_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB : 0) + (rcp->debug ? WGL_CONTEXT_DEBUG_BIT_ARB : 0));
-		}
-		if (rcp->version_major > 0) {
-			context_creation_attrib_list.push_back(WGL_CONTEXT_MAJOR_VERSION_ARB);
-			context_creation_attrib_list.push_back(rcp->version_major);
-		}
-		if (rcp->version_minor > 0) {
-			context_creation_attrib_list.push_back(WGL_CONTEXT_MINOR_VERSION_ARB);
-			context_creation_attrib_list.push_back(rcp->version_minor);
-		}
-		context_creation_attrib_list.push_back(WGL_CONTEXT_PROFILE_MASK_ARB);
-		context_creation_attrib_list.push_back(rcp->core_profile ? WGL_CONTEXT_CORE_PROFILE_BIT_ARB : WGL_CONTEXT_COMPATIBILITY_PROFILE_BIT_ARB);
-		context_creation_attrib_list.push_back(0);
-		fltk::GlChoice::ref_attrib_list() = &context_creation_attrib_list.front();
-	}
-#endif
 	ensure_lock();
 	window_ptr wp;
 	if (window_type == "viewer")
