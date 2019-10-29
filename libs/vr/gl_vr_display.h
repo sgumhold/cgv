@@ -21,6 +21,8 @@ namespace vr {
 	private:
 		int vp[4];
 		int old_msaa;
+		unsigned old_read_fbo_id[2];
+		unsigned old_draw_fbo_id[2];
 	protected:
 		/// pixel dimensions of render targets
 		unsigned width, height, nr_multi_samples;
@@ -49,7 +51,7 @@ namespace vr {
 		bool fbos_initialized() const;
 		/// destruct render targets and framebuffer objects in current opengl context
 		void destruct_fbos();
-		/// enable the framebuffer object of given eye (0..left, 1..right) 
+		/// enable the framebuffer object of given eye (0..left, 1..right)
 		void enable_fbo(int eye);
 		/// disable the framebuffer object of given eye
 		void disable_fbo(int eye);

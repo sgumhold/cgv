@@ -180,7 +180,11 @@ bool avi_video_writer::scan_codecs(std::vector<std::string>& codec_names) const
 {
 	int i;
 	ICINFO icinfo;
+	icinfo.dwSize = sizeof(ICINFO);
 	for (i=0; ICInfo(ICTYPE_VIDEO, i, &icinfo); i++) {
+		char fccType[4], fccHandler[4];
+		(cgv::type::uint32_type&)fccType[0] = icinfo.fccType;
+		(cgv::type::uint32_type&)fccHandler[0] = icinfo.fccHandler;
 		HIC hic = ICOpen(icinfo.fccType, icinfo.fccHandler, ICMODE_QUERY);
 		if (hic) {
 			ICGetInfo(hic, &icinfo, sizeof(icinfo));

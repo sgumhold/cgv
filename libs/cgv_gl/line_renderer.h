@@ -11,18 +11,32 @@ namespace cgv { // @<
 		/** style of a line */
 		struct CGV_API line_render_style : public group_render_style
 		{
-			typedef cgv::media::color<float, cgv::media::RGB, cgv::media::OPACITY> color_type;
 			float line_width;
-			color_type line_color;
+			rgb line_color;
 			line_render_style();
 		};
 
 		/// renderer that supports point splatting
 		class CGV_API line_renderer : public group_renderer
 		{
+		protected:
+			bool has_line_widths;
 		public:
+			/// construct line rendering
 			line_renderer();
+			///
 			bool enable(context& ctx);
+			/// check manager for line width array
+			void set_attribute_array_manager(const context& ctx, attribute_array_manager* _aam_ptr);
+			/// specify a single line_width for all boxes
+			template <typename T>
+			void set_line_width(const context& ctx, const T& line_width) { has_line_widths = true;  ref_prog().set_attribute(ctx, ref_prog().get_attribute_location(ctx, "line_width"), line_width); }
+			/// line_width array specifies box extends in case of position_is_center=true, otherwise the maximum point of each box
+			template <typename T>
+			void set_line_width_array(const context& ctx, const std::vector<T>& line_widths) { has_line_widths = true;  set_attribute_array(ctx, ref_prog().get_attribute_location(ctx, "line_width"), line_widths); }
+			/// line_width array specifies box extends in case of position_is_center=true, otherwise the maximum point of each box
+			template <typename T>
+			void set_line_width_array(const context& ctx, const T* line_widths, size_t nr_elements, unsigned stride_in_bytes = 0) { has_line_widths = true;  set_attribute_array(ctx, ref_prog().get_attribute_location(ctx, "line_width"), line_widths, nr_elements, stride_in_bytes); }
 		};
 	
 		struct CGV_API line_render_style_reflect : public line_render_style

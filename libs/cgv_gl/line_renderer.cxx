@@ -11,8 +11,23 @@ namespace cgv {
 			line_width = 1.0f;
 		}
 
+		/// check manager for line width array
+		void line_renderer::set_attribute_array_manager(const context& ctx, attribute_array_manager* _aam_ptr)
+		{
+			group_renderer::set_attribute_array_manager(ctx, _aam_ptr);
+			if (aam_ptr) {
+				if (aam_ptr->has_attribute(ctx, ref_prog().get_attribute_location(ctx, "line_width")))
+					has_line_widths = true;
+			}
+			else {
+				has_line_widths = false;
+			}
+
+		}
+
 		line_renderer::line_renderer()
 		{
+			has_line_widths = false;
 		}
 
 		bool line_renderer::enable(context& ctx)

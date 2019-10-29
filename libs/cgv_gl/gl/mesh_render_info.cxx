@@ -80,7 +80,7 @@ namespace cgv {
 		/// bind the attribute array to the given shader program
 		void mesh_render_info::bind(cgv::render::context& ctx, cgv::render::shader_program& prog)
 		{
-			unsigned stride = 3;
+			size_t stride = 3;
 			if (include_tex_coords)
 				stride += 2;
 			if (include_normals)
@@ -89,29 +89,29 @@ namespace cgv {
 			if (stride == 3)
 				stride = 0;
 			else
-				stride *= unsigned(element_size);
+				stride *= element_size;
 
 			aab.create(ctx);
 			aab.set_element_array(ctx, vbe);
 			aab.set_attribute_array(ctx,
 				prog.get_position_index(),
 				position_descr,
-				vbo, 0, nr_vertices, stride);
+				vbo, 0, nr_vertices, (unsigned)stride);
 
-			unsigned offset = 3 * unsigned(element_size);
+			size_t offset = 3 * element_size;
 			if (include_tex_coords) {
 				aab.set_attribute_array(ctx,
 					prog.get_texcoord_index(),
 					tex_coords_descr,
-					vbo, offset, nr_vertices, stride);
-				offset += 2 * unsigned(element_size);
+					vbo, offset, nr_vertices, (unsigned)stride);
+				offset += 2 * element_size;
 			}
 			if (include_normals) {
 				aab.set_attribute_array(ctx,
 					prog.get_normal_index(),
 					position_descr,
-					vbo, offset, nr_vertices, stride);
-				offset += 3 * unsigned(element_size);
+					vbo, offset, nr_vertices, (unsigned)stride);
+				offset += 3 * element_size;
 			}
 			if (color_increment > 0) {
 				static int nr_comps[] = { 4,4,3,4 };
@@ -119,8 +119,8 @@ namespace cgv {
 				aab.set_attribute_array(ctx,
 					prog.get_color_index(),
 					cgv::render::type_descriptor(type_ids[ct], nr_comps[ct], true),
-					vbo, offset, nr_vertices, stride);
-				offset += color_increment * unsigned(element_size);
+					vbo, offset, nr_vertices, (unsigned)stride);
+				offset += color_increment * element_size;
 			}
 		}
 		/// draw triangles of given mesh part or whole mesh in case part_index is not given (=-1)

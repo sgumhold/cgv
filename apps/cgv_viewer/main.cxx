@@ -3,6 +3,7 @@
 #include <cgv/gui/gui_driver.h>
 #include <cgv/gui/base_provider_generator.h>
 #include <cgv/utils/file.h>
+#include <cgv/render/context.h>
 #include <cgv/base/console.h>
 #include <cgv/utils/tokenizer.h>
 #include <cgv/utils/advanced_scan.h>
@@ -20,6 +21,9 @@ void generate_gui(gui_driver_ptr d)
 
 int main(int argc, char** argv)
 {
+	cgv::render::render_config_ptr rcp = cgv::render::get_render_config();
+	if (!rcp->is_property("debug"))
+		std::cout << "no debug property ;(" << std::endl;
 	cgv::base::register_prog_name(argv[0]);
 	connect(on_gui_driver_registration(),generate_gui);
 	disable_registration_event_cleanup();

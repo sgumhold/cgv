@@ -45,7 +45,7 @@ public:
 	    this function. */
 	int add_texture_reference(cgv::render::texture& tex);
 	/// virtual method to query number of textures
-	unsigned get_nr_textures() const { return textures.size(); }
+	size_t get_nr_textures() const { return textures.size(); }
 
 	/// return pointer to ambient texture or 0 if non created
 	texture* get_texture(int texture_index) const;

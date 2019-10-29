@@ -20,7 +20,7 @@ void gl_performance_monitor::draw_computed_bars(cgv::render::context& ctx, cgv::
 		P.push_back(vec2(p));
 	cgv::render::attribute_array_binding::set_global_attribute_array(ctx, prog.get_position_index(), P);
 	cgv::render::attribute_array_binding::set_global_attribute_array(ctx, prog.get_color_index(), colors);
-	glDrawArrays(GL_LINES, 0, positions.size());
+	glDrawArrays(GL_LINES, 0, (GLsizei)positions.size());
 }
 
 void gl_performance_monitor::draw_bars(cgv::render::context& ctx, cgv::render::shader_program& prog)
@@ -136,7 +136,7 @@ void gl_performance_monitor::draw_lines(cgv::render::context& ctx, cgv::render::
 
 	ctx.set_color(plot_color);
 	cgv::render::attribute_array_binding::set_global_attribute_array(ctx, prog.get_position_index(), lines);
-	glDrawArrays(GL_LINES, 0, lines.size());
+	glDrawArrays(GL_LINES, 0, (GLsizei) lines.size());
 }
 
 void gl_performance_monitor::draw(cgv::render::context& ctx)

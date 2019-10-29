@@ -544,7 +544,7 @@ extern CGV_API void process_command_line_args(int argc, char** argv);
 struct config_file_observer
 {
 	/// to be implemented method that adds permanent registration for a list of property assignments
-	virtual void multi_observe(base_ptr bp, const std::string& property_assignments, unsigned off) = 0;
+	virtual void multi_observe(base_ptr bp, const std::string& property_assignments, size_t off) = 0;
 };
 
 //! abstract interface for a config file driver that handles permanent registration and gui config files.

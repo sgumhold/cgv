@@ -230,9 +230,9 @@ public:
 	/// transform with homogeneous transform and w-clip and bounding box outdated (careful: normals are not yet transformed!)
 	void transform(const HMat& hmat);
 	/// add a point and allocate normal and color if necessary, return index of new point
-	Idx add_point(const Pnt& p);
+	size_t add_point(const Pnt& p);
 	/// resize the point cloud
-	void resize(unsigned nr_points);
+	void resize(size_t nr_points);
 	//@}
 
 	/**@name file io*/
@@ -257,11 +257,11 @@ public:
 	/// return the number of points
 	Cnt get_nr_points() const { return (Cnt)P.size(); }
 	/// return the i-th point as const reference
-	const Pnt& pnt(Idx i) const { return P[i]; }
+	const Pnt& pnt(size_t i) const { return P[i]; }
 	/// return the i-th point as reference
-	Pnt& pnt(Idx i) { return P[i]; }
+	Pnt& pnt(size_t i) { return P[i]; }
 	/// return the i_th point, in case components and component transformations are created, transform point with its compontent's transformation before returning it 
-	Pnt transformed_pnt(Idx i) const;
+	Pnt transformed_pnt(size_t i) const;
 
 	/// return whether the point cloud has normals
 	bool has_normals() const;
@@ -270,9 +270,9 @@ public:
 	/// deallocate normals
 	void destruct_normals();
 	/// return i-th normal as const reference
-	const Nml& nml(Idx i) const { return N[i]; }
+	const Nml& nml(size_t i) const { return N[i]; }
 	/// return i-th normal as reference
-	Nml& nml(Idx i) { return N[i]; }
+	Nml& nml(size_t i) { return N[i]; }
 
 	/// return whether the point cloud has colors
 	bool has_colors() const;
@@ -281,9 +281,9 @@ public:
 	/// deallocate colors
 	void destruct_colors();
 	/// return i-th color as const reference
-	const Clr& clr(Idx i) const { return C[i]; }
+	const Clr& clr(size_t i) const { return C[i]; }
 	/// return i-th color as reference
-	Clr& clr(Idx i) { return C[i]; }
+	Clr& clr(size_t i) { return C[i]; }
 
 	/// return whether the point cloud has texture coordinates
 	bool has_texture_coordinates() const;
@@ -292,9 +292,9 @@ public:
 	/// deallocate texture coordinates
 	void destruct_texture_coordinates();
 	/// return i-th texture coordinate as const reference
-	const TexCrd& texcrd(Idx i) const { return T[i]; }
+	const TexCrd& texcrd(size_t i) const { return T[i]; }
 	/// return i-th texture coordinate as reference
-	TexCrd& texcrd(Idx i) { return T[i]; }
+	TexCrd& texcrd(size_t i) { return T[i]; }
 
 	/// return whether the point cloud has pixel coordinates
 	bool has_pixel_coordinates() const;
@@ -303,9 +303,9 @@ public:
 	/// deallocate pixel coordinates
 	void destruct_pixel_coordinates();
 	/// return i-th pixel coordinate as const reference
-	const PixCrd& pixcrd(Idx i) const { return I[i]; }
+	const PixCrd& pixcrd(size_t i) const { return I[i]; }
 	/// return i-th pixel coordinate as reference
-	PixCrd& pixcrd(Idx i) { return I[i]; }
+	PixCrd& pixcrd(size_t i) { return I[i]; }
 
 	/// return number of components
 	size_t get_nr_components() const;
@@ -318,9 +318,9 @@ public:
 	/// deallocate component indices and point ranges
 	void destruct_components();
 	/// return i-th component index as const reference
-	unsigned component_index(Idx i) const { return component_indices[i]; }
+	unsigned component_index(size_t i) const { return component_indices[i]; }
 	/// return i-th component index as reference
-	unsigned& component_index(Idx i) { return component_indices[i]; }
+	unsigned& component_index(size_t i) { return component_indices[i]; }
 	/// return the point range of a component as const reference
 	const component_info& component_point_range(Idx ci) const { return components[ci]; }
 	/// return the point range of a component as reference
@@ -366,11 +366,11 @@ public:
 	/// compute an image with a point index stored per pixel, store indices in the pixel range of the point cloud with a border of the given size
 	void compute_index_image(index_image& img, unsigned border_size = 0, Idx component_index = -1);
 	/// detect outliers based on neighborhood in pixel coordinates
-	void detect_outliers(const index_image& img, std::vector<Idx>& outliers) const;
+	void detect_outliers(const index_image& img, std::vector<size_t>& outliers) const;
 	/// compute the range of direct neighbor distances
 	void compute_image_neighbor_distance_statistic(const index_image& img, cgv::utils::statistics& distance_stats, Idx component_idx = -1);
 	/// collect the indices of the neighbor points of point pi
-	Cnt collect_valid_image_neighbors(Idx pi, const index_image& img, std::vector<Idx>& Ni, Crd distance_threshold = 0.0f) const;
+	Cnt collect_valid_image_neighbors(size_t pi, const index_image& img, std::vector<size_t>& Ni, Crd distance_threshold = 0.0f) const;
 	/// compute the normals with the help of pixel coordinates
 	void estimate_normals(const index_image& img, Crd distance_threshold = 0.0f, Idx component_idx = -1, int* nr_isolated = 0, int* nr_iterations = 0, int* nr_left_over = 0);
 	//}

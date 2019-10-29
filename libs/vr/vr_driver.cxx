@@ -53,7 +53,7 @@ namespace vr {
 	/// register a new driver
 	void register_driver(vr_driver* vrd)
 	{
-		vrd->set_index(ref_drivers().size());
+		vrd->set_index((unsigned)ref_drivers().size());
 		ref_drivers().push_back(vrd);
 	}
 	/// return a vector with all registered vr drivers

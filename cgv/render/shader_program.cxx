@@ -77,6 +77,8 @@ bool shader_program::collect_program(const std::string& file_name, std::vector<s
 	std::string content;
 	if (!cgv::base::read_data_file(fn, content, true))
 		return false;
+	if (!content.empty() && content[0] == '§')
+		content = cgv::utils::decode_base64(content.substr(1));
 	std::vector<line> lines;
 	split_to_lines(content, lines);
 	bool added_file = false;
@@ -241,7 +243,9 @@ bool shader_program::attach_program(const context& ctx, const std::string& file_
 		if (show_error)
 			std::cerr << last_error << std::endl;
 		return false;
-	}	
+	}
+	if (!content.empty() && content[0] == '§')
+		content = cgv::utils::decode_base64(content.substr(1));
 	if (get_shader_config()->show_file_paths)
 		std::cout << "read shader program <" << fn << ">" << std::endl;
 	static std::vector<line> lines;
@@ -363,7 +367,7 @@ bool shader_program::build_program(const context& ctx, const std::string& file_n
 		return false;
 	if (!attach_program(ctx, file_name, show_error))
 		return false;
-	if (!link(ctx, false)) {
+	if (!link(ctx, show_error)) {
 		if (show_error) {
 			std::string fn = shader_code::find_file(file_name);
 			std::vector<line> lines;
