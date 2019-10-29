@@ -130,8 +130,7 @@ func(::extend_project_info_vs; :>project_name = "", :>return = 1)
 		pj::defines[ci]     = commonDefs.configDefs[ci].configDefsAdd.pj::defines[ci];
 	}
 	if(pj::projectType=="tool") {
-		pj::output_post[0]=platform_post;
-		cout(pj::output_post[0]); cout("\n");
+		pj::output_post[0]="";
 	}
 //	if (!pj::referenceDeps) {
 		append_library_dependencies_vs(project_name);
