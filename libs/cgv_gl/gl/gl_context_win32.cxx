@@ -77,22 +77,13 @@ struct win32_gl_context : public gl_context
 	void post_redraw() {}
 	/// the context will be redrawn right now. This method cannot be called inside the following methods of a drawable: init, init_frame, draw, finish_draw
 	void force_redraw() {}
-	bool is_alpha_buffer_attached() const { return true; }
-	void attach_alpha_buffer() {}
-	void detach_alpha_buffer() {}
-	bool is_stencil_buffer_attached() const { return false; }
-	void attach_stencil_buffer() {}
-	void detach_stencil_buffer() {}
-	bool is_quad_buffer_supported() const { return false; }
-	bool is_quad_buffer_attached() const { return false; }
-	void attach_quad_buffer() {}
-	void detach_quad_buffer() {}
-	bool is_accum_buffer_attached() const { return false; }
-	void attach_accum_buffer() {}
-	void detach_accum_buffer() {}
-	bool is_multisample_enabled() const { return false; }
-	void enable_multisample() {}
-	void disable_multisample() {}
+	void attach_depth_buffer(bool) {}
+	void attach_alpha_buffer(bool) {}
+	void attach_stencil_buffer(bool) {}
+	bool is_stereo_buffer_supported() const { return false; }
+	void attach_stereo_buffer(bool) {}
+	void attach_accumulation_buffer(bool) {}
+	void attach_multi_sample_buffer(bool) {}
 
 	/**@name font selection and measure*/
 	//@{

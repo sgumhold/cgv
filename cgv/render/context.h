@@ -419,47 +419,56 @@ class CGV_API shader_program;
 extern CGV_API float black[4], white[4], gray[4], green[4], brown[4], dark_red[4];
 extern CGV_API float cyan[4], yellow[4], red[4], blue[4];
 
-/** configuration object used to define default creation parameters for contexts */
-struct CGV_API context_creation_config : public cgv::base::base
+/** configuration object used to define context parameters that need to be set already at creation time */
+struct CGV_API context_config
 {
 	/**@name context creation parameters*/
 	//@{
-	/// default: false
-	bool stereo_mode;
+	/// default: true
+	bool depth_buffer;
 	/// default: true
 	bool double_buffer;
 	/// default: false
 	bool alpha_buffer;
-	/// default: 0
+	/// default: false
+	bool stereo_buffer;
+	/// default: false
+	bool stencil_buffer;
+	/// default: false
+	bool accumulation_buffer;
+	/// default: false
+	bool multi_sample_buffer;
+	/// default: -1
+	int depth_bits;
+	/// default: -1
 	int  stencil_bits;
+	/// default: -1
+	int  accumulation_bits;
+	/// default: -1
+	int  nr_multi_samples;
+
+	/// default: -1 ... major version of maximum supported OpenGL version
+	int  version_major;
+	/// default: -1 ... minor version of maximum supported OpenGL version
+	int  version_minor;
 	/// default: false
 	bool forward_compatible;
 	/// default: false in release and true in debug version
 	bool debug;
 	/// default: false
 	bool core_profile;
-	/// default: 0
-	int  accumulation_bits;
-	/// default: -1 ... major version of maximum supported OpenGL version
-	int  version_major;
-	/// default: -1 ... minor version of maximum supported OpenGL version
-	int  version_minor;
-	/// default: 0
-	int  nr_multi_samples;
 	//@}
 	/// construct config with default parameters
-	context_creation_config();
-	/// return "context_creation_config"
-	std::string get_type_name() const;
+	context_config();
 	/// reflect the shader_path member
 	bool self_reflect(cgv::reflect::reflection_handler& srh);
 };
 
 /// type of ref counted pointer to context creation configuration
-typedef cgv::data::ref_ptr<context_creation_config> context_creation_config_ptr;
+typedef cgv::data::ref_ptr<context_config> context_config_ptr;
 
-/** configuration object used to define default creation parameters for contexts and to configure error handling */
-struct CGV_API render_config : public context_creation_config
+/** configuration object used to define render view creation parameters including error handling configuration */
+struct CGV_API render_config : public cgv::base::base, public context_config
 {
 	/**@name window creation parameters*/
 	//@{
@@ -505,7 +514,7 @@ struct window_transformation
 };
 
 /** base class for all drawables, which is independent of the used rendering API. */
-class CGV_API context : public render_types
+class CGV_API context : public render_types, public context_config
 {
 public:
 	friend class CGV_API attribute_array_manager;
@@ -527,6 +536,7 @@ public:
 	typedef cgv::math::mat<double> dmat_type;
 protected:
 	friend class shader_program_base;
+
 	/// whether to automatically set viewing matrixes in current shader program, defaults to true 
 	bool auto_set_view_in_current_shader_program;
 	/// whether to automatically set lights in current shader program, defaults to true 
@@ -630,7 +640,7 @@ protected:
 	virtual void draw_text(const std::string& text);
 
 	virtual int query_integer_constant(ContextIntegerConstant cic) const = 0;
-
+	virtual void destruct_render_objects();
 	virtual void put_id(void* handle, void* ptr) const = 0;
 
 	virtual cgv::data::component_format texture_find_best_format(const cgv::data::component_format& cf, render_component& rc, const std::vector<cgv::data::data_view>* palettes = 0) const = 0;
@@ -743,10 +753,26 @@ public:
 	virtual bool is_created() const = 0;
 	/// return whether the context is current
 	virtual bool is_current() const = 0;
+	/// recreate context based on current context config settings
+	virtual bool recreate_context();
 	/// make the current context current if possible
 	virtual bool make_current() const = 0;
 	/// clear the current context, typically used in multi-threaded rendering to allow usage of context in several threads
 	virtual void clear_current() const = 0;
+	/// attach or detach (\c attach=false) an alpha buffer to the current frame buffer if not present
+	virtual void attach_alpha_buffer(bool attach = true) = 0;
+	/// attach or detach (\c attach=false) depth buffer to the current frame buffer if not present
+	virtual void attach_depth_buffer(bool attach = true) = 0;
+	/// attach or detach (\c attach=false) stencil buffer to the current frame buffer if not present
+	virtual void attach_stencil_buffer(bool attach = true) = 0;
+	/// return whether the graphics card supports stereo buffer mode
+	virtual bool is_stereo_buffer_supported() const = 0;
+	/// attach or detach (\c attach=false) stereo buffer to the current frame buffer if not present
+	virtual void attach_stereo_buffer(bool attach = true) = 0;
+	/// attach or detach (\c attach=false) accumulation buffer to the current frame buffer if not present
+	virtual void attach_accumulation_buffer(bool attach = true) = 0;
+	/// attach or detach (\c attach=false) multi sample buffer to the current frame buffer if not present
+	virtual void attach_multi_sample_buffer(bool attach = true) = 0;
 	//@}
 
 	/// return the width of the window
@@ -755,38 +781,7 @@ public:
 	virtual unsigned int get_height() const = 0;
 	/// resize the context to the given dimensions
 	virtual void resize(unsigned int width, unsigned int height) = 0;
-	/// return whether alpha buffer is attached
-	virtual bool is_alpha_buffer_attached() const = 0;
-	/// attach an alpha buffer to the current frame buffer if not present
-	virtual void attach_alpha_buffer() = 0;
-	/// detach the alpha buffer if present
-	virtual void detach_alpha_buffer() = 0;
-	/// return whether stencil buffer is attached
-	virtual bool is_stencil_buffer_attached() const = 0;
-	/// attach a stencil buffer to the current frame buffer if not present
-	virtual void attach_stencil_buffer() = 0;
-	/// detach the stencil buffer if present
-	virtual void detach_stencil_buffer() = 0;
-	/// return whether the graphics card supports quad buffer mode
-	virtual bool is_quad_buffer_supported() const = 0;
-	/// return whether quad buffer is attached
-	virtual bool is_quad_buffer_attached() const = 0;
-	/// attach a quad buffer to the current frame buffer if not present
-	virtual void attach_quad_buffer() = 0;
-	/// detach the quad buffer if present
-	virtual void detach_quad_buffer() = 0;
-	/// return whether accumulation buffer is attached
-	virtual bool is_accum_buffer_attached() const = 0;
-	/// attach a accumulation buffer to the current frame buffer if not present
-	virtual void attach_accum_buffer() = 0;
-	/// detach the accumulation buffer if present
-	virtual void detach_accum_buffer() = 0;
-	/// return whether multisampling is enabled
-	virtual bool is_multisample_enabled() const = 0;
-	/// enable multi sampling
-	virtual void enable_multisample() = 0;
-	/// disable multi sampling
-	virtual void disable_multisample() = 0;
+
 
 	/** read the current frame buffer or a rectangular region of it into the given
 	    data view.

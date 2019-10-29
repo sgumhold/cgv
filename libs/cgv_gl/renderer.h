@@ -11,7 +11,7 @@ namespace cgv { // @<
 	namespace render { // @<
 		
 		/// base class for all render styles
-		struct CGV_API render_style
+		struct CGV_API render_style : public render_types
 		{
 			virtual ~render_style();
 		};

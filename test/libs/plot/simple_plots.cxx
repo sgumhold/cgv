@@ -130,11 +130,11 @@ public:
 		adjust_min = true;
 		incremental_build = true;
 		selected_dataset = -1;
-		file_path = "S:/data/EvaluationData";
+		file_path = "D:/research/papers/GP/work in progress/registration/GraphData";
 		headers.resize(nr_sub_plots);
 		auto_x = auto_y = true;
 		selection_mode = BSM_DIRECTORY;
-		p1.set_extent(vec2(3.0f, 2.0f));
+		p1.set_extent(vecn(3.0f, 2.0f));
 		set_name("plot_explorer");
 	}
 	/// overload and implement this method to handle events
@@ -173,13 +173,19 @@ public:
 	{
 		if (auto_x) {
 			p1.adjust_domain_axis_to_data(0, adjust_min, true);
-			if (!adjust_min)
-				p1.ref_domain().ref_min_pnt()(0) = 0;
+			if (!adjust_min) {
+				box2 D = p1.get_domain();
+				D.ref_min_pnt()(0) = 0;
+				p1.set_domain(D);
+			}
 		}
 		if (auto_y) {
 			p1.adjust_domain_axis_to_data(1, adjust_min, true);
-			if (!adjust_min)
-				p1.ref_domain().ref_min_pnt()(1) = 0;
+			if (!adjust_min) {
+				box2 D = p1.get_domain();
+				D.ref_min_pnt()(1) = 0;
+				p1.set_domain(D);
+			}
 		}
 		p1.adjust_tick_marks_to_domain();
 	}

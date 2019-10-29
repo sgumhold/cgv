@@ -89,7 +89,7 @@ void depth_of_field::stream_stats(std::ostream& os)
 
 bool depth_of_field::init(context& ctx)
 {
-	ctx.attach_accum_buffer();
+	ctx.attach_accumulation_buffer();
 	return true;
 }
 

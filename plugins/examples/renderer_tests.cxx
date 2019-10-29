@@ -176,7 +176,7 @@ public:
 	}
 	void draw_points()
 	{
-		if (sort_points) {
+		if (sort_points && view_ptr) {
 			indices.resize(points.size());
 			for (unsigned i = 0; i < indices.size(); ++i)
 				indices[i] = i;

@@ -2,6 +2,7 @@
 
 #include <stack>
 #include <cgv/render/context.h>
+#include <cgv/render/shader_program.h>
 #include <cgv_gl/gl/gl.h>
 
 #include "lib_begin.h"
@@ -42,8 +43,10 @@ private:
 	void frame_buffer_unbind(frame_buffer_base& fbb) const;
 	*/
 protected:
+	shader_program progs[4];
 	mutable cgv::type::uint64_type max_nr_indices, max_nr_vertices;
 	void ensure_configured() const;
+	void destruct_render_objects();
 	void put_id(void* handle, void* ptr) const;
 	void draw_elements_void(GLenum mode, size_t count, GLenum type, size_t type_size, const void* indices) const;
 	template <typename T>
