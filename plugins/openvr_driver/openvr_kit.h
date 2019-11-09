@@ -8,6 +8,10 @@
 #include "lib_begin.h"
 
 namespace vr {
+	/// helper function to convert 3x4 matrix
+	extern CGV_API void put_pose_matrix(const vr::HmdMatrix34_t& P, float* pose_matrix);
+	/// helper function to convert 3x4 matrix
+	extern CGV_API void put_hmatrix(const vr::HmdMatrix44_t& P, float* hmatrix);
 	/**@name vr device management */
 	//@{
 	/// information provided per vr device
