@@ -1,6 +1,7 @@
 #pragma once
 
 #include "vr_state.h"
+#include "vr_camera.h"
 
 #include <vector>
 
@@ -51,6 +52,8 @@ namespace vr {
 		vr_driver* driver;
 		/// device handle for internal use
 		void* device_handle;
+		/// pointer to camera
+		vr_camera* camera;
 		/// name in case driver provides this information (not reliable)
 		std::string name;
 		/// whether force feedback is supported
@@ -66,6 +69,8 @@ namespace vr {
 		const vr_driver* get_driver() const;
 		/// return device handle
 		void* get_device_handle() const;
+		/// return camera
+		vr_camera* get_camera() const;
 		/// return name of vr_kit
 		const std::string& get_name() const;
 		/// return last error of vr_kit
@@ -74,6 +79,8 @@ namespace vr {
 		bool is_wireless() const;
 		/// return whether controllers support force feedback
 		bool has_force_feedback() const;
+		/// return whether device has camera
+		bool has_camera() const;
 		/// declare virtual destructor
 		virtual ~vr_kit();
 		//! for each controller provide information on throttles and sticks and how they map to state axes

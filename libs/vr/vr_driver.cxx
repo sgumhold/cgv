@@ -37,6 +37,11 @@ namespace vr {
 			kit_map[handle] = kit;
 		}
 	}
+	/// initialize the camera of a vr_kit and return whether this was successful
+	bool vr_driver::initialize_camera(vr_kit* kit) const
+	{
+		return kit->get_camera()->initialize();
+	}
 
 	void vr_driver::set_index(unsigned _idx)
 	{
