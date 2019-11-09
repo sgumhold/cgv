@@ -15,8 +15,6 @@ gl_vr_display::gl_vr_display(unsigned _width, unsigned _height, vr_driver* _driv
 		multi_fbo_id[i] = 0;
 		tex_id[i] = 0;
 		fbo_id[i] = 0;
-		old_read_fbo_id[i] = 0;
-		old_draw_fbo_id[i] = 0;
 	}
 }
 
@@ -72,9 +70,6 @@ void gl_vr_display::destruct_fbos()
 /// initialize render targets and framebuffer objects in current opengl context
 bool gl_vr_display::init_fbos()
 {
-	GLint read_fbo, draw_fbo;
-	glGetIntegerv(GL_DRAW_FRAMEBUFFER_BINDING, &draw_fbo);
-	glGetIntegerv(GL_READ_FRAMEBUFFER_BINDING, &read_fbo);
 	for (unsigned i = 0; i < 2; ++i) {
 		glGenFramebuffers(1, &multi_fbo_id[i]);
 		glBindFramebuffer(GL_FRAMEBUFFER, multi_fbo_id[i]);
@@ -113,8 +108,7 @@ bool gl_vr_display::init_fbos()
 			return false;
 		}
 	}
-	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, draw_fbo);
-	glBindFramebuffer(GL_READ_FRAMEBUFFER, read_fbo);
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	return true;
 }
 
@@ -124,11 +118,7 @@ void gl_vr_display::enable_fbo(int eye)
 	old_msaa = (int)glIsEnabled(GL_MULTISAMPLE);
 	if (old_msaa == GL_FALSE)
 		glEnable(GL_MULTISAMPLE);
-	GLint read_fbo, draw_fbo;
-	glGetIntegerv(GL_DRAW_FRAMEBUFFER_BINDING, &draw_fbo);
-	glGetIntegerv(GL_READ_FRAMEBUFFER_BINDING, &read_fbo);
-	old_draw_fbo_id[eye] = read_fbo;
-	old_read_fbo_id[eye] = draw_fbo;
+	// Left Eye
 	glBindFramebuffer(GL_FRAMEBUFFER, multi_fbo_id[eye]);
 	glGetIntegerv(GL_VIEWPORT, vp);
 	glViewport(0, 0, width, height);
@@ -137,12 +127,10 @@ void gl_vr_display::enable_fbo(int eye)
 /// initialize render targets and framebuffer objects in current opengl context
 bool gl_vr_display::blit_fbo(int eye, int x, int y, int w, int h)
 {
-	GLint read_fbo;
-	glGetIntegerv(GL_READ_FRAMEBUFFER_BINDING, &read_fbo);
 	glBindFramebuffer(GL_READ_FRAMEBUFFER, fbo_id[eye]);
 	glBlitFramebuffer(0, 0, width, height, x, y, x+w, y+h,
 		GL_COLOR_BUFFER_BIT, GL_NEAREST);
-	glBindFramebuffer(GL_READ_FRAMEBUFFER, read_fbo);
+	glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
 	return true;
 }
 
@@ -150,13 +138,17 @@ bool gl_vr_display::blit_fbo(int eye, int x, int y, int w, int h)
 void gl_vr_display::disable_fbo(int eye)
 {
 	glViewport(vp[0], vp[1], vp[2], vp[3]);
+
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	glDisable(GL_MULTISAMPLE);
+
 	glBindFramebuffer(GL_READ_FRAMEBUFFER, multi_fbo_id[eye]);
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fbo_id[eye]);
 	glBlitFramebuffer(0, 0, width, height, 0, 0, width, height,
 		GL_COLOR_BUFFER_BIT, GL_LINEAR);
-	glBindFramebuffer(GL_READ_FRAMEBUFFER, old_read_fbo_id[eye]);
-	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, old_draw_fbo_id[eye]);
+	glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
+	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+
 	if (old_msaa == GL_TRUE)
 		glEnable(GL_MULTISAMPLE);
 }
