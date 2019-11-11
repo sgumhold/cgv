@@ -1,4 +1,5 @@
 #include "openvr_kit.h"
+#include "openvr_camera.h"
 #include <iostream>
 
 namespace vr {
@@ -74,12 +75,16 @@ openvr_kit::openvr_kit(unsigned _width, unsigned _height,
 	const std::string& _name, bool _ffb_support, bool _wireless)
 	: gl_vr_display(_width, _height, _driver, _hmd, _name, _ffb_support, _wireless)
 {
+	camera = new openvr_camera(_hmd);
 }
 
 /// declare virtual destructor
 openvr_kit::~openvr_kit()
 {
-
+	if (has_camera()) {
+		camera->stop();
+		destruct_camera();
+	}
 }
 
 void extract_controller_state(const VRControllerState_t& input, vr_controller_state& output)

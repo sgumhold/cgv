@@ -1,7 +1,12 @@
 #include "vr_kit.h"
 
 namespace vr {
-
+	/// destruct camera
+	void vr_kit::destruct_camera()
+	{
+		delete camera;
+		camera = nullptr;
+	}
 	/// construct
 	vr_kit::vr_kit(vr_driver* _driver, void* _handle, const std::string& _name, bool _ffb_support, bool _wireless) :
 		driver(_driver), device_handle(_handle), name(_name), camera(nullptr), force_feedback_support(_ffb_support), wireless(_wireless) {}

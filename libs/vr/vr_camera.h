@@ -75,9 +75,9 @@ public:
 	/// return number of cameras in the headset (1 for mono and 2 for stereo)
 	uint8_t get_nr_cameras() const;
 	/// query the camera intrinsics 
-	bool query_intrinsics(float focal_lengths[2], float center[2], uint32_t camera_index = 0);
+	bool query_intrinsics(uint32_t camera_index, bool undistorted, float focal_lengths[2], float center[2]);
 	/// query the camera projection matrix for given z_near and z_far values; matrix is encoded in column major order
-	bool query_projection(float z_near, float z_far, float projection_matrix[16], uint32_t camera_index = 0);
+	bool query_projection(uint32_t camera_index, bool undistorted, float z_near, float z_far, float projection_matrix[16]);
 	/// start streaming of frames
 	bool start();
 	/// stop streaming of frames
@@ -113,8 +113,8 @@ private:
   virtual bool stop_impl() = 0;
   virtual bool get_frame_impl(std::vector<uint8_t>& frame_data, uint32_t& width, uint32_t& height, bool undistorted, bool maximum_valid_rectangle) = 0;
   virtual bool get_gl_texture_id_impl(uint32_t& tex_id, uint32_t& width, uint32_t& height, bool undistorted, float max_valid_texcoord_range[4]) = 0;
-  virtual bool query_intrinsics_impl(float focal_lengths[2], float center[2], uint32_t camera_index) = 0;
-  virtual bool query_projection_impl(float z_near, float z_far, float projection_matrix[16], uint32_t camera_index) = 0;
+  virtual bool query_intrinsics_impl(uint32_t camera_index, bool undistorted, float focal_lengths[2], float center[2]) = 0;
+  virtual bool query_projection_impl(uint32_t camera_index, bool undistorted, float z_near, float z_far, float projection_matrix[16]) = 0;
 };
 
 } // namespace vr

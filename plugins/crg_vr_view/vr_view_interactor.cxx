@@ -15,6 +15,8 @@
 vr_view_interactor::vr_view_interactor(const char* name) : stereo_view_interactor(name),
 	fence_color1(0,0,1), fence_color2(1,1,0)
 {
+	blit_aspect_scale = 1;
+	none_separate_view = 3;
 	head_tracker_orientation.identity();
 	head_tracker_position = vec3(0.0f);
 	tracking_origin = vec3(0.0f);
@@ -339,37 +341,44 @@ void vr_view_interactor::after_finish(cgv::render::context& ctx)
 			rendered_kit_ptr->disable_fbo(rendered_eye);
 			ctx.recover_from_external_frame_buffer_change(fbo_handle);
 			ctx.recover_from_external_viewport_change(cgv_viewport);
-			int width = ctx.get_width() / 2;
-			int x0 = 0;
-			int blit_height = width * rendered_kit_ptr->get_height() / rendered_kit_ptr->get_width();
-			for (int eye = 0; eye < 2; ++eye) {
-				rendered_kit_ptr->blit_fbo(eye, x0, 0, width, ctx.get_height());
-				x0 += width;
+			if (!separate_view) {
+
+				int x0 = 0, width = ctx.get_width(), eye = 0, eye_end = 2;
+				switch (none_separate_view) {
+				case 1: eye_end = 1; break;
+				case 2: eye = 1; break;
+				case 3: width /= 2; break;
+				}
+				for (; eye < eye_end; ++eye) {
+					rendered_kit_ptr->blit_fbo(eye, x0, 0, width, ctx.get_height());
+					x0 += width;
+				}
 			}
 			rendered_eye = 0;
 			rendered_kit_ptr = 0;
 			rendered_kit_index = -1;
 		}
-		// blit vr kit views in main framebuffer
-		if (kits.size() > unsigned(separate_view?0:1) && blit_vr_views && !dont_render_kits) {
+		// submit frames to active vr kits and blit vr kit views in main framebuffer if activated
+		if (!dont_render_kits) {
 			int y0 = 0;
 			for (size_t ki = 0; ki < kits.size(); ++ki) {
+				// check if kit is attached and its pointer valid
 				if (kit_states[ki].hmd.status == vr::VRS_DETACHED)
 					continue;
 				void* handle = kits[ki];
-				if (!separate_view && handle == current_vr_handle)
-					continue;
 				vr::vr_kit* kit_ptr = vr::get_vr_kit(handle);
 				if (!kit_ptr)
 					continue;
-				
-				int x0 = 0;
-				int blit_height = blit_width * kit_ptr->get_height() / kit_ptr->get_width();
-				for (int eye = 0; eye < 2; ++eye) {
-					kit_ptr->blit_fbo(eye, x0, y0, blit_width, blit_height);
-					x0 += blit_width+5;
+
+				if (blit_vr_views && (separate_view || handle != current_vr_handle)) {
+					int x0 = 0;
+					int blit_height = (int)(blit_width * kit_ptr->get_height() / (blit_aspect_scale*kit_ptr->get_width()));
+					for (int eye = 0; eye < 2; ++eye) {
+						kit_ptr->blit_fbo(eye, x0, y0, blit_width, blit_height);
+						x0 += blit_width + 5;
+					}
+					y0 += blit_height + 5;
 				}
-				y0 += blit_height + 5;
 				kit_ptr->submit_frame();
 			}
 		}
@@ -744,10 +753,12 @@ void vr_view_interactor::create_gui()
 	if (begin_tree_node("VR rendering", separate_view, false, "level=2")) {
 		align("\a");
 		add_member_control(this, "separate_view", separate_view, "check");
+		add_member_control(this, "none_separate_view", (cgv::type::DummyEnum&)none_separate_view, "dropdown", "enums='left=1,right=2,both=3'");
 		add_member_control(this, "head_tracker", head_tracker, "value_slider", "min=-1;max=3");
 		add_member_control(this, "dont_render_kits", dont_render_kits, "check");
 		add_member_control(this, "blit_vr_views", blit_vr_views, "check");
 		add_member_control(this, "blit_width", blit_width, "value_slider", "min=120;max=640;ticks=true;log=true");
+		add_member_control(this, "blit_aspect_scale", blit_aspect_scale, "value_slider", "min=0.5;max=2;ticks=true;log=true");
 		add_member_control(this, "show_action_zone", show_action_zone, "check");
 		if (begin_tree_node("fence styles", fence_color1, false, "level=3")) {
 			align("\a");
@@ -783,7 +794,19 @@ void vr_view_interactor::create_gui()
 /// you must overload this for gui creation
 bool vr_view_interactor::self_reflect(cgv::reflect::reflection_handler& srh)
 {
-	return stereo_view_interactor::self_reflect(srh);
+	return stereo_view_interactor::self_reflect(srh) &&
+		srh.reflect_member("separate_view", separate_view) &&
+		srh.reflect_member("blit_vr_views", blit_vr_views) &&
+		srh.reflect_member("blit_width", blit_width) &&
+		srh.reflect_member("blit_aspect_scale", blit_aspect_scale) &&
+		srh.reflect_member("none_separate_view", none_separate_view) &&
+		srh.reflect_member("tracking_rotation", tracking_rotation) &&
+		srh.reflect_member("tracking_rotation_origin_x", tracking_rotation_origin[0]) &&
+		srh.reflect_member("tracking_rotation_origin_y", tracking_rotation_origin[1]) &&
+		srh.reflect_member("tracking_rotation_origin_z", tracking_rotation_origin[2]) &&
+		srh.reflect_member("tracking_origin_x", tracking_origin[0])&&
+		srh.reflect_member("tracking_origin_y", tracking_origin[1])&&
+		srh.reflect_member("tracking_origin_z", tracking_origin[2]);
 }
 
 
