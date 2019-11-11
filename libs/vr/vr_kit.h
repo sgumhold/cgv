@@ -62,6 +62,8 @@ namespace vr {
 		bool wireless;
 		/// store last error here
 		std::string last_error;
+		/// destruct camera
+		void destruct_camera();
 		/// construct
 		vr_kit(vr_driver* _driver, void* _handle, const std::string& _name, bool _ffb_support, bool _wireless);
 	public:
