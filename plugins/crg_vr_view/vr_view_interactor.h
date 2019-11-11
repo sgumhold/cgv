@@ -105,7 +105,10 @@ protected:
 	bool blit_vr_views;
 	// extent of blitting
 	int blit_width;
-
+	/// scale of aspect ratio used for blitting
+	float blit_aspect_scale;
+	/// selection of view of current hmd used in case of no separate view (1 ... left, 2 ... right, 3 ... both)
+	int none_separate_view;
 	int head_tracker;
 	int rendered_eye;
 	vr::vr_kit* rendered_kit_ptr;
