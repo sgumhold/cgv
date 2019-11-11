@@ -36,7 +36,7 @@ private:
   bool stop_impl();
   bool get_frame_impl(std::vector<uint8_t>& frame_data, uint32_t& width, uint32_t& height, bool undistorted, bool maximum_valid_rectangle);
   bool get_gl_texture_id_impl(uint32_t& tex_id, uint32_t& width, uint32_t& height, bool undistorted, float max_valid_texcoord_range[4]);
-  bool query_intrinsics_impl(uint32_t camera_index, bool undistorted, float focal_lengths[2], float pixel_center[2]);
+  bool query_intrinsics_impl(uint32_t camera_index, bool undistorted, float focal_lengths[2], float center[2]);
   bool query_projection_impl(uint32_t camera_index, bool undistorted, float z_near, float z_far, float projection_matrix[16]);
 };
 
