@@ -693,7 +693,7 @@ void vr_test::construct_environment(float s, float ew, float ed, float eh, float
 		float x = i * s - 0.5f*ew;
 		for (unsigned j = 0; j < m; ++j) {
 			float z = j * s - 0.5f*ed;
-			if ( (x + s > -0.5f*w && x < 0.5f*w) && (z + s > -0.5f*d && z < 0.5f*d) )
+			if ( (x + 0.5f*s > -0.5f*w && x < 0.5f*w) && (z + 0.5f*s > -0.5f*d && z < 0.5f*d) )
 				continue;
 			float h = 0.2f*(std::max(abs(x)-0.5f*w,0.0f)+std::max(abs(z)-0.5f*d,0.0f))*distribution(generator)+0.1f;
 			boxes.push_back(box3(vec3(x, 0, z), vec3(x+s, h, z+s)));
