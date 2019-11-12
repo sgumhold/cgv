@@ -279,13 +279,13 @@ project_folders=["plugin","application_plugin","test","application","library","s
 // encode in a list that text should be placed after ref
 func(after; :>text="", :>ref = "", :>return="") 
 {
-	return = [text, "AFTER", ref];
+	return = ['"'.text.'"', "AFTER", ref];
 }
 
 // encode in a list that text should be placed before ref
 func(before; :>text="", :>ref = "", :>return="") 
 {
-	return = [text, "BEFORE", ref];
+	return = ['"'.text.'"', "BEFORE", ref];
 }
 
 // check whether an element has an encoded reference and return "" if not or the type of reference "AFTER" or "BEFORE"
