@@ -9,15 +9,17 @@ echo -------------------------------
 call :show_list_expanded PATH
 echo -------------------------------
 echo.
-echo CGV_DIR:      %CGV_DIR%
-echo CGV_BUILD:    %CGV_BUILD%
-echo CGV_INSTALL:  %CGV_INSTALL%
-echo CGV_COMPILER: %CGV_COMPILER%
-echo CGV_PLATFORM: %CGV_PLATFORM%
+echo CGV_DIR:         %CGV_DIR%
+echo CGV_BUILD:       %CGV_BUILD%
+echo CGV_INSTALL:     %CGV_INSTALL%
+echo CGV_COMPILER:    %CGV_COMPILER%
+echo CGV_PLATFORM:    %CGV_PLATFORM%
 echo CGV_WINDOWS_SDK: %CGV_WINDOWS_SDK%
 echo CGV_PROJECT_DIR: %CGV_PROJECT_DIR%
 echo CGV_SUPPORT_DIR: %CGV_SUPPORT_DIR%
-echo CGV_DATA:     %CGV_DATA%
+echo CGV_DATA:        %CGV_DATA%
+echo CGV_CHARSET:     %CGV_CHARSET%
+echo CGV_OPTIONS:     %CGV_OPTIONS%
 pause
 goto:eof
 

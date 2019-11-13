@@ -9,7 +9,7 @@ namespace cgv {
 /// create a new empty face to which new corners are added and return face index
 simple_mesh_base::idx_type simple_mesh_base::start_face()
 {
-	faces.push_back(position_indices.size());
+	faces.push_back((cgv::type::uint32_type)position_indices.size());
 	return idx_type(faces.size() - 1);
 }
 /// create a new corner from position, optional normal and optional tex coordinate indices and return corner index

@@ -46,6 +46,7 @@ mat3 get_inverse_normal_matrix();
 
 void main()
 {
+	color_gs = group_color(color, group_index);
 	// compute normal transformation matrix
 	NM = get_normal_matrix();
 	if (has_rotations) {
@@ -65,8 +66,8 @@ void main()
 		BM[3] = position;
 	}
 	else {
+		vec3 C = 0.5*(extent + position.xyz);
 		vec3 E = extent - position.xyz;
-		vec3 C = 0.5*(position.xyz + extent);
 		BM[0][0] = E[0];
 		BM[1][1] = E[1];
 		BM[2][2] = E[2];
@@ -90,6 +91,5 @@ void main()
 	
 	PM = PM * BM;
 
-	color_gs = group_color(color, group_index);
 	gl_Position = position;
 }

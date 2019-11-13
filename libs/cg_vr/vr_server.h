@@ -25,7 +25,7 @@ namespace cgv {
 		protected:
 			/// store device handle
 			void* device_handle;
-			/// store controller index (0 .. left, 1.. right) of vr kit
+			/// store controller index (0 .. left, 1.. right, 2 .. fst generic, 3 .. snd generic) of vr kit
 			unsigned short controller_index;
 			/// store player index
 			unsigned short player_index;

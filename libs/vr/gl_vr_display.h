@@ -36,7 +36,7 @@ namespace vr {
 		gl_vr_display(unsigned _width, unsigned _height, vr_driver* _driver, void* _handle, const std::string& _name, bool _ffb_support, bool _wireless);
 	public:
 		/// declare virtual destructor
-		~gl_vr_display();
+		virtual ~gl_vr_display();
 		/// return width in pixel of view
 		int get_width() const;
 		/// return height in pixel of view

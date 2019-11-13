@@ -1,5 +1,9 @@
 #pragma once
 
+/** \file cgv/utils/scan_enum.h
+ * Helper functions to process enum declarations from strings.
+ */
+
 #include <vector>
 #include "token.h"
 

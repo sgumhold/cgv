@@ -46,6 +46,8 @@ namespace vr {
 		unsigned driver_index;
 		/// call this method during scanning of vr kits. In case vr kit handle had been registered before, previous copy is deleted and a warning is issued
 		void register_vr_kit(void* handle, vr_kit* kit);
+		/// initialize the camera of a vr_kit and return whether this was successful
+		bool initialize_camera(vr_kit* kit) const;
 	public:
 		void set_index(unsigned _idx);
 		/// declare destructor virtual to ensure it being called also for derived classes

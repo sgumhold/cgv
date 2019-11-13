@@ -170,7 +170,7 @@ public:
 			ctx.set_color(rgb(0.4f, 0.1f, 0));
 			glPointSize(2);
 			glEnable(GL_POINT_SMOOTH);
-			glDrawArrays(GL_POINTS, 0, samples.size());
+			glDrawArrays(GL_POINTS, 0, (GLsizei)samples.size());
 
 			if (sampling_type == ST_N_ROOK) {
 				float inv_n = 1.0f/n;
@@ -187,7 +187,7 @@ public:
 				}
 				attribute_array_binding::set_global_attribute_array(ctx, pos_idx, P);
 				ctx.set_color(rgb(0.3f, 0.7f, 1));
-				glDrawArrays(GL_TRIANGLES, 0, P.size());
+				glDrawArrays(GL_TRIANGLES, 0, (GLsizei)P.size());
 			}
 			prog.disable(ctx);
 			attribute_array_binding::disable_global_array(ctx, pos_idx);

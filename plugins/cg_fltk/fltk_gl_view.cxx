@@ -1,5 +1,6 @@
 #include "fltk_gl_view.h"
 #include "fltk_event.h"
+#include "fltk_driver.h"
 #include "fltk_font_server.h"
 #include <cgv/render/drawable.h>
 #include <cgv/base/register.h>
@@ -56,11 +57,13 @@ fltk::GLContext get_context(const fltk::GlWindow* glw)
 fltk_gl_view::fltk_gl_view(int x, int y, int w, int h, const std::string& name) 
 	: fltk::GlWindow(x,y,w,h), group(name), dnd_release_event(0,0,MA_ENTER)
 {
+	version = -1;
+
 	last_context = (void*)-1;
 	last_width = -1;
 	last_height = -1;
 
-	recreate_context = false;
+	in_recreate_context = false;
 	no_more_context = false;
 	instant_redraw = false;
 	in_draw_method = false;
@@ -72,9 +75,7 @@ fltk_gl_view::fltk_gl_view(int x, int y, int w, int h, const std::string& name)
 	dnd_release_event_queued = false;
 
 	connect(out_stream.write, this, &fltk_gl_view::process_text_1);
-
-	if ( (mode() & fltk::ALPHA_BUFFER) == 0 || (mode() & fltk::NO_AUTO_SWAP) == 0 )
-		mode(mode()|fltk::ALPHA_BUFFER|fltk::NO_AUTO_SWAP);
+	mode(determine_mode());
 }
 
 ///
@@ -87,23 +88,46 @@ cgv::base::group* fltk_gl_view::get_group_interface()
 bool fltk_gl_view::self_reflect(cgv::reflect::reflection_handler& srh)
 {
 	return
-	srh.reflect_member("show_help", show_help) &&
-	srh.reflect_member("show_stats", show_stats) &&
-	srh.reflect_member("font_size", info_font_size) &&
-	srh.reflect_member("tab_size", tab_size) &&
-	srh.reflect_member("performance_monitoring", enabled) &&
-	srh.reflect_member("bg_r", bg_r) &&
-	srh.reflect_member("bg_g", bg_g) &&
-	srh.reflect_member("bg_b", bg_b) &&
-	srh.reflect_member("bg_a", bg_a) &&
-	srh.reflect_member("bg_index", current_background) &&
-	srh.reflect_member("nr_display_cycles", nr_display_cycles) &&
-	srh.reflect_member("bar_line_width", bar_line_width) &&
-	srh.reflect_member("file_name", file_name);
+		context_config::self_reflect(srh) &&
+		srh.reflect_member("version", version) &&
+		srh.reflect_member("enable_vsynch", enable_vsynch) &&
+		srh.reflect_member("sRGB_framebuffer", sRGB_framebuffer) &&
+		srh.reflect_member("show_help", show_help) &&
+		srh.reflect_member("show_stats", show_stats) &&
+		srh.reflect_member("font_size", info_font_size) &&
+		srh.reflect_member("tab_size", tab_size) &&
+		srh.reflect_member("performance_monitoring", enabled) &&
+		srh.reflect_member("bg_r", bg_r) &&
+		srh.reflect_member("bg_g", bg_g) &&
+		srh.reflect_member("bg_b", bg_b) &&
+		srh.reflect_member("bg_a", bg_a) &&
+		srh.reflect_member("bg_index", current_background) &&
+		srh.reflect_member("gamma", gamma) &&
+		srh.reflect_member("nr_display_cycles", nr_display_cycles) &&
+		srh.reflect_member("bar_line_width", bar_line_width) &&
+		srh.reflect_member("file_name", file_name);
 }
 
 void fltk_gl_view::on_set(void* member_ptr)
 {
+	if (member_ptr == &version) {
+		if (version == -1)
+			version_major = version_minor = -1;
+		else {
+			version_major = version / 10;
+			version_minor = version % 10;
+		}
+		member_ptr = &version_major;
+	}
+	if (member_ptr >= static_cast<context_config*>(this) && member_ptr < static_cast<context_config*>(this) + 1) {
+		int new_mode = determine_mode();
+		if (is_created() && !in_recreate_context) { // && new_mode != mode()) {
+			if (can_do(new_mode))
+				change_mode(new_mode);
+			else
+				synch_with_mode();
+		}
+	}
 	if (member_ptr == &current_background) {
 		set_bg_clr_idx(current_background);
 		update_member(&bg_r);
@@ -124,218 +148,204 @@ std::string fltk_gl_view::get_property_declarations()
 
 void fltk_gl_view::change_mode(int m)
 {
-	recreate_context = true;
+	in_recreate_context = true;
+	if (mode() == m)
+		mode_ = -1;
+	fltk_driver::set_context_creation_attrib_list(*this);
 	if (!mode(m))
 		std::cerr << "could not change mode to " << m << std::endl;
 	current_font_face.clear();
 	current_font_size = 0;
-	recreate_context = false;
-//	std::cout << "new mode: " << (mode()&255) << std::endl;
+	synch_with_mode();
+	in_recreate_context = false;
 	update_member(this);
 }
 
-/// return whether alpha buffer is attached
-bool fltk_gl_view::is_alpha_buffer_attached() const
+int fltk_gl_view::determine_mode()
 {
-	return (mode() & fltk::ALPHA_BUFFER) != 0;
+	int m = fltk::NO_AUTO_SWAP;
+	if (depth_buffer)
+		m = m | fltk::DEPTH_BUFFER;
+	if (stereo_buffer)
+		m = m | fltk::STEREO;
+	if (stencil_buffer)
+		m = m | fltk::STENCIL_BUFFER;
+	if (alpha_buffer)
+		m = m | fltk::ALPHA_BUFFER;
+	if (accumulation_buffer)
+		m = m | fltk::ACCUM_BUFFER;
+	if (context_config::double_buffer)
+		m = m | fltk::DOUBLE_BUFFER;
+	if (multi_sample_buffer)
+		m = m | fltk::MULTISAMPLE;
+	return m;
 }
 
-/// attach a alpha buffer to the current frame buffer if not present
-void fltk_gl_view::attach_alpha_buffer()
+/// set the context_config members from the current fltk mode
+void fltk_gl_view::synch_with_mode()
 {
-	if (is_alpha_buffer_attached())
-		return;
-	change_mode(mode()|fltk::ALPHA_BUFFER);
+	version = 10 * version_major + version_minor;
+
+	update_member(&version);
+	update_member(&version_major);
+	update_member(&version_minor);
+	update_member(&debug);
+	update_member(&core_profile);
+	update_member(&forward_compatible);
+	configure_opengl_controls();
+
+	int m = mode();
+	make_current();
+	bool new_stereo_buffer = (m & fltk::STEREO) != 0;
+	if (new_stereo_buffer != stereo_buffer) {
+		stereo_buffer = new_stereo_buffer;
+		update_member(&stereo_buffer);
+	}
+	bool new_depth_buffer = (m & fltk::DEPTH_BUFFER) != 0;
+	if (new_depth_buffer != depth_buffer) {
+		depth_buffer = new_depth_buffer;
+		update_member(&depth_buffer);
+	}
+	if (depth_buffer) {
+		GLint depthSize = 24;
+		if (version >= 30) {
+			glGetFramebufferAttachmentParameteriv(GL_DRAW_FRAMEBUFFER,
+				GL_DEPTH, GL_FRAMEBUFFER_ATTACHMENT_DEPTH_SIZE, &depthSize);
+		}
+		depth_bits = depthSize;
+	}
+	else
+		depth_bits = -1;
+	update_member(&depth_bits);
+	
+	bool new_stencil_buffer = (m & fltk::STENCIL_BUFFER) != 0;
+	if (new_stencil_buffer != stencil_buffer) {
+		stencil_buffer = new_stencil_buffer;
+		update_member(&stencil_buffer);
+	}
+	if (stencil_buffer) {
+		GLint stencilSize = 8;
+		if (version >= 30) {
+			glGetFramebufferAttachmentParameteriv(GL_DRAW_FRAMEBUFFER,
+				GL_STENCIL, GL_FRAMEBUFFER_ATTACHMENT_STENCIL_SIZE, &stencilSize);
+		}
+		stencil_bits = stencilSize;
+	}
+	else
+		stencil_bits = -1;
+	update_member(&stencil_bits);
+	
+	bool new_alpha_buffer = (m & fltk::ALPHA_BUFFER) != 0;
+	if (new_alpha_buffer != alpha_buffer) {
+		alpha_buffer = new_alpha_buffer;
+		update_member(&alpha_buffer);
+	}
+	bool new_multi_sample_buffer = (m & fltk::MULTISAMPLE) != 0;
+	if (new_multi_sample_buffer != multi_sample_buffer) {
+		multi_sample_buffer = new_multi_sample_buffer;
+		update_member(&multi_sample_buffer);
+	}
+	if (multi_sample_buffer) {
+		GLint nrSamples = 0;
+		if (version >= 13)
+			glGetIntegerv(GL_SAMPLES, &nrSamples);
+		nr_multi_samples = nrSamples;
+	}
+	else
+		nr_multi_samples = -1;
+	update_member(&nr_multi_samples);
+	
+	bool new_double_buffer = (m & fltk::DOUBLE_BUFFER) != 0;
+	if (new_double_buffer != context_config::double_buffer) {
+		context_config::double_buffer = new_double_buffer;
+		update_member(&(context_config::double_buffer));
+	}
+	bool new_accumulation_buffer = (m & fltk::ACCUM_BUFFER) != 0;
+	if (new_accumulation_buffer != accumulation_buffer) {
+		accumulation_buffer = new_accumulation_buffer;
+		update_member(&accumulation_buffer);
+	}
 }
 
-/// attach a alpha buffer to the current frame buffer if not present
-void fltk_gl_view::detach_alpha_buffer()
+/// attach or detach (\c attach=false) an alpha buffer to the current frame buffer if not present
+void fltk_gl_view::attach_alpha_buffer(bool attach)
 {
-	if (!is_alpha_buffer_attached())
-		return;
-	change_mode(mode()&~fltk::ALPHA_BUFFER);
+	if (alpha_buffer != attach) {
+		alpha_buffer = attach;
+		on_set(&alpha_buffer);
+	}
+}
+/// attach or detach (\c attach=false) depth buffer to the current frame buffer if not present
+void fltk_gl_view::attach_depth_buffer(bool attach)
+{
+	if (depth_buffer != attach) {
+		depth_buffer = attach;
+		on_set(&depth_buffer);
+	}
+}
+/// attach or detach (\c attach=false) stencil buffer to the current frame buffer if not present
+void fltk_gl_view::attach_stencil_buffer(bool attach)
+{
+	if (stencil_buffer != attach) {
+		stencil_buffer = attach;
+		on_set(&stencil_buffer);
+	}
 }
 
-
-/// return whether stencil buffer is attached
-bool fltk_gl_view::is_stencil_buffer_attached() const
+/// return whether the graphics card supports stereo buffer mode
+bool fltk_gl_view::is_stereo_buffer_supported() const
 {
-	return (mode() & fltk::STENCIL_BUFFER) != 0;
+	return can_do(mode() | fltk::STEREO);
+}
+/// attach or detach (\c attach=false) stereo buffer to the current frame buffer if not present
+void fltk_gl_view::attach_stereo_buffer(bool attach)
+{
+	if (stereo_buffer != attach) {
+		stereo_buffer = attach;
+		on_set(&stereo_buffer);
+	}
+}
+/// attach or detach (\c attach=false) accumulation buffer to the current frame buffer if not present
+void fltk_gl_view::attach_accumulation_buffer(bool attach)
+{
+	if (accumulation_buffer != attach) {
+		accumulation_buffer = attach;
+		on_set(&accumulation_buffer);
+	}
+}
+/// attach or detach (\c attach=false) multi sample buffer to the current frame buffer if not present
+void fltk_gl_view::attach_multi_sample_buffer(bool attach)
+{
+	if (multi_sample_buffer != attach) {
+		multi_sample_buffer = attach;
+		on_set(&multi_sample_buffer);
+	}
 }
 
 /// attach a stencil buffer to the current frame buffer if not present
-void fltk_gl_view::attach_stencil_buffer()
+bool fltk_gl_view::recreate_context()
 {
-	if (is_stencil_buffer_attached())
-		return;
-	change_mode(mode()|fltk::STENCIL_BUFFER);
-}
+	int m = determine_mode();
+	if (!can_do(m))
+		return false;
 
-/// attach a stencil buffer to the current frame buffer if not present
-void fltk_gl_view::detach_stencil_buffer()
-{
-	if (!is_stencil_buffer_attached())
-		return;
-	change_mode(mode()&~fltk::STENCIL_BUFFER);
-}
-
-/// return whether the graphics card supports quad buffer mode
-bool fltk_gl_view::is_quad_buffer_supported() const
-{
-	return can_do(mode()|fltk::STEREO);
-}
-
-/// return whether quad buffer is attached
-bool fltk_gl_view::is_quad_buffer_attached() const
-{
-	return (mode() & fltk::STEREO) != 0;
+	change_mode(m);
+	return true;
 }
 
 #include <cgv/gui/dialog.h>
 
-/// attach a quad buffer to the current frame buffer if not present
-void fltk_gl_view::attach_quad_buffer()
-{
-	if (is_quad_buffer_attached())
-		return;
-	if (can_do(mode() | fltk::STEREO))
-		change_mode(mode() | fltk::STEREO);
-	else
-		cgv::gui::message("insufficient OpenGL support");
-}
-
-/// attach a quad buffer to the current frame buffer if not present
-void fltk_gl_view::detach_quad_buffer()
-{
-	if (!is_quad_buffer_attached())
-		return;
-	change_mode(mode()&~fltk::STEREO);
-}
-
-/// return whether accumulation buffer is attached
-bool fltk_gl_view::is_accum_buffer_attached() const
-{
-	return (mode() & fltk::ACCUM_BUFFER) != 0;
-}
-
-/// attach a accumulation buffer to the current frame buffer if not present
-void fltk_gl_view::attach_accum_buffer()
-{
-	if (is_accum_buffer_attached())
-		return;
-	change_mode(mode()|fltk::ACCUM_BUFFER);
-}
-/// detach the accumulation buffer if present
-void fltk_gl_view::detach_accum_buffer()
-{
-	if (!is_accum_buffer_attached())
-		return;
-	change_mode(mode()&~fltk::ACCUM_BUFFER);
-}
-/// return whether multisampling is enabled
-bool fltk_gl_view::is_multisample_enabled() const
-{
-	return (mode() & fltk::MULTISAMPLE) != 0;
-}
-/// enable multi sampling
-void fltk_gl_view::enable_multisample()
-{
-	if (is_multisample_enabled())
-		return;
-	change_mode(mode()|fltk::MULTISAMPLE);
-}
-/// disable multi sampling
-void fltk_gl_view::disable_multisample()
-{
-	if (!is_multisample_enabled())
-		return;
-	change_mode(mode()&~fltk::MULTISAMPLE);
-}
-
 /// abstract interface for the setter 
 bool fltk_gl_view::set_void(const std::string& property, const std::string& value_type, const void* value_ptr)
 {
-	if (property == "quad_buffer") {
-		bool enable;
-		cgv::type::get_variant(enable, value_type, value_ptr);
-		if (enable)
-			attach_quad_buffer();
-		else
-			detach_quad_buffer();
-		redraw();
-		return true;
-	}
-	if (property == "stencil_buffer") {
-		bool enable;
-		cgv::type::get_variant(enable, value_type, value_ptr);
-		if (enable)
-			attach_stencil_buffer();
-		else
-			detach_stencil_buffer();
-		redraw();
-		return true;
-	}
-	if (property == "accum_buffer") {
-		bool enable;
-		cgv::type::get_variant(enable, value_type, value_ptr);
-		if (enable)
-			attach_accum_buffer();
-		else
-			detach_accum_buffer();
-		redraw();
-		return true;
-	}
-	if (property == "multisample") {
-		bool enable;
-		cgv::type::get_variant(enable, value_type, value_ptr);
-		if (enable)
-			enable_multisample();
-		else
-			disable_multisample();
-		redraw();
-		return true;
-	}
-	if (property == "show_stats") {
-		cgv::type::get_variant(show_stats, value_type, value_ptr);
-		redraw();
-		return true;
-	}
-	if (property == "show_help") {
-		cgv::type::get_variant(show_help, value_type, value_ptr);
-		redraw();
-		return true;
-	}
-	if (property == "bg_clr_idx") {
-		cgv::type::uint32_type idx = cgv::type::variant<cgv::type::uint32_type>::get(value_type, value_ptr);
-		set_bg_clr_idx(idx);
-		update_member(&bg_r);
-		return true;
-	}
 	if (fltk_base::set_void(this,this,property, value_type, value_ptr))
 		return true;
-//	if (property == "
 	return base::set_void(property, value_type, value_ptr);
 }
 
 /// abstract interface for the getter 
 bool fltk_gl_view::get_void(const std::string& property, const std::string& value_type, void* value_ptr)
 {
-	if (property == "quad_buffer") {
-		cgv::type::set_variant(is_quad_buffer_attached(), value_type, value_ptr);
-		return true;
-	}
-	if (property == "stencil_buffer") {
-		cgv::type::set_variant(is_stencil_buffer_attached(), value_type, value_ptr);
-		return true;
-	}
-	if (property == "accum_buffer") {
-		cgv::type::set_variant(is_accum_buffer_attached(), value_type, value_ptr);
-		return true;
-	}
-	if (property == "multisample") {
-		cgv::type::set_variant(is_multisample_enabled(), value_type, value_ptr);
-		return true;
-	}
 	if (fltk_base::get_void(this,this,property, value_type, value_ptr))
 		return true;
 	return base::get_void(property, value_type, value_ptr);
@@ -373,18 +383,20 @@ public:
 
 void fltk_gl_view::create()
 {
+	fltk_driver::set_context_creation_attrib_list(*this);
 	fltk::GlWindow::create();
 	make_current();
 	last_context = get_context(this);
 	if (!configure_gl()) {
 		abort();
 	}
+	synch_with_mode();
 }
 
 void fltk_gl_view::destroy()
 {
 	make_current();
-	if (!recreate_context) {
+	if (!in_recreate_context) {
 		remove_all_children();
 		no_more_context = true;
 	}
@@ -393,6 +405,7 @@ void fltk_gl_view::destroy()
 		for (unsigned i=0; i<get_nr_children(); ++i)
 			traverser(sma, "nc").traverse(get_child(i));
 	}
+	destruct_render_objects();
 	fltk::GlWindow::destroy();
 }
 
@@ -480,6 +493,7 @@ void fltk_gl_view::draw()
 			last_width = get_width();
 			last_height = get_height();
 			configure_gl();
+			synch_with_mode();
 		}
 		else if ((int)last_width != get_width() || (int)last_height != get_height()) {
 			last_width = get_width();
@@ -566,15 +580,13 @@ bool fltk_gl_view::handle(event& e)
 				}
 				break;
 			case KEY_Delete :
-				if (ke.get_modifiers() == 0) {
-					if (get_focused_child() != -1) {
-						cgv::base::unregister_object(get_child(get_focused_child()), "");
+				if (ke.get_modifiers() == 0 && get_nr_children() > 1 && get_focused_child() != -1) {
+					cgv::base::unregister_object(get_child(get_focused_child()), "");
 //						remove_child(get_child(get_focused_child()));
-						if (get_focused_child() >= (int)get_nr_children())
-							traverse_policy::set_focused_child(get_focused_child()-1);
-						redraw();
-						return true;
-					}
+					if (get_focused_child() >= (int)get_nr_children())
+						traverse_policy::set_focused_child(get_focused_child()-1);
+					redraw();
+					return true;
 				}
 				break;
 			case KEY_Tab :
@@ -751,43 +763,11 @@ void fltk_gl_view::enable_font_face(font_face_ptr font_face, float font_size)
 			std::cerr << "could not use font face together with fltk" << std::endl;
 			return;
 		}
-		fltk::glsetfont(fff->get_fltk_font(),font_size);
+		if (!core_profile)
+			fltk::glsetfont(fff->get_fltk_font(),font_size);
 		current_font_face = font_face;
 		current_font_size = font_size;
 	//}
-}
-
-/// overload to set the value
-void fltk_gl_view::set_value(const bool& value, void* user_data)
-{
-	int flag = (int&) user_data;
-	switch (flag) {
-	case 1 : if (value) attach_alpha_buffer(); else detach_alpha_buffer(); break;
-	case 2 : if (value) attach_stencil_buffer(); else detach_stencil_buffer(); break;
-	case 3 : if (value) attach_accum_buffer(); else detach_accum_buffer(); break;
-	case 4 : if (value) attach_quad_buffer(); else detach_quad_buffer(); break;
-	case 5 : if (value) enable_multisample(); else disable_multisample(); break;
-	}
-}
-
-/// overload to get the value
-const bool fltk_gl_view::get_value(void* user_data) const
-{
-	int flag = (int&) user_data;
-	switch (flag) {
-	case 1 : return is_alpha_buffer_attached();
-	case 2 : return is_stencil_buffer_attached();
-	case 3 : return is_accum_buffer_attached();
-	case 4 : return is_quad_buffer_attached();
-	case 5 : return is_multisample_enabled();
-	}
-	return false;
-}
-
-/// the default implementation compares ptr to &get_value().
-bool fltk_gl_view::controls(const void* ptr, void* user_data) const
-{
-	return ptr == this;
 }
 
 void fltk_gl_view::draw_text(const std::string& text)
@@ -918,6 +898,15 @@ void fltk_gl_view::disable_phong_shading()
 	gl_context::disable_phong_shading();
 	update_member(&phong_shading);
 }
+void fltk_gl_view::configure_opengl_controls()
+{
+	if (find_control(debug))
+		find_control(debug)->set("active", version >= 30);
+	if (find_control(forward_compatible))
+		find_control(forward_compatible)->set("active", version >= 30);
+	if (find_control(core_profile))
+		find_control(core_profile)->set("active", version >= 32);
+}
 
 ///  
 void fltk_gl_view::create_gui()
@@ -946,7 +935,41 @@ void fltk_gl_view::create_gui()
 		end_tree_node(enabled);
 	}
 
-	if (begin_tree_node("background", bg_r, false, "level=3")) {
+	if (begin_tree_node("buffers", stereo_buffer, false, "level=3")) {
+		provider::align("\a");
+		add_member_control(this, "alpha buffer", alpha_buffer, "toggle");
+		add_member_control(this, "double buffer", context_config::double_buffer, "toggle");
+
+		add_view("depth bits", depth_bits, "", "w=32", " ");
+		add_member_control(this, "depth buffer", depth_buffer, "toggle", "w=160");
+		
+		add_view("stencil bits", stencil_bits, "", "w=32", " ");
+		add_member_control(this, "stencil buffer", stencil_buffer, "toggle", "w=160");
+
+		add_view("accumulation bits", accumulation_bits, "", "w=32", " ");
+		add_member_control(this, "accumulation buffer", accumulation_buffer, "toggle", "w=160");
+
+		add_view("nr multi samples", nr_multi_samples, "", "w=32", " ");
+		add_member_control(this, "multi sample buffer", multi_sample_buffer, "toggle", "w=160");
+
+		add_member_control(this, "stereo buffer", stereo_buffer, "toggle");
+		provider::align("\b");
+		end_tree_node(stereo_buffer);
+	}
+	if (begin_tree_node("opengl", version, false, "level=3")) {
+		provider::align("\a");
+		add_member_control(this, "version", reinterpret_cast<cgv::type::DummyEnum&>(version), "dropdown", 
+			"w=120;enums='detect=-1,1.0=10,1.1=11,1.2=12,1.3=13,1.4=14,1.5=15,2.0=20,2.1=21,3.0=30,3.1=31,3.2=32,3.3=33,4.0=40,4.1=41,4.2=42,4.3=43,4.4=44,4.5=45,4.6=46'", " ");
+		add_view("", version_major, "", "w=32", " ");
+		add_view(".", version_minor, "", "w=32");
+		add_member_control(this, "core", core_profile, "toggle", "w=60", " ");
+		add_member_control(this, "fwd_comp", forward_compatible, "toggle", "w=60", " ");
+		add_member_control(this, "debug", debug, "toggle", "w=60");
+		configure_opengl_controls();
+		provider::align("\b");
+		end_tree_node(version);
+	}
+	if (begin_tree_node("clear", bg_r, false, "level=3")) {
 		provider::align("\a");
 		add_member_control(this, "color", (cgv::media::color<float>&) bg_r);
 		add_member_control(this, "alpha", bg_a, "value_slider", "min=0;max=1;ticks=true;step=0.001");
@@ -956,16 +979,6 @@ void fltk_gl_view::create_gui()
 		add_member_control(this, "depth", bg_d, "value_slider", "min=0;max=1;ticks=true;step=0.001");
 		provider::align("\b");
 		end_tree_node(bg_r);
-	}
-	if (begin_tree_node("buffers", bg_g, false, "level=3")) {
-		provider::align("\a");
-		add_control("alpha buffer", this, "check", "", "\n", to_void_ptr(1));
-		add_control("stencil buffer", this, "check", "", "\n", to_void_ptr(2));
-		add_control("accum buffer", this, "check", "", "\n", to_void_ptr(3));
-		add_control("quad buffer", this, "check", "", "\n", to_void_ptr(4));
-		add_control("multisample", this, "check", "", "\n", to_void_ptr(5));
-		provider::align("\b");
-		end_tree_node(bg_g);
 	}
 	if (begin_tree_node("compatibility", support_compatibility_mode, false, "level=3")) {
 		provider::align("\a");

@@ -129,7 +129,6 @@ unsigned int replace(std::string& _s, const std::string& s1, const std::string& 
 	return (unsigned)n;
 }
 
-/// escapes the C++ special characters \a, \b, \f, \n, \r, \t, \v, \', \", \\, \?
 std::string escape_special(const std::string& s)
 {
 	std::string r;
@@ -152,7 +151,6 @@ std::string escape_special(const std::string& s)
 	return r;
 }
 
-/// interprets the C++ special characters \a, \b, \f, \n, \r, \t, \v, \', \", \\, \?, \ooo, \xhh, xhhhh
 std::string interpret_special(const std::string& s)
 {
 	std::string r;
@@ -222,13 +220,11 @@ bool is_element(char c, const std::string& s)
 	return s.find_first_of(c) != std::string::npos;
 }
 
-/// check if the string e is contained as element in the string s, which is a list separated by sep
 bool is_element(const std::string& e, const std::string& s, char sep)
 {
 	return get_element_index(e,s,sep) != -1;
 }
 
-/** interpret s as a list separated by sep and return the element with the given element index. If index is out of range, return empty string. */
 std::string get_element(const std::string& s, int element_index, char sep)
 {
 	size_t end_pos, start_pos = 0;
@@ -251,8 +247,6 @@ std::string get_element(const std::string& s, int element_index, char sep)
 	return s.substr(start_pos, end_pos - start_pos);
 }
 
-
-/// check if the string e is contained as element in the string s, which is a list separated by sep
 int get_element_index(const std::string& e, const std::string& s, char sep)
 {
 	if (e.empty() && s.empty())

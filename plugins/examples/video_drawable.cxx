@@ -61,6 +61,7 @@ public:
 	}
 	void create_gui()
 	{
+		add_view("frame", frame_index);
 		connect_copy(add_control("animate", running, "check")->value_change, rebind(static_cast<drawable*>(this), &drawable::post_redraw));
 		connect_copy(add_control("use_blending", use_blending, "check")->value_change, rebind(static_cast<drawable*>(this), &drawable::post_redraw));
 		connect_copy(add_control("dublicate", dublicate, "check")->value_change, rebind(static_cast<drawable*>(this), &drawable::post_redraw));
@@ -103,6 +104,7 @@ public:
 		}
 		fps = reader.get_fps();
 		frame_index = 0;
+		update_member(&frame_index);
 		if (running)
 			time = get_animation_trigger().get_current_time();
 		else 
@@ -122,10 +124,12 @@ public:
 		if (!reader.read_frame(dv)) {
 			reader.set("frame", 0);
 			frame_index = 0;
+			reader.read_frame(dv);
 		}
 		glBindTexture(GL_TEXTURE_2D, tex_id);
 		cgv::render::gl::replace_texture(dv);
 		++frame_index;
+		update_member(&frame_index);
 	}
 
 	void write_frame()
@@ -210,6 +214,7 @@ public:
 				frame_index -= 2;
 				reader.set("frame", frame_index);
 				read_frame();
+				update_member(&frame_index);
 			}
 			post_redraw();
 			return true;
@@ -223,6 +228,7 @@ public:
 			else
 				time = time-get_animation_trigger().get_current_time();
 			running = !running;
+			update_member(&running);
 			return true;
 		}
 		return false;
@@ -231,5 +237,6 @@ public:
 
 #include <cgv/base/register.h>
 
-factory_registration<video_drawable> video_drawable_fac("new/media/video drawable", 'V', true);
+factory_registration<video_drawable> video_drawable_fac//("new/media/video drawable", 'V', true);
+("video creator", "shortcut='Ctrl-Shift-V';menu_text='new/media/video drawable'", true);
 

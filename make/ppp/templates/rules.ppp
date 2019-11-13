@@ -103,7 +103,7 @@ func(rule_prog; :>R = MAP, :>return="")
 			if (R::command~~LIST) {
 				if (!R::command > 0) {
 					if (R::tool == R::command[0]) {
-						return = map_rule_variables("$(CGV_INSTALL)bin/".R::tool.platform_post)*clean_path;
+						return = map_rule_variables("$(CGV_INSTALL)bin/".R::tool)*clean_path;
 					}
 					else {
 						return = R::command[0];

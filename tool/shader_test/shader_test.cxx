@@ -10,6 +10,7 @@
 #include <cgv/utils/scan.h>
 #include <cgv/utils/advanced_scan.h>
 #include <cgv/utils/file.h>
+#include <cgv/utils/options.h>
 
 #ifndef WIN32
 #include <fltk/GlWindow.h>
@@ -116,13 +117,18 @@ bool convert_to_string(const std::string& in_fn, const std::string& out_fn, bool
 		return false;
 	if (to_upper(get_extension(in_fn)[0]) == 'P')
 		write(drop_extension(out_fn)+"."+get_extension(in_fn).substr(1), content.c_str(), content.length(), true);
-
+	// try to open output file
 	std::ofstream os(out_fn.c_str());
 	if (os.fail())
 		return false;
+	// encode in base64 if this a cgv option
+	if (cgv::utils::has_option("ENCODE_SHADER_BASE64"))
+		content = std::string("§") + cgv::utils::encode_base64(content);
+	// stream out the string declaration
 	std::string sn = get_file_name(in_fn);
 	replace(sn, '.', '_');
 	os << "const char* " << sn.c_str() << " =\"\\\n";
+	// write out the content in form of a string
 	bool last_is_slash = false;
 	for (unsigned int i=0; i<content.size(); ++i) {
 		bool new_last_is_slash = false;
@@ -173,12 +179,8 @@ context* g_ctx_ptr;
 
 int perform_test()
 {
-	bool shader_developer = false;
+	bool shader_developer = cgv::utils::has_option("SHADER_DEVELOPER");
 	bool exit_code = 0;
-	char* options = getenv("CGV_OPTIONS");
-	if (options)
-		shader_developer = is_element("SHADER_DEVELOPER", to_upper(options), ';');
-
 	if (getenv("CGV_DIR") != 0)
 		get_shader_config()->shader_path = std::string(getenv("CGV_DIR"))+"/libs/cgv_gl/glsl";
 	// check input file extension
@@ -186,24 +188,25 @@ int perform_test()
 	if (ext == "glpr") {
 		// in case of shader program, build it from the file
 		shader_program prog(true);
-		if (prog.build_program(*g_ctx_ptr, g_argv[1], true)) {
+		if (prog.build_program(*g_ctx_ptr, g_argv[1], shader_developer)) {
 			convert_to_string(g_argv[1], g_argv[2]);
 			//write(g_argv[2], "ok", 2, true);
 			std::cout << "shader program ok (" << g_argv[1] << ")" << std::endl;
 		}
 		else {
-			std::cout << "build program failed" << std::endl;
-			std::cerr << g_argv[1] << " (1) : glsl program error" << std::endl;
 			if (!shader_developer)
-				write(g_argv[2], "error", 2, true);
-			exit_code = 1;
+				convert_to_string(g_argv[1], g_argv[2]);
+			else {
+				std::cout << "error:" << g_argv[1] << " (1) : glsl program error" << std::endl;
+				exit_code = 1;
+			}
 		}
 	}
 	else {
 //		if (ext[0] != 'p') {
 			// otherwise read and compile code
 			shader_code code;
-			if (code.read_and_compile(*g_ctx_ptr, g_argv[1], cgv::render::ST_DETECT, true)) {
+			if (code.read_and_compile(*g_ctx_ptr, g_argv[1], cgv::render::ST_DETECT, shader_developer)) {
 				// convert the input file to a string declaration with the string
 				convert_to_string(g_argv[1],g_argv[2]);
 				//write(g_argv[2], "ok", 2, true);
@@ -212,7 +215,8 @@ int perform_test()
 			else {
 				if (!shader_developer)
 					convert_to_string(g_argv[1],g_argv[2]);
-				exit_code = 1;
+				else
+					exit_code = 1;
 			}
 //		}
 /*		else {
@@ -229,13 +233,12 @@ int perform_test()
 int main(int argc, char** argv)
 {
 	int exit_code = 0;
-
+	get_render_config()->show_error_on_console = false;
 	// check command line arguments
 	if (argc != 3) {
 		std::cout << "usage: shader_test.exe input_file log_file" << std::endl;
 		return -1;
 	}
-
 	// create a context without window
 #ifdef WIN32
 	context* ctx_ptr = create_context();
@@ -243,7 +246,7 @@ int main(int argc, char** argv)
 	context* ctx_ptr = new fltk_gl_context(200,200);
 #endif
 	if (!ctx_ptr) {
-		std::cerr << "could not create context!" << std::endl;
+		std::cout << "error: could not create context!" << std::endl;
 		return -1;
 	}
 	g_argc= argc;
@@ -256,7 +259,7 @@ int main(int argc, char** argv)
 #endif
 	// destroy context
 	delete ctx_ptr;
-	return 0;
+	return exit_code;
 }
 
 namespace cgv {
