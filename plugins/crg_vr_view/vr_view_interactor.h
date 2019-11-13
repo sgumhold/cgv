@@ -116,7 +116,6 @@ protected:
 	cgv::render::mesh_render_info MI_controller, MI_hmd;
 
 	cgv::gui::VREventTypeFlags event_flags;
-	static dmat4 hmat_from_pose(float pose_matrix[12]);
 
 	// debugging of vr events on console
 	bool debug_vr_events;
@@ -172,6 +171,8 @@ public:
 	void enable_vr_event_debugging(bool enable = true);
 	/// return a pointer to the state of the current vr kit
 	const vr::vr_kit_state* get_current_vr_state() const;
+	/// return a pointer to the current vr kit
+	vr::vr_kit* get_current_vr_kit() const;
 	//@}
 
 	/**@name vr viewing*/
@@ -219,6 +220,15 @@ public:
 	int get_blit_vr_view_width() const { return blit_width; }
 	/// set the width with which vr views are blit
 	void set_blit_vr_view_width(int width);
+	//@}
+
+	/**@name vr render process*/
+	//@{
+	/// return the currently rendered eye
+	int get_rendered_eye() const { return rendered_eye; }
+	/// return the vr kit currently rendered
+	/// return a pointer to the current vr kit
+	vr::vr_kit* get_rendered_vr_kit() const { return rendered_kit_ptr; }
 	//@}
 	/// 
 	void on_set(void* member_ptr);

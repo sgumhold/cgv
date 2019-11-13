@@ -1,4 +1,5 @@
 #include "vr_view_interactor.h"
+#include "vr_render_helpers.h"
 #include <cgv/render/attribute_array_binding.h>
 #include <cgv/render/shader_program.h>
 #include <cgv/gui/trigger.h>
@@ -108,6 +109,14 @@ const vr::vr_kit_state* vr_view_interactor::get_current_vr_state() const
 {
 	if (current_vr_handle_index > 0 && current_vr_handle_index-1 < int(kit_states.size()))
 		return &kit_states[current_vr_handle_index-1];
+	return 0;
+}
+
+/// return a pointer to the current vr kit
+vr::vr_kit* vr_view_interactor::get_current_vr_kit() const
+{
+	if (current_vr_handle_index > 0 && current_vr_handle_index - 1 < int(kit_states.size()))
+		return vr::get_vr_kit(kits[current_vr_handle_index - 1]);
 	return 0;
 }
 
@@ -464,16 +473,6 @@ void vr_view_interactor::configure_kits()
 	}
 }
 
-vr_view_interactor::dmat4 vr_view_interactor::hmat_from_pose(float pose_matrix[12])
-{
-	dmat4 M;
-	M.set_col(0, dvec4(reinterpret_cast<vec3&>(pose_matrix[0]), 0));
-	M.set_col(1, dvec4(reinterpret_cast<vec3&>(pose_matrix[3]), 0));
-	M.set_col(2, dvec4(reinterpret_cast<vec3&>(pose_matrix[6]), 0));
-	M.set_col(3, dvec4(reinterpret_cast<vec3&>(pose_matrix[9]), 1));
-	return M;
-}
-
 /// this method is called in one pass over all drawables before the draw method
 void vr_view_interactor::init_frame(cgv::render::context& ctx)
 {
@@ -575,14 +574,9 @@ void vr_view_interactor::init_frame(cgv::render::context& ctx)
 		}
 	}
 	if (rendered_kit_ptr) {
-		float eye_to_head[12];
-		rendered_kit_ptr->put_eye_to_head_matrix(rendered_eye, eye_to_head);
-		ctx.set_modelview_matrix(inv(hmat_from_pose(kit_states[rendered_kit_index].hmd.pose)*hmat_from_pose(eye_to_head)));
-
-		mat4 P;
-		rendered_kit_ptr->put_projection_matrix(rendered_eye, float(z_near_derived), float(z_far_derived), &P(0, 0));
 		compute_clipping_planes(z_near_derived, z_far_derived, clip_relative_to_extent);
-		ctx.set_projection_matrix(P);
+		ctx.set_projection_matrix(vr::get_eye_projection_transform(rendered_kit_ptr, float(z_near_derived), float(z_far_derived), rendered_eye));
+		ctx.set_modelview_matrix(vr::get_world_to_eye_transform(rendered_kit_ptr, kit_states[rendered_kit_index], rendered_eye));
 	}
 	else {
 		if (kits.empty() || separate_view)

@@ -38,7 +38,7 @@ protected:
 	/// helper functions to construct matrices
 	mat3x4 construct_pos_matrix(const quat& orientation, const vec3& position);
 	mat4 construct_homogeneous_matrix(const quat& orientation, const vec3& position);
-	void set_pose_matrix(const mat4& H, float* pose);
+	void set_pose_matrix(const mat4& H, float* pose) const;
 	void compute_state_poses();
 public:
 	vr_emulated_kit(float _body_direction, const vec3& _body_position, float _body_height, unsigned _width, unsigned _height, vr::vr_driver* _driver, void* _handle, const std::string& _name, bool _ffb_support, bool _wireless);
@@ -47,8 +47,8 @@ public:
 	const std::vector<std::pair<float, float> >& get_controller_throttles_and_sticks_deadzone_and_precision(int controller_index) const;
 	bool query_state(vr::vr_kit_state& state, int pose_query = 2);
 	bool set_vibration(unsigned controller_index, float low_frequency_strength, float high_frequency_strength);
-	void put_eye_to_head_matrix(int eye, float* pose_matrix);
-	void put_projection_matrix(int eye, float z_near, float z_far, float* projection_matrix);
+	void put_eye_to_head_matrix(int eye, float* pose_matrix) const;
+	void put_projection_matrix(int eye, float z_near, float z_far, float* projection_matrix) const;
 	void submit_frame();
 };
 

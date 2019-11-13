@@ -1,0 +1,20 @@
+#version 330
+
+uniform mat4 texture_matrix;
+//***** begin interface of view.glsl ***********************************
+mat4 get_modelview_projection_matrix();
+//***** end interface of view.glsl ***********************************
+
+layout(location = 0) in vec4 position;
+layout(location = 3) in vec2 texcoord;
+
+out vec2 texcoord_fs;
+out vec4 tex_position;
+
+void main()
+{
+	texcoord_fs = texcoord; 
+	tex_position = texture_matrix*position;
+	// transform vertex to clip space
+	gl_Position = get_modelview_projection_matrix()*position;
+}
