@@ -131,7 +131,7 @@ const std::vector<std::pair<float, float> >& vr_emulated_kit::get_controller_thr
 }
 
 
-void vr_emulated_kit::set_pose_matrix(const mat4& H, float* pose)
+void vr_emulated_kit::set_pose_matrix(const mat4& H, float* pose) const
 {
 	pose[0]  = H(0, 0);
 	pose[1]  = H(1, 0);
@@ -161,7 +161,7 @@ bool vr_emulated_kit::set_vibration(unsigned controller_index, float low_frequen
 	return has_force_feedback();
 }
 
-void vr_emulated_kit::put_eye_to_head_matrix(int eye, float* pose_matrix)
+void vr_emulated_kit::put_eye_to_head_matrix(int eye, float* pose_matrix) const
 {
 	float scale = body_height / Body_height;
 	set_pose_matrix(
@@ -171,7 +171,7 @@ void vr_emulated_kit::put_eye_to_head_matrix(int eye, float* pose_matrix)
 	);
 }
 
-void vr_emulated_kit::put_projection_matrix(int eye, float z_near, float z_far, float* projection_matrix)
+void vr_emulated_kit::put_projection_matrix(int eye, float z_near, float z_far, float* projection_matrix) const
 {
 	reinterpret_cast<mat4&>(*projection_matrix) = 
 		cgv::math::perspective4<float>(fovy, float(width)/height, z_near, z_far);

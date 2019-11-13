@@ -71,7 +71,7 @@ namespace vr {
 		const vr_driver* get_driver() const;
 		/// return device handle
 		void* get_device_handle() const;
-		/// return camera
+		/// return camera or nullptr if not available
 		vr_camera* get_camera() const;
 		/// return name of vr_kit
 		const std::string& get_name() const;
@@ -131,9 +131,9 @@ namespace vr {
 		/// destruct render targets and framebuffer objects in current opengl context
 		virtual void destruct_fbos() = 0;
 		/// access to 3x4 matrix in column major format for transformation from eye (0..left, 1..right) to head coordinates
-		virtual void put_eye_to_head_matrix(int eye, float* pose_matrix) = 0;
+		virtual void put_eye_to_head_matrix(int eye, float* pose_matrix) const = 0;
 		/// access to 4x4 matrix in column major format for perspective transformation from eye (0..left, 1..right)
-		virtual void put_projection_matrix(int eye, float z_near, float z_far, float* projection_matrix) = 0;
+		virtual void put_projection_matrix(int eye, float z_near, float z_far, float* projection_matrix) const = 0;
 		/// enable the framebuffer object of given eye (0..left, 1..right) 
 		virtual void enable_fbo(int eye) = 0;
 		/// disable the framebuffer object of given eye (0..left, 1..right)

@@ -6,6 +6,7 @@
 #include <cgv/utils/scan.h>
 #include <cgv/utils/options.h>
 #include <cgv/gui/provider.h>
+#include <cgv/gui/dialog.h>
 #include <cgv/render/drawable.h>
 #include <cgv/render/shader_program.h>
 #include <cgv/render/frame_buffer.h>
@@ -26,6 +27,7 @@
 #include <vr/vr_driver.h>
 #include <cg_vr/vr_server.h>
 #include <vr_view_interactor.h>
+#include <vr_render_helpers.h>
 #include "intersection.h"
 
 // different interaction states for the controllers
@@ -112,6 +114,81 @@ protected:
 	cgv::render::sphere_render_style srs;
 	cgv::render::box_render_style movable_style;
 
+	int nr_cameras;
+	int frame_width, frame_height;
+	float seethrough_gamma;
+	mat4 camera_to_head_matrix[2];
+	cgv::math::fmat<float, 4, 4> camera_projection_matrix[4];
+	vec2 focal_lengths[4];
+	vec2 camera_centers[4];
+	cgv::render::texture camera_tex;
+	cgv::render::shader_program seethrough;
+	GLuint camera_tex_id;
+	bool undistorted;
+	bool shared_texture;
+	bool max_rectangle;
+	float camera_aspect;
+	bool use_matrix;
+	float background_distance;
+	float background_extent;
+	vec2 extent_texcrd;
+	vec2 center_left;
+	vec2 center_right;
+
+
+	void init_cameras(vr::vr_kit* kit_ptr)
+	{
+		vr::vr_camera* camera_ptr = kit_ptr->get_camera();
+		if (!camera_ptr)
+			return;
+		nr_cameras = camera_ptr->get_nr_cameras();
+		for (int i = 0; i < nr_cameras; ++i) {
+			std::cout << "camera " << i << "(" << nr_cameras << "):" << std::endl;
+			camera_ptr->put_camera_intrinsics(i, false, &focal_lengths[i](0), &camera_centers[i](0));
+			camera_ptr->put_camera_intrinsics(i, true, &focal_lengths[2 + i](0), &camera_centers[2 + i](0));
+			std::cout << "  fx=" << focal_lengths[i][0] << ", fy=" << focal_lengths[i][1] << ", center=[" << camera_centers[i] << "]" << std::endl;
+			std::cout << "  fx=" << focal_lengths[2+i][0] << ", fy=" << focal_lengths[2+i][1] << ", center=[" << camera_centers[2+i] << "]" << std::endl;
+			float camera_to_head[12];
+			camera_ptr->put_camera_to_head_matrix(i, camera_to_head);
+			kit_ptr->put_eye_to_head_matrix(i, camera_to_head);
+			camera_to_head_matrix[i] = vr::get_mat4_from_pose(camera_to_head);
+			std::cout << "  C2H=" << camera_to_head_matrix[i] << std::endl;
+			camera_ptr->put_projection_matrix(i, false, 0.001f, 10.0f, &camera_projection_matrix[i](0, 0));
+			camera_ptr->put_projection_matrix(i, true, 0.001f, 10.0f, &camera_projection_matrix[2+i](0, 0));
+			std::cout << "  dP=" << camera_projection_matrix[i] << std::endl;
+			std::cout << "  uP=" << camera_projection_matrix[2+i] << std::endl;
+		}
+		post_recreate_gui();
+	}
+
+	void start_camera()
+	{
+		if (!vr_view_ptr)
+			return;
+		vr::vr_kit* kit_ptr = vr_view_ptr->get_current_vr_kit();
+		if (!kit_ptr)
+			return;
+		vr::vr_camera* camera_ptr = kit_ptr->get_camera();
+		if (!camera_ptr)
+			return;
+		if (!camera_ptr->start())
+			cgv::gui::message(camera_ptr->get_last_error());
+	}
+
+	void stop_camera()
+	{
+		if (!vr_view_ptr)
+			return;
+		vr::vr_kit* kit_ptr = vr_view_ptr->get_current_vr_kit();
+		if (!kit_ptr)
+			return;
+		vr::vr_camera* camera_ptr = kit_ptr->get_camera();
+		if (!camera_ptr)
+			return;
+		if (!camera_ptr->stop())
+			cgv::gui::message(camera_ptr->get_last_error());
+	}
+
 	// compute intersection points of controller ray with movable boxes
 	void compute_intersections(const vec3& origin, const vec3& direction, int ci, const rgb& color)
 	{
@@ -147,6 +224,7 @@ protected:
 		if (attach) {
 			if (last_kit_handle == 0) {
 				vr::vr_kit* kit_ptr = vr::get_vr_kit(kit_handle);
+				init_cameras(kit_ptr);
 				if (kit_ptr) {
 					last_kit_handle = kit_handle;
 					left_deadzone_and_precision = kit_ptr->get_controller_throttles_and_sticks_deadzone_and_precision(0);
@@ -180,8 +258,23 @@ protected:
 		construct_movable_boxes(tw, td, th, tW, 20);
 	}
 public:
-	vr_test()
+	vr_test() 
 	{
+		extent_texcrd = vec2(0.5f, 0.5f);
+		center_left  = vec2(0.5f,0.25f);
+		center_right = vec2(0.5f,0.25f);
+		seethrough_gamma = 0.33f;
+		frame_width = frame_height = 0;
+		background_distance = 2;
+		background_extent = 2;
+		undistorted = true;
+		shared_texture = true;
+		max_rectangle = false;
+		nr_cameras = 0;
+		camera_tex_id = -1;
+		camera_aspect = 1;
+		use_matrix = true;
+
 		set_name("vr_test");
 		build_scene(5, 7, 3, 0.2f, 1.6f, 0.8f, 0.9f, 0.03f);
 		vr_view_ptr = 0;
@@ -231,6 +324,27 @@ public:
 		add_gui("mesh_orientation", static_cast<dvec4&>(mesh_orientation), "direction", "options='min=-1;max=1;ticks=true");
 		add_member_control(this, "ray_length", ray_length, "value_slider", "min=0.1;max=10;log=true;ticks=true");
 		if (last_kit_handle) {
+			add_decorator("cameras", "heading", "level=3");
+			add_view("nr", nr_cameras);
+			if (nr_cameras > 0) {
+				connect_copy(add_button("start")->click, cgv::signal::rebind(this, &vr_test::start_camera));
+				connect_copy(add_button("stop")->click, cgv::signal::rebind(this, &vr_test::stop_camera));
+				add_view("frame_width", frame_width, "", "w=50", "  ");
+				add_view("frame_height", frame_height, "", "w=50");
+				add_member_control(this, "undistorted", undistorted, "check");
+				add_member_control(this, "shared_texture", shared_texture, "check");
+				add_member_control(this, "max_rectangle", max_rectangle, "check");
+				add_member_control(this, "use_matrix", use_matrix, "check");
+				add_member_control(this, "gamma", seethrough_gamma, "value_slider", "min=0.1;max=10;log=true;ticks=true");
+				add_member_control(this, "extent_x", extent_texcrd[0], "value_slider", "min=0.2;max=2;ticks=true");
+				add_member_control(this, "extent_y", extent_texcrd[1], "value_slider", "min=0.2;max=2;ticks=true");
+				add_member_control(this, "center_left_x", center_left[0], "value_slider", "min=0.2;max=0.8;ticks=true");
+				add_member_control(this, "center_left_y", center_left[1], "value_slider", "min=0.2;max=0.8;ticks=true");
+				add_member_control(this, "center_right_x", center_right[0], "value_slider", "min=0.2;max=0.8;ticks=true");
+				add_member_control(this, "center_right_y", center_right[1], "value_slider", "min=0.2;max=0.8;ticks=true");
+				add_member_control(this, "background_distance", background_distance, "value_slider", "min=0.1;max=10;log=true;ticks=true");
+				add_member_control(this, "background_extent", background_extent, "value_slider", "min=0.01;max=10;log=true;ticks=true");
+			}
 			vr::vr_kit* kit_ptr = vr::get_vr_kit(last_kit_handle);
 			const std::vector<std::pair<int, int> >* t_and_s_ptr = 0;
 			if (kit_ptr)
@@ -438,6 +552,9 @@ public:
 	{
 		if (!cgv::utils::has_option("NO_OPENVR"))
 			ctx.set_gamma(1.0f);
+		if (!seethrough.build_program(ctx, "seethrough.glpr")) {
+			cgv::gui::message("could not build seethrough program");
+		}
 		cgv::media::mesh::simple_mesh<> M;
 #ifdef _DEBUG
 		if (M.read("D:/data/surface/meshes/obj/Max-Planck_lowres.obj")) {
@@ -527,6 +644,73 @@ public:
 
 			label_tex.generate_mipmaps(ctx);
 		}
+		if (vr_view_ptr && vr_view_ptr->get_rendered_vr_kit() != 0 && vr_view_ptr->get_rendered_eye() == 0 && vr_view_ptr->get_rendered_vr_kit() == vr_view_ptr->get_current_vr_kit()) {
+			vr::vr_kit* kit_ptr = vr_view_ptr->get_current_vr_kit();
+			if (kit_ptr) {
+				vr::vr_camera* camera_ptr = kit_ptr->get_camera();
+				if (camera_ptr && camera_ptr->get_state() == vr::CS_STARTED) {
+					uint32_t width = frame_width, height = frame_height;
+					if (shared_texture) {
+						box2 tex_range;
+						if (camera_ptr->get_gl_texture_id(camera_tex_id, width, height, undistorted, &tex_range.ref_min_pnt()(0))) {
+							camera_aspect = (float)width / height;
+							switch (camera_ptr->get_frame_split()) {
+							case vr::CFS_VERTICAL:
+								camera_aspect *= 2;
+								break;
+							case vr::CFS_HORIZONTAL:
+								camera_aspect *= 0.5f;
+								break;
+							}
+						}
+						else
+							camera_tex_id = -1;
+					}
+					else {
+						std::vector<uint8_t> frame_data;
+						if (camera_ptr->get_frame(frame_data, width, height, undistorted, max_rectangle)) {
+							camera_aspect = (float)width / height;
+							switch (camera_ptr->get_frame_split()) {
+							case vr::CFS_VERTICAL:
+								camera_aspect *= 2;
+								break;
+							case vr::CFS_HORIZONTAL:
+								camera_aspect *= 0.5f;
+								break;
+							}
+							cgv::data::data_format df(width, height, cgv::type::info::TI_UINT8, cgv::data::CF_RGBA);
+							cgv::data::data_view dv(&df, frame_data.data());
+							if (camera_tex.is_created()) {
+								if (camera_tex.get_width() != width || camera_tex.get_height() != height)
+									camera_tex.destruct(ctx);
+								else
+									camera_tex.replace(ctx, 0, 0, dv);
+							}
+							if (!camera_tex.is_created())
+								camera_tex.create(ctx, dv);
+						}
+						else if (camera_ptr->has_error())
+							cgv::gui::message(camera_ptr->get_last_error());
+					}
+					if (frame_width != width || frame_height != height) {
+						frame_width = width;
+						frame_height = height;
+
+						center_left(0) = camera_centers[2](0) / frame_width;
+						center_left(1) = camera_centers[2](1) / frame_height;
+						center_right(0) = camera_centers[3](0) / frame_width;
+						center_right(1) = camera_centers[3](1) / frame_height;
+
+						update_member(&frame_width);
+						update_member(&frame_height);
+						update_member(&center_left(0));
+						update_member(&center_left(1));
+						update_member(&center_right(0));
+						update_member(&center_right(1));
+					}
+				}
+			}
+		}
 	}
 	void draw(cgv::render::context& ctx)
 	{
@@ -542,46 +726,111 @@ public:
 			ctx.pop_modelview_matrix();
 		}
 		if (vr_view_ptr) {
-			std::vector<vec3> P;
-			std::vector<rgb> C;
-			const vr::vr_kit_state* state_ptr = vr_view_ptr->get_current_vr_state();
-			if (state_ptr) {
-				for (int ci = 0; ci < 4; ++ci) if (state_ptr->controller[ci].status == vr::VRS_TRACKED) {
-					vec3 ray_origin, ray_direction;
-					state_ptr->controller[ci].put_ray(&ray_origin(0), &ray_direction(0));
-					P.push_back(ray_origin);
-					P.push_back(ray_origin + ray_length * ray_direction);
-					rgb c(float(1 - ci), 0.5f*(int)state[ci], float(ci));
-					C.push_back(c);
-					C.push_back(c);
+			if ((!shared_texture && camera_tex.is_created()) || (shared_texture && camera_tex_id != -1)) {
+				if (vr_view_ptr->get_rendered_vr_kit() != 0 && vr_view_ptr->get_rendered_vr_kit() == vr_view_ptr->get_current_vr_kit()) {
+					int eye = vr_view_ptr->get_rendered_eye();
+
+					// compute billboard
+					dvec3 vd = vr_view_ptr->get_view_dir_of_kit();
+					dvec3 y = vr_view_ptr->get_view_up_dir_of_kit();
+					dvec3 x = normalize(cross(vd, y));
+					y = normalize(cross(x, vd));
+					x *= camera_aspect * background_extent * background_distance;
+					y *= background_extent * background_distance;
+					vd *= background_distance;
+					dvec3 eye_pos = vr_view_ptr->get_eye_of_kit(eye);
+					std::vector<vec3> P;
+					std::vector<vec2> T;
+					P.push_back(eye_pos + vd - x - y);
+					P.push_back(eye_pos + vd + x - y);
+					P.push_back(eye_pos + vd - x + y);
+					P.push_back(eye_pos + vd + x + y);
+					double v_offset = 0.5 * (1-eye);
+					T.push_back(dvec2(0.0, 0.5 + v_offset));
+					T.push_back(dvec2(1.0, 0.5 + v_offset));
+					T.push_back(dvec2(0.0, v_offset));
+					T.push_back(dvec2(1.0, v_offset));
+
+					cgv::render::shader_program& prog = seethrough;
+					cgv::render::attribute_array_binding::set_global_attribute_array(ctx, prog.get_position_index(), P);
+					cgv::render::attribute_array_binding::set_global_attribute_array(ctx, prog.get_texcoord_index(), T);
+					cgv::render::attribute_array_binding::enable_global_array(ctx, prog.get_position_index());
+					cgv::render::attribute_array_binding::enable_global_array(ctx, prog.get_texcoord_index());
+
+					GLint active_texture, texture_binding;
+					if (shared_texture) {
+						glGetIntegerv(GL_ACTIVE_TEXTURE, &active_texture);
+						glGetIntegerv(GL_TEXTURE_BINDING_2D, &texture_binding);
+						glActiveTexture(GL_TEXTURE0);
+						glBindTexture(GL_TEXTURE_2D, camera_tex_id);
+					}
+					else
+						camera_tex.enable(ctx, 0);
+					prog.set_uniform(ctx, "texture", 0);
+
+					mat4 TM = vr::get_texture_transform(vr_view_ptr->get_current_vr_kit(), *vr_view_ptr->get_current_vr_state(), 0.01f, 2 * background_distance, eye, undistorted);
+					prog.set_uniform(ctx, "texture_matrix", TM);
+
+					prog.set_uniform(ctx, "extent_texcrd", extent_texcrd);
+					prog.set_uniform(ctx, "seethrough_gamma", seethrough_gamma);					
+					prog.set_uniform(ctx, "center_left", center_left);
+					prog.set_uniform(ctx, "center_right", center_right);
+					prog.set_uniform(ctx, "use_matrix", use_matrix);
+					prog.set_uniform(ctx, "eye", eye);
+
+					prog.enable(ctx);
+					ctx.set_color(rgba(1, 1, 1, 1));
+
+					glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+
+
+					prog.disable(ctx);
+
+					if (shared_texture) {
+						glActiveTexture(active_texture);
+						glBindTexture(GL_TEXTURE_2D, texture_binding);
+					}
+					else
+						camera_tex.disable(ctx);
+
+					cgv::render::attribute_array_binding::disable_global_array(ctx, prog.get_position_index());
+					cgv::render::attribute_array_binding::disable_global_array(ctx, prog.get_texcoord_index());
 				}
 			}
-			if (P.size() > 0) {
-				cgv::render::shader_program& prog = ctx.ref_default_shader_program();
-				int pi = prog.get_position_index();
-				int ci = prog.get_color_index();
-				cgv::render::attribute_array_binding::set_global_attribute_array(ctx, pi, P);
-				cgv::render::attribute_array_binding::enable_global_array(ctx, pi);
-				cgv::render::attribute_array_binding::set_global_attribute_array(ctx, ci, C);
-				cgv::render::attribute_array_binding::enable_global_array(ctx, ci);
-				glLineWidth(3);
-				prog.enable(ctx);
-				glDrawArrays(GL_LINES, 0, (GLsizei)P.size());
-				prog.disable(ctx);
-				cgv::render::attribute_array_binding::disable_global_array(ctx, pi);
-				cgv::render::attribute_array_binding::disable_global_array(ctx, ci);
-				glLineWidth(1);
+			if (vr_view_ptr) {
+				std::vector<vec3> P;
+				std::vector<rgb> C;
+				const vr::vr_kit_state* state_ptr = vr_view_ptr->get_current_vr_state();
+				if (state_ptr) {
+					for (int ci = 0; ci < 4; ++ci) if (state_ptr->controller[ci].status == vr::VRS_TRACKED) {
+						vec3 ray_origin, ray_direction;
+						state_ptr->controller[ci].put_ray(&ray_origin(0), &ray_direction(0));
+						P.push_back(ray_origin);
+						P.push_back(ray_origin + ray_length * ray_direction);
+						rgb c(float(1 - ci), 0.5f * (int)state[ci], float(ci));
+						C.push_back(c);
+						C.push_back(c);
+					}
+				}
+				if (P.size() > 0) {
+					cgv::render::shader_program& prog = ctx.ref_default_shader_program();
+					int pi = prog.get_position_index();
+					int ci = prog.get_color_index();
+					cgv::render::attribute_array_binding::set_global_attribute_array(ctx, pi, P);
+					cgv::render::attribute_array_binding::enable_global_array(ctx, pi);
+					cgv::render::attribute_array_binding::set_global_attribute_array(ctx, ci, C);
+					cgv::render::attribute_array_binding::enable_global_array(ctx, ci);
+					glLineWidth(3);
+					prog.enable(ctx);
+					glDrawArrays(GL_LINES, 0, (GLsizei)P.size());
+					prog.disable(ctx);
+					cgv::render::attribute_array_binding::disable_global_array(ctx, pi);
+					cgv::render::attribute_array_binding::disable_global_array(ctx, ci);
+					glLineWidth(1);
+				}
 			}
 		}
-		// draw static boxes
 		cgv::render::box_renderer& renderer = cgv::render::ref_box_renderer(ctx);
-		renderer.set_render_style(style);
-		renderer.set_box_array(ctx, boxes);
-		renderer.set_color_array(ctx, box_colors);
-		if (renderer.validate_and_enable(ctx)) {
-			glDrawArrays(GL_POINTS, 0, (GLsizei)boxes.size());
-		}
-		renderer.disable(ctx);
 
 		// draw dynamic boxes 
 		renderer.set_render_style(movable_style);
@@ -590,9 +839,22 @@ public:
 		renderer.set_translation_array(ctx, movable_box_translations);
 		renderer.set_rotation_array(ctx, movable_box_rotations);
 		if (renderer.validate_and_enable(ctx)) {
-			glDrawArrays(GL_POINTS, 0, (GLsizei)movable_boxes.size());
+			glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
+			glDrawArrays(GL_POINTS, 0, 3);
+			glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
+			glDrawArrays(GL_POINTS, 3, (GLsizei)movable_boxes.size()-3);
 		}
 		renderer.disable(ctx);
+
+		// draw static boxes
+		renderer.set_render_style(style);
+		renderer.set_box_array(ctx, boxes);
+		renderer.set_color_array(ctx, box_colors);
+		if (renderer.validate_and_enable(ctx)) {
+			glDrawArrays(GL_POINTS, 0, (GLsizei)boxes.size());
+		}
+		renderer.disable(ctx);
+
 
 		// draw intersection points
 		if (!intersection_points.empty()) {
@@ -633,6 +895,40 @@ public:
 			prog.disable(ctx);
 			cgv::render::attribute_array_binding::disable_global_array(ctx, pi);
 			cgv::render::attribute_array_binding::disable_global_array(ctx, ti);
+		}
+	}
+	void vr_test::finish_draw(cgv::render::context& ctx)
+	{
+		return;
+		if ((!shared_texture && camera_tex.is_created()) || (shared_texture && camera_tex_id != -1)) {
+			cgv::render::shader_program& prog = ctx.ref_default_shader_program(true);
+			glEnable(GL_BLEND);
+			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+			GLint active_texture, texture_binding;
+			if (shared_texture) {
+				glGetIntegerv(GL_ACTIVE_TEXTURE, &active_texture);
+				glGetIntegerv(GL_TEXTURE_BINDING_2D, &texture_binding);
+				glActiveTexture(GL_TEXTURE0);
+				glBindTexture(GL_TEXTURE_2D, camera_tex_id);
+			}
+			else
+				camera_tex.enable(ctx, 0);
+
+			prog.set_uniform(ctx, "texture", 0);
+			ctx.push_modelview_matrix();
+			ctx.mul_modelview_matrix(cgv::math::translate4<double>(0, 3, 0));
+			prog.enable(ctx);
+			ctx.set_color(rgba(1, 1, 1, 0.8f));
+			ctx.tesselate_unit_square();
+			prog.disable(ctx);
+			if (shared_texture) {
+				glActiveTexture(active_texture);
+				glBindTexture(GL_TEXTURE_2D, texture_binding);
+			}
+			else
+				camera_tex.disable(ctx);
+			ctx.pop_modelview_matrix();
+			glDisable(GL_BLEND);
 		}
 	}
 };
@@ -708,6 +1004,12 @@ void vr_test::construct_environment(float s, float ew, float ed, float eh, float
 /// construct boxes that can be moved around
 void vr_test::construct_movable_boxes(float tw, float td, float th, float tW, size_t nr)
 {
+	vec3 extent(0.75f, 0.5f, 0.05f);
+	movable_boxes.push_back(box3(-0.5f * extent, 0.5f * extent));
+	movable_box_colors.push_back(rgb(0,0,0));
+	movable_box_translations.push_back(vec3(0,1.2f,0));
+	movable_box_rotations.push_back(quat(1,0,0,0));
+
 	std::default_random_engine generator;
 	std::uniform_real_distribution<float> distribution(0, 1);
 	std::uniform_real_distribution<float> signed_distribution(-1, 1);
