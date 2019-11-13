@@ -1,5 +1,9 @@
 #pragma once
 
+/** \file advanced_scan.h
+ * More advanced text processing for splitting text into lines or tokens
+ */
+
 #include <vector>
 
 #include "token.h"

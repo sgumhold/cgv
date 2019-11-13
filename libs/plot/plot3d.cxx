@@ -144,7 +144,7 @@ void plot3d::draw_sub_plot(cgv::render::context& ctx, unsigned i)
 		sphere_prog.enable(ctx);
 			ctx.set_color(spc.point_color);
 			sphere_prog.set_attribute(ctx, "att0", 1.0f);
-			glDrawArrays(GL_POINTS, 0, count);
+			glDrawArrays(GL_POINTS, 0, (GLsizei)count);
 		sphere_prog.disable(ctx);
 	}
 	
@@ -157,7 +157,7 @@ void plot3d::draw_sub_plot(cgv::render::context& ctx, unsigned i)
 		box_prog.enable(ctx);
 			ctx.set_color(spc.bar_color);
 			box_prog.set_uniform(ctx, "map_color_to_material", 3);
-			glDrawArrays(GL_POINTS, 0, count);
+			glDrawArrays(GL_POINTS, 0, (GLsizei)count);
 		box_prog.disable(ctx);
 		//if (spc.bar_outline_width > 0) {
 		//	glLineWidth(spc.bar_outline_width);
@@ -175,7 +175,7 @@ void plot3d::draw_sub_plot(cgv::render::context& ctx, unsigned i)
 		glLineWidth(spc.stick_width);
 		stick_prog.enable(ctx);
 			ctx.set_color(spc.stick_color);
-			glDrawArrays(GL_POINTS, 0, count);
+			glDrawArrays(GL_POINTS, 0, (GLsizei)count);
 		stick_prog.disable(ctx);
 	}
 }

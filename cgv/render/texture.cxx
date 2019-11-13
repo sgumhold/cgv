@@ -564,7 +564,7 @@ bool texture::create(const context& ctx, const cgv::data::const_data_view& data,
 			set_resolution(i, data.get_format()->get_resolution(i));
 		if (get_nr_components() != data.get_format()->get_nr_components())
 			static_cast<component_format&>(*this) = *data.get_format();
-		if (level == -1 && !internal_format)
+		if (level == -1 || !internal_format)
 			find_best_format(ctx, palettes);
 	}
 	return complete_create(ctx, ctx.texture_create(*this, *this, data, level, cube_side, palettes));

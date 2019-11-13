@@ -11,7 +11,7 @@ namespace cgv { // @<
 	namespace render { // @<
 		
 		/// base class for all render styles
-		struct CGV_API render_style
+		struct CGV_API render_style : public render_types
 		{
 			virtual ~render_style();
 		};
@@ -69,6 +69,42 @@ namespace cgv { // @<
 			}
 			///
 			bool set_attribute_array(const context& ctx, int loc, type_descriptor element_type, const vertex_buffer& vbo, size_t offset_in_bytes, size_t nr_elements, unsigned stride_in_bytes);
+
+			template <typename C, typename T>
+			bool set_composed_attribute_array(const context& ctx, int loc, const C* array_ptr, size_t nr_elements, const T& elem) {
+				bool res;
+				vertex_buffer*& vbo_ptr = vbos[loc];
+				if (vbo_ptr) {
+					if (vbo_ptr->get_size_in_bytes() == nr_elements * sizeof(C))
+						res = vbo_ptr->replace(ctx, 0, array_ptr, nr_elements);
+					else {
+						vbo_ptr->destruct(ctx);
+						res = vbo_ptr->create(ctx, array_ptr, nr_elements);
+					}
+				}
+				else {
+					vbo_ptr = new vertex_buffer();
+					res = vbo_ptr->create(ctx, array_ptr, nr_elements);
+				}
+				if (res)
+					res = ctx.set_attribute_array_void(&aab, loc, 
+						type_descriptor(element_descriptor_traits<T>::get_type_descriptor(elem), true), 
+						vbo_ptr, 
+						reinterpret_cast<const void*>(reinterpret_cast<const cgv::type::uint8_type*>(&elem) - reinterpret_cast<const cgv::type::uint8_type*>(array_ptr)), 
+						nr_elements, sizeof(C));
+				return res;
+			}
+			template <typename C, typename T>
+			bool ref_composed_attribute_array(const context& ctx, int loc, int loc_ref, const C* array_ptr, size_t nr_elements, const T& elem) {
+				vertex_buffer*& vbo_ptr = vbos[loc_ref];
+				if (!vbo_ptr)
+					return false;
+				return ctx.set_attribute_array_void(&aab, loc,
+					type_descriptor(element_descriptor_traits<T>::get_type_descriptor(elem), true),
+					vbo_ptr,
+					reinterpret_cast<const void*>(reinterpret_cast<const cgv::type::uint8_type*>(&elem) - reinterpret_cast<const cgv::type::uint8_type*>(array_ptr)),
+					nr_elements, sizeof(C));
+			}
 		public:
 			/// default initialization
 			attribute_array_manager();
@@ -129,6 +165,22 @@ namespace cgv { // @<
 				return attribute_array_binding::set_global_attribute_array(ctx, loc, array_ptr, nr_elements, stride);
 			}
 			bool set_attribute_array(const context& ctx, int loc, type_descriptor element_type, const vertex_buffer& vbo, size_t offset_in_bytes, size_t nr_elements, unsigned stride_in_bytes);
+			/// in case that several attributes are stored interleaved, call this function for the first and ref_composed_attribute_array() for all others
+			template <typename C, typename T>
+			bool set_composed_attribute_array(const context& ctx, int loc, const C* array_ptr, size_t nr_elements, const T& elem) {
+				if (aam_ptr)
+					return aam_ptr->set_composed_attribute_array(ctx, loc, array_ptr, nr_elements, elem);
+				enabled_attribute_arrays.insert(loc);
+				return attribute_array_binding::set_global_attribute_array(ctx, loc, &elem, nr_elements, sizeof(C));
+			}
+			/// in case that several attributes are stored interleaved, call set_composed_attribute_array() for the first and this function for all others
+			template <typename C, typename T>
+			bool ref_composed_attribute_array(const context& ctx, int loc, int loc_ref, const C* array_ptr, size_t nr_elements, const T& elem) {
+				if (aam_ptr)
+					return aam_ptr->ref_composed_attribute_array(ctx, loc, loc_ref, array_ptr, nr_elements, elem);
+				enabled_attribute_arrays.insert(loc);
+				return attribute_array_binding::set_global_attribute_array(ctx, loc, &elem, nr_elements, sizeof(C));
+			}
 		public:
 			/// construct and init attribute tracking flags
 			renderer();

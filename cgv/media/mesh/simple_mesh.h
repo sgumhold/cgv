@@ -44,14 +44,19 @@ public:
 	idx_type new_corner(idx_type position_index, idx_type normal_index = -1, idx_type tex_coord_index = -1);
 	/// return the number of faces
 	idx_type get_nr_faces() const { return idx_type(faces.size()); }
+	/// return index of first corner of face with index fi
 	idx_type begin_corner(idx_type fi) const { return faces[fi]; }
+	/// return index of end corner (one after the last one) of face with index fi
 	idx_type end_corner(idx_type fi) const { return fi + 1 == faces.size() ? idx_type(position_indices.size()) : faces[fi + 1]; }
+	/// return number of edges/corners of face with index fi
 	idx_type face_degree(idx_type fi) const { return end_corner(fi) - begin_corner(fi); }
-	/// access to materials
+	/// return number of materials in mesh
 	size_t get_nr_materials() const { return materials.size(); }
+	/// return reference to i-th material
 	const mat_type& get_material(size_t i) const { return materials[i]; }
-	///
+	/// return number of face groups
 	size_t get_nr_groups() const { return group_names.size(); }
+	/// return the name of the i-th face group
 	const std::string& get_group_name(size_t i) const { return group_names[i]; }
 	/// sort faces by group and material indices with two bucket sorts
 	void sort_faces(std::vector<idx_type>& perm, bool by_group = true, bool by_material = true) const;
@@ -64,15 +69,22 @@ public:
 	void extract_wireframe_element_buffer(const std::vector<idx_type>& vertex_indices, std::vector<idx_type>& edge_element_buffer) const;
 };
 
+/// the simple_mesh class is templated over the coordinate type that defaults to float
 template <typename T = float>
 class CGV_API simple_mesh : public simple_mesh_base
 {
 public:
+	/// type of axis aligned 3d box
 	typedef typename cgv::media::axis_aligned_box<T, 3> box_type;
+	/// type of 3d vector
 	typedef typename cgv::math::fvec<T, 3> vec3;
+	/// type of 2d vector
 	typedef typename cgv::math::fvec<T, 2> vec2;
+	/// color type used in surface materials
 	typedef typename illum::surface_material::color_type clr_type;
+	/// textured surface materials are supported by mat_type
 	typedef typename illum::textured_surface_material mat_type;
+	/// 32bit index
 	typedef cgv::type::uint32_type idx_type;
 protected:
 	friend class simple_mesh_obj_reader<T>;
@@ -107,7 +119,7 @@ public:
 	vec2& tex_coord(idx_type ti) { return tex_coords[ti]; }
 	const vec2& tex_coord(idx_type ti) const { return tex_coords[ti]; }
 
-		/// compute the axis aligned bounding box
+	/// compute the axis aligned bounding box
 	box_type compute_box() const;
 	/// compute vertex normals by averaging triangle normals
 	void compute_vertex_normals();

@@ -1,0 +1,10 @@
+show all
+
+persistent
+name(vr interactor):tracking_rotation=70
+name(vr interactor):tracking_origin_x=0.357135;
+name(vr interactor):tracking_origin_y=0.930058;
+name(vr interactor):tracking_origin_z=-0.311962;
+name(vr interactor):tracking_rotation_origin_x=-0.261148;
+name(vr interactor):tracking_rotation_origin_y=-0.971542;
+name(vr interactor):tracking_rotation_origin_z=-0.806538

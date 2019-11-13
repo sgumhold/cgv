@@ -26,15 +26,19 @@ class CGV_API fltk_gl_view :
 	public cgv::gui::event_handler,
 	public cgv::gui::provider,
 	public cgv::render::gl::gl_context,
-	public cgv::render::gl::gl_performance_monitor,
-	public cgv::gui::control_provider<bool>
+	public cgv::render::gl::gl_performance_monitor
 {
 protected:
+	friend class fltk_driver;
+
 	void process_text_1(const std::string& text);
+	void configure_opengl_controls();
 
 	/**@name fltk interface*/
 	//@{
 private:
+	// opengl version used for ui only
+	int version;
 	cgv::gui::mouse_event dnd_release_event;
 	bool dnd_release_event_queued;
 	bool instant_redraw;
@@ -99,16 +103,6 @@ public:
 	void create_gui();
 	//@}
 public:
-	/**@name interface of control_provider */
-	//@{
-	/// overload to set the value
-	void set_value(const bool& value, void* user_data);
-	/// overload to get the value
-	const bool get_value(void* user_data) const;
-	/// the default implementation compares ptr to &get_value().
-	bool controls(const void* ptr, void* user_data) const;
-	//@}
-
 	/**@name context interface*/
 	//@{
 	/// draw some text at cursor position and update cursor position
@@ -138,10 +132,30 @@ public:
 	bool is_created() const;
 	/// return whether the context is current
 	bool is_current() const;
+	/// return the fltk mode determined from the context_config members
+	int determine_mode();
+	/// set the context_config members from the current fltk mode
+	void synch_with_mode();
+	/// recreate context based on current context config settings
+	bool recreate_context();
 	/// make the current context current if possible
 	bool make_current() const;
 	/// clear current context lock
 	void clear_current() const;
+	/// attach or detach (\c attach=false) an alpha buffer to the current frame buffer if not present
+	void attach_alpha_buffer(bool attach = true);
+	/// attach or detach (\c attach=false) depth buffer to the current frame buffer if not present
+	void attach_depth_buffer(bool attach = true);
+	/// attach or detach (\c attach=false) stencil buffer to the current frame buffer if not present
+	void attach_stencil_buffer(bool attach = true);
+	/// return whether the graphics card supports stereo buffer mode
+	bool is_stereo_buffer_supported() const;
+	/// attach or detach (\c attach=false) stereo buffer to the current frame buffer if not present
+	void attach_stereo_buffer(bool attach = true);
+	/// attach or detach (\c attach=false) accumulation buffer to the current frame buffer if not present
+	void attach_accumulation_buffer(bool attach = true);
+	/// attach or detach (\c attach=false) multi sample buffer to the current frame buffer if not present
+	void attach_multi_sample_buffer(bool attach = true);
 	/// the context will be redrawn when the system is idle again
 	void post_redraw();
 	/// the context will be redrawn right now. This method cannot be called inside the following methods of a drawable: init, init_frame, draw, finish_draw
@@ -152,41 +166,11 @@ public:
 	void enable_phong_shading();
 	/// disable phong shading
 	void disable_phong_shading();
-	/// return whether alpha buffer is attached
-	bool is_alpha_buffer_attached() const;
-	/// attach an alpha buffer to the current frame buffer if not present
-	void attach_alpha_buffer();
-	/// detach the alpha buffer if present
-	void detach_alpha_buffer();
-	/// return whether stencil buffer is attached
-	bool is_stencil_buffer_attached() const;
-	/// attach a stencil buffer to the current frame buffer if not present
-	void attach_stencil_buffer();
-	/// detach the stencil buffer if present
-	void detach_stencil_buffer();
 	/// return whether the graphics card supports quad buffer mode
 	bool is_quad_buffer_supported() const;
-	/// return whether quad buffer is attached
-	bool is_quad_buffer_attached() const;
-	/// attach a quad buffer to the current frame buffer if not present
-	void attach_quad_buffer();
-	/// detach the quad buffer if present
-	void detach_quad_buffer();
-	/// return whether accumulation buffer is attached
-	bool is_accum_buffer_attached() const;
-	/// attach a accumulation buffer to the current frame buffer if not present
-	void attach_accum_buffer();
-	/// detach the accumulation buffer if present
-	void detach_accum_buffer();
-	/// return whether multisampling is enabled
-	bool is_multisample_enabled() const;
-	/// enable multi sampling
-	void enable_multisample();
-	/// disable multi sampling
-	void disable_multisample();
 	//@}
 private:
-	bool recreate_context;
+	bool in_recreate_context;
 	bool no_more_context;
 	bool started_frame_pm;
 	///

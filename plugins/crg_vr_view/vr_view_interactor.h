@@ -52,19 +52,64 @@ bool your_class::init(cgv::render::context& ctx)
 }
 ~~~~~~~~~~~~~~~~~~~~~~~~
 */
-class CGV_API vr_view_interactor : 
-	public stereo_view_interactor	
+class CGV_API vr_view_interactor : public stereo_view_interactor	
 {
+	ivec4 cgv_viewport;
+	void* fbo_handle;
+	/**@name head tracking */
+	//@{
+	/// head orientation from tracker orientation
+	mat3 head_tracker_orientation;
+	/// head position from tracker location
+	vec3 head_tracker_position;
+	//@}
+
+	/**@name calibation of tracker coordinate system
+	
+	the calibration affects the tracked poses as follows:
+
+	mat3 rotation = cgv::math::rotate3<float>(tracking_rotation, vec3(0, 1, 0));
+	mat3 orientation_world = rotation * orientation_raw;
+	vec3 position_world = rotation * (position_raw - tracking_rotation_origin) + tracking_origin;
+
+	or more brief:
+	O = R*Q;
+	p = R*(q-q0) + o;
+
+	p = R*(q-q0) + o;
+	o = p - R*(q - q0);
+
+	to identify the current focus point f in world coordinates with the raw tracker position q and the rotation origin also with q we compute
+
+	q0 = q;
+	o  = p;
+
+	Now rotation will happen around calibration point.
+	*/
+	//@{
+	/// rotation angle around the y-axis
+	float tracking_rotation;
+	/// location in tracking coordinate system around which rotation is defined
+	vec3 tracking_rotation_origin;
+	/// origin of tracking coordinate system given in world coordinates
+	vec3 tracking_origin;
+	//@}
 public:
 	typedef cgv::math::fmat<float,3,4> mat34;
 protected:
 	/// whether the window shows a separate view onto the scene or the one of the current vr kit
 	bool separate_view;
+	/// whether to not render for kits
+	bool dont_render_kits;
 	/// whether to blit in the views of the vr kits
 	bool blit_vr_views;
 	// extent of blitting
 	int blit_width;
-
+	/// scale of aspect ratio used for blitting
+	float blit_aspect_scale;
+	/// selection of view of current hmd used in case of no separate view (1 ... left, 2 ... right, 3 ... both)
+	int none_separate_view;
+	int head_tracker;
 	int rendered_eye;
 	vr::vr_kit* rendered_kit_ptr;
 	int rendered_kit_index;
@@ -129,6 +174,29 @@ public:
 	const vr::vr_kit_state* get_current_vr_state() const;
 	//@}
 
+	/**@name vr viewing*/
+	//@{
+	//! query view direction of a vr kit
+	/*! if parameter vr_kit_idx defaults to -1, the view direction of the current vr kit is returned
+	    if there are not vr kits or the \c vr_kit_idx parameter is invalid the view direction of the 
+		\c vr_view_interactor is returned*/
+	dvec3 get_view_dir_of_kit(int vr_kit_idx = -1) const;
+	//! query view up direction of a vr kit
+	/*! if parameter vr_kit_idx defaults to -1, the view up direction of the current vr kit is returned
+		if there are not vr kits or the \c vr_kit_idx parameter is invalid the view up direction of the
+		\c vr_view_interactor is returned*/
+	dvec3 get_view_up_dir_of_kit(int vr_kit_idx = -1) const;
+	//! query the eye position of a vr kit.
+	/*! parameter \c eye is one of
+	    -1 .. left eye
+		 0 .. cyclopic eye
+		 1 .. right eye
+		if parameter vr_kit_idx defaults to -1, the eye position of the current vr kit is returned
+		if there are not vr kits or the \c vr_kit_idx parameter is invalid the eye position of the
+		\c vr_view_interactor is returned*/
+	dvec3 get_eye_of_kit(int eye = 0, int vr_kit_idx = -1) const;
+	//@}
+	
 	/**@name vr rendering*/
 	//@{
 	/// check whether separate view is rendered

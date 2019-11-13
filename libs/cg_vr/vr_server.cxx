@@ -173,14 +173,14 @@ namespace cgv {
 			if ((flags & VRE_STATUS) != 0) {
 				if (new_state.hmd.status != last_state.hmd.status)
 					on_status_change(kit_handle, -1, last_state.hmd.status, new_state.hmd.status);
-				if (new_state.controller[0].status != last_state.controller[0].status)
-					on_status_change(kit_handle, 0, last_state.controller[0].status, new_state.controller[0].status);
-				if (new_state.controller[1].status != last_state.controller[1].status)
-					on_status_change(kit_handle, 1, last_state.controller[1].status, new_state.controller[1].status);
+				for (int ci = 0; ci < 4; ++ci) {
+					if (new_state.controller[ci].status != last_state.controller[ci].status)
+						on_status_change(kit_handle, ci, last_state.controller[ci].status, new_state.controller[ci].status);
+				}
 			}
 			// check for key changes and emit key_event 
 			if ((flags & (VRE_KEY+ VRE_STICK+VRE_STICK_KEY)) != 0) {
-				for (int c = 0; c < 2; ++c) {
+				for (int c = 0; c < 4; ++c) {
 					if (new_state.controller[c].status != vr::VRS_DETACHED &&
 						last_state.controller[c].status != vr::VRS_DETACHED &&
 						new_state.controller[c].button_flags != last_state.controller[c].button_flags) {
@@ -267,7 +267,7 @@ namespace cgv {
 			if (((flags & VRE_THROTTLE) != 0) || ((flags & VRE_STICK) != 0)) {
 				vr::vr_kit* kit_ptr = vr::get_vr_kit(kit_handle);
 				if (kit_ptr) {
-					for (int c = 0; c < 2; ++c) {
+					for (int c = 0; c < 4; ++c) {
 						if (new_state.controller[c].status != vr::VRS_DETACHED &&
 							last_state.controller[c].status != vr::VRS_DETACHED &&
 							array_unequal(new_state.controller[c].axes, last_state.controller[c].axes, 8)) {
@@ -332,12 +332,13 @@ namespace cgv {
 					vr_pose_event vrpe(kit_handle, -1, new_state, new_state.hmd.pose, last_state.hmd.pose, kit_index, time);
 					on_event(vrpe);
 				}
-				for (int c = 0; c < 2; ++c) {
-					if (array_unequal(new_state.controller[c].pose, last_state.controller[c].pose, 12)) {
-						vr_pose_event vrpe(kit_handle, c, new_state, new_state.controller[c].pose, last_state.controller[c].pose, kit_index, time);
-						on_event(vrpe);
+				for (int c = 0; c < 4; ++c) 
+					if (new_state.controller[c].status != vr::VRS_DETACHED) {
+						if (array_unequal(new_state.controller[c].pose, last_state.controller[c].pose, 12)) {
+							vr_pose_event vrpe(kit_handle, c, new_state, new_state.controller[c].pose, last_state.controller[c].pose, kit_index, time);
+							on_event(vrpe);
+						}
 					}
-				}
 			}
 			last_state = new_state;
 		}
@@ -438,7 +439,7 @@ namespace cgv {
 			if (iter == vr_kit_handles.end())
 				return false;
 			size_t i = iter - vr_kit_handles.begin();
-			emit_events_and_update_state(kit_handle, new_state, i, flags, time);
+			emit_events_and_update_state(kit_handle, new_state, (int)i, flags, time);
 			return true;
 		}
 		/// return a reference to gamepad server singleton
@@ -448,7 +449,7 @@ namespace cgv {
 			return server;
 		}
 
-		window_ptr& ref_dispatch_window_pointer()
+		window_ptr& ref_dispatch_window_pointer_vr()
 		{
 			static window_ptr w;
 			return w;
@@ -463,7 +464,7 @@ namespace cgv {
 		{
 			if (w.empty())
 				w = application::get_window(0);
-			ref_dispatch_window_pointer() = w;
+			ref_dispatch_window_pointer_vr() = w;
 			connect(ref_vr_server().on_event, dispatch_vr_event);
 			if (connect_device_change_only_to_animation_trigger)
 				connect_copy(get_animation_trigger().shoot, cgv::signal::rebind(&ref_vr_server(), &vr_server::check_device_changes, cgv::signal::_1));

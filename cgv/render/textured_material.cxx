@@ -35,7 +35,7 @@ int textured_material::add_texture_reference(cgv::render::texture& tex)
 	while (textures.size() < image_file_names.size())
 		textures.push_back(0);
 	textures.push_back(&tex);
-	return textures.size() - 1;
+	return (int)textures.size() - 1;
 }
 
 /// call this to ensure that the textures are loaded - typically done in the init_frame method of a drawable

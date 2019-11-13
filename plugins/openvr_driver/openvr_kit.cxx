@@ -1,4 +1,5 @@
 #include "openvr_kit.h"
+#include "openvr_camera.h"
 #include <iostream>
 
 namespace vr {
@@ -74,12 +75,16 @@ openvr_kit::openvr_kit(unsigned _width, unsigned _height,
 	const std::string& _name, bool _ffb_support, bool _wireless)
 	: gl_vr_display(_width, _height, _driver, _hmd, _name, _ffb_support, _wireless)
 {
+	camera = new openvr_camera(_hmd);
 }
 
 /// declare virtual destructor
 openvr_kit::~openvr_kit()
 {
-
+	if (has_camera()) {
+		camera->stop();
+		destruct_camera();
+	}
 }
 
 void extract_controller_state(const VRControllerState_t& input, vr_controller_state& output)
@@ -117,26 +122,26 @@ void extract_trackable_state(const vr::TrackedDevicePose_t& tracked_pose, vr_tra
 /// retrieve the current state of vr kit and optionally wait for poses optimal for rendering, return false if vr_kit is not connected anymore
 bool openvr_kit::query_state(vr_kit_state& state, int pose_query)
 {
-	vr::TrackedDeviceIndex_t left_index = get_hmd()->GetTrackedDeviceIndexForControllerRole(TrackedControllerRole_LeftHand);
-	vr::TrackedDeviceIndex_t right_index = get_hmd()->GetTrackedDeviceIndexForControllerRole(TrackedControllerRole_RightHand);
+	vr::TrackedDeviceIndex_t dis[2] = {
+		get_hmd()->GetTrackedDeviceIndexForControllerRole(TrackedControllerRole_LeftHand),
+		get_hmd()->GetTrackedDeviceIndexForControllerRole(TrackedControllerRole_RightHand)
+	};
 //	if (pose_query == 1) {
-		VRControllerState_t controller_state;
-		vr::TrackedDevicePose_t tracked_pose;
-		get_hmd()->GetControllerStateWithPose(TrackingUniverseRawAndUncalibrated, left_index, &controller_state, sizeof(controller_state), &tracked_pose);
-		//std::cout << controller_state.rAxis[0].x << "," << controller_state.rAxis[0].y << "  " << controller_state.ulButtonPressed << ";" << controller_state.ulButtonTouched << " <" << controller_state.unPacketNum << ">" << std::endl;
-		//std::cout << controller_state.ulButtonPressed << ";" << controller_state.ulButtonTouched << "   <->    ";
-		extract_controller_state(controller_state, state.controller[0]);
-		//if (pose_query == 1)
-			extract_trackable_state(tracked_pose, state.controller[0]);
-
-		get_hmd()->GetControllerStateWithPose(TrackingUniverseRawAndUncalibrated, right_index, &controller_state, sizeof(controller_state), &tracked_pose);
-		//std::cout << controller_state.ulButtonPressed << ";" << controller_state.ulButtonTouched << std::endl;
-		extract_controller_state(controller_state, state.controller[1]);
-//		if (pose_query == 1)
-			extract_trackable_state(tracked_pose, state.controller[1]);
-		//return true;
+	for (int ci = 0; ci < 2; ++ci) {
+		if (dis[ci] == -1)
+			state.controller[ci].status = VRS_DETACHED;
+		else {
+			VRControllerState_t controller_state;
+			vr::TrackedDevicePose_t tracked_pose;
+			get_hmd()->GetControllerStateWithPose(TrackingUniverseRawAndUncalibrated, dis[ci], &controller_state, sizeof(controller_state), &tracked_pose);
+			//std::cout << controller_state.rAxis[0].x << "," << controller_state.rAxis[0].y << "  " << controller_state.ulButtonPressed << ";" << controller_state.ulButtonTouched << " <" << controller_state.unPacketNum << ">" << std::endl;
+			//std::cout << controller_state.ulButtonPressed << ";" << controller_state.ulButtonTouched << "   <->    ";
+			extract_controller_state(controller_state, state.controller[ci]);
+			//if (pose_query == 1)
+			extract_trackable_state(tracked_pose, state.controller[ci]);
+		}
+	}
 	/*	}
-
 	VRControllerState_t controller_state;
 	if (!get_hmd()->IsInputAvailable()) {
 		std::cerr << "no input" << std::endl;
@@ -151,7 +156,17 @@ bool openvr_kit::query_state(vr_kit_state& state, int pose_query)
 		return true;
 
 	static vr::TrackedDevicePose_t tracked_poses[vr::k_unMaxTrackedDeviceCount];
-	vr::VRCompositor()->WaitGetPoses(tracked_poses, vr::k_unMaxTrackedDeviceCount, NULL, 0);
+	if (vr::VRCompositor()) {
+		vr::VRCompositor()->WaitGetPoses(tracked_poses, vr::k_unMaxTrackedDeviceCount, NULL, 0);
+		state.hmd.status = vr::VRS_TRACKED;
+	}
+	else {
+		vr::VRSystem()->GetDeviceToAbsoluteTrackingPose(vr::TrackingUniverseRawAndUncalibrated, 0.01f, tracked_poses, vr::k_unMaxTrackedDeviceCount);
+		state.hmd.status = vr::VRS_DETACHED;
+	}
+	int next_generic_controller_index = 2;
+	state.controller[2].status = vr::VRS_DETACHED;
+	state.controller[3].status = vr::VRS_DETACHED;
 	for (int device_index = 0; device_index < vr::k_unMaxTrackedDeviceCount; ++device_index)
 	{
 		if (tracked_poses[device_index].bPoseIsValid) {
@@ -169,6 +184,13 @@ bool openvr_kit::query_state(vr_kit_state& state, int pose_query)
 				break;
 			case TrackedDeviceClass_HMD:
 				tracked_pose_ptr = &state.hmd;
+				break;
+			case TrackedDeviceClass_GenericTracker :
+				if (next_generic_controller_index < 4) {
+					tracked_pose_ptr = &state.controller[next_generic_controller_index];
+					state.controller[next_generic_controller_index].status = vr::VRS_TRACKED;
+					++next_generic_controller_index;
+				}
 				break;
 			}
 			if (tracked_pose_ptr) {
@@ -217,6 +239,8 @@ void openvr_kit::put_projection_matrix(int eye, float z_near, float z_far, float
 void openvr_kit::submit_frame()
 {
 	vr::Texture_t leftEyeTexture = { (void*)(uintptr_t)tex_id[0], vr::TextureType_OpenGL, vr::ColorSpace_Gamma };
+	if (!vr::VRCompositor())
+		return;
 	vr::VRCompositor()->Submit(vr::Eye_Left, &leftEyeTexture);
 	vr::Texture_t rightEyeTexture = { (void*)(uintptr_t)tex_id[1], vr::TextureType_OpenGL, vr::ColorSpace_Gamma };
 	vr::VRCompositor()->Submit(vr::Eye_Right, &rightEyeTexture);
@@ -227,12 +251,12 @@ bool openvr_kit::init_fbos()
 {
 	if (!gl_vr_display::init_fbos())
 		return false;
-
+/*
 	if (!vr::VRCompositor()) {
 		last_error = "Compositor initialization failed. See log file for details";
 		return false;
 	}
-
+	*/
 	return true;
 }
 

@@ -175,7 +175,7 @@ void plot2d::clear(cgv::render::context& ctx)
 
 void plot2d::draw_sub_plot(cgv::render::context& ctx, unsigned i)
 {
-	unsigned count = set_attributes(ctx, i, samples);
+	GLsizei count = (GLsizei)set_attributes(ctx, i, samples);
 	if (count == 0)
 		return;
 	const plot2d_config& spc = ref_sub_plot2d_config(i);
@@ -365,6 +365,8 @@ void plot2d::draw(cgv::render::context& ctx)
 	for (unsigned i = 0; i<samples.size(); ++i) {
 		// skip unvisible and empty sub plots
 		if (!ref_sub_plot2d_config(i).show_plot)
+			continue;
+		if (samples[i].empty())
 			continue;
 		draw_sub_plot(ctx, i);
 	}

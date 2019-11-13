@@ -1,5 +1,5 @@
 /**
-\mainpage Description
+\page space_pilot space_pilot header
 
 \section intro What is this about?
 	This package contains a C like interface for for communicating with 3dconnexion devices that are handled by 3DxWare.
@@ -72,7 +72,7 @@
 #pragma once
 
 /*!
-  \file   spacepilot.h
+  \file space_pilot.h
 
  A low level api for 3d-devices by 3dconnexion.
  This library provides a low level api for devices by 3dconnexion (eg. Space Pilot, Space Navigator).

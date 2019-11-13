@@ -2,6 +2,7 @@
 
 #include <stack>
 #include <cgv/render/context.h>
+#include <cgv/render/shader_program.h>
 #include <cgv_gl/gl/gl.h>
 
 #include "lib_begin.h"
@@ -42,8 +43,10 @@ private:
 	void frame_buffer_unbind(frame_buffer_base& fbb) const;
 	*/
 protected:
+	shader_program progs[4];
 	mutable cgv::type::uint64_type max_nr_indices, max_nr_vertices;
 	void ensure_configured() const;
+	void destruct_render_objects();
 	void put_id(void* handle, void* ptr) const;
 	void draw_elements_void(GLenum mode, size_t count, GLenum type, size_t type_size, const void* indices) const;
 	template <typename T>
@@ -173,6 +176,14 @@ public:
 	///
 	void draw_light_source(const cgv::media::illum::light_source& l, float intensity_scale, float light_scale); 
 	//@}
+	/// announce an external viewport change performed with rendering API to the cgv framework providing space to temporarily store viewport of cgv framework
+	void announce_external_viewport_change(ivec4& cgv_viewport_storage);
+	/// restore cgv viewport to the state before the external change
+	void recover_from_external_viewport_change(const ivec4& cgv_viewport_storage);
+	/// announce an external frame buffer change performed with rendering API to the cgv framework providing space to temporarily store frame buffer of cgv framework
+	void announce_external_frame_buffer_change(void*& cgv_fbo_storage);
+	/// restore cgv frame buffer to the state before the external change
+	void recover_from_external_frame_buffer_change(void* cgv_fbo_storage);
 
 	/**@name text output*/
 	//@{

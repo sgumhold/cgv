@@ -91,7 +91,7 @@ public: //@<
 	/// return reference to image file name of i-th image file
 	std::string& ref_image_file_name(int i) { return image_file_names[i]; }
 	/// virtual method to query number of textures
-	virtual unsigned get_nr_textures() const { return get_nr_image_files(); }
+	virtual size_t get_nr_textures() const { return get_nr_image_files(); }
 	///
 	void set_diffuse_index(int i) { diffuse_index = i; }
 	int  get_diffuse_index() const { return diffuse_index; }
