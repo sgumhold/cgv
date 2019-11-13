@@ -116,6 +116,7 @@ protected:
 
 	int nr_cameras;
 	int frame_width, frame_height;
+	int frame_split;
 	float seethrough_gamma;
 	mat4 camera_to_head_matrix[2];
 	cgv::math::fmat<float, 4, 4> camera_projection_matrix[4];
@@ -142,6 +143,7 @@ protected:
 		if (!camera_ptr)
 			return;
 		nr_cameras = camera_ptr->get_nr_cameras();
+		frame_split = camera_ptr->get_frame_split();
 		for (int i = 0; i < nr_cameras; ++i) {
 			std::cout << "camera " << i << "(" << nr_cameras << "):" << std::endl;
 			camera_ptr->put_camera_intrinsics(i, false, &focal_lengths[i](0), &camera_centers[i](0));
@@ -260,6 +262,7 @@ protected:
 public:
 	vr_test() 
 	{
+		frame_split = 0;
 		extent_texcrd = vec2(0.5f, 0.5f);
 		center_left  = vec2(0.5f,0.25f);
 		center_right = vec2(0.5f,0.25f);
@@ -329,8 +332,9 @@ public:
 			if (nr_cameras > 0) {
 				connect_copy(add_button("start")->click, cgv::signal::rebind(this, &vr_test::start_camera));
 				connect_copy(add_button("stop")->click, cgv::signal::rebind(this, &vr_test::stop_camera));
-				add_view("frame_width", frame_width, "", "w=50", "  ");
-				add_view("frame_height", frame_height, "", "w=50");
+				add_view("frame_width", frame_width, "", "w=20", "  ");
+				add_view("height", frame_height, "", "w=20", "  ");
+				add_view("split", frame_split, "", "w=50");
 				add_member_control(this, "undistorted", undistorted, "check");
 				add_member_control(this, "shared_texture", shared_texture, "check");
 				add_member_control(this, "max_rectangle", max_rectangle, "check");
@@ -471,6 +475,7 @@ public:
 				return true;
 			case cgv::gui::SA_MOVE:
 			case cgv::gui::SA_DRAG:
+				return true;
 				std::cout << "stick " << vrse.get_stick_index()
 					<< " of controller " << vrse.get_controller_index()
 					<< " " << cgv::gui::get_stick_action_string(vrse.get_action())
@@ -649,12 +654,13 @@ public:
 			if (kit_ptr) {
 				vr::vr_camera* camera_ptr = kit_ptr->get_camera();
 				if (camera_ptr && camera_ptr->get_state() == vr::CS_STARTED) {
-					uint32_t width = frame_width, height = frame_height;
+					uint32_t width = frame_width, height = frame_height, split = frame_split;
 					if (shared_texture) {
 						box2 tex_range;
 						if (camera_ptr->get_gl_texture_id(camera_tex_id, width, height, undistorted, &tex_range.ref_min_pnt()(0))) {
 							camera_aspect = (float)width / height;
-							switch (camera_ptr->get_frame_split()) {
+							split = camera_ptr->get_frame_split();
+							switch (split) {
 							case vr::CFS_VERTICAL:
 								camera_aspect *= 2;
 								break;
@@ -670,7 +676,8 @@ public:
 						std::vector<uint8_t> frame_data;
 						if (camera_ptr->get_frame(frame_data, width, height, undistorted, max_rectangle)) {
 							camera_aspect = (float)width / height;
-							switch (camera_ptr->get_frame_split()) {
+							split = camera_ptr->get_frame_split();
+							switch (split) {
 							case vr::CFS_VERTICAL:
 								camera_aspect *= 2;
 								break;
@@ -707,6 +714,10 @@ public:
 						update_member(&center_left(1));
 						update_member(&center_right(0));
 						update_member(&center_right(1));
+					}
+					if (split != frame_split) {
+						frame_split = split;
+						update_member(&frame_split);
 					}
 				}
 			}
@@ -772,7 +783,8 @@ public:
 					prog.set_uniform(ctx, "texture_matrix", TM);
 
 					prog.set_uniform(ctx, "extent_texcrd", extent_texcrd);
-					prog.set_uniform(ctx, "seethrough_gamma", seethrough_gamma);					
+					prog.set_uniform(ctx, "seethrough_gamma", seethrough_gamma);
+					prog.set_uniform(ctx, "frame_split", frame_split);
 					prog.set_uniform(ctx, "center_left", center_left);
 					prog.set_uniform(ctx, "center_right", center_right);
 					prog.set_uniform(ctx, "use_matrix", use_matrix);
@@ -869,7 +881,7 @@ public:
 		}
 
 		// draw label
-		if (label_tex.is_created()) {
+		if (vr_view_ptr && label_tex.is_created()) {
 			cgv::render::shader_program& prog = ctx.ref_default_shader_program(true);
 			int pi = prog.get_position_index();
 			int ti = prog.get_texcoord_index();

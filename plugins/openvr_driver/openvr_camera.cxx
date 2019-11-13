@@ -136,27 +136,27 @@ namespace vr {
 			}
 			std::cout << "\n" << std::endl;
 			*/
-
-			// but it does not work, so we query the eye to head transformations instead
-			put_pose_matrix(hmd->GetEyeToHeadTransform(Eye_Left), left_camera_to_head);
-			put_pose_matrix(hmd->GetEyeToHeadTransform(Eye_Right), right_camera_to_head);
-
-			/*
-			std::cout << "left eye to head:";
-			for (i = 0; i < 12; ++i) {
-				if (i % 3 == 0)
-					std::cout << std::endl;
-				std::cout << " " << left_camera_to_head[i];
+			// but sometime this does not work, so we query the eye to head transformations instead
+			if (right_camera_to_head[0] < 0.8f || right_camera_to_head[4] < 0.8f || right_camera_to_head[8] < 0.8f) {
+				put_pose_matrix(hmd->GetEyeToHeadTransform(Eye_Left), left_camera_to_head);
+				put_pose_matrix(hmd->GetEyeToHeadTransform(Eye_Right), right_camera_to_head);
+				/*
+				std::cout << "left eye to head:";
+				for (i = 0; i < 12; ++i) {
+					if (i % 3 == 0)
+						std::cout << std::endl;
+					std::cout << " " << left_camera_to_head[i];
+				}
+				std::cout << "\n" << std::endl;
+				std::cout << "right eye to head:";
+				for (i = 0; i < 12; ++i) {
+					if (i % 3 == 0)
+						std::cout << std::endl;
+					std::cout << " " << right_camera_to_head[i];
+				}
+				std::cout << "\n" << std::endl;
+				*/
 			}
-			std::cout << "\n" << std::endl;
-			std::cout << "right eye to head:";
-			for (i = 0; i < 12; ++i) {
-				if (i % 3 == 0)
-					std::cout << std::endl;
-				std::cout << " " << right_camera_to_head[i];
-			}
-			std::cout << "\n" << std::endl;
-			*/
 		}
 		// query frame layout
 		int32_t frame_layout = hmd->GetInt32TrackedDeviceProperty(vr::k_unTrackedDeviceIndex_Hmd, Prop_CameraFrameLayout_Int32, &property_error);
