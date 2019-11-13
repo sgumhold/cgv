@@ -107,22 +107,56 @@ namespace vr {
 		else {
 			// this would be the correct implementation
 
+			HmdMatrix34_t M[2];
+			uint32_t cnt = hmd->GetArrayTrackedDeviceProperty(vr::k_unTrackedDeviceIndex_Hmd, Prop_CameraToHeadTransforms_Matrix34_Array,
+				k_unHmdMatrix34PropertyTag, M, 2 * sizeof(HmdMatrix34_t), &property_error);
+			if (property_error != vr::TrackedProp_Success) {
+				last_error = "failed to query camera to head transformations of openvr stereo camera: ";
+				last_error += hmd->GetPropErrorNameFromEnum(property_error);
+				return false;
+			}
+			put_pose_matrix(M[0], left_camera_to_head);
+			put_pose_matrix(M[1], right_camera_to_head);
+
 			/*
-				HmdMatrix34_t M[2];
-				uint32_t cnt = hmd->GetArrayTrackedDeviceProperty(vr::k_unTrackedDeviceIndex_Hmd, Prop_CameraToHeadTransforms_Matrix34_Array,
-					k_unHmdMatrix34PropertyTag, M, 2 * sizeof(HmdMatrix34_t), &property_error);
-				if (property_error != vr::TrackedProp_Success) {
-					last_error = "failed to query camera to head transformations of openvr stereo camera: ";
-					last_error += hmd->GetPropErrorNameFromEnum(property_error);
-					return false;
-				}
-				put_pose_matrix(M[0], left_camera_to_head);
-				put_pose_matrix(M[1], right_camera_to_head);
+			std::cout << "left camera to head:";
+			int i;
+			for (i = 0; i < 12; ++i) {
+				if (i % 3 == 0)
+					std::cout << std::endl;
+				std::cout << " " << left_camera_to_head[i];
+			}
+			std::cout << "\n" << std::endl;
+
+			std::cout << "right camera to head:";
+			for (i = 0; i < 12; ++i) {
+				if (i % 3 == 0)
+					std::cout << std::endl;
+				std::cout << " " << right_camera_to_head[i];
+			}
+			std::cout << "\n" << std::endl;
 			*/
 
 			// but it does not work, so we query the eye to head transformations instead
 			put_pose_matrix(hmd->GetEyeToHeadTransform(Eye_Left), left_camera_to_head);
 			put_pose_matrix(hmd->GetEyeToHeadTransform(Eye_Right), right_camera_to_head);
+
+			/*
+			std::cout << "left eye to head:";
+			for (i = 0; i < 12; ++i) {
+				if (i % 3 == 0)
+					std::cout << std::endl;
+				std::cout << " " << left_camera_to_head[i];
+			}
+			std::cout << "\n" << std::endl;
+			std::cout << "right eye to head:";
+			for (i = 0; i < 12; ++i) {
+				if (i % 3 == 0)
+					std::cout << std::endl;
+				std::cout << " " << right_camera_to_head[i];
+			}
+			std::cout << "\n" << std::endl;
+			*/
 		}
 		// query frame layout
 		int32_t frame_layout = hmd->GetInt32TrackedDeviceProperty(vr::k_unTrackedDeviceIndex_Hmd, Prop_CameraFrameLayout_Int32, &property_error);
