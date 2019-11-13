@@ -1656,13 +1656,18 @@ void stereo_view_interactor::set_default_view()
 bool stereo_view_interactor::self_reflect(cgv::reflect::reflection_handler& srh)
 {
 	return 
+	srh.reflect_member("use_gamepad", use_gamepad) &&
+	srh.reflect_member("gamepad_emulation", gamepad_emulation) &&
+	srh.reflect_member("deadzone", deadzone) &&
+	srh.reflect_member("pan_sensitivity", pan_sensitivity) &&
 	srh.reflect_member("rotate_sensitivity", rotate_sensitivity) &&
 	srh.reflect_member("zoom_sensitivity", zoom_sensitivity) &&
 	srh.reflect_member("focus_x", view::focus(0)) &&
 	srh.reflect_member("focus_y", view::focus(1)) &&
 	srh.reflect_member("focus_z", view::focus(2)) &&
+	srh.reflect_member("adapt_aspect_ratio_to_stereo_mode", adapt_aspect_ratio_to_stereo_mode) &&
 	srh.reflect_member("stereo", stereo_enabled) &&
-	srh.reflect_member("eye_dist", eye_distance) &&
+	srh.reflect_member("eye_distance", eye_distance) &&
 	srh.reflect_member("stereo_mode", stereo_mode) &&
 	srh.reflect_member("mono_mode", mono_mode) &&
 	srh.reflect_member("anaglyph_config", anaglyph_config) &&
