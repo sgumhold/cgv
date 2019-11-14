@@ -1,0 +1,10 @@
+@=
+projectGUID="F04E9B88-FB9E-48C5-951E-C288A6F79891";
+projectType="application";
+projectName="test_glsu_glfw";
+excludeSourceFiles=["test_glsu_glut.cxx", "test_glsu_fltk.cxx"];
+addIncDirs=[CGV_DIR."/libs/glsu",CGV_DIR."/3rd"];
+addProjectDeps=["glfw", "glsu"];
+addDependencies=["glu"];
+addProjectDirs=[CGV_DIR."/libs",CGV_DIR."/3rd/glfw"];
+

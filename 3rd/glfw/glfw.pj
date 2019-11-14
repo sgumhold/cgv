@@ -1,0 +1,22 @@
+@=
+projectName="glfw";
+projectType="library";
+projectGUID="CE41F562-AC27-482C-8396-DEBDAE669CE2";
+addStaticDefines=[ ["GLFW_STATIC","all"] ];
+addProjectDirs=[CGV_DIR."/3rd/glew"];
+addProjectDeps=["glew"];
+addDependencies=["opengl"];
+adDefines=["_GLFW_USE_CONFIG_H"];
+addIncDirs=[ [CGV_DIR."/3rd/glfw/include","all"], INPUT_DIR ];
+if (SYSTEM=="windows") {
+	addSharedDefines=[ "_GLFW_BUILD_DLL"];
+	excludeSourceDirs=["unix"];
+	addDefines=[ ["_GLFW_WIN32", "all"], ["_WIN32","all"] ];
+	addIncDirs=addIncDirs.[INPUT_DIR."/win32"];
+	addDependencies=addDependencies.[["user32", "all"], ["gdi32", "all"],["ws2_32","all"],["msimg32","all"]];
+}
+else {
+	excludeSourceDirs=["win32"];
+	addDefines=[ ["_GLFW_X11", "all"] ];
+	addIncDirs=addIncDirs.[INPUT_DIR."/unix"];
+}
