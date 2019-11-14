@@ -1,3 +1,4 @@
+#include <cgv/base/base.h>
 #include "vr_render_helpers.h"
 #include <cgv/math/ftransform.h>
 #include <cgv/math/inv.h>
@@ -53,5 +54,30 @@ namespace vr {
 	cgv::render::render_types::mat4 get_texture_transform(const vr_kit* vr_kit_ptr, const vr_kit_state& state, float z_near, float z_far, int eye, bool undistorted)
 	{
 		return get_camera_projection_transform(vr_kit_ptr, z_near, z_far, eye, undistorted) * get_world_to_camera_transform(vr_kit_ptr, state, eye);
+	}
+	bool configure_seethrough_shader_program(cgv::render::context& ctx, cgv::render::shader_program& prog, uint32_t frame_width, uint32_t frame_height, const vr_kit* vr_kit_ptr, const vr_kit_state& state, float z_near, float z_far, int eye, bool undistorted)
+	{
+		vr::vr_camera* camera_ptr = vr_kit_ptr->get_camera();
+		if (!camera_ptr)
+			return false;
+		
+		int nr_cameras = camera_ptr->get_nr_cameras();
+		int frame_split = camera_ptr->get_frame_split();
+		cgv::render::render_types::vec2 focal_lengths;
+		cgv::render::render_types::vec2 camera_center;
+		camera_ptr->put_camera_intrinsics(eye, true, &focal_lengths(0), &camera_center(0));
+		camera_center(0) /= frame_width;
+		camera_center(1) /= frame_height;
+		cgv::render::render_types::vec2 extent_texcrd = cgv::render::render_types::vec2(0.5f, 0.5f);
+
+		cgv::render::render_types::mat4 TM = vr::get_texture_transform(vr_kit_ptr, state, z_near, z_far, eye, undistorted);
+
+		return
+			prog.set_uniform(ctx, "texture_matrix", TM) &&
+			prog.set_uniform(ctx, "extent_texcrd", extent_texcrd) &&
+			prog.set_uniform(ctx, "frame_split", frame_split) &&
+			prog.set_uniform(ctx, "center_left", camera_center) &&
+			prog.set_uniform(ctx, "center_right", camera_center) &&
+			prog.set_uniform(ctx, "eye", eye);
 	}
 }
