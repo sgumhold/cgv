@@ -778,18 +778,24 @@ public:
 					else
 						camera_tex.enable(ctx, 0);
 					prog.set_uniform(ctx, "texture", 0);
+					prog.set_uniform(ctx, "seethrough_gamma", seethrough_gamma);
+					prog.set_uniform(ctx, "use_matrix", use_matrix);
 
+					// use of convenience function
+					vr::configure_seethrough_shader_program(ctx, prog, frame_width, frame_height,
+						vr_view_ptr->get_current_vr_kit(), *vr_view_ptr->get_current_vr_state(),
+						0.01f, 2 * background_distance, eye, undistorted);
+
+					/* equivalent detailed code relies on more knowledge on program parameters
 					mat4 TM = vr::get_texture_transform(vr_view_ptr->get_current_vr_kit(), *vr_view_ptr->get_current_vr_state(), 0.01f, 2 * background_distance, eye, undistorted);
 					prog.set_uniform(ctx, "texture_matrix", TM);
 
 					prog.set_uniform(ctx, "extent_texcrd", extent_texcrd);
-					prog.set_uniform(ctx, "seethrough_gamma", seethrough_gamma);
 					prog.set_uniform(ctx, "frame_split", frame_split);
 					prog.set_uniform(ctx, "center_left", center_left);
 					prog.set_uniform(ctx, "center_right", center_right);
-					prog.set_uniform(ctx, "use_matrix", use_matrix);
 					prog.set_uniform(ctx, "eye", eye);
-
+					*/
 					prog.enable(ctx);
 					ctx.set_color(rgba(1, 1, 1, 1));
 
