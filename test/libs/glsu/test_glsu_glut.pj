@@ -4,7 +4,7 @@
 @define(projectName="test_glsu_glut")
 @define(addIncDirs=[CGV_DIR."/libs/glsu"])
 @define(addProjectDeps=["glsu"])
-@define(excludeSourceFiles=["test_glsu_fltk.cxx"])
+@define(excludeSourceFiles=["test_glsu_fltk.cxx", "test_glsu_glfw.cxx"])
 @define(mapDeps::freeglut = ["freeglut_static","freeglut_static_d","freeglut","freeglut_d"])
 @define(addDependencies=["glu", "freeglut"])
 @define(addProjectDirs=[CGV_DIR."/libs"])
