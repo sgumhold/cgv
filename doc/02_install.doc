@@ -9,7 +9,7 @@ using namespace cgv;
 The current version of the framework can be found on github https://github.com/sgumhold/cgv.
 
 For a fast start under windows with visual studio do the following:
-- Choose directory (avoid the desktop or library paths in windows) into which to clone the cgv source tree and run the following commands:
+- Choose directory (**avoid paths with spaces such as windows desktop, home or library paths**) into which to clone the cgv source tree and run the following commands:
 \code
 git clone https://github.com/sgumhold/cgv.git
 \endcode
