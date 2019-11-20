@@ -156,6 +156,8 @@ rgbd_control::rgbd_control() :
 	infrared_frame_changed = false;
 	attachment_changed = false;
 
+	prs.measure_point_size_in_pixel = true;
+	prs.point_size = 3.0f;
 	connect(get_animation_trigger().shoot, this, &rgbd_control::timer_event);
 }
 
@@ -287,8 +289,8 @@ void rgbd_control::on_set(void* member_ptr)
 void rgbd_control::on_register()
 {
 	on_device_select_cb();
-//	if (device_mode != DM_DETACHED)
-//		on_start_cb();
+	if (device_mode != DM_DETACHED)
+		on_start_cb();
 }
 
 /// overload to handle unregistration of instances
@@ -383,13 +385,6 @@ void rgbd_control::init_frame(context& ctx)
 		update_texture_from_frame(ctx, warped_color, warped_color_frame, attachment_changed, (color_frame_changed|| depth_frame_changed) &&remap_color);
 		color_frame_changed = false;
 		infrared_frame_changed = false;
-		/*
-		if (depth_frame_changed) {
-			vec3 p = km.track(depth_frame);
-			mouse_pos(0) = p(0);
-			mouse_pos(1) = p(1);
-		}
-		*/
 		depth_frame_changed = false;
 	}
 	else {
@@ -406,7 +401,7 @@ void rgbd_control::draw(context& ctx)
 {
 	ctx.push_modelview_matrix();
 	vec3 flip_vec(flip[0] ? -1.0f : 1.0f, flip[1] ? -1.0f : 1.0f, flip[2] ? -1.0f : 1.0f);
-	ctx.mul_modelview_matrix(cgv::math::scale4<double>(flip_vec[0], -flip_vec[1], flip_vec[2]));
+	ctx.mul_modelview_matrix(cgv::math::scale4<double>(flip_vec[0], -flip_vec[1], -flip_vec[2]));
 	if (P.size() > 0) {
 		ctx.mul_modelview_matrix(cgv::math::translate4<double>(-1.5f,0,0));
 		cgv::render::point_renderer& pr = ref_point_renderer(ctx);
@@ -671,31 +666,34 @@ void rgbd_control::create_gui()
 
 size_t rgbd_control::construct_point_cloud()
 {
-	/*
 	if (remap_color)
-		rgbd_inp.map_color_to_depth(rgbd::FF_DEPTH_RAW, depth2_data.get_ptr<unsigned char>(), rgbd::FF_COLOR_RGB32, color2_data.get_ptr<unsigned char>());
+		rgbd_inp.map_color_to_depth(depth_frame_2, color_frame_2, warped_color_frame_2);
+
 	P2.clear();
 	C2.clear();
-	std::vector<vec3> Q;
-	unsigned short* d_ptr = depth2_data.get_ptr<unsigned short>();
-	unsigned char* c_ptr = color2_data.get_ptr<unsigned char>();
-	for (unsigned y = 0; y < depth_fmt.get_height(); ++y)
-		for (unsigned x = 0; x < depth_fmt.get_width(); ++x) {
-			float point[3];
-			if (rgbd_inp.map_pixel_to_point(x, y, *d_ptr++, FF_DEPTH_RAW, point)) {
-				P2.push_back(vec3(3, point));
-				C2.push_back(reinterpret_cast<rgba8&>(*c_ptr));
-				Q.push_back(vec3(float(x), float(y), (float)d_ptr[-1]));
-				rgba8& col = C2.back();
-				std::swap(col[0], col[2]);
-				col[3] = 255;
+	const unsigned short* depths = reinterpret_cast<const unsigned short*>(&depth_frame_2.frame_data.front());
+	const unsigned char* colors = reinterpret_cast<const unsigned char*>(&warped_color_frame_2.frame_data.front());
+	int i = 0;
+	float s = 1.0f / 255;
+	for (unsigned y = 0; y < depth_frame_2.height; ++y)
+		for (unsigned x = 0; x < depth_frame_2.width; ++x) {
+			unsigned short depth = depths[i] / 8; // divide by 8 in order to remove player index bits
+			if (depth > 0) {
+				P2.push_back(DepthToWorld(x, y, depth));
+				C2.push_back(rgba8(colors[4 * i + 2], colors[4 * i + 1], colors[4 * i], 255));
 			}
-			c_ptr += color_fmt.get_entry_size();
+			++i;
 		}
-	compute_homography(P2, Q);
+	/* debug code to print out bounding box of points */
+	/*
+	box3 box;
+	for (const auto& p : P2)
+		box.add_point(p);
+	std::cout << "constructed " << P2.size() << " points with box = " << box << std::endl;
 	*/
 	return P2.size();
 }
+
 void rgbd_control::calibrate_device()
 {
 	/*

@@ -125,7 +125,7 @@ private:
 
 	/// internal members used for data storage
 	rgbd::frame_type color_frame, depth_frame, ir_frame, warped_color_frame;
-	rgbd::frame_type color_frame_2, depth_frame_2, ir_frame_2;
+	rgbd::frame_type color_frame_2, depth_frame_2, ir_frame_2, warped_color_frame_2;
 
 	std::future<size_t> future_handle;
 	size_t construct_point_cloud();
