@@ -1,4 +1,0 @@
-files:color_mode
-vertex_file:view.glsl
-fragment_file:support.glsl
-fragment_file:fragment.glfs
