@@ -1,0 +1,13 @@
+@=
+projectName="cg_glfw_imgui";
+projectType="plugin";
+projectGUID="46A498D0-5A95-4B55-B1EF-6F178A8C3798";
+addDefines=["USE_GLEW"];
+addProjectDirs=[CGV_DIR."/3rd/jpeg",CGV_DIR."/3rd/png",CGV_DIR."/3rd/glew",CGV_DIR."/3rd/glfw"];
+addProjectDeps=["jpeg","png", "glew", "glfw"];
+addDependencies=["opengl"];
+addIncDirs=[ INPUT_DIR, CGV_DIR."/libs", CGV_DIR."/3rd/jpeg",CGV_DIR."/3rd/png",CGV_DIR."/3rd/zlib"];
+addSharedDefines=["CG_GLFW_IMGUI_EXPORTS"];
+if (SYSTEM=="windows") {
+	addDependencies=addDependencies.[["user32", "all"], ["gdi32", "all"],["ws2_32","all"],["msimg32","all"]];
+}

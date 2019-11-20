@@ -21,6 +21,19 @@ enum Keys {
 	KEY_F10, //!< F10 key
 	KEY_F11, //!< F11 key
 	KEY_F12, //!< F12 key
+	KEY_F13, //!< F13 key
+	KEY_F14, //!< F14 key
+	KEY_F15, //!< F15 key
+	KEY_F16, //!< F16 key
+	KEY_F17, //!< F17 key
+	KEY_F18, //!< F18 key
+	KEY_F19, //!< F19 key
+	KEY_F20, //!< F20 key
+	KEY_F21, //!< F21 key
+	KEY_F22, //!< F22 key
+	KEY_F23, //!< F23 key
+	KEY_F24, //!< F24 key
+	KEY_F25, //!< F25 key
 
 	KEY_Space, //!< space key
 	KEY_Enter, //!< enter key
@@ -29,6 +42,7 @@ enum Keys {
 	KEY_Pause, //!< pause key
 	KEY_Break, //!< break key
 	KEY_Escape, //!< escape key
+	KEY_Menu, //!< menu key
 
 	KEY_Left_Shift, //!< left shift key
 	KEY_Right_Shift, //!< right shift key
