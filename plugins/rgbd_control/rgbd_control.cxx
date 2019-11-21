@@ -64,7 +64,7 @@ rgbd_control::rgbd_control() :
 	remap_color = true;
 
 	device_mode = DM_DEVICE;
-	device_idx = 0;
+	device_idx = -2;
 	pitch = 0;
 	x=y=z=0;
 	aspect = 1;
@@ -395,7 +395,7 @@ void rgbd_control::create_gui()
 {
 	add_decorator("rgbd", "heading", "level=1");
 	unsigned n = rgbd_input::get_nr_devices();
-	string device_def = "enums='detached=-2;dummy=-1";
+	string device_def = "enums='detached=-2;protocol=-1";
 	for (unsigned i=0; i<n; ++i) {
 		device_def += ",";
 		device_def += rgbd_input::get_serial(i);
