@@ -63,7 +63,7 @@ rgbd_control::rgbd_control() :
 	prs.blend_points = false;
 	remap_color = true;
 
-	device_mode = DM_DEVICE;
+	device_mode = DM_DETACHED;
 	device_idx = -2;
 	pitch = 0;
 	x=y=z=0;
@@ -765,6 +765,8 @@ void rgbd_control::on_device_select_cb()
 		device_mode = DM_PROTOCOL;
 	else if (device_idx == -2)
 		device_mode = DM_DETACHED;
+	else 
+		device_mode = DM_DEVICE;
 
 	if (device_mode == DM_DEVICE) {
 		unsigned nr = rgbd_input::get_nr_devices();
