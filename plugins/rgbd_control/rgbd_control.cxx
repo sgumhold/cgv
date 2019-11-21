@@ -788,7 +788,7 @@ void rgbd_control::on_device_select_cb()
 		}
 	}
 	else if (device_mode == DM_PROTOCOL) {
-		rgbd_inp.attach_path(protocol_path);
+		rgbd_inp.attach_path(protocol_path + "/kinect_");
 		update_member(&device_idx);
 		// on_device_select_cb();
 	}
