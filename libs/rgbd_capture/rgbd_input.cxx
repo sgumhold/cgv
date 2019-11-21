@@ -264,9 +264,11 @@ bool rgbd_input::get_frame(InputStreams is, frame_type& frame, int timeOut)
 	}
 	if (rgbd->get_frame(is, frame, timeOut)) {
 		if (!protocol_path.empty()) {
-			string fn = compose_file_name(protocol_path, frame, frame.frame_index);
+			string fn = compose_file_name(protocol_path + "/kinect_", frame, protocol_idx);
 			if (!cgv::utils::file::write(fn, &frame.frame_data.front(), frame.frame_data.size(), false))
 				std::cerr << "rgbd_input::get_frame: could not protocol frame to " << fn << std::endl;
+			else
+				++protocol_idx;
 		}
 		return true;
 	}

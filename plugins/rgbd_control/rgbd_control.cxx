@@ -423,11 +423,18 @@ void rgbd_control::create_gui()
 		connect_copy(add_button("st&art", "shortcut='a'")->click, rebind(this, &rgbd_control::on_start_cb));
 		connect_copy(add_button("&step", "shortcut='s'")->click, rebind(this, &rgbd_control::on_step_cb));
 		connect_copy(add_button("st&op", "shortcut='o'")->click, rebind(this, &rgbd_control::on_stop_cb));
+		align("\b");
+		end_tree_node(nr_color_frames);
+	}
+	if (begin_tree_node("IO", do_protocol, true, "level=2")) {
+		align("\a");
+		add_gui("protocol_path", protocol_path, "directory", "w=150");
+		add_member_control(this, "do_protocol", do_protocol, "toggle");
 		connect_copy(add_button("save")->click, rebind(this, &rgbd_control::on_save_cb));
 		connect_copy(add_button("save point cloud")->click, rebind(this, &rgbd_control::on_save_point_cloud_cb));
 		connect_copy(add_button("load")->click, rebind(this, &rgbd_control::on_load_cb));
 		align("\b");
-		end_tree_node(nr_color_frames);
+		end_tree_node(do_protocol);
 	}
 	if (begin_tree_node("Base", pitch, false, "level=2")) {
 		align("\a");
