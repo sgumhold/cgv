@@ -284,4 +284,14 @@ void rgbd_input::map_color_to_depth(const frame_type& depth_frame, const frame_t
 	rgbd->map_color_to_depth(depth_frame, color_frame, warped_color_frame);
 }
 
+/// map a depth value together with pixel indices to a 3D point with coordinates in meters; point_ptr needs to provide space for 3 floats
+bool rgbd_input::map_depth_to_point(int x, int y, int depth, float* point_ptr) const
+{
+	if (!is_attached()) {
+		cerr << "rgbd_input::map_color_to_depth called on device that has not been attached" << endl;
+		return false;
+	}
+	return rgbd->map_depth_to_point(x, y, depth, point_ptr);
+}
+
 }

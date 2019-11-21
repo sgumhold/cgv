@@ -55,6 +55,8 @@ namespace rgbd {
 		/// map a color frame to the image coordinates of the depth image
 		void map_color_to_depth(const frame_type& depth_frame, const frame_type& color_frame,
 			frame_type& warped_color_frame) const;
+		/// map a depth value together with pixel indices to a 3D point with coordinates in meters; point_ptr needs to provide space for 3 floats
+		bool map_depth_to_point(int x, int y, int depth, float* point_ptr) const;
 	protected:
 		void* camera;
 		void* handles;

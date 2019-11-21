@@ -96,16 +96,7 @@ protected:
 	/// texture, shaders and display lists
 	cgv::data::data_format color_fmt, depth_fmt, infrared_fmt;
 	cgv::render::texture color, depth, infrared, warped_color;
-	dmat4 T;
-	dvec2 ctr, f_p;
-	dvec3 transform_to_world(const dvec3& p_win) const;
 
-	dquat clr_rot;
-	dvec3 clr_tra;
-	dvec2 clr_ctr, clr_f_p;
-	unsigned plane_depth;
-	bool validate_color_camera;
-	void calibrate_device();
 	/// one shader program for each visualization mode
 	cgv::render::shader_program rgbd_prog;
 private:
@@ -129,7 +120,6 @@ private:
 
 	std::future<size_t> future_handle;
 	size_t construct_point_cloud();
-	void compute_homography(const std::vector<vec3>& P, const std::vector<vec3>& Q);
 	bool acquire_next;
 	bool always_acquire_next;
 protected:

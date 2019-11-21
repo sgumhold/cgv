@@ -23,12 +23,16 @@ namespace rgbd {
 		fn += cgv::utils::to_string(idx);
 		return fn + '.' + get_frame_extension(ff);
 	}
+	/// return number of bytes per pixel (ceil(nr_bits_per_pixel/8))
+	unsigned frame_format::get_nr_bytes_per_pixel() const
+	{
+		return nr_bits_per_pixel / 8 + ((nr_bits_per_pixel & 7) == 0 ? 0 : 1);
+	}
 	/// standard computation of the buffer size member
 	void frame_format::compute_buffer_size()
 	{
-		buffer_size = width * height * nr_bits_per_pixel / 8;
+		buffer_size = width * height * get_nr_bytes_per_pixel();
 	}
-
 	/// check whether frame data is allocated
 	bool frame_type::is_allocated() const
 	{
