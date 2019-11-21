@@ -37,6 +37,7 @@ public:
 	bool get_frame(InputStreams is, frame_type& frame, int timeOut);
 	void map_color_to_depth(const frame_type& depth_frame, const frame_type& color_frame,
 		frame_type& warped_color_frame) const;
+	bool map_depth_to_point(int x, int y, int depth, float* point_ptr) const;
 };
 
 }

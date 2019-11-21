@@ -91,8 +91,17 @@ public:
 	/// query a frame of the given input stream
 	bool get_frame(InputStreams is, frame_type& frame, int timeOut);
 	/// map a color frame to the image coordinates of the depth image
-	void map_color_to_depth(const frame_type& depth_frame, const frame_type& color_frame,
-		frame_type& warped_color_frame) const;
+	void map_color_to_depth(const frame_type& depth_frame, const frame_type& color_frame, frame_type& warped_color_frame) const;
+	//! map pixel coordinates and depth to 3d point
+	/*! return whether depth was valid
+	    point_ptr needs to provide space for 3 floats
+		resulting point coordinates are measured in meters with
+		- x pointing to the right
+		- y to the top, and
+		- z in forward direction
+		Careful: the corresponding coordinate system is left handed!
+	*/
+	bool map_depth_to_point(int x, int y, int depth, float* point_ptr) const;
 protected:
 	/// store whether camera has been started
 	bool started;

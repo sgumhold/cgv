@@ -2,6 +2,7 @@
 #include "rgbd_input.h"
 
 #include <cgv/utils/file.h>
+#include <iostream>
 
 using namespace std;
 
@@ -101,8 +102,13 @@ namespace rgbd {
 	void rgbd_emulation::map_color_to_depth(const frame_type& depth_frame, const frame_type& color_frame,
 		frame_type& warped_color_frame) const
 	{
-
+		std::cerr << "map_color_to_depth() not implemented in rgbd_emulation" << std::endl;
 	}
 
+	bool rgbd_emulation::map_depth_to_point(int x, int y, int depth, float* point_ptr) const
+	{
+		std::cerr << "map_depth_to_point() not implemented in rgbd_emulation" << std::endl;
+		return false;
+	}
 
 }

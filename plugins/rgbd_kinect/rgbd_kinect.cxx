@@ -537,6 +537,24 @@ namespace rgbd {
 		}
 	}
 	
+	/// map a depth value together with pixel indices to a 3D point with coordinates in meters; point_ptr needs to provide space for 3 floats
+	bool rgbd_kinect::map_depth_to_point(int x, int y, int depth, float* point_ptr) const
+	{
+		depth /= 8;
+		if (depth == 0)
+			return false;
+
+		static const double fx_d = 1.0 / 5.9421434211923247e+02;
+		static const double fy_d = 1.0 / 5.9104053696870778e+02;
+		static const double cx_d = 3.3930780975300314e+02;
+		static const double cy_d = 2.4273913761751615e+02;
+		double d = 0.001 * depth;
+		point_ptr[0] = float((x - cx_d) * d * fx_d);
+		point_ptr[1] = float((y - cy_d) * d * fy_d);
+		point_ptr[2] = float(d);
+		return true;
+	}
+
 	/// construct CLNUI driver
 	rgbd_kinect_driver::rgbd_kinect_driver()
 	{
