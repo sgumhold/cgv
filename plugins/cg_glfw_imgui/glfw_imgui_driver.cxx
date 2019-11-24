@@ -32,8 +32,8 @@ bool glfw_imgui_driver::enumerate_monitors(std::vector<monitor_description>& mon
 		glfwGetMonitorWorkarea(monitors[i], &md.x, &md.y, reinterpret_cast<int*>(&md.w), reinterpret_cast<int*>(&md.h));
 		int w_mm, h_mm;
 		glfwGetMonitorPhysicalSize(monitors[i], &w_mm, &h_mm);
-		md.dpi_x = (int)(25.4f * md.w / w_mm);
-		md.dpi_y = (int)(25.4f * md.h / h_mm);
+		md.dpi_x = (25.4f * md.w / w_mm);
+		md.dpi_y = (25.4f * md.h / h_mm);
 		monitor_descriptions.push_back(md);
 	}
 	return true;
@@ -334,11 +334,11 @@ protected:
 	}
 	static void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 	{
-		static_cast<glfw_generic_window*>(glfwGetWindowUserPointer(window))->scroll(double xoffset, double yoffset);
+		static_cast<glfw_generic_window*>(glfwGetWindowUserPointer(window))->scroll(xoffset, yoffset);
 	}
 	static void resize_callback(GLFWwindow* window, int width, int height)
 	{
-		static_cast<glfw_generic_window*>(glfwGetWindowUserPointer(window))->resize(width, height);
+		static_cast<glfw_generic_window*>(glfwGetWindowUserPointer(window))->on_resize(width, height);
 	}
 
 	static int get_cursor_index(const std::string& name)
@@ -366,7 +366,7 @@ protected:
 			cursors.push_back(cursors.front()); // todo: nesw cursor
 			cursors.push_back(cursors.front()); // todo: no cursor
 		}
-		return cursors
+		return cursors;
 	}
 	bool recreate_glfw_window(int W, int H, const std::string& title, const cgv::render::render_config* config_ptr = 0, glfw_generic_window* share = 0)
 	{
@@ -515,9 +515,11 @@ public:
 	{
 		// frame size changes
 		if (property == "W" || property == "H") {
-			int w, h, W, H;
+			int w, h, X,Y,W, H;
 			glfwGetWindowSize(glfw_window, &w, &h);
-			glfwGetWindowFrameSize(glfw_window, &W, &H);
+			glfwGetWindowFrameSize(glfw_window, &X, &Y, &W, &H);
+			W -= X;
+			H -= Y;
 			unsigned int new_value;
 			cgv::type::get_variant(new_value, value_type, value_ptr);
 			int new_w = w, new_h = h;
@@ -676,7 +678,6 @@ private:
 	bool in_draw_method;
 	///
 	bool redraw_request;
-
 protected:
 	void on_resize(int w, int h)
 	{
@@ -695,8 +696,28 @@ public:
 	//void change_mode(int m);
 	//static void idle_callback(void* gl_view);
 public:
-	void create();
-	void destroy();
+	//void create();
+	//void destroy();
+	gl_viewer_window(int W, int H, const std::string& title, const cgv::render::render_config* config_ptr = 0, glfw_generic_window* share = 0) :
+		glfw_generic_window(W, H, title, config_ptr, share)
+	{
+
+	}
+	/// clear the current context, typically used in multi-threaded rendering to allow usage of context in several threads
+	void clear_current() const
+	{
+
+	}
+	/// show the %window. This needs to be called after creation to make the %window visible
+	void show(bool modal)
+	{
+		glfwShowWindow(glfw_window);
+	}
+	/// hide the %window
+	void hide()
+	{
+		glfwHideWindow(glfw_window);
+	}
 	/// return the width of the window
 	unsigned get_width() const 
 	{
@@ -740,11 +761,11 @@ public:
 		return glfw_window == glfwGetCurrentContext();
 	}
 	/// return the fltk mode determined from the context_config members
-	int determine_mode();
+	//int determine_mode();
 	/// set the context_config members from the current fltk mode
-	void synch_with_mode();
+	//void synch_with_mode();
 	/// recreate context based on current context config settings
-	bool recreate_context();
+	//bool recreate_context();
 	/// make the current context current if possible
 	bool make_current() const
 	{
@@ -752,40 +773,45 @@ public:
 		return is_current();
 	}
 	/// attach or detach (\c attach=false) an alpha buffer to the current frame buffer if not present
-	void attach_alpha_buffer(bool attach = true);
+	void attach_alpha_buffer(bool attach) {}
 	/// attach or detach (\c attach=false) depth buffer to the current frame buffer if not present
-	void attach_depth_buffer(bool attach = true);
+	void attach_depth_buffer(bool attach) {}
 	/// attach or detach (\c attach=false) stencil buffer to the current frame buffer if not present
-	void attach_stencil_buffer(bool attach = true);
+	void attach_stencil_buffer(bool attach) {}
 	/// return whether the graphics card supports stereo buffer mode
-	bool is_stereo_buffer_supported() const;
+	bool is_stereo_buffer_supported() const { return false; }
 	/// attach or detach (\c attach=false) stereo buffer to the current frame buffer if not present
-	void attach_stereo_buffer(bool attach = true);
+	void attach_stereo_buffer(bool attach) {}
 	/// attach or detach (\c attach=false) accumulation buffer to the current frame buffer if not present
-	void attach_accumulation_buffer(bool attach = true);
+	void attach_accumulation_buffer(bool attach) {}
 	/// attach or detach (\c attach=false) multi sample buffer to the current frame buffer if not present
-	void attach_multi_sample_buffer(bool attach = true);
+	void attach_multi_sample_buffer(bool attach) {}
 	/// the context will be redrawn when the system is idle again
-	void post_redraw();
+	void post_redraw()
+	{
+		redraw_request = true;
+	}
 	/// the context will be redrawn right now. This method cannot be called inside the following methods of a drawable: init, init_frame, draw, finish_draw
-	void force_redraw();
+	void force_redraw()
+	{
+		redraw_request = true;
+	}
 	/// enable the given font face with the given size in pixels
-	void enable_font_face(cgv::media::font::font_face_ptr font_face, float font_size);
-	/// enable phong shading with the help of a shader (enabled by default)
-	void enable_phong_shading();
-	/// disable phong shading
-	void disable_phong_shading();
-	/// return whether the graphics card supports quad buffer mode
-	bool is_quad_buffer_supported() const;
-	//@}
+	void enable_font_face(cgv::media::font::font_face_ptr font_face, float font_size)
+	{
 
+	}
+	/// return whether the graphics card supports quad buffer mode
+	bool is_quad_buffer_supported() const { return true; }
+	//@}
 };
+
 /// create a window of the given type. Currently only the types "viewer with gui", "viewer" and "gui" are supported
 window_ptr glfw_imgui_driver::create_window(int w, int h, const std::string& title, const std::string& window_type)
 {
 	window_ptr wp;
 //	if (window_type == "viewer")
-		wp = window_ptr(new glfw_viewer_window(w, h, title));
+		wp = window_ptr(new gl_viewer_window(w, h, title));
 //	else
 //		if (window_type == "generic")
 //			wp = window_ptr(new glfw_generic_window(0, 0, w, h, title));
@@ -820,9 +846,15 @@ window_ptr glfw_imgui_driver::get_window(unsigned int i)
 	return windows[i];
 }
 /// run the main loop of the window system
-bool glfw_imgui_driver::run();
+bool glfw_imgui_driver::run()
+{
+	return false;
+}
 /// quit the application by closing all windows
-void glfw_imgui_driver::quit(int exit_code);
+void glfw_imgui_driver::quit(int exit_code)
+{
+	exit(exit_code);
+}
 
 /// copy text to the clipboard
 void glfw_imgui_driver::copy_to_clipboard(const std::string& s)
@@ -841,18 +873,38 @@ std::string glfw_imgui_driver::paste_from_clipboard()
 /**@name some basic functionality */
 //@{
 /// ask the user with \c _question to select one of the \c answers, where \c default_answer specifies index of default answer
-int glfw_imgui_driver::question(const std::string& _question, const std::vector<std::string>& answers, int default_answer = -1);
+int glfw_imgui_driver::question(const std::string& _question, const std::vector<std::string>& answers, int default_answer)
+{
+	std::cerr << "glfw_imgui_driver::quetion function not yet implemented" << std::endl;
+	return 0;
+}
 //! query the user for a text, where the second parameter is the default \c text as well as the returned text. 
 /*! If \c password is true, the text is hidden. The function returns false if the user canceled the input of if no gui driver is available. */
-bool glfw_imgui_driver::query(const std::string& question, std::string& text, bool password = false);
+bool glfw_imgui_driver::query(const std::string& question, std::string& text, bool password)
+{
+	std::cerr << "glfw_imgui_driver::query function not yet implemented" << std::endl;
+	return true;
+}
 /// create a text editor
-text_editor_ptr glfw_imgui_driver::create_text_editor(unsigned int w, unsigned int h, const std::string& title, int x, int y);
+text_editor_ptr glfw_imgui_driver::create_text_editor(unsigned int w, unsigned int h, const std::string& title, int x, int y)
+{
+
+}
 /// ask user for an open dialog that can select multiple files, return common path prefix and fill field of filenames
-std::string glfw_imgui_driver::files_open_dialog(std::vector<std::string>& file_names, const std::string& title, const std::string& filter, const std::string& path);
+std::string glfw_imgui_driver::files_open_dialog(std::vector<std::string>& file_names, const std::string& title, const std::string& filter, const std::string& path)
+{
+
+}
 /// ask user for a file to open
-std::string glfw_imgui_driver::file_open_dialog(const std::string& title, const std::string& filter, const std::string& path);
+std::string glfw_imgui_driver::file_open_dialog(const std::string& title, const std::string& filter, const std::string& path)
+{
+
+}
 /// ask user for a file to save
-std::string glfw_imgui_driver::file_save_dialog(const std::string& title, const std::string& filter, const std::string& path);
+std::string glfw_imgui_driver::file_save_dialog(const std::string& title, const std::string& filter, const std::string& path)
+{
+
+}
 //@}
 
 /**@name threading based functionality */
