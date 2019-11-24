@@ -9,7 +9,7 @@
 using namespace cgv::gui;
 
 /// implementation of gui driver with glfw and imgui
-class CGV_API glfw_imgui_driver : public cgv::base::base, public gui_driver
+class CGV_API glfw_imgui_driver : public gui_driver
 {
 protected:
 	/// keep track of the created windows
