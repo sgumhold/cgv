@@ -365,6 +365,7 @@ void plot_base::set_uniforms(cgv::render::context& ctx, cgv::render::shader_prog
 	prog.set_uniform(ctx, "domain_min_pnt", vec3(domain_min.size(), &domain_min(0)));
 	prog.set_uniform(ctx, "domain_max_pnt", vec3(domain_max.size(), &domain_max(0)));
 	prog.set_uniform(ctx, "center_location", center_location);
+	prog.set_uniform(ctx, "offset_percentage", 0.0f);
 	static const char* axis_name = "xyz";
 	for (unsigned ai=0; ai<get_dim(); ++ai)
 		prog.set_uniform(ctx, std::string(1, axis_name[ai])+"_axis_log_scale", get_domain_config_ptr()->axis_configs[ai].log_scale);
@@ -721,6 +722,7 @@ void plot_base::adjust_domain_axis_to_data(unsigned ai, bool adjust_min, bool ad
 			domain_max(ai) = 1.0f;
 		return;
 	}
+
 	if (adjust_min && domain_min(ai) > samples_min)
 		domain_min(ai) = samples_min;
 	if (adjust_max && domain_max(ai) < samples_max)
