@@ -75,6 +75,12 @@ namespace cgv {
 			typedef cgv::math::fvec<int, 3> ivec3;
 			/// declare type of 4d integer vectors
 			typedef cgv::math::fvec<int, 4> ivec4;
+			/// declare type of 2d unsigned integer vectors
+			typedef cgv::math::fvec<unsigned, 2> uvec2;
+			/// declare type of 3d unsigned integer vectors
+			typedef cgv::math::fvec<unsigned, 3> uvec3;
+			/// declare type of 4d unsigned integer vectors
+			typedef cgv::math::fvec<unsigned, 4> uvec4;
 
 		};
 
