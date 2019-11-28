@@ -2,6 +2,5 @@
 projectName="cgv_render";
 projectType="library";
 projectGUID="69D7B3B7-66E4-4d0d-A874-0F6AADC721CD";
-addProjectDirs=[CGV_DIR."/libs/ppp"];
 addProjectDeps=["cgv_utils", "cgv_type", "cgv_reflect", "cgv_data", "cgv_base", "cgv_signal", "cgv_math", "cgv_media", "cgv_ppp"];
 addSharedDefines=["CGV_RENDER_EXPORTS"];
