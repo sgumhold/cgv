@@ -360,6 +360,7 @@ size_t point_cloud::add_point(const Pnt& p)
 	}
 	size_t idx = P.size();
 	P.push_back(p);
+	box_out_of_date = true;
 	return idx;
 }
 
@@ -1354,6 +1355,32 @@ void point_cloud::create_components()
 	comp_box_out_of_date[0] = true;
 	comp_pixrng_out_of_date.resize(1);
 	comp_pixrng_out_of_date[0] = true;
+}
+/// remove all points from the given component
+void point_cloud::clear_component(size_t i)
+{
+	if (!has_components())
+		return;
+	if (i >= components.size())
+		return;
+	size_t beg = components[i].index_of_first_point;
+	size_t cnt = components[i].nr_points;
+	size_t end = beg+cnt;
+	P.erase(P.begin() + beg, P.begin() + end);
+	if (has_components())
+		component_indices.erase(component_indices.begin() + beg, component_indices.begin() + end);
+	if (has_colors())
+		C.erase(C.begin() + beg, C.begin() + end);
+	if (has_normals())
+		N.erase(N.begin() + beg, N.begin() + end);
+	if (has_texture_coordinates())
+		T.erase(T.begin() + beg, T.begin() + end);
+	if (has_pixel_coordinates())
+		I.erase(I.begin() + beg, I.begin() + end);
+	for (size_t j = i + 1; j < get_nr_components(); ++j)
+		components[j].index_of_first_point -= cnt;
+	components[i].nr_points = 0;
+	component_boxes[i].invalidate();
 }
 
 /// deallocate component indices and point ranges

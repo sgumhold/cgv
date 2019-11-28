@@ -316,6 +316,8 @@ public:
 	bool has_components() const;
 	/// allocate component indices and point ranges if not already allocated
 	void create_components();
+	/// remove all points from the given component
+	void clear_component(size_t i);
 	/// deallocate component indices and point ranges
 	void destruct_components();
 	/// return i-th component index as const reference
