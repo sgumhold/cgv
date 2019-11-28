@@ -15,7 +15,7 @@
 #include <cgv/media/mesh/simple_mesh.h>
 #include <cgv_gl/gl/mesh_render_info.h>
 #include <libs/point_cloud/gl_point_cloud_drawable.h>
-
+#include <random>
 ///@ingroup VR
 ///@{
 
@@ -128,29 +128,115 @@ protected:
 		construct_environment(0.2f, 3 * w, 3 * d, h, w, d, h);
 		construct_movable_boxes(tw, td, th, tW, 20);
 	}
+	void generate_point_cloud()
+	{
+		std::default_random_engine r;
+		std::uniform_real_distribution<float> d(0.0f,1.0f);
+		vec3 S(0.0f, 2.0f, 0.0f);
+		vec3 V(1.0f, 0, 0);
+		vec3 U(0.0f, 1.0f, 0);
+		vec3 X = cross(V, U);
+		float aspect = 1.333f;
+		float tan_2 = 0.3f;
+		pc.create_normals();
+		for (int i = 0; i < 10000; ++i) {
+			float x = 2 * d(r) - 1;
+			float y = 2 * d(r) - 1;
+			float z = d(r) + 1;
+			vec3 p = x * aspect * tan_2 * z * X + y * tan_2 * z * U + z*V;
+			size_t pi = pc.add_point(S+p);
+			pc.nml(pi) = -normalize(p);
+		}
+		show_point_begin = 0;
+		show_point_end = pc.get_nr_points();
+		show_point_step = 1;
+	}
 public:
 	vr_rgbd()
 	{
 		set_name("vr_rgbd");
 		build_scene(5, 7, 3, 0.2f, 1.6f, 0.8f, 0.9f, 0.03f);
+		generate_point_cloud();
 		vr_view_ptr = 0;
 		ray_length = 2;
 		connect(cgv::gui::ref_vr_server().on_device_change, this, &vr_rgbd::on_device_change);
 
 		srs.radius = 0.005f;
-
+		show_nmls = false;
 		state[0] = state[1] = state[2] = state[3] = IS_NONE;
 	}
 	std::string get_type_name() const
 	{
 		return "vr_rgbd";
 	}
+	void configure_subsample_controls()
+	{
+		if (find_control(show_point_begin)) {
+			find_control(show_point_begin)->set("max", show_point_end);
+			find_control(show_point_end)->set("min", show_point_begin);
+			find_control(show_point_end)->set("max", pc.get_nr_points());
+		}
+	}
+
 	void create_gui()
 	{
 		add_decorator("vr_rgbd", "heading", "level=2");
 		add_member_control(this, "ray_length", ray_length, "value_slider", "min=0.1;max=10;log=true;ticks=true");
 		if (begin_tree_node("point cloud", pc)) {
 			align("\a");
+			bool show = begin_tree_node("points", show_points, false, "level=3;w=100;align=' '");
+			add_member_control(this, "show", show_points, "toggle", "w=50");
+			if (show) {
+				align("\a");
+				if (begin_tree_node("subsample", show_point_step, false, "level=3")) {
+					align("\a");
+					add_member_control(this, "show step", show_point_step, "value_slider", "min=1;max=20;log=true;ticks=true");
+					add_decorator("range control", "heading", "level=3");
+					add_member_control(this, "begin", show_point_begin, "value_slider", "min=0;max=10;ticks=true");
+					add_member_control(this, "end", show_point_end, "value_slider", "min=0;max=10;ticks=true");
+					add_decorator("window control", "heading", "level=3");
+					configure_subsample_controls();
+					align("\b");
+					end_tree_node(show_point_step);
+				}
+				align("\b");
+				add_member_control(this, "sort_points", sort_points, "check");
+				add_gui("surfel_style", surfel_style);
+				end_tree_node(show_points);
+			}
+			show = begin_tree_node("components", pc.components, false, "level=3;w=100;align=' '");
+			add_member_control(this, "show", surfel_style.use_group_color, "toggle", "w=50");
+			if (show) {
+				align("\a");
+				if (begin_tree_node("component colors", pc.component_colors, false)) {
+					align("\a");
+					for (unsigned i = 0; i < pc.component_colors.size(); ++i) {
+						add_member_control(this, std::string("C") + cgv::utils::to_string(i), pc.component_colors[i]);
+					}
+					align("\b");
+					end_tree_node(pc.component_colors);
+				}
+				if (begin_tree_node("group transformations", pc.component_translations, false)) {
+					align("\a");
+					for (unsigned i = 0; i < pc.component_translations.size(); ++i) {
+						add_gui(std::string("T") + cgv::utils::to_string(i), pc.component_translations[i]);
+						add_gui(std::string("Q") + cgv::utils::to_string(i), pc.component_rotations[i], "direction");
+					}
+					align("\b");
+					end_tree_node(pc.component_translations);
+				}
+				align("\b");
+				end_tree_node(pc.components);
+			}
+			show = begin_tree_node("box", show_box, false, "level=3;w=100;align=' '");
+			add_member_control(this, "show", show_box, "toggle", "w=50");
+			if (show) {
+				add_member_control(this, "show", show_boxes, "toggle", "w=50");
+				add_gui("color", box_color);
+				add_gui("box_style", box_style);
+				add_gui("box_wire_style", box_wire_style);
+				end_tree_node(show_box);
+			}
 			align("\b");
 			end_tree_node(pc);
 		}

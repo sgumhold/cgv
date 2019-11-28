@@ -36,7 +36,7 @@ namespace cgv {
 			/// set to 0 in constructor
 			float percentual_halo_width;
 			/// color of halo with opacity channel
-			rgb halo_color;
+			rgba halo_color;
 			/// strength in [0,1] of halo color with respect to color of primitive
 			float halo_color_strength;
 			/// set to true in constructor
