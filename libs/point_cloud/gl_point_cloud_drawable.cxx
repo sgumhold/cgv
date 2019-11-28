@@ -201,9 +201,12 @@ void gl_point_cloud_drawable::draw_points(context& ctx)
 		if (use_these_component_colors)
 			s_renderer.set_group_colors(ctx, &use_these_component_colors->front(), use_these_component_colors->size());
 		else
-			s_renderer.set_group_colors(ctx, &pc.component_color(0), pc.get_nr_components());
-		s_renderer.set_group_rotations(ctx, &pc.component_rotation(0), pc.get_nr_components());
-		s_renderer.set_group_translations(ctx, &pc.component_translation(0), pc.get_nr_components());
+			if (pc.has_component_colors())
+				s_renderer.set_group_colors(ctx, &pc.component_color(0), pc.get_nr_components());
+		if (pc.has_component_transformations()) {
+			s_renderer.set_group_rotations(ctx, &pc.component_rotation(0), pc.get_nr_components());
+			s_renderer.set_group_translations(ctx, &pc.component_translation(0), pc.get_nr_components());
+		}
 		s_renderer.set_group_index_array(ctx, &pc.component_index(0), pc.get_nr_points());
 	}
 

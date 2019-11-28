@@ -2,6 +2,7 @@
 #include <cgv/signal/rebind.h>
 #include <cgv/base/register.h>
 #include <cgv/gui/event_handler.h>
+#include <cgv/gui/trigger.h>
 #include <cgv/math/ftransform.h>
 #include <cgv/utils/scan.h>
 #include <cgv/utils/options.h>
@@ -15,7 +16,10 @@
 #include <cgv/media/mesh/simple_mesh.h>
 #include <cgv_gl/gl/mesh_render_info.h>
 #include <libs/point_cloud/gl_point_cloud_drawable.h>
+#include <rgbd_input.h>
 #include <random>
+#include <future>
+
 ///@ingroup VR
 ///@{
 
@@ -45,6 +49,25 @@ class vr_rgbd :
 	public cgv::gui::provider
 {
 protected:
+	/// internal members used for data storage
+	rgbd::frame_type color_frame, depth_frame, warped_color_frame;
+	rgbd::frame_type color_frame_2, depth_frame_2, ir_frame_2, warped_color_frame_2;
+	///
+	size_t nr_depth_frames, nr_color_frames;
+	///
+	bool record_frame;
+	///
+	bool record_all_frames;
+	/// intermediate points
+	std::vector<vec3> P;
+	/// intermediate colors
+	std::vector<rgb> C;
+	///
+	std::future<size_t> future_handle;
+	/// 
+	bool rgbd_started;
+	/// 
+	rgbd::rgbd_input rgbd_inp;
 	// store the scene as colored boxes
 	std::vector<box3> boxes;
 	std::vector<rgb> box_colors;
@@ -128,6 +151,7 @@ protected:
 		construct_environment(0.2f, 3 * w, 3 * d, h, w, d, h);
 		construct_movable_boxes(tw, td, th, tW, 20);
 	}
+	/// generate a random point cloud
 	void generate_point_cloud()
 	{
 		std::default_random_engine r;
@@ -138,25 +162,53 @@ protected:
 		vec3 X = cross(V, U);
 		float aspect = 1.333f;
 		float tan_2 = 0.3f;
-		pc.create_normals();
+		//pc.create_normals();
+		pc.create_colors();
 		for (int i = 0; i < 10000; ++i) {
 			float x = 2 * d(r) - 1;
 			float y = 2 * d(r) - 1;
 			float z = d(r) + 1;
 			vec3 p = x * aspect * tan_2 * z * X + y * tan_2 * z * U + z*V;
 			size_t pi = pc.add_point(S+p);
-			pc.nml(pi) = -normalize(p);
+			//pc.nml(pi) = -normalize(p);
+			pc.clr(pi) = point_cloud_types::Clr(point_cloud_types::float_to_color_component(d(r)),0,0);
 		}
 		show_point_begin = 0;
 		show_point_end = pc.get_nr_points();
 		show_point_step = 1;
+	}
+	/// start the rgbd device
+	void start_rgbd()
+	{
+		if (!rgbd_inp.is_attached()) {
+			if (rgbd::rgbd_input::get_nr_devices() == 0)
+				return;
+			if (!rgbd_inp.attach(rgbd::rgbd_input::get_serial(0)))
+				return;
+		}
+		rgbd_inp.set_near_mode(true);
+		std::vector<rgbd::stream_format> stream_formats;
+		rgbd_started = rgbd_inp.start(rgbd::IS_COLOR_AND_DEPTH, stream_formats);
+		update_member(&rgbd_started);
+	}
+	/// stop rgbd device
+	void stop_rgbd()
+	{
+		if (!rgbd_inp.is_started())
+			return;
+		rgbd_started = rgbd_inp.stop();
+		update_member(&rgbd_started);
 	}
 public:
 	vr_rgbd()
 	{
 		set_name("vr_rgbd");
 		build_scene(5, 7, 3, 0.2f, 1.6f, 0.8f, 0.9f, 0.03f);
-		generate_point_cloud();
+		//generate_point_cloud();
+		pc.create_colors();
+		show_point_begin = 0;
+		show_point_end = 0;
+		show_point_step = 1;
 		vr_view_ptr = 0;
 		ray_length = 2;
 		connect(cgv::gui::ref_vr_server().on_device_change, this, &vr_rgbd::on_device_change);
@@ -164,7 +216,110 @@ public:
 		srs.radius = 0.005f;
 		show_nmls = false;
 		state[0] = state[1] = state[2] = state[3] = IS_NONE;
+		rgbd_started = false;
+		record_frame = false;
+		record_all_frames = false;
+
+		connect(cgv::gui::get_animation_trigger().shoot, this, &vr_rgbd::timer_event);
 	}
+	size_t construct_point_cloud()
+	{
+
+		P.clear();
+		C.clear();
+		const unsigned short* depths = reinterpret_cast<const unsigned short*>(&depth_frame_2.frame_data.front());
+		const unsigned char* colors = reinterpret_cast<const unsigned char*>(&color_frame_2.frame_data.front());
+	
+		rgbd_inp.map_color_to_depth(depth_frame_2, color_frame_2, warped_color_frame_2);
+		colors = reinterpret_cast<const unsigned char*>(&warped_color_frame_2.frame_data.front());
+
+		int i = 0;
+		float s = 1.0f / 255;
+		for (int y = 0; y < depth_frame_2.height; ++y)
+			for (int x = 0; x < depth_frame_2.width; ++x) {
+				vec3 p;
+				if (rgbd_inp.map_depth_to_point(x, y, depths[i], &p[0])) {
+					// flipping y to make it the same direction as in pixel y coordinate
+					p[1] = -p[1];
+					P.push_back(p);
+					C.push_back(rgba8(colors[4 * i + 2], colors[4 * i + 1], colors[4 * i], 255));
+				}
+				++i;
+			}
+		return P.size();
+	}
+	void timer_event(double t, double dt)
+	{
+		// in case a point cloud is being constructed
+		if (future_handle.valid()) {
+			// check for termination of thread
+			if (future_handle.wait_for(std::chrono::milliseconds(0)) == std::future_status::ready) {
+				size_t N = future_handle.get();
+				// copy computed point cloud
+				if (!pc.has_components()) {
+					pc.create_components();
+					pc.add_component();
+				}
+				if (record_frame || record_all_frames) {
+					pc.add_component();
+					record_frame = false;
+					update_member(&record_frame);
+				}
+				else {
+					pc.clear_component(pc.get_nr_components() - 1);
+				}
+				for (size_t i = 0; i < P.size(); ++i) {
+					size_t pi = pc.add_point(P[i]);
+					pc.clr(i) = point_cloud_types::Clr(
+						float_to_color_component(C[i].R()),
+						float_to_color_component(C[i].G()),
+						float_to_color_component(C[i].B())
+					);
+				}
+				show_point_end = pc.get_nr_points();
+				update_member(&show_point_end);
+				post_redraw();
+			}
+		}
+		if (rgbd_inp.is_started()) {
+			if (rgbd_inp.is_started()) {
+				bool new_frame;
+				bool found_frame = false;
+				bool depth_frame_changed = false;
+				bool color_frame_changed = false;
+				do {
+					new_frame = false;
+					bool new_color_frame_changed = rgbd_inp.get_frame(rgbd::IS_COLOR, color_frame, 0);
+					if (new_color_frame_changed) {
+						++nr_color_frames;
+						color_frame_changed = new_color_frame_changed;
+						new_frame = true;
+						update_member(&nr_color_frames);
+					}
+					bool new_depth_frame_changed = rgbd_inp.get_frame(rgbd::IS_DEPTH, depth_frame, 0);
+					if (new_depth_frame_changed) {
+						++nr_depth_frames;
+						depth_frame_changed = new_depth_frame_changed;
+						new_frame = true;
+						update_member(&nr_depth_frames);
+					}
+					if (new_frame)
+						found_frame = true;
+				} while (new_frame);
+				if (found_frame)
+					post_redraw();
+				if (color_frame.is_allocated() && depth_frame.is_allocated() &&
+					(color_frame_changed || depth_frame_changed)) {
+					if (!future_handle.valid()) {
+						color_frame_2 = color_frame;
+						depth_frame_2 = depth_frame;
+						future_handle = std::async(&vr_rgbd::construct_point_cloud, this);
+					}
+				}
+			}
+		}
+	}
+
 	std::string get_type_name() const
 	{
 		return "vr_rgbd";
@@ -181,6 +336,10 @@ public:
 	void create_gui()
 	{
 		add_decorator("vr_rgbd", "heading", "level=2");
+		add_member_control(this, "rgbd_started", rgbd_started, "check");
+		add_member_control(this, "record_frame", record_frame, "check");
+		add_member_control(this, "record_all_frames", record_all_frames, "check");
+
 		add_member_control(this, "ray_length", ray_length, "value_slider", "min=0.1;max=10;log=true;ticks=true");
 		if (begin_tree_node("point cloud", pc)) {
 			align("\a");
@@ -261,6 +420,12 @@ public:
 	}
 	void on_set(void* member_ptr)
 	{
+		if (member_ptr == &rgbd_started && rgbd_started != rgbd_inp.is_started()) {
+			if (rgbd_started)
+				start_rgbd();
+			else
+				stop_rgbd();
+		}
 		update_member(member_ptr);
 		post_redraw();
 	}
