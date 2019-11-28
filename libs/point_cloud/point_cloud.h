@@ -149,6 +149,7 @@ protected:
 	friend class point_cloud_interactable;
 	friend class point_cloud_viewer;
 	friend class gl_point_cloud_drawable;
+	friend class vr_rgbd;
 private:
 	mutable std::vector<bool> comp_box_out_of_date;
 	mutable std::vector<bool> comp_pixrng_out_of_date;
