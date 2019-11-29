@@ -62,6 +62,13 @@ protected:
 	std::vector<vec3> P;
 	/// intermediate colors
 	std::vector<rgb> C;
+
+	int rgbd_controller_index;
+	mat3 rgbd_controller_orientation;
+	vec3 rgbd_controller_position;
+	///
+	mat3 rgbd_controller_orientation_pc;
+	vec3 rgbd_controller_position_pc;
 	///
 	std::future<size_t> future_handle;
 	/// 
@@ -203,6 +210,9 @@ public:
 	vr_rgbd()
 	{
 		set_name("vr_rgbd");
+		rgbd_controller_index = 0;
+		rgbd_controller_orientation.identity();
+		rgbd_controller_position = vec3(0, 1.5f, 0);
 		build_scene(5, 7, 3, 0.2f, 1.6f, 0.8f, 0.9f, 0.03f);
 		//generate_point_cloud();
 		pc.create_colors();
@@ -215,6 +225,7 @@ public:
 
 		srs.radius = 0.005f;
 		show_nmls = false;
+		show_box = false;
 		state[0] = state[1] = state[2] = state[3] = IS_NONE;
 		rgbd_started = false;
 		record_frame = false;
@@ -240,7 +251,8 @@ public:
 				vec3 p;
 				if (rgbd_inp.map_depth_to_point(x, y, depths[i], &p[0])) {
 					// flipping y to make it the same direction as in pixel y coordinate
-					p[1] = -p[1];
+					p = -p;
+					p = rgbd_controller_orientation_pc* p + rgbd_controller_position_pc;
 					P.push_back(p);
 					C.push_back(rgba8(colors[4 * i + 2], colors[4 * i + 1], colors[4 * i], 255));
 				}
@@ -313,6 +325,8 @@ public:
 					if (!future_handle.valid()) {
 						color_frame_2 = color_frame;
 						depth_frame_2 = depth_frame;
+						rgbd_controller_orientation_pc = rgbd_controller_orientation;
+						rgbd_controller_position_pc = rgbd_controller_position;
 						future_handle = std::async(&vr_rgbd::construct_point_cloud, this);
 					}
 				}
@@ -339,6 +353,7 @@ public:
 		add_member_control(this, "rgbd_started", rgbd_started, "check");
 		add_member_control(this, "record_frame", record_frame, "check");
 		add_member_control(this, "record_all_frames", record_all_frames, "check");
+		add_member_control(this, "rgbd_controller_index", rgbd_controller_index, "value_slider", "min=0;max=3;ticks=true");
 
 		add_member_control(this, "ray_length", ray_length, "value_slider", "min=0.1;max=10;log=true;ticks=true");
 		if (begin_tree_node("point cloud", pc)) {
@@ -444,6 +459,10 @@ public:
 			cgv::gui::vr_pose_event& vrpe = static_cast<cgv::gui::vr_pose_event&>(e);
 			// check for controller pose events
 			int ci = vrpe.get_trackable_index();
+			if (ci == rgbd_controller_index) {
+				rgbd_controller_orientation = vrpe.get_orientation();
+				rgbd_controller_position = vrpe.get_position();
+			}
 			if (ci != -1) {
 				if (state[ci] == IS_GRAB) {
 					// in grab mode apply relative transformation to grabbed boxes
