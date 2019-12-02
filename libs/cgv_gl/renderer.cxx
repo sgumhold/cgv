@@ -118,7 +118,7 @@ namespace cgv {
 		{
 			// validate set attributes
 			if (!has_positions) {
-				ctx.error("box_renderer::enable() position attribute not set");
+				ctx.error("renderer::enable() position attribute not set");
 				return false;
 			}
 			return true;
