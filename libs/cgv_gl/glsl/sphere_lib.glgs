@@ -68,7 +68,8 @@ void generate_sphere_splat_vertex(in vec4 sphere, in vec2 t, in sphere_parameter
 	ssi.q_tilde = t;
 
 	// compute vector from eye to vertex in eye space
-	ssi.v_eye = (MV * V).xyz;
+	vec4 v4d = MV * V;
+	ssi.v_eye = v4d.xyz / v4d.w;
 
 	// compute components to compute normal in eye space
 	ssi.inv_T_square_v = NM * (v_tilde);
