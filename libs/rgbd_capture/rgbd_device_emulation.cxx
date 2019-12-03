@@ -3,6 +3,7 @@
 
 #include <cgv/utils/file.h>
 #include <iostream>
+#include <fstream>
 
 using namespace std;
 
@@ -12,6 +13,62 @@ namespace rgbd {
 	{
 		file_name = fn;
 		flags = idx = 0;
+
+		std::cout << "rgbd_emulation filename:" << fn << '\n';
+
+		has_color_stream = false;
+		has_depth_stream = false;
+		has_ir_stream = false;
+
+		const string suffix = "0000000000";
+
+		//find first file of the color frames
+		string fn_colorstream = fn + suffix + ".bgr32"; //currently only bgr32 exists
+		ifstream file_colorstream = std::ifstream(fn_colorstream.c_str());
+		
+		if (file_colorstream.good()) {
+			//because the frames are saved as raw data metadata needs to be extracted from the file size and file extension
+			size_t begin = file_colorstream.tellg();
+			file_colorstream.seekg(0, ios::end);
+			size_t end = file_colorstream.tellg();
+			size_t fsize = (end - begin);
+			if (fsize == 1228800) {
+				color_stream.width = 640;
+				color_stream.height = 480;
+			}
+			else if (fsize == 4915200) {
+				color_stream.width = 1280;
+				color_stream.height = 960;
+			}
+			color_stream.fps = 30;
+			color_stream.pixel_format = PixelFormat::PF_BGRA;
+			has_color_stream = true;
+		}
+
+		//find first file of the depth frames
+		string fn_depthstream = fn + suffix + ".dep16"; //currently only dep16 exists
+		ifstream file_depthstream = std::ifstream(fn_depthstream.c_str());
+		if (file_depthstream.good()) {
+			//because the frames are saved as raw data metadata needs to be extracted from the file size and file extension
+			size_t begin = file_depthstream.tellg();
+			file_depthstream.seekg(0, ios::end);
+			size_t end = file_depthstream.tellg();
+			size_t fsize = (end - begin);
+			if (fsize == 614400) {
+				depth_stream.width = 640;
+				depth_stream.height = 480;
+			}
+			else if (fsize == 153600) {
+				depth_stream.width = 320;
+				depth_stream.height = 240;
+			} else if (fsize == 9600) {
+				depth_stream.width = 80;
+				depth_stream.height = 60;
+			}
+			depth_stream.fps = 30;
+			depth_stream.pixel_format = PixelFormat::PF_DEPTH;
+			has_depth_stream = true;
+		}
 	}
 
 	bool rgbd_emulation::attach(const std::string& fn)
