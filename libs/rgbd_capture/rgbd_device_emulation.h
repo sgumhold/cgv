@@ -11,6 +11,14 @@ public:
 	unsigned idx;
 	unsigned flags;
 
+	stream_format color_stream;
+	stream_format depth_stream;
+	stream_format ir_stream;
+	bool has_color_stream;
+	bool has_depth_stream;
+	bool has_ir_stream;
+
+
 	rgbd_emulation(const std::string& fn);
 
 	bool attach(const std::string& fn);
