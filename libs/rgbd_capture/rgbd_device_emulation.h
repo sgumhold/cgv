@@ -11,12 +11,6 @@ public:
 	unsigned idx;
 	unsigned flags;
 
-	stream_format color_stream;
-	stream_format depth_stream;
-	stream_format ir_stream;
-	bool has_color_stream;
-	bool has_depth_stream;
-	bool has_ir_stream;
 
 
 	rgbd_emulation(const std::string& fn);
@@ -46,6 +40,15 @@ public:
 	void map_color_to_depth(const frame_type& depth_frame, const frame_type& color_frame,
 		frame_type& warped_color_frame) const;
 	bool map_depth_to_point(int x, int y, int depth, float* point_ptr) const;
+
+private:
+	stream_format color_stream;
+	stream_format depth_stream;
+	stream_format ir_stream;
+	bool has_color_stream;
+	bool has_depth_stream;
+	bool has_ir_stream;
+	bool device_is_running;
 };
 
 }

@@ -9,7 +9,7 @@ using namespace std;
 
 namespace rgbd {
 
-	rgbd_emulation::rgbd_emulation(const std::string& fn)
+	rgbd_emulation::rgbd_emulation(const std::string& fn):device_is_running(false)
 	{
 		file_name = fn;
 		flags = idx = 0;
@@ -23,7 +23,7 @@ namespace rgbd {
 		const string suffix = "0000000000";
 
 		//find first file of the color frames
-		string fn_colorstream = fn + suffix + ".bgr32"; //currently only bgr32 exists
+		string fn_colorstream = fn + suffix + ".bgra32"; //currently only bgra32 exists
 		ifstream file_colorstream = std::ifstream(fn_colorstream.c_str());
 		
 		if (file_colorstream.good()) {
@@ -42,6 +42,7 @@ namespace rgbd {
 			}
 			color_stream.fps = 30;
 			color_stream.pixel_format = PixelFormat::PF_BGRA;
+			color_stream.nr_bits_per_pixel = 32;
 			has_color_stream = true;
 		}
 
@@ -67,6 +68,7 @@ namespace rgbd {
 			}
 			depth_stream.fps = 30;
 			depth_stream.pixel_format = PixelFormat::PF_DEPTH;
+			depth_stream.nr_bits_per_pixel = 16;
 			has_depth_stream = true;
 		}
 	}
@@ -123,7 +125,7 @@ namespace rgbd {
 		if (has_depth_stream) {
 			streams_avaiable |= IS_DEPTH;
 		}
-		return ~(streams_in | ~streams_avaiable);
+		return (~(~streams_in | streams_avaiable)) == 0;
 	}
 	void rgbd_emulation::query_stream_formats(InputStreams is, std::vector<stream_format>& stream_formats) const
 	{
@@ -136,18 +138,27 @@ namespace rgbd {
 	}
 	bool rgbd_emulation::start_device(InputStreams is, std::vector<stream_format>& stream_formats)
 	{
+		if (!check_input_stream_configuration(is)) {
+			cerr << "invalid input streams configuration!\n";
+			return false;
+		}
+		query_stream_formats(is, stream_formats);
+
+		device_is_running = true;
 		return true;
 	}
 	bool rgbd_emulation::start_device(const std::vector<stream_format>& stream_formats)
 	{
+		device_is_running = true;
 		return true;
 	}
 	bool rgbd_emulation::is_running() const
 	{
-		return true; 
+		return device_is_running;
 	}
 	bool rgbd_emulation::stop_device()
 	{
+		device_is_running = false;
 		return true;
 	}
 	unsigned rgbd_emulation::get_width(InputStreams is) const
@@ -188,13 +199,43 @@ namespace rgbd {
 	}
 	bool rgbd_emulation::get_frame(InputStreams is, frame_type& frame, int timeOut)
 	{	
-		string fn = compose_file_name(file_name, frame, frame.frame_index);
+		//get the stream information
+		stream_format stream;
+		if (is == IS_COLOR) {
+			stream = color_stream;
+		}
+
+		if (is == IS_DEPTH) {
+			stream = depth_stream;
+		}
+
+		//set frame metadata
+		//frame.frame_index = idx;
+		frame.nr_bits_per_pixel = stream.nr_bits_per_pixel;
+		frame.pixel_format = stream.pixel_format;
+		frame.width = stream.width;
+		frame.height = stream.height;
+
+		string fn = compose_file_name(file_name, frame, idx);
 		if (!cgv::utils::file::exists(fn)) {
 			idx = 0;
 			fn = compose_file_name(file_name, frame, 0);
 		}
+
 //		if (!rgbd_input::read_frame(fn, data_ptr, get_frame_size(ff)))
 //			return false;
+		
+
+		//read file
+		string data;
+		if (!cgv::utils::file::read(fn, data, false)) {
+			cerr << "rgbd_emulation: file not found: " << fn << '\n';
+			return false;
+		}
+		
+		frame.frame_data = vector<char>(data.begin(), data.end());
+		//frame.frame_index = idx;
+		++idx;
 		return true;
 	}
 	void rgbd_emulation::map_color_to_depth(const frame_type& depth_frame, const frame_type& color_frame,
