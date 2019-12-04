@@ -115,11 +115,24 @@ namespace rgbd {
 	
 	bool rgbd_emulation::check_input_stream_configuration(InputStreams is) const
 	{
-		return true;
+		unsigned streams_avaiable = IS_NONE, streams_in = is;
+
+		if (has_color_stream) {
+			streams_avaiable |= IS_COLOR;
+		}
+		if (has_depth_stream) {
+			streams_avaiable |= IS_DEPTH;
+		}
+		return ~(streams_in | ~streams_avaiable);
 	}
 	void rgbd_emulation::query_stream_formats(InputStreams is, std::vector<stream_format>& stream_formats) const
 	{
-
+		if (has_color_stream && (is & IS_COLOR)) {
+			stream_formats.push_back(color_stream);
+		}
+		if (has_depth_stream && (is & IS_DEPTH)) {
+			stream_formats.push_back(depth_stream);
+		}
 	}
 	bool rgbd_emulation::start_device(InputStreams is, std::vector<stream_format>& stream_formats)
 	{
@@ -137,13 +150,41 @@ namespace rgbd {
 	{
 		return true;
 	}
-	unsigned rgbd_emulation::get_width(InputStreams) const
+	unsigned rgbd_emulation::get_width(InputStreams is) const
 	{
-		return 640;
+		if (!check_input_stream_configuration(is)) {
+			cerr << "invalid input stream configuration";
+			return 0;
+		}
+		unsigned w = 0;
+		if (is & IS_COLOR) {
+			w = static_cast<unsigned>(color_stream.width);
+		}
+
+		if (is & IS_DEPTH) {
+			unsigned dw = static_cast<unsigned>(depth_stream.width);
+			w = (w > dw) ? w : dw;
+		}
+
+		return w;
 	}
-	unsigned rgbd_emulation::get_height(InputStreams) const
+	unsigned rgbd_emulation::get_height(InputStreams is) const
 	{
-		return 480;
+		if (!check_input_stream_configuration(is)) {
+			cerr << "invalid input stream configuration";
+			return 0;
+		}
+		unsigned w = 0;
+		if (is & IS_COLOR) {
+			w = static_cast<unsigned>(color_stream.height);
+		}
+
+		if (is & IS_DEPTH) {
+			unsigned dw = static_cast<unsigned>(depth_stream.height);
+			w = (w > dw) ? w : dw;
+		}
+
+		return w;
 	}
 	bool rgbd_emulation::get_frame(InputStreams is, frame_type& frame, int timeOut)
 	{	
