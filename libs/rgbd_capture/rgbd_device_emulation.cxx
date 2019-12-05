@@ -23,7 +23,7 @@ namespace rgbd {
 		const string suffix = "0000000000";
 
 		//find first file of the color frames
-		string fn_colorstream = fn + suffix + ".bgra32"; //currently only bgra32 exists
+		string fn_colorstream = fn + suffix + ".bgr32"; //currently only bgr32 exists
 		ifstream file_colorstream = std::ifstream(fn_colorstream.c_str());
 		
 		if (file_colorstream.good()) {
@@ -41,7 +41,7 @@ namespace rgbd {
 				color_stream.height = 960;
 			}
 			color_stream.fps = 30;
-			color_stream.pixel_format = PixelFormat::PF_BGRA;
+			color_stream.pixel_format = PixelFormat::PF_BGR;
 			color_stream.nr_bits_per_pixel = 32;
 			has_color_stream = true;
 		}
