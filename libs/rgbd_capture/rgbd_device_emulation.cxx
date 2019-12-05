@@ -26,12 +26,9 @@ namespace rgbd {
 		string fn_colorstream = fn + suffix + ".bgr32"; //currently only bgr32 exists
 		ifstream file_colorstream = std::ifstream(fn_colorstream.c_str());
 		
-		if (file_colorstream.good()) {
+		if (cgv::utils::file::exists(fn_colorstream)) {
 			//because the frames are saved as raw data metadata needs to be extracted from the file size and file extension
-			size_t begin = file_colorstream.tellg();
-			file_colorstream.seekg(0, ios::end);
-			size_t end = file_colorstream.tellg();
-			size_t fsize = (end - begin);
+			size_t fsize = cgv::utils::file::size(fn_colorstream);
 			if (fsize == 1228800) {
 				color_stream.width = 640;
 				color_stream.height = 480;
@@ -48,13 +45,9 @@ namespace rgbd {
 
 		//find first file of the depth frames
 		string fn_depthstream = fn + suffix + ".dep16"; //currently only dep16 exists
-		ifstream file_depthstream = std::ifstream(fn_depthstream.c_str());
-		if (file_depthstream.good()) {
+		if (cgv::utils::file::exists(fn_depthstream)) {
 			//because the frames are saved as raw data metadata needs to be extracted from the file size and file extension
-			size_t begin = file_depthstream.tellg();
-			file_depthstream.seekg(0, ios::end);
-			size_t end = file_depthstream.tellg();
-			size_t fsize = (end - begin);
+			size_t fsize = cgv::utils::file::size(fn_depthstream);
 			if (fsize == 614400) {
 				depth_stream.width = 640;
 				depth_stream.height = 480;
@@ -200,42 +193,49 @@ namespace rgbd {
 	bool rgbd_emulation::get_frame(InputStreams is, frame_type& frame, int timeOut)
 	{	
 		//get the stream information
-		stream_format stream;
-		if (is == IS_COLOR) {
-			stream = color_stream;
+		stream_format* stream = nullptr;
+		
+		switch (is) {
+		case IS_COLOR:
+			stream = &color_stream;
+			break;
+		case IS_DEPTH:
+			stream = &depth_stream;
+			break;
 		}
 
-		if (is == IS_DEPTH) {
-			stream = depth_stream;
+		if (stream == nullptr) {
+			cerr << "get_frame: unsupported stream\n";
+			return false;
 		}
+		
+		static_cast<frame_format&>(frame) = *stream;
+		frame.frame_index = idx;
 
-		//set frame metadata
-		//frame.frame_index = idx;
-		frame.nr_bits_per_pixel = stream.nr_bits_per_pixel;
-		frame.pixel_format = stream.pixel_format;
-		frame.width = stream.width;
-		frame.height = stream.height;
-
-		string fn = compose_file_name(file_name, frame, idx);
+		string fn = compose_file_name(file_name, frame , idx);
 		if (!cgv::utils::file::exists(fn)) {
 			idx = 0;
 			fn = compose_file_name(file_name, frame, 0);
 		}
 
-//		if (!rgbd_input::read_frame(fn, data_ptr, get_frame_size(ff)))
-//			return false;
+		frame.frame_index = idx;
+		frame.time = idx / stream->fps;
 		
 
 		//read file
 		string data;
+		cout << fn <<'\n';
 		if (!cgv::utils::file::read(fn, data, false)) {
 			cerr << "rgbd_emulation: file not found: " << fn << '\n';
 			return false;
 		}
-		
-		frame.frame_data = vector<char>(data.begin(), data.end());
-		//frame.frame_index = idx;
-		++idx;
+
+		if (frame.frame_data.size() < data.size()) {
+			frame.frame_data.resize(data.size());
+		}
+		memcpy(&frame.frame_data.front(), &data.front(), data.size());
+		frame.compute_buffer_size();
+		idx++;
 		return true;
 	}
 	void rgbd_emulation::map_color_to_depth(const frame_type& depth_frame, const frame_type& color_frame,

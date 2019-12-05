@@ -42,12 +42,8 @@ public:
 	bool map_depth_to_point(int x, int y, int depth, float* point_ptr) const;
 
 private:
-	stream_format color_stream;
-	stream_format depth_stream;
-	stream_format ir_stream;
-	bool has_color_stream;
-	bool has_depth_stream;
-	bool has_ir_stream;
+	stream_format color_stream, depth_stream, ir_stream;
+	bool has_color_stream, has_depth_stream, has_ir_stream;
 	bool device_is_running;
 };
 
