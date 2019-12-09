@@ -192,6 +192,16 @@ namespace rgbd {
 	}
 	bool rgbd_emulation::get_frame(InputStreams is, frame_type& frame, int timeOut)
 	{	
+		if (!is_attached()) {
+			cerr << "rgbd_emulation::get_frame called on device that has not been attached" << endl;
+			return false;
+		}
+
+		if (!is_running()) {
+			cerr << "rgbd_emulation::get_frame called on device that is not running" << endl;
+			return false;
+		}
+		
 		//get the stream information
 		stream_format* stream = nullptr;
 		
@@ -205,7 +215,7 @@ namespace rgbd {
 		}
 
 		if (stream == nullptr) {
-			cerr << "get_frame: unsupported stream\n";
+			cerr << "rgbd_emulation::get_frame: unsupported stream\n";
 			return false;
 		}
 		
@@ -224,7 +234,6 @@ namespace rgbd {
 
 		//read file
 		string data;
-		cout << fn <<'\n';
 		if (!cgv::utils::file::read(fn, data, false)) {
 			cerr << "rgbd_emulation: file not found: " << fn << '\n';
 			return false;
