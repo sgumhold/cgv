@@ -239,11 +239,11 @@ namespace rgbd {
 			return false;
 		}
 
-		if (frame.frame_data.size() < data.size()) {
-			frame.frame_data.resize(data.size());
+		frame.buffer_size = data.size();
+		if (frame.frame_data.size() < frame.buffer_size) {
+			frame.frame_data.resize(frame.buffer_size);
 		}
 		memcpy(&frame.frame_data.front(), &data.front(), data.size());
-		frame.compute_buffer_size();
 		idx++;
 		return true;
 	}

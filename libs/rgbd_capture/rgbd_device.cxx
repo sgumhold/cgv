@@ -21,9 +21,6 @@ namespace rgbd {
 	{
 		string fn = file_name;
 
-		//char ixstr[11];
-		//std::snprintf(ixstr, 11, "%011d", idx);
-
 		stringstream ss;
 		ss << setfill('0') << setw(10) << idx;
 
