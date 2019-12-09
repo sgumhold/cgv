@@ -14,6 +14,8 @@ namespace rgbd {
 		file_name = fn;
 		flags = idx = 0;
 
+		last_frame_time = chrono::high_resolution_clock::now();
+
 		std::cout << "rgbd_emulation filename:" << fn << '\n';
 
 		has_color_stream = false;
@@ -131,10 +133,14 @@ namespace rgbd {
 	}
 	bool rgbd_emulation::start_device(InputStreams is, std::vector<stream_format>& stream_formats)
 	{
+		if (is_running())
+			return true;
+
 		if (!check_input_stream_configuration(is)) {
 			cerr << "invalid input streams configuration!\n";
 			return false;
 		}
+		stream_formats.resize(0);
 		query_stream_formats(is, stream_formats);
 
 		device_is_running = true;
@@ -142,6 +148,8 @@ namespace rgbd {
 	}
 	bool rgbd_emulation::start_device(const std::vector<stream_format>& stream_formats)
 	{
+		if (is_running())
+			return true;
 		device_is_running = true;
 		return true;
 	}
@@ -201,7 +209,7 @@ namespace rgbd {
 			cerr << "rgbd_emulation::get_frame called on device that is not running" << endl;
 			return false;
 		}
-		
+
 		//get the stream information
 		stream_format* stream = nullptr;
 		
@@ -218,7 +226,16 @@ namespace rgbd {
 			cerr << "rgbd_emulation::get_frame: unsupported stream\n";
 			return false;
 		}
-		
+
+		auto inv_fps = chrono::duration_cast<chrono::high_resolution_clock::duration>(chrono::duration<double>( 1. / stream->fps ));
+		auto current_frame_time = chrono::high_resolution_clock::now();
+	
+		//limit fps
+		if (current_frame_time < last_frame_time+inv_fps) {
+			return false;
+		}
+		last_frame_time = current_frame_time;
+
 		static_cast<frame_format&>(frame) = *stream;
 		frame.frame_index = idx;
 
