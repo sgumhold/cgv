@@ -1,4 +1,5 @@
 #include "rgbd_device.h"
+#include <chrono>
 
 using namespace std;
 
@@ -45,6 +46,7 @@ private:
 	stream_format color_stream, depth_stream, ir_stream;
 	bool has_color_stream, has_depth_stream, has_ir_stream;
 	bool device_is_running;
+	std::chrono::time_point<std::chrono::high_resolution_clock> last_frame_time;
 };
 
 }
