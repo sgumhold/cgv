@@ -151,11 +151,22 @@ bool rgbd_input::detach()
 	return true;
 }
 
+void write_protocol_headers(vector<stream_format> streams,std::string path) {
+	for (stream_format stream : streams) {
+		cgv::utils::file::write(path + "/stream_info." + get_frame_extension(stream), reinterpret_cast<const char*>(&stream), sizeof(stream_format), false);
+	}
+}
+
 void rgbd_input::enable_protocol(const std::string& path)
 {
 	protocol_path = path;
 	protocol_idx  = 0;
 	protocol_flags = 0;
+
+	//write the metadata for every stream found
+	if (is_started()) {
+		write_protocol_headers(streams, path);
+	}
 }
 
 /// disable protocolation
@@ -212,7 +223,12 @@ bool rgbd_input::start(InputStreams is, std::vector<stream_format>& stream_forma
 	}
 	if (started)
 		return true;
-	return started = rgbd->start_device(is, stream_formats);
+	started = rgbd->start_device(is, stream_formats);
+	streams = stream_formats;
+	if (!protocol_path.empty()) {
+		write_protocol_headers(streams, protocol_path);
+	}
+	return started;
 }
 
 bool rgbd_input::start(const std::vector<stream_format>& stream_formats)
@@ -223,7 +239,12 @@ bool rgbd_input::start(const std::vector<stream_format>& stream_formats)
 	}
 	if (started)
 		return true;
-	return started = rgbd->start_device(stream_formats);
+	started = rgbd->start_device(stream_formats);
+	streams = stream_formats;
+	if (!protocol_path.empty()) {
+		write_protocol_headers(streams, protocol_path);
+	}
+	return started;
 }
 
 bool rgbd_input::is_started() const

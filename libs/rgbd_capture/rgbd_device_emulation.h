@@ -50,7 +50,7 @@ private:
 	bool device_is_running;
 	std::chrono::time_point<std::chrono::high_resolution_clock> last_color_frame_time;
 	std::chrono::time_point<std::chrono::high_resolution_clock> last_depth_frame_time;
-	size_t number_of_frames;
+	size_t number_of_files;
 };
 
 }
