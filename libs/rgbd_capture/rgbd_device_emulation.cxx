@@ -14,7 +14,8 @@ namespace rgbd {
 		file_name = fn;
 		flags = idx = 0;
 
-		last_frame_time = chrono::high_resolution_clock::now();
+		last_color_frame_time = chrono::high_resolution_clock::now();
+		last_depth_frame_time = chrono::high_resolution_clock::now();
 
 		std::cout << "rgbd_emulation filename:" << fn << '\n';
 
@@ -220,13 +221,16 @@ namespace rgbd {
 
 		//get the stream information
 		stream_format* stream = nullptr;
-		
+		chrono::time_point<std::chrono::high_resolution_clock>* last_frame_time = nullptr;
+
 		switch (is) {
 		case IS_COLOR:
 			stream = &color_stream;
+			last_frame_time = &last_color_frame_time;
 			break;
 		case IS_DEPTH:
 			stream = &depth_stream;
+			last_frame_time = &last_depth_frame_time;
 			break;
 		}
 
@@ -239,10 +243,10 @@ namespace rgbd {
 		auto current_frame_time = chrono::high_resolution_clock::now();
 	
 		//limit fps
-		if (current_frame_time < last_frame_time+inv_fps) {
+		if (current_frame_time < *last_frame_time+inv_fps) {
 			return false;
 		}
-		last_frame_time = current_frame_time;
+		*last_frame_time = current_frame_time;
 
 		//check index
 		if (idx >= number_of_frames) idx = 0;
@@ -253,8 +257,9 @@ namespace rgbd {
 
 		string fn = compose_file_name(file_name, frame , idx);
 		while (!cgv::utils::file::exists(fn)) {
-			fn = compose_file_name(file_name, frame, idx);
 			++idx;
+			if (idx >= number_of_frames) idx = 0;
+			fn = compose_file_name(file_name, frame, idx);
 		}
 
 		frame.frame_index = idx;

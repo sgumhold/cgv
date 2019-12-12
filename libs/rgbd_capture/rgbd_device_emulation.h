@@ -46,7 +46,8 @@ private:
 	stream_format color_stream, depth_stream, ir_stream;
 	bool has_color_stream, has_depth_stream, has_ir_stream;
 	bool device_is_running;
-	std::chrono::time_point<std::chrono::high_resolution_clock> last_frame_time;
+	std::chrono::time_point<std::chrono::high_resolution_clock> last_color_frame_time;
+	std::chrono::time_point<std::chrono::high_resolution_clock> last_depth_frame_time;
 	size_t number_of_frames;
 };
 
