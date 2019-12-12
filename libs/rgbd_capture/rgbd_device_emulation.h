@@ -13,7 +13,9 @@ public:
 	unsigned flags;
 
 
-
+	/*fn : filename prefix of the files used to create an instance of the emulator
+		   fn needs to be a path e.g D:\kinect\kinect_ where D:\kinect\ is the directory 
+		   and kinect_ the prefix used for the files.*/
 	rgbd_emulation(const std::string& fn);
 
 	bool attach(const std::string& fn);
