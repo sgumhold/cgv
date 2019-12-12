@@ -13,6 +13,20 @@ namespace rgbd {
 		size_t x, y;
 	};
 
+	bool find_stream_info(const string &fn_dir , static vector<string> exts,stream_format &stream){
+		for (const string ext : exts) {
+			string fn_meta = fn_dir + "/stream_info." + ext;
+			void* file = cgv::utils::file::find_first(fn_meta + '*');
+
+			if (file != nullptr) {
+				string file_name = cgv::utils::file::find_name(file);
+				cgv::utils::file::read(fn_dir + '/' + file_name, reinterpret_cast<char*>(&stream), sizeof(stream_format));
+				return true;
+			}
+		}
+		return false;
+	}
+
 	vec2u find_resolution(size_t filesize, size_t bytes_per_pixel, size_t metadata = 0) {
 		static const vec2u resolutions[] = { {80,60},{320,240}, { 640,480 }, { 1280,960 } };
 		for (vec2u v : resolutions) {
@@ -32,71 +46,32 @@ namespace rgbd {
 		last_color_frame_time = chrono::high_resolution_clock::now();
 		last_depth_frame_time = chrono::high_resolution_clock::now();
 
-		std::cout << "rgbd_emulation filename:" << fn << '\n';
-
 		has_color_stream = false;
 		has_depth_stream = false;
 		has_ir_stream = false;
 
-		static const char* exts[] = {
-			"ir", "rgb", "bgr", "rgba", "bgra", "byr", "dep", "d_p"
-		};
+		static vector<string> color_exts = {"rgb", "bgr", "rgba", "bgra", "byr"};
+		static vector<string> depth_exts = {"dep", "d_p"};
+		static vector<string> ir_exts = {"ir"};
 
-		//find first file of streams
-		void* file = cgv::utils::file::find_first(fn+'*');
+		string fn_dir = cgv::utils::file::get_path(fn);
+
+		has_color_stream = find_stream_info(fn_dir, color_exts, color_stream);
+		has_depth_stream = find_stream_info(fn_dir, depth_exts, depth_stream);
+		has_ir_stream = find_stream_info(fn_dir, ir_exts, ir_stream);
+
+		//find first frame file
+		void* file = cgv::utils::file::find_first(fn + '*');
 		
 		if (file == nullptr) {
 			cerr << "rgbd_emulation::rgbd_emulation: no frame files found for the prefix:" << fn << endl;
 		}
-		size_t file_count = 0; 
+		size_t file_count = 0;
 		while(file != nullptr) {
-				string file_name = cgv::utils::file::find_name(file);
-				string file_ext = cgv::utils::file::get_extension(file_name);
-				size_t file_size = cgv::utils::file::find_size(file);
-
-				if (file_ext.compare("bgr32") == 0 && !has_color_stream) {
-					auto res = find_resolution(file_size, 4);
-					if (res.x == 1280) {
-						color_stream.fps = 12;
-					}
-					else if (res.x == 640) {
-						depth_stream.fps = 30;
-					}
-					color_stream.width = res.x;
-					color_stream.height = res.y;
-					
-					color_stream.pixel_format = PixelFormat::PF_BGR;
-					color_stream.nr_bits_per_pixel = 32;
-					has_color_stream = true;
-				}
-				else if (file_ext.compare("byr8") == 0 && !has_color_stream) {
-					auto res = find_resolution(file_size, 1);
-					if (res.x == 1280) {
-						color_stream.fps = 12;
-					}
-					else if (res.x == 640) {
-						depth_stream.fps = 30;
-					}
-					color_stream.width = res.x;
-					color_stream.height = res.y;
-
-					color_stream.pixel_format = PixelFormat::PF_BAYER;
-					color_stream.nr_bits_per_pixel = 8;
-					has_color_stream = true;
-				}
-				else if (file_ext.compare("dep16") == 0 && !has_depth_stream) {
-					auto res = find_resolution(file_size, 2);
-					depth_stream.width = res.x;
-					depth_stream.height = res.y;
-					depth_stream.fps = 30;
-					depth_stream.pixel_format = PixelFormat::PF_DEPTH;
-					depth_stream.nr_bits_per_pixel = 16;
-					has_depth_stream = true;
-				}
 			++file_count;
 			file = cgv::utils::file::find_next(file);
 		}
-		number_of_frames = file_count;
+		number_of_files = file_count;
 	}
 
 	bool rgbd_emulation::attach(const std::string& fn)
@@ -268,7 +243,7 @@ namespace rgbd {
 		*last_frame_time = current_frame_time;
 
 		//check index
-		if (idx >= number_of_frames) idx = 0;
+		if (idx >= number_of_files) idx = 0;
 		frame.frame_index = idx;
 
 		//copy frame_format data from stream
@@ -277,7 +252,7 @@ namespace rgbd {
 		string fn = compose_file_name(file_name, frame , idx);
 		while (!cgv::utils::file::exists(fn)) {
 			++idx;
-			if (idx >= number_of_frames) idx = 0;
+			if (idx >= number_of_files) idx = 0;
 			fn = compose_file_name(file_name, frame, idx);
 		}
 
