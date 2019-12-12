@@ -46,12 +46,13 @@ namespace rgbd {
 					if (file_size == 1228800) {
 						color_stream.width = 640;
 						color_stream.height = 480;
+						depth_stream.fps = 30;
 					}
 					else if (file_size == 4915200) {
 						color_stream.width = 1280;
 						color_stream.height = 960;
+						color_stream.fps = 12;
 					}
-					color_stream.fps = 30;
 					color_stream.pixel_format = PixelFormat::PF_BGR;
 					color_stream.nr_bits_per_pixel = 32;
 					has_color_stream = true;
