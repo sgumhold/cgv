@@ -9,6 +9,21 @@ using namespace std;
 
 namespace rgbd {
 
+	struct vec2u {
+		size_t x, y;
+	};
+
+	vec2u find_resolution(size_t filesize, size_t bytes_per_pixel, size_t metadata = 0) {
+		static const vec2u resolutions[] = { {80,60},{320,240}, { 640,480 }, { 1280,960 } };
+		for (vec2u v : resolutions) {
+			size_t expected_size = v.x * v.y * (bytes_per_pixel)+metadata;
+			if (filesize == expected_size) {
+				return v;
+			}
+		}
+		return vec2u{0, 0};
+	}
+
 	rgbd_emulation::rgbd_emulation(const std::string& fn):device_is_running(false)
 	{
 		file_name = fn;
@@ -23,12 +38,9 @@ namespace rgbd {
 		has_depth_stream = false;
 		has_ir_stream = false;
 
-		const string suffix = "0000000000";
-
-		//find first file of the color frames
-		string fn_colorstream = fn + suffix + ".bgr32"; //currently only bgr32 exists
-		ifstream file_colorstream = std::ifstream(fn_colorstream.c_str());
-
+		static const char* exts[] = {
+			"ir", "rgb", "bgr", "rgba", "bgra", "byr", "dep", "d_p"
+		};
 
 		//find first file of streams
 		void* file = cgv::utils::file::find_first(fn+'*');
@@ -43,33 +55,39 @@ namespace rgbd {
 				size_t file_size = cgv::utils::file::find_size(file);
 
 				if (file_ext.compare("bgr32") == 0 && !has_color_stream) {
-					if (file_size == 1228800) {
-						color_stream.width = 640;
-						color_stream.height = 480;
-						depth_stream.fps = 30;
-					}
-					else if (file_size == 4915200) {
-						color_stream.width = 1280;
-						color_stream.height = 960;
+					auto res = find_resolution(file_size, 4);
+					if (res.x == 1280) {
 						color_stream.fps = 12;
 					}
+					else if (res.x == 640) {
+						depth_stream.fps = 30;
+					}
+					color_stream.width = res.x;
+					color_stream.height = res.y;
+					
 					color_stream.pixel_format = PixelFormat::PF_BGR;
 					color_stream.nr_bits_per_pixel = 32;
 					has_color_stream = true;
 				}
+				else if (file_ext.compare("byr8") == 0 && !has_color_stream) {
+					auto res = find_resolution(file_size, 1);
+					if (res.x == 1280) {
+						color_stream.fps = 12;
+					}
+					else if (res.x == 640) {
+						depth_stream.fps = 30;
+					}
+					color_stream.width = res.x;
+					color_stream.height = res.y;
+
+					color_stream.pixel_format = PixelFormat::PF_BAYER;
+					color_stream.nr_bits_per_pixel = 8;
+					has_color_stream = true;
+				}
 				else if (file_ext.compare("dep16") == 0 && !has_depth_stream) {
-					if (file_size == 614400) {
-						depth_stream.width = 640;
-						depth_stream.height = 480;
-					}
-					else if (file_size == 153600) {
-						depth_stream.width = 320;
-						depth_stream.height = 240;
-					}
-					else if (file_size == 9600) {
-						depth_stream.width = 80;
-						depth_stream.height = 60;
-					}
+					auto res = find_resolution(file_size, 2);
+					depth_stream.width = res.x;
+					depth_stream.height = res.y;
 					depth_stream.fps = 30;
 					depth_stream.pixel_format = PixelFormat::PF_DEPTH;
 					depth_stream.nr_bits_per_pixel = 16;
