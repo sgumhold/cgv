@@ -27,45 +27,56 @@ namespace rgbd {
 		//find first file of the color frames
 		string fn_colorstream = fn + suffix + ".bgr32"; //currently only bgr32 exists
 		ifstream file_colorstream = std::ifstream(fn_colorstream.c_str());
-		
-		if (cgv::utils::file::exists(fn_colorstream)) {
-			//because the frames are saved as raw data metadata needs to be extracted from the file size and file extension
-			size_t fsize = cgv::utils::file::size(fn_colorstream);
-			if (fsize == 1228800) {
-				color_stream.width = 640;
-				color_stream.height = 480;
-			}
-			else if (fsize == 4915200) {
-				color_stream.width = 1280;
-				color_stream.height = 960;
-			}
-			color_stream.fps = 30;
-			color_stream.pixel_format = PixelFormat::PF_BGR;
-			color_stream.nr_bits_per_pixel = 32;
-			has_color_stream = true;
-		}
 
-		//find first file of the depth frames
-		string fn_depthstream = fn + suffix + ".dep16"; //currently only dep16 exists
-		if (cgv::utils::file::exists(fn_depthstream)) {
-			//because the frames are saved as raw data metadata needs to be extracted from the file size and file extension
-			size_t fsize = cgv::utils::file::size(fn_depthstream);
-			if (fsize == 614400) {
-				depth_stream.width = 640;
-				depth_stream.height = 480;
-			}
-			else if (fsize == 153600) {
-				depth_stream.width = 320;
-				depth_stream.height = 240;
-			} else if (fsize == 9600) {
-				depth_stream.width = 80;
-				depth_stream.height = 60;
-			}
-			depth_stream.fps = 30;
-			depth_stream.pixel_format = PixelFormat::PF_DEPTH;
-			depth_stream.nr_bits_per_pixel = 16;
-			has_depth_stream = true;
+
+		//find first file of streams
+		void* file = cgv::utils::file::find_first(fn+'*');
+		
+		if (file == nullptr) {
+			cerr << "rgbd_emulation::rgbd_emulation: no frame files found for the prefix:" << fn << endl;
 		}
+		size_t file_count = 0; 
+		while(file != nullptr) {
+				string file_name = cgv::utils::file::find_name(file);
+				string file_ext = cgv::utils::file::get_extension(file_name);
+				size_t file_size = cgv::utils::file::find_size(file);
+
+				if (file_ext.compare("bgr32") == 0 && !has_color_stream) {
+					if (file_size == 1228800) {
+						color_stream.width = 640;
+						color_stream.height = 480;
+					}
+					else if (file_size == 4915200) {
+						color_stream.width = 1280;
+						color_stream.height = 960;
+					}
+					color_stream.fps = 30;
+					color_stream.pixel_format = PixelFormat::PF_BGR;
+					color_stream.nr_bits_per_pixel = 32;
+					has_color_stream = true;
+				}
+				else if (file_ext.compare("dep16") == 0 && !has_depth_stream) {
+					if (file_size == 614400) {
+						depth_stream.width = 640;
+						depth_stream.height = 480;
+					}
+					else if (file_size == 153600) {
+						depth_stream.width = 320;
+						depth_stream.height = 240;
+					}
+					else if (file_size == 9600) {
+						depth_stream.width = 80;
+						depth_stream.height = 60;
+					}
+					depth_stream.fps = 30;
+					depth_stream.pixel_format = PixelFormat::PF_DEPTH;
+					depth_stream.nr_bits_per_pixel = 16;
+					has_depth_stream = true;
+				}
+			++file_count;
+			file = cgv::utils::file::find_next(file);
+		}
+		number_of_frames = file_count;
 	}
 
 	bool rgbd_emulation::attach(const std::string& fn)
@@ -186,17 +197,14 @@ namespace rgbd {
 			cerr << "invalid input stream configuration";
 			return 0;
 		}
-		unsigned w = 0;
+
 		if (is & IS_COLOR) {
-			w = static_cast<unsigned>(color_stream.height);
+			return static_cast<unsigned>(color_stream.height);
 		}
 
 		if (is & IS_DEPTH) {
-			unsigned dw = static_cast<unsigned>(depth_stream.height);
-			w = (w > dw) ? w : dw;
+			return static_cast<unsigned>(depth_stream.height);
 		}
-
-		return w;
 	}
 	bool rgbd_emulation::get_frame(InputStreams is, frame_type& frame, int timeOut)
 	{	
@@ -236,13 +244,17 @@ namespace rgbd {
 		}
 		last_frame_time = current_frame_time;
 
-		static_cast<frame_format&>(frame) = *stream;
+		//check index
+		if (idx >= number_of_frames) idx = 0;
 		frame.frame_index = idx;
 
+		//copy frame_format data from stream
+		static_cast<frame_format&>(frame) = *stream;
+
 		string fn = compose_file_name(file_name, frame , idx);
-		if (!cgv::utils::file::exists(fn)) {
-			idx = 0;
-			fn = compose_file_name(file_name, frame, 0);
+		while (!cgv::utils::file::exists(fn)) {
+			fn = compose_file_name(file_name, frame, idx);
+			++idx;
 		}
 
 		frame.frame_index = idx;
