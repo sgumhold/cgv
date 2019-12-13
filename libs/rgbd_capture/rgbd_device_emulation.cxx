@@ -13,14 +13,23 @@ namespace rgbd {
 		size_t x, y;
 	};
 
+	//searches for the first stream_info file with one of the file extensions from exts
+	//and writes the content to the stream_format object referenced by stream
+	//return true on success false otherwise
 	bool find_stream_info(const string &fn_dir , static vector<string> exts,stream_format &stream){
 		for (const string ext : exts) {
 			string fn_meta = fn_dir + "/stream_info." + ext;
 			void* file = cgv::utils::file::find_first(fn_meta + '*');
 
 			if (file != nullptr) {
-				string file_name = cgv::utils::file::find_name(file);
-				cgv::utils::file::read(fn_dir + '/' + file_name, reinterpret_cast<char*>(&stream), sizeof(stream_format));
+				string fn = fn_dir + '/' + cgv::utils::file::find_name(file);
+				size_t file_size = cgv::utils::file::find_size(file);
+				if (!(file_size == sizeof(stream_format))) {
+					cerr << "find_stream_info: file " << fn << " has the wrong size! expected: "
+						<< sizeof(stream_format) << ",got: " << file_size;
+					continue;
+				}
+				cgv::utils::file::read(fn, reinterpret_cast<char*>(&stream), sizeof(stream_format));
 				return true;
 			}
 		}
@@ -156,6 +165,20 @@ namespace rgbd {
 	{
 		if (is_running())
 			return true;
+
+		for (auto stream : stream_formats) {
+			if (has_color_stream && stream == color_stream) {
+				continue;
+			}
+			if (has_depth_stream && stream == depth_stream) {
+				continue;
+			}
+			if (has_ir_stream && stream == ir_stream) {
+				continue;
+			}
+			return false;
+		}
+
 		device_is_running = true;
 		return true;
 	}
