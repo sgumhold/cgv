@@ -9,9 +9,6 @@ using namespace std;
 
 namespace rgbd {
 
-	struct vec2u {
-		size_t x, y;
-	};
 
 	//searches for the first stream_info file with one of the file extensions from exts
 	//and writes the content to the stream_format object referenced by stream
@@ -34,17 +31,6 @@ namespace rgbd {
 			}
 		}
 		return false;
-	}
-
-	vec2u find_resolution(size_t filesize, size_t bytes_per_pixel, size_t metadata = 0) {
-		static const vec2u resolutions[] = { {80,60},{320,240}, { 640,480 }, { 1280,960 } };
-		for (vec2u v : resolutions) {
-			size_t expected_size = v.x * v.y * (bytes_per_pixel)+metadata;
-			if (filesize == expected_size) {
-				return v;
-			}
-		}
-		return vec2u{0, 0};
 	}
 
 	rgbd_emulation::rgbd_emulation(const std::string& fn):device_is_running(false)
@@ -135,6 +121,9 @@ namespace rgbd {
 		if (has_depth_stream) {
 			streams_avaiable |= IS_DEPTH;
 		}
+		if (has_ir_stream) {
+			streams_avaiable |= IS_INFRARED;
+		}
 		return (~(~streams_in | streams_avaiable)) == 0;
 	}
 	void rgbd_emulation::query_stream_formats(InputStreams is, std::vector<stream_format>& stream_formats) const
@@ -144,6 +133,9 @@ namespace rgbd {
 		}
 		if (has_depth_stream && (is & IS_DEPTH)) {
 			stream_formats.push_back(depth_stream);
+		}
+		if (has_ir_stream && (is & IS_INFRARED)) {
+			stream_formats.push_back(ir_stream);
 		}
 	}
 	bool rgbd_emulation::start_device(InputStreams is, std::vector<stream_format>& stream_formats)
@@ -197,17 +189,19 @@ namespace rgbd {
 			cerr << "invalid input stream configuration";
 			return 0;
 		}
-		unsigned w = 0;
+		
 		if (is & IS_COLOR) {
-			w = static_cast<unsigned>(color_stream.width);
+			return static_cast<unsigned>(color_stream.width);
 		}
 
 		if (is & IS_DEPTH) {
-			unsigned dw = static_cast<unsigned>(depth_stream.width);
-			w = (w > dw) ? w : dw;
+			return static_cast<unsigned>(depth_stream.width);
 		}
 
-		return w;
+		if (is & IS_INFRARED) {
+			return static_cast<unsigned>(ir_stream.width);
+		}
+		return 0;
 	}
 	unsigned rgbd_emulation::get_height(InputStreams is) const
 	{
@@ -223,6 +217,11 @@ namespace rgbd {
 		if (is & IS_DEPTH) {
 			return static_cast<unsigned>(depth_stream.height);
 		}
+
+		if (is & IS_INFRARED) {
+			return static_cast<unsigned>(ir_stream.height);
+		}
+		return 0;
 	}
 	bool rgbd_emulation::get_frame(InputStreams is, frame_type& frame, int timeOut)
 	{	
@@ -248,6 +247,10 @@ namespace rgbd {
 		case IS_DEPTH:
 			stream = &depth_stream;
 			last_frame_time = &last_depth_frame_time;
+			break;
+		case IS_INFRARED:
+			stream = &ir_stream;
+			last_frame_time = &last_ir_frame_time;
 			break;
 		}
 
