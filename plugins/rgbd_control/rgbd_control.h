@@ -112,7 +112,7 @@ private:
 	unsigned nr_depth_frames, nr_color_frames, nr_infrared_frames;
 	/// internal members used for configuration
 	bool color_frame_changed, depth_frame_changed, infrared_frame_changed;
-	bool attachment_changed;
+	bool color_attachment_changed, depth_attachment_changed, infrared_attachment_changed;
 
 	/// internal members used for data storage
 	rgbd::frame_type color_frame, depth_frame, ir_frame, warped_color_frame;

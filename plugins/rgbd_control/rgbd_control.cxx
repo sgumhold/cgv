@@ -8,6 +8,7 @@
 #include <cgv/gui/file_dialog.h>
 #include <cgv/utils/convert.h>
 #include <cgv/utils/file.h>
+#include <cgv/utils/dir.h>
 #include <cgv/utils/statistics.h>
 #include <cgv/type/standard_types.h>
 #include <cgv/math/ftransform.h>
@@ -81,8 +82,7 @@ rgbd_control::rgbd_control() :
 	color_frame_changed = false;
 	depth_frame_changed = false;
 	infrared_frame_changed = false;
-	attachment_changed = false;
-
+	color_attachment_changed = depth_attachment_changed = infrared_attachment_changed = false;
 	prs.measure_point_size_in_pixel = true;
 	prs.point_size = 3.0f;
 	connect(get_animation_trigger().shoot, this, &rgbd_control::timer_event);
@@ -212,10 +212,16 @@ void rgbd_control::init_frame(context& ctx)
 		rgbd_prog.build_program(ctx, "rgbd_shader.glpr");
 
 	if (device_mode != DM_DETACHED) {
-		update_texture_from_frame(ctx, color, color_frame, attachment_changed, color_frame_changed);
-		update_texture_from_frame(ctx, depth, depth_frame, attachment_changed, depth_frame_changed);
-		update_texture_from_frame(ctx, infrared, ir_frame, attachment_changed, infrared_frame_changed);
-		update_texture_from_frame(ctx, warped_color, warped_color_frame, attachment_changed, (color_frame_changed|| depth_frame_changed) &&remap_color);
+		update_texture_from_frame(ctx, color, color_frame, color_attachment_changed, color_frame_changed);
+		update_texture_from_frame(ctx, depth, depth_frame, depth_attachment_changed, depth_frame_changed);
+		update_texture_from_frame(ctx, infrared, ir_frame, infrared_attachment_changed, infrared_frame_changed);
+		update_texture_from_frame(ctx, warped_color, warped_color_frame, color_attachment_changed, (color_frame_changed|| depth_frame_changed) &&remap_color);
+		if (color_frame_changed)
+			color_attachment_changed = false;
+		if (depth_frame_changed)
+			depth_attachment_changed = false;
+		if (infrared_frame_changed)
+			infrared_attachment_changed = false;
 		color_frame_changed = false;
 		infrared_frame_changed = false;
 		depth_frame_changed = false;
@@ -226,7 +232,6 @@ void rgbd_control::init_frame(context& ctx)
 		infrared.destruct(ctx);
 		depth.destruct(ctx);
 	}
-	attachment_changed = false;
 }
 
 /// overload to draw the content of this drawable
@@ -760,6 +765,8 @@ void rgbd_control::update_stream_formats()
 
 void rgbd_control::on_device_select_cb()
 {
+	rgbd_inp.stop();
+	stopped = true;
 	rgbd_inp.detach();
 	if (device_idx == -1)
 		device_mode = DM_PROTOCOL;
@@ -768,6 +775,7 @@ void rgbd_control::on_device_select_cb()
 	else 
 		device_mode = DM_DEVICE;
 
+	bool reset_format_indices = false;
 	if (device_mode == DM_DEVICE) {
 		unsigned nr = rgbd_input::get_nr_devices();
 		if (nr == 0) {
@@ -781,6 +789,7 @@ void rgbd_control::on_device_select_cb()
 			}
 			if (rgbd_inp.attach(rgbd_input::get_serial(device_idx))) {
 				update_stream_formats();
+				reset_format_indices = true;
 				rgbd_inp.set_pitch(pitch);
 			}
 			else {
@@ -790,12 +799,35 @@ void rgbd_control::on_device_select_cb()
 		}
 	}
 	else if (device_mode == DM_PROTOCOL) {
-		rgbd_inp.attach_path(protocol_path + "/kinect_");
-		update_stream_formats();
-		update_member(&device_idx);
-		// on_device_select_cb();
+		bool path_exists = cgv::utils::dir::exists(protocol_path);
+		if (!path_exists) {
+			if (cgv::gui::question(protocol_path + " does not exist. Create it?", "No,Yes", 1)) {
+				path_exists = cgv::utils::dir::mkdir(protocol_path);
+				if (!path_exists)
+					cgv::gui::message(protocol_path + " creation failed!");
+			}
+		}
+		if (path_exists) {
+			rgbd_inp.attach_path(protocol_path + "/kinect_");
+			update_stream_formats();
+			reset_format_indices = true;
+			update_member(&device_idx);
+			// on_device_select_cb();
+		}
+		else {
+			device_mode = DM_DETACHED;
+			update_member(&device_mode);
+		}
 	}
-	attachment_changed = true;
+	if (reset_format_indices) {
+		color_stream_format_idx = -1;
+		depth_stream_format_idx = -1;
+		ir_stream_format_idx = -1;
+		update_member(&color_stream_format_idx);
+		update_member(&depth_stream_format_idx);
+		update_member(&ir_stream_format_idx);
+	}
+	color_attachment_changed = depth_attachment_changed = infrared_attachment_changed = true;
 	post_redraw();
 }
 
