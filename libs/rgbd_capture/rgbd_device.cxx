@@ -20,7 +20,11 @@ namespace rgbd {
 	string compose_file_name(const string& file_name, const frame_format& ff, unsigned idx)
 	{
 		string fn = file_name;
-		fn += cgv::utils::to_string(idx);
+
+		stringstream ss;
+		ss << setfill('0') << setw(10) << idx;
+
+		fn += ss.str();
 		return fn + '.' + get_frame_extension(ff);
 	}
 	/// return number of bytes per pixel (ceil(nr_bits_per_pixel/8))

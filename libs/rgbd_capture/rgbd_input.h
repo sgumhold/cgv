@@ -115,6 +115,8 @@ protected:
 	int protocol_idx;
 	/// flags used to determine which frames have been saved to file for current index
 	unsigned protocol_flags;
+	/// cached stream formats
+	std::vector<stream_format> streams;
 };
 
 /// helper template to register a driver
