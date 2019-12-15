@@ -8,7 +8,8 @@ namespace rgbd {
 class rgbd_emulation : public rgbd_device
 {
 public:
-	string file_name;
+	string path_name;
+	mutable string next_warped_file_name;
 	unsigned idx;
 	unsigned flags;
 

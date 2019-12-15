@@ -56,7 +56,7 @@ namespace rgbd {
 	bool frame_type::read(const std::string& fn)
 	{
 		if (!cgv::utils::file::read(fn,
-			reinterpret_cast<char*>(this),
+			reinterpret_cast<char*>(static_cast<frame_format*>(this)),
 			sizeof(frame_format), false))
 			return false;
 		frame_data.resize(buffer_size);

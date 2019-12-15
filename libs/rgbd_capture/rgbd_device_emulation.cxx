@@ -4,6 +4,7 @@
 #include <cgv/utils/file.h>
 #include <iostream>
 #include <fstream>
+#include <algorithm>
 
 using namespace std;
 
@@ -35,7 +36,7 @@ namespace rgbd {
 
 	rgbd_emulation::rgbd_emulation(const std::string& fn):device_is_running(false)
 	{
-		file_name = fn;
+		path_name = fn;
 		flags = idx = 0;
 
 		last_color_frame_time = chrono::high_resolution_clock::now();
@@ -49,14 +50,12 @@ namespace rgbd {
 		static vector<string> depth_exts = {"dep", "d_p"};
 		static vector<string> ir_exts = {"ir"};
 
-		string fn_dir = cgv::utils::file::get_path(fn);
-
-		has_color_stream = find_stream_info(fn_dir, color_exts, color_stream);
-		has_depth_stream = find_stream_info(fn_dir, depth_exts, depth_stream);
-		has_ir_stream = find_stream_info(fn_dir, ir_exts, ir_stream);
+		has_color_stream = find_stream_info(path_name, color_exts, color_stream);
+		has_depth_stream = find_stream_info(path_name, depth_exts, depth_stream);
+		has_ir_stream = find_stream_info(path_name, ir_exts, ir_stream);
 
 		//find first frame file
-		void* file = cgv::utils::file::find_first(fn + '*');
+		void* file = cgv::utils::file::find_first(path_name + "/kinect_*");
 		
 		if (file == nullptr) {
 			cerr << "rgbd_emulation::rgbd_emulation: no frame files found for the prefix:" << fn << endl;
@@ -71,18 +70,18 @@ namespace rgbd {
 
 	bool rgbd_emulation::attach(const std::string& fn)
 	{
-		file_name = fn;
+		path_name = fn;
 		flags = idx = 0;
 		return true;
 	}
 	bool rgbd_emulation::is_attached() const
 	{
-		return !file_name.empty();
+		return !path_name.empty();
 	}
 	
 	bool rgbd_emulation::detach()
 	{
-		file_name = "";
+		path_name = "";
 		return true;
 	}
 	
@@ -275,14 +274,17 @@ namespace rgbd {
 		//copy frame_format data from stream
 		static_cast<frame_format&>(frame) = *stream;
 
-		string fn = compose_file_name(file_name, frame , idx);
+		string fn = compose_file_name(path_name+"/kinect_", frame , idx);
 		while (!cgv::utils::file::exists(fn)) {
 			++idx;
 			if (idx >= number_of_files) idx = 0;
-			fn = compose_file_name(file_name, frame, idx);
+			fn = compose_file_name(path_name + "/kinect_", frame, idx);
 		}
 
 		frame.frame_index = idx;
+		if (is == IS_COLOR)
+			next_warped_file_name = compose_file_name(path_name + "/warped_", frame, idx);
+		
 		frame.time = idx / stream->fps;
 		
 
@@ -304,13 +306,49 @@ namespace rgbd {
 	void rgbd_emulation::map_color_to_depth(const frame_type& depth_frame, const frame_type& color_frame,
 		frame_type& warped_color_frame) const
 	{
-		std::cerr << "map_color_to_depth() not implemented in rgbd_emulation" << std::endl;
+		if (next_warped_file_name.empty()) {
+			std::cerr << "map_color_to_depth() no warped frames saved" << std::endl;
+			return;
+		}
+		string data;
+		if (!cgv::utils::file::read(next_warped_file_name, data, false)) {
+			std::cerr << "rgbd_emulation::map_color_to_depth() warped frame " << next_warped_file_name << " not found" << std::endl;
+			return;
+		}
+		// prepare warped frame
+		static_cast<frame_size&>(warped_color_frame) = depth_frame;
+		warped_color_frame.pixel_format = color_frame.pixel_format;
+		warped_color_frame.nr_bits_per_pixel = color_frame.nr_bits_per_pixel;
+		warped_color_frame.compute_buffer_size();
+		warped_color_frame.frame_data.resize(warped_color_frame.buffer_size);
+		unsigned bytes_per_pixel = color_frame.nr_bits_per_pixel / 8;
+
+		if (warped_color_frame.frame_data.size() != data.size()) {
+			std::cerr << "rgbd_emulation::map_color_to_depth() frame size mismatch: expected " 
+				<< warped_color_frame.frame_data.size() << ", but found " << data.size() << std::endl;
+		}
+		memcpy(&warped_color_frame.frame_data.front(), &data.front(), std::min(warped_color_frame.frame_data.size(), data.size()));
 	}
 
 	bool rgbd_emulation::map_depth_to_point(int x, int y, int depth, float* point_ptr) const
 	{
+		// assuming kinect
+		depth /= 8;
+		if (depth == 0)
+			return false;
+
+		static const double fx_d = 1.0 / 5.9421434211923247e+02;
+		static const double fy_d = 1.0 / 5.9104053696870778e+02;
+		static const double cx_d = 3.3930780975300314e+02;
+		static const double cy_d = 2.4273913761751615e+02;
+		double d = 0.001 * depth;
+		point_ptr[0] = float((x - cx_d) * d * fx_d);
+		point_ptr[1] = float((y - cy_d) * d * fy_d);
+		point_ptr[2] = float(d);
+		return true;
+/*
 		std::cerr << "map_depth_to_point() not implemented in rgbd_emulation" << std::endl;
-		return false;
+		return false;*/
 	}
 
 }
