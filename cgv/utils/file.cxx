@@ -193,6 +193,8 @@ size_t size(const std::string& file_name, bool ascii)
 bool read(const std::string& filename, char* ptr, size_t size, bool ascii, size_t file_offset)
 {
 	FILE* fp = ::fopen(filename.c_str(), ascii ? "r" : "rb");
+	if (fp == 0)
+		return false;
 	if (file_offset != 0) {
 		if (::fseek(fp, file_offset, SEEK_SET) != 0)
 			return false;

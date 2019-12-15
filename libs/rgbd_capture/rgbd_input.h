@@ -115,6 +115,14 @@ protected:
 	int protocol_idx;
 	/// flags used to determine which frames have been saved to file for current index
 	unsigned protocol_flags;
+public:
+	/// whether to write protocol frames asynchronously
+	bool protocol_write_async;
+protected:
+	/// store filename for protocol of warped frames
+	mutable std::string next_warped_file_name;
+	/// helper function to write protocol frame asynchronously
+	bool write_protocol_frame_async(const std::string& fn, const frame_type& frame) const;
 	/// cached stream formats
 	std::vector<stream_format> streams;
 };
