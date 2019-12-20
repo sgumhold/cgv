@@ -46,8 +46,6 @@ namespace rgbd {
 		std::string get_serial(int i);
 		/// create a kinect device
 		rgbd_device* create_rgbd_device();
-	protected:
-		rs2::context ctx;
 	};
 }
 #include <cgv/config/lib_end.h>
