@@ -30,7 +30,6 @@ namespace rgbd {
 		bool map_depth_to_point(int x, int y, int depth, float* point_ptr) const;
 
 	protected:
-		rs2::context ctx;
 		rs2::device dev;
 	};
 
