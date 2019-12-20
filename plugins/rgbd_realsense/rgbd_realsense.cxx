@@ -88,11 +88,13 @@ namespace rgbd {
 	}
 
 	unsigned rgbd_realsense_driver::get_nr_devices() {
+		rs2::context ctx;
 		auto list = ctx.query_devices();
 		return list.size();
 	}
 
 	std::string rgbd_realsense_driver::get_serial(int i) {
+		rs2::context ctx;
 		auto list = ctx.query_devices();
 		int list_size = get_nr_devices();
 		if (i >= list_size) return "";
