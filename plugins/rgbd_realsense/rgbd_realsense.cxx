@@ -15,6 +15,7 @@ namespace rgbd {
 	bool rgbd_realsense::attach(const std::string& serial)
 	{
 		detach();
+		rs2::context ctx;
 		auto list = ctx.query_devices();
 		for (int i = 0; i < list.size(); ++i) {
 			if (string(list[i].get_info(RS2_CAMERA_INFO_SERIAL_NUMBER)).compare(serial) == 0) {
