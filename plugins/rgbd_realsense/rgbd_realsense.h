@@ -47,5 +47,7 @@ namespace rgbd {
 		/// create a kinect device
 		rgbd_device* create_rgbd_device();
 	};
+
+	rs2::context& get_rs2_context();
 }
 #include <cgv/config/lib_end.h>
