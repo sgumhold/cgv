@@ -1,8 +1,14 @@
+#include <iostream>
 #include "rgbd_realsense.h"
 
 using namespace std;
 
 namespace rgbd {
+
+	rs2::context& get_rs2_context() {
+		static rs2::context ctx;
+		return ctx;
+	}
 
 	rgbd_realsense::rgbd_realsense() {
 		
@@ -14,8 +20,10 @@ namespace rgbd {
 
 	bool rgbd_realsense::attach(const std::string& serial)
 	{
-		detach();
-		rs2::context ctx;
+		if (is_attached()) {
+			detach();
+		}
+		rs2::context& ctx = get_rs2_context();
 		auto list = ctx.query_devices();
 		for (int i = 0; i < list.size(); ++i) {
 			if (string(list[i].get_info(RS2_CAMERA_INFO_SERIAL_NUMBER)).compare(serial) == 0) {
@@ -78,6 +86,85 @@ namespace rgbd {
 
 	void rgbd_realsense::query_stream_formats(InputStreams is, std::vector<stream_format>& stream_formats) const
 	{
+		if (!is_attached()) {
+			std::cerr << "rgbd_realsense::query_stream_formats:  device is not attached!\n";
+			return;
+		}
+		auto sensors = dev.query_sensors();
+		vector<rs2::stream_profile> stream_profiles;
+		for (auto sensor : sensors) {
+			for (auto profile : sensor.get_stream_profiles()) {
+				stream_profiles.push_back(profile);
+			}
+		}
+
+		for (rs2::stream_profile profile : stream_profiles) {
+			if (((is & IS_COLOR) != 0) && 
+					(profile.stream_type() == RS2_STREAM_COLOR) && profile.is<rs2::video_stream_profile>()) {
+				//add color stream formats
+				rs2::video_stream_profile video_stream = static_cast<rs2::video_stream_profile>(profile);
+				stream_format stream;
+				stream.fps = profile.fps();
+				bool valid_format = false;
+				switch (profile.format()) {
+				case RS2_FORMAT_RGBA8:
+					stream.nr_bits_per_pixel = 32;
+					stream.pixel_format = PF_RGBA;
+					valid_format = true;
+					break;
+				case RS2_FORMAT_BGRA8:
+					stream.nr_bits_per_pixel = 32;
+					stream.pixel_format = PF_BGRA;
+					valid_format = true;
+					break;
+				case RS2_FORMAT_BGR8:
+					stream.nr_bits_per_pixel = 24;
+					stream.pixel_format = PF_BGR;
+					valid_format = true;
+					break;
+				}
+				if (valid_format) {
+					stream.height = video_stream.height();
+					stream.width = video_stream.width();
+					stream_formats.push_back(stream);
+				}
+				continue;
+			}
+			if (((is & IS_DEPTH) != 0) &&
+				(profile.stream_type() == RS2_STREAM_DEPTH) && profile.is<rs2::video_stream_profile>()) {
+				//add ir stream formats
+				rs2::video_stream_profile video_stream = static_cast<rs2::video_stream_profile>(profile);
+				stream_format stream;
+				stream.fps = profile.fps();
+				switch (profile.format()) {
+				case RS2_FORMAT_Z16:
+					stream.nr_bits_per_pixel = 16;
+					stream.pixel_format = PF_DEPTH;
+					stream.height = video_stream.height();
+					stream.width = video_stream.width();
+					stream_formats.push_back(stream);
+					break;
+				}
+				continue;
+			}
+			if (((is & IS_INFRARED) != 0) &&
+				(profile.stream_type() == RS2_STREAM_INFRARED) && profile.is<rs2::video_stream_profile>()) {
+				//add ir stream formats
+				rs2::video_stream_profile video_stream = static_cast<rs2::video_stream_profile>(profile);
+				stream_format stream;
+				stream.fps = profile.fps();
+				switch (profile.format()) {
+				case RS2_FORMAT_Y8:
+					stream.nr_bits_per_pixel = 8;
+					stream.pixel_format = PF_DEPTH;
+					stream.height = video_stream.height();
+					stream.width = video_stream.width();
+					stream_formats.push_back(stream);
+					break;
+				}
+				continue;
+			}
+		}
 	}
 
 
@@ -88,18 +175,20 @@ namespace rgbd {
 	}
 
 	unsigned rgbd_realsense_driver::get_nr_devices() {
-		rs2::context ctx;
+		rs2::context& ctx = get_rs2_context();
 		auto list = ctx.query_devices();
 		return list.size();
 	}
 
 	std::string rgbd_realsense_driver::get_serial(int i) {
-		rs2::context ctx;
+		rs2::context& ctx = get_rs2_context();
 		auto list = ctx.query_devices();
-		int list_size = get_nr_devices();
-		if (i >= list_size) return "";
-		
-		return list[i].get_info(RS2_CAMERA_INFO_SERIAL_NUMBER);
+		int list_size = list.size();
+		if (i >= list_size) return string();
+		if (list[i].supports(RS2_CAMERA_INFO_SERIAL_NUMBER)) {
+			return list[i].get_info(RS2_CAMERA_INFO_SERIAL_NUMBER);
+		}
+		return string();
 	}
 
 	rgbd_device* rgbd_realsense_driver::create_rgbd_device() {
