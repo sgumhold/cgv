@@ -30,10 +30,10 @@ namespace rgbd {
 		bool map_depth_to_point(int x, int y, int depth, float* point_ptr) const;
 
 	protected:
+		std::shared_ptr<rs2::context> ctx;
 		rs2::device dev;
 		rs2::pipeline pipe;
 		rs2::config cfg;
-
 		stream_format color_stream, depth_stream, ir_stream;
 	};
 
@@ -52,6 +52,5 @@ namespace rgbd {
 		rgbd_device* create_rgbd_device();
 	};
 
-	rs2::context& get_rs2_context();
 }
 #include <cgv/config/lib_end.h>
