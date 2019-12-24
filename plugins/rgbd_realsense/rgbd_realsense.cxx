@@ -5,13 +5,12 @@ using namespace std;
 
 namespace rgbd {
 
-	rs2::context& get_rs2_context() {
-		static rs2::context ctx;
-		return ctx;
-	}
 
 	rgbd_realsense::rgbd_realsense() {
-		
+		ctx = make_shared<rs2::context>();
+		dev = rs2::device();
+		pipe = rs2::pipeline();
+		cfg = rs2::config();
 	}
 
 	rgbd_realsense::~rgbd_realsense() {
@@ -23,8 +22,8 @@ namespace rgbd {
 		if (is_attached()) {
 			detach();
 		}
-		rs2::context& ctx = get_rs2_context();
-		auto list = ctx.query_devices();
+		
+		auto list = ctx->query_devices();
 		for (int i = 0; i < list.size(); ++i) {
 			if (string(list[i].get_info(RS2_CAMERA_INFO_SERIAL_NUMBER)).compare(serial) == 0) {
 				dev = list[i];
@@ -62,8 +61,8 @@ namespace rgbd {
 		if (is_running()) {
 			return true;
 		}
-		rs2::context ctx = get_rs2_context();
-		pipe = rs2::pipeline(ctx);
+		
+		pipe = rs2::pipeline(*ctx);
 		if (is && IS_COLOR) {
 			cfg.enable_stream(RS2_STREAM_COLOR, 0, 640, 480, RS2_FORMAT_BGR8, 30);
 			stream_formats.push_back(color_stream = stream_format(640, 480,PF_BGR, 30, 24));
@@ -100,7 +99,7 @@ namespace rgbd {
 
 	bool rgbd_realsense::is_running() const
 	{
-		return true;
+		return ;
 	}
 
 	bool rgbd_realsense::get_frame(InputStreams is, frame_type& frame, int timeOut)
@@ -216,20 +215,21 @@ namespace rgbd {
 
 
 	rgbd_realsense_driver::rgbd_realsense_driver() {
-
+		
 	}
 
 	rgbd_realsense_driver::~rgbd_realsense_driver() {
+		
 	}
 
 	unsigned rgbd_realsense_driver::get_nr_devices() {
-		rs2::context& ctx = get_rs2_context();
+		rs2::context ctx;
 		auto list = ctx.query_devices();
 		return list.size();
 	}
 
 	std::string rgbd_realsense_driver::get_serial(int i) {
-		rs2::context& ctx = get_rs2_context();
+		rs2::context ctx;
 		auto list = ctx.query_devices();
 		int list_size = list.size();
 		if (i >= list_size) return string();
