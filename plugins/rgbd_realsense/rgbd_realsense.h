@@ -31,6 +31,10 @@ namespace rgbd {
 
 	protected:
 		rs2::device dev;
+		rs2::pipeline pipe;
+		rs2::config cfg;
+
+		stream_format color_stream, depth_stream, ir_stream;
 	};
 
 	class CGV_API rgbd_realsense_driver : public rgbd_driver
