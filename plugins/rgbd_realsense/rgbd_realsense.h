@@ -2,7 +2,6 @@
 
 #include <rgbd_input.h>
 #include "lib_begin.h"
-#include <librealsense2/rs.hpp>
 
 namespace rgbd {
 
@@ -30,10 +29,11 @@ namespace rgbd {
 		bool map_depth_to_point(int x, int y, int depth, float* point_ptr) const;
 
 	protected:
-		std::shared_ptr<rs2::context> ctx;
-		rs2::device dev;
-		rs2::pipeline pipe;
-		rs2::config cfg;
+		rs2::context* ctx;
+		rs2::device* dev;
+		rs2::pipeline* pipe;
+		rs2::config* cfg;
+		std::string serial;
 		stream_format color_stream, depth_stream, ir_stream;
 	};
 
