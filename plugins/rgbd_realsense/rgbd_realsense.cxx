@@ -1,4 +1,5 @@
 #include <iostream>
+#include <librealsense2/rs.hpp>
 #include "rgbd_realsense.h"
 
 using namespace std;
@@ -7,14 +8,17 @@ namespace rgbd {
 
 
 	rgbd_realsense::rgbd_realsense() {
-		ctx = make_shared<rs2::context>();
-		dev = rs2::device();
-		pipe = rs2::pipeline();
-		cfg = rs2::config();
+		ctx = new rs2::context();
+		dev = nullptr;
+		cfg = nullptr;
+		pipe = nullptr;
 	}
 
 	rgbd_realsense::~rgbd_realsense() {
-		
+		delete ctx;
+		delete dev;
+		delete cfg;
+		delete pipe;
 	}
 
 	bool rgbd_realsense::attach(const std::string& serial)
@@ -24,11 +28,10 @@ namespace rgbd {
 		}
 		
 		auto list = ctx->query_devices();
-		for (int i = 0; i < list.size(); ++i) {
+		for (unsigned i = 0; i < list.size(); ++i) {
 			if (string(list[i].get_info(RS2_CAMERA_INFO_SERIAL_NUMBER)).compare(serial) == 0) {
-				dev = list[i];
-				cfg = rs2::config();
-				cfg.enable_device(serial);
+				dev = new rs2::device(list[i]);
+				this->serial = serial;
 				return true;
 			}
 		}
@@ -37,13 +40,15 @@ namespace rgbd {
 
 	bool rgbd_realsense::is_attached() const
 	{
-		return dev;
+		return dev != nullptr;
 	}
 
 	bool rgbd_realsense::detach()
 	{
-		dev = rs2::device();
-		cfg.enable_device("");
+		delete dev;
+		dev = nullptr;
+		delete cfg;
+		cfg = nullptr;
 		return true;
 	}
 
@@ -61,8 +66,10 @@ namespace rgbd {
 		if (is_running()) {
 			return true;
 		}
-		
-		pipe = rs2::pipeline(*ctx);
+
+		pipe = new rs2::pipeline(*ctx);
+		rs2::config cfg;
+		cfg.enable_device(serial);
 		if (is && IS_COLOR) {
 			cfg.enable_stream(RS2_STREAM_COLOR, 0, 640, 480, RS2_FORMAT_BGR8, 30);
 			stream_formats.push_back(color_stream = stream_format(640, 480,PF_BGR, 30, 24));
@@ -75,10 +82,11 @@ namespace rgbd {
 			cfg.enable_stream(RS2_STREAM_INFRARED, 0, 640, 480, RS2_FORMAT_Y8, 30);
 			stream_formats.push_back(ir_stream = stream_format(640, 480, PF_I, 30, 8));
 		}
-		if (cfg.can_resolve(pipe)) {
-			pipe.start(cfg);
+		if (cfg.can_resolve(*pipe)) {
+			pipe->start(cfg);
 			return true;
 		}
+		
 		return false;
 	}
 
@@ -90,7 +98,9 @@ namespace rgbd {
 	bool rgbd_realsense::stop_device()
 	{
 		if (is_running()) {
-			pipe.stop();
+			pipe->stop();
+			delete pipe;
+			pipe = nullptr;
 			return true;
 		}
 
@@ -99,13 +109,13 @@ namespace rgbd {
 
 	bool rgbd_realsense::is_running() const
 	{
-		return ;
+		return pipe != nullptr;
 	}
 
 	bool rgbd_realsense::get_frame(InputStreams is, frame_type& frame, int timeOut)
 	{
 		rs2::frameset frames;
-		if (pipe.poll_for_frames(&frames))
+		if (pipe->poll_for_frames(&frames))
 		{
 			if (is & IS_COLOR) {
 				rs2::frame depth_frame = frames.first(RS2_STREAM_DEPTH);
@@ -136,7 +146,7 @@ namespace rgbd {
 			std::cerr << "rgbd_realsense::query_stream_formats:  device is not attached!\n";
 			return;
 		}
-		auto sensors = dev.query_sensors();
+		auto sensors = dev->query_sensors();
 		vector<rs2::stream_profile> stream_profiles;
 		for (auto sensor : sensors) {
 			for (auto profile : sensor.get_stream_profiles()) {
@@ -150,7 +160,7 @@ namespace rgbd {
 				//add color stream formats
 				rs2::video_stream_profile video_stream = static_cast<rs2::video_stream_profile>(profile);
 				stream_format stream;
-				stream.fps = profile.fps();
+				stream.fps = (float) profile.fps();
 				bool valid_format = false;
 				switch (profile.format()) {
 				case RS2_FORMAT_RGBA8:
@@ -181,7 +191,7 @@ namespace rgbd {
 				//add ir stream formats
 				rs2::video_stream_profile video_stream = static_cast<rs2::video_stream_profile>(profile);
 				stream_format stream;
-				stream.fps = profile.fps();
+				stream.fps = (float) profile.fps();
 				switch (profile.format()) {
 				case RS2_FORMAT_Z16:
 					stream.nr_bits_per_pixel = 16;
@@ -198,7 +208,7 @@ namespace rgbd {
 				//add ir stream formats
 				rs2::video_stream_profile video_stream = static_cast<rs2::video_stream_profile>(profile);
 				stream_format stream;
-				stream.fps = profile.fps();
+				stream.fps = (float) profile.fps();
 				switch (profile.format()) {
 				case RS2_FORMAT_Y8:
 					stream.nr_bits_per_pixel = 8;
