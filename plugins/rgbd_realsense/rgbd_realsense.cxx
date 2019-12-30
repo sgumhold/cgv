@@ -188,6 +188,11 @@ namespace rgbd {
 
 	bool rgbd_realsense::get_frame(InputStreams is, frame_type& frame, int timeOut)
 	{
+		if (!is_running()) {
+			cerr << "rgbd_realsense::get_frame called on device that is not running" << endl;
+			return false;
+		}
+
 		if (pipe->poll_for_frames(&frame_cache)) {
 			got_color_frame = got_depth_frame = got_ir_frame = false;
 		}
@@ -209,12 +214,15 @@ namespace rgbd {
 				rs_stream = RS2_STREAM_INFRARED;
 				got_ir_frame = true;
 			}
-
+			
 			if (!stream) {
 				return false;
 			}
 
 			rs2::frame next_frame = frame_cache.first(rs_stream);
+			if (!next_frame) {
+				return false;
+			}
 				static_cast<frame_format&>(frame) = *stream;
 				if (frame.frame_data.size() != stream->buffer_size) {
 					frame.frame_data.resize(stream->buffer_size);
