@@ -188,10 +188,10 @@ namespace rgbd {
 
 	bool rgbd_realsense::get_frame(InputStreams is, frame_type& frame, int timeOut)
 	{
-		if (pipe->poll_for_frames(&frames)) {
+		if (pipe->poll_for_frames(&frame_cache)) {
 			got_color_frame = got_depth_frame = got_ir_frame = false;
 		}
-		if (frames.size() > 0)
+		if (frame_cache.size() > 0)
 		{
 			stream_format* stream = nullptr;
 			rs2_stream rs_stream = RS2_STREAM_ANY;
@@ -214,7 +214,7 @@ namespace rgbd {
 				return false;
 			}
 
-			rs2::frame next_frame = frames.first(rs_stream);
+			rs2::frame next_frame = frame_cache.first(rs_stream);
 				static_cast<frame_format&>(frame) = *stream;
 				if (frame.frame_data.size() != stream->buffer_size) {
 					frame.frame_data.resize(stream->buffer_size);
