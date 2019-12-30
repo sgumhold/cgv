@@ -35,6 +35,8 @@ namespace rgbd {
 		rs2::config* cfg;
 		std::string serial;
 		stream_format color_stream, depth_stream, ir_stream;
+		rs2::frameset frame_cache;
+		bool got_color_frame, got_depth_frame, got_ir_frame;
 	};
 
 	class CGV_API rgbd_realsense_driver : public rgbd_driver
