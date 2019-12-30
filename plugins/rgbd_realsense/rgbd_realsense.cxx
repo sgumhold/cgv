@@ -49,12 +49,13 @@ namespace rgbd {
 		dev = nullptr;
 		delete cfg;
 		cfg = nullptr;
+		serial = "";
 		return true;
 	}
 
 	bool rgbd_realsense::check_input_stream_configuration(InputStreams is) const
 	{
-		return false;
+		return true;
 	}
 
 	bool rgbd_realsense::start_device(InputStreams is, std::vector<stream_format>& stream_formats)
@@ -70,20 +71,21 @@ namespace rgbd {
 		pipe = new rs2::pipeline(*ctx);
 		rs2::config cfg;
 		cfg.enable_device(serial);
+		
 		if (is && IS_COLOR) {
-			cfg.enable_stream(RS2_STREAM_COLOR, 0, 640, 480, RS2_FORMAT_BGR8, 30);
+			cfg.enable_stream(RS2_STREAM_COLOR, -1, 640, 480, RS2_FORMAT_BGR8, 30);
 			stream_formats.push_back(color_stream = stream_format(640, 480,PF_BGR, 30, 24));
 		}
 		if (is && IS_DEPTH) {
-			cfg.enable_stream(RS2_STREAM_DEPTH, 0, 640, 480, RS2_FORMAT_Z16, 30);
+			cfg.enable_stream(RS2_STREAM_DEPTH, -1, 640, 480, RS2_FORMAT_Z16, 30);
 			stream_formats.push_back(depth_stream = stream_format(640, 480, PF_DEPTH, 30, 16));
 		}
 		if (is && IS_INFRARED) {
-			cfg.enable_stream(RS2_STREAM_INFRARED, 0, 640, 480, RS2_FORMAT_Y8, 30);
+			cfg.enable_stream(RS2_STREAM_INFRARED, -1, 640, 480, RS2_FORMAT_Y8, 30);
 			stream_formats.push_back(ir_stream = stream_format(640, 480, PF_I, 30, 8));
 		}
 		if (cfg.can_resolve(*pipe)) {
-			pipe->start(cfg);
+			auto profile = pipe->start(cfg);
 			return true;
 		}
 		
@@ -92,6 +94,70 @@ namespace rgbd {
 
 	bool rgbd_realsense::start_device(const std::vector<stream_format>& stream_formats)
 	{
+		if (!is_attached()) {
+			cerr << "rgbd_realsense::start_device : tried to start unattached device\n";
+			return false;
+		}
+		if (is_running()) {
+			return true;
+		}
+
+		pipe = new rs2::pipeline(*ctx);
+		rs2::config cfg;
+		cfg.enable_device(serial);
+
+		for (auto format : stream_formats) {
+			rs2_stream rs2_stream_type = RS2_STREAM_ANY;
+			rs2_format rs2_pixel_format = RS2_FORMAT_ANY;
+			switch (format.pixel_format) {
+			case PF_RGB:
+				rs2_pixel_format = RS2_FORMAT_RGB8;
+				rs2_stream_type = RS2_STREAM_COLOR;
+				break;
+			case PF_BGR:
+				rs2_pixel_format = RS2_FORMAT_BGR8;
+				rs2_stream_type = RS2_STREAM_COLOR;
+				break;
+			case PF_BGRA:
+				rs2_pixel_format = RS2_FORMAT_BGRA8;
+				rs2_stream_type = RS2_STREAM_COLOR;
+				break;
+			case PF_RGBA:
+				rs2_pixel_format = RS2_FORMAT_RGBA8;
+				rs2_stream_type = RS2_STREAM_COLOR;
+				break;
+			case PF_DEPTH:
+				rs2_pixel_format = RS2_FORMAT_Z16;
+				rs2_stream_type = RS2_STREAM_DEPTH;
+				break;
+			case PF_I:
+				rs2_pixel_format = RS2_FORMAT_Y8;
+				rs2_stream_type = RS2_STREAM_INFRARED;
+				break;
+			}
+
+			if (rs2_pixel_format == RS2_FORMAT_ANY) {
+				cerr << "rgbd_realsense::start_device : stream_formats contains an unsupported stream format\n";
+				continue;
+			}
+			switch (rs2_stream_type) {
+			case RS2_STREAM_COLOR:
+				color_stream = format;
+				break;
+			case RS2_STREAM_DEPTH:
+				depth_stream = format;
+				break;
+			case RS2_STREAM_INFRARED:
+				ir_stream = format;
+				break;
+			}
+			cfg.enable_stream(rs2_stream_type, -1, format.width, format.height, rs2_pixel_format, format.fps);
+		}
+
+		if (cfg.can_resolve(*pipe)) {
+			auto profile = pipe->start(cfg);
+			return true;
+		}
 		return false;
 	}
 
@@ -117,14 +183,33 @@ namespace rgbd {
 		rs2::frameset frames;
 		if (pipe->poll_for_frames(&frames))
 		{
-			if (is & IS_COLOR) {
-				rs2::frame depth_frame = frames.first(RS2_STREAM_DEPTH);
-				if (frame.frame_data.size() != color_stream.buffer_size) {
-					frame.frame_data.resize(color_stream.buffer_size);
-				}
-				memcpy(frame.frame_data.data(), depth_frame.get_data(), color_stream.buffer_size);
-				
+			stream_format* stream = nullptr;
+			rs2_stream rs_stream = RS2_STREAM_ANY;
+			switch (is) {
+			case IS_COLOR:
+				stream = &color_stream;
+				rs_stream = RS2_STREAM_COLOR;
+				break;
+			case IS_DEPTH:
+				stream = &depth_stream;
+				rs_stream = RS2_STREAM_DEPTH;
+				break;
+			case IS_INFRARED:
+				stream = &ir_stream;
+				rs_stream = RS2_STREAM_INFRARED;
+				break;
 			}
+
+			if (!stream) {
+				return false;
+			}
+
+			rs2::frame next_frame = frames.first(rs_stream);
+				static_cast<frame_format&>(frame) = *stream;
+				if (frame.frame_data.size() != stream->buffer_size) {
+					frame.frame_data.resize(stream->buffer_size);
+				}
+				memcpy(frame.frame_data.data(), next_frame.get_data(), stream->buffer_size);
 			return true;
 		}
 		return false;
