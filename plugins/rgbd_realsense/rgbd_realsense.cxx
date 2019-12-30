@@ -85,6 +85,7 @@ namespace rgbd {
 			stream_formats.push_back(ir_stream = stream_format(640, 480, PF_I, 30, 8));
 		}
 		if (cfg.can_resolve(*pipe)) {
+			got_color_frame = got_depth_frame = got_ir_frame = false;
 			auto profile = pipe->start(cfg);
 			return true;
 		}
@@ -110,14 +111,20 @@ namespace rgbd {
 			rs2_stream rs2_stream_type = RS2_STREAM_ANY;
 			rs2_format rs2_pixel_format = RS2_FORMAT_ANY;
 			switch (format.pixel_format) {
-			case PF_RGB:
-				rs2_pixel_format = RS2_FORMAT_RGB8;
-				rs2_stream_type = RS2_STREAM_COLOR;
+			case PF_RGB: {
+				if (format.nr_bits_per_pixel == 24) {
+					rs2_pixel_format = RS2_FORMAT_RGB8;
+					rs2_stream_type = RS2_STREAM_COLOR;
+				}
 				break;
-			case PF_BGR:
-				rs2_pixel_format = RS2_FORMAT_BGR8;
-				rs2_stream_type = RS2_STREAM_COLOR;
+			}
+			case PF_BGR: {
+				if (format.nr_bits_per_pixel == 24) {
+					rs2_pixel_format = RS2_FORMAT_BGR8;
+					rs2_stream_type = RS2_STREAM_COLOR;
+				}
 				break;
+			}
 			case PF_BGRA:
 				rs2_pixel_format = RS2_FORMAT_BGRA8;
 				rs2_stream_type = RS2_STREAM_COLOR;
@@ -155,6 +162,7 @@ namespace rgbd {
 		}
 
 		if (cfg.can_resolve(*pipe)) {
+			got_color_frame = got_depth_frame = got_ir_frame = false;
 			auto profile = pipe->start(cfg);
 			return true;
 		}
@@ -180,24 +188,26 @@ namespace rgbd {
 
 	bool rgbd_realsense::get_frame(InputStreams is, frame_type& frame, int timeOut)
 	{
-		rs2::frameset frames;
-		if (pipe->poll_for_frames(&frames))
+		if (pipe->poll_for_frames(&frames)) {
+			got_color_frame = got_depth_frame = got_ir_frame = false;
+		}
+		if (frames.size() > 0)
 		{
 			stream_format* stream = nullptr;
 			rs2_stream rs_stream = RS2_STREAM_ANY;
-			switch (is) {
-			case IS_COLOR:
+
+			if (is == IS_COLOR && !got_color_frame) {
 				stream = &color_stream;
 				rs_stream = RS2_STREAM_COLOR;
-				break;
-			case IS_DEPTH:
+				got_color_frame = true;
+			} else if (is == IS_DEPTH && !got_depth_frame) {
 				stream = &depth_stream;
 				rs_stream = RS2_STREAM_DEPTH;
-				break;
-			case IS_INFRARED:
+				got_depth_frame = true;
+			} else if (is == IS_INFRARED && !got_ir_frame) {
 				stream = &ir_stream;
 				rs_stream = RS2_STREAM_INFRARED;
-				break;
+				got_ir_frame = true;
 			}
 
 			if (!stream) {
