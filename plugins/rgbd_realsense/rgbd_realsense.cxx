@@ -107,7 +107,7 @@ namespace rgbd {
 		rs2::config cfg;
 		cfg.enable_device(serial);
 
-		for (auto format : stream_formats) {
+		for (const auto& format : stream_formats) {
 			rs2_stream rs2_stream_type = RS2_STREAM_ANY;
 			rs2_format rs2_pixel_format = RS2_FORMAT_ANY;
 			switch (format.pixel_format) {
@@ -223,11 +223,13 @@ namespace rgbd {
 			if (!next_frame) {
 				return false;
 			}
-				static_cast<frame_format&>(frame) = *stream;
-				if (frame.frame_data.size() != stream->buffer_size) {
-					frame.frame_data.resize(stream->buffer_size);
-				}
-				memcpy(frame.frame_data.data(), next_frame.get_data(), stream->buffer_size);
+			
+			static_cast<frame_format&>(frame) = *stream;
+			stream->compute_buffer_size();
+			if (frame.frame_data.size() != stream->buffer_size) {
+				frame.frame_data.resize(stream->buffer_size);
+			}
+			memcpy(frame.frame_data.data(), next_frame.get_data(), stream->buffer_size);
 			return true;
 		}
 		return false;
@@ -257,7 +259,7 @@ namespace rgbd {
 			}
 		}
 
-		for (rs2::stream_profile profile : stream_profiles) {
+		for (const rs2::stream_profile &profile : stream_profiles) {
 			if ((is & IS_COLOR) && 
 					(profile.stream_type() == RS2_STREAM_COLOR) && profile.is<rs2::video_stream_profile>()) {
 				//add color stream formats
