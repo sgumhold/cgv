@@ -10,14 +10,12 @@ namespace rgbd {
 	rgbd_realsense::rgbd_realsense() {
 		ctx = new rs2::context();
 		dev = nullptr;
-		cfg = nullptr;
 		pipe = nullptr;
 	}
 
 	rgbd_realsense::~rgbd_realsense() {
 		delete ctx;
 		delete dev;
-		delete cfg;
 		delete pipe;
 	}
 
@@ -47,8 +45,6 @@ namespace rgbd {
 	{
 		delete dev;
 		dev = nullptr;
-		delete cfg;
-		cfg = nullptr;
 		serial = "";
 		return true;
 	}
@@ -192,39 +188,37 @@ namespace rgbd {
 			cerr << "rgbd_realsense::get_frame called on device that is not running" << endl;
 			return false;
 		}
-
 		if (pipe->poll_for_frames(&frame_cache)) {
 			got_color_frame = got_depth_frame = got_ir_frame = false;
 		}
 		if (frame_cache.size() > 0)
 		{
 			stream_format* stream = nullptr;
-			rs2_stream rs_stream = RS2_STREAM_ANY;
 
+			rs2::frame next_frame;
 			if (is == IS_COLOR && !got_color_frame) {
-				stream = &color_stream;
-				rs_stream = RS2_STREAM_COLOR;
-				got_color_frame = true;
+				if (next_frame = frame_cache.first(RS2_STREAM_COLOR)) {
+					got_color_frame = true;
+					stream = &color_stream;
+				}
 			} else if (is == IS_DEPTH && !got_depth_frame) {
-				stream = &depth_stream;
-				rs_stream = RS2_STREAM_DEPTH;
-				got_depth_frame = true;
+				if (next_frame = frame_cache.first(RS2_STREAM_DEPTH)) {
+					got_depth_frame = true;
+					stream = &depth_stream;
+				}
 			} else if (is == IS_INFRARED && !got_ir_frame) {
-				stream = &ir_stream;
-				rs_stream = RS2_STREAM_INFRARED;
-				got_ir_frame = true;
+				if (next_frame = frame_cache.first(RS2_STREAM_INFRARED)) {
+					got_ir_frame = true;
+					stream = &ir_stream;
+				}
 			}
 			
 			if (!stream) {
 				return false;
 			}
-
-			rs2::frame next_frame = frame_cache.first(rs_stream);
-			if (!next_frame) {
-				return false;
-			}
 			
 			static_cast<frame_format&>(frame) = *stream;
+			frame.time = next_frame.get_timestamp();
 			stream->compute_buffer_size();
 			if (frame.frame_data.size() != stream->buffer_size) {
 				frame.frame_data.resize(stream->buffer_size);
