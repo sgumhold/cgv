@@ -32,7 +32,6 @@ namespace rgbd {
 		rs2::context* ctx;
 		rs2::device* dev;
 		rs2::pipeline* pipe;
-		rs2::config* cfg;
 		std::string serial;
 		stream_format color_stream, depth_stream, ir_stream;
 		rs2::frameset frame_cache;
