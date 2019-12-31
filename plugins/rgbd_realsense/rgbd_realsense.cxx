@@ -162,6 +162,9 @@ namespace rgbd {
 			auto profile = pipe->start(cfg);
 			return true;
 		}
+		cerr << "rgbd_realsense::start_device : can't resolve configuration, make sure to use the same ir stream and depth stream resolutions and framerates\n";
+		delete pipe;
+		pipe = nullptr;
 		return false;
 	}
 
