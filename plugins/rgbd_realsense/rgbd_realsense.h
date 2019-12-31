@@ -8,12 +8,17 @@ namespace rgbd {
 	class CGV_API rgbd_realsense : public rgbd_device
 	{
 	public:
+		/// create a detached realsense device object
 		rgbd_realsense();
 		~rgbd_realsense();
 		
+		/// attach to the realsense device of the given serial, the expected serial is the same as returned by rgbd_realsense_driver::get_serial
 		bool attach(const std::string& serial);
+		/// return whether device object is attached to a realsense device
 		bool is_attached() const;
+		/// detaches the object from the realsense device
 		bool detach();
+		/// check whether the device supports the given combination of input streams
 		bool check_input_stream_configuration(InputStreams is) const;
 		void query_stream_formats(InputStreams is, std::vector<stream_format>& stream_formats) const;
 		bool start_device(InputStreams is, std::vector<stream_format>& stream_formats);

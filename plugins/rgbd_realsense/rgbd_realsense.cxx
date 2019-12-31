@@ -48,14 +48,19 @@ namespace rgbd {
 		serial = "";
 		return true;
 	}
-
+	
 	bool rgbd_realsense::check_input_stream_configuration(InputStreams is) const
 	{
-		return true;
+		static const unsigned streams_avaiable = IS_COLOR | IS_DEPTH | IS_INFRARED, streams_in = is;
+		return (~(~streams_in | streams_avaiable)) == 0;
 	}
 
 	bool rgbd_realsense::start_device(InputStreams is, std::vector<stream_format>& stream_formats)
 	{
+		if (!check_input_stream_configuration(is)) {
+			cerr << "rgbd_realsense::start_device : invalid stream configuration\n";
+			return false;
+		}
 		if (!is_attached()) {
 			cerr << "rgbd_realsense::start_device : tried to start unattached device\n";
 			return false;
