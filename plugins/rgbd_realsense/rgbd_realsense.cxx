@@ -102,7 +102,7 @@ namespace rgbd {
 		pipe = new rs2::pipeline(*ctx);
 		rs2::config cfg;
 		cfg.enable_device(serial);
-
+		
 		for (const auto& format : stream_formats) {
 			rs2_stream rs2_stream_type = RS2_STREAM_ANY;
 			rs2_format rs2_pixel_format = RS2_FORMAT_ANY;
@@ -127,6 +127,10 @@ namespace rgbd {
 				break;
 			case PF_RGBA:
 				rs2_pixel_format = RS2_FORMAT_RGBA8;
+				rs2_stream_type = RS2_STREAM_COLOR;
+				break;
+			case PF_BAYER:
+				rs2_pixel_format = RS2_FORMAT_Y16;
 				rs2_stream_type = RS2_STREAM_COLOR;
 				break;
 			case PF_DEPTH:
@@ -278,6 +282,11 @@ namespace rgbd {
 				case RS2_FORMAT_BGR8:
 					stream.nr_bits_per_pixel = 24;
 					stream.pixel_format = PF_BGR;
+					valid_format = true;
+					break;
+				case RS2_FORMAT_Y16:
+					stream.nr_bits_per_pixel = 16;
+					stream.pixel_format = PF_BAYER;
 					valid_format = true;
 					break;
 				}

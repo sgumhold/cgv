@@ -10,9 +10,6 @@ namespace rgbd {
 	public:
 		rgbd_realsense();
 		~rgbd_realsense();
-
-		//not implemented yet
-
 		
 		bool attach(const std::string& serial);
 		bool is_attached() const;
