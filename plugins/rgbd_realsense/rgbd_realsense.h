@@ -38,6 +38,7 @@ namespace rgbd {
 		stream_format color_stream, depth_stream, ir_stream;
 		rs2::frameset frame_cache;
 		bool got_color_frame, got_depth_frame, got_ir_frame;
+		double last_color_frame, last_depth_frame, last_ir_frame;
 	};
 
 	class CGV_API rgbd_realsense_driver : public rgbd_driver
