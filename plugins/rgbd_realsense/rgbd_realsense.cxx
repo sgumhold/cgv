@@ -87,6 +87,7 @@ namespace rgbd {
 		}
 		if (cfg.can_resolve(*pipe)) {
 			got_color_frame = got_depth_frame = got_ir_frame = false;
+			last_color_frame, last_depth_frame, last_ir_frame = -1;
 			auto profile = pipe->start(cfg);
 			return true;
 		}
@@ -211,17 +212,23 @@ namespace rgbd {
 			if (is == IS_COLOR && !got_color_frame) {
 				if (next_frame = frame_cache.first(RS2_STREAM_COLOR)) {
 					got_color_frame = true;
+					if (next_frame.get_timestamp() <= last_color_frame) return false;
 					stream = &color_stream;
+					last_color_frame = next_frame.get_timestamp();
 				}
 			} else if (is == IS_DEPTH && !got_depth_frame) {
 				if (next_frame = frame_cache.first(RS2_STREAM_DEPTH)) {
 					got_depth_frame = true;
+					if (next_frame.get_timestamp() <= last_depth_frame) return false;
 					stream = &depth_stream;
+					last_depth_frame = next_frame.get_timestamp();
 				}
 			} else if (is == IS_INFRARED && !got_ir_frame) {
 				if (next_frame = frame_cache.first(RS2_STREAM_INFRARED)) {
 					got_ir_frame = true;
+					if (next_frame.get_timestamp() <= last_ir_frame) return false;
 					stream = &ir_stream;
+					last_ir_frame = next_frame.get_timestamp();
 				}
 			}
 			
