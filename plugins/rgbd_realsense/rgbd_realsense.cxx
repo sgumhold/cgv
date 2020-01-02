@@ -69,29 +69,17 @@ namespace rgbd {
 			return true;
 		}
 
-		pipe = new rs2::pipeline(*ctx);
-		rs2::config cfg;
-		cfg.enable_device(serial);
 		
 		if (is && IS_COLOR) {
-			cfg.enable_stream(RS2_STREAM_COLOR, -1, 640, 480, RS2_FORMAT_BGR8, 30);
 			stream_formats.push_back(color_stream = stream_format(640, 480,PF_BGR, 30, 24));
 		}
 		if (is && IS_DEPTH) {
-			cfg.enable_stream(RS2_STREAM_DEPTH, -1, 640, 480, RS2_FORMAT_Z16, 30);
 			stream_formats.push_back(depth_stream = stream_format(640, 480, PF_DEPTH, 30, 16));
 		}
 		if (is && IS_INFRARED) {
-			cfg.enable_stream(RS2_STREAM_INFRARED, -1, 640, 480, RS2_FORMAT_Y8, 30);
 			stream_formats.push_back(ir_stream = stream_format(640, 480, PF_I, 30, 8));
 		}
-		if (cfg.can_resolve(*pipe)) {
-			last_color_frame_time, last_depth_frame_time, last_ir_frame_time = -1;
-			auto profile = pipe->start(cfg);
-			return true;
-		}
-		
-		return false;
+		return this->start_device(stream_formats);
 	}
 
 	bool rgbd_realsense::start_device(const std::vector<stream_format>& stream_formats)
