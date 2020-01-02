@@ -37,7 +37,6 @@ namespace rgbd {
 		std::string serial;
 		stream_format color_stream, depth_stream, ir_stream;
 		rs2::frameset frame_cache;
-		bool got_color_frame, got_depth_frame, got_ir_frame;
 		double last_color_frame_time, last_depth_frame_time, last_ir_frame_time;
 	};
 
