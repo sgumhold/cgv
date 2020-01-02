@@ -43,10 +43,13 @@ namespace rgbd {
 
 	bool rgbd_realsense::detach()
 	{
-		delete dev;
-		dev = nullptr;
-		serial = "";
-		return true;
+		if (this->is_attached()) {
+			delete dev;
+			dev = nullptr;
+			serial = "";
+			return true;
+		}
+		return false;
 	}
 	
 	bool rgbd_realsense::check_input_stream_configuration(InputStreams is) const
