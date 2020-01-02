@@ -87,7 +87,7 @@ namespace rgbd {
 		}
 		if (cfg.can_resolve(*pipe)) {
 			got_color_frame = got_depth_frame = got_ir_frame = false;
-			last_color_frame, last_depth_frame, last_ir_frame = -1;
+			last_color_frame_time, last_depth_frame_time, last_ir_frame_time = -1;
 			auto profile = pipe->start(cfg);
 			return true;
 		}
@@ -202,33 +202,33 @@ namespace rgbd {
 			return false;
 		}
 		if (pipe->poll_for_frames(&frame_cache)) {
-			got_color_frame = got_depth_frame = got_ir_frame = false;
+			got_color_frame = got_depth_frame = got_ir_frame = true;
 		}
 		if (frame_cache.size() > 0)
 		{
 			stream_format* stream = nullptr;
 
 			rs2::frame next_frame;
-			if (is == IS_COLOR && !got_color_frame) {
+			if (is == IS_COLOR && got_color_frame) {
 				if (next_frame = frame_cache.first(RS2_STREAM_COLOR)) {
-					got_color_frame = true;
-					if (next_frame.get_timestamp() <= last_color_frame) return false;
+					got_color_frame = false;
+					if (next_frame.get_timestamp() <= last_color_frame_time) return false;
 					stream = &color_stream;
-					last_color_frame = next_frame.get_timestamp();
+					last_color_frame_time = next_frame.get_timestamp();
 				}
-			} else if (is == IS_DEPTH && !got_depth_frame) {
+			} else if (is == IS_DEPTH && got_depth_frame) {
 				if (next_frame = frame_cache.first(RS2_STREAM_DEPTH)) {
-					got_depth_frame = true;
-					if (next_frame.get_timestamp() <= last_depth_frame) return false;
+					got_depth_frame = false;
+					if (next_frame.get_timestamp() <= last_depth_frame_time) return false;
 					stream = &depth_stream;
-					last_depth_frame = next_frame.get_timestamp();
+					last_depth_frame_time = next_frame.get_timestamp();
 				}
-			} else if (is == IS_INFRARED && !got_ir_frame) {
+			} else if (is == IS_INFRARED && got_ir_frame) {
 				if (next_frame = frame_cache.first(RS2_STREAM_INFRARED)) {
-					got_ir_frame = true;
-					if (next_frame.get_timestamp() <= last_ir_frame) return false;
+					got_ir_frame = false;
+					if (next_frame.get_timestamp() <= last_ir_frame_time) return false;
 					stream = &ir_stream;
-					last_ir_frame = next_frame.get_timestamp();
+					last_ir_frame_time = next_frame.get_timestamp();
 				}
 			}
 			
