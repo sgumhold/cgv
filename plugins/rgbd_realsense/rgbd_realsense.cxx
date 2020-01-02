@@ -86,7 +86,6 @@ namespace rgbd {
 			stream_formats.push_back(ir_stream = stream_format(640, 480, PF_I, 30, 8));
 		}
 		if (cfg.can_resolve(*pipe)) {
-			got_color_frame = got_depth_frame = got_ir_frame = false;
 			last_color_frame_time, last_depth_frame_time, last_ir_frame_time = -1;
 			auto profile = pipe->start(cfg);
 			return true;
@@ -168,7 +167,6 @@ namespace rgbd {
 		}
 
 		if (cfg.can_resolve(*pipe)) {
-			got_color_frame = got_depth_frame = got_ir_frame = false;
 			auto profile = pipe->start(cfg);
 			return true;
 		}
@@ -201,31 +199,27 @@ namespace rgbd {
 			cerr << "rgbd_realsense::get_frame called on device that is not running" << endl;
 			return false;
 		}
-		if (pipe->poll_for_frames(&frame_cache)) {
-			got_color_frame = got_depth_frame = got_ir_frame = true;
-		}
+		pipe->poll_for_frames(&frame_cache);
+
 		if (frame_cache.size() > 0)
 		{
 			stream_format* stream = nullptr;
 
 			rs2::frame next_frame;
-			if (is == IS_COLOR && got_color_frame) {
+			if (is == IS_COLOR) {
 				if (next_frame = frame_cache.first(RS2_STREAM_COLOR)) {
-					got_color_frame = false;
 					if (next_frame.get_timestamp() <= last_color_frame_time) return false;
 					stream = &color_stream;
 					last_color_frame_time = next_frame.get_timestamp();
 				}
-			} else if (is == IS_DEPTH && got_depth_frame) {
+			} else if (is == IS_DEPTH) {
 				if (next_frame = frame_cache.first(RS2_STREAM_DEPTH)) {
-					got_depth_frame = false;
 					if (next_frame.get_timestamp() <= last_depth_frame_time) return false;
 					stream = &depth_stream;
 					last_depth_frame_time = next_frame.get_timestamp();
 				}
-			} else if (is == IS_INFRARED && got_ir_frame) {
+			} else if (is == IS_INFRARED) {
 				if (next_frame = frame_cache.first(RS2_STREAM_INFRARED)) {
-					got_ir_frame = false;
 					if (next_frame.get_timestamp() <= last_ir_frame_time) return false;
 					stream = &ir_stream;
 					last_ir_frame_time = next_frame.get_timestamp();
@@ -356,20 +350,32 @@ namespace rgbd {
 	}
 
 	unsigned rgbd_realsense_driver::get_nr_devices() {
-		rs2::context ctx;
-		auto list = ctx.query_devices();
-		return list.size();
+		try {
+			rs2::context ctx;
+			auto list = ctx.query_devices();
+			return list.size();
+		}
+		catch (runtime_error err) {
+			cerr << "get_nr_devices: runtime error=" << err.what() << endl;
+			return 0;
+		}
 	}
 
 	std::string rgbd_realsense_driver::get_serial(int i) {
-		rs2::context ctx;
-		auto list = ctx.query_devices();
-		int list_size = list.size();
-		if (i >= list_size) return string();
-		if (list[i].supports(RS2_CAMERA_INFO_SERIAL_NUMBER)) {
-			return list[i].get_info(RS2_CAMERA_INFO_SERIAL_NUMBER);
+		try {
+			rs2::context ctx;
+			auto list = ctx.query_devices();
+			int list_size = list.size();
+			if (i >= list_size) return string();
+			if (list[i].supports(RS2_CAMERA_INFO_SERIAL_NUMBER)) {
+				return list[i].get_info(RS2_CAMERA_INFO_SERIAL_NUMBER);
+			}
+			return string();
 		}
-		return string();
+		catch (runtime_error err) {
+			cerr << "get_serial: runtime error=" << err.what() << endl;
+			return string();
+		}
 	}
 
 	rgbd_device* rgbd_realsense_driver::create_rgbd_device() {
