@@ -202,19 +202,19 @@ namespace rgbd {
 			rs2::frame next_frame;
 			if (is == IS_COLOR) {
 				if (next_frame = frame_cache.first(RS2_STREAM_COLOR)) {
-					if (next_frame.get_timestamp() <= last_color_frame_time) return false;
+					if (next_frame.get_timestamp() == last_color_frame_time) return false;
 					stream = &color_stream;
 					last_color_frame_time = next_frame.get_timestamp();
 				}
 			} else if (is == IS_DEPTH) {
 				if (next_frame = frame_cache.first(RS2_STREAM_DEPTH)) {
-					if (next_frame.get_timestamp() <= last_depth_frame_time) return false;
+					if (next_frame.get_timestamp() == last_depth_frame_time) return false;
 					stream = &depth_stream;
 					last_depth_frame_time = next_frame.get_timestamp();
 				}
 			} else if (is == IS_INFRARED) {
 				if (next_frame = frame_cache.first(RS2_STREAM_INFRARED)) {
-					if (next_frame.get_timestamp() <= last_ir_frame_time) return false;
+					if (next_frame.get_timestamp() == last_ir_frame_time) return false;
 					stream = &ir_stream;
 					last_ir_frame_time = next_frame.get_timestamp();
 				}
