@@ -125,7 +125,7 @@ namespace rgbd {
 				rs2_pixel_format = RS2_FORMAT_RGBA8;
 				rs2_stream_type = RS2_STREAM_COLOR;
 				break;
-			case PF_BAYER:
+			case PF_CONFIDENCE:
 				rs2_pixel_format = RS2_FORMAT_Y16;
 				rs2_stream_type = RS2_STREAM_COLOR;
 				break;
@@ -283,7 +283,7 @@ namespace rgbd {
 					break;
 				case RS2_FORMAT_Y16:
 					stream.nr_bits_per_pixel = 16;
-					stream.pixel_format = PF_BAYER;
+					stream.pixel_format = PF_CONFIDENCE;
 					valid_format = true;
 					break;
 				}
