@@ -190,6 +190,9 @@ namespace rgbd {
 			cerr << "rgbd_realsense::get_frame called on device that is not running" << endl;
 			return false;
 		}
+		if (!check_input_stream_configuration(is)) {
+			cerr << "rgbd_realsense::get_frame called with an invalid input stream configuration" << endl;
+		}
 		pipe->poll_for_frames(&frame_cache);
 
 		if (frame_cache.size() > 0)
