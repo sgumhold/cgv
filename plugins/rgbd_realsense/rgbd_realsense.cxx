@@ -282,6 +282,7 @@ namespace rgbd {
 			std::cerr << "rgbd_realsense::query_stream_formats:  device is not attached!\n";
 			return;
 		}
+		//find stream formats by quering the sensors
 		auto sensors = dev->query_sensors();
 		vector<rs2::stream_profile> stream_profiles;
 		for (auto sensor : sensors) {
