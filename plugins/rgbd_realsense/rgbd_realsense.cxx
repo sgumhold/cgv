@@ -210,24 +210,44 @@ namespace rgbd {
 			stream_format* stream = nullptr;
 
 			rs2::frame next_frame;
-			if (is == IS_COLOR) {
-				if (next_frame = frame_cache.first(RS2_STREAM_COLOR)) {
-					if (next_frame.get_timestamp() == last_color_frame_time) return false;
-					stream = &color_stream;
-					last_color_frame_time = next_frame.get_timestamp();
+
+			try {
+				if (is == IS_COLOR) {
+					if (next_frame = frame_cache.first(RS2_STREAM_COLOR)) {
+						if (next_frame.get_timestamp() == last_color_frame_time) return false;
+						stream = &color_stream;
+						last_color_frame_time = next_frame.get_timestamp();
+					}
 				}
-			} else if (is == IS_DEPTH) {
-				if (next_frame = frame_cache.first(RS2_STREAM_DEPTH)) {
-					if (next_frame.get_timestamp() == last_depth_frame_time) return false;
-					stream = &depth_stream;
-					last_depth_frame_time = next_frame.get_timestamp();
+				else if (is == IS_DEPTH) {
+					if (next_frame = frame_cache.first(RS2_STREAM_DEPTH)) {
+						if (next_frame.get_timestamp() == last_depth_frame_time) return false;
+						stream = &depth_stream;
+						last_depth_frame_time = next_frame.get_timestamp();
+					}
 				}
-			} else if (is == IS_INFRARED) {
-				if (next_frame = frame_cache.first(RS2_STREAM_INFRARED)) {
-					if (next_frame.get_timestamp() == last_ir_frame_time) return false;
-					stream = &ir_stream;
-					last_ir_frame_time = next_frame.get_timestamp();
+				else if (is == IS_INFRARED) {
+					if (next_frame = frame_cache.first(RS2_STREAM_INFRARED)) {
+						if (next_frame.get_timestamp() == last_ir_frame_time) return false;
+						stream = &ir_stream;
+						last_ir_frame_time = next_frame.get_timestamp();
+					}
 				}
+			}
+			catch (const rs2::error &e){
+				cerr <<  "rgbd_realsense::get_frame: " << e.what();
+				switch (is) {
+				case IS_COLOR:
+					cerr << " color stream was not selected during start. please stop and start the device again with an color stream format\n";
+					break;
+				case IS_DEPTH:
+					cerr << " depth stream was not selected during start. please stop and start the device again with an depth stream format\n";
+					break;
+				case IS_INFRARED:
+					cerr << " infrared stream was not selected during start. please stop and start the device again with an ir stream format\n";
+					break;
+				}
+				return false;
 			}
 			
 			if (!stream) {
