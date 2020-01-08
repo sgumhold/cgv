@@ -25,13 +25,22 @@ namespace rgbd {
 			detach();
 		}
 		
-		auto list = ctx->query_devices();
-		for (unsigned i = 0; i < list.size(); ++i) {
-			if (string(list[i].get_info(RS2_CAMERA_INFO_SERIAL_NUMBER)).compare(serial) == 0) {
-				dev = new rs2::device(list[i]);
-				this->serial = serial;
-				return true;
+		try {
+			auto list = ctx->query_devices();
+			for (unsigned i = 0; i < list.size(); ++i) {
+				if (string(list[i].get_info(RS2_CAMERA_INFO_SERIAL_NUMBER)).compare(serial) == 0) {
+					dev = new rs2::device(list[i]);
+					this->serial = serial;
+					return true;
+				}
 			}
+		}
+		catch (const rs2::camera_disconnected_error& e)
+		{
+			cerr << "rgbd_realsense::attach: Camera was disconnected! Please connect it back" << endl;
+		}
+		catch (const std::runtime_error& e) {
+			cerr << "get_serial: runtime error=" << e.what() << endl;
 		}
 		return false;
 	}
@@ -192,6 +201,7 @@ namespace rgbd {
 		}
 		if (!check_input_stream_configuration(is)) {
 			cerr << "rgbd_realsense::get_frame called with an invalid input stream configuration" << endl;
+			return false;
 		}
 		pipe->poll_for_frames(&frame_cache);
 
@@ -368,8 +378,8 @@ namespace rgbd {
 		}
 		catch (runtime_error err) {
 			cerr << "get_serial: runtime error=" << err.what() << endl;
-			return string();
 		}
+		return string();
 	}
 
 	rgbd_device* rgbd_realsense_driver::create_rgbd_device() {
