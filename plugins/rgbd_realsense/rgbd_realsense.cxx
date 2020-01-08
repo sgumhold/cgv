@@ -268,7 +268,7 @@ namespace rgbd {
 
 	void rgbd_realsense::map_color_to_depth(const frame_type& depth_frame, const frame_type& color_frame, frame_type& warped_color_frame) const
 	{
-		
+		//TODO hint: https://github.com/IntelRealSense/librealsense/wiki/API-How-To#get-and-apply-depth-to-color-extrinsics
 	}
 
 	bool rgbd_realsense::map_depth_to_point(int x, int y, int depth, float* point_ptr) const
