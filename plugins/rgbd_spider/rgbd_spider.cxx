@@ -1,17 +1,37 @@
 #include <iostream>
+#include <cgv/utils/convert.h>
+//spider includes
+#include <artec/sdk/capturing/IScanner.h>
+#include <artec/sdk/capturing/IArrayScannerId.h>
+#include <artec/sdk/capturing/IFrameProcessor.h>
+#include <artec/sdk/capturing/IFrame.h>
+#include <artec/sdk/base/BaseSdkDefines.h>
+#include <artec/sdk/base/Log.h>
+#include <artec/sdk/base/io/ObjIO.h>
+#include <artec/sdk/base/IFrameMesh.h>
+
+
+
 #include "rgbd_spider.h"
 
 using namespace std;
+
+namespace asdk {
+	using namespace artec::sdk::base;
+	using namespace artec::sdk::capturing;
+};
+using asdk::TRef;
+using asdk::TArrayRef;
 
 namespace rgbd {
 
 
 	rgbd_spider::rgbd_spider() {
-
+		serial = "";
 	}
 
 	rgbd_spider::~rgbd_spider() {
-
+		
 	}
 
 	bool rgbd_spider::attach(const std::string& serial)
@@ -20,16 +40,49 @@ namespace rgbd {
 			detach();
 		}
 		
+
+		asdk::IArrayScannerId* scannerList;
+
+		asdk::ErrorCode ec = asdk::enumerateScanners(&scannerList);
+
+		if (ec != asdk::ErrorCode_OK)
+		{
+			std::cout << "rgbd_spider_driver: something went wrong\n";
+			return 0;
+		}
+		asdk::ScannerId id;
+		//const asdk::ScannerId* id = scanner->getId();
+		int list_size = scannerList->getSize();
+		//find the camera with the same id
+		for (int i = 0; i < scannerList->getSize();++i) {
+			asdk::ScannerId &scannerId = scannerList->getPointer()[i];
+			if (cgv::utils::wstr2str(scannerId.serial).compare(serial) == 0) {
+				asdk::ErrorCode ec = asdk::createScanner(&scanner, &scannerId);
+				if (ec != asdk::ErrorCode_OK)
+				{
+					std::cerr << "rgbd_spider::attach: errors ocurred while creating scanner object for scanner with serial " << serial << endl;
+					scanner.release();
+					return false;
+				}
+				this->serial = serial;
+				return true;
+			}
+		}
 		return false;
 	}
 
 	bool rgbd_spider::is_attached() const
 	{
-		return false;
+		return serial != "";
 	}
 
 	bool rgbd_spider::detach()
 	{
+		if (this->is_attached()) {
+			scanner.release();
+			serial = "";
+			return true;
+		}
 		return false;
 	}
 	
@@ -118,6 +171,8 @@ namespace rgbd {
 			std::cerr << "rgbd_realsense::query_stream_formats:  device is not attached!\n";
 			return;
 		}
+
+
 	}
 
 
@@ -130,11 +185,33 @@ namespace rgbd {
 	}
 
 	unsigned rgbd_spider_driver::get_nr_devices() {
-		return 0;
+		asdk::IArrayScannerId* scannerList;
+
+		asdk::ErrorCode ec = asdk::enumerateScanners(&scannerList);
+
+		if (ec != asdk::ErrorCode_OK)
+		{
+			std::cout << "rgbd_spider_driver: something went wrong\n";
+			return 0;
+		}
+		return scannerList->getSize();
 	}
 
 	std::string rgbd_spider_driver::get_serial(int i) {
-		return string();
+		asdk::IArrayScannerId* scannerList;
+		
+		asdk::ErrorCode ec = asdk::enumerateScanners(&scannerList);
+
+		if (ec != asdk::ErrorCode_OK)
+		{
+			std::cout << "rgbd_spider_driver: something went wrong\n";
+			return "";
+		}
+		if (i >= scannerList->getSize()) {
+			std::cout << "rgbd_spider_driver::get_serial scannerList index out of bounds\n";
+			return "";
+		}
+		return cgv::utils::wstr2str(scannerList->getPointer()[i].serial);
 	}
 
 	rgbd_device* rgbd_spider_driver::create_rgbd_device() {
