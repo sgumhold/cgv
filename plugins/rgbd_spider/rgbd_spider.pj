@@ -1,0 +1,13 @@
+@=
+projectType="plugin";
+projectGUID="D0CF2D7F-75ED-496A-B13F-F8ABF8256C3B";
+projectName="rgbd_spider";
+addIncDirs=[CGV_DIR."/libs/rgbd_capture",env::ARTEC_SDK_HOME."/include","D:/boost_1_72_0/boost"];
+addLibDirs=[env::ARTEC_SDK_HOME."/bin-x64"];
+addMapDeps = [ ["spider_lib", ["artec-sdk-base","artec-sdk-base","artec-sdk-base","artec-sdk-base"] ] ];
+addMapDeps = [ ["spider_lib", ["artec-sdk-capturing","artec-sdk-capturing","artec-sdk-capturing","artec-sdk-capturing"] ] ];
+addProjectDirs=[CGV_DIR."/libs/rgbd_capture"];
+addProjectDeps=["rgbd_capture"];
+addDependencies=["spider_lib"];
+addSharedDefines=["RGBD_SPIDER_EXPORTS"];
+
