@@ -1,6 +1,7 @@
 #pragma once
 
 #include <rgbd_input.h>
+#include <artec/sdk/base/TArrayRef.h>
 #include "lib_begin.h"
 
 namespace rgbd {
@@ -38,6 +39,7 @@ namespace rgbd {
 
 	protected:
 		std::string serial;
+		artec::sdk::base::TRef<artec::sdk::capturing::IScanner> scanner;
 		/// selected stream formats for color,depth and infrared
 		stream_format color_stream, depth_stream, ir_stream;
 		double last_color_frame_time, last_depth_frame_time, last_ir_frame_time;
