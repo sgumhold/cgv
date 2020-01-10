@@ -9,15 +9,15 @@ namespace rgbd {
 	class CGV_API rgbd_spider : public rgbd_device
 	{
 	public:
-		/// create a detached realsense device object
+		/// create a detached spider device object
 		rgbd_spider();
 		~rgbd_spider();
 		
-		/// attach to the realsense device of the given serial, the expected serial is the same as returned by rgbd_realsense_driver::get_serial
+		/// attach to the spider device of the given serial, the expected serial is the same as returned by rgbd_realsense_driver::get_serial
 		bool attach(const std::string& serial);
-		/// return whether device object is attached to a realsense device
+		/// return whether device object is attached to a spider device
 		bool is_attached() const;
-		/// detaches the object from the realsense device
+		/// detaches the object from the spider device
 		bool detach();
 		/// check whether the device supports the given combination of input streams
 		bool check_input_stream_configuration(InputStreams is) const;
@@ -52,9 +52,9 @@ namespace rgbd {
 		rgbd_spider_driver();
 		/// destructor
 		~rgbd_spider_driver();
-		/// return the number of realsense devices found by driver
+		/// return the number of spider devices found by driver
 		unsigned get_nr_devices();
-		/// return the serial of the i-th realsense devices
+		/// return the serial of the i-th spider devices
 		std::string get_serial(int i);
 		/// create a kinect device
 		rgbd_device* create_rgbd_device();
