@@ -42,7 +42,7 @@ namespace rgbd {
 		artec::sdk::base::TRef<artec::sdk::capturing::IScanner> scanner;
 		/// selected stream formats for color,depth and infrared
 		stream_format color_stream, depth_stream, ir_stream;
-		double last_color_frame_time, last_depth_frame_time, last_ir_frame_time;
+		artec::sdk::base::TimeStamp last_color_frame_time, last_depth_frame_time, last_ir_frame_time;
 	};
 
 	class CGV_API rgbd_spider_driver : public rgbd_driver
