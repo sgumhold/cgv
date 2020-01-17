@@ -4,7 +4,6 @@
 #include <artec/sdk/capturing/IScanner.h>
 #include <artec/sdk/capturing/IArrayScannerId.h>
 #include <artec/sdk/capturing/IFrameProcessor.h>
-#include <artec/sdk/capturing/IFrame.h>
 #include <artec/sdk/base/BaseSdkDefines.h>
 #include <artec/sdk/base/Log.h>
 #include <artec/sdk/base/io/ObjIO.h>
@@ -25,24 +24,14 @@ using asdk::TArrayRef;
 
 namespace rgbd {
 
-
-	int artectPF2cgvPF(const asdk::PixelFormat pf,PixelFormat& cgvPF){
-		switch (pf) {
-		case asdk::PixelFormat_BGRA:
-			cgvPF = PF_BGRA;
-			return 32;
-		case asdk::PixelFormat_Mono:
-			cgvPF = PF_BAYER;
-			return 8;
-		}
-	}
-
-	rgbd_spider::rgbd_spider() {
-		serial = "";
+	rgbd_spider::rgbd_spider() : capture_thread_running(false),serial("") {
 	}
 
 	rgbd_spider::~rgbd_spider() {
-		
+		if (capture_thread) {
+			capture_thread->join();
+			delete capture_thread;
+		}
 	}
 
 	bool rgbd_spider::attach(const std::string& serial)
@@ -99,8 +88,8 @@ namespace rgbd {
 	
 	bool rgbd_spider::check_input_stream_configuration(InputStreams is) const
 	{
-		static const unsigned streams_avaiable = IS_COLOR | IS_DEPTH | IS_INFRARED, streams_in = is;
-		return (~(~streams_in | streams_avaiable)) == 0;
+		static const unsigned streams_avaiable = IS_COLOR;
+		return (~(~is | streams_avaiable)) == 0;
 	}
 
 	bool rgbd_spider::start_device(InputStreams is, std::vector<stream_format>& stream_formats)
@@ -117,17 +106,14 @@ namespace rgbd {
 			return true;
 		}
 		
+
+
 		//query stream configuration
 		int fps = scanner->getFPS();
 		const asdk::ScannerInfo* info = scanner->getInfo();
-		PixelFormat depth_pf;
-		int depth_depth = artectPF2cgvPF(info->depthFormat, depth_pf);
 		
-		/*if (is && IS_COLOR) {
-			stream_formats.push_back(color_stream = stream_format(c_width, c_height, color_pf, fps, color_depth);
-		}*/
-		if (is && IS_DEPTH) {
-			stream_formats.push_back(depth_stream = stream_format(info->depthMapSizeX, info->depthMapSizeY, PF_BAYER, fps, 8));
+		if (is && IS_COLOR) {
+			stream_formats.push_back(color_stream = stream_format(info->textureSizeX, info->textureSizeY, PF_BAYER, fps, 8));
 		}
 		return this->start_device(stream_formats);
 	}
@@ -141,17 +127,57 @@ namespace rgbd {
 		if (is_running()) {
 			return true;
 		}
+
+		for (auto format : stream_formats) {
+			if (format.pixel_format == PF_BAYER) {
+				color_stream = format;
+			}
+		}
+
+		auto ec = scanner->createFrameProcessor(&frame_processor);
+		if (ec != asdk::ErrorCode_OK) {
+			cerr << "rgbd_spider::start_device : failed to create the frame processor\n";
+		}
+
+		capture_thread = new std::thread(&rgbd_spider::capture_frames,this);
+
 		return true;
 	}
 
 	bool rgbd_spider::stop_device()
 	{
-		return false;
+		capture_thread_running = false;
+		capture_thread->join();
+		delete capture_thread;
+		capture_thread = nullptr;
+		return true;
 	}
 
 	bool rgbd_spider::is_running() const
 	{
-		return serial != "";
+		return capture_thread_running;
+	}
+
+	void rgbd_spider::capture_frames() {
+		if (capture_thread_running) {
+			cerr << "rgbd_spider::capture_frames: a capture thread is allready running\n";
+			return;
+		}
+		capture_thread_running = true;
+		while (capture_thread_running) {
+			if (!is_attached()) {
+				cerr << "rgbd_spider::capture_frames: tried capturing frames from an unattached device\n";
+			}
+			//capture new frame
+			TRef<asdk::IFrame> new_frame;
+			auto ec = scanner->capture(&new_frame, true);
+			if (ec == asdk::ErrorCode_OK) {
+				std::lock_guard<std::mutex> guard(frames_protection);
+				//copy buffer
+				frames.release();
+				frames = new_frame;
+			}
+		}
 	}
 
 	bool rgbd_spider::get_frame(InputStreams is, frame_type& frame, int timeOut)
@@ -164,31 +190,62 @@ namespace rgbd {
 			cerr << "rgbd_spider::get_frame called with an invalid input stream configuration" << endl;
 			return false;
 		}
-
-		stream_format* stream = nullptr;
-		const asdk::IImage* image = nullptr;
-
-		TRef<asdk::IFrame> frames;
-		scanner->capture(&frames, true);
-
-		if (is == IS_DEPTH) {
-			asdk::TimeStamp t = *(frames->getCaptureTimeStamp());
-			if (t.microSeconds == last_depth_frame_time.microSeconds && t.seconds == last_depth_frame_time.seconds) return false;
-			stream = &depth_stream;
-			image = frames->getDepth();
-			last_depth_frame_time = t;
+		if (!capture_thread_running) {
+			return false;
 		}
 
-		if (stream && image) {
-			static_cast<frame_format&>(frame) = *stream;
+		const asdk::IImage* image = nullptr;
+		//lock frames
+		std::lock_guard<std::mutex> guard(frames_protection);
+
+		if (frames == nullptr) {
+			return false;
+		}
+
+		//IArrayPoint3F* points = frames.get_p
+
+		
+
+		if (is == IS_COLOR) {
+			asdk::TimeStamp t = *(frames->getCaptureTimeStamp());
+			if (t.microSeconds == last_color_frame_time.microSeconds && t.seconds == last_color_frame_time.seconds) return false;
+			image = frames->getTexture();
+			last_color_frame_time = t;
+		
+			static_cast<frame_format&>(frame) = color_stream;
 			frame.time = 0.0;
-			stream->compute_buffer_size();
-			if (frame.frame_data.size() != stream->buffer_size) {
-				frame.frame_data.resize(stream->buffer_size);
+			color_stream.compute_buffer_size();
+			if (frame.frame_data.size() != color_stream.buffer_size) {
+				frame.frame_data.resize(color_stream.buffer_size);
 			}
-			memcpy(frame.frame_data.data(), image->getPointer(), stream->buffer_size);
+			auto* point = image->getPointer();
+			memcpy(frame.frame_data.data(), image->getPointer(), color_stream.buffer_size);
 			return true;
 		}
+		else if (false) {
+			//unreachable segment because frame type for pointcloud or mesh is missing
+			TRef<asdk::IFrameMesh> mesh;
+			auto ec = frame_processor->reconstructMesh(&mesh,frames);
+			if (ec != asdk::ErrorCode_OK) {
+				cerr << "rgbd_spider::get_frame : failed to reconstruct mesh\n";
+				return false;
+			}
+			//get point cloud
+			asdk::IArrayPoint3F* points = mesh->getPoints();
+
+			static_cast<frame_format&>(frame) = mesh_stream;
+			//copy pointcloud to frame
+			frame.time = 0.0;
+			color_stream.compute_buffer_size();
+			frame.height = 1;
+			frame.width = points->getSize()*3*sizeof(float);
+			if (frame.frame_data.size() != color_stream.buffer_size) {
+				frame.frame_data.resize(color_stream.buffer_size);
+			}
+			memcpy(frame.frame_data.data(), points, color_stream.buffer_size);
+		}
+
+		
 		return false;
 	}
 
@@ -212,11 +269,9 @@ namespace rgbd {
 		//query stream configuration
 		int fps = scanner->getFPS();
 		const asdk::ScannerInfo* info = scanner->getInfo();
-		PixelFormat depth_pf;
-		int depth_depth = artectPF2cgvPF(info->depthFormat, depth_pf);
 
-		if (is && IS_DEPTH) {
-			stream_formats.push_back(stream_format(info->depthMapSizeX, info->depthMapSizeY, PF_BAYER, fps, 8));
+		if (is & IS_COLOR) {
+			stream_formats.push_back(stream_format(info->textureSizeX, info->textureSizeY, PF_BAYER, fps, 8));
 		}
 	}
 

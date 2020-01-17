@@ -2,6 +2,11 @@
 
 #include <rgbd_input.h>
 #include <artec/sdk/base/TArrayRef.h>
+#include <artec/sdk/capturing/IFrame.h>
+#include <artec/sdk/capturing/IFrameProcessor.h>
+#include <thread>
+#include <atomic>
+#include <mutex>
 #include "lib_begin.h"
 
 namespace rgbd {
@@ -38,11 +43,20 @@ namespace rgbd {
 		bool map_depth_to_point(int x, int y, int depth, float* point_ptr) const;
 
 	protected:
+		void rgbd_spider::capture_frames();
+
 		std::string serial;
 		artec::sdk::base::TRef<artec::sdk::capturing::IScanner> scanner;
+		artec::sdk::base::TRef<artec::sdk::capturing::IFrameProcessor> frame_processor;
+		
 		/// selected stream formats for color,depth and infrared
-		stream_format color_stream, depth_stream, ir_stream;
-		artec::sdk::base::TimeStamp last_color_frame_time, last_depth_frame_time, last_ir_frame_time;
+		stream_format color_stream,mesh_stream;
+		artec::sdk::base::TimeStamp last_color_frame_time;
+		
+		std::thread* capture_thread;
+		bool capture_thread_running;
+		std::mutex frames_protection;
+		artec::sdk::base::TRef<artec::sdk::capturing::IFrame> frames;
 	};
 
 	class CGV_API rgbd_spider_driver : public rgbd_driver
