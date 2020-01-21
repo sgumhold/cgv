@@ -51,7 +51,7 @@ namespace rgbd {
 		
 		/// selected stream formats for color,depth and infrared
 		stream_format color_stream,mesh_stream;
-		artec::sdk::base::TimeStamp last_color_frame_time;
+		artec::sdk::base::TimeStamp last_color_frame_time, last_mesh_frame_time;
 		
 		std::thread* capture_thread;
 		bool capture_thread_running;
