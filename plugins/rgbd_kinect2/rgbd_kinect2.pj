@@ -1,0 +1,12 @@
+@=
+projectType="plugin";
+projectGUID="6201A8CD-C45D-43AD-8CD3-7D7F880A81CD";
+projectName="rgbd_kinect2";
+addIncDirs=[CGV_DIR."/libs/rgbd_capture",env::KINECTSDK20_DIR."/inc"];
+addLibDirs=[env::KINECTSDK20_DIR."/lib/x86"];
+addMapDeps = [ ["kinect2_lib", ["Kinect20","Kinect20","Kinect20","Kinect20"] ] ];
+addProjectDirs=[CGV_DIR."/libs/rgbd_capture"];
+addProjectDeps=["rgbd_capture"];
+addDependencies=["kinect2_lib"];
+addSharedDefines=["RGBD_KINECT2_EXPORTS"];
+
