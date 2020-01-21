@@ -94,6 +94,22 @@ namespace rgbd {
 		return (~(~is | streams_avaiable)) == 0;
 	}
 
+	void rgbd_spider::query_stream_formats(InputStreams is, std::vector<stream_format>& stream_formats) const
+	{
+		if (!is_attached()) {
+			std::cerr << "rgbd_realsense::query_stream_formats:  device is not attached!\n";
+			return;
+		}
+
+		//query stream configuration
+		int fps = scanner->getFPS();
+		const asdk::ScannerInfo* info = scanner->getInfo();
+
+		if (is & IS_COLOR) {
+			stream_formats.push_back(stream_format(info->textureSizeY, info->textureSizeX, PF_RGB, fps, 24));
+		}
+	}
+
 	bool rgbd_spider::start_device(InputStreams is, std::vector<stream_format>& stream_formats)
 	{
 		if (!check_input_stream_configuration(is)) {
@@ -115,7 +131,7 @@ namespace rgbd {
 		const asdk::ScannerInfo* info = scanner->getInfo();
 		
 		if (is && IS_COLOR) {
-			stream_formats.push_back(color_stream = stream_format(info->textureSizeX, info->textureSizeY, PF_BAYER, fps, 8));
+			stream_formats.push_back(color_stream = stream_format(info->textureSizeY, info->textureSizeX, PF_RGB, fps, 24));
 		}
 		return this->start_device(stream_formats);
 	}
@@ -131,7 +147,7 @@ namespace rgbd {
 		}
 
 		for (auto format : stream_formats) {
-			if (format.pixel_format == PF_BAYER) {
+			if (format.pixel_format == PF_RGB) {
 				color_stream = format;
 			}
 		}
@@ -196,7 +212,7 @@ namespace rgbd {
 			return false;
 		}
 
-		const asdk::IImage* image = nullptr;
+		asdk::IImage* image = nullptr;
 		//lock frames
 		std::lock_guard<std::mutex> guard(frames_protection);
 
@@ -204,58 +220,59 @@ namespace rgbd {
 			return false;
 		}
 
-		//IArrayPoint3F* points = frames.get_p
-
-		
 
 		if (is == IS_COLOR) {
+			//capture texture
 			asdk::TimeStamp t = *(frames->getCaptureTimeStamp());
 			if (t.microSeconds == last_color_frame_time.microSeconds && t.seconds == last_color_frame_time.seconds) return false;
-			image = frames->getTexture();
 			last_color_frame_time = t;
-		
+
 			static_cast<frame_format&>(frame) = color_stream;
 			frame.time = duration_cast<milliseconds>(steady_clock::now().time_since_epoch()).count();
+			
+			scanner->convertTextureFull(&image, frames->getTexture());
+			image->bgr2rgb();
+
 			color_stream.compute_buffer_size();
 			if (frame.frame_data.size() != color_stream.buffer_size) {
 				frame.frame_data.resize(color_stream.buffer_size);
 			}
-			auto* point = image->getPointer();
 			memcpy(frame.frame_data.data(), image->getPointer(), color_stream.buffer_size);
 			return true;
 		}
 		else if (false) {
-			//capture triangle mesh
+			asdk::TimeStamp t = *(frames->getCaptureTimeStamp());
+			if (t.microSeconds == last_mesh_frame_time.microSeconds && t.seconds == last_mesh_frame_time.seconds) return false;
+			last_mesh_frame_time = t;
+
+			//create triangle mesh from frames
 			TRef<asdk::IFrameMesh> mesh;
 			auto ec = frame_processor->reconstructMesh(&mesh,frames);
 			if (ec != asdk::ErrorCode_OK) {
 				cerr << "rgbd_spider::get_frame : failed to reconstruct mesh\n";
 				return false;
 			}
-			//get point cloud
+			//get points and triangles
 			asdk::IArrayPoint3F* points = mesh->getPoints();
-			size_t points_size = points->getSize();
 			asdk::IArrayIndexTriplet* triangles = mesh->getTriangles();
+			
 			static_cast<frame_format&>(frame) = mesh_stream;
-			//copy pointcloud to frame
 			const asdk::TimeStamp* time_stamp = frames->getCaptureTimeStamp();
-			//frame.time = ((double)time_stamp->seconds) + ((double)time_stamp->microSeconds * 0.000001);
 			frame.time = duration_cast<milliseconds>(steady_clock::now().time_since_epoch()).count();
-			color_stream.compute_buffer_size();
 			frame.height = 1;
 			frame.width = sizeof(size_t) + points->getSize()*sizeof(asdk::IArrayPoint3F) + triangles->getSize()*sizeof(asdk::IArrayIndexTriplet);
-			if (frame.frame_data.size() != color_stream.buffer_size) {
-				frame.frame_data.resize(color_stream.buffer_size);
+			mesh_stream.compute_buffer_size();
+			if (frame.frame_data.size() != mesh_stream.buffer_size) {
+				frame.frame_data.resize(mesh_stream.buffer_size);
 			}
 			//point_count|point_0,...,point_N|triangle_triplet_0,...,triangle_triplet_N
+			size_t points_size = points->getSize();
 			memcpy(frame.frame_data.data(), &points_size, sizeof(size_t));
 			size_t offset = sizeof(size_t);
 			memcpy(frame.frame_data.data()+offset, points, points_size*sizeof(asdk::IArrayPoint3F));
 			offset += points_size * sizeof(asdk::IArrayPoint3F);
 			memcpy(frame.frame_data.data()+offset, triangles, triangles->getSize() * sizeof(asdk::IArrayIndexTriplet));
 		}
-
-		
 		return false;
 	}
 
@@ -267,22 +284,6 @@ namespace rgbd {
 	bool rgbd_spider::map_depth_to_point(int x, int y, int depth, float* point_ptr) const
 	{
 		return false;
-	}
-
-	void rgbd_spider::query_stream_formats(InputStreams is, std::vector<stream_format>& stream_formats) const
-	{
-		if (!is_attached()) {
-			std::cerr << "rgbd_realsense::query_stream_formats:  device is not attached!\n";
-			return;
-		}
-
-		//query stream configuration
-		int fps = scanner->getFPS();
-		const asdk::ScannerInfo* info = scanner->getInfo();
-
-		if (is & IS_COLOR) {
-			stream_formats.push_back(stream_format(info->textureSizeX, info->textureSizeY, PF_BAYER, fps, 8));
-		}
 	}
 
 
