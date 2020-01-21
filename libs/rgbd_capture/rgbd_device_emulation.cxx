@@ -41,6 +41,7 @@ namespace rgbd {
 
 		last_color_frame_time = chrono::steady_clock::now();
 		last_depth_frame_time = chrono::steady_clock::now();
+		last_ir_frame_time = chrono::steady_clock::now();
 
 		has_color_stream = false;
 		has_depth_stream = false;
