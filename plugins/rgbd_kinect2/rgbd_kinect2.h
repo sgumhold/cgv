@@ -5,6 +5,8 @@
 #include "lib_begin.h"
 
 class IKinectSensor;
+class ICoordinateMapper;
+class IMultiSourceFrameReader;
 
 namespace rgbd {
 	/// interface for kinect devices provided by a driver (only to be used by driver implementors)
@@ -61,6 +63,8 @@ namespace rgbd {
 		bool map_depth_to_point(int x, int y, int depth, float* point_ptr) const;
 	protected:
 		IKinectSensor* camera;
+		ICoordinateMapper* mapper;         // Converts between depth, color, and 3d coordinates
+		IMultiSourceFrameReader* reader;   // Kinect data source
 		void* handles;
 		stream_format color_format, ir_format, depth_format;
 		bool near_mode;

@@ -123,30 +123,19 @@ namespace rgbd {
 	void rgbd_kinect2::query_stream_formats(InputStreams is, std::vector<stream_format>& stream_formats) const
 	{
 		if ((is & IS_COLOR) != 0) {
-			stream_formats.push_back(stream_format(640, 480, PF_BGR, 30));
-			stream_formats.push_back(stream_format(1280, 960, PF_BGR, 12));
-			stream_formats.push_back(stream_format(640, 480, PF_BAYER, 30, 8));
-			stream_formats.push_back(stream_format(1280, 960, PF_BAYER, 12, 8));
+			stream_formats.push_back(stream_format(1920, 1080, PF_BGR, 30, 24));
 		}
 		if ((is & IS_INFRARED) != 0) {
-			stream_formats.push_back(stream_format(640, 480, PF_I, 30, 16));
+			stream_formats.push_back(stream_format(1920, 1080, PF_I, 30, 8));
 		}
 		if ((is & IS_DEPTH) != 0) {
-			if ((is & IS_PLAYER_INDEX) != 0) {
-				stream_formats.push_back(stream_format(80, 60, PF_DEPTH_AND_PLAYER, 30, 16));
-				stream_formats.push_back(stream_format(320, 240, PF_DEPTH_AND_PLAYER, 30, 16));
-				stream_formats.push_back(stream_format(640, 480, PF_DEPTH_AND_PLAYER, 30, 16));
-			}
-			else {
-				stream_formats.push_back(stream_format(80, 60, PF_DEPTH, 30, 16));
-				stream_formats.push_back(stream_format(320, 240, PF_DEPTH, 30, 16));
-				stream_formats.push_back(stream_format(640, 480, PF_DEPTH, 30, 16));
-			}
+			stream_formats.push_back(stream_format(1920, 1080, PF_DEPTH, 30, 16));
 		}
 	}
 	/// start the camera
 	bool rgbd_kinect2::start_device(InputStreams is, std::vector<stream_format>& stream_formats)
 	{
+
 		return false;
 	}
 	/// start the rgbd device with given stream formats 
@@ -154,6 +143,15 @@ namespace rgbd {
 	{
 		if (is_running())
 			return true;
+
+		camera->get_CoordinateMapper(&mapper);
+		camera->Open();
+		camera->OpenMultiSourceFrameReader(
+			FrameSourceTypes::FrameSourceTypes_Depth
+			| FrameSourceTypes::FrameSourceTypes_Color
+			| FrameSourceTypes::FrameSourceTypes_Body,
+			&reader);
+
 		return false;
 	}
 	/// stop the camera
