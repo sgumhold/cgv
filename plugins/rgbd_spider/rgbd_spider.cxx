@@ -89,7 +89,7 @@ namespace rgbd {
 	
 	bool rgbd_spider::check_input_stream_configuration(InputStreams is) const
 	{
-		static const unsigned streams_avaiable = IS_COLOR;
+		static const unsigned streams_avaiable = IS_COLOR;// | IS_MESH;
 		return (~(~is | streams_avaiable)) == 0;
 	}
 
@@ -107,6 +107,9 @@ namespace rgbd {
 		if (is & IS_COLOR) {
 			stream_formats.push_back(stream_format(info->textureSizeY, info->textureSizeX, PF_RGB, fps, 24));
 		}
+		/*else if (is & IS_MESH) {
+			stream_formats.push_back(stream_format(1, 1, PF_INDEXED_TRIANGLE, fps, 8));
+		}*/
 	}
 
 	bool rgbd_spider::start_device(InputStreams is, std::vector<stream_format>& stream_formats)
@@ -149,6 +152,9 @@ namespace rgbd {
 			if (format.pixel_format == PF_RGB) {
 				color_stream = format;
 			}
+			/*else if (format.pixel_format == PF_INDEXED_TRIANGLE) {
+				mesh_stream = format;
+			}*/
 		}
 
 		auto ec = scanner->createFrameProcessor(&frame_processor);
@@ -191,7 +197,6 @@ namespace rgbd {
 			if (ec == asdk::ErrorCode_OK) {
 				std::lock_guard<std::mutex> guard(frames_protection);
 				//copy buffer
-				frames.release();
 				frames = new_frame;
 			}
 		}
@@ -240,7 +245,7 @@ namespace rgbd {
 			memcpy(frame.frame_data.data(), image->getPointer(), color_stream.buffer_size);
 			return true;
 		}
-		else if (false) {
+		else if (false /*is == IS_MESH*/) {
 			if (t->microSeconds == last_mesh_frame_time.microSeconds && t->seconds == last_mesh_frame_time.seconds) return false;
 			last_mesh_frame_time = *t;
 
@@ -260,9 +265,9 @@ namespace rgbd {
 			frame.time = duration_cast<milliseconds>(steady_clock::now().time_since_epoch()).count();
 			frame.height = 1;
 			frame.width = sizeof(size_t) + points->getSize()*sizeof(asdk::IArrayPoint3F) + triangles->getSize()*sizeof(asdk::IArrayIndexTriplet);
-			mesh_stream.compute_buffer_size();
-			if (frame.frame_data.size() != mesh_stream.buffer_size) {
-				frame.frame_data.resize(mesh_stream.buffer_size);
+			frame.compute_buffer_size();
+			if (frame.frame_data.size() != frame.buffer_size) {
+				frame.frame_data.resize(frame.buffer_size);
 			}
 			
 			//copy data to frame
