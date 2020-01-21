@@ -1,4 +1,5 @@
 #include <iostream>
+#include <chrono>
 #include <cgv/utils/convert.h>
 //spider includes
 #include <artec/sdk/capturing/IScanner.h>
@@ -14,6 +15,7 @@
 #include "rgbd_spider.h"
 
 using namespace std;
+using namespace chrono;
 
 namespace asdk {
 	using namespace artec::sdk::base;
@@ -213,7 +215,7 @@ namespace rgbd {
 			last_color_frame_time = t;
 		
 			static_cast<frame_format&>(frame) = color_stream;
-			frame.time = 0.0;
+			frame.time = duration_cast<milliseconds>(steady_clock::now().time_since_epoch()).count();
 			color_stream.compute_buffer_size();
 			if (frame.frame_data.size() != color_stream.buffer_size) {
 				frame.frame_data.resize(color_stream.buffer_size);
@@ -223,7 +225,7 @@ namespace rgbd {
 			return true;
 		}
 		else if (false) {
-			//unreachable segment because frame type for pointcloud or mesh is missing
+			//capture triangle mesh
 			TRef<asdk::IFrameMesh> mesh;
 			auto ec = frame_processor->reconstructMesh(&mesh,frames);
 			if (ec != asdk::ErrorCode_OK) {
@@ -232,17 +234,25 @@ namespace rgbd {
 			}
 			//get point cloud
 			asdk::IArrayPoint3F* points = mesh->getPoints();
-
+			size_t points_size = points->getSize();
+			asdk::IArrayIndexTriplet* triangles = mesh->getTriangles();
 			static_cast<frame_format&>(frame) = mesh_stream;
 			//copy pointcloud to frame
-			frame.time = 0.0;
+			const asdk::TimeStamp* time_stamp = frames->getCaptureTimeStamp();
+			//frame.time = ((double)time_stamp->seconds) + ((double)time_stamp->microSeconds * 0.000001);
+			frame.time = duration_cast<milliseconds>(steady_clock::now().time_since_epoch()).count();
 			color_stream.compute_buffer_size();
 			frame.height = 1;
-			frame.width = points->getSize()*3*sizeof(float);
+			frame.width = sizeof(size_t) + points->getSize()*sizeof(asdk::IArrayPoint3F) + triangles->getSize()*sizeof(asdk::IArrayIndexTriplet);
 			if (frame.frame_data.size() != color_stream.buffer_size) {
 				frame.frame_data.resize(color_stream.buffer_size);
 			}
-			memcpy(frame.frame_data.data(), points, color_stream.buffer_size);
+			//point_count|point_0,...,point_N|triangle_triplet_0,...,triangle_triplet_N
+			memcpy(frame.frame_data.data(), &points_size, sizeof(size_t));
+			size_t offset = sizeof(size_t);
+			memcpy(frame.frame_data.data()+offset, points, points_size*sizeof(asdk::IArrayPoint3F));
+			offset += points_size * sizeof(asdk::IArrayPoint3F);
+			memcpy(frame.frame_data.data()+offset, triangles, triangles->getSize() * sizeof(asdk::IArrayIndexTriplet));
 		}
 
 		
