@@ -10,7 +10,7 @@ using namespace cgv::media::font;
 
 #include "lib_begin.h"
 
-class fltk_font_face : public font_face
+class imgui_font_face : public font_face
 {
 	fltk::Font* f;
 public:
