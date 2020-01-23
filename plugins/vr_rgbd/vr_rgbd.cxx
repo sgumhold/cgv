@@ -67,6 +67,7 @@ protected:
 	bool record_frame;
 	///
 	bool record_all_frames;
+	bool in_calibration;
 	/// intermediate point cloud and to be rendered point cloud
 	std::vector<vertex> intermediate_pc, current_pc;
 	/// list of recorded point clouds
@@ -83,12 +84,20 @@ protected:
 	int rgbd_controller_index;
 	mat3 rgbd_controller_orientation;
 	vec3 rgbd_controller_position;
+	/// 
+	mat3 rgbd_2_controller_orientation;
+	vec3 rgbd_2_controller_position;
 	///
 	mat3 rgbd_controller_orientation_pc;
 	vec3 rgbd_controller_position_pc;
 	///
+	mat3 rgbd_controller_orientation_start_calib;
+	vec3 rgbd_controller_position_start_calib;
+	///
 	bool show_points;
 	unsigned max_nr_shown_recorded_pcs;
+	bool trigger_is_pressed;
+	float recording_fps;
 	///
 	std::future<size_t> future_handle;
 	/// 
@@ -242,6 +251,13 @@ public:
 		rgbd_controller_index = 0;
 		rgbd_controller_orientation.identity();
 		rgbd_controller_position = vec3(0, 1.5f, 0);
+		in_calibration = false;
+		rgbd_2_controller_orientation.identity();
+		rgbd_2_controller_position.zeros();
+
+		rgbd_controller_orientation_start_calib.identity();
+		rgbd_controller_position_start_calib.zeros();
+
 		build_scene(5, 7, 3, 0.2f, 1.6f, 0.8f, 0.9f, 0.03f);
 		//generate_point_cloud(current_pc);
 		vr_view_ptr = 0;
@@ -253,6 +269,8 @@ public:
 		rgbd_started = false;
 		record_frame = false;
 		record_all_frames = false;
+		trigger_is_pressed = false;
+		recording_fps = 5;
 		show_points = true;
 		point_style.point_size = 2;
 		point_style.blend_points = false;
@@ -277,6 +295,7 @@ public:
 				if (rgbd_inp.map_depth_to_point(x, y, depths[i], &p[0])) {
 					// flipping y to make it the same direction as in pixel y coordinate
 					p = -p;
+					p = rgbd_2_controller_orientation * p + rgbd_2_controller_position;
 					p = rgbd_controller_orientation_pc * p + rgbd_controller_position_pc;
 					rgba8 c(colors[4 * i + 2], colors[4 * i + 1], colors[4 * i], 255);
 					vertex v;
@@ -333,6 +352,16 @@ public:
 	{
 		//using pc queue to construct the TSDtree
 	}
+	bool record_this_frame(double t)
+	{
+		if (!(record_frame || record_all_frames || trigger_is_pressed))
+			return false;
+		static double last_recording_time = -1;
+		if (t - last_recording_time < 1.0 / recording_fps)
+			return false;
+		last_recording_time = t;
+		return true;
+	}
 	void timer_event(double t, double dt)
 	{
 		// in case a point cloud is being constructed
@@ -341,7 +370,7 @@ public:
 			if (future_handle.wait_for(std::chrono::milliseconds(0)) == std::future_status::ready) {
 				size_t N = future_handle.get();
 				// copy computed point cloud
-				if (record_frame || record_all_frames) {
+				if (record_this_frame(t)) {
 					recorded_pcs.push_back(intermediate_pc);
 					current_pc.clear();
 					record_frame = false;
@@ -390,8 +419,10 @@ public:
 							future_depth = std::async(&vr_rgbd::read_depth_frame, this);
 						color_frame_2 = future_rgb.get();
 						depth_frame_2 = future_depth.get();*/
-						color_frame_2 = color_frame;
-						depth_frame_2 = depth_frame;
+						if (!in_calibration) {
+							color_frame_2 = color_frame;
+							depth_frame_2 = depth_frame;
+						}
 						rgbd_controller_orientation_pc = rgbd_controller_orientation;
 						rgbd_controller_position_pc = rgbd_controller_position;
 						future_handle = std::async(&vr_rgbd::construct_point_cloud, this);
@@ -415,6 +446,10 @@ public:
 		add_member_control(this, "rgbd_started", rgbd_started, "check");
 		add_member_control(this, "record_frame", record_frame, "check");
 		add_member_control(this, "record_all_frames", record_all_frames, "check");
+		add_member_control(this, "trigger_is_pressed", trigger_is_pressed, "check");
+		add_member_control(this, "recording_fps", recording_fps, "value_slider", "min=1;max=30;ticks=true;log=true");
+		add_member_control(this, "in_calibration", in_calibration, "check");
+
 		add_member_control(this, "rgbd_controller_index", rgbd_controller_index, "value_slider", "min=0;max=3;ticks=true");
 
 		add_member_control(this, "ray_length", ray_length, "value_slider", "min=0.1;max=10;log=true;ticks=true");
@@ -455,6 +490,8 @@ public:
 	bool self_reflect(cgv::reflect::reflection_handler& rh)
 	{
 		return
+			rh.reflect_member("rgbd_controller_index", rgbd_controller_index) &&
+			rh.reflect_member("recording_fps", recording_fps) &&
 			rh.reflect_member("ray_length", ray_length) &&
 			rh.reflect_member("record_frame", record_frame) &&
 			rh.reflect_member("record_all_frames", record_all_frames) &&
@@ -490,6 +527,36 @@ public:
 			return false;
 		// check event id
 		switch (e.get_kind()) {
+		case cgv::gui::EID_KEY:
+		{
+			cgv::gui::vr_key_event& vrke = static_cast<cgv::gui::vr_key_event&>(e);
+			
+			if (vrke.get_key() == (rgbd_controller_index == 0 ? vr::VR_LEFT_STICK : vr::VR_RIGHT_STICK)) {
+				switch (vrke.get_action()) {
+				case cgv::gui::KA_PRESS :
+					rgbd_controller_orientation_start_calib = rgbd_controller_orientation; // V^0 = V
+					rgbd_controller_position_start_calib = rgbd_controller_position;       // r^0 = r
+					in_calibration = true;
+					update_member(&in_calibration);
+					break;
+				case cgv::gui::KA_RELEASE:
+					rgbd_2_controller_orientation = transpose(rgbd_controller_orientation_start_calib)*rgbd_controller_orientation*rgbd_2_controller_orientation;
+					rgbd_2_controller_position = transpose(rgbd_controller_orientation_start_calib)*((rgbd_controller_orientation*rgbd_2_controller_position + rgbd_controller_position) - rgbd_controller_position_start_calib);
+					in_calibration = false;
+					update_member(&in_calibration);
+					break;
+				}
+			}
+		}
+		case cgv::gui::EID_THROTTLE:
+		{
+			cgv::gui::vr_throttle_event& vrte = static_cast<cgv::gui::vr_throttle_event&>(e);
+			if ((vrte.get_last_value() > 0.5f) != (vrte.get_value() > 0.5f)) {
+				trigger_is_pressed = (vrte.get_value() > 0.5f);
+				update_member(&trigger_is_pressed);
+			}
+			break;
+		}
 		case cgv::gui::EID_POSE:
 			cgv::gui::vr_pose_event& vrpe = static_cast<cgv::gui::vr_pose_event&>(e);
 			// check for controller pose events
