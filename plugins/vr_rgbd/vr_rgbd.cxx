@@ -19,6 +19,9 @@
 #include <rgbd_input.h>
 #include <random>
 #include <future>
+#include <iostream>
+#include <chrono>
+#include <point_cloud/point_cloud.h>
 
 ///@ingroup VR
 ///@{
@@ -75,6 +78,8 @@ protected:
 	/// rendering style for points
 	cgv::render::point_render_style point_style;
 
+	//std::vector<point_cloud> pcn;
+
 	int rgbd_controller_index;
 	mat3 rgbd_controller_orientation;
 	vec3 rgbd_controller_position;
@@ -87,6 +92,17 @@ protected:
 	///
 	std::future<size_t> future_handle;
 	/// 
+	std::future<rgbd::frame_type> future_rgb;
+	std::future<rgbd::frame_type> future_rgb2;
+	std::future<rgbd::frame_type> future_rgb3;
+	std::future<rgbd::frame_type> future_rgb4;
+	std::future<rgbd::frame_type> future_rgb5;
+	std::future<rgbd::frame_type> future_depth;
+	std::future<rgbd::frame_type> future_depth2;
+	std::future<rgbd::frame_type> future_depth3;
+	std::future<rgbd::frame_type> future_depth4;
+	std::future<rgbd::frame_type> future_depth5;
+	///
 	bool rgbd_started;
 	std::string rgbd_protocol_path;
 	/// 
@@ -239,6 +255,7 @@ public:
 		record_all_frames = false;
 		show_points = true;
 		point_style.point_size = 2;
+		point_style.blend_points = false;
 		point_style.blend_width_in_pixel = 0;
 		max_nr_shown_recorded_pcs = 20;
 
@@ -270,6 +287,51 @@ public:
 				++i;
 			}
 		return intermediate_pc.size();
+	}
+	rgbd::frame_type read_rgb_frame()    //should be a thread
+	{
+		return color_frame;
+	}
+	rgbd::frame_type read_depth_frame()
+	{
+		return depth_frame;
+	}
+
+	///demand for point cloud format
+	/*std::string compose_file_name(const std::string& file_name, const pointcloud_format& ff, unsigned idx)
+	{
+		std::string fn = file_name;
+
+		std::stringstream ss;
+		ss << setfill('0') << setw(10) << idx;
+
+		fn += ss.str();
+		return fn + '.' + get_frame_extension(ff);
+	}*/
+
+	///here should be const point cloud
+	void write_pc_to_disk(const std::string pathname, const char* ptr, size_t size)
+	{
+		if (!recorded_pcs.empty())
+		{
+			//define point cloud type, wirte to disk
+			for (auto i : recorded_pcs)
+			{
+				//wirte to disk
+				//ptr = i.data.front();
+				//std::string fn = compose_file_name(path_name + "/kinect_", frame, i);
+			}
+			std::cout << "there are point clouds queue" << std::endl;
+		}
+	}
+	size_t read_pc_queue(const std::string filename, std::string content)
+	{
+		cgv::utils::file::read(filename, content, false);
+		//read pcs from disk
+	}
+	void construct_TSDtree()
+	{
+		//using pc queue to construct the TSDtree
 	}
 	void timer_event(double t, double dt)
 	{
@@ -319,12 +381,23 @@ public:
 					post_redraw();
 				if (color_frame.is_allocated() && depth_frame.is_allocated() &&
 					(color_frame_changed || depth_frame_changed)) {
+					
 					if (!future_handle.valid()) {
+						//std::chrono::system_clock::time_point start = std::chrono::system_clock::now();
+						/*if (!future_rgb.valid())
+							future_rgb = std::async(&vr_rgbd::read_rgb_frame, this);
+						if (!future_depth.valid())
+							future_depth = std::async(&vr_rgbd::read_depth_frame, this);
+						color_frame_2 = future_rgb.get();
+						depth_frame_2 = future_depth.get();*/
 						color_frame_2 = color_frame;
 						depth_frame_2 = depth_frame;
 						rgbd_controller_orientation_pc = rgbd_controller_orientation;
 						rgbd_controller_position_pc = rgbd_controller_position;
 						future_handle = std::async(&vr_rgbd::construct_point_cloud, this);
+						/*auto end = std::chrono::system_clock::now();
+						auto diff = std::chrono::duration_cast <std::chrono::milliseconds> (end - start).count();
+						std::cout << "Total Time Taken = " << diff << " Seconds" << std::endl;*/
 					}
 				}
 			}
