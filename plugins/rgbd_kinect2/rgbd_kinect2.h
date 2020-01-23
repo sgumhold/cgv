@@ -61,7 +61,6 @@ namespace rgbd {
 		IDepthFrameReader * depth_reader;
 		IInfraredFrameReader * infrared_reader;
 		stream_format color_format, ir_format, depth_format;
-		bool near_mode;
 	};
 
 	/// interface for kinect drivers (implement only as driver implementor)
