@@ -233,25 +233,31 @@ namespace rgbd {
 	void rgbd_kinect2::map_color_to_depth(const frame_type& depth_frame, const frame_type& color_frame,
 		frame_type& warped_color_frame) const
 	{
-		
+	/*
+		ICoordinateMapper* mapper;
+		const int width = 1920;
+		const int height = 1080;
+		camera->get_CoordinateMapper(&mapper);
+		ColorSpacePoint depth2rgb[width*height];     // Maps depth pixels to rgb pixels
+		CameraSpacePoint depth2xyz[width*height];    // Maps depth pixels to 3d coordinates
+
+		mapper->MapDepthFrameToColorSpace(
+			width*height, reinterpret_cast<const UINT16*>(depth_frame.frame_data.data()),        // Depth frame data and size of depth frame
+			width*height, depth2rgb); // Output ColorSpacePoint array and size
+
+		mapper->MapDepthFrameToCameraSpace(
+			width*height, reinterpret_cast<const UINT16*>(depth_frame.frame_data.data()),        // Depth frame data and size of depth frame
+			width*height, depth2xyz); // Output CameraSpacePoint array and size
+
+
+		mapper->Release();
+		*/
 	}
 	
 	/// map a depth value together with pixel indices to a 3D point with coordinates in meters; point_ptr needs to provide space for 3 floats
 	bool rgbd_kinect2::map_depth_to_point(int x, int y, int depth, float* point_ptr) const
 	{
-		depth /= 8;
-		if (depth == 0)
-			return false;
-
-		static const double fx_d = 1.0 / 5.9421434211923247e+02;
-		static const double fy_d = 1.0 / 5.9104053696870778e+02;
-		static const double cx_d = 3.3930780975300314e+02;
-		static const double cy_d = 2.4273913761751615e+02;
-		double d = 0.001 * depth;
-		point_ptr[0] = float((x - cx_d) * d * fx_d);
-		point_ptr[1] = float((y - cy_d) * d * fy_d);
-		point_ptr[2] = float(d);
-		return true;
+		return false;
 	}
 
 	/// construct CLNUI driver
