@@ -51,55 +51,6 @@ namespace rgbd {
 		return true;
 	}
 
-	/// return whether rgbd device has support for view finding actuator
-	bool rgbd_kinect2::has_view_finder() const
-	{
-		return true;
-	}
-	/// return a view finder info structure
-	const view_finder_info& rgbd_kinect2::get_view_finder_info() const
-	{
-		static view_finder_info info;
-		info.degrees_of_freedom = 1;
-		info.min_angle[0] = -27.0f;
-		info.max_angle[0] =  27.0f;
-		info.min_angle[1] = 0.0f;
-		info.max_angle[1] = 0.0f;
-		info.min_angle[2] = 0.0f;
-		info.max_angle[2] = 0.0f;
-		return info;
-	}
-
-	/// set the pitch position of the kinect base, range of values is [-1, 1]
-	bool rgbd_kinect2::set_pitch(float y)
-	{
-		return true;
-	}
-	/// return the pitch position of the rgbd device in degrees with 0 as middle position
-	float rgbd_kinect2::get_pitch() const
-	{
-		return false;
-	}
-
-	/// check whether rgbd device has inertia measurement unit
-	bool rgbd_kinect2::has_IMU() const
-	{
-		return false;
-	}
-	/// return additional information on inertia measurement unit
-	const IMU_info& rgbd_kinect2::get_IMU_info() const
-	{
-		static IMU_info info;
-		info.has_angular_acceleration = false;
-		info.has_linear_acceleration = true;
-		info.has_time_stamp_support = false;
-		return info;
-	}
-	/// query the current measurement of the acceleration sensors within the given time_out in milliseconds; return whether a measurement has been retrieved
-	bool rgbd_kinect2::put_IMU_measurement(IMU_measurement& m, unsigned time_out) const
-	{
-		return false;
-	}
 	/// check whether the device supports the given combination of input streams
 	bool rgbd_kinect2::check_input_stream_configuration(InputStreams is) const
 	{
