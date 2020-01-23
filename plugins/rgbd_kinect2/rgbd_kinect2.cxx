@@ -21,7 +21,6 @@ namespace rgbd {
 
 	rgbd_kinect2::rgbd_kinect2() : infrared_reader(nullptr),color_reader(nullptr),depth_reader(nullptr)
 	{
-		near_mode = false;
 		camera = nullptr;
 	}
 
