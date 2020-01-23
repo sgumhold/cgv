@@ -17,12 +17,10 @@ struct stream_handles
 
 namespace rgbd {
 
-	/// create a detached kinect CLNUI device object
-	rgbd_kinect2::rgbd_kinect2()
+	rgbd_kinect2::rgbd_kinect2() : infrared_reader(nullptr),color_reader(nullptr),depth_reader(nullptr)
 	{
 		near_mode = false;
-		camera = 0;
-		handles = 0;
+		camera = nullptr;
 	}
 
 	/// attach to the kinect device of the given serial
@@ -33,6 +31,7 @@ namespace rgbd {
 		}
 
 		if (FAILED(GetDefaultKinectSensor(&camera))) {
+			cerr << "rgbd_kinect2::attach: failed to get default kinect sensor\n";
 			return false;
 		}
 		return true;
@@ -119,51 +118,101 @@ namespace rgbd {
 	{
 		return true;
 	}
+
 	/// query the stream formats available for a given stream configuration
 	void rgbd_kinect2::query_stream_formats(InputStreams is, std::vector<stream_format>& stream_formats) const
 	{
 		if ((is & IS_COLOR) != 0) {
-			stream_formats.push_back(stream_format(1920, 1080, PF_BGR, 30, 24));
+			stream_formats.push_back(stream_format(1920, 1080, PF_BGRA, 30, 32));
 		}
 		if ((is & IS_INFRARED) != 0) {
-			stream_formats.push_back(stream_format(1920, 1080, PF_I, 30, 8));
+			stream_formats.push_back(stream_format(512, 424, PF_I, 30, 16));
 		}
 		if ((is & IS_DEPTH) != 0) {
-			stream_formats.push_back(stream_format(1920, 1080, PF_DEPTH, 30, 16));
+			stream_formats.push_back(stream_format(512, 424, PF_DEPTH, 30, 16));
 		}
 	}
 	/// start the camera
 	bool rgbd_kinect2::start_device(InputStreams is, std::vector<stream_format>& stream_formats)
 	{
-
-		return false;
+		if (is & IS_COLOR) {
+			stream_formats.push_back(stream_format(1920, 1080, PF_BGRA, 30, 32));
+		}
+		if (is & IS_INFRARED) {
+			stream_formats.push_back(stream_format(512, 424, PF_I, 30, 16));
+		}
+		if (is & IS_DEPTH) {
+			stream_formats.push_back(stream_format(512, 424, PF_DEPTH, 30, 16));
+		}
+		start_device(stream_formats);
+		return true;
 	}
 	/// start the rgbd device with given stream formats 
 	bool rgbd_kinect2::start_device(const std::vector<stream_format>& stream_formats)
 	{
+		if (!is_attached()) {
+			cerr << "rgbd_kinect2: tried to start an unattached device!\n";
+		}
 		if (is_running())
 			return true;
+		
+		
+		if (FAILED(camera->Open())) {
+			cerr << "rgbd_kinect2::start_device: failed to open kinect sensor\n";
+		}
 
-		camera->get_CoordinateMapper(&mapper);
-		camera->Open();
-		camera->OpenMultiSourceFrameReader(
-			FrameSourceTypes::FrameSourceTypes_Depth
-			| FrameSourceTypes::FrameSourceTypes_Color
-			| FrameSourceTypes::FrameSourceTypes_Body,
-			&reader);
 
-		return false;
+		IDepthFrameSource* depth_frame_source;
+		IColorFrameSource* color_frame_source;
+		IInfraredFrameSource* infrared_frame_source;
+		if (FAILED(camera->get_ColorFrameSource(&color_frame_source))) {
+			cerr << "rgbd_kinect2::start_device: failed to create frame reader\n";
+		}
+		camera->get_DepthFrameSource(&depth_frame_source);
+		camera->get_InfraredFrameSource(&infrared_frame_source);
+		color_frame_source->OpenReader(&color_reader);
+		depth_frame_source->OpenReader(&depth_reader);
+		infrared_frame_source->OpenReader(&infrared_reader);
+		color_frame_source->Release();
+		depth_frame_source->Release();
+		infrared_frame_source->Release();
+
+		for (auto& format : stream_formats) {
+			switch (format.pixel_format) {
+			case PF_BGRA:
+				color_format = format;
+				break;
+			case PF_DEPTH:
+				depth_format = format;
+				break;
+			case PF_I:
+				ir_format = format;
+				break;
+			}
+		}
+
+		return true;
 	}
 	/// stop the camera
 	bool rgbd_kinect2::stop_device()
 	{
+		if (is_running()) {
+			color_reader->Release();
+			color_reader = nullptr;
+			depth_reader->Release();
+			depth_reader = nullptr;
+			infrared_reader->Release();
+			infrared_reader = nullptr;
+			camera->Close();
+			return true;
+		}
 		return false;
 	}
 
 	/// return whether device has been started
 	bool rgbd_kinect2::is_running() const
 	{
-		return handles != 0;
+		return color_reader != 0;
 	}
 
 		/// query a frame of the given input stream
@@ -173,14 +222,80 @@ namespace rgbd {
 			cerr << "rgbd_kinect2::get_frame called on device that has not been attached" << endl;
 			return false;
 		}
-		
 
 		if (!is_running()) {
 			cerr << "rgbd_kinect2::get_frame called on device that is not running" << endl;
 			return false;
 		}
 
-		return true;
+		if (is == IS_COLOR) {
+			IColorFrame* kinect_frame;
+			if (SUCCEEDED(color_reader->AcquireLatestFrame(&kinect_frame))) {
+				static_cast<frame_format&>(frame) = color_format;
+				//frame.compute_buffer_size();
+				if (frame.frame_data.size() != frame.buffer_size) {
+					frame.frame_data.resize(frame.buffer_size);
+				}
+				HRESULT hr = kinect_frame->CopyConvertedFrameDataToArray(frame.buffer_size, reinterpret_cast<BYTE*>(frame.frame_data.data()), ColorImageFormat_Bgra);
+				if (FAILED(hr)) {
+					cerr << "rgbd_kinect2::get_frame failed to copy data into frame buffer\n";
+					return false;
+				}
+				
+				kinect_frame->Release();
+				return true;
+			}
+		}
+		else if (is == IS_DEPTH) {
+			IDepthFrame* kinect_frame;
+			if (SUCCEEDED(depth_reader->AcquireLatestFrame(&kinect_frame))) {
+				static_cast<frame_format&>(frame) = depth_format;
+				frame.compute_buffer_size();
+				if (frame.frame_data.size() != frame.buffer_size) {
+					frame.frame_data.resize(frame.buffer_size);
+				}
+				int w, h;
+				IFrameDescription* desc;
+				kinect_frame->get_FrameDescription(&desc);
+				desc->get_Height(&h);
+				desc->get_Width(&w);
+				HRESULT hr = kinect_frame->CopyFrameDataToArray(frame.buffer_size >> 1, reinterpret_cast<UINT16*>(frame.frame_data.data()));
+				if (FAILED(hr)) {
+					cerr << "rgbd_kinect2::get_frame failed to copy data into frame buffer\n";
+					return false;
+				}
+
+				kinect_frame->Release();
+				return true;
+			}
+		}
+		else if (is == IS_INFRARED) {
+			IInfraredFrame* kinect_frame;
+			if (SUCCEEDED(infrared_reader->AcquireLatestFrame(&kinect_frame))) {
+				static_cast<frame_format&>(frame) = ir_format;
+				frame.compute_buffer_size();
+				if (frame.frame_data.size() != frame.buffer_size) {
+					frame.frame_data.resize(frame.buffer_size);
+				}
+				int w, h;
+				IFrameDescription* desc;
+				kinect_frame->get_FrameDescription(&desc);
+				desc->get_Height(&h);
+				desc->get_Width(&w);
+				
+				HRESULT hr = kinect_frame->CopyFrameDataToArray(frame.buffer_size >> 1, reinterpret_cast<UINT16*>(frame.frame_data.data()));
+				if (FAILED(hr)) {
+					cerr << "rgbd_kinect2::get_frame failed to copy data into frame buffer\n";
+					return false;
+				}
+
+				kinect_frame->Release();
+				return true;
+			}
+		}
+
+
+		return false;
 	}
 	/// map a color frame to the image coordinates of the depth image
 	void rgbd_kinect2::map_color_to_depth(const frame_type& depth_frame, const frame_type& color_frame,
