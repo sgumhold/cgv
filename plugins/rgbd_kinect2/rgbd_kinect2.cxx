@@ -1,4 +1,5 @@
 #include <iostream>
+#include <chrono>
 #include "rgbd_kinect2.h"
 #include <Windows.h>
 #include <Kinect.h>
@@ -6,6 +7,7 @@
 #include <cgv/utils/convert.h>
 
 using namespace std;
+using namespace chrono;
 
 struct stream_handles
 {
@@ -79,25 +81,11 @@ namespace rgbd {
 	{
 		return false;
 	}
-	/// whether rgbd device has support for a near field depth mode
-	bool rgbd_kinect2::has_near_mode() const
-	{
-		return true;
-	}
-	/// return whether the near field depth mode is activated
-	bool rgbd_kinect2::get_near_mode() const
-	{
-		return near_mode;
-	}
-	bool rgbd_kinect2::set_near_mode(bool on)
-	{
-		return false;
-	}
 
 	/// check whether rgbd device has inertia measurement unit
 	bool rgbd_kinect2::has_IMU() const
 	{
-		return true;
+		return false;
 	}
 	/// return additional information on inertia measurement unit
 	const IMU_info& rgbd_kinect2::get_IMU_info() const
@@ -228,10 +216,13 @@ namespace rgbd {
 			return false;
 		}
 
+		double time = duration_cast<milliseconds>(steady_clock::now().time_since_epoch()).count();
+
 		if (is == IS_COLOR) {
 			IColorFrame* kinect_frame;
 			if (SUCCEEDED(color_reader->AcquireLatestFrame(&kinect_frame))) {
 				static_cast<frame_format&>(frame) = color_format;
+				frame.time = time;
 				//frame.compute_buffer_size();
 				if (frame.frame_data.size() != frame.buffer_size) {
 					frame.frame_data.resize(frame.buffer_size);
@@ -250,15 +241,11 @@ namespace rgbd {
 			IDepthFrame* kinect_frame;
 			if (SUCCEEDED(depth_reader->AcquireLatestFrame(&kinect_frame))) {
 				static_cast<frame_format&>(frame) = depth_format;
+				frame.time = time;
 				frame.compute_buffer_size();
 				if (frame.frame_data.size() != frame.buffer_size) {
 					frame.frame_data.resize(frame.buffer_size);
 				}
-				int w, h;
-				IFrameDescription* desc;
-				kinect_frame->get_FrameDescription(&desc);
-				desc->get_Height(&h);
-				desc->get_Width(&w);
 				HRESULT hr = kinect_frame->CopyFrameDataToArray(frame.buffer_size >> 1, reinterpret_cast<UINT16*>(frame.frame_data.data()));
 				if (FAILED(hr)) {
 					cerr << "rgbd_kinect2::get_frame failed to copy data into frame buffer\n";
@@ -273,22 +260,17 @@ namespace rgbd {
 			IInfraredFrame* kinect_frame;
 			if (SUCCEEDED(infrared_reader->AcquireLatestFrame(&kinect_frame))) {
 				static_cast<frame_format&>(frame) = ir_format;
+				frame.time = time;
 				frame.compute_buffer_size();
 				if (frame.frame_data.size() != frame.buffer_size) {
 					frame.frame_data.resize(frame.buffer_size);
 				}
-				int w, h;
-				IFrameDescription* desc;
-				kinect_frame->get_FrameDescription(&desc);
-				desc->get_Height(&h);
-				desc->get_Width(&w);
 				
 				HRESULT hr = kinect_frame->CopyFrameDataToArray(frame.buffer_size >> 1, reinterpret_cast<UINT16*>(frame.frame_data.data()));
 				if (FAILED(hr)) {
 					cerr << "rgbd_kinect2::get_frame failed to copy data into frame buffer\n";
 					return false;
 				}
-
 				kinect_frame->Release();
 				return true;
 			}
@@ -355,13 +337,8 @@ namespace rgbd {
 			return "";
 		}
 		
-		sensor->Open();
-		WCHAR id[256] = L"";
-		HRESULT res = sensor->get_UniqueKinectId(256, id);
-		sensor->Close();
 		sensor->Release();
 	
-		//return cgv::utils::wstr2str(std::wstring(id));
 		return "default-kinect2";
 	}
 

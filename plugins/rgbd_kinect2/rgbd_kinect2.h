@@ -30,13 +30,6 @@ namespace rgbd {
 		bool set_pitch(float y);
 		/// return the pitch position of the rgbd device in degrees with 0 as middle position
 		float get_pitch() const;
-		/// whether rgbd device has support for a near field depth mode
-		bool has_near_mode() const;
-		/// return whether the near field depth mode is activated
-		bool get_near_mode() const;
-		///
-		bool set_near_mode(bool on);
-
 		/// check whether rgbd device has inertia measurement unit
 		bool has_IMU() const;
 		/// return additional information on inertia measurement unit
