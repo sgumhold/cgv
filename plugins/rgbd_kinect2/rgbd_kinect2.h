@@ -22,20 +22,6 @@ namespace rgbd {
 		bool is_attached() const;
 		/// detach from serial (done automatically in constructor
 		bool detach();
-		/// return whether rgbd device has support for view finding actuator
-		bool has_view_finder() const;
-		/// return a view finder info structure
-		const view_finder_info& get_view_finder_info() const;
-		/// set the pitch position of the kinect base, range of values is [-1, 1]
-		bool set_pitch(float y);
-		/// return the pitch position of the rgbd device in degrees with 0 as middle position
-		float get_pitch() const;
-		/// check whether rgbd device has inertia measurement unit
-		bool has_IMU() const;
-		/// return additional information on inertia measurement unit
-		const IMU_info& get_IMU_info() const;
-		/// query the current measurement of the acceleration sensors within the given time_out in milliseconds; return whether a measurement has been retrieved
-		bool put_IMU_measurement(IMU_measurement& m, unsigned time_out) const;
 		/// check whether the device supports the given combination of input streams
 		bool check_input_stream_configuration(InputStreams is) const;
 		/// query the stream formats available for a given stream configuration
