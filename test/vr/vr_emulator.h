@@ -34,6 +34,10 @@ protected:
 	float fovy;
 	vec3 body_position;
 	vec3 hand_position[2];
+	
+	bool tracker_enabled[2];
+	vec3 tracker_positions[2];
+	quat tracker_orientations[2];
 
 	/// helper functions to construct matrices
 	mat3x4 construct_pos_matrix(const quat& orientation, const vec3& position);
@@ -74,6 +78,7 @@ protected:
 	bool left_ctrl, right_ctrl, up_ctrl, down_ctrl;
 	bool home_ctrl, end_ctrl, pgup_ctrl, pgdn_ctrl;
 	int current_kit_ctrl;
+	void create_tracker_gui(vr_emulated_kit* kit, int i);
 	void create_trackable_gui(const std::string& name, vr::vr_trackable_state& ts);
 	void create_controller_gui(int i, vr::vr_controller_state& cs);
 

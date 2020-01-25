@@ -252,8 +252,13 @@ bool vr_view_interactor::init(cgv::render::context& ctx)
 		MI_hmd.construct_vbos(ctx, M2);
 		MI_hmd.bind(ctx, ctx.ref_surface_shader_program(true));
 	}
+	cgv::media::mesh::simple_mesh<float> M3;
+	if (M3.read(cgv::base::find_data_file("HTC_Vive_Tracker_2017.obj", "D"))) {
+		MI_tracker.construct_vbos(ctx, M3);
+		MI_tracker.bind(ctx, ctx.ref_surface_shader_program(true));
+	}
 #endif
-	if (!MI_hmd.is_constructed() && !MI_controller.is_constructed()) {
+	if (!MI_hmd.is_constructed() && !MI_controller.is_constructed() && !MI_tracker.is_constructed()) {
 		show_vr_kits_as_meshes = false;
 		on_set(&show_vr_kits_as_meshes);
 		if (!show_vr_kits_as_spheres) {
@@ -646,7 +651,12 @@ void vr_view_interactor::draw(cgv::render::context& ctx)
 				if (show_vr_kits_as_meshes && MI_controller.is_constructed()) {
 					ctx.push_modelview_matrix();
 					ctx.mul_modelview_matrix(cgv::math::pose4<float>(reinterpret_cast<const mat34&>(state_ptr->controller[i].pose[0])));
-					MI_controller.render_mesh(ctx, ctx.ref_surface_shader_program(true));
+					if (i < 2 || !MI_tracker.is_constructed())
+						MI_controller.render_mesh(ctx, ctx.ref_surface_shader_program(true));
+					else {
+						ctx.mul_modelview_matrix(cgv::math::scale4<float>(vec3(0.001f)));
+						MI_tracker.render_mesh(ctx, ctx.ref_surface_shader_program(true));
+					}
 					ctx.pop_modelview_matrix();
 				}
 				if (show_vr_kits_as_spheres || !MI_controller.is_constructed()) {
