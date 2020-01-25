@@ -2,6 +2,7 @@
 #include <cgv/math/ftransform.h>
 #include <cgv/gui/key_event.h>
 #include <cgv/gui/trigger.h>
+#include <cgv/utils/convert_string.h>
 #include <cg_gamepad/gamepad_server.h>
 
 const float Body_height = 1740.0f;
@@ -86,8 +87,14 @@ void vr_emulated_kit::compute_state_poses()
 	set_pose_matrix(T_body*T_hip*T_head, state.hmd.pose);
 	set_pose_matrix(T_body*T_hip*T_left, state.controller[0].pose);
 	set_pose_matrix(T_body*T_hip*T_right, state.controller[1].pose);
+	for (int i=0; i<2; ++i)
+		if (tracker_enabled[i]) {
+			reinterpret_cast<mat3x4&>(state.controller[2 + i].pose[0]) = construct_pos_matrix(tracker_orientations[i], tracker_positions[i]);
+			state.controller[2 + i].status = vr::VRS_TRACKED;
+		}
+		else
+			state.controller[2 + i].status = vr::VRS_DETACHED;
 }
-
 
 vr_emulated_kit::vr_emulated_kit(float _body_direction, const vec3& _body_position, float _body_height, unsigned _width, unsigned _height, vr::vr_driver* _driver, void* _handle, const std::string& _name, bool _ffb_support, bool _wireless)
 	: gl_vr_display(_width, _height, _driver, _handle, _name, _ffb_support, _wireless)
@@ -105,6 +112,11 @@ vr_emulated_kit::vr_emulated_kit(float _body_direction, const vec3& _body_positi
 	state.controller[0].status = vr::VRS_TRACKED;
 	state.controller[1].status = vr::VRS_TRACKED;
 	
+	tracker_enabled[0] = tracker_enabled[1] = true;
+	tracker_positions[0] = vec3(0.2f, 1.2f, 0.0f);
+	tracker_positions[1] = vec3(-0.2f, 1.2f, 0.0f);
+	tracker_orientations[0] = tracker_orientations[1] = quat(0.71f,-0.71f,0,0);
+
 	compute_state_poses();
 }
 
@@ -544,6 +556,18 @@ void vr_emulator::create_controller_gui(int i, vr::vr_controller_state& cs)
 	add_view("[1]", cs.vibration[1], "value", "w=50");
 }
 
+void vr_emulator::create_tracker_gui(vr_emulated_kit* kit, int i)
+{
+	if (begin_tree_node(std::string("tracker_") + cgv::utils::to_string(i), kit->tracker_enabled[i], false, "level=3")) {
+		add_member_control(this, "enabled", kit->tracker_enabled[i], "check");
+		add_decorator("position", "heading", "level=3");
+		add_gui("position", kit->tracker_positions[i], "vector", "gui_type='value_slider';options='min=-3;max=3;ticks=true'");
+		add_decorator("quaternion", "heading", "level=3");
+		add_gui("quaternion", reinterpret_cast<vec4&>(kit->tracker_orientations[i]), "direction", "gui_type='value_slider';options='min=-1;max=1;ticks=true'");
+		end_tree_node(kit->tracker_enabled[i]);
+	}
+}
+
 ///
 void vr_emulator::create_gui()
 {
@@ -592,6 +616,8 @@ void vr_emulator::create_gui()
 				align("\b");
 				end_tree_node(kits[i]->body_position);
 			}
+			create_tracker_gui(kits[i], 0);
+			create_tracker_gui(kits[i], 1);
 			if (begin_tree_node("state", kits[i]->state.controller[0].pose[1], false, "level=3")) {
 				align("\a");
 				if (begin_tree_node("hmd", kits[i]->state.hmd.pose[0], false, "level=3")) {
