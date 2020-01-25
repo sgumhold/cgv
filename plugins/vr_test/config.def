@@ -1,5 +1,10 @@
 show all
 
+//name(vr interactor):hmd_scale=1.0;hmd_mesh_file_name="generic_hmd.obj"
+//name(vr interactor):controller_scale=1.0;controller_mesh_file_name="vr_controller_vive_1_5.obj"
+//name(vr interactor):tracker_scale=0.001;tracker_mesh_file_name="HTC_Vive_Tracker_2017.obj"
+//name(vr interactor):base_scale=1.0;base_mesh_file_name=""
+
 persistent
 name(vr interactor):tracking_rotation=-155
 name(vr interactor):tracking_origin_x=0.0151364;

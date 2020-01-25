@@ -113,7 +113,6 @@ protected:
 	int rendered_eye;
 	vr::vr_kit* rendered_kit_ptr;
 	int rendered_kit_index;
-	cgv::render::mesh_render_info MI_controller, MI_hmd, MI_tracker;
 
 	cgv::gui::VREventTypeFlags event_flags;
 
@@ -147,6 +146,10 @@ protected:
 	cgv::render::surface_render_style brs;
 	cgv::render::sphere_render_style srs;
 
+	// helper members to allow change of mesh file names
+	std::string hmd_mesh_file_name, controller_mesh_file_name, tracker_mesh_file_name, base_mesh_file_name;
+	// for each mesh type a scale
+	float mesh_scales[4];
 	//
 	void configure_kits();
 	///
