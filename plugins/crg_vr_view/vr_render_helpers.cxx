@@ -1,7 +1,6 @@
 #include <cgv/base/base.h>
 #include "vr_render_helpers.h"
 #include <cgv/math/ftransform.h>
-#include <cgv/math/inv.h>
 #include <cgv/base/import.h>
 
 ///
@@ -65,11 +64,15 @@ namespace vr {
 	}
 	/// compute lookat matrix for a given eye (0 ... left, 1 ... right)
 	cgv::render::render_types::mat4 get_world_to_eye_transform(const vr_kit* vr_kit_ptr, const vr_kit_state& state, int eye)
-	{
+	{		
+		cgv::render::render_types::mat4 T;
+		vr_kit_ptr->put_world_to_eye_transform(eye, state.hmd.pose, &T[0, 0]);
+		return T;		
+		/*
 		float eye_to_head[12];
 		vr_kit_ptr->put_eye_to_head_matrix(eye, eye_to_head);
-		return inv(get_mat4_from_pose(state.hmd.pose) * get_mat4_from_pose(eye_to_head));
-
+		return inv(get_mat4_from_pose(state.hmd.pose) * get_mat4_from_pose(eye_to_head));		
+		*/
 	}
 	/// compute lookat matrix for a given camera (0 ... left, 1 ... right)
 	cgv::render::render_types::mat4 get_world_to_camera_transform(const vr_kit* vr_kit_ptr, const vr_kit_state& state, int eye)
