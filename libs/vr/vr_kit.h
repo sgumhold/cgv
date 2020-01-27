@@ -134,6 +134,8 @@ namespace vr {
 		virtual void put_eye_to_head_matrix(int eye, float* pose_matrix) const = 0;
 		/// access to 4x4 matrix in column major format for perspective transformation from eye (0..left, 1..right)
 		virtual void put_projection_matrix(int eye, float z_near, float z_far, float* projection_matrix) const = 0;
+		/// access to 4x4 modelview transformation matrix of given eye in column major format, which is computed in default implementation from given 3x4 pose matrix and eye to head transformation
+		virtual void put_world_to_eye_transform(int eye, const float* hmd_pose, float* modelview_matrix) const;
 		/// enable the framebuffer object of given eye (0..left, 1..right) 
 		virtual void enable_fbo(int eye) = 0;
 		/// disable the framebuffer object of given eye (0..left, 1..right)
