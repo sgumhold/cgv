@@ -17,7 +17,7 @@ namespace cgv {
 extern CGV_API const char* skip_spaces(const char* begin, const char* end);
 /// return new end pointer by cutting off spaces at the end
 extern CGV_API const char* cutoff_spaces(const char* begin, const char* end);
-/// check if char is a letter
+/// check if char is a whitespace
 extern CGV_API bool is_space(char c);
 /// check if char is a special character from an url
 extern CGV_API bool is_url_special(char c);
