@@ -21,10 +21,11 @@ namespace vr {
 	private:
 		int vp[4];
 		int old_msaa;
-	protected:
+	public:
 		/// pixel dimensions of render targets
 		unsigned width, height, nr_multi_samples;
 		
+	protected:
 		/// ids of gl render objects
 		unsigned multi_depth_buffer_id[2];
 		unsigned multi_tex_id[2];
