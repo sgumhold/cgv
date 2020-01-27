@@ -47,6 +47,7 @@ uniform vec3 domain_max_pnt;
 uniform vec3 extent;
 uniform vec4 orientation = vec4(0.0, 0.0, 0.0, 1.0);
 uniform vec3 center_location;
+uniform float feature_offset;
 
 float convert_to_log_space(float val, float min_val, float max_val)
 {
@@ -74,7 +75,7 @@ vec3 map_plot_to_plot3(in vec2 pnt)
 
 vec4 map_plot_to_world(in vec2 pnt)
 {
-	return vec4(center_location + rotate_vector_with_quaternion(map_plot_to_plot3(pnt), orientation), 1.0);
+	return vec4(center_location + rotate_vector_with_quaternion(map_plot_to_plot3(pnt) + vec3(0.0, 0.0, feature_offset), orientation), 1.0);
 }
 
 vec4 map_plot_to_eye(in vec2 pnt)
