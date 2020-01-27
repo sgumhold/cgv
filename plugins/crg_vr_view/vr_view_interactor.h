@@ -56,6 +56,7 @@ class CGV_API vr_view_interactor : public stereo_view_interactor
 {
 	ivec4 cgv_viewport;
 	void* fbo_handle;
+
 	/**@name head tracking */
 	//@{
 	/// head orientation from tracker orientation
@@ -113,7 +114,6 @@ protected:
 	int rendered_eye;
 	vr::vr_kit* rendered_kit_ptr;
 	int rendered_kit_index;
-	cgv::render::mesh_render_info MI_controller, MI_hmd;
 
 	cgv::gui::VREventTypeFlags event_flags;
 
@@ -147,6 +147,12 @@ protected:
 	cgv::render::surface_render_style brs;
 	cgv::render::sphere_render_style srs;
 
+	// helper members to allow change of mesh file names
+	std::string hmd_mesh_file_name, controller_mesh_file_name, tracker_mesh_file_name, base_mesh_file_name;
+	// for each mesh type a scale
+	float mesh_scales[4];
+	///
+	vr::vr_kit* get_vr_kit_from_index(int i) const;
 	//
 	void configure_kits();
 	///
@@ -237,7 +243,7 @@ public:
 	///
 	bool init(cgv::render::context& ctx);
 	/// 
-	void destruct(cgv::render::context& ctx);
+	void clear(cgv::render::context& ctx);
 	/// overload and implement this method to handle events
 	bool handle(cgv::gui::event& e);
 	/// overload to stream help information to the given output stream

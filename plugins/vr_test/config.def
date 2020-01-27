@@ -1,10 +1,18 @@
 show all
 
+type(vr_emulator):current_kit_index=0
+//type(vr_wall):vr_wall_kit_index=0
+
+//name(vr interactor):hmd_scale=1.0;hmd_mesh_file_name="generic_hmd.obj"
+//name(vr interactor):controller_scale=1.0;controller_mesh_file_name="vr_controller_vive_1_5.obj"
+//name(vr interactor):tracker_scale=0.001;tracker_mesh_file_name="HTC_Vive_Tracker_2017.obj"
+//name(vr interactor):base_scale=1.0;base_mesh_file_name=""
+
 persistent
 name(vr interactor):tracking_rotation=-155
-name(vr interactor):tracking_origin_x=0.230469;
-name(vr interactor):tracking_origin_y=0.929999;
-name(vr interactor):tracking_origin_z=-0.288262;
-name(vr interactor):tracking_rotation_origin_x=0.000289485;
-name(vr interactor):tracking_rotation_origin_y=1.04727;
-name(vr interactor):tracking_rotation_origin_z=-0.369056
+name(vr interactor):tracking_origin_x=0.0151364;
+name(vr interactor):tracking_origin_y=0.930006;
+name(vr interactor):tracking_origin_z=-0.393396;
+name(vr interactor):tracking_rotation_origin_x=-0.2;
+name(vr interactor):tracking_rotation_origin_y=1.2;
+name(vr interactor):tracking_rotation_origin_z=-1.49012e-08

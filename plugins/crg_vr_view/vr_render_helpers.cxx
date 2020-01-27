@@ -1,10 +1,57 @@
 #include <cgv/base/base.h>
 #include "vr_render_helpers.h"
 #include <cgv/math/ftransform.h>
-#include <cgv/math/inv.h>
+#include <cgv/base/import.h>
 
 ///
 namespace vr {
+	bool& ref_vrmesh_outofdate(VRMeshId id)
+	{
+		static std::vector<int> outofdates;
+		if ((int)outofdates.size() <= id)
+			outofdates.resize(id + 1, true);
+		return reinterpret_cast<bool&>(outofdates[id]);
+	}
+	std::string& ref_vrmesh_file_name(VRMeshId id)
+	{
+		static std::vector<std::string> file_names;
+		if ((int)file_names.size() <= id)
+			file_names.resize(id + 1);
+		return file_names[id];
+	}
+	const std::string& get_vrmesh_file_name(VRMeshId id)
+	{
+		return ref_vrmesh_file_name(id);
+	}
+	void set_vrmesh_file_name(VRMeshId id, const std::string& file_name)
+	{
+		ref_vrmesh_file_name(id) = file_name;
+		ref_vrmesh_outofdate(id) = true;
+	}
+	cgv::render::mesh_render_info* get_vrmesh_render_info(cgv::render::context& ctx, VRMeshId id)
+	{
+		static std::vector<cgv::render::mesh_render_info*> mesh_infos;
+		if ((int)mesh_infos.size() <= id)
+			mesh_infos.resize(id + 1, 0);
+		// in case file name changed, delete previous mesh render info
+		if (ref_vrmesh_outofdate(id) && !get_vrmesh_file_name(id).empty() && mesh_infos[id] != 0) {
+			mesh_infos[id]->destruct(ctx);
+			delete mesh_infos[id];
+			mesh_infos[id] = 0;
+		}
+		// check whether mesh needs to be read from file
+		if (mesh_infos[id] == 0 && !get_vrmesh_file_name(id).empty()) {
+			cgv::media::mesh::simple_mesh<float> M;
+			if (M.read(cgv::base::find_data_file(get_vrmesh_file_name(id), "Dc"))) {
+				mesh_infos[id] = new cgv::render::mesh_render_info();
+				mesh_infos[id]->construct_vbos(ctx, M);
+				mesh_infos[id]->bind(ctx, ctx.ref_surface_shader_program(true));
+			}
+			ref_vrmesh_outofdate(id) = false;
+		}
+		return mesh_infos[id];
+	}	
+
 	/// convert pose to mat4
 	cgv::render::render_types::mat4 get_mat4_from_pose(const float pose_matrix[12])
 	{
@@ -17,11 +64,15 @@ namespace vr {
 	}
 	/// compute lookat matrix for a given eye (0 ... left, 1 ... right)
 	cgv::render::render_types::mat4 get_world_to_eye_transform(const vr_kit* vr_kit_ptr, const vr_kit_state& state, int eye)
-	{
+	{		
+		cgv::render::render_types::mat4 T;
+		vr_kit_ptr->put_world_to_eye_transform(eye, state.hmd.pose, &T[0, 0]);
+		return T;		
+		/*
 		float eye_to_head[12];
 		vr_kit_ptr->put_eye_to_head_matrix(eye, eye_to_head);
-		return inv(get_mat4_from_pose(state.hmd.pose) * get_mat4_from_pose(eye_to_head));
-
+		return inv(get_mat4_from_pose(state.hmd.pose) * get_mat4_from_pose(eye_to_head));		
+		*/
 	}
 	/// compute lookat matrix for a given camera (0 ... left, 1 ... right)
 	cgv::render::render_types::mat4 get_world_to_camera_transform(const vr_kit* vr_kit_ptr, const vr_kit_state& state, int eye)
