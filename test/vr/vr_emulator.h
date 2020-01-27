@@ -82,6 +82,8 @@ protected:
 	void create_trackable_gui(const std::string& name, vr::vr_trackable_state& ts);
 	void create_controller_gui(int i, vr::vr_controller_state& cs);
 
+	int current_kit_index;
+
 	void add_new_kit();
 	void timer_event(double t, double dt);
 public:
@@ -95,6 +97,10 @@ public:
 	bool is_installed() const;
 	/// scan all connected vr kits and return a vector with their ids
 	std::vector<void*> scan_vr_kits();
+	/// scan all connected vr kits and return a vector with their ids
+	vr::vr_kit* replace_by_index(int& index, vr::vr_kit* new_kit_ptr);
+	/// scan all connected vr kits and return a vector with their ids
+	bool replace_by_pointer(vr::vr_kit* old_kit_ptr, vr::vr_kit* new_kit_ptr);
 	/// put a 3d up direction into passed array
 	void put_up_direction(float* up_dir) const;
 	/// return the floor level relativ to the world origin

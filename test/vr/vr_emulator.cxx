@@ -2,6 +2,7 @@
 #include <cgv/math/ftransform.h>
 #include <cgv/gui/key_event.h>
 #include <cgv/gui/trigger.h>
+#include <cg_vr/vr_server.h>
 #include <cgv/utils/convert_string.h>
 #include <cg_gamepad/gamepad_server.h>
 
@@ -111,7 +112,7 @@ vr_emulated_kit::vr_emulated_kit(float _body_direction, const vec3& _body_positi
 	state.hmd.status = vr::VRS_TRACKED;
 	state.controller[0].status = vr::VRS_TRACKED;
 	state.controller[1].status = vr::VRS_TRACKED;
-	
+
 	tracker_enabled[0] = tracker_enabled[1] = true;
 	tracker_positions[0] = vec3(0.2f, 1.2f, 0.0f);
 	tracker_positions[1] = vec3(-0.2f, 1.2f, 0.0f);
@@ -197,6 +198,8 @@ void vr_emulated_kit::submit_frame()
 ///
 vr_emulator::vr_emulator() : cgv::base::node("vr_emulator")
 {
+	current_kit_index = -1;
+
 	left_ctrl = right_ctrl = up_ctrl = down_ctrl = false;
 	home_ctrl = end_ctrl = pgup_ctrl = pgdn_ctrl = false;
 	current_kit_ctrl = -1;
@@ -250,6 +253,10 @@ void vr_emulator::timer_event(double t, double dt)
 ///
 void vr_emulator::on_set(void* member_ptr)
 {
+	if (member_ptr == &current_kit_index) {
+		while (current_kit_index >= (int)kits.size())
+			add_new_kit();
+	}
 	update_member(member_ptr);
 	post_redraw();
 }
@@ -282,6 +289,7 @@ void vr_emulator::add_new_kit()
 		std::string("vr_emulated_kit[") + cgv::utils::to_string(counter) + "]", ffb_support, wireless);
 	kits.push_back(new_kit);
 	register_vr_kit(handle, new_kit);
+	cgv::gui::ref_vr_server().check_device_changes(cgv::gui::trigger::get_current_time());
 	post_recreate_gui();
 }
 
@@ -289,11 +297,40 @@ void vr_emulator::add_new_kit()
 std::vector<void*> vr_emulator::scan_vr_kits()
 {
 	std::vector<void*> result;
-
 	if (is_installed())
 		for (auto kit_ptr : kits)
 			result.push_back(kit_ptr->get_device_handle());
 	return result;
+}
+
+/// scan all connected vr kits and return a vector with their ids
+vr::vr_kit* vr_emulator::replace_by_index(int& index, vr::vr_kit* new_kit_ptr)
+{
+	if (!is_installed())
+		return 0;
+
+	for (auto kit_ptr : kits) {
+		if (index == 0) {
+			replace_vr_kit(kit_ptr->get_device_handle(), new_kit_ptr);
+			return kit_ptr;
+		}
+		else
+			--index;
+	}
+	return 0;
+}
+/// scan all connected vr kits and return a vector with their ids
+bool vr_emulator::replace_by_pointer(vr::vr_kit* old_kit_ptr, vr::vr_kit* new_kit_ptr)
+{
+	if (!is_installed())
+		return false;
+	for (auto kit_ptr : kits) {
+		if (kit_ptr == old_kit_ptr) {
+			replace_vr_kit(kit_ptr->get_device_handle(), new_kit_ptr);
+			return true;
+		}
+	}
+	return false;
 }
 
 /// put a 3d up direction into passed array
@@ -502,7 +539,8 @@ void vr_emulator::finish_frame(cgv::render::context&)
 ///
 bool vr_emulator::self_reflect(cgv::reflect::reflection_handler& srh)
 {
-	return
+	return		
+		srh.reflect_member("current_kit_index", current_kit_index) &&
 		srh.reflect_member("installed", installed) &&
 		srh.reflect_member("body_direction", body_direction) &&
 		srh.reflect_member("body_position", body_position) &&
