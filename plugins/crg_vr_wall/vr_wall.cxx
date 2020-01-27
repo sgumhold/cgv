@@ -174,8 +174,10 @@ namespace vr {
 			return;
 		int width = window->get<int>("w");
 		int height = window->get<int>("h");
+		wall_kit_ptr->secondary_context = true;
 		wall_kit_ptr->blit_fbo(0, 0, 0, width / 2, height);
 		wall_kit_ptr->blit_fbo(1, width / 2, 0, width / 2, height);
+		wall_kit_ptr->secondary_context = false;
 		/*
 		if (show_vr_kits_as_spheres && wall_kit_ptr != 0 && vr_wall_kit_index != -1) {
 			vr::vr_kit_state* state_ptr = &kit_states[vr_wall_kit_index];
