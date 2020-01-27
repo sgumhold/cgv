@@ -36,6 +36,8 @@ namespace vr {
 		float eye_separation;
 		/// index of trackable used for head tracking (-1 if parent hmd is used)
 		int hmd_trackable_index;
+
+		bool secondary_context;
 	public:
 		inline const mat34& get_screen_pose() const { return reinterpret_cast<const mat34&>(screen_x_world); }
 		inline const mat3& get_screen_orientation() const { return reinterpret_cast<const mat3&>(screen_x_world); }
@@ -56,6 +58,13 @@ namespace vr {
 		void detach();
 		/// initialize render targets and framebuffer objects in current opengl context
 		bool init_fbos();
+		/// enable the framebuffer object of given eye (0..left, 1..right) 
+		void enable_fbo(int eye);
+		/// disable the framebuffer object of given eye
+		void disable_fbo(int eye);
+		/// initialize render targets and framebuffer objects in current opengl context
+		bool blit_fbo(int eye, int x, int y, int w, int h);
+
 		/// check whether fbos have been initialized
 		bool fbos_initialized() const;
 		/// destruct render targets and framebuffer objects in current opengl context
