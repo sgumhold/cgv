@@ -70,12 +70,17 @@ namespace cgv {
 			/// declare type of double quaternion
 			typedef cgv::math::quaternion<double> dquat;
 			/// declare type of 2d integer vectors
-			typedef cgv::math::fvec<int, 2> ivec2;
+			typedef cgv::math::fvec<int32_t, 2> ivec2;
 			/// declare type of 3d integer vectors
-			typedef cgv::math::fvec<int, 3> ivec3;
+			typedef cgv::math::fvec<int32_t, 3> ivec3;
 			/// declare type of 4d integer vectors
-			typedef cgv::math::fvec<int, 4> ivec4;
-
+			typedef cgv::math::fvec<int32_t, 4> ivec4;
+			/// declare type of 2d unsigned integer vectors
+			typedef cgv::math::fvec<uint32_t, 2> uvec2;
+			/// declare type of 3d unsigned integer vectors
+			typedef cgv::math::fvec<uint32_t, 3> uvec3;
+			/// declare type of 4d unsigned integer vectors
+			typedef cgv::math::fvec<uint32_t, 4> uvec4;
 		};
 
 	}
