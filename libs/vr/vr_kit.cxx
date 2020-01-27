@@ -1,4 +1,5 @@
 #include "vr_kit.h"
+#include <cgv/math/fmat.h>
 
 namespace vr {
 	/// destruct camera
@@ -40,6 +41,53 @@ namespace vr {
 			return (s == CameraState::CS_INITIALIZED || s == CameraState::CS_STARTED);
 		}
     }
+	float dot(int n, const float* a, const float* b, int step_a = 1, int step_b=1)  
+	{
+		float res = 0;
+		for (int i = 0; i < n; ++i)
+			res += a[i*step_a] * b[i*step_b];
+		return res; 
+	}
+	void homogenize_matrix(float* A, int n, const float* B = 0)
+	{
+		if (B == 0)
+			B = A;
+		for (int j = n; j >= 0; --j) {
+			A[j*(n + 1) + n] = (j == n ? 1.0f : 0.0f);
+			for (int i = n - 1; i >= 0; --i)
+				A[j*(n + 1) + i] = B[j*n + i];
+		}
+	}
+	void invert_rigid_body_transformation(float* T)
+	{
+		int i;
+		float t[3];
+		for (i = 0; i < 3; ++i)
+			t[i] = -dot(3, T + 4 * i, T + 12);
+		for (i = 0; i < 3; ++i) {
+			T[12 + i] = t[i];
+			for (int j = i + 1; j < 3; ++j)
+				std::swap(T[4 * j + i], T[4 * i + j]);
+		}
+	}
+	void matrix_multiplication(const float* A, const float* B, float* C)
+	{
+		for (int i = 0; i < 4; ++i)
+			for (int j = 0; j < 4; ++j)
+				C[4 * j + i] = dot(4, A + i, B + 4 * j, 4);
+	}
+	/// access to 4x4 modelview transformation matrix of given eye in column major format, which is computed in default implementation from given 3x4 pose matrix and eye to head transformation
+	void vr_kit::put_world_to_eye_transform(int eye, const float* hmd_pose, float* modelview_matrix) const
+	{
+		float eye_to_head[16];
+		put_eye_to_head_matrix(eye, eye_to_head);
+		homogenize_matrix(eye_to_head, 3);
+		invert_rigid_body_transformation(eye_to_head);
+		float head_to_world[16];
+		homogenize_matrix(head_to_world, 3, hmd_pose);
+		invert_rigid_body_transformation(head_to_world);
+		matrix_multiplication(eye_to_head, head_to_world, modelview_matrix);
+	}
 }
 
 
