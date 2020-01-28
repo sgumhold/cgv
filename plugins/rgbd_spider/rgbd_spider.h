@@ -1,28 +1,28 @@
-/* This file is part of the cgv framework realsense driver
-*  for use ensure that a diretory containing realsense2.dll is in the PATH variable else the plugin fails to load
-*  e.g. C:\Program Files (x86)\Intel RealSense SDK 2.0\bin\x86
-*  also make sure REALSENSE_DIR is set
-*  e.g. C:\Program Files (x86)\Intel RealSense SDK 2.0
-*/
 #pragma once
 
 #include <rgbd_input.h>
+#include <artec/sdk/base/TArrayRef.h>
+#include <artec/sdk/capturing/IFrame.h>
+#include <artec/sdk/capturing/IFrameProcessor.h>
+#include <thread>
+#include <atomic>
+#include <mutex>
 #include "lib_begin.h"
 
 namespace rgbd {
 
-	class CGV_API rgbd_realsense : public rgbd_device
+	class CGV_API rgbd_spider : public rgbd_device
 	{
 	public:
-		/// create a detached realsense device object
-		rgbd_realsense();
-		~rgbd_realsense();
+		/// create a detached spider device object
+		rgbd_spider();
+		~rgbd_spider();
 		
-		/// attach to the realsense device of the given serial, the expected serial is the same as returned by rgbd_realsense_driver::get_serial
+		/// attach to the spider device of the given serial, the expected serial is the same as returned by rgbd_realsense_driver::get_serial
 		bool attach(const std::string& serial);
-		/// return whether device object is attached to a realsense device
+		/// return whether device object is attached to a spider device
 		bool is_attached() const;
-		/// detaches the object from the realsense device
+		/// detaches the object from the spider device
 		bool detach();
 		/// check whether the device supports the given combination of input streams
 		bool check_input_stream_configuration(InputStreams is) const;
@@ -43,27 +43,32 @@ namespace rgbd {
 		bool map_depth_to_point(int x, int y, int depth, float* point_ptr) const;
 
 	protected:
-		rs2::context* ctx;
-		rs2::device* dev;
-		rs2::pipeline* pipe;
+		void rgbd_spider::capture_frames();
+
 		std::string serial;
+		artec::sdk::base::TRef<artec::sdk::capturing::IScanner> scanner;
+		artec::sdk::base::TRef<artec::sdk::capturing::IFrameProcessor> frame_processor;
+		
 		/// selected stream formats for color,depth and infrared
-		stream_format color_stream, depth_stream, ir_stream;
-		/// holds last consistent set of frames
-		rs2::frameset frame_cache;
-		double last_color_frame_time, last_depth_frame_time, last_ir_frame_time;
+		stream_format color_stream,mesh_stream;
+		artec::sdk::base::TimeStamp last_color_frame_time, last_mesh_frame_time;
+		
+		std::thread* capture_thread;
+		bool capture_thread_running;
+		std::mutex frames_protection;
+		artec::sdk::base::TRef<artec::sdk::capturing::IFrame> frames;
 	};
 
-	class CGV_API rgbd_realsense_driver : public rgbd_driver
+	class CGV_API rgbd_spider_driver : public rgbd_driver
 	{
 	public:
 		/// construct CLNUI driver
-		rgbd_realsense_driver();
+		rgbd_spider_driver();
 		/// destructor
-		~rgbd_realsense_driver();
-		/// return the number of realsense devices found by driver
+		~rgbd_spider_driver();
+		/// return the number of spider devices found by driver
 		unsigned get_nr_devices();
-		/// return the serial of the i-th realsense devices
+		/// return the serial of the i-th spider devices
 		std::string get_serial(int i);
 		/// create a kinect device
 		rgbd_device* create_rgbd_device();
