@@ -61,8 +61,8 @@ namespace vr {
 	/// initialize render targets and framebuffer objects in current opengl context
 	bool vr_wall_kit::blit_fbo(int eye, int x, int y, int w, int h)
 	{
-		if (secondary_context)
-			return gl_vr_display::blit_fbo(eye, x, y, w, h);
+//		if (secondary_context)
+//			return gl_vr_display::blit_fbo(eye, x, y, w, h);
 		return parent_kit->blit_fbo(eye, x, y, w, h);
 	}
 
