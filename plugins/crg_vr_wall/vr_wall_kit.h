@@ -37,7 +37,7 @@ namespace vr {
 		/// index of trackable used for head tracking (-1 if parent hmd is used)
 		int hmd_trackable_index;
 
-		bool secondary_context;
+		bool wall_context;
 	public:
 		inline const mat34& get_screen_pose() const { return reinterpret_cast<const mat34&>(screen_x_world); }
 		inline const mat3& get_screen_orientation() const { return reinterpret_cast<const mat3&>(screen_x_world); }
