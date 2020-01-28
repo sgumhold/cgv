@@ -49,9 +49,9 @@ namespace vr {
 		for (int i = 0; i < w; ++i) {
 			for (int j = 0; j < h; ++j) {
 				uint8_t* pixel_ptr = data_ptr + ((j*w + i)*pixel_size);
-				if (pixel_ptr[0] < 128) {
+				if (pixel_ptr[0] > 80) {
 					vec2 p(scale*(i - w / 2), scale*(h / 2 - j));
-					points.push_back(vec3(1.7f*R*p, 0.0f));
+					points.push_back(vec3(2.2f*R*p, 0.0f));
 					float f = 0.5f*D(E) + 0.5f;
 					colors[0].push_back(rgb(f, 0.5f, 0.5f));
 					colors[1].push_back(rgb(0.5f, 0.5f, f));
@@ -63,9 +63,9 @@ namespace vr {
 	/// construct vr wall kit by attaching to another vr kit
 	vr_wall::vr_wall() : cgv::base::node("wall")
 	{
-		if (!generate_points_from_image("res://cgv.png", 0.3f))
+		if (!generate_points_from_image("res://cgv.png", 0.5f))
 			generate_points(100);
-
+		 
 		fst_context = 0;
 		vr_wall_kit_index = -1;
 		vr_wall_hmd_index = -1;
