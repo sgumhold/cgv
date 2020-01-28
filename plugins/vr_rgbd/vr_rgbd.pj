@@ -7,9 +7,9 @@ addProjectDirs=[CGV_DIR."/libs", CGV_DIR."/3rd", CGV_DIR."/plugins", CGV_DIR."/t
 addProjectDeps=["cgv_utils","cgv_type","cgv_data","cgv_base", "cgv_signal", "cgv_reflect", "cgv_media", "cgv_os", "cgv_gui", 
 				"cgv_render", 
                 "cgv_viewer","cgv_gl", "cg_fltk", "cg_ext", 
-				"crg_vr_view", "cg_vr", "vr_emulator", "openvr_driver", "cmi_io", "crg_grid", 
+				"cmi_io", "crg_vr_view", "cg_vr", "vr_emulator", "openvr_driver", "crg_grid", 
 				"glew",
-                "rgbd_capture", "rgbd_kinect"];
+                "rgbd_capture", "rgbd_kinect", "rgbd_realsense"];
 addDependencies=["opengl"];
 addSharedDefines=["VR_RGBD_EXPORTS"];
 addCommandLineArguments=[

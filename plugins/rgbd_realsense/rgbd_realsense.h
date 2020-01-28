@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 /* This file is part of the cgv framework realsense driver
 *  for use ensure that a diretory containing realsense2.dll is in the PATH variable else the plugin fails to load
 *  e.g. C:\Program Files (x86)\Intel RealSense SDK 2.0\bin\x86
