@@ -202,6 +202,7 @@ vr_emulator::vr_emulator() : cgv::base::node("vr_emulator")
 
 	left_ctrl = right_ctrl = up_ctrl = down_ctrl = false;
 	home_ctrl = end_ctrl = pgup_ctrl = pgdn_ctrl = false;
+	alt_left_ctrl = alt_right_ctrl = false;
 	current_kit_ctrl = -1;
 	installed = true;
 	body_speed = 1.0f;
@@ -225,7 +226,7 @@ void vr_emulator::timer_event(double t, double dt)
 			post_redraw();
 		}
 		if (up_ctrl || down_ctrl) {
-			kits[current_kit_ctrl]->body_position -= 3 * (float)(down_ctrl ? -dt : dt) * kits[current_kit_ctrl]->get_body_direction();
+			kits[current_kit_ctrl]->body_position -= (float)(down_ctrl ? -dt : dt) * kits[current_kit_ctrl]->get_body_direction();
 			update_all_members();
 			post_redraw();
 		}
@@ -235,6 +236,11 @@ void vr_emulator::timer_event(double t, double dt)
 				kits[current_kit_ctrl]->gear_parameter = -1;
 			else if (kits[current_kit_ctrl]->gear_parameter > 1)
 				kits[current_kit_ctrl]->gear_parameter = 1;
+			update_all_members();
+			post_redraw();
+		}
+		if (alt_left_ctrl || alt_right_ctrl) {
+			kits[current_kit_ctrl]->body_position -= (float)(alt_left_ctrl ? -dt : dt) * cross(kits[current_kit_ctrl]->get_body_direction(), vec3(0, 1, 0));
 			update_all_members();
 			post_redraw();
 		}
@@ -422,6 +428,10 @@ bool vr_emulator::handle(cgv::gui::event& e)
 				home_ctrl = (ke.get_action() != cgv::gui::KA_RELEASE);
 				update_member(&home_ctrl);
 			}
+			else if (ke.get_modifiers() == cgv::gui::EM_ALT) {
+				alt_left_ctrl = (ke.get_action() != cgv::gui::KA_RELEASE);
+				update_member(&alt_left_ctrl);
+			}
 			else {
 				left_ctrl = (ke.get_action() != cgv::gui::KA_RELEASE);
 				update_member(&left_ctrl);
@@ -434,6 +444,10 @@ bool vr_emulator::handle(cgv::gui::event& e)
 			if (ke.get_modifiers() == cgv::gui::EM_SHIFT) {
 				end_ctrl = (ke.get_action() != cgv::gui::KA_RELEASE);
 				update_member(&end_ctrl);
+			}
+			else if (ke.get_modifiers() == cgv::gui::EM_ALT) {
+				alt_right_ctrl = (ke.get_action() != cgv::gui::KA_RELEASE);
+				update_member(&alt_right_ctrl);
 			}
 			else {
 				right_ctrl = (ke.get_action() != cgv::gui::KA_RELEASE);

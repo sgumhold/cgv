@@ -77,6 +77,7 @@ protected:
 
 	bool left_ctrl, right_ctrl, up_ctrl, down_ctrl;
 	bool home_ctrl, end_ctrl, pgup_ctrl, pgdn_ctrl;
+	bool alt_left_ctrl, alt_right_ctrl;
 	int current_kit_ctrl;
 	void create_tracker_gui(vr_emulated_kit* kit, int i);
 	void create_trackable_gui(const std::string& name, vr::vr_trackable_state& ts);
