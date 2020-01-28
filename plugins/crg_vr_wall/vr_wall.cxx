@@ -1,17 +1,71 @@
 #include <cgv/base/base.h>
 #include "vr_wall.h"
 #include <vr/vr_driver.h>
+#include <cgv/media/image/image_reader.h>
 #include <cg_vr/vr_server.h>
+#include <cgv_gl/gl/gl.h>
 #include <libs/cgv_reflect_types/math/quaternion.h>
 #include <cgv/gui/application.h>
 #include <cgv/math/ftransform.h>
-
+#include <random>
 ///
 namespace vr {
 
+	void vr_wall::generate_points(int n)
+	{
+		std::default_random_engine E;
+		std::uniform_real_distribution<float> D(0.0f, 1.0f);
+		for (int i = 0; i < n; ++i) {
+			points.push_back(vec3(2.0f*vec2(D(E), D(E))-1.0f, 0.0f));
+			float f = 0.5f*D(E) + 0.5f;
+			colors[0].push_back(rgb(f, 0.5f, 0.5f));
+			colors[1].push_back(rgb(0.5f, 0.5f, f));
+		}
+	}
+	bool vr_wall::generate_points_from_image(const std::string& file_name, float angle)
+	{
+		cgv::data::data_format df;
+		cgv::data::data_view dv;
+		cgv::media::image::image_reader ir(df);
+		if (!ir.open(file_name))
+			return false;
+		if (!ir.read_image(dv)) {
+			ir.close();
+			return false;
+		}
+		std::default_random_engine E;
+		std::uniform_real_distribution<float> D(0.0f, 1.0f);
+		int w = (int)df.get_width();
+		int h = (int)df.get_height();
+		float scale = 1.0f / h;
+		uint8_t* data_ptr = dv.get_ptr<uint8_t>();
+		int pixel_size = df.get_entry_size();
+		float c = cos(angle);
+		float s = sin(angle);
+		mat2 R;
+		R.set_col(0, vec2(c, s));
+		R.set_col(1, vec2(-s, c));
+
+		for (int i = 0; i < w; ++i) {
+			for (int j = 0; j < h; ++j) {
+				uint8_t* pixel_ptr = data_ptr + ((j*w + i)*pixel_size);
+				if (pixel_ptr[0] > 80) {
+					vec2 p(scale*(i - w / 2), scale*(h / 2 - j));
+					points.push_back(vec3(2.2f*R*p, 0.0f));
+					float f = 0.5f*D(E) + 0.5f;
+					colors[0].push_back(rgb(f, 0.5f, 0.5f));
+					colors[1].push_back(rgb(0.5f, 0.5f, f));
+				}
+			}
+		}
+		return true;
+	}
 	/// construct vr wall kit by attaching to another vr kit
 	vr_wall::vr_wall() : cgv::base::node("wall")
 	{
+		if (!generate_points_from_image("res://cgv.png", 0.5f))
+			generate_points(100);
+		 
 		fst_context = 0;
 		vr_wall_kit_index = -1;
 		vr_wall_hmd_index = -1;
@@ -21,6 +75,9 @@ namespace vr {
 		window_height = 480;
 		window_x = 0;
 		window_y = 0;
+		prs.halo_color = rgba(0, 0, 0, 0.9f);
+		prs.halo_width_in_pixel = -2.0f;
+		prs.point_size = 15.0f;
 		cgv::signal::connect(cgv::gui::ref_vr_server().on_device_change, this, &vr_wall::on_device_change);
 		kit_enum_definition = "enums='none=-1";
 	}
@@ -60,7 +117,8 @@ namespace vr {
 	///
 	void vr_wall::create_wall_window()
 	{
-		window = cgv::gui::application::create_window(2 * window_width, window_height, "wall_window", "viewer");
+		window = cgv::gui::application::create_window(2 * window_width, window_height, "wall window", "viewer");
+		window->set_name("wall_window");
 //		cgv::base::register_object(window);
 		window->set("menu", false);
 		window->set("gui", false);
@@ -69,7 +127,7 @@ namespace vr {
 		window->set("x", window_x);
 		window->set("y", window_y);
 		window->show();
-		window->register_object(this, "parents=''");
+		window->register_object(this, "parents='';views='wall_window'");
 	}
 	///
 	bool vr_wall::self_reflect(cgv::reflect::reflection_handler& srh)
@@ -89,7 +147,8 @@ namespace vr {
 		add_decorator("VR wall", "heading");
 		add_member_control(this, "vr_wall_kit", (cgv::type::DummyEnum&)vr_wall_kit_index, "dropdown", kit_enum_definition);
 		add_member_control(this, "vr_wall_hmd_index", vr_wall_hmd_index, "value_slider", "min=-1;max=3;ticks=true");
-		if (begin_tree_node("window creation parameters", window_width, true, "level=3")) {
+
+		if (begin_tree_node("window creation parameters", window_width, true, "level=2")) {
 			align("\a");
 			add_member_control(this, "width", window_width, "value_slider", "min=320;max=3920;ticks=true;log=true");
 			add_member_control(this, "height", window_height, "value_slider", "min=240;max=2160;ticks=true;log=true");
@@ -98,15 +157,21 @@ namespace vr {
 			align("\b");
 			end_tree_node(window_width);
 		}
+		if (begin_tree_node("points", prs, false, "level=2")) {
+			align("\a");
+			add_gui("point_style", prs);
+			align("\b");
+			end_tree_node(prs);
+		}
 		if (vr_wall_kit_index != -1 && wall_kit_ptr != 0) {
-			add_decorator("screen", "heading", "level=3");
+			add_decorator("screen", "heading", "level=2");
 			add_view("width", wall_kit_ptr->width, "", "w=60", " ");
 			add_view("height", wall_kit_ptr->height, "" "w=60", " ");
 			add_view("multi", wall_kit_ptr->nr_multi_samples, "" "w=30");
 			add_member_control(this, "pixel_size", wall_kit_ptr->pixel_size, "value_slider", "min=0.0001;max=0.01;ticks=true;log=true;step=0.00001");
 			add_gui("screen_center", wall_kit_ptr->screen_center_world, "", "options='min=-3;max=3;ticks=true'");
 			add_gui("screen_orientation", screen_orientation, "direction", "options='min=-1;max=1;ticks=true'");
-			add_decorator("head", "heading", "level=3");
+			add_decorator("head", "heading", "level=2");
 			add_member_control(this, "eye_separation", wall_kit_ptr->eye_separation, "value_slider", "min=0.01;max=0.12;ticks=true;step=0.001");
 			add_gui("eye_center_tracker", wall_kit_ptr->eye_center_tracker, "", "options='min=-0.2;max=0.2;step=0.001;ticks=true'");
 			add_gui("eye_separation_dir_tracker", wall_kit_ptr->eye_separation_dir_tracker, "direction", "options='min=-1;max=1;ticks=true'");
@@ -151,29 +216,69 @@ namespace vr {
 	///
 	bool vr_wall::init(cgv::render::context& ctx)
 	{
-		if (fst_context == 0)
-			fst_context = &ctx;
-		else {
+//		if (fst_context == 0)
+	//		fst_context = &ctx;
+		//else {
+		ctx.set_default_render_pass_flags((cgv::render::RenderPassFlags)(
+			cgv::render::RPF_CLEAR_COLOR |
+			cgv::render::RPF_DRAWABLES_INIT_FRAME |
+			cgv::render::RPF_SET_CLEAR_COLOR |
+			cgv::render::RPF_DRAWABLES_DRAW |
+			cgv::render::RPF_DRAWABLES_FINISH_FRAME |
+			cgv::render::RPF_DRAW_TEXTUAL_INFO |
+			cgv::render::RPF_DRAWABLES_AFTER_FINISH |
+			cgv::render::RPF_HANDLE_SCREEN_SHOT));
+
 			ctx.set_bg_clr_idx(4);
 			if (!wall_kit_ptr->fbos_initialized())
 				if (wall_kit_ptr->init_fbos())
 					std::cout << "initialized fbos of wall kit in context " << (void*)&ctx << std::endl;
-		}
+			pr.init(ctx);
+//		}
 		return true;
 	}
 	void vr_wall::clear(cgv::render::context& ctx)
 	{
-		if (wall_kit_ptr)
-			delete wall_kit_ptr;
-		wall_kit_ptr = 0;
+	//	if (&ctx != fst_context) {
+			if (wall_kit_ptr)
+				delete wall_kit_ptr;
+			wall_kit_ptr = 0;
+			pr.clear(ctx);
+		//}
 	}
 	///
 	void vr_wall::draw(cgv::render::context& ctx)
 	{
+//		if (&ctx == fst_context)
+	//		return;
 		if (window.empty() || wall_kit_ptr == 0)
 			return;
-		int width = window->get<int>("w");
-		int height = window->get<int>("h");
+
+		int width = ctx.get_width();
+		int height = ctx.get_height();
+		for (int eye = 0; eye < 2; ++eye) {
+			ctx.set_viewport(ivec4(eye*width / 2, 0, width / 2, height));
+			ctx.set_projection_matrix(cgv::math::perspective4<double>(90, (double)width / (2 * height), 0.1, 10.0));
+			ctx.set_modelview_matrix(cgv::math::look_at4<double>(dvec3(0, 0, 1), dvec3(0, 0, 0), dvec3(0, 1, 0)));
+			
+			/*
+			auto& prog = ctx.ref_default_shader_program();
+			prog.enable(ctx);
+			ctx.set_color(rgb(eye, 0, 1 - eye));
+			ctx.tesselate_box(box3(vec3(-0.3f), vec3(0.3f)), false);
+			prog.disable(ctx);			
+			*/
+
+			pr.set_y_view_angle(90);
+			pr.set_render_style(prs);
+			pr.set_position_array(ctx, points);
+			pr.set_color_array(ctx, colors[eye]);
+			if (pr.validate_and_enable(ctx)) {
+				glDrawArrays(GL_POINTS, 0, points.size());
+				pr.disable(ctx);
+			}			
+		}
+		return;
 		wall_kit_ptr->secondary_context = true;
 		wall_kit_ptr->blit_fbo(0, 0, 0, width / 2, height);
 		wall_kit_ptr->blit_fbo(1, width / 2, 0, width / 2, height);
@@ -199,5 +304,5 @@ namespace vr {
 #include <cgv/base/register.h>
 
 /// register a newly created cube with the name "cube1" as constructor argument
-cgv::base::object_registration<vr::vr_wall> wall_reg("no options");
+cgv::base::object_registration<vr::vr_wall> wall_reg("parents='main';views='wall_window'");
 
