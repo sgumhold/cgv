@@ -65,8 +65,16 @@ namespace vr {
 	{
 		if (!generate_points_from_image("res://cgv.png", 0.5f))
 			generate_points(100);
-		 
-		fst_context = 0;
+		
+		test_screen_center = vec3(0, 1, 2);
+		test_screen_x = vec3(-1.5f, 0, 0);
+		test_screen_y = vec3(0, 1.0f, 0);
+		add_arrows(test_screen_center, test_screen_x, test_screen_y, 0.3f);
+		add_screen_box(test_screen_center, test_screen_x, test_screen_y, rgb(0.5f,0.3f,0.1f));
+		ars.radius_relative_to_length = 0;
+		ars.radius_lower_bound = 0.02f;
+
+		main_context = 0;
 		vr_wall_kit_index = -1;
 		vr_wall_hmd_index = -1;
 		wall_kit_ptr = 0;
@@ -163,6 +171,22 @@ namespace vr {
 			align("\b");
 			end_tree_node(prs);
 		}
+		if (begin_tree_node("test screen", test_screen_center, false, "level=2")) {
+			align("\a");
+			add_gui("test_screen_center", test_screen_center, "", "options='min-3;max=3;ticks=true'");
+			add_gui("test_screen_x", test_screen_x, "", "options='min-3;max=3;ticks=true'");
+			add_gui("test_screen_y", test_screen_y, "", "options='min-3;max=3;ticks=true'");
+			add_decorator("box rendering", "heading", "level=3");
+			align("\a");
+			add_gui("box_render_style", brs);
+			align("\b");
+			add_decorator("arrow rendering", "heading", "level=3");
+			align("\a");
+			add_gui("arrow_render_style", ars);
+			align("\b");
+			align("\b");
+			end_tree_node(test_screen_center);
+		}
 		if (vr_wall_kit_index != -1 && wall_kit_ptr != 0) {
 			add_decorator("screen", "heading", "level=2");
 			add_view("width", wall_kit_ptr->width, "", "w=60", " ");
@@ -216,10 +240,13 @@ namespace vr {
 	///
 	bool vr_wall::init(cgv::render::context& ctx)
 	{
-//		if (fst_context == 0)
-	//		fst_context = &ctx;
-		//else {
-		ctx.set_default_render_pass_flags((cgv::render::RenderPassFlags)(
+		if (main_context == 0) {
+			main_context = &ctx;
+			cgv::render::ref_box_renderer(ctx, 1);
+			cgv::render::ref_arrow_renderer(ctx, 1);
+		}
+		else {
+			ctx.set_default_render_pass_flags((cgv::render::RenderPassFlags)(
 			cgv::render::RPF_CLEAR_COLOR |
 			cgv::render::RPF_DRAWABLES_INIT_FRAME |
 			cgv::render::RPF_SET_CLEAR_COLOR |
@@ -230,27 +257,65 @@ namespace vr {
 			cgv::render::RPF_HANDLE_SCREEN_SHOT));
 
 			ctx.set_bg_clr_idx(4);
+
+			wall_kit_ptr->wall_context = true;
 			if (!wall_kit_ptr->fbos_initialized())
 				if (wall_kit_ptr->init_fbos())
 					std::cout << "initialized fbos of wall kit in context " << (void*)&ctx << std::endl;
+			wall_kit_ptr->wall_context = false;
+
 			pr.init(ctx);
-//		}
+		}
 		return true;
 	}
+	///
 	void vr_wall::clear(cgv::render::context& ctx)
 	{
-	//	if (&ctx != fst_context) {
-			if (wall_kit_ptr)
+		if (&ctx == main_context) {
+			cgv::render::ref_box_renderer(ctx, -1);
+			cgv::render::ref_arrow_renderer(ctx, -1);
+			wall_kit_ptr->wall_context = true;
+			wall_kit_ptr->destruct_fbos();
+			wall_kit_ptr->wall_context = false;
+		}
+		else {
+			if (wall_kit_ptr) {
+				wall_kit_ptr->destruct_fbos();
 				delete wall_kit_ptr;
-			wall_kit_ptr = 0;
+				wall_kit_ptr = 0;
+			}
 			pr.clear(ctx);
-		//}
+		}
 	}
 	///
 	void vr_wall::draw(cgv::render::context& ctx)
 	{
-//		if (&ctx == fst_context)
-	//		return;
+		if (&ctx == main_context) {
+			if (!boxes.empty()) {
+				auto& br = cgv::render::ref_box_renderer(ctx);
+				br.set_render_style(brs);
+				br.set_box_array(ctx, boxes);
+				br.set_color_array(ctx, box_colors);
+				br.set_translation_array(ctx, box_translations);
+				br.set_rotation_array(ctx, box_rotations);
+				if (br.validate_and_enable(ctx)) {
+					glDrawArrays(GL_POINTS, 0, (GLsizei)boxes.size());
+					br.disable(ctx);
+				}
+			}
+			if (!arrow_positions.empty()) {
+				auto& ar = cgv::render::ref_arrow_renderer(ctx);
+				ar.set_render_style(ars);
+				ar.set_position_array(ctx, arrow_positions);
+				ar.set_direction_array(ctx, arrow_directions);
+				ar.set_color_array(ctx, arrow_colors);
+				if (ar.validate_and_enable(ctx)) {
+					glDrawArraysInstanced(GL_POINTS, 0, (GLsizei)arrow_positions.size(), ars.nr_subdivisions);
+					ar.disable(ctx);
+				}
+			}
+			return;
+		}
 		if (window.empty() || wall_kit_ptr == 0)
 			return;
 
@@ -261,14 +326,6 @@ namespace vr {
 			ctx.set_projection_matrix(cgv::math::perspective4<double>(90, (double)width / (2 * height), 0.1, 10.0));
 			ctx.set_modelview_matrix(cgv::math::look_at4<double>(dvec3(0, 0, 1), dvec3(0, 0, 0), dvec3(0, 1, 0)));
 			
-			/*
-			auto& prog = ctx.ref_default_shader_program();
-			prog.enable(ctx);
-			ctx.set_color(rgb(eye, 0, 1 - eye));
-			ctx.tesselate_box(box3(vec3(-0.3f), vec3(0.3f)), false);
-			prog.disable(ctx);			
-			*/
-
 			pr.set_y_view_angle(90);
 			pr.set_render_style(prs);
 			pr.set_position_array(ctx, points);
@@ -279,10 +336,13 @@ namespace vr {
 			}			
 		}
 		return;
-		wall_kit_ptr->secondary_context = true;
+		/*
+		wall_kit_ptr->wall_context = true;
 		wall_kit_ptr->blit_fbo(0, 0, 0, width / 2, height);
 		wall_kit_ptr->blit_fbo(1, width / 2, 0, width / 2, height);
-		wall_kit_ptr->secondary_context = false;
+		wall_kit_ptr->wall_context = false;
+		*/
+
 		/*
 		if (show_vr_kits_as_spheres && wall_kit_ptr != 0 && vr_wall_kit_index != -1) {
 			vr::vr_kit_state* state_ptr = &kit_states[vr_wall_kit_index];
@@ -304,5 +364,5 @@ namespace vr {
 #include <cgv/base/register.h>
 
 /// register a newly created cube with the name "cube1" as constructor argument
-cgv::base::object_registration<vr::vr_wall> wall_reg("parents='main';views='wall_window'");
+cgv::base::object_registration<vr::vr_wall> wall_reg("parents='main'");// views = 'wall_window'");
 

@@ -40,37 +40,46 @@ namespace vr {
 	/// check whether fbos have been initialized
 	bool vr_wall_kit::fbos_initialized() const
 	{
-		return gl_vr_display::fbos_initialized() && parent_kit->fbos_initialized();
+		return wall_context ? gl_vr_display::fbos_initialized() : parent_kit->fbos_initialized();
 	}
 	/// destruct render targets and framebuffer objects in current opengl context
 	void vr_wall_kit::destruct_fbos()
 	{
-		gl_vr_display::destruct_fbos();
-		parent_kit->destruct_fbos();
+		if (wall_context)
+			gl_vr_display::destruct_fbos();
+		else
+			parent_kit->destruct_fbos();
 	}
 	/// enable the framebuffer object of given eye (0..left, 1..right) 
 	void vr_wall_kit::enable_fbo(int eye)
 	{
-		parent_kit->enable_fbo(eye);
+		if (wall_context)
+			gl_vr_display::enable_fbo(eye);
+		else
+			parent_kit->enable_fbo(eye);
 	}
 	/// disable the framebuffer object of given eye
 	void vr_wall_kit::disable_fbo(int eye)
 	{
-		parent_kit->disable_fbo(eye);
+		if (wall_context)
+			gl_vr_display::disable_fbo(eye);
+		else
+			parent_kit->disable_fbo(eye);
 	}
 	/// initialize render targets and framebuffer objects in current opengl context
 	bool vr_wall_kit::blit_fbo(int eye, int x, int y, int w, int h)
 	{
-//		if (secondary_context)
-//			return gl_vr_display::blit_fbo(eye, x, y, w, h);
-		return parent_kit->blit_fbo(eye, x, y, w, h);
+		if (wall_context)
+			return gl_vr_display::blit_fbo(eye, x, y, w, h);
+		else
+			return parent_kit->blit_fbo(eye, x, y, w, h);
 	}
 
 	/// construct vr wall kit by attaching to another vr kit
 	vr_wall_kit::vr_wall_kit(int vr_kit_parent_index, unsigned _width, unsigned _height, const std::string& _name) :
 		gl_vr_display(width, height, 0, 0, _name, false, false)
 	{
-		secondary_context = false;
+		wall_context = false;
 		parent_kit = 0;
 		if (attach(vr_kit_parent_index))
 			camera = parent_kit->get_camera();
