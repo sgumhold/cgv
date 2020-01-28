@@ -10,6 +10,7 @@
 #include <cgv_gl/gl/mesh_render_info.h>
 #include <cgv/gui/window.h>
 #include <cgv/gui/provider.h>
+#include <cgv_gl/point_renderer.h>
 
 #include "lib_begin.h"
 
@@ -32,6 +33,14 @@ namespace vr {
 		int window_y;
 		vr_wall_kit* wall_kit_ptr;
 		quat screen_orientation;
+
+		cgv::render::point_render_style prs;
+		cgv::render::point_renderer pr;
+
+		std::vector<vec3> points;
+		std::vector<rgb> colors[2];
+		void generate_points(int n);
+		bool generate_points_from_image(const std::string& file_name, float angle);
 		void create_wall_window();
 	public:
 		/// construct vr wall kit by attaching to another vr kit
