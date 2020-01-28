@@ -1,35 +1,35 @@
-/* This file is part of the cgv framework realsense driver
-*  for use ensure that a diretory containing realsense2.dll is in the PATH variable else the plugin fails to load
-*  e.g. C:\Program Files (x86)\Intel RealSense SDK 2.0\bin\x86
-*  also make sure REALSENSE_DIR is set
-*  e.g. C:\Program Files (x86)\Intel RealSense SDK 2.0
-*/
 #pragma once
 
 #include <rgbd_input.h>
+
 #include "lib_begin.h"
 
-namespace rgbd {
+class IKinectSensor;
+class IColorFrameReader;
+class IDepthFrameReader;
+class IInfraredFrameReader;
 
-	class CGV_API rgbd_realsense : public rgbd_device
+namespace rgbd {
+	/// interface for kinect devices provided by a driver (only to be used by driver implementors)
+	class CGV_API rgbd_kinect2 : public rgbd_device
 	{
 	public:
-		/// create a detached realsense device object
-		rgbd_realsense();
-		~rgbd_realsense();
-		
-		/// attach to the realsense device of the given serial, the expected serial is the same as returned by rgbd_realsense_driver::get_serial
+		/// create a detached kinect CLNUI device object
+		rgbd_kinect2();
+		/// attach to the kinect device of the given serial
 		bool attach(const std::string& serial);
-		/// return whether device object is attached to a realsense device
+		/// return whether device object is attached to a kinect device
 		bool is_attached() const;
-		/// detaches the object from the realsense device
+		/// detach from serial (done automatically in constructor
 		bool detach();
 		/// check whether the device supports the given combination of input streams
 		bool check_input_stream_configuration(InputStreams is) const;
+		/// query the stream formats available for a given stream configuration
 		void query_stream_formats(InputStreams is, std::vector<stream_format>& stream_formats) const;
+		/// start the camera
 		bool start_device(InputStreams is, std::vector<stream_format>& stream_formats);
 		/// start the rgbd device with given stream formats 
-		bool start_device(const std::vector<stream_format>& stream_formats);
+		virtual bool start_device(const std::vector<stream_format>& stream_formats);
 		/// stop the camera
 		bool stop_device();
 		/// return whether device has been started
@@ -41,33 +41,28 @@ namespace rgbd {
 			frame_type& warped_color_frame) const;
 		/// map a depth value together with pixel indices to a 3D point with coordinates in meters; point_ptr needs to provide space for 3 floats
 		bool map_depth_to_point(int x, int y, int depth, float* point_ptr) const;
-
 	protected:
-		rs2::context* ctx;
-		rs2::device* dev;
-		rs2::pipeline* pipe;
-		std::string serial;
-		/// selected stream formats for color,depth and infrared
-		stream_format color_stream, depth_stream, ir_stream;
-		/// holds last consistent set of frames
-		rs2::frameset frame_cache;
-		double last_color_frame_time, last_depth_frame_time, last_ir_frame_time;
+		IKinectSensor* camera;
+		IColorFrameReader* color_reader;
+		IDepthFrameReader * depth_reader;
+		IInfraredFrameReader * infrared_reader;
+		stream_format color_format, ir_format, depth_format;
 	};
 
-	class CGV_API rgbd_realsense_driver : public rgbd_driver
+	/// interface for kinect drivers (implement only as driver implementor)
+	class CGV_API rgbd_kinect2_driver : public rgbd_driver
 	{
 	public:
 		/// construct CLNUI driver
-		rgbd_realsense_driver();
+		rgbd_kinect2_driver();
 		/// destructor
-		~rgbd_realsense_driver();
-		/// return the number of realsense devices found by driver
+		~rgbd_kinect2_driver();
+		/// return the number of kinect devices found by driver
 		unsigned get_nr_devices();
-		/// return the serial of the i-th realsense devices
+		/// return the serial of the i-th kinect devices
 		std::string get_serial(int i);
 		/// create a kinect device
 		rgbd_device* create_rgbd_device();
 	};
-
 }
 #include <cgv/config/lib_end.h>

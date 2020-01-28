@@ -49,6 +49,7 @@ namespace rgbd {
 
 		PF_DEPTH,
 		PF_DEPTH_AND_PLAYER,
+		PF_INDEXED_TRIANGLE,
 		PF_CONFIDENCE
 	};
 
@@ -109,11 +110,12 @@ namespace rgbd {
 		IS_INFRARED = 8,
 		IS_PLAYER_INDEX = 16,
 		IS_SKELETON = 32,
+		IS_MESH = 64,
 
 		IS_COLOR_AND_DEPTH = IS_COLOR | IS_DEPTH,
 		IS_DEPTH_AND_PLAYER_INDEX = IS_DEPTH | IS_PLAYER_INDEX,
-
-		IS_ALL = 63
+		
+		IS_ALL = 127
 	};
 
 	/// info on view finder capabilities

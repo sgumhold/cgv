@@ -39,8 +39,9 @@ namespace rgbd {
 		path_name = fn;
 		flags = idx = 0;
 
-		last_color_frame_time = chrono::high_resolution_clock::now();
-		last_depth_frame_time = chrono::high_resolution_clock::now();
+		last_color_frame_time = chrono::steady_clock::now();
+		last_depth_frame_time = chrono::steady_clock::now();
+		last_ir_frame_time = chrono::steady_clock::now();
 
 		has_color_stream = false;
 		has_depth_stream = false;
@@ -236,7 +237,7 @@ namespace rgbd {
 
 		//get the stream information
 		stream_format* stream = nullptr;
-		chrono::time_point<std::chrono::high_resolution_clock>* last_frame_time = nullptr;
+		chrono::time_point<std::chrono::steady_clock>* last_frame_time = nullptr;
 
 		switch (is) {
 		case IS_COLOR:
@@ -258,8 +259,8 @@ namespace rgbd {
 			return false;
 		}
 
-		auto inv_fps = chrono::duration_cast<chrono::high_resolution_clock::duration>(chrono::duration<double>( 1. / stream->fps ));
-		auto current_frame_time = chrono::high_resolution_clock::now();
+		auto inv_fps = chrono::duration_cast<chrono::steady_clock::duration>(chrono::duration<double>( 1. / stream->fps ));
+		auto current_frame_time = chrono::steady_clock::now();
 	
 		//limit fps
 		if (current_frame_time < *last_frame_time+inv_fps) {
