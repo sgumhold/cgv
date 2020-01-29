@@ -14,6 +14,7 @@
 #include <cgv_gl/point_renderer.h>
 #include <cgv_gl/box_renderer.h>
 #include <cgv_gl/arrow_renderer.h>
+#include <cgv_gl/sphere_renderer.h>
 
 #include "lib_begin.h"
 
@@ -55,7 +56,10 @@ namespace vr {
 
 		cgv::render::point_render_style prs;
 		cgv::render::point_renderer pr;
-		
+
+		cgv::render::sphere_render_style srs;
+		cgv::render::point_renderer sr;
+
 		cgv::render::arrow_render_style ars;
 		cgv::render::box_render_style brs;
 
@@ -63,6 +67,12 @@ namespace vr {
 		vec3 test_screen_x;
 		vec3 test_screen_y;
 
+		std::vector<vec3> sphere_positions;
+		std::vector<float> sphere_radii;
+		std::vector<rgb> sphere_colors;
+
+		vec3 peek_point;
+		mat34 c_P[2];
 		void add_screen_box(const vec3& center, const vec3& x, const vec3& y, const rgb& color)
 		{
 			boxes.push_back(box3(vec3(-x.length(),-y.length(),-0.01f), vec3(x.length(),y.length(),0)));
@@ -83,7 +93,7 @@ namespace vr {
 		std::vector<vec3> box_translations;
 		std::vector<quat> box_rotations;
 
-		void add_arrows(const vec3& center, const vec3& x, const vec3& y, float lum)
+		void add_screen_arrows(const vec3& center, const vec3& x, const vec3& y, float lum)
 		{
 			arrow_positions.push_back(center);
 			arrow_directions.push_back(x);
@@ -97,9 +107,31 @@ namespace vr {
 		std::vector<vec3> arrow_directions;
 		std::vector<rgb> arrow_colors;
 
+		void add_screen(const vec3& center, const vec3& x, const vec3& y, const rgb& clr, float lum)
+		{
+			sphere_positions.push_back(center);
+			sphere_radii.push_back(0.025f);
+			sphere_colors.push_back(rgb(lum, lum, lum));
+			add_screen_arrows(center, x, y, lum);
+			add_screen_box(center, x, y, clr);
+		}
 
-
-
+		void rebuild_screens()
+		{
+			sphere_colors.clear();
+			sphere_positions.clear();
+			sphere_radii.clear();
+			arrow_colors.clear();
+			arrow_directions.clear();
+			arrow_positions.clear();
+			box_colors.clear();
+			boxes.clear();
+			box_rotations.clear();
+			box_translations.clear();
+			add_screen(test_screen_center, test_screen_x, test_screen_y, rgb(0.5f, 0.3f, 0.1f), 0.3f);
+			if (wall_kit_ptr)
+				add_screen(wall_kit_ptr->screen_center_world, wall_kit_ptr->screen_x_world, wall_kit_ptr->screen_y_world, rgb(0.5f, 0.7f, 0.3f), 0.5f);
+		}
 		std::vector<vec3> points;
 		std::vector<rgb> colors[2];
 		void generate_points(int n);
