@@ -24,13 +24,15 @@
 ///
 namespace vr {
 
+	/// the different states of the wall display
 	enum WallState
 	{
-		WS_SCREEN_CALIB,
-		WS_EYES_CALIB,
-		WS_HMD
+		WS_SCREEN_CALIB, // screen calibration
+		WS_EYES_CALIB,   // head to eye transformation
+		WS_HMD           // hmd emulation
 	};
 
+	/// the vr_wall class manages an additional window to cover the display and a wall_vr_kit that can be attached to an existing vr_kit
 	class CGV_API vr_wall : public cgv::base::node, public cgv::render::drawable, public cgv::gui::event_handler, public cgv::gui::provider
 	{
 	public:
