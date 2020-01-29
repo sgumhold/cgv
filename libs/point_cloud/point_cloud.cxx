@@ -1451,7 +1451,7 @@ void point_cloud::reset_component_transformation(Idx component_index)
 }
 
 /// return the i_th point, in case components and component transformations are created, transform point with its compontent's transformation before returning it 
-point_cloud::Pnt point_cloud::transformed_pnt(Idx i) const
+point_cloud::Pnt point_cloud::transformed_pnt(size_t i) const
 {
 	if (!has_components() || !has_component_transformations())
 		return pnt(i);
@@ -1542,7 +1542,7 @@ void point_cloud::compute_image_neighbor_distance_statistic(const index_image& i
 	}
 }
 /// collect the indices of the neighbor points of point pi
-point_cloud::Cnt point_cloud::collect_valid_image_neighbors(size_t pi, const index_image& img, std::vector<Idx>& Ni, Crd distance_threshold) const
+point_cloud::Cnt point_cloud::collect_valid_image_neighbors(size_t pi, const index_image& img, std::vector<size_t>& Ni, Crd distance_threshold) const
 {
 	Ni.clear();
 	for (int j = 0; j < 8; ++j) {
@@ -1566,7 +1566,7 @@ void point_cloud::estimate_normals(const index_image& img, Crd distance_threshol
 	// computing normals
 	std::vector<int> not_set_normals;
 	std::vector<int> isolated_normals;
-	std::vector<int> Ni;
+	std::vector<size_t> Ni;
 	for (Idx e = end_index(ci), i = begin_index(ci); i < e; ++i) {
 		collect_valid_image_neighbors(i, img, Ni, distance_threshold);
 		if (Ni.size() < 3) {
