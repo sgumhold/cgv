@@ -639,15 +639,15 @@ void vr_emulator::create_gui()
 		end_tree_node(screen_width);
 	}
 	add_view("current_kit_ctrl", current_kit_ctrl, "", "w=50", " ");
-	add_member_control(this, "left", left_ctrl, "toggle", "w=35", " ");
-	add_member_control(this, "right", right_ctrl, "toggle", "w=35", " ");
-	add_member_control(this, "up", up_ctrl, "toggle", "w=35", " ");
-	add_member_control(this, "down", down_ctrl, "toggle", "w=35");
-	align("       ");
-	add_member_control(this, "home", home_ctrl, "toggle", "w=35", " ");
-	add_member_control(this, "end", end_ctrl, "toggle", "w=35", " ");
-	add_member_control(this, "pgup", pgup_ctrl, "toggle", "w=35", " ");
-	add_member_control(this, "pgdn", pgdn_ctrl, "toggle", "w=35");
+	add_member_control(this, "L", left_ctrl, "toggle", "w=15", " ");
+	add_member_control(this, "R", right_ctrl, "toggle", "w=15", " ");
+	add_member_control(this, "U", up_ctrl, "toggle", "w=15", " ");
+	add_member_control(this, "D", down_ctrl, "toggle", "w=15");
+	align("   ");
+	add_member_control(this, "H", home_ctrl, "toggle", "w=15", " ");
+	add_member_control(this, "E", end_ctrl,  "toggle", "w=15", " ");
+	add_member_control(this, "P", pgup_ctrl, "toggle", "w=15", " ");
+	add_member_control(this, "p", pgdn_ctrl, "toggle", "w=15");
 
 	for (unsigned i = 0; i < kits.size(); ++i) {
 		if (begin_tree_node(kits[i]->get_name(), *kits[i], false, "level=2")) {
