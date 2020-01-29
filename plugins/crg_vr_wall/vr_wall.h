@@ -35,125 +35,118 @@ namespace vr {
 	/// the vr_wall class manages an additional window to cover the display and a wall_vr_kit that can be attached to an existing vr_kit
 	class CGV_API vr_wall : public cgv::base::node, public cgv::render::drawable, public cgv::gui::event_handler, public cgv::gui::provider
 	{
-	public:
-		typedef cgv::math::fmat<float, 3, 4> mat34;
-	private:
+		/// enum definition to make vr_kit selection possible
 		std::string kit_enum_definition;
 	protected:
-		WallState wall_state;
-		int calib_point_index;
-		bool eye_calibrated[2];
-		void generate_screen_calib_points();
-
+		/**@name management of window and secondary context*/
+		//@{
+		/// remember main context before it is overwritten by child configuration of context of owned window
 		cgv::render::context* main_context;
-		cgv::gui::window_ptr window;
-		int vr_wall_kit_index;
-		int vr_wall_hmd_index;
+		/// helper member that allows to configure width of the window before creation
 		int window_width;
+		/// helper member that allows to configure height of the window before creation
 		int window_height;
+		/// helper member that allows to configure x position of the window before creationint window_width;
 		int window_x;
+		/// helper member that allows to configure y position of the window before creationint window_width;
 		int window_y;
+		/// pointer to wall display window
+		cgv::gui::window_ptr window;
+		/// helper function to create the window for the wall display
+		void create_wall_window();
+		//@}
+
+		/**@name management of wall_vr_kit*/
+		//@{
+		/// index of vr_kit to which wall_vr_kit should be attached
+		int vr_wall_kit_index;
+		/// index of trackable (-1 ... hmd; 0,1 ... controllers; 2,3 ... trackers)
+		int vr_wall_hmd_index;
+		/// pointer to wall_vr_kit
 		vr_wall_kit* wall_kit_ptr;
+		/// helper member to allow to adjust orientation of the virtual screen
 		quat screen_orientation;
+		//@}
 
+		/**@name state control and calibration*/
+		//@{
+		/// current state of wall display
+		WallState wall_state;
+		/// index of to be calibrated point or eye
+		int calib_index;
+		/// position of peek point in controller coordinate system that is used to define 3d calibration points
+		vec3 peek_point;
+		/// current pose matrices of controllers need to render peek point
+		mat34 c_P[2];
+		/// helper function to fill the point 
+		void generate_screen_calib_points();
+		//@}
+
+		/**@name rendering in wall display context*/
+		//@{
+		/// point render style
 		cgv::render::point_render_style prs;
+		/// point renderer
 		cgv::render::point_renderer pr;
+		/// geometry for rendering of points with twice the color attribute once for left and once for right eye
+		std::vector<vec3> points;
+		std::vector<rgb> colors[2];
+		/// method to generate random dots
+		void generate_points(int n);
+		/// use low res image to create point sampling
+		bool generate_points_from_image(const std::string& file_name, float angle);
+		//@}
 
+		/**@name rendering in main context*/
+		//@{
+		/// sphere render style
 		cgv::render::sphere_render_style srs;
-		cgv::render::point_renderer sr;
-
-		cgv::render::arrow_render_style ars;
+		/// box render style
 		cgv::render::box_render_style brs;
+		/// arrow render style
+		cgv::render::arrow_render_style ars;
 
-		vec3 test_screen_center;
-		vec3 test_screen_x;
-		vec3 test_screen_y;
-
+		/// geometry of spheres
 		std::vector<vec3> sphere_positions;
 		std::vector<float> sphere_radii;
 		std::vector<rgb> sphere_colors;
 
-		vec3 peek_point;
-		mat34 c_P[2];
-		void add_screen_box(const vec3& center, const vec3& x, const vec3& y, const rgb& color)
-		{
-			boxes.push_back(box3(vec3(-x.length(),-y.length(),-0.01f), vec3(x.length(),y.length(),0)));
-			box_colors.push_back(color);
-			box_translations.push_back(center);
-			mat3 R;
-			vec3 x_dir = x; x_dir.normalize();
-			vec3 y_dir = y; y_dir.normalize();
-			vec3 z_dir = cross(x_dir, y_dir);
-			R.set_col(0, x_dir);
-			R.set_col(1, y_dir);
-			R.set_col(2, z_dir);
-			box_rotations.push_back(quat(R));
-		}
-
+		/// geometry of oriented boxes
 		std::vector<box3> boxes;
 		std::vector<rgb> box_colors;
 		std::vector<vec3> box_translations;
 		std::vector<quat> box_rotations;
 
-		void add_screen_arrows(const vec3& center, const vec3& x, const vec3& y, float lum)
-		{
-			arrow_positions.push_back(center);
-			arrow_directions.push_back(x);
-			arrow_colors.push_back(rgb(1, lum, lum));
-			arrow_positions.push_back(center);
-			arrow_directions.push_back(y);
-			arrow_colors.push_back(rgb(lum, 1, lum));
-		}
-
+		/// geometry of arrows
 		std::vector<vec3> arrow_positions;
 		std::vector<vec3> arrow_directions;
 		std::vector<rgb> arrow_colors;
 
-		void add_screen(const vec3& center, const vec3& x, const vec3& y, const rgb& clr, float lum)
-		{
-			sphere_positions.push_back(center);
-			sphere_radii.push_back(0.025f);
-			sphere_colors.push_back(rgb(lum, lum, lum));
-			add_screen_arrows(center, x, y, lum);
-			add_screen_box(center, x, y, clr);
-		}
+		/// sample screen
+		vec3 test_screen_center;
+		vec3 test_screen_x;
+		vec3 test_screen_y;
 
-		void rebuild_screens()
-		{
-			sphere_colors.clear();
-			sphere_positions.clear();
-			sphere_radii.clear();
-			arrow_colors.clear();
-			arrow_directions.clear();
-			arrow_positions.clear();
-			box_colors.clear();
-			boxes.clear();
-			box_rotations.clear();
-			box_translations.clear();
-			add_screen(test_screen_center, test_screen_x, test_screen_y, rgb(0.5f, 0.3f, 0.1f), 0.3f);
-			if (wall_kit_ptr)
-				add_screen(wall_kit_ptr->screen_center_world, wall_kit_ptr->screen_x_world, wall_kit_ptr->screen_y_world, rgb(0.5f, 0.7f, 0.3f), 0.5f);
-		}
-		std::vector<vec3> points;
-		std::vector<rgb> colors[2];
-		void generate_points(int n);
-		bool generate_points_from_image(const std::string& file_name, float angle);
-		void create_wall_window();
+		/// add screen center sphere, x & y arrows and box for extruded screen rectangle
+		void add_screen(const vec3& center, const vec3& x, const vec3& y, const rgb& clr, float lum);
+		/// recompute the geometry based on current available  screens
+		void rebuild_screens();
+		//@}
 	public:
 		/// construct vr wall kit by attaching to another vr kit
 		vr_wall();
 		/// destruct window here
 		~vr_wall();
-		///
+		/// update vr_kit enum string
 		void on_device_change(void* device_handle, bool attach);
-		///
+		/// returns "vr_wall"
 		std::string get_type_name() const;
-		///
+		/// reflect members to provide access through config file
 		bool self_reflect(cgv::reflect::reflection_handler& srh);
-		/// you must overload this for gui creation
-		void create_gui();
-		///
+		/// callback management
 		void on_set(void* member_ptr);
+		/// gui creation
+		void create_gui();
 		///
 		void init_frame(cgv::render::context& ctx);
 		///
