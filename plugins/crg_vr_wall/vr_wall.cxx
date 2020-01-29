@@ -4,6 +4,7 @@
 #include <cgv/media/image/image_reader.h>
 #include <cg_vr/vr_server.h>
 #include <cgv_gl/gl/gl.h>
+#include <cgv/gui/key_event.h>
 #include <libs/cgv_reflect_types/math/quaternion.h>
 #include <cgv/gui/application.h>
 #include <cgv/math/ftransform.h>
@@ -60,12 +61,21 @@ namespace vr {
 		}
 		return true;
 	}
+	void vr_wall::generate_screen_calib_points()
+	{
+		points.push_back(vec3(0, 0, 0));
+		colors[0].push_back(rgb(0, 1, 0));
+		colors[1].push_back(rgb(0, 1, 0));
+		points.push_back(vec3(1, 0, 0));
+		colors[0].push_back(rgb(0, 1, 0));
+		colors[1].push_back(rgb(0, 1, 0));
+		points.push_back(vec3(0, 1, 0));
+		colors[0].push_back(rgb(0, 1, 0));
+		colors[1].push_back(rgb(0, 1, 0));
+	}
 	/// construct vr wall kit by attaching to another vr kit
 	vr_wall::vr_wall() : cgv::base::node("wall")
-	{
-		if (!generate_points_from_image("res://cgv.png", 0.5f))
-			generate_points(100);
-		
+	{		
 		test_screen_center = vec3(0, 1, 2);
 		test_screen_x = vec3(-1.5f, 0, 0);
 		test_screen_y = vec3(0, 1.0f, 0);
@@ -79,8 +89,8 @@ namespace vr {
 		vr_wall_hmd_index = -1;
 		wall_kit_ptr = 0;
 		screen_orientation = quat(1, 0, 0, 0);		
-		window_width = 640;
-		window_height = 480;
+		window_width = 320;
+		window_height = 240;
 		window_x = 0;
 		window_y = 0;
 		prs.halo_color = rgba(0, 0, 0, 0.9f);
@@ -88,6 +98,9 @@ namespace vr {
 		prs.point_size = 15.0f;
 		cgv::signal::connect(cgv::gui::ref_vr_server().on_device_change, this, &vr_wall::on_device_change);
 		kit_enum_definition = "enums='none=-1";
+
+		wall_state = WS_SCREEN_CALIB;
+		on_set(&wall_state);
 	}
 	///
 	void vr_wall::on_device_change(void* device_handle, bool attach)
@@ -135,7 +148,9 @@ namespace vr {
 		window->set("x", window_x);
 		window->set("y", window_y);
 		window->show();
-		window->register_object(this, "parents='';views='wall_window'");
+		//cgv::base::node_ptr parent = get_parent();
+		window->register_object(this, "");
+		//cgv::base::node::set_parent(parent);
 	}
 	///
 	bool vr_wall::self_reflect(cgv::reflect::reflection_handler& srh)
@@ -202,9 +217,97 @@ namespace vr {
 		}
 
 	}
+	
+	///
+	bool vr_wall::handle(cgv::gui::event& e)
+	{
+		if (e.get_kind() != cgv::gui::EID_KEY)
+			return false;
+		auto& ke = dynamic_cast<cgv::gui::key_event&>(e);
+		if (ke.get_action() == cgv::gui::KA_RELEASE)
+			return false;
+		if (ke.get_flags()&cgv::gui::EF_VR) {
+			auto& vrke = dynamic_cast<cgv::gui::vr_key_event&>(ke);
+			switch (vrke.get_key()) {
+			case vr::VR_LEFT_BUTTON0:
+			case vr::VR_RIGHT_BUTTON0:
+				switch (wall_state) {
+				case WS_SCREEN_CALIB :
+				{
+					vec3 p = reinterpret_cast<const mat34&>(vrke.get_state().controller[vrke.get_controller_index()].pose[0])*vec4(0, 0, -0.3f, 1.0f);
+					switch (calib_point_index) {
+					case 0:
+						wall_kit_ptr->screen_center_world = p;
+						break;
+					case 1:
+						wall_kit_ptr->screen_x_world = p - wall_kit_ptr->screen_center_world;
+						break;
+					case 2:
+						wall_kit_ptr->screen_y_world = p - wall_kit_ptr->screen_center_world;
+						break;
+					}
+					++calib_point_index;
+					on_set(&calib_point_index);
+					return true;
+				}
+				}
+				break;
+			}
+		}
+		else {
+			switch (ke.get_key()) {
+			case 'S':
+				wall_state = WS_SCREEN_CALIB;
+				on_set(&wall_state);
+				return true;
+			case 'E':
+				wall_state = WS_EYES_CALIB;
+				on_set(&wall_state);
+				return true;
+			case 'H':
+				wall_state = WS_HMD;
+				on_set(&wall_state);
+				return true;
+			}
+		}
+		return false;
+	}
+	///
+	void vr_wall::stream_help(std::ostream& os)
+	{
+		os << "vr_wall: no help yet" << std::endl;
+	}
+
 	///
 	void vr_wall::on_set(void* member_ptr)
 	{
+		if (member_ptr == &calib_point_index) {
+			if (wall_state == WS_SCREEN_CALIB && calib_point_index == points.size()) {
+				wall_state = WS_EYES_CALIB;
+				on_set(&wall_state);
+			}
+			return;
+		}
+		if (member_ptr == &wall_state) {
+			points.clear();
+			colors[0].clear();
+			colors[1].clear();
+			switch (wall_state) {
+			case WS_SCREEN_CALIB:
+				generate_screen_calib_points();
+				calib_point_index = 0;
+				update_member(&calib_point_index);
+				break;
+			case WS_EYES_CALIB:
+				if (!generate_points_from_image("res://cgv.png", 0.5f))
+					generate_points(100);
+				eye_calibrated[0] = eye_calibrated[1] = false;
+				break;
+			case WS_HMD:
+				break;
+			}
+			return;
+		}
 		if (member_ptr == &vr_wall_kit_index) {
 			if (vr_wall_kit_index >= 0) {
 				std::vector<void*> kits = vr::scan_vr_kits();
@@ -238,8 +341,37 @@ namespace vr {
 		}
 	}
 	///
+	void vr_wall::init_frame(cgv::render::context& ctx)
+	{
+		/*
+		std::cout << "init_frame(";
+		if (&ctx == main_context)
+			std::cout << "main";
+		else
+			std::cout << "wall";
+		std::cout << ") : " << wglGetCurrentContext() << std::endl;
+		*/
+
+		if (&ctx == main_context)
+			return;
+
+		wall_kit_ptr->wall_context = true;
+		if (!wall_kit_ptr->fbos_initialized())
+			if (wall_kit_ptr->init_fbos())
+				std::cout << "initialized fbos of wall kit in context " << (void*)&ctx << std::endl;
+		wall_kit_ptr->wall_context = false;
+	}
+	///
 	bool vr_wall::init(cgv::render::context& ctx)
 	{
+		/*
+		std::cout << "init(";
+		if (&ctx == main_context)
+			std::cout << "main";
+		else
+			std::cout << "wall";
+		std::cout << ") : " << wglGetCurrentContext() << std::endl;
+		*/
 		if (main_context == 0) {
 			main_context = &ctx;
 			cgv::render::ref_box_renderer(ctx, 1);
@@ -257,12 +389,6 @@ namespace vr {
 			cgv::render::RPF_HANDLE_SCREEN_SHOT));
 
 			ctx.set_bg_clr_idx(4);
-
-			wall_kit_ptr->wall_context = true;
-			if (!wall_kit_ptr->fbos_initialized())
-				if (wall_kit_ptr->init_fbos())
-					std::cout << "initialized fbos of wall kit in context " << (void*)&ctx << std::endl;
-			wall_kit_ptr->wall_context = false;
 
 			pr.init(ctx);
 		}
@@ -290,6 +416,14 @@ namespace vr {
 	///
 	void vr_wall::draw(cgv::render::context& ctx)
 	{
+		/*
+		std::cout << "draw(";
+		if (&ctx == main_context)
+			std::cout << "main";
+		else
+			std::cout << "wall";
+		std::cout << ") : " << wglGetCurrentContext() << std::endl;
+		*/
 		if (&ctx == main_context) {
 			if (!boxes.empty()) {
 				auto& br = cgv::render::ref_box_renderer(ctx);
@@ -321,27 +455,35 @@ namespace vr {
 
 		int width = ctx.get_width();
 		int height = ctx.get_height();
-		for (int eye = 0; eye < 2; ++eye) {
-			ctx.set_viewport(ivec4(eye*width / 2, 0, width / 2, height));
-			ctx.set_projection_matrix(cgv::math::perspective4<double>(90, (double)width / (2 * height), 0.1, 10.0));
-			ctx.set_modelview_matrix(cgv::math::look_at4<double>(dvec3(0, 0, 1), dvec3(0, 0, 0), dvec3(0, 1, 0)));
-			
-			pr.set_y_view_angle(90);
-			pr.set_render_style(prs);
-			pr.set_position_array(ctx, points);
-			pr.set_color_array(ctx, colors[eye]);
-			if (pr.validate_and_enable(ctx)) {
-				glDrawArrays(GL_POINTS, 0, points.size());
-				pr.disable(ctx);
-			}			
+		switch (wall_state) {
+		case WS_SCREEN_CALIB:
+		case WS_EYES_CALIB:
+			for (int eye = 0; eye < 2; ++eye) {
+				ctx.set_viewport(ivec4(eye*width / 2, 0, width / 2, height));
+				ctx.set_projection_matrix(cgv::math::perspective4<double>(90, (double)width / (2 * height), 0.1, 10.0));
+				ctx.set_modelview_matrix(cgv::math::look_at4<double>(dvec3(0, 0, 1), dvec3(0, 0, 0), dvec3(0, 1, 0)));
+
+				pr.set_y_view_angle(90);
+				pr.set_render_style(prs);
+				pr.set_position_array(ctx, points);
+				pr.set_color_array(ctx, colors[eye]);
+				if (pr.validate_and_enable(ctx)) {
+					if (wall_state == WS_SCREEN_CALIB)
+						glDrawArrays(GL_POINTS, calib_point_index, 1);
+					else
+						glDrawArrays(GL_POINTS, 0, points.size());
+					pr.disable(ctx);
+				}
+			}
+			break;
+		case WS_HMD:
+			wall_kit_ptr->wall_context = true;
+			wall_kit_ptr->blit_fbo(0, 0, 0, width / 2, height);
+			wall_kit_ptr->blit_fbo(1, width / 2, 0, width / 2, height);
+			wall_kit_ptr->wall_context = false;
+			break;
 		}
 		return;
-		/*
-		wall_kit_ptr->wall_context = true;
-		wall_kit_ptr->blit_fbo(0, 0, 0, width / 2, height);
-		wall_kit_ptr->blit_fbo(1, width / 2, 0, width / 2, height);
-		wall_kit_ptr->wall_context = false;
-		*/
 
 		/*
 		if (show_vr_kits_as_spheres && wall_kit_ptr != 0 && vr_wall_kit_index != -1) {
@@ -364,5 +506,5 @@ namespace vr {
 #include <cgv/base/register.h>
 
 /// register a newly created cube with the name "cube1" as constructor argument
-cgv::base::object_registration<vr::vr_wall> wall_reg("parents='main'");// views = 'wall_window'");
+cgv::base::object_registration<vr::vr_wall> wall_reg("");// views = 'wall_window'");
 
