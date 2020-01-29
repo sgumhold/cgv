@@ -88,7 +88,7 @@ namespace vr {
 			if (parent_kit->get_width() != width || parent_kit->get_height() != height) {
 				if (parent_kit->fbos_initialized())
 					parent_kit->destruct_fbos();
-				parent_kit->set_size(width, height);
+				dynamic_cast<vr::gl_vr_display*>(parent_kit)->set_size(width, height);
 			}
 			return parent_kit->fbos_initialized();
 		}
