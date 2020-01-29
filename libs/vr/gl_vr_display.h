@@ -25,7 +25,6 @@ namespace vr {
 		/// pixel dimensions of render targets
 		unsigned width, height, nr_multi_samples;
 		
-	protected:
 		/// ids of gl render objects
 		unsigned multi_depth_buffer_id[2];
 		unsigned multi_tex_id[2];
@@ -33,6 +32,7 @@ namespace vr {
 		unsigned tex_id[2];
 		unsigned fbo_id[2];
 
+	protected:
 		/// construct
 		gl_vr_display(unsigned _width, unsigned _height, vr_driver* _driver, void* _handle, const std::string& _name, bool _ffb_support, bool _wireless);
 	public:
@@ -42,6 +42,8 @@ namespace vr {
 		int get_width() const;
 		/// return height in pixel of view
 		int get_height() const;
+		/// allow to set a different size
+		void set_size(int new_width, int new_height);
 		/// initialize render targets and framebuffer objects in current opengl context
 		bool init_fbos();
 		/// initialize render targets and framebuffer objects in current opengl context

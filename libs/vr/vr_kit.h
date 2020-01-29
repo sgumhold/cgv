@@ -122,6 +122,8 @@ namespace vr {
 		virtual int get_width() const = 0;
 		/// return height in pixel of view
 		virtual int get_height() const = 0;
+		/// allow to set a different size; in case fbos have been initialized before, destruct_fbos() and init_fbos() has to be called with the gl context of this vr kit being current
+		virtual void set_size(int new_width, int new_height) = 0;
 		/// initialize render targets and framebuffer objects in current opengl context
 		virtual bool init_fbos() = 0;
 		/// initialize render targets and framebuffer objects in current opengl context
