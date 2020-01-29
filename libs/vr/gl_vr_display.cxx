@@ -17,12 +17,6 @@ gl_vr_display::gl_vr_display(unsigned _width, unsigned _height, vr_driver* _driv
 		fbo_id[i] = 0;
 	}
 }
-/// set a new size
-void gl_vr_display::set_size(int new_width, int new_height)
-{
-	width = new_width;
-	height = new_height;
-}
 
 /// allow to set a different size
 void gl_vr_display::set_size(int new_width, int new_height)
