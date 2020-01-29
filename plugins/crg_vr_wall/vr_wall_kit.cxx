@@ -1,5 +1,6 @@
 #include "vr_wall_kit.h"
 #include <cgv/math/ftransform.h>
+#include <cgv_gl/gl/gl.h>
 #include <vr_driver.h>
 ///
 namespace vr {
@@ -31,16 +32,66 @@ namespace vr {
 	/// initialize render targets and framebuffer objects in current opengl context
 	bool vr_wall_kit::init_fbos()
 	{
-		if (!gl_vr_display::fbos_initialized())
-			return gl_vr_display::init_fbos();
-		if (!parent_kit->fbos_initialized())
-			return parent_kit->init_fbos();
+		if (wall_context) {
+			if (!gl_vr_display::fbos_initialized()) {
+				// check whether we can do share render buffers and textures
+				gl_vr_display* parent_gl_kit = dynamic_cast<gl_vr_display*>(parent_kit);
+				if (!parent_gl_kit || !parent_gl_kit->fbos_initialized())
+					return false;
+					//return gl_vr_display::init_fbos();
+				// create fbos with textures shared with parent kit
+				
+				//std::cout << "init_fbos(wall): " << wglGetCurrentContext() << std::endl;
+				
+				for (unsigned i = 0; i < 2; ++i) {
+					glGenFramebuffers(1, &multi_fbo_id[i]);
+					glBindFramebuffer(GL_FRAMEBUFFER, multi_fbo_id[i]);
+					multi_depth_buffer_id[i] = parent_gl_kit->multi_depth_buffer_id[i];
+					glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, multi_depth_buffer_id[i]);
+					multi_tex_id[i] = parent_gl_kit->multi_tex_id[i];
+					glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D_MULTISAMPLE, multi_tex_id[i], 0);
+					if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
+						destruct_fbos();
+						glBindFramebuffer(GL_FRAMEBUFFER, 0);
+						last_error = "check status of multi framebuffer failed";
+						return false;
+					}
+					glGenFramebuffers(1, &fbo_id[i]);
+					glBindFramebuffer(GL_FRAMEBUFFER, fbo_id[i]);
+					tex_id[i] = parent_gl_kit->tex_id[i];
+					glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, tex_id[i], 0);
+					if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
+						destruct_fbos();
+						glBindFramebuffer(GL_FRAMEBUFFER, 0);
+						last_error = "check status of framebuffer failed";
+						return false;
+					}
+				}
+				glBindFramebuffer(GL_FRAMEBUFFER, 0);
+				return true;
+			}
+		}
+		else {
+			// std::cout << "init_fbos(main): " << wglGetCurrentContext() << std::endl;
+			if (!parent_kit->fbos_initialized())
+				return parent_kit->init_fbos();
+		}
 		return false;
 	}
 	/// check whether fbos have been initialized
 	bool vr_wall_kit::fbos_initialized() const
 	{
-		return wall_context ? gl_vr_display::fbos_initialized() : parent_kit->fbos_initialized();
+		if (wall_context)
+			return gl_vr_display::fbos_initialized();
+		else {
+			// ensure same size of textures
+			if (parent_kit->get_width() != width || parent_kit->get_height() != height) {
+				if (parent_kit->fbos_initialized())
+					parent_kit->destruct_fbos();
+				parent_kit->set_size(width, height);
+			}
+			return parent_kit->fbos_initialized();
+		}
 	}
 	/// destruct render targets and framebuffer objects in current opengl context
 	void vr_wall_kit::destruct_fbos()
@@ -69,10 +120,12 @@ namespace vr {
 	/// initialize render targets and framebuffer objects in current opengl context
 	bool vr_wall_kit::blit_fbo(int eye, int x, int y, int w, int h)
 	{
-		if (wall_context)
+		if (wall_context) {
+			// std::cout << "blit(wall):" << wglGetCurrentContext() << std::endl;
 			return gl_vr_display::blit_fbo(eye, x, y, w, h);
-		else
-			return parent_kit->blit_fbo(eye, x, y, w, h);
+		}
+		// std::cout << "blit(main):" << wglGetCurrentContext() << std::endl;
+		return parent_kit->blit_fbo(eye, x, y, w, h);
 	}
 
 	/// construct vr wall kit by attaching to another vr kit

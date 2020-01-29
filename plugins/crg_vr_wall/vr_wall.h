@@ -9,6 +9,7 @@
 #include <cgv/render/shader_program.h>
 #include <cgv_gl/gl/mesh_render_info.h>
 #include <cgv/gui/window.h>
+#include <cgv/gui/event_handler.h>
 #include <cgv/gui/provider.h>
 #include <cgv_gl/point_renderer.h>
 #include <cgv_gl/box_renderer.h>
@@ -21,10 +22,26 @@
 
 ///
 namespace vr {
-	class CGV_API vr_wall : public cgv::base::node, public cgv::render::drawable, public cgv::gui::provider
+
+	enum WallState
 	{
+		WS_SCREEN_CALIB,
+		WS_EYES_CALIB,
+		WS_HMD
+	};
+
+	class CGV_API vr_wall : public cgv::base::node, public cgv::render::drawable, public cgv::gui::event_handler, public cgv::gui::provider
+	{
+	public:
+		typedef cgv::math::fmat<float, 3, 4> mat34;
+	private:
 		std::string kit_enum_definition;
 	protected:
+		WallState wall_state;
+		int calib_point_index;
+		bool eye_calibrated[2];
+		void generate_screen_calib_points();
+
 		cgv::render::context* main_context;
 		cgv::gui::window_ptr window;
 		int vr_wall_kit_index;
@@ -38,8 +55,7 @@ namespace vr {
 
 		cgv::render::point_render_style prs;
 		cgv::render::point_renderer pr;
-
-
+		
 		cgv::render::arrow_render_style ars;
 		cgv::render::box_render_style brs;
 
@@ -105,11 +121,17 @@ namespace vr {
 		///
 		void on_set(void* member_ptr);
 		///
+		void init_frame(cgv::render::context& ctx);
+		///
 		bool init(cgv::render::context& ctx);
 		///
 		void clear(cgv::render::context& ctx);
 		///
 		void draw(cgv::render::context& ctx);
+		///
+		bool handle(cgv::gui::event&);
+		///
+		void stream_help(std::ostream& os);
 	};
 }
 
