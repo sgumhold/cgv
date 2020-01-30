@@ -257,7 +257,23 @@ namespace rgbd {
 	/// map a depth value together with pixel indices to a 3D point with coordinates in meters; point_ptr needs to provide space for 3 floats
 	bool rgbd_kinect2::map_depth_to_point(int x, int y, int depth, float* point_ptr) const
 	{
-		return false;
+		depth /= 8;
+		if (depth == 0)
+			return false;
+
+		//intrinisic matrix
+		//1042.56333152221 	0					0
+		//0 				1039.41616865874	0
+		//964.559360889174	547.127316078404	1
+		static const double fx_d = 1.0 / 1042.56333152221;
+		static const double fy_d = 1.0 / 1039.41616865874;
+		static const double cx_d = 964.559360889174;
+		static const double cy_d = 547.127316078404;
+		double d = 0.001 * depth;
+		point_ptr[0] = float((x - cx_d) * d * fx_d);
+		point_ptr[1] = float((y - cy_d) * d * fy_d);
+		point_ptr[2] = float(d);
+		return true;
 	}
 
 	/// construct CLNUI driver
