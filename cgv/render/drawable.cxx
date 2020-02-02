@@ -55,7 +55,7 @@ cgv::render::view* drawable::find_view_as_node(size_t view_idx) const
 	return views[view_idx];
 }
 
-bool drawable::get_world_location(int x, int y, const cgv::render::view& V, cgv::math::fvec<double, 3>& world_location) const
+bool drawable::get_world_location(int x, int y, const cgv::render::view& V, cgv::math::fvec<double, 3>& world_location, double* window_z_ptr) const
 {
 	if (!get_context())
 		return false;
@@ -74,11 +74,15 @@ bool drawable::get_world_location(int x, int y, const cgv::render::view& V, cgv:
 			return false;
 		// use conversion to (double*) operator to map cgv::math::vec<double> to cgv::math::fvec<float,3>
 		world_location = ctx.get_model_point(x, y, z, *DPV_ptr);
+		if (window_z_ptr)
+			*window_z_ptr = z;
 	}
 	else {
 		if (DPV_other_ptr->ncols() != 4)
 			return false;
 		world_location = ctx.get_model_point(x_other, y_other, z_other, *DPV_other_ptr);
+		if (window_z_ptr)
+			*window_z_ptr = z_other;
 	}
 	return true;
 }
