@@ -93,6 +93,5 @@ namespace cgv {
 
 			return surface_renderer::disable(ctx);
 		}
-
 	}
 }
