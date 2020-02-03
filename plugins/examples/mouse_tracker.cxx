@@ -139,7 +139,7 @@ void mouse_tracker::draw(context& ctx)
 	}
 	if (ff.empty())
 		return;
-	ctx.ref_default_shader_program().enable(ctx);
+//	ctx.ref_default_shader_program().enable(ctx);
 		ctx.set_color(rgb(1.0f, 0.0f, 1.0f));
 		ctx.push_pixel_coords();
 			ctx.enable_font_face(ff, font_size);
@@ -153,7 +153,7 @@ void mouse_tracker::draw(context& ctx)
 			ctx.output_stream() << s.c_str();
 			ctx.output_stream().flush();
 		ctx.pop_pixel_coords();
-	ctx.ref_default_shader_program().disable(ctx);
+//	ctx.ref_default_shader_program().disable(ctx);
 }
 
 #include <cgv/base/register.h>
