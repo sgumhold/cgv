@@ -24,12 +24,9 @@ namespace vr {
 		/// allow vr_wall to access the protected members in order to create gui and incorporate them into reflection
 		friend class vr_wall;
 		/// store screen coordinate and position in a way that it can be cast into a pose matrix
-		vec3 screen_x_world;
-		vec3 screen_y_world;
-		vec3 screen_z_world;
-		vec3 screen_center_world;
-		/// pixel size in meters and extent
-		float pixel_size;
+		mat34 screen_pose;
+		/// x- and y-pixel sizes in meters
+		vec2 pixel_size;
 		/// head calibration information
 		vec3 eye_center_tracker;
 		vec3 eye_separation_dir_tracker;
@@ -39,9 +36,11 @@ namespace vr {
 
 		bool wall_context;
 	public:
-		inline const mat34& get_screen_pose() const { return reinterpret_cast<const mat34&>(screen_x_world); }
-		inline const mat3& get_screen_orientation() const { return reinterpret_cast<const mat3&>(screen_x_world); }
-		inline void set_screen_orientation(const quat& q) { q.put_matrix(reinterpret_cast<mat3&>(screen_x_world)); }
+		inline const mat3& get_screen_orientation() const { return reinterpret_cast<const mat3&>(screen_pose); }
+		inline const vec3& get_screen_center() const { return screen_pose.col(3); }
+		inline void set_screen_orientation(const quat& q) { q.put_matrix(reinterpret_cast<mat3&>(screen_pose)); }
+		/// transform to coordinate system of screen with [0,0,0] in center and corners [+-aspect,+-1,0]; z is signed distance to screen in world unites (typically meters) 
+		vec3 transform_world_to_screen(const vec3& p) const;
 		/// eye = 0 ..left | 1 ..right
 		inline vec3 get_eye_position_tracker(int eye) const { return eye_center_tracker + ((eye-0.5f)*eye_separation)*eye_separation_dir_tracker; }
 		/// eye = 0 ..left | 1 ..right
