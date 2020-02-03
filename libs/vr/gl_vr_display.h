@@ -21,7 +21,7 @@ namespace vr {
 	private:
 		int vp[4];
 		int old_msaa;
-	protected:
+	public:
 		/// pixel dimensions of render targets
 		unsigned width, height, nr_multi_samples;
 		
@@ -31,7 +31,9 @@ namespace vr {
 		unsigned multi_fbo_id[2];
 		unsigned tex_id[2];
 		unsigned fbo_id[2];
+	protected:
 
+	protected:
 		/// construct
 		gl_vr_display(unsigned _width, unsigned _height, vr_driver* _driver, void* _handle, const std::string& _name, bool _ffb_support, bool _wireless);
 	public:
@@ -41,6 +43,8 @@ namespace vr {
 		int get_width() const;
 		/// return height in pixel of view
 		int get_height() const;
+		/// allow to set a different size
+		void set_size(int new_width, int new_height);
 		/// initialize render targets and framebuffer objects in current opengl context
 		bool init_fbos();
 		/// initialize render targets and framebuffer objects in current opengl context
@@ -53,6 +57,8 @@ namespace vr {
 		void enable_fbo(int eye);
 		/// disable the framebuffer object of given eye
 		void disable_fbo(int eye);
+		/// bind texture of given eye to current texture unit
+		void bind_texture(int eye);
 	};
 }
 

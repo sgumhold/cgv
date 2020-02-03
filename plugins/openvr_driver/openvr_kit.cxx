@@ -45,6 +45,11 @@ vr::IVRSystem* openvr_kit::get_hmd()
 	return static_cast<vr::IVRSystem*>(device_handle);
 }
 
+const vr::IVRSystem* openvr_kit::get_hmd() const
+{
+	return static_cast<const vr::IVRSystem*>(device_handle);
+}
+
 
 const std::vector<std::pair<int, int> >& openvr_kit::get_controller_throttles_and_sticks(int controller_index) const
 {
@@ -224,15 +229,15 @@ bool openvr_kit::set_vibration(unsigned controller_index, float low_frequency_st
 
 
 /// access to 3x4 matrix in column major format for transformation from eye (0..left, 1..right) to head coordinates
-void openvr_kit::put_eye_to_head_matrix(int eye, float* pose_matrix)
+void openvr_kit::put_eye_to_head_matrix(int eye, float* pose_matrix) const
 {
-	put_pose_matrix(get_hmd()->GetEyeToHeadTransform(EVREye(eye)), pose_matrix);
+	put_pose_matrix(const_cast<vr::IVRSystem*>(get_hmd())->GetEyeToHeadTransform(EVREye(eye)), pose_matrix);
 }
 
 /// access to 4x4 matrix in column major format for perspective transformation from eye (0..left, 1..right) optionally including eye to head transformation
-void openvr_kit::put_projection_matrix(int eye, float z_near, float z_far, float* projection_matrix)
+void openvr_kit::put_projection_matrix(int eye, float z_near, float z_far, float* projection_matrix) const
 {
-	put_hmatrix(get_hmd()->GetProjectionMatrix(EVREye(eye), z_near, z_far), projection_matrix);
+	put_hmatrix(const_cast<vr::IVRSystem*>(get_hmd())->GetProjectionMatrix(EVREye(eye), z_near, z_far), projection_matrix);
 }
 
 /// submit the rendered stereo frame to the hmd

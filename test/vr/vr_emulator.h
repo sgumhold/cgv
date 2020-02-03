@@ -34,11 +34,15 @@ protected:
 	float fovy;
 	vec3 body_position;
 	vec3 hand_position[2];
+	
+	bool tracker_enabled[2];
+	vec3 tracker_positions[2];
+	quat tracker_orientations[2];
 
 	/// helper functions to construct matrices
 	mat3x4 construct_pos_matrix(const quat& orientation, const vec3& position);
 	mat4 construct_homogeneous_matrix(const quat& orientation, const vec3& position);
-	void set_pose_matrix(const mat4& H, float* pose);
+	void set_pose_matrix(const mat4& H, float* pose) const;
 	void compute_state_poses();
 public:
 	vr_emulated_kit(float _body_direction, const vec3& _body_position, float _body_height, unsigned _width, unsigned _height, vr::vr_driver* _driver, void* _handle, const std::string& _name, bool _ffb_support, bool _wireless);
@@ -47,8 +51,8 @@ public:
 	const std::vector<std::pair<float, float> >& get_controller_throttles_and_sticks_deadzone_and_precision(int controller_index) const;
 	bool query_state(vr::vr_kit_state& state, int pose_query = 2);
 	bool set_vibration(unsigned controller_index, float low_frequency_strength, float high_frequency_strength);
-	void put_eye_to_head_matrix(int eye, float* pose_matrix);
-	void put_projection_matrix(int eye, float z_near, float z_far, float* projection_matrix);
+	void put_eye_to_head_matrix(int eye, float* pose_matrix) const;
+	void put_projection_matrix(int eye, float z_near, float z_far, float* projection_matrix) const;
 	void submit_frame();
 };
 
@@ -73,9 +77,13 @@ protected:
 
 	bool left_ctrl, right_ctrl, up_ctrl, down_ctrl;
 	bool home_ctrl, end_ctrl, pgup_ctrl, pgdn_ctrl;
+	bool alt_left_ctrl, alt_right_ctrl;
 	int current_kit_ctrl;
+	void create_tracker_gui(vr_emulated_kit* kit, int i);
 	void create_trackable_gui(const std::string& name, vr::vr_trackable_state& ts);
 	void create_controller_gui(int i, vr::vr_controller_state& cs);
+
+	int current_kit_index;
 
 	void add_new_kit();
 	void timer_event(double t, double dt);
@@ -90,6 +98,10 @@ public:
 	bool is_installed() const;
 	/// scan all connected vr kits and return a vector with their ids
 	std::vector<void*> scan_vr_kits();
+	/// scan all connected vr kits and return a vector with their ids
+	vr::vr_kit* replace_by_index(int& index, vr::vr_kit* new_kit_ptr);
+	/// scan all connected vr kits and return a vector with their ids
+	bool replace_by_pointer(vr::vr_kit* old_kit_ptr, vr::vr_kit* new_kit_ptr);
 	/// put a 3d up direction into passed array
 	void put_up_direction(float* up_dir) const;
 	/// return the floor level relativ to the world origin
