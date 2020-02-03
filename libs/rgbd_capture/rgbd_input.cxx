@@ -1,5 +1,6 @@
 #include <iostream>
 #include <algorithm>
+#include <future>
 #include "rgbd_input.h"
 #include "rgbd_device_emulation.h"
 #include <cgv/utils/file.h>
@@ -80,6 +81,7 @@ rgbd_input::rgbd_input()
 {
 	rgbd = 0;
 	started = false;
+	protocol_write_async = true;
 	protocol_idx = 0;
 	protocol_flags = 0;
 }
@@ -151,11 +153,22 @@ bool rgbd_input::detach()
 	return true;
 }
 
+void write_protocol_headers(vector<stream_format> streams,std::string path) {
+	for (stream_format stream : streams) {
+		cgv::utils::file::write(path + "/stream_info." + get_frame_extension(stream), reinterpret_cast<const char*>(&stream), sizeof(stream_format), false);
+	}
+}
+
 void rgbd_input::enable_protocol(const std::string& path)
 {
 	protocol_path = path;
 	protocol_idx  = 0;
 	protocol_flags = 0;
+
+	//write the metadata for every stream found
+	if (is_started()) {
+		write_protocol_headers(streams, path);
+	}
 }
 
 /// disable protocolation
@@ -212,7 +225,12 @@ bool rgbd_input::start(InputStreams is, std::vector<stream_format>& stream_forma
 	}
 	if (started)
 		return true;
-	return started = rgbd->start_device(is, stream_formats);
+	started = rgbd->start_device(is, stream_formats);
+	streams = stream_formats;
+	if (!protocol_path.empty()) {
+		write_protocol_headers(streams, protocol_path);
+	}
+	return started;
 }
 
 bool rgbd_input::start(const std::vector<stream_format>& stream_formats)
@@ -223,7 +241,12 @@ bool rgbd_input::start(const std::vector<stream_format>& stream_formats)
 	}
 	if (started)
 		return true;
-	return started = rgbd->start_device(stream_formats);
+	started = rgbd->start_device(stream_formats);
+	streams = stream_formats;
+	if (!protocol_path.empty()) {
+		write_protocol_headers(streams, protocol_path);
+	}
+	return started;
 }
 
 bool rgbd_input::is_started() const
@@ -251,6 +274,22 @@ bool rgbd_input::set_near_mode(bool on)
 	return rgbd->set_near_mode(on);
 }
 
+bool write_protocol_frame(const std::string& fn, frame_type* frame_ptr)
+{
+	bool success = cgv::utils::file::write(fn, &frame_ptr->frame_data.front(), frame_ptr->frame_data.size(), false);
+	delete frame_ptr;
+	return success;
+}
+
+bool rgbd_input::write_protocol_frame_async(const std::string& fn, const frame_type& frame) const
+{
+	if (!protocol_write_async)
+		return cgv::utils::file::write(fn, &frame.frame_data.front(), frame.frame_data.size(), false);
+	frame_type* frame_ptr = new frame_type(frame);
+	std::thread t(&write_protocol_frame, fn, frame_ptr);
+	t.detach();
+	return true;
+}
 
 bool rgbd_input::get_frame(InputStreams is, frame_type& frame, int timeOut)
 {
@@ -265,7 +304,10 @@ bool rgbd_input::get_frame(InputStreams is, frame_type& frame, int timeOut)
 	if (rgbd->get_frame(is, frame, timeOut)) {
 		if (!protocol_path.empty()) {
 			string fn = compose_file_name(protocol_path + "/kinect_", frame, protocol_idx);
-			if (!cgv::utils::file::write(fn, &frame.frame_data.front(), frame.frame_data.size(), false))
+			if ((is & IS_COLOR) != 0) {
+				next_warped_file_name = compose_file_name(protocol_path + "/warped_", frame, protocol_idx);
+			}
+			if (!write_protocol_frame_async(fn, frame))
 				std::cerr << "rgbd_input::get_frame: could not protocol frame to " << fn << std::endl;
 			else
 				++protocol_idx;
@@ -284,6 +326,11 @@ void rgbd_input::map_color_to_depth(const frame_type& depth_frame, const frame_t
 		return;
 	}
 	rgbd->map_color_to_depth(depth_frame, color_frame, warped_color_frame);
+	if (!next_warped_file_name.empty()) {
+		if (!write_protocol_frame_async(next_warped_file_name, warped_color_frame))
+			std::cerr << "rgbd_input::map_color_to_depth: could not protocol frame to " << next_warped_file_name << std::endl;
+		next_warped_file_name.clear();
+	}
 }
 
 /// map a depth value together with pixel indices to a 3D point with coordinates in meters; point_ptr needs to provide space for 3 floats

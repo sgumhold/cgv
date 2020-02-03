@@ -12,13 +12,16 @@
 #include <cgv/render/frame_buffer.h>
 #include <cgv/render/attribute_array_binding.h>
 #include <cgv_gl/box_renderer.h>
+#include <cgv_gl/point_renderer.h>
 #include <cgv_gl/sphere_renderer.h>
 #include <cgv/media/mesh/simple_mesh.h>
 #include <cgv_gl/gl/mesh_render_info.h>
-#include <libs/point_cloud/gl_point_cloud_drawable.h>
 #include <rgbd_input.h>
 #include <random>
 #include <future>
+#include <iostream>
+#include <chrono>
+#include <point_cloud/point_cloud.h>
 
 ///@ingroup VR
 ///@{
@@ -41,10 +44,16 @@ enum InteractionState
 	IS_GRAB
 };
 
+struct vertex : public cgv::render::render_types
+{
+	vec3  point;
+	rgba8 color;
+};
+
 /// the plugin class vr_rgbd inherits like other plugins from node, drawable and provider
 class vr_rgbd :
 	public cgv::base::node,
-	public gl_point_cloud_drawable,
+	public cgv::render::drawable,
 	public cgv::gui::event_handler,
 	public cgv::gui::provider
 {
@@ -58,21 +67,56 @@ protected:
 	bool record_frame;
 	///
 	bool record_all_frames;
-	/// intermediate points
-	std::vector<vec3> P;
-	/// intermediate colors
-	std::vector<rgb> C;
+	bool clear_all_frames;
+	bool in_calibration;
+	bool zoom_in;
+	bool zoom_out;
+	/// intermediate point cloud and to be rendered point cloud
+	std::vector<vertex> intermediate_pc, current_pc;
+	/// list of recorded point clouds
+	std::vector<std::vector<vertex> > recorded_pcs;
+	/// translations of recorded point clouds
+	std::vector<quat> rotations;
+	/// rotations of recorded point clouds
+	std::vector<vec3> translations;
+	/// rendering style for points
+	cgv::render::point_render_style point_style;
+
+	//std::vector<point_cloud> pcn;
 
 	int rgbd_controller_index;
 	mat3 rgbd_controller_orientation;
 	vec3 rgbd_controller_position;
+	/// 
+	mat3 rgbd_2_controller_orientation;
+	vec3 rgbd_2_controller_position;
 	///
 	mat3 rgbd_controller_orientation_pc;
 	vec3 rgbd_controller_position_pc;
 	///
+	mat3 rgbd_controller_orientation_start_calib;
+	vec3 rgbd_controller_position_start_calib;
+	///
+	bool show_points;
+	unsigned max_nr_shown_recorded_pcs;
+	bool trigger_is_pressed;
+	float recording_fps;
+	///
 	std::future<size_t> future_handle;
 	/// 
+	std::future<rgbd::frame_type> future_rgb;
+	std::future<rgbd::frame_type> future_rgb2;
+	std::future<rgbd::frame_type> future_rgb3;
+	std::future<rgbd::frame_type> future_rgb4;
+	std::future<rgbd::frame_type> future_rgb5;
+	std::future<rgbd::frame_type> future_depth;
+	std::future<rgbd::frame_type> future_depth2;
+	std::future<rgbd::frame_type> future_depth3;
+	std::future<rgbd::frame_type> future_depth4;
+	std::future<rgbd::frame_type> future_depth5;
+	///
 	bool rgbd_started;
+	std::string rgbd_protocol_path;
 	/// 
 	rgbd::rgbd_input rgbd_inp;
 	// store the scene as colored boxes
@@ -159,7 +203,7 @@ protected:
 		construct_movable_boxes(tw, td, th, tW, 20);
 	}
 	/// generate a random point cloud
-	void generate_point_cloud()
+	void generate_point_cloud(std::vector<vertex>& pc)
 	{
 		std::default_random_engine r;
 		std::uniform_real_distribution<float> d(0.0f,1.0f);
@@ -169,20 +213,17 @@ protected:
 		vec3 X = cross(V, U);
 		float aspect = 1.333f;
 		float tan_2 = 0.3f;
-		//pc.create_normals();
-		pc.create_colors();
 		for (int i = 0; i < 10000; ++i) {
 			float x = 2 * d(r) - 1;
 			float y = 2 * d(r) - 1;
 			float z = d(r) + 1;
-			vec3 p = x * aspect * tan_2 * z * X + y * tan_2 * z * U + z*V;
-			size_t pi = pc.add_point(S+p);
-			//pc.nml(pi) = -normalize(p);
-			pc.clr(pi) = point_cloud_types::Clr(point_cloud_types::float_to_color_component(d(r)),0,0);
+			vec3  p = x * aspect * tan_2 * z * X + y * tan_2 * z * U + z*V;
+			rgba8 c((cgv::type::uint8_type)(255*d(r)), 0, 0);
+			vertex v;
+			v.point = S + p;
+			v.color = c;
+			pc.push_back(v);
 		}
-		show_point_begin = 0;
-		show_point_end = pc.get_nr_points();
-		show_point_step = 1;
 	}
 	/// start the rgbd device
 	void start_rgbd()
@@ -213,31 +254,40 @@ public:
 		rgbd_controller_index = 0;
 		rgbd_controller_orientation.identity();
 		rgbd_controller_position = vec3(0, 1.5f, 0);
+		in_calibration = false;
+		zoom_in = false;
+		zoom_out = false;
+		rgbd_2_controller_orientation.identity();
+		rgbd_2_controller_position.zeros();
+
+		rgbd_controller_orientation_start_calib.identity();
+		rgbd_controller_position_start_calib.zeros();
+
 		build_scene(5, 7, 3, 0.2f, 1.6f, 0.8f, 0.9f, 0.03f);
-		//generate_point_cloud();
-		pc.create_colors();
-		show_point_begin = 0;
-		show_point_end = 0;
-		show_point_step = 1;
+		//generate_point_cloud(current_pc);
 		vr_view_ptr = 0;
 		ray_length = 2;
 		connect(cgv::gui::ref_vr_server().on_device_change, this, &vr_rgbd::on_device_change);
 
 		srs.radius = 0.005f;
-		show_nmls = false;
-		show_box = false;
 		state[0] = state[1] = state[2] = state[3] = IS_NONE;
 		rgbd_started = false;
 		record_frame = false;
 		record_all_frames = false;
+		clear_all_frames = false;
+		trigger_is_pressed = false;
+		recording_fps = 5;
+		show_points = true;
+		point_style.point_size = 2;
+		point_style.blend_points = false;
+		point_style.blend_width_in_pixel = 0;
+		max_nr_shown_recorded_pcs = 20;
 
 		connect(cgv::gui::get_animation_trigger().shoot, this, &vr_rgbd::timer_event);
 	}
 	size_t construct_point_cloud()
 	{
-
-		P.clear();
-		C.clear();
+		intermediate_pc.clear();
 		const unsigned short* depths = reinterpret_cast<const unsigned short*>(&depth_frame_2.frame_data.front());
 		const unsigned char* colors = reinterpret_cast<const unsigned char*>(&color_frame_2.frame_data.front());
 	
@@ -245,21 +295,80 @@ public:
 		colors = reinterpret_cast<const unsigned char*>(&warped_color_frame_2.frame_data.front());
 
 		int i = 0;
-		float s = 1.0f / 255;
 		for (int y = 0; y < depth_frame_2.height; ++y)
 			for (int x = 0; x < depth_frame_2.width; ++x) {
 				vec3 p;
 				if (rgbd_inp.map_depth_to_point(x, y, depths[i], &p[0])) {
 					// flipping y to make it the same direction as in pixel y coordinate
 					p = -p;
-					p = rgbd_controller_orientation_pc* p + rgbd_controller_position_pc;
-					P.push_back(p);
-					C.push_back(rgba8(colors[4 * i + 2], colors[4 * i + 1], colors[4 * i], 255));
+					p = rgbd_2_controller_orientation * p + rgbd_2_controller_position;
+					p = rgbd_controller_orientation_pc * p + rgbd_controller_position_pc;
+					rgba8 c(colors[4 * i + 2], colors[4 * i + 1], colors[4 * i], 255);
+					vertex v;
+					v.point = p;
+					v.color = c;
+					intermediate_pc.push_back(v);
 				}
 				++i;
 			}
-		return P.size();
+		return intermediate_pc.size();
 	}
+	rgbd::frame_type read_rgb_frame()    //should be a thread
+	{
+		return color_frame;
+	}
+	rgbd::frame_type read_depth_frame()
+	{
+		return depth_frame;
+	}
+
+	///demand for point cloud format
+	/*std::string compose_file_name(const std::string& file_name, const pointcloud_format& ff, unsigned idx)
+	{
+		std::string fn = file_name;
+
+		std::stringstream ss;
+		ss << setfill('0') << setw(10) << idx;
+
+		fn += ss.str();
+		return fn + '.' + get_frame_extension(ff);
+	}*/
+
+	///here should be const point cloud
+	void write_pc_to_disk(const std::string pathname, const char* ptr, size_t size)
+	{
+		if (!recorded_pcs.empty())
+		{
+			//define point cloud type, wirte to disk
+			for (auto i : recorded_pcs)
+			{
+				//wirte to disk
+				//ptr = i.data.front();
+				//std::string fn = compose_file_name(path_name + "/kinect_", frame, i);
+			}
+			std::cout << "there are point clouds queue" << std::endl;
+		}
+	}
+	size_t read_pc_queue(const std::string filename, std::string content)
+	{
+		cgv::utils::file::read(filename, content, false);
+		//read pcs from disk
+	}
+	void construct_TSDtree()
+	{
+		//using pc queue to construct the TSDtree
+	}
+	bool record_this_frame(double t)
+	{
+		if (!(record_frame || record_all_frames || trigger_is_pressed))
+			return false;
+		static double last_recording_time = -1;
+		if (t - last_recording_time < 1.0 / recording_fps)
+			return false;
+		last_recording_time = t;
+		return true;
+	}
+
 	void timer_event(double t, double dt)
 	{
 		// in case a point cloud is being constructed
@@ -268,28 +377,19 @@ public:
 			if (future_handle.wait_for(std::chrono::milliseconds(0)) == std::future_status::ready) {
 				size_t N = future_handle.get();
 				// copy computed point cloud
-				if (!pc.has_components()) {
-					pc.create_components();
-					pc.add_component();
-				}
-				if (record_frame || record_all_frames) {
-					pc.add_component();
+				if (record_this_frame(t)) {
+					recorded_pcs.push_back(intermediate_pc);
+					current_pc.clear();
 					record_frame = false;
 					update_member(&record_frame);
 				}
-				else {
-					pc.clear_component(pc.get_nr_components() - 1);
+				else if(clear_all_frames){
+					recorded_pcs.clear();
+					clear_all_frames = false;
+					update_member(&clear_all_frames);
 				}
-				for (size_t i = 0; i < P.size(); ++i) {
-					size_t pi = pc.add_point(P[i]);
-					pc.clr(i) = point_cloud_types::Clr(
-						float_to_color_component(C[i].R()),
-						float_to_color_component(C[i].G()),
-						float_to_color_component(C[i].B())
-					);
-				}
-				show_point_end = pc.get_nr_points();
-				update_member(&show_point_end);
+				else
+					current_pc = intermediate_pc;
 				post_redraw();
 			}
 		}
@@ -322,11 +422,26 @@ public:
 					post_redraw();
 				if (color_frame.is_allocated() && depth_frame.is_allocated() &&
 					(color_frame_changed || depth_frame_changed)) {
-					if (!future_handle.valid()) {
-						color_frame_2 = color_frame;
-						depth_frame_2 = depth_frame;
-						rgbd_controller_orientation_pc = rgbd_controller_orientation;
-						rgbd_controller_position_pc = rgbd_controller_position;
+					
+					if (!future_handle.valid()) { 
+						if (!in_calibration) {
+							color_frame_2 = color_frame;
+							depth_frame_2 = depth_frame;
+						}
+						if (zoom_out && !zoom_in)
+						{
+							rgbd_controller_orientation_pc = rgbd_controller_orientation * 2;
+							rgbd_controller_position_pc = rgbd_controller_position;
+						}
+						else if(zoom_in && !zoom_out)
+						{
+							rgbd_controller_orientation_pc = rgbd_controller_orientation * 0.5;
+							rgbd_controller_position_pc = rgbd_controller_position;
+						}
+						else {
+							rgbd_controller_orientation_pc = rgbd_controller_orientation;
+							rgbd_controller_position_pc = rgbd_controller_position;
+						}
 						future_handle = std::async(&vr_rgbd::construct_point_cloud, this);
 					}
 				}
@@ -338,81 +453,39 @@ public:
 	{
 		return "vr_rgbd";
 	}
-	void configure_subsample_controls()
-	{
-		if (find_control(show_point_begin)) {
-			find_control(show_point_begin)->set("max", show_point_end);
-			find_control(show_point_end)->set("min", show_point_begin);
-			find_control(show_point_end)->set("max", pc.get_nr_points());
-		}
-	}
-
 	void create_gui()
 	{
 		add_decorator("vr_rgbd", "heading", "level=2");
+		add_gui("rgbd_protocol_path", rgbd_protocol_path, "directory", "w=150");
 		add_member_control(this, "rgbd_started", rgbd_started, "check");
 		add_member_control(this, "record_frame", record_frame, "check");
 		add_member_control(this, "record_all_frames", record_all_frames, "check");
+		add_member_control(this, "clear_all_frames", clear_all_frames, "check");
+		add_member_control(this, "trigger_is_pressed", trigger_is_pressed, "check");
+		add_member_control(this, "recording_fps", recording_fps, "value_slider", "min=1;max=30;ticks=true;log=true");
+		add_member_control(this, "in_calibration", in_calibration, "check");
+		add_member_control(this, "zoom_in", zoom_in, "check");
+		add_member_control(this, "zoom_out", zoom_out, "check");
+		
+
 		add_member_control(this, "rgbd_controller_index", rgbd_controller_index, "value_slider", "min=0;max=3;ticks=true");
+		
 
 		add_member_control(this, "ray_length", ray_length, "value_slider", "min=0.1;max=10;log=true;ticks=true");
-		if (begin_tree_node("point cloud", pc)) {
+		bool show = begin_tree_node("points", show_points, true, "w=100;align=' '");
+		add_member_control(this, "show", show_points, "toggle", "w=50");
+		if (show) {
 			align("\a");
-			bool show = begin_tree_node("points", show_points, false, "level=3;w=100;align=' '");
-			add_member_control(this, "show", show_points, "toggle", "w=50");
-			if (show) {
+			add_member_control(this, "max_nr_shown_recorded_pcs", max_nr_shown_recorded_pcs, "value_slider", "min=0;max=100;log=true;ticks=true");
+			//add_member_control(this, "sort_points", sort_points, "check");
+			if (begin_tree_node("point style", point_style)) {
 				align("\a");
-				if (begin_tree_node("subsample", show_point_step, false, "level=3")) {
-					align("\a");
-					add_member_control(this, "show step", show_point_step, "value_slider", "min=1;max=20;log=true;ticks=true");
-					add_decorator("range control", "heading", "level=3");
-					add_member_control(this, "begin", show_point_begin, "value_slider", "min=0;max=10;ticks=true");
-					add_member_control(this, "end", show_point_end, "value_slider", "min=0;max=10;ticks=true");
-					add_decorator("window control", "heading", "level=3");
-					configure_subsample_controls();
-					align("\b");
-					end_tree_node(show_point_step);
-				}
+				add_gui("point_style", point_style);
 				align("\b");
-				add_member_control(this, "sort_points", sort_points, "check");
-				add_gui("surfel_style", surfel_style);
-				end_tree_node(show_points);
-			}
-			show = begin_tree_node("components", pc.components, false, "level=3;w=100;align=' '");
-			add_member_control(this, "show", surfel_style.use_group_color, "toggle", "w=50");
-			if (show) {
-				align("\a");
-				if (begin_tree_node("component colors", pc.component_colors, false)) {
-					align("\a");
-					for (unsigned i = 0; i < pc.component_colors.size(); ++i) {
-						add_member_control(this, std::string("C") + cgv::utils::to_string(i), pc.component_colors[i]);
-					}
-					align("\b");
-					end_tree_node(pc.component_colors);
-				}
-				if (begin_tree_node("group transformations", pc.component_translations, false)) {
-					align("\a");
-					for (unsigned i = 0; i < pc.component_translations.size(); ++i) {
-						add_gui(std::string("T") + cgv::utils::to_string(i), pc.component_translations[i]);
-						add_gui(std::string("Q") + cgv::utils::to_string(i), pc.component_rotations[i], "direction");
-					}
-					align("\b");
-					end_tree_node(pc.component_translations);
-				}
-				align("\b");
-				end_tree_node(pc.components);
-			}
-			show = begin_tree_node("box", show_box, false, "level=3;w=100;align=' '");
-			add_member_control(this, "show", show_box, "toggle", "w=50");
-			if (show) {
-				add_member_control(this, "show", show_boxes, "toggle", "w=50");
-				add_gui("color", box_color);
-				add_gui("box_style", box_style);
-				add_gui("box_wire_style", box_wire_style);
-				end_tree_node(show_box);
+				end_tree_node(point_style);
 			}
 			align("\b");
-			end_tree_node(pc);
+			end_tree_node(show_points);
 		}
 		if (begin_tree_node("box style", style)) {
 			align("\a");
@@ -433,6 +506,20 @@ public:
 			end_tree_node(srs);
 		}
 	}
+	bool self_reflect(cgv::reflect::reflection_handler& rh)
+	{
+		return
+			rh.reflect_member("rgbd_controller_index", rgbd_controller_index) &&
+			rh.reflect_member("zoom_in", zoom_in) &&
+			rh.reflect_member("zoom_out", zoom_out) &&
+			rh.reflect_member("recording_fps", recording_fps) &&
+			rh.reflect_member("ray_length", ray_length) &&
+			rh.reflect_member("record_frame", record_frame) &&
+			rh.reflect_member("record_all_frames", record_all_frames) &&
+			rh.reflect_member("clear_all_frames", clear_all_frames) &&
+			rh.reflect_member("rgbd_started", rgbd_started) &&
+			rh.reflect_member("rgbd_protocol_path", rgbd_protocol_path);
+	}
 	void on_set(void* member_ptr)
 	{
 		if (member_ptr == &rgbd_started && rgbd_started != rgbd_inp.is_started()) {
@@ -440,6 +527,13 @@ public:
 				start_rgbd();
 			else
 				stop_rgbd();
+		}
+		if (member_ptr == &rgbd_protocol_path) {
+			rgbd_inp.stop();
+			rgbd_inp.detach();
+			rgbd_inp.attach_path(rgbd_protocol_path);
+			if (rgbd_started)
+				start_rgbd();
 		}
 		update_member(member_ptr);
 		post_redraw();
@@ -455,6 +549,62 @@ public:
 			return false;
 		// check event id
 		switch (e.get_kind()) {
+		case cgv::gui::EID_KEY:
+		{
+			cgv::gui::vr_key_event& vrke = static_cast<cgv::gui::vr_key_event&>(e);
+			
+			if (vrke.get_key() == (rgbd_controller_index == 0 ? vr::VR_LEFT_STICK : vr::VR_RIGHT_STICK)) {
+				switch (vrke.get_action()) {
+				case cgv::gui::KA_PRESS :
+					rgbd_controller_orientation_start_calib = rgbd_controller_orientation; // V^0 = V
+					rgbd_controller_position_start_calib = rgbd_controller_position;       // r^0 = r
+					in_calibration = true;
+					update_member(&in_calibration);
+					break;
+				case cgv::gui::KA_RELEASE:
+					rgbd_2_controller_orientation = transpose(rgbd_controller_orientation_start_calib)*rgbd_controller_orientation*rgbd_2_controller_orientation;
+					rgbd_2_controller_position = transpose(rgbd_controller_orientation_start_calib)*((rgbd_controller_orientation*rgbd_2_controller_position + rgbd_controller_position) - rgbd_controller_position_start_calib);
+					in_calibration = false;
+					update_member(&in_calibration);
+					break;
+				}
+			}
+			if (vrke.get_key() == (rgbd_controller_index == 0 ? vr::VR_LEFT_STICK_LEFT : vr::VR_RIGHT_STICK_LEFT))
+			{
+				switch (vrke.get_action()) {
+				case cgv::gui::KA_PRESS :
+					zoom_in = true;
+					update_member(&zoom_in);
+					break;
+				case cgv::gui::KA_RELEASE:
+					zoom_in = false;
+					update_member(&zoom_in);
+					break;
+				}
+			}
+			if (vrke.get_key() == (rgbd_controller_index == 0 ? vr::VR_LEFT_STICK_RIGHT : vr::VR_RIGHT_STICK_RIGHT))
+			{
+				switch (vrke.get_action()) {
+				case cgv::gui::KA_PRESS:
+					zoom_out = true;
+					update_member(&zoom_out);
+					break;
+				case cgv::gui::KA_RELEASE:
+					zoom_out = false;
+					update_member(&zoom_out);
+					break;
+				}
+			}
+		}
+		case cgv::gui::EID_THROTTLE:
+		{
+			cgv::gui::vr_throttle_event& vrte = static_cast<cgv::gui::vr_throttle_event&>(e);
+			if ((vrte.get_last_value() > 0.5f) != (vrte.get_value() > 0.5f)) {
+				trigger_is_pressed = (vrte.get_value() > 0.5f);
+				update_member(&trigger_is_pressed);
+			}
+			break;
+		}
 		case cgv::gui::EID_POSE:
 			cgv::gui::vr_pose_event& vrpe = static_cast<cgv::gui::vr_pose_event&>(e);
 			// check for controller pose events
@@ -527,8 +677,7 @@ public:
 	}
 	bool init(cgv::render::context& ctx)
 	{
-		if (!gl_point_cloud_drawable::init(ctx))
-			return false;
+		cgv::render::ref_point_renderer(ctx, 1);
 
 		if (!cgv::utils::has_option("NO_OPENVR"))
 			ctx.set_gamma(1.0f);
@@ -564,14 +713,39 @@ public:
 	}
 	void clear(cgv::render::context& ctx)
 	{
-		gl_point_cloud_drawable::clear(ctx);
+		cgv::render::ref_point_renderer(ctx, -1);
 		cgv::render::ref_box_renderer(ctx, -1);
 		cgv::render::ref_sphere_renderer(ctx, -1);
 	}
+	void draw_pc(cgv::render::context& ctx, const std::vector<vertex>& pc)
+	{
+		if (pc.empty())
+			return;
+		auto& pr = cgv::render::ref_point_renderer(ctx);
+		pr.set_position_array(ctx, &pc.front().point, pc.size(), sizeof(vertex));
+		pr.set_color_array(ctx, &pc.front().color, pc.size(), sizeof(vertex));
+		if (pr.validate_and_enable(ctx)) {
+			glDrawArrays(GL_POINTS, 0, (GLsizei)pc.size());
+			pr.disable(ctx);
+		}
+	}
+
 	void draw(cgv::render::context& ctx)
 	{
-		gl_point_cloud_drawable::draw(ctx);
-		
+		if (show_points) {
+			auto& pr = cgv::render::ref_point_renderer(ctx);
+			pr.set_render_style(point_style);
+			pr.set_y_view_angle((float)vr_view_ptr->get_y_view_angle());
+			draw_pc(ctx, current_pc);
+
+			size_t begin = 0;
+			size_t end = recorded_pcs.size();
+			if (end > max_nr_shown_recorded_pcs)
+				begin = end - max_nr_shown_recorded_pcs;
+			
+			for (size_t i=begin; i<end; ++i)
+				draw_pc(ctx, recorded_pcs[i]);
+		}
 		if (vr_view_ptr) {
 			std::vector<vec3> P;
 			std::vector<rgb> C;
