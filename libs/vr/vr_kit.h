@@ -142,6 +142,8 @@ namespace vr {
 		virtual void enable_fbo(int eye) = 0;
 		/// disable the framebuffer object of given eye (0..left, 1..right)
 		virtual void disable_fbo(int eye) = 0;
+		/// bind texture of given eye to current texture unit
+		virtual void bind_texture(int eye) = 0;
 		/// submit the rendered stereo frame to the hmd
 		virtual void submit_frame() = 0;
 	};
