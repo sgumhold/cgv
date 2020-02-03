@@ -185,9 +185,8 @@ public:
 	///set identity matrix
 	void identity()
 	{
-		assert(N == M);
 		base_type::zeros();
-		for(unsigned i = 0; i < M; ++i)
+		for(unsigned i = 0; i < M && i < N; ++i)
 			operator()(i,i)=1;
 	}
 };
