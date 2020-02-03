@@ -57,6 +57,8 @@ namespace vr {
 		void enable_fbo(int eye);
 		/// disable the framebuffer object of given eye
 		void disable_fbo(int eye);
+		/// bind texture of given eye to current texture unit
+		void bind_texture(int eye);
 	};
 }
 
