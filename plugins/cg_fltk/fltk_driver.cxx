@@ -500,7 +500,7 @@ int fltk_driver::question(const std::string& _question, const std::vector<std::s
 	switch (answers.size()) {
 	case 0 :
 	case 1 : fltk::message(_question.c_str()); return 0;
-	case 2 : return fltk::ask(_question.c_str());
+	case 2 : return fltk::ask(_question.c_str(), answer_ptrs[0], answer_ptrs[1]);
 	case 3 : return fltk::choice(_question.c_str(), answer_ptrs[0], answer_ptrs[1], answer_ptrs[2]);
 	case 4 : return fltk::choice(_question.c_str(), answer_ptrs[0], answer_ptrs[1], answer_ptrs[2], answer_ptrs[3]);
 	case 5 : return fltk::choice(_question.c_str(), answer_ptrs[0], answer_ptrs[1], answer_ptrs[2], answer_ptrs[3], answer_ptrs[4]);

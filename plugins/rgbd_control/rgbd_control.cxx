@@ -8,6 +8,7 @@
 #include <cgv/gui/file_dialog.h>
 #include <cgv/utils/convert.h>
 #include <cgv/utils/file.h>
+#include <cgv/utils/dir.h>
 #include <cgv/utils/statistics.h>
 #include <cgv/type/standard_types.h>
 #include <cgv/math/ftransform.h>
@@ -81,8 +82,7 @@ rgbd_control::rgbd_control() :
 	color_frame_changed = false;
 	depth_frame_changed = false;
 	infrared_frame_changed = false;
-	attachment_changed = false;
-
+	color_attachment_changed = depth_attachment_changed = infrared_attachment_changed = false;
 	prs.measure_point_size_in_pixel = true;
 	prs.point_size = 3.0f;
 	connect(get_animation_trigger().shoot, this, &rgbd_control::timer_event);
@@ -106,8 +106,22 @@ bool rgbd_control::self_reflect(cgv::reflect::reflection_handler& rh)
 void rgbd_control::on_set(void* member_ptr)
 {
 	if (member_ptr == &do_protocol) {
-		if (do_protocol)
-			rgbd_inp.enable_protocol(protocol_path);
+		if (do_protocol) {
+			bool path_exists = cgv::utils::dir::exists(protocol_path);
+			if (!path_exists) {
+				if (cgv::gui::question(protocol_path + " does not exist. Create it?", "No,Yes", 1)) {
+					path_exists = cgv::utils::dir::mkdir(protocol_path);
+					if (!path_exists)
+						cgv::gui::message(protocol_path + " creation failed!");
+				}
+			}
+			if (path_exists)
+				rgbd_inp.enable_protocol(protocol_path);
+			else {
+				do_protocol = false;
+				update_member(&do_protocol);
+			}
+		}
 		else
 			rgbd_inp.disable_protocol();
 	}
@@ -212,10 +226,16 @@ void rgbd_control::init_frame(context& ctx)
 		rgbd_prog.build_program(ctx, "rgbd_shader.glpr");
 
 	if (device_mode != DM_DETACHED) {
-		update_texture_from_frame(ctx, color, color_frame, attachment_changed, color_frame_changed);
-		update_texture_from_frame(ctx, depth, depth_frame, attachment_changed, depth_frame_changed);
-		update_texture_from_frame(ctx, infrared, ir_frame, attachment_changed, infrared_frame_changed);
-		update_texture_from_frame(ctx, warped_color, warped_color_frame, attachment_changed, (color_frame_changed|| depth_frame_changed) &&remap_color);
+		update_texture_from_frame(ctx, color, color_frame, color_attachment_changed, color_frame_changed);
+		update_texture_from_frame(ctx, depth, depth_frame, depth_attachment_changed, depth_frame_changed);
+		update_texture_from_frame(ctx, infrared, ir_frame, infrared_attachment_changed, infrared_frame_changed);
+		update_texture_from_frame(ctx, warped_color, warped_color_frame, color_attachment_changed, (color_frame_changed|| depth_frame_changed) &&remap_color);
+		if (color_frame_changed)
+			color_attachment_changed = false;
+		if (depth_frame_changed)
+			depth_attachment_changed = false;
+		if (infrared_frame_changed)
+			infrared_attachment_changed = false;
 		color_frame_changed = false;
 		infrared_frame_changed = false;
 		depth_frame_changed = false;
@@ -226,7 +246,6 @@ void rgbd_control::init_frame(context& ctx)
 		infrared.destruct(ctx);
 		depth.destruct(ctx);
 	}
-	attachment_changed = false;
 }
 
 /// overload to draw the content of this drawable
@@ -429,6 +448,7 @@ void rgbd_control::create_gui()
 	if (begin_tree_node("IO", do_protocol, true, "level=2")) {
 		align("\a");
 		add_gui("protocol_path", protocol_path, "directory", "w=150");
+		add_member_control(this, "write_async", rgbd_inp.protocol_write_async, "toggle");
 		add_member_control(this, "do_protocol", do_protocol, "toggle");
 		connect_copy(add_button("save")->click, rebind(this, &rgbd_control::on_save_cb));
 		connect_copy(add_button("save point cloud")->click, rebind(this, &rgbd_control::on_save_point_cloud_cb));
@@ -480,6 +500,7 @@ size_t rgbd_control::construct_point_cloud()
 		rgbd_inp.map_color_to_depth(depth_frame_2, color_frame_2, warped_color_frame_2);
 		colors = reinterpret_cast<const unsigned char*>(&warped_color_frame_2.frame_data.front());
 	}
+	unsigned bytes_per_pixel = color_frame_2.nr_bits_per_pixel / 8;
 	int i = 0;
 	float s = 1.0f / 255;
 	for (int y = 0; y < depth_frame_2.height; ++y)
@@ -489,7 +510,18 @@ size_t rgbd_control::construct_point_cloud()
 				// flipping y to make it the same direction as in pixel y coordinate
 				p[1] = -p[1];
 				P2.push_back(p);
-				C2.push_back(rgba8(colors[4 * i + 2], colors[4 * i + 1], colors[4 * i], 255));
+				switch (color_frame_2.pixel_format) {
+				case PF_BGR:
+				case PF_BGRA:
+					C2.push_back(rgba8(colors[bytes_per_pixel * i + 2], colors[bytes_per_pixel * i + 1], colors[bytes_per_pixel * i], 255));
+					break;
+				case PF_RGB:
+				case PF_RGBA:
+					C2.push_back(rgba8(colors[bytes_per_pixel * i], colors[bytes_per_pixel * i + 1], colors[bytes_per_pixel * i + 2], 255));
+					break;
+				case PF_BAYER:
+					C2.push_back(rgba8(colors[i], colors[i], colors[i], 255));
+				}
 			}
 			++i;
 		}
@@ -569,7 +601,7 @@ void rgbd_control::timer_event(double t, double dt)
 					acquire_next = false;
 					color_frame_2 = color_frame;
 					depth_frame_2 = depth_frame;
-					future_handle = std::async(&rgbd_control::construct_point_cloud, this);
+					future_handle = std::async(std::launch::async, &rgbd_control::construct_point_cloud, this);
 				}
 				else {
 					if (remap_color)
@@ -760,6 +792,8 @@ void rgbd_control::update_stream_formats()
 
 void rgbd_control::on_device_select_cb()
 {
+	rgbd_inp.stop();
+	stopped = true;
 	rgbd_inp.detach();
 	if (device_idx == -1)
 		device_mode = DM_PROTOCOL;
@@ -768,6 +802,7 @@ void rgbd_control::on_device_select_cb()
 	else 
 		device_mode = DM_DEVICE;
 
+	bool reset_format_indices = false;
 	if (device_mode == DM_DEVICE) {
 		unsigned nr = rgbd_input::get_nr_devices();
 		if (nr == 0) {
@@ -781,6 +816,7 @@ void rgbd_control::on_device_select_cb()
 			}
 			if (rgbd_inp.attach(rgbd_input::get_serial(device_idx))) {
 				update_stream_formats();
+				reset_format_indices = true;
 				rgbd_inp.set_pitch(pitch);
 			}
 			else {
@@ -790,11 +826,29 @@ void rgbd_control::on_device_select_cb()
 		}
 	}
 	else if (device_mode == DM_PROTOCOL) {
-		rgbd_inp.attach_path(protocol_path + "/kinect_");
-		update_member(&device_idx);
-		// on_device_select_cb();
+		if (cgv::utils::dir::exists(protocol_path)) {
+			rgbd_inp.attach_path(protocol_path);
+			update_stream_formats();
+			reset_format_indices = true;
+			update_member(&device_idx);
+		}
+		else {
+			cgv::gui::message(protocol_path + " does not exist!");
+			device_mode = DM_DETACHED;
+			device_idx = -2;
+			update_member(&device_mode);
+			update_member(&device_idx);
+		}
 	}
-	attachment_changed = true;
+	if (reset_format_indices) {
+		color_stream_format_idx = -1;
+		depth_stream_format_idx = -1;
+		ir_stream_format_idx = -1;
+		update_member(&color_stream_format_idx);
+		update_member(&depth_stream_format_idx);
+		update_member(&ir_stream_format_idx);
+	}
+	color_attachment_changed = depth_attachment_changed = infrared_attachment_changed = true;
 	post_redraw();
 }
 

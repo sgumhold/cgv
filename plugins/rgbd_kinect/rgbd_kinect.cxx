@@ -181,6 +181,7 @@ namespace rgbd {
 
 			Vector4 reading;
 			HRESULT hr = pNuiSensor->NuiAccelerometerGetCurrentReading(&reading);
+			//pNuiSensor->NuiSetForceInfraredEmitterOff(true);
 			if (FAILED(hr))
 				return false;
 			m.linear_acceleration[0] = reading.x;

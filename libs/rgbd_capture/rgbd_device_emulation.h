@@ -1,4 +1,5 @@
 #include "rgbd_device.h"
+#include <chrono>
 
 using namespace std;
 
@@ -7,10 +8,15 @@ namespace rgbd {
 class rgbd_emulation : public rgbd_device
 {
 public:
-	string file_name;
+	string path_name;
+	mutable string next_warped_file_name;
 	unsigned idx;
 	unsigned flags;
 
+
+	/*fn : filename prefix of the files used to create an instance of the emulator
+		   fn needs to be a path e.g D:\kinect\kinect_ where D:\kinect\ is the directory 
+		   and kinect_ the prefix used for the files.*/
 	rgbd_emulation(const std::string& fn);
 
 	bool attach(const std::string& fn);
@@ -38,6 +44,15 @@ public:
 	void map_color_to_depth(const frame_type& depth_frame, const frame_type& color_frame,
 		frame_type& warped_color_frame) const;
 	bool map_depth_to_point(int x, int y, int depth, float* point_ptr) const;
+
+private:
+	stream_format color_stream, depth_stream, ir_stream;
+	bool has_color_stream, has_depth_stream, has_ir_stream;
+	bool device_is_running;
+	std::chrono::time_point<std::chrono::steady_clock> last_color_frame_time;
+	std::chrono::time_point<std::chrono::steady_clock> last_depth_frame_time;
+	std::chrono::time_point<std::chrono::steady_clock> last_ir_frame_time;
+	size_t number_of_files;
 };
 
 }
