@@ -127,7 +127,14 @@ namespace vr {
 		// std::cout << "blit(main):" << wglGetCurrentContext() << std::endl;
 		return parent_kit->blit_fbo(eye, x, y, w, h);
 	}
-
+	/// transform to coordinate system of screen with [0,0,0] in center and corners [+-aspect,+-1,0]; z is signed distance to screen in world unites (typically meters) 
+	vr_wall_kit::vec3 vr_wall_kit::transform_world_to_screen(const vec3& p) const
+	{
+		vec3 p_screen = (p - get_screen_center()) * get_screen_orientation();
+		p_screen[0] /= height*pixel_size[0];
+		p_screen[1] /= height*pixel_size[1];
+		return p_screen;
+	}
 	/// construct vr wall kit by attaching to another vr kit
 	vr_wall_kit::vr_wall_kit(int vr_kit_parent_index, unsigned _width, unsigned _height, const std::string& _name) :
 		gl_vr_display(width, height, 0, 0, _name, false, false)
@@ -138,11 +145,8 @@ namespace vr {
 			camera = parent_kit->get_camera();
 		else
 			camera = 0;
-		screen_x_world = vec3(1.0f, 0.0f, 0.0f);
-		screen_y_world = vec3(0.0f, 1.0f, 0.0f);
-		screen_z_world = vec3(0.0f, 0.0f, 1.0f);
-		screen_center_world.zeros();
-		pixel_size = 0.001f;
+		screen_pose.identity();
+		pixel_size = vec2(0.001f);
 		width = _width;
 		height = _height;
 		eye_center_tracker.zeros();
@@ -189,12 +193,12 @@ namespace vr {
 	void vr_wall_kit::put_projection_matrix(int eye, float z_near, float z_far, float* projection_matrix) const
 	{
 		vec3 eye_world = get_eye_position_world(eye, current_tracker_pose);
-		vec3 eye_screen = (eye_world - screen_center_world) * get_screen_orientation();
+		vec3 eye_screen = (eye_world - get_screen_center()) * get_screen_orientation();
 		float scale = z_near/eye_screen(2);
-		float width_world = get_width()*pixel_size;
+		float width_world = get_width()*pixel_size[0];
 		float l = scale * (-0.5f*width_world - eye_screen(0));
 		float r = scale * (+0.5f*width_world - eye_screen(0));
-		float height_world = get_height()*pixel_size;
+		float height_world = get_height()*pixel_size[1];
 		float b = scale * (-0.5f*height_world - eye_screen(1));
 		float t = scale * (+0.5f*height_world - eye_screen(1));
 		reinterpret_cast<mat4&>(*projection_matrix) = cgv::math::frustum4<float>(l, r, b, t, z_near, z_far);
@@ -203,7 +207,7 @@ namespace vr {
 	void vr_wall_kit::put_world_to_eye_transform(int eye, float* modelview_matrix) const
 	{
 		vec3 eye_world = get_eye_position_world(eye, current_tracker_pose);
-		mat3 R = reinterpret_cast<const mat3&>(get_screen_pose());
+		mat3 R = get_screen_orientation();
 		R.transpose();
 		mat4& T = reinterpret_cast<mat4&>(*modelview_matrix);
 		T.set_col(0, vec4(R.col(0), 0));

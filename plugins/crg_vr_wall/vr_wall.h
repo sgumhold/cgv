@@ -64,8 +64,16 @@ namespace vr {
 		int vr_wall_hmd_index;
 		/// pointer to wall_vr_kit
 		vr_wall_kit* wall_kit_ptr;
+		///
+		uint32_t blit_fbo;
+		/// screen information during screen calibration
+		vec3 screen_center;
+		vec3 screen_x;
+		vec3 screen_y;
 		/// helper member to allow to adjust orientation of the virtual screen
 		quat screen_orientation;
+		/// update screen calibration
+		void on_update_screen_calibration();
 		//@}
 
 		/**@name state control and calibration*/
@@ -76,6 +84,12 @@ namespace vr {
 		int calib_index;
 		/// position of peek point in controller coordinate system that is used to define 3d calibration points
 		vec3 peek_point;
+		/// 
+		vec3 aim_direction;
+		///
+		float aim_circle_radius;
+		///
+		vec3 aim_center;
 		/// current pose matrices of controllers need to render peek point
 		mat34 c_P[2];
 		/// helper function to fill the point 
@@ -95,6 +109,8 @@ namespace vr {
 		void generate_points(int n);
 		/// use low res image to create point sampling
 		bool generate_points_from_image(const std::string& file_name, float angle);
+		///
+		void generate_eye_calib_points();
 		//@}
 
 		/**@name rendering in main context*/
@@ -155,6 +171,8 @@ namespace vr {
 		void clear(cgv::render::context& ctx);
 		///
 		void draw(cgv::render::context& ctx);
+		///
+		void finish_frame(cgv::render::context& ctx);
 		///
 		bool handle(cgv::gui::event&);
 		///
