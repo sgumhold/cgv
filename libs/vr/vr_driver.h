@@ -46,6 +46,8 @@ namespace vr {
 		unsigned driver_index;
 		/// call this method during scanning of vr kits. In case vr kit handle had been registered before, previous copy is deleted and a warning is issued
 		void register_vr_kit(void* handle, vr_kit* kit);
+		/// call this method during replacement of vr kits. In case vr kit handle had been registered before it is replaced, otherwise it is registered
+		void replace_vr_kit(void* handle, vr_kit* kit);
 		/// initialize the camera of a vr_kit and return whether this was successful
 		bool initialize_camera(vr_kit* kit) const;
 	public:
@@ -58,6 +60,10 @@ namespace vr {
 		virtual bool is_installed() const = 0;
 		/// scan all connected vr kits and return a vector with their ids
 		virtual std::vector<void*> scan_vr_kits() = 0;
+		/// scan all connected vr kits and return a vector with their ids
+		virtual vr_kit* replace_by_index(int& index, vr_kit* new_kit_ptr) = 0;
+		/// scan all connected vr kits and return a vector with their ids
+		virtual bool replace_by_pointer(vr_kit* old_kit_ptr, vr_kit* new_kit_ptr) = 0;
 		/// put a 3d x direction into passed array
 		void put_x_direction(float* x_dir) const;
 		/// put a 3d up direction into passed array
@@ -88,6 +94,11 @@ namespace vr {
 	//@{
 	/// iterate all registered vr drivers to scan for vr kits and return vector of vr kit handles
 	extern CGV_API std::vector<void*> scan_vr_kits();
+	/// scan vr kits and if one of given index exists replace it by passed kit and return index to replaced kit; in case of failure return 0 pointer
+	extern CGV_API vr_kit* replace_by_index(int vr_kit_index, vr_kit* new_kit_ptr);
+	/// scan vr kits and if one with given pointer exists, replace it by passed kit; return whether replacement was successful
+	extern CGV_API bool replace_by_pointer(vr_kit* old_kit_ptr, vr_kit* new_kit_ptr);
+
 	/// query a pointer to a vr kit by its device handle, function can return null pointer in case that no vr kit exists for given handle
 	extern CGV_API vr_kit* get_vr_kit(void* vr_kit_handle);
 	/// unregister a previously registered vr kit by handle and pointer

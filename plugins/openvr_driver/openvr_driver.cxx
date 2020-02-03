@@ -111,6 +111,58 @@ struct openvr_driver : public vr_driver
 		}
 		return handles;
 	}
+	/// scan all connected vr kits and return a vector with their ids
+	vr_kit* replace_by_index(int& index, vr_kit* new_kit_ptr)
+	{
+		std::vector<void*> handles;
+		if (!is_installed())
+			return 0;
+		if (VR_IsHmdPresent() && hmd_ptr) {
+			bool do_register = true;
+			vr_kit* kit = get_vr_kit(hmd_ptr);
+			if (!kit) {
+				uint32_t width, height;
+				hmd_ptr->GetRecommendedRenderTargetSize(&width, &height);
+				bool ffb_support = true;
+				bool wireless = false;
+				kit = new openvr_kit(width, height, this, hmd_ptr, kit_name, ffb_support, wireless);
+				bool camera_init = initialize_camera(kit);
+				register_vr_kit(hmd_ptr, kit);
+			}
+			if (index == 0) {
+				replace_vr_kit(hmd_ptr, new_kit_ptr);
+				return kit;
+			}
+			else
+				--index;
+		}
+		return 0;
+	}
+	/// scan all connected vr kits and return a vector with their ids
+	bool replace_by_pointer(vr_kit* old_kit_ptr, vr_kit* new_kit_ptr)
+	{
+		std::vector<void*> handles;
+		if (!is_installed())
+			return false;
+		if (VR_IsHmdPresent() && hmd_ptr) {
+			bool do_register = true;
+			vr_kit* kit = get_vr_kit(hmd_ptr);
+			if (!kit) {
+				uint32_t width, height;
+				hmd_ptr->GetRecommendedRenderTargetSize(&width, &height);
+				bool ffb_support = true;
+				bool wireless = false;
+				kit = new openvr_kit(width, height, this, hmd_ptr, kit_name, ffb_support, wireless);
+				bool camera_init = initialize_camera(kit);
+				register_vr_kit(hmd_ptr, kit);
+			}
+			if (kit == old_kit_ptr) {
+				replace_vr_kit(hmd_ptr, new_kit_ptr);
+				return true;
+			}
+		}
+		return false;
+	}
 	/// put a 3d up direction into passed array
 	void put_up_direction(float* up_dir) const
 	{
