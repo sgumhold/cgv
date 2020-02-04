@@ -1,0 +1,85 @@
+#version 430 
+
+uniform bool position_is_center;
+uniform bool has_rotations;
+uniform bool has_translations;
+
+in vec4 start;
+in vec4 end;
+in vec4 color;
+in int group_index;;
+
+out mat4 PM;
+out flat vec4 a;
+out flat vec4 b;
+out flat vec4 tmvp2;
+out flat vec4 tmvp3;
+out vec4 color_gs;
+
+//***** begin interface of quaternion.glsl ***********************************
+vec4 unit_quaternion();
+vec3 rotate_vector_with_quaternion(in vec3 preimage, in vec4 q);
+vec3 inverse_rotate_vector_with_quaternion(in vec3 v, in vec4 q);
+void quaternion_to_axes(in vec4 q, out vec3 x, out vec3 y, out vec3 z);
+void quaternion_to_matrix(in vec4 q, out mat3 M);
+void rigid_to_matrix(in vec4 q, in vec3 t, out mat4 M);
+//***** end interface of quaternion.glsl ***********************************
+
+//***** begin interface of group.glsl ***********************************
+vec4 group_color(in vec4 color, int group_index);
+vec3 group_transformed_position(in vec3 position, int group_index);
+vec3 group_transformed_normal(in vec3 nml, int group_index);
+void right_multiply_group_normal_matrix(inout mat3 NM, int group_index);
+void right_multiply_group_position_matrix(inout mat4 PM, int group_index);
+void right_multiply_group_normal_matrix_and_rotation(inout mat3 NM, int group_index, vec4 rotation);
+void right_multiply_group_position_matrix_and_rigid(inout mat4 PM, int group_index, vec4 rotation, vec3 translation);
+//***** end interface of group.glsl ***********************************
+
+//***** begin interface of view.glsl ***********************************
+mat4 get_modelview_matrix();
+mat4 get_projection_matrix();
+mat4 get_modelview_projection_matrix();
+mat4 get_inverse_modelview_matrix();
+mat4 get_inverse_modelview_projection_matrix();
+mat3 get_normal_matrix();
+mat3 get_inverse_normal_matrix();
+//***** end interface of view.glsl ***********************************
+
+vec3 ortho_vec(vec3 v) {
+
+	return abs(v.x) > abs(v.z) ? vec3(-v.y, v.x, 0.0f) : vec3(0.0f, -v.z, v.y);
+}
+
+void main()
+{
+	color_gs = group_color(color, group_index);
+	
+	float l = length(end.xyz - start.xyz);
+	vec4 delta = (end - start) / l;
+
+	float max_r = max(start.w, end.w);
+
+	mat3 rot_mat = mat3(1.0);
+	rot_mat[0] = delta.xyz;
+	rot_mat[1] = normalize(ortho_vec(rot_mat[0]));
+	rot_mat[2] = cross(rot_mat[0], rot_mat[1]);
+
+	mat4 mvp = get_modelview_projection_matrix();
+	tmvp2 = vec4(mvp[0][2], mvp[1][2], mvp[2][2], mvp[3][2]);
+	tmvp3 = vec4(mvp[0][3], mvp[1][3], mvp[2][3], mvp[3][3]);
+
+	max_r *= 3;
+
+	mat4 M = mat4(0.0);
+	M[0][0] = l + start.w + end.w;
+	M[1][1] = max_r;
+	M[2][2] = max_r;
+	M[3] = vec4(0.5*(start.xyz + end.xyz), 1.0);
+	
+	PM = get_modelview_matrix() * mat4(rot_mat) * M;
+	
+	a = vec4((get_modelview_matrix() * vec4(start.xyz, 1.0)).xyz, start.w);
+	b = vec4((get_modelview_matrix() * vec4(end.xyz, 1.0)).xyz, end.w);
+	
+	gl_Position = vec4(0.0, 0.0, 0.0, 1.0);
+}
