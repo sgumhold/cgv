@@ -71,7 +71,7 @@ namespace vr {
 		const vr_driver* get_driver() const;
 		/// return device handle
 		void* get_device_handle() const;
-		/// return camera
+		/// return camera or nullptr if not available
 		vr_camera* get_camera() const;
 		/// return name of vr_kit
 		const std::string& get_name() const;
@@ -122,6 +122,8 @@ namespace vr {
 		virtual int get_width() const = 0;
 		/// return height in pixel of view
 		virtual int get_height() const = 0;
+		/// allow to set a different size; in case fbos have been initialized before, destruct_fbos() and init_fbos() has to be called with the gl context of this vr kit being current
+		virtual void set_size(int new_width, int new_height) = 0;
 		/// initialize render targets and framebuffer objects in current opengl context
 		virtual bool init_fbos() = 0;
 		/// initialize render targets and framebuffer objects in current opengl context
@@ -131,13 +133,17 @@ namespace vr {
 		/// destruct render targets and framebuffer objects in current opengl context
 		virtual void destruct_fbos() = 0;
 		/// access to 3x4 matrix in column major format for transformation from eye (0..left, 1..right) to head coordinates
-		virtual void put_eye_to_head_matrix(int eye, float* pose_matrix) = 0;
+		virtual void put_eye_to_head_matrix(int eye, float* pose_matrix) const = 0;
 		/// access to 4x4 matrix in column major format for perspective transformation from eye (0..left, 1..right)
-		virtual void put_projection_matrix(int eye, float z_near, float z_far, float* projection_matrix) = 0;
+		virtual void put_projection_matrix(int eye, float z_near, float z_far, float* projection_matrix) const = 0;
+		/// access to 4x4 modelview transformation matrix of given eye in column major format, which is computed in default implementation from given 3x4 pose matrix and eye to head transformation
+		virtual void put_world_to_eye_transform(int eye, const float* hmd_pose, float* modelview_matrix) const;
 		/// enable the framebuffer object of given eye (0..left, 1..right) 
 		virtual void enable_fbo(int eye) = 0;
 		/// disable the framebuffer object of given eye (0..left, 1..right)
 		virtual void disable_fbo(int eye) = 0;
+		/// bind texture of given eye to current texture unit
+		virtual void bind_texture(int eye) = 0;
 		/// submit the rendered stereo frame to the hmd
 		virtual void submit_frame() = 0;
 	};
