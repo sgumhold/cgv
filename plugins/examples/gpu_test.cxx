@@ -128,14 +128,14 @@ public:
 			glClearColor(0,1,1,1);
 			glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 			// draw text
-			ctx.ref_default_shader_program().enable(ctx);
+			//ctx.ref_default_shader_program().enable(ctx);
 				ctx.set_color(rgb(0.0f));
 				ctx.push_pixel_coords();
 					ctx.set_cursor(200,400);
 					ctx.enable_font_face(font_face, 40);
 					ctx.output_stream() << "test\ntext" << std::endl;
 				ctx.pop_pixel_coords();
-			ctx.ref_default_shader_program().disable(ctx);
+			//ctx.ref_default_shader_program().disable(ctx);
 
 			// draw rotating cube
 			ctx.ref_surface_shader_program().enable(ctx);

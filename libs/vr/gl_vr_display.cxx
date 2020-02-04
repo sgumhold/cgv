@@ -18,6 +18,13 @@ gl_vr_display::gl_vr_display(unsigned _width, unsigned _height, vr_driver* _driv
 	}
 }
 
+/// allow to set a different size
+void gl_vr_display::set_size(int new_width, int new_height)
+{
+	width = new_width;
+	height = new_height;
+}
+
 /// return width in pixel of view
 int gl_vr_display::get_width() const
 {
@@ -110,6 +117,11 @@ bool gl_vr_display::init_fbos()
 	}
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	return true;
+}
+/// bind texture of given eye to current texture unit
+void gl_vr_display::bind_texture(int eye)
+{
+	glBindTexture(GL_TEXTURE_2D, tex_id[eye]);
 }
 
 /// enable the framebuffer object of given eye (0..left, 1..right) 
