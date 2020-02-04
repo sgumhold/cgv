@@ -261,7 +261,7 @@ void vr_emulator::timer_event(double t, double dt)
 		case IM_RIGHT_HAND:
 			if (left_ctrl || right_ctrl) {
 				if (is_alt)
-					kits[current_kit_index]->hand_position[interaction_mode - 1][0] += 0.3f * (float)(right_ctrl ? -dt : dt);
+					kits[current_kit_index]->hand_position[interaction_mode - 1][0] += 0.3f * (float)(left_ctrl ? -dt : dt);
 				else
 					kits[current_kit_index]->hand_orientation[interaction_mode - 1] = quat(vec3(0, 1, 0), (float)(right_ctrl ? -dt : dt))*kits[current_kit_index]->hand_orientation[interaction_mode - 1];
 				update_all_members();
@@ -271,7 +271,7 @@ void vr_emulator::timer_event(double t, double dt)
 				if (is_alt)
 					kits[current_kit_index]->hand_position[interaction_mode - 1][1] += 0.3f * (float)(down_ctrl ? -dt : dt);
 				else
-					kits[current_kit_index]->hand_orientation[interaction_mode - 1] = quat(vec3(1, 0, 0), (float)(down_ctrl ? -dt : dt))*kits[current_kit_index]->hand_orientation[interaction_mode - 1];
+					kits[current_kit_index]->hand_orientation[interaction_mode - 1] = quat(vec3(1, 0, 0), (float)(up_ctrl ? -dt : dt))*kits[current_kit_index]->hand_orientation[interaction_mode - 1];
 				update_all_members();
 				post_redraw();
 			}
