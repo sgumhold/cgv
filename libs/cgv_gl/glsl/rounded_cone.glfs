@@ -1,0 +1,163 @@
+#version 430
+
+#define DEBUG_FRAGMENTS
+
+//***** begin interface of fragment.glfs ***********************************
+uniform float gamma = 2.2;
+void finish_fragment(vec4 color);
+//***** end interface of fragment.glfs ***********************************
+
+//***** begin interface of surface.glsl ***********************************
+vec4 compute_reflected_appearance(vec3 position_eye, vec3 normal_eye, vec4 color, int side);
+//***** end interface of surface.glsl ***********************************
+
+in vec3 position;
+in flat vec4 start;
+in flat vec4 end;
+in flat vec4 tmvp2;
+in flat vec4 tmvp3;
+in vec4 color_fs;
+
+uniform vec3 eye;
+
+vec3 ortho_vec(vec3 v) {
+
+	return abs(v.x) > abs(v.z) ? vec3(-v.y, v.x, 0.0f) : vec3(0.0f, -v.z, v.y);
+}
+
+void main()
+{
+	//vec3 dir = normalize(position - eye);
+	vec3 dir = normalize(position);
+
+	/*vec3 rot_axis = cross(dir, vec3(1.0, 0.0, 0.0));
+	float cost = dot(dir, vec3(1.0, 0.0, 0.0));
+	float angle = acos(cost);
+
+	mat4 R = rotation_matrix(rot_axis, angle);*/
+
+	vec3 a = start.xyz;// - eye;
+	vec3 b = end.xyz;// - eye;
+	/*a = (R * vec4(a.xyz, 1.0)).xyz;
+	b = (R * vec4(b.xyz, 1.0)).xyz;*/
+	
+	mat3 rot_mat = mat3(1.0);
+	rot_mat[0] = dir;
+	rot_mat[1] = normalize(ortho_vec(dir));
+	rot_mat[2] = cross(dir, rot_mat[1]);
+
+	a *= rot_mat;
+	b *= rot_mat;
+
+	vec3 delta = b - a;
+	float dr = end.w - start.w;
+
+	float A = delta.y*delta.y + delta.z*delta.z - dr*dr;
+	float B = 2.0 * (a.y*delta.y + a.z*delta.z - start.w*dr);
+	float C = start.w*start.w - a.y*a.y - a.z*a.z;
+
+	float A2 = A * A;
+	float B2 = B * B;
+	float dx2 = delta.x*delta.x;
+
+	float denom = 2.0 * (A2 + A * dx2);
+
+	float nom = 4.0*A2*C*dx2;
+	nom += A*B2*dx2;
+	nom += 4.0*A*C*dx2*dx2;
+	nom += B2*dx2*dx2;
+
+	if(nom <= 0.0 || denom == 0.0) {
+#ifdef DEBUG_FRAGMENTS
+		finish_fragment(vec4(vec3(1.0f), 1.0));
+		return;
+#else
+		discard;
+#endif
+	}
+
+	nom = sqrt(nom);
+
+	float nom2 = - A*B - B*dx2;
+
+	float l1 = (nom + nom2) / denom;
+	float l2 = (-nom + nom2) / denom;
+
+	l1 = clamp(l1, 0.0, 1.0);
+	l2 = clamp(l2, 0.0, 1.0);
+
+	float t1 = l1 * delta.x + a.x;
+	t1 -= sqrt(-A * l1*l1 - B * l1 + C);
+
+	float t2 = l2 * delta.x + a.x;
+	t2 -= sqrt(-A * l2*l2 - B * l2 + C);
+
+	if(t1 < t2) {
+		float temp = t1;
+		t1 = t2;
+		t2 = temp;
+		temp = l1;
+		l1 = l2;
+		l2 = temp;
+	}
+
+	bool hit = false;
+	vec3 hit_pos = vec3(0.0);
+	vec3 normal = vec3(0.0, 1.0, 0.0);
+	vec3 color = vec3(0.0);
+	
+	if(t1 >= 0.0001) {
+		hit = true;
+		//hit_pos = eye + t1*dir;
+		hit_pos = t1*dir;
+		normal = normalize(hit_pos - mix(start.xyz, end.xyz, l1));
+		//color = mix(texture(color_scale_tex, vec2(s.c.z, 0.5f)).rgb, texture(color_scale_tex, vec2(s.c.w, 0.5f)).rgb, l1);
+		//color = texture(color_scale_tex, vec2(mix(s.c.z, s.c.w, l1), 0.5f)).rgb;
+		//color = texture(color_scale_tex, vec2(mix(0.1, 0.3, l1), 0.5f)).rgb;
+		color = color_fs.rgb;
+	}
+
+	if(t2 >= 0.0001) {
+		hit = true;
+		//hit_pos = eye + t2*dir;
+		hit_pos = t2*dir;
+		normal = normalize(hit_pos - mix(start.xyz, end.xyz, l2));
+		//color = mix(texture(color_scale_tex, vec2(s.c.z, 0.5f)).rgb, texture(color_scale_tex, vec2(s.c.w, 0.5f)).rgb, l2);
+		//color = texture(color_scale_tex, vec2(mix(s.c.z, s.c.w, l2), 0.5f)).rgb;
+		//color = texture(color_scale_tex, vec2(mix(0.1, 0.3, l2), 0.5f)).rgb;
+		color = color_fs.rgb;
+	}
+
+	if(hit) {
+#ifdef DEBUG_FRAGMENTS
+		finish_fragment(vec4(1.0, 0.0, 0.0, 1.0));
+#else
+		float falloff = 0.5 * (1.0 - dot(-dir, normal));
+
+		vec3 light_dir = vec3(1.0);
+
+		float diffuse = clamp(dot(normalize(light_dir), normal), 0.0, 1.0);
+		vec3 halfway = normalize(-dir + light_dir);
+		float specular = pow(max(dot(normal, halfway), 0.0), 16.0);
+
+		color *= (0.3 * diffuse + 0.2 * specular + 0.5);
+
+		finish_fragment(vec4(color, 1.0));
+		//finish_fragment(vec4(mix(color, vec3(0.0), falloff), 1.0));
+#endif
+		
+		vec4 ding = vec4(hit_pos, 1.0);
+		float depth = dot(tmvp2, ding);
+		float depth_w = dot(tmvp3, ding);
+		gl_FragDepth = 0.5 * (depth / depth_w) + 0.5;
+	} else {
+#ifdef DEBUG_FRAGMENTS
+		finish_fragment(vec4(vec3(1.0f), 1.0));
+		return;
+#else
+		discard;
+#endif
+	}
+
+	//finish_fragment(compute_reflected_appearance(position, vec3(0.0, 1.0, 0.0), color_fs, side));
+}
