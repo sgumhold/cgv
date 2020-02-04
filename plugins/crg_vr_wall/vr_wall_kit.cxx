@@ -131,8 +131,8 @@ namespace vr {
 	vr_wall_kit::vec3 vr_wall_kit::transform_world_to_screen(const vec3& p) const
 	{
 		vec3 p_screen = (p - get_screen_center()) * get_screen_orientation();
-		p_screen[0] /= height*pixel_size[0];
-		p_screen[1] /= height*pixel_size[1];
+		p_screen[0] /= 0.5f*height*pixel_size[0];
+		p_screen[1] /= 0.5f*height*pixel_size[1];
 		return p_screen;
 	}
 	/// construct vr wall kit by attaching to another vr kit
