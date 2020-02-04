@@ -73,17 +73,19 @@ void vr_emulated_kit::compute_state_poses()
 	mat4 T_head =
 		cgv::math::translate4<float>(vec3(0, scale*(Chin_height - Hip_height), 0))*
 		cgv::math::rotate4<float>(-90*gear_parameter, vec3(0, 1, 0));
-
+	mat4 R;
+	hand_orientation[0].put_homogeneous_matrix(R);
 	mat4 T_left =
 		cgv::math::translate4<float>(
 			scale*vec3(-(Shoulder_breadth + Arm_length * hand_position[0](0)),
 				Shoulder_height - Hip_height + Arm_length * hand_position[0](1),
-				Arm_length*hand_position[0](2)));
+				Arm_length*hand_position[0](2)))*R;
+	hand_orientation[1].put_homogeneous_matrix(R);
 	mat4 T_right =
 		cgv::math::translate4<float>(
 			scale*vec3(+(Shoulder_breadth + Arm_length * hand_position[1](0)),
 				Shoulder_height - Hip_height + Arm_length * hand_position[1](1),
-				Arm_length*hand_position[1](2)));
+				Arm_length*hand_position[1](2)))*R;
 
 	set_pose_matrix(T_body*T_hip*T_head, state.hmd.pose);
 	set_pose_matrix(T_body*T_hip*T_left, state.controller[0].pose);
@@ -100,7 +102,6 @@ void vr_emulated_kit::compute_state_poses()
 vr_emulated_kit::vr_emulated_kit(float _body_direction, const vec3& _body_position, float _body_height, unsigned _width, unsigned _height, vr::vr_driver* _driver, void* _handle, const std::string& _name, bool _ffb_support, bool _wireless)
 	: gl_vr_display(_width, _height, _driver, _handle, _name, _ffb_support, _wireless)
 {
-
 	body_position = _body_position;
 	body_direction=_body_direction;
 	body_height = _body_height;
@@ -109,6 +110,8 @@ vr_emulated_kit::vr_emulated_kit(float _body_direction, const vec3& _body_positi
 	fovy = 90;
 	hand_position[0] = vec3(0, -0.5f, -0.2f);
 	hand_position[1] = vec3(0, -0.5f, -0.2f);
+	hand_orientation[0] = quat(1, 0, 0, 0);
+	hand_orientation[1] = quat(1, 0, 0, 0);
 	state.hmd.status = vr::VRS_TRACKED;
 	state.controller[0].status = vr::VRS_TRACKED;
 	state.controller[1].status = vr::VRS_TRACKED;
@@ -199,11 +202,10 @@ void vr_emulated_kit::submit_frame()
 vr_emulator::vr_emulator() : cgv::base::node("vr_emulator")
 {
 	current_kit_index = -1;
+	interaction_mode = IM_BODY;
 
 	left_ctrl = right_ctrl = up_ctrl = down_ctrl = false;
 	home_ctrl = end_ctrl = pgup_ctrl = pgdn_ctrl = false;
-	alt_left_ctrl = alt_right_ctrl = false;
-	current_kit_ctrl = -1;
 	installed = true;
 	body_speed = 1.0f;
 	body_position = vec3(0,0,1);
@@ -219,39 +221,69 @@ vr_emulator::vr_emulator() : cgv::base::node("vr_emulator")
 
 void vr_emulator::timer_event(double t, double dt)
 {
-	if (current_kit_ctrl >= 0 && current_kit_ctrl < (int)kits.size()) {
-		if (left_ctrl || right_ctrl) {
-			kits[current_kit_ctrl]->body_direction += 3 * (float)(left_ctrl ? -dt : dt);
-			update_all_members();
-			post_redraw();
-		}
-		if (up_ctrl || down_ctrl) {
-			kits[current_kit_ctrl]->body_position -= (float)(down_ctrl ? -dt : dt) * kits[current_kit_ctrl]->get_body_direction();
-			update_all_members();
-			post_redraw();
-		}
-		if (home_ctrl || end_ctrl) {
-			kits[current_kit_ctrl]->gear_parameter += (float)(home_ctrl ? -dt : dt);
-			if (kits[current_kit_ctrl]->gear_parameter < -1)
-				kits[current_kit_ctrl]->gear_parameter = -1;
-			else if (kits[current_kit_ctrl]->gear_parameter > 1)
-				kits[current_kit_ctrl]->gear_parameter = 1;
-			update_all_members();
-			post_redraw();
-		}
-		if (alt_left_ctrl || alt_right_ctrl) {
-			kits[current_kit_ctrl]->body_position -= (float)(alt_left_ctrl ? -dt : dt) * cross(kits[current_kit_ctrl]->get_body_direction(), vec3(0, 1, 0));
-			update_all_members();
-			post_redraw();
-		}
-		if (pgup_ctrl || pgdn_ctrl) {
-			kits[current_kit_ctrl]->hip_parameter += (float)(pgup_ctrl ? -dt : dt) ;
-			if (kits[current_kit_ctrl]->hip_parameter < -1)
-				kits[current_kit_ctrl]->hip_parameter = -1;
-			else if (kits[current_kit_ctrl]->hip_parameter > 1)
-				kits[current_kit_ctrl]->hip_parameter = 1;
-			update_all_members();
-			post_redraw();
+	if (current_kit_index >= 0 && current_kit_index < (int)kits.size()) {
+		switch (interaction_mode)
+		{
+		case IM_BODY:
+			if (left_ctrl || right_ctrl) {
+				if (is_alt)
+					kits[current_kit_index]->body_position -= (float)(left_ctrl ? -dt : dt) * cross(kits[current_kit_index]->get_body_direction(), vec3(0, 1, 0));
+				else 
+					kits[current_kit_index]->body_direction += 3 * (float)(left_ctrl ? -dt : dt);
+				update_all_members();
+				post_redraw();
+			}
+			if (up_ctrl || down_ctrl) {
+				kits[current_kit_index]->body_position -= (float)(down_ctrl ? -dt : dt) * kits[current_kit_index]->get_body_direction();
+				update_all_members();
+				post_redraw();
+			}
+			if (home_ctrl || end_ctrl) {
+				kits[current_kit_index]->gear_parameter += (float)(home_ctrl ? -dt : dt);
+				if (kits[current_kit_index]->gear_parameter < -1)
+					kits[current_kit_index]->gear_parameter = -1;
+				else if (kits[current_kit_index]->gear_parameter > 1)
+					kits[current_kit_index]->gear_parameter = 1;
+				update_all_members();
+				post_redraw();
+			}
+			if (pgup_ctrl || pgdn_ctrl) {
+				kits[current_kit_index]->hip_parameter += (float)(pgup_ctrl ? -dt : dt);
+				if (kits[current_kit_index]->hip_parameter < -1)
+					kits[current_kit_index]->hip_parameter = -1;
+				else if (kits[current_kit_index]->hip_parameter > 1)
+					kits[current_kit_index]->hip_parameter = 1;
+				update_all_members();
+				post_redraw();
+			}
+			break;
+		case IM_LEFT_HAND:
+		case IM_RIGHT_HAND:
+			if (left_ctrl || right_ctrl) {
+				if (is_alt)
+					kits[current_kit_index]->hand_position[interaction_mode - 1][0] += 0.3f * (float)(right_ctrl ? -dt : dt);
+				else
+					kits[current_kit_index]->hand_orientation[interaction_mode - 1] = quat(vec3(0, 1, 0), (float)(right_ctrl ? -dt : dt))*kits[current_kit_index]->hand_orientation[interaction_mode - 1];
+				update_all_members();
+				post_redraw();
+			}
+			if (up_ctrl || down_ctrl) {
+				if (is_alt)
+					kits[current_kit_index]->hand_position[interaction_mode - 1][1] += 0.3f * (float)(down_ctrl ? -dt : dt);
+				else
+					kits[current_kit_index]->hand_orientation[interaction_mode - 1] = quat(vec3(1, 0, 0), (float)(down_ctrl ? -dt : dt))*kits[current_kit_index]->hand_orientation[interaction_mode - 1];
+				update_all_members();
+				post_redraw();
+			}
+			if (pgup_ctrl || pgdn_ctrl) {
+				if (is_alt)
+					kits[current_kit_index]->hand_position[interaction_mode - 1][2] += 0.3f * (float)(pgup_ctrl ? -dt : dt);
+				else
+					kits[current_kit_index]->hand_orientation[interaction_mode - 1] = quat(vec3(0, 0, 1), (float)(pgup_ctrl ? -dt : dt))*kits[current_kit_index]->hand_orientation[interaction_mode - 1];
+				update_all_members();
+				post_redraw();
+			}
+			break;
 		}
 	}
 }
@@ -369,16 +401,35 @@ void vr_emulator::put_action_zone_bounary(std::vector<float>& boundary) const
 }
 bool vr_emulator::check_for_button_toggle(cgv::gui::key_event& ke, int controller_index, vr::VRButtonStateFlags button)
 {
-	if (current_kit_ctrl == -1)
+	if (current_kit_index == -1)
 		return false;
-	if (current_kit_ctrl >= (int)kits.size())
+	if (current_kit_index >= (int)kits.size())
 		return false;
 	if (ke.get_action() != cgv::gui::KA_PRESS)
 		return false;
-	kits[current_kit_ctrl]->state.controller[controller_index].button_flags ^= button;
+	kits[current_kit_index]->state.controller[controller_index].button_flags ^= button;
 	update_all_members();
 	return true;
 }
+
+bool vr_emulator::handle_ctrl_key(cgv::gui::key_event& ke, bool& fst_ctrl, bool* snd_ctrl_ptr)
+{
+	if (current_kit_index == -1)
+		return false;
+
+	if (snd_ctrl_ptr && (ke.get_modifiers() & cgv::gui::EM_SHIFT) != 0) {
+		*snd_ctrl_ptr = (ke.get_action() != cgv::gui::KA_RELEASE);
+		update_member(snd_ctrl_ptr);
+	}
+	else {
+		fst_ctrl = (ke.get_action() != cgv::gui::KA_RELEASE);
+		update_member(&fst_ctrl);
+	}
+	is_alt = (ke.get_action() != cgv::gui::KA_RELEASE) && ((ke.get_modifiers() & cgv::gui::EM_ALT) != 0);
+	update_member(&is_alt);
+	return true;
+}
+
 /// overload and implement this method to handle events
 bool vr_emulator::handle(cgv::gui::event& e)
 {
@@ -398,14 +449,21 @@ bool vr_emulator::handle(cgv::gui::event& e)
 	case '2':
 	case '3':
 		if (ke.get_modifiers() == 0) {
-			if (ke.get_action() != cgv::gui::KA_RELEASE)
-				current_kit_ctrl = ke.get_key() - '0';
-			else
-				current_kit_ctrl = -1;
-			update_member(&current_kit_ctrl);
+			if (ke.get_action() != cgv::gui::KA_RELEASE) {
+				current_kit_index = ke.get_key() - '0';
+				if (current_kit_index >= (int)kits.size())
+					current_kit_index = -1;
+				update_member(&current_kit_index);
+			}
 			return true;
 		}
 		break;
+	case '5':
+	case '6':
+	case '7':
+		interaction_mode = InteractionMode(IM_BODY + ke.get_key() - '5');
+		update_member(&interaction_mode);
+		return true;
 	case 'Q': return check_for_button_toggle(ke, 0, vr::VRF_MENU);
 	case 'A': return check_for_button_toggle(ke, 0, vr::VRF_BUTTON0);
 	case 'D': return check_for_button_toggle(ke, 0, vr::VRF_BUTTON1);
@@ -422,101 +480,21 @@ bool vr_emulator::handle(cgv::gui::event& e)
 	case 'K': return check_for_button_toggle(ke, 1, vr::VRF_STICK);
 	case 'B': return check_for_button_toggle(ke, 1, vr::VRF_STICK_TOUCH);
 
-	case cgv::gui::KEY_Left:
-		if (current_kit_ctrl != -1) {
-			if (ke.get_modifiers() == cgv::gui::EM_SHIFT) {
-				home_ctrl = (ke.get_action() != cgv::gui::KA_RELEASE);
-				update_member(&home_ctrl);
-			}
-			else if (ke.get_modifiers() == cgv::gui::EM_ALT) {
-				alt_left_ctrl = (ke.get_action() != cgv::gui::KA_RELEASE);
-				update_member(&alt_left_ctrl);
-			}
-			else {
-				left_ctrl = (ke.get_action() != cgv::gui::KA_RELEASE);
-				update_member(&left_ctrl);
-			}
-			return true;
-		}
-		break;
-	case cgv::gui::KEY_Right: 
-		if (current_kit_ctrl != -1) {
-			if (ke.get_modifiers() == cgv::gui::EM_SHIFT) {
-				end_ctrl = (ke.get_action() != cgv::gui::KA_RELEASE);
-				update_member(&end_ctrl);
-			}
-			else if (ke.get_modifiers() == cgv::gui::EM_ALT) {
-				alt_right_ctrl = (ke.get_action() != cgv::gui::KA_RELEASE);
-				update_member(&alt_right_ctrl);
-			}
-			else {
-				right_ctrl = (ke.get_action() != cgv::gui::KA_RELEASE);
-				update_member(&right_ctrl);
-			}
-			return true;
-		}
-		break;
-	case cgv::gui::KEY_Up:
-		if (current_kit_ctrl != -1) {
-			if (ke.get_modifiers() == cgv::gui::EM_SHIFT) {
-				pgup_ctrl = (ke.get_action() != cgv::gui::KA_RELEASE);
-				update_member(&pgup_ctrl);
-			}
-			else {
-				up_ctrl = (ke.get_action() != cgv::gui::KA_RELEASE);
-				update_member(&up_ctrl);
-			}
-			return true;
-		}
-		break;
-	case cgv::gui::KEY_Down:
-		if (current_kit_ctrl != -1) {
-			if (ke.get_modifiers() == cgv::gui::EM_SHIFT) {
-				pgdn_ctrl = (ke.get_action() != cgv::gui::KA_RELEASE);
-				update_member(&pgdn_ctrl);
-			}
-			else {
-				down_ctrl = (ke.get_action() != cgv::gui::KA_RELEASE);
-				update_member(&down_ctrl);
-			}
-			return true;
-		}
-		break;
-	case cgv::gui::KEY_Home:
-		if (current_kit_ctrl != -1) {
-			home_ctrl = (ke.get_action() != cgv::gui::KA_RELEASE);
-			update_member(&home_ctrl);
-			return true;
-		}
-		break;
-	case cgv::gui::KEY_End:
-		if (current_kit_ctrl != -1) {
-			end_ctrl = (ke.get_action() != cgv::gui::KA_RELEASE);
-			update_member(&end_ctrl);
-			return true;
-		}
-		break;
-	case cgv::gui::KEY_Page_Up:
-		if (current_kit_ctrl != -1) {
-			pgup_ctrl = (ke.get_action() != cgv::gui::KA_RELEASE);
-			update_member(&pgup_ctrl);
-			return true;
-		}
-		break;
-	case cgv::gui::KEY_Page_Down:
-		if (current_kit_ctrl != -1) {
-			pgdn_ctrl = (ke.get_action() != cgv::gui::KA_RELEASE);
-			update_member(&pgdn_ctrl);
-			return true;
-		}
-		break;
+	case cgv::gui::KEY_Left: return handle_ctrl_key(ke, left_ctrl, &home_ctrl);
+	case cgv::gui::KEY_Right: return handle_ctrl_key(ke, right_ctrl, &end_ctrl);
+	case cgv::gui::KEY_Up: return handle_ctrl_key(ke, up_ctrl, &pgup_ctrl);
+	case cgv::gui::KEY_Down:return handle_ctrl_key(ke, down_ctrl, &pgdn_ctrl);
+	case cgv::gui::KEY_Home:return handle_ctrl_key(ke, home_ctrl);
+	case cgv::gui::KEY_End:return handle_ctrl_key(ke, end_ctrl);
+	case cgv::gui::KEY_Page_Up:return handle_ctrl_key(ke, pgup_ctrl);
+	case cgv::gui::KEY_Page_Down:return handle_ctrl_key(ke, pgdn_ctrl);
 	}
 	return false;
 }
 /// overload to stream help information to the given output stream
 void vr_emulator::stream_help(std::ostream& os)
 {
-	os << "vr_emulator:\n   Ctrl-Alt-N to create vr kit\n   press and hold <0|1|2|3> to select vr kit and use arrow keys to move or\n      Q,A,W,D,X,C,S|O,L,I,J,M,K,B to toggle left|right controller buttons";
+	os << "vr_emulator:\n   Ctrl-Alt-N to create vr kit\n   <0|1|2|3> to select vr kit and use arrow keys to move or\n      Q,A,W,D,X,C,S|O,L,I,J,M,K,B to toggle left|right controller buttons";
 }
 /// return the type name 
 std::string vr_emulator::get_type_name() const
@@ -638,16 +616,17 @@ void vr_emulator::create_gui()
 		align("\b");
 		end_tree_node(screen_width);
 	}
-	add_view("current_kit_ctrl", current_kit_ctrl, "", "w=50", " ");
-	add_member_control(this, "L", left_ctrl, "toggle", "w=15", " ");
+	add_view("current_kit", current_kit_index, "", "w=50", " ");
+	add_member_control(this, "mode", interaction_mode, "dropdown", "w=100;enums='body,left hand,right hand'");
+	add_member_control(this, "alt", is_alt,   "toggle", "w=15", " ");
+	add_member_control(this, "L", left_ctrl,  "toggle", "w=15", " ");
 	add_member_control(this, "R", right_ctrl, "toggle", "w=15", " ");
-	add_member_control(this, "U", up_ctrl, "toggle", "w=15", " ");
-	add_member_control(this, "D", down_ctrl, "toggle", "w=15");
-	align("   ");
-	add_member_control(this, "H", home_ctrl, "toggle", "w=15", " ");
-	add_member_control(this, "E", end_ctrl,  "toggle", "w=15", " ");
-	add_member_control(this, "P", pgup_ctrl, "toggle", "w=15", " ");
-	add_member_control(this, "p", pgdn_ctrl, "toggle", "w=15");
+	add_member_control(this, "U", up_ctrl,    "toggle", "w=15", " ");
+	add_member_control(this, "D", down_ctrl,  "toggle", "w=15", " ");
+	add_member_control(this, "H", home_ctrl,  "toggle", "w=15", " ");
+	add_member_control(this, "E", end_ctrl,   "toggle", "w=15", " ");
+	add_member_control(this, "P", pgup_ctrl,  "toggle", "w=15", " ");
+	add_member_control(this, "p", pgdn_ctrl,  "toggle", "w=15");
 
 	for (unsigned i = 0; i < kits.size(); ++i) {
 		if (begin_tree_node(kits[i]->get_name(), *kits[i], false, "level=2")) {
