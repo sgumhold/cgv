@@ -34,7 +34,8 @@ protected:
 	float fovy;
 	vec3 body_position;
 	vec3 hand_position[2];
-	
+	quat hand_orientation[2];
+
 	bool tracker_enabled[2];
 	vec3 tracker_positions[2];
 	quat tracker_orientations[2];
@@ -56,6 +57,12 @@ public:
 	void submit_frame();
 };
 
+enum InteractionMode {
+	IM_BODY,
+	IM_LEFT_HAND,
+	IM_RIGHT_HAND
+};
+
 class CGV_API vr_emulator : 
 	public cgv::base::node, public cgv::render::drawable,
 	public vr::vr_driver, public cgv::gui::provider, public cgv::gui::event_handler
@@ -70,15 +77,18 @@ public:
 	vec3 body_position;
 	float body_direction;
 	float body_height;
+	InteractionMode interaction_mode;
+	quat hand_orientation[2];
 protected:
 	// emulation
 	bool installed;
 	float body_speed;
 
+
 	bool left_ctrl, right_ctrl, up_ctrl, down_ctrl;
 	bool home_ctrl, end_ctrl, pgup_ctrl, pgdn_ctrl;
-	bool alt_left_ctrl, alt_right_ctrl;
-	int current_kit_ctrl;
+	bool is_alt;
+
 	void create_tracker_gui(vr_emulated_kit* kit, int i);
 	void create_trackable_gui(const std::string& name, vr::vr_trackable_state& ts);
 	void create_controller_gui(int i, vr::vr_controller_state& cs);
@@ -112,6 +122,8 @@ public:
 	void put_action_zone_bounary(std::vector<float>& boundary) const;
 	///
 	bool check_for_button_toggle(cgv::gui::key_event& ke, int controller_index, vr::VRButtonStateFlags button);
+	///
+	bool handle_ctrl_key(cgv::gui::key_event& ke, bool& fst_ctrl, bool* snd_ctrl_ptr = 0);
 	/// overload and implement this method to handle events
 	bool handle(cgv::gui::event& e);
 	/// overload to stream help information to the given output stream
