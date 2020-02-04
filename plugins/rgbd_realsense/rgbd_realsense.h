@@ -52,6 +52,7 @@ namespace rgbd {
 		/// holds last consistent set of frames
 		rs2::frameset frame_cache;
 		double last_color_frame_time, last_depth_frame_time, last_ir_frame_time;
+		double depth_scale;
 	};
 
 	class CGV_API rgbd_realsense_driver : public rgbd_driver
