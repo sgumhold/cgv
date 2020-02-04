@@ -1,0 +1,97 @@
+#version 430
+#extension GL_EXT_geometry_shader4 : enable
+
+layout(points) in;
+layout(triangle_strip, max_vertices = 24) out;
+
+in mat4 PM[];
+in flat vec4 a[];
+in flat vec4 b[];
+in flat vec4 in_tmvp2[];
+in flat vec4 in_tmvp3[];
+in vec4 color_gs[];
+
+out vec3 position;
+out flat vec4 start;
+out flat vec4 end;
+out flat vec4 tmvp2;
+out flat vec4 tmvp3;
+out vec4 color_fs;
+
+
+//***** begin interface of side.glsl ***********************************
+bool keep_this_side(in vec3 position, in vec3 normal, out int side);
+void update_material_color_and_transparency(inout vec3 mat_color, inout float transparency, in int side, in vec4 color);
+void update_normal(inout vec3 normal, in int side);
+//***** end interface of side.glsl ***********************************
+
+//***** begin interface of view.glsl ***********************************
+mat4 get_modelview_matrix();
+mat4 get_projection_matrix();
+mat4 get_modelview_projection_matrix();
+mat4 get_inverse_modelview_matrix();
+mat4 get_inverse_modelview_projection_matrix();
+mat3 get_normal_matrix();
+mat3 get_inverse_normal_matrix();
+//***** end interface of view.glsl ***********************************
+
+void emit_face(in vec4 c0, in vec4 c1, in vec4 c2, in vec4 c3)
+{
+	color_fs = color_gs[0];
+	// compute eye space normal and first corner position
+	//normal = normal_in;
+	position = c0.xyz;
+	start = a[0];
+	end = b[0];
+	tmvp2 = in_tmvp2[0];
+	tmvp3 = in_tmvp3[0];
+
+	// determine side in eye space and check for culling
+	//if (!keep_this_side(position, normal, side))
+		//return;
+
+	// emit face
+	gl_Position = get_projection_matrix() * c0;
+	EmitVertex();
+	position = c1.xyz;
+	gl_Position = get_projection_matrix() * c1;
+	EmitVertex();
+	position = c2.xyz;
+	gl_Position = get_projection_matrix() * c2;
+	EmitVertex();
+	position = c3.xyz;
+	gl_Position = get_projection_matrix() * c3;
+	EmitVertex();
+	EndPrimitive();
+}
+
+void main()
+{
+	vec4 C0 = PM[0] * vec4(-0.5, -0.5, -0.5, 1.0);
+	vec4 C1 = PM[0] * vec4(0.5, -0.5, -0.5, 1.0);
+	vec4 C2 = PM[0] * vec4(-0.5, 0.5, -0.5, 1.0);
+	vec4 C3 = PM[0] * vec4(0.5, 0.5, -0.5, 1.0);
+	vec4 C4 = PM[0] * vec4(-0.5, -0.5, 0.5, 1.0);
+	vec4 C5 = PM[0] * vec4(0.5, -0.5, 0.5, 1.0);
+	vec4 C6 = PM[0] * vec4(-0.5, 0.5, 0.5, 1.0);
+	vec4 C7 = PM[0] * vec4(0.5, 0.5, 0.5, 1.0);
+
+	/*float e = extent[0].x;
+	float r = extent[0].y;
+
+	vec4 C0 = PM[0] * vec4(-e, -r, -r, 1.0);
+	vec4 C1 = PM[0] * vec4(e, -r, -r, 1.0);
+	vec4 C2 = PM[0] * vec4(-e, r, -r, 1.0);
+	vec4 C3 = PM[0] * vec4(e, r, -r, 1.0);
+	vec4 C4 = PM[0] * vec4(-e, -r, r, 1.0);
+	vec4 C5 = PM[0] * vec4(e, -r, r, 1.0);
+	vec4 C6 = PM[0] * vec4(-e, r, r, 1.0);
+	vec4 C7 = PM[0] * vec4(e, r, r, 1.0);*/
+
+	emit_face(C0, C4, C2, C6);
+	emit_face(C5, C1, C7, C3);
+	emit_face(C0, C1, C4, C5);
+	emit_face(C3, C2, C7, C6);
+	emit_face(C0, C2, C1, C3);
+	emit_face(C6, C4, C7, C5);
+}
