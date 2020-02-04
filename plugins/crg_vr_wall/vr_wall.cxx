@@ -200,8 +200,8 @@ namespace vr {
 		vr_wall_hmd_index = -1;
 		screen_orientation = quat(1, 0, 0, 0);		
 		screen_center = vec3(0, 0.8f, 1);
-		screen_x = vec3(-0.75f, 0, 0);
-		screen_y = vec3(0, 0.5f, 0);
+		screen_x = vec3(-1.0f, 0, 0);
+		screen_y = vec3(0, 0.75f, 0);
 		window_width = 1920;
 		window_height = 1080;
 		window_x = 0;
@@ -219,6 +219,10 @@ namespace vr {
 	///
 	vr_wall::~vr_wall()
 	{
+		if (wall_kit_ptr) {
+			delete wall_kit_ptr;
+			wall_kit_ptr = 0;
+		}
 		cgv::base::unregister_object(window);
 		cgv::gui::application::remove_window(window);
 	}
@@ -526,19 +530,18 @@ namespace vr {
 		if (&ctx == main_context) {
 			cgv::render::ref_box_renderer(ctx, -1);
 			cgv::render::ref_sphere_renderer(ctx, -1);
-			wall_kit_ptr->wall_context = true;
-			wall_kit_ptr->destruct_fbos();
-			wall_kit_ptr->wall_context = false;
+			if (wall_kit_ptr) {
+				wall_kit_ptr->wall_context = true;
+				wall_kit_ptr->destruct_fbos();
+				wall_kit_ptr->wall_context = false;
+			}
 			cgv::render::ref_box_renderer(ctx, -1);
 			cgv::render::ref_sphere_renderer(ctx, -1);
 			cgv::render::ref_arrow_renderer(ctx, -1);
 		}
 		else {
-			if (wall_kit_ptr) {
+			if (wall_kit_ptr)
 				wall_kit_ptr->destruct_fbos();
-				delete wall_kit_ptr;
-				wall_kit_ptr = 0;
-			}
 			pr.clear(ctx);
 		}
 	}
