@@ -36,7 +36,7 @@ namespace vr {
 		/// access to 3x4 matrix in column major format for transformation from eye (0..left, 1..right) to head coordinates
 		void put_eye_to_head_matrix(int eye, float* pose_matrix) const;
 		/// access to 4x4 matrix in column major format for perspective transformation from eye (0..left, 1..right) 
-		void put_projection_matrix(int eye, float z_near, float z_far, float* projection_matrix) const;
+		void put_projection_matrix(int eye, float z_near, float z_far, float* projection_matrix, const float* hmd_pose) const;
 		/// initialize render targets and framebuffer objects in current opengl context
 		bool init_fbos();
 		/// submit the rendered stereo frame to the hmd

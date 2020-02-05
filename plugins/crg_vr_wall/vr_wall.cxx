@@ -293,14 +293,21 @@ namespace vr {
 				generate_screen_calib_points();
 				calib_index = 0;
 				update_member(&calib_index);
+				if (wall_kit_ptr)
+					wall_kit_ptr->in_calibration = true;
 				break;
 			case WS_EYES_CALIB:
 				generate_eye_calib_points();
 				//if (!generate_points_from_image("res://cgv.png", 0.5f))
 				//	generate_points(20);
 				calib_index = 0;
+				update_member(&calib_index);
+				if (wall_kit_ptr)
+					wall_kit_ptr->in_calibration = true;
 				break;
 			case WS_HMD:
+				if (wall_kit_ptr)
+					wall_kit_ptr->in_calibration = false;
 				break;
 			}
 		}
@@ -310,6 +317,8 @@ namespace vr {
 				if (vr_wall_kit_index < (int)kits.size()) {
 					if (wall_kit_ptr == 0) {
 						wall_kit_ptr = new vr::vr_wall_kit(vr_wall_kit_index, window_width, window_height, "vr_wall_kit");
+						if (wall_state != WS_HMD)
+							wall_kit_ptr->in_calibration = true;
 						on_update_screen_calibration();
 						connect_copy(wall_kit_ptr->on_submit_frame, cgv::signal::rebind(static_cast<drawable*>(this), &drawable::post_redraw));
 					}
@@ -505,7 +514,11 @@ namespace vr {
 	///
 	void vr_wall::stream_help(std::ostream& os)
 	{
-		os << "vr_wall: no help yet" << std::endl;
+		os << "vr_wall:\n"
+		   << "  <S|E|H> .. select mode <Screen calib|Eye calib|Hmd>\n" 
+		   << "  <left|right VR Controller Grip> .. define point\n"
+		   << "  Screen calib: touch green points with controller front\n"
+		   << "  Eye calib: aim with left|right eye through left|right controller ring to red|blue dot" << std::endl;
 	}
 	///
 	void vr_wall::init_frame(cgv::render::context& ctx)
@@ -597,7 +610,7 @@ namespace vr {
 				prog.set_uniform(ctx, "texture", 0);
 				ctx.set_color(rgba(1, 1, 1, 1));
 				glActiveTexture(GL_TEXTURE0);
-				wall_kit_ptr->bind_texture(0);
+				glBindTexture(GL_TEXTURE_2D, blit_tex[0]);
 				cgv::render::attribute_array_binding::set_global_attribute_array(ctx, prog.get_position_index(), P);
 				cgv::render::attribute_array_binding::enable_global_array(ctx, prog.get_position_index());
 				cgv::render::attribute_array_binding::set_global_attribute_array(ctx, prog.get_texcoord_index(), T);
@@ -691,27 +704,27 @@ namespace vr {
 			GLint draw_buffer, draw_fbo;
 			glGetIntegerv(GL_DRAW_BUFFER, &draw_buffer);
 			glGetIntegerv(GL_DRAW_FRAMEBUFFER_BINDING, &draw_fbo);
-
-
+			
 			if (blit_fbo == -1) {
 				glGenFramebuffers(1, &blit_fbo);
 				glBindFramebuffer(GL_DRAW_FRAMEBUFFER, blit_fbo);
-				wall_kit_ptr->bind_texture(0);
-				GLint tex_id;
-				glGetIntegerv(GL_TEXTURE_BINDING_2D, &tex_id);
-				glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, tex_id, 0);
-				wall_kit_ptr->bind_texture(1);
-				glGetIntegerv(GL_TEXTURE_BINDING_2D, &tex_id);
-				glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, tex_id, 0);
+				glGenTextures(2, blit_tex);
+				for (int i = 0; i < 2; ++i) {
+					glBindTexture(GL_TEXTURE_2D, blit_tex[i]);
+					glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+					glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 0);
+					glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, ctx.get_width() / 2, ctx.get_height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
+					glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0+i, GL_TEXTURE_2D, blit_tex[i], 0);
+				}
 			}
 			else
 				glBindFramebuffer(GL_DRAW_FRAMEBUFFER, blit_fbo);
 
-			wall_kit_ptr->bind_texture(0);
+			glBindTexture(GL_TEXTURE_2D, blit_tex[0]);
 			glDrawBuffer(GL_COLOR_ATTACHMENT0);
-			
 			glBlitFramebuffer(0, 0, ctx.get_width() / 2, ctx.get_height(), 0, 0, ctx.get_width() / 2, ctx.get_height(), GL_COLOR_BUFFER_BIT, GL_NEAREST);
-			wall_kit_ptr->bind_texture(1);
+			
+			glBindTexture(GL_TEXTURE_2D, blit_tex[1]);
 			glDrawBuffer(GL_COLOR_ATTACHMENT1);
 			glBlitFramebuffer(ctx.get_width() / 2, 0, ctx.get_width() / 2, ctx.get_height(), 0, 0, ctx.get_width() / 2, ctx.get_height(), GL_COLOR_BUFFER_BIT, GL_NEAREST);
 

@@ -65,7 +65,7 @@ namespace vr {
 		/// pointer to wall_vr_kit
 		vr_wall_kit* wall_kit_ptr;
 		///
-		uint32_t blit_fbo;
+		uint32_t blit_fbo, blit_tex[2];
 		/// screen information during screen calibration
 		vec3 screen_center;
 		vec3 screen_x;

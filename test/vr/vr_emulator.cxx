@@ -187,7 +187,7 @@ void vr_emulated_kit::put_eye_to_head_matrix(int eye, float* pose_matrix) const
 	);
 }
 
-void vr_emulated_kit::put_projection_matrix(int eye, float z_near, float z_far, float* projection_matrix) const
+void vr_emulated_kit::put_projection_matrix(int eye, float z_near, float z_far, float* projection_matrix, const float*) const
 {
 	reinterpret_cast<mat4&>(*projection_matrix) = 
 		cgv::math::perspective4<float>(fovy, float(width)/height, z_near, z_far);
@@ -259,6 +259,8 @@ void vr_emulator::timer_event(double t, double dt)
 			break;
 		case IM_LEFT_HAND:
 		case IM_RIGHT_HAND:
+		case IM_TRACKER_1:
+		case IM_TRACKER_2:
 			if (left_ctrl || right_ctrl) {
 				if (is_alt)
 					kits[current_kit_index]->hand_position[interaction_mode - 1][0] += 0.3f * (float)(left_ctrl ? -dt : dt);
@@ -461,6 +463,8 @@ bool vr_emulator::handle(cgv::gui::event& e)
 	case '5':
 	case '6':
 	case '7':
+	case '8':
+	case '9':
 		interaction_mode = InteractionMode(IM_BODY + ke.get_key() - '5');
 		update_member(&interaction_mode);
 		return true;
@@ -494,7 +498,14 @@ bool vr_emulator::handle(cgv::gui::event& e)
 /// overload to stream help information to the given output stream
 void vr_emulator::stream_help(std::ostream& os)
 {
-	os << "vr_emulator:\n   Ctrl-Alt-N to create vr kit\n   <0|1|2|3> to select vr kit and use arrow keys to move or\n      Q,A,W,D,X,C,S|O,L,I,J,M,K,B to toggle left|right controller buttons";
+	os << "vr_emulator:\n"
+	   << "  Ctrl-Alt-N to create vr kit indexed from 0\n"
+	   << "  <0-3> to select to be controlled vr kit (unselect if key's kit not exits)\n"
+	   << "  <5-9> select <body|left hand|right hand|tracker 1|tracker 2> for control\n"
+	   << "    body: <up|down> .. move,  <left|right> .. turn, <pgup|pgdn> .. bend, \n"
+	   << "          <home|end> .. gear, <alt>+<left|right> .. side step\n"
+	   << "    hand&tracker: <left|right|up|down|pgdn|pgup> .. rotate or with <alt> translate\n"
+	   << "  <Q|A|W|D|X|C|S:O|L|I|J|M|K|B> to toggle left:right controller buttons" << std::endl;
 }
 /// return the type name 
 std::string vr_emulator::get_type_name() const
