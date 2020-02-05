@@ -27,6 +27,9 @@ namespace rgbd {
 	/// attach to the kinect device of the given serial
 	bool rgbd_kinect2::attach(const std::string& serial)
 	{
+		if (serial.compare("default-kinect2") != 0) {
+			return false;
+		}
 		if (is_attached()) {
 			detach();
 		}
