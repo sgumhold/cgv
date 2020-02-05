@@ -134,8 +134,10 @@ namespace vr {
 		virtual void destruct_fbos() = 0;
 		/// access to 3x4 matrix in column major format for transformation from eye (0..left, 1..right) to head coordinates
 		virtual void put_eye_to_head_matrix(int eye, float* pose_matrix) const = 0;
-		/// access to 4x4 matrix in column major format for perspective transformation from eye (0..left, 1..right)
-		virtual void put_projection_matrix(int eye, float z_near, float z_far, float* projection_matrix) const = 0;
+		//! access to 4x4 matrix in column major format for perspective transformation from eye (0..left, 1..right)
+		/*! pose matrix is not needed for most vr kits and can be set to nullptr; only in case of wall based vr kits
+		    the pose matrix needs to be specified*/
+		virtual void put_projection_matrix(int eye, float z_near, float z_far, float* projection_matrix, const float* hmd_pose = 0) const = 0;
 		/// access to 4x4 modelview transformation matrix of given eye in column major format, which is computed in default implementation from given 3x4 pose matrix and eye to head transformation
 		virtual void put_world_to_eye_transform(int eye, const float* hmd_pose, float* modelview_matrix) const;
 		/// enable the framebuffer object of given eye (0..left, 1..right) 

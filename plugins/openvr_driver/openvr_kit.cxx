@@ -235,7 +235,7 @@ void openvr_kit::put_eye_to_head_matrix(int eye, float* pose_matrix) const
 }
 
 /// access to 4x4 matrix in column major format for perspective transformation from eye (0..left, 1..right) optionally including eye to head transformation
-void openvr_kit::put_projection_matrix(int eye, float z_near, float z_far, float* projection_matrix) const
+void openvr_kit::put_projection_matrix(int eye, float z_near, float z_far, float* projection_matrix, const float*) const
 {
 	put_hmatrix(const_cast<vr::IVRSystem*>(get_hmd())->GetProjectionMatrix(EVREye(eye), z_near, z_far), projection_matrix);
 }

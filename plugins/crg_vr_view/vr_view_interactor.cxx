@@ -595,7 +595,7 @@ void vr_view_interactor::init_frame(cgv::render::context& ctx)
 	}
 	if (rendered_kit_ptr) {
 		compute_clipping_planes(z_near_derived, z_far_derived, clip_relative_to_extent);
-		ctx.set_projection_matrix(vr::get_eye_projection_transform(rendered_kit_ptr, float(z_near_derived), float(z_far_derived), rendered_eye));
+		ctx.set_projection_matrix(vr::get_eye_projection_transform(rendered_kit_ptr, kit_states[rendered_kit_index], float(z_near_derived), float(z_far_derived), rendered_eye));
 		ctx.set_modelview_matrix(vr::get_world_to_eye_transform(rendered_kit_ptr, kit_states[rendered_kit_index], rendered_eye));
 	}
 	else {

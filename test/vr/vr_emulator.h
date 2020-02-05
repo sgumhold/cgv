@@ -34,11 +34,10 @@ protected:
 	float fovy;
 	vec3 body_position;
 	vec3 hand_position[2];
-	quat hand_orientation[2];
-
-	bool tracker_enabled[2];
 	vec3 tracker_positions[2];
+	quat hand_orientation[2];
 	quat tracker_orientations[2];
+	bool tracker_enabled[2];
 
 	/// helper functions to construct matrices
 	mat3x4 construct_pos_matrix(const quat& orientation, const vec3& position);
@@ -53,14 +52,16 @@ public:
 	bool query_state(vr::vr_kit_state& state, int pose_query = 2);
 	bool set_vibration(unsigned controller_index, float low_frequency_strength, float high_frequency_strength);
 	void put_eye_to_head_matrix(int eye, float* pose_matrix) const;
-	void put_projection_matrix(int eye, float z_near, float z_far, float* projection_matrix) const;
+	void put_projection_matrix(int eye, float z_near, float z_far, float* projection_matrix, const float* hmd_pose) const;
 	void submit_frame();
 };
 
 enum InteractionMode {
 	IM_BODY,
 	IM_LEFT_HAND,
-	IM_RIGHT_HAND
+	IM_RIGHT_HAND,
+	IM_TRACKER_1,
+	IM_TRACKER_2
 };
 
 class CGV_API vr_emulator : 
