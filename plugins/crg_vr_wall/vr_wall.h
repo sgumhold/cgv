@@ -105,6 +105,7 @@ namespace vr {
 		/// geometry for rendering of points with twice the color attribute once for left and once for right eye
 		std::vector<vec3> points;
 		std::vector<rgb> colors[2];
+		std::vector<float> radii;
 		/// method to generate random dots
 		void generate_points(int n);
 		/// use low res image to create point sampling
