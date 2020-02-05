@@ -105,6 +105,9 @@ namespace vr {
 		points.push_back(vec3(0.2f, 0, 0));
 		colors[0].push_back(rgb(0.5f, 0.5f, 1));
 		colors[1].push_back(rgb(0.5f, 0.5f, 1));
+		points.push_back(vec3(0.2f, 0, 0));
+		colors[0].push_back(rgb(0.5f, 1.0f, 0.5f));
+		colors[1].push_back(rgb(0.5f, 1.0f, 0.5f));
 	}
 	/// add screen center sphere, x & y arrows and box for extruded screen rectangle
 	void vr_wall::add_screen(const vec3& center, const vec3& x, const vec3& y, const rgb& clr, float lum)
@@ -329,6 +332,7 @@ namespace vr {
 			(member_ptr >= &screen_center && member_ptr < &screen_center + 1) ||
 			(member_ptr >= &screen_x && member_ptr < &screen_x + 1) ||
 			(member_ptr >= &screen_y && member_ptr < &screen_y + 1)) {
+			rebuild_screens();
 			on_update_screen_calibration();
 		}
 		else if (member_ptr >= &screen_orientation && member_ptr < &screen_orientation + 1) {
@@ -392,6 +396,13 @@ namespace vr {
 			align("\b");
 			end_tree_node(test_screen_center);
 		}
+		if (begin_tree_node("screen", screen_center, false, "level=2")) {
+			add_gui("screen_center", screen_center, "", "long_label=true;options='min=-3;max=3;ticks=true'");
+			add_gui("screen_x", screen_x, "", "long_label=true;options='min=-3;max=3;ticks=true'");
+			add_gui("screen_y", screen_y, "", "long_label=true;options='min=-3;max=3;ticks=true'");
+			add_gui("screen_orientation", (vec4&)screen_orientation, "direction", "long_label=true;options='min=-1;max=1;ticks=true'");
+			end_tree_node(screen_center);
+		}
 		if (vr_wall_kit_index != -1 && wall_kit_ptr != 0) {
 			add_decorator("screen", "heading", "level=2");
 			add_view("width", wall_kit_ptr->width, "", "w=40", " ");
@@ -399,10 +410,6 @@ namespace vr {
 			add_view("multi", wall_kit_ptr->nr_multi_samples, "", "w=20");
 			add_member_control(this, "pixel_size_x", wall_kit_ptr->pixel_size[0], "value_slider", "min=0.0001;max=0.01;ticks=true;log=true;step=0.00001");
 			add_member_control(this, "pixel_size_y", wall_kit_ptr->pixel_size[1], "value_slider", "min=0.0001;max=0.01;ticks=true;log=true;step=0.00001");
-			add_gui("screen_center", screen_center, "", "long_label=true;options='min=-3;max=3;ticks=true'");
-			add_gui("screen_x", screen_x, "", "long_label=true;options='min=-3;max=3;ticks=true'");
-			add_gui("screen_y", screen_y, "", "long_label=true;options='min=-3;max=3;ticks=true'");
-			add_gui("screen_orientation", (vec4&)screen_orientation, "direction", "long_label=true;options='min=-1;max=1;ticks=true'");
 			add_decorator("head", "heading", "level=2");
 			add_member_control(this, "eye_separation", wall_kit_ptr->eye_separation, "value_slider", "min=0.01;max=0.12;ticks=true;step=0.001");
 			add_gui("eye_center_tracker", wall_kit_ptr->eye_center_tracker, "", "options='min=-0.2;max=0.2;step=0.001;ticks=true'");
@@ -425,6 +432,11 @@ namespace vr {
 						post_redraw();
 					}
 				}
+				if (ci == vr_wall_hmd_index && wall_state == WS_EYES_CALIB && wall_kit_ptr) {
+					points[2] = wall_kit_ptr->transform_world_to_screen(vrpe.get_pose_matrix() * vec4(vec3(0.0f), 1.0f));
+					points[2][2] = 0;
+					post_redraw();
+				}
 			}
 		}
 		if (e.get_kind() != cgv::gui::EID_KEY)
@@ -445,14 +457,23 @@ namespace vr {
 					case 0:
 						screen_center = p;
 						on_update_screen_calibration();
+						update_member(&screen_center[0]);
+						update_member(&screen_center[1]);
+						update_member(&screen_center[2]);
 						break;
 					case 1:
 						screen_x = p - screen_center;
 						on_update_screen_calibration();
+						update_member(&screen_x[0]);
+						update_member(&screen_x[1]);
+						update_member(&screen_x[2]);
 						break;
 					case 2:
 						screen_y = p - screen_center;
 						on_update_screen_calibration();
+						update_member(&screen_y[0]);
+						update_member(&screen_y[1]);
+						update_member(&screen_y[2]);
 						break;
 					}
 					++calib_index;
