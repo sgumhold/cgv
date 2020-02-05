@@ -271,12 +271,20 @@ namespace rgbd {
 			}
 			
 			//copy data to frame
-			//point_count|point_0,...,point_N|triangle_triplet_0,...,triangle_triplet_N
+			//format point_count|point_0,...,point_N|triangle_count|triangle_triplet_0,...,triangle_triplet_M
+			
+			//stream begins with the amount of points in the mesh
 			size_t points_size = points->getSize();
 			memcpy(frame.frame_data.data(), &points_size, sizeof(size_t));
 			size_t offset = sizeof(size_t);
+			//then the Points follow 
 			memcpy(frame.frame_data.data()+offset, points, points_size*sizeof(asdk::IArrayPoint3F));
 			offset += points_size * sizeof(asdk::IArrayPoint3F);
+			//the point data ends before points_size * sizeof(asdk::IArrayPoint3F)+ sizeof(size_t)
+			size_t triangle_size = triangles->getSize();
+			memcpy(frame.frame_data.data()+offset, triangles_size, sizeof(size_t));
+			offset += sizeof(size_t);
+			
 			memcpy(frame.frame_data.data()+offset, triangles, triangles->getSize() * sizeof(asdk::IArrayIndexTriplet));
 			return true;
 		}
