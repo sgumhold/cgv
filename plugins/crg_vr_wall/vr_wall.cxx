@@ -97,17 +97,22 @@ namespace vr {
 	void vr_wall::generate_eye_calib_points()
 	{
 		points.clear();
+		radii.clear();
 		colors[0].clear();
 		colors[1].clear();
 		points.push_back(vec3(-0.2f, 0, 0));
 		colors[0].push_back(rgb(1, 0.5f, 0.5f));
 		colors[1].push_back(rgb(1, 0.5f, 0.5f));
+		float radius = wall_kit_ptr ? (2*1.618033989f*aim_circle_radius / wall_kit_ptr->pixel_size[0]) : 15.0f;
+		radii.push_back(radius);
 		points.push_back(vec3(0.2f, 0, 0));
 		colors[0].push_back(rgb(0.5f, 0.5f, 1));
 		colors[1].push_back(rgb(0.5f, 0.5f, 1));
+		radii.push_back(radius);
 		points.push_back(vec3(0.2f, 0, 0));
 		colors[0].push_back(rgb(0.5f, 1.0f, 0.5f));
 		colors[1].push_back(rgb(0.5f, 1.0f, 0.5f));
+		radii.push_back(3.0f);
 	}
 	/// add screen center sphere, x & y arrows and box for extruded screen rectangle
 	void vr_wall::add_screen(const vec3& center, const vec3& x, const vec3& y, const rgb& clr, float lum)
@@ -178,6 +183,7 @@ namespace vr {
 		if (wall_state == WS_EYES_CALIB) {
 			for (int ci = 0; ci < 2; ++ci) {
 				points[ci] = wall_kit_ptr->transform_world_to_screen(c_P[ci] * vec4(aim_center, 1.0f));
+				radii[ci] = (2*1.618033989f*aim_circle_radius / wall_kit_ptr->pixel_size[0]);
 				points[ci][2] = 0;
 			}
 		}
@@ -203,8 +209,8 @@ namespace vr {
 		vr_wall_hmd_index = -1;
 		screen_orientation = quat(1, 0, 0, 0);		
 		screen_center = vec3(0, 0.8f, 1);
-		screen_x = vec3(-1.0f, 0, 0);
-		screen_y = vec3(0, 0.75f, 0);
+		screen_x = vec3(-0.235f, 0, 0);
+		screen_y = vec3(0, 0.135f, 0);
 		window_width = 1920;
 		window_height = 1080;
 		window_x = 0;
@@ -212,6 +218,7 @@ namespace vr {
 		prs.halo_color = rgba(0, 0, 0, 0.9f);
 		prs.halo_width_in_pixel = -2.0f;
 		prs.point_size = 15.0f;
+		prs.measure_point_size_in_pixel = true;
 		cgv::signal::connect(cgv::gui::ref_vr_server().on_device_change, this, &vr_wall::on_device_change);
 		kit_enum_definition = "enums='none=-1";
 
@@ -437,6 +444,7 @@ namespace vr {
 					c_P[ci] = vrpe.get_pose_matrix();
 					if (wall_state == WS_EYES_CALIB && wall_kit_ptr) {
 						points[ci] = wall_kit_ptr->transform_world_to_screen(c_P[ci] * vec4(aim_center, 1.0f));
+						radii[ci] = (2*1.618033989f*aim_circle_radius / wall_kit_ptr->pixel_size[0]);
 						points[ci][2] = 0;
 						post_redraw();
 					}
@@ -668,8 +676,8 @@ namespace vr {
 		int width = ctx.get_width()/2;
 		int height = ctx.get_height();
 		switch (wall_state) {
-		case WS_SCREEN_CALIB:
 		case WS_EYES_CALIB:
+		case WS_SCREEN_CALIB:
 			for (int eye = 0; eye < 2; ++eye) {
 				ctx.set_viewport(ivec4(eye*width, 0, width, height));
 				ctx.set_projection_matrix(cgv::math::perspective4<double>(90, (double)width/height, 0.1, 10.0));
@@ -679,6 +687,9 @@ namespace vr {
 				pr.set_render_style(prs);
 				pr.set_position_array(ctx, points);
 				pr.set_color_array(ctx, colors[eye]);
+				if (wall_state == WS_EYES_CALIB)
+					pr.set_point_size_array(ctx, radii);
+
 				if (pr.validate_and_enable(ctx)) {
 					if (wall_state == WS_SCREEN_CALIB)
 						glDrawArrays(GL_POINTS, calib_index, 1);
