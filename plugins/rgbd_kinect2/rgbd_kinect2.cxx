@@ -235,14 +235,12 @@ namespace rgbd {
 	{
 	
 		ICoordinateMapper* mapper;
-		const int width = 1920;
-		const int height = 1080;
 		camera->get_CoordinateMapper(&mapper);
-		DepthSpacePoint color2depth[width*height];     // Maps depth pixels to rgb pixels
+		vector<ColorSpacePoint> depth2color(depth_frame.width*depth_frame.height, ColorSpacePoint());     // Maps depth pixels to rgb pixels
 
-		mapper->MapColorFrameToDepthSpace(
-			width*height, reinterpret_cast<const UINT16*>(depth_frame.frame_data.data()),        // Depth frame data and size of depth frame
-			width*height, color2depth); // Output ColorSpacePoint array and size
+		mapper->MapDepthFrameToColorSpace(
+			depth_frame.width*depth_frame.height, reinterpret_cast<const UINT16*>(depth_frame.frame_data.data()),        // Depth frame data and size of depth frame
+			depth_frame.width*depth_frame.height, depth2color.data()); // Output ColorSpacePoint array and size
 
 		mapper->Release();
 		
@@ -253,33 +251,28 @@ namespace rgbd {
 		warped_color_frame.frame_data.resize(warped_color_frame.buffer_size);
 		unsigned bytes_per_pixel = color_frame.nr_bits_per_pixel / 8;
 
-		warped_color_frame.compute_buffer_size();
-		if (warped_color_frame.frame_data.size() != warped_color_frame.buffer_size) {
-			warped_color_frame.frame_data.resize(warped_color_frame.buffer_size);
-		}
-		/*
-		for (size_t y = 0; y < height; ++y) {
-			for (size_t x = 0; x < width; ++x) {
-				DepthSpacePoint cp = color2depth[y*height + x];
-				int u, v;
-				u = round(cp.Y);
-				v = round(cp.X);
-				if (u >= 0 && u < width && v >= 0 && v < height) {
-					//TODO add proper sampling
-					memcpy(warped_color_frame.frame_data.data(), color_frame.frame_data.data() + u*height + v, bytes_per_pixel*sizeof(BYTE));
-				}
+		char* dest = &warped_color_frame.frame_data.front();
+		for (size_t y = 0; y < depth_frame.height; ++y) {
+			for (size_t x = 0; x < depth_frame.width; ++x) {
+				ColorSpacePoint cp = depth2color[y*depth_frame.width + x];
+				
+				int color_y = floor(cp.Y);
+				int color_x = floor(cp.X);
+				
+				static char zeros[8] = { 0,0,0,0,0,0,0,0 };
+				const char* src = zeros;
+
+				if (color_x >= 0 && color_x < color_frame.width && color_y >= 0 && color_y < color_frame.height)
+					src = &color_frame.frame_data.front() + bytes_per_pixel * (color_x + color_frame.width*color_y);
+				std::copy(src, src + bytes_per_pixel, dest);
+				dest += bytes_per_pixel;
 			}
-		}*/
+		}
 	}
 	
 	/// map a depth value together with pixel indices to a 3D point with coordinates in meters; point_ptr needs to provide space for 3 floats
 	bool rgbd_kinect2::map_depth_to_point(int x, int y, int depth, float* point_ptr) const
 	{
-		depth /= 8;
-		if (depth == 0)
-			return false;
-
-
 		//intrinisic matrix
 		//1042.56333152221 	0					0
 		//0 				1039.41616865874	0
@@ -289,7 +282,8 @@ namespace rgbd {
 		static const double cx_d = 964.559360889174;
 		static const double cy_d = 547.127316078404;
 
-		double d = 0.001 * depth;
+		//double d = 0.001 * depth;
+		double d = depth;
 		point_ptr[0] = float((x - cx_d) * d * fx_d);
 		point_ptr[1] = float((y - cy_d) * d * fy_d);
 		point_ptr[2] = float(d);
