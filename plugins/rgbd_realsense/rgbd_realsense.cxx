@@ -281,7 +281,7 @@ namespace rgbd {
 		rs2::pipeline_profile profile = pipe->get_active_profile();
 		auto color_stream = profile.get_stream(RS2_STREAM_COLOR);
 		auto depth_stream = profile.get_stream(RS2_STREAM_DEPTH);
-		rs2_extrinsics e = color_stream.get_extrinsics_to(depth_stream);
+		rs2_extrinsics e = depth_stream.get_extrinsics_to(color_stream);
 		rs2_intrinsics depth_intrinsics = depth_stream.as<rs2::video_stream_profile>().get_intrinsics();
 		rs2_intrinsics color_intrinsics = color_stream.as<rs2::video_stream_profile>().get_intrinsics();
 
@@ -298,9 +298,19 @@ namespace rgbd {
 				float color_point[3];
 				float depth_point[3]{ x,y,reinterpret_cast<const unsigned short*>(depth_frame.frame_data.data())[depth_frame.width*y+x]};
 				
-				rs2_deproject_pixel_to_point(color_point, &depth_intrinsics, depth_point,depth_point[2]);
-				rs2_transform_point_to_point(color_point, &e, color_point);
-				rs2_project_point_to_pixel(color_point, &color_intrinsics, color_point);
+				//rs2_deproject_pixel_to_point(color_point, &depth_intrinsics, depth_point,depth_scale*depth_point[2]);
+				//rs2_transform_point_to_point(color_point, &e, color_point);
+				//rs2_project_point_to_pixel(color_point, &color_intrinsics, color_point);
+
+
+				float xyz[3];
+				float color_xyz[3];
+
+				
+				rs2_deproject_pixel_to_point(xyz, &depth_intrinsics, depth_point, depth_point[2]);
+				rs2_transform_point_to_point(color_xyz, &e, xyz);
+				rs2_project_point_to_pixel(color_point, &color_intrinsics, color_xyz);
+
 				memcpy(color_coordinates+2*(depth_frame.width*y+x), color_point, 2 * sizeof(float));
 			}
 		}
@@ -338,6 +348,12 @@ namespace rgbd {
 		//1407.89876957815	0					0
 		//0					1402.63035792400	0
 		//975.564959401091	546.629684502803	1
+		
+		//rs300 intrinsics
+		//1357.265516384099e 		0					0
+		//0						1354.74750108174	0
+		//963.179434235186		547.678492185045	1
+		
 		static const double fx_d = 1.0/1407.89876957815;
 		static const double fy_d = 1.0/1402.63035792400;
 		static const double cx_d = 975.564959401091;
