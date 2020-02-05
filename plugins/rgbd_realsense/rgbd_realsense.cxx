@@ -295,23 +295,21 @@ namespace rgbd {
 		float* color_coordinates = new float[depth_frame.height*depth_frame.width * 2];
 		for (int y = 0; y < depth_frame.height; ++y) {
 			for (int x = 0; x < depth_frame.width; ++x) {
-				float color_point[3];
-				float depth_point[3]{ x,y,reinterpret_cast<const unsigned short*>(depth_frame.frame_data.data())[depth_frame.width*y+x]};
+				float depth = reinterpret_cast<const unsigned short*>(depth_frame.frame_data.data())[depth_frame.width*y + x];
+				float color_pixel[2];
+				float xyz[3];
+				float color_xyz[3];
+				float depth_pixel[2]{x,y};
+				
+				rs2_deproject_pixel_to_point(xyz, &depth_intrinsics, depth_pixel, depth);
+				rs2_transform_point_to_point(color_xyz, &e, xyz);
+				rs2_project_point_to_pixel(color_pixel, &color_intrinsics, color_xyz);
+
+				memcpy(color_coordinates+2*(depth_frame.width*y+x), color_pixel, 2 * sizeof(float));
 				
 				//rs2_deproject_pixel_to_point(color_point, &depth_intrinsics, depth_point,depth_scale*depth_point[2]);
 				//rs2_transform_point_to_point(color_point, &e, color_point);
 				//rs2_project_point_to_pixel(color_point, &color_intrinsics, color_point);
-
-
-				float xyz[3];
-				float color_xyz[3];
-
-				
-				rs2_deproject_pixel_to_point(xyz, &depth_intrinsics, depth_point, depth_point[2]);
-				rs2_transform_point_to_point(color_xyz, &e, xyz);
-				rs2_project_point_to_pixel(color_point, &color_intrinsics, color_xyz);
-
-				memcpy(color_coordinates+2*(depth_frame.width*y+x), color_point, 2 * sizeof(float));
 			}
 		}
 		
