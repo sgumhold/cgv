@@ -301,15 +301,11 @@ namespace rgbd {
 				float color_xyz[3];
 				float depth_pixel[2]{x,y};
 				
-				rs2_deproject_pixel_to_point(xyz, &depth_intrinsics, depth_pixel, depth);
+				rs2_deproject_pixel_to_point(xyz, &depth_intrinsics, depth_pixel, depth_scale*depth);
 				rs2_transform_point_to_point(color_xyz, &e, xyz);
 				rs2_project_point_to_pixel(color_pixel, &color_intrinsics, color_xyz);
 
 				memcpy(color_coordinates+2*(depth_frame.width*y+x), color_pixel, 2 * sizeof(float));
-				
-				//rs2_deproject_pixel_to_point(color_point, &depth_intrinsics, depth_point,depth_scale*depth_point[2]);
-				//rs2_transform_point_to_point(color_point, &e, color_point);
-				//rs2_project_point_to_pixel(color_point, &color_intrinsics, color_point);
 			}
 		}
 		
