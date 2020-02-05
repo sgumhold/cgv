@@ -638,7 +638,7 @@ void fltk_viewer_window::show_menu(bool update_control)
 
 bool fltk_viewer_window::gui_shown() const
 {
-	return gui_visible && (tab_group->get_nr_children()>0);
+	return gui_visible;// && (tab_group->get_nr_children() > 0);
 }
 
 bool fltk_viewer_window::menu_shown() const
@@ -737,6 +737,8 @@ fltk::Menu* fltk_viewer_window::get_menu()
 /// handle on remove signals of the view to ensure that a singelton is dereferenced
 void fltk_viewer_window::unregister_object(base_ptr c, const std::string& options)
 {
+	if (c->get_const_interface<cgv::gui::window>())
+		return;
 	// remove object from 3d view
 	view->remove_child(c);
 

@@ -35,6 +35,8 @@ namespace cgv {
 			typedef cgv::math::fmat<float, 3, 3> mat3;
 			/// declare type of 4x4 matrices
 			typedef cgv::math::fmat<float, 4, 4> mat4;
+			/// declare type of 3x4 matrices which are often used to store a pose
+			typedef cgv::math::fmat<float, 3, 4> mat34;
 			/// declare type of matrices of varying dimensions
 			typedef cgv::math::mat<float> matn;
 			/// declare type of 2d vectors
@@ -51,6 +53,8 @@ namespace cgv {
 			typedef cgv::math::fmat<double, 3, 3> dmat3;
 			/// declare type of 4x4 matrices
 			typedef cgv::math::fmat<double, 4, 4> dmat4;
+			/// declare type of 3x4 matrices which are often used to store a pose
+			typedef cgv::math::fmat<double, 3, 4> dmat34;
 			/// declare type of matrices of varying dimensions
 			typedef cgv::math::mat<double> dmatn;
 			/// declare type of 2d boxes
@@ -70,12 +74,17 @@ namespace cgv {
 			/// declare type of double quaternion
 			typedef cgv::math::quaternion<double> dquat;
 			/// declare type of 2d integer vectors
-			typedef cgv::math::fvec<int, 2> ivec2;
+			typedef cgv::math::fvec<int32_t, 2> ivec2;
 			/// declare type of 3d integer vectors
-			typedef cgv::math::fvec<int, 3> ivec3;
+			typedef cgv::math::fvec<int32_t, 3> ivec3;
 			/// declare type of 4d integer vectors
-			typedef cgv::math::fvec<int, 4> ivec4;
-
+			typedef cgv::math::fvec<int32_t, 4> ivec4;
+			/// declare type of 2d unsigned integer vectors
+			typedef cgv::math::fvec<uint32_t, 2> uvec2;
+			/// declare type of 3d unsigned integer vectors
+			typedef cgv::math::fvec<uint32_t, 3> uvec3;
+			/// declare type of 4d unsigned integer vectors
+			typedef cgv::math::fvec<uint32_t, 4> uvec4;
 		};
 
 	}

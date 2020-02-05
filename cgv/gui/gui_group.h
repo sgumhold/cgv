@@ -46,11 +46,11 @@ protected:
 	static void set_provider_parent(provider* p, gui_group_ptr g);
 	/// %driver specific handle for the group gui element managing the gui built in the provider
 	static gui_group_ptr get_provider_parent(const provider* p);
+public:
 	/// interface of adding an object
 	void register_object(cgv::base::base_ptr object, const std::string& options);
 	///
 	void unregister_object(cgv::base::base_ptr object, const std::string& options);
-public:
 	/// construct from name
 	gui_group(const std::string& name = "");
 	/// overload to return the %type name of this object

@@ -500,6 +500,7 @@ size_t rgbd_control::construct_point_cloud()
 		rgbd_inp.map_color_to_depth(depth_frame_2, color_frame_2, warped_color_frame_2);
 		colors = reinterpret_cast<const unsigned char*>(&warped_color_frame_2.frame_data.front());
 	}
+	unsigned bytes_per_pixel = color_frame_2.nr_bits_per_pixel / 8;
 	int i = 0;
 	float s = 1.0f / 255;
 	for (int y = 0; y < depth_frame_2.height; ++y)
@@ -509,7 +510,18 @@ size_t rgbd_control::construct_point_cloud()
 				// flipping y to make it the same direction as in pixel y coordinate
 				p[1] = -p[1];
 				P2.push_back(p);
-				C2.push_back(rgba8(colors[4 * i + 2], colors[4 * i + 1], colors[4 * i], 255));
+				switch (color_frame_2.pixel_format) {
+				case PF_BGR:
+				case PF_BGRA:
+					C2.push_back(rgba8(colors[bytes_per_pixel * i + 2], colors[bytes_per_pixel * i + 1], colors[bytes_per_pixel * i], 255));
+					break;
+				case PF_RGB:
+				case PF_RGBA:
+					C2.push_back(rgba8(colors[bytes_per_pixel * i], colors[bytes_per_pixel * i + 1], colors[bytes_per_pixel * i + 2], 255));
+					break;
+				case PF_BAYER:
+					C2.push_back(rgba8(colors[i], colors[i], colors[i], 255));
+				}
 			}
 			++i;
 		}

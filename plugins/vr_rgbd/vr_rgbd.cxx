@@ -67,7 +67,10 @@ protected:
 	bool record_frame;
 	///
 	bool record_all_frames;
+	bool clear_all_frames;
 	bool in_calibration;
+	bool zoom_in;
+	bool zoom_out;
 	/// intermediate point cloud and to be rendered point cloud
 	std::vector<vertex> intermediate_pc, current_pc;
 	/// list of recorded point clouds
@@ -252,6 +255,8 @@ public:
 		rgbd_controller_orientation.identity();
 		rgbd_controller_position = vec3(0, 1.5f, 0);
 		in_calibration = false;
+		zoom_in = false;
+		zoom_out = false;
 		rgbd_2_controller_orientation.identity();
 		rgbd_2_controller_position.zeros();
 
@@ -269,6 +274,7 @@ public:
 		rgbd_started = false;
 		record_frame = false;
 		record_all_frames = false;
+		clear_all_frames = false;
 		trigger_is_pressed = false;
 		recording_fps = 5;
 		show_points = true;
@@ -362,6 +368,7 @@ public:
 		last_recording_time = t;
 		return true;
 	}
+
 	void timer_event(double t, double dt)
 	{
 		// in case a point cloud is being constructed
@@ -375,6 +382,11 @@ public:
 					current_pc.clear();
 					record_frame = false;
 					update_member(&record_frame);
+				}
+				else if(clear_all_frames){
+					recorded_pcs.clear();
+					clear_all_frames = false;
+					update_member(&clear_all_frames);
 				}
 				else
 					current_pc = intermediate_pc;
@@ -411,24 +423,26 @@ public:
 				if (color_frame.is_allocated() && depth_frame.is_allocated() &&
 					(color_frame_changed || depth_frame_changed)) {
 					
-					if (!future_handle.valid()) {
-						//std::chrono::system_clock::time_point start = std::chrono::system_clock::now();
-						/*if (!future_rgb.valid())
-							future_rgb = std::async(&vr_rgbd::read_rgb_frame, this);
-						if (!future_depth.valid())
-							future_depth = std::async(&vr_rgbd::read_depth_frame, this);
-						color_frame_2 = future_rgb.get();
-						depth_frame_2 = future_depth.get();*/
+					if (!future_handle.valid()) { 
 						if (!in_calibration) {
 							color_frame_2 = color_frame;
 							depth_frame_2 = depth_frame;
 						}
-						rgbd_controller_orientation_pc = rgbd_controller_orientation;
-						rgbd_controller_position_pc = rgbd_controller_position;
+						if (zoom_out && !zoom_in)
+						{
+							rgbd_controller_orientation_pc = rgbd_controller_orientation * 2;
+							rgbd_controller_position_pc = rgbd_controller_position;
+						}
+						else if(zoom_in && !zoom_out)
+						{
+							rgbd_controller_orientation_pc = rgbd_controller_orientation * 0.5;
+							rgbd_controller_position_pc = rgbd_controller_position;
+						}
+						else {
+							rgbd_controller_orientation_pc = rgbd_controller_orientation;
+							rgbd_controller_position_pc = rgbd_controller_position;
+						}
 						future_handle = std::async(&vr_rgbd::construct_point_cloud, this);
-						/*auto end = std::chrono::system_clock::now();
-						auto diff = std::chrono::duration_cast <std::chrono::milliseconds> (end - start).count();
-						std::cout << "Total Time Taken = " << diff << " Seconds" << std::endl;*/
 					}
 				}
 			}
@@ -446,11 +460,16 @@ public:
 		add_member_control(this, "rgbd_started", rgbd_started, "check");
 		add_member_control(this, "record_frame", record_frame, "check");
 		add_member_control(this, "record_all_frames", record_all_frames, "check");
+		add_member_control(this, "clear_all_frames", clear_all_frames, "check");
 		add_member_control(this, "trigger_is_pressed", trigger_is_pressed, "check");
 		add_member_control(this, "recording_fps", recording_fps, "value_slider", "min=1;max=30;ticks=true;log=true");
 		add_member_control(this, "in_calibration", in_calibration, "check");
+		add_member_control(this, "zoom_in", zoom_in, "check");
+		add_member_control(this, "zoom_out", zoom_out, "check");
+		
 
 		add_member_control(this, "rgbd_controller_index", rgbd_controller_index, "value_slider", "min=0;max=3;ticks=true");
+		
 
 		add_member_control(this, "ray_length", ray_length, "value_slider", "min=0.1;max=10;log=true;ticks=true");
 		bool show = begin_tree_node("points", show_points, true, "w=100;align=' '");
@@ -491,10 +510,13 @@ public:
 	{
 		return
 			rh.reflect_member("rgbd_controller_index", rgbd_controller_index) &&
+			rh.reflect_member("zoom_in", zoom_in) &&
+			rh.reflect_member("zoom_out", zoom_out) &&
 			rh.reflect_member("recording_fps", recording_fps) &&
 			rh.reflect_member("ray_length", ray_length) &&
 			rh.reflect_member("record_frame", record_frame) &&
 			rh.reflect_member("record_all_frames", record_all_frames) &&
+			rh.reflect_member("clear_all_frames", clear_all_frames) &&
 			rh.reflect_member("rgbd_started", rgbd_started) &&
 			rh.reflect_member("rgbd_protocol_path", rgbd_protocol_path);
 	}
@@ -544,6 +566,32 @@ public:
 					rgbd_2_controller_position = transpose(rgbd_controller_orientation_start_calib)*((rgbd_controller_orientation*rgbd_2_controller_position + rgbd_controller_position) - rgbd_controller_position_start_calib);
 					in_calibration = false;
 					update_member(&in_calibration);
+					break;
+				}
+			}
+			if (vrke.get_key() == (rgbd_controller_index == 0 ? vr::VR_LEFT_STICK_LEFT : vr::VR_RIGHT_STICK_LEFT))
+			{
+				switch (vrke.get_action()) {
+				case cgv::gui::KA_PRESS :
+					zoom_in = true;
+					update_member(&zoom_in);
+					break;
+				case cgv::gui::KA_RELEASE:
+					zoom_in = false;
+					update_member(&zoom_in);
+					break;
+				}
+			}
+			if (vrke.get_key() == (rgbd_controller_index == 0 ? vr::VR_LEFT_STICK_RIGHT : vr::VR_RIGHT_STICK_RIGHT))
+			{
+				switch (vrke.get_action()) {
+				case cgv::gui::KA_PRESS:
+					zoom_out = true;
+					update_member(&zoom_out);
+					break;
+				case cgv::gui::KA_RELEASE:
+					zoom_out = false;
+					update_member(&zoom_out);
 					break;
 				}
 			}

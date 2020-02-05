@@ -1,5 +1,6 @@
 #include <iostream>
 #include <librealsense2/rs.hpp>
+#include <librealsense2/rsutil.h>
 #include "rgbd_realsense.h"
 
 using namespace std;
@@ -83,7 +84,7 @@ namespace rgbd {
 
 		
 		if (is && IS_COLOR) {
-			stream_formats.push_back(color_stream = stream_format(640, 480,PF_BGR, 30, 24));
+			stream_formats.push_back(color_stream = stream_format(640, 480,PF_RGBA, 30, 32));
 		}
 		if (is && IS_DEPTH) {
 			stream_formats.push_back(depth_stream = stream_format(640, 480, PF_DEPTH, 30, 16));
@@ -268,12 +269,78 @@ namespace rgbd {
 
 	void rgbd_realsense::map_color_to_depth(const frame_type& depth_frame, const frame_type& color_frame, frame_type& warped_color_frame) const
 	{
-		//TODO hint: https://github.com/IntelRealSense/librealsense/wiki/API-How-To#get-and-apply-depth-to-color-extrinsics
+		rs2::pipeline_profile profile = pipe->get_active_profile();
+		auto color_stream = profile.get_stream(RS2_STREAM_COLOR);
+		auto depth_stream = profile.get_stream(RS2_STREAM_DEPTH);
+		rs2_extrinsics e = color_stream.get_extrinsics_to(depth_stream);
+		rs2_intrinsics depth_intrinsics = depth_stream.as<rs2::video_stream_profile>().get_intrinsics();
+		rs2_intrinsics color_intrinsics = color_stream.as<rs2::video_stream_profile>().get_intrinsics();
+
+		static_cast<frame_size&>(warped_color_frame) = depth_frame;
+		warped_color_frame.pixel_format = color_frame.pixel_format;
+		warped_color_frame.nr_bits_per_pixel = color_frame.nr_bits_per_pixel;
+		warped_color_frame.compute_buffer_size();
+		warped_color_frame.frame_data.resize(warped_color_frame.buffer_size);
+		unsigned bytes_per_pixel = color_frame.nr_bits_per_pixel / 8;
+
+		float* color_coordinates = new float[color_frame.height*color_frame.width * 2];
+		for (int y = 0; y < depth_frame.height; ++y) {
+			for (int x = 0; x < depth_frame.width; ++x) {
+				float color_point[3];
+				float depth_point[3]{ x,y,reinterpret_cast<const unsigned short*>(depth_frame.frame_data.data())[depth_frame.width*y+x]};
+				
+				rs2_deproject_pixel_to_point(color_point, &depth_intrinsics, depth_point,depth_point[2]);
+				rs2_transform_point_to_point(color_point, &e, color_point);
+				rs2_project_point_to_pixel(color_point, &color_intrinsics, color_point);
+				memcpy(color_coordinates+2*(color_frame.width*y+x), color_point, 2 * sizeof(float));
+			}
+		}
+		
+		//copy data
+
+				// loop over each row and column of the color
+		unsigned i = 0;
+		char* dest = &warped_color_frame.frame_data.front();
+		for (int y = 0; y < depth_frame.height; ++y) {
+			for (int x = 0; x < depth_frame.width; ++x) {
+				// retrieve the depth to color mapping for the current depth pixel
+				int color_x = (int) color_coordinates[i++];
+				int color_y = (int) color_coordinates[i++];
+
+				static char zeros[8] = { 0,0,0,0,0,0,0,0 };
+				const char* src = zeros;
+				// make sure the depth pixel maps to a valid point in color space
+				if (color_x >= 0 && color_x < color_frame.width && color_y >= 0 && color_y < color_frame.height)
+					src = &color_frame.frame_data.front() + bytes_per_pixel * (color_x + color_frame.width*color_y);
+				std::copy(src, src + bytes_per_pixel, dest);
+				dest += bytes_per_pixel;
+			}
+		}
+
+		delete[] color_coordinates;
 	}
 
 	bool rgbd_realsense::map_depth_to_point(int x, int y, int depth, float* point_ptr) const
 	{
-		return false;
+		//static auto sensor = dev->first<rs2::depth_sensor>();
+		//static auto depth_scale = sensor.get_depth_scale();
+		//depth *= 8;
+		if (depth == 0)
+			return false;
+		//intrinisc camera matrix
+		//1407.89876957815	0					0
+		//0					1402.63035792400	0
+		//975.564959401091	546.629684502803	1
+		static const double fx_d = 1.0/1407.89876957815;
+		static const double fy_d = 1.0/1402.63035792400;
+		static const double cx_d = 975.564959401091;
+		static const double cy_d = 546.629684502803;
+		//double d = 0.001 * depth;
+		double d = depth;
+		point_ptr[0] = float((x - cx_d) * d * fx_d);
+		point_ptr[1] = float((y - cy_d) * d * fy_d);
+		point_ptr[2] = float(d);
+		return true;
 	}
 
 	void rgbd_realsense::query_stream_formats(InputStreams is, std::vector<stream_format>& stream_formats) const
