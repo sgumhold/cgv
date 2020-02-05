@@ -279,10 +279,16 @@ namespace rgbd {
 		if (depth == 0)
 			return false;
 
-		static const double fx_d = 1.0 / 5.9421434211923247e+02;
-		static const double fy_d = 1.0 / 5.9104053696870778e+02;
-		static const double cx_d = 3.3930780975300314e+02;
-		static const double cy_d = 2.4273913761751615e+02;
+
+		//intrinisic matrix
+		//1042.56333152221 	0					0
+		//0 				1039.41616865874	0
+		//964.559360889174	547.127316078404	1
+		static const double fx_d = 1.0 / 1042.56333152221;
+		static const double fy_d = 1.0 / 1039.41616865874;
+		static const double cx_d = 964.559360889174;
+		static const double cy_d = 547.127316078404;
+
 		double d = 0.001 * depth;
 		point_ptr[0] = float((x - cx_d) * d * fx_d);
 		point_ptr[1] = float((y - cy_d) * d * fy_d);
