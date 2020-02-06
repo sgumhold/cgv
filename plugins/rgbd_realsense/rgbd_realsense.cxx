@@ -333,9 +333,6 @@ namespace rgbd {
 
 	bool rgbd_realsense::map_depth_to_point(int x, int y, int depth, float* point_ptr) const
 	{
-		//static auto sensor = dev->first<rs2::depth_sensor>();
-		//static auto depth_scale = sensor.get_depth_scale();
-		//depth *= 8;
 		if (depth == 0)
 			return false;
 		//intrinisc camera matrix
