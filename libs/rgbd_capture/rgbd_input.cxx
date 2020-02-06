@@ -168,6 +168,11 @@ void rgbd_input::enable_protocol(const std::string& path)
 	//write the metadata for every stream found
 	if (is_started()) {
 		write_protocol_headers(streams, path);
+		//write camera intrinsics
+		camera_intrinsics intrinsics;
+		if (rgbd->get_intrinsics(intrinsics)) {
+			cgv::utils::file::write(path + "/camera_intrinsics", reinterpret_cast<const char*>(&intrinsics), sizeof(camera_intrinsics), false);
+		}
 	}
 }
 
@@ -283,11 +288,14 @@ bool write_protocol_frame(const std::string& fn, frame_type* frame_ptr)
 
 bool rgbd_input::write_protocol_frame_async(const std::string& fn, const frame_type& frame) const
 {
+	static future<bool> fu;
 	if (!protocol_write_async)
 		return cgv::utils::file::write(fn, &frame.frame_data.front(), frame.frame_data.size(), false);
-	frame_type* frame_ptr = new frame_type(frame);
-	std::thread t(&write_protocol_frame, fn, frame_ptr);
-	t.detach();
+
+	if (fu.valid()) {
+		fu.wait();
+	}
+	fu = std::async(std::launch::async, cgv::utils::file::write,fn, &frame.frame_data.front(), frame.frame_data.size(), false);
 	return true;
 }
 

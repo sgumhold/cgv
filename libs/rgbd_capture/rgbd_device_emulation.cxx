@@ -38,7 +38,7 @@ namespace rgbd {
 	{
 		path_name = fn;
 		flags = idx = 0;
-
+		//init frame timers
 		last_color_frame_time = chrono::steady_clock::now();
 		last_depth_frame_time = chrono::steady_clock::now();
 		last_ir_frame_time = chrono::steady_clock::now();
@@ -46,11 +46,11 @@ namespace rgbd {
 		has_color_stream = false;
 		has_depth_stream = false;
 		has_ir_stream = false;
-
+		//list of supported extensions
 		static vector<string> color_exts = {"rgb", "bgr", "rgba", "bgra", "byr"};
 		static vector<string> depth_exts = {"dep", "d_p"};
 		static vector<string> ir_exts = {"ir"};
-
+		//query streams
 		has_color_stream = find_stream_info(path_name, color_exts, color_stream);
 		has_depth_stream = find_stream_info(path_name, depth_exts, depth_stream);
 		has_ir_stream = find_stream_info(path_name, ir_exts, ir_stream);
@@ -67,6 +67,22 @@ namespace rgbd {
 			file = cgv::utils::file::find_next(file);
 		}
 		number_of_files = file_count;
+		
+		//find camera intrinsics
+		static camera_intrinsics default_intrinsics{ 5.9421434211923247e+02 ,5.9104053696870778e+02,
+				3.3930780975300314e+02,2.4273913761751615e+02,0.0 };
+		string data;
+		if (cgv::utils::file::read(path_name + "/camera_intrinsics", data, false)) {
+			if (data.size() * sizeof(char) == sizeof(camera_intrinsics)) {
+				memcpy(&intrinsics, data.data(), sizeof(camera_intrinsics));
+			} else {
+				cerr << "rgbd_emulation: " << path_name << "/camera_intrinsics " << "has the wrong size!";
+				intrinsics = default_intrinsics;
+			}
+		} else {
+			intrinsics = default_intrinsics;
+		}
+
 	}
 
 	bool rgbd_emulation::attach(const std::string& fn)
@@ -338,18 +354,15 @@ namespace rgbd {
 		if (depth == 0)
 			return false;
 
-		static const double fx_d = 1.0 / 5.9421434211923247e+02;
-		static const double fy_d = 1.0 / 5.9104053696870778e+02;
-		static const double cx_d = 3.3930780975300314e+02;
-		static const double cy_d = 2.4273913761751615e+02;
+		double fx_d = 1.0 / intrinsics.fx;
+		double fy_d = 1.0 / intrinsics.fy;
+		double cx_d = intrinsics.cx;
+		double cy_d = intrinsics.cy;
 		double d = 0.001 * depth;
 		point_ptr[0] = float((x - cx_d) * d * fx_d);
 		point_ptr[1] = float((y - cy_d) * d * fy_d);
 		point_ptr[2] = float(d);
 		return true;
-/*
-		std::cerr << "map_depth_to_point() not implemented in rgbd_emulation" << std::endl;
-		return false;*/
 	}
 
 }
