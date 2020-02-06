@@ -148,6 +148,11 @@ namespace rgbd {
 		return false;
 	}
 
+	bool rgbd_device::get_intrinsics(camera_intrinsics& intrinsics) const
+	{
+		return false;
+	}
+
 	std::ostream& operator << (std::ostream& os, const frame_size& fs)
 	{
 		return os << fs.width << "x" << fs.height;
