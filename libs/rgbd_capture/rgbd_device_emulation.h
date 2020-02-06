@@ -53,6 +53,7 @@ private:
 	std::chrono::time_point<std::chrono::steady_clock> last_depth_frame_time;
 	std::chrono::time_point<std::chrono::steady_clock> last_ir_frame_time;
 	size_t number_of_files;
+	camera_intrinsics intrinsics;
 };
 
 }
