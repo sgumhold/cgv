@@ -203,6 +203,7 @@ namespace vr {
 		aim_direction = vec3(0, -0.531592f, 0.847f);
 		aim_circle_radius = 0.0185f;
 		aim_center = vec3(0, -0.0342337f, -0.0142778f);
+		aim_width = 0.068f;
 
 		main_context = 0;
 		vr_wall_kit_index = -1;
