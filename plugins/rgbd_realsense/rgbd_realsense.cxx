@@ -335,15 +335,6 @@ namespace rgbd {
 	{
 		if (depth == 0)
 			return false;
-		//intrinisc camera matrix
-		//1407.89876957815	0					0
-		//0					1402.63035792400	0
-		//975.564959401091	546.629684502803	1
-		
-		//rs300 intrinsics
-		//1357.265516384099e 		0					0
-		//0						1354.74750108174	0
-		//963.179434235186		547.678492185045	1
 		
 		static const double fx_d = 1.0/1407.89876957815;
 		static const double fy_d = 1.0/1402.63035792400;
@@ -353,6 +344,25 @@ namespace rgbd {
 		point_ptr[0] = float((x - cx_d) * d * fx_d);
 		point_ptr[1] = float((y - cy_d) * d * fy_d);
 		point_ptr[2] = float(d);
+		return true;
+	}
+
+	bool rgbd_realsense::get_intrinsics(camera_intrinsics & intrinsics) const
+	{
+		//D435 intriniscs
+		//1407.89876957815	0					0
+		//0					1402.63035792400	0
+		//975.564959401091	546.629684502803	1
+
+		//rs300 intrinsics
+		//1357.265516384099e 		0					0
+		//0						1354.74750108174	0
+		//963.179434235186		547.678492185045	1
+		intrinsics.fx = 1407.89876957815;
+		intrinsics.fy = 1402.63035792400;
+		intrinsics.cx = 975.564959401091;
+		intrinsics.cy = 546.629684502803;
+		intrinsics.sk = 0.0;
 		return true;
 	}
 
