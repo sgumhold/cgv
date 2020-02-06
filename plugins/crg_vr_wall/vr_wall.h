@@ -89,6 +89,8 @@ namespace vr {
 		///
 		float aim_circle_radius;
 		///
+		float aim_width;
+		///
 		vec3 aim_center;
 		/// current pose matrices of controllers need to render peek point
 		mat34 c_P[2];
