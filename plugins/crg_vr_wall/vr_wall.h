@@ -91,7 +91,11 @@ namespace vr {
 		///
 		float aim_width;
 		///
+		float aim_angle;
+		///
 		vec3 aim_center;
+		///
+		vec3 eye_position[2];
 		/// current pose matrices of controllers need to render peek point
 		mat34 c_P[2];
 		/// helper function to fill the point 

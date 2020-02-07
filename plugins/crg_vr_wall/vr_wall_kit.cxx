@@ -131,9 +131,17 @@ namespace vr {
 	vr_wall_kit::vec3 vr_wall_kit::transform_world_to_screen(const vec3& p) const
 	{
 		vec3 p_screen = (p - get_screen_center()) * get_screen_orientation();
-		p_screen[0] /= 0.5f*height*pixel_size[0];
-		p_screen[1] /= 0.5f*height*pixel_size[1];
+		p_screen[0] /= 0.5f * height * pixel_size[0];
+		p_screen[1] /= 0.5f * height * pixel_size[1];
 		return p_screen;
+	}
+	/// transform from coordinate system of screen with [0,0,0] in center and corners [+-aspect,+-1,0]; z is signed distance to screen in world unites (typically meters) 
+	vr_wall_kit::vec3 vr_wall_kit::transform_screen_to_world(const vec3& p_screen) const
+	{
+		vec3 p_s = p_screen;
+		p_s[0] *= 0.5f * height * pixel_size[0];
+		p_s[1] *= 0.5f * height * pixel_size[1];
+		return get_screen_orientation()* p_s + get_screen_center();
 	}
 	/// construct vr wall kit by attaching to another vr kit
 	vr_wall_kit::vr_wall_kit(int vr_kit_parent_index, unsigned _width, unsigned _height, const std::string& _name) :
