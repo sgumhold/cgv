@@ -43,6 +43,14 @@ namespace vr {
 		points.push_back(vec3(0, 1, 0));
 		colors[0].push_back(rgb(0, 1, 0));
 		colors[1].push_back(rgb(0, 1, 0));
+
+		points.push_back(vec3(0, 1, 0));
+		colors[0].push_back(rgb(1, 0, 0));
+		colors[1].push_back(rgb(1, 0, 0));
+
+		points.push_back(vec3(0, 1, 0));
+		colors[0].push_back(rgb(0, 0, 1));
+		colors[1].push_back(rgb(0, 0, 1));
 	}
 	void vr_wall::generate_points(int n)
 	{
@@ -100,19 +108,33 @@ namespace vr {
 		radii.clear();
 		colors[0].clear();
 		colors[1].clear();
+
 		points.push_back(vec3(-0.2f, 0, 0));
 		colors[0].push_back(rgb(1, 0.5f, 0.5f));
 		colors[1].push_back(rgb(1, 0.5f, 0.5f));
 		float radius = wall_kit_ptr ? (2*1.618033989f*aim_circle_radius / wall_kit_ptr->pixel_size[0]) : 15.0f;
+		radius = 5.0f;
 		radii.push_back(radius);
+
 		points.push_back(vec3(0.2f, 0, 0));
 		colors[0].push_back(rgb(0.5f, 0.5f, 1));
 		colors[1].push_back(rgb(0.5f, 0.5f, 1));
 		radii.push_back(radius);
+		
 		points.push_back(vec3(0.2f, 0, 0));
 		colors[0].push_back(rgb(0.5f, 1.0f, 0.5f));
 		colors[1].push_back(rgb(0.5f, 1.0f, 0.5f));
 		radii.push_back(3.0f);
+
+		points.push_back(vec3(0.2f, 0, 0));
+		colors[0].push_back(rgb(1.0f, 1.0f, 0.5f));
+		colors[1].push_back(rgb(1.0f, 1.0f, 0.5f));
+		radii.push_back(6.0f);
+
+		points.push_back(vec3(0.2f, 0, 0));
+		colors[0].push_back(rgb(0.5f, 1.0f, 1.0f));
+		colors[1].push_back(rgb(0.5f, 1.0f, 1.0f));
+		radii.push_back(6.0f);
 	}
 	/// add screen center sphere, x & y arrows and box for extruded screen rectangle
 	void vr_wall::add_screen(const vec3& center, const vec3& x, const vec3& y, const rgb& clr, float lum)
@@ -202,9 +224,14 @@ namespace vr {
 		peek_point = vec3(0, -0.0755634f, -0.0385344f);
 		aim_direction = vec3(0, -0.531592f, 0.847f);
 		aim_circle_radius = 0.0185f;
-		aim_center = vec3(0, -0.0342337f, -0.0142778f);
-		aim_width = 0.068f;
+		//aim_center = vec3(0, -0.0342337f, -0.0142778f);
+		//aim_center = vec3(0, -0.027f, -0.027f);
+		aim_center = vec3(0, -0.03f, -0.024f);
+		aim_width = 0.069f;
+		aim_angle = 50.0f;
 
+		eye_position[0] = vec3(-0.03f, -0.04f, 0.0f);
+		eye_position[1] = vec3(0.03f, -0.04f, 0.0f);
 		main_context = 0;
 		vr_wall_kit_index = -1;
 		vr_wall_hmd_index = -1;
@@ -367,8 +394,6 @@ namespace vr {
 	void vr_wall::create_gui()
 	{
 		add_decorator("VR wall", "heading");
-		add_member_control(this, "vr_wall_kit", (cgv::type::DummyEnum&)vr_wall_kit_index, "dropdown", kit_enum_definition);
-		add_member_control(this, "vr_wall_hmd_index", vr_wall_hmd_index, "value_slider", "min=-1;max=3;ticks=true");
 
 		if (begin_tree_node("window creation parameters", window_width, true, "level=2")) {
 			align("\a");
@@ -379,58 +404,76 @@ namespace vr {
 			align("\b");
 			end_tree_node(window_width);
 		}
-		if (begin_tree_node("points", prs, false, "level=2")) {
-			align("\a");
-			add_gui("point_style", prs);
-			align("\b");
-			end_tree_node(prs);
-		}
-		add_gui("peek_point", peek_point, "", "options='min=-0.1;max=0.1;step=0.0001;ticks=true'");
-		if (begin_tree_node("test screen", test_screen_center, false, "level=2")) {
-			align("\a");
-			add_gui("test_screen_center", test_screen_center, "", "long_label=true;options='min-3;max=3;ticks=true'");
-			add_gui("test_screen_x", test_screen_x, "", "long_label=true;options='min-3;max=3;ticks=true'");
-			add_gui("test_screen_y", test_screen_y, "", "long_label=true;options='min-3;max=3;ticks=true'");
-			if (begin_tree_node("box render style", brs, false, "level=3")) {
+		add_member_control(this, "vr_wall_kit", (cgv::type::DummyEnum&)vr_wall_kit_index, "dropdown", kit_enum_definition);
+		add_member_control(this, "vr_wall_hmd_index", vr_wall_hmd_index, "value_slider", "min=-1;max=3;ticks=true");
+		if (begin_tree_node("screen calibration", screen_center, false, "level=2")) {
+
+			add_gui("peek_point", peek_point, "", "options='min=-0.1;max=0.1;step=0.0001;ticks=true'");
+			if (begin_tree_node("point render style", prs, false, "level=3")) {
 				align("\a");
-				add_gui("box_render_style", brs);
+				add_gui("point_style", prs);
 				align("\b");
-				end_tree_node(brs);
-			}
-			if (begin_tree_node("sphere render style", srs, false, "level=3")) {
-				align("\a");
-				add_gui("sphere_render_style", srs);
-				align("\b");
-				end_tree_node(brs);
-			}
-			if (begin_tree_node("arrow render style", ars, false, "level=3")) {
-				align("\a");
-				add_gui("arrow_render_style", ars);
-				align("\b");
-				end_tree_node(ars);
+				end_tree_node(prs);
 			}
 
-			align("\b");
-			end_tree_node(test_screen_center);
-		}
-		if (begin_tree_node("screen", screen_center, false, "level=2")) {
 			add_gui("screen_center", screen_center, "", "long_label=true;options='min=-3;max=3;ticks=true'");
 			add_gui("screen_x", screen_x, "", "long_label=true;options='min=-3;max=3;ticks=true'");
 			add_gui("screen_y", screen_y, "", "long_label=true;options='min=-3;max=3;ticks=true'");
 			add_gui("screen_orientation", (vec4&)screen_orientation, "direction", "long_label=true;options='min=-1;max=1;ticks=true'");
+
+			if (vr_wall_kit_index != -1 && wall_kit_ptr != 0) {
+				add_decorator("screen", "heading", "level=2");
+				add_view("width", wall_kit_ptr->width, "", "w=40", " ");
+				add_view("height", wall_kit_ptr->height, "", "w=40", " ");
+				add_view("multi", wall_kit_ptr->nr_multi_samples, "", "w=20");
+				add_member_control(this, "pixel_size_x", wall_kit_ptr->pixel_size[0], "value_slider", "min=0.0001;max=0.01;ticks=true;log=true;step=0.00001");
+				add_member_control(this, "pixel_size_y", wall_kit_ptr->pixel_size[1], "value_slider", "min=0.0001;max=0.01;ticks=true;log=true;step=0.00001");
+				add_decorator("head", "heading", "level=2");
+				add_member_control(this, "eye_separation", wall_kit_ptr->eye_separation, "value_slider", "min=0.01;max=0.12;ticks=true;step=0.001");
+				add_gui("eye_center_tracker", wall_kit_ptr->eye_center_tracker, "", "options='min=-0.2;max=0.2;step=0.001;ticks=true'");
+				add_gui("eye_separation_dir_tracker", wall_kit_ptr->eye_separation_dir_tracker, "direction", "options='min=-1;max=1;ticks=true'");
+			}
+
+			if (begin_tree_node("test screen", test_screen_center, false, "level=2")) {
+				align("\a");
+				add_gui("test_screen_center", test_screen_center, "", "long_label=true;options='min-3;max=3;ticks=true'");
+				add_gui("test_screen_x", test_screen_x, "", "long_label=true;options='min-3;max=3;ticks=true'");
+				add_gui("test_screen_y", test_screen_y, "", "long_label=true;options='min-3;max=3;ticks=true'");
+				if (begin_tree_node("box render style", brs, false, "level=3")) {
+					align("\a");
+					add_gui("box_render_style", brs);
+					align("\b");
+					end_tree_node(brs);
+				}
+				if (begin_tree_node("sphere render style", srs, false, "level=3")) {
+					align("\a");
+					add_gui("sphere_render_style", srs);
+					align("\b");
+					end_tree_node(brs);
+				}
+				if (begin_tree_node("arrow render style", ars, false, "level=3")) {
+					align("\a");
+					add_gui("arrow_render_style", ars);
+					align("\b");
+					end_tree_node(ars);
+				}
+
+				align("\b");
+				end_tree_node(test_screen_center);
+			}
 			end_tree_node(screen_center);
 		}
-		if (vr_wall_kit_index != -1 && wall_kit_ptr != 0) {
-			add_decorator("screen", "heading", "level=2");
-			add_view("width", wall_kit_ptr->width, "", "w=40", " ");
-			add_view("height", wall_kit_ptr->height, "", "w=40", " ");
-			add_view("multi", wall_kit_ptr->nr_multi_samples, "", "w=20");
-			add_member_control(this, "pixel_size_x", wall_kit_ptr->pixel_size[0], "value_slider", "min=0.0001;max=0.01;ticks=true;log=true;step=0.00001");
-			add_member_control(this, "pixel_size_y", wall_kit_ptr->pixel_size[1], "value_slider", "min=0.0001;max=0.01;ticks=true;log=true;step=0.00001");
-			add_decorator("head", "heading", "level=2");
-			add_member_control(this, "eye_separation", wall_kit_ptr->eye_separation, "value_slider", "min=0.01;max=0.12;ticks=true;step=0.001");
-			add_gui("eye_center_tracker", wall_kit_ptr->eye_center_tracker, "", "options='min=-0.2;max=0.2;step=0.001;ticks=true'");
-			add_gui("eye_separation_dir_tracker", wall_kit_ptr->eye_separation_dir_tracker, "direction", "options='min=-1;max=1;ticks=true'");
+
+		if (begin_tree_node("eye calibration", prs, false, "level=2")) {
+			align("\a");
+			add_gui("aim_center", aim_center, "", "options='min=-0.2;max=0.2;step=0.001;ticks=true'");
+			add_gui("aim_direction", aim_direction, "direction", "options='min=-1;max=1;ticks=true'");
+			add_member_control(this, "aim circle radius", aim_circle_radius, "value_slider", "min=0;max=0.1;ticks=true;step=0.0001");
+			add_member_control(this, "trapezoid angle", aim_angle, "value_slider", "min=0;max=90;ticks=true;step=0.1");
+			add_gui("left eye", eye_position[0], "", "options='min=-0.2;max=0.2;step=0.001;ticks=true'");
+			add_gui("right eye", eye_position[1], "", "options='min=-0.2;max=0.2;step=0.001;ticks=true'");
+			align("\b");
+			end_tree_node(prs);
 		}
 
 	}
@@ -443,10 +486,16 @@ namespace vr {
 				int ci = vrpe.get_trackable_index();
 				if (ci >= 0 && ci < 2) {
 					c_P[ci] = vrpe.get_pose_matrix();
-					if (wall_state == WS_EYES_CALIB && wall_kit_ptr) {
-						points[ci] = wall_kit_ptr->transform_world_to_screen(c_P[ci] * vec4(aim_center, 1.0f));
-						radii[ci] = (2*1.618033989f*aim_circle_radius / wall_kit_ptr->pixel_size[0]);
-						points[ci][2] = 0;
+					if (wall_kit_ptr) {
+						if (wall_state == WS_EYES_CALIB) {
+							points[ci] = wall_kit_ptr->transform_world_to_screen(c_P[ci] * vec4(aim_center, 1.0f));
+//							radii[ci] = (2 * 1.618033989f * aim_circle_radius / wall_kit_ptr->pixel_size[0]);
+							points[ci][2] = 0;
+						}
+						if (wall_state == WS_SCREEN_CALIB) {
+							points[ci + 3] = wall_kit_ptr->transform_world_to_screen(c_P[ci] * vec4(peek_point, 1.0f));
+							points[ci + 3][2] = 0;
+						}
 						post_redraw();
 					}
 				}
@@ -498,6 +547,29 @@ namespace vr {
 					on_set(&calib_index);
 					return true;
 				}
+				case WS_EYES_CALIB:
+				{
+					/// get index of other controller
+					int ci = 1 - vrke.get_controller_index();
+					// transform aim center to screen coordinates
+					vec3 p = wall_kit_ptr->transform_world_to_screen(reinterpret_cast<const mat34&>(*vrke.get_state().controller[ci].pose)* vec4(aim_center, 1.0f));
+					// compute eye point in screen coordinates
+					p(2) *= 1.618033989f / 0.618033989f;
+					// transform to world coordinates
+					p = wall_kit_ptr->transform_screen_to_world(p);
+					// transform to coordinate system of hmd
+					const mat34* hmd_pose_ptr;
+					if (vr_wall_hmd_index == -1)
+						hmd_pose_ptr = reinterpret_cast<const mat34*>(vrke.get_state().hmd.pose);
+					else
+						hmd_pose_ptr = reinterpret_cast<const mat34*>(vrke.get_state().controller[vr_wall_hmd_index].pose);
+					eye_position[ci] = (p - reinterpret_cast<const vec3&>(hmd_pose_ptr[9]))* reinterpret_cast<const mat3&>(hmd_pose_ptr[0]);
+					update_member(&eye_position[ci][0]);
+					update_member(&eye_position[ci][1]);
+					update_member(&eye_position[ci][2]);
+					break;
+				}
+
 				}
 				break;
 			}
@@ -678,6 +750,39 @@ namespace vr {
 		int height = ctx.get_height();
 		switch (wall_state) {
 		case WS_EYES_CALIB:
+		{
+			std::vector<vec3> P;
+			std::vector<rgb> C;
+			for (int ci=0; ci<2; ++ci) {
+				float x_offset = (1.618033989f * aim_width / wall_kit_ptr->pixel_size[0])/height;
+				float H = 0.3f*x_offset;
+				float slope = tan(0.01745329252f * aim_angle);
+				P.push_back(points[ci] + vec3(-x_offset, 0, 0));
+				P.push_back(points[ci] + vec3( x_offset, 0, 0));
+				P.push_back(points[ci] + vec3(-x_offset+H/slope, H, 0));
+				P.push_back(points[ci] + vec3(x_offset-H/slope, H, 0));
+				C.push_back(ci == 0 ? rgb(1, 0.2f, 0.2f) : rgb(0.2f, 0.2f, 1));
+				C.push_back(C.back());
+				C.push_back(ci == 0 ? rgb(0.7f, 0.8f, 0) : rgb(0, 0.8f, 0.7f));
+				C.push_back(C.back());
+			}
+			for (int eye = 0; eye < 2; ++eye) {
+				ctx.set_viewport(ivec4(eye * width, 0, width, height));
+				ctx.set_projection_matrix(cgv::math::perspective4<double>(90, (double)width / height, 0.1, 10.0));
+				ctx.set_modelview_matrix(cgv::math::look_at4<double>(dvec3(0, 0, 1), dvec3(0, 0, 0), dvec3(0, 1, 0)));
+				auto& prog = ctx.ref_default_shader_program(false);
+				prog.enable(ctx);
+				cgv::render::attribute_array_binding::set_global_attribute_array(ctx, prog.get_position_index(), P);
+				cgv::render::attribute_array_binding::enable_global_array(ctx, prog.get_position_index());
+				cgv::render::attribute_array_binding::set_global_attribute_array(ctx, prog.get_color_index(), C);
+				cgv::render::attribute_array_binding::enable_global_array(ctx, prog.get_color_index());
+				glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+				glDrawArrays(GL_TRIANGLE_STRIP, 4, 4);
+				cgv::render::attribute_array_binding::disable_global_array(ctx, prog.get_position_index());
+				cgv::render::attribute_array_binding::disable_global_array(ctx, prog.get_color_index());
+				prog.disable(ctx);
+			}
+		}
 		case WS_SCREEN_CALIB:
 			for (int eye = 0; eye < 2; ++eye) {
 				ctx.set_viewport(ivec4(eye*width, 0, width, height));
@@ -692,8 +797,10 @@ namespace vr {
 					pr.set_point_size_array(ctx, radii);
 
 				if (pr.validate_and_enable(ctx)) {
-					if (wall_state == WS_SCREEN_CALIB)
+					if (wall_state == WS_SCREEN_CALIB) {
 						glDrawArrays(GL_POINTS, calib_index, 1);
+						glDrawArrays(GL_POINTS, 3, 2);
+					}
 					else
 						glDrawArrays(GL_POINTS, 0, points.size());
 					pr.disable(ctx);
