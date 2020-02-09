@@ -13,6 +13,16 @@
 ///@ingroup VR
 ///@{
 
+/// different visualization types for vr kit components
+enum VRkitVisType
+{
+	VVT_NONE,
+	VVT_SPHERE = 1,
+	VVT_MESH = 2,
+	VVT_BOTH
+};
+
+
 //! extends the stereo view interactor for vr support
 /*! Besides adding the crg_vr_view plugin to your project, you can configure
     the vr_view_interactor in your cgv::render::drawable::init() function similar
@@ -121,9 +131,7 @@ protected:
 	bool debug_vr_events;
 
 	// visualization of kits and action zone
-	bool show_vr_kits;
-	bool show_vr_kits_as_spheres;
-	bool show_vr_kits_as_meshes;
+	VRkitVisType vis_type, hmd_vis_type, controller_vis_type, tracker_vis_type;
 	bool show_action_zone;
 	rgb fence_color1, fence_color2;
 	float fence_frequency;
@@ -211,7 +219,7 @@ public:
 	/// set whether to draw separate view
 	void draw_separate_view(bool do_draw);
 	/// check whether vr kits are drawn
-	bool vr_kits_drawn() const { return show_vr_kits; }
+	bool vr_kits_drawn() const { return vis_type != VVT_NONE; }
 	/// set whether to draw vr kits
 	void draw_vr_kits(bool do_draw);
 	/// check whether action zone is drawn 
