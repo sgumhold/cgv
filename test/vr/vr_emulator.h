@@ -19,6 +19,14 @@ provides vr_emulator and vr_emulated_kit classes.
 */
 class CGV_API vr_emulator;
 
+enum TrackerAttachment 
+{
+	TA_WORLD,
+	TA_HEAD,
+	TA_LEFT_HAND,
+	TA_RIGHT_HAND
+};
+
 class CGV_API vr_emulated_kit : public vr::gl_vr_display, public cgv::render::render_types
 {
 public:
@@ -38,6 +46,7 @@ protected:
 	quat hand_orientation[2];
 	quat tracker_orientations[2];
 	bool tracker_enabled[2];
+	TrackerAttachment tracker_attachments[2];
 
 	/// helper functions to construct matrices
 	mat3x4 construct_pos_matrix(const quat& orientation, const vec3& position);

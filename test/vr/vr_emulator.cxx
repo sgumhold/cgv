@@ -2,6 +2,8 @@
 #include <cgv/math/ftransform.h>
 #include <cgv/gui/key_event.h>
 #include <cgv/gui/trigger.h>
+#include <cgv_reflect_types/math/fvec.h>
+#include <cgv_reflect_types/math/quaternion.h>
 #include <cg_vr/vr_server.h>
 #include <cgv/utils/convert_string.h>
 #include <cg_gamepad/gamepad_server.h>
@@ -77,7 +79,7 @@ void vr_emulated_kit::compute_state_poses()
 	hand_orientation[0].put_homogeneous_matrix(R);
 	mat4 T_left =
 		cgv::math::translate4<float>(
-			scale*vec3(-(Shoulder_breadth + Arm_length * hand_position[0](0)),
+			scale*vec3((-Shoulder_breadth + Arm_length * hand_position[0](0)),
 				Shoulder_height - Hip_height + Arm_length * hand_position[0](1),
 				Arm_length*hand_position[0](2)))*R;
 	hand_orientation[1].put_homogeneous_matrix(R);
@@ -90,13 +92,20 @@ void vr_emulated_kit::compute_state_poses()
 	set_pose_matrix(T_body*T_hip*T_head, state.hmd.pose);
 	set_pose_matrix(T_body*T_hip*T_left, state.controller[0].pose);
 	set_pose_matrix(T_body*T_hip*T_right, state.controller[1].pose);
-	for (int i=0; i<2; ++i)
-		if (tracker_enabled[i]) {
-			reinterpret_cast<mat3x4&>(state.controller[2 + i].pose[0]) = construct_pos_matrix(tracker_orientations[i], tracker_positions[i]);
-			state.controller[2 + i].status = vr::VRS_TRACKED;
-		}
-		else
+	for (int i = 0; i < 2; ++i) {
+		if (!tracker_enabled[i]) {
 			state.controller[2 + i].status = vr::VRS_DETACHED;
+			continue;
+		}
+		mat4 T = construct_homogeneous_matrix(tracker_orientations[i], tracker_positions[i]);
+		switch (tracker_attachments[i]) {
+		case TA_HEAD: T = T_body * T_hip*T_head*T; break;
+		case TA_LEFT_HAND: T = T_body * T_hip*T_left*T; break;
+		case TA_RIGHT_HAND: T = T_body * T_hip*T_right*T; break;
+		}
+		set_pose_matrix(T, state.controller[2 + i].pose);
+		state.controller[2 + i].status = vr::VRS_TRACKED;
+	}
 }
 
 vr_emulated_kit::vr_emulated_kit(float _body_direction, const vec3& _body_position, float _body_height, unsigned _width, unsigned _height, vr::vr_driver* _driver, void* _handle, const std::string& _name, bool _ffb_support, bool _wireless)
@@ -120,7 +129,7 @@ vr_emulated_kit::vr_emulated_kit(float _body_direction, const vec3& _body_positi
 	tracker_positions[0] = vec3(0.2f, 1.2f, 0.0f);
 	tracker_positions[1] = vec3(-0.2f, 1.2f, 0.0f);
 	tracker_orientations[0] = tracker_orientations[1] = quat(0.71f,-0.71f,0,0);
-
+	tracker_attachments[0] = tracker_attachments[1] = TA_WORLD;
 	compute_state_poses();
 }
 
@@ -182,7 +191,7 @@ void vr_emulated_kit::put_eye_to_head_matrix(int eye, float* pose_matrix) const
 	float scale = body_height / Body_height;
 	set_pose_matrix(
 		cgv::math::translate4<float>(
-			scale*vec3(float(2 * eye - 1)*Pupillary_distance, Eye_height - Chin_height, -Pupillary_distance)
+			scale*vec3(float(eye - 0.5f)*Pupillary_distance, Eye_height - Chin_height, -Pupillary_distance)
 		), pose_matrix
 	);
 }
@@ -542,16 +551,39 @@ void vr_emulator::finish_frame(cgv::render::context&)
 ///
 bool vr_emulator::self_reflect(cgv::reflect::reflection_handler& srh)
 {
-	return		
+	bool res =
 		srh.reflect_member("current_kit_index", current_kit_index) &&
 		srh.reflect_member("installed", installed) &&
-		srh.reflect_member("body_direction", body_direction) &&
-		srh.reflect_member("body_position", body_position) &&
+		srh.reflect_member("create_body_direction", body_direction) &&
+		srh.reflect_member("create_body_position", body_position) &&
 		srh.reflect_member("body_height", body_height) &&
 		srh.reflect_member("screen_height", screen_height) &&
 		srh.reflect_member("screen_width", screen_width) &&
 		srh.reflect_member("wireless", wireless) &&
 		srh.reflect_member("ffb_support", ffb_support);
+	if (res && current_kit_index != -1 && current_kit_index < (int)kits.size()) {
+		vr_emulated_kit* kit_ptr = kits[current_kit_index];
+		res =
+			srh.reflect_member("body_direction", kit_ptr->body_direction) &&
+			srh.reflect_member("body_height", kit_ptr->body_height) &&
+			srh.reflect_member("hip_parameter", kit_ptr->hip_parameter) &&
+			srh.reflect_member("gear_parameter", kit_ptr->gear_parameter) &&
+			srh.reflect_member("fovy", kit_ptr->fovy) &&
+			srh.reflect_member("body_position", kit_ptr->body_position) &&
+			srh.reflect_member("left_hand_position", kit_ptr->hand_position[0]) &&
+			srh.reflect_member("right_hand_position", kit_ptr->hand_position[1]) &&
+			srh.reflect_member("tracker_1_position", kit_ptr->tracker_positions[0]) &&
+			srh.reflect_member("tracker_2_position", kit_ptr->tracker_positions[1]) &&
+			srh.reflect_member("tracker_1_enabled", kit_ptr->tracker_enabled[0]) &&
+			srh.reflect_member("tracker_2_enabled", kit_ptr->tracker_enabled[1]) &&
+			srh.reflect_member("tracker_1_orientation", kit_ptr->tracker_orientations[0]) &&
+			srh.reflect_member("tracker_2_orientation", kit_ptr->tracker_orientations[1]) &&
+			srh.reflect_member("left_hand_orientation", kit_ptr->hand_orientation[0]) &&
+			srh.reflect_member("right_hand_orientation", kit_ptr->hand_orientation[1]) &&
+			srh.reflect_member("tracker_1_attachment", (int&)kit_ptr->tracker_attachments[0]) &&
+			srh.reflect_member("tracker_2_attachment", (int&)kit_ptr->tracker_attachments[1]);
+	}
+	return res;
 }
 
 void vr_emulator::create_trackable_gui(const std::string& name, vr::vr_trackable_state& ts)
@@ -560,18 +592,18 @@ void vr_emulator::create_trackable_gui(const std::string& name, vr::vr_trackable
 	add_member_control(this, "status", ts.status, "dropdown", "enums='detached,attached,tracked'");
 	if (begin_tree_node("pose", ts.pose[0], false, "level=3")) {
 		align("\a");
-		add_view("x.x", ts.pose[0], "value", "w=50", " ");
-		add_view("x.y", ts.pose[1], "value", "w=50", " ");
-		add_view("x.z", ts.pose[2], "value", "w=50");
-		add_view("y.x", ts.pose[3], "value", "w=50", " ");
-		add_view("y.y", ts.pose[4], "value", "w=50", " ");
-		add_view("y.z", ts.pose[5], "value", "w=50");
-		add_view("z.x", ts.pose[6], "value", "w=50", " ");
-		add_view("z.y", ts.pose[7], "value", "w=50", " ");
-		add_view("z.z", ts.pose[8], "value", "w=50");
-		add_view("0.x", ts.pose[9], "value", "w=50", " ");
-		add_view("0.y", ts.pose[10], "value", "w=50", " ");
-		add_view("0.z", ts.pose[11], "value", "w=50");
+		add_view("x.x", ts.pose[0], "value", "w=50;step=0.0001", " ");
+		add_view("x.y", ts.pose[1], "value", "w=50;step=0.0001", " ");
+		add_view("x.z", ts.pose[2], "value", "w=50;step=0.0001");
+		add_view("y.x", ts.pose[3], "value", "w=50;step=0.0001", " ");
+		add_view("y.y", ts.pose[4], "value", "w=50;step=0.0001", " ");
+		add_view("y.z", ts.pose[5], "value", "w=50;step=0.0001");
+		add_view("z.x", ts.pose[6], "value", "w=50;step=0.0001", " ");
+		add_view("z.y", ts.pose[7], "value", "w=50;step=0.0001", " ");
+		add_view("z.z", ts.pose[8], "value", "w=50;step=0.0001");
+		add_view("0.x", ts.pose[9], "value", "w=50;step=0.0001", " ");
+		add_view("0.y", ts.pose[10], "value", "w=50;step=0.0001", " ");
+		add_view("0.z", ts.pose[11], "value", "w=50;step=0.0001");
 		align("\b");
 		end_tree_node(ts.pose[0]);
 	}
@@ -599,12 +631,13 @@ void vr_emulator::create_controller_gui(int i, vr::vr_controller_state& cs)
 
 void vr_emulator::create_tracker_gui(vr_emulated_kit* kit, int i)
 {
-	if (begin_tree_node(std::string("tracker_") + cgv::utils::to_string(i), kit->tracker_enabled[i], false, "level=3")) {
+	if (begin_tree_node(std::string("tracker_") + cgv::utils::to_string(i+1), kit->tracker_enabled[i], false, "level=3")) {
 		add_member_control(this, "enabled", kit->tracker_enabled[i], "check");
+		add_member_control(this, "attachment", kit->tracker_attachments[i], "dropdown", "enums='world,head,left hand,right hand'");
 		add_decorator("position", "heading", "level=3");
-		add_gui("position", kit->tracker_positions[i], "vector", "gui_type='value_slider';options='min=-3;max=3;ticks=true'");
-		add_decorator("quaternion", "heading", "level=3");
-		add_gui("quaternion", reinterpret_cast<vec4&>(kit->tracker_orientations[i]), "direction", "gui_type='value_slider';options='min=-1;max=1;ticks=true'");
+		add_gui("position", kit->tracker_positions[i], "vector", "gui_type='value_slider';options='min=-3;max=3;step=0.0001;ticks=true'");
+		add_decorator("orientation", "heading", "level=3");
+		add_gui("orientation", reinterpret_cast<vec4&>(kit->tracker_orientations[i]), "direction", "gui_type='value_slider';options='min=-1;max=1;step=0.0001;ticks=true'");
 		end_tree_node(kit->tracker_enabled[i]);
 	}
 }
@@ -620,9 +653,9 @@ void vr_emulator::create_gui()
 		add_member_control(this, "screen_height", screen_height, "value_slider", "min=240;max=1920;ticks=true");
 		add_member_control(this, "ffb_support", ffb_support, "toggle", "w=90", " ");
 		add_member_control(this, "wireless", wireless, "toggle", "w=90");
-		add_gui("body_position", body_position, "", "options='min=-1;max=1'");
+		add_gui("body_position", body_position, "", "options='min=-1;max=1;step=0.0001;ticks=true'");
 		add_member_control(this, "body_direction", body_direction, "min=0;max=6.3;ticks=true");
-		add_member_control(this, "body_height", body_height, "min=1.2;max=2.0;ticks=true");
+		add_member_control(this, "body_height", body_height, "min=1.2;max=2.0;step=0.001;ticks=true");
 		connect_copy(add_button("create new kit")->click, cgv::signal::rebind(this, &vr_emulator::add_new_kit));
 		align("\b");
 		end_tree_node(screen_width);
@@ -649,12 +682,19 @@ void vr_emulator::create_gui()
 				add_gui("body_position", kits[i]->body_position, "", "options='min=-5;max=5;ticks=true'");
 				add_member_control(this, "body_direction", kits[i]->body_direction, "value_slider", "min=0;max=6.3;ticks=true");
 				add_member_control(this, "body_height", kits[i]->body_height, "value_slider", "min=1.2;max=2.0;ticks=true");
-				add_member_control(this, "hip_parameter", kits[i]->hip_parameter, "value_slider", "min=-1;max=1;ticks=true");
-				add_member_control(this, "gear_parameter", kits[i]->gear_parameter, "value_slider", "min=-1;max=1;ticks=true");
-				add_decorator("left hand", "heading", "level=3");
-				add_gui("left_hand", kits[i]->hand_position[0], "", "options='min=-1;max=1;ticks=true'");
-				add_decorator("right hand", "heading", "level=3");
-				add_gui("right_hand", kits[i]->hand_position[1], "", "options='min=-1;max=1;ticks=true'");
+				add_member_control(this, "hip_parameter", kits[i]->hip_parameter, "value_slider", "min=-1;max=1;step=0.0001;ticks=true");
+				add_member_control(this, "gear_parameter", kits[i]->gear_parameter, "value_slider", "min=-1;max=1;step=0.0001;ticks=true");
+				for (int j = 0; j < 2; ++j) {
+					if (begin_tree_node(j == 0 ? "left hand" : "right hand", kits[i]->hand_position[j], false, "level=3")) {
+						align("\a");
+						add_decorator("position", "heading", "level=3");
+						add_gui("position", kits[i]->hand_position[j], "vector", "gui_type='value_slider';options='min=-3;max=3;step=0.0001;ticks=true'");
+						add_decorator("orientation", "heading", "level=3");
+						add_gui("orientation", reinterpret_cast<vec4&>(kits[i]->hand_orientation[j]), "direction", "gui_type='value_slider';options='min=-1;max=1;step=0.0001;ticks=true'");
+						align("\b");
+						end_tree_node(kits[i]->hand_position[j]);
+					}
+				}
 				align("\b");
 				end_tree_node(kits[i]->body_position);
 			}
@@ -669,7 +709,7 @@ void vr_emulator::create_gui()
 					end_tree_node(kits[i]->state.hmd.pose[1]);
 				}
 				for (unsigned ci = 0; ci < 2; ++ci) {
-					if (begin_tree_node((ci==0?"controller[0]":"controller[1]"), kits[i]->state.controller[ci], false, "level=3")) {
+					if (begin_tree_node((ci==0?"left controller":"right controller"), kits[i]->state.controller[ci], false, "level=3")) {
 						align("\a");
 						create_controller_gui(ci, kits[i]->state.controller[ci]);
 						align("\b");
