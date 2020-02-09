@@ -115,6 +115,7 @@ protected:
 	bool shared_texture;
 	bool max_rectangle;
 	float camera_aspect;
+	bool show_seethrough;
 	bool use_matrix;
 	float background_distance;
 	float background_extent;

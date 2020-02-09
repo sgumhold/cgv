@@ -192,12 +192,13 @@ void vr_test::construct_environment(float s, float ew, float ed, float w, float 
 
 /// construct boxes that can be moved around
 void vr_test::construct_movable_boxes(float tw, float td, float th, float tW, size_t nr) {
+	/*
 	vec3 extent(0.75f, 0.5f, 0.05f);
 	movable_boxes.push_back(box3(-0.5f * extent, 0.5f * extent));
 	movable_box_colors.push_back(rgb(0, 0, 0));
 	movable_box_translations.push_back(vec3(0, 1.2f, 0));
 	movable_box_rotations.push_back(quat(1, 0, 0, 0));
-
+	*/
 	std::default_random_engine generator;
 	std::uniform_real_distribution<float> distribution(0, 1);
 	std::uniform_real_distribution<float> signed_distribution(-1, 1);
@@ -245,7 +246,7 @@ vr_test::vr_test()
 	camera_tex_id = -1;
 	camera_aspect = 1;
 	use_matrix = true;
-
+	show_seethrough = false;
 	set_name("vr_test");
 	build_scene(5, 7, 3, 0.2f, 1.6f, 0.8f, 0.7f, 0.03f);
 	vr_view_ptr = 0;
@@ -741,10 +742,14 @@ void vr_test::draw(cgv::render::context& ctx)
 	renderer.set_translation_array(ctx, movable_box_translations);
 	renderer.set_rotation_array(ctx, movable_box_rotations);
 	if (renderer.validate_and_enable(ctx)) {
-		glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
-		glDrawArrays(GL_POINTS, 0, 3);
-		glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
-		glDrawArrays(GL_POINTS, 3, (GLsizei)movable_boxes.size()-3);
+		if (show_seethrough) {
+			glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
+			glDrawArrays(GL_POINTS, 0, 3);
+			glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
+			glDrawArrays(GL_POINTS, 3, (GLsizei)movable_boxes.size() - 3);
+		}
+		else
+			glDrawArrays(GL_POINTS, 0, (GLsizei)movable_boxes.size());
 	}
 	renderer.disable(ctx);
 
@@ -841,6 +846,7 @@ void vr_test::create_gui() {
 	add_gui("mesh_location", mesh_location, "vector", "options='min=-3;max=3;ticks=true");
 	add_gui("mesh_orientation", static_cast<dvec4&>(mesh_orientation), "direction", "options='min=-1;max=1;ticks=true");
 	add_member_control(this, "ray_length", ray_length, "value_slider", "min=0.1;max=10;log=true;ticks=true");
+	add_member_control(this, "show_seethrough", show_seethrough, "check");
 	if(last_kit_handle) {
 		add_decorator("cameras", "heading", "level=3");
 		add_view("nr", nr_cameras);
