@@ -36,9 +36,7 @@ vr_view_interactor::vr_view_interactor(const char* name) : stereo_view_interacto
 
 	fence_frequency = 5;
 	fence_line_width = 3;
-	show_vr_kits = true;
-	show_vr_kits_as_spheres = false;
-	show_vr_kits_as_meshes = true;
+	vis_type = hmd_vis_type = controller_vis_type = tracker_vis_type = VVT_MESH;
 
 	mesh_scales[0] = mesh_scales[1] = mesh_scales[2] = mesh_scales[3] = 1;
 
@@ -76,9 +74,9 @@ void vr_view_interactor::draw_separate_view(bool do_draw)
 /// whether to draw vr kits
 void vr_view_interactor::draw_vr_kits(bool do_draw)
 {
-	if (show_vr_kits != do_draw) {
-		show_vr_kits = do_draw;
-		on_set(&show_vr_kits);
+	if ((vis_type != VVT_NONE) != do_draw) {
+		vis_type = do_draw ? VVT_MESH : VVT_NONE;
+		on_set(&vis_type);
 	}
 }
 /// whether to draw action zone
@@ -203,6 +201,13 @@ void vr_view_interactor::on_set(void* member_ptr)
 	if (member_ptr == &base_mesh_file_name)
 		vr::set_vrmesh_file_name(vr::VRM_BASE, base_mesh_file_name);
 
+	if (member_ptr == &vis_type) {
+		hmd_vis_type = controller_vis_type = tracker_vis_type = vis_type;
+		update_member(&hmd_vis_type);
+		update_member(&controller_vis_type);
+		update_member(&tracker_vis_type);
+	}
+
 	if (member_ptr == &current_vr_handle_index) {
 		if (current_vr_handle_index == -1) {
 			current_vr_handle = 0;
@@ -254,6 +259,7 @@ bool vr_view_interactor::init(cgv::render::context& ctx)
 	cgv::render::ref_sphere_renderer(ctx, 1);
 
 #ifndef _DEBUG
+	// set mesh file names only in release configuration
 	if (vr::get_vrmesh_file_name(vr::VRM_HMD).empty())
 		vr::set_vrmesh_file_name(vr::VRM_HMD, "generic_hmd.obj");
 	if (vr::get_vrmesh_file_name(vr::VRM_CONTROLLER).empty())
@@ -263,19 +269,28 @@ bool vr_view_interactor::init(cgv::render::context& ctx)
 		mesh_scales[vr::VRM_TRACKER] = 0.001f;
 	}
 #endif
-
-	bool have_hmd_MI = vr::get_vrmesh_render_info(ctx, vr::VRM_HMD);
-	bool have_controller_MI = vr::get_vrmesh_render_info(ctx, vr::VRM_HMD);
-	bool have_tracker_MI = vr::get_vrmesh_render_info(ctx, vr::VRM_HMD);
-	// enable sphere rendering in case meshes are not available
-	if (!have_hmd_MI && !have_controller_MI && !have_tracker_MI && !show_vr_kits_as_spheres) {
-		show_vr_kits_as_spheres = true;
-		on_set(&show_vr_kits_as_spheres);
+	// try to read meshes and turn off mesh rendering and potentially switch to sphere rendering in case meshes are not available
+	if (!vr::get_vrmesh_render_info(ctx, vr::VRM_HMD) && hmd_vis_type != VVT_NONE) {
+		hmd_vis_type = VVT_SPHERE;
+		on_set(&hmd_vis_type);
+		hmd_mesh_file_name = vr::get_vrmesh_file_name(vr::VRM_HMD);
+		update_member(&hmd_mesh_file_name);
 	}
-	hmd_mesh_file_name = vr::get_vrmesh_file_name(vr::VRM_HMD); update_member(&hmd_mesh_file_name);
-	controller_mesh_file_name = vr::get_vrmesh_file_name(vr::VRM_CONTROLLER); update_member(&controller_mesh_file_name);
-	tracker_mesh_file_name = vr::get_vrmesh_file_name(vr::VRM_TRACKER); update_member(&tracker_mesh_file_name);
-	base_mesh_file_name = vr::get_vrmesh_file_name(vr::VRM_BASE); update_member(&base_mesh_file_name);
+	if (!vr::get_vrmesh_render_info(ctx, vr::VRM_HMD) && controller_vis_type != VVT_NONE) {
+		controller_vis_type = VVT_SPHERE;
+		on_set(&controller_vis_type);
+		controller_mesh_file_name = vr::get_vrmesh_file_name(vr::VRM_CONTROLLER);
+		update_member(&controller_mesh_file_name);
+	}
+	if (!vr::get_vrmesh_render_info(ctx, vr::VRM_HMD) && tracker_vis_type != VVT_NONE) {
+		tracker_vis_type = VVT_SPHERE;
+		on_set(&tracker_vis_type);
+		tracker_mesh_file_name = vr::get_vrmesh_file_name(vr::VRM_TRACKER);
+		update_member(&tracker_mesh_file_name);
+	}
+	
+	base_mesh_file_name = vr::get_vrmesh_file_name(vr::VRM_BASE);
+	update_member(&base_mesh_file_name);
 
 	return stereo_view_interactor::init(ctx);
 }
@@ -608,7 +623,7 @@ void vr_view_interactor::init_frame(cgv::render::context& ctx)
 void vr_view_interactor::draw(cgv::render::context& ctx)
 {
 	double time = cgv::gui::trigger::get_current_time();
-	if (show_vr_kits) {
+	if (hmd_vis_type != VVT_NONE && controller_vis_type != VVT_NONE && tracker_vis_type != VVT_NONE) {
 		std::vector<vec4> spheres;
 		std::vector<rgb> sphere_colors;
 		for (int i = 0; i < (int)kits.size(); ++i) {
@@ -623,7 +638,7 @@ void vr_view_interactor::draw(cgv::render::context& ctx)
 				continue;
 
 			cgv::render::mesh_render_info* MI_hmd_ptr = vr::get_vrmesh_render_info(ctx, vr::VRM_HMD);
-			if (show_vr_kits_as_meshes && MI_hmd_ptr != 0) {
+			if ((hmd_vis_type & VVT_MESH) != 0 && MI_hmd_ptr != 0) {
 				if (kit_ptr != rendered_kit_ptr) {
 					ctx.push_modelview_matrix();
 					ctx.mul_modelview_matrix(
@@ -635,7 +650,7 @@ void vr_view_interactor::draw(cgv::render::context& ctx)
 					ctx.pop_modelview_matrix();
 				}
 			}
-			if (show_vr_kits_as_spheres || MI_hmd_ptr == 0) {
+			if ((hmd_vis_type & VVT_SPHERE) != 0) {
 				float left_eye_to_head[12];
 				float right_eye_to_head[12];
 				kit_ptr->put_eye_to_head_matrix(0, left_eye_to_head);
@@ -666,41 +681,49 @@ void vr_view_interactor::draw(cgv::render::context& ctx)
 			}
 			cgv::render::mesh_render_info* MI_controller_ptr = vr::get_vrmesh_render_info(ctx, vr::VRM_CONTROLLER);
 			cgv::render::mesh_render_info* MI_tracker_ptr = vr::get_vrmesh_render_info(ctx, vr::VRM_TRACKER);
-			for (unsigned i = 0; i < 4; ++i)
-				if (state_ptr->controller[i].status == vr::VRS_TRACKED) {
-					bool mesh_info_available = (i < 2 ? MI_controller_ptr : MI_tracker_ptr) != 0;
-					if (show_vr_kits_as_meshes && mesh_info_available) {
+			for (unsigned i = 0; i < 4; ++i) {
+				if (state_ptr->controller[i].status != vr::VRS_TRACKED)
+					continue;
+				bool show_spheres;
+				if (i < 2) {
+					show_spheres = (controller_vis_type & VVT_SPHERE) != 0;
+					if (MI_controller_ptr && (controller_vis_type & VVT_MESH) != 0) {
 						ctx.push_modelview_matrix();
 						ctx.mul_modelview_matrix(cgv::math::pose4<float>(reinterpret_cast<const mat34&>(state_ptr->controller[i].pose[0])));
-						if (i < 2) {
-							ctx.mul_modelview_matrix(cgv::math::scale4<float>(vec3(mesh_scales[vr::VRM_CONTROLLER])));
-							MI_controller_ptr->render_mesh(ctx, ctx.ref_surface_shader_program(true));
-						}
-						else {
-							ctx.mul_modelview_matrix(cgv::math::scale4<float>(vec3(mesh_scales[vr::VRM_TRACKER])));
-							MI_tracker_ptr->render_mesh(ctx, ctx.ref_surface_shader_program(true));
-						}
+						ctx.mul_modelview_matrix(cgv::math::scale4<float>(vec3(mesh_scales[vr::VRM_CONTROLLER])));
+						MI_controller_ptr->render_mesh(ctx, ctx.ref_surface_shader_program(true));
 						ctx.pop_modelview_matrix();
 					}
-					if (show_vr_kits_as_spheres || !mesh_info_available) {
-						const mat3& R_ci = reinterpret_cast<const mat3&>(state_ptr->controller[i].pose[0]);
-						const vec3& p_ci = reinterpret_cast<const vec3&>(state_ptr->controller[i].pose[9]);
-						spheres.push_back(vec4(p_ci, 0.04f));
-						spheres.push_back(vec4(p_ci + 0.05f*R_ci.col(0), 0.01f));
-						spheres.push_back(vec4(p_ci - 0.05f*R_ci.col(0), 0.01f));
-						spheres.push_back(vec4(p_ci + 0.05f*R_ci.col(1), 0.01f));
-						spheres.push_back(vec4(p_ci - 0.05f*R_ci.col(1), 0.01f));
-						spheres.push_back(vec4(p_ci + 0.05f*R_ci.col(2), 0.01f));
-						spheres.push_back(vec4(p_ci - 0.05f*R_ci.col(2), 0.01f));
-						sphere_colors.push_back(rgb(0.5f + (1 - i)*0.5f, 0.5f, 0.5f + 0.5f*i));
-						sphere_colors.push_back(rgb(1, 0, 0));
-						sphere_colors.push_back(rgb(1, 0.5f, 0.5f));
-						sphere_colors.push_back(rgb(0, 1, 0));
-						sphere_colors.push_back(rgb(0.5f, 1, 0.5f));
-						sphere_colors.push_back(rgb(0, 0, 1));
-						sphere_colors.push_back(rgb(0.5f, 0.5f, 1));
+				}
+				else {
+					show_spheres = (tracker_vis_type & VVT_SPHERE) != 0;
+					if (MI_tracker_ptr && (tracker_vis_type & VVT_MESH) != 0) {
+						ctx.push_modelview_matrix();
+						ctx.mul_modelview_matrix(cgv::math::pose4<float>(reinterpret_cast<const mat34&>(state_ptr->controller[i].pose[0])));
+						ctx.mul_modelview_matrix(cgv::math::scale4<float>(vec3(mesh_scales[vr::VRM_TRACKER])));
+						MI_tracker_ptr->render_mesh(ctx, ctx.ref_surface_shader_program(true));
+						ctx.pop_modelview_matrix();
 					}
 				}
+				if (show_spheres) {
+					const mat3& R_ci = reinterpret_cast<const mat3&>(state_ptr->controller[i].pose[0]);
+					const vec3& p_ci = reinterpret_cast<const vec3&>(state_ptr->controller[i].pose[9]);
+					spheres.push_back(vec4(p_ci, 0.04f));
+					spheres.push_back(vec4(p_ci + 0.05f*R_ci.col(0), 0.01f));
+					spheres.push_back(vec4(p_ci - 0.05f*R_ci.col(0), 0.01f));
+					spheres.push_back(vec4(p_ci + 0.05f*R_ci.col(1), 0.01f));
+					spheres.push_back(vec4(p_ci - 0.05f*R_ci.col(1), 0.01f));
+					spheres.push_back(vec4(p_ci + 0.05f*R_ci.col(2), 0.01f));
+					spheres.push_back(vec4(p_ci - 0.05f*R_ci.col(2), 0.01f));
+					sphere_colors.push_back(rgb(0.5f + (1 - i)*0.5f, 0.5f, 0.5f + 0.5f*i));
+					sphere_colors.push_back(rgb(1, 0, 0));
+					sphere_colors.push_back(rgb(1, 0.5f, 0.5f));
+					sphere_colors.push_back(rgb(0, 1, 0));
+					sphere_colors.push_back(rgb(0.5f, 1, 0.5f));
+					sphere_colors.push_back(rgb(0, 0, 1));
+					sphere_colors.push_back(rgb(0.5f, 0.5f, 1));
+				}
+			}
 		}
 		if (!spheres.empty()) {
 			cgv::render::sphere_renderer& sr = cgv::render::ref_sphere_renderer(ctx);
@@ -804,9 +827,12 @@ void vr_view_interactor::create_gui()
 			align("\b");
 			end_tree_node(fence_color1);
 		}
-		add_member_control(this, "show kits", show_vr_kits, "toggle", "w=62", " ");
-		add_member_control(this, "as meshes", show_vr_kits_as_meshes, "toggle", "w=61", " ");
-		add_member_control(this, "as spheres", show_vr_kits_as_spheres, "toggle", "w=61");
+		add_decorator("visualization type", "heading", "level=3");
+		add_member_control(this, "complete kits", vis_type, "dropdown", "enums='hide,sphere,mesh,both'");
+		add_member_control(this, "hmd", hmd_vis_type, "dropdown", "enums='hide,sphere,mesh,both'");
+		add_member_control(this, "controller", controller_vis_type, "dropdown", "enums='hide,sphere,mesh,both'");
+		add_member_control(this, "tracker", tracker_vis_type, "dropdown", "enums='hide,sphere,mesh,both'");
+
 		if (begin_tree_node("sphere styles", srs, false, "level=3")) {
 			align("\a");
 			add_gui("sphere style", srs);
@@ -830,6 +856,10 @@ void vr_view_interactor::create_gui()
 bool vr_view_interactor::self_reflect(cgv::reflect::reflection_handler& srh)
 {
 	return stereo_view_interactor::self_reflect(srh) &&
+		srh.reflect_member("vis_type", (int&)vis_type) &&
+		srh.reflect_member("hmd_vis_type", (int&)hmd_vis_type) &&
+		srh.reflect_member("controller_vis_type", (int&)controller_vis_type) &&
+		srh.reflect_member("tracker_vis_type", (int&)tracker_vis_type) &&
 		srh.reflect_member("hmd_scale", mesh_scales[0]) &&
 		srh.reflect_member("controller_scale", mesh_scales[1]) &&
 		srh.reflect_member("tracker_scale", mesh_scales[2]) &&
