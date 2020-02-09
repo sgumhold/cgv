@@ -32,6 +32,20 @@ namespace vr {
 		WS_HMD           // hmd emulation
 	};
 
+	/// different modes for stereo shader
+	enum StereoShaderMode {
+		SSM_LEFT_ONLY,
+		SSM_RIGHT_ONLY,
+		SSM_SIDE_BY_SIDE,
+		SSM_TOP_BOTTOM,
+		SSM_COLUMN_INTERLEAVED,
+		SSM_ROW_INTERLEAVED,
+		SSM_ANAGLYPH_RED_CYAN,
+		SSM_ANAGLYPH_COLOR,
+		SSM_ANAGLYPH_HALF_COLOR,
+		SSM_ANAGLYPH_DUBOID
+	};
+
 	/// the vr_wall class manages an additional window to cover the display and a wall_vr_kit that can be attached to an existing vr_kit
 	class CGV_API vr_wall : public cgv::base::node, public cgv::render::drawable, public cgv::gui::event_handler, public cgv::gui::provider
 	{
@@ -95,9 +109,19 @@ namespace vr {
 		///
 		vec3 aim_center;
 		///
+		float aim_beta;
+		///
 		vec3 eye_position[2];
+		///
+		bool eye_calibrated[2];
+		///
+		cgv::render::shader_program stereo_prog;
+		///
+		int stereo_mode;
 		/// current pose matrices of controllers need to render peek point
-		mat34 c_P[2];
+		mat34 c_P[2], hmd_pose;
+		///
+		int box_index;
 		/// helper function to fill the point 
 		void generate_screen_calib_points();
 		//@}
