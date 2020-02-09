@@ -1,6 +1,8 @@
 #include "simple_mesh.h"
+#include <cgv/math/inv.h>
 #include <cgv/media/mesh/obj_reader.h>
 #include <cgv/math/bucket_sort.h>
+#include <fstream>
 
 namespace cgv {
 	namespace media {
@@ -21,6 +23,26 @@ simple_mesh_base::idx_type simple_mesh_base::new_corner(idx_type position_index,
 	if (tex_coord_index != -1)
 		tex_coord_indices.push_back(tex_coord_index);
 	return idx_type(position_indices.size());
+}
+
+/// revert face orientation
+void simple_mesh_base::revert_face_orientation()
+{
+	bool nmls = position_indices.size() == normal_indices.size();
+	bool tcs  = position_indices.size() == tex_coord_indices.size();
+	for (size_t fi = 0; fi < get_nr_faces(); ++fi) {
+		idx_type ci = begin_corner(fi);
+		idx_type cj = end_corner(fi);
+		while (ci + 1 < cj) {
+			--cj;
+			std::swap(position_indices[ci], position_indices[cj]);
+			if (nmls)
+				std::swap(normal_indices[ci], normal_indices[cj]);
+			if (tcs)
+				std::swap(tex_coord_indices[ci], tex_coord_indices[cj]);
+			++ci;
+		}
+	}
 }
 
 /// sort faces by group and material indices with two bucket sorts
@@ -216,6 +238,40 @@ bool simple_mesh<T>::read(const std::string& file_name)
 	return reader.read_obj(file_name);
 }
 
+/// write simple mesh to file (currently only obj is supported)
+template <typename T>
+bool simple_mesh<T>::write(const std::string& file_name) const
+{
+	std::ofstream os(file_name);
+	if (os.fail())
+		return false;
+	for (const auto& p : positions)
+		os << "v " << p << std::endl;
+	for (const auto& t : tex_coords)
+		os << "vt " << t << std::endl;
+	for (const auto& n : normals)
+		os << "vn " << n << std::endl;
+
+	bool nmls = position_indices.size() == normal_indices.size();
+	bool tcs = position_indices.size() == tex_coord_indices.size();
+
+	for (size_t fi = 0; fi < faces.size(); ++fi) {
+		os << "f";
+		for (size_t ci = begin_corner(fi); ci < end_corner(fi); ++ci) {
+			os << " " << position_indices[ci] + 1;
+			if (!nmls && !tcs)
+				continue;
+			os << "/";
+			if (tcs)
+				os << tex_coord_indices[ci] + 1;
+			if (nmls)
+				os << "/" << normal_indices[ci] + 1;
+		}
+		os << "\n";
+	}
+	return true;
+}
+
 /// compute the axis aligned bounding box
 template <typename T>
 typename simple_mesh<T>::box_type simple_mesh<T>::compute_box() const
@@ -303,6 +359,24 @@ unsigned simple_mesh<T>::extract_vertex_attribute_buffer(
 		}
 	}
 	return color_increment;
+}
+
+/// apply transformation to mesh
+template <typename T>
+void simple_mesh<T>::transform(const mat3& linear_transformation, const vec3& translation)
+{
+	mat3 inverse_linear_transform = inv(linear_transformation);
+	transform(linear_transformation, translation, inverse_linear_transform);
+}
+
+/// apply transformation to mesh with given inverse linear transformation
+template <typename T>
+void simple_mesh<T>::transform(const mat3& linear_transform, const vec3& translation, const mat3& inverse_linear_transform)
+{
+	for (auto& p : positions)
+		p = linear_transform * p + translation;
+	for (auto& n : normals)
+		n = n * inverse_linear_transform;
 }
 
 template class simple_mesh<float>;
