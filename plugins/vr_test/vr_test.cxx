@@ -8,6 +8,7 @@
 #include <cgv/gui/dialog.h>
 #include <cgv/render/attribute_array_binding.h>
 #include <cgv_gl/sphere_renderer.h>
+#include <cgv_gl/rounded_cone_renderer.h>
 #include <cgv/media/mesh/simple_mesh.h>
 
 #include <random>
@@ -473,12 +474,12 @@ bool vr_test::init(cgv::render::context& ctx)
 			vr_view_ptr->draw_vr_kits(true);
 			vr_view_ptr->enable_blit_vr_views(true);
 			vr_view_ptr->set_blit_vr_view_width(200);
-
 		}
 	}
 
 	cgv::render::ref_box_renderer(ctx, 1);
 	cgv::render::ref_sphere_renderer(ctx, 1);
+	cgv::render::ref_rounded_cone_renderer(ctx, 1);
 	return true;
 }
 
@@ -486,6 +487,7 @@ void vr_test::clear(cgv::render::context& ctx)
 {
 	cgv::render::ref_box_renderer(ctx, -1);
 	cgv::render::ref_sphere_renderer(ctx, -1);
+	cgv::render::ref_rounded_cone_renderer(ctx, -1);
 }
 
 void vr_test::init_frame(cgv::render::context& ctx)
@@ -701,6 +703,8 @@ void vr_test::draw(cgv::render::context& ctx)
 			}
 		}
 		if (vr_view_ptr) {
+			std::vector<cgv::render::rounded_cone_renderer::cone> O;
+			std::vector<rgb> OC;
 			std::vector<vec3> P;
 			std::vector<rgb> C;
 			const vr::vr_kit_state* state_ptr = vr_view_ptr->get_current_vr_state();
@@ -710,26 +714,39 @@ void vr_test::draw(cgv::render::context& ctx)
 					state_ptr->controller[ci].put_ray(&ray_origin(0), &ray_direction(0));
 					P.push_back(ray_origin);
 					P.push_back(ray_origin + ray_length * ray_direction);
+					O.push_back({ vec4(ray_origin,0.01f), vec4(ray_origin + ray_length * ray_direction,0.02f) });
 					rgb c(float(1 - ci), 0.5f * (int)state[ci], float(ci));
 					C.push_back(c);
 					C.push_back(c);
+					OC.push_back(c);
 				}
 			}
 			if (P.size() > 0) {
-				cgv::render::shader_program& prog = ctx.ref_default_shader_program();
-				int pi = prog.get_position_index();
-				int ci = prog.get_color_index();
-				cgv::render::attribute_array_binding::set_global_attribute_array(ctx, pi, P);
-				cgv::render::attribute_array_binding::enable_global_array(ctx, pi);
-				cgv::render::attribute_array_binding::set_global_attribute_array(ctx, ci, C);
-				cgv::render::attribute_array_binding::enable_global_array(ctx, ci);
-				glLineWidth(3);
-				prog.enable(ctx);
-				glDrawArrays(GL_LINES, 0, (GLsizei)P.size());
-				prog.disable(ctx);
-				cgv::render::attribute_array_binding::disable_global_array(ctx, pi);
-				cgv::render::attribute_array_binding::disable_global_array(ctx, ci);
-				glLineWidth(1);
+				
+				auto& cr = cgv::render::ref_rounded_cone_renderer(ctx);
+				cr.set_eye_position(vr_view_ptr->get_eye_of_kit());
+				cr.set_cone_array(ctx, O);
+				cr.set_color_array(ctx, OC);
+				if (false && cr.validate_and_enable(ctx)) {
+					glDrawArrays(GL_POINTS, 0, (GLsizei)O.size());
+					cr.disable(ctx);
+				}
+				else {
+					cgv::render::shader_program& prog = ctx.ref_default_shader_program();
+					int pi = prog.get_position_index();
+					int ci = prog.get_color_index();
+					cgv::render::attribute_array_binding::set_global_attribute_array(ctx, pi, P);
+					cgv::render::attribute_array_binding::enable_global_array(ctx, pi);
+					cgv::render::attribute_array_binding::set_global_attribute_array(ctx, ci, C);
+					cgv::render::attribute_array_binding::enable_global_array(ctx, ci);
+					glLineWidth(3);
+					prog.enable(ctx);
+					glDrawArrays(GL_LINES, 0, (GLsizei)P.size());
+					prog.disable(ctx);
+					cgv::render::attribute_array_binding::disable_global_array(ctx, pi);
+					cgv::render::attribute_array_binding::disable_global_array(ctx, ci);
+					glLineWidth(1);
+				}
 			}
 		}
 	}
