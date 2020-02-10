@@ -255,8 +255,8 @@ vr_test::vr_test()
 	last_kit_handle = 0;
 	connect(cgv::gui::ref_vr_server().on_device_change, this, &vr_test::on_device_change);
 
-	mesh_scale = 0.001f;
-	mesh_location = dvec3(0, 1.1f, 0);
+	mesh_scale = 0.0005f;
+	mesh_location = dvec3(0, 0.85f, 0);
 	mesh_orientation = dquat(1, 0, 0, 0);
 
 	srs.radius = 0.005f;
@@ -722,7 +722,7 @@ void vr_test::draw(cgv::render::context& ctx)
 				}
 			}
 			if (P.size() > 0) {
-				
+				/*
 				auto& cr = cgv::render::ref_rounded_cone_renderer(ctx);
 				cr.set_eye_position(vr_view_ptr->get_eye_of_kit());
 				cr.set_cone_array(ctx, O);
@@ -732,6 +732,7 @@ void vr_test::draw(cgv::render::context& ctx)
 					cr.disable(ctx);
 				}
 				else {
+				*/
 					cgv::render::shader_program& prog = ctx.ref_default_shader_program();
 					int pi = prog.get_position_index();
 					int ci = prog.get_color_index();
@@ -746,7 +747,7 @@ void vr_test::draw(cgv::render::context& ctx)
 					cgv::render::attribute_array_binding::disable_global_array(ctx, pi);
 					cgv::render::attribute_array_binding::disable_global_array(ctx, ci);
 					glLineWidth(1);
-				}
+				//}
 			}
 		}
 	}
