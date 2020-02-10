@@ -53,13 +53,13 @@ namespace cgv {
 				T cz = cos(angles[2]);
 				T sz = sin(angles[2]);
 				M(0, 0) = cy * cz;
-				M(0, 1) = cy * sz;
-				M(0, 2) = -sy;
-				M(1, 0) = sx * sy*cz - cx * sz;
+				M(0, 1) = sx * sy*cz - cx * sz;
+				M(0, 2) = cx * sy*cz + sx * sz;
+				M(1, 0) = cy * sz;
 				M(1, 1) = sx * sy*sz + cx * cz;
-				M(1, 2) = sx * cy;
-				M(2, 0) = cx * sy*cz + sx * sz;
-				M(2, 1) = cx * sy*sz - sx * cz;
+				M(1, 2) = cx * sy*sz - sx * cz;
+				M(2, 0) = -sy;
+				M(2, 1) = sx * cy;
 				M(2, 2) = cx * cy;
 				return M;
 			}
@@ -99,13 +99,13 @@ namespace cgv {
 				T cz = cos(angles[2]);
 				T sz = sin(angles[2]);
 				M(0, 0) = cy * cz;
-				M(0, 1) = cy * sz;
-				M(0, 2) = -sy;
-				M(1, 0) = sx * sy*cz - cx * sz;
+				M(0, 1) = sx * sy*cz - cx * sz;
+				M(0, 2) = cx * sy*cz + sx * sz;
+				M(1, 0) = cy * sz;
 				M(1, 1) = sx * sy*sz + cx * cz;
-				M(1, 2) = sx * cy;
-				M(2, 0) = cx * sy*cz + sx * sz;
-				M(2, 1) = cx * sy*sz - sx * cz;
+				M(1, 2) = cx * sy*sz - sx * cz;
+				M(2, 0) = -sy;
+				M(2, 1) = sx * cy;
 				M(2, 2) = cx * cy;
 				return M;
 			}
