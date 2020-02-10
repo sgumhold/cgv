@@ -46,6 +46,12 @@ namespace vr {
 		SSM_ANAGLYPH_DUBOID
 	};
 
+	enum StereoWindowMode {
+		SWM_SINGLE,
+		SWM_DOUBLE,
+		SWM_TWO
+	};
+
 	/// the vr_wall class manages an additional window to cover the display and a wall_vr_kit that can be attached to an existing vr_kit
 	class CGV_API vr_wall : public cgv::base::node, public cgv::render::drawable, public cgv::gui::event_handler, public cgv::gui::provider
 	{
@@ -64,10 +70,16 @@ namespace vr {
 		int window_x;
 		/// helper member that allows to configure y position of the window before creationint window_width;
 		int window_y;
-		/// pointer to wall display window
-		cgv::gui::window_ptr window;
+		///
+		StereoWindowMode stereo_window_mode;
+		/// 0 for no fullscreen or index of fullscreen monitor (1, 2, ...) for left/main window and optionally for right window
+		int fullscreen, right_fullscreen;
+		/// pointers to wall display windows for left and optionally (stereo_window_mode==SWM_TWO) right eyes
+		cgv::gui::window_ptr window, right_window;
+		/// 
+		cgv::gui::window_ptr create_wall_window(const std::string& name, int x, int y, int width, int height, int fullscr);
 		/// helper function to create the window for the wall display
-		void create_wall_window();
+		void create_wall_windows();
 		//@}
 
 		/**@name management of wall_vr_kit*/
@@ -117,7 +129,7 @@ namespace vr {
 		///
 		cgv::render::shader_program stereo_prog;
 		///
-		int stereo_mode;
+		StereoShaderMode stereo_shader_mode;
 		/// current pose matrices of controllers need to render peek point
 		mat34 c_P[2], hmd_pose;
 		///

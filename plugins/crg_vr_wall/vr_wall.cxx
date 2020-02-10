@@ -14,22 +14,38 @@
 
 ///
 namespace vr {
-	/// helper function to create the window for the wall display
-	void vr_wall::create_wall_window()
+	cgv::gui::window_ptr vr_wall::create_wall_window(const std::string& name, int x, int y, int width, int height, int fullscr)
 	{
-		window = cgv::gui::application::create_window(2 * window_width, window_height, "wall window", "viewer");
-		window->set_name("wall_window");
-		window->set("menu", false);
-		window->set("gui", false);
-		// optionally put it on specific monitor:
-		//		window->set("state", "fullscreen(1)");
-		//		window->set("state", "regular");
-		window->set("w", 2 * window_width);
-		window->set("h", window_height);
-		window->set("x", window_x);
-		window->set("y", window_y);
-		window->show();
-		window->register_object(this, "");
+		cgv::gui::window_ptr W = cgv::gui::application::create_window(window_width, window_height, name, "viewer");
+		W->set_name(name);
+		W->set("menu", false);
+		W->set("gui", false);
+		W->set("w", width);
+		W->set("h", height);
+		W->set("x", x);
+		W->set("y", y);
+		if (fullscr > 0) {
+			W->set("state", std::string("fullscreen(") + cgv::utils::to_string(fullscr) + ")");
+		}
+		W->show();
+		W->register_object(this, "");
+		return W;
+	}
+	/// helper function to create the window for the wall display
+	void vr_wall::create_wall_windows()
+	{
+		switch (stereo_window_mode) {
+		case SWM_SINGLE:
+			window = create_wall_window("wall window", window_x, window_y, window_width, window_height, fullscreen);
+			break;
+		case SWM_DOUBLE:
+			window = create_wall_window("wall window", window_x, window_y, 2*window_width, window_height, fullscreen);
+			break;
+		case SWM_TWO:
+			window = create_wall_window("left wall window", window_x, window_y, window_width, window_height, fullscreen);
+			right_window = create_wall_window("right wall window", window_x, window_y, window_width, window_height, right_fullscreen);
+			break;
+		}		
 	}
 
 	void vr_wall::generate_screen_calib_points()
@@ -214,10 +230,13 @@ namespace vr {
 		}
 	}
 	/// construct vr wall kit by attaching to another vr kit
-	vr_wall::vr_wall() : cgv::base::node("wall")
+	vr_wall::vr_wall() : cgv::base::node("vr_wall")
 	{		
 		blit_fbo = -1;
-		stereo_mode = 6;
+		stereo_shader_mode = SSM_SIDE_BY_SIDE;
+		stereo_window_mode = SWM_DOUBLE;
+		fullscreen = 0;
+		right_fullscreen = 0;
 		wall_kit_ptr = 0;
 		test_screen_center = vec3(0, 1, -0.5f);
 		test_screen_x = vec3(-0.1f, 0, 0);
@@ -312,6 +331,11 @@ namespace vr {
 			srh.reflect_member("peek_point_x", peek_point[0]) &&
 			srh.reflect_member("peek_point_y", peek_point[1]) &&
 			srh.reflect_member("peek_point_z", peek_point[2]) &&
+			srh.reflect_member("fullscreen", fullscreen) &&
+			srh.reflect_member("left_fullscreen", fullscreen) &&
+			srh.reflect_member("right_fullscreen", right_fullscreen) &&
+			srh.reflect_member("stereo_shader_mode", (int&)stereo_shader_mode) &&
+			srh.reflect_member("stereo_window_mode", (int&)stereo_window_mode) &&
 			srh.reflect_member("creation_width", window_width) &&
 			srh.reflect_member("creation_height", window_height) &&
 			srh.reflect_member("creation_x", window_x) &&
@@ -373,7 +397,7 @@ namespace vr {
 						screen_orientation = quat(wall_kit_ptr->get_screen_orientation());
 
 					if (window.empty())
-						create_wall_window();
+						create_wall_windows();
 
 					post_recreate_gui();
 				}
@@ -408,14 +432,16 @@ namespace vr {
 			add_member_control(this, "height", window_height, "value_slider", "min=240;max=2160;ticks=true;log=true");
 			add_member_control(this, "x", window_x, "value_slider", "min=0;max=3920;ticks=true;log=true");
 			add_member_control(this, "y", window_y, "value_slider", "min=0;max=2160;ticks=true;log=true");
+			add_member_control(this, "fullscreen", (cgv::type::DummyEnum&)fullscreen, "dropdown", "enums='no fullscreen,monitor 1, monitor 2,monitor 1+2, monitor 3, monitor 1+3, monitor 2+3, monitor 1+2+3'");
+			add_member_control(this, "stereo_window_mode", stereo_window_mode, "dropdown", "enums='single,double,two'");
 			align("\b");
 			end_tree_node(window_width);
 		}
 		add_member_control(this, "vr_wall_kit", (cgv::type::DummyEnum&)vr_wall_kit_index, "dropdown", kit_enum_definition);
 		add_member_control(this, "vr_wall_hmd_index", vr_wall_hmd_index, "value_slider", "min=-1;max=3;ticks=true");
 		add_member_control(this, "box_index", box_index, "value_slider", "min=0;ticks=true");
-		add_member_control(this, "stereo_mode", (cgv::type::DummyEnum&)stereo_mode, "dropdown", "enums='left only,right only,side by side,top bottom,column interleaved,row interleaved,red|cyan anaglyph,color anaglyph,half-color anaglyph,Dubois anaglyph'");
-		
+		add_member_control(this, "stereo_shader_mode", stereo_shader_mode, "dropdown", "enums='left only,right only,side by side,top bottom,column interleaved,row interleaved,red|cyan anaglyph,color anaglyph,half-color anaglyph,Dubois anaglyph'");
+
 		find_control(box_index)->set("max", boxes.size() - 1);
 		if (begin_tree_node("screen calibration", screen_center, false, "level=2")) {
 
@@ -733,7 +759,7 @@ namespace vr {
 				prog.enable(ctx);
 				prog.set_uniform(ctx, "left_texture", 0);
 				prog.set_uniform(ctx, "right_texture", 1);
-				prog.set_uniform(ctx, "stereo_mode", stereo_mode);
+				prog.set_uniform(ctx, "stereo_mode", int(stereo_shader_mode));
 				ctx.set_color(rgba(1, 1, 1, 1));
 				glActiveTexture(GL_TEXTURE0);
 				if (wall_kit_ptr && wall_state == WS_HMD && ctx.get_render_pass() == cgv::render::RP_MAIN) {
@@ -930,7 +956,7 @@ namespace vr {
 			prog.enable(ctx);
 			prog.set_uniform(ctx, "left_texture", 0);
 			prog.set_uniform(ctx, "right_texture", 1);
-			prog.set_uniform(ctx, "stereo_mode", stereo_mode);
+			prog.set_uniform(ctx, "stereo_mode", int(stereo_shader_mode));
 			ctx.set_color(rgba(1, 1, 1, 1));
 			wall_kit_ptr->wall_context = true;
 			glActiveTexture(GL_TEXTURE0);
