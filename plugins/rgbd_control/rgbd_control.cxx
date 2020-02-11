@@ -506,21 +506,35 @@ size_t rgbd_control::construct_point_cloud()
 	for (int y = 0; y < depth_frame_2.height; ++y)
 		for (int x = 0; x < depth_frame_2.width; ++x) {
 			vec3 p;
+			rgba8 point_color;
 			if (rgbd_inp.map_depth_to_point(x, y, depths[i], &p[0])) {
-				// flipping y to make it the same direction as in pixel y coordinate
-				p[1] = -p[1];
-				P2.push_back(p);
 				switch (color_frame_2.pixel_format) {
 				case PF_BGR:
 				case PF_BGRA:
-					C2.push_back(rgba8(colors[bytes_per_pixel * i + 2], colors[bytes_per_pixel * i + 1], colors[bytes_per_pixel * i], 255));
+					if (color_frame_2.nr_bits_per_pixel == 32) {
+						point_color = rgba8(colors[bytes_per_pixel * i + 2], colors[bytes_per_pixel * i + 1], colors[bytes_per_pixel * i], colors[bytes_per_pixel * i + 3]);
+					} else {
+						point_color = rgba8(colors[bytes_per_pixel * i + 2], colors[bytes_per_pixel * i + 1], colors[bytes_per_pixel * i], 255);
+					}
 					break;
 				case PF_RGB:
 				case PF_RGBA:
-					C2.push_back(rgba8(colors[bytes_per_pixel * i], colors[bytes_per_pixel * i + 1], colors[bytes_per_pixel * i + 2], 255));
+					if (color_frame_2.nr_bits_per_pixel == 32) {
+						point_color = rgba8(colors[bytes_per_pixel * i], colors[bytes_per_pixel * i + 1], colors[bytes_per_pixel * i + 2], colors[bytes_per_pixel * i + 3]);
+					} else {
+						point_color = rgba8(colors[bytes_per_pixel * i], colors[bytes_per_pixel * i + 1], colors[bytes_per_pixel * i + 2], 255);
+					}
 					break;
 				case PF_BAYER:
-					C2.push_back(rgba8(colors[i], colors[i], colors[i], 255));
+					point_color = rgba8(colors[i], colors[i], colors[i], 255);
+					break;
+				}
+				//filter points without color for 32 bit formats
+				if (point_color.alpha() > 0) {
+					C2.push_back(point_color);
+					// flipping y to make it the same direction as in pixel y coordinate
+					p[1] = -p[1];
+					P2.push_back(p);
 				}
 			}
 			++i;
