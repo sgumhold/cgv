@@ -48,6 +48,7 @@ namespace rgbd {
 		rs2::context* ctx;
 		rs2::device* dev;
 		rs2::pipeline* pipe;
+		rs2::temporal_filter temp_filter;
 		std::string serial;
 		/// selected stream formats for color,depth and infrared
 		stream_format color_stream, depth_stream, ir_stream;
