@@ -7,6 +7,7 @@
 #include <algorithm>
 
 using namespace std;
+using namespace chrono;
 
 namespace rgbd {
 
@@ -39,9 +40,9 @@ namespace rgbd {
 		path_name = fn;
 		flags = idx = 0;
 		//init frame timers
-		last_color_frame_time = chrono::steady_clock::now();
-		last_depth_frame_time = chrono::steady_clock::now();
-		last_ir_frame_time = chrono::steady_clock::now();
+		last_color_frame_time = 0;
+		last_depth_frame_time = 0;
+		last_ir_frame_time = 0;
 
 		has_color_stream = false;
 		has_depth_stream = false;
@@ -253,7 +254,7 @@ namespace rgbd {
 
 		//get the stream information
 		stream_format* stream = nullptr;
-		chrono::time_point<std::chrono::steady_clock>* last_frame_time = nullptr;
+		double* last_frame_time = nullptr;
 
 		switch (is) {
 		case IS_COLOR:
@@ -275,9 +276,9 @@ namespace rgbd {
 			return false;
 		}
 
-		auto inv_fps = chrono::duration_cast<chrono::steady_clock::duration>(chrono::duration<double>( 1. / stream->fps ));
-		auto current_frame_time = chrono::steady_clock::now();
-	
+		double inv_fps = 1000.f / stream->fps;
+		double current_frame_time = chrono::duration_cast<milliseconds>(chrono::steady_clock::now().time_since_epoch()).count();
+		
 		//limit fps
 		if (current_frame_time < *last_frame_time+inv_fps) {
 			return false;
@@ -311,7 +312,17 @@ namespace rgbd {
 			cerr << "rgbd_emulation: file not found: " << fn << '\n';
 			return false;
 		}
+		/*
+		//check frame time
+		double next_frame_time = reinterpret_cast<const frame_type*>(data.data())->time;
+		double current_frame_time = duration_cast<milliseconds>(chrono::steady_clock::now().time_since_epoch()).count();
 
+		//limit fps
+		if (current_frame_time < *last_frame_time + inv_fps) {
+			return false;
+		}
+		*last_frame_time = current_frame_time;
+		*/
 		frame.buffer_size = data.size();
 		if (frame.frame_data.size() < frame.buffer_size) {
 			frame.frame_data.resize(frame.buffer_size);

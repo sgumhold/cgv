@@ -265,7 +265,7 @@ namespace rgbd {
 			}
 			
 			static_cast<frame_format&>(frame) = *stream;
-			frame.time = next_frame.get_timestamp();
+			frame.time = next_frame.get_timestamp(); //time in milliseconds
 			stream->compute_buffer_size();
 			if (frame.frame_data.size() != stream->buffer_size) {
 				frame.frame_data.resize(stream->buffer_size);

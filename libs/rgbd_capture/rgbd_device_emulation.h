@@ -49,9 +49,10 @@ private:
 	stream_format color_stream, depth_stream, ir_stream;
 	bool has_color_stream, has_depth_stream, has_ir_stream;
 	bool device_is_running;
-	std::chrono::time_point<std::chrono::steady_clock> last_color_frame_time;
-	std::chrono::time_point<std::chrono::steady_clock> last_depth_frame_time;
-	std::chrono::time_point<std::chrono::steady_clock> last_ir_frame_time;
+	double last_color_frame_time;
+	double last_depth_frame_time;
+	double last_ir_frame_time;
+	frame_type next_color_frame, next_depth_frame, next_ir_frame;
 	size_t number_of_files;
 	camera_intrinsics intrinsics;
 };
