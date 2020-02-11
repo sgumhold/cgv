@@ -234,6 +234,11 @@ bool rgbd_input::start(InputStreams is, std::vector<stream_format>& stream_forma
 	streams = stream_formats;
 	if (!protocol_path.empty()) {
 		write_protocol_headers(streams, protocol_path);
+		//write camera intrinsics
+		camera_intrinsics intrinsics;
+		if (rgbd->get_intrinsics(intrinsics)) {
+			cgv::utils::file::write(protocol_path + "/camera_intrinsics", reinterpret_cast<const char*>(&intrinsics), sizeof(camera_intrinsics), false);
+		}
 	}
 	return started;
 }
