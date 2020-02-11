@@ -16,7 +16,7 @@
 namespace vr {
 	cgv::gui::window_ptr vr_wall::create_wall_window(const std::string& name, int x, int y, int width, int height, int fullscr)
 	{
-		cgv::gui::window_ptr W = cgv::gui::application::create_window(window_width, window_height, name, "viewer");
+		cgv::gui::window_ptr W = cgv::gui::application::create_window(width, height, name, "viewer");
 		W->set_name(name);
 		W->set("menu", false);
 		W->set("gui", false);
@@ -24,10 +24,24 @@ namespace vr {
 		W->set("h", height);
 		W->set("x", x);
 		W->set("y", y);
-		if (fullscr > 0) {
-			W->set("state", std::string("fullscreen(") + cgv::utils::to_string(fullscr) + ")");
-		}
 		W->show();
+		if (fullscr > 0) {
+			std::string state("fullscreen(");
+			bool first = true;
+			int flag = 1;
+			for (int i=1; i<5; ++i) {
+				if ((fullscr & flag) != 0) {
+					if (first)
+						first = false;
+					else
+						state += ",";
+					state += cgv::utils::to_string(i);
+				}
+				flag *= 2;
+			}
+			state += ")";
+			W->set("state", state);
+		}
 		W->register_object(this, "");
 		return W;
 	}
@@ -233,6 +247,7 @@ namespace vr {
 	vr_wall::vr_wall() : cgv::base::node("vr_wall")
 	{		
 		blit_fbo = -1;
+		blit_tex[0] = blit_tex[1] = -1;
 		stereo_shader_mode = SSM_SIDE_BY_SIDE;
 		stereo_window_mode = SWM_DOUBLE;
 		fullscreen = 0;
@@ -402,6 +417,17 @@ namespace vr {
 					post_recreate_gui();
 				}
 			}
+		}
+		else if (member_ptr == &stereo_window_mode && !window.empty()) {
+			if (!window.empty()) {
+				cgv::gui::application::remove_window(window);
+				window.clear();
+			}
+			if (!right_window.empty()) {
+				cgv::gui::application::remove_window(right_window);
+				right_window.clear();
+			}
+			create_wall_windows();
 		}
 		else if (
 			(member_ptr >= &screen_center && member_ptr < &screen_center + 1) ||
@@ -767,7 +793,7 @@ namespace vr {
 					glActiveTexture(GL_TEXTURE1);
 					wall_kit_ptr->bind_texture(1);
 				}
-				else {
+				else if (blit_tex[0] != -1) {
 					glBindTexture(GL_TEXTURE_2D, blit_tex[0]);
 					glActiveTexture(GL_TEXTURE1);
 					glBindTexture(GL_TEXTURE_2D, blit_tex[1]);
@@ -878,8 +904,23 @@ namespace vr {
 		if (window.empty() || wall_kit_ptr == 0)
 			return;
 
-		int width = ctx.get_width()/2;
-		int height = ctx.get_height();
+		int width = ctx.get_width(), height = ctx.get_height();
+		int x_off = 0, y_off = 0;
+		if (stereo_window_mode == SWM_DOUBLE) {
+			width /= 2;
+			x_off = width;
+		}
+		double aspect = double(width) / height;
+
+		int w = width, h = height; 
+		if (stereo_window_mode == SWM_SINGLE) {
+			switch (stereo_shader_mode) {
+			case SSM_SIDE_BY_SIDE: w /= 2; x_off = w; break;
+			case SSM_TOP_BOTTOM: h /= 2; y_off = h; break;
+			}
+		}
+		double a = double(w) / h;
+
 		switch (wall_state) {
 		case WS_EYES_CALIB:
 		{
@@ -899,8 +940,8 @@ namespace vr {
 				C.push_back(C.back());
 			}
 			for (int eye = 0; eye < 2; ++eye) {
-				ctx.set_viewport(ivec4(eye * width, 0, width, height));
-				ctx.set_projection_matrix(cgv::math::perspective4<double>(90, (double)width / height, 0.1, 10.0));
+				ctx.set_viewport(ivec4(eye * x_off, eye*y_off, w, h));
+				ctx.set_projection_matrix(cgv::math::perspective4<double>(90, aspect, 0.1, 10.0));
 				ctx.set_modelview_matrix(cgv::math::look_at4<double>(dvec3(0, 0, 1), dvec3(0, 0, 0), dvec3(0, 1, 0)));
 				auto& prog = ctx.ref_default_shader_program(false);
 				prog.enable(ctx);
@@ -917,8 +958,8 @@ namespace vr {
 		}
 		case WS_SCREEN_CALIB:
 			for (int eye = 0; eye < 2; ++eye) {
-				ctx.set_viewport(ivec4(eye*width, 0, width, height));
-				ctx.set_projection_matrix(cgv::math::perspective4<double>(90, (double)width/height, 0.1, 10.0));
+				ctx.set_viewport(ivec4(eye * x_off, eye*y_off, w, h));
+				ctx.set_projection_matrix(cgv::math::perspective4<double>(90, aspect, 0.1, 10.0));
 				ctx.set_modelview_matrix(cgv::math::look_at4<double>(dvec3(0, 0, 1), dvec3(0, 0, 0), dvec3(0, 1, 0)));
 
 				pr.set_y_view_angle(90);
@@ -941,43 +982,45 @@ namespace vr {
 			break;
 		case WS_HMD:
 		{
-			ctx.set_viewport(ivec4(0, 0, width, height));
-			float aspect = (float)width / height;
-			ctx.set_projection_matrix(cgv::math::perspective4<double>(90, (double)width / height, 0.1, 10.0));
-			ctx.set_modelview_matrix(cgv::math::look_at4<double>(dvec3(0, 0, 1), dvec3(0, 0, 0), dvec3(0, 1, 0)));
-			std::vector<vec3> P;
-			std::vector<vec2> T;
-			P.push_back(vec3(-aspect, -1.0f, 0.0f)); T.push_back(vec2(0.0f, 0.0f));
-			P.push_back(vec3(aspect, -1.0f, 0.0f)); T.push_back(vec2(1.0f, 0.0f));
-			P.push_back(vec3(-aspect, 1.0f, 0.0f)); T.push_back(vec2(0.0f, 1.0f));
-			P.push_back(vec3(aspect, 1.0f, 0.0f)); T.push_back(vec2(1.0f, 1.0f));
+			if (stereo_window_mode == SWM_SINGLE) {
+				ctx.set_viewport(ivec4(0, 0, width, height));
+				ctx.set_projection_matrix(cgv::math::perspective4<double>(90, aspect, 0.1, 10.0));
+				ctx.set_modelview_matrix(cgv::math::look_at4<double>(dvec3(0, 0, 1), dvec3(0, 0, 0), dvec3(0, 1, 0)));
+				std::vector<vec3> P;
+				std::vector<vec2> T;
+				P.push_back(vec3((float)-aspect, -1.0f, 0.0f)); T.push_back(vec2(0.0f, 0.0f));
+				P.push_back(vec3((float)aspect, -1.0f, 0.0f)); T.push_back(vec2(1.0f, 0.0f));
+				P.push_back(vec3((float)-aspect, 1.0f, 0.0f)); T.push_back(vec2(0.0f, 1.0f));
+				P.push_back(vec3((float)aspect, 1.0f, 0.0f)); T.push_back(vec2(1.0f, 1.0f));
 
-			auto& prog = stereo_prog; // ctx.ref_default_shader_program(true);
-			prog.enable(ctx);
-			prog.set_uniform(ctx, "left_texture", 0);
-			prog.set_uniform(ctx, "right_texture", 1);
-			prog.set_uniform(ctx, "stereo_mode", int(stereo_shader_mode));
-			ctx.set_color(rgba(1, 1, 1, 1));
-			wall_kit_ptr->wall_context = true;
-			glActiveTexture(GL_TEXTURE0);
-			wall_kit_ptr->bind_texture(0);
-			glActiveTexture(GL_TEXTURE1);
-			wall_kit_ptr->bind_texture(1);
-			glActiveTexture(GL_TEXTURE0);
-			wall_kit_ptr->wall_context = false;
-			cgv::render::attribute_array_binding::set_global_attribute_array(ctx, prog.get_position_index(), P);
-			cgv::render::attribute_array_binding::enable_global_array(ctx, prog.get_position_index());
-			cgv::render::attribute_array_binding::set_global_attribute_array(ctx, prog.get_texcoord_index(), T);
-			cgv::render::attribute_array_binding::enable_global_array(ctx, prog.get_texcoord_index());
-			glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-			cgv::render::attribute_array_binding::disable_global_array(ctx, prog.get_position_index());
-			cgv::render::attribute_array_binding::disable_global_array(ctx, prog.get_texcoord_index());
-			prog.disable(ctx);
-			/*
-			wall_kit_ptr->wall_context = true;
-			wall_kit_ptr->blit_fbo(0, 0, 0, width, height);
-			wall_kit_ptr->blit_fbo(1, width, 0, width, height);
-			wall_kit_ptr->wall_context = false;*/
+				auto& prog = stereo_prog;
+				prog.enable(ctx);
+				prog.set_uniform(ctx, "left_texture", 0);
+				prog.set_uniform(ctx, "right_texture", 1);
+				prog.set_uniform(ctx, "stereo_mode", int(stereo_shader_mode));
+				ctx.set_color(rgba(1, 1, 1, 1));
+				wall_kit_ptr->wall_context = true;
+				glActiveTexture(GL_TEXTURE0);
+				wall_kit_ptr->bind_texture(0);
+				glActiveTexture(GL_TEXTURE1);
+				wall_kit_ptr->bind_texture(1);
+				glActiveTexture(GL_TEXTURE0);
+				wall_kit_ptr->wall_context = false;
+				cgv::render::attribute_array_binding::set_global_attribute_array(ctx, prog.get_position_index(), P);
+				cgv::render::attribute_array_binding::enable_global_array(ctx, prog.get_position_index());
+				cgv::render::attribute_array_binding::set_global_attribute_array(ctx, prog.get_texcoord_index(), T);
+				cgv::render::attribute_array_binding::enable_global_array(ctx, prog.get_texcoord_index());
+				glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+				cgv::render::attribute_array_binding::disable_global_array(ctx, prog.get_position_index());
+				cgv::render::attribute_array_binding::disable_global_array(ctx, prog.get_texcoord_index());
+				prog.disable(ctx);
+			}
+			else {
+				wall_kit_ptr->wall_context = true;
+				wall_kit_ptr->blit_fbo(0, 0, 0, width, height);
+				wall_kit_ptr->blit_fbo(1, width, 0, width, height);
+				wall_kit_ptr->wall_context = false;
+			}
 			break;
 		}
 		}
@@ -991,6 +1034,23 @@ namespace vr {
 			glGetIntegerv(GL_DRAW_BUFFER, &draw_buffer);
 			glGetIntegerv(GL_DRAW_FRAMEBUFFER_BINDING, &draw_fbo);
 			
+			int width = ctx.get_width(), height = ctx.get_height();
+			int x_off = 0, y_off = 0;
+			if (stereo_window_mode == SWM_DOUBLE) {
+				width /= 2;
+				x_off = width;
+			}
+			double aspect = double(width) / height;
+
+			int w = width, h = height;
+			if (stereo_window_mode == SWM_SINGLE) {
+				switch (stereo_shader_mode) {
+				case SSM_SIDE_BY_SIDE: w /= 2; x_off = w; break;
+				case SSM_TOP_BOTTOM: h /= 2; y_off = h; break;
+				}
+			}
+			double a = double(w) / h;
+
 			if (blit_fbo == -1) {
 				glGenFramebuffers(1, &blit_fbo);
 				glBindFramebuffer(GL_DRAW_FRAMEBUFFER, blit_fbo);
@@ -999,7 +1059,7 @@ namespace vr {
 					glBindTexture(GL_TEXTURE_2D, blit_tex[i]);
 					glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 					glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 0);
-					glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, ctx.get_width() / 2, ctx.get_height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
+					glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
 					glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0+i, GL_TEXTURE_2D, blit_tex[i], 0);
 				}
 			}
@@ -1008,11 +1068,11 @@ namespace vr {
 
 			glBindTexture(GL_TEXTURE_2D, blit_tex[0]);
 			glDrawBuffer(GL_COLOR_ATTACHMENT0);
-			glBlitFramebuffer(0, 0, ctx.get_width() / 2, ctx.get_height(), 0, 0, ctx.get_width() / 2, ctx.get_height(), GL_COLOR_BUFFER_BIT, GL_NEAREST);
+			glBlitFramebuffer(0, 0, w, h, 0, 0, width, height, GL_COLOR_BUFFER_BIT, GL_NEAREST);
 			
 			glBindTexture(GL_TEXTURE_2D, blit_tex[1]);
 			glDrawBuffer(GL_COLOR_ATTACHMENT1);
-			glBlitFramebuffer(ctx.get_width() / 2, 0, ctx.get_width() / 2, ctx.get_height(), 0, 0, ctx.get_width() / 2, ctx.get_height(), GL_COLOR_BUFFER_BIT, GL_NEAREST);
+			glBlitFramebuffer(x_off, y_off, x_off+w, y_off+h, 0, 0, width, height, GL_COLOR_BUFFER_BIT, GL_NEAREST);
 
 			glBindTexture(GL_TEXTURE_2D, 0);
 
