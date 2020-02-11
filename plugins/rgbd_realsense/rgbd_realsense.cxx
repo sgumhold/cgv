@@ -13,6 +13,8 @@ namespace rgbd {
 		dev = nullptr;
 		pipe = nullptr;
 		depth_scale = 0.001;
+		temp_filter = rs2::temporal_filter(0.4, 20.0, 3);
+		//spatial_filter = rs2::spatial_filter(0.5, 20.0, 2.0, 2.0);
 	}
 
 	rgbd_realsense::~rgbd_realsense() {
@@ -234,6 +236,8 @@ namespace rgbd {
 						if (next_frame.get_timestamp() == last_depth_frame_time) return false;
 						stream = &depth_stream;
 						last_depth_frame_time = next_frame.get_timestamp();
+						//filter depth
+						next_frame = temp_filter.process(next_frame);
 					}
 				}
 				else if (is == IS_INFRARED) {
