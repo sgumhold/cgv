@@ -85,17 +85,18 @@ protected:
 	//std::vector<point_cloud> pcn;
 
 	int rgbd_controller_index;
-	mat3 rgbd_controller_orientation;
-	vec3 rgbd_controller_position;
-	/// 
+	/// current pose of the controller
+	mat3 controller_orientation;
+	vec3 controller_position;
+	/// pose of controller when last point cloud was acquire; this is used for contruction of point cloud in parallel thread
+	mat3 controller_orientation_pc;
+	vec3 controller_position_pc;
+	/// current calibration pose mapping from rgbd coordinates to controller coordinates 
 	mat3 rgbd_2_controller_orientation;
 	vec3 rgbd_2_controller_position;
-	///
-	mat3 rgbd_controller_orientation_pc;
-	vec3 rgbd_controller_position_pc;
-	///
-	mat3 rgbd_controller_orientation_start_calib;
-	vec3 rgbd_controller_position_start_calib;
+	/// calibration pose mapping from rgbd coordinates to controller coordinates stored at the time when freezing the point cloud for calibration
+	mat3 rgbd_2_controller_orientation_start_calib;
+	vec3 rgbd_2_controller_position_start_calib;
 	///
 	bool show_points;
 	unsigned max_nr_shown_recorded_pcs;
@@ -252,16 +253,16 @@ public:
 	{
 		set_name("vr_rgbd");
 		rgbd_controller_index = 0;
-		rgbd_controller_orientation.identity();
-		rgbd_controller_position = vec3(0, 1.5f, 0);
+		controller_orientation.identity();
+		controller_position = vec3(0, 1.5f, 0);
 		in_calibration = false;
 		zoom_in = false;
 		zoom_out = false;
 		rgbd_2_controller_orientation.identity();
 		rgbd_2_controller_position.zeros();
 
-		rgbd_controller_orientation_start_calib.identity();
-		rgbd_controller_position_start_calib.zeros();
+		rgbd_2_controller_orientation_start_calib.identity();
+		rgbd_2_controller_position_start_calib.zeros();
 
 		build_scene(5, 7, 3, 0.2f, 1.6f, 0.8f, 0.9f, 0.03f);
 		//generate_point_cloud(current_pc);
@@ -302,7 +303,7 @@ public:
 					// flipping y to make it the same direction as in pixel y coordinate
 					p = -p;
 					p = rgbd_2_controller_orientation * p + rgbd_2_controller_position;
-					p = rgbd_controller_orientation_pc * p + rgbd_controller_position_pc;
+					p = controller_orientation_pc * p + controller_position_pc;
 					rgba8 c(colors[4 * i + 2], colors[4 * i + 1], colors[4 * i], 255);
 					vertex v;
 					v.point = p;
@@ -430,17 +431,17 @@ public:
 						}
 						if (zoom_out && !zoom_in)
 						{
-							rgbd_controller_orientation_pc = rgbd_controller_orientation * 2;
-							rgbd_controller_position_pc = rgbd_controller_position;
+							controller_orientation_pc = controller_orientation * 2;
+							controller_position_pc = controller_position;
 						}
 						else if(zoom_in && !zoom_out)
 						{
-							rgbd_controller_orientation_pc = rgbd_controller_orientation * 0.5;
-							rgbd_controller_position_pc = rgbd_controller_position;
+							controller_orientation_pc = controller_orientation * 0.5;
+							controller_position_pc = controller_position;
 						}
 						else {
-							rgbd_controller_orientation_pc = rgbd_controller_orientation;
-							rgbd_controller_position_pc = rgbd_controller_position;
+							controller_orientation_pc = controller_orientation;
+							controller_position_pc = controller_position;
 						}
 						future_handle = std::async(&vr_rgbd::construct_point_cloud, this);
 					}
@@ -556,14 +557,14 @@ public:
 			if (vrke.get_key() == (rgbd_controller_index == 0 ? vr::VR_LEFT_STICK : vr::VR_RIGHT_STICK)) {
 				switch (vrke.get_action()) {
 				case cgv::gui::KA_PRESS :
-					rgbd_controller_orientation_start_calib = rgbd_controller_orientation; // V^0 = V
-					rgbd_controller_position_start_calib = rgbd_controller_position;       // r^0 = r
+					rgbd_2_controller_orientation_start_calib = controller_orientation; // V^0 = V
+					rgbd_2_controller_position_start_calib = controller_position;       // r^0 = r
 					in_calibration = true;
 					update_member(&in_calibration);
 					break;
 				case cgv::gui::KA_RELEASE:
-					rgbd_2_controller_orientation = transpose(rgbd_controller_orientation_start_calib)*rgbd_controller_orientation*rgbd_2_controller_orientation;
-					rgbd_2_controller_position = transpose(rgbd_controller_orientation_start_calib)*((rgbd_controller_orientation*rgbd_2_controller_position + rgbd_controller_position) - rgbd_controller_position_start_calib);
+					rgbd_2_controller_orientation = transpose(rgbd_2_controller_orientation_start_calib)*controller_orientation*rgbd_2_controller_orientation;
+					rgbd_2_controller_position = transpose(rgbd_2_controller_orientation_start_calib)*((controller_orientation*rgbd_2_controller_position + controller_position) - rgbd_2_controller_position_start_calib);
 					in_calibration = false;
 					update_member(&in_calibration);
 					break;
@@ -610,8 +611,8 @@ public:
 			// check for controller pose events
 			int ci = vrpe.get_trackable_index();
 			if (ci == rgbd_controller_index) {
-				rgbd_controller_orientation = vrpe.get_orientation();
-				rgbd_controller_position = vrpe.get_position();
+				controller_orientation = vrpe.get_orientation();
+				controller_position = vrpe.get_position();
 			}
 			if (ci != -1) {
 				if (state[ci] == IS_GRAB) {
