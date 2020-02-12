@@ -49,12 +49,14 @@ namespace rgbd {
 		rs2::device* dev;
 		rs2::pipeline* pipe;
 		rs2::temporal_filter temp_filter;
+		rs2::spatial_filter spatial_filter;
 		std::string serial;
 		/// selected stream formats for color,depth and infrared
 		stream_format color_stream, depth_stream, ir_stream;
 		/// holds last consistent set of frames
 		rs2::frameset frame_cache;
 		double last_color_frame_time, last_depth_frame_time, last_ir_frame_time;
+		size_t last_color_frame_number, last_depth_frame_number, last_ir_frame_number;
 		double depth_scale;
 	};
 
