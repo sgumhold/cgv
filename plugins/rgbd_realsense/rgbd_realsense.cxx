@@ -13,8 +13,16 @@ namespace rgbd {
 		dev = nullptr;
 		pipe = nullptr;
 		depth_scale = 0.001;
+
+		last_color_frame_number = 0;
+		last_depth_frame_number = 0;
+		last_ir_frame_number = 0;
+
 		temp_filter = rs2::temporal_filter(0.4, 20.0, 3);
 		//spatial_filter = rs2::spatial_filter(0.5, 20.0, 2.0, 2.0);
+		spatial_filter.set_option(rs2_option::RS2_OPTION_FILTER_MAGNITUDE, 5.0f);
+		spatial_filter.set_option(rs2_option::RS2_OPTION_FILTER_SMOOTH_DELTA, 50.0f);
+		spatial_filter.set_option(rs2_option::RS2_OPTION_FILTER_SMOOTH_ALPHA, 0.3f);
 	}
 
 	rgbd_realsense::~rgbd_realsense() {
@@ -226,25 +234,24 @@ namespace rgbd {
 			try {
 				if (is == IS_COLOR) {
 					if (next_frame = frame_cache.first(RS2_STREAM_COLOR)) {
-						if (next_frame.get_timestamp() == last_color_frame_time) return false;
+						if (next_frame.get_frame_number() == last_color_frame_number) return false;
 						stream = &color_stream;
-						last_color_frame_time = next_frame.get_timestamp();
+						last_color_frame_number = next_frame.get_frame_number();
 					}
 				}
 				else if (is == IS_DEPTH) {
 					if (next_frame = frame_cache.first(RS2_STREAM_DEPTH)) {
-						if (next_frame.get_timestamp() == last_depth_frame_time) return false;
+						if (next_frame.get_frame_number() == last_depth_frame_number) return false;
 						stream = &depth_stream;
-						last_depth_frame_time = next_frame.get_timestamp();
-						//filter depth
-						next_frame = temp_filter.process(next_frame);
+						last_depth_frame_number = next_frame.get_frame_number();
+						//next_frame = spatial_filter.process(next_frame);
 					}
 				}
 				else if (is == IS_INFRARED) {
 					if (next_frame = frame_cache.first(RS2_STREAM_INFRARED)) {
-						if (next_frame.get_timestamp() == last_ir_frame_time) return false;
+						if (next_frame.get_frame_number() == last_ir_frame_number) return false;
 						stream = &ir_stream;
-						last_ir_frame_time = next_frame.get_timestamp();
+						last_ir_frame_number = next_frame.get_frame_number();
 					}
 				}
 			}
@@ -337,6 +344,8 @@ namespace rgbd {
 
 	bool rgbd_realsense::map_depth_to_point(int x, int y, int depth, float* point_ptr) const
 	{
+		depth /= 4;
+		depth *= 1024;
 		if (depth == 0)
 			return false;
 		

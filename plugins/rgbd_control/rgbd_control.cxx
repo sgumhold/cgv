@@ -530,7 +530,8 @@ size_t rgbd_control::construct_point_cloud()
 					break;
 				}
 				//filter points without color for 32 bit formats
-				if (point_color.alpha() > 0) {
+				static const rgba8 filter_color = rgba8(0, 0, 0, 0);
+				if (!(point_color ==  filter_color)) {
 					C2.push_back(point_color);
 					// flipping y to make it the same direction as in pixel y coordinate
 					p[1] = -p[1];
