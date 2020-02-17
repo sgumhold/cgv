@@ -510,8 +510,8 @@ void gl_implicit_surface_drawable_base::draw_implicit_surface(context& ctx)
 		extract_mesh();
 		mri.destruct(ctx);
 		if (mesh.get_nr_faces() > 0) {
-			mri.construct_vbos(ctx, mesh);
-			mri.bind(ctx, ctx.ref_surface_shader_program(false));
+			mri.construct(ctx, mesh);
+			mri.bind(ctx, ctx.ref_surface_shader_program(false), true);
 		}
 		outofdate = false;
 	}
@@ -522,8 +522,10 @@ void gl_implicit_surface_drawable_base::draw_implicit_surface(context& ctx)
 		ctx.ref_default_shader_program().disable(ctx);
 	}
 	else {
-		if (mesh.get_nr_faces() > 0)
-			mri.render_mesh(ctx, ctx.ref_surface_shader_program(false), material);
+		if (mesh.get_nr_faces() > 0) {
+			ctx.set_material(material);
+			mri.draw_all(ctx);
+		}
 	}
 }
 

@@ -1,221 +1,237 @@
 #include <cgv/base/base.h>
 #include "mesh_render_info.h"
-#include <cgv/render/shader_program.h>
 #include <cgv_gl/gl/gl.h>
+#include <cgv_gl/gl/gl_tools.h>
+#include <cgv_gl/gl/gl_context.h>
 
 namespace cgv {
 	namespace render {
-		mesh_render_info::mesh_render_info() : 
-			vbe(cgv::render::VBT_INDICES), 
-			position_descr(cgv::render::element_descriptor_traits<vec3>::get_type_descriptor(vec3())), 
-			tex_coords_descr(cgv::render::element_descriptor_traits<vec2>::get_type_descriptor(vec2()))
-		{
-			nr_triangle_elements = 0;
-			nr_edge_elements = 0;
-		}
-		///
-		void mesh_render_info::destruct(cgv::render::context& ctx)
-		{
-			while (mesh_mats.size() > 0) {
-				mesh_mats.back()->destruct_textures(ctx);
-				delete mesh_mats.back();
-				mesh_mats.pop_back();
-			}
-			vbo.destruct(ctx);
-			vbe.destruct(ctx);
-			aab.destruct(ctx);
-			material_group_start.clear();
-			nr_triangle_elements = 0;
-			nr_edge_elements = 0;
-		}
 
-		///
-		void mesh_render_info::construct_vbos_base(
-			cgv::render::context& ctx, 
-			const cgv::media::mesh::simple_mesh_base& mesh,
-			std::vector<idx_type>& vertex_indices, 
-			std::vector<vec3i>& unique_triples,
-			std::vector<idx_type>& triangle_element_buffer, 
-			std::vector<idx_type>& edge_element_buffer)
-		{
-			include_tex_coords = include_normals = include_colors = true;
+mesh_render_info::mesh_render_info() :
+	position_descr(cgv::render::element_descriptor_traits<vec3>::get_type_descriptor(vec3())),
+	tex_coords_descr(cgv::render::element_descriptor_traits<vec2>::get_type_descriptor(vec2()))
+{
+	nr_triangle_elements = 0;
+	nr_edge_elements = 0;
+}
+///
+void mesh_render_info::destruct(cgv::render::context& ctx)
+{
+	render_info::destruct(ctx);
+	material_primitive_start.clear();
+	nr_triangle_elements = 0;
+	nr_edge_elements = 0;
+}
 
-			// load material textures
-			for (unsigned i = 0; i < mesh.get_nr_materials(); ++i) {
-				mesh_mats.push_back(new cgv::render::textured_material(mesh.get_material(i)));
-				mesh_mats.back()->ensure_textures(ctx);
-			}
+///
+void mesh_render_info::construct_vbos_base(
+	cgv::render::context& ctx,
+	const cgv::media::mesh::simple_mesh_base& mesh,
+	std::vector<idx_type>& vertex_indices,
+	std::vector<vec3i>& unique_triples,
+	std::vector<idx_type>& triangle_element_buffer,
+	std::vector<idx_type>& edge_element_buffer)
+{
+	include_tex_coords = include_normals = include_colors = true;
 
-			std::vector<idx_type>* perm_ptr = 0;
-			bool sort_by_groups = mesh.get_nr_groups() > 0;
-			bool sort_by_materials = mesh.get_nr_materials() > 0;
-			if (sort_by_groups || sort_by_materials) {
-				perm_ptr = new std::vector<idx_type>();
-				mesh.sort_faces(*perm_ptr, sort_by_groups, sort_by_materials);
+	// load material textures
+	for (unsigned i = 0; i < mesh.get_nr_materials(); ++i) {
+		ref_materials().push_back(new cgv::render::textured_material(mesh.get_material(i)));
+		ref_materials().back()->ensure_textures(ctx);
+	}
+
+	std::vector<idx_type>* perm_ptr = 0;
+	bool sort_by_groups = mesh.get_nr_groups() > 0;
+	bool sort_by_materials = mesh.get_nr_materials() > 0;
+	if (sort_by_groups || sort_by_materials) {
+		perm_ptr = new std::vector<idx_type>();
+		mesh.sort_faces(*perm_ptr, sort_by_groups, sort_by_materials);
+	}
+	mesh.merge_indices(vertex_indices, unique_triples, &include_tex_coords, &include_normals);
+	nr_vertices = unique_triples.size();
+	mesh.extract_triangle_element_buffer(vertex_indices, triangle_element_buffer, perm_ptr, mesh.get_nr_materials() > 0 ? &material_primitive_start : 0);
+	if (perm_ptr) {
+		delete perm_ptr;
+		perm_ptr = 0;
+	}
+	nr_triangle_elements = triangle_element_buffer.size();
+	mesh.extract_wireframe_element_buffer(vertex_indices, edge_element_buffer);
+	nr_edge_elements = edge_element_buffer.size();
+	ct = mesh.get_color_storage_type();
+}
+
+///
+void mesh_render_info::finish_construct_vbos_base(cgv::render::context& ctx,
+	const std::vector<idx_type>& triangle_element_buffer,
+	const std::vector<idx_type>& edge_element_buffer)
+{
+	ref_vbos().push_back(new cgv::render::vertex_buffer(cgv::render::VBT_INDICES));
+	cgv::render::vertex_buffer& vbe = *ref_vbos()[1];
+	vbe.create(ctx, (nr_triangle_elements + nr_edge_elements) * sizeof(idx_type));
+	vbe.replace(ctx, 0,
+		&triangle_element_buffer.front(), triangle_element_buffer.size());
+	vbe.replace(ctx, triangle_element_buffer.size() * sizeof(idx_type),
+		&edge_element_buffer.front(), edge_element_buffer.size());
+}
+
+/// override to restrict bind function to first aa as second is used for wireframe rendering
+bool mesh_render_info::bind(context& ctx, shader_program& prog, bool force_success, int aa_index)
+{
+	return render_info::bind(ctx, prog, force_success, 0);
+}
+
+/// bind all or specific aa to the passed shader program
+bool mesh_render_info::bind_wireframe(context& ctx, shader_program& prog, bool force_success)
+{
+	wire_draw_call.prog = &prog;
+	return render_info::bind(ctx, prog, force_success, 1);
+}
+
+/// bind the attribute array to the given shader program
+void mesh_render_info::construct_draw_calls(cgv::render::context& ctx)
+{
+	// construct aa with new aab for surface rendering
+	int aa_index = (int)ref_aas().size();
+	ref_aas().push_back(attribute_array());
+	ref_aas().push_back(attribute_array());
+
+	auto& aa = ref_aas()[aa_index];
+	auto& wire_aa = ref_aas()[aa_index + 1];
+
+	aa.aab_ptr = new cgv::render::attribute_array_binding();
+	aa.aab_ptr->create(ctx);
+
+	wire_aa.aab_ptr = new cgv::render::attribute_array_binding();
+	wire_aa.aab_ptr->create(ctx);
+
+	// determine stride
+	size_t stride = 3;
+	if (include_tex_coords)
+		stride += 2;
+	if (include_normals)
+		stride += 3;
+	stride += color_increment;
+	if (stride == 3)
+		stride = 0;
+	else
+		stride *= element_size;
+
+	// set element and attribute pointers
+	aa.aab_ptr->set_element_array(ctx, *ref_vbos()[1]);
+	aa.add_attribute(position_descr, 0, 0, nr_vertices, stride, cgv::render::VA_POSITION);
+	wire_aa.aab_ptr->set_element_array(ctx, *ref_vbos()[1]);
+	wire_aa.add_attribute(position_descr, 0, 0, nr_vertices, stride, cgv::render::VA_POSITION);
+	size_t offset = 3 * element_size;
+	if (include_tex_coords) {
+		aa.add_attribute(tex_coords_descr, 0, offset, nr_vertices, stride, cgv::render::VA_TEXCOORD);
+		wire_aa.add_attribute(tex_coords_descr, 0, offset, nr_vertices, stride, cgv::render::VA_TEXCOORD);
+		offset += 2 * element_size;
+	}
+	if (include_normals) {
+		aa.add_attribute(position_descr, 0, offset, nr_vertices, stride, cgv::render::VA_NORMAL);
+		wire_aa.add_attribute(position_descr, 0, offset, nr_vertices, stride, cgv::render::VA_NORMAL);
+		offset += 3 * element_size;
+	}
+	if (color_increment > 0) {
+		static int nr_comps[] = { 4,4,3,4 };
+		static cgv::type::info::TypeId type_ids[] = { cgv::type::info::TI_UINT8,cgv::type::info::TI_UINT8,cgv::type::info::TI_FLT32,cgv::type::info::TI_FLT32 };
+		aa.add_attribute(cgv::render::type_descriptor(type_ids[ct], nr_comps[ct], true),
+			0, offset, nr_vertices, stride, cgv::render::VA_COLOR);
+		wire_aa.add_attribute(cgv::render::type_descriptor(type_ids[ct], nr_comps[ct], true),
+			0, offset, nr_vertices, stride, cgv::render::VA_COLOR);
+		offset += color_increment * element_size;
+	}
+	
+	// construct draw call structure which is independent of mesh fragment
+	cgv::render::draw_call dc;
+	dc.aa_index = aa_index;
+	dc.primitive_type = PT_TRIANGLES;
+	dc.vertex_offset = 0;
+	dc.draw_call_type = cgv::render::RCT_INDEXED;
+	dc.index_type = cgv::type::info::TI_UINT32;
+	dc.instance_count = 1;
+	dc.prog = 0;
+	dc.material_index = -1;
+	dc.alpha_mode = AM_OPAQUE;
+
+	// in case of no fragments, generate a single draw call
+	if (material_primitive_start.empty()) {
+		dc.count = nr_triangle_elements;
+		dc.indices = 0;
+		ref_draw_calls().push_back(dc);
+	}
+	// otherwise, for each mesh fragment construct a draw call 
+	else {
+		size_t fi;
+		for (fi = 0; fi < material_primitive_start.size(); ++fi) {
+			const auto& mps = material_primitive_start[fi];
+			size_t next_start = nr_triangle_elements;
+			if (fi + 1 < material_primitive_start.size())
+				next_start = material_primitive_start[fi + 1][2];
+			dc.count = next_start - mps[2];
+			dc.indices = (void*)(3 * sizeof(uint32_t)*mps[2]);
+			dc.material_index = mps[0];
+			if (dc.material_index != -1) {
+				const auto& mat = *ref_materials()[dc.material_index];
+				if ((mat.get_transparency_index() != -1) ||
+					(mat.get_transparency() > 0.01f)) {
+					dc.alpha_mode = AM_MASK_AND_BLEND;
+					dc.alpha_cutoff = 0.02f;
+				}
+				else
+					dc.alpha_mode = AM_OPAQUE;
 			}
-			mesh.merge_indices(vertex_indices, unique_triples, &include_tex_coords, &include_normals);
-			nr_vertices = unique_triples.size();
-			mesh.extract_triangle_element_buffer(vertex_indices, triangle_element_buffer, perm_ptr, mesh.get_nr_materials() > 0 ? &material_group_start : 0);
-			if (perm_ptr) {
-				delete perm_ptr;
-				perm_ptr = 0;
-			}
-			nr_triangle_elements = triangle_element_buffer.size();
-			mesh.extract_wireframe_element_buffer(vertex_indices, edge_element_buffer);
-			nr_edge_elements = edge_element_buffer.size();
-			ct = mesh.get_color_storage_type();
+			ref_draw_calls().push_back(dc);
 		}
+	}
+	// set draw call for wire frame rendering
+	wire_draw_call.aa_index = aa_index+1;
+	wire_draw_call.primitive_type = PT_LINES;
+	wire_draw_call.vertex_offset = 0;
+	wire_draw_call.draw_call_type = cgv::render::RCT_INDEXED;
+	wire_draw_call.count = nr_edge_elements;
+	wire_draw_call.index_type = cgv::type::info::TI_UINT32;
+	wire_draw_call.indices = (void*)(sizeof(uint32_t)*nr_triangle_elements);
+	wire_draw_call.material_index = -1;
+	wire_draw_call.alpha_mode = AM_OPAQUE;
+	wire_draw_call.instance_count = 1;
+	wire_draw_call.prog = 0;
+}
 
-		///
-		void mesh_render_info::finish_construct_vbos_base(cgv::render::context& ctx, 
-			const std::vector<idx_type>& triangle_element_buffer, 
-			const std::vector<idx_type>& edge_element_buffer)
-		{
-			vbe.create(ctx, (nr_triangle_elements + nr_edge_elements) * sizeof(idx_type));
-			vbe.replace(ctx, 0, 
-				&triangle_element_buffer.front(), triangle_element_buffer.size());
-			vbe.replace(ctx, triangle_element_buffer.size() * sizeof(idx_type), 
-				&edge_element_buffer.front(), edge_element_buffer.size());
-		}
-		/// bind the attribute array to the given shader program
-		void mesh_render_info::bind(cgv::render::context& ctx, cgv::render::shader_program& prog)
-		{
-			size_t stride = 3;
-			if (include_tex_coords)
-				stride += 2;
-			if (include_normals)
-				stride += 3;
-			stride += color_increment;
-			if (stride == 3)
-				stride = 0;
-			else
-				stride *= element_size;
+/// draw triangles of given mesh part or whole mesh in case part_index is not given (=-1)
+void mesh_render_info::draw_primitive(cgv::render::context& ctx, size_t primitive_index, bool skip_opaque, bool skip_blended, bool use_materials)
+{
+	// extract indices of to be drawn calls
+	std::vector<size_t> dcis;
+	size_t dci = 0;
+	while (dci < draw_calls.size()) {
+		while (dci < draw_calls.size() && material_primitive_start[dci][1] != primitive_index)
+			++dci;
+		if (skip_opaque)
+			while (dci < draw_calls.size() && (draw_calls[dci].alpha_mode & AM_BLEND) == 0)
+				++dci;
+		if (skip_blended)
+			while (dci < draw_calls.size() && (draw_calls[dci].alpha_mode & AM_BLEND) != 0)
+				++dci;
+		if (dci >= draw_calls.size())
+			break;
+		dcis.push_back(dci);
+		++dci;
+	}
+	// draw extracted calls
+	draw_call* prev_dc = 0;
+	for (size_t i = 0; i < dcis.size(); ++i) {
+		draw_call* next_dc = i + 1 < dcis.size() ? &draw_calls[dcis[i + 1]] : 0;
+		draw(ctx, draw_calls[dcis[i]], prev_dc, next_dc, use_materials);
+		prev_dc = &draw_calls[dcis[i]];
+	}
 
-			aab.create(ctx);
-			aab.set_element_array(ctx, vbe);
-			aab.set_attribute_array(ctx,
-				prog.get_position_index(),
-				position_descr,
-				vbo, 0, nr_vertices, (unsigned)stride);
+}
+/// draw array elements forming the edges of the wireframe
+void mesh_render_info::draw_wireframe(cgv::render::context& ctx)
+{
+	draw(ctx, wire_draw_call);
+}
 
-			size_t offset = 3 * element_size;
-			if (include_tex_coords) {
-				aab.set_attribute_array(ctx,
-					prog.get_texcoord_index(),
-					tex_coords_descr,
-					vbo, offset, nr_vertices, (unsigned)stride);
-				offset += 2 * element_size;
-			}
-			if (include_normals) {
-				aab.set_attribute_array(ctx,
-					prog.get_normal_index(),
-					position_descr,
-					vbo, offset, nr_vertices, (unsigned)stride);
-				offset += 3 * element_size;
-			}
-			if (color_increment > 0) {
-				static int nr_comps[] = { 4,4,3,4 };
-				static cgv::type::info::TypeId type_ids[] = { cgv::type::info::TI_UINT8,cgv::type::info::TI_UINT8,cgv::type::info::TI_FLT32,cgv::type::info::TI_FLT32 };
-				aab.set_attribute_array(ctx,
-					prog.get_color_index(),
-					cgv::render::type_descriptor(type_ids[ct], nr_comps[ct], true),
-					vbo, offset, nr_vertices, (unsigned)stride);
-				offset += color_increment * element_size;
-			}
-		}
-		/// draw triangles of given mesh part or whole mesh in case part_index is not given (=-1)
-		void mesh_render_info::draw_surface(cgv::render::context& c, size_t part_index)
-		{
-			if (nr_triangle_elements == 0)
-				return;
-
-			aab.enable(c);
-			if (part_index == -1) 
-				glDrawElements(GL_TRIANGLES, GLsizei(nr_triangle_elements), GL_UNSIGNED_INT, 0);
-			else {
-				size_t offset = material_group_start[part_index](2);
-				size_t count = (part_index + 1 == material_group_start.size() ? nr_triangle_elements : material_group_start[part_index + 1](2)) - offset;
-				glDrawElements(GL_TRIANGLES, GLsizei(count), GL_UNSIGNED_INT, (void*)(offset * sizeof(idx_type)));
-			}
-			aab.disable(c);
-		}
-
-		///
-		void mesh_render_info::draw_wireframe(cgv::render::context& c)
-		{
-			if (nr_edge_elements > 0) {
-				aab.enable(c);
-				glDrawElements(GL_LINES, GLsizei(nr_edge_elements), GL_UNSIGNED_INT, (void*)(nr_triangle_elements * sizeof(idx_type)));
-				aab.disable(c);
-			}
-		}
-
-		///
-		void mesh_render_info::render_mesh_part(cgv::render::context& c, cgv::render::shader_program& prog, size_t i, bool opaque)
-		{
-			cgv::render::textured_material& mat = *mesh_mats[material_group_start[i](0)];
-			if (mat.get_transparency_index() != -1) {
-				if (opaque)
-					return;
-			}
-			else {
-				if ((mat.get_transparency() < 0.01f) != opaque)
-					return;
-			}
-			if (!opaque) {
-				glEnable(GL_BLEND);
-				glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-				glEnable(GL_ALPHA_TEST);
-				glAlphaFunc(GL_GREATER, 0.1f);
-			}
-			prog.enable(c);
-				c.enable_material(mat);
-				draw_surface(c, i);
-			c.disable_material(mat);
-			prog.disable(c);
-			if (!opaque) {
-				glDisable(GL_BLEND);
-				glDisable(GL_ALPHA_TEST);
-			}
-		}
-		///
-		void mesh_render_info::render_mesh(
-			cgv::render::context& c, cgv::render::shader_program& prog,
-			const cgv::media::illum::surface_material& material)
-		{
-			if (material.get_transparency() > 0.0f) {
-				glEnable(GL_BLEND);
-				glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-				glEnable(GL_ALPHA_TEST);
-				glAlphaFunc(GL_GREATER, 0.1f);
-			}
-			prog.enable(c);
-				c.set_material(material);
-				draw_surface(c);
-			prog.disable(c);
-			if (material.get_transparency() > 0.0f) {
-				glDisable(GL_BLEND);
-				glDisable(GL_ALPHA_TEST);
-			}
-		}
-
-		void mesh_render_info::render_mesh(
-			cgv::render::context& c, cgv::render::shader_program& prog,
-			bool render_opaque, bool render_transparent)
-		{
-			if (material_group_start.empty()) {
-				if (c.get_current_material())
-					render_mesh(c, prog, *c.get_current_material());
-				return;
-			}
-			if (render_opaque) {
-				for (size_t i = 0; i < material_group_start.size(); ++i)
-					render_mesh_part(c, prog, i, true);
-			}
-			if (render_transparent) {
-				for (size_t i = 0; i < material_group_start.size(); ++i)
-					render_mesh_part(c, prog, i, false);
-			}
-		}
 	}
 }

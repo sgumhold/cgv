@@ -45,7 +45,7 @@ namespace cgv {
 		template <typename T> fmat<T, 3, 3>
 			rotate3(const fvec<T, 3>& A) {
 				fmat<T, 3, 3>  M;
-				fvec<T, 3> angles = cgv::math::fvec<T, 3>(0.01745329252)*A;
+				fvec<T, 3> angles = cgv::math::fvec<T, 3>(T(0.01745329252))*A;
 				T cx = cos(angles[0]);
 				T sx = sin(angles[0]);
 				T cy = cos(angles[1]);

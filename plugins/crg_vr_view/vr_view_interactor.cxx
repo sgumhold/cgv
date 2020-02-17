@@ -646,7 +646,7 @@ void vr_view_interactor::draw(cgv::render::context& ctx)
 						cgv::math::translate4<float>(0, 0.1f, -0.1f)*
 						cgv::math::scale4<float>(vec3(mesh_scales[vr::VRM_HMD]))
 					);
-					MI_hmd_ptr->render_mesh(ctx, ctx.ref_surface_shader_program(true));
+					MI_hmd_ptr->draw_all(ctx);
 					ctx.pop_modelview_matrix();
 				}
 			}
@@ -691,7 +691,7 @@ void vr_view_interactor::draw(cgv::render::context& ctx)
 						ctx.push_modelview_matrix();
 						ctx.mul_modelview_matrix(cgv::math::pose4<float>(reinterpret_cast<const mat34&>(state_ptr->controller[i].pose[0])));
 						ctx.mul_modelview_matrix(cgv::math::scale4<float>(vec3(mesh_scales[vr::VRM_CONTROLLER])));
-						MI_controller_ptr->render_mesh(ctx, ctx.ref_surface_shader_program(true));
+						MI_controller_ptr->draw_all(ctx);
 						ctx.pop_modelview_matrix();
 					}
 				}
@@ -701,7 +701,7 @@ void vr_view_interactor::draw(cgv::render::context& ctx)
 						ctx.push_modelview_matrix();
 						ctx.mul_modelview_matrix(cgv::math::pose4<float>(reinterpret_cast<const mat34&>(state_ptr->controller[i].pose[0])));
 						ctx.mul_modelview_matrix(cgv::math::scale4<float>(vec3(mesh_scales[vr::VRM_TRACKER])));
-						MI_tracker_ptr->render_mesh(ctx, ctx.ref_surface_shader_program(true));
+						MI_tracker_ptr->draw_all(ctx);
 						ctx.pop_modelview_matrix();
 					}
 				}

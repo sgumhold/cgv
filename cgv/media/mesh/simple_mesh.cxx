@@ -12,6 +12,10 @@ namespace cgv {
 simple_mesh_base::idx_type simple_mesh_base::start_face()
 {
 	faces.push_back((cgv::type::uint32_type)position_indices.size());
+	if (!materials.empty())
+		material_indices.push_back(materials.size() - 1);
+	if (!group_names.empty())
+		group_indices.push_back(group_names.size() - 1);
 	return idx_type(faces.size() - 1);
 }
 /// create a new corner from position, optional normal and optional tex coordinate indices and return corner index
