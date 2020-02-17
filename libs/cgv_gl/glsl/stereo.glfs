@@ -1,0 +1,89 @@
+#version 150
+
+uniform sampler2D left_texture;
+uniform sampler2D right_texture;
+
+uniform int stereo_mode = 6;
+
+in vec4 color_fs;
+in vec2 texcoord_fs;
+
+//***** begin interface of fragment.glfs ***********************************
+uniform float gamma = 2.2;
+void finish_fragment(vec4 color);
+//***** end interface of fragment.glfs ***********************************
+
+const vec3 V1 = vec3(0.299,0.587,0.114);
+const vec3 V2 = vec3(0.456,0.5,0.176);
+const vec3 V3 = vec3(-0.043,-0.088,-0.002);
+const vec3 V4 = vec3(-0.04,-0.038,-0.016);
+const vec3 V5 = vec3(0.378,0.734,-0.018);
+const vec3 V6 = vec3(-0.015,-0.021,-0.005);
+const vec3 V7 = vec3(-0.072, -0.113, 1.226);
+
+vec3 red_cyan_anaglyph(in vec3 L, in vec3 R)
+{
+	return vec3(dot(V1,L),dot(V1,R),dot(V1,R));
+}
+
+vec3 color_anaglyph(in vec3 L, in vec3 R)
+{
+	return vec3(L.r, R.g, R.b);
+}
+
+vec3 half_color_anaglyph(in vec3 L, in vec3 R)
+{
+	return vec3(dot(V1,L), R.g, R.b);
+}
+
+vec3 duboid_anaglyph(in vec3 L, in vec3 R)
+{
+	return clamp(vec3(dot(V2,L)+dot(V3,R), dot(V4,L)+dot(V5,R), dot(V6,L)+dot(V7,R)),0.0,1.0);
+}
+
+void main()
+{
+	vec4 res = color_fs;
+	vec4 L = texture2D(left_texture, texcoord_fs);
+	vec4 R = texture2D(right_texture, texcoord_fs);
+	switch (stereo_mode) {
+	case 0 : res = texture2D(left_texture, texcoord_fs); break;
+	case 1 : res = texture2D(right_texture, texcoord_fs);break;
+	case 2 :
+		if (texcoord_fs.x < 0.5)
+			res = texture2D(left_texture, vec2(2.0*texcoord_fs.x, texcoord_fs.y));
+		else
+			res = texture2D(right_texture, vec2(2.0*texcoord_fs.x-1.0, texcoord_fs.y));
+		break;
+	case 3 :
+		if (texcoord_fs.y < 0.5)
+			res = texture2D(left_texture, vec2(texcoord_fs.x, 2.0*texcoord_fs.y));
+		else
+			res = texture2D(right_texture, vec2(texcoord_fs.x, 2.0*texcoord_fs.y-1.0));
+		break;
+	case 4 :
+		if ((int(gl_FragCoord.x)&1)==0)
+			res = texture2D(left_texture, texcoord_fs);
+		else
+			res = texture2D(right_texture, texcoord_fs);
+		break;
+	case 5 :
+		if ((int(gl_FragCoord.y)&1)==0)
+			res = texture2D(left_texture, texcoord_fs);
+		else
+			res = texture2D(right_texture, texcoord_fs);
+		break;
+	default:
+		vec4 L = texture2D(left_texture, texcoord_fs);
+		vec4 R = texture2D(right_texture, texcoord_fs);
+		res.a = 0.5*(L.a+R.a);
+		switch (stereo_mode) {
+			case 6: res.rgb = red_cyan_anaglyph(L.rgb,R.rgb); break;
+			case 7: res.rgb = color_anaglyph(L.rgb,R.rgb); break;
+			case 8: res.rgb = half_color_anaglyph(L.rgb,R.rgb); break;
+			case 9: res.rgb = duboid_anaglyph(L.rgb,R.rgb); break;
+		}
+		break;
+	}
+	finish_fragment(res);
+}
