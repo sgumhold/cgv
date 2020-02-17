@@ -30,6 +30,10 @@ namespace cgv {
 			tex_scaling = vec3(1.0f);
 			tex_coord_scaling = vec3(1.0f);
 			texel_size = 1.0f;
+
+			sample_dirs.push_back(vec3(1.0f, 0.0f, 0.0f));
+			sample_dirs.push_back(vec3(0.0f, 1.0f, 0.0f));
+			sample_dirs.push_back(vec3(0.0f, 0.0f, 1.0f));
 		}
 
 		rounded_cone_renderer::rounded_cone_renderer()
@@ -88,7 +92,7 @@ namespace cgv {
 			ref_prog().set_uniform(ctx, "density_tex_scaling", rcrs.tex_scaling);
 			ref_prog().set_uniform(ctx, "tex_coord_scaling", rcrs.tex_coord_scaling);
 			ref_prog().set_uniform(ctx, "texel_size", rcrs.texel_size);
-			ref_prog().set_uniform(ctx, "cone_angle_factor", rcrs.cone_angle_factor);
+			ref_prog().set_uniform(ctx, "cone_angle_factor", rcrs.cone_angle_factor);			
 			ref_prog().set_uniform_array(ctx, "sample_dirs", rcrs.sample_dirs);
 			return true;
 		}

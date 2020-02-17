@@ -549,6 +549,9 @@ namespace vr {
 	///
 	bool vr_wall::handle(cgv::gui::event& e)
 	{
+		if (wall_kit_ptr == 0)
+			return false;
+
 		if (e.get_kind() == cgv::gui::EID_POSE) {
 			if ((e.get_flags() & cgv::gui::EF_VR) != 0) {
 				auto& vrpe = dynamic_cast<cgv::gui::vr_pose_event&>(e);
@@ -709,6 +712,9 @@ namespace vr {
 	///
 	void vr_wall::init_frame(cgv::render::context& ctx)
 	{
+		if (wall_kit_ptr == 0)
+			return;
+
 		if (&ctx == main_context)
 			return;
 
@@ -753,14 +759,14 @@ namespace vr {
 		if (&ctx == main_context) {
 			cgv::render::ref_box_renderer(ctx, -1);
 			cgv::render::ref_sphere_renderer(ctx, -1);
+			cgv::render::ref_box_renderer(ctx, -1);
+			cgv::render::ref_sphere_renderer(ctx, -1);
+			cgv::render::ref_arrow_renderer(ctx, -1);
 			if (wall_kit_ptr) {
 				wall_kit_ptr->wall_context = true;
 				wall_kit_ptr->destruct_fbos();
 				wall_kit_ptr->wall_context = false;
 			}
-			cgv::render::ref_box_renderer(ctx, -1);
-			cgv::render::ref_sphere_renderer(ctx, -1);
-			cgv::render::ref_arrow_renderer(ctx, -1);
 		}
 		else {
 			if (wall_kit_ptr)
@@ -771,6 +777,9 @@ namespace vr {
 	///
 	void vr_wall::draw(cgv::render::context& ctx)
 	{
+		if (wall_kit_ptr == 0)
+			return;
+
 		if (&ctx == main_context) {
 			if (!boxes.empty() && (wall_state != WS_HMD || ctx.get_render_pass() == cgv::render::RP_MAIN)) {
 				auto& br = cgv::render::ref_box_renderer(ctx);
@@ -784,7 +793,7 @@ namespace vr {
 					br.disable(ctx);
 				}
 			}
-			if (wall_kit_ptr && wall_state != WS_HMD || ctx.get_render_pass() == cgv::render::RP_MAIN) {
+			if (wall_state != WS_HMD || ctx.get_render_pass() == cgv::render::RP_MAIN) {
 				std::vector<vec3> P;
 				std::vector<vec2> T;
 				vec3 z = cross(screen_x, screen_y);
@@ -802,7 +811,7 @@ namespace vr {
 				prog.set_uniform(ctx, "stereo_mode", int(stereo_shader_mode));
 				ctx.set_color(rgba(1, 1, 1, 1));
 				glActiveTexture(GL_TEXTURE0);
-				if (wall_kit_ptr && wall_state == WS_HMD && ctx.get_render_pass() == cgv::render::RP_MAIN) {
+				if (wall_state == WS_HMD && ctx.get_render_pass() == cgv::render::RP_MAIN) {
 					wall_kit_ptr->bind_texture(0);
 					glActiveTexture(GL_TEXTURE1);
 					wall_kit_ptr->bind_texture(1);
@@ -822,7 +831,7 @@ namespace vr {
 				cgv::render::attribute_array_binding::disable_global_array(ctx, prog.get_texcoord_index());
 				prog.disable(ctx);
 			}
-			if (wall_kit_ptr && wall_state == WS_HMD && ctx.get_render_pass() == cgv::render::RP_MAIN) {
+			if (wall_state == WS_HMD && ctx.get_render_pass() == cgv::render::RP_MAIN) {
 				std::vector<vec3> P;
 				std::vector<rgb> C;
 				for (int ei = 0; ei < 2; ++ei) {
@@ -1047,6 +1056,9 @@ namespace vr {
 	///
 	void vr_wall::finish_frame(cgv::render::context& ctx)
 	{
+		if (wall_kit_ptr == 0)
+			return;
+
 		if (&ctx != main_context && (wall_state != WS_HMD)) {
 			GLint draw_buffer, draw_fbo;
 			glGetIntegerv(GL_DRAW_BUFFER, &draw_buffer);
