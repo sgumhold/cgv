@@ -105,16 +105,7 @@ protected:
 	///
 	std::future<size_t> future_handle;
 	/// 
-	std::future<rgbd::frame_type> future_rgb;
-	std::future<rgbd::frame_type> future_rgb2;
-	std::future<rgbd::frame_type> future_rgb3;
-	std::future<rgbd::frame_type> future_rgb4;
-	std::future<rgbd::frame_type> future_rgb5;
-	std::future<rgbd::frame_type> future_depth;
-	std::future<rgbd::frame_type> future_depth2;
-	std::future<rgbd::frame_type> future_depth3;
-	std::future<rgbd::frame_type> future_depth4;
-	std::future<rgbd::frame_type> future_depth5;
+	
 	///
 	bool rgbd_started;
 	std::string rgbd_protocol_path;
@@ -259,6 +250,9 @@ public:
 		zoom_in = false;
 		zoom_out = false;
 		rgbd_2_controller_orientation.identity();
+		rgbd_2_controller_orientation.set_col(0, vec3(-1, 0, 0));
+		rgbd_2_controller_orientation.set_col(1, vec3(0, -0.7071f, 0.7071f));
+		rgbd_2_controller_orientation.set_col(2, vec3(0, 0.7071f, 0.7071f));
 		rgbd_2_controller_position.zeros();
 
 		rgbd_2_controller_orientation_start_calib.identity();
