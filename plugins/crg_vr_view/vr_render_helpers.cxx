@@ -44,8 +44,8 @@ namespace vr {
 			cgv::media::mesh::simple_mesh<float> M;
 			if (M.read(cgv::base::find_data_file(get_vrmesh_file_name(id), "Dc"))) {
 				mesh_infos[id] = new cgv::render::mesh_render_info();
-				mesh_infos[id]->construct_vbos(ctx, M);
-				mesh_infos[id]->bind(ctx, ctx.ref_surface_shader_program(true));
+				mesh_infos[id]->construct(ctx, M);
+				mesh_infos[id]->bind(ctx, ctx.ref_surface_shader_program(true), true);
 			}
 			ref_vrmesh_outofdate(id) = false;
 		}

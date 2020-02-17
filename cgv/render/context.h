@@ -42,7 +42,7 @@ struct type_descriptor
 	bool is_array : 1;
 	bool normalize : 1;
 	/// construct from int
-	type_descriptor(int td) { *reinterpret_cast<int*>(this) = td; }
+	type_descriptor(int td = 0) { *reinterpret_cast<int*>(this) = td; }
 	/// construct descriptor for values
 	type_descriptor(cgv::type::info::TypeId _coordinate_type, bool _normalize = false) : coordinate_type(_coordinate_type), element_type(ET_VALUE), nr_rows(1), nr_columns(1), is_row_major(false), is_array(false), normalize(_normalize) {}
 	/// construct descriptor for vectors
@@ -676,7 +676,7 @@ protected:
 	virtual bool shader_program_create   (shader_program_base& spb) const = 0;
 	virtual void shader_program_attach(shader_program_base& spb, const render_component& sc) const = 0;
 	virtual void shader_program_detach(shader_program_base& spb, const render_component& sc) const = 0;
-	virtual bool shader_program_link(shader_program_base& spb) const = 0;
+	virtual bool shader_program_link(shader_program_base& spb) const;
 	virtual bool shader_program_set_state(shader_program_base& spb) const = 0;
 	virtual bool shader_program_enable   (shader_program_base& spb);
 	virtual bool shader_program_disable(shader_program_base& spb);

@@ -179,6 +179,10 @@ public:
 	/// set constant default value of a vertex attribute by location index
 	template <typename T>
 	bool set_attribute(const context& ctx, int loc, const T& value) {
+		if (loc == -1) {
+			ctx.error("shader_program::set_attribute() called with loc=-1", this);
+			return false;
+		}
 		return ctx.set_attribute_void(*this, loc, element_descriptor_traits<T>::get_type_descriptor(value), element_descriptor_traits<T>::get_address(value));
 	}
 };

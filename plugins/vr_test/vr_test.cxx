@@ -447,8 +447,8 @@ bool vr_test::init(cgv::render::context& ctx)
 #else
 	if (M.read("D:/data/surface/meshes/obj/Max-Planck_highres.obj")) {
 #endif
-		MI.construct_vbos(ctx, M);
-		MI.bind(ctx, ctx.ref_surface_shader_program(true));
+		MI.construct(ctx, M);
+		MI.bind(ctx, ctx.ref_surface_shader_program(true), true);
 	}
 
 	cgv::gui::connect_vr_server(true);
@@ -620,7 +620,7 @@ void vr_test::draw(cgv::render::context& ctx)
 			cgv::math::translate4<double>(mesh_location)*
 			cgv::math::scale4<double>(mesh_scale, mesh_scale, mesh_scale) *
 			R);
-		MI.render_mesh(ctx, ctx.ref_surface_shader_program(true));
+		MI.draw_all(ctx);
 		ctx.pop_modelview_matrix();
 	}
 	if (vr_view_ptr) {

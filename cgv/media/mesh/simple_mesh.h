@@ -53,12 +53,28 @@ public:
 	idx_type face_degree(idx_type fi) const { return end_corner(fi) - begin_corner(fi); }
 	/// return number of materials in mesh
 	size_t get_nr_materials() const { return materials.size(); }
-	/// return reference to i-th material
+	/// add a new material and return its index
+	idx_type new_material() { materials.push_back(mat_type()); return idx_type(materials.size() - 1); }
+	/// return const reference to i-th material
 	const mat_type& get_material(size_t i) const { return materials[i]; }
+	/// return reference to i-th material
+	mat_type& ref_material(size_t i) { return materials[i]; }
+	/// return material index of given face
+	const idx_type& material_index(idx_type fi) const { return material_indices[fi]; }
+	/// return reference to material index of given face
+	idx_type& material_index(idx_type fi) { return material_indices[fi]; }
 	/// return number of face groups
 	size_t get_nr_groups() const { return group_names.size(); }
 	/// return the name of the i-th face group
-	const std::string& get_group_name(size_t i) const { return group_names[i]; }
+	const std::string& group_name(size_t i) const { return group_names[i]; }
+	/// set a new group name
+	std::string& group_name(size_t i) { return group_names[i]; }
+	/// add a new group and return its index
+	idx_type new_group(const std::string& name) { group_names.push_back(name); return idx_type(group_names.size() - 1); }
+	/// return group index of given face
+	const idx_type& group_index(idx_type fi) const { return group_indices[fi]; }
+	/// return reference to group index of given face
+	idx_type& group_index(idx_type fi) { return group_indices[fi]; }
 	/// revert face orientation
 	void revert_face_orientation();
 	/// sort faces by group and material indices with two bucket sorts

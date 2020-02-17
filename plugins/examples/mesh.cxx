@@ -275,10 +275,10 @@ public:
 				M.compute_vertex_normals();
 			// [re-]compute mesh render info
 			mesh_info.destruct(ctx);
-			mesh_info.construct_vbos(ctx, M);
+			mesh_info.construct(ctx, M);
 			// bind mesh attributes to standard surface shader program
-			mesh_info.bind(ctx, ctx.ref_surface_shader_program(true));
-
+			mesh_info.bind(ctx, ctx.ref_surface_shader_program(true), true);
+			mesh_info.bind_wireframe(ctx, ctx.ref_default_shader_program(), true);
 			// ensure that materials are presented in gui
 			post_recreate_gui();
 			have_new_mesh = false;
@@ -318,7 +318,7 @@ public:
 		prog.set_attribute(ctx, prog.get_color_index(), surface_color);
 
 		// render the mesh from the vertex buffers with selected program
-		mesh_info.render_mesh(ctx, prog, opaque_part, !opaque_part);
+		mesh_info.draw_all(ctx, opaque_part, !opaque_part);
 
 		// recover opengl culling mode
 		if (is_culling)
@@ -346,8 +346,8 @@ public:
 			glLineWidth(line_width);
 				ctx.ref_default_shader_program().enable(ctx);
 					ctx.set_color(line_color);
-					mesh_info.draw_wireframe(ctx);
 				ctx.ref_default_shader_program().disable(ctx);
+				mesh_info.draw_wireframe(ctx);
 			glLineWidth(old_line_width);
 		}
 		if (show_surface) {
