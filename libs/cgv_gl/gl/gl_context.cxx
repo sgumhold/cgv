@@ -2196,7 +2196,7 @@ bool gl_context::shader_program_link(shader_program_base& spb) const
 	int result;
 	glGetProgramiv(p_id, GL_LINK_STATUS, &result); 
 	if (result == 1)
-		return true;
+		return context::shader_program_link(spb);
 	GLint infologLength = 0;
 	glGetProgramiv(p_id, GL_INFO_LOG_LENGTH, &infologLength);
 	if (infologLength > 0) {
@@ -2754,8 +2754,9 @@ bool gl_context::set_element_array(attribute_array_binding_base* aab, const vert
 		return false;
 	}
 	if (vbb->type != VBT_INDICES) {
-		error("gl_context::set_element_array(): called on vertex buffer object that is not of type VBT_INDICES", vbb);
-		return false;
+		std::cout << "gl_context::set_element_array() : called on vertex buffer object that is not of type VBT_INDICES" << std::endl;
+//		error("gl_context::set_element_array(): called on vertex buffer object that is not of type VBT_INDICES", vbb);
+//		return false;
 	}
 	if (aab) {
 		if (!aab->handle) {
