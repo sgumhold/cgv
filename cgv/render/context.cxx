@@ -500,6 +500,7 @@ void context::set_current_view(shader_program& prog, bool modelview_deps, bool p
 	if (modelview_deps) {
 		cgv::math::fmat<float, 4, 4> V(modelview_matrix_stack.top());
 		prog.set_uniform(*this, "modelview_matrix", V);
+		prog.set_uniform(*this, "inverse_modelview_matrix", inv(V));
 		cgv::math::fmat<float, 3, 3> NM;
 		NM(0, 0) = V(0, 0);
 		NM(0, 1) = V(0, 1);
@@ -511,6 +512,7 @@ void context::set_current_view(shader_program& prog, bool modelview_deps, bool p
 		NM(2, 1) = V(2, 1);
 		NM(2, 2) = V(2, 2);
 		NM.transpose();
+		prog.set_uniform(*this, "inverse_normal_matrix", NM);
 		NM = inv(NM);
 		prog.set_uniform(*this, "normal_matrix", NM);
 	}

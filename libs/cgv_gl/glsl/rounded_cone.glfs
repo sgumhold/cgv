@@ -1,0 +1,218 @@
+#version 430
+#extension GL_ARB_conservative_depth : enable
+
+#define ENABLE_AMBIENT_OCCLUSION 1
+
+//#define DEBUG_FRAGMENTS
+
+//***** begin interface of fragment.glfs ***********************************
+uniform float gamma = 2.2;
+void finish_fragment(vec4 color);
+//***** end interface of fragment.glfs ***********************************
+
+//***** begin interface of surface.glsl ***********************************
+vec4 compute_reflected_appearance(vec3 position_eye, vec3 normal_eye, vec4 color, int side);
+//***** end interface of surface.glsl ***********************************
+
+//uniform sampler2D color_scale_tex;
+uniform sampler3D density_tex;
+
+uniform float ao_offset;
+uniform float ao_distance;
+uniform float ao_strength;
+uniform vec3 density_tex_offset;
+uniform vec3 density_tex_scaling;
+uniform vec3 tex_coord_scaling;
+uniform float texel_size;
+uniform float cone_angle_factor;
+uniform vec3 sample_dirs[3];
+
+in vec3 position;
+in flat vec4 start_fs;
+in flat vec4 end_fs;
+in flat vec4 tp2;
+in flat vec4 tp3;
+in vec4 color_fs;
+in flat mat4 inv_modelview;
+in flat mat3 inv_normal;
+
+//layout (depth_greater) out float gl_FragDepth;
+
+vec3 ortho_vec(vec3 v) {
+
+	return abs(v.x) > abs(v.z) ? vec3(-v.y, v.x, 0.0f) : vec3(0.0f, -v.z, v.y);
+}
+
+void main()
+{
+	vec3 dir = normalize(position);
+
+	mat3 R = mat3(1.0);
+	R[0] = dir;
+	R[1] = normalize(ortho_vec(dir));
+	R[2] = cross(dir, R[1]);
+
+	vec3 a = start_fs.xyz * R;
+	vec3 b = end_fs.xyz * R;
+
+	vec3 delta = b - a;
+	float dr = end_fs.w - start_fs.w;
+
+	float A = delta.y*delta.y + delta.z*delta.z - dr*dr;
+	float B = 2.0 * (a.y*delta.y + a.z*delta.z - start_fs.w*dr);
+	float C = start_fs.w*start_fs.w - a.y*a.y - a.z*a.z;
+
+	float A2 = A * A;
+	float B2 = B * B;
+	float dx2 = delta.x*delta.x;
+
+	float denom = 2.0 * (A2 + A * dx2);
+
+	float nom = 4.0*A2*C*dx2;
+	nom += A*B2*dx2;
+	nom += 4.0*A*C*dx2*dx2;
+	nom += B2*dx2*dx2;
+
+	if(nom <= 0.0 || denom == 0.0) {
+#ifdef DEBUG_FRAGMENTS
+		finish_fragment(vec4(vec3(1.0), 1.0));
+		return;
+#else
+		discard;
+#endif
+	}
+
+	nom = sqrt(nom);
+
+	float nom2 = - A*B - B*dx2;
+
+	float l1 = (nom + nom2) / denom;
+	float l2 = (-nom + nom2) / denom;
+
+	l1 = clamp(l1, 0.0, 1.0);
+	l2 = clamp(l2, 0.0, 1.0);
+
+	float t1 = l1 * delta.x + a.x;
+	t1 -= sqrt(-A * l1*l1 - B * l1 + C);
+
+	float t2 = l2 * delta.x + a.x;
+	t2 -= sqrt(-A * l2*l2 - B * l2 + C);
+
+	if(t1 < t2) {
+		float temp = t1;
+		t1 = t2;
+		t2 = temp;
+		temp = l1;
+		l1 = l2;
+		l2 = temp;
+	}
+
+	bool hit = false;
+	vec3 hit_pos = vec3(0.0);
+	vec3 normal = vec3(0.0, 1.0, 0.0);
+	vec3 color = vec3(0.0);
+	
+	if(t1 >= 0.0001) {
+		hit = true;
+		hit_pos = t1*dir;
+		normal = normalize(hit_pos - mix(start_fs.xyz, end_fs.xyz, l1));
+		//color = mix(texture(color_scale_tex, vec2(s.c.z, 0.5f)).rgb, texture(color_scale_tex, vec2(s.c.w, 0.5f)).rgb, l1);
+		//color = texture(color_scale_tex, vec2(mix(s.c.z, s.c.w, l1), 0.5f)).rgb;
+		//color = texture(color_scale_tex, vec2(mix(0.1, 0.3, l1), 0.5f)).rgb;
+		color = color_fs.rgb;
+	}
+
+	if(t2 >= 0.0001) {
+		hit = true;
+		hit_pos = t2*dir;
+		normal = normalize(hit_pos - mix(start_fs.xyz, end_fs.xyz, l2));
+		//color = mix(texture(color_scale_tex, vec2(s.c.z, 0.5f)).rgb, texture(color_scale_tex, vec2(s.c.w, 0.5f)).rgb, l2);
+		//color = texture(color_scale_tex, vec2(mix(s.c.z, s.c.w, l2), 0.5f)).rgb;
+		//color = texture(color_scale_tex, vec2(mix(0.1, 0.3, l2), 0.5f)).rgb;
+		color = color_fs.rgb;
+	}
+
+	if(hit) {
+#ifdef DEBUG_FRAGMENTS
+		finish_fragment(vec4(1.0, 0.0, 0.0, 1.0));
+#else
+		float falloff_strength = 0.0;
+		float falloff = 1.0 - falloff_strength * (1.0 - dot(-dir, normal));
+
+		color = color_fs.rgb;
+
+
+
+
+
+
+
+#if ENABLE_AMBIENT_OCCLUSION
+		// Voxel cone tracing
+		vec3 pos = (inv_modelview * vec4(hit_pos, 1.0)).xyz;
+		vec3 n = normalize(inv_normal * normal);
+
+		float ao = 0.0;
+
+		vec3 new_y = n;
+		vec3 new_x = cross(new_y, normalize(pos));
+		vec3 new_z = cross(new_x, new_y);
+
+		mat3 R = mat3(new_x, new_y, new_z);
+
+		for(int i = 0; i < 3; ++i) {
+			vec3 sd = R * sample_dirs[i];
+
+			float sample_distance = ao_offset + 0.001;
+			vec3 normalized_pos = (pos - density_tex_offset) * density_tex_scaling;
+			
+			float illumination = 1.0;
+			//float occlusion = 0.0f;
+
+			float lod_texel_size = 0.0f;
+
+			do {
+				// Get cone base radius at current distance and then the according mipmap sample level
+				float cone_radius = sample_distance * cone_angle_factor;
+				float sample_level = clamp(log2(cone_radius / texel_size), 0.0, 7.0);
+
+				lod_texel_size = pow(2.0, sample_level) * texel_size;
+
+				vec3 sample_pos = normalized_pos + sample_distance * sd * tex_coord_scaling;
+				float density = textureLod(density_tex, sample_pos, sample_level).r;
+				// Apply the compositing function
+				illumination *= 1.0 - density * illumination;
+				
+				/*occlusion += (1.0 - occlusion) * density;
+				if (occlusion > 0.99) 
+					break;*/
+
+				// Get the next sample distance and position
+				sample_distance += cone_radius;
+			} while(sample_distance < ao_distance - lod_texel_size && illumination > 0.02);
+
+			ao += (1.0 - illumination);
+			//ao += occlusion;
+		}
+
+		float ao_factor = 1.0 - clamp(ao_strength * ao / 3.0, 0.0, 1.0);
+		color *= ao_factor;
+#endif
+
+		//finish_fragment(vec4(color, 1.0));
+		//finish_fragment(vec4(textureLod(density_tex, density_tex_scaling * pos + density_tex_offset, 0).rrr, 1.0));
+		
+		finish_fragment(compute_reflected_appearance(hit_pos, normal, vec4(color, color_fs.a), 1));
+#endif
+		vec4 v_eye = vec4(hit_pos, 1.0);
+		float depth = dot(tp2, v_eye);
+		float depth_w = dot(tp3, v_eye);
+		gl_FragDepth = 0.5*(depth / depth_w) + 0.5;
+	} else {
+#ifdef DEBUG_FRAGMENTS
+		finish_fragment(vec4(vec3(1.0), 1.0));
+#else
+		discard;
+#endif
+	}
+}
