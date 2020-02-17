@@ -13,6 +13,16 @@
 ///@ingroup VR
 ///@{
 
+/// different visualization types for vr kit components
+enum VRkitVisType
+{
+	VVT_NONE,
+	VVT_SPHERE = 1,
+	VVT_MESH = 2,
+	VVT_BOTH
+};
+
+
 //! extends the stereo view interactor for vr support
 /*! Besides adding the crg_vr_view plugin to your project, you can configure
     the vr_view_interactor in your cgv::render::drawable::init() function similar
@@ -56,6 +66,7 @@ class CGV_API vr_view_interactor : public stereo_view_interactor
 {
 	ivec4 cgv_viewport;
 	void* fbo_handle;
+
 	/**@name head tracking */
 	//@{
 	/// head orientation from tracker orientation
@@ -113,18 +124,14 @@ protected:
 	int rendered_eye;
 	vr::vr_kit* rendered_kit_ptr;
 	int rendered_kit_index;
-	cgv::render::mesh_render_info MI_controller, MI_hmd;
 
 	cgv::gui::VREventTypeFlags event_flags;
-	static dmat4 hmat_from_pose(float pose_matrix[12]);
 
 	// debugging of vr events on console
 	bool debug_vr_events;
 
 	// visualization of kits and action zone
-	bool show_vr_kits;
-	bool show_vr_kits_as_spheres;
-	bool show_vr_kits_as_meshes;
+	VRkitVisType vis_type, hmd_vis_type, controller_vis_type, tracker_vis_type;
 	bool show_action_zone;
 	rgb fence_color1, fence_color2;
 	float fence_frequency;
@@ -148,6 +155,12 @@ protected:
 	cgv::render::surface_render_style brs;
 	cgv::render::sphere_render_style srs;
 
+	// helper members to allow change of mesh file names
+	std::string hmd_mesh_file_name, controller_mesh_file_name, tracker_mesh_file_name, base_mesh_file_name;
+	// for each mesh type a scale
+	float mesh_scales[4];
+	///
+	vr::vr_kit* get_vr_kit_from_index(int i) const;
 	//
 	void configure_kits();
 	///
@@ -172,6 +185,8 @@ public:
 	void enable_vr_event_debugging(bool enable = true);
 	/// return a pointer to the state of the current vr kit
 	const vr::vr_kit_state* get_current_vr_state() const;
+	/// return a pointer to the current vr kit
+	vr::vr_kit* get_current_vr_kit() const;
 	//@}
 
 	/**@name vr viewing*/
@@ -204,7 +219,7 @@ public:
 	/// set whether to draw separate view
 	void draw_separate_view(bool do_draw);
 	/// check whether vr kits are drawn
-	bool vr_kits_drawn() const { return show_vr_kits; }
+	bool vr_kits_drawn() const { return vis_type != VVT_NONE; }
 	/// set whether to draw vr kits
 	void draw_vr_kits(bool do_draw);
 	/// check whether action zone is drawn 
@@ -220,6 +235,15 @@ public:
 	/// set the width with which vr views are blit
 	void set_blit_vr_view_width(int width);
 	//@}
+
+	/**@name vr render process*/
+	//@{
+	/// return the currently rendered eye
+	int get_rendered_eye() const { return rendered_eye; }
+	/// return the vr kit currently rendered
+	/// return a pointer to the current vr kit
+	vr::vr_kit* get_rendered_vr_kit() const { return rendered_kit_ptr; }
+	//@}
 	/// 
 	void on_set(void* member_ptr);
 	/// overload to show the content of this object
@@ -227,7 +251,7 @@ public:
 	///
 	bool init(cgv::render::context& ctx);
 	/// 
-	void destruct(cgv::render::context& ctx);
+	void clear(cgv::render::context& ctx);
 	/// overload and implement this method to handle events
 	bool handle(cgv::gui::event& e);
 	/// overload to stream help information to the given output stream
