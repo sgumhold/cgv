@@ -594,6 +594,20 @@ namespace vr {
 		if (ke.get_flags()&cgv::gui::EF_VR) {
 			auto& vrke = dynamic_cast<cgv::gui::vr_key_event&>(ke);
 			switch (vrke.get_key()) {
+			case vr::VR_LEFT_STICK_LEFT:
+			case vr::VR_RIGHT_STICK_LEFT:
+				if (wall_state > WS_SCREEN_CALIB) {
+					wall_state = WallState(wall_state-1);
+					on_set(&wall_state);
+				}
+				break;
+			case vr::VR_LEFT_STICK_RIGHT:
+			case vr::VR_RIGHT_STICK_RIGHT:
+				if (wall_state < WS_HMD) {
+					wall_state = WallState(wall_state + 1);
+					on_set(&wall_state);
+				}
+				break;
 			case vr::VR_LEFT_BUTTON0:
 			case vr::VR_RIGHT_BUTTON0:
 				switch (wall_state) {
@@ -925,7 +939,7 @@ namespace vr {
 		case WS_EYES_CALIB:
 		{
 			std::vector<vec3> P;
-			std::vector<rgb> C;
+			std::vector<rgb> C[2];
 			for (int ci=0; ci<2; ++ci) {
 				float x_offset = (aim_beta * aim_width / wall_kit_ptr->pixel_size[0])/height;
 				float H = 0.3f*x_offset;
@@ -934,10 +948,14 @@ namespace vr {
 				P.push_back(points[ci] + vec3( x_offset, 0, 0));
 				P.push_back(points[ci] + vec3(-x_offset+H/slope, H, 0));
 				P.push_back(points[ci] + vec3(x_offset-H/slope, H, 0));
-				C.push_back(ci == 0 ? rgb(1, 0.2f, 0.2f) : rgb(0.2f, 0.2f, 1));
-				C.push_back(C.back());
-				C.push_back(ci == 0 ? rgb(0.7f, 0.8f, 0) : rgb(0, 0.8f, 0.7f));
-				C.push_back(C.back());
+				C[ci].push_back(ci == 0 ? rgb(1, 0.2f, 0.2f) : rgb(0.2f, 0.2f, 1));
+				C[ci].push_back(C[ci].back());
+				C[ci].push_back(ci == 0 ? rgb(0.7f, 0.8f, 0) : rgb(0, 0.8f, 0.7f));
+				C[ci].push_back(C[ci].back());
+				C[1-ci].push_back(ci == 0 ? rgb(0.2f, 0.2f, 0.2f) : rgb(0.2f, 0.2f, 0.2f));
+				C[1-ci].push_back(C[1-ci].back());
+				C[1-ci].push_back(ci == 0 ? rgb(0.5f, 0.5f, 0.5f) : rgb(0.5f, 0.5f, 0.5f));
+				C[1-ci].push_back(C[1-ci].back());
 			}
 			for (int eye = 0; eye < 2; ++eye) {
 				ctx.set_viewport(ivec4(eye * x_off, eye*y_off, w, h));
@@ -947,7 +965,7 @@ namespace vr {
 				prog.enable(ctx);
 				cgv::render::attribute_array_binding::set_global_attribute_array(ctx, prog.get_position_index(), P);
 				cgv::render::attribute_array_binding::enable_global_array(ctx, prog.get_position_index());
-				cgv::render::attribute_array_binding::set_global_attribute_array(ctx, prog.get_color_index(), C);
+				cgv::render::attribute_array_binding::set_global_attribute_array(ctx, prog.get_color_index(), C[eye]);
 				cgv::render::attribute_array_binding::enable_global_array(ctx, prog.get_color_index());
 				glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 				glDrawArrays(GL_TRIANGLE_STRIP, 4, 4);
