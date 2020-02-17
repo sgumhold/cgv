@@ -33,26 +33,6 @@ enum CameraFrameSplit {
 	CFS_HORIZONTAL // top bottom split
 };
 
-/// different error codes
-enum CameraError
-{
-	CE_NO_ERROR,
-	CE_NO_CAMERA_INTERFACE,
-	CE_NO_CAMERA_AVAILABLE,
-	CE_NO_CAMERA_FIRMWARE,
-	CE_ALREADY_INITIALIZED,
-	CE_FAILED_TO_QUERY_FRAME_SIZE,
-	CE_UNKNOWN_FRAME_FORMAT,
-	CE_ATTEMPT_TO_START_UNINITIALIZED,
-	CE_START_FAILED,
-	CE_GET_FRAME_FAILED,
-	CE_ATTEMPT_TO_STOP_NOT_STARTED_CAMERA,
-	CE_ATTEMPT_TO_GET_FRAME_BUT_NOT_STARTED_CAMERA
-};
-
-/// convert a camera error into an error string 
-extern CGV_API std::string get_camera_error_string(CameraError ce);
-
 /// interface for mono or stereo cameras in VR headsets
 class CGV_API vr_camera 
 {
@@ -67,25 +47,29 @@ protected:
 	bool initialize();
 	/// destruct camera
 	virtual ~vr_camera() = default;
-	/// store last error
-	CameraError last_error;
+	/// store last error as a string to be as flexible as possible
+	mutable std::string last_error;
 public:
 	/**@name camera inspection and control*/
 	//@{
 	/// return number of cameras in the headset (1 for mono and 2 for stereo)
 	uint8_t get_nr_cameras() const;
-	/// query the camera intrinsics 
-	bool query_intrinsics(uint32_t camera_index, bool undistorted, float focal_lengths[2], float center[2]);
-	/// query the camera projection matrix for given z_near and z_far values; matrix is encoded in column major order
-	bool query_projection(uint32_t camera_index, bool undistorted, float z_near, float z_far, float projection_matrix[16]);
+	/// access to 3x4 matrix in column major format for transformation from camera (0 .. left, 1 .. right) to head coordinates
+	virtual bool put_camera_to_head_matrix(int camera_index, float* pose_matrix) const = 0;
+	/// access to 4x4 matrix in column major format for perspective transformation of camera (0..left, 1..right)
+	virtual bool put_projection_matrix(int camera_index, bool undistorted, float z_near, float z_far, float* projection_matrix) const = 0;
+	/// write the focal lengths in x- and y-direction to access to focal_length_2d_ptr[0|1] and the texture center to center_2d_ptr[0|1]
+	virtual bool put_camera_intrinsics(int camera_index, bool undistorted, float* focal_length_2d_ptr, float* center_2d_ptr) const = 0;
 	/// start streaming of frames
 	bool start();
 	/// stop streaming of frames
 	bool stop();
 	/// return the camera state
 	CameraState get_state() const;
-	/// return last error
-	CameraError get_last_error() const;
+	/// check for error
+	bool has_error() const { return !last_error.empty(); }
+	/// return last error, if no error has occured, the function returns an empty string
+	const std::string& get_last_error() const;
 	//@}
 
 	/**@name access to frames*/
@@ -106,15 +90,13 @@ protected:
   CameraFrameFormat frame_format;
   CameraFrameSplit frame_split;
   bool frame_flipped;
-private:
   CameraState state;
+private:
   virtual bool initialize_impl() = 0;
   virtual bool start_impl() = 0;
   virtual bool stop_impl() = 0;
   virtual bool get_frame_impl(std::vector<uint8_t>& frame_data, uint32_t& width, uint32_t& height, bool undistorted, bool maximum_valid_rectangle) = 0;
   virtual bool get_gl_texture_id_impl(uint32_t& tex_id, uint32_t& width, uint32_t& height, bool undistorted, float max_valid_texcoord_range[4]) = 0;
-  virtual bool query_intrinsics_impl(uint32_t camera_index, bool undistorted, float focal_lengths[2], float center[2]) = 0;
-  virtual bool query_projection_impl(uint32_t camera_index, bool undistorted, float z_near, float z_far, float projection_matrix[16]) = 0;
 };
 
 } // namespace vr

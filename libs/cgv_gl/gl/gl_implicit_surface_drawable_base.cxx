@@ -522,9 +522,10 @@ void gl_implicit_surface_drawable_base::draw_implicit_surface(context& ctx)
 		ctx.ref_default_shader_program().disable(ctx);
 	}
 	else {
-		if (mesh.get_nr_faces() > 0)
+		if (mesh.get_nr_faces() > 0) {
 			ctx.set_material(material);
 			mri.draw_all(ctx);
+		}
 	}
 }
 
