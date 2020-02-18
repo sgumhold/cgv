@@ -83,6 +83,8 @@ namespace cgv { // @<
 			bool validate_attributes(const context& ctx) const;
 			///
 			bool disable(context& ctx);
+			///
+			void draw(context& ctx, int offset, int count);
 		};
 	}
 }

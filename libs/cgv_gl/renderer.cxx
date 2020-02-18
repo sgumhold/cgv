@@ -169,6 +169,11 @@ namespace cgv {
 			return ref_prog().disable(ctx) && res;
 		}
 
+		void renderer::draw(context& ctx, int offset, int count)
+		{
+			return;
+		}
+
 		void renderer::clear(const cgv::render::context& ctx)
 		{
 			prog.destruct(ctx);

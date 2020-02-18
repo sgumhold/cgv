@@ -224,6 +224,8 @@ namespace cgv { // @<
 			virtual bool enable(context& ctx);
 			/// disable renderer
 			virtual bool disable(context& ctx);
+			/// convenience function to render with default settings
+			void draw(context& ctx, int offset, int count);
 			/// the clear function destructs the shader program
 			virtual void clear(const context& ctx);
 		};
