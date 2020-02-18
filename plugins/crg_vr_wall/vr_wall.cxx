@@ -301,7 +301,6 @@ namespace vr {
 			delete wall_kit_ptr;
 			wall_kit_ptr = 0;
 		}
-		cgv::base::unregister_object(window);
 		cgv::gui::application::remove_window(window);
 	}
 	///
