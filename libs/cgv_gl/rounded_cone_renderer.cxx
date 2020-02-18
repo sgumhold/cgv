@@ -31,9 +31,11 @@ namespace cgv {
 			tex_coord_scaling = vec3(1.0f);
 			texel_size = 1.0f;
 
-			sample_dirs.push_back(vec3(1.0f, 0.0f, 0.0f));
-			sample_dirs.push_back(vec3(0.0f, 1.0f, 0.0f));
-			sample_dirs.push_back(vec3(0.0f, 0.0f, 1.0f));
+			cone_angle_factor = 1.0f;
+			sample_dirs.resize(3);
+			sample_dirs[0] = vec3(0.0f, 1.0f, 0.0f);
+			sample_dirs[1] = vec3(0.0f, 1.0f, 0.0f);
+			sample_dirs[2] = vec3(0.0f, 1.0f, 0.0f);
 		}
 
 		rounded_cone_renderer::rounded_cone_renderer()
@@ -110,6 +112,14 @@ namespace cgv {
 			return
 				rh.reflect_base(*static_cast<rounded_cone_render_style*>(this)) &&
 				rh.reflect_member("radius", radius);
+		}
+
+		void rounded_cone_renderer::draw(context& ctx, int offset, int count)
+		{
+			if(validate_and_enable(ctx)) {
+				glDrawArrays(GL_LINES, (GLint)offset, (GLsizei)count);
+				disable(ctx);
+			}
 		}
 
 		cgv::reflect::extern_reflection_traits<rounded_cone_render_style, rounded_cone_render_style_reflect> get_reflection_traits(const rounded_cone_render_style&)

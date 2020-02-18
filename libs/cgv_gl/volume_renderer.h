@@ -28,15 +28,14 @@ namespace cgv { // @<
 			/*@name global volume rendering options*/
 			//@{
 			///
-			vec3 eye_position;
 			int volume_texture_unit;
 			int transfer_function_texture_unit;
 			float alpha;
-			float omega;
 			float level_of_detail;
 			float step_size;
 			vec3 tex_size;
 			vec3 tex_coord_scaling;
+			mat4 transformation;
 
 			/// the interpolation method used
 			InterpolationMode interpolation_mode;
@@ -49,7 +48,9 @@ namespace cgv { // @<
 		{
 		protected:
 			///
-			unsigned vao, vbo;
+			cgv::render::attribute_array_manager aa_manager;
+			/// the eye position in world space
+			vec3 eye_position;
 			/// whether the shader should be rebuilt after a define update
 			std::string shader_defines;
 			/// store whether attr array is specified
@@ -64,6 +65,8 @@ namespace cgv { // @<
 			/// construct shader programs and return whether this was successful, call inside of init method of drawable
 			bool init(context& ctx);
 			///
+			void set_eye_position(vec3 _eye_position);
+			///
 			std::string build_define_string();
 			///
 			bool build_shader(context& ctx, std::string defines = "");
@@ -73,6 +76,8 @@ namespace cgv { // @<
 			bool validate_attributes(const context& ctx) const;
 			///
 			bool disable(context& ctx);
+			///
+			void draw(context& ctx, int offset, int count);
 		};
 	}
 }

@@ -19,14 +19,18 @@ mat3 get_normal_matrix();
 mat3 get_inverse_normal_matrix();
 //***** end interface of view.glsl ***********************************
 
+uniform vec3 eye_position;
 uniform vec3 tex_coord_scaling;
+uniform mat4 transformation;
 
 in vec4 position;
 
-out vec3 position_fs;
+out vec3 eye_fs;
+out vec3 vol_coord_fs;
 
 void main()
 {
-	position_fs = position.xyz / tex_coord_scaling;
-	gl_Position = get_modelview_projection_matrix() * vec4(position_fs, 1.0);
+	eye_fs = (inverse(transformation) * vec4(eye_position, 1.0)).xyz / tex_coord_scaling;
+	vol_coord_fs = position.xyz / tex_coord_scaling;
+	gl_Position = get_modelview_projection_matrix() * transformation * position;
 }

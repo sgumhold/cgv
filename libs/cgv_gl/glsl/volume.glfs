@@ -1,6 +1,5 @@
 #version 430
 
-#define USE_CUBIC_INTERPOLATION 0
 #define INTERPOLATION_MODE 0
 
 //***** begin interface of fragment.glfs ***********************************
@@ -25,16 +24,14 @@ vec4 compute_reflected_appearance(vec3 position_eye, vec3 normal_eye, vec4 color
 uniform sampler3D volume_tex;
 uniform sampler2D transfer_function_tex;
 
-uniform vec3 eye_position;
 uniform float alpha_coeff;
-uniform float omega_coeff;
-uniform float scale_factor;
 uniform float lod;
 uniform float step_size;
 uniform vec3 tex_size;
 uniform vec3 tex_coord_scaling;
 
-in vec3 position_fs;
+in vec3 eye_fs;
+in vec3 vol_coord_fs;
 
 /*--------------------------------------------------------------------------*\
 Copyright (c) 2008-2009, Danny Ruijters. All rights reserved.
@@ -115,6 +112,7 @@ float textureLodCubic(sampler3D tex, vec3 coord, float lod) {
 	return mix(tex001, tex000, g0.z);  //weigh along the z-direction
 }
 
+// smooth filtering from https://www.shadertoy.com/view/XsfGDn
 float textureLodSmooth(sampler3D tex, vec3 coord, float lod) {
 	
 	vec3 uv = coord*tex_size + 0.5;
@@ -122,7 +120,7 @@ float textureLodSmooth(sampler3D tex, vec3 coord, float lod) {
 	vec3 iuv = floor( uv );
 	vec3 fuv = fract( uv );
 
-	uv = iuv + fuv*fuv*(3.0-2.0*fuv); // fuv*fuv*fuv*(fuv*(fuv*6.0-15.0)+10.0);;
+	uv = iuv + fuv*fuv*(3.0-2.0*fuv); // fuv*fuv*fuv*(fuv*(fuv*6.0-15.0)+10.0);
 	uv = (uv - 0.5)/tex_size;
 
 	return textureLod(tex, uv, lod).r;
@@ -141,14 +139,17 @@ float textureLodNearest(sampler3D tex, vec3 coord, float lod) {
 
 void main()
 {
-	vec3 dir = normalize(eye_position - position_fs);
+	vec3 dir = normalize(eye_fs - vol_coord_fs);
 
 	vec4 color = vec4(0.0);
-	float alpha = 1.0;
-	vec3 pos = position_fs;
+	vec3 pos = vol_coord_fs;
 	vec3 tex_coords = pos * tex_coord_scaling;
 
-	while(tex_coords.x > -0.01 && tex_coords.x < 1.01 && tex_coords.y > -0.01 && tex_coords.y < 1.01 && tex_coords.z > -0.01 && tex_coords.z < 1.01) {
+	while(
+		dot(dir, pos - eye_fs) <= 0.0 && // Prevent tracing behind the eye position
+		tex_coords.x > -0.01 && tex_coords.x < 1.01 &&
+		tex_coords.y > -0.01 && tex_coords.y < 1.01 &&
+		tex_coords.z > -0.01 && tex_coords.z < 1.01) {
 #if (INTERPOLATION_MODE == 0)
 		float value = textureLodNearest(volume_tex, tex_coords, lod);
 #elif (INTERPOLATION_MODE == 1)

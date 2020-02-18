@@ -63,6 +63,8 @@ namespace cgv { // @<
 			bool validate_attributes(const context& ctx) const;
 			///
 			bool disable(context& ctx);
+			///
+			void draw(context& ctx, int offset, int count);
 		};
 
 		struct CGV_API rounded_cone_render_style_reflect : public rounded_cone_render_style
