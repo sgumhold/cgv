@@ -187,6 +187,8 @@ public:
 	const vr::vr_kit_state* get_current_vr_state() const;
 	/// return a pointer to the current vr kit
 	vr::vr_kit* get_current_vr_kit() const;
+	// query vr state
+	void query_vr_states();
 	//@}
 
 	/**@name vr viewing*/
@@ -256,9 +258,15 @@ public:
 	bool handle(cgv::gui::event& e);
 	/// overload to stream help information to the given output stream
 	void stream_help(std::ostream& os);
+	// render the views for the kits in nested render passes
+	void render_vr_kits(cgv::render::context& ctx);
 	/// this method is called in one pass over all drawables before the draw method
 	void init_frame(cgv::render::context&);
-	/// 
+	/// draw the vr kits in the current view
+	void draw_vr_kits(cgv::render::context& ctx);
+	/// draw the action zone of the current vr kit
+	void draw_action_zone(cgv::render::context& ctx);
+	/// draw all
 	void draw(cgv::render::context&);
 	/// this method is called in one pass over all drawables after drawing
 	void finish_frame(cgv::render::context&);
