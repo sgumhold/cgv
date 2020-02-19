@@ -7,6 +7,7 @@
 #include <cgv/math/ftransform.h>
 #include <cgv/base/import.h>
 #include <cgv/math/inv.h>
+#include <cgv/math/pose.h>
 #include <iostream>
 #include <sstream>
 #include <vr/vr_kit.h>
@@ -300,15 +301,36 @@ void vr_view_interactor::clear(cgv::render::context& ctx)
 	cgv::render::ref_sphere_renderer(ctx, -1);
 }
 
+/// factored our vr event handling
+bool vr_view_interactor::handle_vr_events(cgv::gui::event& e)
+{
+	return false;
+	if (e.get_kind() == cgv::gui::EID_KEY) {
+		auto& vrke = reinterpret_cast<cgv::gui::vr_key_event&>(e);
+		if (vrke.get_key() == vr::VR_RIGHT_STICK) {
+			if (vrke.get_action() == cgv::gui::KA_PRESS) {
+				start_pose = reinterpret_cast<const mat34&>(*vrke.get_state().controller[1].pose);
+			}
+			else if (vrke.get_action() == cgv::gui::KA_RELEASE) {
+				mat34 end_pose = reinterpret_cast<const mat34&>(*vrke.get_state().controller[1].pose);
+				tracking_origin += pose_position(end_pose) - pose_position(start_pose);
+			}
+			return true;
+		}
+	}
+}
+
 /// overload and implement this method to handle events
 bool vr_view_interactor::handle(cgv::gui::event& e)
 {
-	if (debug_vr_events) {
-		if ((e.get_flags() & cgv::gui::EF_VR) != 0) {
+	if ((e.get_flags() & cgv::gui::EF_VR) != 0) {
+		if (debug_vr_events) {
 			e.stream_out(std::cout);
 			std::cout << std::endl;
 		}
+		return handle_vr_events(e);
 	}
+
 	if (head_tracker != -1) {
 		if ( ((e.get_flags() & cgv::gui::EF_VR) != 0) && (e.get_kind() == cgv::gui::EID_POSE) ) {
 			cgv::gui::vr_pose_event& vrpe = dynamic_cast<cgv::gui::vr_pose_event&>(e);

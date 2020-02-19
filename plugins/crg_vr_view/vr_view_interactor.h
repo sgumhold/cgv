@@ -105,6 +105,8 @@ class CGV_API vr_view_interactor : public stereo_view_interactor
 	/// origin of tracking coordinate system given in world coordinates
 	vec3 tracking_origin;
 	//@}
+private:
+	mat34 start_pose;
 public:
 	typedef cgv::math::fmat<float,3,4> mat34;
 protected:
@@ -254,6 +256,8 @@ public:
 	bool init(cgv::render::context& ctx);
 	/// 
 	void clear(cgv::render::context& ctx);
+	/// overload and implement this method to handle events
+	bool handle_vr_events(cgv::gui::event& e);
 	/// overload and implement this method to handle events
 	bool handle(cgv::gui::event& e);
 	/// overload to stream help information to the given output stream

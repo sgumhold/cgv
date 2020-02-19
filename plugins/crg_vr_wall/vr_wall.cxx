@@ -4,7 +4,6 @@
 #include <vr/vr_driver.h>
 #include <cgv/media/image/image_reader.h>
 #include <cgv/render/attribute_array_binding.h>
-#include <cg_vr/vr_server.h>
 #include <cgv_gl/gl/gl.h>
 #include <cgv/gui/key_event.h>
 #include <libs/cgv_reflect_types/math/quaternion.h>
@@ -60,29 +59,19 @@ namespace vr {
 			right_window = create_wall_window("right wall window", window_x, window_y, window_width, window_height, right_fullscreen);
 			break;
 		}
+		generate_screen_calib_points();
 	}
 
 	void vr_wall::generate_screen_calib_points()
 	{
 		float aspect = (float)window_width / window_height;
-		points.push_back(vec3(0, 0, 0));
-		colors[0].push_back(rgb(0, 1, 0));
-		colors[1].push_back(rgb(0, 1, 0));
-		points.push_back(vec3(aspect, 0, 0));
-		colors[0].push_back(rgb(0, 1, 0));
-		colors[1].push_back(rgb(0, 1, 0));
-		points.push_back(vec3(0, 1, 0));
-		colors[0].push_back(rgb(0, 1, 0));
-		colors[1].push_back(rgb(0, 1, 0));
-
-		points.push_back(vec3(0, 1, 0));
-		colors[0].push_back(rgb(1, 0, 0));
-		colors[1].push_back(rgb(1, 0, 0));
-
-		points.push_back(vec3(0, 1, 0));
-		colors[0].push_back(rgb(0, 0, 1));
-		colors[1].push_back(rgb(0, 0, 1));
+		calib_points_screen.push_back(vec3(-0.9f * aspect, 0.0f, 0.0));
+		calib_points_screen.push_back(vec3( 0.9f * aspect, 0.0f, 0.0));
+		calib_points_screen.push_back(vec3(0.0f, -0.5f, 0.0f));
+		calib_points_screen.push_back(vec3(0.0f,  0.5f, 0.0f));
+		calib_points_world = calib_points_screen;
 	}
+	/*
 	void vr_wall::generate_points(int n)
 	{
 		std::default_random_engine E;
@@ -132,7 +121,9 @@ namespace vr {
 		}
 		return true;
 	}
+	*/
 	///
+	/*
 	void vr_wall::generate_eye_calib_points()
 	{
 		points.clear();
@@ -166,7 +157,7 @@ namespace vr {
 		colors[0].push_back(rgb(0.5f, 1.0f, 1.0f));
 		colors[1].push_back(rgb(0.5f, 1.0f, 1.0f));
 		radii.push_back(6.0f);
-	}
+	}*/
 	/// add screen center sphere, x & y arrows and box for extruded screen rectangle
 	void vr_wall::add_screen(const vec3& center, const vec3& x, const vec3& y, const rgb& clr, float lum)
 	{
@@ -235,13 +226,6 @@ namespace vr {
 		update_member(&screen_orientation[1]);
 		update_member(&screen_orientation[2]);
 		update_member(&screen_orientation[3]);
-		if (wall_state == WS_EYES_CALIB) {
-			for (int ci = 0; ci < 2; ++ci) {
-				points[ci] = wall_kit_ptr->transform_world_to_screen(c_P[ci] * vec4(aim_center, 1.0f));
-				radii[ci] = (2 * aim_beta * aim_circle_radius / wall_kit_ptr->pixel_size[0]);
-				points[ci][2] = 0;
-			}
-		}
 	}
 	/// construct vr wall kit by attaching to another vr kit
 	vr_wall::vr_wall() : cgv::base::node("vr_wall")
@@ -267,8 +251,8 @@ namespace vr {
 		aim_width = 0.073f;
 		aim_angle = 50.0f;
 		aim_beta = 1.618033989f;
-		eye_position[0] = vec3(-0.03f, -0.04f, 0.0f);
-		eye_position[1] = vec3(0.03f, -0.04f, 0.0f);
+		eye_position_tracker[0] = vec3(-0.03f, -0.04f, 0.0f);
+		eye_position_tracker[1] = vec3(0.03f, -0.04f, 0.0f);
 		eye_calibrated[0] = eye_calibrated[1] = false;
 		box_index = 0;
 		main_context = 0;
@@ -358,28 +342,10 @@ namespace vr {
 	///
 	void vr_wall::on_set(void* member_ptr)
 	{
-		if (member_ptr == &calib_index) {
-			if (wall_state == WS_SCREEN_CALIB && calib_index == points.size()) {
-				wall_state = WS_EYES_CALIB;
-				on_set(&wall_state);
-			}
-		}
-		else if (member_ptr == &wall_state) {
-			points.clear();
-			colors[0].clear();
-			colors[1].clear();
+		if (member_ptr == &wall_state) {
 			switch (wall_state) {
 			case WS_SCREEN_CALIB:
-				generate_screen_calib_points();
-				calib_index = 0;
-				update_member(&calib_index);
-				if (wall_kit_ptr)
-					wall_kit_ptr->in_calibration = true;
-				break;
 			case WS_EYES_CALIB:
-				generate_eye_calib_points();
-				//if (!generate_points_from_image("res://cgv.png", 0.5f))
-				//	generate_points(20);
 				calib_index = 0;
 				update_member(&calib_index);
 				if (wall_kit_ptr)
@@ -469,6 +435,10 @@ namespace vr {
 
 		find_control(box_index)->set("max", boxes.size() - 1);
 		if (begin_tree_node("screen calibration", screen_center, false, "level=2")) {
+			add_gui("cp0", calib_points_screen[0], "", "options='min=-2;max=2;step=0.0001;ticks=true'");
+			add_gui("cp1", calib_points_screen[1], "", "options='min=-2;max=2;step=0.0001;ticks=true'");
+			add_gui("cp2", calib_points_screen[2], "", "options='min=-2;max=2;step=0.0001;ticks=true'");
+			add_gui("cp3", calib_points_screen[3], "", "options='min=-2;max=2;step=0.0001;ticks=true'");
 
 			add_gui("peek_point", peek_point, "", "options='min=-0.1;max=0.1;step=0.0001;ticks=true'");
 			if (begin_tree_node("point render style", prs, false, "level=3")) {
@@ -531,9 +501,9 @@ namespace vr {
 			add_member_control(this, "trapezoid angle", aim_angle, "value_slider", "min=0;max=90;ticks=true;step=0.1");
 			add_member_control(this, "beta", aim_beta, "value_slider", "min=1.5;max=3;ticks=true;step=0.0001");
 			add_view("left eye", eye_calibrated[0], "check");
-			add_gui("left eye", eye_position[0], "", "options='min=-0.2;max=0.2;step=0.001;ticks=true'");
+			add_gui("left eye", eye_position_tracker[0], "", "options='min=-0.2;max=0.2;step=0.001;ticks=true'");
 			add_view("right eye", eye_calibrated[1], "check");
-			add_gui("right eye", eye_position[1], "", "options='min=-0.2;max=0.2;step=0.001;ticks=true'");
+			add_gui("right eye", eye_position_tracker[1], "", "options='min=-0.2;max=0.2;step=0.001;ticks=true'");
 			if (wall_kit_ptr) {
 				add_decorator("head", "heading", "level=2");
 				add_member_control(this, "eye_separation", wall_kit_ptr->eye_separation, "value_slider", "min=0.01;max=0.12;ticks=true;step=0.001");
@@ -545,47 +515,121 @@ namespace vr {
 		}
 
 	}
+	// handle screen calibration specific keys
+	bool vr_wall::handle_key_event_screen_calib(cgv::gui::vr_key_event& vrke)
+	{
+		switch (vrke.get_key()) {
+			// grip buttons
+		case vr::VR_LEFT_BUTTON0:
+		case vr::VR_RIGHT_BUTTON0:
+			calib_points_world[calib_index] = reinterpret_cast<const mat34&>(vrke.get_state().controller[vrke.get_controller_index()].pose[0])* vec4(peek_point, 1.0f);
+			switch (calib_index) {
+			case 0:
+				on_update_screen_calibration();
+				break;
+			case 1:
+				screen_center = 0.5f * (calib_points_world[0] + calib_points_world[1]);
+				screen_x = (1.0f/1.8f)*(calib_points_world[1]- calib_points_world[0]);
+				on_update_screen_calibration();
+				update_member(&screen_center[0]);
+				update_member(&screen_center[1]);
+				update_member(&screen_center[2]);
+				update_member(&screen_x[0]);
+				update_member(&screen_x[1]);
+				update_member(&screen_x[2]);
+				break;
+			case 2:
+				screen_y = 2.0f * (screen_center - calib_points_world[2]);
+				on_update_screen_calibration();
+				update_member(&screen_y[0]);
+				update_member(&screen_y[1]);
+				update_member(&screen_y[2]);
+				break;
+			case 3:
+				screen_y = calib_points_world[3] - calib_points_world[2];
+				on_update_screen_calibration();
+				update_member(&screen_y[0]);
+				update_member(&screen_y[1]);
+				update_member(&screen_y[2]);
+				break;
+			}
+			++calib_index;
+			on_set(&calib_index);
+			return true;
+		}
+		return false;
+	}
+	// handle screen calibration specific keys
+	bool vr_wall::handle_key_event_eyes_calib(cgv::gui::vr_key_event& vrke)
+	{
+		// update hmd pose
+		hmd_pose = *reinterpret_cast<const mat34*>(
+			(vr_wall_hmd_index == -1) ? vrke.get_state().hmd.pose :
+										vrke.get_state().controller[vr_wall_hmd_index].pose);
+		switch (vrke.get_key()) {
+			// up buttons
+		case vr::VR_LEFT_STICK_UP:
+		case vr::VR_RIGHT_STICK_UP:
+			// use screen x dir as eye separation direction
+			wall_kit_ptr->eye_separation_dir_tracker = wall_kit_ptr->get_screen_orientation().col(0) * pose_orientation(hmd_pose);
+			// use world y and screen z as displacement direction for fixed displacements
+			wall_kit_ptr->eye_center_tracker =
+				-0.035f * vec3(0, 1, 0) * pose_orientation(hmd_pose) +
+				0.02f * wall_kit_ptr->get_screen_orientation().col(2) * pose_orientation(hmd_pose);
+			// compute eye locations
+			eye_position_tracker[0] = wall_kit_ptr->get_eye_position_tracker(0);
+			eye_position_tracker[1] = wall_kit_ptr->get_eye_position_tracker(1);
+			eye_calibrated[0] = eye_calibrated[1] = true;
+			break;
+			// grip buttons
+		case vr::VR_LEFT_BUTTON0:
+		case vr::VR_RIGHT_BUTTON0:
+		{
+			/// get index of other controller
+			int ci = 1 - vrke.get_controller_index();
+			// transform aim center to screen coordinates
+			vec3 p = wall_kit_ptr->transform_world_to_screen(reinterpret_cast<const mat34&>(*vrke.get_state().controller[ci].pose)* vec4(aim_center, 1.0f));
+			// compute eye point in screen coordinates
+			p(2) *= aim_beta / (aim_beta - 1);
+			// transform eye from screen to world coordinates
+			p = wall_kit_ptr->transform_screen_to_world(p);
+			eye_position_tracker[ci] = inverse_pose_transform_point(hmd_pose, p);
+			eye_calibrated[ci] = true;
+			if (eye_calibrated[0] && eye_calibrated[1]) {
+				wall_kit_ptr->eye_center_tracker = 0.5f * (eye_position_tracker[0] + eye_position_tracker[1]);
+				wall_kit_ptr->eye_separation_dir_tracker = normalize(eye_position_tracker[1] - eye_position_tracker[0]);
+			}
+			break;
+		}
+		default:
+			return false;
+		}
+		for (int eye=0;eye<2;++eye) {
+			update_member(&eye_calibrated[eye]);
+			for (int i = 0; i < 3; ++i) {
+				update_member(&eye_position_tracker[eye][i]);
+				update_member(&wall_kit_ptr->eye_separation_dir_tracker[i]);
+				update_member(&wall_kit_ptr->eye_center_tracker[i]);
+			}
+		}
+		return true;
+	}
 	///
 	bool vr_wall::handle(cgv::gui::event& e)
 	{
 		if (wall_kit_ptr == 0)
 			return false;
 
+		// in pose events just keep track of all poses
 		if (e.get_kind() == cgv::gui::EID_POSE) {
 			if ((e.get_flags() & cgv::gui::EF_VR) != 0) {
 				auto& vrpe = dynamic_cast<cgv::gui::vr_pose_event&>(e);
 				int ci = vrpe.get_trackable_index();
-				if (ci >= 0 && ci < 2) {
-					c_P[ci] = vrpe.get_pose_matrix();
-					if (wall_kit_ptr) {
-						if (wall_state == WS_EYES_CALIB) {
-							points[ci] = wall_kit_ptr->transform_world_to_screen(pose_transform_point(c_P[ci], aim_center));
-							//							radii[ci] = (2 * aim_beta * aim_circle_radius / wall_kit_ptr->pixel_size[0]);
-							points[ci][2] = 0;
-						}
-						if (wall_state == WS_SCREEN_CALIB) {
-							points[ci + 3] = wall_kit_ptr->transform_world_to_screen(pose_transform_point(c_P[ci], peek_point));
-							points[ci + 3][2] = 0;
-						}
-						post_redraw();
-					}
-				}
-				if (wall_kit_ptr) {
-					if (wall_state == WS_HMD) {
-						if (ci == -1)
-							hmd_pose = vrpe.get_pose_matrix();
-					}
-					else {
-						if (ci == vr_wall_hmd_index) {
-							hmd_pose = vrpe.get_pose_matrix();
-							if (wall_state == WS_EYES_CALIB) {
-								points[2] = wall_kit_ptr->transform_world_to_screen(pose_position(vrpe.get_pose_matrix()));
-								points[2][2] = 0;
-							}
-						}
-					}
-					post_redraw();
-				}
+				if (ci >= 0 && ci < 2)
+					controller_pose[ci] = vrpe.get_pose_matrix();
+				if (ci == vr_wall_hmd_index)
+					hmd_pose = vrpe.get_pose_matrix();
+				post_redraw();
 			}
 		}
 		if (e.get_kind() != cgv::gui::EID_KEY)
@@ -593,109 +637,43 @@ namespace vr {
 		auto& ke = dynamic_cast<cgv::gui::key_event&>(e);
 		if (ke.get_action() == cgv::gui::KA_RELEASE)
 			return false;
-		if (ke.get_flags() & cgv::gui::EF_VR) {
-			auto& vrke = dynamic_cast<cgv::gui::vr_key_event&>(ke);
-			switch (vrke.get_key()) {
-			case vr::VR_LEFT_STICK_LEFT:
-			case vr::VR_RIGHT_STICK_LEFT:
-				if (wall_state > WS_SCREEN_CALIB) {
-					wall_state = WallState(wall_state - 1);
-					on_set(&wall_state);
-				}
-				break;
-			case vr::VR_LEFT_STICK_RIGHT:
-			case vr::VR_RIGHT_STICK_RIGHT:
-				if (wall_state < WS_HMD) {
-					wall_state = WallState(wall_state + 1);
-					on_set(&wall_state);
-				}
-				break;
-			case vr::VR_LEFT_BUTTON0:
-			case vr::VR_RIGHT_BUTTON0:
-				switch (wall_state) {
-				case WS_SCREEN_CALIB:
-				{
-					vec3 p = reinterpret_cast<const mat34&>(vrke.get_state().controller[vrke.get_controller_index()].pose[0])* vec4(peek_point, 1.0f);
-					switch (calib_index) {
-					case 0:
-						screen_center = p;
-						on_update_screen_calibration();
-						update_member(&screen_center[0]);
-						update_member(&screen_center[1]);
-						update_member(&screen_center[2]);
-						break;
-					case 1:
-						screen_x = p - screen_center;
-						on_update_screen_calibration();
-						update_member(&screen_x[0]);
-						update_member(&screen_x[1]);
-						update_member(&screen_x[2]);
-						break;
-					case 2:
-						screen_y = p - screen_center;
-						on_update_screen_calibration();
-						update_member(&screen_y[0]);
-						update_member(&screen_y[1]);
-						update_member(&screen_y[2]);
-						break;
-					}
-					++calib_index;
-					on_set(&calib_index);
-					return true;
-				}
-				case WS_EYES_CALIB:
-				{
-					/// get index of other controller
-					int ci = 1 - vrke.get_controller_index();
-					// transform aim center to screen coordinates
-					vec3 p = wall_kit_ptr->transform_world_to_screen(reinterpret_cast<const mat34&>(*vrke.get_state().controller[ci].pose)* vec4(aim_center, 1.0f));
-					// compute eye point in screen coordinates
-					p(2) *= aim_beta / (aim_beta - 1);
-					// transform to world coordinates
-					p = wall_kit_ptr->transform_screen_to_world(p);
-					// transform to coordinate system of hmd
-					const mat34* hmd_pose_ptr;
-					if (vr_wall_hmd_index == -1)
-						hmd_pose_ptr = reinterpret_cast<const mat34*>(vrke.get_state().hmd.pose);
-					else
-						hmd_pose_ptr = reinterpret_cast<const mat34*>(vrke.get_state().controller[vr_wall_hmd_index].pose);
-					eye_position[ci] = (p - reinterpret_cast<const vec3&>((*hmd_pose_ptr)(0, 3)))* reinterpret_cast<const mat3&>(*hmd_pose_ptr);
-					eye_calibrated[ci] = true;
-					update_member(&eye_calibrated[ci]);
-					for (int i = 0; i < 3; ++i)
-						update_member(&eye_position[ci][i]);
-					if (eye_calibrated[0] && eye_calibrated[1]) {
-						wall_kit_ptr->eye_center_tracker = 0.5f * (eye_position[0] + eye_position[1]);
-						wall_kit_ptr->eye_separation_dir_tracker = normalize(eye_position[1] - eye_position[0]);
-						wall_kit_ptr->eye_separation = (eye_position[1] - eye_position[0]).length();
-						update_member(&wall_kit_ptr->eye_separation);
-						for (int i = 0; i < 3; ++i) {
-							update_member(&wall_kit_ptr->eye_center_tracker[i]);
-							update_member(&wall_kit_ptr->eye_separation_dir_tracker[i]);
-						}
-					}
-					break;
-				}
-
-				}
-				break;
+		// handle common keys
+		switch (ke.get_key()) {
+		case 'S':
+			wall_state = WS_SCREEN_CALIB;
+			on_set(&wall_state);
+			return true;
+		case 'E':
+			wall_state = WS_EYES_CALIB;
+			on_set(&wall_state);
+			return true;
+		case 'H':
+			wall_state = WS_HMD;
+			on_set(&wall_state);
+			return true;
+		case vr::VR_LEFT_STICK_LEFT:
+		case vr::VR_RIGHT_STICK_LEFT:
+			if (wall_state > WS_SCREEN_CALIB) {
+				wall_state = WallState(wall_state - 1);
+				on_set(&wall_state);
 			}
+			break;
+		case vr::VR_LEFT_STICK_RIGHT:
+		case vr::VR_RIGHT_STICK_RIGHT:
+			if (wall_state < WS_HMD) {
+				wall_state = WallState(wall_state + 1);
+				on_set(&wall_state);
+			}
+			break;
 		}
-		else {
-			switch (ke.get_key()) {
-			case 'S':
-				wall_state = WS_SCREEN_CALIB;
-				on_set(&wall_state);
-				return true;
-			case 'E':
-				wall_state = WS_EYES_CALIB;
-				on_set(&wall_state);
-				return true;
-			case 'H':
-				wall_state = WS_HMD;
-				on_set(&wall_state);
-				return true;
-			}
+		// for calibration specific keys we are only interested in vr keys
+		if ((ke.get_flags() & cgv::gui::EF_VR) == 0)
+			return false;
+		auto& vrke = dynamic_cast<cgv::gui::vr_key_event&>(ke);
+
+		switch (wall_state) {
+		case WS_SCREEN_CALIB: return handle_key_event_screen_calib(vrke);
+		case WS_EYES_CALIB: return handle_key_event_eyes_calib(vrke);
 		}
 		return false;
 	}
@@ -773,7 +751,6 @@ namespace vr {
 			pr.clear(ctx);
 		}
 	}
-
 	///
 	void vr_wall::draw_in_main_context(cgv::render::context& ctx)
 	{
@@ -831,7 +808,7 @@ namespace vr {
 			std::vector<vec3> P;
 			std::vector<rgb> C;
 			for (int ei = 0; ei < 2; ++ei) {
-				vec3 p_eye = pose_transform_point(hmd_pose, eye_position[ei]);
+				vec3 p_eye = pose_transform_point(hmd_pose, eye_position_tracker[ei]);
 				for (int ci = 0; ci < 8; ++ci) {
 					vec3 p_corner = pose_transform_point(box_rotations[box_index], box_translations[box_index], boxes[box_index].get_corner(ci));
 					P.push_back(p_eye);
@@ -860,18 +837,18 @@ namespace vr {
 		if (true) { //!sphere_positions.empty()) {
 			int ci;
 			for (ci = 0; ci < 2; ++ci) {
-				sphere_positions.push_back(c_P[ci] * vec4(peek_point, 1.0f));
+				sphere_positions.push_back(controller_pose[ci] * vec4(peek_point, 1.0f));
 				sphere_colors.push_back(rgb(0, 1, 0));
 				sphere_radii.push_back(0.003f);
-				sphere_positions.push_back(c_P[ci] * vec4(aim_center, 1.0f));
+				sphere_positions.push_back(controller_pose[ci] * vec4(aim_center, 1.0f));
 				sphere_colors.push_back(rgb(0, 1, 1));
 				sphere_radii.push_back(0.003f);
-				sphere_positions.push_back(c_P[ci] * vec4(aim_center + 0.1f * aim_direction, 1.0f));
+				sphere_positions.push_back(controller_pose[ci] * vec4(aim_center + 0.1f * aim_direction, 1.0f));
 				sphere_colors.push_back(rgb(0, 0, 1));
 				sphere_radii.push_back(0.003f);
 				if (wall_state == WS_EYES_CALIB) {
 					// transform aim center to screen coordinates
-					vec3 p = wall_kit_ptr->transform_world_to_screen(c_P[ci] * vec4(aim_center, 1.0f));
+					vec3 p = wall_kit_ptr->transform_world_to_screen(controller_pose[ci] * vec4(aim_center, 1.0f));
 					// compute eye point in screen coordinates
 					p(2) *= aim_beta / (aim_beta - 1);
 					// transform to world coordinates
@@ -883,7 +860,7 @@ namespace vr {
 						sphere_colors.push_back(rgb(0, 0.5f, 1));
 					sphere_radii.push_back(0.0125f);
 
-					sphere_positions.push_back(hmd_pose * vec4(eye_position[ci], 1));
+					sphere_positions.push_back(hmd_pose * vec4(eye_position_tracker[ci], 1));
 					if (ci == 0)
 						sphere_colors.push_back(rgb(1, 0.5f, 0.5f));
 					else
@@ -994,20 +971,73 @@ namespace vr {
 			return;
 		}
 
-		// render common calibration information
-		switch (wall_state) {
-		case WS_EYES_CALIB:
-		{
+		// collect to be rendered points
+		vec3 aim_center_screen[2];
+		std::vector<vec3> P;
+		std::vector<rgb> C;
+		std::vector<float> R;
+
+		// all tracked entities
+		P.push_back(wall_kit_ptr->transform_world_to_screen(pose_position(hmd_pose)));
+		P.back()[2] = 0;
+		C.push_back(rgb(0, 0, 0));
+		R.push_back(0.005f / wall_kit_ptr->pixel_size[0]);
+		if (wall_state == WS_SCREEN_CALIB) {
+			for (const auto& p : calib_points_screen) {
+				P.push_back(p);
+				if (&p - &calib_points_screen.front() == calib_index)
+					C.push_back(rgb(0, 1, 0));
+				else
+					C.push_back(rgb(0.5f, 0.5f, 0.5f));
+				R.push_back(0.005f / wall_kit_ptr->pixel_size[0]);
+			}
+		}
+
+		for (int i = 0; i < 2; ++i) {
+
+			aim_center_screen[i] = wall_kit_ptr->transform_world_to_screen(pose_transform_point(controller_pose[i], aim_center));
+			P.push_back(aim_center_screen[i]);
+			P.back()[2] = 0;
+
+			C.push_back(rgb(0.8f*float(1 - i)+0.2f, 0.2f, 0.8f*float(i)+0.2f));
+			R.push_back(0.005f / wall_kit_ptr->pixel_size[0]);
+
+			if (eye_calibrated[i]) {
+				P.push_back(wall_kit_ptr->transform_world_to_screen(pose_transform_point(hmd_pose, eye_position_tracker[i])));
+				C.push_back(rgb(float(1 - i), 0, float(i)));
+				R.push_back(0.0144f / (0.6f + P.back()[2]) / wall_kit_ptr->pixel_size[0]);
+				P.back()[2] = 0;
+			}
+		}
+		// use point renderer for rendering of points
+		for (int eye = 0; eye < 2; ++eye) {
+			ctx.set_viewport(ivec4(eye * x_off, eye * y_off, w, h));
+			ctx.set_projection_matrix(cgv::math::perspective4<double>(90, aspect, 0.1, 10.0));
+			ctx.set_modelview_matrix(cgv::math::look_at4<double>(dvec3(0, 0, 1), dvec3(0, 0, 0), dvec3(0, 1, 0)));
+
+			pr.set_y_view_angle(90);
+			pr.set_render_style(prs);
+			pr.set_position_array(ctx, P);
+			pr.set_color_array(ctx, C);
+			pr.set_point_size_array(ctx, R);
+
+			if (pr.validate_and_enable(ctx)) {
+				glDrawArrays(GL_POINTS, 0, P.size());
+				pr.disable(ctx);
+			}
+		}
+
+		if (wall_state == WS_EYES_CALIB) {
 			std::vector<vec3> P;
 			std::vector<rgb> C[2];
 			for (int ci=0; ci<2; ++ci) {
 				float x_offset = (aim_beta * aim_width / wall_kit_ptr->pixel_size[0])/height;
 				float H = 0.3f*x_offset;
 				float slope = tan(0.01745329252f * aim_angle);
-				P.push_back(points[ci] + vec3(-x_offset, 0, 0));
-				P.push_back(points[ci] + vec3( x_offset, 0, 0));
-				P.push_back(points[ci] + vec3(-x_offset+H/slope, H, 0));
-				P.push_back(points[ci] + vec3(x_offset-H/slope, H, 0));
+				P.push_back(aim_center_screen[ci] + vec3(-x_offset, 0, 0));
+				P.push_back(aim_center_screen[ci] + vec3( x_offset, 0, 0));
+				P.push_back(aim_center_screen[ci] + vec3(-x_offset+H/slope, H, 0));
+				P.push_back(aim_center_screen[ci] + vec3(x_offset-H/slope, H, 0));
 				C[ci].push_back(ci == 0 ? rgb(1, 0.2f, 0.2f) : rgb(0.2f, 0.2f, 1));
 				C[ci].push_back(C[ci].back());
 				C[ci].push_back(ci == 0 ? rgb(0.7f, 0.8f, 0) : rgb(0, 0.8f, 0.7f));
@@ -1034,36 +1064,6 @@ namespace vr {
 				prog.disable(ctx);
 			}
 		}
-		case WS_SCREEN_CALIB:
-			for (int eye = 0; eye < 2; ++eye) {
-				ctx.set_viewport(ivec4(eye * x_off, eye*y_off, w, h));
-				ctx.set_projection_matrix(cgv::math::perspective4<double>(90, aspect, 0.1, 10.0));
-				ctx.set_modelview_matrix(cgv::math::look_at4<double>(dvec3(0, 0, 1), dvec3(0, 0, 0), dvec3(0, 1, 0)));
-
-				pr.set_y_view_angle(90);
-				pr.set_render_style(prs);
-				pr.set_position_array(ctx, points);
-				pr.set_color_array(ctx, colors[eye]);
-				if (wall_state == WS_EYES_CALIB)
-					pr.set_point_size_array(ctx, radii);
-
-				if (pr.validate_and_enable(ctx)) {
-					if (wall_state == WS_SCREEN_CALIB) {
-						glDrawArrays(GL_POINTS, calib_index, 1);
-						glDrawArrays(GL_POINTS, 3, 2);
-					}
-					else
-						glDrawArrays(GL_POINTS, 0, points.size());
-					pr.disable(ctx);
-				}
-			}
-			break;
-		case WS_HMD:
-		{
-			break;
-		}
-		}
-		return;
 	}
 	///
 	void vr_wall::finish_frame(cgv::render::context& ctx)
