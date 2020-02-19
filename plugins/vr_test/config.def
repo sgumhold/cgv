@@ -46,6 +46,10 @@ type(vr_wall):fullscreen=1
 type(vr_wall):creation_width=1920;creation_height=1080
 type(vr_wall):vr_wall_kit_index=0
 type(vr_wall):vr_wall_hmd_index=2
+// how much eyes are below tracker
+type(vr_wall):eye_downset=0.07 (in meters)
+// how much eyes are behind tracker (in meters)
+type(vr_wall):eye_backset=0.02
 type(vr_wall):screen_center.coords[0]=0
 type(vr_wall):screen_center.coords[1]=0.8
 type(vr_wall):screen_center.coords[2]=-1

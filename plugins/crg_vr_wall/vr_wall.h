@@ -137,6 +137,9 @@ namespace vr {
 		vec3 eye_position_tracker[2];
 		///
 		bool eye_calibrated[2];
+		float eye_downset;
+		float eye_backset;
+
 		///
 		cgv::render::shader_program stereo_prog;
 		///
