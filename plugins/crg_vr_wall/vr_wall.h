@@ -2,6 +2,7 @@
 
 #include <vr/vr_kit.h>
 #include <vr/vr_state.h>
+#include <cg_vr/vr_server.h>
 #include "vr_wall_kit.h"
 #include <vr/gl_vr_display.h>
 #include <cgv/base/node.h>
@@ -80,6 +81,8 @@ namespace vr {
 		cgv::gui::window_ptr create_wall_window(const std::string& name, int x, int y, int width, int height, int fullscr);
 		/// helper function to create the window for the wall display
 		void create_wall_windows();
+		///
+		void draw_in_main_context(cgv::render::context& ctx);
 		//@}
 
 		/**@name management of wall_vr_kit*/
@@ -98,8 +101,16 @@ namespace vr {
 		vec3 screen_y;
 		/// helper member to allow to adjust orientation of the virtual screen
 		quat screen_orientation;
+		/// screen calibration points
+		std::vector<vec3> calib_points_screen;
+		/// screen calibration points
+		std::vector<vec3> calib_points_world;
+		/// helper function to fill the point 
+		void generate_screen_calib_points();
 		/// update screen calibration
 		void on_update_screen_calibration();
+		// handle screen calibration specific keys
+		bool handle_key_event_screen_calib(cgv::gui::vr_key_event& vrke);
 		//@}
 
 		/**@name state control and calibration*/
@@ -123,7 +134,7 @@ namespace vr {
 		///
 		float aim_beta;
 		///
-		vec3 eye_position[2];
+		vec3 eye_position_tracker[2];
 		///
 		bool eye_calibrated[2];
 		///
@@ -131,11 +142,12 @@ namespace vr {
 		///
 		StereoShaderMode stereo_shader_mode;
 		/// current pose matrices of controllers need to render peek point
-		mat34 c_P[2], hmd_pose;
+		mat34 controller_pose[2], hmd_pose;
 		///
 		int box_index;
-		/// helper function to fill the point 
-		void generate_screen_calib_points();
+		// handle eyes calibration specific keys
+		bool handle_key_event_eyes_calib(cgv::gui::vr_key_event& vrke);
+
 		//@}
 
 		/**@name rendering in wall display context*/
@@ -144,10 +156,6 @@ namespace vr {
 		cgv::render::point_render_style prs;
 		/// point renderer
 		cgv::render::point_renderer pr;
-		/// geometry for rendering of points with twice the color attribute once for left and once for right eye
-		std::vector<vec3> points;
-		std::vector<rgb> colors[2];
-		std::vector<float> radii;
 		/// method to generate random dots
 		void generate_points(int n);
 		/// use low res image to create point sampling
@@ -212,8 +220,6 @@ namespace vr {
 		bool init(cgv::render::context& ctx);
 		///
 		void clear(cgv::render::context& ctx);
-		///
-		void draw_in_main_context(cgv::render::context& ctx);
 		///
 		void draw(cgv::render::context& ctx);
 		///
