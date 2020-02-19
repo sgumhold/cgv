@@ -338,6 +338,10 @@ void vr_emulator::add_new_kit()
 		std::string("vr_emulated_kit[") + cgv::utils::to_string(counter) + "]", ffb_support, wireless);
 	kits.push_back(new_kit);
 	register_vr_kit(handle, new_kit);
+	if (current_kit_index == -1) {
+		current_kit_index = kits.size() - 1;
+		update_member(&current_kit_index);
+	}
 	cgv::gui::ref_vr_server().check_device_changes(cgv::gui::trigger::get_current_time());
 	post_recreate_gui();
 }
@@ -410,7 +414,7 @@ void vr_emulator::put_action_zone_bounary(std::vector<float>& boundary) const
 		reinterpret_cast<vec3&>(boundary[3 * i]) = pi;
 	}
 }
-bool vr_emulator::check_for_button_toggle(cgv::gui::key_event& ke, int controller_index, vr::VRButtonStateFlags button)
+bool vr_emulator::check_for_button_toggle(cgv::gui::key_event& ke, int controller_index, vr::VRButtonStateFlags button, float touch_x, float touch_y)
 {
 	if (current_kit_index == -1)
 		return false;
@@ -418,7 +422,12 @@ bool vr_emulator::check_for_button_toggle(cgv::gui::key_event& ke, int controlle
 		return false;
 	if (ke.get_action() != cgv::gui::KA_PRESS)
 		return false;
-	kits[current_kit_index]->state.controller[controller_index].button_flags ^= button;
+	if (ke.get_modifiers() == cgv::gui::EM_SHIFT) {
+		kits[current_kit_index]->state.controller[controller_index].axes[0] = touch_x;
+		kits[current_kit_index]->state.controller[controller_index].axes[1] = touch_y;
+	}
+	else
+		kits[current_kit_index]->state.controller[controller_index].button_flags ^= button;
 	update_all_members();
 	return true;
 }
@@ -454,7 +463,7 @@ bool vr_emulator::handle(cgv::gui::event& e)
 			add_new_kit();
 			return true;
 		}
-		return check_for_button_toggle(ke, 1, vr::VRF_BUTTON0);
+		return check_for_button_toggle(ke, 1, vr::VRF_BUTTON0, 0, -1);
 	case '0':
 	case '1':
 	case '2':
@@ -477,20 +486,24 @@ bool vr_emulator::handle(cgv::gui::event& e)
 		interaction_mode = InteractionMode(IM_BODY + ke.get_key() - '5');
 		update_member(&interaction_mode);
 		return true;
-	case 'W': return check_for_button_toggle(ke, 0, vr::VRF_MENU);
-	case 'X': return check_for_button_toggle(ke, 0, vr::VRF_BUTTON0);
-	case 'Q': return check_for_button_toggle(ke, 0, vr::VRF_BUTTON1);
-	case 'E': return check_for_button_toggle(ke, 0, vr::VRF_BUTTON2);
-	case 'C': return check_for_button_toggle(ke, 0, vr::VRF_BUTTON3);
-	case 'A': return check_for_button_toggle(ke, 0, vr::VRF_STICK_TOUCH);
-	case 'S': return check_for_button_toggle(ke, 0, vr::VRF_STICK);
+	case 'W': return check_for_button_toggle(ke, 0, vr::VRF_MENU, 0, 1);
+	case 'X': return check_for_button_toggle(ke, 0, vr::VRF_BUTTON0, 0, -1);
+	case 'Q': return check_for_button_toggle(ke, 0, vr::VRF_BUTTON1, -1, 1);
+	case 'E': return check_for_button_toggle(ke, 0, vr::VRF_BUTTON2, 1, 1);
+	case 'C': return check_for_button_toggle(ke, 0, vr::VRF_BUTTON3, 1, -1);
+	case 'A': return check_for_button_toggle(ke, 0, vr::VRF_STICK_TOUCH, -1, 0);
+	case 'S': return check_for_button_toggle(ke, 0, vr::VRF_STICK, 0, 0);
+	case 'D': return check_for_button_toggle(ke, 0, vr::VRButtonStateFlags(0), 1, 0);
+	case 'Y': return check_for_button_toggle(ke, 0, vr::VRButtonStateFlags(0), -1, -1);
 
-	case 'I': return check_for_button_toggle(ke, 1, vr::VRF_MENU);
-	case 'O': return check_for_button_toggle(ke, 1, vr::VRF_BUTTON1);
-	case 'U': return check_for_button_toggle(ke, 1, vr::VRF_BUTTON2);
-	case 'B': return check_for_button_toggle(ke, 1, vr::VRF_BUTTON3);
-	case 'J': return check_for_button_toggle(ke, 1, vr::VRF_STICK);
-	case 'K': return check_for_button_toggle(ke, 1, vr::VRF_STICK_TOUCH);
+	case 'I': return check_for_button_toggle(ke, 1, vr::VRF_MENU, 0, 1);
+	case 'O': return check_for_button_toggle(ke, 1, vr::VRF_BUTTON1, 1, 1);
+	case 'U': return check_for_button_toggle(ke, 1, vr::VRF_BUTTON2, -1, 1);
+	case 'B': return check_for_button_toggle(ke, 1, vr::VRF_BUTTON3, -1, -1);
+	case 'J': return check_for_button_toggle(ke, 1, vr::VRF_STICK, 0, 0);
+	case 'K': return check_for_button_toggle(ke, 1, vr::VRF_STICK_TOUCH, 1, 0);
+	case 'H': return check_for_button_toggle(ke, 1, vr::VRButtonStateFlags(0), -1, 0);
+	case 'M': return check_for_button_toggle(ke, 1, vr::VRButtonStateFlags(0), 1, -1);
 
 	case cgv::gui::KEY_Left: return handle_ctrl_key(ke, left_ctrl, &home_ctrl);
 	case cgv::gui::KEY_Right: return handle_ctrl_key(ke, right_ctrl, &end_ctrl);
@@ -513,7 +526,9 @@ void vr_emulator::stream_help(std::ostream& os)
 	   << "    body: <up|down> .. move,  <left|right> .. turn, <pgup|pgdn> .. bend, \n"
 	   << "          <home|end> .. gear, <alt>+<left|right> .. side step\n"
 	   << "    hand&tracker: <left|right|up|down|pgdn|pgup> .. rotate or with <alt> translate\n"
-	   << "  <W|X|Q|E|C|A|S:I|N|O|U|B|K|J> to toggle left:right controller buttons" << std::endl;
+	   << "  <W|X|Q|E|C|A|S:I|N|O|U|B|K|J> to toggle left:right controller buttons\n"
+	   << "  <Shift>-<QWE:ASD:YXC>|<UIO:HJK:BNM> to set left:right controller touch xy to -1|0|+1\n"
+	   << std::endl;
 }
 /// return the type name 
 std::string vr_emulator::get_type_name() const
@@ -669,22 +684,26 @@ void vr_emulator::create_gui()
 	add_member_control(this, "p", pgdn_ctrl,  "toggle", "w=15");
 
 	for (unsigned i = 0; i < kits.size(); ++i) {
-		if (begin_tree_node(kits[i]->get_name(), *kits[i], false, "level=2")) {
+		if (begin_tree_node(kits[i]->get_name(), *kits[i], true, "level=2")) {
 			align("\a");
-			add_view("left buttons", kits[i]->fovy, "", "w=0", "");
+			add_view("buttons left", kits[i]->fovy, "", "w=0", "");
 			add_gui("button_flags", kits[i]->state.controller[0].button_flags, "bit_field_control",
 				"enums='ME=1,B0=2,B1=4,B2=8,B3=16,TO=32,ST=64';options='w=18;tooltip=\""
 				"MEnu button<W> \nButton 0 (Grip) <X>\nButton 1 <Q>\nButton 2 <E>\n"
 				"Button 3 <C>\nstick TOuch <A>\nSTick press <S>\"';"
-				"align=' ';gui_type='toggle'");
-			align("\n");
-			add_view("right buttons", kits[i]->fovy, "", "w=0", "");
+				"align='';gui_type='toggle'");
+			align(" ");
+			add_view("touch xy", kits[i]->state.controller[0].axes[0], "", "w=18", "");
+			add_view("", kits[i]->state.controller[0].axes[1], "", "w=18");
+			add_view("buttons right", kits[i]->fovy, "", "w=0", "");
 			add_gui("button_flags", kits[i]->state.controller[1].button_flags, "bit_field_control",
 				"enums='ME=1,B0=2,B1=4,B2=8,B3=16,TO=32,ST=64';options='w=18;tooltip=\""
 				"MEnu button<I> \nButton 0 (Grip) <N>\nButton 1 <O>\nButton 2 <U>\n"
 				"Button 3 <B>\nstick TOuch <K>\nSTick press <J>\"';"
-				"align=' ';gui_type='toggle'");			
-			align("\n");
+				"align='';gui_type='toggle'");			
+			align(" ");
+			add_view("touch xy", kits[i]->state.controller[1].axes[0], "", "w=18", "");
+			add_view("", kits[i]->state.controller[1].axes[1], "", "w=18");
 
 			add_member_control(this, "fovy", kits[i]->fovy, "value_slider", "min=30;max=180;ticks=true;log=true");
 			if (begin_tree_node("body pose", kits[i]->body_position, false, "level=3")) {

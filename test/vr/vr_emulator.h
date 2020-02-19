@@ -131,7 +131,7 @@ public:
 	/// return a vector of floor points defining the action zone boundary as a closed polygon
 	void put_action_zone_bounary(std::vector<float>& boundary) const;
 	///
-	bool check_for_button_toggle(cgv::gui::key_event& ke, int controller_index, vr::VRButtonStateFlags button);
+	bool check_for_button_toggle(cgv::gui::key_event& ke, int controller_index, vr::VRButtonStateFlags button, float touch_x = 0.0f, float touch_y = 0.0f);
 	///
 	bool handle_ctrl_key(cgv::gui::key_event& ke, bool& fst_ctrl, bool* snd_ctrl_ptr = 0);
 	/// overload and implement this method to handle events
