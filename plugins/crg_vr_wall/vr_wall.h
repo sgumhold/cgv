@@ -213,6 +213,8 @@ namespace vr {
 		///
 		void clear(cgv::render::context& ctx);
 		///
+		void draw_in_main_context(cgv::render::context& ctx);
+		///
 		void draw(cgv::render::context& ctx);
 		///
 		void finish_frame(cgv::render::context& ctx);
