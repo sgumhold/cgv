@@ -243,7 +243,7 @@ bool build_render_info(const std::string& file_name, const fx::gltf::Document& d
 					add_attribute(aa, doc, doc.accessors[a.second], cgv::render::VA_TEXCOORD);
 			}
 			dc.indices = 0;
-			dc.aa_index = R.ref_aas().size() - 1;
+			dc.aa_index = uint32_t(R.ref_aas().size() - 1);
 			dc.instance_count = 1;
 			dc.draw_call_type = cgv::render::RCT_ARRAYS;
 			dc.vertex_offset = 0;
@@ -402,7 +402,7 @@ void extract_mesh(const std::string& file_name, const fx::gltf::Document& doc,
 							mesh.group_index(fi) = prim;
 							mesh.material_index(fi) = mi;
 						}
-						size_t idx = -1;
+						uint32_t idx = -1;
 						switch (accessor.componentType) {
 						case fx::gltf::Accessor::ComponentType::UnsignedByte: idx = data_ptr[i]; break;
 						case fx::gltf::Accessor::ComponentType::UnsignedShort: idx = ushort_ptr[i]; break;

@@ -206,8 +206,8 @@ void vr_test::construct_movable_boxes(float tw, float td, float th, float tW, si
 		float x = distribution(generator);
 		float y = distribution(generator);
 		vec3 extent(distribution(generator), distribution(generator), distribution(generator));
-		extent += 0.1f;
-		extent *= std::min(tw, td)*0.2f;
+		extent += 0.01f;
+		extent *= std::min(tw, td)*0.1f;
 
 		vec3 center(-0.5f*tw + x * tw, th + tW, -0.5f*td + y * td);
 		movable_boxes.push_back(box3(-0.5f*extent, 0.5f*extent));
@@ -226,7 +226,7 @@ void vr_test::build_scene(float w, float d, float h, float W, float tw, float td
 	construct_table(tw, td, th, tW);
 	construct_environment(0.3f, 3 * w, 3 * d, w, d, h);
 	//construct_environment(0.4f, 0.5f, 1u, w, d, h);
-	construct_movable_boxes(tw, td, th, tW, 20);
+	construct_movable_boxes(tw, td, th, tW, 2000);
 }
 
 vr_test::vr_test() 

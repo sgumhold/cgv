@@ -254,6 +254,8 @@ namespace vr {
 		eye_position_tracker[0] = vec3(-0.03f, -0.04f, 0.0f);
 		eye_position_tracker[1] = vec3(0.03f, -0.04f, 0.0f);
 		eye_calibrated[0] = eye_calibrated[1] = false;
+		eye_downset = 0.035f;
+		eye_backset = 0.02f;
 		box_index = 0;
 		main_context = 0;
 		vr_wall_kit_index = -1;
@@ -325,6 +327,8 @@ namespace vr {
 			srh.reflect_member("screen_center", screen_center) &&
 			srh.reflect_member("screen_x", screen_x) &&
 			srh.reflect_member("screen_y", screen_y) &&
+			srh.reflect_member("eye_downset", eye_downset) &&
+			srh.reflect_member("eye_backset", eye_backset) &&
 			srh.reflect_member("wall_state", (int&)wall_state) &&
 			srh.reflect_member("peek_point_x", peek_point[0]) &&
 			srh.reflect_member("peek_point_y", peek_point[1]) &&
@@ -574,8 +578,8 @@ namespace vr {
 			wall_kit_ptr->eye_separation_dir_tracker = wall_kit_ptr->get_screen_orientation().col(0) * pose_orientation(hmd_pose);
 			// use world y and screen z as displacement direction for fixed displacements
 			wall_kit_ptr->eye_center_tracker =
-				-0.035f * vec3(0, 1, 0) * pose_orientation(hmd_pose) +
-				0.02f * wall_kit_ptr->get_screen_orientation().col(2) * pose_orientation(hmd_pose);
+				-eye_downset * vec3(0, 1, 0) * pose_orientation(hmd_pose) +
+				eye_backset * wall_kit_ptr->get_screen_orientation().col(2) * pose_orientation(hmd_pose);
 			// compute eye locations
 			eye_position_tracker[0] = wall_kit_ptr->get_eye_position_tracker(0);
 			eye_position_tracker[1] = wall_kit_ptr->get_eye_position_tracker(1);
@@ -1010,9 +1014,10 @@ namespace vr {
 			}
 		}
 		// use point renderer for rendering of points
+
 		for (int eye = 0; eye < 2; ++eye) {
 			ctx.set_viewport(ivec4(eye * x_off, eye * y_off, w, h));
-			ctx.set_projection_matrix(cgv::math::perspective4<double>(90, aspect, 0.1, 10.0));
+			ctx.set_projection_matrix(cgv::math::perspective4<double>(90, a, 0.1, 10.0));
 			ctx.set_modelview_matrix(cgv::math::look_at4<double>(dvec3(0, 0, 1), dvec3(0, 0, 0), dvec3(0, 1, 0)));
 
 			pr.set_y_view_angle(90);
@@ -1049,7 +1054,7 @@ namespace vr {
 			}
 			for (int eye = 0; eye < 2; ++eye) {
 				ctx.set_viewport(ivec4(eye * x_off, eye*y_off, w, h));
-				ctx.set_projection_matrix(cgv::math::perspective4<double>(90, aspect, 0.1, 10.0));
+				ctx.set_projection_matrix(cgv::math::perspective4<double>(90, a, 0.1, 10.0));
 				ctx.set_modelview_matrix(cgv::math::look_at4<double>(dvec3(0, 0, 1), dvec3(0, 0, 0), dvec3(0, 1, 0)));
 				auto& prog = ctx.ref_default_shader_program(false);
 				prog.enable(ctx);
