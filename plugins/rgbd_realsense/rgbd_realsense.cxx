@@ -177,7 +177,6 @@ namespace rgbd {
 			}
 			cfg.enable_stream(rs2_stream_type, -1, format.width, format.height, rs2_pixel_format, format.fps);
 		}
-
 		if (cfg.can_resolve(*pipe)) {
 			//get the depth scaling for pointcloud generation
 			auto sensors = dev->query_sensors();
@@ -188,6 +187,13 @@ namespace rgbd {
 			}
 			//start the camera
 			auto profile = pipe->start(cfg);
+			//store profile for 
+			active_profile = pipe->get_active_profile();
+			rs2_color_stream = active_profile.get_stream(RS2_STREAM_COLOR);
+			rs2_depth_stream = active_profile.get_stream(RS2_STREAM_DEPTH);
+			extrinsics_to_color_stream = rs2_depth_stream.get_extrinsics_to(rs2_color_stream);
+			depth_intrinsics = rs2_depth_stream.as<rs2::video_stream_profile>().get_intrinsics();
+			color_intrinsics = rs2_color_stream.as<rs2::video_stream_profile>().get_intrinsics();
 			return true;
 		}
 		cerr << "rgbd_realsense::start_device : can't resolve configuration, make sure to use the same ir stream and depth stream resolutions and framerates\n";
@@ -289,13 +295,6 @@ namespace rgbd {
 
 	void rgbd_realsense::map_color_to_depth(const frame_type& depth_frame, const frame_type& color_frame, frame_type& warped_color_frame) const
 	{
-		rs2::pipeline_profile profile = pipe->get_active_profile();
-		auto color_stream = profile.get_stream(RS2_STREAM_COLOR);
-		auto depth_stream = profile.get_stream(RS2_STREAM_DEPTH);
-		rs2_extrinsics e = depth_stream.get_extrinsics_to(color_stream);
-		rs2_intrinsics depth_intrinsics = depth_stream.as<rs2::video_stream_profile>().get_intrinsics();
-		rs2_intrinsics color_intrinsics = color_stream.as<rs2::video_stream_profile>().get_intrinsics();
-
 		static_cast<frame_size&>(warped_color_frame) = depth_frame;
 		warped_color_frame.pixel_format = color_frame.pixel_format;
 		warped_color_frame.nr_bits_per_pixel = color_frame.nr_bits_per_pixel;
@@ -313,7 +312,7 @@ namespace rgbd {
 				float depth_pixel[2]{x,y};
 				
 				rs2_deproject_pixel_to_point(xyz, &depth_intrinsics, depth_pixel, depth_scale*depth);
-				rs2_transform_point_to_point(color_xyz, &e, xyz);
+				rs2_transform_point_to_point(color_xyz, &extrinsics_to_color_stream, xyz);
 				rs2_project_point_to_pixel(color_pixel, &color_intrinsics, color_xyz);
 
 				memcpy(color_coordinates+2*(depth_frame.width*y+x), color_pixel, 2 * sizeof(float));
@@ -344,8 +343,8 @@ namespace rgbd {
 
 	bool rgbd_realsense::map_depth_to_point(int x, int y, int depth, float* point_ptr) const
 	{
-		depth /= 4;
-		depth *= 1024;
+		//depth /= 4;
+		//depth *= 1024;
 		if (depth == 0)
 			return false;
 		

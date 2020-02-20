@@ -50,6 +50,13 @@ namespace rgbd {
 		rs2::pipeline* pipe;
 		rs2::temporal_filter temp_filter;
 		rs2::spatial_filter spatial_filter;
+		rs2::pipeline_profile active_profile;
+		//build in parameters
+		rs2_extrinsics extrinsics_to_color_stream;
+		rs2_intrinsics depth_intrinsics;
+		rs2_intrinsics color_intrinsics;
+		rs2::stream_profile rs2_color_stream, rs2_depth_stream;
+		
 		std::string serial;
 		/// selected stream formats for color,depth and infrared
 		stream_format color_stream, depth_stream, ir_stream;
