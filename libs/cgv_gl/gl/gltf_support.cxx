@@ -195,37 +195,32 @@ bool build_render_info(const std::string& file_name, const fx::gltf::Document& d
 		tm->set_name(m.name);
 
 		bool found_KHR_mat = false;
-		auto& j = m.extensionsAndExtras;
-		if (!j.empty()) {
-			auto& E = j["extensions"];
-			if (!E.empty()) {
-				for (auto& i : E.items()) {
-					if (i.key() == "KHR_materials_pbrSpecularGlossiness") {
-						found_KHR_mat = true;
-						if (i.value()["diffuseFactor"].is_array()) {
-							tm->set_diffuse_reflectance(cgv::render::render_types::rgb(
-								i.value()["diffuseFactor"][0].get<float>(),
-								i.value()["diffuseFactor"][1].get<float>(),
-								i.value()["diffuseFactor"][2].get<float>()));
-							tm->set_transparency(1 - i.value()["diffuseFactor"][3].get<float>());
-						}
-						if (i.value()["diffuseTexture"].is_object()) {
-							int ti = tm->add_texture_reference(*R.ref_textures()[i.value()["diffuseTexture"]["index"].get<int>()]);
-							tm->set_diffuse_index(ti);
-						}
-						if (i.value()["glossinessFactor"].is_number_float())
-							tm->set_roughness(1 - i.value()["glossinessFactor"].get<float>());
-						if (i.value()["specularFactor"].is_array()) {
-							tm->set_diffuse_reflectance(cgv::render::render_types::rgb(
-								i.value()["specularFactor"][0],
-								i.value()["specularFactor"][1],
-								i.value()["specularFactor"][2]));
-						}
-						if (i.value()["specularGlossinessTexture"].is_object()) {
-							int ti = tm->add_texture_reference(*R.ref_textures()[i.value()["specularGlossinessTexture"]["index"].get<int>()]);
-							tm->set_specular_index(ti);
-						}
-					}
+		m.extensionsAndExtras.count("extensions");
+		if (m.extensionsAndExtras.count("extensions")) {
+			auto& ext = m.extensionsAndExtras["extensions"];
+			if (ext.count("KHR_materials_pbrSpecularGlossiness")) {
+				auto& mat = ext["KHR_materials_pbrSpecularGlossiness"];
+				found_KHR_mat = true;
+				if (mat.count("diffuseFactor")) {
+					auto& df = mat["diffuseFactor"];
+					tm->set_diffuse_reflectance(cgv::render::render_types::rgb(
+						df[0].get<float>(), df[1].get<float>(), df[2].get<float>()));
+					tm->set_transparency(1.0f - df[3].get<float>());
+				}
+				if (mat.count("diffuseTexture")) {
+					int ti = tm->add_texture_reference(*R.ref_textures()[mat["diffuseTexture"]["index"].get<int>()]);
+					tm->set_diffuse_index(ti);
+				}
+				if (mat.count("glossinessFactor"))
+					tm->set_roughness(1 - mat["glossinessFactor"].get<float>());
+				if (mat.count("specularFactor")) {
+					auto& sf = mat["specularFactor"];
+					tm->set_diffuse_reflectance(cgv::render::render_types::rgb(
+						sf[0].get<float>(), sf[1].get<float>(), sf[2].get<float>()));
+				}
+				if (mat.count("specularGlossinessTexture")) {
+					int ti = tm->add_texture_reference(*R.ref_textures()[mat["specularGlossinessTexture"]["index"].get<int>()]);
+					tm->set_specular_index(ti);
 				}
 			}
 		}
