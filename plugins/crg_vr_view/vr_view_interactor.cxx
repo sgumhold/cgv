@@ -17,6 +17,7 @@
 vr_view_interactor::vr_view_interactor(const char* name) : stereo_view_interactor(name),
 	fence_color1(0,0,1), fence_color2(1,1,0)
 {
+	pose_query = 2;
 	blit_aspect_scale = 1;
 	none_separate_view = 3;
 	head_tracker_orientation.identity();
@@ -898,6 +899,8 @@ void vr_view_interactor::create_gui()
 	}
 	if (begin_tree_node("VR events", event_flags, false, "level=2")) {
 		align("\a");
+		add_member_control(this, "pose_query", pose_query, "value_slider", "min=0;max=2;ticks=true");
+
 		add_member_control(this, "debug_vr_events", debug_vr_events, "check");
 		add_gui("event_flags", event_flags, "bit_field_control", "enums='dev=1,sta=2,key=4,thr=8,stk=16,skk=32,pos=64';gui_type='toggle';options='w=30';align=''");
 		align("\n\b");

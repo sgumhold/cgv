@@ -110,7 +110,10 @@ namespace vr {
 		/*! if pose_query is 
 			0 ... no poses are queried
 			1 ... most current pose for controller is queried for example to get pose at button press in highest precision
-			2 ... future pose for rendering next frame is queried for controllers and hmd*/
+			2 ... future pose for rendering next frame is queried for controllers and hmd
+			add 4 to restrict query to left controller
+			add 8 to restrict query to right controller
+			add 12 to restrict query to both controllers */
 		virtual bool query_state(vr_kit_state& state, int pose_query = 2) = 0;
 		//! NOT IMPLEMENTED retrieve next key event from given device, return false if device's event queue is empty
 		/*!Typically you use this function in the following way:

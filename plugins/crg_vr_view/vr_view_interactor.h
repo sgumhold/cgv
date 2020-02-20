@@ -151,6 +151,8 @@ protected:
 	std::vector<void*> kits;
 	// list of to be destructed vr kits
 	std::vector<void*> old_kits;
+	/// type of pose query according to vr::vr_kit::query_state function's 2nd parameter
+	int pose_query;
 
 	// render objects
 	cgv::render::box_renderer br;
