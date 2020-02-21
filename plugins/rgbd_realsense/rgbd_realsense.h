@@ -55,6 +55,7 @@ namespace rgbd {
 		rs2_extrinsics extrinsics_to_color_stream;
 		rs2_intrinsics depth_intrinsics;
 		rs2_intrinsics color_intrinsics;
+		//active streaming profiles
 		rs2::stream_profile rs2_color_stream, rs2_depth_stream;
 		
 		std::string serial;
@@ -70,7 +71,7 @@ namespace rgbd {
 	class CGV_API rgbd_realsense_driver : public rgbd_driver
 	{
 	public:
-		/// construct CLNUI driver
+		/// construct realsense driver
 		rgbd_realsense_driver();
 		/// destructor
 		~rgbd_realsense_driver();
@@ -78,7 +79,7 @@ namespace rgbd {
 		unsigned get_nr_devices();
 		/// return the serial of the i-th realsense devices
 		std::string get_serial(int i);
-		/// create a kinect device
+		/// create a realsense device
 		rgbd_device* create_rgbd_device();
 	};
 
