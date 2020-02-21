@@ -18,11 +18,7 @@ namespace rgbd {
 		last_depth_frame_number = 0;
 		last_ir_frame_number = 0;
 
-		temp_filter = rs2::temporal_filter(0.4, 20.0, 3);
-		//spatial_filter = rs2::spatial_filter(0.5, 20.0, 2.0, 2.0);
-		spatial_filter.set_option(rs2_option::RS2_OPTION_FILTER_MAGNITUDE, 5.0f);
-		spatial_filter.set_option(rs2_option::RS2_OPTION_FILTER_SMOOTH_DELTA, 50.0f);
-		spatial_filter.set_option(rs2_option::RS2_OPTION_FILTER_SMOOTH_ALPHA, 0.3f);
+		temp_filter = rs2::temporal_filter(0.08, 43.0, 1);
 	}
 
 	rgbd_realsense::~rgbd_realsense() {
@@ -95,7 +91,7 @@ namespace rgbd {
 
 		
 		if (is && IS_COLOR) {
-			stream_formats.push_back(color_stream = stream_format(640, 480,PF_RGBA, 30, 32));
+			stream_formats.push_back(color_stream = stream_format(848, 480,PF_RGBA, 30, 32));
 		}
 		if (is && IS_DEPTH) {
 			stream_formats.push_back(depth_stream = stream_format(848, 480, PF_DEPTH, 30, 16));
@@ -250,7 +246,7 @@ namespace rgbd {
 						if (next_frame.get_frame_number() == last_depth_frame_number) return false;
 						stream = &depth_stream;
 						last_depth_frame_number = next_frame.get_frame_number();
-						//next_frame = spatial_filter.process(next_frame);
+						next_frame = temp_filter.process(next_frame);
 					}
 				}
 				else if (is == IS_INFRARED) {
@@ -314,7 +310,7 @@ namespace rgbd {
 				rs2_deproject_pixel_to_point(xyz, &depth_intrinsics, depth_pixel, depth_scale*depth);
 				rs2_transform_point_to_point(color_xyz, &extrinsics_to_color_stream, xyz);
 				rs2_project_point_to_pixel(color_pixel, &color_intrinsics, color_xyz);
-
+				float* target = color_coordinates + 2 * (depth_frame.width*y + x);
 				memcpy(color_coordinates+2*(depth_frame.width*y+x), color_pixel, 2 * sizeof(float));
 			}
 		}
