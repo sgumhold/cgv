@@ -98,10 +98,10 @@ namespace rgbd {
 			stream_formats.push_back(color_stream = stream_format(640, 480,PF_RGBA, 30, 32));
 		}
 		if (is && IS_DEPTH) {
-			stream_formats.push_back(depth_stream = stream_format(640, 480, PF_DEPTH, 30, 16));
+			stream_formats.push_back(depth_stream = stream_format(848, 480, PF_DEPTH, 30, 16));
 		}
 		if (is && IS_INFRARED) {
-			stream_formats.push_back(ir_stream = stream_format(640, 480, PF_I, 30, 8));
+			stream_formats.push_back(ir_stream = stream_format(848, 480, PF_I, 30, 8));
 		}
 		return this->start_device(stream_formats);
 	}
