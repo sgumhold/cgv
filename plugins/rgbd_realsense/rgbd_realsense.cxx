@@ -18,7 +18,7 @@ namespace rgbd {
 		last_depth_frame_number = 0;
 		last_ir_frame_number = 0;
 
-		temp_filter = rs2::temporal_filter(0.08, 43.0, 1);
+		temp_filter = rs2::temporal_filter(0.16, 43.0, 1);
 	}
 
 	rgbd_realsense::~rgbd_realsense() {
@@ -91,13 +91,13 @@ namespace rgbd {
 
 		
 		if (is && IS_COLOR) {
-			stream_formats.push_back(color_stream = stream_format(848, 480,PF_RGBA, 30, 32));
+			stream_formats.push_back(color_stream = stream_format(640, 480,PF_BGRA, 30, 32));
 		}
 		if (is && IS_DEPTH) {
-			stream_formats.push_back(depth_stream = stream_format(848, 480, PF_DEPTH, 30, 16));
+			stream_formats.push_back(depth_stream = stream_format(640, 480, PF_DEPTH, 30, 16));
 		}
 		if (is && IS_INFRARED) {
-			stream_formats.push_back(ir_stream = stream_format(848, 480, PF_I, 30, 8));
+			stream_formats.push_back(ir_stream = stream_format(640, 480, PF_I, 30, 8));
 		}
 		return this->start_device(stream_formats);
 	}
@@ -339,8 +339,6 @@ namespace rgbd {
 
 	bool rgbd_realsense::map_depth_to_point(int x, int y, int depth, float* point_ptr) const
 	{
-		//depth /= 4;
-		//depth *= 1024;
 		if (depth == 0)
 			return false;
 		
