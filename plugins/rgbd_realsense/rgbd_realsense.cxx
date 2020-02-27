@@ -18,7 +18,7 @@ namespace rgbd {
 		last_depth_frame_number = 0;
 		last_ir_frame_number = 0;
 
-		temp_filter = rs2::temporal_filter(0.16, 43.0, 1);
+		temp_filter = rs2::temporal_filter(0.16f, 43.f, 1);
 	}
 
 	rgbd_realsense::~rgbd_realsense() {
@@ -45,10 +45,10 @@ namespace rgbd {
 		}
 		catch (const rs2::camera_disconnected_error& e)
 		{
-			cerr << "rgbd_realsense::attach: Camera was disconnected! Please connect it back" << endl;
+			cerr << e.what() << "\nrgbd_realsense::attach: Camera was disconnected! Please connect it back\n";
 		}
 		catch (const std::runtime_error& e) {
-			cerr << "get_serial: runtime error=" << e.what() << endl;
+			cerr << "rgbd_realsense::attach: runtime error=" << e.what() << endl;
 		}
 		return false;
 	}
@@ -183,7 +183,7 @@ namespace rgbd {
 			}
 			//start the camera
 			auto profile = pipe->start(cfg);
-			//store profile for 
+			
 			active_profile = pipe->get_active_profile();
 			rs2_color_stream = active_profile.get_stream(RS2_STREAM_COLOR);
 			rs2_depth_stream = active_profile.get_stream(RS2_STREAM_DEPTH);
@@ -305,7 +305,7 @@ namespace rgbd {
 				float color_pixel[2];
 				float xyz[3];
 				float color_xyz[3];
-				float depth_pixel[2]{x,y};
+				float depth_pixel[2]{float(x),float(y)};
 				
 				rs2_deproject_pixel_to_point(xyz, &depth_intrinsics, depth_pixel, depth_scale*depth);
 				rs2_transform_point_to_point(color_xyz, &extrinsics_to_color_stream, xyz);
@@ -364,6 +364,7 @@ namespace rgbd {
 		//1357.265516384099e 		0					0
 		//0						1354.74750108174	0
 		//963.179434235186		547.678492185045	1
+		
 		intrinsics.fx = 1407.89876957815;
 		intrinsics.fy = 1402.63035792400;
 		intrinsics.cx = 975.564959401091;
