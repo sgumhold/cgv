@@ -18,7 +18,7 @@ namespace rgbd {
 		last_depth_frame_number = 0;
 		last_ir_frame_number = 0;
 
-		temp_filter = rs2::temporal_filter(0.16f, 43.f, 1);
+		temp_filter = rs2::temporal_filter(0.05f, 43.f, 1);
 	}
 
 	rgbd_realsense::~rgbd_realsense() {
@@ -75,6 +75,17 @@ namespace rgbd {
 		return (~(~streams_in | streams_avaiable)) == 0;
 	}
 
+	template<typename Container>
+	stream_format* find_best_format(Container& supported_formats,const rgbd::PixelFormat pf,int fps) {
+		sort(supported_formats.begin(), supported_formats.end(), [](const stream_format& a, const stream_format& b) {
+			return a.height > b.height && a.width >= b.width; });
+		auto it = find_if(supported_formats.begin(), supported_formats.end(), [&](stream_format format) {return format.pixel_format == pf && format.fps == fps; });
+		if (it != supported_formats.end()) {
+			return &(*it);
+		}
+		return nullptr;
+	}
+
 	bool rgbd_realsense::start_device(InputStreams is, std::vector<stream_format>& stream_formats)
 	{
 		if (!check_input_stream_configuration(is)) {
@@ -90,14 +101,32 @@ namespace rgbd {
 		}
 
 		
-		if (is && IS_COLOR) {
-			stream_formats.push_back(color_stream = stream_format(640, 480,PF_BGRA, 30, 32));
+		if (is & IS_COLOR) {
+			std::vector<stream_format> supported_formats;
+			query_stream_formats(IS_COLOR, supported_formats);
+			stream_format* f = find_best_format(supported_formats, PF_BGRA,30);
+			if (f) { stream_formats.push_back(color_stream = *f); }
 		}
-		if (is && IS_DEPTH) {
-			stream_formats.push_back(depth_stream = stream_format(640, 480, PF_DEPTH, 30, 16));
+		if (is & IS_DEPTH) {
+			std::vector<stream_format> supported_formats;
+			query_stream_formats(IS_DEPTH, supported_formats);
+			stream_format* f = find_best_format(supported_formats, PF_DEPTH,30);
+			if (f) { 
+				stream_formats.push_back(depth_stream = *f); 
+				if (is & IS_INFRARED) {
+					std::vector<stream_format> supported_ir_formats;
+					query_stream_formats(IS_INFRARED, supported_ir_formats);
+					auto it = find_if(supported_ir_formats.begin(), supported_ir_formats.end(), [&](const stream_format& a) {
+						return a.height == f->height && a.width == f->width && a.fps == f->fps; });
+					stream_formats.push_back(ir_stream = *it);
+				}
+			}
 		}
-		if (is && IS_INFRARED) {
-			stream_formats.push_back(ir_stream = stream_format(640, 480, PF_I, 30, 8));
+		else if (is & IS_INFRARED) {
+			std::vector<stream_format> supported_formats;
+			query_stream_formats(IS_INFRARED, supported_formats);
+			stream_format* f = find_best_format(supported_formats, PF_I,30);
+			if (f) { stream_formats.push_back(ir_stream = *f); }
 		}
 		return this->start_device(stream_formats);
 	}
@@ -115,7 +144,8 @@ namespace rgbd {
 		pipe = new rs2::pipeline(*ctx);
 		rs2::config cfg;
 		cfg.enable_device(serial);
-		
+		int input_streams = IS_NONE;
+
 		for (const auto& format : stream_formats) {
 			rs2_stream rs2_stream_type = RS2_STREAM_ANY;
 			rs2_format rs2_pixel_format = RS2_FORMAT_ANY;
@@ -160,15 +190,19 @@ namespace rgbd {
 				cerr << "rgbd_realsense::start_device : stream_formats contains an unsupported stream format\n";
 				continue;
 			}
+
 			switch (rs2_stream_type) {
 			case RS2_STREAM_COLOR:
 				color_stream = format;
+				input_streams = input_streams|IS_COLOR;
 				break;
 			case RS2_STREAM_DEPTH:
 				depth_stream = format;
+				input_streams = input_streams | IS_DEPTH;
 				break;
 			case RS2_STREAM_INFRARED:
 				ir_stream = format;
+				input_streams = input_streams | IS_INFRARED;
 				break;
 			}
 			cfg.enable_stream(rs2_stream_type, -1, format.width, format.height, rs2_pixel_format, format.fps);
@@ -185,11 +219,22 @@ namespace rgbd {
 			auto profile = pipe->start(cfg);
 			
 			active_profile = pipe->get_active_profile();
-			rs2_color_stream = active_profile.get_stream(RS2_STREAM_COLOR);
-			rs2_depth_stream = active_profile.get_stream(RS2_STREAM_DEPTH);
-			extrinsics_to_color_stream = rs2_depth_stream.get_extrinsics_to(rs2_color_stream);
-			depth_intrinsics = rs2_depth_stream.as<rs2::video_stream_profile>().get_intrinsics();
-			color_intrinsics = rs2_color_stream.as<rs2::video_stream_profile>().get_intrinsics();
+			if ((input_streams & IS_COLOR_AND_DEPTH) == IS_COLOR_AND_DEPTH) {
+				rs2_color_stream = active_profile.get_stream(RS2_STREAM_COLOR);
+				rs2_depth_stream = active_profile.get_stream(RS2_STREAM_DEPTH);
+				extrinsics_to_color_stream = rs2_depth_stream.get_extrinsics_to(rs2_color_stream);
+				depth_intrinsics = rs2_depth_stream.as<rs2::video_stream_profile>().get_intrinsics();
+				color_intrinsics = rs2_color_stream.as<rs2::video_stream_profile>().get_intrinsics();
+			}
+
+			//set laser power for far away objects
+			/*auto depth_sensor = dev->first<rs2::depth_sensor>();
+			if (depth_sensor.supports(RS2_OPTION_LASER_POWER))
+			{
+				// Query min and max values:
+				auto range = depth_sensor.get_option_range(RS2_OPTION_LASER_POWER);
+				depth_sensor.set_option(RS2_OPTION_LASER_POWER, range.max); // Set max power
+			}*/
 			return true;
 		}
 		cerr << "rgbd_realsense::start_device : can't resolve configuration, make sure to use the same ir stream and depth stream resolutions and framerates\n";
@@ -246,7 +291,8 @@ namespace rgbd {
 						if (next_frame.get_frame_number() == last_depth_frame_number) return false;
 						stream = &depth_stream;
 						last_depth_frame_number = next_frame.get_frame_number();
-						next_frame = temp_filter.process(next_frame);
+						//dec_filter.process(next_frame);
+						//next_frame = temp_filter.process(next_frame);
 					}
 				}
 				else if (is == IS_INFRARED) {
