@@ -109,7 +109,7 @@
 		   ["folder","gui"] ],
 	MAP.[ ["extensions",["def", "cfg"]],
 		   ["folder","config"] ],
-	MAP.[ ["extensions",["glsl", "glvs", "glgs", "glfs", "pglsl", "pglvs", "pglgs", "pglfs", "glpr", "hglsl"]],
+	MAP.[ ["extensions",["glsl", "glvs", "glgs", "glfs", "glcs", "pglsl", "pglvs", "pglgs", "pglfs", "pglcs", "glpr", "hglsl"]],
 			["tool","shader_test"],
 		   ["folder","shader"] ] 
 ] )

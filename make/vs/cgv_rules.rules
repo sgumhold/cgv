@@ -75,7 +75,7 @@
 			DisplayName="pre header"
 			CommandLine="&quot;$(CGV_INSTALL)\bin\shader_test.exe&quot; &quot;$(InputPath)&quot; &quot;$(ProjectDir)$(InputFileName).log&quot;"
 			Outputs="&quot;$(ProjectDir)$(InputFileName).log&quot;"
-			FileExtensions="*.glvs;*.glfs;*.glgs;*.pglvs;*.pglfs;*.pglgs;*.pglsl;*.glpr;*.glsl"
+			FileExtensions="*.glvs;*.glfs;*.glgs;*.glcs;*.pglvs;*.pglfs;*.pglgs;*.pglcs;*.pglsl;*.glpr;*.glsl"
 			ExecutionDescription="check shader compilation"
 			>
 			<Properties>
