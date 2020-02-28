@@ -41,8 +41,8 @@ namespace rgbd {
 			frame_type& warped_color_frame) const;
 		/// map a depth value together with pixel indices to a 3D point with coordinates in meters; point_ptr needs to provide space for 3 floats
 		bool map_depth_to_point(int x, int y, int depth, float* point_ptr) const;
-		/// get the camera intrinsics
-		bool get_intrinsics(camera_intrinsics& intrinsics) const;
+		/// get the camera parameters
+		bool get_emulator_configuration(emulator_parameters& parameters) const;
 
 	protected:
 		rs2::context* ctx;

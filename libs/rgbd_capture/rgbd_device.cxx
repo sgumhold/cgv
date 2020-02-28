@@ -148,7 +148,7 @@ namespace rgbd {
 		return false;
 	}
 
-	bool rgbd_device::get_intrinsics(camera_intrinsics& intrinsics) const
+	bool rgbd_device::get_emulator_configuration(emulator_parameters& cfg) const
 	{
 		return false;
 	}

@@ -46,6 +46,8 @@ public:
 	bool map_depth_to_point(int x, int y, int depth, float* point_ptr) const;
 
 private:
+	bool rgbd_emulation::get_frame_sync(InputStreams is, frame_type& frame, int timeOut);
+
 	stream_format color_stream, depth_stream, ir_stream;
 	bool has_color_stream, has_depth_stream, has_ir_stream;
 	bool device_is_running;
@@ -54,7 +56,7 @@ private:
 	double last_ir_frame_time;
 	frame_type next_color_frame, next_depth_frame, next_ir_frame;
 	size_t number_of_files;
-	camera_intrinsics intrinsics;
+	emulator_parameters parameters;
 };
 
 }

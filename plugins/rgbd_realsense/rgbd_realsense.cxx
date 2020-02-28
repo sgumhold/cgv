@@ -399,7 +399,7 @@ namespace rgbd {
 		return true;
 	}
 
-	bool rgbd_realsense::get_intrinsics(camera_intrinsics & intrinsics) const
+	bool rgbd_realsense::get_emulator_configuration(emulator_parameters & cfg) const
 	{
 		//D435 intriniscs
 		//1407.89876957815	0					0
@@ -411,11 +411,12 @@ namespace rgbd {
 		//0						1354.74750108174	0
 		//963.179434235186		547.678492185045	1
 		
-		intrinsics.fx = 1407.89876957815;
-		intrinsics.fy = 1402.63035792400;
-		intrinsics.cx = 975.564959401091;
-		intrinsics.cy = 546.629684502803;
-		intrinsics.sk = 0.0;
+		cfg.intrinsics.fx = 1407.89876957815;
+		cfg.intrinsics.fy = 1402.63035792400;
+		cfg.intrinsics.cx = 975.564959401091;
+		cfg.intrinsics.cy = 546.629684502803;
+		cfg.intrinsics.sk = 0.0;
+		cfg.depth_scale = depth_scale;
 		return true;
 	}
 
