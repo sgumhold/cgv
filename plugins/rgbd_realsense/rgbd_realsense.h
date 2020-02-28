@@ -48,8 +48,6 @@ namespace rgbd {
 		rs2::context* ctx;
 		rs2::device* dev;
 		rs2::pipeline* pipe;
-		rs2::temporal_filter temp_filter;
-		rs2::decimation_filter dec_filter;
 		rs2::pipeline_profile active_profile;
 		//build in parameters
 		rs2_extrinsics extrinsics_to_color_stream;
