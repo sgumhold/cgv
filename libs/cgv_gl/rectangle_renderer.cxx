@@ -82,5 +82,13 @@ namespace cgv {
 
 			return surface_renderer::disable(ctx);
 		}
+
+		void rectangle_renderer::draw(context& ctx, int offset, int count)
+		{
+			if(validate_and_enable(ctx)) {
+				glDrawArrays(GL_POINTS, (GLint)offset, (GLsizei)count);
+				disable(ctx);
+			}
+		}
 	}
 }

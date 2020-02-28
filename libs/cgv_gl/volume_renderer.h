@@ -27,15 +27,16 @@ namespace cgv { // @<
 		struct CGV_API volume_render_style : public render_style {
 			/*@name global volume rendering options*/
 			//@{
-			///
-			int volume_texture_unit;
+			/// texture unit for the transfer function to use
 			int transfer_function_texture_unit;
+			/// transparency scaling parameter
 			float alpha;
+			/// level of detail for mipmap textures
 			float level_of_detail;
+			/// length of one step for the ray casting
 			float step_size;
-			vec3 tex_size;
-			vec3 tex_coord_scaling;
-			mat4 transformation;
+			/// transformation matrix for the volume; original volume renders from (0,0,0) to (1,1,1)
+			mat4 transformation_matrix;
 
 			/// the interpolation method used
 			InterpolationMode interpolation_mode;
@@ -49,12 +50,14 @@ namespace cgv { // @<
 		protected:
 			///
 			cgv::render::attribute_array_manager aa_manager;
+			/// the 3D texture used for rendering
+			texture* volume_texture;
+			/// the size of the volume texture
+			vec3 volume_texture_size;
 			/// the eye position in world space
 			vec3 eye_position;
 			/// whether the shader should be rebuilt after a define update
 			std::string shader_defines;
-			/// store whether attr array is specified
-			bool has_attr;
 			/// overload to allow instantiation of volume_renderer
 			render_style* create_render_style() const;
 		public:
@@ -64,6 +67,8 @@ namespace cgv { // @<
 			void set_attribute_array_manager(const context& ctx, attribute_array_manager* _aam_ptr);
 			/// construct shader programs and return whether this was successful, call inside of init method of drawable
 			bool init(context& ctx);
+			///
+			bool set_volume_texture(texture* _volume_texture);
 			///
 			void set_eye_position(vec3 _eye_position);
 			///

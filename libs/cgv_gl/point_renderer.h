@@ -85,6 +85,8 @@ namespace cgv {
 			bool enable(context& ctx);
 			///
 			bool disable(context& ctx);
+			/// convenience function to render with default settings
+			void draw(context& ctx, int offset, int count);
 		};
 		struct CGV_API point_render_style_reflect : public point_render_style
 		{

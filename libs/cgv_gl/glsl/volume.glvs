@@ -21,7 +21,7 @@ mat3 get_inverse_normal_matrix();
 
 uniform vec3 eye_position;
 uniform vec3 tex_coord_scaling;
-uniform mat4 transformation;
+uniform mat4 transformation_matrix;
 
 in vec4 position;
 
@@ -30,7 +30,7 @@ out vec3 vol_coord_fs;
 
 void main()
 {
-	eye_fs = (inverse(transformation) * vec4(eye_position, 1.0)).xyz / tex_coord_scaling;
+	eye_fs = (inverse(transformation_matrix) * vec4(eye_position, 1.0)).xyz / tex_coord_scaling;
 	vol_coord_fs = position.xyz / tex_coord_scaling;
-	gl_Position = get_modelview_projection_matrix() * transformation * position;
+	gl_Position = get_modelview_projection_matrix() * transformation_matrix * position;
 }

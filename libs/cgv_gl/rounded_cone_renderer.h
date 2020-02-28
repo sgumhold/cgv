@@ -24,6 +24,7 @@ namespace cgv { // @<
 			/// default value assigned to radius attribute in \c enable method of rounded cone renderer, set to 1 in constructor
 			float radius;
 
+			bool enable_ambient_occlusion;
 			float ao_offset;
 			float ao_distance;
 			float ao_strength;
@@ -43,6 +44,8 @@ namespace cgv { // @<
 		{
 		protected:
 			bool has_radii;
+			/// whether the shader should be rebuilt after a define update
+			std::string shader_defines;
 			/// overload to allow instantiation of rounded_cone_renderer
 			render_style* create_render_style() const;
 		public:
@@ -51,7 +54,11 @@ namespace cgv { // @<
 			void set_attribute_array_manager(const context& ctx, attribute_array_manager* _aam_ptr);
 			/// construct shader programs and return whether this was successful, call inside of init method of drawable
 			bool init(context& ctx);
-			/// 
+			///
+			std::string build_define_string();
+			///
+			bool build_shader(context& ctx, std::string defines = "");
+			///
 			bool enable(context& ctx);
 			///
 			template <typename T = float>
@@ -63,7 +70,7 @@ namespace cgv { // @<
 			bool validate_attributes(const context& ctx) const;
 			///
 			bool disable(context& ctx);
-			///
+			/// convenience function to render with default settings
 			void draw(context& ctx, int offset, int count);
 		};
 
