@@ -862,7 +862,7 @@
     Name="shader_test_rule"
     DisplayName="pre header" />
   <FileExtension
-    Name="*.glvs;*.glfs;*.glgs;*.pglvs;*.pglfs;*.pglgs;*.pglsl;*.glpr;*.glsl"
+    Name="*.glvs;*.glfs;*.glgs;*.glcs;*.pglvs;*.pglfs;*.pglgs;*.pglcs;*.pglsl;*.glpr;*.glsl"
     ContentType="shader_test_rule" />
   <ContentType
     Name="shader_test_rule"

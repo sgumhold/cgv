@@ -184,6 +184,8 @@ ShaderType shader_code::detect_shader_type(const std::string& file_name)
 		st = ST_FRAGMENT;
 	else if (ext == "glgs" || ext == "pglgs")
 		st = ST_GEOMETRY;
+	else if (ext == "glcs" || ext == "pglcs")
+		st = ST_COMPUTE;
 	return st;
 }
 

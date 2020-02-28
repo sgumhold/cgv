@@ -7,7 +7,7 @@ addProjectDirs=[CGV_DIR."/libs", CGV_DIR."/3rd/glew"];
 addRules=[
 	[
 		MAP.[
-			["extensions",["glsl", "glvs", "glgs", "glfs", "pglsl", "pglvs", "pglgs", "pglfs", "glpr", "hglsl"]],
+			["extensions",["glsl", "glvs", "glgs", "glfs", "glcs", "pglsl", "pglvs", "pglgs", "pglfs", "pglcs", "glpr", "hglsl"]],
 			["tool","shader_test"],
 			["folder","shader"],
 			["rules", 
