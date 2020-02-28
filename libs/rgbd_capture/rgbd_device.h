@@ -25,9 +25,13 @@ namespace rgbd {
 		FF_INFRARED
 	};
 	*/
-	/// struct for representing the camera intriniscs
-	struct camera_intrinsics {
-		double fx, fy, cx, cy, sk;
+
+	///struct for representing parameters used in the device emulator
+	struct emulator_parameters {
+		struct {
+			double fx, fy, cx, cy, sk;
+		} intrinsics;
+		double depth_scale;
 	};
 	/// frame size in pixels
 	struct frame_size
@@ -213,8 +217,8 @@ namespace rgbd {
 			frame_type& warped_color_frame) const = 0;
 		/// map a depth value together with pixel indices to a 3D point with coordinates in meters; point_ptr needs to provide space for 3 floats
 		virtual bool map_depth_to_point(int x, int y, int depth, float* point_ptr) const = 0;
-		/// get the camera intrinsics
-		virtual bool get_intrinsics(camera_intrinsics& intrinsics) const;
+		/// get the camera parameters
+		virtual bool get_emulator_configuration(emulator_parameters& parameters) const;
 	};
 }
 

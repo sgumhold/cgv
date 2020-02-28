@@ -69,19 +69,26 @@ namespace rgbd {
 		}
 		number_of_files = file_count;
 		
-		//find camera intrinsics
-		static camera_intrinsics default_intrinsics{ 5.9421434211923247e+02 ,5.9104053696870778e+02,
-				3.3930780975300314e+02,2.4273913761751615e+02,0.0 };
+		//find camera parameters
+		static emulator_parameters default_intrinsics;
+		static bool initialized_default_parameters = false;
+		if (!initialized_default_parameters){
+			default_intrinsics.intrinsics = { 5.9421434211923247e+02, 5.9104053696870778e+02,
+					3.3930780975300314e+02,2.4273913761751615e+02,0.0 };
+			default_intrinsics.depth_scale = 1.0;
+			initialized_default_parameters = true;
+		}
+
 		string data;
-		if (cgv::utils::file::read(path_name + "/camera_intrinsics", data, false)) {
-			if (data.size() * sizeof(char) == sizeof(camera_intrinsics)) {
-				memcpy(&intrinsics, data.data(), sizeof(camera_intrinsics));
+		if (cgv::utils::file::read(path_name + "/emulator_parameters", data, false)) {
+			if (data.size() * sizeof(char) == sizeof(emulator_parameters)) {
+				memcpy(&parameters, data.data(), sizeof(emulator_parameters));
 			} else {
-				cerr << "rgbd_emulation: " << path_name << "/camera_intrinsics " << "has the wrong size!";
-				intrinsics = default_intrinsics;
+				cerr << "rgbd_emulation: " << path_name << "/emulator_parameters " << "has the wrong size!";
+				parameters = default_intrinsics;
 			}
 		} else {
-			intrinsics = default_intrinsics;
+			parameters = default_intrinsics;
 		}
 
 	}
@@ -240,7 +247,13 @@ namespace rgbd {
 		}
 		return 0;
 	}
+
 	bool rgbd_emulation::get_frame(InputStreams is, frame_type& frame, int timeOut)
+	{
+		return get_frame_sync(is, frame, timeOut);
+	}
+
+	bool rgbd_emulation::get_frame_sync(InputStreams is, frame_type& frame, int timeOut)
 	{	
 		if (!is_attached()) {
 			cerr << "rgbd_emulation::get_frame called on device that has not been attached" << endl;
@@ -303,7 +316,7 @@ namespace rgbd {
 		if (is == IS_COLOR)
 			next_warped_file_name = compose_file_name(path_name + "/warped_", frame, idx);
 		
-		frame.time = idx / stream->fps;
+		frame.time = current_frame_time;
 		
 
 		//read file
@@ -312,17 +325,7 @@ namespace rgbd {
 			cerr << "rgbd_emulation: file not found: " << fn << '\n';
 			return false;
 		}
-		/*
-		//check frame time
-		double next_frame_time = reinterpret_cast<const frame_type*>(data.data())->time;
-		double current_frame_time = duration_cast<milliseconds>(chrono::steady_clock::now().time_since_epoch()).count();
 
-		//limit fps
-		if (current_frame_time < *last_frame_time + inv_fps) {
-			return false;
-		}
-		*last_frame_time = current_frame_time;
-		*/
 		frame.buffer_size = data.size();
 		if (frame.frame_data.size() < frame.buffer_size) {
 			frame.frame_data.resize(frame.buffer_size);
@@ -331,6 +334,7 @@ namespace rgbd {
 		idx++;
 		return true;
 	}
+
 	void rgbd_emulation::map_color_to_depth(const frame_type& depth_frame, const frame_type& color_frame,
 		frame_type& warped_color_frame) const
 	{
@@ -340,7 +344,7 @@ namespace rgbd {
 		}
 		string data;
 		if (!cgv::utils::file::read(next_warped_file_name, data, false)) {
-			std::cerr << "rgbd_emulation::map_color_to_depth() warped frame " << next_warped_file_name << " not found" << std::endl;
+			//std::cerr << "rgbd_emulation::map_color_to_depth() warped frame " << next_warped_file_name << " not found" << std::endl;
 			return;
 		}
 		// prepare warped frame
@@ -361,15 +365,15 @@ namespace rgbd {
 	bool rgbd_emulation::map_depth_to_point(int x, int y, int depth, float* point_ptr) const
 	{
 		// assuming kinect
-		depth /= 8;
+		//depth /= 8;
 		if (depth == 0)
 			return false;
-
-		double fx_d = 1.0 / intrinsics.fx;
-		double fy_d = 1.0 / intrinsics.fy;
-		double cx_d = intrinsics.cx;
-		double cy_d = intrinsics.cy;
-		double d = 0.001 * depth;
+		
+		double fx_d = 1.0 / parameters.intrinsics.fx;
+		double fy_d = 1.0 / parameters.intrinsics.fy;
+		double cx_d = parameters.intrinsics.cx;
+		double cy_d = parameters.intrinsics.cy;
+		double d = parameters.depth_scale*depth;
 		point_ptr[0] = float((x - cx_d) * d * fx_d);
 		point_ptr[1] = float((y - cy_d) * d * fy_d);
 		point_ptr[2] = float(d);

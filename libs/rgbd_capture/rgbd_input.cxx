@@ -168,10 +168,10 @@ void rgbd_input::enable_protocol(const std::string& path)
 	//write the metadata for every stream found
 	if (is_started()) {
 		write_protocol_headers(streams, path);
-		//write camera intrinsics
-		camera_intrinsics intrinsics;
-		if (rgbd->get_intrinsics(intrinsics)) {
-			cgv::utils::file::write(path + "/camera_intrinsics", reinterpret_cast<const char*>(&intrinsics), sizeof(camera_intrinsics), false);
+		//write camera parameters
+		emulator_parameters parameters;
+		if (rgbd->get_emulator_configuration(parameters)) {
+			cgv::utils::file::write(path + "/emulator_parameters", reinterpret_cast<const char*>(&parameters), sizeof(emulator_parameters), false);
 		}
 	}
 }
@@ -234,10 +234,10 @@ bool rgbd_input::start(InputStreams is, std::vector<stream_format>& stream_forma
 	streams = stream_formats;
 	if (!protocol_path.empty()) {
 		write_protocol_headers(streams, protocol_path);
-		//write camera intrinsics
-		camera_intrinsics intrinsics;
-		if (rgbd->get_intrinsics(intrinsics)) {
-			cgv::utils::file::write(protocol_path + "/camera_intrinsics", reinterpret_cast<const char*>(&intrinsics), sizeof(camera_intrinsics), false);
+		//write camera parameters
+		emulator_parameters parameters;
+		if (rgbd->get_emulator_configuration(parameters)) {
+			cgv::utils::file::write(protocol_path + "/emulator_parameters", reinterpret_cast<const char*>(&parameters), sizeof(emulator_parameters), false);
 		}
 	}
 	return started;
