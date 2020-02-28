@@ -108,6 +108,15 @@ namespace cgv {
 			}
 			return surface_renderer::disable(ctx);
 		}
+
+		void sphere_renderer::draw(context& ctx, int offset, int count)
+		{
+			if(validate_and_enable(ctx)) {
+				glDrawArrays(GL_POINTS, (GLint)offset, (GLsizei)count);
+				disable(ctx);
+			}
+		}
+
 		bool sphere_render_style_reflect::self_reflect(cgv::reflect::reflection_handler& rh)
 		{
 			return

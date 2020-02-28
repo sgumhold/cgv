@@ -22,6 +22,7 @@ namespace cgv {
 			radius = 1.0f;
 			radius_scale = 1.0f;
 			
+			enable_ambient_occlusion = false;
 			ao_offset = 0.04f;
 			ao_distance = 0.8f;
 			ao_strength = 1.0f;
@@ -41,6 +42,7 @@ namespace cgv {
 		rounded_cone_renderer::rounded_cone_renderer()
 		{
 			has_radii = false;
+			shader_defines = "";
 		}
 
 		void rounded_cone_renderer::set_attribute_array_manager(const context& ctx, attribute_array_manager* _aam_ptr)
@@ -64,18 +66,45 @@ namespace cgv {
 		{
 			bool res = renderer::init(ctx);
 			if (!ref_prog().is_created()) {
-				if (!ref_prog().build_program(ctx, "rounded_cone.glpr", true)) {
+				res = res && build_shader(ctx, build_define_string());
+			}
+			return res;
+		}
+
+		std::string rounded_cone_renderer::build_define_string()
+		{
+			const rounded_cone_render_style& rcrs = get_style<rounded_cone_render_style>();
+
+			std::string defines = "ENABLE_AMBIENT_OCCLUSION=";
+			defines += std::to_string((int)rcrs.enable_ambient_occlusion);
+			return defines;
+		}
+
+		bool rounded_cone_renderer::build_shader(context& ctx, std::string defines)
+		{
+			shader_defines = defines;
+			if(ref_prog().is_created())
+				ref_prog().destruct(ctx);
+
+			if(!ref_prog().is_created()) {
+				if(!ref_prog().build_program(ctx, "rounded_cone.glpr", true, defines)) {
 					std::cerr << "ERROR in rounded_cone_renderer::init() ... could not build program rounded_cone.glpr" << std::endl;
 					return false;
 				}
 			}
-			return res;
+			return true;
 		}
 
 		/// 
 		bool rounded_cone_renderer::enable(context& ctx)
 		{
 			const rounded_cone_render_style& rcrs = get_style<rounded_cone_render_style>();
+
+			std::string defines = build_define_string();
+			if(defines != shader_defines) {
+				if(!build_shader(ctx, defines))
+					return false;
+			}
 
 			if (!surface_renderer::enable(ctx))
 				return false;
@@ -87,15 +116,18 @@ namespace cgv {
 				ref_prog().set_attribute(ctx, "radius", rcrs.radius);
 
 			ref_prog().set_uniform(ctx, "radius_scale", rcrs.radius_scale);
-			ref_prog().set_uniform(ctx, "ao_offset", rcrs.ao_offset);
-			ref_prog().set_uniform(ctx, "ao_distance", rcrs.ao_distance);
-			ref_prog().set_uniform(ctx, "ao_strength", rcrs.ao_strength);
-			ref_prog().set_uniform(ctx, "density_tex_offset", rcrs.tex_offset);
-			ref_prog().set_uniform(ctx, "density_tex_scaling", rcrs.tex_scaling);
-			ref_prog().set_uniform(ctx, "tex_coord_scaling", rcrs.tex_coord_scaling);
-			ref_prog().set_uniform(ctx, "texel_size", rcrs.texel_size);
-			ref_prog().set_uniform(ctx, "cone_angle_factor", rcrs.cone_angle_factor);			
-			ref_prog().set_uniform_array(ctx, "sample_dirs", rcrs.sample_dirs);
+
+			if(rcrs.enable_ambient_occlusion) {
+				ref_prog().set_uniform(ctx, "ao_offset", rcrs.ao_offset);
+				ref_prog().set_uniform(ctx, "ao_distance", rcrs.ao_distance);
+				ref_prog().set_uniform(ctx, "ao_strength", rcrs.ao_strength);
+				ref_prog().set_uniform(ctx, "density_tex_offset", rcrs.tex_offset);
+				ref_prog().set_uniform(ctx, "density_tex_scaling", rcrs.tex_scaling);
+				ref_prog().set_uniform(ctx, "tex_coord_scaling", rcrs.tex_coord_scaling);
+				ref_prog().set_uniform(ctx, "texel_size", rcrs.texel_size);
+				ref_prog().set_uniform(ctx, "cone_angle_factor", rcrs.cone_angle_factor);
+				ref_prog().set_uniform_array(ctx, "sample_dirs", rcrs.sample_dirs);
+			}
 			return true;
 		}
 		///
@@ -149,6 +181,7 @@ namespace cgv {
 				
 				// ambient occlusion
 				p->add_decorator("ambient occlusion", "heading", "level=4");
+				p->add_member_control(b, "enable", rcrs_ptr->enable_ambient_occlusion, "check");
 				p->add_member_control(b, "ao offset", rcrs_ptr->ao_offset, "value_slider", "min=0.0;step=0.0001;max=0.2;log=true;ticks=true");
 				p->add_member_control(b, "ao distance", rcrs_ptr->ao_distance, "value_slider", "min=0.0;step=0.0001;max=1.0;log=true;ticks=true");
 				p->add_member_control(b, "ao strength", rcrs_ptr->ao_strength, "value_slider", "min=0.0;step=0.0001;max=10.0;log=true;ticks=true");

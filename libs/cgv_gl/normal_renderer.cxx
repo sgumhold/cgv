@@ -74,6 +74,15 @@ namespace cgv {
 			ref_prog().set_uniform(ctx, "normal_length", nrs.normal_length * normal_scale);
 			return true;
 		}
+
+		void normal_renderer::draw(context& ctx, int offset, int count)
+		{
+			if(validate_and_enable(ctx)) {
+				glDrawArrays(GL_POINTS, (GLint)offset, (GLsizei)count);
+				disable(ctx);
+			}
+		}
+
 		bool normal_render_style_reflect::self_reflect(cgv::reflect::reflection_handler& rh)
 		{
 			return
