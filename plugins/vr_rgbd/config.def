@@ -4,10 +4,10 @@ show all
 name(vr interactor):show_focus=true
 
 persistent
-name(vr interactor):tracking_rotation=75
-name(vr interactor):tracking_rotation_origin_x=-1.15108
-name(vr interactor):tracking_rotation_origin_y=0.754923
-name(vr interactor):tracking_rotation_origin_z=-0.139039
-name(vr interactor):tracking_origin_x=-0.8026
-name(vr interactor):tracking_origin_y=0.930005
-name(vr interactor):tracking_origin_z=-0.409632
+name(vr interactor):tracking_rotation=-95
+name(vr interactor):tracking_rotation_origin_x=1.15813
+name(vr interactor):tracking_rotation_origin_y=0.824309
+name(vr interactor):tracking_rotation_origin_z=0.530154
+name(vr interactor):tracking_origin_x=-0.805613
+name(vr interactor):tracking_origin_y=0.93026
+name(vr interactor):tracking_origin_z=-0.425478
