@@ -79,6 +79,8 @@ namespace cgv { // @<
 			bool enable(context& ctx);
 			///
 			bool disable(context& ctx);
+			///
+			void draw(context& ctx, int offset, int count);
 		};
 
 		struct CGV_API sphere_render_style_reflect : public sphere_render_style

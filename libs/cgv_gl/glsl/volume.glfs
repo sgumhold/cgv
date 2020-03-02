@@ -137,10 +137,28 @@ float textureLodNearest(sampler3D tex, vec3 coord, float lod) {
 	return textureLod(tex, uv, lod).r;
 }
 
+vec3 gradient(sampler3D tex, vec3 coords) {
+
+	vec3 ts = 1.0 / tex_size;
+
+	float dx = texture(tex, coords + vec3(ts.x, 0.0, 0.0)).r - texture(tex, coords - vec3(ts.x, 0.0, 0.0)).r;
+	dx /= 2.0 * ts.x;
+
+	float dy = texture(tex, coords + vec3(0.0, ts.y, 0.0)).r - texture(tex, coords - vec3(0.0, ts.y, 0.0)).r;
+	dy /= 2.0 * ts.y;
+
+	float dz = texture(tex, coords + vec3(0.0, 0.0, ts.z)).r - texture(tex, coords - vec3(0.0, 0.0, ts.z)).r;
+	dz /= 2.0 * ts.z;
+
+	vec3 grad = -vec3(dx, dy, dz);
+
+	return normalize(grad);
+}
+
 void main()
 {
 	vec3 dir = normalize(eye_fs - vol_coord_fs);
-
+	
 	vec4 color = vec4(0.0);
 	vec3 pos = vol_coord_fs;
 	vec3 tex_coords = pos * tex_coord_scaling;
@@ -172,6 +190,37 @@ void main()
 		pos += step_size * dir;
 		tex_coords = pos * tex_coord_scaling;
 	}
+
+
+
+	// Isosurface rendering (must use backface culling in renderer)
+	/*vec3 dir = normalize(vol_coord_fs - eye_fs);
+	
+	vec4 color = vec4(0.0);
+	vec3 pos = vol_coord_fs;
+	vec3 tex_coords = pos * tex_coord_scaling;
+
+	while(
+		//dot(dir, pos - eye_fs) <= 0.0 && // Prevent tracing behind the eye position
+		tex_coords.x > -0.01 && tex_coords.x < 1.01 &&
+		tex_coords.y > -0.01 && tex_coords.y < 1.01 &&
+		tex_coords.z > -0.01 && tex_coords.z < 1.01) {
+		float value = textureLod(volume_tex, tex_coords, lod).r;
+		
+		if(value > alpha_coeff) {
+			color = vec4(1.0);
+
+			vec3 normal = gradient(volume_tex, tex_coords);
+			vec4 pos_eye = get_modelview_matrix() * vec4(pos, 1.0);
+			color = compute_reflected_appearance(pos_eye.xyz, normal, vec4(0.5, 0.5, 0.5, 1.0), 1);
+
+			break;
+		}
+
+		// step along ray
+		pos += step_size * dir;
+		tex_coords = pos * tex_coord_scaling;
+	}*/
 
 	finish_fragment(color);
 }

@@ -37,6 +37,8 @@ namespace cgv { // @<
 			/// line_width array specifies box extends in case of position_is_center=true, otherwise the maximum point of each box
 			template <typename T>
 			void set_line_width_array(const context& ctx, const T* line_widths, size_t nr_elements, unsigned stride_in_bytes = 0) { has_line_widths = true;  set_attribute_array(ctx, ref_prog().get_attribute_location(ctx, "line_width"), line_widths, nr_elements, stride_in_bytes); }
+			/// convenience function to render with default settings
+			void draw(context& ctx, int offset, int count);
 		};
 	
 		struct CGV_API line_render_style_reflect : public line_render_style

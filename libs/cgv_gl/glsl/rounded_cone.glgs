@@ -12,7 +12,8 @@ out flat vec4 start_fs;
 out flat vec4 end_fs;
 out flat vec4 tp2;
 out flat vec4 tp3;
-out vec4 color_fs;
+out vec4 color_start_fs;
+out vec4 color_end_fs;
 out flat mat4 inv_modelview;
 out flat mat3 inv_normal;
 
@@ -96,7 +97,8 @@ void main()
 	vec4 C6 = C4 + D20;
 	vec4 C7 = C5 + D20;
 	
-	color_fs = color_gs[0];
+	color_start_fs = color_gs[0];
+	color_end_fs = color_gs[1];
 	inv_modelview = get_inverse_modelview_matrix();
 	inv_normal = get_inverse_normal_matrix();
 

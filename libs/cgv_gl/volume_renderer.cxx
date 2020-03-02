@@ -19,22 +19,21 @@ namespace cgv {
 
 		volume_render_style::volume_render_style()
 		{
-			volume_texture_unit = 0;
 			transfer_function_texture_unit = 1;
 			alpha = 1.0f;
 			level_of_detail = 0.0f;
 			step_size = 0.002f;
-			tex_size = vec3(1.0f);
-			tex_coord_scaling = vec3(1.0f);
-			transformation = mat4(0.0f);
-			transformation.identity();
+			transformation_matrix = mat4(0.0f);
+			transformation_matrix.identity();
 
 			interpolation_mode = IP_LINEAR;
 		}
 
 		volume_renderer::volume_renderer()
 		{
-			has_attr = false;
+			shader_defines = "";
+			volume_texture = nullptr;
+			volume_texture_size = vec3(1.0f);
 		}
 
 		void volume_renderer::set_attribute_array_manager(const context& ctx, attribute_array_manager* _aam_ptr)
@@ -47,6 +46,7 @@ namespace cgv {
 			// validate set attributes
 			const volume_render_style& vrs = get_style<volume_render_style>();
 			bool res = renderer::validate_attributes(ctx);
+			res = res && (volume_texture != nullptr);
 			return res;
 		}
 
@@ -80,6 +80,18 @@ namespace cgv {
 			set_position_array(ctx, vertices);
 
 			return res;
+		}
+
+		bool volume_renderer::set_volume_texture(texture* _volume_texture)
+		{
+			if(!_volume_texture)
+				return false;
+			if(_volume_texture->get_nr_dimensions() != 3)
+				return false;
+
+			volume_texture = _volume_texture;
+			volume_texture_size = vec3(volume_texture->get_width(), volume_texture->get_height(), volume_texture->get_depth());
+			return true;
 		}
 
 		void volume_renderer::set_eye_position(vec3 _eye_position)
@@ -123,15 +135,15 @@ namespace cgv {
 
 			if (!renderer::enable(ctx))
 				return false;
-			ref_prog().set_uniform(ctx, "volume_tex", vrs.volume_texture_unit);
+			ref_prog().set_uniform(ctx, "volume_tex", 0);
 			ref_prog().set_uniform(ctx, "transfer_function_tex", vrs.transfer_function_texture_unit);
 			ref_prog().set_uniform(ctx, "eye_position", eye_position);
 			ref_prog().set_uniform(ctx, "alpha_coeff", vrs.alpha);
 			ref_prog().set_uniform(ctx, "lod", vrs.level_of_detail);
 			ref_prog().set_uniform(ctx, "step_size", vrs.step_size);
-			ref_prog().set_uniform(ctx, "tex_size", vrs.tex_size);
-			ref_prog().set_uniform(ctx, "tex_coord_scaling", vrs.tex_coord_scaling);
-			ref_prog().set_uniform(ctx, "transformation", vrs.transformation);
+			ref_prog().set_uniform(ctx, "tex_size", volume_texture_size);
+			ref_prog().set_uniform(ctx, "tex_coord_scaling", vec3(cgv::math::max_value(volume_texture_size)) / volume_texture_size);
+			ref_prog().set_uniform(ctx, "transformation_matrix", vrs.transformation_matrix);
 			return true;
 		}
 		///
@@ -150,7 +162,11 @@ namespace cgv {
 
 				glCullFace(GL_FRONT);
 
+				volume_texture->enable(ctx, 0);
+
 				glDrawArrays(GL_TRIANGLE_STRIP, 0, (GLsizei)14);
+
+				volume_texture->disable(ctx);
 
 				glDisable(GL_BLEND);
 				disable(ctx);

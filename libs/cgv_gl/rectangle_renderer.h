@@ -61,6 +61,8 @@ namespace cgv {
 			bool enable(context& ctx);
 			///
 			bool disable(context& ctx);
+			/// convenience function to render with default settings
+			void draw(context& ctx, int offset, int count);
 		};
 	}
 }
