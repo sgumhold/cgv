@@ -4,6 +4,7 @@
 #include "vr_camera.h"
 
 #include <vector>
+#include <string>
 
 #include "lib_begin.h"
 
@@ -64,6 +65,12 @@ namespace vr {
 		std::string last_error;
 		/// destruct camera
 		void destruct_camera();
+		/// 
+		vr_trackable_state& ref_reference_state(const std::string& serial_nummer);
+		/// remove all reference states
+		void clear_reference_states();
+		/// mark all reference states as untracked
+		void mark_references_as_untracked();
 		/// construct
 		vr_kit(vr_driver* _driver, void* _handle, const std::string& _name, bool _ffb_support, bool _wireless);
 	public:

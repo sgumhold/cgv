@@ -133,7 +133,7 @@ protected:
 	bool debug_vr_events;
 
 	// visualization of kits and action zone
-	VRkitVisType vis_type, hmd_vis_type, controller_vis_type, tracker_vis_type;
+	VRkitVisType vis_type, hmd_vis_type, controller_vis_type, tracker_vis_type, base_vis_type;
 	bool show_action_zone;
 	rgb fence_color1, fence_color2;
 	float fence_frequency;
@@ -171,6 +171,8 @@ protected:
 	void on_status_change(void* device_handle, int controller_index, vr::VRStatus old_status, vr::VRStatus new_status);
 	///
 	void on_device_change(void* device_handle, bool attach);
+	/// helper to visualize pose with colored spheres
+	void add_trackable_spheres(const float* pose, int i, std::vector<vec4>& spheres, std::vector<rgb>& sphere_colors);
 public:
 	///
 	vr_view_interactor(const char* name);

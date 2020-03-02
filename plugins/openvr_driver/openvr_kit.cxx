@@ -1,4 +1,5 @@
 #include "openvr_kit.h"
+#include <vr/vr_driver.h>
 #include "openvr_camera.h"
 #include <iostream>
 #include <cgv_gl/gl/gl.h>
@@ -51,6 +52,76 @@ const vr::IVRSystem* openvr_kit::get_hmd() const
 	return static_cast<const vr::IVRSystem*>(device_handle);
 }
 
+void print_error(vr::IVRSystem* hmd_ptr, vr::ETrackedPropertyError error)
+{
+	std::cerr << "openvr tracked property error: " << hmd_ptr->GetPropErrorNameFromEnum(error) << std::endl;
+}
+
+bool get_bool_property(vr::IVRSystem* hmd_ptr, vr::TrackedDeviceIndex_t unDeviceIndex, ETrackedDeviceProperty prop, const char* name = 0)
+{
+	vr::ETrackedPropertyError error;
+	bool value = hmd_ptr->GetBoolTrackedDeviceProperty(unDeviceIndex, prop, &error);
+	if (error == vr::TrackedProp_Success) {
+		if (name)
+			std::cout << name << " = " << (value?"True":"False") << std::endl;
+		return value;
+	}
+	print_error(hmd_ptr, error);
+	return false;
+}
+
+float get_float_property(vr::IVRSystem* hmd_ptr, vr::TrackedDeviceIndex_t unDeviceIndex, ETrackedDeviceProperty prop, const char* name = 0)
+{
+	vr::ETrackedPropertyError error;
+	float value = hmd_ptr->GetFloatTrackedDeviceProperty(unDeviceIndex, prop, &error);
+	if (error == vr::TrackedProp_Success) {
+		if (name)
+			std::cout << name << " = " << value << std::endl;
+		return value;
+	}
+	print_error(hmd_ptr, error);
+	return 0.0f;
+}
+
+std::string get_string_property(vr::IVRSystem* hmd_ptr, vr::TrackedDeviceIndex_t unDeviceIndex, ETrackedDeviceProperty prop, const char* name = 0)
+{
+	vr::ETrackedPropertyError error;
+	char buffer[k_unMaxPropertyStringSize];
+	uint32_t len = hmd_ptr->GetStringTrackedDeviceProperty(unDeviceIndex, prop, buffer, k_unMaxPropertyStringSize, &error);
+	if (error == vr::TrackedProp_Success) {
+		std::string value(buffer, len);
+		if (name)
+			std::cout << name << " = " << value << std::endl;
+		return value;
+	}
+	print_error(hmd_ptr, error);
+	return "";
+}
+
+void analyze_tracking_reference(vr::IVRSystem* hmd_ptr, vr::TrackedDeviceIndex_t device_index)
+{
+	bool will_drift_in_yaw = get_bool_property(hmd_ptr, device_index, Prop_WillDriftInYaw_Bool, "WillDriftInYaw");
+	bool identifiable = get_bool_property(hmd_ptr, device_index, Prop_Identifiable_Bool, "Identifiable");
+	bool has_lighthouse20 = get_bool_property(hmd_ptr, device_index, Prop_ConfigurationIncludesLighthouse20Features_Bool, "IncludesLighthouse20");
+	bool can_wireless_identify = get_bool_property(hmd_ptr, device_index, Prop_CanWirelessIdentify_Bool, "CanWirelessIdentify");
+	float fov_l_deg = get_float_property(hmd_ptr, device_index, Prop_FieldOfViewLeftDegrees_Float, "FoV_left");
+	float fov_r_deg = get_float_property(hmd_ptr, device_index, Prop_FieldOfViewRightDegrees_Float, "FoV_right");
+	float fov_t_deg = get_float_property(hmd_ptr, device_index, Prop_FieldOfViewTopDegrees_Float, "FoV_top");
+	float fov_b_deg = get_float_property(hmd_ptr, device_index, Prop_FieldOfViewBottomDegrees_Float, "FoV_bottom");
+	float d_min_m = get_float_property(hmd_ptr, device_index, Prop_TrackingRangeMinimumMeters_Float, "RangeMinimumMeters");
+	float d_max_m = get_float_property(hmd_ptr, device_index, Prop_TrackingRangeMaximumMeters_Float, "RangeMaximumMeters");
+	std::string trackingSystemName = get_string_property(hmd_ptr, device_index, Prop_TrackingSystemName_String, "TrackingSystemName");
+	std::string registeredDeviceType = get_string_property(hmd_ptr, device_index, Prop_RegisteredDeviceType_String, "RegisteredDeviceType");
+	std::string serialNumber = get_string_property(hmd_ptr, device_index, Prop_SerialNumber_String, "SerialNumber");
+	std::string manufacturerSerialNumber = get_string_property(hmd_ptr, device_index, Prop_ManufacturerSerialNumber_String, "ManufacturerSerialNumber");
+	std::string hardwareRevision = get_string_property(hmd_ptr, device_index, Prop_HardwareRevision_String, "HardwareRevision");
+	std::string renderModelName = get_string_property(hmd_ptr, device_index, Prop_RenderModelName_String, "RenderModelName");
+	std::string computedSerialNumber = get_string_property(hmd_ptr, device_index, Prop_ComputedSerialNumber_String, "ComputedSerialNumber");
+	std::string modelNumber = get_string_property(hmd_ptr, device_index, Prop_ModelNumber_String, "ModelNumber");
+	std::string manufacturerName = get_string_property(hmd_ptr, device_index, Prop_ManufacturerName_String, "ManufacturerName");
+	std::string modeLabel = get_string_property(hmd_ptr, device_index, Prop_ModeLabel_String, "ModeLabel");
+	//Prop_Nonce_Int32
+}
 
 const std::vector<std::pair<int, int> >& openvr_kit::get_controller_throttles_and_sticks(int controller_index) const
 {
@@ -125,6 +196,7 @@ void extract_trackable_state(const vr::TrackedDevicePose_t& tracked_pose, vr_tra
 		}
 	}
 }
+
 /// retrieve the current state of vr kit and optionally wait for poses optimal for rendering, return false if vr_kit is not connected anymore
 bool openvr_kit::query_state(vr_kit_state& state, int pose_query)
 {
@@ -136,7 +208,7 @@ bool openvr_kit::query_state(vr_kit_state& state, int pose_query)
 	bool controller_only = controller_onlys[0] || controller_onlys[1];
 	pose_query = pose_query & 3;
 
-//	if (pose_query < 2) {
+	//if (pose_query < 2) {
 		for (int ci = 0; ci < 2; ++ci) {
 			if (controller_only && !controller_onlys[1 - ci])
 				continue;
@@ -155,7 +227,7 @@ bool openvr_kit::query_state(vr_kit_state& state, int pose_query)
 				extract_controller_state(controller_state, state.controller[ci]);
 			}
 		}
-//	}
+	//}
 	if (pose_query == 0 || (pose_query == 1) && controller_only)
 		return true;
 	/*
@@ -171,6 +243,7 @@ bool openvr_kit::query_state(vr_kit_state& state, int pose_query)
 	*/
 
 	static vr::TrackedDevicePose_t tracked_poses[vr::k_unMaxTrackedDeviceCount];
+	/*
 	if (vr::VRCompositor()) {
 		if (pose_query == 2)
 			vr::VRCompositor()->WaitGetPoses(NULL, 0, tracked_poses, vr::k_unMaxTrackedDeviceCount);
@@ -179,12 +252,14 @@ bool openvr_kit::query_state(vr_kit_state& state, int pose_query)
 		state.hmd.status = vr::VRS_TRACKED;
 	}
 	else {
+	*/
 		vr::VRSystem()->GetDeviceToAbsoluteTrackingPose(vr::TrackingUniverseRawAndUncalibrated, 0.01f, tracked_poses, vr::k_unMaxTrackedDeviceCount);
 		state.hmd.status = vr::VRS_DETACHED;
-	}
+	//}
 	int next_generic_controller_index = 2;
 	state.controller[2].status = vr::VRS_DETACHED;
 	state.controller[3].status = vr::VRS_DETACHED;
+	clear_reference_states();
 	for (int device_index = 0; device_index < vr::k_unMaxTrackedDeviceCount; ++device_index)
 	{
 		if (tracked_poses[device_index].bPoseIsValid) {
@@ -211,7 +286,10 @@ bool openvr_kit::query_state(vr_kit_state& state, int pose_query)
 				}
 				break;
 			case TrackedDeviceClass_TrackingReference :
-//				get_hmd()->Get
+				//analyze_tracking_reference(get_hmd(), device_index);
+				//tracked_pose_ptr = &ref_reference_state(
+				//	get_string_property(get_hmd(), device_index, Prop_SerialNumber_String)
+				//);
 				break;
 			}
 			if (tracked_pose_ptr) {

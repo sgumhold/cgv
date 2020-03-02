@@ -89,6 +89,7 @@ public:
 	float body_height;
 	InteractionMode interaction_mode;
 	quat hand_orientation[2];
+
 protected:
 	// emulation
 	bool installed;

@@ -10,6 +10,31 @@ namespace vr {
 		return vr_kit_map;
 	}
 
+	/// provide reference to reference states
+	vr_trackable_state& vr_driver::ref_reference_state(const std::string& serial_nummer) 
+	{
+		return reference_states[serial_nummer]; 
+	}
+	
+	/// remove all reference states
+	void vr_driver::clear_reference_states() 
+	{
+		reference_states.clear(); 
+	}
+	
+	/// mark all reference states as untracked
+	void vr_driver::mark_references_as_untracked() 
+	{
+		for (auto& s : reference_states)
+			s.second.status = VRS_DETACHED;
+	}
+
+	/// provide read only access to reference states
+	const std::map<std::string, vr_trackable_state>& vr_driver::get_reference_states() const 
+	{ 
+		return reference_states; 
+	}
+
 	/// declare destructor virtual to ensure it being called also for derived classes
 	vr_driver::~vr_driver()
 	{
