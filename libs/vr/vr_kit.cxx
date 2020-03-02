@@ -1,7 +1,24 @@
 #include "vr_kit.h"
+#include "vr_driver.h"
 #include <cgv/math/fmat.h>
 
 namespace vr {
+
+	/// 
+	vr_trackable_state& vr_kit::ref_reference_state(const std::string& serial_nummer) 
+	{
+		return driver->ref_reference_state(serial_nummer); 
+	}
+	/// remove all reference states
+	void vr_kit::clear_reference_states() 
+	{
+		driver->clear_reference_states(); 
+	}
+	/// mark all reference states as untracked
+	void vr_kit::mark_references_as_untracked() 
+	{
+		driver->mark_references_as_untracked(); 
+	}
 	/// destruct camera
 	void vr_kit::destruct_camera()
 	{

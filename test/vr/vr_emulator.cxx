@@ -225,6 +225,17 @@ vr_emulator::vr_emulator() : cgv::base::node("vr_emulator")
 	ffb_support = true;
 	wireless = false;
 	counter = 0;
+	reference_states["vr_emulator_base_01"].status = vr::VRS_TRACKED;
+	reinterpret_cast<mat3&>(*reference_states["vr_emulator_base_01"].pose)
+		= cgv::math::rotate3<float>(vec3(-20.0f, 45.0f, 0));
+	reinterpret_cast<vec3&>(reference_states["vr_emulator_base_01"].pose[9])
+		= vec3(1.0f, 2.0f, 1.0f);
+	reference_states["vr_emulator_base_02"].status = vr::VRS_TRACKED;
+	reinterpret_cast<mat3&>(*reference_states["vr_emulator_base_02"].pose)
+		= cgv::math::rotate3<float>(vec3(-20.0f, -45.0f, 0));
+	reinterpret_cast<vec3&>(reference_states["vr_emulator_base_02"].pose[9])
+		= vec3(-1.0f, 2.0f, 1.0f);
+
 	connect(cgv::gui::get_animation_trigger().shoot, this, &vr_emulator::timer_event);
 }
 

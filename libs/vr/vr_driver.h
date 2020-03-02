@@ -1,6 +1,8 @@
 #pragma once
 
 #include "vr_kit.h"
+#include <string>
+#include <map>
 
 /** \defgroup VR Virtual Reality
   The library cgv/libs/vr is the basis for implementing vr apps. 
@@ -42,6 +44,7 @@ namespace vr {
 	class CGV_API vr_driver
 	{
 	protected:
+		std::map<std::string, vr_trackable_state> reference_states;
 		/// driver index is set during registration
 		unsigned driver_index;
 		/// call this method during scanning of vr kits. In case vr kit handle had been registered before, previous copy is deleted and a warning is issued
@@ -50,6 +53,14 @@ namespace vr {
 		void replace_vr_kit(void* handle, vr_kit* kit);
 		/// initialize the camera of a vr_kit and return whether this was successful
 		bool initialize_camera(vr_kit* kit) const;
+		/// allow access to reference poses
+		friend class vr_kit;
+		/// provide reference to reference states
+		vr_trackable_state& ref_reference_state(const std::string& serial_nummer);
+		/// remove all reference states
+		void clear_reference_states();
+		/// mark all reference states as untracked
+		void mark_references_as_untracked();
 	public:
 		void set_index(unsigned _idx);
 		/// declare destructor virtual to ensure it being called also for derived classes
@@ -74,6 +85,8 @@ namespace vr {
 		virtual float get_action_zone_height() const = 0;
 		/// return a vector of floor points defining the action zone boundary as a closed polygon
 		virtual void put_action_zone_bounary(std::vector<float>& boundary) const = 0;
+		/// provide read only access to reference states
+		const std::map<std::string, vr_trackable_state>& get_reference_states() const;
 	};
 	/// return a vector with all registered vr drivers
 	extern CGV_API std::vector<vr_driver*>& get_vr_drivers();
