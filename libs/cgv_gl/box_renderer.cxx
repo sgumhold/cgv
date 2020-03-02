@@ -93,7 +93,7 @@ namespace cgv {
 
 			return surface_renderer::disable(ctx);
 		}
-		///
+
 		void box_renderer::draw(context& ctx, int offset, int count)
 		{
 			if(validate_and_enable(ctx)) {

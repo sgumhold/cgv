@@ -4,6 +4,7 @@
 #include <cgv/render/shader_program.h>
 #include <cgv/render/vertex_buffer.h>
 #include <cgv/render/attribute_array_binding.h>
+#include <cgv_gl/gl/gl_context.h>
 
 #include "gl/lib_begin.h"
 
@@ -42,7 +43,7 @@ namespace cgv { // @<
 					vbo_ptr = new vertex_buffer();
 					res = vbo_ptr->create(ctx, array);
 				}
-				if (res)
+				if(res)
 					res = ctx.set_attribute_array_void(&aab, loc, array_descriptor_traits <T>::get_type_descriptor(array), vbo_ptr, 0, array_descriptor_traits < T>::get_nr_elements(array));
 				return res;
 			}
@@ -228,6 +229,24 @@ namespace cgv { // @<
 			void draw(context& ctx, int offset, int count);
 			/// the clear function destructs the shader program
 			virtual void clear(const context& ctx);
+
+
+			// TODO: should this be done this way?
+			int get_vbo(const context& ctx, const std::string attr_name) {
+
+				if(aam_ptr) {
+					int loc = ref_prog().get_attribute_location(ctx, attr_name);
+					auto it = aam_ptr->vbos.find(loc);
+					if(it != aam_ptr->vbos.end()) {
+						vertex_buffer* vbo_ptr = aam_ptr->vbos[loc];
+						if(vbo_ptr->handle) {
+							return (const int&)vbo_ptr->handle - 1;
+						}
+					}
+				}
+
+				return (const int&)-1;
+			}
 		};
 	}
 }

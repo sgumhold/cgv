@@ -76,6 +76,7 @@ public:
 		 - glvs ... ST_VERTEX
 		 - glgs ... ST_GEOMETRY
 		 - glfs ... ST_FRAGMENT
+		 - glcs ... ST_COMPUTE
 	*/
 	static ShaderType detect_shader_type(const std::string& file_name);
 	/// destruct shader code
