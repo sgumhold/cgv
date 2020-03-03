@@ -511,6 +511,35 @@ void vr_view_interactor::configure_kits()
 	}
 }
 
+/// apply calibration to a single pose
+void vr_view_interactor::calibrate_pose(float pose[12], const mat3& R) const
+{
+	mat3& O = reinterpret_cast<mat3&>(pose[0]);
+	vec3& p = reinterpret_cast<vec3&>(pose[9]);
+	O = R * O;
+	p = R * (p - tracking_rotation_origin) + tracking_origin;
+}
+
+void vr_view_interactor::calibrate_state_poses(vr::vr_kit_state& state) const
+{
+	mat3 R = cgv::math::rotate3<float>(tracking_rotation, vec3(0, 1, 0));
+	// update tracking positions according to calibration
+	if (state.hmd.status == vr::VRS_TRACKED)
+		calibrate_pose(state.hmd.pose, R);
+	for (int ci = 0; ci < 4; ++ci) {
+		if (state.controller[ci].status == vr::VRS_TRACKED)
+			calibrate_pose(state.controller[ci].pose, R);
+	}
+}
+
+/// apply calibration to reference states
+void vr_view_interactor::calibrate_reference_states(std::map<std::string, vr::vr_trackable_state>& reference_states) const
+{
+	mat3 R = cgv::math::rotate3<float>(tracking_rotation, vec3(0, 1, 0));
+	for (auto& s : reference_states)
+		calibrate_pose(s.second.pose, R);
+}
+
 // query vr state
 void vr_view_interactor::query_vr_states()
 {
@@ -521,22 +550,7 @@ void vr_view_interactor::query_vr_states()
 		if (current_kit_ptr) {
 			vr::vr_kit_state& state = kit_states[current_vr_handle_index];
 			current_kit_ptr->query_state(state, 2);
-			mat3 R = cgv::math::rotate3<float>(tracking_rotation, vec3(0, 1, 0));
-			// update tracking positions according to calibration
-			if (state.hmd.status == vr::VRS_TRACKED) {
-				mat3& O = reinterpret_cast<mat3&>(state.hmd.pose[0]);
-				vec3& p = reinterpret_cast<vec3&>(state.hmd.pose[9]);
-				O = R * O;
-				p = R * (p - tracking_rotation_origin) + tracking_origin;
-			}
-			for (int ci = 0; ci < 4; ++ci) {
-				if (state.controller[ci].status == vr::VRS_TRACKED) {
-					mat3& O = reinterpret_cast<mat3&>(state.controller[ci].pose[0]);
-					vec3& p = reinterpret_cast<vec3&>(state.controller[ci].pose[9]);
-					O = R * O;
-					p = R * (p - tracking_rotation_origin) + tracking_origin;
-				}
-			}
+			calibrate_state_poses(state);
 			cgv::gui::ref_vr_server().check_new_state(current_vr_handle, state, cgv::gui::trigger::get_current_time(), event_flags);
 		}
 	}
@@ -793,7 +807,8 @@ void vr_view_interactor::draw_vr_kits(cgv::render::context& ctx)
 		}
 	}
 	for (auto& dp : driver_set) {
-		const auto& ss = dp->get_reference_states();
+		auto ss = dp->get_reference_states();
+		calibrate_reference_states(ss);
 		for (const auto& s : ss) {
 			if (s.second.status == vr::VRS_TRACKED) {
 				if ((base_vis_type & VVT_SPHERE) != 0)

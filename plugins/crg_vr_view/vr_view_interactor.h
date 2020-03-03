@@ -104,6 +104,12 @@ class CGV_API vr_view_interactor : public stereo_view_interactor
 	vec3 tracking_rotation_origin;
 	/// origin of tracking coordinate system given in world coordinates
 	vec3 tracking_origin;
+	/// apply calibration to a single pose
+	void calibrate_pose(float pose[12], const mat3& R) const;
+	/// apply calibration to all poses of a given state
+	void calibrate_state_poses(vr::vr_kit_state& state) const;
+	/// apply calibration to reference states
+	void calibrate_reference_states(std::map<std::string, vr::vr_trackable_state>& reference_states) const;
 	//@}
 private:
 	mat34 start_pose;

@@ -86,7 +86,7 @@ namespace vr {
 		/// return a vector of floor points defining the action zone boundary as a closed polygon
 		virtual void put_action_zone_bounary(std::vector<float>& boundary) const = 0;
 		/// provide read only access to reference states
-		const std::map<std::string, vr_trackable_state>& get_reference_states() const;
+		virtual const std::map<std::string, vr_trackable_state>& get_reference_states() const;
 	};
 	/// return a vector with all registered vr drivers
 	extern CGV_API std::vector<vr_driver*>& get_vr_drivers();

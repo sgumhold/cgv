@@ -70,7 +70,11 @@ enum InteractionMode {
 	IM_LEFT_HAND,
 	IM_RIGHT_HAND,
 	IM_TRACKER_1,
-	IM_TRACKER_2
+	IM_TRACKER_2,
+	IM_BASE_1,
+	IM_BASE_2,
+	IM_BASE_3,
+	IM_BASE_4
 };
 
 class CGV_API vr_emulator : 
@@ -90,11 +94,15 @@ public:
 	InteractionMode interaction_mode;
 	quat hand_orientation[2];
 
+	quat coordinate_rotation;
+	vec3 coordinate_displacement;
+	std::vector<quat> base_orientations;
 protected:
+	mutable std::map<std::string, vr::vr_trackable_state> transformed_reference_states;
+
 	// emulation
 	bool installed;
 	float body_speed;
-
 
 	bool left_ctrl, right_ctrl, up_ctrl, down_ctrl;
 	bool home_ctrl, end_ctrl, pgup_ctrl, pgdn_ctrl;
@@ -155,6 +163,8 @@ public:
 	bool self_reflect(cgv::reflect::reflection_handler& srh);
 	/// you must overload this for gui creation
 	void create_gui();
+	/// provide read only access to reference states
+	const std::map<std::string, vr::vr_trackable_state>& get_reference_states() const;
 };
 
 #include <cgv/config/lib_end.h>
