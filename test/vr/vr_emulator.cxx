@@ -1,5 +1,6 @@
 #include "vr_emulator.h"
 #include <cgv/math/ftransform.h>
+#include <cgv/math/pose.h>
 #include <cgv/gui/key_event.h>
 #include <cgv/gui/trigger.h>
 #include <cgv_reflect_types/math/fvec.h>
@@ -176,6 +177,16 @@ bool vr_emulated_kit::query_state(vr::vr_kit_state& state, int pose_query)
 {
 	compute_state_poses();
 	state = this->state;
+	const vr_emulator* vr_em_ptr = dynamic_cast<const vr_emulator*>(get_driver());
+	if (vr_em_ptr) {
+		// transform state with coordinate transformation
+		mat34 coordinate_transform;
+		vr_em_ptr->coordinate_rotation.put_matrix(reinterpret_cast<mat3&>(coordinate_transform));
+		reinterpret_cast<vec3&>(coordinate_transform(0, 3)) = vr_em_ptr->coordinate_displacement;
+		cgv::math::pose_transform(coordinate_transform, reinterpret_cast<mat34&>(state.hmd.pose[0]));
+		for (int i = 0; i < 4; ++i)
+			cgv::math::pose_transform(coordinate_transform, reinterpret_cast<mat34&>(state.controller[i].pose[0]));
+	}
 	return true;
 }
 
@@ -225,16 +236,23 @@ vr_emulator::vr_emulator() : cgv::base::node("vr_emulator")
 	ffb_support = true;
 	wireless = false;
 	counter = 0;
+	
 	reference_states["vr_emulator_base_01"].status = vr::VRS_TRACKED;
-	reinterpret_cast<mat3&>(*reference_states["vr_emulator_base_01"].pose)
-		= cgv::math::rotate3<float>(vec3(-20.0f, 45.0f, 0));
+	mat3& ref_ori_1 = reinterpret_cast<mat3&>(*reference_states["vr_emulator_base_01"].pose);
+	ref_ori_1 = cgv::math::rotate3<float>(vec3(-20.0f, 45.0f, 0));
+	base_orientations.push_back(quat(ref_ori_1));
 	reinterpret_cast<vec3&>(reference_states["vr_emulator_base_01"].pose[9])
 		= vec3(1.0f, 2.0f, 1.0f);
+
 	reference_states["vr_emulator_base_02"].status = vr::VRS_TRACKED;
-	reinterpret_cast<mat3&>(*reference_states["vr_emulator_base_02"].pose)
-		= cgv::math::rotate3<float>(vec3(-20.0f, -45.0f, 0));
+	mat3& ref_ori_2 = reinterpret_cast<mat3&>(*reference_states["vr_emulator_base_02"].pose);
+	ref_ori_2 = cgv::math::rotate3<float>(vec3(-20.0f, -45.0f, 0));
+	base_orientations.push_back(quat(ref_ori_2));
 	reinterpret_cast<vec3&>(reference_states["vr_emulator_base_02"].pose[9])
 		= vec3(-1.0f, 2.0f, 1.0f);
+
+	coordinate_rotation = quat(1.0f, 0.0f, 0.0f, 0.0f);
+	coordinate_displacement = vec3(0.0f);
 
 	connect(cgv::gui::get_animation_trigger().shoot, this, &vr_emulator::timer_event);
 }
@@ -281,31 +299,59 @@ void vr_emulator::timer_event(double t, double dt)
 		case IM_RIGHT_HAND:
 		case IM_TRACKER_1:
 		case IM_TRACKER_2:
+		case IM_BASE_1:
+		case IM_BASE_2:
+		case IM_BASE_3:
+		case IM_BASE_4:
+		{
+			quat* orientation_ptr = 0;
+			vec3* position_ptr = 0;
+			if (interaction_mode < IM_BASE_1) {
+				orientation_ptr = &kits[current_kit_index]->hand_orientation[interaction_mode - 1];
+				position_ptr = &kits[current_kit_index]->hand_position[interaction_mode - 1];
+			}
+			else {
+				uint32_t i = interaction_mode - IM_BASE_1;
+				if (i < reference_states.size()) {
+					auto iter = reference_states.begin();
+					while (i > 0) {
+						++iter;
+						--i;
+					}
+					orientation_ptr = &base_orientations[interaction_mode - IM_BASE_1];
+					position_ptr = &reinterpret_cast<vec3&>(iter->second.pose[9]);
+				}
+			}
 			if (left_ctrl || right_ctrl) {
 				if (is_alt)
-					kits[current_kit_index]->hand_position[interaction_mode - 1][0] += 0.3f * (float)(left_ctrl ? -dt : dt);
+					(*position_ptr)[0] += 0.3f * (float)(left_ctrl ? -dt : dt);
 				else
-					kits[current_kit_index]->hand_orientation[interaction_mode - 1] = quat(vec3(0, 1, 0), (float)(right_ctrl ? -dt : dt))*kits[current_kit_index]->hand_orientation[interaction_mode - 1];
+					*orientation_ptr = quat(vec3(0, 1, 0), (float)(right_ctrl ? -dt : dt))*(*orientation_ptr);
 				update_all_members();
 				post_redraw();
 			}
 			if (up_ctrl || down_ctrl) {
 				if (is_alt)
-					kits[current_kit_index]->hand_position[interaction_mode - 1][1] += 0.3f * (float)(down_ctrl ? -dt : dt);
+					(*position_ptr)[1] += 0.3f * (float)(down_ctrl ? -dt : dt);
 				else
-					kits[current_kit_index]->hand_orientation[interaction_mode - 1] = quat(vec3(1, 0, 0), (float)(up_ctrl ? -dt : dt))*kits[current_kit_index]->hand_orientation[interaction_mode - 1];
+					*orientation_ptr = quat(vec3(1, 0, 0), (float)(up_ctrl ? -dt : dt))*(*orientation_ptr);
 				update_all_members();
 				post_redraw();
 			}
 			if (pgup_ctrl || pgdn_ctrl) {
 				if (is_alt)
-					kits[current_kit_index]->hand_position[interaction_mode - 1][2] += 0.3f * (float)(pgup_ctrl ? -dt : dt);
+					(*position_ptr)[2] += 0.3f * (float)(pgup_ctrl ? -dt : dt);
 				else
-					kits[current_kit_index]->hand_orientation[interaction_mode - 1] = quat(vec3(0, 0, 1), (float)(pgup_ctrl ? -dt : dt))*kits[current_kit_index]->hand_orientation[interaction_mode - 1];
+					*orientation_ptr = quat(vec3(0, 0, 1), (float)(pgup_ctrl ? -dt : dt))*(*orientation_ptr);
 				update_all_members();
 				post_redraw();
 			}
+			if (interaction_mode >= IM_BASE_1) {
+				if (!is_alt)
+					on_set(orientation_ptr);
+			}
 			break;
+		}
 		}
 	}
 }
@@ -316,6 +362,14 @@ void vr_emulator::on_set(void* member_ptr)
 	if (member_ptr == &current_kit_index) {
 		while (current_kit_index >= (int)kits.size())
 			add_new_kit();
+	}
+	if (!base_orientations.empty()) {
+		auto iter = reference_states.begin();
+		for (const auto& bo : base_orientations) {
+			if (member_ptr >= &bo && member_ptr < &bo + 1)
+				bo.put_matrix(reinterpret_cast<mat3&>(*iter->second.pose));
+			++iter;
+		}
 	}
 	update_member(member_ptr);
 	post_redraw();
@@ -479,7 +533,7 @@ bool vr_emulator::handle(cgv::gui::event& e)
 	case '1':
 	case '2':
 	case '3':
-		if (ke.get_modifiers() == 0) {
+		if (ke.get_modifiers() == cgv::gui::EM_SHIFT) {
 			if (ke.get_action() != cgv::gui::KA_RELEASE) {
 				current_kit_index = ke.get_key() - '0';
 				if (current_kit_index >= (int)kits.size())
@@ -488,13 +542,17 @@ bool vr_emulator::handle(cgv::gui::event& e)
 			}
 			return true;
 		}
+		else if (ke.get_modifiers() == 0) {
+			interaction_mode = InteractionMode(IM_BODY + ke.get_key() - '0');
+			update_member(&interaction_mode);
+			return true;
+		}
 		break;
 	case '5':
 	case '6':
 	case '7':
 	case '8':
-	case '9':
-		interaction_mode = InteractionMode(IM_BODY + ke.get_key() - '5');
+		interaction_mode = InteractionMode(IM_BODY + ke.get_key() - '0');
 		update_member(&interaction_mode);
 		return true;
 	case 'W': return check_for_button_toggle(ke, 0, vr::VRF_MENU, 0, 1);
@@ -532,8 +590,8 @@ void vr_emulator::stream_help(std::ostream& os)
 {
 	os << "vr_emulator:\n"
 	   << "  Ctrl-Alt-N to create vr kit indexed from 0\n"
-	   << "  <0-3> to select to be controlled vr kit (unselect if key's kit not exits)\n"
-	   << "  <5-9> select <body|left hand|right hand|tracker 1|tracker 2> for control\n"
+	   << "  Shift-<0-3> to select to be controlled vr kit (unselect if key's kit not exits)\n"
+	   << "  <0-8> select <body|left hand|right hand|tracker 1|tracker 2|base 1|base 2|base 3|base 4> for control\n"
 	   << "    body: <up|down> .. move,  <left|right> .. turn, <pgup|pgdn> .. bend, \n"
 	   << "          <home|end> .. gear, <alt>+<left|right> .. side step\n"
 	   << "    hand&tracker: <left|right|up|down|pgdn|pgup> .. rotate or with <alt> translate\n"
@@ -669,6 +727,23 @@ void vr_emulator::create_gui()
 {
 	add_decorator("vr emulator", "heading", "level=2");
 	add_member_control(this, "installed", installed, "check");
+	if (begin_tree_node("base and calib", coordinate_rotation, false, "level=2")) {
+		align("\a");
+		add_decorator("coordinate transform", "heading", "level=3");
+		add_gui("coordinate_rotation", reinterpret_cast<vec4&>(coordinate_rotation), "direction", "options='min=-1;max=1;step=0.0001;ticks=true'");
+		add_gui("coordinate_displacement", coordinate_displacement, "", "options='min=-2;max=2;step=0.0001;ticks=true'");
+		add_decorator("base stations", "heading", "level=3");
+		uint32_t i = 0;
+		for (auto& s : reference_states) {
+			add_decorator(s.first, "heading", "level=3");
+			add_member_control(this, "status", s.second.status, "dropdown", "enums='detached,attached,tracked'");
+			add_gui("orientation", reinterpret_cast<vec4&>(base_orientations[i]), "direction", "options='min=-1;max=1;step=0.0001;ticks=true'");
+			add_gui("position", reinterpret_cast<vec3&>(s.second.pose[9]), "", "options='min=-2;max=2;step=0.0001;ticks=true'");
+			++i;
+		}
+		align("\b");
+		end_tree_node(coordinate_rotation);
+	}
 	if (begin_tree_node("create kit", screen_width, false, "level=2")) {
 		align("\a");
 		add_member_control(this, "screen_width", screen_width, "value_slider", "min=320;max=1920;ticks=true");
@@ -683,7 +758,7 @@ void vr_emulator::create_gui()
 		end_tree_node(screen_width);
 	}
 	add_view("current_kit", current_kit_index, "", "w=50", " ");
-	add_member_control(this, "mode", interaction_mode, "dropdown", "w=100;enums='body,left hand,right hand'");
+	add_member_control(this, "mode", interaction_mode, "dropdown", "w=100;enums='body,left hand,right hand,tracker 1,tracker 2,base 1, base 2,base 3, base 4'");
 	add_member_control(this, "alt", is_alt,   "toggle", "w=15", " ");
 	add_member_control(this, "L", left_ctrl,  "toggle", "w=15", " ");
 	add_member_control(this, "R", right_ctrl, "toggle", "w=15", " ");
@@ -764,6 +839,19 @@ void vr_emulator::create_gui()
 			end_tree_node(*kits[i]);
 		}
 	}
+}
+
+/// provide read only access to reference states
+const std::map<std::string, vr::vr_trackable_state>& vr_emulator::get_reference_states() const
+{
+	transformed_reference_states = reference_states;
+	// transform state with coordinate transformation
+	mat34 coordinate_transform;
+	coordinate_rotation.put_matrix(reinterpret_cast<mat3&>(coordinate_transform));
+	reinterpret_cast<vec3&>(coordinate_transform(0, 3)) = coordinate_displacement;
+	for (auto& s : transformed_reference_states)
+		cgv::math::pose_transform(coordinate_transform, reinterpret_cast<mat34&>(s.second.pose[0]));
+	return transformed_reference_states;
 }
 
 struct register_driver_and_object
