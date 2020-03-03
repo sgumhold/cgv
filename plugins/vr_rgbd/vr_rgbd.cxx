@@ -71,6 +71,7 @@ protected:
 	bool in_calibration;
 	bool zoom_in;
 	bool zoom_out;
+	bool save_pointcloud;
 	/// intermediate point cloud and to be rendered point cloud
 	std::vector<vertex> intermediate_pc, current_pc;
 	/// list of recorded point clouds
@@ -81,7 +82,8 @@ protected:
 	std::vector<vec3> translations;
 	/// rendering style for points
 	cgv::render::point_render_style point_style;
-
+	///counter of storing point cloud
+	int counter_pc;
 	//std::vector<point_cloud> pcn;
 
 	int rgbd_controller_index;
@@ -249,6 +251,7 @@ public:
 		in_calibration = false;
 		zoom_in = false;
 		zoom_out = false;
+		save_pointcloud = false;
 		rgbd_2_controller_orientation.identity();
 		rgbd_2_controller_orientation.set_col(0, vec3(-1, 0, 0));
 		rgbd_2_controller_orientation.set_col(1, vec3(0, -0.7071f, 0.7071f));
@@ -277,6 +280,7 @@ public:
 		point_style.blend_points = false;
 		point_style.blend_width_in_pixel = 0;
 		max_nr_shown_recorded_pcs = 20;
+		counter_pc = 0;
 
 		connect(cgv::gui::get_animation_trigger().shoot, this, &vr_rgbd::timer_event);
 	}
@@ -316,32 +320,36 @@ public:
 	{
 		return depth_frame;
 	}
-
-	///demand for point cloud format
-	/*std::string compose_file_name(const std::string& file_name, const pointcloud_format& ff, unsigned idx)
+	///cast vertex to point_cloud
+	void copy_pointcloud(const std::vector<vertex> input, point_cloud &output)
 	{
-		std::string fn = file_name;
-
-		std::stringstream ss;
-		ss << setfill('0') << setw(10) << idx;
-
-		fn += ss.str();
-		return fn + '.' + get_frame_extension(ff);
-	}*/
-
+		for (unsigned int i = 0; i < input.size(); i++)
+		{
+			point_cloud_types::Pnt temp;
+			temp[0] = input.at(i).point[0];
+			temp[1] = input.at(i).point[1];
+			temp[2] = input.at(i).point[2];
+			point_cloud_types::Clr tempcolor;
+			tempcolor[0] = input.at(i).color[0];
+			tempcolor[1] = input.at(i).color[1];
+			tempcolor[2] = input.at(i).color[2];
+			output.P.push_back(temp);
+			output.C.push_back(tempcolor);
+		}
+	}
 	///here should be const point cloud
-	void write_pc_to_disk(const std::string pathname, const char* ptr, size_t size)
+	void write_pcs_to_disk(int i)
 	{
-		if (!recorded_pcs.empty())
+		if (!intermediate_pc.empty())
 		{
 			//define point cloud type, wirte to disk
-			for (auto i : recorded_pcs)
-			{
-				//wirte to disk
-				//ptr = i.data.front();
-				//std::string fn = compose_file_name(path_name + "/kinect_", frame, i);
-			}
-			std::cout << "there are point clouds queue" << std::endl;
+			point_cloud *pc_save = new point_cloud();
+			pc_save->has_clrs = true;
+			copy_pointcloud(intermediate_pc, *pc_save);
+			//std::cout << std::to_string(i) << std::endl;
+			///pathname
+			std::string filename = "D://pointcloud_" + std::to_string(i) + ".obj";
+			pc_save->write(filename);
 		}
 	}
 	size_t read_pc_queue(const std::string filename, std::string content)
@@ -374,6 +382,11 @@ public:
 				// copy computed point cloud
 				if (record_this_frame(t)) {
 					recorded_pcs.push_back(intermediate_pc);
+					if (save_pointcloud)
+					{
+						counter_pc++;
+						write_pcs_to_disk(counter_pc);
+					}
 					current_pc.clear();
 					record_frame = false;
 					update_member(&record_frame);
@@ -461,7 +474,7 @@ public:
 		add_member_control(this, "in_calibration", in_calibration, "check");
 		add_member_control(this, "zoom_in", zoom_in, "check");
 		add_member_control(this, "zoom_out", zoom_out, "check");
-		
+		add_member_control(this, "save_pc", save_pointcloud, "check");
 
 		add_member_control(this, "rgbd_controller_index", rgbd_controller_index, "value_slider", "min=0;max=3;ticks=true");
 		
@@ -507,6 +520,7 @@ public:
 			rh.reflect_member("rgbd_controller_index", rgbd_controller_index) &&
 			rh.reflect_member("zoom_in", zoom_in) &&
 			rh.reflect_member("zoom_out", zoom_out) &&
+			rh.reflect_member("save_pc", save_pointcloud) &&
 			rh.reflect_member("recording_fps", recording_fps) &&
 			rh.reflect_member("ray_length", ray_length) &&
 			rh.reflect_member("record_frame", record_frame) &&
@@ -587,6 +601,19 @@ public:
 				case cgv::gui::KA_RELEASE:
 					zoom_out = false;
 					update_member(&zoom_out);
+					break;
+				}
+			}
+			if (vrke.get_key() == (rgbd_controller_index == 0 ? vr::VR_LEFT_MENU : vr::VR_RIGHT_MENU))
+			{
+				switch (vrke.get_action()) {
+				case cgv::gui::KA_PRESS:
+					clear_all_frames = true;
+					update_member(&clear_all_frames);
+					break;
+				case cgv::gui::KA_RELEASE:
+					clear_all_frames = false;
+					update_member(&clear_all_frames);
 					break;
 				}
 			}
