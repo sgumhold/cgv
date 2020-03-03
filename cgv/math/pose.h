@@ -45,6 +45,11 @@ template <typename T> void pose_append(fmat<T, 3, 4>& pose_1, const fmat<T, 3, 4
 	pose_position(pose_1) += pose_orientation(pose_1)*pose_position(pose_2);
 	pose_orientation(pose_1) *= pose_orientation(pose_2);
 }
+/// inplace transformation of a pose matrix with another pose transformation matrix
+template <typename T> void pose_transform(const fmat<T, 3, 4>& pose_transform, fmat<T, 3, 4>& pose) {
+	pose_position(pose) = pose_position(pose_transform) + pose_orientation(pose_transform)*pose_position(pose);
+	pose_orientation(pose) = pose_orientation(pose_transform)*pose_orientation(pose);
+}
 /// return concatenate of two pose transformations
 template <typename T> fmat<T, 3, 4> pose_concat(const fmat<T, 3, 4>& pose_1, const fmat<T, 3, 4>& pose_2) {
 	fmat<T, 3, 4> pose = pose_1;
