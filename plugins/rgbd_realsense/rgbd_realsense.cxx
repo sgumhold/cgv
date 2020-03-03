@@ -356,7 +356,6 @@ namespace rgbd {
 				rs2_deproject_pixel_to_point(xyz, &depth_intrinsics, depth_pixel, depth_scale*depth);
 				rs2_transform_point_to_point(color_xyz, &extrinsics_to_color_stream, xyz);
 				rs2_project_point_to_pixel(color_pixel, &color_intrinsics, color_xyz);
-				float* target = color_coordinates + 2 * (depth_frame.width*y + x);
 				memcpy(color_coordinates+2*(depth_frame.width*y+x), color_pixel, 2 * sizeof(float));
 			}
 		}
