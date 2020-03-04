@@ -274,7 +274,7 @@ void rgbd_control::draw(context& ctx)
 
 	if (MESH_POINTS.size() > 0) {
 		if (MESH_TRI.size() > 0) {
-
+			ctx.mul_modelview_matrix(cgv::math::translate4<double>(-1.5f, 0, 0));
 		}
 		else {
 			ctx.mul_modelview_matrix(cgv::math::translate4<double>(-1.5f, 0, 0));
