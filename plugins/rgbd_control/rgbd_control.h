@@ -65,6 +65,7 @@ protected:
 	bool stream_color;
 	bool stream_depth;
 	bool stream_infrared;
+	bool stream_mesh;
 	std::vector<rgbd::stream_format> color_stream_formats;
 	std::vector<rgbd::stream_format> depth_stream_formats;
 	std::vector<rgbd::stream_format> ir_stream_formats;
@@ -109,13 +110,13 @@ private:
 	float aspect;
 	bool stopped;
 	bool step_only;
-	unsigned nr_depth_frames, nr_color_frames, nr_infrared_frames;
+	unsigned nr_depth_frames, nr_color_frames, nr_infrared_frames,nr_mesh_frames;
 	/// internal members used for configuration
-	bool color_frame_changed, depth_frame_changed, infrared_frame_changed;
+	bool color_frame_changed, depth_frame_changed, infrared_frame_changed,mesh_frame_changed;
 	bool color_attachment_changed, depth_attachment_changed, infrared_attachment_changed;
 
 	/// internal members used for data storage
-	rgbd::frame_type color_frame, depth_frame, ir_frame, warped_color_frame;
+	rgbd::frame_type color_frame, depth_frame, ir_frame, warped_color_frame,mesh_frame;
 	rgbd::frame_type color_frame_2, depth_frame_2, ir_frame_2, warped_color_frame_2;
 
 	std::future<size_t> future_handle;
