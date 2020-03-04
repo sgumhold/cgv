@@ -12,7 +12,7 @@ namespace rgbd {
 	std::string get_frame_extension(const frame_format& ff)
 	{
 		static const char* exts[] = {
-			"ir", "rgb", "bgr", "rgba", "bgra", "byr", "dep", "d_p"
+			"ir", "rgb", "bgr", "rgba", "bgra", "byr", "dep", "d_p", "p_tri"
 		};
 		return std::string(exts[ff.pixel_format]) + to_string(ff.nr_bits_per_pixel);
 	}
