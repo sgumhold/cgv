@@ -257,7 +257,8 @@ void rgbd_control::draw(context& ctx)
 	vec3 flip_vec(flip[0] ? -1.0f : 1.0f, flip[1] ? -1.0f : 1.0f, flip[2] ? -1.0f : 1.0f);
 	ctx.mul_modelview_matrix(cgv::math::scale4<double>(flip_vec[0], -flip_vec[1], -flip_vec[2]));
 	if (P.size() > 0) {
-		ctx.mul_modelview_matrix(cgv::math::translate4<double>(-1.5f,0,0));
+		ctx.mul_modelview_matrix(cgv::math::translate4<double>(-1.5f,0, 0));
+		ctx.mul_modelview_matrix(cgv::math::scale4<double>(0.5, 0.5, 0.5));
 		cgv::render::point_renderer& pr = ref_point_renderer(ctx);
 		pr.set_render_style(prs);
 		pr.set_position_array(ctx, P);
@@ -267,8 +268,29 @@ void rgbd_control::draw(context& ctx)
 			glDrawArrays(GL_POINTS, 0, (GLsizei)P.size());
 			pr.disable(ctx);
 		}
+		ctx.mul_modelview_matrix(cgv::math::scale4<double>(2, 2, 2));
 		ctx.mul_modelview_matrix(cgv::math::translate4<double>(3, 0, 0));
 	}
+
+	if (MESH_POINTS.size() > 0) {
+		if (MESH_TRI.size() > 0) {
+
+		}
+		else {
+			ctx.mul_modelview_matrix(cgv::math::translate4<double>(-1.5f, 0, 0));
+			cgv::render::point_renderer& pr = ref_point_renderer(ctx);
+			pr.set_render_style(prs);
+			pr.set_position_array(ctx, MESH_POINTS);
+			std::vector<rgba8> colors(MESH_POINTS.size(),rgba8(127,127,127,255));
+			pr.set_color_array(ctx,colors);
+			if (pr.validate_and_enable(ctx)) {
+				glDrawArrays(GL_POINTS, 0, (GLsizei)MESH_POINTS.size());
+				pr.disable(ctx);
+			}
+			ctx.mul_modelview_matrix(cgv::math::translate4<double>(3, 0, 0));
+		}
+	}
+
 	// transform to image coordinates
 	ctx.mul_modelview_matrix(cgv::math::scale4<double>(aspect, -1, 1));
 	// enable shader program
@@ -616,6 +638,20 @@ void rgbd_control::timer_event(double t, double dt)
 						mesh_frame_changed = new_mesh_frame_changed;
 						new_frame = true;
 						update_member(&nr_mesh_frames);
+						MESH_POINTS.clear();
+						MESH_TRI.clear();
+						if (mesh_frame.frame_data.size() > sizeof(uint32_t)) {
+							uint32_t points = 0;
+							memcpy(&points, mesh_frame.frame_data.data(), sizeof(uint32_t));
+							//get the point cloud
+							if (mesh_frame.frame_data.size()*points * sizeof(vec3) >= points) {
+								MESH_POINTS.resize(points);
+								size_t offset = sizeof(uint32_t);
+								memcpy(MESH_POINTS.data(), mesh_frame.frame_data.data() + offset, points * sizeof(vec3));
+								offset += points * sizeof(vec3);
+							}
+
+						}
 					}
 				}
 				if (new_frame)
