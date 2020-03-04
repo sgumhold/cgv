@@ -13,6 +13,7 @@
 #include <cgv/render/shader_program.h>
 #include <cgv/render/texture.h>
 #include <cgv_gl/point_renderer.h>
+#include <cgv_gl/surface_renderer.h>
 
 #include <string>
 #include <mutex>
