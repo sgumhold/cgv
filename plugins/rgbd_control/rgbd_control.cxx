@@ -50,6 +50,7 @@ rgbd_control::rgbd_control() :
 	nr_depth_frames = 0;
 	nr_color_frames = 0;
 	nr_infrared_frames = 0;
+	nr_mesh_frames = 0;
 	vis_mode = VM_COLOR;
 	color_scale = 1;
 	depth_scale = 1;
@@ -75,6 +76,7 @@ rgbd_control::rgbd_control() :
 	stream_color = true;
 	stream_depth = true;
 	stream_infrared = false;
+	stream_mesh = false;
 	color_stream_format_idx = -1;
 	depth_stream_format_idx = -1;
 	ir_stream_format_idx = -1;
@@ -430,12 +432,14 @@ void rgbd_control::create_gui()
 	add_view("nr_color_frames", nr_color_frames);
 	add_view("nr_infrared_frames", nr_infrared_frames);
 	add_view("nr_depth_frames", nr_depth_frames);
+	add_view("nr_mesh_frames", nr_mesh_frames);
 
 	if (begin_tree_node("Device", nr_color_frames, true, "level=2")) {
 		align("\a");
 		add_member_control(this, "stream_color", stream_color, "check");
 		add_member_control(this, "stream_depth", stream_depth, "check");
 		add_member_control(this, "stream_infrared", stream_infrared, "check");
+		add_member_control(this, "stream_mesh", stream_mesh, "check");
 		add_member_control(this, "color_stream_format", (DummyEnum&)color_stream_format_idx, "dropdown", get_stream_format_enum(color_stream_formats));
 		add_member_control(this, "depth_stream_format", (DummyEnum&)depth_stream_format_idx, "dropdown", get_stream_format_enum(depth_stream_formats));
 		add_member_control(this, "ir_stream_format", (DummyEnum&)ir_stream_format_idx, "dropdown", get_stream_format_enum(ir_stream_formats));
@@ -603,6 +607,15 @@ void rgbd_control::timer_event(double t, double dt)
 						infrared_frame_changed = new_infrared_frame_changed;
 						new_frame = true;
 						update_member(&nr_infrared_frames);
+					}
+				}
+				if (stream_mesh) {
+					bool new_mesh_frame_changed = rgbd_inp.get_frame(IS_MESH, mesh_frame, 0);
+					if (new_mesh_frame_changed) {
+						++nr_mesh_frames;
+						mesh_frame_changed = new_mesh_frame_changed;
+						new_frame = true;
+						update_member(&nr_mesh_frames);
 					}
 				}
 				if (new_frame)
