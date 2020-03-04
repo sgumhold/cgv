@@ -57,6 +57,8 @@ namespace rgbd {
 		bool capture_thread_running;
 		std::mutex frames_protection;
 		artec::sdk::base::TRef<artec::sdk::capturing::IFrame> frames;
+		artec::sdk::base::TRef<artec::sdk::capturing::IFrameMesh> mesh;
+		bool mesh_changed;
 	};
 
 	class CGV_API rgbd_spider_driver : public rgbd_driver
