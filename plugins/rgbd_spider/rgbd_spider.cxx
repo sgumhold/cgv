@@ -284,16 +284,16 @@ namespace rgbd {
 			//format point_count|point_0,...,point_N|triangle_count|triangle_triplet_0,...,triangle_triplet_M
 			
 			//stream begins with the amount of points in the mesh
-			size_t points_size = points->getSize();
-			memcpy(frame.frame_data.data(), &points_size, sizeof(size_t));
-			size_t offset = sizeof(size_t);
+			uint32_t points_size = points->getSize();
+			memcpy(frame.frame_data.data(), &points_size, sizeof(uint32_t));
+			uint32_t offset = sizeof(uint32_t);
 			//then the Points follow 
 			memcpy(frame.frame_data.data()+offset, points->getPointer(), points_size*sizeof(asdk::Point3F));
 			offset += points_size * sizeof(asdk::Point3F);
-			//the point data ends before points_size * sizeof(asdk::Point3F)+ sizeof(size_t)
-			size_t triangle_size = triangles->getSize();
-			memcpy(frame.frame_data.data()+offset, &triangle_size, sizeof(size_t));
-			offset += sizeof(size_t);
+			//the point data ends before points_size * sizeof(asdk::Point3F)+ sizeof(uint32_t)
+			uint32_t triangle_size = triangles->getSize();
+			memcpy(frame.frame_data.data()+offset, &triangle_size, sizeof(uint32_t));
+			offset += sizeof(uint32_t);
 			
 			memcpy(frame.frame_data.data()+offset, triangles->getPointer(), triangles->getSize() * sizeof(asdk::IndexTriplet));
 			return true;

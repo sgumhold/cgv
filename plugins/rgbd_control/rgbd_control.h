@@ -82,6 +82,10 @@ protected:
 	std::vector<vec3> P, P2;
 	std::vector<rgba8> C, C2;
 
+	/// mesh
+	std::vector<int> MESH_TRI;
+	std::vector<vec3> MESH_POINTS;
+
 	/// processing parameters
 	bool remap_color;
 	bool flip[3];
