@@ -25,7 +25,7 @@ using asdk::TRef;
 
 namespace rgbd {
 
-	rgbd_spider::rgbd_spider() : capture_thread_running(false),serial("") {
+	rgbd_spider::rgbd_spider() : capture_thread_running(false),serial(""), mesh_changed(false), capture_thread(nullptr){
 	}
 
 	rgbd_spider::~rgbd_spider() {
@@ -89,7 +89,7 @@ namespace rgbd {
 	
 	bool rgbd_spider::check_input_stream_configuration(InputStreams is) const
 	{
-		static const unsigned streams_avaiable = IS_COLOR;// | IS_MESH;
+		static const unsigned streams_avaiable = IS_COLOR | IS_MESH;
 		return (~(~is | streams_avaiable)) == 0;
 	}
 
@@ -107,9 +107,9 @@ namespace rgbd {
 		if (is & IS_COLOR) {
 			stream_formats.push_back(stream_format(info->textureSizeY, info->textureSizeX, PF_RGB, fps, 24));
 		}
-		/*else if (is & IS_MESH) {
-			stream_formats.push_back(stream_format(1, 1, PF_INDEXED_TRIANGLE, fps, 8));
-		}*/
+		else if (is & IS_MESH) {
+			stream_formats.push_back(stream_format(1, 1, PF_POINTS_AND_TRIANGLES, fps, 8));
+		}
 	}
 
 	bool rgbd_spider::start_device(InputStreams is, std::vector<stream_format>& stream_formats)
@@ -152,13 +152,12 @@ namespace rgbd {
 			if (format.pixel_format == PF_RGB) {
 				color_stream = format;
 			}
-			/*else if (format.pixel_format == PF_INDEXED_TRIANGLE) {
+			/*else if (format.pixel_format == PF_POINTS_AND_TRIANGLES) {
 				mesh_stream = format;
 			}*/
 		}
 
-		auto ec = scanner->createFrameProcessor(&frame_processor);
-		if (ec != asdk::ErrorCode_OK) {
+		if (scanner->createFrameProcessor(&frame_processor) != asdk::ErrorCode_OK) {
 			cerr << "rgbd_spider::start_device : failed to create the frame processor\n";
 		}
 
@@ -198,6 +197,12 @@ namespace rgbd {
 				std::lock_guard<std::mutex> guard(frames_protection);
 				//copy buffer
 				frames = new_frame;
+				TRef<asdk::IFrameMesh> new_mesh;
+				auto ec = frame_processor->reconstructMesh(&new_mesh, frames);
+				if (ec == asdk::ErrorCode_OK) {
+					mesh_changed = true;
+					mesh = new_mesh;
+				}
 			}
 		}
 	}
@@ -245,27 +250,29 @@ namespace rgbd {
 			memcpy(frame.frame_data.data(), image->getPointer(), color_stream.buffer_size);
 			return true;
 		}
-		else if (false /*is == IS_MESH*/) {
-			if (t->microSeconds == last_mesh_frame_time.microSeconds && t->seconds == last_mesh_frame_time.seconds) return false;
-			last_mesh_frame_time = *t;
-
-			//create triangle mesh from frames
-			TRef<asdk::IFrameMesh> mesh;
-			auto ec = frame_processor->reconstructMesh(&mesh,frames);
-			if (ec != asdk::ErrorCode_OK) {
-				cerr << "rgbd_spider::get_frame : failed to reconstruct mesh\n";
+		else if (is == IS_MESH) {
+			if (!mesh_changed) {
 				return false;
 			}
+			//if (t->microSeconds == last_mesh_frame_time.microSeconds && t->seconds == last_mesh_frame_time.seconds) return false;
+			//last_mesh_frame_time = *t;
+
 			//get points and triangles
+			mesh_changed = false;
 			TRef<asdk::IArrayPoint3F> points = mesh->getPoints();
 			TRef<asdk::IArrayIndexTriplet> triangles = mesh->getTriangles();
-			
+			if (!points || !triangles) {
+				cerr << "rgbd_spider::get_frame : reconstructed mesh is empty!\n";
+				return false;
+			}
+
 			//write frame meta data
 			static_cast<frame_format&>(frame) = mesh_stream;
 			frame.time = duration_cast<milliseconds>(steady_clock::now().time_since_epoch()).count();
 			frame.height = 1;
-			frame.width = sizeof(size_t) + points->getSize()*sizeof(asdk::IArrayPoint3F) + triangles->getSize()*sizeof(asdk::IArrayIndexTriplet);
+			frame.width = 2*sizeof(size_t) + points->getSize()*sizeof(asdk::Point3F) + triangles->getSize()*sizeof(asdk::IndexTriplet);
 			frame.compute_buffer_size();
+			frame.pixel_format = PF_POINTS_AND_TRIANGLES;
 			if (frame.frame_data.size() != frame.buffer_size) {
 				frame.frame_data.resize(frame.buffer_size);
 			}
@@ -278,14 +285,14 @@ namespace rgbd {
 			memcpy(frame.frame_data.data(), &points_size, sizeof(size_t));
 			size_t offset = sizeof(size_t);
 			//then the Points follow 
-			memcpy(frame.frame_data.data()+offset, points, points_size*sizeof(asdk::IArrayPoint3F));
-			offset += points_size * sizeof(asdk::IArrayPoint3F);
-			//the point data ends before points_size * sizeof(asdk::IArrayPoint3F)+ sizeof(size_t)
+			memcpy(frame.frame_data.data()+offset, points->getPointer(), points_size*sizeof(asdk::Point3F));
+			offset += points_size * sizeof(asdk::Point3F);
+			//the point data ends before points_size * sizeof(asdk::Point3F)+ sizeof(size_t)
 			size_t triangle_size = triangles->getSize();
-			memcpy(frame.frame_data.data()+offset, triangles_size, sizeof(size_t));
+			memcpy(frame.frame_data.data()+offset, &triangle_size, sizeof(size_t));
 			offset += sizeof(size_t);
 			
-			memcpy(frame.frame_data.data()+offset, triangles, triangles->getSize() * sizeof(asdk::IArrayIndexTriplet));
+			memcpy(frame.frame_data.data()+offset, triangles->getPointer(), triangles->getSize() * sizeof(asdk::IndexTriplet));
 			return true;
 		}
 		return false;
