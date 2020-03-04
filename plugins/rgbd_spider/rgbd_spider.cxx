@@ -135,6 +135,9 @@ namespace rgbd {
 		if (is && IS_COLOR) {
 			stream_formats.push_back(color_stream = stream_format(info->textureSizeY, info->textureSizeX, PF_RGB, fps, 24));
 		}
+		if (is && IS_MESH) {
+			stream_formats.push_back(mesh_stream = stream_format(0, 0, PF_POINTS_AND_TRIANGLES, fps, 8));
+		}
 		return this->start_device(stream_formats);
 	}
 
@@ -152,9 +155,9 @@ namespace rgbd {
 			if (format.pixel_format == PF_RGB) {
 				color_stream = format;
 			}
-			/*else if (format.pixel_format == PF_POINTS_AND_TRIANGLES) {
+			else if (format.pixel_format == PF_POINTS_AND_TRIANGLES) {
 				mesh_stream = format;
-			}*/
+			}
 		}
 
 		if (scanner->createFrameProcessor(&frame_processor) != asdk::ErrorCode_OK) {

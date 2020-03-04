@@ -43,18 +43,18 @@ namespace rgbd {
 		last_color_frame_time = 0;
 		last_depth_frame_time = 0;
 		last_ir_frame_time = 0;
+		last_mesh_frame_time = 0;
 
-		has_color_stream = false;
-		has_depth_stream = false;
-		has_ir_stream = false;
 		//list of supported extensions
 		static vector<string> color_exts = {"rgb", "bgr", "rgba", "bgra", "byr"};
 		static vector<string> depth_exts = {"dep", "d_p"};
 		static vector<string> ir_exts = {"ir"};
+		static vector<string> mesh_exts = {"p_tri"};
 		//query streams
 		has_color_stream = find_stream_info(path_name, color_exts, color_stream);
 		has_depth_stream = find_stream_info(path_name, depth_exts, depth_stream);
 		has_ir_stream = find_stream_info(path_name, ir_exts, ir_stream);
+		has_mesh_stream = find_stream_info(path_name, mesh_exts, mesh_stream);
 
 		//find first frame file
 		void* file = cgv::utils::file::find_first(path_name + "/kinect_*");
@@ -148,6 +148,9 @@ namespace rgbd {
 		if (has_ir_stream) {
 			streams_avaiable |= IS_INFRARED;
 		}
+		if (has_mesh_stream) {
+			streams_avaiable |= IS_MESH;
+		}
 		return (~(~streams_in | streams_avaiable)) == 0;
 	}
 	void rgbd_emulation::query_stream_formats(InputStreams is, std::vector<stream_format>& stream_formats) const
@@ -160,6 +163,9 @@ namespace rgbd {
 		}
 		if (has_ir_stream && (is & IS_INFRARED)) {
 			stream_formats.push_back(ir_stream);
+		}
+		if (has_mesh_stream && (is & IS_MESH)) {
+			stream_formats.push_back(mesh_stream);
 		}
 	}
 	bool rgbd_emulation::start_device(InputStreams is, std::vector<stream_format>& stream_formats)
@@ -190,6 +196,9 @@ namespace rgbd {
 				continue;
 			}
 			if (has_ir_stream && stream == ir_stream) {
+				continue;
+			}
+			if (has_mesh_stream && stream == mesh_stream) {
 				continue;
 			}
 			return false;
@@ -282,6 +291,10 @@ namespace rgbd {
 			stream = &ir_stream;
 			last_frame_time = &last_ir_frame_time;
 			break;
+		case IS_MESH:
+			stream = &mesh_stream;
+			last_frame_time = &last_mesh_frame_time;
+			break;
 		}
 
 		if (stream == nullptr) {
@@ -327,7 +340,7 @@ namespace rgbd {
 		}
 
 		frame.buffer_size = data.size();
-		if (frame.frame_data.size() < frame.buffer_size) {
+		if (frame.frame_data.size() != frame.buffer_size) {
 			frame.frame_data.resize(frame.buffer_size);
 		}
 		memcpy(&frame.frame_data.front(), &data.front(), data.size());
