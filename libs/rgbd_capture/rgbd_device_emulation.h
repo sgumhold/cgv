@@ -48,13 +48,14 @@ public:
 private:
 	bool rgbd_emulation::get_frame_sync(InputStreams is, frame_type& frame, int timeOut);
 
-	stream_format color_stream, depth_stream, ir_stream;
-	bool has_color_stream, has_depth_stream, has_ir_stream;
+	stream_format color_stream, depth_stream, ir_stream,mesh_stream;
+	bool has_color_stream, has_depth_stream, has_ir_stream,has_mesh_stream;
 	bool device_is_running;
 	double last_color_frame_time;
 	double last_depth_frame_time;
 	double last_ir_frame_time;
-	frame_type next_color_frame, next_depth_frame, next_ir_frame;
+	double last_mesh_frame_time;
+	frame_type next_color_frame, next_depth_frame, next_ir_frame,next_mesh_frame;
 	size_t number_of_files;
 	emulator_parameters parameters;
 };
