@@ -13,6 +13,7 @@
 #include <cgv/type/standard_types.h>
 #include <cgv/math/ftransform.h>
 #include <cgv/math/svd.h>
+#include <cgv_gl/surfel_renderer.h>
 
 using namespace std;
 using namespace cgv::base;
@@ -64,6 +65,10 @@ rgbd_control::rgbd_control() :
 	prs.blend_width_in_pixel = 0.0f;
 	prs.blend_points = false;
 	remap_color = true;
+
+	srs.surface_color = rgb8(160, 160, 160);
+	srs.illumination_mode = cgv::render::IlluminationMode::IM_TWO_SIDED;
+	srs.culling_mode = cgv::render::CullingMode::CM_OFF;
 
 	device_mode = DM_DETACHED;
 	device_idx = -2;
@@ -158,6 +163,7 @@ bool rgbd_control::init(cgv::render::context& ctx)
 		view_ptr->set_focus(vec3(0, 0, 0));
 	}
 	cgv::render::ref_point_renderer(ctx, 1);
+	cgv::render::ref_surfel_renderer(ctx, 1);
 	return true;
 }
 
@@ -169,6 +175,7 @@ void rgbd_control::clear(cgv::render::context& ctx)
 	depth.destruct(ctx);
 	rgbd_prog.destruct(ctx);
 	cgv::render::ref_point_renderer(ctx, -1);
+	cgv::render::ref_surfel_renderer(ctx, -1);
 }
 
 void rgbd_control::update_texture_from_frame(context& ctx, texture& tex, const frame_type& frame, bool recreate, bool replace)
@@ -273,8 +280,18 @@ void rgbd_control::draw(context& ctx)
 	}
 
 	if (MESH_POINTS.size() > 0) {
-		if (MESH_TRI.size() > 0) {
+		if (false /*MESH_TRI.size() > 0*/) {
 			ctx.mul_modelview_matrix(cgv::math::translate4<double>(-1.5f, 0, 0));
+			cgv::render::surfel_renderer& sr = ref_surfel_renderer(ctx);
+			sr.set_render_style(srs);
+			sr.set_position_array(ctx, MESH_POINTS);
+			std::vector<rgba8> colors(MESH_POINTS.size(), rgba8(127, 127, 127, 255));
+			sr.set_color_array(ctx, colors);
+			if (sr.validate_and_enable(ctx)) {
+				glDrawElements(GL_TRIANGLES, MESH_TRI.size()/3, GL_UNSIGNED_INT, MESH_TRI.data());
+				sr.disable(ctx);
+			}
+			ctx.mul_modelview_matrix(cgv::math::translate4<double>(3, 0, 0));
 		}
 		else {
 			ctx.mul_modelview_matrix(cgv::math::translate4<double>(-1.5f, 0, 0));
@@ -644,13 +661,17 @@ void rgbd_control::timer_event(double t, double dt)
 							uint32_t points = 0;
 							memcpy(&points, mesh_frame.frame_data.data(), sizeof(uint32_t));
 							//get the point cloud
-							if (mesh_frame.frame_data.size()*points * sizeof(vec3) >= points) {
+							if (mesh_frame.pixel_format == PF_POINTS_AND_TRIANGLES) {
 								MESH_POINTS.resize(points);
 								size_t offset = sizeof(uint32_t);
 								memcpy(MESH_POINTS.data(), mesh_frame.frame_data.data() + offset, points * sizeof(vec3));
 								offset += points * sizeof(vec3);
+								uint32_t triangles = 0;
+								memcpy(&triangles, mesh_frame.frame_data.data()+offset, sizeof(uint32_t));
+								offset += sizeof(uint32_t);
+								MESH_TRI.resize(3*triangles);
+								memcpy(MESH_TRI.data(), mesh_frame.frame_data.data()+offset, triangles*3*sizeof(uint32_t));
 							}
-
 						}
 					}
 				}

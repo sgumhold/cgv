@@ -84,7 +84,7 @@ protected:
 	std::vector<rgba8> C, C2;
 
 	/// mesh
-	std::vector<int> MESH_TRI;
+	std::vector<uint32_t> MESH_TRI;
 	std::vector<vec3> MESH_POINTS;
 
 	/// processing parameters
@@ -98,6 +98,7 @@ protected:
 	float infrared_scale;
 	vec2 depth_range;
 	cgv::render::point_render_style prs;
+	cgv::render::surface_render_style srs;
 
 	/// texture, shaders and display lists
 	cgv::data::data_format color_fmt, depth_fmt, infrared_fmt;
