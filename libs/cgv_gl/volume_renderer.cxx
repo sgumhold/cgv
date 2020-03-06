@@ -90,7 +90,7 @@ namespace cgv {
 				return false;
 
 			volume_texture = _volume_texture;
-			volume_texture_size = vec3(volume_texture->get_width(), volume_texture->get_height(), volume_texture->get_depth());
+			volume_texture_size = vec3(float(volume_texture->get_width()), float(volume_texture->get_height()), float(volume_texture->get_depth()));
 			return true;
 		}
 
@@ -144,33 +144,30 @@ namespace cgv {
 			ref_prog().set_uniform(ctx, "tex_size", volume_texture_size);
 			ref_prog().set_uniform(ctx, "tex_coord_scaling", vec3(cgv::math::max_value(volume_texture_size)) / volume_texture_size);
 			ref_prog().set_uniform(ctx, "transformation_matrix", vrs.transformation_matrix);
+
+			glEnable(GL_BLEND);
+			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+			glCullFace(GL_FRONT);
+
+			volume_texture->enable(ctx, 0);
 			return true;
 		}
 		///
 		bool volume_renderer::disable(context& ctx)
 		{
+			volume_texture->disable(ctx);
+
+			glDisable(GL_BLEND);
+
 			if (!attributes_persist()) {}
 
 			return renderer::disable(ctx);
 		}
 		///
-		void volume_renderer::draw(context& ctx, int offset, int count)
+		void volume_renderer::draw(context& ctx, size_t start, size_t count, bool use_strips, bool use_adjacency, uint32_t strip_restart_index)
 		{
-			if(validate_and_enable(ctx)) {
-				glEnable(GL_BLEND);
-				glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-				glCullFace(GL_FRONT);
-
-				volume_texture->enable(ctx, 0);
-
-				glDrawArrays(GL_TRIANGLE_STRIP, 0, (GLsizei)14);
-
-				volume_texture->disable(ctx);
-
-				glDisable(GL_BLEND);
-				disable(ctx);
-			}
+			glDrawArrays(GL_TRIANGLE_STRIP, 0, (GLsizei)14);
 		}
 	}
 }

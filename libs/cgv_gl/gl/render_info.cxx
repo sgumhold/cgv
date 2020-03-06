@@ -39,8 +39,11 @@ void render_info::draw(context& ctx, const draw_call& dc, const draw_call* prev_
 	bool new_prog = true;
 	if (prev_dc && prev_dc->prog == dc.prog)
 		new_prog = false;
-	if (new_prog && dc.prog)
+	bool prog_enabled = false;
+	if (new_prog && dc.prog && ctx.get_current_program() != dc.prog) {
 		dc.prog->enable(ctx);
+		prog_enabled = true;
+	}
 
 	// ensure material is enabled
 	bool new_material = true;
@@ -88,7 +91,7 @@ void render_info::draw(context& ctx, const draw_call& dc, const draw_call* prev_
 		ctx.disable_material(*materials[dc.material_index]);
 
 	// disable program
-	if (!next_dc || next_dc->prog != dc.prog)
+	if ((!next_dc || next_dc->prog != dc.prog) && prog_enabled)
 		dc.prog->disable(ctx);
 
 	glDisable(GL_BLEND);

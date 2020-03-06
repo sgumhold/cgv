@@ -45,7 +45,8 @@ namespace cgv {
 			template <typename T>
 			void set_normal_array(const context& ctx, const T* normals, size_t nr_elements, unsigned stride_in_bytes = 0) { has_normals = true;  set_attribute_array(ctx, ref_prog().get_attribute_location(ctx, "normal"), normals, nr_elements, stride_in_bytes); }
 			/// convenience function to render with default settings
-			void draw(context& ctx, int offset, int count);
+			void draw(context& ctx, size_t start, size_t count,
+				bool use_strips = false, bool use_adjacency = false, uint32_t strip_restart_index = -1);
 		};
 
 		struct CGV_API normal_render_style_reflect : public normal_render_style

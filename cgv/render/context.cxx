@@ -384,7 +384,7 @@ void context::enable_sRGB_framebuffer(bool do_enable)
 shader_program_base* context::get_current_program() const
 {
 	if (shader_program_stack.empty()) {
-		error("context::get_current_program() called in core profile without current shader program");
+		//error("context::get_current_program() called in core profile without current shader program");
 		return 0;
 	}
 	shader_program_base& prog = *shader_program_stack.top();

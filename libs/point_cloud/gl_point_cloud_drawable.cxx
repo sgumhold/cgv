@@ -106,9 +106,7 @@ void gl_point_cloud_drawable::render_boxes(context& ctx, group_renderer& R, cgv:
 	R.set_position_array(ctx, &pc.box(0).get_min_pnt(), pc.get_nr_components(), sizeof(Box));
 	if (use_component_colors)
 		R.set_color_array(ctx, &pc.component_color(0), pc.get_nr_components());
-	R.validate_and_enable(ctx);
-	glDrawArrays(GL_POINTS, 0, GLsizei(pc.get_nr_components()));
-	R.disable(ctx);
+	R.render(ctx, 0, pc.get_nr_components());
 }
 
 void gl_point_cloud_drawable::draw_box(cgv::render::context& ctx, const Box& box, const rgba& clr)
@@ -120,9 +118,8 @@ void gl_point_cloud_drawable::draw_box(cgv::render::context& ctx, const Box& box
 	b_renderer.set_render_style(box_style);
 	b_renderer.set_box_array(ctx, &box, 1);
 	b_renderer.set_color_array(ctx, &clr, 1);
-	b_renderer.validate_and_enable(ctx);
-	glDrawArrays(GL_POINTS, 0, 1);
-	b_renderer.disable(ctx);
+	b_renderer.render(ctx, 0, 1);
+
 	box_style.use_group_color = tmp_use_color;
 	box_style.use_group_transformation = tmp_use_transformation;
 
@@ -132,9 +129,7 @@ void gl_point_cloud_drawable::draw_box(cgv::render::context& ctx, const Box& box
 	box_wire_style.use_group_transformation = false;
 	bw_renderer.set_box_array(ctx, &box, 1);
 	bw_renderer.set_color_array(ctx, &clr, 1);
-	bw_renderer.validate_and_enable(ctx);
-	glDrawArrays(GL_POINTS, 0, 1);
-	bw_renderer.disable(ctx);
+	bw_renderer.render(ctx, 0, 1);
 	box_wire_style.use_group_color = tmp_use_color;
 	box_wire_style.use_group_transformation = tmp_use_transformation;
 }
@@ -285,11 +280,9 @@ void gl_point_cloud_drawable::draw_normals(context& ctx)
 		n_renderer.set_color_array(ctx, &pc.clr(0), pc.get_nr_points(), sizeof(Clr)*show_point_step);
 	if (pc.has_normals())
 		n_renderer.set_normal_array(ctx, &pc.nml(0), pc.get_nr_points(), sizeof(Nml)*show_point_step);
-	n_renderer.validate_and_enable(ctx);
 	std::size_t n = (show_point_end - show_point_begin) / show_point_step;
 	GLint offset = GLint(show_point_begin / show_point_step);
-	glDrawArrays(GL_POINTS, offset, GLsizei(n));
-	n_renderer.disable(ctx);
+	n_renderer.render(ctx, offset,n);
 }
 
 

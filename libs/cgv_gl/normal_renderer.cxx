@@ -75,12 +75,9 @@ namespace cgv {
 			return true;
 		}
 
-		void normal_renderer::draw(context& ctx, int offset, int count)
+		void normal_renderer::draw(context& ctx, size_t start, size_t count, bool use_strips, bool use_adjacency, uint32_t strip_restart_index)
 		{
-			if(validate_and_enable(ctx)) {
-				glDrawArrays(GL_POINTS, (GLint)offset, (GLsizei)count);
-				disable(ctx);
-			}
+			draw_impl(ctx, PT_POINTS, start, count, false, false, -1);
 		}
 
 		bool normal_render_style_reflect::self_reflect(cgv::reflect::reflection_handler& rh)

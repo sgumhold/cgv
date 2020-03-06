@@ -842,9 +842,7 @@ void vr_view_interactor::draw_vr_kits(cgv::render::context& ctx)
 		sr.set_render_style(srs);
 		sr.set_sphere_array(ctx, spheres);
 		sr.set_color_array(ctx, sphere_colors);
-		sr.validate_and_enable(ctx);
-		glDrawArrays(GL_POINTS, 0, GLsizei(spheres.size()));
-		sr.disable(ctx);
+		sr.render(ctx, 0, spheres.size());
 	}
 }
 

@@ -109,14 +109,10 @@ namespace cgv {
 			return surface_renderer::disable(ctx);
 		}
 
-		void arrow_renderer::draw(context& ctx, int offset, int count)
+		void arrow_renderer::draw(context& ctx, size_t start, size_t count, bool use_strips, bool use_adjacency, uint32_t strip_restart_index)
 		{
 			const arrow_render_style& ars = get_style<arrow_render_style>();
-
-			if(validate_and_enable(ctx)) {
-				glDrawArraysInstanced(GL_POINTS, (GLint)offset, GLsizei(count), ars.nr_subdivisions);
-				disable(ctx);
-			}
+			draw_impl_instanced(ctx, PT_POINTS, start, count, ars.nr_subdivisions, false, false, -1);
 		}
 
 		bool arrow_render_style_reflect::self_reflect(cgv::reflect::reflection_handler& rh)
