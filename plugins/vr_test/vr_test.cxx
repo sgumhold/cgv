@@ -642,7 +642,7 @@ void vr_test::draw(cgv::render::context& ctx)
 				P.push_back(eye_pos + vd + x - y);
 				P.push_back(eye_pos + vd - x + y);
 				P.push_back(eye_pos + vd + x + y);
-				double v_offset = 0.5 * (1-eye);
+				double v_offset = 0.5 * (1 - eye);
 				T.push_back(dvec2(0.0, 0.5 + v_offset));
 				T.push_back(dvec2(1.0, 0.5 + v_offset));
 				T.push_back(dvec2(0.0, v_offset));
@@ -726,11 +726,7 @@ void vr_test::draw(cgv::render::context& ctx)
 				cr.set_position_array(ctx, P);
 				cr.set_color_array(ctx, C);
 				cr.set_radius_array(ctx, R);
-				if (cr.validate_and_enable(ctx)) {
-					glDrawArrays(GL_LINES, 0, (GLsizei)P.size());
-					cr.disable(ctx);
-				}
-				else {
+				if (!cr.render(ctx, 0, P.size())) {
 					cgv::render::shader_program& prog = ctx.ref_default_shader_program();
 					int pi = prog.get_position_index();
 					int ci = prog.get_color_index();
@@ -760,12 +756,12 @@ void vr_test::draw(cgv::render::context& ctx)
 	if (renderer.validate_and_enable(ctx)) {
 		if (show_seethrough) {
 			glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
-			glDrawArrays(GL_POINTS, 0, 3);
+			renderer.draw(ctx, 0, 3);
 			glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
-			glDrawArrays(GL_POINTS, 3, (GLsizei)movable_boxes.size() - 3);
+			renderer.draw(ctx, 3, movable_boxes.size() - 3);
 		}
 		else
-			glDrawArrays(GL_POINTS, 0, (GLsizei)movable_boxes.size());
+			renderer.draw(ctx, 0, movable_boxes.size());
 	}
 	renderer.disable(ctx);
 
@@ -773,10 +769,7 @@ void vr_test::draw(cgv::render::context& ctx)
 	renderer.set_render_style(style);
 	renderer.set_box_array(ctx, boxes);
 	renderer.set_color_array(ctx, box_colors);
-	if (renderer.validate_and_enable(ctx)) {
-		glDrawArrays(GL_POINTS, 0, (GLsizei)boxes.size());
-	}
-	renderer.disable(ctx);
+	renderer.render(ctx, 0, boxes.size());
 
 
 	// draw intersection points
@@ -785,10 +778,7 @@ void vr_test::draw(cgv::render::context& ctx)
 		sr.set_position_array(ctx, intersection_points);
 		sr.set_color_array(ctx, intersection_colors);
 		sr.set_render_style(srs);
-		if (sr.validate_and_enable(ctx)) {
-			glDrawArrays(GL_POINTS, 0, (GLsizei)intersection_points.size());
-			sr.disable(ctx);
-		}
+		sr.render(ctx, 0, intersection_points.size());
 	}
 
 	// draw label

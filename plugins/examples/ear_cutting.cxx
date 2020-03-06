@@ -375,8 +375,7 @@ public:
 		}
 		pnt_renderer.set_color_array(ctx, colors);
 		pnt_renderer.set_position_array(ctx, points);
-		pnt_renderer.validate_and_enable(ctx);
-			glDrawArrays(GL_POINTS, 0, GLsizei(points.size()));
+		pnt_renderer.render(ctx, 0, points.size());
 		pnt_renderer.disable(ctx);
 
 		if (selected_index != -1)

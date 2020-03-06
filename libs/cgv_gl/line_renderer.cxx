@@ -40,12 +40,9 @@ namespace cgv {
 			return true;
 		}
 
-		void line_renderer::draw(context& ctx, int offset, int count)
+		void line_renderer::draw(context& ctx, size_t start, size_t count, bool use_strips, bool use_adjacency, uint32_t strip_restart_index)
 		{	
-			if(validate_and_enable(ctx)) {
-				glDrawArrays(GL_POINTS, (GLint)offset, GLsizei(count));
-				disable(ctx);
-			}
+			draw_impl(ctx, PT_LINES, start, count, false, false, -1);
 		}
 
 		bool line_render_style_reflect::self_reflect(cgv::reflect::reflection_handler& rh)

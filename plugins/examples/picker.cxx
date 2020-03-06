@@ -202,10 +202,7 @@ void picker::draw(context& ctx)
 				sr.set_position_array(ctx, pnts);
 				sr.set_color_array(ctx, clrs);
 				sr.set_y_view_angle(float(view_ptr->get_y_view_angle()));
-				if (sr.validate_and_enable(ctx)) {
-					glDrawArrays(GL_POINTS, 0, GLsizei(pnts.size()));
-					sr.disable(ctx);
-				}
+				sr.render(ctx, 0, pnts.size());
 			}
 			view_ptr->deactivate_split_viewport(ctx);
 		}

@@ -2897,6 +2897,12 @@ GLenum buffer_usage(VertexBufferUsage vbu)
 	return buffer_usages[vbu];
 }
 
+bool gl_context::vertex_buffer_bind(const vertex_buffer_base& vbb, VertexBufferType _type) const
+{
+	glBindBuffer(buffer_target(_type), get_gl_id(vbb.handle));
+	return !check_gl_error("gl_context::vertex_buffer_bind", &vbb);
+}
+
 bool gl_context::vertex_buffer_create(vertex_buffer_base& vbb, const void* array_ptr, size_t size_in_bytes) const
 {
 	if (!GLEW_VERSION_2_0) {

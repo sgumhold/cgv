@@ -99,10 +99,7 @@ public:
 		R.set_render_style(brs);
 		R.set_box_array(ctx, boxes);
 		R.set_color_array(ctx, box_colors);
-		if (R.validate_and_enable(ctx)) {
-			glDrawArrays(GL_POINTS, 0, (GLsizei)boxes.size());
-			R.disable(ctx);
-		}
+		R.render(ctx, 0, boxes.size());
 	}
 
 	int peel_depth_layers(context& ctx)

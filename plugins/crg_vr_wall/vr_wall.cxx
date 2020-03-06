@@ -765,10 +765,7 @@ namespace vr {
 			br.set_color_array(ctx, box_colors);
 			br.set_translation_array(ctx, box_translations);
 			br.set_rotation_array(ctx, box_rotations);
-			if (br.validate_and_enable(ctx)) {
-				glDrawArrays(GL_POINTS, 0, (GLsizei)boxes.size());
-				br.disable(ctx);
-			}
+			br.render(ctx, 0, boxes.size());
 		}
 		if (wall_state != WS_HMD || ctx.get_render_pass() == cgv::render::RP_MAIN) {
 			std::vector<vec3> P;
@@ -878,10 +875,7 @@ namespace vr {
 			sr.set_position_array(ctx, sphere_positions);
 			sr.set_radius_array(ctx, sphere_radii);
 			sr.set_color_array(ctx, sphere_colors);
-			if (sr.validate_and_enable(ctx)) {
-				glDrawArrays(GL_POINTS, 0, (GLsizei)sphere_positions.size());
-				sr.disable(ctx);
-			}
+			sr.render(ctx, 0, sphere_positions.size());
 			for (ci = 0; ci < ((wall_state == WS_EYES_CALIB) ? 10 : 6); ++ci) {
 				sphere_positions.pop_back();
 				sphere_colors.pop_back();
@@ -894,10 +888,7 @@ namespace vr {
 			ar.set_position_array(ctx, arrow_positions);
 			ar.set_direction_array(ctx, arrow_directions);
 			ar.set_color_array(ctx, arrow_colors);
-			if (ar.validate_and_enable(ctx)) {
-				glDrawArraysInstanced(GL_POINTS, 0, (GLsizei)arrow_positions.size(), ars.nr_subdivisions);
-				ar.disable(ctx);
-			}
+			ar.render(ctx, 0, arrow_positions.size());
 		}
 	}
 	///
@@ -1026,10 +1017,7 @@ namespace vr {
 			pr.set_color_array(ctx, C);
 			pr.set_point_size_array(ctx, R);
 
-			if (pr.validate_and_enable(ctx)) {
-				glDrawArrays(GL_POINTS, 0, P.size());
-				pr.disable(ctx);
-			}
+			pr.render(ctx, 0, P.size());
 		}
 
 		if (wall_state == WS_EYES_CALIB) {
