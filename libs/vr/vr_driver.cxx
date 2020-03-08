@@ -3,13 +3,21 @@
 #include <iostream>
 
 namespace vr {
+	void vr_calibration_base::set_driver_calibration_matrix(vr_driver* driver, const float calibration_matrix[12])
+	{
+		driver->set_calibration_transformation(calibration_matrix);
+	}
+	/// nothing to be done in contructor
+	vr_calibration_base::vr_calibration_base()
+	{
+
+	}
 	/// access to vr_kit map singleton 
 	std::map<void*, vr_kit*>& ref_vr_kit_map()
 	{
 		static std::map<void*, vr_kit*> vr_kit_map;
 		return vr_kit_map;
 	}
-
 	/// provide reference to reference states
 	vr_trackable_state& vr_driver::ref_reference_state(const std::string& serial_nummer) 
 	{
@@ -29,10 +37,74 @@ namespace vr {
 			s.second.status = VRS_DETACHED;
 	}
 
+	/// protected constructor
+	vr_driver::vr_driver()
+	{
+		std::fill(&calibration_matrix[0], &calibration_matrix[0] + 12, 0.0f);
+		calibration_matrix[0] = calibration_matrix[4] = calibration_matrix[8] = 1.0f;
+		use_calibration_matrix = false;
+	}
+
+
+	/// read access to calibration transformation stored as 3x4-matrix
+	void vr_driver::put_calibration_transformation(float transformation_matrix[12]) const
+	{
+		std::copy(&calibration_matrix[0], &calibration_matrix[0] + 12, &transformation_matrix[0]);
+	}
+	/// in case calibration matrix is enabled, transform given pose in place
+	void vr_driver::calibrate_pose(float pose[12]) const
+	{
+		if (!use_calibration_matrix)
+			return;
+		float pos[3];
+		float ori[9];
+		int i;
+		for (i = 0; i < 3; ++i) {
+			pos[i] = calibration_matrix[9 + i];
+			for (int j = 0; j < 3; ++j) {
+				pos[i] += calibration_matrix[3 * j + i] * pose[9 + j];
+				ori[3 * j + i] = 0.0f;
+				for (int k = 0; k < 3; ++k)
+					ori[3 * j + i] += calibration_matrix[3 * k + i] * pose[3 * j + k];
+			}
+		}
+		for (i = 0; i < 3; ++i) {
+			pose[9 + i] = pos[i];
+			for (int j = 0; j < 3; ++j)
+				pose[3 * j + i] = ori[3 * j + i];
+		}
+	}
+
+	/// write access to calibration transformation is reserved to classes derived from vr_calibration_base
+	void vr_driver::set_calibration_transformation(const float new_transformation_matrix[12])
+	{
+		std::copy(&new_transformation_matrix[0], &new_transformation_matrix[0] + 12, &calibration_matrix[0]);
+	}
+	/// enable use of calibration transformation 
+	void vr_driver::enable_calibration_transformation()
+	{
+		use_calibration_matrix = true;
+	}
+	/// disable use of calibration transformation
+	void vr_driver::disable_calibration_transformation()
+	{
+		use_calibration_matrix = false;
+	}
+	/// check whether calibration transformation is enabled; false after construction and typically set to true when calibration is read from calibration file
+	bool vr_driver::is_calibration_transformation_enabled() const
+	{
+		return use_calibration_matrix;
+	}
 	/// provide read only access to reference states
 	const std::map<std::string, vr_trackable_state>& vr_driver::get_reference_states() const 
-	{ 
-		return reference_states; 
+	{
+		if (!is_calibration_transformation_enabled())
+			return reference_states; 
+		calibrated_reference_states = reference_states;
+		for (auto& s : calibrated_reference_states)
+			if (s.second.status == VRS_TRACKED)
+				calibrate_pose(s.second.pose);
+		return calibrated_reference_states;
 	}
 
 	/// declare destructor virtual to ensure it being called also for derived classes

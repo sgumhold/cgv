@@ -31,6 +31,19 @@ namespace vr {
 	/**@name vr driver management*/
 	//@{
 	
+	class CGV_API vr_driver;
+
+	/// base class with write access to driver calibration matrix
+	class CGV_API vr_calibration_base
+	{
+	protected:
+		/// single point of write access to calibration transformation of vr drivers
+		void set_driver_calibration_matrix(vr_driver* driver, const float calibration_matrix[12]);
+	public:
+		/// nothing to be done in contructor
+		vr_calibration_base();
+	};
+
 	//! interface class for vr drivers.
 	/*!	A vr driver has a name get_driver_name() and can be installed 
 	or not installed(). It allows to scan for vr kits 
@@ -43,17 +56,26 @@ namespace vr {
 	*/
 	class CGV_API vr_driver
 	{
-	protected:
-		std::map<std::string, vr_trackable_state> reference_states;
+	private:
 		/// driver index is set during registration
 		unsigned driver_index;
+	protected:
+		/// write access to driver index is restricted to the register_driver() function
+		void set_index(unsigned _idx);
+		friend extern void CGV_API register_driver(vr_driver* vrd);
 		/// call this method during scanning of vr kits. In case vr kit handle had been registered before, previous copy is deleted and a warning is issued
 		void register_vr_kit(void* handle, vr_kit* kit);
 		/// call this method during replacement of vr kits. In case vr kit handle had been registered before it is replaced, otherwise it is registered
 		void replace_vr_kit(void* handle, vr_kit* kit);
 		/// initialize the camera of a vr_kit and return whether this was successful
 		bool initialize_camera(vr_kit* kit) const;
-		/// allow access to reference poses
+	private:
+		/// store poses and tracking status of reference states in map with serial number as key
+		std::map<std::string, vr_trackable_state> reference_states;
+		/// copy of reference states used to store calibrated poses and tracking status of reference states in map with serial number as key
+		mutable std::map<std::string, vr_trackable_state> calibrated_reference_states;
+	protected:
+		/// allow vr_kit access to reference state access functions
 		friend class vr_kit;
 		/// provide reference to reference states
 		vr_trackable_state& ref_reference_state(const std::string& serial_nummer);
@@ -61,8 +83,18 @@ namespace vr {
 		void clear_reference_states();
 		/// mark all reference states as untracked
 		void mark_references_as_untracked();
+	private:
+		/// store calibration matrix
+		float calibration_matrix[12];
+		/// store whether calibration transformation is enabled
+		bool use_calibration_matrix;
+	protected:
+		/// write access to calibration transformation is reserved to classes derived from vr_calibration_base
+		void set_calibration_transformation(const float new_transformation_matrix[12]);
+		friend class vr_calibration_base;
+		/// protected constructor
+		vr_driver();
 	public:
-		void set_index(unsigned _idx);
 		/// declare destructor virtual to ensure it being called also for derived classes
 		virtual ~vr_driver();
 		/// return name of driver
@@ -75,6 +107,7 @@ namespace vr {
 		virtual vr_kit* replace_by_index(int& index, vr_kit* new_kit_ptr) = 0;
 		/// scan all connected vr kits and return a vector with their ids
 		virtual bool replace_by_pointer(vr_kit* old_kit_ptr, vr_kit* new_kit_ptr) = 0;
+
 		/// put a 3d x direction into passed array
 		void put_x_direction(float* x_dir) const;
 		/// put a 3d up direction into passed array
@@ -85,6 +118,19 @@ namespace vr {
 		virtual float get_action_zone_height() const = 0;
 		/// return a vector of floor points defining the action zone boundary as a closed polygon
 		virtual void put_action_zone_bounary(std::vector<float>& boundary) const = 0;
+
+		/// read access to calibration transformation stored as 3x4-matrix
+		void put_calibration_transformation(float transformation_matrix[12]) const;
+		/// in case calibration matrix is enabled, transform given pose in place
+		void calibrate_pose(float pose[12]) const;
+		/// enable use of calibration transformation 
+		void enable_calibration_transformation();
+		/// disable use of calibration transformation
+		void disable_calibration_transformation();
+		/// check whether calibration transformation is enabled; false after construction and typically set to true when calibration is read from calibration file
+		bool is_calibration_transformation_enabled() const;
+
+
 		/// provide read only access to reference states
 		virtual const std::map<std::string, vr_trackable_state>& get_reference_states() const;
 	};

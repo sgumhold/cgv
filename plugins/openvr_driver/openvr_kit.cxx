@@ -198,7 +198,7 @@ void extract_trackable_state(const vr::TrackedDevicePose_t& tracked_pose, vr_tra
 }
 
 /// retrieve the current state of vr kit and optionally wait for poses optimal for rendering, return false if vr_kit is not connected anymore
-bool openvr_kit::query_state(vr_kit_state& state, int pose_query)
+bool openvr_kit::query_state_impl(vr_kit_state& state, int pose_query)
 {
 	vr::TrackedDeviceIndex_t dis[2] = {
 		get_hmd()->GetTrackedDeviceIndexForControllerRole(TrackedControllerRole_LeftHand),

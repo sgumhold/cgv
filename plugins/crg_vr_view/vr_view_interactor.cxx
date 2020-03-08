@@ -186,6 +186,21 @@ void vr_view_interactor::on_device_change(void* device_handle, bool attach)
 		<< (attach?"attach":"detach") << ")" << std::endl;
 }
 
+/// perform driver calibration
+void vr_view_interactor::calibrate_driver()
+{
+	vr::vr_kit* kit_ptr = get_current_vr_kit();
+	if (!kit_ptr)
+		return;
+	const vr::vr_driver* driver_ptr = kit_ptr->get_driver();
+	float calibration_matrix[12];
+	mat34& C = reinterpret_cast<mat34&>(calibration_matrix[0]);
+	pose_orientation(C) = cgv::math::rotate3<float>(tracking_rotation, vec3(0, 1, 0));
+	pose_position(C) = tracking_origin - pose_orientation(C)*tracking_rotation_origin;
+	set_driver_calibration_matrix(const_cast<vr::vr_driver*>(driver_ptr), calibration_matrix);
+	const_cast<vr::vr_driver*>(driver_ptr)->enable_calibration_transformation();
+}
+
 /// return the type name 
 std::string vr_view_interactor::get_type_name() const
 {
@@ -224,6 +239,11 @@ void vr_view_interactor::on_set(void* member_ptr)
 		else
 			if (current_vr_handle_index < int(kits.size()))
 				current_vr_handle = kits[current_vr_handle_index];
+	}
+	if (member_ptr == &tracking_rotation ||
+		(member_ptr >= &tracking_origin && member_ptr < &tracking_origin + 1) ||
+		(member_ptr >= &tracking_rotation_origin && member_ptr < &tracking_rotation_origin + 1)) {
+		calibrate_driver();
 	}
 	if (member_ptr == &head_tracker) {
 		if (current_vr_handle_index >= 0) {
@@ -358,8 +378,11 @@ bool vr_view_interactor::handle(cgv::gui::event& e)
 							tracking_rotation_origin += invR* (p - tracking_origin);
 							tracking_origin = get_focus();
 							p = get_focus();
-							for (int c=0; c<3; ++c)
-								update_member(&tracking_origin[c]);
+							for (int i = 0; i < 3; ++i) {
+								update_member(&tracking_origin[i]);
+								update_member(&tracking_rotation_origin[i]);
+							}
+							calibrate_driver();
 						}
 					}
 				}
@@ -504,40 +527,12 @@ void vr_view_interactor::configure_kits()
 			for (unsigned i = 0; i < kits.size(); ++i)
 				if (kits[i] == current_vr_handle) {
 					current_vr_handle_index = i;
+					calibrate_driver();
 					break;
 				}
 		}
 		update_member(&current_vr_handle_index);
 	}
-}
-
-/// apply calibration to a single pose
-void vr_view_interactor::calibrate_pose(float pose[12], const mat3& R) const
-{
-	mat3& O = reinterpret_cast<mat3&>(pose[0]);
-	vec3& p = reinterpret_cast<vec3&>(pose[9]);
-	O = R * O;
-	p = R * (p - tracking_rotation_origin) + tracking_origin;
-}
-
-void vr_view_interactor::calibrate_state_poses(vr::vr_kit_state& state) const
-{
-	mat3 R = cgv::math::rotate3<float>(tracking_rotation, vec3(0, 1, 0));
-	// update tracking positions according to calibration
-	if (state.hmd.status == vr::VRS_TRACKED)
-		calibrate_pose(state.hmd.pose, R);
-	for (int ci = 0; ci < 4; ++ci) {
-		if (state.controller[ci].status == vr::VRS_TRACKED)
-			calibrate_pose(state.controller[ci].pose, R);
-	}
-}
-
-/// apply calibration to reference states
-void vr_view_interactor::calibrate_reference_states(std::map<std::string, vr::vr_trackable_state>& reference_states) const
-{
-	mat3 R = cgv::math::rotate3<float>(tracking_rotation, vec3(0, 1, 0));
-	for (auto& s : reference_states)
-		calibrate_pose(s.second.pose, R);
 }
 
 // query vr state
@@ -550,7 +545,6 @@ void vr_view_interactor::query_vr_states()
 		if (current_kit_ptr) {
 			vr::vr_kit_state& state = kit_states[current_vr_handle_index];
 			current_kit_ptr->query_state(state, 2);
-			calibrate_state_poses(state);
 			cgv::gui::ref_vr_server().check_new_state(current_vr_handle, state, cgv::gui::trigger::get_current_time(), event_flags);
 		}
 	}
@@ -808,7 +802,6 @@ void vr_view_interactor::draw_vr_kits(cgv::render::context& ctx)
 	}
 	for (auto& dp : driver_set) {
 		auto ss = dp->get_reference_states();
-		calibrate_reference_states(ss);
 		for (const auto& s : ss) {
 			if (s.second.status == vr::VRS_TRACKED) {
 				if ((base_vis_type & VVT_SPHERE) != 0)

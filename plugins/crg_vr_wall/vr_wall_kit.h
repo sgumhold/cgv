@@ -36,6 +36,8 @@ namespace vr {
 		bool wall_context;
 
 		bool in_calibration;
+		/// update state by swapping information of hmd and trackable used to emulate hmd
+		bool query_state_impl(vr_kit_state& state, int pose_query);
 	public:
 		inline const mat3& get_screen_orientation() const { return reinterpret_cast<const mat3&>(screen_pose); }
 		inline const vec3& get_screen_center() const { return screen_pose.col(3); }
@@ -75,8 +77,6 @@ namespace vr {
 		const std::vector<std::pair<int, int> >& get_controller_throttles_and_sticks(int controller_index) const;
 		const std::vector<std::pair<float, float> >& get_controller_throttles_and_sticks_deadzone_and_precision(int controller_index) const;
 		bool set_vibration(unsigned controller_index, float low_frequency_strength, float high_frequency_strength);
-		/// update state by swapping information of hmd and trackable used to emulate hmd
-		bool query_state(vr_kit_state& state, int pose_query);
 		/// access to 3x4 matrix in column major format for transformation from eye (0..left, 1..right) to head coordinates
 		void put_eye_to_head_matrix(int eye, float* pose_matrix) const;
 		/// access to 4x4 matrix in column major format for perspective transformation from eye (0..left, 1..right)

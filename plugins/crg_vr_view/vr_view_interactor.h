@@ -3,6 +3,7 @@
 #include <cgv/base/base.h>
 #include <vr/vr_kit.h>
 #include <cg_vr/vr_server.h>
+#include <vr/vr_driver.h>
 #include <cgv_gl/box_renderer.h>
 #include <cgv_gl/sphere_renderer.h>
 #include <cgv_gl/gl/mesh_render_info.h>
@@ -62,7 +63,7 @@ bool your_class::init(cgv::render::context& ctx)
 }
 ~~~~~~~~~~~~~~~~~~~~~~~~
 */
-class CGV_API vr_view_interactor : public stereo_view_interactor	
+class CGV_API vr_view_interactor : public stereo_view_interactor, public vr::vr_calibration_base
 {
 	ivec4 cgv_viewport;
 	void* fbo_handle;
@@ -104,12 +105,8 @@ class CGV_API vr_view_interactor : public stereo_view_interactor
 	vec3 tracking_rotation_origin;
 	/// origin of tracking coordinate system given in world coordinates
 	vec3 tracking_origin;
-	/// apply calibration to a single pose
-	void calibrate_pose(float pose[12], const mat3& R) const;
-	/// apply calibration to all poses of a given state
-	void calibrate_state_poses(vr::vr_kit_state& state) const;
-	/// apply calibration to reference states
-	void calibrate_reference_states(std::map<std::string, vr::vr_trackable_state>& reference_states) const;
+	/// perform driver calibration
+	void calibrate_driver();
 	//@}
 private:
 	mat34 start_pose;

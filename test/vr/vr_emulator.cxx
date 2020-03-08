@@ -173,7 +173,7 @@ void vr_emulated_kit::set_pose_matrix(const mat4& H, float* pose) const
 	pose[11] = H(2, 3);
 }
 
-bool vr_emulated_kit::query_state(vr::vr_kit_state& state, int pose_query)
+bool vr_emulated_kit::query_state_impl(vr::vr_kit_state& state, int pose_query)
 {
 	compute_state_poses();
 	state = this->state;
@@ -228,7 +228,7 @@ vr_emulator::vr_emulator() : cgv::base::node("vr_emulator")
 	home_ctrl = end_ctrl = pgup_ctrl = pgdn_ctrl = false;
 	installed = true;
 	body_speed = 1.0f;
-	body_position = vec3(0,0,1);
+	body_position = vec3(0, 0, 1);
 	body_height = 1.75f;
 	body_direction = 0;
 	screen_width = 640;
@@ -236,25 +236,41 @@ vr_emulator::vr_emulator() : cgv::base::node("vr_emulator")
 	ffb_support = true;
 	wireless = false;
 	counter = 0;
-	
-	reference_states["vr_emulator_base_01"].status = vr::VRS_TRACKED;
-	mat3& ref_ori_1 = reinterpret_cast<mat3&>(*reference_states["vr_emulator_base_01"].pose);
-	ref_ori_1 = cgv::math::rotate3<float>(vec3(-20.0f, 45.0f, 0));
-	base_orientations.push_back(quat(ref_ori_1));
-	reinterpret_cast<vec3&>(reference_states["vr_emulator_base_01"].pose[9])
-		= vec3(1.0f, 2.0f, 1.0f);
-
-	reference_states["vr_emulator_base_02"].status = vr::VRS_TRACKED;
-	mat3& ref_ori_2 = reinterpret_cast<mat3&>(*reference_states["vr_emulator_base_02"].pose);
-	ref_ori_2 = cgv::math::rotate3<float>(vec3(-20.0f, -45.0f, 0));
-	base_orientations.push_back(quat(ref_ori_2));
-	reinterpret_cast<vec3&>(reference_states["vr_emulator_base_02"].pose[9])
-		= vec3(-1.0f, 2.0f, 1.0f);
 
 	coordinate_rotation = quat(1.0f, 0.0f, 0.0f, 0.0f);
 	coordinate_displacement = vec3(0.0f);
 
+	ref_reference_state("vr_emulator_base_01").status = vr::VRS_TRACKED;
+	mat3& ref_ori_1 = reinterpret_cast<mat3&>(*ref_reference_state("vr_emulator_base_01").pose);
+
+	base_orientations.push_back(quat(cgv::math::rotate3<float>(vec3(-20.0f, 45.0f, 0))));
+	base_positions.push_back(vec3(1.0f, 2.0f, 1.0f));
+	base_serials.push_back("vr_emulator_base_01");
+
+	base_orientations.push_back(quat(cgv::math::rotate3<float>(vec3(-20.0f, -45.0f, 0))));
+	base_positions.push_back(vec3(-1.0f, 2.0f, 1.0f));
+	base_serials.push_back("vr_emulator_base_02");
+
+	update_reference_states();
+
 	connect(cgv::gui::get_animation_trigger().shoot, this, &vr_emulator::timer_event);
+}
+/// update a single renference state or all from base_orientations, base_positions and base_serials
+void vr_emulator::update_reference_states(int i)
+{
+	int ib = i, ie = i + 1;
+	if (i == -1) {
+		ib = 0;
+		ie = (int)base_serials.size();
+	}
+	mat34 coordinate_transform = pose_construct(coordinate_rotation, coordinate_displacement);
+	for (int k = ib; k < ie; ++k) {
+		auto& pose = reinterpret_cast<mat34&>(ref_reference_state(base_serials[k]).pose[0]);
+		ref_reference_state(base_serials[k]).status = vr::VRS_TRACKED;
+		base_orientations[k].put_matrix(pose_orientation(pose));
+		pose_position(pose) = base_positions[k];
+		pose_transform(coordinate_transform, pose);
+	}
 }
 
 void vr_emulator::timer_event(double t, double dt)
@@ -312,15 +328,8 @@ void vr_emulator::timer_event(double t, double dt)
 			}
 			else {
 				uint32_t i = interaction_mode - IM_BASE_1;
-				if (i < reference_states.size()) {
-					auto iter = reference_states.begin();
-					while (i > 0) {
-						++iter;
-						--i;
-					}
-					orientation_ptr = &base_orientations[interaction_mode - IM_BASE_1];
-					position_ptr = &reinterpret_cast<vec3&>(iter->second.pose[9]);
-				}
+				orientation_ptr = &base_orientations[i];
+				position_ptr = &base_positions[i];
 			}
 			if (left_ctrl || right_ctrl) {
 				if (is_alt)
@@ -347,7 +356,9 @@ void vr_emulator::timer_event(double t, double dt)
 				post_redraw();
 			}
 			if (interaction_mode >= IM_BASE_1) {
-				if (!is_alt)
+				if (is_alt)
+					on_set(position_ptr);
+				else
 					on_set(orientation_ptr);
 			}
 			break;
@@ -363,13 +374,11 @@ void vr_emulator::on_set(void* member_ptr)
 		while (current_kit_index >= (int)kits.size())
 			add_new_kit();
 	}
-	if (!base_orientations.empty()) {
-		auto iter = reference_states.begin();
-		for (const auto& bo : base_orientations) {
-			if (member_ptr >= &bo && member_ptr < &bo + 1)
-				bo.put_matrix(reinterpret_cast<mat3&>(*iter->second.pose));
-			++iter;
-		}
+	if (!base_serials.empty()) {
+		for (int i = 0; i < (int)base_serials.size(); ++i)
+			if (member_ptr >= &base_orientations[i] && member_ptr < &base_orientations[i]+1 ||
+				member_ptr >= &base_positions[i] && member_ptr < &base_positions[i]+1)
+				update_reference_states(i);
 	}
 	update_member(member_ptr);
 	post_redraw();
@@ -733,13 +742,10 @@ void vr_emulator::create_gui()
 		add_gui("coordinate_rotation", reinterpret_cast<vec4&>(coordinate_rotation), "direction", "options='min=-1;max=1;step=0.0001;ticks=true'");
 		add_gui("coordinate_displacement", coordinate_displacement, "", "options='min=-2;max=2;step=0.0001;ticks=true'");
 		add_decorator("base stations", "heading", "level=3");
-		uint32_t i = 0;
-		for (auto& s : reference_states) {
-			add_decorator(s.first, "heading", "level=3");
-			add_member_control(this, "status", s.second.status, "dropdown", "enums='detached,attached,tracked'");
+		for (uint32_t i = 0; i < base_serials.size(); ++i) {
+			add_member_control(this, "serial", base_serials[i]);
 			add_gui("orientation", reinterpret_cast<vec4&>(base_orientations[i]), "direction", "options='min=-1;max=1;step=0.0001;ticks=true'");
-			add_gui("position", reinterpret_cast<vec3&>(s.second.pose[9]), "", "options='min=-2;max=2;step=0.0001;ticks=true'");
-			++i;
+			add_gui("position", base_positions[i], "", "options='min=-2;max=2;step=0.0001;ticks=true'");
 		}
 		align("\b");
 		end_tree_node(coordinate_rotation);
@@ -839,19 +845,6 @@ void vr_emulator::create_gui()
 			end_tree_node(*kits[i]);
 		}
 	}
-}
-
-/// provide read only access to reference states
-const std::map<std::string, vr::vr_trackable_state>& vr_emulator::get_reference_states() const
-{
-	transformed_reference_states = reference_states;
-	// transform state with coordinate transformation
-	mat34 coordinate_transform;
-	coordinate_rotation.put_matrix(reinterpret_cast<mat3&>(coordinate_transform));
-	reinterpret_cast<vec3&>(coordinate_transform(0, 3)) = coordinate_displacement;
-	for (auto& s : transformed_reference_states)
-		cgv::math::pose_transform(coordinate_transform, reinterpret_cast<mat34&>(s.second.pose[0]));
-	return transformed_reference_states;
 }
 
 struct register_driver_and_object

@@ -105,6 +105,20 @@ namespace vr {
 		invert_rigid_body_transformation(head_to_world);
 		matrix_multiplication(eye_to_head, head_to_world, modelview_matrix);
 	}
+	bool vr_kit::query_state(vr_kit_state& state, int pose_query)
+	{
+		bool res = query_state_impl(state, pose_query);
+		const vr_driver* dp = get_driver();
+		if (pose_query == 0 || !dp->is_calibration_transformation_enabled())
+			return res;
+		if (state.hmd.status == VRS_TRACKED)
+			dp->calibrate_pose(state.hmd.pose);
+		for (int i = 0; i < 4; ++i)
+			if (state.controller[i].status == VRS_TRACKED)
+				dp->calibrate_pose(state.controller[i].pose);
+		return res;
+	}
+
 }
 
 
