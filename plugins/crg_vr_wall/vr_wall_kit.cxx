@@ -178,7 +178,7 @@ namespace vr {
 		return parent_kit->set_vibration(controller_index, low_frequency_strength, high_frequency_strength);
 	}
 	/// update state by swapping information of hmd and trackable used to emulate hmd
-	bool vr_wall_kit::query_state(vr_kit_state& state, int pose_query) 
+	bool vr_wall_kit::query_state_impl(vr_kit_state& state, int pose_query) 
 	{
 		bool res = parent_kit->query_state(state, pose_query);
 		if (res && !in_calibration) {

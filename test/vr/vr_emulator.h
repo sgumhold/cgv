@@ -53,12 +53,12 @@ protected:
 	mat4 construct_homogeneous_matrix(const quat& orientation, const vec3& position);
 	void set_pose_matrix(const mat4& H, float* pose) const;
 	void compute_state_poses();
+	bool query_state_impl(vr::vr_kit_state& state, int pose_query = 2);
 public:
 	vr_emulated_kit(float _body_direction, const vec3& _body_position, float _body_height, unsigned _width, unsigned _height, vr::vr_driver* _driver, void* _handle, const std::string& _name, bool _ffb_support, bool _wireless);
 	vec3 get_body_direction() const;
 	const std::vector<std::pair<int, int> >& get_controller_throttles_and_sticks(int controller_index) const;
 	const std::vector<std::pair<float, float> >& get_controller_throttles_and_sticks_deadzone_and_precision(int controller_index) const;
-	bool query_state(vr::vr_kit_state& state, int pose_query = 2);
 	bool set_vibration(unsigned controller_index, float low_frequency_strength, float high_frequency_strength);
 	void put_eye_to_head_matrix(int eye, float* pose_matrix) const;
 	void put_projection_matrix(int eye, float z_near, float z_far, float* projection_matrix, const float* hmd_pose) const;
@@ -94,9 +94,16 @@ public:
 	InteractionMode interaction_mode;
 	quat hand_orientation[2];
 
+	// coordinate transform used to emulate a displacement between tracking and world system
 	quat coordinate_rotation;
 	vec3 coordinate_displacement;
+	// information used to define reference states
 	std::vector<quat> base_orientations;
+	std::vector<vec3> base_positions;
+	std::vector<std::string> base_serials;
+	/// update a single renference state or all from base_orientations, base_positions and base_serials
+	void update_reference_states(int i = -1);
+
 protected:
 	mutable std::map<std::string, vr::vr_trackable_state> transformed_reference_states;
 
@@ -163,8 +170,6 @@ public:
 	bool self_reflect(cgv::reflect::reflection_handler& srh);
 	/// you must overload this for gui creation
 	void create_gui();
-	/// provide read only access to reference states
-	const std::map<std::string, vr::vr_trackable_state>& get_reference_states() const;
 };
 
 #include <cgv/config/lib_end.h>

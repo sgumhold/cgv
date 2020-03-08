@@ -71,6 +71,8 @@ namespace vr {
 		void clear_reference_states();
 		/// mark all reference states as untracked
 		void mark_references_as_untracked();
+		/// derived kits implement this without caring about calibration; vr_kit::query_state() will apply driver calibration
+		virtual bool query_state_impl(vr_kit_state& state, int pose_query) = 0;
 		/// construct
 		vr_kit(vr_driver* _driver, void* _handle, const std::string& _name, bool _ffb_support, bool _wireless);
 	public:
@@ -114,14 +116,16 @@ namespace vr {
 			cgv::gui::vr_server::provide_controller_throttles_and_sticks_deadzone_and_precision(). */
 		virtual const std::vector<std::pair<float, float> >& get_controller_throttles_and_sticks_deadzone_and_precision(int controller_index) const = 0;
 		//! query current state of vr kit and return whether this was successful
-		/*! if pose_query is 
-			0 ... no poses are queried
-			1 ... most current pose for controller is queried for example to get pose at button press in highest precision
-			2 ... future pose for rendering next frame is queried for controllers and hmd
-			add 4 to restrict query to left controller
-			add 8 to restrict query to right controller
-			add 12 to restrict query to both controllers */
-		virtual bool query_state(vr_kit_state& state, int pose_query = 2) = 0;
+		/*! \param state state is returned by writing it into passed reference
+		    \param pose_query is 
+				0 ... no poses are queried
+				1 ... most current pose for controller is queried for example to get pose at button press in highest precision
+				2 ... future pose for rendering next frame is queried for controllers and hmd
+				add 4 to restrict query to left controller
+				add 8 to restrict query to right controller
+				add 12 to restrict query to both controllers 
+		*/
+		bool query_state(vr_kit_state& state, int pose_query = 2);
 		//! NOT IMPLEMENTED retrieve next key event from given device, return false if device's event queue is empty
 		/*!Typically you use this function in the following way:
 			while (query_key_event(i,key,action)) { process(key,action); } */
