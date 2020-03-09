@@ -121,6 +121,7 @@ void analyze_tracking_reference(vr::IVRSystem* hmd_ptr, vr::TrackedDeviceIndex_t
 	std::string manufacturerName = get_string_property(hmd_ptr, device_index, Prop_ManufacturerName_String, "ManufacturerName");
 	std::string modeLabel = get_string_property(hmd_ptr, device_index, Prop_ModeLabel_String, "ModeLabel");
 	//Prop_Nonce_Int32
+	std::cout << std::endl;
 }
 
 const std::vector<std::pair<int, int> >& openvr_kit::get_controller_throttles_and_sticks(int controller_index) const
@@ -208,54 +209,45 @@ bool openvr_kit::query_state_impl(vr_kit_state& state, int pose_query)
 	bool controller_only = controller_onlys[0] || controller_onlys[1];
 	pose_query = pose_query & 3;
 
-	//if (pose_query < 2) {
-		for (int ci = 0; ci < 2; ++ci) {
-			if (controller_only && !controller_onlys[1 - ci])
-				continue;
-			if (dis[ci] == -1)
-				state.controller[ci].status = VRS_DETACHED;
+	vr::ETrackingUniverseOrigin tuo = TrackingUniverseRawAndUncalibrated;
+	if (vr::VRCompositor())
+		tuo = vr::VRCompositor()->GetTrackingSpace();
+
+	for (int ci = 0; ci < 2; ++ci) {
+		if (controller_only && !controller_onlys[1 - ci])
+			continue;
+		if (dis[ci] == -1)
+			state.controller[ci].status = VRS_DETACHED;
+		else {
+			VRControllerState_t controller_state;
+			vr::TrackedDevicePose_t tracked_pose;
+			if (pose_query == 0)
+				get_hmd()->GetControllerState(dis[ci], &controller_state, sizeof(controller_state));
 			else {
-				VRControllerState_t controller_state;
-				vr::TrackedDevicePose_t tracked_pose;
-				if (pose_query == 0)
-					get_hmd()->GetControllerState(dis[ci], &controller_state, sizeof(controller_state));
-				else {
-					get_hmd()->GetControllerStateWithPose(TrackingUniverseRawAndUncalibrated, dis[ci],
-						&controller_state, sizeof(controller_state), &tracked_pose);
-					extract_trackable_state(tracked_pose, state.controller[ci]);
-				}
-				extract_controller_state(controller_state, state.controller[ci]);
+				get_hmd()->GetControllerStateWithPose(tuo, dis[ci],
+					&controller_state, sizeof(controller_state), &tracked_pose);
+				extract_trackable_state(tracked_pose, state.controller[ci]);
 			}
+			extract_controller_state(controller_state, state.controller[ci]);
 		}
-	//}
+	}
+
 	if (pose_query == 0 || (pose_query == 1) && controller_only)
 		return true;
-	/*
-	VRControllerState_t controller_state;
-	if (!get_hmd()->IsInputAvailable()) {
-		std::cerr << "no input" << std::endl;
-	}
-	get_hmd()->GetControllerState( left_index, &controller_state, sizeof(VRControllerState_t));
-	extract_controller_state(controller_state, state.controller[0]);
-
-	get_hmd()->GetControllerState(right_index, &controller_state, sizeof(VRControllerState_t));
-	extract_controller_state(controller_state, state.controller[1]);
-	*/
 
 	static vr::TrackedDevicePose_t tracked_poses[vr::k_unMaxTrackedDeviceCount];
-	/*
 	if (vr::VRCompositor()) {
 		if (pose_query == 2)
-			vr::VRCompositor()->WaitGetPoses(NULL, 0, tracked_poses, vr::k_unMaxTrackedDeviceCount);
+			vr::VRCompositor()->WaitGetPoses(tracked_poses, vr::k_unMaxTrackedDeviceCount, NULL, 0);
 		if (pose_query == 1)
 			vr::VRCompositor()->GetLastPoses(tracked_poses, vr::k_unMaxTrackedDeviceCount, NULL, 0);
 		state.hmd.status = vr::VRS_TRACKED;
+		//vr::VRCompositor()->SubmitExplicitTimingData();
 	}
-	else {
-	*/
+	else {	
 		vr::VRSystem()->GetDeviceToAbsoluteTrackingPose(vr::TrackingUniverseRawAndUncalibrated, 0.01f, tracked_poses, vr::k_unMaxTrackedDeviceCount);
 		state.hmd.status = vr::VRS_DETACHED;
-	//}
+	}
 	int next_generic_controller_index = 2;
 	state.controller[2].status = vr::VRS_DETACHED;
 	state.controller[3].status = vr::VRS_DETACHED;
@@ -264,17 +256,8 @@ bool openvr_kit::query_state_impl(vr_kit_state& state, int pose_query)
 	{
 		if (tracked_poses[device_index].bPoseIsValid) {
 			vr_trackable_state* tracked_pose_ptr = 0;
-			switch (get_hmd()->GetTrackedDeviceClass(device_index)) {
-			case TrackedDeviceClass_Controller:
-				switch (get_hmd()->GetControllerRoleForTrackedDeviceIndex(device_index)) {
-				case TrackedControllerRole_LeftHand:
-					tracked_pose_ptr = &state.controller[0];
-					break;
-				case TrackedControllerRole_RightHand:
-					tracked_pose_ptr = &state.controller[1];
-					break;
-				}
-				break;
+			ETrackedDeviceClass tdc = get_hmd()->GetTrackedDeviceClass(device_index);
+			switch (tdc) {
 			case TrackedDeviceClass_HMD:
 				tracked_pose_ptr = &state.hmd;
 				break;
@@ -287,13 +270,14 @@ bool openvr_kit::query_state_impl(vr_kit_state& state, int pose_query)
 				break;
 			case TrackedDeviceClass_TrackingReference :
 				//analyze_tracking_reference(get_hmd(), device_index);
-				//tracked_pose_ptr = &ref_reference_state(
-				//	get_string_property(get_hmd(), device_index, Prop_SerialNumber_String)
-				//);
+				tracked_pose_ptr = &ref_reference_state(
+					get_string_property(get_hmd(), device_index, Prop_SerialNumber_String)
+				);
 				break;
 			}
 			if (tracked_pose_ptr) {
-				put_pose_matrix(tracked_poses[device_index].mDeviceToAbsoluteTracking, tracked_pose_ptr->pose);
+				put_pose_matrix(tracked_poses[device_index].mDeviceToAbsoluteTracking, tracked_pose_ptr->pose);				
+				tracked_pose_ptr->status = tracked_poses[device_index].bPoseIsValid ? VRS_TRACKED : VRS_ATTACHED;
 			}
 		}
 	}
@@ -340,10 +324,11 @@ void openvr_kit::submit_frame()
 	vr::Texture_t leftEyeTexture = { (void*)(uintptr_t)tex_id[0], vr::TextureType_OpenGL, vr::ColorSpace_Gamma };
 	if (!vr::VRCompositor())
 		return;
-	vr::VRCompositor()->Submit(vr::Eye_Left, &leftEyeTexture);
+	EVRCompositorError cel = vr::VRCompositor()->Submit(vr::Eye_Left, &leftEyeTexture);
 	vr::Texture_t rightEyeTexture = { (void*)(uintptr_t)tex_id[1], vr::TextureType_OpenGL, vr::ColorSpace_Gamma };
-	vr::VRCompositor()->Submit(vr::Eye_Right, &rightEyeTexture);
+	EVRCompositorError cer = vr::VRCompositor()->Submit(vr::Eye_Right, &rightEyeTexture);
 	glFlush();
+//	vr::VRCompositor()->PostPresentHandoff();
 }
 
 /// initialize render targets and framebuffer objects in current opengl context
@@ -351,12 +336,14 @@ bool openvr_kit::init_fbos()
 {
 	if (!gl_vr_display::init_fbos())
 		return false;
-/*
+
 	if (!vr::VRCompositor()) {
 		last_error = "Compositor initialization failed. See log file for details";
 		return false;
 	}
-	*/
+//	else
+//		vr::VRCompositor()->SetExplicitTimingMode(VRCompositorTimingMode_Explicit_RuntimePerformsPostPresentHandoff);
+//		vr::VRCompositor()->SetExplicitTimingMode(vr::VRCompositorTimingMode_Explicit_ApplicationPerformsPostPresentHandoff);
 	return true;
 }
 
