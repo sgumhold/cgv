@@ -3,6 +3,7 @@
 #include <vr/vr_kit.h>
 #include <vr/vr_state.h>
 #include <cg_vr/vr_server.h>
+#include <cg_vr/vr_events.h>
 #include "vr_wall_kit.h"
 #include <vr/gl_vr_display.h>
 #include <cgv/base/node.h>

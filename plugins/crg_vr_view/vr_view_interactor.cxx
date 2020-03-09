@@ -12,6 +12,7 @@
 #include <sstream>
 #include <vr/vr_kit.h>
 #include <vr/vr_driver.h>
+#include <cg_vr/vr_events.h>
 
 ///
 vr_view_interactor::vr_view_interactor(const char* name) : stereo_view_interactor(name),
