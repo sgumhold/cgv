@@ -9,6 +9,7 @@
 #include <cgv/render/attribute_array_binding.h>
 #include <cgv_gl/sphere_renderer.h>
 #include <cgv/media/mesh/simple_mesh.h>
+#include <cg_vr/vr_events.h>
 
 #include <random>
 
