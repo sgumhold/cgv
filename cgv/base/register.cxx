@@ -10,6 +10,8 @@
 #include <set>
 
 #if defined(_WIN32)
+#include <Windows.h>
+#include <strsafe.h>
 #if defined(NDEBUG)
 #define CGV_NDEBUG
 #endif
@@ -999,13 +1001,41 @@ bool process_command_ext(const command_info& info, bool* persistent, config_file
 		if (persistent)
 			*persistent = false;
 		return true;
-	case CT_PLUGIN:
+	case CT_PLUGIN: {
 		if (load_plugin(to_string(info.parameters[0]))) {
 			std::cout << "read plugin " << info.parameters[0] << std::endl;
 			return true;
 		}
 		std::cerr << "error reading plugin " << info.parameters[0] << std::endl;
+
+		// Reaching this point means the library could not be loaded.
+		// Therefore use the approriate system facilities to print an error
+		// message.
+#ifdef _WIN32
+		LPVOID lpMsgBuf;
+		DWORD dw = GetLastError();
+
+		FormatMessage(
+			FORMAT_MESSAGE_ALLOCATE_BUFFER |
+			FORMAT_MESSAGE_FROM_SYSTEM |
+			FORMAT_MESSAGE_IGNORE_INSERTS,
+			NULL,
+			dw,
+			MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
+			(LPTSTR)&lpMsgBuf,
+			0, NULL);
+
+		std::wcerr << (LPTSTR)lpMsgBuf;
+
+		LocalFree(lpMsgBuf);
+#else
+		auto error_string = dlerror();
+		if (nullptr != error_string)
+			std::cerr << error_string;
+#endif
+
 		return false;
+	}
 	case CT_CONFIG:
 		if (process_config_file_ext(to_string(info.parameters[0]), persistent)) {
 			std::cout << "read config file " << get_config_file_name(to_string(info.parameters[0])) << std::endl;
