@@ -35,7 +35,7 @@ fvec<T, 3> inverse_pose_transform_point(const fmat<T, 3, 4>& pose, const fvec<T,
 template <typename T>
 fvec<T, 3> inverse_pose_transform_vector(const fmat<T, 3, 4>& pose, const fvec<T, 3>& v) { return v * pose_orientation(pose); }
 /// inplace inversion of pose transformation
-template <typename T> void invert_pose(fmat<T, 3, 4>& pose) { pose_orientation(pose).transpose(); pose_position(pose) -= pose_orientation(pose)*pose_position(pose); }
+template <typename T> void invert_pose(fmat<T, 3, 4>& pose) { pose_orientation(pose).transpose(); pose_position(pose) = -pose_orientation(pose)*pose_position(pose); }
 /// return a pose matrix with the inverse pose transformation
 template <typename T> fmat<T, 3, 4> pose_inverse(const fmat<T, 3, 4>& pose) { fmat<T, 3, 4> inv_pose = pose; invert_pose(inv_pose); return inv_pose; }
 /// construct pose from rotation matrix and position vector
