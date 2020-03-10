@@ -13,7 +13,6 @@
 #include <cgv/render/shader_program.h>
 #include <cgv/render/texture.h>
 #include <cgv_gl/point_renderer.h>
-#include <cgv_gl/surface_renderer.h>
 
 #include <string>
 #include <mutex>
@@ -98,7 +97,6 @@ protected:
 	float infrared_scale;
 	vec2 depth_range;
 	cgv::render::point_render_style prs;
-	cgv::render::surface_render_style srs;
 
 	/// texture, shaders and display lists
 	cgv::data::data_format color_fmt, depth_fmt, infrared_fmt;
