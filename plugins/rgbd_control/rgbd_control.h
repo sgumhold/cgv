@@ -83,8 +83,9 @@ protected:
 	std::vector<rgba8> C, C2;
 
 	/// mesh
-	std::vector<uint32_t> MESH_TRI;
-	std::vector<vec3> MESH_POINTS;
+	std::vector<uint32_t> M_TRIANGLES;
+	std::vector<vec3> M_POINTS;
+	std::vector<vec2> M_UV;
 
 	/// processing parameters
 	bool remap_color;
