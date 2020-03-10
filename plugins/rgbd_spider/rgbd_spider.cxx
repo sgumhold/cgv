@@ -201,7 +201,7 @@ namespace rgbd {
 				//copy buffer
 				frames = new_frame;
 				TRef<asdk::IFrameMesh> new_mesh;
-				auto ec = frame_processor->reconstructMesh(&new_mesh, frames);
+				auto ec = frame_processor->reconstructAndTexturizeMesh(&new_mesh, frames);
 				if (ec == asdk::ErrorCode_OK) {
 					mesh_changed = true;
 					mesh = new_mesh;
@@ -264,16 +264,21 @@ namespace rgbd {
 			mesh_changed = false;
 			TRef<asdk::IArrayPoint3F> points = mesh->getPoints();
 			TRef<asdk::IArrayIndexTriplet> triangles = mesh->getTriangles();
-			if (!points || !triangles) {
+			TRef<asdk::IArrayUVCoordinates> uv_coordinates = mesh->getUVCoordinates();
+			if (!points || !triangles || !uv_coordinates) {
 				cerr << "rgbd_spider::get_frame : reconstructed mesh is empty!\n";
 				return false;
 			}
+
+			uint32_t points_size = points->getSize();
+			uint32_t uv_cooordinates_size = uv_coordinates->getSize();
+			uint32_t triangles_size = triangles->getSize();
 
 			//write frame meta data
 			static_cast<frame_format&>(frame) = mesh_stream;
 			frame.time = duration_cast<milliseconds>(steady_clock::now().time_since_epoch()).count();
 			frame.height = 1;
-			frame.width = 2*sizeof(size_t) + points->getSize()*sizeof(asdk::Point3F) + triangles->getSize()*sizeof(asdk::IndexTriplet);
+			frame.width = 3*sizeof(uint32_t) + points_size*sizeof(asdk::Point3F) + triangles_size *sizeof(asdk::IndexTriplet) + uv_cooordinates_size*sizeof(asdk::UVCoordinates);
 			frame.compute_buffer_size();
 			frame.pixel_format = PF_POINTS_AND_TRIANGLES;
 			if (frame.frame_data.size() != frame.buffer_size) {
@@ -284,18 +289,21 @@ namespace rgbd {
 			//format point_count|point_0,...,point_N|triangle_count|triangle_triplet_0,...,triangle_triplet_M
 			
 			//stream begins with the amount of points in the mesh
-			uint32_t points_size = points->getSize();
 			memcpy(frame.frame_data.data(), &points_size, sizeof(uint32_t));
 			uint32_t offset = sizeof(uint32_t);
 			//then the Points follow 
 			memcpy(frame.frame_data.data()+offset, points->getPointer(), points_size*sizeof(asdk::Point3F));
 			offset += points_size * sizeof(asdk::Point3F);
 			//the point data ends before points_size * sizeof(asdk::Point3F)+ sizeof(uint32_t)
-			uint32_t triangle_size = triangles->getSize();
-			memcpy(frame.frame_data.data()+offset, &triangle_size, sizeof(uint32_t));
+			memcpy(frame.frame_data.data()+offset, &triangles_size, sizeof(uint32_t));
 			offset += sizeof(uint32_t);
-			
-			memcpy(frame.frame_data.data()+offset, triangles->getPointer(), triangles->getSize() * sizeof(asdk::IndexTriplet));
+			//copy triangle data
+			memcpy(frame.frame_data.data()+offset, triangles->getPointer(), triangles_size * sizeof(asdk::IndexTriplet));
+			offset += triangles_size * sizeof(asdk::IndexTriplet);
+			//texture information
+			memcpy(frame.frame_data.data()+offset, &uv_cooordinates_size, sizeof(uint32_t));
+			offset += sizeof(uint32_t);
+			memcpy(frame.frame_data.data() + offset, uv_coordinates->getPointer(), uv_cooordinates_size * sizeof(asdk::UVCoordinates));
 			return true;
 		}
 		return false;
