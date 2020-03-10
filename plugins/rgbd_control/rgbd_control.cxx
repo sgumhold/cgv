@@ -14,6 +14,7 @@
 #include <cgv/math/ftransform.h>
 #include <cgv/math/svd.h>
 #include <cgv_gl/surfel_renderer.h>
+#include <cgv_gl/gl/mesh_render_info.h>
 
 using namespace std;
 using namespace cgv::base;
@@ -65,10 +66,6 @@ rgbd_control::rgbd_control() :
 	prs.blend_width_in_pixel = 0.0f;
 	prs.blend_points = false;
 	remap_color = true;
-
-	srs.surface_color = rgb8(160, 160, 160);
-	srs.illumination_mode = cgv::render::IlluminationMode::IM_TWO_SIDED;
-	srs.culling_mode = cgv::render::CullingMode::CM_OFF;
 
 	device_mode = DM_DETACHED;
 	device_idx = -2;
@@ -280,17 +277,16 @@ void rgbd_control::draw(context& ctx)
 	}
 
 	if (MESH_POINTS.size() > 0) {
-		if (false /*MESH_TRI.size() > 0*/) {
+		if (MESH_TRI.size() > 0) {
 			ctx.mul_modelview_matrix(cgv::math::translate4<double>(-1.5f, 0, 0));
-			cgv::render::surfel_renderer& sr = ref_surfel_renderer(ctx);
-			sr.set_render_style(srs);
-			sr.set_position_array(ctx, MESH_POINTS);
-			std::vector<rgba8> colors(MESH_POINTS.size(), rgba8(127, 127, 127, 255));
-			sr.set_color_array(ctx, colors);
-			if (sr.validate_and_enable(ctx)) {
-				glDrawElements(GL_TRIANGLES, MESH_TRI.size()/3, GL_UNSIGNED_INT, MESH_TRI.data());
-				sr.disable(ctx);
-			}
+			shader_program& prog = ctx.ref_surface_shader_program(true);
+			prog.set_uniform(ctx, "map_color_to_material", (int) cgv::render::CM_COLOR);
+			prog.set_uniform(ctx, "illumination_mode", (int) IM_TWO_SIDED);
+			prog.set_uniform(ctx, "culling_mode", (int)CM_NONE);
+			prog.set_attribute(ctx, prog.get_color_index(), rgb(255,127,127));
+			prog.enable(ctx);
+			ctx.draw_faces(reinterpret_cast<float*>(MESH_POINTS.data()), nullptr, nullptr, reinterpret_cast<int32_t*>(MESH_TRI.data()), nullptr, nullptr, MESH_TRI.size() / 3, 3);
+			prog.disable(ctx);
 			ctx.mul_modelview_matrix(cgv::math::translate4<double>(3, 0, 0));
 		}
 		else {
