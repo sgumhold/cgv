@@ -13,6 +13,7 @@
 #include <vr/vr_kit.h>
 #include <vr/vr_driver.h>
 #include <cg_vr/vr_events.h>
+#include <cg_vr/vr_calib.h>
 
 ///
 vr_view_interactor::vr_view_interactor(const char* name) : stereo_view_interactor(name),
@@ -210,6 +211,14 @@ std::string vr_view_interactor::get_type_name() const
 /// 
 void vr_view_interactor::on_set(void* member_ptr)
 {
+	if (member_ptr == &calibration_file_path) {
+		if (ref_tree_node_visible_flag(calibration_file_path)) {
+			cgv::gui::ref_vr_calibration().update_calibration_info();
+			cgv::gui::ref_vr_calibration().write_calibration(calibration_file_path);
+		}
+		else
+			cgv::gui::ref_vr_calibration().read_calibration(calibration_file_path);
+	}
 	if (member_ptr == &hmd_mesh_file_name)
 		vr::set_vrmesh_file_name(vr::VRM_HMD, hmd_mesh_file_name);
 	if (member_ptr == &controller_mesh_file_name)
@@ -374,6 +383,12 @@ bool vr_view_interactor::handle(cgv::gui::event& e)
 					if (current_vr_handle_index >= 0) {
 						vr::vr_kit_state& state = kit_states[current_vr_handle_index];
 						if (state.controller[ci].status == vr::VRS_TRACKED) {
+							// p = R * (q-r) + t 
+							// f = R * (q-r') + t'
+							// p - f = R*(r'-r)+t-t'
+							// t' = f
+							// p - f = R*(r'-r)+t-f
+							// r' = r = R^*(p - t) 
 							vec3& p = reinterpret_cast<vec3&>(state.controller[ci].pose[9]);
 							mat3 invR = cgv::math::rotate3<float>(-tracking_rotation, vec3(0, 1, 0));
 							tracking_rotation_origin += invR* (p - tracking_origin);
@@ -902,6 +917,10 @@ void vr_view_interactor::create_gui()
 	add_member_control(this, "current vr kit", (cgv::type::DummyEnum&)current_vr_handle_index, "dropdown", kit_enum_definition);
 	if (begin_tree_node("VR calibration", tracking_rotation, false, "level=2")) {
 		align("\a");
+		add_gui("calibration_file_path", calibration_file_path, "file_name",
+			"open=true;open_title='open calibration file';filter='calib (cal):*.cal|all files:*.*';"
+			"save=true;save_title='save calibration file';w=140");
+
 		add_member_control(this, "tracking_rotation", tracking_rotation, "value_slider", "min=-180;max=180;ticks=true");
 		if (begin_tree_node("translational", tracking_origin, false, "level=2")) {
 			align("\a");
@@ -974,6 +993,7 @@ void vr_view_interactor::create_gui()
 bool vr_view_interactor::self_reflect(cgv::reflect::reflection_handler& srh)
 {
 	return stereo_view_interactor::self_reflect(srh) &&
+		srh.reflect_member("calibration_file_path", calibration_file_path) &&
 		srh.reflect_member("vis_type", (int&)vis_type) &&
 		srh.reflect_member("hmd_vis_type", (int&)hmd_vis_type) &&
 		srh.reflect_member("controller_vis_type", (int&)controller_vis_type) &&

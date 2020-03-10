@@ -48,7 +48,7 @@ namespace cgv {
 				relative_translations.push_back(pose_position(relative_transformation));
 			}
 			// compute average over all transformations
-			cgv::math::quaternion<float> avg_rel_rot(0.0f);
+			cgv::math::quaternion<float> avg_rel_rot(0.0f, 0.0f, 0.0f, 0.0f);
 			cgv::math::fvec<float, 3> avg_rel_tra(0.0f);
 			for (const auto& rr : relative_rotations)
 				avg_rel_rot += rr;
@@ -76,10 +76,19 @@ namespace cgv {
 			}
 			return false;
 		}
+		/// update the calibration of a driver from the given target reference states
+		bool vr_calibration::update_driver_calibration(vr::vr_driver* dp) const
+		{
+			auto iter = calibration_info.find(dp->get_driver_name());
+			// ensure that new calibration has been read for this driver
+			if (iter == calibration_info.end())
+				return false;
+			return update_driver_calibration(dp, iter->second);
+		}
 		vr_calibration::vr_calibration()
 		{
 		}
-		bool vr_calibration::read_calibration(const std::string& file_path)
+		bool vr_calibration::read_calibration(const std::string& file_path, bool update_drivers)
 		{
 			// read calibration file
 			std::string content;
@@ -107,7 +116,7 @@ namespace cgv {
 					ss >> orientation >> position;
 					char rest_of_line[500];
 					ss.getline(&rest_of_line[0], 500);
-					std::string serial = std::string(rest_of_line);
+					std::string serial = std::string(rest_of_line+1);
 					if (!serial.empty()) {
 						if (serial[0] == '"')
 							serial = serial.substr(1, serial.size() - 2);
@@ -124,20 +133,22 @@ namespace cgv {
 			// copy read information over to calibration information 
 			for (const auto& driver_info : read_calibration_info)
 				calibration_info[driver_info.first] = driver_info.second;
+
 			// finally iterate drivers and update driver calibrations
-			for (auto dp : vr::get_vr_drivers()) {
-				auto iter = read_calibration_info.find(dp->get_driver_name());
-				// ensure that new calibration has been read for this driver
-				if (iter == read_calibration_info.end())
-					continue;
-				// 
-				update_driver_calibration(dp, iter->second);
+			if (update_drivers) {
+				for (auto dp : vr::get_vr_drivers()) {
+					auto iter = read_calibration_info.find(dp->get_driver_name());
+					// ensure that new calibration has been read for this driver
+					if (iter == read_calibration_info.end())
+						continue;
+					// 
+					update_driver_calibration(dp, iter->second);
+				}
 			}
 			return true;
 		}
-		bool vr_calibration::write_calibration(const std::string& file_path)
+		bool vr_calibration::write_calibration(const std::string& file_path) const
 		{
-			update_calibration_info();
 			std::ofstream os(file_path);
 			if (os.fail())
 				return false;

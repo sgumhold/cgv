@@ -72,6 +72,7 @@ name(vr interactor):blit_vr_views=false;blit_width=400;blit_aspect_scale=1.3
 //name(vr interactor):controller_scale=1.0;controller_mesh_file_name="vr_controller_vive_1_5.obj"
 //name(vr interactor):tracker_scale=1.0;tracker_mesh_file_name="t.obj"
 //name(vr interactor):base_scale=1.0;base_mesh_file_name=""
+//name(vr interactor):calibration_file_path="C:/develop/git/cgv/plugins/vr_test/table.cal"
 
 persistent
 name(vr interactor):tracking_rotation=-180
