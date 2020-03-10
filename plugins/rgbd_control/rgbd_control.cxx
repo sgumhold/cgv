@@ -276,8 +276,8 @@ void rgbd_control::draw(context& ctx)
 		ctx.mul_modelview_matrix(cgv::math::translate4<double>(3, 0, 0));
 	}
 
-	if (MESH_POINTS.size() > 0) {
-		if (MESH_TRI.size() > 0) {
+	if (M_POINTS.size() > 0) {
+		if (M_TRIANGLES.size() > 0) {
 			ctx.mul_modelview_matrix(cgv::math::translate4<double>(-1.5f, 0, 0));
 			shader_program& prog = ctx.ref_surface_shader_program(true);
 			prog.set_uniform(ctx, "map_color_to_material", (int) cgv::render::CM_COLOR);
@@ -285,7 +285,8 @@ void rgbd_control::draw(context& ctx)
 			prog.set_uniform(ctx, "culling_mode", (int)CM_NONE);
 			prog.set_attribute(ctx, prog.get_color_index(), rgb(255,127,127));
 			prog.enable(ctx);
-			ctx.draw_faces(reinterpret_cast<float*>(MESH_POINTS.data()), nullptr, nullptr, reinterpret_cast<int32_t*>(MESH_TRI.data()), nullptr, nullptr, MESH_TRI.size() / 3, 3);
+			ctx.draw_faces(reinterpret_cast<float*>(M_POINTS.data()), nullptr,reinterpret_cast<float*>(M_UV.data()),
+					reinterpret_cast<int32_t*>(M_TRIANGLES.data()), nullptr, reinterpret_cast<int32_t*>(M_TRIANGLES.data()), M_TRIANGLES.size() / 3, 3);
 			prog.disable(ctx);
 			ctx.mul_modelview_matrix(cgv::math::translate4<double>(3, 0, 0));
 		}
@@ -293,11 +294,11 @@ void rgbd_control::draw(context& ctx)
 			ctx.mul_modelview_matrix(cgv::math::translate4<double>(-1.5f, 0, 0));
 			cgv::render::point_renderer& pr = ref_point_renderer(ctx);
 			pr.set_render_style(prs);
-			pr.set_position_array(ctx, MESH_POINTS);
-			std::vector<rgba8> colors(MESH_POINTS.size(),rgba8(127,127,127,255));
+			pr.set_position_array(ctx, M_POINTS);
+			std::vector<rgba8> colors(M_POINTS.size(),rgba8(127,127,127,255));
 			pr.set_color_array(ctx,colors);
 			if (pr.validate_and_enable(ctx)) {
-				glDrawArrays(GL_POINTS, 0, (GLsizei)MESH_POINTS.size());
+				glDrawArrays(GL_POINTS, 0, (GLsizei)M_POINTS.size());
 				pr.disable(ctx);
 			}
 			ctx.mul_modelview_matrix(cgv::math::translate4<double>(3, 0, 0));
@@ -651,22 +652,28 @@ void rgbd_control::timer_event(double t, double dt)
 						mesh_frame_changed = new_mesh_frame_changed;
 						new_frame = true;
 						update_member(&nr_mesh_frames);
-						MESH_POINTS.clear();
-						MESH_TRI.clear();
+						M_POINTS.clear();
+						M_TRIANGLES.clear();
 						if (mesh_frame.frame_data.size() > sizeof(uint32_t)) {
 							uint32_t points = 0;
 							memcpy(&points, mesh_frame.frame_data.data(), sizeof(uint32_t));
-							//get the point cloud
+							
 							if (mesh_frame.pixel_format == PF_POINTS_AND_TRIANGLES) {
-								MESH_POINTS.resize(points);
+								M_POINTS.resize(points);
 								size_t offset = sizeof(uint32_t);
-								memcpy(MESH_POINTS.data(), mesh_frame.frame_data.data() + offset, points * sizeof(vec3));
+								memcpy(M_POINTS.data(), mesh_frame.frame_data.data() + offset, points * sizeof(vec3));
 								offset += points * sizeof(vec3);
 								uint32_t triangles = 0;
 								memcpy(&triangles, mesh_frame.frame_data.data()+offset, sizeof(uint32_t));
 								offset += sizeof(uint32_t);
-								MESH_TRI.resize(3*triangles);
-								memcpy(MESH_TRI.data(), mesh_frame.frame_data.data()+offset, triangles*3*sizeof(uint32_t));
+								M_TRIANGLES.resize(3*triangles);
+								memcpy(M_TRIANGLES.data(), mesh_frame.frame_data.data()+offset, triangles*3*sizeof(uint32_t));
+								offset += triangles * 3 * sizeof(uint32_t);
+								uint32_t uv_coordinates = 0;
+								memcpy(&uv_coordinates, mesh_frame.frame_data.data() + offset, sizeof(uint32_t));
+								offset += sizeof(uint32_t);
+								M_UV.resize(uv_coordinates);
+								memcpy(M_UV.data(), mesh_frame.frame_data.data() + offset, uv_coordinates*sizeof(vec2));
 							}
 						}
 					}
