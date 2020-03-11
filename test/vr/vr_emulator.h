@@ -106,7 +106,7 @@ public:
 
 protected:
 	mutable std::map<std::string, vr::vr_trackable_state> transformed_reference_states;
-
+	
 	// emulation
 	bool installed;
 	float body_speed;
