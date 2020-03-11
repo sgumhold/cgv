@@ -3,7 +3,7 @@
 #include <iostream>
 
 namespace vr {
-	void vr_calibration_base::set_driver_calibration_matrix(vr_driver* driver, const float calibration_matrix[12])
+	void vr_calibration_base::set_driver_calibration_matrix(vr_driver* driver, const float calibration_matrix[12]) const
 	{
 		driver->set_calibration_transformation(calibration_matrix);
 	}
@@ -52,7 +52,7 @@ namespace vr {
 		std::copy(&calibration_matrix[0], &calibration_matrix[0] + 12, &transformation_matrix[0]);
 	}
 	/// in case calibration matrix is enabled, transform given pose in place
-	void vr_driver::calibrate_pose(float pose[12]) const
+	void vr_driver::calibrate_pose(float (&pose)[12]) const
 	{
 		if (!use_calibration_matrix)
 			return;

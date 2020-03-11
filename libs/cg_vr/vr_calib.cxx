@@ -19,11 +19,18 @@ namespace cgv {
 				if (!dp->is_calibration_transformation_enabled())
 					continue;
 				calibration_info[dp->get_driver_name()] = dp->get_reference_states();
+				float trans[12];
+				dp->put_calibration_transformation(trans);
+				std::cout << dp->get_driver_name() << ":";
+				for (int i = 0; i < 12; ++i)
+					std::cout << " " << trans[i];
+				std::cout << std::endl;
 			}
 		}
 		/// update the calibration of a driver from the given target reference states
 		bool vr_calibration::update_driver_calibration(vr::vr_driver* dp, const std::map<std::string, vr::vr_trackable_state>& target_reference_states) const
 		{
+			
 			std::vector<cgv::math::quaternion<float> > relative_rotations;
 			std::vector<cgv::math::fvec<float, 3> > relative_translations;
 			
@@ -39,6 +46,13 @@ namespace cgv {
 			float current_transform_array[12];
 			auto& current_transform = reinterpret_cast<cgv::math::fmat<float, 3, 4>&>(current_transform_array[0]);
 			dp->put_calibration_transformation(current_transform_array);
+
+			std::cout << "update " << dp->get_driver_name() << std::endl;
+			std::cout << "current :";
+			for (int i = 0; i < 12; ++i)
+				std::cout << " " << current_transform_array[i];
+			std::cout << std::endl;
+
 			// iterate target states and generate a relative transformation for each matched serial 
 			for (const auto& target : target_reference_states) {
 				// ensure that serial is registered in driver
@@ -80,7 +94,13 @@ namespace cgv {
 			if (consistent) {
 				cgv::math::fmat<float, 3, 4> relative_transformation = pose_construct(avg_rel_rot, avg_rel_tra);
 				pose_transform(relative_transformation, current_transform);
-				dp->calibrate_pose(current_transform_array);
+				dp->enable_calibration_transformation();
+				set_driver_calibration_matrix(dp, current_transform_array);
+				std::cout << "relative :" << relative_transformation << std::endl;
+				std::cout << "new    :";
+				for (int i = 0; i < 12; ++i)
+					std::cout << " " << current_transform_array[i];
+				std::cout << std::endl;
 				return true;
 			}
 			return false;
