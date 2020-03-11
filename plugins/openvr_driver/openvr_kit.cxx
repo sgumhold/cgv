@@ -89,7 +89,7 @@ std::string get_string_property(vr::IVRSystem* hmd_ptr, vr::TrackedDeviceIndex_t
 	char buffer[k_unMaxPropertyStringSize];
 	uint32_t len = hmd_ptr->GetStringTrackedDeviceProperty(unDeviceIndex, prop, buffer, k_unMaxPropertyStringSize, &error);
 	if (error == vr::TrackedProp_Success) {
-		std::string value(buffer, len);
+		std::string value(buffer, len-1);
 		if (name)
 			std::cout << name << " = " << value << std::endl;
 		return value;
