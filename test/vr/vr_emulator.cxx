@@ -237,8 +237,8 @@ vr_emulator::vr_emulator() : cgv::base::node("vr_emulator")
 	wireless = false;
 	counter = 0;
 
-	coordinate_rotation = quat(1.0f, 0.0f, 0.0f, 0.0f);
-	coordinate_displacement = vec3(0.0f);
+	coordinate_rotation = quat(0.866f, 0.0f, 0.5f, 0.0f);
+	coordinate_displacement = vec3(0.0f, 1.0f, 2.0f);
 
 	ref_reference_state("vr_emulator_base_01").status = vr::VRS_TRACKED;
 	mat3& ref_ori_1 = reinterpret_cast<mat3&>(*ref_reference_state("vr_emulator_base_01").pose);
@@ -255,6 +255,7 @@ vr_emulator::vr_emulator() : cgv::base::node("vr_emulator")
 
 	connect(cgv::gui::get_animation_trigger().shoot, this, &vr_emulator::timer_event);
 }
+
 /// update a single renference state or all from base_orientations, base_positions and base_serials
 void vr_emulator::update_reference_states(int i)
 {
