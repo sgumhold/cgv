@@ -86,7 +86,7 @@ namespace cgv {
 					consistent = false;
 					break;
 				}
-				if (length(relative_translations[i] - avg_rel_tra) > 0.01f) {
+				if (length(relative_translations[i] - avg_rel_tra) > 0.02f) {
 					consistent = false;
 					break;
 				}
