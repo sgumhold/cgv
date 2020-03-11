@@ -543,7 +543,8 @@ void vr_view_interactor::configure_kits()
 			for (unsigned i = 0; i < kits.size(); ++i)
 				if (kits[i] == current_vr_handle) {
 					current_vr_handle_index = i;
-					calibrate_driver();
+					if (calibration_file_path.empty())
+						calibrate_driver();
 					break;
 				}
 		}

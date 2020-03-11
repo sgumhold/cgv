@@ -14,7 +14,7 @@
 namespace cgv {
 	namespace gui {
 		/// vr key events use the key codes defined in vr::VRKeys
-		class CGV_API vr_calibration
+		class CGV_API vr_calibration : public vr::vr_calibration_base
 		{
 		protected:
 			std::map<std::string, std::map<std::string, vr::vr_trackable_state> > calibration_info;

@@ -38,7 +38,7 @@ namespace vr {
 	{
 	protected:
 		/// single point of write access to calibration transformation of vr drivers
-		void set_driver_calibration_matrix(vr_driver* driver, const float calibration_matrix[12]);
+		void set_driver_calibration_matrix(vr_driver* driver, const float calibration_matrix[12]) const;
 	public:
 		/// nothing to be done in contructor
 		vr_calibration_base();
@@ -122,7 +122,7 @@ namespace vr {
 		/// read access to calibration transformation stored as 3x4-matrix
 		void put_calibration_transformation(float transformation_matrix[12]) const;
 		/// in case calibration matrix is enabled, transform given pose in place
-		void calibrate_pose(float pose[12]) const;
+		void calibrate_pose(float(&pose)[12]) const;
 		/// enable use of calibration transformation 
 		void enable_calibration_transformation();
 		/// disable use of calibration transformation
