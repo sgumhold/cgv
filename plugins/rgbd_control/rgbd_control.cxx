@@ -160,7 +160,6 @@ bool rgbd_control::init(cgv::render::context& ctx)
 		view_ptr->set_focus(vec3(0, 0, 0));
 	}
 	cgv::render::ref_point_renderer(ctx, 1);
-	cgv::render::ref_surfel_renderer(ctx, 1);
 	return true;
 }
 
@@ -172,7 +171,6 @@ void rgbd_control::clear(cgv::render::context& ctx)
 	depth.destruct(ctx);
 	rgbd_prog.destruct(ctx);
 	cgv::render::ref_point_renderer(ctx, -1);
-	cgv::render::ref_surfel_renderer(ctx, -1);
 }
 
 void rgbd_control::update_texture_from_frame(context& ctx, texture& tex, const frame_type& frame, bool recreate, bool replace)
@@ -277,21 +275,24 @@ void rgbd_control::draw(context& ctx)
 	}
 
 	if (M_POINTS.size() > 0) {
+		ctx.mul_modelview_matrix(cgv::math::translate4<double>(3, 0, 0));
 		if (M_TRIANGLES.size() > 0) {
-			ctx.mul_modelview_matrix(cgv::math::translate4<double>(-1.5f, 0, 0));
-			shader_program& prog = ctx.ref_surface_shader_program(true);
-			prog.set_uniform(ctx, "map_color_to_material", (int) cgv::render::CM_COLOR);
-			prog.set_uniform(ctx, "illumination_mode", (int) IM_TWO_SIDED);
-			prog.set_uniform(ctx, "culling_mode", (int)CM_NONE);
-			prog.set_attribute(ctx, prog.get_color_index(), rgb(255,127,127));
-			prog.enable(ctx);
-			ctx.draw_faces(reinterpret_cast<float*>(M_POINTS.data()), nullptr,reinterpret_cast<float*>(M_UV.data()),
+			ctx.mul_modelview_matrix(cgv::math::scale4<double>(1.0/128, 1.0/128, -1.0/128));
+			shader_program& prog = rgbd_prog;
+			if (prog.is_created()) {
+				color.enable(ctx, 0);
+				prog.set_uniform(ctx, "color_texture", 0);
+				prog.enable(ctx);
+				glDisable(GL_CULL_FACE);
+				ctx.draw_faces(reinterpret_cast<float*>(M_POINTS.data()), nullptr, reinterpret_cast<float*>(M_UV.data()),
 					reinterpret_cast<int32_t*>(M_TRIANGLES.data()), nullptr, reinterpret_cast<int32_t*>(M_TRIANGLES.data()), M_TRIANGLES.size() / 3, 3);
-			prog.disable(ctx);
-			ctx.mul_modelview_matrix(cgv::math::translate4<double>(3, 0, 0));
+				glEnable(GL_CULL_FACE);
+				prog.disable(ctx);
+				color.disable(ctx);
+			}
+			ctx.mul_modelview_matrix(cgv::math::scale4<double>(128, 128, -128));
 		}
 		else {
-			ctx.mul_modelview_matrix(cgv::math::translate4<double>(-1.5f, 0, 0));
 			cgv::render::point_renderer& pr = ref_point_renderer(ctx);
 			pr.set_render_style(prs);
 			pr.set_position_array(ctx, M_POINTS);
@@ -301,8 +302,8 @@ void rgbd_control::draw(context& ctx)
 				glDrawArrays(GL_POINTS, 0, (GLsizei)M_POINTS.size());
 				pr.disable(ctx);
 			}
-			ctx.mul_modelview_matrix(cgv::math::translate4<double>(3, 0, 0));
 		}
+		ctx.mul_modelview_matrix(cgv::math::translate4<double>(-3, 0, 0));
 	}
 
 	// transform to image coordinates
