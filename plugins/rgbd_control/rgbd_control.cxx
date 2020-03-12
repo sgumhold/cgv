@@ -277,24 +277,20 @@ void rgbd_control::draw(context& ctx)
 	if (M_POINTS.size() > 0) {
 		ctx.mul_modelview_matrix(cgv::math::translate4<double>(3, 0, 0));
 		if (M_TRIANGLES.size() > 0) {
-			ctx.mul_modelview_matrix(cgv::math::scale4<double>(1.0/128, 1.0/128, 1.0/128));
-			//shader_program& prog = ctx.ref_surface_shader_program(true);
+			ctx.mul_modelview_matrix(cgv::math::scale4<double>(1.0/128, 1.0/128, -1.0/128));
 			shader_program& prog = rgbd_prog;
 			if (prog.is_created()) {
 				color.enable(ctx, 0);
-				//prog.set_uniform(ctx, "diffuse_index", 0);
 				prog.set_uniform(ctx, "color_texture", 0);
-				//prog.set_uniform(ctx, "map_color_to_material", (int) cgv::render::CM_COLOR);
-				//prog.set_uniform(ctx, "illumination_mode", (int) IM_TWO_SIDED);
-				//prog.set_uniform(ctx, "culling_mode", (int)CM_NONE);
-				//prog.set_attribute(ctx, prog.get_color_index(), rgb(255,127,127));
 				prog.enable(ctx);
+				glDisable(GL_CULL_FACE);
 				ctx.draw_faces(reinterpret_cast<float*>(M_POINTS.data()), nullptr, reinterpret_cast<float*>(M_UV.data()),
 					reinterpret_cast<int32_t*>(M_TRIANGLES.data()), nullptr, reinterpret_cast<int32_t*>(M_TRIANGLES.data()), M_TRIANGLES.size() / 3, 3);
+				glEnable(GL_CULL_FACE);
 				prog.disable(ctx);
 				color.disable(ctx);
 			}
-			ctx.mul_modelview_matrix(cgv::math::scale4<double>(128, 128, 128));
+			ctx.mul_modelview_matrix(cgv::math::scale4<double>(128, 128, -128));
 		}
 		else {
 			cgv::render::point_renderer& pr = ref_point_renderer(ctx);
