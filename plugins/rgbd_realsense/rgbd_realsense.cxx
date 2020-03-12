@@ -17,8 +17,6 @@ namespace rgbd {
 		last_color_frame_number = 0;
 		last_depth_frame_number = 0;
 		last_ir_frame_number = 0;
-
-		//temp_filter = rs2::temporal_filter(0.05f, 43.f, 1);
 	}
 
 	rgbd_realsense::~rgbd_realsense() {

@@ -61,8 +61,8 @@ namespace rgbd {
 		stream_format color_stream, depth_stream, ir_stream;
 		/// holds last consistent set of frames
 		rs2::frameset frame_cache;
-		double last_color_frame_time, last_depth_frame_time, last_ir_frame_time;
 		size_t last_color_frame_number, last_depth_frame_number, last_ir_frame_number;
+		/// depth scale default = 0.001 (1 depth unit == 1mm)
 		double depth_scale;
 	};
 
