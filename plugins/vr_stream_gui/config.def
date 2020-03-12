@@ -1,0 +1,84 @@
+//show all
+
+//name(main):state="fullscreen(2)"
+name(main):selected="vr_emulator"
+
+type(vr_emulator):current_kit_index=0
+type(vr_emulator):tracker_1_attachment=1
+type(vr_emulator):tracker_1_position.coords[0]=0
+type(vr_emulator):tracker_1_position.coords[1]=0.2
+type(vr_emulator):tracker_1_position.coords[2]=-0.1
+type(vr_emulator):tracker_1_orientation.coords[0]=1
+type(vr_emulator):tracker_1_orientation.coords[1]=0
+type(vr_emulator):tracker_1_orientation.coords[2]=0
+type(vr_emulator):tracker_1_orientation.coords[3]=0
+type(vr_emulator):body_position.coords[0]=-0.10
+type(vr_emulator):body_position.coords[1]=-0.60
+type(vr_emulator):body_position.coords[2]=0.935
+type(vr_emulator):right_hand_position.coords[0]=-0.575
+type(vr_emulator):right_hand_position.coords[1]=0.249
+type(vr_emulator):right_hand_position.coords[2]=-0.2391
+type(vr_emulator):right_hand_orientation.coords[0]=0.49
+type(vr_emulator):right_hand_orientation.coords[1]=0
+type(vr_emulator):right_hand_orientation.coords[2]=0
+type(vr_emulator):right_hand_orientation.coords[3]=0.8717
+type(vr_emulator):left_hand_position.coords[0]=0.575
+type(vr_emulator):left_hand_position.coords[1]=0.249
+type(vr_emulator):left_hand_position.coords[2]=-0.2391
+type(vr_emulator):left_hand_orientation.coords[0]=0.49
+type(vr_emulator):left_hand_orientation.coords[1]=0
+type(vr_emulator):left_hand_orientation.coords[2]=0
+type(vr_emulator):left_hand_orientation.coords[3]=0.8717
+
+// stereo shader mode indices are 
+// left only = 0, right only = 1, side by side = 2, top bottom = 3
+// column interleaved = 4, row interleaved = 5,
+// anaglyphs: red-cyan = 6, color = 7, half-color = 8, duboid = 9
+type(vr_wall):stereo_shader_mode=2
+
+// stereo window mode indices are 
+// single = 0, double = 1, two = 2
+type(vr_wall):stereo_window_mode=0
+
+// fullscreen: 0 .. regular, 1 .. fullscreen on monitor 1, 2 .. fullscreen on monitor 2, 
+// 3 ... fullscreen on monitors 1 + 2, 4 ... fullscreen on monitor 3, 5 ... fullscreen on monitors 1 + 3
+type(vr_wall):fullscreen=1
+type(vr_wall):creation_width=1920;creation_height=1080
+type(vr_wall):vr_wall_kit_index=0
+type(vr_wall):vr_wall_hmd_index=2
+// how much eyes are below tracker
+type(vr_wall):eye_downset=0.07 (in meters)
+// how much eyes are behind tracker (in meters)
+type(vr_wall):eye_backset=0.02
+type(vr_wall):screen_center.coords[0]=0
+type(vr_wall):screen_center.coords[1]=0.8
+type(vr_wall):screen_center.coords[2]=-1
+type(vr_wall):screen_x.coords[0]=-0.2375
+type(vr_wall):screen_x.coords[1]=0
+type(vr_wall):screen_x.coords[2]=0
+type(vr_wall):screen_y.coords[0]=0
+type(vr_wall):screen_y.coords[1]=0.1325
+type(vr_wall):screen_y.coords[2]=0
+type(vr_wall):wall_state=1
+//type(vr_wall):state="fullscreen(2)"
+
+//name(vr interactor):separate_view=false;none_separate_view=2
+name(vr interactor):hmd_vis_type=1
+//name(vr interactor):controller_vis_type=2
+//name(vr interactor):tracker_vis_type=2
+name(vr interactor):blit_vr_views=false;blit_width=400;blit_aspect_scale=1.3
+
+//name(vr interactor):hmd_scale=1.0;hmd_mesh_file_name="generic_hmd.obj"
+//name(vr interactor):controller_scale=1.0;controller_mesh_file_name="vr_controller_vive_1_5.obj"
+//name(vr interactor):tracker_scale=1.0;tracker_mesh_file_name="t.obj"
+//name(vr interactor):base_scale=1.0;base_mesh_file_name=""
+//name(vr interactor):calibration_file_path="C:/develop/git/cgv/plugins/vr_test/table.cal"
+
+persistent
+name(vr interactor):tracking_rotation=-180
+name(vr interactor):tracking_origin_x=0.0151364;
+name(vr interactor):tracking_origin_y=0.930006;
+name(vr interactor):tracking_origin_z=-0.393396;
+name(vr interactor):tracking_rotation_origin_x=-0.2;
+name(vr interactor):tracking_rotation_origin_y=1.2;
+name(vr interactor):tracking_rotation_origin_z=-1.49012e-08
