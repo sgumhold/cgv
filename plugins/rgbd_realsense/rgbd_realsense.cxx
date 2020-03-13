@@ -117,7 +117,7 @@ namespace rgbd {
 					auto it = find_if(supported_ir_formats.begin(), supported_ir_formats.end(), [&](const stream_format& a) {
 						return a.height == f->height && a.width == f->width && a.fps == f->fps; });
 					stream_formats.push_back(ir_stream = *it);
-				}
+				} 
 			}
 		}
 		else if (is & IS_INFRARED) {
@@ -384,13 +384,13 @@ namespace rgbd {
 	{
 		if (depth == 0)
 			return false;
-		
-		static const double fx_d = 1.0/1407.89876957815;
-		static const double fy_d = 1.0/1402.63035792400;
-		static const double cx_d = 975.564959401091;
-		static const double cy_d = 546.629684502803;
+
+		static const double fx_d = 1.0 / depth_intrinsics.fx;
+		static const double fy_d = 1.0 / depth_intrinsics.fy;
+		static const double cx_d = depth_intrinsics.ppx;
+		static const double cy_d = depth_intrinsics.ppy;
 		double d = depth*depth_scale;
-		point_ptr[0] = float((x - cx_d) * d * fx_d);
+		point_ptr[0] = float((x - cx_d) * d * fx_d) * -1;
 		point_ptr[1] = float((y - cy_d) * d * fy_d);
 		point_ptr[2] = float(d);
 		return true;
