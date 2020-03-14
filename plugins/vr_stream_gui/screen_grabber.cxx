@@ -70,20 +70,14 @@ namespace util {
 		{
 			std::lock_guard<std::mutex> lock_internal(internal_mutex);
 
+			// temporarily enable bitmap in capture context
 			HGDIOBJ h_old = SelectObject(device_context_capture, bitmap);
-			success = BitBlt(device_context_capture, 0, 0, screen_width, screen_height,
-			                 device_context_global, 0, 0, SRCCOPY /* | CAPTUREBLT*/);
+				// copy data from screen to bitmap
+				success = BitBlt(device_context_capture, 0, 0, screen_width, screen_height,
+								 device_context_global, 0, 0, SRCCOPY /* | CAPTUREBLT*/);
+			SelectObject(device_context_capture, h_old);
 
-			// StretchBlt seems faster, although unreasonable
-			//success = StretchBlt(device_context_capture, 0, 0, screen_width,
-			//                     screen_height, device_context_global, 0, 0, screen_width,
-			//                     screen_height, SRCCOPY /*| CAPTUREBLT*/);
-			if (!success) {
-				std::cerr << "couldn't blit the screen into bitmap" << std::endl;
-			}
-			else {
-				SelectObject(device_context_capture, h_old);
-
+			if (success) {
 				std::lock_guard<std::mutex> lock_pixel(*pixel_mutex);
 				if (!GetDIBits(device_context_global, bitmap, 0,
 				               bitmap_info.bmiHeader.biHeight, ptr, &bitmap_info,
@@ -91,6 +85,9 @@ namespace util {
 					std::cout << "error reading screen pixels" << std::endl;
 					success = false;
 				}
+			}
+			else {
+				std::cerr << "couldn't blit the screen into bitmap" << std::endl;
 			}
 		}
 

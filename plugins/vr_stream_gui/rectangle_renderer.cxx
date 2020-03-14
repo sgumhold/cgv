@@ -81,19 +81,14 @@ namespace trajectory {
 			mode_changed = false;
 		}
 
-		ctx.push_modelview_matrix();
-		{
-			ctx.mul_modelview_matrix(get_model_matrix());
-			prog.enable(ctx);
-			tex.enable(ctx, 0);
+		prog.enable(ctx);
+		tex.enable(ctx, 0);
 
-			// attributeless rendering
-			glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+		// attributeless rendering
+		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 
-			tex.disable(ctx);
-			prog.disable(ctx);
-		}
-		ctx.pop_modelview_matrix();
+		tex.disable(ctx);
+		prog.disable(ctx);
 
 		vao.disable(ctx);
 	}
@@ -143,20 +138,15 @@ void rectangle_renderer::draw(context &ctx, const rectangle &rect,
 		mode_changed = false;
 	}
 
-	ctx.push_modelview_matrix();
-	{
-		ctx.mul_modelview_matrix(get_model_matrix());
-		prog.enable(ctx);
-		glBindTexture(GL_TEXTURE_2D, texture_handle);
-		glActiveTexture(GL_TEXTURE0);
+	prog.enable(ctx);
+	glBindTexture(GL_TEXTURE_2D, texture_handle);
+	glActiveTexture(GL_TEXTURE0);
 
-		// attributeless rendering
-		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+	// attributeless rendering
+	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 
-		glBindTexture(GL_TEXTURE_2D, 0);
-		prog.disable(ctx);
-	}
-	ctx.pop_modelview_matrix();
+	glBindTexture(GL_TEXTURE_2D, 0);
+	prog.disable(ctx);
 
 	vao.disable(ctx);
 }

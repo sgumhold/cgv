@@ -43,8 +43,7 @@ protected:
 	bool switch_left_and_right_hand = false;
 
 	bool vt_display_reconfiguring = false;
-	int vt_display_reconfigure_state =
-		0; // 0 = await first corner, 1 = await second corner
+	int vt_display_reconfigure_state = 0; // 0 = await first corner, 1 = await second corner
 	vec3 vt_display_reconfigure_first_pos;
 	vec3 vt_display_reconfigure_second_pos;
 	bool stream_screen = false;

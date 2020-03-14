@@ -9,6 +9,7 @@ namespace room {
 	{
 		blitter = std::make_shared<trajectory::rectangle_renderer>();
 		set_position(vec3(0, 1, 0));
+		set_orientation(quat(0.0f, 0.0f, -1.0f, 0.0f));
 	}
 	virtual_display::virtual_display(const plane &display) : display(display)
 	{

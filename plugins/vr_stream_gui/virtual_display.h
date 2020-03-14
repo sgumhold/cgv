@@ -3,7 +3,7 @@
 #include <cgv/math/fvec.h>
 #include "rectangle_renderer.h"
 
-#include "drawable_and_placeable_typed.h"
+#include "placeable.h"
 #include "plane.h"
 
 using namespace cgv::render;
@@ -11,7 +11,8 @@ using namespace cgv::render;
 namespace vr {
 namespace room {
 	// simple wrapper for drawable and placable
-	class virtual_display : public drawable_and_placeable_typed {
+	class virtual_display : public drawable, public placeable 
+	{
 	  public:
 		struct intersection {
 			vec3 pos_world;

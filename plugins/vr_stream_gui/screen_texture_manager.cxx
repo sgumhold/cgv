@@ -24,8 +24,8 @@ namespace util {
 
 	void screen_texture_manager::recreate_texture(context &ctx)
 	{
-		if (tex->is_created()) tex->destruct(ctx);
-
+		if (tex->is_created()) 
+			tex->destruct(ctx);
 		grabber->grab();
 		tex->create(ctx, dv);
 	}
