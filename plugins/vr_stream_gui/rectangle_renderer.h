@@ -5,10 +5,11 @@
 #include <cgv/render/attribute_array_binding.h>
 #include <cgv/render/shader_program.h>
 #include <cgv/render/vertex_buffer.h>
+#include <cgv/render/drawable.h>
 #include <cgv_gl/gl/gl.h>
 
 #include "rectangle.h"
-#include "drawable_and_placeable.h"
+#include "placeable.h"
 
 using namespace cgv::data;
 using namespace cgv::math;
@@ -17,7 +18,8 @@ using namespace cgv::render;
 namespace trajectory {
 
 
-class rectangle_renderer : public drawable_and_placeable {
+class rectangle_renderer : public drawable
+{
   public:
 	enum draw_mode : uint8_t {
 		NORMAL = 0,

@@ -58,9 +58,7 @@ void vr_stream_gui::reconfigure_virtual_display(vec3 pos)
 		vt_display->set_display(plane);
 		// reset config values to zero, as not needed for dynamic positioning
 		vt_display->set_position(vec3(0.0f));
-		vt_display->set_rotation(vec3(0.0f));
-		vt_display->get_blitter().lock()->set_position(vec3(0.0f));
-		vt_display->get_blitter().lock()->set_rotation(vec3(0.0f));
+		vt_display->set_orientation(quat(1.0f, 0.0f, 0.0f, 0.0f));
 
 		break;
 	}
@@ -430,26 +428,6 @@ bool vr_stream_gui::handle(cgv::gui::event& e)
 				}
 			}
 			return true;
-		}
-
-		// alter the event, only call once
-		if (switch_left_and_right_hand) {
-			switch (e.get_kind()) {
-			case cgv::gui::EID_KEY: {
-				cgv::gui::vr_key_event &vrke = static_cast<cgv::gui::vr_key_event &>(e);
-				// vrke.switch_left_and_right(); // TODO: reimplement
-			} break;
-			case cgv::gui::EID_THROTTLE: {
-				cgv::gui::vr_throttle_event &vrte =
-					static_cast<cgv::gui::vr_throttle_event &>(e);
-				// vrte.switch_left_and_right(); // TODO: reimplement
-			} break;
-			case cgv::gui::EID_STICK: {
-				cgv::gui::vr_stick_event &vrse =
-					static_cast<cgv::gui::vr_stick_event &>(e);
-				// vrse.switch_left_and_right(); // TODO: reimplement
-			} break;
-			}
 		}
 
 		if (vm_controller.handle(e))
@@ -1148,7 +1126,9 @@ void vr_stream_gui::create_gui() {
 	
 	if (begin_tree_node("virtual display", stream_screen, true)) {
 		align("\a");
-
+		add_gui("screen orientation", reinterpret_cast<vec4&>(vt_display->ref_orientation()), "direction", "options='min=-1;max=1;ticks=true'");
+		add_gui("screen position", vt_display->ref_position(), "", "options='min=-2;max=2;ticks=true'");
+		add_gui("screen scale", vt_display->ref_scale(), "", "options='min=0.1;max=100;log=true;ticks=true'");
 		connect_copy(add_control("stream screen", stream_screen, "toggle")->value_change, rebind(this, &vr_stream_gui::set_stream_screen));
 		add_member_control(this, "switch hands", switch_left_and_right_hand, "toggle");
 		add_member_control(this, "prohibit vr input", prohibit_vr_input, "toggle");
