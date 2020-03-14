@@ -18,7 +18,8 @@ enum EventId
 	EID_MOUSE,//!< id for mouse event
 	EID_THROTTLE, //!< id of throttle event describing a one axis controller
 	EID_STICK,//!< id of a stick event describing a two axis controller that optionally can be touched and pressed 
-	EID_POSE  //!< id for a 6D pose change events
+	EID_POSE,  //!< id for a 6D pose change events
+	EID_CHOICE  //!< id for focus or selection change events
 };
 
 /// flags

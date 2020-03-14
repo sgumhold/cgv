@@ -5,6 +5,7 @@
 #include <cgv/gui/application.h>
 #include <cgv/signal/rebind.h>
 #include <cgv/gui/trigger.h>
+#include <cgv/gui/choice_event.h>
 #include <cassert>
 
 namespace cgv {
@@ -18,7 +19,7 @@ namespace cgv {
 		}
 		/// construct server with default configuration
 		vr_server::vr_server()
-		{
+		{	
 			last_device_scan = -1;
 			device_scan_interval = 1;
 			event_type_flags = VRE_ALL;
@@ -35,6 +36,33 @@ namespace cgv {
 			vr::VRKeys key[2];
 		};
 
+		/// grab the event focus to the given event handler and return whether this was possible
+		bool vr_server::grab_focus(VRFocus _focus_type, event_handler* handler)
+		{
+			choice_event ce(CET_LOOSE_FOCUS, 0, 0, trigger::get_current_time());
+			ce.set_flags(EF_VR);
+			if (focus) {
+				if (handler == focus)
+					return true;
+				if ((focus_type & VRF_PERMANENT) != 0)
+					return false;
+				focus->handle(ce);
+				focus = 0;
+			}
+			ce.set_type(CET_GRAB_FOCUS);
+			focus = handler;
+			focus->handle(ce);
+			return true;
+		}
+		/// release focus of handler and return whether handler had the focus
+		bool vr_server::release_focus(event_handler* handler)
+		{
+			if (!focus || focus != handler)
+				return false;
+			focus_type = VRF_RELEASED;
+			focus = 0;
+			return true;
+		}
 		/// 
 		VREventTypeFlags vr_server::get_event_type_flags() const
 		{
@@ -359,6 +387,16 @@ namespace cgv {
 			size_t i = iter - vr_kit_handles.begin();
 			emit_events_and_update_state(kit_handle, new_state, (int)i, flags, time);
 			return true;
+		}
+		bool vr_server::dispatch(cgv::gui::event& e)
+		{
+			if (focus && focus_type != VRF_RELEASED) {
+				if (focus->handle(e))
+					return true;
+				if ((focus_type & VRF_EXCLUSIVE) != 0)
+					return false;
+			}
+			return on_event(e);
 		}
 		/// return a reference to gamepad server singleton
 		vr_server& ref_vr_server()
