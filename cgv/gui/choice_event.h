@@ -33,9 +33,9 @@ namespace cgv {
 			void stream_out(std::ostream& os) const;
 			/// read from stream
 			void stream_in(std::istream& is);
-			/// return whether focus was grabbed
+			/// return whether type of choice event
 			ChoiceEventType get_type() const;
-			/// set the type of the event
+			/// set the type of the choice event
 			void set_type(ChoiceEventType _type);
 		};
 

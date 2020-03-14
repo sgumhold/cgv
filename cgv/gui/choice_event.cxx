@@ -4,16 +4,16 @@ namespace cgv {
 	namespace gui {
 
 /// convert a choice event type into a readable string
-		std::string get_choice_type_string(ChoiceEventType type)
-		{
-			switch (type) {
-			case CET_GRAB_FOCUS: return "grab_focus";
-			case CET_LOOSE_FOCUS: return "loose_focus";
-			case CET_SELECTED: return "selected";
-			case CET_UNSELECTED: return "unselected";
-			default: return "unknown";
-			}
-		}
+std::string get_choice_type_string(ChoiceEventType type)
+{
+	switch (type) {
+	case CET_GRAB_FOCUS: return "grab_focus";
+	case CET_LOOSE_FOCUS: return "loose_focus";
+	case CET_SELECTED: return "selected";
+	case CET_UNSELECTED: return "unselected";
+	default: return "unknown";
+	}
+}
 
 choice_event::choice_event(ChoiceEventType _type, unsigned char _modifiers, unsigned char _toggle_keys, double _time)
 	: event(EID_CHOICE,_modifiers, _toggle_keys, _time), type(_type)
