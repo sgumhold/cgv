@@ -6,6 +6,7 @@ uniform bool has_translations;
 in vec4 position;
 in vec2 extent;
 in vec4 color;
+in vec4 texcoord;
 in int group_index;
 in vec4 rotation;
 in vec3 translation;
@@ -13,6 +14,7 @@ in vec3 translation;
 out mat3 NM;
 out mat4 PM;
 out vec4 color_gs;
+out vec4 texcoord_gs;
 
 //***** begin interface of quaternion.glsl ***********************************
 vec4 unit_quaternion();
@@ -46,6 +48,7 @@ mat3 get_inverse_normal_matrix();
 void main()
 {
 	color_gs = group_color(color, group_index);
+	texcoord_gs = texcoord;
 	// compute normal transformation matrix
 	NM = get_normal_matrix();
 	if (has_rotations) {
@@ -59,8 +62,8 @@ void main()
 	// compute plane transformation
 	mat4 M = mat4(0.0);
 	M[0][0] = extent.x;
-	M[1][1] = 1.0f;
-	M[2][2] = extent.y;
+	M[1][1] = extent.y;
+	M[2][2] = 1.0f;
 	M[3] = position;
 
 	PM = get_modelview_matrix();

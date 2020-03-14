@@ -7,9 +7,11 @@ layout(triangle_strip, max_vertices = 4) out;
 in mat3 NM[];
 in mat4 PM[];
 in vec4 color_gs[];
+in vec4 texcoord_gs[];
 
 out vec3 normal;
 out vec4 color_fs;
+out vec2 texcoord_fs;
 out vec3 position;
 flat out int side; // 0 is back facing and 1 is front facing
 
@@ -29,12 +31,12 @@ mat3 get_normal_matrix();
 mat3 get_inverse_normal_matrix();
 //***** end interface of view.glsl ***********************************
 
-void emit_corner(in vec4 corner)
+void emit_corner(in vec4 corner, in vec2 texcoord)
 {
 	position = corner.xyz;
-
+	texcoord_fs = texcoord;
 	// compute position in clip space
-	gl_Position	= get_projection_matrix() * vec4(position, 1.0);
+	gl_Position	= get_projection_matrix() * corner;
 	EmitVertex();
 }
 
@@ -50,8 +52,8 @@ void main()
 		return;*/
 
 	// generate splat vertices
-	emit_corner(PM[0] * vec4(-0.5, 0.0, -0.5, 1.0));
-	emit_corner(PM[0] * vec4(-0.5, 0.0, 0.5, 1.0));
-	emit_corner(PM[0] * vec4(0.5, 0.0, -0.5, 1.0));
-	emit_corner(PM[0] * vec4(0.5, 0.0, 0.5, 1.0));
+	emit_corner(PM[0] * vec4(-0.5,-0.5, 0.0, 1.0), vec2(texcoord_gs[0].xy));
+	emit_corner(PM[0] * vec4(-0.5, 0.5, 0.0, 1.0), vec2(texcoord_gs[0].xw));
+	emit_corner(PM[0] * vec4( 0.5,-0.5, 0.0, 1.0), vec2(texcoord_gs[0].zy));
+	emit_corner(PM[0] * vec4( 0.5, 0.5, 0.0, 1.0), vec2(texcoord_gs[0].zw));
 }
