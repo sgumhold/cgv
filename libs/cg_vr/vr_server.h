@@ -4,6 +4,7 @@
 #include <cgv/gui/throttle_event.h>
 #include <cgv/gui/stick_event.h>
 #include <cgv/gui/pose_event.h>
+#include <cgv/gui/event_handler.h>
 #include <vr/vr_state.h>
 #include <cgv/gui/window.h>
 #include <cgv/signal/signal.h>
@@ -31,6 +32,18 @@ namespace cgv {
 			VRE_STICK_KEY = 32,//!< whether stick|touchpad press actions should be translated to direction key events
 			VRE_POSE = 64,     //!< pose events
 			VRE_ALL = 127      //!< all event types
+		};
+
+		/// different types of event focus grabbing
+		enum VRFocus
+		{
+			VRF_RELEASED = 0,
+			VRF_GRAB = 1,
+			VRF_EXCLUSIVE = 2,
+			VRF_GRAB_EXCLUSIVE = 3,
+			VRF_PERMANENT = 4,
+			VRF_GRAB_PERMANENT = 5,
+			VRF_GRAB_PERMANENT_AND_EXCLUSIVE = 7
 		};
 
 		//! server for vr events
@@ -131,6 +144,8 @@ namespace cgv {
 			std::vector<vr::vr_kit_state> last_states;
 			std::vector<unsigned> last_time_stamps;
 			VREventTypeFlags event_type_flags;
+			VRFocus focus_type;
+			event_handler* focus;
 			///
 			void emit_events_and_update_state(void* kit_handle, const vr::vr_kit_state& new_state, int kit_index, VREventTypeFlags flags, double time);
 			///
@@ -160,6 +175,12 @@ namespace cgv {
 			bool check_new_state(void* kit_handle, const vr::vr_kit_state& new_state, double time);
 			/// same as previous function but with overwrite of flags
 			bool check_new_state(void* kit_handle, const vr::vr_kit_state& new_state, double time, VREventTypeFlags flags);
+			/// grab the event focus to the given event handler and return whether this was possible
+			bool grab_focus(VRFocus focus, event_handler* handler);
+			/// release focus of handler and return whether handler had the focus
+			bool release_focus(event_handler* handler);
+			/// dispatch an event to focus handler and or signal attachments
+			bool dispatch(cgv::gui::event& e);
 			/// signal emitted to dispatch events
 			cgv::signal::bool_signal<cgv::gui::event&> on_event;
 			/// signal emitted to notify about device changes, first argument is handle and second a flag telling whether device got connected or if false disconnected
