@@ -69,6 +69,7 @@ namespace cgv {
 				return false;
 			ref_prog().set_uniform(ctx, "has_rotations", has_rotations);
 			ref_prog().set_uniform(ctx, "has_translations", has_translations);
+			ref_prog().set_uniform(ctx, "use_texture", has_texcoords);
 			return true;
 		}
 
