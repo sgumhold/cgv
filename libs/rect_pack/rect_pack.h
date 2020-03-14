@@ -77,7 +77,7 @@ namespace rect_pack {
 		pack_rectangles function fails, the percentual safety is increased until all rectangles fit. In case of print_progress being
 		true, an asterix is streamed out to std::cout for any failed packing iteration
 		*/
-	extern CGV_API float pack_rectangles_interatively(
+	extern CGV_API float pack_rectangles_iteratively(
 		const std::vector<rectangle_size>& rectangle_sizes,
 		unsigned& width_out, unsigned& height_out,
 		std::vector<rectangle>& rectangles_out,
@@ -95,7 +95,7 @@ namespace rect_pack {
 	extern CGV_API bool save_rectangles_html(const std::string& file_name, unsigned width, unsigned height, const std::vector<rectangle>& rectangles);
 
 	/// generate a packing with the given parameters, measure the time and save result to web page with a file name starting with the given prefix
-	extern CGV_API void analyze_pack_rectangles_interatively(
+	extern CGV_API void analyze_pack_rectangles_iteratively(
 		const std::string& file_name_prefix,
 		std::vector<rectangle_size>& rectangle_sizes,
 		CompareStrategy compare_strategy = CS_ShorterSideFirst,
