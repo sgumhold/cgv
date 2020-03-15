@@ -10,6 +10,7 @@
 #include <cgv/gui/dialog.h>
 #include <cgv/render/attribute_array_binding.h>
 #include <cgv_gl/sphere_renderer.h>
+#include <cgv_gl/rectangle_renderer.h>
 #include <cgv/media/mesh/simple_mesh.h>
 #include <cg_vr/vr_events.h>
 
@@ -728,6 +729,7 @@ bool vr_stream_gui::init(cgv::render::context& ctx)
 	cgv::render::ref_box_renderer(ctx, 1);
 	cgv::render::ref_sphere_renderer(ctx, 1);
 	cgv::render::ref_rounded_cone_renderer(ctx, 1);
+	cgv::render::ref_rectangle_renderer(ctx, 1);
 	return true;
 }
 
@@ -736,6 +738,7 @@ void vr_stream_gui::clear(cgv::render::context& ctx)
 	cgv::render::ref_box_renderer(ctx, -1);
 	cgv::render::ref_sphere_renderer(ctx, -1);
 	cgv::render::ref_rounded_cone_renderer(ctx, -1);
+	cgv::render::ref_rectangle_renderer(ctx, -1);
 }
 
 void vr_stream_gui::init_frame(cgv::render::context& ctx)
@@ -1058,31 +1061,56 @@ void vr_stream_gui::draw(cgv::render::context& ctx)
 
 	// draw label
 	if (vr_view_ptr && label_tex.is_created()) {
-		cgv::render::shader_program& prog = ctx.ref_default_shader_program(true);
-		int pi = prog.get_position_index();
-		int ti = prog.get_texcoord_index();
 		vec3 p(0, 1.5f, 0);
-		vec3 y = label_upright ? vec3(0, 1.0f, 0) : normalize(vr_view_ptr->get_view_up_dir_of_kit());
-		vec3 x = normalize(cross(vec3(vr_view_ptr->get_view_dir_of_kit()), y));
-		float w = 0.5f, h = 0.5f;
-		std::vector<vec3> P;
-		std::vector<vec2> T;
-		P.push_back(p - 0.5f * w * x - 0.5f * h * y); T.push_back(vec2(0.0f, 0.0f));
-		P.push_back(p + 0.5f * w * x - 0.5f * h * y); T.push_back(vec2(1.0f, 0.0f));
-		P.push_back(p - 0.5f * w * x + 0.5f * h * y); T.push_back(vec2(0.0f, 1.0f));
-		P.push_back(p + 0.5f * w * x + 0.5f * h * y); T.push_back(vec2(1.0f, 1.0f));
-		cgv::render::attribute_array_binding::set_global_attribute_array(ctx, pi, P);
-		cgv::render::attribute_array_binding::enable_global_array(ctx, pi);
-		cgv::render::attribute_array_binding::set_global_attribute_array(ctx, ti, T);
-		cgv::render::attribute_array_binding::enable_global_array(ctx, ti);
-		prog.enable(ctx);
-		label_tex.enable(ctx);
-		ctx.set_color(rgb(1, 1, 1));
-		glDrawArrays(GL_TRIANGLE_STRIP, 0, (GLsizei)P.size());
-		label_tex.disable(ctx);
-		prog.disable(ctx);
-		cgv::render::attribute_array_binding::disable_global_array(ctx, pi);
-		cgv::render::attribute_array_binding::disable_global_array(ctx, ti);
+		vec2 e(0.5f, 0.5f);
+		rgba c(1.0f, 0.5f, 0.2f, 1.0f);
+		vec4 tc(0.0f, 0.0f, 1.0f, 1.0f);
+		mat3 O;
+		vec3& x = reinterpret_cast<vec3&>(O(0, 0));
+		vec3& y = reinterpret_cast<vec3&>(O(0, 1));
+		vec3& z = reinterpret_cast<vec3&>(O(0, 2));
+		y = label_upright ? vec3(0, 1.0f, 0) : normalize(vr_view_ptr->get_view_up_dir_of_kit());
+		x = normalize(cross(vec3(vr_view_ptr->get_view_dir_of_kit()), y));
+		z = cross(x, y);
+		quat q(O);
+
+		
+		auto& rr = ref_rectangle_renderer(ctx);
+		rr.set_position_array(ctx, &p, 1);
+		rr.set_extent_array(ctx, &e, 1);
+		rr.set_color_array(ctx, &c, 1);
+		rr.set_rotation_array(ctx, &q, 1);
+		rr.set_texcoord_array(ctx, &tc, 1);
+		if (rr.validate_and_enable(ctx)) {
+			label_tex.enable(ctx);
+			ctx.set_color(rgb(1, 1, 1));
+			rr.draw(ctx, 0, 1);
+			label_tex.disable(ctx);
+			rr.disable(ctx);
+		}
+		else {
+			cgv::render::shader_program& prog = ctx.ref_default_shader_program(true);
+			int pi = prog.get_position_index();
+			int ti = prog.get_texcoord_index();
+			std::vector<vec3> P;
+			std::vector<vec2> T;
+			P.push_back(p - 0.5f * e[0] * x - 0.5f * e[1] * y); T.push_back(vec2(0.0f, 0.0f));
+			P.push_back(p + 0.5f * e[0] * x - 0.5f * e[1] * y); T.push_back(vec2(1.0f, 0.0f));
+			P.push_back(p - 0.5f * e[0] * x + 0.5f * e[1] * y); T.push_back(vec2(0.0f, 1.0f));
+			P.push_back(p + 0.5f * e[0] * x + 0.5f * e[1] * y); T.push_back(vec2(1.0f, 1.0f));
+			cgv::render::attribute_array_binding::set_global_attribute_array(ctx, pi, P);
+			cgv::render::attribute_array_binding::enable_global_array(ctx, pi);
+			cgv::render::attribute_array_binding::set_global_attribute_array(ctx, ti, T);
+			cgv::render::attribute_array_binding::enable_global_array(ctx, ti);
+			prog.enable(ctx);
+			label_tex.enable(ctx);
+			ctx.set_color(rgb(1, 1, 1));
+			glDrawArrays(GL_TRIANGLE_STRIP, 0, (GLsizei)P.size());
+			label_tex.disable(ctx);
+			prog.disable(ctx);
+			cgv::render::attribute_array_binding::disable_global_array(ctx, pi);
+			cgv::render::attribute_array_binding::disable_global_array(ctx, ti);
+		}
 	}
 }
 
