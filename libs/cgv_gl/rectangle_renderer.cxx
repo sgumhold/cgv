@@ -21,6 +21,7 @@ namespace cgv {
 			has_extents = false;
 			has_translations = false;
 			has_rotations = false;
+			has_texcoords = false;
 		}
 
 		void rectangle_renderer::set_attribute_array_manager(const context& ctx, attribute_array_manager* _aam_ptr)
@@ -79,6 +80,7 @@ namespace cgv {
 				has_extents = false;
 				has_rotations = false;
 				has_translations = false;
+				has_texcoords = false;
 			}
 
 			return surface_renderer::disable(ctx);
