@@ -1358,7 +1358,7 @@ unsigned int map_to_gl(TextureFilter filter_type)
 		GL_NEAREST, GL_LINEAR,
 		GL_NEAREST_MIPMAP_NEAREST, GL_LINEAR_MIPMAP_NEAREST,
 		GL_NEAREST_MIPMAP_LINEAR, GL_LINEAR_MIPMAP_LINEAR,
-		GL_TEXTURE_MAX_ANISOTROPY_EXT
+		GL_LINEAR_MIPMAP_LINEAR
 	};
 	return gl_texture_filter[filter_type];
 }
