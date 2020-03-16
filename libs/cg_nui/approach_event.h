@@ -23,7 +23,7 @@ namespace cgv {
 		extern CGV_API std::string get_approach_type_string(ApproachEventType type);
 
 		/// class to represent approach events that include over, touch, press and their opposite
-		class approach_event : public nui_event
+		class CGV_API approach_event : public nui_event
 		{
 		protected:
 			/// store type of approach event

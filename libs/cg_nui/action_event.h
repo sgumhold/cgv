@@ -21,7 +21,7 @@ namespace cgv {
 		extern CGV_API std::string get_action_type_string(ActionEventType type);
 
 		/// class to represent action events that include grabbing, moving and collisions
-		class action_event : public nui_event
+		class CGV_API action_event : public nui_event
 		{
 		protected:
 			/// store type of action event

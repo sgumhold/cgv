@@ -10,6 +10,10 @@
 namespace cgv {
 	namespace nui {
 
+		class nui_tool;
+
+		typedef cgv::data::ref_ptr<nui_tool, true> nui_tool_ptr;
+
 		/// the tool type gives information, which device controls the tool
 		enum ToolType
 		{
@@ -24,7 +28,7 @@ namespace cgv {
 		/// convert an tool type into a readable string
 		extern CGV_API std::string get_tool_type_string(ToolType type);
 
-		class nui_tool : 
+		class CGV_API nui_tool :
 			public cgv::base::named, 
 			public cgv::render::drawable, 
 			public cgv::gui::event_handler,
@@ -38,9 +42,9 @@ namespace cgv {
 			/// 
 			ToolType type;
 			/// function to draw a mode, where the 3d model should fit into the box [-1,1]³
-			virtual void draw_mode(uint32_t mode_index) const = 0;
+			virtual void draw_mode(cgv::render::context& ctx, uint32_t mode_index) { draw(ctx); }
 		public:
-			nui_tool(const std::string& _name, ToolType _type, uint32_t _nr_modi);
+			nui_tool(const std::string& _name, ToolType _type, uint32_t _nr_modi = 1);
 			uint32_t get_nr_modi() const { return nr_modi; }
 			uint32_t get_current_mode() const { return current_mode;  }
 			void set_current_mode(uint32_t _mode) { current_mode = _mode; }

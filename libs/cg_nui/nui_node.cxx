@@ -4,6 +4,20 @@
 
 namespace cgv {
 	namespace nui {
+		void nui_node::stream_help(std::ostream& os)
+		{
+
+		}
+		bool nui_node::handle(cgv::gui::event& e)
+		{
+			if ((e.get_flags() & cgv::gui::EF_NUI) != 0) {
+				std::cout << "node received nui event: ";
+				e.stream_out(std::cout);
+				std::cout << std::endl;
+			}
+			return true;
+		}
+
 		nui_node::nui_node(const std::string& _name, bool use_scale) 
 			: cgv::base::group(_name), apply_scale(use_scale)
 		{
@@ -89,5 +103,32 @@ namespace cgv {
 			for (auto pcp : primitive_containers)
 				pcp->compute_all_intersections(info, start, direction, only_entry_points);
 		}
+
+		bool nui_node::init(cgv::render::context& ctx)
+		{
+			bool res_all = true;
+			for (auto pc : primitive_containers) {
+				pc->set_context(&ctx);
+				bool res = pc->init(ctx);
+				res_all &= res;
+			}
+			return res_all;
+		}
+		void nui_node::init_frame(cgv::render::context& ctx)
+		{
+			for (auto pc : primitive_containers)
+				pc->init_frame(ctx);
+		}
+		void nui_node::clear(cgv::render::context& ctx)
+		{
+			for (auto pc : primitive_containers)
+				pc->clear(ctx);
+		}
+		void nui_node::draw(cgv::render::context& ctx)
+		{
+			for (auto pc : primitive_containers)
+				pc->draw(ctx);
+		}
+
 	}
 }

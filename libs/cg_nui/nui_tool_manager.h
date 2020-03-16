@@ -1,49 +1,15 @@
 #pragma once
 
-#include <cgv/base/named.h>
-#include <cgv/gui/provider.h>
-#include <cgv/gui/event_handler.h>
-#include <cgv/render/drawable.h>
+#include "nui_tool.h"
 
 #include "lib_begin.h"
 
 namespace cgv {
 	namespace nui {
-
-		/// the tool type gives information, which device controls the tool
-		enum ToolType
-		{
-			TT_MOUSE,
-			TT_KEYBOARD,
-			TT_VR_CONTROLLER,
-			TT_GAMEPAD,
-			TT_HAND,
-			TT_BODY
-		};
-
-		/// convert an tool type into a readable string
-		extern CGV_API std::string get_tool_type_string(ToolType type);
-
-		class nui_tool : 
-			public cgv::base::named, 
-			public cgv::render::drawable, 
-			public cgv::gui::event_handler,
-			public cgv::gui::provider
+		class CGV_API nui_manager
 		{
 		protected:
-			/// the number of supported modi
-			uint32_t nr_modi;
-			/// the currently selected mode
-			uint32_t current_mode;
-			/// 
-			ToolType type;
-			/// function to draw a mode, where the 3d model should fit into the box [-1,1]³
-			virtual void draw_mode(uint32_t mode_index) const = 0;
 		public:
-			nui_tool(const std::string& _name, ToolType _type, uint32_t _nr_modi);
-			uint32_t get_nr_modi() const { return nr_modi; }
-			uint32_t get_current_mode() const { return current_mode;  }
-			void set_current_mode(uint32_t _mode) { current_mode = _mode; }
 		};
 	}
 }

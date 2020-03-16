@@ -287,7 +287,16 @@ namespace cgv {
 
 		void rectangle_container::draw(cgv::render::context& ctx)
 		{
-			render(ctx, cgv::render::ref_rectangle_renderer(ctx), srs);
+			auto& r = cgv::render::ref_rectangle_renderer(ctx);
+			prepare_render(ctx, r, srs);
+			if (!r.validate_and_enable(ctx))
+				return;
+			if (use_texcoords && tex)
+				tex->enable(ctx);
+			r.draw(ctx, 0, center_positions.size());
+			if (use_texcoords && tex)
+				tex->disable(ctx);
+			r.disable(ctx);
 		}
 	}
 }

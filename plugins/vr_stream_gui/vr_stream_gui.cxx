@@ -6,6 +6,7 @@
 #include <cgv/base/register.h>
 #include <cgv/math/ftransform.h>
 #include <cgv/utils/scan.h>
+#include <cgv/utils/advanced_scan.h>
 #include <cgv/utils/options.h>
 #include <cgv/gui/dialog.h>
 #include <cgv/render/attribute_array_binding.h>
@@ -287,8 +288,27 @@ void vr_stream_gui::build_scene(float w, float d, float h, float W, float tw, fl
 	construct_movable_boxes(tw, td, th, tW, 2000);
 }
 
-vr_stream_gui::vr_stream_gui() 
+vr_stream_gui::vr_stream_gui()
 {
+	cgv::nui::nui_node* node = new cgv::nui::nui_node("scene", false);
+	node->create_box_container(true, true);
+	node->create_rectangle_container(true, true, true);
+	node->create_sphere_container(true, true);
+	node->ref_boxes()->add_box(box3(vec3(0.0f), vec3(1.0)), rgba(1, 0, 0, 1));
+	node->ref_boxes()->add_box(box3(vec3(2.0f), vec3(3.0)), rgba(0, 1, 0, 1));
+	
+	//node->ref_rectangles()->add_rectangle(vec3(1, 0, 1), vec2(2, 1), rgba(0, 1, 1));
+	node->ref_spheres()->add_sphere(vec3(0, 2, 1), rgba(1, 1, 0, 1), 0.5f);
+	node->ref_spheres()->add_sphere(vec3(0, 2, -1), rgba(1, 0, 1, 1), 0.3f);
+	scene = node;
+	tools[0] = new cgv::nui::ray_tool("left ray", 0);
+	tools[1] = new cgv::nui::ray_tool("right ray", 1);
+	tools[0]->interaction_node = scene;
+	tools[1]->interaction_node = scene;
+	append_child(scene);
+	append_child(tools[0]);
+	append_child(tools[1]);
+
 	screen_tex_manager = std::make_shared<util::screen_texture_manager>();
 	intersection = {};
 	ray_origin = vec3(0.0f);
@@ -297,8 +317,8 @@ vr_stream_gui::vr_stream_gui()
 
 	frame_split = 0;
 	extent_texcrd = vec2(0.5f, 0.5f);
-	center_left  = vec2(0.5f,0.25f);
-	center_right = vec2(0.5f,0.25f);
+	center_left = vec2(0.5f, 0.25f);
+	center_right = vec2(0.5f, 0.25f);
 	seethrough_gamma = 0.33f;
 	frame_width = frame_height = 0;
 	background_distance = 2;
@@ -336,9 +356,10 @@ vr_stream_gui::vr_stream_gui()
 	cgv::media::font::enumerate_font_names(font_names);
 	font_enum_decl = "enums='";
 	for (unsigned i = 0; i < font_names.size(); ++i) {
-		if (i>0)
+		if (i > 0)
 			font_enum_decl += ";";
 		std::string fn(font_names[i]);
+		std::cout << fn << std::endl;
 		if (cgv::utils::to_lower(fn) == "calibri") {
 			label_font_face = cgv::media::font::find_font(fn)->get_font_face(label_face_type);
 			label_font_idx = i;
@@ -347,6 +368,31 @@ vr_stream_gui::vr_stream_gui()
 	}
 	font_enum_decl += "'";
 	state[0] = state[1] = state[2] = state[3] = IS_NONE;
+
+	cgv::media::font::font_ptr f = cgv::media::font::find_font("Open Sans");
+	lm.set_font_face(f->get_font_face(cgv::media::font::FFA_BOLD));
+	lm.set_font_size(24);
+	std::string content;
+	if (cgv::utils::file::read("D:/develop/projects/git/cgv/plugins/vr_stream_gui/labels.txt", content, true)) {
+		std::vector<cgv::utils::line> lines;
+		cgv::utils::split_to_lines(content, lines);
+		for (auto& l : lines) {
+			std::string line = to_string(l);
+			lm.add_label(line, rgba(0.5f, 0.2f, 0, 1));
+		}
+	}
+	lm.compute_label_sizes();
+	lm.pack_labels();
+
+	float scale = 0.002f;
+	for (uint32_t i = 0; i < lm.get_nr_labels(); ++i) {
+		const auto& l = lm.get_label(i);
+		box2 b = reinterpret_cast<const box2&>(lm.get_texcoord_range(i));
+		node->ref_rectangles()->add_rectangle(vec3(0, 1 + 0.05f * i, -0.5f),
+			vec2(scale * l.width, scale * l.height), b,
+			quat(1, 0, 0, 0), rgba(0, 0, 1, 1));
+	}
+
 }
 	
 void vr_stream_gui::stream_help(std::ostream& os) {
@@ -369,6 +415,10 @@ void vr_stream_gui::on_set(void* member_ptr)
 	
 bool vr_stream_gui::handle(cgv::gui::event& e)
 {
+	if (tools[0]->handle(e))
+		return true;
+	if (tools[1]->handle(e))
+		return true;
 	// check if vr event flag is not set and don't process events in this case
 	if ((e.get_flags() & cgv::gui::EF_VR) == 0) {
 		switch (e.get_kind()) {
@@ -735,6 +785,7 @@ bool vr_stream_gui::init(cgv::render::context& ctx)
 
 void vr_stream_gui::clear(cgv::render::context& ctx)
 {
+	lm.destruct(ctx);
 	cgv::render::ref_box_renderer(ctx, -1);
 	cgv::render::ref_sphere_renderer(ctx, -1);
 	cgv::render::ref_rounded_cone_renderer(ctx, -1);
@@ -743,6 +794,9 @@ void vr_stream_gui::clear(cgv::render::context& ctx)
 
 void vr_stream_gui::init_frame(cgv::render::context& ctx)
 {
+	lm.ensure_texture_uptodate(ctx);
+	scene->ref_rectangles()->set_texture(lm.get_texture());
+
 	if (stream_screen) 
 		screen_tex_manager->update(ctx);
 
@@ -878,13 +932,14 @@ void vr_stream_gui::draw(cgv::render::context& ctx)
 		pnt.col = vec4(0.0f, 0.0f, 1.0f, 1.0f);
 		util::debug::draw_point(pnt, 10.0f);
 	}
+	/*
 	else {
 		util::debug::line_t line;
 		line.a = ray_origin;
 		line.b = ray_origin + normalize(ray_dir) * 10.0f;
 		line.col = vec4(1.0f, 0.0f, 0.0f, 1.0f);
 		util::debug::draw_line(line);
-	}
+	}*/
 
 	vt_display->draw(ctx);
 
@@ -979,6 +1034,7 @@ void vr_stream_gui::draw(cgv::render::context& ctx)
 				cgv::render::attribute_array_binding::disable_global_array(ctx, prog.get_texcoord_index());
 			}
 		}
+		/*
 		if (vr_view_ptr) {
 			std::vector<vec3> P;
 			std::vector<float> R;
@@ -1022,6 +1078,7 @@ void vr_stream_gui::draw(cgv::render::context& ctx)
 				}
 			}
 		}
+		*/
 	}
 	cgv::render::box_renderer& renderer = cgv::render::ref_box_renderer(ctx);
 
@@ -1049,7 +1106,7 @@ void vr_stream_gui::draw(cgv::render::context& ctx)
 	renderer.set_color_array(ctx, box_colors);
 	renderer.render(ctx, 0, boxes.size());
 
-
+	/*
 	// draw intersection points
 	if (!intersection_points.empty()) {
 		auto& sr = cgv::render::ref_sphere_renderer(ctx);
@@ -1058,7 +1115,7 @@ void vr_stream_gui::draw(cgv::render::context& ctx)
 		sr.set_render_style(srs);
 		sr.render(ctx, 0, intersection_points.size());
 	}
-
+	*/
 	// draw label
 	if (vr_view_ptr && label_tex.is_created()) {
 		vec3 p(0, 1.5f, 0);

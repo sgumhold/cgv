@@ -19,7 +19,7 @@ namespace cgv {
 		extern CGV_API std::string get_lifetime_type_string(LifetimeEventType type);
 
 		/// class to represent lifetime events that include birth, time evolution and death
-		class lifetime_event : public nui_event
+		class CGV_API lifetime_event : public nui_event
 		{
 		protected:
 			/// store type of lifetime event

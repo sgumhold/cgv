@@ -1,6 +1,8 @@
 #pragma once
 
 #include <vector>
+#include <fstream>
+
 #include "lib_begin.h"
 
 namespace rect_pack {

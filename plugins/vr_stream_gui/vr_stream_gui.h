@@ -1,7 +1,10 @@
 #pragma once
-#include <cgv/base/node.h>
+#include <cgv/base/group.h>
 #include <cgv/render/drawable.h>
 #include <cgv/gui/provider.h>
+#include <cg_nui/nui_node.h>
+#include <cg_nui/label_manager.h>
+#include <cg_nui/ray_tool.h>
 #include <cgv/gui/event_handler.h>
 #include <cgv_gl/box_renderer.h>
 #include <cgv_gl/gl/mesh_render_info.h>
@@ -31,12 +34,14 @@
 using namespace trajectory;
 
 class vr_stream_gui :
-	public cgv::base::node,
+	public cgv::base::group,
 	public cgv::render::drawable,
 	public cgv::gui::event_handler,
 	public cgv::gui::provider {
 protected:
-
+	cgv::nui::label_manager lm;
+	cgv::nui::nui_node_ptr scene;
+	cgv::nui::ray_tool_ptr tools[2];
 	std::shared_ptr<vr::room::virtual_display> vt_display;
 	std::shared_ptr<util::screen_texture_manager> screen_tex_manager;
 	util::vive_mouse_controller vm_controller;
