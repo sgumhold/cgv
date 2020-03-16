@@ -9,7 +9,7 @@ namespace cgv {
 	namespace nui {
 
 		/// base class to all nui events, which are marked with the EF_NUI event flag and have the render types declared
-		class nui_event : public gui::event, public render::render_types
+		class CGV_API nui_event : public gui::event, public render::render_types
 		{
 		public:
 			/// construct a nui event

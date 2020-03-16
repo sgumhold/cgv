@@ -3,8 +3,8 @@
 namespace cgv {
 	namespace nui {
 
-primitive_container::primitive_container(PrimitiveType _type, bool _use_colors, bool _use_orientations, ScalingMode _scaling_mode)
-	: type(_type), use_colors(_use_colors), use_orientations(_use_orientations), scaling_mode(_scaling_mode)
+primitive_container::primitive_container(PrimitiveType _type, bool _use_colors, bool _use_orientations, ScalingMode _scaling_mode, InteractionCapabilities ic)
+	: type(_type), use_colors(_use_colors), use_orientations(_use_orientations), scaling_mode(_scaling_mode), interaction_capabilities(ic)
 {
 }
 
@@ -70,6 +70,63 @@ bool primitive_container::render(cgv::render::context& ctx, cgv::render::rendere
 		r.draw(ctx, 0, center_positions.size());
 	r.disable(ctx);
 	return false;
+}
+
+void primitive_container::set_interaction_capabilities(InteractionCapabilities ic)
+{
+	interaction_capabilities = ic;
+}
+
+primitive_container::quat primitive_container::get_orientation(uint32_t i)
+{
+	if (!use_orientations)
+		return quat(1.0f, 0.0f, 0.0f, 0.0f);
+	return orientations[i];
+}
+
+bool primitive_container::set_orientation(uint32_t i, const quat& q)
+{
+	if (!use_orientations)
+		return false;
+	orientations[i] = q;
+	return true;
+}
+primitive_container::vec3 primitive_container::get_position(uint32_t i) const
+{
+	return center_positions[i];
+}
+void primitive_container::set_position(uint32_t i, const vec3& p)
+{
+	center_positions[i] = p;
+}
+
+float primitive_container::get_uniform_scale(uint32_t i) const
+{
+	if (scaling_mode != SM_UNIFORM)
+		return 1.0f;
+	return uniform_scales[i];
+}
+
+bool primitive_container::set_uniform_scale(uint32_t i, float u)
+{
+	if (scaling_mode != SM_UNIFORM)
+		return false;
+	uniform_scales[i] = u;
+	return true;
+}
+primitive_container::vec3 primitive_container::get_scale(uint32_t i) const
+{
+	if (scaling_mode != SM_NON_UNIFORM)
+		return vec3(1.0f);
+	return scales[i];
+}
+
+bool primitive_container::set_scale(uint32_t i, const vec3& s)
+{
+	if (scaling_mode != SM_UNIFORM)
+		return false;
+	scales[i] = s;
+	return true;
 }
 
 	}

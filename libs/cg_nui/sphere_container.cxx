@@ -115,8 +115,8 @@ int sphere_container::compute_intersection(const vec3& ce, float ra, const vec3&
 	C.normal = normalize(C.position - ce);
 	if (C2_ptr) {
 		C2_ptr->distance = -b + h;
-		C2_ptr->position = ro + C.distance * rd;
-		C2_ptr->normal = normalize(C.position - ce);
+		C2_ptr->position = ro + C2_ptr->distance * rd;
+		C2_ptr->normal = normalize(C2_ptr->position - ce);
 	}
 	return 2;
 }
@@ -150,11 +150,11 @@ void sphere_container::compute_all_intersections(contact_info& info, const vec3&
 		ci1.primitive_index = i;
 		ci1.container = this;
 		info.contacts.push_back(ci1);
-		if (cnt == 1)
+		if (cnt == 1 || only_entry_points)
 			continue;
 		ci2.primitive_index = i;
 		ci2.container = this;
-		info.contacts.push_back(ci1);
+		info.contacts.push_back(ci2);
 	}
 }
 

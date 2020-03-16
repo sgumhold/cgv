@@ -16,7 +16,7 @@ namespace cgv {
 
 		typedef cgv::data::ref_ptr<nui_node, true> nui_node_ptr;
 
-		class nui_node : 
+		class CGV_API nui_node :
 			public cgv::base::group, 
 			public cgv::render::drawable,
 			public cgv::gui::event_handler
@@ -37,6 +37,8 @@ namespace cgv {
 		public:
 			nui_node(const std::string& _name, bool use_scale = false);
 			virtual ~nui_node();
+			void stream_help(std::ostream& os);
+			bool handle(cgv::gui::event& e);
 			mat4 get_model_matrix() const;
 			void create_sphere_container(bool use_radii, bool _use_colors, SphereRenderType _render_type = SRT_SPHERES);
 			sphere_container* ref_spheres() { return spheres; }
@@ -59,6 +61,13 @@ namespace cgv {
 			const vec3& get_scale() const { return scale; }
 			void set_translation(const vec3& _translation) { translation = _translation; }
 			void set_scale(const vec3& _scale) { scale = _scale; }
+
+			// call methods of containers
+			bool init(cgv::render::context& ctx);
+			void init_frame(cgv::render::context& ctx);
+			void clear(cgv::render::context& ctx);
+			void draw(cgv::render::context& ctx);
+
 		};
 	}
 }

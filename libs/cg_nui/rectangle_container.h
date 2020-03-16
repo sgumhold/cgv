@@ -8,7 +8,7 @@
 namespace cgv {
 	namespace nui {
 
-		class rectangle_container : public primitive_container
+		class CGV_API rectangle_container : public primitive_container
 		{
 		protected:
 			cgv::render::surface_render_style srs;
@@ -16,6 +16,8 @@ namespace cgv {
 			std::vector<vec4> texcoord_ranges;
 			/// whether to use texture coordinates
 			bool use_texcoords;
+			/// keep pointer of texture to be used for texturing
+			std::shared_ptr<cgv::render::texture> tex;
 
 			void prepare_render(cgv::render::context& ctx, cgv::render::renderer& r, const cgv::render::render_style& rs, const std::vector<uint32_t>* indices_ptr = 0) const;
 			static int compute_intersection(
@@ -34,6 +36,9 @@ namespace cgv {
 			uint32_t add_rectangle(const vec3& center, const vec2& extent, const box2& texcoord_range, const quat& orientation);
 			uint32_t add_rectangle(const vec3& center, const vec2& extent, const box2& texcoord_range, const rgba& color);
 			uint32_t add_rectangle(const vec3& center, const vec2& extent, const box2& texcoord_range, const quat& orientation, const rgba& color);
+
+			void set_texture(std::shared_ptr<cgv::render::texture> _tex) { tex = _tex; }
+
 			quat get_rotation(uint32_t i) const { return use_orientations ? orientations[i] : quat(1.0f, 0.0f, 0.0f, 0.0f); }
 			box3 compute_bounding_box() const;
 			void compute_closest_point(contact_info& info, const vec3& pos);

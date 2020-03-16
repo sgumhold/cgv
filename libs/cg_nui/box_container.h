@@ -16,7 +16,7 @@ namespace cgv {
 			BRT_SOLID_AND_WIREFRAME = 3
 		};
 
-		class box_container : public primitive_container
+		class CGV_API box_container : public primitive_container
 		{
 		protected:
 			cgv::render::box_render_style brs;

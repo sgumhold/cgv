@@ -16,7 +16,7 @@ namespace cgv {
 			SRT_TUBES
 		};
 
-		class sphere_container : public primitive_container
+		class CGV_API sphere_container : public primitive_container
 		{
 		protected:
 			cgv::render::sphere_render_style srs;
