@@ -206,7 +206,7 @@ namespace rgbd {
 			cfg.enable_stream(rs2_stream_type, -1, format.width, format.height, rs2_pixel_format, format.fps);
 		}
 		if (cfg.can_resolve(*pipe)) {
-			//get the depth scaling for pointcloud generation
+			//get the depth scale for pointcloud generation
 			auto sensors = dev->query_sensors();
 			for (auto sensor : sensors) {
 				if (sensor.is<rs2::depth_sensor>()) {
@@ -215,7 +215,7 @@ namespace rgbd {
 			}
 			//start the camera
 			auto profile = pipe->start(cfg);
-			
+			//extract extrinsics and intrinsics from active profile
 			active_profile = pipe->get_active_profile();
 			if ((input_streams & IS_COLOR_AND_DEPTH) == IS_COLOR_AND_DEPTH) {
 				rs2_color_stream = active_profile.get_stream(RS2_STREAM_COLOR);
@@ -224,15 +224,6 @@ namespace rgbd {
 				depth_intrinsics = rs2_depth_stream.as<rs2::video_stream_profile>().get_intrinsics();
 				color_intrinsics = rs2_color_stream.as<rs2::video_stream_profile>().get_intrinsics();
 			}
-
-			//set laser power for far away objects
-			/*auto depth_sensor = dev->first<rs2::depth_sensor>();
-			if (depth_sensor.supports(RS2_OPTION_LASER_POWER))
-			{
-				// Query min and max values:
-				auto range = depth_sensor.get_option_range(RS2_OPTION_LASER_POWER);
-				depth_sensor.set_option(RS2_OPTION_LASER_POWER, range.max); // Set max power
-			}*/
 			return true;
 		}
 		cerr << "rgbd_realsense::start_device : can't resolve configuration, make sure to use the same ir stream and depth stream resolutions and framerates\n";
@@ -249,7 +240,6 @@ namespace rgbd {
 			pipe = nullptr;
 			return true;
 		}
-
 		return false;
 	}
 
@@ -289,8 +279,6 @@ namespace rgbd {
 						if (next_frame.get_frame_number() == last_depth_frame_number) return false;
 						stream = &depth_stream;
 						last_depth_frame_number = next_frame.get_frame_number();
-						//dec_filter.process(next_frame);
-						//next_frame = temp_filter.process(next_frame);
 					}
 				}
 				else if (is == IS_INFRARED) {
