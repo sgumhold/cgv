@@ -34,17 +34,21 @@ struct mesh_data_adapter {
 	size_t points_size, triangles_size, uv_size;
 };
 
-void mesh_from(mesh_data_interface* mesh,char* data, size_t size) {
+///searches a frame of type PF_POINTS_AND_TRIANGLES for begin and size of the arrays storing mesh data
+void mesh_from(mesh_data_adapter* mesh,char* data, size_t size) {
 	uint32_t points = 0;
+	//how many points the mesh has
 	memcpy(&points, data, sizeof(uint32_t));
 	size_t offset = sizeof(uint32_t);
 	mesh->points = reinterpret_cast<cgv::render::render_types::vec3*>(data + offset);
 	offset += points * sizeof(cgv::render::render_types::vec3);
+	///the number of triangles in the mesh is located behind the points array
 	uint32_t triangles = 0;
 	memcpy(&triangles, data + offset, sizeof(uint32_t));
 	offset += sizeof(uint32_t);
 	mesh->triangles = reinterpret_cast<cgv::render::render_types::ivec3*>(data + offset);
 	offset += triangles * 3 * sizeof(uint32_t);
+	///the number of texture coordinates in the mesh is located behind the triangles array
 	uint32_t uv_coordinates = 0;
 	memcpy(&uv_coordinates, data + offset, sizeof(uint32_t));
 	offset += sizeof(uint32_t);
@@ -312,7 +316,11 @@ void rgbd_control::draw(context& ctx)
 				prog.set_uniform(ctx, "color_texture", 0);
 				prog.enable(ctx);
 				glDisable(GL_CULL_FACE);
-				ctx.draw_faces(reinterpret_cast<float*>(M_POINTS.data()), nullptr, reinterpret_cast<float*>(M_UV.data()),
+				float* tex_coords = nullptr;
+				if (M_UV.size() > 0) {
+					tex_coords = reinterpret_cast<float*>(M_UV.data());
+				}
+				ctx.draw_faces(reinterpret_cast<float*>(M_POINTS.data()), nullptr,tex_coords,
 					reinterpret_cast<int32_t*>(M_TRIANGLES.data()), nullptr, reinterpret_cast<int32_t*>(M_TRIANGLES.data()), M_TRIANGLES.size(), 3);
 				glEnable(GL_CULL_FACE);
 				prog.disable(ctx);
@@ -687,7 +695,7 @@ void rgbd_control::timer_event(double t, double dt)
 
 						if (mesh_frame.frame_data.size() > sizeof(uint32_t)) {														
 							if (mesh_frame.pixel_format == PF_POINTS_AND_TRIANGLES) {
-								mesh_data_interface mesh;
+								mesh_data_adapter mesh;
 								mesh_from(&mesh, mesh_frame.frame_data.data(), mesh_frame.frame_data.size());
 								M_POINTS.resize(mesh.points_size);
 								std::copy(mesh.points, mesh.points+mesh.points_size, M_POINTS.data());
