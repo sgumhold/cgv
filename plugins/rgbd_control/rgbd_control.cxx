@@ -27,7 +27,7 @@ using namespace cgv::render;
 using namespace rgbd;
 
 
-struct mesh_data_interface {
+struct mesh_data_adapter {
 	cgv::render::render_types::vec3 *points;
 	cgv::render::render_types::ivec3 *triangles;
 	cgv::render::render_types::vec2 *uv;
