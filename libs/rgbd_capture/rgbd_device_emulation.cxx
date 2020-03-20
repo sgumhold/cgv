@@ -12,7 +12,7 @@ using namespace chrono;
 namespace rgbd {
 
 
-	//searches for the first stream_info file with one of the file extensions from exts
+	//seeks for the first stream_info file with one of the file extensions from exts
 	//and writes the content to the stream_format object referenced by stream
 	//return true on success false otherwise
 	bool find_stream_info(const string &fn_dir ,const vector<string>& exts, stream_format &stream){
