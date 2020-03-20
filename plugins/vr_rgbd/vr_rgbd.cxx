@@ -22,6 +22,7 @@
 #include <iostream>
 #include <chrono>
 #include <point_cloud/point_cloud.h>
+#include <point_cloud/ICP.h>
 
 ///@ingroup VR
 ///@{
@@ -84,7 +85,8 @@ protected:
 	cgv::render::point_render_style point_style;
 	///counter of storing point cloud
 	int counter_pc;
-	//std::vector<point_cloud> pcn;
+	//registration
+	bool registration_started;
 
 	int rgbd_controller_index;
 	/// current pose of the controller
@@ -252,6 +254,7 @@ public:
 		zoom_in = false;
 		zoom_out = false;
 		save_pointcloud = false;
+		registration_started = false;
 		rgbd_2_controller_orientation.identity();
 		rgbd_2_controller_orientation.set_col(0, vec3(-1, 0, 0));
 		rgbd_2_controller_orientation.set_col(1, vec3(0, -0.7071f, 0.7071f));
@@ -321,10 +324,8 @@ public:
 		return depth_frame;
 	}
 	///cast vertex to point_cloud
-	void copy_pointcloud(const std::vector<vertex> input, point_cloud &output)
-	{
-		for (unsigned int i = 0; i < input.size(); i++)
-		{
+	void copy_pointcloud(const std::vector<vertex> input, point_cloud &output){
+		for (unsigned int i = 0; i < input.size(); i++){
 			point_cloud_types::Pnt temp;
 			temp[0] = input.at(i).point[0];
 			temp[1] = input.at(i).point[1];
@@ -335,6 +336,19 @@ public:
 			tempcolor[2] = input.at(i).color[2];
 			output.P.push_back(temp);
 			output.C.push_back(tempcolor);
+		}
+	}
+	///cast point_cloud to vertex
+	void pc2vertex(const point_cloud &input, std::vector<vertex> &output) {
+		for (unsigned int i = 0; i < input.get_nr_points(); i++) {
+			vertex temp;
+			temp.point[0] = input.pnt(i).x();
+			temp.point[1] = input.pnt(i).y();
+			temp.point[2] = input.pnt(i).z();
+			temp.color[0] = input.clr(i)[0];
+			temp.color[1] = input.clr(i)[1];
+			temp.color[2] = input.clr(i)[2];
+			output.push_back(temp);
 		}
 	}
 	///here should be const point cloud
@@ -356,6 +370,23 @@ public:
 	{
 		cgv::utils::file::read(filename, content, false);
 		//read pcs from disk
+	}
+	void registrationPointCloud() {
+		ICP *icp = new ICP();
+		if (recorded_pcs.size() > 1) {
+			point_cloud *sourcePC = new point_cloud();
+			point_cloud *targetPC = new point_cloud();
+			copy_pointcloud(recorded_pcs.back(), *sourcePC);
+			copy_pointcloud(intermediate_pc, *targetPC);
+			icp->setSourceCloud(*sourcePC);
+			icp->setTargetCloud(*targetPC);
+			icp->setIterations(5);
+			icp->setEps(1e-6);
+			icp->reg_icp();
+			intermediate_pc.clear();
+			pc2vertex(*targetPC, intermediate_pc);
+		}
+		
 	}
 	void construct_TSDtree()
 	{
@@ -381,9 +412,11 @@ public:
 				size_t N = future_handle.get();
 				// copy computed point cloud
 				if (record_this_frame(t)) {
+					if (registration_started) {
+						registrationPointCloud();
+					}
 					recorded_pcs.push_back(intermediate_pc);
-					if (save_pointcloud)
-					{
+					if (save_pointcloud){
 						counter_pc++;
 						write_pcs_to_disk(counter_pc);
 					}
@@ -475,6 +508,7 @@ public:
 		add_member_control(this, "zoom_in", zoom_in, "check");
 		add_member_control(this, "zoom_out", zoom_out, "check");
 		add_member_control(this, "save_pc", save_pointcloud, "check");
+		add_member_control(this, "register_pc", registration_started, "check");
 
 		add_member_control(this, "rgbd_controller_index", rgbd_controller_index, "value_slider", "min=0;max=3;ticks=true");
 		
@@ -521,6 +555,7 @@ public:
 			rh.reflect_member("zoom_in", zoom_in) &&
 			rh.reflect_member("zoom_out", zoom_out) &&
 			rh.reflect_member("save_pc", save_pointcloud) &&
+			rh.reflect_member("register_pc", registration_started) &&
 			rh.reflect_member("recording_fps", recording_fps) &&
 			rh.reflect_member("ray_length", ray_length) &&
 			rh.reflect_member("record_frame", record_frame) &&
