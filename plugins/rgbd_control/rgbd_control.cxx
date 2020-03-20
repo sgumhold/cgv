@@ -26,6 +26,38 @@ using namespace cgv::utils;
 using namespace cgv::render;
 using namespace rgbd;
 
+
+struct mesh_data_adapter {
+	cgv::render::render_types::vec3 *points;
+	cgv::render::render_types::ivec3 *triangles;
+	cgv::render::render_types::vec2 *uv;
+	size_t points_size, triangles_size, uv_size;
+};
+
+///searches a frame of type PF_POINTS_AND_TRIANGLES for begin and size of the arrays storing mesh data
+void mesh_from(mesh_data_adapter* mesh,char* data, size_t size) {
+	uint32_t points = 0;
+	//how many points the mesh has
+	memcpy(&points, data, sizeof(uint32_t));
+	size_t offset = sizeof(uint32_t);
+	mesh->points = reinterpret_cast<cgv::render::render_types::vec3*>(data + offset);
+	offset += points * sizeof(cgv::render::render_types::vec3);
+	///the number of triangles in the mesh is located behind the points array
+	uint32_t triangles = 0;
+	memcpy(&triangles, data + offset, sizeof(uint32_t));
+	offset += sizeof(uint32_t);
+	mesh->triangles = reinterpret_cast<cgv::render::render_types::ivec3*>(data + offset);
+	offset += triangles * 3 * sizeof(uint32_t);
+	///the number of texture coordinates in the mesh is located behind the triangles array
+	uint32_t uv_coordinates = 0;
+	memcpy(&uv_coordinates, data + offset, sizeof(uint32_t));
+	offset += sizeof(uint32_t);
+	mesh->uv = reinterpret_cast<cgv::render::render_types::vec2*>(data + offset);
+	mesh->points_size = points;
+	mesh->triangles_size = triangles;
+	mesh->uv_size = uv_coordinates;
+}
+
 std::string get_stream_format_enum(const std::vector<rgbd::stream_format>& sfs)
 {
 	std::string enum_def = "enums='default=-1";
@@ -284,8 +316,12 @@ void rgbd_control::draw(context& ctx)
 				prog.set_uniform(ctx, "color_texture", 0);
 				prog.enable(ctx);
 				glDisable(GL_CULL_FACE);
-				ctx.draw_faces(reinterpret_cast<float*>(M_POINTS.data()), nullptr, reinterpret_cast<float*>(M_UV.data()),
-					reinterpret_cast<int32_t*>(M_TRIANGLES.data()), nullptr, reinterpret_cast<int32_t*>(M_TRIANGLES.data()), M_TRIANGLES.size() / 3, 3);
+				float* tex_coords = nullptr;
+				if (M_UV.size() > 0) {
+					tex_coords = reinterpret_cast<float*>(M_UV.data());
+				}
+				ctx.draw_faces(reinterpret_cast<float*>(M_POINTS.data()), nullptr,tex_coords,
+					reinterpret_cast<int32_t*>(M_TRIANGLES.data()), nullptr, reinterpret_cast<int32_t*>(M_TRIANGLES.data()), M_TRIANGLES.size(), 3);
 				glEnable(GL_CULL_FACE);
 				prog.disable(ctx);
 				color.disable(ctx);
@@ -655,26 +691,18 @@ void rgbd_control::timer_event(double t, double dt)
 						update_member(&nr_mesh_frames);
 						M_POINTS.clear();
 						M_TRIANGLES.clear();
-						if (mesh_frame.frame_data.size() > sizeof(uint32_t)) {
-							uint32_t points = 0;
-							memcpy(&points, mesh_frame.frame_data.data(), sizeof(uint32_t));
-							
+						M_UV.clear();
+
+						if (mesh_frame.frame_data.size() > sizeof(uint32_t)) {														
 							if (mesh_frame.pixel_format == PF_POINTS_AND_TRIANGLES) {
-								M_POINTS.resize(points);
-								size_t offset = sizeof(uint32_t);
-								memcpy(M_POINTS.data(), mesh_frame.frame_data.data() + offset, points * sizeof(vec3));
-								offset += points * sizeof(vec3);
-								uint32_t triangles = 0;
-								memcpy(&triangles, mesh_frame.frame_data.data()+offset, sizeof(uint32_t));
-								offset += sizeof(uint32_t);
-								M_TRIANGLES.resize(3*triangles);
-								memcpy(M_TRIANGLES.data(), mesh_frame.frame_data.data()+offset, triangles*3*sizeof(uint32_t));
-								offset += triangles * 3 * sizeof(uint32_t);
-								uint32_t uv_coordinates = 0;
-								memcpy(&uv_coordinates, mesh_frame.frame_data.data() + offset, sizeof(uint32_t));
-								offset += sizeof(uint32_t);
-								M_UV.resize(uv_coordinates);
-								memcpy(M_UV.data(), mesh_frame.frame_data.data() + offset, uv_coordinates*sizeof(vec2));
+								mesh_data_adapter mesh;
+								mesh_from(&mesh, mesh_frame.frame_data.data(), mesh_frame.frame_data.size());
+								M_POINTS.resize(mesh.points_size);
+								std::copy(mesh.points, mesh.points+mesh.points_size, M_POINTS.data());
+								M_TRIANGLES.resize(mesh.triangles_size);
+								std::copy(mesh.triangles, mesh.triangles+mesh.triangles_size, M_TRIANGLES.data());
+								M_UV.resize(mesh.uv_size);
+								std::copy(mesh.uv, mesh.uv+mesh.uv_size, M_UV.data());
 							}
 						}
 					}

@@ -83,7 +83,7 @@ protected:
 	std::vector<rgba8> C, C2;
 
 	/// mesh
-	std::vector<uint32_t> M_TRIANGLES;
+	std::vector<ivec3> M_TRIANGLES;
 	std::vector<vec3> M_POINTS;
 	std::vector<vec2> M_UV;
 
