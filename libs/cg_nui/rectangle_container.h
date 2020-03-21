@@ -49,6 +49,7 @@ namespace cgv {
 			void clear(cgv::render::context& ctx);
 			void draw(cgv::render::context& ctx);
 			const cgv::render::render_style* get_render_style() const { return &srs; }
+			cgv::render::surface_render_style& ref_render_style() { return srs; }
 		};
 	}
 }
