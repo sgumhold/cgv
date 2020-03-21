@@ -1,7 +1,7 @@
 #include "vr_stream_gui.h"
 #include "debug_draw.h"
 #include "mouse_win.h"
-
+#include <random>
 #include <cgv/signal/rebind.h>
 #include <cgv/base/register.h>
 #include <cgv/math/ftransform.h>
@@ -371,14 +371,16 @@ vr_stream_gui::vr_stream_gui()
 
 	cgv::media::font::font_ptr f = cgv::media::font::find_font("Open Sans");
 	lm.set_font_face(f->get_font_face(cgv::media::font::FFA_BOLD));
-	lm.set_font_size(24);
+	lm.set_font_size(22);
 	std::string content;
+	std::default_random_engine r;
+	std::uniform_real_distribution<float> d(0.0f, 1.0f);
 	if (cgv::utils::file::read("D:/develop/projects/git/cgv/plugins/vr_stream_gui/labels.txt", content, true)) {
 		std::vector<cgv::utils::line> lines;
 		cgv::utils::split_to_lines(content, lines);
 		for (auto& l : lines) {
-			std::string line = to_string(l);
-			lm.add_label(line, rgba(0.5f, 0.2f, 0, 1));
+			std::string line = to_string(l);			
+			lm.add_label(line, rgba(cgv::media::color<float, cgv::media::HLS, cgv::media::OPACITY>(d(r), 0.5f, 1.0f)));
 		}
 	}
 	lm.compute_label_sizes();
@@ -386,13 +388,15 @@ vr_stream_gui::vr_stream_gui()
 
 	float scale = 0.002f;
 	for (uint32_t i = 0; i < lm.get_nr_labels(); ++i) {
+
 		const auto& l = lm.get_label(i);
 		box2 b = reinterpret_cast<const box2&>(lm.get_texcoord_range(i));
-		node->ref_rectangles()->add_rectangle(vec3(0, 1 + 0.05f * i, -0.5f),
+		node->ref_rectangles()->add_rectangle(vec3(0, 1 + 0.1f * i, -0.5f),
 			vec2(scale * l.width, scale * l.height), b,
-			quat(1, 0, 0, 0), rgba(0, 0, 1, 1));
+			quat(1, 0, 0, 0), l.background_color);
 	}
-
+	auto& srs = scene->ref_rectangles()->ref_render_style();
+	srs.illumination_mode = cgv::render::IM_OFF;
 }
 	
 void vr_stream_gui::stream_help(std::ostream& os) {
