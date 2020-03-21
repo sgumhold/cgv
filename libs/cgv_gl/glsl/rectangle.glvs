@@ -2,6 +2,7 @@
 
 uniform bool has_rotations;
 uniform bool has_translations;
+uniform bool position_is_center = true;
 
 in vec4 position;
 in vec2 extent;
@@ -61,10 +62,18 @@ void main()
 
 	// compute plane transformation
 	mat4 M = mat4(0.0);
-	M[0][0] = extent.x;
-	M[1][1] = extent.y;
-	M[2][2] = 1.0f;
-	M[3] = position;
+	if (position_is_center) {
+		M[0][0] = extent.x;
+		M[1][1] = extent.y;
+		M[2][2] = 1.0f;
+		M[3] = position;
+	}
+	else {
+		M[0][0] = extent.x-position.x;
+		M[1][1] = extent.y-position.y;
+		M[2][2] = 1.0f;
+		M[3] = vec4(vec3(0.5*(position.xy+extent),position.z),position.w);
+	}
 
 	PM = get_modelview_matrix();
 

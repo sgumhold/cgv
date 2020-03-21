@@ -52,8 +52,18 @@ void main()
 		return;*/
 
 	// generate splat vertices
-	emit_corner(PM[0] * vec4(-0.5,-0.5, 0.0, 1.0), vec2(texcoord_gs[0].xy));
-	emit_corner(PM[0] * vec4(-0.5, 0.5, 0.0, 1.0), vec2(texcoord_gs[0].xw));
-	emit_corner(PM[0] * vec4( 0.5,-0.5, 0.0, 1.0), vec2(texcoord_gs[0].zy));
-	emit_corner(PM[0] * vec4( 0.5, 0.5, 0.0, 1.0), vec2(texcoord_gs[0].zw));
+	vec4 tc = texcoord_gs[0];
+	if (tc.x < -1.0) {
+		tc.x += 3.0;
+		emit_corner(PM[0] * vec4(-0.5,-0.5, 0.0, 1.0), vec2(tc.zy));
+		emit_corner(PM[0] * vec4(-0.5, 0.5, 0.0, 1.0), vec2(tc.xy));
+		emit_corner(PM[0] * vec4( 0.5,-0.5, 0.0, 1.0), vec2(tc.zw));
+		emit_corner(PM[0] * vec4( 0.5, 0.5, 0.0, 1.0), vec2(tc.xw));
+	}
+	else {
+		emit_corner(PM[0] * vec4(-0.5,-0.5, 0.0, 1.0), vec2(tc.xy));
+		emit_corner(PM[0] * vec4(-0.5, 0.5, 0.0, 1.0), vec2(tc.xw));
+		emit_corner(PM[0] * vec4( 0.5,-0.5, 0.0, 1.0), vec2(tc.zy));
+		emit_corner(PM[0] * vec4( 0.5, 0.5, 0.0, 1.0), vec2(tc.zw));
+	}
 }
