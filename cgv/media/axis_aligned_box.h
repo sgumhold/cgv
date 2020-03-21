@@ -77,7 +77,7 @@ public:
 	/// return a vector with the extents in the different dimensions
 	fvec_type get_extent() const { return maxp-minp; }
 	/// return the center of the box
-	fpnt_type get_center() const { return minp+(T)0.5*get_extent(); }
+	fpnt_type get_center() const { return (minp+maxp)/2; }
 	/// check if aab is valid
 	bool is_valid() const { return minp[0] <= maxp[0]; }
 	/// check whether a point is inside the aabb
