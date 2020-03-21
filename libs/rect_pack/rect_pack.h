@@ -74,7 +74,7 @@ namespace rect_pack {
 		PackingStrategy strategy = PS_MaxRectangle,
 		bool print_warnings = false);
 
-	/** use the cpmpute_rectange_permutation function to compute an ordering pack_rectangles method to pack the given rectangles
+	/** use the compute_rectange_permutation function to compute an ordering pack_rectangles method to pack the given rectangles
 		into an output texture of dimensions computed with suggest_output_size according to the given strategy. In case the
 		pack_rectangles function fails, the percentual safety is increased until all rectangles fit. In case of print_progress being
 		true, an asterix is streamed out to std::cout for any failed packing iteration
