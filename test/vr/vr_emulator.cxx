@@ -584,14 +584,30 @@ bool vr_emulator::handle(cgv::gui::event& e)
 	case 'H': return check_for_button_toggle(ke, 1, vr::VRButtonStateFlags(0), -1, 0);
 	case 'M': return check_for_button_toggle(ke, 1, vr::VRButtonStateFlags(0), 1, -1);
 
-	case cgv::gui::KEY_Left: return handle_ctrl_key(ke, left_ctrl, &home_ctrl);
-	case cgv::gui::KEY_Right: return handle_ctrl_key(ke, right_ctrl, &end_ctrl);
-	case cgv::gui::KEY_Up: return handle_ctrl_key(ke, up_ctrl, &pgup_ctrl);
-	case cgv::gui::KEY_Down:return handle_ctrl_key(ke, down_ctrl, &pgdn_ctrl);
-	case cgv::gui::KEY_Home:return handle_ctrl_key(ke, home_ctrl);
-	case cgv::gui::KEY_End:return handle_ctrl_key(ke, end_ctrl);
-	case cgv::gui::KEY_Page_Up:return handle_ctrl_key(ke, pgup_ctrl);
-	case cgv::gui::KEY_Page_Down:return handle_ctrl_key(ke, pgdn_ctrl);
+	case cgv::gui::KEY_Left:
+	case cgv::gui::KEY_Num_4:
+		return handle_ctrl_key(ke, left_ctrl, &home_ctrl);
+	case cgv::gui::KEY_Right: 
+	case cgv::gui::KEY_Num_6:
+		return handle_ctrl_key(ke, right_ctrl, &end_ctrl);
+	case cgv::gui::KEY_Up: 
+	case cgv::gui::KEY_Num_8:
+		return handle_ctrl_key(ke, up_ctrl, &pgup_ctrl);
+	case cgv::gui::KEY_Down:
+	case cgv::gui::KEY_Num_2:
+		return handle_ctrl_key(ke, down_ctrl, &pgdn_ctrl);
+	case cgv::gui::KEY_Home:
+	case cgv::gui::KEY_Num_7:
+		return handle_ctrl_key(ke, home_ctrl);
+	case cgv::gui::KEY_End:
+	case cgv::gui::KEY_Num_1:
+		return handle_ctrl_key(ke, end_ctrl);
+	case cgv::gui::KEY_Page_Up:
+	case cgv::gui::KEY_Num_9:
+		return handle_ctrl_key(ke, pgup_ctrl);
+	case cgv::gui::KEY_Page_Down:
+	case cgv::gui::KEY_Num_3:
+		return handle_ctrl_key(ke, pgdn_ctrl);
 	}
 	return false;
 }
