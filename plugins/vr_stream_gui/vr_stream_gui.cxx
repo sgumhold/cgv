@@ -371,7 +371,7 @@ vr_stream_gui::vr_stream_gui()
 
 	cgv::media::font::font_ptr f = cgv::media::font::find_font("Open Sans");
 	lm.set_font_face(f->get_font_face(cgv::media::font::FFA_BOLD));
-	lm.set_font_size(22);
+	lm.set_font_size(36);
 	std::string content;
 	std::default_random_engine r;
 	std::uniform_real_distribution<float> d(0.0f, 1.0f);
@@ -388,12 +388,13 @@ vr_stream_gui::vr_stream_gui()
 
 	float scale = 0.002f;
 	for (uint32_t i = 0; i < lm.get_nr_labels(); ++i) {
-
 		const auto& l = lm.get_label(i);
 		box2 b = reinterpret_cast<const box2&>(lm.get_texcoord_range(i));
-		node->ref_rectangles()->add_rectangle(vec3(0, 1 + 0.1f * i, -0.5f),
-			vec2(scale * l.width, scale * l.height), b,
-			quat(1, 0, 0, 0), l.background_color);
+		node->ref_rectangles()->add_rectangle(
+			vec3(0, 1 + 0.1f * i, -0.5f),
+			vec2(scale * l.get_width(), scale * l.get_height()), b,
+			quat(vec3(0,1,0),0.1f*(i-0.5f*lm.get_nr_labels())), 
+			l.background_color);
 	}
 	auto& srs = scene->ref_rectangles()->ref_render_style();
 	srs.illumination_mode = cgv::render::IM_OFF;
