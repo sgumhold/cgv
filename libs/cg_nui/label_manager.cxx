@@ -91,7 +91,7 @@ void label_manager::pack_labels()
 	unsigned width_out, height_out;
 	rect_pack::pack_rectangles_iteratively(rectangle_sizes,
 		width_out, height_out, rectangles, rect_pack::CS_LongerSideFirst, false, true, rect_pack::PS_Skyline);
-//	rect_pack::save_rectangles_html("c:/temp/rect.html", width_out, height_out, rectangles);
+	rect_pack::save_rectangles_html("c:/temp/rect.html", width_out, height_out, rectangles);
 	tex_width = width_out;
 	tex_height = height_out;
 	not_rotated_labels.clear();
@@ -115,9 +115,10 @@ label_manager::vec4 label_manager::get_texcoord_range(uint32_t label_index)
 		dx = -3.0f;
 	return vec4(
 		(float)(R.get_min_pnt()(0)+safety_extension) / tex_width+dx,
-		(float)(tex_height - (R.get_min_pnt()(1) + safety_extension)) / tex_height,
+		(float)(tex_height - (R.get_max_pnt()(1) - safety_extension)) / tex_height,
 		(float)(R.get_max_pnt()(0) - safety_extension) / tex_width,
-		(float)(tex_height - (R.get_max_pnt()(1) - safety_extension)) / tex_height);
+		(float)(tex_height - (R.get_min_pnt()(1) + safety_extension)) / tex_height
+	);
 }
 
 void label_manager::update_label_text(uint32_t i, const std::string& new_text)
@@ -245,7 +246,7 @@ void label_manager::draw_labels(cgv::render::context& ctx, bool all)
 		draw_label_texts(ctx, rotated_labels, tex_width, all, true);
 		ctx.pop_pixel_coords();
 		tmp_fbo.disable(ctx);
-		//tmp_tex.write_to_file(ctx, "C:/temp/tmp_tex.bmp");
+		tmp_tex.write_to_file(ctx, "C:/temp/tmp_tex.bmp");
 	}
 	// then draw not rotated labels
 	bool created = ensure_tex_fbo_combi(ctx, *tex, fbo, tex_width, tex_height);
@@ -257,8 +258,8 @@ void label_manager::draw_labels(cgv::render::context& ctx, bool all)
 		glClear(GL_COLOR_BUFFER_BIT);
 	draw_label_backgrounds(ctx, not_rotated_labels, all, false);
 	draw_label_texts(ctx, not_rotated_labels, tex_height, all, false);
+	// copy rotated labels with rectangle renderer to main texture
 	if (!rotated_labels.empty()) {
-		// copy rotated labels with rectangle renderer to main texture
 		auto& rr = cgv::render::ref_rectangle_renderer(ctx);
 		rr.set_render_style(rrs);
 		std::vector<vec3> positions;
@@ -272,7 +273,6 @@ void label_manager::draw_labels(cgv::render::context& ctx, bool all)
 				continue;
 			ibox2 tr = tex_ranges[i];
 			vec3 pos((float)tr.get_center()(0), (float)tr.get_center()(1), 0.0f);
-			q.inverse_rotate(pos);
 			vec2 ext((float)tr.get_extent()(1), (float)tr.get_extent()(0));
 			vec4 tc(
 				(float)tr.get_min_pnt()(0) / tex_width,
@@ -285,6 +285,8 @@ void label_manager::draw_labels(cgv::render::context& ctx, bool all)
 			tc[2] = 1.0f - tc[2];
 			tc[1] = 1.0f - tc[1];
 			tc[3] = 1.0f - tc[3];
+			std::swap(tc[0], tc[2]);
+			std::swap(tc[1], tc[3]);
 			positions.push_back(pos);
 			extents.push_back(ext);
 			colors.push_back(labels[i].background_color);
@@ -302,7 +304,7 @@ void label_manager::draw_labels(cgv::render::context& ctx, bool all)
 	}
 	ctx.pop_pixel_coords();
 	fbo.disable(ctx);
-	//tex->write_to_file(ctx, "C:/temp/tex.bmp");
+	tex->write_to_file(ctx, "C:/temp/tex.bmp");
 
 	ctx.pop_window_transformation_array();
 	ctx.enable_font_face(old_font_face, old_font_size);
