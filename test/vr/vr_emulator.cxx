@@ -1,6 +1,7 @@
 #include "vr_emulator.h"
 #include <cgv/math/ftransform.h>
 #include <cgv/math/pose.h>
+#include <cgv/utils/scan.h>
 #include <cgv/gui/key_event.h>
 #include <cgv/gui/trigger.h>
 #include <cgv_reflect_types/math/fvec.h>
@@ -631,9 +632,10 @@ std::string vr_emulator::get_type_name() const
 	return "vr_emulator";
 }
 /// overload to show the content of this object
-void vr_emulator::stream_stats(std::ostream&)
+void vr_emulator::stream_stats(std::ostream& os)
 {
-
+	static std::string i_modes("body,left hand,right hand,tracker 1,tracker 2,base 1, base 2,base 3, base 4");
+	os << "vr_emulator: [" << cgv::utils::get_element(i_modes, (int)interaction_mode, ',') << "]" << std::endl;
 }
 ///
 bool vr_emulator::init(cgv::render::context& ctx)
