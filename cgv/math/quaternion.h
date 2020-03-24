@@ -36,6 +36,9 @@ public:
 	quaternion() {}
 	/// copy constructor
 	quaternion(const quaternion<T>& quat) : fvec<T,4>(quat) {}
+	/// copy constructor with type conversion
+	template <typename S>
+	quaternion(const quaternion<S>& q) : fvec<T,4>(q) {}
 	/// assignement operator
 	quaternion<T>& operator=(const quaternion<T>& quat) {
 		base_type::operator = (quat);
