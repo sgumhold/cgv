@@ -50,47 +50,46 @@ void main()
 {
 	color_gs = group_color(color, group_index);
 	texcoord_gs = texcoord;
-	// compute normal transformation matrix
+	// compute normal transformation matrix from rotation and group rotation
 	NM = get_normal_matrix();
-	if (has_rotations) {
+	if (has_rotations)
 		right_multiply_group_normal_matrix_and_rotation(NM, group_index, rotation);
-	}
-	else {
+	else
 		right_multiply_group_normal_matrix(NM, group_index);
-	}
+
 	// compute position transformation matrix
 
-	// compute plane transformation
-	mat4 M = mat4(0.0);
+	// extract center position and compute scaling part of transformation 
+	vec3 center_position;
+	mat4 S = mat4(0.0);
 	if (position_is_center) {
-		M[0][0] = extent.x;
-		M[1][1] = extent.y;
-		M[2][2] = 1.0f;
-		M[3] = position;
+		S[0][0] = extent.x;
+		S[1][1] = extent.y;
+		S[2][2] = 1.0f;
+		center_position = position.xyz;
 	}
 	else {
-		M[0][0] = extent.x-position.x;
-		M[1][1] = extent.y-position.y;
-		M[2][2] = 1.0f;
-		M[3] = vec4(vec3(0.5*(position.xy+extent),position.z),position.w);
+		S[0][0] = extent.x-position.x;
+		S[1][1] = extent.y-position.y;
+		S[2][2] = 1.0f;
+		center_position = vec3(0.5*(position.xy+extent),position.z);
 	}
+	S[3] = vec4(0.0,0.0,0.0,1.0);
 
+	// setup position matrix from modelview, rotations and translations 
 	PM = get_modelview_matrix();
 
-	if (has_rotations || has_translations) {
-		vec4 q = unit_quaternion();
-		if (has_rotations)
-			q = rotation;
-		vec3 t = vec3(0.0);
-		if (has_translations)
-			t = translation;
-		right_multiply_group_position_matrix_and_rigid(PM, group_index, q, t);
-	}
-	else {
-		right_multiply_group_position_matrix(PM, group_index);
-	}
+	vec4 q;
+	if (has_rotations)
+		q = rotation;
+	else
+		q = unit_quaternion();
+	vec3 t = center_position.xyz;
+	if (has_translations)
+		t += translation;
+	right_multiply_group_position_matrix_and_rigid(PM, group_index, q, t);
 	
-	PM = PM * M;
+	PM = PM * S;
 
 	gl_Position = position;
 }
