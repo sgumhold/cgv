@@ -173,17 +173,16 @@ namespace cgv {
 			std::cerr << "not implemented" << std::endl;
 		}
 
-		int rectangle_container::compute_intersection(
-			const vec3& rectangle_center, const vec2& rectangle_extent,
+		int rectangle_container::compute_intersection(const vec3& rectangle_center, const vec2& rectangle_extent,
 			const vec3& ray_start, const vec3& ray_direction, contact_info::contact& C, contact_info::contact* C2_ptr)
 		{
 			float t_result;
-			vec3 p_result = ray_start;
+			vec3 p_result = ray_start - rectangle_center;
 			// ray starts on rectangle
 			if (fabs(ray_start[2]) < 0.000001f)
 				t_result = 0;
 			else {
-				t_result = -ray_start[2] / ray_direction[2];
+				t_result = -p_result[2] / ray_direction[2];
 				// intersection is before ray start
 				if (t_result < 0)
 					return 0;
@@ -195,7 +194,7 @@ namespace cgv {
 				return 0;
 			vec3 n_result(0.0f, 0.0f, 1.0f);
 			C.distance = t_result;
-			C.position = p_result;
+			C.position = p_result + rectangle_center;
 			C.normal = n_result;
 			return 1;
 		}
@@ -205,16 +204,19 @@ namespace cgv {
 		{
 			vec3 ro = ray_start - rectangle_center;
 			rectangle_rotation.inverse_rotate(ro);
+			ro += rectangle_center;
 			vec3 rd = ray_direction;
 			rectangle_rotation.inverse_rotate(rd);
 			int cnt = compute_intersection(rectangle_center, rectangle_extent, ro, rd, C, C2_ptr);
 			// transform result back
 			if (cnt > 0) {
+				C.position -= rectangle_center;
 				rectangle_rotation.rotate(C.position);
 				C.position += rectangle_center;
 				rectangle_rotation.rotate(C.normal);
 			}
 			if (cnt > 1) {
+				C2_ptr->position -= rectangle_center;
 				rectangle_rotation.rotate(C2_ptr->position);
 				C2_ptr->position += rectangle_center;
 				rectangle_rotation.rotate(C2_ptr->normal);

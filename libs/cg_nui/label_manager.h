@@ -13,10 +13,15 @@ namespace cgv {
 
 struct label
 {
+protected:
+	int width, height;
+	friend class label_manager;
+public:
 	std::string text;
 	cgv::render::render_types::rgba background_color;
 	int border_x, border_y;
-	int width, height;
+	int get_width() const { return std::abs(width); }
+	int get_height() const { return std::abs(height); }
 };
 
 enum LabelState
