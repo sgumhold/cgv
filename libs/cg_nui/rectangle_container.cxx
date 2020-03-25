@@ -8,6 +8,11 @@ namespace cgv {
 		{
 		}
 
+		std::string rectangle_container::get_primitive_type() const
+		{
+			return "rectangle";
+		}
+
 		uint32_t rectangle_container::add_rectangle(const vec3& center, const vec2& extent)
 		{
 			center_positions.push_back(center);
@@ -161,10 +166,13 @@ namespace cgv {
 				}
 				distance = sqrt(sqr_dist);
 				n.normalize();
-				if (use_orientations)
+				vec3 tc((p[0] + h[0]) / scales[i][0], (p[1] + h[1]) / scales[i][1], 0.0f);
+				if (use_orientations) {
+					orientations[i].rotate(p);
 					orientations[i].rotate(n);
+				}
 				p += c;
-				consider_closest_point(i, info, distance, p, n);
+				consider_closest_point(i, info, distance, p, n, tc);
 			}
 		}
 
@@ -196,6 +204,7 @@ namespace cgv {
 			C.distance = t_result;
 			C.position = p_result + rectangle_center;
 			C.normal = n_result;
+			C.texcoord = vec3((vec2(2, &p_result[0]) + 0.5f * rectangle_extent) / rectangle_extent, 0.0f);
 			return 1;
 		}
 		int rectangle_container::compute_intersection(

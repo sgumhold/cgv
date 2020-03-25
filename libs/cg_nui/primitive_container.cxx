@@ -12,13 +12,14 @@ primitive_container::~primitive_container()
 {
 }
 
-void primitive_container::consider_closest_point(uint32_t i, contact_info& info, float distance, const vec3& p, const vec3& n)
+void primitive_container::consider_closest_point(uint32_t i, contact_info& info, float distance, const vec3& p, const vec3& n, const vec3& tc)
 {
 	if (info.contacts.empty()) {
 		contact_info::contact C;
 		C.distance = distance;
 		C.position = p;
 		C.normal = n;
+		C.texcoord = tc;
 		C.primitive_index = i;
 		C.container = this;
 		info.contacts.push_back(C);
@@ -29,6 +30,7 @@ void primitive_container::consider_closest_point(uint32_t i, contact_info& info,
 			C.distance = distance;
 			C.position = p;
 			C.normal = n;
+			C.texcoord = tc;
 			C.primitive_index = i;
 			C.container = this;
 		}

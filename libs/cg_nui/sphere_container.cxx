@@ -10,6 +10,11 @@ sphere_container::sphere_container(bool use_radii, bool _use_colors, SphereRende
 	srs.radius_scale = 1.0f;
 }
 
+std::string sphere_container::get_primitive_type() const
+{
+	return "sphere";
+}
+
 uint32_t sphere_container::add_sphere(const vec3& center)
 {
 	center_positions.push_back(center);
@@ -75,7 +80,7 @@ void sphere_container::compute_closest_point(contact_info& info, const vec3& pos
 		vec3 n = normalize(pos - c);
 		vec3 p = c + r*n;
 		float distance = (p - pos).length();
-		consider_closest_point(i, info, distance, p, n);
+		consider_closest_point(i, info, distance, p, n, n);
 	}
 }
 
@@ -112,11 +117,11 @@ int sphere_container::compute_intersection(const vec3& ce, float ra, const vec3&
 	}
 	C.distance = -b - h;
 	C.position = ro + C.distance * rd;
-	C.normal = normalize(C.position - ce);
+	C.normal = C.texcoord = normalize(C.position - ce);
 	if (C2_ptr) {
 		C2_ptr->distance = -b + h;
 		C2_ptr->position = ro + C2_ptr->distance * rd;
-		C2_ptr->normal = normalize(C2_ptr->position - ce);
+		C2_ptr->normal = C2_ptr->texcoord = normalize(C2_ptr->position - ce);
 	}
 	return 2;
 }

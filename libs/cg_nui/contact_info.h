@@ -16,6 +16,7 @@ namespace cgv {
 				float distance;
 				vec3 position;
 				vec3 normal;
+				vec3 texcoord; // used to store 2D or 3D local coordinates
 				uint32_t primitive_index;
 				primitive_container* container;
 			};

@@ -62,10 +62,12 @@ namespace cgv {
 			InteractionCapabilities interaction_capabilities;
 			virtual void prepare_render(cgv::render::context& ctx, cgv::render::renderer& r, const cgv::render::render_style& rs, const std::vector<uint32_t>* indices_ptr = 0) const;
 			virtual bool render(cgv::render::context& ctx, cgv::render::renderer& r, const cgv::render::render_style& rs, const std::vector<uint32_t>* indices_ptr = 0) const;
-			void primitive_container::consider_closest_point(uint32_t i, contact_info& info, float distance, const vec3& p, const vec3& n);
+			void primitive_container::consider_closest_point(uint32_t i, contact_info& info, float distance, const vec3& p, const vec3& n, const vec3& tc);
 		public:
 			primitive_container(PrimitiveType _type, bool _use_colors, bool _use_orientations, ScalingMode _scaling_mode, InteractionCapabilities ic = IC_ALL);
 			virtual ~primitive_container();
+			/// return primitive type
+			virtual std::string get_primitive_type() const = 0;
 			virtual box3 compute_bounding_box() const;
 			virtual void compute_closest_point(contact_info& info, const vec3& pos) = 0;
 			/// last parameter is weight for trading between position and normal distances for closest oriented point query; default implementation defers call to computer_closest_point

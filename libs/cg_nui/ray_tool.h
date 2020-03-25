@@ -30,6 +30,24 @@ namespace cgv {
 			nui_node_ptr interaction_node;
 			contact_info contact;
 			mat34 controller_pose;
+			struct grab_start_info {
+				vec3 position;
+				quat orientation;
+				vec3 contact_point;
+				vec3 contact_normal;
+				grab_start_info(
+					const vec3& pos = vec3(0.0f), 
+					const quat& ori = quat(1.0f,0.0f,0.0f,0.0f),
+					const vec3& cp = vec3(0.0f),
+					const vec3& cn = vec3(0.0f)) : 
+						position(pos), 
+						orientation(ori),
+						contact_point(cp),
+						contact_normal(cn) {}
+			};
+			std::vector<grab_start_info> grab_start_infos;
+			dvec3 grab_position;
+			dquat grab_orientation;
 		protected:
 			static int mri_ref_count;
 			static cgv::render::mesh_render_info mri;
