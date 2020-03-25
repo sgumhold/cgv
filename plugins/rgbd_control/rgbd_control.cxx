@@ -27,36 +27,66 @@ using namespace cgv::render;
 using namespace rgbd;
 
 
-struct mesh_data_adapter {
+/// helper object for parsing dynamic sized frames of type PF_POINTS_AND_TRIANGLES. 
+struct mesh_data_view {
+	//pointers to continous sequences of objects
 	cgv::render::render_types::vec3 *points;
 	cgv::render::render_types::ivec3 *triangles;
 	cgv::render::render_types::vec2 *uv;
+	//number of objects
 	size_t points_size, triangles_size, uv_size;
+
+	mesh_data_view(char* data, size_t size) {
+		this->parse_data(data, size);
+	}
+	
+	bool is_valid() {
+		return points != nullptr;
+	}
+
+	bool parse_data(char* data, const size_t size) {
+		auto lambda = [&]() {
+			if (size < sizeof(uint32_t)) {
+				return false;
+			}
+			this->points_size = 0;
+			this->triangles_size = 0;
+			this->uv_size = 0;
+			//how many points the mesh has
+			memcpy(&this->points_size, data, sizeof(uint32_t));
+			size_t offset = sizeof(uint32_t);
+			this->points = reinterpret_cast<cgv::render::render_types::vec3*>(data + offset);
+
+			///the number of triangles is located behind the points array
+			offset += this->points_size * sizeof(cgv::render::render_types::vec3);
+			if (size <= offset + sizeof(uint32_t)) {
+				return (size == offset); //in this case, data only has points
+			}
+			memcpy(&this->triangles_size, data + offset, sizeof(uint32_t));
+			offset += sizeof(uint32_t);
+			this->triangles = reinterpret_cast<cgv::render::render_types::ivec3*>(data + offset);
+
+			///the number of texture coordinates is located behind the triangles array
+			if (size <= offset + sizeof(uint32_t)) {
+				return (size == offset); //true if data only has points and triangles
+			}
+			offset += this->triangles_size * 3 * sizeof(uint32_t);
+			memcpy(&this->uv_size, data + offset, sizeof(uint32_t));
+			offset += sizeof(uint32_t);
+			this->uv = reinterpret_cast<cgv::render::render_types::vec2*>(data + offset);
+			//final size
+			offset += sizeof(cgv::render::render_types::vec2)*this->uv_size;
+			return size >= offset;
+		};
+		
+		if (!lambda()) {
+			points = nullptr;
+		}
+		return true;
+	}
 };
 
-///searches a frame of type PF_POINTS_AND_TRIANGLES for begin and size of the arrays storing mesh data
-void mesh_from(mesh_data_adapter* mesh,char* data, size_t size) {
-	uint32_t points = 0;
-	//how many points the mesh has
-	memcpy(&points, data, sizeof(uint32_t));
-	size_t offset = sizeof(uint32_t);
-	mesh->points = reinterpret_cast<cgv::render::render_types::vec3*>(data + offset);
-	offset += points * sizeof(cgv::render::render_types::vec3);
-	///the number of triangles in the mesh is located behind the points array
-	uint32_t triangles = 0;
-	memcpy(&triangles, data + offset, sizeof(uint32_t));
-	offset += sizeof(uint32_t);
-	mesh->triangles = reinterpret_cast<cgv::render::render_types::ivec3*>(data + offset);
-	offset += triangles * 3 * sizeof(uint32_t);
-	///the number of texture coordinates in the mesh is located behind the triangles array
-	uint32_t uv_coordinates = 0;
-	memcpy(&uv_coordinates, data + offset, sizeof(uint32_t));
-	offset += sizeof(uint32_t);
-	mesh->uv = reinterpret_cast<cgv::render::render_types::vec2*>(data + offset);
-	mesh->points_size = points;
-	mesh->triangles_size = triangles;
-	mesh->uv_size = uv_coordinates;
-}
+
 
 std::string get_stream_format_enum(const std::vector<rgbd::stream_format>& sfs)
 {
@@ -695,14 +725,15 @@ void rgbd_control::timer_event(double t, double dt)
 
 						if (mesh_frame.frame_data.size() > sizeof(uint32_t)) {														
 							if (mesh_frame.pixel_format == PF_POINTS_AND_TRIANGLES) {
-								mesh_data_adapter mesh;
-								mesh_from(&mesh, mesh_frame.frame_data.data(), mesh_frame.frame_data.size());
-								M_POINTS.resize(mesh.points_size);
-								std::copy(mesh.points, mesh.points+mesh.points_size, M_POINTS.data());
-								M_TRIANGLES.resize(mesh.triangles_size);
-								std::copy(mesh.triangles, mesh.triangles+mesh.triangles_size, M_TRIANGLES.data());
-								M_UV.resize(mesh.uv_size);
-								std::copy(mesh.uv, mesh.uv+mesh.uv_size, M_UV.data());
+								mesh_data_view mesh(mesh_frame.frame_data.data(), mesh_frame.frame_data.size());
+								if (mesh.is_valid()) {
+									M_POINTS.resize(mesh.points_size);
+									std::copy(mesh.points, mesh.points + mesh.points_size, M_POINTS.data());
+									M_TRIANGLES.resize(mesh.triangles_size);
+									std::copy(mesh.triangles, mesh.triangles + mesh.triangles_size, M_TRIANGLES.data());
+									M_UV.resize(mesh.uv_size);
+									std::copy(mesh.uv, mesh.uv+mesh.uv_size, M_UV.data());
+								}
 							}
 						}
 					}
