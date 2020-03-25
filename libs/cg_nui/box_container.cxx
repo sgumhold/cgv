@@ -8,6 +8,11 @@ namespace cgv {
 		{
 		}
 
+		std::string box_container::get_primitive_type() const
+		{
+			return "box";
+		}
+
 		uint32_t box_container::add_box(const box3& box)
 		{
 			center_positions.push_back(box.get_center());
@@ -108,10 +113,13 @@ namespace cgv {
 					distance = sqrt(sqr_dist);
 					n.normalize();
 				}
-				if (use_orientations)
+				vec3 tc = (p + h) / scales[i];
+				if (use_orientations) {
+					orientations[i].rotate(p);
 					orientations[i].rotate(n);
+				}
 				p += c;
-				consider_closest_point(i, info, distance, p, n);
+				consider_closest_point(i, info, distance, p, n, tc);
 			}
 		}
 
@@ -191,6 +199,7 @@ namespace cgv {
 			C.distance = t_result;
 			C.position = p_result;
 			C.normal = n_result;
+			C.texcoord = (p_result + 0.5f * box_extent) / box_extent;
 			return 1;
 		}
 		int box_container::compute_intersection(

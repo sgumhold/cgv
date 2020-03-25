@@ -28,6 +28,7 @@ namespace cgv {
 				const vec3& ray_start, const vec3& ray_direction, contact_info::contact& C, contact_info::contact* C2_ptr = 0);
 		public:
 			rectangle_container(bool _use_colors, bool _use_orientations, bool _use_texcoords);
+			std::string get_primitive_type() const;
 			uint32_t add_rectangle(const vec3& center, const vec2& extent);
 			uint32_t add_rectangle(const vec3& center, const vec2& extent, const quat& orientation);
 			uint32_t add_rectangle(const vec3& center, const vec2& extent, const rgba& color);

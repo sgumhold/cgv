@@ -171,15 +171,33 @@ bool ray_tool::handle(cgv::gui::event& e)
 						!contact.contacts[i].container->rotatable())
 						contact.contacts.erase(contact.contacts.begin() + i);
 				}
-				if (contact.contacts.empty())
+				// if contact points remain
+				if (contact.contacts.empty()) {
 					interaction_state = IS_NONE;
-				else
+					grab_start_infos.clear();
+				}
+				else {
+					// store primitive transformations at start of grab
 					interaction_state = IS_GRAB;
+					for (const auto& c : contact.contacts) {
+						grab_start_infos.push_back(grab_start_info(
+							c.container->get_position(c.primitive_index),
+							c.container->get_orientation(c.primitive_index),
+							c.position, c.normal));
+					}
+					// append controller pose at start of grab
+					const mat34& controller_pose = reinterpret_cast<const mat34&>(vrse.get_state().controller[vrse.get_controller_index()].pose[0]);
+					dmat3 O(cgv::math::pose_orientation(controller_pose));
+					grab_orientation = dquat(O);
+					grab_position = cgv::math::pose_position(controller_pose);
+				}
 			}
 			break;
 		case cgv::gui::SA_RELEASE:
-			if (interaction_state == IS_GRAB)
+			if (interaction_state == IS_GRAB) {
 				interaction_state = IS_OVER;
+				grab_start_infos.clear();
+			}
 			break;
 		case cgv::gui::SA_PRESS:
 		case cgv::gui::SA_UNPRESS:
@@ -199,41 +217,42 @@ bool ray_tool::handle(cgv::gui::event& e)
 			// in grab mode apply relative transformation to grabbed boxes
 
 			// get previous and current controller position
-			dvec3 last_pos = vrpe.get_last_position();
+			dvec3 last_pos = grab_position; // vrpe.get_last_position();
 			dvec3 pos = vrpe.get_position();
 			// get rotation from previous to current orientation
-			dmat3 last_orientation = vrpe.get_last_orientation();
+			//dmat3 last_orientation = vrpe.get_last_orientation();
 			dmat3 orientation = vrpe.get_orientation();
 			// for numerical reasons compute rotation as quaternion 
 			dquat qo(orientation);
-			dquat ql(last_orientation);
+			dquat ql(grab_orientation); //(last_orientation);
 			ql.conjugate();
 			dquat q = qo*ql;
 			q.normalize();
 			// iterate intersection points of current controller
 			for (auto& c : contact.contacts) {
+				uint32_t i = &c - &contact.contacts[0];
 				if (c.container->rotatable()) {
-					dquat q1 = c.container->get_orientation(c.primitive_index);
+					dquat q1 = grab_start_infos[i].orientation; // c.container->get_orientation(c.primitive_index);
 					q1 = q*q1;
 					q1.normalize();
 					c.container->set_orientation(c.primitive_index, q1);
 				}
 				// update translation with position change and rotation
-				dvec3 r = c.container->get_position(c.primitive_index);
+				dvec3 r = grab_start_infos[i].position; // c.container->get_position(c.primitive_index);
 				r -= last_pos;
 				q.rotate(r);
 				r += pos;
 				c.container->set_position(c.primitive_index, r);
 				
 				// update contact position
-				r = c.position;
+				r = grab_start_infos[i].contact_point; // c.position;
 				r -= last_pos;
 				q.rotate(r);
 				r += pos;
 				c.position = r;
 				
 				// update contact normal
-				r = c.normal;
+				r = grab_start_infos[i].contact_normal; // c.normal;
 				q.rotate(r);
 				c.normal = r;
 			}
@@ -258,9 +277,13 @@ bool ray_tool::handle(cgv::gui::event& e)
 			// one intersection with controller ray
 			if (contact.contacts.empty())
 				interaction_state = IS_NONE;
-			else
+			else {
 				if (interaction_state == IS_NONE)
 					interaction_state = IS_OVER;
+				//for (const auto& c : contact.contacts) {
+				//	std::cout << c.container->get_primitive_type() << "[" << c.primitive_index << "]  " << c.texcoord << std::endl;
+				//}
+			}
 		}
 		post_redraw();
 		return true;

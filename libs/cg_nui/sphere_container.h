@@ -27,6 +27,7 @@ namespace cgv {
 			static int compute_intersection(const vec3& sphere_center, float sphere_radius, const vec3& ray_start, const vec3& ray_direction, contact_info::contact& C, contact_info::contact* C2_ptr = 0);
 		public:
 			sphere_container(bool use_radii, bool _use_colors, SphereRenderType _render_type = SRT_SPHERES);
+			std::string get_primitive_type() const;
 			uint32_t add_sphere(const vec3& center);
 			uint32_t add_sphere(const vec3& center, float radius);
 			uint32_t add_sphere(const vec3& center, const rgba& color);

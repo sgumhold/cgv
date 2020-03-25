@@ -31,6 +31,7 @@ namespace cgv {
 				const vec3& ray_start, const vec3& ray_direction, contact_info::contact& C, contact_info::contact* C2_ptr = 0);
 		public:
 			box_container(bool _use_colors, bool _use_orientations, BoxRenderType _render_type = BRT_SOLID);
+			std::string get_primitive_type() const;
 			uint32_t add_box(const box3& box);
 			uint32_t add_box(const box3& box, const quat& orientation);
 			uint32_t add_box(const box3& box, const rgba& color);
