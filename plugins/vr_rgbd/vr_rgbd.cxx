@@ -378,10 +378,10 @@ public:
 			point_cloud *targetPC = new point_cloud();
 			copy_pointcloud(recorded_pcs.back(), *sourcePC);
 			copy_pointcloud(intermediate_pc, *targetPC);
-			icp->setSourceCloud(*sourcePC);
-			icp->setTargetCloud(*targetPC);
-			icp->setIterations(5);
-			icp->setEps(1e-6);
+			icp->set_source_cloud(*sourcePC);
+			icp->set_target_cloud(*targetPC);
+			icp->set_iterations(5);
+			icp->set_eps(1e-6);
 			icp->reg_icp();
 			intermediate_pc.clear();
 			pc2vertex(*targetPC, intermediate_pc);

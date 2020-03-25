@@ -30,9 +30,9 @@ char to_lower(char c)
 	if (c >= 'A' && c <= 'Z')
 		return (c-'A')+'a';
 	switch (c) {
-		case 'Ö' : return 'ö';
-		case 'Ü' : return 'ü';
-		case 'Ä' : return 'ä';
+		case 'Ã„' : return 'Ã¤';
+		case 'Ã–' : return 'Ã¶';
+		case 'Ãœ' : return 'Ã¼';
 		default: return c;
 	}
 }
@@ -50,9 +50,9 @@ char to_upper(char c)
 	if (c >= 'a' && c <= 'z')
 		return (c-'a')+'A';
 	switch (c) {
-		case 'ö' : return 'Ö';
-		case 'ü' : return 'Ü';
-		case 'ä' : return 'Ä';
+		case 'Ã¤' : return 'Ã„';
+		case 'Ã¶' : return 'Ã–';
+		case 'Ã¼' : return 'Ãœ';
 		default: return c;
 	}
 }
@@ -70,13 +70,13 @@ std::string replace_special(const std::string& _s)
 	std::string s;
 	for (unsigned int i=0; i<_s.size(); ++i) {
 		switch (_s[i]) {
-		case 'Ä' : s += "Ae"; break;
-		case 'Ö' : s += "Oe"; break;
-		case 'Ü' : s += "Ue"; break;
-		case 'ä' : s += "ae"; break;
-		case 'ö' : s += "oe"; break;
-		case 'ü' : s += "ue"; break;
-		case 'ß' : s += "ss"; break;
+		case 'Ã„' : s += "Ae"; break;
+		case 'Ã–' : s += "Oe"; break;
+		case 'Ãœ' : s += "Ue"; break;
+		case 'Ã¤' : s += "ae"; break;
+		case 'Ã¶' : s += "oe"; break;
+		case 'Ã¼' : s += "ue"; break;
+		case 'ÃŸ' : s += "ss"; break;
 		default  : s += _s[i]; break;
 		}
 	}
