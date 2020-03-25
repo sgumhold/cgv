@@ -2,6 +2,7 @@
 
 #include <string>
 #include <vector>
+#include <cgv/math/fvec.h>
 
 #include "lib_begin.h"
 
@@ -32,6 +33,26 @@ namespace rgbd {
 			double fx, fy, cx, cy, sk;
 		} intrinsics;
 		double depth_scale;
+	};
+	/// helper object for parsing dynamic sized frames of type PF_POINTS_AND_TRIANGLES. 
+	struct CGV_API mesh_data_view {
+		typedef cgv::math::fvec<float, 3>  Point;
+		typedef cgv::math::fvec<float, 2>  TextureCoord;
+		typedef cgv::math::fvec<uint32_t, 3>  Triangle;
+		//pointers to continous sequences of objects
+		Point* points;
+		Triangle* triangles;
+		TextureCoord *uv;
+		//number of objects
+		size_t points_size, triangles_size, uv_size;
+
+		mesh_data_view(char* data, const size_t size);
+
+		bool parse_data(char* data, const size_t size);
+		
+		inline bool is_valid() {
+			return points != nullptr;
+		}
 	};
 	/// frame size in pixels
 	struct frame_size
