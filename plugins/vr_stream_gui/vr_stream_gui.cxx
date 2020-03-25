@@ -128,36 +128,6 @@ void vr_stream_gui::stop_camera()
 		cgv::gui::message(camera_ptr->get_last_error());
 }
 
-/// compute intersection points of controller ray with movable boxes
-void vr_stream_gui::compute_intersections(const vec3& origin, const vec3& direction, int ci, const rgb& color)
-{
-	for (size_t i = 0; i < movable_boxes.size(); ++i) {
-		vec3 origin_box_i = origin - movable_box_translations[i];
-		movable_box_rotations[i].inverse_rotate(origin_box_i);
-		vec3 direction_box_i = direction;
-		movable_box_rotations[i].inverse_rotate(direction_box_i);
-		float t_result;
-		vec3  p_result;
-		vec3  n_result;
-		if (cgv::media::ray_axis_aligned_box_intersection(
-			origin_box_i, direction_box_i,
-			movable_boxes[i],
-			t_result, p_result, n_result, 0.000001f)) {
-
-			// transform result back to world coordinates
-			movable_box_rotations[i].rotate(p_result);
-			p_result += movable_box_translations[i];
-			movable_box_rotations[i].rotate(n_result);
-
-			// store intersection information
-			intersection_points.push_back(p_result);
-			intersection_colors.push_back(color);
-			intersection_box_indices.push_back((int)i);
-			intersection_controller_indices.push_back(ci);
-		}
-	}
-}
-
 /// register on device change events
 void vr_stream_gui::on_device_change(void* kit_handle, bool attach)
 {
@@ -167,8 +137,6 @@ void vr_stream_gui::on_device_change(void* kit_handle, bool attach)
 			init_cameras(kit_ptr);
 			if (kit_ptr) {
 				last_kit_handle = kit_handle;
-				left_deadzone_and_precision = kit_ptr->get_controller_throttles_and_sticks_deadzone_and_precision(0);
-				cgv::gui::ref_vr_server().provide_controller_throttles_and_sticks_deadzone_and_precision(kit_handle, 0, &left_deadzone_and_precision);
 				post_recreate_gui();
 			}
 		}
@@ -182,49 +150,54 @@ void vr_stream_gui::on_device_change(void* kit_handle, bool attach)
 }
 
 /// construct boxes that represent a table of dimensions tw,td,th and leg width tW
-void vr_stream_gui::construct_table(float tw, float td, float th, float tW) {
+void vr_stream_gui::construct_table(cgv::nui::nui_node_ptr node, float tw, float td, float th, float tW) {
 	// construct table
-	rgb table_clr(0.3f, 0.2f, 0.0f);
-	boxes.push_back(box3(
-		vec3(-0.5f*tw - 2 * tW, th - tW, -0.5f*td - 2 * tW),
-		vec3(0.5f*tw + 2 * tW, th, 0.5f*td + 2 * tW)));
-	box_colors.push_back(table_clr);
+	rgba table_clr(0.3f, 0.2f, 0.0f, 1.0f);
+	node->ref_boxes()->add_box(
+		box3(vec3(-0.5f * tw - 2 * tW, th - tW, -0.5f * td - 2 * tW),
+			 vec3(0.5f * tw + 2 * tW, th, 0.5f * td + 2 * tW)),
+		table_clr);
 
-	boxes.push_back(box3(vec3(-0.5f*tw, 0, -0.5f*td), vec3(-0.5f*tw - tW, th - tW, -0.5f*td - tW)));
-	boxes.push_back(box3(vec3(-0.5f*tw, 0, 0.5f*td), vec3(-0.5f*tw - tW, th - tW, 0.5f*td + tW)));
-	boxes.push_back(box3(vec3(0.5f*tw, 0, -0.5f*td), vec3(0.5f*tw + tW, th - tW, -0.5f*td - tW)));
-	boxes.push_back(box3(vec3(0.5f*tw, 0, 0.5f*td), vec3(0.5f*tw + tW, th - tW, 0.5f*td + tW)));
-	box_colors.push_back(table_clr);
-	box_colors.push_back(table_clr);
-	box_colors.push_back(table_clr);
-	box_colors.push_back(table_clr);
+	node->ref_boxes()->add_box(
+		box3(vec3(-0.5f*tw, 0, -0.5f*td), vec3(-0.5f*tw - tW, th - tW, -0.5f*td - tW)), table_clr);
+	node->ref_boxes()->add_box(
+		box3(vec3(-0.5f*tw, 0, 0.5f*td), vec3(-0.5f*tw - tW, th - tW, 0.5f*td + tW)), table_clr);
+	node->ref_boxes()->add_box(
+		box3(vec3(0.5f*tw, 0, -0.5f*td), vec3(0.5f*tw + tW, th - tW, -0.5f*td - tW)), table_clr);
+	node->ref_boxes()->add_box(
+		box3(vec3(0.5f*tw, 0, 0.5f*td), vec3(0.5f*tw + tW, th - tW, 0.5f*td + tW)), table_clr);
 }
 
 /// construct boxes that represent a room of dimensions w,d,h and wall width W
-void vr_stream_gui::construct_room(float w, float d, float h, float W, bool walls, bool ceiling) {
+void vr_stream_gui::construct_room(cgv::nui::nui_node_ptr node, float w, float d, float h, float W, bool walls, bool ceiling) {
 	// construct floor
-	boxes.push_back(box3(vec3(-0.5f*w, -W, -0.5f*d), vec3(0.5f*w, 0, 0.5f*d)));
-	box_colors.push_back(rgb(0.2f, 0.2f, 0.2f));
+	node->ref_boxes()->add_box(
+		box3(vec3(-0.5f * w, -W, -0.5f * d), vec3(0.5f * w, 0, 0.5f * d)),
+		rgba(0.2f, 0.2f, 0.2f, 1.0f));
 
 	if(walls) {
 		// construct walls
-		boxes.push_back(box3(vec3(-0.5f*w, -W, -0.5f*d - W), vec3(0.5f*w, h, -0.5f*d)));
-		box_colors.push_back(rgb(0.8f, 0.5f, 0.5f));
-		boxes.push_back(box3(vec3(-0.5f*w, -W, 0.5f*d), vec3(0.5f*w, h, 0.5f*d + W)));
-		box_colors.push_back(rgb(0.8f, 0.5f, 0.5f));
-
-		boxes.push_back(box3(vec3(0.5f*w, -W, -0.5f*d - W), vec3(0.5f*w + W, h, 0.5f*d + W)));
-		box_colors.push_back(rgb(0.5f, 0.8f, 0.5f));
+		node->ref_boxes()->add_box(
+			box3(vec3(-0.5f*w, -W, -0.5f*d - W), vec3(0.5f*w, h, -0.5f*d)),
+			rgba(0.8f, 0.5f, 0.5f,1.0f));
+		node->ref_boxes()->add_box(
+			box3(vec3(-0.5f*w, -W, 0.5f*d), vec3(0.5f*w, h, 0.5f*d + W)),
+			rgba(0.8f, 0.5f, 0.5f,1.0f));
+		
+		node->ref_boxes()->add_box(
+			box3(vec3(0.5f*w, -W, -0.5f*d - W), vec3(0.5f*w + W, h, 0.5f*d + W)),
+			rgba(0.5f, 0.8f, 0.5f, 1.0f));
 	}
 	if(ceiling) {
 		// construct ceiling
-		boxes.push_back(box3(vec3(-0.5f*w - W, h, -0.5f*d - W), vec3(0.5f*w + W, h + W, 0.5f*d + W)));
-		box_colors.push_back(rgb(0.5f, 0.5f, 0.8f));
+		node->ref_boxes()->add_box(
+			box3(vec3(-0.5f*w - W, h, -0.5f*d - W), vec3(0.5f*w + W, h + W, 0.5f*d + W)),
+			rgba(0.5f, 0.5f, 0.8f,1.0f));
 	}
 }
 
 /// construct boxes for environment
-void vr_stream_gui::construct_environment(float s, float ew, float ed, float w, float d, float h) {
+void vr_stream_gui::construct_environment(cgv::nui::nui_node_ptr node, float s, float ew, float ed, float w, float d, float h) {
 	std::default_random_engine generator;
 	std::uniform_real_distribution<float> distribution(0, 1);
 	unsigned n = unsigned(ew / s);
@@ -238,26 +211,15 @@ void vr_stream_gui::construct_environment(float s, float ew, float ed, float w, 
 			if(fabsf(x) < 0.5f*w && fabsf(x + s) < 0.5f*w && fabsf(z) < 0.5f*d && fabsf(z + s) < 0.5f*d)
 				continue;
 			float h = 0.2f*(std::max(abs(x) - 0.5f*w, 0.0f) + std::max(abs(z) - 0.5f*d, 0.0f))*distribution(generator) + 0.1f;
-			boxes.push_back(box3(vec3(x, 0.0f, z), vec3(x + s, h, z + s)));
-			rgb color = cgv::media::color<float, cgv::media::HLS>(distribution(generator), 0.1f*distribution(generator) + 0.15f, 0.3f);
-			box_colors.push_back(color);
-			/*box_colors.push_back(
-				rgb(0.3f*distribution(generator) + 0.3f,
-					0.3f*distribution(generator) + 0.2f,
-					0.2f*distribution(generator) + 0.1f));*/
+			rgba color = cgv::media::color<float, cgv::media::HLS,cgv::media::OPACITY>(distribution(generator), 0.1f*distribution(generator) + 0.15f, 0.3f, 1.0f);
+			node->ref_boxes()->add_box(box3(vec3(x, 0.0f, z), vec3(x + s, h, z + s)), color);
 		}
 	}
 }
 
 /// construct boxes that can be moved around
-void vr_stream_gui::construct_movable_boxes(float tw, float td, float th, float tW, size_t nr) {
-	/*
-	vec3 extent(0.75f, 0.5f, 0.05f);
-	movable_boxes.push_back(box3(-0.5f * extent, 0.5f * extent));
-	movable_box_colors.push_back(rgb(0, 0, 0));
-	movable_box_translations.push_back(vec3(0, 1.2f, 0));
-	movable_box_rotations.push_back(quat(1, 0, 0, 0));
-	*/
+void vr_stream_gui::construct_movable_boxes(cgv::nui::nui_node_ptr node, float tw, float td, float th, float tW, size_t nr)
+{	
 	std::default_random_engine generator;
 	std::uniform_real_distribution<float> distribution(0, 1);
 	std::uniform_real_distribution<float> signed_distribution(-1, 1);
@@ -269,51 +231,28 @@ void vr_stream_gui::construct_movable_boxes(float tw, float td, float th, float 
 		extent *= std::min(tw, td)*0.1f;
 
 		vec3 center(-0.5f*tw + x * tw, th + tW, -0.5f*td + y * td);
-		movable_boxes.push_back(box3(-0.5f*extent, 0.5f*extent));
-		movable_box_colors.push_back(rgb(distribution(generator), distribution(generator), distribution(generator)));
-		movable_box_translations.push_back(center);
 		quat rot(signed_distribution(generator), signed_distribution(generator), signed_distribution(generator), signed_distribution(generator));
 		rot.normalize();
-		movable_box_rotations.push_back(rot);
+		node->ref_boxes()->add_box(
+			box3(center - 0.5f * extent, center + 0.5f * extent), rot,
+			rgba(distribution(generator), distribution(generator), distribution(generator), 1.0f));
 	}
 }
 
 /// construct a scene with a table
-void vr_stream_gui::build_scene(float w, float d, float h, float W, float tw, float td, float th, float tW)
+void vr_stream_gui::construct_lab(cgv::nui::nui_node_ptr node, float w, float d, float h, float W, float tw, float td, float th, float tW)
 {
-	construct_room(w, d, h, W, false, false);
-	construct_table(tw, td, th, tW);
-	construct_environment(0.3f, 3 * w, 3 * d, w, d, h);
-	//construct_environment(0.4f, 0.5f, 1u, w, d, h);
-	construct_movable_boxes(tw, td, th, tW, 2000);
+	construct_room(node, w, d, h, W, false, false);
+	construct_table(node, tw, td, th, tW);
+	construct_environment(node, 0.3f, 3 * w, 3 * d, w, d, h);
 }
 
 vr_stream_gui::vr_stream_gui()
 {
-	cgv::nui::nui_node* node = new cgv::nui::nui_node("scene", false);
-	node->create_box_container(true, true);
-	node->create_rectangle_container(true, true, true);
-	node->create_sphere_container(true, true);
-	node->ref_boxes()->add_box(box3(vec3(0.0f), vec3(1.0)), rgba(1, 0, 0, 1));
-	node->ref_boxes()->add_box(box3(vec3(2.0f), vec3(3.0)), rgba(0, 1, 0, 1));
-	
-	//node->ref_rectangles()->add_rectangle(vec3(1, 0, 1), vec2(2, 1), rgba(0, 1, 1));
-	node->ref_spheres()->add_sphere(vec3(0, 2, 1), rgba(1, 1, 0, 1), 0.5f);
-	node->ref_spheres()->add_sphere(vec3(0, 2, -1), rgba(1, 0, 1, 1), 0.3f);
-	scene = node;
-	tools[0] = new cgv::nui::ray_tool("left ray", 0);
-	tools[1] = new cgv::nui::ray_tool("right ray", 1);
-	tools[0]->interaction_node = scene;
-	tools[1]->interaction_node = scene;
-	append_child(scene);
-	append_child(tools[0]);
-	append_child(tools[1]);
-
 	screen_tex_manager = std::make_shared<util::screen_texture_manager>();
 	intersection = {};
 	ray_origin = vec3(0.0f);
 	ray_dir = vec3(0.0f);
-
 
 	frame_split = 0;
 	extent_texcrd = vec2(0.5f, 0.5f);
@@ -332,9 +271,7 @@ vr_stream_gui::vr_stream_gui()
 	use_matrix = true;
 	show_seethrough = false;
 	set_name("vr_stream_gui");
-	build_scene(5, 7, 3, 0.2f, 1.6f, 0.8f, 0.7f, 0.03f);
 	vr_view_ptr = 0;
-	ray_length = 2;
 	last_kit_handle = 0;
 	connect(cgv::gui::ref_vr_server().on_device_change, this, &vr_stream_gui::on_device_change);
 
@@ -342,33 +279,49 @@ vr_stream_gui::vr_stream_gui()
 	mesh_location = dvec3(0, 0.85f, 0);
 	mesh_orientation = dquat(1, 0, 0, 0);
 
-	srs.radius = 0.005f;
-
-	label_outofdate = true;
-	label_text = "Info Board";
-	label_font_idx = 0;
-	label_upright = true;
-	label_face_type = cgv::media::font::FFA_BOLD;
-	label_resolution = 256;
-	label_size = 20.0f;
-	label_color = rgb(1, 1, 1);
-
 	cgv::media::font::enumerate_font_names(font_names);
 	font_enum_decl = "enums='";
 	for (unsigned i = 0; i < font_names.size(); ++i) {
 		if (i > 0)
 			font_enum_decl += ";";
 		std::string fn(font_names[i]);
-		std::cout << fn << std::endl;
-		if (cgv::utils::to_lower(fn) == "calibri") {
-			label_font_face = cgv::media::font::find_font(fn)->get_font_face(label_face_type);
-			label_font_idx = i;
-		}
 		font_enum_decl += std::string(fn);
 	}
 	font_enum_decl += "'";
-	state[0] = state[1] = state[2] = state[3] = IS_NONE;
 
+	construct_scene();
+}
+
+void vr_stream_gui::construct_scene()
+{
+	scene = new cgv::nui::nui_node("scene", false);
+	cgv::nui::nui_node* lab = new cgv::nui::nui_node("lab", false);
+	scene->append_child(lab);
+	lab->create_box_container(true, false);
+	construct_lab(lab, 5, 7, 3, 0.2f, 1.6f, 0.8f, 0.7f, 0.03f);
+
+	node = new cgv::nui::nui_node("content", false);
+	scene->append_child(node);
+	node->create_box_container(true, true);
+	node->create_rectangle_container(true, true, true);
+	node->create_sphere_container(true, true);
+	construct_movable_boxes(node, 1.6f, 0.8f, 0.7f, 0.03f, 2000);
+	construct_labels(node);
+	node->ref_spheres()->add_sphere(vec3(0, 1, 1), rgba(1, 1, 0, 1), 0.1f);
+	node->ref_spheres()->add_sphere(vec3(0, 1, -1), rgba(1, 0, 1, 1), 0.15f);
+
+	tools[0] = new cgv::nui::ray_tool("left ray", 0);
+	tools[1] = new cgv::nui::ray_tool("right ray", 1);
+	tools[0]->interaction_node = node;
+	tools[1]->interaction_node = node;
+	append_child(scene);
+	append_child(tools[0]);
+	append_child(tools[1]);
+}
+
+/// construct labels
+void vr_stream_gui::construct_labels(cgv::nui::nui_node_ptr node)
+{
 	cgv::media::font::font_ptr f = cgv::media::font::find_font("Open Sans");
 	lm.set_font_face(f->get_font_face(cgv::media::font::FFA_BOLD));
 	lm.set_font_size(36);
@@ -390,13 +343,15 @@ vr_stream_gui::vr_stream_gui()
 	for (uint32_t i = 0; i < lm.get_nr_labels(); ++i) {
 		const auto& l = lm.get_label(i);
 		box2 b = reinterpret_cast<const box2&>(lm.get_texcoord_range(i));
+		int j = i % 6;
+		int k = i / 6;
 		node->ref_rectangles()->add_rectangle(
-			vec3(0, 1 + 0.1f * i, -0.5f),
+			vec3(0.4f*(j-2.5f), 1 + 0.1f * k, 0.5f-0.2f*std::abs(j - 2.5f)),
 			vec2(scale * l.get_width(), scale * l.get_height()), b,
-			quat(vec3(0,1,0),0.1f*(i-0.5f*lm.get_nr_labels())), 
+			quat(vec3(0,1,0),0.2f*(j-2.5f)+3.14f), 
 			l.background_color);
 	}
-	auto& srs = scene->ref_rectangles()->ref_render_style();
+	auto& srs = node->ref_rectangles()->ref_render_style();
 	srs.illumination_mode = cgv::render::IM_OFF;
 }
 	
@@ -406,14 +361,6 @@ void vr_stream_gui::stream_help(std::ostream& os) {
 	
 void vr_stream_gui::on_set(void* member_ptr)
 {
-	if (member_ptr == &label_face_type || member_ptr == &label_font_idx) {
-		label_font_face = cgv::media::font::find_font(font_names[label_font_idx])->get_font_face(label_face_type);
-		label_outofdate = true;
-	}
-	if ((member_ptr >= &label_color && member_ptr < &label_color + 1) ||
-		member_ptr == &label_size || member_ptr == &label_text) {
-		label_outofdate = true;
-	}
 	update_member(member_ptr);
 	post_redraw();
 }
@@ -458,12 +405,6 @@ bool vr_stream_gui::handle(cgv::gui::event& e)
 		return false;
 	}
 
-
-
-
-
-
-
 	// master-switch for vr events
 	if (!prohibit_vr_input) {
 
@@ -479,11 +420,11 @@ bool vr_stream_gui::handle(cgv::gui::event& e)
 						if (state_ptr) {
 							auto pose = state_ptr->controller[1].pose;
 							reconfigure_virtual_display({ pose[9], pose[10], pose[11] });
+							return true;
 						};
 					}
 				}
 			}
-			return true;
 		}
 
 		if (vm_controller.handle(e))
@@ -491,47 +432,6 @@ bool vr_stream_gui::handle(cgv::gui::event& e)
 
 		// check event id
 		switch (e.get_kind()) {
-		case cgv::gui::EID_KEY: {
-			cgv::gui::vr_key_event &vrke = static_cast<cgv::gui::vr_key_event &>(e);
-
-			if (vrke.get_action() == cgv::gui::KA_PRESS) {
-				switch (vrke.get_key()) {
-				case vr::VR_LEFT_BUTTON0: {
-					hold_left_grip = true;
-					return true;
-				}
-				case vr::VR_RIGHT_BUTTON0: {
-					vm_controller.try_fix_state();
-					return true;
-				}
-				}
-				break;
-			}
-			else if (vrke.get_action() == cgv::gui::KA_RELEASE) {
-				switch (vrke.get_key()) {
-				case vr::VR_LEFT_BUTTON0: {
-					hold_left_grip = false;
-					return true;
-				}
-				}
-			}
-		}
-		case cgv::gui::EID_THROTTLE: {
-			cgv::gui::vr_throttle_event &vrte =
-				static_cast<cgv::gui::vr_throttle_event &>(e);
-			/* std::cout << "throttle " << vrte.get_throttle_index() << " of
-			   controller "
-					  << vrte.get_controller_index() << " adjusted from "
-					  << vrte.get_last_value() << " to " << vrte.get_value() <<
-			   std::endl;*/
-
-			if (vrte.get_value() < 0.1f)
-				hold_left_throttle = false;
-			else if (vrte.get_value() > 0.9f)
-				hold_left_throttle = true;
-
-			return true;
-		}
 		case cgv::gui::EID_POSE: {
 
 			// shoots ray into direction right controller is pointing to
@@ -576,141 +476,6 @@ bool vr_stream_gui::handle(cgv::gui::event& e)
 		}
 		break;
 		}
-	}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-	// check event id
-	switch (e.get_kind()) {
-	case cgv::gui::EID_KEY:
-	{
-		cgv::gui::vr_key_event& vrke = static_cast<cgv::gui::vr_key_event&>(e);
-		if (vrke.get_action() != cgv::gui::KA_RELEASE) {
-			switch (vrke.get_key()) {
-			case vr::VR_LEFT_BUTTON0:
-				std::cout << "button 0 of left controller pressed" << std::endl;
-				return true;
-			case vr::VR_RIGHT_STICK_RIGHT:
-				std::cout << "touch pad of right controller pressed at right direction" << std::endl;
-				return true;
-			}
-		}
-		break;
-	}
-	case cgv::gui::EID_THROTTLE:
-	{
-		cgv::gui::vr_throttle_event& vrte = static_cast<cgv::gui::vr_throttle_event&>(e);
-		std::cout << "throttle " << vrte.get_throttle_index() << " of controller " << vrte.get_controller_index()
-			<< " adjusted from " << vrte.get_last_value() << " to " << vrte.get_value() << std::endl;
-		return true;
-	}
-	case cgv::gui::EID_STICK:
-	{
-		cgv::gui::vr_stick_event& vrse = static_cast<cgv::gui::vr_stick_event&>(e);
-		switch (vrse.get_action()) {
-		case cgv::gui::SA_TOUCH:
-			if (state[vrse.get_controller_index()] == IS_OVER)
-				state[vrse.get_controller_index()] = IS_GRAB;
-			break;
-		case cgv::gui::SA_RELEASE:
-			if (state[vrse.get_controller_index()] == IS_GRAB)
-				state[vrse.get_controller_index()] = IS_OVER;
-			break;
-		case cgv::gui::SA_PRESS:
-		case cgv::gui::SA_UNPRESS:
-			std::cout << "stick " << vrse.get_stick_index()
-				<< " of controller " << vrse.get_controller_index()
-				<< " " << cgv::gui::get_stick_action_string(vrse.get_action())
-				<< " at " << vrse.get_x() << ", " << vrse.get_y() << std::endl;
-			return true;
-		case cgv::gui::SA_MOVE:
-		case cgv::gui::SA_DRAG:
-			return true;
-			std::cout << "stick " << vrse.get_stick_index()
-				<< " of controller " << vrse.get_controller_index()
-				<< " " << cgv::gui::get_stick_action_string(vrse.get_action())
-				<< " from " << vrse.get_last_x() << ", " << vrse.get_last_y()
-				<< " to " << vrse.get_x() << ", " << vrse.get_y() << std::endl;
-			return true;
-		}
-		return true;
-	}
-	case cgv::gui::EID_POSE:
-		cgv::gui::vr_pose_event& vrpe = static_cast<cgv::gui::vr_pose_event&>(e);
-		// check for controller pose events
-		int ci = vrpe.get_trackable_index();
-		if (ci != -1) {
-			if (state[ci] == IS_GRAB) {
-				// in grab mode apply relative transformation to grabbed boxes
-
-				// get previous and current controller position
-				vec3 last_pos = vrpe.get_last_position();
-				vec3 pos = vrpe.get_position();
-				// get rotation from previous to current orientation
-				// this is the current orientation matrix times the
-				// inverse (or transpose) of last orientation matrix:
-				// vrpe.get_orientation()*transpose(vrpe.get_last_orientation())
-				mat3 rotation = vrpe.get_rotation_matrix();
-				// iterate intersection points of current controller
-				for (size_t i = 0; i < intersection_points.size(); ++i) {
-					if (intersection_controller_indices[i] != ci)
-						continue;
-					// extract box index
-					unsigned bi = intersection_box_indices[i];
-					// update translation with position change and rotation
-					movable_box_translations[bi] = 
-						rotation * (movable_box_translations[bi] - last_pos) + pos;
-					// update orientation with rotation, note that quaternions
-					// need to be multiplied in oposite order. In case of matrices
-					// one would write box_orientation_matrix *= rotation
-					movable_box_rotations[bi] = quat(rotation) * movable_box_rotations[bi];
-					// update intersection points
-					intersection_points[i] = rotation * (intersection_points[i] - last_pos) + pos;
-				}
-			}
-			else {// not grab
-				// clear intersections of current controller 
-				size_t i = 0;
-				while (i < intersection_points.size()) {
-					if (intersection_controller_indices[i] == ci) {
-						intersection_points.erase(intersection_points.begin() + i);
-						intersection_colors.erase(intersection_colors.begin() + i);
-						intersection_box_indices.erase(intersection_box_indices.begin() + i);
-						intersection_controller_indices.erase(intersection_controller_indices.begin() + i);
-					}
-					else
-						++i;
-				}
-
-				// compute intersections
-				vec3 origin, direction;
-				vrpe.get_state().controller[ci].put_ray(&origin(0), &direction(0));
-				compute_intersections(origin, direction, ci, ci == 0 ? rgb(1, 0, 0) : rgb(0, 0, 1));
-				label_outofdate = true;
-
-
-				// update state based on whether we have found at least 
-				// one intersection with controller ray
-				if (intersection_points.size() == i)
-					state[ci] = IS_NONE;
-				else
-					if (state[ci] == IS_NONE)
-						state[ci] = IS_OVER;
-			}
-			post_redraw();
-		}
-		return true;
 	}
 	return false;
 }
@@ -800,54 +565,11 @@ void vr_stream_gui::clear(cgv::render::context& ctx)
 void vr_stream_gui::init_frame(cgv::render::context& ctx)
 {
 	lm.ensure_texture_uptodate(ctx);
-	scene->ref_rectangles()->set_texture(lm.get_texture());
+	node->ref_rectangles()->set_texture(lm.get_texture());
 
 	if (stream_screen) 
 		screen_tex_manager->update(ctx);
 
-	if (label_fbo.get_width() != label_resolution) {
-		label_tex.destruct(ctx);
-		label_fbo.destruct(ctx);
-	}
-	if (!label_fbo.is_created()) {
-		label_tex.create(ctx, cgv::render::TT_2D, label_resolution, label_resolution);
-		label_fbo.create(ctx, label_resolution, label_resolution);
-		label_tex.set_min_filter(cgv::render::TF_LINEAR_MIPMAP_LINEAR);
-		label_tex.set_mag_filter(cgv::render::TF_LINEAR);
-		label_fbo.attach(ctx, label_tex);
-		label_outofdate = true;
-	}
-	if (label_outofdate && label_fbo.is_complete(ctx)) {
-		glPushAttrib(GL_COLOR_BUFFER_BIT);
-		label_fbo.enable(ctx);
-		label_fbo.push_viewport(ctx);
-		ctx.push_pixel_coords();
-			glClearColor(0.5f,0.5f,0.5f,1.0f);
-			glClear(GL_COLOR_BUFFER_BIT);
-
-			glColor4f(label_color[0], label_color[1], label_color[2], 1);
-			ctx.set_cursor(20, (int)ceil(label_size) + 20);
-			ctx.enable_font_face(label_font_face, label_size);
-			ctx.output_stream() << label_text << "\n";
-			ctx.output_stream().flush(); // make sure to flush the stream before change of font size or font face
-
-			ctx.enable_font_face(label_font_face, 0.7f*label_size);
-			for (size_t i = 0; i < intersection_points.size(); ++i) {
-				ctx.output_stream()
-					<< "box " << intersection_box_indices[i]
-					<< " at (" << intersection_points[i]
-					<< ") with controller " << intersection_controller_indices[i] << "\n";
-			}
-			ctx.output_stream().flush();
-
-		ctx.pop_pixel_coords();
-		label_fbo.pop_viewport(ctx);
-		label_fbo.disable(ctx);
-		glPopAttrib();
-		label_outofdate = false;
-
-		label_tex.generate_mipmaps(ctx);
-	}
 	if (vr_view_ptr && vr_view_ptr->get_rendered_vr_kit() != 0 && vr_view_ptr->get_rendered_eye() == 0 && vr_view_ptr->get_rendered_vr_kit() == vr_view_ptr->get_current_vr_kit()) {
 		vr::vr_kit* kit_ptr = vr_view_ptr->get_current_vr_kit();
 		if (kit_ptr) {
@@ -1039,140 +761,6 @@ void vr_stream_gui::draw(cgv::render::context& ctx)
 				cgv::render::attribute_array_binding::disable_global_array(ctx, prog.get_texcoord_index());
 			}
 		}
-		/*
-		if (vr_view_ptr) {
-			std::vector<vec3> P;
-			std::vector<float> R;
-			std::vector<rgb> C;
-			const vr::vr_kit_state* state_ptr = vr_view_ptr->get_current_vr_state();
-			if (state_ptr) {
-				for (int ci = 0; ci < 4; ++ci) if (state_ptr->controller[ci].status == vr::VRS_TRACKED) {
-					vec3 ray_origin, ray_direction;
-					state_ptr->controller[ci].put_ray(&ray_origin(0), &ray_direction(0));
-					P.push_back(ray_origin);
-					R.push_back(0.002f);
-					P.push_back(ray_origin + ray_length * ray_direction);
-					R.push_back(0.003f);
-					rgb c(float(1 - ci), 0.5f * (int)state[ci], float(ci));
-					C.push_back(c);
-					C.push_back(c);
-				}
-			}
-			if (P.size() > 0) {
-				auto& cr = cgv::render::ref_rounded_cone_renderer(ctx);
-				cr.set_render_style(cone_style);
-				//cr.set_eye_position(vr_view_ptr->get_eye_of_kit());
-				cr.set_position_array(ctx, P);
-				cr.set_color_array(ctx, C);
-				cr.set_radius_array(ctx, R);
-				if (!cr.render(ctx, 0, P.size())) {
-					cgv::render::shader_program& prog = ctx.ref_default_shader_program();
-					int pi = prog.get_position_index();
-					int ci = prog.get_color_index();
-					cgv::render::attribute_array_binding::set_global_attribute_array(ctx, pi, P);
-					cgv::render::attribute_array_binding::enable_global_array(ctx, pi);
-					cgv::render::attribute_array_binding::set_global_attribute_array(ctx, ci, C);
-					cgv::render::attribute_array_binding::enable_global_array(ctx, ci);
-					glLineWidth(3);
-					prog.enable(ctx);
-					glDrawArrays(GL_LINES, 0, (GLsizei)P.size());
-					prog.disable(ctx);
-					cgv::render::attribute_array_binding::disable_global_array(ctx, pi);
-					cgv::render::attribute_array_binding::disable_global_array(ctx, ci);
-					glLineWidth(1);
-				}
-			}
-		}
-		*/
-	}
-	cgv::render::box_renderer& renderer = cgv::render::ref_box_renderer(ctx);
-
-	// draw dynamic boxes 
-	renderer.set_render_style(movable_style);
-	renderer.set_box_array(ctx, movable_boxes);
-	renderer.set_color_array(ctx, movable_box_colors);
-	renderer.set_translation_array(ctx, movable_box_translations);
-	renderer.set_rotation_array(ctx, movable_box_rotations);
-	if (renderer.validate_and_enable(ctx)) {
-		if (show_seethrough) {
-			glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
-			renderer.draw(ctx, 0, 3);
-			glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
-			renderer.draw(ctx, 3, movable_boxes.size() - 3);
-		}
-		else
-			renderer.draw(ctx, 0, movable_boxes.size());
-	}
-	renderer.disable(ctx);
-
-	// draw static boxes
-	renderer.set_render_style(style);
-	renderer.set_box_array(ctx, boxes);
-	renderer.set_color_array(ctx, box_colors);
-	renderer.render(ctx, 0, boxes.size());
-
-	/*
-	// draw intersection points
-	if (!intersection_points.empty()) {
-		auto& sr = cgv::render::ref_sphere_renderer(ctx);
-		sr.set_position_array(ctx, intersection_points);
-		sr.set_color_array(ctx, intersection_colors);
-		sr.set_render_style(srs);
-		sr.render(ctx, 0, intersection_points.size());
-	}
-	*/
-	// draw label
-	if (vr_view_ptr && label_tex.is_created()) {
-		vec3 p(0, 1.5f, 0);
-		vec2 e(0.5f, 0.5f);
-		rgba c(1.0f, 0.5f, 0.2f, 1.0f);
-		vec4 tc(0.0f, 0.0f, 1.0f, 1.0f);
-		mat3 O;
-		vec3& x = reinterpret_cast<vec3&>(O(0, 0));
-		vec3& y = reinterpret_cast<vec3&>(O(0, 1));
-		vec3& z = reinterpret_cast<vec3&>(O(0, 2));
-		y = label_upright ? vec3(0, 1.0f, 0) : normalize(vr_view_ptr->get_view_up_dir_of_kit());
-		x = normalize(cross(vec3(vr_view_ptr->get_view_dir_of_kit()), y));
-		z = cross(x, y);
-		quat q(O);
-
-		
-		auto& rr = ref_rectangle_renderer(ctx);
-		rr.set_position_array(ctx, &p, 1);
-		rr.set_extent_array(ctx, &e, 1);
-		rr.set_color_array(ctx, &c, 1);
-		rr.set_rotation_array(ctx, &q, 1);
-		rr.set_texcoord_array(ctx, &tc, 1);
-		if (rr.validate_and_enable(ctx)) {
-			label_tex.enable(ctx);
-			ctx.set_color(rgb(1, 1, 1));
-			rr.draw(ctx, 0, 1);
-			label_tex.disable(ctx);
-			rr.disable(ctx);
-		}
-		else {
-			cgv::render::shader_program& prog = ctx.ref_default_shader_program(true);
-			int pi = prog.get_position_index();
-			int ti = prog.get_texcoord_index();
-			std::vector<vec3> P;
-			std::vector<vec2> T;
-			P.push_back(p - 0.5f * e[0] * x - 0.5f * e[1] * y); T.push_back(vec2(0.0f, 0.0f));
-			P.push_back(p + 0.5f * e[0] * x - 0.5f * e[1] * y); T.push_back(vec2(1.0f, 0.0f));
-			P.push_back(p - 0.5f * e[0] * x + 0.5f * e[1] * y); T.push_back(vec2(0.0f, 1.0f));
-			P.push_back(p + 0.5f * e[0] * x + 0.5f * e[1] * y); T.push_back(vec2(1.0f, 1.0f));
-			cgv::render::attribute_array_binding::set_global_attribute_array(ctx, pi, P);
-			cgv::render::attribute_array_binding::enable_global_array(ctx, pi);
-			cgv::render::attribute_array_binding::set_global_attribute_array(ctx, ti, T);
-			cgv::render::attribute_array_binding::enable_global_array(ctx, ti);
-			prog.enable(ctx);
-			label_tex.enable(ctx);
-			ctx.set_color(rgb(1, 1, 1));
-			glDrawArrays(GL_TRIANGLE_STRIP, 0, (GLsizei)P.size());
-			label_tex.disable(ctx);
-			prog.disable(ctx);
-			cgv::render::attribute_array_binding::disable_global_array(ctx, pi);
-			cgv::render::attribute_array_binding::disable_global_array(ctx, ti);
-		}
 	}
 }
 
@@ -1211,7 +799,8 @@ void vr_stream_gui::finish_draw(cgv::render::context& ctx)
 	}
 }
 
-void vr_stream_gui::create_gui() {
+void vr_stream_gui::create_gui() 
+{
 	add_decorator("vr_stream_gui", "heading", "level=2");
 	
 	if (begin_tree_node("virtual display", stream_screen, true)) {
@@ -1232,7 +821,6 @@ void vr_stream_gui::create_gui() {
 	add_member_control(this, "mesh_scale", mesh_scale, "value_slider", "min=0.1;max=10;log=true;ticks=true");
 	add_gui("mesh_location", mesh_location, "vector", "options='min=-3;max=3;ticks=true");
 	add_gui("mesh_orientation", static_cast<dvec4&>(mesh_orientation), "direction", "options='min=-1;max=1;ticks=true");
-	add_member_control(this, "ray_length", ray_length, "value_slider", "min=0.1;max=10;log=true;ticks=true");
 	add_member_control(this, "show_seethrough", show_seethrough, "check");
 	if(last_kit_handle) {
 		add_decorator("cameras", "heading", "level=3");
@@ -1261,44 +849,6 @@ void vr_stream_gui::create_gui() {
 		const std::vector<std::pair<int, int> >* t_and_s_ptr = 0;
 		if(kit_ptr)
 			t_and_s_ptr = &kit_ptr->get_controller_throttles_and_sticks(0);
-		add_decorator("deadzone and precisions", "heading", "level=3");
-		int ti = 0;
-		int si = 0;
-		for(unsigned i = 0; i < left_deadzone_and_precision.size(); ++i) {
-			std::string prefix = std::string("unknown[") + cgv::utils::to_string(i) + "]";
-			if(t_and_s_ptr) {
-				if(t_and_s_ptr->at(i).second == -1)
-					prefix = std::string("throttle[") + cgv::utils::to_string(ti++) + "]";
-				else
-					prefix = std::string("stick[") + cgv::utils::to_string(si++) + "]";
-			}
-			add_member_control(this, prefix + ".deadzone", left_deadzone_and_precision[i].first, "value_slider", "min=0;max=1;ticks=true;log=true");
-			add_member_control(this, prefix + ".precision", left_deadzone_and_precision[i].second, "value_slider", "min=0;max=1;ticks=true;log=true");
-		}
-	}
-	if (begin_tree_node("box style", style)) {
-		align("\a");
-		add_gui("box style", style);
-		align("\b");
-		end_tree_node(style);
-	}
-	if (begin_tree_node("cone style", cone_style)) {
-		align("\a");
-		add_gui("cone style", cone_style);
-		align("\b");
-		end_tree_node(cone_style);
-	}
-	if(begin_tree_node("movable box style", movable_style)) {
-		align("\a");
-		add_gui("movable box style", movable_style);
-		align("\b");
-		end_tree_node(movable_style);
-	}
-	if(begin_tree_node("intersections", srs)) {
-		align("\a");
-		add_gui("sphere style", srs);
-		align("\b");
-		end_tree_node(srs);
 	}
 	if(begin_tree_node("mesh", mesh_scale)) {
 		align("\a");
@@ -1307,19 +857,6 @@ void vr_stream_gui::create_gui() {
 		add_gui("orientation", static_cast<dvec4&>(mesh_orientation), "direction", "main_label='';long_label=true;gui_type='value_slider';options='min=-1;max=1;step=0.001;ticks=true'");
 		align("\b");
 		end_tree_node(mesh_scale);
-	}
-
-	if(begin_tree_node("label", label_size)) {
-		align("\a");
-		add_member_control(this, "text", label_text);
-		add_member_control(this, "upright", label_upright);
-		add_member_control(this, "font", (cgv::type::DummyEnum&)label_font_idx, "dropdown", font_enum_decl);
-		add_member_control(this, "face", (cgv::type::DummyEnum&)label_face_type, "dropdown", "enums='regular,bold,italics,bold+italics'");
-		add_member_control(this, "size", label_size, "value_slider", "min=8;max=64;ticks=true");
-		add_member_control(this, "color", label_color);
-		add_member_control(this, "resolution", (cgv::type::DummyEnum&)label_resolution, "dropdown", "enums='256=256,512=512,1024=1024,2048=2048'");
-		align("\b");
-		end_tree_node(label_size);
 	}
 }
 

@@ -40,7 +40,7 @@ class vr_stream_gui :
 	public cgv::gui::provider {
 protected:
 	cgv::nui::label_manager lm;
-	cgv::nui::nui_node_ptr scene;
+	cgv::nui::nui_node_ptr scene, node;
 	cgv::nui::ray_tool_ptr tools[2];
 	std::shared_ptr<vr::room::virtual_display> vt_display;
 	std::shared_ptr<util::screen_texture_manager> screen_tex_manager;
@@ -57,10 +57,6 @@ protected:
 	vec3 ray_dir;
 	vr::room::virtual_display::intersection intersection;
 
-	bool hold_left_grip = false;
-	bool hold_left_throttle = false;
-	bool touch_left_pad = false;
-
 	// test members
 	bool draw_debug = false;
 	bool prohibit_vr_input = false;
@@ -72,22 +68,6 @@ protected:
 	// call twice, one time with upper left, one time with lower right corner
 	void reconfigure_virtual_display(vec3 pos);
 
-
-	// different interaction states for the controllers
-	enum InteractionState {
-		IS_NONE,
-		IS_OVER,
-		IS_GRAB
-	};
-
-	// store the scene as colored boxes
-	std::vector<box3> boxes;
-	std::vector<rgb> box_colors;
-
-	// rendering style for boxes
-	cgv::render::box_render_style style;
-
-	cgv::render::rounded_cone_render_style cone_style;
 	// sample for rendering a mesh
 	double mesh_scale;
 	dvec3 mesh_location;
@@ -96,56 +76,15 @@ protected:
 	// render information for mesh
 	cgv::render::mesh_render_info MI;
 
-	// sample for rendering text labels
-	std::string label_text;
-	int label_font_idx;
-	bool label_upright;
-	float label_size;
-	rgb label_color;
-
-	bool label_outofdate; // whether label texture is out of date
-	unsigned label_resolution; // resolution of label texture
-	cgv::render::texture label_tex; // texture used for offline rendering of label
-	cgv::render::frame_buffer label_fbo; // fbo used for offline rendering of label
-
 	// general font information
 	std::vector<const char*> font_names;
 	std::string font_enum_decl;
 
-	// current font face used
-	cgv::media::font::font_face_ptr label_font_face;
-	cgv::media::font::FontFaceAttributes label_face_type;
-
-
-	// keep deadzone and precision vector for left controller
-	cgv::gui::vr_server::vec_flt_flt left_deadzone_and_precision;
 	// store handle to vr kit of which left deadzone and precision is configured
 	void* last_kit_handle;
 
-	// length of to be rendered rays
-	float ray_length;
-
 	// keep reference to vr_view_interactor
 	vr_view_interactor* vr_view_ptr;
-
-	// store the movable boxes
-	std::vector<box3> movable_boxes;
-	std::vector<rgb> movable_box_colors;
-	std::vector<vec3> movable_box_translations;
-	std::vector<quat> movable_box_rotations;
-
-	// intersection points
-	std::vector<vec3> intersection_points;
-	std::vector<rgb>  intersection_colors;
-	std::vector<int>  intersection_box_indices;
-	std::vector<int>  intersection_controller_indices;
-
-	// state of current interaction with boxes for each controller
-	InteractionState state[4];
-
-	// render style for interaction
-	cgv::render::sphere_render_style srs;
-	cgv::render::box_render_style movable_style;
 
 	int nr_cameras;
 	int frame_width, frame_height;
@@ -177,23 +116,25 @@ public:
 
 	void stop_camera();
 
-	/// compute intersection points of controller ray with movable boxes
-	void compute_intersections(const vec3& origin, const vec3& direction, int ci, const rgb& color);
 	/// register on device change events
 	void on_device_change(void* kit_handle, bool attach);
 	/// construct boxes that represent a table of dimensions tw,td,th and leg width tW
-	void construct_table(float tw, float td, float th, float tW);
+	void construct_table(cgv::nui::nui_node_ptr node, float tw, float td, float th, float tW);
 	/// construct boxes that represent a room of dimensions w,d,h and wall width W
-	void construct_room(float w, float d, float h, float W, bool walls, bool ceiling);
+	void construct_room(cgv::nui::nui_node_ptr node, float w, float d, float h, float W, bool walls, bool ceiling);
 	/// construct boxes for environment
-	void construct_environment(float s, float ew, float ed, float w, float d, float h);
-	/// construct boxes that represent a table of dimensions tw,td,th and leg width tW
-	void construct_movable_boxes(float tw, float td, float th, float tW, size_t nr);
+	void construct_environment(cgv::nui::nui_node_ptr node, float s, float ew, float ed, float w, float d, float h);
 	/// construct a scene with a table
-	void build_scene(float w, float d, float h, float W, float tw, float td, float th, float tW);
+	void construct_lab(cgv::nui::nui_node_ptr node, float w, float d, float h, float W, float tw, float td, float th, float tW);
+	/// construct boxes that represent a table of dimensions tw,td,th and leg width tW
+	void construct_movable_boxes(cgv::nui::nui_node_ptr node, float tw, float td, float th, float tW, size_t nr);
+	/// construct labels
+	void construct_labels(cgv::nui::nui_node_ptr node);
+	/// construct lab and movable parts
+	void construct_scene();
 public:
 	vr_stream_gui();
-
+	
 	std::string get_type_name() { return "vr_stream_gui"; }
 
 	void stream_help(std::ostream& os);
