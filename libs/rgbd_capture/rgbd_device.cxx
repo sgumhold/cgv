@@ -9,6 +9,52 @@ using namespace std;
 
 namespace rgbd {
 
+	mesh_data_view::mesh_data_view(char* data, const size_t size) {
+		this->parse_data(data, size);
+	}
+
+	bool mesh_data_view::parse_data(char* data, const size_t size) {
+		auto lambda = [&]() {
+			if (size < sizeof(uint32_t)) {
+				return false;
+			}
+			this->points_size = 0;
+			this->triangles_size = 0;
+			this->uv_size = 0;
+			//how many points the mesh has
+			memcpy(&this->points_size, data, sizeof(uint32_t));
+			size_t offset = sizeof(uint32_t);
+			this->points = reinterpret_cast<Point*>(data + offset);
+
+			///the number of triangles is located behind the points array
+			offset += this->points_size * sizeof(Point);
+			if (size <= offset + sizeof(uint32_t)) {
+				return (size == offset); //in this case, data only has points
+			}
+			memcpy(&this->triangles_size, data + offset, sizeof(uint32_t));
+			offset += sizeof(uint32_t);
+			this->triangles = reinterpret_cast<Triangle*>(data + offset);
+
+			///the number of texture coordinates is located behind the triangles array
+			if (size <= offset + sizeof(uint32_t)) {
+				return (size == offset); //true if data only has points and triangles
+			}
+			offset += this->triangles_size * sizeof(Triangle);
+			memcpy(&this->uv_size, data + offset, sizeof(uint32_t));
+			offset += sizeof(uint32_t);
+			this->uv = reinterpret_cast<TextureCoord*>(data + offset);
+			//final size
+			offset += sizeof(TextureCoord)*this->uv_size;
+			return size >= offset;
+		};
+
+		if (!lambda()) {
+			points = nullptr;
+			return false;
+		}
+		return true;
+	}
+
 	std::string get_frame_extension(const frame_format& ff)
 	{
 		static const char* exts[] = {
