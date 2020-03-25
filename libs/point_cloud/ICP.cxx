@@ -19,7 +19,7 @@ void ICP::set_source_cloud(point_cloud &inputCloud) {
 	sourceCloud = &inputCloud;
 }
 
-void ICP::set_target_cloud(point_cloud &inputCloud) {
+void ICP::set_target_cloud(const point_cloud &inputCloud) {
 	targetCloud = &inputCloud;
 }
 
@@ -125,9 +125,8 @@ void ICP::reg_icp() {
 		//update the point cloud
 		for (unsigned int i = 0; i < sourceCloud->get_nr_points(); i++)
 		{
-			point_cloud_types::Pnt t = sourceCloud->pnt(i);
-			rotate(&t, rotation_mat, &p);
-			translate(&p, translation_vec, &t);
+			rotate(&sourceCloud->pnt(i), rotation_mat, &p);
+			translate(&p, translation_vec, &sourceCloud->pnt(i));
 		}
 	}
 	print_rotation(rotation_mat);

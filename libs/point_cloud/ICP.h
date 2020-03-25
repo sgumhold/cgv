@@ -9,8 +9,8 @@
 
 class CGV_API ICP : public point_cloud_types{
 public:
-	const point_cloud *sourceCloud;
-	point_cloud *targetCloud;
+	point_cloud *sourceCloud;
+	const point_cloud *targetCloud;
 	int maxIterations;
 	int numRandomSamples;
 	float eps;
@@ -18,7 +18,7 @@ public:
 	ICP();
 	~ICP();
 	void set_source_cloud(point_cloud &inputCloud);
-	void set_target_cloud(point_cloud &inputCloud);
+	void set_target_cloud(const point_cloud &inputCloud);
 	void set_iterations(int Iter);
 	void set_num_random(int NR);
 	void set_eps(float e);
