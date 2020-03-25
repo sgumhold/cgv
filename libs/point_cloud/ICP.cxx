@@ -1,11 +1,4 @@
-#include <cgv/math/permute.h>
-#include <cgv/math/det.h>
 #include "point_cloud.h"
-#include <cgv/utils/file.h>
-#include <cgv/utils/stopwatch.h>
-#include <cgv/utils/scan.h>
-#include <cgv/utils/advanced_scan.h>
-#include <cgv/media/mesh/obj_reader.h>
 #include <fstream>
 #include "ann_tree.h"
 #include "ICP.h"
@@ -22,150 +15,125 @@ ICP::~ICP() {
 
 }
 
-void ICP::setSourceCloud(point_cloud &inputCloud) {
+void ICP::set_source_cloud(point_cloud &inputCloud) {
 	sourceCloud = &inputCloud;
 }
 
-void ICP::setTargetCloud(point_cloud &inputCloud) {
+void ICP::set_target_cloud(point_cloud &inputCloud) {
 	targetCloud = &inputCloud;
 }
 
-void ICP::setIterations(int Iter) {
+void ICP::set_iterations(int Iter) {
 	this->maxIterations = Iter;
 }
 
-void ICP::setNumRandom(int NR) {
+void ICP::set_num_random(int NR) {
 	this->numRandomSamples = NR;
 }
 
-void ICP::setEps(int e) {
+void ICP::set_eps(float e) {
 	this->eps = e;
 }
 
 void ICP::reg_icp() {
-	float rotationMatrix[9];
-	float translation[3];
+	Mat rotation_mat;
+	cgv::math::fvec<float, 3> translation_vec;
 
-	point_cloud* staticPointCloudCopy = new point_cloud();
+	point_cloud* targetPointCloudCopy = new point_cloud();
 
-	point_cloud_types::Pnt dynamicMid(0.0, 0.0, 0.0);
-	point_cloud_types::Pnt staticMid(0.0, 0.0, 0.0);
+	Pnt sourceMid(0.0, 0.0, 0.0);
+	Pnt targetMid(0.0, 0.0, 0.0);
 
-	// copy the static point cloud
-	for (unsigned int i = 0; i < targetCloud->get_nr_points(); i++)
+	// copy the target point cloud
+	for (size_t i = 0; i < targetCloud->get_nr_points(); i++)
 	{
-		point_cloud_types::Pnt pCopy; 
+		Pnt pCopy; 
 		pCopy.x() = targetCloud->pnt(i).x();
 		pCopy.y() = targetCloud->pnt(i).y();
 		pCopy.z() = targetCloud->pnt(i).z();
-		staticPointCloudCopy->add_point(pCopy);
+		targetPointCloudCopy->add_point(pCopy);
 	}
 
-	// create the kd tree
+	// create the ann tree
 	ann_tree* tree = new ann_tree();
-	tree->build(*sourceCloud);
-	size_t numDynamicPoints = sourceCloud->get_nr_points();
+	tree->build(*targetPointCloudCopy);
+	size_t num_source_points = sourceCloud->get_nr_points();
 
-	get_mid_point(*targetCloud, staticMid);
-	get_mid_point(*sourceCloud, dynamicMid);
+	get_mid_point(*targetCloud, targetMid);
+	get_mid_point(*sourceCloud, sourceMid);
 
 	// initialize the translation vector
-	clearTranslation(translation);
+	translation_vec.zeros();
 
 	// initialize the rotation matrix
-	clearRotation(rotationMatrix);
+	rotation_mat.zeros();
 
-	point_cloud_types::Pnt p;
-	point_cloud_types::Pnt x;
+	Pnt p;
+	Pnt x;
 
 	float cost = 1.0;
 	std::srand(std::time(0));
 
-	point_cloud_types::Pnt qd;
 	point_cloud_types::Pnt qs;
+	point_cloud_types::Pnt qd;
 
-	float U[9];
-	float w[9];
-	float sigma[3];
-	float V[9];
+	Mat fA(0.0f);             // this initializes fA to matrix filled with zeros
 
-	float** uSvd = new float*[3];
-	float** vSvd = new float*[3];
-	uSvd[0] = new float[3];
-	uSvd[1] = new float[3];
-	uSvd[2] = new float[3];
-
-	vSvd[0] = new float[3];
-	vSvd[1] = new float[3];
-	vSvd[2] = new float[3];
+	cgv::math::mat<float> U, V;
+	cgv::math::diag_mat<float> Sigma;
+	
 
 	for (int iter = 0; iter < maxIterations && abs(cost) > eps; iter++)
 	{
 		cost = 0.0;
-
-		//clearRotation(rotationMatrix);
-		clearMatrix(U);
-		clearMatrix(V);
-		clearMatrix(w);
-		get_mid_point(*sourceCloud, dynamicMid);
+		U.zeros();
+		V.zeros();
+		Sigma.zeros();
+		get_mid_point(*sourceCloud, sourceMid);
 
 		for (int i = 0; i < numRandomSamples; i++)
 		{
 			int randSample = std::rand() % sourceCloud->get_nr_points();
-			// sample the dynamic point cloud
+			// sample the source point cloud
 			p = sourceCloud->pnt(randSample);
 
-			// get the closest point in the static point cloud
+			// get the closest point in the target point cloud
 			ann_tree::Idx Id = tree->find_closest(p);
 
-			qd = p - dynamicMid;
-			qs = sourceCloud->pnt(Id) - staticMid;
+			qs = p - sourceMid;
+			qd = sourceCloud->pnt(Id) - targetMid;
 
-			outerProduct(&qs, &qd, w);
-			addMatrix(w, U, U);
-
-			cost += error(&x, &p, rotationMatrix, translation);
+			fA += Mat(sourceCloud->pnt(i), targetCloud->pnt(i));
+			
+			cost += error(&x, &p, rotation_mat, translation_vec);
 		}
-		copyMatToUV(U, uSvd);
-		dsvd(uSvd, 3, 3, sigma, vSvd);
-		copyUVtoMat(uSvd, U);
-		copyUVtoMat(vSvd, V);
-
-		transpose(V);
-		matrixMult(U, V, rotationMatrix);
+		///cast fA to A
+		cgv::math::mat<float> A(3, 3, &fA(0, 0));
+		cgv::math::svd(A, U, Sigma, V);
+		Mat fU(3, 3, &U(0, 0)), fV(3, 3, &V(0, 0));
+		rotation_mat = fU * cgv::math::transpose(fV);
 
 		point_cloud_types::Pnt t;
 		t.x() = 0.0;
 		t.y() = 0.0;
 		t.z() = 0.0;
-		rotate(&dynamicMid, rotationMatrix, &t);
-		translation[0] = staticMid.x() - t.x();
-		translation[1] = staticMid.y() - t.y();
-		translation[2] = staticMid.z() - t.z();
+		rotate(&sourceMid, rotation_mat, &t);
+		translation_vec[0] = targetMid.x() - t.x();
+		translation_vec[1] = targetMid.y() - t.y();
+		translation_vec[2] = targetMid.z() - t.z();
 
 		//update the point cloud
 		for (unsigned int i = 0; i < sourceCloud->get_nr_points(); i++)
 		{
 			point_cloud_types::Pnt t = sourceCloud->pnt(i);
-			rotate(&t, rotationMatrix, &p);
-			translate(&p, translation, &t);
+			rotate(&t, rotation_mat, &p);
+			translate(&p, translation_vec, &t);
 		}
-		printRotation(rotationMatrix);
-		printTranslation(translation);
 	}
-
-	staticPointCloudCopy->clear();
+	print_rotation(rotation_mat);
+	print_translation(translation_vec);
+	targetPointCloudCopy->clear();
 	delete tree;
-
-	delete[] uSvd[0];
-	delete[] uSvd[1];
-	delete[] uSvd[2];
-	delete[] uSvd;
-
-	delete[] vSvd[0];
-	delete[] vSvd[1];
-	delete[] vSvd[2];
-	delete[] vSvd;
 }
 
 void ICP::get_mid_point(const point_cloud &input, point_cloud_types::Pnt &mid_point) {
@@ -183,43 +151,6 @@ void ICP::get_mid_point(const point_cloud &input, point_cloud_types::Pnt &mid_po
 	mid_point.z() = mid_point.z() / (float)input.get_nr_points();
 }
 
-void ICP::clearTranslation(float* translation)
-{
-	translation[0] = 0.0;
-	translation[1] = 0.0;
-	translation[2] = 0.0;
-}
-
-void ICP::clearRotation(float* rotation)
-{
-	rotation[0] = 1.0;
-	rotation[1] = 0.0;
-	rotation[2] = 0.0;
-
-	rotation[3] = 0.0;
-	rotation[4] = 1.0;
-	rotation[5] = 0.0;
-
-	rotation[6] = 0.0;
-	rotation[7] = 0.0;
-	rotation[8] = 1.0;
-}
-
-void ICP::clearMatrix(float* mat)
-{
-	mat[0] = 0.0;
-	mat[1] = 0.0;
-	mat[2] = 0.0;
-
-	mat[3] = 0.0;
-	mat[4] = 0.0;
-	mat[5] = 0.0;
-
-	mat[6] = 0.0;
-	mat[7] = 0.0;
-	mat[8] = 0.0;
-}
-
 void ICP::rotate(point_cloud_types::Pnt* p, float* rotationMatrix, point_cloud_types::Pnt* result)
 {
 	result->x() = p->x() * rotationMatrix[0] + p->y() * rotationMatrix[1] + p->z() * rotationMatrix[2];
@@ -234,68 +165,6 @@ void ICP::translate(point_cloud_types::Pnt* p, float* translationVector, point_c
 	result->z() = p->z() + translationVector[2];
 }
 
-void ICP::outerProduct(point_cloud_types::Pnt* a, point_cloud_types::Pnt* b, float* mat)
-{
-	mat[0] = a->x() * b->x();
-	mat[1] = a->x() * b->y();
-	mat[2] = a->x() * b->z();
-
-	mat[3] = a->y() * b->x();
-	mat[4] = a->y() * b->y();
-	mat[5] = a->y() * b->z();
-
-	mat[6] = a->z() * b->x();
-	mat[7] = a->z() * b->y();
-	mat[8] = a->z() * b->z();
-}
-
-void ICP::matrixMult(float* a, float* b, float* result)
-{
-	result[0] = a[0] * b[0] + a[1] * b[3] + a[2] * b[6];
-	result[1] = a[0] * b[1] + a[1] * b[4] + a[2] * b[7];
-	result[2] = a[0] * b[2] + a[1] * b[5] + a[2] * b[8];
-
-	result[3] = a[3] * b[0] + a[4] * b[3] + a[5] * b[6];
-	result[4] = a[3] * b[1] + a[4] * b[4] + a[5] * b[7];
-	result[5] = a[3] * b[2] + a[4] * b[5] + a[5] * b[8];
-
-	result[6] = a[6] * b[0] + a[7] * b[3] + a[8] * b[6];
-	result[7] = a[6] * b[1] + a[7] * b[4] + a[8] * b[7];
-	result[8] = a[6] * b[2] + a[7] * b[5] + a[8] * b[8];
-}
-
-void ICP::transpose(float* a)
-{
-	float temp;
-
-	temp = a[1];
-	a[1] = a[3];
-	a[3] = temp;
-
-	temp = a[2];
-	a[2] = a[6];
-	a[6] = temp;
-
-	temp = a[5];
-	a[5] = a[7];
-	a[7] = temp;
-}
-
-void ICP::addMatrix(float* a, float* b, float* result)
-{
-	result[0] = a[0] + b[0];
-	result[1] = a[1] + b[1];
-	result[2] = a[2] + b[2];
-
-	result[3] = a[3] + b[3];
-	result[4] = a[4] + b[4];
-	result[5] = a[5] + b[5];
-
-	result[6] = a[6] + b[6];
-	result[7] = a[7] + b[7];
-	result[8] = a[8] + b[8];
-}
-
 float ICP::error(point_cloud_types::Pnt* ps, point_cloud_types::Pnt* pd, float* r, float* t)
 {
 	point_cloud_types::Pnt res;
@@ -305,45 +174,15 @@ float ICP::error(point_cloud_types::Pnt* ps, point_cloud_types::Pnt* pd, float* 
 	err += pow(ps->z() - res.z() - t[2], 2.0);
 	return err;
 }
-
-void ICP::copyMatToUV(float* mat, float** result)
-{
-	result[0][0] = mat[0];
-	result[0][1] = mat[1];
-	result[0][2] = mat[2];
-
-	result[1][0] = mat[3];
-	result[1][1] = mat[4];
-	result[1][2] = mat[5];
-
-	result[2][0] = mat[6];
-	result[2][1] = mat[7];
-	result[2][2] = mat[8];
-}
-
-void ICP::copyUVtoMat(float** mat, float* result)
-{
-	result[0] = mat[0][0];
-	result[1] = mat[0][1];
-	result[2] = mat[0][2];
-
-	result[3] = mat[1][0];
-	result[4] = mat[1][1];
-	result[5] = mat[1][2];
-
-	result[6] = mat[2][0];
-	result[7] = mat[2][1];
-	result[8] = mat[2][2];
-}
-
-void ICP::printRotation(float *rotation) {
+///print rotation matrix
+void ICP::print_rotation(float *rotation) {
 	std::cout << "rotation" << std::endl;
 	for (int i = 0; i < 9; i = i+3) {
 		std::cout << rotation[i] << " " << rotation[i + 1] << " " << rotation[i + 2] << std::endl;
 	}
 }
-
-void ICP::printTranslation(float *translation) {
+///print translation vector
+void ICP::print_translation(float *translation) {
 	std::cout << "translation" << std::endl;
 	std::cout << translation[0] << " " << translation[1] << " " << translation[2] << std::endl;
 }
