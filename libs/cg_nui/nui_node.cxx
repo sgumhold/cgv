@@ -15,7 +15,7 @@ namespace cgv {
 				e.stream_out(std::cout);
 				std::cout << std::endl;
 			}
-			return true;
+			return false;
 		}
 
 		nui_node::nui_node(const std::string& _name, bool use_scale) 
