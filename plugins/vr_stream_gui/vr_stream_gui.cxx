@@ -307,8 +307,8 @@ void vr_stream_gui::construct_scene()
 	node->create_sphere_container(true, true);
 	construct_movable_boxes(node, 1.6f, 0.8f, 0.7f, 0.03f, 2000);
 	construct_labels(node);
-	node->ref_spheres()->add_sphere(vec3(0, 1, 1), rgba(1, 1, 0, 1), 0.1f);
-	node->ref_spheres()->add_sphere(vec3(0, 1, -1), rgba(1, 0, 1, 1), 0.15f);
+	node->ref_spheres()->add_sphere(vec3(-1, 0.5f, 0), rgba(1, 1, 0, 1), 0.1f);
+	node->ref_spheres()->add_sphere(vec3(1, 0.5f, 0), rgba(1, 0, 1, 1), 0.15f);
 
 	tools[0] = new cgv::nui::ray_tool("left ray", 0);
 	tools[1] = new cgv::nui::ray_tool("right ray", 1);
