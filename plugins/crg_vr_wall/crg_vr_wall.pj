@@ -7,7 +7,7 @@ addProjectDeps=[
 	"cgv_render", "cgv_gui", "cg_ext", "cgv_gl", "vr", "cg_vr", "crg_vr_view"];
 addProjectDirs=[
 	CGV_DIR."/libs/cgv_gl", 
-	CGV_DIR."/plugins/crg_vr_view"
+	CGV_DIR."/plugins"
 ];
 addIncDirs=[
 	CGV_DIR."/libs", 
