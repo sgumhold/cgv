@@ -138,6 +138,7 @@ protected:
 	void on_load_cb();
 	void on_device_select_cb();
 	void on_pitch_cb();
+	void on_clear_protocol_cb();
 };
 
 #include <cgv/config/lib_end.h>

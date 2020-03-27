@@ -494,6 +494,7 @@ void rgbd_control::create_gui()
 		add_gui("protocol_path", protocol_path, "directory", "w=150");
 		add_member_control(this, "write_async", rgbd_inp.protocol_write_async, "toggle");
 		add_member_control(this, "do_protocol", do_protocol, "toggle");
+		connect_copy(add_button("clear protocol")->click, rebind(this, &rgbd_control::on_clear_protocol_cb));
 		connect_copy(add_button("save")->click, rebind(this, &rgbd_control::on_save_cb));
 		connect_copy(add_button("save point cloud")->click, rebind(this, &rgbd_control::on_save_point_cloud_cb));
 		connect_copy(add_button("load")->click, rebind(this, &rgbd_control::on_load_cb));
@@ -941,6 +942,14 @@ void rgbd_control::on_pitch_cb()
 {
 	if (rgbd_inp.is_attached())
 		rgbd_inp.set_pitch(pitch);
+}
+
+void rgbd_control::on_clear_protocol_cb()
+{
+	//delete previosly recorded data
+	if (!rgbd_inp.is_started() || (rgbd_inp.is_started() && !do_protocol)){
+		rgbd_inp.clear_protocol(protocol_path);
+	}
 }
 
 #include "lib_begin.h"
