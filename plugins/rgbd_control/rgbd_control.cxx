@@ -267,14 +267,14 @@ void rgbd_control::draw(context& ctx)
 			pr.set_color_array(ctx, C);
 		if (pr.validate_and_enable(ctx)) {
 			glDrawArrays(GL_POINTS, 0, (GLsizei)P.size());
-			pr.disable(ctx);
+			pr.disable(ctx);	
 		}
 		ctx.mul_modelview_matrix(cgv::math::scale4<double>(2, 2, 2));
 		ctx.mul_modelview_matrix(cgv::math::translate4<double>(3, 0, 0));
 	}
 
 	if (M_POINTS.size() > 0) {
-		ctx.mul_modelview_matrix(cgv::math::translate4<double>(3, 0, 0));
+		ctx.mul_modelview_matrix(cgv::math::translate4<double>(1.5, 0, 0));
 		if (M_TRIANGLES.size() > 0) {
 			ctx.mul_modelview_matrix(cgv::math::scale4<double>(1.0/128, 1.0/128, -1.0/128));
 			shader_program& prog = rgbd_prog;
@@ -306,7 +306,7 @@ void rgbd_control::draw(context& ctx)
 				pr.disable(ctx);
 			}
 		}
-		ctx.mul_modelview_matrix(cgv::math::translate4<double>(-3, 0, 0));
+		ctx.mul_modelview_matrix(cgv::math::translate4<double>(-1.5, 0, 0));
 	}
 
 	// transform to image coordinates
