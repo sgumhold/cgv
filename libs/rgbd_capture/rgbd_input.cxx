@@ -196,8 +196,10 @@ void rgbd::rgbd_input::clear_protocol(const string& path)
 		while (file_handle) {
 			string fn = cgv::utils::file::find_name(file_handle);
 			string file_path = path + "/" + fn;
-			cout << "rgbd::rgbd_input::clear_protocol: removing " << file_path << "\n";
-			cgv::utils::file::remove(file_path);
+			if (!cgv::utils::file::find_directory(file_handle)) {
+				cout << "rgbd::rgbd_input::clear_protocol: removing " << file_path << "\n";
+				cgv::utils::file::remove(file_path);
+			}
 			file_handle = cgv::utils::file::find_next(file_handle);
 		}
 		file_handle = cgv::utils::file::find_first(path + "/stream_info." + ext + "*");
