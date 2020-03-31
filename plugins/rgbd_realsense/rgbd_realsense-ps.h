@@ -11,7 +11,7 @@
 #include "lib_begin.h"
 
 namespace rgbd {
-
+	/// realsense driver with post processing
 	class CGV_API rgbd_realsense_ps : public rgbd_realsense
 	{
 	public:
