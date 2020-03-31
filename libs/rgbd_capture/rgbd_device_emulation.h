@@ -5,6 +5,7 @@ using namespace std;
 
 namespace rgbd {
 
+/// The rgdb device emulator uses protocols created by rgbd_input for replay
 class rgbd_emulation : public rgbd_device
 {
 public:
@@ -52,7 +53,7 @@ private:
 	bool has_color_stream, has_depth_stream, has_ir_stream,has_mesh_stream;
 	bool device_is_running;
 	double last_color_frame_time, last_depth_frame_time, last_ir_frame_time, last_mesh_frame_time;
-	frame_type next_color_frame, next_depth_frame, next_ir_frame,next_mesh_frame;
+	//frame_type next_color_frame, next_depth_frame, next_ir_frame,next_mesh_frame;
 	size_t number_of_files;
 	emulator_parameters parameters;
 };
