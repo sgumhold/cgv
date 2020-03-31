@@ -235,40 +235,7 @@ namespace rgbd {
 	/// map a color frame to the image coordinates of the depth image
 	void rgbd_kinect2::map_color_to_depth(const frame_type& depth_frame, const frame_type& color_frame,
 		frame_type& warped_color_frame) const
-	{
-		/*
-		ICoordinateMapper* mapper;
-		camera->get_CoordinateMapper(&mapper);
-		vector<DepthSpacePoint> color2depth(depth_frame.width*depth_frame.height,DepthSpacePoint());
-
-		mapper->MapColorFrameToDepthSpace(depth_frame.width * depth_frame.height, (UINT16*)depth_frame.frame_data.data(), depth_frame.width * depth_frame.height, color2depth.data());
-
-		for (int colorIndex = 0; colorIndex < (depth_frame.width * depth_frame.height); ++colorIndex)
-		{
-			// default setting source to copy from the background pixel
-			static char zeros[8] = { 0,0,0,0,0,0,0,0 };
-			char* src = zeros;
-
-			DepthSpacePoint p = color2depth[colorIndex];
-
-			// Values that are negative infinity means it is an invalid color to depth mapping so we
-			// skip processing for this pixel
-			if (p.X != -std::numeric_limits<float>::infinity() && p.Y != -std::numeric_limits<float>::infinity())
-			{
-				int depthX = static_cast<int>(p.X + 0.5f);
-				int depthY = static_cast<int>(p.Y + 0.5f);
-
-				if ((depthX >= 0 && depthX < depth_frame.width) && (depthY >= 0 && depthY < depth_frame.width))
-				{
-					src = m_pColorRGBX + colorIndex;
-				}
-			}
-
-			// write output
-			m_pOutputRGBX[colorIndex] = *pSrc;
-		}
-		*/
-		
+	{		
 		ICoordinateMapper* mapper;
 		camera->get_CoordinateMapper(&mapper);
 		vector<ColorSpacePoint> depth2color(depth_frame.width*depth_frame.height, ColorSpacePoint());     // Maps depth pixels to rgb pixels
