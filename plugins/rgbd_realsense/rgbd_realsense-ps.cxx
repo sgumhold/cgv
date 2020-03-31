@@ -347,7 +347,7 @@ namespace rgbd {
 					break;
 				case RS2_FORMAT_Y16:
 					stream.nr_bits_per_pixel = 16;
-					stream.pixel_format = PF_CONFIDENCE; //using PF_CONFIDENCE here because it is the only color stream format supporting 16 bit grayscale images
+					stream.pixel_format = PF_CONFIDENCE; //using PF_CONFIDENCE here because it is the only color stream pixel format supporting 16 bit grayscale images
 					valid_format = true;
 					break;
 				}
@@ -360,7 +360,7 @@ namespace rgbd {
 			}
 			if ((is & IS_DEPTH) &&
 				(profile.stream_type() == RS2_STREAM_DEPTH) && profile.is<rs2::video_stream_profile>()) {
-				//add ir stream formats
+				//add depth stream formats
 				rs2::video_stream_profile video_stream = static_cast<rs2::video_stream_profile>(profile);
 				stream_format stream;
 				stream.fps = (float) profile.fps();
