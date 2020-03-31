@@ -14,13 +14,13 @@ namespace rgbd {
 	class CGV_API rgbd_kinect2 : public rgbd_device
 	{
 	public:
-		/// create a detached kinect CLNUI device object
+		/// create a detached kinect device object
 		rgbd_kinect2();
-		/// attach to the kinect device of the given serial
+		/// attach to the kinect device of the given serial. Only "default-kinect2" is accessible due to API limitations
 		bool attach(const std::string& serial);
 		/// return whether device object is attached to a kinect device
 		bool is_attached() const;
-		/// detach from serial (done automatically in constructor
+		/// detach from serial (done automatically in constructor)
 		bool detach();
 		/// check whether the device supports the given combination of input streams
 		bool check_input_stream_configuration(InputStreams is) const;
@@ -53,7 +53,7 @@ namespace rgbd {
 	class CGV_API rgbd_kinect2_driver : public rgbd_driver
 	{
 	public:
-		/// construct CLNUI driver
+		/// construct driver
 		rgbd_kinect2_driver();
 		/// destructor
 		~rgbd_kinect2_driver();
