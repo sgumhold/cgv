@@ -9,13 +9,6 @@
 using namespace std;
 using namespace chrono;
 
-struct stream_handles
-{
-	HANDLE hColorStreamHandle;
-	HANDLE hInfraredStreamHandle;
-	HANDLE hDepthStreamHandle;
-	stream_handles() : hColorStreamHandle(NULL), hInfraredStreamHandle(NULL), hDepthStreamHandle(NULL) {}
-};
 
 namespace rgbd {
 
@@ -293,7 +286,7 @@ namespace rgbd {
 		return true;
 	}
 
-	/// construct CLNUI driver
+	/// construct driver
 	rgbd_kinect2_driver::rgbd_kinect2_driver()
 	{
 	}
