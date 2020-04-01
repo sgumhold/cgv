@@ -153,6 +153,17 @@ namespace cgv {
 		{
 			rs = &_rs;
 		}
+		/// access to render style
+		const render_style* renderer::get_style_ptr() const
+		{
+			if (rs)
+				return rs;
+			if (default_render_style)
+				return default_render_style;
+			default_render_style = create_render_style();
+			return default_render_style;
+		}
+
 		bool renderer::init(context& ctx)
 		{
 			if (!default_render_style) {

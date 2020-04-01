@@ -127,6 +127,7 @@ void gl_point_cloud_drawable::draw_box(cgv::render::context& ctx, const Box& box
 	tmp_use_transformation = box_wire_style.use_group_transformation;
 	box_wire_style.use_group_color = false;
 	box_wire_style.use_group_transformation = false;
+	bw_renderer.set_render_style(box_wire_style);
 	bw_renderer.set_box_array(ctx, &box, 1);
 	bw_renderer.set_color_array(ctx, &clr, 1);
 	bw_renderer.render(ctx, 0, 1);
