@@ -9,7 +9,7 @@
 
 class CGV_API ICP : public point_cloud_types{
 public:
-	point_cloud *sourceCloud;
+	const point_cloud *sourceCloud;
 	const point_cloud *targetCloud;
 	int maxIterations;
 	int numRandomSamples;
@@ -17,16 +17,14 @@ public:
 
 	ICP();
 	~ICP();
-	void set_source_cloud(point_cloud &inputCloud);
+	void set_source_cloud(const point_cloud &inputCloud);
 	void set_target_cloud(const point_cloud &inputCloud);
 	void set_iterations(int Iter);
 	void set_num_random(int NR);
 	void set_eps(float e);
-	void reg_icp();
-	void get_mid_point(const point_cloud &input, point_cloud_types::Pnt &mid_point);
-	void rotate(point_cloud_types::Pnt* p, float* rotationMatrix, point_cloud_types::Pnt* result);
-	void translate(point_cloud_types::Pnt* p, float* translationVector, point_cloud_types::Pnt* result);
-	float error(point_cloud_types::Pnt* ps, point_cloud_types::Pnt* pd, float* r, float* t);
+	void reg_icp(Mat &rotation_m, Dir &translation_v);
+	void get_center_point(const point_cloud &input, Pnt &mid_point);
+	float error(Pnt &ps, Pnt &pd, Mat &r, Dir& t);
 	void print_rotation(float *rotationMatrix);
 	void print_translation(float *translation);
 };
