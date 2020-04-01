@@ -74,9 +74,10 @@ namespace rgbd {
 		if (is_running()) {
 			return true;
 		}
-
+		//enable high precision for Intel RealSense D435
 		if (strcmp(dev->get_info(RS2_CAMERA_INFO_NAME), "Intel RealSense D435") == 0)
 		{
+			//advanced mode is required for loading presets
 			auto advanced_mode_dev = dev->as<rs400::advanced_mode>();
 			if (!advanced_mode_dev.is_enabled()) advanced_mode_dev.toggle_advanced_mode(true);
 			advanced_mode_dev.load_json(highprec_preset);
@@ -255,6 +256,7 @@ namespace rgbd {
 						if (next_frame.get_frame_number() == last_depth_frame_number) return false;
 						stream = &depth_stream;
 						last_depth_frame_number = next_frame.get_frame_number();
+						//post processing pipeline: decimation -> depth2disparity -> spatial -> temporal -> disparity2depth
 						next_frame = dec_filter.process(next_frame);
 						next_frame = depth2disparity_transform.process(next_frame);
 						next_frame = spatial_filter.process(next_frame);
@@ -310,7 +312,7 @@ namespace rgbd {
 			std::cerr << "rgbd_realsense::query_stream_formats:  device is not attached!\n";
 			return;
 		}
-		//find stream formats by quering the sensors
+		//find stream formats by querying the sensors
 		auto sensors = dev->query_sensors();
 		vector<rs2::stream_profile> stream_profiles;
 		for (auto sensor : sensors) {
@@ -345,7 +347,7 @@ namespace rgbd {
 					break;
 				case RS2_FORMAT_Y16:
 					stream.nr_bits_per_pixel = 16;
-					stream.pixel_format = PF_CONFIDENCE;
+					stream.pixel_format = PF_CONFIDENCE; //using PF_CONFIDENCE here because it is the only color stream pixel format supporting 16 bit grayscale images
 					valid_format = true;
 					break;
 				}
@@ -358,7 +360,7 @@ namespace rgbd {
 			}
 			if ((is & IS_DEPTH) &&
 				(profile.stream_type() == RS2_STREAM_DEPTH) && profile.is<rs2::video_stream_profile>()) {
-				//add ir stream formats
+				//add depth stream formats
 				rs2::video_stream_profile video_stream = static_cast<rs2::video_stream_profile>(profile);
 				stream_format stream;
 				stream.fps = (float) profile.fps();

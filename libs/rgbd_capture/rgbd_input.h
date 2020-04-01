@@ -62,6 +62,8 @@ public:
 	void enable_protocol(const std::string& path);
 	/// disable protocolation
 	void disable_protocol();
+	/// delete recorded protocol
+	void clear_protocol(const std::string& path);
 	//@}
 
 	/**@name base control*/

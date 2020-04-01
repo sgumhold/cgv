@@ -13,8 +13,6 @@
 #include <cgv/type/standard_types.h>
 #include <cgv/math/ftransform.h>
 #include <cgv/math/svd.h>
-#include <cgv_gl/surfel_renderer.h>
-#include <cgv_gl/gl/mesh_render_info.h>
 
 using namespace std;
 using namespace cgv::base;
@@ -25,67 +23,6 @@ using namespace cgv::data;
 using namespace cgv::utils;
 using namespace cgv::render;
 using namespace rgbd;
-
-
-/// helper object for parsing dynamic sized frames of type PF_POINTS_AND_TRIANGLES. 
-struct mesh_data_view {
-	//pointers to continous sequences of objects
-	cgv::render::render_types::vec3 *points;
-	cgv::render::render_types::ivec3 *triangles;
-	cgv::render::render_types::vec2 *uv;
-	//number of objects
-	size_t points_size, triangles_size, uv_size;
-
-	mesh_data_view(char* data, size_t size) {
-		this->parse_data(data, size);
-	}
-	
-	bool is_valid() {
-		return points != nullptr;
-	}
-
-	bool parse_data(char* data, const size_t size) {
-		auto lambda = [&]() {
-			if (size < sizeof(uint32_t)) {
-				return false;
-			}
-			this->points_size = 0;
-			this->triangles_size = 0;
-			this->uv_size = 0;
-			//how many points the mesh has
-			memcpy(&this->points_size, data, sizeof(uint32_t));
-			size_t offset = sizeof(uint32_t);
-			this->points = reinterpret_cast<cgv::render::render_types::vec3*>(data + offset);
-
-			///the number of triangles is located behind the points array
-			offset += this->points_size * sizeof(cgv::render::render_types::vec3);
-			if (size <= offset + sizeof(uint32_t)) {
-				return (size == offset); //in this case, data only has points
-			}
-			memcpy(&this->triangles_size, data + offset, sizeof(uint32_t));
-			offset += sizeof(uint32_t);
-			this->triangles = reinterpret_cast<cgv::render::render_types::ivec3*>(data + offset);
-
-			///the number of texture coordinates is located behind the triangles array
-			if (size <= offset + sizeof(uint32_t)) {
-				return (size == offset); //true if data only has points and triangles
-			}
-			offset += this->triangles_size * 3 * sizeof(uint32_t);
-			memcpy(&this->uv_size, data + offset, sizeof(uint32_t));
-			offset += sizeof(uint32_t);
-			this->uv = reinterpret_cast<cgv::render::render_types::vec2*>(data + offset);
-			//final size
-			offset += sizeof(cgv::render::render_types::vec2)*this->uv_size;
-			return size >= offset;
-		};
-		
-		if (!lambda()) {
-			points = nullptr;
-		}
-		return true;
-	}
-};
-
 
 
 std::string get_stream_format_enum(const std::vector<rgbd::stream_format>& sfs)
@@ -330,14 +267,14 @@ void rgbd_control::draw(context& ctx)
 			pr.set_color_array(ctx, C);
 		if (pr.validate_and_enable(ctx)) {
 			glDrawArrays(GL_POINTS, 0, (GLsizei)P.size());
-			pr.disable(ctx);
+			pr.disable(ctx);	
 		}
 		ctx.mul_modelview_matrix(cgv::math::scale4<double>(2, 2, 2));
 		ctx.mul_modelview_matrix(cgv::math::translate4<double>(3, 0, 0));
 	}
 
 	if (M_POINTS.size() > 0) {
-		ctx.mul_modelview_matrix(cgv::math::translate4<double>(3, 0, 0));
+		ctx.mul_modelview_matrix(cgv::math::translate4<double>(1.5, 0, 0));
 		if (M_TRIANGLES.size() > 0) {
 			ctx.mul_modelview_matrix(cgv::math::scale4<double>(1.0/128, 1.0/128, -1.0/128));
 			shader_program& prog = rgbd_prog;
@@ -369,7 +306,7 @@ void rgbd_control::draw(context& ctx)
 				pr.disable(ctx);
 			}
 		}
-		ctx.mul_modelview_matrix(cgv::math::translate4<double>(-3, 0, 0));
+		ctx.mul_modelview_matrix(cgv::math::translate4<double>(-1.5, 0, 0));
 	}
 
 	// transform to image coordinates
@@ -557,6 +494,7 @@ void rgbd_control::create_gui()
 		add_gui("protocol_path", protocol_path, "directory", "w=150");
 		add_member_control(this, "write_async", rgbd_inp.protocol_write_async, "toggle");
 		add_member_control(this, "do_protocol", do_protocol, "toggle");
+		connect_copy(add_button("clear protocol")->click, rebind(this, &rgbd_control::on_clear_protocol_cb));
 		connect_copy(add_button("save")->click, rebind(this, &rgbd_control::on_save_cb));
 		connect_copy(add_button("save point cloud")->click, rebind(this, &rgbd_control::on_save_point_cloud_cb));
 		connect_copy(add_button("load")->click, rebind(this, &rgbd_control::on_load_cb));
@@ -732,7 +670,7 @@ void rgbd_control::timer_event(double t, double dt)
 									M_TRIANGLES.resize(mesh.triangles_size);
 									std::copy(mesh.triangles, mesh.triangles + mesh.triangles_size, M_TRIANGLES.data());
 									M_UV.resize(mesh.uv_size);
-									std::copy(mesh.uv, mesh.uv+mesh.uv_size, M_UV.data());
+									std::copy(mesh.uv, mesh.uv + mesh.uv_size, M_UV.data());
 								}
 							}
 						}
@@ -1004,6 +942,14 @@ void rgbd_control::on_pitch_cb()
 {
 	if (rgbd_inp.is_attached())
 		rgbd_inp.set_pitch(pitch);
+}
+
+void rgbd_control::on_clear_protocol_cb()
+{
+	//delete previosly recorded data
+	if (!rgbd_inp.is_started() || (rgbd_inp.is_started() && !do_protocol)){
+		rgbd_inp.clear_protocol(protocol_path);
+	}
 }
 
 #include "lib_begin.h"
