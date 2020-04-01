@@ -177,7 +177,7 @@ namespace cgv { // @<
 			/// otherwise keep track of enabled arrays
 			std::set<int> enabled_attribute_arrays;
 			/// default render style
-			render_style* default_render_style;
+			mutable render_style* default_render_style;
 			/// current render style, can be set by user
 			const render_style* rs;
 			/// pointer to indices in CPU memory
@@ -189,6 +189,8 @@ namespace cgv { // @<
 			/// count of indices
 			size_t index_count;
 		protected:
+			/// access to render style
+			const render_style* get_style_ptr() const;
 			/// if attribue array manager is set, use it for attribute management
 			attribute_array_manager* aam_ptr;
 			/// return whether attributes persist after a call to disable
@@ -199,7 +201,7 @@ namespace cgv { // @<
 		protected:
 			/// access to style
 			template <typename T>
-			const T& get_style() const { return *static_cast<const T*>(rs);  }
+			const T& get_style() const { return *static_cast<const T*>(get_style_ptr());  }
 			/// track whether color attribute is defined
 			mutable bool has_colors;
 			/// track whether position attribute is defined
