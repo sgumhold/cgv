@@ -374,6 +374,10 @@ public:
 	void registrationPointCloud() {
 		ICP *icp = new ICP();
 		if (recorded_pcs.size() > 1) {
+			cgv::math::fmat<float, 3, 3> r;
+			cgv::math::fvec<float, 3> t;
+			r.zeros();
+			t.zeros();
 			point_cloud *sourcePC = new point_cloud();
 			point_cloud *targetPC = new point_cloud();
 			copy_pointcloud(recorded_pcs.back(), *sourcePC);
@@ -382,7 +386,7 @@ public:
 			icp->set_target_cloud(*targetPC);
 			icp->set_iterations(5);
 			icp->set_eps(1e-6);
-			icp->reg_icp();
+			icp->reg_icp(r, t);
 			intermediate_pc.clear();
 			pc2vertex(*targetPC, intermediate_pc);
 		}
