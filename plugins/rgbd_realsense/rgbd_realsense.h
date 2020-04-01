@@ -66,6 +66,7 @@ namespace rgbd {
 		double depth_scale;
 	};
 
+	/// driver for intel realsense cameras compatible with RealSense SDK 2.0
 	class CGV_API rgbd_realsense_driver : public rgbd_driver
 	{
 	public:

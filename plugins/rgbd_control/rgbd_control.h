@@ -83,9 +83,9 @@ protected:
 	std::vector<rgba8> C, C2;
 
 	/// mesh
-	std::vector<ivec3> M_TRIANGLES;
-	std::vector<vec3> M_POINTS;
-	std::vector<vec2> M_UV;
+	std::vector<cgv::render::render_types::ivec3> M_TRIANGLES;
+	std::vector<cgv::render::render_types::vec3> M_POINTS;
+	std::vector<cgv::render::render_types::vec2> M_UV;
 
 	/// processing parameters
 	bool remap_color;
@@ -138,6 +138,7 @@ protected:
 	void on_load_cb();
 	void on_device_select_cb();
 	void on_pitch_cb();
+	void on_clear_protocol_cb();
 };
 
 #include <cgv/config/lib_end.h>

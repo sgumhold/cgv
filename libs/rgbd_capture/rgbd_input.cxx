@@ -184,6 +184,33 @@ void rgbd_input::disable_protocol()
 	protocol_flags = 0;
 }
 
+void rgbd::rgbd_input::clear_protocol(const string& path)
+{
+	cout << "rgbd::rgbd_input::clear_protocol: removing old protocol\n";
+	cgv::utils::file::remove(path + "/emulator_parameters");
+	static const char* exts[] = {
+	"ir", "rgb", "bgr", "rgba", "bgra", "byr", "dep", "d_p", "p_tri"
+	};
+	for (const char* ext : exts) {
+		void* file_handle = cgv::utils::file::find_first(path + "/kinect_*." + ext + "*");
+		while (file_handle) {
+			string fn = cgv::utils::file::find_name(file_handle);
+			string file_path = path + "/" + fn;
+			if (!cgv::utils::file::find_directory(file_handle)) {
+				cout << "rgbd::rgbd_input::clear_protocol: removing " << file_path << "\n";
+				cgv::utils::file::remove(file_path);
+			}
+			file_handle = cgv::utils::file::find_next(file_handle);
+		}
+		file_handle = cgv::utils::file::find_first(path + "/stream_info." + ext + "*");
+		if (file_handle) {
+			string fn = cgv::utils::file::find_name(file_handle);
+			string file_path = path + "/" + fn;
+			cout << "rgbd::rgbd_input::clear_protocol: removing " << file_path << "\n";
+			cgv::utils::file::remove(file_path);
+		}
+	}
+}
 
 bool rgbd_input::set_pitch(float y)
 {
