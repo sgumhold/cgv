@@ -512,6 +512,7 @@ void gl_implicit_surface_drawable_base::draw_implicit_surface(context& ctx)
 		if (mesh.get_nr_faces() > 0) {
 			mri.construct(ctx, mesh);
 			mri.bind(ctx, ctx.ref_surface_shader_program(false), true);
+			mri.bind_wireframe(ctx, ctx.ref_default_shader_program(), true);
 		}
 		outofdate = false;
 	}
