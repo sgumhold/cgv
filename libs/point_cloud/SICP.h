@@ -58,5 +58,7 @@ public:
 	void save_iter(std::string pathToFile);
 	void division_pc(point_cloud& input, double d);
 	void cholesky_decomposition(int matrix[][100], int n);
+	void copy_pc(const point_cloud& input, point_cloud& output);
+	void add_pc(point_cloud& input, point_cloud& output);
 };
 #include <cgv/config/lib_end.h>
