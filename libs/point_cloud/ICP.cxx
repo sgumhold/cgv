@@ -37,6 +37,7 @@ void ICP::set_eps(float e) {
 
 ///output the rotation matrix and translation vector
 void ICP::reg_icp(Mat& rotation_mat, Dir& translation_vec) {
+	point_cloud* output = new point_cloud();
 	Pnt source_center;
 	Pnt target_center;
 	source_center.zeros();
@@ -48,66 +49,67 @@ void ICP::reg_icp(Mat& rotation_mat, Dir& translation_vec) {
 
 	get_center_point(*targetCloud, target_center);
 	get_center_point(*sourceCloud, source_center);
-	/// initialize the translation vector
-	translation_vec.zeros();
-	/// initialize the rotation matrix
-	rotation_mat.zeros();
-
 	Pnt p;
-	Pnt x;
 
 	float cost = 1.0;
+	///define min as Infinity
+	float min = DBL_MAX;
 	std::srand(std::time(0));
-
-	point_cloud_types::Pnt qs;
-	point_cloud_types::Pnt qd;
 
 	Mat fA(0.0f);             // this initializes fA to matrix filled with zeros
 
 	cgv::math::mat<float> U, V;
 	cgv::math::diag_mat<float> Sigma;
-	
-	for (int iter = 0; iter < maxIterations && abs(cost) > eps; iter++)
+	U.zeros();
+	V.zeros();
+	Sigma.zeros();
+	for (int iter = 0; iter < maxIterations && abs(cost) > eps /*&& abs(cost) < min*/; iter++)
 	{
 		cost = 0.0;
-		U.zeros();
-		V.zeros();
-		Sigma.zeros();
-		get_center_point(*sourceCloud, source_center);
-
-		for (int i = 0; i < numRandomSamples; i++)
+		//get_center_point(*sourceCloud, source_center);
+		point_cloud* P = new point_cloud();
+		point_cloud* Q = new point_cloud();
+		P->resize(sourceCloud->get_nr_points());
+		Q->resize(targetCloud->get_nr_points());
+		fA.zeros();
+		for (int i = 0; i < sourceCloud->get_nr_points(); i++)
 		{
 			int randSample = std::rand() % sourceCloud->get_nr_points();
 			/// sample the source point cloud
-			p = sourceCloud->pnt(randSample);
+			P->pnt(i) = sourceCloud->pnt(randSample);
 			/// get the closest point in the target point cloud
-			ann_tree::Idx Id = tree->find_closest(p);
-
-			qs = p - source_center;
-			qd = sourceCloud->pnt(Id) - target_center;
-
-			fA += Mat(sourceCloud->pnt(i), targetCloud->pnt(i));
-			
-			cost += error(x, p, rotation_mat, translation_vec);
+			Q->pnt(i) = targetCloud->pnt(tree->find_closest(rotation_mat * P->pnt(i) + translation_vec));
+			//Q->pnt(i) = rotation_mat * targetCloud->pnt(tree->find_closest(P->pnt(i))) + translation_vec;
+			fA += Mat(rotation_mat * (P->pnt(i) - source_center), Q->pnt(i) - target_center);
 		}
 		///cast fA to A
 		cgv::math::mat<float> A(3, 3, &fA(0, 0));
 		cgv::math::svd(A, U, Sigma, V);
 		Mat fU(3, 3, &U(0, 0)), fV(3, 3, &V(0, 0));
-		rotation_mat = fU * cgv::math::transpose(fV);
-		///calculate rotation matrix and translation vector
-		point_cloud_types::Pnt t;
-		t.zeros();
-		t = rotation_mat * source_center;
-		translation_vec = target_center - t;
-
-		//update the point cloud, the source point cloud will be changed in updating
-		/*for (unsigned int i = 0; i < sourceCloud->get_nr_points(); i++)
-		{
-			rotate(&sourceCloud->pnt(i), rotation_mat, &p);
-			translate(&p, translation_vec, &sourceCloud->pnt(i));
-		}*/
+		///get new R and t
+		Mat rotation_update_mat = fU * cgv::math::transpose(fV);
+		Dir translation_update_vec = target_center - rotation_update_mat * (rotation_mat * source_center + translation_vec);
+		///calculate error function E(R,t)
+		for (int i = 0; i < P->get_nr_points(); i++){
+			///transform Pi to R*Pi + t
+			P->pnt(i) = rotation_mat * P->pnt(i) + translation_vec;
+			///the new rotation matrix: rotation_update_mat
+			cost += error(Q->pnt(i), P->pnt(i), rotation_update_mat, translation_update_vec);
+		}
+		cost /= sourceCloud->get_nr_points();
+		///judge if cost is decreasing, and is larger than eps. If so, update the R and t, otherwise stop and output R and t
+		if (min < abs(cost)) {
+			break;
+		}
+		else if (min >= abs(cost) && abs(cost) > eps) {
+			///update the R and t
+			rotation_mat = rotation_update_mat * rotation_mat;
+			translation_vec = rotation_update_mat * translation_vec + translation_update_vec;
+			min = abs(cost);
+		}
 	}
+	print_rotation(rotation_mat);
+	print_translation(translation_vec);
 	delete tree;
 }
 
@@ -122,9 +124,8 @@ float ICP::error(Pnt &ps, Pnt &pd, Mat &r, Dir &t)
 {
 	Pnt res;
 	res = r * pd;
-	float err = pow(ps.x() - res.x() - t[0], 2.0);
-	err += pow(ps.y() - res.y() - t[1], 2.0);
-	err += pow(ps.z() - res.z() - t[2], 2.0);
+	float err = pow(ps.x() - res.x() - t[0], 2.0) + pow(ps.y() - res.y() - t[1], 2.0) + pow(ps.z() - res.z() - t[2], 2.0);
+	err = sqrt(err);
 	return err;
 }
 ///print rotation matrix

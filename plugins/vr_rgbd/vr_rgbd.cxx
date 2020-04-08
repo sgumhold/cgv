@@ -345,9 +345,12 @@ public:
 			temp.point[0] = input.pnt(i).x();
 			temp.point[1] = input.pnt(i).y();
 			temp.point[2] = input.pnt(i).z();
-			temp.color[0] = input.clr(i)[0];
+			/*temp.color[0] = input.clr(i)[0];
 			temp.color[1] = input.clr(i)[1];
-			temp.color[2] = input.clr(i)[2];
+			temp.color[2] = input.clr(i)[2];*/
+			temp.color[0] = 0.5;
+			temp.color[1] = 0.5;
+			temp.color[2] = 0.0;
 			output.push_back(temp);
 		}
 	}
@@ -373,24 +376,113 @@ public:
 	}
 	void registrationPointCloud() {
 		ICP *icp = new ICP();
+		ICP* icp2 = new ICP();
 		if (recorded_pcs.size() > 1) {
 			cgv::math::fmat<float, 3, 3> r;
 			cgv::math::fvec<float, 3> t;
-			r.zeros();
-			t.zeros();
+			//r.zeros();
+			//t.zeros();
 			point_cloud *sourcePC = new point_cloud();
 			point_cloud *targetPC = new point_cloud();
-			copy_pointcloud(recorded_pcs.back(), *sourcePC);
-			copy_pointcloud(intermediate_pc, *targetPC);
+			copy_pointcloud(recorded_pcs.front(), *targetPC);
+			copy_pointcloud(intermediate_pc, *sourcePC);
 			icp->set_source_cloud(*sourcePC);
 			icp->set_target_cloud(*targetPC);
 			icp->set_iterations(5);
-			icp->set_eps(1e-6);
+			icp->set_eps(1e-8);
 			icp->reg_icp(r, t);
+			for (int i=0;i<sourcePC->get_nr_points();i++)
+				sourcePC->pnt(i) = sourcePC->pnt(i) * r + t;
 			intermediate_pc.clear();
-			pc2vertex(*targetPC, intermediate_pc);
+			//intermediate_pc.resize(outputPC->get_nr_points());
+			pc2vertex(*sourcePC, intermediate_pc);
+			std::cout << "size: " << recorded_pcs.size() << " "<< intermediate_pc.size()<<std::endl;
+
+			cgv::math::fmat<float, 3, 3> r2;
+			cgv::math::fvec<float, 3> t2;
+			//r.zeros();
+			//t.zeros();
+			point_cloud* sourcePC2 = new point_cloud();
+			point_cloud* targetPC2 = new point_cloud();
+			copy_pointcloud(recorded_pcs.front(), *sourcePC2);
+			copy_pointcloud(intermediate_pc, *targetPC2);
+			icp->set_source_cloud(*sourcePC2);
+			icp->set_target_cloud(*targetPC2);
+			icp->set_iterations(5);
+			icp->set_eps(1e-8);
+			icp->reg_icp(r2, t2);
+			std::cout << "size: " << recorded_pcs.size() << " " << intermediate_pc.size() << std::endl;
+		}		
+	}
+
+	void generate_rdm_pc(point_cloud &pc1, point_cloud& pc2) {
+		mat3 rotate_m;
+		rotate_m.identity();
+		/*rotate_m.set_col(0, vec3(1, 0, 0));
+		rotate_m.set_col(1, vec3(0, 0.7071f, 0.7071f));
+		rotate_m.set_col(2, vec3(0, -0.7071f, 0.7071f));*/
+		rotate_m.set_col(0, vec3(1, 0, 0));
+		rotate_m.set_col(1, vec3(0, 0, 1));
+		rotate_m.set_col(2, vec3(0, -1, 0));
+		for (int i = 0; i < 100; i++) {
+			point_cloud_types::Pnt origin;
+			origin.zeros();
+			origin.x() = 1024 * rand() / (RAND_MAX + 1.0f);
+			origin.y() = 1024 * rand() / (RAND_MAX + 1.0f);
+			origin.z() = 1024 * rand() / (RAND_MAX + 1.0f);
+			/*origin.x() = 2.0 * i;
+			origin.y() = 6.0 * i;
+			origin.z() = 4.0;*/
+			pc1.pnt(i) = origin;
+			pc2.pnt(i) = origin;
+			//pc2.pnt(i) = rotate_m * origin;
+			pc2.pnt(i).z() += 87;
 		}
-		
+	}
+
+	void test_svd() {
+		cgv::math::fmat<float,4,5> fA(0.0);
+		fA.set_col(0, (1.0, 0.0, 0.0, 0.0));
+		fA.set_col(1, (0.0, 0.0, 0.0, 2.0));
+		fA.set_col(2, (0.0, 3.0, 0.0, 0.0));
+		fA.set_col(3, (0.0, 0.0, 0.0, 0.0));
+		fA.set_col(4, (2.0, 0.0, 0.0, 0.0));
+		cgv::math::mat<float> U, V;
+		cgv::math::diag_mat<float> Sigma;
+		U.zeros();
+		V.zeros();
+		Sigma.zeros();
+		cgv::math::mat<float> A(4, 5, &fA(0, 0));
+		cgv::math::svd(A, U, Sigma, V);
+		cgv::math::fmat<float, 4, 4> fU(4, 4, &U(0, 0));
+		cgv::math::fmat<float, 5, 5> fV(5, 5, &V(0, 0));
+		std::cout << "U: " << std::endl;
+		std::cout << fU << std::endl;
+		std::cout << "V: " << std::endl;
+		std::cout << fV << std::endl;
+	}
+
+	void  test_icp() {
+		test_svd();
+		ICP* icp = new ICP();
+		cgv::math::fmat<float, 3, 3> r;
+		cgv::math::fvec<float, 3> t;
+		r.identity();
+		t.zeros();
+		point_cloud* sourcePC = new point_cloud();
+		point_cloud* targetPC = new point_cloud();
+		sourcePC->resize(100);
+		targetPC->resize(100);
+		generate_rdm_pc(*sourcePC, *targetPC);
+		//std::cout << "origin: " << targetPC->pnt(3) << " " << sourcePC->pnt(3) << std::endl;
+		icp->set_source_cloud(*sourcePC);
+		icp->set_target_cloud(*targetPC);
+		//icp->set_source_cloud(*targetPC);
+		//icp->set_target_cloud(*sourcePC);
+		icp->set_iterations(100);
+		icp->set_num_random(100);
+		icp->set_eps(1e-8);
+		icp->reg_icp(r, t);
 	}
 	void construct_TSDtree()
 	{
@@ -417,7 +509,8 @@ public:
 				// copy computed point cloud
 				if (record_this_frame(t)) {
 					if (registration_started) {
-						registrationPointCloud();
+						//registrationPointCloud();
+						test_icp();
 					}
 					recorded_pcs.push_back(intermediate_pc);
 					if (save_pointcloud){

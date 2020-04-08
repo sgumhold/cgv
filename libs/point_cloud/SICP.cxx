@@ -42,7 +42,8 @@ int SICP::perform_sparceICP()
     Mat rotation_mat;
     Dir translation_vec;
     ///Maybe we need to overload operator =
-    movingCloud = sourceCloud;
+    //movingCloud = sourceCloud;
+    copy_pc(*sourceCloud, *movingCloud);
     //movingNormals = firstNormals;
 
     //Beginning of the algorithm itself
@@ -230,8 +231,8 @@ void SICP::rigid_transform_point_to_plane(point_cloud& a, point_cloud& b, point_
     }
 
     //Solving linear system
-    LDLT<cgv::math::fmat<double, 6, 6>> ldlt(leftMember);
-    cgv::math::fmat<double, 6, 1> solution = ldlt.solve(rightMember);
+    /*LDLT<cgv::math::fmat<double, 6, 6>> ldlt(leftMember);
+    cgv::math::fmat<double, 6, 1> solution = ldlt.solve(rightMember);*/
 
     //Expressing the resulting transformation
     /*RotMatrix rotation = (AngleAxisd(AngleAxisd::Scalar(solution(0, 0)), Vector3d::UnitX()) * AngleAxisd(AngleAxisd::Scalar(solution(1, 0)), Vector3d::UnitY()) * AngleAxisd(AngleAxisd::Scalar(solution(2, 0)), Vector3d::UnitZ())).matrix();
@@ -309,7 +310,7 @@ void SICP::division_pc(point_cloud& input, double d) {
 }
 ///Here is a demo of Cholesky_Decomposition, still needs to be improved
 void SICP::cholesky_decomposition(int matrix[][100], int n) {
-    int lower[n][n];
+    int lower[100][100];
     memset(lower, 0, sizeof(lower));
 
     // Decomposing a matrix into Lower Triangular 
@@ -349,5 +350,11 @@ void SICP::cholesky_decomposition(int matrix[][100], int n) {
         for (int j = 0; j < n; j++)
             std::cout << std::setw(6) << lower[j][i] << "\t";
         std::cout << std::endl;
+    }
+}
+
+void SICP::copy_pc(const point_cloud& input, point_cloud& output) {
+    for (int i = 0; i < input.get_nr_points(); i++) {
+        output.pnt(i) = input.pnt(i);
     }
 }
