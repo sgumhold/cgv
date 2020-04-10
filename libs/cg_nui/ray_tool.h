@@ -52,9 +52,11 @@ namespace cgv {
 			static int mri_ref_count;
 			static cgv::render::mesh_render_info mri;
 			int32_t controller_index;
+			bool pick_all;
 			float ray_length;
 			cgv::render::rounded_cone_render_style rcrs;
 			cgv::render::sphere_render_style srs;
+			cgv::render::box_wire_render_style wbrs;
 		public:
 			ray_tool(const std::string& _name, int32_t _controller_index = 1);
 			std::string get_type_name() { return "ray_tool"; }

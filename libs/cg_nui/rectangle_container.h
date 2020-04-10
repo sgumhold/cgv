@@ -27,7 +27,7 @@ namespace cgv {
 				const vec3& rectangle_center, const vec2& rectangle_extent, const quat& rectangle_rotation,
 				const vec3& ray_start, const vec3& ray_direction, contact_info::contact& C, contact_info::contact* C2_ptr = 0);
 		public:
-			rectangle_container(bool _use_colors, bool _use_orientations, bool _use_texcoords);
+			rectangle_container(nui_node* _parent, bool _use_colors, bool _use_orientations, bool _use_texcoords);
 			std::string get_primitive_type() const;
 			uint32_t add_rectangle(const vec3& center, const vec2& extent);
 			uint32_t add_rectangle(const vec3& center, const vec2& extent, const quat& orientation);
@@ -41,7 +41,7 @@ namespace cgv {
 			void set_texture(std::shared_ptr<cgv::render::texture> _tex) { tex = _tex; }
 
 			quat get_rotation(uint32_t i) const { return use_orientations ? orientations[i] : quat(1.0f, 0.0f, 0.0f, 0.0f); }
-			box3 compute_bounding_box() const;
+			box3 get_bounding_box(uint32_t i) const;
 			void compute_closest_point(contact_info& info, const vec3& pos);
 			void compute_closest_oriented_point(contact_info& info, const vec3& pos, const vec3& normal, float orientation_weight);
 			void compute_first_intersection(contact_info& info, const vec3& start, const vec3& direction);

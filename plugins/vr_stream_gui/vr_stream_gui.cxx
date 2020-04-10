@@ -294,13 +294,13 @@ vr_stream_gui::vr_stream_gui()
 
 void vr_stream_gui::construct_scene()
 {
-	scene = new cgv::nui::nui_node("scene", false);
-	cgv::nui::nui_node* lab = new cgv::nui::nui_node("lab", false);
+	scene = new cgv::nui::nui_node("scene");
+	cgv::nui::nui_node* lab = new cgv::nui::nui_node("lab");
 	scene->append_child(lab);
 	lab->create_box_container(true, false);
 	construct_lab(lab, 5, 7, 3, 0.2f, 1.6f, 0.8f, 0.7f, 0.03f);
 
-	node = new cgv::nui::nui_node("content", false);
+	node = new cgv::nui::nui_node("content", cgv::nui::SM_UNIFORM);
 	scene->append_child(node);
 	node->create_box_container(true, true);
 	node->create_rectangle_container(true, true, true);
@@ -803,7 +803,7 @@ void vr_stream_gui::create_gui()
 {
 	add_decorator("vr_stream_gui", "heading", "level=2");
 	
-	if (begin_tree_node("virtual display", stream_screen, true)) {
+	if (begin_tree_node("virtual display", stream_screen, false)) {
 		align("\a");
 		add_gui("screen orientation", reinterpret_cast<vec4&>(vt_display->ref_orientation()), "direction", "options='min=-1;max=1;ticks=true'");
 		add_gui("screen position", vt_display->ref_position(), "", "options='min=-2;max=2;ticks=true'");
@@ -817,38 +817,46 @@ void vr_stream_gui::create_gui()
 		align("\b");
 		end_tree_node(stream_screen);
 	}
-
-	add_member_control(this, "mesh_scale", mesh_scale, "value_slider", "min=0.1;max=10;log=true;ticks=true");
-	add_gui("mesh_location", mesh_location, "vector", "options='min=-3;max=3;ticks=true");
-	add_gui("mesh_orientation", static_cast<dvec4&>(mesh_orientation), "direction", "options='min=-1;max=1;ticks=true");
-	add_member_control(this, "show_seethrough", show_seethrough, "check");
-	if(last_kit_handle) {
-		add_decorator("cameras", "heading", "level=3");
-		add_view("nr", nr_cameras);
-		if(nr_cameras > 0) {
-			connect_copy(add_button("start")->click, cgv::signal::rebind(this, &vr_stream_gui::start_camera));
-			connect_copy(add_button("stop")->click, cgv::signal::rebind(this, &vr_stream_gui::stop_camera));
-			add_view("frame_width", frame_width, "", "w=20", "  ");
-			add_view("height", frame_height, "", "w=20", "  ");
-			add_view("split", frame_split, "", "w=50");
-			add_member_control(this, "undistorted", undistorted, "check");
-			add_member_control(this, "shared_texture", shared_texture, "check");
-			add_member_control(this, "max_rectangle", max_rectangle, "check");
-			add_member_control(this, "use_matrix", use_matrix, "check");
-			add_member_control(this, "gamma", seethrough_gamma, "value_slider", "min=0.1;max=10;log=true;ticks=true");
-			add_member_control(this, "extent_x", extent_texcrd[0], "value_slider", "min=0.2;max=2;ticks=true");
-			add_member_control(this, "extent_y", extent_texcrd[1], "value_slider", "min=0.2;max=2;ticks=true");
-			add_member_control(this, "center_left_x", center_left[0], "value_slider", "min=0.2;max=0.8;ticks=true");
-			add_member_control(this, "center_left_y", center_left[1], "value_slider", "min=0.2;max=0.8;ticks=true");
-			add_member_control(this, "center_right_x", center_right[0], "value_slider", "min=0.2;max=0.8;ticks=true");
-			add_member_control(this, "center_right_y", center_right[1], "value_slider", "min=0.2;max=0.8;ticks=true");
-			add_member_control(this, "background_distance", background_distance, "value_slider", "min=0.1;max=10;log=true;ticks=true");
-			add_member_control(this, "background_extent", background_extent, "value_slider", "min=0.01;max=10;log=true;ticks=true");
+	if (begin_tree_node("cameras", show_seethrough, false)) {
+		align("\a");
+		add_member_control(this, "show_seethrough", show_seethrough, "check");
+		if (last_kit_handle) {
+			add_decorator("cameras", "heading", "level=3");
+			add_view("nr", nr_cameras);
+			if (nr_cameras > 0) {
+				connect_copy(add_button("start")->click, cgv::signal::rebind(this, &vr_stream_gui::start_camera));
+				connect_copy(add_button("stop")->click, cgv::signal::rebind(this, &vr_stream_gui::stop_camera));
+				add_view("frame_width", frame_width, "", "w=20", "  ");
+				add_view("height", frame_height, "", "w=20", "  ");
+				add_view("split", frame_split, "", "w=50");
+				add_member_control(this, "undistorted", undistorted, "check");
+				add_member_control(this, "shared_texture", shared_texture, "check");
+				add_member_control(this, "max_rectangle", max_rectangle, "check");
+				add_member_control(this, "use_matrix", use_matrix, "check");
+				add_member_control(this, "gamma", seethrough_gamma, "value_slider", "min=0.1;max=10;log=true;ticks=true");
+				add_member_control(this, "extent_x", extent_texcrd[0], "value_slider", "min=0.2;max=2;ticks=true");
+				add_member_control(this, "extent_y", extent_texcrd[1], "value_slider", "min=0.2;max=2;ticks=true");
+				add_member_control(this, "center_left_x", center_left[0], "value_slider", "min=0.2;max=0.8;ticks=true");
+				add_member_control(this, "center_left_y", center_left[1], "value_slider", "min=0.2;max=0.8;ticks=true");
+				add_member_control(this, "center_right_x", center_right[0], "value_slider", "min=0.2;max=0.8;ticks=true");
+				add_member_control(this, "center_right_y", center_right[1], "value_slider", "min=0.2;max=0.8;ticks=true");
+				add_member_control(this, "background_distance", background_distance, "value_slider", "min=0.1;max=10;log=true;ticks=true");
+				add_member_control(this, "background_extent", background_extent, "value_slider", "min=0.01;max=10;log=true;ticks=true");
+			}
+			vr::vr_kit* kit_ptr = vr::get_vr_kit(last_kit_handle);
+			const std::vector<std::pair<int, int> >* t_and_s_ptr = 0;
+			if (kit_ptr)
+				t_and_s_ptr = &kit_ptr->get_controller_throttles_and_sticks(0);
 		}
-		vr::vr_kit* kit_ptr = vr::get_vr_kit(last_kit_handle);
-		const std::vector<std::pair<int, int> >* t_and_s_ptr = 0;
-		if(kit_ptr)
-			t_and_s_ptr = &kit_ptr->get_controller_throttles_and_sticks(0);
+		align("\b");
+		end_tree_node(show_seethrough);
+	}
+
+	if (begin_tree_node("node", node, true)) {
+		align("\a");
+		inline_object_gui(node);
+		align("\b");
+		end_tree_node(node);
 	}
 	if(begin_tree_node("mesh", mesh_scale)) {
 		align("\a");
@@ -857,6 +865,14 @@ void vr_stream_gui::create_gui()
 		add_gui("orientation", static_cast<dvec4&>(mesh_orientation), "direction", "main_label='';long_label=true;gui_type='value_slider';options='min=-1;max=1;step=0.001;ticks=true'");
 		align("\b");
 		end_tree_node(mesh_scale);
+	}
+	for (int i = 0; i < 2; ++i) {
+		if (begin_tree_node(std::string("tool_")+cgv::utils::to_string(i), tools[i])) {
+			align("\a");
+			inline_object_gui(tools[i]);
+			align("\b");
+			end_tree_node(tools[i]);
+		}
 	}
 }
 

@@ -1,11 +1,61 @@
 #include "primitive_container.h"
+#include "nui_node.h"
 
 namespace cgv {
 	namespace nui {
 
-primitive_container::primitive_container(PrimitiveType _type, bool _use_colors, bool _use_orientations, ScalingMode _scaling_mode, InteractionCapabilities ic)
-	: type(_type), use_colors(_use_colors), use_orientations(_use_orientations), scaling_mode(_scaling_mode), interaction_capabilities(ic)
+bounding_box_cache::bounding_box_cache()
 {
+	box_outofdate = true;
+}
+
+void bounding_box_cache::check_box_update(const box3& old_box, const box3& new_box) const
+{
+	if (box_outofdate)
+		return;
+
+	// check whether we cannot update the box
+	for (uint32_t i = 0; i < 3; ++i) {
+		if (old_box.get_min_pnt()(i) == box.get_min_pnt()(i)) {
+			if (new_box.get_min_pnt()(i) <= old_box.get_min_pnt()(i))
+				box.ref_min_pnt()(i) = new_box.get_min_pnt()(i);
+			else {
+				box_outofdate = true;
+				return;
+			}
+		}
+		if (old_box.get_max_pnt()(i) == box.get_max_pnt()(i)) {
+			if (new_box.get_max_pnt()(i) >= old_box.get_max_pnt()(i))
+				box.ref_max_pnt()(i) = new_box.get_max_pnt()(i);
+			else {
+				box_outofdate = true;
+				return;
+			}
+		}
+	}
+	// finally extend box by new box
+	box.add_axis_aligned_box(new_box);
+}
+
+const bounding_box_cache::box3& bounding_box_cache::compute_bounding_box() const
+{
+	if (box_outofdate) {
+		box.invalidate();
+		for (uint32_t i = 0; i < get_nr_primitives(); ++i)
+			box.add_axis_aligned_box(get_bounding_box(i));
+		box_outofdate = false;
+	}
+	return box;
+}
+
+primitive_container::primitive_container(nui_node* _parent, PrimitiveType _type, bool _use_colors, bool _use_orientations, ScalingMode _scaling_mode, InteractionCapabilities ic)
+	: parent(_parent), type(_type), use_colors(_use_colors), use_orientations(_use_orientations), scaling_mode(_scaling_mode), interaction_capabilities(ic)
+{
+}
+
+nui_node* primitive_container::get_parent() const
+{
+	return parent;
 }
 
 primitive_container::~primitive_container()
@@ -41,14 +91,6 @@ void primitive_container::consider_closest_point(uint32_t i, contact_info& info,
 void primitive_container::compute_closest_oriented_point(contact_info& info, const vec3& pos, const vec3& normal, float orientation_weight)
 {
 	compute_closest_point(info, pos);
-}
-
-primitive_container::box3 primitive_container::compute_bounding_box() const
-{
-	box3 B;
-	for (const auto& c : center_positions)
-		B.add_point(c);
-	return B;
 }
 
 void primitive_container::prepare_render(cgv::render::context& ctx, cgv::render::renderer& r, const cgv::render::render_style& rs, const std::vector<uint32_t>* indices_ptr) const

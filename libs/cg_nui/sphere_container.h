@@ -26,14 +26,14 @@ namespace cgv {
 			void prepare_render(cgv::render::context& ctx, cgv::render::renderer& r, const cgv::render::render_style& rs, const std::vector<uint32_t>* indices_ptr = 0) const;
 			static int compute_intersection(const vec3& sphere_center, float sphere_radius, const vec3& ray_start, const vec3& ray_direction, contact_info::contact& C, contact_info::contact* C2_ptr = 0);
 		public:
-			sphere_container(bool use_radii, bool _use_colors, SphereRenderType _render_type = SRT_SPHERES);
+			sphere_container(nui_node* _parent, bool use_radii, bool _use_colors, SphereRenderType _render_type = SRT_SPHERES);
 			std::string get_primitive_type() const;
 			uint32_t add_sphere(const vec3& center);
 			uint32_t add_sphere(const vec3& center, float radius);
 			uint32_t add_sphere(const vec3& center, const rgba& color);
 			uint32_t add_sphere(const vec3& center, const rgba& color, float radius);
+			box3 get_bounding_box(uint32_t i) const;
 			void add_strip(uint32_t start_index, uint32_t count);
-			box3 compute_bounding_box() const;
 			void set_global_radius(float _radius) { srs.radius = _radius; }
 			float get_radius(uint32_t sphere_index) const { return (scaling_mode == SM_UNIFORM ? uniform_scales[sphere_index] : srs.radius) * srs.radius_scale; }
 			void set_radius_scale(float scale) { srs.radius_scale = scale; }
