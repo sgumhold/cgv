@@ -7,6 +7,10 @@
 #include <cgv/media/mesh/simple_mesh.h>
 #include <cgv/media/mesh/streaming_mesh.h>
 #include <cgv/media/illum/surface_material.h>
+#include <cgv_gl/box_renderer.h>
+#include <cgv_gl/sphere_renderer.h>
+#include <cgv_gl/arrow_renderer.h>
+#include <cgv_gl/rounded_cone_renderer.h>
 
 #include "lib_begin.h" // @<
 
@@ -64,11 +68,14 @@ protected: //@<
 	//@>
 	unsigned int iz;
 	//@>
-	bool wireframe;
-	//@>
-	bool show_sampling_grid;
+	bool show_vertices;
+	bool show_wireframe;
+	bool show_surface;
 	//@>
 	bool show_sampling_locations;
+	//@>
+	bool show_sampling_grid;
+	float sampling_grid_alpha;
 	//@>
 	bool show_box;
 	//@>
@@ -77,6 +84,11 @@ protected: //@<
 	bool show_gradient_normals;
 	//@>
 	bool show_mesh_normals;
+
+	box_render_style brs;
+	sphere_render_style srs;
+	rounded_cone_render_style crs;
+	arrow_render_style ars;
 
 	//@>
 	double epsilon;
@@ -154,8 +166,10 @@ public:
 
 	/// use this as callback to ask for a re-tesselation of the implicit surface
 	void post_rebuild();
-
+	bool init(context& ctx);
+	void clear(context& ctx);
 	void draw(context& ctx);
+	void finish_frame(context& ctx);
 
 }; // @<
 

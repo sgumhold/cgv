@@ -89,10 +89,11 @@ void generate_sphere_cover_splat(in vec4 sphere, in sphere_parameter_space sps, 
 	ssi.inv_T_square_e_c = sps.inv_T_square_e_c_vs;
 	ssi.e_zw_clip = sps.e_zw_clip_vs;
 
-	generate_sphere_splat_vertex(sphere, vec2(-splat_size, -splat_size), sps, MV, MVP, NM);
 	generate_sphere_splat_vertex(sphere, vec2( splat_size, -splat_size), sps, MV, MVP, NM);
-	generate_sphere_splat_vertex(sphere, vec2(-splat_size,  splat_size), sps, MV, MVP, NM);
+	generate_sphere_splat_vertex(sphere, vec2(-splat_size, -splat_size), sps, MV, MVP, NM);
 	generate_sphere_splat_vertex(sphere, vec2( splat_size,  splat_size), sps, MV, MVP, NM);
+	generate_sphere_splat_vertex(sphere, vec2(-splat_size,  splat_size), sps, MV, MVP, NM);
+
 	EndPrimitive();
 }
 
