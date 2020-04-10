@@ -9,6 +9,22 @@
 namespace cgv {
 	namespace nui {
 
+		class bounding_box_cache : public cgv::render::render_types
+		{
+		protected:
+			///
+			mutable box3 box;
+			/// 
+			mutable bool box_outofdate;
+		public:
+			bounding_box_cache();
+			void check_box_update(const box3& old_box, const box3& new_box) const;
+			virtual uint32_t get_nr_primitives() const = 0;
+			virtual box3 get_bounding_box(uint32_t i) const = 0;
+			const box3& compute_bounding_box() const;
+		};
+
+
 		enum PrimitiveType
 		{
 			PT_SPHERE,
@@ -38,7 +54,9 @@ namespace cgv {
 			IC_ALL = 63
 		};
 
-		class CGV_API primitive_container : public cgv::render::drawable
+		class CGV_API nui_node;
+
+		class CGV_API primitive_container : public cgv::render::drawable, public bounding_box_cache
 		{
 		protected:
 			/// primtive type
@@ -59,16 +77,19 @@ namespace cgv {
 			/// mode of using scales
 			ScalingMode scaling_mode;
 			///
+			nui_node* parent;
+			///
 			InteractionCapabilities interaction_capabilities;
 			virtual void prepare_render(cgv::render::context& ctx, cgv::render::renderer& r, const cgv::render::render_style& rs, const std::vector<uint32_t>* indices_ptr = 0) const;
 			virtual bool render(cgv::render::context& ctx, cgv::render::renderer& r, const cgv::render::render_style& rs, const std::vector<uint32_t>* indices_ptr = 0) const;
 			void primitive_container::consider_closest_point(uint32_t i, contact_info& info, float distance, const vec3& p, const vec3& n, const vec3& tc);
 		public:
-			primitive_container(PrimitiveType _type, bool _use_colors, bool _use_orientations, ScalingMode _scaling_mode, InteractionCapabilities ic = IC_ALL);
+			primitive_container(nui_node* _parent, PrimitiveType _type, bool _use_colors, bool _use_orientations, ScalingMode _scaling_mode, InteractionCapabilities ic = IC_ALL);
 			virtual ~primitive_container();
+			nui_node* get_parent() const;
 			/// return primitive type
 			virtual std::string get_primitive_type() const = 0;
-			virtual box3 compute_bounding_box() const;
+			uint32_t get_nr_primitives() const { return center_positions.size(); }
 			virtual void compute_closest_point(contact_info& info, const vec3& pos) = 0;
 			/// last parameter is weight for trading between position and normal distances for closest oriented point query; default implementation defers call to computer_closest_point
 			virtual void compute_closest_oriented_point(contact_info& info, const vec3& pos, const vec3& normal, float orientation_weight = 0.5f);
@@ -90,6 +111,7 @@ namespace cgv {
 			bool set_orientation(uint32_t i, const quat& q);
 			vec3 get_position(uint32_t i) const;
 			void set_position(uint32_t i, const vec3& p);
+			
 			ScalingMode get_scaling_mode() const { return scaling_mode; };
 			float get_uniform_scale(uint32_t i) const;
 			bool set_uniform_scale(uint32_t i, float u);

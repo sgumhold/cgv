@@ -3,8 +3,8 @@
 namespace cgv {
 	namespace nui {
 
-sphere_container::sphere_container(bool use_radii, bool _use_colors, SphereRenderType _render_type)
-	: primitive_container(PT_SPHERE, _use_colors, false, use_radii?SM_UNIFORM:SM_NONE), render_type(_render_type)
+sphere_container::sphere_container(nui_node* _parent, bool use_radii, bool _use_colors, SphereRenderType _render_type)
+	: primitive_container(_parent, PT_SPHERE, _use_colors, false, use_radii?SM_UNIFORM:SM_NONE), render_type(_render_type)
 {
 	srs.radius = 1.0f;
 	srs.radius_scale = 1.0f;
@@ -60,16 +60,11 @@ void sphere_container::add_strip(uint32_t start_index, uint32_t count)
 	indices.push_back(uint32_t(-1));
 }
 
-sphere_container::box3 sphere_container::compute_bounding_box() const
+sphere_container::box3 sphere_container::get_bounding_box(uint32_t i) const
 {
-	vec3 one(1.0f);
-	box3 B;
-	for (const auto& c : center_positions) {
-		float r = get_radius(uint32_t(&c - &center_positions.front()));
-		B.add_point(c - r * one);
-		B.add_point(c + r * one);
-	}
-	return B;
+	const vec3& c = center_positions[i];
+	float r = get_radius(i);
+	return box3(c - r, c + r);
 }
 
 void sphere_container::compute_closest_point(contact_info& info, const vec3& pos)

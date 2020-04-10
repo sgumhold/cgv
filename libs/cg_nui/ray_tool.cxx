@@ -14,6 +14,8 @@ ray_tool::ray_tool(const std::string& _name, int32_t _controller_index)
 	controller_pose.identity();
 	ray_length = 3.0f;
 	srs.radius = 0.005f;
+	wbrs.line_width = 2.0f;
+	pick_all = false;
 }
 
 void ray_tool::on_set(void* member_ptr)
@@ -35,6 +37,7 @@ bool ray_tool::init(cgv::render::context& ctx)
 	}
 	++mri_ref_count;
 	cgv::render::ref_rounded_cone_renderer(ctx, 1);
+	cgv::render::ref_box_wire_renderer(ctx, 1);
 	cgv::render::ref_sphere_renderer(ctx, 1);
 	return true;
 }
@@ -44,6 +47,7 @@ void ray_tool::clear(cgv::render::context& ctx)
 		mri.destruct(ctx);
 
 	cgv::render::ref_rounded_cone_renderer(ctx, -1);
+	cgv::render::ref_box_wire_renderer(ctx, -1);
 	cgv::render::ref_sphere_renderer(ctx, -1);
 }
 void ray_tool::draw(cgv::render::context& ctx)
@@ -76,8 +80,8 @@ void ray_tool::draw(cgv::render::context& ctx)
 	cr.set_radius_array(ctx, R);
 	cr.render(ctx, 0, P.size());
 
-	// draw contact points
 	if (!contact.contacts.empty()) {
+		// draw contact points
 		auto& sr = cgv::render::ref_sphere_renderer(ctx);
 		sr.set_position_array(ctx, 
 			&contact.contacts.front().position, 
@@ -88,7 +92,21 @@ void ray_tool::draw(cgv::render::context& ctx)
 			sr.draw(ctx, 0, contact.contacts.size());
 			sr.disable(ctx);
 		}
+
+		// draw wired boxes around contact primitives
+		//auto& wbr = cgv::render::ref_box_wire_renderer(ctx);
+		//std::vector<box3> boxes;
+		//std::vector<rgb> box_colors;
+		//for (const auto& c : contact.contacts) {
+		//	boxes.push_back(c.container->get_bounding_box(c.primitive_index));
+		//	box_colors.push_back(controller_index == 0 ? rgb(1, 0.5f, 0.5f) : rgb(0.5f, 0.5f, 1));
+		//}
+		//wbr.set_render_style(wbrs);
+		//wbr.set_box_array(ctx, boxes);
+		//wbr.set_color_array(ctx, box_colors);
+		//wbr.render(ctx, 0, boxes.size());
 	}
+
 }
 
 void ray_tool::stream_help(std::ostream& os)
@@ -228,22 +246,78 @@ bool ray_tool::handle(cgv::gui::event& e)
 			ql.conjugate();
 			dquat q = qo*ql;
 			q.normalize();
+
+			dmat4 T_tool_rot;
+			q.put_homogeneous_matrix(T_tool_rot);
+			dmat4 T_tool = cgv::math::translate4<double>(pos) * T_tool_rot * cgv::math::translate4<double>(-last_pos);
+			//std::cout << "T_tool =\n" << T_tool << std::endl;
 			// iterate intersection points of current controller
 			for (auto& c : contact.contacts) {
 				uint32_t i = &c - &contact.contacts[0];
+			
+				auto* N = c.container->get_parent();
+				dmat4 T_node = N->get_node_to_world_transformation();
+				dmat4 T_node_inv = N->get_world_to_node_transformation();
+				dmat4 T_tool_local = T_node_inv * T_tool * T_node;
+				//std::cout << "T_node =\n" << T_node << std::endl;
+				//std::cout << "T_node_inv =\n" << T_node << std::endl;
+				//std::cout << "T_tool_local =\n" << T_tool_local << std::endl;
+
+				mat4 T_prim;
+				grab_start_infos[i].orientation.put_homogeneous_matrix(T_prim);
+				T_prim.set_col(3, vec4(grab_start_infos[i].position, 1.0f));
+
+				//std::cout << "orient = " << grab_start_infos[i].orientation << std::endl;
+				//std::cout << "transl = " << grab_start_infos[i].position << std::endl;
+				//std::cout << "T_prim =\n" << T_prim << std::endl;
+
+				mat4 T_prim_new = T_tool_local * T_prim;
+				//std::cout << "T_prim_new =\n" << T_prim_new << std::endl;
+
 				if (c.container->rotatable()) {
-					dquat q1 = grab_start_infos[i].orientation; // c.container->get_orientation(c.primitive_index);
-					q1 = q*q1;
+					mat3 R;
+					R.set_col(0, reinterpret_cast<const vec3&>(T_prim_new.col(0)));
+					R.set_col(1, reinterpret_cast<const vec3&>(T_prim_new.col(1)));
+					R.set_col(2, reinterpret_cast<const vec3&>(T_prim_new.col(2)));
+					//std::cout << "R =\n" << R << std::endl;
+
+					quat q1(R);
+					//std::cout << "q1 = " << q1 << std::endl;
+					//
+					//if (true) {
+					//	dquat q1 = grab_start_infos[i].orientation; // c.container->get_orientation(c.primitive_index);
+					//	q1 = q * q1;
+					//	q1.normalize();
+					//	std::cout << "q1_validate = " << q1 << std::endl;
+					//}
+					//dmat3 R;
+					//R.set_col(0, reinterpret_cast<const dvec3&>(T_tool_local* dvec4(R1.col(0), 0.0)));
+					//R.set_col(1, reinterpret_cast<const dvec3&>(T_tool_local* dvec4(R1.col(1), 0.0)));
+					//R.set_col(2, reinterpret_cast<const dvec3&>(T_tool_local* dvec4(R1.col(2), 0.0)));
+					//dquat q(R);
+					//q.normalize();
+					//c.container->set_orientation(c.primitive_index, q);
+					
 					q1.normalize();
 					c.container->set_orientation(c.primitive_index, q1);
 				}
-				// update translation with position change and rotation
-				dvec3 r = grab_start_infos[i].position; // c.container->get_position(c.primitive_index);
-				r -= last_pos;
-				q.rotate(r);
-				r += pos;
-				c.container->set_position(c.primitive_index, r);
+				// update primitive position with position change and rotation				
+
+				dvec3 r = reinterpret_cast<const vec3&>(T_prim_new.col(3));
 				
+				/*
+				std::cout << "r = " << r << std::endl;
+
+				if (true) {
+					dvec3 r = grab_start_infos[i].position; // c.container->get_position(c.primitive_index);
+					r -= last_pos;
+					q.rotate(r);
+					r += pos;
+					std::cout << "r_validate = " << r << std::endl;
+				}
+				*/
+				c.container->set_position(c.primitive_index, r);
+
 				// update contact position
 				r = grab_start_infos[i].contact_point; // c.position;
 				r -= last_pos;
@@ -264,7 +338,10 @@ bool ray_tool::handle(cgv::gui::event& e)
 			// compute intersections
 			vec3 origin, direction;
 			vrpe.get_state().controller[vrpe.get_trackable_index()].put_ray(&origin(0), &direction(0));
-			interaction_node->compute_all_intersections(contact, origin, direction);
+			if (pick_all)
+				interaction_node->compute_all_intersections(contact, origin, direction);
+			else
+				interaction_node->compute_first_intersection(contact, origin, direction);
 
 			// remove all intersections that are not approachable
 			uint32_t i = contact.contacts.size();
@@ -293,15 +370,22 @@ bool ray_tool::handle(cgv::gui::event& e)
 
 void ray_tool::create_gui()
 {
+	add_member_control(this, "pick_all", pick_all, "check");
 	if (begin_tree_node("cone style", rcrs)) {
 		align("\a");
-		add_gui("cone style", rcrs);
+		add_gui("style", rcrs);
 		align("\b");
 		end_tree_node(rcrs);
 	}
 	if (begin_tree_node("sphere style", srs)) {
 		align("\a");
-		add_gui("sphere style", srs);
+		add_gui("style", srs);
+		align("\b");
+		end_tree_node(srs);
+	}
+	if (begin_tree_node("wired box style", wbrs)) {
+		align("\a");
+		add_gui("style", wbrs);
 		align("\b");
 		end_tree_node(srs);
 	}

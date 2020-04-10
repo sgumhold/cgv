@@ -3,8 +3,8 @@
 namespace cgv {
 	namespace nui {
 
-		rectangle_container::rectangle_container(bool _use_colors, bool _use_orientations, bool _use_texcoords)
-			: primitive_container(PT_RECTANGLE, _use_colors, _use_orientations, SM_NON_UNIFORM), use_texcoords(_use_texcoords)
+		rectangle_container::rectangle_container(nui_node* _parent, bool _use_colors, bool _use_orientations, bool _use_texcoords)
+			: primitive_container(_parent, PT_RECTANGLE, _use_colors, _use_orientations, SM_NON_UNIFORM), use_texcoords(_use_texcoords)
 		{
 		}
 
@@ -112,19 +112,17 @@ namespace cgv {
 			return uint32_t(center_positions.size() - 1);
 		}
 
-		rectangle_container::box3 rectangle_container::compute_bounding_box() const
+		rectangle_container::box3 rectangle_container::get_bounding_box(uint32_t i) const
 		{
+			const vec3& c = center_positions[i];
+			vec3 e = scales[i];
+			box3 b(c - 0.5f * e, c + 0.5f * e);
+			if (!use_orientations)
+				return b;
+			const quat& q = orientations[i];
 			box3 B;
-			for (const auto& c : center_positions) {
-				vec3 e = scales[&c - &center_positions.front()];
-				box3 b(c - 0.5f * e, c + 0.5f * e);
-				if (use_orientations) {
-					for (int i = 0; i < 4; ++i)
-						B.add_point(b.get_corner(i));
-				}
-				else
-					B.add_axis_aligned_box(b);
-			}
+			for (int i = 0; i < 8; ++i)
+				B.add_point(q.get_rotated(b.get_corner(i)));
 			return B;
 		}
 

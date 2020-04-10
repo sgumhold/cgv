@@ -30,14 +30,14 @@ namespace cgv {
 				const vec3& box_center, const vec3& box_extent, const quat& box_rotation,
 				const vec3& ray_start, const vec3& ray_direction, contact_info::contact& C, contact_info::contact* C2_ptr = 0);
 		public:
-			box_container(bool _use_colors, bool _use_orientations, BoxRenderType _render_type = BRT_SOLID);
+			box_container(nui_node* _parent, bool _use_colors, bool _use_orientations, BoxRenderType _render_type = BRT_SOLID);
 			std::string get_primitive_type() const;
 			uint32_t add_box(const box3& box);
 			uint32_t add_box(const box3& box, const quat& orientation);
 			uint32_t add_box(const box3& box, const rgba& color);
 			uint32_t add_box(const box3& box, const quat& orientation, const rgba& color);
 			quat get_rotation(uint32_t i) const { return use_orientations ? orientations[i] : quat(1.0f, 0.0f, 0.0f, 0.0f); }
-			box3 compute_bounding_box() const;
+			box3 get_bounding_box(uint32_t i) const;
 			void compute_closest_point(contact_info& info, const vec3& pos);
 			void compute_closest_oriented_point(contact_info& info, const vec3& pos, const vec3& normal, float orientation_weight);
 			void compute_first_intersection(contact_info& info, const vec3& start, const vec3& direction);
