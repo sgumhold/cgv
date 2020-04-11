@@ -87,6 +87,18 @@ void primitive_container::consider_closest_point(uint32_t i, contact_info& info,
 	}
 }
 
+primitive_container::box3 primitive_container::get_bounding_box(uint32_t i) const
+{
+	box3 b = get_oriented_bounding_box(i);
+	if (!use_orientations)
+		return b;
+	const quat& q = orientations[i];
+	box3 B;
+	for (int i = 0; i < 8; ++i)
+		B.add_point(q.get_rotated(b.get_corner(i)));
+	return B;
+}
+
 /// last parameter is weight for trading between position and normal distances for closest oriented point query; default implementation defers call to computer_closest_point
 void primitive_container::compute_closest_oriented_point(contact_info& info, const vec3& pos, const vec3& normal, float orientation_weight)
 {

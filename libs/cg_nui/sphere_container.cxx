@@ -60,7 +60,7 @@ void sphere_container::add_strip(uint32_t start_index, uint32_t count)
 	indices.push_back(uint32_t(-1));
 }
 
-sphere_container::box3 sphere_container::get_bounding_box(uint32_t i) const
+sphere_container::box3 sphere_container::get_oriented_bounding_box(uint32_t i) const
 {
 	const vec3& c = center_positions[i];
 	float r = get_radius(i);

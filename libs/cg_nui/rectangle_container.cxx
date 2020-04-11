@@ -16,7 +16,7 @@ namespace cgv {
 		uint32_t rectangle_container::add_rectangle(const vec3& center, const vec2& extent)
 		{
 			center_positions.push_back(center);
-			scales.push_back(vec3(extent, 1.0f));
+			scales.push_back(vec3(extent, 0.0f));
 			if (use_colors)
 				colors.push_back(rgba(0.5f, 0.5f, 0.5f, 1));
 			if (use_orientations)
@@ -29,7 +29,7 @@ namespace cgv {
 		uint32_t rectangle_container::add_rectangle(const vec3& center, const vec2& extent, const quat& orientation)
 		{
 			center_positions.push_back(center);
-			scales.push_back(vec3(extent, 1.0f));
+			scales.push_back(vec3(extent, 0.0f));
 			if (use_colors)
 				colors.push_back(rgba(0.5f, 0.5f, 0.5f, 1));
 			if (use_orientations)
@@ -41,7 +41,7 @@ namespace cgv {
 		uint32_t rectangle_container::add_rectangle(const vec3& center, const vec2& extent, const rgba& color)
 		{
 			center_positions.push_back(center);
-			scales.push_back(vec3(extent, 1.0f));
+			scales.push_back(vec3(extent, 0.0f));
 			if (use_colors)
 				colors.push_back(color);
 			if (use_orientations)
@@ -53,7 +53,7 @@ namespace cgv {
 		uint32_t rectangle_container::add_rectangle(const vec3& center, const vec2& extent, const quat& orientation, const rgba& color)
 		{
 			center_positions.push_back(center);
-			scales.push_back(vec3(extent, 1.0f));
+			scales.push_back(vec3(extent, 0.0f));
 			if (use_colors)
 				colors.push_back(color);
 			if (use_orientations)
@@ -65,7 +65,7 @@ namespace cgv {
 		uint32_t rectangle_container::add_rectangle(const vec3& center, const vec2& extent, const box2& texcoord_range)
 		{
 			center_positions.push_back(center);
-			scales.push_back(vec3(extent, 1.0f));
+			scales.push_back(vec3(extent, 0.0f));
 			if (use_colors)
 				colors.push_back(rgba(0.5f, 0.5f, 0.5f, 1));
 			if (use_orientations)
@@ -78,7 +78,7 @@ namespace cgv {
 		uint32_t rectangle_container::add_rectangle(const vec3& center, const vec2& extent, const box2& texcoord_range, const quat& orientation)
 		{
 			center_positions.push_back(center);
-			scales.push_back(vec3(extent, 1.0f));
+			scales.push_back(vec3(extent, 0.0f));
 			if (use_colors)
 				colors.push_back(rgba(0.5f, 0.5f, 0.5f, 1));
 			if (use_orientations)
@@ -90,7 +90,7 @@ namespace cgv {
 		uint32_t rectangle_container::add_rectangle(const vec3& center, const vec2& extent, const box2& texcoord_range, const rgba& color)
 		{
 			center_positions.push_back(center);
-			scales.push_back(vec3(extent, 1.0f));
+			scales.push_back(vec3(extent, 0.0f));
 			if (use_colors)
 				colors.push_back(color);
 			if (use_orientations)
@@ -102,7 +102,7 @@ namespace cgv {
 		uint32_t rectangle_container::add_rectangle(const vec3& center, const vec2& extent, const box2& texcoord_range, const quat& orientation, const rgba& color)
 		{
 			center_positions.push_back(center);
-			scales.push_back(vec3(extent, 1.0f));
+			scales.push_back(vec3(extent, 0.0f));
 			if (use_colors)
 				colors.push_back(color);
 			if (use_orientations)
@@ -112,18 +112,11 @@ namespace cgv {
 			return uint32_t(center_positions.size() - 1);
 		}
 
-		rectangle_container::box3 rectangle_container::get_bounding_box(uint32_t i) const
+		rectangle_container::box3 rectangle_container::get_oriented_bounding_box(uint32_t i) const
 		{
 			const vec3& c = center_positions[i];
 			vec3 e = scales[i];
-			box3 b(c - 0.5f * e, c + 0.5f * e);
-			if (!use_orientations)
-				return b;
-			const quat& q = orientations[i];
-			box3 B;
-			for (int i = 0; i < 8; ++i)
-				B.add_point(q.get_rotated(b.get_corner(i)));
-			return B;
+			return box3(c - 0.5f * e, c + 0.5f * e);
 		}
 
 		void rectangle_container::compute_closest_point(contact_info& info, const vec3& pos)

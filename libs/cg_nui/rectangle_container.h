@@ -41,7 +41,7 @@ namespace cgv {
 			void set_texture(std::shared_ptr<cgv::render::texture> _tex) { tex = _tex; }
 
 			quat get_rotation(uint32_t i) const { return use_orientations ? orientations[i] : quat(1.0f, 0.0f, 0.0f, 0.0f); }
-			box3 get_bounding_box(uint32_t i) const;
+			box3 get_oriented_bounding_box(uint32_t i) const;
 			void compute_closest_point(contact_info& info, const vec3& pos);
 			void compute_closest_oriented_point(contact_info& info, const vec3& pos, const vec3& normal, float orientation_weight);
 			void compute_first_intersection(contact_info& info, const vec3& start, const vec3& direction);
