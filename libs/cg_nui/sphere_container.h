@@ -38,8 +38,8 @@ namespace cgv {
 			float get_radius(uint32_t sphere_index) const { return (scaling_mode == SM_UNIFORM ? uniform_scales[sphere_index] : srs.radius) * srs.radius_scale; }
 			void set_radius_scale(float scale) { srs.radius_scale = scale; }
 			float get_radius_scale() const { return srs.radius_scale; }
-			void compute_closest_point(contact_info& info, const vec3& pos);
-			void compute_closest_oriented_point(contact_info& info, const vec3& pos, const vec3& normal, float orientation_weight);
+			bool compute_closest_point(contact_info& info, const vec3& pos);
+			//bool compute_closest_oriented_point(contact_info& info, const vec3& pos, const vec3& normal, float orientation_weight);
 			void compute_first_intersection(contact_info& info, const vec3& start, const vec3& direction);
 			void compute_all_intersections(contact_info& info, const vec3& start, const vec3& direction, bool only_entry_points);
 			bool init(cgv::render::context& ctx);

@@ -105,18 +105,20 @@ void ray_tool::draw(cgv::render::context& ctx)
 			box_colors.push_back(controller_index == 0 ? rgb(1, 0.5f, 0.5f) : rgb(0.5f, 0.5f, 1));
 			box_rotations.push_back(c.container->get_orientation(c.primitive_index));
 			if (i+1 == contact.contacts.size() || c.container->get_parent() != contact.contacts[i+1].container->get_parent()) {
-				if (!boxes.empty()) {
-					ctx.push_modelview_matrix();
-					ctx.mul_modelview_matrix(c.container->get_parent()->get_node_to_world_transformation());
-					wbr.set_box_array(ctx, boxes);
-					wbr.set_color_array(ctx, box_colors);
-					wbr.set_rotation_array(ctx, box_rotations);
-					wbr.render(ctx, 0, boxes.size());
-					ctx.pop_modelview_matrix();
-					boxes.clear();
-					box_colors.clear();
-					box_rotations.clear();
-				}
+				nui_node* N = c.container->get_parent();
+				boxes.push_back(N->compute_bounding_box());
+				box_colors.push_back(controller_index == 0 ? rgb(1, 0.75f, 0.75f) : rgb(0.75f, 0.75f, 1));
+				box_rotations.push_back(quat(1.0f, 0.0f, 0.0f, 0.0f));
+				ctx.push_modelview_matrix();
+				ctx.mul_modelview_matrix(c.container->get_parent()->get_node_to_world_transformation());
+				wbr.set_box_array(ctx, boxes);
+				wbr.set_color_array(ctx, box_colors);
+				wbr.set_rotation_array(ctx, box_rotations);
+				wbr.render(ctx, 0, boxes.size());
+				ctx.pop_modelview_matrix();
+				boxes.clear();
+				box_colors.clear();
+				box_rotations.clear();
 			}
 		}
 	}
@@ -352,9 +354,9 @@ bool ray_tool::handle(cgv::gui::event& e)
 			vec3 origin, direction;
 			vrpe.get_state().controller[vrpe.get_trackable_index()].put_ray(&origin(0), &direction(0));
 			if (pick_all)
-				interaction_node->compute_all_intersections(contact, origin, direction);
+				scene_node->compute_all_intersections(contact, origin, direction);
 			else
-				interaction_node->compute_first_intersection(contact, origin, direction);
+				scene_node->compute_first_intersection(contact, origin, direction);
 
 			// remove all intersections that are not approachable
 			uint32_t i = contact.contacts.size();

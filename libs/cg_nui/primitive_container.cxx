@@ -62,7 +62,7 @@ primitive_container::~primitive_container()
 {
 }
 
-void primitive_container::consider_closest_point(uint32_t i, contact_info& info, float distance, const vec3& p, const vec3& n, const vec3& tc)
+bool primitive_container::consider_closest_point(uint32_t i, contact_info& info, float distance, const vec3& p, const vec3& n, const vec3& tc)
 {
 	if (info.contacts.empty()) {
 		contact_info::contact C;
@@ -73,6 +73,7 @@ void primitive_container::consider_closest_point(uint32_t i, contact_info& info,
 		C.primitive_index = i;
 		C.container = this;
 		info.contacts.push_back(C);
+		return true;
 	}
 	else {
 		contact_info::contact& C = info.contacts.front();
@@ -83,8 +84,10 @@ void primitive_container::consider_closest_point(uint32_t i, contact_info& info,
 			C.texcoord = tc;
 			C.primitive_index = i;
 			C.container = this;
+			return true;
 		}
 	}
+	return false;
 }
 
 primitive_container::box3 primitive_container::get_bounding_box(uint32_t i) const
@@ -100,9 +103,9 @@ primitive_container::box3 primitive_container::get_bounding_box(uint32_t i) cons
 }
 
 /// last parameter is weight for trading between position and normal distances for closest oriented point query; default implementation defers call to computer_closest_point
-void primitive_container::compute_closest_oriented_point(contact_info& info, const vec3& pos, const vec3& normal, float orientation_weight)
+bool primitive_container::compute_closest_oriented_point(contact_info& info, const vec3& pos, const vec3& normal, float orientation_weight)
 {
-	compute_closest_point(info, pos);
+	return compute_closest_point(info, pos);
 }
 
 void primitive_container::prepare_render(cgv::render::context& ctx, cgv::render::renderer& r, const cgv::render::render_style& rs, const std::vector<uint32_t>* indices_ptr) const

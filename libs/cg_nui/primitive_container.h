@@ -82,7 +82,7 @@ namespace cgv {
 			InteractionCapabilities interaction_capabilities;
 			virtual void prepare_render(cgv::render::context& ctx, cgv::render::renderer& r, const cgv::render::render_style& rs, const std::vector<uint32_t>* indices_ptr = 0) const;
 			virtual bool render(cgv::render::context& ctx, cgv::render::renderer& r, const cgv::render::render_style& rs, const std::vector<uint32_t>* indices_ptr = 0) const;
-			void primitive_container::consider_closest_point(uint32_t i, contact_info& info, float distance, const vec3& p, const vec3& n, const vec3& tc);
+			bool primitive_container::consider_closest_point(uint32_t i, contact_info& info, float distance, const vec3& p, const vec3& n, const vec3& tc);
 		public:
 			primitive_container(nui_node* _parent, PrimitiveType _type, bool _use_colors, bool _use_orientations, ScalingMode _scaling_mode, InteractionCapabilities ic = IC_ALL);
 			virtual ~primitive_container();
@@ -90,11 +90,12 @@ namespace cgv {
 			/// return primitive type
 			virtual std::string get_primitive_type() const = 0;
 			uint32_t get_nr_primitives() const { return center_positions.size(); }
-			virtual void compute_closest_point(contact_info& info, const vec3& pos) = 0;
 			box3 get_bounding_box(uint32_t i) const;
 			virtual box3 get_oriented_bounding_box(uint32_t i) const = 0;
-			/// last parameter is weight for trading between position and normal distances for closest oriented point query; default implementation defers call to computer_closest_point
-			virtual void compute_closest_oriented_point(contact_info& info, const vec3& pos, const vec3& normal, float orientation_weight = 0.5f);
+			/// return whether a closer point has been found
+			virtual bool compute_closest_point(contact_info& info, const vec3& pos) = 0;
+			/// return whether a closer point has been found; last parameter is weight for trading between position and normal distances for closest oriented point query; default implementation defers call to computer_closest_point
+			virtual bool compute_closest_oriented_point(contact_info& info, const vec3& pos, const vec3& normal, float orientation_weight = 0.5f);
 			virtual void compute_first_intersection(contact_info& info, const vec3& start, const vec3& direction) = 0;
 			virtual void compute_all_intersections(contact_info& info, const vec3& start, const vec3& direction, bool only_entry_points = true) = 0;
 			virtual const cgv::render::render_style* get_render_style() const = 0;

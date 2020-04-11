@@ -119,8 +119,9 @@ namespace cgv {
 			return box3(c - 0.5f * e, c + 0.5f * e);
 		}
 
-		void rectangle_container::compute_closest_point(contact_info& info, const vec3& pos)
+		bool rectangle_container::compute_closest_point(contact_info& info, const vec3& pos)
 		{
+			bool result = false;
 			for (const auto& c : center_positions) {
 				uint32_t i = uint32_t(&c - &center_positions.front());
 				vec3 h = 0.5f * scales[i];
@@ -163,13 +164,10 @@ namespace cgv {
 					orientations[i].rotate(n);
 				}
 				p += c;
-				consider_closest_point(i, info, distance, p, n, tc);
+				if (consider_closest_point(i, info, distance, p, n, tc))
+					result = true;
 			}
-		}
-
-		void rectangle_container::compute_closest_oriented_point(contact_info& info, const vec3& pos, const vec3& normal, float orientation_weight)
-		{
-			std::cerr << "not implemented" << std::endl;
+			return result;
 		}
 
 		int rectangle_container::compute_intersection(const vec3& rectangle_center, const vec2& rectangle_extent,
