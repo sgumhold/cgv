@@ -61,8 +61,9 @@ namespace cgv {
 			vec3 e = scales[i];
 			return box3(c - 0.5f * e, c + 0.5f * e);
 		}
-		void box_container::compute_closest_point(contact_info& info, const vec3& pos)
+		bool box_container::compute_closest_point(contact_info& info, const vec3& pos)
 		{
+			bool result = false;
 			for (const auto& c : center_positions) {
 				uint32_t i = uint32_t(&c - &center_positions.front());
 				vec3 h = 0.5f*scales[i];
@@ -109,15 +110,11 @@ namespace cgv {
 					orientations[i].rotate(n);
 				}
 				p += c;
-				consider_closest_point(i, info, distance, p, n, tc);
+				if (consider_closest_point(i, info, distance, p, n, tc))
+					result = true;
 			}
+			return result;
 		}
-
-		void box_container::compute_closest_oriented_point(contact_info& info, const vec3& pos, const vec3& normal, float orientation_weight)
-		{
-			std::cerr << "not implemented" << std::endl;
-		}
-
 		
 		int box_container::compute_intersection(
 			const vec3& box_center, const vec3& box_extent,
@@ -126,10 +123,10 @@ namespace cgv {
 			float t_result;
 			vec3 p_result, n_result;
 			box3 B(-0.5f * box_extent, 0.5f * box_extent);
-			if (!ray_axis_aligned_box_intersection(ray_start, ray_direction, B, t_result, p_result, n_result, 0.000001f))
+			if (!ray_axis_aligned_box_intersection(ray_start - box_center, ray_direction, B, t_result, p_result, n_result, 0.000001f))
 				return 0;
 			C.distance = t_result;
-			C.position = p_result;
+			C.position = p_result + box_center;
 			C.normal = n_result;
 			C.texcoord = (p_result + 0.5f * box_extent) / box_extent;
 			return 1;
@@ -140,18 +137,17 @@ namespace cgv {
 		{
 			vec3 ro = ray_start - box_center;
 			box_rotation.inverse_rotate(ro);
+			ro += box_center;
 			vec3 rd = ray_direction;
 			box_rotation.inverse_rotate(rd);
 			int cnt = compute_intersection(box_center, box_extent, ro, rd, C, C2_ptr);
 			// transform result back
 			if (cnt > 0) {
-				box_rotation.rotate(C.position);
-				C.position += box_center;
+				C.position = box_rotation.get_rotated(C.position - box_center) + box_center;
 				box_rotation.rotate(C.normal);
 			}
 			if (cnt > 1) {
-				box_rotation.rotate(C2_ptr->position);
-				C2_ptr->position += box_center;
+				C2_ptr->position = box_rotation.get_rotated(C2_ptr->position - box_center) + box_center;
 				box_rotation.rotate(C2_ptr->normal);
 			}
 			return cnt;

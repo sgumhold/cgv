@@ -67,22 +67,19 @@ sphere_container::box3 sphere_container::get_oriented_bounding_box(uint32_t i) c
 	return box3(c - r, c + r);
 }
 
-void sphere_container::compute_closest_point(contact_info& info, const vec3& pos)
+bool sphere_container::compute_closest_point(contact_info& info, const vec3& pos)
 {
+	bool result = false;
 	for (const auto& c : center_positions) {
 		uint32_t i = uint32_t(&c - &center_positions.front());
 		float r = get_radius(i);
 		vec3 n = normalize(pos - c);
 		vec3 p = c + r*n;
 		float distance = (p - pos).length();
-		consider_closest_point(i, info, distance, p, n, n);
+		if (consider_closest_point(i, info, distance, p, n, n))
+			result = true;
 	}
-}
-
-void sphere_container::compute_closest_oriented_point(contact_info& info, const vec3& pos, const vec3& normal, float orientation_weight)
-{
-	primitive_container::compute_closest_oriented_point(info, pos, normal, orientation_weight);
-	// TODO: implement this
+	return result;
 }
 
 int sphere_container::compute_intersection(const vec3& ce, float ra, const vec3& ro, const vec3& rd, contact_info::contact& C, contact_info::contact* C2_ptr)

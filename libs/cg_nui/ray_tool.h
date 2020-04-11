@@ -27,6 +27,7 @@ namespace cgv {
 		{
 		public:
 			InteractionState interaction_state;
+			nui_node_ptr scene_node;
 			nui_node_ptr interaction_node;
 			contact_info contact;
 			mat34 controller_pose;

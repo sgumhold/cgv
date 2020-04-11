@@ -60,8 +60,8 @@ namespace cgv {
 			uint32_t get_nr_primitives() const;
 			box3 get_bounding_box(uint32_t i) const;
 			box3 compute_and_transform_bounding_box() const;
-			virtual void compute_closest_point(contact_info& info, const vec3& pos);
-			virtual void compute_closest_oriented_point(contact_info& info, const vec3& pos, const vec3& normal, float orientation_weight = 0.5f);
+			virtual bool compute_closest_point(contact_info& info, const vec3& pos);
+			virtual bool compute_closest_oriented_point(contact_info& info, const vec3& pos, const vec3& normal, float orientation_weight = 0.5f);
 			virtual void compute_first_intersection(contact_info& info, const vec3& start, const vec3& direction);
 			virtual void compute_all_intersections(contact_info& info, const vec3& start, const vec3& direction, bool only_entry_points = true);
 

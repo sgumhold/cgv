@@ -40,7 +40,7 @@ class vr_stream_gui :
 	public cgv::gui::provider {
 protected:
 	cgv::nui::label_manager lm;
-	cgv::nui::nui_node_ptr scene, node;
+	cgv::nui::nui_node_ptr scene, node, lab;
 	cgv::nui::ray_tool_ptr tools[2];
 	std::shared_ptr<vr::room::virtual_display> vt_display;
 	std::shared_ptr<util::screen_texture_manager> screen_tex_manager;

@@ -147,18 +147,29 @@ namespace cgv {
 				break;
 			}
 		}
-		void nui_node::compute_closest_point(contact_info& info, const vec3& pos)
+		bool nui_node::compute_closest_point(contact_info& info, const vec3& pos)
 		{
+			bool result = false;
 			mat4 M = get_model_matrix();
 			mat4 inv_M = get_inverse_model_matrix();
 			vec3 pos_local = reinterpret_cast<const vec3&>(inv_M * vec4(pos, 1.0f));
 			for (auto pcp : primitive_containers) {
-				pcp->compute_closest_point(info, pos_local);
-				correct_contact_info(info.contacts.back(), M, inv_M, pos);
+				if (pcp->compute_closest_point(info, pos_local)) {
+					correct_contact_info(info.contacts.back(), M, inv_M, pos);
+					result = true;
+				}
 			}
+			for (uint32_t ci = 0; ci < get_nr_children(); ++ci) {
+				if (get_child(ci)->cast<nui_node>()->compute_closest_point(info, pos_local)) {
+					correct_contact_info(info.contacts.back(), M, inv_M, pos);
+					result = true;
+				}
+			}
+			return result;
 		}
-		void nui_node::compute_closest_oriented_point(contact_info& info, const vec3& pos, const vec3& normal, float orientation_weight)
+		bool nui_node::compute_closest_oriented_point(contact_info& info, const vec3& pos, const vec3& normal, float orientation_weight)
 		{
+			bool result = false;
 			mat4 M = get_model_matrix();
 			mat4 inv_M = get_inverse_model_matrix();
 			vec3 pos_local = reinterpret_cast<const vec3&>(inv_M * vec4(pos, 1.0f));
@@ -166,9 +177,18 @@ namespace cgv {
 			if (scaling_mode != SM_NONE)
 				normal_local.normalize();
 			for (auto pcp : primitive_containers) {
-				pcp->compute_closest_oriented_point(info, pos_local, normal_local, orientation_weight);
-				correct_contact_info(info.contacts.back(), M, inv_M, pos);
+				if (pcp->compute_closest_oriented_point(info, pos_local, normal_local, orientation_weight)) {
+					correct_contact_info(info.contacts.back(), M, inv_M, pos);
+					result = true;
+				}
 			}
+			for (uint32_t ci = 0; ci < get_nr_children(); ++ci) {
+				if (get_child(ci)->cast<nui_node>()->compute_closest_oriented_point(info, pos_local, normal_local, orientation_weight)) {
+					correct_contact_info(info.contacts.back(), M, inv_M, pos);
+					result = true;
+				}
+			}
+			return result;
 		}
 		void nui_node::compute_first_intersection(contact_info& info, const vec3& start, const vec3& direction)
 		{
@@ -187,6 +207,13 @@ namespace cgv {
 					for (uint32_t i = count; i < info.contacts.size();++i)
 						correct_contact_info(info.contacts[i], M, inv_M, start);
 				}
+				for (uint32_t ci = 0; ci < get_nr_children(); ++ci) {
+					nui_node_ptr C = get_child(ci)->cast<nui_node>();
+					size_t count = info.contacts.size();
+					C->compute_first_intersection(info, start_local, direction_local);
+					for (uint32_t i = count; i < info.contacts.size(); ++i)
+						correct_contact_info(info.contacts[i], M, inv_M, start);
+				}
 			}
 		}
 		void nui_node::compute_all_intersections(contact_info& info, const vec3& start, const vec3& direction, bool only_entry_points)
@@ -202,7 +229,14 @@ namespace cgv {
 			if (ray_axis_aligned_box_intersection(start_local, direction_local, box, t, p, n, 0.000001f)) {
 				for (auto pcp : primitive_containers) {
 					size_t count = info.contacts.size();
-					pcp->compute_all_intersections(info, start_local, direction_local);
+					pcp->compute_all_intersections(info, start_local, direction_local, only_entry_points);
+					for (uint32_t i = count; i < info.contacts.size(); ++i)
+						correct_contact_info(info.contacts[i], M, inv_M, start);
+				}
+				for (uint32_t ci = 0; ci < get_nr_children(); ++ci) {
+					nui_node_ptr C = get_child(ci)->cast<nui_node>();
+					size_t count = info.contacts.size();
+					C->compute_all_intersections(info, start_local, direction_local, only_entry_points);
 					for (uint32_t i = count; i < info.contacts.size(); ++i)
 						correct_contact_info(info.contacts[i], M, inv_M, start);
 				}

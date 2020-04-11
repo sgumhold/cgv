@@ -295,7 +295,7 @@ vr_stream_gui::vr_stream_gui()
 void vr_stream_gui::construct_scene()
 {
 	scene = new cgv::nui::nui_node("scene");
-	cgv::nui::nui_node* lab = new cgv::nui::nui_node("lab");
+	lab = new cgv::nui::nui_node("lab");
 	scene->append_child(lab);
 	lab->create_box_container(true, false);
 	construct_lab(lab, 5, 7, 3, 0.2f, 1.6f, 0.8f, 0.7f, 0.03f);
@@ -312,8 +312,8 @@ void vr_stream_gui::construct_scene()
 
 	tools[0] = new cgv::nui::ray_tool("left ray", 0);
 	tools[1] = new cgv::nui::ray_tool("right ray", 1);
-	tools[0]->interaction_node = node;
-	tools[1]->interaction_node = node;
+	tools[0]->scene_node = scene;
+	tools[1]->scene_node = scene;
 	append_child(scene);
 	append_child(tools[0]);
 	append_child(tools[1]);
@@ -852,7 +852,19 @@ void vr_stream_gui::create_gui()
 		end_tree_node(show_seethrough);
 	}
 
-	if (begin_tree_node("node", node, true)) {
+	if (begin_tree_node("scene", scene, false)) {
+		align("\a");
+		inline_object_gui(scene);
+		align("\b");
+		end_tree_node(scene);
+	}
+	if (begin_tree_node("lab", lab, false)) {
+		align("\a");
+		inline_object_gui(lab);
+		align("\b");
+		end_tree_node(lab);
+	}
+	if (begin_tree_node("node", node, false)) {
 		align("\a");
 		inline_object_gui(node);
 		align("\b");
