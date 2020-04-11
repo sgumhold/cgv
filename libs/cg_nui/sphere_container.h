@@ -32,7 +32,7 @@ namespace cgv {
 			uint32_t add_sphere(const vec3& center, float radius);
 			uint32_t add_sphere(const vec3& center, const rgba& color);
 			uint32_t add_sphere(const vec3& center, const rgba& color, float radius);
-			box3 get_bounding_box(uint32_t i) const;
+			box3 get_oriented_bounding_box(uint32_t i) const;
 			void add_strip(uint32_t start_index, uint32_t count);
 			void set_global_radius(float _radius) { srs.radius = _radius; }
 			float get_radius(uint32_t sphere_index) const { return (scaling_mode == SM_UNIFORM ? uniform_scales[sphere_index] : srs.radius) * srs.radius_scale; }

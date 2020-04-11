@@ -91,6 +91,8 @@ namespace cgv {
 			virtual std::string get_primitive_type() const = 0;
 			uint32_t get_nr_primitives() const { return center_positions.size(); }
 			virtual void compute_closest_point(contact_info& info, const vec3& pos) = 0;
+			box3 get_bounding_box(uint32_t i) const;
+			virtual box3 get_oriented_bounding_box(uint32_t i) const = 0;
 			/// last parameter is weight for trading between position and normal distances for closest oriented point query; default implementation defers call to computer_closest_point
 			virtual void compute_closest_oriented_point(contact_info& info, const vec3& pos, const vec3& normal, float orientation_weight = 0.5f);
 			virtual void compute_first_intersection(contact_info& info, const vec3& start, const vec3& direction) = 0;

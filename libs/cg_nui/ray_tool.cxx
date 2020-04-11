@@ -94,19 +94,32 @@ void ray_tool::draw(cgv::render::context& ctx)
 		}
 
 		// draw wired boxes around contact primitives
-		//auto& wbr = cgv::render::ref_box_wire_renderer(ctx);
-		//std::vector<box3> boxes;
-		//std::vector<rgb> box_colors;
-		//for (const auto& c : contact.contacts) {
-		//	boxes.push_back(c.container->get_bounding_box(c.primitive_index));
-		//	box_colors.push_back(controller_index == 0 ? rgb(1, 0.5f, 0.5f) : rgb(0.5f, 0.5f, 1));
-		//}
-		//wbr.set_render_style(wbrs);
-		//wbr.set_box_array(ctx, boxes);
-		//wbr.set_color_array(ctx, box_colors);
-		//wbr.render(ctx, 0, boxes.size());
+		auto& wbr = cgv::render::ref_box_wire_renderer(ctx);
+		wbr.set_render_style(wbrs);
+		std::vector<box3> boxes;
+		std::vector<rgb> box_colors;
+		std::vector<quat> box_rotations;
+		for (uint32_t i = 0; i < contact.contacts.size(); ++i) {
+			const auto& c = contact.contacts[i];
+			boxes.push_back(c.container->get_oriented_bounding_box(c.primitive_index));
+			box_colors.push_back(controller_index == 0 ? rgb(1, 0.5f, 0.5f) : rgb(0.5f, 0.5f, 1));
+			box_rotations.push_back(c.container->get_orientation(c.primitive_index));
+			if (i+1 == contact.contacts.size() || c.container->get_parent() != contact.contacts[i+1].container->get_parent()) {
+				if (!boxes.empty()) {
+					ctx.push_modelview_matrix();
+					ctx.mul_modelview_matrix(c.container->get_parent()->get_node_to_world_transformation());
+					wbr.set_box_array(ctx, boxes);
+					wbr.set_color_array(ctx, box_colors);
+					wbr.set_rotation_array(ctx, box_rotations);
+					wbr.render(ctx, 0, boxes.size());
+					ctx.pop_modelview_matrix();
+					boxes.clear();
+					box_colors.clear();
+					box_rotations.clear();
+				}
+			}
+		}
 	}
-
 }
 
 void ray_tool::stream_help(std::ostream& os)

@@ -37,7 +37,7 @@ namespace cgv {
 			uint32_t add_box(const box3& box, const rgba& color);
 			uint32_t add_box(const box3& box, const quat& orientation, const rgba& color);
 			quat get_rotation(uint32_t i) const { return use_orientations ? orientations[i] : quat(1.0f, 0.0f, 0.0f, 0.0f); }
-			box3 get_bounding_box(uint32_t i) const;
+			box3 get_oriented_bounding_box(uint32_t i) const;
 			void compute_closest_point(contact_info& info, const vec3& pos);
 			void compute_closest_oriented_point(contact_info& info, const vec3& pos, const vec3& normal, float orientation_weight);
 			void compute_first_intersection(contact_info& info, const vec3& start, const vec3& direction);

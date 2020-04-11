@@ -55,20 +55,12 @@ namespace cgv {
 				orientations.push_back(orientation);
 			return uint32_t(center_positions.size() - 1);
 		}
-		box_container::box3 box_container::get_bounding_box(uint32_t i) const
+		box_container::box3 box_container::get_oriented_bounding_box(uint32_t i) const
 		{
 			const vec3& c = center_positions[i];
 			vec3 e = scales[i];
-			box3 b(c - 0.5f * e, c + 0.5f * e);
-			if (!use_orientations)
-				return b;
-			const quat& q = orientations[i];
-			box3 B;
-			for (int i = 0; i < 8; ++i)
-				B.add_point(q.get_rotated(b.get_corner(i)));
-			return B;
+			return box3(c - 0.5f * e, c + 0.5f * e);
 		}
-
 		void box_container::compute_closest_point(contact_info& info, const vec3& pos)
 		{
 			for (const auto& c : center_positions) {
