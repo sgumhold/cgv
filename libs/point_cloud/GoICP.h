@@ -8,7 +8,7 @@
 
 #include "lib_begin.h"
 
-class CGV_API goicp : public point_cloud_types{
+class CGV_API GoICP : public point_cloud_types{
 	typedef cgv::math::fvec<float, 3> vec3;
 public:
 	point_cloud *sourceCloud;
