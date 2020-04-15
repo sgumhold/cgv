@@ -12,6 +12,8 @@
 #include <cgv_gl/point_renderer.h>
 
 #include <point_cloud.h>
+#include <GoICP.h>
+#include <ICP.h>
 
 #include <string>
 #include <mutex>
@@ -54,9 +56,18 @@ public:
 
 protected:
 	void timer_event(double t, double dt);
+
+	void on_load_source_point_cloud_cb();
+	void on_load_target_point_cloud_cb();
+
+	void on_randomize_position_cb();
+	void on_step_cb();
 private:
+	ICP icp;
+	GoICP goicp;
 	std::string ply_path;
 	point_cloud source_pc, target_pc;
+	cgv::render::point_render_style prs;
 
 };
 
