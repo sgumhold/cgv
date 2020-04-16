@@ -61,13 +61,17 @@ protected:
 	void on_load_target_point_cloud_cb();
 
 	void on_randomize_position_cb();
-	void on_step_cb();
+	void on_reg_ICP_cb();
+	void on_reg_GoICP_cb();
+
+	void init_icp();
 private:
 	ICP icp;
 	GoICP goicp;
 	std::string ply_path;
 	point_cloud source_pc, target_pc;
-	cgv::render::point_render_style prs;
+	cgv::render::point_render_style source_prs;
+	cgv::render::point_render_style target_prs;
 
 };
 
