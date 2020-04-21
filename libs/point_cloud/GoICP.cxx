@@ -5,6 +5,8 @@ using namespace std;
 using namespace cgv;
 using namespace cgv::pointcloud;
 
+#define PI 3.141592653589793238462643383279502884L;
+
 GoICP::GoICP() 
 {
 	source_cloud = nullptr;
@@ -12,6 +14,14 @@ GoICP::GoICP()
 
 	//settings
 	mse_threshhold = 0.001;
+
+	init_rot.a = -PI;
+	init_rot.b = -PI;
+	init_rot.c = -PI;
+	init_rot.w = 2 * PI;
+	init_rot.l = 0;
+	init_rot.lb = 0;
+	init_trans.lb = 0;
 }
 
 void GoICP::build_distance_transform()

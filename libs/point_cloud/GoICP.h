@@ -66,6 +66,9 @@ namespace cgv {
 
 			DT3D distance_transform;
 
+			rotation_node init_rot;
+			translation_node init_trans;
+
 			//settings
 			float mse_threshhold;
 		};
