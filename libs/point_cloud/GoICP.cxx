@@ -1,5 +1,8 @@
 #include "GoICP.h"
 
+using namespace cgv;
+using namespace cgv::pointcloud;
+
 GoICP::GoICP() 
 {
 	sourceCloud = nullptr;
@@ -11,7 +14,7 @@ GoICP::GoICP()
 
 void GoICP::build_distance_transform()
 {
-
+	
 }
 
 float GoICP::icp(mat & R_icp, mat & t_icp)

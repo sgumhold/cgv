@@ -67,7 +67,7 @@ protected:
 	void init_icp();
 private:
 	ICP icp;
-	GoICP goicp;
+	cgv::pointcloud::GoICP goicp;
 	std::string ply_path;
 	point_cloud source_pc, target_pc;
 	cgv::render::point_render_style source_prs;
