@@ -48,21 +48,23 @@ namespace cgv {
 			GoICP();
 			void build_distance_transform();
 
+			inline void set_source_cloud(const point_cloud &inputCloud) {
+				source_cloud = &inputCloud;
+			}
+			inline void set_target_cloud(const point_cloud &inputCloud) {
+				target_cloud = &inputCloud;
+			};
+
 		protected:
 			float icp(mat& R_icp, mat& t_icp);
 		private:
-			const point_cloud *sourceCloud;
-			const point_cloud *targetCloud;
+			const point_cloud *source_cloud;
+			const point_cloud *target_cloud;
 
 			Mat rotation;
 			Dir translation;
 
-			inline void set_source_cloud(const point_cloud &inputCloud) {
-				sourceCloud = &inputCloud;
-			}
-			inline void set_target_cloud(const point_cloud &inputCloud) {
-				targetCloud = &inputCloud;
-			};
+			DT3D distance_transform;
 
 			//settings
 			float mse_threshhold;
