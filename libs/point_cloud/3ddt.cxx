@@ -769,7 +769,49 @@ void DT3D::build(double* _x, double* _y, double* _z, int num)
 	}
 }
 
-float DT3D::distance(double x, double y, double z)
+float DT3D::distance(double _x, double _y, double _z)
 {
-	return 0.0f;
+	int x, y, z;
+	x = round((_x - xMin)*scale);
+	y = round((_y - yMin)*scale);
+	z = round((_z - zMin)*scale);
+
+	if (x > -1 && x < SIZE && y > -1 && y < SIZE && z > -1 && z < SIZE)
+		return A(x,y,z).distance;
+
+	float a = 0, b = 0, c = 0;
+	if (x < 0)
+	{
+		a = x;
+		x = 0;
+	}
+	else if (x >= SIZE)
+	{
+		a = x - SIZE + 1;
+		x = SIZE - 1;
+	}
+
+	if (y < 0)
+	{
+		b = y;
+		y = 0;
+	}
+	else if (y >= SIZE)
+	{
+		b = y - SIZE + 1;
+		y = SIZE - 1;
+	}
+
+	if (z < 0)
+	{
+		c = z;
+		z = 0;
+	}
+	else if (z >= SIZE)
+	{
+		c = z - SIZE + 1;
+		z = SIZE - 1;
+	}
+
+	return sqrt(a*a + b * b + c * c) / scale + A(x,y,z).distance;
 }
