@@ -3,8 +3,11 @@
 #include "point_cloud.h"
 #include <random>
 #include <ctime>
+#include <vector>
 #include <cgv/math/svd.h>
+#include <memory>
 #include "3ddt.h"
+#include "ICP.h"
 
 
 #include "lib_begin.h"
@@ -43,10 +46,13 @@ namespace cgv {
 
 		class CGV_API GoICP : public point_cloud_types {
 			typedef cgv::math::fvec<float, 3> vec3;
-			typedef cgv::math::fmat<float, 4, 4> mat;
+			typedef cgv::math::fmat<float, 4, 4> mat4;
+			typedef cgv::math::fmat<float, 3, 3> mat3;
 		public:
+			static const int max_rot_level = 20;
+
 			GoICP();
-			void build_distance_transform();
+			void buildDistanceTransform();
 
 			inline void set_source_cloud(const point_cloud &inputCloud) {
 				source_cloud = &inputCloud;
@@ -55,22 +61,55 @@ namespace cgv {
 				target_cloud = &inputCloud;
 			};
 
+			inline float register_pointcloud()
+			{
+				initialize();
+				outerBnB();
+				clear();
+
+				return optimal_error;
+			}
+
 		protected:
-			float icp(mat& R_icp, mat& t_icp);
+			float icp(mat3& R_icp, vec3& t_icp);
+			void initialize();
+			void outerBnB();
+			float innerBnB(float* maxRotDisL, translation_node* nodeTransOut);
+			void clear();
 		private:
 			const point_cloud *source_cloud;
 			const point_cloud *target_cloud;
+			point_cloud temp_icp_cloud; //used in icp
+			point_cloud temp_source_cloud;
 
 			Mat rotation;
 			Dir translation;
-
+			std::vector<float> norm_data;
 			DT3D distance_transform;
+			ICP icp_obj;
 
-			rotation_node init_rot;
-			translation_node init_trans;
+			//temp data
+			float** max_rot_dis;
+			std::vector<float> min_dis;
+			int icp_inlier_num;
+			//vec3* point_data_temp;
+			//vec3* point_data_temp_ICP;
 
+			rotation_node init_rot_node,optimal_rot_node;
+			translation_node init_trans_node, optimal_trans_node;
+			mat3 optimal_rotation;
+			vec3 optimal_translation;
+			
+
+			float optimal_error;
 			//settings
-			float mse_threshhold;
+			float mse_threshhold,sse_threshhold;
+			float rotMinX,rotMinY,rotMinZ,rotWidth;
+			float transMinX, transMinY, transMinZ, transWidth;
+			float trim_fraction;
+			float distance_transform_size;
+			float distance_transform_expand_factor;
+			bool do_trim;
 		};
 
 	}
