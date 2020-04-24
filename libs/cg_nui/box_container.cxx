@@ -64,134 +64,58 @@ namespace cgv {
 		bool box_container::compute_closest_point(contact_info& info, const vec3& pos)
 		{
 			bool result = false;
+			contact_info::contact C;
+			C.container = this;
+			C.node = get_parent();
 			for (const auto& c : center_positions) {
-				uint32_t i = uint32_t(&c - &center_positions.front());
-				vec3 h = 0.5f*scales[i];
-				vec3 p = pos;
-				p -= c;
-				if (use_orientations)
-					orientations[i].inverse_rotate(p);				
-				bool inside[3];
-				float closest[3];
-				float distances[3];
-				int inside_count = 0;
-				for (int j = 0; j < 3; ++j) {
-					closest[j] = p[j] < 0.0f ? -1.0f : 1.0f;
-					distances[j] = fabs(p[j] - closest[j]*h[j]);
-					inside[j] = (p[j] >= -h[j]) && (p[j] <=h[j]);
-					if (inside[j])
-						++inside_count;
-				}
-				vec3 n(0.0f);
-				float distance;
-				if (inside_count == 3) {
-					int j_min = distances[1] < distances[0] ? 1 : 0;
-					if (distances[2] < distances[j_min])
-						j_min = 2;
-					distance = distances[j_min];
-					n[j_min] = closest[j_min];
-					p[j_min] = closest[j_min] * h[j_min];
-				}
-				else {
-					float sqr_dist = 0;
-					for (int j = 0; j < 3; ++j) {
-						if (!inside[j]) {
-							sqr_dist += distances[j]* distances[j];
-							n[j] = closest[j];
-							p[j] = closest[j] * h[j];
-						}
-					}
-					distance = sqrt(sqr_dist);
-					n.normalize();
-				}
-				vec3 tc = (p + h) / scales[i];
-				if (use_orientations) {
-					orientations[i].rotate(p);
-					orientations[i].rotate(n);
-				}
-				p += c;
-				if (consider_closest_point(i, info, distance, p, n, tc))
+				C.primitive_index = uint32_t(&c - &center_positions.front());
+				compute_closest_box_point(C, pos, c, scales[C.primitive_index], use_orientations ? &orientations[C.primitive_index] : 0);
+				if (info.consider_closest_contact(C))
 					result = true;
 			}
 			return result;
 		}
-		
-		int box_container::compute_intersection(
-			const vec3& box_center, const vec3& box_extent,
-			const vec3& ray_start, const vec3& ray_direction, contact_info::contact& C, contact_info::contact* C2_ptr)
+		bool box_container::compute_first_intersection(contact_info& info, const vec3& start, const vec3& direction)
 		{
-			float t_result;
-			vec3 p_result, n_result;
-			box3 B(-0.5f * box_extent, 0.5f * box_extent);
-			if (!ray_axis_aligned_box_intersection(ray_start - box_center, ray_direction, B, t_result, p_result, n_result, 0.000001f))
-				return 0;
-			C.distance = t_result;
-			C.position = p_result + box_center;
-			C.normal = n_result;
-			C.texcoord = (p_result + 0.5f * box_extent) / box_extent;
-			return 1;
-		}
-		int box_container::compute_intersection(
-			const vec3& box_center, const vec3& box_extent, const quat& box_rotation,
-			const vec3& ray_start, const vec3& ray_direction, contact_info::contact& C, contact_info::contact* C2_ptr)
-		{
-			vec3 ro = ray_start - box_center;
-			box_rotation.inverse_rotate(ro);
-			ro += box_center;
-			vec3 rd = ray_direction;
-			box_rotation.inverse_rotate(rd);
-			int cnt = compute_intersection(box_center, box_extent, ro, rd, C, C2_ptr);
-			// transform result back
-			if (cnt > 0) {
-				C.position = box_rotation.get_rotated(C.position - box_center) + box_center;
-				box_rotation.rotate(C.normal);
-			}
-			if (cnt > 1) {
-				C2_ptr->position = box_rotation.get_rotated(C2_ptr->position - box_center) + box_center;
-				box_rotation.rotate(C2_ptr->normal);
-			}
-			return cnt;
-		}
-
-		void box_container::compute_first_intersection(contact_info& info, const vec3& start, const vec3& direction)
-		{
+			bool result = false;
+			contact_info::contact C;
+			C.container = this;
+			C.node = get_parent();
 			for (const auto& c : center_positions) {
-				uint32_t i = uint32_t(&c - &center_positions.front());
-				const vec3& e = scales[i];
-				contact_info::contact ci;
+				C.primitive_index = uint32_t(&c - &center_positions.front());
+				const vec3& e = scales[C.primitive_index];
 				if ((use_orientations ? 
-					 compute_intersection(c, e, get_rotation(i), start, direction, ci) :
-					 compute_intersection(c, e, start, direction, ci)) > 0) {
-					ci.primitive_index = i;
-					ci.container = this;
-					if (info.contacts.empty())
-						info.contacts.push_back(ci);
-					else if (ci.distance < info.contacts.front().distance)
-						info.contacts.front() = ci;
+					 compute_box_intersection(c, e, get_rotation(C.primitive_index), start, direction, C) :
+					 compute_box_intersection(c, e, start, direction, C)) > 0) {
+					if (info.consider_closest_contact(C))
+						result = true;
 				}
 			}
+			return result;
 		}
-
-		void box_container::compute_all_intersections(contact_info& info, const vec3& start, const vec3& direction, bool only_entry_points)
+		int box_container::compute_all_intersections(contact_info& info, const vec3& start, const vec3& direction, bool only_entry_points)
 		{
+			int result = 0;
+			contact_info::contact C1, C2;
+			C1.container = C2.container = this;
+			C1.node = C2.node = get_parent();
 			for (const auto& c : center_positions) {
-				uint32_t i = uint32_t(&c - &center_positions.front());
-				const vec3& e = scales[i];
+				C1.primitive_index = C2.primitive_index = uint32_t(&c - &center_positions.front());
+				const vec3& e = scales[C1.primitive_index];
 				contact_info::contact ci1, ci2;
-				int cnt = use_orientations ?
-					compute_intersection(c, e, get_rotation(i), start, direction, ci1, &ci2) :
-					compute_intersection(c, e, start, direction, ci1, &ci2);
-				if (cnt == 0)
+				int nr_intersections = use_orientations ?
+					compute_box_intersection(c, e, get_rotation(C1.primitive_index), start, direction, C1, &C2) :
+					compute_box_intersection(c, e, start, direction, C1, &C2);
+				if (nr_intersections == 0)
 					continue;
-				ci1.primitive_index = i;
-				ci1.container = this;
-				info.contacts.push_back(ci1);
-				if (cnt == 1)
+				++result;
+				info.contacts.push_back(C1);
+				if (nr_intersections == 1)
 					continue;
-				ci2.primitive_index = i;
-				ci2.container = this;
-				info.contacts.push_back(ci1);
+				++result;
+				info.contacts.push_back(C2);
 			}
+			return result;
 		}
 
 		bool box_container::init(cgv::render::context& ctx)

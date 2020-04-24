@@ -40,8 +40,8 @@ namespace cgv {
 			float get_radius_scale() const { return srs.radius_scale; }
 			bool compute_closest_point(contact_info& info, const vec3& pos);
 			//bool compute_closest_oriented_point(contact_info& info, const vec3& pos, const vec3& normal, float orientation_weight);
-			void compute_first_intersection(contact_info& info, const vec3& start, const vec3& direction);
-			void compute_all_intersections(contact_info& info, const vec3& start, const vec3& direction, bool only_entry_points);
+			bool compute_first_intersection(contact_info& info, const vec3& start, const vec3& direction);
+			int compute_all_intersections(contact_info& info, const vec3& start, const vec3& direction, bool only_entry_points);
 			bool init(cgv::render::context& ctx);
 			void clear(cgv::render::context& ctx);
 			void draw(cgv::render::context& ctx);

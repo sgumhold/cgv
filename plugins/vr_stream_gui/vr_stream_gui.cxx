@@ -2,6 +2,8 @@
 #include "debug_draw.h"
 #include "mouse_win.h"
 #include <random>
+#include <cg_nui/ray_tool.h>
+#include <cg_nui/point_tool.h>
 #include <cgv/signal/rebind.h>
 #include <cgv/base/register.h>
 #include <cgv/math/ftransform.h>
@@ -149,76 +151,8 @@ void vr_stream_gui::on_device_change(void* kit_handle, bool attach)
 	}
 }
 
-/// construct boxes that represent a table of dimensions tw,td,th and leg width tW
-void vr_stream_gui::construct_table(cgv::nui::nui_node_ptr node, float tw, float td, float th, float tW) {
-	// construct table
-	rgba table_clr(0.3f, 0.2f, 0.0f, 1.0f);
-	node->ref_boxes()->add_box(
-		box3(vec3(-0.5f * tw - 2 * tW, th - tW, -0.5f * td - 2 * tW),
-			 vec3(0.5f * tw + 2 * tW, th, 0.5f * td + 2 * tW)),
-		table_clr);
-
-	node->ref_boxes()->add_box(
-		box3(vec3(-0.5f*tw, 0, -0.5f*td), vec3(-0.5f*tw - tW, th - tW, -0.5f*td - tW)), table_clr);
-	node->ref_boxes()->add_box(
-		box3(vec3(-0.5f*tw, 0, 0.5f*td), vec3(-0.5f*tw - tW, th - tW, 0.5f*td + tW)), table_clr);
-	node->ref_boxes()->add_box(
-		box3(vec3(0.5f*tw, 0, -0.5f*td), vec3(0.5f*tw + tW, th - tW, -0.5f*td - tW)), table_clr);
-	node->ref_boxes()->add_box(
-		box3(vec3(0.5f*tw, 0, 0.5f*td), vec3(0.5f*tw + tW, th - tW, 0.5f*td + tW)), table_clr);
-}
-
-/// construct boxes that represent a room of dimensions w,d,h and wall width W
-void vr_stream_gui::construct_room(cgv::nui::nui_node_ptr node, float w, float d, float h, float W, bool walls, bool ceiling) {
-	// construct floor
-	node->ref_boxes()->add_box(
-		box3(vec3(-0.5f * w, -W, -0.5f * d), vec3(0.5f * w, 0, 0.5f * d)),
-		rgba(0.2f, 0.2f, 0.2f, 1.0f));
-
-	if(walls) {
-		// construct walls
-		node->ref_boxes()->add_box(
-			box3(vec3(-0.5f*w, -W, -0.5f*d - W), vec3(0.5f*w, h, -0.5f*d)),
-			rgba(0.8f, 0.5f, 0.5f,1.0f));
-		node->ref_boxes()->add_box(
-			box3(vec3(-0.5f*w, -W, 0.5f*d), vec3(0.5f*w, h, 0.5f*d + W)),
-			rgba(0.8f, 0.5f, 0.5f,1.0f));
-		
-		node->ref_boxes()->add_box(
-			box3(vec3(0.5f*w, -W, -0.5f*d - W), vec3(0.5f*w + W, h, 0.5f*d + W)),
-			rgba(0.5f, 0.8f, 0.5f, 1.0f));
-	}
-	if(ceiling) {
-		// construct ceiling
-		node->ref_boxes()->add_box(
-			box3(vec3(-0.5f*w - W, h, -0.5f*d - W), vec3(0.5f*w + W, h + W, 0.5f*d + W)),
-			rgba(0.5f, 0.5f, 0.8f,1.0f));
-	}
-}
-
-/// construct boxes for environment
-void vr_stream_gui::construct_environment(cgv::nui::nui_node_ptr node, float s, float ew, float ed, float w, float d, float h) {
-	std::default_random_engine generator;
-	std::uniform_real_distribution<float> distribution(0, 1);
-	unsigned n = unsigned(ew / s);
-	unsigned m = unsigned(ed / s);
-	float ox = 0.5f*float(n)*s;
-	float oz = 0.5f*float(m)*s;
-	for(unsigned i = 0; i < n; ++i) {
-		float x = i * s - ox;
-		for(unsigned j = 0; j < m; ++j) {
-			float z = j * s - oz;
-			if(fabsf(x) < 0.5f*w && fabsf(x + s) < 0.5f*w && fabsf(z) < 0.5f*d && fabsf(z + s) < 0.5f*d)
-				continue;
-			float h = 0.2f*(std::max(abs(x) - 0.5f*w, 0.0f) + std::max(abs(z) - 0.5f*d, 0.0f))*distribution(generator) + 0.1f;
-			rgba color = cgv::media::color<float, cgv::media::HLS,cgv::media::OPACITY>(distribution(generator), 0.1f*distribution(generator) + 0.15f, 0.3f, 1.0f);
-			node->ref_boxes()->add_box(box3(vec3(x, 0.0f, z), vec3(x + s, h, z + s)), color);
-		}
-	}
-}
-
 /// construct boxes that can be moved around
-void vr_stream_gui::construct_movable_boxes(cgv::nui::nui_node_ptr node, float tw, float td, float th, float tW, size_t nr)
+void vr_stream_gui::construct_movable_boxes(cgv::nui::nui_primitive_node_ptr node, float tw, float td, float th, float tW, size_t nr)
 {	
 	std::default_random_engine generator;
 	std::uniform_real_distribution<float> distribution(0, 1);
@@ -227,7 +161,7 @@ void vr_stream_gui::construct_movable_boxes(cgv::nui::nui_node_ptr node, float t
 		float x = distribution(generator);
 		float y = distribution(generator);
 		vec3 extent(distribution(generator), distribution(generator), distribution(generator));
-		extent += 0.01f;
+		extent += 0.1f;
 		extent *= std::min(tw, td)*0.1f;
 
 		vec3 center(-0.5f*tw + x * tw, th + tW, -0.5f*td + y * td);
@@ -239,16 +173,9 @@ void vr_stream_gui::construct_movable_boxes(cgv::nui::nui_node_ptr node, float t
 	}
 }
 
-/// construct a scene with a table
-void vr_stream_gui::construct_lab(cgv::nui::nui_node_ptr node, float w, float d, float h, float W, float tw, float td, float th, float tW)
-{
-	construct_room(node, w, d, h, W, false, false);
-	construct_table(node, tw, td, th, tW);
-	construct_environment(node, 0.3f, 3 * w, 3 * d, w, d, h);
-}
-
 vr_stream_gui::vr_stream_gui()
 {
+
 	screen_tex_manager = std::make_shared<util::screen_texture_manager>();
 	intersection = {};
 	ray_origin = vec3(0.0f);
@@ -275,10 +202,6 @@ vr_stream_gui::vr_stream_gui()
 	last_kit_handle = 0;
 	connect(cgv::gui::ref_vr_server().on_device_change, this, &vr_stream_gui::on_device_change);
 
-	mesh_scale = 0.0005f;
-	mesh_location = dvec3(0, 0.85f, 0);
-	mesh_orientation = dquat(1, 0, 0, 0);
-
 	cgv::media::font::enumerate_font_names(font_names);
 	font_enum_decl = "enums='";
 	for (unsigned i = 0; i < font_names.size(); ++i) {
@@ -295,22 +218,32 @@ vr_stream_gui::vr_stream_gui()
 void vr_stream_gui::construct_scene()
 {
 	scene = new cgv::nui::nui_node("scene");
-	lab = new cgv::nui::nui_node("lab");
+	lab = new cgv::nui::nui_primitive_node("lab");
+	lab->set_interaction_capabilities(cgv::nui::IC_NONE);
 	scene->append_child(lab);
 	lab->create_box_container(true, false);
-	construct_lab(lab, 5, 7, 3, 0.2f, 1.6f, 0.8f, 0.7f, 0.03f);
+	lab->construct_lab(5, 7, 3, 0.2f, 1.6f, 0.8f, 0.7f, 0.03f);
 
-	node = new cgv::nui::nui_node("content", cgv::nui::SM_UNIFORM);
+	node = new cgv::nui::nui_primitive_node("content", cgv::nui::SM_UNIFORM);
 	scene->append_child(node);
 	node->create_box_container(true, true);
 	node->create_rectangle_container(true, true, true);
 	node->create_sphere_container(true, true);
-	construct_movable_boxes(node, 1.6f, 0.8f, 0.7f, 0.03f, 2000);
+	construct_movable_boxes(node, 1.6f, 0.8f, 0.7f, 0.03f, 20);
 	construct_labels(node);
 	node->ref_spheres()->add_sphere(vec3(-1, 0.5f, 0), rgba(1, 1, 0, 1), 0.1f);
 	node->ref_spheres()->add_sphere(vec3(1, 0.5f, 0), rgba(1, 0, 1, 1), 0.15f);
+	mesh_node = new cgv::nui::nui_mesh_node("mesh", cgv::nui::SM_UNIFORM);
+	mesh_node->set_scale(vec3(0.001f));
+	mesh_node->set_translation(vec3(-0.5f,0.9f,0.0f));
+#ifdef _DEBUG
+	mesh_node->set_file_name("D:/data/surface/meshes/obj/Max-Planck_lowres.obj");
+#else
+	mesh_node->set_file_name("D:/data/surface/meshes/obj/Max-Planck_highres.obj");
+#endif
+	scene->append_child(mesh_node);
 
-	tools[0] = new cgv::nui::ray_tool("left ray", 0);
+	tools[0] = new cgv::nui::point_tool("left point", 0);
 	tools[1] = new cgv::nui::ray_tool("right ray", 1);
 	tools[0]->scene_node = scene;
 	tools[1]->scene_node = scene;
@@ -320,7 +253,7 @@ void vr_stream_gui::construct_scene()
 }
 
 /// construct labels
-void vr_stream_gui::construct_labels(cgv::nui::nui_node_ptr node)
+void vr_stream_gui::construct_labels(cgv::nui::nui_primitive_node_ptr node)
 {
 	cgv::media::font::font_ptr f = cgv::media::font::find_font("Open Sans");
 	lm.set_font_face(f->get_font_face(cgv::media::font::FFA_BOLD));
@@ -488,16 +421,6 @@ bool vr_stream_gui::init(cgv::render::context& ctx)
 	if (!seethrough.build_program(ctx, "seethrough.glpr"))
 		cgv::gui::message("could not build seethrough program");
 	
-	cgv::media::mesh::simple_mesh<> M;
-#ifdef _DEBUG
-	if (M.read("D:/data/surface/meshes/obj/Max-Planck_lowres.obj")) {
-#else
-	if (M.read("D:/data/surface/meshes/obj/Max-Planck_highres.obj")) {
-#endif
-		MI.construct(ctx, M);
-		MI.bind(ctx, ctx.ref_surface_shader_program(true), true);
-	}
-
 	cgv::gui::connect_vr_server(true);
 
 	auto view_ptr = find_view_as_node();
@@ -670,18 +593,6 @@ void vr_stream_gui::draw(cgv::render::context& ctx)
 
 	vt_display->draw(ctx);
 
-
-	if (MI.is_constructed()) {
-		dmat4 R;
-		mesh_orientation.put_homogeneous_matrix(R);
-		ctx.push_modelview_matrix();
-		ctx.mul_modelview_matrix(
-			cgv::math::translate4<double>(mesh_location)*
-			cgv::math::scale4<double>(mesh_scale, mesh_scale, mesh_scale) *
-			R);
-		MI.draw_all(ctx);
-		ctx.pop_modelview_matrix();
-	}
 	if (vr_view_ptr) {
 		if ((!shared_texture && camera_tex.is_created()) || (shared_texture && camera_tex_id != -1)) {
 			if (vr_view_ptr->get_rendered_vr_kit() != 0 && vr_view_ptr->get_rendered_vr_kit() == vr_view_ptr->get_current_vr_kit()) {
@@ -870,13 +781,11 @@ void vr_stream_gui::create_gui()
 		align("\b");
 		end_tree_node(node);
 	}
-	if(begin_tree_node("mesh", mesh_scale)) {
+	if (begin_tree_node("mesh_node", mesh_node, false)) {
 		align("\a");
-		add_member_control(this, "scale", mesh_scale, "value_slider", "min=0.0001;step=0.0000001;max=100;log=true;ticks=true");
-		add_gui("location", mesh_location, "", "main_label='';long_label=true;gui_type='value_slider';options='min=-2;max=2;step=0.001;ticks=true'");
-		add_gui("orientation", static_cast<dvec4&>(mesh_orientation), "direction", "main_label='';long_label=true;gui_type='value_slider';options='min=-1;max=1;step=0.001;ticks=true'");
+		inline_object_gui(mesh_node);
 		align("\b");
-		end_tree_node(mesh_scale);
+		end_tree_node(mesh_node);
 	}
 	for (int i = 0; i < 2; ++i) {
 		if (begin_tree_node(std::string("tool_")+cgv::utils::to_string(i), tools[i])) {

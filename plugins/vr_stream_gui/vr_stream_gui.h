@@ -2,12 +2,12 @@
 #include <cgv/base/group.h>
 #include <cgv/render/drawable.h>
 #include <cgv/gui/provider.h>
-#include <cg_nui/nui_node.h>
+#include <cg_nui/nui_primitive_node.h>
+#include <cg_nui/nui_mesh_node.h>
 #include <cg_nui/label_manager.h>
-#include <cg_nui/ray_tool.h>
+#include <cg_nui/controller_tool.h>
 #include <cgv/gui/event_handler.h>
 #include <cgv_gl/box_renderer.h>
-#include <cgv_gl/gl/mesh_render_info.h>
 #include <cgv/render/shader_program.h>
 #include <cgv_gl/rounded_cone_renderer.h>
 #include <cgv/render/frame_buffer.h>
@@ -40,8 +40,10 @@ class vr_stream_gui :
 	public cgv::gui::provider {
 protected:
 	cgv::nui::label_manager lm;
-	cgv::nui::nui_node_ptr scene, node, lab;
-	cgv::nui::ray_tool_ptr tools[2];
+	cgv::nui::nui_node_ptr scene;
+	cgv::nui::nui_primitive_node_ptr node, lab;
+	cgv::nui::nui_mesh_node_ptr mesh_node;
+	cgv::nui::controller_tool_ptr tools[2];
 	std::shared_ptr<vr::room::virtual_display> vt_display;
 	std::shared_ptr<util::screen_texture_manager> screen_tex_manager;
 	util::vive_mouse_controller vm_controller;
@@ -67,14 +69,6 @@ protected:
 	// update position of virtual screen
 	// call twice, one time with upper left, one time with lower right corner
 	void reconfigure_virtual_display(vec3 pos);
-
-	// sample for rendering a mesh
-	double mesh_scale;
-	dvec3 mesh_location;
-	dquat mesh_orientation;
-
-	// render information for mesh
-	cgv::render::mesh_render_info MI;
 
 	// general font information
 	std::vector<const char*> font_names;
@@ -119,17 +113,9 @@ public:
 	/// register on device change events
 	void on_device_change(void* kit_handle, bool attach);
 	/// construct boxes that represent a table of dimensions tw,td,th and leg width tW
-	void construct_table(cgv::nui::nui_node_ptr node, float tw, float td, float th, float tW);
-	/// construct boxes that represent a room of dimensions w,d,h and wall width W
-	void construct_room(cgv::nui::nui_node_ptr node, float w, float d, float h, float W, bool walls, bool ceiling);
-	/// construct boxes for environment
-	void construct_environment(cgv::nui::nui_node_ptr node, float s, float ew, float ed, float w, float d, float h);
-	/// construct a scene with a table
-	void construct_lab(cgv::nui::nui_node_ptr node, float w, float d, float h, float W, float tw, float td, float th, float tW);
-	/// construct boxes that represent a table of dimensions tw,td,th and leg width tW
-	void construct_movable_boxes(cgv::nui::nui_node_ptr node, float tw, float td, float th, float tW, size_t nr);
+	void construct_movable_boxes(cgv::nui::nui_primitive_node_ptr node, float tw, float td, float th, float tW, size_t nr);
 	/// construct labels
-	void construct_labels(cgv::nui::nui_node_ptr node);
+	void construct_labels(cgv::nui::nui_primitive_node_ptr node);
 	/// construct lab and movable parts
 	void construct_scene();
 public:
