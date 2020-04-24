@@ -73,12 +73,12 @@ void ICP::reg_icp(Mat& rotation_mat, Dir& translation_vec) {
 		fA.zeros();
 		for (int i = 0; i < sourceCloud->get_nr_points(); i++)
 		{
-			//int randSample = std::rand() % P->get_nr_points();
+			int randSample = std::rand() % sourceCloud->get_nr_points();
 			/// sample the source point cloud
-			S.pnt(i) = sourceCloud->pnt(i);
-			Q.pnt(i) = targetCloud->pnt(tree->find_closest(sourceCloud->pnt(i)));
+			S.pnt(i) = sourceCloud->pnt(randSample);
+			Q.pnt(i) = targetCloud->pnt(tree->find_closest(S.pnt(i)));
 			/// get the closest point in the target point cloud
-			//Q->pnt(i) = targetCloud->pnt(i);
+			//Q.pnt(i) = targetCloud->pnt(i);
 			fA += Mat(Q.pnt(i) - target_center, rotation_mat * S.pnt(i) + translation_vec - source_center);
 		}
 		///cast fA to A
