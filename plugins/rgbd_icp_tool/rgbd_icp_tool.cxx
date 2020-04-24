@@ -145,13 +145,17 @@ void rgbd_icp_tool::on_reg_ICP_cb()
 		return;
 	}
 	point_cloud_types::Mat rotation;
-	rotation.zeros();
+	rotation.identity();
 	point_cloud_types::Dir translation;
 	translation.zeros();
+	icp.set_source_cloud(source_pc);
+	icp.set_target_cloud(target_pc);
+	icp.set_iterations(2);
+	icp.set_eps(1e-6);
+	icp.set_num_random(100);
 	icp.reg_icp(rotation, translation);
-	
-	source_pc.translate(translation);
 	source_pc.rotate(rotation);
+	source_pc.translate(translation);
 	post_redraw();
 }
 
