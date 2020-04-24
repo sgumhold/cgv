@@ -34,6 +34,11 @@ namespace cgv {
 
 		}
 
+		GoICP::~GoICP()
+		{
+			
+		}
+
 		void GoICP::buildDistanceTransform()
 		{
 			vector<double> x, y, z;
@@ -81,7 +86,7 @@ namespace cgv {
 			{
 				sort(min_dis.begin(), min_dis.end());
 				
-				for (i = 0; i < icp_inlier_num; i++)
+				for (i = 0; i < inlier_num; i++)
 				{
 					error += min_dis[i] * min_dis[i];
 				}
@@ -137,13 +142,13 @@ namespace cgv {
 			if (do_trim)
 			{
 				// Calculate number of inlier points
-				icp_inlier_num = (int)(Nd * (1 - trim_fraction));
+				inlier_num = (int)(Nd * (1 - trim_fraction));
 			}
 			else
 			{
-				icp_inlier_num = Nd;
+				inlier_num = Nd;
 			}
-			sse_threshhold = mse_threshhold * icp_inlier_num;
+			sse_threshhold = mse_threshhold * inlier_num;
 		}
 
 		void cgv::pointcloud::GoICP::outerBnB()
