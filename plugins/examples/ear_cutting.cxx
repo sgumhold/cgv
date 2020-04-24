@@ -376,7 +376,6 @@ public:
 		pnt_renderer.set_color_array(ctx, colors);
 		pnt_renderer.set_position_array(ctx, points);
 		pnt_renderer.render(ctx, 0, points.size());
-		pnt_renderer.disable(ctx);
 
 		if (selected_index != -1)
 			std::swap(tmp, colors[selected_index]);
