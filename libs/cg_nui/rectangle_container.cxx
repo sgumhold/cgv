@@ -122,13 +122,16 @@ namespace cgv {
 		bool rectangle_container::compute_closest_point(contact_info& info, const vec3& pos)
 		{
 			bool result = false;
+			contact_info::contact C;
+			C.container = this;
+			C.node = get_parent();
 			for (const auto& c : center_positions) {
-				uint32_t i = uint32_t(&c - &center_positions.front());
-				vec3 h = 0.5f * scales[i];
-				vec3 p = pos;
-				p -= c;
+				C.primitive_index = uint32_t(&c - &center_positions.front());
+				vec3 h = 0.5f * scales[C.primitive_index];
+				vec3& p = C.position;
+				p = pos-c;
 				if (use_orientations)
-					orientations[i].inverse_rotate(p);
+					orientations[C.primitive_index].inverse_rotate(p);
 				bool inside[3];
 				float closest[3];
 				float distances[3];
@@ -143,8 +146,8 @@ namespace cgv {
 					if (inside[j])
 						++inside_count;
 				}
-				vec3 n(0.0f);
-				float distance;
+				vec3& n = C.normal;
+				n.zeros();
 				float sqr_dist = 0;
 				for (int j = 0; j < 3; ++j) {
 					if (!inside[j]) {
@@ -156,22 +159,21 @@ namespace cgv {
 						p[j] = closest[j] * h[j];
 					}
 				}
-				distance = sqrt(sqr_dist);
+				C.distance = sqrt(sqr_dist);
 				n.normalize();
-				vec3 tc((p[0] + h[0]) / scales[i][0], (p[1] + h[1]) / scales[i][1], 0.0f);
+				vec3 tc((p[0] + h[0]) / scales[C.primitive_index][0], (p[1] + h[1]) / scales[C.primitive_index][1], 0.0f);
 				if (use_orientations) {
-					orientations[i].rotate(p);
-					orientations[i].rotate(n);
+					orientations[C.primitive_index].rotate(p);
+					orientations[C.primitive_index].rotate(n);
 				}
 				p += c;
-				if (consider_closest_point(i, info, distance, p, n, tc))
+				if (info.consider_closest_contact(C))
 					result = true;
 			}
 			return result;
 		}
-
-		int rectangle_container::compute_intersection(const vec3& rectangle_center, const vec2& rectangle_extent,
-			const vec3& ray_start, const vec3& ray_direction, contact_info::contact& C, contact_info::contact* C2_ptr)
+		bool rectangle_container::compute_intersection(const vec3& rectangle_center, const vec2& rectangle_extent,
+			const vec3& ray_start, const vec3& ray_direction, contact_info::contact& C)
 		{
 			float t_result;
 			vec3 p_result = ray_start - rectangle_center;
@@ -182,85 +184,76 @@ namespace cgv {
 				t_result = -p_result[2] / ray_direction[2];
 				// intersection is before ray start
 				if (t_result < 0)
-					return 0;
+					return false;
 				p_result += t_result * ray_direction;
 			}
 			// check if ray plane intersection is inside of rectangle extent
 			if (fabs(p_result[0]) > 0.5f * rectangle_extent[0] ||
 				fabs(p_result[1]) > 0.5f * rectangle_extent[1])
-				return 0;
+				return false;
 			vec3 n_result(0.0f, 0.0f, 1.0f);
 			C.distance = t_result;
 			C.position = p_result + rectangle_center;
 			C.normal = n_result;
 			C.texcoord = vec3((vec2(2, &p_result[0]) + 0.5f * rectangle_extent) / rectangle_extent, 0.0f);
-			return 1;
+			return true;
 		}
-		int rectangle_container::compute_intersection(
+		bool rectangle_container::compute_intersection(
 			const vec3& rectangle_center, const vec2& rectangle_extent, const quat& rectangle_rotation,
-			const vec3& ray_start, const vec3& ray_direction, contact_info::contact& C, contact_info::contact* C2_ptr)
+			const vec3& ray_start, const vec3& ray_direction, contact_info::contact& C)
 		{
 			vec3 ro = ray_start - rectangle_center;
 			rectangle_rotation.inverse_rotate(ro);
 			ro += rectangle_center;
 			vec3 rd = ray_direction;
 			rectangle_rotation.inverse_rotate(rd);
-			int cnt = compute_intersection(rectangle_center, rectangle_extent, ro, rd, C, C2_ptr);
-			// transform result back
-			if (cnt > 0) {
+			if (compute_intersection(rectangle_center, rectangle_extent, ro, rd, C)) {
+				// transform result back
 				C.position -= rectangle_center;
 				rectangle_rotation.rotate(C.position);
 				C.position += rectangle_center;
 				rectangle_rotation.rotate(C.normal);
+				return true;
 			}
-			if (cnt > 1) {
-				C2_ptr->position -= rectangle_center;
-				rectangle_rotation.rotate(C2_ptr->position);
-				C2_ptr->position += rectangle_center;
-				rectangle_rotation.rotate(C2_ptr->normal);
-			}
-			return cnt;
+			return false;
 		}
 
-		void rectangle_container::compute_first_intersection(contact_info& info, const vec3& start, const vec3& direction)
+		bool rectangle_container::compute_first_intersection(contact_info& info, const vec3& start, const vec3& direction)
 		{
+			bool result = false;
+			contact_info::contact C;
+			C.container = this;
+			C.node = get_parent();
 			for (const auto& c : center_positions) {
-				uint32_t i = uint32_t(&c - &center_positions.front());
-				const vec2& e = reinterpret_cast<const vec2&>(scales[i]);
-				contact_info::contact ci;
+				C.primitive_index = uint32_t(&c - &center_positions.front());
+				const vec2& e = reinterpret_cast<const vec2&>(scales[C.primitive_index]);
 				if ((use_orientations ?
-					compute_intersection(c, e, get_rotation(i), start, direction, ci) :
-					compute_intersection(c, e, start, direction, ci)) > 0) {
-					ci.primitive_index = i;
-					ci.container = this;
-					if (info.contacts.empty())
-						info.contacts.push_back(ci);
-					else if (ci.distance < info.contacts.front().distance)
-						info.contacts.front() = ci;
+					compute_intersection(c, e, get_rotation(C.primitive_index), start, direction, C) :
+					compute_intersection(c, e, start, direction, C))) {
+					if (info.consider_closest_contact(C))
+						result = true;
 				}
 			}
+			return result;
 		}
 
-		void rectangle_container::compute_all_intersections(contact_info& info, const vec3& start, const vec3& direction, bool only_entry_points)
+		int rectangle_container::compute_all_intersections(contact_info& info, const vec3& start, const vec3& direction, bool only_entry_points)
 		{
+			int result = 0;
+			contact_info::contact C;
+			C.container = this;
+			C.node = get_parent();
 			for (const auto& c : center_positions) {
-				uint32_t i = uint32_t(&c - &center_positions.front());
-				const vec2& e = reinterpret_cast<const vec2&>(scales[i]);
-				contact_info::contact ci1, ci2;
-				int cnt = use_orientations ?
-					compute_intersection(c, e, get_rotation(i), start, direction, ci1, &ci2) :
-					compute_intersection(c, e, start, direction, ci1, &ci2);
-				if (cnt == 0)
-					continue;
-				ci1.primitive_index = i;
-				ci1.container = this;
-				info.contacts.push_back(ci1);
-				if (cnt == 1)
-					continue;
-				ci2.primitive_index = i;
-				ci2.container = this;
-				info.contacts.push_back(ci1);
+				C.primitive_index = uint32_t(&c - &center_positions.front());
+				const vec2& e = reinterpret_cast<const vec2&>(scales[C.primitive_index]);
+				if (use_orientations ?
+					compute_intersection(c, e, get_rotation(C.primitive_index), start, direction, C) :
+					compute_intersection(c, e, start, direction, C)) {
+					++result;
+					info.contacts.push_back(C);
+				}
 			}
+			return result;
 		}
 
 		bool rectangle_container::init(cgv::render::context& ctx)

@@ -23,12 +23,6 @@ namespace cgv {
 			cgv::render::box_wire_render_style bwrs;
 			BoxRenderType render_type;
 			void prepare_render(cgv::render::context& ctx, cgv::render::renderer& r, const cgv::render::render_style& rs, const std::vector<uint32_t>* indices_ptr = 0) const;
-			static int compute_intersection(
-				const vec3& box_center, const vec3& box_extent, 
-				const vec3& ray_start, const vec3& ray_direction, contact_info::contact& C, contact_info::contact* C2_ptr = 0);
-			static int compute_intersection(
-				const vec3& box_center, const vec3& box_extent, const quat& box_rotation,
-				const vec3& ray_start, const vec3& ray_direction, contact_info::contact& C, contact_info::contact* C2_ptr = 0);
 		public:
 			box_container(nui_node* _parent, bool _use_colors, bool _use_orientations, BoxRenderType _render_type = BRT_SOLID);
 			std::string get_primitive_type() const;
@@ -40,8 +34,8 @@ namespace cgv {
 			box3 get_oriented_bounding_box(uint32_t i) const;
 			bool compute_closest_point(contact_info& info, const vec3& pos);
 			// bool compute_closest_oriented_point(contact_info& info, const vec3& pos, const vec3& normal, float orientation_weight);
-			void compute_first_intersection(contact_info& info, const vec3& start, const vec3& direction);
-			void compute_all_intersections(contact_info& info, const vec3& start, const vec3& direction, bool only_entry_points);
+			bool compute_first_intersection(contact_info& info, const vec3& start, const vec3& direction);
+			int compute_all_intersections(contact_info& info, const vec3& start, const vec3& direction, bool only_entry_points);
 			bool init(cgv::render::context& ctx);
 			void clear(cgv::render::context& ctx);
 			void draw(cgv::render::context& ctx);
