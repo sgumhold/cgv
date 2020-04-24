@@ -70,13 +70,16 @@ sphere_container::box3 sphere_container::get_oriented_bounding_box(uint32_t i) c
 bool sphere_container::compute_closest_point(contact_info& info, const vec3& pos)
 {
 	bool result = false;
+	contact_info::contact C;
+	C.container = this;
+	C.node = get_parent();
 	for (const auto& c : center_positions) {
-		uint32_t i = uint32_t(&c - &center_positions.front());
-		float r = get_radius(i);
-		vec3 n = normalize(pos - c);
-		vec3 p = c + r*n;
-		float distance = (p - pos).length();
-		if (consider_closest_point(i, info, distance, p, n, n))
+		C.primitive_index = uint32_t(&c - &center_positions.front());
+		float r = get_radius(C.primitive_index);
+		C.normal = normalize(pos - c);
+		C.position = c + r*C.normal;
+		C.distance = (C.position - pos).length();
+		if (info.consider_closest_contact(C))
 			result = true;
 	}
 	return result;
@@ -118,41 +121,43 @@ int sphere_container::compute_intersection(const vec3& ce, float ra, const vec3&
 	return 2;
 }
 
-void sphere_container::compute_first_intersection(contact_info& info, const vec3& start, const vec3& direction)
+bool sphere_container::compute_first_intersection(contact_info& info, const vec3& start, const vec3& direction)
 {
+	bool result = false;
+	contact_info::contact C;
+	C.container = this;
+	C.node = get_parent();
 	for (const auto& c : center_positions) {
-		uint32_t i = uint32_t(&c - &center_positions.front());
-		float r = get_radius(i);
-		contact_info::contact ci;
-		if (compute_intersection(c, r, start, direction, ci) > 0) {
-			ci.primitive_index = i;
-			ci.container = this;
-			if (info.contacts.empty())
-				info.contacts.push_back(ci);
-			else if (ci.distance < info.contacts.front().distance)
-				info.contacts.front() = ci;
+		C.primitive_index = uint32_t(&c - &center_positions.front());
+		float r = get_radius(C.primitive_index);
+		if (compute_intersection(c, r, start, direction, C) > 0) {
+			if (info.consider_closest_contact(C))
+				result = true;
 		}
 	}
+	return result;
 }
 
-void sphere_container::compute_all_intersections(contact_info& info, const vec3& start, const vec3& direction, bool only_entry_points)
+int sphere_container::compute_all_intersections(contact_info& info, const vec3& start, const vec3& direction, bool only_entry_points)
 {
+	int result = 0;
+	contact_info::contact C1, C2;
+	C1.container = C2.container = this;
+	C1.node = C2.node = get_parent();
 	for (const auto& c : center_positions) {
-		uint32_t i = uint32_t(&c - &center_positions.front());
-		float r = get_radius(i);
-		contact_info::contact ci1, ci2;
-		int cnt = compute_intersection(c, r, start, direction, ci1, &ci2);
-		if (cnt == 0)
+		C1.primitive_index = C2.primitive_index = uint32_t(&c - &center_positions.front());
+		float r = get_radius(C1.primitive_index);
+		int nr_intersections = compute_intersection(c, r, start, direction, C1, &C2);
+		if (nr_intersections == 0)
 			continue;
-		ci1.primitive_index = i;
-		ci1.container = this;
-		info.contacts.push_back(ci1);
-		if (cnt == 1 || only_entry_points)
+		++result;
+		info.contacts.push_back(C1);
+		if (nr_intersections == 1 || only_entry_points)
 			continue;
-		ci2.primitive_index = i;
-		ci2.container = this;
-		info.contacts.push_back(ci2);
+		++result;
+		info.contacts.push_back(C2);
 	}
+	return result;
 }
 
 bool sphere_container::init(cgv::render::context& ctx)

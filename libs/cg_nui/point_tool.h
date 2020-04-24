@@ -12,21 +12,21 @@
 namespace cgv {
 	namespace nui {
 
-		class ray_tool;
+		class point_tool;
 
-		typedef cgv::data::ref_ptr<ray_tool, true> ray_tool_ptr;
+		typedef cgv::data::ref_ptr<point_tool, true> point_tool_ptr;
 
-		class CGV_API ray_tool : public controller_tool
+		class CGV_API point_tool : public controller_tool
 		{
 		protected:
 			static int mri_ref_count;
 			static cgv::render::mesh_render_info mri;
-			bool pick_all;
-			float ray_length;
 			void check_for_contacts(const cgv::gui::vr_pose_event& vrpe);
+			bool pick_oriented;
+			float normal_weight;
 		public:
-			ray_tool(const std::string& _name, int32_t _controller_index = 1);
-			std::string get_type_name() { return "ray_tool"; }
+			point_tool(const std::string& _name, int32_t _controller_index = 1);
+			std::string get_type_name() { return "point_tool"; }
 			void on_set(void* member_ptr);
 			bool init(cgv::render::context& ctx);
 			void clear(cgv::render::context& ctx);
