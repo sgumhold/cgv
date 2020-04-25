@@ -62,6 +62,7 @@ protected:
 
 	void on_randomize_position_cb();
 	void on_reg_ICP_cb();
+	void on_reg_SICP_cb();
 	void on_reg_GoICP_cb();
 
 	void init_icp();

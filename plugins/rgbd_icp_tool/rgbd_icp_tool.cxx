@@ -77,6 +77,10 @@ void draw_point_cloud(cgv::render::context & ctx, point_cloud & pc, point_render
 	}
 }
 
+void draw_correspondences(cgv::render::context& ctx, point_cloud& pc, point_cloud& pc2) {
+
+}
+
 void rgbd_icp_tool::draw(cgv::render::context & ctx)
 {
 	ctx.push_modelview_matrix();
@@ -106,6 +110,7 @@ void rgbd_icp_tool::create_gui()
 	connect_copy(add_button("load target point cloud")->click, rebind(this, &rgbd_icp_tool::on_load_target_point_cloud_cb));
 	connect_copy(add_button("randomize source")->click, rebind(this, &rgbd_icp_tool::on_randomize_position_cb));
 	connect_copy(add_button("ICP")->click, rebind(this, &rgbd_icp_tool::on_reg_ICP_cb));
+	connect_copy(add_button("SICP")->click, rebind(this, &rgbd_icp_tool::on_reg_SICP_cb));
 	connect_copy(add_button("GoICP")->click, rebind(this, &rgbd_icp_tool::on_reg_GoICP_cb));
 	
 }
@@ -157,6 +162,11 @@ void rgbd_icp_tool::on_reg_ICP_cb()
 	source_pc.rotate(rotation);
 	source_pc.translate(translation);
 	post_redraw();
+}
+
+void rgbd_icp_tool::on_reg_SICP_cb()
+{
+
 }
 
 void rgbd_icp_tool::on_reg_GoICP_cb()
