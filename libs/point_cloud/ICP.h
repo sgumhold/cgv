@@ -14,6 +14,8 @@ public:
 	int maxIterations;
 	int numRandomSamples;
 	float eps;
+	point_cloud *crspd_source;
+	point_cloud *crspd_target;
 
 	ICP();
 	~ICP();
