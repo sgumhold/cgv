@@ -1,3 +1,7 @@
+/*
+Implementation of Go-ICP (see http://jlyang.org/go-icp/)
+WIP
+*/
 #pragma once
 #include <vector>
 #include "point_cloud.h"
@@ -18,8 +22,8 @@ namespace cgv {
 
 		struct rotation_node
 		{
-			float a, b, c, w;
-			float ub, lb;
+			float a, b, c, w; //quaternion
+			float ub, lb; //upper bound, lower bound
 			int l;
 			friend bool operator < (const struct rotation_node & n1, const struct rotation_node & n2)
 			{
@@ -33,8 +37,8 @@ namespace cgv {
 
 		struct translation_node
 		{
-			float x, y, z, w;
-			float ub, lb;
+			float x, y, z, w; //translation
+			float ub, lb; //upper bound, lower bound
 			friend bool operator < (const translation_node & n1, const translation_node & n2)
 			{
 				if (n1.lb != n2.lb)
@@ -52,14 +56,20 @@ namespace cgv {
 			static const int max_rot_level = 20;
 
 			GoICP();
+			~GoICP();
 			void buildDistanceTransform();
 
 			inline void set_source_cloud(const point_cloud &inputCloud) {
 				source_cloud = &inputCloud;
+				sample_size = source_cloud->get_nr_points();
 			}
 			inline void set_target_cloud(const point_cloud &inputCloud) {
 				target_cloud = &inputCloud;
 			};
+
+			inline void set_sample_size(int num) {
+				sample_size = num;
+			}
 
 			inline float register_pointcloud()
 			{
@@ -69,18 +79,18 @@ namespace cgv {
 
 				return optimal_error;
 			}
-
+			void initialize();
+			void clear();
 		protected:
 			float icp(mat3& R_icp, vec3& t_icp);
-			void initialize();
 			void outerBnB();
 			float innerBnB(float* maxRotDisL, translation_node* nodeTransOut);
-			void clear();
 		private:
 			const point_cloud *source_cloud;
 			const point_cloud *target_cloud;
 			point_cloud temp_icp_cloud; //used in icp
 			point_cloud temp_source_cloud;
+			int sample_size; // < source cloud size
 
 			Mat rotation;
 			Dir translation;
@@ -90,17 +100,18 @@ namespace cgv {
 
 			//temp data
 			float** max_rot_dis;
+			float* max_rot_dis_l;
 			std::vector<float> min_dis;
-			int icp_inlier_num;
+			int inlier_num;
 			//vec3* point_data_temp;
 			//vec3* point_data_temp_ICP;
 
 			rotation_node init_rot_node,optimal_rot_node;
 			translation_node init_trans_node, optimal_trans_node;
+
+		public:
 			mat3 optimal_rotation;
 			vec3 optimal_translation;
-			
-
 			float optimal_error;
 			//settings
 			float mse_threshhold,sse_threshhold;
