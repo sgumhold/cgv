@@ -21,12 +21,12 @@ rgbd_icp_tool::rgbd_icp_tool() {
 	source_prs.measure_point_size_in_pixel = false;
 	source_prs.point_size = 0.05f;
 	source_prs.blend_width_in_pixel = 1.0f;
-	source_prs.blend_points = false;
+	source_prs.blend_points = true;
 
 	target_prs.measure_point_size_in_pixel = false;
 	target_prs.point_size = 0.05f;
 	target_prs.blend_width_in_pixel = 1.0f;
-	target_prs.blend_points = false;
+	target_prs.blend_points = true;
 }
 
 bool rgbd_icp_tool::self_reflect(cgv::reflect::reflection_handler & rh)
@@ -112,6 +112,8 @@ void rgbd_icp_tool::create_gui()
 	connect_copy(add_button("ICP")->click, rebind(this, &rgbd_icp_tool::on_reg_ICP_cb));
 	connect_copy(add_button("SICP")->click, rebind(this, &rgbd_icp_tool::on_reg_SICP_cb));
 	connect_copy(add_button("GoICP")->click, rebind(this, &rgbd_icp_tool::on_reg_GoICP_cb));
+
+	//add_member_control(this, "ICP epsilon", icp_eps, "value_slider", "min=0.0000001;max=0.1;log=true;ticks=true");
 	
 }
 
@@ -149,6 +151,7 @@ void rgbd_icp_tool::on_reg_ICP_cb()
 	if (!(source_pc.get_nr_points() && target_pc.get_nr_points())){
 		return;
 	}
+	init_icp();
 	point_cloud_types::Mat rotation;
 	rotation.identity();
 	point_cloud_types::Dir translation;
@@ -159,7 +162,8 @@ void rgbd_icp_tool::on_reg_ICP_cb()
 	icp.set_eps(1e-6);
 	icp.set_num_random(100);
 	icp.reg_icp(rotation, translation);
-	source_pc.rotate(rotation);
+
+	source_pc.rotate(cgv::math::quaternion<float>(rotation));
 	source_pc.translate(translation);
 	post_redraw();
 }
@@ -171,19 +175,27 @@ void rgbd_icp_tool::on_reg_SICP_cb()
 
 void rgbd_icp_tool::on_reg_GoICP_cb()
 {
-
+	if (!(source_pc.get_nr_points() && target_pc.get_nr_points())) {
+		return;
+	}
+	goicp.set_source_cloud(source_pc);
+	goicp.set_target_cloud(target_pc);
+	goicp.buildDistanceTransform();
+	goicp.register_pointcloud();
+	source_pc.rotate(cgv::math::quaternion<float>(goicp.optimal_rotation));
+	source_pc.translate(goicp.optimal_translation);
+	cout << "rotation: \n" << goicp.optimal_rotation << '\n' << "translation: \n" << goicp.optimal_translation << '\n';
+	post_redraw();
 }
 
 void rgbd_icp_tool::init_icp()
 {
 	icp.set_source_cloud(source_pc);
 	icp.set_target_cloud(target_pc);
-	icp.set_iterations(50);
-	icp.set_num_random(4000);
-	icp.set_eps(0.00001f);
+	icp.set_iterations(10);
+	icp.set_eps(0.0000001f);
 }
 
 #include "lib_begin.h"
-#include "rgbd_icp_tool.h"
 
 extern CGV_API object_registration<rgbd_icp_tool> kc_or("");

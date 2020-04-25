@@ -73,6 +73,8 @@ private:
 	point_cloud source_pc, target_pc;
 	cgv::render::point_render_style source_prs;
 	cgv::render::point_render_style target_prs;
+	float icp_eps;
+	int icp_iterations;
 
 };
 

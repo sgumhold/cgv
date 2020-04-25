@@ -4,11 +4,6 @@
 
 #include "lib_begin.h"
 
-struct DEucl {
- int v,h;
- float distance;
-};
-
 struct DEucl3D {
  short v,h,d;
  float distance;
