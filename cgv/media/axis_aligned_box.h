@@ -122,10 +122,20 @@ public:
 	/// scale the complete box with respect to the world coordinate origin
 	void scale(const T& f)
 	{
+		if (!is_valid())
+			return;
 		for (unsigned int c = 0; c<N; ++c) {
 			maxp(c) *= f;
 			minp(c) *= f;
 		}
+	}
+	/// translate box by vector
+	void translate(const fpnt_type& v)
+	{
+		if (!is_valid())
+			return;
+		ref_min_pnt() += v;
+		ref_max_pnt() += v;
 	}
 	/// return the index of the coordinte with maximum extend
 	unsigned get_max_extent_coord_index() const

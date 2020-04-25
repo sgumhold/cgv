@@ -16,6 +16,8 @@ controller_tool::controller_tool(const std::string& _name, int32_t _controller_i
 	controller_pose.identity();
 	srs.radius = 0.005f;
 	wbrs.line_width = 2.0f;
+	show_over_boxes = false;
+	show_parent_boxes = false;
 }
 
 bool controller_tool::init(cgv::render::context& ctx)
@@ -47,6 +49,8 @@ void controller_tool::draw(cgv::render::context& ctx)
 		}
 
 		// draw wired boxes around contact primitives
+		if (!show_over_boxes)
+			return;
 		auto& wbr = cgv::render::ref_box_wire_renderer(ctx);
 		wbr.set_render_style(wbrs);
 		std::vector<box3> boxes;
@@ -58,12 +62,15 @@ void controller_tool::draw(cgv::render::context& ctx)
 			box_colors.push_back(controller_index == 0 ? rgb(1, 0.5f, 0.5f) : rgb(0.5f, 0.5f, 1));
 			box_rotations.push_back(c.get_orientation());
 			if (i+1 == contact.contacts.size() || c.node != contact.contacts[i+1].node) {
-				nui_node* N = c.node;
-				boxes.push_back(N->compute_bounding_box());
-				box_colors.push_back(controller_index == 0 ? rgb(1, 0.75f, 0.75f) : rgb(0.75f, 0.75f, 1));
-				box_rotations.push_back(quat(1.0f, 0.0f, 0.0f, 0.0f));
+				nui_node* P = c.get_parent();
+				if (P && show_parent_boxes) {
+					boxes.push_back(P->compute_bounding_box());
+					box_colors.push_back(controller_index == 0 ? rgb(1, 0.75f, 0.75f) : rgb(0.75f, 0.75f, 1));
+					box_rotations.push_back(quat(1.0f, 0.0f, 0.0f, 0.0f));
+				}
+				nui_node* N = P ? P : c.node;
 				ctx.push_modelview_matrix();
-				ctx.mul_modelview_matrix(c.node->get_node_to_world_transformation());
+				ctx.mul_modelview_matrix(N->get_node_to_world_transformation());
 				wbr.set_box_array(ctx, boxes);
 				wbr.set_color_array(ctx, box_colors);
 				wbr.set_rotation_array(ctx, box_rotations);
@@ -142,9 +149,16 @@ void controller_tool::move(const cgv::gui::vr_pose_event& vrpe)
 		for (auto& c : contact.contacts) {
 			uint32_t i = &c - &contact.contacts[0];
 
-			auto* N = c.node;
-			dmat4 T_node = N->get_node_to_world_transformation();
-			dmat4 T_node_inv = N->get_world_to_node_transformation();
+			auto* P = c.get_parent();
+			dmat4 T_node, T_node_inv;
+			if (P) {
+				T_node = P->get_node_to_world_transformation();
+				T_node_inv = P->get_world_to_node_transformation();
+			}
+			else {
+				T_node.identity();
+				T_node_inv.identity();
+			}
 			dmat4 T_tool_local = T_node_inv * T_tool * T_node;
 			//std::cout << "T_node =\n" << T_node << std::endl;
 			//std::cout << "T_node_inv =\n" << T_node << std::endl;
@@ -206,7 +220,7 @@ void controller_tool::move(const cgv::gui::vr_pose_event& vrpe)
 		contact.contacts.clear();
 
 		check_for_contacts(vrpe);
-
+		
 		// remove all intersections that are not approachable
 		uint32_t i = contact.contacts.size();
 		while (i > 0) {
@@ -269,6 +283,7 @@ bool controller_tool::handle(cgv::gui::event& e)
 			}
 			break;
 		}
+		break;
 	}
 	case cgv::gui::EID_POSE:
 		cgv::gui::vr_pose_event& vrpe = static_cast<cgv::gui::vr_pose_event&>(e);
@@ -284,7 +299,9 @@ bool controller_tool::handle(cgv::gui::event& e)
 
 void controller_tool::create_gui()
 {
-	add_member_control(this, "grab_click_time", grab_click_time);
+	add_member_control(this, "grab_click_time", grab_click_time, "value_slider", "min=0.01;max=1;ticks=true;log=true");
+	add_member_control(this, "show_over_boxes", show_over_boxes, "check");
+	add_member_control(this, "show_parent_boxes", show_parent_boxes, "check");
 	if (begin_tree_node("cone style", rcrs)) {
 		align("\a");
 		add_gui("style", rcrs);

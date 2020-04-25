@@ -56,7 +56,8 @@ namespace cgv {
 			double grab_start_time;
 		protected:
 			int32_t controller_index;
-			
+			bool show_over_boxes;
+			bool show_parent_boxes;
 			cgv::render::rounded_cone_render_style rcrs;
 			cgv::render::sphere_render_style srs;
 			cgv::render::box_wire_render_style wbrs;

@@ -50,21 +50,30 @@ contact_info::box3 contact_info::contact::get_oriented_bounding_box() const
 {
 	if (container && primitive_index != -1)
 		return container->get_oriented_bounding_box(primitive_index);
-	return node->compute_bounding_box();
+	box3 B = node->compute_bounding_box();
+	switch (node->get_scaling_mode()) {
+	case SM_UNIFORM: B.scale(node->get_scale()[0]); break;
+	case SM_NON_UNIFORM :
+		B.ref_min_pnt() *= node->get_scale();
+		B.ref_max_pnt() *= node->get_scale();
+		break;
+	}
+	B.translate(node->get_translation());
+	return B;
 }
 
 contact_info::vec3 contact_info::contact::get_position() const
 {
 	if (container && primitive_index != -1)
 		return container->get_position(primitive_index);
-	return vec3(0, 0, 0);
+	return node->get_translation();
 }
 
 contact_info::quat contact_info::contact::get_orientation() const
 {
 	if (container && primitive_index != -1)
 		return container->get_orientation(primitive_index);
-	return quat(1, 0, 0, 0);
+	return node->get_rotation();
 }
 
 
