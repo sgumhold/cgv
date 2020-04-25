@@ -212,6 +212,9 @@ namespace cgv {
 			else {
 				const box3& B = compute_bounding_box();
 				contact_info::contact C;
+				C.node = this;
+				C.container = 0;
+				C.primitive_index = -1;
 				if (compute_box_intersection(B.get_center(), B.get_extent(), start_local, direction_local, C) > 0) {
 					if (info.consider_closest_contact(C)) {
 						correct_contact_info(info.contacts.back(), M, inv_M, start);
