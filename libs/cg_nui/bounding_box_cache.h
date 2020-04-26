@@ -18,7 +18,8 @@ namespace cgv {
 			mutable bool box_outofdate;
 		public:
 			bounding_box_cache();
-			void check_box_update(const box3& old_box, const box3& new_box) const;
+			bool check_box_update(const box3& old_box, const box3& new_box) const;
+			void set_box_outofdate();
 			virtual uint32_t get_nr_primitives() const = 0;
 			virtual box3 get_bounding_box(uint32_t i) const = 0;
 			const box3& compute_bounding_box() const;
