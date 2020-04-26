@@ -26,7 +26,7 @@ primitive_container::box3 primitive_container::get_bounding_box(uint32_t i) cons
 	const quat& q = orientations[i];
 	box3 B;
 	for (int i = 0; i < 8; ++i)
-		B.add_point(q.get_rotated(b.get_corner(i)));
+		B.add_point(q.get_rotated(b.get_corner(i) - b.get_center())+b.get_center());
 	return B;
 }
 
