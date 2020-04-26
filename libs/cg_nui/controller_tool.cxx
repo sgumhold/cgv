@@ -16,8 +16,8 @@ controller_tool::controller_tool(const std::string& _name, int32_t _controller_i
 	controller_pose.identity();
 	srs.radius = 0.005f;
 	wbrs.line_width = 2.0f;
-	show_over_boxes = false;
-	show_parent_boxes = false;
+	show_over_boxes = true;
+	show_parent_boxes = true;
 }
 
 bool controller_tool::init(cgv::render::context& ctx)
@@ -187,7 +187,7 @@ void controller_tool::move(const cgv::gui::vr_pose_event& vrpe)
 			c.update_orientation(q1);
 			c.update_position(r);
 			box3 new_box = c.get_bounding_box();
-			c.get_parent()->check_box_update(old_box, new_box);
+			c.check_box_update(old_box, new_box);
 			// update primitive position with position change and rotation				
 
 			/*

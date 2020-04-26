@@ -23,6 +23,7 @@ namespace cgv {
 				nui_node* node;
 				void update_orientation(const quat& q);
 				void update_position(const vec3& r);
+				bool check_box_update(const box3& old_box, const box3& new_box) const;
 				bool approachable() const;
 				bool translatable() const;
 				bool rotatable() const;

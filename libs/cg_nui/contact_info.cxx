@@ -25,6 +25,26 @@ void contact_info::contact::update_position(const vec3& r)
 		node->set_translation(r);
 }
 
+bool contact_info::contact::check_box_update(const box3& old_box, const box3& new_box) const
+{
+	nui_node* N = 0;
+	if (container && primitive_index != -1) {
+		if (container->check_box_update(old_box, new_box))
+			N = node;
+	}
+	else {
+		nui_node* P = get_parent();
+		if (P && P->check_box_update(old_box, new_box))
+			N = P;
+	}
+	bool result = N != 0;
+	while (N) {
+		N->set_box_outofdate();
+		N = &(*(N->get_parent()->cast<nui_node>()));
+	}
+	return result;
+}
+
 bool contact_info::contact::approachable() const
 {
 	if (container && primitive_index != -1)
