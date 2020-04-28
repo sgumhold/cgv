@@ -151,7 +151,12 @@ void rgbd_icp_tool::on_reg_ICP_cb()
 	if (!(source_pc.get_nr_points() && target_pc.get_nr_points())){
 		return;
 	}
-	init_icp();
+	
+	icp.set_source_cloud(source_pc);
+	icp.set_target_cloud(target_pc);
+	icp.set_iterations(10);
+	icp.set_eps(0.0000001f);
+
 	point_cloud_types::Mat rotation;
 	rotation.identity();
 	point_cloud_types::Dir translation;
@@ -186,14 +191,6 @@ void rgbd_icp_tool::on_reg_GoICP_cb()
 	source_pc.translate(goicp.optimal_translation);
 	cout << "rotation: \n" << goicp.optimal_rotation << '\n' << "translation: \n" << goicp.optimal_translation << '\n';
 	post_redraw();
-}
-
-void rgbd_icp_tool::init_icp()
-{
-	icp.set_source_cloud(source_pc);
-	icp.set_target_cloud(target_pc);
-	icp.set_iterations(10);
-	icp.set_eps(0.0000001f);
 }
 
 #include "lib_begin.h"
