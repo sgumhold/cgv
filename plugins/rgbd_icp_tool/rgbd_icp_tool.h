@@ -65,7 +65,6 @@ protected:
 	void on_reg_SICP_cb();
 	void on_reg_GoICP_cb();
 
-	void init_icp();
 private:
 	ICP icp;
 	cgv::pointcloud::GoICP goicp;
