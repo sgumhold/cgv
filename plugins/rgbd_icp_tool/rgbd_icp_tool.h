@@ -46,6 +46,8 @@ public:
 	/// overload to draw the content of this drawable
 	void draw(cgv::render::context& ctx);
 	///
+	void find_pointcloud(cgv::render::context& ctx);
+	///
 	void clear(cgv::render::context& ctx);
 	/// 
 	bool handle(cgv::gui::event& e);
@@ -64,6 +66,8 @@ protected:
 	void on_reg_ICP_cb();
 	void on_reg_SICP_cb();
 	void on_reg_GoICP_cb();
+	void on_reg_find_point_cloud_cb();
+	void on_point_cloud_style_cb();
 
 private:
 	ICP icp;
@@ -74,6 +78,7 @@ private:
 	cgv::render::point_render_style target_prs;
 	float icp_eps;
 	int icp_iterations;
+	bool view_find_point_cloud;
 
 };
 

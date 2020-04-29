@@ -19,12 +19,12 @@ rgbd_icp_tool::rgbd_icp_tool() {
 	set_name("rgbd_icp_tool");
 
 	source_prs.measure_point_size_in_pixel = false;
-	source_prs.point_size = 0.05f;
+	source_prs.point_size = 0.25f;
 	source_prs.blend_width_in_pixel = 1.0f;
 	source_prs.blend_points = true;
 
 	target_prs.measure_point_size_in_pixel = false;
-	target_prs.point_size = 0.05f;
+	target_prs.point_size = 0.25f;
 	target_prs.blend_width_in_pixel = 1.0f;
 	target_prs.blend_points = true;
 }
@@ -50,6 +50,7 @@ void rgbd_icp_tool::unregister()
 bool rgbd_icp_tool::init(cgv::render::context & ctx)
 {
 	ctx.set_bg_clr_idx(3);
+	ctx.set_bg_color(0, 0, 0, 0.9);
 	cgv::render::view* view_ptr = find_view_as_node();
 	if (view_ptr) {
 		view_ptr->set_view_up_dir(vec3(0, -1, 0));
@@ -60,6 +61,7 @@ bool rgbd_icp_tool::init(cgv::render::context & ctx)
 }
 
 void draw_point_cloud(cgv::render::context & ctx, point_cloud & pc, point_render_style & prs, cgv::math::fvec<float,4> color) {
+	ctx.push_modelview_matrix();
 	if (pc.get_nr_points() > 0) {
 		cgv::render::point_renderer& pr = ref_point_renderer(ctx);
 		pr.set_render_style(prs);
@@ -75,18 +77,43 @@ void draw_point_cloud(cgv::render::context & ctx, point_cloud & pc, point_render
 			pr.disable(ctx);
 		}
 	}
+	ctx.pop_modelview_matrix();
 }
 
 void draw_correspondences(cgv::render::context& ctx, point_cloud& pc, point_cloud& pc2) {
-
+	
 }
 
 void rgbd_icp_tool::draw(cgv::render::context & ctx)
 {
 	ctx.push_modelview_matrix();
-	draw_point_cloud(ctx, source_pc, source_prs,vec4(1.0,0.0,0.0,0.7));
-	draw_point_cloud(ctx, target_pc, target_prs, vec4(0.0, 1.0, 0.0, 0.7));
+	draw_point_cloud(ctx, source_pc, source_prs,vec4(1.0,0.0,0.0,0.8));
+	draw_point_cloud(ctx, target_pc, target_prs, vec4(0.0, 1.0, 0.0, 0.8));
 	ctx.pop_modelview_matrix();
+
+	if (view_find_point_cloud) {
+		find_pointcloud(ctx);
+		view_find_point_cloud = false;
+	}
+}
+
+void rgbd_icp_tool::find_pointcloud(cgv::render::context & ctx)
+{
+	cgv::render::view* view_ptr = find_view_as_node();
+	if (view_ptr) {
+		const point_cloud_types::Box& sb = source_pc.box();
+		const point_cloud_types::Box& tb = target_pc.box();
+		point_cloud_types::Box aabb(sb);
+		aabb.add_point(tb.get_min_pnt());
+		aabb.add_point(tb.get_max_pnt());
+
+		view_ptr->set_focus(aabb.get_center());
+		
+		view_ptr->move(view_ptr->get_depth_of_focus()-1.0);
+		
+	}
+
+	
 }
 
 void rgbd_icp_tool::clear(cgv::render::context & ctx)
@@ -109,12 +136,14 @@ void rgbd_icp_tool::create_gui()
 	connect_copy(add_button("load source point cloud")->click, rebind(this, &rgbd_icp_tool::on_load_source_point_cloud_cb));
 	connect_copy(add_button("load target point cloud")->click, rebind(this, &rgbd_icp_tool::on_load_target_point_cloud_cb));
 	connect_copy(add_button("randomize source")->click, rebind(this, &rgbd_icp_tool::on_randomize_position_cb));
+	connect_copy(add_button("find point cloud")->click, rebind(this, &rgbd_icp_tool::on_reg_find_point_cloud_cb));
 	connect_copy(add_button("ICP")->click, rebind(this, &rgbd_icp_tool::on_reg_ICP_cb));
 	connect_copy(add_button("SICP")->click, rebind(this, &rgbd_icp_tool::on_reg_SICP_cb));
 	connect_copy(add_button("GoICP")->click, rebind(this, &rgbd_icp_tool::on_reg_GoICP_cb));
 
 	//add_member_control(this, "ICP epsilon", icp_eps, "value_slider", "min=0.0000001;max=0.1;log=true;ticks=true");
-	
+	add_decorator("point cloud", "heading", "level=2");
+	connect_copy(add_control("Point size", source_prs.point_size, "value_slider", "min=0.01;max=1.0;log=false;ticks=true")->value_change, rebind(this, &rgbd_icp_tool::on_point_cloud_style_cb));
 }
 
 void rgbd_icp_tool::timer_event(double t, double dt)
@@ -190,6 +219,18 @@ void rgbd_icp_tool::on_reg_GoICP_cb()
 	source_pc.rotate(cgv::math::quaternion<float>(goicp.optimal_rotation));
 	source_pc.translate(goicp.optimal_translation);
 	cout << "rotation: \n" << goicp.optimal_rotation << '\n' << "translation: \n" << goicp.optimal_translation << '\n';
+	post_redraw();
+}
+
+void rgbd_icp_tool::on_reg_find_point_cloud_cb()
+{
+	view_find_point_cloud = true;
+	post_redraw();
+}
+
+void rgbd_icp_tool::on_point_cloud_style_cb()
+{
+	target_prs.point_size = source_prs.point_size;
 	post_redraw();
 }
 
