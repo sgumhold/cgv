@@ -28,6 +28,9 @@ rgbd_icp_tool::rgbd_icp_tool() {
 	target_prs.blend_width_in_pixel = 1.0f;
 	target_prs.blend_points = true;
 
+	lrs.line_width = 1.0f;
+	//rcrs.radius = 0.001f;
+
 	icp_iterations = 50;
 }
 
@@ -82,8 +85,26 @@ void draw_point_cloud(cgv::render::context & ctx, point_cloud & pc, point_render
 	ctx.pop_modelview_matrix();
 }
 
-void draw_correspondences(cgv::render::context& ctx, point_cloud& pc, point_cloud& pc2) {
-	
+void draw_correspondences(cgv::render::context& ctx, point_cloud& pc, point_cloud& pc2, cgv::render::rounded_cone_render_style& rcrs, cgv::math::fvec<float, 4> color) {
+	ctx.push_modelview_matrix();
+	if (pc.get_nr_points() > 0) {
+		vector<point_cloud::Pnt> P;
+		//add start and end point of each correspondence in world coordinates to points
+		for (int i = 0; i < pc.get_nr_points(); ++i) {
+			P.push_back(pc.pnt(i));
+			P.push_back(pc2.pnt(i));
+		}
+		auto& rcr = ref_rounded_cone_renderer(ctx);
+		rcr.set_render_style(rcrs);
+		rcr.set_position_array(ctx, P);
+		vector<cgv::math::fvec<float, 4>> color(P.size(), color);
+		rcr.set_color_array(ctx, color);
+		if (rcr.validate_and_enable(ctx)) {
+			glDrawArrays(GL_LINES, 0, (GLsizei)P.size());
+			rcr.disable(ctx);
+		}
+	}
+	ctx.pop_modelview_matrix();
 }
 
 void rgbd_icp_tool::draw(cgv::render::context & ctx)
@@ -91,6 +112,7 @@ void rgbd_icp_tool::draw(cgv::render::context & ctx)
 	ctx.push_modelview_matrix();
 	draw_point_cloud(ctx, source_pc, source_prs,vec4(1.0,0.0,0.0,0.8));
 	draw_point_cloud(ctx, target_pc, target_prs, vec4(0.0, 1.0, 0.0, 0.8));
+	draw_correspondences(ctx, crs_srs_pc, crs_tgt_pc, rcrs, vec4(0.0, 0.0, 1.0, 0.8));
 	ctx.pop_modelview_matrix();
 
 	if (view_find_point_cloud) {
@@ -145,7 +167,7 @@ void rgbd_icp_tool::create_gui()
 
 	//add_member_control(this, "ICP epsilon", icp_eps, "value_slider", "min=0.0000001;max=0.1;log=true;ticks=true");
 	add_decorator("point cloud", "heading", "level=2");
-	connect_copy(add_control("Point size", source_prs.point_size, "value_slider", "min=0.01;max=1.0;log=false;ticks=true")->value_change, rebind(this, &rgbd_icp_tool::on_point_cloud_style_cb));
+	connect_copy(add_control("Point size", source_prs.point_size, "value_slider", "min=0.01;max=3.0;log=false;ticks=true")->value_change, rebind(this, &rgbd_icp_tool::on_point_cloud_style_cb));
 
 	add_decorator("ICP", "heading", "level=2");
 	add_member_control(this, "Max. iterations", icp_iterations, "value_slider", "min=50;max=1000;ticks=false");
@@ -206,8 +228,8 @@ void rgbd_icp_tool::on_reg_ICP_cb()
 	icp.set_num_random(100);
 
 	icp.initialize();
-	icp.reg_icp(rotation, translation);
-
+	//icp.reg_icp(rotation, translation);
+	icp.get_crspd(rotation, translation, crs_srs_pc, crs_tgt_pc);
 	source_pc.rotate(cgv::math::quaternion<float>(rotation));
 	source_pc.translate(translation);
 	post_redraw();

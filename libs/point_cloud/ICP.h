@@ -31,6 +31,7 @@ public:
 	void reg_icp(Mat &rotation_m, Dir &translation_v);
 	void get_center_point(const point_cloud &input, Pnt &mid_point);
 	float error(Pnt &ps, Pnt &pd, Mat &r, Dir& t);
+	void get_crspd(Mat& rotation_m, Dir& translation_v, point_cloud& pc1, point_cloud& pc2);
 	void print_rotation(float *rotationMatrix);
 	void print_translation(float *translation);
 private:
