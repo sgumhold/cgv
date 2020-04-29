@@ -62,6 +62,7 @@ bool rgbd_icp_tool::init(cgv::render::context & ctx)
 		view_ptr->set_focus(vec3(0, 0, 0));
 	}
 	cgv::render::ref_point_renderer(ctx, 1);
+	cgv::render::ref_rounded_cone_renderer(ctx, 1);
 	return true;
 }
 
@@ -94,7 +95,7 @@ void draw_correspondences(cgv::render::context& ctx, point_cloud& pc, point_clou
 			P.push_back(pc.pnt(i));
 			P.push_back(pc2.pnt(i));
 		}
-		auto& rcr = ref_rounded_cone_renderer(ctx);
+		cgv::render::rounded_cone_renderer& rcr = ref_rounded_cone_renderer(ctx);
 		rcr.set_render_style(rcrs);
 		rcr.set_position_array(ctx, P);
 		vector<cgv::math::fvec<float, 4>> color(P.size(), color);
@@ -143,6 +144,7 @@ void rgbd_icp_tool::find_pointcloud(cgv::render::context & ctx)
 void rgbd_icp_tool::clear(cgv::render::context & ctx)
 {
 	cgv::render::ref_point_renderer(ctx, -1);
+	cgv::render::ref_rounded_cone_renderer(ctx, -1);
 }
 
 bool rgbd_icp_tool::handle(cgv::gui::event & e)
@@ -175,6 +177,14 @@ void rgbd_icp_tool::create_gui()
 	add_decorator("Go-ICP", "heading", "level=2");
 	add_member_control(this, "Go-ICP MSE Threshold", goicp.mse_threshhold, "value_slider", "min=0.000001;max=1.0;log=true;ticks=false");
 	add_member_control(this, "Distance Transform size", goicp.distance_transform_size, "value_slider", "min=50;max=1000;ticks=false");
+
+	///rounded_cone_render
+	if (begin_tree_node("cone render style", rcrs)) {
+		align("\a");
+		add_gui("render_style", rcrs);
+		align("\b");
+		end_tree_node(rcrs);
+	}
 }
 
 void rgbd_icp_tool::timer_event(double t, double dt)
