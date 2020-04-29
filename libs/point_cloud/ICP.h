@@ -2,6 +2,7 @@
 
 #include <vector>
 #include "point_cloud.h"
+#include "ann_tree.h"
 #include <random>
 #include <ctime>
 #include <cgv/math/svd.h> 
@@ -19,6 +20,9 @@ public:
 
 	ICP();
 	~ICP();
+	
+	void initialize();
+	void clear();
 	void set_source_cloud(const point_cloud &inputCloud);
 	void set_target_cloud(const point_cloud &inputCloud);
 	void set_iterations(int Iter);
@@ -29,5 +33,7 @@ public:
 	float error(Pnt &ps, Pnt &pd, Mat &r, Dir& t);
 	void print_rotation(float *rotationMatrix);
 	void print_translation(float *translation);
+private:
+	ann_tree* tree;
 };
 #include <cgv/config/lib_end.h>

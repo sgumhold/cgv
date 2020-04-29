@@ -27,6 +27,8 @@ rgbd_icp_tool::rgbd_icp_tool() {
 	target_prs.point_size = 0.25f;
 	target_prs.blend_width_in_pixel = 1.0f;
 	target_prs.blend_points = true;
+
+	icp_iterations = 50;
 }
 
 bool rgbd_icp_tool::self_reflect(cgv::reflect::reflection_handler & rh)
@@ -144,6 +146,13 @@ void rgbd_icp_tool::create_gui()
 	//add_member_control(this, "ICP epsilon", icp_eps, "value_slider", "min=0.0000001;max=0.1;log=true;ticks=true");
 	add_decorator("point cloud", "heading", "level=2");
 	connect_copy(add_control("Point size", source_prs.point_size, "value_slider", "min=0.01;max=1.0;log=false;ticks=true")->value_change, rebind(this, &rgbd_icp_tool::on_point_cloud_style_cb));
+
+	add_decorator("ICP", "heading", "level=2");
+	add_member_control(this, "Max. iterations", icp_iterations, "value_slider", "min=50;max=1000;ticks=false");
+
+	add_decorator("Go-ICP", "heading", "level=2");
+	add_member_control(this, "Go-ICP MSE Threshold", goicp.mse_threshhold, "value_slider", "min=0.000001;max=1.0;log=true;ticks=false");
+	add_member_control(this, "Distance Transform size", goicp.distance_transform_size, "value_slider", "min=50;max=1000;ticks=false");
 }
 
 void rgbd_icp_tool::timer_event(double t, double dt)
@@ -183,7 +192,7 @@ void rgbd_icp_tool::on_reg_ICP_cb()
 	
 	icp.set_source_cloud(source_pc);
 	icp.set_target_cloud(target_pc);
-	icp.set_iterations(10);
+	icp.set_iterations(icp_iterations);
 	icp.set_eps(0.0000001f);
 
 	point_cloud_types::Mat rotation;
@@ -195,6 +204,8 @@ void rgbd_icp_tool::on_reg_ICP_cb()
 	icp.set_iterations(2);
 	icp.set_eps(1e-6);
 	icp.set_num_random(100);
+
+	icp.initialize();
 	icp.reg_icp(rotation, translation);
 
 	source_pc.rotate(cgv::math::quaternion<float>(rotation));
@@ -233,6 +244,7 @@ void rgbd_icp_tool::on_point_cloud_style_cb()
 	target_prs.point_size = source_prs.point_size;
 	post_redraw();
 }
+
 
 #include "lib_begin.h"
 

@@ -1,18 +1,38 @@
 #include "point_cloud.h"
 #include <fstream>
-#include "ann_tree.h"
 #include "ICP.h"
 
 ICP::ICP() {
-	sourceCloud = new point_cloud();
-	targetCloud = new point_cloud();
+	sourceCloud = nullptr;
+	targetCloud = nullptr;
+	tree = nullptr;
 	this->maxIterations = 400;
 	this->numRandomSamples = 400;
 	this->eps = 1e-8;
 }
 
 ICP::~ICP() {
+	delete tree;
+}
 
+void ICP::initialize()
+{
+	if (targetCloud==nullptr) {
+		std::cerr << "ICP::initialize: target cloud missing, can't build ann tree\n";
+		return;
+	}
+	if (tree) {
+		delete tree;
+	}
+
+	tree = new ann_tree();
+	tree->build(*targetCloud);
+}
+
+void ICP::clear()
+{
+	delete tree;
+	tree = nullptr;
 }
 
 void ICP::set_source_cloud(const point_cloud &inputCloud) {
@@ -37,7 +57,16 @@ void ICP::set_eps(float e) {
 
 ///output the rotation matrix and translation vector
 void ICP::reg_icp(Mat& rotation_mat, Dir& translation_vec) {
-	point_cloud* output = new point_cloud();
+	if (!tree) {
+		initialize();
+		//std::cerr << "ICP::reg_icp: called reg_icp before initialization!\n";
+		return;
+	}
+	if (!(sourceCloud && targetCloud)) {
+		std::cerr << "ICP::reg_icp: source or target cloud not set!\n";
+		return;
+	}
+	//point_cloud* output = new point_cloud();
 	Pnt source_center;
 	Pnt target_center;
 	source_center.zeros();
