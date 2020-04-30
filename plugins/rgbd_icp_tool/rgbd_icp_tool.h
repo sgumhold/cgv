@@ -9,6 +9,7 @@
 #include <cgv/render/drawable.h>
 #include <cgv/render/shader_program.h>
 #include <cgv/render/texture.h>
+#include <cgv/render/render_types.h>
 #include <cgv_gl/point_renderer.h>
 #include <cgv_gl/line_renderer.h>
 #include <cgv_gl/rounded_cone_renderer.h>
