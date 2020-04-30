@@ -151,7 +151,7 @@ typedef array3d_t<float> Array3dfloat;
 class DT3D{
 public:
 	static const short infinity = std::numeric_limits<short>::max();
-	int SIZE;
+	int size;
 	double scale;
 	double expandFactor;
 	double xMin, xMax, yMin, yMax, zMin, zMax;

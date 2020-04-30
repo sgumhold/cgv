@@ -247,7 +247,6 @@ void rgbd_icp_tool::on_reg_GoICP_cb()
 	}
 	goicp.set_source_cloud(source_pc);
 	goicp.set_target_cloud(target_pc);
-	goicp.buildDistanceTransform();
 	goicp.register_pointcloud();
 	source_pc.rotate(cgv::math::quaternion<float>(goicp.optimal_rotation));
 	source_pc.translate(goicp.optimal_translation);

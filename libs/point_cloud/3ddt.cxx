@@ -721,9 +721,9 @@ void DT3D::build(double* _x, double* _y, double* _z, int num)
 	zMin = zCenter - max / 2;
 	zMax = zCenter + max / 2;
 
-	scale = SIZE / max;
+	scale = size / max;
 
-	A = Array3dDEucl3D(SIZE, SIZE, SIZE);
+	A = Array3dDEucl3D(size, size, size);
 
 	int x, y, z;
 
@@ -776,7 +776,7 @@ float DT3D::distance(double _x, double _y, double _z)
 	y = round((_y - yMin)*scale);
 	z = round((_z - zMin)*scale);
 
-	if (x > -1 && x < SIZE && y > -1 && y < SIZE && z > -1 && z < SIZE)
+	if (x > -1 && x < size && y > -1 && y < size && z > -1 && z < size)
 		return A(x,y,z).distance;
 
 	float a = 0, b = 0, c = 0;
@@ -785,10 +785,10 @@ float DT3D::distance(double _x, double _y, double _z)
 		a = x;
 		x = 0;
 	}
-	else if (x >= SIZE)
+	else if (x >= size)
 	{
-		a = x - SIZE + 1;
-		x = SIZE - 1;
+		a = x - size + 1;
+		x = size - 1;
 	}
 
 	if (y < 0)
@@ -796,10 +796,10 @@ float DT3D::distance(double _x, double _y, double _z)
 		b = y;
 		y = 0;
 	}
-	else if (y >= SIZE)
+	else if (y >= size)
 	{
-		b = y - SIZE + 1;
-		y = SIZE - 1;
+		b = y - size + 1;
+		y = size - 1;
 	}
 
 	if (z < 0)
@@ -807,10 +807,10 @@ float DT3D::distance(double _x, double _y, double _z)
 		c = z;
 		z = 0;
 	}
-	else if (z >= SIZE)
+	else if (z >= size)
 	{
-		c = z - SIZE + 1;
-		z = SIZE - 1;
+		c = z - size + 1;
+		z = size - 1;
 	}
 
 	return sqrt(a*a + b * b + c * c) / scale + A(x,y,z).distance;
