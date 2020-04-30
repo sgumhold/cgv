@@ -62,6 +62,7 @@ bool rgbd_icp_tool::init(cgv::render::context & ctx)
 		view_ptr->set_focus(vec3(0, 0, 0));
 	}
 	cgv::render::ref_point_renderer(ctx, 1);
+	cgv::render::ref_rounded_cone_renderer(ctx, 1);
 	return true;
 }
 
@@ -85,20 +86,22 @@ void draw_point_cloud(cgv::render::context & ctx, point_cloud & pc, point_render
 	ctx.pop_modelview_matrix();
 }
 
-void draw_correspondences(cgv::render::context& ctx, point_cloud& pc, point_cloud& pc2, cgv::render::rounded_cone_render_style& rcrs, cgv::math::fvec<float, 4> color) {
+void draw_correspondences(cgv::render::context& ctx, point_cloud& crspd_src, point_cloud& crspd_tgt, cgv::render::rounded_cone_render_style& rcrs, cgv::math::fvec<float, 4> color) {
 	ctx.push_modelview_matrix();
-	if (pc.get_nr_points() > 0) {
+	if (crspd_src.get_nr_points() > 0) {
 		vector<point_cloud::Pnt> P;
 		//add start and end point of each correspondence in world coordinates to points
-		for (int i = 0; i < pc.get_nr_points(); ++i) {
-			P.push_back(pc.pnt(i));
-			P.push_back(pc2.pnt(i));
+		for (int i = 0; i < crspd_src.get_nr_points(); ++i) {
+			P.push_back(crspd_src.pnt(i));
+			P.push_back(crspd_tgt.pnt(i));
 		}
-		auto& rcr = ref_rounded_cone_renderer(ctx);
+		cgv::render::rounded_cone_renderer& rcr = ref_rounded_cone_renderer(ctx);
 		rcr.set_render_style(rcrs);
 		rcr.set_position_array(ctx, P);
+		//rcr.set_radius_array(ctx, radii);
 		vector<cgv::math::fvec<float, 4>> color(P.size(), color);
 		rcr.set_color_array(ctx, color);
+		std::cout << "tct: " << rcr.validate_and_enable(ctx) << std::endl;
 		if (rcr.validate_and_enable(ctx)) {
 			glDrawArrays(GL_LINES, 0, (GLsizei)P.size());
 			rcr.disable(ctx);
@@ -143,6 +146,7 @@ void rgbd_icp_tool::find_pointcloud(cgv::render::context & ctx)
 void rgbd_icp_tool::clear(cgv::render::context & ctx)
 {
 	cgv::render::ref_point_renderer(ctx, -1);
+	cgv::render::ref_rounded_cone_renderer(ctx, -1);
 }
 
 bool rgbd_icp_tool::handle(cgv::gui::event & e)
@@ -175,6 +179,14 @@ void rgbd_icp_tool::create_gui()
 	add_decorator("Go-ICP", "heading", "level=2");
 	add_member_control(this, "Go-ICP MSE Threshold", goicp.mse_threshhold, "value_slider", "min=0.000001;max=1.0;log=true;ticks=false");
 	add_member_control(this, "Distance Transform size", goicp.distance_transform_size, "value_slider", "min=50;max=1000;ticks=false");
+
+	///rounded_cone_render
+	if (begin_tree_node("cone render style", rcrs)) {
+		align("\a");
+		add_gui("render_style", rcrs);
+		align("\b");
+		end_tree_node(rcrs);
+	}
 }
 
 void rgbd_icp_tool::timer_event(double t, double dt)
