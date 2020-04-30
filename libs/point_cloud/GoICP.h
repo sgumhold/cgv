@@ -22,29 +22,28 @@ namespace cgv {
 
 		struct rotation_node
 		{
-			float a, b, c, w; //quaternion
+			float a, b, c, w; // (a,b,c) angle axis representation ,w: side length of rotation subcube
 			float ub, lb; //upper bound, lower bound
-			int l;
-			friend bool operator < (const struct rotation_node & n1, const struct rotation_node & n2)
+			int l; //level
+			friend bool operator<(const struct rotation_node & node_a, const struct rotation_node & node_b)
 			{
-				if (n1.lb != n2.lb)
-					return n1.lb > n2.lb;
+				if (node_a.lb != node_b.lb)
+					return node_a.lb > node_b.lb;
 				else
-					return n1.w < n2.w;
+					return node_a.w < node_b.w;
 			}
-
 		};
 
 		struct translation_node
 		{
 			float x, y, z, w; //translation
 			float ub, lb; //upper bound, lower bound
-			friend bool operator < (const translation_node & n1, const translation_node & n2)
+			friend bool operator < (const translation_node & noda_a, const translation_node & node_b)
 			{
-				if (n1.lb != n2.lb)
-					return n1.lb > n2.lb;
+				if (noda_a.lb != node_b.lb)
+					return noda_a.lb > node_b.lb;
 				else
-					return n1.w < n2.w;
+					return noda_a.w < node_b.w;
 			}
 		};
 
@@ -57,14 +56,13 @@ namespace cgv {
 
 			GoICP();
 			~GoICP();
-			void buildDistanceTransform();
 
 			inline void set_source_cloud(const point_cloud &inputCloud) {
-				source_cloud = &inputCloud;
-				sample_size = source_cloud->get_nr_points();
+				original_source_cloud = &inputCloud;
+				sample_size = original_source_cloud->get_nr_points();
 			}
 			inline void set_target_cloud(const point_cloud &inputCloud) {
-				target_cloud = &inputCloud;
+				original_target_cloud = &inputCloud;
 			};
 
 			inline void set_sample_size(int num) {
@@ -75,20 +73,24 @@ namespace cgv {
 			{
 				initialize();
 				outerBnB();
+				optimal_translation *= cloud_scale;
 				clear();
-
 				return optimal_error;
 			}
 			void initialize();
 			void clear();
 		protected:
+			void buildDistanceTransform();
 			float icp(mat3& R_icp, vec3& t_icp);
 			void outerBnB();
 			float innerBnB(float* maxRotDisL, translation_node* nodeTransOut);
 		private:
-			const point_cloud *source_cloud;
-			const point_cloud *target_cloud;
-			point_cloud temp_icp_cloud; //used in icp
+			const point_cloud *original_source_cloud;
+			const point_cloud *original_target_cloud;
+			point_cloud source_cloud;
+			point_cloud target_cloud;
+			float cloud_scale;
+			vec3 cloud_offset;
 			point_cloud temp_source_cloud;
 			int sample_size; // < source cloud size
 
@@ -99,8 +101,7 @@ namespace cgv {
 			ICP icp_obj;
 
 			//temp data
-			float** max_rot_dis;
-			float* max_rot_dis_l;
+			float** max_rot_dis; //rotation uncertainity radius
 			std::vector<float> min_dis;
 			int inlier_num;
 			//vec3* point_data_temp;
@@ -115,8 +116,6 @@ namespace cgv {
 			float optimal_error;
 			//settings
 			float mse_threshhold,sse_threshhold;
-			float rotMinX,rotMinY,rotMinZ,rotWidth;
-			float transMinX, transMinY, transMinZ, transWidth;
 			float trim_fraction;
 			float distance_transform_size;
 			float distance_transform_expand_factor;
