@@ -86,20 +86,22 @@ void draw_point_cloud(cgv::render::context & ctx, point_cloud & pc, point_render
 	ctx.pop_modelview_matrix();
 }
 
-void draw_correspondences(cgv::render::context& ctx, point_cloud& pc, point_cloud& pc2, cgv::render::rounded_cone_render_style& rcrs, cgv::math::fvec<float, 4> color) {
+void draw_correspondences(cgv::render::context& ctx, point_cloud& crspd_src, point_cloud& crspd_tgt, cgv::render::rounded_cone_render_style& rcrs, cgv::math::fvec<float, 4> color) {
 	ctx.push_modelview_matrix();
-	if (pc.get_nr_points() > 0) {
+	if (crspd_src.get_nr_points() > 0) {
 		vector<point_cloud::Pnt> P;
 		//add start and end point of each correspondence in world coordinates to points
-		for (int i = 0; i < pc.get_nr_points(); ++i) {
-			P.push_back(pc.pnt(i));
-			P.push_back(pc2.pnt(i));
+		for (int i = 0; i < crspd_src.get_nr_points(); ++i) {
+			P.push_back(crspd_src.pnt(i));
+			P.push_back(crspd_tgt.pnt(i));
 		}
 		cgv::render::rounded_cone_renderer& rcr = ref_rounded_cone_renderer(ctx);
 		rcr.set_render_style(rcrs);
 		rcr.set_position_array(ctx, P);
+		//rcr.set_radius_array(ctx, radii);
 		vector<cgv::math::fvec<float, 4>> color(P.size(), color);
 		rcr.set_color_array(ctx, color);
+		std::cout << "tct: " << rcr.validate_and_enable(ctx) << std::endl;
 		if (rcr.validate_and_enable(ctx)) {
 			glDrawArrays(GL_LINES, 0, (GLsizei)P.size());
 			rcr.disable(ctx);
