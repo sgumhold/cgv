@@ -835,7 +835,7 @@ void vr_test::finish_draw(cgv::render::context& ctx)
 	}
 }
 
-void vr_test::create_gui() {
+					0.2f*distribution(generator)+0.1f));void vr_test::create_gui() {
 	add_decorator("vr_test", "heading", "level=2");
 	add_member_control(this, "mesh_scale", mesh_scale, "value_slider", "min=0.1;max=10;log=true;ticks=true");
 	add_gui("mesh_location", mesh_location, "vector", "options='min=-3;max=3;ticks=true");
