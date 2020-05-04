@@ -131,15 +131,24 @@ namespace vr {
 	vr_wall_kit::vec3 vr_wall_kit::transform_world_to_screen(const vec3& p) const
 	{
 		vec3 p_screen = (p - get_screen_center()) * get_screen_orientation();
-		p_screen[0] /= height*pixel_size[0];
-		p_screen[1] /= height*pixel_size[1];
+		p_screen[0] /= 0.5f * height * pixel_size[0];
+		p_screen[1] /= 0.5f * height * pixel_size[1];
 		return p_screen;
+	}
+	/// transform from coordinate system of screen with [0,0,0] in center and corners [+-aspect,+-1,0]; z is signed distance to screen in world unites (typically meters) 
+	vr_wall_kit::vec3 vr_wall_kit::transform_screen_to_world(const vec3& p_screen) const
+	{
+		vec3 p_s = p_screen;
+		p_s[0] *= 0.5f * height * pixel_size[0];
+		p_s[1] *= 0.5f * height * pixel_size[1];
+		return get_screen_orientation()* p_s + get_screen_center();
 	}
 	/// construct vr wall kit by attaching to another vr kit
 	vr_wall_kit::vr_wall_kit(int vr_kit_parent_index, unsigned _width, unsigned _height, const std::string& _name) :
 		gl_vr_display(width, height, 0, 0, _name, false, false)
 	{
 		wall_context = false;
+		in_calibration = false;
 		parent_kit = 0;
 		if (attach(vr_kit_parent_index))
 			camera = parent_kit->get_camera();
@@ -169,51 +178,66 @@ namespace vr {
 		return parent_kit->set_vibration(controller_index, low_frequency_strength, high_frequency_strength);
 	}
 	/// update state by swapping information of hmd and trackable used to emulate hmd
-	bool vr_wall_kit::query_state(vr_kit_state& state, int pose_query) 
+	bool vr_wall_kit::query_state_impl(vr_kit_state& state, int pose_query) 
 	{
 		bool res = parent_kit->query_state(state, pose_query);
-		if (res) {
+		if (res && !in_calibration) {
 			if (hmd_trackable_index != -1)
 				std::swap(state.hmd, static_cast<vr_trackable_state&>(state.controller[hmd_trackable_index]));
-			if (state.hmd.status == vr::VRS_TRACKED)
-				current_tracker_pose = *reinterpret_cast<mat34*>(state.hmd.pose);
 		}
 		return res;
 	}
 	/// access to 3x4 matrix in column major format for transformation from eye (0..left, 1..right) to head coordinates
 	void vr_wall_kit::put_eye_to_head_matrix(int eye, float* pose_matrix) const 
 	{
-		mat34& pose = *reinterpret_cast<mat34*>(pose_matrix);
-		mat3& orientation = *reinterpret_cast<mat3*>(pose_matrix);
-		orientation.identity();
-		vec3& position = *reinterpret_cast<vec3*>(pose_matrix + 9);
-		position = get_eye_position_world(eye, current_tracker_pose);
+		if (in_calibration)
+			parent_kit->put_eye_to_head_matrix(eye, pose_matrix);
+		else {
+			mat34& pose = *reinterpret_cast<mat34*>(pose_matrix);
+			mat3& orientation = *reinterpret_cast<mat3*>(pose_matrix);
+			orientation.identity();
+			vec3& position = *reinterpret_cast<vec3*>(pose_matrix + 9);
+			position = eye_center_tracker + eye_separation * (eye - 0.5f)*eye_separation_dir_tracker;
+		}
 	}
 	/// access to 4x4 matrix in column major format for perspective transformation from eye (0..left, 1..right)
-	void vr_wall_kit::put_projection_matrix(int eye, float z_near, float z_far, float* projection_matrix) const
+	void vr_wall_kit::put_projection_matrix(int eye, float z_near, float z_far, float* projection_matrix, const float* hmd_pose) const
 	{
-		vec3 eye_world = get_eye_position_world(eye, current_tracker_pose);
-		vec3 eye_screen = (eye_world - get_screen_center()) * get_screen_orientation();
-		float scale = z_near/eye_screen(2);
-		float width_world = get_width()*pixel_size[0];
-		float l = scale * (-0.5f*width_world - eye_screen(0));
-		float r = scale * (+0.5f*width_world - eye_screen(0));
-		float height_world = get_height()*pixel_size[1];
-		float b = scale * (-0.5f*height_world - eye_screen(1));
-		float t = scale * (+0.5f*height_world - eye_screen(1));
-		reinterpret_cast<mat4&>(*projection_matrix) = cgv::math::frustum4<float>(l, r, b, t, z_near, z_far);
+		if (in_calibration)
+			parent_kit->put_projection_matrix(eye, z_near, z_far, projection_matrix);
+		else {
+			if (hmd_pose == 0) {
+				std::cerr << "ERROR in vr_wall_kit::put_projection_matrix() ... hmd pose not provided!" << std::endl;
+			}
+			else {
+				vec3 eye_world = get_eye_position_world(eye, *reinterpret_cast<const mat34*>(hmd_pose));
+				vec3 eye_screen = (eye_world - get_screen_center()) * get_screen_orientation();
+				float scale = z_near / eye_screen(2);
+				float width_world = get_width()*pixel_size[0];
+				float l = scale * (-0.5f*width_world - eye_screen(0));
+				float r = scale * (+0.5f*width_world - eye_screen(0));
+				float height_world = get_height()*pixel_size[1];
+				float b = scale * (-0.5f*height_world - eye_screen(1));
+				float t = scale * (+0.5f*height_world - eye_screen(1));
+				reinterpret_cast<mat4&>(*projection_matrix) = cgv::math::frustum4<float>(l, r, b, t, z_near, z_far);
+			}
+		}
 	}
 	/// compute lookat matrix for a given eye (0 ... left, 1 ... right)
-	void vr_wall_kit::put_world_to_eye_transform(int eye, float* modelview_matrix) const
+	void vr_wall_kit::put_world_to_eye_transform(int eye, const float* hmd_pose, float* modelview_matrix) const
 	{
-		vec3 eye_world = get_eye_position_world(eye, current_tracker_pose);
-		mat3 R = get_screen_orientation();
-		R.transpose();
-		mat4& T = reinterpret_cast<mat4&>(*modelview_matrix);
-		T.set_col(0, vec4(R.col(0), 0));
-		T.set_col(1, vec4(R.col(1), 0));
-		T.set_col(2, vec4(R.col(2), 0));
-		T.set_col(3, vec4(-R * eye_world, 1));
+		if (in_calibration)
+			parent_kit->put_world_to_eye_transform(eye, hmd_pose, modelview_matrix);
+		else {
+			vec3 eye_world = get_eye_position_world(eye, *reinterpret_cast<const mat34*>(hmd_pose));
+			mat3 R = get_screen_orientation();
+			R.transpose();
+			mat4& T = reinterpret_cast<mat4&>(*modelview_matrix);
+			T.set_col(0, vec4(R.col(0), 0));
+			T.set_col(1, vec4(R.col(1), 0));
+			T.set_col(2, vec4(R.col(2), 0));
+			T.set_col(3, vec4(-R * eye_world, 1));
+		}
 	}
 	/// submit the rendered stereo frame to the hmd
 	void vr_wall_kit::submit_frame()

@@ -4,6 +4,7 @@
 #include "vr_camera.h"
 
 #include <vector>
+#include <string>
 
 #include "lib_begin.h"
 
@@ -64,6 +65,14 @@ namespace vr {
 		std::string last_error;
 		/// destruct camera
 		void destruct_camera();
+		/// 
+		vr_trackable_state& ref_reference_state(const std::string& serial_nummer);
+		/// remove all reference states
+		void clear_reference_states();
+		/// mark all reference states as untracked
+		void mark_references_as_untracked();
+		/// derived kits implement this without caring about calibration; vr_kit::query_state() will apply driver calibration
+		virtual bool query_state_impl(vr_kit_state& state, int pose_query) = 0;
 		/// construct
 		vr_kit(vr_driver* _driver, void* _handle, const std::string& _name, bool _ffb_support, bool _wireless);
 	public:
@@ -107,11 +116,16 @@ namespace vr {
 			cgv::gui::vr_server::provide_controller_throttles_and_sticks_deadzone_and_precision(). */
 		virtual const std::vector<std::pair<float, float> >& get_controller_throttles_and_sticks_deadzone_and_precision(int controller_index) const = 0;
 		//! query current state of vr kit and return whether this was successful
-		/*! if pose_query is 
-			0 ... no poses are queried
-			1 ... most current pose for controller is queried for example to get pose at button press in highest precision
-			2 ... future pose for rendering next frame is queried for controllers and hmd*/
-		virtual bool query_state(vr_kit_state& state, int pose_query = 2) = 0;
+		/*! \param state state is returned by writing it into passed reference
+		    \param pose_query is 
+				0 ... no poses are queried
+				1 ... most current pose for controller is queried for example to get pose at button press in highest precision
+				2 ... future pose for rendering next frame is queried for controllers and hmd
+				add 4 to restrict query to left controller
+				add 8 to restrict query to right controller
+				add 12 to restrict query to both controllers 
+		*/
+		bool query_state(vr_kit_state& state, int pose_query = 2);
 		//! NOT IMPLEMENTED retrieve next key event from given device, return false if device's event queue is empty
 		/*!Typically you use this function in the following way:
 			while (query_key_event(i,key,action)) { process(key,action); } */
@@ -134,8 +148,10 @@ namespace vr {
 		virtual void destruct_fbos() = 0;
 		/// access to 3x4 matrix in column major format for transformation from eye (0..left, 1..right) to head coordinates
 		virtual void put_eye_to_head_matrix(int eye, float* pose_matrix) const = 0;
-		/// access to 4x4 matrix in column major format for perspective transformation from eye (0..left, 1..right)
-		virtual void put_projection_matrix(int eye, float z_near, float z_far, float* projection_matrix) const = 0;
+		//! access to 4x4 matrix in column major format for perspective transformation from eye (0..left, 1..right)
+		/*! pose matrix is not needed for most vr kits and can be set to nullptr; only in case of wall based vr kits
+		    the pose matrix needs to be specified*/
+		virtual void put_projection_matrix(int eye, float z_near, float z_far, float* projection_matrix, const float* hmd_pose = 0) const = 0;
 		/// access to 4x4 modelview transformation matrix of given eye in column major format, which is computed in default implementation from given 3x4 pose matrix and eye to head transformation
 		virtual void put_world_to_eye_transform(int eye, const float* hmd_pose, float* modelview_matrix) const;
 		/// enable the framebuffer object of given eye (0..left, 1..right) 

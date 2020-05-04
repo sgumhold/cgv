@@ -384,7 +384,7 @@ void context::enable_sRGB_framebuffer(bool do_enable)
 shader_program_base* context::get_current_program() const
 {
 	if (shader_program_stack.empty()) {
-		error("context::get_current_program() called in core profile without current shader program");
+		//error("context::get_current_program() called in core profile without current shader program");
 		return 0;
 	}
 	shader_program_base& prog = *shader_program_stack.top();
@@ -500,6 +500,7 @@ void context::set_current_view(shader_program& prog, bool modelview_deps, bool p
 	if (modelview_deps) {
 		cgv::math::fmat<float, 4, 4> V(modelview_matrix_stack.top());
 		prog.set_uniform(*this, "modelview_matrix", V);
+		prog.set_uniform(*this, "inverse_modelview_matrix", inv(V));
 		cgv::math::fmat<float, 3, 3> NM;
 		NM(0, 0) = V(0, 0);
 		NM(0, 1) = V(0, 1);
@@ -511,6 +512,7 @@ void context::set_current_view(shader_program& prog, bool modelview_deps, bool p
 		NM(2, 1) = V(2, 1);
 		NM(2, 2) = V(2, 2);
 		NM.transpose();
+		prog.set_uniform(*this, "inverse_normal_matrix", NM);
 		NM = inv(NM);
 		prog.set_uniform(*this, "normal_matrix", NM);
 	}
@@ -1859,20 +1861,10 @@ void shader_program_base::specify_vertex_attribute_names(context& ctx, const std
 	normal_index = normal.empty() ? -1 : ctx.get_attribute_location(*this, normal);
 	texcoord_index = texcoord.empty() ? -1 : ctx.get_attribute_location(*this, texcoord);
 }
-
-bool context::shader_program_enable(shader_program_base& spb)
+bool context::shader_program_link(shader_program_base& spb) const
 {
-	if (spb.is_enabled) {
-		if (shader_program_stack.top() == &spb) {
-			error("context::shader_program_enable() called with program that is currently active", &spb);
-			return false;
-		}
-		error("context::shader_program_enable() called with program that is recursively reactivated", &spb);
+	if (spb.handle == 0)
 		return false;
-	}
-	shader_program_stack.push(&spb);
-	spb.is_enabled = true;
-
 	if (spb.auto_detect_vertex_attributes) {
 		spb.position_index = get_attribute_location(spb, "position");
 		spb.color_index = get_attribute_location(spb, "color");
@@ -1887,6 +1879,21 @@ bool context::shader_program_enable(shader_program_base& spb)
 		spb.uses_gamma = get_uniform_location(spb, "gamma") != -1;
 		spb.auto_detect_uniforms = false;
 	}
+	return true;
+}
+
+bool context::shader_program_enable(shader_program_base& spb)
+{
+	if (spb.is_enabled) {
+		if (shader_program_stack.top() == &spb) {
+			error("context::shader_program_enable() called with program that is currently active", &spb);
+			return false;
+		}
+		error("context::shader_program_enable() called with program that is recursively reactivated", &spb);
+		return false;
+	}
+	shader_program_stack.push(&spb);
+	spb.is_enabled = true;
 	return true;
 }
 

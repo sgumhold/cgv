@@ -6,10 +6,7 @@
 namespace cgv {
 	namespace math {
 
-
-
-
-//returns the inverse of a diagonal matrix
+///returns the inverse of a diagonal matrix
 template <typename T>
 diag_mat<T> inv(const diag_mat<T>& m) 
 {
@@ -19,7 +16,7 @@ diag_mat<T> inv(const diag_mat<T>& m)
 	return im;
 }
 
-//returns the inverse of a lower triangular matrix
+///returns the inverse of a lower triangular matrix
 template <typename T>
 low_tri_mat<T> inv(const low_tri_mat<T>& m) 
 {
@@ -45,7 +42,7 @@ low_tri_mat<T> inv(const low_tri_mat<T>& m)
 	return im;
 }
 
-//returns the inverse of an upper triangular matrix
+///returns the inverse of an upper triangular matrix
 template <typename T>
 up_tri_mat<T> inv(const up_tri_mat<T>& m) 
 {
@@ -74,45 +71,21 @@ up_tri_mat<T> inv(const up_tri_mat<T>& m)
 	return im;
 }
 
-/// return the inverse of a square matrix
-template <typename T, cgv::type::uint32_type N>
-fmat<T,N,N> inv(const fmat<T,N,N>& m)
-{
-	mat<T> M(N,N,&m(0,0));
-	return fmat<T,N,N>(N,N,&(inv(M)(0,0)));
-}
-
+///returns the inverse of a square matrix
 template <typename T>
-mat<T> inv(const mat<T>& m) 
+mat<T> inv(const mat<T>& m)
 {
 	assert(m.nrows() == m.ncols());
-	mat<T> im(m.nrows(),m.nrows());
-	solve(m,identity<T>(m.ncols()),im);
+	mat<T> im(m.nrows(), m.nrows());
+	solve(m, identity<T>(m.ncols()), im);
 	return im;
 }
-
 
 ///compute inverse of 2x2 matrix
 template <typename T>
 mat<T> inv_22(const mat<T>& m)
 {
-
 	mat<T> im(2, 2);
-	T t4 = 1.0 / (-m(0, 0) * m(1, 1) + m(0, 1) * m(1, 0));
-	im(0, 0) = -m(1, 1) * t4;
-	im(1, 0) = m(1, 0) * t4;
-	im(0, 1) = m(0, 1) * t4;
-	im(1, 1) = -m(0, 0) * t4;
-
-	return im;
-}
-
-///compute inverse of 2x2 matrix
-template <typename T>
-fmat<T,2,2> inv_22(const fmat<T,3,3>& m)
-{
-
-	fmat<T,2,2> im;
 	T t4 = 1.0 / (-m(0, 0) * m(1, 1) + m(0, 1) * m(1, 0));
 	im(0, 0) = -m(1, 1) * t4;
 	im(1, 0) = m(1, 0) * t4;
@@ -126,7 +99,6 @@ fmat<T,2,2> inv_22(const fmat<T,3,3>& m)
 template <typename T>
 mat<T> inv_33(const mat<T>& m)
 {
-
 	mat<T> im(3, 3);
 	T t4 = m(2, 0) * m(0, 1);
 	T t6 = m(2, 0) * m(0, 2);
@@ -147,35 +119,10 @@ mat<T> inv_33(const mat<T>& m)
 	return im;
 }
 
-///compute inverse of 3x3 matrix
-template <typename T>
-fmat<T,3,3> inv_33(const fmat<T,3,3>& m)
-{
-	fmat<T,3,3> im;
-	T t4 = m(2, 0) * m(0, 1);
-	T t6 = m(2, 0) * m(0, 2);
-	T t8 = m(1, 0) * m(0, 1);
-	T t10 = m(1, 0) * m(0, 2);
-	T t12 = m(0, 0) * m(1, 1);
-	T t14 = m(0, 0) * m(1, 2);
-	T t17 = (T)1.0 / (t4 * m(1, 2) - t6 * m(1, 1) - t8 * m(2, 2) + t10 * m(2, 1) + t12 * m(2, 2) - t14 * m(2, 1));
-	im(0, 0) = (m(1, 1) * m(2, 2) - m(1, 2) * m(2, 1)) * t17;
-	im(0, 1) = -(m(0, 1) * m(2, 2) - m(0, 2) * m(2, 1)) * t17;
-	im(0, 2) = (m(0, 1) * m(1, 2) - m(0, 2) * m(1, 1)) * t17;
-	im(1, 0) = -(-m(2, 0) * m(1, 2) + m(1, 0) * m(2, 2)) * t17;
-	im(1, 1) = (-t6 + m(0, 0) * m(2, 2)) * t17;
-	im(1, 2) = -(-t10 + t14) * t17;
-	im(2, 0) = (-m(2, 0) * m(1, 1) + m(1, 0) * m(2, 1)) * t17;
-	im(2, 1) = -(-t4 + m(0, 0) * m(2, 1)) * t17;
-	im(2, 2) = (-t8 + t12) * t17;
-	return im;
-}
-
-//compute inverse of 4x4 matrix
+///compute inverse of 4x4 matrix
 template <typename T>
 mat<T> inv_44(const mat<T>& m) 
 {
-	
 	mat<T> im(4,4);
 	T t1 = m(3,3) * m(1,1);
 	T t3 = m(3,2) * m(1,1);
@@ -262,8 +209,113 @@ mat<T> inv_44(const mat<T>& m)
 	return im;
 }
 
+/// return the inverse of a square matrix
+template <typename T, cgv::type::uint32_type N>
+fmat<T, N, N> inv(const fmat<T, N, N>& m)
+{
+	mat<T> M(N, N, &m(0, 0));
+	return fmat<T, N, N>(N, N, &(inv(M)(0, 0)));
+}
 
+///compute inverse of 2x2 matrix
+template <typename T>
+fmat<T, 2, 2> inv(const fmat<T, 2, 2>& m)
+{
+	fmat<T, 2, 2> im;
+	T t4 = 1.0 / (-m(0, 0) * m(1, 1) + m(0, 1) * m(1, 0));
+	im(0, 0) = -m(1, 1) * t4;
+	im(1, 0) = +m(1, 0) * t4;
+	im(0, 1) = +m(0, 1) * t4;
+	im(1, 1) = -m(0, 0) * t4;
 
+	return im;
+}
+
+///compute inverse of 3x3 matrix
+template <typename T>
+fmat<T, 3, 3> inv(const fmat<T, 3, 3>& m)
+{
+	T inv_det = (T)1 / (
+		+m(0, 0) * (m(1, 1) * m(2, 2) - m(1, 2) * m(2, 1))
+		- m(0, 1) * (m(1, 0) * m(2, 2) - m(1, 2) * m(2, 0))
+		+ m(0, 2) * (m(1, 0) * m(2, 1) - m(1, 1) * m(2, 0)));
+
+	fmat<T, 3, 3> im;
+	im(0, 0) = +(m(1, 1) * m(2, 2) - m(1, 2) * m(2, 1)) * inv_det;
+	im(0, 1) = -(m(0, 1) * m(2, 2) - m(0, 2) * m(2, 1)) * inv_det;
+	im(0, 2) = +(m(0, 1) * m(1, 2) - m(0, 2) * m(1, 1)) * inv_det;
+	im(1, 0) = -(m(1, 0) * m(2, 2) - m(1, 2) * m(2, 0)) * inv_det;
+	im(1, 1) = +(m(0, 0) * m(2, 2) - m(0, 2) * m(2, 0)) * inv_det;
+	im(1, 2) = -(m(0, 0) * m(1, 2) - m(0, 2) * m(1, 0)) * inv_det;
+	im(2, 0) = +(m(1, 0) * m(2, 1) - m(1, 1) * m(2, 0)) * inv_det;
+	im(2, 1) = -(m(0, 0) * m(2, 1) - m(0, 1) * m(2, 0)) * inv_det;
+	im(2, 2) = +(m(0, 0) * m(1, 1) - m(0, 1) * m(1, 0)) * inv_det;
+
+	return im;
+}
+
+///compute inverse of 4x4 matrix
+template <typename T>
+fmat<T, 4, 4> inv(const fmat<T, 4, 4>& m)
+{
+	T coef00 = m(2, 2) * m(3, 3) - m(2, 3) * m(3, 2);
+	T coef02 = m(2, 1) * m(3, 3) - m(2, 3) * m(3, 1);
+	T coef03 = m(2, 1) * m(3, 2) - m(2, 2) * m(3, 1);
+
+	T coef04 = m(1, 2) * m(3, 3) - m(1, 3) * m(3, 2);
+	T coef06 = m(1, 1) * m(3, 3) - m(1, 3) * m(3, 1);
+	T coef07 = m(1, 1) * m(3, 2) - m(1, 2) * m(3, 1);
+
+	T coef08 = m(1, 2) * m(2, 3) - m(1, 3) * m(2, 2);
+	T coef10 = m(1, 1) * m(2, 3) - m(1, 3) * m(2, 1);
+	T coef11 = m(1, 1) * m(2, 2) - m(1, 2) * m(2, 1);
+
+	T coef12 = m(0, 2) * m(3, 3) - m(0, 3) * m(3, 2);
+	T coef14 = m(0, 1) * m(3, 3) - m(0, 3) * m(3, 1);
+	T coef15 = m(0, 1) * m(3, 2) - m(0, 2) * m(3, 1);
+
+	T coef16 = m(0, 2) * m(2, 3) - m(0, 3) * m(2, 2);
+	T coef18 = m(0, 1) * m(2, 3) - m(0, 3) * m(2, 1);
+	T coef19 = m(0, 1) * m(2, 2) - m(0, 2) * m(2, 1);
+
+	T coef20 = m(0, 2) * m(1, 3) - m(0, 3) * m(1, 2);
+	T coef22 = m(0, 1) * m(1, 3) - m(0, 3) * m(1, 1);
+	T coef23 = m(0, 1) * m(1, 2) - m(0, 2) * m(1, 1);
+
+	fvec<T, 4> fac0(coef00, coef00, coef02, coef03);
+	fvec<T, 4> fac1(coef04, coef04, coef06, coef07);
+	fvec<T, 4> fac2(coef08, coef08, coef10, coef11);
+	fvec<T, 4> fac3(coef12, coef12, coef14, coef15);
+	fvec<T, 4> fac4(coef16, coef16, coef18, coef19);
+	fvec<T, 4> fac5(coef20, coef20, coef22, coef23);
+
+	fvec<T, 4> vec0(m(0, 1), m(0, 0), m(0, 0), m(0, 0));
+	fvec<T, 4> vec1(m(1, 1), m(1, 0), m(1, 0), m(1, 0));
+	fvec<T, 4> vec2(m(2, 1), m(2, 0), m(2, 0), m(2, 0));
+	fvec<T, 4> vec3(m(3, 1), m(3, 0), m(3, 0), m(3, 0));
+
+	fvec<T, 4> inv0(vec1 * fac0 - vec2 * fac1 + vec3 * fac2);
+	fvec<T, 4> inv1(vec0 * fac0 - vec2 * fac3 + vec3 * fac4);
+	fvec<T, 4> inv2(vec0 * fac1 - vec1 * fac3 + vec3 * fac5);
+	fvec<T, 4> inv3(vec0 * fac2 - vec1 * fac4 + vec2 * fac5);
+
+	fvec<T, 4> sign_a(+(T)1, -(T)1, +(T)1, -(T)1);
+	fvec<T, 4> sign_b(-(T)1, +(T)1, -(T)1, +(T)1);
+	fmat<T, 4, 4> im;
+	im.set_col(0, inv0 * sign_a);
+	im.set_col(1, inv1 * sign_b);
+	im.set_col(2, inv2 * sign_a);
+	im.set_col(3, inv3 * sign_b);
+
+	fvec<T, 4> row0(im(0, 0), im(1, 0), im(2, 0), im(3, 0));
+
+	fvec<T, 4> dot0(m.row(0) * row0);
+	T dot1 = (dot0[0] + dot0[1]) + (dot0[2] + dot0[3]);
+
+	T inv_det = (T)1 / dot1;
+
+	return im * inv_det;
+}
 
 inline const perm_mat inv(const perm_mat &p)
 {
@@ -271,10 +323,5 @@ inline const perm_mat inv(const perm_mat &p)
 	r.transpose();
 	return r;
 }
-
-
-
-
-
 	}
 }

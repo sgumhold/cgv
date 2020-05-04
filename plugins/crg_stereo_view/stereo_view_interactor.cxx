@@ -249,8 +249,8 @@ std::string stereo_view_interactor::get_type_name() const
 void stereo_view_interactor::stream_help(std::ostream& os)
 {
 	os << "stereo_view_interactor:\n\a"
-		<< "stereo[F4], stereo mode[s-F4], z_near<s-N,N>, z_far<s-F,F>, select view dir{c-X|Y|Z,sc-X|Y|Z}\n"
-		<< "view all{c-Spc}, set focus{click LMB}, pan<RMB>, zoom<MMB>, rotate<LMB>, roll<s-LMB>";
+		<< "stereo[F4], stereo mode[s-F4], z_near<c-N,a-N>, z_far<c-F,a-F>, select view dir{c-X|Y|Z,sc-X|Y|Z}\n"
+		<< "view all{c-Spc}, show focus[s-F], set focus{click LMB}, pan<RMB>, zoom<MMB>, rotate<LMB>, roll<s-LMB>";
 	if (fix_view_up_dir)
 		os << " disabled";
 	os << "\n";
@@ -630,12 +630,10 @@ bool stereo_view_interactor::handle(event& e)
 		}
 		if (ke.get_action() != KA_RELEASE) {
 			switch (ke.get_key()) {
-			case 'S':
 			case gamepad::GPK_LEFT_STICK_PRESS:
 				left_mode = 1 - left_mode;
 				on_set(&left_mode);
 				return true;
-			case 'J':
 			case gamepad::GPK_RIGHT_STICK_PRESS:
 				right_mode = 1 - right_mode;
 				on_set(&right_mode);
@@ -651,27 +649,25 @@ bool stereo_view_interactor::handle(event& e)
 					return true;
 				}
 				break;
-			case 'G':
+			case 'F':
 			case gamepad::GPK_A:
-				if (ke.get_modifiers() == 0) {
+				if (ke.get_modifiers() == EM_SHIFT || e.get_kind() == gamepad::GPK_A) {
 					show_focus = !show_focus;
 					on_set(&show_focus);
 					return true;
 				}
-				break;
-			case 'F':
-				if (ke.get_modifiers() == EM_SHIFT)
+				else if (ke.get_modifiers() == EM_CTRL)
 					z_far /= 1.05;
-				else if (ke.get_modifiers() == 0)
+				else if (ke.get_modifiers() == EM_ALT)
 					z_far *= 1.05;
 				else
 					break;
 				on_set(&z_far);
 				return true;
 			case 'N':
-				if (ke.get_modifiers() == EM_SHIFT)
+				if (ke.get_modifiers() == EM_CTRL)
 					z_near /= 1.05;
-				else if (ke.get_modifiers() == 0)
+				else if (ke.get_modifiers() == EM_ALT)
 					z_near *= 1.05;
 				else
 					break;

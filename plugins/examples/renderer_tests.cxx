@@ -74,7 +74,7 @@ public:
 	{
 		sort_points = false;
 		blend = false;
-
+		use_box_array = false;
 		T.identity();
 		t = vec3(-0.5f,0.0f,-0.5f);
 		lambda = 1.0f;
@@ -199,7 +199,7 @@ public:
 		}
 		sr.set_group_index_array(ctx, group_indices);
 	}
-	void draw_points()
+	void render_points(cgv::render::context& ctx, cgv::render::renderer& R)
 	{
 		if (sort_points && view_ptr) {
 			indices.resize(points.size());
@@ -215,10 +215,11 @@ public:
 			};
 			vec3 view_dir = view_ptr->get_view_dir();
 			std::sort(indices.begin(), indices.end(), sort_pred(points, view_dir));
-			glDrawElements(GL_POINTS, GLsizei(points.size()), GL_UNSIGNED_INT, &indices.front());
+			R.set_indices(ctx, indices);
 		}
 		else
-			glDrawArrays(GL_POINTS, 0, GLsizei(points.size()));
+			R.remove_indices(ctx);
+		R.render(ctx, 0, points.size());
 	}
 	void draw(cgv::render::context& ctx)
 	{
@@ -240,9 +241,7 @@ public:
 				set_geometry(ctx, p_renderer);
 				p_vbos_out_of_date = false;
 			}
-			p_renderer.validate_and_enable(ctx);
-			draw_points();
-			p_renderer.disable(ctx);
+			render_points(ctx, p_renderer);
 		}	break;
 		case RM_SURFELS: {
 			cgv::render::surfel_renderer& sl_renderer = cgv::render::ref_surfel_renderer(ctx);
@@ -259,9 +258,7 @@ public:
 					sl_renderer.set_normal_array(ctx, normals);
 				sl_vbos_out_of_date = false;
 			}
-			sl_renderer.validate_and_enable(ctx);
-			draw_points();
-			sl_renderer.disable(ctx);
+			render_points(ctx, sl_renderer);
 		}	break;
 		case RM_BOXES: {
 			cgv::render::box_renderer& b_renderer = cgv::render::ref_box_renderer(ctx);
@@ -280,9 +277,7 @@ public:
 				}
 				b_vbos_out_of_date = false;
 			}
-			b_renderer.validate_and_enable(ctx);
-			draw_points();
-			b_renderer.disable(ctx);
+			render_points(ctx, b_renderer);
 		}	break;
 		case RM_BOX_WIRES: {
 			cgv::render::box_wire_renderer& bw_renderer = cgv::render::ref_box_wire_renderer(ctx);
@@ -297,9 +292,7 @@ public:
 				set_geometry(ctx, bw_renderer);
 				bw_renderer.set_extent_array(ctx, sizes);
 			}
-			bw_renderer.validate_and_enable(ctx);
-			draw_points();
-			bw_renderer.disable(ctx);
+			render_points(ctx, bw_renderer);
 		} break;
 		case RM_NORMALS: {
 			cgv::render::normal_renderer& n_renderer = cgv::render::ref_normal_renderer(ctx);
@@ -307,9 +300,7 @@ public:
 			set_group_geometry(ctx, n_renderer);
 			set_geometry(ctx, n_renderer);
 			n_renderer.set_normal_array(ctx, normals);
-			n_renderer.validate_and_enable(ctx);
-			draw_points();
-			n_renderer.disable(ctx);
+			render_points(ctx, n_renderer);
 		}	break;
 		case RM_ARROWS: {
 			cgv::render::arrow_renderer& a_renderer = cgv::render::ref_arrow_renderer(ctx);
@@ -317,10 +308,7 @@ public:
 			a_renderer.set_position_array(ctx, points);
 			a_renderer.set_color_array(ctx, colors);
 			a_renderer.set_direction_array(ctx, normals);
-			if (a_renderer.validate_and_enable(ctx)) {
-				glDrawArraysInstanced(GL_POINTS, 0, GLsizei(points.size()), arrow_style.nr_subdivisions);
-				a_renderer.disable(ctx);
-			}
+			a_renderer.render(ctx, 0, points.size());
 		}	break;
 		case RM_SPHERES: {
 			cgv::render::sphere_renderer& s_renderer = cgv::render::ref_sphere_renderer(ctx);
@@ -330,9 +318,7 @@ public:
 			set_group_geometry(ctx, s_renderer);
 			set_geometry(ctx, s_renderer);
 			s_renderer.set_radius_array(ctx, &sizes[0][0], sizes.size(), sizeof(vec3));
-			s_renderer.validate_and_enable(ctx);
-			draw_points();
-			s_renderer.disable(ctx);
+			render_points(ctx, s_renderer);
 		}	break;
 		}
 		if (disable_depth)

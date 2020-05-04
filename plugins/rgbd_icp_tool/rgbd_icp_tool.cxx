@@ -29,7 +29,7 @@ rgbd_icp_tool::rgbd_icp_tool() {
 	target_prs.blend_points = true;
 
 	lrs.line_width = 1.0f;
-	//rcrs.radius = 0.001f;
+	rcrs.radius = 0.001f;
 
 	icp_iterations = 50;
 }
@@ -101,9 +101,10 @@ void draw_correspondences(cgv::render::context& ctx, point_cloud& crspd_src, poi
 		//rcr.set_radius_array(ctx, radii);
 		vector<cgv::math::fvec<float, 4>> color(P.size(), color);
 		rcr.set_color_array(ctx, color);
-		std::cout << "tct: " << rcr.validate_and_enable(ctx) << std::endl;
+		//std::cout << "tct: " << rcr.validate_and_enable(ctx) << std::endl;
 		if (rcr.validate_and_enable(ctx)) {
-			glDrawArrays(GL_LINES, 0, (GLsizei)P.size());
+			std::cout << "run here" << std::endl;
+			rcr.render(ctx, 0, P.size());
 			rcr.disable(ctx);
 		}
 	}
@@ -163,6 +164,7 @@ void rgbd_icp_tool::create_gui()
 	add_decorator("Point cloud registration", "heading", "level=1");
 	connect_copy(add_button("load source point cloud")->click, rebind(this, &rgbd_icp_tool::on_load_source_point_cloud_cb));
 	connect_copy(add_button("load target point cloud")->click, rebind(this, &rgbd_icp_tool::on_load_target_point_cloud_cb));
+	connect_copy(add_button("clear point cloud")->click, rebind(this, &rgbd_icp_tool::on_clear_point_cloud_cb));
 	connect_copy(add_button("randomize source")->click, rebind(this, &rgbd_icp_tool::on_randomize_position_cb));
 	connect_copy(add_button("find point cloud")->click, rebind(this, &rgbd_icp_tool::on_reg_find_point_cloud_cb));
 	connect_copy(add_button("ICP")->click, rebind(this, &rgbd_icp_tool::on_reg_ICP_cb));
@@ -204,6 +206,15 @@ void rgbd_icp_tool::on_load_target_point_cloud_cb()
 {
 	std::string fn = cgv::gui::file_open_dialog("source point cloud", "OBJ files (obj,ply):*.obj;*.ply");
 	target_pc.read(fn);
+	post_redraw();
+}
+
+void rgbd_icp_tool::on_clear_point_cloud_cb()
+{
+	source_pc.clear();
+	target_pc.clear();
+	crs_srs_pc.clear();
+	crs_tgt_pc.clear();
 	post_redraw();
 }
 

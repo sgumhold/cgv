@@ -44,8 +44,8 @@ namespace vr {
 			cgv::media::mesh::simple_mesh<float> M;
 			if (M.read(cgv::base::find_data_file(get_vrmesh_file_name(id), "Dc"))) {
 				mesh_infos[id] = new cgv::render::mesh_render_info();
-				mesh_infos[id]->construct_vbos(ctx, M);
-				mesh_infos[id]->bind(ctx, ctx.ref_surface_shader_program(true));
+				mesh_infos[id]->construct(ctx, M);
+				mesh_infos[id]->bind(ctx, ctx.ref_surface_shader_program(true), true);
 			}
 			ref_vrmesh_outofdate(id) = false;
 		}
@@ -85,10 +85,10 @@ namespace vr {
 		return inv(get_mat4_from_pose(state.hmd.pose) * get_mat4_from_pose(camera_to_head));
 	}
 	/// query projection matrix for a given eye (0 ... left, 1 ... right)
-	cgv::render::render_types::mat4 get_eye_projection_transform(const vr_kit* vr_kit_ptr, float z_near, float z_far, int eye)
+	cgv::render::render_types::mat4 get_eye_projection_transform(const vr_kit* vr_kit_ptr, const vr_kit_state& state, float z_near, float z_far, int eye)
 	{
 		cgv::render::render_types::mat4 P;
-		vr_kit_ptr->put_projection_matrix(eye, z_near, z_far, &P(0, 0));
+		vr_kit_ptr->put_projection_matrix(eye, z_near, z_far, &P(0, 0), state.hmd.pose);
 		return P;
 	}
 	/// query projection matrix for a given camera (0 ... left or mono, 1 ... right only for stereo cameras)

@@ -64,7 +64,7 @@ protected:
 
 	void on_load_source_point_cloud_cb();
 	void on_load_target_point_cloud_cb();
-
+	void on_clear_point_cloud_cb();
 	void on_randomize_position_cb();
 	void on_reg_ICP_cb();
 	void on_reg_SICP_cb();

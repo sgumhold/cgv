@@ -212,10 +212,7 @@ public:
 		if (!P.empty()) {
 			sr.set_position_array(c, P);
 			sr.set_color_array(c, C);
-			if (sr.validate_and_enable(c)) {
-				glDrawArrays(GL_POINTS, 0, (GLsizei)P.size());
-				sr.disable(c);
-			}
+			sr.render(c, 0, P.size());
 		}
 	}
 	void finish_draw(context& c)

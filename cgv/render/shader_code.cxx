@@ -184,6 +184,8 @@ ShaderType shader_code::detect_shader_type(const std::string& file_name)
 		st = ST_FRAGMENT;
 	else if (ext == "glgs" || ext == "pglgs")
 		st = ST_GEOMETRY;
+	else if (ext == "glcs" || ext == "pglcs")
+		st = ST_COMPUTE;
 	return st;
 }
 
@@ -236,12 +238,17 @@ std::string shader_code::read_code_file(const std::string &file_name, std::strin
 }
 
 /// read shader code from file
-bool shader_code::read_code(const context& ctx, const std::string &file_name, ShaderType st)
+bool shader_code::read_code(const context& ctx, const std::string &file_name, ShaderType st, std::string defines)
 {
 	if (st == ST_DETECT)
 		st = detect_shader_type(file_name);
 
 	std::string source = read_code_file(file_name, &last_error);
+
+	if(!defines.empty()) {
+		set_defines(source, defines);
+	}
+
 	if (source.empty())
 		return false;
 	return set_code(ctx, source, st);
@@ -254,6 +261,45 @@ bool shader_code::set_code(const context& ctx, const std::string &source, Shader
 	destruct(ctx);
 	ctx_ptr = &ctx;
 	return ctx.shader_code_create(*this, st, source);
+}
+
+/// set shader code defines
+void shader_code::set_defines(std::string& source, const std::string& defines) {
+
+	size_t current, previous = 0;
+	current = defines.find_first_of(';');
+	std::vector<std::string> tokens;
+	while(current != std::string::npos) {
+		tokens.push_back(defines.substr(previous, current - previous));
+		previous = current + 1;
+		current = defines.find_first_of(';', previous);
+	}
+	tokens.push_back(defines.substr(previous, current - previous));
+
+	for(size_t i = 0; i < tokens.size(); ++i) {
+		std::string token = tokens[i];
+		size_t pos = token.find('=');
+		if(pos == std::string::npos)
+			continue;
+
+		std::string name = token.substr(0, pos);
+		std::string value = token.substr(pos + 1);
+		if(name.empty())
+			continue;
+
+		size_t define_pos = source.find("#define " + name);
+		if(define_pos == std::string::npos)
+			continue;
+
+		size_t overwrite_pos = define_pos + 8 + name.length() + 1; // length of: #define <NAME><SINGLE_SPACE>
+		std::string first_part = source.substr(0, overwrite_pos);
+		size_t new_line_pos = source.find_first_of('\n', overwrite_pos);
+		if(new_line_pos != std::string::npos) {
+			std::string second_part = source.substr(new_line_pos);
+			source = first_part + value + second_part;
+			source += "";
+		}
+	}
 }
 
 ///compile attached source; returns true if successful
@@ -269,9 +315,9 @@ bool shader_code::compile(const context& ctx)
 }
 
 /// read shader code from file, compile and print error message if necessary
-bool shader_code::read_and_compile(const context& ctx, const std::string &file_name, ShaderType st, bool show_error)
+bool shader_code::read_and_compile(const context& ctx, const std::string &file_name, ShaderType st, bool show_error, std::string defines)
 {
-	if (!read_code(ctx,file_name,st))
+	if (!read_code(ctx,file_name,st,defines))
 		return false;
 	if (!compile(ctx)) {
 		if (show_error)

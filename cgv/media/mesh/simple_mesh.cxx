@@ -12,6 +12,10 @@ namespace cgv {
 simple_mesh_base::idx_type simple_mesh_base::start_face()
 {
 	faces.push_back((cgv::type::uint32_type)position_indices.size());
+	if (!materials.empty())
+		material_indices.push_back(idx_type(materials.size()) - 1);
+	if (!group_names.empty())
+		group_indices.push_back(idx_type(group_names.size()) - 1);
 	return idx_type(faces.size() - 1);
 }
 /// create a new corner from position, optional normal and optional tex coordinate indices and return corner index
@@ -30,7 +34,7 @@ void simple_mesh_base::revert_face_orientation()
 {
 	bool nmls = position_indices.size() == normal_indices.size();
 	bool tcs  = position_indices.size() == tex_coord_indices.size();
-	for (size_t fi = 0; fi < get_nr_faces(); ++fi) {
+	for (idx_type fi = 0; fi < get_nr_faces(); ++fi) {
 		idx_type ci = begin_corner(fi);
 		idx_type cj = end_corner(fi);
 		while (ci + 1 < cj) {
@@ -255,9 +259,9 @@ bool simple_mesh<T>::write(const std::string& file_name) const
 	bool nmls = position_indices.size() == normal_indices.size();
 	bool tcs = position_indices.size() == tex_coord_indices.size();
 
-	for (size_t fi = 0; fi < faces.size(); ++fi) {
+	for (idx_type fi = 0; fi < faces.size(); ++fi) {
 		os << "f";
-		for (size_t ci = begin_corner(fi); ci < end_corner(fi); ++ci) {
+		for (idx_type ci = begin_corner(fi); ci < end_corner(fi); ++ci) {
 			os << " " << position_indices[ci] + 1;
 			if (!nmls && !tcs)
 				continue;

@@ -2,6 +2,8 @@
 
 #include <vr/vr_kit.h>
 #include <vr/vr_state.h>
+#include <cg_vr/vr_server.h>
+#include <cg_vr/vr_events.h>
 #include "vr_wall_kit.h"
 #include <vr/gl_vr_display.h>
 #include <cgv/base/node.h>
@@ -32,6 +34,26 @@ namespace vr {
 		WS_HMD           // hmd emulation
 	};
 
+	/// different modes for stereo shader
+	enum StereoShaderMode {
+		SSM_LEFT_ONLY,
+		SSM_RIGHT_ONLY,
+		SSM_SIDE_BY_SIDE,
+		SSM_TOP_BOTTOM,
+		SSM_COLUMN_INTERLEAVED,
+		SSM_ROW_INTERLEAVED,
+		SSM_ANAGLYPH_RED_CYAN,
+		SSM_ANAGLYPH_COLOR,
+		SSM_ANAGLYPH_HALF_COLOR,
+		SSM_ANAGLYPH_DUBOID
+	};
+
+	enum StereoWindowMode {
+		SWM_SINGLE,
+		SWM_DOUBLE,
+		SWM_TWO
+	};
+
 	/// the vr_wall class manages an additional window to cover the display and a wall_vr_kit that can be attached to an existing vr_kit
 	class CGV_API vr_wall : public cgv::base::node, public cgv::render::drawable, public cgv::gui::event_handler, public cgv::gui::provider
 	{
@@ -50,10 +72,18 @@ namespace vr {
 		int window_x;
 		/// helper member that allows to configure y position of the window before creationint window_width;
 		int window_y;
-		/// pointer to wall display window
-		cgv::gui::window_ptr window;
+		///
+		StereoWindowMode stereo_window_mode;
+		/// 0 for no fullscreen or index of fullscreen monitor (1, 2, ...) for left/main window and optionally for right window
+		int fullscreen, right_fullscreen;
+		/// pointers to wall display windows for left and optionally (stereo_window_mode==SWM_TWO) right eyes
+		cgv::gui::window_ptr window, right_window;
+		/// 
+		cgv::gui::window_ptr create_wall_window(const std::string& name, int x, int y, int width, int height, int fullscr);
 		/// helper function to create the window for the wall display
-		void create_wall_window();
+		void create_wall_windows();
+		///
+		void draw_in_main_context(cgv::render::context& ctx);
 		//@}
 
 		/**@name management of wall_vr_kit*/
@@ -65,15 +95,23 @@ namespace vr {
 		/// pointer to wall_vr_kit
 		vr_wall_kit* wall_kit_ptr;
 		///
-		uint32_t blit_fbo;
+		uint32_t blit_fbo, blit_tex[2];
 		/// screen information during screen calibration
 		vec3 screen_center;
 		vec3 screen_x;
 		vec3 screen_y;
 		/// helper member to allow to adjust orientation of the virtual screen
 		quat screen_orientation;
+		/// screen calibration points
+		std::vector<vec3> calib_points_screen;
+		/// screen calibration points
+		std::vector<vec3> calib_points_world;
+		/// helper function to fill the point 
+		void generate_screen_calib_points();
 		/// update screen calibration
 		void on_update_screen_calibration();
+		// handle screen calibration specific keys
+		bool handle_key_event_screen_calib(cgv::gui::vr_key_event& vrke);
 		//@}
 
 		/**@name state control and calibration*/
@@ -89,11 +127,31 @@ namespace vr {
 		///
 		float aim_circle_radius;
 		///
+		float aim_width;
+		///
+		float aim_angle;
+		///
 		vec3 aim_center;
+		///
+		float aim_beta;
+		///
+		vec3 eye_position_tracker[2];
+		///
+		bool eye_calibrated[2];
+		float eye_downset;
+		float eye_backset;
+
+		///
+		cgv::render::shader_program stereo_prog;
+		///
+		StereoShaderMode stereo_shader_mode;
 		/// current pose matrices of controllers need to render peek point
-		mat34 c_P[2];
-		/// helper function to fill the point 
-		void generate_screen_calib_points();
+		mat34 controller_pose[2], hmd_pose;
+		///
+		int box_index;
+		// handle eyes calibration specific keys
+		bool handle_key_event_eyes_calib(cgv::gui::vr_key_event& vrke);
+
 		//@}
 
 		/**@name rendering in wall display context*/
@@ -102,9 +160,6 @@ namespace vr {
 		cgv::render::point_render_style prs;
 		/// point renderer
 		cgv::render::point_renderer pr;
-		/// geometry for rendering of points with twice the color attribute once for left and once for right eye
-		std::vector<vec3> points;
-		std::vector<rgb> colors[2];
 		/// method to generate random dots
 		void generate_points(int n);
 		/// use low res image to create point sampling

@@ -7,15 +7,19 @@
 #include <cgv/math/ftransform.h>
 #include <cgv/base/import.h>
 #include <cgv/math/inv.h>
+#include <cgv/math/pose.h>
 #include <iostream>
 #include <sstream>
 #include <vr/vr_kit.h>
 #include <vr/vr_driver.h>
+#include <cg_vr/vr_events.h>
+#include <cg_vr/vr_calib.h>
 
 ///
 vr_view_interactor::vr_view_interactor(const char* name) : stereo_view_interactor(name),
 	fence_color1(0,0,1), fence_color2(1,1,0)
 {
+	pose_query = 2;
 	blit_aspect_scale = 1;
 	none_separate_view = 3;
 	head_tracker_orientation.identity();
@@ -36,9 +40,7 @@ vr_view_interactor::vr_view_interactor(const char* name) : stereo_view_interacto
 
 	fence_frequency = 5;
 	fence_line_width = 3;
-	show_vr_kits = true;
-	show_vr_kits_as_spheres = false;
-	show_vr_kits_as_meshes = true;
+	vis_type = hmd_vis_type = controller_vis_type = tracker_vis_type = base_vis_type = VVT_MESH;
 
 	mesh_scales[0] = mesh_scales[1] = mesh_scales[2] = mesh_scales[3] = 1;
 
@@ -76,9 +78,9 @@ void vr_view_interactor::draw_separate_view(bool do_draw)
 /// whether to draw vr kits
 void vr_view_interactor::draw_vr_kits(bool do_draw)
 {
-	if (show_vr_kits != do_draw) {
-		show_vr_kits = do_draw;
-		on_set(&show_vr_kits);
+	if ((vis_type != VVT_NONE) != do_draw) {
+		vis_type = do_draw ? VVT_MESH : VVT_NONE;
+		on_set(&vis_type);
 	}
 }
 /// whether to draw action zone
@@ -186,6 +188,21 @@ void vr_view_interactor::on_device_change(void* device_handle, bool attach)
 		<< (attach?"attach":"detach") << ")" << std::endl;
 }
 
+/// perform driver calibration
+void vr_view_interactor::calibrate_driver()
+{
+	vr::vr_kit* kit_ptr = get_current_vr_kit();
+	if (!kit_ptr)
+		return;
+	const vr::vr_driver* driver_ptr = kit_ptr->get_driver();
+	float calibration_matrix[12];
+	mat34& C = reinterpret_cast<mat34&>(calibration_matrix[0]);
+	pose_orientation(C) = cgv::math::rotate3<float>(tracking_rotation, vec3(0, 1, 0));
+	pose_position(C) = tracking_origin - pose_orientation(C)*tracking_rotation_origin;
+	set_driver_calibration_matrix(const_cast<vr::vr_driver*>(driver_ptr), calibration_matrix);
+	const_cast<vr::vr_driver*>(driver_ptr)->enable_calibration_transformation();
+}
+
 /// return the type name 
 std::string vr_view_interactor::get_type_name() const
 {
@@ -194,14 +211,32 @@ std::string vr_view_interactor::get_type_name() const
 /// 
 void vr_view_interactor::on_set(void* member_ptr)
 {
+	if (member_ptr == &calibration_file_path) {
+		if (ref_tree_node_visible_flag(calibration_file_path)) {
+			cgv::gui::ref_vr_calibration().update_calibration_info();
+			cgv::gui::ref_vr_calibration().write_calibration(calibration_file_path);
+		}
+		else
+			cgv::gui::ref_vr_calibration().read_calibration(calibration_file_path);
+	}
 	if (member_ptr == &hmd_mesh_file_name)
 		vr::set_vrmesh_file_name(vr::VRM_HMD, hmd_mesh_file_name);
 	if (member_ptr == &controller_mesh_file_name)
 		vr::set_vrmesh_file_name(vr::VRM_CONTROLLER, controller_mesh_file_name);
 	if (member_ptr == &tracker_mesh_file_name)
 		vr::set_vrmesh_file_name(vr::VRM_TRACKER, tracker_mesh_file_name);
-	if (member_ptr == &base_mesh_file_name)
+	if (member_ptr == &base_mesh_file_name) {
 		vr::set_vrmesh_file_name(vr::VRM_BASE, base_mesh_file_name);
+		update_member(&base_mesh_file_name);
+	}
+
+	if (member_ptr == &vis_type) {
+		hmd_vis_type = controller_vis_type = tracker_vis_type = vis_type;
+		update_member(&hmd_vis_type);
+		update_member(&controller_vis_type);
+		update_member(&tracker_vis_type);
+		update_member(&base_vis_type);
+	}
 
 	if (member_ptr == &current_vr_handle_index) {
 		if (current_vr_handle_index == -1) {
@@ -214,6 +249,11 @@ void vr_view_interactor::on_set(void* member_ptr)
 		else
 			if (current_vr_handle_index < int(kits.size()))
 				current_vr_handle = kits[current_vr_handle_index];
+	}
+	if (member_ptr == &tracking_rotation ||
+		(member_ptr >= &tracking_origin && member_ptr < &tracking_origin + 1) ||
+		(member_ptr >= &tracking_rotation_origin && member_ptr < &tracking_rotation_origin + 1)) {
+		calibrate_driver();
 	}
 	if (member_ptr == &head_tracker) {
 		if (current_vr_handle_index >= 0) {
@@ -254,6 +294,7 @@ bool vr_view_interactor::init(cgv::render::context& ctx)
 	cgv::render::ref_sphere_renderer(ctx, 1);
 
 #ifndef _DEBUG
+	// set mesh file names only in release configuration
 	if (vr::get_vrmesh_file_name(vr::VRM_HMD).empty())
 		vr::set_vrmesh_file_name(vr::VRM_HMD, "generic_hmd.obj");
 	if (vr::get_vrmesh_file_name(vr::VRM_CONTROLLER).empty())
@@ -263,20 +304,6 @@ bool vr_view_interactor::init(cgv::render::context& ctx)
 		mesh_scales[vr::VRM_TRACKER] = 0.001f;
 	}
 #endif
-
-	bool have_hmd_MI = vr::get_vrmesh_render_info(ctx, vr::VRM_HMD);
-	bool have_controller_MI = vr::get_vrmesh_render_info(ctx, vr::VRM_HMD);
-	bool have_tracker_MI = vr::get_vrmesh_render_info(ctx, vr::VRM_HMD);
-	// enable sphere rendering in case meshes are not available
-	if (!have_hmd_MI && !have_controller_MI && !have_tracker_MI && !show_vr_kits_as_spheres) {
-		show_vr_kits_as_spheres = true;
-		on_set(&show_vr_kits_as_spheres);
-	}
-	hmd_mesh_file_name = vr::get_vrmesh_file_name(vr::VRM_HMD); update_member(&hmd_mesh_file_name);
-	controller_mesh_file_name = vr::get_vrmesh_file_name(vr::VRM_CONTROLLER); update_member(&controller_mesh_file_name);
-	tracker_mesh_file_name = vr::get_vrmesh_file_name(vr::VRM_TRACKER); update_member(&tracker_mesh_file_name);
-	base_mesh_file_name = vr::get_vrmesh_file_name(vr::VRM_BASE); update_member(&base_mesh_file_name);
-
 	return stereo_view_interactor::init(ctx);
 }
 
@@ -285,15 +312,36 @@ void vr_view_interactor::clear(cgv::render::context& ctx)
 	cgv::render::ref_sphere_renderer(ctx, -1);
 }
 
+/// factored our vr event handling
+bool vr_view_interactor::handle_vr_events(cgv::gui::event& e)
+{
+	return false;
+	if (e.get_kind() == cgv::gui::EID_KEY) {
+		auto& vrke = reinterpret_cast<cgv::gui::vr_key_event&>(e);
+		if (vrke.get_key() == vr::VR_RIGHT_STICK) {
+			if (vrke.get_action() == cgv::gui::KA_PRESS) {
+				start_pose = reinterpret_cast<const mat34&>(*vrke.get_state().controller[1].pose);
+			}
+			else if (vrke.get_action() == cgv::gui::KA_RELEASE) {
+				mat34 end_pose = reinterpret_cast<const mat34&>(*vrke.get_state().controller[1].pose);
+				tracking_origin += pose_position(end_pose) - pose_position(start_pose);
+			}
+			return true;
+		}
+	}
+}
+
 /// overload and implement this method to handle events
 bool vr_view_interactor::handle(cgv::gui::event& e)
 {
-	if (debug_vr_events) {
-		if ((e.get_flags() & cgv::gui::EF_VR) != 0) {
+	if ((e.get_flags() & cgv::gui::EF_VR) != 0) {
+		if (debug_vr_events) {
 			e.stream_out(std::cout);
 			std::cout << std::endl;
 		}
+		return handle_vr_events(e);
 	}
+
 	if (head_tracker != -1) {
 		if ( ((e.get_flags() & cgv::gui::EF_VR) != 0) && (e.get_kind() == cgv::gui::EID_POSE) ) {
 			cgv::gui::vr_pose_event& vrpe = dynamic_cast<cgv::gui::vr_pose_event&>(e);
@@ -335,13 +383,22 @@ bool vr_view_interactor::handle(cgv::gui::event& e)
 					if (current_vr_handle_index >= 0) {
 						vr::vr_kit_state& state = kit_states[current_vr_handle_index];
 						if (state.controller[ci].status == vr::VRS_TRACKED) {
+							// p = R * (q-r) + t 
+							// f = R * (q-r') + t'
+							// p - f = R*(r'-r)+t-t'
+							// t' = f
+							// p - f = R*(r'-r)+t-f
+							// r' = r = R^*(p - t) 
 							vec3& p = reinterpret_cast<vec3&>(state.controller[ci].pose[9]);
 							mat3 invR = cgv::math::rotate3<float>(-tracking_rotation, vec3(0, 1, 0));
 							tracking_rotation_origin += invR* (p - tracking_origin);
 							tracking_origin = get_focus();
 							p = get_focus();
-							for (int c=0; c<3; ++c)
-								update_member(&tracking_origin[c]);
+							for (int i = 0; i < 3; ++i) {
+								update_member(&tracking_origin[i]);
+								update_member(&tracking_rotation_origin[i]);
+							}
+							calibrate_driver();
 						}
 					}
 				}
@@ -486,6 +543,8 @@ void vr_view_interactor::configure_kits()
 			for (unsigned i = 0; i < kits.size(); ++i)
 				if (kits[i] == current_vr_handle) {
 					current_vr_handle_index = i;
+					if (calibration_file_path.empty())
+						calibrate_driver();
 					break;
 				}
 		}
@@ -493,227 +552,315 @@ void vr_view_interactor::configure_kits()
 	}
 }
 
+// query vr state
+void vr_view_interactor::query_vr_states()
+{
+	// query states
+	vr::vr_kit* current_kit_ptr = 0;
+	if (current_vr_handle_index >= 0) {
+		current_kit_ptr = get_vr_kit_from_index(current_vr_handle_index);
+		if (current_kit_ptr) {
+			vr::vr_kit_state& state = kit_states[current_vr_handle_index];
+			current_kit_ptr->query_state(state, 2);
+			cgv::gui::ref_vr_server().check_new_state(current_vr_handle, state, cgv::gui::trigger::get_current_time(), event_flags);
+		}
+	}
+	for (unsigned i = 0; i < kits.size(); ++i) {
+		vr::vr_kit* kit_ptr = get_vr_kit_from_index(i);
+		if (!kit_ptr)
+			continue;
+		if (kit_ptr == current_kit_ptr)
+			continue;
+		kit_ptr->query_state(kit_states[i], 1);
+		if (kit_states[i].hmd.status == vr::VRS_DETACHED)
+			continue;
+		cgv::gui::ref_vr_server().check_new_state(kits[i], kit_states[i], cgv::gui::trigger::get_current_time(), event_flags);
+	}
+}
+
+// render the views for the kits in nested render passes
+void vr_view_interactor::render_vr_kits(cgv::render::context& ctx)
+{
+	cgv::render::RenderPassFlags rpf = ctx.get_render_pass_flags();
+	// first render all but current vr kit views
+	for (rendered_kit_index = 0; rendered_kit_index<int(kits.size()); ++rendered_kit_index) {
+		if (rendered_kit_index == current_vr_handle_index)
+			continue;
+		rendered_kit_ptr = get_vr_kit_from_index(rendered_kit_index);
+		if (!rendered_kit_ptr)
+			continue;
+		if (kit_states[rendered_kit_index].hmd.status == vr::VRS_DETACHED)
+			continue;
+		void* fbo_handle;
+		ivec4 cgv_viewport;
+		for (rendered_eye = 0; rendered_eye < 2; ++rendered_eye) {
+			rendered_kit_ptr->enable_fbo(rendered_eye);
+			ctx.announce_external_frame_buffer_change(fbo_handle);
+			ctx.announce_external_viewport_change(cgv_viewport);
+			ctx.render_pass(cgv::render::RP_USER_DEFINED, cgv::render::RenderPassFlags(rpf & ~cgv::render::RPF_HANDLE_SCREEN_SHOT), this);
+			rendered_kit_ptr->disable_fbo(rendered_eye);
+			ctx.recover_from_external_viewport_change(cgv_viewport);
+			ctx.recover_from_external_frame_buffer_change(fbo_handle);
+		}
+	}
+	// then render current vr kit 
+	rendered_kit_index = current_vr_handle_index;
+	rendered_kit_ptr = get_vr_kit_from_index(rendered_kit_index);
+	if (rendered_kit_ptr && kit_states[rendered_kit_index].hmd.status != vr::VRS_DETACHED) {
+		void* fbo_handle;
+		ivec4 cgv_viewport;
+		for (rendered_eye = 0; rendered_eye < 2; ++rendered_eye) {
+			rendered_kit_ptr->enable_fbo(rendered_eye);
+			ctx.announce_external_frame_buffer_change(fbo_handle);
+			ctx.announce_external_viewport_change(cgv_viewport);
+			// we break here in the case of no separate to use main render pass to render second eye of current vr kit
+			if (rendered_eye == 1 && !separate_view) {
+				this->fbo_handle = fbo_handle;
+				this->cgv_viewport = cgv_viewport;
+				break;
+			}
+			ctx.render_pass(cgv::render::RP_USER_DEFINED, cgv::render::RenderPassFlags(rpf & ~cgv::render::RPF_HANDLE_SCREEN_SHOT));
+			rendered_kit_ptr->disable_fbo(rendered_eye);
+			ctx.recover_from_external_viewport_change(cgv_viewport);
+			ctx.recover_from_external_frame_buffer_change(fbo_handle);
+		}
+	}
+	else {
+		rendered_kit_ptr = 0;
+		rendered_kit_index = -1;
+	}
+	if (separate_view) {
+		rendered_kit_ptr = 0;
+		rendered_kit_index = -1;
+	}
+}
+
 /// this method is called in one pass over all drawables before the draw method
 void vr_view_interactor::init_frame(cgv::render::context& ctx)
 {
-	cgv::render::RenderPassFlags rpf = ctx.get_render_pass_flags();
 	if (ctx.get_render_pass() == cgv::render::RP_MAIN) {
-
+		// update current vr kits
 		configure_kits();
 		// perform rendering from the vr kits
 		if (kits.size() > 0) {
-			// query states
-			vr::vr_kit* current_kit_ptr = 0;
-			if (current_vr_handle_index >= 0) {
-				current_kit_ptr = get_vr_kit_from_index(current_vr_handle_index);
-				if (current_kit_ptr) {
-					vr::vr_kit_state& state = kit_states[current_vr_handle_index];
-					current_kit_ptr->query_state(state, 2);
-					mat3 R = cgv::math::rotate3<float>(tracking_rotation, vec3(0, 1, 0));
-					// update tracking positions according to calibration
-					if (state.hmd.status == vr::VRS_TRACKED) {
-						mat3& O = reinterpret_cast<mat3&>(state.hmd.pose[0]);
-						vec3& p = reinterpret_cast<vec3&>(state.hmd.pose[9]);
-						O = R * O;
-						p = R * (p - tracking_rotation_origin) + tracking_origin;
-					}					
-					for (int ci=0; ci<4; ++ci) {
-						if (state.controller[ci].status == vr::VRS_TRACKED) {
-							mat3& O = reinterpret_cast<mat3&>(state.controller[ci].pose[0]);
-							vec3& p = reinterpret_cast<vec3&>(state.controller[ci].pose[9]);
-							O = R * O;
-							p = R * (p - tracking_rotation_origin) + tracking_origin;
-						}
-					}
-					cgv::gui::ref_vr_server().check_new_state(current_vr_handle, state, cgv::gui::trigger::get_current_time(), event_flags);
-				}
-			}
-			for (unsigned i = 0; i < kits.size(); ++i) {
-				vr::vr_kit* kit_ptr = get_vr_kit_from_index(i);
-				if (!kit_ptr)
-					continue;
-				if (kit_ptr == current_kit_ptr)
-					continue;
-				kit_ptr->query_state(kit_states[i], 1);
-				if (kit_states[i].hmd.status == vr::VRS_DETACHED)
-					continue;
-				cgv::gui::ref_vr_server().check_new_state(kits[i], kit_states[i], cgv::gui::trigger::get_current_time(), event_flags);
-			}
-			if (!dont_render_kits) {
-				// render all but current vr kit views
-				for (rendered_kit_index = 0; rendered_kit_index<int(kits.size()); ++rendered_kit_index) {
-					if (rendered_kit_index == current_vr_handle_index)
-						continue;
-					rendered_kit_ptr = get_vr_kit_from_index(rendered_kit_index);
-					if (!rendered_kit_ptr)
-						continue;
-					if (kit_states[rendered_kit_index].hmd.status == vr::VRS_DETACHED)
-						continue;
-					void* fbo_handle;
-					ivec4 cgv_viewport;
-					for (rendered_eye = 0; rendered_eye < 2; ++rendered_eye) {
-						rendered_kit_ptr->enable_fbo(rendered_eye);
-						ctx.announce_external_frame_buffer_change(fbo_handle);
-						ctx.announce_external_viewport_change(cgv_viewport);
-						ctx.render_pass(cgv::render::RP_USER_DEFINED, cgv::render::RenderPassFlags(rpf & ~cgv::render::RPF_HANDLE_SCREEN_SHOT), this);
-						rendered_kit_ptr->disable_fbo(rendered_eye);
-						ctx.recover_from_external_viewport_change(cgv_viewport);
-						ctx.recover_from_external_frame_buffer_change(fbo_handle);
-					}
-				}
-				// render current vr kit 
-				rendered_kit_index = current_vr_handle_index;
-				rendered_kit_ptr = get_vr_kit_from_index(rendered_kit_index);
-				if (rendered_kit_ptr && kit_states[rendered_kit_index].hmd.status != vr::VRS_DETACHED) {
-					void* fbo_handle;
-					ivec4 cgv_viewport;
-					for (rendered_eye = 0; rendered_eye < 2; ++rendered_eye) {
-						rendered_kit_ptr->enable_fbo(rendered_eye);
-						ctx.announce_external_frame_buffer_change(fbo_handle);
-						ctx.announce_external_viewport_change(cgv_viewport);
-						if (rendered_eye == 1 && !separate_view) {
-							this->fbo_handle = fbo_handle;
-							this->cgv_viewport = cgv_viewport;
-							break;
-						}
-						ctx.render_pass(cgv::render::RP_USER_DEFINED, cgv::render::RenderPassFlags(rpf & ~cgv::render::RPF_HANDLE_SCREEN_SHOT));
-						rendered_kit_ptr->disable_fbo(rendered_eye);
-						ctx.recover_from_external_viewport_change(cgv_viewport);
-						ctx.recover_from_external_frame_buffer_change(fbo_handle);
-					}
-				}
-				else {
-					rendered_kit_ptr = 0;
-					rendered_kit_index = -1;
-				}
-				if (separate_view) {
-					rendered_kit_ptr = 0;
-					rendered_kit_index = -1;
-				}
-			}
+			// query vr state
+			query_vr_states();
+			// render the views for the kits in nested render passes
+			if (!dont_render_kits)
+				render_vr_kits(ctx);
 		}
 	}
+	// set model view projection matrices for currently rendered eye of rendered vr kit
 	if (rendered_kit_ptr) {
 		compute_clipping_planes(z_near_derived, z_far_derived, clip_relative_to_extent);
-		ctx.set_projection_matrix(vr::get_eye_projection_transform(rendered_kit_ptr, float(z_near_derived), float(z_far_derived), rendered_eye));
+		ctx.set_projection_matrix(vr::get_eye_projection_transform(rendered_kit_ptr, kit_states[rendered_kit_index], float(z_near_derived), float(z_far_derived), rendered_eye));
 		ctx.set_modelview_matrix(vr::get_world_to_eye_transform(rendered_kit_ptr, kit_states[rendered_kit_index], rendered_eye));
 	}
 	else {
+		// use standard rendering for separate view or if no vr kit is available
 		if (kits.empty() || separate_view)
 			stereo_view_interactor::init_frame(ctx);
 	}
 }
 
-/// 
-void vr_view_interactor::draw(cgv::render::context& ctx)
+void vr_view_interactor::add_trackable_spheres(const float* pose, int i, std::vector<vec4>& spheres, std::vector<rgb>& sphere_colors)
 {
-	double time = cgv::gui::trigger::get_current_time();
-	if (show_vr_kits) {
-		std::vector<vec4> spheres;
-		std::vector<rgb> sphere_colors;
-		for (int i = 0; i < (int)kits.size(); ++i) {
-			vr::vr_kit* kit_ptr = get_vr_kit_from_index(i);
-			if (!kit_ptr)
+	const mat3& R_ci = reinterpret_cast<const mat3&>(pose[0]);
+	const vec3& p_ci = reinterpret_cast<const vec3&>(pose[9]);
+	spheres.push_back(vec4(p_ci, 0.04f));
+	spheres.push_back(vec4(p_ci + 0.05f*R_ci.col(0), 0.01f));
+	spheres.push_back(vec4(p_ci - 0.05f*R_ci.col(0), 0.01f));
+	spheres.push_back(vec4(p_ci + 0.05f*R_ci.col(1), 0.01f));
+	spheres.push_back(vec4(p_ci - 0.05f*R_ci.col(1), 0.01f));
+	spheres.push_back(vec4(p_ci + 0.05f*R_ci.col(2), 0.01f));
+	spheres.push_back(vec4(p_ci - 0.05f*R_ci.col(2), 0.01f));
+	sphere_colors.push_back(rgb(0.5f + (1 - i)*0.5f, 0.5f, 0.5f + 0.5f*i));
+	sphere_colors.push_back(rgb(1, 0, 0));
+	sphere_colors.push_back(rgb(1, 0.5f, 0.5f));
+	sphere_colors.push_back(rgb(0, 1, 0));
+	sphere_colors.push_back(rgb(0.5f, 1, 0.5f));
+	sphere_colors.push_back(rgb(0, 0, 1));
+	sphere_colors.push_back(rgb(0.5f, 0.5f, 1));
+}
+/// 
+void vr_view_interactor::draw_vr_kits(cgv::render::context& ctx)
+{
+	std::vector<vec4> spheres;
+	std::vector<rgb> sphere_colors;
+	cgv::render::mesh_render_info* MI_hmd_ptr = 0;
+	cgv::render::mesh_render_info* MI_controller_ptr = 0;
+	cgv::render::mesh_render_info* MI_tracker_ptr = 0;
+	cgv::render::mesh_render_info* MI_base_ptr = 0;
+	std::set<const vr::vr_driver*> driver_set;
+	for (int i = 0; i < (int)kits.size(); ++i) {
+		// skip removed kits
+		vr::vr_kit* kit_ptr = get_vr_kit_from_index(i);
+		if (!kit_ptr)
+			continue;
+		// extract drivers of which the bases should be drawn
+		if (base_vis_type != VVT_NONE)
+			driver_set.insert(kit_ptr->get_driver());
+		// ignore completely hidden vr kits
+		if (hmd_vis_type == VVT_NONE && controller_vis_type == VVT_NONE && tracker_vis_type == VVT_NONE)
+			continue;
+		// determine state of vr kit and skip kit if no state is available
+		vr::vr_kit_state state;
+		vr::vr_kit_state* state_ptr = &state;
+		if (i == current_vr_handle_index)
+			state_ptr = &kit_states[current_vr_handle_index];
+		else 
+			if (!kit_ptr->query_state(state, 1))
 				continue;
-			vr::vr_kit_state state;
-			vr::vr_kit_state* state_ptr = &state;
-			if (i == current_vr_handle_index)
-				state_ptr = &kit_states[current_vr_handle_index];
-			else if (!kit_ptr->query_state(state, 1))
-				continue;
-
-			cgv::render::mesh_render_info* MI_hmd_ptr = vr::get_vrmesh_render_info(ctx, vr::VRM_HMD);
-			if (show_vr_kits_as_meshes && MI_hmd_ptr != 0) {
-				if (kit_ptr != rendered_kit_ptr) {
+		// render other hmds
+		if (kit_ptr != rendered_kit_ptr) {
+			// either as mesh
+			if ((hmd_vis_type & VVT_MESH) != 0) {
+				if (!MI_hmd_ptr) {
+					MI_hmd_ptr = vr::get_vrmesh_render_info(ctx, vr::VRM_HMD);
+					// try to read meshes and turn off mesh rendering and potentially switch to sphere rendering in case meshes are not available
+					if (MI_hmd_ptr) {
+						hmd_mesh_file_name = vr::get_vrmesh_file_name(vr::VRM_HMD);
+						update_member(&hmd_mesh_file_name);
+					}
+					else {
+						hmd_vis_type = VVT_SPHERE;
+						on_set(&hmd_vis_type);
+					}
+				}
+				if (MI_hmd_ptr != 0) {
 					ctx.push_modelview_matrix();
 					ctx.mul_modelview_matrix(
 						cgv::math::pose4<float>(reinterpret_cast<const mat34&>(state_ptr->hmd.pose[0]))*
 						cgv::math::translate4<float>(0, 0.1f, -0.1f)*
 						cgv::math::scale4<float>(vec3(mesh_scales[vr::VRM_HMD]))
 					);
-					MI_hmd_ptr->render_mesh(ctx, ctx.ref_surface_shader_program(true));
+					MI_hmd_ptr->draw_all(ctx);
 					ctx.pop_modelview_matrix();
 				}
 			}
-			if (show_vr_kits_as_spheres || MI_hmd_ptr == 0) {
+			// and or as spheres
+			if ((hmd_vis_type & VVT_SPHERE) != 0) {
 				float left_eye_to_head[12];
 				float right_eye_to_head[12];
 				kit_ptr->put_eye_to_head_matrix(0, left_eye_to_head);
 				kit_ptr->put_eye_to_head_matrix(1, right_eye_to_head);
 				const mat3& R_w_h = reinterpret_cast<const mat3&>(state_ptr->hmd.pose[0]);
 				const vec3& p_w_h = reinterpret_cast<const vec3&>(state_ptr->hmd.pose[9]);
-
-
 				const mat3& R_h_l = reinterpret_cast<const mat3&>(left_eye_to_head[0]);
 				const vec3& p_h_l = reinterpret_cast<const vec3&>(left_eye_to_head[9]);
-
 				const mat3& R_h_r = reinterpret_cast<const mat3&>(right_eye_to_head[0]);
 				const vec3& p_h_r = reinterpret_cast<const vec3&>(right_eye_to_head[9]);
-
 				vec4 s_l(0, 0, 0, 0.012f);
 				vec4 s_r = s_l;
 				reinterpret_cast<vec3&>(s_l) = R_w_h * p_h_l + p_w_h;
 				reinterpret_cast<vec3&>(s_r) = R_w_h * p_h_r + p_w_h;
-
-				if (kit_ptr != rendered_kit_ptr || rendered_eye != 0) {
-					spheres.push_back(s_l);
-					sphere_colors.push_back(rgb(1, 0, 0));
-				}
-				if (kit_ptr != rendered_kit_ptr || rendered_eye != 1) {
-					spheres.push_back(s_r);
-					sphere_colors.push_back(rgb(0, 0, 1));
-				}
+				spheres.push_back(s_l);
+				sphere_colors.push_back(rgb(1, 0, 0));
+				spheres.push_back(s_r);
+				sphere_colors.push_back(rgb(0, 0, 1));
 			}
-			cgv::render::mesh_render_info* MI_controller_ptr = vr::get_vrmesh_render_info(ctx, vr::VRM_CONTROLLER);
-			cgv::render::mesh_render_info* MI_tracker_ptr = vr::get_vrmesh_render_info(ctx, vr::VRM_TRACKER);
-			for (unsigned i = 0; i < 4; ++i)
-				if (state_ptr->controller[i].status == vr::VRS_TRACKED) {
-					bool mesh_info_available = (i < 2 ? MI_controller_ptr : MI_tracker_ptr) != 0;
-					if (show_vr_kits_as_meshes && mesh_info_available) {
-						ctx.push_modelview_matrix();
-						ctx.mul_modelview_matrix(cgv::math::pose4<float>(reinterpret_cast<const mat34&>(state_ptr->controller[i].pose[0])));
-						if (i < 2) {
-							ctx.mul_modelview_matrix(cgv::math::scale4<float>(vec3(mesh_scales[vr::VRM_CONTROLLER])));
-							MI_controller_ptr->render_mesh(ctx, ctx.ref_surface_shader_program(true));
+		}
+		for (unsigned i = 0; i < 4; ++i) {
+			if (state_ptr->controller[i].status != vr::VRS_TRACKED)
+				continue;
+			bool show_trackable_spheres;
+			cgv::render::mesh_render_info* M_info = 0;
+			float mesh_scale = 1;
+			if (i < 2) {
+				show_trackable_spheres = (controller_vis_type & VVT_SPHERE) != 0;
+				if ((controller_vis_type & VVT_MESH) != 0) {
+					if (!MI_controller_ptr) {
+						MI_controller_ptr = vr::get_vrmesh_render_info(ctx, vr::VRM_CONTROLLER);
+						if (MI_controller_ptr) {
+							controller_mesh_file_name = vr::get_vrmesh_file_name(vr::VRM_CONTROLLER);
+							update_member(&controller_mesh_file_name);
 						}
 						else {
-							ctx.mul_modelview_matrix(cgv::math::scale4<float>(vec3(mesh_scales[vr::VRM_TRACKER])));
-							MI_tracker_ptr->render_mesh(ctx, ctx.ref_surface_shader_program(true));
+							controller_vis_type = VVT_SPHERE;
+							on_set(&controller_vis_type);
 						}
-						ctx.pop_modelview_matrix();
 					}
-					if (show_vr_kits_as_spheres || !mesh_info_available) {
-						const mat3& R_ci = reinterpret_cast<const mat3&>(state_ptr->controller[i].pose[0]);
-						const vec3& p_ci = reinterpret_cast<const vec3&>(state_ptr->controller[i].pose[9]);
-						spheres.push_back(vec4(p_ci, 0.04f));
-						spheres.push_back(vec4(p_ci + 0.05f*R_ci.col(0), 0.01f));
-						spheres.push_back(vec4(p_ci - 0.05f*R_ci.col(0), 0.01f));
-						spheres.push_back(vec4(p_ci + 0.05f*R_ci.col(1), 0.01f));
-						spheres.push_back(vec4(p_ci - 0.05f*R_ci.col(1), 0.01f));
-						spheres.push_back(vec4(p_ci + 0.05f*R_ci.col(2), 0.01f));
-						spheres.push_back(vec4(p_ci - 0.05f*R_ci.col(2), 0.01f));
-						sphere_colors.push_back(rgb(0.5f + (1 - i)*0.5f, 0.5f, 0.5f + 0.5f*i));
-						sphere_colors.push_back(rgb(1, 0, 0));
-						sphere_colors.push_back(rgb(1, 0.5f, 0.5f));
-						sphere_colors.push_back(rgb(0, 1, 0));
-						sphere_colors.push_back(rgb(0.5f, 1, 0.5f));
-						sphere_colors.push_back(rgb(0, 0, 1));
-						sphere_colors.push_back(rgb(0.5f, 0.5f, 1));
+					if (MI_controller_ptr) {
+						M_info = MI_controller_ptr;
+						mesh_scale = mesh_scales[vr::VRM_CONTROLLER];
 					}
 				}
-		}
-		if (!spheres.empty()) {
-			cgv::render::sphere_renderer& sr = cgv::render::ref_sphere_renderer(ctx);
-			sr.set_y_view_angle(float(get_y_view_angle()));
-			sr.set_render_style(srs);
-			sr.set_sphere_array(ctx, spheres);
-			sr.set_color_array(ctx, sphere_colors);
-			sr.validate_and_enable(ctx);
-			glDrawArrays(GL_POINTS, 0, GLsizei(spheres.size()));
-			sr.disable(ctx);
+			}
+			else {
+				show_trackable_spheres = (tracker_vis_type & VVT_SPHERE) != 0;
+				if ((tracker_vis_type & VVT_MESH) != 0) {
+					if (!MI_tracker_ptr) {
+						MI_tracker_ptr = vr::get_vrmesh_render_info(ctx, vr::VRM_TRACKER);
+						if (MI_tracker_ptr) {
+							tracker_mesh_file_name = vr::get_vrmesh_file_name(vr::VRM_TRACKER);
+							update_member(&tracker_mesh_file_name);
+						}
+						else {
+							tracker_vis_type = VVT_SPHERE;
+							on_set(&tracker_vis_type);
+						}
+					}
+					if (MI_tracker_ptr) {
+						M_info = MI_tracker_ptr;
+						mesh_scale = mesh_scales[vr::VRM_TRACKER];
+					}
+				}
+			}
+			if (show_trackable_spheres)
+				add_trackable_spheres(state_ptr->controller[i].pose, i, spheres, sphere_colors);
+			if (M_info) {
+				ctx.push_modelview_matrix();
+				ctx.mul_modelview_matrix(cgv::math::pose4<float>(reinterpret_cast<const mat34&>(state_ptr->controller[i].pose[0])));
+				ctx.mul_modelview_matrix(cgv::math::scale4<float>(vec3(mesh_scale)));
+				M_info->draw_all(ctx);
+				ctx.pop_modelview_matrix();
+			}
 		}
 	}
+	for (auto& dp : driver_set) {
+		auto ss = dp->get_reference_states();
+		for (const auto& s : ss) {
+			if (s.second.status == vr::VRS_TRACKED) {
+				if ((base_vis_type & VVT_SPHERE) != 0)
+					add_trackable_spheres(s.second.pose, -1, spheres, sphere_colors);
+				if ((base_vis_type & VVT_MESH) != 0) {
+					if (!MI_base_ptr) {
+						MI_base_ptr = vr::get_vrmesh_render_info(ctx, vr::VRM_BASE);
+						if (MI_base_ptr) {
+							base_mesh_file_name = vr::get_vrmesh_file_name(vr::VRM_BASE);
+							update_member(&base_mesh_file_name);
+						}
+						else {
+							base_vis_type = VVT_SPHERE;
+							on_set(&base_vis_type);
+						}
+					}
+					if (MI_base_ptr) {
+						ctx.push_modelview_matrix();
+						ctx.mul_modelview_matrix(cgv::math::pose4<float>(reinterpret_cast<const mat34&>(s.second.pose[0])));
+						ctx.mul_modelview_matrix(cgv::math::scale4<float>(vec3(mesh_scales[vr::VRM_BASE])));
+						MI_base_ptr->draw_all(ctx);
+						ctx.pop_modelview_matrix();
+					}
+				}
+			}
+		}
+	}
+	if (!spheres.empty()) {
+		cgv::render::sphere_renderer& sr = cgv::render::ref_sphere_renderer(ctx);
+		sr.set_y_view_angle(float(get_y_view_angle()));
+		sr.set_render_style(srs);
+		sr.set_sphere_array(ctx, spheres);
+		sr.set_color_array(ctx, sphere_colors);
+		sr.render(ctx, 0, spheres.size());
+	}
+}
+
+/// draw the action zone of the current vr kit
+void vr_view_interactor::draw_action_zone(cgv::render::context& ctx)
+{
 	if (show_action_zone && current_vr_handle) {
+		double time = cgv::gui::trigger::get_current_time();
 		vr::vr_kit* kit_ptr = get_vr_kit_from_index(current_vr_handle_index);
 		if (kit_ptr) {
 			const vr::vr_driver* driver_ptr = kit_ptr->get_driver();
@@ -755,6 +902,13 @@ void vr_view_interactor::draw(cgv::render::context& ctx)
 			}
 		}
 	}
+}
+
+/// 
+void vr_view_interactor::draw(cgv::render::context& ctx)
+{
+	draw_vr_kits(ctx);
+	draw_action_zone(ctx);
 	stereo_view_interactor::draw(ctx);
 }
 
@@ -764,6 +918,10 @@ void vr_view_interactor::create_gui()
 	add_member_control(this, "current vr kit", (cgv::type::DummyEnum&)current_vr_handle_index, "dropdown", kit_enum_definition);
 	if (begin_tree_node("VR calibration", tracking_rotation, false, "level=2")) {
 		align("\a");
+		add_gui("calibration_file_path", calibration_file_path, "file_name",
+			"open=true;open_title='open calibration file';filter='calib (cal):*.cal|all files:*.*';"
+			"save=true;save_title='save calibration file';w=140");
+
 		add_member_control(this, "tracking_rotation", tracking_rotation, "value_slider", "min=-180;max=180;ticks=true");
 		if (begin_tree_node("translational", tracking_origin, false, "level=2")) {
 			align("\a");
@@ -804,9 +962,13 @@ void vr_view_interactor::create_gui()
 			align("\b");
 			end_tree_node(fence_color1);
 		}
-		add_member_control(this, "show kits", show_vr_kits, "toggle", "w=62", " ");
-		add_member_control(this, "as meshes", show_vr_kits_as_meshes, "toggle", "w=61", " ");
-		add_member_control(this, "as spheres", show_vr_kits_as_spheres, "toggle", "w=61");
+		add_decorator("visualization type", "heading", "level=3");
+		add_member_control(this, "complete kits", vis_type, "dropdown", "enums='hide,sphere,mesh,both'");
+		add_member_control(this, "hmd", hmd_vis_type, "dropdown", "enums='hide,sphere,mesh,both'");
+		add_member_control(this, "controller", controller_vis_type, "dropdown", "enums='hide,sphere,mesh,both'");
+		add_member_control(this, "tracker", tracker_vis_type, "dropdown", "enums='hide,sphere,mesh,both'");
+		add_member_control(this, "base", base_vis_type, "dropdown", "enums='hide,sphere,mesh,both'");
+
 		if (begin_tree_node("sphere styles", srs, false, "level=3")) {
 			align("\a");
 			add_gui("sphere style", srs);
@@ -818,6 +980,8 @@ void vr_view_interactor::create_gui()
 	}
 	if (begin_tree_node("VR events", event_flags, false, "level=2")) {
 		align("\a");
+		add_member_control(this, "pose_query", pose_query, "value_slider", "min=0;max=2;ticks=true");
+
 		add_member_control(this, "debug_vr_events", debug_vr_events, "check");
 		add_gui("event_flags", event_flags, "bit_field_control", "enums='dev=1,sta=2,key=4,thr=8,stk=16,skk=32,pos=64';gui_type='toggle';options='w=30';align=''");
 		align("\n\b");
@@ -830,6 +994,11 @@ void vr_view_interactor::create_gui()
 bool vr_view_interactor::self_reflect(cgv::reflect::reflection_handler& srh)
 {
 	return stereo_view_interactor::self_reflect(srh) &&
+		srh.reflect_member("calibration_file_path", calibration_file_path) &&
+		srh.reflect_member("vis_type", (int&)vis_type) &&
+		srh.reflect_member("hmd_vis_type", (int&)hmd_vis_type) &&
+		srh.reflect_member("controller_vis_type", (int&)controller_vis_type) &&
+		srh.reflect_member("tracker_vis_type", (int&)tracker_vis_type) &&
 		srh.reflect_member("hmd_scale", mesh_scales[0]) &&
 		srh.reflect_member("controller_scale", mesh_scales[1]) &&
 		srh.reflect_member("tracker_scale", mesh_scales[2]) &&
