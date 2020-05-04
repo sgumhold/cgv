@@ -9,6 +9,7 @@
 #include <cgv/render/attribute_array_binding.h>
 #include <cgv_gl/sphere_renderer.h>
 #include <cgv/media/mesh/simple_mesh.h>
+#include <cg_vr/vr_events.h>
 
 #include <random>
 
@@ -192,12 +193,13 @@ void vr_test::construct_environment(float s, float ew, float ed, float w, float 
 
 /// construct boxes that can be moved around
 void vr_test::construct_movable_boxes(float tw, float td, float th, float tW, size_t nr) {
+	/*
 	vec3 extent(0.75f, 0.5f, 0.05f);
 	movable_boxes.push_back(box3(-0.5f * extent, 0.5f * extent));
 	movable_box_colors.push_back(rgb(0, 0, 0));
 	movable_box_translations.push_back(vec3(0, 1.2f, 0));
 	movable_box_rotations.push_back(quat(1, 0, 0, 0));
-
+	*/
 	std::default_random_engine generator;
 	std::uniform_real_distribution<float> distribution(0, 1);
 	std::uniform_real_distribution<float> signed_distribution(-1, 1);
@@ -205,8 +207,8 @@ void vr_test::construct_movable_boxes(float tw, float td, float th, float tW, si
 		float x = distribution(generator);
 		float y = distribution(generator);
 		vec3 extent(distribution(generator), distribution(generator), distribution(generator));
-		extent += 0.1f;
-		extent *= std::min(tw, td)*0.2f;
+		extent += 0.01f;
+		extent *= std::min(tw, td)*0.1f;
 
 		vec3 center(-0.5f*tw + x * tw, th + tW, -0.5f*td + y * td);
 		movable_boxes.push_back(box3(-0.5f*extent, 0.5f*extent));
@@ -225,7 +227,7 @@ void vr_test::build_scene(float w, float d, float h, float W, float tw, float td
 	construct_table(tw, td, th, tW);
 	construct_environment(0.3f, 3 * w, 3 * d, w, d, h);
 	//construct_environment(0.4f, 0.5f, 1u, w, d, h);
-	construct_movable_boxes(tw, td, th, tW, 20);
+	construct_movable_boxes(tw, td, th, tW, 2000);
 }
 
 vr_test::vr_test() 
@@ -245,7 +247,7 @@ vr_test::vr_test()
 	camera_tex_id = -1;
 	camera_aspect = 1;
 	use_matrix = true;
-
+	show_seethrough = false;
 	set_name("vr_test");
 	build_scene(5, 7, 3, 0.2f, 1.6f, 0.8f, 0.7f, 0.03f);
 	vr_view_ptr = 0;
@@ -253,8 +255,8 @@ vr_test::vr_test()
 	last_kit_handle = 0;
 	connect(cgv::gui::ref_vr_server().on_device_change, this, &vr_test::on_device_change);
 
-	mesh_scale = 0.001f;
-	mesh_location = dvec3(0, 1.1f, 0);
+	mesh_scale = 0.0005f;
+	mesh_location = dvec3(0, 0.85f, 0);
 	mesh_orientation = dquat(1, 0, 0, 0);
 
 	srs.radius = 0.005f;
@@ -445,8 +447,8 @@ bool vr_test::init(cgv::render::context& ctx)
 #else
 	if (M.read("D:/data/surface/meshes/obj/Max-Planck_highres.obj")) {
 #endif
-		MI.construct_vbos(ctx, M);
-		MI.bind(ctx, ctx.ref_surface_shader_program(true));
+		MI.construct(ctx, M);
+		MI.bind(ctx, ctx.ref_surface_shader_program(true), true);
 	}
 
 	cgv::gui::connect_vr_server(true);
@@ -472,12 +474,12 @@ bool vr_test::init(cgv::render::context& ctx)
 			vr_view_ptr->draw_vr_kits(true);
 			vr_view_ptr->enable_blit_vr_views(true);
 			vr_view_ptr->set_blit_vr_view_width(200);
-
 		}
 	}
 
 	cgv::render::ref_box_renderer(ctx, 1);
 	cgv::render::ref_sphere_renderer(ctx, 1);
+	cgv::render::ref_rounded_cone_renderer(ctx, 1);
 	return true;
 }
 
@@ -485,6 +487,7 @@ void vr_test::clear(cgv::render::context& ctx)
 {
 	cgv::render::ref_box_renderer(ctx, -1);
 	cgv::render::ref_sphere_renderer(ctx, -1);
+	cgv::render::ref_rounded_cone_renderer(ctx, -1);
 }
 
 void vr_test::init_frame(cgv::render::context& ctx)
@@ -617,7 +620,7 @@ void vr_test::draw(cgv::render::context& ctx)
 			cgv::math::translate4<double>(mesh_location)*
 			cgv::math::scale4<double>(mesh_scale, mesh_scale, mesh_scale) *
 			R);
-		MI.render_mesh(ctx, ctx.ref_surface_shader_program(true));
+		MI.draw_all(ctx);
 		ctx.pop_modelview_matrix();
 	}
 	if (vr_view_ptr) {
@@ -640,7 +643,7 @@ void vr_test::draw(cgv::render::context& ctx)
 				P.push_back(eye_pos + vd + x - y);
 				P.push_back(eye_pos + vd - x + y);
 				P.push_back(eye_pos + vd + x + y);
-				double v_offset = 0.5 * (1-eye);
+				double v_offset = 0.5 * (1 - eye);
 				T.push_back(dvec2(0.0, 0.5 + v_offset));
 				T.push_back(dvec2(1.0, 0.5 + v_offset));
 				T.push_back(dvec2(0.0, v_offset));
@@ -701,6 +704,7 @@ void vr_test::draw(cgv::render::context& ctx)
 		}
 		if (vr_view_ptr) {
 			std::vector<vec3> P;
+			std::vector<float> R;
 			std::vector<rgb> C;
 			const vr::vr_kit_state* state_ptr = vr_view_ptr->get_current_vr_state();
 			if (state_ptr) {
@@ -708,27 +712,37 @@ void vr_test::draw(cgv::render::context& ctx)
 					vec3 ray_origin, ray_direction;
 					state_ptr->controller[ci].put_ray(&ray_origin(0), &ray_direction(0));
 					P.push_back(ray_origin);
+					R.push_back(0.002f);
 					P.push_back(ray_origin + ray_length * ray_direction);
+					R.push_back(0.003f);
 					rgb c(float(1 - ci), 0.5f * (int)state[ci], float(ci));
 					C.push_back(c);
 					C.push_back(c);
 				}
 			}
 			if (P.size() > 0) {
-				cgv::render::shader_program& prog = ctx.ref_default_shader_program();
-				int pi = prog.get_position_index();
-				int ci = prog.get_color_index();
-				cgv::render::attribute_array_binding::set_global_attribute_array(ctx, pi, P);
-				cgv::render::attribute_array_binding::enable_global_array(ctx, pi);
-				cgv::render::attribute_array_binding::set_global_attribute_array(ctx, ci, C);
-				cgv::render::attribute_array_binding::enable_global_array(ctx, ci);
-				glLineWidth(3);
-				prog.enable(ctx);
-				glDrawArrays(GL_LINES, 0, (GLsizei)P.size());
-				prog.disable(ctx);
-				cgv::render::attribute_array_binding::disable_global_array(ctx, pi);
-				cgv::render::attribute_array_binding::disable_global_array(ctx, ci);
-				glLineWidth(1);
+				auto& cr = cgv::render::ref_rounded_cone_renderer(ctx);
+				cr.set_render_style(cone_style);
+				//cr.set_eye_position(vr_view_ptr->get_eye_of_kit());
+				cr.set_position_array(ctx, P);
+				cr.set_color_array(ctx, C);
+				cr.set_radius_array(ctx, R);
+				if (!cr.render(ctx, 0, P.size())) {
+					cgv::render::shader_program& prog = ctx.ref_default_shader_program();
+					int pi = prog.get_position_index();
+					int ci = prog.get_color_index();
+					cgv::render::attribute_array_binding::set_global_attribute_array(ctx, pi, P);
+					cgv::render::attribute_array_binding::enable_global_array(ctx, pi);
+					cgv::render::attribute_array_binding::set_global_attribute_array(ctx, ci, C);
+					cgv::render::attribute_array_binding::enable_global_array(ctx, ci);
+					glLineWidth(3);
+					prog.enable(ctx);
+					glDrawArrays(GL_LINES, 0, (GLsizei)P.size());
+					prog.disable(ctx);
+					cgv::render::attribute_array_binding::disable_global_array(ctx, pi);
+					cgv::render::attribute_array_binding::disable_global_array(ctx, ci);
+					glLineWidth(1);
+				}
 			}
 		}
 	}
@@ -741,10 +755,14 @@ void vr_test::draw(cgv::render::context& ctx)
 	renderer.set_translation_array(ctx, movable_box_translations);
 	renderer.set_rotation_array(ctx, movable_box_rotations);
 	if (renderer.validate_and_enable(ctx)) {
-		glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
-		glDrawArrays(GL_POINTS, 0, 3);
-		glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
-		glDrawArrays(GL_POINTS, 3, (GLsizei)movable_boxes.size()-3);
+		if (show_seethrough) {
+			glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
+			renderer.draw(ctx, 0, 3);
+			glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
+			renderer.draw(ctx, 3, movable_boxes.size() - 3);
+		}
+		else
+			renderer.draw(ctx, 0, movable_boxes.size());
 	}
 	renderer.disable(ctx);
 
@@ -752,10 +770,7 @@ void vr_test::draw(cgv::render::context& ctx)
 	renderer.set_render_style(style);
 	renderer.set_box_array(ctx, boxes);
 	renderer.set_color_array(ctx, box_colors);
-	if (renderer.validate_and_enable(ctx)) {
-		glDrawArrays(GL_POINTS, 0, (GLsizei)boxes.size());
-	}
-	renderer.disable(ctx);
+	renderer.render(ctx, 0, boxes.size());
 
 
 	// draw intersection points
@@ -764,10 +779,7 @@ void vr_test::draw(cgv::render::context& ctx)
 		sr.set_position_array(ctx, intersection_points);
 		sr.set_color_array(ctx, intersection_colors);
 		sr.set_render_style(srs);
-		if (sr.validate_and_enable(ctx)) {
-			glDrawArrays(GL_POINTS, 0, (GLsizei)intersection_points.size());
-			sr.disable(ctx);
-		}
+		sr.render(ctx, 0, intersection_points.size());
 	}
 
 	// draw label
@@ -841,6 +853,7 @@ void vr_test::finish_draw(cgv::render::context& ctx)
 	add_gui("mesh_location", mesh_location, "vector", "options='min=-3;max=3;ticks=true");
 	add_gui("mesh_orientation", static_cast<dvec4&>(mesh_orientation), "direction", "options='min=-1;max=1;ticks=true");
 	add_member_control(this, "ray_length", ray_length, "value_slider", "min=0.1;max=10;log=true;ticks=true");
+	add_member_control(this, "show_seethrough", show_seethrough, "check");
 	if(last_kit_handle) {
 		add_decorator("cameras", "heading", "level=3");
 		add_view("nr", nr_cameras);
@@ -883,11 +896,17 @@ void vr_test::finish_draw(cgv::render::context& ctx)
 			add_member_control(this, prefix + ".precision", left_deadzone_and_precision[i].second, "value_slider", "min=0;max=1;ticks=true;log=true");
 		}
 	}
-	if(begin_tree_node("box style", style)) {
+	if (begin_tree_node("box style", style)) {
 		align("\a");
 		add_gui("box style", style);
 		align("\b");
 		end_tree_node(style);
+	}
+	if (begin_tree_node("cone style", cone_style)) {
+		align("\a");
+		add_gui("cone style", cone_style);
+		align("\b");
+		end_tree_node(cone_style);
 	}
 	if(begin_tree_node("movable box style", movable_style)) {
 		align("\a");

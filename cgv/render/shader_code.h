@@ -76,6 +76,7 @@ public:
 		 - glvs ... ST_VERTEX
 		 - glgs ... ST_GEOMETRY
 		 - glfs ... ST_FRAGMENT
+		 - glcs ... ST_COMPUTE
 	*/
 	static ShaderType detect_shader_type(const std::string& file_name);
 	/// destruct shader code
@@ -83,9 +84,11 @@ public:
 	/** read shader code from file that is searched for with find_file.
 	    If the shader type defaults to ST_DETECT, the detect_shader_type()
 		 method is applied to the file name.*/
-	bool read_code(const context& ctx, const std::string &file_name, ShaderType st = ST_DETECT);
+	bool read_code(const context& ctx, const std::string &file_name, ShaderType st = ST_DETECT, std::string defines = "");
 	/// set shader code from string
 	bool set_code(const context& ctx, const std::string &source, ShaderType st);
+	/// set shader code defines
+	void set_defines(std::string& source, const std::string& defines);
 	/// return the shader type of this code
 	ShaderType get_shader_type() const;
 	///compile attached source; returns true if successful
@@ -93,7 +96,7 @@ public:
 	/** read shader code with read_code and compile. If show_error is true
 	    print error messages formated with the get_last_error method in case
 		 an error arose. */
-	bool read_and_compile(const context& ctx, const std::string &file_name, ShaderType st = ST_DETECT, bool show_error = true);
+	bool read_and_compile(const context& ctx, const std::string &file_name, ShaderType st = ST_DETECT, bool show_error = true, std::string defines = "");
 	/// return whether shader has been compiled successfully
 	bool is_compiled() const;
 };

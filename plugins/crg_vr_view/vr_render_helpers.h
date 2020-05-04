@@ -23,7 +23,7 @@ namespace vr {
 	/// compute lookat matrix for a given camera (0 ... left, 1 ... right)
 	extern CGV_API cgv::render::render_types::mat4 get_world_to_camera_transform(const vr_kit* vr_kit_ptr, const vr_kit_state& state, int eye);
 	/// query projection matrix for a given eye (0 ... left, 1 ... right)
-	extern CGV_API cgv::render::render_types::mat4 get_eye_projection_transform(const vr_kit* vr_kit_ptr, float z_near, float z_far, int eye);
+	extern CGV_API cgv::render::render_types::mat4 get_eye_projection_transform(const vr_kit* vr_kit_ptr, const vr_kit_state& state, float z_near, float z_far, int eye);
 	/// query projection matrix for a given camera (0 ... left or mono, 1 ... right only for stereo cameras)
 	extern CGV_API cgv::render::render_types::mat4 get_camera_projection_transform(const vr_kit* vr_kit_ptr, float z_near, float z_far, int eye, bool undistorted);
 	/// query the texture matrix needed for projective texture mapping for a given camera (0 ... left or mono, 1 ... right only for stereo cameras)

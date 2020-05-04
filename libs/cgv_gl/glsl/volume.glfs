@@ -1,0 +1,226 @@
+#version 430
+
+#define INTERPOLATION_MODE 0
+
+//***** begin interface of fragment.glfs ***********************************
+uniform float gamma = 2.2;
+void finish_fragment(vec4 color);
+//***** end interface of fragment.glfs ***********************************
+
+//***** begin interface of view.glsl ***********************************
+mat4 get_modelview_matrix();
+mat4 get_projection_matrix();
+mat4 get_modelview_projection_matrix();
+mat4 get_inverse_modelview_matrix();
+mat4 get_inverse_modelview_projection_matrix();
+mat3 get_normal_matrix();
+mat3 get_inverse_normal_matrix();
+//***** end interface of view.glsl ***********************************
+
+//***** begin interface of surface.glsl ***********************************
+vec4 compute_reflected_appearance(vec3 position_eye, vec3 normal_eye, vec4 color, int side);
+//***** end interface of surface.glsl ***********************************
+
+uniform sampler3D volume_tex;
+uniform sampler2D transfer_function_tex;
+
+uniform float alpha_coeff;
+uniform float lod;
+uniform float step_size;
+uniform vec3 tex_size;
+uniform vec3 tex_coord_scaling;
+
+in vec3 eye_fs;
+in vec3 vol_coord_fs;
+
+/*--------------------------------------------------------------------------*\
+Copyright (c) 2008-2009, Danny Ruijters. All rights reserved.
+http://www.dannyruijters.nl/cubicinterpolation/
+This file is part of CUDA Cubic B-Spline Interpolation (CI).
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+*  Redistributions of source code must retain the above copyright
+   notice, this list of conditions and the following disclaimer.
+*  Redistributions in binary form must reproduce the above copyright
+   notice, this list of conditions and the following disclaimer in the
+   documentation and/or other materials provided with the distribution.
+*  Neither the name of the copyright holders nor the names of its
+   contributors may be used to endorse or promote products derived from
+   this software without specific prior written permission.
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+POSSIBILITY OF SUCH DAMAGE.
+The views and conclusions contained in the software and documentation are
+those of the authors and should not be interpreted as representing official
+policies, either expressed or implied.
+When using this code in a scientific project, please cite one or all of the
+following papers:
+*  Daniel Ruijters and Philippe Thévenaz,
+   GPU Prefilter for Accurate Cubic B-Spline Interpolation, 
+   The Computer Journal, vol. 55, no. 1, pp. 15-20, January 2012.
+   http://dannyruijters.nl/docs/cudaPrefilter3.pdf
+*  Daniel Ruijters, Bart M. ter Haar Romeny, and Paul Suetens,
+   Efficient GPU-Based Texture Interpolation using Uniform B-Splines,
+   Journal of Graphics Tools, vol. 13, no. 4, pp. 61-69, 2008.
+\*--------------------------------------------------------------------------*/
+
+// tricubic interpolation function (see copyright notice above)
+float textureLodCubic(sampler3D tex, vec3 coord, float lod) {
+
+	// shift the coordinate from [0,1] to [-0.5, nrOfVoxels-0.5]
+	vec3 coord_grid = coord * tex_size - 0.5;
+	vec3 index = floor(coord_grid);
+	vec3 fraction = coord_grid - index;
+	vec3 one_frac = 1.0 - fraction;
+
+	vec3 w0 = 1.0/6.0 * one_frac*one_frac*one_frac;
+	vec3 w1 = 2.0/3.0 - 0.5 * fraction*fraction*(2.0-fraction);
+	vec3 w2 = 2.0/3.0 - 0.5 * one_frac*one_frac*(2.0-one_frac);
+	vec3 w3 = 1.0/6.0 * fraction*fraction*fraction;
+
+	vec3 g0 = w0 + w1;
+	vec3 g1 = w2 + w3;
+	vec3 mult = 1.0 / tex_size;
+	vec3 h0 = mult * ((w1 / g0) - 0.5 + index);  //h0 = w1/g0 - 1, move from [-0.5, nrOfVoxels-0.5] to [0,1]
+	vec3 h1 = mult * ((w3 / g1) + 1.5 + index);  //h1 = w3/g1 + 1, move from [-0.5, nrOfVoxels-0.5] to [0,1]
+
+	// fetch the eight linear interpolations
+	// weighting and fetching is interleaved for performance and stability reasons
+	float tex000 = textureLod(tex, h0, lod).r;
+	float tex100 = textureLod(tex, vec3(h1.x, h0.y, h0.z), lod).r;
+	tex000 = mix(tex100, tex000, g0.x);  //weigh along the x-direction
+	float tex010 = textureLod(tex, vec3(h0.x, h1.y, h0.z), lod).r;
+	float tex110 = textureLod(tex, vec3(h1.x, h1.y, h0.z), lod).r;
+	tex010 = mix(tex110, tex010, g0.x);  //weigh along the x-direction
+	tex000 = mix(tex010, tex000, g0.y);  //weigh along the y-direction
+	float tex001 = textureLod(tex, vec3(h0.x, h0.y, h1.z), lod).r;
+	float tex101 = textureLod(tex, vec3(h1.x, h0.y, h1.z), lod).r;
+	tex001 = mix(tex101, tex001, g0.x);  //weigh along the x-direction
+	float tex011 = textureLod(tex, vec3(h0.x, h1.y, h1.z), lod).r;
+	float tex111 = textureLod(tex, h1, lod).r;
+	tex011 = mix(tex111, tex011, g0.x);  //weigh along the x-direction
+	tex001 = mix(tex011, tex001, g0.y);  //weigh along the y-direction
+
+	return mix(tex001, tex000, g0.z);  //weigh along the z-direction
+}
+
+// smooth filtering from https://www.shadertoy.com/view/XsfGDn
+float textureLodSmooth(sampler3D tex, vec3 coord, float lod) {
+	
+	vec3 uv = coord*tex_size + 0.5;
+
+	vec3 iuv = floor( uv );
+	vec3 fuv = fract( uv );
+
+	uv = iuv + fuv*fuv*(3.0-2.0*fuv); // fuv*fuv*fuv*(fuv*(fuv*6.0-15.0)+10.0);
+	uv = (uv - 0.5)/tex_size;
+
+	return textureLod(tex, uv, lod).r;
+}
+
+float textureLodNearest(sampler3D tex, vec3 coord, float lod) {
+	
+	vec3 lod_size = tex_size / pow(2.0, lod);
+
+	vec3 uv = coord*lod_size + 0.5;
+	vec3 iuv = floor( uv );
+	uv = (iuv)/lod_size;
+
+	return textureLod(tex, uv, lod).r;
+}
+
+vec3 gradient(sampler3D tex, vec3 coords) {
+
+	vec3 ts = 1.0 / tex_size;
+
+	float dx = texture(tex, coords + vec3(ts.x, 0.0, 0.0)).r - texture(tex, coords - vec3(ts.x, 0.0, 0.0)).r;
+	dx /= 2.0 * ts.x;
+
+	float dy = texture(tex, coords + vec3(0.0, ts.y, 0.0)).r - texture(tex, coords - vec3(0.0, ts.y, 0.0)).r;
+	dy /= 2.0 * ts.y;
+
+	float dz = texture(tex, coords + vec3(0.0, 0.0, ts.z)).r - texture(tex, coords - vec3(0.0, 0.0, ts.z)).r;
+	dz /= 2.0 * ts.z;
+
+	vec3 grad = -vec3(dx, dy, dz);
+
+	return normalize(grad);
+}
+
+void main()
+{
+	vec3 dir = normalize(eye_fs - vol_coord_fs);
+	
+	vec4 color = vec4(0.0);
+	vec3 pos = vol_coord_fs;
+	vec3 tex_coords = pos * tex_coord_scaling;
+
+	while(
+		dot(dir, pos - eye_fs) <= 0.0 && // Prevent tracing behind the eye position
+		tex_coords.x > -0.01 && tex_coords.x < 1.01 &&
+		tex_coords.y > -0.01 && tex_coords.y < 1.01 &&
+		tex_coords.z > -0.01 && tex_coords.z < 1.01) {
+#if (INTERPOLATION_MODE == 0)
+		float value = textureLodNearest(volume_tex, tex_coords, lod);
+#elif (INTERPOLATION_MODE == 1)
+		float value = textureLod(volume_tex, tex_coords, lod).r;
+#elif (INTERPOLATION_MODE == 2)
+		float value = textureLodSmooth(volume_tex, tex_coords, lod);
+#else
+		float value = textureLodCubic(volume_tex, tex_coords, lod);
+#endif
+		
+		float opacity = value * alpha_coeff;
+		vec4 color_in = opacity * vec4(texture(transfer_function_tex, vec2(value, 0.5)).rgb, 1.0);
+
+		color_in *= (1.0 - exp(-step_size * 400.0));
+
+		// back to front blending		
+		color = color_in + (1.0 - color_in.a)*color;
+
+		// step along ray
+		pos += step_size * dir;
+		tex_coords = pos * tex_coord_scaling;
+	}
+
+
+
+	// Isosurface rendering (must use backface culling in renderer)
+	/*vec3 dir = normalize(vol_coord_fs - eye_fs);
+	
+	vec4 color = vec4(0.0);
+	vec3 pos = vol_coord_fs;
+	vec3 tex_coords = pos * tex_coord_scaling;
+
+	while(
+		//dot(dir, pos - eye_fs) <= 0.0 && // Prevent tracing behind the eye position
+		tex_coords.x > -0.01 && tex_coords.x < 1.01 &&
+		tex_coords.y > -0.01 && tex_coords.y < 1.01 &&
+		tex_coords.z > -0.01 && tex_coords.z < 1.01) {
+		float value = textureLod(volume_tex, tex_coords, lod).r;
+		
+		if(value > alpha_coeff) {
+			color = vec4(1.0);
+
+			vec3 normal = gradient(volume_tex, tex_coords);
+			vec4 pos_eye = get_modelview_matrix() * vec4(pos, 1.0);
+			color = compute_reflected_appearance(pos_eye.xyz, normal, vec4(0.5, 0.5, 0.5, 1.0), 1);
+
+			break;
+		}
+
+		// step along ray
+		pos += step_size * dir;
+		tex_coords = pos * tex_coord_scaling;
+	}*/
+
+	finish_fragment(color);
+}

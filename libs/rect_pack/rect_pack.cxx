@@ -246,7 +246,7 @@ namespace rect_pack {
 		return nr_failed;
 	}
 
-	float pack_rectangles_interatively(
+	float pack_rectangles_iteratively(
 		const std::vector<rectangle_size>& rectangle_sizes,
 		unsigned& width_out, unsigned& height_out,
 		std::vector<rectangle>& rectangles_out,
@@ -292,7 +292,7 @@ namespace rect_pack {
 		return !os.fail();
 	}
 
-	void analyze_pack_rectangles_interatively(
+	void analyze_pack_rectangles_iteratively(
 		const std::string& file_name_prefix,
 		std::vector<rectangle_size>& rectangle_sizes,
 		CompareStrategy compare_strategy,
@@ -315,7 +315,7 @@ namespace rect_pack {
 		std::cout << std::setw(13) << strategy_names[unsigned(strategy)] << ": "; std::cout.flush();
 		std::chrono::time_point<std::chrono::system_clock> start, end;
 		start = std::chrono::system_clock::now();
-		float occupancy = pack_rectangles_interatively(rectangle_sizes, width, height, rectangles, compare_strategy, sort_ascending, restrict_to_power_of_two, strategy, print_warnings, print_progress);
+		float occupancy = pack_rectangles_iteratively(rectangle_sizes, width, height, rectangles, compare_strategy, sort_ascending, restrict_to_power_of_two, strategy, print_warnings, print_progress);
 		end = std::chrono::system_clock::now();
 		auto elapsed_milliseconds = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
 		std::cout << "\n" << width << "x" << height << " -> " << occupancy << " in " << elapsed_milliseconds << "ms\n" << std::endl;
@@ -332,6 +332,6 @@ namespace rect_pack {
 		bool print_progress)
 	{
 		for (unsigned i=0; i<unsigned(PS_NrStrategies); ++i)
-			analyze_pack_rectangles_interatively(file_name_prefix, rectangle_sizes, compare_strategy, sort_ascending, restrict_to_power_of_two, PackingStrategy(i), print_warnings, print_progress);
+			analyze_pack_rectangles_iteratively(file_name_prefix, rectangle_sizes, compare_strategy, sort_ascending, restrict_to_power_of_two, PackingStrategy(i), print_warnings, print_progress);
 	}
 }

@@ -27,6 +27,12 @@ size_t vertex_buffer::get_size_in_bytes() const
 	return size_in_bytes;
 }
 
+/// bind buffer potentially overwriting buffer type
+void vertex_buffer::bind(context& ctx, VertexBufferType _type) const
+{
+	ctx.vertex_buffer_bind(*this, _type == VBT_UNDEF ? this->type : _type);
+}
+
 /// create empty vertex buffer of size \c size given in bytes
 bool vertex_buffer::create(const context& ctx, size_t _size_in_bytes)
 {

@@ -1,4 +1,4 @@
-#include <cgv/base/base.h> // this should be first header to avoid warning
+#include <cgv/base/base.h>
 #include <omp.h>
 #include "rgbd_control.h"
 #include <cgv_gl/gl/gl.h>
@@ -8,7 +8,6 @@
 #include <cgv/gui/file_dialog.h>
 #include <cgv/utils/convert.h>
 #include <cgv/utils/file.h>
-#include <cgv/utils/dir.h>
 #include <cgv/utils/statistics.h>
 #include <cgv/type/standard_types.h>
 #include <cgv/math/ftransform.h>
@@ -24,7 +23,6 @@ using namespace cgv::utils;
 using namespace cgv::render;
 using namespace rgbd;
 
-
 std::string get_stream_format_enum(const std::vector<rgbd::stream_format>& sfs)
 {
 	std::string enum_def = "enums='default=-1";
@@ -35,6 +33,69 @@ std::string get_stream_format_enum(const std::vector<rgbd::stream_format>& sfs)
 	return enum_def + "'";
 }
 
+
+rgbd_control::dvec3 transform(const rgbd_control::dmat4& T, const rgbd_control::dvec3& p)
+{
+	rgbd_control::dvec4 q = T * rgbd_control::dvec4(p, 1);
+	double iw = 1.0 / q(3);
+	return rgbd_control::dvec3(iw*q(0), iw*q(1), q(2));
+}
+
+rgbd_control::dvec3 rgbd_control::transform_to_world(const dvec3& p_win) const
+{
+	double Z = 0.001*p_win(2);
+	dvec2 xy_wrl = Z*(dvec2(p_win(0), p_win(1)) - ctr)/f_p;
+	return dvec3(xy_wrl, Z);
+}
+
+float RawDepthToMeters(unsigned short depthValue)
+{
+    if (depthValue < 2047)
+    {
+        return float(1.0 / (double(depthValue) * -0.0030711016 + 3.3309495161));
+    }
+    return 0.0f;
+}
+
+cgv::math::fvec<float,3> DepthToWorld(int x, int y, unsigned short depthValue)
+{
+    static const double fx_d = 1.0 / 5.9421434211923247e+02;
+    static const double fy_d = 1.0 / 5.9104053696870778e+02;
+    static const double cx_d = 3.3930780975300314e+02;
+    static const double cy_d = 2.4273913761751615e+02;
+
+    cgv::math::fvec<float,3> result;
+    const double depth = RawDepthToMeters(depthValue);
+    result(0) = float((x - cx_d) * depth * fx_d);
+    result(1) = float((y - cy_d) * depth * fy_d);
+    result(2) = float(depth);
+    return result;
+}
+
+cgv::math::fvec<float,2> WorldToPixel(const cgv::math::fvec<float,3>& pt)
+{
+	static const float T_data[] = { 1.9985242312092553e-02f, -7.4423738761617583e-04f, -1.0916736334336222e-02f };
+	static const float R_data[] = { 9.9984628826577793e-01f, 1.2635359098409581e-03f, -1.7487233004436643e-02f,
+                                    -1.4779096108364480e-03f, 9.9992385683542895e-01f, -1.2251380107679535e-02f,
+									 1.7470421412464927e-02f, 1.2275341476520762e-02f, 9.9977202419716948e-01f };
+   
+    static const double fx_rgb = 5.2921508098293293e+02;
+    static const double fy_rgb = 5.2556393630057437e+02;
+    static const double cx_rgb = 3.2894272028759258e+02;
+    static const double cy_rgb = 2.6748068171871557e+02;
+
+	cgv::math::fmat<float,3,3> R(3,3, R_data, true);
+	R.transpose();
+	cgv::math::fvec<float,3> transformedPos = R*(pt + cgv::math::fvec<float,3>(3, T_data));
+	const float invZ = 1.0f / transformedPos(2);
+
+	cgv::math::fvec<float,2> result;
+    result(0) = float(transformedPos(0) * fx_rgb * invZ + cx_rgb);
+    result(1) = float(transformedPos(1) * fy_rgb * invZ + cy_rgb);
+    return result;
+}
+ 
+
 ///
 rgbd_control::rgbd_control() : 
 	color_fmt("uint8[B,G,R,A]"),
@@ -44,14 +105,23 @@ rgbd_control::rgbd_control() :
 	infrared("uint16[L]"),
 	depth_range(0.0f, 1.0f)
 {
+	ctr = dvec2(320, 224);
+	f_p = dvec2(571.25,571.25);
+	plane_depth = 500;
+	clr_tra = dvec3(0.023, 0, 0);
+	clr_rot = dquat(1, 0, 0, 0);
+	clr_ctr = dvec2(320, 240);
+	clr_f_p = dvec2(525.0, 525.0);
+
+	validate_color_camera = true;
+	T.identity();
 	set_name("rgbd_control");
 	do_protocol = false;
-	flip[0] = true;
-	flip[1] = flip[2] = false;
+	flip[0] = flip[2] = true;
+	flip[1] = false;
 	nr_depth_frames = 0;
 	nr_color_frames = 0;
 	nr_infrared_frames = 0;
-	nr_mesh_frames = 0;
 	vis_mode = VM_COLOR;
 	color_scale = 1;
 	depth_scale = 1;
@@ -66,8 +136,8 @@ rgbd_control::rgbd_control() :
 	prs.blend_points = false;
 	remap_color = true;
 
-	device_mode = DM_DETACHED;
-	device_idx = -2;
+	device_mode = DM_DEVICE;
+	device_idx = 0;
 	pitch = 0;
 	x=y=z=0;
 	aspect = 1;
@@ -77,7 +147,6 @@ rgbd_control::rgbd_control() :
 	stream_color = true;
 	stream_depth = true;
 	stream_infrared = false;
-	stream_mesh = false;
 	color_stream_format_idx = -1;
 	depth_stream_format_idx = -1;
 	ir_stream_format_idx = -1;
@@ -85,9 +154,8 @@ rgbd_control::rgbd_control() :
 	color_frame_changed = false;
 	depth_frame_changed = false;
 	infrared_frame_changed = false;
-	color_attachment_changed = depth_attachment_changed = infrared_attachment_changed = false;
-	prs.measure_point_size_in_pixel = true;
-	prs.point_size = 3.0f;
+	attachment_changed = false;
+
 	connect(get_animation_trigger().shoot, this, &rgbd_control::timer_event);
 }
 
@@ -108,23 +176,103 @@ bool rgbd_control::self_reflect(cgv::reflect::reflection_handler& rh)
 ///
 void rgbd_control::on_set(void* member_ptr)
 {
-	if (member_ptr == &do_protocol) {
-		if (do_protocol) {
-			bool path_exists = cgv::utils::dir::exists(protocol_path);
-			if (!path_exists) {
-				if (cgv::gui::question(protocol_path + " does not exist. Create it?", "No,Yes", 1)) {
-					path_exists = cgv::utils::dir::mkdir(protocol_path);
-					if (!path_exists)
-						cgv::gui::message(protocol_path + " creation failed!");
+	if (member_ptr >= &clr_rot && member_ptr < &clr_rot + 1) {
+		clr_rot(3) = sqrt(1 - reinterpret_cast<dvec3&>(clr_rot).sqr_length());
+	}
+	/*
+	if (member_ptr >= &T && member_ptr < &T + 1) {
+		P.clear();
+		C.clear();
+		std::vector<vec3> P_win;
+		std::vector<vec3> P_wrl;
+		for (unsigned d = 500; d < 4000; d += 100)
+			for (unsigned y = 0; y < depth_fmt.get_height(); y += 16)
+				for (unsigned x = 0; x < depth_fmt.get_width(); x += 16) {
+					float point[3];
+					if (rgbd_inp.map_pixel_to_point(x, y, 8*d, FF_DEPTH_RAW, point)) {
+						P.push_back(vec3(3, point));
+						C.push_back(rgba8(255, 0, 0, 255));
+						dvec3 q = transform(T, dvec3(x, y, d));
+						P.push_back(vec3((float)q(0), (float)q(1), (float)q(2)));
+						C.push_back(rgba8(0, 255, 0, 255));
+					}
+				}				
+	}
+	if ((member_ptr >= &ctr && member_ptr < &ctr + 1) || 
+		(member_ptr >= &f_p && member_ptr < &f_p + 1)) {
+		P.clear();
+		C.clear();
+		std::vector<vec3> P_win;
+		std::vector<vec3> P_wrl;
+		for (unsigned d = 500; d < 4000; d += 100)
+			for (unsigned y = 0; y < depth_fmt.get_height(); y += 16)
+				for (unsigned x = 0; x < depth_fmt.get_width(); x += 16) {
+					float point[3];
+					if (rgbd_inp.map_pixel_to_point(x, y, 8 * d, FF_DEPTH_RAW, point)) {
+						P.push_back(vec3(3, point));
+						C.push_back(rgba8(255, 0, 0, 255));
+						dvec3 q = transform_to_world(dvec3(x, y, d));
+						P.push_back(vec3((float)q(0), (float)q(1), (float)q(2)));
+						C.push_back(rgba8(0, 255, 0, 255));
+					}
 				}
-			}
-			if (path_exists)
-				rgbd_inp.enable_protocol(protocol_path);
-			else {
-				do_protocol = false;
-				update_member(&do_protocol);
-			}
+	}
+	if ((member_ptr == &plane_depth) || (member_ptr == &validate_color_camera) ||
+		(member_ptr >= &clr_rot && member_ptr < &clr_rot + 1) ||
+		(member_ptr >= &clr_tra && member_ptr < &clr_tra + 1) ||
+		(member_ptr >= &clr_ctr && member_ptr < &clr_ctr + 1) ||
+		(member_ptr >= &clr_f_p && member_ptr < &clr_f_p + 1)) {
+		P.clear();
+		C.clear();
+		if (validate_color_camera) {
+			std::vector<short> pixel_coords;
+			pixel_coords.resize(depth_fmt.get_width() * depth_fmt.get_height() * 2, 0);
+			rgbd_inp.map_depth_to_color_pixel(FF_DEPTH_RAW, depth2_data.get_ptr<unsigned char>(), &pixel_coords.front());
+			for (unsigned y = 0; y < depth_fmt.get_height(); ++y)
+				for (unsigned x = 0; x < depth_fmt.get_width(); ++x) {
+					float point[3];
+					if (rgbd_inp.map_pixel_to_point(x, y, 8 * plane_depth, FF_DEPTH_RAW, point)) {
+						vec3 p(3, point);
+						dvec3 Cp = clr_rot.apply(dvec3(p))+clr_tra;
+						dvec2 Cxy = clr_f_p*reinterpret_cast<dvec2&>(Cp) / Cp(2) + clr_ctr;
+						int Ccx = int(Cxy(0) + 0.5);
+						int Ccy = int(Cxy(1) + 0.5);
+						P.push_back(p);
+
+						unsigned i = 2 * (y*depth_fmt.get_width() + x);
+						int cx = pixel_coords[i];
+						int cy = pixel_coords[i + 1];
+						rgba8 col(50, 50, 50, 255);
+						if (cx == 320 || cy == 240)
+							col[0] = 255;
+						else if (((cx & 31) == 0) || ((cy & 31) == 0))
+							col[0] = 128;
+						if (Ccx == 320 || Ccy == 240)
+							col[1] = 255;
+						else if (((Ccx & 31) == 0) || ((Ccy & 31) == 0))
+							col[1] = 128;
+						C.push_back(col);
+					}
+				}
 		}
+		else {
+			for (unsigned y = 0; y < depth_fmt.get_height(); ++y)
+				for (unsigned x = 0; x < depth_fmt.get_width(); ++x) {
+					float point[3];
+					if (rgbd_inp.map_pixel_to_point(x, y, 8 * plane_depth, FF_DEPTH_RAW, point)) {
+						P.push_back(vec3(3, point));
+						if (((x & 15) == 0) || ((y & 15) == 0))
+							C.push_back(rgba8(255, 0, 0, 255));
+						else
+							C.push_back(rgba8(255, 255, 0, 255));
+					}
+				}
+		}
+	}
+	*/
+	if (member_ptr == &do_protocol) {
+		if (do_protocol)
+			rgbd_inp.enable_protocol(protocol_path);
 		else
 			rgbd_inp.disable_protocol();
 	}
@@ -139,8 +287,8 @@ void rgbd_control::on_set(void* member_ptr)
 void rgbd_control::on_register()
 {
 	on_device_select_cb();
-	if (device_mode != DM_DETACHED)
-		on_start_cb();
+//	if (device_mode != DM_DETACHED)
+//		on_start_cb();
 }
 
 /// overload to handle unregistration of instances
@@ -229,18 +377,19 @@ void rgbd_control::init_frame(context& ctx)
 		rgbd_prog.build_program(ctx, "rgbd_shader.glpr");
 
 	if (device_mode != DM_DETACHED) {
-		update_texture_from_frame(ctx, color, color_frame, color_attachment_changed, color_frame_changed);
-		update_texture_from_frame(ctx, depth, depth_frame, depth_attachment_changed, depth_frame_changed);
-		update_texture_from_frame(ctx, infrared, ir_frame, infrared_attachment_changed, infrared_frame_changed);
-		update_texture_from_frame(ctx, warped_color, warped_color_frame, color_attachment_changed, (color_frame_changed|| depth_frame_changed) &&remap_color);
-		if (color_frame_changed)
-			color_attachment_changed = false;
-		if (depth_frame_changed)
-			depth_attachment_changed = false;
-		if (infrared_frame_changed)
-			infrared_attachment_changed = false;
+		update_texture_from_frame(ctx, color, color_frame, attachment_changed, color_frame_changed);
+		update_texture_from_frame(ctx, depth, depth_frame, attachment_changed, depth_frame_changed);
+		update_texture_from_frame(ctx, infrared, ir_frame, attachment_changed, infrared_frame_changed);
+		update_texture_from_frame(ctx, warped_color, warped_color_frame, attachment_changed, (color_frame_changed|| depth_frame_changed) &&remap_color);
 		color_frame_changed = false;
 		infrared_frame_changed = false;
+		/*
+		if (depth_frame_changed) {
+			vec3 p = km.track(depth_frame);
+			mouse_pos(0) = p(0);
+			mouse_pos(1) = p(1);
+		}
+		*/
 		depth_frame_changed = false;
 	}
 	else {
@@ -249,6 +398,7 @@ void rgbd_control::init_frame(context& ctx)
 		infrared.destruct(ctx);
 		depth.destruct(ctx);
 	}
+	attachment_changed = false;
 }
 
 /// overload to draw the content of this drawable
@@ -256,59 +406,17 @@ void rgbd_control::draw(context& ctx)
 {
 	ctx.push_modelview_matrix();
 	vec3 flip_vec(flip[0] ? -1.0f : 1.0f, flip[1] ? -1.0f : 1.0f, flip[2] ? -1.0f : 1.0f);
-	ctx.mul_modelview_matrix(cgv::math::scale4<double>(flip_vec[0], -flip_vec[1], -flip_vec[2]));
+	ctx.mul_modelview_matrix(cgv::math::scale4<double>(flip_vec[0], -flip_vec[1], flip_vec[2]));
 	if (P.size() > 0) {
-		ctx.mul_modelview_matrix(cgv::math::translate4<double>(-1.5f,0, 0));
-		ctx.mul_modelview_matrix(cgv::math::scale4<double>(0.5, 0.5, 0.5));
+		ctx.mul_modelview_matrix(cgv::math::translate4<double>(-1.5f,0,0));
 		cgv::render::point_renderer& pr = ref_point_renderer(ctx);
 		pr.set_render_style(prs);
 		pr.set_position_array(ctx, P);
 		if (C.size() == P.size())
 			pr.set_color_array(ctx, C);
-		if (pr.validate_and_enable(ctx)) {
-			glDrawArrays(GL_POINTS, 0, (GLsizei)P.size());
-			pr.disable(ctx);	
-		}
-		ctx.mul_modelview_matrix(cgv::math::scale4<double>(2, 2, 2));
+		pr.render(ctx, 0, P.size());
 		ctx.mul_modelview_matrix(cgv::math::translate4<double>(3, 0, 0));
 	}
-
-	if (M_POINTS.size() > 0) {
-		ctx.mul_modelview_matrix(cgv::math::translate4<double>(1.5, 0, 0));
-		if (M_TRIANGLES.size() > 0) {
-			ctx.mul_modelview_matrix(cgv::math::scale4<double>(1.0/128, 1.0/128, -1.0/128));
-			shader_program& prog = rgbd_prog;
-			if (prog.is_created()) {
-				color.enable(ctx, 0);
-				prog.set_uniform(ctx, "color_texture", 0);
-				prog.enable(ctx);
-				glDisable(GL_CULL_FACE);
-				float* tex_coords = nullptr;
-				if (M_UV.size() > 0) {
-					tex_coords = reinterpret_cast<float*>(M_UV.data());
-				}
-				ctx.draw_faces(reinterpret_cast<float*>(M_POINTS.data()), nullptr,tex_coords,
-					reinterpret_cast<int32_t*>(M_TRIANGLES.data()), nullptr, reinterpret_cast<int32_t*>(M_TRIANGLES.data()), M_TRIANGLES.size(), 3);
-				glEnable(GL_CULL_FACE);
-				prog.disable(ctx);
-				color.disable(ctx);
-			}
-			ctx.mul_modelview_matrix(cgv::math::scale4<double>(128, 128, -128));
-		}
-		else {
-			cgv::render::point_renderer& pr = ref_point_renderer(ctx);
-			pr.set_render_style(prs);
-			pr.set_position_array(ctx, M_POINTS);
-			std::vector<rgba8> colors(M_POINTS.size(),rgba8(127,127,127,255));
-			pr.set_color_array(ctx,colors);
-			if (pr.validate_and_enable(ctx)) {
-				glDrawArrays(GL_POINTS, 0, (GLsizei)M_POINTS.size());
-				pr.disable(ctx);
-			}
-		}
-		ctx.mul_modelview_matrix(cgv::math::translate4<double>(-1.5, 0, 0));
-	}
-
 	// transform to image coordinates
 	ctx.mul_modelview_matrix(cgv::math::scale4<double>(aspect, -1, 1));
 	// enable shader program
@@ -410,6 +518,14 @@ bool rgbd_control::handle(cgv::gui::event& e)
 			on_set(&vis_mode);
 			return true;
 		}
+		else if (ke.get_modifiers() == cgv::gui::EM_CTRL) {
+			calibrate_device();
+			return true;
+		}
+		else if (ke.get_modifiers() == cgv::gui::EM_ALT) {
+			on_set(&ctr(0));
+			return true;
+		}
 		return false;
 	case 'A':
 		if (ke.get_modifiers() == 0) {
@@ -456,7 +572,7 @@ void rgbd_control::create_gui()
 {
 	add_decorator("rgbd", "heading", "level=1");
 	unsigned n = rgbd_input::get_nr_devices();
-	string device_def = "enums='detached=-2;protocol=-1";
+	string device_def = "enums='detached=-2;dummy=-1";
 	for (unsigned i=0; i<n; ++i) {
 		device_def += ",";
 		device_def += rgbd_input::get_serial(i);
@@ -472,34 +588,23 @@ void rgbd_control::create_gui()
 	add_view("nr_color_frames", nr_color_frames);
 	add_view("nr_infrared_frames", nr_infrared_frames);
 	add_view("nr_depth_frames", nr_depth_frames);
-	add_view("nr_mesh_frames", nr_mesh_frames);
 
 	if (begin_tree_node("Device", nr_color_frames, true, "level=2")) {
 		align("\a");
 		add_member_control(this, "stream_color", stream_color, "check");
 		add_member_control(this, "stream_depth", stream_depth, "check");
 		add_member_control(this, "stream_infrared", stream_infrared, "check");
-		add_member_control(this, "stream_mesh", stream_mesh, "check");
 		add_member_control(this, "color_stream_format", (DummyEnum&)color_stream_format_idx, "dropdown", get_stream_format_enum(color_stream_formats));
 		add_member_control(this, "depth_stream_format", (DummyEnum&)depth_stream_format_idx, "dropdown", get_stream_format_enum(depth_stream_formats));
 		add_member_control(this, "ir_stream_format", (DummyEnum&)ir_stream_format_idx, "dropdown", get_stream_format_enum(ir_stream_formats));
 		connect_copy(add_button("st&art", "shortcut='a'")->click, rebind(this, &rgbd_control::on_start_cb));
 		connect_copy(add_button("&step", "shortcut='s'")->click, rebind(this, &rgbd_control::on_step_cb));
 		connect_copy(add_button("st&op", "shortcut='o'")->click, rebind(this, &rgbd_control::on_stop_cb));
-		align("\b");
-		end_tree_node(nr_color_frames);
-	}
-	if (begin_tree_node("IO", do_protocol, true, "level=2")) {
-		align("\a");
-		add_gui("protocol_path", protocol_path, "directory", "w=150");
-		add_member_control(this, "write_async", rgbd_inp.protocol_write_async, "toggle");
-		add_member_control(this, "do_protocol", do_protocol, "toggle");
-		connect_copy(add_button("clear protocol")->click, rebind(this, &rgbd_control::on_clear_protocol_cb));
 		connect_copy(add_button("save")->click, rebind(this, &rgbd_control::on_save_cb));
 		connect_copy(add_button("save point cloud")->click, rebind(this, &rgbd_control::on_save_point_cloud_cb));
 		connect_copy(add_button("load")->click, rebind(this, &rgbd_control::on_load_cb));
 		align("\b");
-		end_tree_node(do_protocol);
+		end_tree_node(nr_color_frames);
 	}
 	if (begin_tree_node("Base", pitch, false, "level=2")) {
 		align("\a");
@@ -523,6 +628,12 @@ void rgbd_control::create_gui()
 	if (begin_tree_node("Point Cloud", always_acquire_next, false, "level=2")) {
 		align("\a");
 		add_member_control(this, "always_acquire_next", always_acquire_next, "toggle");
+
+		for (unsigned i = 0; i < 4; ++i)
+			for (unsigned j = 0; j < 4; ++j)
+				add_member_control(this, std::string("T") + to_string(i) + to_string(j), T(i, j),
+					"value_slider", "min=-1;max=1;log=true;step=0.00001;ticks=true");
+
 		if (begin_tree_node("point style", prs)) {
 			align("\a");
 			add_gui("point style", prs);
@@ -532,67 +643,148 @@ void rgbd_control::create_gui()
 		align("\b");
 		end_tree_node(always_acquire_next);
 	}
+	if (begin_tree_node("Calibration", ctr, false, "level=2")) {
+		align("\a");
+		add_member_control(this, "plane_depth", plane_depth, "value_slider", "min=500;max=4000;ticks=true");
+		add_member_control(this, "validate_color_camera", validate_color_camera, "toggle");
+		add_member_control(this, "Dcx", ctr(0), "value_slider", "min=300;max=340;step=0.00001;ticks=true");
+		add_member_control(this, "Dcy", ctr(1), "value_slider", "min=210;max=250;step=0.00001;ticks=true");
+		add_member_control(this, "Dfx", f_p(0), "value_slider", "min=550;max=600;log=true;step=0.00001;ticks=true");
+		add_member_control(this, "Dfy", f_p(1), "value_slider", "min=550;max=600;log=true;step=0.00001;ticks=true");
+		add_member_control(this, "tx", clr_tra(0), "value_slider", "min=-0.05;max=0.05;step=0.00001;ticks=true");
+		add_member_control(this, "ty", clr_tra(1), "value_slider", "min=-0.05;max=0.05;step=0.00001;ticks=true");
+		add_member_control(this, "tz", clr_tra(2), "value_slider", "min=-0.05;max=0.05;step=0.00001;ticks=true");
+		add_member_control(this, "qx", clr_rot(0), "value_slider", "min=-0.05;max=0.05;step=0.00001;ticks=true");
+		add_member_control(this, "qy", clr_rot(1), "value_slider", "min=-0.05;max=0.05;step=0.00001;ticks=true");
+		add_member_control(this, "qz", clr_rot(2), "value_slider", "min=-0.05;max=0.05;step=0.00001;ticks=true");
+		add_member_control(this, "Ccx", clr_ctr(0), "value_slider", "min=300;max=340;step=0.00001;ticks=true");
+		add_member_control(this, "Ccy", clr_ctr(1), "value_slider", "min=210;max=250;step=0.00001;ticks=true");
+		add_member_control(this, "Cfx", clr_f_p(0), "value_slider", "min=550;max=600;log=true;step=0.00001;ticks=true");
+		add_member_control(this, "Cfy", clr_f_p(1), "value_slider", "min=550;max=600;log=true;step=0.00001;ticks=true");
+		align("\b");
+		end_tree_node(ctr);
+	}
 }
 
 size_t rgbd_control::construct_point_cloud()
 {
-
+	/*
+	if (remap_color)
+		rgbd_inp.map_color_to_depth(rgbd::FF_DEPTH_RAW, depth2_data.get_ptr<unsigned char>(), rgbd::FF_COLOR_RGB32, color2_data.get_ptr<unsigned char>());
 	P2.clear();
 	C2.clear();
-	const unsigned short* depths = reinterpret_cast<const unsigned short*>(&depth_frame_2.frame_data.front());
-	const unsigned char* colors = reinterpret_cast<const unsigned char*>(&color_frame_2.frame_data.front());
-	if (remap_color) {
-		rgbd_inp.map_color_to_depth(depth_frame_2, color_frame_2, warped_color_frame_2);
-		colors = reinterpret_cast<const unsigned char*>(&warped_color_frame_2.frame_data.front());
-	}
-	unsigned bytes_per_pixel = color_frame_2.nr_bits_per_pixel / 8;
-	int i = 0;
-	float s = 1.0f / 255;
-	for (int y = 0; y < depth_frame_2.height; ++y)
-		for (int x = 0; x < depth_frame_2.width; ++x) {
-			vec3 p;
-			rgba8 point_color;
-			if (rgbd_inp.map_depth_to_point(x, y, depths[i], &p[0])) {
-				switch (color_frame_2.pixel_format) {
-				case PF_BGR:
-				case PF_BGRA:
-					if (color_frame_2.nr_bits_per_pixel == 32) {
-						point_color = rgba8(colors[bytes_per_pixel * i + 2], colors[bytes_per_pixel * i + 1], colors[bytes_per_pixel * i], colors[bytes_per_pixel * i + 3]);
-					} else {
-						point_color = rgba8(colors[bytes_per_pixel * i + 2], colors[bytes_per_pixel * i + 1], colors[bytes_per_pixel * i], 255);
-					}
-					break;
-				case PF_RGB:
-				case PF_RGBA:
-					if (color_frame_2.nr_bits_per_pixel == 32) {
-						point_color = rgba8(colors[bytes_per_pixel * i], colors[bytes_per_pixel * i + 1], colors[bytes_per_pixel * i + 2], colors[bytes_per_pixel * i + 3]);
-					} else {
-						point_color = rgba8(colors[bytes_per_pixel * i], colors[bytes_per_pixel * i + 1], colors[bytes_per_pixel * i + 2], 255);
-					}
-					break;
-				case PF_BAYER:
-					point_color = rgba8(colors[i], colors[i], colors[i], 255);
-					break;
-				}
-				//filter points without color for 32 bit formats
-				static const rgba8 filter_color = rgba8(0, 0, 0, 0);
-				if (!(point_color ==  filter_color)) {
-					C2.push_back(point_color);
-					// flipping y to make it the same direction as in pixel y coordinate
-					p[1] = -p[1];
-					P2.push_back(p);
-				}
+	std::vector<vec3> Q;
+	unsigned short* d_ptr = depth2_data.get_ptr<unsigned short>();
+	unsigned char* c_ptr = color2_data.get_ptr<unsigned char>();
+	for (unsigned y = 0; y < depth_fmt.get_height(); ++y)
+		for (unsigned x = 0; x < depth_fmt.get_width(); ++x) {
+			float point[3];
+			if (rgbd_inp.map_pixel_to_point(x, y, *d_ptr++, FF_DEPTH_RAW, point)) {
+				P2.push_back(vec3(3, point));
+				C2.push_back(reinterpret_cast<rgba8&>(*c_ptr));
+				Q.push_back(vec3(float(x), float(y), (float)d_ptr[-1]));
+				rgba8& col = C2.back();
+				std::swap(col[0], col[2]);
+				col[3] = 255;
 			}
-			++i;
+			c_ptr += color_fmt.get_entry_size();
 		}
-	/* debug code to print out bounding box of points */
-	/*
-	box3 box;
-	for (const auto& p : P2)
-		box.add_point(p);
-	std::cout << "constructed " << P2.size() << " points with box = " << box << std::endl;
+	compute_homography(P2, Q);
 	*/
 	return P2.size();
+}
+void rgbd_control::calibrate_device()
+{
+	/*
+	std::vector<vec3> P_win;
+	std::vector<vec3> P_wrl;
+	for (unsigned d = 500; d < 4000; d+=100)
+		for (unsigned y = 0; y < depth_fmt.get_height(); y += 16)
+			for (unsigned x = 0; x < depth_fmt.get_width(); x += 16) {
+				float point[3];
+				if (rgbd_inp.map_pixel_to_point(x, y, 8*d, FF_DEPTH_RAW, point)) {
+					P_wrl.push_back(vec3(3, point));
+					P_win.push_back(vec3((float)x, (float)y, (float)d));
+				}
+			}
+	std::cout << "nr points = " << P_win.size() << " (expected " << 34 * depth_fmt.get_width()*depth_fmt.get_height() / 16 / 16 << ")" << std::endl;
+	compute_homography(P_win, P_wrl);
+	*/
+}
+
+void rgbd_control::compute_homography(const std::vector<vec3>& P, const std::vector<vec3>& Q)
+{
+	/*
+	dvecn m(16);
+	cgv::math::mat<double> M(16, 16, 0.0);
+	size_t k;
+	for (k = 0; k < P.size(); ++k) {
+		dvec4 hp = dvec4(P[k],1);
+		dvec3 q  = Q[k];
+		// construct first constraint 
+		reinterpret_cast<dvec4&>(m(0)) = hp;
+		reinterpret_cast<dvec4&>(m(4)).zeros();
+		reinterpret_cast<dvec4&>(m(8)).zeros();
+		reinterpret_cast<dvec4&>(m(12)) = -q(0)*hp;
+		M += dyad(m, m);
+		// construct second constraint 
+		reinterpret_cast<dvec4&>(m(0)).zeros();
+		reinterpret_cast<dvec4&>(m(4)) = hp;
+		reinterpret_cast<dvec4&>(m(8)).zeros();
+		reinterpret_cast<dvec4&>(m(12)) = -q(1)*hp;
+		M += dyad(m, m);
+		// construct third constraint 
+		reinterpret_cast<dvec4&>(m(0)).zeros();
+		reinterpret_cast<dvec4&>(m(4)).zeros();
+		reinterpret_cast<dvec4&>(m(8)) = hp;
+//		reinterpret_cast<dvec4&>(m(12)) = -q(2)*hp;
+		reinterpret_cast<dvec4&>(m(12)) = -dvec4(0,0,0,1);
+		M += dyad(m, m);
+	}
+	//M *= 1.0 / (3 * P.size());
+	cgv::math::mat<double> U, V;
+	cgv::math::diag_mat<double> S;
+	if (!cgv::math::svd(M, U, S, V, true, 100)) {
+		std::cerr << "svd failed" << std::endl;
+		abort();
+	}
+	std::cout << "singular values = " << S << std::endl;
+	m = U.col(15);
+
+	dvecn m2 = M * m;
+	double l2 = m2.length();
+	if (l2 != 0)
+		m2 /= l2;
+	std::cout << "validate result: " << l2 << ", " << dot(m, m2) << std::endl;
+	double scale = 1.0 / m(15);
+	dmat4 H;
+	H.set_row(0, scale*reinterpret_cast<dvec4&>(m(0)));
+	H.set_row(1, scale*reinterpret_cast<dvec4&>(m(4)));
+	H.set_row(2, reinterpret_cast<dvec4&>(m(8)));
+	H.set_row(3, scale*reinterpret_cast<dvec4&>(m(12)));
+	std::cout << "H =\n" << H << std::endl;
+
+	T = H;
+	for (unsigned i = 0; i < 16; ++i)
+		update_member(&T(i / 4, i % 4));
+	on_set(&T);
+	dvec3 error;
+	error.zeros();
+	for (k = 0; k < P.size(); ++k) {
+		dvec3 q = transform(H, P[k]);
+		if (k < 10)
+			std::cout << "comp: ";
+		for (unsigned i = 0; i < 3; ++i) {
+			error(i) += fabs(Q[k](i) - q(i));
+			if (k < 10)
+				std::cout << "  " << P[k](i) << "->" << q(i) << "=" << Q[k](i);
+		}
+		if (k < 10)
+			std::cout << std::endl;
+	}
+	error *= 1.0 / P.size();
+	std::cout << "avg errors: " << error << std::endl;
+	*/
 }
 
 void rgbd_control::timer_event(double t, double dt)
@@ -650,32 +842,6 @@ void rgbd_control::timer_event(double t, double dt)
 						update_member(&nr_infrared_frames);
 					}
 				}
-				if (stream_mesh) {
-					bool new_mesh_frame_changed = rgbd_inp.get_frame(IS_MESH, mesh_frame, 0);
-					if (new_mesh_frame_changed) {
-						++nr_mesh_frames;
-						mesh_frame_changed = new_mesh_frame_changed;
-						new_frame = true;
-						update_member(&nr_mesh_frames);
-						M_POINTS.clear();
-						M_TRIANGLES.clear();
-						M_UV.clear();
-
-						if (mesh_frame.frame_data.size() > sizeof(uint32_t)) {														
-							if (mesh_frame.pixel_format == PF_POINTS_AND_TRIANGLES) {
-								mesh_data_view mesh(mesh_frame.frame_data.data(), mesh_frame.frame_data.size());
-								if (mesh.is_valid()) {
-									M_POINTS.resize(mesh.points_size);
-									std::copy(mesh.points, mesh.points + mesh.points_size, M_POINTS.data());
-									M_TRIANGLES.resize(mesh.triangles_size);
-									std::copy(mesh.triangles, mesh.triangles + mesh.triangles_size, M_TRIANGLES.data());
-									M_UV.resize(mesh.uv_size);
-									std::copy(mesh.uv, mesh.uv + mesh.uv_size, M_UV.data());
-								}
-							}
-						}
-					}
-				}
 				if (new_frame)
 					found_frame = true;
 			} while (new_frame);
@@ -687,7 +853,7 @@ void rgbd_control::timer_event(double t, double dt)
 					acquire_next = false;
 					color_frame_2 = color_frame;
 					depth_frame_2 = depth_frame;
-					future_handle = std::async(std::launch::async, &rgbd_control::construct_point_cloud, this);
+					future_handle = std::async(&rgbd_control::construct_point_cloud, this);
 				}
 				else {
 					if (remap_color)
@@ -696,6 +862,45 @@ void rgbd_control::timer_event(double t, double dt)
 			}
 		}
 	}
+	/*
+	else if (!stopped && device_idx == -1) {
+		if (stream_depth_file_name_base.empty()) {
+			unsigned char* c = color_data.get_ptr<unsigned char>();
+			for (unsigned j=0; j<h; ++j)
+				for (unsigned i=0; i<w; ++i) {
+					*c++ = (unsigned char) (i & 255);
+					*c++ = (unsigned char) (j & 255);
+					*c++ = (unsigned char) ((i*j) & 255);
+					*c++ = 255;
+				}
+			unsigned short* s = depth_data.get_ptr<unsigned short>();
+			for (unsigned j=0; j<h; ++j)
+				for (unsigned i=0; i<w; ++i)
+					*s++ = i;
+
+			color_frame_changed = depth_frame_changed = true;
+			post_redraw();
+		}
+		else {
+			std::string fnd = stream_depth_file_name_base+to_string((int)depth_stream_idx)+".dep";
+			if (!cgv::utils::file::exists(fnd)) {
+				depth_stream_idx = 0;
+				fnd = stream_depth_file_name_base+to_string((int)depth_stream_idx)+".dep";
+			}
+			++depth_stream_idx;
+			if (cgv::utils::file::exists(fnd)) {
+				std::string d;
+				if (cgv::utils::file::read(fnd, d, false)) {
+					memcpy(depth_data.get_ptr<unsigned char>(), &d[0], depth_data.get_format()->get_size()*depth_data.get_format()->get_entry_size());
+					depth_frame_changed = true;
+					post_redraw();
+				}
+				else
+					std::cerr << "could not read " << fnd << std::endl;
+			}
+		}
+	}
+	*/
 	if (!stopped && step_only) {
 		on_stop_cb();
 		step_only = false;
@@ -878,17 +1083,12 @@ void rgbd_control::update_stream_formats()
 
 void rgbd_control::on_device_select_cb()
 {
-	rgbd_inp.stop();
-	stopped = true;
 	rgbd_inp.detach();
 	if (device_idx == -1)
 		device_mode = DM_PROTOCOL;
 	else if (device_idx == -2)
 		device_mode = DM_DETACHED;
-	else 
-		device_mode = DM_DEVICE;
 
-	bool reset_format_indices = false;
 	if (device_mode == DM_DEVICE) {
 		unsigned nr = rgbd_input::get_nr_devices();
 		if (nr == 0) {
@@ -902,7 +1102,6 @@ void rgbd_control::on_device_select_cb()
 			}
 			if (rgbd_inp.attach(rgbd_input::get_serial(device_idx))) {
 				update_stream_formats();
-				reset_format_indices = true;
 				rgbd_inp.set_pitch(pitch);
 			}
 			else {
@@ -912,29 +1111,11 @@ void rgbd_control::on_device_select_cb()
 		}
 	}
 	else if (device_mode == DM_PROTOCOL) {
-		if (cgv::utils::dir::exists(protocol_path)) {
-			rgbd_inp.attach_path(protocol_path);
-			update_stream_formats();
-			reset_format_indices = true;
-			update_member(&device_idx);
-		}
-		else {
-			cgv::gui::message(protocol_path + " does not exist!");
-			device_mode = DM_DETACHED;
-			device_idx = -2;
-			update_member(&device_mode);
-			update_member(&device_idx);
-		}
+		rgbd_inp.attach_path(protocol_path);
+		update_member(&device_idx);
+		// on_device_select_cb();
 	}
-	if (reset_format_indices) {
-		color_stream_format_idx = -1;
-		depth_stream_format_idx = -1;
-		ir_stream_format_idx = -1;
-		update_member(&color_stream_format_idx);
-		update_member(&depth_stream_format_idx);
-		update_member(&ir_stream_format_idx);
-	}
-	color_attachment_changed = depth_attachment_changed = infrared_attachment_changed = true;
+	attachment_changed = true;
 	post_redraw();
 }
 
@@ -942,14 +1123,6 @@ void rgbd_control::on_pitch_cb()
 {
 	if (rgbd_inp.is_attached())
 		rgbd_inp.set_pitch(pitch);
-}
-
-void rgbd_control::on_clear_protocol_cb()
-{
-	//delete previosly recorded data
-	if (!rgbd_inp.is_started() || (rgbd_inp.is_started() && !do_protocol)){
-		rgbd_inp.clear_protocol(protocol_path);
-	}
 }
 
 #include "lib_begin.h"

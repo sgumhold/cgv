@@ -150,6 +150,12 @@ namespace cgv {
 			}
 			return group_renderer::disable(ctx);
 		}
+
+		void point_renderer::draw(context& ctx, size_t start, size_t count, bool use_strips, bool use_adjacency, uint32_t strip_restart_index)
+		{
+			draw_impl(ctx, PT_POINTS, start, count, false, false, -1);
+		}
+
 		bool point_render_style_reflect::self_reflect(cgv::reflect::reflection_handler& rh)
 		{
 			return

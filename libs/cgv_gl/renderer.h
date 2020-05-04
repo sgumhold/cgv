@@ -4,6 +4,7 @@
 #include <cgv/render/shader_program.h>
 #include <cgv/render/vertex_buffer.h>
 #include <cgv/render/attribute_array_binding.h>
+#include <cgv_gl/gl/gl_context.h>
 
 #include "gl/lib_begin.h"
 
@@ -25,6 +26,52 @@ namespace cgv { // @<
 			std::map<int, vertex_buffer*> vbos;
 			/// give renderer access to protected members
 			friend class renderer;
+			/// 
+			template <typename T>
+			bool set_indices(const context& ctx, const T& array)
+			{
+				bool res;
+				vertex_buffer*& vbo_ptr = vbos[-1];
+				if (vbo_ptr) {
+					if (vbo_ptr->get_size_in_bytes() == array_descriptor_traits <T>::get_size(array))
+						res = vbo_ptr->replace(ctx, 0, array_descriptor_traits <T>::get_address(array), array_descriptor_traits < T>::get_nr_elements(array));
+					else {
+						vbo_ptr->destruct(ctx);
+						res = vbo_ptr->create(ctx, array);
+					}
+				}
+				else {
+					vbo_ptr = new vertex_buffer(VBT_INDICES);
+					res = vbo_ptr->create(ctx, array);
+				}
+				if (res)
+					res = ctx.set_element_array(&aab, vbo_ptr);
+				return res;
+			}
+			/// 
+			template <typename T>
+			bool set_indices(const context& ctx, const T* array, size_t count)
+			{
+				bool res;
+				vertex_buffer*& vbo_ptr = vbos[-1];
+				if (vbo_ptr) {
+					if (vbo_ptr->get_size_in_bytes() == count * get_type_size(cgv::type::info::type_id<T>::get_id()))
+						res = vbo_ptr->replace(ctx, 0, array, count);
+					else {
+						vbo_ptr->destruct(ctx);
+						res = vbo_ptr->create(ctx, array, count);
+					}
+				}
+				else {
+					vbo_ptr = new vertex_buffer(VBT_INDICES);
+					res = vbo_ptr->create(ctx, array, count);
+				}
+				if (res)
+					res = ctx.set_element_array(&aab, vbo_ptr);
+				return res;
+			}
+			///
+			void remove_indices(const context& ctx);
 			///
 			template <typename T>
 			bool set_attribute_array(const context& ctx, int loc, const T& array) {
@@ -42,7 +89,7 @@ namespace cgv { // @<
 					vbo_ptr = new vertex_buffer();
 					res = vbo_ptr->create(ctx, array);
 				}
-				if (res)
+				if(res)
 					res = ctx.set_attribute_array_void(&aab, loc, array_descriptor_traits <T>::get_type_descriptor(array), vbo_ptr, 0, array_descriptor_traits < T>::get_nr_elements(array));
 				return res;
 			}
@@ -130,19 +177,31 @@ namespace cgv { // @<
 			/// otherwise keep track of enabled arrays
 			std::set<int> enabled_attribute_arrays;
 			/// default render style
-			render_style* default_render_style;
+			mutable render_style* default_render_style;
 			/// current render style, can be set by user
 			const render_style* rs;
+			/// pointer to indices in CPU memory
+			const void* indices;
+			/// pointer to index buffer
+			const vertex_buffer* index_buffer_ptr;
+			/// type of indices
+			cgv::type::info::TypeId index_type;
+			/// count of indices
+			size_t index_count;
 		protected:
+			/// access to render style
+			const render_style* get_style_ptr() const;
 			/// if attribue array manager is set, use it for attribute management
 			attribute_array_manager* aam_ptr;
 			/// return whether attributes persist after a call to disable
 			bool attributes_persist() const { return aam_ptr != 0; }
+		public:
 			/// derived renderer classes have access to shader program
 			shader_program& ref_prog() { return prog; }
+		protected:
 			/// access to style
 			template <typename T>
-			const T& get_style() const { return *static_cast<const T*>(rs);  }
+			const T& get_style() const { return *static_cast<const T*>(get_style_ptr());  }
 			/// track whether color attribute is defined
 			mutable bool has_colors;
 			/// track whether position attribute is defined
@@ -181,6 +240,10 @@ namespace cgv { // @<
 				enabled_attribute_arrays.insert(loc);
 				return attribute_array_binding::set_global_attribute_array(ctx, loc, &elem, nr_elements, sizeof(C));
 			}
+			/// default implementation of draw method with support for indexed rendering and different primitive types
+			void draw_impl(context& ctx, PrimitiveType pt, size_t start, size_t count, bool use_strips, bool use_adjacency, uint32_t strip_restart_index);
+			/// default implementation of instanced draw method with support for indexed rendering and different primitive types
+			void draw_impl_instanced(context& ctx, PrimitiveType type, size_t start, size_t count, size_t instance_count, bool use_strips, bool use_adjacency, uint32_t strip_restart_index);
 		public:
 			/// construct and init attribute tracking flags
 			renderer();
@@ -216,16 +279,94 @@ namespace cgv { // @<
 			/// template method to set the color attribute from a vertex buffer object, the element type must be given as explicit template parameter
 			template <typename T>
 			void set_color_array(const context& ctx, const vertex_buffer& vbo, size_t offset_in_bytes, size_t nr_elements, unsigned stride_in_bytes = 0) { set_color_array(ctx, type_descriptor(element_descriptor_traits<T>::get_type_descriptor(T()), true), vbo, offset_in_bytes, nr_elements, stride_in_bytes); }
+			/// set the indices for indexed rendering from a vector
+			template <typename T>
+			bool set_indices(const context& ctx, const std::vector<T>& indices) {
+				this->indices = &indices.front();
+				index_buffer_ptr = 0;
+				index_count = indices.size();
+				index_type = cgv::type::info::type_id<T>::get_id();
+				if (aam_ptr)
+					return aam_ptr->set_indices(ctx, indices);
+				return true;
+			}
+			/// set the indices for indexed rendering from a pointer and a count 
+			template <typename T>
+			bool set_indices(const context& ctx, const T* indices, size_t nr_indices) {
+				this->indices = indices;
+				index_buffer_ptr = 0;
+				index_count = nr_indices;
+				index_type = cgv::type::info::type_id<T>::get_id();
+				if (aam_ptr)
+					return aam_ptr->set_indices(ctx, indices, nr_indices);
+				return true;
+			}
+			/// set the indices for indexed rendering from a vertex buffer
+			template <typename T>
+			bool set_indices(const context& ctx, const vertex_buffer& vbo, size_t count) { 
+				index_buffer_ptr = &vbo;
+				indices = 0;
+				index_count = count;
+				index_type = cgv::type::info::type_id<T>::get_id();
+				return true;
+			}
+			/// return whether indices have been defined
+			bool has_indices() const { return index_count > 0; }
+			/// remove previously set indices
+			void remove_indices(const context& ctx);
 			/// call to validate, whether essential position attribute is defined
 			virtual bool validate_attributes(const context& ctx) const;
 			/// validate attributes and if successful, enable renderer
 			bool validate_and_enable(context& ctx);
 			/// enable renderer
 			virtual bool enable(context& ctx);
+			//! Draw a range of vertices or indexed elements.
+			/*! Call this function only successful enabeling via validate_and_enable() or enable().
+			    Capsulates glDrawArrays and glDrawElements calls. Overloaded implementations of specific 
+			    renderers choose the to be used gl primitive type and whether to use an instanced draw call.
+			    \sa render()
+			    \param count number of to be drawn vertices/elements
+			    \param start index of first to be drawn vertex/element
+				\param use_strips whether to generate primitives in strips (only for line or triangle primitives) 
+				\param use_adjacency whether to specify adjacency information (only for line or triangle primitives)
+				\param strip_restart_index extraorindary index used to mark end of strips (only for strip based drawing) 
+				Strip based drawing can be combined with the use of adjacency information. Default implementation
+				uses triangle primitives. */
+			virtual void draw(context& ctx, size_t start, size_t count,
+				bool use_strips = false, bool use_adjacency = false, uint32_t strip_restart_index = -1);
 			/// disable renderer
 			virtual bool disable(context& ctx);
+			//! Convenience function that draws vertex or indexed element with this renderer.
+			/*! This function effectively calls validate_and_enable(), draw() and disable(), passes
+			    its parameters to draw and returns the result of validate_and_enable(). draw() and disable()
+				are only executed if validate_and_enable() succeeds. For performance reasons this function
+				should not be used for several successive draw calls due to the unnecessary enabling and disabling
+				between render calls.
+				Typically, this function does not need to be overloaded by specific renderers.
+				\sa draw()
+				\sa validate_and_enable()*/
+			virtual bool render(context& ctx, size_t start, size_t count, 
+				bool use_strips = false, bool use_adjacency = false, uint32_t strip_restart_index = -1);
 			/// the clear function destructs the shader program
 			virtual void clear(const context& ctx);
+
+
+			// TODO: should this be done this way?
+			int get_vbo(const context& ctx, const std::string attr_name) {
+
+				if(aam_ptr) {
+					int loc = ref_prog().get_attribute_location(ctx, attr_name);
+					auto it = aam_ptr->vbos.find(loc);
+					if(it != aam_ptr->vbos.end()) {
+						vertex_buffer* vbo_ptr = aam_ptr->vbos[loc];
+						if(vbo_ptr->handle) {
+							return (const int&)vbo_ptr->handle - 1;
+						}
+					}
+				}
+
+				return (const int&)-1;
+			}
 		};
 	}
 }

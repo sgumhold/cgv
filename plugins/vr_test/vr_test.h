@@ -6,6 +6,7 @@
 #include <cgv_gl/box_renderer.h>
 #include <cgv_gl/gl/mesh_render_info.h>
 #include <cgv/render/shader_program.h>
+#include <cgv_gl/rounded_cone_renderer.h>
 #include <cgv/render/frame_buffer.h>
 
 ///@ingroup VR
@@ -41,6 +42,7 @@ protected:
 	// rendering style for boxes
 	cgv::render::box_render_style style;
 
+	cgv::render::rounded_cone_render_style cone_style;
 	// sample for rendering a mesh
 	double mesh_scale;
 	dvec3 mesh_location;
@@ -115,6 +117,7 @@ protected:
 	bool shared_texture;
 	bool max_rectangle;
 	float camera_aspect;
+	bool show_seethrough;
 	bool use_matrix;
 	float background_distance;
 	float background_extent;

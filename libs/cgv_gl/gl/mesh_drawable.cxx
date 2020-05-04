@@ -19,8 +19,8 @@ void mesh_drawable::init_frame(context &ctx)
 		return;
 
 	mesh_info.destruct(ctx);
-	mesh_info.construct_vbos(ctx, mesh);
-	mesh_info.bind(ctx, ctx.ref_surface_shader_program(true));
+	mesh_info.construct(ctx, mesh);
+	mesh_info.bind(ctx, ctx.ref_surface_shader_program(true), true);
 }
 
 /// clear all objects living in the context like textures or display lists
@@ -29,24 +29,24 @@ void mesh_drawable::clear(context& ctx)
 	mesh_info.destruct(ctx);
 }
 
-void mesh_drawable::render_mesh_group(context &ctx, shader_program& prog, unsigned gi, bool use_materials)
+void mesh_drawable::draw_mesh_primitive(context &ctx, unsigned pi, bool opaque, bool use_materials)
 {
-	for (size_t i = 0; i < mesh_info.get_nr_mesh_parts(); ++i)
-		if (mesh_info.get_group_index(i) == gi)
-			mesh_info.render_mesh_part(ctx, prog, i, true);
-	for (size_t i = 0; i < mesh_info.get_nr_mesh_parts(); ++i)
-		if (mesh_info.get_group_index(i) == gi)
-			mesh_info.render_mesh_part(ctx, prog, i, false);
+	mesh_info.draw_primitive(ctx, pi, !opaque, opaque, use_materials);
 }
 
-void mesh_drawable::render_mesh(context &ctx, shader_program& prog, bool use_materials)
+void mesh_drawable::draw_mesh(context &ctx, bool opaque, bool use_materials)
 {
-	mesh_info.render_mesh(ctx, prog);
+	mesh_info.draw_all(ctx, !opaque, opaque);
 }
 
 void mesh_drawable::draw(context &ctx)
 {
-	render_mesh(ctx, ctx.ref_surface_shader_program(true));
+	draw_mesh(ctx, true);
+}
+
+void mesh_drawable::finish_draw(context &ctx)
+{
+	draw_mesh(ctx, false);
 }
 
 bool mesh_drawable::read_mesh(const std::string& _file_name)

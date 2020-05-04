@@ -29,12 +29,22 @@ gl_implicit_surface_drawable_base::gl_implicit_surface_drawable_base() : box(dve
 	res = 25;
 #endif
 	func_ptr = 0;
-	wireframe = false;
+	show_vertices = false;
+	show_wireframe = false;
+	show_surface = true;
 	contouring_type = DUAL_CONTOURING;
 	show_sampling_grid = false;
 	show_sampling_locations = false;
 	normal_computation_type = FACE_NORMALS;
 //	normal_computation_type = GRADIENT_NORMALS;
+	brs.culling_mode = CM_FRONTFACE;
+	brs.illumination_mode = IM_TWO_SIDED;
+	brs.map_color_to_material = CM_COLOR;
+	srs.radius = 0.13f;
+	srs.surface_color = rgb(1, 1, 0.5f);
+	crs.radius = 0.04f;
+	crs.surface_color = rgb(0.3f, 0.46f, 0.43f);
+	ars.radius_relative_to_length = 0.05f;
 	consistency_threshold = 0.01;
 	max_nr_iters = 8;
 	normal_threshold = 0.73;
@@ -46,6 +56,7 @@ gl_implicit_surface_drawable_base::gl_implicit_surface_drawable_base() : box(dve
 	grid_epsilon = 0.01;
 	ix=iy=iz=0;
 	show_mini_box = false;
+	sampling_grid_alpha = 0.4f;
 	material.set_diffuse_reflectance(rgb(0.1f, 0.6f, 1.0f));
 	material.set_specular_reflectance(rgb(0.7f,0.7f,0.7f));
 	material.set_roughness(0.6f);
@@ -89,9 +100,9 @@ unsigned int gl_implicit_surface_drawable_base::get_resolution() const
 
 void gl_implicit_surface_drawable_base::enable_wireframe(bool do_enable)
 {
-	if (wireframe == do_enable)
+	if (show_wireframe == do_enable)
 		return;
-	wireframe = do_enable;
+	show_wireframe = do_enable;
 	post_redraw();
 }
 
@@ -152,7 +163,7 @@ bool gl_implicit_surface_drawable_base::are_normals_enabled() const
 
 bool gl_implicit_surface_drawable_base::is_wireframe_enabled() const
 {
-	return wireframe;
+	return show_wireframe;
 }
 
 
@@ -398,7 +409,6 @@ void gl_implicit_surface_drawable_base::surface_extraction()
 
 void gl_implicit_surface_drawable_base::extract_mesh()
 {
-
 	if (!func_ptr)
 		return;
 
@@ -407,64 +417,97 @@ void gl_implicit_surface_drawable_base::extract_mesh()
 	nml_mesh_geometry.clear();
 
 	surface_extraction();
+
+	crs.radius_scale = srs.radius_scale = 0.5f * float(box.get_extent().length()/res);
+}
+
+bool gl_implicit_surface_drawable_base::init(context& ctx)
+{
+	ref_box_renderer(ctx, 1);
+	ref_sphere_renderer(ctx, 1);
+	ref_rounded_cone_renderer(ctx, 1);
+	ref_arrow_renderer(ctx, 1);
+	return true;
+}
+
+void gl_implicit_surface_drawable_base::clear(context& ctx)
+{
+	ref_box_renderer(ctx, -1);
+	ref_rounded_cone_renderer(ctx, -1);
+	ref_sphere_renderer(ctx, -1);
+	ref_arrow_renderer(ctx, -1);
 }
 
 /// overload to draw the content of this drawable
 void gl_implicit_surface_drawable_base::draw(context& ctx)
 {
-	shader_program& prog = ctx.ref_surface_shader_program();
-	prog.enable(ctx);
-	ctx.set_material(material);
-	prog.set_uniform(ctx, "map_color_to_material", (int)3);
-	glEnable(GL_CULL_FACE);
-	glCullFace(GL_FRONT);
+	if (outofdate) {
+		extract_mesh();
+		mri.destruct(ctx);
+		if (mesh.get_nr_faces() > 0) {
+			mri.construct(ctx, mesh);
+			mri.bind(ctx, ctx.ref_surface_shader_program(false), true);
+			mri.bind_wireframe(ctx, ref_rounded_cone_renderer(ctx).ref_prog(), true);
+		}
+		outofdate = false;
+	}
+
+	std::vector<box3> boxes;
+	std::vector<rgb> box_colors;
 	if (show_box) {
-		ctx.set_color(rgb(0.8f,0.7f,0.0f));
-		ctx.tesselate_box(box,true);
+		boxes.push_back(box);
+		box_colors.push_back(rgb(0.8f, 0.7f, 0.0f));
 	}
 	if (show_mini_box) {
-		ctx.set_color(rgb(0.8f, 0.6f, 1.0f));
-		dvec3 d = box.get_extent();
-		d /= (res-1);
+		dvec3 d = box.get_extent() / double(res - 1);
 		dvec3 b0 = box.get_corner(0);
-		b0(0) += ix*d(0);
-		b0(1) += iy*d(1);
-		b0(2) += iz*d(2);
-		dbox3 B(b0, b0 + d);
-		ctx.tesselate_box(B, true);
+		b0(0) += ix * d(0);
+		b0(1) += iy * d(1);
+		b0(2) += iz * d(2);
+		boxes.push_back(dbox3(b0, b0 + d));
+		box_colors.push_back(rgb(0.8f, 0.6f, 1.0f));
 	}
-	glDisable(GL_CULL_FACE);
-	prog.disable(ctx);
-	prog.set_uniform(ctx, "map_color_to_material", 0);
+	if (!boxes.empty()) {
+		auto& br = ref_box_renderer(ctx);
+		br.set_render_style(brs);
+		br.set_box_array(ctx, boxes);
+		br.set_color_array(ctx, box_colors);
+		br.render(ctx, 0, boxes.size());
+	}
 
 	draw_implicit_surface(ctx);
 
-	shader_program& dprog = ctx.ref_default_shader_program();
-	dprog.enable(ctx);
-	cgv::render::attribute_array_binding::enable_global_array(ctx, dprog.get_position_index());
 	if (show_gradient_normals || show_mesh_normals) {
-		glLineWidth(1);
+		auto& ar = ref_arrow_renderer(ctx);
+		ar.set_render_style(ars);
 		if (show_gradient_normals && !nml_gradient_geometry.empty()) {
-			ctx.set_color(rgb(1, 0.5f, 0));
-			cgv::render::attribute_array_binding::set_global_attribute_array(ctx, dprog.get_position_index(), nml_gradient_geometry);
-			glDrawArrays(GL_LINES, 0, (GLsizei)nml_gradient_geometry.size());
+			ar.set_position_array(ctx, &nml_gradient_geometry.front(), nml_gradient_geometry.size() / 2, 2 * sizeof(vec3));
+			ar.set_end_point_array(ctx, &nml_gradient_geometry[1], nml_gradient_geometry.size() / 2, 2 * sizeof(vec3));
+			if (ar.validate_and_enable(ctx)) {
+				ctx.set_color(rgb(1, 0.5f, 0));
+				ar.draw(ctx, 0, nml_gradient_geometry.size() / 2);
+				ar.disable(ctx);
+			}
 		}
 		if (show_mesh_normals && !nml_mesh_geometry.empty()) {
-			ctx.set_color(rgb(1, 0, 1));
-			cgv::render::attribute_array_binding::set_global_attribute_array(ctx, dprog.get_position_index(), nml_mesh_geometry);
-			glDrawArrays(GL_LINES, 0, (GLsizei)nml_mesh_geometry.size());
+			ar.set_position_array(ctx, &nml_mesh_geometry.front(), nml_mesh_geometry.size() / 2, 2 * sizeof(vec3));
+			ar.set_end_point_array(ctx, &nml_mesh_geometry[1], nml_mesh_geometry.size() / 2, 2 * sizeof(vec3));
+			if (ar.validate_and_enable(ctx)) {
+				ctx.set_color(rgb(1, 0, 1));
+				ar.draw(ctx, 0, nml_mesh_geometry.size() / 2);
+				ar.disable(ctx);
+			}
 		}
 	}
-
-	vec3 p = box.get_corner(0);
-	vec3 q = box.get_corner(7);
-	vec3 d = box.get_extent();
-	d /= float(res-1);
-	std::vector<vec3> G;
 	if (show_sampling_locations) {
+		vec3 p = box.get_corner(0);
+		vec3 q = box.get_corner(7);
+		vec3 d = box.get_extent();
+		d /= float(res - 1);
+		std::vector<vec3> G;
 		std::vector<vec3> G_out;
-		for (unsigned int i=0; i<res; ++i)
-			for (unsigned int j=0; j<res; ++j)
+		for (unsigned int i = 0; i < res; ++i)
+			for (unsigned int j = 0; j < res; ++j)
 				for (unsigned int k = 0; k < res; ++k) {
 					vec3 r(p(0) + i * d(0), p(1) + j * d(1), p(2) + k * d(2));
 					if (func_ptr->evaluate(r.to_vec()) > 0)
@@ -472,21 +515,32 @@ void gl_implicit_surface_drawable_base::draw(context& ctx)
 					else
 						G.push_back(r);
 				}
-
-		glPointSize(2);
-		ctx.set_color(rgb(0.3f, 0.3f, 1));
-		cgv::render::attribute_array_binding::set_global_attribute_array(ctx, dprog.get_position_index(), G_out);
-		glDrawArrays(GL_POINTS, 0, (GLsizei)G_out.size());
-		ctx.set_color(rgb(1, 0.3f, 0.3f));
-		cgv::render::attribute_array_binding::set_global_attribute_array(ctx, dprog.get_position_index(), G);
-		glDrawArrays(GL_POINTS, 0, (GLsizei)G.size());
+		auto& sr = ref_sphere_renderer(ctx);
+		sr.set_render_style(srs);
+		sr.set_position_array(ctx, G);
+		if (sr.validate_and_enable(ctx)) {
+			ctx.set_color(rgb(1, 0.3f, 0.3f));
+			sr.draw(ctx, 0, G.size());
+			sr.disable(ctx);
+		}
+		sr.set_position_array(ctx, G_out);
+		if (sr.validate_and_enable(ctx)) {
+			ctx.set_color(rgb(0.3f, 0.3f, 1));
+			sr.draw(ctx, 0, G_out.size());
+			sr.disable(ctx);
+		}
 	}
+}
 
+void gl_implicit_surface_drawable_base::finish_frame(context& ctx)
+{
 	if (show_sampling_grid) {
+		vec3 p = box.get_corner(0);
+		vec3 q = box.get_corner(7);
+		vec3 d = box.get_extent();
+		d /= float(res - 1);
+		std::vector<vec3> G;
 		G.clear();
-		ctx.set_color(rgb(0.7f,0.7f,0.7f,0.4f));
-		glEnable(GL_BLEND);
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		for (unsigned int i=0; i<res; ++i)
 			for (unsigned int j=0; j<res; ++j) {
 				G.push_back(vec3(p(0) + i * d(0), p(1) + j * d(1), p(2)));
@@ -496,34 +550,45 @@ void gl_implicit_surface_drawable_base::draw(context& ctx)
 				G.push_back(vec3(p(0) + i * d(0), p(1), p(2) + j * d(2)));
 				G.push_back(vec3(p(0) + i * d(0), q(1), p(2) + j * d(2)));
 			}
-		cgv::render::attribute_array_binding::set_global_attribute_array(ctx, dprog.get_position_index(), G);
-		glDrawArrays(GL_LINES, 0, (GLsizei)G.size());
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		auto& cr = ref_rounded_cone_renderer(ctx);
+		cr.set_render_style(crs);
+		cr.set_position_array(ctx, G);
+		if (cr.validate_and_enable(ctx)) {
+			ctx.set_color(rgba(0.7f, 0.7f, 0.7f, sampling_grid_alpha));
+			cr.draw(ctx, 0, G.size());
+			cr.disable(ctx);
+		}
 		glDisable(GL_BLEND);
 	}
-	cgv::render::attribute_array_binding::disable_global_array(ctx, dprog.get_position_index());
-	dprog.disable(ctx);
 }
 
 void gl_implicit_surface_drawable_base::draw_implicit_surface(context& ctx)
 {
-	if (outofdate) {
-		extract_mesh();
-		mri.destruct(ctx);
-		if (mesh.get_nr_faces() > 0) {
-			mri.construct_vbos(ctx, mesh);
-			mri.bind(ctx, ctx.ref_surface_shader_program(false));
+	if (show_vertices) {
+		sphere_renderer& sr = ref_sphere_renderer(ctx);
+		sr.set_render_style(srs);
+		sr.set_position_array(ctx, mesh.get_positions());
+		sr.render(ctx, 0, mesh.get_nr_positions());
+	}
+	if (show_wireframe) {
+		rounded_cone_renderer& cr = ref_rounded_cone_renderer(ctx);
+		cr.set_render_style(crs);
+		if (cr.enable(ctx)) {
+			mri.draw_wireframe(ctx);
+			cr.disable(ctx);
 		}
-		outofdate = false;
 	}
-	if (wireframe) {
-		ctx.ref_default_shader_program().enable(ctx);
-		ctx.set_color(rgb(0.1f, 0.2f, 0.6f));
-		mri.draw_wireframe(ctx);
-		ctx.ref_default_shader_program().disable(ctx);
-	}
-	else {
-		if (mesh.get_nr_faces() > 0)
-			mri.render_mesh(ctx, ctx.ref_surface_shader_program(false), material);
+	if (show_surface && (mesh.get_nr_faces() > 0)) {
+		GLboolean cull_face;
+		glGetBooleanv(GL_CULL_FACE, &cull_face);
+		ctx.set_material(material);
+		glDisable(GL_CULL_FACE);
+		ctx.ref_surface_shader_program(false).set_uniform(ctx, "illumination_mode", 2);
+		mri.draw_all(ctx);
+		if (cull_face)
+			glEnable(GL_CULL_FACE);
 	}
 }
 
