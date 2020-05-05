@@ -58,11 +58,11 @@ namespace cgv {
 			~GoICP();
 
 			inline void set_source_cloud(const point_cloud &inputCloud) {
-				original_source_cloud = &inputCloud;
-				sample_size = original_source_cloud->get_nr_points();
+				source_cloud = &inputCloud;
+				sample_size = source_cloud->get_nr_points();
 			}
 			inline void set_target_cloud(const point_cloud &inputCloud) {
-				original_target_cloud = &inputCloud;
+				target_cloud = &inputCloud;
 			};
 
 			inline void set_sample_size(int num) {
@@ -73,7 +73,6 @@ namespace cgv {
 			{
 				initialize();
 				outerBnB();
-				optimal_translation *= cloud_scale;
 				clear();
 				return optimal_error;
 			}
@@ -85,12 +84,8 @@ namespace cgv {
 			void outerBnB();
 			float innerBnB(float* maxRotDisL, translation_node* nodeTransOut);
 		private:
-			const point_cloud *original_source_cloud;
-			const point_cloud *original_target_cloud;
-			point_cloud source_cloud;
-			point_cloud target_cloud;
-			float cloud_scale;
-			vec3 cloud_offset;
+			const point_cloud *source_cloud;
+			const point_cloud *target_cloud;
 			point_cloud temp_source_cloud;
 			int sample_size; // < source cloud size
 
@@ -100,12 +95,9 @@ namespace cgv {
 			DT3D distance_transform;
 			ICP icp_obj;
 
-			//temp data
 			float** max_rot_dis; //rotation uncertainity radius
 			std::vector<float> min_dis;
 			int inlier_num;
-			//vec3* point_data_temp;
-			//vec3* point_data_temp_ICP;
 
 			rotation_node init_rot_node,optimal_rot_node;
 			translation_node init_trans_node, optimal_trans_node;
