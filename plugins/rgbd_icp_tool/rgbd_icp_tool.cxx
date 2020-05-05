@@ -78,10 +78,7 @@ void draw_point_cloud(cgv::render::context & ctx, point_cloud & pc, point_render
 		pr.set_position_array(ctx, P);
 		vector<cgv::math::fvec<float, 4>> color(pc.get_nr_points(), color);
 		pr.set_color_array(ctx, color);
-		if (pr.validate_and_enable(ctx)) {
-			glDrawArrays(GL_POINTS, 0, (GLsizei)P.size());
-			pr.disable(ctx);
-		}
+		pr.render(ctx, 0, P.size());
 	}
 	ctx.pop_modelview_matrix();
 }
@@ -102,11 +99,8 @@ void draw_correspondences(cgv::render::context& ctx, point_cloud& crspd_src, poi
 		vector<cgv::math::fvec<float, 4>> color(P.size(), color);
 		rcr.set_color_array(ctx, color);
 		//std::cout << "tct: " << rcr.validate_and_enable(ctx) << std::endl;
-		if (rcr.validate_and_enable(ctx)) {
-			std::cout << "run here" << std::endl;
-			rcr.render(ctx, 0, P.size());
-			rcr.disable(ctx);
-		}
+		rcr.render(ctx, 0, P.size());
+
 	}
 	ctx.pop_modelview_matrix();
 }
