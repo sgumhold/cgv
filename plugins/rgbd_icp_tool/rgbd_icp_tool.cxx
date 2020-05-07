@@ -284,11 +284,45 @@ void rgbd_icp_tool::on_reg_GoICP_cb()
 	if (!(source_pc.get_nr_points() && target_pc.get_nr_points())) {
 		return;
 	}
-	goicp.set_source_cloud(source_pc);
-	goicp.set_target_cloud(target_pc);
+
+	//prepare point clouds
+	float cloud_scale;
+	vec3 cloud_offset;
+	point_cloud target_cloud, source_cloud;
+	
+	// scale input pointclouds to fit in a box with side length = 1.0 and move them to origin
+	cgv::media::axis_aligned_box<float, 3> compound_aabb = source_pc.box();
+	auto target_aabb = target_pc.box();
+	compound_aabb.add_point(target_aabb.get_max_pnt());
+	compound_aabb.add_point(target_aabb.get_min_pnt());
+	cloud_scale = compound_aabb.get_extent()[compound_aabb.get_max_extent_coord_index()];
+
+	target_cloud.resize(target_pc.get_nr_points());
+	source_cloud.resize(source_pc.get_nr_points());
+
+	// Move pointclouds so the center is in (0,0,0)
+	vec3 center_sc = source_pc.box().get_center();
+	vec3 center_ta = target_pc.box().get_center();
+
+	for (int i = 0; i < source_cloud.get_nr_points(); ++i) {
+		source_cloud.pnt(i) = (source_pc.pnt(i) - center_sc) / cloud_scale;
+	}
+	for (int i = 0; i < target_cloud.get_nr_points(); ++i) {
+		target_cloud.pnt(i) = (target_pc.pnt(i) - center_ta) / cloud_scale;
+	}
+
+	goicp.set_source_cloud(source_cloud);
+	goicp.set_target_cloud(target_cloud);
 	goicp.register_pointcloud();
-	source_pc.rotate(cgv::math::quaternion<float>(goicp.optimal_rotation));
-	source_pc.translate(goicp.optimal_translation);
+
+	mat3 transform;
+
+	// apply optimal transformations
+	source_pc.translate(-center_sc);
+	source_pc.transform(goicp.optimal_rotation);
+	//source_pc.rotate(cgv::math::quaternion<float>(pc_rotation));
+	source_pc.translate(goicp.optimal_translation * (1.0 / cloud_scale) + center_ta);
+
 	cout << "rotation: \n" << goicp.optimal_rotation << '\n' << "translation: \n" << goicp.optimal_translation << '\n';
 	post_redraw();
 }
