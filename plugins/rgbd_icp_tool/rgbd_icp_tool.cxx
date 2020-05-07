@@ -44,6 +44,7 @@ rgbd_icp_tool::rgbd_icp_tool() {
 	rcrs.radius = 0.001f;
 
 	icp_iterations = 50;
+	icp_eps = 1e-8;
 }
 
 bool rgbd_icp_tool::self_reflect(cgv::reflect::reflection_handler & rh)
@@ -180,12 +181,12 @@ void rgbd_icp_tool::create_gui()
 	connect_copy(add_button("SICP")->click, rebind(this, &rgbd_icp_tool::on_reg_SICP_cb));
 	connect_copy(add_button("GoICP")->click, rebind(this, &rgbd_icp_tool::on_reg_GoICP_cb));
 
-	//add_member_control(this, "ICP epsilon", icp_eps, "value_slider", "min=0.0000001;max=0.1;log=true;ticks=true");
 	add_decorator("point cloud", "heading", "level=2");
 	connect_copy(add_control("Point size", source_srs.point_size, "value_slider", "min=0.01;max=3.0;log=false;ticks=true")->value_change, rebind(this, &rgbd_icp_tool::on_point_cloud_style_cb));
 
 	add_decorator("ICP", "heading", "level=2");
 	add_member_control(this, "Max. iterations", icp_iterations, "value_slider", "min=50;max=1000;ticks=false");
+	add_member_control(this, "ICP epsilon", icp_eps, "value_slider", "min=0.0000001;max=0.1;log=true;ticks=false");
 
 	add_decorator("Go-ICP", "heading", "level=2");
 	add_member_control(this, "Go-ICP MSE Threshold", goicp.mse_threshhold, "value_slider", "min=0.000001;max=1.0;log=true;ticks=false");
@@ -263,7 +264,7 @@ void rgbd_icp_tool::on_reg_ICP_cb()
 	icp.set_source_cloud(source_pc);
 	icp.set_target_cloud(target_pc);
 	icp.set_iterations(2);
-	icp.set_eps(1e-6);
+	icp.set_eps(icp_eps);
 	icp.set_num_random(100);
 
 	icp.initialize();
@@ -315,15 +316,32 @@ void rgbd_icp_tool::on_reg_GoICP_cb()
 	goicp.set_target_cloud(target_cloud);
 	goicp.register_pointcloud();
 
-	mat3 transform;
-
 	// apply optimal transformations
+
+	/*
 	source_pc.translate(-center_sc);
 	source_pc.transform(goicp.optimal_rotation);
-	//source_pc.rotate(cgv::math::quaternion<float>(pc_rotation));
 	source_pc.translate(goicp.optimal_translation * cloud_scale + center_ta);
+	*/
 
-	cout << "rotation: \n" << goicp.optimal_rotation << '\n' << "translation: \n" << goicp.optimal_translation << '\n';
+	mat4 transform;
+	transform.identity();
+
+	transform.set_col(3, vec4(-center_sc,1.f));
+	mat4 rot;
+	rot.identity();
+	for (int i = 0; i < 3; ++i) {
+		for (int j = 0; j < 3; ++j) {
+			rot(i, j) = goicp.optimal_rotation(i, j);
+		}
+	}
+	transform = rot * transform;
+	transform.set_col(3, vec4(goicp.optimal_translation * cloud_scale + center_ta,0.f) + transform.col(3));
+
+	source_pc.transform(transform);
+	
+	cout << "go-icp rotation: \n" << goicp.optimal_rotation << '\n' << "go-icp translation: \n" << goicp.optimal_translation << '\n' <<
+		"transform: \n" << transform << '\n';
 	post_redraw();
 }
 

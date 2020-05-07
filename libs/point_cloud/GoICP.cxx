@@ -24,6 +24,7 @@ namespace cgv {
 			trim_fraction = 0.0;
 			distance_transform_size = 300;
 			distance_transform_expand_factor = 2.0;
+			max_icp_iterations = 1000;
 
 			init_rot_node.a = -PI;
 			init_rot_node.b = -PI;
@@ -129,9 +130,8 @@ namespace cgv {
 			//initialize ICP
 			icp_obj.set_target_cloud(*target_cloud);
 			icp_obj.set_source_cloud(*source_cloud);
-			icp_obj.eps = mse_threshhold / 1000;
-			//icp_obj.maxIterations = 10000;
-			icp_obj.maxIterations = 100;
+			icp_obj.eps = mse_threshhold / 1000.0;
+			icp_obj.maxIterations = max_icp_iterations;
 			icp_obj.initialize();
 			
 			//initial rotation and translation
