@@ -24,6 +24,7 @@ namespace cgv {
 			trim_fraction = 0.0;
 			distance_transform_size = 300;
 			distance_transform_expand_factor = 2.0;
+			max_icp_iterations = 1000;
 
 			init_rot_node.a = -PI;
 			init_rot_node.b = -PI;
@@ -64,19 +65,16 @@ namespace cgv {
 		{
 			icp_obj.reg_icp(R_icp, t_icp);
 			
-			int i;
-			float error, dis;
-			
 			// Transform the source point cloud and use the distance transform to determine the error
-			error = 0;
-			for (i = 0; i < source_cloud->get_nr_points(); i++)
+			float error = 0;
+			for (int i = 0; i < source_cloud->get_nr_points(); i++)
 			{
 				const vec3& p = source_cloud->pnt(i);
 				 vec3 t = R_icp * p + t_icp;
 
 				if (!do_trim)
 				{
-					dis = distance_transform.distance(t.x(), t.y(), t.z());
+					float dis = distance_transform.distance(t.x(), t.y(), t.z());
 					error += dis * dis;
 				}
 				else
@@ -89,7 +87,7 @@ namespace cgv {
 			{
 				sort(min_dis.begin(), min_dis.end());
 				
-				for (i = 0; i < inlier_num; i++)
+				for (int i = 0; i < inlier_num; i++)
 				{
 					error += min_dis[i] * min_dis[i];
 				}
@@ -132,10 +130,10 @@ namespace cgv {
 			//initialize ICP
 			icp_obj.set_target_cloud(*target_cloud);
 			icp_obj.set_source_cloud(*source_cloud);
-			icp_obj.eps = mse_threshhold / 1000;
-			//icp_obj.maxIterations = 10000;
-			icp_obj.maxIterations = 100;
+			icp_obj.eps = mse_threshhold / 1000.0;
+			icp_obj.maxIterations = max_icp_iterations;
 			icp_obj.initialize();
+			icp_obj.set_num_random(0);
 			
 			//initial rotation and translation
 			optimal_rot_node = init_rot_node;
@@ -192,14 +190,11 @@ namespace cgv {
 			rotation_queue.push(init_rot_node);
 			//explore rotation space until convergence is achieved
 
-			size_t count = 0;
-
 			while (!rotation_queue.empty()) {
 				rotation_node rot_node_parent = rotation_queue.top();
 				rotation_queue.pop();
 
 				if ((optimal_error - rot_node_parent.lb) <= sse_threshhold) break;
-				++count;
 
 				rot_node.w = rot_node_parent.w / 2;
 				rot_node.l = rot_node_parent.l + 1;
@@ -210,8 +205,8 @@ namespace cgv {
 
 					// calculate new first corner of the sub cube
 					rot_node.a = rot_node_parent.a + (j & 1)*rot_node.w;
-					rot_node.b = rot_node_parent.b + ((j >> 1) & 1)*rot_node.w;
-					rot_node.c = rot_node_parent.c + ((j >> 2) & 1)*rot_node.w;
+					rot_node.b = rot_node_parent.b + (j >> 1 & 1)*rot_node.w;
+					rot_node.c = rot_node_parent.c + (j >> 2 & 1)*rot_node.w;
 
 					// max point of the sub cube
 					vec3 v = vec3(rot_node.a, rot_node.b, rot_node.c)+ vec3(rot_node.w / 2);
@@ -302,7 +297,6 @@ namespace cgv {
 				}
 			}
 
-
 		}
 
 		float cgv::pointcloud::GoICP::innerBnB(float * max_rot_distance_list, translation_node * trans_node_out)
@@ -313,7 +307,6 @@ namespace cgv {
 
 			tnodes.push(init_trans_node);
 
-			//
 			while (!tnodes.empty())
 			{
 				translation_node trans_node_parent = tnodes.top(); tnodes.pop();
@@ -333,11 +326,14 @@ namespace cgv {
 					trans_node.y = trans_node_parent.y + (j >> 1 & 1)*trans_node.w;
 					trans_node.z = trans_node_parent.z + (j >> 2 & 1)*trans_node.w;
 
-					vec3 trans = vec3(trans_node.x, trans_node.y, trans_node.z) + vec3(trans_node.w) / 2;
+					vec3 trans = vec3(trans_node.x, trans_node.y, trans_node.z) + vec3(trans_node.w/2);
 
 					for (int i = 0; i < sample_size; ++i)
 					{
-						min_dis[i] = distance_transform.distance(temp_source_cloud.pnt(i).x() + trans.x(), temp_source_cloud.pnt(i).y() + trans.y(), temp_source_cloud.pnt(i).z() + trans.z());
+						min_dis[i] = distance_transform.distance(
+								temp_source_cloud.pnt(i).x() + trans.x(),
+								temp_source_cloud.pnt(i).y() + trans.y(),
+								temp_source_cloud.pnt(i).z() + trans.z());
 
 						if (max_rot_distance_list)
 							min_dis[i] -= max_rot_distance_list[i];
@@ -353,9 +349,9 @@ namespace cgv {
 						sort(min_dis.begin(), min_dis.end());
 					}
 
-					int lower_bound = 0;
-					int upper_bound = 0;
-					for (int i = 0; i < inlier_num; i++)
+					float lower_bound = 0;
+					float upper_bound = 0;
+					for (int i = 0; i < inlier_num; ++i)
 					{
 						upper_bound += min_dis[i] * min_dis[i];
 						float dis = min_dis[i] - max_trans_dis;

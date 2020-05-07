@@ -94,20 +94,28 @@ void ICP::reg_icp(Mat& rotation_mat, Dir& translation_vec) {
 	U.zeros();
 	V.zeros();
 	Sigma.zeros();
+
+	point_cloud S, Q;
+	S.resize(sourceCloud->get_nr_points());
+	Q.resize(sourceCloud->get_nr_points());
+
+	/// sample the source point cloud
+	if (numRandomSamples > 0) {
+		for (int i = 0; i < numRandomSamples; i++)
+			S.pnt(i) = sourceCloud->pnt(std::rand() % sourceCloud->get_nr_points());
+	} else {
+		for (int i = 0; i < sourceCloud->get_nr_points(); i++) 
+			S.pnt(i) = sourceCloud->pnt(i);
+	}
+
 	for (int iter = 0; iter < maxIterations && abs(cost) > eps; iter++)
 	{
 		cost = 0.0;
-		point_cloud Q,S;
-		Q.resize(sourceCloud->get_nr_points());
-		S.resize(sourceCloud->get_nr_points());
 		source_center = rotation_mat * source_center + translation_vec;
 		fA.zeros();
-		for (int i = 0; i < sourceCloud->get_nr_points(); i++)
+		for (int i = 0; i < S.get_nr_points(); i++)
 		{
-			int randSample = std::rand() % sourceCloud->get_nr_points();
-			/// sample the source point cloud
-			S.pnt(i) = sourceCloud->pnt(randSample);
-			Q.pnt(i) = targetCloud->pnt(tree->find_closest(S.pnt(i)));
+			Q.pnt(i) = targetCloud->pnt(tree->find_closest(rotation_mat * S.pnt(i) + translation_vec));
 			/// get the closest point in the target point cloud
 			//Q.pnt(i) = targetCloud->pnt(i);
 			fA += Mat(Q.pnt(i) - target_center, rotation_mat * S.pnt(i) + translation_vec - source_center);
@@ -120,14 +128,13 @@ void ICP::reg_icp(Mat& rotation_mat, Dir& translation_vec) {
 		Mat rotation_update_mat = fU * cgv::math::transpose(fV);
 		Dir translation_update_vec = target_center - rotation_update_mat * source_center;
 		///calculate error function E(R,t)
-		for (int i = 0; i < S.get_nr_points(); i++){
+		for (int i = 0; i < S.get_nr_points(); i++) {
 			///transform Pi to R*Pi + t
-			S.pnt(i) = rotation_mat * S.pnt(i) + translation_vec;
+			Pnt p = rotation_mat * S.pnt(i) + translation_vec;
 			///the new rotation matrix: rotation_update_mat
-			float tempcost = error(Q.pnt(i), S.pnt(i), rotation_update_mat, translation_update_vec);
-			cost += error(Q.pnt(i), S.pnt(i), rotation_update_mat, translation_update_vec);
+			cost += error(Q.pnt(i), p, rotation_update_mat, translation_update_vec);
 		}
-		cost /= sourceCloud->get_nr_points();
+		cost /= S.get_nr_points();
 		///judge if cost is decreasing, and is larger than eps. If so, update the R and t, otherwise stop and output R and t
 		if (min >= abs(cost)) {
 			///update the R and t
@@ -136,8 +143,8 @@ void ICP::reg_icp(Mat& rotation_mat, Dir& translation_vec) {
 			min = abs(cost);
 		}
 	}
-	std::cout << "rotate_mat: " << rotation_mat << std::endl;
-	std::cout << "translation_vec: " << translation_vec << std::endl;
+	//std::cout << "rotate_mat: " << rotation_mat << std::endl;
+	//std::cout << "translation_vec: " << translation_vec << std::endl;
 	//print_rotation(rotation_mat);
 	//print_translation(translation_vec);
 	delete tree;
