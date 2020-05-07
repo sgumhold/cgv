@@ -34,6 +34,9 @@ public:
 	void get_crspd(Mat& rotation_m, Dir& translation_v, point_cloud& pc1, point_cloud& pc2);
 	void print_rotation(float *rotationMatrix);
 	void print_translation(float *translation);
+
+	bool correspondences_filter(const point_cloud& source, const point_cloud& target, Pnt &source_p, Pnt &target_p);
+	float dis_pts(const Pnt& source_p, const Pnt& target_p);
 private:
 	ann_tree* tree;
 };

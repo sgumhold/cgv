@@ -189,19 +189,27 @@ void ICP::get_crspd(Mat& rotation_mat, Dir& translation_vec, point_cloud& pc1, p
 	{
 		cost = 0.0;
 		point_cloud Q, S;
-		Q.resize(sourceCloud->get_nr_points());
-		S.resize(sourceCloud->get_nr_points());
+		S.clear();
+		Q.clear();
 		source_center = rotation_mat * source_center + translation_vec;
 		fA.zeros();
 		for (int i = 0; i < sourceCloud->get_nr_points(); i++)
 		{
-			int randSample = std::rand() % sourceCloud->get_nr_points();
+			//int randSample = std::rand() % sourceCloud->get_nr_points();
 			/// sample the source point cloud
-			S.pnt(i) = sourceCloud->pnt(randSample);
-			Q.pnt(i) = targetCloud->pnt(tree->find_closest(S.pnt(i)));
+			//S.pnt(i) = sourceCloud->pnt(randSample);
+			//Q.pnt(i) = targetCloud->pnt(tree->find_closest(S.pnt(i)));
+			Pnt temp_s(0.0);
+			Pnt temp_q(0.0);
+			if (correspondences_filter(*sourceCloud, *targetCloud, temp_s, temp_q))
+			{
+				S.add_point(temp_s);
+			    Q.add_point(temp_q);
+				fA += Mat(temp_q - target_center, rotation_mat * temp_s + translation_vec - source_center);
+			}
 			/// get the closest point in the target point cloud
 			//Q.pnt(i) = targetCloud->pnt(i);
-			fA += Mat(Q.pnt(i) - target_center, rotation_mat * S.pnt(i) + translation_vec - source_center);
+			//fA += Mat(Q.pnt(i) - target_center, rotation_mat * S.pnt(i) + translation_vec - source_center);
 		}
 		///cast fA to A
 		cgv::math::mat<float> A(3, 3, &fA(0, 0));
@@ -248,4 +256,31 @@ void ICP::print_rotation(float *rotation) {
 void ICP::print_translation(float *translation) {
 	std::cout << "translation" << std::endl;
 	std::cout << translation[0] << " " << translation[1] << " " << translation[2] << std::endl;
+}
+
+bool ICP::correspondences_filter(const point_cloud& source, const point_cloud& target, Pnt& source_p, Pnt& target_p)
+{
+	ann_tree* tree = new ann_tree();
+	tree->build(target);
+	ann_tree* tree_inv = new ann_tree();
+	tree_inv->build(source);
+	float dist, dist_inv = 0.0;
+	int randSample = std::rand() % source.get_nr_points();
+	source_p = source.pnt(randSample);
+	target_p = target.pnt(tree->find_closest(source_p));
+	dist = dis_pts(source_p, target_p);
+	Pnt source_p_inv = source.pnt(tree_inv->find_closest(target_p));
+	dist_inv = dis_pts(source_p_inv, target_p);
+	if (dist > 1.5 * dist_inv || dist < 0.667 * dist_inv)
+	{
+		return false;
+	}
+	return true;
+}
+
+float ICP::dis_pts(const Pnt& source_p, const Pnt& target_p)
+{
+	float dist = 0.0;
+	dist = sqrt(pow((source_p.x() - target_p.x()), 2) + pow((source_p.y() - target_p.y()), 2) + pow((source_p.z() - target_p.z()), 2));
+	return dist;
 }
