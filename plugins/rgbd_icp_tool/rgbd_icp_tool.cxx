@@ -321,7 +321,7 @@ void rgbd_icp_tool::on_reg_GoICP_cb()
 	source_pc.translate(-center_sc);
 	source_pc.transform(goicp.optimal_rotation);
 	//source_pc.rotate(cgv::math::quaternion<float>(pc_rotation));
-	source_pc.translate(goicp.optimal_translation * (1.0 / cloud_scale) + center_ta);
+	source_pc.translate(goicp.optimal_translation * cloud_scale + center_ta);
 
 	cout << "rotation: \n" << goicp.optimal_rotation << '\n' << "translation: \n" << goicp.optimal_translation << '\n';
 	post_redraw();
