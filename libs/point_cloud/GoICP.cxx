@@ -133,6 +133,7 @@ namespace cgv {
 			icp_obj.eps = mse_threshhold / 1000.0;
 			icp_obj.maxIterations = max_icp_iterations;
 			icp_obj.initialize();
+			icp_obj.set_num_random(0);
 			
 			//initial rotation and translation
 			optimal_rot_node = init_rot_node;
