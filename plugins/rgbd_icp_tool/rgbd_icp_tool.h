@@ -13,6 +13,7 @@
 #include <cgv_gl/point_renderer.h>
 #include <cgv_gl/line_renderer.h>
 #include <cgv_gl/rounded_cone_renderer.h>
+#include <cgv_gl/surfel_renderer.h>
 
 #include <point_cloud.h>
 #include <GoICP.h>
@@ -79,6 +80,8 @@ private:
 	point_cloud source_pc, target_pc, crs_srs_pc, crs_tgt_pc;
 	cgv::render::point_render_style source_prs;
 	cgv::render::point_render_style target_prs;
+	cgv::render::surfel_render_style source_srs;
+	cgv::render::surfel_render_style target_srs;
 	cgv::render::line_render_style lrs;
 	cgv::render::rounded_cone_render_style rcrs;
 	float icp_eps;

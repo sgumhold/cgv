@@ -28,6 +28,18 @@ rgbd_icp_tool::rgbd_icp_tool() {
 	target_prs.blend_width_in_pixel = 1.0f;
 	target_prs.blend_points = true;
 
+	source_srs.measure_point_size_in_pixel = false;
+	source_srs.point_size = 0.25f;
+	source_srs.blend_width_in_pixel = 1.0f;
+	source_srs.blend_points = true;
+	source_srs.illumination_mode = cgv::render::IM_TWO_SIDED;
+
+	target_srs.measure_point_size_in_pixel = false;
+	target_srs.point_size = 0.25f;
+	target_srs.blend_width_in_pixel = 1.0f;
+	target_srs.blend_points = true;
+	target_srs.illumination_mode = cgv::render::IM_TWO_SIDED;
+
 	lrs.line_width = 1.0f;
 	rcrs.radius = 0.001f;
 
@@ -36,8 +48,7 @@ rgbd_icp_tool::rgbd_icp_tool() {
 
 bool rgbd_icp_tool::self_reflect(cgv::reflect::reflection_handler & rh)
 {
-	return
-		rh.reflect_member("ply_path", ply_path);
+	return rh.reflect_member("ply_path", ply_path);
 }
 
 void rgbd_icp_tool::on_set(void * member_ptr)
@@ -61,24 +72,28 @@ bool rgbd_icp_tool::init(cgv::render::context & ctx)
 		view_ptr->set_view_up_dir(vec3(0, -1, 0));
 		view_ptr->set_focus(vec3(0, 0, 0));
 	}
-	cgv::render::ref_point_renderer(ctx, 1);
+	//cgv::render::ref_point_renderer(ctx, 1);
+	cgv::render::ref_surfel_renderer(ctx, 1);
 	cgv::render::ref_rounded_cone_renderer(ctx, 1);
 	return true;
 }
 
-void draw_point_cloud(cgv::render::context & ctx, point_cloud & pc, point_render_style & prs, cgv::math::fvec<float,4> color) {
+void draw_point_cloud(cgv::render::context & ctx, point_cloud & pc, surfel_render_style & srs, cgv::math::fvec<float,4> color) {
 	ctx.push_modelview_matrix();
 	if (pc.get_nr_points() > 0) {
-		cgv::render::point_renderer& pr = ref_point_renderer(ctx);
-		pr.set_render_style(prs);
+		cgv::render::surfel_renderer& sr = ref_surfel_renderer(ctx);
+		sr.set_render_style(srs);
 		vector<point_cloud::Pnt> P(pc.get_nr_points());
+		vector<point_cloud::Nml> N(pc.get_nr_points());
 		for (int i = 0; i < pc.get_nr_points(); ++i) {
 			P[i] = pc.pnt(i);
+			N[i] = pc.nml(i);
 		}
-		pr.set_position_array(ctx, P);
+		sr.set_position_array(ctx, P);
+		sr.set_normal_array(ctx, N);
 		vector<cgv::math::fvec<float, 4>> color(pc.get_nr_points(), color);
-		pr.set_color_array(ctx, color);
-		pr.render(ctx, 0, P.size());
+		sr.set_color_array(ctx, color);
+		sr.render(ctx, 0, P.size());
 	}
 	ctx.pop_modelview_matrix();
 }
@@ -98,7 +113,6 @@ void draw_correspondences(cgv::render::context& ctx, point_cloud& crspd_src, poi
 		//rcr.set_radius_array(ctx, radii);
 		vector<cgv::math::fvec<float, 4>> color(P.size(), color);
 		rcr.set_color_array(ctx, color);
-		//std::cout << "tct: " << rcr.validate_and_enable(ctx) << std::endl;
 		rcr.render(ctx, 0, P.size());
 
 	}
@@ -108,9 +122,9 @@ void draw_correspondences(cgv::render::context& ctx, point_cloud& crspd_src, poi
 void rgbd_icp_tool::draw(cgv::render::context & ctx)
 {
 	ctx.push_modelview_matrix();
-	draw_point_cloud(ctx, source_pc, source_prs,vec4(1.0,0.0,0.0,0.8));
-	draw_point_cloud(ctx, target_pc, target_prs, vec4(0.0, 1.0, 0.0, 0.8));
-	draw_correspondences(ctx, crs_srs_pc, crs_tgt_pc, rcrs, vec4(0.0, 0.0, 1.0, 0.8));
+	draw_point_cloud(ctx, source_pc, source_srs,vec4(1.0,0.0,0.0,0.8));
+	draw_point_cloud(ctx, target_pc, target_srs, vec4(0.0, 1.0, 0.0, 0.8));
+	draw_correspondences(ctx, crs_srs_pc, crs_tgt_pc, rcrs, vec4(0.0, 1.0, 1.0, 0.8));
 	ctx.pop_modelview_matrix();
 
 	if (view_find_point_cloud) {
@@ -140,7 +154,8 @@ void rgbd_icp_tool::find_pointcloud(cgv::render::context & ctx)
 
 void rgbd_icp_tool::clear(cgv::render::context & ctx)
 {
-	cgv::render::ref_point_renderer(ctx, -1);
+	//cgv::render::ref_point_renderer(ctx, -1);
+	cgv::render::ref_surfel_renderer(ctx, -1);
 	cgv::render::ref_rounded_cone_renderer(ctx, -1);
 }
 
@@ -167,7 +182,7 @@ void rgbd_icp_tool::create_gui()
 
 	//add_member_control(this, "ICP epsilon", icp_eps, "value_slider", "min=0.0000001;max=0.1;log=true;ticks=true");
 	add_decorator("point cloud", "heading", "level=2");
-	connect_copy(add_control("Point size", source_prs.point_size, "value_slider", "min=0.01;max=3.0;log=false;ticks=true")->value_change, rebind(this, &rgbd_icp_tool::on_point_cloud_style_cb));
+	connect_copy(add_control("Point size", source_srs.point_size, "value_slider", "min=0.01;max=3.0;log=false;ticks=true")->value_change, rebind(this, &rgbd_icp_tool::on_point_cloud_style_cb));
 
 	add_decorator("ICP", "heading", "level=2");
 	add_member_control(this, "Max. iterations", icp_iterations, "value_slider", "min=50;max=1000;ticks=false");
@@ -182,6 +197,13 @@ void rgbd_icp_tool::create_gui()
 		add_gui("render_style", rcrs);
 		align("\b");
 		end_tree_node(rcrs);
+	}
+	///surfel_render
+	if (begin_tree_node("Surfel Rendering", source_srs, false)) {
+		align("\a");
+		add_gui("surfel_style", source_srs);
+		align("\b");
+		end_tree_node(source_srs);
 	}
 }
 
@@ -279,7 +301,7 @@ void rgbd_icp_tool::on_reg_find_point_cloud_cb()
 
 void rgbd_icp_tool::on_point_cloud_style_cb()
 {
-	target_prs.point_size = source_prs.point_size;
+	target_srs.point_size = source_srs.point_size;
 	post_redraw();
 }
 

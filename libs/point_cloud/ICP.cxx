@@ -160,7 +160,6 @@ float ICP::error(Pnt &ps, Pnt &pd, Mat &r, Dir &t)
 
 void ICP::get_crspd(Mat& rotation_mat, Dir& translation_vec, point_cloud& pc1, point_cloud& pc2)
 {
-	point_cloud* output = new point_cloud();
 	Pnt source_center;
 	Pnt target_center;
 	source_center.zeros();
