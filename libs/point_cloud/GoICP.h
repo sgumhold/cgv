@@ -111,6 +111,7 @@ namespace cgv {
 			float trim_fraction;
 			float distance_transform_size;
 			float distance_transform_expand_factor;
+			int max_icp_iterations;
 			bool do_trim;
 		};
 
