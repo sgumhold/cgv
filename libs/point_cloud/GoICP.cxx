@@ -18,7 +18,6 @@ namespace cgv {
 			target_cloud = nullptr;
 
 			max_rot_dis = nullptr;
-
 			//settings
 			mse_threshhold = 0.0001;
 			trim_fraction = 0.0;
@@ -40,6 +39,8 @@ namespace cgv {
 			do_trim = false;
 			norm_data = vector<float>();
 
+			dc_mode = DCM_NONE;
+
 		}
 
 		GoICP::~GoICP()
@@ -49,6 +50,8 @@ namespace cgv {
 
 		void GoICP::buildDistanceTransform()
 		{
+			//build distance transform
+			distance_transform = make_shared<DT3D>();
 			vector<double> x, y, z;
 			for (int i = 0; i < target_cloud->get_nr_points(); i++)
 			{
@@ -56,12 +59,21 @@ namespace cgv {
 				y.emplace_back(target_cloud->pnt(i).y());
 				z.emplace_back(target_cloud->pnt(i).z());
 			}
-			distance_transform.size = distance_transform_size;
-			distance_transform.expandFactor = distance_transform_expand_factor;
-			distance_transform.build(x.data(), y.data(), z.data(), target_cloud->get_nr_points());
+			distance_transform->size = distance_transform_size;
+			distance_transform->expandFactor = distance_transform_expand_factor;
+			distance_transform->build(x.data(), y.data(), z.data(), target_cloud->get_nr_points());
 		}
 
-		float GoICP::icp(mat3 & R_icp, vec3 & t_icp)
+		void GoICP::buildKDTree()
+		{
+			neighbor_tree = make_shared<ann_tree>();
+			neighbor_tree->build(*target_cloud);
+			
+		}
+
+
+
+		/*float GoICP::icp(mat3 & R_icp, vec3 & t_icp)
 		{
 			icp_obj.reg_icp(R_icp, t_icp);
 			
@@ -74,12 +86,14 @@ namespace cgv {
 
 				if (!do_trim)
 				{
-					float dis = distance_transform.distance(t.x(), t.y(), t.z());
+					float dis = distanceToTarget(t);
+					//float dis = distance_transform->distance(t.x(), t.y(), t.z());
 					error += dis * dis;
 				}
 				else
 				{
-					min_dis[i] = distance_transform.distance(t.x(), t.y(), t.z());
+					min_dis[i] = distanceToTarget(t);
+					//min_dis[i] = distance_transform->distance(t.x(), t.y(), t.z());
 				}
 			}
 			// do outlier elimination
@@ -93,15 +107,26 @@ namespace cgv {
 				}
 			}
 			return error;
+		}*/
+
+		float GoICP::register_pointcloud()
+		{
+			switch (dc_mode) {
+			case DCM_DISTANCE_TRANSFORM:
+				outerBnB<DCM_DISTANCE_TRANSFORM>();
+				break;
+			case DCM_ANN_TREE:
+				outerBnB<DCM_ANN_TREE>();
+				break;
+			}
+
+			return optimal_error;
 		}
 
-		void GoICP::initialize()
+		void GoICP::initializeRegistration()
 		{
 			float sigma, max_angle;
 			assert(sample_size >= 0 && sample_size <= source_cloud->get_nr_points());
-
-			// build distance transform
-			buildDistanceTransform();
 
 			// calculate norm of each point in the source cloud to coordinate system origin
 			norm_data.resize(sample_size);
@@ -127,21 +152,19 @@ namespace cgv {
 
 			min_dis = vector<float>(sample_size);
 
-			//initialize ICP
-			icp_obj.set_target_cloud(*target_cloud);
+			// set parameters of ICP
 			icp_obj.set_source_cloud(*source_cloud);
 			icp_obj.eps = mse_threshhold / 1000.0;
 			icp_obj.maxIterations = max_icp_iterations;
-			icp_obj.initialize();
 			icp_obj.set_num_random(0);
 			
-			//initial rotation and translation
+			// initial rotation and translation
 			optimal_rot_node = init_rot_node;
 			optimal_trans_node = init_trans_node;
 			optimal_rotation.identity();
 			optimal_translation.zeros();
 
-			//triming
+			// triming
 			if (do_trim)
 			{
 				inlier_num = (int)(sample_size * (1 - trim_fraction));
@@ -153,7 +176,8 @@ namespace cgv {
 			sse_threshhold = mse_threshhold * inlier_num;
 		}
 
-		void cgv::pointcloud::GoICP::outerBnB()
+
+		/*void cgv::pointcloud::GoICP::outerBnB()
 		{
 			float lower_bound, upper_bound, error, dis;
 			rotation_node rot_node;
@@ -163,8 +187,9 @@ namespace cgv {
 
 			for (int i = 0; i < source_cloud->get_nr_points(); i++)
 			{
-				const vec3 p = source_cloud->pnt(i);
-				min_dis[i] = distance_transform.distance(p.x(), p.y(), p.z());
+				//const vec3 p = source_cloud->pnt(i);
+				//min_dis[i] = distance_transform->distance(p.x(), p.y(), p.z());
+				min_dis[i] = distanceToTarget(source_cloud->pnt(i));
 			}
 			if (do_trim)
 			{
@@ -246,7 +271,7 @@ namespace cgv {
 						temp_source_cloud.append(*source_cloud);
 					}
 
-					upper_bound = innerBnB(nullptr , &trans_node);
+					upper_bound = innerBnB<DCM>(nullptr , &trans_node);
 
 					if (upper_bound < optimal_error)
 					{
@@ -284,7 +309,7 @@ namespace cgv {
 						rotation_queue = new_rotation_queue;
 					}
 
-					lower_bound = innerBnB(max_rot_dis[rot_node.l], nullptr);
+					lower_bound = innerBnB<DCM>(max_rot_dis[rot_node.l], nullptr);
 
 					if (lower_bound >= optimal_error)
 					{
@@ -297,9 +322,9 @@ namespace cgv {
 				}
 			}
 
-		}
+		}*/
 
-		float cgv::pointcloud::GoICP::innerBnB(float * max_rot_distance_list, translation_node * trans_node_out)
+		/*float cgv::pointcloud::GoICP::innerBnB(float * max_rot_distance_list, translation_node * trans_node_out)
 		{
 			priority_queue<translation_node> tnodes;
 
@@ -330,10 +355,12 @@ namespace cgv {
 
 					for (int i = 0; i < sample_size; ++i)
 					{
-						min_dis[i] = distance_transform.distance(
-								temp_source_cloud.pnt(i).x() + trans.x(),
-								temp_source_cloud.pnt(i).y() + trans.y(),
-								temp_source_cloud.pnt(i).z() + trans.z());
+
+						//min_dis[i] = distance_transform->distance(
+						//		temp_source_cloud.pnt(i).x() + trans.x(),
+						//		temp_source_cloud.pnt(i).y() + trans.y(),
+						//		temp_source_cloud.pnt(i).z() + trans.z());
+						min_dis[i] = distanceToTarget(temp_source_cloud.pnt(i) + trans);
 
 						if (max_rot_distance_list)
 							min_dis[i] -= max_rot_distance_list[i];
@@ -378,6 +405,36 @@ namespace cgv {
 			}
 
 			return opt_trans_err;
+		}*/
+		
+		/*float GoICP::distanceToTarget(const Pnt & p)
+		{
+			switch (dc_mode) {
+			case DCM_DISTANCE_TRANSFORM:
+				return distance_transform->distance(p.x(),p.y(),p.z());
+			case DCM_ANN_TREE:
+				return (target_cloud->pnt(neighbor_tree->find_closest(p)) - p).length();
+			}
+		}*/
+
+		void GoICP::initializeDistanceComputation()
+		{
+			switch (dc_mode) {
+			case DCM_DISTANCE_TRANSFORM:
+				buildDistanceTransform();
+				icp_obj.set_target_cloud(*target_cloud);
+				// ICP only uses the more precise ann tree based distance computation
+				icp_obj.build_ann_tree();
+				break;
+			case DCM_ANN_TREE:
+				buildKDTree();
+				// uses own ann tree also for ICP
+				icp_obj.set_target_cloud(*target_cloud, neighbor_tree);
+				break;
+			default:
+				cerr << "GoICP::initializeDistanceComputation : invalid computation mode set!\n";
+				assert(false);
+			}
 		}
 
 		void cgv::pointcloud::GoICP::clear()

@@ -1,4 +1,4 @@
-/* modified version of dt.c written by Alexander Vasilevskiy (March 21, 1999) */
+/* modified version of dt.c originaly written by Alexander Vasilevskiy (March 21, 1999) */
 
 #include "3ddt.h"
 #include <cmath>

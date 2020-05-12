@@ -7,6 +7,7 @@
 #include <ctime>
 #include <cgv/math/svd.h> 
 #include "lib_begin.h"
+#include <memory>
 
 class CGV_API ICP : public point_cloud_types{
 public:
@@ -21,10 +22,10 @@ public:
 	ICP();
 	~ICP();
 	
-	void initialize();
+	void build_ann_tree();
 	void clear();
 	void set_source_cloud(const point_cloud &inputCloud);
-	void set_target_cloud(const point_cloud &inputCloud);
+	void set_target_cloud(const point_cloud &inputCloud, std::shared_ptr<ann_tree> precomputed_tree=nullptr);
 	void set_iterations(int Iter);
 	void set_num_random(int NR);
 	void set_eps(float e);
@@ -38,6 +39,6 @@ public:
 	bool correspondences_filter(const point_cloud& source, const point_cloud& target, Pnt &source_p, Pnt &target_p);
 	float dis_pts(const Pnt& source_p, const Pnt& target_p);
 private:
-	ann_tree* tree;
+	std::shared_ptr<ann_tree> tree;
 };
 #include <cgv/config/lib_end.h>

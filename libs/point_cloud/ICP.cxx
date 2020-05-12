@@ -14,26 +14,22 @@ ICP::ICP() {
 }
 
 ICP::~ICP() {
-	delete tree;
+	
 }
 
-void ICP::initialize()
+void ICP::build_ann_tree()
 {
-	if (targetCloud==nullptr) {
-		std::cerr << "ICP::initialize: target cloud missing, can't build ann tree\n";
+	if (!targetCloud) {
+		std::cerr << "ICP::build_ann_tree: target cloud missing, can't build ann tree\n";
 		return;
 	}
-	if (tree) {
-		delete tree;
-	}
 
-	tree = new ann_tree();
+	tree = std::make_shared<ann_tree>();
 	tree->build(*targetCloud);
 }
 
 void ICP::clear()
 {
-	delete tree;
 	tree = nullptr;
 }
 
@@ -41,8 +37,10 @@ void ICP::set_source_cloud(const point_cloud &inputCloud) {
 	sourceCloud = &inputCloud;
 }
 
-void ICP::set_target_cloud(const point_cloud &inputCloud) {
+void ICP::set_target_cloud(const point_cloud &inputCloud,std::shared_ptr<ann_tree> precomputed_tree) {
 	targetCloud = &inputCloud;
+	if (precomputed_tree)
+		tree = precomputed_tree;
 }
 
 void ICP::set_iterations(int Iter) {
@@ -60,22 +58,18 @@ void ICP::set_eps(float e) {
 ///output the rotation matrix and translation vector
 void ICP::reg_icp(Mat& rotation_mat, Dir& translation_vec) {
 	if (!tree) {
-		initialize();
+		/// create the ann tree
+		build_ann_tree();
 		//std::cerr << "ICP::reg_icp: called reg_icp before initialization!\n";
-		return;
 	}
 	if (!(sourceCloud && targetCloud)) {
 		std::cerr << "ICP::reg_icp: source or target cloud not set!\n";
 		return;
 	}
-	//point_cloud* output = new point_cloud();
 	Pnt source_center;
 	Pnt target_center;
 	source_center.zeros();
 	target_center.zeros();
-	/// create the ann tree
-	ann_tree* tree = new ann_tree();
-	tree->build(*targetCloud);
 	size_t num_source_points = sourceCloud->get_nr_points();
 
 	get_center_point(*targetCloud, target_center);
@@ -147,7 +141,6 @@ void ICP::reg_icp(Mat& rotation_mat, Dir& translation_vec) {
 	//std::cout << "translation_vec: " << translation_vec << std::endl;
 	//print_rotation(rotation_mat);
 	//print_translation(translation_vec);
-	delete tree;
 }
 
 void ICP::get_center_point(const point_cloud &input, Pnt &center_point) {

@@ -87,7 +87,7 @@ private:
 	float icp_eps;
 	int icp_iterations;
 	bool view_find_point_cloud;
-
+	cgv::pointcloud::GoICP::DistanceComputationMode goicp_distance_computation_mode;
 };
 
 #include <cgv/config/lib_end.h>

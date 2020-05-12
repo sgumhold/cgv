@@ -5,6 +5,7 @@
 #include <ICP.h>
 #include <GoICP.h>
 #include <random>
+#include <chrono>
 
 using namespace std;
 using namespace cgv::base;
@@ -14,6 +15,8 @@ using namespace cgv::gui;
 using namespace cgv::data;
 using namespace cgv::utils;
 using namespace cgv::render;
+
+using namespace cgv::pointcloud;
 
 rgbd_icp_tool::rgbd_icp_tool() {
 	set_name("rgbd_icp_tool");
@@ -45,6 +48,8 @@ rgbd_icp_tool::rgbd_icp_tool() {
 
 	icp_iterations = 50;
 	icp_eps = 1e-8;
+
+	goicp_distance_computation_mode = GoICP::DCM_DISTANCE_TRANSFORM;
 }
 
 bool rgbd_icp_tool::self_reflect(cgv::reflect::reflection_handler & rh)
@@ -192,6 +197,8 @@ void rgbd_icp_tool::create_gui()
 	add_member_control(this, "Go-ICP MSE Threshold", goicp.mse_threshhold, "value_slider", "min=0.000001;max=1.0;log=true;ticks=false");
 	add_member_control(this, "Distance Transform size", goicp.distance_transform_size, "value_slider", "min=50;max=1000;ticks=false");
 
+	add_member_control(this, "Distance Computaion Mode", (DummyEnum&)goicp_distance_computation_mode, "dropdown", "enums='DISTANCE_TRANSFORM,ANN_TREE'");
+
 	///rounded_cone_render
 	if (begin_tree_node("cone render style", rcrs)) {
 		align("\a");
@@ -267,7 +274,7 @@ void rgbd_icp_tool::on_reg_ICP_cb()
 	icp.set_eps(icp_eps);
 	icp.set_num_random(100);
 
-	icp.initialize();
+	icp.build_ann_tree();
 	//icp.reg_icp(rotation, translation);
 	icp.get_crspd(rotation, translation, crs_srs_pc, crs_tgt_pc);
 	source_pc.rotate(cgv::math::quaternion<float>(rotation));
@@ -312,18 +319,37 @@ void rgbd_icp_tool::on_reg_GoICP_cb()
 		target_cloud.pnt(i) = (target_pc.pnt(i) - center_ta) / cloud_scale;
 	}
 
+	// do pointcloud registration
 	goicp.set_source_cloud(source_cloud);
 	goicp.set_target_cloud(target_cloud);
+	goicp.setDistanceComputationMode(goicp_distance_computation_mode);
+		std::chrono::steady_clock::time_point start = std::chrono::steady_clock::now();
+	goicp.initializeDistanceComputation();
+		std::chrono::steady_clock::time_point stop = std::chrono::steady_clock::now();
+		std::cout << "initialized Distance Computation in " << std::chrono::duration_cast<std::chrono::milliseconds>(stop - start).count() << "[ms]\n";
+	
+		start = std::chrono::steady_clock::now();
+	goicp.initializeRegistration();
+		stop = std::chrono::steady_clock::now();
+		std::cout << "initialized regsitration in " << std::chrono::duration_cast<std::chrono::milliseconds>(stop - start).count() << "[ms]\n";
+	
+		start = std::chrono::steady_clock::now();
 	goicp.register_pointcloud();
+		stop = std::chrono::steady_clock::now();
+		std::cout << "finished regsitration in " << std::chrono::duration_cast<std::chrono::milliseconds>(stop - start).count() << "[ms]\n";
 
-	// apply optimal transformations
+	goicp.clear();
 
+	// apply optimal transformations and transform back to the original coordinate system
+
+	//method 1, apply transformation after each other on every point
 	/*
 	source_pc.translate(-center_sc);
 	source_pc.transform(goicp.optimal_rotation);
 	source_pc.translate(goicp.optimal_translation * cloud_scale + center_ta);
 	*/
 
+	//method 2, build a composit transform and apply that to every point
 	mat4 transform;
 	transform.identity();
 
@@ -341,7 +367,9 @@ void rgbd_icp_tool::on_reg_GoICP_cb()
 	source_pc.transform(transform);
 	
 	cout << "go-icp rotation: \n" << goicp.optimal_rotation << '\n' << "go-icp translation: \n" << goicp.optimal_translation << '\n' <<
-		"transform: \n" << transform << '\n';
+			"target center: \n" << center_ta << '\n' << "source center: \n" << center_sc << '\n' <<
+			"pointcloud rescale " << cloud_scale << '\n' <<
+			"final composit transform: \n" << transform << '\n';
 	post_redraw();
 }
 
