@@ -72,7 +72,7 @@ namespace cgv {
 		}
 
 
-		float GoICP::register_pointcloud()
+		float GoICP::registerPointcloud()
 		{
 			switch (dc_mode) {
 			case DCM_DISTANCE_TRANSFORM:
@@ -86,8 +86,11 @@ namespace cgv {
 			return optimal_error;
 		}
 
-		void GoICP::initializeRegistration()
+		void GoICP::initializeRegistration(const point_cloud &inputCloud)
 		{
+			source_cloud = &inputCloud;
+			sample_size = source_cloud->get_nr_points();
+
 			float sigma, max_angle;
 			assert(sample_size >= 0 && sample_size <= source_cloud->get_nr_points());
 
@@ -139,8 +142,9 @@ namespace cgv {
 			sse_threshhold = mse_threshhold * inlier_num;
 		}
 
-		void GoICP::initializeDistanceComputation()
+		void GoICP::initializeDistanceComputation(const point_cloud &inputCloud)
 		{
+			target_cloud = &inputCloud;
 			switch (dc_mode) {
 			case DCM_DISTANCE_TRANSFORM:
 				buildDistanceTransform();
