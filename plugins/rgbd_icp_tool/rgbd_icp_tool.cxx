@@ -325,21 +325,22 @@ void rgbd_icp_tool::on_reg_GoICP_cb()
 	}
 
 	// do pointcloud registration
-	goicp.set_source_cloud(source_cloud);
-	goicp.set_target_cloud(target_cloud);
+
 	goicp.setDistanceComputationMode(goicp_distance_computation_mode);
 		std::chrono::steady_clock::time_point start = std::chrono::steady_clock::now();
-	goicp.initializeDistanceComputation();
+	// initialize point to target point cloud distance computation
+	goicp.initializeDistanceComputation(target_cloud);
 		std::chrono::steady_clock::time_point stop = std::chrono::steady_clock::now();
 		std::cout << "initialized Distance Computation in " << std::chrono::duration_cast<std::chrono::milliseconds>(stop - start).count() << "[ms]\n";
-	
 		start = std::chrono::steady_clock::now();
-	goicp.initializeRegistration();
+	// initialize data structures related to the source cloud
+	goicp.initializeRegistration(source_cloud);
 		stop = std::chrono::steady_clock::now();
 		std::cout << "initialized regsitration in " << std::chrono::duration_cast<std::chrono::milliseconds>(stop - start).count() << "[ms]\n";
 	
 		start = std::chrono::steady_clock::now();
-	goicp.register_pointcloud();
+	// run registration
+	goicp.registerPointcloud();
 		stop = std::chrono::steady_clock::now();
 		std::cout << "finished regsitration in " << std::chrono::duration_cast<std::chrono::milliseconds>(stop - start).count() << "[ms]\n";
 
