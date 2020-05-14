@@ -14,6 +14,7 @@ template <typename T>
 	class array3d_t {
 		T* arr_data;
 		int dim_x, dim_y, dim_z;
+		int dim_xy;
 
 		void destroy_data() {
 			assert(arr_data != nullptr);
@@ -23,13 +24,14 @@ template <typename T>
 		}
 	public:
 		//default constructor
-		array3d_t() : arr_data(nullptr), dim_x(0), dim_y(0), dim_z(0) {}
-
+		array3d_t() : arr_data(nullptr), dim_x(0), dim_y(0), dim_z(0), dim_xy(0) {}
+		
 		//copy constructor
 		array3d_t(const array3d_t &source) {
 			dim_x = source.dim_x;
 			dim_y = source.dim_y;
 			dim_z = source.dim_z;
+			dim_xy = source.dim_xy;
 			arr_data = reinterpret_cast<T*>(malloc(dim_x*dim_y*dim_z*sizeof(T)));
 
 			for (int i = 0; i < dim_x*dim_y*dim_z; ++i) {
@@ -42,18 +44,19 @@ template <typename T>
 			dim_x = source.dim_x;
 			dim_y = source.dim_y;
 			dim_z = source.dim_z;
+			dim_xy = source.dim_xy;
 			arr_data = source.arr_data;
 			source.arr_data = nullptr;
 		}
-
-		array3d_t(const int x, const int y, const int z) : dim_x(x),dim_y(y),dim_z(z){
+		
+		array3d_t(const int x, const int y, const int z) : dim_x(x),dim_y(y),dim_z(z),dim_xy(x*y){
 			arr_data = reinterpret_cast<T*>(malloc(z*y*x * sizeof(T)));
 			for (size_t i = 0; i < x*y*z; ++i) {
 				new (arr_data + i) T();
 			}
 		}
 
-		array3d_t(const int x, const int y,const int z, const T init) : dim_x(x), dim_y(y), dim_z(z) {
+		array3d_t(const int x, const int y,const int z, const T init) : dim_x(x), dim_y(y), dim_z(z), dim_xy(x*y) {
 			arr_data = reinterpret_cast<T*>(malloc(z*y*x * sizeof(T)));
 			for (size_t i = 0; i < x*y*z; ++i) {
 				new (arr_data + i) T();
@@ -73,12 +76,13 @@ template <typename T>
 				if (arr_data != nullptr) {
 					destroy_data();
 				}
-				int x = source.dim_x;
-				int y = source.dim_y;
-				int z = source.dim_z;
-				arr_data = reinterpret_cast<T*>(realloc(arr_data, z*y*x * sizeof(T)));
+				dim_x = source.dim_x;
+				dim_y = source.dim_y;
+				dim_z = source.dim_z;
+				dim_xy = source.dim_xy;
+				arr_data = reinterpret_cast<T*>(realloc(arr_data, dim_xy*dim_z* sizeof(T)));
 
-				for (int i = 0; i < dim_x*dim_y*dim_z; ++i) {
+				for (int i = 0; i < dim_xy*dim_z; ++i) {
 					new (arr_data + i) T(source.arr_data[i]);
 				}
 			}
@@ -90,6 +94,7 @@ template <typename T>
 			dim_x = source.dim_x;
 			dim_y = source.dim_y;
 			dim_z = source.dim_z;
+			dim_xy = source.dim_xy;
 			arr_data = source.arr_data;
 			source.arr_data = nullptr;
 			return *this;
@@ -100,14 +105,14 @@ template <typename T>
 			assert(x < dim_x && x >= 0);
 			assert(y < dim_y && y >= 0);
 			assert(z < dim_z && z >= 0);
-			return arr_data[z*(dim_y*dim_x) + y * dim_x + x];
+			return arr_data[z*dim_xy + y * dim_x + x];
 		}
 
 		T& operator()(int x, int y, int z) {
 			assert(x < dim_x && x >= 0);
 			assert(y < dim_y && y >= 0);
 			assert(z < dim_z && z >= 0);
-			return arr_data[z*(dim_x*dim_y) + y * dim_x + x];
+			return arr_data[z*dim_xy + y * dim_x + x];
 		}
 
 		T* begin() {
@@ -115,7 +120,7 @@ template <typename T>
 		}
 
 		T* end() {
-			return arr_data + dim_x * dim_y*dim_z;
+			return arr_data + dim_xy*dim_z;
 		}
 
 		const T* begin() const {
@@ -123,7 +128,7 @@ template <typename T>
 		}
 
 		const T* end() const {
-			return arr_data + dim_x * dim_y*dim_z;
+			return arr_data + dim_xy*dim_z;
 		}
 
 		//setter getter
@@ -156,7 +161,8 @@ public:
 	double expandFactor;
 	double xMin, xMax, yMin, yMax, zMin, zMax;
 	void build(double* x, double* y, double* z, int num);
-	float distance(double x, double y, double z);
+	template <typename T>
+	float distance(T _x, T _y, T _z);
 protected:
 	static DEucl3D MINforwardDE3(Array3dDEucl3D& A, int z, int y, int x);
 	static DEucl3D MINforwardDE4(Array3dDEucl3D& A, int z, int y, int x);
@@ -168,5 +174,54 @@ protected:
 private:
 	Array3dDEucl3D A;
 };
+
+
+//template functions
+template <typename T>
+inline float DT3D::distance(T _x, T _y, T _z)
+{
+	int x = round((_x - xMin)*scale);
+	int y = round((_y - yMin)*scale);
+	int z = round((_z - zMin)*scale);
+
+	if (x > -1 && x < size && y > -1 && y < size && z > -1 && z < size)
+		return A(x, y, z).distance;
+
+	float a = 0, b = 0, c = 0;
+	if (x < 0)
+	{
+		a = x;
+		x = 0;
+	}
+	else if (x >= size)
+	{
+		a = x - size + 1;
+		x = size - 1;
+	}
+
+	if (y < 0)
+	{
+		b = y;
+		y = 0;
+	}
+	else if (y >= size)
+	{
+		b = y - size + 1;
+		y = size - 1;
+	}
+
+	if (z < 0)
+	{
+		c = z;
+		z = 0;
+	}
+	else if (z >= size)
+	{
+		c = z - size + 1;
+		z = size - 1;
+	}
+
+	return sqrt(a*a + b * b + c * c) / scale + A(x, y, z).distance;
+}
 
 #include <cgv/config/lib_end.h>
