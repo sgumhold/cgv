@@ -93,7 +93,12 @@ void draw_point_cloud(cgv::render::context & ctx, point_cloud & pc, surfel_rende
 		vector<point_cloud::Nml> N(pc.get_nr_points());
 		for (int i = 0; i < pc.get_nr_points(); ++i) {
 			P[i] = pc.pnt(i);
-			N[i] = pc.nml(i);
+			if (pc.has_normals()) {
+				N[i] = pc.nml(i);
+			}
+			else {
+				N[i] = cgv::math::fvec<float, 3>(1, 0, 0);
+			}
 		}
 		sr.set_position_array(ctx, P);
 		sr.set_normal_array(ctx, N);
