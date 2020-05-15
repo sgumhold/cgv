@@ -78,8 +78,7 @@ void ICP::reg_icp(Mat& rotation_mat, Dir& translation_vec) {
 
 	float cost = 1.0;
 	///define min as Infinity
-	float min = DBL_MAX;
-	std::srand(std::time(0));
+	float min = std::numeric_limits<float>::infinity();
 
 	Mat fA(0.0f);             // this initializes fA to matrix filled with zeros
 
@@ -95,6 +94,7 @@ void ICP::reg_icp(Mat& rotation_mat, Dir& translation_vec) {
 
 	/// sample the source point cloud
 	if (numRandomSamples > 0) {
+		std::srand(std::time(0));
 		for (int i = 0; i < numRandomSamples; i++)
 			S.pnt(i) = sourceCloud->pnt(std::rand() % sourceCloud->get_nr_points());
 	} else {
@@ -109,9 +109,8 @@ void ICP::reg_icp(Mat& rotation_mat, Dir& translation_vec) {
 		fA.zeros();
 		for (int i = 0; i < S.get_nr_points(); i++)
 		{
-			Q.pnt(i) = targetCloud->pnt(tree->find_closest(rotation_mat * S.pnt(i) + translation_vec));
 			/// get the closest point in the target point cloud
-			//Q.pnt(i) = targetCloud->pnt(i);
+			Q.pnt(i) = targetCloud->pnt(tree->find_closest(rotation_mat * S.pnt(i) + translation_vec));
 			fA += Mat(Q.pnt(i) - target_center, rotation_mat * S.pnt(i) + translation_vec - source_center);
 		}
 		///cast fA to A
