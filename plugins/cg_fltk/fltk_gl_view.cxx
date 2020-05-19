@@ -91,6 +91,7 @@ bool fltk_gl_view::self_reflect(cgv::reflect::reflection_handler& srh)
 		context_config::self_reflect(srh) &&
 		srh.reflect_member("version", version) &&
 		srh.reflect_member("enable_vsynch", enable_vsynch) &&
+		srh.reflect_member("instant_redraw", instant_redraw) &&
 		srh.reflect_member("sRGB_framebuffer", sRGB_framebuffer) &&
 		srh.reflect_member("show_help", show_help) &&
 		srh.reflect_member("show_stats", show_stats) &&
