@@ -17,6 +17,7 @@
 
 #include <point_cloud.h>
 #include <GoICP.h>
+#include <SICP.h>
 #include <ICP.h>
 
 #include <string>
@@ -76,6 +77,7 @@ protected:
 private:
 	ICP icp;
 	cgv::pointcloud::GoICP goicp;
+	cgv::pointcloud::SICP sicp;
 	std::string ply_path;
 	point_cloud source_pc, target_pc, crs_srs_pc, crs_tgt_pc;
 	cgv::render::point_render_style source_prs;

@@ -2,8 +2,6 @@
 #include "rgbd_icp_tool.h"
 #include <cgv_gl/gl/gl.h>
 #include <cgv/gui/file_dialog.h>
-#include <ICP.h>
-#include <GoICP.h>
 #include <random>
 #include <chrono>
 
@@ -289,7 +287,9 @@ void rgbd_icp_tool::on_reg_ICP_cb()
 
 void rgbd_icp_tool::on_reg_SICP_cb()
 {
-
+	sicp.set_source_cloud(source_pc);
+	sicp.set_target_cloud(target_pc);
+	sicp.register_pointcloud();
 }
 
 void rgbd_icp_tool::on_reg_GoICP_cb()
