@@ -290,6 +290,7 @@ void rgbd_icp_tool::on_reg_SICP_cb()
 	sicp.set_source_cloud(source_pc);
 	sicp.set_target_cloud(target_pc);
 	sicp.register_pointcloud();
+	post_redraw();
 }
 
 void rgbd_icp_tool::on_reg_GoICP_cb()
