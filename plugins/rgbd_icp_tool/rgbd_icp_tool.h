@@ -86,6 +86,8 @@ private:
 	cgv::render::surfel_render_style target_srs;
 	cgv::render::line_render_style lrs;
 	cgv::render::rounded_cone_render_style rcrs;
+	float rot_intensity;
+	float trans_intensity;
 	float icp_eps;
 	int icp_iterations;
 	bool view_find_point_cloud;
