@@ -54,11 +54,11 @@ namespace cgv {
 
 		SICP::SICP() : sourceCloud(nullptr), targetCloud(nullptr) {
 			parameters.max_runs = 20;
-			parameters.max_inner_loop = 50;
+			parameters.max_inner_loop = 1;
 			parameters.max_outer_loop = 50;
-			parameters.mu = 1e-6;
+			parameters.mu = 10;
 			parameters.p = 0.5f;
-			parameters.stop = 1e-4;
+			parameters.stop = 1e-5;
 			parameters.use_penalty = false;
 			parameters.max_mu = 1e5;
 			parameters.alpha = 1.2f;
@@ -91,7 +91,7 @@ namespace cgv {
 		inline void shrink(vector<V>& Z, float mu, float p) {
 			float alphaA = powf((2.f / mu)*(1.f - p), 1.f / (2.f - p));
 			// threshold
-			float th = alphaA + (p / mu)*powf(alphaA, 1 / (p - 1));
+			float th = alphaA + (p / mu)*powf(alphaA, p - 1);
 
 			for (int i = 0; i < Z.size(); ++i) {
 				float n = Z[i].length();
@@ -109,33 +109,40 @@ namespace cgv {
 		void SICP::point_to_point(vec3* X, vec3* Y,size_t size) {
 			/// De-mean
 			vec3 X_mean, Y_mean;
-			X_mean = accumulate(X, X + size, vec3(0, 0, 0))/((float)size);
-			Y_mean = accumulate(Y, Y + size, vec3(0, 0, 0))/((float)size);
+			X_mean = accumulate(X, X + size, vec3(0, 0, 0)) / ((float)size);
+			Y_mean = accumulate(Y, Y + size, vec3(0, 0, 0)) / ((float)size);
 			
-			for_each(X, X + size, [&](Pnt& p) {
-				p -= X_mean;
-			});
-			for_each(Y, Y + size, [&](Pnt& p) {
-				p -= Y_mean;
-			});
+			for (int i = 0; i < size; ++i) {
+				X[i] -= X_mean;
+				Y[i] -= Y_mean;
+			}
 			
 			mat3 rotation;
 			vec3 translation;
 			cgv::math::diag_mat<float> Sigma;
 			cgv::math::mat<float> U, V;
-			mat3 fA;
+			mat3 fA; fA.zeros();
 			U.zeros();
 			V.zeros();
 			Sigma.zeros();
 
-			for (int i = 0; i < size; ++i) {
-				fA += mat3(Y[i], X[i]);
+			float w = 1 / (float)(size);
+			
+			//Eigen::Matrix3d sigma = X * w_normalized.asDiagonal() * Y.transpose();
+			for (int y = 0; y < 3; ++y) {
+				for (int x = 0; x < 3; ++x) {
+					float sum = 0;
+					for (int l = 0; l < size; ++l) {
+						sum += X[l][y]*Y[l][x]*(1.f/((float)size));
+					}
+					fA(x, y) = sum;
+				}
 			}
 			cgv::math::mat<float> A(3, 3, &fA(0, 0));
 			cgv::math::svd(A, U, Sigma, V);
 			mat3 fU(3, 3, &U(0, 0)), fV(3, 3, &V(0, 0));
 			
-			if (det(fU)*det(fV) < 0.0) {
+			if (det(fU)*det(fV) < 0.f) {
 				cgv::math::diag_mat<float> S(3);
 
 				S(0) = 1.f;S(1) = 1.f; S(2) = -1.f;
@@ -152,11 +159,13 @@ namespace cgv {
 			
 			/// Apply transformation
 			for (int i = 0; i < size; ++i) {
-				X[i] = rotation*X[i];
+				X[i] = rotation*X[i]+translation;
 			}
 			/// Re-apply mean
-			for_each(X, X + size, [&](vec3& p) {p += X_mean;});
-			for_each(Y, Y + size, [&](vec3& p) {p += Y_mean;});
+			for (int i = 0; i < size; ++i) {
+				X[i] += X_mean;
+				Y[i] += Y_mean;
+			}
 		}
 
 		void SICP::register_pointcloud()
@@ -201,9 +210,7 @@ namespace cgv {
 							dual = max((sourceCloud->pnt(i) - Xo1[i]).length(),dual);
 						}
 						Xo1 = vector<Pnt>(&sourceCloud->pnt(0), &sourceCloud->pnt(0) + sourceCloud->get_nr_points());
-						if (dual < parameters.stop) {
-							break;
-						}
+						if (dual < parameters.stop) break;
 					}
 					// C Update
 
@@ -223,7 +230,7 @@ namespace cgv {
 				}
 				float stop = -numeric_limits<float>::infinity();
 				for (int i = 0; i < sourceCloud->get_nr_points(); ++i) {
-					stop = max((sourceCloud->pnt(0) - Xo2[i]).length(), stop);
+					stop = max((sourceCloud->pnt(i) - Xo2[i]).length(), stop);
 				}
 				Xo2 = vector<Pnt>(&sourceCloud->pnt(0), &sourceCloud->pnt(0) + sourceCloud->get_nr_points());
 				if (stop < parameters.stop) break;
