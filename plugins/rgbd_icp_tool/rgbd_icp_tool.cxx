@@ -41,6 +41,8 @@ rgbd_icp_tool::rgbd_icp_tool() {
 	target_srs.blend_points = true;
 	target_srs.illumination_mode = cgv::render::IM_TWO_SIDED;
 
+	rot_intensity = 0.2f;
+	trans_intensity = 0.1;
 	lrs.line_width = 1.0f;
 	rcrs.radius = 0.001f;
 
@@ -184,6 +186,8 @@ void rgbd_icp_tool::create_gui()
 	connect_copy(add_button("load target point cloud")->click, rebind(this, &rgbd_icp_tool::on_load_target_point_cloud_cb));
 	connect_copy(add_button("clear point cloud")->click, rebind(this, &rgbd_icp_tool::on_clear_point_cloud_cb));
 	connect_copy(add_button("randomize source")->click, rebind(this, &rgbd_icp_tool::on_randomize_position_cb));
+	add_member_control(this, "rotation intensity", rot_intensity, "value_slider", "min=0.01;max=1.0;log=false;ticks=true");
+	add_member_control(this,"translation intensity", trans_intensity, "value_slider", "min=0.01;max=1.0;log=false;ticks=true");
 	connect_copy(add_button("find point cloud")->click, rebind(this, &rgbd_icp_tool::on_reg_find_point_cloud_cb));
 	connect_copy(add_button("ICP")->click, rebind(this, &rgbd_icp_tool::on_reg_ICP_cb));
 	connect_copy(add_button("SICP")->click, rebind(this, &rgbd_icp_tool::on_reg_SICP_cb));
@@ -250,9 +254,9 @@ void rgbd_icp_tool::on_randomize_position_cb()
 	uniform_real_distribution<float> angle_distribution(0.f, 3.142f);
 	uniform_real_distribution<float> direction_distribution(0.f, 0.05f);
 	random_device rng;
-	float angle = angle_distribution(rng);
+	float angle = rot_intensity*angle_distribution(rng);
 	source_pc.rotate(cgv::math::quaternion<float>(normalize(vec3(direction_distribution(rng), direction_distribution(rng), direction_distribution(rng))), angle));
-	source_pc.translate(vec3(direction_distribution(rng), direction_distribution(rng), direction_distribution(rng)));
+	source_pc.translate(trans_intensity*vec3(direction_distribution(rng), direction_distribution(rng), direction_distribution(rng)));
 	post_redraw();
 }
 
