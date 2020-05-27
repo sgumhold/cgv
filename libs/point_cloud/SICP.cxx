@@ -8,6 +8,7 @@
 #include <cgv/math/det.h>
 #include "ann_tree.h"
 #include "SICP.h"
+#include "Eigen/Eigen"
 
 using namespace std;
 using namespace cgv::math;
@@ -91,7 +92,7 @@ namespace cgv {
 		inline void shrink(vector<V>& Z, float mu, float p) {
 			float alphaA = powf((2.f / mu)*(1.f - p), 1.f / (2.f - p));
 			// threshold
-			float th = alphaA + (p / mu)*powf(alphaA, p - 1);
+			float th = alphaA + (p / mu)*powf(alphaA, p - 1.f);
 
 			for (int i = 0; i < Z.size(); ++i) {
 				float n = Z[i].length();
@@ -135,7 +136,7 @@ namespace cgv {
 					for (int l = 0; l < size; ++l) {
 						sum += X[l][y]*Y[l][x]*(1.f/((float)size));
 					}
-					fA(x, y) = sum;
+					fA(y, x) = sum;
 				}
 			}
 			cgv::math::mat<float> A(3, 3, &fA(0, 0));
@@ -146,14 +147,12 @@ namespace cgv {
 				cgv::math::diag_mat<float> S(3);
 
 				S(0) = 1.f;S(1) = 1.f; S(2) = -1.f;
-				U.transpose();
-				cgv::math::mat<float> R = V *S* U;
+				cgv::math::mat<float> R = V *S* transpose(U);
 				rotation = mat3(3, 3, &R(0,0));
 			}
 			else {
-				U.transpose();
-				cgv::math::mat<float> R = V * U;
-				rotation = Mat(3, 3, &R(0,0));
+				cgv::math::mat<float> R = V * transpose(U);
+				rotation = mat3(3, 3, &R(0,0));
 			}
 			translation = Y_mean - rotation * X_mean;
 			
@@ -168,7 +167,13 @@ namespace cgv {
 			}
 		}
 
-		void SICP::register_pointcloud()
+		void SICP::point_to_plane(vec3 * source, vec3 * Y, vec3 * N, size_t size)
+		{
+
+
+		}
+
+		void SICP::register_point_to_point()
 		{
 			vector<Pnt> closest_points(sourceCloud->get_nr_points());
 			vector<Pnt> Z(sourceCloud->get_nr_points(), Pnt(0, 0, 0));
@@ -236,6 +241,25 @@ namespace cgv {
 				if (stop < parameters.stop) break;
 			}
 
+		}
+
+		void SICP::register_point_to_plane()
+		{
+			Eigen::Matrix3Xf Qp = Eigen::Matrix3Xf::Zero(3, sourceCloud->get_nr_points());
+			Eigen::Matrix3Xf Qn = Eigen::Matrix3Xf::Zero(3, sourceCloud->get_nr_points());
+			Eigen::VectorXf Z = Eigen::VectorXf::Zero(sourceCloud->get_nr_points());
+			Eigen::VectorXf C = Eigen::VectorXf::Zero(sourceCloud->get_nr_points());
+			/*
+			Eigen::Matrix3Xf X(3,sourceCloud->get_nr_points());
+			for (int x = 0; x < sourceCloud->get_nr_points(); ++x) {
+				X(0, x) = sourceCloud->pnt(x).x();
+				X(1, x) = sourceCloud->pnt(x).y();
+				X(2, x) = sourceCloud->pnt(x).z();
+			}
+			*/
+			for (int icp = 0; icp < parameters.max_runs; ++icp) {
+
+			}
 		}
 
 
