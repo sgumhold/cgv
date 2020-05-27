@@ -21,9 +21,9 @@ namespace cgv {
 			//settings
 			mse_threshhold = 0.0001;
 			trim_fraction = 0.0;
-			distance_transform_size = 300;
+			distance_transform_size = 200;
 			distance_transform_expand_factor = 2.0;
-			max_icp_iterations = 1000;
+			max_icp_iterations = 50;
 
 			init_rot_node.a = -PI;
 			init_rot_node.b = -PI;
