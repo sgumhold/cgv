@@ -1,3 +1,12 @@
+/*	"Sparse Iterative Closest Point"
+	 by Sofien Bouaziz, Andrea Tagliasacchi, Mark Pauly
+	Copyright (C) 2013  LGG, EPFL
+
+	implementation derived from https://github.com/OpenGP/sparseicp/blob/master/ICP.h
+	This Source Code Form is subject to the terms of the Mozilla Public
+ 	License, v. 2.0. If a copy of the MPL was not distributed with this
+ 	file, You can obtain one at https://mozilla.org/MPL/2.0/. */
+
 #include "point_cloud.h"
 #include <fstream>
 #include <future>
@@ -21,37 +30,6 @@ namespace cgv {
 		float det(const cgv::math::fmat<float, 3, 3>& m) {
 			return det_33<float>(m(0, 0), m(0, 1), m(0, 2), m(1, 0), m(1, 1), m(1, 2), m(2, 0), m(2, 1), m(2, 2));
 		}
-
-		/// parallelized for loop adapted from https://stackoverflow.com/questions/34221621/optimizing-a-parallel-for-implementation
-		template<unsigned THREADS_PER_CORE = 1>
-		void parallel_for(size_t start, size_t end, const std::function<void(size_t)> &lambda)
-		{
-			int thread_count = std::thread::hardware_concurrency()*THREADS_PER_CORE;
-
-			int block_size = (end - start) / thread_count;
-			if (block_size*thread_count < end - start)
-				++block_size;
-			std::vector<std::future<void>> futures;
-
-			for (int thread_index = 0; thread_index < thread_count; thread_index++)
-			{
-				futures.emplace_back(std::async(std::launch::async, [thread_index, block_size, start, end, &lambda]
-				{
-					int block_start = start + thread_index * block_size;
-					if (block_start >= end) return;
-					int block_end = block_start + block_size;
-					if (block_end > end) block_end = end;
-					for (size_t i = block_start; i < block_end; ++i)
-					{
-						lambda(i);
-					}
-				}));
-			}
-
-			for (std::future<void> &f : futures)
-				f.get();
-		}
-
 
 		SICP::SICP() : sourceCloud(nullptr), targetCloud(nullptr) {
 			parameters.max_runs = 20;
@@ -129,7 +107,6 @@ namespace cgv {
 
 			float w = 1 / (float)(size);
 			
-			//Eigen::Matrix3d sigma = X * w_normalized.asDiagonal() * Y.transpose();
 			for (int y = 0; y < 3; ++y) {
 				for (int x = 0; x < 3; ++x) {
 					float sum = 0;
@@ -183,10 +160,6 @@ namespace cgv {
 			vector<Pnt> Xo2 = vector<Pnt>(&sourceCloud->pnt(0), &sourceCloud->pnt(0) + sourceCloud->get_nr_points());
 
 			for (int i = 0; i < parameters.max_runs; ++i) {
-				// Step 1: find closest points
-				/*parallel_for(0, sourceCloud->get_nr_points(), [&](size_t i) {
-					closest_points[i] = targetCloud->pnt(neighbor_tree.find_closest(sourceCloud->pnt(i)));
-				});*/
 				for (int i = 0; i < sourceCloud->get_nr_points(); ++i) {
 					closest_points[i] = targetCloud->pnt(neighbor_tree.find_closest(sourceCloud->pnt(i)));
 				}
