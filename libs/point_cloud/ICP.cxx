@@ -151,10 +151,12 @@ void ICP::get_center_point(const point_cloud &input, Pnt &center_point) {
 
 float ICP::error(Pnt &ps, Pnt &pd, Mat &r, Dir &t)
 {
-	Pnt res;
-	res = r * pd;
-	float err = pow(ps.x() - res.x() - t[0], 2.0) + pow(ps.y() - res.y() - t[1], 2.0) + pow(ps.z() - res.z() - t[2], 2.0);
-	return err;
+	//Pnt res;
+	//res = r * pd;
+	//float err = pow(ps.x() - res.x() - t[0], 2.0) + pow(ps.y() - res.y() - t[1], 2.0) + pow(ps.z() - res.z() - t[2], 2.0);
+	//return err;
+	Pnt tmp = ps - r*pd - t;
+	return dot(tmp, tmp);
 }
 
 void ICP::get_crspd(Mat& rotation_mat, Dir& translation_vec, point_cloud& pc1, point_cloud& pc2)
