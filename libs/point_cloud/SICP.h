@@ -41,10 +41,12 @@ namespace cgv {
 			~SICP();
 			void set_source_cloud(point_cloud &inputCloud);
 			void set_target_cloud(point_cloud &inputCloud);
-			void register_pointcloud();
+			void register_point_to_point();
+			void register_point_to_plane();
 
 		private:
 			void point_to_point(vec3* X, vec3* Y, size_t size);
+			void point_to_plane(vec3* X, vec3* Y, vec3* N, size_t size);
 		};
 
 	}

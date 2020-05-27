@@ -206,6 +206,17 @@ void rgbd_icp_tool::create_gui()
 
 	add_member_control(this, "Distance Computaion Mode", (DummyEnum&)goicp_distance_computation_mode, "dropdown", "enums='DISTANCE_TRANSFORM,ANN_TREE'");
 
+	add_decorator("SICP", "heading", "level=2");
+	add_member_control(this, "Max SICP runs", sicp.parameters.max_runs, "value_slider", "min=1;max=500;log=false;ticks=true");
+	add_member_control(this, "outer loop", sicp.parameters.max_outer_loop, "value_slider", "min=1;max=100;log=false;ticks=true");
+	add_member_control(this, "inner loop", sicp.parameters.max_inner_loop, "value_slider", "min=1;max=20;log=false;ticks=true");
+	add_member_control(this, "mu", sicp.parameters.mu, "value_slider", "min=1;max=20;log=false;ticks=true");
+	add_member_control(this, "max mu", sicp.parameters.max_mu, "value_slider", "min=1;max=100000;log=false;ticks=true");
+	add_member_control(this, "use penalty", sicp.parameters.use_penalty, "toggle");
+	add_member_control(this, "p", sicp.parameters.p, "value_slider", "min=0.1;max=1.0;log=false;ticks=true");
+	add_member_control(this, "alpha", sicp.parameters.alpha, "value_slider", "min=1.05;max=2.0;log=false;ticks=true");
+	add_member_control(this, "stop", sicp.parameters.stop, "value_slider", "min=0.00000001;max=0.001;log=true;ticks=false");
+
 	///rounded_cone_render
 	if (begin_tree_node("cone render style", rcrs)) {
 		align("\a");
@@ -293,7 +304,7 @@ void rgbd_icp_tool::on_reg_SICP_cb()
 {
 	sicp.set_source_cloud(source_pc);
 	sicp.set_target_cloud(target_pc);
-	sicp.register_pointcloud();
+	sicp.register_point_to_point();
 	post_redraw();
 }
 
