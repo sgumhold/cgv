@@ -4,6 +4,7 @@
 #include <cgv/gui/file_dialog.h>
 #include <random>
 #include <chrono>
+#include <numeric>
 
 using namespace std;
 using namespace cgv::base;
@@ -304,7 +305,18 @@ void rgbd_icp_tool::on_reg_SICP_cb()
 {
 	sicp.set_source_cloud(source_pc);
 	sicp.set_target_cloud(target_pc);
-	sicp.register_point_to_point();
+	vec3 translation,offset;
+	mat3 rotation;
+	sicp.register_point_to_point(rotation,translation);
+	cout << "SICP rot:\n " << rotation << "SICP t:\n" << translation << '\n';
+	vec3 mean = accumulate(&source_pc.pnt(0), &source_pc.pnt(0) + source_pc.get_nr_points(), vec3(0, 0, 0)) / ((float)source_pc.get_nr_points());
+	//need to de-mean for rotation
+	source_pc.translate(-mean);
+	//do rotation
+	source_pc.rotate(cgv::math::quaternion<float>(rotation));
+	//do translation and reapply mean
+	source_pc.translate(translation+mean);
+
 	post_redraw();
 }
 
