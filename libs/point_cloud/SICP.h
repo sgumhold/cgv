@@ -45,7 +45,7 @@ namespace cgv {
 			void register_point_to_plane();
 
 		private:
-			void point_to_point(vec3* X, vec3* Y, size_t size);
+			void point_to_point(vec3* X, const vec3* Y, size_t size, mat3& rotation, vec3& translation);
 			void point_to_plane(vec3* X, vec3* Y, vec3* N, size_t size);
 		};
 
