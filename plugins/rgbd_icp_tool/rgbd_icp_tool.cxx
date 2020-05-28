@@ -200,6 +200,7 @@ void rgbd_icp_tool::create_gui()
 	add_decorator("ICP", "heading", "level=2");
 	add_member_control(this, "Max. iterations", icp_iterations, "value_slider", "min=50;max=1000;ticks=false");
 	add_member_control(this, "ICP epsilon", icp_eps, "value_slider", "min=0.0000001;max=0.1;log=true;ticks=false");
+	add_member_control(this, "Sampling Type", (DummyEnum&)icp_filter_type, "dropdown", "enums='Radom Sampling,Normal-space Sampling'");
 
 	add_decorator("Go-ICP", "heading", "level=2");
 	add_member_control(this, "Go-ICP MSE Threshold", goicp.mse_threshhold, "value_slider", "min=0.000001;max=1.0;log=true;ticks=false");
