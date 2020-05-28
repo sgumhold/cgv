@@ -75,7 +75,7 @@ protected:
 	void on_point_cloud_style_cb();
 
 private:
-	ICP icp;
+	cgv::pointcloud::ICP icp;
 	cgv::pointcloud::GoICP goicp;
 	cgv::pointcloud::SICP sicp;
 	std::string ply_path;
@@ -90,6 +90,7 @@ private:
 	float trans_intensity;
 	float icp_eps;
 	int icp_iterations;
+	cgv::pointcloud::ICP::Sampling_Type icp_filter_type;
 	bool view_find_point_cloud;
 	cgv::pointcloud::GoICP::DistanceComputationMode goicp_distance_computation_mode;
 };
