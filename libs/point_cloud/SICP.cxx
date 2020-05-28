@@ -85,7 +85,7 @@ namespace cgv {
 		}
 
 
-		void SICP::point_to_point(vec3* X, vec3* Y,size_t size) {
+		void SICP::point_to_point(vec3* X, const vec3* Y,size_t size,mat3& rotation, vec3& translation) {
 			/// De-mean
 			vec3 X_mean, Y_mean;
 			X_mean = accumulate(X, X + size, vec3(0, 0, 0)) / ((float)size);
@@ -93,11 +93,9 @@ namespace cgv {
 			
 			for (int i = 0; i < size; ++i) {
 				X[i] -= X_mean;
-				Y[i] -= Y_mean;
+				//Y[i] -= Y_mean;
 			}
 			
-			mat3 rotation;
-			vec3 translation;
 			cgv::math::diag_mat<float> Sigma;
 			cgv::math::mat<float> U, V;
 			mat3 fA; fA.zeros();
@@ -111,7 +109,7 @@ namespace cgv {
 				for (int x = 0; x < 3; ++x) {
 					float sum = 0;
 					for (int l = 0; l < size; ++l) {
-						sum += X[l][y]*Y[l][x]*(1.f/((float)size));
+						sum += X[l][y]*(Y[l][x]-Y_mean[x])*(1.f/((float)size));
 					}
 					fA(y, x) = sum;
 				}
@@ -140,7 +138,7 @@ namespace cgv {
 			/// Re-apply mean
 			for (int i = 0; i < size; ++i) {
 				X[i] += X_mean;
-				Y[i] += Y_mean;
+				//Y[i] += Y_mean;
 			}
 		}
 
@@ -181,7 +179,9 @@ namespace cgv {
 							U[i] = closest_points[i] + Z[i] - lagrage_multipliers[i] / mu;
 						}
 						// ridgid motion estimator
-						point_to_point(&sourceCloud->pnt(0), U.data(), sourceCloud->get_nr_points());
+						mat3 rotation;
+						vec3 translation;
+						point_to_point(&sourceCloud->pnt(0), U.data(), sourceCloud->get_nr_points(), rotation,translation);
 						
 						dual = -numeric_limits<float>::infinity();
 						for (int i = 0; i < sourceCloud->get_nr_points(); ++i) {
