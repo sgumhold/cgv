@@ -47,11 +47,11 @@ namespace cgv {
 
 		}
 
-		void SICP::set_source_cloud(point_cloud& inputCloud) {
+		void SICP::set_source_cloud(const point_cloud& inputCloud) {
 			sourceCloud = &inputCloud;
 		}
 
-		void SICP::set_target_cloud(point_cloud& inputCloud) {
+		void SICP::set_target_cloud(const point_cloud& inputCloud) {
 			targetCloud = &inputCloud;
 			neighbor_tree.build(inputCloud);
 		}
@@ -86,14 +86,11 @@ namespace cgv {
 
 
 		void SICP::point_to_point(vec3* X, const vec3* Y,size_t size,mat3& rotation, vec3& translation) {
-			/// De-mean
-			vec3 X_mean, Y_mean;
-			X_mean = accumulate(X, X + size, vec3(0, 0, 0)) / ((float)size);
-			Y_mean = accumulate(Y, Y + size, vec3(0, 0, 0)) / ((float)size);
+			vec3 X_mean = accumulate(X, X + size, vec3(0, 0, 0)) / ((float)size);
+			vec3 Y_mean = accumulate(Y, Y + size, vec3(0, 0, 0)) / ((float)size);
 			
 			for (int i = 0; i < size; ++i) {
 				X[i] -= X_mean;
-				//Y[i] -= Y_mean;
 			}
 			
 			cgv::math::diag_mat<float> Sigma;
@@ -131,14 +128,9 @@ namespace cgv {
 			}
 			translation = Y_mean - rotation * X_mean;
 			
-			/// Apply transformation
+			/// apply transformation
 			for (int i = 0; i < size; ++i) {
-				X[i] = rotation*X[i]+translation;
-			}
-			/// Re-apply mean
-			for (int i = 0; i < size; ++i) {
-				X[i] += X_mean;
-				//Y[i] += Y_mean;
+				X[i] = rotation*X[i]+translation+ X_mean;
 			}
 		}
 
@@ -148,18 +140,20 @@ namespace cgv {
 
 		}
 
-		void SICP::register_point_to_point()
+		void SICP::register_point_to_point(mat3& rotation, vec3& translation)
 		{
+			rotation.identity();
+			translation.zeros();
+			vector<Pnt> source_points(&sourceCloud->pnt(0), &sourceCloud->pnt(0) + sourceCloud->get_nr_points());
+			vector<Pnt> Xo1 = source_points;
+			vector<Pnt> Xo2 = source_points;
 			vector<Pnt> closest_points(sourceCloud->get_nr_points());
 			vector<Pnt> Z(sourceCloud->get_nr_points(), Pnt(0, 0, 0));
 			vector<Pnt> lagrage_multipliers(sourceCloud->get_nr_points(), Pnt(0, 0, 0));
 
-			vector<Pnt> Xo1 = vector<Pnt>(&sourceCloud->pnt(0), &sourceCloud->pnt(0) + sourceCloud->get_nr_points());
-			vector<Pnt> Xo2 = vector<Pnt>(&sourceCloud->pnt(0), &sourceCloud->pnt(0) + sourceCloud->get_nr_points());
-
 			for (int i = 0; i < parameters.max_runs; ++i) {
 				for (int i = 0; i < sourceCloud->get_nr_points(); ++i) {
-					closest_points[i] = targetCloud->pnt(neighbor_tree.find_closest(sourceCloud->pnt(i)));
+					closest_points[i] = targetCloud->pnt(neighbor_tree.find_closest(source_points[i]));
 				}
 
 				float mu = parameters.mu;
@@ -169,7 +163,7 @@ namespace cgv {
 					for (int i = 0; i < parameters.max_inner_loop; ++i) {
 						// update Z
 						for (int i = 0; i < sourceCloud->get_nr_points(); ++i) {
-							Z[i] = sourceCloud->pnt(i) - closest_points[i] + lagrage_multipliers[i] / mu;
+							Z[i] = source_points[i] - closest_points[i] + lagrage_multipliers[i] / mu;
 						}
 						// shrinkage operator usually converges in three iterations (I = 3)
 						shrink<3>(Z, mu, parameters.p);
@@ -179,22 +173,24 @@ namespace cgv {
 							U[i] = closest_points[i] + Z[i] - lagrage_multipliers[i] / mu;
 						}
 						// ridgid motion estimator
-						mat3 rotation;
-						vec3 translation;
-						point_to_point(&sourceCloud->pnt(0), U.data(), sourceCloud->get_nr_points(), rotation,translation);
-						
+						mat3 rot_up;
+						vec3 trans_up;
+						point_to_point(source_points.data(), U.data(), sourceCloud->get_nr_points(), rot_up,trans_up);
+						rotation *= rot_up;
+						translation += trans_up;
+
 						dual = -numeric_limits<float>::infinity();
 						for (int i = 0; i < sourceCloud->get_nr_points(); ++i) {
-							dual = max((sourceCloud->pnt(i) - Xo1[i]).length(),dual);
+							dual = max((source_points[i] - Xo1[i]).length(),dual);
 						}
-						Xo1 = vector<Pnt>(&sourceCloud->pnt(0), &sourceCloud->pnt(0) + sourceCloud->get_nr_points());
+						Xo1 = source_points;
 						if (dual < parameters.stop) break;
 					}
 					// C Update
 
 					vector<float> Pnorms(sourceCloud->get_nr_points());
 					for (int i = 0; i < sourceCloud->get_nr_points(); ++i) {
-						vec3 p = sourceCloud->pnt(i) - closest_points[i] - Z[i];
+						vec3 p = source_points[i] - closest_points[i] - Z[i];
 						Pnorms[i] = p.length();
 						if (!parameters.use_penalty) {
 							lagrage_multipliers[i] += mu * p;
@@ -208,12 +204,16 @@ namespace cgv {
 				}
 				float stop = -numeric_limits<float>::infinity();
 				for (int i = 0; i < sourceCloud->get_nr_points(); ++i) {
-					stop = max((sourceCloud->pnt(i) - Xo2[i]).length(), stop);
+					stop = max((source_points[i] - Xo2[i]).length(), stop);
 				}
-				Xo2 = vector<Pnt>(&sourceCloud->pnt(0), &sourceCloud->pnt(0) + sourceCloud->get_nr_points());
+				Xo2 = source_points;
 				if (stop < parameters.stop) break;
 			}
-
+			/*
+			for (int i = 0; i < sourceCloud->get_nr_points(); ++i) {
+				sourceCloud->pnt(i) = source_points[i];
+			}
+			*/
 		}
 
 		void SICP::register_point_to_plane()

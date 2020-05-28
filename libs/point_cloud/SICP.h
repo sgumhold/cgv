@@ -33,15 +33,15 @@ namespace cgv {
 				bool use_penalty;
 			}parameters;
 
-			point_cloud *sourceCloud;
-			point_cloud *targetCloud;
+			const point_cloud *sourceCloud;
+			const point_cloud *targetCloud;
 			ann_tree neighbor_tree;
 
 			SICP();
 			~SICP();
-			void set_source_cloud(point_cloud &inputCloud);
-			void set_target_cloud(point_cloud &inputCloud);
-			void register_point_to_point();
+			void set_source_cloud(const point_cloud &inputCloud);
+			void set_target_cloud(const point_cloud &inputCloud);
+			void register_point_to_point(mat3& rotation, vec3& translation);
 			void register_point_to_plane();
 
 		private:
