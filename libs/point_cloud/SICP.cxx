@@ -165,7 +165,7 @@ namespace cgv {
 			Eigen::MatrixXf C = Eigen::MatrixXf::Zero(3, size);
 			for (int i = 0; i < size; i++) {
 				vec3 csp = cross(X[i], N[i]);
-				C.col(i).noalias() = Eigen::Matrix<float,3,1>(csp.x(),csp.y(),csp.z());
+				C.col(i) = Eigen::Matrix<float,3,1>(csp.x(),csp.y(),csp.z());
 			}
 			for (int i = 0; i < size; i++) TL.selfadjointView<Eigen::Upper>().rankUpdate(C.col(i), 1);
 
@@ -178,7 +178,7 @@ namespace cgv {
 				BR.selfadjointView<Eigen::Upper>().rankUpdate(normal, 1);
 			}
 			for (int i = 0; i < C.cols(); i++) {
-				float dist_to_plane = -( dot(X[i] - Y[i]- X_mean,N[i]) - u[i] )*1;
+				float dist_to_plane = -( dot(X[i] - (Y[i]- X_mean),N[i]) - u[i] )*1;
 				RHS.head<3>() += C.col(i)*dist_to_plane;
 				Eigen::Matrix<float, 3, 1> normal = Vec3(N[i].x(), N[i].y(), N[i].z());
 				RHS.tail<3>() += normal*dist_to_plane;
@@ -286,8 +286,9 @@ namespace cgv {
 
 			for (int i = 0; i < parameters.max_runs; ++i) {
 				for (int i = 0; i < sourceCloud->get_nr_points(); ++i) {
-					closest_points_position[i] = targetCloud->pnt(neighbor_tree.find_closest(source_points[i]));
-					closest_points_normal[i] = targetCloud->nml(neighbor_tree.find_closest(source_points[i]));
+					int c = neighbor_tree.find_closest(source_points[i]);
+					closest_points_position[i] = targetCloud->pnt(c);
+					closest_points_normal[i] = targetCloud->nml(c);
 				}
 
 				float mu = parameters.mu;
