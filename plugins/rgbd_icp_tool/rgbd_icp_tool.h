@@ -93,6 +93,7 @@ private:
 	cgv::pointcloud::ICP::Sampling_Type icp_filter_type;
 	bool view_find_point_cloud;
 	cgv::pointcloud::GoICP::DistanceComputationMode goicp_distance_computation_mode;
+	cgv::pointcloud::SICP::ComputationMode sicp_computation_mode;
 };
 
 #include <cgv/config/lib_end.h>
