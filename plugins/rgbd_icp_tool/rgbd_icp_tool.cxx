@@ -51,6 +51,7 @@ rgbd_icp_tool::rgbd_icp_tool() {
 	icp_eps = 1e-8;
 
 	goicp_distance_computation_mode = GoICP::DCM_DISTANCE_TRANSFORM;
+	sicp_computation_mode = SICP::CM_POINT_TO_POINT;
 }
 
 bool rgbd_icp_tool::self_reflect(cgv::reflect::reflection_handler & rh)
@@ -218,6 +219,8 @@ void rgbd_icp_tool::create_gui()
 	add_member_control(this, "p", sicp.parameters.p, "value_slider", "min=0.1;max=1.0;log=false;ticks=true");
 	add_member_control(this, "alpha", sicp.parameters.alpha, "value_slider", "min=1.05;max=2.0;log=false;ticks=true");
 	add_member_control(this, "stop", sicp.parameters.stop, "value_slider", "min=0.00000001;max=0.001;log=true;ticks=false");
+	add_member_control(this, "Computaion Mode", (DummyEnum&)sicp_computation_mode, "dropdown", "enums='DEFAULT,POINT_TO_POINT,POINT_TO_PLANE'");
+
 
 	///rounded_cone_render
 	if (begin_tree_node("cone render style", rcrs)) {
@@ -308,7 +311,7 @@ void rgbd_icp_tool::on_reg_SICP_cb()
 	sicp.set_target_cloud(target_pc);
 	vec3 translation,offset;
 	mat3 rotation;
-	sicp.register_point_to_point(rotation,translation);
+	sicp.register_point_cloud(sicp_computation_mode,rotation,translation);
 	cout << "SICP rot:\n " << rotation << "SICP t:\n" << translation << '\n';
 	vec3 mean = accumulate(&source_pc.pnt(0), &source_pc.pnt(0) + source_pc.get_nr_points(), vec3(0, 0, 0)) / ((float)source_pc.get_nr_points());
 	//need to de-mean for rotation

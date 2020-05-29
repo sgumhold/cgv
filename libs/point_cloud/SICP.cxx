@@ -1,11 +1,4 @@
-/*	"Sparse Iterative Closest Point"
-	 by Sofien Bouaziz, Andrea Tagliasacchi, Mark Pauly
-	Copyright (C) 2013  LGG, EPFL
-
-	implementation derived from https://github.com/OpenGP/sparseicp/blob/master/ICP.h
-	This Source Code Form is subject to the terms of the Mozilla Public
- 	License, v. 2.0. If a copy of the MPL was not distributed with this
- 	file, You can obtain one at https://mozilla.org/MPL/2.0/. */
+/*	Sparse Iterative Closest Point by Sofien Bouaziz, Andrea Tagliasacchi, Mark Pauly 2013 */
 
 #include "point_cloud.h"
 #include <fstream>
@@ -66,8 +59,8 @@ namespace cgv {
 			return beta_t;
 		}
 
-		template<int I, typename V = cgv::math::fvec<float, 3>>
-		inline void shrink(vector<V>& Z, float mu, float p) {
+		template<int I>
+		inline void shrink(vector<cgv::math::fvec<float, 3>>& Z, float mu, float p) {
 			float alphaA = powf((2.f / mu)*(1.f - p), 1.f / (2.f - p));
 			// threshold
 			float th = alphaA + (p / mu)*powf(alphaA, p - 1.f);
@@ -84,6 +77,23 @@ namespace cgv {
 			}
 		}
 
+		template<int I>
+		inline void shrink(vector<float>& y, float mu, float p) {
+			float alphaA = powf((2.f / mu)*(1.f - p), 1.f / (2.f - p));
+			// threshold
+			float th = alphaA + (p / mu)*powf(alphaA, p - 1.f);
+
+			for (int i = 0; i < y.size(); ++i) {
+				float n = abs(y[i]);
+
+				if (n > th) {
+					y[i] *= shrink_recursion<I>(mu, n, p, (alphaA / n + 1.f) / 2.f);
+				}
+				else {
+					y[i] = 0;
+				}
+			}
+		}
 
 		void SICP::point_to_point(vec3* X, const vec3* Y,size_t size,mat3& rotation, vec3& translation) {
 			vec3 X_mean = accumulate(X, X + size, vec3(0, 0, 0)) / ((float)size);
@@ -134,10 +144,60 @@ namespace cgv {
 			}
 		}
 
-		void SICP::point_to_plane(vec3 * source, vec3 * Y, vec3 * N, size_t size)
+		void SICP::point_to_plane(vec3* X,vec3* Y,vec3* N,const float* u, size_t size, mat3& rotation, vec3& translation)
 		{
+			typedef Eigen::Matrix<float, 6, 6> Mat66;
+			typedef Eigen::Matrix<float, 6, 1> Vec6;
+			typedef Eigen::Block<Mat66, 3, 3> Blk33;
+			typedef Eigen::Matrix<float, 3, 1> Vec3;
 
+			vec3 X_mean = accumulate(X, X + size, vec3(0, 0, 0)) / ((float)size);
 
+			for (int i = 0; i < size; ++i) {
+				X[i] -= X_mean;
+			}
+
+			Mat66 LHS = Mat66::Zero();
+			Vec6 RHS = Vec6::Zero();
+			Blk33 TL = LHS.topLeftCorner<3, 3>();
+			Blk33 TR = LHS.topRightCorner<3, 3>();
+			Blk33 BR = LHS.bottomRightCorner<3, 3>();
+			Eigen::MatrixXf C = Eigen::MatrixXf::Zero(3, size);
+			for (int i = 0; i < size; i++) {
+				vec3 csp = cross(X[i], N[i]);
+				C.col(i).noalias() = Eigen::Matrix<float,3,1>(csp.x(),csp.y(),csp.z());
+			}
+			for (int i = 0; i < size; i++) TL.selfadjointView<Eigen::Upper>().rankUpdate(C.col(i), 1);
+
+			for (int i = 0; i < size; i++) {
+				Eigen::Matrix<float, 3, 1> normal = Vec3(N[i].x(),N[i].y(),N[i].z());
+				TR += (C.col(i)*normal.transpose());
+			}
+			for (int i = 0; i < size; i++) {
+				Eigen::Matrix<float, 3, 1> normal = Vec3(N[i].x(), N[i].y(), N[i].z());
+				BR.selfadjointView<Eigen::Upper>().rankUpdate(normal, 1);
+			}
+			for (int i = 0; i < C.cols(); i++) {
+				float dist_to_plane = -( dot(X[i] - Y[i]- X_mean,N[i]) - u[i] )*1;
+				RHS.head<3>() += C.col(i)*dist_to_plane;
+				Eigen::Matrix<float, 3, 1> normal = Vec3(N[i].x(), N[i].y(), N[i].z());
+				RHS.tail<3>() += normal*dist_to_plane;
+			}
+			LHS = LHS.selfadjointView<Eigen::Upper>();
+			Eigen::Affine3f transformation;
+			Eigen::LDLT<Mat66> ldlt(LHS);
+			RHS = ldlt.solve(RHS);
+
+			transformation = Eigen::AngleAxisf(RHS(0), Eigen::Vector3f::UnitX()) *
+				Eigen::AngleAxisf(RHS(1), Eigen::Vector3f::UnitY()) *
+				Eigen::AngleAxisf(RHS(2), Eigen::Vector3f::UnitZ());
+			transformation.translation() = RHS.tail<3>();
+			rotation= mat3(3,3, transformation.affine().data());
+			translation = vec3(transformation.translation()(0), transformation.translation()(1), transformation.translation()(2));
+
+			for (int i = 0; i < size; ++i) {
+				X[i] = rotation * X[i] + translation + X_mean;
+			}
 		}
 
 		void SICP::register_point_to_point(mat3& rotation, vec3& translation)
@@ -209,32 +269,94 @@ namespace cgv {
 				Xo2 = source_points;
 				if (stop < parameters.stop) break;
 			}
-			/*
-			for (int i = 0; i < sourceCloud->get_nr_points(); ++i) {
-				sourceCloud->pnt(i) = source_points[i];
-			}
-			*/
 		}
 
-		void SICP::register_point_to_plane()
+		//unfinished
+		void SICP::register_point_to_plane(mat3& rotation,vec3& translation)
 		{
-			Eigen::Matrix3Xf Qp = Eigen::Matrix3Xf::Zero(3, sourceCloud->get_nr_points());
-			Eigen::Matrix3Xf Qn = Eigen::Matrix3Xf::Zero(3, sourceCloud->get_nr_points());
-			Eigen::VectorXf Z = Eigen::VectorXf::Zero(sourceCloud->get_nr_points());
-			Eigen::VectorXf C = Eigen::VectorXf::Zero(sourceCloud->get_nr_points());
-			/*
-			Eigen::Matrix3Xf X(3,sourceCloud->get_nr_points());
-			for (int x = 0; x < sourceCloud->get_nr_points(); ++x) {
-				X(0, x) = sourceCloud->pnt(x).x();
-				X(1, x) = sourceCloud->pnt(x).y();
-				X(2, x) = sourceCloud->pnt(x).z();
-			}
-			*/
-			for (int icp = 0; icp < parameters.max_runs; ++icp) {
+			rotation.identity();
+			translation.zeros();
+			vector<Pnt> source_points(&sourceCloud->pnt(0), &sourceCloud->pnt(0) + sourceCloud->get_nr_points());
+			vector<Pnt> Xo1 = source_points;
+			vector<Pnt> Xo2 = source_points;
+			vector<Pnt> closest_points_position(sourceCloud->get_nr_points());
+			vector<Dir> closest_points_normal(sourceCloud->get_nr_points());
+			vector<float> Z(sourceCloud->get_nr_points(), 0);
+			vector<float> lagrage_multipliers(sourceCloud->get_nr_points(), 0);
 
+			for (int i = 0; i < parameters.max_runs; ++i) {
+				for (int i = 0; i < sourceCloud->get_nr_points(); ++i) {
+					closest_points_position[i] = targetCloud->pnt(neighbor_tree.find_closest(source_points[i]));
+					closest_points_normal[i] = targetCloud->nml(neighbor_tree.find_closest(source_points[i]));
+				}
+
+				float mu = parameters.mu;
+
+				for (int o = 0; o < parameters.max_outer_loop; ++o) {
+					float dual = 0;
+					for (int i = 0; i < parameters.max_inner_loop; ++i) {
+						// update Z
+						for (int i = 0; i < sourceCloud->get_nr_points(); ++i) {
+							Z[i] = dot(closest_points_normal[i],(source_points[i] - closest_points_position[i])) + lagrage_multipliers[i] / mu;
+						}
+						// shrinkage operator usually converges in three iterations (I = 3)
+						shrink<3>(Z, mu, parameters.p);
+
+						vector<float> U(sourceCloud->get_nr_points());
+						for (int i = 0; i < U.size(); ++i) {
+							U[i] = Z[i] - lagrage_multipliers[i] / mu;
+						}
+						// ridgid motion estimator
+						mat3 rot_up;
+						vec3 trans_up;
+						point_to_plane(source_points.data(), closest_points_position.data(), closest_points_normal.data(), U.data(), sourceCloud->get_nr_points(),rot_up,trans_up);
+						rotation *= rot_up;
+						translation += trans_up;
+
+						dual = -numeric_limits<float>::infinity();
+						for (int i = 0; i < sourceCloud->get_nr_points(); ++i) {
+							dual = max((source_points[i] - Xo1[i]).length(), dual);
+						}
+						Xo1 = source_points;
+						if (dual < parameters.stop) break;
+					}
+					// C Update
+
+					vector<float> P(sourceCloud->get_nr_points());
+					for (int i = 0; i < sourceCloud->get_nr_points(); ++i) {
+						float p = dot(closest_points_normal[i],(source_points[i] - closest_points_position[i])) - Z[i];
+						if (!parameters.use_penalty) {
+							lagrage_multipliers[i] += mu * p;
+							P[i] = p;
+						}
+					}
+					//mu Update
+					if (mu < parameters.max_mu) mu *= parameters.alpha;
+					/// stopping criteria
+					for (auto& p : P) { p = abs(p); }
+					float primal = *max_element(P.begin(), P.end());
+					if (primal < parameters.stop && dual < parameters.stop) break;
+				}
+				float stop = -numeric_limits<float>::infinity();
+				for (int i = 0; i < sourceCloud->get_nr_points(); ++i) {
+					stop = max((source_points[i] - Xo2[i]).length(), stop);
+				}
+				Xo2 = source_points;
+				if (stop < parameters.stop) break;
 			}
 		}
 
+		void SICP::register_point_cloud(ComputationMode cm, mat3& rotation, vec3& translation)
+		{
+			switch (cm) {
+			case CM_DEFAULT:
+			case CM_POINT_TO_POINT:
+				register_point_to_point(rotation, translation);
+				break;
+			case CM_POINT_TO_PLANE:
+				register_point_to_plane(rotation, translation);
+			}
+		}
 
 	}
 }
