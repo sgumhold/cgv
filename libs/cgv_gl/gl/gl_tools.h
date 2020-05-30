@@ -72,8 +72,8 @@ extern CGV_API void gl_1D_texture_to_screen(bool vary_along_x = true, float xmin
     in vec4 position;
 	in vec2 texcoord
 */
-extern CGV_API bool cover_screen(context& ctx, shader_program* prog_ptr = 0, bool flip_tex_v_coord = false);
-
+extern CGV_API bool cover_screen(context& ctx, shader_program* prog_ptr = 0, bool flip_tex_v_coord = false, float xmin = -1.0f, float ymin = -1.0f, float xmax = 1.0f, float ymax = 1.0f,
+	float umin = 0.0f, float vmin = 0.0f, float umax = 1.0f, float vmax = 1.0f);
 
 DEPRECATED("deprecated, use cover_screen instead.") extern CGV_API void gl_texture_to_screen(float xmin = -1.0f, float ymin = -1.0f, float xmax = 1.0f, float ymax = 1.0f,
 										 float umin =  0.0f, float vmin =  0.0f, float umax = 1.0f, float vmax = 1.0f);
