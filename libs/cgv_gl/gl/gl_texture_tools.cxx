@@ -674,7 +674,7 @@ unsigned int create_texture(const cgv::data::const_data_view& dv, unsigned level
 }
 
 /// cover the current viewport with a textured quad using the textured default shader program or the one passed in the third parameter
-bool cover_screen(context& ctx, shader_program* prog_ptr, bool flip_tex_v_coord)
+bool cover_screen(context& ctx, shader_program* prog_ptr, bool flip_tex_v_coord, float xmin, float ymin, float xmax, float ymax, float umin, float vmin, float umax, float vmax)
 {
 	shader_program& prog = prog_ptr ? *prog_ptr : ctx.ref_default_shader_program(true);
 	bool was_enabled = prog.is_enabled();
@@ -699,21 +699,21 @@ bool cover_screen(context& ctx, shader_program* prog_ptr, bool flip_tex_v_coord)
 	ctx.push_projection_matrix();
 	ctx.set_projection_matrix(cgv::math::identity4<double>());
 	
-	static render_types::vec4 positions[4] = {
-		render_types::vec4(-1,-1, 0, 1),
-		render_types::vec4( 1,-1, 0, 1),
-		render_types::vec4(-1, 1, 0, 1),
-		render_types::vec4( 1, 1, 0, 1)
+	render_types::vec4 positions[4] = {
+		render_types::vec4(xmin,ymin, 0, 1),
+		render_types::vec4(xmax,ymin, 0, 1),
+		render_types::vec4(xmin,ymax, 0, 1),
+		render_types::vec4(xmax,ymax, 0, 1)
 	};
-	static render_types::vec2 texcoords[8] = {
-		render_types::vec2(0.0f, 0.0f),
-		render_types::vec2(1.0f, 0.0f),
-		render_types::vec2(0.0f, 1.0f),
-		render_types::vec2(1.0f, 1.0f),
-		render_types::vec2(0.0f, 1.0f),
-		render_types::vec2(1.0f, 1.0f),
-		render_types::vec2(0.0f, 0.0f),
-		render_types::vec2(1.0f, 0.0f)
+	render_types::vec2 texcoords[8] = {
+		render_types::vec2(umin, vmin),
+		render_types::vec2(umax, vmin),
+		render_types::vec2(umin, vmax),
+		render_types::vec2(umax, vmax),
+		render_types::vec2(umin, vmax),
+		render_types::vec2(umax, vmax),
+		render_types::vec2(umin, vmin),
+		render_types::vec2(umax, vmin)
 	};
 
 	attribute_array_binding::set_global_attribute_array(ctx, pos_idx, positions, 4);

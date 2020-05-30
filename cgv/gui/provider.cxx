@@ -375,7 +375,7 @@ std::string provider::get_gui_name() const
 	const cgv::base::base* bp = dynamic_cast<const cgv::base::base*>(this);
 	if (bp) {
 		if (const_cast<cgv::base::base*>(bp)->get_named())
-			return const_cast<cgv::base::base*>(bp)->get_named()->get_name()+"_ui";
+			return const_cast<cgv::base::base*>(bp)->get_named()->get_name();
 	}
 	std::string mp = get_menu_path();
 	if (!mp.empty()) {
