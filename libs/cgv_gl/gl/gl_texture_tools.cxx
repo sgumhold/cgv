@@ -892,6 +892,11 @@ bool render_to_texture3D(context& ctx, shader_program& prog, TextureSampling tex
 	int slice_coord_loc = prog.get_uniform_location(ctx, "slice_coord");
 	// go through slices
 	for (int i = 0; i < (int) tex_res[2]; i++) {
+
+		if (slice_coord_loc != -1) {
+			float slice_coord = (texture_sampling == TS_CELL) ? (i + 0.5f) / tex_res[2] : (float)i / (tex_res[2] - 1);
+			prog.set_uniform(ctx, slice_coord_loc, slice_coord);
+		}
 		// attach textures to fbo
 		fbo.attach(ctx, target_tex, i, 0, 0);
 		if (target_tex2)
@@ -901,12 +906,6 @@ bool render_to_texture3D(context& ctx, shader_program& prog, TextureSampling tex
 		if (target_tex4)
 			fbo.attach(ctx, *target_tex4, i, 0, 3);
 		fbo.enable(ctx, 0);
-		
-		// draw square
-		if (slice_coord_loc != -1) {
-			float slice_coord = (texture_sampling == TS_CELL) ? (i + 0.5f) / tex_res[2] : (float)i / (tex_res[2] - 1);
-			prog.set_uniform(ctx, slice_coord_loc, slice_coord);
-		}
 		ctx.draw_faces(V, 0, T, F, 0, F, 1, 4);
 		fbo.disable(ctx);
 	}
