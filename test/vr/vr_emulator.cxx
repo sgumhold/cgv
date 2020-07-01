@@ -76,7 +76,7 @@ void vr_emulated_kit::compute_state_poses()
 		cgv::math::rotate4<float>(-60*hip_parameter, vec3(1, 0, 0));
 	mat4 T_head =
 		cgv::math::translate4<float>(vec3(0, scale*(Chin_height - Hip_height), 0))*
-		cgv::math::rotate4<float>(-90*gear_parameter, vec3(0, 1, 0));
+		cgv::math::rotate4<float>(-90*yaw_parameter, vec3(0, 1, 0));
 	mat4 R;
 	hand_orientation[0].put_homogeneous_matrix(R);
 	mat4 T_left =
@@ -117,7 +117,7 @@ vr_emulated_kit::vr_emulated_kit(float _body_direction, const vec3& _body_positi
 	body_direction=_body_direction;
 	body_height = _body_height;
 	hip_parameter= 0;
-	gear_parameter = 0;
+	yaw_parameter = 0;
 	fovy = 90;
 	hand_position[0] = vec3(0, -0.5f, -0.2f);
 	hand_position[1] = vec3(0, -0.5f, -0.2f);
@@ -295,11 +295,11 @@ void vr_emulator::timer_event(double t, double dt)
 				post_redraw();
 			}
 			if (home_ctrl || end_ctrl) {
-				kits[current_kit_index]->gear_parameter += (float)(home_ctrl ? -dt : dt);
-				if (kits[current_kit_index]->gear_parameter < -1)
-					kits[current_kit_index]->gear_parameter = -1;
-				else if (kits[current_kit_index]->gear_parameter > 1)
-					kits[current_kit_index]->gear_parameter = 1;
+				kits[current_kit_index]->yaw_parameter += (float)(home_ctrl ? -dt : dt);
+				if (kits[current_kit_index]->yaw_parameter < -1)
+					kits[current_kit_index]->yaw_parameter = -1;
+				else if (kits[current_kit_index]->yaw_parameter > 1)
+					kits[current_kit_index]->yaw_parameter = 1;
 				update_all_members();
 				post_redraw();
 			}
@@ -678,7 +678,7 @@ bool vr_emulator::self_reflect(cgv::reflect::reflection_handler& srh)
 			srh.reflect_member("body_direction", kit_ptr->body_direction) &&
 			srh.reflect_member("body_height", kit_ptr->body_height) &&
 			srh.reflect_member("hip_parameter", kit_ptr->hip_parameter) &&
-			srh.reflect_member("gear_parameter", kit_ptr->gear_parameter) &&
+			srh.reflect_member("yaw_parameter", kit_ptr->yaw_parameter) &&
 			srh.reflect_member("fovy", kit_ptr->fovy) &&
 			srh.reflect_member("body_position", kit_ptr->body_position) &&
 			srh.reflect_member("left_hand_position", kit_ptr->hand_position[0]) &&
@@ -824,7 +824,7 @@ void vr_emulator::create_gui()
 				add_member_control(this, "body_direction", kits[i]->body_direction, "value_slider", "min=0;max=6.3;ticks=true");
 				add_member_control(this, "body_height", kits[i]->body_height, "value_slider", "min=1.2;max=2.0;ticks=true");
 				add_member_control(this, "hip_parameter", kits[i]->hip_parameter, "value_slider", "min=-1;max=1;step=0.0001;ticks=true");
-				add_member_control(this, "gear_parameter", kits[i]->gear_parameter, "value_slider", "min=-1;max=1;step=0.0001;ticks=true");
+				add_member_control(this, "yaw_parameter", kits[i]->yaw_parameter, "value_slider", "min=-1;max=1;step=0.0001;ticks=true");
 				for (int j = 0; j < 2; ++j) {
 					if (begin_tree_node(j == 0 ? "left hand" : "right hand", kits[i]->hand_position[j], false, "level=3")) {
 						align("\a");
