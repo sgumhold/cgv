@@ -5,13 +5,16 @@
 #include <cgv/math/ftransform.h>
 #include <cgv/utils/scan.h>
 #include <cgv/utils/options.h>
+#include <cgv/utils/file.h>
 #include <cgv/gui/dialog.h>
+#include <cgv/gui/file_dialog.h>
 #include <cgv/render/attribute_array_binding.h>
 #include <cgv_gl/sphere_renderer.h>
 #include <cgv/media/mesh/simple_mesh.h>
 #include <cg_vr/vr_events.h>
 
 #include <random>
+#include <sstream>
 
 #include "intersection.h"
 
@@ -847,7 +850,8 @@ void vr_test::finish_draw(cgv::render::context& ctx)
 	}
 }
 
-					0.2f*distribution(generator)+0.1f));void vr_test::create_gui() {
+					//0.2f*distribution(generator)+0.1f));
+void vr_test::create_gui() {
 	add_decorator("vr_test", "heading", "level=2");
 	add_member_control(this, "mesh_scale", mesh_scale, "value_slider", "min=0.1;max=10;log=true;ticks=true");
 	add_gui("mesh_location", mesh_location, "vector", "options='min=-3;max=3;ticks=true");
@@ -941,6 +945,76 @@ void vr_test::finish_draw(cgv::render::context& ctx)
 		align("\b");
 		end_tree_node(label_size);
 	}
+	if (begin_tree_node("dynamic boxes",1.f)) {
+		align("\a");
+		connect_copy(add_button("save")->click, rebind(this, &vr_test::on_save_boxes_cb));
+		connect_copy(add_button("load")->click, rebind(this, &vr_test::on_load_boxes_cb));
+		align("\b");
+	}
+}
+
+bool vr_test::save_boxes(const std::string fn, const std::vector<box3>& boxes, const std::vector<rgb>& box_colors, const std::vector<vec3>& box_translations, const std::vector<quat>& box_rotations)
+{
+	std::stringstream data;
+
+
+	if (boxes.size() != box_colors.size() || boxes.size() != box_translations.size() || boxes.size() != box_rotations.size()) {
+		std::cerr << "vr_test::save_boxes: passed vectors have different sizes!";
+		return false;
+	}
+
+	for (int i = 0; i < movable_boxes.size(); ++i) {
+		//format: BOX <box.min_p> <box.max_p> <trans.x> <trans.y> <trans.z> <rot.re> <rot.ix> <rot.iy> <rot.iz>
+		const vec3& box_translation = box_translations[i];
+		const quat& box_rotation = box_rotations[i];
+		const rgb& box_color = box_colors[i];
+		data << "BOX "
+			<< boxes[i].get_min_pnt() << " "
+			<< boxes[i].get_max_pnt() << " "
+			<< box_translation.x() << " " << box_translation.y() << " " << box_translation.z() << " "
+			<< box_rotation.w() << " " << box_rotation.x() << " " << box_rotation.y() << " " << box_rotation.z() << " "
+			<< box_color.R() << " " << box_color.B() << " " << box_color.G() << " "
+			<< '\n';
+	}
+	std::string s = data.str();
+	if (!cgv::utils::file::write(fn, s.data(), s.size())) {
+		std::cerr << "vr_test::save_boxes: failed writing data to file: " << fn;
+	}
+	return true;
+}
+
+bool vr_test::load_boxes(const std::string fn, const std::vector<box3>& boxes, std::vector<rgb>& box_colors, std::vector<vec3>& box_translations, std::vector<quat>& box_rotations)
+{
+	std::cerr << "vr_test::load_boxes: not implemented!\n";
+	std::string data;
+	if (!cgv::utils::file::read(fn, data)) {
+		std::cerr << "vr_test::load_boxes: failed reading data from file: " << fn << '\n';
+		return false;
+	}
+	std::istringstream f(data);
+	std::string line;
+	while (std::getline(f, line)) {
+		//TODO parse line
+	}
+	return true;
+}
+
+void vr_test::on_save_boxes_cb()
+{
+	std::string fn = cgv::gui::file_save_dialog("base file name", "Box configurations(txt):*.txt");
+	if (fn.empty())
+		return;
+	
+	save_boxes(fn, movable_boxes, movable_box_colors, movable_box_translations, movable_box_rotations);
+}
+
+void vr_test::on_load_boxes_cb()
+{
+	std::string fn = cgv::gui::file_open_dialog("base file name", "Box configurations(txt):*.txt");
+	movable_boxes.clear();
+	movable_box_colors.clear();
+	movable_box_rotations.clear();
+	movable_box_colors.clear();
 }
 
 #include <cgv/base/register.h>
