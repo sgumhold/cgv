@@ -1,0 +1,83 @@
+// *********** Calibration ***********************
+
+// set file name of calibration that has been saved in UI 
+type(vr_view_interactor):calibration_file_path="D:/develop/projects/git/cgv/plugins/vr_test/table.cal"
+
+// *********** Visibility of VR devices **********
+
+// set visibility type of all VR devices to 0 ... hidden, 1 ... sphere glyphs, 2 ... meshes, 3 ... spheres and meshes
+type(vr_view_interactor):vis_type=0
+
+// set visibility type of a specific VR device type
+type(vr_view_interactor):hmd_vis_type=0
+type(vr_view_interactor):controller_vis_type=2
+type(vr_view_interactor):tracker_vis_type=1
+type(vr_view_interactor):base_vis_type=0
+
+// *********** VR View Configuration ************
+
+// whether to render a navigatable birds eye view in the cgv viewer
+type(vr_view_interactor):separate_view=false
+
+// in case of no separate view one can specify image of current hmd to be shown in cgv viewer (1 ... left, 2 ... right, 3 ... both)
+type(vr_view_interactor):none_separate_view=1
+
+// whether to blit images sent to hmd in the cgv viewer window
+type(vr_view_interactor):blit_vr_views=true
+
+// width in pixel of an individually blitted image
+type(vr_view_interactor):blit_width=200
+
+// factor to scale aspect ratio of blitted images
+type(vr_view_interactor):blit_aspect_scale=1.3
+
+
+// *********** Meshes ****************************
+
+// set mesh file name for hmd
+// mesh file is searched recursively in paths registered in environment variable CGV_DATA
+// under windows you can drag your data path onto CGV_DIR/define_data_dir.bat to set CGV_DATA
+type(vr_view_interactor):hmd_mesh_file_name="generic_hmd.obj"
+
+// set scaling factor for hmd mesh to scale it to meter
+type(vr_view_interactor):hmd_scale=1.0
+
+// set mesh file name for controllers
+type(vr_view_interactor):controller_mesh_file_name="vr_controller_vive_1_5.obj"
+
+// set scaling factor for controllers
+type(vr_view_interactor):controller_scale=1.0
+
+// set mesh file name for trackers
+type(vr_view_interactor):tracker_mesh_file_name="HTC_Vive_Tracker_2017.obj"
+
+// set scaling factor for trackers (here mesh was specified in mm units requiring 0.001 as scale factor)
+type(vr_view_interactor):tracker_scale=0.001
+
+// set mesh file name for base stations
+type(vr_view_interactor):base_mesh_file_name="lh_basestation_vive.obj"
+
+// set scaling factor for base stations
+type(vr_view_interactor):base_scale=1.0
+
+
+type(vr_view_interactor):show_focus=true
+name(main):selected="vr_wall"
+
+//persistent
+//name(vr interactor):tracking_rotation=-30
+//name(vr interactor):tracking_rotation_origin_x=1.30629;
+//name(vr interactor):tracking_rotation_origin_y=1.61343;
+//name(vr interactor):tracking_rotation_origin_z=0.216547
+//name(vr interactor):tracking_origin_x=0.0341002;
+//name(vr interactor):tracking_origin_y=0.700002;
+//name(vr interactor):tracking_origin_z=-0.436978;
+//type(vr_wall):screen_x.coords[0]=-0.303026
+//type(vr_wall):screen_x.coords[1]=-0.00205745
+//type(vr_wall):screen_x.coords[2]=0.00989599
+//type(vr_wall):screen_y.coords[0]=-0.00399962
+//type(vr_wall):screen_y.coords[1]=0.157189
+//type(vr_wall):screen_y.coords[2]=0.0397811
+//type(vr_wall):screen_center.coords[0]=0.36696
+//type(vr_wall):screen_center.coords[1]=0.999418
+//type(vr_wall):screen_center.coords[2]=-0.756677
