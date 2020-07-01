@@ -168,6 +168,15 @@ public:
 	void finish_draw(cgv::render::context& ctx);
 
 	void create_gui();
+
+	bool save_boxes(const std::string fn, const std::vector<box3>& boxes, const std::vector<rgb>& box_colors, const std::vector<vec3>& box_translations, const std::vector<quat>& box_rotations);
+	bool load_boxes(const std::string fn, const std::vector<box3>& boxes, std::vector<rgb>& box_colors, std::vector<vec3>& box_translations, std::vector<quat>& box_rotations);
+
+	private:
+
+	void on_save_boxes_cb();
+	void on_load_boxes_cb();
+
 };
 
 ///@}
