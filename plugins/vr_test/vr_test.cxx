@@ -227,7 +227,7 @@ void vr_test::build_scene(float w, float d, float h, float W, float tw, float td
 	construct_table(tw, td, th, tW);
 	construct_environment(0.3f, 3 * w, 3 * d, w, d, h);
 	//construct_environment(0.4f, 0.5f, 1u, w, d, h);
-	construct_movable_boxes(tw, td, th, tW, 2000);
+	construct_movable_boxes(tw, td, th, tW, 50);
 }
 
 vr_test::vr_test() 

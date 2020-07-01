@@ -999,6 +999,7 @@ bool vr_view_interactor::self_reflect(cgv::reflect::reflection_handler& srh)
 		srh.reflect_member("hmd_vis_type", (int&)hmd_vis_type) &&
 		srh.reflect_member("controller_vis_type", (int&)controller_vis_type) &&
 		srh.reflect_member("tracker_vis_type", (int&)tracker_vis_type) &&
+		srh.reflect_member("base_vis_type", (int&)base_vis_type) &&
 		srh.reflect_member("hmd_scale", mesh_scales[0]) &&
 		srh.reflect_member("controller_scale", mesh_scales[1]) &&
 		srh.reflect_member("tracker_scale", mesh_scales[2]) &&
