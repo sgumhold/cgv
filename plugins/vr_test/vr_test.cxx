@@ -964,16 +964,16 @@ bool vr_test::save_boxes(const std::string fn, const std::vector<box3>& boxes, c
 	}
 
 	for (int i = 0; i < movable_boxes.size(); ++i) {
-		//format: BOX <box.min_p> <box.max_p> <trans.x> <trans.y> <trans.z> <rot.re> <rot.ix> <rot.iy> <rot.iz>
+		//format: BOX <box.min_p> <box.max_p> <trans> <rot> <col>
 		const vec3& box_translation = box_translations[i];
 		const quat& box_rotation = box_rotations[i];
 		const rgb& box_color = box_colors[i];
 		data << "BOX "
 			<< boxes[i].get_min_pnt() << " "
 			<< boxes[i].get_max_pnt() << " "
-			<< box_translation.x() << " " << box_translation.y() << " " << box_translation.z() << " "
-			<< box_rotation.w() << " " << box_rotation.x() << " " << box_rotation.y() << " " << box_rotation.z() << " "
-			<< box_color.R() << " " << box_color.B() << " " << box_color.G() << " "
+			<< box_translation << " "
+			<< box_rotation << " "
+			<< box_color << " "
 			<< '\n';
 	}
 	std::string s = data.str();
@@ -983,9 +983,8 @@ bool vr_test::save_boxes(const std::string fn, const std::vector<box3>& boxes, c
 	return true;
 }
 
-bool vr_test::load_boxes(const std::string fn, const std::vector<box3>& boxes, std::vector<rgb>& box_colors, std::vector<vec3>& box_translations, std::vector<quat>& box_rotations)
+bool vr_test::load_boxes(const std::string fn, std::vector<box3>& boxes, std::vector<rgb>& box_colors, std::vector<vec3>& box_translations, std::vector<quat>& box_rotations)
 {
-	std::cerr << "vr_test::load_boxes: not implemented!\n";
 	std::string data;
 	if (!cgv::utils::file::read(fn, data)) {
 		std::cerr << "vr_test::load_boxes: failed reading data from file: " << fn << '\n';
@@ -993,8 +992,33 @@ bool vr_test::load_boxes(const std::string fn, const std::vector<box3>& boxes, s
 	}
 	std::istringstream f(data);
 	std::string line;
-	while (std::getline(f, line)) {
-		//TODO parse line
+
+	while (!f.eof()) {
+		std::getline(f, line); 	//read a line
+		std::istringstream l(line);
+		std::string sym;
+		
+		int limit=1;
+		bool valid = true;
+		if (!l.eof()) {
+			getline(l, sym, ' '); //get the first symbol determing the type
+			if (sym == "BOX") { //in case of a box
+				vec3 minp,maxp,trans;
+				quat rot;
+				rgb col;
+				l >> minp;
+				l >> maxp;
+				l >> trans;
+				l >> rot;
+				l >> col;
+				if (!l.bad()) {
+					boxes.emplace_back(minp, maxp);
+					box_translations.emplace_back(trans);
+					box_rotations.emplace_back(rot);
+					box_colors.emplace_back(col);
+				}
+			}
+		}
 	}
 	return true;
 }
@@ -1011,8 +1035,21 @@ void vr_test::on_save_boxes_cb()
 void vr_test::on_load_boxes_cb()
 {
 	std::string fn = cgv::gui::file_open_dialog("base file name", "Box configurations(txt):*.txt");
+	if (!cgv::utils::file::exists(fn)) {
+		std::cerr << "vr_test::on_load_boxes_cb: file does not exist!\n";
+		return;
+	}
+	clear_movable_boxes();
+	if (!load_boxes(fn, movable_boxes, movable_box_colors, movable_box_translations, movable_box_rotations)) {
+		std::cerr << "vr_test::on_load_boxes_cb: failed to parse file!\n";
+		clear_movable_boxes(); //delete all boxes after a failure to reach a valid logical state
+	}
+}
+
+void vr_test::clear_movable_boxes()
+{
 	movable_boxes.clear();
-	movable_box_colors.clear();
+	movable_box_translations.clear();
 	movable_box_rotations.clear();
 	movable_box_colors.clear();
 }
