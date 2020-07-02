@@ -900,6 +900,12 @@ void vr_test::create_gui() {
 			add_member_control(this, prefix + ".precision", left_deadzone_and_precision[i].second, "value_slider", "min=0;max=1;ticks=true;log=true");
 		}
 	}
+	if (begin_tree_node("movable boxes", 1.f)) {
+		align("\a");
+		connect_copy(add_button("save")->click, rebind(this, &vr_test::on_save_boxes_cb));
+		connect_copy(add_button("load")->click, rebind(this, &vr_test::on_load_boxes_cb));
+		align("\b");
+	}
 	if (begin_tree_node("box style", style)) {
 		align("\a");
 		add_gui("box style", style);
@@ -944,12 +950,6 @@ void vr_test::create_gui() {
 		add_member_control(this, "resolution", (cgv::type::DummyEnum&)label_resolution, "dropdown", "enums='256=256,512=512,1024=1024,2048=2048'");
 		align("\b");
 		end_tree_node(label_size);
-	}
-	if (begin_tree_node("dynamic boxes",1.f)) {
-		align("\a");
-		connect_copy(add_button("save")->click, rebind(this, &vr_test::on_save_boxes_cb));
-		connect_copy(add_button("load")->click, rebind(this, &vr_test::on_load_boxes_cb));
-		align("\b");
 	}
 }
 
@@ -1011,12 +1011,11 @@ bool vr_test::load_boxes(const std::string fn, std::vector<box3>& boxes, std::ve
 				l >> trans;
 				l >> rot;
 				l >> col;
-				if (!l.bad()) {
-					boxes.emplace_back(minp, maxp);
-					box_translations.emplace_back(trans);
-					box_rotations.emplace_back(rot);
-					box_colors.emplace_back(col);
-				}
+				
+				boxes.emplace_back(minp, maxp);
+				box_translations.emplace_back(trans);
+				box_rotations.emplace_back(rot);
+				box_colors.emplace_back(col);
 			}
 		}
 	}

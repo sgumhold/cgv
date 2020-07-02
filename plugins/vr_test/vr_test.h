@@ -169,7 +169,13 @@ public:
 
 	void create_gui();
 
+	//! stores configuration of the movable boxes inside a file
+	/*! stores configuration of the movable boxes inside a file. All passed vectors in the arguments are reqired to have the same number of elements.
+		@param fn : file for writing the configuration */
 	bool save_boxes(const std::string fn, const std::vector<box3>& boxes, const std::vector<rgb>& box_colors, const std::vector<vec3>& box_translations, const std::vector<quat>& box_rotations);
+	
+	//! loads boxes stored by the save_boxes method from a file
+	/*! loads boxes stored by the save_boxes method. This method will append the box information from the file to the vectors given by the arguments.*/
 	bool load_boxes(const std::string fn, std::vector<box3>& boxes, std::vector<rgb>& box_colors, std::vector<vec3>& box_translations, std::vector<quat>& box_rotations);
 
 	private:
