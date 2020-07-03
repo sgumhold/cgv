@@ -89,6 +89,12 @@ protected:
 	std::vector<vec3> movable_box_translations;
 	std::vector<quat> movable_box_rotations;
 
+	// store the wireframe boxes
+	std::vector<box3> frame_boxes;
+	std::vector<rgb> frame_box_colors;
+	std::vector<vec3> frame_box_translations;
+	std::vector<quat> frame_box_rotations;
+
 	// intersection points
 	std::vector<vec3> intersection_points;
 	std::vector<rgb>  intersection_colors;
@@ -101,6 +107,7 @@ protected:
 	// render style for interaction
 	cgv::render::sphere_render_style srs;
 	cgv::render::box_render_style movable_style;
+	cgv::render::box_render_style wire_frame_style;
 
 	int nr_cameras;
 	int frame_width, frame_height;
@@ -180,9 +187,11 @@ public:
 
 	private:
 
-	void on_save_boxes_cb();
-	void on_load_boxes_cb();
+	void on_save_movable_boxes_cb();
+	void on_load_movable_boxes_cb();
+	void on_load_wireframe_boxes_cb();
 	void clear_movable_boxes();
+	void clear_frame_boxes();
 
 };
 

@@ -230,7 +230,7 @@ void vr_test::build_scene(float w, float d, float h, float W, float tw, float td
 	construct_table(tw, td, th, tW);
 	construct_environment(0.3f, 3 * w, 3 * d, w, d, h);
 	//construct_environment(0.4f, 0.5f, 1u, w, d, h);
-	construct_movable_boxes(tw, td, th, tW, 2000);
+	construct_movable_boxes(tw, td, th, tW, 20);
 }
 
 vr_test::vr_test() 
@@ -751,6 +751,20 @@ void vr_test::draw(cgv::render::context& ctx)
 	}
 	cgv::render::box_renderer& renderer = cgv::render::ref_box_renderer(ctx);
 
+	// draw wireframe boxes
+	//TODO draw wireframe boxes
+	renderer.set_render_style(wire_frame_style);
+	renderer.set_box_array(ctx, frame_boxes);
+	renderer.set_color_array(ctx, frame_box_colors);
+	renderer.set_translation_array(ctx, frame_box_translations);
+	renderer.set_rotation_array(ctx, frame_box_rotations);
+	if (renderer.validate_and_enable(ctx)) {
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		renderer.draw(ctx, 0, frame_boxes.size());
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	}
+	renderer.disable(ctx);
+
 	// draw dynamic boxes 
 	renderer.set_render_style(movable_style);
 	renderer.set_box_array(ctx, movable_boxes);
@@ -902,8 +916,9 @@ void vr_test::create_gui() {
 	}
 	if (begin_tree_node("movable boxes", 1.f)) {
 		align("\a");
-		connect_copy(add_button("save")->click, rebind(this, &vr_test::on_save_boxes_cb));
-		connect_copy(add_button("load")->click, rebind(this, &vr_test::on_load_boxes_cb));
+		connect_copy(add_button("save boxes")->click, rebind(this, &vr_test::on_save_movable_boxes_cb));
+		connect_copy(add_button("load boxes")->click, rebind(this, &vr_test::on_load_movable_boxes_cb));
+		connect_copy(add_button("load target")->click, rebind(this, &vr_test::on_load_wireframe_boxes_cb));
 		align("\b");
 	}
 	if (begin_tree_node("box style", style)) {
@@ -1022,7 +1037,7 @@ bool vr_test::load_boxes(const std::string fn, std::vector<box3>& boxes, std::ve
 	return true;
 }
 
-void vr_test::on_save_boxes_cb()
+void vr_test::on_save_movable_boxes_cb()
 {
 	std::string fn = cgv::gui::file_save_dialog("base file name", "Box configurations(txt):*.txt");
 	if (fn.empty())
@@ -1031,17 +1046,31 @@ void vr_test::on_save_boxes_cb()
 	save_boxes(fn, movable_boxes, movable_box_colors, movable_box_translations, movable_box_rotations);
 }
 
-void vr_test::on_load_boxes_cb()
+void vr_test::on_load_movable_boxes_cb()
 {
 	std::string fn = cgv::gui::file_open_dialog("base file name", "Box configurations(txt):*.txt");
 	if (!cgv::utils::file::exists(fn)) {
-		std::cerr << "vr_test::on_load_boxes_cb: file does not exist!\n";
+		std::cerr << "vr_test::on_load_movable_boxes_cb: file does not exist!\n";
 		return;
 	}
 	clear_movable_boxes();
 	if (!load_boxes(fn, movable_boxes, movable_box_colors, movable_box_translations, movable_box_rotations)) {
-		std::cerr << "vr_test::on_load_boxes_cb: failed to parse file!\n";
+		std::cerr << "vr_test::on_load_movable_boxes_cb: failed to parse file!\n";
 		clear_movable_boxes(); //delete all boxes after a failure to reach a valid logical state
+	}
+}
+
+void vr_test::on_load_wireframe_boxes_cb()
+{
+	std::string fn = cgv::gui::file_open_dialog("base file name", "Box configurations(txt):*.txt");
+	if (!cgv::utils::file::exists(fn)) {
+		std::cerr << "vr_test::on_load_movable_boxes_cb: file does not exist!\n";
+		return;
+	}
+	clear_frame_boxes();
+	if (!load_boxes(fn, frame_boxes, frame_box_colors, frame_box_translations, frame_box_rotations)) {
+		std::cerr << "vr_test::on_load_wireframe_boxes_cb: failed to parse file!\n";
+		clear_frame_boxes(); //delete all boxes after a failure to reach a valid logical state
 	}
 }
 
@@ -1051,6 +1080,14 @@ void vr_test::clear_movable_boxes()
 	movable_box_translations.clear();
 	movable_box_rotations.clear();
 	movable_box_colors.clear();
+}
+
+void vr_test::clear_frame_boxes()
+{
+	frame_boxes.clear();
+	frame_box_translations.clear();
+	frame_box_rotations.clear();
+	frame_box_colors.clear();
 }
 
 #include <cgv/base/register.h>
