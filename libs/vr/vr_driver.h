@@ -70,19 +70,21 @@ namespace vr {
 		/// initialize the camera of a vr_kit and return whether this was successful
 		bool initialize_camera(vr_kit* kit) const;
 	private:
-		/// store poses and tracking status of reference states in map with serial number as key
-		std::map<std::string, vr_trackable_state> reference_states;
+		/// store poses and tracking status of tracking reference states in map with serial number as key
+		std::map<std::string, vr_trackable_state> tracking_reference_states;
 		/// copy of reference states used to store calibrated poses and tracking status of reference states in map with serial number as key
-		mutable std::map<std::string, vr_trackable_state> calibrated_reference_states;
+		mutable std::map<std::string, vr_trackable_state> calibrated_tracking_reference_states;
 	protected:
-		/// allow vr_kit access to reference state access functions
+		/// allow vr_kit access to ref_reference_state and tracking_system_info
 		friend class vr_kit;
-		/// provide reference to reference states
-		vr_trackable_state& ref_reference_state(const std::string& serial_nummer);
-		/// remove all reference states
-		void clear_reference_states();
-		/// mark all reference states as untracked
-		void mark_references_as_untracked();
+		/// store tracking system info to be filled by driver implementations
+		mutable vr_tracking_system_info tracking_system_info;
+		/// provide reference to tracking reference states
+		vr_trackable_state& ref_tracking_reference_state(const std::string& serial_nummer);
+		/// remove all tracking reference states
+		void clear_tracking_reference_states();
+		/// mark all tracking reference states as untracked
+		void mark_tracking_references_as_untracked();
 	private:
 		/// store calibration matrix
 		float calibration_matrix[12];
@@ -131,8 +133,10 @@ namespace vr {
 		bool is_calibration_transformation_enabled() const;
 
 
-		/// provide read only access to reference states
-		virtual const std::map<std::string, vr_trackable_state>& get_reference_states() const;
+		/// provide read only access to tracking reference states
+		virtual const std::map<std::string, vr_trackable_state>& get_tracking_reference_states() const;
+		/// provide information on tracking system
+		virtual const vr_tracking_system_info& get_tracking_system_info() const;
 	};
 	/// return a vector with all registered vr drivers
 	extern CGV_API std::vector<vr_driver*>& get_vr_drivers();

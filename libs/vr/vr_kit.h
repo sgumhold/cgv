@@ -2,6 +2,7 @@
 
 #include "vr_state.h"
 #include "vr_camera.h"
+#include "vr_info.h"
 
 #include <vector>
 #include <string>
@@ -15,13 +16,14 @@
 namespace vr {
 	/// forward declaration of vr driver class
 	class CGV_API vr_driver;
+
 	/**@name vr kit management */
 	//@{
-	//! information provided per vr device
-	/*! each vr_kit is uniquely specified by a device handle that is represented as void* and
-	can be access via get_device_handle(). Furthermore, each kit has a human readable
+	//! a vr kit is composed of headset, two controllers, and two trackers, where all devices can be attached or detached
+	/*! each vr_kit is uniquely specified by a handle that is represented as void* and
+	can be access via get_handle(). Furthermore, each kit has a human readable
 	name [get_name()].
-	The corresponding driver is access through get_driver(). In case of an error, the error
+	The corresponding driver is accessed through get_driver(). In case of an error, the error
 	message can be accessed via get_last_error().
 
 	query_state(vr_kit_state& state, int pose_query) gives access to the state of the kit and comes in 
@@ -29,6 +31,8 @@ namespace vr {
 	- 0 ... query controller state only
 	- 1 ... query most recent controller state and poses of hmd and controller
 	- 2 ... wait for the optimal time to start a rendering process and query state and future poses
+
+	Information on the currently attached devices can be queried with get_device_info().
 
 	TODO: support for vibration based force feedback
 
@@ -51,8 +55,8 @@ namespace vr {
 	protected:
 		/// pointer to driver that created the vr kit
 		vr_driver* driver;
-		/// device handle for internal use
-		void* device_handle;
+		/// handle for internal use
+		void* handle;
 		/// pointer to camera
 		vr_camera* camera;
 		/// name in case driver provides this information (not reliable)
@@ -61,16 +65,20 @@ namespace vr {
 		bool force_feedback_support;
 		/// whether it is wireless
 		bool wireless;
+		/// store vr kit info to be filled and updated by driver implementations
+		vr_kit_info info;
 		/// store last error here
 		std::string last_error;
 		/// destruct camera
 		void destruct_camera();
-		/// 
-		vr_trackable_state& ref_reference_state(const std::string& serial_nummer);
+		/// write access to the state of the tracking reference with given serial number
+		vr_trackable_state& ref_tracking_reference_state(const std::string& serial_nummer);
+		/// write access to tracking system info
+		vr_tracking_system_info& ref_tracking_system_info();
 		/// remove all reference states
-		void clear_reference_states();
+		void clear_tracking_reference_states();
 		/// mark all reference states as untracked
-		void mark_references_as_untracked();
+		void mark_tracking_references_as_untracked();
 		/// derived kits implement this without caring about calibration; vr_kit::query_state() will apply driver calibration
 		virtual bool query_state_impl(vr_kit_state& state, int pose_query) = 0;
 		/// construct
@@ -78,8 +86,8 @@ namespace vr {
 	public:
 		/// return driver
 		const vr_driver* get_driver() const;
-		/// return device handle
-		void* get_device_handle() const;
+		/// return handle of vr kit
+		void* get_handle() const;
 		/// return camera or nullptr if not available
 		vr_camera* get_camera() const;
 		/// return name of vr_kit
@@ -130,6 +138,8 @@ namespace vr {
 		/*!Typically you use this function in the following way:
 			while (query_key_event(i,key,action)) { process(key,action); } */
 		/// virtual bool query_key_event(VRKeys& key, KeyAction& action) = 0;
+		/// return information on the currently attached devices
+		virtual const vr_kit_info& get_device_info() const;
 		/// set the vibration strength between 0 and 1 of low and high frequency motors, return false if device is not connected anymore
 		virtual bool set_vibration(unsigned controller_index, float low_frequency_strength, float high_frequency_strength) = 0;
 		/// return width in pixel of view

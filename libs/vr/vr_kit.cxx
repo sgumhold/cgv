@@ -5,19 +5,24 @@
 namespace vr {
 
 	/// 
-	vr_trackable_state& vr_kit::ref_reference_state(const std::string& serial_nummer) 
+	vr_trackable_state& vr_kit::ref_tracking_reference_state(const std::string& serial_nummer) 
 	{
-		return driver->ref_reference_state(serial_nummer); 
+		return driver->ref_tracking_reference_state(serial_nummer); 
+	}
+	/// write access to tracking system info
+	vr_tracking_system_info& vr_kit::ref_tracking_system_info()
+	{
+		return driver->tracking_system_info;
 	}
 	/// remove all reference states
-	void vr_kit::clear_reference_states() 
+	void vr_kit::clear_tracking_reference_states() 
 	{
-		driver->clear_reference_states(); 
+		driver->clear_tracking_reference_states(); 
 	}
 	/// mark all reference states as untracked
-	void vr_kit::mark_references_as_untracked() 
+	void vr_kit::mark_tracking_references_as_untracked() 
 	{
-		driver->mark_references_as_untracked(); 
+		driver->mark_tracking_references_as_untracked(); 
 	}
 	/// destruct camera
 	void vr_kit::destruct_camera()
@@ -27,7 +32,7 @@ namespace vr {
 	}
 	/// construct
 	vr_kit::vr_kit(vr_driver* _driver, void* _handle, const std::string& _name, bool _ffb_support, bool _wireless) :
-		driver(_driver), device_handle(_handle), name(_name), camera(nullptr), force_feedback_support(_ffb_support), wireless(_wireless) {}
+		driver(_driver), handle(_handle), name(_name), camera(nullptr), force_feedback_support(_ffb_support), wireless(_wireless) {}
 	/// declare virtual destructor
 	vr_kit::~vr_kit()
 	{
@@ -38,7 +43,7 @@ namespace vr {
 	/// return driver
 	const vr_driver* vr_kit::get_driver() const { return driver; }
 	/// return device handle
-	void* vr_kit::get_device_handle() const { return device_handle; }
+	void* vr_kit::get_handle() const { return handle; }
 	/// return camera
 	vr_camera * vr_kit::get_camera() const { return camera; }
 	/// return name of vr_kit
@@ -117,6 +122,11 @@ namespace vr {
 			if (state.controller[i].status == VRS_TRACKED)
 				dp->calibrate_pose(state.controller[i].pose);
 		return res;
+	}
+	/// return information on the currently attached devices
+	const vr_kit_info& vr_kit::get_device_info() const
+	{
+		return info;
 	}
 
 }

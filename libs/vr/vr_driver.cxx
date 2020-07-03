@@ -19,21 +19,21 @@ namespace vr {
 		return vr_kit_map;
 	}
 	/// provide reference to reference states
-	vr_trackable_state& vr_driver::ref_reference_state(const std::string& serial_nummer) 
+	vr_trackable_state& vr_driver::ref_tracking_reference_state(const std::string& serial_nummer) 
 	{
-		return reference_states[serial_nummer]; 
+		return tracking_reference_states[serial_nummer]; 
 	}
 	
 	/// remove all reference states
-	void vr_driver::clear_reference_states() 
+	void vr_driver::clear_tracking_reference_states() 
 	{
-		reference_states.clear(); 
+		tracking_reference_states.clear(); 
 	}
 	
 	/// mark all reference states as untracked
-	void vr_driver::mark_references_as_untracked() 
+	void vr_driver::mark_tracking_references_as_untracked() 
 	{
-		for (auto& s : reference_states)
+		for (auto& s : tracking_reference_states)
 			s.second.status = VRS_DETACHED;
 	}
 
@@ -96,15 +96,21 @@ namespace vr {
 		return use_calibration_matrix;
 	}
 	/// provide read only access to reference states
-	const std::map<std::string, vr_trackable_state>& vr_driver::get_reference_states() const 
+	const std::map<std::string, vr_trackable_state>& vr_driver::get_tracking_reference_states() const 
 	{
 		if (!is_calibration_transformation_enabled())
-			return reference_states; 
-		calibrated_reference_states = reference_states;
-		for (auto& s : calibrated_reference_states)
+			return tracking_reference_states; 
+		calibrated_tracking_reference_states = tracking_reference_states;
+		for (auto& s : calibrated_tracking_reference_states)
 			if (s.second.status == VRS_TRACKED)
 				calibrate_pose(s.second.pose);
-		return calibrated_reference_states;
+		return calibrated_tracking_reference_states;
+	}
+
+	/// provide information on tracking system
+	const vr_tracking_system_info& vr_driver::get_tracking_system_info() const
+	{
+		return tracking_system_info;
 	}
 
 	/// declare destructor virtual to ensure it being called also for derived classes

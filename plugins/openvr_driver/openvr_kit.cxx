@@ -1,3 +1,5 @@
+#define _USE_MATH_DEFINES
+#include <math.h>
 #include "openvr_kit.h"
 #include <vr/vr_driver.h>
 #include "openvr_camera.h"
@@ -44,12 +46,12 @@ void put_hmatrix(const vr::HmdMatrix44_t& P, float* hmatrix)
 
 vr::IVRSystem* openvr_kit::get_hmd()
 {
-	return static_cast<vr::IVRSystem*>(device_handle);
+	return static_cast<vr::IVRSystem*>(handle);
 }
 
 const vr::IVRSystem* openvr_kit::get_hmd() const
 {
-	return static_cast<const vr::IVRSystem*>(device_handle);
+	return static_cast<const vr::IVRSystem*>(handle);
 }
 
 void print_error(vr::IVRSystem* hmd_ptr, vr::ETrackedPropertyError error)
@@ -89,13 +91,39 @@ std::string get_string_property(vr::IVRSystem* hmd_ptr, vr::TrackedDeviceIndex_t
 	char buffer[k_unMaxPropertyStringSize];
 	uint32_t len = hmd_ptr->GetStringTrackedDeviceProperty(unDeviceIndex, prop, buffer, k_unMaxPropertyStringSize, &error);
 	if (error == vr::TrackedProp_Success) {
-		std::string value(buffer, len-1);
+		std::string value(buffer, len - 1);
 		if (name)
 			std::cout << name << " = " << value << std::endl;
 		return value;
 	}
 	print_error(hmd_ptr, error);
 	return "";
+}
+
+int32_t get_int32_property(vr::IVRSystem* hmd_ptr, vr::TrackedDeviceIndex_t unDeviceIndex, ETrackedDeviceProperty prop, const char* name = 0)
+{
+	vr::ETrackedPropertyError error;
+	int32_t value = hmd_ptr->GetInt32TrackedDeviceProperty(unDeviceIndex, prop, &error);
+	if (error == vr::TrackedProp_Success) {
+		if (name)
+			std::cout << name << " = " << value << std::endl;
+		return value;
+	}
+	print_error(hmd_ptr, error);
+	return 0;
+}
+
+uint64_t get_uint64_property(vr::IVRSystem* hmd_ptr, vr::TrackedDeviceIndex_t unDeviceIndex, ETrackedDeviceProperty prop, const char* name = 0)
+{
+	vr::ETrackedPropertyError error;
+	uint64_t value = hmd_ptr->GetUint64TrackedDeviceProperty(unDeviceIndex, prop, &error);
+	if (error == vr::TrackedProp_Success) {
+		if (name)
+			std::cout << name << " = " << value << std::endl;
+		return value;
+	}
+	print_error(hmd_ptr, error);
+	return 0;
 }
 
 void analyze_tracking_reference(vr::IVRSystem* hmd_ptr, vr::TrackedDeviceIndex_t device_index)
@@ -198,6 +226,66 @@ void extract_trackable_state(const vr::TrackedDevicePose_t& tracked_pose, vr_tra
 	}
 }
 
+void openvr_kit::update_hmd_info()
+{
+}
+void openvr_kit::update_controller_info(int ci, vr::TrackedDeviceIndex_t device_index)
+{
+	std::string serial_number = get_string_property(get_hmd(), device_index, Prop_SerialNumber_String);
+	auto& CI = info.controller[ci];
+	if (CI.serial_number != serial_number) {
+		CI.serial_number = serial_number;
+		CI.model_number = get_string_property(get_hmd(), device_index, Prop_ModelNumber_String);
+		std::string attached_device_id = get_string_property(get_hmd(), device_index, Prop_AttachedDeviceId_String);
+		if (!attached_device_id.empty())
+			CI.variable_parameters["attached_device_id"] = attached_device_id;
+		std::fill(CI.axis_type, CI.axis_type + 8, VRA_NONE);
+		int ai = 0;
+		for (int i = 0; i < 5; ++i)
+			switch (get_int32_property(get_hmd(), device_index, ETrackedDeviceProperty(Prop_Axis0Type_Int32 + i))) {
+			case k_eControllerAxis_None: break;
+			case k_eControllerAxis_TrackPad:
+				CI.axis_type[ai++] = VRA_PAD_X;
+				CI.axis_type[ai++] = VRA_PAD_Y;
+				break;
+			case k_eControllerAxis_Joystick:
+				CI.axis_type[ai++] = VRA_STICK_X;
+				CI.axis_type[ai++] = VRA_STICK_Y;
+				break;
+			case k_eControllerAxis_Trigger:
+				CI.axis_type[ai++] = VRA_TRIGGER;
+				break;
+			}
+		CI.supported_buttons = get_uint64_property(get_hmd(), device_index, Prop_SupportedButtons_Uint64);
+	}
+}
+
+/// update tracker info
+void openvr_kit::update_tracker_info(int ci, vr::TrackedDeviceIndex_t device_index)
+{
+	std::string serial_number = get_string_property(get_hmd(), device_index, Prop_SerialNumber_String);
+	auto& CI = info.controller[ci];
+	if (CI.serial_number != serial_number) {
+
+	}
+}
+/// update tracker info
+void openvr_kit::update_tracking_reference_info(const std::string& serial, vr::TrackedDeviceIndex_t device_index)
+{
+	auto& TSI = ref_tracking_system_info();
+	if (TSI.references.find(serial) == TSI.references.end()) {
+		auto& TRI = TSI.references[serial];
+		TRI.serial_number = serial;
+		TRI.model_number = get_string_property(get_hmd(), device_index, Prop_ModelNumber_String);
+		TRI.z_near = get_float_property(get_hmd(), device_index, Prop_TrackingRangeMinimumMeters_Float);
+		TRI.z_far  = get_float_property(get_hmd(), device_index, Prop_TrackingRangeMaximumMeters_Float);
+		TRI.frustum[0] = float(TRI.z_near * tan(M_PI / 180 * get_float_property(get_hmd(), device_index, Prop_FieldOfViewLeftDegrees_Float)));
+		TRI.frustum[1] = float(TRI.z_near * tan(M_PI / 180 * get_float_property(get_hmd(), device_index, Prop_FieldOfViewRightDegrees_Float)));
+		TRI.frustum[2] = float(TRI.z_near * tan(M_PI / 180 * get_float_property(get_hmd(), device_index, Prop_FieldOfViewBottomDegrees_Float)));
+		TRI.frustum[3] = float(TRI.z_near * tan(M_PI / 180 * get_float_property(get_hmd(), device_index, Prop_FieldOfViewTopDegrees_Float)));
+	}
+}
+
 /// retrieve the current state of vr kit and optionally wait for poses optimal for rendering, return false if vr_kit is not connected anymore
 bool openvr_kit::query_state_impl(vr_kit_state& state, int pose_query)
 {
@@ -229,6 +317,7 @@ bool openvr_kit::query_state_impl(vr_kit_state& state, int pose_query)
 				extract_trackable_state(tracked_pose, state.controller[ci]);
 			}
 			extract_controller_state(controller_state, state.controller[ci]);
+			update_controller_info(ci, dis[ci]);
 		}
 	}
 
@@ -251,7 +340,7 @@ bool openvr_kit::query_state_impl(vr_kit_state& state, int pose_query)
 	int next_generic_controller_index = 2;
 	state.controller[2].status = vr::VRS_DETACHED;
 	state.controller[3].status = vr::VRS_DETACHED;
-	clear_reference_states();
+	clear_tracking_reference_states();
 	for (int device_index = 0; device_index < vr::k_unMaxTrackedDeviceCount; ++device_index)
 	{
 		if (tracked_poses[device_index].bPoseIsValid) {
@@ -260,19 +349,22 @@ bool openvr_kit::query_state_impl(vr_kit_state& state, int pose_query)
 			switch (tdc) {
 			case TrackedDeviceClass_HMD:
 				tracked_pose_ptr = &state.hmd;
+				update_hmd_info();
 				break;
 			case TrackedDeviceClass_GenericTracker :
 				if (next_generic_controller_index < 4) {
 					tracked_pose_ptr = &state.controller[next_generic_controller_index];
 					state.controller[next_generic_controller_index].status = vr::VRS_TRACKED;
+					update_tracker_info(next_generic_controller_index, device_index);
 					++next_generic_controller_index;
 				}
 				break;
 			case TrackedDeviceClass_TrackingReference :
-				//analyze_tracking_reference(get_hmd(), device_index);
-				tracked_pose_ptr = &ref_reference_state(
-					get_string_property(get_hmd(), device_index, Prop_SerialNumber_String)
-				);
+				{
+					std::string serial_number = get_string_property(get_hmd(), device_index, Prop_SerialNumber_String);
+					tracked_pose_ptr = &ref_tracking_reference_state(serial_number);
+					update_tracking_reference_info(serial_number, device_index);
+				}
 				break;
 			}
 			if (tracked_pose_ptr) {
