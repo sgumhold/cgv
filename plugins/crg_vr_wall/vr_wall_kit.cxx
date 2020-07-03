@@ -23,7 +23,7 @@ namespace vr {
 		parent_kit = replace_by_index(vr_kit_parent_index, this);
 		camera = parent_kit->get_camera();
 		driver = const_cast<vr::vr_driver*>(parent_kit->get_driver());
-		device_handle = parent_kit->get_device_handle();
+		handle = parent_kit->get_handle();
 		force_feedback_support = parent_kit->has_force_feedback();
 		wireless = parent_kit->is_wireless();
 		return true;

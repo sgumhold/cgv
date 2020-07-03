@@ -173,9 +173,9 @@ protected:
 	//
 	void configure_kits();
 	///
-	void on_status_change(void* device_handle, int controller_index, vr::VRStatus old_status, vr::VRStatus new_status);
+	void on_status_change(void* handle, int controller_index, vr::VRStatus old_status, vr::VRStatus new_status);
 	///
-	void on_device_change(void* device_handle, bool attach);
+	void on_device_change(void* handle, bool attach);
 	/// helper to visualize pose with colored spheres
 	void add_trackable_spheres(const float* pose, int i, std::vector<vec4>& spheres, std::vector<rgb>& sphere_colors);
 public:

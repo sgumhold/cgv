@@ -290,7 +290,7 @@ namespace vr {
 		cgv::gui::application::remove_window(window);
 	}
 	///
-	void vr_wall::on_device_change(void* device_handle, bool attach)
+	void vr_wall::on_device_change(void* handle, bool attach)
 	{
 		kit_enum_definition = "enums='none=-1";
 		std::vector<void*> kits = vr::scan_vr_kits();

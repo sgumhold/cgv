@@ -166,25 +166,25 @@ void vr_view_interactor::set_event_type_flags(cgv::gui::VREventTypeFlags flags)
 }
 
 ///
-void vr_view_interactor::on_status_change(void* device_handle, int controller_index, vr::VRStatus old_status, vr::VRStatus new_status)
+void vr_view_interactor::on_status_change(void* handle, int controller_index, vr::VRStatus old_status, vr::VRStatus new_status)
 {
 	post_redraw();
 	if (debug_vr_events)
-		std::cout << "on status change(" << device_handle << ","
+		std::cout << "on status change(" << handle << ","
 		<< controller_index << "," << vr::get_status_string(old_status)
 		<< "," << vr::get_status_string(new_status) << ")" << std::endl;
 }
 
 ///
-void vr_view_interactor::on_device_change(void* device_handle, bool attach)
+void vr_view_interactor::on_device_change(void* handle, bool attach)
 {
 	if (attach)
-		new_kits.push_back(device_handle);
+		new_kits.push_back(handle);
 	else
-		old_kits.push_back(device_handle);
+		old_kits.push_back(handle);
 	post_redraw();
 	if (debug_vr_events)
-		std::cout << "on device change(" << device_handle << ","
+		std::cout << "on device change(" << handle << ","
 		<< (attach?"attach":"detach") << ")" << std::endl;
 }
 
@@ -818,7 +818,7 @@ void vr_view_interactor::draw_vr_kits(cgv::render::context& ctx)
 		}
 	}
 	for (auto& dp : driver_set) {
-		auto ss = dp->get_reference_states();
+		auto ss = dp->get_tracking_reference_states();
 		for (const auto& s : ss) {
 			if (s.second.status == vr::VRS_TRACKED) {
 				if ((base_vis_type & VVT_SPHERE) != 0)

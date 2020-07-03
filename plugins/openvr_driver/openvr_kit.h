@@ -20,6 +20,14 @@ namespace vr {
 	protected:
 		vr::IVRSystem* get_hmd();
 		const vr::IVRSystem* get_hmd() const;
+		/// update hmd info
+		void update_hmd_info();
+		/// update controller info
+		void update_controller_info(int controller_index, vr::TrackedDeviceIndex_t tracked_device_index);
+		/// update tracker info
+		void update_tracker_info(int controller_index, vr::TrackedDeviceIndex_t tracked_device_index);
+		/// update tracker info
+		void update_tracking_reference_info(const std::string& serial, vr::TrackedDeviceIndex_t tracked_device_index);
 		/// query current state of vr kit and return whether this was successful
 		bool query_state_impl(vr_kit_state& state, int pose_query);
 	public:

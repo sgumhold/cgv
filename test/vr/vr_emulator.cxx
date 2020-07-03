@@ -241,8 +241,8 @@ vr_emulator::vr_emulator() : cgv::base::node("vr_emulator")
 	coordinate_rotation = quat(0.866f, 0.0f, 0.5f, 0.0f);
 	coordinate_displacement = vec3(0.0f, 1.0f, 2.0f);
 
-	ref_reference_state("vr_emulator_base_01").status = vr::VRS_TRACKED;
-	mat3& ref_ori_1 = reinterpret_cast<mat3&>(*ref_reference_state("vr_emulator_base_01").pose);
+	ref_tracking_reference_state("vr_emulator_base_01").status = vr::VRS_TRACKED;
+	mat3& ref_ori_1 = reinterpret_cast<mat3&>(*ref_tracking_reference_state("vr_emulator_base_01").pose);
 
 	base_orientations.push_back(quat(cgv::math::rotate3<float>(vec3(-20.0f, 45.0f, 0))));
 	base_positions.push_back(vec3(1.0f, 2.0f, 1.0f));
@@ -267,8 +267,8 @@ void vr_emulator::update_reference_states(int i)
 	}
 	mat34 coordinate_transform = pose_construct(coordinate_rotation, coordinate_displacement);
 	for (int k = ib; k < ie; ++k) {
-		auto& pose = reinterpret_cast<mat34&>(ref_reference_state(base_serials[k]).pose[0]);
-		ref_reference_state(base_serials[k]).status = vr::VRS_TRACKED;
+		auto& pose = reinterpret_cast<mat34&>(ref_tracking_reference_state(base_serials[k]).pose[0]);
+		ref_tracking_reference_state(base_serials[k]).status = vr::VRS_TRACKED;
 		base_orientations[k].put_matrix(pose_orientation(pose));
 		pose_position(pose) = base_positions[k];
 		pose_transform(coordinate_transform, pose);
@@ -428,7 +428,7 @@ std::vector<void*> vr_emulator::scan_vr_kits()
 	std::vector<void*> result;
 	if (is_installed())
 		for (auto kit_ptr : kits)
-			result.push_back(kit_ptr->get_device_handle());
+			result.push_back(kit_ptr->get_handle());
 	return result;
 }
 
@@ -440,7 +440,7 @@ vr::vr_kit* vr_emulator::replace_by_index(int& index, vr::vr_kit* new_kit_ptr)
 
 	for (auto kit_ptr : kits) {
 		if (index == 0) {
-			replace_vr_kit(kit_ptr->get_device_handle(), new_kit_ptr);
+			replace_vr_kit(kit_ptr->get_handle(), new_kit_ptr);
 			return kit_ptr;
 		}
 		else
@@ -455,7 +455,7 @@ bool vr_emulator::replace_by_pointer(vr::vr_kit* old_kit_ptr, vr::vr_kit* new_ki
 		return false;
 	for (auto kit_ptr : kits) {
 		if (kit_ptr == old_kit_ptr) {
-			replace_vr_kit(kit_ptr->get_device_handle(), new_kit_ptr);
+			replace_vr_kit(kit_ptr->get_handle(), new_kit_ptr);
 			return true;
 		}
 	}

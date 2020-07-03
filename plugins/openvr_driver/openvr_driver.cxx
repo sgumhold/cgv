@@ -11,15 +11,15 @@ namespace vr {
 	// encode user index in handle
 	void* get_handle(int user_index)
 	{
-		void* device_handle = 0;
-		(int&)device_handle = user_index;
-		return device_handle;
+		void* handle = 0;
+		(int&)handle = user_index;
+		return handle;
 	}
 
 	// decode user index from handle
-	int get_user_index(void* device_handle)
+	int get_user_index(void* handle)
 	{
-		int user_index = (int&)device_handle;
+		int user_index = (int&)handle;
 		assert(user_index >= 0 && user_index < 4);
 		return user_index;
 	}
