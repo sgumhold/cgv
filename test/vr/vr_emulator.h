@@ -171,5 +171,6 @@ public:
 	/// you must overload this for gui creation
 	void create_gui();
 };
+///@}
 
 #include <cgv/config/lib_end.h>

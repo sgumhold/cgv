@@ -79,63 +79,80 @@ namespace vr {
 	{
 		static const char* vr_key_names[] = {
 		"VR_UNKNOWN",
-		"VR_LEFT_MENU",
-		"VR_LEFT_BUTTON0",
-		"VR_LEFT_BUTTON1",
-		"VR_LEFT_BUTTON2",
-		"VR_LEFT_BUTTON3",
-		"VR_LEFT_STICK_TOUCH",
-		"VR_LEFT_STICK_DOWNLEFT",
-		"VR_LEFT_STICK_DOWN",
-		"VR_LEFT_STICK_DOWNRIGHT",
-		"VR_LEFT_STICK_LEFT",
-		"VR_LEFT_STICK",
-		"VR_LEFT_STICK_RIGHT",
-		"VR_LEFT_STICK_UPLEFT",
-		"VR_LEFT_STICK_UP",
-		"VR_LEFT_STICK_UPRIGHT",
-		"VR_RIGHT_MENU",
-		"VR_RIGHT_BUTTON0",
-		"VR_RIGHT_BUTTON1",
-		"VR_RIGHT_BUTTON2",
-		"VR_RIGHT_BUTTON3",
-		"VR_RIGHT_STICK_TOUCH",
-		"VR_RIGHT_STICK_DOWNLEFT",
-		"VR_RIGHT_STICK_DOWN",
-		"VR_RIGHT_STICK_DOWNRIGHT",
-		"VR_RIGHT_STICK_LEFT",
-		"VR_RIGHT_STICK",
-		"VR_RIGHT_STICK_RIGHT",
-		"VR_RIGHT_STICK_UPLEFT",
-		"VR_RIGHT_STICK_UP",
-		"VR_RIGHT_STICK_UPRIGHT"
+		"VR_SYSTEM",          
+		"VR_MENU",            
+		"VR_GRIP",            
+		"VR_DPAD_DOWN_LEFT",  
+		"VR_DPAD_DOWN",       
+		"VR_DPAD_DOWN_RIGHT", 
+		"VR_DPAD_LEFT",       
+		"VR_DPAD_RIGHT",      
+		"VR_DPAD_UP_LEFT",    
+		"VR_DPAD_UP",         
+		"VR_DPAD_UP_RIGHT",   
+		"VR_A",               
+		"VR_INPUT0_TOUCH",    
+		"VR_INPUT0",          
+		"VR_INPUT1_TOUCH",    
+		"VR_INPUT1",          
+		"VR_INPUT2_TOUCH",    
+		"VR_INPUT2",          
+		"VR_INPUT3_TOUCH",    
+		"VR_INPUT3",          
+		"VR_INPUT4_TOUCH",    
+		"VR_INPUT4",
+		"VR_PROXIMITY"
 		};
 		int index = key - (int)VR_UNKNOWN;
-		return index < 31 ? vr_key_names[index] : "VR_UNKNOWN";
+		return index < 24 ? vr_key_names[index] : "VR_UNKNOWN";
 	}
 	/// convert flags to string
 	std::string get_state_flag_string(VRButtonStateFlags flags)
 	{
 		static const char* flag_names[] = {
+		"SYSTEM",
 		"MENU",
-		"BUTTON0",
-		"BUTTON1",
-		"BUTTON2",
-		"BUTTON3",
-		"TOUCH",
-		"PRESS"
+		"GRIP",
+		"DPAD_LEFT",
+		"DPAD_RIGHT",
+		"DPAD_DOWN",
+		"DPAD_UP",
+		"A",
+		"INPUT0_TOUCH",
+		"INPUT0",
+		"INPUT1_TOUCH",
+		"INPUT1",
+		"INPUT2_TOUCH",
+		"INPUT2",
+		"INPUT3_TOUCH",
+		"INPUT3",
+		"INPUT4_TOUCH",
+		"INPUT4",
+		"PROXIMITY"
 		};
-		static const VRButtonStateFlags flag_values[] = {
-			VRF_MENU,
-			VRF_BUTTON0,
-			VRF_BUTTON1,
-			VRF_BUTTON2,
-			VRF_BUTTON3,
-			VRF_STICK_TOUCH,
-			VRF_STICK
+		static const VRButtonStateFlags flag_values[] = { 
+			VRF_SYSTEM       ,
+		VRF_MENU         ,
+		VRF_GRIP         ,
+		VRF_DPAD_LEFT    ,
+		VRF_DPAD_RIGHT   ,
+		VRF_DPAD_DOWN    ,
+		VRF_DPAD_UP      ,
+		VRF_A            ,
+		VRF_INPUT0_TOUCH ,
+		VRF_INPUT0       ,
+		VRF_INPUT1_TOUCH ,
+		VRF_INPUT1       ,
+		VRF_INPUT2_TOUCH ,
+		VRF_INPUT2       ,
+		VRF_INPUT3_TOUCH ,
+		VRF_INPUT3       ,
+		VRF_INPUT4_TOUCH ,
+		VRF_INPUT4       ,
+		VRF_PROXIMITY
 		};
 		std::string result;
-		for (unsigned i = 0; i < 7; ++i)
+		for (unsigned i = 0; i < 19; ++i)
 			if ((flags & flag_values[i]) != 0) {
 				if (result.empty())
 					result = flag_names[i];

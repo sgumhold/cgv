@@ -6,13 +6,13 @@
 type(vr_emulator):installed=true
 
 
-/******** vr kit selection and creation ****************
+/******** vr kit selection and creation ****************/
 
 // select current vr kit by index. If kit not exists, create it
 type(vr_emulator):current_kit_index=0
 
 
-/******** vr kit creation parameters ****************
+/******** vr kit creation parameters ****************/
 
 // initial body direction as rotation angle inside the x-z-plane in radians with 0.0 corresponding to z-axis
 type(vr_emulator):create_body_direction=0.0
@@ -29,7 +29,7 @@ type(vr_emulator):wireless=true
 type(vr_emulator):ffb_support=false
 
 
-/******** configuration of current vr kit ****************
+/******** configuration of current vr kit ****************/
 
 // current body direction as rotation angle inside the x-z-plane in radians with 0.0 corresponding to z-axis
 type(vr_emulator):body_direction=0.0
@@ -53,7 +53,7 @@ type(vr_emulator):left_hand_orientation='0 0 0 1'
 // right hand orientation as quaternion with scalar part in w component
 type(vr_emulator):right_hand_orientation='0 0 0 1'
 
-/******** configuration of trackers ****************
+/******** configuration of trackers ****************/
 
 // whether tracker 1 is enabled
 type(vr_emulator):tracker_1_enabled=false

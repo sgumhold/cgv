@@ -105,6 +105,8 @@ struct openvr_driver : public vr_driver
 				bool wireless = false;
 				kit = new openvr_kit(width, height, this, hmd_ptr, kit_name, ffb_support, wireless);
 				bool camera_init = initialize_camera(kit);
+				vr_kit_state state;
+				kit->query_state(state, 2);
 				register_vr_kit(hmd_ptr, kit);
 			}
 			handles.push_back(hmd_ptr);

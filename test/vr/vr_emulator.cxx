@@ -539,7 +539,7 @@ bool vr_emulator::handle(cgv::gui::event& e)
 			add_new_kit();
 			return true;
 		}
-		return check_for_button_toggle(ke, 1, vr::VRF_BUTTON0, 0, -1);
+		return check_for_button_toggle(ke, 1, vr::VRF_GRIP, 0, -1);
 	case '0':
 	case '1':
 	case '2':
@@ -567,21 +567,20 @@ bool vr_emulator::handle(cgv::gui::event& e)
 		update_member(&interaction_mode);
 		return true;
 	case 'W': return check_for_button_toggle(ke, 0, vr::VRF_MENU, 0, 1);
-	case 'X': return check_for_button_toggle(ke, 0, vr::VRF_BUTTON0, 0, -1);
-	case 'Q': return check_for_button_toggle(ke, 0, vr::VRF_BUTTON1, -1, 1);
-	case 'E': return check_for_button_toggle(ke, 0, vr::VRF_BUTTON2, 1, 1);
-	case 'C': return check_for_button_toggle(ke, 0, vr::VRF_BUTTON3, 1, -1);
-	case 'A': return check_for_button_toggle(ke, 0, vr::VRF_STICK_TOUCH, -1, 0);
-	case 'S': return check_for_button_toggle(ke, 0, vr::VRF_STICK, 0, 0);
+	case 'X': return check_for_button_toggle(ke, 0, vr::VRF_GRIP, 0, -1);
+	case 'Q': return check_for_button_toggle(ke, 0, vr::VRF_SYSTEM, -1, 1);
+	case 'E': return check_for_button_toggle(ke, 0, vr::VRF_A, 1, 1);
+	case 'A': return check_for_button_toggle(ke, 0, vr::VRF_INPUT0_TOUCH, -1, 0);
+	case 'S': return check_for_button_toggle(ke, 0, vr::VRF_INPUT0, 0, 0);
 	case 'D': return check_for_button_toggle(ke, 0, vr::VRButtonStateFlags(0), 1, 0);
 	case 'Y': return check_for_button_toggle(ke, 0, vr::VRButtonStateFlags(0), -1, -1);
 
 	case 'I': return check_for_button_toggle(ke, 1, vr::VRF_MENU, 0, 1);
-	case 'O': return check_for_button_toggle(ke, 1, vr::VRF_BUTTON1, 1, 1);
-	case 'U': return check_for_button_toggle(ke, 1, vr::VRF_BUTTON2, -1, 1);
-	case 'B': return check_for_button_toggle(ke, 1, vr::VRF_BUTTON3, -1, -1);
-	case 'J': return check_for_button_toggle(ke, 1, vr::VRF_STICK, 0, 0);
-	case 'K': return check_for_button_toggle(ke, 1, vr::VRF_STICK_TOUCH, 1, 0);
+	case 'O': return check_for_button_toggle(ke, 1, vr::VRF_GRIP, 1, 1);
+	case 'U': return check_for_button_toggle(ke, 1, vr::VRF_SYSTEM, -1, 1);
+	case 'B': return check_for_button_toggle(ke, 1, vr::VRF_A, -1, -1);
+	case 'J': return check_for_button_toggle(ke, 1, vr::VRF_INPUT0, 0, 0);
+	case 'K': return check_for_button_toggle(ke, 1, vr::VRF_INPUT0_TOUCH, 1, 0);
 	case 'H': return check_for_button_toggle(ke, 1, vr::VRButtonStateFlags(0), -1, 0);
 	case 'M': return check_for_button_toggle(ke, 1, vr::VRButtonStateFlags(0), 1, -1);
 

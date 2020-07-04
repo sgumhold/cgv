@@ -316,11 +316,11 @@ bool vr_test::handle(cgv::gui::event& e)
 		cgv::gui::vr_key_event& vrke = static_cast<cgv::gui::vr_key_event&>(e);
 		if (vrke.get_action() != cgv::gui::KA_RELEASE) {
 			switch (vrke.get_key()) {
-			case vr::VR_LEFT_BUTTON0:
-				std::cout << "button 0 of left controller pressed" << std::endl;
+			case vr::VR_GRIP:
+				std::cout << "grip button " << (vrke.get_controller_index() == 0 ? "left":"right") << " controller pressed" << std::endl;
 				return true;
-			case vr::VR_RIGHT_STICK_RIGHT:
-				std::cout << "touch pad of right controller pressed at right direction" << std::endl;
+			case vr::VR_DPAD_RIGHT:
+				std::cout << "touch pad of " << (vrke.get_controller_index() == 0 ? "left" : "right") << " controller pressed at right direction" << std::endl;
 				return true;
 			}
 		}

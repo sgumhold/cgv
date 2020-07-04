@@ -318,7 +318,7 @@ bool vr_view_interactor::handle_vr_events(cgv::gui::event& e)
 	return false;
 	if (e.get_kind() == cgv::gui::EID_KEY) {
 		auto& vrke = reinterpret_cast<cgv::gui::vr_key_event&>(e);
-		if (vrke.get_key() == vr::VR_RIGHT_STICK) {
+		if (vrke.get_key() == vr::VR_INPUT0 && vrke.get_controller_index() == 1) {
 			if (vrke.get_action() == cgv::gui::KA_PRESS) {
 				start_pose = reinterpret_cast<const mat34&>(*vrke.get_state().controller[1].pose);
 			}
