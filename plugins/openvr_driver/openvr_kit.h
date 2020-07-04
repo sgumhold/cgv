@@ -20,6 +20,8 @@ namespace vr {
 	protected:
 		vr::IVRSystem* get_hmd();
 		const vr::IVRSystem* get_hmd() const;
+		/// update information common to all trackable devices
+		void update_trackable_info(vr_trackable_info& TI, vr::TrackedDeviceIndex_t device_index, bool only_dynamic);
 		/// update hmd info
 		void update_hmd_info();
 		/// update controller info

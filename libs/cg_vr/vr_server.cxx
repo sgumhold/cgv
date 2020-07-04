@@ -33,7 +33,7 @@ namespace cgv {
 		struct button_mapping
 		{
 			vr::VRButtonStateFlags flag;
-			vr::VRKeys key[2];
+			vr::VRKeys key;
 		};
 
 		/// grab the event focus to the given event handler and return whether this was possible
@@ -103,16 +103,30 @@ namespace cgv {
 		///
 		void vr_server::emit_events_and_update_state(void* kit_handle, const vr::vr_kit_state& new_state, int kit_index, VREventTypeFlags flags, double time)
 		{
-			static button_mapping button_keys[5] = {
-				{ vr::VRF_MENU, vr::VR_LEFT_MENU, vr::VR_RIGHT_MENU},
-				{ vr::VRF_BUTTON0, vr::VR_LEFT_BUTTON0, vr::VR_RIGHT_BUTTON0},
-				{ vr::VRF_BUTTON1, vr::VR_LEFT_BUTTON1, vr::VR_RIGHT_BUTTON1},
-				{ vr::VRF_BUTTON2, vr::VR_LEFT_BUTTON2, vr::VR_RIGHT_BUTTON2},
-				{ vr::VRF_BUTTON3, vr::VR_LEFT_BUTTON3, vr::VR_RIGHT_BUTTON3}
+			static button_mapping button_keys[19] = {
+				{ vr::VRF_SYSTEM,       vr::VR_SYSTEM },
+				{ vr::VRF_MENU,         vr::VR_MENU },
+				{ vr::VRF_GRIP,         vr::VR_GRIP },
+				{ vr::VRF_DPAD_LEFT,    vr::VR_DPAD_LEFT },
+				{ vr::VRF_DPAD_RIGHT,   vr::VR_DPAD_RIGHT },
+				{ vr::VRF_DPAD_DOWN,    vr::VR_DPAD_DOWN },
+				{ vr::VRF_DPAD_UP,      vr::VR_DPAD_UP },
+				{ vr::VRF_A,            vr::VR_A },
+				{ vr::VRF_INPUT0_TOUCH, vr::VR_INPUT0_TOUCH },
+				{ vr::VRF_INPUT0,       vr::VR_INPUT0 },
+				{ vr::VRF_INPUT1_TOUCH, vr::VR_INPUT1_TOUCH },
+				{ vr::VRF_INPUT1,       vr::VR_INPUT1 },
+				{ vr::VRF_INPUT2_TOUCH, vr::VR_INPUT2_TOUCH },
+				{ vr::VRF_INPUT2,       vr::VR_INPUT2 },
+				{ vr::VRF_INPUT3_TOUCH, vr::VR_INPUT3_TOUCH },
+				{ vr::VRF_INPUT3,       vr::VR_INPUT3 },
+				{ vr::VRF_INPUT4_TOUCH, vr::VR_INPUT4_TOUCH },
+				{ vr::VRF_INPUT4,       vr::VR_INPUT4 },
+				{ vr::VRF_PROXIMITY,    vr::VR_PROXIMITY }
 			};
 			static button_mapping stick_keys[2] = {
-				{ vr::VRF_STICK_TOUCH, vr::VR_LEFT_STICK_TOUCH, vr::VR_RIGHT_STICK_TOUCH},
-				{ vr::VRF_STICK, vr::VR_LEFT_STICK, vr::VR_RIGHT_STICK}
+				{ vr::VRF_INPUT0_TOUCH, vr::VR_INPUT0_TOUCH},
+				{ vr::VRF_INPUT0, vr::VR_INPUT0}
 			};
 			vr::vr_kit_state& last_state = last_states[kit_index];
 			// check for status changes and emit signal for found status changes					
@@ -131,12 +145,12 @@ namespace cgv {
 						last_state.controller[c].status != vr::VRS_DETACHED &&
 						new_state.controller[c].button_flags != last_state.controller[c].button_flags) {
 						if ((flags & VRE_KEY) != 0) {
-							for (unsigned j = 0; j < 5; ++j) {
+							for (unsigned j = 0; j < 19; ++j) {
 								if ((new_state.controller[c].button_flags & button_keys[j].flag) !=
 									(last_state.controller[c].button_flags & button_keys[j].flag)) {
 									// construct and emit event
 									vr_key_event vrke(kit_handle, kit_index, c, new_state,
-										button_keys[j].key[c],
+										button_keys[j].key,
 										(new_state.controller[c].button_flags & button_keys[j].flag) != 0 ? KA_PRESS : KA_RELEASE,
 										0, 0, time);
 									on_event(vrke);
@@ -158,7 +172,7 @@ namespace cgv {
 									}
 									// construct and emit event
 									vr_key_event vrke(kit_handle, kit_index, c, new_state,
-										stick_keys[j].key[c] + key_offset,
+										stick_keys[j].key + key_offset,
 										(new_state.controller[c].button_flags & stick_keys[j].flag) != 0 ? KA_PRESS : KA_RELEASE, 0,
 										0, time);
 									on_event(vrke);
@@ -168,16 +182,16 @@ namespace cgv {
 						if ((flags & VRE_STICK) != 0) {
 							// check if press/touch state changed
 							int new_p_or_t = 0;
-							if ((new_state.controller[c].button_flags & vr::VRF_STICK) != 0)
+							if ((new_state.controller[c].button_flags & vr::VRF_INPUT0) != 0)
 								new_p_or_t = 2;
 							else
-								if ((new_state.controller[c].button_flags & vr::VRF_STICK_TOUCH) != 0)
+								if ((new_state.controller[c].button_flags & vr::VRF_INPUT0_TOUCH) != 0)
 									new_p_or_t = 1;
 							int old_p_or_t = 0;
-							if ((last_state.controller[c].button_flags & vr::VRF_STICK) != 0)
+							if ((last_state.controller[c].button_flags & vr::VRF_INPUT0) != 0)
 								old_p_or_t = 2;
 							else
-								if ((last_state.controller[c].button_flags & vr::VRF_STICK_TOUCH) != 0)
+								if ((last_state.controller[c].button_flags & vr::VRF_INPUT0_TOUCH) != 0)
 									old_p_or_t = 1;
 							if (new_p_or_t != old_p_or_t) {
 								static StickAction actions[9] = {
@@ -243,8 +257,8 @@ namespace cgv {
 								else {
 									// stick case
 									if ((flags & VRE_STICK) != 0) {
-										if (((new_state.controller[c].button_flags & (vr::VRF_STICK_TOUCH+vr::VRF_STICK)) == 0) ||
-											((last_state.controller[c].button_flags & (vr::VRF_STICK_TOUCH + vr::VRF_STICK)) == 0)) {
+										if (((new_state.controller[c].button_flags & (vr::VRF_INPUT0_TOUCH+vr::VRF_INPUT0)) == 0) ||
+											((last_state.controller[c].button_flags & (vr::VRF_INPUT0_TOUCH + vr::VRF_INPUT0)) == 0)) {
 										}
 										else {
 											int ai = throttle_or_stick.first;
@@ -255,9 +269,8 @@ namespace cgv {
 											last_p = correct_deadzone_and_precision(last_p, deadzone_and_precision);
 											vec2 diff = p - last_p;
 											if (diff(0) != 0 || diff(1) != 0) {
-												/// construct a throttle event from value and value change
 												StickAction action = SA_MOVE;
-												if ((new_state.controller[c].button_flags & vr::VRF_STICK) != 0)
+												if ((new_state.controller[c].button_flags & vr::VRF_INPUT0) != 0)
 													action = SA_DRAG;
 												vr_stick_event vrse(kit_handle, c, new_state,
 													action, p(0), p(1), diff(0), diff(1), kit_index, si, time);
@@ -289,7 +302,6 @@ namespace cgv {
 			last_state = new_state;
 		}
 
-		/// check enabled gamepad devices for new events and dispatch them through the on_event signal
 		void vr_server::check_device_changes(double time)
 		{
 			std::vector<bool> is_first_state(vr_kit_handles.size(), false);

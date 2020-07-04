@@ -147,6 +147,10 @@ namespace vr {
 		}
 		else {
 			kit_map[handle] = kit;
+#ifdef _DEBUG
+			std::cout << "vr kit registered:\n" << kit->get_device_info() << std::endl;
+			std::cout << "tracking system:\n" << kit->get_driver()->get_tracking_system_info() << std::endl;
+#endif
 		}
 	}
 	/// initialize the camera of a vr_kit and return whether this was successful

@@ -134,10 +134,6 @@ namespace vr {
 				add 12 to restrict query to both controllers 
 		*/
 		bool query_state(vr_kit_state& state, int pose_query = 2);
-		//! NOT IMPLEMENTED retrieve next key event from given device, return false if device's event queue is empty
-		/*!Typically you use this function in the following way:
-			while (query_key_event(i,key,action)) { process(key,action); } */
-		/// virtual bool query_key_event(VRKeys& key, KeyAction& action) = 0;
 		/// return information on the currently attached devices
 		virtual const vr_kit_info& get_device_info() const;
 		/// set the vibration strength between 0 and 1 of low and high frequency motors, return false if device is not connected anymore

@@ -59,7 +59,7 @@ void print_error(vr::IVRSystem* hmd_ptr, vr::ETrackedPropertyError error)
 	std::cerr << "openvr tracked property error: " << hmd_ptr->GetPropErrorNameFromEnum(error) << std::endl;
 }
 
-bool get_bool_property(vr::IVRSystem* hmd_ptr, vr::TrackedDeviceIndex_t unDeviceIndex, ETrackedDeviceProperty prop, const char* name = 0)
+bool get_bool_property(vr::IVRSystem* hmd_ptr, vr::TrackedDeviceIndex_t unDeviceIndex, ETrackedDeviceProperty prop, bool show_error = true, const char* name = 0)
 {
 	vr::ETrackedPropertyError error;
 	bool value = hmd_ptr->GetBoolTrackedDeviceProperty(unDeviceIndex, prop, &error);
@@ -68,7 +68,8 @@ bool get_bool_property(vr::IVRSystem* hmd_ptr, vr::TrackedDeviceIndex_t unDevice
 			std::cout << name << " = " << (value?"True":"False") << std::endl;
 		return value;
 	}
-	print_error(hmd_ptr, error);
+	if (show_error)
+		print_error(hmd_ptr, error);
 	return false;
 }
 
@@ -100,7 +101,7 @@ std::string get_string_property(vr::IVRSystem* hmd_ptr, vr::TrackedDeviceIndex_t
 	return "";
 }
 
-int32_t get_int32_property(vr::IVRSystem* hmd_ptr, vr::TrackedDeviceIndex_t unDeviceIndex, ETrackedDeviceProperty prop, const char* name = 0)
+int32_t get_int32_property(vr::IVRSystem* hmd_ptr, vr::TrackedDeviceIndex_t unDeviceIndex, ETrackedDeviceProperty prop, bool show_error = true, const char* name = 0)
 {
 	vr::ETrackedPropertyError error;
 	int32_t value = hmd_ptr->GetInt32TrackedDeviceProperty(unDeviceIndex, prop, &error);
@@ -109,7 +110,8 @@ int32_t get_int32_property(vr::IVRSystem* hmd_ptr, vr::TrackedDeviceIndex_t unDe
 			std::cout << name << " = " << value << std::endl;
 		return value;
 	}
-	print_error(hmd_ptr, error);
+	if (show_error)
+		print_error(hmd_ptr, error);
 	return 0;
 }
 
@@ -197,14 +199,45 @@ void extract_controller_state(const VRControllerState_t& input, vr_controller_st
 {
 	output.time_stamp = input.unPacketNum;
 	output.button_flags = 0;
+
+	if ((input.ulButtonPressed & ButtonMaskFromId(k_EButton_System)) != 0)
+		output.button_flags += VRF_SYSTEM;
 	if ((input.ulButtonPressed & ButtonMaskFromId(k_EButton_ApplicationMenu)) != 0)
 		output.button_flags += VRF_MENU;
 	if ((input.ulButtonPressed & ButtonMaskFromId(k_EButton_Grip)) != 0)
-		output.button_flags += VRF_BUTTON0;
+		output.button_flags += VRF_GRIP;
+	if ((input.ulButtonPressed & ButtonMaskFromId(k_EButton_DPad_Left)) != 0)
+		output.button_flags += VRF_DPAD_LEFT;
+	if ((input.ulButtonPressed & ButtonMaskFromId(k_EButton_DPad_Right)) != 0)
+		output.button_flags += VRF_DPAD_RIGHT;
+	if ((input.ulButtonPressed & ButtonMaskFromId(k_EButton_DPad_Down)) != 0)
+		output.button_flags += VRF_DPAD_DOWN;
+	if ((input.ulButtonPressed & ButtonMaskFromId(k_EButton_DPad_Up)) != 0)
+		output.button_flags += VRF_DPAD_UP;
+	if ((input.ulButtonPressed & ButtonMaskFromId(k_EButton_A)) != 0)
+		output.button_flags += VRF_A;
 	if ((input.ulButtonPressed & ButtonMaskFromId(k_EButton_Axis0)) != 0)
-		output.button_flags += VRF_STICK;
+		output.button_flags += VRF_INPUT0;
 	if ((input.ulButtonTouched & ButtonMaskFromId(k_EButton_Axis0)) != 0)
-		output.button_flags += VRF_STICK_TOUCH;
+		output.button_flags += VRF_INPUT0_TOUCH;
+	if ((input.ulButtonPressed & ButtonMaskFromId(k_EButton_Axis1)) != 0)
+		output.button_flags += VRF_INPUT1;
+	if ((input.ulButtonTouched & ButtonMaskFromId(k_EButton_Axis1)) != 0)
+		output.button_flags += VRF_INPUT1_TOUCH;
+	if ((input.ulButtonPressed & ButtonMaskFromId(k_EButton_Axis2)) != 0)
+		output.button_flags += VRF_INPUT2;
+	if ((input.ulButtonTouched & ButtonMaskFromId(k_EButton_Axis2)) != 0)
+		output.button_flags += VRF_INPUT2_TOUCH;
+	if ((input.ulButtonPressed & ButtonMaskFromId(k_EButton_Axis3)) != 0)
+		output.button_flags += VRF_INPUT3;
+	if ((input.ulButtonTouched & ButtonMaskFromId(k_EButton_Axis3)) != 0)
+		output.button_flags += VRF_INPUT3_TOUCH;
+	if ((input.ulButtonPressed & ButtonMaskFromId(k_EButton_Axis4)) != 0)
+		output.button_flags += VRF_INPUT4;
+	if ((input.ulButtonTouched & ButtonMaskFromId(k_EButton_Axis4)) != 0)
+		output.button_flags += VRF_INPUT4_TOUCH;
+	if ((input.ulButtonTouched & ButtonMaskFromId(k_EButton_ProximitySensor)) != 0)
+		output.button_flags += VRF_PROXIMITY;
 
 	for (unsigned i = 0; i < 4; ++i) {
 		output.axes[2 * i] = input.rAxis[i].x;
@@ -226,38 +259,113 @@ void extract_trackable_state(const vr::TrackedDevicePose_t& tracked_pose, vr_tra
 	}
 }
 
+void openvr_kit::update_trackable_info(vr_trackable_info& TI, vr::TrackedDeviceIndex_t device_index, bool only_dynamic)
+{
+	if (!only_dynamic) {
+		TI.model_number = get_string_property(get_hmd(), device_index, Prop_ModelNumber_String);
+		TI.device_type = get_string_property(get_hmd(), device_index, Prop_RegisteredDeviceType_String);
+		TI.device_class = get_int32_property(get_hmd(), device_index, Prop_DeviceClass_Int32);
+		TI.is_wireless = get_bool_property(get_hmd(), device_index, Prop_DeviceIsWireless_Bool, false);
+		TI.provides_battery_charge_level = get_bool_property(get_hmd(), device_index, Prop_DeviceProvidesBatteryStatus_Bool, false);
+	}
+	if (TI.is_wireless && TI.provides_battery_charge_level)
+		TI.battery_charge_level = get_float_property(get_hmd(), device_index, Prop_DeviceBatteryPercentage_Float);
+}
+
 void openvr_kit::update_hmd_info()
 {
+	vr::TrackedDeviceIndex_t device_index = 0;
+	vr_hmd_info& HI = info.hmd;
+	std::string serial_number = get_string_property(get_hmd(), device_index, Prop_SerialNumber_String);
+	if (HI.serial_number == serial_number) {
+		update_trackable_info(info.hmd, device_index, true);
+		return;
+	}
+	update_trackable_info(HI, device_index, false);
+	HI.serial_number = serial_number;
+	HI.reports_time_since_vsynch = get_bool_property(get_hmd(), device_index, Prop_ReportsTimeSinceVSync_Bool);
+	HI.seconds_vsynch_to_photons = get_float_property(get_hmd(), device_index, Prop_SecondsFromVsyncToPhotons_Float);
+	HI.fps = get_float_property(get_hmd(), device_index, Prop_DisplayFrequency_Float);
+	HI.ipd = get_float_property(get_hmd(), device_index, Prop_UserIpdMeters_Float);
+	HI.head_to_eye_distance = get_float_property(get_hmd(), device_index, Prop_UserHeadToEyeDepthMeters_Float);
+	/*
+	HI.camera_to_head_transform[2][12];
+	HI.imu_to_head_transform[12];
+	HI.imu_gyro_bias[3];
+	HI.imu_gyro_scale[3];
+	HI.imu_accelerometer_bias[3];
+	HI.imu_accelerometer_scale[3];
+	*/
+	HI.lighthouse_2_0_features = get_bool_property(get_hmd(), device_index, Prop_ConfigurationIncludesLighthouse20Features_Bool);
+	HI.has_proximity_sensor = get_bool_property(get_hmd(), device_index, Prop_ContainsProximitySensor_Bool);
+	if (get_bool_property(get_hmd(), device_index, Prop_HasCamera_Bool))
+		HI.number_cameras = get_int32_property(get_hmd(), device_index, Prop_DeviceClass_Int32);
+	else
+		HI.number_cameras = 0;
 }
+
 void openvr_kit::update_controller_info(int ci, vr::TrackedDeviceIndex_t device_index)
 {
 	std::string serial_number = get_string_property(get_hmd(), device_index, Prop_SerialNumber_String);
 	auto& CI = info.controller[ci];
-	if (CI.serial_number != serial_number) {
-		CI.serial_number = serial_number;
-		CI.model_number = get_string_property(get_hmd(), device_index, Prop_ModelNumber_String);
-		std::string attached_device_id = get_string_property(get_hmd(), device_index, Prop_AttachedDeviceId_String);
-		if (!attached_device_id.empty())
-			CI.variable_parameters["attached_device_id"] = attached_device_id;
-		std::fill(CI.axis_type, CI.axis_type + 8, VRA_NONE);
-		int ai = 0;
-		for (int i = 0; i < 5; ++i)
-			switch (get_int32_property(get_hmd(), device_index, ETrackedDeviceProperty(Prop_Axis0Type_Int32 + i))) {
-			case k_eControllerAxis_None: break;
-			case k_eControllerAxis_TrackPad:
-				CI.axis_type[ai++] = VRA_PAD_X;
-				CI.axis_type[ai++] = VRA_PAD_Y;
-				break;
-			case k_eControllerAxis_Joystick:
-				CI.axis_type[ai++] = VRA_STICK_X;
-				CI.axis_type[ai++] = VRA_STICK_Y;
-				break;
-			case k_eControllerAxis_Trigger:
-				CI.axis_type[ai++] = VRA_TRIGGER;
-				break;
-			}
-		CI.supported_buttons = get_uint64_property(get_hmd(), device_index, Prop_SupportedButtons_Uint64);
+	if (CI.serial_number == serial_number) {
+		update_trackable_info(CI, device_index, true);
+		return;
 	}
+	update_trackable_info(CI, device_index, false);
+	CI.type = VRC_CONTROLLER;
+	CI.serial_number = serial_number;
+//	std::string attached_device_id = get_string_property(get_hmd(), device_index, Prop_AttachedDeviceId_String);
+//	if (!attached_device_id.empty())
+//		CI.variable_parameters["attached_device_id"] = attached_device_id;
+	std::fill(CI.axis_type, CI.axis_type + 8, VRA_NONE);
+	int ai = 0;
+	for (int i = 0; i < 5; ++i)
+		switch (get_int32_property(get_hmd(), device_index, ETrackedDeviceProperty(Prop_Axis0Type_Int32 + i), false)) {
+		case k_eControllerAxis_None: break;
+		case k_eControllerAxis_TrackPad:
+			CI.axis_type[ai++] = VRA_PAD_X;
+			CI.axis_type[ai++] = VRA_PAD_Y;
+			break;
+		case k_eControllerAxis_Joystick:
+			CI.axis_type[ai++] = VRA_STICK_X;
+			CI.axis_type[ai++] = VRA_STICK_Y;
+			break;
+		case k_eControllerAxis_Trigger:
+			CI.axis_type[ai++] = VRA_TRIGGER;
+			break;
+		}
+	uint64_t button_flags = 0;
+	uint64_t supported_buttons = get_uint64_property(get_hmd(), device_index, Prop_SupportedButtons_Uint64);
+	if ((supported_buttons & ButtonMaskFromId(k_EButton_System)) != 0)
+		button_flags += VRF_SYSTEM;
+	if ((supported_buttons & ButtonMaskFromId(k_EButton_ApplicationMenu)) != 0)
+		button_flags += VRF_MENU;
+	if ((supported_buttons & ButtonMaskFromId(k_EButton_Grip)) != 0)
+		button_flags += VRF_GRIP;
+	if ((supported_buttons & ButtonMaskFromId(k_EButton_DPad_Left)) != 0)
+		button_flags += VRF_DPAD_LEFT;
+	if ((supported_buttons & ButtonMaskFromId(k_EButton_DPad_Right)) != 0)
+		button_flags += VRF_DPAD_RIGHT;
+	if ((supported_buttons & ButtonMaskFromId(k_EButton_DPad_Down)) != 0)
+		button_flags += VRF_DPAD_DOWN;
+	if ((supported_buttons & ButtonMaskFromId(k_EButton_DPad_Up)) != 0)
+		button_flags += VRF_DPAD_UP;
+	if ((supported_buttons & ButtonMaskFromId(k_EButton_A)) != 0)
+		button_flags += VRF_A;
+	if ((supported_buttons & ButtonMaskFromId(k_EButton_Axis0)) != 0)
+		button_flags += VRF_INPUT0;
+	if ((supported_buttons & ButtonMaskFromId(k_EButton_Axis1)) != 0)
+		button_flags += VRF_INPUT1;
+	if ((supported_buttons & ButtonMaskFromId(k_EButton_Axis2)) != 0)
+		button_flags += VRF_INPUT2;
+	if ((supported_buttons & ButtonMaskFromId(k_EButton_Axis3)) != 0)
+		button_flags += VRF_INPUT3;
+	if ((supported_buttons & ButtonMaskFromId(k_EButton_Axis4)) != 0)
+		button_flags += VRF_INPUT4;
+	if ((supported_buttons & ButtonMaskFromId(k_EButton_ProximitySensor)) != 0)
+		button_flags += VRF_PROXIMITY;
+	CI.supported_buttons = VRButtonStateFlags(button_flags);
 }
 
 /// update tracker info
@@ -265,18 +373,26 @@ void openvr_kit::update_tracker_info(int ci, vr::TrackedDeviceIndex_t device_ind
 {
 	std::string serial_number = get_string_property(get_hmd(), device_index, Prop_SerialNumber_String);
 	auto& CI = info.controller[ci];
-	if (CI.serial_number != serial_number) {
-
+	if (CI.serial_number == serial_number) {
+		update_trackable_info(CI, device_index, true);
+		return;
 	}
+	update_trackable_info(CI, device_index, false);
+	CI.serial_number = serial_number;
 }
+
 /// update tracker info
 void openvr_kit::update_tracking_reference_info(const std::string& serial, vr::TrackedDeviceIndex_t device_index)
 {
 	auto& TSI = ref_tracking_system_info();
+	if (TSI.name.empty())
+		TSI.name = get_string_property(get_hmd(), device_index, Prop_TrackingSystemName_String);
+
 	if (TSI.references.find(serial) == TSI.references.end()) {
 		auto& TRI = TSI.references[serial];
+		update_trackable_info(TRI, device_index, false);
 		TRI.serial_number = serial;
-		TRI.model_number = get_string_property(get_hmd(), device_index, Prop_ModelNumber_String);
+		TRI.mode = get_string_property(get_hmd(), device_index, Prop_ModeLabel_String);
 		TRI.z_near = get_float_property(get_hmd(), device_index, Prop_TrackingRangeMinimumMeters_Float);
 		TRI.z_far  = get_float_property(get_hmd(), device_index, Prop_TrackingRangeMaximumMeters_Float);
 		TRI.frustum[0] = float(TRI.z_near * tan(M_PI / 180 * get_float_property(get_hmd(), device_index, Prop_FieldOfViewLeftDegrees_Float)));

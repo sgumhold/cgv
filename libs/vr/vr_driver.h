@@ -13,7 +13,6 @@
   There can be several drivers in use at the same time. A simple registry is used to manage 
   drivers and vr kits. The class vr::vr_kit provides access to the head mounted display and 
   the controllers with a simple state polling api.
-  @{
 */
 
 /** @file 
