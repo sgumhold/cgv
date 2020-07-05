@@ -583,12 +583,16 @@ void gl_implicit_surface_drawable_base::draw_implicit_surface(context& ctx)
 	if (show_surface && (mesh.get_nr_faces() > 0)) {
 		GLboolean cull_face;
 		glGetBooleanv(GL_CULL_FACE, &cull_face);
+		auto& prog = ctx.ref_surface_shader_program(false);
+		prog.enable(ctx);
 		ctx.set_material(material);
+		prog.set_uniform(ctx, "illumination_mode", 2);
+		prog.set_uniform(ctx, "map_color_to_material", 0);
 		glDisable(GL_CULL_FACE);
-		ctx.ref_surface_shader_program(false).set_uniform(ctx, "illumination_mode", 2);
 		mri.draw_all(ctx);
 		if (cull_face)
 			glEnable(GL_CULL_FACE);
+		prog.disable(ctx);
 	}
 }
 
