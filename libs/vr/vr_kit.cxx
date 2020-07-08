@@ -3,7 +3,12 @@
 #include <cgv/math/fmat.h>
 
 namespace vr {
-
+	/// initialize to defaults (dead_zone=precision=0;threshold=0.5)
+	controller_input_config::controller_input_config()
+	{
+		dead_zone = precision = 0.0f;
+		threshold = 0.5f;
+	}
 	/// 
 	vr_trackable_state& vr_kit::ref_tracking_reference_state(const std::string& serial_nummer) 
 	{
@@ -31,14 +36,13 @@ namespace vr {
 		camera = nullptr;
 	}
 	/// construct
-	vr_kit::vr_kit(vr_driver* _driver, void* _handle, const std::string& _name, bool _ffb_support, bool _wireless) :
-		driver(_driver), handle(_handle), name(_name), camera(nullptr), force_feedback_support(_ffb_support), wireless(_wireless) {}
+	vr_kit::vr_kit(vr_driver* _driver, void* _handle, const std::string& _name) :
+		driver(_driver), handle(_handle), name(_name), camera(nullptr) {}
 	/// declare virtual destructor
 	vr_kit::~vr_kit()
 	{
-		if (has_camera()) {
+		if (camera)
 			camera->stop();
-		}
 	}
 	/// return driver
 	const vr_driver* vr_kit::get_driver() const { return driver; }
@@ -50,19 +54,7 @@ namespace vr {
 	const std::string& vr_kit::get_name() const { return name; }
 	/// return last error of vr_kit
 	const std::string& vr_kit::get_last_error() const { return last_error; }
-	/// return whether vr_kit is wireless
-	bool vr_kit::is_wireless() const { return wireless; }
-	/// return whether controllers support force feedback
-	bool vr_kit::has_force_feedback() const { return force_feedback_support; }
-	/// return whether device has camera
-	/// only may return true after camera was initialized
-    bool vr_kit::has_camera() const { 
-		if(!camera) return false;
-        else {
-			auto s = camera->get_state();
-			return (s == CameraState::CS_INITIALIZED || s == CameraState::CS_STARTED);
-		}
-    }
+
 	float dot(int n, const float* a, const float* b, int step_a = 1, int step_b=1)  
 	{
 		float res = 0;
@@ -127,6 +119,15 @@ namespace vr {
 	const vr_kit_info& vr_kit::get_device_info() const
 	{
 		return info;
+	}
+	void vr_kit::set_controller_input_config(int ci, int ii, const controller_input_config& cic)
+	{
+		input_configs[ci][ii] = cic;
+	}
+	/// query the configuration of a controller input 
+	const controller_input_config& vr_kit::get_controller_input_config(int ci, int ii) const
+	{
+		return input_configs[ci][ii];
 	}
 
 }

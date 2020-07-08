@@ -22,7 +22,6 @@ namespace vr {
 		battery_charge_level = 0;
 		device_class = -1;
 		has_proximity_sensor = false;
-		number_cameras = 0;
 	}
 	std::ostream& operator << (std::ostream& os, const vr_trackable_info& TI)
 	{
@@ -35,8 +34,6 @@ namespace vr {
 			os << "battery charge level = " << TI.battery_charge_level << std::endl;
 		if (TI.has_proximity_sensor)
 			os << "has proximity sensor" << std::endl;
-		if (TI.number_cameras > 0)
-			os << "number cameras = " << TI.number_cameras << std::endl;
 		return os;
 	}
 	vr_hmd_info::vr_hmd_info()
@@ -46,6 +43,8 @@ namespace vr {
 		fps = 60;
 		ipd = 0;
 		head_to_eye_distance = 0;
+		number_cameras = 0;
+
 		/*
 		std::fill(camera_to_head_transform[0], camera_to_head_transform[0] + 12, 0.0f);
 		std::fill(camera_to_head_transform[1], camera_to_head_transform[1] + 12, 0.0f);
@@ -84,6 +83,8 @@ namespace vr {
 			os << "reports time since vsynch with " << HI.seconds_vsynch_to_photons << " seconds to photons" << std::endl;
 		os << "fps = " << HI.fps << std::endl;
 		os << "ipd = " << HI.ipd << std::endl;
+		if (HI.number_cameras > 0)
+			os << "number cameras = " << HI.number_cameras << std::endl;
 		/*
 		os << "head_to_eye_distance = " << HI.head_to_eye_distance << std::endl;
 		if (HI.number_cameras == 1)
@@ -106,22 +107,37 @@ namespace vr {
 	vr_controller_info::vr_controller_info()
 	{
 		type = VRC_NONE;
+		nr_inputs = 0;
+		std::fill(input_type, input_type + 5, VRI_NONE);
+		nr_axes = 0;
 		std::fill(axis_type, axis_type + 8, VRA_NONE);
 		supported_buttons = VRButtonStateFlags(0);
 	}
 	std::ostream& operator << (std::ostream& os, const vr_controller_info& CI)
 	{
 		const char* controller_type_strings[] = { "none", "controller", "tracker" };
+		const char* input_type_strings[] = { "none", "trigger", "pad", "strick" };
 		const char* axis_type_strings[] = { "none", "trigger", "pad_x", "pad_y", "strick_x", "stick_y" };
 		os << "type = " << controller_type_strings[CI.type] << std::endl;
 		os << static_cast<const vr_trackable_info&>(CI);
-		os << "axis types = [";
-		for (int ai = 0; ai < 8; ++ai) {
-			if (ai > 0)
-				os << ",";
-			os << axis_type_strings[CI.axis_type[ai]];
+		if (CI.nr_inputs == 0)
+			os << "no inputs provided" << std::endl;
+		else {
+			os << "input types = [";
+			for (int i = 0; i < CI.nr_inputs; ++i) {
+				if (i > 0)
+					os << ",";
+				os << input_type_strings[CI.input_type[i]];
+			}
+			os << "]" << std::endl;
+			os << "axis types = [";
+			for (int ai = 0; ai < CI.nr_axes; ++ai) {
+				if (ai > 0)
+					os << ",";
+				os << axis_type_strings[CI.axis_type[ai]];
+			}
+			os << "]" << std::endl;
 		}
-		os << "]" << std::endl;
 		os << "button support = " << get_state_flag_string(CI.supported_buttons) << std::endl;
 		return os;
 	}

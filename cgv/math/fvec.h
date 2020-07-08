@@ -289,29 +289,39 @@ std::istream& operator>>(std::istream& in, fvec<T,N>& v)
 	return in;
 }
 
-
 ///returns the product of a scalar s and vector v
 template <typename T, cgv::type::uint32_type N>
-fvec<T,N> operator * (const T& s, const fvec<T,N>& v) 
-{
-	fvec<T,N> r = v; r *= s; return r; 
-}
+fvec<T,N> operator * (const T& s, const fvec<T,N>& v) {	fvec<T,N> r = v; r *= s; return r; }
 
 ///returns the dot product of vector v and w
 template <typename T, cgv::type::uint32_type N>
-inline T dot(const fvec<T,N>& v, const fvec<T,N>& w) 
+inline T dot(const fvec<T,N>& v, const fvec<T,N>& w)
 { 
 	T r = 0; 
-	for (unsigned i=0;i<N;++i) r += v(i)*w(i); 
+	for (unsigned i=0;i<N;++i)
+		r += v(i)*w(i); 
 	return r; 
 }
 
 ///returns the length of vector v 
 template <typename T, cgv::type::uint32_type N>
-inline T length(const fvec<T,N>& v) 
-{
-	return sqrt(dot(v,v));
-}
+inline T length(const fvec<T, N>& v) { return sqrt(dot(v, v)); }
+
+/// apply abs function component wise to vector
+template <typename T, cgv::type::uint32_type N>
+inline fvec<T, N> abs(const fvec<T, N>& v) { fvec<T, N> r(v); r.abs(); return r; }
+
+/// apply round function component wise to vector
+template <typename T, cgv::type::uint32_type N>
+inline fvec<T, N> round(const fvec<T, N>& v) { fvec<T, N> r(v); r.round(); return r; }
+
+/// apply floor function component wise to vector
+template <typename T, cgv::type::uint32_type N>
+inline fvec<T, N> floor(const fvec<T, N>& v) { fvec<T, N> r(v); r.floor(); return r; }
+
+/// apply ceil function component wise to vector
+template <typename T, cgv::type::uint32_type N>
+inline fvec<T, N> ceil(const fvec<T, N>& v) { fvec<T, N> r(v); r.ceil(); return r; }
 
 ///returns the squared length of vector v 
 template <typename T, cgv::type::uint32_type N>

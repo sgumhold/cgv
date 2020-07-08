@@ -101,10 +101,7 @@ struct openvr_driver : public vr_driver
 			if (!kit) {
 				uint32_t width, height;
 				hmd_ptr->GetRecommendedRenderTargetSize(&width, &height);
-				bool ffb_support = true;
-				bool wireless = false;
-				kit = new openvr_kit(width, height, this, hmd_ptr, kit_name, ffb_support, wireless);
-				bool camera_init = initialize_camera(kit);
+				kit = new openvr_kit(width, height, this, hmd_ptr, kit_name);
 				vr_kit_state state;
 				kit->query_state(state, 2);
 				register_vr_kit(hmd_ptr, kit);
@@ -125,10 +122,7 @@ struct openvr_driver : public vr_driver
 			if (!kit) {
 				uint32_t width, height;
 				hmd_ptr->GetRecommendedRenderTargetSize(&width, &height);
-				bool ffb_support = true;
-				bool wireless = false;
-				kit = new openvr_kit(width, height, this, hmd_ptr, kit_name, ffb_support, wireless);
-				bool camera_init = initialize_camera(kit);
+				kit = new openvr_kit(width, height, this, hmd_ptr, kit_name);
 				register_vr_kit(hmd_ptr, kit);
 			}
 			if (index == 0) {
@@ -152,10 +146,7 @@ struct openvr_driver : public vr_driver
 			if (!kit) {
 				uint32_t width, height;
 				hmd_ptr->GetRecommendedRenderTargetSize(&width, &height);
-				bool ffb_support = true;
-				bool wireless = false;
-				kit = new openvr_kit(width, height, this, hmd_ptr, kit_name, ffb_support, wireless);
-				bool camera_init = initialize_camera(kit);
+				kit = new openvr_kit(width, height, this, hmd_ptr, kit_name);
 				register_vr_kit(hmd_ptr, kit);
 			}
 			if (kit == old_kit_ptr) {

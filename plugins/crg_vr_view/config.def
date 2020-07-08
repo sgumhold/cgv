@@ -1,35 +1,11 @@
+// *********** stereo_view_interactor ************
+
+
+
 // *********** Calibration ***********************
 
 // set file name of calibration that has been saved in UI 
 type(vr_view_interactor):calibration_file_path="D:/develop/projects/git/cgv/plugins/vr_test/table.cal"
-
-// *********** Visibility of VR devices **********
-
-// set visibility type of all VR devices to 0 ... hidden, 1 ... sphere glyphs, 2 ... meshes, 3 ... spheres and meshes
-type(vr_view_interactor):vis_type=0
-
-// set visibility type of a specific VR device type
-type(vr_view_interactor):hmd_vis_type=0
-type(vr_view_interactor):controller_vis_type=2
-type(vr_view_interactor):tracker_vis_type=1
-type(vr_view_interactor):base_vis_type=0
-
-// *********** VR View Configuration ************
-
-// whether to render a navigatable birds eye view in the cgv viewer
-type(vr_view_interactor):separate_view=false
-
-// in case of no separate view one can specify image of current hmd to be shown in cgv viewer (1 ... left, 2 ... right, 3 ... both)
-type(vr_view_interactor):none_separate_view=1
-
-// whether to blit images sent to hmd in the cgv viewer window
-type(vr_view_interactor):blit_vr_views=true
-
-// width in pixel of an individually blitted image
-type(vr_view_interactor):blit_width=200
-
-// factor to scale aspect ratio of blitted images
-type(vr_view_interactor):blit_aspect_scale=1.3
 
 
 // *********** Meshes ****************************

@@ -35,7 +35,7 @@ namespace vr {
 
 	protected:
 		/// construct
-		gl_vr_display(unsigned _width, unsigned _height, vr_driver* _driver, void* _handle, const std::string& _name, bool _ffb_support, bool _wireless);
+		gl_vr_display(unsigned _width, unsigned _height, vr_driver* _driver, void* _handle, const std::string& _name);
 	public:
 		/// declare virtual destructor
 		virtual ~gl_vr_display();

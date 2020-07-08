@@ -31,13 +31,13 @@ namespace vr {
 		VR_DPAD_DOWN,       //!< direction pad down
 		VR_DPAD_DOWN_RIGHT, //!< direction pad diagonally down and right
 		VR_DPAD_LEFT,       //!< direction pad left
-		VR_INPUT0,          //!< input 0
 		VR_DPAD_RIGHT,      //!< direction pad right
 		VR_DPAD_UP_LEFT,    //!< direction pad diagonally up and left
 		VR_DPAD_UP,         //!< direction pad up
 		VR_DPAD_UP_RIGHT,   //!< direction pad diagonally up and right
 		VR_A,               //!< A button
 		VR_INPUT0_TOUCH,    //!< touched input 0
+		VR_INPUT0,          //!< input 0
 		VR_INPUT1_TOUCH,    //!< touched input 1
 		VR_INPUT1,          //!< input 1
 		VR_INPUT2_TOUCH,    //!< touched input 2

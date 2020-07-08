@@ -110,8 +110,8 @@ void vr_emulated_kit::compute_state_poses()
 	}
 }
 
-vr_emulated_kit::vr_emulated_kit(float _body_direction, const vec3& _body_position, float _body_height, unsigned _width, unsigned _height, vr::vr_driver* _driver, void* _handle, const std::string& _name, bool _ffb_support, bool _wireless)
-	: gl_vr_display(_width, _height, _driver, _handle, _name, _ffb_support, _wireless)
+vr_emulated_kit::vr_emulated_kit(float _body_direction, const vec3& _body_position, float _body_height, unsigned _width, unsigned _height, vr::vr_driver* _driver, void* _handle, const std::string& _name)
+	: gl_vr_display(_width, _height, _driver, _handle, _name)
 {
 	body_position = _body_position;
 	body_direction=_body_direction;
@@ -132,6 +132,34 @@ vr_emulated_kit::vr_emulated_kit(float _body_direction, const vec3& _body_positi
 	tracker_positions[1] = vec3(-0.2f, 1.2f, 0.0f);
 	tracker_orientations[0] = tracker_orientations[1] = quat(0.71f,-0.71f,0,0);
 	tracker_attachments[0] = tracker_attachments[1] = TA_WORLD;
+	info.force_feedback_support = true;
+	info.hmd.device_class = 1234;
+	info.hmd.device_type = "vr kit";
+	info.hmd.has_proximity_sensor = false;
+	info.hmd.head_to_eye_distance = 0.1f;
+	info.hmd.ipd = 0.06f;
+	info.hmd.model_number = 1;
+	info.hmd.number_cameras = 0;
+	info.hmd.serial_number = cgv::utils::to_string(_handle)+"H";
+	info.hmd.fps = 60;
+	for (int ci = 0; ci < 4; ++ci) {
+		if (ci < 2) {
+			info.controller[ci].nr_axes = 3;
+			info.controller[ci].nr_inputs = 2;
+			info.controller[ci].input_type[0] = vr::VRI_PAD;
+			info.controller[ci].input_type[1] = vr::VRI_TRIGGER;
+			info.controller[ci].axis_type[0] = vr::VRA_PAD_X;
+			info.controller[ci].axis_type[1] = vr::VRA_PAD_Y;
+			info.controller[ci].axis_type[2] = vr::VRA_TRIGGER;
+			info.controller[ci].supported_buttons = vr::VRButtonStateFlags(vr::VRF_MENU | vr::VRF_GRIP | vr::VRF_SYSTEM | vr::VRF_A | vr::VRF_INPUT0_TOUCH | vr::VRF_INPUT0);
+		}
+		info.controller[ci].model_number = ci < 2 ? 2 : 6;
+		info.controller[ci].is_wireless = true;
+		info.controller[ci].device_class = 444;
+		info.controller[ci].device_type = ci < 2 ? "emul_controller" : "emul_tracker";
+		info.controller[ci].serial_number = cgv::utils::to_string(_handle) + "C" + cgv::utils::to_string(ci);
+		info.controller[ci].type = ci < 2 ? vr::VRC_CONTROLLER : vr::VRC_TRACKER;
+	}
 	compute_state_poses();
 }
 
@@ -195,7 +223,7 @@ bool vr_emulated_kit::set_vibration(unsigned controller_index, float low_frequen
 {
 	state.controller[controller_index].vibration[0] = low_frequency_strength;
 	state.controller[controller_index].vibration[1] = high_frequency_strength;
-	return has_force_feedback();
+	return info.force_feedback_support;
 }
 
 void vr_emulated_kit::put_eye_to_head_matrix(int eye, float* pose_matrix) const
@@ -234,12 +262,10 @@ vr_emulator::vr_emulator() : cgv::base::node("vr_emulator")
 	body_direction = 0;
 	screen_width = 640;
 	screen_height = 480;
-	ffb_support = true;
-	wireless = false;
 	counter = 0;
 
-	coordinate_rotation = quat(0.866f, 0.0f, 0.5f, 0.0f);
-	coordinate_displacement = vec3(0.0f, 1.0f, 2.0f);
+	coordinate_rotation = quat(1,0,0,0);
+	coordinate_displacement = vec3(0.0f);
 
 	ref_tracking_reference_state("vr_emulator_base_01").status = vr::VRS_TRACKED;
 	mat3& ref_ori_1 = reinterpret_cast<mat3&>(*ref_tracking_reference_state("vr_emulator_base_01").pose);
@@ -411,7 +437,7 @@ void vr_emulator::add_new_kit()
 	(unsigned&)handle = counter;
 	vr_emulated_kit* new_kit = new vr_emulated_kit(body_direction, body_position, body_height,
 		screen_width, screen_height, this, handle, 
-		std::string("vr_emulated_kit[") + cgv::utils::to_string(counter) + "]", ffb_support, wireless);
+		std::string("vr_emulated_kit[") + cgv::utils::to_string(counter) + "]");
 	kits.push_back(new_kit);
 	register_vr_kit(handle, new_kit);
 	if (current_kit_index == -1) {
@@ -572,8 +598,6 @@ bool vr_emulator::handle(cgv::gui::event& e)
 	case 'E': return check_for_button_toggle(ke, 0, vr::VRF_A, 1, 1);
 	case 'A': return check_for_button_toggle(ke, 0, vr::VRF_INPUT0_TOUCH, -1, 0);
 	case 'S': return check_for_button_toggle(ke, 0, vr::VRF_INPUT0, 0, 0);
-	case 'D': return check_for_button_toggle(ke, 0, vr::VRButtonStateFlags(0), 1, 0);
-	case 'Y': return check_for_button_toggle(ke, 0, vr::VRButtonStateFlags(0), -1, -1);
 
 	case 'I': return check_for_button_toggle(ke, 1, vr::VRF_MENU, 0, 1);
 	case 'O': return check_for_button_toggle(ke, 1, vr::VRF_GRIP, 1, 1);
@@ -581,8 +605,6 @@ bool vr_emulator::handle(cgv::gui::event& e)
 	case 'B': return check_for_button_toggle(ke, 1, vr::VRF_A, -1, -1);
 	case 'J': return check_for_button_toggle(ke, 1, vr::VRF_INPUT0, 0, 0);
 	case 'K': return check_for_button_toggle(ke, 1, vr::VRF_INPUT0_TOUCH, 1, 0);
-	case 'H': return check_for_button_toggle(ke, 1, vr::VRButtonStateFlags(0), -1, 0);
-	case 'M': return check_for_button_toggle(ke, 1, vr::VRButtonStateFlags(0), 1, -1);
 
 	case cgv::gui::KEY_Left:
 	case cgv::gui::KEY_Num_4:
@@ -668,9 +690,7 @@ bool vr_emulator::self_reflect(cgv::reflect::reflection_handler& srh)
 		srh.reflect_member("create_body_position", body_position) &&
 		srh.reflect_member("body_height", body_height) &&
 		srh.reflect_member("screen_height", screen_height) &&
-		srh.reflect_member("screen_width", screen_width) &&
-		srh.reflect_member("wireless", wireless) &&
-		srh.reflect_member("ffb_support", ffb_support);
+		srh.reflect_member("screen_width", screen_width);
 	if (res && current_kit_index != -1 && current_kit_index < (int)kits.size()) {
 		vr_emulated_kit* kit_ptr = kits[current_kit_index];
 		res =
@@ -772,8 +792,6 @@ void vr_emulator::create_gui()
 		align("\a");
 		add_member_control(this, "screen_width", screen_width, "value_slider", "min=320;max=1920;ticks=true");
 		add_member_control(this, "screen_height", screen_height, "value_slider", "min=240;max=1920;ticks=true");
-		add_member_control(this, "ffb_support", ffb_support, "toggle", "w=90", " ");
-		add_member_control(this, "wireless", wireless, "toggle", "w=90");
 		add_gui("body_position", body_position, "", "options='min=-1;max=1;step=0.0001;ticks=true'");
 		add_member_control(this, "body_direction", body_direction, "min=0;max=6.3;ticks=true");
 		add_member_control(this, "body_height", body_height, "min=1.2;max=2.0;step=0.001;ticks=true");
@@ -798,18 +816,18 @@ void vr_emulator::create_gui()
 			align("\a");
 			add_view("buttons left", kits[i]->fovy, "", "w=0", "");
 			add_gui("button_flags", kits[i]->state.controller[0].button_flags, "bit_field_control",
-				"enums='ME=1,B0=2,B1=4,B2=8,B3=16,TO=32,ST=64';options='w=18;tooltip=\""
-				"MEnu button<W> \nButton 0 (Grip) <X>\nButton 1 <Q>\nButton 2 <E>\n"
-				"Button 3 <C>\nstick TOuch <A>\nSTick press <S>\"';"
+				"enums='SY=1,ME=2,GR=4,A=128,TO=256,PR=512';options='w=18;tooltip=\""
+				"SYstem button<Q> \nMEnu button <W>\nGRip button <X>\nA button <E>\n"
+				"pad TOuch <A>\npad PRess <S>\"';"
 				"align='';gui_type='toggle'");
 			align(" ");
 			add_view("touch xy", kits[i]->state.controller[0].axes[0], "", "w=18", "");
 			add_view("", kits[i]->state.controller[0].axes[1], "", "w=18");
 			add_view("buttons right", kits[i]->fovy, "", "w=0", "");
 			add_gui("button_flags", kits[i]->state.controller[1].button_flags, "bit_field_control",
-				"enums='ME=1,B0=2,B1=4,B2=8,B3=16,TO=32,ST=64';options='w=18;tooltip=\""
-				"MEnu button<I> \nButton 0 (Grip) <N>\nButton 1 <O>\nButton 2 <U>\n"
-				"Button 3 <B>\nstick TOuch <K>\nSTick press <J>\"';"
+				"enums='SY=1,ME=2,GR=4,A=128,TO=256,PR=512';options='w=18;tooltip=\""
+				"SYstem button<U> \nMEnu button <I>\nGRip button <O>\nA button <B>\n"
+				"pad TOuch <K>\npad PRess <J>\"';"
 				"align='';gui_type='toggle'");			
 			align(" ");
 			add_view("touch xy", kits[i]->state.controller[1].axes[0], "", "w=18", "");

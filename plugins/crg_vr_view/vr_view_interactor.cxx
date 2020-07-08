@@ -33,7 +33,7 @@ vr_view_interactor::vr_view_interactor(const char* name) : stereo_view_interacto
 	dont_render_kits = false;
 	blit_vr_views = true;
 	blit_width = 160;
-	event_flags = cgv::gui::VREventTypeFlags(cgv::gui::VRE_STATUS + cgv::gui::VRE_KEY + cgv::gui::VRE_POSE);
+	event_flags = cgv::gui::VREventTypeFlags(cgv::gui::VRE_ALL);
 	rendered_kit_ptr = 0;
 	rendered_eye = 0;
 	rendered_kit_index = -1;
@@ -983,7 +983,7 @@ void vr_view_interactor::create_gui()
 		add_member_control(this, "pose_query", pose_query, "value_slider", "min=0;max=2;ticks=true");
 
 		add_member_control(this, "debug_vr_events", debug_vr_events, "check");
-		add_gui("event_flags", event_flags, "bit_field_control", "enums='dev=1,sta=2,key=4,thr=8,stk=16,skk=32,pos=64';gui_type='toggle';options='w=30';align=''");
+		add_gui("event_flags", event_flags, "bit_field_control", "enums='dev=1,sta=2,key=4,1ax=8,2ax=16,1_k=32,2_k=64,pos=128';gui_type='toggle';options='w=30';align=''");
 		align("\n\b");
 		end_tree_node(event_flags);
 	}

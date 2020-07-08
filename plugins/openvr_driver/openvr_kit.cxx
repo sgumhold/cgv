@@ -154,48 +154,24 @@ void analyze_tracking_reference(vr::IVRSystem* hmd_ptr, vr::TrackedDeviceIndex_t
 	std::cout << std::endl;
 }
 
-const std::vector<std::pair<int, int> >& openvr_kit::get_controller_throttles_and_sticks(int controller_index) const
-{
-	static std::vector<std::pair<int, int> > throttles_and_sticks;
-	if (throttles_and_sticks.empty()) {
-		// add stick
-		throttles_and_sticks.push_back(std::pair<int, int>(0, 1));
-		// add trigger throttle
-		throttles_and_sticks.push_back(std::pair<int, int>(2, -1));
-	}
-	return throttles_and_sticks;
-}
-
-/// for each controller provide information on throttles' and sticks' deadzone and precision values
-const std::vector<std::pair<float, float> >& openvr_kit::get_controller_throttles_and_sticks_deadzone_and_precision(int controller_index) const
-{
-	static std::vector<std::pair<float, float> > deadzone_and_precision;
-	if (deadzone_and_precision.empty()) {
-		deadzone_and_precision.push_back(std::pair<float, float>(0.0f, 0.0f));
-		deadzone_and_precision.push_back(std::pair<float, float>(0.0f, 0.0f));
-	}
-	return deadzone_and_precision;
-}
-
 /// construct
-openvr_kit::openvr_kit(unsigned _width, unsigned _height, 
-	vr_driver* _driver, vr::IVRSystem* _hmd,
-	const std::string& _name, bool _ffb_support, bool _wireless)
-	: gl_vr_display(_width, _height, _driver, _hmd, _name, _ffb_support, _wireless)
+openvr_kit::openvr_kit(unsigned _width, unsigned _height, vr_driver* _driver, vr::IVRSystem* _hmd, const std::string& _name)
+	: gl_vr_display(_width, _height, _driver, _hmd, _name)
 {
 	camera = new openvr_camera(_hmd);
+	info.force_feedback_support = true;
 }
 
 /// declare virtual destructor
 openvr_kit::~openvr_kit()
 {
-	if (has_camera()) {
+	if (camera) {
 		camera->stop();
 		destruct_camera();
 	}
 }
 
-void extract_controller_state(const VRControllerState_t& input, vr_controller_state& output)
+void openvr_kit::extract_controller_state(const VRControllerState_t& input, int ci, vr_controller_state& output)
 {
 	output.time_stamp = input.unPacketNum;
 	output.button_flags = 0;
@@ -238,10 +214,16 @@ void extract_controller_state(const VRControllerState_t& input, vr_controller_st
 		output.button_flags += VRF_INPUT4_TOUCH;
 	if ((input.ulButtonTouched & ButtonMaskFromId(k_EButton_ProximitySensor)) != 0)
 		output.button_flags += VRF_PROXIMITY;
-
-	for (unsigned i = 0; i < 4; ++i) {
-		output.axes[2 * i] = input.rAxis[i].x;
-		output.axes[2 * i + 1] = input.rAxis[i].y;
+	
+	const auto& CI = get_device_info().controller[ci];
+	int ai = 0;
+	for (int ii = 0; ii < CI.nr_inputs; ++ii) {
+		if (CI.input_type[ii] == VRI_NONE)
+			continue;
+		output.axes[ai++] = input.rAxis[ii].x;
+		if (CI.input_type[ii] == VRI_TRIGGER)
+			continue;
+		output.axes[ai++] = input.rAxis[ii].y;
 	}
 }
 
@@ -288,6 +270,7 @@ void openvr_kit::update_hmd_info()
 	HI.fps = get_float_property(get_hmd(), device_index, Prop_DisplayFrequency_Float);
 	HI.ipd = get_float_property(get_hmd(), device_index, Prop_UserIpdMeters_Float);
 	HI.head_to_eye_distance = get_float_property(get_hmd(), device_index, Prop_UserHeadToEyeDepthMeters_Float);
+	bool has_camera = get_bool_property(get_hmd(), device_index, Prop_HasCamera_Bool, false);
 	/*
 	HI.camera_to_head_transform[2][12];
 	HI.imu_to_head_transform[12];
@@ -311,30 +294,48 @@ void openvr_kit::update_controller_info(int ci, vr::TrackedDeviceIndex_t device_
 	if (CI.serial_number == serial_number) {
 		update_trackable_info(CI, device_index, true);
 		return;
-	}
+	}	
 	update_trackable_info(CI, device_index, false);
 	CI.type = VRC_CONTROLLER;
 	CI.serial_number = serial_number;
 //	std::string attached_device_id = get_string_property(get_hmd(), device_index, Prop_AttachedDeviceId_String);
 //	if (!attached_device_id.empty())
 //		CI.variable_parameters["attached_device_id"] = attached_device_id;
+	std::fill(CI.input_type, CI.input_type + 5, VRI_NONE);
 	std::fill(CI.axis_type, CI.axis_type + 8, VRA_NONE);
 	int ai = 0;
-	for (int i = 0; i < 5; ++i)
-		switch (get_int32_property(get_hmd(), device_index, ETrackedDeviceProperty(Prop_Axis0Type_Int32 + i), false)) {
-		case k_eControllerAxis_None: break;
+	CI.nr_inputs = 0;
+	for (int ii = 0; ii < 5; ++ii)
+		switch (get_int32_property(get_hmd(), device_index, ETrackedDeviceProperty(Prop_Axis0Type_Int32 + ii), false)) {
+		case k_eControllerAxis_None: 
+			break;
 		case k_eControllerAxis_TrackPad:
+			CI.input_type[ii] = VRI_PAD;
 			CI.axis_type[ai++] = VRA_PAD_X;
 			CI.axis_type[ai++] = VRA_PAD_Y;
+			++CI.nr_inputs;
 			break;
 		case k_eControllerAxis_Joystick:
+			CI.input_type[ii] = VRI_STICK;
 			CI.axis_type[ai++] = VRA_STICK_X;
 			CI.axis_type[ai++] = VRA_STICK_Y;
+			++CI.nr_inputs;
 			break;
 		case k_eControllerAxis_Trigger:
+			CI.input_type[ii] = VRI_TRIGGER;
 			CI.axis_type[ai++] = VRA_TRIGGER;
+			++CI.nr_inputs;
 			break;
 		}
+	CI.nr_axes = ai;
+	// set controller input configuration to default
+	for (int ii = 0; ii < CI.nr_inputs; ++ii) {
+		auto cif = get_controller_input_config(ci, ii);
+		cif.dead_zone = 0.1f;
+		cif.precision = 0.0f;
+		cif.threshold = 0.5f;
+		set_controller_input_config(ci, ii, cif);
+	}
 	uint64_t button_flags = 0;
 	uint64_t supported_buttons = get_uint64_property(get_hmd(), device_index, Prop_SupportedButtons_Uint64);
 	if ((supported_buttons & ButtonMaskFromId(k_EButton_System)) != 0)
@@ -432,7 +433,7 @@ bool openvr_kit::query_state_impl(vr_kit_state& state, int pose_query)
 					&controller_state, sizeof(controller_state), &tracked_pose);
 				extract_trackable_state(tracked_pose, state.controller[ci]);
 			}
-			extract_controller_state(controller_state, state.controller[ci]);
+			extract_controller_state(controller_state, ci, state.controller[ci]);
 			update_controller_info(ci, dis[ci]);
 		}
 	}
