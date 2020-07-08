@@ -66,8 +66,6 @@ namespace vr {
 		void register_vr_kit(void* handle, vr_kit* kit);
 		/// call this method during replacement of vr kits. In case vr kit handle had been registered before it is replaced, otherwise it is registered
 		void replace_vr_kit(void* handle, vr_kit* kit);
-		/// initialize the camera of a vr_kit and return whether this was successful
-		bool initialize_camera(vr_kit* kit) const;
 	private:
 		/// store poses and tracking status of tracking reference states in map with serial number as key
 		std::map<std::string, vr_trackable_state> tracking_reference_states;

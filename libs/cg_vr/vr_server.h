@@ -27,11 +27,12 @@ namespace cgv {
 			VRE_DEVICE = 1,    //!< device change events
 			VRE_STATUS = 2,    //!< status change events
 			VRE_KEY = 4,       //!< key events
-			VRE_THROTTLE = 8,  //!< throttle events
-			VRE_STICK = 16,    //!< stick events
-			VRE_STICK_KEY = 32,//!< whether stick|touchpad press actions should be translated to direction key events
-			VRE_POSE = 64,     //!< pose events
-			VRE_ALL = 127      //!< all event types
+			VRE_ONE_AXIS = 8,  //!< trigger / throttle / pedal events
+			VRE_TWO_AXES = 16, //!< pad / stick events
+			VRE_ONE_AXIS_GENERATES_KEY =32,//!< whether one axis events should generate a key event when passing inputs threshold value
+			VRE_TWO_AXES_GENERATES_DPAD = 64, //!< whether two axes input generates direction pad keys when presses
+			VRE_POSE = 128,    //!< pose events
+			VRE_ALL = 255      //!< all event types
 		};
 
 		/// different types of event focus grabbing
@@ -132,15 +133,11 @@ namespace cgv {
 		class CGV_API vr_server
 		{
 		public:
-			typedef std::pair<float, float> flt_flt;
-			typedef std::vector<flt_flt> vec_flt_flt;
-			typedef std::pair<const vec_flt_flt*, const vec_flt_flt*> vec_pair;
 			typedef stick_event::vec2 vec2;
 		protected:
 			double last_device_scan;
 			double device_scan_interval;
 			std::vector<void*> vr_kit_handles;
-			std::vector<vec_pair> vr_kit_deadzone_and_precision;
 			std::vector<vr::vr_kit_state> last_states;
 			std::vector<unsigned> last_time_stamps;
 			VREventTypeFlags event_type_flags;
@@ -149,9 +146,9 @@ namespace cgv {
 			///
 			void emit_events_and_update_state(void* kit_handle, const vr::vr_kit_state& new_state, int kit_index, VREventTypeFlags flags, double time);
 			///
-			float correct_deadzone_and_precision(float value, const flt_flt& deadzone_and_precision);
+			float correct_deadzone_and_precision(float value, const vr::controller_input_config& IC);
 			///
-			vec2 correct_deadzone_and_precision(const vec2& position, const flt_flt& deadzone_and_precision);
+			vec2 correct_deadzone_and_precision(const vec2& position, const vr::controller_input_config& IC);
 		public:
 			/// construct server with default configuration
 			vr_server();
@@ -159,10 +156,6 @@ namespace cgv {
 			VREventTypeFlags get_event_type_flags() const;
 			/// set the event type flags of to be emitted events
 			void set_event_type_flags(VREventTypeFlags flags);
-			//! for a given device handle, replace for controller given by index the deadzone and precision parameter vector.
-			/*! If last parameter is nullptr, restore original vr kit parameters.
-			    Return whether vr_kit_handle corresponded to an active device. */
-			bool provide_controller_throttles_and_sticks_deadzone_and_precision(void* kit_handle, int controller_index, const vec_flt_flt* dz_and_ps);
 			/// set time interval in seconds to check for device connection changes
 			void set_device_scan_interval(double duration);
 			/// return the time interval in seconds to check for device connection changes

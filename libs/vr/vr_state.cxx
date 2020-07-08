@@ -132,24 +132,24 @@ namespace vr {
 		};
 		static const VRButtonStateFlags flag_values[] = { 
 			VRF_SYSTEM       ,
-		VRF_MENU         ,
-		VRF_GRIP         ,
-		VRF_DPAD_LEFT    ,
-		VRF_DPAD_RIGHT   ,
-		VRF_DPAD_DOWN    ,
-		VRF_DPAD_UP      ,
-		VRF_A            ,
-		VRF_INPUT0_TOUCH ,
-		VRF_INPUT0       ,
-		VRF_INPUT1_TOUCH ,
-		VRF_INPUT1       ,
-		VRF_INPUT2_TOUCH ,
-		VRF_INPUT2       ,
-		VRF_INPUT3_TOUCH ,
-		VRF_INPUT3       ,
-		VRF_INPUT4_TOUCH ,
-		VRF_INPUT4       ,
-		VRF_PROXIMITY
+			VRF_MENU         ,
+			VRF_GRIP         ,
+			VRF_DPAD_LEFT    ,
+			VRF_DPAD_RIGHT   ,
+			VRF_DPAD_DOWN    ,
+			VRF_DPAD_UP      ,
+			VRF_A            ,
+			VRF_INPUT0_TOUCH ,
+			VRF_INPUT0       ,
+			VRF_INPUT1_TOUCH ,
+			VRF_INPUT1       ,
+			VRF_INPUT2_TOUCH ,
+			VRF_INPUT2       ,
+			VRF_INPUT3_TOUCH ,
+			VRF_INPUT3       ,
+			VRF_INPUT4_TOUCH ,
+			VRF_INPUT4       ,
+			VRF_PROXIMITY
 		};
 		std::string result;
 		for (unsigned i = 0; i < 19; ++i)

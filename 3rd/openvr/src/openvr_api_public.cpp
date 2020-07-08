@@ -55,7 +55,7 @@ void CleanupInternalInterfaces();
 
 uint32_t VR_InitInternal2( EVRInitError *peError, vr::EVRApplicationType eApplicationType, const char *pStartupInfo )
 {
-	std::lock_guard<std::recursive_mutex> lock( g_mutexSystem );
+//	std::lock_guard<std::recursive_mutex> lock( g_mutexSystem );
 
 	EVRInitError err = VR_LoadHmdSystemInternal();
 	if ( err == vr::VRInitError_None )

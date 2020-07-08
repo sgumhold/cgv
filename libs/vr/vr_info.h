@@ -43,8 +43,6 @@ namespace vr {
 		float battery_charge_level;
 		/// whether device has proximity sensor
 		bool has_proximity_sensor;
-		/// number of cameras
-		int32_t number_cameras;
 		/// construct with default values
 		vr_trackable_info();
 	};
@@ -65,6 +63,8 @@ namespace vr {
 		float ipd;
 		/// distance from head origin to eye centers in meters
 		float head_to_eye_distance;
+		/// number of cameras
+		int32_t number_cameras;
 		/*
 		/// imu to head pose matrix
 		float imu_to_head_transform[12];
@@ -85,13 +85,20 @@ namespace vr {
 	/// stream out operator for hmd device infos
 	extern CGV_API std::ostream& operator << (std::ostream& os, const vr_hmd_info& HI);
 
-	/// enum for information on controller type
+	/// type of controller
 	enum VRControllerType {
 		VRC_NONE = 0,
 		VRC_CONTROLLER = 1,
 		VRC_TRACKER = 2
 	};
-	/// different controller axis types
+	/// different controller input types
+	enum VRInputType {
+		VRI_NONE,
+		VRI_TRIGGER,
+		VRI_PAD,
+		VRI_STICK
+	};
+	/// different axis types of controller inputs
 	enum VRAxisType {
 		VRA_NONE = 0,
 		VRA_TRIGGER = 1,
@@ -105,7 +112,16 @@ namespace vr {
 	{
 		/// controller type
 		VRControllerType type;
-		/// axis type for each of the 8 axes in the state
+		/// number of used inputs
+		int32_t nr_inputs;
+		/// type of up to 5 inputs built into the controller
+		VRInputType input_type[5];
+		/// total number of axes provided by all inputs
+		int32_t nr_axes;
+		//! axis type for each of the 8 axes in the state
+		/*! axes are enumerated in the order of the inputs. Typically, the first is
+		    a 2d input (pad or stick) with the corresponding axes indexed with 0 and 1.
+			The first axis of the second input is in this case 2. */
 		VRAxisType axis_type[8];
 		/// one flag per button telling whether it is supported
 		VRButtonStateFlags supported_buttons;
@@ -118,6 +134,8 @@ namespace vr {
 	/// information provided for a vr kit
 	struct CGV_API vr_kit_info
 	{
+		/// whether force feedback is supported
+		bool force_feedback_support;
 		/// information for head mounted display
 		vr_hmd_info hmd;
 		/// information for attached controllers and trackers

@@ -17,6 +17,23 @@ namespace vr {
 	/// forward declaration of vr driver class
 	class CGV_API vr_driver;
 
+	/// configuration of a controller input axis
+	struct CGV_API controller_input_config
+	{
+		//! all input values below dead_zone are clamped to 0.
+		/*! For pad and stick inputs the length of the vector valued position is compared to dead_zone 
+		    and the zero vector is compared inside of dead zone.*/
+		float dead_zone;
+		//! if precision is larger than zero, values are rounded to multiples of precision. 
+		/*! If precision is 0.02 then the value 0.031 would be rounded to 0.04.*/
+		float precision;
+		//! if value gets larger than threshold a key press event is triggered if this is enabled.
+		/*! In case input is pad or stick, a direction pad is emulated and the two thresholds are used to determine direction. */
+		float threshold;
+		/// initialize to defaults (dead_zone=precision=0;threshold=0.5)
+		controller_input_config();
+	};
+
 	/**@name vr kit management */
 	//@{
 	//! a vr kit is composed of headset, two controllers, and two trackers, where all devices can be attached or detached
@@ -61,12 +78,10 @@ namespace vr {
 		vr_camera* camera;
 		/// name in case driver provides this information (not reliable)
 		std::string name;
-		/// whether force feedback is supported
-		bool force_feedback_support;
-		/// whether it is wireless
-		bool wireless;
 		/// store vr kit info to be filled and updated by driver implementations
 		vr_kit_info info;
+		/// store controller input configs per controller and input
+		controller_input_config input_configs[4][5];
 		/// store last error here
 		std::string last_error;
 		/// destruct camera
@@ -82,7 +97,7 @@ namespace vr {
 		/// derived kits implement this without caring about calibration; vr_kit::query_state() will apply driver calibration
 		virtual bool query_state_impl(vr_kit_state& state, int pose_query) = 0;
 		/// construct
-		vr_kit(vr_driver* _driver, void* _handle, const std::string& _name, bool _ffb_support, bool _wireless);
+		vr_kit(vr_driver* _driver, void* _handle, const std::string& _name);
 	public:
 		/// return driver
 		const vr_driver* get_driver() const;
@@ -94,35 +109,19 @@ namespace vr {
 		const std::string& get_name() const;
 		/// return last error of vr_kit
 		const std::string& get_last_error() const;
-		/// return whether vr_kit is wireless
-		bool is_wireless() const;
-		/// return whether controllers support force feedback
-		bool has_force_feedback() const;
-		/// return whether device has camera
-		bool has_camera() const;
 		/// declare virtual destructor
 		virtual ~vr_kit();
-		//! for each controller provide information on throttles and sticks and how they map to state axes
-		/*! each entry of the returned vector is either
-		    - a throttle if second pair entry is -1 mapped to axis with index in first pair entry
-			- or a stick with the two pair entries being indices of x and y axes */
-		virtual const std::vector<std::pair<int, int> >& get_controller_throttles_and_sticks(int controller_index) const = 0;
-		//! for each controller provide information on throttles' and sticks' deadzone and precision values
-		/*! The pairs in the returned vector correspond to the pairs in the vector returned by get_controller_throttles_and_sticks().
-		    For each throttle or stick two float values are provided:
-			- the first value is the deadzone of the throttle or stick, i.e. a deadzone of 0.1 means that all stick positions p
-			  with |p| < 0.1 are treated as (0,0). For throttles all values below 0.1 are treated as 0. For deadzone values 
-			  of 0, no deadzone is generated.
-			- the second value is the precision as a floating point number. I.e. for a precision od 0.1 the coordinates
-			  of a stick position and the throttle values can only assume multiples of 0.1 values. This is achieved by
-			  rounding the axis values to the next multiple of the precision value. If the precision value 
-			  is 0, no rounding is done and the raw axis values are passed on.
-			The deadzone and precision information is used by the cgv::gui::vr_server for detection and creation of
-			events. The values stored in the events are deadzone corrected and rounded to the precision of the throttles
-			and sticks. The cgv::gui::vr_server allows to replace the deadzone and precision values of a device with 
-			two user defined vectors of float pairs (which can be identical) through the function 
-			cgv::gui::vr_server::provide_controller_throttles_and_sticks_deadzone_and_precision(). */
-		virtual const std::vector<std::pair<float, float> >& get_controller_throttles_and_sticks_deadzone_and_precision(int controller_index) const = 0;
+		/// return information on the currently attached devices
+		const vr_kit_info& get_device_info() const;
+		//! set the configuration of a controller input
+		/*! A controller can have up to 5 inputs, which can be 1-axis throttels and triggers or
+			2 axis touchpad (abbreviated as pad) and joysticks (abbreviated as stick).
+			The input type can be checked in vr_kit_info queried with get_device_info().
+			The provided deadzone, precision and threshold information is used by
+			cgv::gui::vr_server for detection and creation of events. */
+		virtual void set_controller_input_config(int controller_index, int input_index, const controller_input_config& cic);
+		/// query the configuration of a controller input 
+		const controller_input_config&  get_controller_input_config(int controller_index, int input_index) const;
 		//! query current state of vr kit and return whether this was successful
 		/*! \param state state is returned by writing it into passed reference
 		    \param pose_query is 
@@ -134,8 +133,6 @@ namespace vr {
 				add 12 to restrict query to both controllers 
 		*/
 		bool query_state(vr_kit_state& state, int pose_query = 2);
-		/// return information on the currently attached devices
-		virtual const vr_kit_info& get_device_info() const;
 		/// set the vibration strength between 0 and 1 of low and high frequency motors, return false if device is not connected anymore
 		virtual bool set_vibration(unsigned controller_index, float low_frequency_strength, float high_frequency_strength) = 0;
 		/// return width in pixel of view
