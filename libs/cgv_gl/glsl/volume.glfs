@@ -177,7 +177,6 @@ void main()
 #else
 		float value = textureLodCubic(volume_tex, tex_coords, lod);
 #endif
-		
 		float opacity = value * alpha_coeff;
 		vec4 color_in = opacity * vec4(texture(transfer_function_tex, vec2(value, 0.5)).rgb, 1.0);
 
@@ -190,8 +189,6 @@ void main()
 		pos += step_size * dir;
 		tex_coords = pos * tex_coord_scaling;
 	}
-
-
 
 	// Isosurface rendering (must use backface culling in renderer)
 	/*vec3 dir = normalize(vol_coord_fs - eye_fs);
