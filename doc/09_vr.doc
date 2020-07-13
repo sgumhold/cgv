@@ -191,31 +191,32 @@ You typically enable and configure VR in your drawable::init method by connectin
 to the event processing of the main window and telling the cgv::render::vr_view_interactor instance which
 vr events should be generated and how the main rendering window should be configured. In \dr{cgv/plugins/vr_test} 
 you can find an example where the following code fragments are important:
-
-    #include <cg_vr/vr_server.h>
-    #include <vr_view_interactor.h>
-    bool vr_test::init(cgv::render::context& ctx)
-    {
-    	cgv::gui::connect_vr_server(true);
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.c++}
+#include <cg_vr/vr_server.h>
+#include <vr_view_interactor.h>
+bool vr_test::init(cgv::render::context& ctx)
+{
+    cgv::gui::connect_vr_server(true);
     
-    	auto view_ptr = find_view_as_node();
-    	if (view_ptr) {
-    		vr_view_ptr = dynamic_cast<vr_view_interactor*>(view_ptr);
-    		if (vr_view_ptr) {
-    			vr_view_ptr->set_event_type_flags(
-    				cgv::gui::VREventTypeFlags(
-    					cgv::gui::VRE_DEVICE + cgv::gui::VRE_STATUS +
-    					cgv::gui::VRE_KEY +	cgv::gui::VRE_ONE_AXIS + cgv::gui::VRE_TWO_AXES +
-    					cgv::gui::VRE_ONE_AXIS_GENERATES_KEY + cgv::gui::VRE_TWO_AXES_GENERATES_DPAD +
-    					cgv::gui::VRE_POSE));
-    			vr_view_ptr->enable_vr_event_debugging(true);
-    			vr_view_ptr->draw_action_zone(false);
-    			vr_view_ptr->draw_vr_kits(true);
-    			vr_view_ptr->enable_blit_vr_views(true);
-    			vr_view_ptr->set_blit_vr_view_width(200);
-    		}
+    auto view_ptr = find_view_as_node();
+    if (view_ptr) {
+    	vr_view_ptr = dynamic_cast<vr_view_interactor*>(view_ptr);
+    	if (vr_view_ptr) {
+    		vr_view_ptr->set_event_type_flags(
+    			cgv::gui::VREventTypeFlags(
+    				cgv::gui::VRE_DEVICE + cgv::gui::VRE_STATUS +
+    				cgv::gui::VRE_KEY +	cgv::gui::VRE_ONE_AXIS + cgv::gui::VRE_TWO_AXES +
+    				cgv::gui::VRE_ONE_AXIS_GENERATES_KEY + cgv::gui::VRE_TWO_AXES_GENERATES_DPAD +
+    				cgv::gui::VRE_POSE));
+    		vr_view_ptr->enable_vr_event_debugging(true);
+    		vr_view_ptr->draw_action_zone(false);
+    		vr_view_ptr->draw_vr_kits(true);
+    		vr_view_ptr->enable_blit_vr_views(true);
+    		vr_view_ptr->set_blit_vr_view_width(200);
     	}
     }
+}
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 For the includes you need to add the following include paths in your .pj file:
 
@@ -224,34 +225,37 @@ For the includes you need to add the following include paths in your .pj file:
 If you have enabled the device (cgv::gui::VRE_DEVICE) and status (cgv::gui::VRE_STATUS) events, you
 can set special callbacks to get informed of device changes and changes of the tracking and attachement status
 of hmds, controllers and trackers. This can already be prepared in your constructor:
-
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.c++}
     connect(cgv::gui::ref_vr_server().on_device_change, this, &vr_test::on_device_change);
     connect(cgv::gui::ref_vr_server().on_status_change, this, &vr_test::on_status_change);
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 These callbacks are implemented like this:
-
-    #include <vr/vr_driver.h>
-    void vr_test::on_device_change(void* kit_handle, bool attach)
-    {
-    	if (attach) {
-   			vr::vr_kit* kit_ptr = vr::get_vr_kit(kit_handle);
-			:
-		}
-    }
-    void vr_test::on_status_change(void* kit_handle, int ci, vr::VRStatus old_status, vr::VRStatus new_status)
-    {
-    	vr::vr_kit* kit_ptr = vr::get_vr_kit(kit_handle);
-        :
-    }
-
-The vr events are dispatched through your handle method and where you can ensure that you only process vr events by
-
-    bool vr_test::handle(cgv::gui::event& e)
-    {
-		if ((e.get_flags() & cgv::gui::EF_VR) == 0)
-			return false;
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.c++}
+#include <vr/vr_driver.h>
+void vr_test::on_device_change(void* kit_handle, bool attach)
+{
+    if (attach) {
+   		vr::vr_kit* kit_ptr = vr::get_vr_kit(kit_handle);
 		:
 	}
+}
+void vr_test::on_status_change(void* kit_handle, int ci, vr::VRStatus old_status, vr::VRStatus new_status)
+{
+    vr::vr_kit* kit_ptr = vr::get_vr_kit(kit_handle);
+    :
+}
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The vr events are dispatched through your handle method and where you can ensure that you only process vr events by
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.c++}
+bool vr_test::handle(cgv::gui::event& e)
+{
+	if ((e.get_flags() & cgv::gui::EF_VR) == 0)
+		return false;
+	:
+}
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 For examples of how to process vr events please checkout \dr{cgv/plugins/vr_test/vr_test.cxx}.
 
