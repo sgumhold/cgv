@@ -238,7 +238,8 @@ bool gradient_viewer::init(cgv::render::context& ctx)
 	cgv::data::data_format format;
 	cgv::media::image::image_reader image(format);
 	cgv::data::data_view tf_data;
-	if (!image.read_image(QUOTE_SYMBOL_VALUE(INPUT_DIR) "/res/inferno.bmp", tf_data))
+	//if (!image.read_image(QUOTE_SYMBOL_VALUE(INPUT_DIR) "/res/inferno.bmp", tf_data) &&
+	if (!image.read_image("res://inferno.bmp", tf_data))
 		abort();
 	tf_tex.create(ctx, tf_data, 0);
 
