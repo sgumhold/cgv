@@ -149,7 +149,7 @@ namespace cgv {
 			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 			glCullFace(GL_FRONT);
-
+			glEnable(GL_CULL_FACE);
 			volume_texture->enable(ctx, 0);
 			return true;
 		}
@@ -159,6 +159,7 @@ namespace cgv {
 			volume_texture->disable(ctx);
 
 			glDisable(GL_BLEND);
+			glDisable(GL_CULL_FACE);
 
 			if (!attributes_persist()) {}
 
