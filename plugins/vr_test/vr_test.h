@@ -39,10 +39,10 @@ protected:
 	std::vector<box3> boxes;
 	std::vector<rgb> box_colors;
 
-	// rendering style for boxes
+	// rendering styles
 	cgv::render::box_render_style style;
-
 	cgv::render::rounded_cone_render_style cone_style;
+
 	// sample for rendering a mesh
 	double mesh_scale;
 	dvec3 mesh_location;
@@ -58,7 +58,10 @@ protected:
 	float label_size;
 	rgb label_color;
 
+private:
 	bool label_outofdate; // whether label texture is out of date
+
+protected:
 	unsigned label_resolution; // resolution of label texture
 	cgv::render::texture label_tex; // texture used for offline rendering of label
 	cgv::render::frame_buffer label_fbo; // fbo used for offline rendering of label
@@ -95,7 +98,7 @@ protected:
 	std::vector<int>  intersection_box_indices;
 	std::vector<int>  intersection_controller_indices;
 
-	// state of current interaction with boxes for each controller
+	// state of current interaction with boxes for all controllers
 	InteractionState state[4];
 
 	// render style for interaction

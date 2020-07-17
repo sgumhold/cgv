@@ -282,7 +282,7 @@ void openvr_kit::update_hmd_info()
 	HI.lighthouse_2_0_features = get_bool_property(get_hmd(), device_index, Prop_ConfigurationIncludesLighthouse20Features_Bool);
 	HI.has_proximity_sensor = get_bool_property(get_hmd(), device_index, Prop_ContainsProximitySensor_Bool);
 	if (get_bool_property(get_hmd(), device_index, Prop_HasCamera_Bool))
-		HI.number_cameras = get_int32_property(get_hmd(), device_index, Prop_DeviceClass_Int32);
+		HI.number_cameras = get_int32_property(get_hmd(), device_index, Prop_NumCameras_Int32);
 	else
 		HI.number_cameras = 0;
 }
