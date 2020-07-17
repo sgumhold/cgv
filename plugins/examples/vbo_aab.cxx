@@ -12,6 +12,7 @@
 #include <cgv/gui/provider.h>
 #include <cgv/media/color_scale.h>
 #include <cgv/media/mesh/simple_mesh.h>
+#include <cgv/media/illum/surface_material.h>
 #include <cgv/gui/key_event.h>
 #include <cgv/gui/provider.h>
 #include <cgv/math/ftransform.h>

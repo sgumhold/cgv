@@ -34,14 +34,14 @@ public:
 	fmat(cgv::type::uint32_type n, cgv::type::uint32_type m, const T* a, bool column_major = true) {
 		for (cgv::type::uint32_type j = 0; j < std::min(m, M); ++j)
 			for (cgv::type::uint32_type i = 0; i < std::min(n, N); ++i)
-				(*this)(i, j) = a[column_major ? j * N + i : i * M + j];
+				(*this)(i, j) = a[column_major ? j * n + i : i * m + j];
 	}
 	///creates a matrix from an array a of given dimensions but different type - by default in column major format
 	template <typename S>
 	fmat(cgv::type::uint32_type n, cgv::type::uint32_type m, const S* a, bool column_major = true) {
 		for (cgv::type::uint32_type j = 0; j < std::min(m, M); ++j)
 			for (cgv::type::uint32_type i = 0; i < std::min(n, N); ++i)
-				(*this)(i, j) = (T)a[column_major ? j * N + i : i * M + j];
+				(*this)(i, j) = (T)a[column_major ? j * n + i : i * m + j];
 	}
 	///copy constructor for matrix with different element type
 	template <typename S>

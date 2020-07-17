@@ -152,6 +152,10 @@ namespace vr {
 			std::cout << "tracking system:\n" << kit->get_driver()->get_tracking_system_info() << std::endl;
 #endif
 		}
+		if (kit->get_camera()) {
+			if (!kit->get_camera()->initialize())
+				std::cerr << "WARNING: could not initialize camera if vr kit <" << kit->get_name() << ">" << std::endl;
+		}
 	}
 	void vr_driver::set_index(unsigned _idx)
 	{
