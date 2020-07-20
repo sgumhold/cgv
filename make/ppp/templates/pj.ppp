@@ -225,6 +225,12 @@ addMapDeps = [
 
 addDependencies = ["opengl","glu","glew",["Vfw32", "static"] ];
 
+// enable openmp support by the following line (0 is default value)
+useOpenMP = 1;
+
+// set the C++ language standard to "stdcpp14" or "stdcpp17" by the following line
+cppLanguageStandard = "stdcpp17";
+
 
 //set the name of the definition file, in which the symbols are 
 //defined that should be exported in a dll which has been implemented

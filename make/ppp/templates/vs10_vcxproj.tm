@@ -138,7 +138,13 @@
       <PrecompiledHeader></PrecompiledHeader>
 @}
       <WarningLevel>Level3</WarningLevel>
-    </ClCompile>
+@if(pj::useOpenMP)@{@//
+      <OpenMPSupport>true</OpenMPSupport>
+@}
+@if(pj::cppLanguageStandard != "")@{@//
+      <LanguageStandard>@(pj::cppLanguageStandard)</LanguageStandard>
+@}@//
+	</ClCompile>
     <@(pj::linker_tool_vs10[cj])>
       <AdditionalDependencies>@(concat(pj::dependencies[cj%4],';','','.lib')*clean_path);%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>@(concat(['$(CGV_DIR)/lib','$(CGV_BUILD)/lib'].pj::libDirs[cj%4], ';')*clean_path);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>

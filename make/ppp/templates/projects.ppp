@@ -29,6 +29,8 @@ func(read_project; :>pj_file = "", :>return = MAP)
 		:>addLibDirs=[];
 		:>addDependencies=[];
 		:>defFile = "";
+		:>useOpenMP = 0;
+		:>cppLanguageStandard = "";
 		:>addRuleFiles=[];
 		:>addRules=[];
 		:>addMapDeps=[];
