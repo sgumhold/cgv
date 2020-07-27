@@ -23,6 +23,7 @@
 #include <chrono>
 #include <point_cloud/point_cloud.h>
 #include <point_cloud/ICP.h>
+#include <cg_vr/vr_events.h>
 
 ///@ingroup VR
 ///@{
@@ -379,7 +380,7 @@ public:
 		//read pcs from disk
 	}
 	void registrationPointCloud() {
-		ICP *icp = new ICP();
+		cgv::pointcloud::ICP *icp = new cgv::pointcloud::ICP();
 		if (recorded_pcs.size() >= 1) {
 			cgv::math::fmat<float, 3, 3> r;
 			cgv::math::fvec<float, 3> t;
@@ -428,7 +429,7 @@ public:
 	}
 
 	void  test_icp() {
-		ICP* icp = new ICP();
+		cgv::pointcloud::ICP* icp = new cgv::pointcloud::ICP();
 		cgv::math::fmat<float, 3, 3> r;
 		cgv::math::fvec<float, 3> t;
 		r.identity();
