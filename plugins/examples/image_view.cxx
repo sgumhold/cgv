@@ -3,6 +3,8 @@
 #include <cgv/gui/key_event.h>
 #include <cgv/gui/trigger.h>
 #include <cgv/gui/provider.h>
+#include <cgv/gui/event_handler.h>
+#include <cgv/gui/key_event.h>
 #include <cgv/gui/file_dialog.h>
 #include <cgv/render/drawable.h>
 #include <cgv/utils/ostream_printf.h>
@@ -25,6 +27,7 @@ using namespace cgv::media::image;
 class image_view : 
 	public cgv::base::node,          /// derive from node to integrate into global tree structure and to store a name
 	public cgv::render::gl::image_drawable,     /// derive from drawable for drawing the cube
+	public cgv::gui::event_handler,
 	public provider
 {
 protected:
@@ -42,6 +45,42 @@ public:
 			update_member(&current_image);
 			post_redraw();
 		}
+	}
+	bool handle(event& e)
+	{
+		if (e.get_kind() != EID_KEY)
+			return false;
+		auto& ke = reinterpret_cast<key_event&>(e);
+		if (ke.get_action() == KA_RELEASE)
+			return false;
+		switch (ke.get_char()) {
+		case '+' :
+			if (tex_ids.size() > 1) {
+				if (++current_image == tex_ids.size())
+					current_image = 0;
+				on_set(&current_image);
+			}
+			return true;
+		case '-' :
+			if (tex_ids.size() > 1) {
+				if (current_image == 0)
+					current_image = tex_ids.size() - 1;
+				else
+					--current_image;
+				on_set(&current_image);
+			}
+			return true;
+		}
+		switch (ke.get_key()) {
+		case 'S': spherical = !spherical; on_set(&spherical); return true;
+		case KEY_Left:  pan_tilt[0] -= scale * 0.1f; on_set(&pan_tilt[0]); return true;
+		case KEY_Right: pan_tilt[0] += scale * 0.1f; on_set(&pan_tilt[0]); return true;
+		case KEY_Down:  pan_tilt[1] += scale * 0.1f; on_set(&pan_tilt[1]); return true;
+		case KEY_Up:    pan_tilt[1] -= scale * 0.1f; on_set(&pan_tilt[1]); return true;
+		case KEY_Page_Down:  scale *= 1.1f; on_set(&scale); return true;
+		case KEY_Page_Up:    scale /= 1.1f; on_set(&scale); return true;
+		}
+		return false;
 	}
 	void on_set(void* member_ptr)
 	{
@@ -109,6 +148,10 @@ public:
 			add_gui("min_value", min_value, "vector", "main_label='heading';components='rgba';options='min=0;max=1;ticks=true;step=0.00001;log=true'");
 			add_gui("max_value", max_value, "vector", "main_label='heading';components='rgba';options='min=0;max=1;ticks=true;step=0.00001;log=true'");
 			add_gui("range", range, "ascending", "main_label='heading';components='nx';options='min=0;max=1;ticks=true;step=0.00001;log=true'");
+			add_member_control(this, "spherical", spherical, "check");
+			add_member_control(this, "pan", pan_tilt[0], "value_slider", "min=-2;max=2;ticks=true");
+			add_member_control(this, "tilt", pan_tilt[1], "value_slider", "min=-2;max=2;ticks=true");
+			add_member_control(this, "scale", scale, "value_slider", "min=0.01;max=100;ticks=true;log=true");
 			align("\b");
 			end_tree_node(use_blending);
 		}

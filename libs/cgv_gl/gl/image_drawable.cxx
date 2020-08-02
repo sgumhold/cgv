@@ -34,6 +34,10 @@ image_drawable::image_drawable() : min_value(0,0,0,0), max_value(1,1,1,1), gamma
 	use_mixing = false;
 	mix_with = -1;
 	mix_param = 0.0f;
+
+	spherical = false;
+	pan_tilt = vec2(0.0f);
+	scale = 1.0f;
 }
 
 void image_drawable::timer_event(double t, double dt)
@@ -243,7 +247,8 @@ void image_drawable::draw(context& ctx)
 			glActiveTexture(GL_TEXTURE0);
 			glEnable(GL_TEXTURE_2D);
 			glBindTexture(GL_TEXTURE_2D, tex_ids[current_image]);
-
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, spherical ? GL_REPEAT : GL_CLAMP_TO_EDGE);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, spherical ? GL_REPEAT : GL_CLAMP_TO_EDGE);
 			if (use_mixing && mix_with != -1 && mix_with < tex_ids.size()) {
 				glActiveTexture(GL_TEXTURE1);
 				glEnable(GL_TEXTURE_2D);
@@ -264,6 +269,9 @@ void image_drawable::draw(context& ctx)
 			prog.set_uniform(ctx, "use_mixing", use_mixing);
 			prog.set_uniform(ctx, "mix_with", 1);
 			prog.set_uniform(ctx, "mix_param", mix_param);
+			prog.set_uniform(ctx, "spherical", spherical);
+			prog.set_uniform(ctx, "pan_tilt", pan_tilt);
+			prog.set_uniform(ctx, "scale", vec2(float(aspect*scale), scale));
 		}
 		if (use_blending) {
 			glEnable(GL_BLEND);
