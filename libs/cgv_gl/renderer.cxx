@@ -201,6 +201,7 @@ namespace cgv {
 				enabled_attribute_arrays.clear();
 				has_colors = false;
 				has_positions = false;
+				index_count = 0;
 			}
 			return ref_prog().disable(ctx) && res;
 		}
@@ -244,7 +245,7 @@ namespace cgv {
 			if (has_indices())
 				glDrawElementsInstanced(pt, (GLsizei)count, gl::map_to_gl(index_type), reinterpret_cast<const uint8_t*>(indices) + start * cgv::type::info::get_type_size(index_type), (GLsizei)instance_count);
 			else
-				glDrawArraysInstanced(pt, (GLint)start, (GLsizei)count, instance_count);
+				glDrawArraysInstanced(pt, (GLint)start, (GLsizei)count, (GLsizei)instance_count);
 			if (index_buffer_ptr && !aam_ptr)
 				glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 		}
