@@ -1,6 +1,7 @@
 // *********** stereo_view_interactor ************
 
-
+// inherits all properties from stereo_view_interactor as described in cgv/plugins/crg_stereo_view/config.def
+// replace type(stereo_view_interactor) with type(vr_view_interactor)
 
 // *********** Calibration ***********************
 
