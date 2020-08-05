@@ -47,7 +47,7 @@ void label_manager::set_text_color(const rgba& clr)
 }
 
 
-void label_manager::add_label(const std::string& _text,
+uint32_t label_manager::add_label(const std::string& _text,
 	const rgba& bg_clr, int _border_x, int _border_y,
 	int _width, int _height)
 {
@@ -63,6 +63,7 @@ void label_manager::add_label(const std::string& _text,
 	packing_outofdate = true;
 	texture_outofdate = true;
 	texture_content_outofdate = true;
+	return (uint32_t)(labels.size() - 1);
 }
 
 void label_manager::compute_label_sizes()
@@ -78,6 +79,16 @@ void label_manager::compute_label_sizes()
 		}
 	}
 }
+
+void label_manager::fix_label_size(uint32_t li)
+{
+	if (li >= labels.size())
+		return;
+	auto& l = labels[li];
+	l.width = l.get_width();
+	l.height = l.get_height();
+}
+
 void label_manager::pack_labels()
 {
 	std::vector<rect_pack::rectangle> rectangles;
@@ -91,14 +102,14 @@ void label_manager::pack_labels()
 	unsigned width_out, height_out;
 	rect_pack::pack_rectangles_iteratively(rectangle_sizes,
 		width_out, height_out, rectangles, rect_pack::CS_LongerSideFirst, false, true, rect_pack::PS_Skyline);
-	rect_pack::save_rectangles_html("c:/temp/rect.html", width_out, height_out, rectangles);
+	//rect_pack::save_rectangles_html("c:/temp/rect.html", width_out, height_out, rectangles);
 	tex_width = width_out;
 	tex_height = height_out;
 	not_rotated_labels.clear();
 	rotated_labels.clear();
 	tex_ranges.clear();
 	for (const auto& R : rectangles) {
-		uint32_t i = tex_ranges.size();
+		uint32_t i = uint32_t(tex_ranges.size());
 		if (std::abs(labels[i].width) + 2 * safety_extension != R.width)
 			rotated_labels.push_back(i);
 		else
@@ -137,6 +148,7 @@ void label_manager::update_label_size(uint32_t i, int w, int h)
 	labels[i].width = w;
 	labels[i].height = h;
 	label_states[i] |= LS_NEW_SIZE;
+	packing_outofdate = true;
 }
 
 void label_manager::init(cgv::render::context& ctx)
@@ -246,7 +258,7 @@ void label_manager::draw_labels(cgv::render::context& ctx, bool all)
 		draw_label_texts(ctx, rotated_labels, tex_width, all, true);
 		ctx.pop_pixel_coords();
 		tmp_fbo.disable(ctx);
-		tmp_tex.write_to_file(ctx, "C:/temp/tmp_tex.bmp");
+		//tmp_tex.write_to_file(ctx, "C:/temp/tmp_tex.bmp");
 	}
 	// then draw not rotated labels
 	bool created = ensure_tex_fbo_combi(ctx, *tex, fbo, tex_width, tex_height);
@@ -304,7 +316,7 @@ void label_manager::draw_labels(cgv::render::context& ctx, bool all)
 	}
 	ctx.pop_pixel_coords();
 	fbo.disable(ctx);
-	tex->write_to_file(ctx, "C:/temp/tex.bmp");
+	//tex->write_to_file(ctx, "C:/temp/tex.bmp");
 
 	ctx.pop_window_transformation_array();
 	ctx.enable_font_face(old_font_face, old_font_size);
