@@ -1,0 +1,42 @@
+@=
+projectType="application_plugin";
+projectName="hello_label";
+projectGUID="F408A594-A280-46B5-A56E-FF3700C3208A";
+addProjectDirs=[CGV_DIR."/plugins", CGV_DIR."/libs"];
+addIncDirs=[INPUT_DIR, CGV_DIR."/libs"];
+
+// add rect_pack as dependent library
+addProjectDeps=[
+	"cgv_utils", "cgv_type", "cgv_data", "cgv_base", "cgv_math", "cgv_media", "cgv_gui", "cgv_render", 
+	"cgv_gl",
+	
+	"rect_pack",
+	
+	"cgv_viewer", 
+	"cg_fltk", "crg_stereo_view"
+];
+
+// add source files of label manager without adding the whole cg_nui library
+sourceFiles=[
+
+	CGV_DIR."/libs/cg_nui/label_manager.cxx", 
+
+	CGV_DIR."/libs/cg_nui/label_manager.h",
+
+	INPUT_DIR."/hello_label.cxx"
+];
+
+// instead of adding each of your source files individually you can also uncomment to following line
+// sourceDirs=[INPUT_DIR];
+
+// add "CG_NUI_EXPORTS" to shared defines such that label_manager.cxx compiles
+addSharedDefines=[
+	"HELLO_LABEL_EXPORTS", 
+
+	"CG_NUI_EXPORTS"
+
+];
+
+addCommandLineArguments=[
+	after("type(shader_config):shader_path='".CGV_DIR."/libs/cgv_gl/glsl'","cg_fltk")
+];
