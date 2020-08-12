@@ -4,6 +4,8 @@
 
 #include "lib_begin.h"
 
+#include <memory>
+#include <thread>
 #include <k4a/k4a.hpp>
 
 namespace rgbd {
@@ -13,6 +15,7 @@ namespace rgbd {
 	public:
 		/// create a detached kinect CLNUI device object
 		rgbd_kinect_azure();
+		~rgbd_kinect_azure();
 		/// attach to the kinect device of the given serial
 		bool attach(const std::string& serial);
 		/// return whether device object is attached to a kinect device
@@ -23,12 +26,6 @@ namespace rgbd {
 		bool has_view_finder() const;
 		/// return a view finder info structure
 		const view_finder_info& get_view_finder_info() const;
-		/// whether rgbd device has support for a near field depth mode
-		bool has_near_mode() const;
-		/// return whether the near field depth mode is activated
-		bool get_near_mode() const;
-		///
-		bool set_near_mode(bool on);
 
 		/// check whether rgbd device has inertia measurement unit
 		bool has_IMU() const;
@@ -55,12 +52,22 @@ namespace rgbd {
 			frame_type& warped_color_frame) const;
 		/// map a depth value together with pixel indices to a 3D point with coordinates in meters; point_ptr needs to provide space for 3 floats
 		bool map_depth_to_point(int x, int y, int depth, float* point_ptr) const;
+
 	protected:
 		k4a::device device;
 		std::string device_serial;
+		volatile bool device_started;
 
 		stream_format color_format, ir_format, depth_format;
 		bool near_mode;
+
+		std::shared_ptr<std::thread> capture_thread;
+		volatile bool has_new_color_frame, has_new_depth_frame, has_new_ir_frame;
+		std::shared_ptr<rgbd::frame_type> color_frame, depth_frame, ir_frame;
+		std::chrono::time_point<std::chrono::steady_clock,std::chrono::microseconds> last_capture;
+
+	private:
+		void capture(rgbd::InputStreams is);
 	};
 
 	/// interface for kinect drivers (implement only as driver implementor)
