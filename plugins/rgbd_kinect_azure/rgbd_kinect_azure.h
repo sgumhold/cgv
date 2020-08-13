@@ -6,6 +6,7 @@
 
 #include <memory>
 #include <thread>
+#include <mutex>
 #include <k4a/k4a.hpp>
 
 namespace rgbd {
@@ -61,13 +62,13 @@ namespace rgbd {
 		stream_format color_format, ir_format, depth_format;
 		bool near_mode;
 
-		std::shared_ptr<std::thread> capture_thread;
+		std::unique_ptr<std::thread> capture_thread;
+		std::mutex capture_lock;
 		volatile bool has_new_color_frame, has_new_depth_frame, has_new_ir_frame;
 		std::shared_ptr<rgbd::frame_type> color_frame, depth_frame, ir_frame;
 		std::chrono::time_point<std::chrono::steady_clock,std::chrono::microseconds> last_capture;
-
 	private:
-		void capture(rgbd::InputStreams is);
+		void capture(int is);
 	};
 
 	/// interface for kinect drivers (implement only as driver implementor)
