@@ -174,8 +174,9 @@ namespace rgbd {
 		if (is_running())
 			return true;
 
-		k4a_device_configuration_t cfg;
+		k4a_device_configuration_t cfg = K4A_DEVICE_CONFIG_INIT_DISABLE_ALL;
 		cfg.color_resolution = K4A_COLOR_RESOLUTION_OFF;
+		cfg.color_format = K4A_IMAGE_FORMAT_COLOR_BGRA32;
 		cfg.depth_mode = K4A_DEPTH_MODE_OFF;
 		cfg.wired_sync_mode = K4A_WIRED_SYNC_MODE_STANDALONE; //set syncronization mode to standalone
 		cfg.depth_delay_off_color_usec = 0;
@@ -210,7 +211,6 @@ namespace rgbd {
 
 		if (color_stream_ix != -1) {
 			auto &format = stream_formats[color_stream_ix];
-			cfg.color_format = K4A_IMAGE_FORMAT_COLOR_BGRA32;
 			if (format.height == 720) cfg.color_resolution = K4A_COLOR_RESOLUTION_720P;
 			else if (format.height == 1080) cfg.color_resolution = K4A_COLOR_RESOLUTION_1080P;
 			else if (format.height == 1440) cfg.color_resolution = K4A_COLOR_RESOLUTION_1440P;
@@ -371,6 +371,7 @@ namespace rgbd {
 			if (is & IS_DEPTH) {
 				k4a::image dep = cap.get_depth_image();
 				dep_frame = make_shared<frame_type>();
+				static_cast<frame_format&>(*dep_frame) = depth_format;
 				dep_frame->time = dep.get_device_timestamp().count()*0.001;
 				dep_frame->frame_data.resize(dep.get_size());
 				dep_frame->compute_buffer_size();
