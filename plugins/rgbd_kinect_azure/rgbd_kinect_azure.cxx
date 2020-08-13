@@ -12,6 +12,7 @@ namespace rgbd {
 	{
 		device_serial = "";
 		device_started = false;
+		has_new_color_frame = has_new_depth_frame = has_new_ir_frame = false;
 	}
 
 	rgbd_kinect_azure::~rgbd_kinect_azure()
@@ -124,18 +125,18 @@ namespace rgbd {
 		if ((is & IS_COLOR) != 0) {
 			
 			for (int i = 0; i < fps_size; ++i) {
-				stream_formats.push_back(stream_format(1280, 720, PF_BGR, fps[i], 24));
-				stream_formats.push_back(stream_format(1920, 1080, PF_BGR, fps[i], 24));
-				stream_formats.push_back(stream_format(2560, 1440, PF_BGR, fps[i], 24));
-				stream_formats.push_back(stream_format(2048, 1536, PF_BGR, fps[i], 24));
+				stream_formats.push_back(stream_format(1280, 720, PF_BGR, fps[i], 32));
+				stream_formats.push_back(stream_format(1920, 1080, PF_BGR, fps[i], 32));
+				stream_formats.push_back(stream_format(2560, 1440, PF_BGR, fps[i], 32));
+				stream_formats.push_back(stream_format(2048, 1536, PF_BGR, fps[i], 32));
 				if (fps[i] < 30) {
-					stream_formats.push_back(stream_format(3840, 2160, PF_BGR, fps[i], 24));
+					stream_formats.push_back(stream_format(3840, 2160, PF_BGR, fps[i], 32));
 				}
 			}
 		}
 		if ((is & IS_INFRARED) != 0) {
 			for (int i = 0; i < fps_size; ++i) {
-				stream_formats.push_back(stream_format(1024, 1024, PF_I, fps[i], 8));
+				stream_formats.push_back(stream_format(1024, 1024, PF_I, fps[i], 16));
 			}
 		}
 		if ((is & IS_DEPTH) != 0) {
@@ -155,13 +156,13 @@ namespace rgbd {
 	bool rgbd_kinect_azure::start_device(InputStreams is, std::vector<stream_format>& stream_formats)
 	{
 		if (is & IS_COLOR) {
-			stream_formats.push_back(stream_format(2048, 1536, PF_BGR, 30, 24));
+			stream_formats.push_back(stream_format(2048, 1536, PF_BGR, 30, 32));
 		}
 		if (is & IS_DEPTH) {
 			stream_formats.push_back(stream_format(512, 512, PF_DEPTH, 30, 16));
 		}
 		if (is & IS_INFRARED) {
-			stream_formats.push_back(stream_format(512, 512, PF_I, 30, 8));
+			stream_formats.push_back(stream_format(512, 512, PF_I, 30, 16));
 		}
 		if (is_running())
 			return true;
@@ -177,7 +178,6 @@ namespace rgbd {
 		cfg.color_resolution = K4A_COLOR_RESOLUTION_OFF;
 		cfg.depth_mode = K4A_DEPTH_MODE_OFF;
 		cfg.wired_sync_mode = K4A_WIRED_SYNC_MODE_STANDALONE; //set syncronization mode to standalone
-		cfg.synchronized_images_only = true;
 		cfg.depth_delay_off_color_usec = 0;
 		cfg.subordinate_delay_off_master_usec = 0;
 		cfg.disable_streaming_indicator = false;
@@ -246,12 +246,22 @@ namespace rgbd {
 				return false;
 			}
 		}
+
+		cfg.synchronized_images_only = (color_stream_ix != -1 && depth_stream_ix != -1);
+		
 		try { device.start_cameras(&cfg); }
 		catch (runtime_error e) {
 			cerr << e.what() << '\n';
 			return false;
 		}
 		device_started = true;
+		
+		int is =
+			((color_stream_ix != -1) ? IS_COLOR : IS_NONE) |
+			((depth_stream_ix != -1) ? IS_DEPTH : IS_NONE) |
+			((ir_stream_ix != -1) ? IS_INFRARED : IS_NONE);
+				
+		capture_thread = make_unique<thread>(&rgbd_kinect_azure::capture,this,is);
 		return true;
 	}
 	/// stop the camera
@@ -260,11 +270,13 @@ namespace rgbd {
 		if (!is_running())
 			return true;
 		device_started = false;
-		device.stop_cameras();
+		//terminate capture thread
 		if (capture_thread) {
 			capture_thread->join();
 		}
 		capture_thread = nullptr;
+		//stop device
+		device.stop_cameras();
 		return true;
 	}
 
@@ -287,10 +299,19 @@ namespace rgbd {
 			return false;
 		}
 	
-		/*
-		k4a::capture cap;
-		device.get_capture(&cap);
-		*/
+		if (is == IS_COLOR && has_new_color_frame) {
+			capture_lock.lock();
+			frame = *color_frame;
+			has_new_color_frame = false;
+			capture_lock.unlock();
+			return true;
+		} else if (is == IS_DEPTH && has_new_depth_frame) {
+			capture_lock.lock();
+			frame = *depth_frame;
+			has_new_depth_frame = false;
+			capture_lock.unlock();
+			return true;
+		}
 		return false;
 	}
 	/// map a color frame to the image coordinates of the depth image
@@ -329,12 +350,45 @@ namespace rgbd {
 		return true;
 	}
 
-	void rgbd_kinect_azure::capture(rgbd::InputStreams is)
+	void rgbd_kinect_azure::capture(int is)
 	{
 		while (is_running()) {
 			k4a::capture cap;
 			device.get_capture(&cap);
-			has_new_color_frame = has_new_depth_frame = has_new_ir_frame = true;
+			shared_ptr<frame_type> col_frame;
+			shared_ptr<frame_type> dep_frame;
+
+			if (is & IS_COLOR) {
+				k4a::image col = cap.get_color_image();
+				col_frame = make_shared<frame_type>();
+				static_cast<frame_format&>(*col_frame) = color_format;
+				col_frame->time = col.get_device_timestamp().count()*0.001;
+				col_frame->frame_data.resize(col.get_size());
+				col_frame->compute_buffer_size();
+				memcpy(col_frame->frame_data.data(), col.get_buffer(), col.get_size());
+			}
+
+			if (is & IS_DEPTH) {
+				k4a::image dep = cap.get_depth_image();
+				dep_frame = make_shared<frame_type>();
+				dep_frame->time = dep.get_device_timestamp().count()*0.001;
+				dep_frame->frame_data.resize(dep.get_size());
+				dep_frame->compute_buffer_size();
+				memcpy(dep_frame->frame_data.data(), dep.get_buffer(), dep.get_size());
+			}
+
+			capture_lock.lock();
+			if (is & IS_COLOR) {
+				color_frame = col_frame;
+				has_new_color_frame = true;
+			}
+			if (is & IS_DEPTH) {
+				depth_frame = dep_frame;
+				has_new_depth_frame = true;
+			}
+			
+			has_new_ir_frame = true;
+			capture_lock.unlock();
 		}
 	}
 
