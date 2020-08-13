@@ -345,15 +345,19 @@ namespace rgbd {
 	/// map a depth value together with pixel indices to a 3D point with coordinates in meters; point_ptr needs to provide space for 3 floats
 	bool rgbd_kinect_azure::map_depth_to_point(int x, int y, int depth, float* point_ptr) const
 	{
-		//data from rgbd_kinect.cxx
-		depth /= 8;
+		/*intriniscs
+		376.553974631499		0					0
+		0						375.836262300202	0
+		697.111113366395		375.383389596281	1
+		*/
+
 		if (depth == 0)
 			return false;
 
-		static const double fx_d = 1.0 / 5.9421434211923247e+02;
-		static const double fy_d = 1.0 / 5.9104053696870778e+02;
-		static const double cx_d = 3.3930780975300314e+02;
-		static const double cy_d = 2.4273913761751615e+02;
+		static const double fx_d = 1.0 / 376.553974631499;
+		static const double fy_d = 1.0 / 375.836262300202;
+		static const double cx_d = 697.111113366395;
+		static const double cy_d = 375.383389596281;
 		double d = 0.001 * depth;
 		point_ptr[0] = float((x - cx_d) * d * fx_d);
 		point_ptr[1] = float((y - cy_d) * d * fy_d);
