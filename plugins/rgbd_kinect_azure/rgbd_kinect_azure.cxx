@@ -137,6 +137,10 @@ namespace rgbd {
 		if ((is & IS_INFRARED) != 0) {
 			for (int i = 0; i < fps_size; ++i) {
 				stream_formats.push_back(stream_format(1024, 1024, PF_I, fps[i], 16));
+
+				stream_formats.push_back(stream_format(320, 288, PF_I, fps[i], 16));
+				stream_formats.push_back(stream_format(512, 512, PF_I, fps[i], 16));
+				stream_formats.push_back(stream_format(640, 576, PF_I, fps[i], 16));
 			}
 		}
 		if ((is & IS_DEPTH) != 0) {
@@ -230,8 +234,8 @@ namespace rgbd {
 
 		if (ir_stream_ix != -1) {
 			auto &format = stream_formats[ir_stream_ix];
-			if (depth_stream_ix > 0) {
-				if (stream_formats[depth_stream_ix].height != format.height) {
+			if (depth_stream_ix != -1) {
+				if (stream_formats[depth_stream_ix].height != format.height && stream_formats[depth_stream_ix].width != format.width) {
 					cerr << "rgbd_kinect_azure::start_device: selected ir and depth format need matching resolutions\n";
 					return false;
 				}
@@ -311,7 +315,14 @@ namespace rgbd {
 			has_new_depth_frame = false;
 			capture_lock.unlock();
 			return true;
+		} else if (is == IS_INFRARED && has_new_ir_frame) {
+			capture_lock.lock();
+			frame = *ir_frame;
+			has_new_ir_frame = false;
+			capture_lock.unlock();
+			return true;
 		}
+
 		return false;
 	}
 	/// map a color frame to the image coordinates of the depth image
@@ -355,8 +366,7 @@ namespace rgbd {
 		while (is_running()) {
 			k4a::capture cap;
 			device.get_capture(&cap);
-			shared_ptr<frame_type> col_frame;
-			shared_ptr<frame_type> dep_frame;
+			shared_ptr<frame_type> col_frame, dep_frame, ired_frame;
 
 			if (is & IS_COLOR) {
 				k4a::image col = cap.get_color_image();
@@ -378,6 +388,16 @@ namespace rgbd {
 				memcpy(dep_frame->frame_data.data(), dep.get_buffer(), dep.get_size());
 			}
 
+			if (is & IS_INFRARED) {
+				k4a::image ir = cap.get_ir_image();
+				ired_frame = make_shared<frame_type>();
+				static_cast<frame_format&>(*ired_frame) = ir_format;
+				ired_frame->time = ir.get_device_timestamp().count()*0.001;
+				ired_frame->frame_data.resize(ir.get_size());
+				ired_frame->compute_buffer_size();
+				memcpy(ired_frame->frame_data.data(), ir.get_buffer(), ir.get_size());
+			}
+
 			capture_lock.lock();
 			if (is & IS_COLOR) {
 				color_frame = col_frame;
@@ -387,8 +407,10 @@ namespace rgbd {
 				depth_frame = dep_frame;
 				has_new_depth_frame = true;
 			}
-			
-			has_new_ir_frame = true;
+			if (is & IS_INFRARED) {
+				ir_frame = ired_frame;
+				has_new_ir_frame = true;
+			}
 			capture_lock.unlock();
 		}
 	}
