@@ -65,7 +65,7 @@ namespace rgbd {
 		std::unique_ptr<std::thread> capture_thread;
 		mutable std::mutex capture_lock;
 		volatile bool has_new_color_frame, has_new_depth_frame, has_new_ir_frame;
-		std::shared_ptr<rgbd::frame_type> color_frame, depth_frame, ir_frame;
+		std::unique_ptr<rgbd::frame_type> color_frame, depth_frame, ir_frame;
 		bool imu_enabled;
 		mutable IMU_measurement imu_data;
 		mutable volatile bool has_new_IMU_data;
