@@ -55,7 +55,7 @@ namespace rgbd {
 		bool map_depth_to_point(int x, int y, int depth, float* point_ptr) const;
 
 	protected:
-		k4a::device device;
+		mutable k4a::device device;
 		std::string device_serial;
 		volatile bool device_started;
 
@@ -63,10 +63,13 @@ namespace rgbd {
 		bool near_mode;
 
 		std::unique_ptr<std::thread> capture_thread;
-		std::mutex capture_lock;
+		mutable std::mutex capture_lock;
 		volatile bool has_new_color_frame, has_new_depth_frame, has_new_ir_frame;
 		std::shared_ptr<rgbd::frame_type> color_frame, depth_frame, ir_frame;
-		std::chrono::time_point<std::chrono::steady_clock,std::chrono::microseconds> last_capture;
+		bool imu_enabled;
+		mutable IMU_measurement imu_data;
+		mutable volatile bool has_new_IMU_data;
+		k4a::calibration calibration;
 	private:
 		void capture(int is);
 	};

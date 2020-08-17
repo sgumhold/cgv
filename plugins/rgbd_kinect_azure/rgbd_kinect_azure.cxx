@@ -6,6 +6,8 @@
 using namespace std;
 using namespace std::chrono;
 
+void dummy(void* buffer,void* context){}
+
 namespace rgbd {
 	/// create a detached kinect device object
 	rgbd_kinect_azure::rgbd_kinect_azure()
@@ -13,6 +15,8 @@ namespace rgbd {
 		device_serial = "";
 		device_started = false;
 		has_new_color_frame = has_new_depth_frame = has_new_ir_frame = false;
+		has_new_IMU_data = false;
+		imu_enabled = false;
 	}
 
 	rgbd_kinect_azure::~rgbd_kinect_azure()
@@ -102,14 +106,21 @@ namespace rgbd {
 	const IMU_info& rgbd_kinect_azure::get_IMU_info() const
 	{
 		static IMU_info info;
-		info.has_angular_acceleration = false;
+		info.has_angular_acceleration = true;
 		info.has_linear_acceleration = true;
-		info.has_time_stamp_support = false;
+		info.has_time_stamp_support = true;
 		return info;
 	}
 	/// query the current measurement of the acceleration sensors within the given time_out in milliseconds; return whether a measurement has been retrieved
 	bool rgbd_kinect_azure::put_IMU_measurement(IMU_measurement& m, unsigned time_out) const
 	{
+		if (has_new_IMU_data) {
+			capture_lock.lock();
+			memcpy(&m, &imu_data, sizeof(imu_data));
+			has_new_IMU_data = false;
+			capture_lock.unlock();
+			return true;
+		}
 		return false;
 	}
 	/// check whether the device supports the given combination of input streams
@@ -253,10 +264,19 @@ namespace rgbd {
 
 		cfg.synchronized_images_only = (color_stream_ix != -1 && depth_stream_ix != -1);
 		
+		calibration = device.get_calibration(cfg.depth_mode, cfg.color_resolution);
+
 		try { device.start_cameras(&cfg); }
 		catch (runtime_error e) {
 			cerr << e.what() << '\n';
 			return false;
+		}
+		try { 
+			device.start_imu(); 
+			imu_enabled = true; }
+		catch (runtime_error e){
+			cerr << "failed to start IMU\n" << e.what() << '\n';
+			imu_enabled = false;
 		}
 		device_started = true;
 		
@@ -274,6 +294,7 @@ namespace rgbd {
 		if (!is_running())
 			return true;
 		device_started = false;
+		imu_enabled = false;
 		//terminate capture thread
 		if (capture_thread) {
 			capture_thread->join();
@@ -281,6 +302,7 @@ namespace rgbd {
 		capture_thread = nullptr;
 		//stop device
 		device.stop_cameras();
+		device.stop_imu();
 		return true;
 	}
 
@@ -339,7 +361,20 @@ namespace rgbd {
 		warped_color_frame.nr_bits_per_pixel = color_frame.nr_bits_per_pixel;
 		warped_color_frame.compute_buffer_size();
 		warped_color_frame.frame_data.resize(warped_color_frame.buffer_size);
-		unsigned bytes_per_pixel = color_frame.nr_bits_per_pixel / 8;
+		unsigned bytes_per_pixel = color_frame.nr_bits_per_pixel >> 3;
+
+		vector<char> col_buffer = color_frame.frame_data;
+		vector<char> dep_buffer = depth_frame.frame_data;
+		k4a::transformation transform = k4a::transformation(calibration);
+		k4a::image color_img = k4a::image::create_from_buffer(K4A_IMAGE_FORMAT_COLOR_BGRA32, color_frame.width, color_frame.height,
+			color_frame.width * 4, reinterpret_cast<uint8_t*>(col_buffer.data()),
+			color_frame.frame_data.size(),dummy,dummy);
+		k4a::image depth_img = k4a::image::create_from_buffer(K4A_IMAGE_FORMAT_DEPTH16, depth_frame.width, depth_frame.height,
+			depth_frame.width * 2, reinterpret_cast<uint8_t*>(dep_buffer.data()),
+			depth_frame.frame_data.size(), dummy, dummy);
+		k4a::image transformed_color_img = transform.color_image_to_depth_camera(depth_img, color_img);
+
+		memcpy(warped_color_frame.frame_data.data(), transformed_color_img.get_buffer(), transformed_color_img.get_size());
 	}
 	
 	/// map a depth value together with pixel indices to a 3D point with coordinates in meters; point_ptr needs to provide space for 3 floats
@@ -351,6 +386,8 @@ namespace rgbd {
 		697.111113366395		375.383389596281	1
 		*/
 
+		//coordinates are in millimeters
+
 		if (depth == 0)
 			return false;
 
@@ -358,7 +395,7 @@ namespace rgbd {
 		static const double fy_d = 1.0 / 375.836262300202;
 		static const double cx_d = 697.111113366395;
 		static const double cy_d = 375.383389596281;
-		double d = 0.001 * depth;
+		double d = depth;
 		point_ptr[0] = float((x - cx_d) * d * fx_d);
 		point_ptr[1] = float((y - cy_d) * d * fy_d);
 		point_ptr[2] = float(d);
@@ -402,6 +439,23 @@ namespace rgbd {
 				memcpy(ired_frame->frame_data.data(), ir.get_buffer(), ir.get_size());
 			}
 
+
+			//read IMU
+			k4a_imu_sample_t imu_sample;
+			if (imu_enabled) {
+				switch (k4a_device_get_imu_sample(device.handle(), &imu_sample, -1))
+				{
+				case K4A_WAIT_RESULT_SUCCEEDED:
+					break;
+				case K4A_WAIT_RESULT_TIMEOUT:
+					break;
+				case K4A_WAIT_RESULT_FAILED:
+					cerr << "Failed to read a imu sample\n";
+					imu_enabled = false;
+				}
+			}
+
+
 			capture_lock.lock();
 			if (is & IS_COLOR) {
 				color_frame = col_frame;
@@ -414,6 +468,18 @@ namespace rgbd {
 			if (is & IS_INFRARED) {
 				ir_frame = ired_frame;
 				has_new_ir_frame = true;
+			}
+
+			if (imu_enabled) {
+				imu_data.angular_acceleration[0] = imu_sample.gyro_sample.v[0];
+				imu_data.angular_acceleration[1] = imu_sample.gyro_sample.v[1];
+				imu_data.angular_acceleration[2] = imu_sample.gyro_sample.v[2];
+
+				imu_data.linear_acceleration[0] = imu_sample.acc_sample.v[0];
+				imu_data.linear_acceleration[1] = imu_sample.acc_sample.v[1];
+				imu_data.linear_acceleration[2] = imu_sample.acc_sample.v[2];
+				imu_data.time_stamp = imu_sample.acc_timestamp_usec;
+				has_new_IMU_data = true;
 			}
 			capture_lock.unlock();
 		}
