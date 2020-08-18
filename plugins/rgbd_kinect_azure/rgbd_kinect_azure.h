@@ -23,11 +23,6 @@ namespace rgbd {
 		bool is_attached() const;
 		/// detach from serial (done automatically in constructor
 		bool detach();
-		/// return whether rgbd device has support for view finding actuator
-		bool has_view_finder() const;
-		/// return a view finder info structure
-		const view_finder_info& get_view_finder_info() const;
-
 		/// check whether rgbd device has inertia measurement unit
 		bool has_IMU() const;
 		/// return additional information on inertia measurement unit
