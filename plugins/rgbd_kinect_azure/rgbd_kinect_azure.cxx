@@ -78,25 +78,6 @@ namespace rgbd {
 		return false;
 	}
 
-	/// return whether rgbd device has support for view finding actuator
-	bool rgbd_kinect_azure::has_view_finder() const
-	{
-		return false;
-	}
-	/// return a view finder info structure, copy from rgbd_kinect.cxx
-	const view_finder_info& rgbd_kinect_azure::get_view_finder_info() const
-	{
-		static view_finder_info info;
-		info.degrees_of_freedom = 1;
-		info.min_angle[0] = -27.0f;
-		info.max_angle[0] =  27.0f;
-		info.min_angle[1] = 0.0f;
-		info.max_angle[1] = 0.0f;
-		info.min_angle[2] = 0.0f;
-		info.max_angle[2] = 0.0f;
-		return info;
-	}
-
 	/// check whether rgbd device has inertia measurement unit
 	bool rgbd_kinect_azure::has_IMU() const
 	{
@@ -361,10 +342,11 @@ namespace rgbd {
 		warped_color_frame.nr_bits_per_pixel = color_frame.nr_bits_per_pixel;
 		warped_color_frame.compute_buffer_size();
 		warped_color_frame.frame_data.resize(warped_color_frame.buffer_size);
-		unsigned bytes_per_pixel = color_frame.nr_bits_per_pixel >> 3;
+		unsigned bytes_per_pixel = color_frame.nr_bits_per_pixel / 8;
 
 		vector<char> col_buffer = color_frame.frame_data;
 		vector<char> dep_buffer = depth_frame.frame_data;
+
 		k4a::transformation transform = k4a::transformation(calibration);
 		k4a::image color_img = k4a::image::create_from_buffer(K4A_IMAGE_FORMAT_COLOR_BGRA32, color_frame.width, color_frame.height,
 			color_frame.width * 4, reinterpret_cast<uint8_t*>(col_buffer.data()),
