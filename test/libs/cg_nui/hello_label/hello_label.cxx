@@ -18,7 +18,7 @@ class hello_label :
 	public cgv::gui::provider
 {
 protected:
-	// use label manager to organize hello_label in texture
+	// use label manager to organize labels in texture
 	cgv::nui::label_manager lm;
 
 	// store label placements for rectangle renderer
@@ -30,12 +30,12 @@ protected:
 	// scale used to translate texture coordinate extents to world extents
 	float label_scale;
 
-	// indices of hello_label that will be changed during execution
+	// indices of labels that will be changed during execution
 	uint32_t time_label_index;
 	uint32_t mouse_position_label_index;
 
-	// whether dynamic hello_label need to be updated
-	bool dynamic_hello_label_out_of_date;
+	// whether dynamic labels need to be updated
+	bool dynamic_labels_out_of_date;
 
 	// remember time when app started
 	double start_time;
@@ -46,7 +46,7 @@ protected:
 	// keep pointer to other objects
 	cgv::render::view* view_ptr;
 
-	/// construct hello_label in label manager together with rectangle geometry
+	/// construct labels in label manager together with rectangle geometry
 	void construct_hello_label(cgv::render::context& ctx)
 	{
 		// configure label manager
@@ -55,24 +55,24 @@ protected:
 		lm.set_font_size(36);
 		lm.set_text_color(rgba(0, 0, 0, 1));
 		
-		// add hello_label to label manager
+		// add labels to label manager
 		lm.add_label("Hello", rgba(1, 0, 0, 1));
 		lm.add_label("Label", rgba(0, 1, 0, 1));
 		lm.add_label("!", rgba(0, 0, 1, 1));
 		time_label_index = lm.add_label("00:00:00,00", rgba(0.75f, 0.75f, 0.5f, 1));
 		mouse_position_label_index = lm.add_label("0000,0000", rgba(0.75f, 0.75f, 0.75f, 1));
 		
-		// compute size of hello_label in pixels and texture coordinate ranges by packing hello_label into texture
+		// compute size of labels in pixels and texture coordinate ranges by packing labels into texture
 		lm.compute_label_sizes();
 		lm.fix_label_size(time_label_index);
 		lm.fix_label_size(mouse_position_label_index);
 		lm.pack_labels();
 
-		// place and size rectangles for hello_label in world space
+		// place and size rectangles for labels in world space
 		for (uint32_t li = 0; li < lm.get_nr_labels(); ++li) {
 			const auto& l = lm.get_label(li);
 			label_positions.push_back(vec3(0.4f * (li - 2.0f), 1, 0.2f * std::abs(li - 2.0f)));
-			// rotate hello_label around y-axis
+			// rotate labels around y-axis
 			label_orientations.push_back(quat(vec3(0, 1, 0), -0.2f * (li - 2.0f) ));
 			label_extents.push_back(vec2(label_scale * l.get_width(), label_scale * l.get_height()));
 			label_texture_ranges.push_back(lm.get_texcoord_range(li));
@@ -82,7 +82,7 @@ public:
 	hello_label() : cgv::base::node("hello_label")
 	{
 		label_scale = 0.002f;
-		dynamic_hello_label_out_of_date = true;
+		dynamic_labels_out_of_date = true;
 		view_ptr = 0;
 		start_time = cgv::gui::get_animation_trigger().get_current_time();
 		prs.illumination_mode = cgv::render::IM_OFF;
@@ -105,7 +105,7 @@ public:
 		   << std::setfill('0') << std::setw(2) << cs;
 		ss.flush();
 		lm.update_label_text(time_label_index, ss.str());
-		dynamic_hello_label_out_of_date = true;
+		dynamic_labels_out_of_date = true;
 		post_redraw();
 	}
 	std::string get_type_name() 
@@ -130,9 +130,9 @@ public:
 	}
 	void init_frame(cgv::render::context& ctx)
 	{
-		if (dynamic_hello_label_out_of_date) {
+		if (dynamic_labels_out_of_date) {
 			lm.ensure_texture_uptodate(ctx);
-			dynamic_hello_label_out_of_date = false;
+			dynamic_labels_out_of_date = false;
 		}
 	}
 	void draw(cgv::render::context& ctx)
@@ -162,7 +162,7 @@ public:
 		ss << std::setfill(' ') << std::setw(4) << me.get_x() << ',' << me.get_y();
 		ss.flush();
 		lm.update_label_text(mouse_position_label_index, ss.str());
-		dynamic_hello_label_out_of_date = true;
+		dynamic_labels_out_of_date = true;
 		post_redraw();
 		return false;
 	}

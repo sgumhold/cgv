@@ -211,8 +211,12 @@ void show_object_debug_info(cgv::base::base_ptr o)
 /// register an object and send event to all current registration ref_listeners()
 void register_object_internal(base_ptr object, const std::string& options)
 {
+	std::string all_options = object->get_default_options();
+	if (!all_options.empty() && !options.empty())
+		all_options += ";";
+	all_options += options;
 	if (is_registration_debugging_enabled()) {
-		std::cout << "REG OBJECT ('" << options << "') ";
+		std::cout << "REG OBJECT ('" << all_options << "') ";
 		show_object_debug_info(object);
 		std::cout << std::endl;
 
@@ -227,7 +231,7 @@ void register_object_internal(base_ptr object, const std::string& options)
 
 	// send register event to all listeners
 	for (unsigned i = 0; i<ref_listeners().size(); ++i)
-		ref_listeners()[i]->get_interface<registration_listener>()->register_object(object, options);
+		ref_listeners()[i]->get_interface<registration_listener>()->register_object(object, all_options);
 
 	// perform permanent registration
 	if (is_permanent_registration_enabled())

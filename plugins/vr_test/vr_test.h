@@ -5,6 +5,8 @@
 #include <cgv/gui/event_handler.h>
 #include <cgv_gl/box_renderer.h>
 #include <cgv_gl/gl/mesh_render_info.h>
+#include <cgv_gl/sphere_renderer.h>
+#include <cgv_gl/rounded_cone_renderer.h>
 #include <cgv/render/shader_program.h>
 #include <cgv_gl/rounded_cone_renderer.h>
 #include <cgv/render/frame_buffer.h>
@@ -35,6 +37,7 @@ protected:
 		IS_GRAB
 	};
 
+	
 	// store the scene as colored boxes
 	std::vector<box3> boxes;
 	std::vector<rgb> box_colors;
