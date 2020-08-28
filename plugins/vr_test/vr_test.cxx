@@ -473,11 +473,11 @@ bool vr_test::init(cgv::render::context& ctx)
 		cgv::gui::message("could not build seethrough program");
 	
 	cgv::media::mesh::simple_mesh<> M;
-#ifdef _DEBUG
+//#ifdef 1
 	if (M.read("D:/data/surface/meshes/obj/Max-Planck_lowres.obj")) {
-#else
-	if (M.read("D:/data/surface/meshes/obj/Max-Planck_highres.obj")) {
-#endif
+//#else
+//	if (M.read("D:/data/surface/meshes/obj/Max-Planck_highres.obj")) {
+//#endif
 		MI.construct(ctx, M);
 		MI.bind(ctx, ctx.ref_surface_shader_program(true), true);
 	}

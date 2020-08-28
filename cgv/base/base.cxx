@@ -246,6 +246,12 @@ std::string base::get_type_name() const
 	return cgv::type::info::type_name<base>::get_name();
 }
 
+/// overload to provide default options for registration
+std::string base::get_default_options() const
+{
+	return std::string();
+}
+
 /// return a semicolon separated list of property declarations of the form "name:type", by default an empty list is returned
 std::string base::get_property_declarations()
 {
