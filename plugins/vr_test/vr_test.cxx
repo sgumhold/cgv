@@ -151,14 +151,14 @@ void vr_test::construct_table(float tw, float td, float th, float tW) {
 	// construct table
 	rgb table_clr(0.3f, 0.2f, 0.0f);
 	boxes.push_back(box3(
-		vec3(-0.5f*tw - 2 * tW, th - tW, -0.5f*td - 2 * tW),
-		vec3(0.5f*tw + 2 * tW, th, 0.5f*td + 2 * tW)));
+		vec3(-0.5f*tw, th - tW, -0.5f*td),
+		vec3(0.5f*tw, th, 0.5f*td)));
 	box_colors.push_back(table_clr);
 
-	boxes.push_back(box3(vec3(-0.5f*tw, 0, -0.5f*td), vec3(-0.5f*tw - tW, th - tW, -0.5f*td - tW)));
-	boxes.push_back(box3(vec3(-0.5f*tw, 0, 0.5f*td), vec3(-0.5f*tw - tW, th - tW, 0.5f*td + tW)));
-	boxes.push_back(box3(vec3(0.5f*tw, 0, -0.5f*td), vec3(0.5f*tw + tW, th - tW, -0.5f*td - tW)));
-	boxes.push_back(box3(vec3(0.5f*tw, 0, 0.5f*td), vec3(0.5f*tw + tW, th - tW, 0.5f*td + tW)));
+	boxes.push_back(box3(vec3(-0.5f*tw + 2*tW, 0, -0.5f*td+2*tW), vec3(-0.5f*tw+tW, th - tW, -0.5f*td + tW)));
+	boxes.push_back(box3(vec3(-0.5f*tw + 2*tW, 0, 0.5f*td-2*tW), vec3(-0.5f*tw + tW, th - tW, 0.5f*td - tW)));
+	boxes.push_back(box3(vec3(0.5f*tw-2*tW, 0, -0.5f*td+tW), vec3(0.5f*tw - tW, th - tW, -0.5f*td +2* tW)));
+	boxes.push_back(box3(vec3(0.5f*tw-2*tW, 0, 0.5f*td-2*tW), vec3(0.5f*tw - tW, th - tW, 0.5f*td - tW)));
 	box_colors.push_back(table_clr);
 	box_colors.push_back(table_clr);
 	box_colors.push_back(table_clr);
@@ -272,7 +272,7 @@ vr_test::vr_test()
 	use_matrix = true;
 	show_seethrough = false;
 	set_name("vr_test");
-	build_scene(5, 7, 3, 0.2f, 1.6f, 0.8f, 0.7f, 0.03f);
+	build_scene(5, 7, 3, 0.2f, 0.8f, 0.8f, 0.72f, 0.03f);
 	vr_view_ptr = 0;
 	ray_length = 2;
 	last_kit_handle = 0;
