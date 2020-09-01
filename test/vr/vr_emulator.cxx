@@ -441,7 +441,7 @@ void vr_emulator::add_new_kit()
 	kits.push_back(new_kit);
 	register_vr_kit(handle, new_kit);
 	if (current_kit_index == -1) {
-		current_kit_index = kits.size() - 1;
+		current_kit_index = int(kits.size()) - 1;
 		update_member(&current_kit_index);
 	}
 	cgv::gui::ref_vr_server().check_device_changes(cgv::gui::trigger::get_current_time());
