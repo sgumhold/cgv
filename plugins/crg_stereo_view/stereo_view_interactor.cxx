@@ -1126,13 +1126,14 @@ void stereo_view_interactor::draw_mouse_pointer_as_arrow(cgv::render::context& c
 void stereo_view_interactor::draw_mouse_pointer(cgv::render::context& ctx, bool visible)
 {
 	const dmat4* MPW_ptr, * MPW_other_ptr;
-	int x, y, center_x, center_y;
 	int x_other, y_other, vp_col_idx, vp_row_idx, vp_width, vp_height, vp_center_x, vp_center_y, vp_center_x_other, vp_center_y_other;
 	int eye_panel = get_modelview_projection_window_matrices(last_x, last_y, ctx.get_width(), ctx.get_height(),
 		&MPW_ptr, &MPW_other_ptr, &x_other, &y_other,
 		&vp_col_idx, &vp_row_idx, &vp_width, &vp_height,
 		&vp_center_x, &vp_center_y, &vp_center_x_other, &vp_center_y_other);
 
+	int x = last_x, y = last_y, center_x = vp_center_x, center_y = vp_center_y;
+	/*
 	if (((stereo_mouse_pointer != SMP_ARROW) && ((ctx.get_render_pass() == cgv::render::RP_STEREO) == (eye_panel == -1))) ||
 		((stereo_mouse_pointer == SMP_ARROW) && (eye_panel == -1))) {
 		//	if ((ctx.get_render_pass() == cgv::render::RP_STEREO) == (eye_panel == -1)) {
@@ -1147,7 +1148,7 @@ void stereo_view_interactor::draw_mouse_pointer(cgv::render::context& ctx, bool 
 		center_x = vp_center_x_other;
 		center_y = vp_center_y_other;
 		MPW_ptr = MPW_other_ptr;
-	}
+	}*/
 	glPushAttrib(GL_DEPTH_BUFFER_BIT | GL_LINE_BIT | GL_POLYGON_BIT | GL_COLOR_BUFFER_BIT | GL_PIXEL_MODE_BIT);
 	if (is_viewport_splitting_enabled())
 		activate_split_viewport(ctx, vp_col_idx, vp_row_idx);
@@ -1306,19 +1307,18 @@ void stereo_view_interactor::init_frame(context& ctx)
 	if (rpf & RPF_SET_PROJECTION)
 		gl_set_projection_matrix(ctx, current_e, aspect);
 
-	if (rpf & RPF_SET_MODELVIEW) {
+	if (rpf & RPF_SET_MODELVIEW)
 		gl_set_modelview_matrix(ctx, current_e, aspect, *this);
 
-		if (current_e == GLSU_RIGHT) {
-			MPW_right = ctx.get_modelview_projection_window_matrix();
-			if (do_viewport_splitting)
-				MPWs_right = std::vector<dmat4>(nr_viewport_rows * nr_viewport_columns, MPW_right);
-		}
-		else {
-			MPW = ctx.get_modelview_projection_window_matrix();
-			if (do_viewport_splitting)
-				MPWs = std::vector<dmat4>(nr_viewport_rows * nr_viewport_columns, MPW);
-		}
+	if (current_e == GLSU_RIGHT) {
+		MPW_right = ctx.get_modelview_projection_window_matrix();
+		if (do_viewport_splitting)
+			MPWs_right = std::vector<dmat4>(nr_viewport_rows * nr_viewport_columns, MPW_right);
+	}
+	else {
+		MPW = ctx.get_modelview_projection_window_matrix();
+		if (do_viewport_splitting)
+			MPWs = std::vector<dmat4>(nr_viewport_rows * nr_viewport_columns, MPW);
 	}
 }
 

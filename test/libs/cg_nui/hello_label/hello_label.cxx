@@ -45,7 +45,18 @@ protected:
 
 	// keep pointer to other objects
 	cgv::render::view* view_ptr;
-
+	
+	// after packing has changed, we need to update extends (actually only from size changing labels) and texture ranges again
+	void update_texture_ranges_and_extents()
+	{
+		label_extents.clear();
+		label_texture_ranges.clear();
+		for (uint32_t li = 0; li < lm.get_nr_labels(); ++li) {
+			const auto& l = lm.get_label(li);
+			label_extents.push_back(vec2(label_scale * l.get_width(), label_scale * l.get_height()));
+			label_texture_ranges.push_back(lm.get_texcoord_range(li));
+		}
+	}
 	/// construct labels in label manager together with rectangle geometry
 	void construct_hello_label(cgv::render::context& ctx)
 	{
@@ -61,21 +72,18 @@ protected:
 		lm.add_label("!", rgba(0, 0, 1, 1));
 		time_label_index = lm.add_label("00:00:00,00", rgba(0.75f, 0.75f, 0.5f, 1));
 		mouse_position_label_index = lm.add_label("0000,0000", rgba(0.75f, 0.75f, 0.75f, 1));
-		
-		// compute size of labels in pixels and texture coordinate ranges by packing labels into texture
-		lm.compute_label_sizes();
+		// fix size of dynamic labels to size computed from initial text
 		lm.fix_label_size(time_label_index);
 		lm.fix_label_size(mouse_position_label_index);
+		// pack labels to compute texture ranges
 		lm.pack_labels();
-
-		// place and size rectangles for labels in world space
+		update_texture_ranges_and_extents();
+		// place labels in world space
 		for (uint32_t li = 0; li < lm.get_nr_labels(); ++li) {
 			const auto& l = lm.get_label(li);
 			label_positions.push_back(vec3(0.4f * (li - 2.0f), 1, 0.2f * std::abs(li - 2.0f)));
 			// rotate labels around y-axis
 			label_orientations.push_back(quat(vec3(0, 1, 0), -0.2f * (li - 2.0f) ));
-			label_extents.push_back(vec2(label_scale * l.get_width(), label_scale * l.get_height()));
-			label_texture_ranges.push_back(lm.get_texcoord_range(li));
 		}
 	}
 public:
@@ -131,7 +139,10 @@ public:
 	void init_frame(cgv::render::context& ctx)
 	{
 		if (dynamic_labels_out_of_date) {
+			bool repack = lm.is_packing_outofdate();
 			lm.ensure_texture_uptodate(ctx);
+			if (repack)
+				update_texture_ranges_and_extents();
 			dynamic_labels_out_of_date = false;
 		}
 	}

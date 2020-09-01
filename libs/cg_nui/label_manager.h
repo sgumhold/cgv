@@ -69,6 +69,7 @@ protected:
 	bool ensure_tex_fbo_combi(cgv::render::context& ctx, cgv::render::texture& tex, cgv::render::frame_buffer& fbo, int width, int height);
 	void draw_label_backgrounds(cgv::render::context& ctx, const std::vector<uint32_t>& indices, bool all, bool swap);
 	void draw_label_texts(cgv::render::context& ctx, const std::vector<uint32_t>& indices, int height, bool all, bool swap);
+	void compute_label_size(label& l);
 public:
 	/// construct label manager
 	label_manager(cgv::media::font::font_face_ptr _font_face = 0, float _font_size = -1);
@@ -92,10 +93,10 @@ public:
 	uint32_t add_label(const std::string& text,
 		const rgba& bg_clr, int _border_x = 4, int _border_y = 4,
 		int _width = -1, int height = -1);
-	/// compute sizes of labels where width and height were not fixed during adding
-	void compute_label_sizes();
 	/// fix the label size of a previously unfixed label. Call after compute_label_sizes()
 	void fix_label_size(uint32_t li);
+	/// return whether labels need to be packed
+	bool is_packing_outofdate() const { return packing_outofdate; }
 	/// pack the sized labels into a texture whose width and height in texels is automatically estimated
 	void pack_labels();
 	//! for given label return where it is placed in the atlas texture
@@ -121,6 +122,8 @@ public:
 	    functions in case this is necessary due to changes done to labels since last atlas texture 
 		computation.*/
 	void ensure_texture_uptodate(cgv::render::context& ctx);
+	/// return whether texture is out of date
+	bool is_texture_outofdate() const { return texture_outofdate; }
 	/// give access to atlas texture
 	std::shared_ptr<cgv::render::texture> get_texture() const { return tex; }
 	/// draws the labels to the texture (you typically do not need this function)

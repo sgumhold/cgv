@@ -1,4 +1,5 @@
 #include "label_manager.h"
+#include <cgv/utils/advanced_scan.h>
 #include <rect_pack/rect_pack.h>
 #include <cgv_gl/gl/gl.h>
 
@@ -58,6 +59,7 @@ uint32_t label_manager::add_label(const std::string& _text,
 	l.border_y = _border_y;
 	l.width = _width;
 	l.height = _height;
+	compute_label_size(l);
 	labels.push_back(l);
 	label_states.push_back(LS_NEW_SIZE + LS_NEW_TEXT);
 	packing_outofdate = true;
@@ -66,17 +68,28 @@ uint32_t label_manager::add_label(const std::string& _text,
 	return (uint32_t)(labels.size() - 1);
 }
 
-void label_manager::compute_label_sizes()
+void label_manager::compute_label_size(label& l)
 {
-	for (auto& l : labels) {
-		if (l.width == -1) {
-			int w = (int)ceil(font_face->measure_text_width(l.text, font_size));
-			l.width = -(w + 2*l.border_x);
+	int nr_lines = -1;
+	if (l.width < 0) {
+		std::vector<cgv::utils::token> toks;
+		cgv::utils::split_to_tokens(l.text, toks, "", false, "", "", "\n");
+		nr_lines = int(toks.size());
+		int w = -1;
+		for (auto t : toks) {
+			int new_w = (int)ceil(font_face->measure_text_width(cgv::utils::to_string(t), font_size));
+			w = std::max(w, new_w);
 		}
-		if (l.height == -1) {
-			int h = (int)ceil(1.0f*font_size);
-			l.height = -(2*l.border_y + h);
+		l.width = -(w + 2*l.border_x);
+	}
+	if (l.height < 0) {
+		if (nr_lines == -1) {
+			std::vector<cgv::utils::token> toks;
+			cgv::utils::split_to_tokens(l.text, toks, "\n", false, "", "", "");
+			nr_lines = int(toks.size());
 		}
+		int h = (int)ceil(1.0f*font_size);
+		l.height = -(int)(2*l.border_y + nr_lines*h + 0.2f*font_size*(nr_lines-1));
 	}
 }
 
@@ -140,6 +153,7 @@ void label_manager::update_label_text(uint32_t i, const std::string& new_text)
 	if (labels[i].width < 0 || labels[i].height < 0) {
 		packing_outofdate = true;
 		label_states[i] |= LS_NEW_SIZE;
+		compute_label_size(labels[i]);
 	}
 }
 
@@ -147,6 +161,7 @@ void label_manager::update_label_size(uint32_t i, int w, int h)
 {
 	labels[i].width = w;
 	labels[i].height = h;
+	compute_label_size(labels[i]);
 	label_states[i] |= LS_NEW_SIZE;
 	packing_outofdate = true;
 }
@@ -339,10 +354,8 @@ void label_manager::destruct(cgv::render::context& ctx)
 
 void label_manager::ensure_texture_uptodate(cgv::render::context& ctx)
 {
-	if (packing_outofdate) {
-		compute_label_sizes();
+	if (packing_outofdate)
 		pack_labels();
-	}
 	if (texture_outofdate)
 		draw_labels(ctx, packing_outofdate);
 }
