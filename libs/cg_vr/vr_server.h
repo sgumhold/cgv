@@ -5,7 +5,7 @@
 #include <cgv/gui/stick_event.h>
 #include <cgv/gui/pose_event.h>
 #include <cgv/gui/event_handler.h>
-#include <vr/vr_state.h>
+#include <vr/vr_kit.h>
 #include <cgv/gui/window.h>
 #include <cgv/signal/signal.h>
 #include <cgv/signal/bool_signal.h>
