@@ -32,8 +32,8 @@ public:
 
 	/**@name{\large b) construction}*/
 	//@{
-	/// empty standard constructor
-	quaternion() {}
+	/// standard constructor initializes to unit quaternion
+	quaternion() : fvec<T,4>(T(0),T(0),T(0),T(1)) {}
 	/// copy constructor
 	quaternion(const quaternion<T>& quat) : fvec<T,4>(quat) {}
 	/// copy constructor with type conversion
