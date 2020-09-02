@@ -378,8 +378,10 @@ bool vr_view_interactor::handle(cgv::gui::event& e)
 				}
 			}
 			else if (ke.get_modifiers() == cgv::gui::EM_CTRL + cgv::gui::EM_SHIFT) {
-				if (ke.get_key() >= '0' && ke.get_key() < '4') {
+				if (ke.get_key() >= '0' && ke.get_key() < '5') {
 					int ci = ke.get_key() - '0';
+					if (ci == 4)
+						ci = 0;
 					if (current_vr_handle_index >= 0) {
 						vr::vr_kit_state& state = kit_states[current_vr_handle_index];
 						if (state.controller[ci].status == vr::VRS_TRACKED) {
@@ -447,7 +449,7 @@ void vr_view_interactor::after_finish(cgv::render::context& ctx)
 				// check if kit is attached and its pointer valid
 				if (kit_states[ki].hmd.status == vr::VRS_DETACHED)
 					continue;
-				vr::vr_kit* kit_ptr = get_vr_kit_from_index(ki);
+				vr::vr_kit* kit_ptr = get_vr_kit_from_index((int)ki);
 				if (!kit_ptr)
 					continue;
 
