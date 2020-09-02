@@ -26,7 +26,7 @@ int pose_event::get_trackable_index() const
 void pose_event::stream_out(std::ostream& os) const
 {
 	event::stream_out(os);
-	os << "x(" << pose[0] << "," << pose[0] << "," << pose[2] << ");";
+	os << "x(" << pose[0] << "," << pose[1] << "," << pose[2] << ");";
 	os << "y(" << pose[3] << "," << pose[4] << "," << pose[5] << ");";
 	os << "z(" << pose[6] << "," << pose[7] << "," << pose[8] << ");";
 	os << "O(" << pose[9] << "," << pose[10] << "," << pose[11] << ");";
