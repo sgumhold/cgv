@@ -109,6 +109,19 @@ class CGV_API vr_view_interactor : public stereo_view_interactor, public vr::vr_
 	void calibrate_driver();
 	/// path to calibration file
 	std::string calibration_file_path;
+public:
+	void set_tracking_rotation(float tr) {
+		tracking_rotation = tr;
+	}
+	float get_tracking_rotation() {
+		return tracking_rotation;
+	}
+	void set_tracking_origin(vec3 ori) {
+		tracking_origin = ori;
+	}
+	vec3 get_tracking_origin() {
+		return tracking_origin;
+	}
 	//@}
 private:
 	mat34 start_pose;
