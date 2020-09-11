@@ -133,7 +133,7 @@ protected:
 
 	vec3 compute_normal(const vec3& p0, const vec3& p1, const vec3& p2);
 public:
-	/// construct from string corresponding to conway notation (defaults to empty mesh)
+	/// construct from string corresponding to Conway notation (defaults to empty mesh)
 	simple_mesh(const std::string& conway_notation = "");
 	/// clear simple mesh
 	void clear();
@@ -163,21 +163,21 @@ public:
 	const vec2& tex_coord(idx_type ti) const { return tex_coords[ti]; }
 	/// compute per face normals (ensure that per corner normal indices are set correspondingly)
 	void compute_face_normals();
-	// /conway ambo operator
+	// /Conway ambo operator
 	void ambo();
-	/// conway truncate operator
+	/// Conway truncate operator
 	void truncate(T lambda = 0.33333f);
-	/// conway snub operator
+	/// Conway snub operator
 	void snub(T lambda = 0.33333f);
-	/// conway dual operator
+	/// Conway dual operator
 	void dual();
-	/// conway gyro operator
+	/// Conway gyro operator
 	void gyro(T lambda = 0.3333f);
-	/// conway join operator
+	/// Conway join operator
 	void join();
-	/// conway ortho operator
+	/// Conway ortho operator
 	void ortho();
-	/// construct new mesh according to conway polyhedron notation: [a|t|s|d|g|j|o]*[T|C|O|D|I] which is evaluated from right to left and last capital letter is platonian solid and lowercase letters are conway operations
+	/// construct new mesh according to Conway polyhedron notation: [a|t|s|d|g|j|o]*[T|C|O|D|I] which is evaluated from right to left and last capital letter is Platonic solid and lowercase letters are Conway operations
 	void construct_conway_polyhedron(const std::string& conway_notation);
 
 	/// compute the axis aligned bounding box
