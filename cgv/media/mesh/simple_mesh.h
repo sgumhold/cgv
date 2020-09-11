@@ -39,6 +39,8 @@ protected:
 	std::vector<idx_type> material_indices;
 	std::vector<mat_type> materials;
 public:
+	/// position count
+	virtual idx_type get_nr_positions() const = 0;
 	/// create a new empty face to which new corners are added and return face index
 	idx_type start_face();
 	/// create a new corner from position, optional normal and optional tex coordinate indices and return corner index
@@ -52,7 +54,7 @@ public:
 	/// return the number of faces
 	idx_type get_nr_faces() const { return idx_type(faces.size()); }
 	/// return the number of corners
-	idx_type get_nr_corners() const { return position_indices.size(); }
+	idx_type get_nr_corners() const { return idx_type(position_indices.size()); }
 	/// return index of first corner of face with index fi
 	idx_type begin_corner(idx_type fi) const { return faces[fi]; }
 	/// return index of end corner (one after the last one) of face with index fi
@@ -94,6 +96,12 @@ public:
 		const std::vector<idx_type>* face_perm_ptr = 0, std::vector<vec3i>* material_group_start_ptr = 0) const;
 	/// extract element array buffers for edges in wireframe
 	void extract_wireframe_element_buffer(const std::vector<idx_type>& vertex_indices, std::vector<idx_type>& edge_element_buffer) const;
+	/// compute a index vector storing the inv corners per corner and optionally index vectors with per position corner index, per corner next and or prev corner index (implementation assumes closed manifold connectivity)
+	void compute_inv(std::vector<uint32_t>& inv, std::vector<uint32_t>* p2c_ptr = 0, std::vector<uint32_t>* next_ptr = 0, std::vector<uint32_t>* prev_ptr = 0);
+	/// given the inv corners compute index vector per corner its edge index and optionally per edge its corner index and return edge count (implementation assumes closed manifold connectivity)
+	uint32_t compute_c2e(const std::vector<uint32_t>& inv, std::vector<uint32_t>& c2e, std::vector<uint32_t>* e2c_ptr = 0);
+	/// compute index vector with per corner its face index
+	void compute_c2f(std::vector<uint32_t>& c2f);
 };
 
 /// the simple_mesh class is templated over the coordinate type that defaults to float
@@ -101,6 +109,8 @@ template <typename T = float>
 class CGV_API simple_mesh : public simple_mesh_base
 {
 public:
+	/// type of axis aligned 3d box
+	typedef typename simple_mesh<T> mesh_type;
 	/// type of axis aligned 3d box
 	typedef typename cgv::media::axis_aligned_box<T, 3> box_type;
 	/// type of 3d vector
@@ -120,7 +130,11 @@ protected:
 	std::vector<vec3>  positions;
 	std::vector<vec3>  normals;
 	std::vector<vec2>  tex_coords;
+
+	vec3 compute_normal(const vec3& p0, const vec3& p1, const vec3& p2);
 public:
+	/// construct from string corresponding to conway notation (defaults to empty mesh)
+	simple_mesh(const std::string& conway_notation = "");
 	/// clear simple mesh
 	void clear();
 
@@ -147,6 +161,24 @@ public:
 	idx_type get_nr_tex_coords() const { return idx_type(tex_coords.size()); }
 	vec2& tex_coord(idx_type ti) { return tex_coords[ti]; }
 	const vec2& tex_coord(idx_type ti) const { return tex_coords[ti]; }
+	/// compute per face normals (ensure that per corner normal indices are set correspondingly)
+	void compute_face_normals();
+	// /conway ambo operator
+	void ambo();
+	/// conway truncate operator
+	void truncate(T lambda = 0.33333f);
+	/// conway snub operator
+	void snub(T lambda = 0.33333f);
+	/// conway dual operator
+	void dual();
+	/// conway gyro operator
+	void gyro(T lambda = 0.3333f);
+	/// conway join operator
+	void join();
+	/// conway ortho operator
+	void ortho();
+	/// construct new mesh according to conway polyhedron notation: [a|t|s|d|g|j|o]*[T|C|O|D|I] which is evaluated from right to left and last capital letter is platonian solid and lowercase letters are conway operations
+	void construct_conway_polyhedron(const std::string& conway_notation);
 
 	/// compute the axis aligned bounding box
 	box_type compute_box() const;
