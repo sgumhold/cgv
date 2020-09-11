@@ -105,16 +105,16 @@ void mesh_render_info::construct_draw_calls(cgv::render::context& ctx)
 	wire_aa.aab_ptr->create(ctx);
 
 	// determine stride
-	size_t stride = 3;
+	uint32_t stride = 3;
 	if (include_tex_coords)
 		stride += 2;
 	if (include_normals)
 		stride += 3;
-	stride += color_increment;
+	stride += uint32_t(color_increment);
 	if (stride == 3)
 		stride = 0;
 	else
-		stride *= element_size;
+		stride *= uint32_t(element_size);
 
 	// set element and attribute pointers
 	aa.aab_ptr->set_element_array(ctx, *ref_vbos()[1]);
@@ -156,7 +156,7 @@ void mesh_render_info::construct_draw_calls(cgv::render::context& ctx)
 
 	// in case of no fragments, generate a single draw call
 	if (material_primitive_start.empty()) {
-		dc.count = nr_triangle_elements;
+		dc.count = uint32_t(nr_triangle_elements);
 		dc.indices = 0;
 		ref_draw_calls().push_back(dc);
 	}
@@ -168,7 +168,7 @@ void mesh_render_info::construct_draw_calls(cgv::render::context& ctx)
 			size_t next_start = nr_triangle_elements;
 			if (fi + 1 < material_primitive_start.size())
 				next_start = material_primitive_start[fi + 1][2];
-			dc.count = next_start - mps[2];
+			dc.count = uint32_t(next_start - mps[2]);
 			dc.indices = (void*)(3 * sizeof(uint32_t)*mps[2]);
 			dc.material_index = mps[0];
 			if (dc.material_index != -1) {
@@ -189,7 +189,7 @@ void mesh_render_info::construct_draw_calls(cgv::render::context& ctx)
 	wire_draw_call.primitive_type = PT_LINES;
 	wire_draw_call.vertex_offset = 0;
 	wire_draw_call.draw_call_type = cgv::render::RCT_INDEXED;
-	wire_draw_call.count = nr_edge_elements;
+	wire_draw_call.count = uint32_t(nr_edge_elements);
 	wire_draw_call.index_type = cgv::type::info::TI_UINT32;
 	wire_draw_call.indices = (void*)(sizeof(uint32_t)*nr_triangle_elements);
 	wire_draw_call.material_index = -1;
