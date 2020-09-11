@@ -251,6 +251,11 @@ void label_manager::draw_label_texts(cgv::render::context& ctx, const std::vecto
 
 void label_manager::draw_labels(cgv::render::context& ctx, bool all)
 {
+	if (labels.empty()) {
+		texture_outofdate = false;
+		texture_content_outofdate = false;
+		return;
+	}
 	cgv::media::font::font_face_ptr old_font_face = ctx.get_current_font_face();
 	float old_font_size = ctx.get_current_font_size();
 	GLboolean is_depth, is_scissor;

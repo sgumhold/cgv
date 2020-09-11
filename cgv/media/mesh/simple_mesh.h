@@ -43,8 +43,16 @@ public:
 	idx_type start_face();
 	/// create a new corner from position, optional normal and optional tex coordinate indices and return corner index
 	idx_type new_corner(idx_type position_index, idx_type normal_index = -1, idx_type tex_coord_index = -1);
+	/// return position index of corner
+	idx_type c2p(idx_type ci) const { return position_indices[ci]; }
+	/// return normal index of corner
+	idx_type c2n(idx_type ci) const { return normal_indices[ci]; }
+	/// return texture index of corner
+	idx_type c2t(idx_type ci) const { return tex_coord_indices[ci]; }
 	/// return the number of faces
 	idx_type get_nr_faces() const { return idx_type(faces.size()); }
+	/// return the number of corners
+	idx_type get_nr_corners() const { return position_indices.size(); }
 	/// return index of first corner of face with index fi
 	idx_type begin_corner(idx_type fi) const { return faces[fi]; }
 	/// return index of end corner (one after the last one) of face with index fi
