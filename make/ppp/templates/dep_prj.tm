@@ -66,6 +66,8 @@
 @define(         defFile_tmp=         defFile)
 @define(       useOpenMP_tmp=       useOpenMP)
 @define(cppLanguageStandard_tmp=cppLanguageStandard)
+@define(charset_tmp=charset)
+@define(subsystem_tmp=subsystem)
 @define(    addRuleFiles_tmp=    addRuleFiles)
 @define(        addRules_tmp=        addRules)
 @if(application_name)@{
@@ -102,6 +104,8 @@
 @define(     folder_list=     folder_list_tmp)
 @define(       useOpenMP=       useOpenMP_tmp)
 @define(cppLanguageStandard=cppLanguageStandard_tmp)
+@define(charset=charset_tmp)
+@define(subsystem=subsystem_tmp)
 @define(         defFile=         defFile_tmp)
 @define(    addRuleFiles=    addRuleFiles_tmp)
 @define(        addRules=        addRules_tmp)

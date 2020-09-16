@@ -96,7 +96,7 @@ func(::extend_project_info_vs; :>project_name = "", :>return = 1)
 		if (pj::is_executable[ci]) {
 			configDefsAdd            = ["_CONSOLE"];
 			pj::sub_system[ci]       = 1;
-			pj::sub_system_vs10[ci]  = "Console";
+			pj::sub_system_vs10[ci]  = pj::subsystem;
 			pj::config_type[ci]      = 1;
 			pj::config_type_vs10[ci] = "Application";
 			pj::output_ext[ci]       = "exe";
