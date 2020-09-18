@@ -409,12 +409,12 @@ bool reflection_handler::reflect_vector_impl(const std::string& member_name, std
 {
 	RT rt;
 #endif
-	int grp_tra = reflect_array_begin(GK_VECTOR, member_name, &member_ref, &rt, member_ref.size());
+	int grp_tra = reflect_array_begin(GK_VECTOR, member_name, &member_ref, &rt, (unsigned)member_ref.size());
 	if (grp_tra == GT_TERMINATE || grp_tra == GT_SKIP)
 		return grp_tra == GT_SKIP;
 	bool res = true;
 	if (grp_tra == GT_COMPLETE) {
-		unsigned size = member_ref.size();
+		unsigned size = (unsigned)member_ref.size();
 		res = reflect_member("size", size);
 		if (member_ref.size() != size)
 			member_ref.resize(size);
