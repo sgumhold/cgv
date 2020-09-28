@@ -28,7 +28,7 @@ void libtorch_viewer::on_set(void* member_ptr) {
 
 	if(member_ptr == &neural_net_filename) {
 		bool success{ false };
-		neural_net = load_net_from_file(neural_net_filename, &success);
+		neural_net = cgv::nn::load_net_from_file(neural_net_filename, &success);
 		assert(success);
 		return;
 	}
@@ -113,11 +113,8 @@ void libtorch_viewer::do_inference() {
 		
 		//std::cout << output << std::endl;
 
-		std::vector<float> out;
-		float* data_ptr = output.data<float>();
-		for(unsigned i = 0; i < 10; ++i)
-			out.push_back(data_ptr[i]);
-
+		std::vector<float> out = cgv::nn::to_vector<float>(output);
+		
 		float abs_min = std::numeric_limits<float>::max();
 		int min_idx = -1;
 

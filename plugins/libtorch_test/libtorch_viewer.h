@@ -18,7 +18,7 @@ protected:
 	/// Stores the location of the currently selected torch script file
 	std::string neural_net_filename;
 	/// Stores the neural network
-	TNPtr neural_net;
+	cgv::nn::tn_ptr neural_net;
 	/// Stores the location of the currently selected image file
 	std::string input_image_filename;
 	/// Stores the input image
