@@ -1875,7 +1875,12 @@ bool context::shader_program_link(shader_program_base& spb) const
 	if (spb.auto_detect_uniforms) {
 		spb.uses_lights = get_uniform_location(spb, "light_sources[0].light_source_type") != -1;
 		spb.uses_material = get_uniform_location(spb, "material.brdf_type") != -1;
-		spb.uses_view = get_uniform_location(spb, "modelview_matrix") != -1;
+		spb.uses_view =
+			get_uniform_location(spb, "modelview_matrix") != -1 ||
+			get_uniform_location(spb, "projection_matrix") != -1 ||
+			get_uniform_location(spb, "normal_matrix") != -1 ||
+			get_uniform_location(spb, "inverse_modelview_matrix") != -1 ||
+			get_uniform_location(spb, "inverse_normal_matrix") != -1;
 		spb.uses_gamma = get_uniform_location(spb, "gamma") != -1;
 		spb.auto_detect_uniforms = false;
 	}
