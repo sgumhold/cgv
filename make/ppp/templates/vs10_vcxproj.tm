@@ -93,7 +93,7 @@
     <OutDir Condition=@('"'."'")$(Configuration)|$(Platform)@("'=='")@(config_name[cj])|@(vs_platform)@("'".'"')>@((CGV_INSTALL."/".pj::output_dir[cj]."/")*clean_path)</OutDir>
     <IntDir Condition=@('"'."'")$(Configuration)|$(Platform)@("'=='")@(config_name[cj])|@(vs_platform)@("'".'"')>@((pj::build_dir."/$(ProjectName)_$(Configuration)/")*clean_path)</IntDir>
     <TargetName Condition=@('"'."'")$(Configuration)|$(Platform)@("'=='")@(config_name[cj])|@(vs_platform)@("'".'"')>$(ProjectName)@(pj::output_post[cj])</TargetName>
-@if(pj::output_dir[cj] == "bin")@{@//
+@if(pj::is_executable[cj] || pj::is_shared[cj])@{@//
     <LinkIncremental Condition=@('"'."'")$(Configuration)|$(Platform)@("'=='")@(config_name[cj])|@(vs_platform)@("'".'"')>@(is_dbg[cj])</LinkIncremental>
 @}      
     @}
@@ -151,7 +151,7 @@
 @if(!pj::is_static[cj] && pj::defFile != "")@{@//
       <ModuleDefinitionFile>@(pj::defFile*clean_path)</ModuleDefinitionFile>
 @}
-@if(pj::output_dir[cj] == "bin")@{@//
+@if(pj::is_executable[cj] || pj::is_shared[cj])@{@//
       <GenerateDebugInformation>@(is_dbg[cj])</GenerateDebugInformation>
       <SubSystem>@(pj::sub_system_vs10[cj])</SubSystem>
 @if(pj::is_executable[cj])@{@//
