@@ -114,7 +114,7 @@ public:
 		// adjust domain, tick marks and extent in world space (of offline rendering process)
 		plot.adjust_domain_to_data();
 		plot.adjust_tick_marks_to_domain();
-		plot.set_extent(vecn(1.9f, 1.9f));
+		plot.set_extent(vecn(1.8f, 1.8f));
 		plot.adjust_extent_to_domain_aspect_ratio();
 		// scale up extent in y-direction where we want to use half the texture resolution
 		vecn ex = plot.get_extent();
