@@ -1,5 +1,5 @@
 @=
-projectType="shared_library";
+projectType="library";
 projectName="libtorch";
 projectGUID="2AD270F1-A9FE-430B-B592-4CE992719DDB";
 addIncDirs=[ [CGV_DIR."/3rd/libtorch/dist/libtorch/include/torch/csrc/api/include", "all"], [CGV_DIR."/3rd/libtorch/dist/libtorch/include", "all"], [CGV_DIR."/3rd/libtorch/src/include", "all"] ];
