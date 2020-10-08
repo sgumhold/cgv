@@ -14,7 +14,7 @@ namespace cgv {
 
 				return ret;
 			} catch(const c10::Error& e) {
-				std::cerr << "Error: Could not load the PyTorch model! Maybe you are not using a maching build (debug/release of libtorch)." << std::endl;
+				std::cerr << "Error: Could not load the PyTorch model!" << std::endl;
 				if(success)
 					*success = false;
 				return {};
