@@ -12,6 +12,7 @@
 #include <cgv_gl/normal_renderer.h>
 #include <cgv_gl/box_renderer.h>
 #include <cgv_gl/box_wire_renderer.h>
+#include <cgv_gl/rounded_cone_renderer.h>
 #include <cgv_gl/gl/gl.h>
 #include <random>
 
@@ -21,7 +22,7 @@ class renderer_tests :
 	public cgv::gui::provider
 {
 public:
-	enum RenderMode { RM_POINTS, RM_SURFELS, RM_BOXES, RM_BOX_WIRES, RM_NORMALS, RM_ARROWS, RM_SPHERES };
+	enum RenderMode { RM_POINTS, RM_SURFELS, RM_BOXES, RM_BOX_WIRES, RM_NORMALS, RM_ARROWS, RM_SPHERES, RM_ROUNDED_CONES };
 	struct vertex {
 		vec3 point;
 		vec3 normal;
@@ -40,6 +41,7 @@ protected:
 	vec3 t;
 	float lambda;
 
+	bool transform_points_only;
 	bool sort_points;
 	bool disable_depth;
 	bool blend;
@@ -63,6 +65,7 @@ protected:
 	cgv::render::normal_render_style normal_style;
 	cgv::render::arrow_render_style arrow_style;
 	cgv::render::sphere_render_style sphere_style;
+	cgv::render::rounded_cone_render_style rounded_cone_style;
 
 	// declare attribute managers
 	cgv::render::attribute_array_manager p_manager;
@@ -72,6 +75,7 @@ public:
 	/// define format and texture filters in constructor
 	renderer_tests() : cgv::base::node("renderer_test")
 	{
+		transform_points_only = true;
 		sort_points = false;
 		blend = false;
 		use_box_array = false;
@@ -89,6 +93,7 @@ public:
 		std::default_random_engine g;
 		std::uniform_real_distribution<float> d(0.0f, 1.0f);
 		unsigned i;
+		
 		for (i = 0; i < 10000; ++i) {
 			points.push_back(vec3(d(g), d(g), d(g)));
 			unsigned group_index = 0;
@@ -109,13 +114,14 @@ public:
 			sizes.push_back(vec3(0.03f*d(g) + 0.001f, 0.03f*d(g) + 0.001f, 0.03f*d(g) + 0.001f));
 			boxes.push_back(box3(points.back() - 0.5f * sizes.back(), points.back() + 0.5f * sizes.back()));
 		}
+
 		compute_transformed_points();
 		for (i = 0; i < 8; ++i) {
 			group_colors.push_back(vec4((i & 1) != 0 ? 1.0f : 0.0f, (i & 2) != 0 ? 1.0f : 0.0f, (i & 4) != 0 ? 1.0f : 0.0f, 1.0f));
 			group_translations.push_back(vec3(0, 0, 0));
 			group_rotations.push_back(vec4(0, 0, 0, 1));
 		}
-		mode = RM_BOXES;
+		mode = RM_ROUNDED_CONES;
 		point_style.measure_point_size_in_pixel = false;
 		surfel_style.point_size = 15;
 		surfel_style.measure_point_size_in_pixel = false;
@@ -123,6 +129,7 @@ public:
 		arrow_style.length_scale = 0.01f;
 		sphere_style.radius = 0.01f;
 		sphere_style.use_group_color = true;
+		rounded_cone_style.radius = 0.01f;
 	}
 	std::string get_type_name() const
 	{
@@ -131,16 +138,17 @@ public:
 	void compute_transformed_points()
 	{
 		transformed_points.resize(points.size());
-		for (size_t i = 0; i < points.size(); ++i) {
-			vec4 hp = vec4(points[i]+t, 1.0f);
-			hp = T * hp;
+		for(size_t i = 0; i < points.size(); ++i) {
+			vec4 hp = vec4(points[i] + t, 1.0f);
+			if(transform_points_only)
+				hp = T * hp;
 			vec3 p = (1.0f / hp[3])*vec3(hp[0], hp[1], hp[2]);
-			transformed_points[i] = (1.0f-lambda)*(points[i]+t) + lambda*p;
+			transformed_points[i] = (1.0f - lambda)*(points[i] + t) + lambda * p;
 		}
 	}
 	void on_set(void* member_ptr)
 	{
-		if ((member_ptr >= &T && member_ptr < &T + 1) || (member_ptr >= &t && member_ptr < &t + 1) || (member_ptr == &lambda)) {
+		if ((member_ptr >= &T && member_ptr < &T + 1) || (member_ptr >= &t && member_ptr < &t + 1) || (member_ptr == &lambda) || member_ptr == &transform_points_only) {
 			compute_transformed_points();
 			p_vbos_out_of_date = true;
 		}
@@ -156,7 +164,7 @@ public:
 	{
 		
 		if (view_ptr = find_view_as_node()) {
-			view_ptr->set_focus(0.5, 0.5, 0.5);
+			view_ptr->set_focus(0.0, 0.5, 0.0);
 			view_ptr->set_y_extent_at_focus(1.0);
 		}
 		ctx.set_bg_clr_idx(4);
@@ -170,13 +178,14 @@ public:
 			return false;
 
 		// increase reference counts of used renderer singeltons
-		cgv::render::ref_point_renderer   (ctx, 1);
-		cgv::render::ref_surfel_renderer  (ctx, 1);
-		cgv::render::ref_box_renderer     (ctx, 1);
-		cgv::render::ref_box_wire_renderer(ctx, 1);
-		cgv::render::ref_normal_renderer(ctx, 1);
-		cgv::render::ref_arrow_renderer(ctx, 1);
-		cgv::render::ref_sphere_renderer  (ctx, 1);
+		cgv::render::ref_point_renderer			(ctx, 1);
+		cgv::render::ref_surfel_renderer		(ctx, 1);
+		cgv::render::ref_box_renderer			(ctx, 1);
+		cgv::render::ref_box_wire_renderer		(ctx, 1);
+		cgv::render::ref_normal_renderer		(ctx, 1);
+		cgv::render::ref_arrow_renderer			(ctx, 1);
+		cgv::render::ref_sphere_renderer		(ctx, 1);
+		cgv::render::ref_rounded_cone_renderer	(ctx, 1);
 		return true;
 	}
 
@@ -223,6 +232,18 @@ public:
 	}
 	void draw(cgv::render::context& ctx)
 	{
+		if(!transform_points_only) {
+			ctx.push_modelview_matrix();
+			mat4 M = ctx.get_modelview_matrix();
+			mat4 MT = M * T;
+			M = cgv::math::lerp(M, MT, lambda);
+			ctx.set_modelview_matrix(M);
+		}
+
+		vec3 eye_pos(0.0f);
+		if(view_ptr)
+			eye_pos = view_ptr->get_eye();
+
 		if (blend) {
 			glEnable(GL_BLEND);
 			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -320,11 +341,23 @@ public:
 			s_renderer.set_radius_array(ctx, &sizes[0][0], sizes.size(), sizeof(vec3));
 			render_points(ctx, s_renderer);
 		}	break;
+		case RM_ROUNDED_CONES:
+		{
+			cgv::render::rounded_cone_renderer& rc_renderer = cgv::render::ref_rounded_cone_renderer(ctx);
+			rc_renderer.set_render_style(rounded_cone_style);
+
+			set_geometry(ctx, rc_renderer);
+			render_points(ctx, rc_renderer);
+		}	break;
 		}
 		if (disable_depth)
 			glDepthFunc(GL_LESS);
 		if (blend) {
 			glDisable(GL_BLEND);
+		}
+
+		if(!transform_points_only) {
+			ctx.pop_modelview_matrix();
 		}
 	}
 	void clear(cgv::render::context& ctx)
@@ -335,18 +368,19 @@ public:
 		b_manager.destruct(ctx);
 
 		// decrease reference counts of used renderer singeltons
-		cgv::render::ref_point_renderer(ctx, -1);
-		cgv::render::ref_surfel_renderer(ctx, -1);
-		cgv::render::ref_box_renderer(ctx, -1);
-		cgv::render::ref_box_wire_renderer(ctx, -1);
-		cgv::render::ref_normal_renderer  (ctx, -1);
-		cgv::render::ref_arrow_renderer   (ctx, -1);
-		cgv::render::ref_sphere_renderer  (ctx, -1);
+		cgv::render::ref_point_renderer			(ctx, -1);
+		cgv::render::ref_surfel_renderer		(ctx, -1);
+		cgv::render::ref_box_renderer			(ctx, -1);
+		cgv::render::ref_box_wire_renderer		(ctx, -1);
+		cgv::render::ref_normal_renderer		(ctx, -1);
+		cgv::render::ref_arrow_renderer			(ctx, -1);
+		cgv::render::ref_sphere_renderer		(ctx, -1);
+		cgv::render::ref_rounded_cone_renderer  (ctx, -1);
 	}
 	void create_gui()
 	{
 		add_decorator("renderer tests", "heading");
-		add_member_control(this, "mode", mode, "dropdown", "enums='points,surfels,boxes,box wires,normals,arrows,spheres'");
+		add_member_control(this, "mode", mode, "dropdown", "enums='points,surfels,boxes,box wires,normals,arrows,spheres,rounded cones'");
 		if (begin_tree_node("transformation", lambda, true)) {
 			align("\a");
 			add_member_control(this, "lambda", lambda, "value_slider", "min=0;max=1;ticks=true");
@@ -362,6 +396,7 @@ public:
 				for (unsigned j = 0; j < 4; ++j)
 					add_member_control(this, "", T(i, j), "slider", "min=-1;max=1;w=50;ticks=true", j == 3 ? "\n" : " ");
 			}
+			add_member_control(this, "transform points only", transform_points_only, "check");
 			align("\b");
 			end_tree_node(lambda);
 		}
@@ -435,6 +470,12 @@ public:
 			add_gui("sphere_style", sphere_style);
 			align("\b");
 			end_tree_node(sphere_style);
+		}
+		if(begin_tree_node("Rounded Cone Rendering", rounded_cone_style, false)) {
+			align("\a");
+			add_gui("rounded_cone_style", rounded_cone_style);
+			align("\b");
+			end_tree_node(rounded_cone_style);
 		}
 	}
 };

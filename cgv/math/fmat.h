@@ -254,6 +254,27 @@ fmat<T, N, M> dyad(const fvec<T,N>& v, const fvec<S,M>& w)
 	return m;
 }
 
+///linear interpolation returns (1-t)*m1 + t*m2
+template <typename T, cgv::type::uint32_type N, cgv::type::uint32_type M>
+const fmat<T, N, M> lerp(const fmat<T, N, M>& m1, const fmat<T, N, M>& m2, T t)
+{
+	fmat<T, N, M> m;
+	for(unsigned i = 0; i < N; i++)
+		for(unsigned j = 0; j < M; j++)
+			m(i, j) = ((T)1 - t)*m1(i, j) + t * m2(i, j);
+	return m;
+}
+
+///linear interpolation returns (1-t)*m1 + t*m2
+template <typename T, cgv::type::uint32_type N, cgv::type::uint32_type M>
+const fmat<T, N, M> lerp(const fmat<T, N, M>& m1, const fmat<T, N, M>& m2, fmat<T, N, M> t)
+{
+	fmat<T, N, M> m;
+	for(unsigned i = 0; i < N; i++)
+		for(unsigned j = 0; j < M; j++)
+			m(i, j) = ((T)1 - t(i, j))*m1(i, j) + t(i, j)*m2(i, j);
+	return m;
+}
 
 	}
 
