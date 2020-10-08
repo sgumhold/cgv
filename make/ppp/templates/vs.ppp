@@ -101,10 +101,10 @@ func(::extend_project_info_vs; :>project_name = "", :>return = 1)
 			pj::config_type_vs10[ci] = "Application";
 			pj::output_ext[ci]       = "exe";
 			if (2*(ci/2) == ci) {
-				pj::output_dir[ci]       = "bin/release";
+				pj::output_dir[ci]       = "bin/release".platform_post;
 			}
 			else {
-				pj::output_dir[ci]       = "bin/debug";
+				pj::output_dir[ci]       = "bin/debug".platform_post;
 			}
 			pj::linker_tool[ci]      = "VCLinkerTool";
 			pj::linker_tool_vs10[ci] = "Link";
@@ -119,10 +119,10 @@ func(::extend_project_info_vs; :>project_name = "", :>return = 1)
 				pj::config_type_vs10[ci] = "DynamicLibrary";
 				pj::output_ext[ci]       = "dll";
 				if (2*(ci/2) == ci) {
-					pj::output_dir[ci]       = "bin/release";
+					pj::output_dir[ci]       = "bin/release".platform_post;
 				}
 				else {
-					pj::output_dir[ci]       = "bin/debug";
+					pj::output_dir[ci]       = "bin/debug".platform_post;
 				}
 				pj::linker_tool[ci]      = "VCLinkerTool";
 				pj::linker_tool_vs10[ci] = "Link";
