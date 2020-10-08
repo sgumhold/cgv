@@ -1,5 +1,5 @@
 @=
-projectType="plugin";
+projectType="application_plugin";
 projectName="libtorch_test";
 projectGUID="2B38897C-4340-4C2A-8657-308FF82E71BB";
 addProjectDirs=[CGV_DIR."/plugins", CGV_DIR."/libs", CGV_DIR."/3rd"];
