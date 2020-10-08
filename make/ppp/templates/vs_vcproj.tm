@@ -44,7 +44,7 @@
 @if(projectType=="tool")@{
 	@define(output_post[0]="")
 @}
-@define(output_dir=[["lib","lib"],["bin","bin"]][exec_idx].["bin","bin"])
+@define(output_dir=[["lib","lib"],["bin/release","bin/debug"]][exec_idx].["bin/release","bin/debug"])
 @define(config_name=["Release","Debug","Release Dll","Debug Dll"])
 @define(static_linker_tool=["VCLibrarianTool","VCLinkerTool"][exec_idx])
 @define(linker_tool=[static_linker_tool,static_linker_tool,"VCLinkerTool","VCLinkerTool"])

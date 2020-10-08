@@ -128,7 +128,7 @@
 				Name="VCPostBuildEventTool"
 @if(pj::projectType == "test" && !is_debug)@{
 				Description="performing tests"
-				CommandLine=@"CGV_INSTALL.'\\bin\\tester'.pj::output_post[ci].'.exe '.get_command_line_args(<:pj =& pj, <:ci = ci)*'|"|&quot;|'"
+				CommandLine=@"CGV_INSTALL.'\\'.(pj::output_dir[ci]*clean_path).'\\tester'.pj::output_post[ci].'.exe '.get_command_line_args(<:pj =& pj, <:ci = ci)*'|"|&quot;|'"
 @}
 			/>
     </Configuration>
