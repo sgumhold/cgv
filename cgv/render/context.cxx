@@ -1710,7 +1710,9 @@ void context::put_cursor_coords(const vec_type& p, int& x, int& y) const
 	dvec4 p4(0, 0, 0, 1);
 	for (unsigned int c = 0; c < p.size(); ++c)
 		p4(c) = p(c);
-	p4 = get_modelview_projection_window_matrix() *p4;
+
+	p4 = get_modelview_projection_window_matrix() * p4;
+
 	x = (int)(p4(0) / p4(3));
 	y = (int)(p4(1) / p4(3));
 }
