@@ -1,6 +1,15 @@
 #version 430
+#define ENABLE_AMBIENT_OCCLUSION 1
 
-#define ENABLE_AMBIENT_OCCLUSION 0
+//***** begin interface of view.glsl ***********************************
+mat4 get_modelview_matrix();
+mat4 get_projection_matrix();
+mat4 get_modelview_projection_matrix();
+mat4 get_inverse_modelview_matrix();
+mat4 get_inverse_modelview_projection_matrix();
+mat3 get_normal_matrix();
+mat3 get_inverse_normal_matrix();
+//***** end interface of view.glsl ***********************************
 
 //***** begin interface of fragment.glfs ***********************************
 uniform float gamma = 2.2;
@@ -11,7 +20,6 @@ void finish_fragment(vec4 color);
 vec4 compute_reflected_appearance(vec3 position_eye, vec3 normal_eye, vec4 color, int side);
 //***** end interface of surface.glsl ***********************************
 
-//uniform sampler2D color_scale_tex;
 uniform sampler3D density_tex;
 
 // ambient occlusion parameters
@@ -32,8 +40,6 @@ in flat vec4 tp2;
 in flat vec4 tp3;
 in vec4 color_start_fs;
 in vec4 color_end_fs;
-in flat mat4 inv_modelview;
-in flat mat3 inv_normal;
 
 vec3 ortho_vec(vec3 v) {
 
@@ -42,22 +48,26 @@ vec3 ortho_vec(vec3 v) {
 
 void main()
 {
-	vec3 dir = normalize(position);
-
+	// Original
+	//vec3 org = vec3(0.0);
+	//vec3 dir = normalize(position);
+	vec3 org = (get_inverse_modelview_matrix() * vec4(vec3(0.0), 1.0)).xyz;
+	vec3 dir = normalize((get_inverse_modelview_matrix() * vec4(normalize(position), 0.0)).xyz);
+	
 	float ra = start_fs.w;
 	float rb = end_fs.w;
 
     vec3  ba = end_fs.xyz - start_fs.xyz;
-	vec3  oa = -start_fs.xyz;
-	vec3  ob = -end_fs.xyz;
+	vec3  oa = org - start_fs.xyz;
+	vec3  ob = org - end_fs.xyz;
     float rr = ra - rb;
-    float m0 = dot(ba,ba);
-    float m1 = dot(ba,oa);
-    float m2 = dot(ba,dir);
-    float m3 = dot(dir,oa);
-    float m5 = dot(oa,oa);
-	float m6 = dot(ob,dir);
-    float m7 = dot(ob,ob);
+    float m0 = dot(ba, ba);
+    float m1 = dot(ba, oa);
+    float m2 = dot(ba, dir);
+    float m3 = dot(dir, oa);
+    float m5 = dot(oa, oa);
+	float m6 = dot(ob, dir);
+    float m7 = dot(ob, ob);
     
     float d2 = m0 - rr*rr;
     
@@ -115,8 +125,8 @@ void main()
 		vec4 color = mix(color_start_fs, color_end_fs, l);
 #if ENABLE_AMBIENT_OCCLUSION == 1
 		// Voxel cone tracing
-		vec3 pos = (inv_modelview * vec4(hit_pos, 1.0)).xyz;
-		vec3 n = normalize(inv_normal * normal);
+		vec3 pos = hit_pos.xyz;
+		vec3 n = normal;
 
 		float ao = 0.0;
 
@@ -157,10 +167,12 @@ void main()
 		float ao_factor = 1.0 - clamp(ao_strength * ao / 3.0, 0.0, 1.0);
 		color *= ao_factor;
 #endif
-
-		finish_fragment(vec4(compute_reflected_appearance(hit_pos, normal, vec4(color.xyz, 1.0), 1).rgb, color.a));
-
-		vec4 v_eye = vec4(hit_pos, 1.0);
+	
+		vec3 hit_pos_eye = (get_modelview_matrix() * vec4(hit_pos + org, 1.0)).xyz;
+		vec3 normal_eye = normalize(get_normal_matrix() * normal);
+		finish_fragment(vec4(compute_reflected_appearance(hit_pos_eye, normal_eye, vec4(color.xyz, 1.0), 1).rgb, color.a));
+		
+		vec4 v_eye = vec4(hit_pos_eye, 1.0);
 		float depth = dot(tp2, v_eye);
 		float depth_w = dot(tp3, v_eye);
 		gl_FragDepth = 0.5*(depth / depth_w) + 0.5;

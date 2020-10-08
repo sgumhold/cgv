@@ -381,7 +381,19 @@ T max_value(const fvec<T,N> &v)
 	return *(std::max_element(&v(0),&v(N-1)+1));
 }
 
+///linear interpolation returns (1-t)*v1 + t*v2
+template <typename T, cgv::type::uint32_type N>
+const fvec<T, N> lerp(const fvec<T, N>& v1, const fvec<T, N>& v2, T t)
+{
+	return ((T)1 - t)*v1 + t * v2;
+}
 
+///linear interpolation returns (1-t)*v1 + t*v2
+template <typename T, cgv::type::uint32_type N>
+const fvec<T, N> lerp(const fvec<T, N>& v1, const fvec<T, N>& v2, fvec<T, N> t)
+{
+	return (fvec<T, N>(1) - t)*v1 + t * v2;
+}
 
 	}
 }
