@@ -71,6 +71,8 @@ protected:
 public:
 	/// overload to return the type name of this object. By default the type interface is queried over get_type.
 	virtual std::string get_type_name() const;
+	/// overload to provide default options for registration
+	virtual std::string get_default_options() const;
 	/// overload to handle register events that is sent after the instance has been registered
 	virtual void on_register();
 	/// overload to handle unregistration of instances

@@ -32,10 +32,13 @@ public:
 
 	/**@name{\large b) construction}*/
 	//@{
-	/// empty standard constructor
-	quaternion() {}
+	/// standard constructor initializes to unit quaternion
+	quaternion() : fvec<T,4>(T(0),T(0),T(0),T(1)) {}
 	/// copy constructor
 	quaternion(const quaternion<T>& quat) : fvec<T,4>(quat) {}
+	/// copy constructor with type conversion
+	template <typename S>
+	quaternion(const quaternion<S>& q) : fvec<T,4>(q) {}
 	/// assignement operator
 	quaternion<T>& operator=(const quaternion<T>& quat) {
 		base_type::operator = (quat);
@@ -128,6 +131,8 @@ public:
 		M(2, 1) = 2 * this->y()*this->z() + 2 * this->w()*this->x();
 		M(2, 2) = 1-2*this->x()*this->x()-2*this->y()*this->y();
 	}
+	/// return equivalent 3x3 rotation matrix
+	mat_type get_matrix() const { mat_type M; put_matrix(M); return M; }
 	/// compute equivalent homogeneous 4x4 rotation matrix
 	void put_homogeneous_matrix(hmat_type& M) const
 	{
@@ -143,6 +148,8 @@ public:
 		M(3,0) = M(3,1) = M(3,2) = M(0,3) = M(1, 3) = M(2, 3) = M(3, 3) = 0;
 		M(3,3) = 1;
 	}
+	/// return equivalent 4x4 rotation matrix
+	hmat_type get_homogeneous_matrix() const { hmat_type M; put_homogeneous_matrix(M); return M; }
 	/// initialize quaternion from normal vector
 	void set_normal(const vec_type& n)
 	{

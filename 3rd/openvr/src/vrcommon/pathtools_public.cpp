@@ -361,8 +361,9 @@ std::string Path_Compact( const std::string & sRawPath, char slash )
 		std::string::size_type len = sPath.length();
 		if( sPath[ len-1 ] == '.'  && sPath[ len-2 ] == slash )
 		{
-		  // sPath.pop_back();
-		  sPath[len-1] = 0;  // for now, at least
+			sPath.pop_back();
+			//Not sure why the following line of code was used for a while.  It causes problems with strlen.
+			//sPath[len-1] = 0;  // for now, at least 
 		}
 	}
 
@@ -590,6 +591,41 @@ std::string Path_FindParentSubDirectoryRecursively( const std::string &strStartD
 //-----------------------------------------------------------------------------
 // Purpose: reading and writing files in the vortex directory
 //-----------------------------------------------------------------------------
+std::vector<uint8_t> Path_ReadBinaryFile( const std::string & strFilename )
+{
+	FILE *f;
+#if defined( POSIX )
+	f = fopen( strFilename.c_str(), "rb" );
+#else
+	std::wstring wstrFilename = UTF8to16( strFilename.c_str() );
+	// the open operation needs to be sharable, therefore use of _wfsopen instead of _wfopen_s
+	f = _wfsopen( wstrFilename.c_str(), L"rb", _SH_DENYNO );
+#endif
+
+	std::vector<uint8_t> vecFileContents;
+
+	if ( f != NULL )
+	{
+		fseek( f, 0, SEEK_END );
+		int size = ftell( f );
+		fseek( f, 0, SEEK_SET );
+
+		vecFileContents.resize( size );
+		if ( fread( &vecFileContents[ 0 ], size, 1, f ) == 1 )
+		{
+		}
+		else
+		{
+			vecFileContents.clear();
+		}
+
+		fclose( f );
+	}
+
+	return vecFileContents ;
+}
+
+
 unsigned char * Path_ReadBinaryFile( const std::string &strFilename, int *pSize )
 {
 	FILE *f;
@@ -819,7 +855,7 @@ std::string Path_FilePathToUrl( const std::string & sRelativePath, const std::st
 
 		size_t unBufferSize = sAbsolute.length() * 3;
 		char *pchBuffer = (char *)alloca( unBufferSize );
-		V_URLEncodeNoPlusForSpace( pchBuffer, (int)unBufferSize, sAbsolute.c_str(), (int)sAbsolute.length() );
+		V_URLEncodeFullPath( pchBuffer, (int)unBufferSize, sAbsolute.c_str(), (int)sAbsolute.length() );
 
 		return std::string( FILE_URL_PREFIX ) + pchBuffer;
 	}

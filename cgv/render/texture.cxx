@@ -442,15 +442,14 @@ bool texture::write_to_file(context& ctx, const std::string& file_name, unsigned
 	}
 	bool is_depth = get_standard_component_format() == CF_D;
 	data_format df("uint8[R,G,B]");
-	render_buffer rb("[D]");
 	if (is_depth) {
-		rb = render_buffer("[R,G,B]");
+		render_buffer rb("[R,G,B]");
 		df = data_format("uint32[D]");
-	}
-	rb.create(ctx,get_width(), get_height());
-	if (!fb.attach(ctx, rb)) {
-		last_error = "could not attach render buffer for write_to_file";
-		return false;
+		rb.create(ctx, get_width(), get_height());
+		if (!fb.attach(ctx, rb)) {
+			last_error = "could not attach color buffer for write_to_file";
+			return false;
+		}
 	}
 	if (!fb.is_complete(ctx)) {
 		last_error = "frame buffer object not complete for write_to_file due to\n";

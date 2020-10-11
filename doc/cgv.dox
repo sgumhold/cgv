@@ -34,7 +34,9 @@ MULTILINE_CPP_IS_BRIEF = NO
 INHERIT_DOCS           = YES
 SEPARATE_MEMBER_PAGES  = NO
 TAB_SIZE               = 8
-ALIASES                = 
+ALIASES               += sc{1}="<B><TT>{\1}</TT></B>"
+ALIASES               += dr{1}="<B><TT><\1></TT></B>"
+ALIASES               += mn{1}="<B><TT>[\1]</TT></B>"
 OPTIMIZE_OUTPUT_FOR_C  = NO
 OPTIMIZE_OUTPUT_JAVA   = NO
 BUILTIN_STL_SUPPORT    = NO
@@ -101,13 +103,13 @@ $(CGV_DIR)/cgv/signal \
 $(CGV_DIR)/cgv/reflect \
 $(CGV_DIR)/cgv/base \
 $(CGV_DIR)/cgv/os \
+$(CGV_DIR)/cgv/ppp \
 $(CGV_DIR)/cgv/math \
 $(CGV_DIR)/cgv/media \
 $(CGV_DIR)/cgv/render \
 $(CGV_DIR)/cgv/gui \
 $(CGV_DIR)/libs/cgv_gl \
 $(CGV_DIR)/libs/plot \
-$(CGV_DIR)/libs/ppp \
 $(CGV_DIR)/libs/gamepad \
 $(CGV_DIR)/libs/cg_gamepad
 INCLUDE_PATH = \
@@ -121,6 +123,7 @@ FILE_PATTERNS          = *.c \
                          *.cpp \
                          *.c++ \
                          *.d \
+                         *.def \
                          *.java \
                          *.ii \
                          *.ixx \
@@ -136,6 +139,7 @@ FILE_PATTERNS          = *.c \
                          *.odl \
                          *.cs \
                          *.php \
+                         *.pj \
                          *.php3 \
                          *.inc \
                          *.m \
@@ -148,11 +152,13 @@ EXCLUDE                =
 EXCLUDE_SYMLINKS       = NO
 EXCLUDE_PATTERNS       = */.svn* */vis/*
 EXCLUDE_SYMBOLS        = 
-EXAMPLE_PATH           = $(CGV_DIR)/cgv $(CGV_DIR)/cgv/config $(CGV_DIR)/plugins/examples $(CGV_DIR)/tool/ppp_tool $(CGV_DIR)/libs/ppp $(CGV_DIR)/make/ppp/templates
+EXAMPLE_PATH           = $(CGV_DIR)/cgv $(CGV_DIR)/cgv/config $(CGV_DIR)/plugins/examples $(CGV_DIR)/tool/ppp_tool $(CGV_DIR)/cgv/ppp $(CGV_DIR)/make/ppp/templates
 EXAMPLE_PATTERNS       = *.ph \
                          *.ppp \
                          *.cxx \
                          *.tm \
+                         *.pj \
+                         *.def \
                          *.h
 EXAMPLE_RECURSIVE      = NO
 IMAGE_PATH             = 
@@ -204,7 +210,7 @@ LATEX_OUTPUT           = latex
 LATEX_CMD_NAME         = latex
 MAKEINDEX_CMD_NAME     = makeindex
 COMPACT_LATEX          = NO
-PAPER_TYPE             = a4wide
+PAPER_TYPE             = A4
 EXTRA_PACKAGES         = 
 LATEX_HEADER           = 
 PDF_HYPERLINKS         = YES
@@ -263,12 +269,10 @@ TAGFILES               =
 GENERATE_TAGFILE       = 
 ALLEXTERNALS           = NO
 EXTERNAL_GROUPS        = YES
-PERL_PATH              = /usr/bin/perl
 #---------------------------------------------------------------------------
 # Configuration options related to the dot tool   
 #---------------------------------------------------------------------------
 CLASS_DIAGRAMS         = YES
-MSCGEN_PATH            = 
 HIDE_UNDOC_RELATIONS   = YES
 HAVE_DOT               = NO
 CLASS_GRAPH            = YES

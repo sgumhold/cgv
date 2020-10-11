@@ -18,6 +18,8 @@
 //
 // - CGV_SUPPORT_DIR ... from environment variable CGV_SUPPORT_DIR or undefined if 
 //                       environment variable not defined
+// - CGV_CHARSET     ... from environment variable CGV_CHARSET or Unicode if 
+//                       environment variable is not defined. Use define_charset.bat to set environment variable
 // - CGV_DATA        ... from environment variable CGV_DATA or undefined if 
 //                       environment variable not defined
 // - CGV_COMPILER    ... from environment variable CGV_COMPILER or if not defined 
@@ -62,7 +64,6 @@ projectType = "library";
 //name of project defaults to INPUT_NAME without extension
 
 projectName = "my_project";
-
 
 //list of individual source files that must be specified with full path
 
@@ -225,6 +226,17 @@ addMapDeps = [
 
 addDependencies = ["opengl","glu","glew",["Vfw32", "static"] ];
 
+// enable openmp support by the following line (0 is default value)
+useOpenMP = 1;
+
+// set the C++ language standard to "stdcpp14" or "stdcpp17" by the following line
+cppLanguageStandard = "stdcpp17";
+
+// overwrite windows character set used to encode string, which defaults to "Unicode" or if set env::CGV_CHARSET
+charset = "MultiByte";
+
+// overwrite windows subsystem used for linking of executables, which defaults to "Console"
+subsystem = "Windows";
 
 //set the name of the definition file, in which the symbols are 
 //defined that should be exported in a dll which has been implemented

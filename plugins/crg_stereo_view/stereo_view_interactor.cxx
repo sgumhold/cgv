@@ -249,8 +249,8 @@ std::string stereo_view_interactor::get_type_name() const
 void stereo_view_interactor::stream_help(std::ostream& os)
 {
 	os << "stereo_view_interactor:\n\a"
-		<< "stereo[F4], stereo mode[s-F4], z_near<s-N,N>, z_far<s-F,F>, select view dir{c-X|Y|Z,sc-X|Y|Z}\n"
-		<< "view all{c-Spc}, set focus{click LMB}, pan<RMB>, zoom<MMB>, rotate<LMB>, roll<s-LMB>";
+		<< "stereo[F4], stereo mode[s-F4], z_near<c-N,a-N>, z_far<c-F,a-F>, select view dir{c-X|Y|Z,sc-X|Y|Z}\n"
+		<< "view all{c-Spc}, show focus[s-F], set focus{click LMB}, pan<RMB>, zoom<MMB>, rotate<LMB>, roll<s-LMB>";
 	if (fix_view_up_dir)
 		os << " disabled";
 	os << "\n";
@@ -630,12 +630,10 @@ bool stereo_view_interactor::handle(event& e)
 		}
 		if (ke.get_action() != KA_RELEASE) {
 			switch (ke.get_key()) {
-			case 'S':
 			case gamepad::GPK_LEFT_STICK_PRESS:
 				left_mode = 1 - left_mode;
 				on_set(&left_mode);
 				return true;
-			case 'J':
 			case gamepad::GPK_RIGHT_STICK_PRESS:
 				right_mode = 1 - right_mode;
 				on_set(&right_mode);
@@ -651,27 +649,25 @@ bool stereo_view_interactor::handle(event& e)
 					return true;
 				}
 				break;
-			case 'G':
+			case 'F':
 			case gamepad::GPK_A:
-				if (ke.get_modifiers() == 0) {
+				if (ke.get_modifiers() == EM_SHIFT || e.get_kind() == gamepad::GPK_A) {
 					show_focus = !show_focus;
 					on_set(&show_focus);
 					return true;
 				}
-				break;
-			case 'F':
-				if (ke.get_modifiers() == EM_SHIFT)
+				else if (ke.get_modifiers() == EM_CTRL)
 					z_far /= 1.05;
-				else if (ke.get_modifiers() == 0)
+				else if (ke.get_modifiers() == EM_ALT)
 					z_far *= 1.05;
 				else
 					break;
 				on_set(&z_far);
 				return true;
 			case 'N':
-				if (ke.get_modifiers() == EM_SHIFT)
+				if (ke.get_modifiers() == EM_CTRL)
 					z_near /= 1.05;
-				else if (ke.get_modifiers() == 0)
+				else if (ke.get_modifiers() == EM_ALT)
 					z_near *= 1.05;
 				else
 					break;
@@ -1130,13 +1126,14 @@ void stereo_view_interactor::draw_mouse_pointer_as_arrow(cgv::render::context& c
 void stereo_view_interactor::draw_mouse_pointer(cgv::render::context& ctx, bool visible)
 {
 	const dmat4* MPW_ptr, * MPW_other_ptr;
-	int x, y, center_x, center_y;
 	int x_other, y_other, vp_col_idx, vp_row_idx, vp_width, vp_height, vp_center_x, vp_center_y, vp_center_x_other, vp_center_y_other;
 	int eye_panel = get_modelview_projection_window_matrices(last_x, last_y, ctx.get_width(), ctx.get_height(),
 		&MPW_ptr, &MPW_other_ptr, &x_other, &y_other,
 		&vp_col_idx, &vp_row_idx, &vp_width, &vp_height,
 		&vp_center_x, &vp_center_y, &vp_center_x_other, &vp_center_y_other);
 
+	int x = last_x, y = last_y, center_x = vp_center_x, center_y = vp_center_y;
+	/*
 	if (((stereo_mouse_pointer != SMP_ARROW) && ((ctx.get_render_pass() == cgv::render::RP_STEREO) == (eye_panel == -1))) ||
 		((stereo_mouse_pointer == SMP_ARROW) && (eye_panel == -1))) {
 		//	if ((ctx.get_render_pass() == cgv::render::RP_STEREO) == (eye_panel == -1)) {
@@ -1151,7 +1148,7 @@ void stereo_view_interactor::draw_mouse_pointer(cgv::render::context& ctx, bool 
 		center_x = vp_center_x_other;
 		center_y = vp_center_y_other;
 		MPW_ptr = MPW_other_ptr;
-	}
+	}*/
 	glPushAttrib(GL_DEPTH_BUFFER_BIT | GL_LINE_BIT | GL_POLYGON_BIT | GL_COLOR_BUFFER_BIT | GL_PIXEL_MODE_BIT);
 	if (is_viewport_splitting_enabled())
 		activate_split_viewport(ctx, vp_col_idx, vp_row_idx);
@@ -1310,19 +1307,18 @@ void stereo_view_interactor::init_frame(context& ctx)
 	if (rpf & RPF_SET_PROJECTION)
 		gl_set_projection_matrix(ctx, current_e, aspect);
 
-	if (rpf & RPF_SET_MODELVIEW) {
+	if (rpf & RPF_SET_MODELVIEW)
 		gl_set_modelview_matrix(ctx, current_e, aspect, *this);
 
-		if (current_e == GLSU_RIGHT) {
-			MPW_right = ctx.get_modelview_projection_window_matrix();
-			if (do_viewport_splitting)
-				MPWs_right = std::vector<dmat4>(nr_viewport_rows * nr_viewport_columns, MPW_right);
-		}
-		else {
-			MPW = ctx.get_modelview_projection_window_matrix();
-			if (do_viewport_splitting)
-				MPWs = std::vector<dmat4>(nr_viewport_rows * nr_viewport_columns, MPW);
-		}
+	if (current_e == GLSU_RIGHT) {
+		MPW_right = ctx.get_modelview_projection_window_matrix();
+		if (do_viewport_splitting)
+			MPWs_right = std::vector<dmat4>(nr_viewport_rows * nr_viewport_columns, MPW_right);
+	}
+	else {
+		MPW = ctx.get_modelview_projection_window_matrix();
+		if (do_viewport_splitting)
+			MPWs = std::vector<dmat4>(nr_viewport_rows * nr_viewport_columns, MPW);
 	}
 }
 

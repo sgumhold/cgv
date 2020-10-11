@@ -66,7 +66,7 @@ namespace cgv {
 
 		bool arrow_renderer::validate_attributes(const context& ctx) const
 		{
-			const arrow_render_style& srs = get_style<arrow_render_style>();
+			const arrow_render_style& ars = get_style<arrow_render_style>();
 			if (!surface_renderer::validate_attributes(ctx))
 				return false;
 
@@ -102,12 +102,19 @@ namespace cgv {
 
 		bool arrow_renderer::disable(cgv::render::context& ctx)
 		{
-			const arrow_render_style& srs = get_style<arrow_render_style>();
+			const arrow_render_style& ars = get_style<arrow_render_style>();
 			if (!attributes_persist()) {
 				has_directions = false;
 			}
 			return surface_renderer::disable(ctx);
 		}
+
+		void arrow_renderer::draw(context& ctx, size_t start, size_t count, bool use_strips, bool use_adjacency, uint32_t strip_restart_index)
+		{
+			const arrow_render_style& ars = get_style<arrow_render_style>();
+			draw_impl_instanced(ctx, PT_POINTS, start, count, ars.nr_subdivisions, false, false, -1);
+		}
+
 		bool arrow_render_style_reflect::self_reflect(cgv::reflect::reflection_handler& rh)
 		{
 			return
@@ -147,41 +154,41 @@ namespace cgv {
 			{
 				if (value_type != cgv::type::info::type_name<cgv::render::arrow_render_style>::get_name())
 					return false;
-				cgv::render::arrow_render_style* srs_ptr = reinterpret_cast<cgv::render::arrow_render_style*>(value_ptr);
+				cgv::render::arrow_render_style* ars_ptr = reinterpret_cast<cgv::render::arrow_render_style*>(value_ptr);
 				cgv::base::base* b = dynamic_cast<cgv::base::base*>(p);
 
-				p->add_member_control(b, "relative_location_of_position", srs_ptr->relative_location_of_position, "value_slider", "min=0;max=1;ticks=true");
-				p->add_member_control(b, "nr_subdivisions", srs_ptr->nr_subdivisions, "value_slider", "min=4;max=32;ticks=true");
-				p->add_member_control(b, "color_scale", srs_ptr->color_scale, "value_slider", "min=0.01;max=100;log=true;ticks=true");
-				if (p->begin_tree_node("length", srs_ptr->length_scale, true, "level=3")) {
+				p->add_member_control(b, "relative_location_of_position", ars_ptr->relative_location_of_position, "value_slider", "min=0;max=1;ticks=true");
+				p->add_member_control(b, "nr_subdivisions", ars_ptr->nr_subdivisions, "value_slider", "min=4;max=32;ticks=true");
+				p->add_member_control(b, "color_scale", ars_ptr->color_scale, "value_slider", "min=0.01;max=100;log=true;ticks=true");
+				if (p->begin_tree_node("length", ars_ptr->length_scale, true, "level=3")) {
 					p->align("\a");
-					p->add_member_control(b, "normalize_length", srs_ptr->normalize_length, "toggle");
-					p->add_member_control(b, "length_scale", srs_ptr->length_scale, "value_slider", "min=0.01;max=100;log=true;ticks=true");
-					p->add_member_control(b, "length_epsilon", srs_ptr->length_eps, "value_slider", "min=0.00000001;step=0.000000001;max=1;log=true;ticks=true");
+					p->add_member_control(b, "normalize_length", ars_ptr->normalize_length, "toggle");
+					p->add_member_control(b, "length_scale", ars_ptr->length_scale, "value_slider", "min=0.01;max=100;log=true;ticks=true");
+					p->add_member_control(b, "length_epsilon", ars_ptr->length_eps, "value_slider", "min=0.00000001;step=0.000000001;max=1;log=true;ticks=true");
 					p->align("\b");
-					p->end_tree_node(srs_ptr->length_scale);
+					p->end_tree_node(ars_ptr->length_scale);
 				}
-				if (p->begin_tree_node("radius", srs_ptr->radius_lower_bound, true, "level=3")) {
+				if (p->begin_tree_node("radius", ars_ptr->radius_lower_bound, true, "level=3")) {
 					p->align("\a");
-					p->add_member_control(b, "radius_relative_to_length", srs_ptr->radius_relative_to_length, "value_slider", "min=0;max=1;ticks=true");
-					p->add_member_control(b, "radius_lower_bound", srs_ptr->radius_lower_bound, "value_slider", "min=0;max=1;log=true;ticks=true");
-					p->add_member_control(b, "inner_outer_lambda", srs_ptr->inner_outer_lambda, "value_slider", "min=0;max=1;ticks=true");
+					p->add_member_control(b, "radius_relative_to_length", ars_ptr->radius_relative_to_length, "value_slider", "min=0;max=1;ticks=true");
+					p->add_member_control(b, "radius_lower_bound", ars_ptr->radius_lower_bound, "value_slider", "min=0;max=1;log=true;ticks=true");
+					p->add_member_control(b, "inner_outer_lambda", ars_ptr->inner_outer_lambda, "value_slider", "min=0;max=1;ticks=true");
 					p->align("\b");
-					p->end_tree_node(srs_ptr->radius_lower_bound);
+					p->end_tree_node(ars_ptr->radius_lower_bound);
 				}
-				if (p->begin_tree_node("radius", srs_ptr->head_radius_scale, true, "level=3")) {
+				if (p->begin_tree_node("radius", ars_ptr->head_radius_scale, true, "level=3")) {
 					p->align("\a");
-					p->add_member_control(b, "head_length_relative_to_radius", srs_ptr->head_length_relative_to_radius, "value_slider", "min=0.1;max=5;ticks=true");
-					p->add_member_control(b, "head_length_relative_to_length", srs_ptr->head_length_relative_to_length, "value_slider", "min=0;max=1;ticks=true");
-					p->add_member_control(b, "head_radius_scale", srs_ptr->head_radius_scale, "value_slider", "min=1;max=3;ticks=true");
+					p->add_member_control(b, "head_length_relative_to_radius", ars_ptr->head_length_relative_to_radius, "value_slider", "min=0.1;max=5;ticks=true");
+					p->add_member_control(b, "head_length_relative_to_length", ars_ptr->head_length_relative_to_length, "value_slider", "min=0;max=1;ticks=true");
+					p->add_member_control(b, "head_radius_scale", ars_ptr->head_radius_scale, "value_slider", "min=1;max=3;ticks=true");
 					p->align("\b");
-					p->end_tree_node(srs_ptr->head_radius_scale);
+					p->end_tree_node(ars_ptr->head_radius_scale);
 				}
-				if (p->begin_tree_node("surface rendering", srs_ptr->use_group_color, false, "level=3")) {
+				if (p->begin_tree_node("surface rendering", ars_ptr->use_group_color, false, "level=3")) {
 					p->align("\a");
-					p->add_gui("surface_render_style", *static_cast<cgv::render::surface_render_style*>(srs_ptr));
+					p->add_gui("surface_render_style", *static_cast<cgv::render::surface_render_style*>(ars_ptr));
 					p->align("\b");
-					p->end_tree_node(srs_ptr->use_group_color);
+					p->end_tree_node(ars_ptr->use_group_color);
 				}
 				return true;
 			}

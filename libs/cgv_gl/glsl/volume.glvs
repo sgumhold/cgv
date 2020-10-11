@@ -1,0 +1,36 @@
+#version 430 
+
+//***** begin interface of quaternion.glsl ***********************************
+vec4 unit_quaternion();
+vec3 rotate_vector_with_quaternion(in vec3 preimage, in vec4 q);
+vec3 inverse_rotate_vector_with_quaternion(in vec3 v, in vec4 q);
+void quaternion_to_axes(in vec4 q, out vec3 x, out vec3 y, out vec3 z);
+void quaternion_to_matrix(in vec4 q, out mat3 M);
+void rigid_to_matrix(in vec4 q, in vec3 t, out mat4 M);
+//***** end interface of quaternion.glsl ***********************************
+
+//***** begin interface of view.glsl ***********************************
+mat4 get_modelview_matrix();
+mat4 get_projection_matrix();
+mat4 get_modelview_projection_matrix();
+mat4 get_inverse_modelview_matrix();
+mat4 get_inverse_modelview_projection_matrix();
+mat3 get_normal_matrix();
+mat3 get_inverse_normal_matrix();
+//***** end interface of view.glsl ***********************************
+
+uniform vec3 eye_position;
+uniform vec3 tex_coord_scaling;
+uniform mat4 transformation_matrix;
+
+in vec4 position;
+
+out vec3 eye_fs;
+out vec3 vol_coord_fs;
+
+void main()
+{
+	eye_fs = (inverse(transformation_matrix) * vec4(eye_position, 1.0)).xyz / tex_coord_scaling;
+	vol_coord_fs = position.xyz / tex_coord_scaling;
+	gl_Position = get_modelview_projection_matrix() * transformation_matrix * position;
+}

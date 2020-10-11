@@ -366,8 +366,6 @@ void plot2d::draw(cgv::render::context& ctx)
 		// skip unvisible and empty sub plots
 		if (!ref_sub_plot2d_config(i).show_plot)
 			continue;
-		if (samples[i].empty())
-			continue;
 		draw_sub_plot(ctx, i);
 	}
 	disable_attributes(ctx, 2);

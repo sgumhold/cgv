@@ -52,6 +52,10 @@ namespace cgv {
 		{
 			// validate set attributes
 			bool res = renderer::validate_attributes(ctx);
+			if (!res)
+				return false;
+			if (!get_style_ptr())
+				return false;
 			const group_render_style& grs = get_style<group_render_style>();
 			if (!has_group_indices && (grs.use_group_color || grs.use_group_transformation)) {
 				ctx.error("group_renderer::enable() group_index attribute not set while using group colors or group transformations");

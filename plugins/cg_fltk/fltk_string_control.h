@@ -12,6 +12,7 @@ namespace fltk {
 /** implements a control for string values with the fltk::Input class */
 struct CGV_API fltk_string_control : public cgv::gui::control<std::string>, public fltk_base
 {
+	bool in_callback;
 	/// a fltk::Input is used to implement the string control
 	fltk::Input* fI;
 	/// construct from label, value reference and dimensions

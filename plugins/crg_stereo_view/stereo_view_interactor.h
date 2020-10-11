@@ -24,6 +24,7 @@ enum StereoMousePointer {
 
 extern CGV_API cgv::reflect::enum_reflection_traits<StereoMousePointer> get_reflection_traits(const StereoMousePointer&);
 
+/// class that manages a stereoscopic view
 class CGV_API stereo_view_interactor : 
 	public cgv::base::node, 
 	public cgv::gui::event_handler, 

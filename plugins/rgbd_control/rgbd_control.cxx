@@ -414,10 +414,7 @@ void rgbd_control::draw(context& ctx)
 		pr.set_position_array(ctx, P);
 		if (C.size() == P.size())
 			pr.set_color_array(ctx, C);
-		if (pr.validate_and_enable(ctx)) {
-			glDrawArrays(GL_POINTS, 0, (GLsizei)P.size());
-			pr.disable(ctx);
-		}
+		pr.render(ctx, 0, P.size());
 		ctx.mul_modelview_matrix(cgv::math::translate4<double>(3, 0, 0));
 	}
 	// transform to image coordinates

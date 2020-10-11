@@ -5,12 +5,11 @@ uniform float group_point_sizes[250];
 uniform bool use_color_index;
 uniform vec4 palette[16];
 
-in float point_size;
 in vec4 position;
+in float point_size;
 in vec4 color;
-in uint color_index;
-
 in int group_index;
+in uint color_index;
 
 out vec4 color_gs;
 
