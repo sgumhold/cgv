@@ -1,0 +1,182 @@
+#version 430
+#define ENABLE_AMBIENT_OCCLUSION 1
+
+//***** begin interface of view.glsl ***********************************
+mat4 get_modelview_matrix();
+mat4 get_projection_matrix();
+mat4 get_modelview_projection_matrix();
+mat4 get_inverse_modelview_matrix();
+mat4 get_inverse_modelview_projection_matrix();
+mat3 get_normal_matrix();
+mat3 get_inverse_normal_matrix();
+//***** end interface of view.glsl ***********************************
+
+//***** begin interface of fragment.glfs ***********************************
+uniform float gamma = 2.2;
+void finish_fragment(vec4 color);
+//***** end interface of fragment.glfs ***********************************
+
+//***** begin interface of surface.glsl ***********************************
+vec4 compute_reflected_appearance(vec3 position_eye, vec3 normal_eye, vec4 color, int side);
+//***** end interface of surface.glsl ***********************************
+
+uniform sampler3D density_tex;
+
+// ambient occlusion parameters
+uniform float ao_offset;
+uniform float ao_distance;
+uniform float ao_strength;
+uniform vec3 density_tex_offset;
+uniform vec3 density_tex_scaling;
+uniform vec3 tex_coord_scaling;
+uniform float texel_size;
+uniform float cone_angle_factor;
+uniform vec3 sample_dirs[3];
+
+in vec3 position;
+in flat vec4 start_fs;
+in flat vec4 end_fs;
+in flat vec4 tp2;
+in flat vec4 tp3;
+in vec4 color_start_fs;
+in vec4 color_end_fs;
+
+vec3 ortho_vec(vec3 v) {
+
+	return abs(v.x) > abs(v.z) ? vec3(-v.y, v.x, 0.0f) : vec3(0.0f, -v.z, v.y);
+}
+
+void main()
+{
+	// Original
+	//vec3 org = vec3(0.0);
+	//vec3 dir = normalize(position);
+	vec3 org = (get_inverse_modelview_matrix() * vec4(vec3(0.0), 1.0)).xyz;
+	vec3 dir = normalize((get_inverse_modelview_matrix() * vec4(normalize(position), 0.0)).xyz);
+	
+	float ra = start_fs.w;
+	float rb = end_fs.w;
+
+    vec3  ba = end_fs.xyz - start_fs.xyz;
+	vec3  oa = org - start_fs.xyz;
+	vec3  ob = org - end_fs.xyz;
+    float rr = ra - rb;
+    float m0 = dot(ba, ba);
+    float m1 = dot(ba, oa);
+    float m2 = dot(ba, dir);
+    float m3 = dot(dir, oa);
+    float m5 = dot(oa, oa);
+	float m6 = dot(ob, dir);
+    float m7 = dot(ob, ob);
+    
+    float d2 = m0 - rr*rr;
+    
+	float k2 = d2    - m2*m2;
+    float k1 = d2*m3 - m1*m2 + m2*rr*ra;
+    float k0 = d2*m5 - m1*m1 + m1*rr*ra*2.0 - m0*ra*ra;
+    
+	float h = k1*k1 - k0*k2;
+
+	if(h < 0.0) {
+		discard;
+		return;
+	}
+
+	bool hit = false;
+	float l = 0.0;
+	vec3 normal = vec3(0.0);
+
+    float t = (-sqrt(h) - k1) / k2;
+	float y = m1 - ra*rr + t*m2;
+    
+    if(y > 0.0 && y < d2) {
+		hit = true;
+		l = y / d2;
+		normal = normalize(d2*(oa + t*dir) - ba*y);
+    } else {
+		float h1 = m3*m3 - m5 + ra*ra;
+		float h2 = m6*m6 - m7 + rb*rb;
+		
+		float t1 = 1e20;
+
+		if(h1 > 0.0) {
+			hit = true;
+    		t = -m3 - sqrt(h1);
+			t1 = t;
+			l = 0.0;
+			normal = (oa + t*dir) / ra;
+		}
+
+		if(h2 > 0.0) {
+    		t = -m6 - sqrt(h2);
+			if(t < t1) {
+				hit = true;
+				t1 = t;
+				l = 1.0;
+				normal = (ob + t*dir) / rb;
+			}
+		}
+
+		t = t1;
+	}
+
+	if(hit) {
+		vec3 hit_pos = t * dir;
+		vec4 color = mix(color_start_fs, color_end_fs, l);
+#if ENABLE_AMBIENT_OCCLUSION == 1
+		// Voxel cone tracing
+		vec3 pos = hit_pos.xyz;
+		vec3 n = normal;
+
+		float ao = 0.0;
+
+		vec3 new_y = n;
+		vec3 new_x = cross(new_y, normalize(pos));
+		vec3 new_z = cross(new_x, new_y);
+
+		mat3 R = mat3(new_x, new_y, new_z);
+
+		for(int i = 0; i < 3; ++i) {
+			vec3 sd = R * sample_dirs[i];
+
+			float sample_distance = ao_offset + 0.001;
+			vec3 normalized_pos = (pos - density_tex_offset) * density_tex_scaling;
+			float lod_texel_size = 0.0f;
+			
+			float illumination = 1.0;
+
+			do {
+				// Get cone base radius at current distance and then the according mipmap sample level
+				float cone_radius = sample_distance * cone_angle_factor;
+				float sample_level = clamp(log2(cone_radius / texel_size), 0.0, 7.0);
+
+				lod_texel_size = pow(2.0, sample_level) * texel_size;
+
+				vec3 sample_pos = normalized_pos + sample_distance * sd * tex_coord_scaling;
+				float density = textureLod(density_tex, sample_pos, sample_level).r;
+				// Apply the compositing function
+				illumination *= 1.0 - density * illumination;
+				
+				// Get the next sample distance and position
+				sample_distance += cone_radius;
+			} while(sample_distance < ao_distance - lod_texel_size && illumination > 0.02);
+
+			ao += (1.0 - illumination);
+		}
+
+		float ao_factor = 1.0 - clamp(ao_strength * ao / 3.0, 0.0, 1.0);
+		color *= ao_factor;
+#endif
+	
+		vec3 hit_pos_eye = (get_modelview_matrix() * vec4(hit_pos + org, 1.0)).xyz;
+		vec3 normal_eye = normalize(get_normal_matrix() * normal);
+		finish_fragment(vec4(compute_reflected_appearance(hit_pos_eye, normal_eye, vec4(color.xyz, 1.0), 1).rgb, color.a));
+		
+		vec4 v_eye = vec4(hit_pos_eye, 1.0);
+		float depth = dot(tp2, v_eye);
+		float depth_w = dot(tp3, v_eye);
+		gl_FragDepth = 0.5*(depth / depth_w) + 0.5;
+	} else {
+		discard;
+	}
+}

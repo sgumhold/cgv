@@ -5,8 +5,8 @@
 namespace vr {
 
 /// construct
-gl_vr_display::gl_vr_display(unsigned _width, unsigned _height, vr_driver* _driver, void* _handle, const std::string& _name, bool _ffb_support, bool _wireless)
-	: width(_width), height(_height), vr_kit(_driver, _handle, _name, _ffb_support, _wireless)
+gl_vr_display::gl_vr_display(unsigned _width, unsigned _height, vr_driver* _driver, void* _handle, const std::string& _name)
+	: width(_width), height(_height), vr_kit(_driver, _handle, _name)
 {
 	nr_multi_samples = 4;
 	for (unsigned i = 0; i < 2; ++i) {
@@ -16,6 +16,13 @@ gl_vr_display::gl_vr_display(unsigned _width, unsigned _height, vr_driver* _driv
 		tex_id[i] = 0;
 		fbo_id[i] = 0;
 	}
+}
+
+/// allow to set a different size
+void gl_vr_display::set_size(int new_width, int new_height)
+{
+	width = new_width;
+	height = new_height;
 }
 
 /// return width in pixel of view
@@ -110,6 +117,11 @@ bool gl_vr_display::init_fbos()
 	}
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	return true;
+}
+/// bind texture of given eye to current texture unit
+void gl_vr_display::bind_texture(int eye)
+{
+	glBindTexture(GL_TEXTURE_2D, tex_id[eye]);
 }
 
 /// enable the framebuffer object of given eye (0..left, 1..right) 

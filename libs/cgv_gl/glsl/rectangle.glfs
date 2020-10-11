@@ -1,0 +1,28 @@
+#version 150
+
+in vec3 normal;
+in vec4 color_fs;
+in vec2 texcoord_fs;
+in vec3 position;
+flat in int side;
+
+uniform bool use_texture = false;
+uniform sampler2D tex;
+
+//***** begin interface of fragment.glfs ***********************************
+uniform float gamma = 2.2;
+void finish_fragment(vec4 color);
+//***** end interface of fragment.glfs ***********************************
+
+//***** begin interface of surface.glsl ***********************************
+vec4 compute_reflected_appearance(vec3 position_eye, vec3 normal_eye, vec4 color, int side);
+//***** end interface of surface.glsl ***********************************
+
+void main()
+{
+	vec4 color = color_fs;
+	if (use_texture)
+		color = texture(tex, texcoord_fs);
+	// illumination
+	finish_fragment(compute_reflected_appearance(position, normalize(normal), color, side));
+}

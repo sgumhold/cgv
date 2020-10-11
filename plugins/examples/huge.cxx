@@ -90,7 +90,7 @@ public:
 		return true;
 	}
 
-	void draw_points()
+	void render_points(cgv::render::context& ctx, cgv::render::renderer& R)
 	{
 		if (sort_points) {
 			indices.resize(spheres.size());
@@ -106,10 +106,11 @@ public:
 			};
 			vec3 view_dir = view_ptr->get_view_dir();
 			std::sort(indices.begin(), indices.end(), sort_pred(spheres, view_dir));
-			glDrawElements(GL_POINTS, GLsizei(spheres.size()), GL_UNSIGNED_INT, &indices.front());
+			R.set_indices(ctx, indices);
 		}
 		else
-			glDrawArrays(GL_POINTS, 0, GLsizei(spheres.size()));
+			R.remove_indices(ctx);
+		R.render(ctx, 0, spheres.size());
 	}
 	void draw(cgv::render::context& ctx)
 	{
@@ -121,9 +122,7 @@ public:
 
 		s_renderer.set_sphere_array(ctx, spheres);
 		s_renderer.set_color_array(ctx, colors);
-		s_renderer.validate_and_enable(ctx);
-		draw_points();
-		s_renderer.disable(ctx);
+		render_points(ctx, s_renderer);
 		if (blend)
 			glDisable(GL_BLEND);
 	}

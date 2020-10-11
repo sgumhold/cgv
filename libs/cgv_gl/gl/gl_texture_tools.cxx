@@ -674,7 +674,7 @@ unsigned int create_texture(const cgv::data::const_data_view& dv, unsigned level
 }
 
 /// cover the current viewport with a textured quad using the textured default shader program or the one passed in the third parameter
-bool cover_screen(context& ctx, shader_program* prog_ptr, bool flip_tex_v_coord)
+bool cover_screen(context& ctx, shader_program* prog_ptr, bool flip_tex_v_coord, float xmin, float ymin, float xmax, float ymax, float umin, float vmin, float umax, float vmax)
 {
 	shader_program& prog = prog_ptr ? *prog_ptr : ctx.ref_default_shader_program(true);
 	bool was_enabled = prog.is_enabled();
@@ -699,21 +699,21 @@ bool cover_screen(context& ctx, shader_program* prog_ptr, bool flip_tex_v_coord)
 	ctx.push_projection_matrix();
 	ctx.set_projection_matrix(cgv::math::identity4<double>());
 	
-	static render_types::vec4 positions[4] = {
-		render_types::vec4(-1,-1, 0, 1),
-		render_types::vec4( 1,-1, 0, 1),
-		render_types::vec4(-1, 1, 0, 1),
-		render_types::vec4( 1, 1, 0, 1)
+	render_types::vec4 positions[4] = {
+		render_types::vec4(xmin,ymin, 0, 1),
+		render_types::vec4(xmax,ymin, 0, 1),
+		render_types::vec4(xmin,ymax, 0, 1),
+		render_types::vec4(xmax,ymax, 0, 1)
 	};
-	static render_types::vec2 texcoords[8] = {
-		render_types::vec2(0.0f, 0.0f),
-		render_types::vec2(1.0f, 0.0f),
-		render_types::vec2(0.0f, 1.0f),
-		render_types::vec2(1.0f, 1.0f),
-		render_types::vec2(0.0f, 1.0f),
-		render_types::vec2(1.0f, 1.0f),
-		render_types::vec2(0.0f, 0.0f),
-		render_types::vec2(1.0f, 0.0f)
+	render_types::vec2 texcoords[8] = {
+		render_types::vec2(umin, vmin),
+		render_types::vec2(umax, vmin),
+		render_types::vec2(umin, vmax),
+		render_types::vec2(umax, vmax),
+		render_types::vec2(umin, vmax),
+		render_types::vec2(umax, vmax),
+		render_types::vec2(umin, vmin),
+		render_types::vec2(umax, vmin)
 	};
 
 	attribute_array_binding::set_global_attribute_array(ctx, pos_idx, positions, 4);
@@ -810,17 +810,18 @@ void gl_1D_texture_to_screen(bool vary_along_x, float xmin, float ymin, float xm
 bool complete_program_form_render_to_texture3D(cgv::render::context& ctx, cgv::render::shader_program& prog, std::string* error_message)
 {
 	const char* vertex_shader_source = "\
-#version 150 compatibility\n\
+#version 330\n\
 \n\
 uniform float slice_coord;\n\
-\n\
+layout(location = 0) in vec3 position;\n\
+layout(location = 3) in vec2 texcoord;\n\
 out vec3 tex_coord;\n\
 \n\
 void main()\n\
 {\n\
-	tex_coord.xy = gl_MultiTexCoord0.xy;\n\
+	tex_coord.xy = texcoord;\n\
 	tex_coord.z = slice_coord;\n\
-	gl_Position = gl_Vertex;\n\
+	gl_Position = vec4(position,1.0);\n\
 }";
 
 	if (!prog.attach_code(ctx, vertex_shader_source, cgv::render::ST_VERTEX)) {
@@ -842,7 +843,6 @@ bool render_to_texture3D(context& ctx, shader_program& prog, TextureSampling tex
 {
 	// extract texture resolution
 	unsigned tex_res[3] = { target_tex.get_width(), target_tex.get_height(), target_tex.get_depth() };
-
 	// check consistency of all texture resolutions
 	if (target_tex2) {
 		if (target_tex2->get_width() != tex_res[0] || target_tex2->get_height() != tex_res[1] || target_tex2->get_depth() != tex_res[2]) {
@@ -865,13 +865,11 @@ bool render_to_texture3D(context& ctx, shader_program& prog, TextureSampling tex
 	// create fbo with resolution of slices
 	cgv::render::frame_buffer fbo;
 	fbo.create(ctx, tex_res[0], tex_res[1]);
-
 	fbo.attach(ctx, target_tex, 0, 0, 0);
 	if (!fbo.is_complete(ctx)) {
 		std::cerr << "fbo to update volume gradient not complete" << std::endl;
 		return false;
 	}
-
 	static float V[4 * 3] = {
 		-1, -1, 0, +1, -1, 0,
 		+1, +1, 0, -1, +1, 0
@@ -889,20 +887,16 @@ bool render_to_texture3D(context& ctx, shader_program& prog, TextureSampling tex
 		T[1] = T[3] = float(-0.5 / tex_res[1]);
 		T[5] = T[7] = float(1.0 + 0.5 / tex_res[1]);
 	}
-
-	// store transformation matrices and reset them to identity
-	glMatrixMode(GL_MODELVIEW);
-	glPushMatrix();
-	glLoadIdentity();
-	glMatrixMode(GL_TEXTURE);
-	glPushMatrix();
-	glLoadIdentity();
-	glMatrixMode(GL_PROJECTION);
-	glPushMatrix();
-	glLoadIdentity();
-
+	ctx.push_window_transformation_array();
+	ctx.set_viewport(render_types::ivec4(0, 0, tex_res[0], tex_res[1]));
+	int slice_coord_loc = prog.get_uniform_location(ctx, "slice_coord");
 	// go through slices
 	for (int i = 0; i < (int) tex_res[2]; i++) {
+
+		if (slice_coord_loc != -1) {
+			float slice_coord = (texture_sampling == TS_CELL) ? (i + 0.5f) / tex_res[2] : (float)i / (tex_res[2] - 1);
+			prog.set_uniform(ctx, slice_coord_loc, slice_coord);
+		}
 		// attach textures to fbo
 		fbo.attach(ctx, target_tex, i, 0, 0);
 		if (target_tex2)
@@ -912,27 +906,10 @@ bool render_to_texture3D(context& ctx, shader_program& prog, TextureSampling tex
 		if (target_tex4)
 			fbo.attach(ctx, *target_tex4, i, 0, 3);
 		fbo.enable(ctx, 0);
-		
-		// draw square
-		if (texture_sampling == TS_CELL)
-			prog.set_uniform(ctx, "slice_coord", (i + 0.5f) / tex_res[2]);
-		else
-			prog.set_uniform(ctx, "slice_coord", (float)i / (tex_res[2]-1));
-
 		ctx.draw_faces(V, 0, T, F, 0, F, 1, 4);
-
 		fbo.disable(ctx);
 	}
-
-	// restore transformation matrices
-	glMatrixMode(GL_MODELVIEW);
-	glPopMatrix();
-	glMatrixMode(GL_TEXTURE);
-	glPopMatrix();
-	glMatrixMode(GL_PROJECTION);
-	glPopMatrix();
-	glMatrixMode(GL_MODELVIEW);
-
+	ctx.pop_window_transformation_array();
 	return true;
 }
 

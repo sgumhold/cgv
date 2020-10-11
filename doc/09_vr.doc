@@ -6,6 +6,7 @@
 #include <libs/vr/gl_vr_display.h>
 #include <plugins/vr_emulator/vr_emulator.h>
 #include <plugins/cg_vr/vr_server.h>
+#include <plugins/crg_stereo_view/stereo_view_interactor.h>
 #include <plugins/crg_vr_view/vr_view_interactor.h>
 
 /*! \page VR VR support
@@ -15,84 +16,56 @@
 The VR support distributed over several libraries and plugins. 
 The following list gives a brief overview:
 
-- cgv/libs/vr \ref VR
+- \dr{cgv/libs/vr}
 
   basic interface to implement vr apps that is independent of cgv framework and specific
-  vr api. It builds on the concept of a driver that provides instances of vr kits. There
+  vr api. It builds on the concept of a driver that provides instances of vr kits and
+  supports calibration through a calibration matrix. There
   can be several drivers in use at the same time. A simple registry is used to manage 
   drivers and vr kits. The vr_kit class provides access to the display and the controllers
   with a simple state polling api.
 
-- cgv/3rd/openvr
+- \dr{cgv/3rd/openvr}
 
   a copy of the openvr library such that it compiles within the build system of the framework.
   There is one change to support compilation with unicode characters under windows.
 
-- cgv/plugins/openvr_driver
+- \dr{cgv/plugins/openvr_driver}
 
   implements the vr interface for the openvr api. The only thing that needs to be done is to 
-  add the openvr_driver plugin as dependent project in the .pj-file.
+  add the \c openvr_driver plugin as dependent project in the .pj-file.
 
   Currently, under windows steam vr changes the framebuffer type to non sRGB. Then the gamma correction
   needs to be set to 1.0f with cgv::render::context::set_gamma(1.0f) instead of the standard value of 2.2f. 
-  As this happens even if no vr device is attached. One can define the option CGV_OPTIONS=NO_OPENVR when one
-  is not using a vr_kit. Then openvr is not initialized by the openvr_driver.
+  As this happens even if no vr device is attached. 
+  
+  One can define the option <tt>CGV_OPTIONS=NO_OPENVR</tt> when one
+  is not using a vr kit. Then openvr is not initialized by the openvr driver.
 
-- cgv/plugins/vr_emulator
+- \dr{cgv/test/vr}
   
-  implements the vr interface for emulated vr kits and supports multiple kits at the same time.
-  When added to the .pj-file, the vr_emulator defines a new tabgroup in the user interface and
-  handles some shortcuts:
-  
-  - Ctrl-Alt-N ... creates a new vr_kit
-  
-  Each vr_kit is controlled by a very simple model of the human body that can move and turn,
-  bend the hip forward/backward, turn the head left or right (gear) and move each hand a local
-  3D coordinate system with origin in the corresponding shoulder and oriented as the hip 
-  coordinate system.
+  Plugin that implements a vr driver emulating one or several vr kits that can be controlled with keyboard.
+  More information on its usage can be found in \ref VREmul.
 
-  To control the body model the vr_emulator allows to use the keys <0>, <1>, <2>, and <3> as 
-  modifier keys to control up to 4 vr_kits with the keyboard. The arrow keys allow to move and
-  rotate. <PgUp> and <PgDn> correspond to the hip bending and <Home> and <End> to gearing.
-  
-  The controller keys of each kit are emulated with the following keys pressed with the vr_kit
-  modifier key (<0>,...,<3>) hold down:
+- \dr{cgv/plugins/cg_vr}
 
-  - Q ... left menu
-  - A ... left button 0
-  - W ... left button 1
-  - D ... left button 2
-  - X ... left button 3
-  - C ... left touch
-  - S ... left press
-  - O ... right menu
-  - L ... right button 0
-  - I ... right button 1
-  - J ... right button 2
-  - M ... right button 3
-  - K ... right touch
-  - N ... right press
+  This plugin connects \dr{cgv/libs/vr} to \dr{cgv/gui} by translating changes in the
+  vr kit states into events dispatched though the cgv::gui::event_handler interface.
+  The central class for this is cgv::gui::vr_server. Please see its documentation.
+  VR events are declared in the cgv/plugins/cg_vr/vr_events.h header and marked with 
+  the cgv::gui::EF_VR event flag.
   
-  To make sure that all keys are dispatched by the vr_emulator, select it for keyboard focus
-  with the tab key or by selecting its tab group.
-
-- cgv/plugins/cg_vr
-
-  This plugin connects the vr library to the cgv/gui library by translating changes in the
-  vr kit states into events. The central class for this is cgv::gui::vr_server. Please see
-  its documentation.
-  
-- cgv/plugins/crg_vr_view
+- \dr{cgv/plugins/crg_vr_view}
 
   This plugin extends the stereo_view_interactor class of the crg_stereo_view plugin with
   vr support to the vr_view_interactor class. It connects to the on_device_change 
   signal of the cgv::gui::vr_server singelton and keeps track of device changes in order 
   to initialize and destruct their framebuffers in the opengl context of the vr_view_interactor.
   
-  It keeps a current vr_kit which can be selected with Ctrl-Alt-<0..3> or through the 
-  user interface. It can render the VR kits with meshes or in a some spheres 
-  representing the eyes and hands. If the meshes are not provided in the CGV_DATA path
-  and in Debug configuration the sphere rendering is used.
+  It keeps a current vr_kit which can be selected with \sc{Ctrl-Alt-0..3} or through the 
+  user interface. It can render vr kits with meshes and or with spheres 
+  representing eyes and controllers. If the meshes are not provided in the \c CGV_DATA path
+  and in Debug configuration the sphere rendering is the default.
   
   Furthermore, the action zone boundaries can be rendered
   as a dashed fence. It can also debug all emitted vr events in the text console window.
@@ -101,9 +74,9 @@ The following list gives a brief overview:
   
   Further rendering passes are issued to render from the
   views of the hmds of the present vr kits. The current vr kit states are queried with
-  pose_query=2 for the currently selected vr kit and with pose_query=1 for the others.
+  `pose_query=2` for the currently selected vr kit and with `pose_query=1` for the others.
   The rendered vr views are submitted to the hmds and can optionally blit in the current 
-  framebuffer. The queried states are transfered to the cgv::gui::vr_server singleton with the
+  framebuffer. The queried states are dispatched in the cgv::gui::vr_server singleton with the
   cgv::gui::vr_server::check_new_state() function such that you should use the second or third option descripted in
   the detailed documentation of the cgv::gui::vr_server.
 
@@ -118,10 +91,183 @@ The following list gives a brief overview:
   - vr_view_interactor::get_current_vr_state() ... access to the vr_state of the active vr_kit
   - vr_view_interactor::get_view_dir_of_kit(), vr_view_interactor::get_view_up_dir_of_kit(), vr_view_interactor::get_eye_of_kit() ... to access the view information of the attached vr_kits
   
-- cgv/plugins/vr_test
+- \dr{cgv/plugins/vr_test}
 
-  an advanced example of how to use the vr support of the cgv framework that includes picking and
-  grabbing of boxes through controller rays and a touch of the controller touchpad, offline rendering
-  of a textual info board and rendering a polygonal mesh (currently the file name is hard coded and
+  an advanced example of how to use the vr in the cgv framework that includes picking and
+  grabbing of boxes through controller rays and a touch of the controller touchpad, offline text rendering
+  to display an information board and rendering a polygonal mesh (currently the file name is hard coded and
   needs to be changed in the code to some local meshes)
+
+\section VRCalib Calibration of Tracking System
+
+Each vr driver has an optional 3x4 matrix to transform all tracked poses. The transformation can
+be enabled with vr::vr_driver::enable_calibration_transformation() and disabled with 
+vr::vr_driver::enable_calibration_transformation(). One can query the current transformation
+matrix with vr::vr_driver::put_calibration_transformation(). Setting the calibration matrix
+is restricted to classes derived from vr::vr_calibration_base. 
+
+Typically, one does not deal with the calibration matrix directly, but uses the functionality
+implemented in vr_view_interactor. To define the calibration matrix in a way that the 
+coordinates of the tracking system align with the physical world, one follows the following
+procedure:
+-# find a point on a horizontal surface in physical space (table or ground) which has a 
+   corresponding point in your virtual scene
+-# place a controller upside on the horizontal surface pointing in a direction aligned 
+   with a physical edge that corresponds to a virtual edge.
+-# single click corresponding point in your virtual scene, such that the focus point of
+   vr_view_interactor is set to the clicked point
+-# press \sc{Shift-Ctrl-0..3} with the number key corresponding to the controller index 
+   (you can also use a tracker for calibration). Then vr_view_interactor sets its calibration
+   location vectors and update and enable the calibration matrix of the current vr driver such 
+   that tracked position of the calibrated controller matches the position of the focus point
+   in the virtual scene
+-# to adjust the rotation go to the \mn{vr interactor} tab and open the \mn{VR calibration} UI 
+   node. Adjust the \mn{tracking_rotation} slider to match the 2D rotation of the virtual
+   controller and the physical controller. The vr_view_interactor always updates the driver
+   calibration matrix when this rotation angle is changed.
+-# When you are done with calibration, you can save the calibration to a file by pressing
+   the save icon of \mn{calibration_file_path}. Please choose `.cal` as extension.
+
+To automatically read your calibration at program start add the following line to your
+<tt>.pj</tt>-file:
+
+    type(vr_view_interactor):calibration_file_path="D:/develop/table.cal"
+
+\section VREmul Emulation of Virtual VR Kits
+
+When you add the plugin \dr{cgv/test/vr/vr_emulator.pj} to the list of dependent projects in your `.pj`-file:
+
+    addProjectDeps = [ ... , "vr_emulator", ... ];
+    addProjectDirs = [ ... , CGV_DIR."/test/vr", ... ];
+
+the plugin automatically creates an instance of the \c vr_emulator class that generates a new tabgroup 
+in the UI and handles keyboard shortcuts. You can configure
+the \c vr_emulator instance in your configuration file. See 
+<tt>cgv/test/vr/config.def</tt> for a documented
+list of possible configurations, which include creation of vr kits at program start.
+
+After program start you can create a new vr_kit with the shortcut \sc{Ctrl-Alt-N}.
+
+Each vr_kit is controlled by a very simple model of the human body that can move and turn,
+bend the hip forward/backward, turn the head left or right (yaw) and move each hand in a local
+3D coordinate system with origin in the corresponding shoulder and oriented as the hip 
+coordinate system.
+
+To control the body model the vr_emulator allows to use the keys \sc{0}, \sc{1}, \sc{2}, and \sc{3} as 
+modifier keys to control up to 4 vr_kits with the keyboard. The arrow keys allow to move and
+rotate. \sc{PgUp} and \sc{PgDn} control hip bending and \sc{Home} and \sc{End} yawing.
+
+The controller keys of each kit are can be toggled with the following keys pressed while
+holding the modifier key (\sc{0 .. 3}) of the vr kit:
+
+- \sc{W} ... left menu button
+- \sc{X} ... left grip button
+- \sc{Q} ... left system button
+- \sc{E} ... left A button
+- \sc{A} ... left pad touch
+- \sc{S} ... left pad press
+- \sc{I} ... right menu button
+- \sc{O} ... right grip button
+- \sc{U} ... right system button
+- \sc{B} ... right A button
+- \sc{J} ... right pad press
+- \sc{K} ... right pad touch
+
+To make sure that all keys are dispatched by `vr_emulator`, select it for keyboard focus
+with the tab key or by selecting its tab group.
+
+\section VRApp Application Development
+
+The most convenient approach to use vr in a cgv application is through the plugin \dr{cgv/plugins/crg_vr_view} 
+which replaces the plugin \dr{cgv/plugins/crg_stereo_view} of a none vr application. To get access to vr kits
+you need the plugin \dr{cgv/plugins/openvr_driver} to use openvr and or \dr{cgv/test/vr_emulator} to use the
+vr emulation. Finally, you need to include the libraries \dr{cgv/libs/vr} and \dr{cgv/libs/cg_vr}.
+
+To implement your application main class, e.g. vr_viewer, derive it as usual from 
+cgv::base::node, cgv::render::drawable, cgv::gui::event_handler, and optionally from
+cgv::gui::provider if you want to provide a classic UI. 
+
+You typically enable and configure VR in your drawable::init method by connecting the cgv::gui::vr_server singleton
+to the event processing of the main window and telling the cgv::render::vr_view_interactor instance which
+vr events should be generated and how the main rendering window should be configured. In \dr{cgv/plugins/vr_test} 
+you can find an example where the following code fragments are important:
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.c++}
+#include <cg_vr/vr_server.h>
+#include <vr_view_interactor.h>
+bool vr_test::init(cgv::render::context& ctx)
+{
+    cgv::gui::connect_vr_server(true);
+    
+    auto view_ptr = find_view_as_node();
+    if (view_ptr) {
+    	vr_view_ptr = dynamic_cast<vr_view_interactor*>(view_ptr);
+    	if (vr_view_ptr) {
+    		vr_view_ptr->set_event_type_flags(
+    			cgv::gui::VREventTypeFlags(
+    				cgv::gui::VRE_DEVICE + cgv::gui::VRE_STATUS +
+    				cgv::gui::VRE_KEY +	cgv::gui::VRE_ONE_AXIS + cgv::gui::VRE_TWO_AXES +
+    				cgv::gui::VRE_ONE_AXIS_GENERATES_KEY + cgv::gui::VRE_TWO_AXES_GENERATES_DPAD +
+    				cgv::gui::VRE_POSE));
+    		vr_view_ptr->enable_vr_event_debugging(true);
+    		vr_view_ptr->draw_action_zone(false);
+    		vr_view_ptr->draw_vr_kits(true);
+    		vr_view_ptr->enable_blit_vr_views(true);
+    		vr_view_ptr->set_blit_vr_view_width(200);
+    	}
+    }
+}
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+For the includes you need to add the following include paths in your .pj file:
+
+    addIncDirs=[INPUT_DIR, CGV_DIR."/libs", CGV_DIR."/test"];
+
+If you have enabled the device (cgv::gui::VRE_DEVICE) and status (cgv::gui::VRE_STATUS) events, you
+can set special callbacks to get informed of device changes and changes of the tracking and attachement status
+of hmds, controllers and trackers. This can already be prepared in your constructor:
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.c++}
+    connect(cgv::gui::ref_vr_server().on_device_change, this, &vr_test::on_device_change);
+    connect(cgv::gui::ref_vr_server().on_status_change, this, &vr_test::on_status_change);
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+These callbacks are implemented like this:
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.c++}
+#include <vr/vr_driver.h>
+void vr_test::on_device_change(void* kit_handle, bool attach)
+{
+    if (attach) {
+   		vr::vr_kit* kit_ptr = vr::get_vr_kit(kit_handle);
+		:
+	}
+}
+void vr_test::on_status_change(void* kit_handle, int ci, vr::VRStatus old_status, vr::VRStatus new_status)
+{
+    vr::vr_kit* kit_ptr = vr::get_vr_kit(kit_handle);
+    :
+}
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The vr events are dispatched through your handle method and where you can ensure that you only process vr events by
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.c++}
+bool vr_test::handle(cgv::gui::event& e)
+{
+	if ((e.get_flags() & cgv::gui::EF_VR) == 0)
+		return false;
+	:
+}
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+For examples of how to process vr events please checkout \dr{cgv/plugins/vr_test/vr_test.cxx}.
+
+\section VRInfo Device Information
+
+To get device information of the vr kit and its attached controllers and trackers, the vr::vr_kit class
+provides the vr::vr_kit::get_device_info() function that stores all static device information. The information
+on controllers and trackers is filled when they are attached, what can change during program execution.
+Information on not attached controllers and trackers might be invalid. The attachment status can be tracked
+in the status events and is also accessible in all vr events through the get_state() function, 
+e.g. cgv::gui::vr_key_event::get_state(). When browsing the documentation on the vr::vr_kit_info class, always
+check also the inheritance hierarchy as for example the serial number is available for all derived device
+classes from the vr::vr_device_info class.
+
 */

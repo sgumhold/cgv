@@ -1,0 +1,69 @@
+#version 150
+#extension GL_EXT_geometry_shader4 : enable
+
+layout(points) in;
+layout(triangle_strip, max_vertices = 4) out;
+
+in mat3 NM[];
+in mat4 PM[];
+in vec4 color_gs[];
+in vec4 texcoord_gs[];
+
+out vec3 normal;
+out vec4 color_fs;
+out vec2 texcoord_fs;
+out vec3 position;
+flat out int side; // 0 is back facing and 1 is front facing
+
+//***** begin interface of side.glsl ***********************************
+bool keep_this_side(in vec3 position, in vec3 normal, out int side);
+void update_material_color_and_transparency(inout vec3 mat_color, inout float transparency, in int side, in vec4 color);
+void update_normal(inout vec3 normal, in int side);
+//***** end interface of side.glsl ***********************************
+
+//***** begin interface of view.glsl ***********************************
+mat4 get_modelview_matrix();
+mat4 get_projection_matrix();
+mat4 get_modelview_projection_matrix();
+mat4 get_inverse_modelview_matrix();
+mat4 get_inverse_modelview_projection_matrix();
+mat3 get_normal_matrix();
+mat3 get_inverse_normal_matrix();
+//***** end interface of view.glsl ***********************************
+
+void emit_corner(in vec4 corner, in vec2 texcoord)
+{
+	position = corner.xyz;
+	texcoord_fs = texcoord;
+	// compute position in clip space
+	gl_Position	= get_projection_matrix() * corner;
+	EmitVertex();
+}
+
+void main()
+{
+	// set color to color attribute
+	color_fs = color_gs[0];
+	// transform normal to eye space
+	normal = NM[0]*vec3(0.0, 1.0, 0.0);
+	
+	// determine side in eye space and check for culling
+	/*if (!keep_this_side(position, normal, side))
+		return;*/
+
+	// generate splat vertices
+	vec4 tc = texcoord_gs[0];
+	if (tc.x < -1.0) {
+		tc.x += 3.0;
+		emit_corner(PM[0] * vec4(-0.5,-0.5, 0.0, 1.0), vec2(tc.zy));
+		emit_corner(PM[0] * vec4(-0.5, 0.5, 0.0, 1.0), vec2(tc.xy));
+		emit_corner(PM[0] * vec4( 0.5,-0.5, 0.0, 1.0), vec2(tc.zw));
+		emit_corner(PM[0] * vec4( 0.5, 0.5, 0.0, 1.0), vec2(tc.xw));
+	}
+	else {
+		emit_corner(PM[0] * vec4(-0.5,-0.5, 0.0, 1.0), vec2(tc.xy));
+		emit_corner(PM[0] * vec4(-0.5, 0.5, 0.0, 1.0), vec2(tc.xw));
+		emit_corner(PM[0] * vec4( 0.5,-0.5, 0.0, 1.0), vec2(tc.zy));
+		emit_corner(PM[0] * vec4( 0.5, 0.5, 0.0, 1.0), vec2(tc.zw));
+	}
+}

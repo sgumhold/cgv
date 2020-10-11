@@ -2,12 +2,12 @@
 projectName="cgv_gl";
 projectType="library";
 projectGUID="5EFDDD95-15F8-4A18-B96B-79652EA6553E";
-addIncDirs=[[CGV_DIR."/libs", "all"], CGV_BUILD_DIR."/".projectName, CGV_DIR."/3rd/glew"];
+addIncDirs=[[CGV_DIR."/libs", "all"], [CGV_DIR."/3rd/json", "all"], CGV_BUILD_DIR."/".projectName, CGV_DIR."/3rd/glew"];
 addProjectDirs=[CGV_DIR."/libs", CGV_DIR."/3rd/glew"];
 addRules=[
 	[
 		MAP.[
-			["extensions",["glsl", "glvs", "glgs", "glfs", "pglsl", "pglvs", "pglgs", "pglfs", "glpr", "hglsl"]],
+			["extensions",["glsl", "glvs", "glgs", "glfs", "glcs", "pglsl", "pglvs", "pglgs", "pglfs", "pglcs", "glpr", "hglsl"]],
 			["tool","shader_test"],
 			["folder","shader"],
 			["rules", 

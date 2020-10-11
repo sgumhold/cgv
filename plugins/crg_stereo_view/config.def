@@ -1,0 +1,81 @@
+// *********** gamepad *******************
+
+// (only works if lib/cg_gamepad is dependent project and only under windows)
+// 
+// button mappings:
+// - start ... set default view
+// - A ... toggle show focus
+// - DPAD_Left/Right/Up/Down ... set view direction along x/-x/y/-y axes
+// - left/right BUMPER ... set view direction along z/-z axes
+//
+// left and right stick work with two modes which can be toggled individually by pressing 
+// the corresponding stick
+// - left stick mode 0:  rotate in plane orthogonal to view direction
+// - left stick mode 1:  pan in plane orthogonal to view direction
+// - right stick mode 0: left/right to roll, up/down to zoom
+// - right stick mode 1: left/right to change field of view angle, up/down to move forward/backward
+//
+// gamepad configuration:
+//
+// whether to allow navigation with gamepad 
+type(stereo_view_interactor):use_gamepad=true
+// gamepad deadzone percentage
+type(stereo_view_interactor):deadzone=0.03
+// sensitivity for panning with gamepad
+type(stereo_view_interactor):pan_sensitivity=1.0
+// sensitivity for rotation with gamepad
+type(stereo_view_interactor):rotate_sensitivity=1.0
+// sensitivity for zooming with gamepad
+type(stereo_view_interactor):zoom_sensitivity=1.0
+
+// *********** gamepad emulation ************
+
+// whether to emulate gamepad with A,D,W,X for left and H,K,U,M for right stick 
+// (emulation currently does not support gamepad buttons or pressing of sticks)
+type(stereo_view_interactor):gamepad_emulation=false
+
+
+// ********** view configuration ************
+type(stereo_view_interactor):focus_x=0.0
+type(stereo_view_interactor):focus_y=0.0
+type(stereo_view_interactor):focus_z=0.0
+type(stereo_view_interactor):view_dir_x=0.0
+type(stereo_view_interactor):view_dir_y=0.0
+type(stereo_view_interactor):view_dir_z=-1.0
+type(stereo_view_interactor):up_dir_x=0.0
+type(stereo_view_interactor):up_dir_y=1.0
+type(stereo_view_interactor):up_dir_z=0.0
+// field of view angle in y direction in degrees
+type(stereo_view_interactor):y_view_angle=45
+// y extent in world space at focus point (changes to this will move eye point correspondingly)
+type(stereo_view_interactor):extent=2.0
+type(stereo_view_interactor):z_near=0.0001
+type(stereo_view_interactor):z_far=100
+
+// ********** navigation configuration ************
+// whether to fix view up direction (effectively prohibits rolling)
+type(stereo_view_interactor):fix_view_up_dir=false
+// whether to restrict rotation to roll (effectively results in 2D navigation)
+type(stereo_view_interactor):two_d_enabled=false
+
+// ********** stereo configuration ************
+// whether to scale aspect ratio by 0.5/2.0 in vsplit/hsplit mode which is used for compressed 
+// stereo display modes typically used in 3D TVs
+type(stereo_view_interactor):adapt_aspect_ratio_to_stereo_mode=true
+// whether stereo rendering is turned on
+type(stereo_view_interactor):stereo=false
+// eye distance in percent to y-extent of screen
+type(stereo_view_interactor):eye_distance=0.03
+// stereo rendering mode
+type(stereo_view_interactor):stereo_mode=anaglyph (other values: vsplit,hsplit,"quad buffer")
+type(stereo_view_interactor):mono_mode=center (other values: left,right)
+type(stereo_view_interactor):anaglyph_config="red|cyan" (other values: "red|blue","yellow|blue","magenta|green","blue|red","cyan|red","blue|yellow","green|magenta")
+// distance to parallax 0 plane 
+type(stereo_view_interactor):parallax_zero_scale=0.5
+// whether to incorporate translation from center eye to left and right eyes into model view transformation
+// this will provide physically correct lighting which makes it harder for viewer to fuse left and rigth 
+// images. Therefore this is turned off by default 
+type(stereo_view_interactor):stereo_translate_in_model_view=false
+type(stereo_view_interactor):show_focus", show_focus) &&
+type(stereo_view_interactor):stereo_mouse_pointer", stereo_mouse_pointer) &&
+type(stereo_view_interactor):clip_relative_to_extent", clip_relative_to_extent);

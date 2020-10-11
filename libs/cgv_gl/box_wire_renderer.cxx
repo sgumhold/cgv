@@ -92,5 +92,10 @@ namespace cgv {
 
 			return line_renderer::disable(ctx);
 		}
+		
+		void box_wire_renderer::draw(context& ctx, size_t start, size_t count, bool use_strips, bool use_adjacency, uint32_t strip_restart_index)
+		{
+			draw_impl(ctx, PT_POINTS, start, count, false, false, -1);
+		}
 	}
 }

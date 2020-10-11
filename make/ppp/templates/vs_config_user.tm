@@ -2,7 +2,7 @@
 			Name=@"config_name[ci].'|Win32'"
 			>
 			<DebugSettings@if(application_name)@{
-				Command=@"CGV_INSTALL.'\\bin\\'.application_name.output_post[ci].'.exe'"
+				Command=@"CGV_INSTALL.'\\'.(pj::output_dir[ci]*clean_path).'\\'.application_name.output_post[ci].'.exe'"
 @}
 @else@{
 				Command="$(TargetPath)"@}@if(workingDirectory!~UNDEF)@{

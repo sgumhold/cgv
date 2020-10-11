@@ -1,4 +1,5 @@
 #include "renderer.h"
+#include "gl/gl_tools.h"
 
 namespace cgv {
 	namespace render {
@@ -21,6 +22,17 @@ namespace cgv {
 		{
 			return ctx.set_attribute_array_void(&aab, loc, element_type, &vbo, reinterpret_cast<const void*>(offset_in_bytes), nr_elements, stride_in_bytes);
 		}
+		///
+		void attribute_array_manager::remove_indices(const context& ctx)
+		{
+			vertex_buffer*& vbo_ptr = vbos[-1];
+			if (vbo_ptr) {
+				vbo_ptr->destruct(ctx);
+				delete vbo_ptr;
+				vbos[-1] = 0;
+			}
+		}
+
 		bool attribute_array_manager::init(context& ctx)
 		{
 			return aab.create(ctx);
@@ -44,13 +56,16 @@ namespace cgv {
 			vbos.clear();
 			aab.destruct(ctx);
 		}
-
 		renderer::renderer()
 		{
 			has_colors = false;
 			has_positions = false;
 			rs = default_render_style = 0;
 			aam_ptr = 0;
+			indices = 0;
+			index_buffer_ptr = 0;
+			index_type = cgv::type::info::TI_UNDEF;
+			index_count = 0;
 		}
 		void renderer::manage_singelton(context& ctx, const std::string& renderer_name, int& ref_count, int ref_count_change)
 		{
@@ -113,12 +128,22 @@ namespace cgv {
 			has_colors = true;
 			set_attribute_array(ctx, ref_prog().get_attribute_location(ctx, "color"), element_type, vbo, offset_in_bytes, nr_elements, stride_in_bytes);
 		}
-
+		void renderer::remove_indices(const context& ctx)
+		{
+			if (!has_indices())
+				return;
+			if (aam_ptr)
+				aam_ptr->remove_indices(ctx);
+			index_buffer_ptr = 0;
+			indices = 0;
+			index_count = 0;
+			index_type = cgv::type::info::TI_UNDEF;
+		}
 		bool renderer::validate_attributes(const context& ctx) const
 		{
 			// validate set attributes
 			if (!has_positions) {
-				ctx.error("box_renderer::enable() position attribute not set");
+				ctx.error("renderer::enable() position attribute not set");
 				return false;
 			}
 			return true;
@@ -128,6 +153,17 @@ namespace cgv {
 		{
 			rs = &_rs;
 		}
+		/// access to render style
+		const render_style* renderer::get_style_ptr() const
+		{
+			if (rs)
+				return rs;
+			if (default_render_style)
+				return default_render_style;
+			default_render_style = create_render_style();
+			return default_render_style;
+		}
+
 		bool renderer::init(context& ctx)
 		{
 			if (!default_render_style) {
@@ -165,10 +201,66 @@ namespace cgv {
 				enabled_attribute_arrays.clear();
 				has_colors = false;
 				has_positions = false;
+				index_count = 0;
 			}
 			return ref_prog().disable(ctx) && res;
 		}
-
+		void renderer::draw_impl(context& ctx, PrimitiveType type, size_t start, size_t count, bool use_strips, bool use_adjacency, uint32_t strip_restart_index)
+		{
+			if (use_strips && has_indices()) {
+				glPrimitiveRestartIndex(strip_restart_index);
+				glEnable(GL_PRIMITIVE_RESTART);
+			}
+			GLenum pt = gl::map_to_gl(type);
+			if (type == PT_LINES || type == PT_TRIANGLES) {
+				if (use_adjacency)
+					pt += GL_TRIANGLES_ADJACENCY - GL_TRIANGLES;
+				if (use_strips)
+					pt += GL_TRIANGLE_STRIP - GL_TRIANGLES;
+			}
+			if (index_buffer_ptr && !aam_ptr)
+				index_buffer_ptr->bind(ctx, VBT_INDICES);
+			if (has_indices())
+				glDrawElements(pt, (GLsizei)count, gl::map_to_gl(index_type), reinterpret_cast<const uint8_t*>(aam_ptr ? 0 : indices) + start * cgv::type::info::get_type_size(index_type));
+			else
+				glDrawArrays(pt, (GLint)start, (GLsizei)count);
+			if (index_buffer_ptr && !aam_ptr)
+				glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+		}
+		void renderer::draw_impl_instanced(context& ctx, PrimitiveType type, size_t start, size_t count, size_t instance_count, bool use_strips, bool use_adjacency, uint32_t strip_restart_index)
+		{
+			if (use_strips && has_indices()) {
+				glPrimitiveRestartIndex(strip_restart_index);
+				glEnable(GL_PRIMITIVE_RESTART);
+			}
+			GLenum pt = gl::map_to_gl(type);
+			if (type == PT_LINES || type == PT_TRIANGLES) {
+				if (use_adjacency)
+					pt += GL_TRIANGLES_ADJACENCY - GL_TRIANGLES;
+				if (use_strips)
+					pt += GL_TRIANGLE_STRIP - GL_TRIANGLES;
+			}
+			if (index_buffer_ptr && !aam_ptr)
+				index_buffer_ptr->bind(ctx, VBT_INDICES);
+			if (has_indices())
+				glDrawElementsInstanced(pt, (GLsizei)count, gl::map_to_gl(index_type), reinterpret_cast<const uint8_t*>(indices) + start * cgv::type::info::get_type_size(index_type), (GLsizei)instance_count);
+			else
+				glDrawArraysInstanced(pt, (GLint)start, (GLsizei)count, (GLsizei)instance_count);
+			if (index_buffer_ptr && !aam_ptr)
+				glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+		}
+		void renderer::draw(context& ctx, size_t start, size_t count,
+			bool use_strips, bool use_adjacency, uint32_t strip_restart_index)
+		{
+			draw_impl(ctx, PT_TRIANGLES, start, count, use_strips, use_adjacency, strip_restart_index);
+		}
+		bool renderer::render(context& ctx, size_t start, size_t count, bool use_strips, bool use_adjacency, uint32_t strip_restart_index)
+		{
+			if (!validate_and_enable(ctx))
+				return false;
+			draw(ctx, start, count, use_strips, use_adjacency, strip_restart_index);
+			return disable(ctx);
+		}
 		void renderer::clear(const cgv::render::context& ctx)
 		{
 			prog.destruct(ctx);
