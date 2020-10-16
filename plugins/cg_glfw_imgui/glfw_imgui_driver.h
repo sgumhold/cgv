@@ -2,6 +2,7 @@
 
 #include <cgv/base/base.h>
 #include <cgv/gui/gui_driver.h>
+#include <mutex>
 //#include <cgv/render/context.h>
 
 #include "lib_begin.h"
@@ -14,6 +15,10 @@ class CGV_API glfw_imgui_driver : public gui_driver
 protected:
 	/// keep track of the created windows
 	std::vector<window_ptr> windows;
+	/// store the last wakeup message
+	std::string wakeup_message;
+	/// mutex used for locking
+	std::mutex mtx;
 public:
 	///
 	glfw_imgui_driver();
