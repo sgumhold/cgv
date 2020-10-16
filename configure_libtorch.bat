@@ -19,12 +19,12 @@ if NOT "%CGV_DIR%" == "" if NOT "%CGV_BUILD%" == "" (
   echo Download and extraction complete.
 
   set d_src=%CGV_DIR%\3rd\libtorch\dist\libtorch\lib\debug
-  set d_dst=%CGV_BUILD%\bin\debug
+  set d_dst=%CGV_BUILD%\bin\debug64
   echo Copying required libtorch debug Dlls to !d_dst!...
   robocopy "!d_src!" "!d_dst!" asmjit.dll c10.dll fbgemm.dll libiomp5md.dll torch_cpu.dll /R:3 /W:5 /IS /IT
 
   set r_src=%CGV_DIR%\3rd\libtorch\dist\libtorch\lib\release
-  set r_dst=%CGV_BUILD%\bin\release
+  set r_dst=%CGV_BUILD%\bin\release64
   echo Copying required libtorch release Dlls to !r_dst!...
   robocopy "!r_src!" "!r_dst!" asmjit.dll c10.dll fbgemm.dll libiomp5md.dll torch_cpu.dll /R:3 /W:5 /IS /IT
 
