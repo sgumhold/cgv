@@ -66,7 +66,6 @@ protected:
 	bool gui;
 	bool stats;
 
-
 	bool dispatch_event(cgv::gui::event& e)
 	{
 		cgv::base::single_method_action<cgv::gui::event_handler, bool, event&> sma((event&)e, &cgv::gui::event_handler::handle);
@@ -279,12 +278,13 @@ protected:
 			m += cgv::gui::MB_MIDDLE_BUTTON;
 		return m;
 	}
-
+	/// translate cursor position event to mouse move event
 	void cursor_position(double xpos, double ypos)
 	{
 		cgv::gui::mouse_event me((int)xpos, (int)ypos, cgv::gui::MA_MOVE, query_button_state(), 0, 0, 0, query_modifiers(), query_toggle_keys(), glfwGetTime());
 		dispatch_event(me);
 	}
+	/// translate mouse button event to mouse press / release event
 	void mouse_button(int button, int action, int mods)
 	{
 		double xpos, ypos;
@@ -300,6 +300,7 @@ protected:
 		cgv::gui::mouse_event me((int)xpos, (int)ypos, ma, query_button_state(), mb, 0, 0, query_modifiers(), query_toggle_keys(), glfwGetTime());
 		dispatch_event(me);
 	}
+	/// translate window enter event
 	void cursor_enter(int entered)
 	{
 		double xpos, ypos;
@@ -308,6 +309,7 @@ protected:
 		cgv::gui::mouse_event me((int)xpos, (int)ypos, ma, query_button_state(), 0, 0, 0, query_modifiers(), query_toggle_keys(), glfwGetTime());
 		dispatch_event(me);
 	}
+	/// translate window scroll event
 	void scroll(double xoffset, double yoffset)
 	{
 		double xpos, ypos;
@@ -340,7 +342,6 @@ protected:
 	{
 		static_cast<glfw_generic_window*>(glfwGetWindowUserPointer(window))->on_resize(width, height);
 	}
-
 	static int get_cursor_index(const std::string& name)
 	{
 		int ei = cgv::utils::get_element_index(name, "default,arrow,cross,wait,insert,hand,help,move,ns,we,nwse,nesw,no,invisible", ',');
@@ -455,6 +456,18 @@ public:
 		recreate_glfw_window(W, H, title, config_ptr, share);
 		this->title = title;
 	}
+	/// this virtual method allows to pass application specific data for internal purposes
+	void* get_user_data() const { return glfw_window; }
+	/// show the %window. This needs to be called after creation to make the %window visible
+	void show(bool modal)
+	{
+		glfwShowWindow(glfw_window);
+	}
+	/// hide the %window
+	void hide()
+	{
+		glfwHideWindow(glfw_window);
+	}
 	/// returns the property declaration
 	std::string get_property_declarations()
 	{
@@ -509,7 +522,6 @@ public:
 		if (member_ptr == &dock_order)
 			ensure_dock_order();
 	}
-
 	/// abstract interface for the setter implemented via the fltk_gui_group
 	bool set_void(const std::string& property, const std::string& value_type, const void* value_ptr)
 	{
@@ -648,7 +660,6 @@ public:
 		/** todo: implement getters */
 		return false;
 	}
-
 	~glfw_generic_window()
 	{
 		glfwDestroyWindow(glfw_window);
@@ -701,38 +712,33 @@ public:
 	gl_viewer_window(int W, int H, const std::string& title, const cgv::render::render_config* config_ptr = 0, glfw_generic_window* share = 0) :
 		glfw_generic_window(W, H, title, config_ptr, share)
 	{
-
-	}
-	/// clear the current context, typically used in multi-threaded rendering to allow usage of context in several threads
-	void clear_current() const
-	{
-
-	}
-	/// show the %window. This needs to be called after creation to make the %window visible
-	void show(bool modal)
-	{
-		glfwShowWindow(glfw_window);
-	}
-	/// hide the %window
-	void hide()
-	{
-		glfwHideWindow(glfw_window);
+		in_draw_method = false;
+		redraw_request = false;
 	}
 	/// return the width of the window
-	unsigned get_width() const 
+	unsigned get_width() const
 	{
-		return const_cast<gl_viewer_window*>(this)->get<unsigned>("w");
+		int width, height;
+		glfwGetWindowSize(glfw_window, &width, &height);
+		return width;
 	}
 	/// return the height of the window
 	unsigned get_height() const
 	{
-		return const_cast<gl_viewer_window*>(this)->get<unsigned>("h");
+		int width, height;
+		glfwGetWindowSize(glfw_window, &width, &height);
+		return height;
 	}
 	/// resize the context to the given dimensions
-	void resize(unsigned int width, unsigned int height) 
+	void resize(unsigned int width, unsigned int height)
 	{
 		set("w", width);
 		set("h", height);
+	}
+	/// clear the current context, typically used in multi-threaded rendering to allow usage of context in several threads
+	void clear_current() const
+	{
+		glfwMakeContextCurrent(NULL);
 	}
 	/// return whether the context is currently in process of rendering
 	bool in_render_process() const
@@ -802,7 +808,10 @@ public:
 
 	}
 	/// return whether the graphics card supports quad buffer mode
-	bool is_quad_buffer_supported() const { return true; }
+	bool is_quad_buffer_supported() const 
+	{
+		return true;
+	}
 	//@}
 };
 
@@ -810,11 +819,11 @@ public:
 window_ptr glfw_imgui_driver::create_window(int w, int h, const std::string& title, const std::string& window_type)
 {
 	window_ptr wp;
-//	if (window_type == "viewer")
+	if (window_type == "viewer")
 		wp = window_ptr(new gl_viewer_window(w, h, title));
-//	else
-//		if (window_type == "generic")
-//			wp = window_ptr(new glfw_generic_window(0, 0, w, h, title));
+	else
+		if (window_type == "generic")
+			wp = window_ptr(new glfw_generic_window(w, h, title));
 	if (wp.empty())
 		return wp;
 	windows.push_back(wp);
@@ -838,7 +847,7 @@ bool glfw_imgui_driver::set_focus(const_window_ptr w)
 /// return the number of created windows
 unsigned int glfw_imgui_driver::get_nr_windows()
 {
-	return windows.size();
+	return (unsigned)windows.size();
 }
 /// return the i-th created window
 window_ptr glfw_imgui_driver::get_window(unsigned int i)
@@ -853,9 +862,9 @@ bool glfw_imgui_driver::run()
 /// quit the application by closing all windows
 void glfw_imgui_driver::quit(int exit_code)
 {
+	glfwTerminate();
 	exit(exit_code);
 }
-
 /// copy text to the clipboard
 void glfw_imgui_driver::copy_to_clipboard(const std::string& s)
 {
@@ -867,7 +876,6 @@ std::string glfw_imgui_driver::paste_from_clipboard()
 {
 	return glfwGetClipboardString(0);
 }
-
 //@}
 
 /**@name some basic functionality */
@@ -875,7 +883,7 @@ std::string glfw_imgui_driver::paste_from_clipboard()
 /// ask the user with \c _question to select one of the \c answers, where \c default_answer specifies index of default answer
 int glfw_imgui_driver::question(const std::string& _question, const std::vector<std::string>& answers, int default_answer)
 {
-	std::cerr << "glfw_imgui_driver::quetion function not yet implemented" << std::endl;
+	std::cerr << "glfw_imgui_driver::question function not yet implemented" << std::endl;
 	return 0;
 }
 //! query the user for a text, where the second parameter is the default \c text as well as the returned text. 
@@ -911,24 +919,61 @@ std::string glfw_imgui_driver::file_save_dialog(const std::string& title, const 
 //@{
 //! lock the main thread of the gui from a child thread before any gui specific call.
 /*! If lock is called several times, the child thread must call unlock the same number of times */
-void glfw_imgui_driver::lock();
+void glfw_imgui_driver::lock()
+{
+	mtx.lock();
+}
 /// unlock the main thread
-void glfw_imgui_driver::unlock();
+void glfw_imgui_driver::unlock()
+{
+	mtx.unlock();
+}
 //! wake main thread.
 /*! Ensures that main thead is not going to
 	sleep any longer with the given message, that can be
 	queried by the main thread with get_wakeup_message(). */
-void glfw_imgui_driver::wake(const std::string& message = "");
+void glfw_imgui_driver::wake(const std::string& message)
+{
+	wakeup_message = message;
+	glfwPostEmptyEvent();
+}
 /// return the message send by the thread that woke up the main thread with wake()
-std::string glfw_imgui_driver::get_wakeup_message();
+std::string glfw_imgui_driver::get_wakeup_message()
+{
+	return wakeup_message;
+}
 /// let the main thread sleep for the given number of seconds
-void glfw_imgui_driver::sleep(float time_in_seconds);
+void glfw_imgui_driver::sleep(float time_in_seconds)
+{
+	glfwWaitEventsTimeout(time_in_seconds);
+}
 //@}
 
 /**@name gui elements */
 //@{
+base_ptr get_base_provider_generator(bool unregister = false)
+{
+	static base_ptr bpg_ptr;
+	if (unregister) {
+		if (bpg_ptr)
+			unregister_object(bpg_ptr);
+		bpg_ptr.clear();
+	}
+	else {
+		if (!bpg_ptr) {
+			bpg_ptr = base_ptr(new cgv::gui::base_provider_generator());
+			register_object(base_ptr(bpg_ptr));
+		}
+	}
+	return bpg_ptr;
+}
+
 /// process the gui declarations in the given gui file
-bool glfw_imgui_driver::process_gui_file(const std::string& file_name);
+bool glfw_imgui_driver::process_gui_file(const std::string& file_name)
+{
+	cgv::gui::base_provider_generator* bpg = get_base_provider_generator()->get_interface<cgv::gui::base_provider_generator>();
+	return bpg->parse_gui_file(file_name);
+}
 /// add a new gui group to the given parent group
 gui_group_ptr glfw_imgui_driver::add_group(gui_group_ptr parent, const std::string& label, const std::string& group_type, const std::string& options, const std::string& align);
 /// add a newly created decorator to the parent group
