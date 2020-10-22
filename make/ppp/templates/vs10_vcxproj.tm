@@ -65,7 +65,7 @@
     <PlatformToolset>v@(cgv_compiler_version*10)</PlatformToolset>
 	@}
 @}
-    <CharacterSet>@(CGV_CHARSET)</CharacterSet>
+    <CharacterSet>@(pj::charset)</CharacterSet>
 @if(cj%4==0)@{@//
     <WholeProgramOptimization>true</WholeProgramOptimization>
 @}@//
@@ -93,7 +93,7 @@
     <OutDir Condition=@('"'."'")$(Configuration)|$(Platform)@("'=='")@(config_name[cj])|@(vs_platform)@("'".'"')>@((CGV_INSTALL."/".pj::output_dir[cj]."/")*clean_path)</OutDir>
     <IntDir Condition=@('"'."'")$(Configuration)|$(Platform)@("'=='")@(config_name[cj])|@(vs_platform)@("'".'"')>@((pj::build_dir."/$(ProjectName)_$(Configuration)/")*clean_path)</IntDir>
     <TargetName Condition=@('"'."'")$(Configuration)|$(Platform)@("'=='")@(config_name[cj])|@(vs_platform)@("'".'"')>$(ProjectName)@(pj::output_post[cj])</TargetName>
-@if(pj::output_dir[cj] == "bin")@{@//
+@if(pj::is_executable[cj] || pj::is_shared[cj])@{@//
     <LinkIncremental Condition=@('"'."'")$(Configuration)|$(Platform)@("'=='")@(config_name[cj])|@(vs_platform)@("'".'"')>@(is_dbg[cj])</LinkIncremental>
 @}      
     @}
@@ -138,14 +138,20 @@
       <PrecompiledHeader></PrecompiledHeader>
 @}
       <WarningLevel>Level3</WarningLevel>
-    </ClCompile>
+@if(pj::useOpenMP)@{@//
+      <OpenMPSupport>true</OpenMPSupport>
+@}
+@if(pj::cppLanguageStandard != "")@{@//
+      <LanguageStandard>@(pj::cppLanguageStandard)</LanguageStandard>
+@}@//
+	</ClCompile>
     <@(pj::linker_tool_vs10[cj])>
       <AdditionalDependencies>@(concat(pj::dependencies[cj%4],';','','.lib')*clean_path);%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>@(concat(['$(CGV_DIR)/lib','$(CGV_BUILD)/lib'].pj::libDirs[cj%4], ';')*clean_path);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
 @if(!pj::is_static[cj] && pj::defFile != "")@{@//
       <ModuleDefinitionFile>@(pj::defFile*clean_path)</ModuleDefinitionFile>
 @}
-@if(pj::output_dir[cj] == "bin")@{@//
+@if(pj::is_executable[cj] || pj::is_shared[cj])@{@//
       <GenerateDebugInformation>@(is_dbg[cj])</GenerateDebugInformation>
       <SubSystem>@(pj::sub_system_vs10[cj])</SubSystem>
 @if(pj::is_executable[cj])@{@//

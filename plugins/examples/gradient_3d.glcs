@@ -1,0 +1,256 @@
+#version 430
+
+layout(local_size_x = 4, local_size_y = 4, local_size_z = 4) in;
+
+layout(binding = 0, r32f) uniform readonly image3D volume_tex;
+layout(binding = 1, rgba32f) uniform writeonly image3D gradient_tex;
+
+uniform uvec3 resolution; // the resolution of the volume texture
+uniform int gradient_mode = 2;
+
+float get_value(ivec3 idx) {
+
+	if(	idx.x >= 0 && idx.x < resolution.x &&
+		idx.y >= 0 && idx.y < resolution.y &&
+		idx.z >= 0 && idx.z < resolution.z) {
+		return imageLoad(volume_tex, idx).r;
+	} else {
+		return 0.0;
+	}
+}
+
+float sobel_x(ivec3 idx) {
+
+	float result = 0.0;
+	result += -1.0 * get_value(idx + ivec3(-1, -1, -1));
+	result += -1.0 * get_value(idx + ivec3(-1, -1, +1));
+	result += -1.0 * get_value(idx + ivec3(-1, +1, -1));
+	result += -1.0 * get_value(idx + ivec3(-1, +1, +1));
+
+	result += -3.0 * get_value(idx + ivec3(-1, +0, -1));
+	result += -3.0 * get_value(idx + ivec3(-1, +0, +1));
+	result += -3.0 * get_value(idx + ivec3(-1, -1, +0));
+	result += -3.0 * get_value(idx + ivec3(-1, +1, +0));
+
+	result += -6.0 * get_value(idx + ivec3(-1, +0, +0));
+
+	result += 1.0 * get_value(idx + ivec3(+1, -1, -1));
+	result += 1.0 * get_value(idx + ivec3(+1, -1, +1));
+	result += 1.0 * get_value(idx + ivec3(+1, +1, -1));
+	result += 1.0 * get_value(idx + ivec3(+1, +1, +1));
+
+	result += 3.0 * get_value(idx + ivec3(+1, +0, -1));
+	result += 3.0 * get_value(idx + ivec3(+1, +0, +1));
+	result += 3.0 * get_value(idx + ivec3(+1, -1, +0));
+	result += 3.0 * get_value(idx + ivec3(+1, +1, +0));
+
+	result += 6.0 * get_value(idx + ivec3(+1, +0, +0));
+
+	return (1.0/44.0) * result;
+}
+
+float sobel_y(ivec3 idx) {
+
+	float result = 0.0;
+	result += -1.0 * get_value(idx + ivec3(-1, -1, -1));
+	result += -1.0 * get_value(idx + ivec3(-1, -1, +1));
+	result += -1.0 * get_value(idx + ivec3(+1, -1, -1));
+	result += -1.0 * get_value(idx + ivec3(+1, -1, +1));
+
+	result += -3.0 * get_value(idx + ivec3(+0, -1, -1));
+	result += -3.0 * get_value(idx + ivec3(+0, -1, +1));
+	result += -3.0 * get_value(idx + ivec3(-1, -1, +0));
+	result += -3.0 * get_value(idx + ivec3(+1, -1, +0));
+
+	result += -6.0 * get_value(idx + ivec3(+0, -1, +0));
+
+	result += 1.0 * get_value(idx + ivec3(-1, +1, -1));
+	result += 1.0 * get_value(idx + ivec3(-1, +1, +1));
+	result += 1.0 * get_value(idx + ivec3(+1, +1, -1));
+	result += 1.0 * get_value(idx + ivec3(+1, +1, +1));
+
+	result += 3.0 * get_value(idx + ivec3(+0, +1, -1));
+	result += 3.0 * get_value(idx + ivec3(+0, +1, +1));
+	result += 3.0 * get_value(idx + ivec3(-1, +1, +0));
+	result += 3.0 * get_value(idx + ivec3(+1, +1, +0));
+
+	result += 6.0 * get_value(idx + ivec3(+0, +1, +0));
+
+	return (1.0/44.0) * result;
+}
+
+float sobel_z(ivec3 idx) {
+
+	float result = 0.0;
+	result += -1.0 * get_value(idx + ivec3(-1, -1, -1));
+	result += -1.0 * get_value(idx + ivec3(-1, +1, -1));
+	result += -1.0 * get_value(idx + ivec3(+1, -1, -1));
+	result += -1.0 * get_value(idx + ivec3(+1, +1, -1));
+
+	result += -3.0 * get_value(idx + ivec3(+0, -1, -1));
+	result += -3.0 * get_value(idx + ivec3(+0, +1, -1));
+	result += -3.0 * get_value(idx + ivec3(-1, +0, -1));
+	result += -3.0 * get_value(idx + ivec3(+1, +0, -1));
+
+	result += -6.0 * get_value(idx + ivec3(+0, +0, -1));
+
+	result += 1.0 * get_value(idx + ivec3(-1, -1, +1));
+	result += 1.0 * get_value(idx + ivec3(-1, +1, +1));
+	result += 1.0 * get_value(idx + ivec3(+1, -1, +1));
+	result += 1.0 * get_value(idx + ivec3(+1, +1, +1));
+
+	result += 3.0 * get_value(idx + ivec3(+0, -1, +1));
+	result += 3.0 * get_value(idx + ivec3(+0, +1, +1));
+	result += 3.0 * get_value(idx + ivec3(-1, +0, +1));
+	result += 3.0 * get_value(idx + ivec3(+1, +0, +1));
+
+	result += 6.0 * get_value(idx + ivec3(+0, +0, +1));
+
+	return (1.0/44.0) * result;
+}
+
+vec3 gradient_sobel(ivec3 idx) {
+
+	float result = 0.0;
+	vec3 grad = vec3(0.0);
+
+	float val[8];
+
+	val[0] = get_value(idx + ivec3(-1, -1, -1));
+	val[1] = get_value(idx + ivec3(-1, -1, +1));
+	val[2] = get_value(idx + ivec3(-1, +1, -1));
+	val[3] = get_value(idx + ivec3(-1, +1, +1));
+
+	val[4] = get_value(idx + ivec3(+1, -1, -1));
+	val[5] = get_value(idx + ivec3(+1, -1, +1));
+	val[6] = get_value(idx + ivec3(+1, +1, -1));
+	val[7] = get_value(idx + ivec3(+1, +1, +1));
+
+	grad.x += -1.0 * val[0];
+	grad.x += -1.0 * val[1];
+	grad.x += -1.0 * val[2];
+	grad.x += -1.0 * val[3];
+
+	grad.x += 1.0 * val[4];
+	grad.x += 1.0 * val[5];
+	grad.x += 1.0 * val[6];
+	grad.x += 1.0 * val[7];
+
+	grad.y += -1.0 * val[0];
+	grad.y += -1.0 * val[1];
+	grad.y += -1.0 * val[4];
+	grad.y += -1.0 * val[5];
+
+	grad.y += 1.0 * val[2];
+	grad.y += 1.0 * val[3];
+	grad.y += 1.0 * val[6];
+	grad.y += 1.0 * val[7];
+
+	grad.z += -1.0 * val[0];
+	grad.z += -1.0 * val[2];
+	grad.z += -1.0 * val[4];
+	grad.z += -1.0 * val[6];
+
+	grad.z += 1.0 * val[1];
+	grad.z += 1.0 * val[3];
+	grad.z += 1.0 * val[5];
+	grad.z += 1.0 * val[7];
+
+	val[0] = get_value(idx + ivec3(-1, +0, -1));
+	val[1] = get_value(idx + ivec3(-1, +0, +1));
+	val[2] = get_value(idx + ivec3(-1, -1, +0));
+	val[3] = get_value(idx + ivec3(-1, +1, +0));
+
+	val[4] = get_value(idx + ivec3(+1, +0, -1));
+	val[5] = get_value(idx + ivec3(+1, +0, +1));
+	val[6] = get_value(idx + ivec3(+1, -1, +0));
+	val[7] = get_value(idx + ivec3(+1, +1, +0));
+
+	grad.x += -3.0 * val[0];
+	grad.x += -3.0 * val[1];
+	grad.x += -3.0 * val[2];
+	grad.x += -3.0 * val[3];
+
+	grad.x += 3.0 * val[4];
+	grad.x += 3.0 * val[5];
+	grad.x += 3.0 * val[6];
+	grad.x += 3.0 * val[7];
+	
+	grad.y += -3.0 * val[2];
+	grad.y += -3.0 * val[6];
+
+	grad.y += 3.0 * val[3];
+	grad.y += 3.0 * val[7];
+	
+	grad.z += -3.0 * val[0];
+	grad.z += -3.0 * val[4];
+
+	grad.z += 3.0 * val[1];
+	grad.z += 3.0 * val[5];
+
+	val[0] = get_value(idx + ivec3(+0, -1, -1));
+	val[1] = get_value(idx + ivec3(+0, -1, +1));
+	val[2] = get_value(idx + ivec3(+0, +1, -1));
+	val[3] = get_value(idx + ivec3(+0, +1, +1));
+
+	val[4] = get_value(idx + ivec3(-1, +0, +0));
+	val[5] = get_value(idx + ivec3(+1, +0, +0));
+	val[6] = get_value(idx + ivec3(+0, -1, +0));
+	val[7] = get_value(idx + ivec3(+0, +1, +0));
+
+	grad.y += -3.0 * val[0];
+	grad.y += -3.0 * val[1];
+	
+	grad.y += 3.0 * val[2];
+	grad.y += 3.0 * val[3];
+	
+	grad.z += -3.0 * val[0];
+	grad.z += -3.0 * val[2];
+	
+	grad.z += 3.0 * val[1];
+	grad.z += 3.0 * val[3];
+
+	val[0] = get_value(idx + ivec3(+0, +0, -1));
+	val[1] = get_value(idx + ivec3(+0, +0, +1));
+
+	grad.x += -6.0 * val[4];
+	grad.x += 6.0 * val[5];
+
+	grad.y += -6.0 * val[6];
+	grad.y += 6.0 * val[7];
+
+	grad.z += -6.0 * val[0];
+	grad.z += 6.0 * val[1];
+
+	return (1.0/44.0) * grad;
+}
+
+void main() {
+
+    // The voxel coordinates of this thread
+    ivec3 idx = ivec3(gl_GlobalInvocationID);
+    
+	if(idx.x < resolution.x && idx.y < resolution.y && idx.z < resolution.z) {
+		//float value = get_value(idx).r;
+
+		switch (gradient_mode) {			
+		case 0 :    // Central differences	
+			{
+				float xr = get_value(idx + ivec3(1, 0, 0));
+				float xl = get_value(idx + ivec3(-1, 0, 0));
+				float yr = get_value(idx + ivec3(0, 1, 0));
+				float yl = get_value(idx + ivec3(0, -1, 0));
+				float zr = get_value(idx + ivec3(0, 0, 1));
+				float zl = get_value(idx + ivec3(0, 0, -1));
+				imageStore(gradient_tex, idx, -0.5 * vec4(xr - xl, yr - yl, zr - zl, 0.0));
+			}
+			break;
+		case 1 :    // Sobel operator
+			imageStore(gradient_tex, idx, -1.0 * vec4(sobel_x(idx), sobel_y(idx), sobel_z(idx), 0.0));
+			break;
+		case 2 : 		// Sobel operator with minimal amount of image loads
+			imageStore(gradient_tex, idx, -1.0 * vec4(gradient_sobel(idx), 0.0));
+			break;
+		}
+	}
+}

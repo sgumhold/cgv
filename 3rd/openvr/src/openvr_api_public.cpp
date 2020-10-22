@@ -35,10 +35,24 @@ using vr::VRInitError_None;
 namespace vr
 {
 
-static void *g_pVRModule = NULL;
-static IVRClientCore *g_pHmdSystem = NULL;
-static std::recursive_mutex g_mutexSystem;
+void*& ref_g_pVRModule()
+{
+	static void* g_pVRModule = NULL;
+	return g_pVRModule;
+}
 
+IVRClientCore*& ref_g_pHmdSystem()
+{
+
+	static IVRClientCore* g_pHmdSystem = NULL;
+	return g_pHmdSystem;
+}
+
+std::recursive_mutex& ref_g_mutexSystem()
+{
+	static std::recursive_mutex g_mutexSystem;
+	return g_mutexSystem;
+}
 
 typedef void* (*VRClientCoreFactoryFn)(const char *pInterfaceName, int *pReturnCode);
 
@@ -55,12 +69,12 @@ void CleanupInternalInterfaces();
 
 uint32_t VR_InitInternal2( EVRInitError *peError, vr::EVRApplicationType eApplicationType, const char *pStartupInfo )
 {
-	std::lock_guard<std::recursive_mutex> lock( g_mutexSystem );
+//	std::lock_guard<std::recursive_mutex> lock( ref_g_mutexSystem() );
 
 	EVRInitError err = VR_LoadHmdSystemInternal();
 	if ( err == vr::VRInitError_None )
 	{
-		err = g_pHmdSystem->Init( eApplicationType, pStartupInfo );
+		err = ref_g_pHmdSystem()->Init( eApplicationType, pStartupInfo );
 	}
 
 	if ( peError )
@@ -68,9 +82,9 @@ uint32_t VR_InitInternal2( EVRInitError *peError, vr::EVRApplicationType eApplic
 
 	if ( err != VRInitError_None )
 	{
-		SharedLib_Unload( g_pVRModule );
-		g_pHmdSystem = NULL;
-		g_pVRModule = NULL;
+		SharedLib_Unload( ref_g_pVRModule() );
+		ref_g_pHmdSystem() = NULL;
+		ref_g_pVRModule() = NULL;
 
 		return 0;
 	}
@@ -87,17 +101,17 @@ uint32_t VR_InitInternal( EVRInitError *peError, vr::EVRApplicationType eApplica
 
 void VR_ShutdownInternal()
 {
-	std::lock_guard<std::recursive_mutex> lock( g_mutexSystem );
+	std::lock_guard<std::recursive_mutex> lock( ref_g_mutexSystem() );
 	
-	if ( g_pHmdSystem )
+	if ( ref_g_pHmdSystem() )
 	{
-		g_pHmdSystem->Cleanup();
-		g_pHmdSystem = NULL;
+		ref_g_pHmdSystem()->Cleanup();
+		ref_g_pHmdSystem() = NULL;
 	}
-	if ( g_pVRModule )
+	if ( ref_g_pVRModule() )
 	{
-		SharedLib_Unload( g_pVRModule );
-		g_pVRModule = NULL;
+		SharedLib_Unload( ref_g_pVRModule() );
+		ref_g_pVRModule() = NULL;
 	}
 
 #if !defined( VR_API_PUBLIC )
@@ -126,7 +140,7 @@ EVRInitError VR_LoadHmdSystemInternal()
 
 	// Because we don't have a way to select debug vs. release yet we'll just
 	// use debug if it's there
-#if defined( LINUX64 )
+#if defined( LINUX64 ) || defined( LINUXARM64 )
 	std::string sTestPath = Path_Join( sRuntimePath, "bin", PLATSUBDIR );
 #else
 	std::string sTestPath = Path_Join( sRuntimePath, "bin" );
@@ -158,52 +172,52 @@ EVRInitError VR_LoadHmdSystemInternal()
 	}
 
 	int nReturnCode = 0;
-	g_pHmdSystem = static_cast< IVRClientCore * > ( fnFactory( vr::IVRClientCore_Version, &nReturnCode ) );
-	if( !g_pHmdSystem )
+	ref_g_pHmdSystem() = static_cast< IVRClientCore * > ( fnFactory( vr::IVRClientCore_Version, &nReturnCode ) );
+	if( !ref_g_pHmdSystem() )
 	{
 		SharedLib_Unload( pMod );
 		return vr::VRInitError_Init_InterfaceNotFound;
 	}
 
-	g_pVRModule = pMod;
+	ref_g_pVRModule() = pMod;
 	return VRInitError_None;
 }
 
 
 void *VR_GetGenericInterface(const char *pchInterfaceVersion, EVRInitError *peError)
 {
-	std::lock_guard<std::recursive_mutex> lock( g_mutexSystem );
+	std::lock_guard<std::recursive_mutex> lock( ref_g_mutexSystem() );
 
-	if (!g_pHmdSystem)
+	if (!ref_g_pHmdSystem())
 	{
 		if (peError)
 			*peError = vr::VRInitError_Init_NotInitialized;
 		return NULL;
 	}
 
-	return g_pHmdSystem->GetGenericInterface(pchInterfaceVersion, peError);
+	return ref_g_pHmdSystem()->GetGenericInterface(pchInterfaceVersion, peError);
 }
 
 bool VR_IsInterfaceVersionValid(const char *pchInterfaceVersion)
 {
-	std::lock_guard<std::recursive_mutex> lock( g_mutexSystem );
+	std::lock_guard<std::recursive_mutex> lock( ref_g_mutexSystem() );
 
-	if (!g_pHmdSystem)
+	if (!ref_g_pHmdSystem())
 	{
 		return false;
 	}
 
-	return g_pHmdSystem->IsInterfaceVersionValid(pchInterfaceVersion) == VRInitError_None;
+	return ref_g_pHmdSystem()->IsInterfaceVersionValid(pchInterfaceVersion) == VRInitError_None;
 }
 
 bool VR_IsHmdPresent()
 {
-	std::lock_guard<std::recursive_mutex> lock( g_mutexSystem );
+	std::lock_guard<std::recursive_mutex> lock( ref_g_mutexSystem() );
 
-	if( g_pHmdSystem )
+	if( ref_g_pHmdSystem() )
 	{
 		// if we're already initialized, just call through
-		return g_pHmdSystem->BIsHmdPresent();
+		return ref_g_pHmdSystem()->BIsHmdPresent();
 	}
 	else
 	{
@@ -212,11 +226,11 @@ bool VR_IsHmdPresent()
 		if( err != VRInitError_None )
 			return false;
 
-		bool bHasHmd = g_pHmdSystem->BIsHmdPresent();
+		bool bHasHmd = ref_g_pHmdSystem()->BIsHmdPresent();
 
-		g_pHmdSystem = NULL;
-		SharedLib_Unload( g_pVRModule );
-		g_pVRModule = NULL;
+		ref_g_pHmdSystem() = NULL;
+		SharedLib_Unload( ref_g_pVRModule() );
+		ref_g_pVRModule() = NULL;
 
 		return bHasHmd;
 	}
@@ -225,9 +239,9 @@ bool VR_IsHmdPresent()
 /** Returns true if the OpenVR runtime is installed. */
 bool VR_IsRuntimeInstalled()
 {
-	std::lock_guard<std::recursive_mutex> lock( g_mutexSystem );
+	std::lock_guard<std::recursive_mutex> lock( ref_g_mutexSystem() );
 
-	if( g_pHmdSystem )
+	if( ref_g_pHmdSystem() )
 	{
 		// if we're already initialized, OpenVR is obviously installed
 		return true;
@@ -319,10 +333,10 @@ bool VR_GetRuntimePath( char *pchPathBuffer, uint32_t unBufferSize, uint32_t *pu
 /** Returns the symbol version of an HMD error. */
 const char *VR_GetVRInitErrorAsSymbol( EVRInitError error )
 {
-	std::lock_guard<std::recursive_mutex> lock( g_mutexSystem );
+	std::lock_guard<std::recursive_mutex> lock( ref_g_mutexSystem() );
 
-	if( g_pHmdSystem )
-		return g_pHmdSystem->GetIDForVRInitError( error );
+	if( ref_g_pHmdSystem() )
+		return ref_g_pHmdSystem()->GetIDForVRInitError( error );
 	else
 		return GetIDForVRInitError( error );
 }
@@ -331,10 +345,10 @@ const char *VR_GetVRInitErrorAsSymbol( EVRInitError error )
 /** Returns the english string version of an HMD error. */
 const char *VR_GetVRInitErrorAsEnglishDescription( EVRInitError error )
 {
-	std::lock_guard<std::recursive_mutex> lock( g_mutexSystem );
+	std::lock_guard<std::recursive_mutex> lock( ref_g_mutexSystem() );
 
-	if ( g_pHmdSystem )
-		return g_pHmdSystem->GetEnglishStringForHmdError( error );
+	if ( ref_g_pHmdSystem() )
+		return ref_g_pHmdSystem()->GetEnglishStringForHmdError( error );
 	else
 		return GetEnglishStringForHmdError( error );
 }

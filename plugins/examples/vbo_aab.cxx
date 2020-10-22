@@ -12,6 +12,7 @@
 #include <cgv/gui/provider.h>
 #include <cgv/media/color_scale.h>
 #include <cgv/media/mesh/simple_mesh.h>
+#include <cgv/media/illum/surface_material.h>
 #include <cgv/gui/key_event.h>
 #include <cgv/gui/provider.h>
 #include <cgv/math/ftransform.h>
@@ -431,9 +432,7 @@ public:
 			sphere_renderer& sr = ref_sphere_renderer(ctx);
 			sr.set_attribute_array_manager(ctx, &aam_sphere);
 			sr.set_render_style(sphere_style);
-			sr.validate_and_enable(ctx);
-			glDrawArrays(GL_POINTS, 0, (GLsizei) nr_positions);
-			sr.disable(ctx);
+			sr.render(ctx, 0, nr_positions);
 		}
 
 		// remember restart setting

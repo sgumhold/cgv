@@ -6,7 +6,7 @@
 			Name=@"config_name[ci].'|Win32'"
 			>
 			<DebugSettings@if(pj::is_shared[ci] && (pj::application_name !~ UNDEF))@{
-				Command=@"CGV_INSTALL.'\\bin\\'.pj::application_name.pj::output_post[ci].'.exe'"
+				Command=@"CGV_INSTALL.'\\'.(pj::output_dir[ci]*clean_path).'\\'.pj::application_name.pj::output_post[ci].'.exe'"
 @}@else@{
 				Command="$(TargetPath)"@}@if(pj::workingDirectory)@{
 				WorkingDirectory=@"pj::workingDirectory"

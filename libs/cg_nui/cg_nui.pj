@@ -1,0 +1,13 @@
+@=
+projectName="cg_nui";
+projectType="library";
+projectGUID="6AD7992B-CE61-405D-BF54-A377203FB866";
+addSharedDefines=["CG_NUI_EXPORTS"];
+addProjectDirs=[CGV_DIR."/libs", CGV_DIR."/plugins", CGV_DIR."/3rd"];
+addProjectDeps=[
+	"cgv_utils","cgv_type","cgv_reflect", "cgv_data","cgv_base", "vr", "cg_vr",
+	"cgv_media", "cgv_os", "cgv_gui", "cgv_render", "cgv_gl", "rect_pack", "screen_capture_lite"];
+addIncDirs=[CGV_DIR."/libs", CGV_BUILD_DIR."/".projectName];
+if(SYSTEM=="windows") {
+	addStaticDefines=["REGISTER_SHADER_FILES"];
+}

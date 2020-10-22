@@ -1,0 +1,8 @@
+show all
+/persistent
+/name(stereo interactor):focus_x=-2.12678;focus_y=-0.0543797;focus_z=0.00291198
+/name(stereo interactor):stereo=0;eye_dist=0.1;parallax_zero_scale=1
+/name(stereo interactor):view_dir_x=0;view_dir_y=0;view_dir_z=-1
+/name(stereo interactor):up_dir_x=-0.214114;up_dir_y=0.854828;up_dir_z=-0.472678
+/name(stereo interactor):y_view_angle=45;extent=2.98365
+/initial

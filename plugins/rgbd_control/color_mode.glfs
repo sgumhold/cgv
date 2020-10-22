@@ -1,0 +1,24 @@
+#version 150
+
+//***** begin interface of fragment.glfs ***********************************
+uniform float gamma = 2.2;
+void finish_fragment(vec4 color);
+//***** end interface of fragment.glfs ***********************************
+
+uniform sampler2D color_texture;
+uniform sampler2D depth_texture;
+uniform float     color_scale;
+uniform float min_depth = 0.0;
+uniform float max_depth = 1.0;
+
+vec4 scale_color(in float scale, in vec4 color);
+
+in vec2 tc;
+
+void main()
+{
+	float depth = texture(depth_texture, tc).x;
+	if (depth < min_depth ||depth > max_depth)
+		discard;
+	finish_fragment(scale_color(color_scale, texture(color_texture, tc)));
+}

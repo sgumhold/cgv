@@ -21,8 +21,8 @@ extern CGV_API float black[4], white[4], gray[4], green[4], brown[4], dark_red[4
 /// map a type id to a gl enum
 extern CGV_API unsigned map_to_gl(TypeId ti);
 
-/// map a component format to a gl enum
-extern CGV_API unsigned map_to_gl(cgv::data::ComponentFormat cf);
+/// map a component format to a gl enum, return -1 of this was not possible
+extern CGV_API unsigned map_to_gl(cgv::data::ComponentFormat cf, cgv::data::ComponentIntegerInterpretation cii = cgv::data::CII_DEFAULT);
 
 /// return OpenGL material side constant
 extern CGV_API unsigned map_to_gl(MaterialSide ms);
@@ -72,8 +72,8 @@ extern CGV_API void gl_1D_texture_to_screen(bool vary_along_x = true, float xmin
     in vec4 position;
 	in vec2 texcoord
 */
-extern CGV_API bool cover_screen(context& ctx, shader_program* prog_ptr = 0, bool flip_tex_v_coord = false);
-
+extern CGV_API bool cover_screen(context& ctx, shader_program* prog_ptr = 0, bool flip_tex_v_coord = false, float xmin = -1.0f, float ymin = -1.0f, float xmax = 1.0f, float ymax = 1.0f,
+	float umin = 0.0f, float vmin = 0.0f, float umax = 1.0f, float vmax = 1.0f);
 
 DEPRECATED("deprecated, use cover_screen instead.") extern CGV_API void gl_texture_to_screen(float xmin = -1.0f, float ymin = -1.0f, float xmax = 1.0f, float ymax = 1.0f,
 										 float umin =  0.0f, float vmin =  0.0f, float umax = 1.0f, float vmax = 1.0f);

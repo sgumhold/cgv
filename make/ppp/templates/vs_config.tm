@@ -116,7 +116,7 @@
       <Tool
 				Name="VCPostBuildEventTool"
 @if(projectType == "test")@{
-	@define(command_line=CGV_INSTALL.'\\bin\\tester'.output_post[ci].'.exe')
+	@define(command_line=CGV_INSTALL.'\\'.(pj::output_dir[ci]*clean_path).'\\tester'.output_post[ci].'.exe')
 	@if((ci > 1) & (plugin_list !~ UNDEF))@{
 		@for(i=0;i<!plugin_list;++i)@{
 			@define(command_line = command_line.' plugin:'.plugin_list[i].output_post[ci].'.dll')

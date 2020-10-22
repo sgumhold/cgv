@@ -21,6 +21,8 @@ namespace cgv {
 			has_extents = false;
 			has_translations = false;
 			has_rotations = false;
+			has_texcoords = false;
+			position_is_center = true;
 		}
 
 		void rectangle_renderer::set_attribute_array_manager(const context& ctx, attribute_array_manager* _aam_ptr)
@@ -53,6 +55,12 @@ namespace cgv {
 			return res;
 		}
 
+		/// set the flag, whether the position is interpreted as the rectangle center, true by default
+		void rectangle_renderer::set_position_is_center(bool _position_is_center)
+		{
+			position_is_center = _position_is_center;
+		}
+
 		bool rectangle_renderer::validate_attributes(const context& ctx) const
 		{
 			const surface_render_style& srs = get_style<surface_render_style>();
@@ -69,6 +77,8 @@ namespace cgv {
 				return false;
 			ref_prog().set_uniform(ctx, "has_rotations", has_rotations);
 			ref_prog().set_uniform(ctx, "has_translations", has_translations);
+			ref_prog().set_uniform(ctx, "position_is_center", position_is_center);
+			ref_prog().set_uniform(ctx, "use_texture", has_texcoords);
 			return true;
 		}
 
@@ -78,9 +88,16 @@ namespace cgv {
 				has_extents = false;
 				has_rotations = false;
 				has_translations = false;
+				has_texcoords = false;
+				position_is_center = true;
 			}
 
 			return surface_renderer::disable(ctx);
+		}
+
+		void rectangle_renderer::draw(context& ctx, size_t start, size_t count, bool use_strips, bool use_adjacency, uint32_t strip_restart_index)
+		{
+			draw_impl(ctx, PT_POINTS, start, count, false, false, -1);
 		}
 	}
 }

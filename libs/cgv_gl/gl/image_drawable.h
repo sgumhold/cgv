@@ -49,6 +49,11 @@ protected:
 	unsigned mix_with;
 	float mix_param;
 
+	// sperical projection
+	bool spherical;
+	vec2 pan_tilt;
+	float scale;
+
 	cgv::render::shader_program prog;
 public:
 	/// construct base image drawable

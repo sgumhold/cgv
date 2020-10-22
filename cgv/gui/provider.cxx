@@ -427,6 +427,8 @@ void provider::recreate_gui()
 {
 	if (!parent_group)
 		return;
+	// ensure that layout is available
+	parent_group->set("dolayout", true);
 	int xscroll = parent_group->get<int>("xscroll");
 	int yscroll = parent_group->get<int>("yscroll");
 	remove_all_elements();

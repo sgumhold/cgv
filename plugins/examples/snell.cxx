@@ -16,7 +16,7 @@ using namespace cgv::math;
 using namespace cgv::render;
 using namespace cgv::utils;
 
-class snell_demo : public node, public drawable, public provider
+class snell_demo : public cgv::base::node, public cgv::render::drawable, public cgv::gui::provider
 {
 protected:
 	double n1,n2;
@@ -80,10 +80,15 @@ public:
 		//add_gui("n", n, "direction", "main_label='n';gui_type='value_slider';options='min=-1;max=1;ticks=true'");
 		add_gui("v", v, "direction", "main_label='';long_label=true;gui_type='value_slider';options='min=-1;max=1;ticks=true'");
 
-		add_decorator("visualization", "heading", "level=3");
-		add_member_control(this, "aspect", aspect, "value_slider", "min=0.001;max=0.1;log=true;ticks=true");
-		add_gui("vector material", axes_mat);
-		add_gui("surface material", surface_mat);
+		if (begin_tree_node("visualization", surface_mat, true)) {
+			align("\a");
+			add_member_control(this, "aspect", aspect, "value_slider", "min=0.001;max=0.1;log=true;ticks=true");
+			add_gui("vector material", axes_mat);
+			add_gui("surface material", surface_mat);
+			align("\b");
+			end_tree_node(surface_mat);
+
+		}
 	}
 	void draw(context& c)
 	{
@@ -122,4 +127,4 @@ public:
 #include <cgv/base/register.h>
 
 /// register a factory to create new cubes
-factory_registration<snell_demo> snell_demo_fac("snell", "shortcut='Shift-Ctrl-S';menu_text='new/demo/snell demo'", true); 
+cgv::base::factory_registration<snell_demo> snell_demo_fac("snell", "shortcut='Shift-Ctrl-S';menu_text='new/demo/snell demo'", true); 

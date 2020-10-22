@@ -1,0 +1,7 @@
+@=
+projectName="rgbd_capture";
+projectType="library";
+projectGUID="1B59DCCB-712D-4EC4-B020-52C335935FCB";
+addSharedDefines=["RGBD_CAPTURE_EXPORTS"];
+addProjectDeps=["cgv_utils", "cgv_type", "cgv_data"];
+

@@ -13,11 +13,11 @@ namespace cgv {
 	namespace render {
 
 /// attach a list of files
-bool shader_program::attach_files(const context& ctx, const std::vector<std::string>& file_names)
+bool shader_program::attach_files(const context& ctx, const std::vector<std::string>& file_names, std::string defines)
 {
 	bool no_error = true;
 	for (unsigned int i = 0; i < file_names.size(); ++i)
-		no_error = attach_file(ctx, file_names[i]) && no_error;
+		no_error = attach_file(ctx, file_names[i], ST_DETECT, defines) && no_error;
 	return no_error;
 }
 
@@ -33,7 +33,7 @@ bool shader_program::collect_file(const std::string& file_name, std::vector<std:
 
 bool shader_program::collect_files(const std::string& base_name, std::vector<std::string>& file_names)
 {
-	const char* exts[] = { "glvs", "glgs", "glfs", "pglvs", "pglfs", "pglgs", 0 }; 
+	const char* exts[] = { "glvs", "glgs", "glfs", "glcs", "pglvs", "pglfs", "pglgs", "pglcs", 0 }; 
 	const char** iter = exts;
 	bool added_file = false;
 	while (*iter) {
@@ -198,10 +198,10 @@ bool shader_program::attach_code(const context& ctx, const std::string& source, 
 
 
 /// read shader code from file, compile and attach to program
-bool shader_program::attach_file(const context& ctx, const std::string& file_name, ShaderType st)
+bool shader_program::attach_file(const context& ctx, const std::string& file_name, ShaderType st, std::string defines)
 {
 	shader_code* code_ptr = new shader_code;
-	if (!code_ptr->read_and_compile(ctx,file_name,st,show_code_errors)) {
+	if (!code_ptr->read_and_compile(ctx,file_name,st,show_code_errors,defines)) {
 		last_error = code_ptr->last_error;
 		delete code_ptr;
 		return false;
@@ -211,12 +211,12 @@ bool shader_program::attach_file(const context& ctx, const std::string& file_nam
 }
 
 /// read shader code from files with the given base name, compile and attach them
-bool shader_program::attach_files(const context& ctx, const std::string& base_name)
+bool shader_program::attach_files(const context& ctx, const std::string& base_name, std::string defines)
 {
 	std::vector<std::string> file_names;
 	if (!collect_files(base_name,file_names))
 		return false;
-	return attach_files(ctx, file_names);
+	return attach_files(ctx, file_names, defines);
 }
 /// collect shader code files from directory, compile and attach.
 bool shader_program::attach_dir(const context& ctx, const std::string& dir_name, bool recursive)
@@ -228,7 +228,7 @@ bool shader_program::attach_dir(const context& ctx, const std::string& dir_name,
 }
 
 /// collect shader code files declared in shader program file, compile and attach them
-bool shader_program::attach_program(const context& ctx, const std::string& file_name, bool show_error)
+bool shader_program::attach_program(const context& ctx, const std::string& file_name, bool show_error, std::string defines)
 {
 	std::string fn = shader_code::find_file(file_name);
 	if (fn.empty()) {
@@ -272,15 +272,17 @@ bool shader_program::attach_program(const context& ctx, const std::string& file_
 		if (l[0] == '/')
 			continue;
 		if (l.substr(0,5) == "file:")
-			success = attach_file(ctx, l.substr(5));
+			success = attach_file(ctx, l.substr(5), ST_DETECT, defines);
 		else if (l.substr(0,12) == "vertex_file:")
-			success = attach_file(ctx, l.substr(12), ST_VERTEX);
+			success = attach_file(ctx, l.substr(12), ST_VERTEX, defines);
 		else if (l.substr(0,14) == "geometry_file:")
-			success = attach_file(ctx, l.substr(14), ST_GEOMETRY);
+			success = attach_file(ctx, l.substr(14), ST_GEOMETRY, defines);
 		else if (l.substr(0,14) == "fragment_file:")
-			success = attach_file(ctx, l.substr(14), ST_FRAGMENT);
+			success = attach_file(ctx, l.substr(14), ST_FRAGMENT, defines);
+		else if(l.substr(0, 14) == "compute_file:")
+			success = attach_file(ctx, l.substr(14), ST_COMPUTE, defines);
 		else if (l.substr(0,6) == "files:")
-			success = attach_files(ctx, l.substr(6));
+			success = attach_files(ctx, l.substr(6), defines);
 		else if (l.substr(0,4) == "dir:")
 			success = attach_dir(ctx, l.substr(4), false);
 		else if (l.substr(0,8) == "rec_dir:")
@@ -361,11 +363,11 @@ bool shader_program::build_dir(const context& ctx, const std::string& dir_name, 
 }
 
 /// successively calls create, attach_program and link.
-bool shader_program::build_program(const context& ctx, const std::string& file_name, bool show_error)
+bool shader_program::build_program(const context& ctx, const std::string& file_name, bool show_error, std::string defines)
 {
 	if (!(is_created() || create(ctx)))
 		return false;
-	if (!attach_program(ctx, file_name, show_error))
+	if (!attach_program(ctx, file_name, show_error, defines))
 		return false;
 	if (!link(ctx, show_error)) {
 		if (show_error) {

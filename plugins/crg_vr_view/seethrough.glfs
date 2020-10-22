@@ -1,0 +1,22 @@
+#version 150
+
+uniform sampler2D texture;
+uniform bool use_matrix;
+uniform float seethrough_gamma = 1.0;
+
+in vec4 tex_position;
+in vec2 texcoord_fs;
+
+out vec4 frag_color;
+
+vec2 compute_seethrough_texture_coordinates(in vec4 tex_position);
+
+void main()
+{
+	vec2 texcrd = compute_seethrough_texture_coordinates(tex_position);
+	if (use_matrix)
+		frag_color = texture2D(texture, texcrd);
+	else 
+		frag_color = texture2D(texture, texcoord_fs);
+	frag_color.rgb = pow(frag_color.rgb, vec3(seethrough_gamma));
+}

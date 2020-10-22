@@ -24,52 +24,55 @@ namespace vr {
 	/// enumerate all VR keys starting at 1024
 	enum VRKeys {
 		VR_UNKNOWN = 1024,
-		VR_LEFT_MENU,           //!< <em>left controller</em> VIVE: menu button; occulus: start button
-		VR_LEFT_BUTTON0,        //!< <em>left controller</em> VIVE: grip button; occulus: X button
-		VR_LEFT_BUTTON1,        //!< <em>left controller</em> VIVE: not used; occulus: Y button 
-		VR_LEFT_BUTTON2,        //!< <em>left controller</em> VIVE: not used; occulus: not used
-		VR_LEFT_BUTTON3,        //!< <em>left controller</em> not used
-		VR_LEFT_STICK_TOUCH,    //!< <em>left controller</em> VIVE: touch sensor; occulus: not used
-		VR_LEFT_STICK_DOWNLEFT, //!< <em>left controller</em> press key events (VIVE-touch pad|occulus stick): down left
-		VR_LEFT_STICK_DOWN,     //!< <em>left controller</em> press key events (VIVE-touch pad|occulus stick): down 
-		VR_LEFT_STICK_DOWNRIGHT,//!< <em>left controller</em> press key events (VIVE-touch pad|occulus stick): down right
-		VR_LEFT_STICK_LEFT,     //!< <em>left controller</em> press key events (VIVE-touch pad|occulus stick): left
-		VR_LEFT_STICK,          //!< <em>left controller</em> press key events (VIVE-touch pad|occulus stick): neutral
-		VR_LEFT_STICK_RIGHT,    //!< <em>left controller</em> press key events (VIVE-touch pad|occulus stick): right
-		VR_LEFT_STICK_UPLEFT,   //!< <em>left controller</em> press key events (VIVE-touch pad|occulus stick): up left
-		VR_LEFT_STICK_UP,       //!< <em>left controller</em> press key events (VIVE-touch pad|occulus stick): up
-		VR_LEFT_STICK_UPRIGHT,  //!< <em>left controller</em> press key events (VIVE-touch pad|occulus stick): up right
-		VR_RIGHT_MENU,           //!< <em>right controller</em> VIVE: menu button; occulus: start button
-		VR_RIGHT_BUTTON0,		 //!< <em>right controller</em> VIVE: grip button; occulus: X button
-		VR_RIGHT_BUTTON1,		 //!< <em>right controller</em> VIVE: not used; occulus: Y button 
-		VR_RIGHT_BUTTON2,		 //!< <em>right controller</em> VIVE: not used; occulus: not used
-		VR_RIGHT_BUTTON3,		 //!< <em>right controller</em> not used
-		VR_RIGHT_STICK_TOUCH,	 //!< <em>right controller</em> VIVE: touch sensor; occulus: not used
-		VR_RIGHT_STICK_DOWNLEFT,  //!< <em>right controller</em> press key events (VIVE-touch pad|occulus stick): down left
-		VR_RIGHT_STICK_DOWN,	  //!< <em>right controller</em> press key events (VIVE-touch pad|occulus stick):down 
-		VR_RIGHT_STICK_DOWNRIGHT, //!< <em>right controller</em> press key events (VIVE-touch pad|occulus stick):down right
-		VR_RIGHT_STICK_LEFT,	  //!< <em>right controller</em> press key events (VIVE-touch pad|occulus stick):left
-		VR_RIGHT_STICK,			  //!< <em>right controller</em> press key events (VIVE-touch pad|occulus stick):neutral
-		VR_RIGHT_STICK_RIGHT,	  //!< <em>right controller</em> press key events (VIVE-touch pad|occulus stick):right
-		VR_RIGHT_STICK_UPLEFT,	  //!< <em>right controller</em> press key events (VIVE-touch pad|occulus stick):up left
-		VR_RIGHT_STICK_UP,		  //!< <em>right controller</em> press key events (VIVE-touch pad|occulus stick):up
-		VR_RIGHT_STICK_UPRIGHT,	  //!< <em>right controller</em> press key events (VIVE-touch pad|occulus stick):up right
-		VR_END, //!< end marker used in for loops over all VR keys
-		VR_BEGIN = VR_LEFT_MENU //!< begin marker used in for loops over all VR keys
+		VR_SYSTEM,          //!< VIVE: system button; occulus: ???
+		VR_MENU,            //!< VIVE: menu button; occulus: start button
+		VR_GRIP,            //!< grip button
+		VR_DPAD_DOWN_LEFT,  //!< direction pad diagonally down and left
+		VR_DPAD_DOWN,       //!< direction pad down
+		VR_DPAD_DOWN_RIGHT, //!< direction pad diagonally down and right
+		VR_DPAD_LEFT,       //!< direction pad left
+		VR_DPAD_RIGHT,      //!< direction pad right
+		VR_DPAD_UP_LEFT,    //!< direction pad diagonally up and left
+		VR_DPAD_UP,         //!< direction pad up
+		VR_DPAD_UP_RIGHT,   //!< direction pad diagonally up and right
+		VR_A,               //!< A button
+		VR_INPUT0_TOUCH,    //!< touched input 0
+		VR_INPUT0,          //!< input 0
+		VR_INPUT1_TOUCH,    //!< touched input 1
+		VR_INPUT1,          //!< input 1
+		VR_INPUT2_TOUCH,    //!< touched input 2
+		VR_INPUT2,          //!< input 2
+		VR_INPUT3_TOUCH,    //!< touched input 3
+		VR_INPUT3,          //!< input 3
+		VR_INPUT4_TOUCH,    //!< touched input 4
+		VR_INPUT4,          //!< input 4
+		VR_PROXIMITY,       //!< proximity sensor
+		VR_END,             //!< end marker used in for loops over all VR keys
+		VR_BEGIN=VR_SYSTEM  //!< begin marker used in for loops over all VR keys
 	};
-
-	/// one flag for each vr controler button
+	/// one flag for each vr controller button
 	enum VRButtonStateFlags
 	{
-		VRF_MENU        = 0x0001, //!< flag for menu button
-		VRF_BUTTON0     = 0x0002, //!< flag for button 0
-		VRF_BUTTON1     = 0x0004, //!< flag for button 1
-		VRF_BUTTON2     = 0x0008, //!< flag for button 2
-		VRF_BUTTON3     = 0x0010, //!< flag for button 3
-		VRF_STICK_TOUCH = 0x0020, //!< flag for VIVE:touchpad|occulus:stick touch
-		VRF_STICK       = 0x0040  //!< flag for VIVE:touchpad|occulus:stick press 
+		VRF_SYSTEM       = 0x000001, //!< system button
+		VRF_MENU         = 0x000002, //!< application menu button
+		VRF_GRIP         = 0x000004, //!< grip button
+		VRF_DPAD_LEFT    = 0x000008, //!< direction pad left button
+		VRF_DPAD_RIGHT   = 0x000010, //!< direction pad right button
+		VRF_DPAD_DOWN    = 0x000020, //!< direction pad down button
+		VRF_DPAD_UP      = 0x000040, //!< direction pad up button
+		VRF_A            = 0x000080, //!< A button
+		VRF_INPUT0_TOUCH = 0x000100, //!< touch sensor for input 0 which often is touchpad or stick
+		VRF_INPUT0       = 0x000200, //!< button of input 0 
+		VRF_INPUT1_TOUCH = 0x000400, //!< touch sensor for input 1 which often is touchpad or stick
+		VRF_INPUT1       = 0x000800, //!< button of input 1
+		VRF_INPUT2_TOUCH = 0x001000, //!< touch sensor for input 2 which often is touchpad or stick
+		VRF_INPUT2       = 0x002000, //!< button of input 2
+		VRF_INPUT3_TOUCH = 0x004000, //!< touch sensor for input 3 which often is touchpad or stick
+		VRF_INPUT3       = 0x008000, //!< button of input 3
+		VRF_INPUT4_TOUCH = 0x010000, //!< touch sensor for input 4 which often is touchpad or stick
+		VRF_INPUT4       = 0x020000, //!< button of input 4
+		VRF_PROXIMITY    = 0x040000  //!< proximity sensor
 	};
-
 	/// different status values for a trackable
 	enum VRStatus
 	{

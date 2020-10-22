@@ -1230,5 +1230,3 @@ const vec<T> slerp(const vec<T>& v0, const vec<T>& v1, T t)
 
 	}
 }
-
-

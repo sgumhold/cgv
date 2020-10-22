@@ -12,6 +12,11 @@ uniform sampler2D mix_with;
 
 uniform float mix_param = 0.0;
 
+// spherical projection
+uniform vec2 scale = vec2(1.0);
+uniform vec2 pan_tilt = vec2(0.0);
+uniform bool spherical = false;
+
 in vec2 tc;
 in vec4 color_fs;
 
@@ -23,9 +28,25 @@ void finish_fragment(vec4 color);
 void main()
 {
 	if (use_texture) {
-		vec4 rgba = pow(clamp((texture2D(image, tc) - min_value) / (max_value - min_value),vec4(0.0,0.0,0.0,0.0),vec4(1.0,1.0,1.0,1.0)), gamma4);
+		vec2 texcoord = tc;
+		if (spherical) {
+			float a = 3.14159265359*pan_tilt[0];
+			float b = 0.5*3.14159265359*pan_tilt[1];
+			float ca = cos(a);
+			float sa = sin(a);
+			float cb = cos(b);
+			float sb = sin(b);
+			vec3 n = vec3(ca*cb,sa*cb,sb);
+			vec3 x = normalize(vec3(-sa*cb,ca*cb,0.0));
+			vec3 y = normalize(vec3(-ca*sb,-sa*sb,cb));
+			vec3 d = n+2.0*scale[0]*(tc.x-0.5)*x+2.0*scale[1]*(tc.y-0.5)*y;
+			float phi = atan(d.y, d.x);
+			float theta = atan(d.z/length(d.xy));
+			texcoord = 0.318309886*vec2(0.5*phi,theta)+vec2(0.5);
+		}
+		vec4 rgba = pow(clamp((texture2D(image, texcoord) - min_value) / (max_value - min_value),vec4(0.0,0.0,0.0,0.0),vec4(1.0,1.0,1.0,1.0)), gamma4);
 		if (use_mixing) {
-			vec4 rgba_mix = pow(clamp((texture2D(mix_with, tc) - min_value) / (max_value - min_value), vec4(0.0, 0.0, 0.0, 0.0), vec4(1.0, 1.0, 1.0, 1.0)), gamma4);
+			vec4 rgba_mix = pow(clamp((texture2D(mix_with, texcoord) - min_value) / (max_value - min_value), vec4(0.0, 0.0, 0.0, 0.0), vec4(1.0, 1.0, 1.0, 1.0)), gamma4);
 			rgba = (1.0 - mix_param)*rgba + mix_param * rgba_mix;
 		}
 		finish_fragment(rgba);

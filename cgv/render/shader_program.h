@@ -31,7 +31,7 @@ protected:
 
 	std::vector<shader_code*> managed_codes;
 	/// attach a list of files
-	bool attach_files(const context& ctx, const std::vector<std::string>& file_names);
+	bool attach_files(const context& ctx, const std::vector<std::string>& file_names, std::string defines = "");
 	/// ensure that the state has been set in the context
 	void update_state(const context& ctx);
 public:
@@ -82,13 +82,13 @@ public:
 	/// attach a shader code given as string and managed the created shader code object
 	bool attach_code(const context& ctx, const std::string& source, ShaderType st);
 	/// read shader code from file, compile and attach to program
-	bool attach_file(const context& ctx, const std::string& file_name, ShaderType st = ST_DETECT);
+	bool attach_file(const context& ctx, const std::string& file_name, ShaderType st = ST_DETECT, std::string defines = "");
 	/// read shader code from files with the given base name, compile and attach them
-	bool attach_files(const context& ctx, const std::string& base_name);
+	bool attach_files(const context& ctx, const std::string& base_name, std::string defines = "");
 	/// collect shader code files from directory, compile and attach.
 	bool attach_dir(const context& ctx, const std::string& dir_name, bool recursive);
 	/// collect shader code files declared in shader program file, compile and attach them
-	bool attach_program(const context& ctx, const std::string& file_name, bool show_error = false);
+	bool attach_program(const context& ctx, const std::string& file_name, bool show_error = false, std::string defines = "");
 	/// link shaders to an executable program
 	bool link(const context& ctx, bool show_error = false);
 	/// return whether program is linked
@@ -98,7 +98,7 @@ public:
 	/// successively calls create, attach_dir and link.
 	bool build_dir(const context& ctx, const std::string& dir_name, bool recursive = false, bool show_error = false);
 	/// successively calls create, attach_program and link.
-	bool build_program(const context& ctx, const std::string& file_name, bool show_error = false);
+	bool build_program(const context& ctx, const std::string& file_name, bool show_error = false, std::string defines = "");
 	/// configure the geometry shader, if count < 1 set it to get_max_nr_geometry_shader_output_vertices
 	void set_geometry_shader_info(PrimitiveType input_type, PrimitiveType output_type, int max_output_count = 0);
 	/// enable the shader program
@@ -179,6 +179,10 @@ public:
 	/// set constant default value of a vertex attribute by location index
 	template <typename T>
 	bool set_attribute(const context& ctx, int loc, const T& value) {
+		if (loc == -1) {
+			ctx.error("shader_program::set_attribute() called with loc=-1", this);
+			return false;
+		}
 		return ctx.set_attribute_void(*this, loc, element_descriptor_traits<T>::get_type_descriptor(value), element_descriptor_traits<T>::get_address(value));
 	}
 };

@@ -42,7 +42,7 @@ struct type_descriptor
 	bool is_array : 1;
 	bool normalize : 1;
 	/// construct from int
-	type_descriptor(int td) { *reinterpret_cast<int*>(this) = td; }
+	type_descriptor(int td = 0) { *reinterpret_cast<int*>(this) = td; }
 	/// construct descriptor for values
 	type_descriptor(cgv::type::info::TypeId _coordinate_type, bool _normalize = false) : coordinate_type(_coordinate_type), element_type(ET_VALUE), nr_rows(1), nr_columns(1), is_row_major(false), is_array(false), normalize(_normalize) {}
 	/// construct descriptor for vectors
@@ -341,6 +341,7 @@ public:
 
 /// different vertex buffer types
 enum VertexBufferType {
+	VBT_UNDEF = -1,
 	VBT_VERTICES,
 	VBT_INDICES,
 	VBT_TEXTURE,
@@ -565,8 +566,10 @@ protected:
 	std::stack<frame_buffer_base*> frame_buffer_stack;
 	/// stack of currently enabled shader programs
 	std::stack<shader_program_base*> shader_program_stack;
+public:
 	/// check for current program, prepare it for rendering and return pointer to it
 	shader_program_base* get_current_program() const;
+protected:
 	/// stack of currently enabled attribute array binding
 	std::stack<attribute_array_binding_base*> attribute_array_binding_stack;
 	/// status information of light sources
@@ -676,7 +679,7 @@ protected:
 	virtual bool shader_program_create   (shader_program_base& spb) const = 0;
 	virtual void shader_program_attach(shader_program_base& spb, const render_component& sc) const = 0;
 	virtual void shader_program_detach(shader_program_base& spb, const render_component& sc) const = 0;
-	virtual bool shader_program_link(shader_program_base& spb) const = 0;
+	virtual bool shader_program_link(shader_program_base& spb) const;
 	virtual bool shader_program_set_state(shader_program_base& spb) const = 0;
 	virtual bool shader_program_enable   (shader_program_base& spb);
 	virtual bool shader_program_disable(shader_program_base& spb);
@@ -696,6 +699,7 @@ protected:
 	virtual bool enable_attribute_array(attribute_array_binding_base* aab, int loc, bool do_enable) const = 0;
 	virtual bool is_attribute_array_enabled(const attribute_array_binding_base* aab, int loc) const = 0;
 
+	virtual bool vertex_buffer_bind(const vertex_buffer_base& vbb, VertexBufferType _type) const = 0;
 	virtual bool vertex_buffer_create(vertex_buffer_base& vbb, const void* array_ptr, size_t size_in_bytes) const = 0;
 	virtual bool vertex_buffer_replace(vertex_buffer_base& vbb, size_t offset, size_t size_in_bytes, const void* array_ptr) const = 0;
 	virtual bool vertex_buffer_copy(const vertex_buffer_base& src, size_t src_offset, vertex_buffer_base& target, size_t target_offset, size_t size_in_bytes) const = 0;

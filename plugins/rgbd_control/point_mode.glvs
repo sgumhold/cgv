@@ -1,0 +1,37 @@
+#version 330
+
+//***** begin interface of view.glsl ***********************************
+mat4 get_modelview_matrix();
+mat4 get_projection_matrix();
+mat4 get_modelview_projection_matrix();
+mat4 get_inverse_modelview_matrix();
+mat4 get_inverse_modelview_projection_matrix();
+mat3 get_normal_matrix();
+mat3 get_inverse_normal_matrix();
+//***** end interface of view.glsl ***********************************
+
+uniform sampler2D depth_texture;
+uniform float     depth_scale = 1.0;
+uniform int       w;
+uniform int       h;
+out vec2 tc;
+out float depth;
+
+float RawDepthToMeters(float depthValue);
+vec3 DepthToWorld(vec2 tc, float depthValue);
+
+void main()
+{
+	int i = gl_InstanceID % w;
+	int j = gl_InstanceID / w;
+	float sx = 1.0 / float(w);
+	float sy = 1.0 / float(h);
+	vec4 position = vec4(2.0*(sx*(0.5 + i) - 0.5), 2.0*(sy*(0.5 + j) - 0.5), 0.0, 1.0);
+	// compute height
+	tc           = 0.5*position.xy+0.5;
+	depth = texture2D(depth_texture, tc).x;
+	//position.xyz = DepthToWorld(tc, depth);
+	//position.z = depth_scale * depth;
+	position.z = depth_scale * RawDepthToMeters(depth);
+	gl_Position   = get_modelview_projection_matrix() * position;
+}
