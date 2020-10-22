@@ -36,10 +36,10 @@ protected:
 	bool rebuild_mesh_info;
 	/// the bounding box of the mesh is computed in the read_mesh method
 	box3 box;
-	/// draw all faces belonging to the given group, optionally turn off the specification of materials
-	void render_mesh_group(cgv::render::context &ctx, cgv::render::shader_program& prog, unsigned gi, bool use_materials = true);
+	/// draw all faces belonging to the given primitive, optionally turn off the specification of materials
+	void draw_mesh_primitive(cgv::render::context &ctx, unsigned pi, bool opaque, bool use_materials = true);
 	/// draw the complete mesh, optionally turn off the specification of materials
-	void render_mesh(cgv::render::context &ctx, cgv::render::shader_program& prog, bool use_materials = true);
+	void draw_mesh(cgv::render::context &ctx, bool opaque, bool use_materials = true);
 	//! call this to center the view after loading the mesh. 
 	/*! For this to work you need to derive from at least cgv::base::node and register
 	    an instance through the object registration mechanism defined in cgv/base/register.h */
@@ -49,8 +49,10 @@ public:
 	mesh_drawable();
 	/// init textures if the mesh has been newly loaded
 	void init_frame(cgv::render::context &ctx);
-	/// default drawing implementation calls draw_mesh(ctx)
+	/// default drawing implementation calls draw_mesh(ctx, true) to render opaque part
 	void draw(cgv::render::context &ctx);
+	/// default finish drawing implementation calls draw_mesh(ctx, false) to render transparent part
+	void finish_draw(context &ctx);
 	/// read mesh from the given file_name which is extended by model path if it does not exist
 	virtual bool read_mesh(const std::string& file_name);
 	/// clear all objects living in the context like textures or display lists

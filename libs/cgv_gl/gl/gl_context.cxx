@@ -1358,7 +1358,7 @@ unsigned int map_to_gl(TextureFilter filter_type)
 		GL_NEAREST, GL_LINEAR,
 		GL_NEAREST_MIPMAP_NEAREST, GL_LINEAR_MIPMAP_NEAREST,
 		GL_NEAREST_MIPMAP_LINEAR, GL_LINEAR_MIPMAP_LINEAR,
-		GL_TEXTURE_MAX_ANISOTROPY_EXT
+		GL_LINEAR_MIPMAP_LINEAR
 	};
 	return gl_texture_filter[filter_type];
 }
@@ -1514,37 +1514,38 @@ bool gl_context::texture_create(texture_base& tb, cgv::data::data_format& df) co
 		return false;
 	GLuint tmp_id = texture_bind(tb.tt, tex_id);
 
+	// extract component type
+	unsigned int transfer_format = map_to_gl(df.get_standard_component_format(), df.get_integer_interpretation());
+	if (transfer_format == -1) {
+		error("could not determine transfer format", &tb);
+		return false;
+	}
 	switch (tb.tt) {
 	case TT_1D :
 		glTexImage1D(GL_TEXTURE_1D, 0, 
-			gl_format, df.get_width(), 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
+			gl_format, df.get_width(), 0, transfer_format, GL_UNSIGNED_BYTE, 0);
 		break;
 	case TT_2D :
-		{
-			unsigned int comp_type = GL_RGBA;
-			if (std::string(df.get_component_name(0)) == "D")
-				comp_type = GL_DEPTH_COMPONENT;
-			glTexImage2D(GL_TEXTURE_2D, 0, 
-				gl_format, df.get_width(), df.get_height(), 0, comp_type, GL_UNSIGNED_BYTE, 0);
-			break;
-		}
+		glTexImage2D(GL_TEXTURE_2D, 0, 
+			gl_format, df.get_width(), df.get_height(), 0, transfer_format, GL_UNSIGNED_BYTE, 0);
+		break;
 	case TT_3D :
 		glTexImage3D(GL_TEXTURE_3D, 0,
-			gl_format, df.get_width(), df.get_height(), df.get_depth(), 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
+			gl_format, df.get_width(), df.get_height(), df.get_depth(), 0, transfer_format, GL_UNSIGNED_BYTE, 0);
 		break;
 	case TT_CUBEMAP :
 		glTexImage2D( GL_TEXTURE_CUBE_MAP_POSITIVE_X, 0,
-			gl_format, df.get_width(), df.get_height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
+			gl_format, df.get_width(), df.get_height(), 0, transfer_format, GL_UNSIGNED_BYTE, 0);
 		glTexImage2D( GL_TEXTURE_CUBE_MAP_NEGATIVE_X, 0,
-			gl_format, df.get_width(), df.get_height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
+			gl_format, df.get_width(), df.get_height(), 0, transfer_format, GL_UNSIGNED_BYTE, 0);
 		glTexImage2D( GL_TEXTURE_CUBE_MAP_POSITIVE_Y, 0,
-			gl_format, df.get_width(), df.get_height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
+			gl_format, df.get_width(), df.get_height(), 0, transfer_format, GL_UNSIGNED_BYTE, 0);
 		glTexImage2D( GL_TEXTURE_CUBE_MAP_NEGATIVE_Y, 0,
-			gl_format, df.get_width(), df.get_height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
+			gl_format, df.get_width(), df.get_height(), 0, transfer_format, GL_UNSIGNED_BYTE, 0);
 		glTexImage2D( GL_TEXTURE_CUBE_MAP_POSITIVE_Z, 0,
-			gl_format, df.get_width(), df.get_height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
+			gl_format, df.get_width(), df.get_height(), 0, transfer_format, GL_UNSIGNED_BYTE, 0);
 		glTexImage2D( GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, 0,
-			gl_format, df.get_width(), df.get_height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
+			gl_format, df.get_width(), df.get_height(), 0, transfer_format, GL_UNSIGNED_BYTE, 0);
 		break;
 	}
 	if (check_gl_error("gl_context::texture_create", &tb)) {
@@ -2195,7 +2196,7 @@ bool gl_context::shader_program_link(shader_program_base& spb) const
 	int result;
 	glGetProgramiv(p_id, GL_LINK_STATUS, &result); 
 	if (result == 1)
-		return true;
+		return context::shader_program_link(spb);
 	GLint infologLength = 0;
 	glGetProgramiv(p_id, GL_INFO_LOG_LENGTH, &infologLength);
 	if (infologLength > 0) {
@@ -2753,8 +2754,9 @@ bool gl_context::set_element_array(attribute_array_binding_base* aab, const vert
 		return false;
 	}
 	if (vbb->type != VBT_INDICES) {
-		error("gl_context::set_element_array(): called on vertex buffer object that is not of type VBT_INDICES", vbb);
-		return false;
+		std::cout << "gl_context::set_element_array() : called on vertex buffer object that is not of type VBT_INDICES" << std::endl;
+//		error("gl_context::set_element_array(): called on vertex buffer object that is not of type VBT_INDICES", vbb);
+//		return false;
 	}
 	if (aab) {
 		if (!aab->handle) {
@@ -2893,6 +2895,12 @@ GLenum buffer_usage(VertexBufferUsage vbu)
 {
 	static GLenum buffer_usages[] = { GL_STREAM_DRAW, GL_STREAM_READ, GL_STREAM_COPY, GL_STATIC_DRAW, GL_STATIC_READ, GL_STATIC_COPY, GL_DYNAMIC_DRAW, GL_DYNAMIC_READ, GL_DYNAMIC_COPY };
 	return buffer_usages[vbu];
+}
+
+bool gl_context::vertex_buffer_bind(const vertex_buffer_base& vbb, VertexBufferType _type) const
+{
+	glBindBuffer(buffer_target(_type), get_gl_id(vbb.handle));
+	return !check_gl_error("gl_context::vertex_buffer_bind", &vbb);
 }
 
 bool gl_context::vertex_buffer_create(vertex_buffer_base& vbb, const void* array_ptr, size_t size_in_bytes) const

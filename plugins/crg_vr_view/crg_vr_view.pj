@@ -3,9 +3,8 @@ projectType="plugin";
 projectName="crg_vr_view";
 projectGUID="5EC8DA24-C288-4526-8EC7-FC9684466B5E";
 addProjectDeps=[
-	"cgv_type", "cgv_utils", "cgv_base", "cgv_data", "cgv_signal", "cgv_reflect", 
-	"cgv_render", "cgv_gui", "glsu", "cgv_gl", "crg_stereo_view_lib", "vr",
-	"cg_vr"];
+	"cgv_type", "cgv_utils", "cgv_base", "cgv_data", "cgv_signal", "cgv_reflect", "cgv_reflect_types", 
+	"cgv_render", "cgv_gui", "cg_ext", "glsu", "cgv_gl", "crg_stereo_view_lib", "vr", "cg_vr"];
 addProjectDirs=[
 	CGV_DIR."/libs/glsu", 
 	CGV_DIR."/libs/cgv_gl", 
@@ -14,6 +13,6 @@ addProjectDirs=[
 addIncDirs=[
 	CGV_DIR."/libs", 
 	[INPUT_DIR, "all"],  
-	[ CGV_DIR."/libs/vr_kit", "all" ]
+	[ CGV_DIR."/libs/vr", "all" ]
 ];
 addSharedDefines=["CGV_VR_VIEW_EXPORTS"];

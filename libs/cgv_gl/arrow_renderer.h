@@ -81,6 +81,9 @@ namespace cgv {
 			bool enable(context& ctx);
 			///
 			bool disable(context& ctx);
+			/// convenience function to render with default settings
+			void draw(context& ctx, size_t start, size_t count,
+				bool use_strips = false, bool use_adjacency = false, uint32_t strip_restart_index = -1);
 		};
 		struct CGV_API arrow_render_style_reflect : public arrow_render_style
 		{

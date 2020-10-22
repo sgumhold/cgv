@@ -25,6 +25,7 @@ grid::grid() : minX(-50),minZ(-50),maxX(50),maxZ(50)
 {
 	view_ptr = 0;
 	set_name("grid");
+	auto_hide_axis_threshold = 0.0f;
 	threshold = 5;
 	alpha = 0.5;
 	show_grid = true;
@@ -34,7 +35,7 @@ grid::grid() : minX(-50),minZ(-50),maxX(50),maxZ(50)
 	show_lines = true;
 
 	arrow_length = 1.5;
-	arrow_aspect = 0.03333f;
+	arrow_aspect = 0.01333f;
 	arrow_rel_tip_radius = 2;
 	arrow_tip_aspect = 0.3f;
 }
@@ -147,6 +148,11 @@ void grid::render_grid_lines(float alpha)
 
 void grid::draw_grid(context &ctx)
 {
+	cgv::render::view* view_ptr = find_view_as_node();
+	if (view_ptr) {
+		z_axis = view_ptr->get_view_dir();
+	}
+	
 	// transform coordinate frame to clip space
 	dmat4 P;
 	P(0, 0) = 1.0; P(0, 1) = 0.0; P(0, 2) = 0.0; P(0, 3) = 0.0;
@@ -161,9 +167,9 @@ void grid::draw_grid(context &ctx)
 	// compute length of each coordinate axes in screen space and set z_axis
 	for (unsigned i = 0; i < 3; ++i) {
 		l(i) = (1 / P(3, i)*reinterpret_cast<const dvec3&>(P.col(i)) - O_clip).length();
-		z_axis(i) = ((l(i) < threshold) ? 1.0f : 0.0f);
+	//	z_axis(i) = ((l(i) < threshold) ? 1.0f : 0.0f);
 	}
-
+	
 	double v = cgv::math::maximum(l(0),l(1),l(2));
 	factor = (float)pow(2.0, ceil(log(20.0) - log(v)) / log(2.0));
 
@@ -180,19 +186,19 @@ void grid::draw_grid(context &ctx)
 	if (show_axes) {
 		ctx.push_modelview_matrix();
 		//z-axis
-		if (fabs(fabs(z_axis(2)) - 1.0)> 0.01) {
+		if (fabs(fabs(z_axis(2)) - 1.0) > auto_hide_axis_threshold) {
 			ctx.set_color(rgb(0, 0, 1));
 			ctx.tesselate_arrow((double)arrow_length, (double)arrow_aspect, (double)arrow_rel_tip_radius, (double)arrow_tip_aspect);
 		}
 		//x-axis
-		if (fabs(fabs(z_axis(0)) - 1.0)> 0.01) {
+		if (fabs(fabs(z_axis(0)) - 1.0)> auto_hide_axis_threshold) {
 			ctx.set_color(rgb(1, 0, 0));
 			ctx.mul_modelview_matrix(cgv::math::rotate4<double>(90, vec3(0, 1, 0)));
 			ctx.tesselate_arrow((double)arrow_length, (double)arrow_aspect, (double)arrow_rel_tip_radius, (double)arrow_tip_aspect);
 		}
 
 		//y-axis
-		if (fabs(fabs(z_axis(1)) - 1.0)> 0.01) {
+		if (fabs(fabs(z_axis(1)) - 1.0)> auto_hide_axis_threshold) {
 			ctx.set_color(rgb(0, 1, 0));
 			ctx.mul_modelview_matrix(cgv::math::rotate4<double>(-90, vec3(1, 0, 0)));
 			ctx.tesselate_arrow((double)arrow_length, (double)arrow_aspect, (double)arrow_rel_tip_radius, (double)arrow_tip_aspect);
@@ -316,11 +322,12 @@ void grid::create_gui()
 	add_decorator("Grid", "heading");
 	add_member_control(this, "grid", show_grid, "check");
 	add_member_control(this, "grid_lines", show_lines, "check");
+	add_member_control(this, "auto_hide_axis_threshold", auto_hide_axis_threshold, "value_slider", "min=0;max=0.1;log=true;ticks=true;step=0.0000001");
 	add_member_control(this, "adaptive", adaptive_grid, "check");
 	add_member_control(this, "threshold", threshold, "value_slider", "min=0;max=20;ticks=true;log=false");
 	add_member_control(this, "opacity", alpha, "value_slider", "min=0;max=1;ticks=true");
 	add_member_control(this, "axes", show_axes, "check");
-	add_member_control(this, "arrow_length", arrow_length, "value_slider", "min=0;max=100;log=true;ticks=true");
+	add_member_control(this, "arrow_length", arrow_length, "value_slider", "min=0;max=10000;step=0.0001;log=true;ticks=true");
 	add_member_control(this, "arrow_aspect", arrow_aspect, "value_slider", "min=0.001;max=1;step=0.0005;log=true;ticks=true");
 	add_member_control(this, "arrow_rel_tip_radius", arrow_rel_tip_radius, "value_slider", "min=1;max=10;log=true;ticks=true");
 	add_member_control(this, "arrow_tip_aspect", arrow_tip_aspect, "value_slider", "min=0.1;max=10;log=true;ticks=true");

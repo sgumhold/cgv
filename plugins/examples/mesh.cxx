@@ -5,6 +5,7 @@
 #include <cgv/render/clipped_view.h>
 #include <cgv_gl/gl/gl.h>
 #include <cgv_gl/sphere_renderer.h>
+#include <cgv_gl/rounded_cone_renderer.h>
 #include <cgv_gl/gl/mesh_render_info.h>
 #include <cgv_gl/gl/gl_context.h>
 #include <cgv/render/attribute_array_binding.h>
@@ -89,12 +90,11 @@ public:
 	rgb  surface_color;
 	IlluminationMode illumination_mode;
 
-	bool show_wireframe;
-	float line_width;
-	rgb  line_color;
-
 	bool show_vertices;
-	cgv::render::sphere_render_style sphere_style;
+	sphere_render_style sphere_style;
+
+	bool show_wireframe;
+	rounded_cone_render_style cone_style;
 
 	std::string file_name;
 
@@ -116,12 +116,15 @@ public:
 		illumination_mode = IM_ONE_SIDED;
 
 		show_wireframe = true;
-		line_width = 2.0f;
-		line_color = rgb(0.6f,0.5f,0.4f);
 
 		show_vertices = true;
 		M.read(QUOTE_SYMBOL_VALUE(INPUT_DIR) "/res/example.obj");
+		
 		sphere_style.radius = float(0.05*sqrt(M.compute_box().get_extent().sqr_length() / M.get_nr_positions()));
+		sphere_style.surface_color = rgb(0.8f, 0.3f, 0.3f);
+		
+		cone_style.radius = 0.5f*sphere_style.radius;
+		cone_style.surface_color = rgb(0.6f, 0.5f, 0.4f);
 		file_name = "example.obj";
 		have_new_mesh = true;
 
@@ -175,6 +178,8 @@ public:
 				M = tmp;
 				sphere_style.radius = float(0.05*sqrt(M.compute_box().get_extent().sqr_length() / M.get_nr_positions()));
 				on_set(&sphere_style.radius);
+				cone_style.radius = 0.5f*sphere_style.radius;
+				on_set(&cone_style.radius);
 				if (cgv::utils::file::get_file_name(file_name) == "Max-Planck_lowres.obj")
 					construct_mesh_colors();
 				have_new_mesh = true;
@@ -212,27 +217,28 @@ public:
 			align("\b");
 			end_tree_node(a);
 		}
-		show = begin_tree_node("vertex spheres", show_vertices, false, "options='w=140';align=' '");
-		add_member_control(this, "show", show_vertices, "toggle", "w=52;shortcut='w'");
+		show = begin_tree_node("vertices", show_vertices, false, "options='w=100';align=' '");
+		add_member_control(this, "show", show_vertices, "toggle", "w=42;shortcut='w'", " ");
+		add_member_control(this, "", sphere_style.surface_color, "", "w=42");
 		if (show) {
 			align("\a");
 			add_gui("style", sphere_style);
 			align("\b");
 			end_tree_node(show_wireframe);
 		}
-
-		show = begin_tree_node("wireframe", show_wireframe, true, "options='w=140';align=' '");
-		add_member_control(this, "show", show_wireframe, "toggle", "w=52;shortcut='w'");
+		show = begin_tree_node("wireframe", show_wireframe, false, "options='w=100';align=' '");
+		add_member_control(this, "show", show_wireframe, "toggle", "w=42;shortcut='w'", " ");
+		add_member_control(this, "", cone_style.surface_color, "", "w=42");
 		if (show) {
 			align("\a");
-			add_member_control(this, "line width", line_width, "value_slider", "min=1;max=20;ticks=true;log=true");
-			add_member_control(this, "line color", line_color);
+			add_gui("style", cone_style);
 			align("\b");
 			end_tree_node(show_wireframe);
 		}
 
-		show = begin_tree_node("surface", show_surface, true, "options='w=140';align=' '");
-		add_member_control(this, "show", show_surface, "toggle", "w=52;shortcut='s'");
+		show = begin_tree_node("surface", show_surface, false, "options='w=100';align=' '");
+		add_member_control(this, "show", show_surface, "toggle", "w=42;shortcut='s'", " ");
+		add_member_control(this, "", surface_color, "", "w=42");
 		if (show) {
 			align("\a");
 			add_member_control(this, "cull mode", cull_mode, "dropdown", "enums='none,back,front'");
@@ -261,10 +267,12 @@ public:
 	bool init(context& ctx)
 	{
 		ref_sphere_renderer(ctx, 1);
+		ref_rounded_cone_renderer(ctx, 1);
 		return true;
 	}
 	void destruct(context& ctx)
 	{
+		ref_rounded_cone_renderer(ctx, -1);
 		ref_sphere_renderer(ctx, -1);
 	}
 	void init_frame(context& ctx)
@@ -275,10 +283,10 @@ public:
 				M.compute_vertex_normals();
 			// [re-]compute mesh render info
 			mesh_info.destruct(ctx);
-			mesh_info.construct_vbos(ctx, M);
+			mesh_info.construct(ctx, M);
 			// bind mesh attributes to standard surface shader program
-			mesh_info.bind(ctx, ctx.ref_surface_shader_program(true));
-
+			mesh_info.bind(ctx, ctx.ref_surface_shader_program(true), true);
+			mesh_info.bind_wireframe(ctx, ref_rounded_cone_renderer(ctx).ref_prog(), true);
 			// ensure that materials are presented in gui
 			post_recreate_gui();
 			have_new_mesh = false;
@@ -318,7 +326,7 @@ public:
 		prog.set_attribute(ctx, prog.get_color_index(), surface_color);
 
 		// render the mesh from the vertex buffers with selected program
-		mesh_info.render_mesh(ctx, prog, opaque_part, !opaque_part);
+		mesh_info.draw_all(ctx, opaque_part, !opaque_part);
 
 		// recover opengl culling mode
 		if (is_culling)
@@ -336,19 +344,15 @@ public:
 			sr.set_position_array(ctx, M.get_positions());
 			if (M.has_colors())
 				sr.set_color_array(ctx, *reinterpret_cast<const std::vector<rgb>*>(M.get_color_data_vector_ptr()));
-			sr.validate_and_enable(ctx);
-			glDrawArrays(GL_POINTS, 0, (GLsizei)M.get_nr_positions());
-			sr.disable(ctx);
+			sr.render(ctx, 0, M.get_nr_positions());
 		}
 		if (show_wireframe) {
-			GLfloat old_line_width;
-			glGetFloatv(GL_LINE_WIDTH, &old_line_width);
-			glLineWidth(line_width);
-				ctx.ref_default_shader_program().enable(ctx);
-					ctx.set_color(line_color);
-					mesh_info.draw_wireframe(ctx);
-				ctx.ref_default_shader_program().disable(ctx);
-			glLineWidth(old_line_width);
+			rounded_cone_renderer& cr = ref_rounded_cone_renderer(ctx);
+			cr.set_render_style(cone_style);
+			if (cr.enable(ctx)) {
+				mesh_info.draw_wireframe(ctx);
+				cr.disable(ctx);
+			}
 		}
 		if (show_surface) {
 			draw_surface(ctx, true);

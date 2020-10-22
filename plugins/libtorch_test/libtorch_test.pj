@@ -1,0 +1,21 @@
+@=
+projectType="application_plugin";
+projectName="libtorch_test";
+projectGUID="2B38897C-4340-4C2A-8657-308FF82E71BB";
+addProjectDirs=[CGV_DIR."/plugins", CGV_DIR."/libs", CGV_DIR."/3rd"];
+addIncDirs=[CGV_DIR."/3rd/glew", CGV_DIR."/libs"];
+addProjectDeps=[
+    "cgv_utils","cgv_type","cgv_data","cgv_base", "cgv_signal", "cgv_reflect", "cgv_gl", "cgv_media", "cgv_os", "cgv_gui", "cgv_render",
+	"cgv_viewer",
+	"libtorch",
+	"cg_fltk","crg_stereo_view", "crg_light", "crg_grid", "cmi_io", "cgv_reflect_types", "cg_icons",
+	"glew"
+];
+
+
+addSharedDefines=["LIBTORCH_TEST_EXPORTS"];
+
+addCommandLineArguments=[
+	'config:"'.INPUT_DIR.'/config.def"',
+	after("type(shader_config):shader_path='".INPUT_DIR."/glsl;".CGV_DIR."/libs/plot/glsl;".CGV_DIR."/libs/cgv_gl/glsl'", "cg_fltk")
+];

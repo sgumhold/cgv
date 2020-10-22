@@ -1,0 +1,15 @@
+@=
+projectName="rgbd_control";
+projectType="application_plugin";
+projectGUID="08D3DC47-39FC-45e4-82C1-40EC10194687";
+addIncDirs    =[CGV_DIR."/3rd", CGV_DIR."/libs/rgbd_capture", CGV_BUILD_DIR."/rgbd_control"];
+addProjectDirs=[CGV_DIR."/libs", CGV_DIR."/3rd", CGV_DIR."/plugins", CGV_SUPPORT_DIR];
+addProjectDeps=["cgv_utils","cgv_type","cgv_data","cgv_base", "cgv_signal", "cgv_reflect", "cgv_media", "cgv_os", "cgv_gui", "cgv_render", 
+                "cgv_viewer","cgv_gl", "cg_fltk", "cg_ext", "crg_stereo_view", "cmi_io", "cmv_avi", "crg_grid", "glew",
+                "rgbd_capture", "rgbd_kinect"];
+addDependencies=["opengl", "glu"];
+addSharedDefines=["RGBD_CONTROL_EXPORTS"];
+addCommandLineArguments=[
+		after("type(rgbd_control):protocol_path='".INPUT_DIR."'", "rgbd_control"),
+		'config:"'.INPUT_DIR.'/config.def"',
+		after("type(shader_config):shader_path='".CGV_DIR."/libs/cgv_gl/glsl;".INPUT_DIR."'", "cg_fltk")];

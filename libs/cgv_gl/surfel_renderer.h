@@ -36,7 +36,7 @@ namespace cgv {
 			/// set to 0 in constructor
 			float percentual_halo_width;
 			/// color of halo with opacity channel
-			rgb halo_color;
+			rgba halo_color;
 			/// strength in [0,1] of halo color with respect to color of primitive
 			float halo_color_strength;
 			/// set to true in constructor
@@ -94,6 +94,9 @@ namespace cgv {
 			bool enable(context& ctx);
 			///
 			bool disable(context& ctx);
+			/// convenience function to render with default settings
+			void draw(context& ctx, size_t start, size_t count,
+				bool use_strips = false, bool use_adjacency = false, uint32_t strip_restart_index = -1);
 		};
 		struct CGV_API surfel_render_style_reflect : public surfel_render_style
 		{

@@ -224,8 +224,10 @@ protected:
 	static std::vector<const char*> font_names;
 	/// concatenate font names to enum definition for dropdown control
 	static std::string font_name_enum_def;
+public:
 	/// ensure that font names have been enumerate
 	void ensure_font_names();
+protected:
 	//@}
 
 	/**@name configuration parameters of plot */

@@ -9,8 +9,10 @@ bit_field_controler::bit_field_controler(int& _value, const std::string& _bit_de
 {
 	std::vector<cgv::utils::token> toks;
 	cgv::utils::parse_enum_declarations(bit_defs, toks, bit_values);
-	for (unsigned i=0; i<toks.size(); ++i)
+	for (unsigned i = 0; i < toks.size(); ++i) {
 		bit_names.push_back(to_string(toks[i]));
+//		std::cout << bit_names[i] << "=" << bit_values[i] << std::endl;
+	}
 }
 
 bit_field_controler::~bit_field_controler()

@@ -1,0 +1,16 @@
+@=
+projectType="library";
+projectName="libtorch";
+projectGUID="2AD270F1-A9FE-430B-B592-4CE992719DDB";
+addIncDirs=[ [CGV_DIR."/3rd/libtorch/dist/libtorch/include/torch/csrc/api/include", "all"], [CGV_DIR."/3rd/libtorch/dist/libtorch/include", "all"], [CGV_DIR."/3rd/libtorch/src/include", "all"] ];
+excludeSourceDirs=[ CGV_DIR."/3rd/libtorch/dist/libtorch/bin", CGV_DIR."/3rd/libtorch/dist/libtorch/cmake", CGV_DIR."/3rd/libtorch/dist/libtorch/lib", CGV_DIR."/3rd/libtorch/dist/libtorch/share", CGV_DIR."/3rd/libtorch/dist/libtorch/test" ];
+excludeSourceFiles=[ CGV_DIR."/3rd/libtorch/dist/libtorch/build-hash" ];
+addLibDirs=[ [CGV_DIR."/3rd/libtorch/dist/libtorch/lib", "all"] ];
+addProjectDeps=[ "cgv_utils", "cgv_data", "cgv_type" ];
+addMapDeps=[ 
+    [["torch_base", ["release/torch", "debug/torch", "release/torch", "debug/torch"]], "all"],
+    [["torch_base_cpu", ["release/torch_cpu", "debug/torch_cpu", "release/torch_cpu", "debug/torch_cpu"]], "all"],
+    [["torchdep_asmjit", ["release/asmjit", "debug/asmjit", "release/asmjit", "debug/asmjit"]], "all"],
+    [["torchdep_fbgemm", ["release/fbgemm", "debug/fbgemm", "release/fbgemm", "debug/fbgemm"]], "all"],
+    [["torchdep_c10", ["release/c10", "debug/c10", "release/c10", "debug/c10"]], "all"] ];
+addDependencies=[ ["torch_base", "all"], ["torch_base_cpu", "all"], ["torchdep_asmjit", "all"], ["torchdep_fbgemm", "all"], ["torchdep_c10", "all"] ];

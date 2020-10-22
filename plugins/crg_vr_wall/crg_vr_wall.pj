@@ -1,0 +1,16 @@
+@=
+projectType="plugin";
+projectName="crg_vr_wall";
+projectGUID="615A6608-4007-4144-BF3B-A4D2364870B9";
+addProjectDeps=[
+	"cgv_type", "cgv_utils", "cgv_base", "cgv_data", "cgv_signal", "cgv_reflect", "cgv_reflect_types", 
+	"cgv_render", "cgv_gui", "cg_ext", "cgv_gl", "vr", "cg_vr", "crg_vr_view"];
+addProjectDirs=[
+	CGV_DIR."/libs/cgv_gl", 
+	CGV_DIR."/plugins"
+];
+addIncDirs=[
+	CGV_DIR."/libs", 
+	[INPUT_DIR, "all"] 
+];
+addSharedDefines=["CGV_VR_WALL_EXPORTS"];

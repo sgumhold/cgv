@@ -12,8 +12,8 @@ one with a different name ending up with the type based gui definition.
 
 ********************/
 
-
 #include <cgv/base/named.h>
+#include <cgv/reflect/method_interface_impl.h>
 #include <cgv/math/ftransform.h>
 #include <cgv/render/drawable.h>
 #include <cgv/render/shader_program.h>
@@ -43,6 +43,8 @@ public:
 	{
 		return "base_provider_test";
 	}
+	void test()
+	{}
 	bool self_reflect(cgv::reflect::reflection_handler& rh)
 	{
 		return
@@ -50,7 +52,8 @@ public:
 			rh.reflect_member("line_width", line_width) &&
 			rh.reflect_member("line_color", line_color) &&
 			rh.reflect_member("layout_aspect", layout_aspect) &&
-			rh.reflect_member("some_text", some_text);
+			rh.reflect_member("some_text", some_text) &&
+			rh.reflect_method("on_set", &base_provider_test::test);
 	}
 	void draw(cgv::render::context& ctx)
 	{

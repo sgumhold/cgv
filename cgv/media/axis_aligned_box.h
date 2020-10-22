@@ -77,7 +77,7 @@ public:
 	/// return a vector with the extents in the different dimensions
 	fvec_type get_extent() const { return maxp-minp; }
 	/// return the center of the box
-	fpnt_type get_center() const { return minp+(T)0.5*get_extent(); }
+	fpnt_type get_center() const { return (minp+maxp)/2; }
 	/// check if aab is valid
 	bool is_valid() const { return minp[0] <= maxp[0]; }
 	/// check whether a point is inside the aabb
@@ -122,10 +122,20 @@ public:
 	/// scale the complete box with respect to the world coordinate origin
 	void scale(const T& f)
 	{
+		if (!is_valid())
+			return;
 		for (unsigned int c = 0; c<N; ++c) {
 			maxp(c) *= f;
 			minp(c) *= f;
 		}
+	}
+	/// translate box by vector
+	void translate(const fpnt_type& v)
+	{
+		if (!is_valid())
+			return;
+		ref_min_pnt() += v;
+		ref_max_pnt() += v;
 	}
 	/// return the index of the coordinte with maximum extend
 	unsigned get_max_extent_coord_index() const
