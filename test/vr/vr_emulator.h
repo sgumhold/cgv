@@ -38,7 +38,7 @@ protected:
 	float body_direction;
 	float body_height;
 	float hip_parameter;
-	float gear_parameter;
+	float yaw_parameter;
 	float fovy;
 	vec3 body_position;
 	vec3 hand_position[2];
@@ -55,7 +55,7 @@ protected:
 	void compute_state_poses();
 	bool query_state_impl(vr::vr_kit_state& state, int pose_query = 2);
 public:
-	vr_emulated_kit(float _body_direction, const vec3& _body_position, float _body_height, unsigned _width, unsigned _height, vr::vr_driver* _driver, void* _handle, const std::string& _name, bool _ffb_support, bool _wireless);
+	vr_emulated_kit(float _body_direction, const vec3& _body_position, float _body_height, unsigned _width, unsigned _height, vr::vr_driver* _driver, void* _handle, const std::string& _name);
 	vec3 get_body_direction() const;
 	const std::vector<std::pair<int, int> >& get_controller_throttles_and_sticks(int controller_index) const;
 	const std::vector<std::pair<float, float> >& get_controller_throttles_and_sticks_deadzone_and_precision(int controller_index) const;
@@ -86,7 +86,6 @@ public:
 	std::vector<vr_emulated_kit*> kits;
 	static bool gamepad_connected;
 	unsigned screen_width, screen_height;
-	bool ffb_support, wireless;
 	unsigned counter;
 	vec3 body_position;
 	float body_direction;
@@ -171,5 +170,6 @@ public:
 	/// you must overload this for gui creation
 	void create_gui();
 };
+///@}
 
 #include <cgv/config/lib_end.h>

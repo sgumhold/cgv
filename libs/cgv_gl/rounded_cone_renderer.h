@@ -14,9 +14,12 @@ namespace cgv { // @<
 			counter decreases to 0, singelton renderer is destructed. */
 		extern CGV_API rounded_cone_renderer& ref_rounded_cone_renderer(context& ctx, int ref_count_change = 0);
 
+<<<<<<< HEAD
 		/// rounded cones use surface render styles
 		//typedef surface_render_style rounded_cone_render_style;
 
+=======
+>>>>>>> remotes/origin/develop
 		struct CGV_API rounded_cone_render_style : public surface_render_style
 		{	
 			/// multiplied to the sphere radii, initialized to 1

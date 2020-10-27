@@ -11,15 +11,15 @@ namespace vr {
 	// encode user index in handle
 	void* get_handle(int user_index)
 	{
-		void* device_handle = 0;
-		(int&)device_handle = user_index;
-		return device_handle;
+		void* handle = 0;
+		(int&)handle = user_index;
+		return handle;
 	}
 
 	// decode user index from handle
-	int get_user_index(void* device_handle)
+	int get_user_index(void* handle)
 	{
-		int user_index = (int&)device_handle;
+		int user_index = (int&)handle;
 		assert(user_index >= 0 && user_index < 4);
 		return user_index;
 	}
@@ -101,10 +101,9 @@ struct openvr_driver : public vr_driver
 			if (!kit) {
 				uint32_t width, height;
 				hmd_ptr->GetRecommendedRenderTargetSize(&width, &height);
-				bool ffb_support = true;
-				bool wireless = false;
-				kit = new openvr_kit(width, height, this, hmd_ptr, kit_name, ffb_support, wireless);
-				bool camera_init = initialize_camera(kit);
+				kit = new openvr_kit(width, height, this, hmd_ptr, kit_name);
+				vr_kit_state state;
+				kit->query_state(state, 2);
 				register_vr_kit(hmd_ptr, kit);
 			}
 			handles.push_back(hmd_ptr);
@@ -123,10 +122,7 @@ struct openvr_driver : public vr_driver
 			if (!kit) {
 				uint32_t width, height;
 				hmd_ptr->GetRecommendedRenderTargetSize(&width, &height);
-				bool ffb_support = true;
-				bool wireless = false;
-				kit = new openvr_kit(width, height, this, hmd_ptr, kit_name, ffb_support, wireless);
-				bool camera_init = initialize_camera(kit);
+				kit = new openvr_kit(width, height, this, hmd_ptr, kit_name);
 				register_vr_kit(hmd_ptr, kit);
 			}
 			if (index == 0) {
@@ -150,10 +146,7 @@ struct openvr_driver : public vr_driver
 			if (!kit) {
 				uint32_t width, height;
 				hmd_ptr->GetRecommendedRenderTargetSize(&width, &height);
-				bool ffb_support = true;
-				bool wireless = false;
-				kit = new openvr_kit(width, height, this, hmd_ptr, kit_name, ffb_support, wireless);
-				bool camera_init = initialize_camera(kit);
+				kit = new openvr_kit(width, height, this, hmd_ptr, kit_name);
 				register_vr_kit(hmd_ptr, kit);
 			}
 			if (kit == old_kit_ptr) {

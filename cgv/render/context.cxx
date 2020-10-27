@@ -1650,11 +1650,11 @@ const std::vector<window_transformation>& context::get_window_transformation_arr
 /// return a homogeneous 4x4 matrix to transform clip to window coordinates, optionally specify for the case of multiple viewports/depth ranges
 context::dmat4 context::get_window_matrix(unsigned array_index) const
 {
-	if (array_index >= window_transformation_stack.size()) {
+	if (array_index >= window_transformation_stack.top().size()) {
 		std::string message("context::get_window_matrix() ... attempt to query window matrix with array index ");
 		message += cgv::utils::to_string(array_index);
 		message += " out of range [0,";
-		message += cgv::utils::to_string(window_transformation_stack.size());
+		message += cgv::utils::to_string(window_transformation_stack.top().size());
 		message += "[";
 		error(message);
 		return cgv::math::identity4<double>();
@@ -1665,7 +1665,7 @@ context::dmat4 context::get_window_matrix(unsigned array_index) const
 	M(0, 3) = M(0, 0) + wt.viewport[0];
 //	if (make_y_point_downwards) {
 		M(1, 1) = -0.5*wt.viewport[3];
-		M(1, 3) = get_height() + M(1, 1) - wt.viewport[1];
+		M(1, 3) = wt.viewport[3] + M(1, 1) - wt.viewport[1];
 /*	}
 	else {
 		M(1, 1) = 0.5*wt.viewport[3];
@@ -1710,7 +1710,9 @@ void context::put_cursor_coords(const vec_type& p, int& x, int& y) const
 	dvec4 p4(0, 0, 0, 1);
 	for (unsigned int c = 0; c < p.size(); ++c)
 		p4(c) = p(c);
-	p4 = get_modelview_projection_window_matrix()*p4;
+
+	p4 = get_modelview_projection_window_matrix() * p4;
+
 	x = (int)(p4(0) / p4(3));
 	y = (int)(p4(1) / p4(3));
 }
@@ -1875,7 +1877,12 @@ bool context::shader_program_link(shader_program_base& spb) const
 	if (spb.auto_detect_uniforms) {
 		spb.uses_lights = get_uniform_location(spb, "light_sources[0].light_source_type") != -1;
 		spb.uses_material = get_uniform_location(spb, "material.brdf_type") != -1;
-		spb.uses_view = get_uniform_location(spb, "modelview_matrix") != -1;
+		spb.uses_view =
+			get_uniform_location(spb, "modelview_matrix") != -1 ||
+			get_uniform_location(spb, "projection_matrix") != -1 ||
+			get_uniform_location(spb, "normal_matrix") != -1 ||
+			get_uniform_location(spb, "inverse_modelview_matrix") != -1 ||
+			get_uniform_location(spb, "inverse_normal_matrix") != -1;
 		spb.uses_gamma = get_uniform_location(spb, "gamma") != -1;
 		spb.auto_detect_uniforms = false;
 	}

@@ -290,7 +290,7 @@ namespace vr {
 		cgv::gui::application::remove_window(window);
 	}
 	///
-	void vr_wall::on_device_change(void* device_handle, bool attach)
+	void vr_wall::on_device_change(void* handle, bool attach)
 	{
 		kit_enum_definition = "enums='none=-1";
 		std::vector<void*> kits = vr::scan_vr_kits();
@@ -524,8 +524,7 @@ namespace vr {
 	{
 		switch (vrke.get_key()) {
 			// grip buttons
-		case vr::VR_LEFT_BUTTON0:
-		case vr::VR_RIGHT_BUTTON0:
+		case vr::VR_GRIP:
 			calib_points_world[calib_index] = reinterpret_cast<const mat34&>(vrke.get_state().controller[vrke.get_controller_index()].pose[0])* vec4(peek_point, 1.0f);
 			switch (calib_index) {
 			case 0:
@@ -572,8 +571,7 @@ namespace vr {
 										vrke.get_state().controller[vr_wall_hmd_index].pose);
 		switch (vrke.get_key()) {
 			// up buttons
-		case vr::VR_LEFT_STICK_UP:
-		case vr::VR_RIGHT_STICK_UP:
+		case vr::VR_DPAD_UP:
 			// use screen x dir as eye separation direction
 			wall_kit_ptr->eye_separation_dir_tracker = wall_kit_ptr->get_screen_orientation().col(0) * pose_orientation(hmd_pose);
 			// use world y and screen z as displacement direction for fixed displacements
@@ -586,8 +584,7 @@ namespace vr {
 			eye_calibrated[0] = eye_calibrated[1] = true;
 			break;
 			// grip buttons
-		case vr::VR_LEFT_BUTTON0:
-		case vr::VR_RIGHT_BUTTON0:
+		case vr::VR_GRIP:
 		{
 			/// get index of other controller
 			int ci = 1 - vrke.get_controller_index();
@@ -655,15 +652,13 @@ namespace vr {
 			wall_state = WS_HMD;
 			on_set(&wall_state);
 			return true;
-		case vr::VR_LEFT_STICK_LEFT:
-		case vr::VR_RIGHT_STICK_LEFT:
+		case vr::VR_DPAD_LEFT:
 			if (wall_state > WS_SCREEN_CALIB) {
 				wall_state = WallState(wall_state - 1);
 				on_set(&wall_state);
 			}
 			break;
-		case vr::VR_LEFT_STICK_RIGHT:
-		case vr::VR_RIGHT_STICK_RIGHT:
+		case vr::VR_DPAD_RIGHT:
 			if (wall_state < WS_HMD) {
 				wall_state = WallState(wall_state + 1);
 				on_set(&wall_state);

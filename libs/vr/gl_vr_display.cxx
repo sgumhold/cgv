@@ -5,8 +5,8 @@
 namespace vr {
 
 /// construct
-gl_vr_display::gl_vr_display(unsigned _width, unsigned _height, vr_driver* _driver, void* _handle, const std::string& _name, bool _ffb_support, bool _wireless)
-	: width(_width), height(_height), vr_kit(_driver, _handle, _name, _ffb_support, _wireless)
+gl_vr_display::gl_vr_display(unsigned _width, unsigned _height, vr_driver* _driver, void* _handle, const std::string& _name)
+	: width(_width), height(_height), vr_kit(_driver, _handle, _name)
 {
 	nr_multi_samples = 4;
 	for (unsigned i = 0; i < 2; ++i) {

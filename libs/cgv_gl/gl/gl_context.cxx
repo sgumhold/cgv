@@ -1680,7 +1680,7 @@ bool gl_context::texture_replace(
 			return false;
 		}
 		if (z < 0 || z > 5) {
-			error("gl_context::texture_replace: replace on cubemap without invalid side specification", &tb);
+			error("gl_context::texture_replace: replace on cubemap with invalid side specification", &tb);
 			return false;
 		}
 	}

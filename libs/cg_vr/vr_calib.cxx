@@ -18,7 +18,7 @@ namespace cgv {
 			for (auto dp : vr::get_vr_drivers()) {
 				if (!dp->is_calibration_transformation_enabled())
 					continue;
-				calibration_info[dp->get_driver_name()] = dp->get_reference_states();
+				calibration_info[dp->get_driver_name()] = dp->get_tracking_reference_states();
 				float trans[12];
 				dp->put_calibration_transformation(trans);
 				std::cout << dp->get_driver_name() << ":";
@@ -34,14 +34,14 @@ namespace cgv {
 			std::vector<cgv::math::quaternion<float> > relative_rotations;
 			std::vector<cgv::math::fvec<float, 3> > relative_translations;
 			
-			if (dp->get_reference_states().empty()) {
+			if (dp->get_tracking_reference_states().empty()) {
 				std::vector<void*> handles = dp->scan_vr_kits();
 				if (!handles.empty()) {
 					vr::vr_kit_state state;
 					vr::get_vr_kit(handles.front())->query_state(state, 2);
 				}
 			}
-			const auto& refs = dp->get_reference_states();
+			const auto& refs = dp->get_tracking_reference_states();
 
 			float current_transform_array[12];
 			auto& current_transform = reinterpret_cast<cgv::math::fmat<float, 3, 4>&>(current_transform_array[0]);

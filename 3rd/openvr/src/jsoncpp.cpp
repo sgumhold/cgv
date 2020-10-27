@@ -2469,10 +2469,17 @@ namespace Json {
 #else
 #define ALIGNAS(byte_alignment)
 #endif
-static const unsigned char ALIGNAS(8) kNull[sizeof(Value)] = { 0 };
-const unsigned char& kNullRef = kNull[0];
-const Value& Value::null = reinterpret_cast<const Value&>(kNullRef);
-const Value& Value::nullRef = null;
+const Value& Value::null()
+{
+	static const unsigned char ALIGNAS(8) kNull[sizeof(Value)] = { 0 };
+	static const unsigned char& kNullRef = kNull[0];
+	return reinterpret_cast<const Value&>(kNullRef);
+}
+
+const Value& Value::nullRef()
+{
+	return null();
+}
 
 const Int Value::minInt = Int(~(UInt(-1) / 2));
 const Int Value::maxInt = Int(UInt(-1) / 2);
@@ -3409,11 +3416,11 @@ const Value& Value::operator[](ArrayIndex index) const {
       type_ == nullValue || type_ == arrayValue,
       "in Json::Value::operator[](ArrayIndex)const: requires arrayValue");
   if (type_ == nullValue)
-    return nullRef;
+	  return nullRef();
   CZString key(index);
   ObjectValues::const_iterator it = value_.map_->find(key);
   if (it == value_.map_->end())
-    return nullRef;
+    return nullRef();
   return (*it).second;
 }
 
@@ -3476,7 +3483,7 @@ Value& Value::resolveReference(char const* key, char const* cend)
 
 Value Value::get(ArrayIndex index, const Value& defaultValue) const {
   const Value* value = &((*this)[index]);
-  if ( value == &nullRef )
+  if ( value == &nullRef())
   {
 	  return defaultValue;
   }
@@ -3504,13 +3511,13 @@ Value const* Value::find(char const* key, char const* cend) const
 const Value& Value::operator[](const char* key) const
 {
   Value const* found = find(key, key + strlen(key));
-  if (!found) return nullRef;
+  if (!found) return nullRef();
   return *found;
 }
 Value const& Value::operator[](std::string const& key) const
 {
   Value const* found = find(key.data(), key.data() + key.length());
-  if (!found) return nullRef;
+  if (!found) return nullRef();
   return *found;
 }
 
@@ -3590,7 +3597,7 @@ Value Value::removeMember(const char* key)
   JSON_ASSERT_MESSAGE(type_ == nullValue || type_ == objectValue,
                       "in Json::Value::removeMember(): requires objectValue");
   if (type_ == nullValue)
-    return nullRef;
+    return nullRef();
 
   Value removed;  // null
   removeMember(key, key + strlen(key), &removed);
@@ -3977,7 +3984,7 @@ const Value& Path::resolve(const Value& root) const {
         // Error: unable to resolve path (object value expected at position...)
       }
       node = &((*node)[arg.key_]);
-      if (node == &Value::nullRef) {
+      if (node == &Value::nullRef()) {
         // Error: unable to resolve path (object has no member named '' at
         // position...)
       }
@@ -3998,7 +4005,7 @@ Value Path::resolve(const Value& root, const Value& defaultValue) const {
       if (!node->isObject())
         return defaultValue;
       node = &((*node)[arg.key_]);
-      if (node == &Value::nullRef)
+      if (node == &Value::nullRef())
         return defaultValue;
     }
   }

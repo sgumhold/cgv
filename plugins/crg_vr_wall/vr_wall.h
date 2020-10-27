@@ -209,7 +209,7 @@ namespace vr {
 		/// destruct window here
 		~vr_wall();
 		/// update vr_kit enum string
-		void on_device_change(void* device_handle, bool attach);
+		void on_device_change(void* handle, bool attach);
 		/// returns "vr_wall"
 		std::string get_type_name() const;
 		/// reflect members to provide access through config file

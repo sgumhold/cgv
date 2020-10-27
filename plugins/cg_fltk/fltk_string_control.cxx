@@ -15,6 +15,7 @@
 void input_cb(fltk::Widget* w, void* input_ptr)
 {
 	fltk_string_control*  fsc = static_cast<fltk_string_control*>(static_cast<cgv::base::base*>(input_ptr));
+	fsc->in_callback = true;
 	fltk::Input* fI = static_cast<fltk::Input*>(w);
 	fsc->set_new_value(fI->value());
 	if (fsc->check_value(*fsc)) {
@@ -25,6 +26,7 @@ void input_cb(fltk::Widget* w, void* input_ptr)
 	}
 	if (fsc->get_value() != fI->value())
 		fI->value(fsc->get_value().c_str());
+	fsc->in_callback = false;
 }
 
 /// construct from label, value reference and dimensions
@@ -32,7 +34,9 @@ fltk_string_control::fltk_string_control(const std::string& _label, std::string&
 										 abst_control_provider* acp, int x, int y, int w, int h)
 	: control<std::string>(_label, acp, &value)
 {
+	in_callback = false;
 	fI = new CW<fltk::Input>(x,y,w,h,get_name().c_str());
+	fI->when(fltk::WHEN_CHANGED);
 	fI->callback(input_cb,static_cast<cgv::base::base*>(this));
 	update();
 }
@@ -58,7 +62,8 @@ std::string fltk_string_control::get_type_name() const
 /// updates the fltk::Input widget in case the controled value has been changed externally
 void fltk_string_control::update()
 {
-	fI->value(get_value().c_str());
+	if (!in_callback)
+		fI->value(get_value().c_str());
 }
 /// only uses the implementation of fltk_base
 std::string fltk_string_control::get_property_declarations()

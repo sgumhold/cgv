@@ -191,6 +191,9 @@ namespace cgv {
 #include "gl/lib_begin.h"
 
 		CGV_API cgv::gui::gui_creator_registration<rounded_cone_render_style_gui_creator> rounded_cone_rs_gc_reg("rounded_cone_render_style_gui_creator");
+<<<<<<< HEAD
 
+=======
+>>>>>>> remotes/origin/develop
 	}
 }

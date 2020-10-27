@@ -33,7 +33,7 @@ vr_view_interactor::vr_view_interactor(const char* name) : stereo_view_interacto
 	dont_render_kits = false;
 	blit_vr_views = true;
 	blit_width = 160;
-	event_flags = cgv::gui::VREventTypeFlags(cgv::gui::VRE_STATUS + cgv::gui::VRE_KEY + cgv::gui::VRE_POSE);
+	event_flags = cgv::gui::VREventTypeFlags(cgv::gui::VRE_ALL);
 	rendered_kit_ptr = 0;
 	rendered_eye = 0;
 	rendered_kit_index = -1;
@@ -166,25 +166,25 @@ void vr_view_interactor::set_event_type_flags(cgv::gui::VREventTypeFlags flags)
 }
 
 ///
-void vr_view_interactor::on_status_change(void* device_handle, int controller_index, vr::VRStatus old_status, vr::VRStatus new_status)
+void vr_view_interactor::on_status_change(void* handle, int controller_index, vr::VRStatus old_status, vr::VRStatus new_status)
 {
 	post_redraw();
 	if (debug_vr_events)
-		std::cout << "on status change(" << device_handle << ","
+		std::cout << "on status change(" << handle << ","
 		<< controller_index << "," << vr::get_status_string(old_status)
 		<< "," << vr::get_status_string(new_status) << ")" << std::endl;
 }
 
 ///
-void vr_view_interactor::on_device_change(void* device_handle, bool attach)
+void vr_view_interactor::on_device_change(void* handle, bool attach)
 {
 	if (attach)
-		new_kits.push_back(device_handle);
+		new_kits.push_back(handle);
 	else
-		old_kits.push_back(device_handle);
+		old_kits.push_back(handle);
 	post_redraw();
 	if (debug_vr_events)
-		std::cout << "on device change(" << device_handle << ","
+		std::cout << "on device change(" << handle << ","
 		<< (attach?"attach":"detach") << ")" << std::endl;
 }
 
@@ -318,7 +318,7 @@ bool vr_view_interactor::handle_vr_events(cgv::gui::event& e)
 	return false;
 	if (e.get_kind() == cgv::gui::EID_KEY) {
 		auto& vrke = reinterpret_cast<cgv::gui::vr_key_event&>(e);
-		if (vrke.get_key() == vr::VR_RIGHT_STICK) {
+		if (vrke.get_key() == vr::VR_INPUT0 && vrke.get_controller_index() == 1) {
 			if (vrke.get_action() == cgv::gui::KA_PRESS) {
 				start_pose = reinterpret_cast<const mat34&>(*vrke.get_state().controller[1].pose);
 			}
@@ -379,7 +379,13 @@ bool vr_view_interactor::handle(cgv::gui::event& e)
 			}
 			else if (ke.get_modifiers() == cgv::gui::EM_CTRL + cgv::gui::EM_SHIFT) {
 				if (ke.get_key() >= '0' && ke.get_key() < '5') {
+<<<<<<< HEAD
 					int ci = (ke.get_key() - '0') % 4;
+=======
+					int ci = ke.get_key() - '0';
+					if (ci == 4)
+						ci = 0;
+>>>>>>> remotes/origin/develop
 					if (current_vr_handle_index >= 0) {
 						vr::vr_kit_state& state = kit_states[current_vr_handle_index];
 						if (state.controller[ci].status == vr::VRS_TRACKED) {
@@ -447,7 +453,7 @@ void vr_view_interactor::after_finish(cgv::render::context& ctx)
 				// check if kit is attached and its pointer valid
 				if (kit_states[ki].hmd.status == vr::VRS_DETACHED)
 					continue;
-				vr::vr_kit* kit_ptr = get_vr_kit_from_index(ki);
+				vr::vr_kit* kit_ptr = get_vr_kit_from_index((int)ki);
 				if (!kit_ptr)
 					continue;
 
@@ -818,7 +824,7 @@ void vr_view_interactor::draw_vr_kits(cgv::render::context& ctx)
 		}
 	}
 	for (auto& dp : driver_set) {
-		auto ss = dp->get_reference_states();
+		auto ss = dp->get_tracking_reference_states();
 		for (const auto& s : ss) {
 			if (s.second.status == vr::VRS_TRACKED) {
 				if ((base_vis_type & VVT_SPHERE) != 0)
@@ -983,7 +989,7 @@ void vr_view_interactor::create_gui()
 		add_member_control(this, "pose_query", pose_query, "value_slider", "min=0;max=2;ticks=true");
 
 		add_member_control(this, "debug_vr_events", debug_vr_events, "check");
-		add_gui("event_flags", event_flags, "bit_field_control", "enums='dev=1,sta=2,key=4,thr=8,stk=16,skk=32,pos=64';gui_type='toggle';options='w=30';align=''");
+		add_gui("event_flags", event_flags, "bit_field_control", "enums='dev=1,sta=2,key=4,1ax=8,2ax=16,1_k=32,2_k=64,pos=128';gui_type='toggle';options='w=30';align=''");
 		align("\n\b");
 		end_tree_node(event_flags);
 	}
@@ -999,6 +1005,7 @@ bool vr_view_interactor::self_reflect(cgv::reflect::reflection_handler& srh)
 		srh.reflect_member("hmd_vis_type", (int&)hmd_vis_type) &&
 		srh.reflect_member("controller_vis_type", (int&)controller_vis_type) &&
 		srh.reflect_member("tracker_vis_type", (int&)tracker_vis_type) &&
+		srh.reflect_member("base_vis_type", (int&)base_vis_type) &&
 		srh.reflect_member("hmd_scale", mesh_scales[0]) &&
 		srh.reflect_member("controller_scale", mesh_scales[1]) &&
 		srh.reflect_member("tracker_scale", mesh_scales[2]) &&
