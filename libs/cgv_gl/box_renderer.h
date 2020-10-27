@@ -21,7 +21,7 @@ namespace cgv { // @<
 		class CGV_API box_renderer : public surface_renderer
 		{
 		protected:
-			/// store whether extent array has been specified is specified
+			/// store whether extent array has been specified
 			bool has_extents;
 			/// whether array with per box translations has been specified
 			bool has_translations;
