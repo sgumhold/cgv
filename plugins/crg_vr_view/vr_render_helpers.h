@@ -47,5 +47,6 @@ namespace vr {
 	/// return a pointer to a mesh info structure for the given mesh type (read and construct if necessary); returns 0 pointer if mesh is not available
 	extern CGV_API cgv::render::mesh_render_info* get_vrmesh_render_info(cgv::render::context& ctx, VRMeshId id);
 }
+///@}
 
 #include <cgv/config/lib_end.h>

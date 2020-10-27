@@ -3,21 +3,31 @@
 #include <cgv/math/fmat.h>
 
 namespace vr {
-
-	/// 
-	vr_trackable_state& vr_kit::ref_reference_state(const std::string& serial_nummer) 
+	/// initialize to defaults (dead_zone=precision=0;threshold=0.5)
+	controller_input_config::controller_input_config()
 	{
-		return driver->ref_reference_state(serial_nummer); 
+		dead_zone = precision = 0.0f;
+		threshold = 0.5f;
+	}
+	/// 
+	vr_trackable_state& vr_kit::ref_tracking_reference_state(const std::string& serial_nummer) 
+	{
+		return driver->ref_tracking_reference_state(serial_nummer); 
+	}
+	/// write access to tracking system info
+	vr_tracking_system_info& vr_kit::ref_tracking_system_info()
+	{
+		return driver->tracking_system_info;
 	}
 	/// remove all reference states
-	void vr_kit::clear_reference_states() 
+	void vr_kit::clear_tracking_reference_states() 
 	{
-		driver->clear_reference_states(); 
+		driver->clear_tracking_reference_states(); 
 	}
 	/// mark all reference states as untracked
-	void vr_kit::mark_references_as_untracked() 
+	void vr_kit::mark_tracking_references_as_untracked() 
 	{
-		driver->mark_references_as_untracked(); 
+		driver->mark_tracking_references_as_untracked(); 
 	}
 	/// destruct camera
 	void vr_kit::destruct_camera()
@@ -26,38 +36,25 @@ namespace vr {
 		camera = nullptr;
 	}
 	/// construct
-	vr_kit::vr_kit(vr_driver* _driver, void* _handle, const std::string& _name, bool _ffb_support, bool _wireless) :
-		driver(_driver), device_handle(_handle), name(_name), camera(nullptr), force_feedback_support(_ffb_support), wireless(_wireless) {}
+	vr_kit::vr_kit(vr_driver* _driver, void* _handle, const std::string& _name) :
+		driver(_driver), handle(_handle), name(_name), camera(nullptr) {}
 	/// declare virtual destructor
 	vr_kit::~vr_kit()
 	{
-		if (has_camera()) {
+		if (camera)
 			camera->stop();
-		}
 	}
 	/// return driver
 	const vr_driver* vr_kit::get_driver() const { return driver; }
 	/// return device handle
-	void* vr_kit::get_device_handle() const { return device_handle; }
+	void* vr_kit::get_handle() const { return handle; }
 	/// return camera
 	vr_camera * vr_kit::get_camera() const { return camera; }
 	/// return name of vr_kit
 	const std::string& vr_kit::get_name() const { return name; }
 	/// return last error of vr_kit
 	const std::string& vr_kit::get_last_error() const { return last_error; }
-	/// return whether vr_kit is wireless
-	bool vr_kit::is_wireless() const { return wireless; }
-	/// return whether controllers support force feedback
-	bool vr_kit::has_force_feedback() const { return force_feedback_support; }
-	/// return whether device has camera
-	/// only may return true after camera was initialized
-    bool vr_kit::has_camera() const { 
-		if(!camera) return false;
-        else {
-			auto s = camera->get_state();
-			return (s == CameraState::CS_INITIALIZED || s == CameraState::CS_STARTED);
-		}
-    }
+
 	float dot(int n, const float* a, const float* b, int step_a = 1, int step_b=1)  
 	{
 		float res = 0;
@@ -117,6 +114,20 @@ namespace vr {
 			if (state.controller[i].status == VRS_TRACKED)
 				dp->calibrate_pose(state.controller[i].pose);
 		return res;
+	}
+	/// return information on the currently attached devices
+	const vr_kit_info& vr_kit::get_device_info() const
+	{
+		return info;
+	}
+	void vr_kit::set_controller_input_config(int ci, int ii, const controller_input_config& cic)
+	{
+		input_configs[ci][ii] = cic;
+	}
+	/// query the configuration of a controller input 
+	const controller_input_config& vr_kit::get_controller_input_config(int ci, int ii) const
+	{
+		return input_configs[ci][ii];
 	}
 
 }

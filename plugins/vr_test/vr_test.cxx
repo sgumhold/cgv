@@ -103,6 +103,27 @@ void vr_test::compute_intersections(const vec3& origin, const vec3& direction, i
 	}
 }
 
+/// keep track of status changes
+void vr_test::on_status_change(void* kit_handle, int ci, vr::VRStatus old_status, vr::VRStatus new_status)
+{
+	// ignore all but left controller changes
+	if (ci != 0)
+		return;
+	vr::vr_kit* kit_ptr = vr::get_vr_kit(kit_handle);
+	// check for attaching of controller
+	if (old_status == vr::VRS_DETACHED) {
+		left_inp_cfg.resize(kit_ptr->get_device_info().controller[0].nr_inputs);
+		for (int ii = 0; ii < (int)left_inp_cfg.size(); ++ii)
+			left_inp_cfg[ii] = kit_ptr->get_controller_input_config(0, ii);
+		post_recreate_gui();
+	}
+	// check for attaching of controller
+	if (new_status == vr::VRS_DETACHED) {
+		left_inp_cfg.clear();
+		post_recreate_gui();
+	}
+}
+
 /// register on device change events
 void vr_test::on_device_change(void* kit_handle, bool attach)
 {
@@ -112,8 +133,10 @@ void vr_test::on_device_change(void* kit_handle, bool attach)
 			init_cameras(kit_ptr);
 			if (kit_ptr) {
 				last_kit_handle = kit_handle;
-				left_deadzone_and_precision = kit_ptr->get_controller_throttles_and_sticks_deadzone_and_precision(0);
-				cgv::gui::ref_vr_server().provide_controller_throttles_and_sticks_deadzone_and_precision(kit_handle, 0, &left_deadzone_and_precision);
+				// copy left controller input configurations from new device in order to make it adjustable
+				left_inp_cfg.resize(kit_ptr->get_device_info().controller[0].nr_inputs);
+				for (int ii = 0; ii < (int)left_inp_cfg.size(); ++ii)
+					left_inp_cfg[ii] = kit_ptr->get_controller_input_config(0, ii);
 				post_recreate_gui();
 			}
 		}
@@ -131,14 +154,14 @@ void vr_test::construct_table(float tw, float td, float th, float tW) {
 	// construct table
 	rgb table_clr(0.3f, 0.2f, 0.0f);
 	boxes.push_back(box3(
-		vec3(-0.5f*tw - 2 * tW, th - tW, -0.5f*td - 2 * tW),
-		vec3(0.5f*tw + 2 * tW, th, 0.5f*td + 2 * tW)));
+		vec3(-0.5f*tw, th - tW, -0.5f*td),
+		vec3(0.5f*tw, th, 0.5f*td)));
 	box_colors.push_back(table_clr);
 
-	boxes.push_back(box3(vec3(-0.5f*tw, 0, -0.5f*td), vec3(-0.5f*tw - tW, th - tW, -0.5f*td - tW)));
-	boxes.push_back(box3(vec3(-0.5f*tw, 0, 0.5f*td), vec3(-0.5f*tw - tW, th - tW, 0.5f*td + tW)));
-	boxes.push_back(box3(vec3(0.5f*tw, 0, -0.5f*td), vec3(0.5f*tw + tW, th - tW, -0.5f*td - tW)));
-	boxes.push_back(box3(vec3(0.5f*tw, 0, 0.5f*td), vec3(0.5f*tw + tW, th - tW, 0.5f*td + tW)));
+	boxes.push_back(box3(vec3(-0.5f*tw + 2*tW, 0, -0.5f*td+2*tW), vec3(-0.5f*tw+tW, th - tW, -0.5f*td + tW)));
+	boxes.push_back(box3(vec3(-0.5f*tw + 2*tW, 0, 0.5f*td-2*tW), vec3(-0.5f*tw + tW, th - tW, 0.5f*td - tW)));
+	boxes.push_back(box3(vec3(0.5f*tw-2*tW, 0, -0.5f*td+tW), vec3(0.5f*tw - tW, th - tW, -0.5f*td +2* tW)));
+	boxes.push_back(box3(vec3(0.5f*tw-2*tW, 0, 0.5f*td-2*tW), vec3(0.5f*tw - tW, th - tW, 0.5f*td - tW)));
 	box_colors.push_back(table_clr);
 	box_colors.push_back(table_clr);
 	box_colors.push_back(table_clr);
@@ -230,7 +253,11 @@ void vr_test::build_scene(float w, float d, float h, float W, float tw, float td
 	construct_table(tw, td, th, tW);
 	construct_environment(0.3f, 3 * w, 3 * d, w, d, h);
 	//construct_environment(0.4f, 0.5f, 1u, w, d, h);
+<<<<<<< HEAD
 	construct_movable_boxes(tw, td, th, tW, 20);
+=======
+	construct_movable_boxes(tw, td, th, tW, 50);
+>>>>>>> remotes/origin/develop
 }
 
 vr_test::vr_test() 
@@ -252,11 +279,12 @@ vr_test::vr_test()
 	use_matrix = true;
 	show_seethrough = false;
 	set_name("vr_test");
-	build_scene(5, 7, 3, 0.2f, 1.6f, 0.8f, 0.7f, 0.03f);
+	build_scene(5, 7, 3, 0.2f, 0.8f, 0.8f, 0.72f, 0.03f);
 	vr_view_ptr = 0;
 	ray_length = 2;
 	last_kit_handle = 0;
 	connect(cgv::gui::ref_vr_server().on_device_change, this, &vr_test::on_device_change);
+	connect(cgv::gui::ref_vr_server().on_status_change, this, &vr_test::on_status_change);
 
 	mesh_scale = 0.0005f;
 	mesh_location = dvec3(0, 0.85f, 0);
@@ -303,6 +331,13 @@ void vr_test::on_set(void* member_ptr)
 		member_ptr == &label_size || member_ptr == &label_text) {
 		label_outofdate = true;
 	}
+
+	vr::vr_kit* kit_ptr = vr::get_vr_kit(last_kit_handle);
+	if (kit_ptr) {
+		for (int ii = 0; ii < (int)left_inp_cfg.size(); ++ii)
+			if (member_ptr >= &left_inp_cfg[ii] && member_ptr < &left_inp_cfg[ii] + 1)
+				kit_ptr->set_controller_input_config(0, ii, left_inp_cfg[ii]);
+	}
 	update_member(member_ptr);
 	post_redraw();
 }
@@ -319,11 +354,11 @@ bool vr_test::handle(cgv::gui::event& e)
 		cgv::gui::vr_key_event& vrke = static_cast<cgv::gui::vr_key_event&>(e);
 		if (vrke.get_action() != cgv::gui::KA_RELEASE) {
 			switch (vrke.get_key()) {
-			case vr::VR_LEFT_BUTTON0:
-				std::cout << "button 0 of left controller pressed" << std::endl;
+			case vr::VR_GRIP:
+				std::cout << "grip button " << (vrke.get_controller_index() == 0 ? "left":"right") << " controller pressed" << std::endl;
 				return true;
-			case vr::VR_RIGHT_STICK_RIGHT:
-				std::cout << "touch pad of right controller pressed at right direction" << std::endl;
+			case vr::VR_DPAD_RIGHT:
+				std::cout << "touch pad of " << (vrke.get_controller_index() == 0 ? "left" : "right") << " controller pressed at right direction" << std::endl;
 				return true;
 			}
 		}
@@ -445,11 +480,11 @@ bool vr_test::init(cgv::render::context& ctx)
 		cgv::gui::message("could not build seethrough program");
 	
 	cgv::media::mesh::simple_mesh<> M;
-#ifdef _DEBUG
+//#ifdef 1
 	if (M.read("D:/data/surface/meshes/obj/Max-Planck_lowres.obj")) {
-#else
-	if (M.read("D:/data/surface/meshes/obj/Max-Planck_highres.obj")) {
-#endif
+//#else
+//	if (M.read("D:/data/surface/meshes/obj/Max-Planck_highres.obj")) {
+//#endif
 		MI.construct(ctx, M);
 		MI.bind(ctx, ctx.ref_surface_shader_program(true), true);
 	}
@@ -465,10 +500,13 @@ bool vr_test::init(cgv::render::context& ctx)
 			// configure vr event processing
 			vr_view_ptr->set_event_type_flags(
 				cgv::gui::VREventTypeFlags(
+					cgv::gui::VRE_DEVICE +
+					cgv::gui::VRE_STATUS +
 					cgv::gui::VRE_KEY +
-					cgv::gui::VRE_THROTTLE +
-					cgv::gui::VRE_STICK +
-					cgv::gui::VRE_STICK_KEY +
+					cgv::gui::VRE_ONE_AXIS_GENERATES_KEY +
+					cgv::gui::VRE_ONE_AXIS +
+					cgv::gui::VRE_TWO_AXES +
+					cgv::gui::VRE_TWO_AXES_GENERATES_DPAD +
 					cgv::gui::VRE_POSE
 				));
 			vr_view_ptr->enable_vr_event_debugging(false);
@@ -896,22 +934,22 @@ void vr_test::create_gui() {
 			add_member_control(this, "background_extent", background_extent, "value_slider", "min=0.01;max=10;log=true;ticks=true");
 		}
 		vr::vr_kit* kit_ptr = vr::get_vr_kit(last_kit_handle);
-		const std::vector<std::pair<int, int> >* t_and_s_ptr = 0;
-		if(kit_ptr)
-			t_and_s_ptr = &kit_ptr->get_controller_throttles_and_sticks(0);
-		add_decorator("deadzone and precisions", "heading", "level=3");
-		int ti = 0;
-		int si = 0;
-		for(unsigned i = 0; i < left_deadzone_and_precision.size(); ++i) {
-			std::string prefix = std::string("unknown[") + cgv::utils::to_string(i) + "]";
-			if(t_and_s_ptr) {
-				if(t_and_s_ptr->at(i).second == -1)
-					prefix = std::string("throttle[") + cgv::utils::to_string(ti++) + "]";
-				else
-					prefix = std::string("stick[") + cgv::utils::to_string(si++) + "]";
+		if (kit_ptr) {
+			add_decorator("controller input configs", "heading", "level=3");
+			int ti = 0, si = 0, pi = 0;
+			const auto& CI = kit_ptr->get_device_info().controller[0];
+			for (int ii = 0; ii < (int)left_inp_cfg.size(); ++ii) {
+				std::string prefix;
+				switch (CI.input_type[ii]) {
+				case vr::VRI_TRIGGER: prefix = std::string("trigger[") + cgv::utils::to_string(ti++) + "]"; break;
+				case vr::VRI_PAD:     prefix = std::string("pad[") + cgv::utils::to_string(pi++) + "]"; break;
+				case vr::VRI_STICK:   prefix = std::string("strick[") + cgv::utils::to_string(si++) + "]"; break;
+				default:              prefix = std::string("unknown[") + cgv::utils::to_string(ii) + "]";
+				}
+				add_member_control(this, prefix + ".dead_zone", left_inp_cfg[ii].dead_zone, "value_slider", "min=0;max=1;ticks=true;log=true");
+				add_member_control(this, prefix + ".precision", left_inp_cfg[ii].precision, "value_slider", "min=0;max=1;ticks=true;log=true");
+				add_member_control(this, prefix + ".threshold", left_inp_cfg[ii].threshold, "value_slider", "min=0;max=1;ticks=true");
 			}
-			add_member_control(this, prefix + ".deadzone", left_deadzone_and_precision[i].first, "value_slider", "min=0;max=1;ticks=true;log=true");
-			add_member_control(this, prefix + ".precision", left_deadzone_and_precision[i].second, "value_slider", "min=0;max=1;ticks=true;log=true");
 		}
 	}
 	if (begin_tree_node("movable boxes", 1.f)) {

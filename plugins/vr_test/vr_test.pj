@@ -12,6 +12,11 @@ addProjectDeps=["cgv_utils", "cgv_type", "cgv_data", "cgv_base", "cgv_math",
 				"cg_vr", "vr_emulator", "openvr_driver"];
 addIncDirs=[INPUT_DIR, CGV_DIR."/libs", CGV_DIR."/test"];
 addCommandLineArguments=[
+<<<<<<< HEAD
 	after("type(shader_config):shader_path='".INPUT_DIR.";".CGV_DIR."/libs/cgv_gl/glsl'","cg_fltk"),	'config:"'.INPUT_DIR.'/config.def"'
+=======
+	after("type(shader_config):shader_path='".INPUT_DIR.";".CGV_DIR."/plugins/crg_vr_view;".CGV_DIR."/libs/cgv_gl/glsl'","cg_fltk"),
+	'config:"'.INPUT_DIR.'/config.def"'
+>>>>>>> remotes/origin/develop
 ];
 addSharedDefines=["VR_TEST_EXPORTS"];

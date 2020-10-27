@@ -73,9 +73,7 @@ namespace vr {
 		bool fbos_initialized() const;
 		/// destruct render targets and framebuffer objects in current opengl context
 		void destruct_fbos();
-		/// use implementation of parent kit
-		const std::vector<std::pair<int, int> >& get_controller_throttles_and_sticks(int controller_index) const;
-		const std::vector<std::pair<float, float> >& get_controller_throttles_and_sticks_deadzone_and_precision(int controller_index) const;
+		///
 		bool set_vibration(unsigned controller_index, float low_frequency_strength, float high_frequency_strength);
 		/// access to 3x4 matrix in column major format for transformation from eye (0..left, 1..right) to head coordinates
 		void put_eye_to_head_matrix(int eye, float* pose_matrix) const;

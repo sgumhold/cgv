@@ -23,9 +23,8 @@ namespace vr {
 		parent_kit = replace_by_index(vr_kit_parent_index, this);
 		camera = parent_kit->get_camera();
 		driver = const_cast<vr::vr_driver*>(parent_kit->get_driver());
-		device_handle = parent_kit->get_device_handle();
-		force_feedback_support = parent_kit->has_force_feedback();
-		wireless = parent_kit->is_wireless();
+		handle = parent_kit->get_handle();
+		info = parent_kit->get_device_info();
 		return true;
 	}
 
@@ -145,7 +144,7 @@ namespace vr {
 	}
 	/// construct vr wall kit by attaching to another vr kit
 	vr_wall_kit::vr_wall_kit(int vr_kit_parent_index, unsigned _width, unsigned _height, const std::string& _name) :
-		gl_vr_display(width, height, 0, 0, _name, false, false)
+		gl_vr_display(width, height, 0, 0, _name)
 	{
 		wall_context = false;
 		in_calibration = false;
@@ -164,15 +163,6 @@ namespace vr {
 		hmd_trackable_index = -1;
 	}
 
-	/// use implementation of parent kit
-	const std::vector<std::pair<int, int> >& vr_wall_kit::get_controller_throttles_and_sticks(int controller_index) const
-	{
-		return parent_kit->get_controller_throttles_and_sticks(controller_index); 
-	}
-	const std::vector<std::pair<float, float> >& vr_wall_kit::get_controller_throttles_and_sticks_deadzone_and_precision(int controller_index) const
-	{
-		return parent_kit->get_controller_throttles_and_sticks_deadzone_and_precision(controller_index); 
-	}
 	bool vr_wall_kit::set_vibration(unsigned controller_index, float low_frequency_strength, float high_frequency_strength)
 	{
 		return parent_kit->set_vibration(controller_index, low_frequency_strength, high_frequency_strength);

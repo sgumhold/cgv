@@ -1,0 +1,73 @@
+// the vr_emulator plugin can emulate several vr_kits at the same time
+// vr_kit specific configurations are set on a current vr kit
+
+
+// set whether vr_emulator driver is installed (defaults to true)
+type(vr_emulator):installed=true
+
+
+/******** vr kit selection and creation ****************/
+
+// select current vr kit by index. If kit not exists, create it
+type(vr_emulator):current_kit_index=0
+
+
+/******** vr kit creation parameters ****************/
+
+// initial body direction as rotation angle inside the x-z-plane in radians with 0.0 corresponding to z-axis
+type(vr_emulator):create_body_direction=0.0
+// initial 3d body ground position as 3d vector
+type(vr_emulator):create_body_position='2.0 0 -1'
+// body height in meters
+type(vr_emulator):body_height=1.90
+// resolution of virtual eye display of single eye of to be created vr kit
+type(vr_emulator):screen_width=640
+type(vr_emulator):screen_height=480
+// set whether to be created vr kit is wireless
+type(vr_emulator):wireless=true
+// set whether to be created vr kit has force feedback support
+type(vr_emulator):ffb_support=false
+
+
+/******** configuration of current vr kit ****************/
+
+// current body direction as rotation angle inside the x-z-plane in radians with 0.0 corresponding to z-axis
+type(vr_emulator):body_direction=0.0
+// body height
+type(vr_emulator):body_height=1.80
+// current hip bending parameter in range [-1,1] with -1 ... bend down, 1 ... bend up
+type(vr_emulator):hip_parameter", kit_ptr->hip_parameter) &&
+// current head yaw parameter in range [-1,1] with -1 ... look left, 1 ... look right
+type(vr_emulator):yaw_parameter"=0
+// field of view in y direction in degrees
+type(vr_emulator):fovy=90
+// current 3d body ground position
+type(vr_emulator):body_position='0 0 0'
+// current position of left hand relativ arm length with origin in left shoulder 
+// (y in up direction, x to the right and z in backward direction)
+type(vr_emulator):left_hand_position='0 -0.5 -0.2'
+// current position of right hand relativ arm length with origin in right shoulder 
+type(vr_emulator):right_hand_position='0 -0.5 -0.2'
+// left hand orientation as quaternion with scalar part in w component
+type(vr_emulator):left_hand_orientation='0 0 0 1'
+// right hand orientation as quaternion with scalar part in w component
+type(vr_emulator):right_hand_orientation='0 0 0 1'
+
+/******** configuration of trackers ****************/
+
+// whether tracker 1 is enabled
+type(vr_emulator):tracker_1_enabled=false
+// whether tracker 2 is enabled
+type(vr_emulator):tracker_2_enabled=false
+// coordinate system to which tracker 1 is attached (0 ... world, 1 ... hmd, 2 ... left hand, 3 ... right hand)
+type(vr_emulator):tracker_1_attachment", (int&)kit_ptr->tracker_attachments[0]) &&
+// coordinate system to which tracker 2 is attached (0 ... world, 1 ... hmd, 2 ... left hand, 3 ... right hand)
+type(vr_emulator):tracker_2_attachment", (int&)kit_ptr->tracker_attachments[1]);
+// tracker 1 position in world coordinates in meters
+type(vr_emulator):tracker_1_position='0 0 0'
+// tracker 2 position in world coordinates in meters
+type(vr_emulator):tracker_2_position='1 0 0 '
+// orientation of tracker 1 as quaternion
+type(vr_emulator):tracker_1_orientation='0 0 0 1'
+// orientation of tracker 2 as quaternion
+type(vr_emulator):tracker_2_orientation='0 0 0 1'

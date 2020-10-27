@@ -1,7 +1,10 @@
 #version 150 
 
+// use cgv/render/context/CullingMode enum (0 .. off, 1 .. backface, 2 .. frontface)
 uniform int culling_mode = 0;
+// use cgv/render/context/MaterialSide enum (0 .. none, 1 .. front, 2 .. back, 3 .. front and back)
 uniform int map_color_to_material = 0;
+// use cgv/render/context/IlluminationMode enum (0 .. off, 1 .. one sided, 2 .. two sided)
 uniform int illumination_mode = 2;
 
 /*

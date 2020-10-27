@@ -1,14 +1,48 @@
 #include <iostream>
-
+#include <string>
 #include "screen_grabber.h"
 
 // https://stackoverflow.com/questions/26233848/c-read-pixels-with-getdibits
 
 namespace trajectory {
 namespace util {
+	
+	BOOL CALLBACK EnumWindowsProc(_In_ HWND hWnd, _In_ LPARAM lParam)
+	{
+		char title_buffer[1024];
+		int length = GetWindowTextA(hWnd, title_buffer, 1024);
+		if (length > 0) {
+			std::string title(title_buffer, length);
+
+			WINDOWINFO wi;
+			if (GetWindowInfo(hWnd, &wi)) {
+				const RECT& r = wi.rcWindow;
+				if (r.bottom - r.top > 0 && r.right - r.left > 0) {
+					std::cout << "<" << title << ">";
+					if (wi.dwWindowStatus != 0)
+						std::cout << "*";
+					std::cout << " window:" << r.left << "," << r.top << ":" << r.right - r.left << "x" << r.bottom - r.top;
+					RECT& R = wi.rcClient;
+					std::cout << " client:" << R.left << "," << R.top << ":" << R.right - R.left << "x" << R.bottom - R.top;
+					HDC dc = GetDC(hWnd);
+					if (dc) {
+						std::cout << " got dc";
+					}
+					std::cout << std::endl;
+
+				}
+			}
+		}
+		return TRUE;
+	}
+	void enum_windows()
+	{
+		EnumWindows(&EnumWindowsProc, 0);
+	}
 
 	screen_grabber::screen_grabber()
 	{
+		enum_windows();
 		pixel_mutex = std::make_shared<std::mutex>();
 
 		screen_width = GetSystemMetrics(SM_CXSCREEN);
@@ -75,6 +109,8 @@ namespace util {
 				// copy data from screen to bitmap
 				success = BitBlt(device_context_capture, 0, 0, screen_width, screen_height,
 								 device_context_global, 0, 0, SRCCOPY /* | CAPTUREBLT*/);
+				static int cnt = 0;
+				std::cout << ++cnt << std::endl;
 			SelectObject(device_context_capture, h_old);
 
 			if (success) {

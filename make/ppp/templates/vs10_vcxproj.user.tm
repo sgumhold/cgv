@@ -4,7 +4,7 @@
   @define(:>pj =& projects[project_name])
   @if(pj::is_shared[ci] && (pj::application_name !~ UNDEF))@{@//
   <PropertyGroup Condition=@('"'."'")$(Configuration)|$(Platform)@("'=='")@(config_name[ci])|@(vs_platform)@("'".'"')>
-    <LocalDebuggerCommand>@(CGV_INSTALL.'\\bin\\'.pj::application_name.pj::output_post[ci].'.exe')</LocalDebuggerCommand>
+    <LocalDebuggerCommand>@(CGV_INSTALL.'\\'.(pj::output_dir[ci]*clean_path).'\\'.pj::application_name.pj::output_post[ci].'.exe')</LocalDebuggerCommand>
   </PropertyGroup>
 @}
   @define(command_line_args=get_command_line_args(<:pj =& pj, <:ci = ci)*'|"|&quot;|')

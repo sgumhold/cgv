@@ -109,6 +109,19 @@ class CGV_API vr_view_interactor : public stereo_view_interactor, public vr::vr_
 	void calibrate_driver();
 	/// path to calibration file
 	std::string calibration_file_path;
+public:
+	void set_tracking_rotation(float tr) {
+		tracking_rotation = tr;
+	}
+	float get_tracking_rotation() {
+		return tracking_rotation;
+	}
+	void set_tracking_origin(vec3 ori) {
+		tracking_origin = ori;
+	}
+	vec3 get_tracking_origin() {
+		return tracking_origin;
+	}
 	//@}
 private:
 	mat34 start_pose;
@@ -173,9 +186,9 @@ protected:
 	//
 	void configure_kits();
 	///
-	void on_status_change(void* device_handle, int controller_index, vr::VRStatus old_status, vr::VRStatus new_status);
+	void on_status_change(void* handle, int controller_index, vr::VRStatus old_status, vr::VRStatus new_status);
 	///
-	void on_device_change(void* device_handle, bool attach);
+	void on_device_change(void* handle, bool attach);
 	/// helper to visualize pose with colored spheres
 	void add_trackable_spheres(const float* pose, int i, std::vector<vec4>& spheres, std::vector<rgb>& sphere_colors);
 public:

@@ -19,77 +19,27 @@ using namespace cgv::gui;
 #include <fltk/Scrollbar.h>
 #include <fltk/PackedGroup.h>
 #include <fltk/Button.h>
+#include <fltk/ScrollGroup.h>
 #ifdef WIN32
 #pragma warning (default:4311)
 #endif
 
 namespace fltk {
 
-class FL_API ScrollGroup : public Group {
-protected:
-  int xposition_, yposition_;
-  int layoutdx, layoutdy;
-  int scrolldx, scrolldy;
-  bool enable_drag_scroll_;
-  bool drag_scrolling_;
-  bool delegate_alt_click_;
-  int drag_x_, drag_y_, pos_x_, pos_y_;
-  int max_x_scroll_, max_y_scroll_;
-  static void hscrollbar_cb(Widget*, void*);
-  static void scrollbar_cb(Widget*, void*);
-  static void draw_clip(void*,const Rectangle&);
-
-protected:
-
-  void draw();
-
-public:
-
-  void bbox(Rectangle&);
-  Scrollbar scrollbar;
-  Scrollbar hscrollbar;
-
-  void enable_drag_scroll( bool enable ) { enable_drag_scroll_ = true; }
-
-  virtual int handle(int);
-  virtual void layout();
-
-  ScrollGroup(int x,int y,int w,int h, const char*l=0, bool begin=false);
-
-  enum { // values for type()
-    HORIZONTAL = 1,
-    VERTICAL = 2,
-    BOTH = 3,
-    ALWAYS_ON = 4,
-    HORIZONTAL_ALWAYS = 5,
-    VERTICAL_ALWAYS = 6,
-    BOTH_ALWAYS = 7
-  };
-
-  int xposition() const {return xposition_;}
-  int yposition() const {return yposition_;}
-  void scrollTo(int, int);
-};
-
-
 class MyScrollGroup : public ScrollGroup
 {
 	int last_x;
 public:
-	int offsetx, offsety;
 	MyScrollGroup(int x,int y,int w,int h, const char*l=0, bool begin=false) : ScrollGroup(x,y,w,h,l,begin)
 	{
-		offsetx = offsety = 0;
 		hscrollbar.pagesize(20);
 		scrollbar.pagesize(200);
 		scrollbar.linesize(14);
 	}
 	void drag(int dx)
 	{
-		offsetx += dx;
-		scrollTo(xposition()-dx, yposition());
+ 		scrollTo(xposition()-dx, yposition());
 	}
-
 	bool inside()
 	{
 		if (children() == 0)
@@ -132,18 +82,9 @@ public:
 		}
 		return 0;
 	}
-	/*	
-	void layout() 
-	{
-		fltk::ScrollGroup::layout();
-		std::cout << "yscroll_layout = " << yposition() << std::endl;
-		return;
-	}
-	*/
 };
 
 }
-
 
 
 fltk_align_group::fltk_align_group(int x, int y, int w, int h, const std::string& _name) : cgv::gui::gui_group(_name)
@@ -157,7 +98,6 @@ fltk_align_group::fltk_align_group(int x, int y, int w, int h, const std::string
 /// delete fltk group realization
 fltk_align_group::~fltk_align_group()
 {
-//	delete inner_group;
 	delete scroll_group;
 }
 
@@ -235,7 +175,6 @@ void* fltk_align_group::get_user_data() const
 	return static_cast<fltk::Widget*>(scroll_group);
 }
 
-
 /// put default sizes into dimension fields and set inner_group to be active
 void fltk_align_group::prepare_new_element(cgv::gui::gui_group_ptr ggp, int& x, int& y, int& w, int& h)
 {
@@ -244,7 +183,6 @@ void fltk_align_group::prepare_new_element(cgv::gui::gui_group_ptr ggp, int& x, 
 	w = default_width;
 	h = default_height;
 	scroll_group->begin();
-//	inner_group->begin();
 }
 
 void fltk_align_group::parse_variable_change(const std::string& align, unsigned int& i, int& var, int default_value)

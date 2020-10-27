@@ -1,6 +1,20 @@
 #version 430
+<<<<<<< HEAD
 
 #extension GL_EXT_geometry_shader4 : enable
+=======
+#extension GL_EXT_geometry_shader4 : enable
+
+//***** begin interface of view.glsl ***********************************
+mat4 get_modelview_matrix();
+mat4 get_projection_matrix();
+mat4 get_modelview_projection_matrix();
+mat4 get_inverse_modelview_matrix();
+mat4 get_inverse_modelview_projection_matrix();
+mat3 get_normal_matrix();
+mat3 get_inverse_normal_matrix();
+//***** end interface of view.glsl ***********************************
+>>>>>>> remotes/origin/develop
 
 layout(lines) in;
 layout(triangle_strip, max_vertices = 14) out;
@@ -14,6 +28,7 @@ out flat vec4 tp2;
 out flat vec4 tp3;
 out vec4 color_start_fs;
 out vec4 color_end_fs;
+<<<<<<< HEAD
 out flat mat4 inv_modelview;
 out flat mat3 inv_normal;
 
@@ -27,6 +42,9 @@ mat3 get_normal_matrix();
 mat3 get_inverse_normal_matrix();
 //***** end interface of view.glsl ***********************************
 
+=======
+
+>>>>>>> remotes/origin/develop
 vec3 ortho_vec(vec3 v) {
 
 	return abs(v.x) > abs(v.z) ? vec3(-v.y, v.x, 0.0f) : vec3(0.0f, -v.z, v.y);
@@ -63,31 +81,33 @@ void main()
 	R[2] *= max_d;
 
 	// transform to eye space
-	mat4 PM = get_modelview_matrix() * R;
+	mat4 M = get_modelview_matrix() * R;
 	
 	// transform cone start and end position to eye space
-	start_fs = vec4((get_modelview_matrix() * vec4(start.xyz, 1.0)).xyz, start.w);
-	end_fs = vec4((get_modelview_matrix() * vec4(end.xyz, 1.0)).xyz, end.w);
+	//start_fs = vec4((get_modelview_matrix() * vec4(start.xyz, 1.0)).xyz, start.w);
+	//end_fs = vec4((get_modelview_matrix() * vec4(end.xyz, 1.0)).xyz, end.w);
+	start_fs = start;
+	end_fs = end;
 
-
-
+	color_start_fs = color_gs[0];
+	color_end_fs = color_gs[1];
 
 	/*
-	vec4 C0 = PM * vec4(-0.5, -0.5, -0.5, 1.0);
-	vec4 C1 = PM * vec4(0.5, -0.5, -0.5, 1.0);
-	vec4 C2 = PM * vec4(-0.5, 0.5, -0.5, 1.0);
-	vec4 C3 = PM * vec4(0.5, 0.5, -0.5, 1.0);
-	vec4 C4 = PM * vec4(-0.5, -0.5, 0.5, 1.0);
-	vec4 C5 = PM * vec4(0.5, -0.5, 0.5, 1.0);
-	vec4 C6 = PM * vec4(-0.5, 0.5, 0.5, 1.0);
-	vec4 C7 = PM * vec4(0.5, 0.5, 0.5, 1.0);
+	vec4 C0 = M * vec4(-0.5, -0.5, -0.5, 1.0);
+	vec4 C1 = M * vec4(0.5, -0.5, -0.5, 1.0);
+	vec4 C2 = M * vec4(-0.5, 0.5, -0.5, 1.0);
+	vec4 C3 = M * vec4(0.5, 0.5, -0.5, 1.0);
+	vec4 C4 = M * vec4(-0.5, -0.5, 0.5, 1.0);
+	vec4 C5 = M * vec4(0.5, -0.5, 0.5, 1.0);
+	vec4 C6 = M * vec4(-0.5, 0.5, 0.5, 1.0);
+	vec4 C7 = M * vec4(0.5, 0.5, 0.5, 1.0);
 	*/
 
-	// generate transformed base vector corners of box
-	vec4 C0 = PM * vec4(-0.5, -0.5, -0.5, 1.0);
-	vec4 C1 = PM * vec4(0.5, -0.5, -0.5, 1.0);
-	vec4 C2 = PM * vec4(-0.5, 0.5, -0.5, 1.0);
-	vec4 C4 = PM * vec4(-0.5, -0.5, 0.5, 1.0);
+	// generate transformed base vector corners of the box
+	vec4 C0 = M * vec4(-0.5, -0.5, -0.5, 1.0);
+	vec4 C1 = M * vec4(0.5, -0.5, -0.5, 1.0);
+	vec4 C2 = M * vec4(-0.5, 0.5, -0.5, 1.0);
+	vec4 C4 = M * vec4(-0.5, -0.5, 0.5, 1.0);
 
 	// calculate remaining corners
 	vec4 D20 = C2 - C0;
@@ -97,65 +117,62 @@ void main()
 	vec4 C6 = C4 + D20;
 	vec4 C7 = C5 + D20;
 	
-	color_start_fs = color_gs[0];
-	color_end_fs = color_gs[1];
-	inv_modelview = get_inverse_modelview_matrix();
-	inv_normal = get_inverse_normal_matrix();
+	mat4 PM = get_projection_matrix();
 
 	position = C6.xyz;
-	gl_Position = get_projection_matrix() * C6;
+	gl_Position = PM * C6;
 	EmitVertex();
 
 	position = C7.xyz;
-	gl_Position = get_projection_matrix() * C7;
+	gl_Position = PM * C7;
 	EmitVertex();
 
 	position = C4.xyz;
-	gl_Position = get_projection_matrix() * C4;
+	gl_Position = PM * C4;
 	EmitVertex();
 
 	position = C5.xyz;
-	gl_Position = get_projection_matrix() * C5;
+	gl_Position = PM * C5;
 	EmitVertex();
 
 	position = C1.xyz;
-	gl_Position = get_projection_matrix() * C1;
+	gl_Position = PM * C1;
 	EmitVertex();
 
 	position = C7.xyz;
-	gl_Position = get_projection_matrix() * C7;
+	gl_Position = PM * C7;
 	EmitVertex();
 	
 	position = C3.xyz;
-	gl_Position = get_projection_matrix() * C3;
+	gl_Position = PM * C3;
 	EmitVertex();
 	
 	position = C6.xyz;
-	gl_Position = get_projection_matrix() * C6;
+	gl_Position = PM * C6;
 	EmitVertex();
 	
 	position = C2.xyz;
-	gl_Position = get_projection_matrix() * C2;
+	gl_Position = PM * C2;
 	EmitVertex();
 	
 	position = C4.xyz;
-	gl_Position = get_projection_matrix() * C4;
+	gl_Position = PM * C4;
 	EmitVertex();
 	
 	position = C0.xyz;
-	gl_Position = get_projection_matrix() * C0;
+	gl_Position = PM * C0;
 	EmitVertex();
 	
 	position = C1.xyz;
-	gl_Position = get_projection_matrix() * C1;
+	gl_Position = PM * C1;
 	EmitVertex();
 	
 	position = C2.xyz;
-	gl_Position = get_projection_matrix() * C2;
+	gl_Position = PM * C2;
 	EmitVertex();
 	
 	position = C3.xyz;
-	gl_Position = get_projection_matrix() * C3;
+	gl_Position = PM * C3;
 	EmitVertex();
 
 	EndPrimitive();

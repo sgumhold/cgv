@@ -15,7 +15,7 @@
 #endif
 #endif
 
-SharedLibHandle SharedLib_Load( const char *pchPath )
+SharedLibHandle SharedLib_Load(const char* pchPath)
 {
 #ifdef _WIN32
 #ifdef UNICODE
@@ -28,7 +28,7 @@ SharedLibHandle SharedLib_Load( const char *pchPath )
 	}
 	return (SharedLibHandle)LoadLibraryEx(ws.c_str(), NULL, LOAD_WITH_ALTERED_SEARCH_PATH);
 #else
-	return (SharedLibHandle)LoadLibraryEx( pchPath, NULL, LOAD_WITH_ALTERED_SEARCH_PATH );
+	return (SharedLibHandle)LoadLibraryEx(pchPath, NULL, LOAD_WITH_ALTERED_SEARCH_PATH);
 #endif
 #elif defined(POSIX)
 	return (SharedLibHandle)dlopen(pchPath, RTLD_LOCAL|RTLD_NOW);
