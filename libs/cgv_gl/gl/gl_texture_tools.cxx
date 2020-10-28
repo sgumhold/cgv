@@ -119,13 +119,18 @@ unsigned get_gl_cube_map_target(unsigned side)
 	return gl_cube_map_target[side];
 }
 
-GLuint gl_tex_dim[] = { GL_TEXTURE_1D, GL_TEXTURE_2D, GL_TEXTURE_3D, GL_TEXTURE_CUBE_MAP_EXT };
+GLuint gl_tex_dim[] = { GL_TEXTURE_1D, GL_TEXTURE_2D, GL_TEXTURE_3D, GL_TEXTURE_1D_ARRAY, GL_TEXTURE_2D_ARRAY, GL_TEXTURE_CUBE_MAP_EXT };
 
-bool generate_mipmaps(unsigned int dim, std::string* last_error)
+bool generate_mipmaps(unsigned int dim, bool is_array, std::string* last_error)
 {
 	if (dim == 0 || dim > 3) {
 		if (last_error)
 			*last_error = "wrong dimension of texture";
+		return false;
+	}
+	if(is_array && (dim < 2 || dim > 3)) {
+		if(last_error)
+			*last_error = "wrong dimension for array texture";
 		return false;
 	}
 	if (!(ensure_glew_initialized() && GLEW_EXT_framebuffer_object)) {
@@ -133,6 +138,8 @@ bool generate_mipmaps(unsigned int dim, std::string* last_error)
 			*last_error = "automatic generation of mipmaps not supported";
 		return false;
 	}
+	if(is_array)
+		dim += 2;
 	glGenerateMipmap(gl_tex_dim[dim-1]);
 	return true;
 }
@@ -580,12 +587,16 @@ unsigned configure_src_format(const cgv::data::const_data_view& data, GLuint& sr
 	return nr_comp;
 }
 
-bool load_texture(const cgv::data::const_data_view& data, unsigned gl_tex_format, unsigned level, unsigned cube_side, const std::vector<data_view>* palettes)
+bool load_texture(const cgv::data::const_data_view& data, unsigned gl_tex_format, unsigned level, unsigned cube_side, bool is_array, const std::vector<data_view>* palettes)
 {
 	unsigned nr_dim = data.get_format()->get_nr_dimensions();
 	const unsigned char* data_ptr = data.get_ptr<unsigned char>();
 	unsigned w = data.get_format()->get_width();
 	bool cube_map = (nr_dim == 2) && (cube_side != -1);
+	bool texture_array = (nr_dim > 1) && (nr_dim < 4) && !cube_map && is_array;
+
+	if(!(ensure_glew_initialized() && GLEW_EXT_texture_array))
+		texture_array = false;
 
 	GLuint src_type, src_fmt;
 	unsigned nr_comp = configure_src_format(data, src_type, src_fmt, palettes);
@@ -593,17 +604,27 @@ bool load_texture(const cgv::data::const_data_view& data, unsigned gl_tex_format
 	bool gen_mipmap = level == -1;
 	if (gen_mipmap)
 		level = 0;
-	switch (nr_dim) {
-	case 1 : glTexImage1D(GL_TEXTURE_1D, level, gl_tex_format, w, 0, src_fmt, src_type, data_ptr); break;
-	case 2 : glTexImage2D(cube_map ? get_gl_cube_map_target(cube_side) : GL_TEXTURE_2D, level, 
-						  gl_tex_format, w, data.get_format()->get_height(), 0, src_fmt, src_type, data_ptr); break;
-	case 3 : if (ensure_glew_initialized() && GLEW_EXT_texture3D)
-				glTexImage3D(GL_TEXTURE_3D, level, gl_tex_format, w, data.get_format()->get_height(), 
-							 data.get_format()->get_depth(), 0, src_fmt, src_type, data_ptr);
-			 break;
+	switch(nr_dim) {
+	case 1:
+		glTexImage1D(GL_TEXTURE_1D, level, gl_tex_format, w, 0, src_fmt, src_type, data_ptr);
+		break;
+	case 2:
+		if(texture_array) {
+			glTexImage2D(GL_TEXTURE_1D_ARRAY, level, gl_tex_format, w, data.get_format()->get_height(), 0, src_fmt, src_type, data_ptr);
+		} else {
+			glTexImage2D(cube_map ? get_gl_cube_map_target(cube_side) : GL_TEXTURE_2D, level,
+				gl_tex_format, w, data.get_format()->get_height(), 0, src_fmt, src_type, data_ptr);
+		}
+		break;
+	case 3:
+		if(ensure_glew_initialized() && GLEW_EXT_texture3D) {
+			glTexImage3D(texture_array ? GL_TEXTURE_2D_ARRAY : GL_TEXTURE_3D, level, gl_tex_format, w, data.get_format()->get_height(),
+				data.get_format()->get_depth(), 0, src_fmt, src_type, data_ptr);
+		}
+		break;
 	}
 	if (gen_mipmap) 
-		gen_mipmap = generate_mipmaps(nr_dim);
+		gen_mipmap = generate_mipmaps(nr_dim, texture_array);
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
 	return gen_mipmap;
@@ -640,7 +661,7 @@ bool replace_texture(const cgv::data::const_data_view& data, int level, int x, i
 		break;
 	}
 	if (gen_mipmap) 
-		gen_mipmap = generate_mipmaps(nr_dim);
+		gen_mipmap = generate_mipmaps(nr_dim, false);
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 	return gen_mipmap;
 }
@@ -662,7 +683,7 @@ unsigned int create_texture(const cgv::data::const_data_view& dv, unsigned level
 
 	unsigned gl_tex_format = find_best_texture_format(*dv.get_format(), 0, palettes);
 
-	if (load_texture(dv, gl_tex_format, level, cube_side, palettes))
+	if (load_texture(dv, gl_tex_format, level, cube_side, (unsigned)-1, palettes))
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 	else
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);

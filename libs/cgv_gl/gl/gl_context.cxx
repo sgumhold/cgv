@@ -1332,12 +1332,12 @@ static const char* color_buffer_formats[] =
 
 
 GLuint get_tex_dim(TextureType tt) {
-	static GLuint tex_dim[] = { 0, GL_TEXTURE_1D, GL_TEXTURE_2D, GL_TEXTURE_3D, GL_TEXTURE_CUBE_MAP };
+	static GLuint tex_dim[] = { 0, GL_TEXTURE_1D, GL_TEXTURE_2D, GL_TEXTURE_3D, GL_TEXTURE_1D_ARRAY, GL_TEXTURE_2D_ARRAY, GL_TEXTURE_CUBE_MAP };
 	return tex_dim[tt];
 }
 
 GLuint get_tex_bind(TextureType tt) {
-	static GLuint tex_bind[] = { 0, GL_TEXTURE_BINDING_1D, GL_TEXTURE_BINDING_2D, GL_TEXTURE_BINDING_3D, GL_TEXTURE_BINDING_CUBE_MAP, GL_TEXTURE_BUFFER };
+	static GLuint tex_bind[] = { 0, GL_TEXTURE_BINDING_1D, GL_TEXTURE_BINDING_2D, GL_TEXTURE_BINDING_3D, GL_TEXTURE_BINDING_1D_ARRAY, GL_TEXTURE_BINDING_2D_ARRAY, GL_TEXTURE_BINDING_CUBE_MAP, GL_TEXTURE_BUFFER };
 	return tex_bind[tt];
 }
 
@@ -1564,16 +1564,23 @@ bool gl_context::texture_create(
 							texture_base& tb, 
 							cgv::data::data_format& target_format, 
 							const cgv::data::const_data_view& data, 
-							int level, int cube_side, const std::vector<cgv::data::data_view>* palettes) const
+							int level, int cube_side, bool is_array, const std::vector<cgv::data::data_view>* palettes) const
 {
 	// query the format to be used for the texture
 	GLuint gl_tex_format = (const GLuint&) tb.internal_format;
 
 	// define the texture type from the data format and the cube_side parameter
 	tb.tt = (TextureType)data.get_format()->get_nr_dimensions();
-	if (tb.tt == TT_2D && cube_side != -1)
-		tb.tt = TT_CUBEMAP;
-	
+	if(cube_side > -1) {
+		if(tb.tt == TT_2D)
+			tb.tt = TT_CUBEMAP;
+	} else if(is_array) {
+		unsigned n_dims = data.get_format()->get_nr_dimensions();
+		if(n_dims == 2)
+			tb.tt = TT_1D_ARRAY;
+		if(n_dims == 3)
+			tb.tt = TT_2D_ARRAY;
+	}
 	// create texture is not yet done
 	GLuint tex_id;
 	if (tb.is_created()) 
@@ -1589,7 +1596,7 @@ bool gl_context::texture_create(
 	GLuint tmp_id = texture_bind(tb.tt, tex_id);
 
 	// load data to texture
-	tb.have_mipmaps = load_texture(data, gl_tex_format, level, cube_side, palettes);
+	tb.have_mipmaps = load_texture(data, gl_tex_format, level, cube_side, is_array, palettes);
 	bool result = !check_gl_error("gl_context::texture_create", &tb);
 	// restore old texture
 	texture_unbind(tb.tt, tmp_id);
@@ -1840,7 +1847,9 @@ bool gl_context::texture_enable(
 	glGetIntegerv(get_tex_bind(tb.tt), &old_binding);
 	++old_binding;
 	glBindTexture(get_tex_dim(tb.tt), tex_id);
-	glEnable(get_tex_dim(tb.tt));
+	// glEnable is not needed for texture arrays and will throw an invalid enum error
+	if(!(tb.tt == TT_1D_ARRAY || tb.tt == TT_2D_ARRAY))
+		glEnable(get_tex_dim(tb.tt));
 	bool result = !check_gl_error("gl_context::texture_enable", &tb);
 	if (tex_unit >= 0)
 		glActiveTexture(GL_TEXTURE0);
@@ -1863,7 +1872,9 @@ bool gl_context::texture_disable(
 	--old_binding;
 	if (tex_unit >= 0)
 		glActiveTexture(GL_TEXTURE0+tex_unit);
-	glDisable(get_tex_dim(tb.tt));
+	// glDisable is not needed for texture arrays and will throw an invalid enum error
+	if(!(tb.tt == TT_1D_ARRAY || tb.tt == TT_2D_ARRAY))
+		glDisable(get_tex_dim(tb.tt));
 	bool result = !check_gl_error("gl_context::texture_disable", &tb);
 	glBindTexture(get_tex_dim(tb.tt), old_binding);
 	if (tex_unit >= 0)
