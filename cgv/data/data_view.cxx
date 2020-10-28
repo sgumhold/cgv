@@ -245,7 +245,6 @@ data_view::data_view(const data_format* _format, unsigned char* _data_ptr,
 	  owns_ptr(manage_ptr)
 {
 }
-
 /** the assignment operator takes over the data format and data pointers
     in case they are managed by the source data view */
 data_view& data_view::operator = (const data_view& dv)
@@ -347,7 +346,65 @@ void data_view::reflect_horizontally()
 	}
 	delete [] buffer;
 }
+/// combine multiple n-dimensional data views with the same format into a (n+1)-dimensional data view by appending them
+bool data_view::compose(data_view& composed_dv, const std::vector<data_view>& dvs)
+{
+	if(dvs.size() > 0) {
+		const data_format* src_df_ptr = dvs[0].format;
 
+		unsigned n_dims = src_df_ptr->get_nr_dimensions();
+		cgv::type::info::TypeId component_type = src_df_ptr->get_component_type();
+		const component_format cf = src_df_ptr->get_component_format();
+		
+		data_format* composed_df = new data_format(*src_df_ptr);
+
+		if(n_dims < 1 || n_dims > 3) {
+			std::cerr << "cannot compose data views with " << n_dims << " dimension" << std::endl;
+			return false;
+		}
+		
+		switch(n_dims) {
+		case 1: composed_df->set_height(dvs.size()); break;
+		case 2: composed_df->set_depth(dvs.size()); break;
+		case 3: composed_df->set_nr_time_steps(dvs.size()); break;
+		}
+
+		if(composed_dv.empty()) {
+			new(&composed_dv) data_view(composed_df);
+		} else {
+			std::cerr << "cannot compose into a non empty data view" << std::endl;
+			return false;
+		}
+
+		unsigned char* dst_ptr = composed_dv.get_ptr<unsigned char>();
+		unsigned wrong_format_count = 0;
+
+		unsigned bytes_per_slice = composed_df->get_nr_bytes() / dvs.size();
+
+		for(size_t i = 0; i < dvs.size(); ++i) {
+			const data_view& dv = dvs[i];
+			const data_format* df_ptr = dv.get_format();
+			unsigned char* src_ptr = dv.get_ptr<unsigned char>();
+			unsigned n_bytes = df_ptr->get_nr_bytes();
+
+			if(*src_df_ptr != *df_ptr || n_bytes != bytes_per_slice) {
+				++wrong_format_count;
+				continue;
+			}
+
+			memcpy(dst_ptr, src_ptr, n_bytes);
+			dst_ptr += n_bytes;
+		}
+		
+		if(wrong_format_count > 0) {
+			std::cerr << "skipped " << wrong_format_count << " data views with unmatching formats while composing" << std::endl;
+			return false;
+		}
+		return true;
+	}
+
+	return false;
+}
 
 template class data_view_impl<data_view,unsigned char*>;
 template class data_view_impl<const_data_view,const unsigned char*>;

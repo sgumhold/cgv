@@ -197,6 +197,8 @@ public:
 	}
 	/// reflect 2D data view at horizontal axis
 	void reflect_horizontally();
+	/// combine multiple n-dimensional data views with the same format into a (n+1)-dimensional data view by appending them
+	static bool compose(data_view& composed_dv, const std::vector<data_view>& dvs);
 };
 
 /** The const_data_view has the functionality of the data_view but 
@@ -224,7 +226,6 @@ public:
 	/// set a different data pointer
 	void set_ptr(const void* ptr);
 };
-
 
 	}
 }
