@@ -31,7 +31,7 @@ extern CGV_API unsigned map_to_gl(MaterialSide ms);
 extern CGV_API unsigned get_gl_cube_map_target(unsigned side);
 
 /// generate mipmaps for the currently bound texture, which has the given texture dimension; optionally pass a string to get information on failure
-extern CGV_API bool generate_mipmaps(unsigned int dim, bool is_array, std::string* last_error = 0);
+extern CGV_API bool generate_mipmaps(unsigned int dim, bool is_array = false, std::string* last_error = 0);
 
 /// map the given component format to the best matching available gl component format
 extern CGV_API unsigned find_best_texture_format(const cgv::data::component_format& cf, cgv::data::component_format* best_cf = 0, const std::vector<cgv::data::data_view>* palettes = 0);

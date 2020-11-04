@@ -683,7 +683,7 @@ unsigned int create_texture(const cgv::data::const_data_view& dv, unsigned level
 
 	unsigned gl_tex_format = find_best_texture_format(*dv.get_format(), 0, palettes);
 
-	if (load_texture(dv, gl_tex_format, level, cube_side, (unsigned)-1, palettes))
+	if (load_texture(dv, gl_tex_format, level, cube_side, false, palettes))
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 	else
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);

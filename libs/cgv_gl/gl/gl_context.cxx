@@ -1525,9 +1525,17 @@ bool gl_context::texture_create(texture_base& tb, cgv::data::data_format& df) co
 		glTexImage1D(GL_TEXTURE_1D, 0, 
 			gl_format, df.get_width(), 0, transfer_format, GL_UNSIGNED_BYTE, 0);
 		break;
+	case TT_1D_ARRAY :
+		glTexImage2D(GL_TEXTURE_1D_ARRAY, 0,
+			gl_format, df.get_width(), df.get_height(), 0, transfer_format, GL_UNSIGNED_BYTE, 0);
+		break;
 	case TT_2D :
 		glTexImage2D(GL_TEXTURE_2D, 0, 
 			gl_format, df.get_width(), df.get_height(), 0, transfer_format, GL_UNSIGNED_BYTE, 0);
+		break;
+	case TT_2D_ARRAY :
+		glTexImage3D(GL_TEXTURE_2D_ARRAY, 0,
+			gl_format, df.get_width(), df.get_height(), df.get_depth(), 0, transfer_format, GL_UNSIGNED_BYTE, 0);
 		break;
 	case TT_3D :
 		glTexImage3D(GL_TEXTURE_3D, 0,
@@ -1764,8 +1772,9 @@ bool gl_context::texture_generate_mipmaps(texture_base& tb, unsigned int dim) co
 {
 	GLuint tmp_id = texture_bind(tb.tt,get_gl_id(tb.handle));
 
+	bool is_array = tb.tt == TT_1D_ARRAY || tb.tt == TT_2D_ARRAY;
 	std::string error_string;
-	bool result = generate_mipmaps(dim, &error_string);
+	bool result = generate_mipmaps(dim, is_array, &error_string);
 	if (result)
 		tb.have_mipmaps = true;
 	else
