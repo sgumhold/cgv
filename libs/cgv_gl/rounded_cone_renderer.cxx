@@ -14,7 +14,7 @@ namespace cgv {
 
 		render_style* rounded_cone_renderer::create_render_style() const
 		{
-			return new surface_render_style();
+			return new rounded_cone_render_style();
 		}
 
 		rounded_cone_render_style::rounded_cone_render_style()

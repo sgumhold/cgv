@@ -22,6 +22,8 @@ namespace cgv {
 			thickness_scale = 1.0f;
 			tex_unit = 0;
 			tf_tex_unit = 1;
+			use_transfer_function = false;
+			tf_source_channel = 0;
 			tex_idx_offset = 0;
 			tex_idx_stride = 1;
 			step_size = 0.02f;
@@ -102,6 +104,8 @@ namespace cgv {
 			ref_prog().set_uniform(ctx, "thickness_scale", srs.thickness_scale);
 			ref_prog().set_uniform(ctx, "tex", srs.tex_unit);
 			ref_prog().set_uniform(ctx, "tf_tex", srs.tf_tex_unit);
+			ref_prog().set_uniform(ctx, "use_transfer_function", srs.use_transfer_function);
+			ref_prog().set_uniform(ctx, "tf_source_channel", srs.tf_source_channel);
 			ref_prog().set_uniform(ctx, "tex_idx_offset", srs.tex_idx_offset);
 			ref_prog().set_uniform(ctx, "tex_idx_stride", srs.tex_idx_stride);
 			ref_prog().set_uniform(ctx, "step_size", srs.step_size);
@@ -109,6 +113,9 @@ namespace cgv {
 			ref_prog().set_uniform(ctx, "falloff_mix", srs.falloff_mix);
 			ref_prog().set_uniform(ctx, "falloff_strength", srs.falloff_strength);
 			ref_prog().set_uniform(ctx, "scale", srs.scale);
+
+			glCullFace(GL_FRONT);
+			glEnable(GL_CULL_FACE);
 			return true;
 		}
 		///
@@ -120,6 +127,9 @@ namespace cgv {
 				has_rotations = false;
 				has_translations = false;
 			}
+
+			glDisable(GL_BLEND);
+			glDisable(GL_CULL_FACE);
 
 			return group_renderer::disable(ctx);
 		}
@@ -159,8 +169,11 @@ namespace cgv {
 				cgv::render::slab_render_style* srs_ptr = reinterpret_cast<cgv::render::slab_render_style*>(value_ptr);
 				cgv::base::base* b = dynamic_cast<cgv::base::base*>(p);
 
-				p->add_member_control(b, "texture unit", srs_ptr->tex_unit, "value_slider", "min=0;step=1;max=9;log=false;ticks=true");
 				p->add_member_control(b, "thickness scale", srs_ptr->thickness_scale, "value_slider", "min=0.001;step=0.0001;max=10.0;log=true;ticks=true");
+				p->add_member_control(b, "texture unit", srs_ptr->tex_unit, "value_slider", "min=0;step=1;max=9;log=false;ticks=true");
+				p->add_member_control(b, "transfer function unit", srs_ptr->tf_tex_unit, "value_slider", "min=0;step=1;max=9;log=false;ticks=true");
+				p->add_member_control(b, "use transfer function", srs_ptr->use_transfer_function, "check");
+				p->add_member_control(b, "tf source channel", srs_ptr->tf_source_channel, "value_slider", "min=0;step=1;max=3;log=false;ticks=true");
 
 				p->add_member_control(b, "step_size", srs_ptr->step_size, "value_slider", "min=0.001;step=0.001;max=0.5;log=true;ticks=true");
 				p->add_member_control(b, "opacity scale", srs_ptr->opacity, "value_slider", "min=0.0;step=0.0001;max=1.0;log=true;ticks=true");
@@ -168,7 +181,7 @@ namespace cgv {
 				p->add_member_control(b, "falloff strength", srs_ptr->falloff_strength, "value_slider", "min=0.0;step=0.0001;max=10.0;log=true;ticks=true");
 				p->add_member_control(b, "scale", srs_ptr->scale, "value_slider", "min=0.0;step=0.0001;max=100.0;log=true;ticks=true");
 
-				p->add_gui("group_render_style", *static_cast<cgv::render::group_render_style*>(srs_ptr));
+				//p->add_gui("group_render_style", *static_cast<cgv::render::group_render_style*>(srs_ptr));
 				return true;
 			}
 		};
