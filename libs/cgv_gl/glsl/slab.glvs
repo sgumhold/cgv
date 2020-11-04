@@ -106,7 +106,7 @@ void main()
 	else
 		tex_idx = 0;
 
-	tex_idx = tex_idx*tex_idx_stride + tex_idx_offset;
+	tex_idx = tex_idx + tex_idx_offset*tex_idx_stride;
 
 	gl_Position = position;
 }

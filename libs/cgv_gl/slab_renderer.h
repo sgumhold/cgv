@@ -29,8 +29,10 @@ namespace cgv { // @<
 			int tex_unit;
 			/// unit used to access the volume transfer function texture, initialized to 1, must be a 1d texture
 			int tf_tex_unit;
-			/// whether to use a transfer function or interpret the luminance as alpha
+			/// whether to use a transfer function or interpret the luminance as alpha, initialized to false
 			bool use_transfer_function;
+			///
+			int tf_source_channel;
 			/// used to offset the texture index of each slab when specified
 			int tex_idx_offset;
 			/// multiplied to the texture index of each slab
@@ -45,10 +47,6 @@ namespace cgv { // @<
 			float falloff_strength;
 			/// compensates for the overall slab scale
 			float scale;
-
-			// TODO: enable usage of luminance to alpha or transfer function
-			
-
 			/// construct with default values
 			slab_render_style();
 		};
