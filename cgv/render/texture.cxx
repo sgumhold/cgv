@@ -313,7 +313,7 @@ bool texture::create_from_image(cgv::data::data_format& df, cgv::data::data_view
 		else
 			std::fill(dest_ptr, dest_ptr + N*entry_size, 0);
 	}
-	return create(ctx, dv1, level, cube_side, -1, &palettes);
+	return create(ctx, dv1, level, cube_side, false, &palettes);
 }
 
 
