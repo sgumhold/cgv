@@ -7,11 +7,9 @@
 #include <memory>
 #include <thread>
 #include <mutex>
+#include <atomic>
 #include <k4a/k4a.hpp>
-
- namespace rgbd_utils {
-		class frame_set;
-}
+#include "rgbd_frame_set.h"
 
 namespace rgbd {
 
@@ -19,6 +17,7 @@ namespace rgbd {
 	class CGV_API rgbd_kinect_azure : public rgbd_device
 	{
 	public:
+		typedef rgbd_utils::frame_tuple<3> rgbd_frame_set;
 		/// create a detached kinect CLNUI device object
 		rgbd_kinect_azure();
 		~rgbd_kinect_azure();
@@ -73,9 +72,6 @@ namespace rgbd {
 		k4a::calibration calibration;
 	private:
 		void capture(int is);
-
-		// holds last consistent set of frames
-		std::shared_ptr<rgbd_utils::frame_set> frames;
 	};
 
 	/// interface for kinect drivers (implement only as driver implementor)
