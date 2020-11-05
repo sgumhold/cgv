@@ -1,5 +1,6 @@
 #include <iostream>
 #include "rgbd_kinect_azure.h"
+#include "rgbd_frame_set.h"
 #include <cgv/utils/convert.h>
 
 

@@ -9,7 +9,12 @@
 #include <mutex>
 #include <k4a/k4a.hpp>
 
+ namespace rgbd_utils {
+		class frame_set;
+}
+
 namespace rgbd {
+
 	/// interface for kinect devices provided by a driver (only to be used by driver implementors)
 	class CGV_API rgbd_kinect_azure : public rgbd_device
 	{
@@ -58,6 +63,7 @@ namespace rgbd {
 		bool near_mode;
 
 		std::unique_ptr<std::thread> capture_thread;
+		
 		mutable std::mutex capture_lock;
 		volatile bool has_new_color_frame, has_new_depth_frame, has_new_ir_frame;
 		std::unique_ptr<rgbd::frame_type> color_frame, depth_frame, ir_frame;
@@ -67,6 +73,9 @@ namespace rgbd {
 		k4a::calibration calibration;
 	private:
 		void capture(int is);
+
+		// holds last consistent set of frames
+		std::shared_ptr<rgbd_utils::frame_set> frames;
 	};
 
 	/// interface for kinect drivers (implement only as driver implementor)
