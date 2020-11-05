@@ -1,6 +1,5 @@
 #include <iostream>
 #include "rgbd_kinect_azure.h"
-#include "rgbd_frame_set.h"
 #include <cgv/utils/convert.h>
 
 
@@ -374,10 +373,10 @@ namespace rgbd {
 		if (depth == 0)
 			return false;
 
-		static const double fx_d = 1.0 / 376.553974631499;
-		static const double fy_d = 1.0 / 375.836262300202;
-		static const double cx_d = 697.111113366395;
-		static const double cy_d = 375.383389596281;
+		static constexpr double fx_d = 1.0 / 376.553974631499;
+		static constexpr double fy_d = 1.0 / 375.836262300202;
+		static constexpr double cx_d = 697.111113366395;
+		static constexpr double cy_d = 375.383389596281;
 		double d = depth;
 		point_ptr[0] = float((x - cx_d) * d * fx_d);
 		point_ptr[1] = float((y - cy_d) * d * fy_d);

@@ -1,6 +1,31 @@
+#pragma once
+#include <type_traits>
+#include <rgbd_device.h>
+
 namespace rgbd_utils {
-	class kinect_azure{
-			rgbd::frame_type color_frame, depth_frame, ir_frame;
-			bool read_color_frame, read_depth_frame, read_ir_frame;
+	
+	template<unsigned S=3>
+	struct frame_tuple{
+		enum {
+			F_COLOR = 0,
+			F_DEPTH = 1,
+			F_IR = 2,
+		};
+
+		rgbd::frame_type frame[S];
+		bool read_frame[S];
+		
+		template<unsigned F>
+		rgbd::frame_type get_frame() {
+			read_frame[F] = true;
+			return frame[F];
+		}
+	};
+
+
+	template<unsigned S = 3>
+	struct rgbd_camera_state {
+		frame_tuple<S> frames;
+		rgbd::IMU_measurement imu_data;
 	};
 }
