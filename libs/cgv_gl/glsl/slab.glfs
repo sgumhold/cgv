@@ -91,7 +91,7 @@ vec4 integrate_tf(vec3 org, vec3 dir, float dist, float inv_y_scale) {
 		vec4 color_in = value * vec4(texture(tf_tex, value).rgb, 1.0);
 		color_in *= falloff * opacity_scale;
 			
-		//color_in *= (1.0 - exp(-step_size * scale));
+		color_in *= (1.0 - exp(-step_size * scale));
 
 		// back to front blending
 		color = color_in + (1.0 - color_in.a)*color;
@@ -125,7 +125,7 @@ vec4 integrate(vec3 org, vec3 dir, float dist, float inv_y_scale) {
 		value *= falloff * opacity_scale;
 
 		vec4 color_in = value;
-		//color_in *= (1.0 - exp(-step_size * scale));
+		color_in *= (1.0 - exp(-step_size * scale));
 
 		// back to front blending
 		color = color_in + (1.0 - color_in.a)*color;

@@ -124,7 +124,11 @@ namespace cgv { // @<
 			void set_rotation_array(const context& ctx, const T* rotations, size_t nr_elements, unsigned stride) { has_rotations = true; set_attribute_array(ctx, ref_prog().get_attribute_location(ctx, "rotation"), rotations, nr_elements, stride); }
 			/// extent array specifies slab extends in case of position_is_center=true, otherwise the maximum point of each slab
 			template <typename T>
-			void set_texture_index_array(const context& ctx, const std::vector<T>& texture_indices) { has_texture_indices = true; set_attribute_array(ctx, ref_prog().get_attribute_location(ctx, "texture_index"), texture_indices); }
+			void set_texture_index_array(const context& ctx, const std::vector<T>& texture_indices) {
+				has_texture_indices = true;
+				int loc = ref_prog().get_attribute_location(ctx, "texture_index");
+				set_attribute_array(ctx, loc, texture_indices);
+			}
 			/// extent array specifies slab extends in case of position_is_center=true, otherwise the maximum point of each slab
 			template <typename T>
 			void set_texture_index_array(const context& ctx, const T* texture_indices, size_t nr_elements, unsigned stride_in_bytes = 0) { has_texture_indices = true;  set_attribute_array(ctx, ref_prog().get_attribute_location(ctx, "texture_index"), texture_indices, nr_elements, stride_in_bytes); }
