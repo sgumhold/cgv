@@ -3,7 +3,8 @@
 //#define SHOW_BBOX
 #define INT_ROOT_MASK
 
-#define BISECTION_ITERATION_COUNT 10
+// TODO: test performance with 10
+#define BISECTION_ITERATION_COUNT 8
 
 //***** begin interface of view.glsl ***********************************
 mat4 get_modelview_matrix();
@@ -512,8 +513,7 @@ Hit EvalSplineISect(vec3 dir, vec3 s, vec3 h, vec3 t, float rs, float rh, float 
 		int rn = 0;
 
 		ivec4 rootTypes = ivec4(15, 10, 20, 20);
-		ivec2 rootMap = ivec2(10, 30);
-
+		
 		if(EvalPolyD0(0.0, polyB_C) >= 0.0) {
 			roots.x = 0.0;
 			rootType = 15;
@@ -566,10 +566,13 @@ Hit EvalSplineISect(vec3 dir, vec3 s, vec3 h, vec3 t, float rs, float rh, float 
 			++rn;
 		}
 
+		const ivec4 rootMap = ivec4(0, 30, 20, 30);
+
 		// TODO: check if this is equivalent
 		//if(rootType == 15) rootType = 10;
 		//if(rootType == 10) rootType = 30;
-		if(rootType == 15 || rootType == 10) rootType = 30;
+		//if(rootType == 15 || rootType == 10) rootType = 30;
+		rootType = rootMap[rootType / 10];
 
 		// 137-140 fps
 		/*int rootType = 0;
