@@ -98,7 +98,7 @@ DEF_EvalCSplineMidPoint(float)
 DEF_EvalCSplineMidPoint(vec3)
 
 #define DEF_SplitCurve(T)								\
-void SplitCurve(uint segment, T v0, T d0, T v1, T d1,	\
+void SplitCurve(T v0, T d0, T v1, T d1,					\
 	out T v00_out, out T h0_out, out T v10_out,			\
 	out T v01_out, out T h1_out, out T v11_out)			\
 {														\
@@ -115,18 +115,18 @@ void SplitCurve(uint segment, T v0, T d0, T v1, T d1,	\
 DEF_SplitCurve(float)
 DEF_SplitCurve(vec3)
 
-#define SPLIT_CURVE(SEG, TUBE, MEM_V, MEM_D, QTUBE0, QTUBE1)	\
+#define SPLIT_CURVE(TUBE, MEM_V, MEM_D, QTUBE0, QTUBE1)			\
 SplitCurve(														\
-	SEG, TUBE.s.MEM_V, TUBE.s.MEM_D, TUBE.e.MEM_V, TUBE.e.MEM_D,\
+	TUBE.s.MEM_V, TUBE.s.MEM_D, TUBE.e.MEM_V, TUBE.e.MEM_D,		\
 	QTUBE0.s.MEM_V, QTUBE0.h.MEM_V, QTUBE0.e.MEM_V,				\
 	QTUBE1.s.MEM_V, QTUBE1.h.MEM_V, QTUBE1.e.MEM_V				\
 )
 
-void SplitTube(uint segment, Tube tube, out QTube qTube0, out QTube qTube1)
+void SplitTube(Tube tube, out QTube qTube0, out QTube qTube1)
 {
-	SPLIT_CURVE(segment, tube, pos, pos_tan, qTube0, qTube1);
-	SPLIT_CURVE(segment, tube, rad, rad_tan, qTube0, qTube1);
-	//SPLIT_CURVE(segment, tube, col, col_tan, qTube);
+	SPLIT_CURVE(tube, pos, pos_tan, qTube0, qTube1);
+	SPLIT_CURVE(tube, rad, rad_tan, qTube0, qTube1);
+	//SPLIT_CURVE(tube, col, col_tan, qTube);
 }
 
 void SplinePointsToPolyCoeffs(float p0, float h, float p1, out float o_c[3])
@@ -321,7 +321,7 @@ void main()
 	tube.e.rad_tan = tangent_gs[1].w;
 
 	QTube qTube0, qTube1;
-	SplitTube(1, tube, qTube0, qTube1);
+	SplitTube(tube, qTube0, qTube1);
 	
 	mat4 p = get_projection_matrix();
 	tp2 = vec4(p[0][2], p[1][2], p[2][2], p[3][2]);
