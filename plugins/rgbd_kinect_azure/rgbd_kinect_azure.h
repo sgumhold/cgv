@@ -7,13 +7,17 @@
 #include <memory>
 #include <thread>
 #include <mutex>
+#include <atomic>
 #include <k4a/k4a.hpp>
+#include "rgbd_frame_set.h"
 
 namespace rgbd {
+
 	/// interface for kinect devices provided by a driver (only to be used by driver implementors)
 	class CGV_API rgbd_kinect_azure : public rgbd_device
 	{
 	public:
+		typedef rgbd_utils::frame_tuple<3> rgbd_frame_set;
 		/// create a detached kinect CLNUI device object
 		rgbd_kinect_azure();
 		~rgbd_kinect_azure();
@@ -58,6 +62,7 @@ namespace rgbd {
 		bool near_mode;
 
 		std::unique_ptr<std::thread> capture_thread;
+		
 		mutable std::mutex capture_lock;
 		volatile bool has_new_color_frame, has_new_depth_frame, has_new_ir_frame;
 		std::unique_ptr<rgbd::frame_type> color_frame, depth_frame, ir_frame;
