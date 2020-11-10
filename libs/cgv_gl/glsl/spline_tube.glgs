@@ -33,7 +33,6 @@ struct Tube {
 struct QTubeNode {
 	vec3 pos;
 	float rad;
-	//vec3 col;
 };
 
 struct QTube {
@@ -43,13 +42,15 @@ struct QTube {
 };
 
 in flat vec4 tangent_gs[];
-in flat int vertex_id_gs[];
+in flat vec4 color_gs[];
 
-// TODO: test non flat vs flat
 out vec3 position_fs;
 out flat vec4 tp2;
 out flat vec4 tp3;
 out flat QTube qTube_fs;
+out flat vec3 color0_fs;
+out flat vec3 color1_fs;
+out flat float l_offset_fs;
 
 #define BBOX_LEFT_DN_FRNT bbox[0]
 #define BBOX_LEFT_UP_FRNT bbox[1]
@@ -77,56 +78,56 @@ vec3 ProjToPlane(vec3 vec, vec3 n)
 	return vec - n * dot(vec, n) / dot(n, n);
 }
 
-#define DEF_EvalCSplineMidPoint(T)											\
-void EvalCSplineMidPoint(T p1, T t1, T p2, T t2, out T out_p, out T out_t)	\
-{																			\
-	T h1 = p1 + t1 * ONE_OVER_THREE;										\
-	T h2 = p2 - t2 * ONE_OVER_THREE;										\
-																			\
-	T a1 = (p1 + h1) * 0.5;													\
-	T a2 = (h1 + h2) * 0.5;													\
-	T a3 = (h2 + p2) * 0.5;													\
-																			\
-	T b1 = (a1 + a2) * 0.5;													\
-	T b2 = (a2 + a3) * 0.5;													\
-																			\
-	out_t = (b2 - b1) * 3.0;												\
-	out_p = (b1 + b2) * 0.5;												\
+#define DEF_EvalCSplineMidPoint(T)					\
+void EvalCSplineMidPoint(T p1, T t1, T p2, T t2,	\
+	out T out_p, out T out_t)						\
+{													\
+	T h1 = p1 + t1 * ONE_OVER_THREE;				\
+	T h2 = p2 - t2 * ONE_OVER_THREE;				\
+													\
+	T a1 = (p1 + h1) * 0.5;							\
+	T a2 = (h1 + h2) * 0.5;							\
+	T a3 = (h2 + p2) * 0.5;							\
+													\
+	T b1 = (a1 + a2) * 0.5;							\
+	T b2 = (a2 + a3) * 0.5;							\
+													\
+	out_t = (b2 - b1) * 3.0;						\
+	out_p = (b1 + b2) * 0.5;						\
 }
 
 DEF_EvalCSplineMidPoint(float)
 DEF_EvalCSplineMidPoint(vec3)
 
-#define DEF_SplitCurve(T)								\
-void SplitCurve(T v0, T d0, T v1, T d1,					\
-	out T v00_out, out T h0_out, out T v10_out,			\
-	out T v01_out, out T h1_out, out T v11_out)			\
-{														\
-	v00_out = v0;										\
-	h0_out = v0 + d0 * 0.25;							\
-	T h1 = v1 - d1 * 0.25;								\
-	v10_out = (h0_out + h1) * 0.5;						\
-														\
-	v01_out = v10_out;									\
-	h1_out = h1;										\
-	v11_out = v1;										\
+#define DEF_SplitCurve(T)						\
+void SplitCurve(T v0, T d0, T v1, T d1,			\
+	out T v00_out, out T h0_out, out T v10_out,	\
+	out T v01_out, out T h1_out, out T v11_out)	\
+{												\
+	v00_out = v0;								\
+	h0_out = v0 + d0 * 0.25;					\
+	T h1 = v1 - d1 * 0.25;						\
+	v10_out = (h0_out + h1) * 0.5;				\
+												\
+	v01_out = v10_out;							\
+	h1_out = h1;								\
+	v11_out = v1;								\
 }
 
 DEF_SplitCurve(float)
 DEF_SplitCurve(vec3)
 
-#define SPLIT_CURVE(TUBE, MEM_V, MEM_D, QTUBE0, QTUBE1)			\
-SplitCurve(														\
-	TUBE.s.MEM_V, TUBE.s.MEM_D, TUBE.e.MEM_V, TUBE.e.MEM_D,		\
-	QTUBE0.s.MEM_V, QTUBE0.h.MEM_V, QTUBE0.e.MEM_V,				\
-	QTUBE1.s.MEM_V, QTUBE1.h.MEM_V, QTUBE1.e.MEM_V				\
+#define SPLIT_CURVE(TUBE, MEM_V, MEM_D, QTUBE0, QTUBE1)		\
+SplitCurve(													\
+	TUBE.s.MEM_V, TUBE.s.MEM_D, TUBE.e.MEM_V, TUBE.e.MEM_D,	\
+	QTUBE0.s.MEM_V, QTUBE0.h.MEM_V, QTUBE0.e.MEM_V,			\
+	QTUBE1.s.MEM_V, QTUBE1.h.MEM_V, QTUBE1.e.MEM_V			\
 )
 
 void SplitTube(Tube tube, out QTube qTube0, out QTube qTube1)
 {
 	SPLIT_CURVE(tube, pos, pos_tan, qTube0, qTube1);
 	SPLIT_CURVE(tube, rad, rad_tan, qTube0, qTube1);
-	//SPLIT_CURVE(tube, col, col_tan, qTube);
 }
 
 void SplinePointsToPolyCoeffs(float p0, float h, float p1, out float o_c[3])
@@ -150,7 +151,7 @@ vec3 GetOrthoVec(vec3 v)
     return abs(v.x) > abs(v.z) ? vec3(-v.y, v.x, 0.0) : vec3(0.0, -v.z, v.y);
 }
 
-void emit_bounding_box(QTube qTube) {
+void emit_bounding_box(int segment_idx, QTube qTube) {
 
 	vec3 x, y, z;
 	float xl, yl;
@@ -261,6 +262,7 @@ void emit_bounding_box(QTube qTube) {
 	qTube.e.pos = (get_modelview_matrix() * vec4(qTube.e.pos, 1.0)).xyz;
 
 	qTube_fs = qTube;
+	l_offset_fs = segment_idx == 0 ? 0.0 : 0.5;
 
 	position_fs = BBOX_LEFT_UP_FRNT.xyz;
 	gl_Position = get_projection_matrix() * BBOX_LEFT_UP_FRNT;
@@ -320,6 +322,9 @@ void main()
 	tube.e.pos_tan = tangent_gs[1].xyz;
 	tube.e.rad_tan = tangent_gs[1].w;
 
+	color0_fs = color_gs[0].rgb;
+	color1_fs = color_gs[1].rgb;
+
 	QTube qTube0, qTube1;
 	SplitTube(tube, qTube0, qTube1);
 	
@@ -327,6 +332,6 @@ void main()
 	tp2 = vec4(p[0][2], p[1][2], p[2][2], p[3][2]);
 	tp3 = vec4(p[0][3], p[1][3], p[2][3], p[3][3]);
 
-	emit_bounding_box(qTube0);
-	emit_bounding_box(qTube1);
+	emit_bounding_box(0, qTube0);
+	emit_bounding_box(1, qTube1);
 }
