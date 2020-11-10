@@ -1,10 +1,19 @@
 #version 430
 
 //#define SHOW_BBOX
-#define INT_ROOT_MASK
 
-// TODO: test performance with 10
-#define BISECTION_ITERATION_COUNT 8
+#define ITERATION_COUNT 10
+#define USE_CUBIC_SOLVER
+
+// Floating-point epsilon (highp, i.e. 2^-23)
+#define FLT_EPS 0.00000011920928955078125
+#define POS_INF 3e+37
+#define NEG_INF -3e+37
+
+#define rcp(x) (1.0 / x)
+
+#define N0 3
+#define N1 5
 
 //***** begin interface of view.glsl ***********************************
 mat4 get_modelview_matrix();
@@ -15,6 +24,15 @@ mat4 get_inverse_modelview_projection_matrix();
 mat3 get_normal_matrix();
 mat3 get_inverse_normal_matrix();
 //***** end interface of view.glsl ***********************************
+
+//***** begin interface of fragment.glfs ***********************************
+uniform float gamma = 2.2;
+void finish_fragment(vec4 color);
+//***** end interface of fragment.glfs ***********************************
+
+//***** begin interface of surface.glsl ***********************************
+vec4 compute_reflected_appearance(vec3 position_eye, vec3 normal_eye, vec4 color, int side);
+//***** end interface of surface.glsl ***********************************
 
 struct QTubeNode {
 	vec3 pos;
@@ -27,90 +45,6 @@ struct QTube {
 	QTubeNode h;
 	QTubeNode e;
 };
-
-float Pow2(float  x) { return x * x; }
-vec2 Pow2(vec2 x) { return x * x; }
-vec3 Pow2(vec3 x) { return x * x; }
-vec4 Pow2(vec4 x) { return x * x; }
-
-float Pow3(float  x) { return x * x * x; }
-vec2 Pow3(vec2 x) { return x * x * x; }
-vec3 Pow3(vec3 x) { return x * x * x; }
-vec4 Pow3(vec4 x) { return x * x * x; }
-
-// Floating-point epsilon (highp, i.e. 2^-23)
-const float _eps = 0.00000011920928955078125;
-
-#define POS_INF 3e+37
-#define NEG_INF -3e+37
-
-#define rcp(x) (1.0 / x)
-
-// source: https://gist.github.com/paniq/c86df99358c76906a6c4
-// solve_quadratic0 & solve_quadratic by Leonard Ritter (paniq)
-//-----------------------------------------------------------//
-float solve_quadratic0(vec3 fa) 
-{
-    float a = fa.z;
-    float b = fa.y;
-    float c = fa.x;
-	
-    // the quadratic solve doesn't work for a=0
-    // so we need a branch here.
-    if(abs(a) < _eps) {
-        return -c / b;
-    } else { 
-        // (-b +- sqrt(b*b - 4.0*a*c)) / 2.0*a
-        float k = -0.5*b/a;
-        float q = sqrt(k*k - c/a);
-        // pick the closest positive root
-		return k + ((k <= q)?q:-q);
-    }
-}
-
-float solve_quadratic(vec3 fa, float x) 
-{
-    float a = fa.z;
-    float b = fa.y;
-    float c = fa.x;
-
-    // the quadratic solve doesn't work for a=0
-    // so we need a branch here.
-    if(abs(a) < _eps) {
-        return -c / b;
-    } else { 
-        // (-b +- sqrt(b*b - 4.0*a*c)) / 2.0*a
-        float k = -0.5*b/a;
-        float q = sqrt(k*k - c/a);
-        float q0 = k - q;
-        float q1 = k + q;
-        // pick the closest root right of x
-        return (q0 <= x)?q1:q0;
-    }
-}
-//-----------------------------------------------------------//
-
-vec2 SolveQuadratic(float a, float b, float c) 
-{
-    if(abs(a) < _eps) {
-		if(abs(a) < _eps)
-			return vec2(-2.0, 2.0);
-		else
-			return vec2(-c / b, 2.0);
-    } else {
-		float discr = b * b - 4.0 * a * c;
-		
-		if(abs(a) < _eps)
-			return vec2(-b / (2.0 * a), 2.0);
-		
-		if(discr < 0.0)
-			return vec2(-2.0, 2.0);
-		
-		vec2 r = (-vec2(b) + vec2(-1.0, 1.0) * vec2(sqrt(discr))) / (2.0 * a);
-		return r.x < r.y ? r.xy : r.yx;
-    }
-}
-
 
 struct Hit
 {
@@ -134,6 +68,104 @@ Hit Hit_New()
 	return hit;
 }
 
+in vec3 position_fs;
+in flat QTube qTube_fs;
+in flat vec4 tp2;
+in flat vec4 tp3;
+in flat vec3 color0_fs;
+in flat vec3 color1_fs;
+in flat float l_offset_fs;
+
+float Pow2(float  x) { return x * x; }
+vec2 Pow2(vec2 x) { return x * x; }
+vec3 Pow2(vec3 x) { return x * x; }
+vec4 Pow2(vec4 x) { return x * x; }
+
+float Pow3(float  x) { return x * x * x; }
+vec2 Pow3(vec2 x) { return x * x * x; }
+vec3 Pow3(vec3 x) { return x * x * x; }
+vec4 Pow3(vec4 x) { return x * x * x; }
+
+vec2 SolveQuadratic(float a, float b, float c) 
+{
+    if(abs(a) < FLT_EPS) {
+		if(abs(b) < FLT_EPS)
+			return vec2(-2.0, 2.0);
+		else
+			return vec2(-c / b, 2.0);
+    } else {
+		float discr = b * b - 4.0 * a * c;
+		
+		if(abs(discr) < FLT_EPS)
+			return vec2(-b / (2.0 * a), 2.0);
+		
+		if(discr < 0.0)
+			return vec2(-2.0, 2.0);
+		
+		vec2 r = (-vec2(b) + vec2(-1.0, 1.0) * vec2(sqrt(discr))) / (2.0 * a);
+		return r.x < r.y ? r.xy : r.yx;
+    }
+}
+
+//-----------------------------------------------------------//
+// cubic root solver
+// sorce: https://www.shadertoy.com/view/3d23Dc
+
+#define FLT_TAU 6.28318530718
+#define sol(k) ( 2.0*sqrt(-Q) * cos((A+(k)*FLT_TAU)/3.0) - b/3.0 )
+// fix asinh() symetry error
+#define asinh(z) ( sign(z)*asinh(abs(z)) )
+
+vec3 solve_cubic(float a, float b, float c, float d)
+{
+    float Q, A, D, v, l;
+	float k = -1.0;
+
+	// TODO: having a degenerate 3rd degree polynomial produces image artifacts
+    if(abs(a) < FLT_EPS) {
+		// degenerated P3
+        k = -2.0;
+        v = c*c - 4.0*b*d;
+        l = ( -c -sign(b)* sqrt(v) ) / (2.0*b);
+    } else {
+		// true P3
+		b /= a;
+		c /= a;
+		d /= a;
+		float p = ( 3.0*c - b*b ) / 3.0;
+		float q = ( 9.0*b*c - 27.0*d - 2.0*b*b*b) / 27.0; // -
+		float r = q / 2.0;
+		Q = p / 3.0;
+		D = Q*Q*Q + r*r;
+    
+		if(D < 0.0) {
+			// --- if 3 sol
+			A = acos(r/sqrt(-Q*Q*Q));
+			k = round(1.5-A/FLT_TAU); // k = 0,1,2 ; we want min l
+			l = sol(k);
+		} else {
+			// --- if 1 sol
+			if(p > 0.0) {
+				v = -2.0*sqrt(p/3.0);
+				l = -v* sinh(asinh(3.0*-q/p/v)/3.0) -b/3.0;
+			} else {
+				v = -2.0*sqrt(-p/3.0);
+				l = sign(-q)*v* cosh(acosh(3.0*abs(q)/p/v)/3.0) -b/3.0;
+			}
+		}
+	}
+    
+	vec3 ret = vec3(0.0);
+	ret.z = l;
+	if(k >= 0.0) {
+		ret.x = l;
+		ret.y = sol(k + 1.0);
+		ret.z = sol(k + 2.0);
+	}
+	return ret;
+}
+//-----------------------------------------------------------//
+
 void Pow2(in float c[3], out float o_c[5])
 {
 	o_c[0] = c[0] * c[0]; 
@@ -143,19 +175,6 @@ void Pow2(in float c[3], out float o_c[5])
 	
 	o_c[3] =  2.0 * c[2] * c[1];
 	o_c[4] = c[2] * c[2];
-}
-
-void Pow2(in float c[4], out float o_c[7])
-{
-	o_c[0] = c[0] * c[0]; 
-	o_c[1] =  2.0 * c[0] * c[1]; 
-	o_c[2] =  2.0 * c[0] * c[2] + c[1] * c[1]; 
-	
-	o_c[3] =  2.0 * (c[1] * c[2] + c[0] * c[3]); 
-	
-	o_c[4] =  2.0 * c[3] * c[1] + c[2] * c[2]; 
-	o_c[5] =  2.0 * c[3] * c[2]; 
-	o_c[6] = c[3] * c[3];
 }
 
 void Sub(in float a[5], in float b[5], out float o_c[5]) {
@@ -171,93 +190,95 @@ float EvalPoly(float x, float c0, float c1 = 0, float c2 = 0, float c3 = 0, floa
 	return x * (x * (x * (x * (x * (x * c6 + c5) + c4) + c3) + c2) + c1) + c0;
 }
 
+//float EvalPolyD0(float x, float c[3]) { return EvalPoly(x, c[0], c[1], c[2]); }
+//float EvalPolyD1(float x, float c[3]) { return EvalPoly(x, c[1], c[2] * 2.0); }
+//float EvalPolyD2(float x, float c[3]) { return EvalPoly(x, c[2] * 2.0);       }
+
+//float EvalPolyD0(float x, float c[5]) { return EvalPoly(x, c[0], c[1], c[2], c[3], c[4]);             }
+//float EvalPolyD1(float x, float c[5]) { return EvalPoly(x, c[1], c[2] * 2.0, c[3] * 3.0, c[4] * 4.0); }
+//float EvalPolyD2(float x, float c[5]) { return EvalPoly(x, c[2] * 2.0, c[3] * 6.0, c[4] * 12.0);      }
+//float EvalPolyD3(float x, float c[5]) { return EvalPoly(x, c[3] * 6.0, c[4] * 24.0);                  }
+
+// same as above, but multiplication wit 2, 3, or 4 is replaced with addition (gives a small performance boost)
 float EvalPolyD0(float x, float c[3]) { return EvalPoly(x, c[0], c[1], c[2]); }
-float EvalPolyD1(float x, float c[3]) { return EvalPoly(x, c[1], c[2] * 2.0); }
-float EvalPolyD2(float x, float c[3]) { return EvalPoly(x, c[2] * 2.0);       }
-
-float EvalPolyD0(float x, float c[4]) { return EvalPoly(x, c[0], c[1], c[2], c[3]);       }
-float EvalPolyD1(float x, float c[4]) { return EvalPoly(x, c[1], c[2] * 2.0, c[3] * 3.0); }
-float EvalPolyD2(float x, float c[4]) { return EvalPoly(x, c[2] * 2.0, c[3] * 6.0);       }
-float EvalPolyD3(float x, float c[4]) { return EvalPoly(x, c[3] * 6.0);                   }
+float EvalPolyD1(float x, float c[3]) { return EvalPoly(x, c[1], c[2] + c[2]); }
+float EvalPolyD2(float x, float c[3]) { return EvalPoly(x, c[2] + c[2]); }
 	
-float EvalPolyD0(float x, float c[5]) { return EvalPoly(x, c[0], c[1], c[2], c[3], c[4]);             }
-float EvalPolyD1(float x, float c[5]) { return EvalPoly(x, c[1], c[2] * 2.0, c[3] * 3.0, c[4] * 4.0); }
-float EvalPolyD2(float x, float c[5]) { return EvalPoly(x, c[2] * 2.0, c[3] * 6.0, c[4] * 12.0);      }
-float EvalPolyD3(float x, float c[5]) { return EvalPoly(x, c[3] * 6.0, c[4] * 24.0);                  }
+float EvalPolyD0(float x, float c[5]) { return EvalPoly(x, c[0], c[1], c[2], c[3], c[4]); }
+float EvalPolyD1(float x, float c[5]) { return EvalPoly(x, c[1], c[2] + c[2], c[3] + c[3] + c[3], c[4] + c[4] + c[4] + c[4]); }
+float EvalPolyD2(float x, float c[5]) { return EvalPoly(x, c[2] + c[2], c[3] * 6.0, c[4] * 12.0); }
+float EvalPolyD3(float x, float c[5]) { return EvalPoly(x, c[3] * 6.0, c[4] * 24.0); }
 
-float EvalPolyD0(float x, float c[7]) { return EvalPoly(x, c[0], c[1], c[2], c[3], c[4], c[5], c[6]);                         }
-float EvalPolyD1(float x, float c[7]) { return EvalPoly(x, c[1], c[2] * 2.0, c[3] * 3.0, c[4] * 4.0, c[5] * 5.0, c[6] * 6.0); }
-float EvalPolyD2(float x, float c[7]) { return EvalPoly(x, c[2] * 2.0, c[3] * 6.0, c[4] * 12.0, c[5] * 20.0, c[6] * 30.0);    }
-float EvalPolyD3(float x, float c[7]) { return EvalPoly(x, c[3] * 6.0, c[4] * 24.0, c[5] * 60.0, c[6] * 120.0);               }
-
-#define N0 3
-#define N1 5
+vec3 EvalCSpline(vec3 p1, vec3 t1, vec3 p2, vec3 t2, float l)
+{
+	vec3 h1 = p1 + t1 / 3.0;
+	vec3 h2 = p2 - t2 / 3.0;
 	
-#define DEF_FINDROOTS(N, D)                                                                                                    \
-void FindRoots##D(float poly_C[N1], float x_i[N], float m_i[N], out float x_o[N+1], out float m_o[N+1], uint iCount)		   \
-{	                                                                                                                           \
-    m_o[0] = m_o[N] = 1.0;                                                                                                     \
-	                                                                                                                           \
-	x_o[0] = x_i[0];                                                                                                           \
-	                                                                                                                           \
-	uint j = 0;                                                                                                                \
-	                                                                                                                           \
-	float x_l = x_i[0];                                                                                                        \
-	float y_l = EvalPoly##D(x_l, poly_C);                                                                                      \
-	float sy_l = sign(y_l);                                                                                                    \
-                                                                                                                               \
-	for(uint i = 1; i < N; ++i)                                                                                                \
-	{                                                                                                                          \
-		float x_r = x_i[i];                                                                                                    \
-		float y_r = EvalPoly##D(x_r, poly_C);                                                                                  \
-		float sy_r = sign(y_r);                                                                                                \
-		                                                                                                                       \
-		x_o[i] = 0.0;																										   \
-		                                                                                                                       \
-		if(m_i[i] == 1.0)                                                                                                      \
-		{                                                                                                                      \
-			if(sy_l != sy_r)                                                                                                   \
-			{			                                                                                                       \
-				float n = x_l;                                                                                                 \
-				float p = x_r;                                                                                                 \
-				                                                                                                               \
-				float ny = EvalPoly##D(n, poly_C);                                                                             \
-				float py = EvalPoly##D(p, poly_C);                                                                             \
-				                                                                                                               \
-				if(ny > 0.0 && py < 0.0)                                                                                       \
-				{                                                                                                              \
-					float t = n;                                                                                               \
-					n = p; p = t;                                                                                              \
-				}                                                                                                              \
-				                                                                                                               \
-				for(uint j = 0; j < iCount; ++j)                                                                               \
-				{                                                                                                              \
-					float m = (n + p) * 0.5;                                                                                   \
-					                                                                                                           \
-					float f = EvalPoly##D(m, poly_C);                                                                          \
-					                                                                                                           \
-					if(f < 0.0)                                                                                                \
-					n = m;                                                                                                     \
-					else                                                                                                       \
-					p = m;                                                                                                     \
-				}                                                                                                              \
-				                                                                                                               \
-				x_o[i] = (n + p) * 0.5;                                                                                        \
-                                                                                                                               \
-				m_o[i] = 1.0;                                                                                                  \
-			} else {			                                                                                               \
-				m_o[i] = 0.0;                                                                                                  \
-			}                                                                                                                  \
-			                                                                                                                   \
-			x_l = x_r;                                                                                                         \
-			y_l = y_r;                                                                                                         \
-			sy_l = sy_r;                                                                                                       \
-		}                                                                                                                      \
-		else                                                                                                                   \
-		m_o[i] = -1.0;                                                                                                         \
-	}                                                                                                                          \
-	                                                                                                                           \
-	x_o[N] = x_i[N - 1];                                                                                                       \
+	vec3 a1 = mix(p1, h1, l);
+	vec3 a2 = mix(h1, h2, l);
+	vec3 a3 = mix(h2, p2, l);
+	
+	vec3 b1 = mix(a1, a2, l);
+	vec3 b2 = mix(a2, a3, l);
+	
+	return mix(b1, b2, l);
+}
+
+#define DEF_FINDROOTS(N, D)                                                                         \
+void FindRoots##D(float poly_C[N1], float x_i[N], int m_i[N], out float x_o[N+1], out int m_o[N+1]) \
+{	                                                                                                \
+    m_o[0] = m_o[N] = 1;                                                                            \
+	x_o[0] = x_i[0];                                                                                \
+	                                                                                                \
+	uint j = 0;                                                                                     \
+	                                                                                                \
+	float x_l = x_i[0];                                                                             \
+	float y_l = EvalPoly##D(x_l, poly_C);                                                           \
+	float sy_l = sign(y_l);                                                                         \
+                                                                                                    \
+	for(uint i = 1; i < N; ++i) {                                                                   \
+		float x_r = x_i[i];                                                                         \
+		float y_r = EvalPoly##D(x_r, poly_C);                                                       \
+		float sy_r = sign(y_r);                                                                     \
+		                                                                                            \
+		x_o[i] = 0.0;                                                                               \
+		                                                                                            \
+		if(m_i[i] == 1) {                                                                           \
+			if(sy_l != sy_r) {                                                                      \
+				float n = x_l;                                                                      \
+				float p = x_r;                                                                      \
+				float ny = EvalPoly##D(n, poly_C);                                                  \
+				float py = EvalPoly##D(p, poly_C);                                                  \
+				                                                                                    \
+				if(ny > 0.0 && py < 0.0) {                                                          \
+					float t = n;                                                                    \
+					n = p; p = t;                                                                   \
+				}                                                                                   \
+				                                                                                    \
+				for(uint j = 0; j < ITERATION_COUNT; ++j) {                                         \
+					float m = (n + p) * 0.5;                                                        \
+					float f = EvalPoly##D(m, poly_C);                                               \
+					                                                                                \
+					if(f < 0.0) n = m;                                                              \
+					else p = m;                                                                     \
+				}                                                                                   \
+				                                                                                    \
+				x_o[i] = (n + p) * 0.5;                                                             \
+                                                                                                    \
+				m_o[i] = 1;                                                                         \
+			} else {			                                                                    \
+				m_o[i] = 0;                                                                         \
+			}                                                                                       \
+			                                                                                        \
+			x_l = x_r;                                                                              \
+			y_l = y_r;                                                                              \
+			sy_l = sy_r;                                                                            \
+		} else {                                                                                    \
+			m_o[i] = 0; /* was -1 in the original implementation */                                 \
+		}                                                                                           \
+	}                                                                                               \
+	                                                                                                \
+	x_o[N] = x_i[N - 1];                                                                            \
 }
 
 DEF_FINDROOTS(4, D1)
@@ -287,46 +308,31 @@ vec3 qSplineEval(float l, float curveX[N0], float curveY[N0], float curveZ[N0])
 		EvalPolyD0(l, curveZ)
 	);
 }
-	
-#define qSpline_Eval(l) qSplineEval(l, curveX, curveY, curveZ)
-#define qSpline_ParasDec float curveX[N0], float curveY[N0], float curveZ[N0]
-#define qSpline_Paras curveX, curveY, curveZ
-	
+
 float qSplineIDistEval(float t, float curveX[N0], float polyB_C[N1])
 {		
 	float term  = EvalPolyD0(t, curveX);
 	float discr = EvalPolyD0(t, polyB_C);
 		
-	if(discr < 0.0)
-		return 999999.0;
-	else
-		return term - sqrt(discr);
+	if(discr < 0.0) return POS_INF;
+	else return term - sqrt(discr);
 }
-	
-#define qSplineIDist_Eval(t) qSplineIDistEval(t, curveX, polyB_C)
+
 #define qSplineIDist_ParasDec float curveX[N0], float polyB_C[N1]
 #define qSplineIDist_Paras curveX, polyB_C
-	
+
 float qSplineD1Eval(float t, float curveX[N0], float polyB_C[N1])
 {	 		
-	float f1D1 = EvalPolyD1(t, curveX);
-		
+	float f1D1 = EvalPolyD1(t, curveX);	
 	float f2D0 = EvalPolyD0(t, polyB_C);
 	float f2D1 = EvalPolyD1(t, polyB_C);
-		
-	// vec2 r = Poly::EvalD01(t, polyB_C);
-		
-	// f2D0 = r.x;
-	// f2D1 = r.y;
-		
-	// return f1D1 * 2.0 * sqrt(max(0.0, f2D0)) - f2D1;
+
 	return f1D1 - f2D1 * 0.5 * inversesqrt(max(0.0, f2D0));
 }
-	
-#define qSplineD1_Eval(t) qSplineD1Eval(t, curveX, polyB_C)
+
 #define qSplineD1_ParasDec float curveX[N0], float polyB_C[N1]
 #define qSplineD1_Paras curveX, polyB_C
-	
+
 float qSplineD2Eval(float t, float curveX[N0], float polyB_C[N1])
 {		
 	float f1D1 = EvalPolyD1(t, curveX);
@@ -341,7 +347,6 @@ float qSplineD2Eval(float t, float curveX[N0], float polyB_C[N1])
 	return (Pow2(f2D1) / f2D0 * 0.25 - f2D2 * 0.5) * inversesqrt(f2D0) + f1D2;
 }
 
-#define qSplineD2_Eval(t) qSplineD2Eval(t, curveX, polyB_C)
 #define qSplineD2_ParasDec float curveX[N0], float polyB_C[N1]
 #define qSplineD2_Paras curveX, polyB_C
 
@@ -351,86 +356,61 @@ float qSplineD3Eval(float t, float polyB_C[N1])
 	float f2D1 = EvalPolyD1(t, polyB_C);
 	float f2D2 = EvalPolyD2(t, polyB_C);
 	float f2D3 = EvalPolyD3(t, polyB_C);
-	
+
 	f2D0 = max(0.0, f2D0);
-	
+
 	return (-3.0 * Pow3(f2D1) + 6.0 * f2D0 * f2D1 * f2D2 - 4.0 * Pow2(f2D0) * f2D3) / Pow2(f2D0) * inversesqrt(f2D0);
-	return (-3.0 * Pow3(f2D1) / Pow2(f2D0) + 6.0 * (f2D0 / Pow2(f2D0)) * f2D1 * f2D2 - 4.0 * f2D3) * inversesqrt(f2D0) * 0.125;
-	return (-3.0 * Pow3(f2D1) * Pow2(rcp(f2D0)) + 6.0 * rcp(f2D0) * f2D1 * f2D2 - 4.0 * f2D3) * inversesqrt(f2D0);
 }
 
-#define qSplineD3_Eval(t) qSplineD3Eval(t, polyB_C)
 #define qSplineD3_ParasDec float polyB_C[N1]
 #define qSplineD3_Paras polyB_C
 
-/*#define DEF_binRootFinder(func)                                                          \
-float func##_BinRootFinder_Eval(float n, float p, const uint iCount, func##_ParasDec)    \
-{		                                                                                 \
-	if(func##Eval(n, func##_Paras) > 0.0) return n;                                                     \
-	if(func##Eval(p, func##_Paras) < 0.0) return p;		                                             \
-		                                                                                    \
-	for(uint i = 0; i < iCount; ++i)                                                     \
-	{                                                                                    \
-		float m = (n + p) * 0.5;                                                         \
-			                                                                                \
-		float f = func##Eval(m, func##_Paras);                                           \
-			                                                                                \
-		if(f < 0.0)                                                                      \
-		n = m;                                                                           \
-		else                                                                             \
-		p = m;                                                                           \
-	}                                                                                    \
-		                                                                                    \
-	return (n + p) * 0.5;                                                                \
-}*/
-
-#define DEF_binRootFinder(func)                                                          \
-float func##_BinRootFinder_Eval(float n, float p, const uint iCount, func##_ParasDec)    \
-{		                                                                                 \
-	if(func##Eval(n, func##_Paras) > 0.0) return n;                                                     \
-	if(func##Eval(p, func##_Paras) < 0.0) return p;		                                             \
-	\
-	float m = (n + p) * 0.5;\
-	if(func##Eval(m, func##_Paras) < 0.0) n = m;\
-	else p = m;\
-	m = (n + p) * 0.5;\
-	if(func##Eval(m, func##_Paras) < 0.0) n = m;\
-	else p = m;\
-	m = (n + p) * 0.5;\
-	if(func##Eval(m, func##_Paras) < 0.0) n = m;\
-	else p = m;\
-	m = (n + p) * 0.5;\
-	if(func##Eval(m, func##_Paras) < 0.0) n = m;\
-	else p = m;\
-	m = (n + p) * 0.5;\
-	if(func##Eval(m, func##_Paras) < 0.0) n = m;\
-	else p = m;\
-	m = (n + p) * 0.5;\
-	if(func##Eval(m, func##_Paras) < 0.0) n = m;\
-	else p = m;\
-	m = (n + p) * 0.5;\
-	if(func##Eval(m, func##_Paras) < 0.0) n = m;\
-	else p = m;\
-	m = (n + p) * 0.5;\
-	if(func##Eval(m, func##_Paras) < 0.0) n = m;\
-	else p = m;\
-	m = (n + p) * 0.5;\
-	if(func##Eval(m, func##_Paras) < 0.0) n = m;\
-	else p = m;\
-	m = (n + p) * 0.5;\
-	if(func##Eval(m, func##_Paras) < 0.0) n = m;\
-	else p = m;\
-	\
-		                                                                                    \
-	return (n + p) * 0.5;                                                                \
+#define DEF_binRootFinder(func)                                  \
+float func##_BinRootFinder_Eval(float n, float p, func##_ParasDec) \
+{		                                                           \
+	if(func##Eval(n, func##_Paras) > 0.0) return n;                \
+	if(func##Eval(p, func##_Paras) < 0.0) return p;		           \
+		                                                           \
+	for(uint i = 0; i < ITERATION_COUNT; ++i) {                    \
+		float m = (n + p) * 0.5;                                   \
+		float f = func##Eval(m, func##_Paras);                     \
+			                                                       \
+		if(f < 0.0) n = m;                                         \
+		else p = m;                                                \
+	}                                                              \
+		                                                           \
+	return (n + p) * 0.5;                                          \
 }
+
+// secant method: either this is wrong or it does not converge with the given polynoms
+// does not produce the correct solutions
+/*#define DEF_binRootFinder(func)												\
+float func##_BinRootFinder_Eval(float x0, float x1, func##_ParasDec)		\
+{		\
+	float f0 = func##Eval(x0, func##_Paras);\
+	float f1 = func##Eval(x1, func##_Paras);\
+	if(f0 > 0.0) return x0;						\
+	if(f1 < 0.0) return x1;						\
+																		\
+	for(uint i = 0; i < ITERATION_COUNT; ++i) {								\
+		if(abs(f0 - f1) < FLT_EPS) break;\
+		float x2 = x1 - (x1 - x0) * f1 / (f1 - f0); \
+		float f2 = func##Eval(x2, func##_Paras);							\
+																			\
+		x0 = x1;															\
+		x1 = x2;															\
+		f0 = f1;\
+		f1 = f2;\
+	}																		\
+	return x1;																\
+}*/
 
 DEF_binRootFinder(qSplineIDist)
 DEF_binRootFinder(qSplineD1)
 DEF_binRootFinder(qSplineD2)
 DEF_binRootFinder(qSplineD3)
 
-#define binRootFinder_Eval(n, p, func, iCount) func##_BinRootFinder_Eval(n, p, iCount, func##_Paras)
+#define binRootFinder_Eval(n, p, func) func##_BinRootFinder_Eval(n, p, func##_Paras)
 
 Hit EvalSplineISect(vec3 dir, vec3 s, vec3 h, vec3 t, float rs, float rh, float rt)
 {
@@ -441,8 +421,6 @@ Hit EvalSplineISect(vec3 dir, vec3 s, vec3 h, vec3 t, float rs, float rh, float 
 	RM[1] = normalize(GetOrthoVec(dir));
 	RM[2] = cross(dir, RM[1]);
 	
-	//vec3 fCol = vec3(0.0);
-
 	s *= RM;
 	t *= RM;
 	h *= RM;
@@ -482,34 +460,53 @@ Hit EvalSplineISect(vec3 dir, vec3 s, vec3 h, vec3 t, float rs, float rh, float 
 	
 	vec4 roots = vec4(-1.0);
 	
+#ifdef USE_CUBIC_SOLVER
+	float x3[5];
+	int m3[5];
+
+	// solve the cubic formula of the 1st derivative of polyB --> 4 * polyB_C[4] +  3 * polyB_C[3] + 2 * polyB_C[2] + polyB_C[1]
+	vec3 r = solve_cubic(polyB_C[4] + polyB_C[4] + polyB_C[4] + polyB_C[4], polyB_C[3] + polyB_C[3] + polyB_C[3], polyB_C[2] + polyB_C[2], polyB_C[1]);
+
+	x3[0] = 0.0;
+	x3[1] = r.x;
+	x3[2] = r.y;
+	x3[3] = r.z;
+	x3[4] = 1.0;
+
+	m3[0] = 1;
+	m3[1] = (x3[1] <= 0.0 || x3[1] >= 1.0) ? 0 : 1;
+	m3[2] = (x3[2] <= 0.0 || x3[2] >= 1.0) ? 0 : 1;
+	m3[3] = (x3[3] <= 0.0 || x3[3] >= 1.0) ? 0 : 1;
+	m3[4] = 1;
+#else
 	float x2[4];
-	float m2[4];
+	int m2[4];
 	
 	vec2 r = SolveQuadratic(polyB_C[4] * 12.0, polyB_C[3] * 6.0, polyB_C[2] * 2.0);
 	
-	x2[0] = 0.0; m2[0] = 1.0;
-	x2[1] = r.x; m2[1] = (x2[1] <= 0.0 || x2[1] >= 1.0) ? 0.0 : 1.0;
-	x2[2] = r.y; m2[2] = (x2[2] <= 0.0 || x2[2] >= 1.0) ? 0.0 : 1.0;
-	x2[3] = 1.0; m2[3] = 1.0;
+	x2[0] = 0.0;
+	x2[1] = r.x;
+	x2[2] = r.y;
+	x2[3] = 1.0;
+
+	m2[0] = 1;
+	m2[1] = (x2[1] <= 0.0 || x2[1] >= 1.0) ? 0 : 1;
+	m2[2] = (x2[2] <= 0.0 || x2[2] >= 1.0) ? 0 : 1;
+	m2[3] = 1;
 	
 	float x3[5];
-	float m3[5];
-	FindRootsD1(polyB_C, x2, m2, x3, m3, BISECTION_ITERATION_COUNT);
-	
+	int m3[5];
+	FindRootsD1(polyB_C, x2, m2, x3, m3);
+#endif
+
 	float x4[6];
-	// TODO: use bitmask in single variable
-	float m4[6];
-	m4[0] = 4.0;
-	m4[1] = 4.0;
-	m4[2] = 4.0;
-	m4[3] = 4.0;
-	m4[4] = 4.0;
-	m4[5] = 4.0;
+	int m4[6];
 	
 	{		
-		FindRootsD0(polyB_C, x3, m3, x4, m4, BISECTION_ITERATION_COUNT);
-#ifdef INT_ROOT_MASK
-		int rootType = 0;
+		FindRootsD0(polyB_C, x3, m3, x4, m4);
+
+		// Alternative method for root counting and type determination (is slightly slower)
+		/*int rootType = 0;
 		int rn = 0;
 
 		ivec4 rootTypes = ivec4(15, 10, 20, 20);
@@ -520,7 +517,7 @@ Hit EvalSplineISect(vec3 dir, vec3 s, vec3 h, vec3 t, float rs, float rh, float 
 			rn = 1;
 		}
 		
-		if(m4[1] == 1.0) {
+		if(m4[1] == 1) {
 			roots[rn] = x4[1];
 			rootType = rootTypes[rn];
 			rootTypes[1] = 10;
@@ -530,7 +527,7 @@ Hit EvalSplineISect(vec3 dir, vec3 s, vec3 h, vec3 t, float rs, float rh, float 
 			rootTypes[1] = 30;
 		}
 		
-		if(m4[2] == 1.0) {
+		if(m4[2] == 1) {
 			roots[rn] = x4[2];
 			rootType = rootTypes[rn];
 			rootTypes[1] = 10;
@@ -540,7 +537,7 @@ Hit EvalSplineISect(vec3 dir, vec3 s, vec3 h, vec3 t, float rs, float rh, float 
 			rootTypes[1] = 30;
 		}
 		
-		if(m4[3] == 1.0) {
+		if(m4[3] == 1) {
 			roots[rn] = x4[3];
 			rootType = rootTypes[rn];
 			rootTypes[1] = 10;
@@ -550,7 +547,7 @@ Hit EvalSplineISect(vec3 dir, vec3 s, vec3 h, vec3 t, float rs, float rh, float 
 			rootTypes[1] = 30;
 		}
 		
-		if(m4[4] == 1.0) {
+		if(m4[4] == 1) {
 			roots[rn] = x4[4];
 			rootType = rootTypes[rn];
 			rootTypes[1] = 10;
@@ -563,167 +560,81 @@ Hit EvalSplineISect(vec3 dir, vec3 s, vec3 h, vec3 t, float rs, float rh, float 
 		if(EvalPolyD0(1.0, polyB_C) > 0.0) {
 			roots[rn] = 1.0;
 			rootType = rootTypes[rn];
-			++rn;
 		}
 
 		const ivec4 rootMap = ivec4(0, 30, 20, 30);
 
-		// TODO: check if this is equivalent
-		//if(rootType == 15) rootType = 10;
-		//if(rootType == 10) rootType = 30;
-		//if(rootType == 15 || rootType == 10) rootType = 30;
-		rootType = rootMap[rootType / 10];
+		rootType = rootMap[rootType / 10];*/
 
-		// 137-140 fps
-		/*int rootType = 0;
+		int rootType = 0;
 		int rn = 0;
 		
-		if(EvalPolyD0(0.0, polyB_C) >= 0.0) 
-		{ 
+		if(EvalPolyD0(0.0, polyB_C) >= 0.0) {
 								  roots.x =  0; rn = 1; rootType = 15;
 		}
 		
-		if(m4[1] == 1.0) 
-		{
+		if(m4[1] == 1) {
 			if(rn == 0) 		{ roots.x = x4[1]; rn = 1; rootType = 15;						}
 			else				{ roots.y = x4[1]; rn = 2; rootType = 10; 						}	
-		}
-		else if(rootType == 15) rootType = 0;
-		
-		if(m4[2] == 1.0) 
-		{
-			if     (rn == 0) 	{ roots.x = x4[2]; rn = 1; rootType = 15;						 }
-			else if(rn == 1)	{ roots.y = x4[2]; rn = 2; rootType = rootType == 0 ? 30 : 10; }	
-			else 				{ roots.z = x4[2]; rn = 3; rootType = 20; 						 }	
-		}
-		else if(rootType == 15) rootType = 0;
-		
-		if(m4[3] == 1.0) 
-		{
-			if     (rn == 0) 	{ roots.x = x4[3]; rn = 1; rootType = 15;						 }
-			else if(rn == 1)	{ roots.y = x4[3]; rn = 2; rootType = rootType == 0 ? 30 : 10; }	
-			else if(rn == 2)	{ roots.z = x4[3]; rn = 3; rootType = 20; 						 }	
-			else 				{ roots.w = x4[3]; rn = 4; rootType = 20; 						 }	
-		}
-		else if(rootType == 15) rootType = 0;
-		
-		if(m4[4] == 1.0) 
-		{
-			if     (rn == 0) 	{ roots.x = x4[4]; rn = 1; rootType = 15;						 }
-			else if(rn == 1)	{ roots.y = x4[4]; rn = 2; rootType = rootType == 0 ? 30 : 10; }	
-			else if(rn == 2)	{ roots.z = x4[4]; rn = 3; rootType = 20; 						 }	
-			else 				{ roots.w = x4[4]; rn = 4; rootType = 20; 						 }	
-		} 
-		else if(rootType == 15) rootType = 0;
-		
-		if(EvalPolyD0(1.0, polyB_C) > 0.0) 
-		{ 
-			if(rn == 1) 		{ roots.y =   1.0; rn = 1; rootType = rootType == 0 ? 30 : 10; }
-			else				{ roots.w =   1.0; rn = 2; rootType = 20; 						 }	
+		} else if(rootType == 15) {
+			rootType = 0;
 		}
 		
-		if(rootType == 15) rootType = 10;
-		
-		if(rootType == 10) rootType = 30;*/
-#else
-		float rootType = 0.0;
-		float rn = 0.0;
-		
-		if(EvalPolyD0(0.0, polyB_C) >= 0.0) 
-		{ 
-								  roots.x =  0.0; rn = 1.0; rootType = 1.5;
+		if(m4[2] == 1) {
+			if     (rn == 0) 	{ roots.x = x4[2]; rn = 1; rootType = 15;						}
+			else if(rn == 1)	{ roots.y = x4[2]; rn = 2; rootType = rootType == 0 ? 30 : 10;	}	
+			else 				{ roots.z = x4[2]; rn = 3; rootType = 20; 						}	
+		} else if(rootType == 15) {
+			rootType = 0;
 		}
 		
-		if(m4[1] == 1.0) 
-		{
-			if(rn == 0.0) 		{ roots.x = x4[1]; rn = 1.0; rootType = 1.5;						}
-			else				{ roots.y = x4[1]; rn = 2.0; rootType = 1.0; 						}	
-		}
-		else if(rootType == 1.5) rootType = 0.0;
-		
-		if(m4[2] == 1.0) 
-		{
-			if     (rn == 0.0) 	{ roots.x = x4[2]; rn = 1.0; rootType = 1.5;						 }
-			else if(rn == 1.0)	{ roots.y = x4[2]; rn = 2.0; rootType = rootType == 0.0 ? 3.0 : 1.0; }	
-			else 				{ roots.z = x4[2]; rn = 3.0; rootType = 2.0; 						 }	
-		}
-		else if(rootType == 1.5) rootType = 0.0;
-		
-		if(m4[3] == 1.0) 
-		{
-			if     (rn == 0.0) 	{ roots.x = x4[3]; rn = 1.0; rootType = 1.5;						 }
-			else if(rn == 1.0)	{ roots.y = x4[3]; rn = 2.0; rootType = rootType == 0.0 ? 3.0 : 1.0; }	
-			else if(rn == 2.0)	{ roots.z = x4[3]; rn = 3.0; rootType = 2.0; 						 }	
-			else 				{ roots.w = x4[3]; rn = 4.0; rootType = 2.0; 						 }	
-		}
-		else if(rootType == 1.5) rootType = 0.0;
-		
-		if(m4[4] == 1.0) 
-		{
-			if     (rn == 0.0) 	{ roots.x = x4[4]; rn = 1.0; rootType = 1.5;						 }
-			else if(rn == 1.0)	{ roots.y = x4[4]; rn = 2.0; rootType = rootType == 0.0 ? 3.0 : 1.0; }	
-			else if(rn == 2.0)	{ roots.z = x4[4]; rn = 3.0; rootType = 2.0; 						 }	
-			else 				{ roots.w = x4[4]; rn = 4.0; rootType = 2.0; 						 }	
-		} 
-		else if(rootType == 1.5) rootType = 0.0;
-		
-		if(EvalPolyD0(1.0, polyB_C) > 0.0) 
-		{ 
-			if(rn == 1.0) 		{ roots.y =   1.0; rn = 1.0; rootType = rootType == 0.0 ? 3.0 : 1.0; }
-			else				{ roots.w =   1.0; rn = 2.0; rootType = 2.0; 						 }	
+		if(m4[3] == 1) {
+			if     (rn == 0) 	{ roots.x = x4[3]; rn = 1; rootType = 15;						}
+			else if(rn == 1)	{ roots.y = x4[3]; rn = 2; rootType = rootType == 0 ? 30 : 10;	}	
+			else if(rn == 2)	{ roots.z = x4[3]; rn = 3; rootType = 20; 						}	
+			else 				{ roots.w = x4[3]; rn = 4; rootType = 20; 						}	
+		} else if(rootType == 15) {
+			rootType = 0;
 		}
 		
-		if(rootType == 1.5) rootType = 1.0;
+		if(m4[4] == 1) {
+			if     (rn == 0) 	{ roots.x = x4[4]; rn = 1; rootType = 15;						}
+			else if(rn == 1)	{ roots.y = x4[4]; rn = 2; rootType = rootType == 0 ? 30 : 10;	}	
+			else if(rn == 2)	{ roots.z = x4[4]; rn = 3; rootType = 20; 						}	
+			else 				{ roots.w = x4[4]; rn = 4; rootType = 20; 						}	
+		} else if(rootType == 15) {
+			rootType = 0;
+		}
 		
-		if(rootType == 1.0) rootType = 3.0;
-#endif
+		if(EvalPolyD0(1.0, polyB_C) > 0.0) {
+			if     (rn == 1)	{ roots.y =   1.0; rn = 1; rootType = rootType == 0 ? 30 : 10;	}
+			else				{ roots.w =   1.0; rn = 2; rootType = 20; 						}	
+		}
+		
+		if(rootType == 10 || rootType == 15) rootType = 30;
 
-// TODO: if we dont do int check here performance is much better
-#ifdef INT_ROOT_MASK
 		//region finalize
 		if(rootType > 0) {
 			if(rootType == 30) {
-				float rootD3 = binRootFinder_Eval(roots.x, roots.y, qSplineD3, BISECTION_ITERATION_COUNT);
+				float rootD3 = binRootFinder_Eval(roots.x, roots.y, qSplineD3);
 				
 				vec2 rootsD2;
-				rootsD2.x = binRootFinder_Eval(rootD3, roots.x, qSplineD2, BISECTION_ITERATION_COUNT);
-				rootsD2.y = binRootFinder_Eval(rootD3, roots.y, qSplineD2, BISECTION_ITERATION_COUNT);
+				rootsD2.x = binRootFinder_Eval(rootD3, roots.x, qSplineD2);
+				rootsD2.y = binRootFinder_Eval(rootD3, roots.y, qSplineD2);
 				
-				l1 = binRootFinder_Eval(roots.x, rootsD2.x, qSplineD1, BISECTION_ITERATION_COUNT);
-				l2 = binRootFinder_Eval(rootsD2.y, roots.y, qSplineD1, BISECTION_ITERATION_COUNT);
-				// l1 = rootD3;
+				l1 = binRootFinder_Eval(roots.x, rootsD2.x, qSplineD1);
+				l2 = binRootFinder_Eval(rootsD2.y, roots.y, qSplineD1);
 			} else {
-				l1 = binRootFinder_Eval(roots.x, roots.y, qSplineD1, BISECTION_ITERATION_COUNT);
+				l1 = binRootFinder_Eval(roots.x, roots.y, qSplineD1);
 				
 				if(rootType == 20)
-				l2 = binRootFinder_Eval(roots.z, roots.w, qSplineD1, BISECTION_ITERATION_COUNT);
+					l2 = binRootFinder_Eval(roots.z, roots.w, qSplineD1);
 				else
-				l2 = l1;
+					l2 = l1;
 			}
-#else			
-		//region finalize
-		if(rootType > 0.0) {
-			if(rootType == 3.0) {
-				float rootD3 = binRootFinder_Eval(roots.x, roots.y, qSplineD3, BISECTION_ITERATION_COUNT);
-				
-				vec2 rootsD2;
-				rootsD2.x = binRootFinder_Eval(rootD3, roots.x, qSplineD2, BISECTION_ITERATION_COUNT);
-				rootsD2.y = binRootFinder_Eval(rootD3, roots.y, qSplineD2, BISECTION_ITERATION_COUNT);
-				
-				l1 = binRootFinder_Eval(roots.x, rootsD2.x, qSplineD1, BISECTION_ITERATION_COUNT);
-				l2 = binRootFinder_Eval(rootsD2.y, roots.y, qSplineD1, BISECTION_ITERATION_COUNT);
-			} else {
-				l1 = binRootFinder_Eval(roots.x, roots.y, qSplineD1, BISECTION_ITERATION_COUNT);
-				
-				if(rootType == 2.0)
-				l2 = binRootFinder_Eval(roots.z, roots.w, qSplineD1, BISECTION_ITERATION_COUNT);
-				else
-				l2 = l1;
-			}
-#endif
 			
-			float t1 = qSplineIDist_Eval(l1);
-			float t2 = qSplineIDist_Eval(l2);
+			float t1 = qSplineIDistEval(l1, curveX, polyB_C);
+			float t2 = qSplineIDistEval(l2, curveX, polyB_C);
 			
 			float r1 = EvalPolyD0(l1, rcurve);
 			float r2 = EvalPolyD0(l2, rcurve);
@@ -745,50 +656,22 @@ Hit EvalSplineISect(vec3 dir, vec3 s, vec3 h, vec3 t, float rs, float rh, float 
 				l = l2;
 			}
 			
-			vec3 sp = qSpline_Eval(l);
+			vec3 sp = qSplineEval(l, curveX, curveY, curveZ);
 			sp = RM * sp;
 			vec3 ip = dir * t;
 				
 			vec3 n = normalize(ip - sp);
 			
-			//fCol = (n * 0.5 + 0.5);
-			// fCol = vec3(rootType == 1.0, rootType == 3.0, rootType == 2.0);
-			
-			//fCol = pow(fCol, vec3(2.2));
-			// fCol *= saturate(dot(viewVec, n));
-
-			// if(firstHit) fCol *= 0.0;
-			// if(r1 > 0.0 || r2 > 0.0) fCol *= 0.0;
-			// fCol *= 1.0 - saturate(Draw::ApplyDistScale(sqrt(min(-fd.x + r2, -fd.z + r2)) - r) + 1.0);
-			
 			hit.mask = hit1 || hit2;
 			hit.l = l;
 			hit.t = t;
 			hit.normal = n;
-			//hit.color = fCol;
 		}
 		//endregion
 	}
 
 	return hit;
 }
-
-
-in vec3 position_fs;
-in flat QTube qTube_fs;
-in flat vec4 tp2;
-in flat vec4 tp3;
-
-uniform vec3 eye_pos;
-
-//***** begin interface of fragment.glfs ***********************************
-uniform float gamma = 2.2;
-void finish_fragment(vec4 color);
-//***** end interface of fragment.glfs ***********************************
-
-//***** begin interface of surface.glsl ***********************************
-vec4 compute_reflected_appearance(vec3 position_eye, vec3 normal_eye, vec4 color, int side);
-//***** end interface of surface.glsl ***********************************
 
 void main()
 {
@@ -807,6 +690,8 @@ void main()
 	);
 
 	vec4 frag_color = vec4(0.5, 0.5, 0.5, 1.0);
+	// TODO: color tangent is not supported (do we need this?)
+	frag_color.rgb = EvalCSpline(color0_fs, vec3(0.0), color1_fs, vec3(0.0), hit.l * 0.5 + l_offset_fs);
 	
 	if(!hit.mask) {
 		discard;
