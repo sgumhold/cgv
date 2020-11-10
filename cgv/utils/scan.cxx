@@ -38,15 +38,12 @@ char to_lower(char c)
 	if (c >= 'A' && c <= 'Z')
 		return (c-'A')+'a';
 	switch (c) {
-<<<<<<< HEAD
 		case 'Ä' : return 'ä';
 		case 'Ö' : return 'ö';
 		case 'Ü' : return 'ü';
-=======
 		case OE : return oe;
 		case UE : return ue;
 		case AE : return ae;
->>>>>>> remotes/origin/develop
 		default: return c;
 	}
 }
@@ -64,15 +61,12 @@ char to_upper(char c)
 	if (c >= 'a' && c <= 'z')
 		return (c-'a')+'A';
 	switch (c) {
-<<<<<<< HEAD
 		case 'ä' : return 'Ä';
 		case 'ö' : return 'Ö';
 		case 'ü' : return 'Ü';
-=======
 		case oe: return OE;
 		case ue: return UE;
 		case ae: return AE;
->>>>>>> remotes/origin/develop
 		default: return c;
 	}
 }
@@ -90,7 +84,6 @@ std::string replace_special(const std::string& _s)
 	std::string s;
 	for (unsigned int i=0; i<_s.size(); ++i) {
 		switch (_s[i]) {
-<<<<<<< HEAD
 		case 'Ä' : s += "Ae"; break;
 		case 'Ö' : s += "Oe"; break;
 		case 'Ü' : s += "Ue"; break;
@@ -98,7 +91,6 @@ std::string replace_special(const std::string& _s)
 		case 'ö' : s += "oe"; break;
 		case 'ü' : s += "ue"; break;
 		case 'ß' : s += "ss"; break;
-=======
 		case AE: s += "Ae"; break;
 		case OE: s += "Oe"; break;
 		case UE: s += "Ue"; break;
@@ -106,7 +98,6 @@ std::string replace_special(const std::string& _s)
 		case oe: s += "oe"; break;
 		case ue: s += "ue"; break;
 		case ss: s += "ss"; break;
->>>>>>> remotes/origin/develop
 		default  : s += _s[i]; break;
 		}
 	}

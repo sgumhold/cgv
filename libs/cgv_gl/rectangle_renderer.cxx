@@ -54,12 +54,7 @@ namespace cgv {
 			}
 			return res;
 		}
-<<<<<<< HEAD
-		/// set the flag, whether the position is interpreted as the box center, true by default
-=======
-
 		/// set the flag, whether the position is interpreted as the rectangle center, true by default
->>>>>>> remotes/origin/develop
 		void rectangle_renderer::set_position_is_center(bool _position_is_center)
 		{
 			position_is_center = _position_is_center;

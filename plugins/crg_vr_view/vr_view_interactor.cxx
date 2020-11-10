@@ -379,13 +379,9 @@ bool vr_view_interactor::handle(cgv::gui::event& e)
 			}
 			else if (ke.get_modifiers() == cgv::gui::EM_CTRL + cgv::gui::EM_SHIFT) {
 				if (ke.get_key() >= '0' && ke.get_key() < '5') {
-<<<<<<< HEAD
-					int ci = (ke.get_key() - '0') % 4;
-=======
 					int ci = ke.get_key() - '0';
 					if (ci == 4)
 						ci = 0;
->>>>>>> remotes/origin/develop
 					if (current_vr_handle_index >= 0) {
 						vr::vr_kit_state& state = kit_states[current_vr_handle_index];
 						if (state.controller[ci].status == vr::VRS_TRACKED) {
