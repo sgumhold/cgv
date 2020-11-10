@@ -41,11 +41,6 @@ in flat vec4 tp3;
 in vec4 color_start_fs;
 in vec4 color_end_fs;
 
-vec3 ortho_vec(vec3 v) {
-
-	return abs(v.x) > abs(v.z) ? vec3(-v.y, v.x, 0.0f) : vec3(0.0f, -v.z, v.y);
-}
-
 void main()
 {
 	// Original
@@ -104,7 +99,7 @@ void main()
     		t = -m3 - sqrt(h1);
 			t1 = t;
 			l = 0.0;
-			normal = (oa + t*dir) / ra;
+			normal = normalize((oa + t*dir) / ra);
 		}
 
 		if(h2 > 0.0) {
@@ -113,7 +108,7 @@ void main()
 				hit = true;
 				t1 = t;
 				l = 1.0;
-				normal = (ob + t*dir) / rb;
+				normal = normalize((ob + t*dir) / rb);
 			}
 		}
 

@@ -793,10 +793,8 @@ template <typename T> void simple_mesh<T>::construct_conway_polyhedron(const std
 	}
 }
 
-
 template class simple_mesh<float>;
 template class simple_mesh<double>;
-
 
 		}
 	}

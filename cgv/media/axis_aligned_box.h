@@ -74,6 +74,8 @@ public:
 				c(dim) = maxp(dim);
 		return c;
 	}
+	/// return a vector containing linear interpolation parameter values in the different dimensions
+	fvec_type get_alpha(const fvec_type& p) const { return (p-minp) / (maxp-minp); }
 	/// return a vector with the extents in the different dimensions
 	fvec_type get_extent() const { return maxp-minp; }
 	/// return the center of the box
@@ -159,4 +161,3 @@ std::ostream& operator<<(std::ostream& out, const axis_aligned_box<T, N>& box)
 
 	}
 }
-

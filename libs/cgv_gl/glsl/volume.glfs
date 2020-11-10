@@ -182,7 +182,7 @@ void main()
 
 		color_in *= (1.0 - exp(-step_size * 400.0));
 
-		// back to front blending		
+		// back to front blending
 		color = color_in + (1.0 - color_in.a)*color;
 
 		// step along ray
