@@ -1,5 +1,4 @@
 #version 430
-<<<<<<< HEAD
 
 #extension GL_EXT_geometry_shader4 : enable
 =======
@@ -14,7 +13,6 @@ mat4 get_inverse_modelview_projection_matrix();
 mat3 get_normal_matrix();
 mat3 get_inverse_normal_matrix();
 //***** end interface of view.glsl ***********************************
->>>>>>> remotes/origin/develop
 
 layout(lines) in;
 layout(triangle_strip, max_vertices = 14) out;
@@ -28,7 +26,6 @@ out flat vec4 tp2;
 out flat vec4 tp3;
 out vec4 color_start_fs;
 out vec4 color_end_fs;
-<<<<<<< HEAD
 out flat mat4 inv_modelview;
 out flat mat3 inv_normal;
 
@@ -42,9 +39,6 @@ mat3 get_normal_matrix();
 mat3 get_inverse_normal_matrix();
 //***** end interface of view.glsl ***********************************
 
-=======
-
->>>>>>> remotes/origin/develop
 vec3 ortho_vec(vec3 v) {
 
 	return abs(v.x) > abs(v.z) ? vec3(-v.y, v.x, 0.0f) : vec3(0.0f, -v.z, v.y);

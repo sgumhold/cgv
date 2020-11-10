@@ -657,10 +657,10 @@ public:
 		case cgv::gui::EID_KEY:
 		{
 			cgv::gui::vr_key_event& vrke = static_cast<cgv::gui::vr_key_event&>(e);
-			
-			if (vrke.get_key() == (rgbd_controller_index == 0 ? vr::VR_LEFT_STICK : vr::VR_RIGHT_STICK)) {
+			if (vrke.get_key() == vr::VR_DPAD_DOWN) {
 				switch (vrke.get_action()) {
 				case cgv::gui::KA_PRESS :
+					std::cout << "run here " << std::endl;
 					rgbd_2_controller_orientation_start_calib = controller_orientation; // V^0 = V
 					rgbd_2_controller_position_start_calib = controller_position;       // r^0 = r
 					in_calibration = true;
@@ -674,7 +674,7 @@ public:
 					break;
 				}
 			}
-			if (vrke.get_key() == (rgbd_controller_index == 0 ? vr::VR_LEFT_STICK_LEFT : vr::VR_RIGHT_STICK_LEFT))
+			if (vrke.get_key() == vr::VR_DPAD_LEFT)
 			{
 				switch (vrke.get_action()) {
 				case cgv::gui::KA_PRESS :
@@ -687,7 +687,7 @@ public:
 					break;
 				}
 			}
-			if (vrke.get_key() == (rgbd_controller_index == 0 ? vr::VR_LEFT_STICK_RIGHT : vr::VR_RIGHT_STICK_RIGHT))
+			if (vrke.get_key() == vr::VR_DPAD_RIGHT)
 			{
 				switch (vrke.get_action()) {
 				case cgv::gui::KA_PRESS:
@@ -700,7 +700,7 @@ public:
 					break;
 				}
 			}
-			if (vrke.get_key() == (rgbd_controller_index == 0 ? vr::VR_LEFT_MENU : vr::VR_RIGHT_MENU))
+			if (vrke.get_key() == vr::VR_MENU)
 			{
 				switch (vrke.get_action()) {
 				case cgv::gui::KA_PRESS:
@@ -811,9 +811,9 @@ public:
 				vr_view_ptr->set_event_type_flags(
 					cgv::gui::VREventTypeFlags(
 						cgv::gui::VRE_KEY +
-						cgv::gui::VRE_THROTTLE +
-						cgv::gui::VRE_STICK +
-						cgv::gui::VRE_STICK_KEY +
+						cgv::gui::VRE_ONE_AXIS +
+						cgv::gui::VRE_TWO_AXES +
+						cgv::gui::VRE_ONE_AXIS_GENERATES_KEY +
 						cgv::gui::VRE_POSE
 					));
 				vr_view_ptr->enable_vr_event_debugging(false);
