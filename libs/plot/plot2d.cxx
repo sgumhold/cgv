@@ -219,6 +219,7 @@ void plot2d::draw_sub_plot(cgv::render::context& ctx, unsigned i)
 	if (spc.show_points || spc.show_lines) {
 		set_uniforms(ctx, prog, i);
 		prog.enable(ctx);
+		prog.set_uniform(ctx, "feature_offset", 0.001f * extent.length());
 		set_default_attributes(ctx, prog, 2);
 	}
 
@@ -242,8 +243,10 @@ void plot2d::draw_sub_plot(cgv::render::context& ctx, unsigned i)
 		glDrawArrays(GL_POINTS, 0, count);
 	}
 
-	if (spc.show_points || spc.show_lines)
+	if(spc.show_points || spc.show_lines) {
+		prog.set_uniform(ctx, "feature_offset", 0.0f);
 		prog.disable(ctx);
+	}
 }
 
 void plot2d::draw_domain(cgv::render::context& ctx)

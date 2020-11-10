@@ -163,7 +163,7 @@ public:
 	const vec2& tex_coord(idx_type ti) const { return tex_coords[ti]; }
 	/// compute per face normals (ensure that per corner normal indices are set correspondingly)
 	void compute_face_normals();
-	// /Conway ambo operator
+	/// Conway ambo operator
 	void ambo();
 	/// Conway truncate operator
 	void truncate(T lambda = 0.33333f);

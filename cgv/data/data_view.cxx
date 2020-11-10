@@ -245,7 +245,6 @@ data_view::data_view(const data_format* _format, unsigned char* _data_ptr,
 	  owns_ptr(manage_ptr)
 {
 }
-
 /** the assignment operator takes over the data format and data pointers
     in case they are managed by the source data view */
 data_view& data_view::operator = (const data_view& dv)
@@ -347,7 +346,175 @@ void data_view::reflect_horizontally()
 	}
 	delete [] buffer;
 }
+/// combine multiple n-dimensional data views with the same format into a (n+1)-dimensional data view by appending them
+bool data_view::compose(data_view& composed_dv, const std::vector<data_view>& dvs)
+{
+	if(dvs.size() > 0) {
+		const data_format* src_df_ptr = dvs[0].format;
 
+		unsigned n_dims = src_df_ptr->get_nr_dimensions();
+		const component_format cf = src_df_ptr->get_component_format();
+		
+		data_format* composed_df = new data_format(*src_df_ptr);
+
+		if(n_dims < 1 || n_dims > 3) {
+			std::cerr << "cannot compose data views with " << n_dims << " dimension" << std::endl;
+			return false;
+		}
+		
+		switch(n_dims) {
+		case 1: composed_df->set_height(dvs.size()); break;
+		case 2: composed_df->set_depth(dvs.size()); break;
+		case 3: composed_df->set_nr_time_steps(dvs.size()); break;
+		}
+
+		if(composed_dv.empty()) {
+			new(&composed_dv) data_view(composed_df);
+		} else {
+			std::cerr << "cannot compose into a non empty data view" << std::endl;
+			return false;
+		}
+
+		unsigned char* dst_ptr = composed_dv.get_ptr<unsigned char>();
+		unsigned wrong_format_count = 0;
+
+		unsigned bytes_per_slice = composed_df->get_nr_bytes() / dvs.size();
+
+		for(size_t i = 0; i < dvs.size(); ++i) {
+			const data_view& dv = dvs[i];
+			const data_format* df_ptr = dv.get_format();
+			unsigned char* src_ptr = dv.get_ptr<unsigned char>();
+			unsigned n_bytes = df_ptr->get_nr_bytes();
+
+			if(*src_df_ptr != *df_ptr || n_bytes != bytes_per_slice) {
+				++wrong_format_count;
+				continue;
+			}
+
+			memcpy(dst_ptr, src_ptr, n_bytes);
+			dst_ptr += n_bytes;
+		}
+		
+		if(wrong_format_count > 0) {
+			std::cerr << "skipped " << wrong_format_count << " data views with unmatching formats while composing" << std::endl;
+			return false;
+		}
+		return true;
+	}
+
+	return false;
+}
+
+bool data_view::combine_components(data_view& dv, const std::vector<data_view>::iterator first, const std::vector<data_view>::iterator last) {
+
+	unsigned n_components = std::distance(first, last);
+	if(n_components < 2 || n_components > 4) {
+		std::cerr << "cannot combine channels of less than 2 or more than 4 data views" << std::endl;
+		return false;
+	}
+	
+	const data_format* src_df_ptr = first->format;
+
+	const component_format src_cf = src_df_ptr->get_component_format();
+	if(src_cf.get_nr_components() > 1) {
+		std::cerr << "cannot combine components of data views with more than one component" << std::endl;
+		return false;
+	}
+
+	std::vector<data_view>::iterator it = first;
+	for(unsigned i = 1; i < n_components; ++i) {
+		const data_format* df_ptr = it->format;
+
+		if(*src_df_ptr != *df_ptr) {
+			std::cerr << "cannot combine channels of data views with different formats" << std::endl;
+			return false;
+		}
+		++it;
+	}
+
+	unsigned n_dims = src_df_ptr->get_nr_dimensions();
+	cgv::type::info::TypeId component_type = src_df_ptr->get_component_type();
+
+	ComponentFormat dst_component_format = CF_R;
+	switch(n_components) {
+	case 2: dst_component_format = CF_RG;  break;
+	case 3: dst_component_format = CF_RGB;  break;
+	case 4: dst_component_format = CF_RGBA; break;
+	}
+
+	data_format* dst_df_ptr = nullptr;
+	unsigned w, h, d, t;
+	w = h = d = t = 1;
+
+	unsigned mask_h = 0;
+	unsigned mask_d = 0;
+	unsigned mask_t = 0;
+
+	switch(n_dims) {
+	case 1:
+		w = src_df_ptr->get_width();
+		dst_df_ptr = new data_format(w, component_type, dst_component_format);
+		break;
+	case 2:
+		w = src_df_ptr->get_width();
+		h = src_df_ptr->get_height();
+		mask_h = 1;
+		dst_df_ptr = new data_format(w, h, component_type, dst_component_format);
+		break;
+	case 3:
+		w = src_df_ptr->get_width();
+		h = src_df_ptr->get_height();
+		d = src_df_ptr->get_depth();
+		mask_h = 1;
+		mask_d = 1;
+		dst_df_ptr = new data_format(w, h, d, component_type, dst_component_format);
+		break;
+	case 4:
+		w = src_df_ptr->get_width();
+		h = src_df_ptr->get_height();
+		d = src_df_ptr->get_depth();
+		t = src_df_ptr->get_nr_time_steps();
+		mask_h = 1;
+		mask_d = 1;
+		mask_t = 1;
+		dst_df_ptr = new data_format(w, h, d, t, component_type, dst_component_format);
+		break;
+	}
+
+	if(dv.empty()) {
+		new(&dv) data_view(dst_df_ptr);
+	} else {
+		std::cerr << "cannot combine channels into a non empty data view" << std::endl;
+		return false;
+	}
+
+	//component_type
+	unsigned component_size = cgv::type::info::get_type_size(component_type);
+
+	for(unsigned i = 0; i < t; ++i) {
+		for(unsigned z = 0; z < d; ++z) {
+			for(unsigned y = 0; y < h; ++y) {
+				for(unsigned x = 0; x < w; ++x) {
+
+					it = first;
+					for(unsigned j = 0; j < n_components; ++j) {
+						const data_view& src_dv = (*it);
+						unsigned char* src_ptr = src_dv.get_ptr<unsigned char>(x, mask_h*y, mask_d*z, mask_t*i);
+						unsigned char* dst_ptr = dv.get_ptr<unsigned char>(x, mask_h*y, mask_d*z, mask_t*i);
+
+						dst_ptr += j * component_size;
+
+						memcpy(dst_ptr, src_ptr, component_size);
+						++it;
+					}
+
+				}
+			}
+		}
+	}
+
+	return true;
+}
 
 template class data_view_impl<data_view,unsigned char*>;
 template class data_view_impl<const_data_view,const unsigned char*>;

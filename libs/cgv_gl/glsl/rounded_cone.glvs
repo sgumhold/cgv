@@ -32,6 +32,5 @@ out vec4 color_gs;
 void main()
 {
 	color_gs = group_color(color, group_index);
-	
 	gl_Position = vec4(position.xyz, radius * radius_scale);
 }
