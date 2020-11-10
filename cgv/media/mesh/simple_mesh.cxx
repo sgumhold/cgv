@@ -260,6 +260,14 @@ public:
 			mesh.group_indices.push_back(get_current_group());
 		if (get_current_material() != -1)
 			mesh.material_indices.push_back(get_current_material());
+		if (texcoords) {
+			if (mesh.tex_coord_indices.size() < mesh.position_indices.size())
+				mesh.tex_coord_indices.resize(mesh.position_indices.size(), 0);
+		}
+		if (normals) {
+			if (mesh.normal_indices.size() < mesh.position_indices.size())
+				mesh.normal_indices.resize(mesh.position_indices.size(), 0);
+		}
 		for (idx_type i = 0; i < vcount; ++i) {
 			mesh.position_indices.push_back(idx_type(vertices[i]));
 			if (texcoords)
