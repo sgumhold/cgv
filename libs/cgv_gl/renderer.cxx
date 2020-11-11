@@ -211,13 +211,28 @@ namespace cgv {
 				glPrimitiveRestartIndex(strip_restart_index);
 				glEnable(GL_PRIMITIVE_RESTART);
 			}
-			GLenum pt = gl::map_to_gl(type);
-			if (type == PT_LINES || type == PT_TRIANGLES) {
+			if (type == PT_LINES) {
 				if (use_adjacency)
-					pt += GL_TRIANGLES_ADJACENCY - GL_TRIANGLES;
-				if (use_strips)
-					pt += GL_TRIANGLE_STRIP - GL_TRIANGLES;
+					if (use_strips)
+						type = PT_LINE_STRIP_ADJACENCY;
+					else
+						type = PT_LINES_ADJACENCY;
+				else
+					if (use_strips)
+						type = PT_LINE_STRIP;
 			}
+			else if (type == PT_TRIANGLES)
+				if (use_adjacency)
+					if (use_strips)
+						type = PT_TRIANGLE_STRIP_ADJACENCY;
+					else
+						type = PT_TRIANGLES_ADJACENCY;
+				else
+					if (use_strips)
+						type = PT_TRIANGLE_STRIP;
+
+			GLenum pt = gl::map_to_gl(type);
+			
 			if (index_buffer_ptr && !aam_ptr)
 				index_buffer_ptr->bind(ctx, VBT_INDICES);
 			if (has_indices())
@@ -233,13 +248,28 @@ namespace cgv {
 				glPrimitiveRestartIndex(strip_restart_index);
 				glEnable(GL_PRIMITIVE_RESTART);
 			}
-			GLenum pt = gl::map_to_gl(type);
-			if (type == PT_LINES || type == PT_TRIANGLES) {
+			if (type == PT_LINES) {
 				if (use_adjacency)
-					pt += GL_TRIANGLES_ADJACENCY - GL_TRIANGLES;
-				if (use_strips)
-					pt += GL_TRIANGLE_STRIP - GL_TRIANGLES;
+					if (use_strips)
+						type = PT_LINE_STRIP_ADJACENCY;
+					else
+						type = PT_LINES_ADJACENCY;
+				else
+					if (use_strips)
+						type = PT_LINE_STRIP;
 			}
+			else if (type == PT_TRIANGLES)
+				if (use_adjacency)
+					if (use_strips)
+						type = PT_TRIANGLE_STRIP_ADJACENCY;
+					else
+						type = PT_TRIANGLES_ADJACENCY;
+				else
+					if (use_strips)
+						type = PT_TRIANGLE_STRIP;
+			
+			GLenum pt = gl::map_to_gl(type);
+			
 			if (index_buffer_ptr && !aam_ptr)
 				index_buffer_ptr->bind(ctx, VBT_INDICES);
 			if (has_indices())
