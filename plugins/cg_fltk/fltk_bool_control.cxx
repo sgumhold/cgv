@@ -81,6 +81,18 @@ template <typename FB>
 void fltk_bool_control<FB>::update()
 {
 	fB->value(get_value());
+	if (get_value()) {
+		if (!true_label.empty())
+			set("label", true_label);
+		if (!true_image.empty())
+			set("image", true_image);
+	}
+	else {
+		if (!false_label.empty())
+			set("label", false_label);
+		if (!false_image.empty())
+			set("image", false_image);
+	}
 }
 
 /// only uses the implementation of fltk_base
