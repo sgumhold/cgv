@@ -15,7 +15,15 @@ namespace cgv { // @<
 		extern CGV_API box_renderer& ref_box_renderer(context& ctx, int ref_count_change = 0);
 
 		/// boxes use surface render styles
-		typedef surface_render_style box_render_style;
+		struct CGV_API box_render_style : public surface_render_style
+		{
+			/// extent used in case extent array is not specified
+			vec3 default_extent;
+			/// box anchor position relative to center that corresponds to the position attribute
+			vec3 relative_anchor;
+			/// default constructor sets default extent to (1,1,1) and relative anchor to (0,0,0)
+			box_render_style();
+		};
 
 		/// renderer that supports point splatting
 		class CGV_API box_renderer : public surface_renderer
@@ -92,6 +100,11 @@ namespace cgv { // @<
 			void draw(context& ctx, size_t start, size_t count,
 				bool use_strips = false, bool use_adjacency = false, uint32_t strip_restart_index = -1);
 		};
+		struct CGV_API box_render_style_reflect : public box_render_style
+		{
+			bool self_reflect(cgv::reflect::reflection_handler& rh);
+		};
+		extern CGV_API cgv::reflect::extern_reflection_traits<box_render_style, box_render_style_reflect> get_reflection_traits(const box_render_style&);
 	}
 }
 
