@@ -4,6 +4,13 @@
 
 namespace cgv {
 	namespace render {
+		/// default constructor sets default extent to (1,1,1)
+		box_render_style::box_render_style()
+		{
+			default_extent = vec3(1.0f);
+			relative_anchor = vec3(0.0f);
+		}
+
 		box_renderer& ref_box_renderer(context& ctx, int ref_count_change)
 		{
 			static int ref_count = 0;
@@ -52,12 +59,7 @@ namespace cgv {
 		{
 			// validate set attributes
 			const surface_render_style& srs = get_style<surface_render_style>();
-			bool res = surface_renderer::validate_attributes(ctx);
-			if (!has_extents) {
-				ctx.error("box_renderer::enable() extent attribute not set");
-				res = false;
-			}
-			return res;
+			return surface_renderer::validate_attributes(ctx);
 		}
 		bool box_renderer::init(cgv::render::context& ctx)
 		{
@@ -70,7 +72,6 @@ namespace cgv {
 			}
 			return res;
 		}
-
 		/// 
 		bool box_renderer::enable(context& ctx)
 		{
@@ -79,6 +80,10 @@ namespace cgv {
 			ref_prog().set_uniform(ctx, "position_is_center", position_is_center);
 			ref_prog().set_uniform(ctx, "has_rotations", has_rotations);
 			ref_prog().set_uniform(ctx, "has_translations", has_translations);
+			const auto& brs = get_style<box_render_style>();
+			ref_prog().set_uniform(ctx, "relative_anchor", brs.relative_anchor);
+			if (!has_extents)
+				ref_prog().set_attribute(ctx, "extent", brs.default_extent);
 			return true;
 		}
 		///
@@ -98,5 +103,51 @@ namespace cgv {
 		{
 			draw_impl(ctx, PT_POINTS, start, count, false, false, -1);
 		}
+
+		bool box_render_style_reflect::self_reflect(cgv::reflect::reflection_handler& rh)
+		{
+			return
+				rh.reflect_base(*static_cast<surface_render_style*>(this)) &&
+				rh.reflect_member("default_extent", default_extent);
+		}
+
+
+		cgv::reflect::extern_reflection_traits<box_render_style, box_render_style_reflect> get_reflection_traits(const box_render_style&)
+		{
+			return cgv::reflect::extern_reflection_traits<box_render_style, box_render_style_reflect>();
+		}
+	}
+}
+
+#include <cgv/gui/provider.h>
+
+namespace cgv {
+	namespace gui {
+
+		struct box_render_style_gui_creator : public gui_creator
+		{
+			/// attempt to create a gui and return whether this was successful
+			bool create(provider* p, const std::string& label,
+				void* value_ptr, const std::string& value_type,
+				const std::string& gui_type, const std::string& options, bool*)
+			{
+				if (value_type != cgv::type::info::type_name<cgv::render::box_render_style>::get_name())
+					return false;
+				cgv::render::box_render_style* brs_ptr = reinterpret_cast<cgv::render::box_render_style*>(value_ptr);
+				cgv::base::base* b = dynamic_cast<cgv::base::base*>(p);
+				p->add_member_control(b, "default_extent.x", brs_ptr->default_extent[0], "value_slider", "min=0.001;max=1000;log=true;ticks=true");
+				p->add_member_control(b, "default_extent.y", brs_ptr->default_extent[1], "value_slider", "min=0.001;max=1000;log=true;ticks=true");
+				p->add_member_control(b, "default_extent.z", brs_ptr->default_extent[2], "value_slider", "min=0.001;max=1000;log=true;ticks=true");
+				p->add_member_control(b, "relative_anchor.x", brs_ptr->relative_anchor[0], "value_slider", "min=-1;max=1;ticks=true");
+				p->add_member_control(b, "relative_anchor.y", brs_ptr->relative_anchor[1], "value_slider", "min=-1;max=1;ticks=true");
+				p->add_member_control(b, "relative_anchor.z", brs_ptr->relative_anchor[2], "value_slider", "min=-1;max=1;ticks=true");
+				p->add_gui("surface_render_style", *static_cast<cgv::render::surface_render_style*>(brs_ptr));
+				return true;
+			}
+		};
+
+#include "gl/lib_begin.h"
+
+		CGV_API cgv::gui::gui_creator_registration<box_render_style_gui_creator> box_rs_gc_reg("box_render_style_gui_creator");
 	}
 }
