@@ -222,6 +222,7 @@ private:
 	bool do_viewport_splitting;
 	unsigned nr_viewport_columns;
 	unsigned nr_viewport_rows;
+	unsigned viewport_shrinkage;
 	std::vector<dmat4> MPWs, MPWs_right;
 	std::vector<cgv::render::view> views;
 	std::vector<bool> use_individual_view;
