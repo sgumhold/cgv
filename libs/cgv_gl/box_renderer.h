@@ -93,8 +93,6 @@ namespace cgv { // @<
 			template <typename T>
 			void set_rotation_array(const context& ctx, const T* rotations, size_t nr_elements, unsigned stride) { has_rotations = true; set_attribute_array(ctx, ref_prog().get_attribute_location(ctx, "rotation"), rotations, nr_elements, stride); }
 			///
-			bool validate_attributes(const context& ctx) const;
-			///
 			bool disable(context& ctx);
 			///
 			void draw(context& ctx, size_t start, size_t count,
