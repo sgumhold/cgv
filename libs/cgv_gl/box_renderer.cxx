@@ -54,13 +54,6 @@ namespace cgv {
 		{
 			position_is_center = _position_is_center;
 		}
-
-		bool box_renderer::validate_attributes(const context& ctx) const
-		{
-			// validate set attributes
-			const surface_render_style& srs = get_style<surface_render_style>();
-			return surface_renderer::validate_attributes(ctx);
-		}
 		bool box_renderer::init(cgv::render::context& ctx)
 		{
 			bool res = renderer::init(ctx);
@@ -108,7 +101,8 @@ namespace cgv {
 		{
 			return
 				rh.reflect_base(*static_cast<surface_render_style*>(this)) &&
-				rh.reflect_member("default_extent", default_extent);
+				rh.reflect_member("default_extent", default_extent) &&
+				rh.reflect_member("relative_anchor", relative_anchor);
 		}
 
 
