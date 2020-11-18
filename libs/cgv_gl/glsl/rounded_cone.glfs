@@ -46,7 +46,11 @@ void main()
 	// Original
 	//vec3 org = vec3(0.0);
 	//vec3 dir = normalize(position);
-	vec3 org = (get_inverse_modelview_matrix() * vec4(vec3(0.0), 1.0)).xyz;
+	//vec3 org = (get_inverse_modelview_matrix() * vec4(vec3(0.0), 1.0)).xyz;
+	// Intersection is performed in eye space => eye position is at vec3(0.0) and this fragment is located at "position"
+	// By moving the eye position closer to the fragment position we can improve the numerical accuracy of the resulting
+	// transformed vectors anmd directions.
+	vec3 org = (get_inverse_modelview_matrix() * vec4(0.98*position, 1.0)).xyz;
 	vec3 dir = normalize((get_inverse_modelview_matrix() * vec4(normalize(position), 0.0)).xyz);
 	
 	float ra = start_fs.w;
