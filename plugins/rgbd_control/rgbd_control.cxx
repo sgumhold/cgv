@@ -110,6 +110,11 @@ void rgbd_control::on_set(void* member_ptr)
 {
 	if (member_ptr == &do_protocol) {
 		if (do_protocol) {
+			//prevent reading and writing the log on the same path 
+			if (device_mode == DM_PROTOCOL) {
+				do_protocol = false;
+				rgbd_inp.disable_protocol();
+			}
 			bool path_exists = cgv::utils::dir::exists(protocol_path);
 			if (!path_exists) {
 				if (cgv::gui::question(protocol_path + " does not exist. Create it?", "No,Yes", 1)) {
