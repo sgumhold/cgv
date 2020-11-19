@@ -321,6 +321,8 @@ bool write_protocol_frame(const std::string& fn, frame_type* frame_ptr)
 bool rgbd_input::write_protocol_frame_async(const std::string& fn, const frame_type& frame) const
 {
 	static future<bool> fu;
+	if (frame.frame_data.size() == 0)
+		return false;
 	if (!protocol_write_async)
 		return cgv::utils::file::write(fn, &frame.frame_data.front(), frame.frame_data.size(), false);
 
