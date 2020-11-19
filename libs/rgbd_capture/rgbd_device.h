@@ -27,13 +27,20 @@ namespace rgbd {
 	};
 	*/
 
+
+	struct camera_intrinsics {
+		double fx, fy; //focal length, width in pixel
+		double cx, cy; //principal point;
+		double sk; //skew
+		unsigned image_width, image_height;
+	};
+
 	///struct for representing parameters used in the device emulator
 	struct emulator_parameters {
-		struct {
-			double fx, fy, cx, cy, sk;
-		} intrinsics;
+		camera_intrinsics intrinsics;
 		double depth_scale;
 	};
+
 	/// helper object for parsing dynamic sized frames of type PF_POINTS_AND_TRIANGLES. 
 	struct CGV_API mesh_data_view {
 		typedef cgv::math::fvec<float, 3>  Point;

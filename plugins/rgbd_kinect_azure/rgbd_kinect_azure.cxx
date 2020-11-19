@@ -8,6 +8,11 @@ using namespace std::chrono;
 
 void dummy(void* buffer,void* context){}
 
+
+//constexpr emulator_parameters
+
+constexpr rgbd::camera_intrinsics azure_color_intrinsics = { 3.765539746314990e+02, 3.758362623002023e+02,6.971111133663950e+02,3.753833895962808e+02, 0.0, 768, 1366 };
+
 namespace rgbd {
 	/// create a detached kinect device object
 	rgbd_kinect_azure::rgbd_kinect_azure()
@@ -370,25 +375,21 @@ namespace rgbd {
 	/// map a depth value together with pixel indices to a 3D point with coordinates in meters; point_ptr needs to provide space for 3 floats
 	bool rgbd_kinect_azure::map_depth_to_point(int x, int y, int depth, float* point_ptr) const
 	{
-		/*intriniscs
-		376.553974631499		0					0
-		0						375.836262300202	0
-		697.111113366395		375.383389596281	1
-		*/
-
-		//coordinates are in millimeters
-
-		if (depth == 0)
-			return false;
-
-		static constexpr double fx_d = 1.0 / 376.553974631499;
-		static constexpr double fy_d = 1.0 / 375.836262300202;
-		static constexpr double cx_d = 697.111113366395;
-		static constexpr double cy_d = 375.383389596281;
+		static constexpr double fx_d = 1.0 / azure_color_intrinsics.fx;
+		static constexpr double fy_d = 1.0 / azure_color_intrinsics.fy;
+		static constexpr double cx_d = azure_color_intrinsics.cx;
+		static constexpr double cy_d = azure_color_intrinsics.cy;
 		double d = depth;
 		point_ptr[0] = float((x - cx_d) * d * fx_d);
 		point_ptr[1] = float((y - cy_d) * d * fy_d);
 		point_ptr[2] = float(d);
+		return true;
+	}
+
+	bool rgbd_kinect_azure::get_emulator_configuration(emulator_parameters& parameters) const
+	{
+		parameters.depth_scale = 1.0;
+		parameters.intrinsics = azure_color_intrinsics;
 		return true;
 	}
 

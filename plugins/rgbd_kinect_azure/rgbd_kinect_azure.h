@@ -51,8 +51,7 @@ namespace rgbd {
 		/// map a depth value together with pixel indices to a 3D point with coordinates in meters; point_ptr needs to provide space for 3 floats
 		bool map_depth_to_point(int x, int y, int depth, float* point_ptr) const;
 
-		void check_errors();
-		bool recover_from_errors();
+		virtual bool get_emulator_configuration(emulator_parameters& parameters) const override;
 
 	private:
 		std::unique_ptr<k4a::error> capture_thread_device_error;
@@ -79,6 +78,8 @@ namespace rgbd {
 		k4a::transformation camera_transform;
 	protected:
 		void capture(int is);
+		void check_errors();
+		bool recover_from_errors();
 	};
 
 	/// interface for kinect drivers (implement only as driver implementor)
