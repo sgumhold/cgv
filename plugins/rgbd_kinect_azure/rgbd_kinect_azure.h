@@ -9,7 +9,6 @@
 #include <mutex>
 #include <atomic>
 #include <k4a/k4a.hpp>
-#include "rgbd_frame_set.h"
 
 namespace rgbd {
 
@@ -17,7 +16,6 @@ namespace rgbd {
 	class CGV_API rgbd_kinect_azure : public rgbd_device
 	{
 	public:
-		typedef rgbd_utils::frame_tuple<3> rgbd_frame_set;
 		/// create a detached kinect CLNUI device object
 		rgbd_kinect_azure();
 		~rgbd_kinect_azure();
@@ -66,6 +64,7 @@ namespace rgbd {
 		mutable std::mutex capture_lock;
 		volatile bool has_new_color_frame, has_new_depth_frame, has_new_ir_frame;
 		std::unique_ptr<rgbd::frame_type> color_frame, depth_frame, ir_frame;
+		//rgbd::frame_type *color_frame =nullptr, *depth_frame=nullptr, *ir_frame=nullptr;
 		bool imu_enabled;
 		mutable IMU_measurement imu_data;
 		mutable volatile bool has_new_IMU_data;
