@@ -170,6 +170,12 @@ namespace rgbd {
 		if (is_running())
 			return true;
 
+		//reset error information
+		if (capture_thread_device_error && !recover_from_errors()){
+			std::cerr << "rgbd_kinect_azure::start_device: could not recover from errors\n";
+			return false;
+		}
+
 		k4a_device_configuration_t cfg = K4A_DEVICE_CONFIG_INIT_DISABLE_ALL;
 		cfg.color_resolution = K4A_COLOR_RESOLUTION_OFF;
 		cfg.color_format = K4A_IMAGE_FORMAT_COLOR_BGRA32;
@@ -245,7 +251,8 @@ namespace rgbd {
 
 		cfg.synchronized_images_only = (color_stream_ix != -1 && depth_stream_ix != -1);
 		
-		calibration = device.get_calibration(cfg.depth_mode, cfg.color_resolution);
+		camera_calibration = device.get_calibration(cfg.depth_mode, cfg.color_resolution);
+		camera_transform = k4a::transformation(camera_calibration);
 
 		try { device.start_cameras(&cfg); }
 		catch (runtime_error e) {
@@ -290,7 +297,7 @@ namespace rgbd {
 	/// return whether device has been started
 	bool rgbd_kinect_azure::is_running() const
 	{
-		return device_started;
+		return device_started.load(std::memory_order_relaxed);
 	}
 
 		/// query a frame of the given input stream
@@ -305,7 +312,7 @@ namespace rgbd {
 			cerr << "rgbd_kinect::get_frame called on device that is not running" << endl;
 			return false;
 		}
-	
+
 		if (is == IS_COLOR && has_new_color_frame) {
 			capture_lock.lock();
 			frame = move(*color_frame);
@@ -325,6 +332,8 @@ namespace rgbd {
 			capture_lock.unlock();
 			return true;
 		}
+
+		check_errors();
 
 		return false;
 	}
@@ -347,14 +356,13 @@ namespace rgbd {
 		vector<char> col_buffer = color_frame.frame_data;
 		vector<char> dep_buffer = depth_frame.frame_data;
 
-		k4a::transformation transform = k4a::transformation(calibration);
 		k4a::image color_img = k4a::image::create_from_buffer(K4A_IMAGE_FORMAT_COLOR_BGRA32, color_frame.width, color_frame.height,
 			color_frame.width * 4, reinterpret_cast<uint8_t*>(col_buffer.data()),
 			color_frame.frame_data.size(),dummy,dummy);
 		k4a::image depth_img = k4a::image::create_from_buffer(K4A_IMAGE_FORMAT_DEPTH16, depth_frame.width, depth_frame.height,
 			depth_frame.width * 2, reinterpret_cast<uint8_t*>(dep_buffer.data()),
 			depth_frame.frame_data.size(), dummy, dummy);
-		k4a::image transformed_color_img = transform.color_image_to_depth_camera(depth_img, color_img);
+		k4a::image transformed_color_img = camera_transform.color_image_to_depth_camera(depth_img, color_img);
 
 		memcpy(warped_color_frame.frame_data.data(), transformed_color_img.get_buffer(), transformed_color_img.get_size());
 	}
@@ -384,86 +392,115 @@ namespace rgbd {
 		return true;
 	}
 
+	void rgbd_kinect_azure::check_errors()
+	{
+		if (capture_thread_has_new_messages.load(std::memory_order_acquire)) {
+			if (capture_thread_device_error) {
+				capture_thread_broken = true;
+				std::cerr << "rgbd_kinect_azure driver: exception occured in capture thread! \n" << capture_thread_device_error->what() << '\n';
+				stop_device();
+			}
+		}
+	}
+
+	bool rgbd_kinect_azure::recover_from_errors()
+	{
+		assert(!is_running());
+		capture_thread_has_new_messages.store(false, std::memory_order_relaxed);
+		capture_thread_device_error = nullptr;
+		//try recover
+		std::string old_dev_serial = device_serial;
+		detach();
+		return attach(old_dev_serial);
+	}
+
 	void rgbd_kinect_azure::capture(int is)
 	{
 		while (is_running()) {
-			k4a::capture cap;
-			device.get_capture(&cap);
-			unique_ptr<frame_type> col_frame, dep_frame, ired_frame;
+			try {
+				k4a::capture cap;
+				device.get_capture(&cap);
+				unique_ptr<frame_type> col_frame, dep_frame, ired_frame;
 
-			if (is & IS_COLOR) {
-				k4a::image col = cap.get_color_image();
-				col_frame = make_unique<frame_type>();
-				static_cast<frame_format&>(*col_frame) = color_format;
-				col_frame->time = col.get_device_timestamp().count()*0.001;
-				col_frame->frame_data.resize(col.get_size());
-				col_frame->compute_buffer_size();
-				memcpy(col_frame->frame_data.data(), col.get_buffer(), col.get_size());
-			}
-
-			if (is & IS_DEPTH) {
-				k4a::image dep = cap.get_depth_image();
-				dep_frame = make_unique<frame_type>();
-				static_cast<frame_format&>(*dep_frame) = depth_format;
-				dep_frame->time = dep.get_device_timestamp().count()*0.001;
-				dep_frame->frame_data.resize(dep.get_size());
-				dep_frame->compute_buffer_size();
-				memcpy(dep_frame->frame_data.data(), dep.get_buffer(), dep.get_size());
-			}
-
-			if (is & IS_INFRARED) {
-				k4a::image ir = cap.get_ir_image();
-				ired_frame = make_unique<frame_type>();
-				static_cast<frame_format&>(*ired_frame) = ir_format;
-				ired_frame->time = ir.get_device_timestamp().count()*0.001;
-				ired_frame->frame_data.resize(ir.get_size());
-				ired_frame->compute_buffer_size();
-				memcpy(ired_frame->frame_data.data(), ir.get_buffer(), ir.get_size());
-			}
-
-
-			//read IMU
-			k4a_imu_sample_t imu_sample;
-			if (imu_enabled) {
-				switch (k4a_device_get_imu_sample(device.handle(), &imu_sample, -1))
-				{
-				case K4A_WAIT_RESULT_SUCCEEDED:
-					break;
-				case K4A_WAIT_RESULT_TIMEOUT:
-					break;
-				case K4A_WAIT_RESULT_FAILED:
-					cerr << "Failed to read a imu sample\n";
-					imu_enabled = false;
+				if (is & IS_COLOR) {
+					k4a::image col = cap.get_color_image();
+					col_frame = make_unique<frame_type>();
+					static_cast<frame_format&>(*col_frame) = color_format;
+					col_frame->time = col.get_device_timestamp().count() * 0.001;
+					col_frame->frame_data.resize(col.get_size());
+					col_frame->compute_buffer_size();
+					memcpy(col_frame->frame_data.data(), col.get_buffer(), col.get_size());
 				}
-			}
+
+				if (is & IS_DEPTH) {
+					k4a::image dep = cap.get_depth_image();
+					dep_frame = make_unique<frame_type>();
+					static_cast<frame_format&>(*dep_frame) = depth_format;
+					dep_frame->time = dep.get_device_timestamp().count() * 0.001;
+					dep_frame->frame_data.resize(dep.get_size());
+					dep_frame->compute_buffer_size();
+					memcpy(dep_frame->frame_data.data(), dep.get_buffer(), dep.get_size());
+				}
+
+				if (is & IS_INFRARED) {
+					k4a::image ir = cap.get_ir_image();
+					ired_frame = make_unique<frame_type>();
+					static_cast<frame_format&>(*ired_frame) = ir_format;
+					ired_frame->time = ir.get_device_timestamp().count() * 0.001;
+					ired_frame->frame_data.resize(ir.get_size());
+					ired_frame->compute_buffer_size();
+					memcpy(ired_frame->frame_data.data(), ir.get_buffer(), ir.get_size());
+				}
 
 
-			capture_lock.lock();
-			if (is & IS_COLOR) {
-				color_frame = move(col_frame);
-				has_new_color_frame = true;
-			}
-			if (is & IS_DEPTH) {
-				depth_frame = move(dep_frame);
-				has_new_depth_frame = true;
-			}
-			if (is & IS_INFRARED) {
-				ir_frame = move(ired_frame);
-				has_new_ir_frame = true;
-			}
+				//read IMU
+				k4a_imu_sample_t imu_sample;
+				if (imu_enabled) {
+					switch (k4a_device_get_imu_sample(device.handle(), &imu_sample, -1))
+					{
+					case K4A_WAIT_RESULT_SUCCEEDED:
+						break;
+					case K4A_WAIT_RESULT_TIMEOUT:
+						break;
+					case K4A_WAIT_RESULT_FAILED:
+						cerr << "Failed to read a imu sample\n";
+						imu_enabled = false;
+					}
+				}
 
-			if (imu_enabled) {
-				imu_data.angular_acceleration[0] = imu_sample.gyro_sample.v[0];
-				imu_data.angular_acceleration[1] = imu_sample.gyro_sample.v[1];
-				imu_data.angular_acceleration[2] = imu_sample.gyro_sample.v[2];
 
-				imu_data.linear_acceleration[0] = imu_sample.acc_sample.v[0];
-				imu_data.linear_acceleration[1] = imu_sample.acc_sample.v[1];
-				imu_data.linear_acceleration[2] = imu_sample.acc_sample.v[2];
-				imu_data.time_stamp = imu_sample.acc_timestamp_usec;
-				has_new_IMU_data = true;
+				capture_lock.lock();
+				if (is & IS_COLOR) {
+					color_frame = move(col_frame);
+					has_new_color_frame = true;
+				}
+				if (is & IS_DEPTH) {
+					depth_frame = move(dep_frame);
+					has_new_depth_frame = true;
+				}
+				if (is & IS_INFRARED) {
+					ir_frame = move(ired_frame);
+					has_new_ir_frame = true;
+				}
+
+				if (imu_enabled) {
+					imu_data.angular_acceleration[0] = imu_sample.gyro_sample.v[0];
+					imu_data.angular_acceleration[1] = imu_sample.gyro_sample.v[1];
+					imu_data.angular_acceleration[2] = imu_sample.gyro_sample.v[2];
+
+					imu_data.linear_acceleration[0] = imu_sample.acc_sample.v[0];
+					imu_data.linear_acceleration[1] = imu_sample.acc_sample.v[1];
+					imu_data.linear_acceleration[2] = imu_sample.acc_sample.v[2];
+					imu_data.time_stamp = imu_sample.acc_timestamp_usec;
+					has_new_IMU_data = true;
+				}
+				capture_lock.unlock();
 			}
-			capture_lock.unlock();
+			catch (k4a::error err) {
+				capture_thread_device_error = std::make_unique<k4a::error>(err);
+				capture_thread_has_new_messages.store(true, std::memory_order_release);
+				return; //most of the time the device is unusable after an error
+			}
 		}
 	}
 

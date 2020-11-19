@@ -51,10 +51,17 @@ namespace rgbd {
 		/// map a depth value together with pixel indices to a 3D point with coordinates in meters; point_ptr needs to provide space for 3 floats
 		bool map_depth_to_point(int x, int y, int depth, float* point_ptr) const;
 
-	protected:
+		void check_errors();
+		bool recover_from_errors();
+
+	private:
+		std::unique_ptr<k4a::error> capture_thread_device_error;
+		std::atomic<bool> capture_thread_has_new_messages = false;
+		bool capture_thread_broken = false;
+
 		mutable k4a::device device;
 		std::string device_serial;
-		volatile bool device_started;
+		std::atomic<bool> device_started;
 
 		stream_format color_format, ir_format, depth_format;
 		bool near_mode;
@@ -68,8 +75,9 @@ namespace rgbd {
 		bool imu_enabled;
 		mutable IMU_measurement imu_data;
 		mutable volatile bool has_new_IMU_data;
-		k4a::calibration calibration;
-	private:
+		k4a::calibration camera_calibration;
+		k4a::transformation camera_transform;
+	protected:
 		void capture(int is);
 	};
 
