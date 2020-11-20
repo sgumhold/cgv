@@ -24,6 +24,9 @@
 #include <point_cloud/point_cloud.h>
 #include <point_cloud/ICP.h>
 #include <cg_vr/vr_events.h>
+#include <vr/vr_state.h>
+#include <vr/vr_kit.h>
+#include <vr/vr_driver.h>
 
 ///@ingroup VR
 ///@{
@@ -657,10 +660,10 @@ public:
 		case cgv::gui::EID_KEY:
 		{
 			cgv::gui::vr_key_event& vrke = static_cast<cgv::gui::vr_key_event&>(e);
-			if (vrke.get_key() == vr::VR_DPAD_DOWN) {
+			int ci = vrke.get_controller_index();
+			if (ci == 0 && vrke.get_key() == vr::VR_DPAD_DOWN) {
 				switch (vrke.get_action()) {
 				case cgv::gui::KA_PRESS :
-					std::cout << "run here " << std::endl;
 					rgbd_2_controller_orientation_start_calib = controller_orientation; // V^0 = V
 					rgbd_2_controller_position_start_calib = controller_position;       // r^0 = r
 					in_calibration = true;
@@ -674,7 +677,7 @@ public:
 					break;
 				}
 			}
-			if (vrke.get_key() == vr::VR_DPAD_LEFT)
+			if (ci == 0 && vrke.get_key() == vr::VR_DPAD_LEFT)
 			{
 				switch (vrke.get_action()) {
 				case cgv::gui::KA_PRESS :
@@ -687,7 +690,7 @@ public:
 					break;
 				}
 			}
-			if (vrke.get_key() == vr::VR_DPAD_RIGHT)
+			if (ci == 0 && vrke.get_key() == vr::VR_DPAD_RIGHT)
 			{
 				switch (vrke.get_action()) {
 				case cgv::gui::KA_PRESS:
@@ -700,7 +703,7 @@ public:
 					break;
 				}
 			}
-			if (vrke.get_key() == vr::VR_MENU)
+			if (ci == 0 && vrke.get_key() == vr::VR_MENU)
 			{
 				switch (vrke.get_action()) {
 				case cgv::gui::KA_PRESS:
@@ -713,6 +716,7 @@ public:
 					break;
 				}
 			}
+			return true;
 		}
 		case cgv::gui::EID_THROTTLE:
 		{
@@ -812,8 +816,9 @@ public:
 					cgv::gui::VREventTypeFlags(
 						cgv::gui::VRE_KEY +
 						cgv::gui::VRE_ONE_AXIS +
-						cgv::gui::VRE_TWO_AXES +
 						cgv::gui::VRE_ONE_AXIS_GENERATES_KEY +
+						cgv::gui::VRE_TWO_AXES +
+						cgv::gui::VRE_TWO_AXES_GENERATES_DPAD +
 						cgv::gui::VRE_POSE
 					));
 				vr_view_ptr->enable_vr_event_debugging(false);
