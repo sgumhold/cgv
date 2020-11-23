@@ -153,8 +153,11 @@ public:
 	    of data view but the component format of the texture.
 	    If level is not specified or set to -1 mipmaps are generated. 
 		If cube_side is specified, and data view is 2D, create one of
-		the six sides of a cubemap. */
-	bool create(const context& ctx, const cgv::data::const_data_view& data, int level = -1, int cube_side = -1, const std::vector<cgv::data::data_view>* palettes = 0);
+		the six sides of a cubemap.
+		If is_array is true and data view is 2D or 3D, create
+		a texture array layer.
+		Cubemap arrays are currently not suported. */
+	bool create(const context& ctx, const cgv::data::const_data_view& data, int level = -1, int cube_side = -1, bool is_array = false, const std::vector<cgv::data::data_view>* palettes = 0);
 	/** replace a block within a 1d texture with the given data. 
 	    If level is not specified, level 0 is set and if a mipmap 
 		 has been created before, coarser levels are updated also. */

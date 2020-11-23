@@ -3,7 +3,10 @@
 uniform bool position_is_center;
 uniform bool has_rotations;
 uniform bool has_translations;
-uniform vec3 relative_anchor = vec3(0.0);
+uniform bool has_texture_indices;
+uniform float thickness_scale;
+uniform int tex_idx_offset;
+uniform int tex_idx_stride;
 
 in vec4 position;
 in vec3 extent;
@@ -11,10 +14,14 @@ in vec4 color;
 in int group_index;
 in vec4 rotation;
 in vec3 translation;
+in int texture_index;
 
 out mat3 NM;
 out mat4 PM;
+out mat4 inv_TM;
+out float y_scale;
 out vec4 color_gs;
+flat out int tex_idx;
 
 //***** begin interface of quaternion.glsl ***********************************
 vec4 unit_quaternion();
@@ -62,23 +69,22 @@ void main()
 	mat4 S = mat4(0.0);
 	if (position_is_center) {
 		S[0][0] = extent[0];
-		S[1][1] = extent[1];
+		S[1][1] = extent[1] * thickness_scale;
 		S[2][2] = extent[2];
-		S[3]    = vec4(-0.5*relative_anchor*extent,1.0);
 		center_position = position.xyz;
 	}
 	else {
 		vec3 E = extent - position.xyz;
 		S[0][0] = E[0];
-		S[1][1] = E[1];
+		S[1][1] = E[1] * thickness_scale;
 		S[2][2] = E[2];
-		S[3] = vec4(0.0,0.0,0.0,1.0);
 		center_position = 0.5*(extent + position.xyz);
 	}
+	S[3] = vec4(0.0,0.0,0.0,1.0);
 
-	// setup position matrix from modelview, rotations and translations 
-	PM = get_modelview_matrix();
-
+	// setup transformation matrix from rotations and translations 
+	mat4 TM = mat4(1.0);
+	
 	vec4 q;
 	if (has_rotations)
 		q = rotation;
@@ -87,9 +93,20 @@ void main()
 	vec3 t = center_position;
 	if (has_translations)
 		t += translation;
-	right_multiply_group_position_matrix_and_rigid(PM, group_index, q, t);
+	right_multiply_group_position_matrix_and_rigid(TM, group_index, q, t);
 	
-	PM = PM * S;
+	// setup position matrix from modelview, transformation and scale 
+	PM = get_modelview_matrix() * TM * S;
+	
+	inv_TM = inverse(TM * S * mat4(0.5)) * get_inverse_modelview_matrix();
+	y_scale = 0.5 * S[1][1];
+
+	if(has_texture_indices)
+		tex_idx = texture_index;
+	else
+		tex_idx = 0;
+
+	tex_idx = tex_idx + tex_idx_offset*tex_idx_stride;
 
 	gl_Position = position;
 }
