@@ -121,7 +121,7 @@ public:
 			group_translations.push_back(vec3(0, 0, 0));
 			group_rotations.push_back(vec4(0, 0, 0, 1));
 		}
-		mode = RM_ROUNDED_CONES;
+		mode = RM_POINTS;
 		point_style.measure_point_size_in_pixel = false;
 		surfel_style.point_size = 15;
 		surfel_style.measure_point_size_in_pixel = false;

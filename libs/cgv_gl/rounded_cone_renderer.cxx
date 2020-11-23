@@ -14,7 +14,7 @@ namespace cgv {
 
 		render_style* rounded_cone_renderer::create_render_style() const
 		{
-			return new surface_render_style();
+			return new rounded_cone_render_style();
 		}
 
 		rounded_cone_render_style::rounded_cone_render_style()
@@ -191,6 +191,5 @@ namespace cgv {
 #include "gl/lib_begin.h"
 
 		CGV_API cgv::gui::gui_creator_registration<rounded_cone_render_style_gui_creator> rounded_cone_rs_gc_reg("rounded_cone_render_style_gui_creator");
-
 	}
 }
