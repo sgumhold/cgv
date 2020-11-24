@@ -27,6 +27,7 @@
 #include <vr/vr_state.h>
 #include <vr/vr_kit.h>
 #include <vr/vr_driver.h>
+#include <cgv/defines/quote.h>
 
 ///@ingroup VR
 ///@{
@@ -72,11 +73,14 @@ protected:
 	bool record_frame;
 	///
 	bool record_all_frames;
+	/// 
+	bool record_key_frames;
 	bool clear_all_frames;
 	bool in_calibration;
 	bool zoom_in;
 	bool zoom_out;
 	bool save_pointcloud;
+	int key_frame_step;
 	/// intermediate point cloud and to be rendered point cloud
 	std::vector<vertex> intermediate_pc, current_pc;
 	/// list of recorded point clouds
@@ -116,6 +120,8 @@ protected:
 	std::future<size_t> future_handle;
 	/// 
 	
+	/// path to be set for pc files
+	std::string pc_file_path;
 	///
 	bool rgbd_started;
 	std::string rgbd_protocol_path;
@@ -283,6 +289,7 @@ public:
 		rgbd_started = false;
 		record_frame = false;
 		record_all_frames = false;
+		record_key_frames = false;
 		clear_all_frames = false;
 		trigger_is_pressed = false;
 		recording_fps = 5;
@@ -292,6 +299,8 @@ public:
 		point_style.blend_width_in_pixel = 0;
 		max_nr_shown_recorded_pcs = 20;
 		counter_pc = 0;
+
+		pc_file_path = QUOTE_SYMBOL_VALUE(INPUT_DIR) "/../data";
 
 		connect(cgv::gui::get_animation_trigger().shoot, this, &vr_rgbd::timer_event);
 	}
@@ -371,9 +380,8 @@ public:
 			point_cloud *pc_save = new point_cloud();
 			pc_save->has_clrs = true;
 			copy_pointcloud(intermediate_pc, *pc_save);
-			//std::cout << std::to_string(i) << std::endl;
 			///pathname
-			std::string filename = "D://pointcloud_" + std::to_string(i) + ".obj";
+			std::string filename = pc_file_path + std::to_string(i) + ".obj";
 			pc_save->write(filename);
 		}
 	}
@@ -451,6 +459,7 @@ public:
 		icp->set_eps(1e-10);
 		icp->reg_icp(r, t);
 	}
+
 	void construct_TSDtree()
 	{
 		//using pc queue to construct the TSDtree

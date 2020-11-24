@@ -76,6 +76,7 @@ namespace rgbd {
 		mutable volatile bool has_new_IMU_data;
 		k4a::calibration camera_calibration;
 		k4a::transformation camera_transform;
+		k4a_calibration_intrinsic_parameters_t* intrinsics;
 	protected:
 		void capture(int is);
 		void check_errors();

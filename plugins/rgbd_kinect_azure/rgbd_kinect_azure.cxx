@@ -258,6 +258,7 @@ namespace rgbd {
 		
 		camera_calibration = device.get_calibration(cfg.depth_mode, cfg.color_resolution);
 		camera_transform = k4a::transformation(camera_calibration);
+		intrinsics = &camera_calibration.depth_camera_calibration.intrinsics.parameters;
 
 		try { device.start_cameras(&cfg); }
 		catch (runtime_error e) {
@@ -375,12 +376,17 @@ namespace rgbd {
 	/// map a depth value together with pixel indices to a 3D point with coordinates in meters; point_ptr needs to provide space for 3 floats
 	bool rgbd_kinect_azure::map_depth_to_point(int x, int y, int depth, float* point_ptr) const
 	{
-		static constexpr double fx_d = 1.0 / azure_color_intrinsics.fx;
+		/*static constexpr double fx_d = 1.0 / azure_color_intrinsics.fx;
 		static constexpr double fy_d = 1.0 / azure_color_intrinsics.fy;
 		static constexpr double cx_d = azure_color_intrinsics.cx;
-		static constexpr double cy_d = azure_color_intrinsics.cy;
-		double d = depth;
-		point_ptr[0] = float((x - cx_d) * d * fx_d);
+		static constexpr double cy_d = azure_color_intrinsics.cy;*/
+		double fx_d = 1.0 / intrinsics->param.fx;
+		double fy_d = 1.0 / intrinsics->param.fy;
+		double cx_d = intrinsics->param.cx;
+		double cy_d = intrinsics->param.cy;
+		// set 0.001 for current vr_rgbd
+		double d = 0.001 * depth;
+		point_ptr[0] = -1.f * float((x - cx_d) * d * fx_d);
 		point_ptr[1] = float((y - cy_d) * d * fy_d);
 		point_ptr[2] = float(d);
 		return true;
