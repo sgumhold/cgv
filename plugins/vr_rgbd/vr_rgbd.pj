@@ -9,7 +9,7 @@ addProjectDeps=["cgv_utils","cgv_type","cgv_data","cgv_base", "cgv_signal", "cgv
                 "cgv_viewer","cgv_gl", "cg_fltk", "cg_ext", 
 				"cmi_io", "crg_vr_view", "cg_vr", "vr_emulator", "openvr_driver", "crg_grid", 
 				"glew",
-                "rgbd_capture", "rgbd_kinect", "rgbd_realsense", "point_cloud"];
+                "rgbd_capture", "rgbd_kinect", "rgbd_realsense", "rgbd_kinect_azure", "point_cloud"];
 addDependencies=["opengl"];
 addSharedDefines=["VR_RGBD_EXPORTS"];
 addCommandLineArguments=[
