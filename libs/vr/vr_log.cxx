@@ -44,7 +44,7 @@ void tokenize(std::string& line, C& buffer) {
 			t.type = token::COMPOUND;
 			unsigned end = text.find_first_of("}");
 			if (end != std::string::npos) {
-				t.text = text.substr(0, end);
+				t.text = text.substr(1, end);
 				buffer.push_back(t);
 			}
 			else {
@@ -158,12 +158,13 @@ void vr::vr_log::log_vr_state(const vr::vr_kit_state& state, const int mode, con
 			}
 		}
 		if (mode & SM_OSTREAM) {
+			//<timestamp>, ({C <controller_id> [P <pose>] [B <button - mask>] [A <axes - state>] [V <vibration>] }, )* [H <pose>]
 			//C{<controller_id> [P <pose>] [B <button - mask>] [A <axes - state>] [V <vibration>]}
-			*(log_stream) << " C{" << i;
+			*(log_stream) << ",{C " << i;
 			if (filter & F_POSE) {
-				*(log_stream) << " P{";
+				*(log_stream) << " P ";
 				for (int j = 0; j < 12; ++j)
-					*(log_stream) << ' ' << state.controller[i].pose[j] << "}";
+					*(log_stream) << ' ' << state.controller[i].pose[j];
 			}
 			if (filter & F_BUTTON) {
 				*(log_stream) << " B " << state.controller[i].button_flags;
@@ -190,9 +191,10 @@ void vr::vr_log::log_vr_state(const vr::vr_kit_state& state, const int mode, con
 			hmd_status.push_back(state.hmd.status);
 		}
 		if ((mode & SM_OSTREAM) && log_stream) {
-			*(log_stream) << "H " << time;
+			*(log_stream) << ",{H " << time;
 			for (int j = 0; j < 12; ++j)
 				*(log_stream) << ' ' << state.hmd.pose[j];
+			*(log_stream) << '}';
 		}
 	}
 	//end line
@@ -266,9 +268,8 @@ unsigned parse_vr_kit_state(iterator it, iterator last, vr::vr_kit_state& state,
 
 
 bool vr::vr_log::load_state(std::istringstream& is) {
-	assert(false); //unfinished implementation, do not use
 	//log lines look like this: 
-	//	<timestamp> (C <controller_id>[P <pose>][B <button - mask>][A <axes - state>][V <vibration>])* [H <pose>]
+	//<timestamp>, ({ C <controller_id>[P <pose>][B <button - mask>][A <axes - state>][V <vibration>] }, )* [H <pose>]
 	if (setting_locked)
 		return false;
 	log_storage_mode = SM_IN_MEMORY;
