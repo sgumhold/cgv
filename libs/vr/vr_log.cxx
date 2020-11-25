@@ -24,7 +24,7 @@ void vr::vr_log::log_vr_state(const vr::vr_kit_state& state, const int mode, con
 {
 	if (!setting_locked)
 		return;
-
+	++nr_vr_states;
 	//time stamp
 	if (mode & SM_IN_MEMORY) {
 		this->time_stamp.push_back(time);
@@ -99,7 +99,8 @@ void vr::vr_log::log_vr_state(const vr::vr_kit_state& state, const int mode, con
 	}
 }
 
-void  vr::vr_log::load_state(std::istringstream& is, const char terminator) {
+bool vr::vr_log::load_state(std::istringstream& is, const char terminator) {
 	//not implemented
 	assert(false);
+	return false;
 }
