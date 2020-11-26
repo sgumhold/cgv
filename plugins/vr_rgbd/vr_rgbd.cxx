@@ -324,8 +324,14 @@ public:
 					p = controller_orientation_pc * p + controller_position_pc;
 					rgba8 c(colors[4 * i + 2], colors[4 * i + 1], colors[4 * i], 255);
 					vertex v;
-					v.point = p;
-					v.color = c;
+					//filter points without color for 32 bit formats
+					static const rgba8 filter_color = rgba8(0, 0, 0, 255);
+					if (!(c == filter_color)) {
+						v.color = c;
+						v.point = p;
+					}
+					//v.point = p;
+					//v.color = c;
 					intermediate_pc.push_back(v);
 				}
 				++i;

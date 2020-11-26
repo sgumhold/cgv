@@ -386,8 +386,13 @@ namespace rgbd {
 		double cy_d = intrinsics->param.cy;
 		// set 0.001 for current vr_rgbd
 		double d = 0.001 * depth;
-		point_ptr[0] = -1.f * float((x - cx_d) * d * fx_d);
-		point_ptr[1] = float((y - cy_d) * d * fy_d);
+		//solve the radial and tangential distortion
+		double x_distorted = x * (1 + intrinsics->param.k1 * pow(intrinsics->param.metric_radius, 2.0) + intrinsics->param.k2 * pow(intrinsics->param.metric_radius, 4.0) + intrinsics->param.k3 * pow(intrinsics->param.metric_radius, 6.0));
+		double y_distorted = y * (1 + intrinsics->param.k4 * pow(intrinsics->param.metric_radius, 2.0) + intrinsics->param.k5 * pow(intrinsics->param.metric_radius, 4.0) + intrinsics->param.k6 * pow(intrinsics->param.metric_radius, 6.0));
+		x_distorted = x_distorted + 2.0 * intrinsics->param.p1 * x * y + intrinsics->param.p2 * (pow(intrinsics->param.metric_radius, 2.0) + 2 * pow(x, 2.0));
+		y_distorted = y_distorted + 2.0 * intrinsics->param.p2 * x * y + intrinsics->param.p1 * (pow(intrinsics->param.metric_radius, 2.0) + 2 * pow(y, 2.0));
+		point_ptr[0] = -1.f * float((x_distorted - cx_d) * d * fx_d);
+		point_ptr[1] = float((y_distorted - cy_d) * d * fy_d);
 		point_ptr[2] = float(d);
 		return true;
 	}
