@@ -30,7 +30,8 @@ namespace vr {
 			F_AXES = 4,
 			F_VIBRATION = 8,
 			F_HMD = 16,
-			F_ALL = 31
+			F_ALL = 31,
+			F_NONE = 0
 		};
 
 		container<double> time_stamp;
@@ -58,12 +59,10 @@ namespace vr {
 	protected:
 		//! record state
 		void log_vr_state(const vr::vr_kit_state& state, const int mode, const int filter, const double time, std::ostream* log_stream);
-		//! read log from stream
-		bool load_state(std::istringstream& is, const char terminator = '\0');
 	public:
 		vr_log() = default;
 		//construct log from stream
-		vr_log(std::istringstream& is, const char terminator='\0');
+		vr_log(std::istringstream& is);
 
 		//! write vr_kit_state to log , and stream serialized vr_kit_state to log_stream if ostream_log is enabled
 		inline void log_vr_state(const vr::vr_kit_state& state, const double& time, std::ostream* log_stream = nullptr) {
@@ -72,21 +71,20 @@ namespace vr {
 		//! disable logging
 		void disable_log();
 		//! enable in memory log
-		inline void enable_in_memory_log() {
-			if (!setting_locked)
-				log_storage_mode = log_storage_mode | SM_IN_MEMORY;
-		}
+		void enable_in_memory_log();
 
 		//! enable writing to ostream.
-		inline void enable_ostream_log() {
-			if (!setting_locked)
-				log_storage_mode = log_storage_mode | SM_OSTREAM;
-		}
+		void enable_ostream_log();
+
 		inline void set_filter(int f) {
 			if (setting_locked)
 				return;
 			filters = f;
 		}
+		inline int get_filter() const {
+			return filters;
+		}
+
 		//! prevent changes to settings and enables log_vr_state methods
 		inline void lock_settings() {
 			setting_locked = true;
@@ -95,6 +93,9 @@ namespace vr {
 		inline const size_t recorded_vr_states() const {
 			return nr_vr_states;
 		}
+
+		//! read log from stream
+		bool load_state(std::istringstream& is);
 	};
 }
 

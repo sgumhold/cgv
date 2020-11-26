@@ -7,8 +7,93 @@
 <vibration>: 2 floats for the vibration intensity
 <timestamp>: time in ms
 
-<timestamp> (C <controller_id> [P <pose>] [B <button-mask>] [A <axes-state>] [V <vibration>])* [H <pose>]
+<timestamp>,({C <controller_id> [P <pose>] [B <button-mask>] [A <axes-state>] [V <vibration>]},)*[H <pose>]
 */
+
+struct token {
+	enum {
+		COMPOUND, //<name> <...>
+		VALUE,// <value>
+	} type;
+	std::string text;
+
+};
+
+const std::string key_chars = "CPHVB";
+
+template <size_t size, typename T>
+bool array_contains(const T* container, const T& element) {
+	int i = 0;
+	while (i < size) {
+		if (container[i] == element) {
+			return true;
+		}
+		++i;
+	}
+	return false;
+}
+
+
+template <typename C>
+void tokenize(std::string& line, C& buffer) {
+	std::istringstream l(line);
+	std::string text;
+	while (std::getline(l, text, ',')) {
+		if (text.size()>0 && text.c_str()[0] == '{') { //compound
+			token t;
+			t.type = token::COMPOUND;
+			unsigned end = text.find_first_of("}");
+			if (end != std::string::npos) {
+				t.text = text.substr(0, end);
+				buffer.push_back(t);
+			}
+			else {
+				throw std::string("parsing error: missing \"}\"");
+			}
+		}
+		else if (text.size() > 0 && text.find_first_of("0123456789") != std::string::npos) {
+			token t;
+			t.type = token::VALUE;
+			t.text = text;
+			buffer.push_back(t);
+		}
+	}
+}
+
+const std::string filter_to_string(vr::vr_log::Filter f){
+	switch (f) {
+	case vr::vr_log::F_AXES:
+		return "AXES";
+	case vr::vr_log::F_BUTTON:
+		return "BUTTON";
+	case vr::vr_log::F_HMD:
+		return "HMD";
+	case vr::vr_log::F_POSE:
+		return "POSE";
+	case vr::vr_log::F_VIBRATION:
+		return "VIBRATION";
+	default:
+		return "UNKNOWN_FILTER";
+	}
+}
+
+const std::unordered_map<std::string, vr::vr_log::Filter> filter_map = {
+   {"AXES", vr::vr_log::F_AXES},
+   {"BUTTON", vr::vr_log::F_BUTTON},
+   {"HMD", vr::vr_log::F_HMD },
+   {"POSE", vr::vr_log::F_POSE},
+   {"VIBRATION", vr::vr_log::F_VIBRATION},
+   {"UNKNOWN_FILTER", vr::vr_log::F_NONE}
+};
+
+
+const vr::vr_log::Filter filter_from_string(const std::string& f) {
+	const auto it = filter_map.find(f);
+	if (it != filter_map.cend()) {
+		return (*it).second;
+	}
+	return vr::vr_log::F_NONE;
+}
 
 
 void vr::vr_log::disable_log()
@@ -16,21 +101,37 @@ void vr::vr_log::disable_log()
 	log_storage_mode = SM_NONE;
 }
 
-vr::vr_log::vr_log(std::istringstream& is, char terminator) {
-	load_state(is, terminator);
+void vr::vr_log::enable_in_memory_log()
+{
+	if (!setting_locked)
+		log_storage_mode = log_storage_mode | SM_IN_MEMORY;
+}
+
+void vr::vr_log::enable_ostream_log()
+{
+	if (!setting_locked)
+		log_storage_mode = log_storage_mode | SM_OSTREAM;
+}
+
+
+vr::vr_log::vr_log(std::istringstream& is) {
+	load_state(is);
 }
 
 void vr::vr_log::log_vr_state(const vr::vr_kit_state& state, const int mode, const int filter, const double time,std::ostream* log_stream)
 {
 	if (!setting_locked)
 		return;
-	++nr_vr_states;
+	
 	//time stamp
 	if (mode & SM_IN_MEMORY) {
 		this->time_stamp.push_back(time);
 	}
 	if (mode & SM_OSTREAM) {
 		*(log_stream) << time;
+	}
+	if (mode != SM_NONE) {
+		++nr_vr_states;
 	}
 
 	//controller state
@@ -57,12 +158,12 @@ void vr::vr_log::log_vr_state(const vr::vr_kit_state& state, const int mode, con
 			}
 		}
 		if (mode & SM_OSTREAM) {
-			//C <timestamp> <controller_id> [P <pose>] [B <button-mask>] [T <throttle-state>] [V <vibration>]
-			*(log_stream) << " C " << i;
+			//C{<controller_id> [P <pose>] [B <button - mask>] [A <axes - state>] [V <vibration>]}
+			*(log_stream) << " C{" << i;
 			if (filter & F_POSE) {
-				*(log_stream) << " P";
+				*(log_stream) << " P{";
 				for (int j = 0; j < 12; ++j)
-					*(log_stream) << ' ' << state.controller[i].pose[j];
+					*(log_stream) << ' ' << state.controller[i].pose[j] << "}";
 			}
 			if (filter & F_BUTTON) {
 				*(log_stream) << " B " << state.controller[i].button_flags;
@@ -77,6 +178,7 @@ void vr::vr_log::log_vr_state(const vr::vr_kit_state& state, const int mode, con
 				for (int j = 0; j < 2; ++j)
 					*(log_stream) << ' ' << state.controller[i].vibration[j];
 			}
+			*(log_stream) << "}";
 		}
 	}
 
@@ -99,8 +201,105 @@ void vr::vr_log::log_vr_state(const vr::vr_kit_state& state, const int mode, con
 	}
 }
 
-bool vr::vr_log::load_state(std::istringstream& is, const char terminator) {
-	//not implemented
-	assert(false);
-	return false;
+template <typename T,unsigned SIZE>
+void parse_array(std::istringstream& line,T* storage) {
+	for (int i = 0; i < SIZE; ++i) {
+		line >> storage[i];
+	}
+}
+
+unsigned parse_controller_state(std::istringstream& line, vr::vr_controller_state& state) {
+	unsigned filter = 0;
+	std::string cinfo_type;
+	line >> cinfo_type;
+
+	if (cinfo_type == "P") {
+		filter |= vr::vr_log::F_POSE;
+		parse_array<float, 12>(line, state.pose);
+	}
+	else if (cinfo_type == "A") {
+		filter |= vr::vr_log::F_AXES;
+		parse_array<float, 8>(line, state.axes);
+	}
+	else if (cinfo_type == "B") {
+		filter |= vr::vr_log::F_BUTTON;
+		line >> state.button_flags;
+	}
+	else if (cinfo_type == "V") {
+		filter |= vr::vr_log::F_VIBRATION;
+		parse_array<float, 2>(line, state.vibration);
+	}
+	return filter;
+}
+
+//returns active filters found
+template <typename iterator>
+unsigned parse_vr_kit_state(iterator it, iterator last, vr::vr_kit_state& state,double& time) {
+	unsigned filter = 0;
+	while (it != last)
+	{
+		if (it->type == token::COMPOUND) {
+			std::string type;
+			std::istringstream line(it->text);
+			line >> type;
+			if (type == "C") { //controller info compund
+				int cid = -1; //controller id
+				line >> cid;
+				if (cid >= 0 && cid < 4)
+					filter |= parse_controller_state(line, state.controller[cid]);
+				else
+					throw std::string("invalid controller id");
+			}
+			else if (type == "H") { //parse hmd info
+				filter |= vr::vr_log::F_HMD;
+				parse_array<float, 12>(line, state.hmd.pose);
+			}
+		}
+		else {
+			throw std::string("unexpected token");
+			//unexpected token
+		}
+		++it;
+	}
+	return filter;
+}
+
+
+bool vr::vr_log::load_state(std::istringstream& is) {
+	assert(false); //unfinished implementation, do not use
+	//log lines look like this: 
+	//	<timestamp> (C <controller_id>[P <pose>][B <button - mask>][A <axes - state>][V <vibration>])* [H <pose>]
+	if (setting_locked)
+		return false;
+	log_storage_mode = SM_IN_MEMORY;
+	set_filter(F_ALL);
+	lock_settings();
+	//write log
+	std::vector<token> tokens;
+
+	try {
+		while (!is.eof()) {
+			std::string line;
+			std::getline(is, line);
+			tokens.clear();
+			tokenize(line, tokens);
+			double time = -1;
+			if (tokens.size()) {
+				if (tokens[0].type != token::VALUE) {
+					throw std::string("parsing error expected time got " + tokens[0].text);
+				}
+				double time = std::stod(tokens[0].text);
+				
+				vr::vr_kit_state state;
+				filters &= parse_vr_kit_state(tokens.cbegin()+1,tokens.cend(),state,time);
+				log_vr_state(state, time);
+			}
+		}
+	}
+	catch (std::string err) {
+		return false;
+	}
+
+	disable_log();
+	return true;
 }
