@@ -358,12 +358,12 @@ namespace cgv {
 			}
 			return on_event(e);
 		}
-		void vr_server::enable_logging(std::string fn, bool in_memory_log, int filter)
+		void vr_server::enable_log(std::string fn, bool in_memory_log, int filter)
 		{
 			if (log.get())
 				this->log->disable_log();
 			if (fn.size() > 0)
-				log_file = std::make_shared<std::ofstream>(fn);
+				log_file = std::make_unique<std::ofstream>(fn);
 
 			this->log = std::make_unique<vr::vr_log>();
 			this->log->enable_ostream_log();
@@ -373,7 +373,7 @@ namespace cgv {
 			this->log->set_filter(filter);
 			this->log->lock_settings();
 		}
-		void vr_server::disable_logging()
+		void vr_server::disable_log()
 		{
 			if (this->log)
 				this->log->disable_log();
@@ -383,6 +383,10 @@ namespace cgv {
 		vr::vr_log& vr_server::ref_log()
 		{
 			return *log;
+		}
+		std::shared_ptr<vr::vr_log> vr_server::get_log()
+		{
+			return log;
 		}
 		/// return a reference to gamepad server singleton
 		vr_server& ref_vr_server()
