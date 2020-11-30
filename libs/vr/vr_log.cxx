@@ -113,6 +113,15 @@ void vr::vr_log::enable_ostream_log()
 		log_storage_mode = log_storage_mode | SM_OSTREAM;
 }
 
+void vr::vr_log::enable_log(int filter, StorageMode sm)
+{
+	if (setting_locked)
+		return;
+	filters = filter;
+	log_storage_mode = sm;
+	lock_settings();
+}
+
 
 vr::vr_log::vr_log(std::istringstream& is) {
 	load_state(is);
@@ -136,7 +145,7 @@ void vr::vr_log::log_vr_state(const vr::vr_kit_state& state, const int mode, con
 
 	//controller state
 	for (int i = 0; i < 4; ++i) {
-		controller_status->push_back(state.controller[i].status);
+		controller_status[i].push_back(state.controller[i].status);
 		if (mode & SM_IN_MEMORY) {
 			if (filter & F_VIBRATION) {
 				vec2 vibration = vec2(state.controller[i].vibration[0], state.controller[i].vibration[1]);
@@ -162,7 +171,7 @@ void vr::vr_log::log_vr_state(const vr::vr_kit_state& state, const int mode, con
 			//C{<controller_id> [P <pose>] [B <button - mask>] [A <axes - state>] [V <vibration>]}
 			*(log_stream) << ",{C " << i;
 			if (filter & F_POSE) {
-				*(log_stream) << " P ";
+				*(log_stream) << " P";
 				for (int j = 0; j < 12; ++j)
 					*(log_stream) << ' ' << state.controller[i].pose[j];
 			}
@@ -210,31 +219,34 @@ void parse_array(std::istringstream& line,T* storage) {
 	}
 }
 
+//expects controller state string
 unsigned parse_controller_state(std::istringstream& line, vr::vr_controller_state& state) {
 	unsigned filter = 0;
 	std::string cinfo_type;
-	line >> cinfo_type;
-
-	if (cinfo_type == "P") {
-		filter |= vr::vr_log::F_POSE;
-		parse_array<float, 12>(line, state.pose);
-	}
-	else if (cinfo_type == "A") {
-		filter |= vr::vr_log::F_AXES;
-		parse_array<float, 8>(line, state.axes);
-	}
-	else if (cinfo_type == "B") {
-		filter |= vr::vr_log::F_BUTTON;
-		line >> state.button_flags;
-	}
-	else if (cinfo_type == "V") {
-		filter |= vr::vr_log::F_VIBRATION;
-		parse_array<float, 2>(line, state.vibration);
+	
+	while (!line.eof()) {
+		line >> cinfo_type;
+		if (cinfo_type == "P") {
+			filter |= vr::vr_log::F_POSE;
+			parse_array<float, 12>(line, state.pose);
+		}
+		else if (cinfo_type == "A") {
+			filter |= vr::vr_log::F_AXES;
+			parse_array<float, 8>(line, state.axes);
+		}
+		else if (cinfo_type == "B") {
+			filter |= vr::vr_log::F_BUTTON;
+			line >> state.button_flags;
+		}
+		else if (cinfo_type == "V") {
+			filter |= vr::vr_log::F_VIBRATION;
+			parse_array<float, 2>(line, state.vibration);
+		}
 	}
 	return filter;
 }
 
-//returns active filters found
+//expects up to 5 COMPOUND tokens, returns active filters found
 template <typename iterator>
 unsigned parse_vr_kit_state(iterator it, iterator last, vr::vr_kit_state& state,double& time) {
 	unsigned filter = 0;

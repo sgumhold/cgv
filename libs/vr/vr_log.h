@@ -50,9 +50,6 @@ namespace vr {
 		int filters = 0;
 		size_t nr_vr_states = 0; //number of recorded vr states
 
-		container<std::pair<unsigned, unsigned>> vr_states_ix;
-		unsigned vr_state_num = 0;
-
 		inline void unlock_settings() {
 			setting_locked = false;
 		}
@@ -76,6 +73,9 @@ namespace vr {
 		//! enable writing to ostream.
 		void enable_ostream_log();
 
+		void enable_log(int filter, StorageMode sm);
+
+		//! define what data should be recorded.
 		inline void set_filter(int f) {
 			if (setting_locked)
 				return;
