@@ -273,8 +273,8 @@ namespace cgv {
 			}
 
 			//write log
-			if (log && !(new_state == last_state)) {
-				log->log_vr_state(new_state,time, log_file.get());
+			if (log_data[kit_index] && !(new_state == last_state)) {
+				log_data[kit_index]->log_vr_state(new_state,time);
 			}
 			last_state = new_state;
 		}
@@ -358,35 +358,40 @@ namespace cgv {
 			}
 			return on_event(e);
 		}
-		void vr_server::enable_log(std::string fn, bool in_memory_log, int filter)
+		void vr_server::enable_log(std::string fn, bool in_memory_log, int filter, int kit_index)
 		{
-			if (log.get())
-				this->log->disable_log();
-			if (fn.size() > 0)
-				log_file = std::make_unique<std::ofstream>(fn);
-
-			this->log = std::make_unique<vr::vr_log>();
-			this->log->enable_ostream_log();
+			auto it = log_data.find(kit_index);
+			if (log_data[kit_index]) {
+				log_data[kit_index]->disable_log();
+				log_data[kit_index] = nullptr;
+			}
+			log_data[kit_index] = std::make_shared<vr::vr_log>();
+			vr::vr_log& log = *log_data[kit_index];
+			
+			if (fn.size() > 0) {
+				auto p = std::make_shared<std::ofstream>(fn);
+				log.enable_ostream_log(p);
+			}
 			if (in_memory_log)
-				this->log->enable_in_memory_log();
+				log.enable_in_memory_log();
 
-			this->log->set_filter(filter);
-			this->log->lock_settings();
+			log.set_filter(filter);
+			log.lock_settings();
 		}
-		void vr_server::disable_log()
+		void vr_server::disable_log(int kit_index)
 		{
-			if (this->log)
-				this->log->disable_log();
-			log_file = nullptr;
+			auto it = log_data.find(kit_index);
+			if (it != log_data.end())
+				it->second->disable_log();
 		}
 
-		vr::vr_log& vr_server::ref_log()
+		vr::vr_log& vr_server::ref_log(const int kit_index)
 		{
-			return *log;
+			return *log_data[kit_index];
 		}
-		std::shared_ptr<vr::vr_log> vr_server::get_log()
+		std::shared_ptr<vr::vr_log> vr_server::get_log(const int kit_index)
 		{
-			return log;
+			return log_data[kit_index];
 		}
 		/// return a reference to gamepad server singleton
 		vr_server& ref_vr_server()

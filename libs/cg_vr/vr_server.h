@@ -145,8 +145,7 @@ namespace cgv {
 			VREventTypeFlags event_type_flags;
 			VRFocus focus_type;
 			event_handler* focus;
-			std::shared_ptr<vr::vr_log> log;
-			std::unique_ptr<std::ofstream> log_file;
+			std::unordered_map<int, std::shared_ptr<vr::vr_log>> log_data;
 			///
 			void emit_events_and_update_state(void* kit_handle, const vr::vr_kit_state& new_state, int kit_index, VREventTypeFlags flags, double time);
 			///
@@ -186,13 +185,13 @@ namespace cgv {
 			cgv::signal::signal<void*, int, vr::VRStatus, vr::VRStatus> on_status_change;
 			/*! creates a logfile and activates logging of vr . 
 				@param fn path to logfile. pass an empty string to disable writing to a log file*/
-			void enable_log(std::string fn="", bool in_memory_log = true, int filter=vr::vr_log::F_ALL);
+			void enable_log(const std::string fn="", const bool in_memory_log = true, const int filter=vr::vr_log::F_ALL, const int kit_index = 0);
 			/// disable logging and close log file
-			void disable_log();
+			void disable_log(const int kit_index=0);
 			/// return a reference to the used vr_log object
-			vr::vr_log& ref_log();
+			vr::vr_log& ref_log(const int kit_index=0);
 			/// returns a pointer to the active log data container, ment for extending the lifetime of the log data beyond a new enable_log call
-			std::shared_ptr<vr::vr_log> get_log();
+			std::shared_ptr<vr::vr_log> get_log(const int kit_index=0);
 		};
 
 		/// return a reference to vr server singleton

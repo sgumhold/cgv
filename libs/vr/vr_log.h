@@ -50,6 +50,8 @@ namespace vr {
 		int filters = 0;
 		size_t nr_vr_states = 0; //number of recorded vr states
 
+		std::shared_ptr<std::ostream> log_stream;
+
 		inline void unlock_settings() {
 			setting_locked = false;
 		}
@@ -62,8 +64,8 @@ namespace vr {
 		vr_log(std::istringstream& is);
 
 		//! write vr_kit_state to log , and stream serialized vr_kit_state to log_stream if ostream_log is enabled
-		inline void log_vr_state(const vr::vr_kit_state& state, const double& time, std::ostream* log_stream = nullptr) {
-			log_vr_state(state, log_storage_mode, filters, time, log_stream);
+		inline void log_vr_state(const vr::vr_kit_state& state, const double& time) {
+			log_vr_state(state, log_storage_mode, filters, time, log_stream.get());
 		}
 		//! disable logging
 		void disable_log();
@@ -71,9 +73,7 @@ namespace vr {
 		void enable_in_memory_log();
 
 		//! enable writing to ostream.
-		void enable_ostream_log();
-
-		void enable_log(int filter, StorageMode sm);
+		void enable_ostream_log(const std::shared_ptr<std::ostream>& stream);
 
 		//! define what data should be recorded.
 		inline void set_filter(int f) {
