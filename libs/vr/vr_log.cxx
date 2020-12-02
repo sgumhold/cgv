@@ -10,16 +10,16 @@
 <timestamp>,({C <controller_id> [P <pose>] [B <button-mask>] [A <axes-state>] [V <vibration>]},)*[H <pose>]
 */
 
+//token struct for the parser
 struct token {
 	enum {
 		COMPOUND, //<name> <...>
 		VALUE,// <value>
+		NAME
 	} type;
 	std::string text;
 
 };
-
-const std::string key_chars = "CPHVB";
 
 template <size_t size, typename T>
 bool array_contains(const T* container, const T& element) {
@@ -44,12 +44,18 @@ void tokenize(std::string& line, C& buffer) {
 			t.type = token::COMPOUND;
 			unsigned end = text.find_first_of("}");
 			if (end != std::string::npos) {
-				t.text = text.substr(1, end);
+				t.text = text.substr(1, end-1);
 				buffer.push_back(t);
 			}
 			else {
 				throw std::string("parsing error: missing \"}\"");
 			}
+		}
+		else if (text.size() > 0 && text.find_first_of("abcdefghijklmnopqrstuvwxyz") != std::string::npos) {
+			token t;
+			t.type = token::NAME;
+			t.text = text;
+			buffer.push_back(t);
 		}
 		else if (text.size() > 0 && text.find_first_of("0123456789") != std::string::npos) {
 			token t;
@@ -116,7 +122,6 @@ void vr::vr_log::enable_ostream_log(const std::shared_ptr<std::ostream>& stream)
 		log_stream = stream;
 		log_stream->precision(std::numeric_limits<double>::max_digits10);
 		log_storage_mode = log_storage_mode | SM_OSTREAM;
-		//TODO write header
 }
 
 vr::vr_log::vr_log(std::istringstream& is) {
@@ -219,6 +224,16 @@ void parse_array(std::istringstream& line,T* storage) {
 	}
 }
 
+int parse_filter_string(std::istringstream& line) {
+	int filters = 0;
+	while (!line.eof()) {
+		std::string filter;
+		line >> filter;
+		filters |= filter_from_string(filter);
+	}
+	return filters;
+}
+
 //expects controller state string
 unsigned parse_controller_state(std::istringstream& line, vr::vr_controller_state& state) {
 	unsigned filter = 0;
@@ -280,6 +295,29 @@ unsigned parse_vr_kit_state(iterator it, iterator last, vr::vr_kit_state& state,
 }
 
 
+void vr::vr_log::lock_settings()
+{
+	setting_locked = true;
+	//write header
+	if (log_storage_mode & SM_OSTREAM) {
+		*(log_stream) << "filters,{";
+		int fil = 1;
+		bool first = true;
+		while (fil < F_ALL) {
+			if (fil & filters) {
+				if (!first) {
+					*(log_stream) << " ";
+				} else { 
+					first = false;
+				}
+				*(log_stream) << filter_to_string(static_cast<vr::vr_log::Filter>(fil));
+				fil = fil << 1;
+			}
+		}
+		*(log_stream) << "}\n";
+	}
+}
+
 bool vr::vr_log::load_state(std::istringstream& is) {
 	//log lines look like this: 
 	//<timestamp>, ({ C <controller_id>[P <pose>][B <button - mask>][A <axes - state>][V <vibration>] }, )* [H <pose>]
@@ -290,6 +328,7 @@ bool vr::vr_log::load_state(std::istringstream& is) {
 	lock_settings();
 	//write log
 	std::vector<token> tokens;
+	bool found_filters = false;
 
 	try {
 		while (!is.eof()) {
@@ -299,14 +338,24 @@ bool vr::vr_log::load_state(std::istringstream& is) {
 			tokenize(line, tokens);
 			double time = -1;
 			if (tokens.size()) {
-				if (tokens[0].type != token::VALUE) {
+				if (tokens[0].type == token::VALUE) {
+					if (!found_filters) {
+						return false;
+					}
+					double time = std::stod(tokens[0].text);
+					vr::vr_kit_state state;
+					parse_vr_kit_state(tokens.cbegin() + 1, tokens.cend(), state, time);
+					log_vr_state(state, time);
+				}
+				else if (tokens[0].type == token::NAME) {
+					if (tokens.size() >= 2 && tokens[0].text == "filters" && tokens[1].type == token::COMPOUND) {
+						found_filters = true;
+						filters = parse_filter_string(std::istringstream(tokens[1].text));
+					}
+				}
+				else {
 					throw std::string("parsing error expected time got " + tokens[0].text);
 				}
-				double time = std::stod(tokens[0].text);
-				
-				vr::vr_kit_state state;
-				filters &= parse_vr_kit_state(tokens.cbegin()+1,tokens.cend(),state,time);
-				log_vr_state(state, time);
 			}
 		}
 	}
