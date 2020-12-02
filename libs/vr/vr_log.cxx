@@ -99,6 +99,9 @@ const vr::vr_log::Filter filter_from_string(const std::string& f) {
 void vr::vr_log::disable_log()
 {
 	log_storage_mode = SM_NONE;
+	if (log_stream) {
+		log_stream = nullptr;
+	}
 }
 
 void vr::vr_log::enable_in_memory_log()
@@ -107,21 +110,14 @@ void vr::vr_log::enable_in_memory_log()
 		log_storage_mode = log_storage_mode | SM_IN_MEMORY;
 }
 
-void vr::vr_log::enable_ostream_log()
+void vr::vr_log::enable_ostream_log(const std::shared_ptr<std::ostream>& stream)
 {
 	if (!setting_locked)
+		log_stream = stream;
+		log_stream->precision(std::numeric_limits<double>::max_digits10);
 		log_storage_mode = log_storage_mode | SM_OSTREAM;
+		//TODO write header
 }
-
-void vr::vr_log::enable_log(int filter, StorageMode sm)
-{
-	if (setting_locked)
-		return;
-	filters = filter;
-	log_storage_mode = sm;
-	lock_settings();
-}
-
 
 vr::vr_log::vr_log(std::istringstream& is) {
 	load_state(is);
@@ -169,26 +165,28 @@ void vr::vr_log::log_vr_state(const vr::vr_kit_state& state, const int mode, con
 		if (mode & SM_OSTREAM) {
 			//<timestamp>, ({C <controller_id> [P <pose>] [B <button - mask>] [A <axes - state>] [V <vibration>] }, )* [H <pose>]
 			//C{<controller_id> [P <pose>] [B <button - mask>] [A <axes - state>] [V <vibration>]}
-			*(log_stream) << ",{C " << i;
-			if (filter & F_POSE) {
-				*(log_stream) << " P";
-				for (int j = 0; j < 12; ++j)
-					*(log_stream) << ' ' << state.controller[i].pose[j];
+			if (state.controller[i].status == vr::VRStatus::VRS_TRACKED) {
+				*(log_stream) << ",{C " << i;
+				if (filter & F_POSE) {
+					*(log_stream) << " P";
+					for (int j = 0; j < 12; ++j)
+						*(log_stream) << ' ' << state.controller[i].pose[j];
+				}
+				if (filter & F_BUTTON) {
+					*(log_stream) << " B " << state.controller[i].button_flags;
+				}
+				if (filter & F_AXES) {
+					*(log_stream) << " A";
+					for (int j = 0; j < 8; ++j)
+						*(log_stream) << ' ' << state.controller[i].axes[j];
+				}
+				if (filter & F_VIBRATION) {
+					*(log_stream) << " V";
+					for (int j = 0; j < 2; ++j)
+						*(log_stream) << ' ' << state.controller[i].vibration[j];
+				}
+				*(log_stream) << "}";
 			}
-			if (filter & F_BUTTON) {
-				*(log_stream) << " B " << state.controller[i].button_flags;
-			}
-			if (filter & F_AXES) {
-				*(log_stream) << " A";
-				for (int j = 0; j < 8; ++j)
-					*(log_stream) << ' ' << state.controller[i].axes[j];
-			}
-			if (filter & F_VIBRATION) {
-				*(log_stream) << " V";
-				for (int j = 0; j < 2; ++j)
-					*(log_stream) << ' ' << state.controller[i].vibration[j];
-			}
-			*(log_stream) << "}";
 		}
 	}
 
@@ -200,10 +198,12 @@ void vr::vr_log::log_vr_state(const vr::vr_kit_state& state, const int mode, con
 			hmd_status.push_back(state.hmd.status);
 		}
 		if ((mode & SM_OSTREAM) && log_stream) {
-			*(log_stream) << ",{H " << time;
-			for (int j = 0; j < 12; ++j)
-				*(log_stream) << ' ' << state.hmd.pose[j];
-			*(log_stream) << '}';
+			if (state.hmd.status == vr::VRStatus::VRS_TRACKED) {
+				*(log_stream) << ",{H " << time;
+				for (int j = 0; j < 12; ++j)
+					*(log_stream) << ' ' << state.hmd.pose[j];
+				*(log_stream) << '}';
+			}
 		}
 	}
 	//end line
@@ -250,6 +250,7 @@ unsigned parse_controller_state(std::istringstream& line, vr::vr_controller_stat
 template <typename iterator>
 unsigned parse_vr_kit_state(iterator it, iterator last, vr::vr_kit_state& state,double& time) {
 	unsigned filter = 0;
+
 	while (it != last)
 	{
 		if (it->type == token::COMPOUND) {
