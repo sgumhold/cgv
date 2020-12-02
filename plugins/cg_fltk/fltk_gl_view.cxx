@@ -397,6 +397,7 @@ void fltk_gl_view::create()
 void fltk_gl_view::destroy()
 {
 	make_current();
+	destruct_render_objects();
 	if (!in_recreate_context) {
 		remove_all_children();
 		no_more_context = true;
@@ -406,7 +407,7 @@ void fltk_gl_view::destroy()
 		for (unsigned i=0; i<get_nr_children(); ++i)
 			traverser(sma, "nc").traverse(get_child(i));
 	}
-	destruct_render_objects();
+	//destruct_render_objects();
 	fltk::GlWindow::destroy();
 }
 
