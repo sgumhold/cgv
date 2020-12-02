@@ -271,6 +271,11 @@ namespace cgv {
 						}
 					}
 			}
+
+			//write log
+			if (log_data[kit_index] && !(new_state == last_state)) {
+				log_data[kit_index]->log_vr_state(new_state,time);
+			}
 			last_state = new_state;
 		}
 
@@ -352,6 +357,41 @@ namespace cgv {
 					return false;
 			}
 			return on_event(e);
+		}
+		void vr_server::enable_log(std::string fn, bool in_memory_log, int filter, int kit_index)
+		{
+			auto it = log_data.find(kit_index);
+			if (log_data[kit_index]) {
+				log_data[kit_index]->disable_log();
+				log_data[kit_index] = nullptr;
+			}
+			log_data[kit_index] = std::make_shared<vr::vr_log>();
+			vr::vr_log& log = *log_data[kit_index];
+			
+			if (fn.size() > 0) {
+				auto p = std::make_shared<std::ofstream>(fn);
+				log.enable_ostream_log(p);
+			}
+			if (in_memory_log)
+				log.enable_in_memory_log();
+
+			log.set_filter(filter);
+			log.lock_settings();
+		}
+		void vr_server::disable_log(int kit_index)
+		{
+			auto it = log_data.find(kit_index);
+			if (it != log_data.end())
+				it->second->disable_log();
+		}
+
+		vr::vr_log& vr_server::ref_log(const int kit_index)
+		{
+			return *log_data[kit_index];
+		}
+		std::shared_ptr<vr::vr_log> vr_server::get_log(const int kit_index)
+		{
+			return log_data[kit_index];
 		}
 		/// return a reference to gamepad server singleton
 		vr_server& ref_vr_server()

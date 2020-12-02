@@ -363,9 +363,9 @@ bool data_view::compose(data_view& composed_dv, const std::vector<data_view>& dv
 		}
 		
 		switch(n_dims) {
-		case 1: composed_df->set_height(dvs.size()); break;
-		case 2: composed_df->set_depth(dvs.size()); break;
-		case 3: composed_df->set_nr_time_steps(dvs.size()); break;
+		case 1: composed_df->set_height       ((unsigned)dvs.size()); break;
+		case 2: composed_df->set_depth        ((unsigned)dvs.size()); break;
+		case 3: composed_df->set_nr_time_steps((unsigned)dvs.size()); break;
 		}
 
 		if(composed_dv.empty()) {
@@ -407,7 +407,7 @@ bool data_view::compose(data_view& composed_dv, const std::vector<data_view>& dv
 
 bool data_view::combine_components(data_view& dv, const std::vector<data_view>::iterator first, const std::vector<data_view>::iterator last) {
 
-	unsigned n_components = std::distance(first, last);
+	unsigned n_components = (unsigned)std::distance(first, last);
 	if(n_components < 2 || n_components > 4) {
 		std::cerr << "cannot combine channels of less than 2 or more than 4 data views" << std::endl;
 		return false;
