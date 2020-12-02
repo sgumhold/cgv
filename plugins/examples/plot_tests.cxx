@@ -93,7 +93,7 @@ public:
 	{
 		// compute vector of vec3 with x coordinates and function values of cos and sin
 		unsigned i;
-		for (i = 0; i < 50; ++i) {
+		for (i = 1; i < 50; ++i) {
 			float x = 0.1f * i;
 			P.push_back(vec3(x, cos(x), sin(x)));
 		}
@@ -136,10 +136,11 @@ public:
 	}
 	bool init(cgv::render::context& ctx)
 	{
+
 		// create GPU objects for offline rendering
-		tex.create(ctx, cgv::render::TT_2D, 1024, 512);
-		depth.create(ctx, 1024, 512);
-		fbo.create(ctx, 1024, 512);
+		tex.create(ctx, cgv::render::TT_2D, 2048, 1024);
+		depth.create(ctx, 2048, 1024);
+		fbo.create(ctx, 2048, 1024);
 		fbo.attach(ctx, depth);
 		fbo.attach(ctx, tex);
 
@@ -155,19 +156,22 @@ public:
 			return;
 		
 		// if fbo is created, perform offline rendering with world space in the range [-1,1]² and white background
-		ctx.push_modelview_matrix();
-		ctx.set_modelview_matrix(cgv::math::identity4<double>());
-		ctx.push_projection_matrix();
-		ctx.set_projection_matrix(cgv::math::identity4<double>());
 		fbo.enable(ctx);
 		fbo.push_viewport(ctx);
 		glClearColor(1, 1, 1, 1);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		ctx.push_modelview_matrix();
+		ctx.set_modelview_matrix(cgv::math::identity4<double>());
+		ctx.push_projection_matrix();
+		ctx.set_projection_matrix(cgv::math::identity4<double>());
+		glDepthMask(GL_FALSE);
 		plot.draw(ctx);
-		fbo.pop_viewport(ctx);
-		fbo.disable(ctx);
+		glDepthMask(GL_TRUE);
 		ctx.pop_projection_matrix();
 		ctx.pop_modelview_matrix();
+
+		fbo.pop_viewport(ctx);
+		fbo.disable(ctx);
 
 		// generate mipmaps in rendered texture and in case of success enable anisotropic filtering
 		if (tex.generate_mipmaps(ctx))
@@ -175,20 +179,24 @@ public:
 	}
 	void draw(cgv::render::context& ctx)
 	{
-		// use default shader with texture support to draw offline rendered plot
-		glDisable(GL_CULL_FACE);
-		auto& prog = ctx.ref_default_shader_program(true);
-		tex.enable(ctx);
-		prog.enable(ctx);
-		ctx.set_color(rgba(1, 1, 1, 1));
-		ctx.push_modelview_matrix();
-		// scale down in y-direction according to texture resolution
-		ctx.mul_modelview_matrix(cgv::math::scale4<double>(1.0, 0.5, 1.0));
-		ctx.tesselate_unit_square();
-		ctx.pop_modelview_matrix();
-		prog.disable(ctx);
-		tex.disable(ctx);
-		glEnable(GL_CULL_FACE);
+		if (fbo.is_created()) {
+			// use default shader with texture support to draw offline rendered plot
+			glDisable(GL_CULL_FACE);
+			auto& prog = ctx.ref_default_shader_program(true);
+			tex.enable(ctx);
+			prog.enable(ctx);
+			ctx.set_color(rgba(1, 1, 1, 1));
+			ctx.push_modelview_matrix();
+			// scale down in y-direction according to texture resolution
+			ctx.mul_modelview_matrix(cgv::math::scale4<double>(1.0, 0.5, 1.0));
+			ctx.tesselate_unit_square();
+			ctx.pop_modelview_matrix();
+			prog.disable(ctx);
+			tex.disable(ctx);
+			glEnable(GL_CULL_FACE);
+		}
+		else
+			plot.draw(ctx);
 	}
 	void create_gui()
 	{
