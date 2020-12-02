@@ -86,9 +86,7 @@ namespace vr {
 		}
 
 		//! prevent changes to settings and enables log_vr_state methods
-		inline void lock_settings() {
-			setting_locked = true;
-		}
+		void lock_settings();
 
 		inline const size_t recorded_vr_states() const {
 			return nr_vr_states;
