@@ -1,4 +1,4 @@
-#version 430
+#version 460
 #extension GL_EXT_geometry_shader4 : enable
 
 //***** begin interface of view.glsl ***********************************
@@ -45,12 +45,11 @@ in flat vec4 tangent_gs[];
 in flat vec4 color_gs[];
 
 out vec3 position_fs;
-out flat vec4 tp2;
-out flat vec4 tp3;
-out flat QTube qTube_fs;
+out flat float l_offset_fs;
 out flat vec3 color0_fs;
 out flat vec3 color1_fs;
-out flat float l_offset_fs;
+out flat QTube qTube_fs;
+
 
 #define BBOX_LEFT_DN_FRNT bbox[0]
 #define BBOX_LEFT_UP_FRNT bbox[1]
@@ -245,6 +244,7 @@ void emit_bounding_box(int segment_idx, QTube qTube) {
 	mat4 mat_4 = mat4(mat);
 	mat_4[3] = vec4(center, 1.0);
 	mat4 M = get_modelview_matrix() * mat_4;
+	//mat4 M = mat_4;
 	
 	const vec4 bbox[8] = {
 		M * corners[0],
@@ -264,47 +264,50 @@ void emit_bounding_box(int segment_idx, QTube qTube) {
 	qTube_fs = qTube;
 	l_offset_fs = segment_idx == 0 ? 0.0 : 0.5;
 
+	mat4 PM = get_projection_matrix();
+	//mat4 PM = get_modelview_projection_matrix();
+
 	position_fs = BBOX_LEFT_UP_FRNT.xyz;
-	gl_Position = get_projection_matrix() * BBOX_LEFT_UP_FRNT;
+	gl_Position = PM * BBOX_LEFT_UP_FRNT;
 	EmitVertex();
 	position_fs = BBOX_RGHT_UP_FRNT.xyz;
-	gl_Position = get_projection_matrix() * BBOX_RGHT_UP_FRNT;
+	gl_Position = PM * BBOX_RGHT_UP_FRNT;
 	EmitVertex();
 	position_fs = BBOX_LEFT_DN_FRNT.xyz;
-	gl_Position = get_projection_matrix() * BBOX_LEFT_DN_FRNT;
+	gl_Position = PM * BBOX_LEFT_DN_FRNT;
 	EmitVertex();
 	position_fs = BBOX_RGHT_DN_FRNT.xyz;
-	gl_Position = get_projection_matrix() * BBOX_RGHT_DN_FRNT;
+	gl_Position = PM * BBOX_RGHT_DN_FRNT;
 	EmitVertex();
 	position_fs = BBOX_RGHT_DN_BACK.xyz;
-	gl_Position = get_projection_matrix() * BBOX_RGHT_DN_BACK;
+	gl_Position = PM * BBOX_RGHT_DN_BACK;
 	EmitVertex();
 	position_fs = BBOX_RGHT_UP_FRNT.xyz;
-	gl_Position = get_projection_matrix() * BBOX_RGHT_UP_FRNT;
+	gl_Position = PM * BBOX_RGHT_UP_FRNT;
 	EmitVertex();
 	position_fs = BBOX_RGHT_UP_BACK.xyz;
-	gl_Position = get_projection_matrix() * BBOX_RGHT_UP_BACK;
+	gl_Position = PM * BBOX_RGHT_UP_BACK;
 	EmitVertex();
 	position_fs = BBOX_LEFT_UP_FRNT.xyz;
-	gl_Position = get_projection_matrix() * BBOX_LEFT_UP_FRNT;
+	gl_Position = PM * BBOX_LEFT_UP_FRNT;
 	EmitVertex();
 	position_fs = BBOX_LEFT_UP_BACK.xyz;
-	gl_Position = get_projection_matrix() * BBOX_LEFT_UP_BACK;
+	gl_Position = PM * BBOX_LEFT_UP_BACK;
 	EmitVertex();
 	position_fs = BBOX_LEFT_DN_FRNT.xyz;
-	gl_Position = get_projection_matrix() * BBOX_LEFT_DN_FRNT;
+	gl_Position = PM * BBOX_LEFT_DN_FRNT;
 	EmitVertex();
 	position_fs = BBOX_LEFT_DN_BACK.xyz;
-	gl_Position = get_projection_matrix() * BBOX_LEFT_DN_BACK;
+	gl_Position = PM * BBOX_LEFT_DN_BACK;
 	EmitVertex();
 	position_fs = BBOX_RGHT_DN_BACK.xyz;
-	gl_Position = get_projection_matrix() * BBOX_RGHT_DN_BACK;
+	gl_Position = PM * BBOX_RGHT_DN_BACK;
 	EmitVertex();
 	position_fs = BBOX_LEFT_UP_BACK.xyz;
-	gl_Position = get_projection_matrix() * BBOX_LEFT_UP_BACK;
+	gl_Position = PM * BBOX_LEFT_UP_BACK;
 	EmitVertex();
 	position_fs = BBOX_RGHT_UP_BACK.xyz;
-	gl_Position = get_projection_matrix() * BBOX_RGHT_UP_BACK;
+	gl_Position = PM * BBOX_RGHT_UP_BACK;
 	EmitVertex();
 	EndPrimitive();
 }
@@ -328,10 +331,6 @@ void main()
 	QTube qTube0, qTube1;
 	SplitTube(tube, qTube0, qTube1);
 	
-	mat4 p = get_projection_matrix();
-	tp2 = vec4(p[0][2], p[1][2], p[2][2], p[3][2]);
-	tp3 = vec4(p[0][3], p[1][3], p[2][3], p[3][3]);
-
 	emit_bounding_box(0, qTube0);
 	emit_bounding_box(1, qTube1);
 }
