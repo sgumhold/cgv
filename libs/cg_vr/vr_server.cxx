@@ -365,7 +365,7 @@ namespace cgv {
 				log_data[kit_index]->disable_log();
 				log_data[kit_index] = nullptr;
 			}
-			log_data[kit_index] = std::make_shared<vr::vr_log>();
+			log_data[kit_index] = new vr::vr_log();
 			vr::vr_log& log = *log_data[kit_index];
 			
 			if (fn.size() > 0) {
@@ -389,7 +389,7 @@ namespace cgv {
 		{
 			return *log_data[kit_index];
 		}
-		std::shared_ptr<vr::vr_log> vr_server::get_log(const int kit_index)
+		cgv::data::ref_ptr<vr::vr_log> vr_server::get_log(const int kit_index)
 		{
 			return log_data[kit_index];
 		}

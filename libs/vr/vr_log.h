@@ -6,13 +6,16 @@
 #include <sstream>
 
 #include <libs/vr/vr_state.h>
+#include <cgv/data/ref_counted.h>
 #include "vr_driver.h"
 
 #include "lib_begin.h"
 
 namespace vr {
 	//! helper struct for logging vr events
-	class CGV_API vr_log : public cgv::render::render_types {
+	class CGV_API vr_log : 
+		public cgv::render::render_types,
+		public cgv::data::ref_counted {
 	public:
 		template<class T>
 		using container = std::vector<T, std::allocator<T>>;

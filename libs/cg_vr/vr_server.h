@@ -145,7 +145,7 @@ namespace cgv {
 			VREventTypeFlags event_type_flags;
 			VRFocus focus_type;
 			event_handler* focus;
-			std::unordered_map<int, std::shared_ptr<vr::vr_log>> log_data;
+			std::unordered_map<int, cgv::data::ref_ptr<vr::vr_log>> log_data;
 			///
 			void emit_events_and_update_state(void* kit_handle, const vr::vr_kit_state& new_state, int kit_index, VREventTypeFlags flags, double time);
 			///
@@ -191,7 +191,7 @@ namespace cgv {
 			/// return a reference to the used vr_log object
 			vr::vr_log& ref_log(const int kit_index=0);
 			/// returns a pointer to the active log data container, ment for extending the lifetime of the log data beyond a new enable_log call
-			std::shared_ptr<vr::vr_log> get_log(const int kit_index=0);
+			cgv::data::ref_ptr<vr::vr_log> get_log(const int kit_index=0);
 		};
 
 		/// return a reference to vr server singleton
