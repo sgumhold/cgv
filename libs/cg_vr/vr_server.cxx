@@ -381,7 +381,7 @@ namespace cgv {
 		void vr_server::disable_log(int kit_index)
 		{
 			auto it = log_data.find(kit_index);
-			if (it != log_data.end())
+			if (it != log_data.end() && it->second)
 				it->second->disable_log();
 		}
 
