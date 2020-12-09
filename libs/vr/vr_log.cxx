@@ -311,8 +311,8 @@ void vr::vr_log::lock_settings()
 					first = false;
 				}
 				*(log_stream) << filter_to_string(static_cast<vr::vr_log::Filter>(fil));
-				fil = fil << 1;
 			}
+			fil = fil << 1;
 		}
 		*(log_stream) << "}\n";
 	}
