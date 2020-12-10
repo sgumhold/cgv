@@ -204,7 +204,7 @@ void vr::vr_log::log_vr_state(const vr::vr_kit_state& state, const int mode, con
 		}
 		if ((mode & SM_OSTREAM) && log_stream) {
 			if (state.hmd.status == vr::VRStatus::VRS_TRACKED) {
-				*(log_stream) << ",{H " << time;
+				*(log_stream) << ",{H ";
 				for (int j = 0; j < 12; ++j)
 					*(log_stream) << ' ' << state.hmd.pose[j];
 				*(log_stream) << '}';
