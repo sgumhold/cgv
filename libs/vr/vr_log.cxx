@@ -145,50 +145,50 @@ void vr::vr_log::log_vr_state(const vr::vr_kit_state& state, const int mode, con
 	}
 
 	//controller state
-	for (int i = 0; i < 4; ++i) {
-		controller_status[i].push_back(state.controller[i].status);
+	for (int ci = 0; ci < 4; ++ci) {
+		controller_status[ci].push_back(state.controller[ci].status);
 		if (mode & SM_IN_MEMORY) {
 			if (filter & F_VIBRATION) {
-				vec2 vibration = vec2(state.controller[i].vibration[0], state.controller[i].vibration[1]);
-				this->controller_vibration[i].push_back(vibration);
+				vec2 vibration = vec2(state.controller[ci].vibration[0], state.controller[ci].vibration[1]);
+				this->controller_vibration[ci].push_back(vibration);
 			}
 			if (filter & F_AXES) {
 				vec8 axes;
-				for (int i = 0; i < 8; ++i) {
-					axes(i) = state.controller[i].axes[i];
+				for (int j = 0; j < 8; ++j) {
+					axes(j) = state.controller[ci].axes[j];
 				}
-				this->controller_axes[i].push_back(axes);
+				this->controller_axes[ci].push_back(axes);
 			}
 			if (filter & F_POSE) {
-				mat34 pose = mat34(3, 4, state.controller[i].pose);
-				this->controller_pose[i].push_back(pose);
+				mat34 pose = mat34(3, 4, state.controller[ci].pose);
+				this->controller_pose[ci].push_back(pose);
 			}
 			if (filter & F_BUTTON) {
-				this->controller_button_flags[i].push_back(state.controller[i].button_flags);
+				this->controller_button_flags[ci].push_back(state.controller[ci].button_flags);
 			}
 		}
 		if (mode & SM_OSTREAM) {
 			//<timestamp>, ({C <controller_id> [P <pose>] [B <button - mask>] [A <axes - state>] [V <vibration>] }, )* [H <pose>]
 			//C{<controller_id> [P <pose>] [B <button - mask>] [A <axes - state>] [V <vibration>]}
-			if (state.controller[i].status == vr::VRStatus::VRS_TRACKED) {
-				*(log_stream) << ",{C " << i;
+			if (state.controller[ci].status == vr::VRStatus::VRS_TRACKED) {
+				*(log_stream) << ",{C " << ci;
 				if (filter & F_POSE) {
 					*(log_stream) << " P";
 					for (int j = 0; j < 12; ++j)
-						*(log_stream) << ' ' << state.controller[i].pose[j];
+						*(log_stream) << ' ' << state.controller[ci].pose[j];
 				}
 				if (filter & F_BUTTON) {
-					*(log_stream) << " B " << state.controller[i].button_flags;
+					*(log_stream) << " B " << state.controller[ci].button_flags;
 				}
 				if (filter & F_AXES) {
 					*(log_stream) << " A";
 					for (int j = 0; j < 8; ++j)
-						*(log_stream) << ' ' << state.controller[i].axes[j];
+						*(log_stream) << ' ' << state.controller[ci].axes[j];
 				}
 				if (filter & F_VIBRATION) {
 					*(log_stream) << " V";
 					for (int j = 0; j < 2; ++j)
-						*(log_stream) << ' ' << state.controller[i].vibration[j];
+						*(log_stream) << ' ' << state.controller[ci].vibration[j];
 				}
 				*(log_stream) << "}";
 			}
