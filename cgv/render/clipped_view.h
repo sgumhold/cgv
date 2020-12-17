@@ -25,6 +25,8 @@ public:
 	void compute_clipping_planes(double& z_near_derived, double& z_far_derived, bool clip_relative_to_extent = false) const;
 	/// compute clipping planes according to given view adapted to the current scene extent, z_near_derived is at least z_near and as large as possible to include the scene, similarly z_far_derived is as small as possible  
 	void compute_clipping_planes(const view& view, double& z_near_derived, double& z_far_derived, bool clip_relative_to_extent = false) const;
+	/// compute clipping planes according to given view adapted to the current scene extent, z_near_derived is at least z_near and as large as possible to include the scene, similarly z_far_derived is as small as possible  
+	void compute_clipping_planes(const dvec3& eye, const dvec3& view_dir, double& z_near_derived, double& z_far_derived, bool clip_relative_to_extent = false) const;
 
 	/**@name getter and setter methods*/
 	//@{
