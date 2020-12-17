@@ -56,6 +56,15 @@ struct display_configuration
 /// out streaming of a display configuration
 extern CGV_API std::ostream& operator << (std::ostream& os, const display_configuration& dc);
 
+/** differnt flags for filtering the scanning of displays */
+enum DisplayScanMode
+{
+	DSM_ALL = 0,       /// no restriction results in all displays
+	DSM_PHYSICAL = 1,  /// restriction to physical displays
+	DSM_ACTIVE = 2,    /// restriction to active displays (can be combined with restriction to physical)
+	DSM_PASSIVE = 4    /// restriction to passive displays (can be combined with restriction to physical)
+};
+
 /** the display class gives access to the display modes of all 
 	 available displays. An example application can be found in
 	 <apps/display>. It provides a command line interface to the
@@ -69,7 +78,7 @@ public:
 	/// if one of the methods return false, this static member gives textual information about the reason
 	static std::string last_error;
 	/// scan all available displays and ignore the mirrored displays that do not correspond to physical devices if \c only_physical_displays is set to true
-	static void scan_displays(bool only_physical_displays = true);
+	static void scan_displays(DisplayScanMode mode = DSM_ALL);
 	/// return the list of previously scanned display devices
 	static const std::vector<display*>& get_displays();
 	/// clear the list of previously scanned devices and free all allocated memory
@@ -79,7 +88,7 @@ public:
 	/// check if all displays can be activated according to the registered settings
 	static bool check_activate_all();
 	/// show all available displays
-	static void show_all_displays(bool only_physical_displays = true);
+	static void show_all_displays(DisplayScanMode scan_mode = DSM_ALL);
 	//@}
 
 	/// virtual destructor frees all platform specifically allocated memory

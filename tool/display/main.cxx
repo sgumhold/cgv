@@ -7,7 +7,7 @@ using namespace cgv::utils;
 
 void show_usage()
 {
-	std::cout << "usage:\ndisplay ... show all displays\ndisplay command1 command2 ... commandn\n\n"
+	std::cout << "usage:\ndisplay [p][+|-] ... show all [physical] [active|passive] displays\ndisplay command1 command2 ... commandn\n\n"
 		<< "command syntax:\n"
 		<< "   [0-9]  ... show display with given index\n"
 		<< "   [0-9]m ... show monitor compatible modes of given display\n"
@@ -119,7 +119,22 @@ int main(int argc, char** argv)
 		display::show_all_displays();
 		return 1;
 	}
-	display::scan_displays();
+	if (argc == 2) {
+		if (argv[1][0] == 'p' || argv[1][0] == '+' || argv[1][0] == '-') {
+			DisplayScanMode mode = DSM_ALL;
+			int j = 0;
+			while (argv[1][j] != 0 && j < 2) {
+				switch (argv[1][j]) {
+				case 'p': mode = DisplayScanMode(mode | DSM_PHYSICAL); break;
+				case '+': mode = DisplayScanMode(mode | DSM_ACTIVE); break;
+				case '-': mode = DisplayScanMode(mode | DSM_PASSIVE); break;
+				}
+				++j;
+			}
+			display::show_all_displays(mode);
+			return 1;
+		}
+	}
 	const std::vector<display*>& displays = display::get_displays();
 	bool mode_changed, position_changed;
 	for (int i=1; i<argc; ++i) {
