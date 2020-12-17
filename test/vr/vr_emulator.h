@@ -6,7 +6,7 @@
 #include <cgv/gui/provider.h>
 #include <cgv/gui/event_handler.h>
 #include <cgv/gui/key_event.h>
-#include <vr/gl_vr_display.h>
+#include <vr/vr_kit.h>
 #include <vr/vr_driver.h>
 
 #include "lib_begin.h"
@@ -27,7 +27,7 @@ enum TrackerAttachment
 	TA_RIGHT_HAND
 };
 
-class CGV_API vr_emulated_kit : public vr::gl_vr_display, public cgv::render::render_types
+class CGV_API vr_emulated_kit : public vr::vr_kit, public cgv::render::render_types
 {
 public:
 	typedef cgv::math::fmat<float, 3, 4> mat3x4;

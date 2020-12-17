@@ -34,9 +34,9 @@ vr_view_interactor::vr_view_interactor(const char* name) : stereo_view_interacto
 	blit_vr_views = true;
 	blit_width = 160;
 	event_flags = cgv::gui::VREventTypeFlags(cgv::gui::VRE_ALL);
-	rendered_kit_ptr = 0;
+	rendered_display_ptr = 0;
 	rendered_eye = 0;
-	rendered_kit_index = -1;
+	rendered_display_index = -1;
 
 	fence_frequency = 5;
 	fence_line_width = 3;
@@ -421,8 +421,8 @@ void vr_view_interactor::after_finish(cgv::render::context& ctx)
 {
 	stereo_view_interactor::after_finish(ctx);
 	if (ctx.get_render_pass() == cgv::render::RP_MAIN) {
-		if (rendered_kit_ptr) {
-			rendered_kit_ptr->disable_fbo(rendered_eye);
+		if (rendered_display_ptr) {
+			rendered_display_ptr->disable_fbo(rendered_eye);
 			ctx.recover_from_external_frame_buffer_change(fbo_handle);
 			ctx.recover_from_external_viewport_change(cgv_viewport);
 			if (!separate_view) {
@@ -434,13 +434,13 @@ void vr_view_interactor::after_finish(cgv::render::context& ctx)
 				case 3: width /= 2; break;
 				}
 				for (; eye < eye_end; ++eye) {
-					rendered_kit_ptr->blit_fbo(eye, x0, 0, width, ctx.get_height());
+					rendered_display_ptr->blit_fbo(eye, x0, 0, width, ctx.get_height());
 					x0 += width;
 				}
 			}
 			rendered_eye = 0;
-			rendered_kit_ptr = 0;
-			rendered_kit_index = -1;
+			rendered_display_ptr = 0;
+			rendered_display_index = -1;
 		}
 		// submit frames to active vr kits and blit vr kit views in main framebuffer if activated
 		if (!dont_render_kits) {
@@ -585,34 +585,34 @@ void vr_view_interactor::render_vr_kits(cgv::render::context& ctx)
 {
 	cgv::render::RenderPassFlags rpf = ctx.get_render_pass_flags();
 	// first render all but current vr kit views
-	for (rendered_kit_index = 0; rendered_kit_index<int(kits.size()); ++rendered_kit_index) {
-		if (rendered_kit_index == current_vr_handle_index)
+	for (rendered_display_index = 0; rendered_display_index<int(kits.size()); ++rendered_display_index) {
+		if (rendered_display_index == current_vr_handle_index)
 			continue;
-		rendered_kit_ptr = get_vr_kit_from_index(rendered_kit_index);
-		if (!rendered_kit_ptr)
+		rendered_display_ptr = get_vr_kit_from_index(rendered_display_index);
+		if (!rendered_display_ptr)
 			continue;
-		if (kit_states[rendered_kit_index].hmd.status == vr::VRS_DETACHED)
+		if (kit_states[rendered_display_index].hmd.status == vr::VRS_DETACHED)
 			continue;
 		void* fbo_handle;
 		ivec4 cgv_viewport;
 		for (rendered_eye = 0; rendered_eye < 2; ++rendered_eye) {
-			rendered_kit_ptr->enable_fbo(rendered_eye);
+			rendered_display_ptr->enable_fbo(rendered_eye);
 			ctx.announce_external_frame_buffer_change(fbo_handle);
 			ctx.announce_external_viewport_change(cgv_viewport);
 			ctx.render_pass(cgv::render::RP_USER_DEFINED, cgv::render::RenderPassFlags(rpf & ~cgv::render::RPF_HANDLE_SCREEN_SHOT), this);
-			rendered_kit_ptr->disable_fbo(rendered_eye);
+			rendered_display_ptr->disable_fbo(rendered_eye);
 			ctx.recover_from_external_viewport_change(cgv_viewport);
 			ctx.recover_from_external_frame_buffer_change(fbo_handle);
 		}
 	}
 	// then render current vr kit 
-	rendered_kit_index = current_vr_handle_index;
-	rendered_kit_ptr = get_vr_kit_from_index(rendered_kit_index);
-	if (rendered_kit_ptr && kit_states[rendered_kit_index].hmd.status != vr::VRS_DETACHED) {
+	rendered_display_index = current_vr_handle_index;
+	rendered_display_ptr = get_vr_kit_from_index(rendered_display_index);
+	if (rendered_display_ptr && kit_states[rendered_display_index].hmd.status != vr::VRS_DETACHED) {
 		void* fbo_handle;
 		ivec4 cgv_viewport;
 		for (rendered_eye = 0; rendered_eye < 2; ++rendered_eye) {
-			rendered_kit_ptr->enable_fbo(rendered_eye);
+			rendered_display_ptr->enable_fbo(rendered_eye);
 			ctx.announce_external_frame_buffer_change(fbo_handle);
 			ctx.announce_external_viewport_change(cgv_viewport);
 			// we break here in the case of no separate to use main render pass to render second eye of current vr kit
@@ -622,18 +622,18 @@ void vr_view_interactor::render_vr_kits(cgv::render::context& ctx)
 				break;
 			}
 			ctx.render_pass(cgv::render::RP_USER_DEFINED, cgv::render::RenderPassFlags(rpf & ~cgv::render::RPF_HANDLE_SCREEN_SHOT));
-			rendered_kit_ptr->disable_fbo(rendered_eye);
+			rendered_display_ptr->disable_fbo(rendered_eye);
 			ctx.recover_from_external_viewport_change(cgv_viewport);
 			ctx.recover_from_external_frame_buffer_change(fbo_handle);
 		}
 	}
 	else {
-		rendered_kit_ptr = 0;
-		rendered_kit_index = -1;
+		rendered_display_ptr = 0;
+		rendered_display_index = -1;
 	}
 	if (separate_view) {
-		rendered_kit_ptr = 0;
-		rendered_kit_index = -1;
+		rendered_display_ptr = 0;
+		rendered_display_index = -1;
 	}
 }
 
@@ -653,10 +653,11 @@ void vr_view_interactor::init_frame(cgv::render::context& ctx)
 		}
 	}
 	// set model view projection matrices for currently rendered eye of rendered vr kit
-	if (rendered_kit_ptr) {
+	if (rendered_display_ptr) {
+		vr::vr_kit* rendered_vr_kit = get_rendered_vr_kit();
 		compute_clipping_planes(z_near_derived, z_far_derived, clip_relative_to_extent);
-		ctx.set_projection_matrix(vr::get_eye_projection_transform(rendered_kit_ptr, kit_states[rendered_kit_index], float(z_near_derived), float(z_far_derived), rendered_eye));
-		ctx.set_modelview_matrix(vr::get_world_to_eye_transform(rendered_kit_ptr, kit_states[rendered_kit_index], rendered_eye));
+		ctx.set_projection_matrix(vr::get_eye_projection_transform(rendered_vr_kit, kit_states[rendered_display_index], float(z_near_derived), float(z_far_derived), rendered_eye));
+		ctx.set_modelview_matrix(vr::get_world_to_eye_transform(rendered_vr_kit, kit_states[rendered_display_index], rendered_eye));
 	}
 	else {
 		// use standard rendering for separate view or if no vr kit is available
@@ -714,7 +715,7 @@ void vr_view_interactor::draw_vr_kits(cgv::render::context& ctx)
 			if (!kit_ptr->query_state(state, 1))
 				continue;
 		// render other hmds
-		if (kit_ptr != rendered_kit_ptr) {
+		if (kit_ptr != rendered_display_ptr) {
 			// either as mesh
 			if ((hmd_vis_type & VVT_MESH) != 0) {
 				if (!MI_hmd_ptr) {
@@ -1024,9 +1025,12 @@ bool vr_view_interactor::self_reflect(cgv::reflect::reflection_handler& srh)
 		srh.reflect_member("tracking_origin_z", tracking_origin[2]);
 }
 
+#ifndef NO_VR_VIEW_INTERACTOR
+
 #include <cgv/base/register.h>
 
 /// register a newly created cube with the name "cube1" as constructor argument
 extern cgv::base::object_registration_1<vr_view_interactor,const char*> 
  obj1("vr interactor", "registration of vr interactor");
 
+#endif

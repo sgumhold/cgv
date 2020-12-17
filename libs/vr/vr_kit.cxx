@@ -36,8 +36,8 @@ namespace vr {
 		camera = nullptr;
 	}
 	/// construct
-	vr_kit::vr_kit(vr_driver* _driver, void* _handle, const std::string& _name) :
-		driver(_driver), handle(_handle), name(_name), camera(nullptr) {}
+	vr_kit::vr_kit(vr_driver* _driver, void* _handle, const std::string& _name, unsigned _width, unsigned _height, unsigned _nr_multi_samples) :
+		gl_vr_display(_width, _height, _nr_multi_samples), driver(_driver), handle(_handle), name(_name), camera(nullptr) {}
 	/// declare virtual destructor
 	vr_kit::~vr_kit()
 	{
@@ -52,9 +52,7 @@ namespace vr {
 	vr_camera * vr_kit::get_camera() const { return camera; }
 	/// return name of vr_kit
 	const std::string& vr_kit::get_name() const { return name; }
-	/// return last error of vr_kit
-	const std::string& vr_kit::get_last_error() const { return last_error; }
-
+	
 	float dot(int n, const float* a, const float* b, int step_a = 1, int step_b=1)  
 	{
 		float res = 0;

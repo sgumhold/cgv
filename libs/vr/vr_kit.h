@@ -3,9 +3,7 @@
 #include "vr_state.h"
 #include "vr_camera.h"
 #include "vr_info.h"
-
-#include <vector>
-#include <string>
+#include "gl_vr_display.h"
 
 #include "lib_begin.h"
 
@@ -41,7 +39,7 @@ namespace vr {
 	can be access via get_handle(). Furthermore, each kit has a human readable
 	name [get_name()].
 	The corresponding driver is accessed through get_driver(). In case of an error, the error
-	message can be accessed via get_last_error().
+	message can be accessed via get_last_error() of the base class gl_vr_display.
 
 	query_state(vr_kit_state& state, int pose_query) gives access to the state of the kit and comes in 
 	three variants distinguished by the pose_query parameter:
@@ -67,7 +65,7 @@ namespace vr {
 	matrix. The projection matrix can be accessed per eye via
 	put_projection_matrix(eye,z_near,z_far,float[16]).
 	*/
-	class CGV_API vr_kit
+	class CGV_API vr_kit : public gl_vr_display
 	{
 	protected:
 		/// pointer to driver that created the vr kit
@@ -82,8 +80,6 @@ namespace vr {
 		vr_kit_info info;
 		/// store controller input configs per controller and input
 		controller_input_config input_configs[4][5];
-		/// store last error here
-		std::string last_error;
 		/// destruct camera
 		void destruct_camera();
 		/// write access to the state of the tracking reference with given serial number
@@ -97,7 +93,7 @@ namespace vr {
 		/// derived kits implement this without caring about calibration; vr_kit::query_state() will apply driver calibration
 		virtual bool query_state_impl(vr_kit_state& state, int pose_query) = 0;
 		/// construct
-		vr_kit(vr_driver* _driver, void* _handle, const std::string& _name);
+		vr_kit(vr_driver* _driver, void* _handle, const std::string& _name, unsigned _width, unsigned _height, unsigned _nr_multi_samples = 4);
 	public:
 		/// return driver
 		const vr_driver* get_driver() const;
@@ -107,8 +103,6 @@ namespace vr {
 		vr_camera* get_camera() const;
 		/// return name of vr_kit
 		const std::string& get_name() const;
-		/// return last error of vr_kit
-		const std::string& get_last_error() const;
 		/// declare virtual destructor
 		virtual ~vr_kit();
 		/// return information on the currently attached devices
@@ -135,20 +129,6 @@ namespace vr {
 		bool query_state(vr_kit_state& state, int pose_query = 2);
 		/// set the vibration strength between 0 and 1 of low and high frequency motors, return false if device is not connected anymore
 		virtual bool set_vibration(unsigned controller_index, float low_frequency_strength, float high_frequency_strength) = 0;
-		/// return width in pixel of view
-		virtual int get_width() const = 0;
-		/// return height in pixel of view
-		virtual int get_height() const = 0;
-		/// allow to set a different size; in case fbos have been initialized before, destruct_fbos() and init_fbos() has to be called with the gl context of this vr kit being current
-		virtual void set_size(int new_width, int new_height) = 0;
-		/// initialize render targets and framebuffer objects in current opengl context
-		virtual bool init_fbos() = 0;
-		/// initialize render targets and framebuffer objects in current opengl context
-		virtual bool blit_fbo(int eye, int x, int y, int w, int h) = 0;
-		/// check whether fbos have been initialized
-		virtual bool fbos_initialized() const = 0;
-		/// destruct render targets and framebuffer objects in current opengl context
-		virtual void destruct_fbos() = 0;
 		/// access to 3x4 matrix in column major format for transformation from eye (0..left, 1..right) to head coordinates
 		virtual void put_eye_to_head_matrix(int eye, float* pose_matrix) const = 0;
 		//! access to 4x4 matrix in column major format for perspective transformation from eye (0..left, 1..right)
@@ -157,12 +137,6 @@ namespace vr {
 		virtual void put_projection_matrix(int eye, float z_near, float z_far, float* projection_matrix, const float* hmd_pose = 0) const = 0;
 		/// access to 4x4 modelview transformation matrix of given eye in column major format, which is computed in default implementation from given 3x4 pose matrix and eye to head transformation
 		virtual void put_world_to_eye_transform(int eye, const float* hmd_pose, float* modelview_matrix) const;
-		/// enable the framebuffer object of given eye (0..left, 1..right) 
-		virtual void enable_fbo(int eye) = 0;
-		/// disable the framebuffer object of given eye (0..left, 1..right)
-		virtual void disable_fbo(int eye) = 0;
-		/// bind texture of given eye to current texture unit
-		virtual void bind_texture(int eye) = 0;
 		/// submit the rendered stereo frame to the hmd
 		virtual void submit_frame() = 0;
 	};
