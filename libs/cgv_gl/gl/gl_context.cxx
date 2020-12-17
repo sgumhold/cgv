@@ -13,6 +13,7 @@
 #include <cgv/render/drawable.h>
 #include <cgv/render/shader_program.h>
 #include <cgv/render/attribute_array_binding.h>
+#include <cgv/render/vertex_buffer.h>
 #include <cgv/render/textured_material.h>
 #include <cgv/utils/scan.h>
 #include <cgv/media/image/image_writer.h>
@@ -917,16 +918,44 @@ void render_vertex(int k, const float* vertices, const float* normals, const flo
 	glVertex3fv(vertices+3*vertex_indices[k]);
 }
 
+attribute_array_binding*& get_aab_ptr()
+{
+	static attribute_array_binding* aab_ptr = 0;
+	return aab_ptr;
+}
+
+vertex_buffer*& get_vbo_ptr()
+{
+	static vertex_buffer* vbo_ptr = 0;
+	return vbo_ptr;
+}
+
 bool gl_context::release_attributes(const float* normals, const float* tex_coords, const int* normal_indices, const int* tex_coord_indices) const
 {
 	shader_program* prog_ptr = static_cast<shader_program*>(get_current_program());
 	if (!prog_ptr || prog_ptr->get_position_index() == -1)
 		return false;
-	attribute_array_binding::disable_global_array(*this, prog_ptr->get_position_index());
-	if (prog_ptr->get_normal_index() != -1 && normals && normal_indices)
-		attribute_array_binding::disable_global_array(*this, prog_ptr->get_normal_index());
-	if (prog_ptr->get_texcoord_index() != -1 && tex_coords && tex_coord_indices)
-		attribute_array_binding::disable_global_array(*this, prog_ptr->get_texcoord_index());
+
+	attribute_array_binding*& aab_ptr = get_aab_ptr();
+	if (!aab_ptr) {
+		attribute_array_binding::disable_global_array(*this, prog_ptr->get_position_index());
+		if (prog_ptr->get_normal_index() != -1 && normals && normal_indices)
+			attribute_array_binding::disable_global_array(*this, prog_ptr->get_normal_index());
+		if (prog_ptr->get_texcoord_index() != -1 && tex_coords && tex_coord_indices)
+			attribute_array_binding::disable_global_array(*this, prog_ptr->get_texcoord_index());
+	}
+	else {
+		aab_ptr->disable(const_cast<gl_context&>(*this));
+		aab_ptr->disable_array(*this, prog_ptr->get_position_index());
+		if (prog_ptr->get_normal_index() != -1 && normals && normal_indices)
+			aab_ptr->disable_global_array(*this, prog_ptr->get_normal_index());
+		if (prog_ptr->get_texcoord_index() != -1 && tex_coords && tex_coord_indices)
+			aab_ptr->disable_global_array(*this, prog_ptr->get_texcoord_index());
+		vertex_buffer*& vbo_ptr = get_vbo_ptr();
+		vbo_ptr->destruct(*this);
+		delete vbo_ptr;
+		vbo_ptr = 0;
+	}
 	return true;
 }
 
@@ -941,32 +970,84 @@ bool gl_context::prepare_attributes(std::vector<vec3>& P, std::vector<vec3>& N, 
 	P.resize(nr_vertices);
 	for (i = 0; i < nr_vertices; ++i)
 		P[i] = *reinterpret_cast<const vec3*>(vertices + 3 * vertex_indices[i]);
-	attribute_array_binding::set_global_attribute_array<>(*this, prog_ptr->get_position_index(), P);
-	attribute_array_binding::enable_global_array(*this, prog_ptr->get_position_index());
-	if (prog_ptr->get_normal_index() != -1) {
-		if (normals && normal_indices) {
-			N.resize(nr_vertices);
-			for (i = 0; i < nr_vertices; ++i) {
-				N[i] = *reinterpret_cast<const vec3*>(normals + 3 * normal_indices[i]);
-				if (flip_normals)
-					N[i] = -N[i];
-			}
-			attribute_array_binding::set_global_attribute_array<>(*this, prog_ptr->get_normal_index(), N);
-			attribute_array_binding::enable_global_array(*this, prog_ptr->get_normal_index());
+
+	if (prog_ptr->get_normal_index() != -1 && normals && normal_indices) {
+		N.resize(nr_vertices);
+		for (i = 0; i < nr_vertices; ++i) {
+			N[i] = *reinterpret_cast<const vec3*>(normals + 3 * normal_indices[i]);
+			if (flip_normals)
+				N[i] = -N[i];
 		}
-		else
-			attribute_array_binding::disable_global_array(*this, prog_ptr->get_normal_index());
 	}
-	if (prog_ptr->get_texcoord_index() != -1) {
-		if (tex_coords && tex_coord_indices) {
-			T.resize(nr_vertices);
-			for (i = 0; i < nr_vertices; ++i)
-				T[i] = *reinterpret_cast<const vec2*>(tex_coords + 2 * tex_coord_indices[i]);
-			attribute_array_binding::set_global_attribute_array<>(*this, prog_ptr->get_texcoord_index(), T);
-			attribute_array_binding::enable_global_array(*this, prog_ptr->get_texcoord_index());
+	if (prog_ptr->get_texcoord_index() != -1 && tex_coords && tex_coord_indices) {
+		T.resize(nr_vertices);
+		for (i = 0; i < nr_vertices; ++i)
+			T[i] = *reinterpret_cast<const vec2*>(tex_coords + 2 * tex_coord_indices[i]);
+	}
+
+	attribute_array_binding*& aab_ptr = get_aab_ptr();
+	if (core_profile && !aab_ptr) {
+		aab_ptr = new attribute_array_binding();
+		aab_ptr->create(*this);
+	}
+	if (!aab_ptr) {
+		attribute_array_binding::set_global_attribute_array<>(*this, prog_ptr->get_position_index(), P);
+		attribute_array_binding::enable_global_array(*this, prog_ptr->get_position_index());
+		if (prog_ptr->get_normal_index() != -1) {
+			if (normals && normal_indices) {
+				attribute_array_binding::set_global_attribute_array<>(*this, prog_ptr->get_normal_index(), N);
+				attribute_array_binding::enable_global_array(*this, prog_ptr->get_normal_index());
+			}
+			else
+				attribute_array_binding::disable_global_array(*this, prog_ptr->get_normal_index());
 		}
+		if (prog_ptr->get_texcoord_index() != -1) {
+			if (tex_coords && tex_coord_indices) {
+				attribute_array_binding::set_global_attribute_array<>(*this, prog_ptr->get_texcoord_index(), T);
+				attribute_array_binding::enable_global_array(*this, prog_ptr->get_texcoord_index());
+			}
+			else
+				attribute_array_binding::disable_global_array(*this, prog_ptr->get_texcoord_index());
+		}
+	}
+	else {
+		vertex_buffer*& vbo_ptr = get_vbo_ptr();
+		if (!vbo_ptr)
+			vbo_ptr = new vertex_buffer();
 		else
-			attribute_array_binding::disable_global_array(*this, prog_ptr->get_texcoord_index());
+			vbo_ptr->destruct(*this);
+		vbo_ptr->create(*this, P.size() * sizeof(vec3) + N.size() * sizeof(vec3) + T.size() * sizeof(vec2));
+		vbo_ptr->replace(const_cast<gl_context&>(*this), 0, &P.front(), P.size());
+		size_t nml_off = P.size() * sizeof(vec3);
+		size_t tex_off = nml_off;
+		if (!N.empty()) {
+			vbo_ptr->replace(const_cast<gl_context&>(*this), nml_off, &N.front(), N.size());
+			tex_off += N.size() * sizeof(vec2);
+		}
+		if (!T.empty())
+			vbo_ptr->replace(const_cast<gl_context&>(*this), tex_off, &T.front(), T.size());
+
+		type_descriptor td3 = element_descriptor_traits<vec3>::get_type_descriptor(P.front());
+		aab_ptr->set_attribute_array(*this, prog_ptr->get_position_index(), td3, *vbo_ptr, 0, P.size());
+		aab_ptr->enable_array(*this, prog_ptr->get_position_index());
+		if (prog_ptr->get_normal_index() != -1) {
+			if (normals && normal_indices) {
+				aab_ptr->set_attribute_array(*this, prog_ptr->get_normal_index(), td3, *vbo_ptr, nml_off, N.size());
+				aab_ptr->enable_array(*this, prog_ptr->get_normal_index());
+			}
+			else
+				aab_ptr->disable_array(*this, prog_ptr->get_normal_index());
+		}
+		if (prog_ptr->get_texcoord_index() != -1) {
+			if (tex_coords && tex_coord_indices) {
+				type_descriptor td2 = element_descriptor_traits<vec2>::get_type_descriptor(T.front());
+				aab_ptr->set_attribute_array(*this, prog_ptr->get_texcoord_index(), td2, *vbo_ptr, tex_off, T.size());
+				aab_ptr->enable_array(*this, prog_ptr->get_texcoord_index());
+			}
+			else
+				aab_ptr->disable_array(*this, prog_ptr->get_texcoord_index());
+		}
+		aab_ptr->enable(const_cast<gl_context&>(*this));
 	}
 	return true;
 }
