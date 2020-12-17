@@ -79,6 +79,7 @@ namespace cgv {
 				ref_prog().set_attribute(ctx, "tangent", vec4(0.0));
 
 			ref_prog().set_uniform(ctx, "radius_scale", strs.radius_scale);
+			ref_prog().set_uniform(ctx, "eye_pos", eye_pos);
 
 			return true;
 		}

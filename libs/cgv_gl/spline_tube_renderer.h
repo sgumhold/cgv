@@ -32,9 +32,17 @@ namespace cgv { // @<
 			bool has_radii;
 			/// whether tangents are specified
 			bool has_tangents;
+
+			vec3 eye_pos;
+
 			/// overload to allow instantiation of spline_tube_renderer
 			render_style* create_render_style() const;
 		public:
+
+
+			void set_eye_pos(vec3 ep) { eye_pos = ep; }
+
+
 			/// initializes position_is_center to true 
 			spline_tube_renderer();
 			void set_attribute_array_manager(const context& ctx, attribute_array_manager* _aam_ptr);
