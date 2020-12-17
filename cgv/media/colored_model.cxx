@@ -9,6 +9,17 @@ namespace cgv {
 		{
 			color_storage_ptr = 0;
 		}
+		/// copy constructur
+		colored_model::colored_model(const colored_model& cm)
+		{
+			color_storage_ptr = cm.color_storage_ptr ? cm.color_storage_ptr->clone() : 0;
+		}
+		/// assignment operator
+		colored_model& colored_model::operator = (const colored_model& cm)
+		{
+			color_storage_ptr = cm.color_storage_ptr ? cm.color_storage_ptr->clone() : 0;
+			return *this;
+		}
 		/// destruct colored model
 		colored_model::~colored_model()
 		{
