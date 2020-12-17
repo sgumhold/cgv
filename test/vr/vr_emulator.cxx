@@ -111,7 +111,7 @@ void vr_emulated_kit::compute_state_poses()
 }
 
 vr_emulated_kit::vr_emulated_kit(float _body_direction, const vec3& _body_position, float _body_height, unsigned _width, unsigned _height, vr::vr_driver* _driver, void* _handle, const std::string& _name)
-	: gl_vr_display(_width, _height, _driver, _handle, _name)
+	: vr_kit(_driver, _handle, _name, _width, _height)
 {
 	body_position = _body_position;
 	body_direction=_body_direction;

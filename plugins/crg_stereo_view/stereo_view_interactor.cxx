@@ -1670,6 +1670,7 @@ bool stereo_view_interactor::self_reflect(cgv::reflect::reflection_handler& srh)
 		srh.reflect_member("focus_x", view::focus(0)) &&
 		srh.reflect_member("focus_y", view::focus(1)) &&
 		srh.reflect_member("focus_z", view::focus(2)) &&
+		srh.reflect_member("focus", view::focus) &&
 		srh.reflect_member("adapt_aspect_ratio_to_stereo_mode", adapt_aspect_ratio_to_stereo_mode) &&
 		srh.reflect_member("stereo", stereo_enabled) &&
 		srh.reflect_member("eye_distance", eye_distance) &&
@@ -1681,10 +1682,12 @@ bool stereo_view_interactor::self_reflect(cgv::reflect::reflection_handler& srh)
 		srh.reflect_member("view_dir_x", view_dir(0)) &&
 		srh.reflect_member("view_dir_y", view_dir(1)) &&
 		srh.reflect_member("view_dir_z", view_dir(2)) &&
+		srh.reflect_member("view_dir", view_dir) &&
 		srh.reflect_member("fix_view_up_dir", fix_view_up_dir) &&
 		srh.reflect_member("up_dir_x", view_up_dir(0)) &&
 		srh.reflect_member("up_dir_y", view_up_dir(1)) &&
 		srh.reflect_member("up_dir_z", view_up_dir(2)) &&
+		srh.reflect_member("up_dir", view_up_dir) &&
 		srh.reflect_member("y_view_angle", y_view_angle) &&
 		srh.reflect_member("extent", y_extent_at_focus) &&
 		srh.reflect_member("z_near", z_near) &&

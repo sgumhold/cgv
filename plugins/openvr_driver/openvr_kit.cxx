@@ -156,7 +156,7 @@ void analyze_tracking_reference(vr::IVRSystem* hmd_ptr, vr::TrackedDeviceIndex_t
 
 /// construct
 openvr_kit::openvr_kit(unsigned _width, unsigned _height, vr_driver* _driver, vr::IVRSystem* _hmd, const std::string& _name)
-	: gl_vr_display(_width, _height, _driver, _hmd, _name)
+	: vr_kit(_driver, _hmd, _name, _width, _height)
 {
 	camera = new openvr_camera(_hmd);
 	info.force_feedback_support = true;
