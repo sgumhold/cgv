@@ -172,7 +172,6 @@ void plot2d::clear(cgv::render::context& ctx)
 	bar_outline_prog.destruct(ctx);
 }
 
-
 void plot2d::draw_sub_plot(cgv::render::context& ctx, unsigned i)
 {
 	GLsizei count = (GLsizei)set_attributes(ctx, i, samples);
@@ -187,7 +186,7 @@ void plot2d::draw_sub_plot(cgv::render::context& ctx, unsigned i)
 		set_default_attributes(ctx, bar_prog, 2);
 
 		ctx.set_color(spc.bar_color);
-		glDrawArrays(GL_POINTS, 0, count);
+		draw_sub_plot_samples(count, spc);
 		bar_prog.disable(ctx);
 
 		glEnable(GL_CULL_FACE);
@@ -201,7 +200,7 @@ void plot2d::draw_sub_plot(cgv::render::context& ctx, unsigned i)
 			set_default_attributes(ctx, bar_outline_prog, 2);
 
 			ctx.set_color(spc.bar_outline_color);
-			glDrawArrays(GL_POINTS, 0, count);
+			draw_sub_plot_samples(count, spc);
 			bar_outline_prog.disable(ctx);
 		}
 	}
@@ -212,7 +211,7 @@ void plot2d::draw_sub_plot(cgv::render::context& ctx, unsigned i)
 		stick_prog.enable(ctx);
 		set_default_attributes(ctx, stick_prog, 2);
 		ctx.set_color(spc.stick_color);
-		glDrawArrays(GL_POINTS, 0, count);
+		draw_sub_plot_samples(count, spc);
 		stick_prog.disable(ctx);
 	}
 
@@ -226,8 +225,9 @@ void plot2d::draw_sub_plot(cgv::render::context& ctx, unsigned i)
 	if (spc.show_lines) {
 		ctx.set_color(spc.line_color);
 		glLineWidth(spc.line_width);
-		if (strips[i].empty())
-			glDrawArrays(GL_LINE_STRIP, 0, count);
+		if (strips[i].empty()) {
+			draw_sub_plot_samples(count, spc, true);
+		}
 		else {
 			unsigned fst = 0;
 			for (unsigned j = 0; j < strips[i].size(); ++j) {
@@ -240,7 +240,7 @@ void plot2d::draw_sub_plot(cgv::render::context& ctx, unsigned i)
 	if (spc.show_points) {
 		ctx.set_color(spc.point_color);
 		glPointSize(spc.point_size);
-		glDrawArrays(GL_POINTS, 0, count);
+		draw_sub_plot_samples(count, spc);
 	}
 
 	if(spc.show_points || spc.show_lines) {

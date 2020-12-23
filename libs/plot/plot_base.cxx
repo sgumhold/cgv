@@ -2,6 +2,7 @@
 #include <cgv/render/shader_program.h>
 #include <cgv/signal/rebind.h>
 #include <cgv/render/attribute_array_binding.h>
+#include <libs/cgv_gl/gl/gl.h>
 
 namespace cgv {
 	namespace plot {
@@ -44,6 +45,9 @@ domain_config::domain_config(unsigned nr_axes) : color(0.85f,0.85f,0.85f), axis_
 plot_base_config::plot_base_config(const std::string& _name) : name(_name)
 {
 	show_plot = true;
+
+	begin_sample = 0;
+	end_sample = size_t(-1);
 
 	point_size = 3;
 	point_color = rgb(1,0,0);
@@ -117,6 +121,26 @@ attribute_source::attribute_source(const attribute_source& as)
 	offset = as.offset;
 	count  = as.count;
 	stride = as.stride;
+}
+
+void plot_base::draw_sub_plot_samples(int count, const plot_base_config& spc, bool strip)
+{
+	if (spc.begin_sample >= spc.end_sample) {
+		glDrawArrays(strip ? GL_LINE_STRIP : GL_POINTS, GLint(spc.begin_sample), GLsizei(count - spc.begin_sample));
+		if (strip) {
+			GLint indices[2] = { count - 1, 0 };
+			glDrawElements(GL_LINES, 2, GL_UNSIGNED_INT, indices);
+		}
+		if (spc.end_sample > 0)
+			glDrawArrays(strip ? GL_LINE_STRIP : GL_POINTS, 0, GLsizei(spc.end_sample));
+	}
+	else {
+		if (spc.end_sample == size_t(-1))
+			glDrawArrays(strip ? GL_LINE_STRIP : GL_POINTS, GLint(spc.begin_sample), GLsizei(count - spc.begin_sample));
+		else
+			if (spc.begin_sample < spc.end_sample)
+				glDrawArrays(strip ? GL_LINE_STRIP : GL_POINTS, GLint(spc.begin_sample), GLsizei(spc.end_sample - spc.begin_sample));
+	}
 }
 
 /// check whether tick information has to be updated
@@ -723,9 +747,9 @@ void plot_base::adjust_domain_axis_to_data(unsigned ai, bool adjust_min, bool ad
 		return;
 	}
 
-	if (adjust_min && domain_min(ai) > samples_min)
+	if (adjust_min) // && domain_min(ai) > samples_min)
 		domain_min(ai) = samples_min;
-	if (adjust_max && domain_max(ai) < samples_max)
+	if (adjust_max) // && domain_max(ai) < samples_max)
 		domain_max(ai) = samples_max;
 	if (domain_min(ai) == domain_max(ai))
 		domain_max(ai) += 1;
@@ -928,6 +952,11 @@ void plot_base::create_config_gui(cgv::base::base* bp, cgv::gui::provider& p, un
 {
 	plot_base_config& pbc = ref_sub_plot_config(i);
 	p.add_member_control(bp, "name", pbc.name);
+	p.add_member_control(bp, "begin", pbc.begin_sample, "value_slider", "min=0;ticks=true");
+	p.find_control(pbc.begin_sample)->set("max", attribute_sources[i].front().count - 1);
+	p.add_member_control(bp, "end", pbc.end_sample, "value_slider", "min=-1;ticks=true");
+	p.find_control(pbc.end_sample)->set("max", attribute_sources[i].front().count - 1);
+
 	bool show = p.begin_tree_node("points", pbc.show_points, false, "level=3;options='w=142';align=' '");
 	p.add_member_control(bp, "show", pbc.show_points, "toggle", "w=50");
 	if (show) {

@@ -93,6 +93,11 @@ struct CGV_API plot_base_config : public cgv::render::render_types
 	/// name of sub plot
 	std::string name;
 
+	/// offset into samples defaults to 0, if larger than end_sample vector is split into two parts
+	size_t begin_sample;
+	/// defaults to -1 and effectively is always the end of the sample vector
+	size_t end_sample;
+
 	/// whether to show plot, ac
 	bool show_plot;
 
@@ -289,6 +294,8 @@ protected:
 	void disable_attributes(cgv::render::context& ctx, unsigned count);
 	///
 	virtual bool compute_sample_coordinate_interval(int i, int ai, float& samples_min, float& samples_max) = 0;
+	///
+	void draw_sub_plot_samples(int count, const plot_base_config& spc, bool strip = false);
 public:
 	/// construct with default parameters
 	plot_base(unsigned nr_axes);

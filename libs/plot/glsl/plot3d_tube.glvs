@@ -1,0 +1,29 @@
+#version 330 
+
+uniform float radius;
+
+uniform vec3 domain_min_pnt;
+uniform vec3 domain_max_pnt;
+uniform vec3 extent;
+uniform vec4 orientation;
+uniform vec3 center_location;
+
+layout(location = 0) in float xpos;
+layout(location = 1) in float ypos;
+layout(location = 2) in float zpos;
+layout(location = 3) in float att0;
+
+in vec4 color;
+
+out vec4  color_gs;
+
+vec3 map_plot_to_plot3(in vec3 pnt);
+vec4 map_plot_to_world3(in vec3 pnt);
+
+void main()
+{
+	// compute sphere color
+	color_gs = color;
+	// output sphere parameter space for geometry shader
+	gl_Position = vec4(map_plot_to_plot3(vec3(xpos, ypos, zpos)), radius);
+}

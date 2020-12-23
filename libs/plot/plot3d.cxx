@@ -4,6 +4,14 @@
 namespace cgv {
 	namespace plot {
 
+
+void plot3d_config::set_colors(const rgb& base_color)
+{
+	plot_base_config::set_colors(base_color);
+	tube_color = 0.25f * rgb(1, 1, 1) + 0.75f * base_color;
+	surface_color = 0.1f * rgb(1, 1, 1) + 0.9f * base_color;
+}
+
 /// overloaded in derived classes to compute complete tick render information
 void plot3d::compute_tick_render_information()
 {
@@ -17,6 +25,9 @@ void plot3d::compute_tick_render_information()
 
 plot3d_config::plot3d_config(const std::string& _name) : plot_base_config(_name)
 {
+	show_tubes = false;
+	tube_radius = 0.01f;
+	tube_color = rgb(0.6f,0.1f,0.0f);
 	show_points = true;
 	show_bars = false;
 	samples_per_row = 0;
@@ -130,6 +141,7 @@ bool plot3d::init(cgv::render::context& ctx)
 	cgv::render::ref_box_renderer(ctx, 1);
 	return true;
 }
+
 void plot3d::draw_sub_plot(cgv::render::context& ctx, unsigned i)
 {
 	size_t count = set_attributes(ctx, i, samples);
@@ -144,11 +156,23 @@ void plot3d::draw_sub_plot(cgv::render::context& ctx, unsigned i)
 		sphere_prog.enable(ctx);
 			ctx.set_color(spc.point_color);
 			sphere_prog.set_attribute(ctx, "att0", 1.0f);
-			glDrawArrays(GL_POINTS, 0, (GLsizei)count);
+			draw_sub_plot_samples(int(count), spc);
 		sphere_prog.disable(ctx);
 	}
 	
 	if (spc.show_bars) {
+		if (spc.bar_outline_width > 0) {
+			glLineWidth(spc.bar_outline_width);
+			set_uniforms(ctx, wirebox_prog, i);
+			wirebox_prog.set_uniform(ctx, "percentual_width", spc.bar_percentual_width);
+			wirebox_prog.set_uniform(ctx, "percentual_depth", spc.bar_percentual_depth);
+			wirebox_prog.set_uniform(ctx, "N", (int&)spc.samples_per_row);
+			wirebox_prog.set_uniform(ctx, "M", (int)(count / spc.samples_per_row));
+			wirebox_prog.enable(ctx);
+			ctx.set_color(spc.bar_outline_color);
+			draw_sub_plot_samples(int(count), spc);
+			wirebox_prog.disable(ctx);
+		}
 		set_uniforms(ctx, box_prog, i);
 		box_prog.set_uniform(ctx, "percentual_width", spc.bar_percentual_width);
 		box_prog.set_uniform(ctx, "percentual_depth", spc.bar_percentual_depth);
@@ -157,26 +181,24 @@ void plot3d::draw_sub_plot(cgv::render::context& ctx, unsigned i)
 		box_prog.enable(ctx);
 			ctx.set_color(spc.bar_color);
 			box_prog.set_uniform(ctx, "map_color_to_material", 3);
-			glDrawArrays(GL_POINTS, 0, (GLsizei)count);
+			draw_sub_plot_samples(int(count), spc);
 		box_prog.disable(ctx);
-		//if (spc.bar_outline_width > 0) {
-		//	glLineWidth(spc.bar_outline_width);
-		//	set_uniforms(ctx, wirebox_prog, i);
-
-		//	wirebox_prog.enable(ctx);
-		//	ctx.set_color(spc.bar_outline_color);
-		//	glDrawArrays(GL_POINTS, 0, count);
-		//	wirebox_prog.disable(ctx);
-		//}
 	}
-
 	if (spc.show_sticks) {
 		set_uniforms(ctx, stick_prog, i);
 		glLineWidth(spc.stick_width);
 		stick_prog.enable(ctx);
 			ctx.set_color(spc.stick_color);
-			glDrawArrays(GL_POINTS, 0, (GLsizei)count);
+			draw_sub_plot_samples(int(count), spc);
 		stick_prog.disable(ctx);
+	}
+	if (spc.show_tubes) {
+		set_uniforms(ctx, tube_prog, i);
+		tube_prog.set_uniform(ctx, "radius", spc.tube_radius);
+		tube_prog.enable(ctx);
+		ctx.set_color(spc.tube_color);
+		draw_sub_plot_samples(int(count), spc, true);
+		tube_prog.disable(ctx);
 	}
 }
 
@@ -315,16 +337,19 @@ void plot3d::draw(cgv::render::context& ctx)
 			std::cerr << "could not build GLSL program from plot3d_box.glpr" << std::endl;
 		}
 	}
-	/*if (!wirebox_prog.is_created()) {
-		if (!wirebox_prog.build_program(ctx, "plot3d_wirebox.glpr")) {
-			std::cerr << "could not build GLSL program from plot3d_wirebox.glpr" << std::endl;
+	if (!wirebox_prog.is_created()) {
+		if (!wirebox_prog.build_program(ctx, "plot3d_box_wire.glpr")) {
+			std::cerr << "could not build GLSL program from plot3d_box_wire.glpr" << std::endl;
 		}
 	}
-	if (!stick_prog.is_created()) {
-		if (!stick_prog.build_program(ctx, "plot3d_stick.glpr")) {
-			std::cerr << "could not build GLSL program from plot3d_stick.glpr" << std::endl;
+	if (!tube_prog.is_created()) {
+		if (!tube_prog.build_program(ctx, "plot3d_tube.glpr", true)) {
+			std::cerr << "could not build GLSL program from plot3d_tube.glpr" << std::endl;
 		}
-	}*/
+		else {
+			tube_prog.set_uniform(ctx, "map_color_to_material", 3);
+		}
+	}
 	//if (!surface_prog.is_created()) {
 	//	if (!surface_prog.build_program(ctx, "plot3d_surface.glpr")) {
 	//		std::cerr << "could not build GLSL program from plot3d_surface.glpr" << std::endl;
@@ -380,8 +405,9 @@ void plot3d::clear(cgv::render::context& ctx)
 {
 	sphere_prog.destruct(ctx);
 	box_prog.destruct(ctx);
-//	wirebox_prog.destruct(ctx);
+	wirebox_prog.destruct(ctx);
 	stick_prog.destruct(ctx);
+	tube_prog.destruct(ctx);
 //	surface_prog.destruct(ctx);
 	cgv::render::ref_box_renderer(ctx, -1);
 
@@ -390,7 +416,53 @@ void plot3d::clear(cgv::render::context& ctx)
 void plot3d::create_config_gui(cgv::base::base* bp, cgv::gui::provider& p, unsigned i)
 {
 	plot3d_config& pbc = ref_sub_plot3d_config(i);
-	bool show = p.begin_tree_node("lines", pbc.show_surface, false, "level=3;w=100;align=' '");
+
+	p.add_member_control(bp, "name", pbc.name);
+	p.add_member_control(bp, "begin", pbc.begin_sample, "value_slider", "min=0;ticks=true");
+	p.find_control(pbc.begin_sample)->set("max", attribute_sources[i].front().count - 1);
+	p.add_member_control(bp, "end", pbc.end_sample, "value_slider", "min=-1;ticks=true");
+	p.find_control(pbc.end_sample)->set("max", attribute_sources[i].front().count - 1);
+
+	bool show = p.begin_tree_node("points", pbc.show_points, false, "level=3;options='w=142';align=' '");
+	p.add_member_control(bp, "show", pbc.show_points, "toggle", "w=50");
+	if (show) {
+		p.align("\a");
+		p.add_member_control(bp, "size", pbc.point_size, "value_slider", "min=1;max=20;log=true;ticks=true");
+		p.add_member_control(bp, "color", pbc.point_color);
+		p.align("\b");
+		p.end_tree_node(pbc.show_points);
+	}
+	show = p.begin_tree_node("sticks", pbc.show_sticks, false, "level=3;options='w=142';align=' '");
+	p.add_member_control(bp, "show", pbc.show_sticks, "toggle", "w=50");
+	if (show) {
+		p.align("\a");
+		p.add_member_control(bp, "width", pbc.stick_width, "value_slider", "min=1;max=20;log=true;ticks=true");
+		p.add_member_control(bp, "color", pbc.stick_color);
+		p.align("\b");
+		p.end_tree_node(pbc.show_sticks);
+	}
+	show = p.begin_tree_node("bars", pbc.show_bars, false, "level=3;options='w=142';align=' '");
+	p.add_member_control(bp, "show", pbc.show_bars, "toggle", "w=50");
+	if (show) {
+		p.align("\a");
+		p.add_member_control(bp, "width", pbc.bar_percentual_width, "value_slider", "min=0.01;max=1;log=true;ticks=true");
+		p.add_member_control(bp, "depth", pbc.bar_percentual_depth, "value_slider", "min=0.01;max=1;log=true;ticks=true");
+		p.add_member_control(bp, "fill", pbc.bar_color);
+		p.add_member_control(bp, "outline_width", pbc.bar_outline_width, "value_slider", "min=0;max=20;log=true;ticks=true");
+		p.add_member_control(bp, "outline", pbc.bar_outline_color);
+		p.align("\b");
+		p.end_tree_node(pbc.show_bars);
+	}
+	show = p.begin_tree_node("tubes", pbc.show_tubes, false, "level=3;options='w=142';align=' '");
+	p.add_member_control(bp, "show", pbc.show_tubes, "toggle", "w=50");
+	if (show) {
+		p.align("\a");
+		p.add_member_control(bp, "radius", pbc.tube_radius, "value_slider", "min=0.0001;step=0.0000001;max=1;log=true;ticks=true");
+		p.add_member_control(bp, "color", pbc.tube_color);
+		p.align("\b");
+		p.end_tree_node(pbc.show_tubes);
+	}
+	show = p.begin_tree_node("surface", pbc.show_surface, false, "level=3;w=100;align=' '");
 	p.add_member_control(bp, "show", pbc.show_surface, "toggle", "w=50");
 	if (show) {
 		p.align("\a");
@@ -398,10 +470,8 @@ void plot3d::create_config_gui(cgv::base::base* bp, cgv::gui::provider& p, unsig
 		p.add_member_control(bp, "wireframe", pbc.wireframe, "check");
 		p.add_member_control(bp, "color", pbc.surface_color);
 		p.add_member_control(bp, "wireframe", pbc.face_illumination, "dropdown", "enums='none,face,vertex'");
-	}
-	p.add_member_control(bp, "bar depth", pbc.bar_percentual_depth, "value_slider", "min=0.01;max=1;log=true;ticks=true");
-	
-	plot_base::create_config_gui(bp, p, i);
+	}	
+	//plot_base::create_config_gui(bp, p, i);
 }
 
 
