@@ -1,0 +1,14 @@
+vertex_file:plot3d_tube.glvs
+vertex_file:plot_lib.glsl
+vertex_file:group.glsl
+vertex_file:view.glsl
+geometry_file:rounded_cone.glgs
+geometry_file:view.glsl
+fragment_file:rounded_cone.glfs
+fragment_file:view.glsl
+fragment_file:fragment.glfs
+fragment_file:side.glsl
+fragment_file:lights.glsl
+fragment_file:bump_map.glfs
+fragment_file:surface.glsl
+fragment_file:brdf.glsl
