@@ -195,6 +195,8 @@ protected:
 	/*! Ignores all but the vertex elements and from the vertex elements the properties x,y,z,nx,ny,nz:Float32 and red,green,blue,alpha:Uint8.
 	    Colors are transformed to 32-bit floats in the range [0,1] and alpha components are ignored. */
 	bool read_ply(const std::string& file_name);
+	/// read txt file from leica scanner
+	bool read_txt(const std::string& file_name);
 	/// write ascii format, see read_ascii for format description
 	bool write_ascii(const std::string& file_name, bool write_nmls = true) const;
 	/// write binary format, see read_bin for format description
