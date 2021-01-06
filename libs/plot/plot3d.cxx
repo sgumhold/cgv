@@ -274,6 +274,10 @@ void plot3d::draw_ticks(cgv::render::context& ctx)
 		for (const auto& tbc : tick_batches) if (tbc.vertex_count > 0) {
 			tick_label_prog.set_uniform(ctx, "ai", tbc.ai);
 			tick_label_prog.set_uniform(ctx, "aj", tbc.aj);
+			int ao = 0;
+			while (tbc.ai == ao || tbc.aj == ao)
+				++ao;
+			tick_label_prog.set_uniform(ctx, "default_value", domain_min[ao]);
 			const axis_config& ac = get_domain_config_ptr()->axis_configs[tbc.ai];
 			const tick_config& tc = tbc.primary ? ac.primary_ticks : ac.secondary_ticks;
 			glLineWidth(tc.line_width);
@@ -302,6 +306,10 @@ void plot3d::draw_tick_labels(cgv::render::context& ctx)
 			vec3 p(0.0f);
 			p(tbc.ai) = li.position(a0);
 			p(tbc.aj) = li.position(a1);
+			int ao = 0;
+			while (tbc.ai == ao || tbc.aj == ao)
+				++ao;
+			p(ao) = domain_min[ao];
 			ctx.set_cursor(transform_to_world(p.to_vec()).to_vec(), li.label, li.align);
 			ctx.output_stream() << li.label;
 			ctx.output_stream().flush();
