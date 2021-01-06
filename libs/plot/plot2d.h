@@ -11,18 +11,10 @@ namespace cgv {
 /** extend common plot configuration with parameters specific to 2d plot */
 struct CGV_API plot2d_config : public plot_base_config
 {
-	/// whether to connect data points with lines
-	bool show_lines;
-	/// line width
-	float line_width;
-	/// line color
-	rgb line_color;
 	/// set default values
 	plot2d_config(const std::string& _name);
 	/// configure the sub plot to a specific chart type
 	void configure_chart(ChartType chart_type);
-	/// add line color setting
-	void set_colors(const rgb& base_color);
 };
 
 /** The \c plot2d class draws 2d plots with potentially several sub plots of different chart types */
@@ -67,8 +59,6 @@ public:
 	std::vector<unsigned>& ref_sub_plot_strips(unsigned i = 0);
 	//@}
 
-	/// create the gui for a configuration, overload to specialize for extended configs
-	void create_config_gui(cgv::base::base* bp, cgv::gui::provider& p, unsigned i);
 	/// construct shader programs
 	bool init(cgv::render::context& ctx);
 	/// draw plot

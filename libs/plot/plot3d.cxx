@@ -8,7 +8,6 @@ namespace cgv {
 void plot3d_config::set_colors(const rgb& base_color)
 {
 	plot_base_config::set_colors(base_color);
-	tube_color = 0.25f * rgb(1, 1, 1) + 0.75f * base_color;
 	surface_color = 0.1f * rgb(1, 1, 1) + 0.9f * base_color;
 }
 
@@ -25,10 +24,9 @@ void plot3d::compute_tick_render_information()
 
 plot3d_config::plot3d_config(const std::string& _name) : plot_base_config(_name)
 {
-	show_tubes = false;
-	tube_radius = 0.01f;
-	tube_color = rgb(0.6f,0.1f,0.0f);
 	show_points = true;
+	show_lines = true;
+	show_line_orientation = true;
 	show_bars = false;
 	samples_per_row = 0;
 	show_surface = true;
@@ -148,10 +146,10 @@ void plot3d::draw_sub_plot(cgv::render::context& ctx, unsigned i)
 	if (count == 0)
 		return;
 	const plot3d_config& spc = ref_sub_plot3d_config(i);
-
+	float size2radius = (extent(0) + extent(1)) / (500.0f);
 	if (spc.show_points) {
 		set_uniforms(ctx, sphere_prog, i);
-		sphere_prog.set_uniform(ctx, "radius_scale", spc.point_size*(extent(0) + extent(1)) / (500.0f));
+		sphere_prog.set_uniform(ctx, "radius_scale", spc.point_size*size2radius);
 		sphere_prog.set_uniform(ctx, "map_color_to_material", 3);
 		sphere_prog.enable(ctx);
 			ctx.set_color(spc.point_color);
@@ -166,8 +164,14 @@ void plot3d::draw_sub_plot(cgv::render::context& ctx, unsigned i)
 			set_uniforms(ctx, wirebox_prog, i);
 			wirebox_prog.set_uniform(ctx, "percentual_width", spc.bar_percentual_width);
 			wirebox_prog.set_uniform(ctx, "percentual_depth", spc.bar_percentual_depth);
-			wirebox_prog.set_uniform(ctx, "N", (int&)spc.samples_per_row);
-			wirebox_prog.set_uniform(ctx, "M", (int)(count / spc.samples_per_row));
+			if (spc.samples_per_row == 0) {
+				wirebox_prog.set_uniform(ctx, "N", (int)count);
+				wirebox_prog.set_uniform(ctx, "M", (int)count);
+			}
+			else {
+				wirebox_prog.set_uniform(ctx, "N", (int)spc.samples_per_row);
+				wirebox_prog.set_uniform(ctx, "M", (int)(count / spc.samples_per_row));
+			}
 			wirebox_prog.enable(ctx);
 			ctx.set_color(spc.bar_outline_color);
 			draw_sub_plot_samples(int(count), spc);
@@ -176,8 +180,14 @@ void plot3d::draw_sub_plot(cgv::render::context& ctx, unsigned i)
 		set_uniforms(ctx, box_prog, i);
 		box_prog.set_uniform(ctx, "percentual_width", spc.bar_percentual_width);
 		box_prog.set_uniform(ctx, "percentual_depth", spc.bar_percentual_depth);
-		box_prog.set_uniform(ctx, "N", (int&)spc.samples_per_row);
-		box_prog.set_uniform(ctx, "M", (int)(count/spc.samples_per_row));
+		if (spc.samples_per_row == 0) {
+			box_prog.set_uniform(ctx, "N", (int)count);
+			box_prog.set_uniform(ctx, "M", (int)count);
+		}
+		else {
+			box_prog.set_uniform(ctx, "N", (int&)spc.samples_per_row);
+			box_prog.set_uniform(ctx, "M", (int)(count / spc.samples_per_row));
+		}
 		box_prog.enable(ctx);
 			ctx.set_color(spc.bar_color);
 			box_prog.set_uniform(ctx, "map_color_to_material", 3);
@@ -192,11 +202,11 @@ void plot3d::draw_sub_plot(cgv::render::context& ctx, unsigned i)
 			draw_sub_plot_samples(int(count), spc);
 		stick_prog.disable(ctx);
 	}
-	if (spc.show_tubes) {
+	if (spc.show_lines) {
 		set_uniforms(ctx, tube_prog, i);
-		tube_prog.set_uniform(ctx, "radius", spc.tube_radius);
+		tube_prog.set_uniform(ctx, "radius", spc.line_width*size2radius);
 		tube_prog.enable(ctx);
-		ctx.set_color(spc.tube_color);
+		ctx.set_color(spc.line_color);
 		draw_sub_plot_samples(int(count), spc, true);
 		tube_prog.disable(ctx);
 	}
@@ -426,31 +436,18 @@ void plot3d::clear(cgv::render::context& ctx)
 void plot3d::create_config_gui(cgv::base::base* bp, cgv::gui::provider& p, unsigned i)
 {
 	plot3d_config& pbc = ref_sub_plot3d_config(i);
-
-	p.add_member_control(bp, "name", pbc.name);
-	p.add_member_control(bp, "begin", pbc.begin_sample, "value_slider", "min=0;ticks=true");
-	p.find_control(pbc.begin_sample)->set("max", attribute_sources[i].front().count - 1);
-	p.add_member_control(bp, "end", pbc.end_sample, "value_slider", "min=-1;ticks=true");
-	p.find_control(pbc.end_sample)->set("max", attribute_sources[i].front().count - 1);
-
-	bool show = p.begin_tree_node("points", pbc.show_points, false, "level=3;options='w=142';align=' '");
-	p.add_member_control(bp, "show", pbc.show_points, "toggle", "w=50");
+	create_config_gui_impl(bp, p, i, "op");
+	bool show = p.begin_tree_node("lines", pbc.show_lines, false, "level=3;options='w=142';align=' '");
+	p.add_member_control(bp, "show", pbc.show_lines, "toggle", "w=50");
 	if (show) {
 		p.align("\a");
-		p.add_member_control(bp, "size", pbc.point_size, "value_slider", "min=1;max=20;log=true;ticks=true");
-		p.add_member_control(bp, "color", pbc.point_color);
+		p.add_member_control(bp, "width", pbc.line_width, "value_slider", "min=1;max=20;log=true;ticks=true");
+		p.add_member_control(bp, "color", pbc.line_color);
+		p.add_member_control(bp, "show_orientation", pbc.show_line_orientation, "check");
 		p.align("\b");
-		p.end_tree_node(pbc.show_points);
+		p.end_tree_node(pbc.show_lines);
 	}
-	show = p.begin_tree_node("sticks", pbc.show_sticks, false, "level=3;options='w=142';align=' '");
-	p.add_member_control(bp, "show", pbc.show_sticks, "toggle", "w=50");
-	if (show) {
-		p.align("\a");
-		p.add_member_control(bp, "width", pbc.stick_width, "value_slider", "min=1;max=20;log=true;ticks=true");
-		p.add_member_control(bp, "color", pbc.stick_color);
-		p.align("\b");
-		p.end_tree_node(pbc.show_sticks);
-	}
+	create_config_gui_impl(bp, p, i, "s");
 	show = p.begin_tree_node("bars", pbc.show_bars, false, "level=3;options='w=142';align=' '");
 	p.add_member_control(bp, "show", pbc.show_bars, "toggle", "w=50");
 	if (show) {
@@ -463,15 +460,6 @@ void plot3d::create_config_gui(cgv::base::base* bp, cgv::gui::provider& p, unsig
 		p.align("\b");
 		p.end_tree_node(pbc.show_bars);
 	}
-	show = p.begin_tree_node("tubes", pbc.show_tubes, false, "level=3;options='w=142';align=' '");
-	p.add_member_control(bp, "show", pbc.show_tubes, "toggle", "w=50");
-	if (show) {
-		p.align("\a");
-		p.add_member_control(bp, "radius", pbc.tube_radius, "value_slider", "min=0.0001;step=0.0000001;max=1;log=true;ticks=true");
-		p.add_member_control(bp, "color", pbc.tube_color);
-		p.align("\b");
-		p.end_tree_node(pbc.show_tubes);
-	}
 	show = p.begin_tree_node("surface", pbc.show_surface, false, "level=3;w=100;align=' '");
 	p.add_member_control(bp, "show", pbc.show_surface, "toggle", "w=50");
 	if (show) {
@@ -481,7 +469,6 @@ void plot3d::create_config_gui(cgv::base::base* bp, cgv::gui::provider& p, unsig
 		p.add_member_control(bp, "color", pbc.surface_color);
 		p.add_member_control(bp, "wireframe", pbc.face_illumination, "dropdown", "enums='none,face,vertex'");
 	}	
-	//plot_base::create_config_gui(bp, p, i);
 }
 
 

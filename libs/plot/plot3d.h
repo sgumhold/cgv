@@ -20,14 +20,10 @@ enum PlotFaceIllumination
 /** extend common plot configuration with parameters specific to 2d plot */
 struct CGV_API plot3d_config : public plot_base_config
 {
+	/// whether to illustrate line orientation
+	bool show_line_orientation;
 	/// provide second dimension of bar extend
 	float bar_percentual_depth;
-	/// whether to connect data points with tubes
-	bool show_tubes;
-	/// tube width
-	float tube_radius;
-	/// tube color
-	rgb tube_color;
 	/// if samples per row > 0, the samples are interpreted as regular grid
 	unsigned samples_per_row;
 	/// whether to show faces

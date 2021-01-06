@@ -98,8 +98,12 @@ struct CGV_API plot_base_config : public cgv::render::render_types
 	/// defaults to -1 and effectively is always the end of the sample vector
 	size_t end_sample;
 
-	/// whether to show plot, ac
+	/// whether to show sub plot
 	bool show_plot;
+	/// reference color, when changed, all colors are adapted with set_colors()
+	rgb ref_color;
+	/// reference size, when changes, all sizes are adapted with set_size()
+	float ref_size;
 
 	/// whether to show data points
 	bool show_points;
@@ -108,6 +112,13 @@ struct CGV_API plot_base_config : public cgv::render::render_types
 	/// point color
 	rgb point_color;
 	
+	/// whether to connect data points with lines
+	bool show_lines;
+	/// line width
+	float line_width;
+	/// line color
+	rgb line_color;
+
 	/// whether to show straight lines to the bottom of the plot, which are called sticks
 	bool show_sticks;
 	/// line width of stick
@@ -130,8 +141,10 @@ struct CGV_API plot_base_config : public cgv::render::render_types
 	plot_base_config(const std::string& _name);
 	/// configure the sub plot to a specific chart type
 	virtual void configure_chart(ChartType chart_type);
-	/// set all colors from a common color
+	/// set all colors from reference color
 	virtual void set_colors(const rgb& base_color);
+	/// set all sizes from reference size 
+	virtual void set_size(float _size);
 	/// virtual constructor in order to allow to extend the configuration for derived classes
 	virtual ~plot_base_config();
 };
@@ -395,6 +408,8 @@ public:
 
 	/**@name gui support*/
 	//@{
+	/// create the gui for the plot without gui for sub plots
+	void create_config_gui_impl(cgv::base::base* bp, cgv::gui::provider& p, unsigned i, const std::string& parts = "oplsb");
 	/// create the gui for the plot without gui for sub plots
 	virtual void create_plot_gui(cgv::base::base* bp, cgv::gui::provider& p);
 	/// create the gui for a configuration, overload to specialize for extended configs
