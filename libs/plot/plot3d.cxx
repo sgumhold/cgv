@@ -307,6 +307,7 @@ void plot3d::draw_tick_labels(cgv::render::context& ctx)
 			ctx.output_stream().flush();
 		}
 	}
+	disable_attributes(ctx, 2);
 }
 
 void plot3d::draw(cgv::render::context& ctx)
@@ -365,7 +366,7 @@ void plot3d::draw(cgv::render::context& ctx)
 	glGetIntegerv(GL_DEPTH_FUNC, reinterpret_cast<GLint*>(&depth));
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glDepthFunc(GL_LEQUAL);
-
+	
 	enable_attributes(ctx, 3);
 	for (unsigned i = 0; i < samples.size(); ++i) {
 		// skip unvisible and empty sub plots
@@ -374,23 +375,24 @@ void plot3d::draw(cgv::render::context& ctx)
 		draw_sub_plot(ctx, i);
 	}
 	disable_attributes(ctx, 3);
-
+	
 	if (get_domain_config_ptr()->show_domain) {
 		draw_domain(ctx);
-
+		
 		enable_attributes(ctx, 3);
 			set_uniforms(ctx, prog, -1);
 			prog.enable(ctx);
 				draw_axes(ctx);
 			prog.disable(ctx);
 		disable_attributes(ctx, 3);
-
+		
 		draw_ticks(ctx);
-
+		
 		ctx.enable_font_face(label_font_face, get_domain_config_ptr()->label_font_size);
 		draw_tick_labels(ctx);
+		
 	}
-
+	
 	if (!line_smooth)
 		glDisable(GL_LINE_SMOOTH);
 	if (!point_smooth)
