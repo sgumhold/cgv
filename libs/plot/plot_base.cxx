@@ -48,18 +48,11 @@ plot_base_config::plot_base_config(const std::string& _name) : name(_name)
 
 	begin_sample = 0;
 	end_sample = size_t(-1);
-
-	point_size = 3;
-	point_color = rgb(1,0,0);
-
-	stick_width = 2;
-	stick_color = rgb(1,1,0);
-
+	ref_size = 3;
+	ref_color = rgb(1, 0, 0);
 	bar_percentual_width = 0.75f;
-	bar_outline_width = 1;
-	bar_color = rgb(0,1,1);
-	bar_outline_color = rgb(1,1,1);
-
+	set_size(ref_size);
+	set_colors(ref_color);
 	configure_chart(CT_BAR_CHART);
 }
 
@@ -84,16 +77,26 @@ void plot_base_config::configure_chart(ChartType chart_type)
 ///
 void plot_base_config::set_colors(const rgb& base_color)
 {
-	stick_color = 0.25f*rgb(0, 0, 0) + 0.75f*base_color;
+	ref_color = base_color;
 	point_color = base_color;
+	line_color = 0.25f * rgb(1, 1, 1) + 0.75f * base_color;
+	stick_color = 0.25f * rgb(0, 0, 0) + 0.75f * base_color;
 	bar_color = 0.5f*rgb(1, 1, 1) + 0.5f*base_color;
 	bar_outline_color = base_color;
+}
+
+void plot_base_config::set_size(float _size)
+{
+	ref_size = _size;
+	point_size = _size;
+	line_width = 0.4f * _size;
+	stick_width = 0.6f * _size;
+	bar_outline_width = 0.2f * _size;
 }
 
 plot_base_config::~plot_base_config()
 {
 }
-
 
 /// constructor for empty sources
 attribute_source::attribute_source() : source(AS_NONE), pointer(0), offset(0), count(0), stride(0)
@@ -900,8 +903,6 @@ void plot_base::create_plot_gui(cgv::base::base* bp, cgv::gui::provider& p)
 		p.add_gui("orientation", reinterpret_cast<vec4&>(orientation), "direction", "main_label='heading';gui_type='value_slider'");
 		p.align("\b");
 	}
-
-
 	bool open = p.begin_tree_node("domain", get_domain_config_ptr()->show_domain, false, "level=3;options='w=104';align=' '");
 	p.add_member_control(bp, "show", get_domain_config_ptr()->show_domain, "toggle", "w=40", " ");
 	p.add_member_control(bp, "fill", get_domain_config_ptr()->fill, "toggle", "w=40");
@@ -948,44 +949,77 @@ void plot_base::create_plot_gui(cgv::base::base* bp, cgv::gui::provider& p)
 	}
 }
 
-void plot_base::create_config_gui(cgv::base::base* bp, cgv::gui::provider& p, unsigned i)
+void plot_base::create_config_gui_impl(cgv::base::base* bp, cgv::gui::provider& p, unsigned i, const std::string& parts)
 {
 	plot_base_config& pbc = ref_sub_plot_config(i);
-	p.add_member_control(bp, "name", pbc.name);
-	p.add_member_control(bp, "begin", pbc.begin_sample, "value_slider", "min=0;ticks=true");
-	p.find_control(pbc.begin_sample)->set("max", attribute_sources[i].front().count - 1);
-	p.add_member_control(bp, "end", pbc.end_sample, "value_slider", "min=-1;ticks=true");
-	p.find_control(pbc.end_sample)->set("max", attribute_sources[i].front().count - 1);
-
-	bool show = p.begin_tree_node("points", pbc.show_points, false, "level=3;options='w=142';align=' '");
-	p.add_member_control(bp, "show", pbc.show_points, "toggle", "w=50");
-	if (show) {
-		p.align("\a");
+	bool show;
+	if (parts.find('o') != std::string::npos) {
+		show = p.begin_tree_node(pbc.name, pbc.show_plot, true, "level=3;options='w=142';align=' '");
+		p.add_member_control(bp, "show", pbc.show_points, "toggle", "w=50");
+		if (show) {
+			p.align("\a");
+			p.add_member_control(bp, "name", pbc.name);
+			p.add_member_control(bp, "size", pbc.ref_size, "value_slider", "min=1;max=20;log=true;ticks=true");
+			p.add_member_control(bp, "color", pbc.ref_color);
+			p.add_member_control(bp, "begin", pbc.begin_sample, "value_slider", "min=0;ticks=true");
+			p.find_control(pbc.begin_sample)->set("max", attribute_sources[i].front().count - 1);
+			p.add_member_control(bp, "end", pbc.end_sample, "value_slider", "min=-1;ticks=true");
+			p.find_control(pbc.end_sample)->set("max", attribute_sources[i].front().count - 1);
+			p.align("\b");
+			p.end_tree_node(pbc.show_plot);
+		}
+	}
+	if (parts.find('p') != std::string::npos) {
+		show = p.begin_tree_node("points", pbc.show_points, false, "level=3;options='w=142';align=' '");
+		p.add_member_control(bp, "show", pbc.show_points, "toggle", "w=50");
+		if (show) {
+			p.align("\a");
 			p.add_member_control(bp, "size", pbc.point_size, "value_slider", "min=1;max=20;log=true;ticks=true");
 			p.add_member_control(bp, "color", pbc.point_color);
-		p.align("\b");
-		p.end_tree_node(pbc.show_points);
+			p.align("\b");
+			p.end_tree_node(pbc.show_points);
+		}
 	}
-	show = p.begin_tree_node("sticks", pbc.show_sticks, false, "level=3;options='w=142';align=' '");
-	p.add_member_control(bp, "show", pbc.show_sticks, "toggle", "w=50");
-	if (show) {
-		p.align("\a");
+	if (parts.find('l') != std::string::npos) {
+		show = p.begin_tree_node("lines", pbc.show_lines, false, "level=3;options='w=142';align=' '");
+		p.add_member_control(bp, "show", pbc.show_lines, "toggle", "w=50");
+		if (show) {
+			p.align("\a");
+			p.add_member_control(bp, "width", pbc.line_width, "value_slider", "min=1;max=20;log=true;ticks=true");
+			p.add_member_control(bp, "color", pbc.line_color);
+			p.align("\b");
+			p.end_tree_node(pbc.show_lines);
+		}
+	}
+	if (parts.find('s') != std::string::npos) {
+		show = p.begin_tree_node("sticks", pbc.show_sticks, false, "level=3;options='w=142';align=' '");
+		p.add_member_control(bp, "show", pbc.show_sticks, "toggle", "w=50");
+		if (show) {
+			p.align("\a");
 			p.add_member_control(bp, "width", pbc.stick_width, "value_slider", "min=1;max=20;log=true;ticks=true");
 			p.add_member_control(bp, "color", pbc.stick_color);
-		p.align("\b");
-		p.end_tree_node(pbc.show_sticks);
+			p.align("\b");
+			p.end_tree_node(pbc.show_sticks);
+		}
 	}
-	show = p.begin_tree_node("bars", pbc.show_bars, false, "level=3;options='w=142';align=' '");
-	p.add_member_control(bp, "show", pbc.show_bars, "toggle", "w=50");
-	if (show) {
-		p.align("\a");
+	if (parts.find('b') != std::string::npos) {
+		show = p.begin_tree_node("bars", pbc.show_bars, false, "level=3;options='w=142';align=' '");
+		p.add_member_control(bp, "show", pbc.show_bars, "toggle", "w=50");
+		if (show) {
+			p.align("\a");
 			p.add_member_control(bp, "width", pbc.bar_percentual_width, "value_slider", "min=0.01;max=1;log=true;ticks=true");
 			p.add_member_control(bp, "fill", pbc.bar_color);
 			p.add_member_control(bp, "outline_width", pbc.bar_outline_width, "value_slider", "min=0;max=20;log=true;ticks=true");
 			p.add_member_control(bp, "outline", pbc.bar_outline_color);
-		p.align("\b");
-		p.end_tree_node(pbc.show_bars);
+			p.align("\b");
+			p.end_tree_node(pbc.show_bars);
+		}
 	}
+}
+
+void plot_base::create_config_gui(cgv::base::base* bp, cgv::gui::provider& p, unsigned i)
+{
+	create_config_gui_impl(bp, p, i);
 }
 
 void plot_base::create_gui(cgv::base::base* bp, cgv::gui::provider& p)

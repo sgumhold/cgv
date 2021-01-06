@@ -28,9 +28,6 @@ void plot2d::set_uniforms(cgv::render::context& ctx, cgv::render::shader_program
 /** extend common plot configuration with parameters specific to 1d plot */
 plot2d_config::plot2d_config(const std::string& _name) : plot_base_config(_name)
 {
-	show_lines = true;
-	line_width = 1;
-	line_color = rgb(1,0.5f,0);
 	configure_chart(CT_LINE_CHART);
 };
 
@@ -39,13 +36,6 @@ void plot2d_config::configure_chart(ChartType chart_type)
 {
 	plot_base_config::configure_chart(chart_type);
 	show_lines = chart_type == CT_LINE_CHART;
-}
-
-///
-void plot2d_config::set_colors(const rgb& base_color)
-{
-	plot_base_config::set_colors(base_color);
-	line_color = 0.25f*rgb(1, 1, 1) + 0.75f*base_color;
 }
 
 /// construct empty plot with default domain [0..1,0..1]
@@ -125,22 +115,6 @@ std::vector<plot2d::vec2>& plot2d::ref_sub_plot_samples(unsigned i)
 std::vector<unsigned>& plot2d::ref_sub_plot_strips(unsigned i)
 {
 	return strips[i];
-}
-
-void plot2d::create_config_gui(cgv::base::base* bp, cgv::gui::provider& p, unsigned i)
-{
-	plot2d_config& pbc = ref_sub_plot2d_config(i);
-	bool show = p.begin_tree_node("lines", pbc.show_lines, false, "level=3;options='w=142';align=' '");
-	p.add_member_control(bp, "show", pbc.show_lines, "toggle", "w=50");
-	if (show) {
-		p.align("\a");
-			p.add_member_control(bp, "width", pbc.line_width, "value_slider", "min=1;max=20;log=true;ticks=true");
-			p.add_member_control(bp, "color", pbc.line_color);
-		p.align("\b");
-		p.end_tree_node(pbc.show_lines);
-	}
-
-	plot_base::create_config_gui(bp, p, i);
 }
 
 bool plot2d::init(cgv::render::context& ctx)
