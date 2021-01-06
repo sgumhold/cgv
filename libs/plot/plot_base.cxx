@@ -262,7 +262,7 @@ void plot_base::collect_tick_geometry(int ai, int aj, const float* dom_min_pnt, 
 			min_val = convert_to_log_space(min_val, dom_min_pnt[ai], dom_max_pnt[ai]);
 			max_val = convert_to_log_space(max_val, dom_min_pnt[ai], dom_max_pnt[ai]);
 		}
-		int min_i = (int)((min_val - fmod(min_val, tc.step)) / tc.step);
+		int min_i = (int)ceil(min_val / tc.step - std::numeric_limits<float>::epsilon());
 		int max_i = (int)((max_val - fmod(max_val, tc.step)) / tc.step);
 
 		// ignore secondary ticks on domain boundary
