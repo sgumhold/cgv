@@ -1,6 +1,5 @@
 #pragma once
 
-#include <LOLA_vis.h>
 #include "time_series.h"
 
 #include <cgv/render/render_types.h>
@@ -10,6 +9,13 @@
 #include "lib_begin.h"
 
 namespace stream_vis {
+
+	/// combination of index and value
+	struct indexed_value
+	{
+		uint16_t index;
+		uint8_t  value[8];
+	};
 	/// interface for all time series used in the streaming visualization library
 	class CGV_API streaming_time_series : public cgv::render::render_types
 	{
@@ -36,7 +42,7 @@ namespace stream_vis {
 		/// append all cached samples converted to float at end of given samples container
 		//void append_cached_samples(std::vector<vec2>& samples, unsigned component_index = 0) const;
 		/// extract new sample and return whether new value was provided in given values
-		virtual bool extract_from_values(uint16_t num_values, rtlola_viz::LV_IndexedValue* values, double timestamp) = 0;
+		virtual bool extract_from_values(uint16_t num_values, indexed_value* values, double timestamp) = 0;
 	};
 
 	struct CGV_API float_time_series : public streaming_time_series, public time_series<float, float, double>
@@ -44,7 +50,7 @@ namespace stream_vis {
 		uint16_t index;
 		float_time_series(uint16_t i);
 		std::vector<uint16_t> get_io_indices() const { return std::vector<uint16_t>(1, index); }
-		bool extract_from_values(uint16_t num_values, rtlola_viz::LV_IndexedValue* values, double timestamp);
+		bool extract_from_values(uint16_t num_values, indexed_value* values, double timestamp);
 		const time_series_base& series() const { return *this; }
 		time_series_base& series() { return *this; }
 	};
@@ -54,7 +60,7 @@ namespace stream_vis {
 		uint16_t index;
 		int_time_series(uint16_t i);
 		std::vector<uint16_t> get_io_indices() const { return std::vector<uint16_t>(1, index); }
-		bool extract_from_values(uint16_t num_values, rtlola_viz::LV_IndexedValue* values, double timestamp);
+		bool extract_from_values(uint16_t num_values, indexed_value* values, double timestamp);
 		const time_series_base& series() const { return *this; }
 		time_series_base& series() { return *this; }
 	};
@@ -64,7 +70,7 @@ namespace stream_vis {
 		uint16_t index;
 		uint_time_series(uint16_t i);
 		std::vector<uint16_t> get_io_indices() const { return std::vector<uint16_t>(1, index); }
-		bool extract_from_values(uint16_t num_values, rtlola_viz::LV_IndexedValue* values, double timestamp);
+		bool extract_from_values(uint16_t num_values, indexed_value* values, double timestamp);
 		const time_series_base& series() const { return *this; }
 		time_series_base& series() { return *this; }
 	};
@@ -74,7 +80,7 @@ namespace stream_vis {
 		uint16_t index;
 		bool_time_series(uint16_t i);
 		std::vector<uint16_t> get_io_indices() const { return std::vector<uint16_t>(1, index); }
-		bool extract_from_values(uint16_t num_values, rtlola_viz::LV_IndexedValue* values, double timestamp);
+		bool extract_from_values(uint16_t num_values, indexed_value* values, double timestamp);
 		const time_series_base& series() const { return *this; }
 		time_series_base& series() { return *this; }
 	};
@@ -112,7 +118,7 @@ namespace stream_vis {
 			}
 			return "vecn";
 		}
-		bool extract_from_values(uint16_t num_values, rtlola_viz::LV_IndexedValue* values, double timestamp)
+		bool extract_from_values(uint16_t num_values, indexed_value* values, double timestamp)
 		{
 			cgv::math::fvec<double, N> pos;
 			int cnt = 0;
@@ -138,7 +144,7 @@ namespace stream_vis {
 		std::vector<uint16_t> get_io_indices() const { return std::vector<uint16_t>(indices, indices+4); }
 		/// return name of value type
 		std::string get_value_type_name() const;
-		bool extract_from_values(uint16_t num_values, rtlola_viz::LV_IndexedValue* values, double timestamp);
+		bool extract_from_values(uint16_t num_values, indexed_value* values, double timestamp);
 		const time_series_base& series() const { return *this; }
 		time_series_base& series() { return *this; }
 	};
