@@ -146,7 +146,7 @@ void plot3d::draw_sub_plot(cgv::render::context& ctx, unsigned i)
 	if (count == 0)
 		return;
 	const plot3d_config& spc = ref_sub_plot3d_config(i);
-	float size2radius = (extent(0) + extent(1)) / (500.0f);
+	float size2radius = (extent(0) + extent(1)) / (2000.0f);
 	if (spc.show_points) {
 		set_uniforms(ctx, sphere_prog, i);
 		sphere_prog.set_uniform(ctx, "radius_scale", spc.point_size*size2radius);
