@@ -1,5 +1,6 @@
 #include "plot3d.h"
 #include <libs/cgv_gl/gl/gl.h>
+#include <cgv/math/ftransform.h>
 
 namespace cgv {
 	namespace plot {
@@ -223,6 +224,7 @@ void plot3d::draw_domain(cgv::render::context& ctx)
 		br.set_position_is_center(true);
 		br.set_extent(ctx, extent);
 		br.set_render_style(brs);
+		br.set_rotation_array(ctx, &orientation, 1, 0);
 		if (br.validate_and_enable(ctx)) {
 			ctx.set_color(dc.color);
 			glDrawArrays(GL_POINTS, 0, 1);
@@ -410,6 +412,7 @@ void plot3d::draw(cgv::render::context& ctx)
 		draw_tick_labels(ctx);
 		
 	}
+
 	
 	if (!line_smooth)
 		glDisable(GL_LINE_SMOOTH);
@@ -419,6 +422,8 @@ void plot3d::draw(cgv::render::context& ctx)
 		glDisable(GL_BLEND);
 	glDepthFunc(depth);
 	glBlendFunc(blend_src, blend_dst);
+
+
 }
 
 void plot3d::clear(cgv::render::context& ctx)

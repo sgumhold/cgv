@@ -360,6 +360,8 @@ public:
 	void place_corner(unsigned corner_index, const vec3& new_corner_location);
 	/// return the current origin in 3D coordinates
 	vec3 get_origin() const;
+	/// get current orientation quaternion
+	const quat& get_orientation() const;
 	/// return the current plot center in 3D coordinates
 	const vec3& get_center() const;
 	/// return the i-th plot corner in 3D coordinates

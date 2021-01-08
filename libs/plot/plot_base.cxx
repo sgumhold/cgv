@@ -660,6 +660,12 @@ plot_base::vec3 plot_base::get_origin() const
 	return transform_to_world(domain_min);
 }
 
+/// get current orientation quaternion
+const plot_base::quat& plot_base::get_orientation() const
+{
+	return orientation;
+}
+
 /// return the current plot center in 3D coordinates
 const plot_base::vec3& plot_base::get_center() const
 {
