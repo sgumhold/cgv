@@ -33,7 +33,7 @@ namespace stream_vis {
 	float_time_series::float_time_series(uint16_t i) : streaming_time_series(cgv::type::info::TI_FLT64), index(i)
 	{
 	}
-	bool float_time_series::extract_from_values(uint16_t num_values, rtlola_viz::LV_IndexedValue* values, double timestamp)
+	bool float_time_series::extract_from_values(uint16_t num_values, indexed_value* values, double timestamp)
 	{
 		for (uint16_t i = 0; i < num_values; ++i) {
 			if (values[i].index == index) {
@@ -51,7 +51,7 @@ namespace stream_vis {
 	{
 	}
 
-	bool int_time_series::extract_from_values(uint16_t num_values, rtlola_viz::LV_IndexedValue* values, double timestamp)
+	bool int_time_series::extract_from_values(uint16_t num_values, indexed_value* values, double timestamp)
 	{
 		for (uint16_t i = 0; i < num_values; ++i) {
 			if (values[i].index == index) {
@@ -68,7 +68,7 @@ namespace stream_vis {
 	uint_time_series::uint_time_series(uint16_t i) : streaming_time_series(cgv::type::info::TI_UINT64), index(i)
 	{
 	}
-	bool uint_time_series::extract_from_values(uint16_t num_values, rtlola_viz::LV_IndexedValue* values, double timestamp)
+	bool uint_time_series::extract_from_values(uint16_t num_values, indexed_value* values, double timestamp)
 	{
 		for (uint16_t i = 0; i < num_values; ++i) {
 			if (values[i].index == index) {
@@ -84,7 +84,7 @@ namespace stream_vis {
 	bool_time_series::bool_time_series(uint16_t i) : streaming_time_series(cgv::type::info::TI_BOOL), index(i)
 	{
 	}
-	bool bool_time_series::extract_from_values(uint16_t num_values, rtlola_viz::LV_IndexedValue* values, double timestamp)
+	bool bool_time_series::extract_from_values(uint16_t num_values, indexed_value* values, double timestamp)
 	{
 		for (uint16_t i = 0; i < num_values; ++i) {
 			if (values[i].index == index) {
@@ -109,7 +109,7 @@ namespace stream_vis {
 	{
 		return "quat";
 	}
-	bool quat_time_series::extract_from_values(uint16_t num_values, rtlola_viz::LV_IndexedValue* values, double timestamp)
+	bool quat_time_series::extract_from_values(uint16_t num_values, indexed_value* values, double timestamp)
 	{
 		cgv::math::quaternion<double> q;
 		int cnt = 0;
