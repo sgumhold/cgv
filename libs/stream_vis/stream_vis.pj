@@ -1,0 +1,13 @@
+@=
+projectType="library";
+projectName="stream_vis";
+projectGUID="CE5CD9E0-0F6D-4B6B-A42C-E1CCE9A67A73";
+addProjectDirs=[CGV_DIR."/libs", CGV_DIR."/3rd"];
+addIncDirs=[CGV_DIR."/libs", CGV_BUILD_DIR."/".projectName, INPUT_DIR."/../rtlola-viz"];
+excludeSourceDirs=["LOLA_viewer","bouncing_sphere"];
+addProjectDeps=["cgv_utils", "cgv_type", "cgv_reflect", "cgv_data", "cgv_signal", "cgv_base", "cgv_media", "cgv_gui", 
+"cgv_render","cgv_os", "cgv_gl", "glew","plot"];
+if(SYSTEM=="windows") {
+	addStaticDefines=["REGISTER_SHADER_FILES"];
+}
+addSharedDefines=["STREAM_VIS_EXPORTS"];
