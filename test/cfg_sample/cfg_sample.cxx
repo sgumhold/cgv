@@ -2,6 +2,8 @@
 #include <cgv/base/register.h>
 #include <cgv/gui/provider.h>
 #include <cgv/render/drawable.h>
+#include <cgv/gui/dialog.h>
+#include <random>
 
 // renderer headers include self reflection helpers for render styles
 #include <cgv_gl/box_renderer.h>
@@ -26,6 +28,7 @@ protected:
 	vec3  p;
 	rgb   c;
 	float r;
+	std::default_random_engine e;
 
 	cgv::render::sphere_render_style srs;
 	cgv::render::box_render_style brs;
@@ -102,12 +105,33 @@ public:
 		ctx.output_stream() << s;
 		ctx.output_stream().flush();
 	}
+	void pose_query(bool hide)
+	{
+		if (cgv::gui::query("new value for s:", s, hide))
+			on_set(&s);
+	}
 	void on_set(void* member_ptr)
 	{
 		if (member_ptr == &n) {
 			auto c_ptr = find_control(i);
 			if (c_ptr)
 				c_ptr->set("max", n - 1);
+
+			if (i >= int(n)) {
+				std::uniform_int_distribution<int> d(0, 1);
+				switch (cgv::gui::question("i went out of range, correct it?", "yes,no,random", 0)) {
+				case 2 :
+					if (d(e) == 0) {
+						cgv::gui::message("random says \"don't adapt\".");
+						break;
+					}
+				case 0 : 
+					i = n - 1;
+					update_member(&i);
+				default:
+					break;
+				}
+			}
 		}
 		// consistent update in ui of vector valued members needs some help:
 		if (member_ptr == &p) {
@@ -130,6 +154,8 @@ public:
 	void create_gui()
 	{
 		add_decorator("cfg_sample", "heading", "level=1");
+		connect_copy(add_button("query")->click, cgv::signal::rebind(this, &cfg_sample::pose_query, cgv::signal::_c<bool>(false)));
+		connect_copy(add_button("password")->click, cgv::signal::rebind(this, &cfg_sample::pose_query, cgv::signal::_c<bool>(true)));
 		add_member_control(this, "s", s);
 		add_member_control(this, "i", i, "value_slider", "min=0;max=9;ticks=true");
 		add_member_control(this, "n", n, "value_slider", "min=1;max=1000;ticks=true;log=true");

@@ -6,7 +6,7 @@ name(cfg_sample_instance):p="1 -0.5 1";c="0 0.5 1"
 // line with "persistent" keyword makes successive declarations persistent over several runs
 // for this newly adjusted values are written into the config file
 persistent
-name(cfg_sample_instance):n=24;i=12
+name(cfg_sample_instance):n=75;i=34
 
 // string definition of vector valued members are not allowed and lead to an abort of the program
 // instead one needs to define individual components
