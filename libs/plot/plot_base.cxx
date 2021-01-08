@@ -893,7 +893,7 @@ void plot_base::create_plot_gui(cgv::base::base* bp, cgv::gui::provider& p)
 
 	ensure_font_names();
 
-	if (p.begin_tree_node("dimensions", "heading", false, "level=3")) {
+	if (p.begin_tree_node("dimensions", center_location, false, "level=3")) {
 		p.align("\a");
 		p.add_gui("center", center_location, "vector", "main_label='heading';gui_type='value_slider';options='min=-100;max=100;log=true;ticks=true'");
 		p.add_gui("domain_min", domain_min, "vector", "main_label='heading';gui_type='value_slider';options='min=-10;max=10;log=true;ticks=true'");
