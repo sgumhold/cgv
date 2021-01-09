@@ -155,6 +155,7 @@ namespace stream_vis {
 		virtual void extract_time_series() = 0;
 		void parse_declarations(const std::string& declarations);
 		void show_time_series() const;
+		void show_plots() const;
 		bool is_outofdate() const { return outofdate; }
 		bool init(cgv::render::context& ctx);
 		void clear(cgv::render::context& ctx);

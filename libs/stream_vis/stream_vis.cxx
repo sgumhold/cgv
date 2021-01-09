@@ -7,6 +7,7 @@
 namespace stream_vis {
 	stream_vis::stream_vis()
 	{
+		set_name("stream_vis");
 	}
 	stream_vis::~stream_vis()
 	{

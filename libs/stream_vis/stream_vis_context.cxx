@@ -765,6 +765,25 @@ namespace stream_vis {
 			std::cout << std::endl;
 		}
 	}
+	void stream_vis_context::show_plots() const
+	{
+		for (const auto& pl : plot_pool) {
+			std::cout << pl.name << ":";
+			for (const auto& spi : pl.subplot_infos) {
+				std::cout << "<";
+				for (const auto& ad : spi.attribute_definitions) {
+					std::cout << typed_time_series[ad.time_series_index]->name << "." << (int)ad.accessor << "|";
+				}
+				std::cout << "> [";
+				for (const auto& rr : spi.ringbuffer_references) {
+					std::cout << typed_time_series[time_series_ringbuffers[rr.index].time_series_index]->name 
+						<< "." << rr.component_index << "|";
+				}
+				std::cout << "]";
+			}
+			std::cout << std::endl;
+		}
+	}
 
 	bool stream_vis_context::init(cgv::render::context& ctx)
 	{
@@ -835,6 +854,7 @@ namespace stream_vis {
 			plot_attributes_initialized = true;
 		}
 		// update time series ringbuffers
+		int i = 0;
 		for (auto& tsrr : time_series_ringbuffers) {
 			const auto& tts = typed_time_series[tsrr.time_series_index];
 			// check if new samples are available

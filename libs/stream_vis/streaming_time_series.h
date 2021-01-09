@@ -9,13 +9,16 @@
 #include "lib_begin.h"
 
 namespace stream_vis {
-
-	/// combination of index and value
-	struct indexed_value
+	extern "C"
 	{
-		uint16_t index;
-		uint8_t  value[8];
-	};
+		typedef uint8_t value_type[8];
+		/// combination of index and value
+		struct indexed_value
+		{
+			uint16_t index;
+			value_type value;
+		};
+	}
 	/// interface for all time series used in the streaming visualization library
 	class CGV_API streaming_time_series : public cgv::render::render_types
 	{
@@ -123,7 +126,7 @@ namespace stream_vis {
 			cgv::math::fvec<double, N> pos;
 			int cnt = 0;
 			for (uint16_t i = 0; i < num_values; ++i) {
-				for (int c = 0; c < 3; ++c)
+				for (int c = 0; c < N; ++c)
 					if (values[i].index == indices[c]) {
 						pos[c] = reinterpret_cast<const double&>(values[i].value[0]);
 						++cnt;
