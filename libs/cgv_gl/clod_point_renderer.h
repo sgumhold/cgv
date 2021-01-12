@@ -23,8 +23,13 @@ namespace cgv {
 
 
 		class CGV_API clod_point_renderer : public cgv::render::renderer{
-			shader_program prog;
+			float CLOD;
+			float spacing;
+			float scale;
+
 		protected:
+
+
 		public:
 			render_style* create_render_style() const;
 
@@ -33,6 +38,8 @@ namespace cgv {
 			bool enable(context& ctx);
 			
 			bool disable(context& ctx);
+		private:
+			void add_shader(context& ctx, const std::string& sf, const cgv::render::ShaderType st);
 		};
 	}
 }
