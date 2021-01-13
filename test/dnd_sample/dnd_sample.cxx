@@ -317,10 +317,18 @@ public:
 				}
 				break;
 			case 'I' :
-				if (!input_dir.empty()) {
-					clear_files();
-					append_directory(input_dir);
+				switch (ke.get_modifiers()) {
+				case 0 :
+					if (!input_dir.empty()) {
+						clear_files();
+						append_directory(input_dir);
+						post_redraw();
+					}
+					break;
+				case cgv::gui::EM_SHIFT :
+					insert_position = cursor_position;
 					post_redraw();
+					break;
 				}
 				return true;
 			case 'C': concat(); return true;
@@ -538,7 +546,7 @@ public:
 	void draw(cgv::render::context& ctx)
 	{
 		ctx.push_pixel_coords();
-		ivec2 pos(10, 20);
+		ivec2 pos(10, 24);
 		for (size_t i = 0; i < file_names.size(); ++i) {
 			rgb col(1, 1, 1);
 			if (i == cursor_position)
@@ -550,9 +558,34 @@ public:
 			ctx.output_stream() << file_names[i] << " " << durations[i] << std::endl;
 			pos[1] += 20;
 		}
+		if (!dnd_text.empty()) {
+			rgb col(1, 0.5f, 0.5f);
+			std::vector<cgv::utils::line> lines;
+			cgv::utils::split_to_lines(dnd_text, lines);
+			float w = 0;
+			float s = ctx.get_current_font_size();
+			for (auto l : lines)
+				w = std::max(w, ctx.get_current_font_face()->measure_text_width(cgv::utils::to_string(l), s));
+			float h = lines.size()*s;
+			ivec2 ll_pos = dnd_pos + ivec2((int)w, (int)h);
+			ivec2 draw_pos = dnd_pos;
+			if (ll_pos[0] > (int)ctx.get_width())
+				draw_pos[0] -= ll_pos[0] - ctx.get_width();
+			if (ll_pos[1] - s > (int)ctx.get_height())
+				draw_pos[1] -= int(ll_pos[1] - s - ctx.get_height());
+			int ipos = int((ll_pos[1] -  24) / 20);
+			if (ipos < 0)
+				ipos = 0;
+			if (ipos > file_names.size())
+				ipos = int(file_names.size());
+			insert_position = ipos;
+			ctx.set_color(col);
+			ctx.set_cursor(vecn(float(draw_pos[0]), float(draw_pos[1])), "", cgv::render::TA_TOP_LEFT);
+			ctx.output_stream() << dnd_text << std::endl;
+		}
 		std::vector<vec3> P;
-		P.push_back(vec3(0.0f, 20.0f * insert_position + 10.0f));
-		P.push_back(vec3(100.0f, 20.0f * insert_position + 10.0f));
+		P.push_back(vec3(0.0f, 20.0f * insert_position + 10.0f, 0));
+		P.push_back(vec3(100.0f, 20.0f * insert_position + 10.0f, 0));
 		auto& prog = ctx.ref_default_shader_program();
 		cgv::render::attribute_array_binding::enable_global_array(ctx, prog.get_position_index());
 		cgv::render::attribute_array_binding::set_global_attribute_array(ctx, prog.get_position_index(), P);
@@ -560,6 +593,7 @@ public:
 		prog.enable(ctx);
 		glDrawArrays(GL_LINES, 0, 2);
 		prog.disable(ctx);
+		ctx.pop_pixel_coords();
 	}
 	void on_set(void* member_ptr)
 	{
