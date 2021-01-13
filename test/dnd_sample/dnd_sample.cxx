@@ -511,10 +511,10 @@ public:
 							bool do_select = me.get_modifiers() == cgv::gui::EM_SHIFT;
 							if (do_select)
 								std::fill(selection.begin(), selection.end(), false);
-							if (cgv::utils::file::exists(fn))
-								insert_file(fn, do_select);
 							if (cgv::utils::dir::exists(fn))
 								insert_directory(fn, do_select);
+							else if (cgv::utils::file::exists(fn))
+								insert_file(fn, do_select);
 						}
 					}
 					dnd_text.clear();
