@@ -23,13 +23,13 @@ namespace cgv {
 
 
 		class CGV_API clod_point_renderer : public cgv::render::renderer{
-			float CLOD;
-			float spacing;
-			float scale;
+			float CLOD = 1.f;
+			float spacing = 1.f; //root spacing
+			float scale = 1.f;
 
 		protected:
 
-
+			void draw_and_compute_impl(context& ctx, PrimitiveType type, size_t start, size_t count, bool use_strips, bool use_adjacency, uint32_t strip_restart_index);
 		public:
 			render_style* create_render_style() const;
 
@@ -38,8 +38,12 @@ namespace cgv {
 			bool enable(context& ctx);
 			
 			bool disable(context& ctx);
+
+			void draw(context& ctx, size_t start, size_t count,
+				bool use_strips = false, bool use_adjacency = false, uint32_t strip_restart_index = -1);
 		private:
 			void add_shader(context& ctx, const std::string& sf, const cgv::render::ShaderType st);
+
 		};
 	}
 }
