@@ -35,18 +35,20 @@ void split_to_tokens(
 		last_is_sep = is_sep;
 		if (create_token) {
 			if (p > b)
-				tokens.push_back(token(b,p));
+				tokens.push_back(token(b, p));
 			if (is_whitespace)
 				b = p+1;
 			else
 				b = p;
 		}
-		else if ((pos = open_parenthesis.find_first_of(*p)) != std::string::npos) {
+		if ((pos = open_parenthesis.find_first_of(*p)) != std::string::npos) {
+			if (p > b)
+				tokens.push_back(token(b, p));
 			b = ++p;
 			while (p != end && *p != close_parenthesis[pos])
 				++p;
-			tokens.push_back(token(b,p));
-			b = p+1;
+			tokens.push_back(token(b, p));
+			b = p + 1;
 		}
 		if (p == end)
 			break;
