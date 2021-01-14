@@ -29,6 +29,7 @@ uniform float pointSize;
 uniform float minMilimeters;
 uniform vec2 screenSize;
 uniform vec4 pivot;
+uniform mat4 transform;
 
 out vec3 vColor;
 out float vPointSize;
@@ -42,7 +43,6 @@ float rand(float n){
 
 
 void main() {
-	mat4 transform = get_modelview_projection_matrix();
 	mat4 centralTransform = transform;
 	vec4 pos = transform * vec4(position.xyz, 1.0);
 

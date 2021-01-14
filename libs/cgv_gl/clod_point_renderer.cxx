@@ -12,6 +12,9 @@ namespace cgv {
 		{
 			renderer::draw_impl(ctx, type, start, count, use_strips, use_adjacency, strip_restart_index);
 			//TODO run compute shader
+			reduce_prog.enable(ctx);
+			glDispatchCompute( positions.size(), 1, 1);
+			reduce_prog.disable(ctx);
 			;
 		}
 
@@ -22,20 +25,28 @@ namespace cgv {
 
 		bool clod_point_renderer::init(context& ctx)
 		{
+			if (!reduce_prog.is_created()) {
+				reduce_prog.create(ctx);
+				add_shader(ctx, reduce_prog, "pointcloud_clod_filter_points.glcs", cgv::render::ST_COMPUTE);
+				reduce_prog.link(ctx);
+#ifndef NDEBUG
+				std::cerr << reduce_prog.last_error;
+#endif // #ifdef NDEBUG
+			}
+
 			//create shader program
 			if (!ref_prog().is_created()) {
 				ref_prog().create(ctx);
-				add_shader(ctx, "view.glsl", cgv::render::ST_VERTEX);
-				add_shader(ctx, "pointcloud_clod.glvs", cgv::render::ST_VERTEX);
-				add_shader(ctx, "fragment.glfs", cgv::render::ST_FRAGMENT);
-				add_shader(ctx, "pointcloud_clod.glfs", cgv::render::ST_FRAGMENT);
-				add_shader(ctx, "pointcloud_clod_filter_points.glcs", cgv::render::ST_COMPUTE);
+				add_shader(ctx, ref_prog(), "view.glsl", cgv::render::ST_VERTEX);
+				add_shader(ctx, ref_prog(), "pointcloud_clod.glvs", cgv::render::ST_VERTEX);
+				add_shader(ctx, ref_prog(), "fragment.glfs", cgv::render::ST_FRAGMENT);
+				add_shader(ctx, ref_prog(), "pointcloud_clod.glfs", cgv::render::ST_FRAGMENT);
 				ref_prog().link(ctx);
 #ifndef NDEBUG
 				std::cerr << ref_prog().last_error;
 #endif // #ifdef NDEBUG
 			}
-			return ref_prog().is_linked();
+			return ref_prog().is_linked() && reduce_prog.is_linked();
 		}
 
 		bool clod_point_renderer::enable(context& ctx)
@@ -49,7 +60,6 @@ namespace cgv {
 			}
 
 			const clod_point_render_style& srs = get_style<clod_point_render_style>();
-
 			//TODO set uniforms
 			vec2 screenSize(ctx.get_width(), ctx.get_height());
 			vec4 pivot = ctx.get_modelview_matrix().col(3);
@@ -58,7 +68,14 @@ namespace cgv {
 			ref_prog().set_uniform(ctx, ref_prog().get_uniform_location(ctx, "spacing"), spacing);
 			ref_prog().set_uniform(ctx, ref_prog().get_uniform_location(ctx, "pivot"), pivot);
 			ref_prog().set_uniform(ctx, ref_prog().get_uniform_location(ctx, "screenSize"), screenSize);
-
+			ref_prog().set_uniform(ctx, ref_prog().get_uniform_location(ctx, "transform"), ctx.get_modelview_projection_device_matrix());
+				
+			reduce_prog.set_uniform(ctx, ref_prog().get_uniform_location(ctx, "transform"), ctx.get_modelview_projection_device_matrix());
+			reduce_prog.set_uniform(ctx, ref_prog().get_uniform_location(ctx, "CLOD"), CLOD);
+			reduce_prog.set_uniform(ctx, ref_prog().get_uniform_location(ctx, "scale"), scale);
+			reduce_prog.set_uniform(ctx, ref_prog().get_uniform_location(ctx, "spacing"), spacing);
+			reduce_prog.set_uniform(ctx, ref_prog().get_uniform_location(ctx, "pivot"), pivot);
+			reduce_prog.set_uniform(ctx, ref_prog().get_uniform_location(ctx, "screenSize"), screenSize);
 			return true;
 		}
 
@@ -77,16 +94,16 @@ namespace cgv {
 			draw_and_compute_impl(ctx, cgv::render::PT_POINTS, start, count, use_strips, use_adjacency, strip_restart_index);
 		}
 
-		void clod_point_renderer::add_shader(context& ctx, const std::string& sf,const cgv::render::ShaderType st)
+		void clod_point_renderer::add_shader(context& ctx, shader_program& prog, const std::string& sf,const cgv::render::ShaderType st)
 		{
 #ifndef NDEBUG
 			std::cout << "add shader " << sf << '\n';
 #endif // #ifdef NDEBUG
-			ref_prog().attach_file(ctx, sf, st);
+			prog.attach_file(ctx, sf, st);
 #ifndef NDEBUG
-			if (ref_prog().last_error.size() > 0) {
-				std::cerr << ref_prog().last_error << '\n';
-				ref_prog().last_error = "";
+			if (prog.last_error.size() > 0) {
+				std::cerr << prog.last_error << '\n';
+				prog.last_error = "";
 			}	
 #endif // #ifdef NDEBUG
 
