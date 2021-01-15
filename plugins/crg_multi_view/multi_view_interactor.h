@@ -7,6 +7,7 @@
 #include <vr/vr_kit.h>
 #include <cgv_gl/box_renderer.h>
 #include <cgv_gl/sphere_renderer.h>
+#include <cgv_gl/rectangle_renderer.h>
 #include <cgv_gl/gl/mesh_render_info.h>
 #include <vr_view_interactor.h>
 
@@ -52,7 +53,7 @@ protected:
 	/// read access to screen orientation
 	inline const mat3& get_screen_orientation() const { return reinterpret_cast<const mat3&>(screen_pose); }
 	/// write access to screen orientation
-	inline void set_screen_orientation(const quat& q) { q.put_matrix(reinterpret_cast<mat3&>(screen_pose)); }
+	inline void set_screen_orientation(const quat& q) { q.put_matrix(reinterpret_cast<mat3&>(screen_pose)); screen_orientation = q; }
 	/// access to screen center location
 	inline const vec3& get_screen_center() const { return screen_pose.col(3); }
 	/// transform to coordinate system of screen with [0,0,0] in center and corners [+-aspect,+-1,0]; z is signed distance to screen in world unites (typically meters) 
@@ -62,8 +63,9 @@ protected:
 	//@}
 	/// whether to render the screen inside of the scene
 	bool show_screen;
-	/// orientation of the screen
+	/// this member variable is only used for the user interface to allow changes to the orientation of the screen
 	quat screen_orientation;
+	/// 
 	float pixel_scale;
 	/// whether to show the eyes of the users
 	bool show_eyes;
@@ -71,6 +73,10 @@ protected:
 	int debug_display_index;
 	/// index of eye rendered for debugging on virtual screen
 	int debug_eye;
+	/// debug probe
+	vec3 debug_probe;
+	///
+	cgv::render::surface_render_style rrs;
 	///
 	const vr::vr_trackable_state* get_trackable_state(int display_index) const;
 	///
@@ -80,6 +86,8 @@ public:
 	multi_view_interactor(const char* name);
 	/// return the type name 
 	std::string get_type_name() const;
+	/// general callback
+	void on_set(void* member_ptr);
 	/// 
 	bool init(cgv::render::context& ctx);
 	/// 

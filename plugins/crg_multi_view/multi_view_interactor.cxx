@@ -10,12 +10,15 @@ multi_view_interactor::multi_view_interactor(const char* name) : vr_view_interac
 	set_screen_orientation(quat(1, 0, 0, 0));
 	screen_pose.set_col(3, vec3(0, 1, 0));
 	pixel_size = vec2(0.001f, 0.001f);
+	pixel_scale = 0.001f;
 	width = 1920;
 	height = 1080;
 	show_screen = true;
 	show_eyes = true;
 	debug_display_index = -1;
 	debug_eye = 0;
+	debug_probe = vec3(0.0f);
+	rrs.illumination_mode = cgv::render::IM_OFF;
 }
 
 ///
@@ -52,7 +55,7 @@ multi_view_interactor::vec3 multi_view_interactor::transform_world_to_screen(con
 multi_view_interactor::vec3 multi_view_interactor::transform_screen_to_world(const vec3& p_screen) const
 {
 	vec3 p_s = p_screen;
-	p_s[0] *= 0.5f * height * pixel_size[0];
+	p_s[0] *= 0.5f * width * pixel_size[0];
 	p_s[1] *= 0.5f * height * pixel_size[1];
 	return get_screen_orientation() * p_s + get_screen_center();
 }
@@ -62,10 +65,13 @@ void multi_view_interactor::put_projection_matrix(unsigned user_index, int eye, 
 {
 	vec3 eye_world = get_eye_position_world(user_index, eye, *reinterpret_cast<const mat34*>(tracker_pose));
 	vec3 eye_screen = (eye_world - get_screen_center()) * get_screen_orientation();
-	float scale = z_near / eye_screen(2);
+	float scale = z_near / abs(eye_screen(2));
 	float width_world = width * pixel_size[0];
-	float l = scale * (-0.5f * width_world - eye_screen(0));
-	float r = scale * (+0.5f * width_world - eye_screen(0));
+	float eye_screen_x = eye_screen(0);
+	if (eye_screen(2) < 0)
+		eye_screen_x = -eye_screen_x;
+	float l = scale * (-0.5f * width_world - eye_screen_x);
+	float r = scale * (+0.5f * width_world - eye_screen_x);
 	float height_world = height * pixel_size[1];
 	float b = scale * (-0.5f * height_world - eye_screen(1));
 	float t = scale * (+0.5f * height_world - eye_screen(1));
@@ -78,6 +84,11 @@ void multi_view_interactor::put_world_to_eye_transform(unsigned user_index, int 
 	if (eye_world_ptr)
 		*eye_world_ptr = eye_world;
 	mat3 R = get_screen_orientation();
+	vec3 eye_screen = (eye_world - get_screen_center()) * get_screen_orientation();
+	if (eye_screen(2) < 0) {
+		R.set_col(0, -R.col(0));
+		R.set_col(2, -R.col(2));
+	}
 	if (view_dir_ptr)
 		*view_dir_ptr = -R.col(2);
 	R.transpose();
@@ -122,6 +133,8 @@ void multi_view_interactor::init_frame(cgv::render::context& ctx)
 	while (!new_displays.empty()) {
 		new_displays.back()->init_fbos();
 		new_displays.pop_back();
+		if (find_control(debug_display_index)) 
+			find_control(debug_display_index)->set("max", int(displays.size())-1);
 	}
 	if (ctx.get_render_pass() == cgv::render::RP_MAIN) {
 		// update current vr kits
@@ -182,9 +195,29 @@ void multi_view_interactor::init_frame(cgv::render::context& ctx)
 			stereo_view_interactor::init_frame(ctx);
 	}
 }
+void multi_view_interactor::on_set(void* member_ptr)
+{
+	if (member_ptr == &pixel_scale) {
+		pixel_size = vec2(pixel_scale);
+	}
+	if (member_ptr >= &screen_orientation && member_ptr < &screen_orientation + 1) {
+		set_screen_orientation(screen_orientation);
+	}
+	update_member(member_ptr);
+	post_redraw();
+}
 
 void multi_view_interactor::draw(cgv::render::context& ctx)
 {
+	static int has_stereo = 0;
+	if (ctx.get_render_pass() == cgv::render::RP_STEREO)
+		has_stereo = 2;
+	else
+		has_stereo = has_stereo > 0 ? has_stereo - 1 : 0;
+	int eye = debug_eye;
+	if (has_stereo > 0)
+		eye = ctx.get_render_pass() == cgv::render::RP_STEREO ? 0 : 1;
+
 	// draw spheres
 	std::vector<vec3> P;
 	std::vector<rgb> C;
@@ -196,10 +229,25 @@ void multi_view_interactor::draw(cgv::render::context& ctx)
 				continue;
 			P.push_back(get_eye_position_world(display_index, 0, reinterpret_cast<const mat34&>(*ts_ptr->pose)));
 			C.push_back(rgb(1, 0, 0));
-			R.push_back(0.06f);
+			R.push_back(0.03f);
 			P.push_back(get_eye_position_world(display_index, 1, reinterpret_cast<const mat34&>(*ts_ptr->pose)));
 			C.push_back(rgb(0, 1, 1));
 			R.push_back(0.03f);
+		}
+	}
+	if (debug_display_index >= 0 && debug_display_index < displays.size()) {
+		for (int i = 0; i < 50; ++i) {
+			float lambda = 0.1f * i;
+			P.push_back((1.0f - lambda) * get_eye_position_world(debug_display_index, eye, reinterpret_cast<const mat34&>(get_trackable_state(debug_display_index)->pose))
+				+ lambda * debug_probe);
+			if (i == 10) {
+				R.push_back(0.04f);
+				C.push_back(rgb(0.5f, 1, 0.5f));
+			}
+			else {
+				R.push_back(0.01f);
+				C.push_back(rgb(0, 1, 0));
+			}
 		}
 	}
 	if (!P.empty()) {
@@ -209,6 +257,28 @@ void multi_view_interactor::draw(cgv::render::context& ctx)
 		sr.set_radius_array(ctx, R);
 		sr.set_color_array(ctx, C);
 		sr.render(ctx, 0, (GLuint)P.size());
+	}
+	if (show_screen && ctx.get_render_pass() != cgv::render::RP_USER_DEFINED) {
+		auto& rr = cgv::render::ref_rectangle_renderer(ctx, 1);
+		rr.set_render_style(rrs);
+		vec3 screen_center = get_screen_center();
+		quat screen_orientation(get_screen_orientation());
+		vec2 extent(width * pixel_size[0], height * pixel_size[1]);
+		rgb screen_color(0.5f, 0.5f, 0.5f);
+		vec4 tex_range(0, 0, 1, 1);
+
+		rr.set_position_array(ctx, &screen_center, 1);
+		rr.set_extent_array(ctx, &extent, 1);
+		rr.set_color_array(ctx, &screen_color, 1);
+		rr.set_rotation_array(ctx, &screen_orientation, 1);
+		if (debug_display_index >= 0 && debug_display_index < displays.size()) {
+			vec3 eye_screen = (get_eye_position_world(debug_display_index, eye, reinterpret_cast<const mat34&>(get_trackable_state(debug_display_index)->pose)) - get_screen_center())* get_screen_orientation();
+			if (eye_screen(2) < 0)
+				tex_range = vec4(1, 0, 0, 1);
+			rr.set_texcoord_array(ctx, &tex_range, 1);
+			displays[debug_display_index]->bind_texture(eye);
+		}
+		rr.render(ctx, 0, 1);
 	}
 	vr_view_interactor::draw(ctx);
 }
@@ -250,8 +320,15 @@ void multi_view_interactor::create_gui()
 	add_member_control(this, "pixel_scale", pixel_scale, "value_slider", "min=0.00001;max=0.01;log=true;ticks=true;step=0.0000001");
 	add_gui("screen_orientation", (vec4&)screen_orientation, "direction", "options='min=-1;max=1;ticks=true'");
 	add_gui("screen_location", (vec3&)screen_pose(0,3), "", "options='min=-2;max=2;ticks=true'");
+	add_gui("debug_probe", debug_probe, "", "options='min=-2;max=2;ticks=true'");
 	add_member_control(this, "debug_display_index", debug_display_index, "value_slider", "min=-1;max=-1;ticks=true");
 	add_member_control(this, "debug_eye", (cgv::type::DummyEnum&)debug_eye, "dropdown", "enums='left,right'");
+	if (begin_tree_node("rectangle render style", rrs, false, "level=2")) {
+		align("\a");
+		add_gui("rectangle render style", rrs);
+		align("\b");
+		end_tree_node(rrs);
+	}
 	vr_view_interactor::create_gui();
 }
 
