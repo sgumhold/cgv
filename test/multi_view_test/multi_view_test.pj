@@ -1,0 +1,24 @@
+@=
+projectType="application_plugin";
+projectName="multi_view_test";
+projectGUID="EC7B0E1E-34D4-4BD5-89A8-0A62FE2964C6";
+addProjectDirs=[CGV_DIR."/libs", CGV_DIR."/plugins", CGV_DIR."/3rd", CGV_DIR."/test"];
+addIncDirs=[CGV_DIR."/libs"];
+addProjectDeps=["cgv_utils", "cgv_type", "cgv_reflect", "cgv_data", "cgv_signal", "cgv_base", "cgv_media", "cgv_gui", 
+"cgv_render", "cgv_os", "cgv_viewer","cg_fltk", "cg_ext", "crg_multi_view",  
+"crg_light", "cmi_io", "crg_grid", "cgv_gl", "glew", "rect_pack"];
+addCommandLineArguments=[
+	'config:"'.INPUT_DIR.'/config.def"',
+	after("type(shader_config):shader_path='".INPUT_DIR.";".CGV_DIR."/libs/plot/glsl;".CGV_DIR."/libs/cgv_gl/glsl'","cg_fltk")
+];
+sourceFiles = [ 
+	CGV_DIR."/plugins/examples/res/alhambra.png",
+	CGV_DIR."/plugins/examples/res/cartuja.png",
+	CGV_DIR."/libs/cg_nui/label_manager.cxx", 
+	CGV_DIR."/libs/cg_nui/label_manager.h"
+];
+addSharedDefines=[
+	"CG_NUI_EXPORTS"
+];
+sourceDirs = [ INPUT_DIR ];
+workingDirectory = INPUT_DIR;
