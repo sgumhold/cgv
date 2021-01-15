@@ -1,18 +1,21 @@
 #include "multi_view_interactor.h"
 #include <cgv/math/ftransform.h>
 #include <cgv/math/pose.h>
+#include <cgv_reflect_types/math/fvec.h>
+#include <cgv_reflect_types/math/quaternion.h>
 #include <cgv_gl/box_renderer.h>
 #include <cgv_gl/rectangle_renderer.h>
 
 ///
 multi_view_interactor::multi_view_interactor(const char* name) : vr_view_interactor(name)
 {
+	last_kit_handle = 0;
 	set_screen_orientation(quat(1, 0, 0, 0));
 	screen_pose.set_col(3, vec3(0, 1, 0));
 	pixel_size = vec2(0.001f, 0.001f);
 	pixel_scale = 0.001f;
-	width = 1920;
-	height = 1080;
+	screen_width = 1920;
+	screen_height = 1080;
 	show_screen = true;
 	show_eyes = false;
 	debug_display_index = -1;
@@ -27,15 +30,24 @@ void multi_view_interactor::on_device_change(void* handle, bool attach)
 {
 	vr_view_interactor::on_device_change(handle, attach);
 	if (attach) {
-		displays.push_back(new vr::gl_vr_display(1920, 1080, 4));
-		head_tracking_info hti;
-		hti.kit_handle = handle;
-		hti.controller_index = 0;
-		hti.local_eye_position[0] = vec3(-0.04f, -0.1f, 0);
-		hti.local_eye_position[1] = vec3( 0.04f, -0.1f, 0);
-		head_trackers.push_back(hti);
-		new_displays.push_back(displays.back());
+		last_kit_handle = handle;
 	}
+}
+
+void multi_view_interactor::add_player(int ci)
+{
+	if (last_kit_handle == 0) {
+		std::cerr << "add_controller_as_player ignored as no vr_kit is attached" << std::endl;
+		return;
+	}
+	displays.push_back(new vr::gl_vr_display(screen_width, screen_height, 4));
+	head_tracking_info hti;
+	hti.kit_handle = last_kit_handle;
+	hti.controller_index = ci;
+	hti.local_eye_position[0] = vec3(-0.04f, -0.1f, 0);
+	hti.local_eye_position[1] = vec3( 0.04f, -0.1f, 0);
+	head_trackers.push_back(hti);
+	new_displays.push_back(displays.back());
 }
 
 /// return the type name 
@@ -48,16 +60,16 @@ std::string multi_view_interactor::get_type_name() const
 multi_view_interactor::vec3 multi_view_interactor::transform_world_to_screen(const vec3& p) const
 {
 	vec3 p_screen = (p - get_screen_center()) * get_screen_orientation();
-	p_screen[0] /= 0.5f * height * pixel_size[0];
-	p_screen[1] /= 0.5f * height * pixel_size[1];
+	p_screen[0] /= 0.5f * screen_width * pixel_size[0];
+	p_screen[1] /= 0.5f * screen_height * pixel_size[1];
 	return p_screen;
 }
 /// transform from coordinate system of screen with [0,0,0] in center and corners [+-aspect,+-1,0]; z is signed distance to screen in world unites (typically meters) 
 multi_view_interactor::vec3 multi_view_interactor::transform_screen_to_world(const vec3& p_screen) const
 {
 	vec3 p_s = p_screen;
-	p_s[0] *= 0.5f * width * pixel_size[0];
-	p_s[1] *= 0.5f * height * pixel_size[1];
+	p_s[0] *= 0.5f * screen_width * pixel_size[0];
+	p_s[1] *= 0.5f * screen_height * pixel_size[1];
 	return get_screen_orientation() * p_s + get_screen_center();
 }
 
@@ -67,13 +79,13 @@ void multi_view_interactor::put_projection_matrix(unsigned user_index, int eye, 
 	vec3 eye_world = get_eye_position_world(user_index, eye, *reinterpret_cast<const mat34*>(tracker_pose));
 	vec3 eye_screen = (eye_world - get_screen_center()) * get_screen_orientation();
 	float scale = z_near / abs(eye_screen(2));
-	float width_world = width * pixel_size[0];
+	float width_world = screen_width * pixel_size[0];
 	float eye_screen_x = eye_screen(0);
 	if (eye_screen(2) < 0)
 		eye_screen_x = -eye_screen_x;
 	float l = scale * (-0.5f * width_world - eye_screen_x);
 	float r = scale * (+0.5f * width_world - eye_screen_x);
-	float height_world = height * pixel_size[1];
+	float height_world = screen_height * pixel_size[1];
 	float b = scale * (-0.5f * height_world - eye_screen(1));
 	float t = scale * (+0.5f * height_world - eye_screen(1));
 	reinterpret_cast<mat4&>(*projection_matrix) = cgv::math::frustum4<float>(l, r, b, t, z_near, z_far);
@@ -196,6 +208,26 @@ void multi_view_interactor::init_frame(cgv::render::context& ctx)
 			stereo_view_interactor::init_frame(ctx);
 	}
 }
+
+///
+bool multi_view_interactor::self_reflect(cgv::reflect::reflection_handler& srh)
+{
+	return
+		srh.reflect_base<vr_view_interactor>(*static_cast<vr_view_interactor*>(this)) &&
+		srh.reflect_member("add_controller_as_player", add_controller_as_player) &&
+		srh.reflect_member("debug_eye", debug_eye) &&
+		srh.reflect_member("debug_display_index", debug_display_index) &&
+		srh.reflect_member("show_eyes", show_eyes) &&
+		srh.reflect_member("pixel_scale", pixel_scale) &&
+		srh.reflect_member("show_screen", show_screen) &&
+		srh.reflect_member("screen_orientation", screen_orientation) &&
+		srh.reflect_member("show_probe", show_probe) &&
+		srh.reflect_member("debug_probe", debug_probe) &&
+		srh.reflect_member("screen_width", screen_width) &&
+		srh.reflect_member("screen_height", screen_height) &&
+		srh.reflect_member("screen_center", reinterpret_cast<vec3&>(screen_pose(0, 3)));
+}
+
 void multi_view_interactor::on_set(void* member_ptr)
 {
 	if (member_ptr == &pixel_scale) {
@@ -203,6 +235,9 @@ void multi_view_interactor::on_set(void* member_ptr)
 	}
 	if (member_ptr >= &screen_orientation && member_ptr < &screen_orientation + 1) {
 		set_screen_orientation(screen_orientation);
+	}
+	if (member_ptr == &add_controller_as_player) {
+		add_player(add_controller_as_player);
 	}
 	update_member(member_ptr);
 	post_redraw();
@@ -264,7 +299,7 @@ void multi_view_interactor::draw(cgv::render::context& ctx)
 		rr.set_render_style(rrs);
 		vec3 screen_center = get_screen_center();
 		quat screen_orientation(get_screen_orientation());
-		vec2 extent(width * pixel_size[0], height * pixel_size[1]);
+		vec2 extent(screen_width * pixel_size[0], screen_height * pixel_size[1]);
 		rgb screen_color(0.5f, 0.5f, 0.5f);
 		vec4 tex_range(0, 0, 1, 1);
 

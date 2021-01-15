@@ -3,7 +3,7 @@
 /* Logfile lines
 <pose> : 12 floats representing a 4*3 matrix (column major)
 <button-mask>: 32 bit integer
-<axis-state>: 8 floats for the axes of the controller
+<axis-state>: vr::max_nr_controller_axes floats for the axes of the controller
 <vibration>: 2 floats for the vibration intensity
 <timestamp>: time in ms
 
@@ -42,7 +42,7 @@ void tokenize(std::string& line, C& buffer) {
 		if (text.size()>0 && text.c_str()[0] == '{') { //compound
 			token t;
 			t.type = token::COMPOUND;
-			unsigned end = text.find_first_of("}");
+			size_t end = text.find_first_of("}");
 			if (end != std::string::npos) {
 				t.text = text.substr(1, end-1);
 				buffer.push_back(t);
@@ -145,7 +145,7 @@ void vr::vr_log::log_vr_state(const vr::vr_kit_state& state, const int mode, con
 	}
 
 	//controller state
-	for (int ci = 0; ci < 4; ++ci) {
+	for (int ci = 0; ci < max_nr_controllers; ++ci) {
 		controller_status[ci].push_back(state.controller[ci].status);
 		if (mode & SM_IN_MEMORY) {
 			if (filter & F_VIBRATION) {
@@ -153,8 +153,8 @@ void vr::vr_log::log_vr_state(const vr::vr_kit_state& state, const int mode, con
 				this->controller_vibration[ci].push_back(vibration);
 			}
 			if (filter & F_AXES) {
-				vec8 axes;
-				for (int j = 0; j < 8; ++j) {
+				vecn axes(max_nr_controller_axes);
+				for (int j = 0; j < max_nr_controller_axes; ++j) {
 					axes(j) = state.controller[ci].axes[j];
 				}
 				this->controller_axes[ci].push_back(axes);
@@ -182,7 +182,7 @@ void vr::vr_log::log_vr_state(const vr::vr_kit_state& state, const int mode, con
 				}
 				if (filter & F_AXES) {
 					*(log_stream) << " A";
-					for (int j = 0; j < 8; ++j)
+					for (int j = 0; j < max_nr_controller_axes; ++j)
 						*(log_stream) << ' ' << state.controller[ci].axes[j];
 				}
 				if (filter & F_VIBRATION) {
@@ -247,7 +247,7 @@ unsigned parse_controller_state(std::istringstream& line, vr::vr_controller_stat
 		}
 		else if (cinfo_type == "A") {
 			filter |= vr::vr_log::F_AXES;
-			parse_array<float, 8>(line, state.axes);
+			parse_array<float, vr::max_nr_controller_axes>(line, state.axes);
 		}
 		else if (cinfo_type == "B") {
 			filter |= vr::vr_log::F_BUTTON;
@@ -275,7 +275,7 @@ unsigned parse_vr_kit_state(iterator it, iterator last, vr::vr_kit_state& state,
 			if (type == "C") { //controller info compund
 				int cid = -1; //controller id
 				line >> cid;
-				if (cid >= 0 && cid < 4)
+				if (cid >= 0 && cid < vr::max_nr_controllers)
 					filter |= parse_controller_state(line, state.controller[cid]);
 				else
 					throw std::string("invalid controller id");

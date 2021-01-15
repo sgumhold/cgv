@@ -108,7 +108,7 @@ namespace vr {
 			return res;
 		if (state.hmd.status == VRS_TRACKED)
 			dp->calibrate_pose(state.hmd.pose);
-		for (int i = 0; i < 4; ++i)
+		for (int i = 0; i < max_nr_controllers; ++i)
 			if (state.controller[i].status == VRS_TRACKED)
 				dp->calibrate_pose(state.controller[i].pose);
 		return res;
