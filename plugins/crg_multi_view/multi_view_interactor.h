@@ -73,6 +73,8 @@ protected:
 	int debug_display_index;
 	/// index of eye rendered for debugging on virtual screen
 	int debug_eye;
+	///
+	bool show_probe;
 	/// debug probe
 	vec3 debug_probe;
 	///

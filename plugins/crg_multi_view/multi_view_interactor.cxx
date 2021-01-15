@@ -14,9 +14,10 @@ multi_view_interactor::multi_view_interactor(const char* name) : vr_view_interac
 	width = 1920;
 	height = 1080;
 	show_screen = true;
-	show_eyes = true;
+	show_eyes = false;
 	debug_display_index = -1;
 	debug_eye = 0;
+	show_probe = false;
 	debug_probe = vec3(0.0f);
 	rrs.illumination_mode = cgv::render::IM_OFF;
 }
@@ -235,7 +236,7 @@ void multi_view_interactor::draw(cgv::render::context& ctx)
 			R.push_back(0.03f);
 		}
 	}
-	if (debug_display_index >= 0 && debug_display_index < displays.size()) {
+	if (show_probe && debug_display_index >= 0 && debug_display_index < displays.size()) {
 		for (int i = 0; i < 50; ++i) {
 			float lambda = 0.1f * i;
 			P.push_back((1.0f - lambda) * get_eye_position_world(debug_display_index, eye, reinterpret_cast<const mat34&>(get_trackable_state(debug_display_index)->pose))
@@ -315,14 +316,29 @@ void multi_view_interactor::after_finish(cgv::render::context& ctx)
 void multi_view_interactor::create_gui() 
 {
 	add_decorator("multi view interactor", "heading");
-	add_member_control(this, "show_screen", show_screen, "check");
-	add_member_control(this, "show_eyes", show_eyes, "check");
-	add_member_control(this, "pixel_scale", pixel_scale, "value_slider", "min=0.00001;max=0.01;log=true;ticks=true;step=0.0000001");
-	add_gui("screen_orientation", (vec4&)screen_orientation, "direction", "options='min=-1;max=1;ticks=true'");
-	add_gui("screen_location", (vec3&)screen_pose(0,3), "", "options='min=-2;max=2;ticks=true'");
-	add_gui("debug_probe", debug_probe, "", "options='min=-2;max=2;ticks=true'");
-	add_member_control(this, "debug_display_index", debug_display_index, "value_slider", "min=-1;max=-1;ticks=true");
-	add_member_control(this, "debug_eye", (cgv::type::DummyEnum&)debug_eye, "dropdown", "enums='left,right'");
+	if (begin_tree_node("screen definition", show_screen, false, "level=2")) {
+		align("\a");
+		add_member_control(this, "show_screen", show_screen, "check");
+		add_member_control(this, "pixel_scale", pixel_scale, "value_slider", "min=0.00001;max=0.01;log=true;ticks=true;step=0.0000001");
+		add_decorator("screen_orientation", "heading", "level=3");
+		add_gui("screen_orientation", (vec4&)screen_orientation, "direction", "options='min=-1;max=1;ticks=true'");
+		add_decorator("screen_center", "heading", "level=3");
+		add_gui("screen_center", (vec3&)screen_pose(0, 3), "", "options='min=-2;max=2;ticks=true'");
+		align("\b");
+		end_tree_node(show_screen);
+	}
+	if (begin_tree_node("debug projection", debug_display_index, false, "level=2")) {
+		align("\a");
+		add_member_control(this, "show_eyes", show_eyes, "check");
+		add_member_control(this, "debug_display_index", debug_display_index, "value_slider", "min=-1;max=-1;ticks=true");
+		find_control(debug_display_index)->set("max", int(displays.size()) - 1);
+		add_member_control(this, "debug_eye", (cgv::type::DummyEnum&)debug_eye, "dropdown", "enums='left,right'");
+		add_member_control(this, "show_probe", show_probe, "check");
+		add_decorator("debug_probe", "heading", "level=3");
+		add_gui("debug_probe", debug_probe, "", "options='min=-2;max=2;ticks=true'");
+		align("\b");
+		end_tree_node(debug_display_index);
+	}
 	if (begin_tree_node("rectangle render style", rrs, false, "level=2")) {
 		align("\a");
 		add_gui("rectangle render style", rrs);
