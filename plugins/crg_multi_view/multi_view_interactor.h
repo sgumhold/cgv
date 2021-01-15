@@ -27,6 +27,7 @@ struct head_tracking_info : public cgv::render::render_types
 class CGV_API multi_view_interactor : public vr_view_interactor 
 {
 protected:
+	void* last_kit_handle;
 	/// store a list of trackers used to track head positions of players
 	std::vector<head_tracking_info> head_trackers;
 	/// list of displays used for offline rendering
@@ -49,7 +50,7 @@ protected:
 	/// x- and y-pixel sizes in meters
 	vec2 pixel_size;
 	/// pixel extent of screen
-	unsigned width, height;
+	unsigned screen_width, screen_height;
 	/// read access to screen orientation
 	inline const mat3& get_screen_orientation() const { return reinterpret_cast<const mat3&>(screen_pose); }
 	/// write access to screen orientation
@@ -77,6 +78,8 @@ protected:
 	bool show_probe;
 	/// debug probe
 	vec3 debug_probe;
+	/// 
+	int add_controller_as_player;
 	///
 	cgv::render::surface_render_style rrs;
 	///
@@ -88,6 +91,10 @@ public:
 	multi_view_interactor(const char* name);
 	/// return the type name 
 	std::string get_type_name() const;
+	///
+	bool self_reflect(cgv::reflect::reflection_handler& srh);
+	/// attach player to controller/tracker ci of last attached vr kit
+	void add_player(int ci);
 	/// general callback
 	void on_set(void* member_ptr);
 	/// 

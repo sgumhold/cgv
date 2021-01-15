@@ -41,12 +41,14 @@ protected:
 	float yaw_parameter;
 	float fovy;
 	vec3 body_position;
+
 	vec3 hand_position[2];
-	vec3 tracker_positions[2];
 	quat hand_orientation[2];
-	quat tracker_orientations[2];
-	bool tracker_enabled[2];
-	TrackerAttachment tracker_attachments[2];
+
+	vec3 tracker_positions[4];
+	quat tracker_orientations[4];
+	bool tracker_enabled[4];
+	TrackerAttachment tracker_attachments[4];
 
 	/// helper functions to construct matrices
 	mat3x4 construct_pos_matrix(const quat& orientation, const vec3& position);
@@ -71,6 +73,8 @@ enum InteractionMode {
 	IM_RIGHT_HAND,
 	IM_TRACKER_1,
 	IM_TRACKER_2,
+	IM_TRACKER_3,
+	IM_TRACKER_4,
 	IM_BASE_1,
 	IM_BASE_2,
 	IM_BASE_3,

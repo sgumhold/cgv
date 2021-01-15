@@ -29,6 +29,8 @@ namespace stream_vis {
 		cgv::base::disable_registration_event_cleanup();
 		cgv::base::enable_permanent_registration();
 		cgv::base::enable_registration();
+		//std::string cgv_dir = getenv("CGV_DIR");
+		//std::string shader_config_cmd = "type(shader_config):shader_path='"+cgv_dir+"/libs/plot/glsl;D:/develop/projects/git/cgv/libs/cgv_gl/glsl
 		cgv::base::process_command("plugin:cg_ext");
 		cgv::base::process_command("plugin:cmi_io");
 		cgv::base::process_command("plugin:cg_icons");

@@ -378,9 +378,9 @@ bool vr_view_interactor::handle(cgv::gui::event& e)
 				}
 			}
 			else if (ke.get_modifiers() == cgv::gui::EM_CTRL + cgv::gui::EM_SHIFT) {
-				if (ke.get_key() >= '0' && ke.get_key() < '5') {
+				if (ke.get_key() >= '0' && ke.get_key() < '1'+vr::max_nr_controllers) {
 					int ci = ke.get_key() - '0';
-					if (ci == 4)
+					if (ci == vr::max_nr_controllers)
 						ci = 0;
 					if (current_vr_handle_index >= 0) {
 						vr::vr_kit_state& state = kit_states[current_vr_handle_index];
@@ -763,13 +763,13 @@ void vr_view_interactor::draw_vr_kits(cgv::render::context& ctx)
 				sphere_colors.push_back(rgb(0, 0, 1));
 			}
 		}
-		for (unsigned i = 0; i < 4; ++i) {
-			if (state_ptr->controller[i].status != vr::VRS_TRACKED)
+		for (unsigned ci = 0; ci < vr::max_nr_controllers; ++ci) {
+			if (state_ptr->controller[ci].status != vr::VRS_TRACKED)
 				continue;
 			bool show_trackable_spheres;
 			cgv::render::mesh_render_info* M_info = 0;
 			float mesh_scale = 1;
-			if (i < 2) {
+			if (kit_ptr->get_device_info().controller[ci].type == vr::VRC_CONTROLLER) {
 				show_trackable_spheres = (controller_vis_type & VVT_SPHERE) != 0;
 				if ((controller_vis_type & VVT_MESH) != 0) {
 					if (!MI_controller_ptr) {
@@ -810,10 +810,10 @@ void vr_view_interactor::draw_vr_kits(cgv::render::context& ctx)
 				}
 			}
 			if (show_trackable_spheres)
-				add_trackable_spheres(state_ptr->controller[i].pose, i, spheres, sphere_colors);
+				add_trackable_spheres(state_ptr->controller[ci].pose, i, spheres, sphere_colors);
 			if (M_info) {
 				ctx.push_modelview_matrix();
-				ctx.mul_modelview_matrix(cgv::math::pose4<float>(reinterpret_cast<const mat34&>(state_ptr->controller[i].pose[0])));
+				ctx.mul_modelview_matrix(cgv::math::pose4<float>(reinterpret_cast<const mat34&>(state_ptr->controller[ci].pose[0])));
 				ctx.mul_modelview_matrix(cgv::math::scale4<float>(vec3(mesh_scale)));
 				M_info->draw_all(ctx);
 				ctx.pop_modelview_matrix();

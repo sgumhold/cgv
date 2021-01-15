@@ -15,6 +15,13 @@
 */
 ///
 namespace vr {
+	/// maximum number of attachable controller and tracker devices
+	const unsigned max_nr_controllers = 8;
+	/// maximum number of inputs per controller
+	const unsigned max_nr_controller_inputs = 5;
+	/// maximum number of axes per controller
+	const unsigned max_nr_controller_axes = 8;
+
 	/// repeated definition from cgv/gui/key_event.h
 	enum KeyAction {
 		KA_RELEASE, 
@@ -102,10 +109,10 @@ namespace vr {
 	};
 	//! Extends the trackable state by information on the buttons, input axes and vibration strengths
 	/*! extends the trackable state by a vr_controller_state::time_stamp, vr_controller_state::button_flags, 
-	vr_controller_state::axes[8], and vr_controller_state::vibration[2]
+	vr_controller_state::axes[vr::max_nr_controller_axes], and vr_controller_state::vibration[2]
 	There are 7 buttons as listed in vr::VRButtonStateFlags, where vr::VRF_STICK_TOUCH
 	corresponds to touching of the stick|touchpad and vr::VRF_STICK to pressing it.The
-	controller provides up to 8 axes, where the first two correspond to the stick|touchpad
+	controller provides up to \c vr::max_nr_controller_axes axes, where the first two correspond to the stick|touchpad
 	position and the third (vr_controller_state::axes[2]) to the trigger.*/
 	struct CGV_API vr_controller_state : public vr_trackable_state
 	{
@@ -113,8 +120,8 @@ namespace vr {
 		unsigned time_stamp;
 		/// combination of flags in VRButtonStateFlags combined with the OR operation
 		unsigned button_flags;
-		/// up to 8 axis values in the range [-1,1] or [0,1] (VIVE: 0|1..touchpad x|y [-1,1], 2..trigger [0,1])
-		float axes[8];
+		/// up to \c vr::max_nr_controller_axes axis values in the range [-1,1] or [0,1] (VIVE: 0|1..touchpad x|y [-1,1], 2..trigger [0,1])
+		float axes[max_nr_controller_axes];
 		/// strength of the vibration motors
 		float vibration[2];
 		/// equal comparison operator
@@ -132,8 +139,8 @@ namespace vr {
 	{
 		/// status and pose of hmd
 		vr_trackable_state hmd;
-		/// status, pose, button, axes, and vibration information of up to 4 controllers (first two are for left and right hand)
-		vr_controller_state controller[4];
+		/// status, pose, button, axes, and vibration information of up to \c vr::max_nr_controllers controller and tracker devices (first two are for left and right hand controllers)
+		vr_controller_state controller[max_nr_controllers];
 		/// check for equality
 		bool operator == (const vr_kit_state& state) const;
 		/// standard constructor for initialization of members

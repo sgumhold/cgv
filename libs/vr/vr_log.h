@@ -42,11 +42,11 @@ namespace vr {
 		container<mat34> hmd_pose;
 		container<uint8_t> hmd_status;
 
-		container<vec8> controller_axes[4];
-		container<mat34> controller_pose[4];
-		container<vec2> controller_vibration[4];
-		container<unsigned> controller_button_flags[4];
-		container<uint8_t> controller_status[4];
+		container<vecn> controller_axes[max_nr_controllers];
+		container<mat34> controller_pose[max_nr_controllers];
+		container<vec2> controller_vibration[max_nr_controllers];
+		container<unsigned> controller_button_flags[max_nr_controllers];
+		container<uint8_t> controller_status[max_nr_controllers];
 	private:
 		bool setting_locked = false;
 		int log_storage_mode = SM_NONE;
