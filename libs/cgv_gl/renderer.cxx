@@ -66,6 +66,7 @@ namespace cgv {
 			index_buffer_ptr = 0;
 			index_type = cgv::type::info::TI_UNDEF;
 			index_count = 0;
+			prog_ptr = &prog;
 		}
 		void renderer::manage_singelton(context& ctx, const std::string& renderer_name, int& ref_count, int ref_count_change)
 		{
@@ -163,6 +164,11 @@ namespace cgv {
 			default_render_style = create_render_style();
 			return default_render_style;
 		}
+		/// set external shader program for successive draw call only
+		void renderer::set_prog(shader_program& one_shot_prog)
+		{
+			prog_ptr = &one_shot_prog;
+		}
 
 		bool renderer::init(context& ctx)
 		{
@@ -203,7 +209,9 @@ namespace cgv {
 				has_positions = false;
 				index_count = 0;
 			}
-			return ref_prog().disable(ctx) && res;
+			res = ref_prog().disable(ctx) && res;
+			prog_ptr = &prog;
+			return res;
 		}
 		void renderer::draw_impl(context& ctx, PrimitiveType type, size_t start, size_t count, bool use_strips, bool use_adjacency, uint32_t strip_restart_index)
 		{

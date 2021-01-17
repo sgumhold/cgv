@@ -174,6 +174,8 @@ namespace cgv { // @<
 		private:
 			/// shader program
 			shader_program prog;
+			/// shader program
+			shader_program* prog_ptr;
 			/// otherwise keep track of enabled arrays
 			std::set<int> enabled_attribute_arrays;
 			/// default render style
@@ -197,7 +199,9 @@ namespace cgv { // @<
 			bool attributes_persist() const { return aam_ptr != 0; }
 		public:
 			/// derived renderer classes have access to shader program
-			shader_program& ref_prog() { return prog; }
+			shader_program& ref_prog() { return *prog_ptr; }
+			/// set external shader program up to next call to the disable() function, which is also called by the render() function
+			void set_prog(shader_program& one_shot_prog);
 		protected:
 			/// access to style
 			template <typename T>
