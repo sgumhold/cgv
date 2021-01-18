@@ -29,14 +29,24 @@ namespace cgv {
 				rgba8 colors;
 			};
 
+			struct drawParameters {
+				uint32_t  count = 0;
+				uint32_t  primCount = 0;
+				uint32_t  first = 0;
+				uint32_t  baseInstance = 0;
+			};
+
 			float CLOD = 1.f;
 			float spacing = 1.f; //root spacing
 			float scale = 1.f;
+			
 			shader_program reduce_prog;
 			
 			std::vector<vec3> positions;
+			std::vector<Vertex> input_buffer_data;
 			std::vector<rgba8> colors; //alpha channel is later used for storing the clod level
-			GLuint input_buffer, render_buffer;
+			GLuint input_buffer, render_buffer, draw_parameter_buffer;
+			const int input_pos = 0, render_pos = 1, drawp_pos = 3;
 		protected:
 
 			void draw_and_compute_impl(context& ctx, PrimitiveType type, size_t start, size_t count, bool use_strips, bool use_adjacency, uint32_t strip_restart_index);
@@ -53,15 +63,18 @@ namespace cgv {
 				bool use_strips = false, bool use_adjacency = false, uint32_t strip_restart_index = -1);
 			
 			void set_position_array(context& ctx, std::vector<vec3> positions) {
-				std::vector<Vertex> input_buffer_data(positions.size());
+				this->positions = positions;
+				input_buffer_data.resize(positions.size());
 				for (int i = 0; i < positions.size(); ++i) {
 					input_buffer_data[i].position = positions[i];
 				}
-				glCreateBuffers(1, &input_buffer); //array of {float x;float y;float z;uint colors;};
-				glCreateBuffers(1, &render_buffer);
-				glNamedBufferData(input_buffer, positions.size() * sizeof(vec4), positions.data(), GL_STATIC_READ);
-				glNamedBufferData(render_buffer, positions.size() * sizeof(vec4), nullptr, GL_DYNAMIC_DRAW);
-				int pos_att = reduce_prog.get_attribute_location(ctx, "ssInputBuffer");
+			}
+			template<typename T>
+			void sset_color_array(const context& ctx, const std::vector<T>& colors) {
+				input_buffer_data.resize(colors.size());
+				for (int i = 0; i < positions.size(); ++i) {
+					input_buffer_data[i].colors = rgba(colors[i]);
+				}
 			}
 
 		private:
