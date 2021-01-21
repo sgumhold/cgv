@@ -22,7 +22,7 @@ namespace cgv {
 		};
 
 
-		class CGV_API clod_point_renderer : public cgv::render::renderer{
+		class CGV_API clod_point_renderer : public cgv::render::render_types {
 
 			struct Vertex {
 				vec3 position;
@@ -41,12 +41,19 @@ namespace cgv {
 			float scale = 1.f;
 			
 			shader_program reduce_prog;
-			
+			shader_program draw_prog;
+
 			std::vector<vec3> positions;
 			std::vector<Vertex> input_buffer_data;
 			std::vector<rgba8> colors; //alpha channel is later used for storing the clod level
-			GLuint input_buffer, render_buffer, draw_parameter_buffer;
+			GLuint vertex_array = 0;
+			GLuint input_buffer = 0, render_buffer = 0, draw_parameter_buffer = 0;
 			const int input_pos = 0, render_pos = 1, drawp_pos = 3;
+			bool buffers_outofdate = true;
+
+
+			//test
+			point_render_style prs;
 		protected:
 
 			void draw_and_compute_impl(context& ctx, PrimitiveType type, size_t start, size_t count, bool use_strips, bool use_adjacency, uint32_t strip_restart_index);
@@ -62,24 +69,28 @@ namespace cgv {
 			void draw(context& ctx, size_t start, size_t count,
 				bool use_strips = false, bool use_adjacency = false, uint32_t strip_restart_index = -1);
 			
-			void set_position_array(context& ctx, std::vector<vec3> positions) {
+			void set_positions(context& ctx, std::vector<vec3> positions) {
 				this->positions = positions;
 				input_buffer_data.resize(positions.size());
 				for (int i = 0; i < positions.size(); ++i) {
 					input_buffer_data[i].position = positions[i];
 				}
+				buffers_outofdate = true;
 			}
 			template<typename T>
-			void sset_color_array(const context& ctx, const std::vector<T>& colors) {
+			void set_colors(const context& ctx, const std::vector<T>& colors) {
 				input_buffer_data.resize(colors.size());
 				for (int i = 0; i < positions.size(); ++i) {
 					input_buffer_data[i].colors = rgba(colors[i]);
+					input_buffer_data[i].colors.alpha() = 0;
 				}
+				buffers_outofdate = true;
 			}
 
 		private:
 			void add_shader(context& ctx, shader_program& prog, const std::string& sf, const cgv::render::ShaderType st);
-
+			void fill_buffers(context& ctx);
+			void clear_buffers(context& ctx);
 		};
 	}
 }
