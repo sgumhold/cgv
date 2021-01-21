@@ -1,13 +1,10 @@
 #version 150
 
-uniform vec4 halo_color;
-uniform float halo_color_strength = 0.5;
-
 in vec3 vColor;
-in float percentual_blend_width;
-in float percentual_splat_size;
-in float percentual_core_size;
-in float percentual_point_size;
+in float vPointSize;
+in float vRadius;
+in float vLinearDepth;
+
 
 //***** begin interface of fragment.glfs ***********************************
 uniform float gamma = 2.2;
@@ -17,4 +14,5 @@ void finish_fragment(vec4 color);
 void main()
 {
 	finish_fragment(vec4(vColor.xyz,1.0));
+	
 }

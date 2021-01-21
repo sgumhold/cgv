@@ -19,8 +19,9 @@ mat3 get_normal_matrix();
 mat3 get_inverse_normal_matrix();
 //***** end interface of view.glsl ***********************************/
 
-layout(location = 0) in vec4 position; //position in world coordinates
-layout(location = 1) in vec4 color; //level in alpha channel
+layout(location = 0) in vec3 position; //position in world coordinates
+//layout(location = 1) in vec4 color; //level in alpha channel
+layout(location = 1) in uint color_rgba8; //level in alpha channel
 
 uniform float CLOD;
 uniform float scale;
@@ -42,9 +43,19 @@ float rand(float n){
 }
 
 
+vec4 rgba_from_int(const uint col){
+	vec4 re;
+	re.a = float((col&0xFF000000) >> 24 ) / 255.0;
+	re.b = float((col&0x00FF0000) >> 16 ) / 255.0;
+	re.g = float((col&0x0000FF00) >> 8 ) / 255.0;
+	re.r = float(col&0x000000FF) / 255.0;
+	return re;
+}
+
 void main() {
 	mat4 centralTransform = transform;
 	vec4 pos = transform * vec4(position.xyz, 1.0);
+	vec4 color = rgba_from_int(color_rgba8);
 
 	gl_Position = pos;
 
@@ -55,10 +66,8 @@ void main() {
 
 	vLinearDepth = gl_Position.w;
 
-	//vColor = color.rgb * ssArgs.colorMultiplier;
 	vColor = color.rgb;
 
-	//vec3 worldPos = (ssArgs.world * vec4(position.xyz, 1)).xyz;
 	vec3 worldPos = position.xyz;
 
 	float d = distance(worldPos, pivot.xyz);
@@ -123,7 +132,7 @@ void main() {
 	}
 
 	vPointSize = gl_PointSize;
-
-	gl_PointSize *= 0.8;
+	gl_PointSize = 10.0;
+	//gl_PointSize *= 0.8;
 }
 
