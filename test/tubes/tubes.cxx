@@ -1,7 +1,7 @@
 
 // C++ STL
-#include <random>
-#include <fstream>
+#include <vector>
+#include <set>
 
 // CGV framework core
 #include <cgv/base/node.h>
@@ -18,7 +18,7 @@
 #include <cgv_gl/spline_tube_renderer.h>
 
 // local includes
-#include "bezdat.h"
+#include "traj_loader.h"
 
 
 /// plugin for testing the various tube renderers
@@ -40,67 +40,92 @@ public:
 
 protected:
 
-	/// filename of the dataset
-	std::string dataset_fn;
+	/// path of the dataset to load - can be either a directory or a single file
+	std::string datapath;
 
-	// renderer to use
-	Renderer renderer = SPLINE_TUBE;
+	/// rendering-related configurable fields
+	struct
+	{
+		// renderer to use
+		Renderer renderer = SPLINE_TUBE;
 
-	/// proxy field for controlling fltk_gl_view::instant_redraw
-	bool instant_redraw_proxy = false;
+		/// render style for the rounded cone renderer
+		cgv::render::surface_render_style render_style;
+	} render_cfg;	
 
-	/// style for the rounded cone renderer
-	cgv::render::rounded_cone_render_style rounded_cone_rstyle;
+	/// misc configurable fields
+	struct
+	{
+		/// proxy for controlling fltk_gl_view::instant_redraw
+		bool instant_redraw_proxy = false;
+	} misc_cfg;
 
-	/// style for the spline tube renderer
-	cgv::render::spline_tube_render_style spline_tube_rstyle;
+	/// rendering state fields
+	struct
+	{
+		/// style for the rounded cone renderer
+		cgv::render::rounded_cone_render_style rounded_cone_rstyle;
 
-	/// current drag-n-drop mouse position
-	ivec2 dnd_pos;
+		/// style for the spline tube renderer
+		cgv::render::spline_tube_render_style spline_tube_rstyle;
+	} render;
 
-	/// current drag-n-drop string
-	std::string dnd_text;
+	/// drag-n-drop state fields
+	struct
+	{
+		/// current mouse position
+		ivec2 pos;
 
-	/// current drag-n-drop file
-	std::string dnd_file;
+		/// current drag-n-drop string
+		std::string text;
 
-	/// trajectory data loader
-	bezdat_handler<float> loader;
+		/// list of filenames extracted from @ref #text
+		std::vector<std::string> filenames;
+	} dnd;
+
+	/// dataset state fields
+	struct
+	{
+		/// set of filepaths for loading
+		std::set<std::string> files;
+	} dataset;
+
+	/// trajectory data manager
+	traj_manager<float> traj_mgr;
 
 
 public:
 	tubes() : node("tubes_instance")
 	{
 		// adjusted rounded cone renderer defaults
-		rounded_cone_rstyle.enable_ambient_occlusion = true;
-
-		// adjusted spline tube renderer defaults
-		/* none_so_far */;
+		render.rounded_cone_rstyle.enable_ambient_occlusion = true;
 	}
 
 	void handle_args (std::vector<std::string> &args)
 	{
-		// look for our custom argument
-		signed idx=-1;
+		// look out for potential dataset files
+		std::vector<unsigned> arg_ids;
 		for (unsigned i=0; i<(unsigned)args.size(); i++)
 		{
-			auto &arg = args[i];
-			if (arg[0] != '-' && arg[0] != '/')
+			const std::string &arg = args[i], first10 = arg.substr(0, 11);
+			if (cgv::utils::to_lower(first10).compare("tubes_file:") == 0)
 			{
-				// this appears to not be a command line switch, grab it as the filename of a dataset to load
-				dataset_fn = arg;
-				idx = (signed)i;
-				break;
+				std::string file = arg.substr(11, arg.length());
+				// this appears to be a dataset file we're supposed to load
+				dataset.files.emplace(file);
+				arg_ids.emplace_back(i);
 			}
+			// ToDo: add support for a "tubes_dir" kind of argument
 		}
 
-		// process our argument (if any)
-		if (idx > -1)
+		// process our arguments (if any)
+		if (!arg_ids.empty())
 		{
-			// remove the argument we grabbed
-			args.erase(args.begin() + ((unsigned)idx));
+			// remove the arguments we grabbed
+			for (unsigned i=(unsigned)arg_ids.size()-1; i!=0; i--)
+				args.erase(args.begin() + arg_ids[i]);
 			// announce change in dataset_fn
-			on_set(&dataset_fn);
+			on_set(&dataset);
 		}
 	}
 
@@ -112,11 +137,10 @@ public:
 	bool self_reflect (cgv::reflect::reflection_handler &rh)
 	{
 		return
-			rh.reflect_member("dataset_fn", dataset_fn) &&
-			rh.reflect_member("renderer", renderer) &&
-			rh.reflect_member("instant_redraw_proxy", instant_redraw_proxy) &&
-			rh.reflect_member("rounded_cone_rstyle", rounded_cone_rstyle) &&
-			rh.reflect_member("spline_tube_rstyle", spline_tube_rstyle);
+			rh.reflect_member("datapath", datapath) &&
+			rh.reflect_member("renderer", render_cfg.renderer) &&
+			rh.reflect_member("render_style", render_cfg.render_style) &&
+			rh.reflect_member("instant_redraw_proxy", misc_cfg.instant_redraw_proxy);
 	}
 
 	bool init (cgv::render::context &ctx)
@@ -151,39 +175,43 @@ public:
 			{
 				case cgv::gui::MA_ENTER:
 				{
-					// store dnd text and file (i.e. the first item in the text) on enter event, since
-					// it's not available in drag events
-					dnd_text = me.get_dnd_text();
+					// store (and process) dnd text on enter event, since it's not available in drag events
+					dnd.text = me.get_dnd_text();
 					std::vector<cgv::utils::line> lines;
-					cgv::utils::split_to_lines(dnd_text, lines, true);
-					dnd_file = cgv::utils::to_string(lines.front());
+					cgv::utils::split_to_lines(dnd.text, lines, true);
+					dnd.filenames.reserve(lines.size());
+					for (const auto &line : lines)
+						dnd.filenames.emplace_back(cgv::utils::to_string(line));
 					return true;
 				}
 
 				case cgv::gui::MA_DRAG:
 				{
 					// during dragging keep track of drop position and redraw
-					dnd_pos = ivec2(me.get_x(), me.get_y());
+					dnd.pos = ivec2(me.get_x(), me.get_y());
 					post_redraw();
 					return true;
 				}
 
 				case cgv::gui::MA_LEAVE:
 				{
-					// when mouse leaves window, cancel the dnd operation
-					dnd_text.clear();
-					dnd_file.clear();
+					// when mouse leaves window, cancel the dnd operation (and redraw to clear the dnd indicator
+					// onscreen text)
+					dnd.text.clear();
+					dnd.filenames.clear();
 					post_redraw();
 					return true;
 				}
 
 				case cgv::gui::MA_RELEASE:
 				{
-					// release corresponds to drop
-					dataset_fn = dnd_file;
-					dnd_text.clear();
-					dnd_file.clear();
-					on_set(&dataset_fn);
+					// process the files that where dropped onto the window
+					dataset.files.clear();
+					for (const std::string &filename : dnd.filenames)
+						dataset.files.emplace(filename);
+					dnd.filenames.clear();
+					dnd.text.clear();
+					on_set(&dataset);
 					return true;
 				}
 
@@ -197,93 +225,148 @@ public:
 	void draw (cgv::render::context &ctx)
 	{
 		// display drag-n-drop information, if a dnd operation is in progress
-		if (!dnd_text.empty())
+		if (!dnd.text.empty())
 		{
 			static const rgb dnd_col(1, 0.5f, 0.5f);
-			std::vector<cgv::utils::line> lines;
-			cgv::utils::split_to_lines(dnd_text, lines);
+			// compile the text we're going to draw and gather its approximate dimensions at the same time
+			float w = 0, s = ctx.get_current_font_size();
+			std::stringstream dnd_drawtext;
+			dnd_drawtext << "Load dataset:" << std::endl;
+			{
+				std::string tmp;
+				for (const std::string &filename : dnd.filenames)
+				{
+					tmp = "   "; tmp += filename;
+					w = std::max(w, ctx.get_current_font_face()->measure_text_width(tmp, s));
+					dnd_drawtext << tmp << std::endl;
+				}
+			}
+			float h = dnd.filenames.size() * s + s;
+			// gather our available screen estate
+			GLint vp[4]; glGetIntegerv(GL_VIEWPORT, vp);
+			// calculate actual position at which to place the text
+			ivec2 pos = dnd.pos,
+			      overflow(vp[0]+vp[2] - dnd.pos.x()-int(std::ceil(w)),
+			               vp[1]+vp[3] - dnd.pos.y()-int(std::ceil(h)));
+			// - first, try to prevent truncation at the right and bottom borders
+			if (overflow.x() < 0)
+				pos.x() = std::max(1, pos.x()+overflow.x());
+			if (overflow.y() < 0)
+				pos.y() = std::max(1, pos.y()+overflow.y());
+			// - then, absolutely prevent truncation at the left and top borders
+			pos.x() = std::max(vp[0]+2, pos.x());
+			pos.y() = std::max(vp[1]+signed(s), pos.y());
+			// draw the text
 			ctx.push_pixel_coords();
 				ctx.set_color(dnd_col);
-				ctx.set_cursor(vecn(float(dnd_pos.x()), float(dnd_pos.y())), "", cgv::render::TA_TOP_LEFT);
-				ctx.output_stream() << "Load dataset \""<<cgv::utils::to_string(lines.front())<<"\"" << std::endl;
+				ctx.set_cursor(vecn(float(pos.x()), float(pos.y())), "", cgv::render::TA_TOP_LEFT);
+				ctx.output_stream() << dnd_drawtext.str();
+				ctx.output_stream().flush();
 			ctx.pop_pixel_coords();
 		}
 
-		// prepare common database
-		/*std::vector<vec3> P;
-		std::vector<real> R;
-		std::vector<rgb> C;
-		P.emplace_back(vec3{0, 0, 0}); R.emplace_back(real(0.125)); C.emplace_back(rgb(1, 0, 0));
-		P.emplace_back(vec3{2, 0, 0}); R.emplace_back(real(0.25)); C.emplace_back(rgb(0, 1, 0));
-		P.emplace_back(vec3{2, 0, 2}); R.emplace_back(real(0.375)); C.emplace_back(rgb(0, 0, 1));
-		std::vector<unsigned> Idx = {0, 1, 1, 2};*/
-		bool dataset_loaded = loader.has_data();
-		const std::vector<vec3> &P = (dataset_loaded ? loader.positions() : std::vector<vec3>());
-		const std::vector<vec4> &dP = (dataset_loaded ? loader.tangents() : std::vector<vec4>());
-		const std::vector<real> &R = (dataset_loaded ? loader.radii() : std::vector<real>());
-		const std::vector<rgb> &C = (dataset_loaded ? loader.colors() : std::vector<rgb>());
-		const std::vector<unsigned> &Idx = (dataset_loaded ? loader.indices() : std::vector<unsigned>());
-
 		// draw dataset using selected renderer
-		if (dataset_loaded) switch (renderer)
+		if (traj_mgr.has_data())
 		{
-			case ROUNDED_CONE:
+			auto &vao = traj_mgr.get_attrib_array_binding();
+			switch (render_cfg.renderer)
 			{
-				auto &rcr = cgv::render::ref_rounded_cone_renderer(ctx);
-				rcr.set_render_style(rounded_cone_rstyle);
-				rcr.set_position_array(ctx, P);
-				rcr.set_radius_array(ctx, R);
-				rcr.set_color_array(ctx, C);
-				rcr.set_indices(ctx, Idx);
-				rcr.render(ctx, 0, Idx.size());
-				break;
-			}
+				case ROUNDED_CONE:
+				{
+					auto &rcr = cgv::render::ref_rounded_cone_renderer(ctx);
+					rcr.set_render_style(render.rounded_cone_rstyle);
+					rcr.set_position_array(ctx, vao.positions);
+					rcr.set_radius_array(ctx, vao.radii);
+					rcr.set_color_array(ctx, vao.colors);
+					rcr.set_indices(ctx, vao.indices);
+					rcr.render(ctx, 0, vao.indices.size());
+					break;
+				}
 
-			case SPLINE_TUBE:
-			{
-				auto &str = cgv::render::ref_spline_tube_renderer(ctx);
-				str.set_render_style(spline_tube_rstyle);
-				str.set_position_array(ctx, P);
-				str.set_tangent_array(ctx, dP);
-				str.set_radius_array(ctx, R);
-				str.set_color_array(ctx, C);
-				str.set_indices(ctx, Idx);
-				str.render(ctx, 0, Idx.size());
+				case SPLINE_TUBE:
+				{
+					auto &str = cgv::render::ref_spline_tube_renderer(ctx);
+					str.set_render_style(render.spline_tube_rstyle);
+					str.set_position_array(ctx, vao.positions);
+					str.set_tangent_array(ctx, vao.tangents);
+					str.set_radius_array(ctx, vao.radii);
+					str.set_color_array(ctx, vao.colors);
+					str.set_indices(ctx, vao.indices);
+					str.render(ctx, 0, vao.indices.size());
+				}
 			}
 		}
 	}
 
 	void create_gui (void)
 	{
+		// dataset settings
 		add_decorator("Dataset", "heading", "level=1");
-		add_member_control(this, "dataset_fn", dataset_fn);
+		add_member_control(this, "data file/path", datapath);
+
+		// rendering settings
 		add_decorator("Rendering", "heading", "level=1");
-		add_member_control(this, "renderer", renderer, "dropdown", "enums='ROUNDED_CONE=0,SPLINE_TUBE=1';tooltip='The built-in renderer to use for drawing the tubes.'");
-		add_decorator("Misc. settings (persistent by default)", "heading", "level=1");
-		add_member_control(this, "instant_redraw_proxy", instant_redraw_proxy, "toggle", "tooltip='Controls the instant redraw state of the FLTK GL window.'");
+		add_member_control(
+			this, "renderer", render_cfg.renderer, "dropdown",
+			"enums='ROUNDED_CONE=0,SPLINE_TUBE=1';tooltip='The built-in renderer to use for drawing the tubes.'"
+		);
+		if (begin_tree_node("tube surface material", render_cfg, false))
+		{
+			align("\a");
+			add_gui("render_style", render_cfg.render_style);
+			align("\b");
+			end_tree_node(render_cfg);
+		}
+
+		// Misc settings contractable section
+		add_decorator("Miscellaneous", "heading", "level=1");
+		if (begin_tree_node("tools (persistent by default)", misc_cfg, false))
+		{
+			align("\a");
+			add_member_control(
+				this, "instant_redraw_proxy", misc_cfg.instant_redraw_proxy, "toggle",
+				"tooltip='Controls the instant redraw state of the FLTK GL window.'"
+			);
+			align("\b");
+			end_tree_node(misc_cfg);
+		}
 	}
 
 	void on_set (void *member_ptr)
 	{
-		// Dataset settings
-		// - filename
-		if (member_ptr == &dataset_fn && !dataset_fn.empty())
+		// dataset settings
+		// - configurable datapath
+		if (member_ptr == &datapath && !datapath.empty())
 		{
-			std::ifstream file(dataset_fn);
-			if (!file.is_open())
-				return;
-			loader.read(file);
+			if (traj_mgr.load(datapath))
+			{
+				dataset.files.clear();
+				dataset.files.emplace(datapath);
+			}
+		}
+		// - non-configurable dataset logic
+		else if (member_ptr == &dataset)
+		{
+			datapath.clear();
+			traj_mgr.clear();
+			for (auto& file : dataset.files)
+				traj_mgr.load(file);
+			update_member(&datapath);
 		}
 
-		// Misc settings
+		// misc settings
 		// - instant redraw
-		if (member_ptr == &instant_redraw_proxy)
+		else if (member_ptr == &misc_cfg.instant_redraw_proxy)
 		{
 			// ToDo: handle the (virtually impossible) case that some other plugin than cg_fltk provides the gl_context
 			dynamic_cast<fltk_gl_view*>(get_context())->set_void("instant_redraw", "bool", member_ptr);
 		}
 
 		// default implementation for all members
+		// - dirty hack to catch GUI changes to render_cfg.render_style
+		*dynamic_cast<cgv::render::surface_render_style*>(&render.rounded_cone_rstyle) = render_cfg.render_style;
+		*dynamic_cast<cgv::render::surface_render_style*>(&render.spline_tube_rstyle) = render_cfg.render_style;
+		// - remaining logic
 		update_member(member_ptr);
 		post_redraw();
 	}

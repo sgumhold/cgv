@@ -18,7 +18,7 @@
 #include "regulargrid.h"
 
 // implemented header
-#include "bezdat.h"
+#include "bezdat_handler.h"
 
 
 /////
@@ -42,12 +42,35 @@
 /// multiple of the RGB8 color space unit for use as a tolerance to decide whether two node color derivatives are similar or not
 #define BEZDAT_SIM_TOLERANCE_DCOL real(0.0078125)
 
+/// identifyier to use for tangent data
+#define BEZDAT_TANGENT_ATTRIB_NAME "tangent"
+
+/// identifyier to use for radius data
+#define BEZDAT_RADIUS_ATTRIB_NAME "radius"
+
+/// identifyier to use for color data
+#define BEZDAT_COLOR_ATTRIB_NAME "color"
+
+/// identifyier to use for color data
+#define BEZDAT_DCOLOR_ATTRIB_NAME "dcolor"
+
 
 ////
-// Local types
+// Local types and variables
 
 // anonymous namespace begin
 namespace {
+
+/// generate a static, always applicable default attribute mapping suggestion for .bezdat files
+const struct attrib_suggestion_struct
+{
+	const visual_attribute_mapping map;
+
+	attrib_suggestion_struct()
+		: map{{VisualAttrib::TANGENT, BEZDAT_TANGENT_ATTRIB_NAME}, {VisualAttrib::RADIUS, BEZDAT_RADIUS_ATTRIB_NAME},
+		      {VisualAttrib::COLOR, BEZDAT_COLOR_ATTRIB_NAME}}
+	{}
+} attrib_suggestion;
 
 /// one point in a bezdat dataset
 template <class flt_type>
@@ -140,7 +163,6 @@ union hermite_segment
 }
 
 
-
 ////
 // Class implementation
 
@@ -155,21 +177,7 @@ struct bezdat_handler<flt_type>::Impl
 
 	// fields
 	unsigned curve_count = 0;
-	std::vector<Vec3> P;
-	std::vector<Vec4> dP;
-	std::vector<real> R;
-	std::vector<rgb>  C, dC;
-	std::vector<unsigned> I;
-
-	// helper methods
-	void clear (void)
-	{
-		curve_count = 0;
-		P.clear(); dP.clear();
-		R.clear();
-		C.clear(); dC.clear();
-		I.clear();
-	}
+	real avg_dist = 0;
 };
 
 template <class flt_type>
@@ -186,26 +194,48 @@ bezdat_handler<flt_type>::~bezdat_handler()
 }
 
 template <class flt_type>
-bool bezdat_handler<flt_type>::read (std::istream &contents)
+void bezdat_handler<flt_type>::cleanup (void)
 {
-	// check stream for compatibility
-	// ToDo: move to dedicated can-I-read-this query function
+	// shortcut for saving one indirection
+	auto& impl = *pimpl;
+
+	// reset our private fields
+	impl.curve_count = 0;
+	impl.avg_dist = 0;
+}
+
+template <class flt_type>
+bool bezdat_handler<flt_type>::can_handle (std::istream &contents) const
+{
 	std::string str;
 	auto g = contents.tellg();
+
+	// check for tell-tale stream contents
+	// - .bezdat header
 	std::getline(contents, str);
 	if (cgv::utils::to_lower(str).compare("bezdata 1.0") != 0)
 	{
-		std::cout << "bezdat_handler: first line in stream must be \"BezDatA 1.0\", but found \"" << str << "\" instead!" << std::endl;
+		//std::cout << "bezdat_handler: first line in stream must be \"BezDatA 1.0\", but found \"" << str << "\" instead!" << std::endl;
 		contents.seekg(g);
 		return false;
 	}
+	// - apparent valid file structure
+	contents >> str;
+	contents.seekg(g);
+	str = std::move(cgv::utils::to_upper(str));
+	return str.empty() || str.compare("PT")==0 || str.compare("BC")==0;
+}
 
+template <class flt_type>
+bool bezdat_handler<flt_type>::read (std::istream &contents, unsigned idx_offset)
+{
 	// bezdat database
 	std::vector<bezdat_point<real> > points;
 	std::vector<bezdat_segment> bsegs;
 	real avgNodeDist=0, avgRadiusDiff=0, avgColorDiff=0;
 
 	// parse the stream until EOF
+	std::string str;
 	contents >> str;
 	while (!contents.eof())
 	{
@@ -239,7 +269,6 @@ bool bezdat_handler<flt_type>::read (std::istream &contents)
 		}
 		contents >> str;
 	}
-
 
 	// build database of Hermite node data
 	std::vector<bezdat_node<real> > nodes;
@@ -339,26 +368,35 @@ bool bezdat_handler<flt_type>::read (std::istream &contents)
 	auto &impl = *pimpl;
 
 	// commit attributes to common curve representation
-	impl.clear();
 	const size_t num = nodes.size();
-	impl.P.reserve(num); impl.dP.reserve(num);
-	impl.R.reserve(num);
-	impl.C.reserve(num); impl.dC.reserve(num);
-	impl.I.reserve(segments.size()*2);
+	auto &A = attributes();
+	auto &P = positions(); P.reserve(num);
+	auto &I = indices(); I.reserve(segments.size()*2);
+	std::vector<Vec4> dP; dP.reserve(num);
+	std::vector<real> R; R.reserve(num);
+	std::vector<rgb> C, dC; C.reserve(num); dC.reserve(num);
 	for (auto &node : nodes)
 	{
-		impl.P.emplace_back(node.pos);
-		impl.dP.emplace_back(vec4_from_vec3s(node.dpos, node.drad));
-		impl.R.emplace_back(node.rad);
-		impl.C.emplace_back(vec3_to_rgb(node.col));
-		impl.dC.emplace_back(vec3_to_rgb(node.dcol));
+		P.emplace_back(node.pos);
+		dP.emplace_back(vec4_from_vec3s(node.dpos, node.drad));
+		R.emplace_back(node.rad);
+		C.emplace_back(vec3_to_rgb(node.col));
+		dC.emplace_back(vec3_to_rgb(node.dcol));
 	}
 	for (auto& seg : segments)
 	{
-		impl.I.push_back(seg.n0);
-		impl.I.push_back(seg.n1);
+		I.push_back(seg.n0 + idx_offset);
+		I.push_back(seg.n1 + idx_offset);
+		impl.avg_dist += (P[seg.n1] - P[seg.n0]).length();
 	}
+	impl.avg_dist /= (real)segments.size();
 	impl.curve_count = curve_count;
+
+	// commit to actual attribute storage
+	A.emplace(BEZDAT_TANGENT_ATTRIB_NAME, std::move(dP));
+	A.emplace(BEZDAT_RADIUS_ATTRIB_NAME, std::move(R));
+	A.emplace(BEZDAT_COLOR_ATTRIB_NAME, std::move(C));
+	A.emplace(BEZDAT_DCOLOR_ATTRIB_NAME, std::move(dC));
 
 	// print some stats
 	std::cout << "bezdat_handler: loading completed! Stats:" << std::endl
@@ -367,9 +405,8 @@ bool bezdat_handler<flt_type>::read (std::istream &contents)
 	          << " --- converted to: ---" << std::endl
 	          << "  " << nodes.size()<<" Hermite nodes" << std::endl
 	          << "  " << segments.size()<<" Hermite segments" << std::endl
-	          << "  " << impl.curve_count<<" distinct "<<(impl.curve_count>1?"trajectories":"trajectory")
+	          << "  " << impl.curve_count<<" distinct smooth "<<(impl.curve_count>1?"intervals":"interval")
 	          << std::endl << std::endl;
-
 
 	// done
 	return true;
@@ -382,33 +419,15 @@ bool bezdat_handler<flt_type>::has_data (void) const
 }
 
 template <class flt_type>
-const std::vector<typename bezdat_handler<flt_type>::Vec3 >& bezdat_handler<flt_type>::positions (void) const
+flt_type bezdat_handler<flt_type>::avg_segment_length (void) const
 {
-	return pimpl->P;
+	return pimpl->avg_dist;
 }
 
 template <class flt_type>
-const std::vector<typename bezdat_handler<flt_type>::Vec4 >& bezdat_handler<flt_type>::tangents (void) const
+const visual_attribute_mapping& bezdat_handler<flt_type>::suggest_mapping (void) const
 {
-	return pimpl->dP;
-}
-
-template <class flt_type>
-const std::vector<flt_type>& bezdat_handler<flt_type>::radii (void) const
-{
-	return pimpl->R;
-}
-
-template <class flt_type>
-const std::vector<typename bezdat_handler<flt_type>::rgb >& bezdat_handler<flt_type>::colors (void) const
-{
-	return pimpl->C;
-}
-
-template <class flt_type>
-const std::vector<unsigned>& bezdat_handler<flt_type>::indices (void) const
-{
-	return pimpl->I;
+	return attrib_suggestion.map;
 }
 
 
