@@ -22,7 +22,7 @@ mat3 get_inverse_normal_matrix();
 //***** end interface of view.glsl ***********************************
 
 ////***** begin interface of surface.glsl ***********************************
-//vec4 compute_reflected_appearance(vec3 position_eye, vec3 normal_eye, vec4 color, int side);
+vec4 compute_reflected_appearance(vec3 position_eye, vec3 normal_eye, vec4 color, int side);
 ////***** end interface of surface.glsl ***********************************
 
 //***** begin interface of fragment.glfs ***********************************
@@ -510,6 +510,6 @@ void main()
 	vec4 depth = get_projection_matrix() * v_eye;
 	gl_FragDepth = 0.5*(depth.z / depth.w) + 0.5;
 
-	//frag_color = compute_reflected_appearance(hit_pos_eye, hit.normal, frag_color, 0);
+	frag_color = compute_reflected_appearance(hit_pos_eye, hit.normal, frag_color, 0);
 	finish_fragment(frag_color);
 }
