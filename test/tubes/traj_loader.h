@@ -259,8 +259,8 @@ public:
 	/// color type
 	typedef typename traj_format_handler<real>::rgb rgb;
 
-	/// TEMP - TO BE REPLACED
-	struct render_attrib_binding
+	/// encapsulates data for all visual attributes for use by renderers
+	struct render_data
 	{
 		typedef flt_type real;
 		typedef typename traj_manager<real>::Vec2 Vec2;
@@ -293,8 +293,11 @@ public:
 	/// the destructor
 	~traj_manager();
 
+	/// test if the given file or directory can be loaded
+	bool can_load (const std::string &path) const;
+
 	/// load trajectories from a file or directory and add them to the internal database, reporting if anything was loaded
-	bool load (std::string path);
+	bool load (const std::string &path);
 
 	/// reset internal trajectory database (e.g. for loading a new, unrelated set of trajectories into this existing instance)
 	void clear (void);
@@ -302,8 +305,8 @@ public:
 	/// check if the loader currently stores valid loaded data
 	bool has_data (void) const;
 
-	/// returns an attribute array binding for rendering the loaded datasets
-	const render_attrib_binding& get_attrib_array_binding (void);
+	/// returns the visual attributes of all dataset laid out in a way suitable for rendering
+	const render_data& get_render_data (void);
 };
 
 
