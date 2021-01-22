@@ -271,6 +271,11 @@ void multi_view_interactor::draw(cgv::render::context& ctx)
 			R.push_back(0.03f);
 		}
 	}
+	if (show_screen) {
+		P.push_back(get_screen_center() + 0.05f * get_screen_orientation().col(2));
+		R.push_back(0.05f);
+		C.push_back(rgb(0.8f, 0.5f, 0.5f));
+	}
 	if (show_probe && debug_display_index >= 0 && debug_display_index < displays.size()) {
 		for (int i = 0; i < 50; ++i) {
 			float lambda = 0.1f * i;
@@ -314,7 +319,11 @@ void multi_view_interactor::draw(cgv::render::context& ctx)
 			rr.set_texcoord_array(ctx, &tex_range, 1);
 			displays[debug_display_index]->bind_texture(eye);
 		}
-		rr.render(ctx, 0, 1);
+		if (rr.validate_and_enable(ctx)) {
+			rr.ref_prog().set_uniform(ctx, "gamma", 1.0f);
+			rr.draw(ctx, 0, 1);
+			rr.disable(ctx);
+		}
 	}
 	vr_view_interactor::draw(ctx);
 }
