@@ -458,7 +458,8 @@ unsigned simple_mesh<T>::extract_vertex_attribute_buffer(
 	include_normals = include_normals && !normal_indices.empty() && !normals.empty();
 	bool include_colors = false;
 	if (include_colors_ptr)
-		*include_colors_ptr = include_colors = has_colors() && *include_colors_ptr;
+		*include_colors_ptr = include_colors = 
+			has_colors() && get_nr_colors() > 0 && *include_colors_ptr;
 
 	// determine number floats per vertex
 	unsigned nr_floats = 3;
