@@ -292,7 +292,7 @@ struct traj_manager<flt_type>::Impl
 	std::vector<std::unique_ptr<traj_dataset> > datasets;
 
 	bool dirty = true;
-	render_attrib_binding attrib_array_binding;
+	render_data rd;
 
 	// helper methods
 	Impl()
@@ -329,7 +329,38 @@ traj_manager<flt_type>::~traj_manager()
 }
 
 template <class flt_type>
-bool traj_manager<flt_type>::load (std::string path)
+bool traj_manager<flt_type>::can_load (const std::string &path) const
+{
+	// shortcut for saving one indirection
+	auto &impl = *pimpl;
+
+	// handle path pointing to a directory
+	if (cgv::utils::dir::exists(path))
+	{
+		// not supported yet!
+		std::cout << "traj_loader: WARNING - loading a directory is not yet supported!" << std::endl << std::endl;
+		return false;
+	}
+
+	// assume it's a file that can just be opened
+	std::ifstream file(path);
+	if (!file.is_open())
+	{
+		std::cout << "traj_loader: cannot open file:" << std::endl << '"'<<path<<'"' << std::endl << std::endl;
+		return false;
+	}
+
+	// test if we find a suitable handler
+	for (auto &h : impl.handlers)
+		if (h->can_handle(file))
+			// yes we can...
+			return true;
+	// no we can't...
+	return false;
+}
+
+template <class flt_type>
+bool traj_manager<flt_type>::load (const std::string &path)
 {
 	// shortcut for saving one indirection
 	auto &impl = *pimpl;
@@ -375,7 +406,7 @@ bool traj_manager<flt_type>::load (std::string path)
 		new_dataset->visual_map = handler->suggest_mapping();
 		handler->clear();
 		impl.datasets.emplace_back(std::move(new_dataset));
-		impl.dirty = true; // we will need to rebuild the attribute array binding for rendering
+		impl.dirty = true; // we will need to rebuild the render data
 
 		// done
 		return true;
@@ -399,34 +430,33 @@ bool traj_manager<flt_type>::has_data (void) const
 }
 
 template <class flt_type>
-const typename traj_manager<flt_type>::render_attrib_binding& traj_manager<flt_type>::get_attrib_array_binding (void)
+const typename traj_manager<flt_type>::render_data& traj_manager<flt_type>::get_render_data (void)
 {
 	// shortcut for saving one indirection
 	auto &impl = *pimpl;
 
-	// check if the attribute array binding needs to be rebuild
+	// check if the render data needs to be rebuild
 	if (impl.dirty)
 	{
-		impl.attrib_array_binding.positions.clear();
-		impl.attrib_array_binding.tangents.clear();
-		impl.attrib_array_binding.radii.clear();
-		impl.attrib_array_binding.colors.clear();
-		impl.attrib_array_binding.indices.clear();
+		impl.rd.positions.clear();
+		impl.rd.tangents.clear();
+		impl.rd.radii.clear();
+		impl.rd.colors.clear();
+		impl.rd.indices.clear();
 		for (auto &d_ptr : impl.datasets)
 		{
 			// convencience shorthand
 			auto &dataset = *d_ptr;
 
 			// account for vao content contributed by previously processed datasets
-			unsigned idx_offset = (unsigned)impl.attrib_array_binding.positions.size();
+			unsigned idx_offset = (unsigned)impl.rd.positions.size();
 
 			// copy special attributes
-			impl.attrib_array_binding.positions.insert(
-				impl.attrib_array_binding.positions.end(),
-				dataset.positions.begin(), dataset.positions.end()
+			impl.rd.positions.insert(
+				impl.rd.positions.end(), dataset.positions.begin(), dataset.positions.end()
 			);
 			std::transform(
-				dataset.indices.begin(), dataset.indices.end(), std::back_inserter(impl.attrib_array_binding.indices),
+				dataset.indices.begin(), dataset.indices.end(), std::back_inserter(impl.rd.indices),
 				[idx_offset] (unsigned index) -> unsigned { return index + idx_offset; }
 			);
 
@@ -435,33 +465,24 @@ const typename traj_manager<flt_type>::render_attrib_binding& traj_manager<flt_t
 			if (Impl::find_visual_attrib(&attrib_name, dataset.visual_map, VisualAttrib::TANGENT))
 			{
 				auto & data = dataset.attribs.find(attrib_name)->second.get_data<Vec4>();
-				impl.attrib_array_binding.tangents.insert(
-					impl.attrib_array_binding.tangents.end(),
-					data.begin(), data.end()
-				);
+				impl.rd.tangents.insert(impl.rd.tangents.end(), data.begin(), data.end());
 			}
 			if (Impl::find_visual_attrib(&attrib_name, dataset.visual_map, VisualAttrib::RADIUS))
 			{
 				auto &data = dataset.attribs.find(attrib_name)->second.get_data<real>();
-				impl.attrib_array_binding.radii.insert(
-					impl.attrib_array_binding.radii.end(),
-					data.begin(), data.end()
-				);
+				impl.rd.radii.insert(impl.rd.radii.end(), data.begin(), data.end());
 			}
 			if (Impl::find_visual_attrib(&attrib_name, dataset.visual_map, VisualAttrib::COLOR))
 			{
 				auto &data = dataset.attribs.find(attrib_name)->second.get_data<rgb>();
-				impl.attrib_array_binding.colors.insert(
-					impl.attrib_array_binding.colors.end(),
-					data.begin(), data.end()
-				);
+				impl.rd.colors.insert(impl.rd.colors.end(), data.begin(), data.end());
 			}
 		}
 		impl.dirty = false;
 	}
 
 	// done
-	return impl.attrib_array_binding;
+	return impl.rd;
 }
 
 
