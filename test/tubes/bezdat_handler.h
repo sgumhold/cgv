@@ -32,10 +32,7 @@ public:
 	/// 4D vector type
 	typedef traj_format_handler::Vec4 Vec4;
 
-	/// 4x4 matrix type
-	typedef cgv::math::fmat<real, 4, 4> Mat4;
-
-	// color type of .bezdat color attribute
+	/// rgb color type
 	typedef traj_format_handler::rgb rgb;
 
 

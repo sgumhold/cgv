@@ -11,6 +11,7 @@
 #include <limits>
 
 // CGV framework core
+#include <cgv/base/register.h>
 #include <cgv/utils/scan.h>
 #include <cgv/utils/advanced_scan.h>
 
@@ -437,3 +438,11 @@ const visual_attribute_mapping& bezdat_handler<flt_type>::suggest_mapping (void)
 // Only float and double variants are intended
 template class bezdat_handler<float>;
 template class bezdat_handler<double>;
+
+
+////
+// Object registration
+
+// The trajectory format handler registry
+cgv::base::object_registration<bezdat_handler<float> > flt_bezdat_reg("bezdat trajectory handler (float)");
+cgv::base::object_registration<bezdat_handler<double> > dbl_bezdat_reg("bezdat trajectory handler (double)");

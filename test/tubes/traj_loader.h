@@ -8,6 +8,7 @@
 #include <utility>
 
 // CGV framework core
+#include <cgv/base/base.h>
 #include <cgv/math/fvec.h>
 #include <cgv/math/fmat.h>
 #include <cgv/media/color.h>
@@ -148,9 +149,9 @@ template <class flt_type>
 using attribute_map = std::unordered_map<std::string, traj_attribute<flt_type> >;
 
 
-/// abstract handler interface that can be implemented to support specific file formats
+/// abstract handler interface that can be implemented to support specific trajectory file formats
 template <class flt_type>
-class traj_format_handler
+class traj_format_handler : public cgv::base::base
 {
 
 	// interfacing

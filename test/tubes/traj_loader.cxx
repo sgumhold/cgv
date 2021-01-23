@@ -6,14 +6,12 @@
 #include <utility>
 
 // CGV framework core
+#include <cgv/base/base.h>
+#include <cgv/base/register.h>
 #include <cgv/utils/file.h>
 #include <cgv/utils/dir.h>
 #include <cgv/utils/scan.h>
 #include <cgv/utils/advanced_scan.h>
-
-// local includes
-#include "bezdat_handler.h"
-#include "csv_handler.h"
 
 // implemented header
 #include "traj_loader.h"
@@ -33,6 +31,32 @@ namespace type_string
 	static const std::string VEC4       = ":VEC4";
 	static const std::string COLOR_RGB  = ":RGB";
 	static const std::string ERROR_TYPE = ":ERROR_TYPE";
+};
+
+// trajectory handler registry
+template <class flt_type>
+struct trajectory_handler_registry : public cgv::base::base, public cgv::base::registration_listener
+{
+	static std::vector<cgv::base::base_ptr>& handlers (void)
+	{
+		static std::vector<cgv::base::base_ptr> _handlers;
+		return _handlers;
+	}
+	std::string get_type_name() const { return "trajectory_handler_registry"; }
+
+	void register_object (cgv::base::base_ptr object, const std::string &)
+	{
+		if (object->get_interface<traj_format_handler<flt_type> >())
+			handlers().push_back(object);
+	}
+	void unregister_object(cgv::base::base_ptr object, const std::string &)
+	{
+		for (unsigned i=0; i<handlers().size(); i++)
+		{
+			if (object == handlers()[i])
+				handlers().erase(handlers().begin()+i);
+		}
+	}
 };
 
 // Anonymous namespace end
@@ -288,18 +312,13 @@ struct traj_manager<flt_type>::Impl
 	};
 
 	// fields
-	std::vector<std::unique_ptr<traj_format_handler<real> > > handlers;
 	std::vector<std::unique_ptr<traj_dataset> > datasets;
-
-	bool dirty = true;
 	render_data rd;
+	bool dirty = true;
 
 	// helper methods
 	Impl()
-	{
-		handlers.emplace_back(std::make_unique<bezdat_handler<real> >());
-		handlers.emplace_back(std::make_unique<csv_handler<real> >());
-	}
+	{}
 	~Impl()
 	{}
 	static const bool find_visual_attrib (std::string *out, const visual_attribute_mapping &map, VisualAttrib attrib)
@@ -351,8 +370,9 @@ bool traj_manager<flt_type>::can_load (const std::string &path) const
 	}
 
 	// test if we find a suitable handler
-	for (auto &h : impl.handlers)
-		if (h->can_handle(file))
+	auto &handlers = trajectory_handler_registry<real>::handlers();
+	for (auto &h : handlers)
+		if (h->get_interface<traj_format_handler<flt_type> >()->can_handle(file))
 			// yes we can...
 			return true;
 	// no we can't...
@@ -382,14 +402,16 @@ bool traj_manager<flt_type>::load (const std::string &path)
 	}
 
 	// delegate actual loading to first suitable handler
+	auto &handlers = trajectory_handler_registry<real>::handlers();
 	traj_format_handler<real> *handler = nullptr;
-	for (auto &h : impl.handlers)
+	for (auto &_h : handlers)
 	{
+		auto h = _h->get_interface<traj_format_handler<flt_type> >();
 		if (h->can_handle(file))
 		{
 			if (h->read(file))
 			{
-				handler = h.get();
+				handler = h;
 				break;
 			}
 		}
@@ -496,3 +518,11 @@ template class traj_format_handler<float>;
 template class traj_format_handler<double>;
 template class traj_manager<float>;
 template class traj_manager<double>;
+
+
+////
+// Object registration
+
+// The trajectory format handler registry
+cgv::base::object_registration<trajectory_handler_registry<float> > flt_trj_registry("trajectory handler registry (float)");
+cgv::base::object_registration<trajectory_handler_registry<double> > dbl_trj_registry("trajectory handler registry (double)");
