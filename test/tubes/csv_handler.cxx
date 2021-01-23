@@ -11,6 +11,7 @@
 #include <limits>
 
 // CGV framework core
+#include <cgv/base/register.h>
 #include <cgv/utils/scan.h>
 #include <cgv/utils/advanced_scan.h>
 
@@ -241,3 +242,11 @@ const visual_attribute_mapping& csv_handler<flt_type>::suggest_mapping (void) co
 // Only float and double variants are intended
 template class csv_handler<float>;
 template class csv_handler<double>;
+
+
+////
+// Object registration
+
+// The trajectory format handler registry
+cgv::base::object_registration<csv_handler<float> > flt_csv_reg("csv trajectory handler (float)");
+cgv::base::object_registration<csv_handler<double> > dbl_csv_reg("csv trajectory handler (double)");
