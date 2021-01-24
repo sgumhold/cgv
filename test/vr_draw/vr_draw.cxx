@@ -44,9 +44,23 @@ protected:
 	cgv::render::rounded_cone_render_style rcrs;
 public:
 	/// add a new vertex
-	uint32_t add_vertex(const vertex& v) { uint32_t vi = uint32_t(vertices.size()); vertices.push_back(v); ++nr_vertices; return vi; }
+	uint32_t add_vertex(const vertex& v) 
+	{ 
+		uint32_t vi = uint32_t(vertices.size()); 
+		vertices.push_back(v); 
+		++nr_vertices; 
+		on_set(&nr_vertices);
+		return vi; 
+	}
 	/// add a new edge
-	uint32_t add_edge(const edge& e) { uint32_t ei = uint32_t(edges.size()); edges.push_back(e); ++nr_edges; return ei; }
+	uint32_t add_edge(const edge& e) 
+	{
+		uint32_t ei = uint32_t(edges.size()); 
+		edges.push_back(e); 
+		++nr_edges; 
+		on_set(&nr_edges);
+		return ei; 
+	}
 	/// return number of vertices
 	uint32_t get_nr_vertices() const { return (uint32_t)vertices.size(); }
 	/// writable access to vertex
@@ -601,6 +615,7 @@ public:
 						clear_drawing();
 					else
 						read_drawing(draw_file_path + "/" + draw_file_names[current_drawing_idx]);
+					on_set(&current_drawing_idx);
 				}
 				return true;
 			case vr::VR_DPAD_LEFT:
@@ -613,6 +628,7 @@ public:
 						}
 						--current_drawing_idx;
 						read_drawing(draw_file_path + "/" + draw_file_names[current_drawing_idx]);
+						on_set(&current_drawing_idx);
 					}
 				}
 				return true;

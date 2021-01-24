@@ -30,11 +30,17 @@ protected:
 	std::vector<box3> boxes;
 	std::vector<rgb> box_colors;
 
+	bool use_procedural_shader;
+	int noise_type;
 	cgv::render::shader_program noisy_box_prog;
 	float noise_eps;
 	float noise_zoom;
 	float noise_color_scale;
 	float noise_bump_scale;
+	int nr_octaves;
+	float lacunarity;
+	float gain;
+	float offset;
 
 	// ui parameters for table construction
 	float table_width, table_depth, table_height, leg_width, leg_offset;

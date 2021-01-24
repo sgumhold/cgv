@@ -6,6 +6,9 @@ geometry_file:box.glgs
 geometry_file:group.glsl
 geometry_file:view.glsl
 geometry_file:side.glsl
+fragment_file:noise.glsl
+fragment_file:snoise.glsl
+fragment_file:cnoise.glsl
 fragment_file:noisy_box.glfs
 fragment_file:view.glsl
 fragment_file:fragment.glfs
