@@ -95,17 +95,6 @@ vr_scene::vr_scene()
 	leg_width = 0.04f;
 	leg_offset = 0.0f;
 
-	use_procedural_shader = false;
-	noise_type = 3;
-	noise_eps = 0.00001f;
-	noise_zoom = 40.0f;
-	noise_bump_scale = 0.1f;
-	noise_color_scale = 0.05f;
-	nr_octaves = 4;
-	lacunarity = 2.0f;
-	gain = 0.5f;
-	offset = 0.9f;
-
 	build_scene(5, 7, 3, 0.2f);
 
 	pixel_scale = 0.001f;
@@ -143,10 +132,6 @@ bool vr_scene::init(cgv::render::context& ctx)
 	cgv::render::ref_box_renderer(ctx, 1);
 	cgv::render::ref_rounded_cone_renderer(ctx, 1);
 	cgv::gui::connect_vr_server(true);
-	if (!noisy_box_prog.build_program(ctx, "noisy_box.glpr", true)) {
-		std::cerr << "could not bould noisy_box_prog" << std::endl;
-		abort();
-	}
 	lm.init(ctx);
 	cgv::media::font::font_ptr f = cgv::media::font::find_font("Courier New");
 	lm.set_font_face(f->get_font_face(cgv::media::font::FFA_BOLD));
@@ -204,18 +189,6 @@ void vr_scene::draw(cgv::render::context& ctx)
 	rr.set_render_style(prs);
 
 	// draw static part
-	if (use_procedural_shader) {
-		br.set_prog(noisy_box_prog);
-		noisy_box_prog.set_uniform(ctx, "noise_type", (GLint)noise_type);
-		noisy_box_prog.set_uniform(ctx, "eps", noise_eps);
-		noisy_box_prog.set_uniform(ctx, "noise_zoom", noise_zoom);
-		noisy_box_prog.set_uniform(ctx, "noise_color_scale", noise_color_scale);
-		noisy_box_prog.set_uniform(ctx, "noise_bump_scale", noise_bump_scale);
-		noisy_box_prog.set_uniform(ctx, "nr_octaves", nr_octaves);
-		noisy_box_prog.set_uniform(ctx, "lacunarity", lacunarity);
-		noisy_box_prog.set_uniform(ctx, "gain", gain);
-		noisy_box_prog.set_uniform(ctx, "offset", offset);
-	}
 	br.set_box_array(ctx, boxes);
 	br.set_color_array(ctx, box_colors);
 	br.render(ctx, 0, boxes.size());
@@ -275,21 +248,6 @@ bool vr_scene::handle(cgv::gui::event& e)
 void vr_scene::create_gui()
 {
 	add_decorator("vr_scene", "heading");
-	if (begin_tree_node("noise", noise_eps, true)) {
-		align("\a");
-		add_member_control(this, "use_procedural_shader", use_procedural_shader, "check");
-		add_member_control(this, "noise_type", (cgv::type::DummyEnum&)noise_type, "dropdown", "enums='generic,generic2,classic perlin,simplex'");
-		add_member_control(this, "noise_eps", noise_eps, "value_slider", "min=0.00001;step=0.0000001;max=1;log=true;ticks=true");
-		add_member_control(this, "noise_zoom", noise_zoom, "value_slider", "min=1;max=10000;log=true;ticks=true");
-		add_member_control(this, "noise_color_scale", noise_color_scale, "value_slider", "min=0;max=10;log=true;ticks=true");
-		add_member_control(this, "noise_bump_scale", noise_bump_scale, "value_slider", "min=0;max=10;log=true;ticks=true");
-		add_member_control(this, "nr_octaves", nr_octaves, "value_slider", "min=1;max=24;ticks=true");
-		add_member_control(this, "lacunarity", lacunarity, "value_slider", "min=0;max=10;log=true;ticks=true");
-		add_member_control(this, "gain", gain, "value_slider", "min=0;max=2;ticks=true");
-		add_member_control(this, "offset", offset, "value_slider", "min=0;max=1;ticks=true");
-		align("\b");
-		end_tree_node(noise_eps);
-	}
 	if (begin_tree_node("table", table_width)) {
 		align("\a");
 		add_member_control(this, "color", table_color);
