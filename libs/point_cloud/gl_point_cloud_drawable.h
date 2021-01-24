@@ -7,7 +7,7 @@
 #include "point_cloud.h"
 
 #include <cgv_gl/surfel_renderer.h>
-#include <cgv_gl/normal_renderer.h>
+#include <cgv_gl/arrow_renderer.h>
 #include <cgv_gl/box_renderer.h>
 #include <cgv_gl/box_wire_renderer.h>
 
@@ -21,12 +21,12 @@ protected:
 	point_cloud pc;
 
 	cgv::render::surfel_render_style surfel_style;
-	cgv::render::normal_render_style normal_style;
+	cgv::render::arrow_render_style normal_style;
 	cgv::render::surface_render_style box_style;
 	cgv::render::line_render_style box_wire_style;
 
 	cgv::render::surfel_renderer s_renderer;
-	cgv::render::normal_renderer n_renderer;
+	cgv::render::arrow_renderer a_renderer;
 	cgv::render::box_renderer b_renderer;
 	cgv::render::box_wire_renderer bw_renderer;
 
@@ -49,14 +49,15 @@ protected:
 	std::size_t show_point_begin, show_point_end;
 	unsigned nr_draw_calls;
 	cgv::render::view* view_ptr;
+	mutable std::string last_error;
 	bool ensure_view_pointer();
 	void set_arrays(cgv::render::context& ctx, size_t offset = 0, size_t count = -1);
-
+	bool ensure_file_name(std::string& _file_name, const std::string* data_path_ptr = 0) const;
 public:
 	gl_point_cloud_drawable();
 
-	bool read(const std::string& file_name);
-	bool append(const std::string& file_name, bool add_component = true);
+	bool read(std::string& file_name, const std::string* data_path_ptr = 0);
+	bool append(std::string& file_name, bool add_component = true, const std::string* data_path_ptr = 0);
 	bool write(const std::string& file_name);
 	
 	void render_boxes(cgv::render::context& ctx, cgv::render::group_renderer& R, cgv::render::group_render_style& RS);
