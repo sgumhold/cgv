@@ -1,5 +1,7 @@
 #include "clod_point_renderer.h"
 
+#define CLOD_PR_RENDER_TEST_MODE _TM_
+
 namespace cgv {
 	namespace render {
 		//from opengl_context.cxx
@@ -19,25 +21,25 @@ namespace cgv {
 
 			//run compute shader
 			
-			/*
 			reduce_prog.enable(ctx);
 			glBindBufferBase(GL_SHADER_STORAGE_BUFFER, drawp_pos, draw_parameter_buffer);
 			glBindBufferBase(GL_SHADER_STORAGE_BUFFER, render_pos, input_buffer);
 			glBindBufferBase(GL_SHADER_STORAGE_BUFFER, input_pos, input_buffer);
 			glDispatchCompute( static_cast<int>(std::ceil(positions.size()/128)), 1, 1);
-			reduce_prog.disable(ctx);
-			glMemoryBarrier(GL_ALL_BARRIER_BITS);
-			*/
 
-			
-			//draw
-			//glBindBuffer(GL_ARRAY_BUFFER, render_buffer);
-			//test render shaders
-			
+			// synchronize
+			glMemoryBarrier(GL_ALL_BARRIER_BITS);
+			reduce_prog.disable(ctx);
+
+			// draw resulting buffer
 			draw_prog.enable(ctx);
 			glBindVertexArray(vertex_array);
 			glEnable(GL_PROGRAM_POINT_SIZE);
-			glDrawArrays(GL_POINTS, 0, input_buffer_data.size());
+#ifdef CLOD_PR_RENDER_TEST_MODE
+			glDrawArrays(GL_POINTS, 0, input_buffer_data.size()); //TEST
+#else
+			glDrawArrays(GL_POINTS, 0, device_draw_parameters->count);
+#endif // CLOD_PR_RENDER_TEST_MODE
 			glBindVertexArray(0);
 			draw_prog.disable(ctx);
 		}
@@ -75,7 +77,11 @@ namespace cgv {
 			glGenVertexArrays(1, &vertex_array);
 			glBindVertexArray(vertex_array);
 			//position
-			glBindBuffer(GL_ARRAY_BUFFER,input_buffer);
+#ifdef CLOD_PR_RENDER_TEST_MODE
+			glBindBuffer(GL_ARRAY_BUFFER,input_buffer); //test
+#else 
+			glBindBuffer(GL_ARRAY_BUFFER, render_buffer);
+#endif
 			glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)0);
 			glEnableVertexAttribArray(0);
 			//color
@@ -84,6 +90,7 @@ namespace cgv {
 
 			glBindBuffer(GL_ARRAY_BUFFER, 0);
 			glBindVertexArray(0);
+
 			return draw_prog.is_linked() && reduce_prog.is_linked();
 		}
 
@@ -181,7 +188,7 @@ namespace cgv {
 
 		void clod_point_renderer::fill_buffers(context& ctx)
 		{ //  fill buffers for the compute shader
-			drawParameters dp = drawParameters();
+			DrawParameters dp = DrawParameters();
 
 			/*
 			glBindBuffer(GL_ARRAY_BUFFER, input_buffer);
@@ -190,12 +197,16 @@ namespace cgv {
 			glBindBuffer(GL_SHADER_STORAGE_BUFFER, input_buffer);
 			glBufferData(GL_SHADER_STORAGE_BUFFER, input_buffer_data.size() * sizeof(Vertex), input_buffer_data.data(), GL_STATIC_READ);
 			
-			//glBindBuffer(GL_SHADER_STORAGE_BUFFER, render_buffer);
-			//glBufferData(GL_SHADER_STORAGE_BUFFER, input_buffer_data.size() * sizeof(Vertex), nullptr, GL_DYNAMIC_DRAW);
+			glBindBuffer(GL_SHADER_STORAGE_BUFFER, render_buffer);
+			glBufferData(GL_SHADER_STORAGE_BUFFER, input_buffer_data.size() * sizeof(Vertex), nullptr, GL_DYNAMIC_DRAW);
 
-			//glBindBuffer(GL_SHADER_STORAGE_BUFFER, draw_parameter_buffer);
-			//glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(drawParameters), &dp, GL_DYNAMIC_READ);
-
+			glBindBuffer(GL_SHADER_STORAGE_BUFFER, draw_parameter_buffer);
+			glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(DrawParameters), &dp, GL_DYNAMIC_READ);
+			//map buffer into host address space
+			if (device_draw_parameters) {
+				glUnmapNamedBuffer(draw_parameter_buffer);
+			}
+			device_draw_parameters = static_cast<DrawParameters*>(glMapNamedBufferRange(draw_parameter_buffer, 0, sizeof(DrawParameters), GL_MAP_READ_BIT));
 			glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 
 		}

@@ -25,16 +25,15 @@ namespace cgv {
 		class CGV_API clod_point_renderer : public cgv::render::render_types {
 
 			struct Vertex {
-				vec4 position;
+				vec3 position;
 				rgba8 colors;
 			};
 
-			struct drawParameters {
-				uint32_t  count = 0;
-				uint32_t  primCount = 0;
-				uint32_t  first = 0;
-				uint32_t  baseInstance = 0;
+			struct DrawParameters {
+				uint32_t  count = 0; //element count
 			};
+
+			DrawParameters* device_draw_parameters = nullptr;
 
 			float CLOD = 1.f;
 			float spacing = 1.f; //root spacing
@@ -47,7 +46,7 @@ namespace cgv {
 			std::vector<Vertex> input_buffer_data;
 			std::vector<rgba8> colors; //alpha channel is later used for storing the clod level
 			GLuint vertex_array = 0;
-			GLuint input_buffer = 0, render_buffer = 0, draw_parameter_buffer = 0, input_buffer_point_sizes = 0;
+			GLuint input_buffer = 0, render_buffer = 0, draw_parameter_buffer = 0;
 			const int input_pos = 0, render_pos = 1, drawp_pos = 3;
 			bool buffers_outofdate = true;
 
@@ -73,7 +72,7 @@ namespace cgv {
 				this->positions = positions;
 				input_buffer_data.resize(positions.size());
 				for (int i = 0; i < positions.size(); ++i) {
-					input_buffer_data[i].position = vec4(positions[i].x(),positions[i].y(),positions[i].z(),1.f);
+					input_buffer_data[i].position = positions[i];
 				}
 				buffers_outofdate = true;
 			}
