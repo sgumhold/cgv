@@ -46,9 +46,6 @@ layout(std430, binding = 1) buffer ssTargetBuffer{
 
 layout(std430, binding = 3) buffer ssDrawParameters{
 	uint  count;
-	uint  primCount;
-	uint  first;
-	uint  baseInstance;
 } drawParameters;
 
 layout(location = 21) uniform int uBatchOffset;
