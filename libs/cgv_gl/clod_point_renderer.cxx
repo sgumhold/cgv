@@ -49,10 +49,10 @@ namespace cgv {
 
 		bool clod_point_renderer::init(context& ctx)
 		{
-			ref_point_renderer(ctx,1);
 			if (!reduce_prog.is_created()) {
 				reduce_prog.create(ctx);
-				add_shader(ctx, reduce_prog, "pointcloud_clod_filter_points.glcs", cgv::render::ST_COMPUTE);
+				
+				add_shader(ctx, reduce_prog, "point_clod_filter_points.glcs", cgv::render::ST_COMPUTE);
 				reduce_prog.link(ctx);
 #ifndef NDEBUG
 				std::cerr << reduce_prog.last_error;
@@ -61,17 +61,13 @@ namespace cgv {
 			
 			//create shader program
 			if (!draw_prog.is_created()) {
-				draw_prog.create(ctx);
-				add_shader(ctx, draw_prog, "view.glsl", cgv::render::ST_VERTEX);
-				add_shader(ctx, draw_prog, "pointcloud_clod.glvs", cgv::render::ST_VERTEX);
-				add_shader(ctx, draw_prog, "fragment.glfs", cgv::render::ST_FRAGMENT);
-				add_shader(ctx, draw_prog, "pointcloud_clod.glfs", cgv::render::ST_FRAGMENT);
-				draw_prog.link(ctx);
+				//draw_prog.build_program(ctx, "point.glpr", true);
+				draw_prog.build_program(ctx, "point_clod.glpr", true);
 #ifndef NDEBUG
 				std::cerr << draw_prog.last_error;
 #endif // #ifdef NDEBUG
 			}
-
+			
 			glGenBuffers(1, &input_buffer); //array of {float x;float y;float z;uint colors;};
 			glGenBuffers(1, &render_buffer);
 			glGenBuffers(1, &draw_parameter_buffer);
@@ -80,10 +76,10 @@ namespace cgv {
 			glBindVertexArray(vertex_array);
 			//position
 			glBindBuffer(GL_ARRAY_BUFFER,input_buffer);
-			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
+			glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)0);
 			glEnableVertexAttribArray(0);
 			//color
-			glVertexAttribPointer(1, 1, GL_INT, GL_FALSE, 4 * sizeof(float), (void*)(3 * sizeof(float)));
+			glVertexAttribPointer(1, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(Vertex), (void*)(sizeof(Vertex::position)));
 			glEnableVertexAttribArray(1);
 
 			glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -109,7 +105,7 @@ namespace cgv {
 			mat4 transform = ctx.get_modelview_projection_device_matrix();
 			mat4 modelview_matrix = ctx.get_modelview_matrix();
 			mat4 projection_matrix = ctx.get_projection_matrix();
-			mat4 inverse_modelview_matrix = inv(modelview_matrix);
+
 			draw_prog.set_uniform(ctx, draw_prog.get_uniform_location(ctx, "CLOD"), CLOD);
 			draw_prog.set_uniform(ctx, draw_prog.get_uniform_location(ctx, "scale"), scale);
 			draw_prog.set_uniform(ctx, draw_prog.get_uniform_location(ctx, "spacing"), spacing);
@@ -119,7 +115,6 @@ namespace cgv {
 			//view.glsl
 			draw_prog.set_uniform(ctx, draw_prog.get_uniform_location(ctx, "modelview_matrix"), modelview_matrix);
 			draw_prog.set_uniform(ctx, draw_prog.get_uniform_location(ctx, "projection_matrix"), projection_matrix);
-			draw_prog.set_uniform(ctx, draw_prog.get_uniform_location(ctx, "inverse_modelview_matrix"), inverse_modelview_matrix);
 
 			reduce_prog.set_uniform(ctx, reduce_prog.get_uniform_location(ctx, "transform"), transform);
 			reduce_prog.set_uniform(ctx, reduce_prog.get_uniform_location(ctx, "CLOD"), CLOD);
@@ -131,6 +126,24 @@ namespace cgv {
 			reduce_prog.set_uniform(ctx, reduce_prog.get_uniform_location(ctx, "uBatchOffset"), 0);
 			reduce_prog.set_uniform(ctx, reduce_prog.get_uniform_location(ctx, "uBatchSize"), (int)positions.size());
 
+
+			//testcode
+			float reference_point_size = 0.01f;
+			float y_view_angle = 45;
+			draw_prog.set_uniform(ctx, "use_color_index", false);
+			draw_prog.set_uniform(ctx, "measure_point_size_in_pixel", prs.measure_point_size_in_pixel);
+			draw_prog.set_uniform(ctx, "reference_point_size", reference_point_size);
+			draw_prog.set_uniform(ctx, "use_group_point_size", prs.use_group_point_size);
+			float pixel_extent_per_depth = (float)(2.0 * tan(0.5 * 0.0174532925199 * y_view_angle) / ctx.get_height());
+			draw_prog.set_uniform(ctx, "pixel_extent_per_depth", pixel_extent_per_depth);
+			draw_prog.set_uniform(ctx, "blend_width_in_pixel", prs.blend_width_in_pixel);
+			draw_prog.set_uniform(ctx, "percentual_halo_width", 0.01f * prs.percentual_halo_width);
+			draw_prog.set_uniform(ctx, "halo_width_in_pixel", prs.halo_width_in_pixel);
+			draw_prog.set_uniform(ctx, "halo_color", prs.halo_color);
+			draw_prog.set_uniform(ctx, "halo_color_strength", prs.halo_color_strength);
+			
+			draw_prog.set_uniform(ctx, "use_group_color", false);
+			draw_prog.set_uniform(ctx, "use_group_transformation", false);
 			return true;
 		}
 
@@ -170,12 +183,12 @@ namespace cgv {
 		{ //  fill buffers for the compute shader
 			drawParameters dp = drawParameters();
 
+			/*
 			glBindBuffer(GL_ARRAY_BUFFER, input_buffer);
 			glBufferData(GL_ARRAY_BUFFER, input_buffer_data.size() * sizeof(Vertex), input_buffer_data.data(), GL_STATIC_READ);
-			glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-			//glBindBuffer(GL_SHADER_STORAGE_BUFFER, input_buffer);
-			//glBufferData(GL_SHADER_STORAGE_BUFFER, input_buffer_data.size() * sizeof(Vertex), input_buffer_data.data(), GL_STATIC_READ);
+			glBindBuffer(GL_ARRAY_BUFFER, 0);*/
+			glBindBuffer(GL_SHADER_STORAGE_BUFFER, input_buffer);
+			glBufferData(GL_SHADER_STORAGE_BUFFER, input_buffer_data.size() * sizeof(Vertex), input_buffer_data.data(), GL_STATIC_READ);
 			
 			//glBindBuffer(GL_SHADER_STORAGE_BUFFER, render_buffer);
 			//glBufferData(GL_SHADER_STORAGE_BUFFER, input_buffer_data.size() * sizeof(Vertex), nullptr, GL_DYNAMIC_DRAW);
@@ -183,7 +196,7 @@ namespace cgv {
 			//glBindBuffer(GL_SHADER_STORAGE_BUFFER, draw_parameter_buffer);
 			//glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(drawParameters), &dp, GL_DYNAMIC_READ);
 
-			//glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
+			glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 
 		}
 
