@@ -510,6 +510,6 @@ void main()
 	vec4 depth = get_projection_matrix() * v_eye;
 	gl_FragDepth = 0.5*(depth.z / depth.w) + 0.5;
 
-	frag_color = compute_reflected_appearance(hit_pos_eye, hit.normal, frag_color, 0);
+	frag_color = compute_reflected_appearance(hit_pos_eye, hit.normal, frag_color, 1);
 	finish_fragment(frag_color);
 }
