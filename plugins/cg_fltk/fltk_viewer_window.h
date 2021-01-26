@@ -36,7 +36,9 @@ enum MonitorSelection
 	MS_MONITOR_CURRENT = 0,
 	MS_MONITOR_1 = 1,
 	MS_MONITOR_2 = 2,
-	MS_MONITOR_ALL = 3,
+	MS_MONITOR_3 = 4,
+	MS_MONITOR_4 = 8,
+	MS_MONITOR_ALL = 15,
 };
 
 /** the fltk_viewer_window is implemented with the help of a fltk_gl_view
