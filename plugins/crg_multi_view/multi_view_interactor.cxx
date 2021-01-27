@@ -44,8 +44,8 @@ void multi_view_interactor::add_player(int ci)
 	head_tracking_info hti;
 	hti.kit_handle = last_kit_handle;
 	hti.controller_index = ci;
-	hti.local_eye_position[0] = vec3(-0.04f, -0.1f, 0);
-	hti.local_eye_position[1] = vec3( 0.04f, -0.1f, 0);
+	hti.local_eye_position[0] = vec3( 0.035f, -0.06f, -0.07f);
+	hti.local_eye_position[1] = vec3(-0.035f, -0.06f, -0.07f);
 	head_trackers.push_back(hti);
 	new_displays.push_back(displays.back());
 }
@@ -331,8 +331,13 @@ void multi_view_interactor::draw(cgv::render::context& ctx)
 void multi_view_interactor::after_finish(cgv::render::context& ctx)
 {
 	stereo_view_interactor::after_finish(ctx);
-	if (ctx.get_render_pass() != cgv::render::RP_MAIN)
+	if (!(ctx.get_render_pass() == cgv::render::RP_MAIN ||
+		 ctx.get_render_pass() == cgv::render::RP_STEREO) )
 		return;
+
+	int offset = 0;// ctx.get_width() / 2;
+	if (ctx.get_render_pass() == cgv::render::RP_STEREO)
+		offset = 0;
 
 	if (rendered_display_ptr) {
 		rendered_display_ptr->disable_fbo(rendered_eye);
@@ -349,7 +354,7 @@ void multi_view_interactor::after_finish(cgv::render::context& ctx)
 		int x0 = 0;
 		int blit_height = (int)(blit_width * kit_ptr->get_height() / (blit_aspect_scale * kit_ptr->get_width()));
 		for (int eye = 0; eye < 2; ++eye) {
-			kit_ptr->blit_fbo(eye, x0, y0, blit_width, blit_height);
+			kit_ptr->blit_fbo(eye, x0 + offset, y0, blit_width, blit_height);
 			x0 += blit_width + 5;
 		}
 		y0 += blit_height + 5;
