@@ -24,10 +24,24 @@ struct head_tracking_info : public cgv::render::render_types
 	vec3 local_eye_position[2];
 };
 
+enum MultiViewMode
+{
+	MVM_DEBUG = 0,
+	MVM_TWO_PLAYERS_PASSIVE_ANAGLYPH = 1,
+	MVM_TWO_PLAYERS_PASSIVE_ACTIVE = 2,
+	MVM_FOUR_PLAYERS = 3,
+	MVM_LAST = MVM_FOUR_PLAYERS
+};
+
 class CGV_API multi_view_interactor : public vr_view_interactor 
 {
 protected:
 	void* last_kit_handle;
+	///
+	MultiViewMode multi_view_mode;
+	
+	/**@name player information*/
+	//@{
 	/// store a list of trackers used to track head positions of players
 	std::vector<head_tracking_info> head_trackers;
 	/// list of displays used for offline rendering
@@ -42,6 +56,7 @@ protected:
 	void put_projection_matrix(unsigned user_index, int eye, float z_near, float z_far, float* projection_matrix, const float* tracker_pose) const;
 	/// given tracker pose construct lookat matrix for a given eye (0 ... left, 1 ... right)
 	void put_world_to_eye_transform(unsigned user_index, int eye, const float* tracker_pose, float* modelview_matrix, vec3* eye_world_ptr = 0, vec3* view_dir_ptr = 0) const;
+	//@}
 
 	/**@name screen information*/
 	//@{
@@ -99,6 +114,8 @@ public:
 	void on_set(void* member_ptr);
 	/// 
 	bool init(cgv::render::context& ctx);
+	///
+	bool handle(cgv::gui::event& e);
 	/// 
 	void clear(cgv::render::context& ctx);
 	/// this method is called in one pass over all drawables before the draw method

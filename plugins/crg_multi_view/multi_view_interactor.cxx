@@ -1,9 +1,11 @@
 #include "multi_view_interactor.h"
 #include <cgv/math/ftransform.h>
 #include <cgv/math/pose.h>
+#include <cgv/gui/key_event.h>
 #include <cgv_reflect_types/math/fvec.h>
 #include <cgv_reflect_types/math/quaternion.h>
 #include <cgv_gl/box_renderer.h>
+#include <cgv_gl/gl/gl_tools.h>
 #include <cgv_gl/rectangle_renderer.h>
 
 ///
@@ -20,8 +22,10 @@ multi_view_interactor::multi_view_interactor(const char* name) : vr_view_interac
 	show_eyes = false;
 	debug_display_index = -1;
 	debug_eye = 0;
+	adapt_aspect_ratio_to_stereo_mode = false;
 	show_probe = false;
 	debug_probe = vec3(0.0f);
+	multi_view_mode = MVM_DEBUG;
 	rrs.illumination_mode = cgv::render::IM_OFF;
 }
 
@@ -216,6 +220,7 @@ bool multi_view_interactor::self_reflect(cgv::reflect::reflection_handler& srh)
 		srh.reflect_base<vr_view_interactor>(*static_cast<vr_view_interactor*>(this)) &&
 		srh.reflect_member("add_controller_as_player", add_controller_as_player) &&
 		srh.reflect_member("debug_eye", debug_eye) &&
+		srh.reflect_member("multi_view_mode", multi_view_mode) &&
 		srh.reflect_member("debug_display_index", debug_display_index) &&
 		srh.reflect_member("show_eyes", show_eyes) &&
 		srh.reflect_member("pixel_scale", pixel_scale) &&
@@ -259,7 +264,7 @@ void multi_view_interactor::draw(cgv::render::context& ctx)
 	std::vector<rgb> C;
 	std::vector<float> R;
 	if (show_eyes) {
-		for (int display_index = 0; display_index < displays.size(); ++display_index) {
+		for (int display_index = 0; display_index < (int)displays.size(); ++display_index) {
 			auto* ts_ptr = get_trackable_state(display_index);
 			if (ts_ptr->status == vr::VRS_DETACHED)
 				continue;
@@ -276,7 +281,7 @@ void multi_view_interactor::draw(cgv::render::context& ctx)
 		R.push_back(0.05f);
 		C.push_back(rgb(0.8f, 0.5f, 0.5f));
 	}
-	if (show_probe && debug_display_index >= 0 && debug_display_index < displays.size()) {
+	if (show_probe && debug_display_index >= 0 && debug_display_index < (int)displays.size()) {
 		for (int i = 0; i < 50; ++i) {
 			float lambda = 0.1f * i;
 			P.push_back((1.0f - lambda) * get_eye_position_world(debug_display_index, eye, reinterpret_cast<const mat34&>(get_trackable_state(debug_display_index)->pose))
@@ -312,7 +317,7 @@ void multi_view_interactor::draw(cgv::render::context& ctx)
 		rr.set_extent_array(ctx, &extent, 1);
 		rr.set_color_array(ctx, &screen_color, 1);
 		rr.set_rotation_array(ctx, &screen_orientation, 1);
-		if (debug_display_index >= 0 && debug_display_index < displays.size()) {
+		if (debug_display_index >= 0 && debug_display_index < (int)displays.size()) {
 			vec3 eye_screen = (get_eye_position_world(debug_display_index, eye, reinterpret_cast<const mat34&>(get_trackable_state(debug_display_index)->pose)) - get_screen_center())* get_screen_orientation();
 			if (eye_screen(2) < 0)
 				tex_range = vec4(1, 0, 0, 1);
@@ -331,40 +336,174 @@ void multi_view_interactor::draw(cgv::render::context& ctx)
 void multi_view_interactor::after_finish(cgv::render::context& ctx)
 {
 	stereo_view_interactor::after_finish(ctx);
-	if (!(ctx.get_render_pass() == cgv::render::RP_MAIN ||
-		 ctx.get_render_pass() == cgv::render::RP_STEREO) )
-		return;
-
-	int offset = 0;// ctx.get_width() / 2;
-	if (ctx.get_render_pass() == cgv::render::RP_STEREO)
-		offset = 0;
-
-	if (rendered_display_ptr) {
-		rendered_display_ptr->disable_fbo(rendered_eye);
-		ctx.recover_from_external_frame_buffer_change(fbo_handle);
-		ctx.recover_from_external_viewport_change(cgv_viewport);
-		rendered_eye = 0;
-		rendered_display_ptr = 0;
-		rendered_display_index = -1;
-	}
-	// render all user views and take last eye into main render pass if no separate view is rendered
-	int y0 = 0;
-	for (unsigned i = 0; i <displays.size(); ++i) {
-		auto kit_ptr = displays[i];
-		int x0 = 0;
-		int blit_height = (int)(blit_width * kit_ptr->get_height() / (blit_aspect_scale * kit_ptr->get_width()));
-		for (int eye = 0; eye < 2; ++eye) {
-			kit_ptr->blit_fbo(eye, x0 + offset, y0, blit_width, blit_height);
-			x0 += blit_width + 5;
+	if (ctx.get_render_pass() == cgv::render::RP_MAIN) {
+		if (rendered_display_ptr) {
+			rendered_display_ptr->disable_fbo(rendered_eye);
+				ctx.recover_from_external_frame_buffer_change(fbo_handle);
+				ctx.recover_from_external_viewport_change(cgv_viewport);
+				rendered_eye = 0;
+				rendered_display_ptr = 0;
+				rendered_display_index = -1;
 		}
-		y0 += blit_height + 5;
 	}
+	if (ctx.get_render_pass() == cgv::render::RP_MAIN ||
+		ctx.get_render_pass() == cgv::render::RP_STEREO) {
+
+
+		/// here we handle
+		/// left eye if we are in RP_STEREO render pass and
+		/// right eye in RP_MAIN render pass
+
+		switch (multi_view_mode) {
+		case MVM_DEBUG:
+		{
+			int x_offset = 0;
+			int y_offset = 0;
+			if (stereo_enabled) {
+				if (ctx.get_render_pass() == cgv::render::RP_MAIN && stereo_mode == GLSU_SPLIT_VERTICALLY)
+					x_offset = ctx.get_width() / 2;
+				if (ctx.get_render_pass() == cgv::render::RP_STEREO && stereo_mode == GLSU_SPLIT_HORIZONTALLY)
+					y_offset = ctx.get_height() / 2;
+			}
+			// render all user views and take last eye into main render pass if no separate view is rendered
+			int y0 = 0;
+			for (unsigned i = 0; i < displays.size(); ++i) {
+				auto kit_ptr = displays[i];
+				int x0 = 0;
+				int blit_height = (int)(blit_width * kit_ptr->get_height() / (blit_aspect_scale * kit_ptr->get_width()));
+				for (int eye = 0; eye < 2; ++eye) {
+					kit_ptr->blit_fbo(eye, x0 + x_offset, y0 + y_offset, blit_width, blit_height);
+					x0 += blit_width + 5;
+				}
+				y0 += blit_height + 5;
+			}
+		}
+		break;
+		case MVM_TWO_PLAYERS_PASSIVE_ANAGLYPH:
+		{
+			if (stereo_enabled && displays.size() >= 2 && stereo_mode == GLSU_ANAGLYPH) {
+				float tmp_gamma = ctx.get_gamma();
+				ctx.set_gamma(1.0f);
+				// in case of left eye
+				if (ctx.get_render_pass() == cgv::render::RP_STEREO) {
+					glColorMask(GL_TRUE, GL_FALSE, GL_FALSE, GL_TRUE);
+					displays[0]->bind_texture(0); cgv::render::gl::cover_screen(ctx, 0, false, -1.0f, -1.0f, 0.0f, 1.0f);
+					displays[1]->bind_texture(0); cgv::render::gl::cover_screen(ctx, 0, false, 0.0f, -1.0f, 1.0f, 1.0f);
+					glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
+				}
+				// in case of right eye
+				else {
+					glColorMask(GL_FALSE, GL_TRUE, GL_TRUE, GL_TRUE);
+					displays[0]->bind_texture(1); cgv::render::gl::cover_screen(ctx, 0, false, -1.0f, -1.0f, 0.0f, 1.0f);
+					displays[1]->bind_texture(1); cgv::render::gl::cover_screen(ctx, 0, false, 0.0f, -1.0f, 1.0f, 1.0f);
+					glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
+				}
+				ctx.set_gamma(tmp_gamma);
+			}
+		}
+		break;
+		case MVM_TWO_PLAYERS_PASSIVE_ACTIVE:
+			if (stereo_enabled && displays.size() >= 2 && stereo_mode == GLSU_QUAD_BUFFER) {
+				float tmp_gamma = ctx.get_gamma();
+				ctx.set_gamma(1.0f);
+				// in case of left eye
+				if (ctx.get_render_pass() == cgv::render::RP_STEREO) {
+					displays[0]->bind_texture(0); cgv::render::gl::cover_screen(ctx, 0, false, -1.0f, -1.0f, 0.0f, 1.0f);
+					displays[1]->bind_texture(0); cgv::render::gl::cover_screen(ctx, 0, false, 0.0f, -1.0f, 1.0f, 1.0f);
+				}
+				// in case of right eye
+				else {
+					displays[0]->bind_texture(1); cgv::render::gl::cover_screen(ctx, 0, false, -1.0f, -1.0f, 0.0f, 1.0f);
+					displays[1]->bind_texture(1); cgv::render::gl::cover_screen(ctx, 0, false, 0.0f, -1.0f, 1.0f, 1.0f);
+				}
+				ctx.set_gamma(tmp_gamma);
+			}
+			break;
+		case MVM_FOUR_PLAYERS:
+			if (stereo_enabled && displays.size() >= 4 && stereo_mode == GLSU_QUAD_BUFFER) {
+				float tmp_gamma = ctx.get_gamma();
+				ctx.set_gamma(1.0f);
+				// in case of left eye
+				if (ctx.get_render_pass() == cgv::render::RP_STEREO) {
+					glColorMask(GL_TRUE, GL_FALSE, GL_FALSE, GL_TRUE);
+					displays[0]->bind_texture(0); cgv::render::gl::cover_screen(ctx, 0, false, -1.0f, -1.0f, 0.0f, 1.0f);
+					displays[1]->bind_texture(0); cgv::render::gl::cover_screen(ctx, 0, false, 0.0f, -1.0f, 1.0f, 1.0f);
+					glColorMask(GL_FALSE, GL_TRUE, GL_TRUE, GL_TRUE);
+					displays[2]->bind_texture(1); cgv::render::gl::cover_screen(ctx, 0, false, -1.0f, -1.0f, 0.0f, 1.0f);
+					displays[3]->bind_texture(1); cgv::render::gl::cover_screen(ctx, 0, false, 0.0f, -1.0f, 1.0f, 1.0f);
+					glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
+				}
+				// in case of right eye
+				else {
+					glColorMask(GL_TRUE, GL_FALSE, GL_FALSE, GL_TRUE);
+					displays[0]->bind_texture(0); cgv::render::gl::cover_screen(ctx, 0, false, -1.0f, -1.0f, 0.0f, 1.0f);
+					displays[1]->bind_texture(0); cgv::render::gl::cover_screen(ctx, 0, false, 0.0f, -1.0f, 1.0f, 1.0f);
+					glColorMask(GL_FALSE, GL_TRUE, GL_TRUE, GL_TRUE);
+					displays[2]->bind_texture(1); cgv::render::gl::cover_screen(ctx, 0, false, -1.0f, -1.0f, 0.0f, 1.0f);
+					displays[3]->bind_texture(1); cgv::render::gl::cover_screen(ctx, 0, false, 0.0f, -1.0f, 1.0f, 1.0f);
+					glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
+				}
+				ctx.set_gamma(tmp_gamma);
+			}
+			if (stereo_enabled && displays.size() >= 4 && stereo_mode == GLSU_SPLIT_HORIZONTALLY) {
+				float tmp_gamma = ctx.get_gamma();
+				ctx.set_gamma(1.0f);
+				glDisable(GL_DEPTH_TEST);
+				// in case of left eye
+				if (ctx.get_render_pass() == cgv::render::RP_STEREO) {
+					glColorMask(GL_TRUE, GL_FALSE, GL_FALSE, GL_TRUE);
+					displays[0]->bind_texture(0); cgv::render::gl::cover_screen(ctx, 0, false, -1.0f, -1.0f, 0.0f, 1.0f);
+					displays[1]->bind_texture(0); cgv::render::gl::cover_screen(ctx, 0, false, 0.0f, -1.0f, 1.0f, 1.0f);
+					glColorMask(GL_FALSE, GL_TRUE, GL_TRUE, GL_TRUE);
+					displays[0]->bind_texture(1); cgv::render::gl::cover_screen(ctx, 0, false, -1.0f, -1.0f, 0.0f, 1.0f);
+					displays[1]->bind_texture(1); cgv::render::gl::cover_screen(ctx, 0, false, 0.0f, -1.0f, 1.0f, 1.0f);
+					glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
+				}
+				// in case of right eye
+				else {
+					glColorMask(GL_TRUE, GL_FALSE, GL_FALSE, GL_TRUE);
+					displays[2]->bind_texture(0); cgv::render::gl::cover_screen(ctx, 0, false, -1.0f, -1.0f, 0.0f, 0.0f);
+					displays[3]->bind_texture(0); cgv::render::gl::cover_screen(ctx, 0, false, 0.0f, -1.0f, 1.0f, 0.0f);
+					glColorMask(GL_FALSE, GL_TRUE, GL_TRUE, GL_TRUE);
+					displays[2]->bind_texture(1); cgv::render::gl::cover_screen(ctx, 0, false, -1.0f, -1.0f, 0.0f, 0.0f);
+					displays[3]->bind_texture(1); cgv::render::gl::cover_screen(ctx, 0, false, 0.0f, -1.0f, 1.0f, 0.0f);
+					glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
+				}
+				glEnable(GL_DEPTH_TEST);
+				ctx.set_gamma(tmp_gamma);
+			}
+			break;
+		}
+	}
+}
+
+///
+bool multi_view_interactor::handle(cgv::gui::event& e)
+{
+	if (vr_view_interactor::handle(e))
+		return true;
+	if (e.get_kind() != cgv::gui::EID_KEY)
+		return false;
+	auto& ke = reinterpret_cast<cgv::gui::key_event&>(e);
+	if (ke.get_action() != cgv::gui::KA_RELEASE) {
+		switch (ke.get_key()) {
+		case cgv::gui::KEY_F9 :
+			if (multi_view_mode == MVM_LAST)
+				multi_view_mode = MVM_DEBUG;
+			else
+				++(int&)multi_view_mode;
+			on_set(&multi_view_mode);
+			return true;
+		}
+	}
+	return false;
 }
 
 ///
 void multi_view_interactor::create_gui() 
 {
 	add_decorator("multi view interactor", "heading");
+	add_member_control(this, "mutli-view mode", multi_view_mode, "dropdown", "enums='debug,passive+anaglyph,passive+active,four players'");
 	if (begin_tree_node("screen definition", show_screen, false, "level=2")) {
 		align("\a");
 		add_member_control(this, "show_screen", show_screen, "check");
