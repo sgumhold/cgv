@@ -21,7 +21,11 @@
 #include "traj_loader.h"
 
 
-/// plugin for testing the various tube renderers
+////
+// Plugin definition
+
+/// baseline visualization plugin for arbitrary trajectory data as tubes using the framework tube renderers and
+/// trajectory loading facilities
 class tubes :
 	public cgv::base::node,             // derive from node to integrate into global tree structure and to store a name
 	public cgv::base::argument_handler, // derive from argument handler to be able to process custom arguments
@@ -31,7 +35,7 @@ class tubes :
 {
 public:
 
-	/// floating point type
+	/// real number type
 	typedef float real;
 
 	/// renderer type
@@ -258,8 +262,7 @@ public:
 				pos.x() = std::max(1, pos.x()+overflow.x());
 			if (overflow.y() < 0)
 				pos.y() = std::max(1, pos.y()+overflow.y());
-			// - then, absolutely prevent truncation at the left and top borders
-			pos.x() = std::max(vp[0]+2, pos.x());
+			// - then, absolutely prevent truncation at the top border
 			pos.y() = std::max(vp[1]+signed(s), pos.y());
 			// draw the text
 			ctx.push_pixel_coords();
@@ -416,7 +419,10 @@ public:
 	}
 };
 
-#include <cgv/base/register.h>
+
+////
+// Object registration
+
 cgv::base::object_registration<tubes> reg_tubes("");
 
 #ifdef CGV_FORCE_STATIC

@@ -209,7 +209,7 @@ template <class flt_type>
 bool bezdat_handler<flt_type>::can_handle (std::istream &contents) const
 {
 	std::string str;
-	auto g = contents.tellg();
+	stream_pos_guard g(contents);
 
 	// check for tell-tale stream contents
 	// - .bezdat header
@@ -217,14 +217,12 @@ bool bezdat_handler<flt_type>::can_handle (std::istream &contents) const
 	if (cgv::utils::to_lower(str).compare("bezdata 1.0") != 0)
 	{
 		//std::cout << "bezdat_handler: first line in stream must be \"BezDatA 1.0\", but found \"" << str << "\" instead!" << std::endl;
-		contents.seekg(g);
 		return false;
 	}
-	// - apparent valid file structure
-	contents >> str;
-	contents.seekg(g);
-	str = std::move(cgv::utils::to_upper(str));
-	return str.empty() || str.compare("PT")==0 || str.compare("BC")==0;
+	// - check if rest of the file looks valid on first glance
+	do { std::getline(contents, str); } while (!contents.eof() && str.empty());
+	str = std::move(cgv::utils::to_upper(str.substr(0, 2)));
+	return str.compare("PT")==0 || str.compare("BC")==0;
 }
 
 template <class flt_type>
@@ -443,6 +441,6 @@ template class bezdat_handler<double>;
 ////
 // Object registration
 
-// The trajectory format handler registry
+// Register both float and double handlers
 cgv::base::object_registration<bezdat_handler<float> > flt_bezdat_reg("bezdat trajectory handler (float)");
 cgv::base::object_registration<bezdat_handler<double> > dbl_bezdat_reg("bezdat trajectory handler (double)");
