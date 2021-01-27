@@ -33,6 +33,7 @@ struct Vertex{
 	float x;
 	float y;
 	float z;
+	
 	uint colors;
 };
 
@@ -66,13 +67,12 @@ float rand(float n){
 }
 
 void main(){
-
 	uint inputIndex = gl_GlobalInvocationID.x;
 
 	if(inputIndex > uBatchSize){
 		return;
 	}
-
+	
 	inputIndex = inputIndex + uBatchOffset;
 
 	Vertex v = inputBuffer[inputIndex];
@@ -84,17 +84,19 @@ void main(){
 	vec4 projected = (transform * vec4(aPosition, 1));
 	projected.xyz = projected.xyz / projected.w;
 
+	/* skip frustum culling
 	// extented-frustum culling
-	float extent = 2;
+	float extent = 2.0;
 	if(abs(projected.x) > extent || abs(projected.y) > extent){
 		return;
 	}
-
+	*/
+	
 	// near-clipping
 	if(projected.w < 0){
 		return;
 	}
-
+	
 	//vec3 worldPos = (world * vec4(aPosition, 1)).xyz;
 	vec3 worldPos = aPosition;
 
