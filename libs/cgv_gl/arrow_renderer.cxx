@@ -19,7 +19,7 @@ namespace cgv {
 
 		arrow_render_style::arrow_render_style() 
 		{
-			radius_lower_bound = 0.001f;
+			radius_lower_bound = 0.00001f;
 			inner_outer_lambda = 0.5f;
 			radius_relative_to_length = 0.1f;
 			head_radius_scale = 2.0f;
@@ -171,7 +171,7 @@ namespace cgv {
 				if (p->begin_tree_node("radius", ars_ptr->radius_lower_bound, true, "level=3")) {
 					p->align("\a");
 					p->add_member_control(b, "radius_relative_to_length", ars_ptr->radius_relative_to_length, "value_slider", "min=0;max=1;ticks=true");
-					p->add_member_control(b, "radius_lower_bound", ars_ptr->radius_lower_bound, "value_slider", "min=0;max=1;log=true;ticks=true");
+					p->add_member_control(b, "radius_lower_bound", ars_ptr->radius_lower_bound, "value_slider", "min=0.00000001;step=0.000000001;max=0.01;log=true;ticks=true");
 					p->add_member_control(b, "inner_outer_lambda", ars_ptr->inner_outer_lambda, "value_slider", "min=0;max=1;ticks=true");
 					p->align("\b");
 					p->end_tree_node(ars_ptr->radius_lower_bound);

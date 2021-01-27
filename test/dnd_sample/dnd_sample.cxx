@@ -10,9 +10,11 @@
 #include <cgv/render/drawable.h>
 #include <cgv/render/attribute_array_binding.h>
 #include <cgv/gui/dialog.h>
+#include <cgv/gui/trigger.h>
 #include <fstream>
 #include <stdio.h>
 #include <stdlib.h>
+#include <future>
 
 // renderer headers include self reflection helpers for render styles
 #include <cgv_gl/box_renderer.h>
@@ -41,7 +43,6 @@ std::string query_system_output(std::string cmd, bool cerr) {
 	return data;
 }
 
-
 class dnd_sample :
 	public cgv::base::node,          /// derive from node to integrate into global tree structure and to store a name
 	public cgv::render::drawable,    /// derive from drawable for drawing the cube
@@ -57,6 +58,7 @@ protected:
 	size_t cursor_position;
 	std::vector<std::string> file_names;
 	std::vector<std::string> durations;
+	std::vector<std::pair<std::string, std::future<std::string>>> futures;
 	std::vector<bool> selection;
 	std::string output_prefix;
 	std::string input_dir;
@@ -72,6 +74,12 @@ public:
 		lecture = 10;
 		part = 1;
 		subpart = 1;
+		connect(cgv::gui::get_animation_trigger().shoot, this, &dnd_sample::timer_event);
+	}
+	void timer_event(double t, double dt)
+	{
+		if (!futures.empty())
+			post_redraw();
 	}
 	std::string get_output_file_name(bool use_subpart = false) const
 	{
@@ -80,19 +88,6 @@ public:
 		if (use_subpart)
 			output_name += letters[subpart] - 1;
 		return  output_name + ".mp4";
-	}
-	void insert_file(const std::string& s, bool selected = false)
-	{
-		if (insert_position == file_names.size()) {
-			file_names.push_back(s);
-			selection.push_back(selected);
-			durations.push_back(get_file_duration(s));
-		}
-		else {
-			file_names.insert(file_names.begin() + insert_position, s);
-			selection.insert(selection.begin() + insert_position, selected);
-			durations.insert(durations.begin() + insert_position, get_file_duration(s));
-		}
 	}
 	std::string get_file_duration(const std::string& s)
 	{
@@ -109,6 +104,20 @@ public:
 
 		}
 		return duration;
+	}
+	void insert_file(const std::string& s, bool selected = false)
+	{
+		futures.push_back({ s, std::async(std::launch::async, &dnd_sample::get_file_duration, this, s) });
+		if (insert_position == file_names.size()) {
+			file_names.push_back(s);
+			selection.push_back(selected);
+			durations.push_back("??:??:??");
+		}
+		else {
+			file_names.insert(file_names.begin() + insert_position, s);
+			selection.insert(selection.begin() + insert_position, selected);
+			durations.insert(durations.begin() + insert_position, "??:??:??");
+		}
 	}
 	void trim_file()
 	{
@@ -134,7 +143,8 @@ public:
 	{
 		file_names.push_back(s);
 		selection.push_back(selected);
-		durations.push_back(get_file_duration(s));
+		futures.push_back({ s, std::async(std::launch::async, &dnd_sample::get_file_duration, this, s) });
+		durations.push_back("??:??:??");
 		insert_position = file_names.size();
 	}
 	void append_directory(const std::string& d, bool selected = false)
@@ -182,8 +192,15 @@ public:
 		insert_position = 0;
 		post_redraw();
 	}
-	void erase_file(size_t i)
+	void erase_file(size_t i, bool remove_on_disc = false)
 	{
+		if (remove_on_disc) {
+			int answer = cgv::gui::question(std::string("remove ") + file_names[i] + " on disk?", "&No,&Yes,&Cancel", 0);
+			if (answer == 2)
+				return;
+			if (answer == 1)
+				cgv::utils::file::remove(file_names[i]);
+		}
 		file_names.erase(file_names.begin() + i);
 		selection.erase(selection.begin() + i);
 		durations.erase(durations.begin() + i);
@@ -196,25 +213,21 @@ public:
 			update_member(&insert_position);
 		}
 	}
-	void discard_selection_or_current()
+	void discard_selection_or_current(bool remove_on_disc = false)
 	{
 		bool sel = false;
 		for (size_t i = file_names.size(); i > 0; ) {
 			--i;
 			if (selection[i]) {
-				erase_file(i);
+				erase_file(i, remove_on_disc);
 				sel = true;
 			}
 		}
 		if (!sel) {
 			if (cursor_position < file_names.size()) {
-				erase_file(cursor_position);
+				erase_file(cursor_position, remove_on_disc);
 			}
 		}
-	}
-	void remove_selection_or_current()
-	{
-		std::cerr << "not implemented" << std::endl;
 	}
 	void toggle_selection()
 	{
@@ -350,7 +363,7 @@ public:
 					return true;
 				}
 				if (ke.get_modifiers() == cgv::gui::EM_ALT+cgv::gui::EM_CTRL) {
-					remove_selection_or_current();
+					discard_selection_or_current(true);
 					post_redraw();
 					return true;
 				}
@@ -543,8 +556,22 @@ public:
 	void clear(cgv::render::context& ctx)
 	{
 	}
+	void check_futures()
+	{
+		for (size_t i = 0; i < futures.size(); ) {
+			if (futures[i].second.wait_for(std::chrono::seconds(0)) == std::future_status::ready) {
+				auto iter = std::find(file_names.begin(), file_names.end(), futures[i].first);
+				if (iter != file_names.end())
+					durations[iter - file_names.begin()] = futures[i].second.get();
+				futures.erase(futures.begin() + i);
+			}
+			else
+				++i;
+		}
+	}
 	void draw(cgv::render::context& ctx)
 	{
+		check_futures();
 		ctx.push_pixel_coords();
 		ivec2 pos(10, 24);
 		for (size_t i = 0; i < file_names.size(); ++i) {
