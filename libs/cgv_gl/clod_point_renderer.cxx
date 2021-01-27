@@ -1,6 +1,14 @@
+/*
+Tests
+near clipping			works
+extended frustum culling	disabled
+reduce compute shader	works? (test with different lod levels missing)
+render shaders	unfinished
+*/
+
 #include "clod_point_renderer.h"
 
-#define CLOD_PR_RENDER_TEST_MODE _TM_
+//#define CLOD_PR_RENDER_TEST_MODE _TM_
 
 namespace cgv {
 	namespace render {
@@ -19,13 +27,17 @@ namespace cgv {
 		{
 			//renderer::draw_impl(ctx, type, start, count, use_strips, use_adjacency, strip_restart_index);
 
-			//run compute shader
+			// reset draw parameters
+			DrawParameters dp = DrawParameters();
+			glBindBuffer(GL_SHADER_STORAGE_BUFFER, draw_parameter_buffer);
+			glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(DrawParameters), &dp, GL_DYNAMIC_READ);
+			glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 			
 			reduce_prog.enable(ctx);
 			glBindBufferBase(GL_SHADER_STORAGE_BUFFER, drawp_pos, draw_parameter_buffer);
-			glBindBufferBase(GL_SHADER_STORAGE_BUFFER, render_pos, input_buffer);
+			glBindBufferBase(GL_SHADER_STORAGE_BUFFER, render_pos, render_buffer);
 			glBindBufferBase(GL_SHADER_STORAGE_BUFFER, input_pos, input_buffer);
-			glDispatchCompute( static_cast<int>(std::ceil(positions.size()/128)), 1, 1);
+			glDispatchCompute((positions.size()/128)+1, 1, 1);
 
 			// synchronize
 			glMemoryBarrier(GL_ALL_BARRIER_BITS);
@@ -38,7 +50,10 @@ namespace cgv {
 #ifdef CLOD_PR_RENDER_TEST_MODE
 			glDrawArrays(GL_POINTS, 0, input_buffer_data.size()); //TEST
 #else
+			//map buffer into host address space
+			DrawParameters* device_draw_parameters = static_cast<DrawParameters*>(glMapNamedBufferRange(draw_parameter_buffer, 0, sizeof(DrawParameters), GL_MAP_READ_BIT));
 			glDrawArrays(GL_POINTS, 0, device_draw_parameters->count);
+			glUnmapNamedBuffer(draw_parameter_buffer);
 #endif // CLOD_PR_RENDER_TEST_MODE
 			glBindVertexArray(0);
 			draw_prog.disable(ctx);
@@ -110,6 +125,7 @@ namespace cgv {
 			vec2 screenSize(ctx.get_width(), ctx.get_height());
 			vec4 pivot = ctx.get_modelview_matrix().col(3);
 			mat4 transform = ctx.get_modelview_projection_device_matrix();
+			
 			mat4 modelview_matrix = ctx.get_modelview_matrix();
 			mat4 projection_matrix = ctx.get_projection_matrix();
 
@@ -130,6 +146,8 @@ namespace cgv {
 			reduce_prog.set_uniform(ctx, reduce_prog.get_uniform_location(ctx, "pivot"), pivot);
 			reduce_prog.set_uniform(ctx, reduce_prog.get_uniform_location(ctx, "screenSize"), screenSize);
 			//configure shader to compute everything after one frame
+
+			//TODO adapt every frame
 			reduce_prog.set_uniform(ctx, reduce_prog.get_uniform_location(ctx, "uBatchOffset"), 0);
 			reduce_prog.set_uniform(ctx, reduce_prog.get_uniform_location(ctx, "uBatchSize"), (int)positions.size());
 
@@ -151,6 +169,7 @@ namespace cgv {
 			
 			draw_prog.set_uniform(ctx, "use_group_color", false);
 			draw_prog.set_uniform(ctx, "use_group_transformation", false);
+
 			return true;
 		}
 
@@ -188,8 +207,6 @@ namespace cgv {
 
 		void clod_point_renderer::fill_buffers(context& ctx)
 		{ //  fill buffers for the compute shader
-			DrawParameters dp = DrawParameters();
-
 			/*
 			glBindBuffer(GL_ARRAY_BUFFER, input_buffer);
 			glBufferData(GL_ARRAY_BUFFER, input_buffer_data.size() * sizeof(Vertex), input_buffer_data.data(), GL_STATIC_READ);
@@ -199,16 +216,6 @@ namespace cgv {
 			
 			glBindBuffer(GL_SHADER_STORAGE_BUFFER, render_buffer);
 			glBufferData(GL_SHADER_STORAGE_BUFFER, input_buffer_data.size() * sizeof(Vertex), nullptr, GL_DYNAMIC_DRAW);
-
-			glBindBuffer(GL_SHADER_STORAGE_BUFFER, draw_parameter_buffer);
-			glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(DrawParameters), &dp, GL_DYNAMIC_READ);
-			//map buffer into host address space
-			if (device_draw_parameters) {
-				glUnmapNamedBuffer(draw_parameter_buffer);
-			}
-			device_draw_parameters = static_cast<DrawParameters*>(glMapNamedBufferRange(draw_parameter_buffer, 0, sizeof(DrawParameters), GL_MAP_READ_BIT));
-			glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
-
 		}
 
 		void clod_point_renderer::clear_buffers(context& ctx)

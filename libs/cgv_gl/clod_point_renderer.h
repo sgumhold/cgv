@@ -33,8 +33,6 @@ namespace cgv {
 				uint32_t  count = 0; //element count
 			};
 
-			DrawParameters* device_draw_parameters = nullptr;
-
 			float CLOD = 1.f;
 			float spacing = 1.f; //root spacing
 			float scale = 1.f;
