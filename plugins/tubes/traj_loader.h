@@ -29,6 +29,25 @@ enum class VisualAttrib
 typedef std::unordered_map<VisualAttrib, std::string> visual_attribute_mapping;
 
 
+/// RAII-type helper that trajectory format handlers can use to ensure reset of the stream position after
+/// can_handle() queries
+struct stream_pos_guard
+{
+	/// the stream to guard
+	std::istream &stream;
+
+	/// the position the stream will be reset to
+	const std::istream::pos_type g;
+
+	/// construct the guard for the given stream
+	stream_pos_guard(std::istream& stream) : stream(stream), g(stream.tellg())
+	{}
+
+	/// the destructor
+	~stream_pos_guard() { stream.seekg(g); }
+};
+
+
 /// class encapsulating an attribute type
 template<class flt_type>
 class traj_attribute
@@ -208,7 +227,8 @@ public:
 	/// virtual base destructor - causes vtable creation
 	virtual ~traj_format_handler();
 
-	/// test if the given data stream can be handled by this handler
+	/// Test if the given data stream can be handled by this handler. At the minimum, the handler must be able to extract sample
+	/// positions from the data stream when reporting true.
 	virtual bool can_handle (std::istream &contents) const = 0;
 
 	/// parse the given stream containing the file contents to load trajectories stored in it (optionally offsetting sample indices by
