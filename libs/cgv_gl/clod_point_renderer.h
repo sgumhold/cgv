@@ -26,7 +26,8 @@ namespace cgv {
 
 			struct Vertex {
 				vec3 position;
-				rgba8 colors;
+				rgb8 colors;
+				uint8_t level = 0;
 			};
 
 			struct DrawParameters {
@@ -76,12 +77,19 @@ namespace cgv {
 			}
 			template<typename T>
 			void set_colors(const context& ctx, const std::vector<T>& colors) {
-				input_buffer_data.resize(colors.size());
+				//input_buffer_data.resize(colors.size());
 				for (int i = 0; i < positions.size(); ++i) {
-					input_buffer_data[i].colors = rgba(colors[i]);
-					input_buffer_data[i].colors.alpha() = 1;
+					input_buffer_data[i].colors = rgb(colors[i]);
 				}
 				buffers_outofdate = true;
+			}
+
+			template<typename T>
+			void set_lods(const std::vector<T>& lod) {
+				//input_buffer_data.resize(lod.size());
+				for (int i = 0; i < lod.size(); ++i) {
+					input_buffer_data[i].level = lod[i]; //LOD level (lower levels should be more coarse than higher levels)
+				}
 			}
 
 		private:
