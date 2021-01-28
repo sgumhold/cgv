@@ -55,7 +55,6 @@ layout(location = 22) uniform int uBatchSize;
 uniform float CLOD;
 uniform float scale;
 uniform float spacing; //root_spacings
-uniform float minMilimeters;
 uniform vec2 screenSize;
 uniform vec4 pivot;
 
@@ -84,13 +83,12 @@ void main(){
 	vec4 projected = (transform * vec4(aPosition, 1));
 	projected.xyz = projected.xyz / projected.w;
 
-	/* skip frustum culling
 	// extented-frustum culling
-	float extent = 2.0;
-	if(abs(projected.x) > extent || abs(projected.y) > extent){
+	vec2 extent = 2.0*screenSize;
+	if(projected.x < 0.0 || projected.x >= extent.x ||
+		projected.y < 0.0 || projected.y >= extent.y){
 		return;
 	}
-	*/
 	
 	// near-clipping
 	if(projected.w < 0){
