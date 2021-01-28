@@ -4,6 +4,10 @@ layout(location = 0) in vec3 position;
 layout(location = 1) in vec4 color;
 
 out vec4 color_gs;
+out float point_size;
+out float radius;
+out float linear_depth;
+
 
 //***** begin interface of view.glsl **********************************/
 mat4 get_modelview_matrix();
@@ -21,13 +25,19 @@ float rand(float n){
 
 void main()
 {
+	vec4 pos = get_modelview_projection_matrix() * vec4(position.xyz, 1.0);
+	
+	//test values
+	point_size = 1.0; //TODO set to target spacing
+	radius = 1.0;
+	linear_depth = pos.w;
+	
 	gl_PointSize = 1.0;
 	color_gs = color;
 	
 	gl_Position = vec4(position.xyz, 1.0);
 	//mat4 transform = get_modelview_projection_matrix();
 	//mat4 centralTransform = transform;
-	//vec4 pos = transform * vec4(position.xyz, 1.0);
 
 	//gl_Position = pos;
 }

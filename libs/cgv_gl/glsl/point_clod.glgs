@@ -8,7 +8,10 @@ uniform bool measure_point_size_in_pixel = true;
 uniform float reference_point_size = 1.0;
 uniform float pixel_extent_per_depth;
 
-in vec4 color_gs[];
+in vec4 color_gs[]; //vColor
+in float point_size[];
+in float radius[];
+in float linear_depth[];
 
 out vec2 uv;
 out vec4 color_fs;
