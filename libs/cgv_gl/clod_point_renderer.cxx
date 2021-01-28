@@ -234,3 +234,31 @@ namespace cgv {
 
 	}
 }
+
+
+#include <cgv/gui/provider.h>
+
+namespace cgv {
+	namespace gui {
+
+		struct clod_point_render_style_gui_creator : public gui_creator {
+			/// attempt to create a gui and return whether this was successful
+			bool create(provider* p, const std::string& label,
+				void* value_ptr, const std::string& value_type,
+				const std::string& gui_type, const std::string& options, bool*) {
+				if (value_type != cgv::type::info::type_name<cgv::render::clod_point_render_style>::get_name())
+					return false;
+				cgv::render::clod_point_render_style* rs_ptr = reinterpret_cast<cgv::render::clod_point_render_style*>(value_ptr);
+				cgv::base::base* b = dynamic_cast<cgv::base::base*>(p);
+				p->add_member_control(b, "CLOD factor", rs_ptr->CLOD, "value_slider", "min=0.1;max=10;ticks=true");
+				p->add_member_control(b, "scale", rs_ptr->scale, "value_slider", "min=0.1;max=10;ticks=true");
+				p->add_member_control(b, "point spacing", rs_ptr->spacing, "value_slider", "min=0.1;max=10;ticks=true");
+				p->add_member_control(b, "point size", rs_ptr->pointSize, "value_slider", "min=0.1;max=10;ticks=true");
+				p->add_member_control(b, "min millimeters", rs_ptr->min_millimeters, "value_slider", "min=0.1;max=10;ticks=true");
+				return true;
+			}
+		};
+
+		cgv::gui::gui_creator_registration<clod_point_render_style_gui_creator> cprsgc("clod_point_render_style_gui_creator");
+	}
+}
