@@ -126,7 +126,6 @@ namespace cgv {
 			//TODO set uniforms
 			vec2 screenSize(ctx.get_width(), ctx.get_height());
 			vec4 pivot = ctx.get_modelview_matrix().col(3);
-			mat4 transform = ctx.get_modelview_projection_device_matrix();
 			
 			mat4 modelview_matrix = ctx.get_modelview_matrix();
 			mat4 projection_matrix = ctx.get_projection_matrix();
@@ -138,7 +137,6 @@ namespace cgv {
 			draw_prog.set_uniform(ctx, "minMilimeters", prs.min_millimeters);
 			draw_prog.set_uniform(ctx, "screenSize", screenSize);
 			draw_prog.set_uniform(ctx, "pivot", pivot);
-			draw_prog.set_uniform(ctx, "transform", transform);
 			
 			//view.glsl
 			draw_prog.set_uniform(ctx, draw_prog.get_uniform_location(ctx, "modelview_matrix"), modelview_matrix);
