@@ -26,7 +26,9 @@
 //   The same models with the same LOD can be downsampled and rendered at 90FPS in a single frame on a 2080 TI, 
 //   compared to a 1080 that required distribution of the downsampling step over ~5 frames.
 //
-	
+
+
+
 layout(local_size_x = 128, local_size_y = 1) in;
 
 struct Vertex{
@@ -45,8 +47,12 @@ layout(std430, binding = 1) buffer ssTargetBuffer{
 	Vertex targetBuffer[];
 };
 
+//draw parameters for glDrawArraysIndirect
 layout(std430, binding = 3) buffer ssDrawParameters{
-	uint  count;
+	uint count;
+	uint primCount;
+	uint first;
+	uint baseInstance;
 } drawParameters;
 
 layout(location = 21) uniform int uBatchOffset;
@@ -58,14 +64,20 @@ uniform float spacing; //root_spacings
 uniform vec2 screenSize;
 uniform vec4 pivot;
 
-uniform mat4 transform; //model view projection matrix
 
+//***** begin interface of view.glsl ***********************************
+mat4 get_modelview_matrix();
+mat4 get_projection_matrix();
+mat4 get_modelview_projection_matrix();
+//***** end interface of view.glsl ***********************************
 
 float rand(float n){
 	return fract(cos(n) * 123456.789);
 }
 
 void main(){
+	mat4 transform = get_modelview_projection_matrix();
+	
 	uint inputIndex = gl_GlobalInvocationID.x;
 
 	if(inputIndex > uBatchSize){
@@ -84,9 +96,8 @@ void main(){
 	projected.xyz = projected.xyz / projected.w;
 
 	// extented-frustum culling
-	vec2 extent = 2.0*screenSize;
-	if(projected.x < 0.0 || projected.x >= extent.x ||
-		projected.y < 0.0 || projected.y >= extent.y){
+	float extent = 2.0;
+	if(abs(projected.x) > extent || abs(projected.y) > extent){
 		return;
 	}
 	
@@ -105,7 +116,7 @@ void main(){
 	float pointSpacing = scale * spacing / pow(2, level + aRandom);
 
 	float d = distance(worldPos, pivot.xyz);
-	float dc = length(projected.xy);
+	float dc = length((projected.xy/screenSize)-vec2(1.0,1.0)); //distance to center in device coordinates
 
 	// targetSpacing dependant on camera distance
 	//float targetSpacing = (CLOD / 1000) * d;

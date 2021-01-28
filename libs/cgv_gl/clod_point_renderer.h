@@ -10,11 +10,15 @@ namespace cgv {
 	namespace render {
 
 		/** render style for sphere rendere */
-		struct CGV_API clod_point_render_style : public render_style
+		struct CGV_API clod_point_render_style : public point_render_style
 		{
 			/*@name clod rendering attributes*/
 			//@{
-			
+			float CLOD = 1.f;
+			float spacing = 1.f;
+			float scale = 1.f;
+			float min_millimeters = 1.f;
+			float pointSize = 1.f;
 			//@}
 
 			/// construct with default values
@@ -31,12 +35,15 @@ namespace cgv {
 			};
 
 			struct DrawParameters {
-				uint32_t  count = 0; //element count
+				GLuint  count = 0; //element count
+				GLuint  primCount = 1;
+				GLuint  first = 0;
+				GLuint  baseInstance = 0;
 			};
 
-			float CLOD = 1.f;
-			float spacing = 1.f; //root spacing
-			float scale = 1.f;
+			//float CLOD = 1.f;
+			//float spacing = 1.f; //root spacing
+			//float scale = 1.f;
 			
 			shader_program reduce_prog;
 			shader_program draw_prog;
@@ -51,7 +58,7 @@ namespace cgv {
 
 
 			//test
-			point_render_style prs;
+			clod_point_render_style prs;
 		protected:
 
 			void draw_and_compute_impl(context& ctx, PrimitiveType type, size_t start, size_t count, bool use_strips, bool use_adjacency, uint32_t strip_restart_index);
@@ -88,8 +95,9 @@ namespace cgv {
 			void set_lods(const std::vector<T>& lod) {
 				//input_buffer_data.resize(lod.size());
 				for (int i = 0; i < lod.size(); ++i) {
-					input_buffer_data[i].level = lod[i]; //LOD level (lower levels should be more coarse than higher levels)
+					input_buffer_data[i].level = lod[i]; //set LOD level (lower levels should be more coarse than higher levels)
 				}
+				buffers_outofdate = true;
 			}
 
 		private:

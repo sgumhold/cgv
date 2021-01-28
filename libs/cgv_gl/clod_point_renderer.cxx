@@ -30,7 +30,7 @@ namespace cgv {
 			// reset draw parameters
 			DrawParameters dp = DrawParameters();
 			glBindBuffer(GL_SHADER_STORAGE_BUFFER, draw_parameter_buffer);
-			glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(DrawParameters), &dp, GL_DYNAMIC_READ);
+			glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(DrawParameters), &dp, GL_DYNAMIC_DRAW);
 			glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 			
 			reduce_prog.enable(ctx);
@@ -46,14 +46,17 @@ namespace cgv {
 			// draw resulting buffer
 			draw_prog.enable(ctx);
 			glBindVertexArray(vertex_array);
-			glEnable(GL_PROGRAM_POINT_SIZE);
+			glBindBuffer(GL_DRAW_INDIRECT_BUFFER, draw_parameter_buffer);
+			glDrawArraysIndirect(GL_POINTS, 0);
+			glBindBuffer(GL_DRAW_INDIRECT_BUFFER,0);
 #ifdef CLOD_PR_RENDER_TEST_MODE
 			glDrawArrays(GL_POINTS, 0, input_buffer_data.size()); //TEST
 #else
+			
 			//map buffer into host address space
-			DrawParameters* device_draw_parameters = static_cast<DrawParameters*>(glMapNamedBufferRange(draw_parameter_buffer, 0, sizeof(DrawParameters), GL_MAP_READ_BIT));
-			glDrawArrays(GL_POINTS, 0, device_draw_parameters->count);
-			glUnmapNamedBuffer(draw_parameter_buffer);
+			//DrawParameters* device_draw_parameters = static_cast<DrawParameters*>(glMapNamedBufferRange(draw_parameter_buffer, 0, sizeof(DrawParameters), GL_MAP_READ_BIT));
+			//glUnmapNamedBuffer(draw_parameter_buffer);
+			
 #endif // CLOD_PR_RENDER_TEST_MODE
 			glBindVertexArray(0);
 			draw_prog.disable(ctx);
@@ -68,7 +71,7 @@ namespace cgv {
 		{
 			if (!reduce_prog.is_created()) {
 				reduce_prog.create(ctx);
-				
+				add_shader(ctx, reduce_prog, "view.glsl", cgv::render::ST_COMPUTE);
 				add_shader(ctx, reduce_prog, "point_clod_filter_points.glcs", cgv::render::ST_COMPUTE);
 				reduce_prog.link(ctx);
 #ifndef NDEBUG
@@ -78,7 +81,6 @@ namespace cgv {
 			
 			//create shader program
 			if (!draw_prog.is_created()) {
-				//draw_prog.build_program(ctx, "point.glpr", true);
 				draw_prog.build_program(ctx, "point_clod.glpr", true);
 #ifndef NDEBUG
 				std::cerr << draw_prog.last_error;
@@ -129,20 +131,25 @@ namespace cgv {
 			mat4 modelview_matrix = ctx.get_modelview_matrix();
 			mat4 projection_matrix = ctx.get_projection_matrix();
 
-			draw_prog.set_uniform(ctx, draw_prog.get_uniform_location(ctx, "CLOD"), CLOD);
-			draw_prog.set_uniform(ctx, draw_prog.get_uniform_location(ctx, "scale"), scale);
-			draw_prog.set_uniform(ctx, draw_prog.get_uniform_location(ctx, "spacing"), spacing);
-			draw_prog.set_uniform(ctx, draw_prog.get_uniform_location(ctx, "pivot"), pivot);
-			draw_prog.set_uniform(ctx, draw_prog.get_uniform_location(ctx, "screenSize"), screenSize);
-			draw_prog.set_uniform(ctx, draw_prog.get_uniform_location(ctx, "transform"), transform);
+			draw_prog.set_uniform(ctx, "CLOD" , prs.CLOD);
+			draw_prog.set_uniform(ctx, "scale", prs.scale);
+			draw_prog.set_uniform(ctx, "spacing", prs.spacing);
+			draw_prog.set_uniform(ctx, "pointSize", prs.pointSize);
+			draw_prog.set_uniform(ctx, "minMilimeters", prs.min_millimeters);
+			draw_prog.set_uniform(ctx, "screenSize", screenSize);
+			draw_prog.set_uniform(ctx, "pivot", pivot);
+			draw_prog.set_uniform(ctx, "transform", transform);
+			
 			//view.glsl
 			draw_prog.set_uniform(ctx, draw_prog.get_uniform_location(ctx, "modelview_matrix"), modelview_matrix);
 			draw_prog.set_uniform(ctx, draw_prog.get_uniform_location(ctx, "projection_matrix"), projection_matrix);
 
-			reduce_prog.set_uniform(ctx, reduce_prog.get_uniform_location(ctx, "transform"), transform);
-			reduce_prog.set_uniform(ctx, reduce_prog.get_uniform_location(ctx, "CLOD"), CLOD);
-			reduce_prog.set_uniform(ctx, reduce_prog.get_uniform_location(ctx, "scale"), scale);
-			reduce_prog.set_uniform(ctx, reduce_prog.get_uniform_location(ctx, "spacing"), spacing);
+			// compute shader
+			reduce_prog.set_uniform(ctx, "modelview_matrix", modelview_matrix);
+			reduce_prog.set_uniform(ctx, "projection_matrix", projection_matrix);
+			reduce_prog.set_uniform(ctx, "CLOD", prs.CLOD);
+			reduce_prog.set_uniform(ctx, "scale", prs.scale);
+			reduce_prog.set_uniform(ctx, "spacing", prs.spacing);
 			reduce_prog.set_uniform(ctx, reduce_prog.get_uniform_location(ctx, "pivot"), pivot);
 			reduce_prog.set_uniform(ctx, reduce_prog.get_uniform_location(ctx, "screenSize"), screenSize);
 			//configure shader to compute everything after one frame
@@ -155,6 +162,7 @@ namespace cgv {
 			//testcode
 			float reference_point_size = 0.01f;
 			float y_view_angle = 45;
+			//general point renderer uniforms
 			draw_prog.set_uniform(ctx, "use_color_index", false);
 			draw_prog.set_uniform(ctx, "measure_point_size_in_pixel", prs.measure_point_size_in_pixel);
 			draw_prog.set_uniform(ctx, "reference_point_size", reference_point_size);
@@ -169,7 +177,6 @@ namespace cgv {
 			
 			draw_prog.set_uniform(ctx, "use_group_color", false);
 			draw_prog.set_uniform(ctx, "use_group_transformation", false);
-
 			return true;
 		}
 
