@@ -1,8 +1,15 @@
 @echo off
+
+echo This script will download and extract the prebuilt libtorch binaries from the pytorch file server.
+echo The download will be approximately 766MB in size and 4.7GB of hard drive space is needed after extraction.
+
+echo.
+echo [30;43mIMPORTANT^![0m
+echo [33mIn order to use the [1mDebug DLL [0;33mbuild configuration Visual Studio 2019 with the C++ desktop development workload must be installed.[0m
+echo.
+
 setlocal EnableDelayedExpansion
 
-echo This script will download and extract the prebuilt binaries from the pytorch website.
-echo Download will be approximately 500MB. Approximately 3.5GB of hard drive space is needed after extraction.
 :choice
 set /P c=Are you sure you want to continue [y/n]?
 if /I "%c%" EQU "y" goto :run
