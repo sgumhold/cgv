@@ -1,6 +1,8 @@
 #pragma once
 #include <cgv/render/context.h>
 #include <cgv_gl/point_renderer.h>
+#include <atomic>
+#include <mutex>
 
 #include "gl/lib_begin.h"
 
@@ -25,8 +27,7 @@ namespace cgv {
 			clod_point_render_style();
 		};
 
-
-		class CGV_API clod_point_renderer : public cgv::render::render_types {
+		class CGV_API clod_point_renderer : public cgv::render::renderer {
 
 			struct Vertex {
 				vec3 position;
@@ -40,6 +41,21 @@ namespace cgv {
 				GLuint  first = 0;
 				GLuint  baseInstance = 0;
 			};
+
+			struct State {
+				std::atomic<int64_t> pointsTotal = 0;
+				std::atomic<int64_t> pointsProcessed = 0;
+
+				int numPasses = 3;
+				int currentPass = 0; // starts with index 1! interval: [1,  numPasses]
+
+				std::mutex mtx;
+
+				double progress() {
+					return double(pointsProcessed) / double(pointsTotal);
+				}
+			};
+
 
 			//float CLOD = 1.f;
 			//float spacing = 1.f; //root spacing
@@ -56,10 +72,10 @@ namespace cgv {
 			const int input_pos = 0, render_pos = 1, drawp_pos = 3;
 			bool buffers_outofdate = true;
 
-
-			//test
-			clod_point_render_style prs;
 		protected:
+
+			void lod_chunking();
+			std::vector<std::atomic<unsigned>> lod_counting(std::vector<vec3> positions, vec3 min, vec3 max, int64_t gridSize, State& state);
 
 			void draw_and_compute_impl(context& ctx, PrimitiveType type, size_t start, size_t count, bool use_strips, bool use_adjacency, uint32_t strip_restart_index);
 		public:
@@ -74,6 +90,8 @@ namespace cgv {
 			void draw(context& ctx, size_t start, size_t count,
 				bool use_strips = false, bool use_adjacency = false, uint32_t strip_restart_index = -1);
 			
+			void generate_lods();
+
 			void set_positions(context& ctx, std::vector<vec3> positions) {
 				this->positions = positions;
 				input_buffer_data.resize(positions.size());
