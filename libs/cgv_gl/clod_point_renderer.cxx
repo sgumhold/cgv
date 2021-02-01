@@ -23,6 +23,52 @@ namespace cgv {
 			float clod_factor;
 		}
 
+		void clod_point_renderer::lod_chunking()
+		{
+			size_t maxPointsPerChunk = std::min<size_t>(positions.size() / 20, 10'000'000ll);
+			size_t gridSize;
+			size_t currentPass;
+
+			if (positions.size() < 100'000'000) {
+				gridSize = 128;
+			}
+			else if (positions.size() < 500'000'000) {
+				gridSize = 256;
+			}
+			else {
+				gridSize = 512;
+			}
+
+			currentPass = 1;
+
+			// COUNT
+			std::vector<std::atomic<unsigned>> grid;
+			
+			//lod_counting(grid,positions,)
+			//auto grid = countPointsInCells(sources, min, max, gridSize, state);
+
+			{ // DISTIRBUTE
+
+				//auto lut = createLUT(grid, gridSize);
+
+				//state.currentPass = 2;
+				//distributePoints(sources, min, max, targetDir, lut, state, outputAttributes);
+			}
+
+
+			//string metadataPath = targetDir + "/chunks/metadata.json";
+			//double cubeSize = (max - min).max();
+			//Vector3 size = { cubeSize, cubeSize, cubeSize };
+			//max = min + cubeSize;
+
+			//writeMetadata(metadataPath, min, max, outputAttributes);
+		}
+
+		std::vector<std::atomic<unsigned>> clod_point_renderer::lod_counting(std::vector<vec3> positions, vec3 min, vec3 max, int64_t gridSize, State& state)
+		{
+			return std::vector<std::atomic<unsigned>>();
+		}
+
 		void clod_point_renderer::draw_and_compute_impl(context& ctx, PrimitiveType type, size_t start, size_t count, bool use_strips, bool use_adjacency, uint32_t strip_restart_index)
 		{
 			//renderer::draw_impl(ctx, type, start, count, use_strips, use_adjacency, strip_restart_index);
@@ -125,10 +171,12 @@ namespace cgv {
 			//const clod_point_render_style& srs = get_style<clod_point_render_style>();
 			//TODO set uniforms
 			vec2 screenSize(ctx.get_width(), ctx.get_height());
-			vec4 pivot = ctx.get_modelview_matrix().col(3);
+			vec4 pivot = inv(ctx.get_modelview_matrix())*dvec4(0.0,0.0,0.0,1.0);
 			
 			mat4 modelview_matrix = ctx.get_modelview_matrix();
 			mat4 projection_matrix = ctx.get_projection_matrix();
+
+			const clod_point_render_style& prs = get_style<clod_point_render_style>();
 
 			draw_prog.set_uniform(ctx, "CLOD" , prs.CLOD);
 			draw_prog.set_uniform(ctx, "scale", prs.scale);
@@ -193,6 +241,11 @@ namespace cgv {
 		void clod_point_renderer::draw(context& ctx, size_t start, size_t count, bool use_strips, bool use_adjacency, uint32_t strip_restart_index)
 		{
 			draw_and_compute_impl(ctx, cgv::render::PT_POINTS, start, count, use_strips, use_adjacency, strip_restart_index);
+		}
+
+		void clod_point_renderer::generate_lods()
+		{
+			//TODO
 		}
 
 		void clod_point_renderer::add_shader(context& ctx, shader_program& prog, const std::string& sf,const cgv::render::ShaderType st)
