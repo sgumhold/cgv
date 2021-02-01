@@ -180,7 +180,7 @@ namespace cgv {
 										else if (components.substr(0, 3) == "RGB")
 											info.components = cgv::data::CF_RGB;
 										else if (components.substr(0, 2) == "RG")
-											info.components = cgv::data::CF_RGB;
+											info.components = cgv::data::CF_RG;
 										else if (components.substr(0, 5) == "ALPHA")
 											info.components = cgv::data::CF_A;
 									}
@@ -278,7 +278,7 @@ namespace cgv {
 				switch (VI.components) {
 				case cgv::data::CF_L: os << " Luminance"; break;
 				case cgv::data::CF_I: os << " Intensity"; break;
-				case cgv::data::CF_RG: os << " RGB"; break;
+				case cgv::data::CF_RG: os << " RG"; break;
 				case cgv::data::CF_RGB: os << " RGB"; break;
 				case cgv::data::CF_RGBA: os << " RGBA"; break;
 				case cgv::data::CF_A: os << " Alpha"; break;
