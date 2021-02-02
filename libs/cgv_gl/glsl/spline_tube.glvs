@@ -1,10 +1,10 @@
 #version 460 
 
 in vec4 position;
-in vec4 tangent;
 in float radius;
 in vec4 color;
 in int group_index;
+in vec4 tangent;
 
 out flat vec4 tangent_gs;
 out flat vec4 color_gs;
