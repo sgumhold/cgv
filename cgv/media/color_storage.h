@@ -48,6 +48,8 @@ namespace cgv {
 			ColorType get_color_type() const;
 			/// return size of a single color in byte
 			size_t get_color_size() const;
+			/// clone the color storage
+			virtual abst_color_storage* clone() const = 0;
 			/// return number colors stored in color storage
 			virtual size_t get_nr_colors() const = 0;
 			/// resize to the given number of colors
@@ -103,6 +105,10 @@ namespace cgv {
 				case CT_RGB8:  new (this) color_storage<C>(static_cast<const color_storage<rgb8>&>(acsm)); break;
 				case CT_RGBA8: new (this) color_storage<C>(static_cast<const color_storage<rgba8>&>(acsm)); break;
 				}
+			}
+			/// clone the color storage
+			abst_color_storage* clone() const {
+				return new color_storage(*this);
 			}
 			// implementation of vector access passes interface to std::vector class
 			size_t get_nr_colors() const { return colors.size(); }

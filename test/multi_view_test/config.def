@@ -1,0 +1,27 @@
+show all
+
+// set creation parameters and create emulated vr kit
+type(vr_emulator):create_body_direction=3.14
+type(vr_emulator):create_body_position='0 0 -1'
+type(vr_emulator):current_kit_index=0
+
+// place trackers of emulated kit
+type(vr_emulator):tracker_1_position='-0.75 1.5 -1'
+type(vr_emulator):tracker_2_position='-0.25 1.5 -1'
+type(vr_emulator):tracker_3_position=' 0.25 1.5 -1'
+type(vr_emulator):tracker_4_position=' 0.75 1.5 -1'
+
+// uncomment to turn on stereo rendering in bird's eye view 
+// type(multi_view_interactor):stereo=true
+
+// define bird's eye observer
+type(multi_view_interactor):focus="0 1 0";view_dir="0 -0.5 1"
+
+// attach 4 displays to trackers (having controller indices 2..5) of emulated kit
+type(multi_view_interactor):add_controller_as_player=2
+type(multi_view_interactor):add_controller_as_player=3
+type(multi_view_interactor):add_controller_as_player=4
+type(multi_view_interactor):add_controller_as_player=5
+
+// show offline rending of display 1 (attached to tracker 2 with controller index 3)
+type(multi_view_interactor):debug_display_index=1

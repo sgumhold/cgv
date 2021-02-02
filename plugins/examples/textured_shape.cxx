@@ -28,7 +28,7 @@ public:
 	} object;
 	
 	// texture generation
-	enum TextureSelection { CHECKER, WAVES, ALHAMBRA, CARTUJA } texture_selection;
+	enum TextureSelection { CHECKER, CG1_SAMPLE, WAVES, ALHAMBRA, CARTUJA } texture_selection;
 	float texture_frequency, texture_frequency_aspect;
 	int n; // resolution
 
@@ -48,12 +48,12 @@ public:
 	textured_shape(int _n = 1024) : 
 		node("textured primitiv"), 
 		n(_n), 
-		border_color(1,0,0,0), 
+		border_color(1,0,0,1), 
 		frame_color(1,1,1,1)
 	{
 		frame_width = 2;
 		object = CUBE;
-		texture_selection = CHECKER;
+		texture_selection = CG1_SAMPLE;
 		texture_frequency = 50;
 		texture_frequency_aspect = 1;
 		texture_scale = 1;
@@ -125,7 +125,21 @@ public:
 			update_member(&n);
 			return;
 		}
-	
+		if (texture_selection == CG1_SAMPLE) {
+			cgv::data::data_format df(4, 4, cgv::type::info::TI_FLT32, cgv::data::CF_RGB);
+			cgv::data::data_view dv(&df);
+			static uint8_t rgbs[] = {
+				213,235,255, 47,153,255, 0,106,179, 255,192,0,
+				83,204,255,  47,153,255, 0,106,179, 166,225,105,
+				83,204,255,   0,106,179, 166,225,105,235,67,208,
+				24,255,142,  24,255,142, 235,67,208, 148, 119, 201
+			};
+			float* ptr = (float*)dv.get_ptr<unsigned char>();
+			for (int i = 0; i < 48; ++i)
+				ptr[i] = rgbs[i] / 255.0f;
+			t_ptr->create(ctx, dv);
+			return;
+		}
 		cgv::data::data_format df(n,n, cgv::type::info::TI_FLT32, cgv::data::CF_L);
 		cgv::data::data_view dv(&df);
 		int i,j;
@@ -133,7 +147,7 @@ public:
 		for (i=0; i<n; ++i)
 			for (j=0; j<n; ++j)
 				if (texture_selection == CHECKER)
-					ptr[i*n+j] = (float)(((i/8)&1) ^((j/8)&1));
+					ptr[i*n+j] = (float)(((i/int(texture_frequency))&1) ^((j/ int(texture_frequency))&1));
 				else
 					ptr[i*n+j] = 
 					   (float)(0.5*(pow(cos(M_PI*texture_frequency/texture_frequency_aspect*i/(n-1)),3)*
@@ -217,7 +231,7 @@ public:
 		add_member_control(this, "priority", t_ptr->priority, "value_slider", "min=0;max=1;ticks=true");
 
 		add_decorator("Texture Properties", "heading");
-		add_member_control(this, "texture", texture_selection, "dropdown", "enums='checker,waves,alhambra,cartuja'");
+		add_member_control(this, "texture", texture_selection, "dropdown", "enums='checker,cg1_sample,waves,alhambra,cartuja'");
 		add_member_control(this, "frequency", texture_frequency, "value_slider", "min=0;max=200;log=true;ticks=true");
 		add_member_control(this, "frequency aspect", texture_frequency_aspect, "value_slider", "min=0.1;max=10;log=true;ticks=true");
 		add_member_control(this, "texture resolution", n, "value_slider", "min=4;max=1024;log=true;ticks=true");

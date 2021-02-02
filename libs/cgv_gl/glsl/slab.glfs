@@ -1,0 +1,178 @@
+#version 150 
+
+in vec3 position;
+in mat4 inv_TM_fs;
+in float y_scale_fs;
+flat in int tex_idx_fs;
+
+uniform sampler2DArray tex;
+uniform sampler1D tf_tex;
+
+uniform bool use_transfer_function;
+uniform int tf_source_channel;
+uniform float step_size;
+uniform float opacity_scale;
+uniform float falloff_mix;
+uniform float falloff_strength;
+uniform float scale;
+
+//***** begin interface of view.glsl ***********************************
+mat4 get_modelview_matrix();
+mat4 get_projection_matrix();
+mat4 get_modelview_projection_matrix();
+mat4 get_inverse_modelview_matrix();
+mat4 get_inverse_modelview_projection_matrix();
+mat3 get_normal_matrix();
+mat3 get_inverse_normal_matrix();
+//***** end interface of view.glsl ***********************************
+
+//***** begin interface of fragment.glfs ***********************************
+uniform float gamma = 2.2;
+void finish_fragment(vec4 color);
+//***** end interface of fragment.glfs ***********************************
+
+bool intersect_box(vec3 org, vec3 dir, out float t_min, out float t_max) {
+
+	vec3 inv_dir = 1.0f / dir;
+
+	float t1 = (-1.0 - org.x)*inv_dir.x;
+	float t2 = (+1.0 - org.x)*inv_dir.x;
+
+	t_min = min(t1, t2);
+	t_max = max(t1, t2);
+
+	t1 = (-1.0 - org.y)*inv_dir.y;
+	t2 = (+1.0 - org.y)*inv_dir.y;
+
+	t_min = max(t_min, min(t1, t2));
+	t_max = min(t_max, max(t1, t2));
+
+	t1 = (-1.0 - org.z)*inv_dir.z;
+	t2 = (+1.0 - org.z)*inv_dir.z;
+
+	t_min = max(t_min, min(t1, t2));
+	t_max = min(t_max, max(t1, t2));
+
+	return t_max > max(t_min, 0.0);
+}
+
+/* Different falloff versions (evaluate what is most useful)
+
+	// exponential
+	float falloff = exp(-falloff_strength*abs_y) - abs_y*exp(-falloff_strength);
+			
+	// linear
+	float falloff = mix(1.0 - abs_y, 1.0, falloff_strength);
+
+	// power
+	float falloff = pow(1.0 - abs_y + 0.0001, falloff_strength);
+*/
+
+vec4 integrate_tf(vec3 org, vec3 dir, float dist, float inv_y_scale) {
+	vec4 color = vec4(0.0);
+	// start at a small offset to prevent sampling artifacts
+	float t = 1e-6;
+
+	// trace the ray until it reaches the predefined distance
+	while(t < dist) {
+		vec3 sample_pos = org - t*dir;
+		float abs_y = abs(sample_pos.y) * inv_y_scale;
+		vec2 tex_coords = 0.5*sample_pos.xz + 0.5;
+		// TODO: flip or not (depends on input image)?
+		//tex_coords.y = 1.0 - tex_coords.y;
+
+		float value = texture(tex, vec3(tex_coords, tex_idx_fs))[tf_source_channel];
+		
+		// inverse power
+		float falloff = (1.0 - pow(abs_y, falloff_strength)) * (1.0 - abs_y);
+		falloff = mix(1.0, falloff, falloff_mix);
+
+		// TODO: also get alpha from transfer function
+		vec4 color_in = value * vec4(texture(tf_tex, value).rgb, 1.0);
+		color_in *= falloff * opacity_scale;
+			
+		color_in *= (1.0 - exp(-step_size * scale));
+
+		// back to front blending
+		color = color_in + (1.0 - color_in.a)*color;
+
+		// step along ray
+		t += step_size;
+	}
+	return color;
+}
+
+vec4 integrate(vec3 org, vec3 dir, float dist, float inv_y_scale) {
+	vec4 color = vec4(0.0);
+	// start at a small offset to prevent sampling artifacts
+	float t = 1e-6;
+
+	// trace the ray until it reaches the predefined distance
+	while(t < dist) {
+		vec3 sample_pos = org - t*dir;
+		float abs_y = abs(sample_pos.y) * inv_y_scale;
+		vec2 tex_coords = 0.5*sample_pos.xz + 0.5;
+		// TODO: flip or not (depends on input image)?
+		//tex_coords.y = 1.0 - tex_coords.y;
+
+		vec4 value = vec4(texture(tex, vec3(tex_coords, tex_idx_fs)).rgb, 0.0);
+		
+		// inverse power
+		float falloff = (1.0 - pow(abs_y, falloff_strength)) * (1.0 - abs_y);
+		falloff = mix(1.0, falloff, falloff_mix);
+
+		value.a = dot(vec3(0.2126, 0.7152, 0.0722), value.rgb); // alpha from luminance
+		value *= falloff * opacity_scale;
+
+		vec4 color_in = value;
+		color_in *= (1.0 - exp(-step_size * scale));
+
+		// back to front blending
+		color = color_in + (1.0 - color_in.a)*color;
+
+		// step along ray
+		t += step_size;
+	}
+	return color;
+}
+
+void main()
+{
+	// transform from eye space to world space to get the eye position (org) and position on the box (pos)
+	vec3 org = (inv_TM_fs * vec4(0.0, 0.0, 0.0, 1.0)).xyz;
+	vec3 pos = (inv_TM_fs * vec4(position, 1.0)).xyz;
+	// the ray direction
+	vec3 dir = normalize(pos - org);
+
+	vec4 color = vec4(0.0);
+
+	float tn = 1e20;
+	float tf = 1e20;
+	// get the min and max parameters where the ray interscts the box
+	if(intersect_box(org, dir, tn, tf)) {
+		// calculate ray enter and exit positions
+		// make sure t near and t far are positive to prevent tracing behind the eye point
+		vec3 ipos = org + max(tn, 0.0)*dir;
+		vec3 opos = org + max(tf, 0.0)*dir;
+
+		// scale the y component to account for the slabs thickness
+		ipos.y *= y_scale_fs;
+		opos.y *= y_scale_fs;
+
+		// get the direction and distance of the object space ray segment passing through the box
+		vec3 direction = opos - ipos;
+		float dist = length(direction);
+		direction /= dist;
+		
+		// inverse y scale to calculate the normalized distance from the sample point to the slabs center plane on the y-axis
+		float inv_y_scale = 1.0 / y_scale_fs;
+
+		// TODO: switch to front to back compositing for integration functions?
+		if(use_transfer_function)
+			color = integrate_tf(opos, direction, dist, inv_y_scale);
+		else
+			color = integrate(opos, direction, dist, inv_y_scale);
+	}
+
+	finish_fragment(color);
+}

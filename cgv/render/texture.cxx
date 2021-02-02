@@ -313,7 +313,7 @@ bool texture::create_from_image(cgv::data::data_format& df, cgv::data::data_view
 		else
 			std::fill(dest_ptr, dest_ptr + N*entry_size, 0);
 	}
-	return create(ctx, dv1, level, cube_side, &palettes);
+	return create(ctx, dv1, level, cube_side, false, &palettes);
 }
 
 
@@ -536,17 +536,27 @@ bool texture::create_from_buffer(const context& ctx, int x, int y, int width, in
 /** create texture from data view. Use dimension and resolution
     of data view but the component format of the texture.
     If level is not specified or set to -1 mipmaps are generated. */
-bool texture::create(const context& ctx, const cgv::data::const_data_view& data, int level, int cube_side, const std::vector<data_view>* palettes)
+bool texture::create(const context& ctx, const cgv::data::const_data_view& data, int level, int cube_side, bool is_array, const std::vector<data_view>* palettes)
 {
 	const data_format& f = *data.get_format();
 	TextureType tt = (TextureType)f.get_nr_dimensions();
-	if (tt == TT_2D && cube_side != -1)
-		tt = TT_CUBEMAP;
-	if ( (tt != TT_CUBEMAP && is_created()) ) {
+	
+	if(cube_side > -1) {
+		if(tt == TT_2D)
+			tt = TT_CUBEMAP;
+	} else if(is_array) {
+		unsigned n_dims = f.get_nr_dimensions();
+		if(n_dims == 2)
+			tt = TT_1D_ARRAY;
+		if(n_dims == 3)
+			tt = TT_2D_ARRAY;
+	}
+	// TODO: replace is currently only allowed for non-array type textures. If this changes make sure to modify the replace method accordingly including generating mipmaps.
+	if ((tt == TT_1D || tt == TT_2D || tt == TT_3D) && is_created()) {
 		bool replace_allowed = tt == this->tt;
-			for (unsigned i=0; replace_allowed && i<get_nr_dimensions(); ++i)
-				if (get_resolution(i) != f.get_resolution(i))
-					replace_allowed = false;
+		for(unsigned i = 0; replace_allowed && i < get_nr_dimensions(); ++i)
+			if(get_resolution(i) != f.get_resolution(i))
+				replace_allowed = false;
 		if (replace_allowed && level < 1) {
 			switch (tt) {
 			case TT_1D : return replace(ctx, 0, data, level, palettes);
@@ -559,14 +569,14 @@ bool texture::create(const context& ctx, const cgv::data::const_data_view& data,
 	}
 	if (level < 1) {
 		set_nr_dimensions(data.get_format()->get_nr_dimensions());
-		for (unsigned int i=0; i<get_nr_dimensions(); ++i)
+		for(unsigned int i = 0; i < get_nr_dimensions(); ++i)
 			set_resolution(i, data.get_format()->get_resolution(i));
 		if (get_nr_components() != data.get_format()->get_nr_components())
 			static_cast<component_format&>(*this) = *data.get_format();
 		if (level == -1 || !internal_format)
 			find_best_format(ctx, palettes);
 	}
-	return complete_create(ctx, ctx.texture_create(*this, *this, data, level, cube_side, palettes));
+	return complete_create(ctx, ctx.texture_create(*this, *this, data, level, cube_side, is_array, palettes));
 }
 
 /** replace a block within a 1d texture with the given data. 

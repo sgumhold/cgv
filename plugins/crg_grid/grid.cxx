@@ -248,13 +248,16 @@ void grid::finish_frame(context& ctx)
 
 void grid::draw_lines(context& ctx)
 {
-	glPushAttrib(GL_DEPTH_BUFFER_BIT | GL_LINE_BIT);
+//	glPushAttrib(GL_DEPTH_BUFFER_BIT | GL_LINE_BIT);
 	GLboolean is_blend = glIsEnabled(GL_BLEND);
 	GLint blend_src, blend_dst;
 	glGetIntegerv(GL_BLEND_SRC_RGB, &blend_src);
 	glGetIntegerv(GL_BLEND_DST_RGB, &blend_dst);
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	GLboolean depth_mask, line_smooth, depth_test = glIsEnabled(GL_DEPTH_TEST);
+	glGetBooleanv(GL_DEPTH_WRITEMASK, &depth_mask);
+	glGetBooleanv(GL_LINE_SMOOTH, &line_smooth);
 
 	glEnable(GL_LINE_SMOOTH);
 	glEnable(GL_DEPTH_TEST);
@@ -282,7 +285,14 @@ void grid::draw_lines(context& ctx)
 
 	prog.disable(ctx);
 
-	glPopAttrib();
+//	glPopAttrib();
+	if (!line_smooth)
+		glDisable(GL_LINE_SMOOTH);
+	if (!depth_test)
+		glDisable(GL_DEPTH_TEST);
+	if (depth_mask)
+		glDepthMask(GL_TRUE);
+
 	if (!is_blend)
 		glDisable(GL_BLEND);
 	glBlendFunc(blend_src, blend_dst);

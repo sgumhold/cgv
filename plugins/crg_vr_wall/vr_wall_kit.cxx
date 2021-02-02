@@ -144,7 +144,7 @@ namespace vr {
 	}
 	/// construct vr wall kit by attaching to another vr kit
 	vr_wall_kit::vr_wall_kit(int vr_kit_parent_index, unsigned _width, unsigned _height, const std::string& _name) :
-		gl_vr_display(width, height, 0, 0, _name)
+		vr_kit(0, 0, _name, width, height)
 	{
 		wall_context = false;
 		in_calibration = false;

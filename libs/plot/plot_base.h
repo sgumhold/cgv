@@ -93,8 +93,17 @@ struct CGV_API plot_base_config : public cgv::render::render_types
 	/// name of sub plot
 	std::string name;
 
-	/// whether to show plot, ac
+	/// offset into samples defaults to 0, if larger than end_sample vector is split into two parts
+	size_t begin_sample;
+	/// defaults to -1 and effectively is always the end of the sample vector
+	size_t end_sample;
+
+	/// whether to show sub plot
 	bool show_plot;
+	/// reference color, when changed, all colors are adapted with set_colors()
+	rgb ref_color;
+	/// reference size, when changes, all sizes are adapted with set_size()
+	float ref_size;
 
 	/// whether to show data points
 	bool show_points;
@@ -103,6 +112,13 @@ struct CGV_API plot_base_config : public cgv::render::render_types
 	/// point color
 	rgb point_color;
 	
+	/// whether to connect data points with lines
+	bool show_lines;
+	/// line width
+	float line_width;
+	/// line color
+	rgb line_color;
+
 	/// whether to show straight lines to the bottom of the plot, which are called sticks
 	bool show_sticks;
 	/// line width of stick
@@ -125,8 +141,10 @@ struct CGV_API plot_base_config : public cgv::render::render_types
 	plot_base_config(const std::string& _name);
 	/// configure the sub plot to a specific chart type
 	virtual void configure_chart(ChartType chart_type);
-	/// set all colors from a common color
+	/// set all colors from reference color
 	virtual void set_colors(const rgb& base_color);
+	/// set all sizes from reference size 
+	virtual void set_size(float _size);
 	/// virtual constructor in order to allow to extend the configuration for derived classes
 	virtual ~plot_base_config();
 };
@@ -289,6 +307,8 @@ protected:
 	void disable_attributes(cgv::render::context& ctx, unsigned count);
 	///
 	virtual bool compute_sample_coordinate_interval(int i, int ai, float& samples_min, float& samples_max) = 0;
+	///
+	void draw_sub_plot_samples(int count, const plot_base_config& spc, bool strip = false);
 public:
 	/// construct with default parameters
 	plot_base(unsigned nr_axes);
@@ -340,6 +360,8 @@ public:
 	void place_corner(unsigned corner_index, const vec3& new_corner_location);
 	/// return the current origin in 3D coordinates
 	vec3 get_origin() const;
+	/// get current orientation quaternion
+	const quat& get_orientation() const;
 	/// return the current plot center in 3D coordinates
 	const vec3& get_center() const;
 	/// return the i-th plot corner in 3D coordinates
@@ -388,6 +410,8 @@ public:
 
 	/**@name gui support*/
 	//@{
+	/// create the gui for the plot without gui for sub plots
+	void create_config_gui_impl(cgv::base::base* bp, cgv::gui::provider& p, unsigned i, const std::string& parts = "oplsb");
 	/// create the gui for the plot without gui for sub plots
 	virtual void create_plot_gui(cgv::base::base* bp, cgv::gui::provider& p);
 	/// create the gui for a configuration, overload to specialize for extended configs

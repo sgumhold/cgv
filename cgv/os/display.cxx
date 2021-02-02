@@ -527,14 +527,22 @@ void display::clear_displays()
 	ref_displays().clear();
 }
 /// enumerate the current displays and ignore the mirrored displays that do not correpond to physical devices
-void display::scan_displays(bool only_physical_displays)
+void display::scan_displays(DisplayScanMode mode)
 {
 	clear_displays();
 #ifdef _MSC_VER
 	windows_display* d = new windows_display;
 	int i = 0;
 	while (d->attach(i)) {
-		if (d->is_mirror() && only_physical_displays)
+		DisplayScanMode display_mode = DSM_ALL;
+		bool keep = true;
+		if (((mode & DSM_PHYSICAL) != 0) && d->is_mirror())
+			keep = false;
+		if (((mode & DSM_ACTIVE) != 0) && !d->is_active())
+			keep = false;
+		if (((mode & DSM_PASSIVE) != 0) && d->is_active())
+			keep = false;
+		if (!keep)
 			delete d;
 		else
 			ref_displays().push_back(d);
@@ -574,9 +582,9 @@ bool display::check_activate_all()
 }
 
 /// show all available displays
-void display::show_all_displays(bool only_physical_displays)
+void display::show_all_displays(DisplayScanMode scan_mode)
 {
-	scan_displays(only_physical_displays);
+	scan_displays(scan_mode);
 	const std::vector<display*>& displays = get_displays();
 	for (unsigned int i=0; i<displays.size(); ++i)
 		std::cout << "display " << i << ": " << *displays[i] << std::endl;

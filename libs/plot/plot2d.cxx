@@ -28,9 +28,6 @@ void plot2d::set_uniforms(cgv::render::context& ctx, cgv::render::shader_program
 /** extend common plot configuration with parameters specific to 1d plot */
 plot2d_config::plot2d_config(const std::string& _name) : plot_base_config(_name)
 {
-	show_lines = true;
-	line_width = 1;
-	line_color = rgb(1,0.5f,0);
 	configure_chart(CT_LINE_CHART);
 };
 
@@ -39,13 +36,6 @@ void plot2d_config::configure_chart(ChartType chart_type)
 {
 	plot_base_config::configure_chart(chart_type);
 	show_lines = chart_type == CT_LINE_CHART;
-}
-
-///
-void plot2d_config::set_colors(const rgb& base_color)
-{
-	plot_base_config::set_colors(base_color);
-	line_color = 0.25f*rgb(1, 1, 1) + 0.75f*base_color;
 }
 
 /// construct empty plot with default domain [0..1,0..1]
@@ -127,22 +117,6 @@ std::vector<unsigned>& plot2d::ref_sub_plot_strips(unsigned i)
 	return strips[i];
 }
 
-void plot2d::create_config_gui(cgv::base::base* bp, cgv::gui::provider& p, unsigned i)
-{
-	plot2d_config& pbc = ref_sub_plot2d_config(i);
-	bool show = p.begin_tree_node("lines", pbc.show_lines, false, "level=3;options='w=142';align=' '");
-	p.add_member_control(bp, "show", pbc.show_lines, "toggle", "w=50");
-	if (show) {
-		p.align("\a");
-			p.add_member_control(bp, "width", pbc.line_width, "value_slider", "min=1;max=20;log=true;ticks=true");
-			p.add_member_control(bp, "color", pbc.line_color);
-		p.align("\b");
-		p.end_tree_node(pbc.show_lines);
-	}
-
-	plot_base::create_config_gui(bp, p, i);
-}
-
 bool plot2d::init(cgv::render::context& ctx)
 {
 	if (!prog.build_program(ctx, "plot2d.glpr")) {
@@ -172,7 +146,6 @@ void plot2d::clear(cgv::render::context& ctx)
 	bar_outline_prog.destruct(ctx);
 }
 
-
 void plot2d::draw_sub_plot(cgv::render::context& ctx, unsigned i)
 {
 	GLsizei count = (GLsizei)set_attributes(ctx, i, samples);
@@ -187,7 +160,7 @@ void plot2d::draw_sub_plot(cgv::render::context& ctx, unsigned i)
 		set_default_attributes(ctx, bar_prog, 2);
 
 		ctx.set_color(spc.bar_color);
-		glDrawArrays(GL_POINTS, 0, count);
+		draw_sub_plot_samples(count, spc);
 		bar_prog.disable(ctx);
 
 		glEnable(GL_CULL_FACE);
@@ -201,7 +174,7 @@ void plot2d::draw_sub_plot(cgv::render::context& ctx, unsigned i)
 			set_default_attributes(ctx, bar_outline_prog, 2);
 
 			ctx.set_color(spc.bar_outline_color);
-			glDrawArrays(GL_POINTS, 0, count);
+			draw_sub_plot_samples(count, spc);
 			bar_outline_prog.disable(ctx);
 		}
 	}
@@ -212,7 +185,7 @@ void plot2d::draw_sub_plot(cgv::render::context& ctx, unsigned i)
 		stick_prog.enable(ctx);
 		set_default_attributes(ctx, stick_prog, 2);
 		ctx.set_color(spc.stick_color);
-		glDrawArrays(GL_POINTS, 0, count);
+		draw_sub_plot_samples(count, spc);
 		stick_prog.disable(ctx);
 	}
 
@@ -226,8 +199,9 @@ void plot2d::draw_sub_plot(cgv::render::context& ctx, unsigned i)
 	if (spc.show_lines) {
 		ctx.set_color(spc.line_color);
 		glLineWidth(spc.line_width);
-		if (strips[i].empty())
-			glDrawArrays(GL_LINE_STRIP, 0, count);
+		if (strips[i].empty()) {
+			draw_sub_plot_samples(count, spc, true);
+		}
 		else {
 			unsigned fst = 0;
 			for (unsigned j = 0; j < strips[i].size(); ++j) {
@@ -240,7 +214,7 @@ void plot2d::draw_sub_plot(cgv::render::context& ctx, unsigned i)
 	if (spc.show_points) {
 		ctx.set_color(spc.point_color);
 		glPointSize(spc.point_size);
-		glDrawArrays(GL_POINTS, 0, count);
+		draw_sub_plot_samples(count, spc);
 	}
 
 	if(spc.show_points || spc.show_lines) {

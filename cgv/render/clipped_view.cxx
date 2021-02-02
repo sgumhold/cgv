@@ -68,10 +68,12 @@ void clipped_view::compute_clipping_planes(double& z_near_derived, double& z_far
 /// compute clipping planes according to given view adapted to the current scene extent, z_near_derived is at least z_near and as large as possible to include the scene, similarly z_far_derived is as small as possible  
 void clipped_view::compute_clipping_planes(const cgv::render::view& view, double& z_near_derived, double& z_far_derived, bool clip_relative_to_extent) const
 {
-	// compute eye and focus point
-	dvec3 foc = view.get_focus();
-	dvec3 eye = view.get_eye();
-	dvec3 view_dir = view.get_view_dir();
+	compute_clipping_planes(view.get_eye(), view.get_view_dir(), z_near_derived, z_far_derived, clip_relative_to_extent);
+}
+
+/// compute clipping planes according to given view adapted to the current scene extent, z_near_derived is at least z_near and as large as possible to include the scene, similarly z_far_derived is as small as possible  
+void clipped_view::compute_clipping_planes(const dvec3& eye, const dvec3& view_dir, double& z_near_derived, double& z_far_derived, bool clip_relative_to_extent) const
+{
 	double z_eye = dot(eye, view_dir);
 
 	// compute the clipping planes based on the eye and scene extent

@@ -39,7 +39,7 @@ namespace cgv { // @<
 			rounded_cone_render_style();
 		};
 
-		/// renderer that supports point splatting
+		/// renderer that supports raycasting of rounded cones
 		class CGV_API rounded_cone_renderer : public surface_renderer
 		{
 		protected:
@@ -49,7 +49,7 @@ namespace cgv { // @<
 			/// overload to allow instantiation of rounded_cone_renderer
 			render_style* create_render_style() const;
 		public:
-			/// initializes position_is_center to true 
+			/// initializes member variables
 			rounded_cone_renderer();
 			void set_attribute_array_manager(const context& ctx, attribute_array_manager* _aam_ptr);
 			/// construct shader programs and return whether this was successful, call inside of init method of drawable
