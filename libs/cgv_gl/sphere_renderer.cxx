@@ -23,7 +23,7 @@ namespace cgv {
 			radius = 1;
 			use_group_radius = false;
 
-			blend_width_in_pixel = 1.0f;
+			blend_width_in_pixel = 0.0f;
 			halo_width_in_pixel = 0.0f;
 			percentual_halo_width = 0.0;
 			halo_color_strength = 0.5f;

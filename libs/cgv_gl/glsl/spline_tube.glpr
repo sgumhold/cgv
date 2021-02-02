@@ -1,0 +1,11 @@
+files:spline_tube
+vertex_file:group.glsl
+vertex_file:view.glsl
+geometry_file:view.glsl
+fragment_file:view.glsl
+fragment_file:side.glsl
+fragment_file:lights.glsl
+fragment_file:brdf.glsl
+fragment_file:bump_map.glfs
+fragment_file:surface.glsl
+fragment_file:fragment.glfs

@@ -1,0 +1,112 @@
+#version 150 
+
+uniform bool position_is_center;
+uniform bool has_rotations;
+uniform bool has_translations;
+uniform bool has_texture_indices;
+uniform float thickness_scale;
+uniform int tex_idx_offset;
+uniform int tex_idx_stride;
+
+in vec4 position;
+in vec3 extent;
+in vec4 color;
+in int group_index;
+in vec4 rotation;
+in vec3 translation;
+in int texture_index;
+
+out mat3 NM;
+out mat4 PM;
+out mat4 inv_TM;
+out float y_scale;
+out vec4 color_gs;
+flat out int tex_idx;
+
+//***** begin interface of quaternion.glsl ***********************************
+vec4 unit_quaternion();
+vec3 rotate_vector_with_quaternion(in vec3 preimage, in vec4 q);
+vec3 inverse_rotate_vector_with_quaternion(in vec3 v, in vec4 q);
+void quaternion_to_axes(in vec4 q, out vec3 x, out vec3 y, out vec3 z);
+void quaternion_to_matrix(in vec4 q, out mat3 M);
+void rigid_to_matrix(in vec4 q, in vec3 t, out mat4 M);
+//***** end interface of quaternion.glsl ***********************************
+
+//***** begin interface of group.glsl ***********************************
+vec4 group_color(in vec4 color, int group_index);
+vec3 group_transformed_position(in vec3 position, int group_index);
+vec3 group_transformed_normal(in vec3 nml, int group_index);
+void right_multiply_group_normal_matrix(inout mat3 NM, int group_index);
+void right_multiply_group_position_matrix(inout mat4 PM, int group_index);
+void right_multiply_group_normal_matrix_and_rotation(inout mat3 NM, int group_index, vec4 rotation);
+void right_multiply_group_position_matrix_and_rigid(inout mat4 PM, int group_index, vec4 rotation, vec3 translation);
+//***** end interface of group.glsl ***********************************
+
+//***** begin interface of view.glsl ***********************************
+mat4 get_modelview_matrix();
+mat4 get_projection_matrix();
+mat4 get_modelview_projection_matrix();
+mat4 get_inverse_modelview_matrix();
+mat4 get_inverse_modelview_projection_matrix();
+mat3 get_normal_matrix();
+mat3 get_inverse_normal_matrix();
+//***** end interface of view.glsl ***********************************
+
+void main()
+{
+	color_gs = group_color(color, group_index);
+	// compute normal transformation matrix
+	NM = get_normal_matrix();
+	if (has_rotations)
+		right_multiply_group_normal_matrix_and_rotation(NM, group_index, rotation);
+	else
+		right_multiply_group_normal_matrix(NM, group_index);
+
+	// compute position transformation matrix
+
+	// extract center position and compute scaling part of transformation 
+	vec3 center_position;
+	mat4 S = mat4(0.0);
+	if (position_is_center) {
+		S[0][0] = extent[0];
+		S[1][1] = extent[1] * thickness_scale;
+		S[2][2] = extent[2];
+		center_position = position.xyz;
+	}
+	else {
+		vec3 E = extent - position.xyz;
+		S[0][0] = E[0];
+		S[1][1] = E[1] * thickness_scale;
+		S[2][2] = E[2];
+		center_position = 0.5*(extent + position.xyz);
+	}
+	S[3] = vec4(0.0,0.0,0.0,1.0);
+
+	// setup transformation matrix from rotations and translations 
+	mat4 TM = mat4(1.0);
+	
+	vec4 q;
+	if (has_rotations)
+		q = rotation;
+	else
+		q = unit_quaternion();
+	vec3 t = center_position;
+	if (has_translations)
+		t += translation;
+	right_multiply_group_position_matrix_and_rigid(TM, group_index, q, t);
+	
+	// setup position matrix from modelview, transformation and scale 
+	PM = get_modelview_matrix() * TM * S;
+	
+	inv_TM = inverse(TM * S * mat4(0.5)) * get_inverse_modelview_matrix();
+	y_scale = 0.5 * S[1][1];
+
+	if(has_texture_indices)
+		tex_idx = texture_index;
+	else
+		tex_idx = 0;
+
+	tex_idx = tex_idx + tex_idx_offset*tex_idx_stride;
+
+	gl_Position = position;
+}

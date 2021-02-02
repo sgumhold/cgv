@@ -25,7 +25,7 @@ namespace cgv {
 		protected:
 			/// store device handle
 			void* device_handle;
-			/// store controller index (0 .. left, 1.. right, 2 .. fst generic, 3 .. snd generic) of vr kit
+			/// store index of controller (0 .. vr::max_nr_controllers-1), controllers with left and right hand role are sorted to indices 0 and 1 
 			unsigned short controller_index;
 			/// store player index
 			unsigned short player_index;
@@ -38,7 +38,7 @@ namespace cgv {
 				unsigned char _modifiers = 0, double _time = 0);
 			/// return the device id, by default returns 0
 			void* get_device_handle() const { return device_handle; }
-			/// return controller index (0 .. left, 1.. right) of vr kit
+			/// return controller index (0 .. vr::max_nr_controllers-1), controllers with left and right hand role are sorted to indices 0 and 1 
 			unsigned get_controller_index() const { return controller_index; }
 			/// return player index
 			unsigned get_player_index() const { return player_index; }

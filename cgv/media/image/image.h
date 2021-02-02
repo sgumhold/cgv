@@ -24,7 +24,7 @@ namespace cgv {
 				template <typename T> const T* get_ptr() const { return dv.get_ptr<T>(); }
 				bool read(const std::string& file_name)
 				{
-					cgv::media::image::image_reader ir(*this);
+					image_reader ir(*this);
 					if (ir.open(file_name)) {
 						if (ir.read_image(dv)) {
 							return true;
@@ -33,7 +33,7 @@ namespace cgv {
 					return false;
 				}
 				bool write(const std::string& file_name) {
-					cgv::media::image::image_writer iw(file_name);
+					image_writer iw(file_name);
 					if(iw.write_image(dv)) {
 						return true;
 					}
@@ -64,7 +64,7 @@ namespace cgv {
 						set<double>(ci, dst_ptr, scale*c[ci]);
 				}
 				/// constructs a copy of given image
-				void copy(const cgv::media::image::image& I)
+				void copy(const image& I)
 				{
 					int w = I.get_width();
 					int h = I.get_height();
@@ -86,14 +86,14 @@ namespace cgv {
 					memcpy(dst_ptr, src_ptr, size);
 				}
 				/// construct a resized smaller version of given image using area averaging
-				void downscale(unsigned int size_x, unsigned int size_y, const cgv::media::image::image& I)
+				void downscale(unsigned int size_x, unsigned int size_y, const image& I)
 				{
 					int w = I.get_width();
 					int h = I.get_height();
-					float wf = static_cast<float>(w);
-					float hf = static_cast<float>(h);
-					float x_scale = static_cast<float>(size_x) / wf;
-					float y_scale = static_cast<float>(size_y) / hf;
+					float wf = float(w);
+					float hf = float(h);
+					float x_scale = float(size_x) / wf;
+					float y_scale = float(size_y) / hf;
 					float y_end = 0.0f;
 
 					// copy format and set downscaled dimensions
@@ -110,7 +110,7 @@ namespace cgv {
 					unsigned n_c = get_nr_components();
 					unsigned entry_size = get_entry_size();
 
-					for(int j = 0; j < size_y; ++j) {
+					for(unsigned j = 0; j < size_y; ++j) {
 						float y_start = y_end;
 						y_end = (j + 1) / y_scale;
 
@@ -118,7 +118,7 @@ namespace cgv {
 
 						float x_end = 0.0f;
 
-						for(int i = 0; i < size_x; ++i) {
+						for(unsigned i = 0; i < size_x; ++i) {
 							float x_start = x_end;
 							x_end = (i + 1) / x_scale;
 
@@ -150,8 +150,13 @@ namespace cgv {
 						}
 					}
 				}
+				/// downsample image in x and y direction by given downsampling factors fx and fy
+				void downsample(unsigned fx, unsigned fy, const image& I)
+				{
+					downscale(I.get_width() / fx, I.get_height() / fy, I);
+				}
 				/// construct a resized larger version of given image using bilinear interpolation
-				void upscale(unsigned int size_x, unsigned int size_y, const cgv::media::image::image& I)
+				void upscale(unsigned int size_x, unsigned int size_y, const image& I)
 				{
 					int w = I.get_width();
 					int h = I.get_height();
@@ -174,13 +179,13 @@ namespace cgv {
 
 					unsigned n = 8;
 					unsigned m = 4;
-					float step_x = 1.0f / static_cast<float>(size_x);
-					float step_y = 1.0f / static_cast<float>(size_y);
+					float step_x = 1.0f / float(size_x);
+					float step_y = 1.0f / float(size_y);
 
-					for(int j = 0; j < size_y; ++j) {
-						float ty = (static_cast<float>(j) + 0.5f) * step_y;
-						float fiy = ty * static_cast<float>(h) - 0.5f;
-						unsigned iy = static_cast<unsigned>(fiy);
+					for(unsigned j = 0; j < size_y; ++j) {
+						float ty = (float(j) + 0.5f) * step_y;
+						float fiy = ty * float(h) - 0.5f;
+						unsigned iy = unsigned(fiy);
 						ty = cgv::math::clamp(fiy - iy, 0.0f, 1.0f);
 
 						if(iy == h - 1) {
@@ -188,10 +193,10 @@ namespace cgv {
 							ty = 1.0f;
 						}
 						
-						for(int i = 0; i < size_x; ++i) {
-							float tx = (static_cast<float>(i) + 0.5f) * step_x;
-							float fix = tx * static_cast<float>(w) - 0.5f;
-							unsigned ix = static_cast<unsigned>(fix);
+						for(unsigned i = 0; i < size_x; ++i) {
+							float tx = (float(i) + 0.5f) * step_x;
+							float fix = tx * float(w) - 0.5f;
+							unsigned ix = unsigned(fix);
 							tx = cgv::math::clamp(fix - ix, 0.0f, 1.0f);
 
 							if(ix == w - 1) {
@@ -219,10 +224,10 @@ namespace cgv {
 					}
 				}
 				/// construct a resized version of given image using the down- and upscale methods
-				void resize(unsigned int size_x, unsigned int size_y, const cgv::media::image::image& I)
+				void resize(unsigned size_x, unsigned size_y, const image& I)
 				{
-					int w = I.get_width();
-					int h = I.get_height();
+					unsigned w = I.get_width();
+					unsigned h = I.get_height();
 					
 					// cannot produce an image with resolution of zero in either dimension
 					assert(size_x != 0);

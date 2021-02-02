@@ -398,9 +398,11 @@ bool point_cloud::read(const string& _file_name)
 	if (ext == "apc" || ext == "pnt")
 		success = read_ascii(_file_name);
 	if (ext == "obj" || ext == "pobj")
-	success = read_obj(_file_name);
+		success = read_obj(_file_name);
 	if (ext == "ply")
-	success = read_ply(_file_name);
+		success = read_ply(_file_name);
+	if (ext == "txt")
+		success = read_txt(_file_name);
 	if (success) {
 		if (N.size() > 0)
 			has_nmls = true;
@@ -658,6 +660,58 @@ bool point_cloud::read_xyz(const std::string& file_name)
 		}
 		else {
 
+			vector<token> numbers;
+			tokenizer(lines[i]).bite_all(numbers);
+			double values[7];
+			unsigned n = min(7, (int)numbers.size());
+			unsigned j;
+			for (j = 0; j < n; ++j) {
+				if (!is_double(numbers[j].begin, numbers[j].end, values[j]))
+					break;
+			}
+			if (j >= 3)
+				P.push_back(Pnt((Crd)values[0], (Crd)values[1], (Crd)values[2]));
+			if (j >= 6)
+				C.push_back(Clr(float_to_color_component(values[3]), float_to_color_component(values[4]), float_to_color_component(values[5])));
+		}
+		if ((P.size() % 100000) == 0)
+			cout << "read " << P.size() << " points" << endl;
+	}
+	watch.add_time();
+	return true;
+}
+
+/// read ascii file with lines of the form x y z I r g b intensity and color values, where intensity values are ignored
+bool point_cloud::read_txt(const std::string& file_name)
+{
+	string content;
+	cgv::utils::stopwatch watch;
+	if (!cgv::utils::file::read(file_name, content, true))
+		return false;
+	std::cout << "read data from disk "; watch.add_time();
+	clear();
+	vector<line> lines;
+	split_to_lines(content, lines);
+	std::cout << "split data into " << lines.size() << " lines. ";	watch.add_time();
+
+	bool do_parse = false;
+	unsigned i;
+	for (i = 0; i < lines.size(); ++i) {
+		if (lines[i].empty())
+			continue;
+
+		if (true) {
+			Pnt p;
+			int c[3], I;
+			char tmp = lines[i].end[0];
+			content[lines[i].end - content.c_str()] = 0;
+			if (sscanf(lines[i].begin, "%f %f %f %d %d %d %d", &p[0], &p[1], &p[2], &I, c, c + 1, c + 2) == 7) {
+				P.push_back(p);
+				C.push_back(Clr(byte_to_color_component(c[0]), byte_to_color_component(c[1]), byte_to_color_component(c[2])));
+			}
+			content[lines[i].end - content.c_str()] = tmp;
+		}
+		else {
 			vector<token> numbers;
 			tokenizer(lines[i]).bite_all(numbers);
 			double values[7];

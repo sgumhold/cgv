@@ -1,5 +1,6 @@
 #include <cgv/signal/rebind.h>
 #include <cgv/base/node.h>
+#include <cgv/utils/convert.h>
 #include <cgv/base/register.h>
 #include <cgv/math/fvec.h>
 #include <cgv/gui/provider.h>
@@ -71,6 +72,11 @@ protected:
 	cgv::render::attribute_array_manager p_manager;
 	cgv::render::attribute_array_manager sl_manager;
 	cgv::render::attribute_array_manager b_manager;
+	cgv::render::attribute_array_manager bw_manager;
+	cgv::render::attribute_array_manager n_manager;
+	cgv::render::attribute_array_manager a_manager;
+	cgv::render::attribute_array_manager s_manager;
+	cgv::render::attribute_array_manager rc_manager;
 public:
 	/// define format and texture filters in constructor
 	renderer_tests() : cgv::base::node("renderer_test")
@@ -176,7 +182,16 @@ public:
 			return false;
 		if (!b_manager.init(ctx))
 			return false;
-
+		if (!bw_manager.init(ctx))
+			return false;
+		if (!n_manager.init(ctx))
+			return false;
+		if (!a_manager.init(ctx))
+			return false;
+		if (!s_manager.init(ctx))
+			return false;
+		if (!rc_manager.init(ctx))
+			return false;
 		// increase reference counts of used renderer singeltons
 		cgv::render::ref_point_renderer			(ctx, 1);
 		cgv::render::ref_surfel_renderer		(ctx, 1);
@@ -303,6 +318,7 @@ public:
 		case RM_BOX_WIRES: {
 			cgv::render::box_wire_renderer& bw_renderer = cgv::render::ref_box_wire_renderer(ctx);
 			bw_renderer.set_render_style(box_wire_style);
+			bw_renderer.set_attribute_array_manager(ctx, &bw_manager);
 			set_group_geometry(ctx, bw_renderer);
 			if (use_box_array) {
 				bw_renderer.set_color_array(ctx, colors);
@@ -318,6 +334,7 @@ public:
 		case RM_NORMALS: {
 			cgv::render::normal_renderer& n_renderer = cgv::render::ref_normal_renderer(ctx);
 			n_renderer.set_render_style(normal_style);
+			n_renderer.set_attribute_array_manager(ctx, &n_manager);
 			set_group_geometry(ctx, n_renderer);
 			set_geometry(ctx, n_renderer);
 			n_renderer.set_normal_array(ctx, normals);
@@ -326,6 +343,7 @@ public:
 		case RM_ARROWS: {
 			cgv::render::arrow_renderer& a_renderer = cgv::render::ref_arrow_renderer(ctx);
 			a_renderer.set_render_style(arrow_style);
+			a_renderer.set_attribute_array_manager(ctx, &a_manager);
 			a_renderer.set_position_array(ctx, points);
 			a_renderer.set_color_array(ctx, colors);
 			a_renderer.set_direction_array(ctx, normals);
@@ -335,6 +353,7 @@ public:
 			cgv::render::sphere_renderer& s_renderer = cgv::render::ref_sphere_renderer(ctx);
 			s_renderer.set_y_view_angle(float(view_ptr->get_y_view_angle()));
 			s_renderer.set_render_style(sphere_style);
+			s_renderer.set_attribute_array_manager(ctx, &s_manager);
 
 			set_group_geometry(ctx, s_renderer);
 			set_geometry(ctx, s_renderer);
@@ -345,6 +364,7 @@ public:
 		{
 			cgv::render::rounded_cone_renderer& rc_renderer = cgv::render::ref_rounded_cone_renderer(ctx);
 			rc_renderer.set_render_style(rounded_cone_style);
+			rc_renderer.set_attribute_array_manager(ctx, &rc_manager);
 
 			set_geometry(ctx, rc_renderer);
 			render_points(ctx, rc_renderer);
@@ -366,6 +386,11 @@ public:
 		p_manager.destruct(ctx);
 		sl_manager.destruct(ctx);
 		b_manager.destruct(ctx);
+		bw_manager.destruct(ctx);
+		n_manager.destruct(ctx);
+		a_manager.destruct(ctx);
+		s_manager.destruct(ctx);
+		rc_manager.destruct(ctx);
 
 		// decrease reference counts of used renderer singeltons
 		cgv::render::ref_point_renderer			(ctx, -1);
@@ -384,17 +409,17 @@ public:
 		if (begin_tree_node("transformation", lambda, true)) {
 			align("\a");
 			add_member_control(this, "lambda", lambda, "value_slider", "min=0;max=1;ticks=true");
-			add_member_control(this, "translation", t[0], "value", "w=50", " ");
-			add_member_control(this, "", t[1], "value", "w=50", " ");
-			add_member_control(this, "", t[2], "value", "w=50");
-			add_member_control(this, "", t[0], "slider", "w=50;min=-2;max=2;ticks=true", " ");
-			add_member_control(this, "", t[1], "slider", "w=50;min=-2;max=2;ticks=true", " ");
-			add_member_control(this, "", t[2], "slider", "w=50;min=-2;max=2;ticks=true");
+			add_member_control(this, "translation", t[0], "value", "w=100", " ");
+			add_member_control(this, "", t[1], "value", "w=100", " ");
+			add_member_control(this, "", t[2], "value", "w=100");
+			add_member_control(this, "", t[0], "slider", "w=100;min=-2;max=2;ticks=true", " ");
+			add_member_control(this, "", t[1], "slider", "w=100;min=-2;max=2;ticks=true", " ");
+			add_member_control(this, "", t[2], "slider", "w=100;min=-2;max=2;ticks=true");
 			for (unsigned i = 0; i < 4; ++i) {
 				for (unsigned j = 0; j < 4; ++j)
-					add_member_control(this, (i == 0 && j == 0) ? "T" : "", T(i, j), "value", "w=50", j == 3 ? "\n" : " ");
+					add_member_control(this, (i == 0 && j == 0) ? "T" : "", T(i, j), "value", "w=100", j == 3 ? "\n" : " ");
 				for (unsigned j = 0; j < 4; ++j)
-					add_member_control(this, "", T(i, j), "slider", "min=-1;max=1;w=50;ticks=true", j == 3 ? "\n" : " ");
+					add_member_control(this, "", T(i, j), "slider", "min=-1;max=1;w=100;ticks=true", j == 3 ? "\n" : " ");
 			}
 			add_member_control(this, "transform points only", transform_points_only, "check");
 			align("\b");

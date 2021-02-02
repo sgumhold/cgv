@@ -2,7 +2,6 @@
 
 #include <vr/vr_kit.h>
 #include <vr/vr_state.h>
-#include <vr/gl_vr_display.h>
 #include <cgv/signal/signal.h>
 #include <cgv/render/render_types.h>
 
@@ -13,7 +12,7 @@
 
 ///
 namespace vr {
-	class CGV_API vr_wall_kit : public gl_vr_display, public cgv::render::render_types
+	class CGV_API vr_wall_kit : public vr_kit, public cgv::render::render_types
 	{
 	public:
 		typedef cgv::math::fmat<float, 3, 4> mat34;
