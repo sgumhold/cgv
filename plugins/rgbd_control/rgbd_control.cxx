@@ -896,6 +896,7 @@ void rgbd_control::on_device_select_cb()
 	bool reset_format_indices = false;
 	if (device_mode == DM_DEVICE) {
 		unsigned nr = rgbd_input::get_nr_devices();
+		// if the number of device is zero
 		if (nr == 0) {
 			device_mode = DM_DETACHED;
 			update_member(&device_mode);

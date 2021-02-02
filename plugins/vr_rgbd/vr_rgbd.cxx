@@ -265,7 +265,7 @@ public:
 		in_calibration = false;
 		zoom_in = false;
 		zoom_out = false;
-		save_pointcloud = false;
+		save_pointcloud = true;
 		registration_started = false;
 		rgbd_2_controller_orientation.identity();
 		rgbd_2_controller_orientation.set_col(0, vec3(-1, 0, 0));
@@ -300,7 +300,7 @@ public:
 		max_nr_shown_recorded_pcs = 20;
 		counter_pc = 0;
 
-		pc_file_path = QUOTE_SYMBOL_VALUE(INPUT_DIR) "/../data";
+		pc_file_path = "D://YU//";
 
 		connect(cgv::gui::get_animation_trigger().shoot, this, &vr_rgbd::timer_event);
 	}
