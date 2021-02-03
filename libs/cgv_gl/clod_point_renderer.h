@@ -42,25 +42,6 @@ namespace cgv {
 				GLuint  baseInstance = 0;
 			};
 
-			struct State {
-				std::atomic<int64_t> pointsTotal = 0;
-				std::atomic<int64_t> pointsProcessed = 0;
-
-				int numPasses = 3;
-				int currentPass = 0; // starts with index 1! interval: [1,  numPasses]
-
-				std::mutex mtx;
-
-				double progress() {
-					return double(pointsProcessed) / double(pointsTotal);
-				}
-			};
-
-
-			//float CLOD = 1.f;
-			//float spacing = 1.f; //root spacing
-			//float scale = 1.f;
-			
 			shader_program reduce_prog;
 			shader_program draw_prog;
 
@@ -74,8 +55,7 @@ namespace cgv {
 
 		protected:
 
-			void lod_chunking();
-			std::vector<std::atomic<unsigned>> lod_counting(std::vector<vec3> positions, vec3 min, vec3 max, int64_t gridSize, State& state);
+
 
 			void draw_and_compute_impl(context& ctx, PrimitiveType type, size_t start, size_t count, bool use_strips, bool use_adjacency, uint32_t strip_restart_index);
 		public:
@@ -104,7 +84,7 @@ namespace cgv {
 			void set_colors(const context& ctx, const std::vector<T>& colors) {
 				//input_buffer_data.resize(colors.size());
 				for (int i = 0; i < positions.size(); ++i) {
-					input_buffer_data[i].colors = rgb(colors[i]);
+					input_buffer_data[i].colors = rgb8(colors[i]);
 				}
 				buffers_outofdate = true;
 			}
@@ -122,6 +102,38 @@ namespace cgv {
 			void add_shader(context& ctx, shader_program& prog, const std::string& sf, const cgv::render::ShaderType st);
 			void fill_buffers(context& ctx);
 			void clear_buffers(context& ctx);
+		};
+
+		class octree_lod_generator : public render_types {
+			
+			struct State {
+				std::atomic<int64_t> pointsTotal = 0;
+				std::atomic<int64_t> pointsProcessed = 0;
+
+				int numPasses = 3;
+				int currentPass = 0; // starts with index 1! interval: [1,  numPasses]
+
+				std::mutex mtx;
+
+				double progress() {
+					return double(pointsProcessed) / double(pointsTotal);
+				}
+			};
+
+			// grid contains index of node in nodes
+			struct NodeLUT {
+				int64_t grid_size;
+				std::vector<int> grid;
+			};
+
+		protected:
+			void lod_chunking(const std::vector<vec3>& positions, const vec3& min, const vec3& max);
+			std::vector<std::atomic_int32_t> lod_counting(const std::vector<vec3>& positions, int64_t grid_size, const vec3& min, const vec3& max);
+			NodeLUT lod_createLUT(std::vector<std::atomic_int32_t>& grid, int64_t grid_size);
+
+		public:
+			//lod stored in alpha channel of point color
+			void generate_lods(const std::vector<vec3>& positions, const std::vector<rgba8>& colors);
 		};
 	}
 }
