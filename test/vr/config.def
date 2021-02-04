@@ -59,15 +59,32 @@ type(vr_emulator):right_hand_orientation='0 0 0 1'
 type(vr_emulator):tracker_1_enabled=false
 // whether tracker 2 is enabled
 type(vr_emulator):tracker_2_enabled=false
+// whether tracker 3 is enabled
+type(vr_emulator):tracker_3_enabled=false
+// whether tracker 4 is enabled
+type(vr_emulator):tracker_4_enabled=false
+
 // coordinate system to which tracker 1 is attached (0 ... world, 1 ... hmd, 2 ... left hand, 3 ... right hand)
-type(vr_emulator):tracker_1_attachment", (int&)kit_ptr->tracker_attachments[0]) &&
+type(vr_emulator):tracker_1_attachment=1
 // coordinate system to which tracker 2 is attached (0 ... world, 1 ... hmd, 2 ... left hand, 3 ... right hand)
-type(vr_emulator):tracker_2_attachment", (int&)kit_ptr->tracker_attachments[1]);
+type(vr_emulator):tracker_2_attachment=2
+// coordinate system to which tracker 3 is attached (0 ... world, 1 ... hmd, 2 ... left hand, 3 ... right hand)
+type(vr_emulator):tracker_2_attachment=3
+// coordinate system to which tracker 4 is attached (0 ... world, 1 ... hmd, 2 ... left hand, 3 ... right hand)
+type(vr_emulator):tracker_3_attachment=0
 // tracker 1 position in world coordinates in meters
 type(vr_emulator):tracker_1_position='0 0 0'
 // tracker 2 position in world coordinates in meters
 type(vr_emulator):tracker_2_position='1 0 0 '
+// tracker 3 position in world coordinates in meters
+type(vr_emulator):tracker_3_position='0.5 0 0'
+// tracker 4 position in world coordinates in meters
+type(vr_emulator):tracker_4_position='1.5 0 0 '
 // orientation of tracker 1 as quaternion
 type(vr_emulator):tracker_1_orientation='0 0 0 1'
 // orientation of tracker 2 as quaternion
 type(vr_emulator):tracker_2_orientation='0 0 0 1'
+// orientation of tracker 3 as quaternion
+type(vr_emulator):tracker_3_orientation='0 0 0 1'
+// orientation of tracker 4 as quaternion
+type(vr_emulator):tracker_4_orientation='0 0 0 1'

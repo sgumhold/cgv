@@ -209,6 +209,7 @@ stereo_view_interactor::stereo_view_interactor(const char* name) : node(name)
 	}
 	adapt_aspect_ratio_to_stereo_mode = true;
 	last_do_viewport_splitting = do_viewport_splitting = false;
+	viewport_shrinkage = 2;
 	deadzone = 0.03f;
 	gamepad_attached = false;
 	left_mode = right_mode = 0;
@@ -351,7 +352,12 @@ void stereo_view_interactor::activate_split_viewport(cgv::render::context& ctx, 
 	new_vp[0] = current_vp[0] + col_index * new_vp[2];
 	new_vp[3] = current_vp[3] / nr_viewport_rows;
 	new_vp[1] = current_vp[1] + (nr_viewport_rows - row_index - 1) * new_vp[3];
-
+	if (viewport_shrinkage > 0) {
+		new_vp[0] += viewport_shrinkage;
+		new_vp[2] -= 2 * viewport_shrinkage;
+		new_vp[1] += viewport_shrinkage;
+		new_vp[3] -= 2 * viewport_shrinkage;
+	}
 	/*
 	new_sb[2] = current_sb[2] / nr_viewport_columns;
 	new_sb[0] = current_sb[0] + col_index * new_sb[2];
@@ -474,12 +480,14 @@ int stereo_view_interactor::get_modelview_projection_window_matrices(int x, int 
 	if (last_do_viewport_splitting) {
 		vp_width /= last_nr_viewport_columns;
 		vp_height /= last_nr_viewport_rows;
+		vp_width  -= 2 * viewport_shrinkage;
+		vp_height -= 2 * viewport_shrinkage;
 		vp_col_idx = (x - off_x) / vp_width;
 		vp_row_idx = (y - off_y) / vp_height;
-		off_x += vp_col_idx * vp_width;
-		off_y += vp_row_idx * vp_height;
-		off_x_other += vp_col_idx * vp_width;
-		off_y_other += vp_row_idx * vp_height;
+		off_x += vp_col_idx * vp_width + viewport_shrinkage;
+		off_y += vp_row_idx * vp_height + viewport_shrinkage;
+		off_x_other += vp_col_idx * vp_width + viewport_shrinkage;
+		off_y_other += vp_row_idx * vp_height + viewport_shrinkage;
 		int vp_idx = vp_row_idx * last_nr_viewport_columns + vp_col_idx;
 		if (eye_panel == 1) {
 			if (vp_idx < (int)MPWs_right.size())
@@ -1481,6 +1489,7 @@ void stereo_view_interactor::create_gui()
 		add_member_control(this, "zoom_sensitivity", zoom_sensitivity, "value_slider", "min=0.1;max=10;ticks=true;step=0.01;log=true");
 		add_member_control(this, "rotate_sensitivity", rotate_sensitivity, "value_slider", "min=0.1;max=10;ticks=true;step=0.01;log=true");
 		add_member_control(this, "deadzone", deadzone, "value_slider", "min=0;max=1;ticks=true;step=0.0001;log=true");
+		add_member_control(this, "viewport_shrinkage", viewport_shrinkage, "value_slider", "min=0;max=40;ticks=true");
 		add_member_control(this, "show_focus", show_focus, "check");
 		align("\b");
 		end_tree_node(zoom_sensitivity);
@@ -1661,6 +1670,7 @@ bool stereo_view_interactor::self_reflect(cgv::reflect::reflection_handler& srh)
 		srh.reflect_member("focus_x", view::focus(0)) &&
 		srh.reflect_member("focus_y", view::focus(1)) &&
 		srh.reflect_member("focus_z", view::focus(2)) &&
+		srh.reflect_member("focus", view::focus) &&
 		srh.reflect_member("adapt_aspect_ratio_to_stereo_mode", adapt_aspect_ratio_to_stereo_mode) &&
 		srh.reflect_member("stereo", stereo_enabled) &&
 		srh.reflect_member("eye_distance", eye_distance) &&
@@ -1672,10 +1682,12 @@ bool stereo_view_interactor::self_reflect(cgv::reflect::reflection_handler& srh)
 		srh.reflect_member("view_dir_x", view_dir(0)) &&
 		srh.reflect_member("view_dir_y", view_dir(1)) &&
 		srh.reflect_member("view_dir_z", view_dir(2)) &&
+		srh.reflect_member("view_dir", view_dir) &&
 		srh.reflect_member("fix_view_up_dir", fix_view_up_dir) &&
 		srh.reflect_member("up_dir_x", view_up_dir(0)) &&
 		srh.reflect_member("up_dir_y", view_up_dir(1)) &&
 		srh.reflect_member("up_dir_z", view_up_dir(2)) &&
+		srh.reflect_member("up_dir", view_up_dir) &&
 		srh.reflect_member("y_view_angle", y_view_angle) &&
 		srh.reflect_member("extent", y_extent_at_focus) &&
 		srh.reflect_member("z_near", z_near) &&

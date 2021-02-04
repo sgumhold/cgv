@@ -7,7 +7,7 @@
 namespace cgv {
 	namespace render {
 
-		class vertex_buffer;
+		class CGV_API vertex_buffer;
 
 /** the attribute_array_binding allows to define vertex attributes (i.e. the inputs to the
     vertex shader as well as an element array that stores element indices in indexed rendering.

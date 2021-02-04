@@ -1,0 +1,12 @@
+@=
+projectType="application_plugin";
+projectName="cfg_sample";
+projectGUID="FA8C677C-2C5C-4CB5-A984-D31E5759A7AC";
+addProjectDirs=[CGV_DIR."/libs", CGV_DIR."/plugins", CGV_DIR."/3rd"];
+addIncDirs=[CGV_DIR."/libs"];
+addProjectDeps=["cgv_utils", "cgv_type", "cgv_reflect", "cgv_data", "cgv_signal", "cgv_base", "cgv_media", "cgv_gui", 
+"cgv_render", "cgv_os", "cgv_viewer","cg_fltk", "cg_ext", "crg_stereo_view", "cgv_gl", "glew"];
+addCommandLineArguments=[
+	'config:"'.INPUT_DIR.'/config.def"',
+	after("type(shader_config):shader_path='".CGV_DIR."/libs/cgv_gl/glsl'","cg_fltk")
+];

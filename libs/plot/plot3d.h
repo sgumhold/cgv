@@ -20,6 +20,10 @@ enum PlotFaceIllumination
 /** extend common plot configuration with parameters specific to 2d plot */
 struct CGV_API plot3d_config : public plot_base_config
 {
+	/// whether to illustrate line orientation
+	bool show_line_orientation;
+	/// provide second dimension of bar extend
+	float bar_percentual_depth;
 	/// if samples per row > 0, the samples are interpreted as regular grid
 	unsigned samples_per_row;
 	/// whether to show faces
@@ -28,10 +32,10 @@ struct CGV_API plot3d_config : public plot_base_config
 	bool wireframe;
 	/// color of faces
 	rgb surface_color;
-	/// 
-	float bar_percentual_depth;
 	/// how to illuminate the surface
 	PlotFaceIllumination face_illumination;
+	/// add tube and surface color
+	void set_colors(const rgb& base_color);
 	/// construct with default values
 	plot3d_config(const std::string& _name);
 };
@@ -43,8 +47,9 @@ class CGV_API plot3d : public plot_base
 	cgv::render::shader_program tick_label_prog;
 	cgv::render::shader_program sphere_prog;
 	cgv::render::shader_program box_prog;
-	//cgv::render::shader_program wirebox_prog;
+	cgv::render::shader_program wirebox_prog;
 	cgv::render::shader_program stick_prog;
+	cgv::render::shader_program tube_prog;
 	//cgv::render::shader_program surface_prog;
 	cgv::render::box_render_style brs;
 	void set_uniforms(cgv::render::context& ctx, cgv::render::shader_program& prog, unsigned i);

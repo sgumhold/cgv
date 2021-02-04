@@ -26,6 +26,15 @@ std::string to_string(const T& v, unsigned int w = -1, unsigned int p = -1)
 	return ss.str();
 }
 
+/// convert an integer type \c T into string of width \c w with given fill character
+template <typename T>
+std::string to_string(const T& v, unsigned int w, char fill_char)
+{
+	std::stringstream ss;
+	ss << std::setw(w) << std::setfill(fill_char) << v;
+	return ss.str();
+}
+
 /// specialization of conversion from string to strings
 template <> CGV_API std::string to_string(const std::string& v, unsigned int w, unsigned int p);
 

@@ -35,10 +35,14 @@ void* open(const std::string& file_name, const std::string& mode, void* buf, int
 
 bool exists(const std::string& file_name)
 {
+	void* handle = find_first(file_name);
+	return handle != 0;
+	/*
 	FILE* fp = fopen(file_name.c_str(), "r");
 	if (fp) 
 		fclose(fp);
 	return fp != NULL;
+	*/
 }
 
 std::string find_recursive(const std::string& path, const std::string& file_name)
@@ -170,8 +174,10 @@ Result cmp(const std::string& what, const std::string& with)
 
 size_t size(const std::string& file_name, bool ascii)
 {
-	if (!exists(file_name)) 
+	void* handle = find_first(file_name);
+	if (handle == 0)
 		return (size_t)-1;
+	return find_size(handle);
 #ifdef _WIN32
 	int fh = _open(file_name.c_str(), ascii ? _O_RDONLY : (_O_BINARY | _O_RDONLY) );
 	if (fh == -1) return (size_t)-1;

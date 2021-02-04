@@ -735,8 +735,6 @@ namespace vr {
 		if (&ctx == main_context) {
 			cgv::render::ref_box_renderer(ctx, -1);
 			cgv::render::ref_sphere_renderer(ctx, -1);
-			cgv::render::ref_box_renderer(ctx, -1);
-			cgv::render::ref_sphere_renderer(ctx, -1);
 			cgv::render::ref_arrow_renderer(ctx, -1);
 			if (wall_kit_ptr) {
 				wall_kit_ptr->wall_context = true;

@@ -92,7 +92,7 @@ namespace cgv {
 		{
 			bool res = renderer::disable(ctx);
 			if (!attributes_persist())
-				has_group_indices;
+				has_group_indices = false;
 			return res;
 		}
 

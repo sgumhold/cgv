@@ -65,6 +65,7 @@ bool your_class::init(cgv::render::context& ctx)
 */
 class CGV_API vr_view_interactor : public stereo_view_interactor, public vr::vr_calibration_base
 {
+protected:
 	ivec4 cgv_viewport;
 	void* fbo_handle;
 
@@ -142,8 +143,8 @@ protected:
 	int none_separate_view;
 	int head_tracker;
 	int rendered_eye;
-	vr::vr_kit* rendered_kit_ptr;
-	int rendered_kit_index;
+	vr::gl_vr_display* rendered_display_ptr;
+	int rendered_display_index;
 
 	cgv::gui::VREventTypeFlags event_flags;
 
@@ -188,7 +189,7 @@ protected:
 	///
 	void on_status_change(void* handle, int controller_index, vr::VRStatus old_status, vr::VRStatus new_status);
 	///
-	void on_device_change(void* handle, bool attach);
+	virtual void on_device_change(void* handle, bool attach);
 	/// helper to visualize pose with colored spheres
 	void add_trackable_spheres(const float* pose, int i, std::vector<vec4>& spheres, std::vector<rgb>& sphere_colors);
 public:
@@ -268,7 +269,9 @@ public:
 	int get_rendered_eye() const { return rendered_eye; }
 	/// return the vr kit currently rendered
 	/// return a pointer to the current vr kit
-	vr::vr_kit* get_rendered_vr_kit() const { return rendered_kit_ptr; }
+	vr::gl_vr_display* get_rendered_display() const { return rendered_display_ptr; }
+	///
+	vr::vr_kit* get_rendered_vr_kit() const { return static_cast<vr::vr_kit*>(rendered_display_ptr); }
 	//@}
 	/// 
 	void on_set(void* member_ptr);
