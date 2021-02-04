@@ -18,9 +18,7 @@ namespace cgv {
 
 		void octree_lod_generator::lod_chunking(const std::vector<vec3>& positions, const vec3& min, const vec3& max)
 		{
-			size_t maxPointsPerChunk = std::min<size_t>(positions.size() / 20, 10'000'000ll);
-			size_t grid_size;
-			size_t currentPass;
+			max_points_per_chunk = std::min<size_t>(positions.size() / 20, 10'000'000ll);
 			
 			if (positions.size() < 4'000'000) {
 				grid_size = 32;
@@ -47,9 +45,17 @@ namespace cgv {
 
 				auto lut = lod_createLUT(grid, grid_size);
 
+				//state.currentPass = 2;
+				//distributePoints(sources, min, max, targetDir, lut, state, outputAttributes);
 			}
 
 
+			//string metadataPath = targetDir + "/chunks/metadata.json";
+			//double cubeSize = (max - min).max();
+			//Vector3 size = { cubeSize, cubeSize, cubeSize };
+			//max = min + cubeSize;
+
+			//writeMetadata(metadataPath, min, max, outputAttributes);
 		}
 
 		std::vector<std::atomic_int32_t> octree_lod_generator::lod_counting(const std::vector<vec3>& positions, int64_t grid_size, const vec3& min, const vec3& max)
@@ -122,9 +128,132 @@ namespace cgv {
 
 		octree_lod_generator::NodeLUT octree_lod_generator::lod_createLUT(std::vector<std::atomic_int32_t>& grid, int64_t grid_size)
 		{
+			nodes.clear();
 
+			auto for_xyz = [](int64_t gridSize, std::function< void(int64_t, int64_t, int64_t)> callback) {
+				for (int x = 0; x < gridSize; x++) {
+					for (int y = 0; y < gridSize; y++) {
+						for (int z = 0; z < gridSize; z++) {
+							callback(x, y, z);
+						}
+					}
+				}
+			};
+
+			// atomic vectors are cumbersome, convert the highest level into a regular integer vector first.
+			std::vector<int64_t> grid_high;
+			grid_high.reserve(grid.size());
+			for (auto& value : grid) {
+				grid_high.push_back(value);
+			}
+
+			int64_t level_max = int64_t(log2(grid_size));
+			
+			// - evaluate counting grid in "image pyramid" fashion
+			// - merge smaller cells into larger ones
+			// - unmergeable cells are resulting chunks; push them to "nodes" array.
+			for (int64_t level_low = level_max - 1; level_low >= 0; level_low--) {
+
+				int64_t level_high = level_low + 1;
+
+				int64_t gridSize_high = pow(2, level_high);
+				int64_t gridSize_low = pow(2, level_low);
+
+				std::vector<int64_t> grid_low(gridSize_low * gridSize_low * gridSize_low, 0);
+				// grid_high
+				
+				// loop through all cells of the lower detail target grid, and for each cell through the 8 enclosed cells of the higher level grid
+				for_xyz(gridSize_low, [this ,&grid_low, &grid_high, gridSize_low, gridSize_high, level_low, level_high, level_max](int64_t x, int64_t y, int64_t z) {
+
+					int64_t index_low = x + y * gridSize_low + z * gridSize_low * gridSize_low;
+
+					int64_t sum = 0;
+					int64_t max = 0;
+					bool unmergeable = false;
+
+					// loop through the 8 enclosed cells of the higher detailed grid
+					for (int64_t j = 0; j < 8; j++) {
+						int64_t ox = (j & 0b100) >> 2;
+						int64_t oy = (j & 0b010) >> 1;
+						int64_t oz = (j & 0b001) >> 0;
+
+						int64_t nx = 2 * x + ox;
+						int64_t ny = 2 * y + oy;
+						int64_t nz = 2 * z + oz;
+
+						int64_t index_high = nx + ny * gridSize_high + nz * gridSize_high * gridSize_high;
+
+						auto value = grid_high[index_high];
+
+						if (value == -1) {
+							unmergeable = true;
+						}
+						else {
+							sum += value;
+						}
+
+						max = std::max(max, value);
+					}
+
+
+					if (unmergeable || sum > max_points_per_chunk) {
+
+						// finished chunks
+						for (int64_t j = 0; j < 8; j++) {
+							int64_t ox = (j & 0b100) >> 2;
+							int64_t oy = (j & 0b010) >> 1;
+							int64_t oz = (j & 0b001) >> 0;
+
+							int64_t nx = 2 * x + ox;
+							int64_t ny = 2 * y + oy;
+							int64_t nz = 2 * z + oz;
+
+							int64_t index_high = nx + ny * gridSize_high + nz * gridSize_high * gridSize_high;
+
+							auto value = grid_high[index_high];
+
+
+							if (value > 0) {
+								Node node(value);
+								node.x = nx;
+								node.y = ny;
+								node.z = nz;
+								node.size = pow(2, (level_max - level_high));
+
+								nodes.push_back(node);
+							}
+						}
+
+						// invalidate the field to show the parent that nothing can be merged with it
+						grid_low[index_low] = -1;
+					}
+					else {
+						grid_low[index_low] = sum;
+					}
+
+					});
+
+				grid_high = grid_low;
+			}
+
+			// - create lookup table
+			// - loop through nodes, add pointers to node/chunk for all enclosed cells in LUT.
+			
 			std::vector<int32_t> lut(grid_size * grid_size * grid_size, -1);
+			
+			for (int i = 0; i < nodes.size(); i++) {
+				const auto& node = nodes[i];
 
+				for_xyz(node.size, [node, &lut, grid_size, i](int64_t ox, int64_t oy, int64_t oz) {
+					int64_t x = node.size * node.x + ox;
+					int64_t y = node.size * node.y + oy;
+					int64_t z = node.size * node.z + oz;
+					int64_t index = x + y * grid_size + z * grid_size * grid_size;
+
+					lut[index] = i;
+					});
+			}
+			
 			return { grid_size, lut };
 		}
 

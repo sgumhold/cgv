@@ -126,6 +126,25 @@ namespace cgv {
 				std::vector<int> grid;
 			};
 
+			struct Node {
+				int64_t level = 0;
+				int64_t x = 0;
+				int64_t y = 0;
+				int64_t z = 0;
+				int64_t size = 0;
+				int64_t numPoints;
+
+				Node(int numPoints) {
+					this->numPoints = numPoints;
+				}
+			};
+
+			std::vector<Node> nodes;
+
+			int max_points_per_chunk = 5'000'000;
+			int grid_size;
+			int currentPass;
+
 		protected:
 			void lod_chunking(const std::vector<vec3>& positions, const vec3& min, const vec3& max);
 			std::vector<std::atomic_int32_t> lod_counting(const std::vector<vec3>& positions, int64_t grid_size, const vec3& min, const vec3& max);
