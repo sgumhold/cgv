@@ -33,7 +33,7 @@ gl_point_cloud_drawable::gl_point_cloud_drawable()
 	box_color = rgba(0.5f, 0.5f, 0.5f, 1.0f);
 	box_style.illumination_mode = cgv::render::IM_TWO_SIDED;
 	box_style.culling_mode = cgv::render::CM_FRONTFACE;
-
+	normal_style.radius_relative_to_length = 0.05f;
 	use_these_point_colors = 0;
 	use_these_component_colors = 0;
 	use_these_point_palette = 0;
@@ -43,15 +43,34 @@ gl_point_cloud_drawable::gl_point_cloud_drawable()
 	use_component_transformations = false;
 }
 
-bool gl_point_cloud_drawable::read(const std::string& _file_name)
+bool gl_point_cloud_drawable::ensure_file_name(std::string& fn, const std::string* data_path_ptr) const
 {
-	std::string fn = cgv::base::find_data_file(_file_name, "cpD");
-	if (fn.empty()) {
-		cerr << "point cloud " << _file_name << " not found" << endl;
-		return false;
+	if (cgv::utils::file::exists(fn))
+		return true;
+	if (data_path_ptr) {
+		std::string file_path = *data_path_ptr + "/" + fn;
+		if (cgv::utils::file::exists(file_path)) {
+			fn = file_path;
+			return true;
+		}
 	}
+	std::string file_path = cgv::base::find_data_file(fn, "cpD");
+	if (!file_path.empty()) {
+		fn = file_path;
+		return true;
+	}
+	last_error = "point cloud ";
+	last_error += fn;
+	last_error += " not found";
+	return false;
+}
+bool gl_point_cloud_drawable::read(std::string& fn, const std::string* data_path_ptr)
+{
+	if (!ensure_file_name(fn, data_path_ptr))
+		return false;
 	if (!pc.read(fn)) {
-		cerr << "could not read point cloud " << fn << endl;
+		last_error = "could not read point cloud ";
+		last_error += fn;
 		return false;
 	}
 	show_point_begin = 0;
@@ -60,20 +79,16 @@ bool gl_point_cloud_drawable::read(const std::string& _file_name)
 	post_redraw();
 	return true;
 }
-
-bool gl_point_cloud_drawable::append(const std::string& _file_name, bool add_component)
+bool gl_point_cloud_drawable::append(std::string& fn, bool add_component, const std::string* data_path_ptr)
 {
-	std::string fn = cgv::base::find_data_file(_file_name, "cpD");
-	if (fn.empty()) {
-		cerr << "point cloud " << _file_name << " not found" << endl;
+	if (!ensure_file_name(fn, data_path_ptr))
 		return false;
-	}
 	point_cloud pc1;
 	if (!pc1.read(fn)) {
-		cerr << "could not read point cloud " << fn << endl;
+		last_error = "could not read point cloud ";
+		last_error += fn;
 		return false;
 	}
-
 	// construct component if necessary
 	if (add_component) {
 		if (!pc.has_components()) {
@@ -86,16 +101,16 @@ bool gl_point_cloud_drawable::append(const std::string& _file_name, bool add_com
 	}
 	pc.append(pc1);
 	pc.component_name(cgv::type::int32_type(pc.get_nr_components() - 1)) = 
-		cgv::utils::file::drop_extension(cgv::utils::file::get_file_name(_file_name));
+		cgv::utils::file::drop_extension(cgv::utils::file::get_file_name(fn));
 	show_point_begin = 0;
 	show_point_end = pc.get_nr_points();
 	return true;
 }
-
 bool gl_point_cloud_drawable::write(const std::string& fn)
 {
 	if (!pc.write(fn)) {
-		cerr << "could not write point cloud " << fn << endl;
+		last_error = "could not write point cloud ";
+		last_error += fn;
 		return false;
 	}
 	return true;
@@ -278,15 +293,18 @@ void gl_point_cloud_drawable::draw_normals(context& ctx)
 {
 	if (!show_nmls || !pc.has_normals())
 		return;
-	n_renderer.set_normal_scale(pc.box().get_extent().length() / sqrt(float(pc.get_nr_points())));
-	n_renderer.set_position_array(ctx, &pc.pnt(0), pc.get_nr_points(), sizeof(Pnt)*show_point_step);
+	float tmp = normal_style.length_scale;
+	normal_style.length_scale *= 0.5f*pc.box().get_extent().length() / sqrt(float(pc.get_nr_points()));
+	a_renderer.set_render_style(normal_style);
+	a_renderer.set_position_array(ctx, &pc.pnt(0), pc.get_nr_points(), sizeof(Pnt)*show_point_step);
 	if (pc.has_colors())
-		n_renderer.set_color_array(ctx, &pc.clr(0), pc.get_nr_points(), sizeof(Clr)*show_point_step);
+		a_renderer.set_color_array(ctx, &pc.clr(0), pc.get_nr_points(), sizeof(Clr)*show_point_step);
 	if (pc.has_normals())
-		n_renderer.set_normal_array(ctx, &pc.nml(0), pc.get_nr_points(), sizeof(Nml)*show_point_step);
+		a_renderer.set_direction_array(ctx, &pc.nml(0), pc.get_nr_points(), sizeof(Nml)*show_point_step);
 	std::size_t n = (show_point_end - show_point_begin) / show_point_step;
 	GLint offset = GLint(show_point_begin / show_point_step);
-	n_renderer.render(ctx, offset,n);
+	a_renderer.render(ctx, offset,n);
+	normal_style.length_scale = tmp;
 }
 
 
@@ -295,9 +313,9 @@ bool gl_point_cloud_drawable::init(cgv::render::context& ctx)
 	if (!s_renderer.init(ctx))
 		return false;
 	s_renderer.set_render_style(surfel_style);
-	if (!n_renderer.init(ctx))
+	if (!a_renderer.init(ctx))
 		return false;
-	n_renderer.set_render_style(normal_style);
+	a_renderer.set_render_style(normal_style);
 	if (!b_renderer.init(ctx))
 		return false;
 	b_renderer.set_render_style(box_style);
@@ -312,7 +330,7 @@ bool gl_point_cloud_drawable::init(cgv::render::context& ctx)
 void gl_point_cloud_drawable::clear(cgv::render::context& ctx)
 {
 	s_renderer.clear(ctx);
-	n_renderer.clear(ctx);
+	a_renderer.clear(ctx);
 	b_renderer.clear(ctx);
 	bw_renderer.clear(ctx);
 }

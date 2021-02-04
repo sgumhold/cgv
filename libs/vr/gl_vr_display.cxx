@@ -5,10 +5,9 @@
 namespace vr {
 
 /// construct
-gl_vr_display::gl_vr_display(unsigned _width, unsigned _height, vr_driver* _driver, void* _handle, const std::string& _name)
-	: width(_width), height(_height), vr_kit(_driver, _handle, _name)
+gl_vr_display::gl_vr_display(unsigned _width, unsigned _height, unsigned _nr_multi_samples)
+	: width(_width), height(_height), nr_multi_samples(_nr_multi_samples)
 {
-	nr_multi_samples = 4;
 	for (unsigned i = 0; i < 2; ++i) {
 		multi_depth_buffer_id[i] = 0;
 		multi_tex_id[i] = 0;
@@ -16,6 +15,17 @@ gl_vr_display::gl_vr_display(unsigned _width, unsigned _height, vr_driver* _driv
 		tex_id[i] = 0;
 		fbo_id[i] = 0;
 	}
+}
+
+/// declare virtual destructor
+gl_vr_display::~gl_vr_display() 
+{
+}
+
+/// return last error of vr_kit
+const std::string& gl_vr_display::get_last_error() const 
+{
+	return last_error; 
 }
 
 /// allow to set a different size
@@ -34,11 +44,6 @@ int gl_vr_display::get_width() const
 int gl_vr_display::get_height() const
 {
 	return height;
-}
-
-/// declare virtual destructor
-gl_vr_display::~gl_vr_display()
-{
 }
 
 /// check whether fbos have been initialized

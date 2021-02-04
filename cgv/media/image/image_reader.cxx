@@ -137,7 +137,6 @@ bool image_reader::read_image(const std::string& file_name, const data_view& dv,
 	return true;
 }
 
-
 /// open the file and read the image header in order to determine the data format
 bool image_reader::open(const std::string& file_name)
 {

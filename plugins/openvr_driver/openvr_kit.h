@@ -1,6 +1,6 @@
 #pragma once
 
-#include <vr/gl_vr_display.h>
+#include <vr/vr_kit.h>
 #include "openvr.h"
 
 #include <vector>
@@ -15,7 +15,7 @@ namespace vr {
 	/**@name vr device management */
 	//@{
 	/// information provided per vr device
-	class CGV_API openvr_kit : public gl_vr_display
+	class CGV_API openvr_kit : public vr_kit
 	{
 	protected:
 		vr::IVRSystem* get_hmd();

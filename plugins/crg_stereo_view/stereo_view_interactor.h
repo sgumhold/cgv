@@ -47,7 +47,7 @@ protected:
 	bool two_d_enabled;
 	bool fix_view_up_dir;
 	bool adapt_aspect_ratio_to_stereo_mode;
-
+public:
 	void set_default_values();
 	GlsuStereoMode get_stereo_mode() const { return stereo_mode; }
 	virtual void set_stereo_mode(GlsuStereoMode sm) { stereo_mode = sm; on_set(&stereo_mode); }
@@ -56,7 +56,7 @@ protected:
 	virtual void set_anaglyph_config(GlsuAnaglyphConfiguration _ac) { anaglyph_config = _ac; on_set(&anaglyph_config); }
 	bool is_stereo_enabled() const { return stereo_enabled; }
 	virtual void enable_stereo(bool e = true) { stereo_enabled = e; on_set(&stereo_enabled); }
-	
+protected:
 	double z_near_derived, z_far_derived;
 	float depth_offset, depth_scale;
 	bool auto_view_images;
@@ -222,6 +222,7 @@ private:
 	bool do_viewport_splitting;
 	unsigned nr_viewport_columns;
 	unsigned nr_viewport_rows;
+	unsigned viewport_shrinkage;
 	std::vector<dmat4> MPWs, MPWs_right;
 	std::vector<cgv::render::view> views;
 	std::vector<bool> use_individual_view;

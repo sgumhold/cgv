@@ -3,6 +3,7 @@
 uniform bool position_is_center;
 uniform bool has_rotations;
 uniform bool has_translations;
+uniform vec3 relative_anchor = vec3(0.0);
 
 in vec4 position;
 in vec3 extent;
@@ -63,6 +64,7 @@ void main()
 		S[0][0] = extent[0];
 		S[1][1] = extent[1];
 		S[2][2] = extent[2];
+		S[3]    = vec4(-0.5*relative_anchor*extent,1.0);
 		center_position = position.xyz;
 	}
 	else {
@@ -70,9 +72,9 @@ void main()
 		S[0][0] = E[0];
 		S[1][1] = E[1];
 		S[2][2] = E[2];
+		S[3] = vec4(0.0,0.0,0.0,1.0);
 		center_position = 0.5*(extent + position.xyz);
 	}
-	S[3] = vec4(0.0,0.0,0.0,1.0);
 
 	// setup position matrix from modelview, rotations and translations 
 	PM = get_modelview_matrix();

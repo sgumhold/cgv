@@ -39,6 +39,12 @@ protected:
 	std::vector<idx_type> material_indices;
 	std::vector<mat_type> materials;
 public:
+	/// default constructor
+	simple_mesh_base();
+	/// copy constructor
+	simple_mesh_base(const simple_mesh_base& smb);
+	/// assignment operator
+	simple_mesh_base& operator=(const simple_mesh_base& smb);
 	/// position count
 	virtual idx_type get_nr_positions() const = 0;
 	/// create a new empty face to which new corners are added and return face index
@@ -134,7 +140,11 @@ protected:
 	vec3 compute_normal(const vec3& p0, const vec3& p1, const vec3& p2);
 public:
 	/// construct from string corresponding to Conway notation (defaults to empty mesh)
+	simple_mesh(const simple_mesh<T>& sm);
+	/// construct from string corresponding to Conway notation (defaults to empty mesh)
 	simple_mesh(const std::string& conway_notation = "");
+	/// construct from string corresponding to Conway notation (defaults to empty mesh)
+	simple_mesh<T>& operator = (const simple_mesh<T>& sm);
 	/// clear simple mesh
 	void clear();
 

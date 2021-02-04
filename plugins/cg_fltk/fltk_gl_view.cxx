@@ -397,6 +397,7 @@ void fltk_gl_view::create()
 void fltk_gl_view::destroy()
 {
 	make_current();
+	destruct_render_objects();
 	if (!in_recreate_context) {
 		remove_all_children();
 		no_more_context = true;
@@ -406,7 +407,7 @@ void fltk_gl_view::destroy()
 		for (unsigned i=0; i<get_nr_children(); ++i)
 			traverser(sma, "nc").traverse(get_child(i));
 	}
-	destruct_render_objects();
+	//destruct_render_objects();
 	fltk::GlWindow::destroy();
 }
 
@@ -853,9 +854,13 @@ int fltk_gl_view::handle(int ei)
 			return 1;
 		break;
 	case fltk::DND_ENTER:
-		if (dispatch_event(cgv_mouse_event(MA_ENTER, EF_DND)))
+	{
+		cgv::gui::mouse_event me = cgv_mouse_event(MA_ENTER, EF_DND);
+		me.set_dnd_text(fltk::event_text());
+		if (dispatch_event(me))
 			return 1;
 		break;
+	}
 	case fltk::DND_DRAG :
 		if (dx != 0 || dy != 0) {
 			if (dispatch_event(cgv_mouse_event(MA_DRAG,EF_DND,dx,dy)))

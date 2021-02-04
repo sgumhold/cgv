@@ -8,6 +8,40 @@ namespace cgv {
 	namespace media {
 		namespace mesh {
 
+/// default constructor
+simple_mesh_base::simple_mesh_base() 
+{
+
+}
+/// copy constructor
+simple_mesh_base::simple_mesh_base(const simple_mesh_base& smb) :
+	colored_model(smb),
+	position_indices(smb.position_indices),
+	normal_indices(smb.normal_indices),
+	tex_coord_indices(smb.tex_coord_indices),
+	faces(smb.faces),
+	group_indices(smb.group_indices),
+	group_names(smb.group_names),
+	material_indices(smb.material_indices),
+	materials(smb.materials)
+{
+}
+/// assignment operator
+simple_mesh_base& simple_mesh_base::operator=(const simple_mesh_base& smb)
+{
+	colored_model::operator=(smb);
+	position_indices=smb.position_indices;
+	normal_indices=smb.normal_indices;
+	tex_coord_indices=smb.tex_coord_indices;
+	faces=smb.faces;
+	group_indices=smb.group_indices;
+	group_names=smb.group_names;
+	material_indices=smb.material_indices;
+	materials = smb.materials;
+	return *this;
+}
+
+
 /// create a new empty face to which new corners are added and return face index
 simple_mesh_base::idx_type simple_mesh_base::start_face()
 {
@@ -260,6 +294,14 @@ public:
 			mesh.group_indices.push_back(get_current_group());
 		if (get_current_material() != -1)
 			mesh.material_indices.push_back(get_current_material());
+		if (texcoords) {
+			if (mesh.tex_coord_indices.size() < mesh.position_indices.size())
+				mesh.tex_coord_indices.resize(mesh.position_indices.size(), 0);
+		}
+		if (normals) {
+			if (mesh.normal_indices.size() < mesh.position_indices.size())
+				mesh.normal_indices.resize(mesh.position_indices.size(), 0);
+		}
 		for (idx_type i = 0; i < vcount; ++i) {
 			mesh.position_indices.push_back(idx_type(vertices[i]));
 			if (texcoords)
@@ -281,6 +323,24 @@ public:
 		mesh.materials[idx] = mtl;
 	}
 };
+
+
+/// construct from string corresponding to Conway notation (defaults to empty mesh)
+template <typename T>
+simple_mesh<T>::simple_mesh(const simple_mesh<T>& sm) : simple_mesh_base(sm), positions(sm.positions), normals(sm.normals), tex_coords(sm.tex_coords)
+{
+}
+
+/// construct from string corresponding to Conway notation (defaults to empty mesh)
+template <typename T>
+simple_mesh<T>& simple_mesh<T>::operator = (const simple_mesh<T>& sm)
+{
+	simple_mesh_base::operator = (sm);
+	positions = sm.positions;
+	normals = sm.normals;
+	tex_coords = sm.tex_coords;
+	return *this;
+}
 
 /// clear simple mesh
 template <typename T>
@@ -398,7 +458,8 @@ unsigned simple_mesh<T>::extract_vertex_attribute_buffer(
 	include_normals = include_normals && !normal_indices.empty() && !normals.empty();
 	bool include_colors = false;
 	if (include_colors_ptr)
-		*include_colors_ptr = include_colors = has_colors() && *include_colors_ptr;
+		*include_colors_ptr = include_colors = 
+			has_colors() && get_nr_colors() > 0 && *include_colors_ptr;
 
 	// determine number floats per vertex
 	unsigned nr_floats = 3;
