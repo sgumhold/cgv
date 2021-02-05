@@ -25,23 +25,23 @@
 /////
 // Some constant defines
 
-/// multiple of the Euclidean distance unit for use as a tolerance to decide whether two node position values are similar or not
+/// multiple of the user-supplied distance unit for use as a tolerance to decide whether two node position values are similar or not
 #define BEZDAT_SIM_TOLERANCE_POS (real(32)*std::numeric_limits<real>::epsilon())
 
-/// multiple of the Euclidean distance unit for use as a tolerance to decide whether two node tangents are similar or not
-#define BEZDAT_SIM_TOLERANCE_DPOS real(0.0078125)
+/// multiple of the user-supplied distance unit for use as a tolerance to decide whether two node tangents are similar or not
+#define BEZDAT_SIM_TOLERANCE_DPOS real(0.125)
 
-/// multiple of the Euclidean distance unit for use as a tolerance to decide whether two node radius values are similar or not
-#define BEZDAT_SIM_TOLERANCE_RAD (real(32)*std::numeric_limits<real>::epsilon())
+/// multiple of the user-supplied distance unit for use as a tolerance to decide whether two node radius values are similar or not
+#define BEZDAT_SIM_TOLERANCE_RAD (real(128)*std::numeric_limits<real>::epsilon())
 
-/// multiple of the Euclidean distance unit for use as a tolerance to decide whether two node radius derivatives are similar or not
-#define BEZDAT_SIM_TOLERANCE_DRAD real(0.0078125)
+/// multiple of the user-supplied distance unit for use as a tolerance to decide whether two node radius derivatives are similar or not
+#define BEZDAT_SIM_TOLERANCE_DRAD real(0.125)
 
-/// multiple of the Euclidean distance unit for use as a tolerance to decide whether two node color values are similar or not
-#define BEZDAT_SIM_TOLERANCE_COL (real(32)*std::numeric_limits<real>::epsilon())
+/// multiple of the user-supplied distance unit for use as a tolerance to decide whether two node color values are similar or not
+#define BEZDAT_SIM_TOLERANCE_COL (real(1024)*std::numeric_limits<real>::epsilon())
 
-/// multiple of the RGB8 color space unit for use as a tolerance to decide whether two node color derivatives are similar or not
-#define BEZDAT_SIM_TOLERANCE_DCOL real(0.0078125)
+/// multiple of the user-supplied color distance unit for use as a tolerance to decide whether two node color derivatives are similar or not
+#define BEZDAT_SIM_TOLERANCE_DCOL real(0.125)
 
 /// identifyier to use for tangent data
 #define BEZDAT_TANGENT_ATTRIB_NAME "tangent"
@@ -140,7 +140,7 @@ struct bezdat_node
 			diff_dcol=(dcol - other.dcol).sqr_length(),
 			thr_dcol=BEZDAT_SIM_TOLERANCE_DCOL*BEZDAT_SIM_TOLERANCE_DPOS * cUnit*cUnit;
 
-		return   (diff_pos < thr_pos)  && (diff_rad < thr_rad)  && (diff_col < thr_col)
+		return   (diff_pos <= thr_pos) && (diff_rad <= thr_rad) && (diff_col <= thr_col)
 		      && (diff_dpos<=thr_dpos) && (diff_drad<=thr_drad) && (diff_dcol<=thr_dcol);
 	}
 };
@@ -275,7 +275,7 @@ bool bezdat_handler<flt_type>::read (std::istream &contents, unsigned idx_offset
 	nodes.reserve(points.size());
 	segments.reserve(bsegs.size());
 	grid3D<real> nodes_db(
-		avgNodeDist*real(0.015625),
+		avgNodeDist*real(2)*BEZDAT_SIM_TOLERANCE_POS,
 		[&nodes] (Vec3 *pnt, size_t id) -> bool {
 			if (id < nodes.size())
 			{
