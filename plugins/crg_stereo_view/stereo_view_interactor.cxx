@@ -1212,9 +1212,9 @@ void stereo_view_interactor::on_stereo_change()
 	base* bp = dynamic_cast<base*>(get_context());
 	if (bp) {
 		bool need_quad_buffer = is_stereo_enabled() && (stereo_mode == GLSU_QUAD_BUFFER);
-		if (need_quad_buffer != bp->get<bool>("quad_buffer")) {
-			bp->set("quad_buffer", need_quad_buffer);
-			if (need_quad_buffer && !bp->get<bool>("quad_buffer"))
+		if (need_quad_buffer != bp->get<bool>("stereo_buffer")) {
+			bp->set("stereo_buffer", need_quad_buffer);
+			if (need_quad_buffer && !bp->get<bool>("stereo_buffer"))
 				enable_stereo(false);
 		}
 
