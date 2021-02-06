@@ -67,7 +67,7 @@ type(stereo_view_interactor):stereo=false
 // eye distance in percent to y-extent of screen
 type(stereo_view_interactor):eye_distance=0.03
 // stereo rendering mode
-type(stereo_view_interactor):stereo_mode=anaglyph (other values: vsplit,hsplit,"quad buffer")
+type(stereo_view_interactor):stereo_mode=anaglyph (other values: vsplit,hsplit,quad_buffer)
 type(stereo_view_interactor):mono_mode=center (other values: left,right)
 type(stereo_view_interactor):anaglyph_config="red|cyan" (other values: "red|blue","yellow|blue","magenta|green","blue|red","cyan|red","blue|yellow","green|magenta")
 // distance to parallax 0 plane 
