@@ -1,0 +1,16 @@
+@=
+projectType="application_plugin";
+projectName="stereo_image_view";
+projectGUID="EC7B0E1E-34D4-4BD5-89A8-0A62FE2964C6";
+addProjectDirs=[CGV_DIR."/libs", CGV_DIR."/plugins", CGV_DIR."/3rd"];
+addIncDirs=[CGV_DIR."/libs", CGV_DIR."/libs/delaunay"];
+addProjectDeps=["cgv_utils", "cgv_type", "cgv_reflect", "cgv_data", "cgv_signal", "cgv_base", "cgv_media", "cgv_gui", 
+"cgv_render","cgv_os", "cgv_viewer","cg_fltk", "cg_ext", "crg_stereo_view",  
+"crg_light", "cmi_io","cmv_avi","crg_grid","co_web", "cgv_gl", "glew"];
+addCommandLineArguments=[
+	'config:"'.INPUT_DIR.'/config.def"',
+	after("type(shader_config):shader_path='".INPUT_DIR.";".CGV_DIR."/libs/plot/glsl;".CGV_DIR."/libs/cgv_gl/glsl'","cg_fltk")
+];
+excludeSourceDirs = ["data"];
+workingDirectory = INPUT_DIR;
+
