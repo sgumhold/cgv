@@ -196,6 +196,12 @@ public:
 	{		
 		return true;
 	}
+	/// destruct left/right eye textures
+	void clear(cgv::render::context& ctx)
+	{
+		tex_left.destruct(ctx);
+		tex_right.destruct(ctx);
+	}
 	/// draw stereo image here
 	void draw(cgv::render::context& ctx)
 	{
