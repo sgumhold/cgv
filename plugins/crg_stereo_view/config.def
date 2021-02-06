@@ -1,5 +1,4 @@
 // *********** gamepad *******************
-
 // (only works if lib/cg_gamepad is dependent project and only under windows)
 // 
 // button mappings:
@@ -53,6 +52,9 @@ type(stereo_view_interactor):z_near=0.0001
 type(stereo_view_interactor):z_far=100
 
 // ********** navigation configuration ************
+// whether dialog boxes with messages should be provided to user (defaults to true)
+// currently a message is produced only in case that quad buffer stereo cannot be enabled
+type(stereo_view_interactor):enable_messages=true
 // whether to fix view up direction (effectively prohibits rolling)
 type(stereo_view_interactor):fix_view_up_dir=false
 // whether to restrict rotation to roll (effectively results in 2D navigation)

@@ -1,6 +1,7 @@
 #include "stereo_view_interactor.h"
 #include <cgv/math/geom.h>
 #include <cgv/math/ftransform.h>
+#include <cgv/gui/dialog.h>
 #include <libs/cg_gamepad/gamepad_server.h>
 #include <cgv_reflect_types/math/fvec.h>
 #include <cgv/render/shader_program.h>
@@ -195,6 +196,7 @@ void stereo_view_interactor::timer_event(double t, double dt)
 ///
 stereo_view_interactor::stereo_view_interactor(const char* name) : node(name)
 {
+	enable_messages = true;
 	use_gamepad = true;
 	gamepad_emulation = false;
 	emulation_active = false;
@@ -1214,8 +1216,11 @@ void stereo_view_interactor::on_stereo_change()
 		bool need_quad_buffer = is_stereo_enabled() && (stereo_mode == GLSU_QUAD_BUFFER);
 		if (need_quad_buffer != bp->get<bool>("stereo_buffer")) {
 			bp->set("stereo_buffer", need_quad_buffer);
-			if (need_quad_buffer && !bp->get<bool>("stereo_buffer"))
+			if (need_quad_buffer && !bp->get<bool>("stereo_buffer")) {
 				enable_stereo(false);
+				if (enable_messages)
+					cgv::gui::message("could not activate quad_buffer stereo");
+			}
 		}
 
 		if (stereo_enabled && ((stereo_mode == GLSU_SPLIT_HORIZONTALLY) || (stereo_mode == GLSU_SPLIT_VERTICALLY)))
@@ -1660,7 +1665,8 @@ void stereo_view_interactor::set_default_view()
 /// you must overload this for gui creation
 bool stereo_view_interactor::self_reflect(cgv::reflect::reflection_handler& srh)
 {
-	return
+	return		
+		srh.reflect_member("enable_messages", enable_messages) &&
 		srh.reflect_member("use_gamepad", use_gamepad) &&
 		srh.reflect_member("gamepad_emulation", gamepad_emulation) &&
 		srh.reflect_member("deadzone", deadzone) &&
