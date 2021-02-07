@@ -1,6 +1,7 @@
 #include "stereo_view_interactor.h"
 #include <cgv/math/geom.h>
 #include <cgv/math/ftransform.h>
+#include <cgv/gui/dialog.h>
 #include <libs/cg_gamepad/gamepad_server.h>
 #include <cgv_reflect_types/math/fvec.h>
 #include <cgv/render/shader_program.h>
@@ -26,7 +27,7 @@ using namespace cgv::render;
 using namespace cgv::render::gl;
 
 #define SMP_ENUMS "bitmap,pixels,arrow"
-#define SM_ENUMS "vsplit,hsplit,anaglyph,quad buffer"
+#define SM_ENUMS "vsplit,hsplit,anaglyph,quad_buffer"
 #define AC_ENUMS "red|blue,red|cyan,yellow|blue,magenta|green,blue|red,cyan|red,blue|yellow,green|magenta"
 #define EYE_ENUMS "left=-1,center,right"
 
@@ -195,6 +196,7 @@ void stereo_view_interactor::timer_event(double t, double dt)
 ///
 stereo_view_interactor::stereo_view_interactor(const char* name) : node(name)
 {
+	enable_messages = true;
 	use_gamepad = true;
 	gamepad_emulation = false;
 	emulation_active = false;
@@ -1214,8 +1216,11 @@ void stereo_view_interactor::on_stereo_change()
 		bool need_quad_buffer = is_stereo_enabled() && (stereo_mode == GLSU_QUAD_BUFFER);
 		if (need_quad_buffer != bp->get<bool>("stereo_buffer")) {
 			bp->set("stereo_buffer", need_quad_buffer);
-			if (need_quad_buffer && !bp->get<bool>("stereo_buffer"))
+			if (need_quad_buffer && !bp->get<bool>("stereo_buffer")) {
 				enable_stereo(false);
+				if (enable_messages)
+					cgv::gui::message("could not activate quad_buffer stereo");
+			}
 		}
 
 		if (stereo_enabled && ((stereo_mode == GLSU_SPLIT_HORIZONTALLY) || (stereo_mode == GLSU_SPLIT_VERTICALLY)))
@@ -1513,7 +1518,7 @@ void stereo_view_interactor::create_gui()
 		align("\a");
 		connect_copy(add_control("stereo", stereo_enabled, "check")->value_change, rebind(this, &stereo_view_interactor::on_stereo_change));
 		add_member_control(this, "mono_mode", mono_mode, "dropdown", "enums='left=-1,center,right'");
-		add_member_control(this, "stereo_mode", stereo_mode, "dropdown", "enums='vsplit,hsplit,anaglyph,quad buffer'");
+		add_member_control(this, "stereo_mode", stereo_mode, "dropdown", "enums='vsplit,hsplit,anaglyph,quad_buffer'");
 		add_member_control(this, "adapt_aspect_ratio", adapt_aspect_ratio_to_stereo_mode, "check");
 		add_member_control(this, "anaglyph_config", anaglyph_config, "dropdown", "enums='" AC_ENUMS "'");
 		add_member_control(this, "eye_distance", eye_distance, "value_slider", "min=0.001;max=0.5;ticks=true;step=0.00001;log=true");
@@ -1544,7 +1549,7 @@ void stereo_view_interactor::create_gui()
 }
 
 /*
-	srh.reflect_member("mode", stereo_mode);, "vsplit,hsplit,anaglyph,quad buffer")->value_change,
+	srh.reflect_member("mode", stereo_mode);, "vsplit,hsplit,anaglyph,quad_buffer")->value_change,
 		rebind(static_cast<drawable*>(this), &drawable::post_redraw));
 	connect_copy(add_control("config", anaglyph_config,
 		"<red|blue>,<red|cyan>,<yellow|blue>,<magenta|green>,<blue|red>,<cyan|red>,<blue|yellow>,<green|magenta>")->value_change,
@@ -1553,7 +1558,7 @@ void stereo_view_interactor::create_gui()
 
 std::string stereo_view_interactor::get_property_declarations()
 {
-	return cgv::base::base::get_property_declarations() + ";stereo_mode:string(vsplit,hsplit,anaglyph,quad buffer);stereo_config(<red|blue>,<red|cyan>,<yellow|blue>,<magenta|green>,<blue|red>,<cyan|red>,<blue|yellow>,<green|magenta>):string";
+	return cgv::base::base::get_property_declarations() + ";stereo_mode:string(vsplit,hsplit,anaglyph,quad_buffer);stereo_config(<red|blue>,<red|cyan>,<yellow|blue>,<magenta|green>,<blue|red>,<cyan|red>,<blue|yellow>,<green|magenta>):string";
 }
 
 bool stereo_view_interactor::set_void(const std::string& property, const std::string& value_type, const void* value_ptr)
@@ -1570,10 +1575,10 @@ bool stereo_view_interactor::set_void(const std::string& property, const std::st
 			stereo_mode = GLSU_SPLIT_HORIZONTALLY;
 		else if (v == "anaglyph")
 			stereo_mode = GLSU_ANAGLYPH;
-		else if (v == "quad buffer")
+		else if (v == "quad_buffer")
 			stereo_mode = GLSU_QUAD_BUFFER;
 		else
-			std::cerr << "string value of stereo_mode must be one out of 'vsplit,hsplit,anaglyph,quad buffer'" << std::endl;
+			std::cerr << "string value of stereo_mode must be one out of 'vsplit,hsplit,anaglyph,quad_buffer'" << std::endl;
 		on_set(&stereo_mode);
 		return true;
 	}
@@ -1614,7 +1619,7 @@ bool stereo_view_interactor::get_void(const std::string& property, const std::st
 		case GLSU_SPLIT_VERTICALLY: cgv::type::set_variant(std::string("vsplit"), value_type, value_ptr); break;
 		case GLSU_SPLIT_HORIZONTALLY: cgv::type::set_variant(std::string("hsplit"), value_type, value_ptr); break;
 		case GLSU_ANAGLYPH: cgv::type::set_variant(std::string("anaglyph"), value_type, value_ptr); break;
-		case GLSU_QUAD_BUFFER: cgv::type::set_variant(std::string("quad buffer"), value_type, value_ptr); break;
+		case GLSU_QUAD_BUFFER: cgv::type::set_variant(std::string("quad_buffer"), value_type, value_ptr); break;
 		}
 		return true;
 	}
@@ -1660,7 +1665,8 @@ void stereo_view_interactor::set_default_view()
 /// you must overload this for gui creation
 bool stereo_view_interactor::self_reflect(cgv::reflect::reflection_handler& srh)
 {
-	return
+	return		
+		srh.reflect_member("enable_messages", enable_messages) &&
 		srh.reflect_member("use_gamepad", use_gamepad) &&
 		srh.reflect_member("gamepad_emulation", gamepad_emulation) &&
 		srh.reflect_member("deadzone", deadzone) &&

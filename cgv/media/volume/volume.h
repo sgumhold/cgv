@@ -62,9 +62,11 @@ namespace cgv {
 				/// return the size of a voxel in bytes
 				unsigned get_voxel_size() const { return df.get_component_format().get_entry_size(); }
 				/// return the size of a row within a slice in bytes
-				unsigned get_row_size() const { return df.get_width() * get_voxel_size(); }
+				size_t get_row_size() const { return df.get_width() * get_voxel_size(); }
 				/// return the size of a slice in bytes
-				unsigned get_slice_size() const { return df.get_height() * get_row_size(); }
+				size_t get_slice_size() const { return df.get_height() * get_row_size(); }
+				/// return size of volume in bytes
+				size_t get_size() const { return get_voxel_size() * get_nr_voxels(); }
 				//@}
 
 				/**@name access to sampling resolution*/
@@ -72,7 +74,7 @@ namespace cgv {
 				/// return the dimensions or (0,0,0) if not available
 				virtual dimension_type get_dimensions() const;
 				/// return the total number of voxels
-				std::size_t get_nr_voxels() const;
+				size_t get_nr_voxels() const;
 				/// resize the volume
 				virtual void resize(const dimension_type& S);
 				//@}
