@@ -75,6 +75,8 @@ namespace cgv {
 			CGV_API std::string get_path(const std::string& file_path);
 			/// check whether a path is relative
 			CGV_API bool is_relative_path(const std::string& file_path);
+			/// clean up path such that it conforms to platform specific path
+			CGV_API std::string platform_path(const std::string& file_path);
 			/// clean up the path such that all back slashes are replaced by /, no multiple / arise and no trailing / arises
 			CGV_API std::string clean_path(const std::string& file_path);
 			/// remove the prefix_path from the file_path in case that it is a prefix and return true whether it was a prefix
