@@ -14,132 +14,14 @@
 #include "traj_loader.h"
 
 
-/// possible special semantics of a .csv column
-enum class CSV_ColumnSemantics
-{
-	ARBITRARY=0, POS_X, POS_Y, POS_Z, TRAJ_ID
-};
-#if !defined(CSV_HANDLER_NO_SHORTHAND_ENUM_CSV) || CSV_HANDLER_NO_SHORTHAND_ENUM_CSV==0
-	/// convenience shorthand for \ref CSV_ColumnSemantics
-	typedef CSV_ColumnSemantics CSV;
-#endif
-
-
-/// table format descriptor to identify a supported .csv file
-struct csv_table_descriptor
-{
-	/// descriptor of one data column
-	/// ToDo: add way to describe the data format of a column, right now we always assume a scalar - it would be
-	///       nice to be able to specify string encodings for other data types (like actual strings or composite
-	///       types like vectors or matrices)
-	struct column
-	{
-		/// name of the column
-		std::string name;
-
-		/// special meaning of this column, if any
-		CSV_ColumnSemantics semantics;
-
-		/// whether \ref #name should be treated as case-sensitive or not
-		/// ToDo: make it settable
-		bool case_sensitive = false;
-
-		// default constructor
-		column() : semantics(CSV_ColumnSemantics::ARBITRARY) {}
-
-		// constructs unnamed column with given semantics
-		column(CSV_ColumnSemantics semantics=CSV_ColumnSemantics::ARBITRARY)
-			: semantics(semantics)
-		{}
-
-		// constructs from string containing the column name and a given semantics
-		column(const std::string &name, CSV_ColumnSemantics semantics=CSV_ColumnSemantics::ARBITRARY)
-			: name(name), semantics(semantics)
-		{
-			if (!case_sensitive)
-				this->name = cgv::utils::to_lower(name);
-		}
-
-		// constructs from string containing the column name (move semantics)
-		column(std::string &&name, CSV_ColumnSemantics semantics=CSV_ColumnSemantics::ARBITRARY)
-			: name(std::move(name)), semantics(semantics)
-		{
-			if (!case_sensitive)
-				this->name = cgv::utils::to_lower(this->name);
-		}
-
-		// constructs from c-style string containing the column name
-		column(const char *name, CSV_ColumnSemantics semantics=CSV_ColumnSemantics::ARBITRARY)
-			: name(name), semantics(semantics)
-		{
-			if (!case_sensitive)
-				this->name = cgv::utils::to_lower(this->name);
-		}
-	};
-
-	/// whether to insist on a header row - determines whether the column names will be checked
-	bool header;
-
-	/// list of columns expected in the .csv - if \ref #header is false, the ordering must be exactly as in the
-	/// .csv file
-	std::vector<column> columns;
-
-	/// default constructor
-	inline csv_table_descriptor() : header(false) {}
-
-	/// copy constructor
-	inline csv_table_descriptor(const csv_table_descriptor &other)
-		: header(other.header), columns(other.columns)
-	{}
-
-	/// move constructor
-	inline csv_table_descriptor(csv_table_descriptor &&other)
-		: header(other.header), columns(std::move(other.columns))
-	{}
-
-	/// construct with the given properties
-	inline csv_table_descriptor(const std::vector<column> &columns, bool header=false)
-		: header(header), columns(columns)
-	{}
-
-	/// construct with the given properties (moving in the column descriptors)
-	inline csv_table_descriptor(std::vector<column> &&columns, bool header=false)
-		: header(header), columns(std::move(columns))
-	{}
-
-	/// construct with the given properties, specifying the columns via initializer list
-	inline csv_table_descriptor(const std::initializer_list<column> &columns, bool header=false)
-		: header(header), columns(columns)
-	{}
-
-	/// copy assignment
-	inline csv_table_descriptor& operator= (const csv_table_descriptor &other)
-	{
-		header = other.header;
-		columns = other.columns;
-		return *this;
-	}
-
-	/// move assignment
-	inline csv_table_descriptor& operator= (csv_table_descriptor &&other)
-	{
-		header = other.header;
-		columns = std::move(other.columns);
-		other.columns.clear(); // make sure the other is always empty after having its contents moved out
-		                       // (because we don't want the standard swap semantics for reasons)
-		return *this;
-	}
-};
-
-
-/// possible special semantics of a .csv column
+/// possible special semantics of attributes found in .csv column(s)
 enum class CSV_AttribSemantics
 {
 	ARBITRARY=0, POS, TRAJ_ID
 };
 #if !defined(CSV_HANDLER_NO_SHORTHAND_ENUM_CSV) || CSV_HANDLER_NO_SHORTHAND_ENUM_CSV==0
 	/// convenience shorthand for \ref CSV_AttribSemantics
-	typedef CSV_AttribSemantics CSVA;
+	typedef CSV_AttribSemantics CSV;
 #endif
 
 
@@ -148,6 +30,28 @@ class csv_descriptor
 {
 
 public:
+
+	/// collection of properties of a .csv descriptor
+	struct csv_properties
+	{
+		struct
+		{
+			/// indicates if readable .csv files must have a header row
+			unsigned char header : 1,
+
+			/// indicates if readable .csv files can store more than one trajectory
+			multi_traj : 1;
+		};
+
+		/// indicates the largest .csv column number referenced by any attribute in the descriptor
+		unsigned max_col_id;
+
+		/// indicates the index of the position attribute in declared attribute list
+		unsigned pos_id;
+
+		/// indicates the index of the trajectory id attribute in the declared attribute list, if any
+		unsigned traj_id;
+	};
 
 	/// descriptor of one attribute (potentially composed from many columns) encoded in the .csv file
 	/// ToDo: Add way to describe the data format of a column, right now we always assume one scalar
@@ -251,7 +155,7 @@ public:
 		std::vector<column> columns;
 
 		/// default constructor
-		attribute() : semantics(CSVA::ARBITRARY) {}
+		attribute() : semantics(CSV::ARBITRARY) {}
 
 		/// copy constructor
 		inline attribute(const attribute &other)
@@ -359,11 +263,17 @@ public:
 	/// move constructor
 	csv_descriptor(csv_descriptor &&other);
 
-	/// construct with the given .csv attribute specification
-	csv_descriptor(const std::vector<attribute> &attributes);
+	/// construct with the given .csv separator and attribute specification
+	csv_descriptor(const std::string &separators, const std::vector<attribute> &attributes);
 
-	/// construct with the given .csv attribute specification (move semantics)
-	csv_descriptor(std::vector<attribute> &&attributes);
+	/// construct with the given .csv separator (move semantics) and attribute specification
+	csv_descriptor(std::string &&separators, const std::vector<attribute> &attributes);
+
+	/// construct with the given .csv separator and attribute specification (move semantics)
+	csv_descriptor(const std::string &separators, std::vector<attribute> &&attributes);
+
+	/// construct with the given .csv separator and attribute specification (move semantics on both arguments)
+	csv_descriptor(std::string &&separators, std::vector<attribute> &&attributes);
 
 	/// the destructor
 	~csv_descriptor();
@@ -374,11 +284,17 @@ public:
 	/// move assignment
 	csv_descriptor& operator= (csv_descriptor &&other);
 
+	/// reference the list of column separators expected in the .csv file
+	const std::string& separators (void) const;
+
 	/// reference the file attribute definitions encapsulated by this descriptor
 	const std::vector<attribute>& attributes (void) const;
 
-	/// check if a given list of file attribute definitions will require .csv files to have header row
-	static bool will_need_header (const std::vector<attribute> &attributes);
+	/// reference the attribute properties struct
+	const csv_properties& properties (void) const;
+
+	/// inferes the properties that would result from the given list of attribute definitions
+	static csv_properties infer_properties (const std::vector<attribute> &attributes);
 };
 
 
@@ -428,12 +344,6 @@ protected:
 
 public:
 
-	/// constructs the handler for the given .csv table format description
-	csv_handler(const csv_table_descriptor &table_desc);
-
-	/// constructs the  handler for the given .csv table format description (move semantics)
-	csv_handler(csv_table_descriptor &&table_desc);
-
 	/// Constructs the handler for the given .csv description. Note that the columns mentioned by the
 	/// descriptors are required for a file to be readable by this handler, but that does not exclude
 	/// additional columns from being read in also - they will simply be read into additional generic
@@ -469,7 +379,4 @@ public:
 	/// Check if a given csv description is valid. Note that this only performs superficial checks that are computationally
 	/// cheap - does not catch inconsistencies possible in a \ref csv_descriptor !
 	static bool is_csv_descriptor_valid (const csv_descriptor &csv_desc);
-
-	/// check if a given csv description can result in multiple trajectories from a single file
-	static bool is_csv_descriptor_multi_traj (const csv_descriptor &csv_desc);
 };
