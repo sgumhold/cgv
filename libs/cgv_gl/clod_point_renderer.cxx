@@ -7,6 +7,7 @@ render shaders	unfinished
 */
 
 #include <algorithm>
+#include <random>
 #include "clod_point_renderer.h"
 
 //#define CLOD_PR_RENDER_TEST_MODE _TM_
@@ -16,37 +17,34 @@ namespace cgv {
 
 		clod_point_render_style::clod_point_render_style() {}
 
-		void octree_lod_generator::lod_chunking(const std::vector<vec3>& positions, const vec3& min, const vec3& max)
+		void octree_lod_generator::lod_chunking(const Vertex* vertices, const size_t num_points, const vec3& min, const vec3& max)
 		{
-			max_points_per_chunk = std::min<size_t>(positions.size() / 20, 10'000'000ll);
+			max_points_per_chunk = std::min<size_t>(source_data_size / 20, 10'000'000ll);
 			
-			if (positions.size() < 4'000'000) {
+			if (source_data_size < 4'000'000) {
 				grid_size = 32;
 			}
-			else if (positions.size() < 20'000'000) {
+			else if (source_data_size < 20'000'000) {
 				grid_size = 64;
 			}
-			else if (positions.size() < 100'000'000) {
+			else if (source_data_size < 100'000'000) {
 				grid_size = 128;
 			}
-			else if (positions.size() < 500'000'000) {
+			else if (source_data_size < 500'000'000) {
 				grid_size = 256;
 			}
 			else {
 				grid_size = 512;
 			}
 
-			currentPass = 1;
-
 			// COUNT
-			auto grid = lod_counting(positions, grid_size, min, max);
+			auto grid = lod_counting(source_data, source_data_size, grid_size, min, max);
 			grid.size();
 			{ // DISTIRBUTE
 
 				auto lut = lod_createLUT(grid, grid_size);
 
-				//state.currentPass = 2;
-				//distributePoints(sources, min, max, targetDir, lut, state, outputAttributes);
+				distributePoints(min, max, lut, vertices, num_points);
 			}
 
 
@@ -58,9 +56,9 @@ namespace cgv {
 			//writeMetadata(metadataPath, min, max, outputAttributes);
 		}
 
-		std::vector<std::atomic_int32_t> octree_lod_generator::lod_counting(const std::vector<vec3>& positions, int64_t grid_size, const vec3& min, const vec3& max)
+
+		std::vector<std::atomic_int32_t> octree_lod_generator::lod_counting(const Vertex* vertices, const int64_t num_points, int64_t grid_size, const vec3& min, const vec3& max)
 		{	
-			int64_t num_points = positions.size();
 			int64_t points_left = num_points;
 			int64_t batch_size = 1'000'000;
 			int64_t num_read = 0;
@@ -69,7 +67,7 @@ namespace cgv {
 			std::vector<std::thread> threads;
 			double dgrid_size = double(grid_size);
 
-			auto processor = [&grid,grid_size, &positions, &min,&max, dgrid_size](int64_t first_point, int64_t num_points, vec3 min, vec3 max) {
+			auto processor = [&grid,grid_size, vertices, &min,&max, dgrid_size](int64_t first_point, int64_t num_points, vec3 min, vec3 max) {
 
 				vec3 ext = max - min;
 				float cube_size = *std::max_element(ext.begin(),ext.end());
@@ -78,14 +76,11 @@ namespace cgv {
 				max = min + vec3(cube_size,cube_size,cube_size);
 
 				for (int i = 0; i < num_points; i++) {
-					
-					double x = positions[i][0];
-					double y = positions[i][1];
-					double z = positions[i][2];
+					vec3 pos = vertices[i].position;
 
-					int32_t X = positions[i][0];
-					int32_t Y = positions[i][1];
-					int32_t Z = positions[i][2];
+					int32_t X = pos[0];
+					int32_t Y = pos[1];
+					int32_t Z = pos[2];
 
 					double ux = (double(X) - min.x()) / size.x();
 					double uy = (double(Y) - min.y()) / size.y();
@@ -125,6 +120,7 @@ namespace cgv {
 
 			return std::move(grid);
 		}
+
 
 		octree_lod_generator::NodeLUT octree_lod_generator::lod_createLUT(std::vector<std::atomic_int32_t>& grid, int64_t grid_size)
 		{
@@ -220,7 +216,7 @@ namespace cgv {
 								node.z = nz;
 								node.size = pow(2, (level_max - level_high));
 
-								nodes.push_back(node);
+								nodes.emplace_back(node);
 							}
 						}
 
@@ -257,14 +253,61 @@ namespace cgv {
 			return { grid_size, lut };
 		}
 
-		void octree_lod_generator::generate_lods(const std::vector<vec3>& positions, const std::vector<rgba8>& colors)
+		
+		void octree_lod_generator::distributePoints(vec3 min, vec3 max, NodeLUT& lut, const Vertex* vertices, const int64_t num_points)
 		{
+			std::mutex mtx_push_point;
+			std::vector<std::atomic_int32_t> counters(nodes.size());
+
+			vec3 ext = max - min;
+			float cube_size = *std::max_element(ext.begin(), ext.end());
+
+			vec3 size = { cube_size, cube_size, cube_size };
+			max = min + vec3(cube_size, cube_size, cube_size);
+
+
+			auto gridSize = lut.grid_size;
+			double dGridSize = double(gridSize);
+
+			auto toIndex = [gridSize, dGridSize, size, min, &lut](const vec3 p) {
+				double ux = (p.x() - min.x()) / size.x();
+				double uy = (p.y() - min.y()) / size.y();
+				double uz = (p.z() - min.z()) / size.z();
+
+				int64_t ix = int64_t(std::min(dGridSize * ux, dGridSize - 1.0));
+				int64_t iy = int64_t(std::min(dGridSize * uy, dGridSize - 1.0));
+				int64_t iz = int64_t(std::min(dGridSize * uz, dGridSize - 1.0));
+
+				int64_t index = lut.index(ix, iy, iz);
+				//int64_t index = ix + iy * gridSize + iz * gridSize * gridSize;
+				return index;
+			};
+
+			auto& grid = lut.grid;
+			//TODO parallelize
+			for (int i = 0; i < num_points; ++i) {
+				vec3 p = vertices[i].position;
+				int idx = toIndex(p);
+				auto& node = nodes[grid[idx]];
+				Vertex v = vertices[i];
+				node.pc_data.vertices.push_back(v);
+			}
+
+			int test = 0;
+		}
+
+		void octree_lod_generator::generate_lods(const std::vector<Vertex>& vertices)
+		{
+			this->source_data = (Vertex*)vertices.data();
+			this->source_data_size = vertices.size();
+
 			//find min, max
 			static constexpr float Infinity = std::numeric_limits<float>::infinity();
 			vec3 min = { Infinity , Infinity , Infinity };
 			vec3 max = { -Infinity , -Infinity , -Infinity };
 
-			for (auto p : positions) {
+			for (int i = 0; i < source_data_size; ++i) {
+				vec3& p = source_data[i].position;
 				min.x() = std::min(min.x(), p.x());
 				min.y() = std::min(min.y(), p.y());
 				min.z() = std::min(min.z(), p.z());
@@ -274,11 +317,22 @@ namespace cgv {
 				max.z() = std::max(max.z(), p.z());
 			}
 
-			lod_chunking(positions, min, max);
+			lod_chunking(vertices.data(), vertices.size(), min, max);
 			//TODO continue
 		}
 
 
+
+		void clod_point_renderer::generate_lods_poisson()
+		{
+			static constexpr int mean = 8;
+			std::poisson_distribution<int> dist(8);
+			std::random_device rdev;
+			
+			for (auto& v : input_buffer_data) {
+				v.level = mean - abs(dist(rdev)-mean);
+			}
+		}
 
 		void clod_point_renderer::draw_and_compute_impl(context& ctx, PrimitiveType type, size_t start, size_t count, bool use_strips, bool use_adjacency, uint32_t strip_restart_index)
 		{
@@ -294,7 +348,7 @@ namespace cgv {
 			glBindBufferBase(GL_SHADER_STORAGE_BUFFER, drawp_pos, draw_parameter_buffer);
 			glBindBufferBase(GL_SHADER_STORAGE_BUFFER, render_pos, render_buffer);
 			glBindBufferBase(GL_SHADER_STORAGE_BUFFER, input_pos, input_buffer);
-			glDispatchCompute((positions.size()/128)+1, 1, 1);
+			glDispatchCompute((input_buffer_data.size()/128)+1, 1, 1);
 
 			// synchronize
 			glMemoryBarrier(GL_ALL_BARRIER_BITS);
@@ -413,7 +467,7 @@ namespace cgv {
 
 			//TODO adapt every frame
 			reduce_prog.set_uniform(ctx, reduce_prog.get_uniform_location(ctx, "uBatchOffset"), 0);
-			reduce_prog.set_uniform(ctx, reduce_prog.get_uniform_location(ctx, "uBatchSize"), (int)positions.size());
+			reduce_prog.set_uniform(ctx, reduce_prog.get_uniform_location(ctx, "uBatchSize"), (int)input_buffer_data.size());
 
 
 			//testcode
@@ -454,10 +508,19 @@ namespace cgv {
 			draw_and_compute_impl(ctx, cgv::render::PT_POINTS, start, count, use_strips, use_adjacency, strip_restart_index);
 		}
 
-		void clod_point_renderer::generate_lods()
+		void clod_point_renderer::generate_lods(const LoDMode mode)
 		{
-			octree_lod_generator lod;
-			lod.generate_lods(positions, colors);
+			switch (mode) {
+			case LoDMode::POTREE: {
+				octree_lod_generator lod;
+				lod.generate_lods(input_buffer_data);
+				break; }
+			case LoDMode::RANDOM_POISSON: {
+				generate_lods_poisson();
+				break;
+			}
+			}
+
 			
 		}
 
