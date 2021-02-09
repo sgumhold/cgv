@@ -93,9 +93,11 @@ public:
 		/// attribute data vector
 		std::vector<elem_type> data;
 
+		/// default constructor
+		container() {}
+
 		/// construct with the given actual data
-		container(std::vector<elem_type> &&data)
-			: data(std::move(data))
+		container(std::vector<elem_type> &&data) : data(std::move(data))
 		{}
 	};
 
@@ -110,6 +112,9 @@ protected:
 
 
 public:
+
+	/// construct with the given number of components (i.e. scalar, 2d, 3d, 4d)
+	traj_attribute(unsigned components);
 
 	/// construct with scalar attribute data
 	traj_attribute(std::vector<real> &&source);
