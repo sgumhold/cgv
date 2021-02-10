@@ -29,7 +29,7 @@ public:
 	/// point accessor type
 	typedef std::function<bool(Vec3*, size_t)> point_accessor;
 
-	//// grid cell functionality wrapper
+	/// grid cell functionality wrapper
 	struct cell
 	{
 		/// STL-compliant hash functor for grid cells.
@@ -57,6 +57,13 @@ public:
 		/// the @a z grid coordinate of the cell
 		long long z;
 
+		/// arithmetic accumulation
+		inline void operator+= (const cell &other)
+		{
+			x += other.x; y += other.y; z += other.z;
+			// we intentionally don't support returning the result of applying the operator
+		}
+
 		/// equality comparison
 		inline bool operator == (const cell &other) const
 		{
@@ -66,10 +73,18 @@ public:
 		/// determines the cell that a given position lies in, given a certain grid cell width
 		inline static cell get (const Vec3 &position, real cellwidth)
 		{
-			bool nx = position.x()<0, ny = position.y()<0, nz = position.z()<0;
+			const bool nx = position.x()<0, ny = position.y()<0, nz = position.z()<0;
 			return {(long long)(position.x() / cellwidth) - long(nx),
 			        (long long)(position.y() / cellwidth) - long(ny),
 			        (long long)(position.z() / cellwidth) - long(nz)};
+		}
+
+		/// stores the cell resulting from applying an offset to a reference
+		inline static void offset (cell &result, const cell &reference, const cell &offset)
+		{
+			result.x = reference.x + offset.x;
+			result.y = reference.y + offset.y;
+			result.z = reference.z + offset.z;
 		}
 	};
 
