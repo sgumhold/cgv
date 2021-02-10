@@ -6,6 +6,7 @@
 #include <cgv/render/drawable.h>
 #include <cgv/render/vertex_buffer.h>
 #include <cgv/media/color.h>
+#include <cgv/media/color_scale.h>
 #include <cgv/media/font/font.h>
 #include <cgv/gui/provider.h>
 
@@ -136,7 +137,6 @@ struct CGV_API plot_base_config : public cgv::render::render_types
 	rgb bar_color;
 	/// bar outline color
 	rgb bar_outline_color;
-
 	/// set default values
 	plot_base_config(const std::string& _name);
 	/// configure the sub plot to a specific chart type
@@ -274,6 +274,18 @@ protected:
 	vecn extent;
 	/// transform to world
 	vec3 transform_to_world(const vecn& domain_point) const;
+	//@}
+
+	/**@name placement of legend*/
+	//@{
+	/// whether to show legend
+	bool show_legend;
+	/// maximum support for two color scales
+	cgv::media::ColorScale color_scale_indices[2];
+	/// and independent gamma adjustments
+	float color_scale_gammas[2];
+	bool is_bipolar;
+	float window_zero_position;
 	//@}
 
 	/// store pointer to current font

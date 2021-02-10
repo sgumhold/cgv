@@ -10,9 +10,12 @@ addProjectDeps=[
 	"cgv_viewer", 
 	"cg_fltk", "crg_stereo_view", "crg_grid", "cg_ext", "cmi_io"
 ];
-addIncDirs=[INPUT_DIR, CGV_DIR."/libs"];
+addIncDirs=[INPUT_DIR, CGV_DIR."/libs", CGV_BUILD_DIR."/".projectName];
 
 addSharedDefines=["CGV_PROC_TEST_EXPORTS"];
+if(SYSTEM=="windows") {
+	addStaticDefines=["REGISTER_SHADER_FILES"];
+}
 
 addCommandLineArguments=[
 	after("type(shader_config):shader_path='".INPUT_DIR.";".CGV_DIR."/libs/cgv_gl/glsl;".CGV_DIR."/libs/cgv_proc'","cg_fltk"),

@@ -1,5 +1,8 @@
 #include "plot2d.h"
 #include <libs/cgv_gl/gl/gl.h>
+#include <cgv/media/color_scale.h>
+#include <cgv/render/attribute_array_binding.h>
+#include <cgv/render/color_scale.h>
 
 namespace cgv {
 	namespace plot {
@@ -119,10 +122,14 @@ std::vector<unsigned>& plot2d::ref_sub_plot_strips(unsigned i)
 
 bool plot2d::init(cgv::render::context& ctx)
 {
-	if (!prog.build_program(ctx, "plot2d.glpr")) {
+	if (!prog.build_program(ctx, "plot2d.glpr", true)) {
 		std::cerr << "could not build GLSL program from plot2d.glpr" << std::endl;
 		return false;
 	}
+	if (!legend_prog.build_program(ctx, "plot_legend.glpr", true)) {
+		std::cerr << "could not build GLSL program from plot_legend.glpr" << std::endl;
+		return false;
+	}	
 	if (!stick_prog.build_program(ctx, "plot2d_stick.glpr")) {
 		std::cerr << "could not build GLSL program from plot2d_stick.glpr" << std::endl;
 		return false;
@@ -148,6 +155,7 @@ void plot2d::clear(cgv::render::context& ctx)
 
 void plot2d::draw_sub_plot(cgv::render::context& ctx, unsigned i)
 {
+	enable_attributes(ctx, int(attribute_sources[i].size()));
 	GLsizei count = (GLsizei)set_attributes(ctx, i, samples);
 	if (count == 0)
 		return;
@@ -191,9 +199,13 @@ void plot2d::draw_sub_plot(cgv::render::context& ctx, unsigned i)
 
 	if (spc.show_points || spc.show_lines) {
 		set_uniforms(ctx, prog, i);
-		prog.enable(ctx);
+		prog.set_uniform(ctx, "color_mapping", int(0));
+		cgv::render::configure_color_scale(ctx, prog, color_scale_indices[0], is_bipolar, window_zero_position);
+		prog.set_uniform(ctx, "color_scale_gamma", color_scale_gammas[0]);
+
 		prog.set_uniform(ctx, "feature_offset", 0.001f * extent.length());
-		set_default_attributes(ctx, prog, 2);
+		prog.enable(ctx);
+		//set_default_attributes(ctx, prog, 2);
 	}
 
 	if (spc.show_lines) {
@@ -221,6 +233,8 @@ void plot2d::draw_sub_plot(cgv::render::context& ctx, unsigned i)
 		prog.set_uniform(ctx, "feature_offset", 0.0f);
 		prog.disable(ctx);
 	}
+
+	disable_attributes(ctx, int(attribute_sources[i].size()));
 }
 
 void plot2d::draw_domain(cgv::render::context& ctx)
@@ -327,6 +341,7 @@ void plot2d::draw(cgv::render::context& ctx)
 	enable_attributes(ctx, 2);
 	set_uniforms(ctx, prog);
 	prog.enable(ctx);
+	prog.set_uniform(ctx, "color_mapping", int(-1));
 	set_default_attributes(ctx, prog, 2);
 	if (get_domain_config_ptr()->show_domain)
 		draw_domain(ctx);
@@ -338,15 +353,12 @@ void plot2d::draw(cgv::render::context& ctx)
 	ctx.enable_font_face(label_font_face, get_domain_config_ptr()->label_font_size);
 	draw_tick_labels(ctx);
 
-	enable_attributes(ctx, 2);
 	for (unsigned i = 0; i<samples.size(); ++i) {
 		// skip unvisible and empty sub plots
 		if (!ref_sub_plot2d_config(i).show_plot)
 			continue;
 		draw_sub_plot(ctx, i);
 	}
-	disable_attributes(ctx, 2);
-
 	if (!line_smooth)
 		glDisable(GL_LINE_SMOOTH);
 	if (!point_smooth)
@@ -355,6 +367,32 @@ void plot2d::draw(cgv::render::context& ctx)
 		glDisable(GL_BLEND);
 	glDepthFunc(depth);
 	glBlendFunc(blend_src, blend_dst);
+
+	// draw legend
+	std::vector<vec3> P;
+	std::vector<float> V;
+	P.push_back(vec3(0.0f, 0.0f, 0.0f));
+	P.push_back(vec3(0.1f, 0.0f, 0.0f));
+	P.push_back(vec3(0.0f, 1.0f, 0.0f));
+	P.push_back(vec3(0.1f, 1.0f, 0.0f));
+	V.push_back(0.0f);
+	V.push_back(0.0f);
+	V.push_back(1.0f);
+	V.push_back(1.0f);
+	legend_prog.enable(ctx);
+	cgv::render::configure_color_scale(ctx, legend_prog, color_scale_indices[0], is_bipolar, window_zero_position);
+	legend_prog.set_uniform(ctx, "color_scale_gamma", color_scale_gammas[0]);
+
+	int pos_idx = legend_prog.get_attribute_location(ctx, "position");
+	int val_idx = legend_prog.get_attribute_location(ctx, "value");
+	cgv::render::attribute_array_binding::enable_global_array(ctx, pos_idx);
+	cgv::render::attribute_array_binding::enable_global_array(ctx, val_idx);
+	cgv::render::attribute_array_binding::set_global_attribute_array(ctx, pos_idx, P);
+	cgv::render::attribute_array_binding::set_global_attribute_array(ctx, val_idx, V);
+	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+	cgv::render::attribute_array_binding::disable_global_array(ctx, pos_idx);
+	cgv::render::attribute_array_binding::disable_global_array(ctx, val_idx);
+	legend_prog.disable(ctx);
 }
 
 	}
