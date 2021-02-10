@@ -33,6 +33,29 @@ enum ColorScale {
 extern CGV_API color<float,RGB> color_scale(double value, ColorScale cs = CS_TEMPERATURE);
 
 /// <summary>
+/// perform a gamma mapping from [0,1] to [0,1] with optional accountance of window zero position in case of bipolar color scales
+/// </summary>
+/// <param name="v">to be mapped value</param>
+/// <param name="gamma">gamma parameter</param>
+/// <param name="is_bipolar">whether bipolar gamma mapping should be use</param>
+/// <param name="window_zero_position">zero window position for bipolar gamma mapping</param>
+/// <returns></returns>
+extern CGV_API double color_scale_gamma_mapping(double v, double gamma, bool is_bipolar = false, double window_zero_position = 0.5);
+
+/// <summary>
+/// for the use of bipolar color maps this function can be used to adjust the value such that
+/// the window position is mapped to the center of the bipolar color map. In a shader program
+/// using color_scale.glsl this adjustment can be enabled by setting the uniform flag
+/// map_window_zero_position_to_color_scale_center to true and specifying window_zero_position
+/// with the float typed uniform of this name
+/// </summary>
+/// <param name="value">to be adjusted value</param>
+/// <param name="window_zero_position">window position in the range [0,1] to which the 
+/// attribute value zero is mapped</param>
+/// <returns></returns>
+extern CGV_API double adjust_zero_position(double value, double window_zero_position);
+
+/// <summary>
 /// register color samples as named color scale
 /// </summary>
 /// <param name="name">name of new color scale</param>
