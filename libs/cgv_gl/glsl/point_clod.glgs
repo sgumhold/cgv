@@ -1,9 +1,9 @@
-#version 450
+#version 150
+#extension GL_EXT_geometry_shader4 : enable
 
 layout(points) in;
 layout(triangle_strip, max_vertices = 4) out;
 
-uniform float reference_point_size = 1.0;
 uniform float pixel_extent_per_depth;
 
 in vec4 color_gs[]; //vColor

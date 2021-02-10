@@ -35,7 +35,7 @@ void main()
 	mat4 transform = get_modelview_projection_matrix();
 	mat4 centralTransform = transform; //TODO change for use with VR
 	
-	color_gs = color;
+	color_gs = vec4(color.rgb,1.0);
 	
 	
 	//copy pasta

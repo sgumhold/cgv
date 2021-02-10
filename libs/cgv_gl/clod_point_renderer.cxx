@@ -83,23 +83,23 @@ namespace cgv {
 				vec3 ext = max - min;
 				float cube_size = *std::max_element(ext.begin(),ext.end());
 
-				vec3 size = { cube_size, cube_size, cube_size };
+				dvec3 size = { cube_size, cube_size, cube_size };
 				max = min + vec3(cube_size,cube_size,cube_size);
 
 				for (int i = 0; i < num_points; i++) {
-					vec3 pos = vertices[i].position;
+					dvec3 pos = vertices[i].position;
 
-					int32_t X = pos[0];
-					int32_t Y = pos[1];
-					int32_t Z = pos[2];
-
-					double ux = (double(X) - min.x()) / size.x();
-					double uy = (double(Y) - min.y()) / size.y();
-					double uz = (double(Z) - min.z()) / size.z();
-
+					//convert to grid positions
+					double ux = (pos[0] - min.x()) / size.x();
+					double uy = (pos[1] - min.y()) / size.y();
+					double uz = (pos[2] - min.z()) / size.z();
+					
+					//debug only
 					bool in_box = ux >= 0.0 && uy >= 0.0 && uz >= 0.0 
 							&& ux <= 1.0 && uy <= 1.0 && uz <= 1.0;
+					assert(in_box);
 
+					//truncate floats
 					int64_t ix = int64_t(std::min(dgrid_size * ux, dgrid_size - 1.0));
 					int64_t iy = int64_t(std::min(dgrid_size * uy, dgrid_size - 1.0));
 					int64_t iz = int64_t(std::min(dgrid_size * uz, dgrid_size - 1.0));
@@ -352,9 +352,9 @@ namespace cgv {
 			// reset draw parameters
 			DrawParameters dp = DrawParameters();
 			glBindBuffer(GL_SHADER_STORAGE_BUFFER, draw_parameter_buffer);
-			glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(DrawParameters), &dp, GL_DYNAMIC_DRAW);
+			glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(DrawParameters), &dp, GL_STREAM_DRAW);
 			glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
-			
+			// reduce
 			reduce_prog.enable(ctx);
 			glBindBufferBase(GL_SHADER_STORAGE_BUFFER, drawp_pos, draw_parameter_buffer);
 			glBindBufferBase(GL_SHADER_STORAGE_BUFFER, render_pos, render_buffer);
@@ -365,21 +365,17 @@ namespace cgv {
 			glMemoryBarrier(GL_ALL_BARRIER_BITS);
 			reduce_prog.disable(ctx);
 
-			// draw resulting buffer
+			// draw composed buffer
 			draw_prog.enable(ctx);
 			glBindVertexArray(vertex_array);
 			glBindBuffer(GL_DRAW_INDIRECT_BUFFER, draw_parameter_buffer);
 			glDrawArraysIndirect(GL_POINTS, 0);
 			glBindBuffer(GL_DRAW_INDIRECT_BUFFER,0);
-#ifdef CLOD_PR_RENDER_TEST_MODE
-			glDrawArrays(GL_POINTS, 0, input_buffer_data.size()); //TEST
-#else
 			
-			//map buffer into host address space
-			DrawParameters* device_draw_parameters = static_cast<DrawParameters*>(glMapNamedBufferRange(draw_parameter_buffer, 0, sizeof(DrawParameters), GL_MAP_READ_BIT));
-			glUnmapNamedBuffer(draw_parameter_buffer);
+			//DEBUG map buffer into host address space
+			//DrawParameters* device_draw_parameters = static_cast<DrawParameters*>(glMapNamedBufferRange(draw_parameter_buffer, 0, sizeof(DrawParameters), GL_MAP_READ_BIT));
+			//glUnmapNamedBuffer(draw_parameter_buffer);
 			
-#endif // CLOD_PR_RENDER_TEST_MODE
 			glBindVertexArray(0);
 			draw_prog.disable(ctx);
 		}
@@ -476,7 +472,7 @@ namespace cgv {
 			reduce_prog.set_uniform(ctx, reduce_prog.get_uniform_location(ctx, "screenSize"), screenSize);
 			//configure shader to compute everything after one frame
 
-			//TODO adapt every frame
+			//TODO add option to spread calculation to multiple frames
 			reduce_prog.set_uniform(ctx, reduce_prog.get_uniform_location(ctx, "uBatchOffset"), 0);
 			reduce_prog.set_uniform(ctx, reduce_prog.get_uniform_location(ctx, "uBatchSize"), (int)input_buffer_data.size());
 
@@ -486,8 +482,6 @@ namespace cgv {
 			float y_view_angle = 45;
 			//general point renderer uniforms
 			draw_prog.set_uniform(ctx, "use_color_index", false);
-			draw_prog.set_uniform(ctx, "measure_point_size_in_pixel", prs.measure_point_size_in_pixel);
-			draw_prog.set_uniform(ctx, "reference_point_size", reference_point_size);
 			draw_prog.set_uniform(ctx, "use_group_point_size", prs.use_group_point_size);
 			float pixel_extent_per_depth = (float)(2.0 * tan(0.5 * 0.0174532925199 * y_view_angle) / ctx.get_height());
 			draw_prog.set_uniform(ctx, "pixel_extent_per_depth", pixel_extent_per_depth);

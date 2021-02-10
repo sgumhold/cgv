@@ -1,11 +1,10 @@
 #version 450
 
-// author: Markus Schütz
-// license: MIT license (https://opensource.org/licenses/MIT)
-
-// Source for paper: "Real-Time Continuous Level of Detail Rendering of Point Clouds"
+// modified version of source for 
+// "Real-Time Continuous Level of Detail Rendering of Point Clouds"
 // Markus Schütz, Katharina Krösl, Michael Wimmer
 // IEEE VR 2019, March, Osaka
+// license: MIT license (https://opensource.org/licenses/MIT)
 //	
 // This compute shader is executed for each point of the 
 // full point cloud (inputBuffer) and it stores a selected subset 
