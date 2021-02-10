@@ -1,0 +1,4 @@
+files:plot_legend
+vertex_file:view.glsl
+fragment_file:color_scale.glsl
+fragment_file:fragment.glfs

@@ -1,6 +1,7 @@
 #include "plot_base.h"
 #include <cgv/render/shader_program.h>
 #include <cgv/signal/rebind.h>
+#include <cgv/media/color_scale.h>
 #include <cgv/render/attribute_array_binding.h>
 #include <libs/cgv_gl/gl/gl.h>
 
@@ -437,8 +438,8 @@ size_t plot_base::set_attributes(cgv::render::context& ctx, int i, const std::ve
 	return count;
 }
 
-//// set vertex shader input attributes based on attribute source information
-size_t plot_base::set_attributes(cgv::render::context& ctx, int i, const std::vector< std::vector<vec3> >& samples)
+/// set vertex shader input attributes based on attribute source information
+size_t plot_base::set_attributes(cgv::render::context& ctx, int i, const std::vector<std::vector<vec3>>& samples)
 {
 	const auto& ass = attribute_sources[i];
 	unsigned ai = 0;
@@ -472,16 +473,16 @@ size_t plot_base::set_attributes(cgv::render::context& ctx, int i, const std::ve
 /// set vertex shader input attributes 
 void plot_base::set_attributes(cgv::render::context& ctx, const std::vector<vec2>& points)
 {
-	cgv::render::attribute_array_binding::set_global_attribute_array(ctx, 0, &points[0][0], points.size(), 2*sizeof(float));
-	cgv::render::attribute_array_binding::set_global_attribute_array(ctx, 1, &points[0][1], points.size(), 2 * sizeof(float));
+	cgv::render::attribute_array_binding::set_global_attribute_array(ctx, 0, &points[0][0], points.size(),sizeof(vec2));
+	cgv::render::attribute_array_binding::set_global_attribute_array(ctx, 1, &points[0][1], points.size(),sizeof(vec2));
 }
 
 /// set vertex shader input attributes 
 void plot_base::set_attributes(cgv::render::context& ctx, const std::vector<vec3>& points)
 {
-	cgv::render::attribute_array_binding::set_global_attribute_array(ctx, 0, &points[0][0], points.size(), 3*sizeof(float));
-	cgv::render::attribute_array_binding::set_global_attribute_array(ctx, 1, &points[0][1], points.size(), 3*sizeof(float));
-	cgv::render::attribute_array_binding::set_global_attribute_array(ctx, 2, &points[0][2], points.size(), 3*sizeof(float));
+	cgv::render::attribute_array_binding::set_global_attribute_array(ctx, 0, &points[0][0], points.size(), sizeof(vec3));
+	cgv::render::attribute_array_binding::set_global_attribute_array(ctx, 1, &points[0][1], points.size(), sizeof(vec3));
+	cgv::render::attribute_array_binding::set_global_attribute_array(ctx, 2, &points[0][2], points.size(), sizeof(vec3));
 }
 
 /// define a sub plot attribute ai from coordinate aj of the i-th internal sample container
@@ -514,7 +515,6 @@ void plot_base::set_sub_plot_attribute(unsigned i, unsigned ai, const cgv::rende
 
 void plot_base::set_default_attributes(cgv::render::context& ctx, cgv::render::shader_program& prog, unsigned count_others)
 {
-	return;
 	if (count_others < 3)
 		prog.set_attribute(ctx, 2, 0.0f);
 	if (count_others < 4)
@@ -559,6 +559,10 @@ plot_base::plot_base(unsigned nr_axes) : dom_cfg(nr_axes), last_dom_cfg(0)
 	extent.fill(1.0f);
 	orientation = quat(1.0f, 0.0f, 0.0f, 0.0f);
 	center_location = vec3(0.0f);
+	color_scale_indices[0] = color_scale_indices[1] = cgv::media::CS_HUE;
+	color_scale_gammas[0] = color_scale_gammas[1] = 1;
+	is_bipolar = false;
+	window_zero_position = 0.5f;
 }
 
 /// return domain shown in plot
@@ -898,6 +902,10 @@ void plot_base::create_plot_gui(cgv::base::base* bp, cgv::gui::provider& p)
 	const char* axis_names = "xyz";
 
 	ensure_font_names();
+	p.add_member_control(bp, "primary_color_scale", (cgv::type::DummyEnum&)color_scale_indices[0], "dropdown", cgv::media::get_color_scale_enum_definition());
+	p.add_member_control(bp, "primary_color_gamma", color_scale_gammas[0], "value_slider", "min=0.1;step=0.01;max=10;log=true;ticks=true");
+	p.add_member_control(bp, "is_bipolar", is_bipolar, "toggle");
+	p.add_member_control(bp, "window_zero_position", window_zero_position, "value_slider", "min=0;max=1;ticks=true");
 
 	if (p.begin_tree_node("dimensions", center_location, false, "level=3")) {
 		p.align("\a");

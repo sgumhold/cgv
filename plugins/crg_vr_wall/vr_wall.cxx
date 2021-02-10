@@ -1,5 +1,6 @@
 #include <cgv/base/base.h>
 #include "vr_wall.h"
+#include <cgv/render/callback_drawable.h>
 #include <cgv/math/pose.h>
 #include <vr/vr_driver.h>
 #include <cgv/media/image/image_reader.h>
@@ -13,7 +14,7 @@
 
 ///
 namespace vr {
-	cgv::gui::window_ptr vr_wall::create_wall_window(const std::string& name, int x, int y, int width, int height, int fullscr)
+	cgv::gui::window_ptr vr_wall::create_wall_window(const std::string& name, int x, int y, int width, int height, int fullscr, bool is_right)
 	{
 		cgv::gui::window_ptr W = cgv::gui::application::create_window(width, height, name, "viewer");
 		W->set_name(name);
@@ -41,7 +42,22 @@ namespace vr {
 			state += ")";
 			W->set("state", state);
 		}
-		W->register_object(this, "");
+		// create callback_drawable and connect its signals to corresponding methods of vr_wall
+		std::string drawable_name = "window drawable";
+		if (stereo_window_mode == SWM_TWO)
+			drawable_name = std::string(is_right ? "right " : "left ") + name;
+		cgv::render::callback_drawable* cbd = new cgv::render::callback_drawable(drawable_name);
+//		connect_copy(cbd->init_callback, cgv::signal::rebind(this, &vr_wall::init_cbd, cgv::signal::_1, cgv::signal::_c(is_right)));
+		if (is_right)
+			connect(cbd->init_callback, this, &vr_wall::init_cbd1);
+		else
+			connect(cbd->init_callback, this, &vr_wall::init_cbd0);
+		connect_copy(cbd->clear_callback, cgv::signal::rebind(this, &vr_wall::clear_cbd, cgv::signal::_1, cgv::signal::_c(is_right)));
+		//connect_copy(cbd->init_frame_callback, cgv::signal::rebind(this, &vr_wall::init_frame_cbd, cgv::signal::_1, cgv::signal::_c(is_right)));
+		connect_copy(cbd->draw_callback, cgv::signal::rebind(this, &vr_wall::draw_cbd, cgv::signal::_1, cgv::signal::_c(is_right)));
+		connect_copy(cbd->finish_frame_callback, cgv::signal::rebind(this, &vr_wall::finish_frame_cbd, cgv::signal::_1, cgv::signal::_c(is_right)));
+		// register callback drawable
+		W->register_object(cbd, "");
 		return W;
 	}
 	/// helper function to create the window for the wall display
@@ -56,7 +72,7 @@ namespace vr {
 			break;
 		case SWM_TWO:
 			window = create_wall_window("left wall window", window_x, window_y, window_width, window_height, fullscreen);
-			right_window = create_wall_window("right wall window", window_x, window_y, window_width, window_height, right_fullscreen);
+			right_window = create_wall_window("right wall window", window_x, window_y, window_width, window_height, right_fullscreen, true);
 			break;
 		}
 		generate_screen_calib_points();
@@ -257,7 +273,6 @@ namespace vr {
 		eye_downset = 0.035f;
 		eye_backset = 0.02f;
 		box_index = 0;
-		main_context = 0;
 		vr_wall_kit_index = -1;
 		vr_wall_hmd_index = -1;
 		screen_orientation = quat(1, 0, 0, 0);
@@ -283,11 +298,14 @@ namespace vr {
 	///
 	vr_wall::~vr_wall()
 	{
+		if (window)
+			cgv::gui::application::remove_window(window);
+		if (right_window)
+			cgv::gui::application::remove_window(right_window);
 		if (wall_kit_ptr) {
 			delete wall_kit_ptr;
 			wall_kit_ptr = 0;
 		}
-		cgv::gui::application::remove_window(window);
 	}
 	///
 	void vr_wall::on_device_change(void* handle, bool attach)
@@ -686,70 +704,69 @@ namespace vr {
 			<< "  Eye calib: aim with left|right eye through left|right controller ring to red|blue dot" << std::endl;
 	}
 	///
-	void vr_wall::init_frame(cgv::render::context& ctx)
+	bool vr_wall::init_cbd(cgv::render::context& ctx, bool is_right)
 	{
-		if (wall_kit_ptr == 0)
-			return;
-
-		if (&ctx == main_context)
-			return;
-
+		bool result = true;
 		wall_kit_ptr->wall_context = true;
-		if (!wall_kit_ptr->fbos_initialized())
-			if (wall_kit_ptr->init_fbos())
+		EyeSelection es = ES_BOTH;
+		if (stereo_window_mode == SWM_TWO)
+			es = is_right ? ES_RIGHT : ES_LEFT;
+		if (!wall_kit_ptr->fbos_initialized(es))
+			if (wall_kit_ptr->init_fbos(es)) {
 				std::cout << "initialized fbos of wall kit in context " << (void*)&ctx << std::endl;
+				result = false;
+			}
 		wall_kit_ptr->wall_context = false;
+
+		ctx.set_default_render_pass_flags((cgv::render::RenderPassFlags)(
+			cgv::render::RPF_CLEAR_COLOR |
+			cgv::render::RPF_DRAWABLES_INIT_FRAME |
+			cgv::render::RPF_SET_CLEAR_COLOR |
+			cgv::render::RPF_DRAWABLES_DRAW |
+			cgv::render::RPF_DRAWABLES_FINISH_FRAME |
+			cgv::render::RPF_DRAW_TEXTUAL_INFO |
+			cgv::render::RPF_DRAWABLES_AFTER_FINISH |
+			cgv::render::RPF_HANDLE_SCREEN_SHOT));
+		ctx.set_bg_clr_idx(4);
+		pr.init(ctx);
+		cgv::render::ref_point_renderer(ctx, 1);
+		return result;
+	}
+	void vr_wall::clear_cbd(cgv::render::context& ctx, bool is_right)
+	{
+		EyeSelection es = ES_BOTH;
+		if (stereo_window_mode == SWM_TWO)
+			es = is_right ? ES_RIGHT : ES_LEFT;
+		if (wall_kit_ptr) {
+			wall_kit_ptr->wall_context = true;
+			wall_kit_ptr->destruct_fbos(es);
+			wall_kit_ptr->wall_context = false;
+		}
+		cgv::render::ref_point_renderer(ctx, -1);
 	}
 	///
 	bool vr_wall::init(cgv::render::context& ctx)
 	{
-		if (main_context == 0) {
-			main_context = &ctx;
-			cgv::render::ref_box_renderer(ctx, 1);
-			cgv::render::ref_sphere_renderer(ctx, 1);
-			cgv::render::ref_arrow_renderer(ctx, 1);
-			if (!stereo_prog.build_program(ctx, "stereo.glpr")) {
-				std::cerr << "could not build stereo shader program" << std::endl;
-			}
-		}
-		else {
-			ctx.set_default_render_pass_flags((cgv::render::RenderPassFlags)(
-				cgv::render::RPF_CLEAR_COLOR |
-				cgv::render::RPF_DRAWABLES_INIT_FRAME |
-				cgv::render::RPF_SET_CLEAR_COLOR |
-				cgv::render::RPF_DRAWABLES_DRAW |
-				cgv::render::RPF_DRAWABLES_FINISH_FRAME |
-				cgv::render::RPF_DRAW_TEXTUAL_INFO |
-				cgv::render::RPF_DRAWABLES_AFTER_FINISH |
-				cgv::render::RPF_HANDLE_SCREEN_SHOT));
-
-			ctx.set_bg_clr_idx(4);
-
-			pr.init(ctx);
+		cgv::render::ref_box_renderer(ctx, 1);
+		cgv::render::ref_sphere_renderer(ctx, 1);
+		cgv::render::ref_arrow_renderer(ctx, 1);
+		if (!stereo_prog.build_program(ctx, "stereo.glpr")) {
+			std::cerr << "could not build stereo shader program" << std::endl;
+			return false;
 		}
 		return true;
 	}
 	///
 	void vr_wall::clear(cgv::render::context& ctx)
 	{
-		if (&ctx == main_context) {
-			cgv::render::ref_box_renderer(ctx, -1);
-			cgv::render::ref_sphere_renderer(ctx, -1);
-			cgv::render::ref_arrow_renderer(ctx, -1);
-			if (wall_kit_ptr) {
-				wall_kit_ptr->wall_context = true;
-				wall_kit_ptr->destruct_fbos();
-				wall_kit_ptr->wall_context = false;
-			}
-		}
-		else {
-			if (wall_kit_ptr)
-				wall_kit_ptr->destruct_fbos();
-			pr.clear(ctx);
-		}
+		cgv::render::ref_box_renderer(ctx, -1);
+		cgv::render::ref_sphere_renderer(ctx, -1);
+		cgv::render::ref_arrow_renderer(ctx, -1);
+		if (wall_kit_ptr)
+			wall_kit_ptr->destruct_fbos();
 	}
 	///
-	void vr_wall::draw_in_main_context(cgv::render::context& ctx)
+	void vr_wall::draw(cgv::render::context& ctx)
 	{
 		if (!boxes.empty() && (wall_state != WS_HMD || ctx.get_render_pass() == cgv::render::RP_MAIN)) {
 			auto& br = cgv::render::ref_box_renderer(ctx);
@@ -760,6 +777,8 @@ namespace vr {
 			br.set_rotation_array(ctx, box_rotations);
 			br.render(ctx, 0, boxes.size());
 		}
+		if (!wall_kit_ptr)
+			return;
 		if (wall_state != WS_HMD || ctx.get_render_pass() == cgv::render::RP_MAIN) {
 			std::vector<vec3> P;
 			std::vector<vec2> T;
@@ -885,18 +904,21 @@ namespace vr {
 		}
 	}
 	///
-	void vr_wall::draw(cgv::render::context& ctx)
+	void vr_wall::draw_cbd(cgv::render::context& ctx, bool is_right)
 	{
+		// check for wall kit
 		if (wall_kit_ptr == 0)
 			return;
 
-		if (&ctx == main_context) {
-			draw_in_main_context(ctx);
-			return;
+		// check for window
+		if (stereo_window_mode == SWM_TWO && is_right) {
+			if (right_window.empty())
+				return;
 		}
-		if (window.empty())
-			return;
-
+		else {
+			if (window.empty())
+				return;
+		}
 		// determine size and aspect ratio of wall window in pixel
 		int width = ctx.get_width(), height = ctx.get_height();
 		double aspect = double(width) / height;
@@ -1003,13 +1025,11 @@ namespace vr {
 			ctx.set_viewport(ivec4(eye * x_off, eye * y_off, w, h));
 			ctx.set_projection_matrix(cgv::math::perspective4<double>(90, a, 0.1, 10.0));
 			ctx.set_modelview_matrix(cgv::math::look_at4<double>(dvec3(0, 0, 1), dvec3(0, 0, 0), dvec3(0, 1, 0)));
-
 			pr.set_y_view_angle(90);
 			pr.set_render_style(prs);
 			pr.set_position_array(ctx, P);
 			pr.set_color_array(ctx, C);
 			pr.set_point_size_array(ctx, R);
-
 			pr.render(ctx, 0, P.size());
 		}
 
@@ -1052,61 +1072,62 @@ namespace vr {
 		}
 	}
 	///
-	void vr_wall::finish_frame(cgv::render::context& ctx)
+	void vr_wall::finish_frame_cbd(cgv::render::context& ctx, bool is_right)
 	{
 		if (wall_kit_ptr == 0)
 			return;
 
-		if (&ctx != main_context && (wall_state != WS_HMD)) {
-			GLint draw_buffer, draw_fbo;
-			glGetIntegerv(GL_DRAW_BUFFER, &draw_buffer);
-			glGetIntegerv(GL_DRAW_FRAMEBUFFER_BINDING, &draw_fbo);
+		if (wall_state == WS_HMD)
+			return;
+
+		GLint draw_buffer, draw_fbo;
+		glGetIntegerv(GL_DRAW_BUFFER, &draw_buffer);
+		glGetIntegerv(GL_DRAW_FRAMEBUFFER_BINDING, &draw_fbo);
 			
-			int width = ctx.get_width(), height = ctx.get_height();
-			int x_off = 0, y_off = 0;
-			if (stereo_window_mode == SWM_DOUBLE) {
-				width /= 2;
-				x_off = width;
-			}
-			double aspect = double(width) / height;
-
-			int w = width, h = height;
-			if (stereo_window_mode == SWM_SINGLE) {
-				switch (stereo_shader_mode) {
-				case SSM_SIDE_BY_SIDE: w /= 2; x_off = w; break;
-				case SSM_TOP_BOTTOM: h /= 2; y_off = h; break;
-				}
-			}
-			double a = double(w) / h;
-
-			if (blit_fbo == -1) {
-				glGenFramebuffers(1, &blit_fbo);
-				glBindFramebuffer(GL_DRAW_FRAMEBUFFER, blit_fbo);
-				glGenTextures(2, blit_tex);
-				for (int i = 0; i < 2; ++i) {
-					glBindTexture(GL_TEXTURE_2D, blit_tex[i]);
-					glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-					glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 0);
-					glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
-					glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0+i, GL_TEXTURE_2D, blit_tex[i], 0);
-				}
-			}
-			else
-				glBindFramebuffer(GL_DRAW_FRAMEBUFFER, blit_fbo);
-
-			glBindTexture(GL_TEXTURE_2D, blit_tex[0]);
-			glDrawBuffer(GL_COLOR_ATTACHMENT0);
-			glBlitFramebuffer(0, 0, w, h, 0, 0, width, height, GL_COLOR_BUFFER_BIT, GL_NEAREST);
-			
-			glBindTexture(GL_TEXTURE_2D, blit_tex[1]);
-			glDrawBuffer(GL_COLOR_ATTACHMENT1);
-			glBlitFramebuffer(x_off, y_off, x_off+w, y_off+h, 0, 0, width, height, GL_COLOR_BUFFER_BIT, GL_NEAREST);
-
-			glBindTexture(GL_TEXTURE_2D, 0);
-
-			glBindFramebuffer(GL_DRAW_FRAMEBUFFER, draw_fbo);
-			glDrawBuffer(draw_buffer);
+		int width = ctx.get_width(), height = ctx.get_height();
+		int x_off = 0, y_off = 0;
+		if (stereo_window_mode == SWM_DOUBLE) {
+			width /= 2;
+			x_off = width;
 		}
+		double aspect = double(width) / height;
+
+		int w = width, h = height;
+		if (stereo_window_mode == SWM_SINGLE) {
+			switch (stereo_shader_mode) {
+			case SSM_SIDE_BY_SIDE: w /= 2; x_off = w; break;
+			case SSM_TOP_BOTTOM: h /= 2; y_off = h; break;
+			}
+		}
+		double a = double(w) / h;
+
+		if (blit_fbo == -1) {
+			glGenFramebuffers(1, &blit_fbo);
+			glBindFramebuffer(GL_DRAW_FRAMEBUFFER, blit_fbo);
+			glGenTextures(2, blit_tex);
+			for (int i = 0; i < 2; ++i) {
+				glBindTexture(GL_TEXTURE_2D, blit_tex[i]);
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 0);
+				glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
+				glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0+i, GL_TEXTURE_2D, blit_tex[i], 0);
+			}
+		}
+		else
+			glBindFramebuffer(GL_DRAW_FRAMEBUFFER, blit_fbo);
+
+		glBindTexture(GL_TEXTURE_2D, blit_tex[0]);
+		glDrawBuffer(GL_COLOR_ATTACHMENT0);
+		glBlitFramebuffer(0, 0, w, h, 0, 0, width, height, GL_COLOR_BUFFER_BIT, GL_NEAREST);
+			
+		glBindTexture(GL_TEXTURE_2D, blit_tex[1]);
+		glDrawBuffer(GL_COLOR_ATTACHMENT1);
+		glBlitFramebuffer(x_off, y_off, x_off+w, y_off+h, 0, 0, width, height, GL_COLOR_BUFFER_BIT, GL_NEAREST);
+
+		glBindTexture(GL_TEXTURE_2D, 0);
+
+		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, draw_fbo);
+		glDrawBuffer(draw_buffer);
 	}
 }
 

@@ -62,8 +62,6 @@ namespace vr {
 	protected:
 		/**@name management of window and secondary context*/
 		//@{
-		/// remember main context before it is overwritten by child configuration of context of owned window
-		cgv::render::context* main_context;
 		/// helper member that allows to configure width of the window before creation
 		int window_width;
 		/// helper member that allows to configure height of the window before creation
@@ -79,9 +77,10 @@ namespace vr {
 		/// pointers to wall display windows for left and optionally (stereo_window_mode==SWM_TWO) right eyes
 		cgv::gui::window_ptr window, right_window;
 		/// 
-		cgv::gui::window_ptr create_wall_window(const std::string& name, int x, int y, int width, int height, int fullscr);
+		cgv::gui::window_ptr create_wall_window(const std::string& name, int x, int y, int width, int height, int fullscr, bool is_right = false);
 		/// helper function to create the window for the wall display
 		void create_wall_windows();
+		/// 
 		///
 		void draw_in_main_context(cgv::render::context& ctx);
 		//@}
@@ -156,10 +155,10 @@ namespace vr {
 
 		/**@name rendering in wall display context*/
 		//@{
+		///
+		cgv::render::point_renderer pr;
 		/// point render style
 		cgv::render::point_render_style prs;
-		/// point renderer
-		cgv::render::point_renderer pr;
 		/// method to generate random dots
 		void generate_points(int n);
 		/// use low res image to create point sampling
@@ -219,15 +218,25 @@ namespace vr {
 		/// gui creation
 		void create_gui();
 		///
-		void init_frame(cgv::render::context& ctx);
+		bool init_cbd(cgv::render::context& ctx, bool is_right);
+		bool init_cbd0(cgv::render::context& ctx) { return init_cbd(ctx, false); }
+		bool init_cbd1(cgv::render::context& ctx) { return init_cbd(ctx, true); }
 		///
 		bool init(cgv::render::context& ctx);
 		///
+		void clear_cbd(cgv::render::context& ctx, bool is_right);
+		///
 		void clear(cgv::render::context& ctx);
+		///
+		//void init_frame_cbd(cgv::render::context& ctx, bool is_right);
+		///
+		void draw_cbd(cgv::render::context& ctx, bool is_right);
 		///
 		void draw(cgv::render::context& ctx);
 		///
-		void finish_frame(cgv::render::context& ctx);
+		void finish_frame_cbd(cgv::render::context& ctx, bool is_right);
+		///
+		//void finish_frame(cgv::render::context& ctx);
 		///
 		bool handle(cgv::gui::event&);
 		///

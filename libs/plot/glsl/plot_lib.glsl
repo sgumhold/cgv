@@ -16,6 +16,7 @@ vec3 map_plot_to_plot3(in vec3 pnt);
 vec4 map_plot_to_world3(in vec3 pnt);
 vec4 map_plot_to_eye3(in vec3 pnt);
 vec4 map_plot_to_screen3(in vec3 pnt);
+vec4 map_color(in vec2 atts, in vec4 base_color);
 //***** end interface of plot_lib.glsl ***********************************
 */
 
@@ -39,6 +40,11 @@ void quaternion_to_matrix(in vec4 q, out mat3 M);
 void rigid_to_matrix(in vec4 q, in vec3 t, out mat4 M);
 //***** end interface of quaternion.glsl ***********************************
 
+//***** begin interface of color_scale.glsl ***********************************
+float color_scale_gamma_mapping(in float v, in float gamma);
+vec3 color_scale(in float v);
+//***** end interface of color_scale.glsl ***********************************
+
 uniform bool x_axis_log_scale = false;
 uniform bool y_axis_log_scale = false;
 uniform bool z_axis_log_scale = false;
@@ -48,6 +54,13 @@ uniform vec3 extent;
 uniform vec4 orientation = vec4(0.0, 0.0, 0.0, 1.0);
 uniform vec3 center_location;
 uniform float feature_offset;
+
+uniform float color_scale_gamma = 1.0;
+uniform int color_mapping = 0;
+uniform float att0_min = 0.0;
+uniform float att0_max = 1.0;
+uniform float att1_min = 0.0;
+uniform float att1_max = 1.0;
 
 float convert_to_log_space(float val, float min_val, float max_val)
 {
@@ -111,3 +124,19 @@ vec4 map_plot_to_screen3(in vec3 pnt)
 	return get_modelview_projection_matrix() * map_plot_to_world3(pnt);
 }
 
+vec4 map_color(in vec2 atts, in vec4 base_color)
+{
+	if (color_mapping < 0 || color_mapping > 1)
+		return base_color;
+
+	float v = 1.0;
+	switch (color_mapping) {
+	case  0: 
+		v = (atts[0] - att0_min) / (att0_max - att0_min);
+		break;
+	case  1: 
+		v = (atts[1] - att1_min) / (att1_max - att1_min);
+		break;
+	}
+	return vec4(color_scale(color_scale_gamma_mapping(v,color_scale_gamma)), 1.0);
+}
