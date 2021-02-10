@@ -35,10 +35,6 @@ void main()
 	mat4 transform = get_modelview_projection_matrix();
 	mat4 centralTransform = transform; //TODO change for use with VR
 	
-	//test values
-	point_size_gs = 1.0; //TODO set to target spacing
-	radius_gs = 1.0;
-	gl_PointSize = 1.0;
 	color_gs = color;
 	
 	
@@ -72,7 +68,7 @@ void main()
 	{ // point size based on target spacing
 		float ws = max(targetSpacing, minMilimeters / 1000.0);
 
-		float l = sizeMultiplier * 2 * ws;
+		float l = sizeMultiplier * 2.0 * ws;
 		vec4 v1 = get_modelview_matrix() * vec4(position, 1.0);
 		vec4 v2 = vec4(v1.x + l, v1.y + l, v1.z, 1.0);
 
