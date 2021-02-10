@@ -25,6 +25,7 @@ namespace cgv {
 
 			/// construct with default values
 			clod_point_render_style();
+			bool self_reflect(cgv::reflect::reflection_handler& rh);
 		};
 
 		class CGV_API clod_point_renderer : public cgv::render::renderer {
