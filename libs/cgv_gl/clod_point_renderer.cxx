@@ -17,6 +17,17 @@ namespace cgv {
 
 		clod_point_render_style::clod_point_render_style() {}
 
+		bool clod_point_render_style::self_reflect(cgv::reflect::reflection_handler& rh)
+		{
+			return
+				rh.reflect_base(*static_cast<point_render_style*>(this)) &&
+				rh.reflect_member("CLOD_factor", CLOD) &&
+				rh.reflect_member("spacing", spacing) &&
+				rh.reflect_member("scale", scale) &&
+				rh.reflect_member("min_millimeters", min_millimeters) &&
+				rh.reflect_member("point_size", pointSize);
+		}
+
 		void octree_lod_generator::lod_chunking(const Vertex* vertices, const size_t num_points, const vec3& min, const vec3& max)
 		{
 			max_points_per_chunk = std::min<size_t>(source_data_size / 20, 10'000'000ll);
