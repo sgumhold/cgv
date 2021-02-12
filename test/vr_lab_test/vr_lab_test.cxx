@@ -188,7 +188,7 @@ public:
 				}
 				return true;
 			case vr::VR_GRIP:
-				return true;
+				return false;
 			case vr::VR_INPUT0:
 				return true;
 			}

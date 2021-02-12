@@ -26,21 +26,23 @@ layout(location = 0) in float xpos;
 layout(location = 1) in float ypos;
 layout(location = 2) in float zpos;
 layout(location = 3) in float att0;
+layout(location = 4) in float att1;
 
 in vec4 color;
-
 out vec4  color_gs;
 
 vec3 map_plot_to_plot3(in vec3 pnt);
 vec4 map_plot_to_world3(in vec3 pnt);
+vec4 map_color(in vec2 atts, in vec4 base_color);
+float map_size(in vec2 atts, in float base_size);
 
 void main()
 {
 	// compute sphere color
-	color_gs = color;
+	color_gs = map_color(vec2(att0, att1), color);
 	// output sphere parameter space for geometry shader
 	vec4 p = map_plot_to_world3(vec3(xpos, ypos, zpos));
-	p.w = radius_scale*att0;
+	p.w = map_size(vec2(att0,att1), radius_scale);
 	gl_Position = p;
 	output_sphere_parameter_space(gl_Position);
 }

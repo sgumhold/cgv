@@ -14,12 +14,10 @@ namespace cgv {
 /// <param name="ctx">render context</param>
 /// <param name="prog">shader program using the color scale</param>
 /// <param name="cs">color scale index that can surpass cgv::media::CS_NAMED to index named color scales</param>
-/// <param name="is_bipolar">whether color scale is bipolar</param>
 /// <param name="window_zero_position">window_zero_position which is mapped to center of a bipolar color scale</param>
 	extern CGV_API void configure_color_scale(
 								cgv::render::context& ctx, cgv::render::shader_program& prog, 
-								cgv::media::ColorScale cs, bool is_bipolar = false, 
-								float window_zero_position = 0.5f);
+								cgv::media::ColorScale cs, float window_zero_position = 0.5f);
 
 	}
 }

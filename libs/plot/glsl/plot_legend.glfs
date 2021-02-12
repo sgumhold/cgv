@@ -1,0 +1,20 @@
+#version 150
+
+in float value_fs;
+
+uniform float color_scale_gamma = 1.0;
+
+//***** begin interface of color_scale.glsl ***********************************
+float color_scale_gamma_mapping(in float v, in float gamma);
+vec3 color_scale(in float v);
+//***** end interface of color_scale.glsl ***********************************
+
+//***** begin interface of fragment.glfs ***********************************
+uniform float gamma = 2.2;
+void finish_fragment(vec4 color);
+//***** end interface of fragment.glfs ***********************************
+
+void main()
+{
+	finish_fragment(vec4(color_scale(color_scale_gamma_mapping(value_fs,color_scale_gamma)),1.0));
+}

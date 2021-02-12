@@ -138,7 +138,7 @@ std::vector<plot3d::vec3>& plot3d::ref_sub_plot_samples(unsigned i)
 bool plot3d::init(cgv::render::context& ctx)
 {
 	cgv::render::ref_box_renderer(ctx, 1);
-	return true;
+	return plot_base::init(ctx);
 }
 
 void plot3d::draw_sub_plot(cgv::render::context& ctx, unsigned i)
@@ -423,6 +423,7 @@ void plot3d::draw(cgv::render::context& ctx)
 	glDepthFunc(depth);
 	glBlendFunc(blend_src, blend_dst);
 
+	draw_legend(ctx);
 
 }
 
