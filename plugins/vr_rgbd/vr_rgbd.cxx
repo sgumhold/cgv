@@ -300,7 +300,7 @@ public:
 		max_nr_shown_recorded_pcs = 20;
 		counter_pc = 0;
 
-		pc_file_path = "D://YU//";
+		pc_file_path = QUOTE_SYMBOL_VALUE(INPUT_DIR) " / .. / data";
 
 		connect(cgv::gui::get_animation_trigger().shoot, this, &vr_rgbd::timer_event);
 	}
@@ -889,7 +889,8 @@ public:
 			std::vector<rgb> C;
 			const vr::vr_kit_state* state_ptr = vr_view_ptr->get_current_vr_state();
 			if (state_ptr) {
-				for (int ci = 0; ci < 4; ++ci) if (state_ptr->controller[ci].status == vr::VRS_TRACKED) {
+				for (int ci = 0; ci < 2; ++ci) if (state_ptr->controller[ci].status == vr::VRS_TRACKED) {
+					std::cout << ci << " " << state_ptr->controller->status << std::endl;
 					vec3 ray_origin, ray_direction;
 					state_ptr->controller[ci].put_ray(&ray_origin(0), &ray_direction(0));
 					P.push_back(ray_origin);
