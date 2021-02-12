@@ -1,5 +1,6 @@
 vertex_file:plot3d_box.glvs
 vertex_file:quaternion.glsl
+vertex_file:color_scale.glsl
 vertex_file:plot_lib.glsl
 vertex_file:view.glsl
 geometry_file:box.glgs

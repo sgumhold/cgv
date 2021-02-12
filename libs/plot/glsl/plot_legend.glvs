@@ -15,9 +15,11 @@ mat3 get_normal_matrix();
 mat3 get_inverse_normal_matrix();
 //***** end interface of view.glsl ***********************************
 
+vec4 map_legend_to_screen(in vec3 pnt);
+
 void main()
 {
 	// transform vertex to clip space
-	gl_Position = get_modelview_projection_matrix()*position;
+	gl_Position = map_legend_to_screen(position.xyz);
 	value_fs = value;
 }

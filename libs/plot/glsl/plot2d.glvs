@@ -6,7 +6,6 @@ layout(location = 2) in float att0;
 layout(location = 3) in float att1;
 
 in vec4 color;
-
 out vec4 color_fs;
 
 //***** begin interface of plot_lib.glsl ***********************************

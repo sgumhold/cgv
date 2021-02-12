@@ -59,12 +59,27 @@ vec3 sampled_color_scale(in float value)
 	// than check if values needs to be clamped to 1 and make sure that values is really smaller than 1
 	if (value > 0.99999)
 		return color_scale_samples[nr_color_scale_samples - 1];
-	// scale value up to [0,n-1]
-	float v = value * (nr_color_scale_samples - 1);
-	// compute index of smaller sampled necessary for linear interpolation
-	int i = int(v);
-	// compute fractional part
-	float f = v - float(i);
+	float f,v;
+	int i;
+	if (color_scale_is_bipolar) {
+		// scale value up to [0,n-2]
+		v = value * (nr_color_scale_samples - 2);
+		// compute index of smaller sampled necessary for linear interpolation
+		i = int(v);
+		// compute fractional part
+		f = v - float(i);
+		// correct indices in second half
+		if (i+1 >= nr_color_scale_samples/2)
+			++i;
+	}
+	else {
+		// scale value up to [0,n-1]
+		v = value * (nr_color_scale_samples - 1);
+		// compute index of smaller sampled necessary for linear interpolation
+		i = int(v);
+		// compute fractional part
+		f = v - float(i);
+	}
 	// return affine combination of two adjacent samples
 	return (1.0 - f) * color_scale_samples[i] + f * color_scale_samples[i + 1];
 }
