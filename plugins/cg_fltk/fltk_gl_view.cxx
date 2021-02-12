@@ -144,7 +144,7 @@ void fltk_gl_view::on_set(void* member_ptr)
 /// returns the property declaration
 std::string fltk_gl_view::get_property_declarations()
 {
-	return fltk_base::get_property_declarations()+";"+cgv::base::group::get_property_declarations()+";stencil_buffer:bool;accum_buffer:bool;quad_buffer:bool;multisample:bool";
+	return fltk_base::get_property_declarations()+";"+cgv::base::group::get_property_declarations()+";stencil_buffer:bool;accum_buffer:bool;stereo_buffer:bool;multisample:bool";
 }
 
 void fltk_gl_view::change_mode(int m)
