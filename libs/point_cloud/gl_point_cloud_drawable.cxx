@@ -100,8 +100,10 @@ bool gl_point_cloud_drawable::append(std::string& fn, bool add_component, const 
 			pc.add_component();
 	}
 	pc.append(pc1);
-	pc.component_name(cgv::type::int32_type(pc.get_nr_components() - 1)) = 
-		cgv::utils::file::drop_extension(cgv::utils::file::get_file_name(fn));
+	if (pc.has_components()) {
+		pc.component_name(cgv::type::int32_type(pc.get_nr_components() - 1)) =
+			cgv::utils::file::drop_extension(cgv::utils::file::get_file_name(fn));
+	}
 	show_point_begin = 0;
 	show_point_end = pc.get_nr_points();
 	return true;

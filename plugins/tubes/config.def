@@ -8,3 +8,4 @@ type(tubes):renderer=1
 // persistant state
 persistent
 type(tubes):instant_redraw_proxy=false
+type(tubes):fix_view_up_dir_proxy=false

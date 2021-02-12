@@ -10,12 +10,15 @@
 #include <cgv/render/drawable.h>
 #include <cgv/utils/advanced_scan.h>
 
+// CGV OpenGL lib
+#include <cgv_gl/rounded_cone_renderer.h>
+#include <cgv_gl/spline_tube_renderer.h>
+
 // fltk_gl_view for controlling instant redraw
 #include <plugins/cg_fltk/fltk_gl_view.h>
 
-// renderer headers include self reflection helpers for render styles
-#include <cgv_gl/rounded_cone_renderer.h>
-#include <cgv_gl/spline_tube_renderer.h>
+// stereo_view_interactor for controlling fix_view_up_dir
+#include <plugins/crg_stereo_view/stereo_view_interactor.h>
 
 // local includes
 #include "traj_loader.h"
@@ -62,6 +65,9 @@ protected:
 	{
 		/// proxy for controlling fltk_gl_view::instant_redraw
 		bool instant_redraw_proxy = false;
+
+		/// proxy for controlling stereo_view_interactor::fix_view_up_dir
+		bool fix_view_up_dir_proxy = false;
 	} misc_cfg;
 
 	/// rendering state fields
@@ -145,7 +151,8 @@ public:
 			rh.reflect_member("datapath", datapath) &&
 			rh.reflect_member("renderer", render_cfg.renderer) &&
 			rh.reflect_member("render_style", render_cfg.render_style) &&
-			rh.reflect_member("instant_redraw_proxy", misc_cfg.instant_redraw_proxy);
+			rh.reflect_member("instant_redraw_proxy", misc_cfg.instant_redraw_proxy) &&
+			rh.reflect_member("fix_view_up_dir_proxy", misc_cfg.fix_view_up_dir_proxy);
 	}
 
 	bool init (cgv::render::context &ctx)
@@ -231,6 +238,16 @@ public:
 		return false;
 	}
 
+	void init_frame (cgv::render::context &ctx)
+	{
+		if (misc_cfg.fix_view_up_dir_proxy)
+			// ToDo: make stereo view interactors reflect this property
+			/*dynamic_cast<stereo_view_interactor*>(find_view_as_node())->set(
+				"fix_view_up_dir", misc_cfg.fix_view_up_dir_proxy
+			);*/
+			find_view_as_node()->set_view_up_dir(0, 1, 0);
+	}
+
 	void draw (cgv::render::context &ctx)
 	{
 		// display drag-n-drop information, if a dnd operation is in progress
@@ -250,7 +267,7 @@ public:
 					dnd_drawtext << tmp << std::endl;
 				}
 			}
-			float h = dnd.filenames.size() * s + s;
+			float h = dnd.filenames.size()*s + s;
 			// gather our available screen estate
 			GLint vp[4]; glGetIntegerv(GL_VIEWPORT, vp);
 			// calculate actual position at which to place the text
@@ -326,6 +343,10 @@ public:
 			add_member_control(
 				this, "instant_redraw_proxy", misc_cfg.instant_redraw_proxy, "toggle",
 				"tooltip='Controls the instant redraw state of the FLTK GL window.'"
+			);
+			add_member_control(
+				this, "fix_view_up_dir_proxy", misc_cfg.fix_view_up_dir_proxy, "toggle",
+				"tooltip='Controls the \"fix_view_up_dir\" state of the view interactor.'"
 			);
 			align("\b");
 			end_tree_node(misc_cfg);
@@ -404,10 +425,17 @@ public:
 		// misc settings
 		// - instant redraw
 		else if (member_ptr == &misc_cfg.instant_redraw_proxy)
-		{
 			// ToDo: handle the (virtually impossible) case that some other plugin than cg_fltk provides the gl_context
 			dynamic_cast<fltk_gl_view*>(get_context())->set_void("instant_redraw", "bool", member_ptr);
-		}
+		// - fix view up dir
+		else if (member_ptr == &misc_cfg.fix_view_up_dir_proxy)
+			// ToDo: make stereo view interactors reflect this property, and handle the case that some other plugin that
+			//       is not derived from stereo_view_interactor handles viewing
+			//if (!misc_cfg.fix_view_up_dir_proxy)
+			//	dynamic_cast<stereo_view_interactor*>(find_view_as_node())->set("fix_view_up_dir", false);
+			//else
+			if (misc_cfg.fix_view_up_dir_proxy)
+				find_view_as_node()->set_view_up_dir(0, 1, 0);
 
 		// default implementation for all members
 		// - dirty hack to catch GUI changes to render_cfg.render_style
