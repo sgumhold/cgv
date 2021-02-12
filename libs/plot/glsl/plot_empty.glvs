@@ -11,10 +11,12 @@ in vec4 color;
 out vec4 color_gs;
 out vec2 attribs;
 
+vec4 map_color(in vec2 atts, in vec4 base_color);
+
 void main()
 {
 	// transform vertex to clip space
 	gl_Position = vec4(xpos, ypos, zpos, 1.0);
 	attribs = vec2(att0, att1);
-	color_gs = color;
+	color_gs = map_color(vec2(att0, att1), color);
 }

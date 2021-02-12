@@ -9,6 +9,7 @@ uniform vec3 extent;
 uniform vec4 orientation;
 uniform vec3 center_location;
 vec3 map_plot_to_plot3(in vec2 pnt);
+vec4 map_legend_to_screen(in vec3 pnt);
 vec4 map_plot_to_world(in vec2 pnt);
 vec4 map_plot_to_eye(in vec2 pnt);
 vec4 map_plot_to_screen(in vec2 pnt);
@@ -17,9 +18,9 @@ vec4 map_plot_to_world3(in vec3 pnt);
 vec4 map_plot_to_eye3(in vec3 pnt);
 vec4 map_plot_to_screen3(in vec3 pnt);
 vec4 map_color(in vec2 atts, in vec4 base_color);
+float map_size(in vec2 atts, in float base_size);
 //***** end interface of plot_lib.glsl ***********************************
 */
-
 
 //***** begin interface of view.glsl ***********************************
 mat4 get_modelview_matrix();
@@ -55,12 +56,16 @@ uniform vec4 orientation = vec4(0.0, 0.0, 0.0, 1.0);
 uniform vec3 center_location;
 uniform float feature_offset;
 
-uniform float color_scale_gamma = 1.0;
+uniform vec2 attribute_min = vec2(0.0,0.0);
+uniform vec2 attribute_max = vec2(1.0,1.0);
+
 uniform int color_mapping = 0;
-uniform float att0_min = 0.0;
-uniform float att0_max = 1.0;
-uniform float att1_min = 0.0;
-uniform float att1_max = 1.0;
+uniform float color_scale_gamma = 1.0;
+
+uniform int size_mapping = 0;
+uniform float size_gamma = 1.0;
+uniform float size_max = 1.0;
+uniform float size_min = 0.1;
 
 float convert_to_log_space(float val, float min_val, float max_val)
 {
@@ -91,6 +96,11 @@ vec4 map_plot_to_world(in vec2 pnt)
 	return vec4(center_location + rotate_vector_with_quaternion(map_plot_to_plot3(pnt) + vec3(0.0, 0.0, feature_offset), orientation), 1.0);
 }
 
+vec4 map_legend_to_screen(in vec3 pnt)
+{
+	return get_modelview_projection_matrix() * vec4(center_location + rotate_vector_with_quaternion(0.5*extent * pnt + vec3(0.0, 0.0, feature_offset), orientation), 1.0);
+}
+
 vec4 map_plot_to_eye(in vec2 pnt)
 {
 	return get_modelview_matrix() * map_plot_to_world(pnt);
@@ -100,6 +110,7 @@ vec4 map_plot_to_screen(in vec2 pnt)
 {
 	return get_modelview_projection_matrix() * map_plot_to_world(pnt);
 }
+
 
 vec3 map_plot_to_plot3(in vec3 pnt)
 {
@@ -128,15 +139,17 @@ vec4 map_color(in vec2 atts, in vec4 base_color)
 {
 	if (color_mapping < 0 || color_mapping > 1)
 		return base_color;
-
-	float v = 1.0;
-	switch (color_mapping) {
-	case  0: 
-		v = (atts[0] - att0_min) / (att0_max - att0_min);
-		break;
-	case  1: 
-		v = (atts[1] - att1_min) / (att1_max - att1_min);
-		break;
-	}
+	// simple window transform
+	float v = (atts[color_mapping] - attribute_min[color_mapping])/(attribute_max[color_mapping] - attribute_min[color_mapping]);
 	return vec4(color_scale(color_scale_gamma_mapping(v,color_scale_gamma)), 1.0);
+}
+
+float map_size(in vec2 atts, in float base_size)
+{
+	if (size_mapping < 0 || size_mapping > 1)
+		return base_size;
+	// simple window transform
+	float v = (atts[size_mapping] - attribute_min[size_mapping]) / (attribute_max[size_mapping] - attribute_min[size_mapping]);
+	v = pow(v, size_gamma);
+	return ((size_max - size_min) * v + size_min)* base_size;
 }

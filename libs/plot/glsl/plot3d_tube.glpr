@@ -1,4 +1,5 @@
 vertex_file:plot3d_tube.glvs
+vertex_file:color_scale.glsl
 vertex_file:view.glsl
 vertex_file:quaternion.glsl
 vertex_file:plot_lib.glsl

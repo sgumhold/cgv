@@ -22,7 +22,6 @@ class CGV_API plot2d : public plot_base
 {
 protected:
 	cgv::render::shader_program prog;
-	cgv::render::shader_program legend_prog;
 	cgv::render::shader_program stick_prog;
 	cgv::render::shader_program bar_prog, bar_outline_prog;
 
