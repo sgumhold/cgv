@@ -5,7 +5,9 @@
 #include <cgv/media/axis_aligned_box.h>
 #include <cgv/render/drawable.h>
 #include <cgv/render/vertex_buffer.h>
+#include <cgv/render/shader_program.h>
 #include <cgv/media/color.h>
+#include <cgv/media/color_scale.h>
 #include <cgv/media/font/font.h>
 #include <cgv/gui/provider.h>
 
@@ -59,6 +61,16 @@ struct axis_config
 	axis_config();
 };
 
+/// <summary>
+/// enumeration of visual variables onto which additional attributes can be mapped
+/// </summary>
+enum VisualVariable
+{
+	VV_COLOR,
+	VV_OPACITY,
+	VV_SIZE
+};
+
 struct domain_config
 {
 	/// whether to show the coordinate axes including tickmarks and labels
@@ -67,7 +79,7 @@ struct domain_config
 	bool fill;
 	/// color of the domain fill
 	cgv::render::render_types::rgb color;
-	/// store a vector of axis configurations (2/3 for plot2/3d)
+	/// store a vector of axis configurations (2/3 for plot2/3d plus several attribute axes)
 	std::vector<axis_config> axis_configs;
 	/// store index of selected font
 	unsigned label_font_index;
@@ -136,7 +148,6 @@ struct CGV_API plot_base_config : public cgv::render::render_types
 	rgb bar_color;
 	/// bar outline color
 	rgb bar_outline_color;
-
 	/// set default values
 	plot_base_config(const std::string& _name);
 	/// configure the sub plot to a specific chart type
@@ -193,6 +204,8 @@ private:
 	domain_config last_dom_cfg;
 	///
 	vecn last_dom_min, last_dom_max;
+	///
+	cgv::render::shader_program legend_prog;
 protected:
 	/// render information stored per label
 	struct label_info
@@ -276,6 +289,30 @@ protected:
 	vec3 transform_to_world(const vecn& domain_point) const;
 	//@}
 
+	/**@name placement of legend*/
+	//@{
+	/// whether to show legend
+	bool show_legend;
+	/// center location of legend in domain coordinates
+	vec3 legend_location;
+	/// center location of legend in domain coordinates
+	vec2 legend_extent;
+	/// index of attribute mapped to color
+	int color_mapping;
+	/// maximum support for two color scales
+	cgv::media::ColorScale color_scale_index;
+	/// and independent gamma adjustments
+	float color_scale_gamma;
+	/// for bipolar color maps window position of zero
+	float window_zero_position;
+	/// index of attribute mapped to size
+	int size_mapping;
+	/// and independent gamma adjustments
+	float size_gamma;
+	/// min and max of mapped size
+	float size_min, size_max;
+	//@}
+
 	/// store pointer to current font
 	cgv::media::font::font_ptr label_font;
 	/// store pointer to current font face
@@ -309,6 +346,8 @@ protected:
 	virtual bool compute_sample_coordinate_interval(int i, int ai, float& samples_min, float& samples_max) = 0;
 	///
 	void draw_sub_plot_samples(int count, const plot_base_config& spc, bool strip = false);
+	///
+	void draw_legend(cgv::render::context& ctx);
 public:
 	/// construct with default parameters
 	plot_base(unsigned nr_axes);
@@ -404,7 +443,8 @@ public:
 	void set_sub_plot_attribute(unsigned i, unsigned ai, const cgv::render::vertex_buffer* _vbo_ptr, size_t _offset, size_t _count, size_t _stride);
 	//@}
 
-
+	/// build legend prog
+	bool init(cgv::render::context& ctx);
 	/// ensure tick computation
 	void init_frame(cgv::render::context& ctx);
 

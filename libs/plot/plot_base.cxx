@@ -1,8 +1,10 @@
 #include "plot_base.h"
 #include <cgv/render/shader_program.h>
 #include <cgv/signal/rebind.h>
+#include <cgv/media/color_scale.h>
 #include <cgv/render/attribute_array_binding.h>
 #include <libs/cgv_gl/gl/gl.h>
+#include <cgv/render/color_scale.h>
 
 namespace cgv {
 	namespace plot {
@@ -393,6 +395,16 @@ void plot_base::set_uniforms(cgv::render::context& ctx, cgv::render::shader_prog
 	prog.set_uniform(ctx, "domain_max_pnt", vec3(domain_max.size(), &domain_max(0)));
 	prog.set_uniform(ctx, "center_location", center_location);
 	prog.set_uniform(ctx, "offset_percentage", 0.0f);
+	if (prog.get_uniform_location(ctx, "color_mapping") != -1) {
+		prog.set_uniform(ctx, "color_mapping", color_mapping);
+		cgv::render::configure_color_scale(ctx, prog, color_scale_index, window_zero_position);
+		prog.set_uniform(ctx, "color_scale_gamma", color_scale_gamma);
+		prog.set_uniform(ctx, "size_mapping", size_mapping);
+		prog.set_uniform(ctx, "size_gamma", size_gamma);
+		prog.set_uniform(ctx, "size_min", size_min);
+		prog.set_uniform(ctx, "size_max", size_max);
+	}
+
 	static const char* axis_name = "xyz";
 	for (unsigned ai=0; ai<get_dim(); ++ai)
 		prog.set_uniform(ctx, std::string(1, axis_name[ai])+"_axis_log_scale", get_domain_config_ptr()->axis_configs[ai].log_scale);
@@ -437,8 +449,8 @@ size_t plot_base::set_attributes(cgv::render::context& ctx, int i, const std::ve
 	return count;
 }
 
-//// set vertex shader input attributes based on attribute source information
-size_t plot_base::set_attributes(cgv::render::context& ctx, int i, const std::vector< std::vector<vec3> >& samples)
+/// set vertex shader input attributes based on attribute source information
+size_t plot_base::set_attributes(cgv::render::context& ctx, int i, const std::vector<std::vector<vec3>>& samples)
 {
 	const auto& ass = attribute_sources[i];
 	unsigned ai = 0;
@@ -472,16 +484,16 @@ size_t plot_base::set_attributes(cgv::render::context& ctx, int i, const std::ve
 /// set vertex shader input attributes 
 void plot_base::set_attributes(cgv::render::context& ctx, const std::vector<vec2>& points)
 {
-	cgv::render::attribute_array_binding::set_global_attribute_array(ctx, 0, &points[0][0], points.size(), 2*sizeof(float));
-	cgv::render::attribute_array_binding::set_global_attribute_array(ctx, 1, &points[0][1], points.size(), 2 * sizeof(float));
+	cgv::render::attribute_array_binding::set_global_attribute_array(ctx, 0, &points[0][0], points.size(),sizeof(vec2));
+	cgv::render::attribute_array_binding::set_global_attribute_array(ctx, 1, &points[0][1], points.size(),sizeof(vec2));
 }
 
 /// set vertex shader input attributes 
 void plot_base::set_attributes(cgv::render::context& ctx, const std::vector<vec3>& points)
 {
-	cgv::render::attribute_array_binding::set_global_attribute_array(ctx, 0, &points[0][0], points.size(), 3*sizeof(float));
-	cgv::render::attribute_array_binding::set_global_attribute_array(ctx, 1, &points[0][1], points.size(), 3*sizeof(float));
-	cgv::render::attribute_array_binding::set_global_attribute_array(ctx, 2, &points[0][2], points.size(), 3*sizeof(float));
+	cgv::render::attribute_array_binding::set_global_attribute_array(ctx, 0, &points[0][0], points.size(), sizeof(vec3));
+	cgv::render::attribute_array_binding::set_global_attribute_array(ctx, 1, &points[0][1], points.size(), sizeof(vec3));
+	cgv::render::attribute_array_binding::set_global_attribute_array(ctx, 2, &points[0][2], points.size(), sizeof(vec3));
 }
 
 /// define a sub plot attribute ai from coordinate aj of the i-th internal sample container
@@ -514,7 +526,6 @@ void plot_base::set_sub_plot_attribute(unsigned i, unsigned ai, const cgv::rende
 
 void plot_base::set_default_attributes(cgv::render::context& ctx, cgv::render::shader_program& prog, unsigned count_others)
 {
-	return;
 	if (count_others < 3)
 		prog.set_attribute(ctx, 2, 0.0f);
 	if (count_others < 4)
@@ -559,7 +570,54 @@ plot_base::plot_base(unsigned nr_axes) : dom_cfg(nr_axes), last_dom_cfg(0)
 	extent.fill(1.0f);
 	orientation = quat(1.0f, 0.0f, 0.0f, 0.0f);
 	center_location = vec3(0.0f);
+	color_mapping = -1;
+	color_scale_index = cgv::media::CS_HUE;
+	color_scale_gamma = 1;
+	window_zero_position = 0.5f;
+	size_mapping = -1;
+	size_min = 0.1f;
+	size_max = 1.0f;
+	size_gamma = 1.0f;
+	show_legend = false;
+	legend_extent = vec2(0.1f, 1.0f);
+	legend_location = vec3(0.5f, 0.0f, 0.0f);
 }
+
+void plot_base::draw_legend(cgv::render::context& ctx)
+{
+	if (!show_legend)
+		return;
+	set_uniforms(ctx, legend_prog);
+	// draw legend
+	std::vector<vec3> P;
+	std::vector<float> V;
+
+	vec3 pmin = legend_location - vec3(0.5f * legend_extent, 0.0f);
+	vec3 pmax = legend_location + vec3(0.5f * legend_extent, 0.0f);
+	P.push_back(pmin);
+	P.push_back(vec3(pmax(0), pmin(1), pmin(2)));
+	P.push_back(vec3(pmin(0), pmax(1), pmin(2)));
+	P.push_back(pmax);
+	V.push_back(0.0f);
+	V.push_back(0.0f);
+	V.push_back(1.0f);
+	V.push_back(1.0f);
+	legend_prog.enable(ctx);
+	cgv::render::configure_color_scale(ctx, legend_prog, color_scale_index, window_zero_position);
+	legend_prog.set_uniform(ctx, "color_scale_gamma", color_scale_gamma);
+
+	int pos_idx = legend_prog.get_attribute_location(ctx, "position");
+	int val_idx = legend_prog.get_attribute_location(ctx, "value");
+	cgv::render::attribute_array_binding::enable_global_array(ctx, pos_idx);
+	cgv::render::attribute_array_binding::enable_global_array(ctx, val_idx);
+	cgv::render::attribute_array_binding::set_global_attribute_array(ctx, pos_idx, P);
+	cgv::render::attribute_array_binding::set_global_attribute_array(ctx, val_idx, V);
+	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+	cgv::render::attribute_array_binding::disable_global_array(ctx, pos_idx);
+	cgv::render::attribute_array_binding::disable_global_array(ctx, val_idx);
+	legend_prog.disable(ctx);
+}
+
 
 /// return domain shown in plot
 const plot_base::box2 plot_base::get_domain() const
@@ -886,6 +944,14 @@ void plot_base::set_sub_plot_colors(unsigned i, const rgb& base_color)
 	ref_sub_plot_config(i).set_colors(base_color);
 }
 
+bool plot_base::init(cgv::render::context& ctx)
+{
+	if (!legend_prog.build_program(ctx, "plot_legend.glpr", true)) {
+		std::cerr << "could not build GLSL program from plot_legend.glpr" << std::endl;
+		return false;
+	}
+	return true;
+}
 
 /// ensure tick computation
 void plot_base::init_frame(cgv::render::context& ctx)
@@ -898,6 +964,22 @@ void plot_base::create_plot_gui(cgv::base::base* bp, cgv::gui::provider& p)
 	const char* axis_names = "xyz";
 
 	ensure_font_names();
+	if (p.begin_tree_node("visual variables", color_mapping, false, "level=3")) {
+		p.align("\a");
+		p.add_member_control(bp, "color_mapping", (cgv::type::DummyEnum&)color_mapping, "dropdown", "enums='off=-1,attr0,attr1'");
+		p.add_member_control(bp, "color_scale", (cgv::type::DummyEnum&)color_scale_index, "dropdown", cgv::media::get_color_scale_enum_definition());
+		p.add_member_control(bp, "color_gamma", color_scale_gamma, "value_slider", "min=0.1;step=0.01;max=10;log=true;ticks=true");
+		p.add_member_control(bp, "window_zero_position", window_zero_position, "value_slider", "min=0;max=1;ticks=true");
+		p.add_member_control(bp, "size_mapping", (cgv::type::DummyEnum&)size_mapping, "dropdown", "enums='off=-1,attr0,attr1'");
+		p.add_member_control(bp, "size_gamma", size_gamma, "value_slider", "min=0.1;step=0.01;max=10;log=true;ticks=true");
+		p.add_member_control(bp, "size_min", size_min, "value_slider", "min=0.1;step=0.01;max=10;log=true;ticks=true");
+		p.add_member_control(bp, "size_max", size_max, "value_slider", "min=0.1;step=0.01;max=10;log=true;ticks=true");
+		p.add_member_control(bp, "show_legend", show_legend, "toggle");
+		p.add_gui("center", legend_location, "vector", "main_label='heading';gui_type='value_slider';options='min=-1.2;max=1.2;log=true;ticks=true'");
+		p.add_gui("extent", legend_extent, "vector", "main_label='heading';gui_type='value_slider';options='min=0.01;max=2;step=0.001;log=true;ticks=true'");
+		p.align("\b");
+		p.end_tree_node(color_mapping);
+	}
 
 	if (p.begin_tree_node("dimensions", center_location, false, "level=3")) {
 		p.align("\a");
@@ -908,6 +990,7 @@ void plot_base::create_plot_gui(cgv::base::base* bp, cgv::gui::provider& p)
 		p.add_gui("extent", extent, "vector", "main_label='heading';gui_type='value_slider';options='min=0.01;max=100;step=0.001;log=true;ticks=true'");
 		p.add_gui("orientation", reinterpret_cast<vec4&>(orientation), "direction", "main_label='heading';gui_type='value_slider'");
 		p.align("\b");
+		p.end_tree_node(center_location);
 	}
 	bool open = p.begin_tree_node("domain", get_domain_config_ptr()->show_domain, false, "level=3;options='w=104';align=' '");
 	p.add_member_control(bp, "show", get_domain_config_ptr()->show_domain, "toggle", "w=40", " ");

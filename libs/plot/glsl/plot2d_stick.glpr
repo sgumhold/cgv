@@ -1,4 +1,6 @@
 vertex_file:plot_empty.glvs
+vertex_file:color_scale.glsl
+vertex_file:plot_lib.glsl
 geometry_shader_info:points;line_strip;2
 geometry_file:plot2d_stick.glgs
 geometry_file:quaternion.glsl

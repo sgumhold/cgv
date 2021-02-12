@@ -1,5 +1,7 @@
 #include "plot2d.h"
 #include <libs/cgv_gl/gl/gl.h>
+#include <cgv/media/color_scale.h>
+#include <cgv/render/attribute_array_binding.h>
 
 namespace cgv {
 	namespace plot {
@@ -119,7 +121,7 @@ std::vector<unsigned>& plot2d::ref_sub_plot_strips(unsigned i)
 
 bool plot2d::init(cgv::render::context& ctx)
 {
-	if (!prog.build_program(ctx, "plot2d.glpr")) {
+	if (!prog.build_program(ctx, "plot2d.glpr", true)) {
 		std::cerr << "could not build GLSL program from plot2d.glpr" << std::endl;
 		return false;
 	}
@@ -135,7 +137,7 @@ bool plot2d::init(cgv::render::context& ctx)
 		std::cerr << "could not build GLSL program from bar_outline_prog.glpr" << std::endl;
 		return false;
 	}
-	return true;
+	return plot_base::init(ctx);
 }
 
 void plot2d::clear(cgv::render::context& ctx)
@@ -148,6 +150,7 @@ void plot2d::clear(cgv::render::context& ctx)
 
 void plot2d::draw_sub_plot(cgv::render::context& ctx, unsigned i)
 {
+	enable_attributes(ctx, int(attribute_sources[i].size()));
 	GLsizei count = (GLsizei)set_attributes(ctx, i, samples);
 	if (count == 0)
 		return;
@@ -191,9 +194,9 @@ void plot2d::draw_sub_plot(cgv::render::context& ctx, unsigned i)
 
 	if (spc.show_points || spc.show_lines) {
 		set_uniforms(ctx, prog, i);
-		prog.enable(ctx);
 		prog.set_uniform(ctx, "feature_offset", 0.001f * extent.length());
-		set_default_attributes(ctx, prog, 2);
+		prog.enable(ctx);
+		//set_default_attributes(ctx, prog, 2);
 	}
 
 	if (spc.show_lines) {
@@ -221,6 +224,8 @@ void plot2d::draw_sub_plot(cgv::render::context& ctx, unsigned i)
 		prog.set_uniform(ctx, "feature_offset", 0.0f);
 		prog.disable(ctx);
 	}
+
+	disable_attributes(ctx, int(attribute_sources[i].size()));
 }
 
 void plot2d::draw_domain(cgv::render::context& ctx)
@@ -327,6 +332,7 @@ void plot2d::draw(cgv::render::context& ctx)
 	enable_attributes(ctx, 2);
 	set_uniforms(ctx, prog);
 	prog.enable(ctx);
+	prog.set_uniform(ctx, "color_mapping", int(-1));
 	set_default_attributes(ctx, prog, 2);
 	if (get_domain_config_ptr()->show_domain)
 		draw_domain(ctx);
@@ -338,15 +344,12 @@ void plot2d::draw(cgv::render::context& ctx)
 	ctx.enable_font_face(label_font_face, get_domain_config_ptr()->label_font_size);
 	draw_tick_labels(ctx);
 
-	enable_attributes(ctx, 2);
 	for (unsigned i = 0; i<samples.size(); ++i) {
 		// skip unvisible and empty sub plots
 		if (!ref_sub_plot2d_config(i).show_plot)
 			continue;
 		draw_sub_plot(ctx, i);
 	}
-	disable_attributes(ctx, 2);
-
 	if (!line_smooth)
 		glDisable(GL_LINE_SMOOTH);
 	if (!point_smooth)
@@ -355,6 +358,8 @@ void plot2d::draw(cgv::render::context& ctx)
 		glDisable(GL_BLEND);
 	glDepthFunc(depth);
 	glBlendFunc(blend_src, blend_dst);
+
+	draw_legend(ctx);
 }
 
 	}
