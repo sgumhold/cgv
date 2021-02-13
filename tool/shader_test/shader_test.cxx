@@ -181,8 +181,12 @@ int perform_test()
 {
 	bool shader_developer = cgv::utils::has_option("SHADER_DEVELOPER");
 	bool exit_code = 0;
-	if (getenv("CGV_DIR") != 0)
-		get_shader_config()->shader_path = std::string(getenv("CGV_DIR"))+"/libs/cgv_gl/glsl";
+	if (get_shader_config()->shader_path.empty() && getenv("CGV_DIR") != 0) {
+		get_shader_config()->shader_path = 
+			std::string(getenv("CGV_DIR")) + "/libs/cgv_gl/glsl;"+
+			std::string(getenv("CGV_DIR")) + "/libs/plot/glsl;" +
+			std::string(getenv("CGV_DIR")) + "/libs/cgv_proc";
+	}
 	// check input file extension
 	std::string ext = to_lower(get_extension(g_argv[1]));
 	if (ext == "glpr") {
