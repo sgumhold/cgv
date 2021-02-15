@@ -1,8 +1,5 @@
 #include <cgv/base/base.h>
 #include "mesh_render_info.h"
-#include <cgv_gl/gl/gl.h>
-#include <cgv_gl/gl/gl_tools.h>
-#include <cgv_gl/gl/gl_context.h>
 
 namespace cgv {
 	namespace render {

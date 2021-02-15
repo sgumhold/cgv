@@ -57,6 +57,8 @@ public:
 	bool is_stereo_enabled() const { return stereo_enabled; }
 	virtual void enable_stereo(bool e = true) { stereo_enabled = e; on_set(&stereo_enabled); }
 protected:
+	/// whether messages should be shown to user in case something fails
+	bool enable_messages;
 	double z_near_derived, z_far_derived;
 	float depth_offset, depth_scale;
 	bool auto_view_images;

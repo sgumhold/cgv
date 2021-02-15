@@ -202,7 +202,7 @@ bool read(const std::string& filename, char* ptr, size_t size, bool ascii, size_
 	if (fp == 0)
 		return false;
 	if (file_offset != 0) {
-		if (::fseek(fp, file_offset, SEEK_SET) != 0)
+		if (::fseek(fp, (long)file_offset, SEEK_SET) != 0)
 			return false;
 	}
 	size_t n = ::fread(ptr, 1, size, fp);
@@ -578,6 +578,25 @@ std::string clean_path(const std::string& file_path)
 	if (cleaned_path[m-1] == '/')
 		--m;
 	return cleaned_path.substr(0,m);
+}
+
+/// clean up path such that it conforms to platform specific path
+std::string platform_path(const std::string& file_path)
+{
+	std::string cleaned_path = clean_path(file_path);
+	unsigned i;
+	for (i = 0; i < cleaned_path.size(); ++i) {
+		char c = cleaned_path[i];
+#ifdef _WIN32
+		if (c == '/')
+			c = '\\';
+#else
+		if (c == '\\')
+			c = '/';
+#endif
+		cleaned_path[i] = c;
+	}
+	return cleaned_path;
 }
 
 /// remove the prefix_path from the file_path in case that it is a prefix and return true whether it was a prefix
