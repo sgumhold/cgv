@@ -69,10 +69,10 @@ namespace cgv {
 				if (path.size() > 0)
 					file_name_pattern = path + "/" + file_name_pattern;
 
-				if (file_name_pattern.find_first_of('*') == std::string::npos && get_slice_file_name(0) == get_slice_file_name(1)) {
-					std::cerr << "found invalid file name pattern " << file_name_pattern << std::endl;
-					return false;
-				}
+				//if (file_name_pattern.find_first_of('*') == std::string::npos && get_slice_file_name(0) == get_slice_file_name(1)) {
+				//	std::cerr << "found invalid file name pattern " << file_name_pattern << std::endl;
+				//	return false;
+				//}
 				return true;
 			}
 

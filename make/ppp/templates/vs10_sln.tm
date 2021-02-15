@@ -1,5 +1,5 @@
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 20@((cgv_compiler_version-10)*2+10)
+Microsoft Visual Studio Solution File, Format Version @(vs_file_format).00
+# Visual Studio @(vs_version)
 
 @func(::gen_project; :>projectName="", :>add_rel_path=1, :>return="")@{
 	@define(:>pj =& projects[projectName])

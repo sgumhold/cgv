@@ -1,0 +1,11 @@
+// uncomment to disable messages that quad buffer is not supported
+//type(stereo_view_interactor):enable_messages=false
+
+// to configure quad buffer stereo on startup, uncomment:
+//type(stereo_view_interactor):stereo_mode=quad_buffer;stereo=true
+
+// to configure anaglyph stereo on startup, uncomment:
+type(stereo_view_interactor):stereo_mode=anaglyph;stereo=true
+
+// to read in left and right image uncomment
+//type(stereo_image_view):file_name_left="data/tud_inf_l.png";file_name_right="data/tud_inf_r.png"

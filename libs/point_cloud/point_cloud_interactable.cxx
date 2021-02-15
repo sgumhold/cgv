@@ -98,7 +98,7 @@ bool point_cloud_interactable::open_directory(const std::string& dn)
 bool point_cloud_interactable::open_and_append(const std::string& _file_name)
 {
 	std::string fn = _file_name;
-	if (!append(fn, true, &data_path)) {
+	if (!append(fn, pc.get_nr_points() > 0, &data_path)) {
 		cgv::gui::message(last_error);
 		return false;
 	}
