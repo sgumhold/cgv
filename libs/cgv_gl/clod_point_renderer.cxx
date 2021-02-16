@@ -28,6 +28,39 @@ namespace cgv {
 				rh.reflect_member("point_size", pointSize);
 		}
 
+		std::string octree_lod_generator::to_node_id(int level, int gridSize, int64_t x, int64_t y, int64_t z) {
+			std::string id = "r";
+
+			int currentGridSize = gridSize;
+			int lx = x;
+			int ly = y;
+			int lz = z;
+
+			for (int i = 0; i < level; i++) {
+
+				int index = 0;
+
+				if (lx >= currentGridSize / 2) {
+					index = index + 0b100;
+					lx = lx - currentGridSize / 2;
+				}
+
+				if (ly >= currentGridSize / 2) {
+					index = index + 0b010;
+					ly = ly - currentGridSize / 2;
+				}
+
+				if (lz >= currentGridSize / 2) {
+					index = index + 0b001;
+					lz = lz - currentGridSize / 2;
+				}
+
+				id = id + std::to_string(index);
+				currentGridSize = currentGridSize / 2;
+			}
+			return id;
+		}
+
 		void octree_lod_generator::lod_chunking(const Vertex* vertices, const size_t num_points, const vec3& min, const vec3& max)
 		{
 			max_points_per_chunk = std::min<size_t>(source_data_size / 20, 10'000'000ll);
@@ -90,14 +123,18 @@ namespace cgv {
 					dvec3 pos = vertices[i].position;
 
 					//convert to grid positions
-					double ux = (pos[0] - min.x()) / size.x();
-					double uy = (pos[1] - min.y()) / size.y();
-					double uz = (pos[2] - min.z()) / size.z();
+					double ux = (pos[0] - (double)min.x()) / size.x();
+					double uy = (pos[1] - (double)min.y()) / size.y();
+					double uz = (pos[2] - (double)min.z()) / size.z();
 					
 					//debug only
-					bool in_box = ux >= 0.0 && uy >= 0.0 && uz >= 0.0 
-							&& ux <= 1.0 && uy <= 1.0 && uz <= 1.0;
+					/*
+					bool in_box = ux >= 0.0 && uy >= 0.0 && uz >= 0.0 && 
+							ux <= 1.0+std::numeric_limits<double>::epsilon() && 
+							uy <= 1.0+std::numeric_limits<double>::epsilon() &&
+							uz <= 1.0+std::numeric_limits<double>::epsilon();
 					assert(in_box);
+					*/
 
 					//truncate floats
 					int64_t ix = int64_t(std::min(dgrid_size * ux, dgrid_size - 1.0));
@@ -221,7 +258,9 @@ namespace cgv {
 
 
 							if (value > 0) {
-								Node node(value);
+								std::string node_id = to_node_id(level_high, gridSize_high, nx, ny, nz);
+
+								ChunkNode node(node_id,value);
 								node.x = nx;
 								node.y = ny;
 								node.z = nz;
@@ -301,14 +340,301 @@ namespace cgv {
 				int idx = toIndex(p);
 				auto& node = nodes[grid[idx]];
 				Vertex v = vertices[i];
-				node.pc_data.vertices.push_back(v);
+				node.pc_data->vertices.push_back(v);
 			}
 
 			int test = 0;
 		}
 
-		void octree_lod_generator::generate_lods(const std::vector<Vertex>& vertices)
+		void octree_lod_generator::indexing(const std::vector<ChunkNode>& chunks, std::vector<Vertex>& vertices)
 		{
+			struct Task {
+				std::shared_ptr<ChunkNode> chunk;
+
+				Task(std::shared_ptr<ChunkNode> chunk) {
+					this->chunk = chunk;
+				}
+			};
+
+			auto chunk_processor = [](std::shared_ptr<Task> task) {
+				//IndexNode chunk_root = IndexNode(task->chunk->id,task->chunk->)
+				//	task->chunk;
+			};
+
+
+		}
+
+		// see https://www.forceflow.be/2013/10/07/morton-encodingdecoding-through-bit-interleaving-implementations/
+		// method to seperate bits from a given integer 3 positions apart
+		inline uint64_t splitBy3(unsigned int a) {
+			uint64_t x = a & 0x1fffff; // we only look at the first 21 bits
+			x = (x | x << 32) & 0x1f00000000ffff; // shift left 32 bits, OR with self, and 00011111000000000000000000000000000000001111111111111111
+			x = (x | x << 16) & 0x1f0000ff0000ff; // shift left 32 bits, OR with self, and 00011111000000000000000011111111000000000000000011111111
+			x = (x | x << 8) & 0x100f00f00f00f00f; // shift left 32 bits, OR with self, and 0001000000001111000000001111000000001111000000001111000000000000
+			x = (x | x << 4) & 0x10c30c30c30c30c3; // shift left 32 bits, OR with self, and 0001000011000011000011000011000011000011000011000011000100000000
+			x = (x | x << 2) & 0x1249249249249249;
+			return x;
+		}
+
+		// COPYPASTE from potree converter
+
+		struct NodeCandidate {
+			std::string name = "";
+			int64_t indexStart = 0;
+			int64_t numPoints = 0;
+			int64_t level = 0;
+			int64_t x = 0;
+			int64_t y = 0;
+			int64_t z = 0;
+		};
+
+		inline uint64_t mortonEncode_magicbits(unsigned int x, unsigned int y, unsigned int z) {
+			uint64_t answer = 0;
+			answer |= splitBy3(x) | splitBy3(y) << 1 | splitBy3(z) << 2;
+			return answer;
+		}
+
+		std::vector<std::vector<int64_t>> createSumPyramid(std::vector<int64_t>& grid, int gridSize) {
+			int maxLevel = std::log2(gridSize);
+			int currentGridSize = gridSize / 2;
+
+			std::vector<std::vector<int64_t>> sumPyramid(maxLevel + 1);
+			for (int level = 0; level < maxLevel; level++) {
+				auto cells = pow(8, level);
+				sumPyramid[level].resize(cells, 0);
+			}
+			sumPyramid[maxLevel] = grid;
+
+			for (int level = maxLevel - 1; level >= 0; level--) {
+
+				for (int x = 0; x < currentGridSize; x++) {
+					for (int y = 0; y < currentGridSize; y++) {
+						for (int z = 0; z < currentGridSize; z++) {
+
+							auto index = mortonEncode_magicbits(z, y, x);
+							auto index_p1 = mortonEncode_magicbits(2 * z, 2 * y, 2 * x);
+
+							int64_t sum = 0;
+							for (int i = 0; i < 8; i++) {
+								sum += sumPyramid[level + 1][index_p1 + i];
+							}
+
+							sumPyramid[level][index] = sum;
+
+						}
+					}
+				}
+
+				currentGridSize = currentGridSize / 2;
+
+			}
+
+			return sumPyramid;
+		}
+
+		std::vector<NodeCandidate> createNodes(std::vector<std::vector<int64_t>>& pyramid, int64_t maxPointsPerChunk) {
+
+			std::vector<NodeCandidate> nodes;
+
+			std::vector<std::vector<int64_t>> pyramidOffsets;
+			for (auto& counters : pyramid) {
+
+				if (counters.size() == 1) {
+					pyramidOffsets.push_back({ 0 });
+				}
+				else {
+
+					std::vector<int64_t> offsets(counters.size(), 0);
+					for (int64_t i = 1; i < counters.size(); i++) {
+						int64_t offset = offsets[i - 1] + counters[i - 1];
+
+						offsets[i] = offset;
+					}
+
+					pyramidOffsets.push_back(offsets);
+				}
+			}
+
+			// pyramid starts at level 0 -> gridSize = 1
+			// 2 levels -> levels 0 and 1 -> maxLevel 1
+			auto maxLevel = pyramid.size() - 1;
+
+			NodeCandidate root;
+			root.name = "";
+			root.level = 0;
+			root.x = 0;
+			root.y = 0;
+			root.z = 0;
+
+			std::vector<NodeCandidate> stack = { root };
+
+			while (!stack.empty()) {
+
+				NodeCandidate candidate = stack.back();
+				stack.pop_back();
+
+				auto level = candidate.level;
+				auto x = candidate.x;
+				auto y = candidate.y;
+				auto z = candidate.z;
+
+				auto& grid = pyramid[level];
+				auto index = mortonEncode_magicbits(z, y, x);
+				int64_t numPoints = grid[index];
+
+				if (level == maxLevel) {
+					// don't split further at this time. May be split further in another pass
+
+					if (numPoints > 0) {
+						nodes.push_back(candidate);
+					}
+				}
+				else if (numPoints > maxPointsPerChunk) {
+					// split (too many points in node)
+
+					for (int i = 0; i < 8; i++) {
+
+						auto index_p1 = mortonEncode_magicbits(2 * z, 2 * y, 2 * x) + i;
+						auto count = pyramid[level + 1][index_p1];
+
+						if (count > 0) {
+							NodeCandidate child;
+							child.level = level + 1;
+							child.name = candidate.name + std::to_string(i);
+							child.indexStart = pyramidOffsets[level + 1][index_p1];
+							child.numPoints = count;
+							child.x = 2 * x + ((i & 0b100) >> 2);
+							child.y = 2 * y + ((i & 0b010) >> 1);
+							child.z = 2 * z + ((i & 0b001) >> 0);
+
+							stack.push_back(child);
+						}
+					}
+
+				}
+				else if (numPoints > 0) {
+					// accept (small enough)
+					nodes.push_back(candidate);
+				}
+
+			}
+
+			return nodes;
+		}
+
+
+		// END COPYPASTE from potree converter
+		
+		void octree_lod_generator::buildHierarchy(Indexer* indexer, IndexNode* node, std::shared_ptr<PointCloud> points, int64_t numPoints, int64_t depth)
+		{
+			if (numPoints < max_points_per_chunk) {
+				IndexNode* realization = node;
+				realization->index_start = 0;
+				realization->num_points = numPoints;
+				realization->points = points;
+				return;
+			}
+
+			int64_t levels = 5; // = gridSize 32
+			int64_t counterGridSize = pow(2, levels);
+			std::vector<int64_t> counters(counterGridSize * counterGridSize * counterGridSize, 0);
+			
+			auto min = node->min;
+			auto max = node->max;
+			auto size = max - min;
+
+			auto gridIndexOf = [&points, min, size, counterGridSize](int64_t pointIndex) {
+				int32_t* xyz = reinterpret_cast<int32_t*>(&points->vertices + pointIndex);
+
+				double x = xyz[0];
+				double y = xyz[1];
+				double z = xyz[2];
+
+				int64_t ix = std::floor(double(counterGridSize) * (x - min.x()) / size.x());
+				int64_t iy = std::floor(double(counterGridSize) * (y - min.y()) / size.y());
+				int64_t iz = std::floor(double(counterGridSize) * (z - min.z()) / size.z());
+
+				ix = std::max(int64_t(0), std::min(ix, counterGridSize - 1));
+				iy = std::max(int64_t(0), std::min(iy, counterGridSize - 1));
+				iz = std::max(int64_t(0), std::min(iz, counterGridSize - 1));
+
+				return mortonEncode_magicbits(iz, iy, ix); //replace with lookup table based morton encoding
+			};
+
+			// COUNTING
+			for (int64_t i = 0; i < numPoints; i++) {
+				auto index = gridIndexOf(i);
+				counters[index]++;
+			}
+
+			{ // DISTRIBUTING
+				std::vector<int64_t> offsets(counters.size(), 0);
+				for (int64_t i = 1; i < counters.size(); i++) {
+					offsets[i] = offsets[i - 1] + counters[i - 1];
+				}
+
+				PointCloud tmp(numPoints);
+
+				for (int64_t i = 0; i < numPoints; i++) {
+					auto index = gridIndexOf(i);
+					auto targetIndex = offsets[index]++;
+
+					tmp.vertices[targetIndex] = points->vertices[i];
+					//memcpy(&tmp.vertices + targetIndex, &points->pc_data.vertices + i, sizeof(Vertex));
+				}
+
+				memcpy(&points->vertices, &tmp.vertices, numPoints * sizeof(Vertex));
+			}
+
+			auto pyramid = createSumPyramid(counters, counterGridSize);
+
+			auto nodes = createNodes(pyramid,max_points_per_chunk);
+
+			auto expandTo = [node](NodeCandidate& candidate) {
+
+				std::string startName = node->name;
+				std::string fullName = startName + candidate.name;
+
+				// e.g. startName: r, fullName: r031
+				// start iteration with char at index 1: "0"
+
+				IndexNode* currentNode = node;
+				for (int64_t i = startName.size(); i < fullName.size(); i++) {
+					int64_t index = fullName.at(i) - '0';
+
+					if (currentNode->children[index] == nullptr) {
+						auto childBox = child_bounding_box_of(currentNode->min, currentNode->max, index);
+						std::string childName = currentNode->name + std::to_string(index);
+
+						std::shared_ptr<IndexNode> child = std::make_shared<IndexNode>();
+						child->min = childBox.get_min_pnt();
+						child->max = childBox.get_max_pnt();
+						child->name = childName;
+						child->children.resize(8);
+
+						currentNode->children[index] = child;
+						currentNode = child.get();
+					}
+					else {
+						currentNode = currentNode->children[index].get();
+					}
+
+
+				}
+
+				return currentNode;
+			};
+
+			std::vector<IndexNode*> needRefinement;
+
+			int64_t octreeDepth = 0;
+
+			//TODO add rest
+		}
+
+		std::vector <octree_lod_generator::Vertex> octree_lod_generator::generate_lods(const std::vector<Vertex>& vertices)
+		{
+			std::vector<Vertex> out;
 			this->source_data = (Vertex*)vertices.data();
 			this->source_data_size = vertices.size();
 
@@ -329,6 +655,8 @@ namespace cgv {
 			}
 
 			lod_chunking(vertices.data(), vertices.size(), min, max);
+			indexing(nodes, out);
+			return out;
 			//TODO continue
 		}
 
@@ -411,12 +739,8 @@ namespace cgv {
 
 			glGenVertexArrays(1, &vertex_array);
 			glBindVertexArray(vertex_array);
-			//position
-#ifdef CLOD_PR_RENDER_TEST_MODE
-			glBindBuffer(GL_ARRAY_BUFFER,input_buffer); //test
-#else 
+			//position 
 			glBindBuffer(GL_ARRAY_BUFFER, render_buffer);
-#endif
 			glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)0);
 			glEnableVertexAttribArray(0);
 			//color
@@ -564,9 +888,116 @@ namespace cgv {
 			glDeleteBuffers(1, &draw_parameter_buffer);
 			input_buffer = render_buffer = draw_parameter_buffer = 0;
 		}
+		
+		octree_lod_generator::IndexNode::IndexNode(const std::string& name, const vec3& min, const vec3& max)
+		{
+			this->name = name;
+			this->min = min;
+			this->max = max;
+			children.resize(8, nullptr);
+		}
+
+		void octree_lod_generator::IndexNode::traverse_pre(std::function<void(IndexNode*)> callback)
+		{
+			callback(this);
+
+			for (auto child : children) {
+
+				if (child != nullptr) {
+					child->traverse_pre(callback);
+				}
+
+			}
+		}
+
+		void octree_lod_generator::IndexNode::traverse_post(std::function<void(IndexNode*)> callback)
+		{
+			for (auto child : children) {
+
+				if (child != nullptr) {
+					child->traverse_post(callback);
+				}
+			}
+
+			callback(this);
+		}
+
+		bool octree_lod_generator::IndexNode::is_leaf() {
+
+			for (auto child : children) {
+				if (child != nullptr) {
+					return false;
+				}
+			}
 
 
-	}
+			return true;
+		}
+
+		render_types::box3 octree_lod_generator::child_bounding_box_of(const vec3& min, const vec3& max, const int index)
+		{
+			vec3 min_pnt, max_pnt;
+			auto size = max - min;
+			vec3 center = min + (size * 0.5f);
+
+			if ((index & 0b100) == 0) {
+				min_pnt.x() = min.x();
+				max_pnt.x() = center.x();
+			}
+			else {
+				min_pnt.x() = center.x();
+				max_pnt.x() = max.x();
+			}
+
+			if ((index & 0b010) == 0) {
+				min_pnt.y() = min.y();
+				max_pnt.y() = center.y();
+			}
+			else {
+				min_pnt.y() = center.y();
+				max_pnt.y() = max.y();
+			}
+
+			if ((index & 0b001) == 0) {
+				min_pnt.z() = min.z();
+				max_pnt.z() = center.z();
+			}
+			else {
+				min_pnt.z() = center.z();
+				max_pnt.z() = max.z();
+			}
+
+			return box3(min_pnt, max_pnt);
+		}
+
+		void octree_lod_generator::IndexNode::add_descendant(std::shared_ptr<IndexNode> descendant) {
+			static std::mutex mtx;
+			std::lock_guard<std::mutex> lock(mtx);
+
+			int descendantLevel = descendant->name.size() - 1;
+
+			IndexNode* current = this;
+
+			for (int level = 1; level < descendantLevel; level++) {
+				int index = descendant->name[level] - '0';
+
+				if (current->children[index] != nullptr) {
+					current = current->children[index].get();
+				}
+				else {
+					std::string childName = current->name + std::to_string(index);
+					auto box = child_bounding_box_of(current->min, current->max, index);
+
+					auto child = std::make_shared<IndexNode>(childName, box.get_min_pnt(), box.get_max_pnt());
+
+					current->children[index] = child;
+
+					current = child.get();
+				}
+			}
+		}
+
+}
 }
 
 

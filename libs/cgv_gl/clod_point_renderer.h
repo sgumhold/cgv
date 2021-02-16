@@ -29,14 +29,13 @@ namespace cgv {
 		};
 
 		class CGV_API clod_point_renderer : public cgv::render::renderer {
-
+		public:
 			enum class LoDMode {
 				POTREE = 1,
 				RANDOM_POISSON = 2,
 				INVALID = -1
 			};
 
-		public:
 			struct Vertex {
 				vec3 position;
 				rgb8 colors;
@@ -116,6 +115,9 @@ namespace cgv {
 
 			struct PointCloud {
 				std::vector<Vertex> vertices;
+
+				PointCloud() = default;
+				PointCloud(int size) : vertices(size){}
 			};
 
 			struct State {
@@ -144,7 +146,7 @@ namespace cgv {
 			};
 
 			//nodes creted by chunking phase
-			struct Node {
+			struct ChunkNode {
 				int64_t level = 0;
 				int64_t x = 0;
 				int64_t y = 0;
@@ -152,15 +154,71 @@ namespace cgv {
 				int64_t size = 0;
 				int64_t numPoints;
 				//point cloud data
-				PointCloud pc_data;
+				std::shared_ptr<PointCloud> pc_data;
+				std::string id;
 
-				Node(int numPoints) {
+				ChunkNode(std::string node_id,int numPoints) {
 					this->numPoints = numPoints;
+					this->id = node_id;
+					this->pc_data = std::make_shared<PointCloud>();
 				}
 			};
 
+			struct IndexNode {
+
+				std::vector<std::shared_ptr<IndexNode>> children;
+
+				std::shared_ptr<PointCloud> points;
+				std::vector<rgb8> accumulated_colors;
+				vec3 min;
+				vec3 max;
+				std::string name;
+
+				int64_t index_start = 0;
+				int64_t num_points = 0;
+
+				bool sampled = false;
+
+				IndexNode() {}
+
+				IndexNode(const std::string& name,const vec3& min, const vec3& max);
+
+				void traverse_pre(std::function<void(IndexNode*)> callback);
+
+				void traverse_post(std::function<void(IndexNode*)> callback);
+
+				bool is_leaf();
+
+				void add_descendant(std::shared_ptr<IndexNode> descendant);
+			};
+
+			struct Indexer {
+				std::shared_ptr<IndexNode> root;
+
+				std::vector<std::shared_ptr<IndexNode>> detachedParts;
+
+				std::atomic_int64_t byteOffset = 0;
+
+				double scale = 0.001;
+				double spacing = 1.0;
+
+				std::atomic_int64_t dbg = 0;
+
+				std::mutex mtx_depth;
+				int64_t octreeDepth = 0;
+				
+				std::mutex mtx_chunkRoot;
+			};
+
+			struct Sampler {
+
+				Sampler() {}
+
+				virtual void sample(std::shared_ptr<IndexNode> node, double baseSpacing, std::function<void(IndexNode*)> callbackNodeCompleted) = 0;
+			};
+
 			// stores chunks created by the chunking phase
-			std::vector<Node> nodes;
+			std::vector<ChunkNode> nodes;
 
 			std::vector<PointCloud> point_clouds;
 
@@ -175,6 +233,8 @@ namespace cgv {
 			size_t source_data_size;
 
 		protected:
+			std::string to_node_id(int level, int gridSize, int64_t x, int64_t y, int64_t z);
+			
 			//void lod_chunking(const std::vector<vec3>& positions, const vec3& min, const vec3& max);
 			void lod_chunking(const Vertex* vertices, const size_t num_points,const vec3& min, const vec3& max);
 
@@ -184,10 +244,17 @@ namespace cgv {
 			
 			//void distributePoints(vec3 min, vec3 max, NodeLUT& lut, const vec3* positions, const rgba8* colors, size_t num_points);
 			void distributePoints(vec3 min, vec3 max, NodeLUT& lut, const Vertex* vertices, const int64_t num_points);
+			//in chunks, out vertices
+			void indexing(const std::vector<ChunkNode>& chunks, std::vector<Vertex>& vertices);
+
+			void buildHierarchy(Indexer* indexer, IndexNode* node, std::shared_ptr<PointCloud> points, int64_t numPoints, int64_t depth = 0);
+
+			static box3 child_bounding_box_of(const vec3& min, const vec3& max, const int index);
+
 		public:
 			//lod stored in alpha channel of point color
 			//void generate_lods(const std::vector<vec3>& positions, const std::vector<rgba8>& colors);
-			void generate_lods(const std::vector<Vertex>& vertices);
+			std::vector<Vertex> generate_lods(const std::vector<Vertex>& vertices);
 		};
 	}
 }
