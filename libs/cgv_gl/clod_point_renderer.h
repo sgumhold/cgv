@@ -28,14 +28,14 @@ namespace cgv {
 			bool self_reflect(cgv::reflect::reflection_handler& rh);
 		};
 
+		enum class LoDMode {
+			POTREE = 1,
+			RANDOM_POISSON = 2,
+			INVALID = -1
+		};
+
 		class CGV_API clod_point_renderer : public cgv::render::renderer {
 		public:
-			enum class LoDMode {
-				POTREE = 1,
-				RANDOM_POISSON = 2,
-				INVALID = -1
-			};
-
 			struct Vertex {
 				vec3 position;
 				rgb8 colors;
@@ -190,6 +190,10 @@ namespace cgv {
 				bool is_leaf();
 
 				void add_descendant(std::shared_ptr<IndexNode> descendant);
+
+				int64_t level() {
+					return name.size() - 1;
+				}
 			};
 
 			struct Indexer {
@@ -242,7 +246,7 @@ namespace cgv {
 			
 			NodeLUT lod_createLUT(std::vector<std::atomic_int32_t>& grid, int64_t grid_size);
 			
-			//void distributePoints(vec3 min, vec3 max, NodeLUT& lut, const vec3* positions, const rgba8* colors, size_t num_points);
+			//create chunk nodes
 			void distributePoints(vec3 min, vec3 max, NodeLUT& lut, const Vertex* vertices, const int64_t num_points);
 			//in chunks, out vertices
 			void indexing(const std::vector<ChunkNode>& chunks, std::vector<Vertex>& vertices);

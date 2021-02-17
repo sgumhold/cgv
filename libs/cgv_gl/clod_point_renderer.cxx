@@ -1,16 +1,9 @@
-/*
-Tests
-near clipping			works
-extended frustum culling	disabled
-reduce compute shader	works? (test with different lod levels missing)
-render shaders	unfinished
-*/
-
 #include <algorithm>
 #include <random>
+#include <unordered_map>
+#include <sstream>
 #include "clod_point_renderer.h"
 
-//#define CLOD_PR_RENDER_TEST_MODE _TM_
 
 namespace cgv {
 	namespace render {
@@ -629,7 +622,145 @@ namespace cgv {
 
 			int64_t octreeDepth = 0;
 
-			//TODO add rest
+			for (NodeCandidate& candidate : nodes) {
+
+				IndexNode* realization = expandTo(candidate);
+				realization->index_start = candidate.indexStart;
+				realization->num_points = candidate.numPoints;
+
+				auto buffer = std::make_shared<PointCloud>(numPoints);
+				memcpy(buffer->vertices.data(),
+					points->vertices.data() + candidate.indexStart,
+					candidate.numPoints
+				);
+
+				realization->points = buffer;
+
+				if (realization->num_points > max_points_per_chunk) {
+					needRefinement.push_back(realization);
+				}
+
+				octreeDepth = std::max(octreeDepth, realization->level());
+			}
+
+			{
+				std::lock_guard<std::mutex> lock(indexer->mtx_depth);
+
+				indexer->octreeDepth = std::max(indexer->octreeDepth, octreeDepth);
+			}
+
+			int64_t sanityCheck = 0;
+			for (int64_t nodeIndex = 0; nodeIndex < needRefinement.size(); nodeIndex++) {
+				auto subject = needRefinement[nodeIndex];
+				auto buffer = subject->points;
+
+				if (sanityCheck > needRefinement.size() * 2) {
+					//failed to partition point cloud in indexer::buildHierarchy();
+				}
+
+				if (subject->num_points == numPoints) {
+					// the subsplit has the same number of points than the input -> ERROR
+
+					std::unordered_map<std::string, int> counters;
+
+					for (int64_t i = 0; i < numPoints; i++) {
+
+						int64_t sourceOffset = i;
+						vec3 pos = buffer->vertices[sourceOffset].position;
+						
+						int X=std::floor(pos.x()), Y=std::floor(pos.y()), Z=std::floor(pos.z());
+						std::stringstream ss;
+						ss << X << ", " << Y << ", " << Z;
+
+						std::string key = ss.str();
+						counters[key]++;
+					}
+
+					int64_t numPointsInBox = subject->num_points;
+					int64_t numUniquePoints = counters.size();
+					int64_t numDuplicates = numPointsInBox - numUniquePoints;
+
+					if (numDuplicates < max_points_per_chunk / 2) {
+						// few uniques, just unfavouribly distributed points
+						// print warning but continue
+						/*
+						std::stringstream ss;
+						ss << "Encountered unfavourable point distribution. Conversion continues anyway because not many duplicates were encountered. ";
+						ss << "However, issues may arise. If you find an error, please report it at github. \n";
+						ss << "#points in box: " << numPointsInBox << ", #unique points in box: " << numUniquePoints << ", ";
+						ss << "min: " << subject->min.toString() << ", max: " << subject->max.toString();
+						*/
+						//logger::WARN(ss.str());
+					}
+					else {
+
+						// remove the duplicates, then try again
+
+						std::vector<int64_t> distinct;
+						std::unordered_map<std::string, int> handled;
+
+						auto contains = [](auto map, auto key) {
+							return map.find(key) != map.end();
+						};
+
+						for (int64_t i = 0; i < numPoints; i++) {
+
+							int64_t sourceOffset = i;
+
+							vec3 pos = buffer->vertices[sourceOffset].position;
+
+							int32_t X = std::floor(pos.x()), Y = std::floor(pos.y()), Z = std::floor(pos.z());
+
+							std::stringstream ss;
+							ss << X << ", " << Y << ", " << Z;
+
+							std::string key = ss.str();
+
+							if (contains(counters, key)) {
+								if (!contains(handled, key)) {
+									distinct.push_back(i);
+									handled[key] = true;
+								}
+							}
+							else {
+								distinct.push_back(i);
+							}
+
+						}
+
+						//cout << "#distinct: " << distinct.size() << endl;
+						/*
+						std::stringstream msg;
+						msg << "Too many duplicate points were encountered. #points: " << subject->numPoints;
+						msg << ", #unique points: " << distinct.size() << std::endl;
+						msg << "Duplicates inside node will be dropped! ";
+						msg << "min: " << subject->min.toString() << ", max: " << subject->max.toString();
+
+						logger::WARN(msg.str());
+						*/
+
+						std::shared_ptr<PointCloud> distinctBuffer = std::make_shared<PointCloud>(distinct.size());
+
+						for (int64_t i = 0; i < distinct.size(); i++) {
+							distinctBuffer->vertices[i] = buffer->vertices[i];
+						}
+
+						subject->points = distinctBuffer;
+						subject->num_points = distinct.size();
+
+						// try again
+						nodeIndex--;
+					}
+
+				}
+
+				int64_t nextNumPoins = subject->num_points;
+
+				subject->points = nullptr;
+				subject->num_points = 0;
+
+				buildHierarchy(indexer, subject, buffer, nextNumPoins, depth + 1);
+			}
 		}
 
 		std::vector <octree_lod_generator::Vertex> octree_lod_generator::generate_lods(const std::vector<Vertex>& vertices)
