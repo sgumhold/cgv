@@ -12,8 +12,11 @@ float tick_space_from_window_space(int ai, float value);
 vec3 plot_space_from_window_space(vec3 pnt);
 vec3 window_space_from_plot_space(vec3 pnt);
 vec3 world_space_from_plot_space(vec3 pnt);
+vec3 map_color(in float v_window, int idx = 0);
 vec3 map_color(in float attributes[8], in vec3 base_color, int idx = 0);
+float map_opacity(in float v_window, int idx = 0);
 float map_opacity(in float attributes[8], in float base_opacity, int idx = 0);
+float map_size(in float v_window);
 float map_size(in float attributes[8], in float base_size);
 //***** end interface of plot_lib.glsl ***********************************
 */
@@ -128,6 +131,12 @@ vec3 world_space_from_plot_space(vec3 pnt)
 {
 	return center_location + rotate_vector_with_quaternion(pnt + vec3(0.0, 0.0, feature_offset), orientation);
 }
+
+vec3 map_color(in float v, int idx = 0)
+{
+	return color_scale(color_scale_gamma_mapping(v, color_scale_gamma[idx], idx), idx);
+}
+
 vec3 map_color(in float attributes[8], in vec3 base_color, int idx = 0)
 {
 	if (idx >= 2 || color_mapping[idx] < 0 || color_mapping[idx] > 7)
@@ -135,7 +144,7 @@ vec3 map_color(in float attributes[8], in vec3 base_color, int idx = 0)
 	// simple window transform
 	float v = window_space_from_tick_space(color_mapping[idx],
 				tick_space_from_attribute_space(color_mapping[idx], attributes[color_mapping[idx]]));
-	return color_scale(color_scale_gamma_mapping(v,color_scale_gamma[idx],idx));
+	return map_color(v,idx);
 }
 
 float opacity_gamma_mapping(in float v, in float gamma, int idx = 0)
@@ -151,6 +160,11 @@ float opacity_gamma_mapping(in float v, in float gamma, int idx = 0)
 		return pow(v, gamma);
 }
 
+float map_opacity(in float v, int idx = 0)
+{
+	return (opacity_min[idx] + (opacity_max[idx] - opacity_min[idx])) * opacity_gamma_mapping(v, opacity_gamma[idx], idx);
+}
+
 float map_opacity(in float attributes[8], in float base_opacity, int idx = 0)
 {
 	if (opacity_mapping[idx] < 0 || opacity_mapping[idx] > 7)
@@ -158,7 +172,12 @@ float map_opacity(in float attributes[8], in float base_opacity, int idx = 0)
 	// simple window transform
 	float v = window_space_from_tick_space(opacity_mapping[idx],
 		tick_space_from_attribute_space(opacity_mapping[idx], attributes[opacity_mapping[idx]]));
-	return opacity_gamma_mapping(v, opacity_gamma[idx], idx) * base_opacity;
+	return map_opacity(v, idx) * base_opacity;
+}
+
+float map_size(in float v)
+{
+	return ((size_max - size_min) * pow(v, size_gamma) + size_min);
 }
 
 float map_size(in float attributes[8], in float base_size)
@@ -168,6 +187,5 @@ float map_size(in float attributes[8], in float base_size)
 	// simple window transform
 	float v = window_space_from_tick_space(size_mapping,
 		tick_space_from_attribute_space(size_mapping, attributes[size_mapping]));
-	v = pow(v, size_gamma);
-	return ((size_max - size_min) * v + size_min) * base_size;
+	return map_size(v) * base_size;
 }

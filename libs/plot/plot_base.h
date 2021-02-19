@@ -309,7 +309,7 @@ protected:
 	/// callback to change font face
 	void on_font_face_selection();
 	/// set the uniforms for the i-th sub plot, overloaded by derived classes to set uniforms of derived configuration classes
-	virtual void set_uniforms(cgv::render::context& ctx, cgv::render::shader_program& prog, unsigned i = -1);
+	virtual void set_uniforms(cgv::render::context& ctx, cgv::render::shader_program& prog, unsigned i = -1, bool is_legend = false);
 	/// set vertex shader input attributes based on single vector of 2d points
 	void set_attributes(cgv::render::context& ctx, const std::vector<vec2>& points);
 	/// set vertex shader input attributes based on single vector of 3d points
@@ -330,7 +330,7 @@ protected:
 	///
 	void draw_sub_plot_samples(int count, const plot_base_config& spc, bool strip = false);
 	///
-	void draw_legend(cgv::render::context& ctx);
+	void draw_legend(cgv::render::context& ctx, float depth_offset = 0.0f);
 public:
 	/// construct from plot dimension and number of additional attributes with default parameters
 	plot_base(unsigned dim, unsigned nr_attributes = 0);

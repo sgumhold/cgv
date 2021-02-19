@@ -1,4 +1,4 @@
-#version 150 
+#version 330 core
 
 in vec4 position;
 in vec4 color;
@@ -35,7 +35,7 @@ float map_size(in float attributes[8], in float base_size);
 void main()
 {
 	// transform vertex to clip space
-	vec4 pos = vec4(world_space_from_plot_space(plot_space_from_window_space(position.xyz)),1.0);
+	vec4 pos = vec4(plot_space_from_window_space(position.xyz),1.0);
 	gl_Position = get_modelview_projection_matrix()*pos;
 	value_fs = value;
 	color_fs = color;

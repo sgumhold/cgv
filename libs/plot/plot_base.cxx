@@ -306,7 +306,7 @@ void plot_base::on_font_face_selection()
 	label_font_face = label_font->get_font_face(get_domain_config_ptr()->label_ffa);
 }
 
-void plot_base::set_uniforms(cgv::render::context& ctx, cgv::render::shader_program& prog, unsigned i)
+void plot_base::set_uniforms(cgv::render::context& ctx, cgv::render::shader_program& prog, unsigned i, bool is_legend)
 {
 	vec3 extent(0.0f);
 	vecn attribute_min(8u, 0.0f), attribute_max(8u, 1.0f), axis_log_minimum(8u, 0.000001f);
@@ -320,34 +320,38 @@ void plot_base::set_uniforms(cgv::render::context& ctx, cgv::render::shader_prog
 		axis_log_scale(ai) = ac.get_log_scale() ? 1 : 0;
 		axis_log_minimum(ai) = ac.get_log_minimum();
 	}
-	prog.set_uniform_array(ctx, "attribute_min", attribute_min);
-	prog.set_uniform_array(ctx, "attribute_max", attribute_max);
-	prog.set_uniform_array(ctx, "axis_log_scale", axis_log_scale);
-	prog.set_uniform_array(ctx, "axis_log_minimum", axis_log_minimum);
-	prog.set_uniform(ctx, "orientation", orientation);
-	prog.set_uniform(ctx, "center_location", center_location);
 	vec3 E(extent.size(), &extent(0));
 	prog.set_uniform(ctx, "extent", E);
-	prog.set_uniform(ctx, "offset_percentage", 0.0f);
-	if (prog.get_uniform_location(ctx, "color_mapping") != -1) {
-		prog.set_uniform_array(ctx, "color_mapping", color_mapping, 2);
+	if (!is_legend) {
+		prog.set_uniform_array(ctx, "attribute_min", attribute_min);
+		prog.set_uniform_array(ctx, "attribute_max", attribute_max);
+		prog.set_uniform_array(ctx, "axis_log_scale", axis_log_scale);
+		prog.set_uniform_array(ctx, "axis_log_minimum", axis_log_minimum);
+		prog.set_uniform(ctx, "orientation", orientation);
+		prog.set_uniform(ctx, "center_location", center_location);
+	}
+	if (prog.get_uniform_location(ctx, "color_scale_gamma[0]") != -1) {
 		cgv::render::configure_color_scale(ctx, prog, color_scale_index, window_zero_position);
 		prog.set_uniform_array(ctx, "color_scale_gamma", color_scale_gamma, 2);
+		if (!is_legend)
+			prog.set_uniform_array(ctx, "color_mapping", color_mapping, 2);
 	}
-	if (prog.get_uniform_location(ctx, "opacity_mapping") != -1) {
-		prog.set_uniform_array(ctx, "opacity_mapping", opacity_mapping, 2);
+	if (prog.get_uniform_location(ctx, "opacity_gamma[0]") != -1) {
 		prog.set_uniform_array(ctx, "opacity_gamma", opacity_gamma, 2);
 		prog.set_uniform_array(ctx, "opacity_min", opacity_min, 2);
 		prog.set_uniform_array(ctx, "opacity_max", opacity_max, 2);
 		int opa[2] = { opacity_is_bipolar[0] ? 1 : 0, opacity_is_bipolar[1] ? 1 : 0 };
 		prog.set_uniform_array(ctx, "opacity_is_bipolar", opa, 2);
 		prog.set_uniform_array(ctx, "opacity_window_zero_position", opacity_window_zero_position, 2);
+		if (!is_legend)
+			prog.set_uniform_array(ctx, "opacity_mapping", opacity_mapping, 2);
 	}
 	if (prog.get_uniform_location(ctx, "size_mapping") != -1) {
-		prog.set_uniform(ctx, "size_mapping", size_mapping);
 		prog.set_uniform(ctx, "size_gamma", size_gamma);
 		prog.set_uniform(ctx, "size_min", size_min);
 		prog.set_uniform(ctx, "size_max", size_max);
+		if (!is_legend)
+			prog.set_uniform(ctx, "size_mapping", size_mapping);
 	}
 	/*
 	if (i >= 0 && i < get_nr_sub_plots()) {
@@ -491,9 +495,9 @@ plot_base::plot_base(unsigned _dim, unsigned _nr_attributes) : dom_cfg(_dim+_nr_
 	nr_attributes = _nr_attributes;
 	dom_cfg_ptr = &dom_cfg;
 	legend_components = LC_HIDDEN;
-	legend_location = vec3(0.5f, 0.0f, 0.0f);
-	legend_extent = vec2(0.05f,0.8f);
-	legend_color = rgba(0.7f, 0.6f, 0.3f, 1.0f);
+	legend_location = vec3(0.8f, 0.6f, 0.0f);
+	legend_extent = vec2(0.05f,0.7f);
+	legend_color = rgba(0.9f, 1.0f, 0.3f, 1.0f);
 	orientation = quat(1.0f, 0.0f, 0.0f, 0.0f);
 	center_location = vec3(0.0f);
 
@@ -515,11 +519,9 @@ plot_base::plot_base(unsigned _dim, unsigned _nr_attributes) : dom_cfg(_dim+_nr_
 	size_gamma = 1.0f;
 }
 
-void plot_base::draw_legend(cgv::render::context& ctx)
+void plot_base::draw_legend(cgv::render::context& ctx, float depth_offset)
 {
-	if (legend_components == LC_HIDDEN)
-		return;
-	set_uniforms(ctx, legend_prog);
+	set_uniforms(ctx, legend_prog,0,true);
 	ctx.push_modelview_matrix();
 	// draw legend
 	std::vector<vec3> P;
@@ -539,7 +541,7 @@ void plot_base::draw_legend(cgv::render::context& ctx)
 	cgv::render::configure_color_scale(ctx, legend_prog, color_scale_index, window_zero_position);
 	int pos_idx = legend_prog.get_attribute_location(ctx, "position");
 	int val_idx = legend_prog.get_attribute_location(ctx, "value");
-	legend_prog.set_uniform(ctx, "feature_offset", 0.01f * get_domain().get_extent().length());
+	legend_prog.set_uniform(ctx, "depth_offset", depth_offset);
 	cgv::render::attribute_array_binding::enable_global_array(ctx, pos_idx);
 	cgv::render::attribute_array_binding::enable_global_array(ctx, val_idx);
 	cgv::render::attribute_array_binding::set_global_attribute_array(ctx, pos_idx, P);
@@ -548,25 +550,25 @@ void plot_base::draw_legend(cgv::render::context& ctx)
 		legend_prog.set_uniform(ctx, "color_index", 0);
 		legend_prog.set_uniform(ctx, "opacity_index", -1);
 		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-		ctx.mul_modelview_matrix(cgv::math::translate4<float>(vec3(legend_extent(0), 0.0f, 0.0f)));
+		ctx.mul_modelview_matrix(cgv::math::translate4<float>(vec3(1.1f*legend_extent(0), 0.0f, 0.0f)));
 	}
 	if ((legend_components & LC_PRIMARY_OPACITY) != 0) {
 		legend_prog.set_uniform(ctx, "color_index", -1);
 		legend_prog.set_uniform(ctx, "opacity_index", 0);
 		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-		ctx.mul_modelview_matrix(cgv::math::translate4<float>(vec3(legend_extent(0), 0.0f, 0.0f)));
+		ctx.mul_modelview_matrix(cgv::math::translate4<float>(vec3(1.1f*legend_extent(0), 0.0f, 0.0f)));
 	}
 	if ((legend_components & LC_SECONDARY_COLOR) != 0) {
 		legend_prog.set_uniform(ctx, "color_index", 1);
 		legend_prog.set_uniform(ctx, "opacity_index", -1);
 		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-		ctx.mul_modelview_matrix(cgv::math::translate4<float>(vec3(legend_extent(0), 0.0f, 0.0f)));
+		ctx.mul_modelview_matrix(cgv::math::translate4<float>(vec3(1.1f*legend_extent(0), 0.0f, 0.0f)));
 	}
 	if ((legend_components & LC_SECONDARY_OPACITY) != 0) {
 		legend_prog.set_uniform(ctx, "color_index", -1);
 		legend_prog.set_uniform(ctx, "opacity_index", 1);
 		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-		ctx.mul_modelview_matrix(cgv::math::translate4<float>(vec3(legend_extent(0), 0.0f, 0.0f)));
+		ctx.mul_modelview_matrix(cgv::math::translate4<float>(vec3(1.1f*legend_extent(0), 0.0f, 0.0f)));
 	}
 	cgv::render::attribute_array_binding::disable_global_array(ctx, pos_idx);
 	cgv::render::attribute_array_binding::disable_global_array(ctx, val_idx);
@@ -922,7 +924,8 @@ void plot_base::create_plot_gui(cgv::base::base* bp, cgv::gui::provider& p)
 	}
 	if (p.begin_tree_node("legend", legend_components, false, "level=3")) {
 		p.align("\a");
-		p.add_gui("legend_components", legend_components, "bit_field_control", "enums='prim color,snd color,prim opacity,seco opacity,size'");
+		p.add_member_control(bp, "legend_color", legend_color);
+		p.add_gui("legend_components", legend_components, "bit_field_control", "enums='prim color=1,snd color=2,prim opacity=4,seco opacity=8,size=16'");
 		p.add_gui("center", legend_location, "vector", "main_label='heading';gui_type='value_slider';options='min=-1.2;max=1.2;log=true;ticks=true'");
 		p.add_gui("extent", legend_extent, "vector", "options='min=0.1;max=10;step=0.001;log=true;ticks=true'");
 		p.align("\b");
