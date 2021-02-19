@@ -30,7 +30,7 @@ plot2d_config::plot2d_config(const std::string& _name) : plot_base_config(_name)
 	reference_point_size = 0.001f;
 	blend_width_in_pixel = 1.0;
 	halo_width_in_pixel = 0.0f;
-	percentual_halo_width = 0.1f;
+	percentual_halo_width = -0.35f;
 	halo_color = rgba(0.5f, 0.5f, 0.5f, 1.0f);
 
 	stick_coordinate_index = 1;
@@ -54,12 +54,13 @@ void plot2d_config::configure_chart(ChartType chart_type)
 plot2d::plot2d(unsigned nr_attributes) : plot_base(2, nr_attributes)
 {
 	view_ptr = 0;
+	legend_components = LC_ANY;
 	rrs.illumination_mode = cgv::render::IM_OFF;
 	layer_depth = 0.00001f;
 	auto& acs = get_domain_config_ptr()->axis_configs;
 	acs[0].name = "x";
 	acs[1].name = "y";
-	for (unsigned ai =0; ai < nr_attributes; ai)
+	for (unsigned ai =0; ai < nr_attributes; ++ai)
 		acs[ai+2].name = std::string("attribute_")+cgv::utils::to_string(ai);
 }
 
@@ -451,12 +452,16 @@ void plot2d::draw(cgv::render::context& ctx)
 		ctx.enable_font_face(label_font_face, get_domain_config_ptr()->label_font_size);
 		draw_tick_labels(ctx);
 	}
+	if (legend_components != LC_HIDDEN)
+		draw_legend(ctx, -4 * layer_depth);
 	for (unsigned i = 0; i < samples.size(); ++i) {
 		// skip unvisible and empty sub plots
 		if (!ref_sub_plot2d_config(i).show_plot)
 			continue;
 		draw_sub_plot(ctx, i);
 	}
+
+
 	ctx.pop_modelview_matrix();
 
 
@@ -468,8 +473,6 @@ void plot2d::draw(cgv::render::context& ctx)
 		glDisable(GL_BLEND);
 	glDepthFunc(depth);
 	glBlendFunc(blend_src, blend_dst);
-
-	draw_legend(ctx);
 
 	return;
 
