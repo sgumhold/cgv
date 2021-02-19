@@ -28,6 +28,8 @@ namespace cgv {
 			bool has_rotations;
 			/// whether position is rectangle center, if not it is lower left corner
 			bool position_is_center;
+			/// whether depth offset array has been specified
+			bool has_depth_offsets;
 			/// overload to allow instantiation of rectangle_renderer
 			render_style* create_render_style() const;
 		public:
@@ -70,6 +72,11 @@ namespace cgv {
 				has_extents = true;
 				set_position_is_center(false);
 			}
+			/// set const depth offset for all rectangles to follow
+			void set_depth_offset(const context& ctx, float depth_offset);
+			/// set per rectangle depth offsets
+			template <typename T = float>
+			void set_depth_offset_array(const context& ctx, const std::vector<T>& depth_offsets) { has_depth_offsets = true; set_attribute_array(ctx, ref_prog().get_attribute_location(ctx, "depth_offset"), depth_offsets); }
 			/// template method to set the translations from a vector of vectors of type T, which should have 3 components
 			template <typename T>
 			void set_translation_array(const context& ctx, const std::vector<T>& translations) { has_translations = true; set_attribute_array(ctx, ref_prog().get_attribute_location(ctx, "translation"), translations); }

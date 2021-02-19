@@ -11,11 +11,13 @@ in vec4 texcoord;
 in int group_index;
 in vec4 rotation;
 in vec3 translation;
+in float depth_offset;
 
 out mat3 NM;
 out mat4 PM;
 out vec4 color_gs;
 out vec4 texcoord_gs;
+out float depth_offset_gs;
 
 //***** begin interface of quaternion.glsl ***********************************
 vec4 unit_quaternion();
@@ -50,6 +52,7 @@ void main()
 {
 	color_gs = group_color(color, group_index);
 	texcoord_gs = texcoord;
+	depth_offset_gs = depth_offset;
 	// compute normal transformation matrix from rotation and group rotation
 	NM = get_normal_matrix();
 	if (has_rotations)
