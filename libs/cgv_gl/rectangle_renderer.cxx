@@ -23,6 +23,7 @@ namespace cgv {
 			has_rotations = false;
 			has_texcoords = false;
 			position_is_center = true;
+			has_depth_offsets = false;
 		}
 
 		void rectangle_renderer::set_attribute_array_manager(const context& ctx, attribute_array_manager* _aam_ptr)
@@ -35,14 +36,23 @@ namespace cgv {
 					has_translations = true;
 				if(aam_ptr->has_attribute(ctx, ref_prog().get_attribute_location(ctx, "rotation")))
 					has_rotations = true;
+				if (aam_ptr->has_attribute(ctx, ref_prog().get_attribute_location(ctx, "depth_offset")))
+					has_depth_offsets = true;
 			}
 			else {
 				has_extents = false;
 				has_translations = false;
 				has_rotations = false;
+				has_depth_offsets = false;
 			}
 		}
 		
+		/// set const depth offset for all rectangles to follow
+		void rectangle_renderer::set_depth_offset(const context& ctx, float depth_offset) 
+		{
+			ref_prog().set_attribute(ctx, "depth_offset", depth_offset); 
+		}
+
 		bool rectangle_renderer::init(context& ctx)
 		{
 			bool res = renderer::init(ctx);
@@ -52,6 +62,7 @@ namespace cgv {
 					return false;
 				}
 			}
+			ref_prog().set_attribute(ctx, "depth_offset", 0.0f);
 			return res;
 		}
 
@@ -89,6 +100,7 @@ namespace cgv {
 				has_rotations = false;
 				has_translations = false;
 				has_texcoords = false;
+				has_depth_offsets = false;
 				position_is_center = true;
 			}
 

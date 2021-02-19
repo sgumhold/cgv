@@ -5,9 +5,11 @@ in vec4 color_fs;
 in vec2 texcoord_fs;
 in vec3 position;
 flat in int side;
+in float depth_offset_fs;
 
 uniform bool use_texture = false;
 uniform sampler2D tex;
+
 
 //***** begin interface of fragment.glfs ***********************************
 uniform float gamma = 2.2;
@@ -25,4 +27,5 @@ void main()
 		color = texture(tex, texcoord_fs);
 	// illumination
 	finish_fragment(compute_reflected_appearance(position, normalize(normal), color, side));
+	gl_FragDepth = gl_FragCoord.z+depth_offset_fs;
 }

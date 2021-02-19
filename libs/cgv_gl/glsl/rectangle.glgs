@@ -8,10 +8,12 @@ in mat3 NM[];
 in mat4 PM[];
 in vec4 color_gs[];
 in vec4 texcoord_gs[];
+in float depth_offset_gs[];
 
 out vec3 normal;
 out vec4 color_fs;
 out vec2 texcoord_fs;
+out float depth_offset_fs;
 out vec3 position;
 flat out int side; // 0 is back facing and 1 is front facing
 
@@ -42,6 +44,7 @@ void emit_corner(in vec4 corner, in vec2 texcoord)
 
 void main()
 {
+	depth_offset_fs = depth_offset_gs[0];
 	// set color to color attribute
 	color_fs = color_gs[0];
 	// transform normal to eye space
