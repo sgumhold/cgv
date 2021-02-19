@@ -103,6 +103,9 @@ namespace cgv {
 				buffers_outofdate = true;
 			}
 
+			uint8_t& point_lod(const int i);
+			rgb8& point_color(const int i);
+			vec3& point_position(const int i);
 		private:
 			void add_shader(context& ctx, shader_program& prog, const std::string& sf, const cgv::render::ShaderType st);
 			void fill_buffers(context& ctx);
@@ -168,7 +171,7 @@ namespace cgv {
 
 				std::vector<std::shared_ptr<IndexNode>> children;
 
-				std::shared_ptr<PointCloud> points;
+				std::shared_ptr<std::vector<Vertex>> points;
 				std::vector<rgb8> accumulated_colors;
 				vec3 min;
 				vec3 max;
@@ -197,6 +200,9 @@ namespace cgv {
 			};
 
 			struct Indexer {
+				//pointer to result vector
+				std::vector<Vertex>* output;
+
 				std::shared_ptr<IndexNode> root;
 
 				std::vector<std::shared_ptr<IndexNode>> detachedParts;
@@ -212,6 +218,10 @@ namespace cgv {
 				int64_t octreeDepth = 0;
 				
 				std::mutex mtx_chunkRoot;
+
+				Indexer(std::vector<Vertex>* const ptr) {
+					output = ptr;
+				}
 			};
 
 			struct Sampler {
@@ -251,7 +261,7 @@ namespace cgv {
 			//in chunks, out vertices
 			void indexing(const std::vector<ChunkNode>& chunks, std::vector<Vertex>& vertices);
 
-			void buildHierarchy(Indexer* indexer, IndexNode* node, std::shared_ptr<PointCloud> points, int64_t numPoints, int64_t depth = 0);
+			void buildHierarchy(Indexer* indexer, IndexNode* node, std::shared_ptr<std::vector<Vertex>> points, int64_t numPoints, int64_t depth = 0);
 
 			static box3 child_bounding_box_of(const vec3& min, const vec3& max, const int index);
 

@@ -341,21 +341,54 @@ namespace cgv {
 
 		void octree_lod_generator::indexing(const std::vector<ChunkNode>& chunks, std::vector<Vertex>& vertices)
 		{
+			Indexer indexer(&vertices);
+
 			struct Task {
 				std::shared_ptr<ChunkNode> chunk;
-
+				//one chunk per task
 				Task(std::shared_ptr<ChunkNode> chunk) {
 					this->chunk = chunk;
 				}
+				Task() = default;
 			};
 
+			struct Tasks {
+				std::vector<Task> task_pool;
+				std::atomic_int next_task;
+
+				void operator()(){
+					while (true) {
+						Task* task;
+						//get task
+						{
+							int task_id = next_task.fetch_add(1);
+							if (task_id >= task_pool.size())
+								return;
+							task = &task_pool[task_id];
+						}
+
+						{
+							auto chunk = task->chunk;
+							//auto chunk_root = std::make_shared<IndexNode>(chunk->id, chunk->min, chunk->max);
+							//buildHierarchy(&indexer, chunkRoot.get(), chunks, numPoints);
+						}
+					}
+				}
+			} tasks;
+
+			//run octree generation on each chunk in parallel
+			std::vector<std::thread> thread_pool(std::thread::hardware_concurrency());
+
 			auto chunk_processor = [](std::shared_ptr<Task> task) {
+				
+				
 				//IndexNode chunk_root = IndexNode(task->chunk->id,task->chunk->)
 				//	task->chunk;
 			};
 
 
 		}
+
 
 		// see https://www.forceflow.be/2013/10/07/morton-encodingdecoding-through-bit-interleaving-implementations/
 		// method to seperate bits from a given integer 3 positions apart
@@ -518,7 +551,7 @@ namespace cgv {
 
 		// END COPYPASTE from potree converter
 		
-		void octree_lod_generator::buildHierarchy(Indexer* indexer, IndexNode* node, std::shared_ptr<PointCloud> points, int64_t numPoints, int64_t depth)
+		void octree_lod_generator::buildHierarchy(Indexer* indexer, IndexNode* node, std::shared_ptr<std::vector<Vertex>> points, int64_t numPoints, int64_t depth)
 		{
 			if (numPoints < max_points_per_chunk) {
 				IndexNode* realization = node;
@@ -537,7 +570,7 @@ namespace cgv {
 			auto size = max - min;
 
 			auto gridIndexOf = [&points, min, size, counterGridSize](int64_t pointIndex) {
-				int32_t* xyz = reinterpret_cast<int32_t*>(&points->vertices + pointIndex);
+				float* xyz = reinterpret_cast<float*>(points.get() + pointIndex);
 
 				double x = xyz[0];
 				double y = xyz[1];
@@ -566,17 +599,17 @@ namespace cgv {
 					offsets[i] = offsets[i - 1] + counters[i - 1];
 				}
 
-				PointCloud tmp(numPoints);
+				std::vector<Vertex> tmp(numPoints);
 
 				for (int64_t i = 0; i < numPoints; i++) {
 					auto index = gridIndexOf(i);
 					auto targetIndex = offsets[index]++;
 
-					tmp.vertices[targetIndex] = points->vertices[i];
+					tmp[targetIndex] = (*points)[i];
 					//memcpy(&tmp.vertices + targetIndex, &points->pc_data.vertices + i, sizeof(Vertex));
 				}
 
-				memcpy(&points->vertices, &tmp.vertices, numPoints * sizeof(Vertex));
+				memcpy(points.get(), tmp.data(), numPoints * sizeof(Vertex));
 			}
 
 			auto pyramid = createSumPyramid(counters, counterGridSize);
@@ -628,9 +661,9 @@ namespace cgv {
 				realization->index_start = candidate.indexStart;
 				realization->num_points = candidate.numPoints;
 
-				auto buffer = std::make_shared<PointCloud>(numPoints);
-				memcpy(buffer->vertices.data(),
-					points->vertices.data() + candidate.indexStart,
+				auto buffer = std::make_shared<std::vector<Vertex>>(numPoints);
+				memcpy(buffer->data(),
+					points->data() + candidate.indexStart,
 					candidate.numPoints
 				);
 
@@ -666,7 +699,7 @@ namespace cgv {
 					for (int64_t i = 0; i < numPoints; i++) {
 
 						int64_t sourceOffset = i;
-						vec3 pos = buffer->vertices[sourceOffset].position;
+						vec3 pos = buffer->data()[sourceOffset].position;
 						
 						int X=std::floor(pos.x()), Y=std::floor(pos.y()), Z=std::floor(pos.z());
 						std::stringstream ss;
@@ -707,7 +740,7 @@ namespace cgv {
 
 							int64_t sourceOffset = i;
 
-							vec3 pos = buffer->vertices[sourceOffset].position;
+							vec3 pos = buffer->data()[sourceOffset].position;
 
 							int32_t X = std::floor(pos.x()), Y = std::floor(pos.y()), Z = std::floor(pos.z());
 
@@ -739,10 +772,10 @@ namespace cgv {
 						logger::WARN(msg.str());
 						*/
 
-						std::shared_ptr<PointCloud> distinctBuffer = std::make_shared<PointCloud>(distinct.size());
+						std::shared_ptr<std::vector<Vertex>> distinctBuffer = std::make_shared<std::vector<Vertex>>(distinct.size());
 
 						for (int64_t i = 0; i < distinct.size(); i++) {
-							distinctBuffer->vertices[i] = buffer->vertices[i];
+							distinctBuffer->data()[i] = buffer->data()[i];
 						}
 
 						subject->points = distinctBuffer;
@@ -800,7 +833,7 @@ namespace cgv {
 			std::random_device rdev;
 			
 			for (auto& v : input_buffer_data) {
-				v.level = mean - abs(dist(rdev)-mean);
+				v.level = std::min(2*mean,std::max(0,mean - abs(dist(rdev)-mean)));
 			}
 		}
 
@@ -982,6 +1015,21 @@ namespace cgv {
 			}
 
 			
+		}
+
+		uint8_t& clod_point_renderer::point_lod(const int i)
+		{
+			return input_buffer_data[i].level;
+		}
+
+		cgv::render::render_types::rgb8& clod_point_renderer::point_color(const int i)
+		{
+			return input_buffer_data[i].colors;
+		}
+
+		cgv::render::render_types::vec3& clod_point_renderer::point_position(const int i)
+		{
+			return input_buffer_data[i].position;
 		}
 
 		void clod_point_renderer::add_shader(context& ctx, shader_program& prog, const std::string& sf,const cgv::render::ShaderType st)
