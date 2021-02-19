@@ -1,12 +1,27 @@
 #version 150
 
 in float value_fs;
+in vec4 color_fs;
 
-uniform float color_scale_gamma = 1.0;
+uniform float color_scale_gamma[2] = { 1.0, 1.0 };
+uniform int color_index = 0;
+uniform int opacity_index = -1;
+uniform vec4 legend_color = vec4(0.7,0.6,0.3,1.0);
+
+// opacity mapping
+uniform int   opacity_mapping[2] = { -1, -1 };
+uniform float opacity_gamma[2] = { 1.0, 1.0 };
+uniform bool  opacity_is_bipolar[2] = { false, false };
+uniform float opacity_window_zero_position[2] = { 0.5, 0.5 };
+uniform float opacity_min[2] = { 0.1, 0.1 };
+uniform float opacity_max[2] = { 1.0, 1.0 };
+
 
 //***** begin interface of color_scale.glsl ***********************************
-float color_scale_gamma_mapping(in float v, in float gamma);
-vec3 color_scale(in float v);
+/// adjust value with a gamma mapping, which clamps value to [0,1] and accounts for window zero positions in case of bipolar color scales
+float color_scale_gamma_mapping(in float v, in float gamma, int idx = 0);
+/// map value with currently selected color scale to rgb color
+vec3 color_scale(in float v, int idx = 0);
 //***** end interface of color_scale.glsl ***********************************
 
 //***** begin interface of fragment.glfs ***********************************
@@ -14,7 +29,31 @@ uniform float gamma = 2.2;
 void finish_fragment(vec4 color);
 //***** end interface of fragment.glfs ***********************************
 
+float opacity_gamma_mapping(in float v, in float gamma, int idx = 0)
+{
+	if (opacity_is_bipolar[idx]) {
+		float amplitude = max(opacity_window_zero_position[idx], 1.0 - opacity_window_zero_position[idx]);
+		if (v < opacity_window_zero_position[idx])
+			return opacity_window_zero_position[idx] - pow((opacity_window_zero_position[idx] - v) / amplitude, gamma) * amplitude;
+		else
+			return pow((v - opacity_window_zero_position[idx]) / amplitude, gamma) * amplitude + opacity_window_zero_position[idx];
+	}
+	else
+		return pow(v, gamma);
+}
+
+float map_opacity(float value, in float base_opacity, int idx = 0)
+{
+	return opacity_gamma_mapping(value, opacity_gamma[idx], idx) * base_opacity;
+}
+
 void main()
 {
-	finish_fragment(vec4(color_scale(color_scale_gamma_mapping(value_fs,color_scale_gamma)),1.0));
+	vec4 color = color_fs;
+	if (color_index >= 0 && color_index < 2)
+		color.rgb = color_scale(color_scale_gamma_mapping(value_fs,color_scale_gamma[color_index],color_index),color_index);
+	if (opacity_index >= 0 && opacity_index < 2)
+		color.a = map_opacity(value_fs, color.a, opacity_index);
+	vec3 bg_color = vec3(float(((int(gl_FragCoord.x)+int(gl_FragCoord.y))&1)));
+	finish_fragment(vec4(color.a*color.rgb+(1.0-color.a)*bg_color, 1.0));
 }
