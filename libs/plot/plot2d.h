@@ -1,7 +1,9 @@
 #pragma once
 
 #include "plot_base.h"
+#include <cgv/render/view.h>
 #include <cgv/render/shader_program.h>
+#include <libs/cgv_gl/rectangle_renderer.h>
 
 #include "lib_begin.h"
 
@@ -11,6 +13,22 @@ namespace cgv {
 /** extend common plot configuration with parameters specific to 2d plot */
 struct CGV_API plot2d_config : public plot_base_config
 {
+	/// extended point information
+	float reference_point_size;
+	float blend_width_in_pixel;
+	float halo_width_in_pixel;
+	float percentual_halo_width;
+	rgba halo_color;
+
+	/// extended stick information
+	int stick_coordinate_index;
+	float stick_base_window;
+
+	/// extended bar information
+	float bar_width;
+	int bar_coordinate_index;
+	float bar_base_window;
+
 	/// set default values
 	plot2d_config(const std::string& _name);
 	/// configure the sub plot to a specific chart type
@@ -22,28 +40,29 @@ class CGV_API plot2d : public plot_base
 {
 protected:
 	cgv::render::shader_program prog;
-	cgv::render::shader_program stick_prog;
+	cgv::render::shader_program point_prog, stick_prog;
 	cgv::render::shader_program bar_prog, bar_outline_prog;
 
-	/// overloaded in derived classes to compute complete tick render information
-	void compute_tick_render_information();
 	///
 	void draw_sub_plot(cgv::render::context& ctx, unsigned i);
 	void draw_domain(cgv::render::context& ctx);
-	void draw_axes(cgv::render::context& ctx);
-	void draw_ticks(cgv::render::context& ctx);
 	void draw_tick_labels(cgv::render::context& ctx);
 protected:
 	void set_uniforms(cgv::render::context& ctx, cgv::render::shader_program& prog, unsigned i = -1);
 	bool compute_sample_coordinate_interval(int i, int ai, float& samples_min, float& samples_max);
 
+	cgv::render::view* view_ptr;
 	/// store 2d samples for data series
 	std::vector<std::vector<vec2> > samples;
 	/// allow to split series into connected strips that are represented by the number of contained samples
 	std::vector <std::vector<unsigned> > strips;
+	///
+	float layer_depth;
+	/// render style of rectangles
+	cgv::render::plane_render_style rrs;
 public:
-	/// construct empty plot with default domain [0..1,0..1]
-	plot2d();
+	/// construct 2D plot with given number of additional attributes and default parameters
+	plot2d(unsigned nr_attributes = 0);
 
 	/**@name management of sub plots*/
 	//@{
@@ -65,6 +84,15 @@ public:
 	void draw(cgv::render::context& ctx);
 	/// destruct shader programs
 	void clear(cgv::render::context& ctx);
+
+	/// create the gui for a point subplot
+	void create_point_config_gui(cgv::base::base* bp, cgv::gui::provider& p, plot_base_config& pbc);
+	/// create the gui for a stick subplot
+	void create_stick_config_gui(cgv::base::base* bp, cgv::gui::provider& p, plot_base_config& pbc);
+	/// create the gui for a bar subplot
+	void create_bar_config_gui(cgv::base::base* bp, cgv::gui::provider& p, plot_base_config& pbc);
+	///
+	void create_config_gui(cgv::base::base* bp, cgv::gui::provider& p, unsigned i);
 };
 
 	}

@@ -1,6 +1,8 @@
-vertex_file:plot_empty.glvs
+vertex_file:plot3d.glvs
 vertex_file:color_scale.glsl
 vertex_file:plot_lib.glsl
+vertex_file:view.glsl
+vertex_file:quaternion.glsl
 geometry_file:plot3d_stick.glgs
 geometry_file:quaternion.glsl
 geometry_file:plot_lib.glsl

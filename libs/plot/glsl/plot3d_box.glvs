@@ -1,20 +1,24 @@
 #version 330
 
-uniform float percentual_width;
-uniform float percentual_depth;
+uniform float box_width;
+uniform float box_depth;
 uniform int N;
 uniform int M;
-uniform vec3 domain_min_pnt;
-uniform vec3 domain_max_pnt;
-uniform vec3 extent;
 uniform vec4 orientation;
 uniform vec3 center_location;
+uniform int box_coordinate_index = 1;
+uniform float box_base_window = 0.0;
+uniform int color_index = -1;
+uniform int opacity_index = -1;
 
-layout(location = 0) in float xpos;
-layout(location = 1) in float ypos;
-layout(location = 2) in float zpos;
-layout(location = 3) in float att0;
-layout(location = 4) in float att1;
+layout(location = 0) in float attribute0;
+layout(location = 1) in float attribute1;
+layout(location = 2) in float attribute2;
+layout(location = 3) in float attribute3;
+layout(location = 4) in float attribute4;
+layout(location = 5) in float attribute5;
+layout(location = 6) in float attribute6;
+layout(location = 7) in float attribute7;
 
 in vec4 color;
 
@@ -41,33 +45,75 @@ void quaternion_to_matrix(in vec4 q, out mat3 M);
 void rigid_to_matrix(in vec4 q, in vec3 t, out mat4 M);
 //***** end interface of quaternion.glsl ***********************************
 
-vec3 map_plot_to_plot3(in vec3 pnt);
-vec4 map_plot_to_world3(in vec3 pnt);
-vec4 map_color(in vec2 atts, in vec4 base_color);
+//***** begin interface of plot_lib.glsl ***********************************
+uniform float attribute_min[8];
+uniform float attribute_max[8];
+float tick_space_from_attribute_space(int ai, float value);
+float attribute_space_from_tick_space(int ai, float value);
+float window_space_from_tick_space(int ai, float value);
+float tick_space_from_window_space(int ai, float value);
+vec3 plot_space_from_window_space(vec3 pnt);
+vec3 window_space_from_plot_space(vec3 pnt);
+vec3 world_space_from_plot_space(vec3 pnt);
+vec3 map_color(in float attributes[8], in vec3 base_color, int idx = 0);
+float map_opacity(in float attributes[8], in float base_opacity, int idx = 0);
+float map_size(in float attributes[8], in float base_size);
+//***** end interface of plot_lib.glsl ***********************************
 
 void main()
 {
+	// collect attributes
+	float attributes[8];
+	attributes[0] = attribute0;
+	attributes[1] = attribute1;
+	attributes[2] = attribute2;
+	attributes[3] = attribute3;
+	attributes[4] = attribute4;
+	attributes[5] = attribute5;
+	attributes[6] = attribute6;
+	attributes[7] = attribute7;
+
+	// compute position in window space
+	vec3 position_window = vec3(
+		window_space_from_tick_space(0, tick_space_from_attribute_space(0, attribute0)),
+		window_space_from_tick_space(1, tick_space_from_attribute_space(1, attribute1)),
+		window_space_from_tick_space(2, tick_space_from_attribute_space(2, attribute2)));
+
+	vec3 min_window = position_window;
+	min_window[box_coordinate_index]=min(position_window[box_coordinate_index],box_base_window);
+	vec3 max_window = position_window;
+	max_window[box_coordinate_index]=max(position_window[box_coordinate_index],box_base_window);
+	vec3 min_plot = plot_space_from_window_space(min_window);
+	int i = box_coordinate_index == 2 ? 0 : box_coordinate_index+1;
+	int j = i == 2 ? 0 : i+1;
+	min_plot[i] -= 0.5*box_depth;
+	min_plot[j] -= 0.5*box_width;
+	vec3 max_plot = plot_space_from_window_space(max_window);
+	max_plot[i] += 0.5*box_depth;
+	max_plot[j] += 0.5*box_width;
+
 	NM = get_normal_matrix();
 	mat3 R;
 	quaternion_to_matrix(orientation, R);
 	NM *= R;
-	vec3 plot_min = map_plot_to_plot3(domain_min_pnt);
-	vec3 box_extent;
-	box_extent.x = (percentual_width / float(N - 1)) *extent.x;
-	box_extent.y = (percentual_depth / float(M - 1)) *extent.y;
-	vec4 p = vec4(map_plot_to_plot3(vec3(xpos,ypos,zpos)),1.0);
-	box_extent.z = p.z - plot_min.z;
+	vec3 box_extent = max_plot - min_plot;
+	vec4 p = vec4(0.5*(min_plot+max_plot),1.0);
 	// compute box transformation
 	mat4 BM = mat4(0.0);
 	BM[0][0] = box_extent[0];
 	BM[1][1] = box_extent[1];
 	BM[2][2] = box_extent[2];
 	BM[3]    = p;
-	BM[3].z  = 0.5*(p.z + plot_min.z);
 	mat4 M;
 	rigid_to_matrix(orientation, center_location, M);
 	PM = get_modelview_matrix()*M*BM;
 
-	color_gs = map_color(vec2(att0, att1), color);
+	// map to visual attributes
+	color_gs = color;
+	if (color_index >=0)
+		color_gs.rgb = map_color(attributes, color_gs.rgb, color_index);
+	if (opacity_index >= 0)
+		color_gs.a = map_opacity(attributes, color_gs.a, opacity_index);
+
 	gl_Position = p;
 }

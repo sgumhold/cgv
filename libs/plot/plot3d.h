@@ -64,8 +64,8 @@ protected:
 	/// overloaded in derived classes to compute complete tick render information
 	void compute_tick_render_information();
 public:
-	/// construct empty plot with default domain [0..1,0..1,0..1]
-	plot3d();
+	/// construct 3d plot with given number of additional attributes and default parameters
+	plot3d(unsigned nr_attributes = 0);
 	/**@name management of sub plots*/
 	//@{
 	/// add sub plot and return reference to samples
@@ -82,6 +82,10 @@ public:
 	std::vector<vec3>& ref_sub_plot_samples(unsigned i = 0);
 	//@}
 
+	/// create the gui for a line subplot
+	void create_line_config_gui(cgv::base::base* bp, cgv::gui::provider& p, plot_base_config& pbc);
+	/// create the gui for a bar subplot
+	void create_bar_config_gui(cgv::base::base* bp, cgv::gui::provider& p, plot_base_config& pbc);
 	void create_config_gui(cgv::base::base* bp, cgv::gui::provider& p, unsigned i);
 	bool init(cgv::render::context& ctx);
 	void draw(cgv::render::context& ctx);

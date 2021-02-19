@@ -15,12 +15,14 @@ void plot3d_config::set_colors(const rgb& base_color)
 /// overloaded in derived classes to compute complete tick render information
 void plot3d::compute_tick_render_information()
 {
+	/*
 	collect_tick_geometry(0, 1, &domain_min(0), &domain_max(0), &extent(0));
 	collect_tick_geometry(0, 2, &domain_min(0), &domain_max(0), &extent(0));
 	collect_tick_geometry(1, 0, &domain_min(0), &domain_max(0), &extent(0));
 	collect_tick_geometry(1, 2, &domain_min(0), &domain_max(0), &extent(0));
 	collect_tick_geometry(2, 0, &domain_min(0), &domain_max(0), &extent(0));
 	collect_tick_geometry(2, 1, &domain_min(0), &domain_max(0), &extent(0));
+	*/
 }
 
 plot3d_config::plot3d_config(const std::string& _name) : plot_base_config(_name)
@@ -69,9 +71,15 @@ bool plot3d::compute_sample_coordinate_interval(int i, int ai, float& samples_mi
 	return false;
 }
 
-/// construct empty plot with default domain [0..1,0..1,0..1]
-plot3d::plot3d() : plot_base(3)
+plot3d::plot3d(unsigned nr_attributes) : plot_base(3, nr_attributes)
 {
+	auto& acs = get_domain_config_ptr()->axis_configs;
+	acs[0].name = "x";
+	acs[1].name = "y";
+	acs[2].name = "z";
+	for (unsigned ai = 0; ai < nr_attributes; ai)
+		acs[ai + 3].name = std::string("attribute_") + cgv::utils::to_string(ai);
+
 	brs.culling_mode = cgv::render::CM_FRONTFACE;
 	brs.map_color_to_material = cgv::render::CM_COLOR;
 	brs.illumination_mode = cgv::render::IM_TWO_SIDED;
@@ -147,6 +155,7 @@ void plot3d::draw_sub_plot(cgv::render::context& ctx, unsigned i)
 	if (count == 0)
 		return;
 	const plot3d_config& spc = ref_sub_plot3d_config(i);
+	vecn extent = get_extent();
 	float size2radius = (extent(0) + extent(1)) / (2000.0f);
 	if (spc.show_points) {
 		set_uniforms(ctx, sphere_prog, i);
@@ -218,6 +227,7 @@ void plot3d::draw_domain(cgv::render::context& ctx)
 	std::vector<vec3> P;
 	const domain_config& dc = *get_domain_config_ptr();
 	if (dc.fill) {
+		vecn extent = get_extent();
 		cgv::render::box_renderer& br = cgv::render::ref_box_renderer(ctx);
 		br.set_attribute_array_manager(ctx, 0);
 		br.set_position_array(ctx, &center_location, 1);
@@ -235,6 +245,9 @@ void plot3d::draw_domain(cgv::render::context& ctx)
 
 void plot3d::draw_axes(cgv::render::context& ctx)
 {
+	box3 domain = get_domain3();
+	vec3 domain_min = domain.get_min_pnt();
+	vec3 domain_max = domain.get_max_pnt();
 	std::vector<vec3> P;
 	for (unsigned ai = 0; ai < 3; ++ai) {
 		unsigned aj = (ai + 1) % 3;
@@ -277,6 +290,9 @@ void plot3d::draw_axes(cgv::render::context& ctx)
 
 void plot3d::draw_ticks(cgv::render::context& ctx)
 {
+	box3 domain = get_domain3();
+	vec3 domain_min = domain.get_min_pnt();
+	vec3 domain_max = domain.get_max_pnt();
 	if (tick_vertices.empty())
 		return;
 	enable_attributes(ctx, 2);
@@ -302,6 +318,9 @@ void plot3d::draw_ticks(cgv::render::context& ctx)
 
 void plot3d::draw_tick_labels(cgv::render::context& ctx)
 {
+	box3 domain = get_domain3();
+	vec3 domain_min = domain.get_min_pnt();
+	vec3 domain_max = domain.get_max_pnt();
 	if (tick_labels.empty())
 		return;
 	set_attributes(ctx, tick_vertices);
@@ -413,7 +432,6 @@ void plot3d::draw(cgv::render::context& ctx)
 		
 	}
 
-	
 	if (!line_smooth)
 		glDisable(GL_LINE_SMOOTH);
 	if (!point_smooth)
@@ -429,6 +447,7 @@ void plot3d::draw(cgv::render::context& ctx)
 
 void plot3d::clear(cgv::render::context& ctx)
 {
+	prog.destruct(ctx);
 	sphere_prog.destruct(ctx);
 	box_prog.destruct(ctx);
 	wirebox_prog.destruct(ctx);
@@ -439,34 +458,27 @@ void plot3d::clear(cgv::render::context& ctx)
 
 }
 
+void plot3d::create_line_config_gui(cgv::base::base* bp, cgv::gui::provider& p, plot_base_config& pbc)
+{
+	plot_base::create_line_config_gui(bp, p, pbc);
+	plot3d_config& p3bc = reinterpret_cast<plot3d_config&>(pbc);
+	p.add_member_control(bp, "show_orientation", p3bc.show_line_orientation, "check");
+}
+void plot3d::create_bar_config_gui(cgv::base::base* bp, cgv::gui::provider& p, plot_base_config& pbc)
+{
+	plot3d_config& p3bc = reinterpret_cast<plot3d_config&>(pbc);
+	p.add_member_control(bp, "width", p3bc.bar_percentual_width, "value_slider", "min=0.01;max=1;log=true;ticks=true");
+	p.add_member_control(bp, "depth", p3bc.bar_percentual_depth, "value_slider", "min=0.01;max=1;log=true;ticks=true");
+	p.add_member_control(bp, "fill", p3bc.bar_color);
+	p.add_member_control(bp, "outline_width", p3bc.bar_outline_width, "value_slider", "min=0;max=20;log=true;ticks=true");
+	p.add_member_control(bp, "outline", p3bc.bar_outline_color);
+}
+
 void plot3d::create_config_gui(cgv::base::base* bp, cgv::gui::provider& p, unsigned i)
 {
+	plot_base::create_config_gui(bp, p, i);
 	plot3d_config& pbc = ref_sub_plot3d_config(i);
-	create_config_gui_impl(bp, p, i, "op");
-	bool show = p.begin_tree_node("lines", pbc.show_lines, false, "level=3;options='w=142';align=' '");
-	p.add_member_control(bp, "show", pbc.show_lines, "toggle", "w=50");
-	if (show) {
-		p.align("\a");
-		p.add_member_control(bp, "width", pbc.line_width, "value_slider", "min=1;max=20;log=true;ticks=true");
-		p.add_member_control(bp, "color", pbc.line_color);
-		p.add_member_control(bp, "show_orientation", pbc.show_line_orientation, "check");
-		p.align("\b");
-		p.end_tree_node(pbc.show_lines);
-	}
-	create_config_gui_impl(bp, p, i, "s");
-	show = p.begin_tree_node("bars", pbc.show_bars, false, "level=3;options='w=142';align=' '");
-	p.add_member_control(bp, "show", pbc.show_bars, "toggle", "w=50");
-	if (show) {
-		p.align("\a");
-		p.add_member_control(bp, "width", pbc.bar_percentual_width, "value_slider", "min=0.01;max=1;log=true;ticks=true");
-		p.add_member_control(bp, "depth", pbc.bar_percentual_depth, "value_slider", "min=0.01;max=1;log=true;ticks=true");
-		p.add_member_control(bp, "fill", pbc.bar_color);
-		p.add_member_control(bp, "outline_width", pbc.bar_outline_width, "value_slider", "min=0;max=20;log=true;ticks=true");
-		p.add_member_control(bp, "outline", pbc.bar_outline_color);
-		p.align("\b");
-		p.end_tree_node(pbc.show_bars);
-	}
-	show = p.begin_tree_node("surface", pbc.show_surface, false, "level=3;w=100;align=' '");
+	bool show = p.begin_tree_node("surface", pbc.show_surface, false, "level=3;w=100;align=' '");
 	p.add_member_control(bp, "show", pbc.show_surface, "toggle", "w=50");
 	if (show) {
 		p.align("\a");
@@ -474,7 +486,9 @@ void plot3d::create_config_gui(cgv::base::base* bp, cgv::gui::provider& p, unsig
 		p.add_member_control(bp, "wireframe", pbc.wireframe, "check");
 		p.add_member_control(bp, "color", pbc.surface_color);
 		p.add_member_control(bp, "wireframe", pbc.face_illumination, "dropdown", "enums='none,face,vertex'");
-	}	
+		p.align("\b");
+		p.end_tree_node(pbc.show_surface);
+	}
 }
 
 
