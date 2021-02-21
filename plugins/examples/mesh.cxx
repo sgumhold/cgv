@@ -174,7 +174,10 @@ public:
 	{
 		if (member_ptr == &file_name) {
 			mesh_type tmp;
+			tmp.ensure_colors(cgv::media::CT_RGB);
 			if (tmp.read(file_name)) {
+				if (tmp.get_nr_colors() == 0)
+					tmp.destruct_colors();
 				M = tmp;
 				sphere_style.radius = float(0.05*sqrt(M.compute_box().get_extent().sqr_length() / M.get_nr_positions()));
 				on_set(&sphere_style.radius);
