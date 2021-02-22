@@ -339,7 +339,7 @@ namespace cgv {
 			int test = 0;
 		}
 
-		void octree_lod_generator::indexing(const std::vector<ChunkNode>& chunks, std::vector<Vertex>& vertices)
+		void octree_lod_generator::lod_indexing(const std::vector<ChunkNode>& chunks, std::vector<Vertex>& vertices)
 		{
 			Indexer indexer(&vertices);
 
@@ -370,6 +370,7 @@ namespace cgv {
 						{
 							auto chunk = task->chunk;
 							//auto chunk_root = std::make_shared<IndexNode>(chunk->id, chunk->min, chunk->max);
+							
 							//buildHierarchy(&indexer, chunkRoot.get(), chunks, numPoints);
 						}
 					}
@@ -819,7 +820,7 @@ namespace cgv {
 			}
 
 			lod_chunking(vertices.data(), vertices.size(), min, max);
-			indexing(nodes, out);
+			lod_indexing(nodes, out);
 			return out;
 			//TODO continue
 		}
@@ -840,6 +841,11 @@ namespace cgv {
 		void clod_point_renderer::draw_and_compute_impl(context& ctx, PrimitiveType type, size_t start, size_t count, bool use_strips, bool use_adjacency, uint32_t strip_restart_index)
 		{
 			//renderer::draw_impl(ctx, type, start, count, use_strips, use_adjacency, strip_restart_index);
+			
+			//TODO add option to spread calculation over multiple frames
+			//configure shader to compute everything after one frame
+			reduce_prog.set_uniform(ctx, reduce_prog.get_uniform_location(ctx, "uBatchOffset"), 0);
+			reduce_prog.set_uniform(ctx, reduce_prog.get_uniform_location(ctx, "uBatchSize"), (int)count);
 
 			// reset draw parameters
 			DrawParameters dp = DrawParameters();
@@ -929,7 +935,6 @@ namespace cgv {
 			}
 
 			//const clod_point_render_style& srs = get_style<clod_point_render_style>();
-			//TODO set uniforms
 			vec2 screenSize(ctx.get_width(), ctx.get_height());
 			vec4 pivot = inv(ctx.get_modelview_matrix())*dvec4(0.0,0.0,0.0,1.0);
 			
@@ -958,15 +963,7 @@ namespace cgv {
 			reduce_prog.set_uniform(ctx, "spacing", prs.spacing);
 			reduce_prog.set_uniform(ctx, reduce_prog.get_uniform_location(ctx, "pivot"), pivot);
 			reduce_prog.set_uniform(ctx, reduce_prog.get_uniform_location(ctx, "screenSize"), screenSize);
-			//configure shader to compute everything after one frame
 
-			//TODO add option to spread calculation to multiple frames
-			reduce_prog.set_uniform(ctx, reduce_prog.get_uniform_location(ctx, "uBatchOffset"), 0);
-			reduce_prog.set_uniform(ctx, reduce_prog.get_uniform_location(ctx, "uBatchSize"), (int)input_buffer_data.size());
-
-
-			//testcode
-			float reference_point_size = 0.01f;
 			float y_view_angle = 45;
 			//general point renderer uniforms
 			draw_prog.set_uniform(ctx, "use_color_index", false);
@@ -999,6 +996,15 @@ namespace cgv {
 		void clod_point_renderer::draw(context& ctx, size_t start, size_t count, bool use_strips, bool use_adjacency, uint32_t strip_restart_index)
 		{
 			draw_and_compute_impl(ctx, cgv::render::PT_POINTS, start, count, use_strips, use_adjacency, strip_restart_index);
+		}
+
+		bool clod_point_renderer::render(context& ctx, size_t start, size_t count, bool use_strips, bool use_adjacency, uint32_t strip_restart_index)
+		{
+			if (enable(ctx)) {
+				draw(ctx, start, count, use_strips, use_adjacency, strip_restart_index);
+				return true;
+			}
+			return false;
 		}
 
 		void clod_point_renderer::generate_lods(const LoDMode mode)
@@ -1049,10 +1055,6 @@ namespace cgv {
 
 		void clod_point_renderer::fill_buffers(context& ctx)
 		{ //  fill buffers for the compute shader
-			/*
-			glBindBuffer(GL_ARRAY_BUFFER, input_buffer);
-			glBufferData(GL_ARRAY_BUFFER, input_buffer_data.size() * sizeof(Vertex), input_buffer_data.data(), GL_STATIC_READ);
-			glBindBuffer(GL_ARRAY_BUFFER, 0);*/
 			glBindBuffer(GL_SHADER_STORAGE_BUFFER, input_buffer);
 			glBufferData(GL_SHADER_STORAGE_BUFFER, input_buffer_data.size() * sizeof(Vertex), input_buffer_data.data(), GL_STATIC_READ);
 			

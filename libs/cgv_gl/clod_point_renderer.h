@@ -52,9 +52,8 @@ namespace cgv {
 			shader_program reduce_prog;
 			shader_program draw_prog;
 
-			//std::vector<vec3> positions;
 			std::vector<Vertex> input_buffer_data;
-			//std::vector<rgba8> colors; //alpha channel is later used for storing the clod level
+			
 			GLuint vertex_array = 0;
 			GLuint input_buffer = 0, render_buffer = 0, draw_parameter_buffer = 0;
 			const int input_pos = 0, render_pos = 1, drawp_pos = 3;
@@ -74,9 +73,17 @@ namespace cgv {
 			
 			bool disable(context& ctx);
 
-			void draw(context& ctx, size_t start, size_t count,
-				bool use_strips = false, bool use_adjacency = false, uint32_t strip_restart_index = -1);
-			
+			/// @param use_strips : unused
+			/// @param use_adjacency : unused
+			/// @param strip_restart_index : unused
+			void draw(context& ctx, size_t start=0, size_t count=0,
+				bool use_strips = false, bool use_adjacency = false, uint32_t strip_restart_index = -1) override;
+			/// @param use_strips : unused
+			/// @param use_adjacency : unused
+			/// @param strip_restart_index : unused
+			bool render(context& ctx, size_t start, size_t count,
+				bool use_strips = false, bool use_adjacency = false, uint32_t strip_restart_index = -1) override;
+
 			void generate_lods(const LoDMode mode = LoDMode::RANDOM_POISSON);
 
 			void set_positions(context& ctx, std::vector<vec3> positions) {
@@ -259,7 +266,7 @@ namespace cgv {
 			//create chunk nodes
 			void distributePoints(vec3 min, vec3 max, NodeLUT& lut, const Vertex* vertices, const int64_t num_points);
 			//in chunks, out vertices
-			void indexing(const std::vector<ChunkNode>& chunks, std::vector<Vertex>& vertices);
+			void lod_indexing(const std::vector<ChunkNode>& chunks, std::vector<Vertex>& vertices);
 
 			void buildHierarchy(Indexer* indexer, IndexNode* node, std::shared_ptr<std::vector<Vertex>> points, int64_t numPoints, int64_t depth = 0);
 
