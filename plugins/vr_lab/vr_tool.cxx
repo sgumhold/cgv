@@ -10,10 +10,14 @@ namespace vr {
 
 void vr_tool::on_device_change(void* device_handle, bool connect)
 {
-	if (connect)
+	if (connect) {
 		kit_ptr = vr::get_vr_kit(device_handle);
-	else
+		after_connect_kit();
+	}
+	else {
+		before_disconnect_kit();
 		kit_ptr = 0;
+	}
 }
 
 //
@@ -27,26 +31,54 @@ vr_scene* vr_tool::find_scene(size_t scene_idx) const
 	return scenes[scene_idx];
 }
 
+/// overload to be notified after a new kit has been connected
+void vr_tool::after_connect_kit()
+{
+}
+/// overload to be notified before a kit is disconnected
+void vr_tool::before_disconnect_kit()
+{
+}
+/// access to vr scene object, which can return nullptr in case scene is registered after tool
+vr_scene* vr_tool::get_scene_ptr() const
+{
+	if (!scene_ptr)
+		scene_ptr = find_scene();
+	return scene_ptr;
+}
+/// access to vr kit, which can return nullptr if no kit is attached
+vr_kit* vr_tool::get_kit_ptr() const
+{
+	return kit_ptr;
+}
+
+/// access to vr view, which can return nullptr in case no vr view is available or vr view is registered after tool
+vr_view_interactor* vr_tool::get_view_ptr() const
+{
+	if (!view_ptr && !no_vr_view) {
+		auto vw_ptr = find_view_as_node();
+		if (vw_ptr) {
+			view_ptr = dynamic_cast<vr_view_interactor*>(vw_ptr);
+		}
+		else {
+			no_vr_view = true;
+			std::cerr << "WARNING: found view which cannot be cast into vr_view_interactor!\nmake sure to have crg_vr_view in your addProjectDeps list." << std::endl;
+		}
+	}
+	return view_ptr;
+}
+
 vr_tool::vr_tool(const std::string& _name) : cgv::base::node(_name)
 {
 	tool_is_active = true;
 
 	scene_ptr = 0;
 	kit_ptr = 0;
-	vr_view_ptr = 0;
+	view_ptr = 0;
 	
-	connect(cgv::gui::ref_vr_server().on_device_change, this, &vr_tool::on_device_change);
-}
+	no_vr_view = false;
 
-void vr_tool::init_frame(cgv::render::context& ctx)
-{
-	if (!scene_ptr)
-		scene_ptr = find_scene();
-	if (!vr_view_ptr) {
-		auto view_ptr = find_view_as_node();
-		if (view_ptr)
-			vr_view_ptr = dynamic_cast<vr_view_interactor*>(view_ptr);
-	}
+	connect(cgv::gui::ref_vr_server().on_device_change, this, &vr_tool::on_device_change);
 }
 
 //	std::string vr_tool::get_default_options() const {

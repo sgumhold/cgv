@@ -115,6 +115,10 @@ public:
 	void hide_label(uint32_t li) { label_visibilities[li] = 0; }
 	/// show a label
 	void show_label(uint32_t li) { label_visibilities[li] = 1; }
+	/// set the common border color of labels
+	void set_label_border_color(const rgba& border_color);
+	/// set the common border width in percent of the minimal extent
+	void set_label_border_width(float border_width);
 	//@}
 
 public:
