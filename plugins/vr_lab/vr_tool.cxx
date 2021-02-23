@@ -23,7 +23,7 @@ void vr_tool::on_device_change(void* device_handle, bool connect)
 //
 vr_scene* vr_tool::find_scene(size_t scene_idx) const
 {
-	cgv::base::base* base_ptr = const_cast<cgv::base::base*>(static_cast<const cgv::base::base*>(this));
+	cgv::base::base* base_ptr = const_cast<cgv::base::base*>(dynamic_cast<const cgv::base::base*>(this));
 	std::vector<vr_scene*> scenes;
 	cgv::base::find_interface<vr_scene>(base_ptr, scenes);
 	if (scenes.empty() || scene_idx > scenes.size())
@@ -56,19 +56,21 @@ vr_kit* vr_tool::get_kit_ptr() const
 vr_view_interactor* vr_tool::get_view_ptr() const
 {
 	if (!view_ptr && !no_vr_view) {
-		auto vw_ptr = find_view_as_node();
-		if (vw_ptr) {
-			view_ptr = dynamic_cast<vr_view_interactor*>(vw_ptr);
-		}
-		else {
+		cgv::base::base* base_ptr = const_cast<cgv::base::base*>(dynamic_cast<const cgv::base::base*>(this));
+		std::vector<vr_view_interactor*> views;
+		cgv::base::find_interface<vr_view_interactor>(base_ptr, views);
+		if (views.empty()) {
 			no_vr_view = true;
 			std::cerr << "WARNING: found view which cannot be cast into vr_view_interactor!\nmake sure to have crg_vr_view in your addProjectDeps list." << std::endl;
+		}
+		else {
+			view_ptr = views[0];
 		}
 	}
 	return view_ptr;
 }
 
-vr_tool::vr_tool(const std::string& _name) : cgv::base::node(_name)
+vr_tool::vr_tool() 
 {
 	tool_is_active = true;
 
