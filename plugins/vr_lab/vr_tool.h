@@ -10,11 +10,7 @@
 
 namespace vr {
 
-class CGV_API vr_tool : 
-	public cgv::base::node,
-	public cgv::render::drawable,
-	public cgv::gui::event_handler,
-	public cgv::gui::provider
+class CGV_API vr_tool : public cgv::signal::tacker
 {
 private:
 	/// store pointer to scene
@@ -44,8 +40,10 @@ protected:
 	vr_view_interactor* get_view_ptr() const;
 public:
 	/// construct with all pointers set to null and tool being active
-	vr_tool(const std::string& _name = "vr_tool");
+	vr_tool();
 //	std::string get_default_options() const;
 };
 
 }
+
+#include <cgv/config/lib_end.h>

@@ -18,7 +18,12 @@
 #include <cgv/utils/file.h>
 #include <fstream>
 
-class vr_lab_test : public vr::vr_tool
+class vr_lab_test : 
+	public cgv::base::node,
+	public cgv::render::drawable,
+	public cgv::gui::event_handler,
+	public cgv::gui::provider,
+	public vr::vr_tool
 {
 	cgv::render::sphere_render_style srs;
 	cgv::render::rounded_cone_render_style rcrs;
@@ -41,7 +46,7 @@ public:
 		return mat34(3, 4, pose) * vec4(p, 1.0f);
 	}
 public:
-	vr_lab_test() : vr_tool("vr_lab_test")
+	vr_lab_test()
 	{
 		li_help[0] = li_help[1] = -1;
 		li_stats = -1;
