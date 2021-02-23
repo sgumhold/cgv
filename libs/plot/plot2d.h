@@ -14,21 +14,7 @@ namespace cgv {
 struct CGV_API plot2d_config : public plot_base_config
 {
 	/// extended point information
-	float reference_point_size;
 	float blend_width_in_pixel;
-	float halo_width_in_pixel;
-	float percentual_halo_width;
-	rgba halo_color;
-
-	/// extended stick information
-	int stick_coordinate_index;
-	float stick_base_window;
-
-	/// extended bar information
-	float bar_width;
-	int bar_coordinate_index;
-	float bar_base_window;
-
 	/// set default values
 	plot2d_config(const std::string& _name);
 	/// configure the sub plot to a specific chart type
@@ -41,14 +27,12 @@ class CGV_API plot2d : public plot_base
 protected:
 	cgv::render::shader_program prog;
 	cgv::render::shader_program point_prog, stick_prog;
-	cgv::render::shader_program bar_prog, bar_outline_prog;
-
+	cgv::render::shader_program rectangle_prog;
 	///
-	void draw_sub_plot(cgv::render::context& ctx, unsigned i);
+	void draw_sub_plots(cgv::render::context& ctx);
 	void draw_domain(cgv::render::context& ctx);
 	void draw_tick_labels(cgv::render::context& ctx);
 protected:
-	void set_uniforms(cgv::render::context& ctx, cgv::render::shader_program& prog, unsigned i = -1);
 	bool compute_sample_coordinate_interval(int i, int ai, float& samples_min, float& samples_max);
 
 	cgv::render::view* view_ptr;
@@ -59,7 +43,7 @@ protected:
 	///
 	float layer_depth;
 	/// render style of rectangles
-	cgv::render::plane_render_style rrs;
+	cgv::render::rectangle_render_style rrs;
 public:
 	/// construct 2D plot with given number of additional attributes and default parameters
 	plot2d(unsigned nr_attributes = 0);

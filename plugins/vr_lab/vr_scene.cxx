@@ -166,12 +166,6 @@ bool vr_scene::init(cgv::render::context& ctx)
 
 void vr_scene::init_frame(cgv::render::context& ctx)
 {
-	bool repack = lm.is_packing_outofdate();
-	lm.ensure_texture_uptodate(ctx);
-	if (repack) {
-		for (uint32_t li = 0; li < label_texture_ranges.size(); ++li)
-			label_texture_ranges[li] = lm.get_texcoord_range(li);
-	}
 }
 
 void vr_scene::clear(cgv::render::context& ctx)
@@ -182,39 +176,54 @@ void vr_scene::clear(cgv::render::context& ctx)
 
 void vr_scene::draw(cgv::render::context& ctx)
 {
+	bool repack = lm.is_packing_outofdate();
+	lm.ensure_texture_uptodate(ctx);
+	if (repack) {
+		for (uint32_t li = 0; li < label_texture_ranges.size(); ++li)
+			label_texture_ranges[li] = lm.get_texcoord_range(li);
+	}
+
 	// activate render styles
 	auto& br = cgv::render::ref_box_renderer(ctx);
 	br.set_render_style(style);
-	auto& rr = cgv::render::ref_rectangle_renderer(ctx);
-	rr.set_render_style(prs);
-
+	
 	// draw static part
 	br.set_box_array(ctx, boxes);
 	br.set_color_array(ctx, box_colors);
 	br.render(ctx, 0, boxes.size());
+}
 
+/// draw transparent part here
+void vr_scene::finish_frame(cgv::render::context& ctx)
+{
 	// compute label poses in lab coordinate system
 	std::vector<vec3> P;
 	std::vector<quat> Q;
 	std::vector<vec2> E;
 	std::vector<vec4> T;
-	mat34 pose[5];
-	bool valid[5];
-	valid[CS_LAB] = valid[CS_TABLE] = true;
-	pose[CS_LAB].identity();
-	pose[CS_TABLE].identity();
+	mat34 ID; ID.identity();
+	mat34 pose[5] = { ID, ID };
+	bool valid[5] = { true, true, false, false, false };
+	// update table pose
 	cgv::math::pose_position(pose[CS_TABLE]) = vec3(0.0f, table_height, 0.0f);
-	valid[CS_HEAD] = vr_view_ptr && vr_view_ptr->get_current_vr_state() && vr_view_ptr->get_current_vr_state()->hmd.status == vr::VRS_TRACKED;
-	if (valid[CS_HEAD])
-		pose[CS_HEAD] = reinterpret_cast<const mat34&>(vr_view_ptr->get_current_vr_state()->hmd.pose[0]);
-	valid[CS_LEFT_CONTROLLER] = vr_view_ptr && vr_view_ptr->get_current_vr_state() && vr_view_ptr->get_current_vr_state()->controller[0].status == vr::VRS_TRACKED;
-	if (valid[CS_LEFT_CONTROLLER])
-		pose[CS_LEFT_CONTROLLER] = reinterpret_cast<const mat34&>(vr_view_ptr->get_current_vr_state()->controller[0].pose[0]);
-	valid[CS_RIGHT_CONTROLLER] = vr_view_ptr && vr_view_ptr->get_current_vr_state() && vr_view_ptr->get_current_vr_state()->controller[1].status == vr::VRS_TRACKED;
-	if (valid[CS_RIGHT_CONTROLLER])
-		pose[CS_RIGHT_CONTROLLER] = reinterpret_cast<const mat34&>(vr_view_ptr->get_current_vr_state()->controller[1].pose[0]);
+	// extract poses from tracked vr devices
+	if (vr_view_ptr) {
+		const auto* cs = vr_view_ptr->get_current_vr_state();
+		if (cs) {
+			valid[CS_HEAD] = cs->hmd.status == vr::VRS_TRACKED;
+			valid[CS_LEFT_CONTROLLER] = cs->controller[0].status == vr::VRS_TRACKED;
+			valid[CS_RIGHT_CONTROLLER] = cs->controller[1].status == vr::VRS_TRACKED;
+			if (valid[CS_HEAD])
+				pose[CS_HEAD] = reinterpret_cast<const mat34&>(vr_view_ptr->get_current_vr_state()->hmd.pose[0]);
+			if (valid[CS_LEFT_CONTROLLER])
+				pose[CS_LEFT_CONTROLLER] = reinterpret_cast<const mat34&>(vr_view_ptr->get_current_vr_state()->controller[0].pose[0]);
+			if (valid[CS_RIGHT_CONTROLLER])
+				pose[CS_RIGHT_CONTROLLER] = reinterpret_cast<const mat34&>(vr_view_ptr->get_current_vr_state()->controller[1].pose[0]);
+		}
+	}
+	// set poses of visible labels in valid coordinate systems
 	for (uint32_t li = 0; li < label_coord_systems.size(); ++li) {
-		if (!label_visibilities[li] || !valid[label_coord_systems[li]])
+		if (label_visibilities[li] == 0 || !valid[label_coord_systems[li]])
 			continue;
 		mat34 label_pose = cgv::math::pose_construct(label_orientations[li], label_positions[li]);
 		cgv::math::pose_transform(pose[label_coord_systems[li]], label_pose);
@@ -225,6 +234,29 @@ void vr_scene::draw(cgv::render::context& ctx)
 	}
 	// draw labels
 	if (!P.empty()) {
+		/*
+		auto& br = cgv::render::ref_box_renderer(ctx);
+		br.set_render_style(style);
+		std::vector<vec3> E3;
+		for (auto e : E)
+			E3.push_back(vec3(e, 0.1f));
+		// draw static part
+		br.set_position_array(ctx, P);
+		br.set_rotation_array(ctx, Q);
+		br.set_extent_array(ctx, E3);
+		br.render(ctx, 0, P.size());
+		*/
+		auto& rr = cgv::render::ref_rectangle_renderer(ctx);
+		rr.set_render_style(rrs);
+
+		GLboolean blend = glIsEnabled(GL_BLEND); glEnable(GL_BLEND);
+		GLenum blend_src, blend_dst, depth;
+		glGetIntegerv(GL_BLEND_DST, reinterpret_cast<GLint*>(&blend_dst));
+		glGetIntegerv(GL_BLEND_SRC, reinterpret_cast<GLint*>(&blend_src));
+		glGetIntegerv(GL_DEPTH_FUNC, reinterpret_cast<GLint*>(&depth));
+
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
 		rr.set_position_array(ctx, P);
 		rr.set_rotation_array(ctx, Q);
 		rr.set_extent_array(ctx, E);
@@ -232,6 +264,10 @@ void vr_scene::draw(cgv::render::context& ctx)
 		lm.get_texture()->enable(ctx);
 		rr.render(ctx, 0, P.size());
 		lm.get_texture()->disable(ctx);
+
+		if (!blend)
+			glDisable(GL_BLEND);
+		glBlendFunc(blend_src, blend_dst);
 	}
 }
 
@@ -259,6 +295,29 @@ void vr_scene::create_gui()
 		add_member_control(this, "offset", leg_offset, "value_slider", "min=0.0;max=0.5;ticks=true");
 		align("\b");
 		end_tree_node(table_width);
+	}
+	if (begin_tree_node("labels", lm)) {
+		align("\a");
+		for (size_t i = 0; i < label_positions.size(); ++i) {
+			if (begin_tree_node(std::string("label ") + cgv::utils::to_string(i), label_positions[i])) {
+				align("\a");
+				add_member_control(this, "visible", (bool&)label_visibilities[i], "toggle");
+				add_member_control(this, "coordinate_system", (cgv::type::DummyEnum&)label_coord_systems[i], "dropdown", "enums='lab,table,head,left controller,right controller'");
+				add_gui("position", label_positions[i], "vector", "gui_type='value_slider';options='min=-2;max=2;ticks=true'");
+				add_gui("orientation", (vec4&)label_orientations[i], "direction", "gui_type='value_slider';options='min=-1;max=1;ticks=true'");
+				add_gui("extent", label_extents[i], "vector", "gui_type='value_slider';options='min=0;max=1;ticks=true'");
+				align("\b");
+				end_tree_node(label_positions[i]);
+			}
+		}
+		if (begin_tree_node("rectangles", rrs)) {
+			align("\a");
+			add_gui("rrs", rrs);
+			align("\b");
+			end_tree_node(rrs);
+		}
+		align("\b");
+		end_tree_node(lm);
 	}
 }
 

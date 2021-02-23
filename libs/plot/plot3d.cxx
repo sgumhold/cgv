@@ -41,7 +41,8 @@ plot3d_config::plot3d_config(const std::string& _name) : plot_base_config(_name)
 
 void plot3d::set_uniforms(cgv::render::context& ctx, cgv::render::shader_program& prog, unsigned i)
 {
-	plot_base::set_uniforms(ctx, prog, i);
+	plot_base::set_plot_uniforms(ctx, prog);
+	plot_base::set_mapping_uniforms(ctx, prog);
 	if (i >= 0 && i < get_nr_sub_plots()) {
 		const plot3d_config& spc = ref_sub_plot3d_config(i);
 	}

@@ -25,6 +25,8 @@ namespace cgv {
 			bool use_group_point_size;
 			/// whether to measure point size in pixels or in world space relative to reference_pixel_size passed to enable method, defaults to true
 			bool measure_point_size_in_pixel;
+			/// whether to span point splat in screen aligned coordinate system
+			bool screen_aligned;
 			//@}
 
 			/*@name global point rendering options*/
@@ -41,6 +43,8 @@ namespace cgv {
 			float halo_color_strength;
 			/// set to true in constructor
 			bool blend_points;
+			///
+			float default_depth_offset;
 			/// construct with default values
 			point_render_style();
 		};
@@ -52,6 +56,7 @@ namespace cgv {
 			bool has_point_sizes;
 			bool has_group_point_sizes;
 			bool has_indexed_colors;
+			bool has_depth_offsets;
 			float reference_point_size;
 			float y_view_angle;
 			/// overload to allow instantiation of point_renderer
@@ -69,6 +74,9 @@ namespace cgv {
 			///
 			template <typename T = float>
 			void set_point_size_array(const context& ctx, const std::vector<T>& point_sizes) { has_point_sizes = true; set_attribute_array(ctx, ref_prog().get_attribute_location(ctx, "point_size"), point_sizes); }
+			/// set per point depth offsets
+			template <typename T = float>
+			void set_depth_offset_array(const context& ctx, const std::vector<T>& depth_offsets) { has_depth_offsets = true; set_attribute_array(ctx, ref_prog().get_attribute_location(ctx, "depth_offset"), depth_offsets); }
 			///
 			template <typename T = unsigned, typename C = cgv::media::color<float,cgv::media::RGB,cgv::media::OPACITY> >
 			void set_indexed_color_array(const context& ctx, const std::vector<T>& color_indices, const std::vector<C>& palette) {

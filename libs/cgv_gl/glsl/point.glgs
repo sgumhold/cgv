@@ -1,22 +1,32 @@
-#version 150
-#extension GL_EXT_geometry_shader4 : enable
+#version 330 core
 
 layout(points) in;
 layout(triangle_strip, max_vertices = 4) out;
 
 uniform bool measure_point_size_in_pixel = true;
+uniform bool screen_aligned = true;
 uniform float reference_point_size = 1.0;
 uniform float pixel_extent_per_depth;
+uniform float blend_width_in_pixel = 1.0;
 
-in vec4 color_gs[];
+in POINT_GS {
+	vec4 color;
+	vec4 halo_color;
+	float halo_width_in_pixel;
+	float percentual_halo_width;
+	float depth_offset;
+} gi[];
 
-out vec2 uv;
-out vec4 color_fs;
-
-out float percentual_blend_width;
-out float percentual_core_size;
-out float percentual_point_size;
-out float percentual_splat_size;
+out POINT_FS {
+	vec2 uv;
+	vec4 color;
+	vec4 halo_color;
+	float percentual_blend_width;
+	float percentual_core_size;
+	float percentual_point_size;
+	float percentual_splat_size;
+	float depth_offset;
+} go;
 
 //***** begin interface of view.glsl ***********************************
 mat4 get_modelview_matrix();
@@ -31,37 +41,52 @@ mat3 get_inverse_normal_matrix();
 //***** begin interface of splat.glsl ***********************************
 void prepare_splat(
 	in float reference_point_radius, in float pixel_extent,
+	in float blend_width_in_pixel, in float halo_width_in_pixel, in float percentual_halo_width,
 	out float percentual_core_size, out float percentual_point_size,
 	out float percentual_blend_width, out float percentual_splat_size);
 //***** end interface of surface.glsl ***********************************
 
-void emit_corner(in vec3 corner, in float u, in float v)
+void emit_corner(in mat4 M, in vec3 corner, in float u, in float v)
 {
-	uv = vec2(u,v);
-
-	// compute position in clip space
-	gl_Position	   = get_projection_matrix() * vec4(corner,1.0);
-
+	go.uv = vec2(u,v);
+	gl_Position	= M * vec4(corner,1.0);
 	EmitVertex();
 }
 
 void main()
 {
 	// set color to color attribute
-	color_fs = color_gs[0];
+	go.color = gi[0].color;
+	go.halo_color = gi[0].halo_color;
+	go.depth_offset = gi[0].depth_offset;
 	// transform position to eye space
-	vec4 p4d = get_modelview_matrix()*gl_PositionIn[0];
-	vec3 position_eye = p4d.xyz/p4d.w;
+	float z_eye;
+	vec4 tmp = get_modelview_matrix()*gl_in[0].gl_Position;
+	mat4 M;
+	vec3 center = gl_in[0].gl_Position.xyz;
+	if (screen_aligned) {
+		center = tmp.xyz/tmp.w;
+		z_eye = center.z;
+		M = get_projection_matrix();
+	}
+	else {
+		z_eye = tmp.z/tmp.w;
+		M = get_modelview_projection_matrix();
+	}
+
+	//vec4 p4d = get_modelview_matrix()*gl_PositionIn[0];
+	//vec3 position_eye = p4d.xyz/p4d.w;
 	// compute extent of a pixel at point depth in eye coordinates
-	float pixel_extent = pixel_extent_per_depth * abs(position_eye.z);
+	float pixel_extent = pixel_extent_per_depth * abs(z_eye);
 	// compute point radius from input point size
-	float reference_point_radius = 0.5 * gl_PointSizeIn[0] * (measure_point_size_in_pixel ?  pixel_extent : reference_point_size);
+	float reference_point_radius = 0.5 * gl_in[0].gl_PointSize * (measure_point_size_in_pixel ?  pixel_extent : reference_point_size);
 	// compute splat parameters for fragment shader
 	prepare_splat(reference_point_radius, pixel_extent,
-		percentual_core_size, percentual_point_size,
-		percentual_blend_width, percentual_splat_size);
+	    blend_width_in_pixel, gi[0].halo_width_in_pixel, gi[0].percentual_halo_width,
+		go.percentual_core_size, go.percentual_point_size,
+		go.percentual_blend_width, go.percentual_splat_size);
 	// compute radius of splat
-	float splat_radius = reference_point_radius * percentual_splat_size;
+	float splat_radius = reference_point_radius * go.percentual_splat_size;
 	// compute splat base vectors
 	vec3 dx = vec3(1.0 ,0.0, 0.0);
 	vec3 dy = vec3(0.0, 1.0, 0.0);
@@ -69,8 +94,8 @@ void main()
 	dx *= splat_radius;
 	dy *= splat_radius;
 	// generate splat vertices
-	emit_corner(position_eye + dx - dy,  percentual_splat_size, -percentual_splat_size);
-	emit_corner(position_eye + dx + dy,  percentual_splat_size,  percentual_splat_size);
-	emit_corner(position_eye - dx - dy, -percentual_splat_size, -percentual_splat_size);
-	emit_corner(position_eye - dx + dy, -percentual_splat_size,  percentual_splat_size);
+	emit_corner(M, center + dx - dy,  go.percentual_splat_size, -go.percentual_splat_size);
+	emit_corner(M, center + dx + dy,  go.percentual_splat_size,  go.percentual_splat_size);
+	emit_corner(M, center - dx - dy, -go.percentual_splat_size, -go.percentual_splat_size);
+	emit_corner(M, center - dx + dy, -go.percentual_splat_size,  go.percentual_splat_size);
 }

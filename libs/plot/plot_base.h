@@ -81,25 +81,58 @@ struct CGV_API plot_base_config : public cgv::render::render_types
 	bool show_points;
 	/// point size in pixels
 	float point_size;
+	/// index used to map point size (defaults to 0)
+	int point_size_idx;
+
 	/// point color
 	rgba point_color;
-	
+	/// index used to map point color (defaults to 0)
+	int point_color_idx;
+	/// index used to map point opacity (defaults to 0)
+	int point_opacity_idx;
+	/// width of point halo in pixel
+	float point_halo_width;
+	/// color of point halo
+	rgba point_halo_color;
+	/// index used to map point halo color (defaults to -1)
+	int point_halo_color_idx;
+	/// index used to map point halo opacity (defaults to -1)
+	int point_halo_opacity_idx;
+
 	/// whether to connect data points with lines
 	bool show_lines;
 	/// line width
 	float line_width;
+	///
+	int line_size_idx;
 	/// line color
 	rgba line_color;
+	/// 
+	int line_color_idx;
+	/// 
+	int line_opacity_idx;
 
 	/// whether to show straight lines to the bottom of the plot, which are called sticks
 	bool show_sticks;
+	/// extended stick information
+	int stick_coordinate_index;
+	/// base window position of stick
+	float stick_base_window;
 	/// line width of stick
 	float stick_width;
 	/// color of the stick line
 	rgba stick_color;
+	///
+	int stick_size_idx;
+	int stick_color_idx;
+	int stick_opacity_idx;
 
 	/// whether to show bars
 	bool show_bars;
+	/// extended bar information
+	int bar_coordinate_index;
+	///
+	float bar_base_window;
 	/// line width of bar outlines
 	float bar_outline_width;
 	/// percentual width of bar computed assuming a uniform y-sampling distance
@@ -108,6 +141,13 @@ struct CGV_API plot_base_config : public cgv::render::render_types
 	rgba bar_color;
 	/// bar outline color
 	rgba bar_outline_color;
+	int bar_size_idx;
+	int bar_color_idx;
+	int bar_opacity_idx;
+	int bar_outline_size_idx;
+	int bar_outline_color_idx;
+	int bar_outline_opacity_idx;
+
 	/// set default values
 	plot_base_config(const std::string& _name);
 	/// configure the sub plot to a specific chart type
@@ -308,8 +348,10 @@ protected:
 	void on_font_selection();
 	/// callback to change font face
 	void on_font_face_selection();
-	/// set the uniforms for the i-th sub plot, overloaded by derived classes to set uniforms of derived configuration classes
-	virtual void set_uniforms(cgv::render::context& ctx, cgv::render::shader_program& prog, unsigned i = -1, bool is_legend = false);
+	/// set the uniforms for plot configurations
+	void set_plot_uniforms(cgv::render::context& ctx, cgv::render::shader_program& prog);
+	/// set the uniforms for defining the mappings to visual variables
+	void set_mapping_uniforms(cgv::render::context& ctx, cgv::render::shader_program& prog);
 	/// set vertex shader input attributes based on single vector of 2d points
 	void set_attributes(cgv::render::context& ctx, const std::vector<vec2>& points);
 	/// set vertex shader input attributes based on single vector of 3d points

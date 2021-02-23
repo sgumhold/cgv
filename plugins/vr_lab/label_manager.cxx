@@ -277,7 +277,7 @@ void label_manager::draw_labels(cgv::render::context& ctx, bool all)
 		draw_label_texts(ctx, rotated_labels, tex_width, all, true);
 		ctx.pop_pixel_coords();
 		tmp_fbo.disable(ctx);
-		//tmp_tex.write_to_file(ctx, "C:/temp/tmp_tex.bmp");
+		tmp_tex.write_to_file(ctx, "C:/temp/tmp_tex.bmp");
 	}
 	// then draw not rotated labels
 	bool created = ensure_tex_fbo_combi(ctx, *tex, fbo, tex_width, tex_height);
@@ -335,7 +335,7 @@ void label_manager::draw_labels(cgv::render::context& ctx, bool all)
 	}
 	ctx.pop_pixel_coords();
 	fbo.disable(ctx);
-	//tex->write_to_file(ctx, "C:/temp/tex.bmp");
+	tex->write_to_file(ctx, "C:/temp/tex.bmp");
 
 	ctx.pop_window_transformation_array();
 	ctx.enable_font_face(old_font_face, old_font_size);

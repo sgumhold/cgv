@@ -14,8 +14,17 @@ namespace cgv {
 			counter decreases to 0, singelton renderer is destructed. */
 		extern CGV_API rectangle_renderer& ref_rectangle_renderer(context& ctx, int ref_count_change = 0);
 
-		typedef surface_render_style plane_render_style;
-		
+		struct CGV_API rectangle_render_style : public surface_render_style
+		{
+			int border_mode;
+			rgba border_color;
+			float pixel_blend;
+			float percentual_border_width;
+			float border_width_in_pixel;
+			float default_depth_offset;
+			rectangle_render_style();
+		};
+
 		/// renderer that supports plane rendering
 		class CGV_API rectangle_renderer : public surface_renderer
 		{
@@ -30,11 +39,14 @@ namespace cgv {
 			bool position_is_center;
 			/// whether depth offset array has been specified
 			bool has_depth_offsets;
+			float y_view_angle;
 			/// overload to allow instantiation of rectangle_renderer
 			render_style* create_render_style() const;
 		public:
 			///
 			rectangle_renderer();
+			///
+			void set_y_view_angle(float y_view_angle);
 			///
 			void set_attribute_array_manager(const context& ctx, attribute_array_manager* _aam_ptr);
 			///
@@ -72,8 +84,6 @@ namespace cgv {
 				has_extents = true;
 				set_position_is_center(false);
 			}
-			/// set const depth offset for all rectangles to follow
-			void set_depth_offset(const context& ctx, float depth_offset);
 			/// set per rectangle depth offsets
 			template <typename T = float>
 			void set_depth_offset_array(const context& ctx, const std::vector<T>& depth_offsets) { has_depth_offsets = true; set_attribute_array(ctx, ref_prog().get_attribute_location(ctx, "depth_offset"), depth_offsets); }
@@ -99,6 +109,11 @@ namespace cgv {
 			void draw(context& ctx, size_t start, size_t count,
 				bool use_strips = false, bool use_adjacency = false, uint32_t strip_restart_index = -1);
 		};
+		struct CGV_API rectangle_render_style_reflect : public rectangle_render_style
+		{
+			bool self_reflect(cgv::reflect::reflection_handler& rh);
+		};
+		extern CGV_API cgv::reflect::extern_reflection_traits<rectangle_render_style, rectangle_render_style_reflect> get_reflection_traits(const rectangle_render_style&);
 	}
 }
 
