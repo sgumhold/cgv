@@ -7,6 +7,20 @@
 
 namespace vr {
 
+/// set the common border color of labels
+void vr_scene::set_label_border_color(const rgba& border_color)
+{
+	rrs.border_color = border_color;
+	update_member(&rrs.percentual_border_width);
+}
+/// set the common border width in percent of the minimal extent
+void vr_scene::set_label_border_width(float border_width)
+{
+	rrs.percentual_border_width = border_width;
+	update_member(&rrs.percentual_border_width);
+}
+
+
 void vr_scene::construct_table(float tw, float td, float th, float tW, float tO, rgb table_clr, rgb leg_clr) 
 {
 	float x0 = -0.5f * tw;
@@ -94,6 +108,10 @@ vr_scene::vr_scene()
 	leg_color = rgb(0.2f, 0.1f, 0.1f);
 	leg_width = 0.04f;
 	leg_offset = 0.0f;
+
+	rrs.map_color_to_material = cgv::render::CM_COLOR_AND_OPACITY;
+	rrs.border_mode = 3;
+	rrs.illumination_mode = cgv::render::IM_OFF;
 
 	build_scene(5, 7, 3, 0.2f);
 
@@ -234,18 +252,6 @@ void vr_scene::finish_frame(cgv::render::context& ctx)
 	}
 	// draw labels
 	if (!P.empty()) {
-		/*
-		auto& br = cgv::render::ref_box_renderer(ctx);
-		br.set_render_style(style);
-		std::vector<vec3> E3;
-		for (auto e : E)
-			E3.push_back(vec3(e, 0.1f));
-		// draw static part
-		br.set_position_array(ctx, P);
-		br.set_rotation_array(ctx, Q);
-		br.set_extent_array(ctx, E3);
-		br.render(ctx, 0, P.size());
-		*/
 		auto& rr = cgv::render::ref_rectangle_renderer(ctx);
 		rr.set_render_style(rrs);
 
