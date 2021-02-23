@@ -1,0 +1,17 @@
+vertex_file:plot2d_rect.glvs
+vertex_file:color_scale.glsl
+vertex_file:plot_lib.glsl
+vertex_file:quaternion.glsl
+vertex_file:view.glsl
+geometry_shader_info:points;triangle_strip;4
+geometry_file:rectangle.glgs
+geometry_file:view.glsl
+geometry_file:side.glsl
+geometry_file:quaternion.glsl
+fragment_file:rectangle.glfs
+fragment_file:fragment.glfs
+fragment_file:side.glsl
+fragment_file:lights.glsl
+fragment_file:bump_map.glfs
+fragment_file:surface.glsl
+fragment_file:brdf.glsl

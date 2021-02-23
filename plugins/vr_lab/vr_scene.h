@@ -60,10 +60,10 @@ protected:
 	std::vector<vec4> label_texture_ranges;
 
 	// label visibility
-	std::vector<bool> label_visibilities;
+	std::vector<int> label_visibilities;
 
-	/// for rectangle renderer a plane_render_style is needed
-	cgv::render::plane_render_style prs;
+	/// for rectangle renderer a rectangle_render_style is needed
+	cgv::render::rectangle_render_style rrs;
 public:
 	/// different coordinate systems used to place labels
 	enum CoordinateSystem
@@ -95,7 +95,7 @@ public:
 		label_extents.push_back(vec2(1.0f));
 		label_texture_ranges.push_back(vec4(0.0f));
 		label_coord_systems.push_back(CS_LAB);
-		label_visibilities.push_back(true);
+		label_visibilities.push_back(1);
 		return li;
 	}
 	/// update label text
@@ -112,9 +112,9 @@ public:
 		label_coord_systems[li] = coord_system;
 	}
 	/// hide a label
-	void hide_label(uint32_t li) { label_visibilities[li] = false; }
+	void hide_label(uint32_t li) { label_visibilities[li] = 0; }
 	/// show a label
-	void show_label(uint32_t li) { label_visibilities[li] = true; }
+	void show_label(uint32_t li) { label_visibilities[li] = 1; }
 	//@}
 
 public:
@@ -144,6 +144,8 @@ public:
 	void clear(cgv::render::context& ctx);
 	/// draw scene here
 	void draw(cgv::render::context& ctx);
+	/// draw transparent part here
+	void finish_frame(cgv::render::context& ctx);
 	//@}
 
 	/// cgv::gui::provider function to create classic UI

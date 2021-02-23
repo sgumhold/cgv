@@ -86,10 +86,10 @@ public:
 					vec3 controller_pos = reinterpret_cast<const vec3&>(vr_view_ptr->get_current_vr_state()->controller[ci].pose[9]);
 					float controller_depth = dot(view_dir, controller_pos - view_pos);
 					float controller_dist = (view_pos + controller_depth * view_dir - controller_pos).length();
-					if (view_dir.y() < -0.5f && controller_depth / controller_dist > 5.0f)
+					//if (view_dir.y() < -0.5f && controller_depth / controller_dist > 5.0f)
 						scene_ptr->show_label(li_help[ci]);
-					else
-						scene_ptr->hide_label(li_help[ci]);
+					//else
+//						scene_ptr->hide_label(li_help[ci]);
 				}
 			}
 

@@ -118,7 +118,7 @@ public:
 			static_cast<cgv::render::render_style&>(point_style) :
 			static_cast<cgv::render::render_style&>(sphere_style));
 		if (r.validate_and_enable(ctx)) {
-			glDrawArrays(GL_POINTS, 0, points.size());
+			glDrawArrays(GL_POINTS, 0, GLsizei(points.size()));
 			r.disable(ctx);
 		}
 		r.set_attribute_array_manager(ctx, 0);

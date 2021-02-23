@@ -5,7 +5,6 @@ in vec4 color_fs;
 
 uniform int color_index = 0;
 uniform int opacity_index = -1;
-uniform vec4 legend_color = vec4(0.9,1.0,0.3,1.0);
 uniform float depth_offset = 0.0;
 
 //***** begin interface of plot_lib.glsl ***********************************
