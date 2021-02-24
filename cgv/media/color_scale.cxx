@@ -1,5 +1,6 @@
 #include "color_scale.h"
 #include <map>
+#include <algorithm>
 
 namespace cgv {
 	namespace media {
