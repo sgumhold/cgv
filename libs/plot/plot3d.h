@@ -56,9 +56,7 @@ class CGV_API plot3d : public plot_base
 	cgv::render::rounded_cone_render_style rcrs;
 	bool compute_sample_coordinate_interval(int i, int ai, float& samples_min, float& samples_max);
 	void draw_domain(cgv::render::context& ctx);
-	void draw_axes(cgv::render::context& ctx);
 	void draw_ticks(cgv::render::context& ctx);
-	void draw_tick_labels(cgv::render::context& ctx);
 	void draw_sub_plots(cgv::render::context& ctx);
 protected:
 	std::vector<std::vector<vec3> > samples;
