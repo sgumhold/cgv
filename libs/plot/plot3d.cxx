@@ -469,51 +469,6 @@ void plot3d::draw_domain(cgv::render::context& ctx)
 	rcr.render(ctx, 0, P.size());
 }
 
-void plot3d::draw_axes(cgv::render::context& ctx)
-{
-	box3 domain = get_domain3();
-	vec3 domain_min = domain.get_min_pnt();
-	vec3 domain_max = domain.get_max_pnt();
-	std::vector<vec3> P;
-	for (unsigned ai = 0; ai < 3; ++ai) {
-		unsigned aj = (ai + 1) % 3;
-		unsigned ak = (ai + 2) % 3;
-		axis_config& ac = get_domain_config_ptr()->axis_configs[ai];
-		axis_config& ao = get_domain_config_ptr()->axis_configs[aj];
-		axis_config& ap = get_domain_config_ptr()->axis_configs[ak];
-		ctx.set_color(ac.color);
-		glLineWidth(ac.line_width);
-		// 4 lines 
-		vec3 p(domain_min.size(), &domain_min(0)); P.push_back(p);
-		p(ai) = domain_max(ai); P.push_back(p);
-		p(aj) = domain_max(aj); P.push_back(p);
-		p(ai) = domain_min(ai); P.push_back(p);
-		p(ak) = domain_max(ak); P.push_back(p);
-		p(ai) = domain_max(ai); P.push_back(p);
-		p(aj) = domain_min(aj); P.push_back(p);
-		p(ai) = domain_min(ai); P.push_back(p);
-		// axis line
-		if (domain_min(aj) < 0 && domain_max(aj) > 0) {
-			p(aj) = 0.0f; P.push_back(p);
-			p(ai) = domain_max(ai); P.push_back(p);
-			p(ak) = domain_min(ak); P.push_back(p);
-			p(ai) = domain_min(ai); P.push_back(p);
-		}
-		if (domain_min(ak) < 0 && domain_max(ak) > 0) {
-			p(ak) = 0.0f;
-			p(aj) = domain_min(aj); P.push_back(p);
-			p(ai) = domain_max(ai); P.push_back(p);
-			p(aj) = domain_max(aj); P.push_back(p);
-			p(ai) = domain_min(ai); P.push_back(p);
-		}
-		if (!P.empty()) {
-			set_attributes(ctx, P);
-			glDrawArrays(GL_LINES, 0, GLsizei(P.size()));
-			P.clear();
-		}
-	}
-}
-
 void plot3d::draw_ticks(cgv::render::context& ctx)
 {
 	if (tick_labels.empty())
@@ -555,66 +510,7 @@ void plot3d::draw(cgv::render::context& ctx)
 		draw_legend(ctx, 0.0f);
 
 	draw_sub_plots(ctx);
-		/*
-		enable_attributes(ctx, 3);
-		set_uniforms(ctx, prog, -1);
-		prog.enable(ctx);
-		draw_axes(ctx);
-		prog.disable(ctx);
-		disable_attributes(ctx, 3);
-
-		draw_ticks(ctx);
-
-		ctx.enable_font_face(label_font_face, get_domain_config_ptr()->label_font_size);
-		draw_tick_labels(ctx);
-		*/
 	ctx.pop_modelview_matrix();
-	return;
-	if (!line_smooth)
-		glDisable(GL_LINE_SMOOTH);
-	if (!point_smooth)
-		glDisable(GL_POINT_SMOOTH);
-	if (!blend)
-		glDisable(GL_BLEND);
-	glDepthFunc(depth);
-	glBlendFunc(blend_src, blend_dst);
-
-	/*
-	GLboolean line_smooth = glIsEnabled(GL_LINE_SMOOTH); glEnable(GL_LINE_SMOOTH);
-	GLboolean point_smooth = glIsEnabled(GL_POINT_SMOOTH); glEnable(GL_POINT_SMOOTH);
-	GLboolean blend = glIsEnabled(GL_BLEND); glEnable(GL_BLEND);
-	GLenum blend_src, blend_dst, depth;
-	glGetIntegerv(GL_BLEND_DST, reinterpret_cast<GLint*>(&blend_dst));
-	glGetIntegerv(GL_BLEND_SRC, reinterpret_cast<GLint*>(&blend_src));
-	glGetIntegerv(GL_DEPTH_FUNC, reinterpret_cast<GLint*>(&depth));
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	glDepthFunc(GL_LEQUAL);
-	
-	enable_attributes(ctx, 3);
-	for (unsigned i = 0; i < samples.size(); ++i) {
-		// skip unvisible and empty sub plots
-		if (!ref_sub_plot3d_config(i).show_plot)
-			continue;
-		draw_sub_plot(ctx, i);
-	}
-	disable_attributes(ctx, 3);
-	
-	if (get_domain_config_ptr()->show_domain) {
-		draw_domain(ctx);
-		
-		enable_attributes(ctx, 3);
-			set_uniforms(ctx, prog, -1);
-			prog.enable(ctx);
-				draw_axes(ctx);
-			prog.disable(ctx);
-		disable_attributes(ctx, 3);
-		
-		draw_ticks(ctx);
-		
-		ctx.enable_font_face(label_font_face, get_domain_config_ptr()->label_font_size);
-		draw_tick_labels(ctx);
-		
-	}
 
 	if (!line_smooth)
 		glDisable(GL_LINE_SMOOTH);
@@ -624,9 +520,6 @@ void plot3d::draw(cgv::render::context& ctx)
 		glDisable(GL_BLEND);
 	glDepthFunc(depth);
 	glBlendFunc(blend_src, blend_dst);
-
-	draw_legend(ctx);
-	*/
 }
 
 void plot3d::clear(cgv::render::context& ctx)

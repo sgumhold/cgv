@@ -1,13 +1,14 @@
-#version 330 core
+#version 330
+
+uniform int stick_coordinate_index = 1;
+uniform float stick_base_window = 0.0;
 
 uniform int color_index = -1;
-uniform int secondary_color_index = -1;
 uniform int opacity_index = -1;
+uniform int secondary_color_index = -1;
 uniform int secondary_opacity_index = -1;
 uniform int size_index = -1;
 uniform int secondary_size_index = -1;
-
-uniform float radius_scale = 1.0;
 
 layout(location = 0) in float attribute0;
 layout(location = 1) in float attribute1;
@@ -19,10 +20,16 @@ layout(location = 6) in float attribute6;
 layout(location = 7) in float attribute7;
 
 in vec4 color;
-//in vec4 secondary_color;
+in vec4 secondary_color;
 in float size;
+in float secondary_size;
 
-out vec4 color_gs;
+out STICK_3D_GS {
+	vec4 start_sphere;
+	vec4 end_sphere;
+	vec4 start_color;
+	vec4 end_color;
+} vo;
 
 //***** begin interface of plot_lib.glsl ***********************************
 uniform float attribute_min[8];
@@ -52,21 +59,35 @@ void main()
 	attributes[6] = attribute6;
 	attributes[7] = attribute7;
 
-	// map to visual attributes
-	color_gs = color;
-	if (color_index >=0)
-		color_gs.rgb = map_color(attributes, color_gs.rgb, color_index);
-	if (opacity_index >= 0)
-		color_gs.a = map_opacity(attributes, color_gs.a, opacity_index);
-	float radius = size;
+	float start_radius = size;
 	if (size_index >= 0)
-		radius = map_size(attributes, radius, size_index);
-
-	// transform vertex to clip space
+		start_radius = map_size(attributes, start_radius, size_index);
+	float end_radius = secondary_size;
+	if (secondary_size_index >= 0)
+		end_radius = map_size(attributes, end_radius, secondary_size_index);
+	// compute position in window space
 	vec3 position_window = vec3(
 		window_space_from_tick_space(0, tick_space_from_attribute_space(0, attribute0)),
 		window_space_from_tick_space(1, tick_space_from_attribute_space(1, attribute1)),
 		window_space_from_tick_space(2, tick_space_from_attribute_space(2, attribute2)));
-	vec3 position_plot = plot_space_from_window_space(position_window);
-	gl_Position = vec4(position_plot, radius*radius_scale);
+
+	vec3 min_window = position_window;
+	min_window[stick_coordinate_index]=min(position_window[stick_coordinate_index],stick_base_window);
+	vec3 max_window = position_window;
+	max_window[stick_coordinate_index]=max(position_window[stick_coordinate_index],stick_base_window);
+	vec3 min_plot = plot_space_from_window_space(min_window);
+	vec3 max_plot = plot_space_from_window_space(max_window);
+	vo.start_sphere = vec4(min_plot,start_radius);
+	vo.end_sphere = vec4(max_plot,end_radius);
+	vo.start_color = color;
+	if (color_index >=0)
+		vo.start_color.rgb = map_color(attributes, vo.start_color.rgb, color_index);
+	if (opacity_index >= 0)
+		vo.start_color.a = map_opacity(attributes, vo.start_color.a, opacity_index);
+	vo.end_color = secondary_color;
+	if (secondary_color_index >=0)
+		vo.end_color.rgb = map_color(attributes, vo.end_color.rgb, secondary_color_index);
+	if (secondary_opacity_index >= 0)
+		vo.end_color.a = map_opacity(attributes, vo.end_color.a, secondary_opacity_index);
+	gl_Position = vo.start_sphere;
 }
