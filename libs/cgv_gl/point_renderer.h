@@ -31,6 +31,8 @@ namespace cgv {
 
 			/*@name global point rendering options*/
 			//@{
+			/// default value for depth offset used to support layering
+			float default_depth_offset;
 			/// set to 1 in constructor 
 			float blend_width_in_pixel;
 			/// set to 0 in constructor
@@ -43,8 +45,6 @@ namespace cgv {
 			float halo_color_strength;
 			/// set to true in constructor
 			bool blend_points;
-			///
-			float default_depth_offset;
 			/// construct with default values
 			point_render_style();
 		};

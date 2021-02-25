@@ -6,6 +6,7 @@
 #include <cgv/render/attribute_array_binding.h>
 #include <libs/cgv_gl/gl/gl.h>
 #include <cgv/render/color_scale.h>
+#include <algorithm>
 
 namespace cgv {
 	namespace plot {
@@ -24,12 +25,13 @@ domain_config::domain_config(unsigned nr_axes) : color(0.85f,0.85f,0.85f), axis_
 	show_domain = true;
 	fill = true;
 	reference_size = 0.001f;
+	blend_width_in_pixel = 1.0f;
 	label_font_index = -1;
 	label_font_size = 16.0f;
 	label_ffa = cgv::media::font::FFA_BOLD_ITALIC;
 }
 
-plot_base_config::plot_base_config(const std::string& _name) : name(_name)
+plot_base_config::plot_base_config(const std::string& _name, unsigned dim) : name(_name)
 {
 	show_plot = true;
 	begin_sample = 0;
@@ -40,13 +42,14 @@ plot_base_config::plot_base_config(const std::string& _name) : name(_name)
 	bar_percentual_width = 0.75f;
 	point_halo_width = 1.0f;
 	point_halo_color = rgba(0.5f, 0.5f, 0.5f, 1.0f);
-	stick_coordinate_index = 1;
+	stick_coordinate_index = dim-1;
 	stick_base_window = 0.0f;
-	bar_coordinate_index = 1;
+	bar_coordinate_index = dim-1;
 	bar_base_window = 0.0;
-	set_colors(ref_color);
-	set_opacities(ref_opacity);
-	set_sizes(ref_size);
+	sub_plot_influence = SPI_ALL;
+	set_colors(ref_color.color);
+	set_opacities(ref_opacity.opacity);
+	set_sizes(ref_size.size);
 	configure_chart(CT_BAR_CHART);
 }
 
@@ -70,32 +73,100 @@ void plot_base_config::configure_chart(ChartType chart_type)
 ///
 void plot_base_config::set_colors(const rgb& base_color)
 {
-	ref_color = base_color;
-	point_color = base_color;
-	line_color = 0.25f * rgb(1, 1, 1) + 0.75f * base_color;
-	stick_color = 0.25f * rgb(0, 0, 0) + 0.75f * base_color;
-	bar_color = 0.5f*rgb(1, 1, 1) + 0.5f*base_color;
-	bar_outline_color = base_color;
+	ref_color.color = base_color;
+	if ((sub_plot_influence & SPI_POINT) != 0)
+		point_color.color = base_color;
+	if ((sub_plot_influence & SPI_POINT_HALO) != 0) {
+		cgv::media::color<float, cgv::media::HLS> hls_base(base_color);
+		hls_base.S() *= 0.6f;
+		point_halo_color.color = hls_base;
+	}
+	if ((sub_plot_influence & SPI_LINE) != 0)
+		line_color.color = 0.25f * rgb(1, 1, 1) + 0.75f * base_color;
+	if ((sub_plot_influence & SPI_STICK) != 0)
+		stick_color.color = 0.25f * rgb(0, 0, 0) + 0.75f * base_color;
+	if ((sub_plot_influence & SPI_BAR) != 0)
+		bar_color.color = 0.5f * rgb(1, 1, 1) + 0.5f * base_color;
+	if ((sub_plot_influence & SPI_BAR_OUTLINE) != 0)
+		bar_outline_color.color = base_color;
+}
+
+void plot_base_config::set_color_indices(int idx)
+{
+	if ((sub_plot_influence & SPI_POINT) != 0)
+		point_color.color_idx = idx;
+	if ((sub_plot_influence & SPI_POINT_HALO) != 0)
+		point_halo_color.color_idx = idx;
+	if ((sub_plot_influence & SPI_LINE) != 0)
+		line_color.color_idx = idx;
+	if ((sub_plot_influence & SPI_STICK) != 0)
+		stick_color.color_idx = idx;
+	if ((sub_plot_influence & SPI_BAR) != 0)
+		bar_color.color_idx = idx;
+	if ((sub_plot_influence & SPI_BAR_OUTLINE) != 0)
+		bar_outline_color.color_idx = idx;
 }
 
 void plot_base_config::set_sizes(float _size)
 {
-	ref_size = _size;
-	point_size = _size;
-	line_width = 0.5f * _size;
-	stick_width = 0.4f * _size;
-	bar_outline_width = 0.2f * _size;
-	point_halo_width = 0.2f * _size;
+	ref_size.size = _size;
+	if ((sub_plot_influence & SPI_POINT) != 0)
+		point_size.size = _size;
+	if ((sub_plot_influence & SPI_POINT_HALO) != 0)
+		point_halo_width.size = 0.2f * _size;
+	if ((sub_plot_influence & SPI_LINE) != 0)
+		line_width.size = 0.5f * _size;
+	if ((sub_plot_influence & SPI_STICK) != 0)
+		stick_width.size = 0.4f * _size;
+	if ((sub_plot_influence & SPI_BAR_OUTLINE) != 0)
+		bar_outline_width.size = 0.2f * _size;
+}
+
+void plot_base_config::set_size_indices(int idx)
+{
+	if ((sub_plot_influence & SPI_POINT) != 0)
+		point_size.size_idx = idx;
+	if ((sub_plot_influence & SPI_POINT_HALO) != 0)
+		point_halo_width.size_idx = idx;
+	if ((sub_plot_influence & SPI_LINE) != 0)
+		line_width.size_idx = idx;
+	if ((sub_plot_influence & SPI_STICK) != 0)
+		stick_width.size_idx = idx;
+	if ((sub_plot_influence & SPI_BAR_OUTLINE) != 0)
+		bar_outline_width.size_idx = idx;
 }
 
 void plot_base_config::set_opacities(float _opa)
 {
 	ref_opacity = _opa;
-	point_color.alpha() = _opa;
-	line_color.alpha() = pow(_opa, 0.8f);
-	stick_color.alpha() = pow(_opa, 0.9f);
-	bar_outline_color.alpha() = pow(_opa, 0.7f);
-	bar_color.alpha() = pow(_opa, 0.7f);
+	if ((sub_plot_influence & SPI_POINT) != 0)
+		point_color.color.alpha() = _opa;
+	if ((sub_plot_influence & SPI_POINT_HALO) != 0)
+		point_halo_color.color.alpha() = _opa;
+	if ((sub_plot_influence & SPI_LINE) != 0)
+		line_color.color.alpha() = pow(_opa, 0.8f);
+	if ((sub_plot_influence & SPI_STICK) != 0)
+		stick_color.color.alpha() = pow(_opa, 0.9f);
+	if ((sub_plot_influence & SPI_BAR) != 0) 
+		bar_outline_color.color.alpha() = pow(_opa, 0.7f);
+	if ((sub_plot_influence & SPI_BAR_OUTLINE) != 0)
+		bar_color.color.alpha() = pow(_opa, 0.7f);
+}
+
+void plot_base_config::set_opacity_indices(int idx)
+{
+	if ((sub_plot_influence & SPI_POINT) != 0)
+		point_color.opacity_idx = idx;
+	if ((sub_plot_influence & SPI_POINT_HALO) != 0)
+		point_halo_color.opacity_idx = idx;
+	if ((sub_plot_influence & SPI_LINE) != 0)
+		line_color.opacity_idx = idx;
+	if ((sub_plot_influence & SPI_STICK) != 0)
+		stick_color.opacity_idx = idx;
+	if ((sub_plot_influence & SPI_BAR) != 0)
+		bar_outline_color.opacity_idx = idx;
+	if ((sub_plot_influence & SPI_BAR_OUTLINE) != 0)
+		bar_color.opacity_idx = idx;
 }
 
 plot_base_config::~plot_base_config()
@@ -173,111 +244,6 @@ plot_base::vec3 plot_base::transform_to_world(const vecn& pnt_attr) const
 	return world_space_from_plot_space(pnt_plot);
 }
 
-void plot_base::collect_tick_geometry(int ai, int aj, const float* dom_min_pnt, const float* dom_max_pnt, const float* extent)
-{
-/*
-	int a0 = ai;
-	int a1 = aj;
-	if (a0 == 2)
-		a0 = 1 - a1;
-	if (a1 == 2)
-		a1 = 1 - a0;
-	axis_config& ac = get_domain_config_ptr()->axis_configs[ai];
-	for (unsigned ti=0; ti<2; ++ti) {
-		tick_config& tc = ti == 0 ? ac.primary_ticks : ac.secondary_ticks;
-		if (tc.type == TT_NONE)
-			return;
-		axis_config& ao = get_domain_config_ptr()->axis_configs[aj];
-		
-		float min_tick = ac.tick_space_from_attribute_space(ac.get_attribute_min());
-		float max_tick = ac.tick_space_from_attribute_space(ac.get_attribute_max());
-		int min_i = (int)ceil(min_tick / tc.step - std::numeric_limits<float>::epsilon());
-		int max_i = (int)((max_tick - fmod(max_tick, tc.step)) / tc.step);
-		// ignore secondary ticks on domain boundary
-		if (ti == 1 && min_i * tc.step - min_tick < std::numeric_limits<float>::epsilon())
-			++min_i;
-		if (ti == 1 && max_i * tc.step - max_tick > -std::numeric_limits<float>::epsilon())
-			--max_i;
-		float lw = 0.5f*get_domain_config_ptr()->reference_size*tc.line_width;
-		float dl = 0.5f*get_domain_config_ptr()->reference_size*tc.length;
-		float he = 0.5f * ac.extent;
-		float z_plot = ao.plot_space_from_attribute_space(0.0f);
-		for (int i = min_i; i <= max_i; ++i) {
-			float c_tick = (float)(i * tc.step);
-			float c_attr = ac.attribute_space_from_tick_space(c_tick);
-			if (tc.label)
-				label_str = cgv::utils::to_string(c[a0]);
-			// ignore secondary ticks on axes
-			if (ti == 1 && fabs(c_attr) < std::numeric_limits<float>::epsilon())
-				continue;
-			float c_plot = ac.plot_space_from_window_space(ac.window_space_from_tick_space(c_tick));
-			box2 r;
-			r.ref_min_pnt()[a0] = c_plot - lw;
-			r.ref_max_pnt()[a0] = c_plot + lw;
-			r.ref_min_pnt()[a1] = -he;
-			r.ref_max_pnt()[a1] = -he + dl;
-			R.push_back(r);
-			C.push_back(ac.color);
-			D.push_back()
-			std::string label_str;
-			switch (tc.type) {
-			case TT_DASH:
-				// generate label
-				if (!label_str.empty()) {
-					// left label
-					c[a1] = log_conform_add(s_min, -0.5f*dash_length, ao.log_scale, dom_min_pnt[aj], dom_max_pnt[aj]);
-					tick_labels.push_back(label_info(c, label_str, ai == 0 ? cgv::render::TA_TOP : cgv::render::TA_RIGHT));
-					// right label
-					c[a1] = log_conform_add(s_max,  0.5f*dash_length, ao.log_scale, dom_min_pnt[aj], dom_max_pnt[aj]);
-					tick_labels.push_back(label_info(c, label_str, ai == 0 ? cgv::render::TA_BOTTOM : cgv::render::TA_LEFT));
-				}
-				// left tick
-				c[a1] = s_min;
-				tick_vertices.push_back(c);
-				c[a1] = log_conform_add(s_min,  dash_length, ao.log_scale, dom_min_pnt[aj], dom_max_pnt[aj]);
-				tick_vertices.push_back(c);
-
-				// right tick
-				c[a1] = s_max;
-				tick_vertices.push_back(c);
-				c[a1] = log_conform_add(s_max, -dash_length, ao.log_scale, dom_min_pnt[aj], dom_max_pnt[aj]);
-				tick_vertices.push_back(c);
-
-				// non log axis tick
-				if (!ao.log_scale && s_min + 0.5f*dash_length < 0 && s_max - 0.5f*dash_length > 0) {
-					c[a1] = -0.5f*dash_length;
-					tick_vertices.push_back(c);
-					c[a1] = 0.5f*dash_length;
-					tick_vertices.push_back(c);
-				}
-				break;
-			case TT_LINE:
-			case TT_PLANE:
-				// generate label
-				if (!label_str.empty()) {
-					// left label
-					c[a1] = log_conform_add(s_min, -0.5f*dash_length, ao.log_scale, dom_min_pnt[aj], dom_max_pnt[aj]);
-					tick_labels.push_back(label_info(c, label_str, ai == 0 ? cgv::render::TA_TOP : cgv::render::TA_RIGHT));
-					// right label
-					c[a1] = log_conform_add(s_max, 0.5f*dash_length, ao.log_scale, dom_min_pnt[aj], dom_max_pnt[aj]);
-					tick_labels.push_back(label_info(c, label_str, ai == 0 ? cgv::render::TA_BOTTOM : cgv::render::TA_LEFT));
-				}
-				c[a1] = s_min; tick_vertices.push_back(c);
-				if (tc.label) {
-					c(a1) = log_conform_add(c(a1), -0.5f*dash_length, ao.log_scale, dom_min_pnt[aj], dom_max_pnt[aj]);
-					tick_labels.push_back(label_info(c, label_str, ai == 0 ? cgv::render::TA_TOP : cgv::render::TA_RIGHT));
-				}
-				c[a1] = s_max; tick_vertices.push_back(c);
-				break;
-			}
-		}
-		tick_batches.back().vertex_count = (unsigned)(tick_vertices.size() - tick_batches.back().first_vertex);
-		tick_batches.back().label_count = (unsigned)(tick_labels.size() - tick_batches.back().first_label);
-	}
-	*/
-}
-
-
 void plot_base::ensure_font_names()
 {
 	if (font_names.empty()) {
@@ -340,25 +306,27 @@ void plot_base::set_plot_uniforms(cgv::render::context& ctx, cgv::render::shader
 /// set the uniforms for defining the mappings to visual variables
 void plot_base::set_mapping_uniforms(cgv::render::context& ctx, cgv::render::shader_program& prog)
 {
-	prog.set_uniform_array(ctx, "color_mapping", color_mapping, 2);
-	prog.set_uniform_array(ctx, "opacity_mapping", opacity_mapping, 2);
-	prog.set_uniform(ctx, "size_mapping", size_mapping);
+	prog.set_uniform_array(ctx, "color_mapping", color_mapping, MAX_NR_COLOR_MAPPINGS);
+	prog.set_uniform_array(ctx, "opacity_mapping", opacity_mapping, MAX_NR_COLOR_MAPPINGS);
+	prog.set_uniform_array(ctx, "size_mapping", size_mapping, MAX_NR_COLOR_MAPPINGS);
 	if (prog.get_uniform_location(ctx, "color_scale_gamma[0]") != -1) {
 		cgv::render::configure_color_scale(ctx, prog, color_scale_index, window_zero_position);
-		prog.set_uniform_array(ctx, "color_scale_gamma", color_scale_gamma, 2);
+		prog.set_uniform_array(ctx, "color_scale_gamma", color_scale_gamma, MAX_NR_COLOR_MAPPINGS);
 	}
 	if (prog.get_uniform_location(ctx, "opacity_gamma[0]") != -1) {
-		prog.set_uniform_array(ctx, "opacity_gamma", opacity_gamma, 2);
-		prog.set_uniform_array(ctx, "opacity_min", opacity_min, 2);
-		prog.set_uniform_array(ctx, "opacity_max", opacity_max, 2);
-		int opa[2] = { opacity_is_bipolar[0] ? 1 : 0, opacity_is_bipolar[1] ? 1 : 0 };
-		prog.set_uniform_array(ctx, "opacity_is_bipolar", opa, 2);
-		prog.set_uniform_array(ctx, "opacity_window_zero_position", opacity_window_zero_position, 2);
+		prog.set_uniform_array(ctx, "opacity_gamma", opacity_gamma, MAX_NR_OPACITY_MAPPINGS);
+		prog.set_uniform_array(ctx, "opacity_min", opacity_min, MAX_NR_OPACITY_MAPPINGS);
+		prog.set_uniform_array(ctx, "opacity_max", opacity_max, MAX_NR_OPACITY_MAPPINGS);
+		int opa[MAX_NR_OPACITY_MAPPINGS];
+		for (int oi=0;oi< MAX_NR_OPACITY_MAPPINGS;++oi)
+			opa[oi] = opacity_is_bipolar[oi] ? 1 : 0;
+		prog.set_uniform_array(ctx, "opacity_is_bipolar", opa, MAX_NR_OPACITY_MAPPINGS);
+		prog.set_uniform_array(ctx, "opacity_window_zero_position", opacity_window_zero_position, MAX_NR_OPACITY_MAPPINGS);
 	}
-	if (prog.get_uniform_location(ctx, "size_mapping") != -1) {
-		prog.set_uniform(ctx, "size_gamma", size_gamma);
-		prog.set_uniform(ctx, "size_min", size_min);
-		prog.set_uniform(ctx, "size_max", size_max);
+	if (prog.get_uniform_location(ctx, "size_mapping[0]") != -1) {
+		prog.set_uniform_array(ctx, "size_gamma", size_gamma, MAX_NR_SIZE_MAPPINGS);
+		prog.set_uniform_array(ctx, "size_min", size_min, MAX_NR_SIZE_MAPPINGS);
+		prog.set_uniform_array(ctx, "size_max", size_max, MAX_NR_SIZE_MAPPINGS);
 	}
 }
 
@@ -491,31 +459,43 @@ void plot_base::disable_attributes(cgv::render::context& ctx, unsigned count)
 plot_base::plot_base(unsigned _dim, unsigned _nr_attributes) : dom_cfg(_dim+_nr_attributes)
 {
 	dim = _dim;
+	view_ptr = 0;
 	nr_attributes = _nr_attributes;
 	dom_cfg_ptr = &dom_cfg;
 	legend_components = LC_HIDDEN;
 	legend_location = vec3(0.8f, 0.6f, 0.0f);
 	legend_extent = vec2(0.05f,0.7f);
-	legend_color = rgba(0.9f, 1.0f, 0.3f, 1.0f);
+	legend_color = rgba(0.3f, 0.2f, 0.8f, 1.0f);
 	orientation = quat(1.0f, 0.0f, 0.0f, 0.0f);
 	center_location = vec3(0.0f);
 
-	color_mapping[0] = color_mapping[1] = -1;
-	color_scale_index[0] = color_scale_index[1] = cgv::media::CS_TEMPERATURE;
-	color_scale_gamma[0] = color_scale_gamma[1] = 1;
-	window_zero_position[0] = window_zero_position[1] = 0.5f;
-	
-	opacity_mapping[0] = opacity_mapping[1] = -1;
-	opacity_gamma[0] = opacity_gamma[1] = 1.0f;
-	opacity_is_bipolar[0] = opacity_is_bipolar[1] = false;
-	opacity_window_zero_position[0] = opacity_window_zero_position[1] = 0.5;
-	opacity_min[0] = opacity_min[1] = 0.1f;
-	opacity_max[0] = opacity_max[1] = 1.0f;
+	for (int ci = 0; ci < MAX_NR_COLOR_MAPPINGS; ++ci) {
+		color_mapping[ci] = -1;
+		color_scale_index[ci] = cgv::media::CS_TEMPERATURE;
+		color_scale_gamma[ci] = 1;
+		window_zero_position[ci] = 0.5f;
+	}
+	for (int oi = 0; oi < MAX_NR_OPACITY_MAPPINGS; ++oi) {
+		opacity_mapping[oi] = -1;
+		opacity_gamma[oi] = 1.0f;
+		opacity_is_bipolar[oi] = false;
+		opacity_window_zero_position[oi] = 0.5;
+		opacity_min[oi] = 0.1f;
+		opacity_max[oi] = 1.0f;
+	}
 
-	size_mapping = -1;
-	size_min = 0.1f;
-	size_max = 1.0f;
-	size_gamma = 1.0f;
+	for (int si = 0; si < MAX_NR_SIZE_MAPPINGS; ++si) {
+		size_mapping[si] = -1;
+		size_min[si] = 0.1f;
+		size_max[si] = 1.0f;
+		size_gamma[si] = 1.0f;
+	}
+}
+
+/// set the view ptr
+void plot_base::set_view_ptr(cgv::render::view* _view_ptr)
+{
+	view_ptr = _view_ptr;
 }
 
 void plot_base::draw_legend(cgv::render::context& ctx, float depth_offset)
@@ -898,44 +878,53 @@ void plot_base::create_plot_gui(cgv::base::base* bp, cgv::gui::provider& p)
 
 	ensure_font_names();
 	p.add_member_control(bp, "reference_size", get_domain_config_ptr()->reference_size, "value_slider", "min=0.0001;step=0.00001;max=1;log=true;ticks=true");
+	p.add_member_control(bp, "blend_width_in_pixel", get_domain_config_ptr()->blend_width_in_pixel, "value_slider", "min=0.0001;step=0.0;max=3.0;ticks=true");
 
 	if (p.begin_tree_node("visual variables", dim, false, "level=3")) {
 		p.align("\a");
 		bool show;
-		for (unsigned idx = 0; idx < 2; ++idx) {
-			std::string prefix = idx == 0 ? "prm_" : "snd_";
-			show = p.begin_tree_node(prefix + "color", color_mapping[idx], false, "level=3;align=' ';options='w=100'");
-			p.add_member_control(bp, "", (cgv::type::DummyEnum&)color_mapping[idx], "dropdown", "w=92;enums='off=-1,attr0,attr1,attr2,attr3,attr4,attr5,attr6,attr7'");
-			if (show) {
-				p.align("\a");
-				p.add_member_control(bp, prefix + "color_scale", (cgv::type::DummyEnum&)color_scale_index[idx], "dropdown", cgv::media::get_color_scale_enum_definition());
-				p.add_member_control(bp, prefix + "color_gamma", color_scale_gamma[idx], "value_slider", "min=0.1;step=0.01;max=10;log=true;ticks=true");
-				p.add_member_control(bp, prefix + "window_zero_position", window_zero_position[idx], "value_slider", "min=0;max=1;ticks=true");
-				p.align("\b");
-				p.end_tree_node(color_mapping[idx]);
+		unsigned nr = std::max(MAX_NR_COLOR_MAPPINGS, std::max(MAX_NR_SIZE_MAPPINGS, MAX_NR_OPACITY_MAPPINGS));
+		static const char* prefixes[] = { "primary_", "secondary_", "ternary_" };
+		for (unsigned idx = 0; idx < nr; ++idx) {
+			std::string prefix(prefixes[idx]);
+			if (idx < MAX_NR_COLOR_MAPPINGS) {
+				show = p.begin_tree_node(prefix + "color", color_mapping[idx], false, "level=3;align=' ';options='w=100'");
+				p.add_member_control(bp, "", (cgv::type::DummyEnum&)color_mapping[idx], "dropdown", "w=92;enums='off=-1,attr0,attr1,attr2,attr3,attr4,attr5,attr6,attr7'");
+				if (show) {
+					p.align("\a");
+					p.add_member_control(bp, prefix + "color_scale", (cgv::type::DummyEnum&)color_scale_index[idx], "dropdown", cgv::media::get_color_scale_enum_definition());
+					p.add_member_control(bp, prefix + "color_gamma", color_scale_gamma[idx], "value_slider", "min=0.1;step=0.01;max=10;log=true;ticks=true");
+					p.add_member_control(bp, prefix + "window_zero_position", window_zero_position[idx], "value_slider", "min=0;max=1;ticks=true");
+					p.align("\b");
+					p.end_tree_node(color_mapping[idx]);
+				}
 			}
-			show = p.begin_tree_node(prefix + "opacity", opacity_mapping[idx], false, "level=3;align=' ';options='w=100'");
-			p.add_member_control(bp, "", (cgv::type::DummyEnum&)opacity_mapping[idx], "dropdown", "w=92;enums='off=-1,attr0,attr1,attr2,attr3,attr4,attr5,attr6,attr7'");
-			if (show) {
-				p.align("\a");
-				p.add_member_control(bp, prefix + "opacity_gamma", opacity_gamma[idx], "value_slider", "min=0.1;step=0.01;max=10;log=true;ticks=true");
-				p.add_member_control(bp, prefix + "opacity_is_bipolar", opacity_is_bipolar[idx], "check");
-				p.add_member_control(bp, prefix + "opacity_window_zero_position", opacity_window_zero_position[idx], "value_slider", "min=0;max=1;ticks=true");
-				p.add_member_control(bp, prefix + "opacity_min", opacity_min[idx], "value_slider", "min=0;step=0.01;max=1;ticks=true");
-				p.add_member_control(bp, prefix + "opacity_max", opacity_max[idx], "value_slider", "min=0;step=0.01;max=1;ticks=true");
-				p.align("\b");
-				p.end_tree_node(opacity_mapping[idx]);
+			if (idx < MAX_NR_OPACITY_MAPPINGS) {
+				show = p.begin_tree_node(prefix + "opacity", opacity_mapping[idx], false, "level=3;align=' ';options='w=100'");
+				p.add_member_control(bp, "", (cgv::type::DummyEnum&)opacity_mapping[idx], "dropdown", "w=92;enums='off=-1,attr0,attr1,attr2,attr3,attr4,attr5,attr6,attr7'");
+				if (show) {
+					p.align("\a");
+					p.add_member_control(bp, prefix + "opacity_gamma", opacity_gamma[idx], "value_slider", "min=0.1;step=0.01;max=10;log=true;ticks=true");
+					p.add_member_control(bp, prefix + "opacity_is_bipolar", opacity_is_bipolar[idx], "check");
+					p.add_member_control(bp, prefix + "opacity_window_zero_position", opacity_window_zero_position[idx], "value_slider", "min=0;max=1;ticks=true");
+					p.add_member_control(bp, prefix + "opacity_min", opacity_min[idx], "value_slider", "min=0;step=0.01;max=1;ticks=true");
+					p.add_member_control(bp, prefix + "opacity_max", opacity_max[idx], "value_slider", "min=0;step=0.01;max=1;ticks=true");
+					p.align("\b");
+					p.end_tree_node(opacity_mapping[idx]);
+				}
 			}
-		}
-		show = p.begin_tree_node("size", size_mapping, false, "level=3;align=' ';options='w=100'");
-		p.add_member_control(bp, "", (cgv::type::DummyEnum&)size_mapping, "dropdown", "w=92;enums='off=-1,attr0,attr1,attr2,attr3,attr4,attr5,attr6,attr7'");
-		if (show) {
-			p.align("\a");
-			p.add_member_control(bp, "size_gamma", size_gamma, "value_slider", "min=0.1;step=0.01;max=10;log=true;ticks=true");
-			p.add_member_control(bp, "size_min", size_min, "value_slider", "min=0.1;step=0.01;max=10;log=true;ticks=true");
-			p.add_member_control(bp, "size_max", size_max, "value_slider", "min=0.1;step=0.01;max=10;log=true;ticks=true");
-			p.align("\b");
-			p.end_tree_node(size_mapping);
+			if (idx < MAX_NR_SIZE_MAPPINGS) {
+				show = p.begin_tree_node(prefix + "size", size_mapping[idx], false, "level=3;align=' ';options='w=100'");
+				p.add_member_control(bp, "", (cgv::type::DummyEnum&)size_mapping[idx], "dropdown", "w=92;enums='off=-1,attr0,attr1,attr2,attr3,attr4,attr5,attr6,attr7'");
+				if (show) {
+					p.align("\a");
+					p.add_member_control(bp, prefix+"size_gamma", size_gamma[idx], "value_slider", "min=0.1;step=0.01;max=10;log=true;ticks=true");
+					p.add_member_control(bp, prefix+"size_min", size_min[idx], "value_slider", "min=0.1;step=0.01;max=10;log=true;ticks=true");
+					p.add_member_control(bp, prefix+"size_max", size_max[idx], "value_slider", "min=0.1;step=0.01;max=10;log=true;ticks=true");
+					p.align("\b");
+					p.end_tree_node(size_mapping);
+				}
+			}
 		}
 		p.align("\b");
 		p.end_tree_node(dim);
@@ -943,9 +932,9 @@ void plot_base::create_plot_gui(cgv::base::base* bp, cgv::gui::provider& p)
 	if (p.begin_tree_node("legend", legend_components, false, "level=3")) {
 		p.align("\a");
 		p.add_member_control(bp, "legend_color", legend_color);
-		p.add_gui("legend_components", legend_components, "bit_field_control", "enums='prim color=1,snd color=2,prim opacity=4,seco opacity=8,size=16'");
+		p.add_gui("legend_components", legend_components, "bit_field_control", "enums='primary color=1,secondary color=2,primary opacity=4,secondary opacity=8,primary size=16,secondary size=32'");
 		p.add_gui("center", legend_location, "vector", "main_label='heading';gui_type='value_slider';options='min=-1.2;max=1.2;log=true;ticks=true'");
-		p.add_gui("extent", legend_extent, "vector", "options='min=0.1;max=10;step=0.001;log=true;ticks=true'");
+		p.add_gui("extent", legend_extent, "vector", "main_label='heading';gui_type='value_slider';options='min=0.01;max=10;step=0.001;log=true;ticks=true'");
 		p.align("\b");
 		p.end_tree_node(legend_components);
 	}
@@ -953,7 +942,6 @@ void plot_base::create_plot_gui(cgv::base::base* bp, cgv::gui::provider& p)
 	if (p.begin_tree_node("placement", center_location, false, "level=3")) {
 		p.align("\a");
 		p.add_gui("center", center_location, "vector", "main_label='heading';gui_type='value_slider';options='min=-100;max=100;log=true;ticks=true'");
-		//p.add_gui("extent", extent, "vector", "main_label='heading';gui_type='value_slider';options='min=0.01;max=100;step=0.001;log=true;ticks=true'");
 		p.add_gui("orientation", reinterpret_cast<vec4&>(orientation), "direction", "main_label='heading';gui_type='value_slider'");
 		p.align("\b");
 		p.end_tree_node(center_location);
@@ -977,75 +965,158 @@ void plot_base::create_plot_gui(cgv::base::base* bp, cgv::gui::provider& p)
 		p.end_tree_node(get_domain_config_ptr()->show_domain);
 	}
 }
+
 void plot_base::update_ref_opacity(unsigned i, cgv::gui::provider& p)
 {
 	plot_base_config& pbc = ref_sub_plot_config(i);
-	pbc.set_opacities(pbc.ref_opacity);
-	p.update_member(&pbc.bar_outline_color.alpha());
-	p.update_member(&pbc.bar_color.alpha());
-	p.update_member(&pbc.point_color.alpha());
-	p.update_member(&pbc.line_color.alpha());
-	p.update_member(&pbc.stick_color.alpha());
+	pbc.set_opacities(pbc.ref_opacity.opacity);
+	p.update_member(&pbc.point_color.color.alpha());
+	p.update_member(&pbc.point_halo_color.color.alpha());
+	p.update_member(&pbc.line_color.color.alpha());
+	p.update_member(&pbc.stick_color.color.alpha());
+	p.update_member(&pbc.bar_color.color.alpha());
+	p.update_member(&pbc.bar_outline_color.color.alpha());
 }
+
+void plot_base::update_ref_opacity_index(unsigned i, cgv::gui::provider& p)
+{
+	plot_base_config& pbc = ref_sub_plot_config(i);
+	pbc.set_opacity_indices(pbc.ref_opacity.opacity_idx);
+	p.update_member(&pbc.point_color.opacity_idx);
+	p.update_member(&pbc.point_halo_color.opacity_idx);
+	p.update_member(&pbc.line_color.opacity_idx);
+	p.update_member(&pbc.stick_color.opacity_idx);
+	p.update_member(&pbc.bar_color.opacity_idx);
+	p.update_member(&pbc.bar_outline_color.opacity_idx);
+}
+
 void plot_base::update_ref_color(unsigned i, cgv::gui::provider& p)
 {
 	plot_base_config& pbc = ref_sub_plot_config(i);
-	pbc.set_colors(pbc.ref_color);
-	p.update_member(&pbc.bar_outline_color);
-	p.update_member(&pbc.bar_color);
-	p.update_member(&pbc.point_color);
-	p.update_member(&pbc.line_color);
-	p.update_member(&pbc.stick_color);
+	pbc.set_colors(pbc.ref_color.color);
+	p.update_member(&pbc.point_color.color);
+	p.update_member(&pbc.point_halo_color.color);
+	p.update_member(&pbc.line_color.color);
+	p.update_member(&pbc.stick_color.color);
+	p.update_member(&pbc.bar_color.color);
+	p.update_member(&pbc.bar_outline_color.color);
+}
+
+void plot_base::update_ref_color_index(unsigned i, cgv::gui::provider& p)
+{
+	plot_base_config& pbc = ref_sub_plot_config(i);
+	pbc.set_color_indices(pbc.ref_color.color_idx);
+	p.update_member(&pbc.point_color.color_idx);
+	p.update_member(&pbc.point_halo_color.color_idx);
+	p.update_member(&pbc.line_color.color_idx);
+	p.update_member(&pbc.stick_color.color_idx);
+	p.update_member(&pbc.bar_color.color_idx);
+	p.update_member(&pbc.bar_outline_color.color_idx);
 }
 
 void plot_base::update_ref_size(unsigned i, cgv::gui::provider& p)
 {
 	plot_base_config& pbc = ref_sub_plot_config(i);
-	pbc.set_sizes(pbc.ref_size);
-	p.update_member(&pbc.bar_outline_width);
-	p.update_member(&pbc.point_size);
-	p.update_member(&pbc.line_width);
-	p.update_member(&pbc.stick_width);
-	p.update_member(&pbc.point_halo_width);
+	pbc.set_sizes(pbc.ref_size.size);
+	p.update_member(&pbc.point_size.size);
+	p.update_member(&pbc.point_halo_width.size);
+	p.update_member(&pbc.line_width.size);
+	p.update_member(&pbc.stick_width.size);
+	p.update_member(&pbc.bar_outline_width.size);
+}
+
+void plot_base::update_ref_size_index(unsigned i, cgv::gui::provider& p)
+{
+	plot_base_config& pbc = ref_sub_plot_config(i);
+	p.update_member(&pbc.point_size.size_idx);
+	p.update_member(&pbc.point_halo_width.size_idx);
+	p.update_member(&pbc.line_width.size_idx);
+	p.update_member(&pbc.stick_width.size_idx);
+	p.update_member(&pbc.bar_outline_width.size_idx);
 }
 
 void plot_base::create_base_config_gui(cgv::base::base* bp, cgv::gui::provider& p, unsigned i)
 {
 	plot_base_config& pbc = ref_sub_plot_config(i);
 	p.add_member_control(bp, "name", pbc.name);
-	connect_copy(p.add_member_control(bp, "color", pbc.ref_color)->value_change,
+	p.add_gui("sub plot influence", pbc.sub_plot_influence, "bit_field_control", 
+		"gui_type='toggle';align='';options='w=32';enums='pnt=1,halo=2,line=4,stk=8,bar=16,out=32'");
+	p.align("\n");
+	connect_copy(p.add_member_control(bp, "color", pbc.ref_color.color, "", "w=100", " ")->value_change,
 		cgv::signal::rebind(this, &plot_base::update_ref_color, cgv::signal::_c(i), cgv::signal::_r(p)));
-	connect_copy(p.add_member_control(bp, "opacity", pbc.ref_opacity, "value_slider", "min=0;max=1;ticks=true")->value_change,
+	connect_copy(p.add_member_control(bp, "", (cgv::type::DummyEnum&)pbc.ref_color.color_idx, "dropdown", "w=92;enums='off=-1,primary=0,secondary=1'")->value_change,
+		cgv::signal::rebind(this, &plot_base::update_ref_color_index, cgv::signal::_c(i), cgv::signal::_r(p)));
+
+	connect_copy(p.add_member_control(bp, "opacity", pbc.ref_opacity.opacity, "value_slider", "min=0;max=1;ticks=true;w=100", " ")->value_change,
 		cgv::signal::rebind(this, &plot_base::update_ref_opacity, cgv::signal::_c(i), cgv::signal::_r(p)));
-	connect_copy(p.add_member_control(bp, "size", pbc.ref_size, "value_slider", "min=1;max=20;log=true;ticks=true")->value_change,
+	connect_copy(p.add_member_control(bp, "", (cgv::type::DummyEnum&)pbc.ref_opacity.opacity_idx, "dropdown", "w=92;enums='off=-1,primary=0,secondary=1'")->value_change,
+		cgv::signal::rebind(this, &plot_base::update_ref_opacity_index, cgv::signal::_c(i), cgv::signal::_r(p)));
+
+	connect_copy(p.add_member_control(bp, "size", pbc.ref_size.size, "value_slider", "min=1;max=20;log=true;ticks=true;w=100", " ")->value_change,
 		cgv::signal::rebind(this, &plot_base::update_ref_size, cgv::signal::_c(i), cgv::signal::_r(p)));
+	connect_copy(p.add_member_control(bp, "", (cgv::type::DummyEnum&)pbc.ref_size.size_idx, "dropdown", "w=92;enums='off=-1,primary=0,secondary=1'")->value_change,
+		cgv::signal::rebind(this, &plot_base::update_ref_size_index, cgv::signal::_c(i), cgv::signal::_r(p)));
 
 	p.add_member_control(bp, "begin", pbc.begin_sample, "value_slider", "min=0;ticks=true")->set("max", attribute_sources[i].front().count - 1);
 	p.add_member_control(bp, "end", pbc.end_sample, "value_slider", "min=-1;ticks=true")->set("max", attribute_sources[i].front().count - 1);
 }
+
+void plot_base::add_mapped_size_control(cgv::gui::provider& p, cgv::base::base* bp, const std::string& name, mapped_size& ms, std::string options)
+{
+	if (options.empty())
+		options = "min=1;max=20;log=true;ticks=true;w=100";
+	else
+		options += ";w=140";
+	p.add_member_control(bp, name, ms.size, "value_slider", options, " ");
+	p.add_member_control(bp, "si", (cgv::type::DummyEnum&)ms.size_idx, "dropdown", "enums='off=-1,primary,secondary';w=52");
+}
+
+void plot_base::add_mapped_rgb_control(cgv::gui::provider& p, cgv::base::base* bp, const std::string& name, mapped_rgb& ms)
+{
+	p.add_member_control(bp, name, ms.color, "", "w=140", " ");
+	p.add_member_control(bp, "ci", (cgv::type::DummyEnum&)ms.color_idx, "dropdown", "enums='off=-1,primary,secondary';w=52");
+}
+void plot_base::add_mapped_rgba_control(cgv::gui::provider& p, cgv::base::base* bp, const std::string& name, mapped_rgba& ms)
+{
+	p.add_member_control(bp, name, ms.color, "", "w=80", " ");
+	p.add_member_control(bp, "ci", (cgv::type::DummyEnum&)ms.color_idx, "dropdown", "enums='off=-1,primary,secondary';w=42", " ");
+	p.add_member_control(bp, "oi", (cgv::type::DummyEnum&)ms.opacity_idx, "dropdown", "enums='off=-1,primary,secondary';w=42");
+}
+void plot_base::add_mapped_opacity_control(cgv::gui::provider& p, cgv::base::base* bp, const std::string& name, mapped_opacity& ms)
+{
+	p.add_member_control(bp, name, ms.opacity, "", "w=140", " ");
+	p.add_member_control(bp, "oi", (cgv::type::DummyEnum&)ms.opacity_idx, "dropdown", "enums='off=-1,primary,secondary';w=52");
+}
+
 void plot_base::create_point_config_gui(cgv::base::base* bp, cgv::gui::provider& p, plot_base_config& pbc)
 {
-	p.add_member_control(bp, "size", pbc.point_size, "value_slider", "min=1;max=20;log=true;ticks=true");
-	p.add_member_control(bp, "color", pbc.point_color);
-	p.add_member_control(bp, "halo_width", pbc.point_halo_width, "value_slider", "min=-10;max=10;log=true;ticks=true");
-	p.add_member_control(bp, "halo_color", pbc.point_halo_color);
+	add_mapped_rgba_control(p, bp, "color", pbc.point_color);
+	add_mapped_rgba_control(p, bp, "halo_color", pbc.point_halo_color);
+	add_mapped_size_control(p, bp, "size", pbc.point_size);
+	add_mapped_size_control(p, bp, "halo_width", pbc.point_halo_width, "min=-8;max=8;ticks=true");
 }
 void plot_base::create_line_config_gui(cgv::base::base* bp, cgv::gui::provider& p, plot_base_config& pbc)
 {
-	p.add_member_control(bp, "width", pbc.line_width, "value_slider", "min=1;max=20;log=true;ticks=true");
-	p.add_member_control(bp, "color", pbc.line_color);
+	add_mapped_rgba_control(p, bp, "color", pbc.line_color);
+	add_mapped_size_control(p, bp, "width", pbc.line_width);
 }
 void plot_base::create_stick_config_gui(cgv::base::base* bp, cgv::gui::provider& p, plot_base_config& pbc)
 {
-	p.add_member_control(bp, "width", pbc.stick_width, "value_slider", "min=1;max=20;log=true;ticks=true");
-	p.add_member_control(bp, "color", pbc.stick_color);
+	p.add_member_control(bp, "crd_idx", pbc.stick_coordinate_index, "value_slider", "min=0;max=1;ticks=true")
+		->set("max", get_dim()-1);
+	p.add_member_control(bp, "base", pbc.stick_base_window, "value_slider", "min=0;max=1;ticks=true");
+	add_mapped_rgba_control(p, bp, "color", pbc.stick_color);
+	add_mapped_size_control(p, bp, "width", pbc.stick_width);
 }
 void plot_base::create_bar_config_gui(cgv::base::base* bp, cgv::gui::provider& p, plot_base_config& pbc)
 {
-	p.add_member_control(bp, "width", pbc.bar_percentual_width, "value_slider", "min=0.01;max=1;log=true;ticks=true");
-	p.add_member_control(bp, "fill", pbc.bar_color);
-	p.add_member_control(bp, "outline_width", pbc.bar_outline_width, "value_slider", "min=0;max=20;log=true;ticks=true");
-	p.add_member_control(bp, "outline", pbc.bar_outline_color);
+	p.add_member_control(bp, "crd_idx", pbc.bar_coordinate_index, "value_slider", "min=0;max=1;ticks=true")
+		->set("max", get_dim() - 1);
+	p.add_member_control(bp, "base", pbc.bar_base_window, "value_slider", "min=0;max=1;ticks=true");
+	add_mapped_rgba_control(p, bp, "color", pbc.bar_color);
+	add_mapped_rgba_control(p, bp, "outline", pbc.bar_outline_color);
+	add_mapped_size_control(p, bp, "outline_width", pbc.bar_outline_width);
+	add_mapped_size_control(p, bp, "width", pbc.bar_percentual_width, "min=0.01;max=1;log=true;ticks=true");
 }
 void plot_base::create_config_gui(cgv::base::base* bp, cgv::gui::provider& p, unsigned i)
 {

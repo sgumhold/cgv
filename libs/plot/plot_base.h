@@ -9,6 +9,7 @@
 #include <cgv/media/color.h>
 #include <cgv/media/color_scale.h>
 #include <cgv/media/font/font.h>
+#include <cgv/render/view.h>
 #include <cgv/gui/provider.h>
 #include "axis_config.h"
 
@@ -35,8 +36,10 @@ struct domain_config : public cgv::render::render_types
 	bool fill;
 	/// color of the domain fill
 	rgb color;
-	/// 
+	/// store size of virtual pixel based measurement
 	float reference_size;
+	/// store blend width in screen pixels used for antialiasing
+	float blend_width_in_pixel;
 	/// store a vector of axis configurations (2/3 for plot2/3d plus several attribute axes)
 	std::vector<axis_config> axis_configs;
 	/// store index of selected font
@@ -57,6 +60,48 @@ enum ChartType
 	CT_BAR_CHART
 };
 
+struct mapped_rgb : public cgv::render::render_types
+{
+	rgb color;
+	int color_idx;
+	mapped_rgb(const rgb& c = rgb(1,1,1)) : color(c), color_idx(-1) {}
+};
+
+struct mapped_opacity
+{
+	float opacity;
+	int opacity_idx;
+	mapped_opacity(float o = 1.0f) : opacity(o), opacity_idx(-1) {}
+};
+
+struct mapped_size
+{
+	float size;
+	int size_idx;
+	mapped_size(float s = 1.0f) : size(s), size_idx(-1) {}
+};
+
+struct mapped_rgba : public cgv::render::render_types
+{
+	rgba color;
+	int color_idx;
+	int opacity_idx;
+	mapped_rgba(const rgba& c = rgba(1, 1, 1, 1)) : color(c), color_idx(-1), opacity_idx(-1) {}
+
+};
+
+enum SubPlotInfluence
+{
+	SPI_NONE = 0,
+	SPI_POINT = 1,
+	SPI_POINT_HALO = 2,
+	SPI_LINE = 4,
+	SPI_STICK = 8,
+	SPI_BAR = 16,
+	SPI_BAR_OUTLINE = 32,
+	SPI_ALL = 63
+};
+
 /** plot independent configuration parameters of one sub plot in a 2d or 3d plot */
 struct CGV_API plot_base_config : public cgv::render::render_types
 {
@@ -70,47 +115,34 @@ struct CGV_API plot_base_config : public cgv::render::render_types
 
 	/// whether to show sub plot
 	bool show_plot;
+
+	///  store bit field to define which sub plots are influenced by reference values
+	SubPlotInfluence sub_plot_influence;
 	/// reference color, when changed, all colors are adapted with set_colors()
-	rgb ref_color;
+	mapped_rgb ref_color;
 	/// reference opacity, when changed, all opcities are adapted with set_opacity()
-	float ref_opacity;
+	mapped_opacity ref_opacity;
 	/// reference size, when changed, all sizes are adapted with set_size()
-	float ref_size;
+	mapped_size ref_size;
 
 	/// whether to show data points
 	bool show_points;
 	/// point size in pixels
-	float point_size;
-	/// index used to map point size (defaults to 0)
-	int point_size_idx;
+	mapped_size point_size;
 
 	/// point color
-	rgba point_color;
-	/// index used to map point color (defaults to 0)
-	int point_color_idx;
-	/// index used to map point opacity (defaults to 0)
-	int point_opacity_idx;
+	mapped_rgba point_color;
 	/// width of point halo in pixel
-	float point_halo_width;
+	mapped_size point_halo_width;
 	/// color of point halo
-	rgba point_halo_color;
-	/// index used to map point halo color (defaults to -1)
-	int point_halo_color_idx;
-	/// index used to map point halo opacity (defaults to -1)
-	int point_halo_opacity_idx;
+	mapped_rgba point_halo_color;
 
 	/// whether to connect data points with lines
 	bool show_lines;
 	/// line width
-	float line_width;
-	///
-	int line_size_idx;
+	mapped_size line_width;
 	/// line color
-	rgba line_color;
-	/// 
-	int line_color_idx;
-	/// 
-	int line_opacity_idx;
+	mapped_rgba line_color;
 
 	/// whether to show straight lines to the bottom of the plot, which are called sticks
 	bool show_sticks;
@@ -119,13 +151,9 @@ struct CGV_API plot_base_config : public cgv::render::render_types
 	/// base window position of stick
 	float stick_base_window;
 	/// line width of stick
-	float stick_width;
+	mapped_size stick_width;
 	/// color of the stick line
-	rgba stick_color;
-	///
-	int stick_size_idx;
-	int stick_color_idx;
-	int stick_opacity_idx;
+	mapped_rgba stick_color;
 
 	/// whether to show bars
 	bool show_bars;
@@ -134,30 +162,27 @@ struct CGV_API plot_base_config : public cgv::render::render_types
 	///
 	float bar_base_window;
 	/// line width of bar outlines
-	float bar_outline_width;
+	mapped_size bar_outline_width;
 	/// percentual width of bar computed assuming a uniform y-sampling distance
-	float bar_percentual_width;
+	mapped_size bar_percentual_width;
 	/// bar fill color
-	rgba bar_color;
+	mapped_rgba bar_color;
 	/// bar outline color
-	rgba bar_outline_color;
-	int bar_size_idx;
-	int bar_color_idx;
-	int bar_opacity_idx;
-	int bar_outline_size_idx;
-	int bar_outline_color_idx;
-	int bar_outline_opacity_idx;
+	mapped_rgba bar_outline_color;
 
 	/// set default values
-	plot_base_config(const std::string& _name);
+	plot_base_config(const std::string& _name, unsigned dim);
 	/// configure the sub plot to a specific chart type
 	virtual void configure_chart(ChartType chart_type);
 	/// set all colors from reference color
 	virtual void set_colors(const rgb& base_color);
+	virtual void set_color_indices(int idx);
 	/// set all opacities from reference opacity
 	virtual void set_opacities(float _opa);
+	virtual void set_opacity_indices(int idx);
 	/// set all sizes from reference size 
 	virtual void set_sizes(float _size);
+	virtual void set_size_indices(int idx);
 	/// virtual constructor in order to allow to extend the configuration for derived classes
 	virtual ~plot_base_config();
 };
@@ -203,8 +228,9 @@ enum LegendComponent
 	LC_SECONDARY_COLOR   =  2,
 	LC_PRIMARY_OPACITY   =  4,
 	LC_SECONDARY_OPACITY =  8,
-	LC_SIZE              = 16,
-	LC_ANY               = 31
+	LC_PRIMARY_SIZE      = 16,
+	LC_SECONDARY_SIZE    = 32,
+	LC_ANY               = 63
 };
 
 /** base class for plot2d and plot3d, which can have several sub plots each */
@@ -216,13 +242,14 @@ private:
 	///
 	cgv::render::shader_program legend_prog;
 protected:
+	cgv::render::view* view_ptr;
 	/// render information stored per label
 	struct label_info
 	{
-		vec2 position;
+		vecn position;
 		std::string label;
 		cgv::render::TextAlignment align;
-		label_info(const vec2& _position, const std::string& _label, cgv::render::TextAlignment _align)
+		label_info(const vecn& _position, const std::string& _label, cgv::render::TextAlignment _align)
 			: position(_position), label(_label), align(_align) {}
 	};
 	/// 
@@ -249,10 +276,6 @@ protected:
 	std::vector<label_info> tick_labels, legend_tick_labels;
 	/// twice number of axis pairs with index of first tick label and number of tick labels for primary and secondary ticks
 	std::vector<tick_batch_info> tick_batches, legend_tick_batches;
-	/// overloaded in derived classes to compute complete tick render information
-	// virtual void compute_tick_render_information() = 0;
-	/// used in implementation of compute_tick_render_information() in derived class to collect for given axis combination the primary and secondary tick render information batches
-	void collect_tick_geometry(int ai, int aj, const float* dom_min_pnt, const float* dom_max_pnt, const float* extent);
 
 	/**@name font name handling*/
 	//@{
@@ -306,34 +329,40 @@ protected:
 
 	/**@name visual attribute mapping*/
 	//@{
+	/// define maximum number of color mappings
+	static const unsigned MAX_NR_COLOR_MAPPINGS = 2;
 	/// index of attribute mapped to primary and secondary color
-	int color_mapping[2];
+	int color_mapping[MAX_NR_COLOR_MAPPINGS];
 	/// color scale indices of primary and secondary color mapping
-	cgv::media::ColorScale color_scale_index[2];
+	cgv::media::ColorScale color_scale_index[MAX_NR_COLOR_MAPPINGS];
 	/// gamma adjustments for primary and secondary color mapping
-	float color_scale_gamma[2];
+	float color_scale_gamma[MAX_NR_COLOR_MAPPINGS];
 	/// window space position of zero for primary and secondary color mapping
-	float window_zero_position[2];
-
-	/// index of attribute mapped to primary and secondary opacity
-	int opacity_mapping[2];
-	/// gamma adjustments for primary and secondary opacity mapping
-	float opacity_gamma[2];
-	/// flag whether opacity mapping is bipolar for primary and secondary opacity mapping
-	bool  opacity_is_bipolar[2];
-	///  window space position of zero for primary and secondary opacity mapping
-	float opacity_window_zero_position[2];
-	/// minimum opacity value for primary and secondary opacity mapping
-	float opacity_min[2];
-	/// maximum opacity value for primary and secondary opacity mapping
-	float opacity_max[2];
+	float window_zero_position[MAX_NR_COLOR_MAPPINGS];
 	
+	/// define maximum number of opacity mappings
+	static const unsigned MAX_NR_OPACITY_MAPPINGS = 2;
+	/// index of attribute mapped to primary and secondary opacity
+	int opacity_mapping[MAX_NR_OPACITY_MAPPINGS];
+	/// gamma adjustments for primary and secondary opacity mapping
+	float opacity_gamma[MAX_NR_OPACITY_MAPPINGS];
+	/// flag whether opacity mapping is bipolar for primary and secondary opacity mapping
+	bool  opacity_is_bipolar[MAX_NR_OPACITY_MAPPINGS];
+	///  window space position of zero for primary and secondary opacity mapping
+	float opacity_window_zero_position[MAX_NR_OPACITY_MAPPINGS];
+	/// minimum opacity value for primary and secondary opacity mapping
+	float opacity_min[MAX_NR_OPACITY_MAPPINGS];
+	/// maximum opacity value for primary and secondary opacity mapping
+	float opacity_max[MAX_NR_OPACITY_MAPPINGS];
+	
+	/// define maximum number of size mappings
+	static const unsigned MAX_NR_SIZE_MAPPINGS = 2;
 	/// index of attribute mapped to size
-	int size_mapping;
+	int size_mapping[MAX_NR_SIZE_MAPPINGS];
 	/// and independent gamma adjustments
-	float size_gamma;
+	float size_gamma[MAX_NR_SIZE_MAPPINGS];
 	/// min and max of mapped size
-	float size_min, size_max;
+	float size_min[MAX_NR_SIZE_MAPPINGS], size_max[MAX_NR_SIZE_MAPPINGS];
 	//@}
 
 	/// store pointer to current font
@@ -378,6 +407,8 @@ public:
 	plot_base(unsigned dim, unsigned nr_attributes = 0);
 	/// return nr dimensions of plot
 	unsigned get_dim() const { return dim; }
+	/// set the view ptr
+	void set_view_ptr(cgv::render::view* _view_ptr);
 	/**@name management of domain configuration */
 	//@{
 	/// configure the label font
@@ -467,9 +498,19 @@ public:
 
 	/**@name gui support*/
 	//@{
+protected:
 	void update_ref_opacity(unsigned i, cgv::gui::provider& p);
+	void update_ref_opacity_index(unsigned i, cgv::gui::provider& p);
 	void update_ref_size(unsigned i, cgv::gui::provider& p);
+	void update_ref_size_index(unsigned i, cgv::gui::provider& p);
 	void update_ref_color(unsigned i, cgv::gui::provider& p);
+	void update_ref_color_index(unsigned i, cgv::gui::provider& p);
+	void add_mapped_size_control(cgv::gui::provider& p, cgv::base::base* bp, const std::string& name, mapped_size& ms, std::string options = "");
+	void add_mapped_rgb_control(cgv::gui::provider& p, cgv::base::base* bp, const std::string& name, mapped_rgb& ms);
+	void add_mapped_rgba_control(cgv::gui::provider& p, cgv::base::base* bp, const std::string& name, mapped_rgba& ms);
+	void add_mapped_opacity_control(cgv::gui::provider& p, cgv::base::base* bp, const std::string& name, mapped_opacity& ms);
+
+public:
 	/// create the gui for the plot without gui for sub plots
 	virtual void create_plot_gui(cgv::base::base* bp, cgv::gui::provider& p);
 	/// create the gui for base subplot settings

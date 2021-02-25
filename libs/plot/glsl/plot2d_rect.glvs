@@ -5,6 +5,7 @@ uniform int   secondary_color_index = -1;
 uniform int   opacity_index = -1;
 uniform int   secondary_opacity_index = -1;
 uniform int   size_index = -1;
+uniform int   secondary_size_index = -1;
 
 uniform int   rectangle_coordinate_index = 1;
 uniform float rectangle_base_window  = 0.0;
@@ -58,7 +59,7 @@ vec3 window_space_from_plot_space(vec3 pnt);
 vec3 world_space_from_plot_space(vec3 pnt);
 vec3 map_color(in float attributes[8], in vec3 base_color, int idx = 0);
 float map_opacity(in float attributes[8], in float base_opacity, int idx = 0);
-float map_size(in float attributes[8], in float base_size);
+float map_size(in float attributes[8], in float base_size, int idx = 0);
 //***** end interface of plot_lib.glsl ***********************************
 
 void main()
@@ -92,7 +93,10 @@ void main()
 		vo.border_color.a = map_opacity(attributes, vo.border_color.a, secondary_opacity_index);
 	float width = size;
 	if (size_index >= 0)
-		width = map_size(attributes, width);
+		width = map_size(attributes, width, size_index);
+	vo.percentual_border_width = max(-0.5,-rectangle_border_width/width);
+	if (secondary_size_index >= 0)
+		vo.percentual_border_width = map_size(attributes, vo.percentual_border_width, secondary_size_index);
 
 	// construct top and bottom center positions in window coordinates
 	vec3 bottom_window = position_window;
@@ -118,6 +122,5 @@ void main()
 
 	vo.normal_eye = get_normal_matrix()*vec3(0.0,0.0,1.0);
 	vo.depth_offset = depth_offset;
-	vo.percentual_border_width = max(-0.5,-rectangle_border_width/width);
-	vo.border_width_in_pixel = 0; 
+	vo.border_width_in_pixel = 0.0; 
 }

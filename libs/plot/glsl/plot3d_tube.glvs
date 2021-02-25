@@ -5,6 +5,8 @@ uniform int secondary_color_index = -1;
 uniform int opacity_index = -1;
 uniform int secondary_opacity_index = -1;
 uniform int size_index = -1;
+uniform int secondary_size_index = -1;
+
 uniform float radius_scale = 1.0;
 
 layout(location = 0) in float attribute0;
@@ -17,20 +19,10 @@ layout(location = 6) in float attribute6;
 layout(location = 7) in float attribute7;
 
 in vec4 color;
-in vec4 secondary_color;
+//in vec4 secondary_color;
 in float size;
 
 out vec4 color_gs;
-
-//***** begin interface of view.glsl ***********************************
-mat4 get_modelview_matrix();
-mat4 get_projection_matrix();
-mat4 get_modelview_projection_matrix();
-mat4 get_inverse_modelview_matrix();
-mat4 get_inverse_modelview_projection_matrix();
-mat3 get_normal_matrix();
-mat3 get_inverse_normal_matrix();
-//***** end interface of view.glsl ***********************************
 
 //***** begin interface of plot_lib.glsl ***********************************
 uniform float attribute_min[8];
@@ -44,7 +36,7 @@ vec3 window_space_from_plot_space(vec3 pnt);
 vec3 world_space_from_plot_space(vec3 pnt);
 vec3 map_color(in float attributes[8], in vec3 base_color, int idx = 0);
 float map_opacity(in float attributes[8], in float base_opacity, int idx = 0);
-float map_size(in float attributes[8], in float base_size);
+float map_size(in float attributes[8], in float base_size, int idx = 0);
 //***** end interface of plot_lib.glsl ***********************************
 
 void main()
@@ -68,7 +60,7 @@ void main()
 		color_gs.a = map_opacity(attributes, color_gs.a, opacity_index);
 	float radius = size;
 	if (size_index >= 0)
-		radius = map_size(attributes, radius);
+		radius = map_size(attributes, radius, size_index);
 
 	// transform vertex to clip space
 	vec3 position_window = vec3(

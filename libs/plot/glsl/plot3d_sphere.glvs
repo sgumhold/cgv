@@ -1,11 +1,15 @@
 #version 330 core
 
-uniform int color_index = -1;
-uniform int secondary_color_index = -1;
-uniform int opacity_index = -1;
-uniform int secondary_opacity_index = -1;
-uniform int size_index = -1;
+uniform int   color_index = -1;
+uniform int   secondary_color_index = -1;
+uniform int   opacity_index = -1;
+uniform int   secondary_opacity_index = -1;
+uniform int   size_index = -1;
+uniform int   secondary_size_index = -1;
+
 uniform float radius_scale = 1.0;
+uniform float halo_width_in_pixel = 0.0;
+uniform float percentual_halo_width = 0.0;
 
 layout(location = 0) in float attribute0;
 layout(location = 1) in float attribute1;
@@ -20,7 +24,15 @@ in vec4 color;
 in vec4 secondary_color;
 in float size;
 
-out vec4 color_gs;
+out SPHERE_GS {
+	mat3 normal_matrix;
+	mat4 model_view_matrix;
+	mat4 model_view_projection_matrix;
+	vec4 color;
+	vec4 halo_color;
+	float halo_width_in_pixel;
+	float percentual_halo_width;
+} vo;
 
 //***** begin interface of view.glsl ***********************************
 mat4 get_modelview_matrix();
@@ -44,11 +56,11 @@ vec3 window_space_from_plot_space(vec3 pnt);
 vec3 world_space_from_plot_space(vec3 pnt);
 vec3 map_color(in float attributes[8], in vec3 base_color, int idx = 0);
 float map_opacity(in float attributes[8], in float base_opacity, int idx = 0);
-float map_size(in float attributes[8], in float base_size);
+float map_size(in float attributes[8], in float base_size, int idx = 0);
 //***** end interface of plot_lib.glsl ***********************************
 
 //***** begin interface of sphere_lib.glvs ***********************************
-void output_sphere_parameter_space(in vec4 sphere);
+void output_sphere_parameter_space(in vec4 sphere, in mat4 MV, in mat4 MVP, in mat3 NM, in mat4 iMV);
 //***** end interface of sphere_lib.glvs ***********************************
 
 void main()
@@ -64,22 +76,36 @@ void main()
 	attributes[6] = attribute6;
 	attributes[7] = attribute7;
 
-	// map to visual attributes
-	color_gs = color;
+		// map to visual attributes
+	vo.color = color;
 	if (color_index >=0)
-		color_gs.rgb = map_color(attributes, color_gs.rgb, color_index);
+		vo.color.rgb = map_color(attributes, vo.color.rgb, color_index);
 	if (opacity_index >= 0)
-		color_gs.a = map_opacity(attributes, color_gs.a, opacity_index);
+		vo.color.a = map_opacity(attributes, vo.color.a, opacity_index);
+	vo.halo_color = secondary_color;
+	if (secondary_color_index >=0)
+		vo.halo_color.rgb = map_color(attributes, vo.halo_color.rgb, secondary_color_index);
+	if (secondary_opacity_index >= 0)
+		vo.halo_color.a = map_opacity(attributes, vo.halo_color.a, secondary_opacity_index);
 	float radius = size;
 	if (size_index >= 0)
-		radius = map_size(attributes, radius);
-
+		radius = map_size(attributes, size, size_index);
+	vo.percentual_halo_width = percentual_halo_width;
+	if (secondary_size_index >= 0)
+		vo.percentual_halo_width = map_size(attributes, vo.percentual_halo_width, secondary_size_index);
+	
 	// transform vertex to clip space
 	vec3 position_window = vec3(
 		window_space_from_tick_space(0, tick_space_from_attribute_space(0, attribute0)),
 		window_space_from_tick_space(1, tick_space_from_attribute_space(1, attribute1)),
 		window_space_from_tick_space(2, tick_space_from_attribute_space(2, attribute2)));
 	vec3 position_world = world_space_from_plot_space(plot_space_from_window_space(position_window));
+
 	gl_Position = vec4(position_world, radius*radius_scale);
-	output_sphere_parameter_space(gl_Position);
+	vo.halo_width_in_pixel = halo_width_in_pixel;
+	vo.normal_matrix = get_normal_matrix();
+	vo.model_view_matrix = get_modelview_matrix();
+	vo.model_view_projection_matrix = get_modelview_projection_matrix();
+	output_sphere_parameter_space(gl_Position, vo.model_view_matrix, vo.model_view_projection_matrix, 
+			vo.normal_matrix, get_inverse_modelview_matrix());
 }

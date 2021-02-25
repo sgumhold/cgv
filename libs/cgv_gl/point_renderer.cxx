@@ -130,7 +130,7 @@ namespace cgv {
 				if (!has_point_sizes)
 					ref_prog().set_attribute(ctx, "point_size", prs.point_size);
 				if (!has_depth_offsets)
-					ref_prog().set_attribute(ctx, "point_size", prs.default_depth_offset);
+					ref_prog().set_attribute(ctx, "depth_offset", prs.default_depth_offset);
 				ref_prog().set_uniform(ctx, "use_color_index", has_indexed_colors);
 				ref_prog().set_uniform(ctx, "measure_point_size_in_pixel", prs.measure_point_size_in_pixel);
 				ref_prog().set_uniform(ctx, "screen_aligned", prs.screen_aligned);

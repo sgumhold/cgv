@@ -61,6 +61,7 @@ public:
 	}
 	bool init(cgv::render::context& ctx)
 	{
+		plot.set_view_ptr(find_view_as_node());
 		return plot.init(ctx);
 	}
 	void init_frame(cgv::render::context& ctx)
@@ -144,6 +145,7 @@ public:
 		fbo.attach(ctx, depth);
 		fbo.attach(ctx, tex);
 
+		plot.set_view_ptr(find_view_as_node());
 		// and init plot
 		return plot.init(ctx) && fbo.is_complete(ctx);
 	}
