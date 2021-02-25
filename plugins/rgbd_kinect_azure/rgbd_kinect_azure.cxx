@@ -374,24 +374,47 @@ namespace rgbd {
 	/// map a depth value together with pixel indices to a 3D point with coordinates in meters; point_ptr needs to provide space for 3 floats
 	bool rgbd_kinect_azure::map_depth_to_point(int x, int y, int depth, float* point_ptr) const
 	{
+		k4a_float2_t p;
+		k4a_float3_t ray;
+		int valid;
+
+		p.xy.y = (float)y;
+		p.xy.x = (float)x;
+
+		k4a_calibration_2d_to_3d(
+			&camera_calibration, &p, depth, K4A_CALIBRATION_TYPE_DEPTH, K4A_CALIBRATION_TYPE_DEPTH, &ray, &valid);
+
 		/*static constexpr double fx_d = 1.0 / azure_color_intrinsics.fx;
 		static constexpr double fy_d = 1.0 / azure_color_intrinsics.fy;
 		static constexpr double cx_d = azure_color_intrinsics.cx;
 		static constexpr double cy_d = azure_color_intrinsics.cy;*/
-		double fx_d = 1.0 / intrinsics->param.fx;
+		/*double fx_d = 1.0 / intrinsics->param.fx;
 		double fy_d = 1.0 / intrinsics->param.fy;
 		double cx_d = intrinsics->param.cx;
-		double cy_d = intrinsics->param.cy;
+		double cy_d = intrinsics->param.cy;*/
 		// set 0.001 for current vr_rgbd
-		double d = 0.001 * depth * 1.100;
+		//double d = 0.001 * depth;
 		//solve the radial and tangential distortion
-		double x_distorted = x * (1 + intrinsics->param.k1 * pow(intrinsics->param.metric_radius, 2.0) + intrinsics->param.k2 * pow(intrinsics->param.metric_radius, 4.0) + intrinsics->param.k3 * pow(intrinsics->param.metric_radius, 6.0));
+		/*double x_distorted = x * (1 + intrinsics->param.k1 * pow(intrinsics->param.metric_radius, 2.0) + intrinsics->param.k2 * pow(intrinsics->param.metric_radius, 4.0) + intrinsics->param.k3 * pow(intrinsics->param.metric_radius, 6.0));
 		double y_distorted = y * (1 + intrinsics->param.k4 * pow(intrinsics->param.metric_radius, 2.0) + intrinsics->param.k5 * pow(intrinsics->param.metric_radius, 4.0) + intrinsics->param.k6 * pow(intrinsics->param.metric_radius, 6.0));
 		x_distorted = x_distorted + 2.0 * intrinsics->param.p1 * x * y + intrinsics->param.p2 * (pow(intrinsics->param.metric_radius, 2.0) + 2 * pow(x, 2.0));
-		y_distorted = y_distorted + 2.0 * intrinsics->param.p2 * x * y + intrinsics->param.p1 * (pow(intrinsics->param.metric_radius, 2.0) + 2 * pow(y, 2.0));
-		point_ptr[0] = -1.f * float((x_distorted - cx_d) * d * fx_d);
+		y_distorted = y_distorted + 2.0 * intrinsics->param.p2 * x * y + intrinsics->param.p1 * (pow(intrinsics->param.metric_radius, 2.0) + 2 * pow(y, 2.0));*/
+		/*point_ptr[0] = -1.f * float((x_distorted - cx_d) * d * fx_d);
 		point_ptr[1] = float((y_distorted - cy_d) * d * fy_d);
-		point_ptr[2] = float(d);
+		point_ptr[2] = float(d);*/
+		if (valid)
+		{
+			point_ptr[0] = -1.f * 0.001 * ray.xyz.x;
+			point_ptr[1] = 0.001 * ray.xyz.y;
+			point_ptr[2] = 0.001 * ray.xyz.z;
+		}
+		else
+		{
+			point_ptr[0] = nanf("");
+			point_ptr[1] = nanf("");
+			point_ptr[2] = nanf("");
+		}
+		
 		return true;
 	}
 
@@ -444,7 +467,14 @@ namespace rgbd {
 				}
 
 				if (is & IS_DEPTH) {
-					k4a::image dep;
+					k4a::image dep = cap.get_depth_image();
+					dep_frame = make_unique<frame_type>();
+					static_cast<frame_format&>(*dep_frame) = depth_format;
+					dep_frame->time = dep.get_device_timestamp().count() * 0.001;
+					dep_frame->frame_data.resize(dep.get_size());
+					dep_frame->compute_buffer_size();
+					memcpy(dep_frame->frame_data.data(), dep.get_buffer(), dep.get_size());
+					/*k4a::image dep;
 					try {
 						dep = cap.get_depth_image();
 					}
@@ -486,7 +516,7 @@ namespace rgbd {
 						dep_frame->frame_data.resize(dep.get_size());
 						dep_frame->compute_buffer_size();
 						memcpy(dep_frame->frame_data.data(), dep.get_buffer(), dep.get_size());
-					}
+					}*/
 				}
 
 				if (is & IS_INFRARED) {
