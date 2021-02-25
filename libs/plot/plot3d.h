@@ -3,6 +3,7 @@
 #include "plot_base.h"
 #include <cgv/render/shader_program.h>
 #include <libs/cgv_gl/box_renderer.h>
+#include <cgv_gl/rounded_cone_renderer.h>
 
 #include "lib_begin.h"
 
@@ -23,7 +24,7 @@ struct CGV_API plot3d_config : public plot_base_config
 	/// whether to illustrate line orientation
 	bool show_line_orientation;
 	/// provide second dimension of bar extend
-	float bar_percentual_depth;
+	mapped_size bar_percentual_depth;
 	/// if samples per row > 0, the samples are interpreted as regular grid
 	unsigned samples_per_row;
 	/// whether to show faces
@@ -52,13 +53,13 @@ class CGV_API plot3d : public plot_base
 	cgv::render::shader_program tube_prog;
 	//cgv::render::shader_program surface_prog;
 	cgv::render::box_render_style brs;
-	void set_uniforms(cgv::render::context& ctx, cgv::render::shader_program& prog, unsigned i);
+	cgv::render::rounded_cone_render_style rcrs;
 	bool compute_sample_coordinate_interval(int i, int ai, float& samples_min, float& samples_max);
 	void draw_domain(cgv::render::context& ctx);
 	void draw_axes(cgv::render::context& ctx);
 	void draw_ticks(cgv::render::context& ctx);
 	void draw_tick_labels(cgv::render::context& ctx);
-	void draw_sub_plot(cgv::render::context& ctx, unsigned i);
+	void draw_sub_plots(cgv::render::context& ctx);
 protected:
 	std::vector<std::vector<vec3> > samples;
 	/// overloaded in derived classes to compute complete tick render information
@@ -90,6 +91,7 @@ public:
 	bool init(cgv::render::context& ctx);
 	void draw(cgv::render::context& ctx);
 	void clear(cgv::render::context& ctx);
+	void create_gui(cgv::base::base* bp, cgv::gui::provider& p);
 };
 
 	}

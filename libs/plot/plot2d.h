@@ -1,7 +1,6 @@
 #pragma once
 
 #include "plot_base.h"
-#include <cgv/render/view.h>
 #include <cgv/render/shader_program.h>
 #include <libs/cgv_gl/rectangle_renderer.h>
 
@@ -13,8 +12,6 @@ namespace cgv {
 /** extend common plot configuration with parameters specific to 2d plot */
 struct CGV_API plot2d_config : public plot_base_config
 {
-	/// extended point information
-	float blend_width_in_pixel;
 	/// set default values
 	plot2d_config(const std::string& _name);
 	/// configure the sub plot to a specific chart type
@@ -34,8 +31,6 @@ protected:
 	void draw_tick_labels(cgv::render::context& ctx);
 protected:
 	bool compute_sample_coordinate_interval(int i, int ai, float& samples_min, float& samples_max);
-
-	cgv::render::view* view_ptr;
 	/// store 2d samples for data series
 	std::vector<std::vector<vec2> > samples;
 	/// allow to split series into connected strips that are represented by the number of contained samples
@@ -77,6 +72,7 @@ public:
 	void create_bar_config_gui(cgv::base::base* bp, cgv::gui::provider& p, plot_base_config& pbc);
 	///
 	void create_config_gui(cgv::base::base* bp, cgv::gui::provider& p, unsigned i);
+	void create_gui(cgv::base::base* bp, cgv::gui::provider& p);
 };
 
 	}

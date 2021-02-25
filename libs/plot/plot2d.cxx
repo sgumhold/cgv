@@ -8,10 +8,8 @@ namespace cgv {
 	namespace plot {
 
 /** extend common plot configuration with parameters specific to 1d plot */
-plot2d_config::plot2d_config(const std::string& _name) : plot_base_config(_name)
+plot2d_config::plot2d_config(const std::string& _name) : plot_base_config(_name, 2)
 {
-	blend_width_in_pixel = 1.0;
-
 	configure_chart(CT_LINE_CHART);
 };
 
@@ -25,7 +23,6 @@ void plot2d_config::configure_chart(ChartType chart_type)
 /// construct empty plot with default domain [0..1,0..1]
 plot2d::plot2d(unsigned nr_attributes) : plot_base(2, nr_attributes)
 {
-	view_ptr = 0;
 	//legend_components = LC_ANY;
 	rrs.illumination_mode = cgv::render::IM_OFF;
 	rrs.map_color_to_material = cgv::render::CM_COLOR_AND_OPACITY;
@@ -114,7 +111,6 @@ std::vector<unsigned>& plot2d::ref_sub_plot_strips(unsigned i)
 bool plot2d::init(cgv::render::context& ctx)
 {
 	cgv::render::ref_rectangle_renderer(ctx, 1);
-	//view_ptr = find_view_as_node();
 
 	if (!prog.build_program(ctx, "plot2d.glpr", true)) {
 		std::cerr << "could not build GLSL program from plot2d.glpr" << std::endl;
@@ -160,12 +156,6 @@ void plot2d::draw_sub_plots(cgv::render::context& ctx)
 		// prepare rectangle program to draw bar and stick plots
 		set_plot_uniforms(ctx, rectangle_prog);
 		set_mapping_uniforms(ctx, rectangle_prog);
-		// configure vertex shader
-		rectangle_prog.set_uniform(ctx, "color_index", 0);
-		rectangle_prog.set_uniform(ctx, "secondary_color_index", 1);
-		rectangle_prog.set_uniform(ctx, "opacity_index", 0);
-		rectangle_prog.set_uniform(ctx, "secondary_opacity_index", 1);
-		rectangle_prog.set_uniform(ctx, "size_index", 0);
 		// configure geometry shader
 		rectangle_prog.set_uniform(ctx, "pixel_blend", 1.0f);
 		rectangle_prog.set_uniform(ctx, "pixel_extent_per_depth", pixel_extent_per_depth);
@@ -192,12 +182,18 @@ void plot2d::draw_sub_plots(cgv::render::context& ctx)
 		enable_attributes(ctx, nr_attributes);
 		set_default_attributes(ctx, rectangle_prog, nr_attributes);
 		// configure vertex shader
+		rectangle_prog.set_uniform(ctx, "color_index", spc.bar_color.color_idx);
+		rectangle_prog.set_uniform(ctx, "secondary_color_index", spc.bar_outline_color.color_idx);
+		rectangle_prog.set_uniform(ctx, "opacity_index", spc.bar_color.opacity_idx);
+		rectangle_prog.set_uniform(ctx, "secondary_opacity_index", spc.bar_outline_color.opacity_idx);
+		rectangle_prog.set_uniform(ctx, "size_index", spc.bar_percentual_width.size_idx);
+		rectangle_prog.set_uniform(ctx, "secondary_size_index", spc.bar_outline_width.size_idx);
 		rectangle_prog.set_uniform(ctx, "rectangle_base_window", spc.bar_base_window);
 		rectangle_prog.set_uniform(ctx, "rectangle_coordinate_index", spc.bar_coordinate_index);
-		rectangle_prog.set_uniform(ctx, "rectangle_border_width", spc.bar_outline_width * rs);
-		rectangle_prog.set_attribute(ctx, "color", spc.bar_color);
-		rectangle_prog.set_attribute(ctx, "secondary_color", spc.bar_outline_color);
-		rectangle_prog.set_attribute(ctx, "size", get_extent()[0] / count * spc.bar_percentual_width);
+		rectangle_prog.set_uniform(ctx, "rectangle_border_width", spc.bar_outline_width.size * rs);
+		rectangle_prog.set_attribute(ctx, "color", spc.bar_color.color);
+		rectangle_prog.set_attribute(ctx, "secondary_color", spc.bar_outline_color.color);
+		rectangle_prog.set_attribute(ctx, "size", get_extent()[0] / count * spc.bar_percentual_width.size);
 		rectangle_prog.set_attribute(ctx, "depth_offset", -layer_idx * layer_depth);
 		// configure geometry shader
 		rectangle_prog.set_uniform(ctx, "border_mode", spc.bar_coordinate_index == 0 ? 2 : 1);
@@ -224,11 +220,17 @@ void plot2d::draw_sub_plots(cgv::render::context& ctx)
 
 		set_default_attributes(ctx, rectangle_prog, nr_attributes);
 		// configure vertex shader
+		rectangle_prog.set_uniform(ctx, "color_index", spc.stick_color.color_idx);
+		rectangle_prog.set_uniform(ctx, "secondary_color_index", -1);
+		rectangle_prog.set_uniform(ctx, "opacity_index", spc.stick_color.opacity_idx);
+		rectangle_prog.set_uniform(ctx, "secondary_opacity_index", -1);
+		rectangle_prog.set_uniform(ctx, "size_index", spc.stick_width.size_idx);
+		rectangle_prog.set_uniform(ctx, "secondary_size_index", -1);
 		rectangle_prog.set_uniform(ctx, "rectangle_base_window", spc.stick_base_window);
 		rectangle_prog.set_uniform(ctx, "rectangle_coordinate_index", spc.stick_coordinate_index);
 		rectangle_prog.set_uniform(ctx, "rectangle_border_width", 0.0f);
-		rectangle_prog.set_attribute(ctx, "color", spc.stick_color);
-		rectangle_prog.set_attribute(ctx, "size", spc.stick_width * rs);
+		rectangle_prog.set_attribute(ctx, "color", spc.stick_color.color);
+		rectangle_prog.set_attribute(ctx, "size", spc.stick_width.size * rs);
 		rectangle_prog.set_attribute(ctx, "depth_offset", -layer_idx * layer_depth);
 		// configure geometry shader
 		rectangle_prog.set_uniform(ctx, "border_mode", spc.stick_coordinate_index == 0 ? 2 : 1);
@@ -251,17 +253,17 @@ void plot2d::draw_sub_plots(cgv::render::context& ctx)
 		const plot2d_config& spc = ref_sub_plot2d_config(i);
 		if (!(spc.show_lines && prog.is_linked()))
 			continue;
-		glLineWidth(spc.line_width);
+		glLineWidth(spc.line_width.size);
 		set_default_attributes(ctx, prog, nr_attributes);
 		set_plot_uniforms(ctx, prog);
 		set_mapping_uniforms(ctx, prog);
 		prog.set_uniform(ctx, "feature_offset", 0.001f * get_extent().length());
-		prog.set_uniform(ctx, "color_index", 0);
+		prog.set_uniform(ctx, "color_index", spc.line_color.color_idx);
 		prog.set_uniform(ctx, "secondary_color_index", -1);
-		prog.set_uniform(ctx, "opacity_index", 0);
+		prog.set_uniform(ctx, "opacity_index", spc.line_color.opacity_idx);
 		prog.set_uniform(ctx, "secondary_opacity_index", -1);
-		prog.set_uniform(ctx, "size_index", 0);
-		prog.set_attribute(ctx, "color", spc.line_color);
+		prog.set_uniform(ctx, "size_index", spc.line_width.size_idx);
+		prog.set_attribute(ctx, "color", spc.line_color.color);
 		prog.enable(ctx);
 		if (strips[i].empty())
 			draw_sub_plot_samples(count, spc, true);
@@ -292,21 +294,22 @@ void plot2d::draw_sub_plots(cgv::render::context& ctx)
 		set_plot_uniforms(ctx, point_prog);
 		set_mapping_uniforms(ctx, point_prog);
 		point_prog.set_uniform(ctx, "depth_offset", -layer_idx*layer_depth);
-		point_prog.set_uniform(ctx, "reference_point_size", spc.point_size*rs);
-		point_prog.set_uniform(ctx, "blend_width_in_pixel", spc.blend_width_in_pixel);
+		point_prog.set_uniform(ctx, "reference_point_size", spc.point_size.size*rs);
+		point_prog.set_uniform(ctx, "blend_width_in_pixel", get_domain_config_ptr()->blend_width_in_pixel);
 		point_prog.set_uniform(ctx, "halo_width_in_pixel", 0.0f);
-		point_prog.set_uniform(ctx, "percentual_halo_width", spc.point_halo_width/spc.point_size);
+		point_prog.set_uniform(ctx, "percentual_halo_width", spc.point_halo_width.size/spc.point_size.size);
 		point_prog.set_uniform(ctx, "pixel_extent_per_depth", pixel_extent_per_depth);
 		point_prog.set_uniform(ctx, "measure_point_size_in_pixel", false);
 		point_prog.set_uniform(ctx, "screen_aligned", false);
-		point_prog.set_uniform(ctx, "color_index", 0);
-		point_prog.set_uniform(ctx, "secondary_color_index", 1);
-		point_prog.set_uniform(ctx, "opacity_index", 0);
-		point_prog.set_uniform(ctx, "secondary_opacity_index", 1);
-		point_prog.set_uniform(ctx, "size_index", 0);
-		point_prog.set_attribute(ctx, "color", spc.point_color);
-		point_prog.set_attribute(ctx, "secondary_color", spc.point_halo_color);
-		point_prog.set_attribute(ctx, "size", spc.point_size);
+		point_prog.set_uniform(ctx, "color_index", spc.point_color.color_idx);
+		point_prog.set_uniform(ctx, "secondary_color_index", spc.point_halo_color.color_idx);
+		point_prog.set_uniform(ctx, "opacity_index", spc.point_color.opacity_idx);
+		point_prog.set_uniform(ctx, "secondary_opacity_index", spc.point_halo_color.opacity_idx);
+		point_prog.set_uniform(ctx, "size_index", spc.point_size.size_idx);
+		point_prog.set_uniform(ctx, "secondary_index", spc.point_halo_width.size_idx);
+		point_prog.set_attribute(ctx, "color", spc.point_color.color);
+		point_prog.set_attribute(ctx, "secondary_color", spc.point_halo_color.color);
+		point_prog.set_attribute(ctx, "size", spc.point_size.size);
 		point_prog.enable(ctx);
 		draw_sub_plot_samples(count, spc);
 		point_prog.disable(ctx);
@@ -403,14 +406,14 @@ void plot2d::draw_domain(cgv::render::context& ctx)
 					C.push_back(ac.color);
 					D.push_back(d);
 					if (!label_str.empty())
-						tick_labels.push_back(label_info(mx, label_str, ai == 0 ? cgv::render::TA_BOTTOM : cgv::render::TA_LEFT));
+						tick_labels.push_back(label_info(mx.to_vec(), label_str, ai == 0 ? cgv::render::TA_BOTTOM : cgv::render::TA_LEFT));
 					mn[1 - ai] = he - dl;
 					mx[1 - ai] = he;
 					R.push_back(box2(mn, mx));
 					C.push_back(ac.color);
 					D.push_back(d);
 					if (!label_str.empty())
-						tick_labels.push_back(label_info(mn, label_str, ai == 0 ? cgv::render::TA_TOP : cgv::render::TA_RIGHT));
+						tick_labels.push_back(label_info(mn.to_vec(), label_str, ai == 0 ? cgv::render::TA_TOP : cgv::render::TA_RIGHT));
 					if (includes_zero) {
 						mn[1 - ai] = z_plot - dl;
 						mx[1 - ai] = z_plot + dl;
@@ -427,8 +430,8 @@ void plot2d::draw_domain(cgv::render::context& ctx)
 					C.push_back(ac.color);
 					D.push_back(d);
 					if (!label_str.empty()) {
-						tick_labels.push_back(label_info(mn, label_str, ai == 0 ? cgv::render::TA_TOP : cgv::render::TA_RIGHT));
-						tick_labels.push_back(label_info(mx, label_str, ai == 0 ? cgv::render::TA_BOTTOM : cgv::render::TA_LEFT));
+						tick_labels.push_back(label_info(mn.to_vec(), label_str, ai == 0 ? cgv::render::TA_TOP : cgv::render::TA_RIGHT));
+						tick_labels.push_back(label_info(mx.to_vec(), label_str, ai == 0 ? cgv::render::TA_BOTTOM : cgv::render::TA_LEFT));
 					}
 					break;
 				}
@@ -453,7 +456,7 @@ void plot2d::draw_tick_labels(cgv::render::context& ctx)
 		ctx.set_color(get_domain_config_ptr()->axis_configs[tbc.ai].color);
 		for (unsigned i = tbc.first_label; i < tbc.first_label + tbc.label_count; ++i) {
 			const label_info& li = tick_labels[i];
-			ctx.set_cursor(vec3(li.position, 0.0f).to_vec(), li.label, li.align);
+			ctx.set_cursor(li.position, li.label, li.align);
 			ctx.output_stream() << li.label;
 			ctx.output_stream().flush();
 		}
@@ -504,7 +507,6 @@ void plot2d::draw(cgv::render::context& ctx)
 void plot2d::create_point_config_gui(cgv::base::base* bp, cgv::gui::provider& p, plot_base_config& pbc)
 {
 	auto& p2dc = reinterpret_cast<plot2d_config&>(pbc);
-	p.add_member_control(bp, "blend_width_in_pixel", p2dc.blend_width_in_pixel, "value_slider", "min=0;max=2;ticks=true");
 	plot_base::create_point_config_gui(bp, p, pbc);
 }
 
@@ -512,8 +514,6 @@ void plot2d::create_point_config_gui(cgv::base::base* bp, cgv::gui::provider& p,
 void plot2d::create_stick_config_gui(cgv::base::base* bp, cgv::gui::provider& p, plot_base_config& pbc)
 {
 	auto& p2dc = reinterpret_cast<plot2d_config&>(pbc);
-	p.add_member_control(bp, "crd_idx", p2dc.stick_coordinate_index, "value_slider", "min=0;max=1;ticks=true");
-	p.add_member_control(bp, "base", p2dc.stick_base_window, "value_slider", "min=0;max=1;ticks=true");
 	plot_base::create_stick_config_gui(bp, p, pbc);
 }
 
@@ -521,15 +521,18 @@ void plot2d::create_stick_config_gui(cgv::base::base* bp, cgv::gui::provider& p,
 void plot2d::create_bar_config_gui(cgv::base::base* bp, cgv::gui::provider& p, plot_base_config& pbc)
 {
 	auto& p2dc = reinterpret_cast<plot2d_config&>(pbc);
-	p.add_member_control(bp, "crd_idx", p2dc.bar_coordinate_index, "value_slider", "min=0;max=1;ticks=true");
-	p.add_member_control(bp, "base", p2dc.bar_base_window, "value_slider", "min=0;max=1;ticks=true");
 	plot_base::create_bar_config_gui(bp, p, pbc);
 }
 
 void plot2d::create_config_gui(cgv::base::base* bp, cgv::gui::provider& p, unsigned i)
 {
 	plot_base::create_config_gui(bp, p, i);
-	return;
+}
+
+void plot2d::create_gui(cgv::base::base* bp, cgv::gui::provider& p)
+{
+	p.add_decorator("plot2d", "heading");
+	plot_base::create_gui(bp, p);
 	if (p.begin_tree_node("rectangle", rrs, false, "level=3")) {
 		p.align("\a");
 		p.add_member_control(bp, "layer_depth", layer_depth, "value_slider", "min=0.000001;max=0.01;step=0.0000001;log=true;ticks=true");

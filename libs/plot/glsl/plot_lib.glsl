@@ -16,8 +16,8 @@ vec3 map_color(in float v_window, int idx = 0);
 vec3 map_color(in float attributes[8], in vec3 base_color, int idx = 0);
 float map_opacity(in float v_window, int idx = 0);
 float map_opacity(in float attributes[8], in float base_opacity, int idx = 0);
-float map_size(in float v_window);
-float map_size(in float attributes[8], in float base_size);
+float map_size(in float v_window, int idx = 0);
+float map_size(in float attributes[8], in float base_size, int idx = 0);
 //***** end interface of plot_lib.glsl ***********************************
 */
 
@@ -60,22 +60,25 @@ uniform vec4 orientation = vec4(0.0, 0.0, 0.0, 1.0);
 uniform float feature_offset;
 
 // color mapping
-uniform int   color_mapping[2] = { -1, -1 };
-uniform float color_scale_gamma[2] = { 1.0, 1.0 };
+const int MAX_NR_COLOR_MAPPINGS = 2;
+uniform int   color_mapping[MAX_NR_COLOR_MAPPINGS] = { -1, -1 };
+uniform float color_scale_gamma[MAX_NR_COLOR_MAPPINGS] = { 1.0, 1.0 };
 
 // opacity mapping
-uniform int   opacity_mapping[2] = { -1, -1 };
-uniform float opacity_gamma[2] = { 1.0, 1.0 };
-uniform int  opacity_is_bipolar[2] = { 0, 0 };
-uniform float opacity_window_zero_position[2] = { 0.5, 0.5 };
-uniform float opacity_min[2] = { 0.1, 0.1 };
-uniform float opacity_max[2] = { 1.0, 1.0 };
+const int MAX_NR_OPACITY_MAPPINGS = 2;
+uniform int   opacity_mapping[MAX_NR_OPACITY_MAPPINGS] = { -1, -1 };
+uniform float opacity_gamma[MAX_NR_OPACITY_MAPPINGS] = { 1.0, 1.0 };
+uniform int  opacity_is_bipolar[MAX_NR_OPACITY_MAPPINGS] = { 0, 0 };
+uniform float opacity_window_zero_position[MAX_NR_OPACITY_MAPPINGS] = { 0.5, 0.5 };
+uniform float opacity_min[MAX_NR_OPACITY_MAPPINGS] = { 0.1, 0.1 };
+uniform float opacity_max[MAX_NR_OPACITY_MAPPINGS] = { 1.0, 1.0 };
 
 // size mapping
-uniform int   size_mapping = 0;
-uniform float size_gamma = 1.0;
-uniform float size_max = 1.0;
-uniform float size_min = 0.1;
+const int MAX_NR_SIZE_MAPPINGS = 2;
+uniform int   size_mapping[MAX_NR_SIZE_MAPPINGS] = { -1, -1 };
+uniform float size_gamma[MAX_NR_SIZE_MAPPINGS] = { 1.0, 1.0 };
+uniform float size_max[MAX_NR_SIZE_MAPPINGS] = { 1.0, 1.0 };
+uniform float size_min[MAX_NR_SIZE_MAPPINGS] = { 0.2, 0.2 };
 
 float tick_space_from_attribute_space(int ai, float value)
 {
@@ -139,7 +142,7 @@ vec3 map_color(in float v, int idx = 0)
 
 vec3 map_color(in float attributes[8], in vec3 base_color, int idx = 0)
 {
-	if (idx >= 2 || color_mapping[idx] < 0 || color_mapping[idx] > 7)
+	if (idx >= MAX_NR_COLOR_MAPPINGS || color_mapping[idx] < 0 || color_mapping[idx] > 7)
 		return base_color;
 	// simple window transform
 	float v = window_space_from_tick_space(color_mapping[idx],
@@ -167,7 +170,7 @@ float map_opacity(in float v, int idx = 0)
 
 float map_opacity(in float attributes[8], in float base_opacity, int idx = 0)
 {
-	if (opacity_mapping[idx] < 0 || opacity_mapping[idx] > 7)
+	if (idx >= MAX_NR_OPACITY_MAPPINGS || opacity_mapping[idx] < 0 || opacity_mapping[idx] > 7)
 		return base_opacity;
 	// simple window transform
 	float v = window_space_from_tick_space(opacity_mapping[idx],
@@ -175,17 +178,17 @@ float map_opacity(in float attributes[8], in float base_opacity, int idx = 0)
 	return map_opacity(v, idx) * base_opacity;
 }
 
-float map_size(in float v)
+float map_size(in float v, int idx)
 {
-	return ((size_max - size_min) * pow(v, size_gamma) + size_min);
+	return ((size_max[idx] - size_min[idx]) * pow(v, size_gamma[idx]) + size_min[idx]);
 }
 
-float map_size(in float attributes[8], in float base_size)
+float map_size(in float attributes[8], in float base_size, int idx)
 {
-	if (size_mapping < 0 || size_mapping > 7)
+	if (idx >= MAX_NR_SIZE_MAPPINGS || size_mapping[idx] < 0 || size_mapping[idx] > 7)
 		return base_size;
 	// simple window transform
-	float v = window_space_from_tick_space(size_mapping,
-		tick_space_from_attribute_space(size_mapping, attributes[size_mapping]));
-	return map_size(v) * base_size;
+	float v = window_space_from_tick_space(size_mapping[idx],
+		tick_space_from_attribute_space(size_mapping[idx], attributes[size_mapping[idx]]));
+	return map_size(v, idx) * base_size;
 }
