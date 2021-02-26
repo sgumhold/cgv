@@ -7,6 +7,204 @@
 
 namespace cgv {
 	namespace render {
+		namespace {
+			struct SamplerRandom : public octree_lod_generator::Sampler {
+
+				// subsample a local octree from bottom up
+				void sample(std::shared_ptr<octree_lod_generator::IndexNode> node, double baseSpacing, std::function<void(octree_lod_generator::IndexNode*)> onNodeCompleted) {
+					using IndexNode = octree_lod_generator::IndexNode;
+					using vec3 = cgv::render::render_types::vec3;
+					using Vertex = clod_point_renderer::Vertex;
+					
+					//lambda for bottom up traversal
+					std::function<void(IndexNode*, std::function<void(IndexNode*)>)> traversePost = [&traversePost](IndexNode* node, std::function<void(IndexNode*)> callback) {
+						for (auto child : node->children) {
+
+							if (child != nullptr && !child->sampled) {
+								traversePost(child.get(), callback);
+							}
+						}
+
+						callback(node);
+					};
+					
+
+					traversePost(node.get(), [baseSpacing, &onNodeCompleted](IndexNode* node) {
+						node->sampled = true;
+
+						int64_t numPoints = node->num_points;
+
+						int64_t gridSize = 128;
+						thread_local std::vector<int64_t> grid(gridSize * gridSize * gridSize, -1);
+						thread_local int64_t iteration = 0;
+						iteration++;
+
+						auto max = node->max;
+						auto min = node->min;
+						auto size = max - min;
+
+						struct CellIndex {
+							int64_t index = -1;
+							double distance = 0.0;
+						};
+
+						auto toCellIndex = [min, size, gridSize](vec3 point) -> CellIndex {
+
+							double nx = (point.x() - min.x()) / size.x();
+							double ny = (point.y() - min.y()) / size.y();
+							double nz = (point.z() - min.z()) / size.z();
+
+							double lx = 2.0 * fmod(double(gridSize) * nx, 1.0) - 1.0;
+							double ly = 2.0 * fmod(double(gridSize) * ny, 1.0) - 1.0;
+							double lz = 2.0 * fmod(double(gridSize) * nz, 1.0) - 1.0;
+
+							double distance = sqrt(lx * lx + ly * ly + lz * lz);
+
+							int64_t x = double(gridSize) * nx;
+							int64_t y = double(gridSize) * ny;
+							int64_t z = double(gridSize) * nz;
+
+							x = std::max(int64_t(0), std::min(x, gridSize - 1));
+							y = std::max(int64_t(0), std::min(y, gridSize - 1));
+							z = std::max(int64_t(0), std::min(z, gridSize - 1));
+
+							int64_t index = x + y * gridSize + z * gridSize * gridSize;
+
+							return { index, distance };
+						};
+
+						bool isLeaf = node->is_leaf();
+						if (isLeaf) {
+							std::vector<int> indices(node->num_points);
+							for (int i = 0; i < node->num_points; i++) {
+								indices[i] = i;
+							}
+
+							unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+							//shuffle leafs
+							std::shuffle(indices.begin(), indices.end(), std::default_random_engine(seed));
+
+							auto buffer = std::make_shared<std::vector<Vertex>>(node->num_points);
+
+							for (int i = 0; i < node->num_points; i++) {
+
+								int64_t sourceOffset = i;
+								int64_t targetOffset = indices[i];
+
+								buffer->at(targetOffset) = node->points->at(sourceOffset);
+								//memcpy(buffer->data() + targetOffset, node->points->data() + sourceOffset, sizeof(Vertex));
+							}
+
+							node->points = buffer;
+
+							return false;
+						}
+
+						// =================================================================
+						// SAMPLING
+						// =================================================================
+						//
+						// first, check for each point whether it's accepted or rejected
+						// save result in an array with one element for each point
+
+						std::vector<std::vector<int8_t>> acceptedChildPointFlags;
+						std::vector<int64_t> numRejectedPerChild;
+						int64_t numAccepted = 0;
+						for (int childIndex = 0; childIndex < 8; childIndex++) {
+							auto child = node->children[childIndex];
+
+							if (child == nullptr) {
+								acceptedChildPointFlags.push_back({});
+								numRejectedPerChild.push_back({});
+
+								continue;
+							}
+
+							std::vector<int8_t> acceptedFlags(child->num_points, 0);
+							int64_t numRejected = 0;
+
+							for (int i = 0; i < child->num_points; i++) {
+
+								int64_t pointOffset = i;
+								vec3 pos = child->points->at(pointOffset).position;
+
+								CellIndex cellIndex = toCellIndex(pos);
+
+								auto& gridValue = grid[cellIndex.index];
+
+								static double all = sqrt(3.0);
+
+								bool isAccepted;
+								if (child->num_points < 100) {
+									isAccepted = true;
+								}
+								else if (cellIndex.distance < 0.7 * all && gridValue < iteration) {
+									isAccepted = true;
+								}
+								else {
+									isAccepted = false;
+								}
+
+								if (isAccepted) {
+									gridValue = iteration;
+									numAccepted++;
+								}
+								else {
+									numRejected++;
+								}
+
+								acceptedFlags[i] = isAccepted ? 1 : 0;
+							}
+
+							acceptedChildPointFlags.push_back(acceptedFlags);
+							numRejectedPerChild.push_back(numRejected);
+						}
+
+						auto accepted = std::make_shared<std::vector<Vertex>>(numAccepted);
+						for (int childIndex = 0; childIndex < 8; childIndex++) {
+							auto child = node->children[childIndex];
+
+							if (child == nullptr) {
+								continue;
+							}
+
+							auto numRejected = numRejectedPerChild[childIndex];
+							auto& acceptedFlags = acceptedChildPointFlags[childIndex];
+							auto rejected = std::make_shared<std::vector<Vertex>>(numRejected);
+
+							for (int i = 0; i < child->num_points; i++) {
+								auto isAccepted = acceptedFlags[i];
+								int64_t pointOffset = i;
+
+								if (isAccepted) {
+									accepted->push_back(child->points->at(pointOffset));
+								}
+								else {
+									rejected->push_back(child->points->at(pointOffset));
+								}
+							}
+
+							if (numRejected == 0) {
+								node->children[childIndex] = nullptr;
+							} if (numRejected > 0) {
+								child->points = rejected;
+								child->num_points = numRejected;
+
+								onNodeCompleted(child.get());
+							}
+						}
+
+						node->points = accepted;
+						node->num_points = numAccepted;
+
+						return true;
+						});
+				}
+
+			};
+
+
+		}
 
 		clod_point_render_style::clod_point_render_style() {}
 
@@ -54,8 +252,11 @@ namespace cgv {
 			return id;
 		}
 
-		void octree_lod_generator::lod_chunking(const Vertex* vertices, const size_t num_points, const vec3& min, const vec3& max)
+		octree_lod_generator::Chunks octree_lod_generator::lod_chunking(const Vertex* vertices, const size_t num_points, const vec3& min, const vec3& max)
 		{
+			// stores chunks created by the chunking phase
+			Chunks chunks;
+
 			max_points_per_chunk = std::min<size_t>(source_data_size / 20, 10'000'000ll);
 			
 			if (source_data_size < 4'000'000) {
@@ -77,20 +278,21 @@ namespace cgv {
 			// COUNT
 			auto grid = lod_counting(source_data, source_data_size, grid_size, min, max);
 			grid.size();
+
 			{ // DISTIRBUTE
 
-				auto lut = lod_createLUT(grid, grid_size);
-
-				distributePoints(min, max, lut, vertices, num_points);
+				auto lut = lod_createLUT(grid, grid_size,chunks.nodes);
+				distributePoints(min, max, lut, vertices, num_points,chunks.nodes);
 			}
 
 
-			//string metadataPath = targetDir + "/chunks/metadata.json";
-			//double cubeSize = (max - min).max();
-			//Vector3 size = { cubeSize, cubeSize, cubeSize };
-			//max = min + cubeSize;
+			vec3 ext = max - min;
+			float cube_size = *std::max_element(ext.begin(), ext.end());
+			vec3 size = { cube_size, cube_size, cube_size };
 
-			//writeMetadata(metadataPath, min, max, outputAttributes);
+			chunks.min = min;
+			chunks.max = min + cube_size;
+			return std::move(chunks);
 		}
 
 
@@ -163,7 +365,7 @@ namespace cgv {
 		}
 
 
-		octree_lod_generator::NodeLUT octree_lod_generator::lod_createLUT(std::vector<std::atomic_int32_t>& grid, int64_t grid_size)
+		octree_lod_generator::NodeLUT octree_lod_generator::lod_createLUT(std::vector<std::atomic_int32_t>& grid, int64_t grid_size, std::vector<ChunkNode>& nodes)
 		{
 			nodes.clear();
 
@@ -200,7 +402,7 @@ namespace cgv {
 				// grid_high
 				
 				// loop through all cells of the lower detail target grid, and for each cell through the 8 enclosed cells of the higher level grid
-				for_xyz(gridSize_low, [this ,&grid_low, &grid_high, gridSize_low, gridSize_high, level_low, level_high, level_max](int64_t x, int64_t y, int64_t z) {
+				for_xyz(gridSize_low, [this, &nodes ,&grid_low, &grid_high, gridSize_low, gridSize_high, level_low, level_high, level_max](int64_t x, int64_t y, int64_t z) {
 
 					int64_t index_low = x + y * gridSize_low + z * gridSize_low * gridSize_low;
 
@@ -297,7 +499,7 @@ namespace cgv {
 		}
 
 		
-		void octree_lod_generator::distributePoints(vec3 min, vec3 max, NodeLUT& lut, const Vertex* vertices, const int64_t num_points)
+		void octree_lod_generator::distributePoints(vec3 min, vec3 max, NodeLUT& lut, const Vertex* vertices, const int64_t num_points, const std::vector<ChunkNode>& nodes)
 		{
 			std::mutex mtx_push_point;
 			std::vector<std::atomic_int32_t> counters(nodes.size());
@@ -339,24 +541,23 @@ namespace cgv {
 			int test = 0;
 		}
 
-		void octree_lod_generator::indexing(const std::vector<ChunkNode>& chunks, std::vector<Vertex>& vertices)
+		void octree_lod_generator::lod_indexing(Chunks& chunks, std::vector<Vertex>& vertices, Sampler& sampler)
 		{
-			Indexer indexer(&vertices);
-
 			struct Task {
-				std::shared_ptr<ChunkNode> chunk;
+				ChunkNode* chunk = nullptr;
 				//one chunk per task
-				Task(std::shared_ptr<ChunkNode> chunk) {
-					this->chunk = chunk;
+				Task(ChunkNode& chunk) {
+					this->chunk = &chunk;
 				}
-				Task() = default;
 			};
 
 			struct Tasks {
 				std::vector<Task> task_pool;
-				std::atomic_int next_task;
+				std::atomic_int next_task = 0;
 
-				void operator()(){
+				std::function<void(Task*)> func;
+
+				void operator()() {
 					while (true) {
 						Task* task;
 						//get task
@@ -366,27 +567,93 @@ namespace cgv {
 								return;
 							task = &task_pool[task_id];
 						}
-
-						{
-							auto chunk = task->chunk;
-							//auto chunk_root = std::make_shared<IndexNode>(chunk->id, chunk->min, chunk->max);
-							//buildHierarchy(&indexer, chunkRoot.get(), chunks, numPoints);
-						}
+						func(task);
 					}
 				}
 			} tasks;
 
-			//run octree generation on each chunk in parallel
-			std::vector<std::thread> thread_pool(std::thread::hardware_concurrency());
 
-			auto chunk_processor = [](std::shared_ptr<Task> task) {
+			Indexer indexer(&vertices);
+			std::mutex mtx_nodes;
+			std::vector<std::shared_ptr<IndexNode>> nodes;
+			
+			indexer.root = std::make_shared<IndexNode>("r", chunks.min, chunks.max);
+			indexer.spacing = (chunks.max - chunks.min).x() / 128.0;
+
+			//builds node hierachy
+			tasks.func = [this,&indexer,&sampler,&nodes,&mtx_nodes](Task* task) {
+				static constexpr float Infinity = std::numeric_limits<float>::infinity();
+				auto chunk = task->chunk;
+				vec3 min(Infinity), max(-Infinity);
+				for (auto& v : chunk->pc_data->vertices) {
+					min.x() = std::min(min.x(), v.position.x());
+					min.y() = std::min(min.y(), v.position.y());
+					min.z() = std::min(min.z(), v.position.z());
+
+					max.x() = std::max(max.x(), v.position.x());
+					max.y() = std::max(max.y(), v.position.y());
+					max.z() = std::max(max.z(), v.position.z());
+				}
+
+				auto chunk_root = std::make_shared<IndexNode>(chunk->id, min, max);
 				
-				
-				//IndexNode chunk_root = IndexNode(task->chunk->id,task->chunk->)
-				//	task->chunk;
+				//alias vertices
+				std::shared_ptr<std::vector<Vertex>> points(chunk->pc_data, &(chunk->pc_data->vertices));
+
+				buildHierarchy(&indexer, chunk_root.get(), points, points->size());
+				//TODO continue
+				auto onNodeCompleted = [&indexer](IndexNode* node) {
+					indexer.write(*node);
+				};
+
+				sampler.sample(chunk_root, indexer.spacing, onNodeCompleted);
+
+				indexer.flushChunkRoot(chunk_root);
+
+				// add chunk root, provided it isn't the root.
+				if (chunk_root->name.size() > 1) {
+					assert(indexer.root != nullptr);
+					indexer.root->add_descendant(chunk_root);
+				}
+
+				std::lock_guard<std::mutex> lock(mtx_nodes);
+
+				nodes.push_back(chunk_root);
 			};
 
+			//fill task pool
+			for (auto& chunk : chunks.nodes) {
+				tasks.task_pool.emplace_back(chunk);
+			}
+			
+			//run octree generation on each chunk in parallel
+			std::vector<std::thread> thread_pool;
+			int num_threads = 1;// std::thread::hardware_concurrency();
+			for (int i = 0; i < num_threads; ++i) {
+				thread_pool.emplace_back([&tasks]() {tasks(); });
+			}
+			
+			for (auto& thread : thread_pool) {
+				thread.join();
+			}
 
+			//indexer.reloadChunkRoots();
+
+			if (chunks.nodes.size() == 1) {
+				indexer.root = nodes[0];
+			}
+			else {
+
+				auto onNodeCompleted = [&indexer](IndexNode* node) {
+					indexer.write(*node);
+				};
+
+				sampler.sample(indexer.root, indexer.spacing, onNodeCompleted);
+			}
+
+			indexer.write(*indexer.root.get());
+
+			//indexer.writer->closeAndWait();
 		}
 
 
@@ -593,7 +860,7 @@ namespace cgv {
 				counters[index]++;
 			}
 
-			{ // DISTRIBUTING
+			{ // DISTRIBUTING - reorder points to follow morton code order
 				std::vector<int64_t> offsets(counters.size(), 0);
 				for (int64_t i = 1; i < counters.size(); i++) {
 					offsets[i] = offsets[i - 1] + counters[i - 1];
@@ -606,9 +873,8 @@ namespace cgv {
 					auto targetIndex = offsets[index]++;
 
 					tmp[targetIndex] = (*points)[i];
-					//memcpy(&tmp.vertices + targetIndex, &points->pc_data.vertices + i, sizeof(Vertex));
+					memcpy(tmp.data() + targetIndex, points->data() + i, sizeof(Vertex));
 				}
-
 				memcpy(points.get(), tmp.data(), numPoints * sizeof(Vertex));
 			}
 
@@ -798,6 +1064,7 @@ namespace cgv {
 
 		std::vector <octree_lod_generator::Vertex> octree_lod_generator::generate_lods(const std::vector<Vertex>& vertices)
 		{
+			std::cerr << "Warning: octree method is highly unstable!\n";
 			std::vector<Vertex> out;
 			this->source_data = (Vertex*)vertices.data();
 			this->source_data_size = vertices.size();
@@ -818,8 +1085,9 @@ namespace cgv {
 				max.z() = std::max(max.z(), p.z());
 			}
 
-			lod_chunking(vertices.data(), vertices.size(), min, max);
-			indexing(nodes, out);
+			auto nodes = lod_chunking(vertices.data(), vertices.size(), min, max);
+			SamplerRandom sampler;
+			lod_indexing(nodes, out, sampler);
 			return out;
 			//TODO continue
 		}
@@ -840,6 +1108,11 @@ namespace cgv {
 		void clod_point_renderer::draw_and_compute_impl(context& ctx, PrimitiveType type, size_t start, size_t count, bool use_strips, bool use_adjacency, uint32_t strip_restart_index)
 		{
 			//renderer::draw_impl(ctx, type, start, count, use_strips, use_adjacency, strip_restart_index);
+			
+			//TODO add option to spread calculation over multiple frames
+			//configure shader to compute everything after one frame
+			reduce_prog.set_uniform(ctx, reduce_prog.get_uniform_location(ctx, "uBatchOffset"), 0);
+			reduce_prog.set_uniform(ctx, reduce_prog.get_uniform_location(ctx, "uBatchSize"), (int)count);
 
 			// reset draw parameters
 			DrawParameters dp = DrawParameters();
@@ -929,7 +1202,6 @@ namespace cgv {
 			}
 
 			//const clod_point_render_style& srs = get_style<clod_point_render_style>();
-			//TODO set uniforms
 			vec2 screenSize(ctx.get_width(), ctx.get_height());
 			vec4 pivot = inv(ctx.get_modelview_matrix())*dvec4(0.0,0.0,0.0,1.0);
 			
@@ -958,15 +1230,7 @@ namespace cgv {
 			reduce_prog.set_uniform(ctx, "spacing", prs.spacing);
 			reduce_prog.set_uniform(ctx, reduce_prog.get_uniform_location(ctx, "pivot"), pivot);
 			reduce_prog.set_uniform(ctx, reduce_prog.get_uniform_location(ctx, "screenSize"), screenSize);
-			//configure shader to compute everything after one frame
 
-			//TODO add option to spread calculation to multiple frames
-			reduce_prog.set_uniform(ctx, reduce_prog.get_uniform_location(ctx, "uBatchOffset"), 0);
-			reduce_prog.set_uniform(ctx, reduce_prog.get_uniform_location(ctx, "uBatchSize"), (int)input_buffer_data.size());
-
-
-			//testcode
-			float reference_point_size = 0.01f;
 			float y_view_angle = 45;
 			//general point renderer uniforms
 			draw_prog.set_uniform(ctx, "use_color_index", false);
@@ -993,6 +1257,7 @@ namespace cgv {
 				//TODO reset internal attributes
 			}
 			*/
+
 			return true;
 		}
 
@@ -1001,12 +1266,21 @@ namespace cgv {
 			draw_and_compute_impl(ctx, cgv::render::PT_POINTS, start, count, use_strips, use_adjacency, strip_restart_index);
 		}
 
+		bool clod_point_renderer::render(context& ctx, size_t start, size_t count, bool use_strips, bool use_adjacency, uint32_t strip_restart_index)
+		{
+			if (enable(ctx)) {
+				draw(ctx, start, count, use_strips, use_adjacency, strip_restart_index);
+				return true;
+			}
+			return false;
+		}
+
 		void clod_point_renderer::generate_lods(const LoDMode mode)
 		{
 			switch (mode) {
 			case LoDMode::POTREE: {
 				octree_lod_generator lod;
-				lod.generate_lods(input_buffer_data);
+				input_buffer_data = lod.generate_lods(input_buffer_data);
 				break; }
 			case LoDMode::RANDOM_POISSON: {
 				generate_lods_poisson();
@@ -1049,10 +1323,6 @@ namespace cgv {
 
 		void clod_point_renderer::fill_buffers(context& ctx)
 		{ //  fill buffers for the compute shader
-			/*
-			glBindBuffer(GL_ARRAY_BUFFER, input_buffer);
-			glBufferData(GL_ARRAY_BUFFER, input_buffer_data.size() * sizeof(Vertex), input_buffer_data.data(), GL_STATIC_READ);
-			glBindBuffer(GL_ARRAY_BUFFER, 0);*/
 			glBindBuffer(GL_SHADER_STORAGE_BUFFER, input_buffer);
 			glBufferData(GL_SHADER_STORAGE_BUFFER, input_buffer_data.size() * sizeof(Vertex), input_buffer_data.data(), GL_STATIC_READ);
 			
