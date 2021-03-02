@@ -326,8 +326,8 @@ public:
 		prog.set_uniform(ctx, "illumination_mode", (int)illumination_mode);
 		// set default surface color for color mapping which only affects 
 		// rendering if mesh does not have per vertex colors and color_mapping is on
-		prog.set_attribute(ctx, prog.get_color_index(), surface_color);
-
+		//prog.set_attribute(ctx, prog.get_color_index(), surface_color);
+		ctx.set_color(surface_color);
 		// render the mesh from the vertex buffers with selected program
 		mesh_info.draw_all(ctx, opaque_part, !opaque_part);
 

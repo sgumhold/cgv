@@ -861,7 +861,7 @@ public:
 	/**@name font selection and measure*/
 	//@{
 	/// enable the given font face with the given size in pixels
-	virtual void enable_font_face(media::font::font_face_ptr font_face, float font_size) = 0;
+	virtual void enable_font_face(media::font::font_face_ptr font_face, float font_size);
 	/// return the size in pixels of the currently enabled font face
 	virtual float get_current_font_size() const;
 	/// return the currently enabled font face

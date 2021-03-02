@@ -127,21 +127,10 @@ void gl_set_material(const cgv::media::illum::phong_material& mat, MaterialSide 
 gl_context::gl_context()
 {
 	frame_buffer_stack.top()->handle = get_handle(0);
-
+	current_color = rgba(1, 1, 1, 1);
 	max_nr_indices = 0;
 	max_nr_vertices = 0;
 	info_font_size = 14;
-	// check if a new context has been created or if the size of the viewport has been changed
-	font_ptr info_font = find_font("Courier New");
-	if (info_font.empty()) {
-		info_font = find_font("Courier");
-		if (info_font.empty()) {
-			info_font = find_font("system");
-		}
-	}
-	if (!info_font.empty())
-		info_font_face = info_font->get_font_face(FFA_REGULAR);
-
 	show_help = false;
 	show_stats = false;
 }
@@ -300,6 +289,21 @@ media::font::font_face_ptr gl_context::get_current_font_face() const
 
 void gl_context::init_render_pass()
 {
+	if (info_font_face.empty()) {
+		font_ptr info_font = find_font("Consolas");
+		if (info_font.empty()) {
+			info_font = find_font("Courier");
+			if (info_font.empty()) {
+				info_font = find_font("system");
+			}
+		}
+		if (!info_font.empty()) {
+			info_font_face = info_font->get_font_face(FFA_REGULAR);
+			info_font_face->enable(this, info_font_size);
+			if (current_font_face.empty())
+				enable_font_face(info_font_face, info_font_size);
+		}
+	}
 #ifdef WIN32
 	wglSwapIntervalEXT(enable_vsynch ? 1 : 0);
 #else
@@ -412,37 +416,42 @@ struct format_callback_handler : public traverse_callback_handler
 void gl_context::draw_textual_info()
 {
 	if (show_help || show_stats) {
-		if (!core_profile) {
-			glPushAttrib(GL_CURRENT_BIT | GL_ENABLE_BIT);
-			glDisable(GL_DEPTH_TEST);
-			if (bg_r + bg_g + bg_b < 1.5f)
-				glColor4f(1, 1, 1, 1);
-			else
-				glColor4f(0, 0, 0, 1);
+		rgba tmp = current_color;
+		GLboolean depth_test = glIsEnabled(GL_DEPTH_TEST);
+		glDisable(GL_DEPTH_TEST);
 
-			push_pixel_coords();
-			enable_font_face(info_font_face, info_font_size);
-			format_callback_handler fch(output_stream());
-			set_cursor(20, 20);
-			group_ptr grp(dynamic_cast<group*>(this));
-			if (grp && show_stats) {
-				single_method_action<cgv::base::base, void, std::ostream&> sma(output_stream(), &cgv::base::base::stream_stats, false, false);
-				traverser(sma, "nc").traverse(grp, &fch);
-				output_stream() << std::endl;
-			}
-			if (bg_r + bg_g + bg_b < 1.5f)
-				glColor4f(1, 1, 0, 1);
-			else
-				glColor4f(0.4f, 0.3f, 0, 1);
-			if (grp && show_help) {
-				// collect help from myself and all children
-				single_method_action<event_handler, void, std::ostream&> sma(output_stream(), &event_handler::stream_help, false, false);
-				traverser(sma, "nc").traverse(grp, &fch);
-				output_stream().flush();
-			}
-			pop_pixel_coords();
-			glPopAttrib();
+		push_pixel_coords();
+		enable_font_face(info_font_face, info_font_size);
+
+		set_cursor(20, 20);
+
+		if (bg_r + bg_g + bg_b < 1.5f)
+			set_color(rgba(1, 1, 1, 1));
+		else
+			set_color(rgba(0, 0, 0, 1));
+
+		// traverse objects for show_stats callback
+		format_callback_handler fch(output_stream());
+		group_ptr grp(dynamic_cast<group*>(this));
+		if (grp && show_stats) {
+			single_method_action<cgv::base::base, void, std::ostream&> sma(output_stream(), &cgv::base::base::stream_stats, false, false);
+			traverser(sma, "nc").traverse(grp, &fch);
+			output_stream() << std::endl;
 		}
+		if (bg_r + bg_g + bg_b < 1.5f)
+			set_color(rgba(1, 1, 0, 1));
+		else
+			set_color(rgba(0.4f, 0.3f, 0, 1));
+
+		if (grp && show_help) {
+			// collect help from myself and all children
+			single_method_action<event_handler, void, std::ostream&> sma(output_stream(), &event_handler::stream_help, false, false);
+			traverser(sma, "nc").traverse(grp, &fch);
+			output_stream().flush();
+		}
+		pop_pixel_coords();
+		if (depth_test)
+			glEnable(GL_DEPTH_TEST);
 	}
 }
 
@@ -516,17 +525,16 @@ void gl_context::enumerate_program_attributes(shader_program& prog, std::vector<
 /// set the current color
 void gl_context::set_color(const rgba& clr)
 {
+	current_color = clr;
 	if (support_compatibility_mode && !core_profile) {
 		glColor4fv(&clr[0]);
 	}
 	if (shader_program_stack.empty())
 		return;
-
 	cgv::render::shader_program& prog = *static_cast<cgv::render::shader_program*>(shader_program_stack.top());
 	int clr_loc = prog.get_color_index();
 	if (clr_loc == -1)
 		return;
-
 	prog.set_attribute(*this, clr_loc, clr);
 }
 
@@ -2328,8 +2336,7 @@ bool gl_context::shader_program_enable(shader_program_base& spb)
 {
 	if (!context::shader_program_enable(spb))
 		return false;
-	glUseProgram(get_gl_id(spb.handle));
-	
+	glUseProgram(get_gl_id(spb.handle));	
 	shader_program& prog = static_cast<shader_program&>(spb);
 	if (auto_set_lights_in_current_shader_program && spb.does_use_lights())
 		set_current_lights(prog);
@@ -2339,6 +2346,8 @@ bool gl_context::shader_program_enable(shader_program_base& spb)
 		set_current_view(prog);
 	if (auto_set_gamma_in_current_shader_program && spb.does_use_gamma())
 		prog.set_uniform(*this, "gamma", gamma);
+	if (prog.get_color_index() >= 0)
+		prog.set_attribute(*this, prog.get_color_index(), current_color);
 	return true;
 }
 

@@ -151,7 +151,8 @@ public:
 	/// draw transparent part here
 	void finish_frame(cgv::render::context& ctx);
 	//@}
-
+	/// provide access to table dimensions
+	vec3 get_table_extent() const { return vec3(table_width, table_height, table_depth); }
 	/// cgv::gui::provider function to create classic UI
 	void create_gui();
 };
