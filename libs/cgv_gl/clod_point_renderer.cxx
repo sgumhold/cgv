@@ -4,6 +4,158 @@
 #include <sstream>
 #include "clod_point_renderer.h"
 
+//for debug purposes
+#include <cgv/utils/file.h>
+
+namespace {
+	//** concurrency classes *//
+	class SenseReversingBarrier
+	{
+		int remaining = 0;
+		int initial_count = 0;
+		bool barrier_sense = false;
+		std::mutex barrier_mutex;
+		std::condition_variable condition;
+		std::unordered_map<std::thread::id, bool> thread_sense;
+	public:
+		SenseReversingBarrier(const int i) {
+			remaining = i;
+			initial_count = i;
+		}
+
+		bool sense() const {
+			return barrier_sense;
+		}
+
+		// post_once is run by one thread whith following condition, 
+		//	-- run after all threads reached the phase synchronization point 
+		//  -- before any thread is notified in the current phase
+		template <typename F>
+		void await(F post_once) {
+			bool sense;
+			std::thread::id id = std::this_thread::get_id();
+			std::unique_lock<std::mutex> lock(barrier_mutex);
+			auto sen = thread_sense.find(id);
+			if (sen != thread_sense.end()) {
+				sense = sen->second;
+			}
+			else {
+				sense = !barrier_sense;
+			}
+
+			--remaining;
+			if (remaining == 0) {
+				remaining = initial_count; //one addition for the calling thread
+				barrier_sense = !barrier_sense;
+				post_once();
+				condition.notify_all();
+			}
+			else {
+				while (sense != barrier_sense)
+					condition.wait(lock);
+			}
+			thread_sense[id] = !sense;
+		}
+
+		void await() {
+			await([]() {});
+		}
+	};
+
+	//class is not thread safe
+	class WorkerPool {
+
+		struct PoolTask {
+			//Task* task;
+			std::function<void()> task;
+			std::atomic_int remaining; //threads not finished yet
+			PoolTask(const std::function<void()>& t, const int num_threads) : task(t), remaining(num_threads) {}
+		};
+
+		SenseReversingBarrier barrier_pre;
+		SenseReversingBarrier barrier_post;
+
+		std::unique_ptr<PoolTask> current_task = nullptr;
+
+		std::vector<std::thread> threads;
+
+		bool stop_request = false;
+
+	public:
+		WorkerPool(unsigned i) : barrier_pre(i + 1), barrier_post(i + 1) {
+			construct_threads(i);
+		}
+		~WorkerPool() {
+			join_all();
+		}
+
+		//collectiv task execution, calling thread also runs the task
+		template<typename F>
+		void run(F func) {
+			//no lock required since the calling threads is the only accessing thread
+			current_task = std::make_unique<PoolTask>(std::move(std::function<void()>(func)), (int)threads.size() + 1);
+			worker_kernel(current_task.get(), -1, false);
+		}
+
+	protected:
+		//join i threads (blocking)
+		void join_all();
+
+		// kernel runs in parallel
+		void worker_kernel(PoolTask* ptask, int thread_id, bool is_pool_member = true);
+
+		//add i threads to the pool (blocking)
+		void construct_threads(unsigned i) {
+			//create threads
+			while (i > 0) {
+				bool sense = !barrier_pre.sense();
+				threads.emplace_back(&WorkerPool::worker_kernel, this, nullptr, --i, true);
+			}
+		}
+	};
+
+	void WorkerPool::join_all()
+	{
+		{
+			{
+				stop_request = true;
+				current_task = nullptr;
+			}
+			worker_kernel(nullptr, -1, false);
+		}
+		for (auto& thread : threads) {
+			thread.join();
+		}
+		threads.clear();
+		stop_request = false;
+	}
+
+	void WorkerPool::worker_kernel(PoolTask* ptask, int thread_id, bool is_pool_member)
+	{
+		do {
+			//std::printf("%d arrived\n", thread_id);
+			barrier_pre.await(); //usually threads wait on this barrier
+			//std::printf("%d passed barrier\n", thread_id);
+			ptask = current_task.get();
+			//terminate on request
+			if (stop_request) {
+				return;
+			}
+
+			//run any existing task
+			if (ptask) {
+				ptask->task();
+				//threads resynchronize on this barrier prior marking the Task as done
+				barrier_post.await([this]() {
+					current_task = nullptr;
+					});
+
+			}
+		} while (is_pool_member);
+	}
+}
+//**
+
 
 namespace cgv {
 	namespace render {
@@ -14,7 +166,7 @@ namespace cgv {
 				void sample(std::shared_ptr<octree_lod_generator::IndexNode> node, double baseSpacing, std::function<void(octree_lod_generator::IndexNode*)> onNodeCompleted) {
 					using IndexNode = octree_lod_generator::IndexNode;
 					using vec3 = cgv::render::render_types::vec3;
-					using Vertex = clod_point_renderer::Vertex;
+					using Vertex = clod_point_renderer::Point;
 					
 					//lambda for bottom up traversal
 					std::function<void(IndexNode*, std::function<void(IndexNode*)>)> traversePost = [&traversePost](IndexNode* node, std::function<void(IndexNode*)> callback) {
@@ -252,7 +404,7 @@ namespace cgv {
 			return id;
 		}
 
-		octree_lod_generator::Chunks octree_lod_generator::lod_chunking(const Vertex* vertices, const size_t num_points, const vec3& min, const vec3& max)
+		octree_lod_generator::Chunks octree_lod_generator::lod_chunking(const Vertex* vertices, const size_t num_points, const vec3& min, const vec3& max, const float& cube_size)
 		{
 			// stores chunks created by the chunking phase
 			Chunks chunks;
@@ -276,72 +428,91 @@ namespace cgv {
 			}
 
 			// COUNT
-			auto grid = lod_counting(source_data, source_data_size, grid_size, min, max);
-			grid.size();
+			auto grid = lod_counting(source_data, source_data_size, grid_size, min, max, cube_size);
+#ifndef NDEBUG
+			{ //Test counting
+				int points = 0;
+				for (const auto& e : grid) {
+					points += e;
+				}
+				assert(points == num_points);
+			}
+#endif
+
 
 			{ // DISTIRBUTE
 
 				auto lut = lod_createLUT(grid, grid_size,chunks.nodes);
-				distributePoints(min, max, lut, vertices, num_points,chunks.nodes);
+#ifndef NDEBUG
+				{ //Test counting
+					bool has_valid_entries = false;
+					int first_valid = -1;
+					int value = -1;
+					for (const auto& e : lut.grid) {
+						if (e > -1){
+							has_valid_entries = true;
+							value = e;
+							break;
+						}
+					}
+					assert(has_valid_entries);
+				}
+#endif
+
+				distributePoints(min, max,cube_size, lut, vertices, num_points,chunks.nodes);
 			}
 
-
-			vec3 ext = max - min;
-			float cube_size = *std::max_element(ext.begin(), ext.end());
-			vec3 size = { cube_size, cube_size, cube_size };
-
 			chunks.min = min;
-			chunks.max = min + cube_size;
+			chunks.max = max;
 			return std::move(chunks);
 		}
 
 
-		std::vector<std::atomic_int32_t> octree_lod_generator::lod_counting(const Vertex* vertices, const int64_t num_points, int64_t grid_size, const vec3& min, const vec3& max)
+		std::vector<std::atomic_int32_t> octree_lod_generator::lod_counting(const Vertex* vertices, const int64_t num_points, int64_t grid_size, const vec3& min, const vec3& max, const float& cube_size)
 		{	
 			int64_t points_left = num_points;
 			int64_t batch_size = 1'000'000;
+			//int64_t batch_size = num_points;
 			int64_t num_read = 0;
 
 			std::vector<std::atomic_int32_t> grid(grid_size * grid_size * grid_size);
 			std::vector<std::thread> threads;
-			double dgrid_size = double(grid_size);
 
-			auto processor = [&grid,grid_size, vertices, &min,&max, dgrid_size](int64_t first_point, int64_t num_points, vec3 min, vec3 max) {
-
-				vec3 ext = max - min;
-				float cube_size = *std::max_element(ext.begin(),ext.end());
-
-				dvec3 size = { cube_size, cube_size, cube_size };
-				max = min + vec3(cube_size,cube_size,cube_size);
-
+			auto processor = [this, &grid, &cube_size, grid_size, vertices, &min, &max](int64_t first_point, int64_t num_points) {
 				for (int i = 0; i < num_points; i++) {
-					dvec3 pos = vertices[i].position;
-
-					//convert to grid positions
-					double ux = (pos[0] - (double)min.x()) / size.x();
-					double uy = (pos[1] - (double)min.y()) / size.y();
-					double uz = (pos[2] - (double)min.z()) / size.z();
-					
-					//debug only
-					/*
-					bool in_box = ux >= 0.0 && uy >= 0.0 && uz >= 0.0 && 
-							ux <= 1.0+std::numeric_limits<double>::epsilon() && 
-							uy <= 1.0+std::numeric_limits<double>::epsilon() &&
-							uz <= 1.0+std::numeric_limits<double>::epsilon();
-					assert(in_box);
-					*/
-
-					//truncate floats
-					int64_t ix = int64_t(std::min(dgrid_size * ux, dgrid_size - 1.0));
-					int64_t iy = int64_t(std::min(dgrid_size * uy, dgrid_size - 1.0));
-					int64_t iz = int64_t(std::min(dgrid_size * uz, dgrid_size - 1.0));
-
-					int64_t index = ix + iy * dgrid_size + iz * grid_size * grid_size;
-					grid[index]++;
+					int64_t index = grid_index(vertices[first_point + i].position, min, cube_size, grid_size);
+					grid[index].fetch_add(1, std::memory_order::memory_order_relaxed);
 				}
-
 			};
 
+			struct Task {
+				int64_t first_point;
+				int64_t num_points;
+			};
+
+			struct Tasks {
+				std::vector<Task> task_pool;
+				std::atomic_int next_task = 0;
+
+				std::function<void(int64_t first_point, int64_t num_points)> func;
+
+				void operator()() {
+					while (true) {
+						Task* task;
+						//get task
+						{
+							int task_id = next_task.fetch_add(1);
+							if (task_id >= task_pool.size())
+								return;
+							task = &task_pool[task_id];
+						}
+						func(task->first_point,task->num_points);
+					}
+				}
+			} tasks;
+			tasks.func = processor;
+
+			//simple thread pool
 			while (points_left > 0) {
 
 				int64_t num_to_read;
@@ -353,14 +524,23 @@ namespace cgv {
 					num_to_read = batch_size;
 					points_left = points_left - batch_size;
 				}
-				//TODO limit threads to cpu core number
-				threads.emplace_back(processor, num_read, num_to_read, min, max);
+				
+				//threads.emplace_back(processor, num_read, num_to_read, min, max);
+				{	
+					Task t;
+					t.first_point = num_read;
+					t.num_points = num_to_read;
+					tasks.task_pool.push_back(t);
+				}
 				num_read += batch_size;
 			}
 
-			for (auto& t : threads)
+			WorkerPool pool(std::thread::hardware_concurrency()-1);
+			pool.run([&tasks]() {tasks(); });
+			
+			/*for (auto& t : threads)
 				t.join();
-
+				*/
 			return std::move(grid);
 		}
 
@@ -407,7 +587,6 @@ namespace cgv {
 					int64_t index_low = x + y * gridSize_low + z * gridSize_low * gridSize_low;
 
 					int64_t sum = 0;
-					int64_t max = 0;
 					bool unmergeable = false;
 
 					// loop through the 8 enclosed cells of the higher detailed grid
@@ -430,8 +609,6 @@ namespace cgv {
 						else {
 							sum += value;
 						}
-
-						max = std::max(max, value);
 					}
 
 
@@ -499,45 +676,68 @@ namespace cgv {
 		}
 
 		
-		void octree_lod_generator::distributePoints(vec3 min, vec3 max, NodeLUT& lut, const Vertex* vertices, const int64_t num_points, const std::vector<ChunkNode>& nodes)
+		cgv::render::render_types::ivec3 octree_lod_generator::grid_index_vec(const vec3& position, const vec3& min, const float& cube_size, const int& grid_size) const {
+			dvec3 pos = position;
+			double dgrid_size = grid_size;
+			//normalized grid position
+			double ux = (pos[0] - (double)min.x()) / cube_size;
+			double uy = (pos[1] - (double)min.y()) / cube_size;
+			double uz = (pos[2] - (double)min.z()) / cube_size;
+
+			//debug only
+			/*
+			bool in_box = ux >= 0.0 && uy >= 0.0 && uz >= 0.0 &&
+					ux <= 1.0+std::numeric_limits<double>::epsilon() &&
+					uy <= 1.0+std::numeric_limits<double>::epsilon() &&
+					uz <= 1.0+std::numeric_limits<double>::epsilon();
+			assert(in_box);
+			*/
+			
+			int ix = int(std::min(dgrid_size * ux, dgrid_size - 1.0));
+			int iy = int(std::min(dgrid_size * uy, dgrid_size - 1.0));
+			int iz = int(std::min(dgrid_size * uz, dgrid_size - 1.0));
+
+			return ivec3(ix, iy, iz);
+		}
+
+		int64_t octree_lod_generator::grid_index(const vec3& position, const vec3& min, const float& cube_size, const int& grid_size) const
 		{
-			std::mutex mtx_push_point;
-			std::vector<std::atomic_int32_t> counters(nodes.size());
+			auto v = grid_index_vec(position, min, cube_size,grid_size);
+			int64_t index = v.x() + v.y() * grid_size + v.z() * grid_size * grid_size;
+			return index;
+		}
 
-			vec3 ext = max - min;
-			float cube_size = *std::max_element(ext.begin(), ext.end());
+		void octree_lod_generator::distributePoints(vec3 min, vec3 max, float cube_size, NodeLUT& lut, const Vertex* vertices, const int64_t num_points, const std::vector<ChunkNode>& nodes)
+		{
+			//std::mutex mtx_push_point;
 
-			vec3 size = { cube_size, cube_size, cube_size };
-			max = min + vec3(cube_size, cube_size, cube_size);
-
-
-			auto gridSize = lut.grid_size;
-			double dGridSize = double(gridSize);
-
-			auto toIndex = [gridSize, dGridSize, size, min, &lut](const vec3 p) {
-				double ux = (p.x() - min.x()) / size.x();
-				double uy = (p.y() - min.y()) / size.y();
-				double uz = (p.z() - min.z()) / size.z();
-
-				int64_t ix = int64_t(std::min(dGridSize * ux, dGridSize - 1.0));
-				int64_t iy = int64_t(std::min(dGridSize * uy, dGridSize - 1.0));
-				int64_t iz = int64_t(std::min(dGridSize * uz, dGridSize - 1.0));
-
-				int64_t index = lut.index(ix, iy, iz);
-				//int64_t index = ix + iy * gridSize + iz * gridSize * gridSize;
-				return index;
+			struct Task {
+				int64_t maxBatchSize;
+				int64_t batchSize;
+				int64_t firstPoint;
+				NodeLUT* lut;
+				vec3 min;
+				vec3 max;
 			};
 
 			auto& grid = lut.grid;
+			std::vector<int> broken_index;
 			//TODO parallelize
 			for (int i = 0; i < num_points; ++i) {
 				vec3 p = vertices[i].position;
-				int idx = toIndex(p);
+				int idx = grid_index(p, min, cube_size, grid_size);
+				
+				if (grid[idx] == -1) {
+					broken_index.push_back(idx);
+					continue;
+					//cgv::utils::file::write("R:/dump.bin", (char*)grid.data(), grid.size() * sizeof(int));
+				}
+				
 				auto& node = nodes[grid[idx]];
 				Vertex v = vertices[i];
 				node.pc_data->vertices.push_back(v);
 			}
-
+			assert(broken_index.size() == 0);
 			int test = 0;
 		}
 
@@ -837,8 +1037,8 @@ namespace cgv {
 			auto size = max - min;
 
 			auto gridIndexOf = [&points, min, size, counterGridSize](int64_t pointIndex) {
-				float* xyz = reinterpret_cast<float*>(points.get() + pointIndex);
-
+				//float* xyz = reinterpret_cast<float*>(points.get() + pointIndex);
+				vec3 xyz = points->at(pointIndex).position;
 				double x = xyz[0];
 				double y = xyz[1];
 				double z = xyz[2];
@@ -875,7 +1075,7 @@ namespace cgv {
 					tmp[targetIndex] = (*points)[i];
 					memcpy(tmp.data() + targetIndex, points->data() + i, sizeof(Vertex));
 				}
-				memcpy(points.get(), tmp.data(), numPoints * sizeof(Vertex));
+				memcpy(points->data(), tmp.data(), numPoints * sizeof(Vertex));
 			}
 
 			auto pyramid = createSumPyramid(counters, counterGridSize);
@@ -926,8 +1126,8 @@ namespace cgv {
 				IndexNode* realization = expandTo(candidate);
 				realization->index_start = candidate.indexStart;
 				realization->num_points = candidate.numPoints;
-
-				auto buffer = std::make_shared<std::vector<Vertex>>(numPoints);
+				
+				auto buffer = std::make_shared<std::vector<Vertex>>(candidate.numPoints); //potential out of memory here
 				memcpy(buffer->data(),
 					points->data() + candidate.indexStart,
 					candidate.numPoints
@@ -1085,7 +1285,13 @@ namespace cgv {
 				max.z() = std::max(max.z(), p.z());
 			}
 
-			auto nodes = lod_chunking(vertices.data(), vertices.size(), min, max);
+			vec3 ext = max - min;
+			float cube_size = *std::max_element(ext.begin(), ext.end());
+
+			max = min + vec3(cube_size, cube_size, cube_size);
+
+			auto nodes = lod_chunking(vertices.data(), vertices.size(), min, max, cube_size);
+
 			SamplerRandom sampler;
 			lod_indexing(nodes, out, sampler);
 			return out;
@@ -1097,9 +1303,11 @@ namespace cgv {
 		void clod_point_renderer::generate_lods_poisson()
 		{
 			static constexpr int mean = 8;
+			
+			
 			std::poisson_distribution<int> dist(8);
 			std::random_device rdev;
-			
+
 			for (auto& v : input_buffer_data) {
 				v.level = std::min(2*mean,std::max(0,mean - abs(dist(rdev)-mean)));
 			}
@@ -1178,10 +1386,10 @@ namespace cgv {
 			glBindVertexArray(vertex_array);
 			//position 
 			glBindBuffer(GL_ARRAY_BUFFER, render_buffer);
-			glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)0);
+			glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, sizeof(Point), (void*)0);
 			glEnableVertexAttribArray(0);
 			//color
-			glVertexAttribPointer(1, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(Vertex), (void*)(sizeof(Vertex::position)));
+			glVertexAttribPointer(1, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(Point), (void*)(sizeof(Point::position)));
 			glEnableVertexAttribArray(1);
 
 			glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -1291,6 +1499,15 @@ namespace cgv {
 			
 		}
 
+		void clod_point_renderer::set_positions(context& ctx, const std::vector<vec3>& positions)
+		{
+			input_buffer_data.resize(positions.size());
+			for (int i = 0; i < positions.size(); ++i) {
+				input_buffer_data[i].position = positions[i];
+			}
+			buffers_outofdate = true;
+		}
+
 		uint8_t& clod_point_renderer::point_lod(const int i)
 		{
 			return input_buffer_data[i].level;
@@ -1324,10 +1541,10 @@ namespace cgv {
 		void clod_point_renderer::fill_buffers(context& ctx)
 		{ //  fill buffers for the compute shader
 			glBindBuffer(GL_SHADER_STORAGE_BUFFER, input_buffer);
-			glBufferData(GL_SHADER_STORAGE_BUFFER, input_buffer_data.size() * sizeof(Vertex), input_buffer_data.data(), GL_STATIC_READ);
+			glBufferData(GL_SHADER_STORAGE_BUFFER, input_buffer_data.size() * sizeof(Point), input_buffer_data.data(), GL_STATIC_READ);
 			
 			glBindBuffer(GL_SHADER_STORAGE_BUFFER, render_buffer);
-			glBufferData(GL_SHADER_STORAGE_BUFFER, input_buffer_data.size() * sizeof(Vertex), nullptr, GL_DYNAMIC_DRAW);
+			glBufferData(GL_SHADER_STORAGE_BUFFER, input_buffer_data.size() * sizeof(Point), nullptr, GL_DYNAMIC_DRAW);
 		}
 
 		void clod_point_renderer::clear_buffers(context& ctx)
