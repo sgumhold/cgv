@@ -364,6 +364,76 @@ size_t point_cloud::add_point(const Pnt& p)
 	return idx;
 }
 
+/// add a point and a normal, add a color if necessary, return index of new point
+size_t point_cloud::add_point(const Pnt& p, const Nml& n) {
+	if (has_normals())
+		N.resize(N.size() + 1);
+	if (has_colors())
+		C.resize(P.size() + 1);
+	if (has_texture_coordinates())
+		T.resize(P.size() + 1);
+	if (has_pixel_coordinates())
+		I.resize(P.size() + 1);
+	if (has_components()) {
+		if (components.empty())
+			components.push_back(component_info(0, p.size()));
+		component_indices.push_back(unsigned(components.size() - 1));
+		++components.back().nr_points;
+	}
+	size_t idx = P.size();
+	P.push_back(p);
+	N.push_back(n);
+	box_out_of_date = true;
+	return idx;
+}
+/// add a point and a color, add a normal if necessary, return index of new point
+size_t point_cloud::add_point(const Pnt& p, const Clr& c)
+{
+	if (has_normals())
+		N.resize(N.size() + 1);
+	if (has_colors())
+		C.resize(P.size() + 1);
+	if (has_texture_coordinates())
+		T.resize(P.size() + 1);
+	if (has_pixel_coordinates())
+		I.resize(P.size() + 1);
+	if (has_components()) {
+		if (components.empty())
+			components.push_back(component_info(0, p.size()));
+		component_indices.push_back(unsigned(components.size() - 1));
+		++components.back().nr_points;
+	}
+	size_t idx = P.size();
+	P.push_back(p);
+	C.push_back(c);
+	box_out_of_date = true;
+	return idx;
+}
+/// add a point, a normal and a color, return index of new point
+size_t point_cloud::add_point(const Pnt& p, const Nml& n, const Clr& c)
+{
+	if (has_normals())
+		N.resize(N.size() + 1);
+	if (has_colors())
+		C.resize(P.size() + 1);
+	if (has_texture_coordinates())
+		T.resize(P.size() + 1);
+	if (has_pixel_coordinates())
+		I.resize(P.size() + 1);
+	if (has_components()) {
+		if (components.empty())
+			components.push_back(component_info(0, p.size()));
+		component_indices.push_back(unsigned(components.size() - 1));
+		++components.back().nr_points;
+	}
+	size_t idx = P.size();
+	P.push_back(p);
+	N.push_back(n);
+	C.push_back(c);
+	box_out_of_date = true;
+	return idx;
+}
+
 /// resize the point cloud
 void point_cloud::resize(size_t nr_points)
 {
