@@ -215,7 +215,7 @@ void plot3d::draw_sub_plots(cgv::render::context& ctx)
 			sphere_prog.set_uniform(ctx, "secondary_opacity_index", spc.point_halo_color.opacity_idx);
 			sphere_prog.set_uniform(ctx, "size_index", spc.point_size.size_idx);
 			sphere_prog.set_uniform(ctx, "secondary_size_index", spc.point_halo_width.size_idx);
-			sphere_prog.set_attribute(ctx, "color", spc.point_color.color);
+			ctx.set_color(spc.point_color.color);
 			sphere_prog.set_attribute(ctx, "secondary_color", spc.point_halo_color.color);
 			sphere_prog.set_attribute(ctx, "size", spc.point_size.size);
 			sphere_prog.enable(ctx);
@@ -245,7 +245,7 @@ void plot3d::draw_sub_plots(cgv::render::context& ctx)
 				wirebox_prog.set_uniform(ctx, "secondary_opacity_index", -1);
 				wirebox_prog.set_uniform(ctx, "size_index", spc.bar_percentual_width.size_idx);
 				wirebox_prog.set_uniform(ctx, "secondary_size_index", spc.bar_percentual_depth.size_idx);
-				wirebox_prog.set_attribute(ctx, "color", spc.bar_outline_color.color);
+				ctx.set_color(spc.bar_outline_color.color);
 				wirebox_prog.enable(ctx);
 				draw_sub_plot_samples(int(count), spc);
 				wirebox_prog.disable(ctx);
@@ -263,7 +263,7 @@ void plot3d::draw_sub_plots(cgv::render::context& ctx)
 			box_prog.set_uniform(ctx, "secondary_opacity_index", -1);
 			box_prog.set_uniform(ctx, "size_index", spc.bar_percentual_width.size_idx);
 			box_prog.set_uniform(ctx, "secondary_size_index", spc.bar_percentual_depth.size_idx);
-			box_prog.set_attribute(ctx, "color", spc.bar_color.color);
+			ctx.set_color(spc.bar_color.color);
 			box_prog.enable(ctx);
 			draw_sub_plot_samples(int(count), spc);
 			box_prog.disable(ctx);
@@ -281,7 +281,7 @@ void plot3d::draw_sub_plots(cgv::render::context& ctx)
 			stick_prog.set_uniform(ctx, "secondary_opacity_index", -1);
 			stick_prog.set_uniform(ctx, "size_index", spc.stick_width.size_idx);
 			stick_prog.set_uniform(ctx, "secondary_size_index", -1);
-			stick_prog.set_attribute(ctx, "color", spc.stick_color.color);
+			ctx.set_color(spc.stick_color.color);
 			stick_prog.set_attribute(ctx, "secondary_color", spc.stick_color.color);
 			stick_prog.set_attribute(ctx, "size", spc.stick_width.size * rs);
 			stick_prog.set_attribute(ctx, "secondary_size", spc.stick_width.size * rs);
@@ -300,7 +300,7 @@ void plot3d::draw_sub_plots(cgv::render::context& ctx)
 			tube_prog.set_uniform(ctx, "secondary_opacity_index", -1);
 			tube_prog.set_uniform(ctx, "size_index", spc.line_width.size_idx);
 			tube_prog.set_uniform(ctx, "secondary_size_index", -1);
-			tube_prog.set_attribute(ctx, "color", spc.line_color.color);
+			ctx.set_color(spc.line_color.color);
 			tube_prog.set_attribute(ctx, "size", spc.line_width.size * rs);
 			tube_prog.enable(ctx);
 			draw_sub_plot_samples(int(count), spc, true);
