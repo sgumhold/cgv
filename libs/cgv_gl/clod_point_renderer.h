@@ -36,12 +36,14 @@ namespace cgv {
 
 		class CGV_API clod_point_renderer : public cgv::render::renderer {
 		public:
-			struct Vertex {
+			struct Point {
 				vec3 position;
 				rgb8 colors;
 				uint8_t level = 0; //LOD
 			};
+			
 		private:
+			// stores parameters generated for the draw shaders
 			struct DrawParameters {
 				GLuint  count = 0; //element count
 				GLuint  primCount = 1;
@@ -52,7 +54,7 @@ namespace cgv {
 			shader_program reduce_prog;		// writes reduced input buffer to render_buffer (compute shader)
 			shader_program draw_prog;		// draws render_buffer (vertex, geometry, fragment shader)
 
-			std::vector<Vertex> input_buffer_data;
+			std::vector<Point> input_buffer_data;
 			
 			GLuint vertex_array = 0;
 			GLuint input_buffer = 0, render_buffer = 0, draw_parameter_buffer = 0;
@@ -87,13 +89,8 @@ namespace cgv {
 			// this method can overwrite and reorder the elements of input_buffer_data
 			void generate_lods(const LoDMode mode = LoDMode::RANDOM_POISSON);
 
-			void set_positions(context& ctx, std::vector<vec3> positions) {
-				input_buffer_data.resize(positions.size());
-				for (int i = 0; i < positions.size(); ++i) {
-					input_buffer_data[i].position = positions[i];
-				}
-				buffers_outofdate = true;
-			}
+			void set_positions(context& ctx, const std::vector<vec3>& positions);
+
 			template<typename T>
 			void set_colors(const context& ctx, const std::vector<T>& colors) {				
 				for (int i = 0; i < input_buffer_data.size(); ++i) {
@@ -122,7 +119,7 @@ namespace cgv {
 
 		class octree_lod_generator : public render_types {
 		public:
-			using Vertex = clod_point_renderer::Vertex;
+			using Vertex = clod_point_renderer::Point;
 
 			struct PointCloud {
 				std::vector<Vertex> vertices;
@@ -136,10 +133,6 @@ namespace cgv {
 				int64_t grid_size;
 				// grid contains index of node in nodes
 				std::vector<int> grid;
-
-				inline int index(const int& ix, const int& iy, const int& iz) {
-					return ix + iy * grid_size + iz * grid_size * grid_size;
-				}
 			};
 
 			//nodes creted by chunking phase
@@ -148,7 +141,7 @@ namespace cgv {
 				int64_t x = 0;
 				int64_t y = 0;
 				int64_t z = 0;
-				int64_t size = 0;
+				int64_t size = 0; //cube edge length
 				int64_t numPoints;
 				//point cloud data
 				std::shared_ptr<PointCloud> pc_data;
@@ -273,20 +266,23 @@ namespace cgv {
 			
 			//void lod_chunking(const std::vector<vec3>& positions, const vec3& min, const vec3& max);
 			//std::vector<octree_lod_generator::ChunkNode> lod_chunking(const Vertex* vertices, const size_t num_points,const vec3& min, const vec3& max);
-			Chunks lod_chunking(const Vertex* vertices, const size_t num_points,const vec3& min, const vec3& max);
+			Chunks lod_chunking(const Vertex* vertices, const size_t num_points,const vec3& min, const vec3& max, const float& size);
 
-			std::vector<std::atomic_int32_t> lod_counting(const Vertex* vertices, const int64_t num_points, int64_t grid_size, const vec3& min, const vec3& max);
+			std::vector<std::atomic_int32_t> lod_counting(const Vertex* vertices, const int64_t num_points, int64_t grid_size, const vec3& min, const vec3& max, const float& size);
 			
 			NodeLUT lod_createLUT(std::vector<std::atomic_int32_t>& grid, int64_t grid_size,std::vector<ChunkNode>& nodes);
 			
 			//create chunk nodes
-			void distributePoints(vec3 min, vec3 max, NodeLUT& lut, const Vertex* vertices, const int64_t num_points, const std::vector<ChunkNode>& nodes);
+			void distributePoints(vec3 min, vec3 max, float cube_size, NodeLUT& lut, const Vertex* vertices, const int64_t num_points, const std::vector<ChunkNode>& nodes);
 			//inout chunks, out vertices
 			void lod_indexing(Chunks& chunks, std::vector<Vertex>& vertices, Sampler& sampler);
 			
 			void buildHierarchy(Indexer* indexer, IndexNode* node, std::shared_ptr<std::vector<Vertex>> points, int64_t numPoints, int64_t depth = 0);
 
 			static box3 child_bounding_box_of(const vec3& min, const vec3& max, const int index);
+			
+			int64_t grid_index(const vec3& position, const vec3& min, const float& cube_size, const int& grid_size) const;
+			cgv::render::render_types::ivec3 grid_index_vec(const vec3& position, const vec3& min, const float& cube_size, const int& grid_size) const;
 
 		public:
 			//lod stored in alpha channel of point color
