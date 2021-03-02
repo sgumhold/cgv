@@ -764,7 +764,7 @@ void vr_view_interactor::draw_vr_kits(cgv::render::context& ctx)
 			}
 		}
 		for (unsigned ci = 0; ci < vr::max_nr_controllers; ++ci) {
-			if (state_ptr->controller[ci].status != vr::VRS_TRACKED)
+			if (state_ptr->controller[ci].status != vr::VRS_TRACKED || state_ptr->controller[ci].time_stamp == 0)
 				continue;
 			bool show_trackable_spheres;
 			cgv::render::mesh_render_info* M_info = 0;

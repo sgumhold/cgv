@@ -384,24 +384,6 @@ namespace rgbd {
 		k4a_calibration_2d_to_3d(
 			&camera_calibration, &p, depth, K4A_CALIBRATION_TYPE_DEPTH, K4A_CALIBRATION_TYPE_DEPTH, &ray, &valid);
 
-		/*static constexpr double fx_d = 1.0 / azure_color_intrinsics.fx;
-		static constexpr double fy_d = 1.0 / azure_color_intrinsics.fy;
-		static constexpr double cx_d = azure_color_intrinsics.cx;
-		static constexpr double cy_d = azure_color_intrinsics.cy;*/
-		/*double fx_d = 1.0 / intrinsics->param.fx;
-		double fy_d = 1.0 / intrinsics->param.fy;
-		double cx_d = intrinsics->param.cx;
-		double cy_d = intrinsics->param.cy;*/
-		// set 0.001 for current vr_rgbd
-		//double d = 0.001 * depth;
-		//solve the radial and tangential distortion
-		/*double x_distorted = x * (1 + intrinsics->param.k1 * pow(intrinsics->param.metric_radius, 2.0) + intrinsics->param.k2 * pow(intrinsics->param.metric_radius, 4.0) + intrinsics->param.k3 * pow(intrinsics->param.metric_radius, 6.0));
-		double y_distorted = y * (1 + intrinsics->param.k4 * pow(intrinsics->param.metric_radius, 2.0) + intrinsics->param.k5 * pow(intrinsics->param.metric_radius, 4.0) + intrinsics->param.k6 * pow(intrinsics->param.metric_radius, 6.0));
-		x_distorted = x_distorted + 2.0 * intrinsics->param.p1 * x * y + intrinsics->param.p2 * (pow(intrinsics->param.metric_radius, 2.0) + 2 * pow(x, 2.0));
-		y_distorted = y_distorted + 2.0 * intrinsics->param.p2 * x * y + intrinsics->param.p1 * (pow(intrinsics->param.metric_radius, 2.0) + 2 * pow(y, 2.0));*/
-		/*point_ptr[0] = -1.f * float((x_distorted - cx_d) * d * fx_d);
-		point_ptr[1] = float((y_distorted - cy_d) * d * fy_d);
-		point_ptr[2] = float(d);*/
 		if (valid)
 		{
 			point_ptr[0] = -1.f * 0.001 * ray.xyz.x;
@@ -474,49 +456,6 @@ namespace rgbd {
 					dep_frame->frame_data.resize(dep.get_size());
 					dep_frame->compute_buffer_size();
 					memcpy(dep_frame->frame_data.data(), dep.get_buffer(), dep.get_size());
-					/*k4a::image dep;
-					try {
-						dep = cap.get_depth_image();
-					}
-					catch (k4a::error err) {
-						std::cout << "Failed to get depth image" << std::endl;
-					}
-					if (depth_image = dep.handle())
-					{
-						pinhole = create_pinhole_from_xy_range(&camera_calibration, K4A_CALIBRATION_TYPE_DEPTH);
-
-						if (K4A_RESULT_SUCCEEDED != k4a_image_create(K4A_IMAGE_FORMAT_CUSTOM,
-							pinhole.width,
-							pinhole.height,
-							pinhole.width * (int)sizeof(coordinate_t),
-							&lut)) {
-							std::cout << "Failed to create lut" << std::endl;
-						};
-
-						create_undistortion_lut(&camera_calibration, K4A_CALIBRATION_TYPE_DEPTH, &pinhole, lut, interpolation_type);
-
-						if (K4A_RESULT_SUCCEEDED != k4a_image_create(K4A_IMAGE_FORMAT_DEPTH16,
-							pinhole.width,
-							pinhole.height,
-							pinhole.width * (int)sizeof(uint16_t),
-							&undistorted))
-						{
-							std::cout << "Failed to create undistorted" << std::endl;
-						}
-						remap(depth_image, lut, undistorted, interpolation_type);
-						try {
-							dep = k4a::image::image(depth_image);
-						}
-						catch (k4a::error err) {
-							std::cout << "Failed to create k4a::image::image(depth_image)" << std::endl;
-						}
-						dep_frame = make_unique<frame_type>();
-						static_cast<frame_format&>(*dep_frame) = depth_format;
-						dep_frame->time = dep.get_device_timestamp().count() * 0.001;
-						dep_frame->frame_data.resize(dep.get_size());
-						dep_frame->compute_buffer_size();
-						memcpy(dep_frame->frame_data.data(), dep.get_buffer(), dep.get_size());
-					}*/
 				}
 
 				if (is & IS_INFRARED) {
