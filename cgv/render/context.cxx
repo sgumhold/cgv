@@ -789,6 +789,13 @@ void context::process_text(const std::string& text)
 /// draw some text at cursor position and update cursor position
 void context::draw_text(const std::string& text)
 {
+	if (current_font_face.empty())
+		return;
+	float x = (float)cursor_x;
+	float y = (float)cursor_y;
+	current_font_face->draw_text(x, y, text);
+	cursor_x = int(x + 0.5f);
+	cursor_y = int(y + 0.5f);
 }
 
 
@@ -796,6 +803,15 @@ void context::draw_text(const std::string& text)
 std::ostream& context::output_stream()
 {
 	return out_stream;
+}
+
+void context::enable_font_face(media::font::font_face_ptr font_face, float font_size)
+{
+	if (!(font_face == current_font_face) || font_size != current_font_size) {
+		font_face->enable(this, font_size);
+		current_font_face = font_face;
+		current_font_size = font_size;
+	}
 }
 
 /// return the size in pixels of the currently enabled font face

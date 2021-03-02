@@ -1,0 +1,8 @@
+@=
+projectType="plugin";
+projectName="cmf_tt_gl_font";
+projectGUID="3E236E44-F130-4EFD-8148-95FF4CD6B857";
+addProjectDirs=[CGV_DIR."/libs", CGV_DIR."/3rd"];
+addIncDirs=[CGV_DIR."/libs"];
+addProjectDeps=["cgv_utils", "cgv_type", "cgv_base", "cgv_media", "cgv_render", "cgv_gl", "tt_gl_font", "glew"];
+addSharedDefines=["CMF_TT_GL_FONT_EXPORTS"];

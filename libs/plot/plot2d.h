@@ -30,6 +30,8 @@ protected:
 	void draw_domain(cgv::render::context& ctx);
 	void draw_tick_labels(cgv::render::context& ctx);
 protected:
+	bool disable_depth_mask;
+
 	bool compute_sample_coordinate_interval(int i, int ai, float& samples_min, float& samples_max);
 	/// store 2d samples for data series
 	std::vector<std::vector<vec2> > samples;

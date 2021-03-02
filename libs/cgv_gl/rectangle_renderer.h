@@ -22,6 +22,7 @@ namespace cgv {
 			float percentual_border_width;
 			float border_width_in_pixel;
 			float default_depth_offset;
+			int texture_mode;
 			rectangle_render_style();
 		};
 
@@ -82,6 +83,32 @@ namespace cgv {
 					ref_prog().get_attribute_location(ctx, "position"), boxes, count, boxes[0].get_max_pnt());
 				has_positions = true;
 				has_extents = true;
+				set_position_is_center(false);
+			}
+			/// specify rectangle array directly. This sets position_is_center to false as well as position and extent array
+			void set_textured_rectangle_array(const context& ctx, const std::vector<textured_rectangle>& tc_rects) {
+				set_composed_attribute_array(ctx, ref_prog().get_attribute_location(ctx, "position"),
+					&tc_rects.front(), tc_rects.size(), tc_rects[0].rectangle.get_min_pnt());
+				ref_composed_attribute_array(ctx, ref_prog().get_attribute_location(ctx, "extent"),
+					ref_prog().get_attribute_location(ctx, "position"), &tc_rects.front(), tc_rects.size(), tc_rects[0].rectangle.get_max_pnt());
+				ref_composed_attribute_array(ctx, ref_prog().get_attribute_location(ctx, "texcoord"),
+					ref_prog().get_attribute_location(ctx, "position"), &tc_rects.front(), tc_rects.size(), tc_rects[0].texcoords);
+				has_positions = true;
+				has_extents = true;
+				has_texcoords = true;
+				set_position_is_center(false);
+			}
+			/// specify ractangle array directly. This sets position_is_center to false as well as position and extent array
+			void set_textured_rectangle_array(const context& ctx, const textured_rectangle* tc_rects, size_t count) {
+				set_composed_attribute_array(ctx, ref_prog().get_attribute_location(ctx, "position"),
+					tc_rects, count, tc_rects[0].rectangle.get_min_pnt());
+				ref_composed_attribute_array(ctx, ref_prog().get_attribute_location(ctx, "extent"),
+					ref_prog().get_attribute_location(ctx, "position"), tc_rects, count, tc_rects[0].rectangle.get_max_pnt());
+				ref_composed_attribute_array(ctx, ref_prog().get_attribute_location(ctx, "texcoord"),
+					ref_prog().get_attribute_location(ctx, "position"), tc_rects, count, tc_rects[0].texcoords);
+				has_positions = true;
+				has_extents = true;
+				has_texcoords = true;
 				set_position_is_center(false);
 			}
 			/// set per rectangle depth offsets

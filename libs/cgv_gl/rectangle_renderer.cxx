@@ -24,6 +24,7 @@ namespace cgv {
 			percentual_border_width = 0.0f;
 			border_width_in_pixel = 0.0f;
 			default_depth_offset = 0.0f;
+			texture_mode = 0;
 			border_color = rgba(0.0f,0.0f,0.0f,1.0f);
 		}
 
@@ -108,6 +109,7 @@ namespace cgv {
 			ref_prog().set_uniform(ctx, "use_texture", has_texcoords);
 			float pixel_extent_per_depth = (float)(2.0 * tan(0.5 * 0.0174532925199 * y_view_angle) / ctx.get_height());
 			ref_prog().set_uniform(ctx, "pixel_extent_per_depth", pixel_extent_per_depth);
+			ref_prog().set_uniform(ctx, "texture_mode", rrs.texture_mode);
 			ref_prog().set_uniform(ctx, "pixel_blend", rrs.pixel_blend);
 			ref_prog().set_uniform(ctx, "border_width_in_pixel", rrs.border_width_in_pixel);
 			ref_prog().set_uniform(ctx, "percentual_border_width", rrs.percentual_border_width);
@@ -170,6 +172,7 @@ namespace cgv {
 				cgv::render::rectangle_render_style* prs_ptr = reinterpret_cast<cgv::render::rectangle_render_style*>(value_ptr);
 				cgv::base::base* b = dynamic_cast<cgv::base::base*>(p);
 
+				p->add_member_control(b, "texture_mode", (cgv::type::DummyEnum&)prs_ptr->texture_mode, "dropdown", "enums='replace,replace alpha,multiply color,multiply border color,colmix col+bd col,colmix bd col+col,redmix col+bd col,redmix bd col+col'");
 				p->add_member_control(b, "pixel_blend", prs_ptr->pixel_blend, "value_slider", "min=0.0;max=2;ticks=true");
 				p->add_member_control(b, "border_mode", (cgv::type::DummyEnum&)prs_ptr->border_mode, "dropdown", "enums='separate=0,width as ref,height as ref,min(width height)'");
 				p->add_member_control(b, "border_width_in_pixel", prs_ptr->border_width_in_pixel, "value_slider", "min=-10;max=10;ticks=true");

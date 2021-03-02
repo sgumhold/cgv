@@ -23,6 +23,7 @@ void plot2d_config::configure_chart(ChartType chart_type)
 /// construct empty plot with default domain [0..1,0..1]
 plot2d::plot2d(unsigned nr_attributes) : plot_base(2, nr_attributes)
 {
+	disable_depth_mask = false;
 	//legend_components = LC_ANY;
 	rrs.illumination_mode = cgv::render::IM_OFF;
 	rrs.map_color_to_material = cgv::render::CM_COLOR_AND_OPACITY;
@@ -475,6 +476,8 @@ void plot2d::draw(cgv::render::context& ctx)
 
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glDepthFunc(GL_LEQUAL);
+	if (disable_depth_mask)
+		glDepthMask(GL_FALSE);
 
 	ctx.push_modelview_matrix();
 	mat4 R;
@@ -501,6 +504,8 @@ void plot2d::draw(cgv::render::context& ctx)
 		glDisable(GL_BLEND);
 	glDepthFunc(depth);
 	glBlendFunc(blend_src, blend_dst);
+	if (disable_depth_mask)
+		glDepthMask(GL_TRUE);
 }
 
 /// create the gui for a point subplot
@@ -533,6 +538,7 @@ void plot2d::create_gui(cgv::base::base* bp, cgv::gui::provider& p)
 {
 	p.add_decorator("plot2d", "heading");
 	plot_base::create_gui(bp, p);
+	p.add_member_control(bp, "disable_depth_mask", disable_depth_mask, "toggle");
 	if (p.begin_tree_node("rectangle", rrs, false, "level=3")) {
 		p.align("\a");
 		p.add_member_control(bp, "layer_depth", layer_depth, "value_slider", "min=0.000001;max=0.01;step=0.0000001;log=true;ticks=true");

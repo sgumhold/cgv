@@ -2,7 +2,7 @@
 #include <fltk/run.h>
 #include <fltk/draw.h>
 #include <fltk/Font.h>
-
+#include <fltk/gl.h>
 
 /// construct from attributes
 fltk_font_face::fltk_font_face(fltk::Font* _f, int _ffa) : f(_f), font_face(_ffa)
@@ -28,6 +28,32 @@ float fltk_font_face::measure_text_width(const std::string& text, float font_siz
 	fltk::setfont(f, font_size);
 	return fltk::getwidth(text.c_str());
 }
+
+/// enables font face of given size and should be called once before calling draw_text functions
+void fltk_font_face::enable(void* context_ptr, float _font_size)
+{
+	fltk::glsetfont(get_fltk_font(), _font_size);
+}
+
+/// draw text at given location with font_face implementation dependent rendering api and advance location
+void fltk_font_face::draw_text(float& x, float& y, const std::string& text) const
+{
+	if (text.empty())
+		return;
+	int cursor_x = int(x);
+	int cursor_y = int(y);
+	glRasterPos2i(cursor_x, cursor_y);
+	GLint r_prev[4];
+	glGetIntegerv(GL_CURRENT_RASTER_POSITION, r_prev);
+	fltk::gldrawtext(text.c_str(), (int)text.size());
+	GLint r[4];
+	glGetIntegerv(GL_CURRENT_RASTER_POSITION, r);
+	cursor_x += r[0] - r_prev[0];
+	cursor_y -= r[1] - r_prev[1];
+	x = (float)cursor_x;
+	y = (float)cursor_y;
+}
+
 ///
 fltk::Font* fltk_font_face::get_fltk_font() const
 {
@@ -76,7 +102,8 @@ font_face_ptr fltk_font::get_font_face(int _ffa) const
 
 void fltk_font_server::on_register()
 {
-	register_font_server(font_server_ptr(this));
+	if (get_font_server().empty())
+		register_font_server(this);
 }
 
 /// return "fltk_font_server"
