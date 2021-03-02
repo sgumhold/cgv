@@ -192,7 +192,7 @@ void plot2d::draw_sub_plots(cgv::render::context& ctx)
 		rectangle_prog.set_uniform(ctx, "rectangle_base_window", spc.bar_base_window);
 		rectangle_prog.set_uniform(ctx, "rectangle_coordinate_index", spc.bar_coordinate_index);
 		rectangle_prog.set_uniform(ctx, "rectangle_border_width", spc.bar_outline_width.size * rs);
-		rectangle_prog.set_attribute(ctx, "color", spc.bar_color.color);
+		ctx.set_color(spc.bar_color.color);
 		rectangle_prog.set_attribute(ctx, "secondary_color", spc.bar_outline_color.color);
 		rectangle_prog.set_attribute(ctx, "size", get_extent()[0] / count * spc.bar_percentual_width.size);
 		rectangle_prog.set_attribute(ctx, "depth_offset", -layer_idx * layer_depth);
@@ -230,7 +230,7 @@ void plot2d::draw_sub_plots(cgv::render::context& ctx)
 		rectangle_prog.set_uniform(ctx, "rectangle_base_window", spc.stick_base_window);
 		rectangle_prog.set_uniform(ctx, "rectangle_coordinate_index", spc.stick_coordinate_index);
 		rectangle_prog.set_uniform(ctx, "rectangle_border_width", 0.0f);
-		rectangle_prog.set_attribute(ctx, "color", spc.stick_color.color);
+		ctx.set_color(spc.stick_color.color);
 		rectangle_prog.set_attribute(ctx, "size", spc.stick_width.size * rs);
 		rectangle_prog.set_attribute(ctx, "depth_offset", -layer_idx * layer_depth);
 		// configure geometry shader
@@ -265,6 +265,7 @@ void plot2d::draw_sub_plots(cgv::render::context& ctx)
 		prog.set_uniform(ctx, "secondary_opacity_index", -1);
 		prog.set_uniform(ctx, "size_index", spc.line_width.size_idx);
 		prog.set_attribute(ctx, "color", spc.line_color.color);
+		ctx.set_color(spc.line_color.color);
 		prog.enable(ctx);
 		if (strips[i].empty())
 			draw_sub_plot_samples(count, spc, true);
@@ -308,7 +309,7 @@ void plot2d::draw_sub_plots(cgv::render::context& ctx)
 		point_prog.set_uniform(ctx, "secondary_opacity_index", spc.point_halo_color.opacity_idx);
 		point_prog.set_uniform(ctx, "size_index", spc.point_size.size_idx);
 		point_prog.set_uniform(ctx, "secondary_index", spc.point_halo_width.size_idx);
-		point_prog.set_attribute(ctx, "color", spc.point_color.color);
+		ctx.set_color(spc.point_color.color);
 		point_prog.set_attribute(ctx, "secondary_color", spc.point_halo_color.color);
 		point_prog.set_attribute(ctx, "size", spc.point_size.size);
 		point_prog.enable(ctx);
