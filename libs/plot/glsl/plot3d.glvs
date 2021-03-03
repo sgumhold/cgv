@@ -1,17 +1,89 @@
 #version 330 
 
-layout(location = 0) in float xpos;
-layout(location = 1) in float ypos;
-layout(location = 2) in float zpos;
+uniform int color_index = -1;
+uniform int secondary_color_index = -1;
+uniform int opacity_index = -1;
+uniform int secondary_opacity_index = -1;
+uniform int size_index = -1;
+
+layout(location = 0) in float attribute0;
+layout(location = 1) in float attribute1;
+layout(location = 2) in float attribute2;
+layout(location = 3) in float attribute3;
+layout(location = 4) in float attribute4;
+layout(location = 5) in float attribute5;
+layout(location = 6) in float attribute6;
+layout(location = 7) in float attribute7;
+
 in vec4 color;
+in vec4 secondary_color;
+in float size;
 
-out vec4 color_fs;
+out VO {
+	vec4 color;
+	vec4 secondary_color;
+	vec3 position_window;
+	float size;
+} vo;
 
-vec4 map_plot_to_screen3(in vec3 pnt);
+//***** begin interface of view.glsl ***********************************
+mat4 get_modelview_matrix();
+mat4 get_projection_matrix();
+mat4 get_modelview_projection_matrix();
+mat4 get_inverse_modelview_matrix();
+mat4 get_inverse_modelview_projection_matrix();
+mat3 get_normal_matrix();
+mat3 get_inverse_normal_matrix();
+//***** end interface of view.glsl ***********************************
+
+//***** begin interface of plot_lib.glsl ***********************************
+uniform float attribute_min[8];
+uniform float attribute_max[8];
+float tick_space_from_attribute_space(int ai, float value);
+float attribute_space_from_tick_space(int ai, float value);
+float window_space_from_tick_space(int ai, float value);
+float tick_space_from_window_space(int ai, float value);
+vec3 plot_space_from_window_space(vec3 pnt);
+vec3 window_space_from_plot_space(vec3 pnt);
+vec3 world_space_from_plot_space(vec3 pnt);
+vec3 map_color(in float attributes[8], in vec3 base_color, int idx = 0);
+float map_opacity(in float attributes[8], in float base_opacity, int idx = 0);
+float map_size(in float attributes[8], in float base_size, int idx = 0);
+//***** end interface of plot_lib.glsl ***********************************
 
 void main()
 {
+	// collect attributes
+	float attributes[8];
+	attributes[0] = attribute0;
+	attributes[1] = attribute1;
+	attributes[2] = attribute2;
+	attributes[3] = attribute3;
+	attributes[4] = attribute4;
+	attributes[5] = attribute5;
+	attributes[6] = attribute6;
+	attributes[7] = attribute7;
+
 	// transform vertex to clip space
-	gl_Position = map_plot_to_screen3(vec3(xpos,ypos,zpos));
-	color_fs = color;
+	vo.position_window = vec3(
+		window_space_from_tick_space(0, tick_space_from_attribute_space(0, attribute0)),
+		window_space_from_tick_space(1, tick_space_from_attribute_space(1, attribute1)),
+		window_space_from_tick_space(2, tick_space_from_attribute_space(2, attribute2)));
+	vec3 position_world = world_space_from_plot_space(plot_space_from_window_space(vo.position_window));
+	gl_Position = get_modelview_projection_matrix()*vec4(position_world, 1.0);
+
+	// map to visual attributes
+	vo.color = color;
+	if (color_index >=0)
+		vo.color.rgb = map_color(attributes, vo.color.rgb, color_index);
+	if (opacity_index >= 0)
+		vo.color.a = map_opacity(attributes, vo.color.a, opacity_index);
+	vo.secondary_color = secondary_color;
+	if (secondary_color_index >=0)
+		vo.secondary_color.rgb = map_color(attributes, vo.secondary_color.rgb, secondary_color_index);
+	if (secondary_opacity_index >= 0)
+		vo.secondary_color.a = map_opacity(attributes, vo.secondary_color.a, secondary_opacity_index);
+	vo.size = size;
+	if (size_index >= 0)
+		vo.size = map_size(attributes, vo.size);
 }

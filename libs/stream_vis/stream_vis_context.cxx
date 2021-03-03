@@ -216,33 +216,8 @@ namespace stream_vis {
 	}
 	void stream_vis_context::on_set(void* member_ptr)
 	{
-		// iterate all plots
-		for (auto& pl : plot_pool) {
-			for (unsigned i = 0; i < pl.plot_ptr->get_nr_sub_plots(); ++i) {
-				auto& cfg = pl.plot_ptr->ref_sub_plot_config(i);
-				if (member_ptr == &cfg.ref_size) {
-					cfg.set_size(cfg.ref_size);
-					update_member(&cfg.point_size);
-					update_member(&cfg.line_width);
-					update_member(&cfg.stick_width);
-					update_member(&cfg.bar_outline_width);
-				}
-				if (member_ptr == &cfg.ref_color) {
-					cfg.set_colors(cfg.ref_color);
-					update_member(&cfg.point_color);
-					update_member(&cfg.line_color);
-					update_member(&cfg.stick_color);
-					update_member(&cfg.bar_color);
-					update_member(&cfg.bar_outline_color);
-				}
-			}
-			if ((member_ptr >= &pl.plot_ptr->ref_domain_min()(0) && member_ptr < &pl.plot_ptr->ref_domain_min()(0) + pl.plot_ptr->get_dim()) ||
-				(member_ptr >= &pl.plot_ptr->ref_domain_max()(0) && member_ptr < &pl.plot_ptr->ref_domain_max()(0) + pl.plot_ptr->get_dim())) {
-				pl.plot_ptr->adjust_tick_marks_to_domain();
-			}
-			update_member(member_ptr);
-			post_redraw();
-		}
+		update_member(member_ptr);
+		post_redraw();
 	}
 	void stream_vis_context::parse_declarations(const std::string& declarations)
 	{
@@ -300,7 +275,7 @@ namespace stream_vis {
 	{
 		bool success = true;
 		for (auto& pl : plot_pool) {
-			if (pl.dim == 2) {
+			if (false && pl.dim == 2) {
 				// create GPU objects for offline rendering
 				pl.tex.set_data_format("[R,G,B,A]");
 				pl.depth.set_component_format("[D]");
@@ -499,7 +474,7 @@ namespace stream_vis {
 			}
 			// set domain
 			pl.plot_ptr->set_domain3(dom);
-			pl.plot_ptr->adjust_tick_marks_to_domain();
+			pl.plot_ptr->adjust_tick_marks();
 		}
 	}
 	void stream_vis_context::init_frame(cgv::render::context& ctx)
@@ -508,7 +483,7 @@ namespace stream_vis {
 		update_plot_domains();
 		for (auto& pl : plot_pool) {
 			pl.plot_ptr->init_frame(ctx);
-			if (pl.dim == 2) {
+			if (false && pl.dim == 2) {
 				// first call init frame of plot
 				if (!pl.fbo.is_created())
 					continue;
@@ -552,7 +527,7 @@ namespace stream_vis {
 		ctx.push_modelview_matrix();
 		for (auto& pl : plot_pool) {			
 			if (pl.dim == 2) {
-				if (pl.fbo.is_created()) {
+				if (false && pl.fbo.is_created()) {
 					// use default shader with texture support to draw offline rendered plot
 					glDisable(GL_CULL_FACE);
 					auto& prog = ctx.ref_default_shader_program(true);

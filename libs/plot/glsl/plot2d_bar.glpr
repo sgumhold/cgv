@@ -1,4 +1,8 @@
-vertex_file:plot_empty.glvs
+vertex_file:plot2d.glvs
+vertex_file:color_scale.glsl
+vertex_file:plot_lib.glsl
+vertex_file:quaternion.glsl
+vertex_file:view.glsl
 geometry_shader_info:points;triangle_strip;4
 geometry_file:plot2d_bar.glgs
 geometry_file:quaternion.glsl

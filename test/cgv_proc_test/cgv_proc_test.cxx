@@ -33,7 +33,7 @@ public:
 public:
 	cgv_proc_test() : cgv::base::node("cgv_proc_test")
 	{
-		use_procedural_shader = false;
+		use_procedural_shader = true;
 		noise_type = 3;
 		noise_eps = 0.00001f;
 		noise_zoom = 40.0f;
@@ -124,3 +124,12 @@ public:
 
 #include <cgv/base/register.h>
 cgv::base::object_registration<cgv_proc_test> cgv_prog_test_reg("cgv_prog_test");
+
+#ifdef REGISTER_SHADER_FILES
+#include <cgv_proc_test_shader_inc.h>
+#endif
+
+#ifdef CGV_FORCE_STATIC
+extern cgv::base::registration_order_definition dro("stereo_view_interactor;cgv_proc_test");
+#endif
+
