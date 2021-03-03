@@ -29,13 +29,13 @@ namespace vr {
 	}
 
 	/// initialize render targets and framebuffer objects in current opengl context
-	bool vr_wall_kit::init_fbos()
+	bool vr_wall_kit::init_fbos(EyeSelection es)
 	{
 		if (wall_context) {
-			if (!gl_vr_display::fbos_initialized()) {
+			if (!gl_vr_display::fbos_initialized(es)) {
 				// check whether we can do share render buffers and textures
 				gl_vr_display* parent_gl_kit = dynamic_cast<gl_vr_display*>(parent_kit);
-				if (!parent_gl_kit || !parent_gl_kit->fbos_initialized())
+				if (!parent_gl_kit || !parent_gl_kit->fbos_initialized(es))
 					return false;
 					//return gl_vr_display::init_fbos();
 				// create fbos with textures shared with parent kit
@@ -43,6 +43,11 @@ namespace vr {
 				//std::cout << "init_fbos(wall): " << wglGetCurrentContext() << std::endl;
 				
 				for (unsigned i = 0; i < 2; ++i) {
+					if (es == ES_LEFT && i == 1)
+						continue;
+					if (es == ES_RIGHT && i == 0)
+						continue;
+
 					glGenFramebuffers(1, &multi_fbo_id[i]);
 					glBindFramebuffer(GL_FRAMEBUFFER, multi_fbo_id[i]);
 					multi_depth_buffer_id[i] = parent_gl_kit->multi_depth_buffer_id[i];
@@ -72,33 +77,33 @@ namespace vr {
 		}
 		else {
 			// std::cout << "init_fbos(main): " << wglGetCurrentContext() << std::endl;
-			if (!parent_kit->fbos_initialized())
-				return parent_kit->init_fbos();
+			if (!parent_kit->fbos_initialized(es))
+				return parent_kit->init_fbos(es);
 		}
 		return false;
 	}
 	/// check whether fbos have been initialized
-	bool vr_wall_kit::fbos_initialized() const
+	bool vr_wall_kit::fbos_initialized(EyeSelection es) const
 	{
 		if (wall_context)
-			return gl_vr_display::fbos_initialized();
+			return gl_vr_display::fbos_initialized(es);
 		else {
 			// ensure same size of textures
 			if (parent_kit->get_width() != width || parent_kit->get_height() != height) {
-				if (parent_kit->fbos_initialized())
-					parent_kit->destruct_fbos();
+				if (parent_kit->fbos_initialized(es))
+					parent_kit->destruct_fbos(es);
 				dynamic_cast<vr::gl_vr_display*>(parent_kit)->set_size(width, height);
 			}
-			return parent_kit->fbos_initialized();
+			return parent_kit->fbos_initialized(es);
 		}
 	}
 	/// destruct render targets and framebuffer objects in current opengl context
-	void vr_wall_kit::destruct_fbos()
+	void vr_wall_kit::destruct_fbos(EyeSelection es)
 	{
 		if (wall_context)
-			gl_vr_display::destruct_fbos();
+			gl_vr_display::destruct_fbos(es);
 		else
-			parent_kit->destruct_fbos();
+			parent_kit->destruct_fbos(es);
 	}
 	/// enable the framebuffer object of given eye (0..left, 1..right) 
 	void vr_wall_kit::enable_fbo(int eye)

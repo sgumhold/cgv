@@ -60,7 +60,7 @@ namespace vr {
 		/// detach wall vr kit from current parent
 		void detach();
 		/// initialize render targets and framebuffer objects in current opengl context
-		bool init_fbos();
+		bool init_fbos(EyeSelection es = ES_BOTH);
 		/// enable the framebuffer object of given eye (0..left, 1..right) 
 		void enable_fbo(int eye);
 		/// disable the framebuffer object of given eye
@@ -69,9 +69,9 @@ namespace vr {
 		bool blit_fbo(int eye, int x, int y, int w, int h);
 
 		/// check whether fbos have been initialized
-		bool fbos_initialized() const;
+		bool fbos_initialized(EyeSelection es = ES_BOTH) const;
 		/// destruct render targets and framebuffer objects in current opengl context
-		void destruct_fbos();
+		void destruct_fbos(EyeSelection es = ES_BOTH);
 		///
 		bool set_vibration(unsigned controller_index, float low_frequency_strength, float high_frequency_strength);
 		/// access to 3x4 matrix in column major format for transformation from eye (0..left, 1..right) to head coordinates

@@ -1,0 +1,7 @@
+files:plot_legend
+vertex_file:view.glsl
+vertex_file:plot_lib.glsl
+vertex_file:quaternion.glsl
+fragment_file:color_scale.glsl
+fragment_file:plot_lib.glsl
+fragment_file:fragment.glfs

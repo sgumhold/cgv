@@ -63,7 +63,14 @@ float sample_noise(vec3 p, in float zoom) {
 		case 2 : noi = cnoise(p*freq); break;
 		case 3 : noi = snoise(p*freq); break;
 		}
-        float n = ridge(noi, offset);
+		float n;
+		if (i == 2) {
+			float q = mod(10.0*noi,1.0);
+			q = sin(3.14*q);
+			n = q*q;
+		}
+		else
+			n = ridge(noi, offset);
         sum += n*amp;
         sum += n*amp*prev;  // scale by previous octave
         prev = n;

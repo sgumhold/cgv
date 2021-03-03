@@ -1,0 +1,17 @@
+@=
+projectType="application_plugin";
+projectName="font_test";
+projectGUID="FEFF2708-82D3-4946-95D6-2B383782795E";
+addProjectDirs=[CGV_DIR."/libs", CGV_DIR."/plugins", CGV_DIR."/3rd"];
+addIncDirs=[CGV_DIR."/libs"];
+addProjectDeps=[
+	"cgv_utils", "cgv_type", "cgv_reflect", "cgv_data", "cgv_signal", "cgv_base", 
+	"cgv_media", "cgv_gui", "cgv_render", "cgv_os", 
+	"cgv_viewer",
+	"cg_fltk", "cg_icons", "cmi_io", "cg_ext", "crg_stereo_view", "cgv_gl", 
+	"tt_gl_font", "cmf_tt_gl_font", "glew"
+];
+addCommandLineArguments=[
+	'config:"'.INPUT_DIR.'/config.def"',
+	after("type(shader_config):shader_path='".CGV_DIR."/libs/cgv_gl/glsl'","cg_fltk")
+];

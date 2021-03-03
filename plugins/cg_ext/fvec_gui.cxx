@@ -326,7 +326,7 @@ struct vec_gui_creator : public cgv::gui::gui_creator
 			proposed_child_options = "min=-1;max=1;ticks=true";
 
 		if (!cgv::base::has_property(options, "main_label", main_label, false))
-			main_label = "";
+			main_label = "heading";
 		if (!cgv::base::has_property(options, "components", components, false))
 			components = "xyzw";
 		if (!cgv::base::has_property(options, "long_label", long_label, false))

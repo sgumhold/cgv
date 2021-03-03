@@ -105,8 +105,6 @@ public:
 public:
 	/**@name context interface*/
 	//@{
-	/// draw some text at cursor position and update cursor position
-	void draw_text(const std::string& text);
 	void change_mode(int m);
 private:
 	/// store whether we are in the draw method

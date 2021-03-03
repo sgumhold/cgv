@@ -114,11 +114,13 @@ public:
 	}
 
 	///creates a vector with dim elements
-	explicit vec(unsigned dim)
+	explicit vec(unsigned dim, const T& value = T(0))
 	{
 		_size=dim;
-		if(dim > 0)
+		if (dim > 0) {
 			_data = new T[_size];
+			std::fill(_data, _data + _size, value);
+		}
 		else
 			_data = NULL;
 		data_is_external = false;
