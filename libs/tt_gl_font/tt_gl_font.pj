@@ -1,0 +1,8 @@
+@=
+projectType="library";
+projectName="tt_gl_font";
+projectGUID="3D645354-47E5-4A42-828B-1FD8816771DA";
+addProjectDirs=[CGV_DIR."/libs", CGV_DIR."/3rd"];
+addIncDirs=[CGV_DIR."/libs"];
+addProjectDeps=["cgv_utils", "cgv_type", "cgv_base", "cgv_media", "cgv_render", "cgv_gl", "glew"];
+addSharedDefines=["TT_GL_FONT_EXPORTS"];

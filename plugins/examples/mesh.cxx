@@ -174,7 +174,10 @@ public:
 	{
 		if (member_ptr == &file_name) {
 			mesh_type tmp;
+			tmp.ensure_colors(cgv::media::CT_RGB);
 			if (tmp.read(file_name)) {
+				if (tmp.get_nr_colors() == 0)
+					tmp.destruct_colors();
 				M = tmp;
 				sphere_style.radius = float(0.05*sqrt(M.compute_box().get_extent().sqr_length() / M.get_nr_positions()));
 				on_set(&sphere_style.radius);
@@ -323,8 +326,8 @@ public:
 		prog.set_uniform(ctx, "illumination_mode", (int)illumination_mode);
 		// set default surface color for color mapping which only affects 
 		// rendering if mesh does not have per vertex colors and color_mapping is on
-		prog.set_attribute(ctx, prog.get_color_index(), surface_color);
-
+		//prog.set_attribute(ctx, prog.get_color_index(), surface_color);
+		ctx.set_color(surface_color);
 		// render the mesh from the vertex buffers with selected program
 		mesh_info.draw_all(ctx, opaque_part, !opaque_part);
 

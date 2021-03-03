@@ -43,6 +43,6 @@ public:
 	void stream_stats(std::ostream& os);
 	/// necessary method of event_handler
 	void stream_help(std::ostream& os);
-	/// optional method of drawable
-	void draw(cgv::render::context&);
+	/// this method is called in one pass over all drawables after drawing
+	void finish_frame(cgv::render::context& ctx);
 };

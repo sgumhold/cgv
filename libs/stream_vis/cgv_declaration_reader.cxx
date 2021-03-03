@@ -84,6 +84,20 @@ namespace stream_vis {
 			color[j] = float(16 * parse_hex(value[2 * j]) + parse_hex(value[2 * j + 1])) / 255.0f;
 		return true;
 	}
+	bool cgv_declaration_reader::parse_color(const std::string& name, rgba& color)
+	{
+		auto iter = pp.find(name);
+		if (iter == pp.end())
+			return false;
+		std::string value = iter->second;
+		if (value.size() != 6 && value.size() != 8)
+			return false;
+		size_t cnt = value.size() / 2;
+		color[3] = 1.0f;
+		for (unsigned j = 0; j < cnt; ++j)
+			color[j] = float(16 * parse_hex(value[2 * j]) + parse_hex(value[2 * j + 1])) / 255.0f;
+		return true;
+	}
 	bool cgv_declaration_reader::parse_quat(const std::string& name, quat& quat)
 	{
 		auto iter = pp.find(name);

@@ -1,0 +1,14 @@
+vertex_file:plot2d_point.glvs
+vertex_file:color_scale.glsl
+vertex_file:plot_lib.glsl
+vertex_file:view.glsl
+vertex_file:quaternion.glsl
+geometry_shader_info:points;line_strip;2
+geometry_file:point.glgs
+geometry_file:quaternion.glsl
+geometry_file:plot_lib.glsl
+geometry_file:splat.glsl
+geometry_file:view.glsl
+fragment_file:point.glfs
+fragment_file:splat.glsl
+fragment_file:fragment.glfs
