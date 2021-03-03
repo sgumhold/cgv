@@ -38,14 +38,18 @@ public:
 	std::string get_type_name() const;
 	/// return the attributes
 	virtual int get_attributes() const;
-	/// enumerate the supported sizes
+	/// enumerate the supported sizes; if nothing is enumerated any size is supported
 	virtual void enumerate_sizes(std::vector<int>& supported_sizes) const = 0;
 	/// return the width of a text printed in the given size, which is measured in pixels
 	virtual float measure_text_width(const std::string& text, float font_size) const = 0;
+	/// enables font face of given size and should be called once before calling draw_text functions
+	virtual void enable(void* context_ptr, float _font_size) = 0;
+	/// draw text at given location with font_face implementation dependent rendering api and advance location
+	virtual void draw_text(float& x, float& y, const std::string& text) const = 0;
 };
 
 /// always use this ref counted pointer to store font faces
-typedef data::ref_ptr<const font_face> font_face_ptr;
+typedef data::ref_ptr<font_face> font_face_ptr;
 
 /// interface class for fonts. Construct font with the find_font function
 class CGV_API font : public base::base
@@ -64,7 +68,7 @@ public:
 };
 
 /// always use this ref counted pointer to store fonts
-typedef data::ref_ptr<const font> font_ptr;
+typedef data::ref_ptr<font> font_ptr;
 
 /// find an installed font by name
 extern CGV_API font_ptr find_font(const std::string& font_name);

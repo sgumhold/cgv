@@ -234,6 +234,12 @@ public:
 	void transform(const HMat& hmat);
 	/// add a point and allocate normal and color if necessary, return index of new point
 	size_t add_point(const Pnt& p);
+	/// add a point and a normal, add a color if necessary, return index of new point
+	size_t add_point(const Pnt& p, const Nml& n);
+	/// add a point and a color, add a normal if necessary, return index of new point
+	size_t add_point(const Pnt& p, const Clr& c);
+	/// add a point, a normal and a color, return index of new point
+	size_t add_point(const Pnt& p, const Nml& n, const Clr& c);
 	/// resize the point cloud
 	void resize(size_t nr_points);
 	//@}

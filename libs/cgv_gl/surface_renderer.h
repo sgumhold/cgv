@@ -24,6 +24,8 @@ namespace cgv { // @<
 		/** style of a point */
 		struct CGV_API surface_render_style : public group_render_style
 		{
+			/// whether to set the surface color automatically
+			bool set_surface_color;
 			/// default value for color when map color to material is used
 			cgv::media::illum::surface_material::color_type surface_color;
 			/// culling mode for point splats, set to CM_OFF in constructor

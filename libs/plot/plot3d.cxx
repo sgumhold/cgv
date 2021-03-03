@@ -15,15 +15,17 @@ void plot3d_config::set_colors(const rgb& base_color)
 /// overloaded in derived classes to compute complete tick render information
 void plot3d::compute_tick_render_information()
 {
+	/*
 	collect_tick_geometry(0, 1, &domain_min(0), &domain_max(0), &extent(0));
 	collect_tick_geometry(0, 2, &domain_min(0), &domain_max(0), &extent(0));
 	collect_tick_geometry(1, 0, &domain_min(0), &domain_max(0), &extent(0));
 	collect_tick_geometry(1, 2, &domain_min(0), &domain_max(0), &extent(0));
 	collect_tick_geometry(2, 0, &domain_min(0), &domain_max(0), &extent(0));
 	collect_tick_geometry(2, 1, &domain_min(0), &domain_max(0), &extent(0));
+	*/
 }
 
-plot3d_config::plot3d_config(const std::string& _name) : plot_base_config(_name)
+plot3d_config::plot3d_config(const std::string& _name) : plot_base_config(_name, 3)
 {
 	show_points = true;
 	show_lines = true;
@@ -35,14 +37,6 @@ plot3d_config::plot3d_config(const std::string& _name) : plot_base_config(_name)
 	surface_color = rgb(0.7f,0.4f,0);
 	face_illumination = PFI_PER_FACE;
 	bar_percentual_depth = 1.0f;
-}
-
-void plot3d::set_uniforms(cgv::render::context& ctx, cgv::render::shader_program& prog, unsigned i)
-{
-	plot_base::set_uniforms(ctx, prog, i);
-	if (i >= 0 && i < get_nr_sub_plots()) {
-		const plot3d_config& spc = ref_sub_plot3d_config(i);
-	}
 }
 
 bool plot3d::compute_sample_coordinate_interval(int i, int ai, float& samples_min, float& samples_max)
@@ -69,12 +63,20 @@ bool plot3d::compute_sample_coordinate_interval(int i, int ai, float& samples_mi
 	return false;
 }
 
-/// construct empty plot with default domain [0..1,0..1,0..1]
-plot3d::plot3d() : plot_base(3)
+plot3d::plot3d(unsigned nr_attributes) : plot_base(3, nr_attributes)
 {
+	auto& acs = get_domain_config_ptr()->axis_configs;
+	acs[0].name = "x"; acs[0].color = rgb(0.4f, 0.2f, 0.2f);
+	acs[1].name = "y"; acs[1].color = rgb(0.2f, 0.4f, 0.2f);
+	acs[2].name = "z"; acs[2].color = rgb(0.2f, 0.2f, 0.4f);
+	for (unsigned ai = 0; ai < nr_attributes; ai)
+		acs[ai + 3].name = std::string("attribute_") + cgv::utils::to_string(ai);
+
 	brs.culling_mode = cgv::render::CM_FRONTFACE;
 	brs.map_color_to_material = cgv::render::CM_COLOR;
 	brs.illumination_mode = cgv::render::IM_TWO_SIDED;
+
+	legend_location[2] = 0.01f;
 }
 
 unsigned plot3d::add_sub_plot(const std::string& name)
@@ -137,246 +139,353 @@ std::vector<plot3d::vec3>& plot3d::ref_sub_plot_samples(unsigned i)
 
 bool plot3d::init(cgv::render::context& ctx)
 {
-	cgv::render::ref_box_renderer(ctx, 1);
-	return true;
-}
+	bool success = true;
+	if (!prog.build_program(ctx, "plot3d.glpr")) {
+		success = false;
+		std::cerr << "could not build GLSL program from plot3d.glpr" << std::endl;
+	}
+	if (!sphere_prog.build_program(ctx, "plot3d_sphere.glpr")) {
+		success = false;
+		std::cerr << "could not build GLSL program from plot3d_sphere.glpr" << std::endl;
+	}
+	if (!stick_prog.build_program(ctx, "plot3d_stick.glpr")) {
+		success = false;
+		std::cerr << "could not build GLSL program from plot3d_stick.glpr" << std::endl;
+	}
+	if (!tick_label_prog.build_program(ctx, "plot3d_tick_label.glpr")) {
+		success = false;
+		std::cerr << "could not build GLSL program from plot3d_tick_label.glpr" << std::endl;
+	}
+	if (!box_prog.build_program(ctx, "plot3d_box.glpr")) {
+		std::cerr << "could not build GLSL program from plot3d_box.glpr" << std::endl;
+		success = false;
+	}
+	if (!wirebox_prog.build_program(ctx, "plot3d_box_wire.glpr")) {
+		success = false;
+		std::cerr << "could not build GLSL program from plot3d_box_wire.glpr" << std::endl;
+	}
+	if (!tube_prog.build_program(ctx, "plot3d_tube.glpr", true)) {
+		std::cerr << "could not build GLSL program from plot3d_tube.glpr" << std::endl;
+		success = false;
+	}
+	else {
+		tube_prog.set_uniform(ctx, "map_color_to_material", 3);
+	}
 
-void plot3d::draw_sub_plot(cgv::render::context& ctx, unsigned i)
-{
-	size_t count = set_attributes(ctx, i, samples);
-	if (count == 0)
-		return;
-	const plot3d_config& spc = ref_sub_plot3d_config(i);
-	float size2radius = (extent(0) + extent(1)) / (2000.0f);
-	if (spc.show_points) {
-		set_uniforms(ctx, sphere_prog, i);
-		sphere_prog.set_uniform(ctx, "radius_scale", spc.point_size*size2radius);
-		sphere_prog.set_uniform(ctx, "map_color_to_material", 3);
-		sphere_prog.enable(ctx);
-			ctx.set_color(spc.point_color);
-			sphere_prog.set_attribute(ctx, "att0", 1.0f);
-			draw_sub_plot_samples(int(count), spc);
-		sphere_prog.disable(ctx);
-	}
-	
-	if (spc.show_bars) {
-		if (spc.bar_outline_width > 0) {
-			glLineWidth(spc.bar_outline_width);
-			set_uniforms(ctx, wirebox_prog, i);
-			wirebox_prog.set_uniform(ctx, "percentual_width", spc.bar_percentual_width);
-			wirebox_prog.set_uniform(ctx, "percentual_depth", spc.bar_percentual_depth);
-			if (spc.samples_per_row == 0) {
-				wirebox_prog.set_uniform(ctx, "N", (int)count);
-				wirebox_prog.set_uniform(ctx, "M", (int)count);
-			}
-			else {
-				wirebox_prog.set_uniform(ctx, "N", (int)spc.samples_per_row);
-				wirebox_prog.set_uniform(ctx, "M", (int)(count / spc.samples_per_row));
-			}
-			wirebox_prog.enable(ctx);
-			ctx.set_color(spc.bar_outline_color);
-			draw_sub_plot_samples(int(count), spc);
-			wirebox_prog.disable(ctx);
-		}
-		set_uniforms(ctx, box_prog, i);
-		box_prog.set_uniform(ctx, "percentual_width", spc.bar_percentual_width);
-		box_prog.set_uniform(ctx, "percentual_depth", spc.bar_percentual_depth);
-		if (spc.samples_per_row == 0) {
-			box_prog.set_uniform(ctx, "N", (int)count);
-			box_prog.set_uniform(ctx, "M", (int)count);
-		}
-		else {
-			box_prog.set_uniform(ctx, "N", (int&)spc.samples_per_row);
-			box_prog.set_uniform(ctx, "M", (int)(count / spc.samples_per_row));
-		}
-		box_prog.enable(ctx);
-			ctx.set_color(spc.bar_color);
-			box_prog.set_uniform(ctx, "map_color_to_material", 3);
-			draw_sub_plot_samples(int(count), spc);
-		box_prog.disable(ctx);
-	}
-	if (spc.show_sticks) {
-		set_uniforms(ctx, stick_prog, i);
-		glLineWidth(spc.stick_width);
-		stick_prog.enable(ctx);
-			ctx.set_color(spc.stick_color);
-			draw_sub_plot_samples(int(count), spc);
-		stick_prog.disable(ctx);
-	}
-	if (spc.show_lines) {
-		set_uniforms(ctx, tube_prog, i);
-		tube_prog.set_uniform(ctx, "radius", spc.line_width*size2radius);
-		tube_prog.enable(ctx);
-		ctx.set_color(spc.line_color);
-		draw_sub_plot_samples(int(count), spc, true);
-		tube_prog.disable(ctx);
-	}
-}
-
-void plot3d::draw_domain(cgv::render::context& ctx)
-{
-	std::vector<vec3> P;
-	const domain_config& dc = *get_domain_config_ptr();
-	if (dc.fill) {
-		cgv::render::box_renderer& br = cgv::render::ref_box_renderer(ctx);
-		br.set_attribute_array_manager(ctx, 0);
-		br.set_position_array(ctx, &center_location, 1);
-		br.set_position_is_center(true);
-		br.set_extent(ctx, extent);
-		br.set_render_style(brs);
-		br.set_rotation_array(ctx, &orientation, 1, 0);
-		if (br.validate_and_enable(ctx)) {
-			ctx.set_color(dc.color);
-			glDrawArrays(GL_POINTS, 0, 1);
-			br.disable(ctx);
-		}
-	}
-}
-
-void plot3d::draw_axes(cgv::render::context& ctx)
-{
-	std::vector<vec3> P;
-	for (unsigned ai = 0; ai < 3; ++ai) {
-		unsigned aj = (ai + 1) % 3;
-		unsigned ak = (ai + 2) % 3;
-		axis_config& ac = get_domain_config_ptr()->axis_configs[ai];
-		axis_config& ao = get_domain_config_ptr()->axis_configs[aj];
-		axis_config& ap = get_domain_config_ptr()->axis_configs[ak];
-		ctx.set_color(ac.color);
-		glLineWidth(ac.line_width);
-		// 4 lines 
-		vec3 p(domain_min.size(), &domain_min(0)); P.push_back(p);
-		p(ai) = domain_max(ai); P.push_back(p);
-		p(aj) = domain_max(aj); P.push_back(p);
-		p(ai) = domain_min(ai); P.push_back(p);
-		p(ak) = domain_max(ak); P.push_back(p);
-		p(ai) = domain_max(ai); P.push_back(p);
-		p(aj) = domain_min(aj); P.push_back(p);
-		p(ai) = domain_min(ai); P.push_back(p);
-		// axis line
-		if (domain_min(aj) < 0 && domain_max(aj) > 0) {
-			p(aj) = 0.0f; P.push_back(p);
-			p(ai) = domain_max(ai); P.push_back(p);
-			p(ak) = domain_min(ak); P.push_back(p);
-			p(ai) = domain_min(ai); P.push_back(p);
-		}
-		if (domain_min(ak) < 0 && domain_max(ak) > 0) {
-			p(ak) = 0.0f;
-			p(aj) = domain_min(aj); P.push_back(p);
-			p(ai) = domain_max(ai); P.push_back(p);
-			p(aj) = domain_max(aj); P.push_back(p);
-			p(ai) = domain_min(ai); P.push_back(p);
-		}
-		if (!P.empty()) {
-			set_attributes(ctx, P);
-			glDrawArrays(GL_LINES, 0, GLsizei(P.size()));
-			P.clear();
-		}
-	}
-}
-
-void plot3d::draw_ticks(cgv::render::context& ctx)
-{
-	if (tick_vertices.empty())
-		return;
-	enable_attributes(ctx, 2);
-	tick_label_prog.enable(ctx);
-		set_uniforms(ctx, tick_label_prog, -1);
-		set_attributes(ctx, tick_vertices);
-		for (const auto& tbc : tick_batches) if (tbc.vertex_count > 0) {
-			tick_label_prog.set_uniform(ctx, "ai", tbc.ai);
-			tick_label_prog.set_uniform(ctx, "aj", tbc.aj);
-			int ao = 0;
-			while (tbc.ai == ao || tbc.aj == ao)
-				++ao;
-			tick_label_prog.set_uniform(ctx, "default_value", domain_min[ao]);
-			const axis_config& ac = get_domain_config_ptr()->axis_configs[tbc.ai];
-			const tick_config& tc = tbc.primary ? ac.primary_ticks : ac.secondary_ticks;
-			glLineWidth(tc.line_width);
-			ctx.set_color(ac.color);
-			glDrawArrays(GL_LINES, tbc.first_vertex, tbc.vertex_count);
-		}
-	tick_label_prog.disable(ctx);
-	disable_attributes(ctx, 2);
-}
-
-void plot3d::draw_tick_labels(cgv::render::context& ctx)
-{
-	if (tick_labels.empty())
-		return;
-	set_attributes(ctx, tick_vertices);
-	for (const auto& tbc : tick_batches) if (tbc.label_count > 0) {
-		ctx.set_color(get_domain_config_ptr()->axis_configs[tbc.ai].color);
-		for (unsigned i = tbc.first_label; i < tbc.first_label + tbc.label_count; ++i) {
-			int a0 = tbc.ai;
-			int a1 = tbc.aj;
-			if (a0 == 2)
-				a0 = 1 - a1;
-			if (a1 == 2)
-				a1 = 1 - a0;
-			const label_info& li = tick_labels[i];
-			vec3 p(0.0f);
-			p(tbc.ai) = li.position(a0);
-			p(tbc.aj) = li.position(a1);
-			int ao = 0;
-			while (tbc.ai == ao || tbc.aj == ao)
-				++ao;
-			p(ao) = domain_min[ao];
-			ctx.set_cursor(transform_to_world(p.to_vec()).to_vec(), li.label, li.align);
-			ctx.output_stream() << li.label;
-			ctx.output_stream().flush();
-		}
-	}
-	disable_attributes(ctx, 2);
-}
-
-void plot3d::draw(cgv::render::context& ctx)
-{
-	if (!prog.is_created()) {
-		if (!prog.build_program(ctx, "plot3d.glpr")) {
-			std::cerr << "could not build GLSL program from plot3d.glpr" << std::endl;
-		}
-	}
-	if (!sphere_prog.is_created()) {
-		if (!sphere_prog.build_program(ctx, "plot3d_sphere.glpr")) {
-			std::cerr << "could not build GLSL program from plot3d_sphere.glpr" << std::endl;
-		}
-	}
-	if (!stick_prog.is_created()) {
-		if (!stick_prog.build_program(ctx, "plot3d_stick.glpr")) {
-			std::cerr << "could not build GLSL program from plot3d_stick.glpr" << std::endl;
-		}
-	}
-	if (!tick_label_prog.is_created()) {
-		if (!tick_label_prog.build_program(ctx, "plot3d_tick_label.glpr")) {
-			std::cerr << "could not build GLSL program from plot3d_tick_label.glpr" << std::endl;
-		}
-	}
-	
-	if (!box_prog.is_created()) {
-		if (!box_prog.build_program(ctx, "plot3d_box.glpr")) {
-			std::cerr << "could not build GLSL program from plot3d_box.glpr" << std::endl;
-		}
-	}
-	if (!wirebox_prog.is_created()) {
-		if (!wirebox_prog.build_program(ctx, "plot3d_box_wire.glpr")) {
-			std::cerr << "could not build GLSL program from plot3d_box_wire.glpr" << std::endl;
-		}
-	}
-	if (!tube_prog.is_created()) {
-		if (!tube_prog.build_program(ctx, "plot3d_tube.glpr", true)) {
-			std::cerr << "could not build GLSL program from plot3d_tube.glpr" << std::endl;
-		}
-		else {
-			tube_prog.set_uniform(ctx, "map_color_to_material", 3);
-		}
-	}
 	//if (!surface_prog.is_created()) {
 	//	if (!surface_prog.build_program(ctx, "plot3d_surface.glpr")) {
 	//		std::cerr << "could not build GLSL program from plot3d_surface.glpr" << std::endl;
 	//	}
 	//}
 
+	cgv::render::ref_box_renderer(ctx, 1);
+	cgv::render::ref_rounded_cone_renderer(ctx, 1);
+	return plot_base::init(ctx);
+}
+
+void plot3d::draw_sub_plots(cgv::render::context& ctx)
+{
+	float rs = get_domain_config_ptr()->reference_size;
+	vecn extent = get_extent();
+	double y_view_angle = 45.0f;
+	if (view_ptr)
+		y_view_angle = view_ptr->get_y_view_angle();
+	float pixel_extent_per_depth = (float)(2.0 * tan(0.5 * 0.0174532925199 * y_view_angle) / ctx.get_height());
+
+	for (unsigned i = 0; i < get_nr_sub_plots(); ++i) {
+		size_t count = set_attributes(ctx, i, samples);
+		if (count == 0)
+			continue;
+		const plot3d_config& spc = ref_sub_plot3d_config(i);
+		if (!spc.show_plot)
+			continue;
+		if (spc.show_points) {
+			set_plot_uniforms(ctx,    sphere_prog);
+			set_mapping_uniforms(ctx, sphere_prog);
+			sphere_prog.set_uniform(ctx, "radius_scale", spc.point_size.size * rs);
+			sphere_prog.set_uniform(ctx, "map_color_to_material", 7);
+			sphere_prog.set_uniform(ctx, "blend_width_in_pixel", get_domain_config_ptr()->blend_width_in_pixel);
+			sphere_prog.set_uniform(ctx, "pixel_extent_per_depth", pixel_extent_per_depth);
+			sphere_prog.set_uniform(ctx, "halo_width_in_pixel", 0.0f);
+			sphere_prog.set_uniform(ctx, "halo_color_strength", 1.0f);
+			sphere_prog.set_uniform(ctx, "percentual_halo_width", spc.point_halo_width.size / spc.point_size.size);
+			sphere_prog.set_uniform(ctx, "color_index", spc.point_color.color_idx);
+			sphere_prog.set_uniform(ctx, "secondary_color_index", spc.point_halo_color.color_idx);
+			sphere_prog.set_uniform(ctx, "opacity_index", spc.point_color.opacity_idx);
+			sphere_prog.set_uniform(ctx, "secondary_opacity_index", spc.point_halo_color.opacity_idx);
+			sphere_prog.set_uniform(ctx, "size_index", spc.point_size.size_idx);
+			sphere_prog.set_uniform(ctx, "secondary_size_index", spc.point_halo_width.size_idx);
+			ctx.set_color(spc.point_color.color);
+			sphere_prog.set_attribute(ctx, "secondary_color", spc.point_halo_color.color);
+			sphere_prog.set_attribute(ctx, "size", spc.point_size.size);
+			sphere_prog.enable(ctx);
+			draw_sub_plot_samples(int(count), spc);
+			sphere_prog.disable(ctx);
+		}
+		if (spc.show_bars) {
+			unsigned N = (unsigned)count;
+			unsigned M = (unsigned)count;
+			if (spc.samples_per_row > 0) {
+				N = spc.samples_per_row;
+				M /= spc.samples_per_row;
+			}
+			float box_width = spc.bar_percentual_width.size *extent((spc.bar_coordinate_index + 1) % 3) / N;
+			float box_depth = spc.bar_percentual_depth.size * extent((spc.bar_coordinate_index + 2) % 3) / M;
+			if (spc.bar_outline_width.size > 0) {
+				glLineWidth(spc.bar_outline_width.size);
+				set_plot_uniforms(ctx, wirebox_prog);
+				set_mapping_uniforms(ctx, wirebox_prog);
+				wirebox_prog.set_uniform(ctx, "box_width", box_width);
+				wirebox_prog.set_uniform(ctx, "box_depth", box_depth);
+				wirebox_prog.set_uniform(ctx, "box_coordinate_index", spc.bar_coordinate_index);
+				wirebox_prog.set_uniform(ctx, "box_base_window", spc.bar_base_window);
+				wirebox_prog.set_uniform(ctx, "color_index", spc.bar_outline_color.color_idx);
+				wirebox_prog.set_uniform(ctx, "secondary_color_index", -1);
+				wirebox_prog.set_uniform(ctx, "opacity_index", spc.bar_outline_color.opacity_idx);
+				wirebox_prog.set_uniform(ctx, "secondary_opacity_index", -1);
+				wirebox_prog.set_uniform(ctx, "size_index", spc.bar_percentual_width.size_idx);
+				wirebox_prog.set_uniform(ctx, "secondary_size_index", spc.bar_percentual_depth.size_idx);
+				ctx.set_color(spc.bar_outline_color.color);
+				wirebox_prog.enable(ctx);
+				draw_sub_plot_samples(int(count), spc);
+				wirebox_prog.disable(ctx);
+			}
+			set_plot_uniforms(ctx, box_prog);
+			set_mapping_uniforms(ctx, box_prog);
+			box_prog.set_uniform(ctx, "map_color_to_material", 7);
+			box_prog.set_uniform(ctx, "box_width", box_width);
+			box_prog.set_uniform(ctx, "box_depth", box_depth);
+			box_prog.set_uniform(ctx, "box_base_window", spc.bar_base_window);
+			box_prog.set_uniform(ctx, "box_coordinate_index", spc.bar_coordinate_index);
+			box_prog.set_uniform(ctx, "color_index", spc.bar_color.color_idx);
+			box_prog.set_uniform(ctx, "secondary_color_index", -1);
+			box_prog.set_uniform(ctx, "opacity_index", spc.bar_color.opacity_idx);
+			box_prog.set_uniform(ctx, "secondary_opacity_index", -1);
+			box_prog.set_uniform(ctx, "size_index", spc.bar_percentual_width.size_idx);
+			box_prog.set_uniform(ctx, "secondary_size_index", spc.bar_percentual_depth.size_idx);
+			ctx.set_color(spc.bar_color.color);
+			box_prog.enable(ctx);
+			draw_sub_plot_samples(int(count), spc);
+			box_prog.disable(ctx);
+		}
+		if (spc.show_sticks) {
+			set_plot_uniforms(ctx, stick_prog);
+			set_mapping_uniforms(ctx, stick_prog);
+			stick_prog.set_uniform(ctx, "radius_scale", 1.0f);
+			stick_prog.set_uniform(ctx, "stick_coordinate_index", spc.stick_coordinate_index);
+			stick_prog.set_uniform(ctx, "stick_base_window", spc.stick_base_window);
+			stick_prog.set_uniform(ctx, "map_color_to_material", 7);
+			stick_prog.set_uniform(ctx, "color_index", spc.stick_color.color_idx);
+			stick_prog.set_uniform(ctx, "secondary_color_index", -1);
+			stick_prog.set_uniform(ctx, "opacity_index", spc.stick_color.opacity_idx);
+			stick_prog.set_uniform(ctx, "secondary_opacity_index", -1);
+			stick_prog.set_uniform(ctx, "size_index", spc.stick_width.size_idx);
+			stick_prog.set_uniform(ctx, "secondary_size_index", -1);
+			ctx.set_color(spc.stick_color.color);
+			stick_prog.set_attribute(ctx, "secondary_color", spc.stick_color.color);
+			stick_prog.set_attribute(ctx, "size", spc.stick_width.size * rs);
+			stick_prog.set_attribute(ctx, "secondary_size", spc.stick_width.size * rs);
+			stick_prog.enable(ctx);
+			draw_sub_plot_samples(int(count), spc);
+			stick_prog.disable(ctx);
+		}
+		if (spc.show_lines) {
+			set_plot_uniforms(ctx, tube_prog);
+			set_mapping_uniforms(ctx, tube_prog);
+			tube_prog.set_uniform(ctx, "radius_scale", 1.0f);
+			tube_prog.set_uniform(ctx, "map_color_to_material", 7);
+			tube_prog.set_uniform(ctx, "color_index", spc.line_color.color_idx);
+			tube_prog.set_uniform(ctx, "secondary_color_index", -1);
+			tube_prog.set_uniform(ctx, "opacity_index", spc.line_color.opacity_idx);
+			tube_prog.set_uniform(ctx, "secondary_opacity_index", -1);
+			tube_prog.set_uniform(ctx, "size_index", spc.line_width.size_idx);
+			tube_prog.set_uniform(ctx, "secondary_size_index", -1);
+			ctx.set_color(spc.line_color.color);
+			tube_prog.set_attribute(ctx, "size", spc.line_width.size * rs);
+			tube_prog.enable(ctx);
+			draw_sub_plot_samples(int(count), spc, true);
+			tube_prog.disable(ctx);
+		}
+		
+	}
+}
+
+void plot3d::draw_domain(cgv::render::context& ctx)
+{
+	tick_labels.clear();
+	tick_batches.clear();
+	const domain_config& dc = *get_domain_config_ptr();
+	vec3 extent = vec3::from_vec(get_extent());
+	if (dc.fill) {
+		vec3 origin(0.0f);
+		cgv::render::box_renderer& br = cgv::render::ref_box_renderer(ctx);
+		br.set_attribute_array_manager(ctx, 0);
+		br.set_position_array(ctx, &origin, 1);
+		br.set_color_array(ctx, &dc.color, 1);
+		br.set_position_is_center(true);
+		br.set_extent(ctx, extent);
+		br.set_render_style(brs);
+		br.render(ctx, 0, 1);
+	}
+	// draw axes
+	std::vector<vec3> P;
+	std::vector<rgb> C;
+	std::vector<float> R;
+	float rs = get_domain_config_ptr()->reference_size;
+	for (unsigned ai = 0; ai < 3; ++ai) {
+		int aj = (ai + 1) % 3;
+		int ak = (ai + 2) % 3;
+		axis_config& ac = get_domain_config_ptr()->axis_configs[ai];
+		axis_config& ao = get_domain_config_ptr()->axis_configs[aj];
+		axis_config& ap = get_domain_config_ptr()->axis_configs[ak];
+		float lw = rs * ac.line_width;
+		rgb col = ac.color;
+		vec3 D = 0.5f * extent;
+		unsigned cnt = 4;
+		float c[5][2] = { {-D[aj],-D[ak]}, {D[aj],-D[ak]}, {D[aj],D[ak]}, {-D[aj],D[ak]} };
+		// axis line
+		if (ao.get_attribute_min() < 0 && ao.get_attribute_max() > 0 &&
+			ap.get_attribute_min() < 0 && ap.get_attribute_max() > 0) {
+			c[cnt][0] = ao.plot_space_from_attribute_space(0.0f);
+			c[cnt][1] = ap.plot_space_from_attribute_space(0.0f);
+			++cnt;
+		}
+		vec3 p;
+		for (unsigned ci = 0; ci < cnt; ++ci) {
+			p[ai] = -D[ai];
+			p[aj] = c[ci][0];
+			p[ak] = c[ci][1];
+			P.push_back(p);
+			C.push_back(col);
+			R.push_back(lw);
+			p[ai] = D[ai];
+			P.push_back(p);
+			C.push_back(col);
+			R.push_back(lw);
+
+			for (unsigned ti = 0; ti < 2; ++ti) {
+				tick_config& tc = ti == 0 ? ac.primary_ticks : ac.secondary_ticks;
+				if (tc.type == TT_NONE)
+					continue;
+				tick_batches.push_back(tick_batch_info(ai, aj, ti == 0, 0, (unsigned)tick_labels.size()));
+				float min_tick = ac.tick_space_from_attribute_space(ac.get_attribute_min());
+				float max_tick = ac.tick_space_from_attribute_space(ac.get_attribute_max());
+				int min_i = (int)ceil(min_tick / tc.step - std::numeric_limits<float>::epsilon());
+				int max_i = (int)((max_tick - fmod(max_tick, tc.step)) / tc.step);
+				// ignore secondary ticks on domain boundary
+				if (ti == 1 && min_i * tc.step - min_tick < std::numeric_limits<float>::epsilon())
+					++min_i;
+				if (ti == 1 && max_i * tc.step - max_tick > -std::numeric_limits<float>::epsilon())
+					--max_i;
+				float lw = 0.5f * get_domain_config_ptr()->reference_size * tc.line_width;
+				float dl = 0.5f * get_domain_config_ptr()->reference_size * tc.length;
+				for (int i = min_i; i <= max_i; ++i) {
+					float c_tick = (float)(i * tc.step);
+					float c_attr = ac.attribute_space_from_tick_space(c_tick);
+					std::string label_str;
+					if (tc.label)
+						label_str = cgv::utils::to_string(c_attr);
+					float c_plot = ac.plot_space_from_window_space(ac.window_space_from_tick_space(c_tick));
+					switch (tc.type) {
+					case TT_DASH:
+						p[ai] = c_plot;
+						p[aj] = c[ci][0]-dl;
+						p[ak] = c[ci][1];
+						P.push_back(p);
+						C.push_back(col);
+						R.push_back(lw);
+						p[aj] = c[ci][0]+dl;
+						P.push_back(p);
+						C.push_back(col);
+						R.push_back(lw);
+						if (!label_str.empty())
+							tick_labels.push_back(label_info(p.to_vec(), label_str, ai == 0 ? cgv::render::TA_BOTTOM : cgv::render::TA_LEFT));
+						p[aj] = c[ci][0];
+						p[ak] = c[ci][1]-dl;
+						P.push_back(p);
+						C.push_back(col);
+						R.push_back(lw);
+						p[ak] = c[ci][1]+dl;
+						P.push_back(p);
+						C.push_back(col);
+						R.push_back(lw);
+//						if (!label_str.empty())
+//							tick_labels.push_back(label_info(p.to_vec(), label_str, ai == 0 ? cgv::render::TA_BOTTOM : cgv::render::TA_LEFT));
+						break;
+					case TT_LINE:
+					case TT_PLANE:
+						if (ci < 4) {
+							p[ai] = c_plot;
+							p[aj] = c[ci][0];
+							p[ak] = c[ci][1];
+							if (!label_str.empty())
+								tick_labels.push_back(label_info(p.to_vec(), label_str, ai == 0 ? cgv::render::TA_BOTTOM : cgv::render::TA_LEFT));
+							P.push_back(p);
+							C.push_back(col);
+							R.push_back(lw);
+							p[aj] = c[(ci + 1) % 4][0];
+							p[ak] = c[(ci + 1) % 4][1];
+							P.push_back(p);
+							C.push_back(col);
+							R.push_back(lw);
+						}
+						else {
+							p[ai] = c_plot;
+							p[aj] = c[ci][0];
+							p[ak] = c[ci][1];
+							if (!label_str.empty())
+								tick_labels.push_back(label_info(p.to_vec(), label_str, ai == 0 ? cgv::render::TA_BOTTOM : cgv::render::TA_LEFT));
+							p[ak] = -D[ak];
+							P.push_back(p);
+							C.push_back(col);
+							R.push_back(lw);
+							p[ak] = D[ak];
+							P.push_back(p);
+							C.push_back(col);
+							R.push_back(lw);
+							p[aj] = -D[aj];
+							p[ak] = c[ci][1];
+							P.push_back(p);
+							C.push_back(col);
+							R.push_back(lw);
+							p[aj] = D[aj];
+							P.push_back(p);
+							C.push_back(col);
+							R.push_back(lw);
+						}
+						break;
+					}
+				}
+				tick_batches.back().label_count = (unsigned)(tick_labels.size() - tick_batches.back().first_label);
+			}
+		}
+	}
+
+	auto& rcr = cgv::render::ref_rounded_cone_renderer(ctx);
+	rcr.set_render_style(rcrs);
+	rcr.set_position_array(ctx, P);
+	rcr.set_color_array(ctx, C);
+	rcr.set_radius_array(ctx, R);
+	rcr.render(ctx, 0, P.size());
+}
+
+void plot3d::draw_ticks(cgv::render::context& ctx)
+{
+	if (tick_labels.empty())
+		return;
+	for (const auto& tbc : tick_batches) if (tbc.label_count > 0) {
+		ctx.set_color(get_domain_config_ptr()->axis_configs[tbc.ai].color);
+		for (unsigned i = tbc.first_label; i < tbc.first_label + tbc.label_count; ++i) {
+			const label_info& li = tick_labels[i];
+			ctx.set_cursor(li.position, li.label, li.align);
+			ctx.output_stream() << li.label;
+			ctx.output_stream().flush();
+		}
+	}
+}
+
+void plot3d::draw(cgv::render::context& ctx)
+{	
 	GLboolean line_smooth = glIsEnabled(GL_LINE_SMOOTH); glEnable(GL_LINE_SMOOTH);
 	GLboolean point_smooth = glIsEnabled(GL_POINT_SMOOTH); glEnable(GL_POINT_SMOOTH);
 	GLboolean blend = glIsEnabled(GL_BLEND); glEnable(GL_BLEND);
@@ -384,36 +493,25 @@ void plot3d::draw(cgv::render::context& ctx)
 	glGetIntegerv(GL_BLEND_DST, reinterpret_cast<GLint*>(&blend_dst));
 	glGetIntegerv(GL_BLEND_SRC, reinterpret_cast<GLint*>(&blend_src));
 	glGetIntegerv(GL_DEPTH_FUNC, reinterpret_cast<GLint*>(&depth));
+
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glDepthFunc(GL_LEQUAL);
-	
-	enable_attributes(ctx, 3);
-	for (unsigned i = 0; i < samples.size(); ++i) {
-		// skip unvisible and empty sub plots
-		if (!ref_sub_plot3d_config(i).show_plot)
-			continue;
-		draw_sub_plot(ctx, i);
-	}
-	disable_attributes(ctx, 3);
-	
+
+	ctx.push_modelview_matrix();
+	mat4 R;
+	orientation.put_homogeneous_matrix(R);
+	ctx.mul_modelview_matrix(cgv::math::translate4<float>(center_location) * R);
 	if (get_domain_config_ptr()->show_domain) {
 		draw_domain(ctx);
-		
-		enable_attributes(ctx, 3);
-			set_uniforms(ctx, prog, -1);
-			prog.enable(ctx);
-				draw_axes(ctx);
-			prog.disable(ctx);
-		disable_attributes(ctx, 3);
-		
-		draw_ticks(ctx);
-		
 		ctx.enable_font_face(label_font_face, get_domain_config_ptr()->label_font_size);
-		draw_tick_labels(ctx);
-		
+		draw_ticks(ctx);
 	}
+	if (legend_components != LC_HIDDEN)
+		draw_legend(ctx, 0.0f);
 
-	
+	draw_sub_plots(ctx);
+	ctx.pop_modelview_matrix();
+
 	if (!line_smooth)
 		glDisable(GL_LINE_SMOOTH);
 	if (!point_smooth)
@@ -422,12 +520,11 @@ void plot3d::draw(cgv::render::context& ctx)
 		glDisable(GL_BLEND);
 	glDepthFunc(depth);
 	glBlendFunc(blend_src, blend_dst);
-
-
 }
 
 void plot3d::clear(cgv::render::context& ctx)
 {
+	prog.destruct(ctx);
 	sphere_prog.destruct(ctx);
 	box_prog.destruct(ctx);
 	wirebox_prog.destruct(ctx);
@@ -435,37 +532,27 @@ void plot3d::clear(cgv::render::context& ctx)
 	tube_prog.destruct(ctx);
 //	surface_prog.destruct(ctx);
 	cgv::render::ref_box_renderer(ctx, -1);
+	cgv::render::ref_rounded_cone_renderer(ctx, -1);
+}
 
+void plot3d::create_line_config_gui(cgv::base::base* bp, cgv::gui::provider& p, plot_base_config& pbc)
+{
+	plot_base::create_line_config_gui(bp, p, pbc);
+	plot3d_config& p3bc = reinterpret_cast<plot3d_config&>(pbc);
+	p.add_member_control(bp, "show_orientation", p3bc.show_line_orientation, "check");
+}
+void plot3d::create_bar_config_gui(cgv::base::base* bp, cgv::gui::provider& p, plot_base_config& pbc)
+{
+	plot_base::create_bar_config_gui(bp, p, pbc);
+	plot3d_config& p3bc = reinterpret_cast<plot3d_config&>(pbc);
+	add_mapped_size_control(p, bp, "depth", p3bc.bar_percentual_depth, "min=0.01;max=1;log=true;ticks=true");
 }
 
 void plot3d::create_config_gui(cgv::base::base* bp, cgv::gui::provider& p, unsigned i)
 {
+	plot_base::create_config_gui(bp, p, i);
 	plot3d_config& pbc = ref_sub_plot3d_config(i);
-	create_config_gui_impl(bp, p, i, "op");
-	bool show = p.begin_tree_node("lines", pbc.show_lines, false, "level=3;options='w=142';align=' '");
-	p.add_member_control(bp, "show", pbc.show_lines, "toggle", "w=50");
-	if (show) {
-		p.align("\a");
-		p.add_member_control(bp, "width", pbc.line_width, "value_slider", "min=1;max=20;log=true;ticks=true");
-		p.add_member_control(bp, "color", pbc.line_color);
-		p.add_member_control(bp, "show_orientation", pbc.show_line_orientation, "check");
-		p.align("\b");
-		p.end_tree_node(pbc.show_lines);
-	}
-	create_config_gui_impl(bp, p, i, "s");
-	show = p.begin_tree_node("bars", pbc.show_bars, false, "level=3;options='w=142';align=' '");
-	p.add_member_control(bp, "show", pbc.show_bars, "toggle", "w=50");
-	if (show) {
-		p.align("\a");
-		p.add_member_control(bp, "width", pbc.bar_percentual_width, "value_slider", "min=0.01;max=1;log=true;ticks=true");
-		p.add_member_control(bp, "depth", pbc.bar_percentual_depth, "value_slider", "min=0.01;max=1;log=true;ticks=true");
-		p.add_member_control(bp, "fill", pbc.bar_color);
-		p.add_member_control(bp, "outline_width", pbc.bar_outline_width, "value_slider", "min=0;max=20;log=true;ticks=true");
-		p.add_member_control(bp, "outline", pbc.bar_outline_color);
-		p.align("\b");
-		p.end_tree_node(pbc.show_bars);
-	}
-	show = p.begin_tree_node("surface", pbc.show_surface, false, "level=3;w=100;align=' '");
+	bool show = p.begin_tree_node("surface", pbc.show_surface, false, "level=3;w=100;align=' '");
 	p.add_member_control(bp, "show", pbc.show_surface, "toggle", "w=50");
 	if (show) {
 		p.align("\a");
@@ -473,9 +560,22 @@ void plot3d::create_config_gui(cgv::base::base* bp, cgv::gui::provider& p, unsig
 		p.add_member_control(bp, "wireframe", pbc.wireframe, "check");
 		p.add_member_control(bp, "color", pbc.surface_color);
 		p.add_member_control(bp, "wireframe", pbc.face_illumination, "dropdown", "enums='none,face,vertex'");
-	}	
+		p.align("\b");
+		p.end_tree_node(pbc.show_surface);
+	}
 }
 
+void plot3d::create_gui(cgv::base::base* bp, cgv::gui::provider& p)
+{
+	p.add_decorator("plot3d", "heading");
+	plot_base::create_gui(bp, p);
+	if (p.begin_tree_node("rounded cones", rcrs)) {
+		p.align("\a");
+		p.add_gui("rcrs", rcrs);
+		p.align("\b");
+		p.end_tree_node(rcrs);
+	}
+}
 
 	}
 }

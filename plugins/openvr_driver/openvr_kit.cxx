@@ -439,6 +439,7 @@ bool openvr_kit::query_state_impl(vr_kit_state& state, int pose_query)
 		tuo = vr::VRCompositor()->GetTrackingSpace();
 
 	// special query for controllers assigned to hands
+	bool updated[2] = { false, false };
 	for (int ci = 0; ci < 2; ++ci) {
 		if (controller_only && !controller_onlys[1 - ci])
 			continue;
@@ -456,6 +457,7 @@ bool openvr_kit::query_state_impl(vr_kit_state& state, int pose_query)
 			}
 			extract_controller_state(controller_state, ci, state.controller[ci]);
 			update_controller_info(ci, dis[ci]);
+			updated[ci] = true;
 		}
 	}
 
@@ -490,11 +492,25 @@ bool openvr_kit::query_state_impl(vr_kit_state& state, int pose_query)
 				update_hmd_info();
 				break;
 			case TrackedDeviceClass_Controller:
-				if (next_generic_controller_index < vr::max_nr_controllers) {
-					tracked_pose_ptr = &state.controller[next_generic_controller_index];
-					state.controller[next_generic_controller_index].status = vr::VRS_TRACKED;
-					update_controller_info(next_generic_controller_index, device_index);
-					++next_generic_controller_index;
+				// check for controllers corresponding to left and right hand which are assigned 
+				// to controller indices 0 and 1
+				if (device_index == dis[0] || device_index == dis[1]) {
+					int ci = (device_index == dis[0] ? 0 : 1);
+					// only update state if not yet done before
+					if (!updated[ci]) {
+						tracked_pose_ptr = &state.controller[ci];
+						state.controller[ci].status = vr::VRS_TRACKED;
+						update_controller_info(ci, device_index);
+					}
+				}
+				// otherwise we found a new controller
+				else {
+					if (next_generic_controller_index < vr::max_nr_controllers) {
+						tracked_pose_ptr = &state.controller[next_generic_controller_index];
+						state.controller[next_generic_controller_index].status = vr::VRS_TRACKED;
+						update_controller_info(next_generic_controller_index, device_index);
+						++next_generic_controller_index;
+					}
 				}
 				break;
 			case TrackedDeviceClass_GenericTracker:

@@ -1,24 +1,25 @@
-#version 150
+#version 330 core
 
 /*
 The following interface is implemented in this shader:
 //***** begin interface of plot_lib.glsl ***********************************
-uniform vec3 domain_min_pnt;
-uniform vec3 domain_max_pnt;
-uniform vec3 extent;
-uniform vec4 orientation;
-uniform vec3 center_location;
-vec3 map_plot_to_plot3(in vec2 pnt);
-vec4 map_plot_to_world(in vec2 pnt);
-vec4 map_plot_to_eye(in vec2 pnt);
-vec4 map_plot_to_screen(in vec2 pnt);
-vec3 map_plot_to_plot3(in vec3 pnt);
-vec4 map_plot_to_world3(in vec3 pnt);
-vec4 map_plot_to_eye3(in vec3 pnt);
-vec4 map_plot_to_screen3(in vec3 pnt);
+uniform float attribute_min[8];
+uniform float attribute_max[8];
+float tick_space_from_attribute_space(int ai, float value);
+float attribute_space_from_tick_space(int ai, float value);
+float window_space_from_tick_space(int ai, float value);
+float tick_space_from_window_space(int ai, float value);
+vec3 plot_space_from_window_space(vec3 pnt);
+vec3 window_space_from_plot_space(vec3 pnt);
+vec3 world_space_from_plot_space(vec3 pnt);
+vec3 map_color(in float v_window, int idx = 0);
+vec3 map_color(in float attributes[8], in vec3 base_color, int idx = 0);
+float map_opacity(in float v_window, int idx = 0);
+float map_opacity(in float attributes[8], in float base_opacity, int idx = 0);
+float map_size(in float v_window, int idx = 0);
+float map_size(in float attributes[8], in float base_size, int idx = 0);
 //***** end interface of plot_lib.glsl ***********************************
 */
-
 
 //***** begin interface of view.glsl ***********************************
 mat4 get_modelview_matrix();
@@ -39,75 +40,155 @@ void quaternion_to_matrix(in vec4 q, out mat3 M);
 void rigid_to_matrix(in vec4 q, in vec3 t, out mat4 M);
 //***** end interface of quaternion.glsl ***********************************
 
-uniform bool x_axis_log_scale = false;
-uniform bool y_axis_log_scale = false;
-uniform bool z_axis_log_scale = false;
-uniform vec3 domain_min_pnt;
-uniform vec3 domain_max_pnt;
+//***** begin interface of color_scale.glsl ***********************************
+float color_scale_gamma_mapping(in float v, in float gamma, int idx = 0);
+vec3 color_scale(in float v, int idx = 0);
+//***** end interface of color_scale.glsl ***********************************
+
+// tick space transform
+uniform int axis_log_scale[8];
+uniform float axis_log_minimum[8];
+
+// window transform
+uniform float attribute_min[8];
+uniform float attribute_max[8];
+
+// world transform
 uniform vec3 extent;
-uniform vec4 orientation = vec4(0.0, 0.0, 0.0, 1.0);
 uniform vec3 center_location;
+uniform vec4 orientation = vec4(0.0, 0.0, 0.0, 1.0);
 uniform float feature_offset;
 
-float convert_to_log_space(float val, float min_val, float max_val)
+// color mapping
+const int MAX_NR_COLOR_MAPPINGS = 2;
+uniform int   color_mapping[MAX_NR_COLOR_MAPPINGS] = { -1, -1 };
+uniform float color_scale_gamma[MAX_NR_COLOR_MAPPINGS] = { 1.0, 1.0 };
+
+// opacity mapping
+const int MAX_NR_OPACITY_MAPPINGS = 2;
+uniform int   opacity_mapping[MAX_NR_OPACITY_MAPPINGS] = { -1, -1 };
+uniform float opacity_gamma[MAX_NR_OPACITY_MAPPINGS] = { 1.0, 1.0 };
+uniform int  opacity_is_bipolar[MAX_NR_OPACITY_MAPPINGS] = { 0, 0 };
+uniform float opacity_window_zero_position[MAX_NR_OPACITY_MAPPINGS] = { 0.5, 0.5 };
+uniform float opacity_min[MAX_NR_OPACITY_MAPPINGS] = { 0.1, 0.1 };
+uniform float opacity_max[MAX_NR_OPACITY_MAPPINGS] = { 1.0, 1.0 };
+
+// size mapping
+const int MAX_NR_SIZE_MAPPINGS = 2;
+uniform int   size_mapping[MAX_NR_SIZE_MAPPINGS] = { -1, -1 };
+uniform float size_gamma[MAX_NR_SIZE_MAPPINGS] = { 1.0, 1.0 };
+uniform float size_max[MAX_NR_SIZE_MAPPINGS] = { 1.0, 1.0 };
+uniform float size_min[MAX_NR_SIZE_MAPPINGS] = { 0.2, 0.2 };
+
+float tick_space_from_attribute_space(int ai, float value)
 {
-	return log(max(val, 1e-6f*max_val)) / log(10.0);
+	if (axis_log_scale[ai] == 0)
+		return value;
+	if (value > axis_log_minimum[ai])
+		return log(value)/log(10.0);
+	if (value < -axis_log_minimum[ai])
+		return (2.0 * log(axis_log_minimum[ai]) - log(-value))/ log(10.0) - 2.0;
+	return log(axis_log_minimum[ai])/log(10.0) + value / axis_log_minimum[ai] - 1.0;
 }
 
-float compute_delta(float val, float min_val, float max_val, bool log_scale)
+float attribute_space_from_tick_space(int ai, float value)
 {
-	if (log_scale) {
-		float log_val     = convert_to_log_space(val, min_val, max_val);
-		float log_min_val = convert_to_log_space(min_val, min_val, max_val);
-		float log_max_val = convert_to_log_space(max_val, min_val, max_val);
-		return (log_val - 0.5*(log_min_val + log_max_val)) / (log_max_val - log_min_val);
+	if (axis_log_scale[ai] == 0)
+		return value;
+	if (value > log(axis_log_minimum[ai])/log(10.0))
+		return pow(10.0f, value);
+	if (value < log(axis_log_minimum[ai])/log(10.0) - 2.0)
+		return -pow(10.0f, 2.0 * log(axis_log_minimum[ai])/log(10.0) - 2.0 - value);
+	return axis_log_minimum[ai] * (value + 1.0 - log(axis_log_minimum[ai])/log(10.0));
+}
+
+float window_space_from_tick_space(int ai, float value)
+{
+	float min_value = attribute_min[ai];
+	float max_value = attribute_max[ai];
+	if (axis_log_scale[ai] != 0) {
+		min_value = tick_space_from_attribute_space(ai, min_value);
+		max_value = tick_space_from_attribute_space(ai, max_value);
+	}
+	return (value - min_value) / (max_value - min_value);
+}
+float tick_space_from_window_space(int ai, float value)
+{
+	float min_value = attribute_min[ai];
+	float max_value = attribute_max[ai];
+	if (axis_log_scale[ai] != 0) {
+		min_value = tick_space_from_attribute_space(ai, min_value);
+		max_value = tick_space_from_attribute_space(ai, max_value);
+	}
+	return value * (max_value - min_value) + min_value;
+}
+vec3 plot_space_from_window_space(vec3 pnt)
+{
+	return extent * (pnt - 0.5f);
+}
+vec3 window_space_from_plot_space(vec3 pnt)
+{
+	return pnt / extent + 0.5f;
+}
+vec3 world_space_from_plot_space(vec3 pnt)
+{
+	return center_location + rotate_vector_with_quaternion(pnt + vec3(0.0, 0.0, feature_offset), orientation);
+}
+
+vec3 map_color(in float v, int idx = 0)
+{
+	return color_scale(color_scale_gamma_mapping(v, color_scale_gamma[idx], idx), idx);
+}
+
+vec3 map_color(in float attributes[8], in vec3 base_color, int idx = 0)
+{
+	if (idx >= MAX_NR_COLOR_MAPPINGS || color_mapping[idx] < 0 || color_mapping[idx] > 7)
+		return base_color;
+	// simple window transform
+	float v = window_space_from_tick_space(color_mapping[idx],
+				tick_space_from_attribute_space(color_mapping[idx], attributes[color_mapping[idx]]));
+	return map_color(v,idx);
+}
+
+float opacity_gamma_mapping(in float v, in float gamma, int idx = 0)
+{
+	if (opacity_is_bipolar[idx] != 0) {
+		float amplitude = max(opacity_window_zero_position[idx], 1.0 - opacity_window_zero_position[idx]);
+		if (v < opacity_window_zero_position[idx])
+			return opacity_window_zero_position[idx] - pow((opacity_window_zero_position[idx] - v) / amplitude, gamma) * amplitude;
+		else
+			return pow((v - opacity_window_zero_position[idx]) / amplitude, gamma) * amplitude + opacity_window_zero_position[idx];
 	}
 	else
-		return (val - 0.5*(min_val+max_val)) / (max_val - min_val);
+		return pow(v, gamma);
 }
 
-vec3 map_plot_to_plot3(in vec2 pnt)
+float map_opacity(in float v, int idx = 0)
 {
-	return extent * vec3(
-		compute_delta(pnt.x, domain_min_pnt.x, domain_max_pnt.x, x_axis_log_scale),
-		compute_delta(pnt.y, domain_min_pnt.y, domain_max_pnt.y, y_axis_log_scale), 0.0);
+	return (opacity_min[idx] + (opacity_max[idx] - opacity_min[idx])) * opacity_gamma_mapping(v, opacity_gamma[idx], idx);
 }
 
-vec4 map_plot_to_world(in vec2 pnt)
+float map_opacity(in float attributes[8], in float base_opacity, int idx = 0)
 {
-	return vec4(center_location + rotate_vector_with_quaternion(map_plot_to_plot3(pnt) + vec3(0.0, 0.0, feature_offset), orientation), 1.0);
+	if (idx >= MAX_NR_OPACITY_MAPPINGS || opacity_mapping[idx] < 0 || opacity_mapping[idx] > 7)
+		return base_opacity;
+	// simple window transform
+	float v = window_space_from_tick_space(opacity_mapping[idx],
+		tick_space_from_attribute_space(opacity_mapping[idx], attributes[opacity_mapping[idx]]));
+	return map_opacity(v, idx) * base_opacity;
 }
 
-vec4 map_plot_to_eye(in vec2 pnt)
+float map_size(in float v, int idx)
 {
-	return get_modelview_matrix() * map_plot_to_world(pnt);
+	return ((size_max[idx] - size_min[idx]) * pow(v, size_gamma[idx]) + size_min[idx]);
 }
 
-vec4 map_plot_to_screen(in vec2 pnt)
+float map_size(in float attributes[8], in float base_size, int idx)
 {
-	return get_modelview_projection_matrix() * map_plot_to_world(pnt);
+	if (idx >= MAX_NR_SIZE_MAPPINGS || size_mapping[idx] < 0 || size_mapping[idx] > 7)
+		return base_size;
+	// simple window transform
+	float v = window_space_from_tick_space(size_mapping[idx],
+		tick_space_from_attribute_space(size_mapping[idx], attributes[size_mapping[idx]]));
+	return map_size(v, idx) * base_size;
 }
-
-vec3 map_plot_to_plot3(in vec3 pnt)
-{
-	return extent * vec3(
-		compute_delta(pnt.x, domain_min_pnt.x, domain_max_pnt.x, x_axis_log_scale),
-		compute_delta(pnt.y, domain_min_pnt.y, domain_max_pnt.y, y_axis_log_scale),
-		compute_delta(pnt.z, domain_min_pnt.z, domain_max_pnt.z, z_axis_log_scale));
-}
-
-vec4 map_plot_to_world3(in vec3 pnt)
-{
-	return vec4(center_location + rotate_vector_with_quaternion(map_plot_to_plot3(pnt), orientation), 1.0);
-}
-
-vec4 map_plot_to_eye3(in vec3 pnt)
-{
-	return get_modelview_matrix() * map_plot_to_world3(pnt);
-}
-
-vec4 map_plot_to_screen3(in vec3 pnt)
-{
-	return get_modelview_projection_matrix() * map_plot_to_world3(pnt);
-}
-
