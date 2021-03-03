@@ -27,7 +27,7 @@ domain_config::domain_config(unsigned nr_axes) : color(0.85f,0.85f,0.85f), axis_
 	reference_size = 0.001f;
 	blend_width_in_pixel = 1.0f;
 	label_font_index = -1;
-	label_font_size = 16.0f;
+	label_font_size = 24.0f;
 	label_ffa = cgv::media::font::FFA_BOLD_ITALIC;
 }
 

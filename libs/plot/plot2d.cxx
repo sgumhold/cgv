@@ -3,6 +3,7 @@
 #include <cgv/media/color_scale.h>
 #include <cgv/render/attribute_array_binding.h>
 #include <cgv/math/ftransform.h>
+#include <libs/tt_gl_font/tt_gl_font.h>
 
 namespace cgv {
 	namespace plot {
@@ -151,7 +152,6 @@ void plot2d::draw_sub_plots(cgv::render::context& ctx)
 	if (view_ptr)
 		y_view_angle = view_ptr->get_y_view_angle();
 	float pixel_extent_per_depth = (float)(2.0 * tan(0.5 * 0.0174532925199 * y_view_angle) / ctx.get_height());
-
 	glDisable(GL_CULL_FACE);
 	{
 		// prepare rectangle program to draw bar and stick plots
@@ -159,7 +159,7 @@ void plot2d::draw_sub_plots(cgv::render::context& ctx)
 		set_mapping_uniforms(ctx, rectangle_prog);
 		// configure geometry shader
 		rectangle_prog.set_uniform(ctx, "pixel_blend", 1.0f);
-		rectangle_prog.set_uniform(ctx, "pixel_extent_per_depth", pixel_extent_per_depth);
+		rectangle_prog.set_uniform(ctx, "viewport_height", (float)ctx.get_height());
 		// configure fragment shader
 		rectangle_prog.set_uniform(ctx, "use_texture", false);
 		// configure side shader
@@ -300,7 +300,7 @@ void plot2d::draw_sub_plots(cgv::render::context& ctx)
 		point_prog.set_uniform(ctx, "blend_width_in_pixel", get_domain_config_ptr()->blend_width_in_pixel);
 		point_prog.set_uniform(ctx, "halo_width_in_pixel", 0.0f);
 		point_prog.set_uniform(ctx, "percentual_halo_width", spc.point_halo_width.size/spc.point_size.size);
-		point_prog.set_uniform(ctx, "pixel_extent_per_depth", pixel_extent_per_depth);
+		point_prog.set_uniform(ctx, "viewport_height", (float)ctx.get_height());
 		point_prog.set_uniform(ctx, "measure_point_size_in_pixel", false);
 		point_prog.set_uniform(ctx, "screen_aligned", false);
 		point_prog.set_uniform(ctx, "color_index", spc.point_color.color_idx);
@@ -367,6 +367,7 @@ void plot2d::draw_domain(cgv::render::context& ctx)
 	for (unsigned ti = 0; ti < 2; ++ti) {
 		for (unsigned ai = 0; ai < 2; ++ai) {
 			axis_config& ac = get_domain_config_ptr()->axis_configs[ai];
+			float acw = 1.5f * ac.line_width * get_domain_config_ptr()->reference_size;
 			axis_config& ao = get_domain_config_ptr()->axis_configs[1 - ai];
 			tick_config& tc = ti == 0 ? ac.primary_ticks : ac.secondary_ticks;
 			if (tc.type == TT_NONE)
@@ -393,6 +394,9 @@ void plot2d::draw_domain(cgv::render::context& ctx)
 				// ignore secondary ticks on axes
 				if (fabs(c_attr) < std::numeric_limits<float>::epsilon())
 					continue;
+				// ignore secondary ticks on primary ticks
+				if (ti == 1 && fabs(fmod(c_tick, ac.primary_ticks.step)) < 0.00001f)
+					continue;
 				std::string label_str;
 				if (tc.label)
 					label_str = cgv::utils::to_string(c_attr);
@@ -407,15 +411,23 @@ void plot2d::draw_domain(cgv::render::context& ctx)
 					R.push_back(box2(mn, mx));
 					C.push_back(ac.color);
 					D.push_back(d);
-					if (!label_str.empty())
+					if (!label_str.empty()) {
+						mx[1 - ai] += acw;
 						tick_labels.push_back(label_info(mx.to_vec(), label_str, ai == 0 ? cgv::render::TA_BOTTOM : cgv::render::TA_LEFT));
+						if (ti == 1)
+							tick_labels.back().scale = 0.75f;
+					}
 					mn[1 - ai] = he - dl;
 					mx[1 - ai] = he;
 					R.push_back(box2(mn, mx));
 					C.push_back(ac.color);
 					D.push_back(d);
-					if (!label_str.empty())
+					if (!label_str.empty()) {
+						mn[1 - ai] -= acw;
 						tick_labels.push_back(label_info(mn.to_vec(), label_str, ai == 0 ? cgv::render::TA_TOP : cgv::render::TA_RIGHT));
+						if (ti == 1)
+							tick_labels.back().scale = 0.75f;
+					}
 					if (includes_zero) {
 						mn[1 - ai] = z_plot - dl;
 						mx[1 - ai] = z_plot + dl;
@@ -432,8 +444,16 @@ void plot2d::draw_domain(cgv::render::context& ctx)
 					C.push_back(ac.color);
 					D.push_back(d);
 					if (!label_str.empty()) {
-						tick_labels.push_back(label_info(mn.to_vec(), label_str, ai == 0 ? cgv::render::TA_TOP : cgv::render::TA_RIGHT));
-						tick_labels.push_back(label_info(mx.to_vec(), label_str, ai == 0 ? cgv::render::TA_BOTTOM : cgv::render::TA_LEFT));
+						mn[1 - ai] += acw;
+						mx[1 - ai] -= acw;
+						mn[ai] += 2.5f * lw;
+						mx[ai] += 2.5f * lw;
+						tick_labels.push_back(label_info(mx.to_vec(), label_str, cgv::render::TextAlignment(ai == 0 ? cgv::render::TA_TOP+cgv::render::TA_LEFT : cgv::render::TA_RIGHT+cgv::render::TA_BOTTOM)));
+						if (ti == 1)
+							tick_labels.back().scale = 0.75f;
+						tick_labels.push_back(label_info(mn.to_vec(), label_str, cgv::render::TextAlignment(ai == 0 ? cgv::render::TA_BOTTOM+cgv::render::TA_LEFT : cgv::render::TA_LEFT+ cgv::render::TA_BOTTOM)));
+						if (ti == 1)
+							tick_labels.back().scale = 0.75f;
 					}
 					break;
 				}
@@ -452,16 +472,57 @@ void plot2d::draw_domain(cgv::render::context& ctx)
 
 void plot2d::draw_tick_labels(cgv::render::context& ctx)
 {
-	if (tick_labels.empty())
+	if (tick_labels.empty() || label_font_face.empty())
 		return;
-	for (const auto& tbc : tick_batches) if (tbc.label_count > 0) {
-		ctx.set_color(get_domain_config_ptr()->axis_configs[tbc.ai].color);
-		for (unsigned i = tbc.first_label; i < tbc.first_label + tbc.label_count; ++i) {
-			const label_info& li = tick_labels[i];
-			ctx.set_cursor(li.position, li.label, li.align);
-			ctx.output_stream() << li.label;
-			ctx.output_stream().flush();
+	cgv::tt_gl_font_face_ptr ff = label_font_face.up_cast<cgv::tt_gl_font_face>();
+	if (!ff) {
+		ctx.enable_font_face(label_font_face, get_domain_config_ptr()->label_font_size);
+		for (const auto& tbc : tick_batches) if (tbc.label_count > 0) {
+			ctx.set_color(get_domain_config_ptr()->axis_configs[tbc.ai].color);
+			for (unsigned i = tbc.first_label; i < tbc.first_label + tbc.label_count; ++i) {
+				const label_info& li = tick_labels[i];
+				ctx.set_cursor(li.position, li.label, li.align);
+				ctx.output_stream() << li.label;
+				ctx.output_stream().flush();
+			}
 		}
+		return;
+	}
+	else {
+		float rs = 0.05f*get_domain_config_ptr()->reference_size;
+		ff->enable(&ctx, 20*get_domain_config_ptr()->label_font_size);
+		std::vector<cgv::render::textured_rectangle> Q;
+		std::vector<rgba> C;
+		for (const auto& tbc : tick_batches) if (tbc.label_count > 0) {
+			for (unsigned i = tbc.first_label; i < tbc.first_label + tbc.label_count; ++i) {
+				const label_info& li = tick_labels[i];
+				vec2 pos = vec2::from_vec(li.position);
+				pos = ff->align_text(pos, li.label, li.align, li.scale*rs, true);
+				unsigned cnt = ff->text_to_quads(pos, li.label, Q, li.scale*rs, true);
+				for (unsigned i = 0; i < cnt; ++i)
+					C.push_back(get_domain_config_ptr()->axis_configs[tbc.ai].color);
+			}
+		}
+		vec2 p(0.0f,0.1f);
+		for (int i = 0; i < get_nr_sub_plots(); ++i) {
+			auto& spc = ref_sub_plot2d_config(i);
+			vec2 pos = ff->align_text(p, spc.name, cgv::render::TA_NONE, 1.3f * rs, true);
+			unsigned cnt = ff->text_to_quads(pos, spc.name, Q, 1.3f * rs, true);
+			for (unsigned i = 0; i < cnt; ++i)
+				C.push_back(rgb(spc.ref_color.color[0], spc.ref_color.color[1], spc.ref_color.color[2]));
+			p[1] -= 1.3f * rs*20*get_domain_config_ptr()->label_font_size;
+		}
+		if (Q.empty())
+			return;
+		auto& rr = cgv::render::ref_rectangle_renderer(ctx);
+		cgv::render::rectangle_render_style rrs = cgv::ref_rectangle_render_style();
+		rrs.default_depth_offset = -4 * layer_depth;
+		rr.set_render_style(rrs);
+		rr.set_textured_rectangle_array(ctx, Q);
+		rr.set_color_array(ctx, C);
+		ff->ref_texture(ctx).enable(ctx);
+		rr.render(ctx, 0, Q.size());
+		ff->ref_texture(ctx).disable(ctx);
 	}
 }
 
@@ -486,7 +547,6 @@ void plot2d::draw(cgv::render::context& ctx)
 	ctx.mul_modelview_matrix(cgv::math::translate4<float>(center_location) * R);
 	if (get_domain_config_ptr()->show_domain) {
 		draw_domain(ctx);
-		ctx.enable_font_face(label_font_face, get_domain_config_ptr()->label_font_size);
 		draw_tick_labels(ctx);
 	}
 	if (legend_components != LC_HIDDEN)
