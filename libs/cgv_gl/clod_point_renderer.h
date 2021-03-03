@@ -75,6 +75,8 @@ namespace cgv {
 			
 			bool disable(context& ctx);
 
+			void clear(const cgv::render::context& ctx) override;
+
 			/// @param use_strips : unused
 			/// @param use_adjacency : unused
 			/// @param strip_restart_index : unused
@@ -91,6 +93,7 @@ namespace cgv {
 
 			void set_positions(context& ctx, const std::vector<vec3>& positions);
 
+			// set point colors
 			template<typename T>
 			void set_colors(const context& ctx, const std::vector<T>& colors) {				
 				for (int i = 0; i < input_buffer_data.size(); ++i) {
@@ -99,6 +102,7 @@ namespace cgv {
 				buffers_outofdate = true;
 			}
 
+			// add lod information for each point
 			template<typename T>
 			void set_lods(const std::vector<T>& lod) {
 				//input_buffer_data.resize(lod.size());
@@ -108,13 +112,15 @@ namespace cgv {
 				buffers_outofdate = true;
 			}
 
+			
+
 			uint8_t& point_lod(const int i);
 			rgb8& point_color(const int i);
 			vec3& point_position(const int i);
 		private:
 			void add_shader(context& ctx, shader_program& prog, const std::string& sf, const cgv::render::ShaderType st);
 			void fill_buffers(context& ctx);
-			void clear_buffers(context& ctx);
+			void clear_buffers(const context& ctx);
 		};
 
 		class octree_lod_generator : public render_types {

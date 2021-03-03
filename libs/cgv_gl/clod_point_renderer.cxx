@@ -67,9 +67,9 @@ namespace {
 
 		struct PoolTask {
 			//Task* task;
-			std::function<void()> task;
+			std::function<void(int)> task;
 			std::atomic_int remaining; //threads not finished yet
-			PoolTask(const std::function<void()>& t, const int num_threads) : task(t), remaining(num_threads) {}
+			PoolTask(const std::function<void(int)>& t, const int num_threads) : task(t), remaining(num_threads) {}
 		};
 
 		SenseReversingBarrier barrier_pre;
@@ -89,12 +89,12 @@ namespace {
 			join_all();
 		}
 
-		//collectiv task execution, calling thread also runs the task
+		//collectiv task execution. calling thread also runs the task and is getting a thread id assigned
 		template<typename F>
 		void run(F func) {
 			//no lock required since the calling threads is the only accessing thread
-			current_task = std::make_unique<PoolTask>(std::move(std::function<void()>(func)), (int)threads.size() + 1);
-			worker_kernel(current_task.get(), -1, false);
+			current_task = std::make_unique<PoolTask>(std::move(std::function<void(int)>(func)), (int)threads.size() + 1);
+			worker_kernel(current_task.get(), threads.size(), false);
 		}
 
 	protected:
@@ -144,7 +144,7 @@ namespace {
 
 			//run any existing task
 			if (ptask) {
-				ptask->task();
+				ptask->task(thread_id);
 				//threads resynchronize on this barrier prior marking the Task as done
 				barrier_post.await([this]() {
 					current_task = nullptr;
@@ -153,6 +153,8 @@ namespace {
 			}
 		} while (is_pool_member);
 	}
+
+	static WorkerPool pool(std::thread::hardware_concurrency() - 1);
 }
 //**
 
@@ -535,8 +537,8 @@ namespace cgv {
 				num_read += batch_size;
 			}
 
-			WorkerPool pool(std::thread::hardware_concurrency()-1);
-			pool.run([&tasks]() {tasks(); });
+			//WorkerPool pool(std::thread::hardware_concurrency()-1);
+			pool.run([&tasks](int thread_id) {tasks(); });
 			
 			/*for (auto& t : threads)
 				t.join();
@@ -1303,13 +1305,57 @@ namespace cgv {
 		void clod_point_renderer::generate_lods_poisson()
 		{
 			static constexpr int mean = 8;
-			
-			
-			std::poisson_distribution<int> dist(8);
-			std::random_device rdev;
+			bool run_parralel = (input_buffer_data.size() > 10'000);
 
-			for (auto& v : input_buffer_data) {
-				v.level = std::min(2*mean,std::max(0,mean - abs(dist(rdev)-mean)));
+			if (run_parralel) {
+
+				struct Task {
+					Point* start;
+					int num_points;
+				};
+				struct Tasks {
+					std::atomic_int next_task = 0;
+					std::vector<Task> task;
+				} tasks;
+
+				int64_t points_distributed = 0;
+				int64_t points_total = input_buffer_data.size();
+				constexpr int64_t batch_size = 500000;
+
+				while (points_distributed < points_total) {
+					int64_t batch = std::min(batch_size, points_total - points_distributed);
+					tasks.task.push_back({ &input_buffer_data[points_distributed],(int)batch });
+					points_distributed += batch;
+				}
+
+				pool.run([this, &tasks](int thread_id) {
+					std::poisson_distribution<int> dist(mean);
+					std::random_device rdev;
+
+					while (true) {
+						//fetch task
+						int tid = tasks.next_task.fetch_add(1, std::memory_order_relaxed);
+						if (tid < tasks.task.size()) {
+							Task& task = tasks.task[tid];
+
+							Point* end = task.start + task.num_points;
+							for (Point* p = task.start; p < end; p++) {
+								p->level = std::min(2 * mean, std::max(0, mean - abs(dist(rdev) - mean)));
+							}
+						}
+						else {
+							return;
+						}
+					}
+					});
+			}
+			else {
+				std::poisson_distribution<int> dist(8);
+				std::random_device rdev;
+
+				for (auto& v : input_buffer_data) {
+					v.level = std::min(2 * mean, std::max(0, mean - abs(dist(rdev) - mean)));
+				}
 			}
 		}
 
@@ -1324,15 +1370,17 @@ namespace cgv {
 
 			// reset draw parameters
 			DrawParameters dp = DrawParameters();
-			glBindBuffer(GL_SHADER_STORAGE_BUFFER, draw_parameter_buffer);
-			glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(DrawParameters), &dp, GL_STREAM_DRAW);
+			//glBindBuffer(GL_SHADER_STORAGE_BUFFER, draw_parameter_buffer);
+			//glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(DrawParameters), &dp, GL_STREAM_DRAW);
+			//glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, sizeof(DrawParameters), &dp);
+			glNamedBufferSubData(draw_parameter_buffer, 0, sizeof(DrawParameters), &dp);
 			glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 			// reduce
 			reduce_prog.enable(ctx);
 			glBindBufferBase(GL_SHADER_STORAGE_BUFFER, drawp_pos, draw_parameter_buffer);
 			glBindBufferBase(GL_SHADER_STORAGE_BUFFER, render_pos, render_buffer);
 			glBindBufferBase(GL_SHADER_STORAGE_BUFFER, input_pos, input_buffer);
-			glDispatchCompute((input_buffer_data.size()/128)+1, 1, 1);
+			glDispatchCompute((input_buffer_data.size()/128)+1, 1, 1); //with NVIDIA cards this will spam notifications about buffer usage 
 
 			// synchronize
 			glMemoryBarrier(GL_ALL_BARRIER_BITS);
@@ -1458,15 +1506,22 @@ namespace cgv {
 
 		bool clod_point_renderer::disable(context& ctx)
 		{
-			/*
+			
 			const clod_point_render_style& srs = get_style<clod_point_render_style>();
 
 			if (!attributes_persist()) {
 				//TODO reset internal attributes
-			}
-			*/
 
+			}
+			
 			return true;
+		}
+
+		void clod_point_renderer::clear(const cgv::render::context& ctx)
+		{
+			reduce_prog.destruct(ctx);
+			draw_prog.destruct(ctx);
+			clear_buffers(ctx);
 		}
 
 		void clod_point_renderer::draw(context& ctx, size_t start, size_t count, bool use_strips, bool use_adjacency, uint32_t strip_restart_index)
@@ -1545,9 +1600,11 @@ namespace cgv {
 			
 			glBindBuffer(GL_SHADER_STORAGE_BUFFER, render_buffer);
 			glBufferData(GL_SHADER_STORAGE_BUFFER, input_buffer_data.size() * sizeof(Point), nullptr, GL_DYNAMIC_DRAW);
+			glBindBuffer(GL_SHADER_STORAGE_BUFFER, draw_parameter_buffer);
+			glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(DrawParameters), nullptr, GL_STREAM_DRAW);
 		}
 
-		void clod_point_renderer::clear_buffers(context& ctx)
+		void clod_point_renderer::clear_buffers(const context& ctx)
 		{
 			glDeleteBuffers(1, &input_buffer);
 			glDeleteBuffers(1, &render_buffer);
