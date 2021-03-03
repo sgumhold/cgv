@@ -113,12 +113,6 @@ void main()
 
 	// compute/set remaining outputs
 	vo.modelview = get_modelview_matrix();
-	mat4 M;
-	M[0] = vec4(1,0,0, 0.0);
-	M[1] = vec4(0,1,0, 0.0);
-	M[2] = vec4(0,0,1, 0.0);
-	M[3] = vec4(0.5*(bottom_plot+top_plot), 1.0);
-	vo.modelview *= M;
 
 	vo.normal_eye = get_normal_matrix()*vec3(0.0,0.0,1.0);
 	vo.depth_offset = depth_offset;

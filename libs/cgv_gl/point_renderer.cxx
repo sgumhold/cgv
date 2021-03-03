@@ -136,8 +136,7 @@ namespace cgv {
 				ref_prog().set_uniform(ctx, "screen_aligned", prs.screen_aligned);
 				ref_prog().set_uniform(ctx, "reference_point_size", reference_point_size);
 				ref_prog().set_uniform(ctx, "use_group_point_size", prs.use_group_point_size);
-				float pixel_extent_per_depth = (float)(2.0*tan(0.5*0.0174532925199*y_view_angle) / ctx.get_height());
-				ref_prog().set_uniform(ctx, "pixel_extent_per_depth", pixel_extent_per_depth);
+				ref_prog().set_uniform(ctx, "viewport_height", (float)ctx.get_height());
 				ref_prog().set_uniform(ctx, "blend_width_in_pixel", prs.blend_width_in_pixel);
 				ref_prog().set_uniform(ctx, "percentual_halo_width", 0.01f*prs.percentual_halo_width);
 				ref_prog().set_uniform(ctx, "halo_width_in_pixel", prs.halo_width_in_pixel);

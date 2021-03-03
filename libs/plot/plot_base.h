@@ -249,8 +249,9 @@ protected:
 		vecn position;
 		std::string label;
 		cgv::render::TextAlignment align;
+		float scale;
 		label_info(const vecn& _position, const std::string& _label, cgv::render::TextAlignment _align)
-			: position(_position), label(_label), align(_align) {}
+			: position(_position), label(_label), align(_align), scale(1.0f) {}
 	};
 	/// 
 	struct tick_batch_info
