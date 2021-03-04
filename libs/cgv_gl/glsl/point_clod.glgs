@@ -32,9 +32,18 @@ mat3 get_inverse_normal_matrix();
 //***** begin interface of splat.glsl ***********************************
 void prepare_splat(
 	in float reference_point_radius, in float pixel_extent,
+	in float blend_width_in_pixel, in float halo_width_in_pixel, in float percentual_halo_width,
 	out float percentual_core_size, out float percentual_point_size,
 	out float percentual_blend_width, out float percentual_splat_size);
 //***** end interface of surface.glsl ***********************************
+//old splat
+void prepare_splat(
+	in float reference_point_radius, in float pixel_extent,
+	out float percentual_core_size, out float percentual_point_size,
+	out float percentual_blend_width, out float percentual_splat_size) 
+{
+	prepare_splat(reference_point_radius,pixel_extent,0.0,0.0,0.0,percentual_core_size,percentual_point_size,percentual_blend_width,percentual_splat_size);
+}
 
 void emit_corner(in vec3 corner, in float u, in float v)
 {
