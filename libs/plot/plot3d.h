@@ -44,7 +44,6 @@ struct CGV_API plot3d_config : public plot_base_config
 /** The \c plot3d class draws 2d plots with potentially several sub plots of different plot configuration */
 class CGV_API plot3d : public plot_base
 {
-	cgv::render::shader_program prog;
 	cgv::render::shader_program tick_label_prog;
 	cgv::render::shader_program sphere_prog;
 	cgv::render::shader_program box_prog;

@@ -24,6 +24,9 @@ void plot2d_config::configure_chart(ChartType chart_type)
 /// construct empty plot with default domain [0..1,0..1]
 plot2d::plot2d(unsigned nr_attributes) : plot_base(2, nr_attributes)
 {
+	multi_y_axis_mode = false;
+	dz = 0.0f;
+
 	disable_depth_mask = false;
 	//legend_components = LC_ANY;
 	rrs.illumination_mode = cgv::render::IM_OFF;
@@ -142,186 +145,195 @@ void plot2d::clear(cgv::render::context& ctx)
 	rectangle_prog.destruct(ctx);
 }
 
-void plot2d::draw_sub_plots(cgv::render::context& ctx)
+bool plot2d::draw_point_plot(cgv::render::context& ctx, int i, int layer_idx)
 {
-	int layer_idx = 6;
-
-	// extract reference size rs and pixel extent per depth
-	float rs = get_domain_config_ptr()->reference_size;
-	double y_view_angle = 45.0f;
-	if (view_ptr)
-		y_view_angle = view_ptr->get_y_view_angle();
-	float pixel_extent_per_depth = (float)(2.0 * tan(0.5 * 0.0174532925199 * y_view_angle) / ctx.get_height());
-	glDisable(GL_CULL_FACE);
-	{
-		// prepare rectangle program to draw bar and stick plots
-		set_plot_uniforms(ctx, rectangle_prog);
-		set_mapping_uniforms(ctx, rectangle_prog);
-		// configure geometry shader
-		rectangle_prog.set_uniform(ctx, "pixel_blend", 1.0f);
-		rectangle_prog.set_uniform(ctx, "viewport_height", (float)ctx.get_height());
-		// configure fragment shader
-		rectangle_prog.set_uniform(ctx, "use_texture", false);
-		// configure side shader
-		rectangle_prog.set_uniform(ctx, "culling_mode", 0);
-		rectangle_prog.set_uniform(ctx, "map_color_to_material", 7);
-		rectangle_prog.set_uniform(ctx, "illumination_mode", 0);
+	// skip unvisible and empty sub plots
+	if (!ref_sub_plot2d_config(i).show_plot)
+		return false;
+	unsigned nr_attributes = (unsigned)attribute_sources[i].size();
+	GLsizei count = (GLsizei)set_attributes(ctx, i, samples);
+	if (count == 0)
+		return false;
+	const plot2d_config& spc = ref_sub_plot2d_config(i);
+	if (!(spc.show_points && point_prog.is_linked()))
+		return false;
+	set_default_attributes(ctx, point_prog, nr_attributes);
+	set_plot_uniforms(ctx, point_prog);
+	set_mapping_uniforms(ctx, point_prog);
+	point_prog.set_uniform(ctx, "depth_offset", -layer_idx * layer_depth);
+	point_prog.set_uniform(ctx, "reference_point_size", spc.point_size.size * get_domain_config_ptr()->reference_size);
+	point_prog.set_uniform(ctx, "blend_width_in_pixel", get_domain_config_ptr()->blend_width_in_pixel);
+	point_prog.set_uniform(ctx, "halo_width_in_pixel", 0.0f);
+	point_prog.set_uniform(ctx, "percentual_halo_width", spc.point_halo_width.size / spc.point_size.size);
+	point_prog.set_uniform(ctx, "viewport_height", (float)ctx.get_height());
+	point_prog.set_uniform(ctx, "measure_point_size_in_pixel", false);
+	point_prog.set_uniform(ctx, "screen_aligned", false);
+	point_prog.set_uniform(ctx, "color_index", spc.point_color.color_idx);
+	point_prog.set_uniform(ctx, "secondary_color_index", spc.point_halo_color.color_idx);
+	point_prog.set_uniform(ctx, "opacity_index", spc.point_color.opacity_idx);
+	point_prog.set_uniform(ctx, "secondary_opacity_index", spc.point_halo_color.opacity_idx);
+	point_prog.set_uniform(ctx, "size_index", spc.point_size.size_idx);
+	point_prog.set_uniform(ctx, "secondary_index", spc.point_halo_width.size_idx);
+	ctx.set_color(spc.point_color.color);
+	point_prog.set_attribute(ctx, "secondary_color", spc.point_halo_color.color);
+	point_prog.set_attribute(ctx, "size", spc.point_size.size);
+	point_prog.enable(ctx);
+	draw_sub_plot_samples(count, spc);
+	point_prog.disable(ctx);
+	return true;
+}
+bool plot2d::draw_line_plot(cgv::render::context& ctx, int i, int layer_idx)
+{
+	// skip unvisible and empty sub plots
+	if (!ref_sub_plot2d_config(i).show_plot)
+		return false;
+	unsigned nr_attributes = (unsigned)attribute_sources[i].size();
+	GLsizei count = (GLsizei)set_attributes(ctx, i, samples);
+	if (count == 0)
+		return false;
+	const plot2d_config& spc = ref_sub_plot2d_config(i);
+	if (!(spc.show_lines && prog.is_linked()))
+		return false;
+	//glLineWidth(spc.line_width.size);
+	set_default_attributes(ctx, prog, nr_attributes);
+	set_plot_uniforms(ctx, prog);
+	set_mapping_uniforms(ctx, prog);
+	prog.set_uniform(ctx, "feature_offset", 0.001f * get_extent().length());
+	prog.set_uniform(ctx, "color_index", spc.line_color.color_idx);
+	prog.set_uniform(ctx, "secondary_color_index", -1);
+	prog.set_uniform(ctx, "opacity_index", spc.line_color.opacity_idx);
+	prog.set_uniform(ctx, "secondary_opacity_index", -1);
+	prog.set_uniform(ctx, "size_index", spc.line_width.size_idx);
+	prog.set_attribute(ctx, "color", spc.line_color.color);
+	ctx.set_color(spc.line_color.color);
+	prog.enable(ctx);
+	if (strips[i].empty())
+		draw_sub_plot_samples(count, spc, true);
+	else {
+		unsigned fst = 0;
+		for (unsigned j = 0; j < strips[i].size(); ++j) {
+			glDrawArrays(GL_LINE_STRIP, fst, strips[i][j]);
+			fst += strips[i][j];
+		}
 	}
+	prog.disable(ctx);
+	return true;
+}
+bool plot2d::draw_stick_plot(cgv::render::context& ctx, int i, int layer_idx)
+{
+	// skip unvisible and empty sub plots
+	if (!ref_sub_plot2d_config(i).show_plot)
+		return false;
+	unsigned nr_attributes = (unsigned)attribute_sources[i].size();
+	GLsizei count = (GLsizei)set_attributes(ctx, i, samples);
+	if (count == 0)
+		return false;
+	const plot2d_config& spc = ref_sub_plot2d_config(i);
+	if (!(spc.show_sticks && stick_prog.is_linked()))
+		return false;
+
+	set_default_attributes(ctx, rectangle_prog, nr_attributes);
+	// configure vertex shader
+	rectangle_prog.set_uniform(ctx, "color_index", spc.stick_color.color_idx);
+	rectangle_prog.set_uniform(ctx, "secondary_color_index", -1);
+	rectangle_prog.set_uniform(ctx, "opacity_index", spc.stick_color.opacity_idx);
+	rectangle_prog.set_uniform(ctx, "secondary_opacity_index", -1);
+	rectangle_prog.set_uniform(ctx, "size_index", spc.stick_width.size_idx);
+	rectangle_prog.set_uniform(ctx, "secondary_size_index", -1);
+	rectangle_prog.set_uniform(ctx, "rectangle_base_window", spc.stick_base_window);
+	rectangle_prog.set_uniform(ctx, "rectangle_coordinate_index", spc.stick_coordinate_index);
+	rectangle_prog.set_uniform(ctx, "rectangle_border_width", 0.0f);
+	ctx.set_color(spc.stick_color.color);
+	rectangle_prog.set_attribute(ctx, "size", spc.stick_width.size * get_domain_config_ptr()->reference_size);
+	rectangle_prog.set_attribute(ctx, "depth_offset", -layer_idx * layer_depth);
+	// configure geometry shader
+	rectangle_prog.set_uniform(ctx, "border_mode", spc.stick_coordinate_index == 0 ? 2 : 1);
+
+	rectangle_prog.enable(ctx);
+	draw_sub_plot_samples(count, spc);
+	rectangle_prog.disable(ctx);
+	return true;
+}
+void plot2d::configure_bar_plot(cgv::render::context& ctx)
+{
+	// prepare rectangle program to draw bar and stick plots
+	set_plot_uniforms(ctx, rectangle_prog);
+	set_mapping_uniforms(ctx, rectangle_prog);
+	// configure geometry shader
+	rectangle_prog.set_uniform(ctx, "pixel_blend", 1.0f);
+	rectangle_prog.set_uniform(ctx, "viewport_height", (float)ctx.get_height());
+	// configure fragment shader
+	rectangle_prog.set_uniform(ctx, "use_texture", false);
+	// configure side shader
+	rectangle_prog.set_uniform(ctx, "culling_mode", 0);
+	rectangle_prog.set_uniform(ctx, "map_color_to_material", 7);
+	rectangle_prog.set_uniform(ctx, "illumination_mode", 0);
+}
+bool plot2d::draw_bar_plot(cgv::render::context& ctx, int i, int layer_idx)
+{
+	// skip unvisible and empty sub plots
+	if (!ref_sub_plot2d_config(i).show_plot)
+		return false;
+	unsigned nr_attributes = (unsigned)attribute_sources[i].size();
+	GLsizei count = (GLsizei)set_attributes(ctx, i, samples);
+	if (count == 0)
+		return false;
+	const plot2d_config& spc = ref_sub_plot2d_config(i);
+	if (!(spc.show_bars && rectangle_prog.is_linked()))
+		return false;
+	enable_attributes(ctx, nr_attributes);
+	set_default_attributes(ctx, rectangle_prog, nr_attributes);
+	// configure vertex shader
+	rectangle_prog.set_uniform(ctx, "color_index", spc.bar_color.color_idx);
+	rectangle_prog.set_uniform(ctx, "secondary_color_index", spc.bar_outline_color.color_idx);
+	rectangle_prog.set_uniform(ctx, "opacity_index", spc.bar_color.opacity_idx);
+	rectangle_prog.set_uniform(ctx, "secondary_opacity_index", spc.bar_outline_color.opacity_idx);
+	rectangle_prog.set_uniform(ctx, "size_index", spc.bar_percentual_width.size_idx);
+	rectangle_prog.set_uniform(ctx, "secondary_size_index", spc.bar_outline_width.size_idx);
+	rectangle_prog.set_uniform(ctx, "rectangle_base_window", spc.bar_base_window);
+	rectangle_prog.set_uniform(ctx, "rectangle_coordinate_index", spc.bar_coordinate_index);
+	rectangle_prog.set_uniform(ctx, "rectangle_border_width", spc.bar_outline_width.size * get_domain_config_ptr()->reference_size);
+	ctx.set_color(spc.bar_color.color);
+	rectangle_prog.set_attribute(ctx, "secondary_color", spc.bar_outline_color.color);
+	rectangle_prog.set_attribute(ctx, "size", get_extent()[0] / count * spc.bar_percentual_width.size);
+	rectangle_prog.set_attribute(ctx, "depth_offset", -layer_idx * layer_depth);
+	// configure geometry shader
+	rectangle_prog.set_uniform(ctx, "border_mode", spc.bar_coordinate_index == 0 ? 2 : 1);
+
+	rectangle_prog.enable(ctx);
+	draw_sub_plot_samples(count, spc);
+	rectangle_prog.disable(ctx);
+	disable_attributes(ctx, unsigned(attribute_sources[i].size()));
+	return true;
+}
+
+int plot2d::draw_sub_plots_jointly(cgv::render::context& ctx, int layer_idx)
+{
 	// first draw all bar plots
 	unsigned i;
 	for (i = 0; i < get_nr_sub_plots(); ++i) {
-		// skip unvisible and empty sub plots
-		if (!ref_sub_plot2d_config(i).show_plot)
-			continue;
-		unsigned nr_attributes = (unsigned)attribute_sources[i].size();
-		GLsizei count = (GLsizei)set_attributes(ctx, i, samples);
-		if (count == 0)
-			continue;
-		const plot2d_config& spc = ref_sub_plot2d_config(i);
-		if (!(spc.show_bars && rectangle_prog.is_linked()))
-			continue;
-		enable_attributes(ctx, nr_attributes);
-		set_default_attributes(ctx, rectangle_prog, nr_attributes);
-		// configure vertex shader
-		rectangle_prog.set_uniform(ctx, "color_index", spc.bar_color.color_idx);
-		rectangle_prog.set_uniform(ctx, "secondary_color_index", spc.bar_outline_color.color_idx);
-		rectangle_prog.set_uniform(ctx, "opacity_index", spc.bar_color.opacity_idx);
-		rectangle_prog.set_uniform(ctx, "secondary_opacity_index", spc.bar_outline_color.opacity_idx);
-		rectangle_prog.set_uniform(ctx, "size_index", spc.bar_percentual_width.size_idx);
-		rectangle_prog.set_uniform(ctx, "secondary_size_index", spc.bar_outline_width.size_idx);
-		rectangle_prog.set_uniform(ctx, "rectangle_base_window", spc.bar_base_window);
-		rectangle_prog.set_uniform(ctx, "rectangle_coordinate_index", spc.bar_coordinate_index);
-		rectangle_prog.set_uniform(ctx, "rectangle_border_width", spc.bar_outline_width.size * rs);
-		ctx.set_color(spc.bar_color.color);
-		rectangle_prog.set_attribute(ctx, "secondary_color", spc.bar_outline_color.color);
-		rectangle_prog.set_attribute(ctx, "size", get_extent()[0] / count * spc.bar_percentual_width.size);
-		rectangle_prog.set_attribute(ctx, "depth_offset", -layer_idx * layer_depth);
-		// configure geometry shader
-		rectangle_prog.set_uniform(ctx, "border_mode", spc.bar_coordinate_index == 0 ? 2 : 1);
-
-		rectangle_prog.enable(ctx);
-		draw_sub_plot_samples(count, spc);
-		rectangle_prog.disable(ctx);
-		disable_attributes(ctx, unsigned(attribute_sources[i].size()));
-
+		draw_bar_plot(ctx, i, layer_idx);
 		++layer_idx;
 	}
 	// next draw stick plots
 	for (i = 0; i < get_nr_sub_plots(); ++i) {
-		// skip unvisible and empty sub plots
-		if (!ref_sub_plot2d_config(i).show_plot)
-			continue;
-		unsigned nr_attributes = (unsigned)attribute_sources[i].size();
-		GLsizei count = (GLsizei)set_attributes(ctx, i, samples);
-		if (count == 0)
-			continue;
-		const plot2d_config& spc = ref_sub_plot2d_config(i);
-		if (!(spc.show_sticks && stick_prog.is_linked()))
-			continue;
-
-		set_default_attributes(ctx, rectangle_prog, nr_attributes);
-		// configure vertex shader
-		rectangle_prog.set_uniform(ctx, "color_index", spc.stick_color.color_idx);
-		rectangle_prog.set_uniform(ctx, "secondary_color_index", -1);
-		rectangle_prog.set_uniform(ctx, "opacity_index", spc.stick_color.opacity_idx);
-		rectangle_prog.set_uniform(ctx, "secondary_opacity_index", -1);
-		rectangle_prog.set_uniform(ctx, "size_index", spc.stick_width.size_idx);
-		rectangle_prog.set_uniform(ctx, "secondary_size_index", -1);
-		rectangle_prog.set_uniform(ctx, "rectangle_base_window", spc.stick_base_window);
-		rectangle_prog.set_uniform(ctx, "rectangle_coordinate_index", spc.stick_coordinate_index);
-		rectangle_prog.set_uniform(ctx, "rectangle_border_width", 0.0f);
-		ctx.set_color(spc.stick_color.color);
-		rectangle_prog.set_attribute(ctx, "size", spc.stick_width.size * rs);
-		rectangle_prog.set_attribute(ctx, "depth_offset", -layer_idx * layer_depth);
-		// configure geometry shader
-		rectangle_prog.set_uniform(ctx, "border_mode", spc.stick_coordinate_index == 0 ? 2 : 1);
-
-		rectangle_prog.enable(ctx);
-		draw_sub_plot_samples(count, spc);
-		rectangle_prog.disable(ctx);
-
+		draw_stick_plot(ctx, i, layer_idx);
 		++layer_idx;
 	}
 	// then we draw line plots
 	for (i = 0; i < get_nr_sub_plots(); ++i) {
-		// skip unvisible and empty sub plots
-		if (!ref_sub_plot2d_config(i).show_plot)
-			continue;
-		unsigned nr_attributes = (unsigned)attribute_sources[i].size();
-		GLsizei count = (GLsizei)set_attributes(ctx, i, samples);
-		if (count == 0)
-			continue;
-		const plot2d_config& spc = ref_sub_plot2d_config(i);
-		if (!(spc.show_lines && prog.is_linked()))
-			continue;
-		glLineWidth(spc.line_width.size);
-		set_default_attributes(ctx, prog, nr_attributes);
-		set_plot_uniforms(ctx, prog);
-		set_mapping_uniforms(ctx, prog);
-		prog.set_uniform(ctx, "feature_offset", 0.001f * get_extent().length());
-		prog.set_uniform(ctx, "color_index", spc.line_color.color_idx);
-		prog.set_uniform(ctx, "secondary_color_index", -1);
-		prog.set_uniform(ctx, "opacity_index", spc.line_color.opacity_idx);
-		prog.set_uniform(ctx, "secondary_opacity_index", -1);
-		prog.set_uniform(ctx, "size_index", spc.line_width.size_idx);
-		prog.set_attribute(ctx, "color", spc.line_color.color);
-		ctx.set_color(spc.line_color.color);
-		prog.enable(ctx);
-		if (strips[i].empty())
-			draw_sub_plot_samples(count, spc, true);
-		else {
-			unsigned fst = 0;
-			for (unsigned j = 0; j < strips[i].size(); ++j) {
-				glDrawArrays(GL_LINE_STRIP, fst, strips[i][j]);
-				fst += strips[i][j];
-			}
-		}
-		prog.disable(ctx);
-
+		draw_line_plot(ctx, i, layer_idx);
 		++layer_idx;
 	}
 	// finally draw point plots
 	for (i = 0; i < get_nr_sub_plots(); ++i) {
-		// skip unvisible and empty sub plots
-		if (!ref_sub_plot2d_config(i).show_plot)
-			continue;
-		unsigned nr_attributes = (unsigned)attribute_sources[i].size();
-		GLsizei count = (GLsizei)set_attributes(ctx, i, samples);
-		if (count == 0)
-			continue;
-		const plot2d_config& spc = ref_sub_plot2d_config(i);
-		if (!(spc.show_points && point_prog.is_linked()))
-			continue;
-		set_default_attributes(ctx, point_prog, nr_attributes);
-		set_plot_uniforms(ctx, point_prog);
-		set_mapping_uniforms(ctx, point_prog);
-		point_prog.set_uniform(ctx, "depth_offset", -layer_idx*layer_depth);
-		point_prog.set_uniform(ctx, "reference_point_size", spc.point_size.size*rs);
-		point_prog.set_uniform(ctx, "blend_width_in_pixel", get_domain_config_ptr()->blend_width_in_pixel);
-		point_prog.set_uniform(ctx, "halo_width_in_pixel", 0.0f);
-		point_prog.set_uniform(ctx, "percentual_halo_width", spc.point_halo_width.size/spc.point_size.size);
-		point_prog.set_uniform(ctx, "viewport_height", (float)ctx.get_height());
-		point_prog.set_uniform(ctx, "measure_point_size_in_pixel", false);
-		point_prog.set_uniform(ctx, "screen_aligned", false);
-		point_prog.set_uniform(ctx, "color_index", spc.point_color.color_idx);
-		point_prog.set_uniform(ctx, "secondary_color_index", spc.point_halo_color.color_idx);
-		point_prog.set_uniform(ctx, "opacity_index", spc.point_color.opacity_idx);
-		point_prog.set_uniform(ctx, "secondary_opacity_index", spc.point_halo_color.opacity_idx);
-		point_prog.set_uniform(ctx, "size_index", spc.point_size.size_idx);
-		point_prog.set_uniform(ctx, "secondary_index", spc.point_halo_width.size_idx);
-		ctx.set_color(spc.point_color.color);
-		point_prog.set_attribute(ctx, "secondary_color", spc.point_halo_color.color);
-		point_prog.set_attribute(ctx, "size", spc.point_size.size);
-		point_prog.enable(ctx);
-		draw_sub_plot_samples(count, spc);
-		point_prog.disable(ctx);
-
+		draw_point_plot(ctx, i, layer_idx);
 		++layer_idx;
 	}
-	glEnable(GL_CULL_FACE);
+	return layer_idx;
 }
 
-void plot2d::draw_domain(cgv::render::context& ctx)
+void plot2d::draw_domain(cgv::render::context& ctx, int si, bool no_fill)
 {
 	tick_labels.clear();
 	tick_batches.clear();
@@ -330,7 +342,7 @@ void plot2d::draw_domain(cgv::render::context& ctx)
 	std::vector<float> D; D.resize(5);
 	vec2 extent = vec2::from_vec(get_extent());
 	float rs = get_domain_config_ptr()->reference_size;
-	if (get_domain_config_ptr()->fill) {
+	if (get_domain_config_ptr()->fill && !no_fill) {
 		R[0] = box2(-0.5f * extent, 0.5f * extent);
 		C[0] = get_domain_config_ptr()->color;
 		D[0] = 0.0f;
@@ -466,15 +478,15 @@ void plot2d::draw_domain(cgv::render::context& ctx)
 	rr.set_rectangle_array(ctx, R);
 	rr.set_color_array(ctx, C);
 	rr.set_depth_offset_array(ctx, D);
-	size_t offset = get_domain_config_ptr()->fill ? 0 : 1;
+	size_t offset = (get_domain_config_ptr()->fill && !no_fill) ? 0 : 1;
 	rr.render(ctx, offset, R.size()-offset);
 }
 
-void plot2d::draw_tick_labels(cgv::render::context& ctx)
+void plot2d::draw_tick_labels(cgv::render::context& ctx, int si)
 {
 	if (tick_labels.empty() || label_font_face.empty())
 		return;
-	cgv::tt_gl_font_face_ptr ff = label_font_face.up_cast<cgv::tt_gl_font_face>();
+	cgv::tt_gl_font_face_ptr ff = dynamic_cast<cgv::tt_gl_font_face*>(&(*label_font_face));
 	if (!ff) {
 		ctx.enable_font_face(label_font_face, get_domain_config_ptr()->label_font_size);
 		for (const auto& tbc : tick_batches) if (tbc.label_count > 0) {
@@ -489,8 +501,8 @@ void plot2d::draw_tick_labels(cgv::render::context& ctx)
 		return;
 	}
 	else {
-		float rs = 0.05f*get_domain_config_ptr()->reference_size;
-		ff->enable(&ctx, 20*get_domain_config_ptr()->label_font_size);
+		float rs = 0.2f*get_domain_config_ptr()->reference_size;
+		ff->enable(&ctx, 5*get_domain_config_ptr()->label_font_size);
 		std::vector<cgv::render::textured_rectangle> Q;
 		std::vector<rgba> C;
 		for (const auto& tbc : tick_batches) if (tbc.label_count > 0) {
@@ -503,14 +515,14 @@ void plot2d::draw_tick_labels(cgv::render::context& ctx)
 					C.push_back(get_domain_config_ptr()->axis_configs[tbc.ai].color);
 			}
 		}
-		vec2 p(0.0f,0.1f);
-		for (int i = 0; i < get_nr_sub_plots(); ++i) {
-			auto& spc = ref_sub_plot2d_config(i);
+		if (si != -1) {
+			vec2 p(0.0f, 0.1f);
+			auto& spc = ref_sub_plot2d_config(si);
 			vec2 pos = ff->align_text(p, spc.name, cgv::render::TA_NONE, 1.3f * rs, true);
 			unsigned cnt = ff->text_to_quads(pos, spc.name, Q, 1.3f * rs, true);
 			for (unsigned i = 0; i < cnt; ++i)
 				C.push_back(rgb(spc.ref_color.color[0], spc.ref_color.color[1], spc.ref_color.color[2]));
-			p[1] -= 1.3f * rs*20*get_domain_config_ptr()->label_font_size;
+			p[1] -= 1.3f * rs * 20 * get_domain_config_ptr()->label_font_size;
 		}
 		if (Q.empty())
 			return;
@@ -528,41 +540,82 @@ void plot2d::draw_tick_labels(cgv::render::context& ctx)
 
 void plot2d::draw(cgv::render::context& ctx)
 {
-	GLboolean line_smooth = glIsEnabled(GL_LINE_SMOOTH); glEnable(GL_LINE_SMOOTH);
-	GLboolean point_smooth = glIsEnabled(GL_POINT_SMOOTH); glEnable(GL_POINT_SMOOTH);
-	GLboolean blend = glIsEnabled(GL_BLEND); glEnable(GL_BLEND);
+	// store to be changed opengl state
+	GLboolean line_smooth = glIsEnabled(GL_LINE_SMOOTH); 
+	GLboolean blend = glIsEnabled(GL_BLEND); 
+	GLboolean cull_face = glIsEnabled(GL_CULL_FACE);
 	GLenum blend_src, blend_dst, depth;
 	glGetIntegerv(GL_BLEND_DST, reinterpret_cast<GLint*>(&blend_dst));
 	glGetIntegerv(GL_BLEND_SRC, reinterpret_cast<GLint*>(&blend_src));
 	glGetIntegerv(GL_DEPTH_FUNC, reinterpret_cast<GLint*>(&depth));
 
+	// update state
+	glEnable(GL_LINE_SMOOTH);
+	glDisable(GL_CULL_FACE);
+	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glDepthFunc(GL_LEQUAL);
 	if (disable_depth_mask)
 		glDepthMask(GL_FALSE);
 
+	// place plot with modelview matrix
 	ctx.push_modelview_matrix();
 	mat4 R;
 	orientation.put_homogeneous_matrix(R);
 	ctx.mul_modelview_matrix(cgv::math::translate4<float>(center_location) * R);
-	if (get_domain_config_ptr()->show_domain) {
-		draw_domain(ctx);
-		draw_tick_labels(ctx);
-	}
-	if (legend_components != LC_HIDDEN)
-		draw_legend(ctx, -5 * layer_depth);
 
-	draw_sub_plots(ctx);
+	// configure bar prog only once
+	configure_bar_plot(ctx);
+	// draw all subplots jointly in one plane
+	if (dz == 0.0f) {
+		if (get_domain_config_ptr()->show_domain) {
+			draw_domain(ctx);
+			draw_tick_labels(ctx);
+		}
+		if (legend_components != LC_HIDDEN)
+			draw_legend(ctx, -5 * layer_depth);
+		draw_sub_plots_jointly(ctx, 6);
+	}
+	// draw subplots with offset in back to front order
+	else {
+		auto M = ctx.get_modelview_matrix();
+		double plot_pos_eye_z = M(2, 3);
+		double plot_z_eye_z = M(2, 2);
+		int i_begin = 0, i_end = get_nr_sub_plots(), i_delta = 1;
+		// check if we can not use default order
+		if (plot_pos_eye_z * plot_z_eye_z * dz > 0) {
+			i_begin = i_end - 1;
+			i_end = -1;
+			i_delta = -1;
+			ctx.mul_modelview_matrix(cgv::math::translate4<float>(vec3(0, 0, (get_nr_sub_plots()-1) * dz)));
+		}
+		// traverse all subplots in back to front order
+		bool fst = true;
+		for (int i = i_begin; i != i_end; i += i_delta) {
+			if (get_domain_config_ptr()->show_domain) {
+				draw_domain(ctx, i, !fst);
+				draw_tick_labels(ctx, i);
+			}
+			if (legend_components != LC_HIDDEN)
+				draw_legend(ctx, -5 * layer_depth);
+			draw_bar_plot(ctx, i, 6);
+			draw_stick_plot(ctx, i, 7);
+			draw_line_plot(ctx, i, 8);
+			draw_point_plot(ctx, i, 9);
+			ctx.mul_modelview_matrix(cgv::math::translate4<float>(vec3(0, 0, i_delta*dz)));
+			fst = false;
+		}
+	}
 
 	ctx.pop_modelview_matrix();
 
-
+	// recover opengl state
 	if (!line_smooth)
 		glDisable(GL_LINE_SMOOTH);
-	if (!point_smooth)
-		glDisable(GL_POINT_SMOOTH);
 	if (!blend)
 		glDisable(GL_BLEND);
+	if (cull_face)
+		glEnable(GL_CULL_FACE);
 	glDepthFunc(depth);
 	glBlendFunc(blend_src, blend_dst);
 	if (disable_depth_mask)
@@ -598,6 +651,8 @@ void plot2d::create_config_gui(cgv::base::base* bp, cgv::gui::provider& p, unsig
 void plot2d::create_gui(cgv::base::base* bp, cgv::gui::provider& p)
 {
 	p.add_decorator("plot2d", "heading");
+	p.add_member_control(bp, "multi_y_axis_mode", multi_y_axis_mode, "toggle");
+	p.add_member_control(bp, "dz", dz, "value_slider", "min=-1;max=1;step=0.1;ticks=true");
 	plot_base::create_gui(bp, p);
 	p.add_member_control(bp, "disable_depth_mask", disable_depth_mask, "toggle");
 	if (p.begin_tree_node("rectangle", rrs, false, "level=3")) {

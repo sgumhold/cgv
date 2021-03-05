@@ -274,12 +274,12 @@ namespace cgv {
 		if (tex_ptr->is_created() && tex_ptr->get_width() != bitmap_width || tex_ptr->get_height() != bitmap_height)
 			tex_ptr->destruct(ctx);
 		ctx_ptr = &ctx;
-		cgv::data::data_format df(bitmap_width, bitmap_height, cgv::type::info::TI_UINT8, cgv::data::CF_L);
+		cgv::data::data_format df(bitmap_width, bitmap_height, cgv::type::info::TI_UINT8, cgv::data::CF_R);
 		cgv::data::data_view dv(&df, bitmap.data());
-		if (tex_ptr->is_created())
-			tex_ptr->replace(ctx, 0, 0, dv);
-		else
-			tex_ptr->create(ctx, dv);
+		if (!tex_ptr->is_created())
+			tex_ptr->create(ctx, cgv::render::TT_2D, bitmap_width, bitmap_height);
+		tex_ptr->replace(ctx, 0, 0, dv);
+		
 		tex_ptr->generate_mipmaps(ctx);
 		tex_out_of_date = false;
 	}
@@ -315,7 +315,7 @@ namespace cgv {
 		fst_char = 32;
 		nr_chars = 224;
 		ctx_ptr = 0;
-		tex_ptr = new cgv::render::texture();
+		tex_ptr = new cgv::render::texture("[R]");
 		tex_ptr->set_min_filter(cgv::render::TF_ANISOTROP, 8.0f);
 		if (!read_font(file_name, fi)) {
 			internal_ttf_buffer.clear();

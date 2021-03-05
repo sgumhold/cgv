@@ -1,4 +1,4 @@
-#version 150
+#version 330 core
 
 uniform int    color_scale_index[2] = { 7, 7 };
 uniform vec3   color_scale_samples[64];
@@ -9,10 +9,14 @@ uniform float  window_zero_position[2] = { 0.5, 0.5 };
 /*
 The following interface is implemented in this shader:
 //***** begin interface of color_scale.glsl ***********************************
-/// adjust value with a gamma mapping, which clamps value to [0,1] and accounts for window zero positions in case of bipolar color scales
-float color_scale_gamma_mapping(in float v, in float gamma, int idx = 0);
-/// map value with currently selected color scale to rgb color
-vec3 color_scale(in float v, int idx = 0);
+/// gamma adjust value after clamping to [0,1] and in case of uniform color_scale_is_bi_polar[0] accounting for uniform window_zero_position[0]
+float color_scale_gamma_mapping(in float v, in float gamma);
+/// gamma adjust value after clamping to [0,1] and in case of uniform color_scale_is_bi_polar[idx] accounting for uniform window_zero_position[idx]
+float color_scale_gamma_mapping(in float v, in float gamma, int idx);
+/// map value with color scale selected in uniform color_scale_index[idx=0|1] to rgb color
+vec3 color_scale(in float v, int idx);
+/// map value with color scale selected in uniform color_scale_index[0] to rgb color
+vec3 color_scale(in float v, int idx);
 //***** end interface of color_scale.glsl ***********************************
 */
 
@@ -98,6 +102,11 @@ float color_scale_gamma_mapping(in float v, in float gamma, int idx)
 		return pow(v, gamma);
 }
 
+float color_scale_gamma_mapping(in float v, in float gamma)
+{
+	return color_scale_gamma_mapping(v, gamma, 0);
+}
+
 void adjust_zero_position(inout float v, in float window_zero)
 {
 	// map v according to scale*v + offset to a new value such that attribute_zero_position maps to 0.5 
@@ -108,7 +117,7 @@ void adjust_zero_position(inout float v, in float window_zero)
 		v *= 0.5 / window_zero;
 }
 
-vec3 color_scale(in float v, int idx = 0)
+vec3 color_scale(in float v, int idx)
 {
 	if (color_scale_is_bipolar[idx] != 0)
 		adjust_zero_position(v, window_zero_position[idx]);
@@ -128,4 +137,9 @@ vec3 color_scale(in float v, int idx = 0)
 	case 7: return sampled_color_scale(v, idx);
 	}
 	return vec3(v, v, v);
+}
+
+vec3 color_scale(in float v)
+{
+	return color_scale(v, 0);
 }
