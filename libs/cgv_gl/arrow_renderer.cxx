@@ -35,8 +35,8 @@ namespace cgv {
 		void arrow_renderer::set_attribute_array_manager(const context& ctx, attribute_array_manager* _aam_ptr)
 		{
 			surface_renderer::set_attribute_array_manager(ctx, _aam_ptr);
-			if (aam_ptr) {
-				if (aam_ptr->has_attribute(ctx, ref_prog().get_attribute_location(ctx, "direction")))
+			if (has_aam()) {
+				if (has_attribute(ctx, "direction"))
 					has_directions = true;
 			}
 			else {
