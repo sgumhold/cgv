@@ -43,8 +43,17 @@ float tick_space_from_window_space(int ai, float value);
 vec3 plot_space_from_window_space(vec3 pnt);
 vec3 window_space_from_plot_space(vec3 pnt);
 vec3 world_space_from_plot_space(vec3 pnt);
-vec3 map_color(in float attributes[8], in vec3 base_color, int idx = 0);
-float map_opacity(in float attributes[8], in float base_opacity, int idx = 0);
+vec3 map_color(in float v_window, int idx);
+vec3 map_color(in float attributes[8], in vec3 base_color, int idx);
+float map_opacity(in float v_window, int idx);
+float map_opacity(in float attributes[8], in float base_opacity, int idx);
+float map_size(in float v_window, int idx);
+float map_size(in float attributes[8], in float base_size, int idx);
+vec3 map_color(in float v_window);
+vec3 map_color(in float attributes[8], in vec3 base_color);
+float map_opacity(in float v_window);
+float map_opacity(in float attributes[8], in float base_opacity);
+float map_size(in float v_window);
 float map_size(in float attributes[8], in float base_size);
 //***** end interface of plot_lib.glsl ***********************************
 

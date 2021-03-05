@@ -96,9 +96,33 @@ void Sub(in float a[5], in float b[5], out float o_c[5]) {
 	o_c[4] = a[4] - b[4];
 }
 
-float EvalPoly(float x, float c0, float c1 = 0, float c2 = 0, float c3 = 0, float c4 = 0, float c5 = 0, float c6 = 0)
+float EvalPoly(float x, float c0, float c1, float c2, float c3, float c4, float c5, float c6)
 {
 	return x * (x * (x * (x * (x * (x * c6 + c5) + c4) + c3) + c2) + c1) + c0;
+}
+float EvalPoly(float x, float c0, float c1, float c2, float c3, float c4, float c5)
+{
+	return EvalPoly(x, c0,c1,c2,c3,c4,c5,0.0);
+}
+float EvalPoly(float x, float c0, float c1, float c2, float c3, float c4)
+{
+	return EvalPoly(x, c0,c1,c2,c3,c4,0.0,0.0);
+}
+float EvalPoly(float x, float c0, float c1, float c2, float c3)
+{
+	return EvalPoly(x, c0,c1,c2,c3,0.0,0.0,0.0);
+}
+float EvalPoly(float x, float c0, float c1, float c2)
+{
+	return EvalPoly(x, c0,c1,c2,0.0,0.0,0.0,0.0);
+}
+float EvalPoly(float x, float c0, float c1)
+{
+	return EvalPoly(x, c0,c1,0.0,0.0,0.0,0.0,0.0);
+}
+float EvalPoly(float x, float c0)
+{
+	return EvalPoly(x, c0,0.0,0.0,0.0,0.0,0.0,0.0);
 }
 
 //float EvalPolyD0(float x, float c[3]) { return EvalPoly(x, c[0], c[1], c[2]); }

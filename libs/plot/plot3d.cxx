@@ -140,10 +140,6 @@ std::vector<plot3d::vec3>& plot3d::ref_sub_plot_samples(unsigned i)
 bool plot3d::init(cgv::render::context& ctx)
 {
 	bool success = true;
-	if (!prog.build_program(ctx, "plot3d.glpr")) {
-		success = false;
-		std::cerr << "could not build GLSL program from plot3d.glpr" << std::endl;
-	}
 	if (!sphere_prog.build_program(ctx, "plot3d_sphere.glpr")) {
 		success = false;
 		std::cerr << "could not build GLSL program from plot3d_sphere.glpr" << std::endl;
@@ -524,7 +520,6 @@ void plot3d::draw(cgv::render::context& ctx)
 
 void plot3d::clear(cgv::render::context& ctx)
 {
-	prog.destruct(ctx);
 	sphere_prog.destruct(ctx);
 	box_prog.destruct(ctx);
 	wirebox_prog.destruct(ctx);

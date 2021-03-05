@@ -103,8 +103,10 @@ public:
 		// create two sub plots and configure their colors
 		unsigned p1 = plot.add_sub_plot("cos");
 		unsigned p2 = plot.add_sub_plot("sin");
+		unsigned p3 = plot.add_sub_plot("cos²");
 		plot.set_sub_plot_colors(p1, rgb(1.0f, 0.0f, 0.1f));
 		plot.set_sub_plot_colors(p2, rgb(0.1f, 0.0f, 1.0f));
+		plot.set_sub_plot_colors(p3, rgb(0.0f, 1.0f, 0.1f));
 
 		// attach sub plot attributes to previously created vector
 		// CAREFUL: this creates references to P and P is not allowed to be deleted thereafter
@@ -116,6 +118,10 @@ public:
 		plot.set_sub_plot_attribute(p2, 1, &P[0][2], P.size(), sizeof(vec4));
 		plot.set_sub_plot_attribute(p2, 2, &P[0][0], P.size(), sizeof(vec4));
 		plot.set_sub_plot_attribute(p2, 3, &P[0][3], P.size(), sizeof(vec4));
+		plot.set_sub_plot_attribute(p3, 0, &P[0][0], P.size(), sizeof(vec4));
+		plot.set_sub_plot_attribute(p3, 1, &P[0][3], P.size(), sizeof(vec4));
+		plot.set_sub_plot_attribute(p3, 2, &P[0][1], P.size(), sizeof(vec4));
+		plot.set_sub_plot_attribute(p3, 3, &P[0][2], P.size(), sizeof(vec4));
 
 		// adjust domain, tick marks and extent in world space (of offline rendering process)
 		plot.adjust_domain_to_data();
