@@ -44,14 +44,14 @@ namespace cgv {
 		void slab_renderer::set_attribute_array_manager(const context& ctx, attribute_array_manager* _aam_ptr)
 		{
 			group_renderer::set_attribute_array_manager(ctx, _aam_ptr);
-			if (aam_ptr) {
-				if (aam_ptr->has_attribute(ctx, ref_prog().get_attribute_location(ctx, "extent")))
+			if (has_aam()) {
+				if (has_attribute(ctx, "extent"))
 					has_extents = true;
-				if (aam_ptr->has_attribute(ctx, ref_prog().get_attribute_location(ctx, "translation")))
+				if (has_attribute(ctx, "translation"))
 					has_translations= true;
-				if (aam_ptr->has_attribute(ctx, ref_prog().get_attribute_location(ctx, "rotation")))
+				if (has_attribute(ctx, "rotation"))
 					has_rotations= true;
-				if (aam_ptr->has_attribute(ctx, ref_prog().get_attribute_location(ctx, "texture_index")))
+				if (has_attribute(ctx, "texture_index"))
 					has_texture_indices = true;
 			}
 			else {

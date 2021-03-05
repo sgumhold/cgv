@@ -111,6 +111,8 @@ namespace cgv {
 				has_positions = false;
 				has_colors = false;
 			}
+			if (!aam_ptr && ctx.core_profile)
+				aam_ptr = &default_aam;
 		}
 		bool renderer::set_attribute_array(const context& ctx, int loc, type_descriptor element_type, const vertex_buffer& vbo, size_t offset_in_bytes, size_t nr_elements, unsigned stride_in_bytes)
 		{
@@ -172,6 +174,11 @@ namespace cgv {
 
 		bool renderer::init(context& ctx)
 		{
+			if (ctx.core_profile) {
+				default_aam.init(ctx);
+				if (!aam_ptr)
+					aam_ptr = &default_aam;
+			}
 			if (!default_render_style) {
 				default_render_style = create_render_style();
 			}
@@ -199,11 +206,18 @@ namespace cgv {
 		bool renderer::disable(context& ctx)
 		{
 			bool res = true;
-			if (aam_ptr)
+			if (has_aam())
 				res = aam_ptr->disable(ctx);
 			else {
-				for (int loc : enabled_attribute_arrays)
-					res = attribute_array_binding::disable_global_array(ctx, loc) && res;
+				if (ctx.core_profile) {
+					default_aam.disable(ctx);
+					for (int loc : enabled_attribute_arrays)
+						res = default_aam.aab.disable_array(ctx, loc) && res;
+				}
+				else {
+					for (int loc : enabled_attribute_arrays)
+						res = attribute_array_binding::disable_global_array(ctx, loc) && res;
+				}
 				enabled_attribute_arrays.clear();
 				has_colors = false;
 				has_positions = false;

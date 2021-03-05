@@ -14,12 +14,10 @@ namespace cgv {
 std::vector<const char*> plot_base::font_names;
 std::string plot_base::font_name_enum_def;
 
-///
 plot_base::tick_batch_info::tick_batch_info(int _ai, int _aj, bool _primary, unsigned _first_vertex, unsigned _first_label) 
 	: ai(_ai), aj(_aj), primary(_primary), first_vertex(_first_vertex), first_label(_first_label)
 {
 }
-
 domain_config::domain_config(unsigned nr_axes) : color(0.85f,0.85f,0.85f), axis_configs(nr_axes)
 {
 	show_domain = true;
@@ -30,7 +28,6 @@ domain_config::domain_config(unsigned nr_axes) : color(0.85f,0.85f,0.85f), axis_
 	label_font_size = 24.0f;
 	label_ffa = cgv::media::font::FFA_BOLD_ITALIC;
 }
-
 plot_base_config::plot_base_config(const std::string& _name, unsigned dim) : name(_name)
 {
 	show_plot = true;
@@ -52,8 +49,6 @@ plot_base_config::plot_base_config(const std::string& _name, unsigned dim) : nam
 	set_sizes(ref_size.size);
 	configure_chart(CT_BAR_CHART);
 }
-
-/// configure the sub plot to a specific chart type
 void plot_base_config::configure_chart(ChartType chart_type)
 {
 	switch (chart_type) {
@@ -70,7 +65,6 @@ void plot_base_config::configure_chart(ChartType chart_type)
 		break;
 	}
 }
-///
 void plot_base_config::set_colors(const rgb& base_color)
 {
 	ref_color.color = base_color;
@@ -90,7 +84,6 @@ void plot_base_config::set_colors(const rgb& base_color)
 	if ((sub_plot_influence & SPI_BAR_OUTLINE) != 0)
 		bar_outline_color.color = base_color;
 }
-
 void plot_base_config::set_color_indices(int idx)
 {
 	if ((sub_plot_influence & SPI_POINT) != 0)
@@ -106,7 +99,6 @@ void plot_base_config::set_color_indices(int idx)
 	if ((sub_plot_influence & SPI_BAR_OUTLINE) != 0)
 		bar_outline_color.color_idx = idx;
 }
-
 void plot_base_config::set_sizes(float _size)
 {
 	ref_size.size = _size;
@@ -121,7 +113,6 @@ void plot_base_config::set_sizes(float _size)
 	if ((sub_plot_influence & SPI_BAR_OUTLINE) != 0)
 		bar_outline_width.size = 0.2f * _size;
 }
-
 void plot_base_config::set_size_indices(int idx)
 {
 	if ((sub_plot_influence & SPI_POINT) != 0)
@@ -135,7 +126,6 @@ void plot_base_config::set_size_indices(int idx)
 	if ((sub_plot_influence & SPI_BAR_OUTLINE) != 0)
 		bar_outline_width.size_idx = idx;
 }
-
 void plot_base_config::set_opacities(float _opa)
 {
 	ref_opacity = _opa;
@@ -152,7 +142,6 @@ void plot_base_config::set_opacities(float _opa)
 	if ((sub_plot_influence & SPI_BAR_OUTLINE) != 0)
 		bar_color.color.alpha() = pow(_opa, 0.7f);
 }
-
 void plot_base_config::set_opacity_indices(int idx)
 {
 	if ((sub_plot_influence & SPI_POINT) != 0)
@@ -168,25 +157,18 @@ void plot_base_config::set_opacity_indices(int idx)
 	if ((sub_plot_influence & SPI_BAR_OUTLINE) != 0)
 		bar_color.opacity_idx = idx;
 }
-
 plot_base_config::~plot_base_config()
 {
 }
 
-/// constructor for empty sources
 attribute_source::attribute_source() : source(AS_NONE), pointer(0), offset(0), count(0), stride(0)
 {}
-
-/// constructor for source from sample container
 attribute_source::attribute_source(int _sub_plot_index, size_t ai, size_t _count, size_t _stride) :
 	source(AS_SAMPLE_CONTAINER), sub_plot_index(_sub_plot_index), offset(ai), count(_count), stride(_stride) {}
-/// constructor for source from external data
 attribute_source::attribute_source(const float* _pointer, size_t _count, size_t _stride) :
 	source(AS_POINTER), pointer(_pointer), offset(0), count(_count), stride(_stride) {}
-/// constructor for source from vbo
 attribute_source::attribute_source(const cgv::render::vertex_buffer* _vbo_ptr, size_t _offset, size_t _count, size_t _stride) :
 source(AS_VBO), vbo_ptr(_vbo_ptr), offset(_offset), count(_count), stride(_stride) {}
-/// copy constructor has no magic inside
 attribute_source::attribute_source(const attribute_source& as)
 {
 	source = as.source;
@@ -200,7 +182,12 @@ attribute_source::attribute_source(const attribute_source& as)
 	count  = as.count;
 	stride = as.stride;
 }
-
+attribute_source_array::attribute_source_array()
+{
+	samples_out_of_date = true;
+	sources_out_of_date = true;
+	count = 0;
+}
 void plot_base::draw_sub_plot_samples(int count, const plot_base_config& spc, bool strip)
 {
 	if (spc.begin_sample >= spc.end_sample) {
@@ -220,16 +207,11 @@ void plot_base::draw_sub_plot_samples(int count, const plot_base_config& spc, bo
 				glDrawArrays(strip ? GL_LINE_STRIP : GL_POINTS, GLint(spc.begin_sample), GLsizei(spc.end_sample - spc.begin_sample));
 	}
 }
-
-
-///
 plot_base::vec3 plot_base::world_space_from_plot_space(const vecn& pnt_plot) const
 {
 	vec3 pnt(pnt_plot(0), pnt_plot(1), pnt_plot.size() >= 3 ? pnt_plot(2) : 0.0f);
 	return orientation.apply(pnt) + center_location;
 }
-
-/// transform from attribute space to world space
 plot_base::vec3 plot_base::transform_to_world(const vecn& pnt_attr) const
 {
 	unsigned n = pnt_attr.size();
@@ -243,7 +225,6 @@ plot_base::vec3 plot_base::transform_to_world(const vecn& pnt_attr) const
 	}
 	return world_space_from_plot_space(pnt_plot);
 }
-
 void plot_base::ensure_font_names()
 {
 	if (font_names.empty()) {
@@ -267,18 +248,15 @@ void plot_base::ensure_font_names()
 		on_font_selection();
 	}
 }
-
 void plot_base::on_font_selection()
 {
 	label_font = cgv::media::font::find_font(font_names[get_domain_config_ptr()->label_font_index]);
 	on_font_face_selection();
 }
-
 void plot_base::on_font_face_selection()
 {
 	label_font_face = label_font->get_font_face(get_domain_config_ptr()->label_ffa);
 }
-
 void plot_base::set_plot_uniforms(cgv::render::context& ctx, cgv::render::shader_program& prog)
 {
 	vec3 extent(0.0f);
@@ -302,8 +280,6 @@ void plot_base::set_plot_uniforms(cgv::render::context& ctx, cgv::render::shader
 	prog.set_uniform(ctx, "orientation", orientation);
 	prog.set_uniform(ctx, "center_location", center_location);
 }
-
-/// set the uniforms for defining the mappings to visual variables
 void plot_base::set_mapping_uniforms(cgv::render::context& ctx, cgv::render::shader_program& prog)
 {
 	prog.set_uniform_array(ctx, "color_mapping", color_mapping, MAX_NR_COLOR_MAPPINGS);
@@ -330,130 +306,158 @@ void plot_base::set_mapping_uniforms(cgv::render::context& ctx, cgv::render::sha
 	}
 }
 
-/// set vertex shader input attributes 
-void plot_base::set_attributes(cgv::render::context& ctx, const std::vector<vec2>& points)
-{
-	cgv::render::attribute_array_binding::set_global_attribute_array(ctx, 0, &points[0][0], points.size(), sizeof(vec2));
-	cgv::render::attribute_array_binding::set_global_attribute_array(ctx, 1, &points[0][1], points.size(), sizeof(vec2));
-}
-
-/// set vertex shader input attributes 
-void plot_base::set_attributes(cgv::render::context& ctx, const std::vector<vec3>& points)
-{
-	cgv::render::attribute_array_binding::set_global_attribute_array(ctx, 0, &points[0][0], points.size(), sizeof(vec3));
-	cgv::render::attribute_array_binding::set_global_attribute_array(ctx, 1, &points[0][1], points.size(), sizeof(vec3));
-	cgv::render::attribute_array_binding::set_global_attribute_array(ctx, 2, &points[0][2], points.size(), sizeof(vec3));
-}
-
-/// set vertex shader input attributes based on attribute source information
-size_t plot_base::set_attributes(cgv::render::context& ctx, int i, const std::vector<std::vector<vec2>>& samples)
-{
-	const auto& ass = attribute_sources[i];
-	unsigned ai = 0;
-	size_t count = -1;
-	for (ai = 0; ai < ass.size(); ++ai) {
-		const auto& as = ass[ai];
-		switch (as.source) {
-		case AS_SAMPLE_CONTAINER: {
-			int j = as.sub_plot_index == -1 ? i : as.sub_plot_index;
-			cgv::render::attribute_array_binding::set_global_attribute_array(ctx, ai,
-				&samples[j][0][as.offset], samples[j].size(), sizeof(vec2));
-			count = std::min(samples[j].size(), count);
-			break;
-		}
-		case AS_POINTER:
-			cgv::render::attribute_array_binding::set_global_attribute_array(ctx, ai,
-				as.pointer, as.count, (unsigned) as.stride);
-			count = std::min(as.count, count);
-			break;
-		case AS_VBO:
-			cgv::render::attribute_array_binding::set_global_attribute_array(ctx, ai, *as.vbo_ptr,
-				cgv::render::element_descriptor_traits<float>::get_type_descriptor(*as.pointer),
-				as.count, as.offset, (unsigned) as.stride);
-			count = std::min(as.count, count);
-			break;
-		}
-	}
-	return count;
-}
-
-/// set vertex shader input attributes based on attribute source information
-size_t plot_base::set_attributes(cgv::render::context& ctx, int i, const std::vector<std::vector<vec3>>& samples)
-{
-	const auto& ass = attribute_sources[i];
-	unsigned ai = 0;
-	size_t count = -1;
-	for (const auto& as : ass) {
-		switch (as.source) {
-		case AS_SAMPLE_CONTAINER: {
-			int j = as.sub_plot_index == -1 ? i : as.sub_plot_index;
-			cgv::render::attribute_array_binding::set_global_attribute_array(ctx, ai,
-				&samples[j][0][as.offset], samples[j].size(), sizeof(vec3));
-			count = std::min(samples[j].size(), count);
-			break;
-		}
-		case AS_POINTER:
-			cgv::render::attribute_array_binding::set_global_attribute_array(ctx, ai,
-				as.pointer, as.count, (unsigned) as.stride);
-			count = std::min(as.count, count);
-			break;
-		case AS_VBO:
-			cgv::render::attribute_array_binding::set_global_attribute_array(ctx, ai, *as.vbo_ptr,
-				cgv::render::element_descriptor_traits<float>::get_type_descriptor(*as.pointer),
-				as.count, as.offset, (unsigned)as.stride);
-			count = std::min(as.count, count);
-			break;
-		}
-		++ai;
-	}
-	return count;
-}
-
-/// define a sub plot attribute ai from coordinate aj of the i-th internal sample container
 void plot_base::set_sub_plot_attribute(unsigned i, unsigned ai, int subplot_index, size_t aj)
 {
-	assert(attribute_sources.size() > i);
-	auto& ass = attribute_sources[i];
+	assert(attribute_source_arrays.size() > i);
+	auto& ass = attribute_source_arrays[i].attribute_sources;
 	if (ass.size() <= ai)
 		ass.resize(ai + 1);
 	ass[ai] = attribute_source(subplot_index, aj, 0, get_dim() * sizeof(float));
+	attribute_source_arrays[i].sources_out_of_date = true;
 }
-/// define a sub plot attribute from an external pointer
 void plot_base::set_sub_plot_attribute(unsigned i, unsigned ai, const float* _pointer, size_t count, size_t stride)
 {
-	assert(attribute_sources.size() > i);
-	auto& ass = attribute_sources[i];
+	assert(attribute_source_arrays.size() > i);
+	auto& ass = attribute_source_arrays[i].attribute_sources;
 	if (ass.size() <= ai)
 		ass.resize(ai + 1);
 	ass[ai] = attribute_source(_pointer, count, stride);
+	attribute_source_arrays[i].sources_out_of_date = true;
 }
-/// define a sub plot attribute from a vbo (attribute must be stored in float type in vbo)
 void plot_base::set_sub_plot_attribute(unsigned i, unsigned ai, const cgv::render::vertex_buffer* _vbo_ptr, size_t _offset, size_t _count, size_t _stride)
 {
-	assert(attribute_sources.size() > i);
-	auto& ass = attribute_sources[i];
+	assert(attribute_source_arrays.size() > i);
+	auto& ass = attribute_source_arrays[i].attribute_sources;
 	while (ass.size() <= ai)
 		ass.resize(ai + 1);
 	ass[ai] = attribute_source(_vbo_ptr, _offset, _count, _stride);
+	attribute_source_arrays[i].sources_out_of_date = true;
 }
 
-void plot_base::set_default_attributes(cgv::render::context& ctx, cgv::render::shader_program& prog, unsigned count_others)
+template <uint32_t N>
+struct vecn_sample_access : public sample_access
 {
-	for (unsigned i=0; i<count_others; ++i)
-		prog.set_attribute(ctx, get_dim()+i, 0.0f);
+	const std::vector<std::vector<cgv::math::fvec<float, N>>>& samples;
+	vecn_sample_access(const std::vector < std::vector<cgv::math::fvec<float, N>>>& _samples) : samples(_samples) {}
+	size_t size(unsigned i) const { return samples[i].size(); }
+	float operator() (unsigned i, unsigned k, unsigned o) const { return samples[i][k][o]; }
+};
+size_t plot_base::enable_attributes(cgv::render::context& ctx, int i, const sample_access& sa)
+{
+	auto& asa = attribute_source_arrays[i];
+	const auto& ass = asa.attribute_sources;
+	// first check whether we need to update vbo
+	unsigned ai = 0, j;
+	bool update_vbo = false;
+	size_t vbo_nr_floats = 0;
+	for (ai = 0; ai < ass.size(); ++ai) {
+		const auto& as = ass[ai];
+		switch (as.source) {
+		case AS_SAMPLE_CONTAINER:
+			j = as.sub_plot_index == -1 ? i : as.sub_plot_index;
+			if (attribute_source_arrays[j].samples_out_of_date) {
+				update_vbo = true;
+				vbo_nr_floats += sa.size(j);
+			}
+			break;
+		case AS_POINTER:
+			if (asa.samples_out_of_date) {
+				update_vbo = true;
+				vbo_nr_floats += as.count;
+			}
+			break;
+		default:
+			break;
+		}
+	}
+	// update vbo if necessary
+	if (update_vbo) {
+		// copy data into CPU buffer
+		std::vector<float> buffer(vbo_nr_floats);
+		float* dest = buffer.data();
+		for (ai = 0; ai < ass.size(); ++ai) {
+			const auto& as = ass[ai];
+			switch (as.source) {
+			case AS_SAMPLE_CONTAINER:
+				j = as.sub_plot_index == -1 ? i : as.sub_plot_index;
+				if (attribute_source_arrays[j].samples_out_of_date) {
+					for (int k = 0; k < as.count; ++k)
+						*dest++ = sa(j,k,(unsigned)as.offset);
+				}
+				break;
+			case AS_POINTER:
+				if (asa.samples_out_of_date) {
+					const float* src = as.pointer;
+					unsigned stride = unsigned(as.stride/sizeof(float));
+					for (int k = 0; k < as.count; ++k, src += stride)
+						*dest++ = *src;
+				}
+				break;
+			default:
+				break;
+			}
+		}
+		if (asa.vbo.get_size_in_bytes() != vbo_nr_floats * sizeof(float)) {
+			asa.vbo.destruct(ctx);
+			asa.vbo.create(ctx, buffer);
+		}
+		else
+			asa.vbo.replace(ctx, 0, buffer.data(), buffer.size());
+		asa.sources_out_of_date = true;
+	}
+	// update attribute bindings
+	if (!asa.aab.is_created()) {
+		asa.aab.create(ctx);
+		asa.sources_out_of_date = true;
+	}
+	if (asa.sources_out_of_date) {
+		size_t count = -1;
+		size_t vbo_offset = 0; 
+		float f;
+		for (ai = 0; ai < ass.size(); ++ai) {
+			const auto& as = ass[ai];
+			switch (as.source) {
+			case AS_SAMPLE_CONTAINER: {
+				j = as.sub_plot_index == -1 ? i : as.sub_plot_index;
+				asa.aab.set_attribute_array(ctx, ai, cgv::render::get_element_type(f), asa.vbo, vbo_offset, sa.size(j), 0);
+				count = std::min(sa.size(j), count);
+				vbo_offset += count * sizeof(float);
+				break;
+			}
+			case AS_POINTER:
+				asa.aab.set_attribute_array(ctx, ai, cgv::render::get_element_type(f), asa.vbo, vbo_offset, as.count, 0);
+				count = std::min(as.count, count);
+				vbo_offset += count * sizeof(float);
+				break;
+			case AS_VBO:
+				asa.aab.set_attribute_array(ctx, ai, cgv::render::get_element_type(f), *as.vbo_ptr, as.count, as.offset, (unsigned)as.stride);
+				count = std::min(as.count, count);
+				break;
+			}
+		}
+		asa.count = count;
+		asa.sources_out_of_date = false;
+	}
+	// enable and return count
+	asa.aab.enable(ctx);
+	return asa.count;
 }
-
-/// 
-void plot_base::enable_attributes(cgv::render::context& ctx, unsigned count)
+size_t plot_base::enable_attributes(cgv::render::context& ctx, int i, const std::vector<std::vector<vec2>>& samples)
 {
-	for (unsigned ai=0; ai<count; ++ai)
-		cgv::render::attribute_array_binding::enable_global_array(ctx, ai);
+	return enable_attributes(ctx, i, vecn_sample_access<2>(samples));
 }
-/// 
-void plot_base::disable_attributes(cgv::render::context& ctx, unsigned count)
+size_t plot_base::enable_attributes(cgv::render::context& ctx, int i, const std::vector<std::vector<vec3>>& samples)
 {
-	for (unsigned ai = 0; ai < count; ++ai)
-		cgv::render::attribute_array_binding::disable_global_array(ctx, ai);
+	return enable_attributes(ctx, i, vecn_sample_access<3>(samples));
+}
+void plot_base::disable_attributes(cgv::render::context& ctx, int i)
+{
+	attribute_source_arrays[i].aab.disable(ctx);
+}
+void plot_base::update_samples_out_of_date_flag()
+{
+	for (auto& asa : attribute_source_arrays)
+		asa.samples_out_of_date = false;
 }
 
 plot_base::plot_base(unsigned _dim, unsigned _nr_attributes) : dom_cfg(_dim+_nr_attributes)
@@ -491,8 +495,6 @@ plot_base::plot_base(unsigned _dim, unsigned _nr_attributes) : dom_cfg(_dim+_nr_
 		size_gamma[si] = 1.0f;
 	}
 }
-
-/// set the view ptr
 void plot_base::set_view_ptr(cgv::render::view* _view_ptr)
 {
 	view_ptr = _view_ptr;
@@ -503,85 +505,64 @@ void plot_base::draw_legend(cgv::render::context& ctx, float depth_offset)
 	legend_prog.set_uniform(ctx, "extent", vec3::from_vec(get_extent()));
 	set_mapping_uniforms(ctx, legend_prog);
 	ctx.push_modelview_matrix();
+	// place and size legend
+	ctx.mul_modelview_matrix(
+		cgv::math::translate4<float>(legend_location)*
+		cgv::math::scale4<float>(vec3(legend_extent,1.0f))
+	);
 	// draw legend
-	std::vector<vec3> P;
-	std::vector<float> V;
-	vec3 pmin = legend_location - vec3(0.5f * legend_extent, 0.0f);
-	vec3 pmax = legend_location + vec3(0.5f * legend_extent, 0.0f);
-	P.push_back(pmin);
-	P.push_back(vec3(pmax(0), pmin(1), pmin(2)));
-	P.push_back(vec3(pmin(0), pmax(1), pmin(2)));
-	P.push_back(pmax);
-	V.push_back(0.0f);
-	V.push_back(0.0f);
-	V.push_back(1.0f);
-	V.push_back(1.0f);
+	aab_legend.enable(ctx);
 	legend_prog.enable(ctx);
 	ctx.set_color(legend_color);
 	cgv::render::configure_color_scale(ctx, legend_prog, color_scale_index, window_zero_position);
-	int pos_idx = legend_prog.get_attribute_location(ctx, "position");
-	int val_idx = legend_prog.get_attribute_location(ctx, "value");
 	legend_prog.set_uniform(ctx, "depth_offset", depth_offset);
-	cgv::render::attribute_array_binding::enable_global_array(ctx, pos_idx);
-	cgv::render::attribute_array_binding::enable_global_array(ctx, val_idx);
-	cgv::render::attribute_array_binding::set_global_attribute_array(ctx, pos_idx, P);
-	cgv::render::attribute_array_binding::set_global_attribute_array(ctx, val_idx, V);
 	if ((legend_components & LC_PRIMARY_COLOR) != 0) {
 		legend_prog.set_uniform(ctx, "color_index", 0);
 		legend_prog.set_uniform(ctx, "opacity_index", -1);
 		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-		ctx.mul_modelview_matrix(cgv::math::translate4<float>(vec3(1.1f*legend_extent(0), 0.0f, 0.0f)));
+		ctx.mul_modelview_matrix(cgv::math::translate4<float>(vec3(1.1f, 0.0f, 0.0f)));
 	}
 	if ((legend_components & LC_PRIMARY_OPACITY) != 0) {
 		legend_prog.set_uniform(ctx, "color_index", -1);
 		legend_prog.set_uniform(ctx, "opacity_index", 0);
 		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-		ctx.mul_modelview_matrix(cgv::math::translate4<float>(vec3(1.1f*legend_extent(0), 0.0f, 0.0f)));
+		ctx.mul_modelview_matrix(cgv::math::translate4<float>(vec3(1.1f, 0.0f, 0.0f)));
 	}
 	if ((legend_components & LC_SECONDARY_COLOR) != 0) {
 		legend_prog.set_uniform(ctx, "color_index", 1);
 		legend_prog.set_uniform(ctx, "opacity_index", -1);
 		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-		ctx.mul_modelview_matrix(cgv::math::translate4<float>(vec3(1.1f*legend_extent(0), 0.0f, 0.0f)));
+		ctx.mul_modelview_matrix(cgv::math::translate4<float>(vec3(1.1f, 0.0f, 0.0f)));
 	}
 	if ((legend_components & LC_SECONDARY_OPACITY) != 0) {
 		legend_prog.set_uniform(ctx, "color_index", -1);
 		legend_prog.set_uniform(ctx, "opacity_index", 1);
 		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-		ctx.mul_modelview_matrix(cgv::math::translate4<float>(vec3(1.1f*legend_extent(0), 0.0f, 0.0f)));
+		ctx.mul_modelview_matrix(cgv::math::translate4<float>(vec3(1.1f, 0.0f, 0.0f)));
 	}
-	cgv::render::attribute_array_binding::disable_global_array(ctx, pos_idx);
-	cgv::render::attribute_array_binding::disable_global_array(ctx, val_idx);
 	legend_prog.disable(ctx);
+	aab_legend.disable(ctx);
 	ctx.pop_modelview_matrix();
 }
 
-
-/// return domain shown in plot
 const plot_base::box2 plot_base::get_domain() const
 {
 	const auto& acs = get_domain_config_ptr()->axis_configs;
 	return box2(vec2(acs[0].get_attribute_min(),acs[1].get_attribute_min()), 
 		        vec2(acs[0].get_attribute_max(), acs[1].get_attribute_max()));
 }
-
-/// return domain shown in plot
 const plot_base::box3 plot_base::get_domain3() const
 {
 	const auto& acs = get_domain_config_ptr()->axis_configs;
 	return box3(vec3(acs[0].get_attribute_min(), acs[1].get_attribute_min(), get_dim() == 2 ? 0 : acs[2].get_attribute_min()), 
 		        vec3(acs[0].get_attribute_max(), acs[1].get_attribute_max(), get_dim() == 2 ? 0 : acs[2].get_attribute_max()));
 }
-
-/// set the domain in 2d
 void plot_base::set_domain(const box2& dom)
 {
 	auto& acs = get_domain_config_ptr()->axis_configs;
 	acs[0].set_attribute_range(dom.get_min_pnt()(0), dom.get_max_pnt()(0));
 	acs[1].set_attribute_range(dom.get_min_pnt()(1), dom.get_max_pnt()(1));
 }
-
-/// set the domain for 3d plots
 void plot_base::set_domain3(const box3& dom)
 {
 	auto& acs = get_domain_config_ptr()->axis_configs;
@@ -589,7 +570,6 @@ void plot_base::set_domain3(const box3& dom)
 	for (unsigned ai = 0; ai < n; ++ai)
 		acs[ai].set_attribute_range(dom.get_min_pnt()(ai), dom.get_max_pnt()(ai));
 }
-/// query the plot extend in 2D coordinates
 plot_base::vecn plot_base::get_extent() const
 {
 	const auto& acs = get_domain_config_ptr()->axis_configs;
@@ -598,8 +578,6 @@ plot_base::vecn plot_base::get_extent() const
 		extent(ai) = acs[ai].extent;
 	return extent;
 }
-
-/// set the plot extend in 2D coordinates
 void plot_base::set_extent(const vecn& new_extent)
 {
 	auto& acs = get_domain_config_ptr()->axis_configs;
@@ -607,8 +585,6 @@ void plot_base::set_extent(const vecn& new_extent)
 	for (unsigned ai = 0; ai < n; ++ai)
 		acs[ai].extent = new_extent(ai);
 }
-
-/// set the plot width to given value and if constrained == true the height, such that the aspect ration is the same as the aspect ratio of the domain
 void plot_base::set_width(float new_width, bool constrained)
 {
 	auto& acs = get_domain_config_ptr()->axis_configs;
@@ -619,8 +595,6 @@ void plot_base::set_width(float new_width, bool constrained)
 			(acs[0].tick_space_from_attribute_space(acs[0].get_attribute_max()) - acs[0].tick_space_from_attribute_space(acs[0].get_attribute_max()));
 	}
 }
-
-/// set the plot height to given value and if constrained == true the width, such that the aspect ration is the same as the aspect ratio of the domain
 void plot_base::set_height(float new_height, bool constrained)
 {
 	auto& acs = get_domain_config_ptr()->axis_configs;
@@ -631,50 +605,34 @@ void plot_base::set_height(float new_height, bool constrained)
 			(acs[1].tick_space_from_attribute_space(acs[1].get_attribute_max()) - acs[1].tick_space_from_attribute_space(acs[1].get_attribute_max()));
 	}
 }
-
-/// set new orientation quaternion
 void plot_base::set_orientation(const quat& q)
 {
 	orientation = q;
 }
-
-/// place the origin of the plot in 3D to the given location
 void plot_base::place_origin(const vec3& new_origin_location)
 {
 	center_location += new_origin_location - get_origin();
 }
-
-/// place the plot extent center in 3D to the given location (this might can change the current origin location) 
 void plot_base::place_center(const vec3& new_center_location)
 {
 	center_location = new_center_location;
 }
-
-/// place a corner (0 .. lower left, 1 .. lower right, 2 .. upper left, 3 .. upper right) to a given 3D location ((this might can change the current origin / center location) 
 void plot_base::place_corner(unsigned corner_index, const vec3& new_corner_location)
 {
 	center_location += new_corner_location - get_corner(corner_index);
 }
-
-/// return the current origin in 3D coordinates
 plot_base::vec3 plot_base::get_origin() const
 {
 	return transform_to_world(get_domain3().get_min_pnt().to_vec());
 }
-
-/// get current orientation quaternion
 const plot_base::quat& plot_base::get_orientation() const
 {
 	return orientation;
 }
-
-/// return the current plot center in 3D coordinates
 const plot_base::vec3& plot_base::get_center() const
 {
 	return center_location;
 }
-
-/// return the i-th plot corner in 3D coordinates
 plot_base::vec3 plot_base::get_corner(unsigned i) const
 {
 	box3 B = get_domain3();
@@ -684,16 +642,12 @@ plot_base::vec3 plot_base::get_corner(unsigned i) const
 		c(j) = c3(j);
 	return transform_to_world(c);
 }
-
-/// return true world direction of x, y or z axis
 const plot_base::vec3 plot_base::get_axis_direction(unsigned ai) const
 {
 	vec3 a(0.0f);
 	a(ai) = 1.0f;
 	return orientation.apply(a);
 }
-
-/// adjust the domain with respect to \c ai th axis to the data
 void plot_base::adjust_domain_axis_to_data(unsigned ai, bool adjust_min, bool adjust_max, bool only_visible)
 {
 	bool found_sample = false;
@@ -701,11 +655,11 @@ void plot_base::adjust_domain_axis_to_data(unsigned ai, bool adjust_min, bool ad
 	for (unsigned i = 0; i < configs.size(); ++i) {
 		if (only_visible && !ref_sub_plot_config(i).show_plot)
 			continue;
-		if (attribute_sources.size() <= i)
+		if (attribute_source_arrays.size() <= i)
 			continue;
-		if (attribute_sources[i].size() <= ai)
+		if (attribute_source_arrays[i].attribute_sources.size() <= ai)
 			continue;
-		const attribute_source& as = attribute_sources[i][ai];
+		const attribute_source& as = attribute_source_arrays[i].attribute_sources[ai];
 		if (as.source == AS_NONE)
 			continue;
 		bool new_found_sample = false;
@@ -764,8 +718,6 @@ void plot_base::adjust_domain_axis_to_data(unsigned ai, bool adjust_min, bool ad
 	if (acs[ai].get_attribute_min() == acs[ai].get_attribute_max())
 		acs[ai].set_attribute_maximum(acs[ai].get_attribute_max() + 1);
 }
-
-/// adjust tick marks of all axes based on maximum number of secondary ticks and domain min and max in coordinate of axis
 void plot_base::adjust_tick_marks(unsigned max_nr_secondary_ticks, bool adjust_to_attribute_ranges)
 {
 	auto& acs = get_domain_config_ptr()->axis_configs;
@@ -775,8 +727,6 @@ void plot_base::adjust_tick_marks(unsigned max_nr_secondary_ticks, bool adjust_t
 			break;
 	}
 }
-
-/// adjust the extent such that it has same aspect ration as domain
 void plot_base::adjust_extent_to_domain_aspect_ratio(int preserve_ai)
 {
 	auto& acs = get_domain_config_ptr()->axis_configs;
@@ -786,8 +736,6 @@ void plot_base::adjust_extent_to_domain_aspect_ratio(int preserve_ai)
 		acs[ai].extent = acs[preserve_ai].extent*acs[ai].get_attribute_extent()/acs[preserve_ai].get_attribute_extent();
 	}
 }
-
-/// extend domain such that given axis is included
 void plot_base::include_axis_to_domain(unsigned ai)
 {
 	auto& acs = get_domain_config_ptr()->axis_configs;
@@ -800,16 +748,12 @@ void plot_base::include_axis_to_domain(unsigned ai)
 			acs[aj].set_attribute_maximum(0);
 	}
 }
-
-/// adjust all axes of domain to data
 void plot_base::adjust_domain_to_data(bool only_visible)
 {
 	unsigned n = unsigned(get_domain_config_ptr()->axis_configs.size());
 	for (unsigned ai=0; ai < n; ++ai)
 		adjust_domain_axis_to_data(ai, true, true, only_visible);
 }
-
-/// configure the label font
 void plot_base::set_label_font(float font_size, cgv::media::font::FontFaceAttributes ffa, const std::string& font_name)
 {
 	get_domain_config_ptr()->label_font_size = font_size;
@@ -826,19 +770,14 @@ void plot_base::set_label_font(float font_size, cgv::media::font::FontFaceAttrib
 		on_font_face_selection();
 }
 
-/// return const pointer to domain configuration
 const domain_config* plot_base::get_domain_config_ptr() const
 {
 	return dom_cfg_ptr;
 }
-
-/// return pointer to domain configuration
 domain_config* plot_base::get_domain_config_ptr()
 {
 	return dom_cfg_ptr;
 }
-
-/// set the domain configuration to an external configuration in order to synch several plots, if set to null, the internal domain config is used again
 void plot_base::set_domain_config_ptr(domain_config* _new_ptr)
 {
 	if (_new_ptr)
@@ -846,30 +785,55 @@ void plot_base::set_domain_config_ptr(domain_config* _new_ptr)
 	else
 		dom_cfg_ptr = &dom_cfg;
 }
-
 unsigned plot_base::get_nr_sub_plots() const
 {
 	return (unsigned) configs.size();
 }
-
 plot_base_config& plot_base::ref_sub_plot_config(unsigned i)
 {
 	return *configs[i];
 }
-
-/// set the colors for all plot features as variation of the given color
+void plot_base::set_samples_out_of_date(unsigned i)
+{
+	attribute_source_arrays[i].samples_out_of_date = true;
+}
 void plot_base::set_sub_plot_colors(unsigned i, const rgb& base_color)
 {
 	ref_sub_plot_config(i).set_colors(base_color);
 }
-
 bool plot_base::init(cgv::render::context& ctx)
 {
 	if (!legend_prog.build_program(ctx, "plot_legend.glpr", true)) {
 		std::cerr << "could not build GLSL program from plot_legend.glpr" << std::endl;
 		return false;
 	}
+	// construct legend vbo and aab
+	std::vector<vec4> P;
+	P.push_back(vec4(-0.5f, -0.5f, 0.0f, 0.0f));
+	P.push_back(vec4( 0.5f, -0.5f, 0.0f, 0.0f));
+	P.push_back(vec4(-0.5f, 0.5f, 0.0f, 1.0f));
+	P.push_back(vec4( 0.5f, 0.5f, 0.0f, 1.0f));
+	vbo_legend.create(ctx, P);
+	aab_legend.create(ctx);
+	int pos_idx = legend_prog.get_attribute_location(ctx, "position");
+	int val_idx = legend_prog.get_attribute_location(ctx, "value");
+	aab_legend.enable_array(ctx, pos_idx);
+	aab_legend.enable_array(ctx, val_idx);
+	vec3& p0 = reinterpret_cast<vec3&>(P[0]);
+	float& v0 = P[0][3];
+	aab_legend.set_attribute_array(ctx, pos_idx, cgv::render::get_element_type(p0), vbo_legend, 0, P.size(), sizeof(vec4));
+	aab_legend.set_attribute_array(ctx, val_idx, cgv::render::get_element_type(v0), vbo_legend, sizeof(vec3), P.size(), sizeof(vec4));
 	return true;
+}
+void plot_base::clear(cgv::render::context& ctx)
+{
+	aab_legend.destruct(ctx);
+	vbo_legend.destruct(ctx);
+	legend_prog.destruct(ctx);
+	for (unsigned i = 0; i < get_nr_sub_plots(); ++i) {
+		attribute_source_arrays[i].aab.destruct(ctx);
+		attribute_source_arrays[i].vbo.destruct(ctx);
+	}
 }
 
 void plot_base::create_plot_gui(cgv::base::base* bp, cgv::gui::provider& p)
@@ -965,7 +929,6 @@ void plot_base::create_plot_gui(cgv::base::base* bp, cgv::gui::provider& p)
 		p.end_tree_node(get_domain_config_ptr()->show_domain);
 	}
 }
-
 void plot_base::update_ref_opacity(unsigned i, cgv::gui::provider& p)
 {
 	plot_base_config& pbc = ref_sub_plot_config(i);
@@ -977,7 +940,6 @@ void plot_base::update_ref_opacity(unsigned i, cgv::gui::provider& p)
 	p.update_member(&pbc.bar_color.color.alpha());
 	p.update_member(&pbc.bar_outline_color.color.alpha());
 }
-
 void plot_base::update_ref_opacity_index(unsigned i, cgv::gui::provider& p)
 {
 	plot_base_config& pbc = ref_sub_plot_config(i);
@@ -989,7 +951,6 @@ void plot_base::update_ref_opacity_index(unsigned i, cgv::gui::provider& p)
 	p.update_member(&pbc.bar_color.opacity_idx);
 	p.update_member(&pbc.bar_outline_color.opacity_idx);
 }
-
 void plot_base::update_ref_color(unsigned i, cgv::gui::provider& p)
 {
 	plot_base_config& pbc = ref_sub_plot_config(i);
@@ -1001,7 +962,6 @@ void plot_base::update_ref_color(unsigned i, cgv::gui::provider& p)
 	p.update_member(&pbc.bar_color.color);
 	p.update_member(&pbc.bar_outline_color.color);
 }
-
 void plot_base::update_ref_color_index(unsigned i, cgv::gui::provider& p)
 {
 	plot_base_config& pbc = ref_sub_plot_config(i);
@@ -1013,7 +973,6 @@ void plot_base::update_ref_color_index(unsigned i, cgv::gui::provider& p)
 	p.update_member(&pbc.bar_color.color_idx);
 	p.update_member(&pbc.bar_outline_color.color_idx);
 }
-
 void plot_base::update_ref_size(unsigned i, cgv::gui::provider& p)
 {
 	plot_base_config& pbc = ref_sub_plot_config(i);
@@ -1024,7 +983,6 @@ void plot_base::update_ref_size(unsigned i, cgv::gui::provider& p)
 	p.update_member(&pbc.stick_width.size);
 	p.update_member(&pbc.bar_outline_width.size);
 }
-
 void plot_base::update_ref_size_index(unsigned i, cgv::gui::provider& p)
 {
 	plot_base_config& pbc = ref_sub_plot_config(i);
@@ -1034,7 +992,6 @@ void plot_base::update_ref_size_index(unsigned i, cgv::gui::provider& p)
 	p.update_member(&pbc.stick_width.size_idx);
 	p.update_member(&pbc.bar_outline_width.size_idx);
 }
-
 void plot_base::create_base_config_gui(cgv::base::base* bp, cgv::gui::provider& p, unsigned i)
 {
 	plot_base_config& pbc = ref_sub_plot_config(i);
@@ -1057,10 +1014,9 @@ void plot_base::create_base_config_gui(cgv::base::base* bp, cgv::gui::provider& 
 	connect_copy(p.add_member_control(bp, "", (cgv::type::DummyEnum&)pbc.ref_size.size_idx, "dropdown", "w=92;enums='off=-1,primary=0,secondary=1'")->value_change,
 		cgv::signal::rebind(this, &plot_base::update_ref_size_index, cgv::signal::_c(i), cgv::signal::_r(p)));
 
-	p.add_member_control(bp, "begin", pbc.begin_sample, "value_slider", "min=0;ticks=true")->set("max", attribute_sources[i].front().count - 1);
-	p.add_member_control(bp, "end", pbc.end_sample, "value_slider", "min=-1;ticks=true")->set("max", attribute_sources[i].front().count - 1);
+	p.add_member_control(bp, "begin", pbc.begin_sample, "value_slider", "min=0;ticks=true")->set("max", attribute_source_arrays[i].attribute_sources.front().count - 1);
+	p.add_member_control(bp, "end", pbc.end_sample, "value_slider", "min=-1;ticks=true")->set("max", attribute_source_arrays[i].attribute_sources.front().count - 1);
 }
-
 void plot_base::add_mapped_size_control(cgv::gui::provider& p, cgv::base::base* bp, const std::string& name, mapped_size& ms, std::string options)
 {
 	if (options.empty())
@@ -1070,7 +1026,6 @@ void plot_base::add_mapped_size_control(cgv::gui::provider& p, cgv::base::base* 
 	p.add_member_control(bp, name, ms.size, "value_slider", options, " ");
 	p.add_member_control(bp, "si", (cgv::type::DummyEnum&)ms.size_idx, "dropdown", "enums='off=-1,primary,secondary';w=52");
 }
-
 void plot_base::add_mapped_rgb_control(cgv::gui::provider& p, cgv::base::base* bp, const std::string& name, mapped_rgb& ms)
 {
 	p.add_member_control(bp, name, ms.color, "", "w=140", " ");
@@ -1087,7 +1042,6 @@ void plot_base::add_mapped_opacity_control(cgv::gui::provider& p, cgv::base::bas
 	p.add_member_control(bp, name, ms.opacity, "", "w=140", " ");
 	p.add_member_control(bp, "oi", (cgv::type::DummyEnum&)ms.opacity_idx, "dropdown", "enums='off=-1,primary,secondary';w=52");
 }
-
 void plot_base::create_point_config_gui(cgv::base::base* bp, cgv::gui::provider& p, plot_base_config& pbc)
 {
 	add_mapped_rgba_control(p, bp, "color", pbc.point_color);
@@ -1162,7 +1116,6 @@ void plot_base::create_config_gui(cgv::base::base* bp, cgv::gui::provider& p, un
 		p.end_tree_node(pbc.show_bars);
 	}
 }
-
 void plot_base::create_gui(cgv::base::base* bp, cgv::gui::provider& p)
 {
 	create_plot_gui(bp, p);
@@ -1178,7 +1131,6 @@ void plot_base::create_gui(cgv::base::base* bp, cgv::gui::provider& p)
 		}
 	}
 }
-
 
 	}
 }

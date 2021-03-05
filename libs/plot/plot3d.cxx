@@ -94,10 +94,10 @@ unsigned plot3d::add_sub_plot(const std::string& name)
 
 	// create new point container
 	samples.push_back(std::vector<vec3>());
-	attribute_sources.push_back(std::vector<attribute_source>());
-	attribute_sources.back().push_back(attribute_source(i, 0, 0, 3 * sizeof(float)));
-	attribute_sources.back().push_back(attribute_source(i, 1, 0, 3 * sizeof(float)));
-	attribute_sources.back().push_back(attribute_source(i, 2, 0, 3 * sizeof(float)));
+	attribute_source_arrays.push_back(attribute_source_array());
+	attribute_source_arrays.back().attribute_sources.push_back(attribute_source(i, 0, 0, 3 * sizeof(float)));
+	attribute_source_arrays.back().attribute_sources.push_back(attribute_source(i, 1, 0, 3 * sizeof(float)));
+	attribute_source_arrays.back().attribute_sources.push_back(attribute_source(i, 2, 0, 3 * sizeof(float)));
 
 	// return sub plot index
 	return i;
@@ -189,120 +189,120 @@ void plot3d::draw_sub_plots(cgv::render::context& ctx)
 	float pixel_extent_per_depth = (float)(2.0 * tan(0.5 * 0.0174532925199 * y_view_angle) / ctx.get_height());
 
 	for (unsigned i = 0; i < get_nr_sub_plots(); ++i) {
-		size_t count = set_attributes(ctx, i, samples);
-		if (count == 0)
-			continue;
-		const plot3d_config& spc = ref_sub_plot3d_config(i);
-		if (!spc.show_plot)
-			continue;
-		if (spc.show_points) {
-			set_plot_uniforms(ctx,    sphere_prog);
-			set_mapping_uniforms(ctx, sphere_prog);
-			sphere_prog.set_uniform(ctx, "radius_scale", spc.point_size.size * rs);
-			sphere_prog.set_uniform(ctx, "map_color_to_material", 7);
-			sphere_prog.set_uniform(ctx, "blend_width_in_pixel", get_domain_config_ptr()->blend_width_in_pixel);
-			sphere_prog.set_uniform(ctx, "pixel_extent_per_depth", pixel_extent_per_depth);
-			sphere_prog.set_uniform(ctx, "halo_width_in_pixel", 0.0f);
-			sphere_prog.set_uniform(ctx, "halo_color_strength", 1.0f);
-			sphere_prog.set_uniform(ctx, "percentual_halo_width", spc.point_halo_width.size / spc.point_size.size);
-			sphere_prog.set_uniform(ctx, "color_index", spc.point_color.color_idx);
-			sphere_prog.set_uniform(ctx, "secondary_color_index", spc.point_halo_color.color_idx);
-			sphere_prog.set_uniform(ctx, "opacity_index", spc.point_color.opacity_idx);
-			sphere_prog.set_uniform(ctx, "secondary_opacity_index", spc.point_halo_color.opacity_idx);
-			sphere_prog.set_uniform(ctx, "size_index", spc.point_size.size_idx);
-			sphere_prog.set_uniform(ctx, "secondary_size_index", spc.point_halo_width.size_idx);
-			ctx.set_color(spc.point_color.color);
-			sphere_prog.set_attribute(ctx, "secondary_color", spc.point_halo_color.color);
-			sphere_prog.set_attribute(ctx, "size", spc.point_size.size);
-			sphere_prog.enable(ctx);
-			draw_sub_plot_samples(int(count), spc);
-			sphere_prog.disable(ctx);
-		}
-		if (spc.show_bars) {
-			unsigned N = (unsigned)count;
-			unsigned M = (unsigned)count;
-			if (spc.samples_per_row > 0) {
-				N = spc.samples_per_row;
-				M /= spc.samples_per_row;
+		size_t count = enable_attributes(ctx, i, samples);
+		if (count > 0) {
+			const plot3d_config& spc = ref_sub_plot3d_config(i);
+			if (spc.show_plot) {
+				if (spc.show_points) {
+					set_plot_uniforms(ctx, sphere_prog);
+					set_mapping_uniforms(ctx, sphere_prog);
+					sphere_prog.set_uniform(ctx, "radius_scale", spc.point_size.size * rs);
+					sphere_prog.set_uniform(ctx, "map_color_to_material", 7);
+					sphere_prog.set_uniform(ctx, "blend_width_in_pixel", get_domain_config_ptr()->blend_width_in_pixel);
+					sphere_prog.set_uniform(ctx, "pixel_extent_per_depth", pixel_extent_per_depth);
+					sphere_prog.set_uniform(ctx, "halo_width_in_pixel", 0.0f);
+					sphere_prog.set_uniform(ctx, "halo_color_strength", 1.0f);
+					sphere_prog.set_uniform(ctx, "percentual_halo_width", spc.point_halo_width.size / spc.point_size.size);
+					sphere_prog.set_uniform(ctx, "color_index", spc.point_color.color_idx);
+					sphere_prog.set_uniform(ctx, "secondary_color_index", spc.point_halo_color.color_idx);
+					sphere_prog.set_uniform(ctx, "opacity_index", spc.point_color.opacity_idx);
+					sphere_prog.set_uniform(ctx, "secondary_opacity_index", spc.point_halo_color.opacity_idx);
+					sphere_prog.set_uniform(ctx, "size_index", spc.point_size.size_idx);
+					sphere_prog.set_uniform(ctx, "secondary_size_index", spc.point_halo_width.size_idx);
+					ctx.set_color(spc.point_color.color);
+					sphere_prog.set_attribute(ctx, "secondary_color", spc.point_halo_color.color);
+					sphere_prog.set_attribute(ctx, "size", spc.point_size.size);
+					sphere_prog.enable(ctx);
+					draw_sub_plot_samples(int(count), spc);
+					sphere_prog.disable(ctx);
+				}
+				if (spc.show_bars) {
+					unsigned N = (unsigned)count;
+					unsigned M = (unsigned)count;
+					if (spc.samples_per_row > 0) {
+						N = spc.samples_per_row;
+						M /= spc.samples_per_row;
+					}
+					float box_width = spc.bar_percentual_width.size * extent((spc.bar_coordinate_index + 1) % 3) / N;
+					float box_depth = spc.bar_percentual_depth.size * extent((spc.bar_coordinate_index + 2) % 3) / M;
+					if (spc.bar_outline_width.size > 0) {
+						//glLineWidth(spc.bar_outline_width.size);
+						set_plot_uniforms(ctx, wirebox_prog);
+						set_mapping_uniforms(ctx, wirebox_prog);
+						wirebox_prog.set_uniform(ctx, "box_width", box_width);
+						wirebox_prog.set_uniform(ctx, "box_depth", box_depth);
+						wirebox_prog.set_uniform(ctx, "box_coordinate_index", spc.bar_coordinate_index);
+						wirebox_prog.set_uniform(ctx, "box_base_window", spc.bar_base_window);
+						wirebox_prog.set_uniform(ctx, "color_index", spc.bar_outline_color.color_idx);
+						wirebox_prog.set_uniform(ctx, "secondary_color_index", -1);
+						wirebox_prog.set_uniform(ctx, "opacity_index", spc.bar_outline_color.opacity_idx);
+						wirebox_prog.set_uniform(ctx, "secondary_opacity_index", -1);
+						wirebox_prog.set_uniform(ctx, "size_index", spc.bar_percentual_width.size_idx);
+						wirebox_prog.set_uniform(ctx, "secondary_size_index", spc.bar_percentual_depth.size_idx);
+						ctx.set_color(spc.bar_outline_color.color);
+						wirebox_prog.enable(ctx);
+						draw_sub_plot_samples(int(count), spc);
+						wirebox_prog.disable(ctx);
+					}
+					set_plot_uniforms(ctx, box_prog);
+					set_mapping_uniforms(ctx, box_prog);
+					box_prog.set_uniform(ctx, "map_color_to_material", 7);
+					box_prog.set_uniform(ctx, "box_width", box_width);
+					box_prog.set_uniform(ctx, "box_depth", box_depth);
+					box_prog.set_uniform(ctx, "box_base_window", spc.bar_base_window);
+					box_prog.set_uniform(ctx, "box_coordinate_index", spc.bar_coordinate_index);
+					box_prog.set_uniform(ctx, "color_index", spc.bar_color.color_idx);
+					box_prog.set_uniform(ctx, "secondary_color_index", -1);
+					box_prog.set_uniform(ctx, "opacity_index", spc.bar_color.opacity_idx);
+					box_prog.set_uniform(ctx, "secondary_opacity_index", -1);
+					box_prog.set_uniform(ctx, "size_index", spc.bar_percentual_width.size_idx);
+					box_prog.set_uniform(ctx, "secondary_size_index", spc.bar_percentual_depth.size_idx);
+					ctx.set_color(spc.bar_color.color);
+					box_prog.enable(ctx);
+					draw_sub_plot_samples(int(count), spc);
+					box_prog.disable(ctx);
+				}
+				if (spc.show_sticks) {
+					set_plot_uniforms(ctx, stick_prog);
+					set_mapping_uniforms(ctx, stick_prog);
+					stick_prog.set_uniform(ctx, "radius_scale", 1.0f);
+					stick_prog.set_uniform(ctx, "stick_coordinate_index", spc.stick_coordinate_index);
+					stick_prog.set_uniform(ctx, "stick_base_window", spc.stick_base_window);
+					stick_prog.set_uniform(ctx, "map_color_to_material", 7);
+					stick_prog.set_uniform(ctx, "color_index", spc.stick_color.color_idx);
+					stick_prog.set_uniform(ctx, "secondary_color_index", -1);
+					stick_prog.set_uniform(ctx, "opacity_index", spc.stick_color.opacity_idx);
+					stick_prog.set_uniform(ctx, "secondary_opacity_index", -1);
+					stick_prog.set_uniform(ctx, "size_index", spc.stick_width.size_idx);
+					stick_prog.set_uniform(ctx, "secondary_size_index", -1);
+					ctx.set_color(spc.stick_color.color);
+					stick_prog.set_attribute(ctx, "secondary_color", spc.stick_color.color);
+					stick_prog.set_attribute(ctx, "size", spc.stick_width.size * rs);
+					stick_prog.set_attribute(ctx, "secondary_size", spc.stick_width.size * rs);
+					stick_prog.enable(ctx);
+					draw_sub_plot_samples(int(count), spc);
+					stick_prog.disable(ctx);
+				}
+				if (spc.show_lines) {
+					set_plot_uniforms(ctx, tube_prog);
+					set_mapping_uniforms(ctx, tube_prog);
+					tube_prog.set_uniform(ctx, "radius_scale", 1.0f);
+					tube_prog.set_uniform(ctx, "map_color_to_material", 7);
+					tube_prog.set_uniform(ctx, "color_index", spc.line_color.color_idx);
+					tube_prog.set_uniform(ctx, "secondary_color_index", -1);
+					tube_prog.set_uniform(ctx, "opacity_index", spc.line_color.opacity_idx);
+					tube_prog.set_uniform(ctx, "secondary_opacity_index", -1);
+					tube_prog.set_uniform(ctx, "size_index", spc.line_width.size_idx);
+					tube_prog.set_uniform(ctx, "secondary_size_index", -1);
+					ctx.set_color(spc.line_color.color);
+					tube_prog.set_attribute(ctx, "size", spc.line_width.size * rs);
+					tube_prog.enable(ctx);
+					draw_sub_plot_samples(int(count), spc, true);
+					tube_prog.disable(ctx);
+				}
 			}
-			float box_width = spc.bar_percentual_width.size *extent((spc.bar_coordinate_index + 1) % 3) / N;
-			float box_depth = spc.bar_percentual_depth.size * extent((spc.bar_coordinate_index + 2) % 3) / M;
-			if (spc.bar_outline_width.size > 0) {
-				glLineWidth(spc.bar_outline_width.size);
-				set_plot_uniforms(ctx, wirebox_prog);
-				set_mapping_uniforms(ctx, wirebox_prog);
-				wirebox_prog.set_uniform(ctx, "box_width", box_width);
-				wirebox_prog.set_uniform(ctx, "box_depth", box_depth);
-				wirebox_prog.set_uniform(ctx, "box_coordinate_index", spc.bar_coordinate_index);
-				wirebox_prog.set_uniform(ctx, "box_base_window", spc.bar_base_window);
-				wirebox_prog.set_uniform(ctx, "color_index", spc.bar_outline_color.color_idx);
-				wirebox_prog.set_uniform(ctx, "secondary_color_index", -1);
-				wirebox_prog.set_uniform(ctx, "opacity_index", spc.bar_outline_color.opacity_idx);
-				wirebox_prog.set_uniform(ctx, "secondary_opacity_index", -1);
-				wirebox_prog.set_uniform(ctx, "size_index", spc.bar_percentual_width.size_idx);
-				wirebox_prog.set_uniform(ctx, "secondary_size_index", spc.bar_percentual_depth.size_idx);
-				ctx.set_color(spc.bar_outline_color.color);
-				wirebox_prog.enable(ctx);
-				draw_sub_plot_samples(int(count), spc);
-				wirebox_prog.disable(ctx);
-			}
-			set_plot_uniforms(ctx, box_prog);
-			set_mapping_uniforms(ctx, box_prog);
-			box_prog.set_uniform(ctx, "map_color_to_material", 7);
-			box_prog.set_uniform(ctx, "box_width", box_width);
-			box_prog.set_uniform(ctx, "box_depth", box_depth);
-			box_prog.set_uniform(ctx, "box_base_window", spc.bar_base_window);
-			box_prog.set_uniform(ctx, "box_coordinate_index", spc.bar_coordinate_index);
-			box_prog.set_uniform(ctx, "color_index", spc.bar_color.color_idx);
-			box_prog.set_uniform(ctx, "secondary_color_index", -1);
-			box_prog.set_uniform(ctx, "opacity_index", spc.bar_color.opacity_idx);
-			box_prog.set_uniform(ctx, "secondary_opacity_index", -1);
-			box_prog.set_uniform(ctx, "size_index", spc.bar_percentual_width.size_idx);
-			box_prog.set_uniform(ctx, "secondary_size_index", spc.bar_percentual_depth.size_idx);
-			ctx.set_color(spc.bar_color.color);
-			box_prog.enable(ctx);
-			draw_sub_plot_samples(int(count), spc);
-			box_prog.disable(ctx);
 		}
-		if (spc.show_sticks) {
-			set_plot_uniforms(ctx, stick_prog);
-			set_mapping_uniforms(ctx, stick_prog);
-			stick_prog.set_uniform(ctx, "radius_scale", 1.0f);
-			stick_prog.set_uniform(ctx, "stick_coordinate_index", spc.stick_coordinate_index);
-			stick_prog.set_uniform(ctx, "stick_base_window", spc.stick_base_window);
-			stick_prog.set_uniform(ctx, "map_color_to_material", 7);
-			stick_prog.set_uniform(ctx, "color_index", spc.stick_color.color_idx);
-			stick_prog.set_uniform(ctx, "secondary_color_index", -1);
-			stick_prog.set_uniform(ctx, "opacity_index", spc.stick_color.opacity_idx);
-			stick_prog.set_uniform(ctx, "secondary_opacity_index", -1);
-			stick_prog.set_uniform(ctx, "size_index", spc.stick_width.size_idx);
-			stick_prog.set_uniform(ctx, "secondary_size_index", -1);
-			ctx.set_color(spc.stick_color.color);
-			stick_prog.set_attribute(ctx, "secondary_color", spc.stick_color.color);
-			stick_prog.set_attribute(ctx, "size", spc.stick_width.size * rs);
-			stick_prog.set_attribute(ctx, "secondary_size", spc.stick_width.size * rs);
-			stick_prog.enable(ctx);
-			draw_sub_plot_samples(int(count), spc);
-			stick_prog.disable(ctx);
-		}
-		if (spc.show_lines) {
-			set_plot_uniforms(ctx, tube_prog);
-			set_mapping_uniforms(ctx, tube_prog);
-			tube_prog.set_uniform(ctx, "radius_scale", 1.0f);
-			tube_prog.set_uniform(ctx, "map_color_to_material", 7);
-			tube_prog.set_uniform(ctx, "color_index", spc.line_color.color_idx);
-			tube_prog.set_uniform(ctx, "secondary_color_index", -1);
-			tube_prog.set_uniform(ctx, "opacity_index", spc.line_color.opacity_idx);
-			tube_prog.set_uniform(ctx, "secondary_opacity_index", -1);
-			tube_prog.set_uniform(ctx, "size_index", spc.line_width.size_idx);
-			tube_prog.set_uniform(ctx, "secondary_size_index", -1);
-			ctx.set_color(spc.line_color.color);
-			tube_prog.set_attribute(ctx, "size", spc.line_width.size * rs);
-			tube_prog.enable(ctx);
-			draw_sub_plot_samples(int(count), spc, true);
-			tube_prog.disable(ctx);
-		}
-		
+		disable_attributes(ctx, i);
 	}
 }
 
@@ -469,6 +469,7 @@ void plot3d::draw_ticks(cgv::render::context& ctx)
 {
 	if (tick_labels.empty())
 		return;
+	ctx.enable_font_face(label_font_face, get_domain_config_ptr()->label_font_size);
 	for (const auto& tbc : tick_batches) if (tbc.label_count > 0) {
 		ctx.set_color(get_domain_config_ptr()->axis_configs[tbc.ai].color);
 		for (unsigned i = tbc.first_label; i < tbc.first_label + tbc.label_count; ++i) {
@@ -528,6 +529,7 @@ void plot3d::clear(cgv::render::context& ctx)
 //	surface_prog.destruct(ctx);
 	cgv::render::ref_box_renderer(ctx, -1);
 	cgv::render::ref_rounded_cone_renderer(ctx, -1);
+	plot_base::clear(ctx);
 }
 
 void plot3d::create_line_config_gui(cgv::base::base* bp, cgv::gui::provider& p, plot_base_config& pbc)

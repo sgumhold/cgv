@@ -32,10 +32,10 @@ namespace cgv {
 		void surfel_renderer::set_attribute_array_manager(const context& ctx, attribute_array_manager* _aam_ptr)
 		{
 			surface_renderer::set_attribute_array_manager(ctx, _aam_ptr);
-			if (aam_ptr) {
-				if (aam_ptr->has_attribute(ctx, ref_prog().get_attribute_location(ctx, "point_size")))
+			if (has_aam()) {
+				if (has_attribute(ctx, "point_size"))
 					has_point_sizes = true;
-				if (aam_ptr->has_attribute(ctx, ref_prog().get_attribute_location(ctx, "color_index")))
+				if (has_attribute(ctx, "color_index"))
 					has_indexed_colors = true;
 			}
 			else {

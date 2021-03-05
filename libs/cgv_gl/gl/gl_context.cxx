@@ -1947,8 +1947,8 @@ bool gl_context::texture_enable(
 	++old_binding;
 	glBindTexture(get_tex_dim(tb.tt), tex_id);
 	// glEnable is not needed for texture arrays and will throw an invalid enum error
-	if(!(tb.tt == TT_1D_ARRAY || tb.tt == TT_2D_ARRAY))
-		glEnable(get_tex_dim(tb.tt));
+	//if(!(tb.tt == TT_1D_ARRAY || tb.tt == TT_2D_ARRAY))
+	//	glEnable(get_tex_dim(tb.tt));
 	bool result = !check_gl_error("gl_context::texture_enable", &tb);
 	if (tex_unit >= 0)
 		glActiveTexture(GL_TEXTURE0);
@@ -1972,8 +1972,8 @@ bool gl_context::texture_disable(
 	if (tex_unit >= 0)
 		glActiveTexture(GL_TEXTURE0+tex_unit);
 	// glDisable is not needed for texture arrays and will throw an invalid enum error
-	if(!(tb.tt == TT_1D_ARRAY || tb.tt == TT_2D_ARRAY))
-		glDisable(get_tex_dim(tb.tt));
+	//if(!(tb.tt == TT_1D_ARRAY || tb.tt == TT_2D_ARRAY))
+	//	glDisable(get_tex_dim(tb.tt));
 	bool result = !check_gl_error("gl_context::texture_disable", &tb);
 	glBindTexture(get_tex_dim(tb.tt), old_binding);
 	if (tex_unit >= 0)
@@ -2816,6 +2816,7 @@ bool gl_context::attribute_array_binding_create(attribute_array_binding_base& aa
 		error(std::string("gl_context::attribute_array_binding_create(): ") + gl_error(), &aab);
 		return false;
 	}
+	aab.ctx_ptr = this;
 	aab.handle = get_handle(a_id);
 	return true;
 }

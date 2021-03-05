@@ -22,8 +22,8 @@ namespace cgv {
 		void group_renderer::set_attribute_array_manager(const context& ctx, attribute_array_manager* _aam_ptr)
 		{
 			renderer::set_attribute_array_manager(ctx, _aam_ptr);
-			if (aam_ptr) {
-				if (aam_ptr->has_attribute(ctx, ref_prog().get_attribute_location(ctx, "group_index")))
+			if (has_aam()) {
+				if (has_attribute(ctx, "group_index"))
 					has_group_indices = true;
 			}
 			else {

@@ -190,11 +190,19 @@ namespace cgv { // @<
 			cgv::type::info::TypeId index_type;
 			/// count of indices
 			size_t index_count;
+			/// declare default attribute array manager used in core profile
+			attribute_array_manager default_aam;
+			/// if attribute array manager is set, use it for attribute management
+			attribute_array_manager* aam_ptr;
 		protected:
+			/// check for attribute array manager
+			bool has_aam() const { return aam_ptr != 0 && aam_ptr != &default_aam; }
+			/// check for attribute
+			bool has_attribute(const context& ctx, const std::string& attr_name) {
+				return aam_ptr->has_attribute(ctx, ref_prog().get_attribute_location(ctx, attr_name));
+			}
 			/// access to render style
 			const render_style* get_style_ptr() const;
-			/// if attribue array manager is set, use it for attribute management
-			attribute_array_manager* aam_ptr;
 			/// return whether attributes persist after a call to disable
 			bool attributes_persist() const { return aam_ptr != 0; }
 		public:

@@ -4,6 +4,7 @@
 #include <vector>
 #include <cgv/media/axis_aligned_box.h>
 #include <cgv/render/drawable.h>
+#include <cgv/render/attribute_array_binding.h>
 #include <cgv/render/vertex_buffer.h>
 #include <cgv/render/shader_program.h>
 #include <cgv/media/color.h>
@@ -220,6 +221,17 @@ struct CGV_API attribute_source
 	attribute_source(const attribute_source& as);
 };
 
+/// struct that manages attribute sources and corresponding gpu objects per subplot
+struct CGV_API attribute_source_array
+{
+	bool samples_out_of_date;
+	bool sources_out_of_date;
+	size_t count;
+	cgv::render::attribute_array_binding aab;
+	cgv::render::vertex_buffer vbo;
+	std::vector<attribute_source> attribute_sources;
+	attribute_source_array();
+};
 /// define enum with composable legend components
 enum LegendComponent
 {
@@ -231,6 +243,12 @@ enum LegendComponent
 	LC_PRIMARY_SIZE      = 16,
 	LC_SECONDARY_SIZE    = 32,
 	LC_ANY               = 63
+};
+
+struct sample_access
+{
+	virtual size_t size(unsigned i) const = 0;
+	virtual float operator() (unsigned i, unsigned k, unsigned o) const = 0;
 };
 
 /** base class for plot2d and plot3d, which can have several sub plots each */
@@ -370,9 +388,12 @@ protected:
 	cgv::media::font::font_ptr label_font;
 	/// store pointer to current font face
 	cgv::media::font::font_face_ptr label_font_face;
-
+	/// vbo for legend drawing
+	cgv::render::vertex_buffer vbo_legend;
+	/// manage attributes for legend drawing
+	cgv::render::attribute_array_binding aab_legend;
 	/// attribute sources
-	std::vector<std::vector<attribute_source> > attribute_sources;
+	std::vector<attribute_source_array> attribute_source_arrays;
 
 	/// callback to change fonts
 	void on_font_selection();
@@ -382,21 +403,18 @@ protected:
 	void set_plot_uniforms(cgv::render::context& ctx, cgv::render::shader_program& prog);
 	/// set the uniforms for defining the mappings to visual variables
 	void set_mapping_uniforms(cgv::render::context& ctx, cgv::render::shader_program& prog);
-	/// set vertex shader input attributes based on single vector of 2d points
-	void set_attributes(cgv::render::context& ctx, const std::vector<vec2>& points);
-	/// set vertex shader input attributes based on single vector of 3d points
-	void set_attributes(cgv::render::context& ctx, const std::vector<vec3>& points);
+private:
+	/// dimension independent implementation of attribute enabling
+	size_t enable_attributes(cgv::render::context& ctx, int i, const sample_access& sa);
+protected:
 	/// set vertex shader input attributes based on attribute source information
-	size_t set_attributes(cgv::render::context& ctx, int i, const std::vector< std::vector<vec2> >& samples);
+	size_t enable_attributes(cgv::render::context& ctx, int i, const std::vector<std::vector<vec2>>& samples);
 	/// set vertex shader input attributes based on attribute source information
-	size_t set_attributes(cgv::render::context& ctx, int i, const std::vector< std::vector<vec3> >& samples);
+	size_t enable_attributes(cgv::render::context& ctx, int i, const std::vector<std::vector<vec3>>& samples);
+	/// 
+	void disable_attributes(cgv::render::context& ctx, int i);
 	///
-	void set_default_attributes(cgv::render::context& ctx, cgv::render::shader_program& prog, unsigned count_others);
-
-	/// 
-	void enable_attributes(cgv::render::context& ctx, unsigned count);
-	/// 
-	void disable_attributes(cgv::render::context& ctx, unsigned count);
+	void update_samples_out_of_date_flag();
 	///
 	virtual bool compute_sample_coordinate_interval(int i, int ai, float& samples_min, float& samples_max) = 0;
 	///
@@ -484,6 +502,8 @@ public:
 	virtual void delete_sub_plot(unsigned i) = 0;
 	/// return a reference to the plot base configuration of the i-th plot
 	plot_base_config& ref_sub_plot_config(unsigned i);
+	/// notify plot that samples of given subplot are out of date
+	void set_samples_out_of_date(unsigned i);
 	/// set the colors for all plot features of the i-th sub plot as variation of the given color
 	void set_sub_plot_colors(unsigned i, const rgb& base_color);
 	/// define a sub plot attribute ai from coordinate aj of the i-th internal sample container
@@ -494,8 +514,10 @@ public:
 	void set_sub_plot_attribute(unsigned i, unsigned ai, const cgv::render::vertex_buffer* _vbo_ptr, size_t _offset, size_t _count, size_t _stride);
 	//@}
 
-	/// build legend prog
+	/// build legend prog and create aab
 	bool init(cgv::render::context& ctx);
+	/// destruct shader programs
+	void clear(cgv::render::context& ctx);
 
 	/**@name gui support*/
 	//@{
