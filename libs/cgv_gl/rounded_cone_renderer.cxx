@@ -45,15 +45,18 @@ namespace cgv {
 			shader_defines = "";
 		}
 
-		void rounded_cone_renderer::set_attribute_array_manager(const context& ctx, attribute_array_manager* _aam_ptr)
+		/// call this before setting attribute arrays to manage attribute array in given manager
+		void rounded_cone_renderer::enable_attribute_array_manager(const context& ctx, attribute_array_manager& aam)
 		{
-			surface_renderer::set_attribute_array_manager(ctx, _aam_ptr);
-			if(has_aam()) {
-				if(has_attribute(ctx, "radius"))
-					has_radii = true;
-			} else {
-				has_radii = false;
-			}
+			surface_renderer::enable_attribute_array_manager(ctx, aam);
+			if (has_attribute(ctx, "radius"))
+				has_radii = true;
+		}
+		/// call this after last render/draw call to ensure that no other users of renderer change attribute arrays of given manager
+		void rounded_cone_renderer::disable_attribute_array_manager(const context& ctx, attribute_array_manager& aam)
+		{
+			surface_renderer::disable_attribute_array_manager(ctx, aam);
+			has_radii = false;
 		}
 
 		bool rounded_cone_renderer::validate_attributes(const context& ctx) const

@@ -247,12 +247,12 @@ public:
 
 		// configure the attribute manager
 		auto& sr = ref_sphere_renderer(ctx);
-		sr.set_attribute_array_manager(ctx, &aam_sphere);
+		sr.enable_attribute_array_manager(ctx, aam_sphere);
 			sr.set_position_array(ctx, get_element_type(V.front().position), 
 				vbo_attribs, 0, V.size(), sizeof(vertex_type));
 			sr.set_color_array(ctx, get_element_type(V.front().color),
 				vbo_attribs, 2*sizeof(vec3), V.size(), sizeof(vertex_type));
-		sr.set_attribute_array_manager(ctx, 0);
+		sr.disable_attribute_array_manager(ctx, aam_sphere);
 
 		// configure attribute array binding for surface rendering
 		auto& pr = ctx.ref_surface_shader_program(false);
@@ -430,9 +430,10 @@ public:
 	{
 		if (show_vertices) {
 			sphere_renderer& sr = ref_sphere_renderer(ctx);
-			sr.set_attribute_array_manager(ctx, &aam_sphere);
+			sr.enable_attribute_array_manager(ctx, aam_sphere);
 			sr.set_render_style(sphere_style);
 			sr.render(ctx, 0, nr_positions);
+			sr.disable_attribute_array_manager(ctx, aam_sphere);
 		}
 
 		// remember restart setting

@@ -41,25 +41,27 @@ namespace cgv {
 			has_rotations = false;
 			has_texture_indices = false;
 		}
-		void slab_renderer::set_attribute_array_manager(const context& ctx, attribute_array_manager* _aam_ptr)
+		/// call this before setting attribute arrays to manage attribute array in given manager
+		void slab_renderer::enable_attribute_array_manager(const context& ctx, attribute_array_manager& aam)
 		{
-			group_renderer::set_attribute_array_manager(ctx, _aam_ptr);
-			if (has_aam()) {
-				if (has_attribute(ctx, "extent"))
-					has_extents = true;
-				if (has_attribute(ctx, "translation"))
-					has_translations= true;
-				if (has_attribute(ctx, "rotation"))
-					has_rotations= true;
-				if (has_attribute(ctx, "texture_index"))
-					has_texture_indices = true;
-			}
-			else {
-				has_extents = false;
-				has_translations = false;
-				has_rotations = false;
-				has_texture_indices = false;
-			}
+			group_renderer::enable_attribute_array_manager(ctx, aam);
+			if (has_attribute(ctx, "extent"))
+				has_extents = true;
+			if (has_attribute(ctx, "translation"))
+				has_translations = true;
+			if (has_attribute(ctx, "rotation"))
+				has_rotations = true;
+			if (has_attribute(ctx, "texture_index"))
+				has_texture_indices = true;
+		}
+		/// call this after last render/draw call to ensure that no other users of renderer change attribute arrays of given manager
+		void slab_renderer::disable_attribute_array_manager(const context& ctx, attribute_array_manager& aam)
+		{
+			group_renderer::disable_attribute_array_manager(ctx, aam);
+			has_extents = false;
+			has_translations = false;
+			has_rotations = false;
+			has_texture_indices = false;
 		}
 
 		/// set the flag, whether the position is interpreted as the slab center

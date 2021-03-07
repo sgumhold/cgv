@@ -116,7 +116,8 @@ std::vector<unsigned>& plot2d::ref_sub_plot_strips(unsigned i)
 bool plot2d::init(cgv::render::context& ctx)
 {
 	cgv::render::ref_rectangle_renderer(ctx, 1);
-
+	aam_domain.init(ctx);
+	aam_tick_labels.init(ctx);
 	if (!prog.build_program(ctx, "plot2d.glpr", true)) {
 		std::cerr << "could not build GLSL program from plot2d.glpr" << std::endl;
 		return false;
@@ -139,6 +140,8 @@ bool plot2d::init(cgv::render::context& ctx)
 void plot2d::clear(cgv::render::context& ctx)
 {
 	cgv::render::ref_rectangle_renderer(ctx, -1);
+	aam_domain.destruct(ctx);
+	aam_tick_labels.destruct(ctx);
 	point_prog.destruct(ctx);
 	prog.destruct(ctx);
 	stick_prog.destruct(ctx);
@@ -478,11 +481,13 @@ void plot2d::draw_domain(cgv::render::context& ctx, int si, bool no_fill)
 	}
 	auto& rr = cgv::render::ref_rectangle_renderer(ctx);
 	rr.set_render_style(rrs);
+	rr.enable_attribute_array_manager(ctx, aam_domain);
 	rr.set_rectangle_array(ctx, R);
 	rr.set_color_array(ctx, C);
 	rr.set_depth_offset_array(ctx, D);
 	size_t offset = (get_domain_config_ptr()->fill && !no_fill) ? 0 : 1;
 	rr.render(ctx, offset, R.size()-offset);
+	rr.disable_attribute_array_manager(ctx, aam_domain);
 }
 
 void plot2d::draw_tick_labels(cgv::render::context& ctx, int si)
@@ -533,11 +538,13 @@ void plot2d::draw_tick_labels(cgv::render::context& ctx, int si)
 		cgv::render::rectangle_render_style rrs = cgv::ref_rectangle_render_style();
 		rrs.default_depth_offset = -4 * layer_depth;
 		rr.set_render_style(rrs);
+		rr.enable_attribute_array_manager(ctx, aam_tick_labels);
 		rr.set_textured_rectangle_array(ctx, Q);
 		rr.set_color_array(ctx, C);
 		ff->ref_texture(ctx).enable(ctx);
 		rr.render(ctx, 0, Q.size());
 		ff->ref_texture(ctx).disable(ctx);
+		rr.disable_attribute_array_manager(ctx, aam_tick_labels);
 	}
 }
 

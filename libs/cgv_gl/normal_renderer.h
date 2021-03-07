@@ -33,7 +33,10 @@ namespace cgv {
 			bool validate_attributes(const context& ctx) const;
 		public:
 			normal_renderer();
-			void set_attribute_array_manager(const context& ctx, attribute_array_manager* _aam_ptr);
+			/// call this before setting attribute arrays to manage attribute array in given manager
+			void enable_attribute_array_manager(const context& ctx, attribute_array_manager& aam);
+			/// call this after last render/draw call to ensure that no other users of renderer change attribute arrays of given manager
+			void disable_attribute_array_manager(const context& ctx, attribute_array_manager& aam);
 			/// the normal scale is multiplied to the normal length of the normal render style
 			void set_normal_scale(float _normal_scale);
 			bool init(context& ctx);

@@ -98,21 +98,31 @@ namespace cgv {
 				delete default_render_style;
 			default_render_style = 0;
 		}
+		/// call this before setting attribute arrays to manage attribute array in given manager
+		void renderer::enable_attribute_array_manager(const context& ctx, attribute_array_manager& aam)
+		{
+			aam_ptr = &aam;
+			if (aam_ptr->has_attribute(ctx, ref_prog().get_attribute_location(ctx, "position")))
+				has_positions = true;
+			if (aam_ptr->has_attribute(ctx, ref_prog().get_attribute_location(ctx, "color")))
+				has_colors = true;
+		}
+		/// call this after last render/draw call to ensure that no other users of renderer change attribute arrays of given manager
+		void renderer::disable_attribute_array_manager(const context& ctx, attribute_array_manager& aam)
+		{
+			has_positions = false;
+			has_colors = false;
+			if (ctx.core_profile)
+				aam_ptr = &default_aam;
+			else
+				aam_ptr = 0;
+		}
 		void renderer::set_attribute_array_manager(const context& ctx, attribute_array_manager* _aam_ptr)
 		{
-			aam_ptr = _aam_ptr;
-			if (aam_ptr) {
-				if (aam_ptr->has_attribute(ctx, ref_prog().get_attribute_location(ctx, "position")))
-					has_positions = true;
-				if (aam_ptr->has_attribute(ctx, ref_prog().get_attribute_location(ctx, "color")))
-					has_colors = true;
-			}
-			else {
-				has_positions = false;
-				has_colors = false;
-			}
-			if (!aam_ptr && ctx.core_profile)
-				aam_ptr = &default_aam;
+			if (aam_ptr)
+				enable_attribute_array_manager(ctx, *_aam_ptr);
+			else
+				disable_attribute_array_manager(ctx, *aam_ptr);
 		}
 		bool renderer::set_attribute_array(const context& ctx, int loc, type_descriptor element_type, const vertex_buffer& vbo, size_t offset_in_bytes, size_t nr_elements, unsigned stride_in_bytes)
 		{

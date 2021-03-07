@@ -173,7 +173,7 @@ bool plot3d::init(cgv::render::context& ctx)
 	//		std::cerr << "could not build GLSL program from plot3d_surface.glpr" << std::endl;
 	//	}
 	//}
-
+	aam_domain.init(ctx);
 	cgv::render::ref_box_renderer(ctx, 1);
 	cgv::render::ref_rounded_cone_renderer(ctx, 1);
 	return plot_base::init(ctx);
@@ -315,12 +315,12 @@ void plot3d::draw_domain(cgv::render::context& ctx)
 	if (dc.fill) {
 		vec3 origin(0.0f);
 		cgv::render::box_renderer& br = cgv::render::ref_box_renderer(ctx);
-		br.set_attribute_array_manager(ctx, 0);
-		br.set_position_array(ctx, &origin, 1);
-		br.set_color_array(ctx, &dc.color, 1);
-		br.set_position_is_center(true);
-		br.set_extent(ctx, extent);
+		brs.surface_color = get_domain_config_ptr()->color;
 		br.set_render_style(brs);
+		br.set_position(ctx, origin);
+		br.set_extent(ctx, extent);
+		br.set_position_is_center(true);
+		br.set_color(ctx, dc.color);
 		br.render(ctx, 0, 1);
 	}
 	// draw axes
@@ -459,10 +459,12 @@ void plot3d::draw_domain(cgv::render::context& ctx)
 
 	auto& rcr = cgv::render::ref_rounded_cone_renderer(ctx);
 	rcr.set_render_style(rcrs);
+	rcr.enable_attribute_array_manager(ctx, aam_domain);
 	rcr.set_position_array(ctx, P);
 	rcr.set_color_array(ctx, C);
 	rcr.set_radius_array(ctx, R);
 	rcr.render(ctx, 0, P.size());
+	rcr.disable_attribute_array_manager(ctx, aam_domain);
 }
 
 void plot3d::draw_ticks(cgv::render::context& ctx)
@@ -483,14 +485,13 @@ void plot3d::draw_ticks(cgv::render::context& ctx)
 
 void plot3d::draw(cgv::render::context& ctx)
 {	
-	GLboolean line_smooth = glIsEnabled(GL_LINE_SMOOTH); glEnable(GL_LINE_SMOOTH);
-	GLboolean point_smooth = glIsEnabled(GL_POINT_SMOOTH); glEnable(GL_POINT_SMOOTH);
-	GLboolean blend = glIsEnabled(GL_BLEND); glEnable(GL_BLEND);
+	GLboolean blend = glIsEnabled(GL_BLEND); 
 	GLenum blend_src, blend_dst, depth;
 	glGetIntegerv(GL_BLEND_DST, reinterpret_cast<GLint*>(&blend_dst));
 	glGetIntegerv(GL_BLEND_SRC, reinterpret_cast<GLint*>(&blend_src));
 	glGetIntegerv(GL_DEPTH_FUNC, reinterpret_cast<GLint*>(&depth));
 
+	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glDepthFunc(GL_LEQUAL);
 
@@ -509,10 +510,6 @@ void plot3d::draw(cgv::render::context& ctx)
 	draw_sub_plots(ctx);
 	ctx.pop_modelview_matrix();
 
-	if (!line_smooth)
-		glDisable(GL_LINE_SMOOTH);
-	if (!point_smooth)
-		glDisable(GL_POINT_SMOOTH);
 	if (!blend)
 		glDisable(GL_BLEND);
 	glDepthFunc(depth);
@@ -529,6 +526,7 @@ void plot3d::clear(cgv::render::context& ctx)
 //	surface_prog.destruct(ctx);
 	cgv::render::ref_box_renderer(ctx, -1);
 	cgv::render::ref_rounded_cone_renderer(ctx, -1);
+	aam_domain.destruct(ctx);
 	plot_base::clear(ctx);
 }
 
