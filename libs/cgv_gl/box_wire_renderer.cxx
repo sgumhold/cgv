@@ -31,23 +31,26 @@ namespace cgv {
 			has_translations = false;
 			has_rotations = false;
 		}
-		void box_wire_renderer::set_attribute_array_manager(const context& ctx, attribute_array_manager* _aam_ptr)
+		/// call this before setting attribute arrays to manage attribute array in given manager
+		void box_wire_renderer::enable_attribute_array_manager(const context& ctx, attribute_array_manager& aam)
 		{
-			line_renderer::set_attribute_array_manager(ctx, _aam_ptr);
-			if (has_aam()) {
-				if (has_attribute(ctx, "extent"))
-					has_extents = true;
-				if (has_attribute(ctx, "translation"))
+			line_renderer::enable_attribute_array_manager(ctx, aam);
+			if (has_attribute(ctx, "extent"))
+				has_extents = true;
+			if (has_attribute(ctx, "translation"))
 				has_translations = true;
-				if (has_attribute(ctx, "rotation"))
-					has_rotations = true;
-			}
-			else {
-				has_extents = false;
-				has_translations = false;
-				has_rotations = false;
-			}
+			if (has_attribute(ctx, "rotation"))
+				has_rotations = true;
 		}
+		/// call this after last render/draw call to ensure that no other users of renderer change attribute arrays of given manager
+		void box_wire_renderer::disable_attribute_array_manager(const context& ctx, attribute_array_manager& aam)
+		{
+			line_renderer::disable_attribute_array_manager(ctx, aam);
+			has_extents = false;
+			has_translations = false;
+			has_rotations = false;
+		}
+
 		/// set the flag, whether the position is interpreted as the box center
 		void box_wire_renderer::set_position_is_center(bool _position_is_center)
 		{

@@ -53,6 +53,8 @@ class CGV_API plot3d : public plot_base
 	//cgv::render::shader_program surface_prog;
 	cgv::render::box_render_style brs;
 	cgv::render::rounded_cone_render_style rcrs;
+	cgv::render::attribute_array_manager aam_domain;
+
 	bool compute_sample_coordinate_interval(int i, int ai, float& samples_min, float& samples_max);
 	void draw_domain(cgv::render::context& ctx);
 	void draw_ticks(cgv::render::context& ctx);

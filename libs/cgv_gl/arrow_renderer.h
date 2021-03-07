@@ -60,7 +60,10 @@ namespace cgv {
 		public:
 			///
 			arrow_renderer();
-			void set_attribute_array_manager(const context& ctx, attribute_array_manager* _aam_ptr);
+			/// call this before setting attribute arrays to manage attribute array in given manager
+			void enable_attribute_array_manager(const context& ctx, attribute_array_manager& aam);
+			/// call this after last render/draw call to ensure that no other users of renderer change attribute arrays of given manager
+			void disable_attribute_array_manager(const context& ctx, attribute_array_manager& aam);
 			/// templated method to set the direction attribute from a vector of directions of type T, which should have 3 components
 			template <typename T>
 			void set_direction_array(const context& ctx, const std::vector<T>& directions) { has_directions = true;  direction_is_end_point = false;  set_attribute_array(ctx, ref_prog().get_attribute_location(ctx, "direction"), directions); }

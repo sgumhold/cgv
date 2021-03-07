@@ -50,6 +50,7 @@ protected:
 	float layer_depth;
 	/// render style of rectangles
 	cgv::render::rectangle_render_style rrs;
+	cgv::render::attribute_array_manager aam_domain, aam_tick_labels;
 public:
 	/// construct 2D plot with given number of additional attributes and default parameters
 	plot2d(unsigned nr_attributes = 0);

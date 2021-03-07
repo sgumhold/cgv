@@ -204,7 +204,7 @@ namespace cgv { // @<
 			/// access to render style
 			const render_style* get_style_ptr() const;
 			/// return whether attributes persist after a call to disable
-			bool attributes_persist() const { return aam_ptr != 0; }
+			bool attributes_persist() const { return has_aam(); }
 		public:
 			/// derived renderer classes have access to shader program
 			shader_program& ref_prog() { return *prog_ptr; }
@@ -263,12 +263,20 @@ namespace cgv { // @<
 			virtual ~renderer();
 			/// used by derived classes to manage singeltons
 			void manage_singelton(context& ctx, const std::string& renderer_name, int& ref_count, int ref_count_change);
-			/// provide an attribute manager that is used in successive calls to attribute array setting methods and in the enable and disable method, if a nullptr is provided attributes are managed through deprecated VertexAttributePointers - in this case a call to disable deattaches all attribute arrays which have to be set before the next enable call again
-			virtual void set_attribute_array_manager(const context& ctx, attribute_array_manager* _aam_ptr = 0);
+			/// call this before setting attribute arrays to manage attribute array in given manager
+			virtual void enable_attribute_array_manager(const context& ctx, attribute_array_manager& aam);
+			/// call this after last render/draw call to ensure that no other users of renderer change attribute arrays of given manager
+			virtual void disable_attribute_array_manager(const context& ctx, attribute_array_manager& aam);
+			/// this function is deprecated, please use enable_attribute_array_manager() and disable_attribute_manager() instead
+			DEPRECATED("deprecated, use enable_attribute_array_manager() paired with disable_attribute_manager instead().")
+				virtual void set_attribute_array_manager(const context& ctx, attribute_array_manager* _aam_ptr = 0);
 			/// reference given render style
 			void set_render_style(const render_style& rs);
 			/// abstract initialize method creates default render style, derived renderers to load the shader program
 			virtual bool init(context& ctx);
+			/// templated method to set the position attribute from a single position of type T
+			template <typename T>
+			void set_position(const context& ctx, const T& position) { has_positions = true; ref_prog().set_attribute(ctx, ref_prog().get_attribute_location(ctx, "position"), position); }
 			/// templated method to set the position attribute from a vector of positions of type T
 			template <typename T>
 			void set_position_array(const context& ctx, const std::vector<T>& positions) { has_positions = true; set_attribute_array(ctx, ref_prog().get_attribute_location(ctx, "position"), positions); }
@@ -280,6 +288,9 @@ namespace cgv { // @<
 			/// template method to set the position attribute from a vertex buffer object, the element type must be given as explicit template parameter
 			template <typename T>
 			void set_position_array(const context& ctx, const vertex_buffer& vbo, size_t offset_in_bytes, size_t nr_elements, unsigned stride_in_bytes = 0) { set_position_array(ctx, type_descriptor(element_descriptor_traits<T>::get_type_descriptor(T()), true), vbo, offset_in_bytes, nr_elements, stride_in_bytes); }
+			/// templated method to set the color attribute from a single color of type T
+			template <typename T>
+			void set_color(const context& ctx, const T& color) { has_colors = true; ref_prog().set_attribute(ctx, ref_prog().get_attribute_location(ctx, "color"), color); }
 			/// template method to set the color attribute from a vector of colors of type T
 			template <typename T>
 			void set_color_array(const context& ctx, const std::vector<T>& colors) { has_colors = true;  set_attribute_array(ctx, ref_prog().get_attribute_location(ctx, "color"), colors); }

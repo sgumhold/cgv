@@ -345,19 +345,20 @@ struct vecn_sample_access : public sample_access
 size_t plot_base::enable_attributes(cgv::render::context& ctx, int i, const sample_access& sa)
 {
 	auto& asa = attribute_source_arrays[i];
-	const auto& ass = asa.attribute_sources;
+	auto& ass = asa.attribute_sources;
 	// first check whether we need to update vbo
 	unsigned ai = 0, j;
 	bool update_vbo = false;
 	size_t vbo_nr_floats = 0;
 	for (ai = 0; ai < ass.size(); ++ai) {
-		const auto& as = ass[ai];
+		auto& as = ass[ai];
 		switch (as.source) {
 		case AS_SAMPLE_CONTAINER:
 			j = as.sub_plot_index == -1 ? i : as.sub_plot_index;
 			if (attribute_source_arrays[j].samples_out_of_date) {
 				update_vbo = true;
-				vbo_nr_floats += sa.size(j);
+				as.count = sa.size(j);
+				vbo_nr_floats += as.count;
 			}
 			break;
 		case AS_POINTER:
