@@ -324,7 +324,8 @@ static const char* snorm_texture_formats[] = {
 	"sint16[A]",
 	"sint16[L]",
 	"sint16[L,A]",
-	"sint16[I]"
+	"sint16[I]",
+	0
 };
 
 static const GLenum gl_int_texture_format_ids[] = 
