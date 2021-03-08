@@ -12,7 +12,7 @@ namespace cgv {
 	namespace render {
 
 		/** render style for sphere rendere */
-		struct CGV_API clod_point_render_style : public point_render_style
+		struct CGV_API clod_point_render_style : public group_render_style
 		{
 			/*@name clod rendering attributes*/
 			//@{
@@ -34,7 +34,7 @@ namespace cgv {
 			INVALID = -1
 		};
 
-		class CGV_API clod_point_renderer : public cgv::render::renderer {
+		class CGV_API clod_point_renderer : public render_types {
 		public:
 			struct Point {
 				vec3 position;
@@ -59,14 +59,27 @@ namespace cgv {
 			GLuint vertex_array = 0;
 			GLuint input_buffer = 0, render_buffer = 0, draw_parameter_buffer = 0;
 			const int input_pos = 0, render_pos = 1, drawp_pos = 3;
+
 			bool buffers_outofdate = true;
+
+			/// default render style
+			mutable render_style* default_render_style = nullptr;
+			/// current render style, can be set by user
+			const render_style* rs = nullptr;
 
 		protected:
 
 			void generate_lods_poisson();
 
-			void draw_and_compute_impl(context& ctx, PrimitiveType type, size_t start, size_t count, bool use_strips, bool use_adjacency, uint32_t strip_restart_index);
+			void draw_and_compute_impl(context& ctx, PrimitiveType type, size_t start, size_t count);
+
+			const render_style* get_style_ptr() const;
+
+			template <typename T>
+			const T& get_style() const { return *static_cast<const T*>(get_style_ptr()); }
 		public:
+			clod_point_renderer() = default;
+
 			render_style* create_render_style() const;
 
 			bool init(context& ctx);
@@ -75,18 +88,16 @@ namespace cgv {
 			
 			bool disable(context& ctx);
 
-			void clear(const cgv::render::context& ctx) override;
+			void clear(const cgv::render::context& ctx);
 
 			/// @param use_strips : unused
 			/// @param use_adjacency : unused
 			/// @param strip_restart_index : unused
-			void draw(context& ctx, size_t start=0, size_t count=0,
-				bool use_strips = false, bool use_adjacency = false, uint32_t strip_restart_index = -1) override;
+			void draw(context& ctx, size_t start=0, size_t count=0);
 			/// @param use_strips : unused
 			/// @param use_adjacency : unused
 			/// @param strip_restart_index : unused
-			bool render(context& ctx, size_t start, size_t count,
-				bool use_strips = false, bool use_adjacency = false, uint32_t strip_restart_index = -1) override;
+			bool render(context& ctx, size_t start, size_t count);
 
 			// this method can overwrite and reorder the elements of input_buffer_data
 			void generate_lods(const LoDMode mode = LoDMode::RANDOM_POISSON);
@@ -112,7 +123,7 @@ namespace cgv {
 				buffers_outofdate = true;
 			}
 
-			
+			void set_render_style(const render_style& rs);
 
 			uint8_t& point_lod(const int i);
 			rgb8& point_color(const int i);
