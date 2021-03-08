@@ -14,7 +14,7 @@ uniform float spacing; //root_spacings
 uniform float pointSize;
 uniform float minMilimeters;
 uniform vec2 screenSize;
-uniform vec4 pivot;
+uniform vec4 pivot; //pivot point in model space, usually the camera position
 
 //***** begin interface of view.glsl **********************************/
 mat4 get_modelview_matrix();
@@ -37,8 +37,6 @@ void main()
 	
 	color_gs = vec4(color.rgb,1.0);
 	
-	
-	//copy pasta
 	gl_Position = vec4(position.xyz, 1.0);
 
 	vec4 tpos = transform * vec4(position, 1.0);

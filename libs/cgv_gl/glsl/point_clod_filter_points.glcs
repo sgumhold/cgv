@@ -61,7 +61,7 @@ uniform float CLOD;
 uniform float scale;
 uniform float spacing; //root_spacings
 uniform vec2 screenSize;
-uniform vec4 pivot;
+uniform vec4 pivot; //pivot point in model space, usually the camera position
 
 
 //***** begin interface of view.glsl ***********************************
@@ -106,7 +106,7 @@ void main(){
 	}
 	
 	//vec3 worldPos = (world * vec4(aPosition, 1)).xyz;
-	vec3 worldPos = aPosition;
+	vec3 modelPos = aPosition;
 
 	// without level randomization
 	//float pointSpacing = uScale * uSpacing / pow(2, level);
@@ -114,7 +114,7 @@ void main(){
 	// with level randomization
 	float pointSpacing = scale * spacing / pow(2, level + aRandom);
 
-	float d = distance(worldPos, pivot.xyz);
+	float d = distance(modelPos, pivot.xyz);
 	float dc = length((projected.xy/screenSize)-vec2(1.0,1.0)); //distance to center in device coordinates
 
 	// targetSpacing dependant on camera distance

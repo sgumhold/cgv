@@ -365,7 +365,7 @@ namespace cgv {
 		bool clod_point_render_style::self_reflect(cgv::reflect::reflection_handler& rh)
 		{
 			return
-				rh.reflect_base(*static_cast<point_render_style*>(this)) &&
+				//rh.reflect_base(*static_cast<point_render_style*>(this)) &&
 				rh.reflect_member("CLOD_factor", CLOD) &&
 				rh.reflect_member("spacing", spacing) &&
 				rh.reflect_member("scale", scale) &&
@@ -527,7 +527,6 @@ namespace cgv {
 					points_left = points_left - batch_size;
 				}
 				
-				//threads.emplace_back(processor, num_read, num_to_read, min, max);
 				{	
 					Task t;
 					t.first_point = num_read;
@@ -537,12 +536,8 @@ namespace cgv {
 				num_read += batch_size;
 			}
 
-			//WorkerPool pool(std::thread::hardware_concurrency()-1);
 			pool.run([&tasks](int thread_id) {tasks(); });
 			
-			/*for (auto& t : threads)
-				t.join();
-				*/
 			return std::move(grid);
 		}
 
@@ -1359,7 +1354,7 @@ namespace cgv {
 			}
 		}
 
-		void clod_point_renderer::draw_and_compute_impl(context& ctx, PrimitiveType type, size_t start, size_t count, bool use_strips, bool use_adjacency, uint32_t strip_restart_index)
+		void clod_point_renderer::draw_and_compute_impl(context& ctx, PrimitiveType type, size_t start, size_t count)
 		{
 			//renderer::draw_impl(ctx, type, start, count, use_strips, use_adjacency, strip_restart_index);
 			
@@ -1399,6 +1394,16 @@ namespace cgv {
 			
 			glBindVertexArray(0);
 			draw_prog.disable(ctx);
+		}
+
+		const render_style* clod_point_renderer::get_style_ptr() const
+		{
+			if (rs)
+				return rs;
+			if (default_render_style)
+				return default_render_style;
+			default_render_style = create_render_style();
+			return default_render_style;
 		}
 
 		render_style* clod_point_renderer::create_render_style() const
@@ -1459,11 +1464,12 @@ namespace cgv {
 
 			//const clod_point_render_style& srs = get_style<clod_point_render_style>();
 			vec2 screenSize(ctx.get_width(), ctx.get_height());
+			//transform to model space since there is no view matrix
 			vec4 pivot = inv(ctx.get_modelview_matrix())*dvec4(0.0,0.0,0.0,1.0);
-			
-			mat4 modelview_matrix = ctx.get_modelview_matrix();
-			mat4 projection_matrix = ctx.get_projection_matrix();
 
+			//mat4 modelview_matrix = ctx.get_modelview_matrix();
+			//mat4 projection_matrix = ctx.get_projection_matrix();
+			
 			const clod_point_render_style& prs = get_style<clod_point_render_style>();
 
 			draw_prog.set_uniform(ctx, "CLOD" , prs.CLOD);
@@ -1474,13 +1480,14 @@ namespace cgv {
 			draw_prog.set_uniform(ctx, "screenSize", screenSize);
 			draw_prog.set_uniform(ctx, "pivot", pivot);
 			
-			//view.glsl
-			draw_prog.set_uniform(ctx, draw_prog.get_uniform_location(ctx, "modelview_matrix"), modelview_matrix);
-			draw_prog.set_uniform(ctx, draw_prog.get_uniform_location(ctx, "projection_matrix"), projection_matrix);
+
+			//view.glsl uniforms, set on draw_prog.enable(ctx) and  reduce_prog.enable(ctx)
+			//draw_prog.set_uniform(ctx, "modelview_matrix", modelview_matrix, true);
+			//draw_prog.set_uniform(ctx, "projection_matrix", projection_matrix, true);
+			//reduce_prog.set_uniform(ctx, "modelview_matrix", modelview_matrix, true);
+			//reduce_prog.set_uniform(ctx, "projection_matrix", projection_matrix, true);
 
 			// compute shader
-			reduce_prog.set_uniform(ctx, "modelview_matrix", modelview_matrix);
-			reduce_prog.set_uniform(ctx, "projection_matrix", projection_matrix);
 			reduce_prog.set_uniform(ctx, "CLOD", prs.CLOD);
 			reduce_prog.set_uniform(ctx, "scale", prs.scale);
 			reduce_prog.set_uniform(ctx, "spacing", prs.spacing);
@@ -1490,30 +1497,21 @@ namespace cgv {
 			float y_view_angle = 45;
 			//general point renderer uniforms
 			draw_prog.set_uniform(ctx, "use_color_index", false);
-			draw_prog.set_uniform(ctx, "use_group_point_size", prs.use_group_point_size);
+			//draw_prog.set_uniform(ctx, "use_group_point_size", prs.use_group_point_size);
 			float pixel_extent_per_depth = (float)(2.0 * tan(0.5 * 0.0174532925199 * y_view_angle) / ctx.get_height());
 			draw_prog.set_uniform(ctx, "pixel_extent_per_depth", pixel_extent_per_depth);
-			draw_prog.set_uniform(ctx, "blend_width_in_pixel", prs.blend_width_in_pixel);
-			draw_prog.set_uniform(ctx, "percentual_halo_width", 0.01f * prs.percentual_halo_width);
-			draw_prog.set_uniform(ctx, "halo_width_in_pixel", prs.halo_width_in_pixel);
-			draw_prog.set_uniform(ctx, "halo_color", prs.halo_color);
-			draw_prog.set_uniform(ctx, "halo_color_strength", prs.halo_color_strength);
-			
-			draw_prog.set_uniform(ctx, "use_group_color", false);
-			draw_prog.set_uniform(ctx, "use_group_transformation", false);
+			//draw_prog.set_uniform(ctx, "blend_width_in_pixel", prs.blend_width_in_pixel);
+			//draw_prog.set_uniform(ctx, "percentual_halo_width", 0.01f * prs.percentual_halo_width);
+			//draw_prog.set_uniform(ctx, "halo_width_in_pixel", prs.halo_width_in_pixel);
+			//draw_prog.set_uniform(ctx, "halo_color", prs.halo_color);
+			//draw_prog.set_uniform(ctx, "halo_color_strength", prs.halo_color_strength);
 			return true;
 		}
 
 		bool clod_point_renderer::disable(context& ctx)
 		{
 			
-			const clod_point_render_style& srs = get_style<clod_point_render_style>();
-
-			if (!attributes_persist()) {
-				//TODO reset internal attributes
-
-			}
-			
+			const clod_point_render_style& srs = get_style<clod_point_render_style>();			
 			return true;
 		}
 
@@ -1524,15 +1522,15 @@ namespace cgv {
 			clear_buffers(ctx);
 		}
 
-		void clod_point_renderer::draw(context& ctx, size_t start, size_t count, bool use_strips, bool use_adjacency, uint32_t strip_restart_index)
+		void clod_point_renderer::draw(context& ctx, size_t start, size_t count)
 		{
-			draw_and_compute_impl(ctx, cgv::render::PT_POINTS, start, count, use_strips, use_adjacency, strip_restart_index);
+			draw_and_compute_impl(ctx, cgv::render::PT_POINTS, start, count);
 		}
 
-		bool clod_point_renderer::render(context& ctx, size_t start, size_t count, bool use_strips, bool use_adjacency, uint32_t strip_restart_index)
+		bool clod_point_renderer::render(context& ctx, size_t start, size_t count)
 		{
 			if (enable(ctx)) {
-				draw(ctx, start, count, use_strips, use_adjacency, strip_restart_index);
+				draw(ctx, start, count);
 				return true;
 			}
 			return false;
@@ -1561,6 +1559,11 @@ namespace cgv {
 				input_buffer_data[i].position = positions[i];
 			}
 			buffers_outofdate = true;
+		}
+
+		void clod_point_renderer::set_render_style(const render_style& rs)
+		{
+			this->rs = &rs;
 		}
 
 		uint8_t& clod_point_renderer::point_lod(const int i)
