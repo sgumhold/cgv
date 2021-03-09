@@ -26,15 +26,6 @@ void attribute_array::add_attribute(type_descriptor element_type, uint32_t vbo_i
 /// perform a single render call
 void render_info::draw(context& ctx, const draw_call& dc, const draw_call* prev_dc, const draw_call* next_dc, bool use_materials)
 {
-
-	if ((dc.alpha_mode & AM_MASK) != 0) {
-		glEnable(GL_ALPHA_TEST);
-		glAlphaFunc(GL_GREATER, dc.alpha_cutoff);
-	}
-	if ((dc.alpha_mode & AM_BLEND) != 0) {
-		glEnable(GL_BLEND);
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	}
 	// ensure program is enabled
 	bool new_prog = true;
 	if (prev_dc && prev_dc->prog == dc.prog)
@@ -43,6 +34,19 @@ void render_info::draw(context& ctx, const draw_call& dc, const draw_call* prev_
 	if (new_prog && dc.prog && ctx.get_current_program() != dc.prog) {
 		dc.prog->enable(ctx);
 		prog_enabled = true;
+	}
+	if ((dc.alpha_mode & AM_MASK) != 0) {
+		dc.prog->set_uniform(ctx, "alpha_test", true);
+		dc.prog->set_uniform(ctx, "alpha_cutoff", dc.alpha_cutoff);
+	}
+	bool blend;
+	GLenum blend_src, blend_dst;
+	if ((dc.alpha_mode & AM_BLEND) != 0) {
+		blend = glIsEnabled(GL_BLEND);
+		glGetIntegerv(GL_BLEND_DST, reinterpret_cast<GLint*>(&blend_dst));
+		glGetIntegerv(GL_BLEND_SRC, reinterpret_cast<GLint*>(&blend_src));
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	}
 
 	// ensure material is enabled
@@ -94,8 +98,13 @@ void render_info::draw(context& ctx, const draw_call& dc, const draw_call* prev_
 	if ((!next_dc || next_dc->prog != dc.prog) && prog_enabled)
 		dc.prog->disable(ctx);
 
-	glDisable(GL_BLEND);
-	glDisable(GL_ALPHA_TEST);
+	if ((dc.alpha_mode & AM_BLEND) != 0) {
+		if (!blend)
+			glDisable(GL_BLEND);
+		glBlendFunc(blend_src, blend_dst);
+	}
+	if ((dc.alpha_mode & AM_MASK) != 0)
+		dc.prog->set_uniform(ctx, "alpha_test", false);
 }
 
 /// set vbo and vbe types

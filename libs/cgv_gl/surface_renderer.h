@@ -24,6 +24,8 @@ namespace cgv { // @<
 		/** style of a point */
 		struct CGV_API surface_render_style : public group_render_style
 		{
+			/// whether to set the surface color automatically
+			bool set_surface_color;
 			/// default value for color when map color to material is used
 			cgv::media::illum::surface_material::color_type surface_color;
 			/// culling mode for point splats, set to CM_OFF in constructor
@@ -47,7 +49,10 @@ namespace cgv { // @<
 			bool cull_per_primitive;
 		public:
 			surface_renderer();
-			void set_attribute_array_manager(const context& ctx, attribute_array_manager* _aam_ptr);
+			/// call this before setting attribute arrays to manage attribute array in given manager
+			void enable_attribute_array_manager(const context& ctx, attribute_array_manager& aam);
+			/// call this after last render/draw call to ensure that no other users of renderer change attribute arrays of given manager
+			void disable_attribute_array_manager(const context& ctx, attribute_array_manager& aam);
 			/// 
 			bool enable(context& ctx);
 			///

@@ -11,6 +11,12 @@
 
 ///
 namespace vr {
+	/// enum to support restriction of eyes to a single eye
+	enum EyeSelection {
+		ES_BOTH,
+		ES_LEFT,
+		ES_RIGHT
+	};
 	//! implements offscreen rendering
 	/*! vr_kit derives from gl_vr_display to provide offscreen rendering vor openvr driver as well as 
 		for the vr_emulated_kit of the vr_emulator. Implements the init_fbos(), enable_fbos(), 
@@ -47,13 +53,13 @@ namespace vr {
 		/// allow to set a different size
 		virtual void set_size(int new_width, int new_height);
 		/// initialize render targets and framebuffer objects in current opengl context
-		virtual bool init_fbos();
+		virtual bool init_fbos(EyeSelection es = ES_BOTH);
 		/// initialize render targets and framebuffer objects in current opengl context
 		virtual bool blit_fbo(int eye, int x, int y, int w, int h);
 		/// check whether fbos have been initialized
-		virtual bool fbos_initialized() const;
+		virtual bool fbos_initialized(EyeSelection es = ES_BOTH) const;
 		/// destruct render targets and framebuffer objects in current opengl context
-		virtual void destruct_fbos();
+		virtual void destruct_fbos(EyeSelection es = ES_BOTH);
 		/// enable the framebuffer object of given eye (0..left, 1..right) 
 		virtual void enable_fbo(int eye);
 		/// disable the framebuffer object of given eye

@@ -1,11 +1,16 @@
-files:plot3d_sphere
+vertex_file:plot3d_sphere.glvs
+vertex_file:color_scale.glsl
 vertex_file:view.glsl
 vertex_file:quaternion.glsl
 vertex_file:sphere_lib.glvs
 vertex_file:plot_lib.glsl
 geometry_shader_info:points;triangle_strip;4
+geometry_file:sphere.glgs
 geometry_file:sphere_lib.glgs
+geometry_file:splat.glsl
 geometry_file:view.glsl
+fragment_file:sphere.glfs
+fragment_file:splat.glsl
 fragment_file:sphere_lib.glfs
 fragment_file:side.glsl
 fragment_file:lights.glsl

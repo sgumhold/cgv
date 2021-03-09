@@ -139,7 +139,8 @@ namespace cgv {
 				case CT_RGB8:  color_storage_ptr = new color_storage<rgb8>(); break;
 				case CT_RGBA8: color_storage_ptr = new color_storage<rgba8>(); break;
 				}
-				color_storage_ptr->resize(nr_colors);
+				if (nr_colors != -1)
+					color_storage_ptr->resize(nr_colors);
 			}
 		}
 		/// destruct color storage

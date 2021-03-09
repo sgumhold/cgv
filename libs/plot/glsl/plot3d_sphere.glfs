@@ -1,4 +1,4 @@
-#version 150
+#version 330 core
 
 //***** begin interface of sphere_lib.glfs ***********************************
 bool computer_ray_sphere_intersection(out vec3 p_eye, out vec3 n_eye, out vec2 splat_tc, out float clip_depth, out int side);

@@ -243,16 +243,16 @@ void data_format::get_layout_dimension(unsigned int i, unsigned int layout_dim)
 
 
 /// return the total number of data entries 
-unsigned int data_format::get_nr_entries() const
+size_t data_format::get_nr_entries() const
 {
-	unsigned int size = 1;
+	size_t size = 1;
 	for (unsigned int i=0; i<get_nr_dimensions(); ++i)
 		size *= get_resolution(i);
 	return size;
 }
 
 /// return the total number of bytes necessary to store the data
-unsigned int data_format::get_nr_bytes() const
+size_t data_format::get_nr_bytes() const
 {
 	return get_nr_entries()*get_entry_size();
 }

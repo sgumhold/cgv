@@ -65,27 +65,27 @@ namespace stream_vis {
 	{
 		if (name == "p" || name == "points") {
 			cfg.show_points = true;
-			parse_color("color", cfg.point_color);
-			parse_float("size", cfg.point_size);
+			parse_color("color", cfg.point_color.color);
+			parse_float("size", cfg.point_size.size);
 		}
 		else if (name == "s" || name == "sticks") {
 			cfg.show_sticks = true;
-			parse_color("color", cfg.stick_color);
-			parse_float("width", cfg.stick_width);
+			parse_color("color", cfg.stick_color.color);
+			parse_float("width", cfg.stick_width.size);
 		}
 		else if (name == "b" || name == "bars") {
 			cfg.show_bars = true;
-			parse_color("color", cfg.bar_color);
-			parse_color("outline_color", cfg.bar_outline_color);
-			parse_float("outline_width", cfg.bar_outline_width);
-			parse_float("percentual_width", cfg.bar_percentual_width);
+			parse_color("color", cfg.bar_color.color);
+			parse_color("outline_color", cfg.bar_outline_color.color);
+			parse_float("outline_width", cfg.bar_outline_width.size);
+			parse_float("percentual_width", cfg.bar_percentual_width.size);
 			if (dim == 3)
-				parse_float("percentual_depth", static_cast<cgv::plot::plot3d_config&>(cfg).bar_percentual_depth);
+				parse_float("percentual_depth", static_cast<cgv::plot::plot3d_config&>(cfg).bar_percentual_depth.size);
 		}
 		else if (name == "l" || name == "lines") {
 			cfg.show_lines = true;
-			parse_color("color", cfg.line_color);
-			parse_float("width", cfg.line_width);
+			parse_color("color", cfg.line_color.color);
+			parse_float("width", cfg.line_width.size);
 			if (dim == 3)
 				parse_bool("show_orientation", static_cast<cgv::plot::plot3d_config&>(cfg).show_line_orientation);
 		}
@@ -179,8 +179,19 @@ namespace stream_vis {
 			return false;
 		}
 		// todo add derivation of subplot name from attribute definitions
-		std::string subplot_name = "subplot";
-		subplot_name += cgv::utils::to_string(pi.subplot_infos.size()+1);
+		std::string subplot_name = "<";
+		uint16_t last_time_series_index = 65535;
+		for (const auto& ad : ads) {
+			if (ad.time_series_index != last_time_series_index) {
+				if (last_time_series_index != 65535)
+					subplot_name += ",";
+				last_time_series_index = ad.time_series_index;
+				subplot_name += typed_time_series_ptr->at(ad.time_series_index)->name;
+				subplot_name += ".";
+			}
+			subplot_name += get_accessor_string(ad.accessor);			
+		}
+		subplot_name += ">";
 
 		// add subplot info
 		subplot_info spi;
@@ -190,10 +201,10 @@ namespace stream_vis {
 
 		// construct subplot config
 		cfg.show_points = cfg.show_sticks = cfg.show_bars = cfg.show_lines = false;
-		if (parse_color("color", cfg.ref_color))
-			cfg.set_colors(cfg.ref_color);
-		if (parse_float("size", cfg.ref_size))
-			cfg.set_size(cfg.ref_size);
+		if (parse_color("color", cfg.ref_color.color))
+			cfg.set_colors(cfg.ref_color.color);
+		if (parse_float("size", cfg.ref_size.size))
+			cfg.set_sizes(cfg.ref_size.size);
 
 		parse_marks(pi, cfg, dim);
 

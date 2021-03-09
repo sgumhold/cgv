@@ -1,13 +1,31 @@
-#version 150
-
-in vec3 normal;
-in vec4 color_fs;
-in vec2 texcoord_fs;
-in vec3 position;
-flat in int side;
+#version 330 core
 
 uniform bool use_texture = false;
+// 0 ... replace (color.rgba = texture.rgba)
+// 1 ... replace alpha (color.a = texture.r)
+// 2 ... multiply color (color.rgba*texture.rgba)
+// 3 ... multiply border_color (border_color.rgba*texture.rgba)
+// 4 ... mix color and border_color, 
+// 5 ... mix border_color and color,
+// 6 ... mix color and border_color with red texture component
+// 7 ... mix border_color and color with red texture component
+uniform int texture_mode = 0;
 uniform sampler2D tex;
+
+in RECTANGLE_FS {
+	vec3 position_eye;
+	vec3 normal_eye;
+	vec2 texcoord;
+	vec4 color;
+	vec4 border_color;
+	float depth_offset;
+	flat int side; // 0 is back facing and 1 is front facing
+	vec2 splatcoord;
+	vec2 percentual_splat_size;
+	vec2 percentual_blend_width;
+	vec2 percentual_rectangle_size;
+	vec2 percentual_core_size;
+} fi;
 
 //***** begin interface of fragment.glfs ***********************************
 uniform float gamma = 2.2;
@@ -18,11 +36,67 @@ void finish_fragment(vec4 color);
 vec4 compute_reflected_appearance(vec3 position_eye, vec3 normal_eye, vec4 color, int side);
 //***** end interface of surface.glsl ***********************************
 
+/// compute fragment color of point splat with halo
+vec4 compute_blended_color_with_halo(
+	in float percentual_radial_position,
+	in vec4 core_color, in float percentual_core_size,
+	in vec4 halo_color, in float percentual_point_size,
+	in float percentual_blend_width);
+
+float compute_lambda(in float min_value1, in float max_value1, in float min_value2, in float max_value2)
+{
+	return max(min(max_value1, max_value2) - max(min_value1, min_value2), 0.0);
+}
+
+float is_inside(in float value1, float min_value2, float max_value2)
+{
+	return (value1 >= min_value2 && value1 < max_value2) ? 1.0 : 0.0;
+}
+
+vec2 compute_blended_factors(in float percentual_radial_position, in float percentual_core_size,
+	                         in float percentual_point_size,      in float percentual_blend_width)
+{
+	float min_value1 = percentual_radial_position - 0.5*percentual_blend_width;
+	float max_value1 = percentual_radial_position + 0.5*percentual_blend_width;
+	vec2 lambda;
+	if (percentual_blend_width > 0.0) {
+		lambda[0] = compute_lambda(min_value1, max_value1, -percentual_core_size,   percentual_core_size);
+		lambda[1] = compute_lambda(min_value1, max_value1, -percentual_point_size, -percentual_core_size)
+		          + compute_lambda(min_value1, max_value1,  percentual_core_size,  percentual_point_size);
+		lambda /= percentual_blend_width;
+	}
+	else {
+		lambda[0] = is_inside(percentual_radial_position, -percentual_core_size, percentual_core_size);
+		lambda[1] = is_inside(abs(percentual_radial_position), percentual_core_size, percentual_point_size);
+		if (lambda[0]+lambda[1] > 1.0)
+			lambda *= 0.5;
+	}
+	return lambda;
+}
+
 void main()
 {
-	vec4 color = color_fs;
-	if (use_texture)
-		color = texture(tex, texcoord_fs);
+	vec4 core_color = fi.color;
+	if (use_texture) {
+		core_color = texture(tex, fi.texcoord);
+		switch (texture_mode) {
+		case 1 : core_color.a = core_color.r;
+		         core_color.rgb = fi.color.rgb; 
+				 break;
+		case 2 : core_color *= fi.color; break;
+		case 3 : core_color *= fi.border_color; break;
+		case 4 : core_color = mix(fi.color, fi.border_color, core_color); break;
+		case 5 : core_color = mix(fi.border_color, fi.color, core_color); break;
+		case 6 : core_color = mix(fi.color, fi.border_color, core_color.x); break;
+		case 7 : core_color = mix(fi.border_color, fi.color, core_color.x); break;
+		}
+	}
+	vec2 u = compute_blended_factors(fi.splatcoord[0], fi.percentual_core_size[0], fi.percentual_rectangle_size[0], fi.percentual_blend_width[0]);
+	vec2 v = compute_blended_factors(fi.splatcoord[1], fi.percentual_core_size[1], fi.percentual_rectangle_size[1], fi.percentual_blend_width[1]);
+	vec4 color = u[0]*v[0]*core_color + (u[1]*(v[0]+v[1])+u[0]*v[1])*fi.border_color;
+
 	// illumination
-	finish_fragment(compute_reflected_appearance(position, normalize(normal), color, side));
+	color = compute_reflected_appearance(fi.position_eye, normalize(fi.normal_eye), color, fi.side);
+	finish_fragment(color);
+	gl_FragDepth = gl_FragCoord.z+fi.depth_offset;
 }
