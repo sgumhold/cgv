@@ -43,6 +43,7 @@ private:
 	void frame_buffer_unbind(frame_buffer_base& fbb) const;
 	*/
 protected:
+	rgba current_color;
 	shader_program progs[4];
 	mutable cgv::type::uint64_type max_nr_indices, max_nr_vertices;
 	void ensure_configured() const;

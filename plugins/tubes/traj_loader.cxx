@@ -23,8 +23,7 @@
 // anonymous namespace begin
 namespace {
 
-namespace type_string
-{
+namespace type_str {
 	static const std::string REAL       = ":REAL";
 	static const std::string VEC2       = ":VEC2";
 	static const std::string VEC3       = ":VEC3";
@@ -69,6 +68,33 @@ struct trajectory_handler_registry : public cgv::base::base, public cgv::base::r
 template <class flt_type>
 traj_attribute<flt_type>::container_base::~container_base()
 {}
+
+template <class flt_type>
+traj_attribute<flt_type>::traj_attribute (unsigned components) : data(nullptr)
+{
+	switch (components)
+	{
+		case 1:
+			_type = REAL;
+			data = new container<real>();
+			return;
+		case 2:
+			_type = VEC2;
+			data = new container<Vec2>();
+			return;
+		case 3:
+			_type = VEC3;
+			data = new container<Vec3>();
+			return;
+		case 4:
+			_type = VEC4;
+			data = new container<Vec4>();
+			return;
+
+		default:
+			/* DoNothing() */;
+	}
+}
 
 template <class flt_type>
 traj_attribute<flt_type>::traj_attribute (std::vector<real> &&source)
@@ -161,18 +187,18 @@ const std::string& traj_attribute<flt_type>::type_string (void) const
 	switch (_type)
 	{
 		case REAL:
-			return type_string::REAL;
+			return type_str::REAL;
 		case VEC2:
-			return type_string::VEC2;
+			return type_str::VEC2;
 		case VEC3:
-			return type_string::VEC3;
+			return type_str::VEC3;
 		case VEC4:
-			return type_string::VEC4;
+			return type_str::VEC4;
 		case COLOR_RGB:
-			return type_string::COLOR_RGB;
+			return type_str::COLOR_RGB;
 
 		default:
-			return type_string::ERROR_TYPE;
+			return type_str::ERROR_TYPE;
 	}
 }
 

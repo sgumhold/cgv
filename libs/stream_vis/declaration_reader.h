@@ -23,6 +23,7 @@ namespace stream_vis {
 		virtual bool parse_bool (const std::string& name, bool& b) = 0;
 		virtual bool parse_float(const std::string& name, float& flt) = 0;
 		virtual bool parse_color(const std::string& name, rgb& color) = 0;
+		virtual bool parse_color(const std::string& name, rgba& color) = 0;
 		virtual bool parse_quat (const std::string& name, quat& quat) = 0;
 		virtual bool parse_vecn (const std::string& name, float* v, uint32_t dim) = 0;
 		virtual bool parse_ivecn(const std::string& name, int32_t* v, uint32_t dim) = 0;

@@ -244,8 +244,7 @@ void multi_view_interactor::on_set(void* member_ptr)
 	if (member_ptr == &add_controller_as_player) {
 		add_player(add_controller_as_player);
 	}
-	update_member(member_ptr);
-	post_redraw();
+	vr_view_interactor::on_set(member_ptr);
 }
 
 void multi_view_interactor::draw(cgv::render::context& ctx)

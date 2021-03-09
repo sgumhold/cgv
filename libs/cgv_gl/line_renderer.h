@@ -26,8 +26,10 @@ namespace cgv { // @<
 			line_renderer();
 			///
 			bool enable(context& ctx);
-			/// check manager for line width array
-			void set_attribute_array_manager(const context& ctx, attribute_array_manager* _aam_ptr);
+			/// call this before setting attribute arrays to manage attribute array in given manager
+			void enable_attribute_array_manager(const context& ctx, attribute_array_manager& aam);
+			/// call this after last render/draw call to ensure that no other users of renderer change attribute arrays of given manager
+			void disable_attribute_array_manager(const context& ctx, attribute_array_manager& aam);
 			/// specify a single line_width for all boxes
 			template <typename T>
 			void set_line_width(const context& ctx, const T& line_width) { has_line_widths = true;  ref_prog().set_attribute(ctx, ref_prog().get_attribute_location(ctx, "line_width"), line_width); }

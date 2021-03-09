@@ -1,0 +1,129 @@
+#version 330
+
+uniform int   color_index = -1;
+uniform int   secondary_color_index = -1;
+uniform int   opacity_index = -1;
+uniform int   secondary_opacity_index = -1;
+uniform int   size_index = -1;
+uniform int   secondary_size_index = -1;
+
+uniform int   rectangle_coordinate_index = 1;
+uniform float rectangle_base_window  = 0.0;
+uniform float rectangle_border_width = 0.0; 
+
+layout(location = 0) in float attribute0;
+layout(location = 1) in float attribute1;
+layout(location = 2) in float attribute2;
+layout(location = 3) in float attribute3;
+layout(location = 4) in float attribute4;
+layout(location = 5) in float attribute5;
+layout(location = 6) in float attribute6;
+layout(location = 7) in float attribute7;
+
+in vec4 color;
+in vec4 secondary_color;
+in float size;
+in float depth_offset;
+
+out RECTANGLE_GS {
+	mat4  modelview;
+	vec3  normal_eye;
+	vec2  extent;
+	vec4  color;
+	vec4  border_color;
+	float percentual_border_width;
+	float border_width_in_pixel; 
+	vec4  texcoord;
+	float depth_offset;
+} vo;
+
+//***** begin interface of view.glsl ***********************************
+mat4 get_modelview_matrix();
+mat4 get_projection_matrix();
+mat4 get_modelview_projection_matrix();
+mat4 get_inverse_modelview_matrix();
+mat4 get_inverse_modelview_projection_matrix();
+mat3 get_normal_matrix();
+mat3 get_inverse_normal_matrix();
+//***** end interface of view.glsl ***********************************
+
+//***** begin interface of plot_lib.glsl ***********************************
+uniform float attribute_min[8];
+uniform float attribute_max[8];
+float tick_space_from_attribute_space(int ai, float value);
+float attribute_space_from_tick_space(int ai, float value);
+float window_space_from_tick_space(int ai, float value);
+float tick_space_from_window_space(int ai, float value);
+vec3 plot_space_from_window_space(vec3 pnt);
+vec3 window_space_from_plot_space(vec3 pnt);
+vec3 world_space_from_plot_space(vec3 pnt);
+vec3 map_color(in float v_window, int idx);
+vec3 map_color(in float attributes[8], in vec3 base_color, int idx);
+float map_opacity(in float v_window, int idx);
+float map_opacity(in float attributes[8], in float base_opacity, int idx);
+float map_size(in float v_window, int idx);
+float map_size(in float attributes[8], in float base_size, int idx);
+vec3 map_color(in float v_window);
+vec3 map_color(in float attributes[8], in vec3 base_color);
+float map_opacity(in float v_window);
+float map_opacity(in float attributes[8], in float base_opacity);
+float map_size(in float v_window);
+float map_size(in float attributes[8], in float base_size);
+//***** end interface of plot_lib.glsl ***********************************
+
+void main()
+{
+	// collect attributes
+	float attributes[8];
+	attributes[0] = attribute0;
+	attributes[1] = attribute1;
+	attributes[2] = attribute2;
+	attributes[3] = attribute3;
+	attributes[4] = attribute4;
+	attributes[5] = attribute5;
+	attributes[6] = attribute6;
+	attributes[7] = attribute7;
+
+	// compute position in window coordinates
+	vec3 position_window = vec3(
+		window_space_from_tick_space(0, tick_space_from_attribute_space(0, attribute0)),
+		window_space_from_tick_space(1, tick_space_from_attribute_space(1, attribute1)), 0.0);
+
+	// map to visual attributes
+	vo.color = color;
+	if (color_index >=0)
+		vo.color.rgb = map_color(attributes, vo.color.rgb, color_index);
+	if (opacity_index >= 0)
+		vo.color.a = map_opacity(attributes, vo.color.a, opacity_index);
+	vo.border_color = secondary_color;
+	if (secondary_color_index >=0)
+		vo.border_color.rgb = map_color(attributes, vo.border_color.rgb, secondary_color_index);
+	if (secondary_opacity_index >= 0)
+		vo.border_color.a = map_opacity(attributes, vo.border_color.a, secondary_opacity_index);
+	float width = size;
+	if (size_index >= 0)
+		width = map_size(attributes, width, size_index);
+	vo.percentual_border_width = max(-0.5,-rectangle_border_width/width);
+	if (secondary_size_index >= 0)
+		vo.percentual_border_width = map_size(attributes, vo.percentual_border_width, secondary_size_index);
+
+	// construct top and bottom center positions in window coordinates
+	vec3 bottom_window = position_window;
+	bottom_window[rectangle_coordinate_index] = min(position_window[rectangle_coordinate_index],rectangle_base_window);
+	vec3 top_window = position_window;
+	top_window[rectangle_coordinate_index] = max(position_window[rectangle_coordinate_index],rectangle_base_window);
+	// transform both to plot coordinates
+	vec3 bottom_plot = plot_space_from_window_space(bottom_window);
+	vec3 top_plot = plot_space_from_window_space(top_window);
+	// compute extent and center position
+	vo.extent = vec2(width);
+	vo.extent[rectangle_coordinate_index] = top_plot[rectangle_coordinate_index]-bottom_plot[rectangle_coordinate_index];
+	gl_Position = vec4(0.5*(bottom_plot+top_plot), 1.0);
+
+	// compute/set remaining outputs
+	vo.modelview = get_modelview_matrix();
+
+	vo.normal_eye = get_normal_matrix()*vec3(0.0,0.0,1.0);
+	vo.depth_offset = depth_offset;
+	vo.border_width_in_pixel = 0.0; 
+}

@@ -43,7 +43,7 @@ bool mouse_tracker::handle(event& e)
 {
 	if (e.get_kind() == EID_KEY) {
 		key_event& ke = static_cast<key_event&>(e);
-		if (ke.get_action() == KA_PRESS) {
+		if (ke.get_action() != KA_RELEASE) {
 			switch (ke.get_key()) {
 			case 'B' : 
 				bold = !bold;
@@ -130,7 +130,7 @@ void mouse_tracker::stream_help(std::ostream& os)
 #include <cgv/render/shader_program.h>
 
 /// optional method of drawable
-void mouse_tracker::draw(context& ctx)
+void mouse_tracker::finish_frame(context& ctx)
 {
 	if (ff.empty()) {
 		cgv::media::font::font_ptr f = cgv::media::font::find_font(font_names[font_idx]);

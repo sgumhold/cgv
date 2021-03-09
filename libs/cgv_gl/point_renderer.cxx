@@ -23,12 +23,14 @@ namespace cgv {
 			point_size = 1.0f;
 			use_group_point_size = false;
 			measure_point_size_in_pixel = true;
+			screen_aligned = true;
 
 			blend_points = true;
 			blend_width_in_pixel = 1.0f;
 			halo_width_in_pixel = 0.0f;
 			percentual_halo_width = 0.0f;
 			halo_color_strength = 0.5f;
+			default_depth_offset = 0.0f;
 		}
 
 		point_renderer::point_renderer()
@@ -36,23 +38,29 @@ namespace cgv {
 			has_point_sizes = false;
 			has_group_point_sizes = false;
 			has_indexed_colors = false;
+			has_depth_offsets = false;
 			///
 			reference_point_size = 0.01f;
 			y_view_angle = 45;
 		}
-		void point_renderer::set_attribute_array_manager(const context& ctx, attribute_array_manager* _aam_ptr)
+		/// call this before setting attribute arrays to manage attribute array in given manager
+		void point_renderer::enable_attribute_array_manager(const context& ctx, attribute_array_manager& aam)
 		{
-			group_renderer::set_attribute_array_manager(ctx, _aam_ptr);
-			if (aam_ptr) {
-				if (aam_ptr->has_attribute(ctx, ref_prog().get_attribute_location(ctx, "point_size")))
-					has_point_sizes = true;
-				if (aam_ptr->has_attribute(ctx, ref_prog().get_attribute_location(ctx, "color_index")))
-					has_indexed_colors = true;
-			}
-			else {
-				has_point_sizes = false;
-				has_indexed_colors = false;
-			}
+			group_renderer::enable_attribute_array_manager(ctx, aam);
+			if (has_attribute(ctx, "point_size"))
+				has_point_sizes = true;
+			if (has_attribute(ctx, "color_index"))
+				has_indexed_colors = true;
+			if (has_attribute(ctx, "depth_offset"))
+				has_depth_offsets = true;
+		}
+		/// call this after last render/draw call to ensure that no other users of renderer change attribute arrays of given manager
+		void point_renderer::disable_attribute_array_manager(const context& ctx, attribute_array_manager& aam)
+		{
+			group_renderer::disable_attribute_array_manager(ctx, aam);
+			has_point_sizes = false;
+			has_indexed_colors = false;
+			has_depth_offsets = false;
 		}
 		///
 		void point_renderer::set_reference_point_size(float _reference_point_size)
@@ -123,12 +131,14 @@ namespace cgv {
 			if (ref_prog().is_linked()) {
 				if (!has_point_sizes)
 					ref_prog().set_attribute(ctx, "point_size", prs.point_size);
+				if (!has_depth_offsets)
+					ref_prog().set_attribute(ctx, "depth_offset", prs.default_depth_offset);
 				ref_prog().set_uniform(ctx, "use_color_index", has_indexed_colors);
 				ref_prog().set_uniform(ctx, "measure_point_size_in_pixel", prs.measure_point_size_in_pixel);
+				ref_prog().set_uniform(ctx, "screen_aligned", prs.screen_aligned);
 				ref_prog().set_uniform(ctx, "reference_point_size", reference_point_size);
 				ref_prog().set_uniform(ctx, "use_group_point_size", prs.use_group_point_size);
-				float pixel_extent_per_depth = (float)(2.0*tan(0.5*0.0174532925199*y_view_angle) / ctx.get_height());
-				ref_prog().set_uniform(ctx, "pixel_extent_per_depth", pixel_extent_per_depth);
+				ref_prog().set_uniform(ctx, "viewport_height", (float)ctx.get_height());
 				ref_prog().set_uniform(ctx, "blend_width_in_pixel", prs.blend_width_in_pixel);
 				ref_prog().set_uniform(ctx, "percentual_halo_width", 0.01f*prs.percentual_halo_width);
 				ref_prog().set_uniform(ctx, "halo_width_in_pixel", prs.halo_width_in_pixel);
@@ -147,6 +157,7 @@ namespace cgv {
 			if (!attributes_persist()) {
 				has_indexed_colors = false;
 				has_point_sizes = false;
+				has_depth_offsets = false;
 			}
 			return group_renderer::disable(ctx);
 		}
@@ -163,6 +174,8 @@ namespace cgv {
 				rh.reflect_member("point_size", point_size) &&
 				rh.reflect_member("use_group_point_size", use_group_point_size) &&
 				rh.reflect_member("measure_point_size_in_pixel", measure_point_size_in_pixel) &&
+				rh.reflect_member("screen_aligned", screen_aligned) &&
+				rh.reflect_member("default_depth_offset", default_depth_offset) &&
 				rh.reflect_member("blend_points", blend_points) &&
 				rh.reflect_member("blend_width_in_pixel", blend_width_in_pixel) &&
 				rh.reflect_member("halo_width_in_pixel", halo_width_in_pixel) &&
@@ -194,9 +207,11 @@ namespace cgv {
 				cgv::render::point_render_style* prs_ptr = reinterpret_cast<cgv::render::point_render_style*>(value_ptr);
 				cgv::base::base* b = dynamic_cast<cgv::base::base*>(p);
 
+				p->add_member_control(b, "screen_aligned", prs_ptr->screen_aligned, "toggle");
 				p->add_member_control(b, "point_size", prs_ptr->point_size, "value_slider", "label='';w=130;min=0.01;max=50;log=true;ticks=true", "");
-				p->add_member_control(b, "px", prs_ptr->measure_point_size_in_pixel, "toggle", "w=16");
+				p->add_member_control(b, "px", prs_ptr->measure_point_size_in_pixel, "toggle", "w=16", "");
 				p->add_member_control(b, "blend", prs_ptr->blend_points, "toggle", "w=50");
+				p->add_member_control(b, "default_depth_offset", prs_ptr->default_depth_offset, "value_slider", "min=0.000001;max=0.1;step=0.0000001;log=true;ticks=true");
 				bool show = p->begin_tree_node("halo", prs_ptr->halo_color, false, "options='w=120';level=3;align=''");
 				p->add_member_control(b, "color", prs_ptr->halo_color, "", "w=50");
 				if (show) {

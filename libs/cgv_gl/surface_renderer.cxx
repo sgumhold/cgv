@@ -24,6 +24,7 @@ namespace cgv {
 
 		surface_render_style::surface_render_style() : material("default")
 		{
+			set_surface_color = true;
 			surface_color = cgv::media::illum::surface_material::color_type(0.4f, 0.1f, 0.7f);
 			culling_mode = CM_OFF;
 			illumination_mode = IM_ONE_SIDED;
@@ -36,19 +37,21 @@ namespace cgv {
 			cull_per_primitive = true;
 			has_normals = false;
 		}
-		void surface_renderer::set_attribute_array_manager(const context& ctx, attribute_array_manager* _aam_ptr)
+		/// call this before setting attribute arrays to manage attribute array in given manager
+		void surface_renderer::enable_attribute_array_manager(const context& ctx, attribute_array_manager& aam)
 		{
-			group_renderer::set_attribute_array_manager(ctx, _aam_ptr);
-			if (aam_ptr) {
-				if (aam_ptr->has_attribute(ctx, ref_prog().get_attribute_location(ctx, "normal")))
-					has_normals = true;
-				if (aam_ptr->has_attribute(ctx, ref_prog().get_attribute_location(ctx, "texcoord")))
-					has_texcoords = true;
-			}
-			else {
-				has_normals = false;
-				has_texcoords = false;
-			}
+			group_renderer::enable_attribute_array_manager(ctx, aam);
+			if (has_attribute(ctx, "normal"))
+				has_normals = true;
+			if (has_attribute(ctx, "texcoord"))
+				has_texcoords = true;
+		}
+		/// call this after last render/draw call to ensure that no other users of renderer change attribute arrays of given manager
+		void surface_renderer::disable_attribute_array_manager(const context& ctx, attribute_array_manager& aam)
+		{
+			group_renderer::disable_attribute_array_manager(ctx, aam);
+			has_normals = false;
+			has_texcoords = false;
 		}
 
 		void set_gl_material_color(GLenum side, const cgv::media::illum::phong_material::color_type& c, float alpha, GLenum type)
@@ -97,8 +100,9 @@ namespace cgv {
 				}
 			}
 			if (ref_prog().is_linked()) {
+				if (srs.set_surface_color)
+					ctx.set_color(srs.surface_color);
 				ctx.set_material(srs.material);
-				ctx.set_color(srs.surface_color);
 				ref_prog().set_uniform(ctx, "map_color_to_material", int(srs.map_color_to_material));
 				ref_prog().set_uniform(ctx, "culling_mode", int(srs.culling_mode));
 				ref_prog().set_uniform(ctx, "illumination_mode", int(srs.illumination_mode));
@@ -126,6 +130,7 @@ namespace cgv {
 				rh.reflect_member("culling_mode", culling_mode) &&
 				rh.reflect_member("illumination_mode", illumination_mode) &&
 				rh.reflect_member("map_color_to_material", map_color_to_material) &&
+				rh.reflect_member("set_surface_color", set_surface_color) &&
 				rh.reflect_member("surface_color", surface_color) &&
 				rh.reflect_member("material", material);
 		}
@@ -164,7 +169,8 @@ namespace cgv {
 				p->add_member_control(b, "culling_mode", srs_ptr->culling_mode, "dropdown", "enums='off,backface,frontface'");
 				if (p->begin_tree_node("color and materials", srs_ptr->surface_color, false, "level=3")) {
 					p->align("\a");
-					p->add_member_control(b, "surface_color", srs_ptr->surface_color);
+					p->add_member_control(b, "surface_color", srs_ptr->surface_color, "", "w=160", " ");
+					p->add_member_control(b, "set", srs_ptr->set_surface_color, "toggle", "w=32");
 					if (p->begin_tree_node("material", srs_ptr->material, false, "level=3")) {
 						p->align("\a");
 						p->add_gui("front_material", srs_ptr->material);
