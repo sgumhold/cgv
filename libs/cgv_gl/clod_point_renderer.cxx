@@ -743,7 +743,7 @@ namespace cgv {
 			struct Task {
 				ChunkNode* chunk = nullptr;
 				//one chunk per task
-				Task(ChunkNode& chunk) {
+				explicit Task(ChunkNode& chunk) {
 					this->chunk = &chunk;
 				}
 			};
@@ -780,8 +780,9 @@ namespace cgv {
 			//builds node hierachy
 			tasks.func = [this,&indexer,&sampler,&nodes,&mtx_nodes](Task* task) {
 				static constexpr float Infinity = std::numeric_limits<float>::infinity();
-				auto chunk = task->chunk;
+				ChunkNode* chunk = task->chunk;
 				vec3 min(Infinity), max(-Infinity);
+
 				for (auto& v : chunk->pc_data->vertices) {
 					min.x() = std::min(min.x(), v.position.x());
 					min.y() = std::min(min.y(), v.position.y());
@@ -798,14 +799,15 @@ namespace cgv {
 				std::shared_ptr<std::vector<Vertex>> points(chunk->pc_data, &(chunk->pc_data->vertices));
 
 				buildHierarchy(&indexer, chunk_root.get(), points, points->size());
-				//TODO continue
+
 				auto onNodeCompleted = [&indexer](IndexNode* node) {
 					indexer.write(*node);
 				};
 
 				sampler.sample(chunk_root, indexer.spacing, onNodeCompleted);
 
-				indexer.flushChunkRoot(chunk_root);
+				//in core method does not need flushing
+				//indexer.flushChunkRoot(chunk_root);
 
 				// add chunk root, provided it isn't the root.
 				if (chunk_root->name.size() > 1) {
@@ -815,7 +817,7 @@ namespace cgv {
 
 				std::lock_guard<std::mutex> lock(mtx_nodes);
 
-				nodes.push_back(chunk_root);
+				nodes.push_back(std::move(chunk_root));
 			};
 
 			//fill task pool
@@ -842,14 +844,18 @@ namespace cgv {
 			else {
 
 				auto onNodeCompleted = [&indexer](IndexNode* node) {
-					indexer.write(*node);
+					//indexer.write(*node);
 				};
 
 				sampler.sample(indexer.root, indexer.spacing, onNodeCompleted);
 			}
-
-			indexer.write(*indexer.root.get());
-
+			
+			//indexer.write(*indexer.root.get());
+			//write nodes
+			nodes.push_back(indexer.root);
+			for (auto& node : nodes) {
+				indexer.write(*node.get());
+			}
 			//indexer.writer->closeAndWait();
 		}
 
@@ -1017,7 +1023,7 @@ namespace cgv {
 		
 		void octree_lod_generator::buildHierarchy(Indexer* indexer, IndexNode* node, std::shared_ptr<std::vector<Vertex>> points, int64_t numPoints, int64_t depth)
 		{
-			if (numPoints < max_points_per_chunk) {
+			if (numPoints < max_points_per_index_node) {
 				IndexNode* realization = node;
 				realization->index_start = 0;
 				realization->num_points = numPoints;
@@ -1077,7 +1083,7 @@ namespace cgv {
 
 			auto pyramid = createSumPyramid(counters, counterGridSize);
 
-			auto nodes = createNodes(pyramid,max_points_per_chunk);
+			auto nodes = createNodes(pyramid, max_points_per_index_node);
 
 			auto expandTo = [node](NodeCandidate& candidate) {
 
@@ -1132,7 +1138,7 @@ namespace cgv {
 
 				realization->points = buffer;
 
-				if (realization->num_points > max_points_per_chunk) {
+				if (realization->num_points > max_points_per_index_node) {
 					needRefinement.push_back(realization);
 				}
 
@@ -1176,7 +1182,7 @@ namespace cgv {
 					int64_t numUniquePoints = counters.size();
 					int64_t numDuplicates = numPointsInBox - numUniquePoints;
 
-					if (numDuplicates < max_points_per_chunk / 2) {
+					if (numDuplicates < max_points_per_index_node / 2) {
 						// few uniques, just unfavouribly distributed points
 						// print warning but continue
 						/*
@@ -1261,7 +1267,7 @@ namespace cgv {
 
 		std::vector <octree_lod_generator::Vertex> octree_lod_generator::generate_lods(const std::vector<Vertex>& vertices)
 		{
-			std::cerr << "Warning: octree method is highly unstable!\n";
+			std::cerr << "Warning: octree method is unstable!\n";
 			std::vector<Vertex> out;
 			this->source_data = (Vertex*)vertices.data();
 			this->source_data_size = vertices.size();

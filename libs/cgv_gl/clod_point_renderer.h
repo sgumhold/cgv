@@ -249,7 +249,6 @@ namespace cgv {
 				void flushChunkRoot(std::shared_ptr<IndexNode> chunkRoot) {
 
 					std::lock_guard<std::mutex> lock(mtx_chunkRoot);
-					int64_t size = chunkRoot->points->size();
 
 					for (auto& vert : *(chunkRoot->points)) {
 						output->push_back(vert);
@@ -268,7 +267,8 @@ namespace cgv {
 			
 			std::vector<PointCloud> point_clouds;
 
-			int max_points_per_chunk = 5'000'000;
+			static constexpr int max_points_per_index_node = 10'000;
+			int max_points_per_chunk;
 			int grid_size;
 			int currentPass;
 
