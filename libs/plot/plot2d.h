@@ -22,8 +22,8 @@ struct CGV_API plot2d_config : public plot_base_config
 class CGV_API plot2d : public plot_base
 {
 protected:
-	cgv::render::shader_program prog;
-	cgv::render::shader_program point_prog, stick_prog;
+	cgv::render::shader_program line_prog;
+	cgv::render::shader_program point_prog;
 	cgv::render::shader_program rectangle_prog;
 	///
 	bool draw_point_plot(cgv::render::context& ctx, int si, int layer_idx);

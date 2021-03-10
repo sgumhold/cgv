@@ -1,14 +1,17 @@
 #version 330 core
 
-in vec2 uv;
-in vec4 color_fs;
-in vec4 secondary_color_fs;
-in float percentual_blend_width;
-in float percentual_splat_size;
-in float percentual_core_size;
-in float percentual_point_size;
+uniform float halo_color_strength = 1.0;
 
-uniform float depth_offset = 0.0;
+in LINE_FS {
+	vec4  color;
+	vec4  halo_color;
+	float param;
+	float percentual_blend_width;
+	float percentual_core_size;
+	float percentual_point_size;
+	float percentual_splat_size;
+	float depth_offset;
+} fi;
 
 //***** begin interface of fragment.glfs ***********************************
 uniform float gamma = 2.2;
@@ -25,13 +28,9 @@ vec4 compute_blended_color_with_halo(
 
 void main()
 {
-	float percentual_radial_position = length(uv);
-	if (percentual_radial_position > percentual_splat_size)
-		discard;
-
 	finish_fragment(compute_blended_color_with_halo(
-		percentual_radial_position, color_fs, percentual_core_size,
-		secondary_color_fs, percentual_point_size, percentual_blend_width));
-
-	gl_FragDepth = gl_FragCoord.z+depth_offset;
+		fi.param, fi.color, fi.percentual_core_size,
+		vec4(mix(fi.color.rgb, fi.halo_color.rgb,halo_color_strength), fi.halo_color.a), fi.percentual_point_size, fi.percentual_blend_width
+	));
+	gl_FragDepth = gl_FragCoord.z+fi.depth_offset;
 }
