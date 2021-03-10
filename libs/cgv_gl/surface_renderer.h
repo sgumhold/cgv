@@ -57,6 +57,9 @@ namespace cgv { // @<
 			bool enable(context& ctx);
 			///
 			bool disable(context& ctx);
+			/// specify a single normal for all lines
+			template <typename T>
+			void set_normal(const context& ctx, const cgv::math::fvec<T, 3>& normal) { has_normals = true;  ref_prog().set_attribute(ctx, ref_prog().get_attribute_location(ctx, "normal"), normal); }
 			/// templated method to set the normal attribute array from a vector of normals of type T, which should have 3 components
 			template <typename T>
 			void set_normal_array(const context& ctx, const std::vector<T>& normals) { has_normals = true;  set_attribute_array(ctx, ref_prog().get_attribute_location(ctx, "normal"), normals); }

@@ -118,16 +118,12 @@ bool plot2d::init(cgv::render::context& ctx)
 	cgv::render::ref_rectangle_renderer(ctx, 1);
 	aam_domain.init(ctx);
 	aam_tick_labels.init(ctx);
-	if (!prog.build_program(ctx, "plot2d.glpr", true)) {
-		std::cerr << "could not build GLSL program from plot2d.glpr" << std::endl;
+	if (!line_prog.build_program(ctx, "plot2d_line.glpr", true)) {
+		std::cerr << "could not build GLSL program from plot2d_line.glpr" << std::endl;
 		return false;
 	}
 	if (!point_prog.build_program(ctx, "plot2d_point.glpr")) {
 		std::cerr << "could not build GLSL program from plot2d_point.glpr" << std::endl;
-		return false;
-	}
-	if (!stick_prog.build_program(ctx, "plot2d_stick.glpr")) {
-		std::cerr << "could not build GLSL program from plot2d_stick.glpr" << std::endl;
 		return false;
 	}
 	if (!rectangle_prog.build_program(ctx, "plot2d_rect.glpr")) {
@@ -143,8 +139,7 @@ void plot2d::clear(cgv::render::context& ctx)
 	aam_domain.destruct(ctx);
 	aam_tick_labels.destruct(ctx);
 	point_prog.destruct(ctx);
-	prog.destruct(ctx);
-	stick_prog.destruct(ctx);
+	line_prog.destruct(ctx);
 	rectangle_prog.destruct(ctx);
 	plot_base::clear(ctx);
 }
@@ -196,19 +191,27 @@ bool plot2d::draw_line_plot(cgv::render::context& ctx, int i, int layer_idx)
 	bool result = false;
 	if (count > 0) {
 		const plot2d_config& spc = ref_sub_plot2d_config(i);
-		if (spc.show_lines && prog.is_linked()) {
-			//glLineWidth(spc.line_width.size);
-			set_plot_uniforms(ctx, prog);
-			set_mapping_uniforms(ctx, prog);
-			prog.set_uniform(ctx, "feature_offset", 0.001f * get_extent().length());
-			prog.set_uniform(ctx, "color_index", spc.line_color.color_idx);
-			prog.set_uniform(ctx, "secondary_color_index", -1);
-			prog.set_uniform(ctx, "opacity_index", spc.line_color.opacity_idx);
-			prog.set_uniform(ctx, "secondary_opacity_index", -1);
-			prog.set_uniform(ctx, "size_index", spc.line_width.size_idx);
-			prog.set_attribute(ctx, "color", spc.line_color.color);
+		if (spc.show_lines && line_prog.is_linked()) {
+			set_plot_uniforms(ctx, line_prog);
+			set_mapping_uniforms(ctx, line_prog);
+			line_prog.set_uniform(ctx, "depth_offset", -layer_idx * layer_depth);
+			line_prog.set_uniform(ctx, "reference_line_width", spc.line_width.size * get_domain_config_ptr()->reference_size);
+			line_prog.set_uniform(ctx, "blend_width_in_pixel", get_domain_config_ptr()->blend_width_in_pixel);
+			line_prog.set_uniform(ctx, "halo_width_in_pixel", 0.0f);
+			line_prog.set_uniform(ctx, "halo_color_strength", 0.0f);
+			line_prog.set_uniform(ctx, "halo_color", spc.line_color.color);
+			line_prog.set_uniform(ctx, "percentual_halo_width", 0.0f);
+			line_prog.set_uniform(ctx, "viewport_height", (float)ctx.get_height());
+			line_prog.set_uniform(ctx, "measure_line_width_in_pixel", false);
+			line_prog.set_uniform(ctx, "screen_aligned", false);
+			line_prog.set_uniform(ctx, "color_index", spc.line_color.color_idx);
+			line_prog.set_uniform(ctx, "secondary_color_index", -1);
+			line_prog.set_uniform(ctx, "opacity_index", spc.line_color.opacity_idx);
+			line_prog.set_uniform(ctx, "secondary_opacity_index", -1);
+			line_prog.set_uniform(ctx, "size_index", spc.line_width.size_idx);
+			line_prog.set_attribute(ctx, "color", spc.line_color.color);
 			ctx.set_color(spc.line_color.color);
-			prog.enable(ctx);
+			line_prog.enable(ctx);
 			if (strips[i].empty())
 				draw_sub_plot_samples(count, spc, true);
 			else {
@@ -218,7 +221,7 @@ bool plot2d::draw_line_plot(cgv::render::context& ctx, int i, int layer_idx)
 					fst += strips[i][j];
 				}
 			}
-			prog.disable(ctx);
+			line_prog.disable(ctx);
 			result = true;
 		}
 	}
@@ -234,7 +237,7 @@ bool plot2d::draw_stick_plot(cgv::render::context& ctx, int i, int layer_idx)
 	bool result = false;
 	if (count > 0) {
 		const plot2d_config& spc = ref_sub_plot2d_config(i);
-		if (spc.show_sticks && stick_prog.is_linked()) {
+		if (spc.show_sticks && rectangle_prog.is_linked()) {
 			// configure vertex shader
 			rectangle_prog.set_uniform(ctx, "color_index", spc.stick_color.color_idx);
 			rectangle_prog.set_uniform(ctx, "secondary_color_index", -1);
