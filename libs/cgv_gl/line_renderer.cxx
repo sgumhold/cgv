@@ -103,7 +103,7 @@ namespace cgv {
 			// set program uniforms
 			ref_prog().set_uniform(ctx, "halo_color", lrs.halo_color);
 			ref_prog().set_uniform(ctx, "halo_width_in_pixel", lrs.halo_width_in_pixel);
-			ref_prog().set_uniform(ctx, "percentual_halo_width", lrs.percentual_halo_width);
+			ref_prog().set_uniform(ctx, "percentual_halo_width", 0.01f * lrs.percentual_halo_width);
 			ref_prog().set_uniform(ctx, "screen_aligned", lrs.screen_aligned);
 			ref_prog().set_uniform(ctx, "measure_line_width_in_pixel", lrs.measure_line_width_in_pixel);
 			ref_prog().set_uniform(ctx, "reference_line_width", lrs.reference_line_width);

@@ -29,7 +29,7 @@ vec4 compute_blended_color_with_halo(
 void main()
 {
 	finish_fragment(compute_blended_color_with_halo(
-		fi.param, fi.color, fi.percentual_core_size,
+		abs(fi.param), fi.color, fi.percentual_core_size,
 		vec4(mix(fi.color.rgb, fi.halo_color.rgb,halo_color_strength), fi.halo_color.a), fi.percentual_point_size, fi.percentual_blend_width
 	));
 	gl_FragDepth = gl_FragCoord.z+fi.depth_offset;
