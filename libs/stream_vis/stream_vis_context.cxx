@@ -273,6 +273,7 @@ namespace stream_vis {
 
 	bool stream_vis_context::init(cgv::render::context& ctx)
 	{
+		ctx.set_bg_clr_idx(4);
 		bool success = true;
 		for (auto& pl : plot_pool) {
 			if (false && pl.dim == 2) {

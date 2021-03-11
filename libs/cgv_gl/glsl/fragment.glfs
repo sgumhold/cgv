@@ -10,12 +10,16 @@ void finish_fragment(vec4 color);
 
 
 uniform float gamma = 2.2;
+uniform bool alpha_test = false;
+uniform float alpha_cutoff = 0.1;
 
 out vec4 frag_color;
 
-
 void finish_fragment(vec4 color)
 {
+	// alpha test
+	if (alpha_test && color.a <= alpha_cutoff)
+		discard;
 	frag_color = color;
 	// perform inverse gamma correction and clamp to avoid problems with on laptop screens
 	frag_color.rgb = clamp(pow(frag_color.rgb, vec3(gamma)),0.0,0.9999999);

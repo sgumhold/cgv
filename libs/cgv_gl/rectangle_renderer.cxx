@@ -43,28 +43,30 @@ namespace cgv {
 			y_view_angle = _y_view_angle;
 		}
 
-		void rectangle_renderer::set_attribute_array_manager(const context& ctx, attribute_array_manager* _aam_ptr)
+		/// call this before setting attribute arrays to manage attribute array in given manager
+		void rectangle_renderer::enable_attribute_array_manager(const context& ctx, attribute_array_manager& aam)
 		{
-			surface_renderer::set_attribute_array_manager(ctx, _aam_ptr);
-			if (aam_ptr) {
-				if(aam_ptr->has_attribute(ctx, ref_prog().get_attribute_location(ctx, "extent")))
-					has_extents = true;
-				if(aam_ptr->has_attribute(ctx, ref_prog().get_attribute_location(ctx, "translation")))
-					has_translations = true;
-				if(aam_ptr->has_attribute(ctx, ref_prog().get_attribute_location(ctx, "rotation")))
-					has_rotations = true;
-				if (aam_ptr->has_attribute(ctx, ref_prog().get_attribute_location(ctx, "texcoord")))
-					has_texcoords = true;
-				if (aam_ptr->has_attribute(ctx, ref_prog().get_attribute_location(ctx, "depth_offset")))
-					has_depth_offsets = true;
-			}
-			else {
-				has_extents = false;
-				has_translations = false;
-				has_rotations = false;
-				has_texcoords = false;
-				has_depth_offsets = false;
-			}
+			surface_renderer::enable_attribute_array_manager(ctx, aam);
+			if (has_attribute(ctx, "extent"))
+				has_extents = true;
+			if (has_attribute(ctx, "translation"))
+				has_translations = true;
+			if (has_attribute(ctx, "rotation"))
+				has_rotations = true;
+			if (has_attribute(ctx, "texcoord"))
+				has_texcoords = true;
+			if (has_attribute(ctx, "depth_offset"))
+				has_depth_offsets = true;
+		}
+		/// call this after last render/draw call to ensure that no other users of renderer change attribute arrays of given manager
+		void rectangle_renderer::disable_attribute_array_manager(const context& ctx, attribute_array_manager& aam)
+		{
+			surface_renderer::disable_attribute_array_manager(ctx, aam);
+			has_extents = false;
+			has_translations = false;
+			has_rotations = false;
+			has_texcoords = false;
+			has_depth_offsets = false;
 		}
 		
 		bool rectangle_renderer::init(context& ctx)
@@ -106,8 +108,7 @@ namespace cgv {
 			ref_prog().set_uniform(ctx, "has_translations", has_translations);
 			ref_prog().set_uniform(ctx, "position_is_center", position_is_center);
 			ref_prog().set_uniform(ctx, "use_texture", has_texcoords);
-			float pixel_extent_per_depth = (float)(2.0 * tan(0.5 * 0.0174532925199 * y_view_angle) / ctx.get_height());
-			ref_prog().set_uniform(ctx, "pixel_extent_per_depth", pixel_extent_per_depth);
+			ref_prog().set_uniform(ctx, "viewport_height", (float)ctx.get_height());
 			ref_prog().set_uniform(ctx, "texture_mode", rrs.texture_mode);
 			ref_prog().set_uniform(ctx, "pixel_blend", rrs.pixel_blend);
 			ref_prog().set_uniform(ctx, "border_width_in_pixel", rrs.border_width_in_pixel);

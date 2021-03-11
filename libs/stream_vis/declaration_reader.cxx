@@ -179,8 +179,19 @@ namespace stream_vis {
 			return false;
 		}
 		// todo add derivation of subplot name from attribute definitions
-		std::string subplot_name = "subplot";
-		subplot_name += cgv::utils::to_string(pi.subplot_infos.size()+1);
+		std::string subplot_name = "<";
+		uint16_t last_time_series_index = 65535;
+		for (const auto& ad : ads) {
+			if (ad.time_series_index != last_time_series_index) {
+				if (last_time_series_index != 65535)
+					subplot_name += ",";
+				last_time_series_index = ad.time_series_index;
+				subplot_name += typed_time_series_ptr->at(ad.time_series_index)->name;
+				subplot_name += ".";
+			}
+			subplot_name += get_accessor_string(ad.accessor);			
+		}
+		subplot_name += ">";
 
 		// add subplot info
 		subplot_info spi;

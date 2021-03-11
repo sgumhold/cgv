@@ -83,10 +83,10 @@ public:
 	bool write_atlas(const std::string& file_name);
 	cgv::render::texture& ref_texture(cgv::render::context& ctx) const;
 	cgv::render::texture& ref_texture(cgv::render::context& ctx);
-	void text_to_quads(vec2& p, const std::string& text, std::vector<cgv::render::textured_rectangle>& Q) const;
-	void text_to_quads(vec2& p, const std::string& text, std::vector<cgv::render::textured_rectangle>& Q);
-	box2 compute_box(const std::string& text) const;
-	vec2 align_text(const vec2& p, const std::string& text, cgv::render::TextAlignment ta) const;
+	unsigned text_to_quads(vec2& p, const std::string& text, std::vector<cgv::render::textured_rectangle>& Q, float scale = 1.0f, bool flip_y = false) const;
+	unsigned text_to_quads(vec2& p, const std::string& text, std::vector<cgv::render::textured_rectangle>& Q, float scale = 1.0f, bool flip_y = false);
+	box2 compute_box(const std::string& text, float scale = 1.0f, bool flip_y = false) const;
+	vec2 align_text(const vec2& p, const std::string& text, cgv::render::TextAlignment ta, float scale = 1.0f, bool flip_y = false) const;
 };
 
 /// reference counted pointer to tt_gl_font_faces

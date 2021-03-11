@@ -12,12 +12,18 @@ float tick_space_from_window_space(int ai, float value);
 vec3 plot_space_from_window_space(vec3 pnt);
 vec3 window_space_from_plot_space(vec3 pnt);
 vec3 world_space_from_plot_space(vec3 pnt);
-vec3 map_color(in float v_window, int idx = 0);
-vec3 map_color(in float attributes[8], in vec3 base_color, int idx = 0);
-float map_opacity(in float v_window, int idx = 0);
-float map_opacity(in float attributes[8], in float base_opacity, int idx = 0);
-float map_size(in float v_window, int idx = 0);
-float map_size(in float attributes[8], in float base_size, int idx = 0);
+vec3 map_color(in float v_window, int idx);
+vec3 map_color(in float attributes[8], in vec3 base_color, int idx);
+float map_opacity(in float v_window, int idx);
+float map_opacity(in float attributes[8], in float base_opacity, int idx);
+float map_size(in float v_window, int idx);
+float map_size(in float attributes[8], in float base_size, int idx);
+vec3 map_color(in float v_window);
+vec3 map_color(in float attributes[8], in vec3 base_color);
+float map_opacity(in float v_window);
+float map_opacity(in float attributes[8], in float base_opacity);
+float map_size(in float v_window);
+float map_size(in float attributes[8], in float base_size);
 //***** end interface of plot_lib.glsl ***********************************
 */
 
@@ -41,8 +47,14 @@ void rigid_to_matrix(in vec4 q, in vec3 t, out mat4 M);
 //***** end interface of quaternion.glsl ***********************************
 
 //***** begin interface of color_scale.glsl ***********************************
-float color_scale_gamma_mapping(in float v, in float gamma, int idx = 0);
-vec3 color_scale(in float v, int idx = 0);
+/// gamma adjust value after clamping to [0,1] and in case of uniform color_scale_is_bi_polar[0] accounting for uniform window_zero_position[0]
+float color_scale_gamma_mapping(in float v, in float gamma);
+/// gamma adjust value after clamping to [0,1] and in case of uniform color_scale_is_bi_polar[idx] accounting for uniform window_zero_position[idx]
+float color_scale_gamma_mapping(in float v, in float gamma, int idx);
+/// map value with color scale selected in uniform color_scale_index[idx=0|1] to rgb color
+vec3 color_scale(in float v, int idx);
+/// map value with color scale selected in uniform color_scale_index[0] to rgb color
+vec3 color_scale(in float v, int idx);
 //***** end interface of color_scale.glsl ***********************************
 
 // tick space transform
@@ -135,12 +147,17 @@ vec3 world_space_from_plot_space(vec3 pnt)
 	return center_location + rotate_vector_with_quaternion(pnt + vec3(0.0, 0.0, feature_offset), orientation);
 }
 
-vec3 map_color(in float v, int idx = 0)
+vec3 map_color(in float v, int idx)
 {
 	return color_scale(color_scale_gamma_mapping(v, color_scale_gamma[idx], idx), idx);
 }
 
-vec3 map_color(in float attributes[8], in vec3 base_color, int idx = 0)
+vec3 map_color(in float v)
+{
+	return map_color(v, 0);
+}
+
+vec3 map_color(in float attributes[8], in vec3 base_color, int idx)
 {
 	if (idx >= MAX_NR_COLOR_MAPPINGS || color_mapping[idx] < 0 || color_mapping[idx] > 7)
 		return base_color;
@@ -150,7 +167,12 @@ vec3 map_color(in float attributes[8], in vec3 base_color, int idx = 0)
 	return map_color(v,idx);
 }
 
-float opacity_gamma_mapping(in float v, in float gamma, int idx = 0)
+vec3 map_color(in float attributes[8], in vec3 base_color)
+{
+	return map_color(attributes, base_color, 0);
+}
+
+float opacity_gamma_mapping(in float v, in float gamma, int idx)
 {
 	if (opacity_is_bipolar[idx] != 0) {
 		float amplitude = max(opacity_window_zero_position[idx], 1.0 - opacity_window_zero_position[idx]);
@@ -163,12 +185,22 @@ float opacity_gamma_mapping(in float v, in float gamma, int idx = 0)
 		return pow(v, gamma);
 }
 
-float map_opacity(in float v, int idx = 0)
+float opacity_gamma_mapping(in float v, in float gamma)
+{
+	return opacity_gamma_mapping(v, gamma, 0);
+}
+
+float map_opacity(in float v, int idx)
 {
 	return (opacity_min[idx] + (opacity_max[idx] - opacity_min[idx])) * opacity_gamma_mapping(v, opacity_gamma[idx], idx);
 }
 
-float map_opacity(in float attributes[8], in float base_opacity, int idx = 0)
+float map_opacity(in float v)
+{
+	return map_opacity(v, 0);
+}
+
+float map_opacity(in float attributes[8], in float base_opacity, int idx)
 {
 	if (idx >= MAX_NR_OPACITY_MAPPINGS || opacity_mapping[idx] < 0 || opacity_mapping[idx] > 7)
 		return base_opacity;
@@ -178,9 +210,19 @@ float map_opacity(in float attributes[8], in float base_opacity, int idx = 0)
 	return map_opacity(v, idx) * base_opacity;
 }
 
+float map_opacity(in float attributes[8], in float base_opacity)
+{
+	return map_opacity(attributes, base_opacity, 0);
+}
+
 float map_size(in float v, int idx)
 {
 	return ((size_max[idx] - size_min[idx]) * pow(v, size_gamma[idx]) + size_min[idx]);
+}
+
+float map_size(in float v)
+{
+	return map_size(v, 0);
 }
 
 float map_size(in float attributes[8], in float base_size, int idx)
@@ -191,4 +233,9 @@ float map_size(in float attributes[8], in float base_size, int idx)
 	float v = window_space_from_tick_space(size_mapping[idx],
 		tick_space_from_attribute_space(size_mapping[idx], attributes[size_mapping[idx]]));
 	return map_size(v, idx) * base_size;
+}
+
+float map_size(in float attributes[8], in float base_size)
+{
+	return map_size(attributes, base_size, 0);
 }

@@ -1,6 +1,33 @@
 #include "time_series.h"
 
 namespace stream_vis {
+
+	std::string get_accessor_string(TimeSeriesAccessor tsa)
+	{
+		std::string result;
+		if ((tsa & TSA_TIME) != 0)
+			result += 't';
+		if ((tsa & TSA_X) != 0)
+			result += 'x';
+		if ((tsa & TSA_Y) != 0)
+			result += 'y';
+		if ((tsa & TSA_Z) != 0)
+			result += 'z';
+		if ((tsa & TSA_W) != 0)
+			result += 'w';
+		if ((tsa & TSA_LENGTH) != 0)
+			result += 'l';
+		if ((tsa & TSA_DIRECTION_X) != 0)
+			result += 'X';
+		if ((tsa & TSA_DIRECTION_Y) != 0)
+			result += 'Y';
+		if ((tsa & TSA_DIRECTION_Z) != 0)
+			result += 'Z';
+		if ((tsa & TSA_DIRECTION_W) != 0)
+			result += 'W';
+		return result;
+	}
+
 	/// return total number of seen samples
 	size_t time_series_base::get_nr_samples() const
 	{

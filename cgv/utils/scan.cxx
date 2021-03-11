@@ -305,6 +305,9 @@ bool is_integer(const char* begin, const char* end, int& value)
 {
 	if (begin == end)
 		return false;
+	// skip trailing spaces
+	while (begin < end && *begin == ' ')
+		++begin;
 	// check for hexadecimal case
 	if (end-begin>2 && begin[0] == '0' && to_upper(begin[1]) == 'X') {
 		int new_value = 0, b = 1;
@@ -360,8 +363,10 @@ bool is_double(const char* begin, const char* end, double& value)
 	int nr_dots = 0;
 	int nr_exp = 0;
 	bool sign_may_follow = true;
-	const char* p;
-	for (p = begin; p<end; ++p) {
+	const char* p = begin;
+	while (p < end && *p == ' ')
+		++p;
+	for (p; p<end; ++p) {
 		switch (*p) {
 		case '0' :
 		case '1' :
