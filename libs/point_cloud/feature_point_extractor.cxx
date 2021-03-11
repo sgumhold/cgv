@@ -31,6 +31,7 @@ void feature_points_extractor::get_feature_points(const point_cloud& source_pc, 
 			}
 		}
 	}
+	output_cloud.create_normals();
 }
 
 float feature_points_extractor::get_nml_deviation(const Nml& a, const Nml& b)
