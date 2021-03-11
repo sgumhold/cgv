@@ -32,18 +32,19 @@ namespace cgv {
 			length_eps = 0.000001f;
 			nr_subdivisions = 8;
 		}
-		void arrow_renderer::set_attribute_array_manager(const context& ctx, attribute_array_manager* _aam_ptr)
+		/// call this before setting attribute arrays to manage attribute array in given manager
+		void arrow_renderer::enable_attribute_array_manager(const context& ctx, attribute_array_manager& aam)
 		{
-			surface_renderer::set_attribute_array_manager(ctx, _aam_ptr);
-			if (aam_ptr) {
-				if (aam_ptr->has_attribute(ctx, ref_prog().get_attribute_location(ctx, "direction")))
-					has_directions = true;
-			}
-			else {
-				has_directions = false;
-			}
+			surface_renderer::enable_attribute_array_manager(ctx, aam);
+			if (has_attribute(ctx, "direction"))
+				has_directions = true;
 		}
-
+		/// call this after last render/draw call to ensure that no other users of renderer change attribute arrays of given manager
+		void arrow_renderer::disable_attribute_array_manager(const context& ctx, attribute_array_manager& aam)
+		{
+			surface_renderer::disable_attribute_array_manager(ctx, aam);
+			has_directions = false;
+		}
 		arrow_renderer::arrow_renderer()
 		{
 			has_directions = false;

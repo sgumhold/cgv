@@ -26,9 +26,14 @@ protected:
 	cgv::render::shader_program point_prog, stick_prog;
 	cgv::render::shader_program rectangle_prog;
 	///
-	void draw_sub_plots(cgv::render::context& ctx);
-	void draw_domain(cgv::render::context& ctx);
-	void draw_tick_labels(cgv::render::context& ctx);
+	bool draw_point_plot(cgv::render::context& ctx, int si, int layer_idx);
+	bool draw_line_plot(cgv::render::context& ctx, int si, int layer_idx);
+	bool draw_stick_plot(cgv::render::context& ctx, int si, int layer_idx);
+	void configure_bar_plot(cgv::render::context& ctx);
+	bool draw_bar_plot(cgv::render::context& ctx, int si, int layer_idx);
+	int draw_sub_plots_jointly(cgv::render::context& ctx, int layer_idx);
+	void draw_domain(cgv::render::context& ctx, int si = -1, bool no_fill = false);
+	void draw_tick_labels(cgv::render::context& ctx, int si = -1);
 protected:
 	bool disable_depth_mask;
 
@@ -37,10 +42,15 @@ protected:
 	std::vector<std::vector<vec2> > samples;
 	/// allow to split series into connected strips that are represented by the number of contained samples
 	std::vector <std::vector<unsigned> > strips;
+	/// whether to manage separate y-axis for each sub plot
+	bool multi_y_axis_mode;
+	/// offset in z-direction between sub plots
+	float dz;
 	///
 	float layer_depth;
 	/// render style of rectangles
 	cgv::render::rectangle_render_style rrs;
+	cgv::render::attribute_array_manager aam_domain, aam_tick_labels;
 public:
 	/// construct 2D plot with given number of additional attributes and default parameters
 	plot2d(unsigned nr_attributes = 0);

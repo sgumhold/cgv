@@ -274,12 +274,12 @@ namespace cgv {
 		if (tex_ptr->is_created() && tex_ptr->get_width() != bitmap_width || tex_ptr->get_height() != bitmap_height)
 			tex_ptr->destruct(ctx);
 		ctx_ptr = &ctx;
-		cgv::data::data_format df(bitmap_width, bitmap_height, cgv::type::info::TI_UINT8, cgv::data::CF_L);
+		cgv::data::data_format df(bitmap_width, bitmap_height, cgv::type::info::TI_UINT8, cgv::data::CF_R);
 		cgv::data::data_view dv(&df, bitmap.data());
-		if (tex_ptr->is_created())
-			tex_ptr->replace(ctx, 0, 0, dv);
-		else
-			tex_ptr->create(ctx, dv);
+		if (!tex_ptr->is_created())
+			tex_ptr->create(ctx, cgv::render::TT_2D, bitmap_width, bitmap_height);
+		tex_ptr->replace(ctx, 0, 0, dv);
+		
 		tex_ptr->generate_mipmaps(ctx);
 		tex_out_of_date = false;
 	}
@@ -315,7 +315,8 @@ namespace cgv {
 		fst_char = 32;
 		nr_chars = 224;
 		ctx_ptr = 0;
-		tex_ptr = new cgv::render::texture();
+		tex_ptr = new cgv::render::texture("[R]");
+		tex_ptr->set_min_filter(cgv::render::TF_ANISOTROP, 8.0f);
 		if (!read_font(file_name, fi)) {
 			internal_ttf_buffer.clear();
 			ttf_buffer = 0;
@@ -436,42 +437,59 @@ namespace cgv {
 		ensure_texture(ctx);
 		return *tex_ptr;
 	}
-	void tt_gl_font_face::text_to_quads(vec2& p, const std::string& text, std::vector<cgv::render::textured_rectangle>& Q) const
+	unsigned tt_gl_font_face::text_to_quads(vec2& p, const std::string& text, std::vector<cgv::render::textured_rectangle>& Q, float scale, bool flip_y) const
 	{
+		p /= scale;
+		unsigned cnt = 0;
 		for (unsigned char c : text) {
 			if (c < fst_char || c >= fst_char + nr_chars)
 				continue;
 			stbtt_aligned_quad q;
+			float y0 = p[1];
 			stbtt_GetBakedQuad(baked_chars.data(), bitmap_width, bitmap_height, int(c) - fst_char, &p[0], &p[1], &q, 1);
+			if (flip_y) {
+				float tmp = q.y0;
+				q.y0 = 2 * y0 - q.y1;
+				q.y1 = 2 * y0 - tmp;
+				p[1] = 2 * y0 - p[1];
+				std::swap(q.t1, q.t0);
+			}
 			Q.resize(Q.size() + 1);
-			Q.back().rectangle = box2(vec2(q.x0, q.y0), vec2(q.x1, q.y1));
+			Q.back().rectangle = box2(scale*vec2(q.x0, q.y0), scale * vec2(q.x1, q.y1));
 			Q.back().texcoords = vec4(q.s0, q.t0, q.s1, q.t1);
+			++cnt;
 		}
+		p *= scale;
+		return cnt;
 	}
-	void tt_gl_font_face::text_to_quads(vec2& p, const std::string& text, std::vector<cgv::render::textured_rectangle>& Q)
+	unsigned tt_gl_font_face::text_to_quads(vec2& p, const std::string& text, std::vector<cgv::render::textured_rectangle>& Q, float scale, bool flip_y)
 	{
 		ensure_bitmap();
-		const_cast<const tt_gl_font_face*>(this)->text_to_quads(p, text, Q);
+		return const_cast<const tt_gl_font_face*>(this)->text_to_quads(p, text, Q, scale, flip_y);
 	}
-	tt_gl_font_face::box2 tt_gl_font_face::compute_box(const std::string& text) const
+	tt_gl_font_face::box2 tt_gl_font_face::compute_box(const std::string& text, float scale, bool flip_y) const
 	{
 		box2 extent;
 		vec2 p(0.0f);
+		float y_scale = flip_y ? -1.0f : 1.0f;
 		for (unsigned char c : text) {
 			if (c < fst_char || c >= fst_char + nr_chars)
 				continue;
 			stbtt_aligned_quad q;
 			stbtt_GetBakedQuad(baked_chars.data(), bitmap_width, bitmap_height, int(c) - fst_char, &p[0], &p[1], &q, 1);
-			extent.add_point(vec2(q.x0, q.y0));
-			extent.add_point(vec2(q.x1, q.y1));
+			extent.add_point(vec2(q.x0, y_scale*q.y0));
+			extent.add_point(vec2(q.x1, y_scale*q.y1));
 		}
+		extent.scale(scale);
 		return extent;
 	}
-	tt_gl_font_face::vec2 tt_gl_font_face::align_text(const vec2& p, const std::string& text, cgv::render::TextAlignment ta) const
+	tt_gl_font_face::vec2 tt_gl_font_face::align_text(const vec2& p, const std::string& text, cgv::render::TextAlignment ta, float scale, bool flip_y) const
 	{
-		box2 B = compute_box(text);
+		box2 B = compute_box(text, scale, flip_y);
 		vec2 a = B.get_center();
 		vec2 hE = 0.5f * B.get_extent();
+		if (flip_y)
+			hE[1] *= -1.0f;
 		if ((ta & cgv::render::TA_BOTTOM) != 0)
 			a[1] += hE[1];
 		if ((ta & cgv::render::TA_TOP) != 0)

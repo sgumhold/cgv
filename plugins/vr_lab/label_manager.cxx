@@ -264,6 +264,8 @@ void label_manager::draw_labels(cgv::render::context& ctx, bool all)
 	glDisable(GL_SCISSOR_TEST);
 	glClearColor(0.5f, 0.5f, 0.5f, 1);
 	ctx.push_window_transformation_array();
+	float gamma = ctx.get_gamma();
+	ctx.set_gamma(1.0f);
 
 	// first draw rotated labels
 	if (!rotated_labels.empty()) {
@@ -335,8 +337,9 @@ void label_manager::draw_labels(cgv::render::context& ctx, bool all)
 	}
 	ctx.pop_pixel_coords();
 	fbo.disable(ctx);
-	//tex->write_to_file(ctx, "C:/temp/tex.bmp");
+	//tex->write_to_file(ctx, "C:/temp/tex2.bmp");
 
+	ctx.set_gamma(gamma);
 	ctx.pop_window_transformation_array();
 	ctx.enable_font_face(old_font_face, old_font_size);
 	if (!is_scissor)

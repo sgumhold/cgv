@@ -29,19 +29,21 @@ namespace cgv {
 			blend_points = true;
 			orient_splats = true;
 		}
-		void surfel_renderer::set_attribute_array_manager(const context& ctx, attribute_array_manager* _aam_ptr)
+		/// call this before setting attribute arrays to manage attribute array in given manager
+		void surfel_renderer::enable_attribute_array_manager(const context& ctx, attribute_array_manager& aam)
 		{
-			surface_renderer::set_attribute_array_manager(ctx, _aam_ptr);
-			if (aam_ptr) {
-				if (aam_ptr->has_attribute(ctx, ref_prog().get_attribute_location(ctx, "point_size")))
-					has_point_sizes = true;
-				if (aam_ptr->has_attribute(ctx, ref_prog().get_attribute_location(ctx, "color_index")))
-					has_indexed_colors = true;
-			}
-			else {
-				has_point_sizes = false;
-				has_indexed_colors = false;
-			}
+			surface_renderer::enable_attribute_array_manager(ctx, aam);
+			if (has_attribute(ctx, "point_size"))
+				has_point_sizes = true;
+			if (has_attribute(ctx, "color_index"))
+				has_indexed_colors = true;
+		}
+		/// call this after last render/draw call to ensure that no other users of renderer change attribute arrays of given manager
+		void surfel_renderer::disable_attribute_array_manager(const context& ctx, attribute_array_manager& aam)
+		{
+			surface_renderer::disable_attribute_array_manager(ctx, aam);
+			has_point_sizes = false;
+			has_indexed_colors = false;
 		}
 
 		surfel_renderer::surfel_renderer()

@@ -8,7 +8,6 @@
 #include <cgv_gl/gl/gl.h>
 #include <cgv_gl/gl/gl_transparent_renderer.h>
 #include <cgv_gl/box_renderer.h>
-#include <cgv_gl/gl/mesh_drawable.h>
 #include <cgv_gl/gl/gl_tools.h>
 
 using namespace cgv::base;
@@ -22,7 +21,7 @@ using namespace cgv::gui;
 
 class depth_peeler_test : 
 	public base,
-	public cgv::render::gl::mesh_drawable,
+	public drawable,
 	public provider
 {
 protected:
@@ -39,6 +38,7 @@ protected:
 	std::vector<box3> boxes;
 	std::vector<rgba> box_colors;
 	box_render_style brs;
+	attribute_array_manager aam_boxes;
 	// debug helpers
 	bool write_images;
 public:
@@ -74,11 +74,18 @@ public:
 		if (!transparent_renderer.init(ctx)) {
 			std::cerr << "could not init transparent renderer" << std::endl;
 			exit(0);
-		}
-		ref_box_renderer(ctx, 1);
+		}		
+		// create vbos for box geometry and attribute array bindings for box render program
+		aam_boxes.init(ctx);
+		auto& R = cgv::render::ref_box_renderer(ctx, 1);
+		R.enable_attribute_array_manager(ctx, aam_boxes);
+		R.set_box_array(ctx, boxes);
+		R.set_color_array(ctx, box_colors);
+		R.disable_attribute_array_manager(ctx, aam_boxes);
+
 		connect(transparent_renderer.render_callback, this, &depth_peeler_test::render_scene);
 		ctx.set_bg_clr_idx(0);
-		return cgv::render::gl::mesh_drawable::init(ctx);
+		return true;
 	}
 	void init_frame(context& ctx) 
 	{
@@ -88,18 +95,16 @@ public:
 		else
 			transparent_renderer.set_back_to_front();
 		transparent_renderer.init_frame(ctx);
-		cgv::render::gl::mesh_drawable::init_frame(ctx);
 	}
 	void render_scene(context& ctx)
 	{
 		for (auto& c : box_colors)
 			c[3] = 1.0f - transparency;
 		auto& R = cgv::render::ref_box_renderer(ctx);
-		R.set_attribute_array_manager(ctx, 0);
 		R.set_render_style(brs);
-		R.set_box_array(ctx, boxes);
-		R.set_color_array(ctx, box_colors);
+		R.enable_attribute_array_manager(ctx, aam_boxes);
 		R.render(ctx, 0, boxes.size());
+		R.disable_attribute_array_manager(ctx, aam_boxes);
 	}
 
 	int peel_depth_layers(context& ctx)
@@ -160,6 +165,7 @@ public:
 	{
 		// destruct all allocated objects
 		transparent_renderer.destruct(ctx);
+		aam_boxes.destruct(ctx);
 		ref_box_renderer(ctx, -1);
 	}
 	

@@ -17,20 +17,30 @@ float tick_space_from_window_space(int ai, float value);
 vec3 plot_space_from_window_space(vec3 pnt);
 vec3 window_space_from_plot_space(vec3 pnt);
 vec3 world_space_from_plot_space(vec3 pnt);
-vec3 map_color(in float v_window, int idx = 0);
-vec3 map_color(in float attributes[8], in vec3 base_color, int idx = 0);
-float map_opacity(in float v_window, int idx = 0);
-float map_opacity(in float attributes[8], in float base_opacity, int idx = 0);
+vec3 map_color(in float v_window, int idx);
+vec3 map_color(in float attributes[8], in vec3 base_color, int idx);
+float map_opacity(in float v_window, int idx);
+float map_opacity(in float attributes[8], in float base_opacity, int idx);
+float map_size(in float v_window, int idx);
+float map_size(in float attributes[8], in float base_size, int idx);
+vec3 map_color(in float v_window);
+vec3 map_color(in float attributes[8], in vec3 base_color);
+float map_opacity(in float v_window);
+float map_opacity(in float attributes[8], in float base_opacity);
 float map_size(in float v_window);
 float map_size(in float attributes[8], in float base_size);
 //***** end interface of plot_lib.glsl ***********************************
 
 
 //***** begin interface of color_scale.glsl ***********************************
-/// adjust value with a gamma mapping, which clamps value to [0,1] and accounts for window zero positions in case of bipolar color scales
-float color_scale_gamma_mapping(in float v, in float gamma, int idx = 0);
-/// map value with currently selected color scale to rgb color
-vec3 color_scale(in float v, int idx = 0);
+/// gamma adjust value after clamping to [0,1] and in case of uniform color_scale_is_bi_polar[0] accounting for uniform window_zero_position[0]
+float color_scale_gamma_mapping(in float v, in float gamma);
+/// gamma adjust value after clamping to [0,1] and in case of uniform color_scale_is_bi_polar[idx] accounting for uniform window_zero_position[idx]
+float color_scale_gamma_mapping(in float v, in float gamma, int idx);
+/// map value with color scale selected in uniform color_scale_index[idx=0|1] to rgb color
+vec3 color_scale(in float v, int idx);
+/// map value with color scale selected in uniform color_scale_index[0] to rgb color
+vec3 color_scale(in float v, int idx);
 //***** end interface of color_scale.glsl ***********************************
 
 //***** begin interface of fragment.glfs ***********************************

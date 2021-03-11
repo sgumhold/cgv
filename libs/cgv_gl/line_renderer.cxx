@@ -10,19 +10,18 @@ namespace cgv {
 		{
 			line_width = 1.0f;
 		}
-
-		/// check manager for line width array
-		void line_renderer::set_attribute_array_manager(const context& ctx, attribute_array_manager* _aam_ptr)
+		/// call this before setting attribute arrays to manage attribute array in given manager
+		void line_renderer::enable_attribute_array_manager(const context& ctx, attribute_array_manager& aam)
 		{
-			group_renderer::set_attribute_array_manager(ctx, _aam_ptr);
-			if (aam_ptr) {
-				if (aam_ptr->has_attribute(ctx, ref_prog().get_attribute_location(ctx, "line_width")))
-					has_line_widths = true;
-			}
-			else {
-				has_line_widths = false;
-			}
-
+			group_renderer::enable_attribute_array_manager(ctx, aam);
+			if (has_attribute(ctx, "line_width"))
+				has_line_widths = true;
+		}
+		/// call this after last render/draw call to ensure that no other users of renderer change attribute arrays of given manager
+		void line_renderer::disable_attribute_array_manager(const context& ctx, attribute_array_manager& aam)
+		{
+			group_renderer::disable_attribute_array_manager(ctx, aam);
+			has_line_widths = false;
 		}
 
 		line_renderer::line_renderer()

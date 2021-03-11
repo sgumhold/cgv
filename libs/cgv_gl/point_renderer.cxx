@@ -43,22 +43,24 @@ namespace cgv {
 			reference_point_size = 0.01f;
 			y_view_angle = 45;
 		}
-		void point_renderer::set_attribute_array_manager(const context& ctx, attribute_array_manager* _aam_ptr)
+		/// call this before setting attribute arrays to manage attribute array in given manager
+		void point_renderer::enable_attribute_array_manager(const context& ctx, attribute_array_manager& aam)
 		{
-			group_renderer::set_attribute_array_manager(ctx, _aam_ptr);
-			if (aam_ptr) {
-				if (aam_ptr->has_attribute(ctx, ref_prog().get_attribute_location(ctx, "point_size")))
-					has_point_sizes = true;
-				if (aam_ptr->has_attribute(ctx, ref_prog().get_attribute_location(ctx, "color_index")))
-					has_indexed_colors = true;
-				if (aam_ptr->has_attribute(ctx, ref_prog().get_attribute_location(ctx, "depth_offset")))
-					has_depth_offsets = true;
-			}
-			else {
-				has_point_sizes = false;
-				has_indexed_colors = false;
-				has_depth_offsets = false;
-			}
+			group_renderer::enable_attribute_array_manager(ctx, aam);
+			if (has_attribute(ctx, "point_size"))
+				has_point_sizes = true;
+			if (has_attribute(ctx, "color_index"))
+				has_indexed_colors = true;
+			if (has_attribute(ctx, "depth_offset"))
+				has_depth_offsets = true;
+		}
+		/// call this after last render/draw call to ensure that no other users of renderer change attribute arrays of given manager
+		void point_renderer::disable_attribute_array_manager(const context& ctx, attribute_array_manager& aam)
+		{
+			group_renderer::disable_attribute_array_manager(ctx, aam);
+			has_point_sizes = false;
+			has_indexed_colors = false;
+			has_depth_offsets = false;
 		}
 		///
 		void point_renderer::set_reference_point_size(float _reference_point_size)
@@ -136,8 +138,7 @@ namespace cgv {
 				ref_prog().set_uniform(ctx, "screen_aligned", prs.screen_aligned);
 				ref_prog().set_uniform(ctx, "reference_point_size", reference_point_size);
 				ref_prog().set_uniform(ctx, "use_group_point_size", prs.use_group_point_size);
-				float pixel_extent_per_depth = (float)(2.0*tan(0.5*0.0174532925199*y_view_angle) / ctx.get_height());
-				ref_prog().set_uniform(ctx, "pixel_extent_per_depth", pixel_extent_per_depth);
+				ref_prog().set_uniform(ctx, "viewport_height", (float)ctx.get_height());
 				ref_prog().set_uniform(ctx, "blend_width_in_pixel", prs.blend_width_in_pixel);
 				ref_prog().set_uniform(ctx, "percentual_halo_width", 0.01f*prs.percentual_halo_width);
 				ref_prog().set_uniform(ctx, "halo_width_in_pixel", prs.halo_width_in_pixel);
