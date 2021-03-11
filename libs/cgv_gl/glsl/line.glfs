@@ -5,7 +5,9 @@ uniform float halo_color_strength = 1.0;
 in LINE_FS {
 	vec4  color;
 	vec4  halo_color;
-	float param;
+	vec3  side_vector_eye;
+	vec3  center_position_eye;
+	vec3  position_eye;
 	float percentual_blend_width;
 	float percentual_core_size;
 	float percentual_point_size;
@@ -28,8 +30,11 @@ vec4 compute_blended_color_with_halo(
 
 void main()
 {
+	vec4 plane = vec4(fi.side_vector_eye, -dot(fi.side_vector_eye, fi.center_position_eye));
+	plane *= 1.0 / dot(fi.side_vector_eye, fi.side_vector_eye);
+	float splat_pos = dot(plane,vec4(fi.position_eye,1.0));
 	finish_fragment(compute_blended_color_with_halo(
-		abs(fi.param), fi.color, fi.percentual_core_size,
+		abs(splat_pos), fi.color, fi.percentual_core_size,
 		vec4(mix(fi.color.rgb, fi.halo_color.rgb,halo_color_strength), fi.halo_color.a), fi.percentual_point_size, fi.percentual_blend_width
 	));
 	gl_FragDepth = gl_FragCoord.z+fi.depth_offset;

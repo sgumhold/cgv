@@ -22,7 +22,9 @@ in LINE_GS {
 out LINE_FS {
 	vec4  color;
 	vec4  halo_color;
-	float param;
+	vec3  side_vector_eye;
+	vec3  center_position_eye;
+	vec3  position_eye;
 	float percentual_blend_width;
 	float percentual_core_size;
 	float percentual_point_size;
@@ -50,7 +52,7 @@ void prepare_splat(
 
 void emit_corner(in vec3 pos_eye, in float param)
 {
-	fo.param = param;
+	fo.position_eye = pos_eye;
 	gl_Position	= get_projection_matrix() * vec4(pos_eye,1.0);
 	EmitVertex();
 }
@@ -67,7 +69,9 @@ void emit_edge(in vec3 dir_eye, int i)
 	prepare_splat(reference_width, pixel_extent, blend_width_in_pixel, gi[i].halo_width_in_pixel, gi[i].percentual_halo_width,
 				  fo.percentual_core_size, fo.percentual_point_size,fo.percentual_blend_width, fo.percentual_splat_size);
 
+	fo.side_vector_eye = reference_width*side_dir_eye;
 	vec3 d_eye = fo.percentual_splat_size*reference_width*side_dir_eye;
+	fo.center_position_eye = gi[i].position_eye;
 	emit_corner(gi[i].position_eye + d_eye,  fo.percentual_splat_size);
 	emit_corner(gi[i].position_eye - d_eye, -fo.percentual_splat_size);
 }
