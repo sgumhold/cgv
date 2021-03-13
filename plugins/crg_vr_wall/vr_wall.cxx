@@ -213,8 +213,8 @@ namespace vr {
 		boxes.clear();
 		box_rotations.clear();
 		box_translations.clear();
-		add_screen(test_screen_center, test_screen_x, test_screen_y, rgb(0.5f, 0.3f, 0.1f), 0.3f);
-		add_screen(screen_center, screen_x, screen_y, rgb(0.5f, 0.7f, 0.3f), 0.5f);
+		//add_screen(test_screen_center, test_screen_x, test_screen_y, rgb(0.5f, 0.3f, 0.1f), 0.3f);
+		//add_screen(screen_center, screen_x, screen_y, rgb(0.5f, 0.7f, 0.3f), 0.5f);
 	}
 	/// update screen calibration
 	void vr_wall::on_update_screen_calibration()
@@ -242,6 +242,8 @@ namespace vr {
 		update_member(&screen_orientation[1]);
 		update_member(&screen_orientation[2]);
 		update_member(&screen_orientation[3]);
+		if (!screen_calibration_file_name.empty())
+			write_screen_calibration(screen_calibration_file_name);
 	}
 	/// construct vr wall kit by attaching to another vr kit
 	vr_wall::vr_wall() : cgv::base::node("vr_wall")
@@ -338,6 +340,7 @@ namespace vr {
 	bool vr_wall::self_reflect(cgv::reflect::reflection_handler& srh)
 	{
 		return
+			srh.reflect_member("screen_calibration_file_name", screen_calibration_file_name) &&
 			srh.reflect_member("vr_wall_kit_index", vr_wall_kit_index) &&
 			srh.reflect_member("vr_wall_hmd_index", vr_wall_hmd_index) &&
 			srh.reflect_member("aim_beta", aim_beta) &&
@@ -362,8 +365,50 @@ namespace vr {
 			srh.reflect_member("creation_y", window_y);
 	}
 	///
+	bool vr_wall::read_screen_calibration(const std::string& file_name)
+	{
+		std::ifstream is(file_name);
+		if (is.fail())
+			return false;
+		int w, h;
+		vec2 ps;
+		vec3 ctr;
+		quat ori;
+		is >> w >> h >> ps >> ctr >> ori;
+		if (is.fail())
+			return false;
+		wall_kit_ptr->set_screen_orientation(ori);
+		wall_kit_ptr->screen_pose.set_col(3, ctr);
+		wall_kit_ptr->pixel_size = ps;
+		wall_kit_ptr->width = w;
+		wall_kit_ptr->height = h;
+		screen_center = ctr;
+		float l_x = 0.5f * ps[0] * w;
+		float l_y = 0.5f * ps[1] * h;
+		screen_x = l_x*wall_kit_ptr->screen_pose.col(0);
+		screen_y = l_y*wall_kit_ptr->screen_pose.col(1);
+		screen_orientation = ori;
+		update_all_members();
+		return true;
+	}
+	///
+	bool vr_wall::write_screen_calibration(const std::string& file_name) const
+	{
+		std::ofstream os(file_name);
+		if (os.fail())
+			return false;
+		os << wall_kit_ptr->width << " " << wall_kit_ptr->height << " " << wall_kit_ptr->pixel_size << " ";
+		mat34& screen_pose = wall_kit_ptr->screen_pose;
+		os << screen_pose.col(3) << " " << quat(wall_kit_ptr->get_screen_orientation()) << std::endl;
+		os.close();
+		return true;
+	}
+	///
 	void vr_wall::on_set(void* member_ptr)
 	{
+		if (member_ptr == &screen_calibration_file_name) {
+			read_screen_calibration(screen_calibration_file_name);
+		}
 		if (member_ptr == &wall_state) {
 			switch (wall_state) {
 			case WS_SCREEN_CALIB:
@@ -390,7 +435,7 @@ namespace vr {
 						if (wall_state != WS_HMD)
 							wall_kit_ptr->in_calibration = true;
 						on_update_screen_calibration();
-						connect_copy(wall_kit_ptr->on_submit_frame, cgv::signal::rebind(static_cast<drawable*>(this), &drawable::post_redraw));
+						connect_copy(wall_kit_ptr->on_submit_frame, cgv::signal::rebind(this, &vr_wall::post_redraw_all));
 					}
 					else
 						wall_kit_ptr->attach(vr_wall_kit_index);
@@ -434,12 +479,18 @@ namespace vr {
 				wall_kit_ptr->hmd_trackable_index = vr_wall_hmd_index;
 		}
 		update_member(member_ptr);
+		post_redraw_all();
+	}
+
+	void vr_wall::post_redraw_all()
+	{
 		post_redraw();
 		if (cbd_ptr)
 			cbd_ptr->post_redraw();
 		if (right_cbd_ptr)
 			right_cbd_ptr->post_redraw();
 	}
+
 	/// you must overload this for gui creation
 	void vr_wall::create_gui()
 	{
@@ -654,7 +705,7 @@ namespace vr {
 					controller_pose[ci] = vrpe.get_pose_matrix();
 				if (ci == vr_wall_hmd_index)
 					hmd_pose = vrpe.get_pose_matrix();
-				post_redraw();
+				post_redraw_all();
 			}
 		}
 		if (e.get_kind() != cgv::gui::EID_KEY)
@@ -823,7 +874,7 @@ namespace vr {
 			cgv::render::attribute_array_binding::disable_global_array(ctx, prog.get_texcoord_index());
 			prog.disable(ctx);
 		}
-		if (wall_state == WS_HMD && ctx.get_render_pass() == cgv::render::RP_MAIN) {
+		if (wall_state == WS_HMD && ctx.get_render_pass() == cgv::render::RP_MAIN && box_index < boxes.size()) {
 			std::vector<vec3> P;
 			std::vector<rgb> C;
 			for (int ei = 0; ei < 2; ++ei) {
