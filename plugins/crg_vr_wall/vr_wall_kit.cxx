@@ -25,6 +25,7 @@ namespace vr {
 		driver = const_cast<vr::vr_driver*>(parent_kit->get_driver());
 		handle = parent_kit->get_handle();
 		info = parent_kit->get_device_info();
+		std::cout << "attached kit:\n" << info << std::endl;
 		return true;
 	}
 
@@ -152,6 +153,7 @@ namespace vr {
 		vr_kit(0, 0, _name, width, height)
 	{
 		wall_context = false;
+		skip_calibration = true;
 		in_calibration = false;
 		parent_kit = 0;
 		if (attach(vr_kit_parent_index))
