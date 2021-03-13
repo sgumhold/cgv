@@ -84,6 +84,7 @@ namespace vr {
 		/// helper function to create the window for the wall display
 		void create_wall_windows();
 		/// 
+		void post_redraw_all();
 		///
 		void draw_in_main_context(cgv::render::context& ctx);
 		//@}
@@ -151,6 +152,13 @@ namespace vr {
 		mat34 controller_pose[2], hmd_pose;
 		///
 		int box_index;
+		/// 
+		std::string screen_calibration_file_name;
+		///
+		bool read_screen_calibration(const std::string& file_name);
+		///
+		bool write_screen_calibration(const std::string& file_name) const;
+
 		// handle eyes calibration specific keys
 		bool handle_key_event_eyes_calib(cgv::gui::vr_key_event& vrke);
 
