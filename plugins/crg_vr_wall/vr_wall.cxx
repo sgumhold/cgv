@@ -1,6 +1,5 @@
 #include <cgv/base/base.h>
 #include "vr_wall.h"
-#include <cgv/render/callback_drawable.h>
 #include <cgv/math/pose.h>
 #include <vr/vr_driver.h>
 #include <cgv/media/image/image_reader.h>
@@ -14,7 +13,8 @@
 
 ///
 namespace vr {
-	cgv::gui::window_ptr vr_wall::create_wall_window(const std::string& name, int x, int y, int width, int height, int fullscr, bool is_right)
+	cgv::gui::window_ptr vr_wall::create_wall_window(cgv::data::ref_ptr<cgv::render::callback_drawable>& _cbd_ptr, 
+		const std::string& name, int x, int y, int width, int height, int fullscr, bool is_right)
 	{
 		cgv::gui::window_ptr W = cgv::gui::application::create_window(width, height, name, "viewer");
 		W->set_name(name);
@@ -46,18 +46,18 @@ namespace vr {
 		std::string drawable_name = "window drawable";
 		if (stereo_window_mode == SWM_TWO)
 			drawable_name = std::string(is_right ? "right " : "left ") + name;
-		cgv::render::callback_drawable* cbd = new cgv::render::callback_drawable(drawable_name);
+		_cbd_ptr = new cgv::render::callback_drawable(drawable_name);
 //		connect_copy(cbd->init_callback, cgv::signal::rebind(this, &vr_wall::init_cbd, cgv::signal::_1, cgv::signal::_c(is_right)));
 		if (is_right)
-			connect(cbd->init_callback, this, &vr_wall::init_cbd1);
+			connect(_cbd_ptr->init_callback, this, &vr_wall::init_cbd1);
 		else
-			connect(cbd->init_callback, this, &vr_wall::init_cbd0);
-		connect_copy(cbd->clear_callback, cgv::signal::rebind(this, &vr_wall::clear_cbd, cgv::signal::_1, cgv::signal::_c(is_right)));
+			connect(_cbd_ptr->init_callback, this, &vr_wall::init_cbd0);
+		connect_copy(_cbd_ptr->clear_callback, cgv::signal::rebind(this, &vr_wall::clear_cbd, cgv::signal::_1, cgv::signal::_c(is_right)));
 		//connect_copy(cbd->init_frame_callback, cgv::signal::rebind(this, &vr_wall::init_frame_cbd, cgv::signal::_1, cgv::signal::_c(is_right)));
-		connect_copy(cbd->draw_callback, cgv::signal::rebind(this, &vr_wall::draw_cbd, cgv::signal::_1, cgv::signal::_c(is_right)));
-		connect_copy(cbd->finish_frame_callback, cgv::signal::rebind(this, &vr_wall::finish_frame_cbd, cgv::signal::_1, cgv::signal::_c(is_right)));
+		connect_copy(_cbd_ptr->draw_callback, cgv::signal::rebind(this, &vr_wall::draw_cbd, cgv::signal::_1, cgv::signal::_c(is_right)));
+		connect_copy(_cbd_ptr->finish_frame_callback, cgv::signal::rebind(this, &vr_wall::finish_frame_cbd, cgv::signal::_1, cgv::signal::_c(is_right)));
 		// register callback drawable
-		W->register_object(cbd, "");
+		W->register_object(_cbd_ptr, "");
 		return W;
 	}
 	/// helper function to create the window for the wall display
@@ -65,14 +65,14 @@ namespace vr {
 	{
 		switch (stereo_window_mode) {
 		case SWM_SINGLE:
-			window = create_wall_window("wall window", window_x, window_y, window_width, window_height, fullscreen);
+			window = create_wall_window(cbd_ptr, "wall window", window_x, window_y, window_width, window_height, fullscreen);
 			break;
 		case SWM_DOUBLE:
-			window = create_wall_window("wall window", window_x, window_y, 2 * window_width, window_height, fullscreen);
+			window = create_wall_window(cbd_ptr, "wall window", window_x, window_y, 2 * window_width, window_height, fullscreen);
 			break;
 		case SWM_TWO:
-			window = create_wall_window("left wall window", window_x, window_y, window_width, window_height, fullscreen);
-			right_window = create_wall_window("right wall window", window_x, window_y, window_width, window_height, right_fullscreen, true);
+			window = create_wall_window(cbd_ptr, "left wall window", window_x, window_y, window_width, window_height, fullscreen);
+			right_window = create_wall_window(right_cbd_ptr, "right wall window", window_x, window_y, window_width, window_height, right_fullscreen, true);
 			break;
 		}
 		generate_screen_calib_points();
@@ -291,7 +291,7 @@ namespace vr {
 		kit_enum_definition = "enums='none=-1";
 		hmd_pose.identity();
 
-		wall_state = WS_SCREEN_CALIB;
+		wall_state = WS_HMD;
 		rebuild_screens();
 		on_set(&wall_state);
 	}
@@ -372,10 +372,12 @@ namespace vr {
 				update_member(&calib_index);
 				if (wall_kit_ptr)
 					wall_kit_ptr->in_calibration = true;
+				cgv::gui::ref_vr_server().grab_focus(cgv::gui::VRF_GRAB_EXCLUSIVE, this);
 				break;
 			case WS_HMD:
 				if (wall_kit_ptr)
 					wall_kit_ptr->in_calibration = false;
+				cgv::gui::ref_vr_server().release_focus(this);
 				break;
 			}
 		}
@@ -433,6 +435,10 @@ namespace vr {
 		}
 		update_member(member_ptr);
 		post_redraw();
+		if (cbd_ptr)
+			cbd_ptr->post_redraw();
+		if (right_cbd_ptr)
+			right_cbd_ptr->post_redraw();
 	}
 	/// you must overload this for gui creation
 	void vr_wall::create_gui()

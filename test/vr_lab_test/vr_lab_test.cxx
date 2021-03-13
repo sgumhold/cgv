@@ -14,9 +14,17 @@
 #include <cg_vr/vr_events.h>
 #include <vr_view_interactor.h>
 #include <cgv/utils/dir.h>
+#include <cgv/utils/advanced_scan.h>
 #include <cgv/math/ftransform.h>
 #include <cgv/utils/file.h>
 #include <fstream>
+
+std::string to_hex(uint8_t v)
+{
+	static const char hex_digits[] = "0123456789abcdef";
+	char res[2] = { hex_digits[v / 16], hex_digits[v & 15] };
+	return std::string(res,2);
+}
 
 class vr_lab_test : 
 	public cgv::base::node,
@@ -62,11 +70,136 @@ public:
 		cgv::render::ref_rounded_cone_renderer(ctx, 1);
 		return true;
 	}
+	struct tud_color
+	{
+		std::string function;
+		std::string name;
+		ivec4 cymk_color;
+		rgb8 rgb_color;
+	};
+	struct kostenstelle
+	{
+		int nummer;
+		std::string name;
+		rgb8 color;
+	};
+	std::vector<std::pair<int,std::vector<kostenstelle>>> kostenstellen;
+	std::vector<tud_color> tud_colors;
+	std::vector<int> tud_color_lis;
+	void read_kostenstellen()
+	{
+		std::string content;
+		cgv::utils::file::read("D:/admin/räume/RE-FX/2021_03_04_Raumliste.txt", content, true);
+		std::vector<cgv::utils::line> lines;
+		cgv::utils::split_to_lines(content, lines);
+		int ii = -1;
+		for (unsigned li = 0; li < lines.size(); ++li) {
+			std::vector<cgv::utils::token> tokens;
+			cgv::utils::split_to_tokens(lines[li], tokens, "\t", false, "\"'", "\"'", "");
+			if (tokens.size() != 3) {
+				if (tokens.size() == 1) {
+					int ci;
+					if (cgv::utils::is_integer(tokens[0].begin, tokens[0].end, ci)) {
+						++ii;
+						kostenstellen.resize(ii + 1);
+						kostenstellen.back().first = ci;
+					}
+				}
+				continue;
+			}
+			kostenstelle kst;
+			kst.name = cgv::utils::to_string(tokens[2]);
+			if (!cgv::utils::is_integer(tokens[0].begin, tokens[0].end, kst.nummer))
+				continue;
+			kostenstellen[ii].second.push_back(kst);
+		}
+		std::cout << "read " << kostenstellen.size() << " Kostenstellen" << std::endl;
+	}
+	void read_tud_colors()
+	{
+		std::string content;
+		cgv::utils::file::read("D:/admin/räume/RE-FX/TUD CD Colors.txt", content, true);
+		std::vector<cgv::utils::line> lines;
+		cgv::utils::split_to_lines(content, lines);
+		for (unsigned li = 1; li < lines.size(); ++li) {
+			std::vector<cgv::utils::token> tokens;
+			cgv::utils::split_to_tokens(lines[li], tokens, ",", false, "\"'", "\"'", "");
+			if (tokens.size() != 17)
+				continue;
+			tud_color tc;
+			tc.function = cgv::utils::to_string(tokens[0]);
+			tc.name = cgv::utils::to_string(tokens[2]);
+			int v[7];
+			for (int i = 0; i < 7; ++i) {
+				if (!cgv::utils::is_integer(tokens[2 * i + 4].begin, tokens[2 * i + 4].end, v[i]))
+					continue;
+			}
+			
+			tc.cymk_color = ivec4(v[0], v[1], v[2], v[3]);
+			tc.rgb_color = rgb8((uint8_t)v[4], (uint8_t)v[5], (uint8_t)v[6]);
+			tud_colors.push_back(tc);
+		}
+		std::ofstream os("D:/admin/räume/RE-FX/hex_colors.txt");
+		for (auto tc : tud_colors) {
+			os << tc.function << ", " << tc.name << ": " << 
+				(int)tc.rgb_color[0] << "/" << (int)tc.rgb_color[1] << "/" << (int)tc.rgb_color[2] <<
+				" = #" << to_hex(tc.rgb_color[0]) << to_hex(tc.rgb_color[1]) << to_hex(tc.rgb_color[2]) << std::endl;
+		}
+		std::cout << "read " << tud_colors.size() << " tud colors" << std::endl;
+	}
 	void init_frame(cgv::render::context& ctx)
 	{
 		vr::vr_scene* scene_ptr = get_scene_ptr();
 		if (!scene_ptr)
 			return;
+		if (tud_colors.empty()) {
+			read_tud_colors();
+			read_kostenstellen();
+			float h = 3.0f;
+			int gi = 0;
+			for (const auto& kst_grp : kostenstellen) {
+				rgb C_rgb = tud_colors[kst_grp.first].rgb_color;
+				cgv::media::color<float, cgv::media::HLS> C_hls = C_rgb;
+				float s = 1.0f/(kst_grp.second.size()+1);
+				int n = int(kst_grp.second.size());
+				int i = 0;
+				for (auto kst : kst_grp.second) {
+					rgb C = C_hls;
+					kst.color = C;
+					std::cout << kst.nummer << ": #" 
+						<< to_hex(kst.color[0]) << to_hex(kst.color[1]) << to_hex(kst.color[2]) << " ("
+						<< int(kst.color[0]) << "," << int(kst.color[1]) << "," << int(kst.color[2]) << 
+						")" << std::endl;
+					int li = scene_ptr->add_label(kst.name, C);
+					scene_ptr->fix_label_size(li);
+					scene_ptr->place_label(li, vec3(0.0f, h, 0.0f), quat(1.0f, vec3(0.0f)), 
+										vr::vr_scene::CS_TABLE, vr::vr_scene::LA_CENTER);
+					h -= 0.05f;
+					++i;
+					if (gi < 2) {
+						C_hls[1] -= 0.3f * s;
+						C_hls[2] -= 0.6f * s;
+					}
+					else {
+						if (gi < 6)
+							C_hls[2] -= (n-i)*0.2f * s;
+						C_hls[1] += (0.25f) * s;
+					}
+				}
+				++gi;
+			}
+
+//			float h = 0.1f * tud_colors.size() + 0.1f;
+//			int i = 0;
+//			for (const auto& tc : tud_colors) {
+//				int li = scene_ptr->add_label(tc.function + "\n" + cgv::utils::to_string(i++)+" "+tc.name, tc.rgb_color);
+//				tud_color_lis.push_back(li);
+//				scene_ptr->fix_label_size(li);
+//				scene_ptr->place_label(li, vec3(0.0f, h, 0.0f), quat(1.0f, vec3(0.0f)), 
+//					vr::vr_scene::CS_TABLE, vr::vr_scene::LA_CENTER);
+//				h -= 0.1f;
+//			}
+		}
 		// if not done before, create labels
 		if (li_help[0] == -1) {
 			li_stats = scene_ptr->add_label(

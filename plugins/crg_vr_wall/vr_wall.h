@@ -17,6 +17,7 @@
 #include <cgv_gl/box_renderer.h>
 #include <cgv_gl/arrow_renderer.h>
 #include <cgv_gl/sphere_renderer.h>
+#include <cgv/render/callback_drawable.h>
 
 #include "lib_begin.h"
 
@@ -76,8 +77,10 @@ namespace vr {
 		int fullscreen, right_fullscreen;
 		/// pointers to wall display windows for left and optionally (stereo_window_mode==SWM_TWO) right eyes
 		cgv::gui::window_ptr window, right_window;
+		cgv::data::ref_ptr<cgv::render::callback_drawable> cbd_ptr, right_cbd_ptr;
 		/// 
-		cgv::gui::window_ptr create_wall_window(const std::string& name, int x, int y, int width, int height, int fullscr, bool is_right = false);
+		cgv::gui::window_ptr create_wall_window(cgv::data::ref_ptr<cgv::render::callback_drawable>& cbd_ptr, 
+			const std::string& name, int x, int y, int width, int height, int fullscr, bool is_right = false);
 		/// helper function to create the window for the wall display
 		void create_wall_windows();
 		/// 
