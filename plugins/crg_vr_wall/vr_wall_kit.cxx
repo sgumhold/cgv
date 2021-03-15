@@ -106,11 +106,20 @@ namespace vr {
 		else
 			parent_kit->destruct_fbos(es);
 	}
+	void vr_wall_kit::ensure_fbo(int eye)
+	{
+		EyeSelection es = eye == 0 ? ES_LEFT : ES_RIGHT;
+		if (fbos_initialized(es))
+			return;
+		init_fbos(es);
+	}
 	/// enable the framebuffer object of given eye (0..left, 1..right) 
 	void vr_wall_kit::enable_fbo(int eye)
 	{
-		if (wall_context)
+		if (wall_context) {
+			ensure_fbo(eye);
 			gl_vr_display::enable_fbo(eye);
+		}
 		else
 			parent_kit->enable_fbo(eye);
 	}
@@ -126,11 +135,18 @@ namespace vr {
 	bool vr_wall_kit::blit_fbo(int eye, int x, int y, int w, int h)
 	{
 		if (wall_context) {
-			// std::cout << "blit(wall):" << wglGetCurrentContext() << std::endl;
+			ensure_fbo(eye);
 			return gl_vr_display::blit_fbo(eye, x, y, w, h);
 		}
-		// std::cout << "blit(main):" << wglGetCurrentContext() << std::endl;
 		return parent_kit->blit_fbo(eye, x, y, w, h);
+	}
+	/// bind texture of given eye to current texture unit
+	void vr_wall_kit::bind_texture(int eye)
+	{
+		if (wall_context)
+			return gl_vr_display::bind_texture(eye);
+		else
+			return parent_kit->bind_texture(eye);
 	}
 	/// transform to coordinate system of screen with [0,0,0] in center and corners [+-aspect,+-1,0]; z is signed distance to screen in world unites (typically meters) 
 	vr_wall_kit::vec3 vr_wall_kit::transform_world_to_screen(const vec3& p) const
