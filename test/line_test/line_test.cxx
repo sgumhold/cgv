@@ -58,6 +58,7 @@ public:
 		C.resize(3, rgba(1,1,1,1));
 		C[1] = rgba(1, 0, 1, 0.5f);
 		R.resize(3, 10.0f);
+		R[1] = 50.0f;
 		angle[0] = -0.5f;
 		angle[1] = 0.5f;
 		smooth = true;
@@ -71,6 +72,12 @@ public:
 		I[5] = 1;
 		I[6] = 2;
 		use_shader = true;
+		lrs.blend_lines = true;
+		lrs.screen_aligned = false;
+		lrs.measure_line_width_in_pixel = false;
+		lrs.halo_color = rgba(1.0f, 1.0f, 0.0f, 1.0f);
+		lrs.blend_width_in_pixel = 1.0f;
+		lrs.percentual_halo_width = 40.0f;
 		compute_positions();
 	}
 	void on_set(void* member_ptr)
@@ -159,6 +166,7 @@ public:
 	}
 	void draw(cgv::render::context& ctx)
 	{
+		glDisable(GL_CULL_FACE);
 		if (use_shader) {
 			auto& lr = cgv::render::ref_line_renderer(ctx, 0);
 			lr.set_render_style(lrs);
