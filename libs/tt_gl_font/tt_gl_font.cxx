@@ -383,6 +383,7 @@ namespace cgv {
 			init_rr = 0;
 		rr.set_render_style(ref_rectangle_render_style());
 		rr.set_textured_rectangle_array(*ctx_ptr, Q);
+		rr.set_color(*ctx_ptr, ctx_ptr->get_color());
 		ref_texture(*ctx_ptr).enable(*ctx_ptr);
 		GLboolean blend = glIsEnabled(GL_BLEND);
 		glEnable(GL_BLEND);

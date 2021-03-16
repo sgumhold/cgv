@@ -439,7 +439,6 @@ public:
 		rr.set_rectangle(ctx, rectangle);
 		rr.set_depth_offset(ctx, 0.000001f);
 		rr.set_color(ctx, rgb(1, 1, 1));
-		ctx.set_color(rgb(1, 1, 1));
 		if (show_rasterization) {
 			rr.set_texcoord(ctx, texcoord);
 			tex.enable(ctx);
@@ -485,7 +484,6 @@ public:
 		// draw polygon
 		if (polygon.size() > 0) {
 			lr.set_color(ctx, rgb(0.8f, 0.5f, 0));
-			ctx.set_color(rgb(0.8f, 0.5f, 0));
 			lr.set_line_width(ctx, 5.0f);
 			// collect indices of to render polygon as triangle strip
 			std::vector<GLuint> I;
@@ -500,7 +498,6 @@ public:
 		if (!nodes.empty()) {
 			// configure color and line width
 			lr.set_color(ctx, rgb(0.8f, 0, 0.7f));
-			ctx.set_color(rgb(0.8f, 0, 0.7f));
 			lr.set_line_width(ctx, 2.0f);
 			lr.set_depth_offset(ctx, -0.000002f);
 			// collect indices of to render line loop as triangle strip
