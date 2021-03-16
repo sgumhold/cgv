@@ -127,7 +127,6 @@ void gl_set_material(const cgv::media::illum::phong_material& mat, MaterialSide 
 gl_context::gl_context()
 {
 	frame_buffer_stack.top()->handle = get_handle(0);
-	current_color = rgba(1, 1, 1, 1);
 	max_nr_indices = 0;
 	max_nr_vertices = 0;
 	info_font_size = 14;
@@ -532,6 +531,8 @@ void gl_context::set_color(const rgba& clr)
 	if (shader_program_stack.empty())
 		return;
 	cgv::render::shader_program& prog = *static_cast<cgv::render::shader_program*>(shader_program_stack.top());
+	if (!prog.does_context_set_color())
+		return;
 	int clr_loc = prog.get_color_index();
 	if (clr_loc == -1)
 		return;
@@ -585,6 +586,7 @@ shader_program& gl_context::ref_default_shader_program(bool texture_support)
 			}
 			progs[0].specify_standard_uniforms(true, false, false, true);
 			progs[0].specify_standard_vertex_attribute_names(*this, true, false, false);
+			progs[0].allow_context_to_set_color(true);
 		}
 		return progs[0];
 	}
@@ -596,6 +598,7 @@ shader_program& gl_context::ref_default_shader_program(bool texture_support)
 		progs[1].set_uniform(*this, "texture", 0);
 		progs[1].specify_standard_uniforms(true, false, false, true);
 		progs[1].specify_standard_vertex_attribute_names(*this, true, false, true);
+		progs[1].allow_context_to_set_color(true);
 	}
 	return progs[1];
 }
@@ -611,6 +614,7 @@ shader_program& gl_context::ref_surface_shader_program(bool texture_support)
 			}
 			progs[2].specify_standard_uniforms(true, true, true, true);
 			progs[2].specify_standard_vertex_attribute_names(*this, true, true, false);
+			progs[2].allow_context_to_set_color(true);
 		}
 		return progs[2];
 	}
@@ -621,6 +625,7 @@ shader_program& gl_context::ref_surface_shader_program(bool texture_support)
 		}
 		progs[3].specify_standard_uniforms(true, true, true, true);
 		progs[3].specify_standard_vertex_attribute_names(*this, true, true, true);
+		progs[3].allow_context_to_set_color(true);
 	}
 	return progs[3];
 }
@@ -2347,7 +2352,7 @@ bool gl_context::shader_program_enable(shader_program_base& spb)
 		set_current_view(prog);
 	if (auto_set_gamma_in_current_shader_program && spb.does_use_gamma())
 		prog.set_uniform(*this, "gamma", gamma);
-	if (prog.get_color_index() >= 0)
+	if (prog.does_context_set_color() && prog.get_color_index() >= 0)
 		prog.set_attribute(*this, prog.get_color_index(), current_color);
 	return true;
 }

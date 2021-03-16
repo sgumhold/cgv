@@ -157,7 +157,7 @@ bool plot2d::draw_point_plot(cgv::render::context& ctx, int i, int layer_idx)
 			set_plot_uniforms(ctx, point_prog);
 			set_mapping_uniforms(ctx, point_prog);
 			point_prog.set_uniform(ctx, "depth_offset", -layer_idx * layer_depth);
-			point_prog.set_uniform(ctx, "reference_point_size", spc.point_size.size * get_domain_config_ptr()->reference_size);
+			point_prog.set_uniform(ctx, "reference_point_size", get_domain_config_ptr()->reference_size);
 			point_prog.set_uniform(ctx, "blend_width_in_pixel", get_domain_config_ptr()->blend_width_in_pixel);
 			point_prog.set_uniform(ctx, "halo_width_in_pixel", 0.0f);
 			point_prog.set_uniform(ctx, "percentual_halo_width", spc.point_halo_width.size / spc.point_size.size);
@@ -170,7 +170,7 @@ bool plot2d::draw_point_plot(cgv::render::context& ctx, int i, int layer_idx)
 			point_prog.set_uniform(ctx, "secondary_opacity_index", spc.point_halo_color.opacity_idx);
 			point_prog.set_uniform(ctx, "size_index", spc.point_size.size_idx);
 			point_prog.set_uniform(ctx, "secondary_index", spc.point_halo_width.size_idx);
-			ctx.set_color(spc.point_color.color);
+			point_prog.set_attribute(ctx, point_prog.get_color_index(), spc.point_color.color);
 			point_prog.set_attribute(ctx, "secondary_color", spc.point_halo_color.color);
 			point_prog.set_attribute(ctx, "size", spc.point_size.size);
 			point_prog.enable(ctx);
@@ -195,7 +195,7 @@ bool plot2d::draw_line_plot(cgv::render::context& ctx, int i, int layer_idx)
 			set_plot_uniforms(ctx, line_prog);
 			set_mapping_uniforms(ctx, line_prog);
 			line_prog.set_uniform(ctx, "depth_offset", -layer_idx * layer_depth);
-			line_prog.set_uniform(ctx, "reference_line_width", spc.line_width.size * get_domain_config_ptr()->reference_size);
+			line_prog.set_uniform(ctx, "reference_line_width", get_domain_config_ptr()->reference_size);
 			line_prog.set_uniform(ctx, "blend_width_in_pixel", get_domain_config_ptr()->blend_width_in_pixel);
 			line_prog.set_uniform(ctx, "halo_width_in_pixel", 0.0f);
 			line_prog.set_uniform(ctx, "halo_color_strength", 0.0f);
@@ -209,8 +209,8 @@ bool plot2d::draw_line_plot(cgv::render::context& ctx, int i, int layer_idx)
 			line_prog.set_uniform(ctx, "opacity_index", spc.line_color.opacity_idx);
 			line_prog.set_uniform(ctx, "secondary_opacity_index", -1);
 			line_prog.set_uniform(ctx, "size_index", spc.line_width.size_idx);
-			line_prog.set_attribute(ctx, "color", spc.line_color.color);
-			ctx.set_color(spc.line_color.color);
+			line_prog.set_attribute(ctx, line_prog.get_color_index(), spc.line_color.color);
+			line_prog.set_attribute(ctx, "size", spc.line_width.size);
 			line_prog.enable(ctx);
 			if (strips[i].empty())
 				draw_sub_plot_samples(count, spc, true);
@@ -248,7 +248,7 @@ bool plot2d::draw_stick_plot(cgv::render::context& ctx, int i, int layer_idx)
 			rectangle_prog.set_uniform(ctx, "rectangle_base_window", spc.stick_base_window);
 			rectangle_prog.set_uniform(ctx, "rectangle_coordinate_index", spc.stick_coordinate_index);
 			rectangle_prog.set_uniform(ctx, "rectangle_border_width", 0.0f);
-			ctx.set_color(spc.stick_color.color);
+			rectangle_prog.set_attribute(ctx, rectangle_prog.get_color_index(), spc.stick_color.color);
 			rectangle_prog.set_attribute(ctx, "size", spc.stick_width.size * get_domain_config_ptr()->reference_size);
 			rectangle_prog.set_attribute(ctx, "depth_offset", -layer_idx * layer_depth);
 			// configure geometry shader
@@ -298,7 +298,7 @@ bool plot2d::draw_bar_plot(cgv::render::context& ctx, int i, int layer_idx)
 			rectangle_prog.set_uniform(ctx, "rectangle_base_window", spc.bar_base_window);
 			rectangle_prog.set_uniform(ctx, "rectangle_coordinate_index", spc.bar_coordinate_index);
 			rectangle_prog.set_uniform(ctx, "rectangle_border_width", spc.bar_outline_width.size * get_domain_config_ptr()->reference_size);
-			ctx.set_color(spc.bar_color.color);
+			rectangle_prog.set_attribute(ctx, rectangle_prog.get_color_index(), spc.bar_color.color);
 			rectangle_prog.set_attribute(ctx, "secondary_color", spc.bar_outline_color.color);
 			rectangle_prog.set_attribute(ctx, "size", get_extent()[0] / count * spc.bar_percentual_width.size);
 			rectangle_prog.set_attribute(ctx, "depth_offset", -layer_idx * layer_depth);
@@ -308,14 +308,12 @@ bool plot2d::draw_bar_plot(cgv::render::context& ctx, int i, int layer_idx)
 			rectangle_prog.enable(ctx);
 			draw_sub_plot_samples(count, spc);
 			rectangle_prog.disable(ctx);
-			disable_attributes(ctx, unsigned(attribute_source_arrays[i].attribute_sources.size()));
 			result = true;
 		}
 	}
 	disable_attributes(ctx, i);
 	return result;
 }
-
 int plot2d::draw_sub_plots_jointly(cgv::render::context& ctx, int layer_idx)
 {
 	// first draw all bar plots
@@ -341,7 +339,6 @@ int plot2d::draw_sub_plots_jointly(cgv::render::context& ctx, int layer_idx)
 	}
 	return layer_idx;
 }
-
 void plot2d::draw_domain(cgv::render::context& ctx, int si, bool no_fill)
 {
 	tick_labels.clear();
