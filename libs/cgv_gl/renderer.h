@@ -70,6 +70,8 @@ namespace cgv { // @<
 					res = ctx.set_element_array(&aab, vbo_ptr);
 				return res;
 			}
+			/// whether aam contains an index buffer
+			bool has_index_buffer() const;
 			///
 			void remove_indices(const context& ctx);
 			///
@@ -302,35 +304,66 @@ namespace cgv { // @<
 			/// template method to set the color attribute from a vertex buffer object, the element type must be given as explicit template parameter
 			template <typename T>
 			void set_color_array(const context& ctx, const vertex_buffer& vbo, size_t offset_in_bytes, size_t nr_elements, unsigned stride_in_bytes = 0) { set_color_array(ctx, type_descriptor(element_descriptor_traits<T>::get_type_descriptor(T()), true), vbo, offset_in_bytes, nr_elements, stride_in_bytes); }
-			/// set the indices for indexed rendering from a vector
+			/// <summary>
+			/// Set the indices for indexed rendering from a vector. If an attribute array manager is
+			/// enabled and keep_on_cpu is false (default), create GPU index buffer and transfer indices 
+			/// into it.
+			/// </summary>
+			/// <typeparam name="T">index type must be uint8_t, uint16_t, or uint32_t</typeparam>
+			/// <param name="ctx">opengl context in which indexed rendering takes place</param>
+			/// <param name="indices">vector of indices</param>
+			/// <param name="keep_on_cpu">flag whether indices should be kept in CPU memory</param>
+			/// <returns>this can only fail if indices cannot be copied to GPU buffer</returns>
 			template <typename T>
-			bool set_indices(const context& ctx, const std::vector<T>& indices) {
+			bool set_indices(const context& ctx, const std::vector<T>& indices, bool keep_on_cpu = false) {
 				this->indices = &indices.front();
 				index_buffer_ptr = 0;
 				index_count = indices.size();
 				index_type = cgv::type::info::type_id<T>::get_id();
-				if (aam_ptr)
+				if (!keep_on_cpu && aam_ptr)
 					return aam_ptr->set_indices(ctx, indices);
 				return true;
 			}
-			/// set the indices for indexed rendering from a pointer and a count 
+			/// <summary>
+			/// Set the indices for indexed rendering from an array given as a pointer. If an attribute array 
+			/// manager is enabled and keep_on_cpu is false (default), create GPU index buffer and transfer 
+			/// indices into it.
+			/// </summary>
+			/// <typeparam name="T">index type must be uint8_t, uint16_t, or uint32_t</typeparam>
+			/// <param name="ctx">opengl context in which indexed rendering takes place</param>
+			/// <param name="indices">pointer to array containing the indices</param>
+			/// <param name="nr_indices">number of indices in the array</param>
+			/// <param name="keep_on_cpu">flag whether indices should be kept in CPU memory</param>
+			/// <returns>this can only fail if indices cannot be copied to GPU buffer</returns>
 			template <typename T>
-			bool set_indices(const context& ctx, const T* indices, size_t nr_indices) {
+			bool set_indices(const context& ctx, const T* indices, size_t nr_indices, bool keep_on_cpu = false) {
 				this->indices = indices;
 				index_buffer_ptr = 0;
 				index_count = nr_indices;
 				index_type = cgv::type::info::type_id<T>::get_id();
-				if (aam_ptr)
+				if (!keep_on_cpu && aam_ptr)
 					return aam_ptr->set_indices(ctx, indices, nr_indices);
 				return true;
 			}
-			/// set the indices for indexed rendering from a vertex buffer
+			/// 
+
+			/// <summary>
+			/// Set the indices for indexed rendering from a GPU buffer. If an attribute array manager
+			/// is enabled its index buffer is removed through this call.
+			/// </summary>
+			/// <typeparam name="T">index type must be uint8_t, uint16_t, or uint32_t</typeparam>
+			/// <param name="ctx">opengl context in which indexed rendering takes place</param>
+			/// <param name="vbo">GPU buffer</param>
+			/// <param name="count">number of indices in the GPU buffer</param>
+			/// <returns>in current implementation this succeeds always</returns>
 			template <typename T>
 			bool set_indices(const context& ctx, const vertex_buffer& vbo, size_t count) { 
 				index_buffer_ptr = &vbo;
 				indices = 0;
 				index_count = count;
 				index_type = cgv::type::info::type_id<T>::get_id();
+				if (aam_ptr)
+					aam_ptr->remove_indices(ctx);
 				return true;
 			}
 			/// return whether indices have been defined
