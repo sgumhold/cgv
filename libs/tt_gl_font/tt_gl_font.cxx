@@ -140,7 +140,6 @@ namespace cgv {
 		if (!initialized) {
 			rrs.pixel_blend = 0.0f;
 			rrs.texture_mode = 1;
-			rrs.set_surface_color = false;
 			rrs.map_color_to_material = cgv::render::CM_COLOR_AND_OPACITY;
 			rrs.illumination_mode = cgv::render::IM_OFF;
 		}

@@ -88,7 +88,7 @@ namespace cgv { // @<
 			/// templated method to set the normal attribute from an array of normals of type T, which should have 3 components
 			template <typename T>
 			void set_normal_array(const context& ctx, const T* normals, size_t nr_elements, unsigned stride_in_bytes = 0) { has_normals = true;  set_attribute_array(ctx, ref_prog().get_attribute_location(ctx, "normal"), normals, nr_elements, stride_in_bytes); }
-			/// specify a single line_width for all boxes
+			/// specify a single line_width for all lines
 			template <typename T>
 			void set_line_width(const context& ctx, const T& line_width) { has_line_widths = true;  ref_prog().set_attribute(ctx, ref_prog().get_attribute_location(ctx, "line_width"), line_width); }
 			/// line_width array specifies box extends in case of position_is_center=true, otherwise the maximum point of each box
@@ -97,12 +97,21 @@ namespace cgv { // @<
 			/// line_width array specifies box extends in case of position_is_center=true, otherwise the maximum point of each box
 			template <typename T>
 			void set_line_width_array(const context& ctx, const T* line_widths, size_t nr_elements, unsigned stride_in_bytes = 0) { has_line_widths = true;  set_attribute_array(ctx, ref_prog().get_attribute_location(ctx, "line_width"), line_widths, nr_elements, stride_in_bytes); }
+			/// specify a single depth_offset for all lines
+			template <typename T>
+			void set_depth_offset(const context& ctx, const T& depth_offset) { has_depth_offsets = true;  ref_prog().set_attribute(ctx, ref_prog().get_attribute_location(ctx, "depth_offset"), depth_offset); }
+			/// depth_offset array specifies box extends in case of position_is_center=true, otherwise the maximum point of each box
+			template <typename T>
+			void set_depth_offset_array(const context& ctx, const std::vector<T>& depth_offsets) { has_depth_offsets = true;  set_attribute_array(ctx, ref_prog().get_attribute_location(ctx, "depth_offset"), depth_offsets); }
+			/// depth_offset array specifies box extends in case of position_is_center=true, otherwise the maximum point of each box
+			template <typename T>
+			void set_depth_offset_array(const context& ctx, const T* depth_offsets, size_t nr_elements, unsigned stride_in_bytes = 0) { has_depth_offsets = true;  set_attribute_array(ctx, ref_prog().get_attribute_location(ctx, "depth_offset"), depth_offsets, nr_elements, stride_in_bytes); }
 			/// convenience function to render with default settings
 			void draw(context& ctx, size_t start, size_t count,
 				bool use_strips = false, bool use_adjacency = false, uint32_t strip_restart_index = -1);
 		};
 		///	
-		extern CGV_API line_renderer& ref_line_renderer(context& ctx, int ref_count_change);
+		extern CGV_API line_renderer& ref_line_renderer(context& ctx, int ref_count_change = 0);
 		///
 		struct CGV_API line_render_style_reflect : public line_render_style
 		{
