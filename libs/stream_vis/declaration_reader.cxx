@@ -216,10 +216,8 @@ namespace stream_vis {
 	void declaration_reader::construct_plot(const std::string& name, int dim)
 	{
 		plot_info pi;
-		pi.outofdate = true;
 		pi.dim = dim;
 		pi.name = name;
-		pi.offline_texture_resolution = ivec2(1024, 1024);
 		pi.fixed_domain = box3(vec3(0.0f), vec3(1.0f));
 		for (int i = 0; i < 2; ++i) {
 			for (int j = 0; j < dim; ++j) {
@@ -230,12 +228,9 @@ namespace stream_vis {
 		parse_bound_vecn("view_min", pi.domain_adjustment[0], pi.domain_bound_ts_index[0], &pi.fixed_domain.ref_min_pnt()[0], dim);
 		parse_bound_vecn("view_max", pi.domain_adjustment[1], pi.domain_bound_ts_index[1], &pi.fixed_domain.ref_max_pnt()[0], dim);
 		parse_vecn("view_max", &pi.fixed_domain.ref_max_pnt()[0], dim);
-		parse_ivec2("offline_resolution", pi.offline_texture_resolution);			
 		if (dim == 2) {
 			pi.plot_ptr = new cgv::plot::plot2d();
-			pi.extent_on_texture = vec2(2.0f);
-			parse_vec2("extent_on_texture", pi.extent_on_texture);
-			vec2 ext = vec2(1.0f, float(pi.offline_texture_resolution[1]) / pi.offline_texture_resolution[0]);
+			vec2 ext = vec2(1.0f, 1.0f);
 			parse_vec2("extent", ext);
 			pi.plot_ptr->set_extent(ext.to_vec());
 		}
