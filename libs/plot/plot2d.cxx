@@ -510,7 +510,7 @@ void plot2d::draw_tick_labels(cgv::render::context& ctx, int si)
 	}
 	else {
 		float rs = 0.2f*get_domain_config_ptr()->reference_size;
-		ff->enable(&ctx, 5*get_domain_config_ptr()->label_font_size);
+		ctx.enable_font_face(ff, 5*get_domain_config_ptr()->label_font_size);
 		std::vector<cgv::render::textured_rectangle> Q;
 		std::vector<rgba> C;
 		for (const auto& tbc : tick_batches) if (tbc.label_count > 0) {
