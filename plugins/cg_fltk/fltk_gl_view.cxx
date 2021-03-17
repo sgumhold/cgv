@@ -32,7 +32,8 @@ using namespace cgv::utils;
 
 void fltk_gl_view::process_text_1(const std::string& text)
 {
-	process_text(text);
+	if (!text.empty())
+		process_text(text);
 }
 
 class MyGlWindow : public fltk::Window
