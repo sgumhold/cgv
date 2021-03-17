@@ -1,6 +1,7 @@
 #include "stream_vis_context.h"
 #include <cgv/math/ftransform.h>
 #include <cgv/utils/advanced_scan.h>
+#include <cgv/gui/key_event.h>
 #include <cgv/utils/file.h>
 #include "cgv_declaration_reader.h"
 #include <nlohmann/json.hpp>
@@ -204,6 +205,8 @@ namespace stream_vis {
 
 	stream_vis_context::stream_vis_context(const std::string& name) : node(name)
 	{
+		paused = false;
+		sleep_ms = 20;
 		outofdate = true;
 		last_use_vbo = use_vbo = false;
 		plot_attributes_initialized = false;
@@ -270,24 +273,43 @@ namespace stream_vis {
 			std::cout << std::endl;
 		}
 	}
+	bool stream_vis_context::handle(cgv::gui::event& e)
+	{
+		if (e.get_kind() != cgv::gui::EID_KEY)
+			return false;
+		auto& ke = reinterpret_cast<cgv::gui::key_event&>(e);
+		if (ke.get_action() != cgv::gui::KA_RELEASE) {
+			switch (ke.get_char()) {
+			case '+':
+				sleep_ms += 1;
+				on_set(&sleep_ms);
+				return true;
+			case '-':
+				if (sleep_ms > 0) {
+					sleep_ms -= 1;
+					on_set(&sleep_ms);
+				}
+				return true;
+			}
+			switch (ke.get_key()) {
+			case cgv::gui::KEY_Space :
+				paused = !paused;
+				on_set(&paused);
+				return true;
+			}
+		}
+		return false;
+	}
+	void stream_vis_context::stream_help(std::ostream& os)
+	{
+		os << "stream_vis_context: <Space> toggles pause, <+|-> control sleep ms" << std::endl;
+	}
 
 	bool stream_vis_context::init(cgv::render::context& ctx)
 	{
 		ctx.set_bg_clr_idx(4);
 		bool success = true;
 		for (auto& pl : plot_pool) {
-			if (false && pl.dim == 2) {
-				// create GPU objects for offline rendering
-				pl.tex.set_data_format("[R,G,B,A]");
-				pl.depth.set_component_format("[D]");
-				pl.tex.create(ctx, cgv::render::TT_2D, pl.offline_texture_resolution[0], pl.offline_texture_resolution[1]);
-				pl.depth.create(ctx, pl.offline_texture_resolution[0], pl.offline_texture_resolution[1]);
-				pl.fbo.create(ctx, pl.offline_texture_resolution[0], pl.offline_texture_resolution[1]);
-				pl.fbo.attach(ctx, pl.depth);
-				pl.fbo.attach(ctx, pl.tex);
-				if (!pl.fbo.is_complete(ctx))
-					success = false;
-			}
 			if (!pl.plot_ptr->init(ctx))
 				success = false;
 		}
@@ -295,16 +317,9 @@ namespace stream_vis {
 	}
 	void stream_vis_context::clear(cgv::render::context& ctx)
 	{
-		for (auto& pl : plot_pool) {
+		for (auto& pl : plot_pool)
 			pl.plot_ptr->clear(ctx);
-			if (pl.dim == 2) {
-				pl.depth.destruct(ctx);
-				pl.tex.destruct(ctx);
-				pl.fbo.destruct(ctx);
-			}
-		}
 	}
-
 	void stream_vis_context::update_plot_samples(cgv::render::context& ctx)
 	{
 		// ensure construction of sorage buffers and vbos
@@ -482,82 +497,20 @@ namespace stream_vis {
 	{
 		update_plot_samples(ctx);
 		update_plot_domains();
-		for (auto& pl : plot_pool) {
+		for (auto& pl : plot_pool)
 			pl.plot_ptr->init_frame(ctx);
-			if (false && pl.dim == 2) {
-				// first call init frame of plot
-				if (!pl.fbo.is_created())
-					continue;
-				if (!pl.outofdate)
-					continue;
-				// if fbo is created, perform offline rendering with world space in the range [-1,1]² and white background
-				pl.fbo.enable(ctx);
-				pl.fbo.push_viewport(ctx);
-				glClearColor(1, 1, 1, 1);
-				glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-				ctx.push_modelview_matrix();
-				ctx.set_modelview_matrix(cgv::math::identity4<double>());
-				ctx.push_projection_matrix();
-				ctx.set_projection_matrix(cgv::math::identity4<double>());
-				glDepthMask(GL_FALSE);
-				vecn ext = pl.plot_ptr->get_extent();
-				vec3 ctr = pl.plot_ptr->get_center();
-				quat ori = pl.plot_ptr->get_orientation();
-				pl.plot_ptr->set_extent(pl.extent_on_texture.to_vec());
-				pl.plot_ptr->place_center(vec3(0.0f));
-				pl.plot_ptr->set_orientation(quat());
-				pl.plot_ptr->draw(ctx);
-				pl.plot_ptr->set_orientation(ori);
-				pl.plot_ptr->place_center(ctr);
-				pl.plot_ptr->set_extent(ext);
-				glDepthMask(GL_TRUE);
-				ctx.pop_projection_matrix();
-				ctx.pop_modelview_matrix();
-
-				pl.fbo.pop_viewport(ctx);
-				pl.fbo.disable(ctx);
-
-				// generate mipmaps in rendered texture and in case of success enable anisotropic filtering
-				if (pl.tex.generate_mipmaps(ctx))
-					pl.tex.set_min_filter(cgv::render::TF_ANISOTROP, 16.0f);
-			}
-		}
 	}
 	void stream_vis_context::draw(cgv::render::context& ctx)
 	{
 		ctx.push_modelview_matrix();
-		for (auto& pl : plot_pool) {			
-			if (pl.dim == 2) {
-				if (false && pl.fbo.is_created()) {
-					// use default shader with texture support to draw offline rendered plot
-					glDisable(GL_CULL_FACE);
-					auto& prog = ctx.ref_default_shader_program(true);
-					pl.tex.enable(ctx);
-					prog.enable(ctx);
-					ctx.set_color(rgba(1, 1, 1, 1));
-					// scale down in y-direction according to texture resolution
-					vecn ext(pl.plot_ptr->get_extent());
-					ctx.push_modelview_matrix();
-					ctx.mul_modelview_matrix(
-						cgv::math::translate4<float>(pl.plot_ptr->get_center())*
-						pl.plot_ptr->get_orientation().get_homogeneous_matrix()
-					);
-					ctx.mul_modelview_matrix(cgv::math::scale4<double>(ext[0]/pl.extent_on_texture[0], ext[1]/pl.extent_on_texture[1], 1.0));
-					ctx.tesselate_unit_square();
-					prog.disable(ctx);
-					pl.tex.disable(ctx);
-					ctx.pop_modelview_matrix();
-					glEnable(GL_CULL_FACE);
-				}
-				else
-					pl.plot_ptr->draw(ctx);
-			}
-			else
-				pl.plot_ptr->draw(ctx);
-		}
+		for (auto& pl : plot_pool)			
+			pl.plot_ptr->draw(ctx);
 	}
 	void stream_vis_context::create_gui()
 	{
+		add_decorator("stream vis context", "heading", "level=1");
+		add_member_control(this, "pause", paused, "toggle");
+		add_member_control(this, "sleep_ms", sleep_ms, "value_slider", "min=0;max=1000;log=true;ticks=true");
 		add_member_control(this, "use_vbo", use_vbo, "check");
 		for (auto& pl : plot_pool) {
 			add_decorator(pl.name, "heading", "level=2");

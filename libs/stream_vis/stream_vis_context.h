@@ -45,7 +45,11 @@ namespace stream_vis {
 		AM_BLOCKED_16
 	};
 
-	class CGV_API stream_vis_context : public cgv::base::node, public cgv::render::drawable, public cgv::gui::provider
+	class CGV_API stream_vis_context : 
+		public cgv::base::node, 
+		public cgv::render::drawable, 
+		public cgv::gui::event_handler,
+		public cgv::gui::provider
 	{
 	protected:
 		std::atomic<bool> outofdate;
@@ -54,7 +58,10 @@ namespace stream_vis {
 		std::map<std::string, uint16_t> name2index;
 		std::vector<stream_vis::streaming_time_series*> typed_time_series;
 		std::vector<plot_info> plot_pool;
-		
+
+		bool paused;
+		unsigned sleep_ms;
+
 		/// store for each typed time series and each of its components a list of references where the time series component is stored in the storage buffers/vbos
 		std::vector<std::vector<component_reference>> time_series_component_references;
 		/// 
@@ -67,6 +74,8 @@ namespace stream_vis {
 
 		void construct_streaming_aabbs();
 		void construct_storage_buffer();
+		bool is_paused() const { return paused; }
+		unsigned get_sleep_ms() const { return sleep_ms; }
 	public:
 		stream_vis_context(const std::string& name);
 		~stream_vis_context();
@@ -78,6 +87,8 @@ namespace stream_vis {
 		void show_time_series() const;
 		void show_plots() const;
 		bool is_outofdate() const { return outofdate; }
+		bool handle(cgv::gui::event& e);
+		void stream_help(std::ostream& os);
 		bool init(cgv::render::context& ctx);
 		void clear(cgv::render::context& ctx);
 		void update_plot_samples(cgv::render::context& ctx);
