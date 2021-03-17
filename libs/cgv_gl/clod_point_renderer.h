@@ -29,7 +29,7 @@ namespace cgv {
 		};
 
 		enum class LoDMode {
-			POTREE = 1,
+			OCTREE = 1,
 			RANDOM_POISSON = 2,
 			INVALID = -1
 		};
@@ -106,8 +106,9 @@ namespace cgv {
 
 			// set point colors
 			template<typename T>
-			void set_colors(const context& ctx, const std::vector<T>& colors) {				
-				for (int i = 0; i < input_buffer_data.size(); ++i) {
+			void set_colors(const context& ctx, const std::vector<T>& colors) {
+				size_t size = std::min(colors.size(), input_buffer_data.size());
+				for (int i = 0; i < size; ++i) {
 					input_buffer_data[i].colors = rgb8(colors[i]);
 				}
 				buffers_outofdate = true;
@@ -209,6 +210,9 @@ namespace cgv {
 				int64_t level() {
 					return name.size() - 1;
 				}
+
+				//debug
+				bool is_chunk_root = false;
 			};
 
 			struct Indexer {
@@ -237,24 +241,19 @@ namespace cgv {
 					output = ptr;
 				}
 
-				void write(IndexNode& node) {
+				// lock and write node to out
+				void write(IndexNode& node, bool unload = false) {
 					assert(node.sampled);
 					std::lock_guard<std::mutex> lock(mtx_write);
 					for (auto& vert : *node.points) {
+						if (vert.position == vec3(0)){
+							int br = 0;
+						}
 						vert.level = node.level();
 						output->push_back(vert);
 					}
-				}
-
-				void flushChunkRoot(std::shared_ptr<IndexNode> chunkRoot) {
-
-					std::lock_guard<std::mutex> lock(mtx_chunkRoot);
-
-					for (auto& vert : *(chunkRoot->points)) {
-						output->push_back(vert);
-					}
-					
-					chunkRoot->points = nullptr;
+					if (unload)
+						node.points = nullptr;
 				}
 			};
 
@@ -300,6 +299,33 @@ namespace cgv {
 			
 			int64_t grid_index(const vec3& position, const vec3& min, const float& cube_size, const int& grid_size) const;
 			cgv::render::render_types::ivec3 grid_index_vec(const vec3& position, const vec3& min, const float& cube_size, const int& grid_size) const;
+
+			//only needed for debug purposes
+			int counthierarchy(IndexNode* node) {
+				if (node == nullptr)
+					return 0;
+				int count = (node->points == nullptr) ? 0 : node->points->size();
+				for (auto& child : node->children) {
+					count += counthierarchy(child.get());
+				}
+				return count;
+			};
+
+			//only needed for debug purposes
+			int count_zeros_hierarchy(IndexNode* node) {
+				if (node == nullptr)
+					return 0;
+				int count = 0;
+				if (node->points != nullptr) {
+					for (auto& pnt : *node->points)
+						if (pnt.position == vec3(0))
+							++count;	
+				}
+				for (auto& child : node->children) {
+					count += count_zeros_hierarchy(child.get());
+				}
+				return count;
+			};
 
 		public:
 			//lod stored in alpha channel of point color
