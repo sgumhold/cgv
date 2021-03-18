@@ -814,7 +814,8 @@ namespace cgv {
 
 				buildHierarchy(&indexer, chunk_root.get(), points, points->size());
 
-				assert(count_zeros_hierarchy(chunk_root.get()) == 0);
+				int zeros = count_zeros_hierarchy(chunk_root.get());
+				assert(zeros == 0);
 
 				auto onNodeCompleted = [&indexer,&chunk_root](IndexNode* node) {
 					//write nodes and unload all except the chunk roots
@@ -1067,7 +1068,7 @@ namespace cgv {
 				iy = std::max(int64_t(0), std::min(iy, counterGridSize - 1));
 				iz = std::max(int64_t(0), std::min(iz, counterGridSize - 1));
 
-				return mortonEncode_magicbits(iz, iy, ix); //replace with lookup table based morton encoding
+				return mortonEncode_magicbits(iz, iy, ix); //TODO replace with faster lookup table based morton encoding
 			};
 
 			// COUNTING
@@ -1146,7 +1147,7 @@ namespace cgv {
 				auto buffer = std::make_shared<std::vector<Vertex>>(candidate.numPoints); //potential out of memory here
 				memcpy(buffer->data(),
 					points->data() + candidate.indexStart,
-					candidate.numPoints
+					candidate.numPoints * sizeof(Vertex)
 				);
 
 				realization->points = buffer;
