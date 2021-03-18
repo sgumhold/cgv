@@ -34,7 +34,6 @@ struct Vertex{
 	float x;
 	float y;
 	float z;
-	
 	uint colors;
 };
 
@@ -63,6 +62,7 @@ uniform float spacing; //root_spacings
 uniform vec2 screenSize;
 uniform vec4 pivot; //pivot point in model space, usually the camera position
 
+uniform float frustum_extent;
 
 //***** begin interface of view.glsl ***********************************
 mat4 get_modelview_matrix();
@@ -94,9 +94,8 @@ void main(){
 	vec4 projected = (transform * vec4(aPosition, 1));
 	projected.xyz = projected.xyz / projected.w;
 
-	// extented-frustum culling
-	float extent = 2.0;
-	if(abs(projected.x) > extent || abs(projected.y) > extent){
+	// (extented-)frustum culling
+	if(abs(projected.x) > frustum_extent || abs(projected.y) > frustum_extent){
 		return;
 	}
 	

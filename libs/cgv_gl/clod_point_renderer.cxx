@@ -155,6 +155,28 @@ namespace {
 	}
 
 	static WorkerPool pool(std::thread::hardware_concurrency() - 1);
+
+	template <typename TASK>
+	struct TaskPool {
+		std::vector<TASK> pool;
+		std::atomic_int next_task = 0;
+
+		std::function<void(TASK*)> func;
+
+		void operator()() {
+			while (true) {
+				TASK* task;
+				//get task
+				{
+					int task_id = next_task.fetch_add(1);
+					if (task_id >= pool.size())
+						return;
+					task = &pool[task_id];
+				}
+				func(task);
+			}
+		}
+	};
 }
 //**
 
@@ -169,10 +191,6 @@ namespace cgv {
 					using IndexNode = octree_lod_generator::IndexNode;
 					using vec3 = cgv::render::render_types::vec3;
 					using Vertex = clod_point_renderer::Point;
-					
-					//debug lock
-					static std::mutex dbg_mtx;
-					std::lock_guard<std::mutex> dbg_lg(dbg_mtx);
 
 					//lambda for bottom up traversal
 					std::function<void(IndexNode*, std::function<void(IndexNode*)>)> traversePost = [&traversePost](IndexNode* node, std::function<void(IndexNode*)> callback) {
@@ -717,36 +735,61 @@ namespace cgv {
 
 		void octree_lod_generator::distributePoints(vec3 min, vec3 max, float cube_size, NodeLUT& lut, const Vertex* vertices, const int64_t num_points, const std::vector<ChunkNode>& nodes)
 		{
+			auto start = std::chrono::steady_clock::now();
 			//std::mutex mtx_push_point;
 
+			auto& grid = lut.grid;
+
+			constexpr int max_chunk_size = 256 * 1024 / sizeof(Vertex);
+
 			struct Task {
-				int64_t maxBatchSize;
-				int64_t batchSize;
-				int64_t firstPoint;
-				NodeLUT* lut;
-				vec3 min;
-				vec3 max;
+				int64_t batch_size;
+				int64_t first_point;
 			};
 
-			auto& grid = lut.grid;
-			std::vector<int> broken_index;
+			TaskPool<Task> tasks;
+			
+			{
+				int64_t i = 0;
+				while (i < num_points) {
+					Task t;
+					t.first_point = i;
+					int64_t points_left = num_points - i;
+					t.batch_size = (points_left < max_chunk_size) ? points_left : max_chunk_size;
+					i += t.batch_size;
+					tasks.pool.push_back(t);
+				}
+			}
+			tasks.func = [this,&tasks, &vertices, &min, &cube_size, &grid, &nodes](Task* task) {
+				int batch_size = task->batch_size;
+				int64_t first_point = task->first_point;
+
+				const Vertex* start = vertices + first_point;
+				const Vertex* end = vertices + first_point;
+				for (const Vertex* i = start; i < end; ++i) {
+					vec3 p = i->position;
+					int idx = grid_index(p, min, cube_size, grid_size);
+
+					auto& node = nodes[grid[idx]];
+					Vertex v = *i;
+					node.pc_data->vertices.push_back(v);
+				}
+			};
+
+			//pool.run([&tasks](int id) {tasks();});
+			
 			//TODO parallelize
 			for (int i = 0; i < num_points; ++i) {
 				vec3 p = vertices[i].position;
 				int idx = grid_index(p, min, cube_size, grid_size);
 				
-				if (grid[idx] == -1) {
-					broken_index.push_back(idx);
-					continue;
-					//cgv::utils::file::write("R:/dump.bin", (char*)grid.data(), grid.size() * sizeof(int));
-				}
-				
 				auto& node = nodes[grid[idx]];
 				Vertex v = vertices[i];
 				node.pc_data->vertices.push_back(v);
 			}
-			assert(broken_index.size() == 0);
-			int test = 0;
+			
+			auto end = std::chrono::steady_clock::now();
+			std::printf("distributing: %d ns\n",std::chrono::duration_cast<std::chrono::nanoseconds>(end - start));
 		}
 
 		void octree_lod_generator::lod_indexing(Chunks& chunks, std::vector<Vertex>& vertices, Sampler& sampler)
@@ -1389,12 +1432,11 @@ namespace cgv {
 			//configure shader to compute everything after one frame
 			reduce_prog.set_uniform(ctx, reduce_prog.get_uniform_location(ctx, "uBatchOffset"), 0);
 			reduce_prog.set_uniform(ctx, reduce_prog.get_uniform_location(ctx, "uBatchSize"), (int)count);
+			reduce_prog.set_uniform(ctx, "frustum_extent", 1.0f);
+			//reduce_prog.set_uniform(ctx, "frustum_extent", 2.0f);
 
 			// reset draw parameters
 			DrawParameters dp = DrawParameters();
-			//glBindBuffer(GL_SHADER_STORAGE_BUFFER, draw_parameter_buffer);
-			//glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(DrawParameters), &dp, GL_STREAM_DRAW);
-			//glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, sizeof(DrawParameters), &dp);
 			glNamedBufferSubData(draw_parameter_buffer, 0, sizeof(DrawParameters), &dp);
 			glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 			// reduce
@@ -1402,7 +1444,7 @@ namespace cgv {
 			glBindBufferBase(GL_SHADER_STORAGE_BUFFER, drawp_pos, draw_parameter_buffer);
 			glBindBufferBase(GL_SHADER_STORAGE_BUFFER, render_pos, render_buffer);
 			glBindBufferBase(GL_SHADER_STORAGE_BUFFER, input_pos, input_buffer);
-			glDispatchCompute((input_buffer_data.size()/128)+1, 1, 1); //with NVIDIA cards this will spam notifications about buffer usage 
+			glDispatchCompute((input_buffer_data.size()/128)+1, 1, 1); //with NVIDIA GPUs this will spam notifications about buffer usage in debug mode
 
 			// synchronize
 			glMemoryBarrier(GL_ALL_BARRIER_BITS);
@@ -1415,7 +1457,7 @@ namespace cgv {
 			glDrawArraysIndirect(GL_POINTS, 0);
 			glBindBuffer(GL_DRAW_INDIRECT_BUFFER,0);
 			
-			//DEBUG map buffer into host address space
+			//for debugging, map buffer into host address space
 			//DrawParameters* device_draw_parameters = static_cast<DrawParameters*>(glMapNamedBufferRange(draw_parameter_buffer, 0, sizeof(DrawParameters), GL_MAP_READ_BIT));
 			//glUnmapNamedBuffer(draw_parameter_buffer);
 			
