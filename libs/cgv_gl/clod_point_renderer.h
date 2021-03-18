@@ -6,7 +6,10 @@
 
 #include "gl/lib_begin.h"
 
-// [WIP] clod point cloud renderer
+// source code of the continous level of detail point cloud renderer adapted for the cgv framework
+
+// original paper: "Real-Time Continuous Level of Detail Rendering of Point Clouds" from Schutz, Markus and Krosl, Katharina and Wimmer, Michael
+// the reference implementation can be found at https://github.com/m-schuetz/ieeevr_2019_clod
 
 namespace cgv {
 	namespace render {
@@ -17,8 +20,10 @@ namespace cgv {
 			/*@name clod rendering attributes*/
 			//@{
 			float CLOD = 1.f;
+			// root spacing in the paper
 			float spacing = 1.f;
 			float scale = 1.f;
+			// minimal size of the visible points
 			float min_millimeters = 1.f;
 			float pointSize = 1.f;
 			//@}
@@ -39,11 +44,11 @@ namespace cgv {
 			struct Point {
 				vec3 position;
 				rgb8 colors;
-				uint8_t level = 0; //LOD
+				uint8_t level = 0;
 			};
 			
 		private:
-			// stores parameters generated for the draw shaders
+			// stores parameters generated for the draw shaders, for an explaination search for OpenGL Indirect rendering (https://www.khronos.org/opengl/wiki/Vertex_Rendering#Indirect_rendering)
 			struct DrawParameters {
 				GLuint  count = 0; //element count
 				GLuint  primCount = 1;
@@ -51,16 +56,20 @@ namespace cgv {
 				GLuint  baseInstance = 0;
 			};
 
-			shader_program reduce_prog;		// writes reduced input buffer to render_buffer (compute shader)
+			shader_program reduce_prog;		// filters points from the input buffer and writes them to the render_buffer (compute shader)
 			shader_program draw_prog;		// draws render_buffer (vertex, geometry, fragment shader)
 
 			std::vector<Point> input_buffer_data;
-			
+			vertex_buffer vert_input_buffer;
+
+
 			GLuint vertex_array = 0;
 			GLuint input_buffer = 0, render_buffer = 0, draw_parameter_buffer = 0;
 			const int input_pos = 0, render_pos = 1, drawp_pos = 3;
 
 			bool buffers_outofdate = true;
+			// controls execution of the point filter, with values greater than 1 point filtering is scattered across multiple frames, and extended frustum culling is used
+			int point_filter_delay = 0;
 
 			/// default render style
 			mutable render_style* default_render_style = nullptr;
@@ -146,7 +155,7 @@ namespace cgv {
 				PointCloud(int size) : vertices(size){}
 			};
 
-			//lookup table for converting cell indices to linear indices
+			//lookup table used to converting cell indices to linear indices
 			struct NodeLUT {
 				int64_t grid_size;
 				// grid contains index of node in nodes
@@ -246,9 +255,6 @@ namespace cgv {
 					assert(node.sampled);
 					std::lock_guard<std::mutex> lock(mtx_write);
 					for (auto& vert : *node.points) {
-						if (vert.position == vec3(0)){
-							int br = 0;
-						}
 						vert.level = node.level();
 						output->push_back(vert);
 					}
