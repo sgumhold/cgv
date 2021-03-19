@@ -186,6 +186,15 @@ namespace cgv {
 		namespace {
 			struct SamplerRandom : public octree_lod_generator::Sampler {
 
+				template <int GRID_SIZE>
+				struct SampleGrid {
+					static constexpr int64_t grid_size = GRID_SIZE;
+					std::vector<int64_t> grid;
+					int64_t iteration = 0;
+
+					SampleGrid() : grid(grid_size* grid_size* grid_size, -1), iteration(0) {}
+				};
+
 				// subsample a octree from bottom up, calls onNodeCompleted on every node except the root
 				void sample(std::shared_ptr<octree_lod_generator::IndexNode> node, double baseSpacing, std::function<void(octree_lod_generator::IndexNode*)> onNodeCompleted) {
 					using IndexNode = octree_lod_generator::IndexNode;
@@ -204,15 +213,18 @@ namespace cgv {
 						callback(node);
 					};
 					
+					SampleGrid<128> cgrid;
 
-					traversePost(node.get(), [baseSpacing, &onNodeCompleted](IndexNode* node) {
+					traversePost(node.get(), [baseSpacing, &onNodeCompleted, &cgrid](IndexNode* node) {
 						assert((node == nullptr) || (node->num_points == 0 && node->points.get() == nullptr) || (node->num_points == node->points->size()) );
 						
 						node->sampled = true;
 
-						int64_t gridSize = 128;
-						thread_local std::vector<int64_t> grid(gridSize * gridSize * gridSize, -1);
-						thread_local int64_t iteration = 0;
+						int64_t gridSize = cgrid.grid_size;
+						std::vector<int64_t> &grid = cgrid.grid;
+						int64_t &iteration = cgrid.iteration;
+						//thread_local std::vector<int64_t> grid(gridSize * gridSize * gridSize, -1);
+						//thread_local int64_t iteration = 0;
 						iteration++;
 
 						auto max = node->max;
@@ -252,7 +264,7 @@ namespace cgv {
 						bool isLeaf = node->is_leaf();
 						if (isLeaf) {
 							//TODO may make skip shuffle an option
-							return false;
+							//return false;
 							
 							std::vector<int> indices(node->num_points);
 							for (int i = 0; i < node->num_points; i++) {
@@ -490,7 +502,7 @@ namespace cgv {
 				}
 #endif
 
-				distributePoints(min, max,cube_size, lut, vertices, num_points,chunks.nodes);
+				distribute_points(min, max,cube_size, lut, vertices, num_points,chunks.nodes);
 			}
 
 			chunks.min = min;
@@ -657,14 +669,13 @@ namespace cgv {
 
 							if (value > 0) {
 								std::string node_id = to_node_id(level_high, gridSize_high, nx, ny, nz);
+								nodes.emplace_back(node_id,value);
+								ChunkNode& node = nodes.back();
 
-								ChunkNode node(node_id,value);
 								node.x = nx;
 								node.y = ny;
 								node.z = nz;
 								node.size = pow(2, (level_max - level_high));
-
-								nodes.emplace_back(node);
 							}
 						}
 
@@ -688,7 +699,7 @@ namespace cgv {
 			for (int i = 0; i < nodes.size(); i++) {
 				const auto& node = nodes[i];
 
-				for_xyz(node.size, [node, &lut, grid_size, i](int64_t ox, int64_t oy, int64_t oz) {
+				for_xyz(node.size, [&node, &lut, grid_size, i](int64_t ox, int64_t oy, int64_t oz) {
 					int64_t x = node.size * node.x + ox;
 					int64_t y = node.size * node.y + oy;
 					int64_t z = node.size * node.z + oz;
@@ -733,14 +744,13 @@ namespace cgv {
 			return index;
 		}
 
-		void octree_lod_generator::distributePoints(vec3 min, vec3 max, float cube_size, NodeLUT& lut, const Vertex* vertices, const int64_t num_points, const std::vector<ChunkNode>& nodes)
+		void octree_lod_generator::distribute_points(vec3 min, vec3 max, float cube_size, NodeLUT& lut, const Vertex* vertices, const int64_t num_points, const std::vector<ChunkNode>& nodes)
 		{
-			auto start = std::chrono::steady_clock::now();
-			//std::mutex mtx_push_point;
+			//auto start = std::chrono::steady_clock::now();
 
 			auto& grid = lut.grid;
 
-			constexpr int max_chunk_size = 256 * 1024 / sizeof(Vertex);
+			constexpr int max_chunk_size = 512 * (64 / sizeof(Vertex));
 
 			struct Task {
 				int64_t batch_size;
@@ -765,31 +775,43 @@ namespace cgv {
 				int64_t first_point = task->first_point;
 
 				const Vertex* start = vertices + first_point;
-				const Vertex* end = vertices + first_point;
+				const Vertex* end = start + batch_size;
+
+				//create a bucket for each chunk
+				int num_buckets = nodes.size();
+				std::vector<std::vector<Vertex>> buckets(num_buckets);
+
 				for (const Vertex* i = start; i < end; ++i) {
 					vec3 p = i->position;
 					int idx = grid_index(p, min, cube_size, grid_size);
 
-					auto& node = nodes[grid[idx]];
-					Vertex v = *i;
-					node.pc_data->vertices.push_back(v);
+					//auto& node = nodes[grid[idx]];
+					buckets[grid[idx]].push_back(*i);
+					//node.pc_data->write_points(i,1);
 				}
+				
+				for (int i = 0; i < num_buckets;++i) {
+					if (buckets[i].size() > 0)
+						nodes[i].pc_data->write_points(buckets[i].data(), buckets[i].size());
+				}
+
 			};
 
-			//pool.run([&tasks](int id) {tasks();});
+			pool.run([&tasks](int id) {tasks();});
 			
-			//TODO parallelize
+			/*
 			for (int i = 0; i < num_points; ++i) {
 				vec3 p = vertices[i].position;
 				int idx = grid_index(p, min, cube_size, grid_size);
 				
 				auto& node = nodes[grid[idx]];
 				Vertex v = vertices[i];
-				node.pc_data->vertices.push_back(v);
-			}
+				node.pc_data->write_points(&v, 1);
+				//node.pc_data->vertices.push_back(v);
+			}*/
 			
-			auto end = std::chrono::steady_clock::now();
-			std::printf("distributing: %d ns\n",std::chrono::duration_cast<std::chrono::nanoseconds>(end - start));
+			//auto end = std::chrono::steady_clock::now();
+			//std::printf("distributing: %d ns\n",std::chrono::duration_cast<std::chrono::nanoseconds>(end - start));
 		}
 
 		void octree_lod_generator::lod_indexing(Chunks& chunks, std::vector<Vertex>& vertices, Sampler& sampler)
@@ -838,6 +860,7 @@ namespace cgv {
 			tasks.func = [this,&indexer,&sampler,&nodes,&mtx_nodes](Task* task) {
 				static constexpr float Infinity = std::numeric_limits<float>::infinity();
 				ChunkNode* chunk = task->chunk;
+
 				vec3 min(Infinity), max(-Infinity);
 
 				for (auto& v : chunk->pc_data->vertices) {
@@ -851,14 +874,14 @@ namespace cgv {
 				}
 
 				auto chunk_root = std::make_shared<IndexNode>(chunk->id, min, max);
-				chunk_root->is_chunk_root = true;
+
 				//alias vertices
 				std::shared_ptr<std::vector<Vertex>> points(chunk->pc_data, &(chunk->pc_data->vertices));
 
-				buildHierarchy(&indexer, chunk_root.get(), points, points->size());
+				build_hierarchy(&indexer, chunk_root.get(), points, points->size());
 
-				int zeros = count_zeros_hierarchy(chunk_root.get());
-				assert(zeros == 0);
+				//int zeros = count_zeros_hierarchy(chunk_root.get());
+				//assert(zeros == 0);
 
 				auto onNodeCompleted = [&indexer,&chunk_root](IndexNode* node) {
 					//write nodes and unload all except the chunk roots
@@ -889,25 +912,10 @@ namespace cgv {
 			
 			pool.run([&tasks](int thread_id) {tasks(); });
 
-			//run octree generation on each chunk in parallel
-			/*
-			std::vector<std::thread> thread_pool;
-			int num_threads = 1;// std::thread::hardware_concurrency();
-			for (int i = 0; i < num_threads; ++i) {
-				thread_pool.emplace_back([&tasks]() {tasks(); });
-			}
-			
-			for (auto& thread : thread_pool) {
-				thread.join();
-			}*/
-
-			//indexer.reloadChunkRoots();
-
 			if (chunks.nodes.size() == 1) {
 				indexer.root = nodes[0];
 			}
 			else {
-
 				auto onNodeCompleted = [&indexer](IndexNode* node) {
 					indexer.write(*node,true);
 				};
@@ -1078,7 +1086,7 @@ namespace cgv {
 
 		// END COPYPASTE from potree converter
 		
-		void octree_lod_generator::buildHierarchy(Indexer* indexer, IndexNode* node, std::shared_ptr<std::vector<Vertex>> points, int64_t numPoints, int64_t depth)
+		void octree_lod_generator::build_hierarchy(Indexer* indexer, IndexNode* node, std::shared_ptr<std::vector<Vertex>> points, int64_t numPoints, int64_t depth)
 		{
 			if (numPoints < max_points_per_index_node) {
 				IndexNode* realization = node;
@@ -1214,7 +1222,7 @@ namespace cgv {
 				auto buffer = subject->points;
 
 				if (sanityCheck > needRefinement.size() * 2) {
-					//failed to partition point cloud in indexer::buildHierarchy();
+					//failed to partition point cloud in indexer::build_hierarchy();
 				}
 
 				if (subject->num_points == numPoints) {
@@ -1318,13 +1326,12 @@ namespace cgv {
 				subject->points = nullptr;
 				subject->num_points = 0;
 
-				buildHierarchy(indexer, subject, buffer, nextNumPoins, depth + 1);
+				build_hierarchy(indexer, subject, buffer, nextNumPoins, depth + 1);
 			}
 		}
 
 		std::vector <octree_lod_generator::Vertex> octree_lod_generator::generate_lods(const std::vector<Vertex>& vertices)
 		{
-			std::cerr << "Warning: octree method is unstable!\n";
 			std::vector<Vertex> out;
 			out.reserve(vertices.size());
 			this->source_data = (Vertex*)vertices.data();

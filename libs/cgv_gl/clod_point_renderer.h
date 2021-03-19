@@ -150,9 +150,16 @@ namespace cgv {
 
 			struct PointCloud {
 				std::vector<Vertex> vertices;
-
+				std::atomic_int numPointsWritten = 0;
 				PointCloud() = default;
 				PointCloud(int size) : vertices(size){}
+
+				//write points in a thread safe way
+				void write_points(const Vertex* points, const int size) {
+					int start = numPointsWritten.fetch_add(size);
+					assert(vertices.size() - start >= size);
+					memcpy(vertices.data()+ start, points, size * sizeof(Vertex));
+				}
 			};
 
 			//lookup table used to converting cell indices to linear indices
@@ -164,12 +171,12 @@ namespace cgv {
 
 			//nodes creted by chunking phase
 			struct ChunkNode {
-				int64_t level = 0;
-				int64_t x = 0;
-				int64_t y = 0;
-				int64_t z = 0;
-				int64_t size = 0; //cube edge length
-				int64_t numPoints;
+				int level = 0;
+				int x = 0;
+				int y = 0;
+				int z = 0;
+				int size = 0; //cube edge length
+				int numPoints;
 				//point cloud data
 				std::shared_ptr<PointCloud> pc_data;
 				std::string id;
@@ -177,7 +184,7 @@ namespace cgv {
 				ChunkNode(std::string node_id,int numPoints) {
 					this->numPoints = numPoints;
 					this->id = node_id;
-					this->pc_data = std::make_shared<PointCloud>();
+					this->pc_data = std::make_shared<PointCloud>(numPoints);
 				}
 			};
 
@@ -193,7 +200,7 @@ namespace cgv {
 				//accepted points, empty if sampled == false
 				std::shared_ptr<std::vector<Vertex>> points;
 				
-				std::vector<rgb8> accumulated_colors;
+				//std::vector<rgb8> accumulated_colors;
 				vec3 min;
 				vec3 max;
 				std::string name;
@@ -219,9 +226,6 @@ namespace cgv {
 				int64_t level() {
 					return name.size() - 1;
 				}
-
-				//debug
-				bool is_chunk_root = false;
 			};
 
 			struct Indexer {
@@ -269,16 +273,13 @@ namespace cgv {
 
 				virtual void sample(std::shared_ptr<IndexNode> node, double baseSpacing, std::function<void(IndexNode*)> callbackNodeCompleted) = 0;
 			};
-			
+		
 			std::vector<PointCloud> point_clouds;
 
 			static constexpr int max_points_per_index_node = 10'000;
 			int max_points_per_chunk;
 			int grid_size;
 			int currentPass;
-
-			//const std::vector<vec3>* positions;
-			//const std::vector<rgba8>* colors;
 
 			Vertex* source_data;
 			size_t source_data_size;
@@ -295,11 +296,11 @@ namespace cgv {
 			NodeLUT lod_createLUT(std::vector<std::atomic_int32_t>& grid, int64_t grid_size,std::vector<ChunkNode>& nodes);
 			
 			//create chunk nodes
-			void distributePoints(vec3 min, vec3 max, float cube_size, NodeLUT& lut, const Vertex* vertices, const int64_t num_points, const std::vector<ChunkNode>& nodes);
+			void distribute_points(vec3 min, vec3 max, float cube_size, NodeLUT& lut, const Vertex* vertices, const int64_t num_points, const std::vector<ChunkNode>& nodes);
 			//inout chunks, out vertices
 			void lod_indexing(Chunks& chunks, std::vector<Vertex>& vertices, Sampler& sampler);
 			
-			void buildHierarchy(Indexer* indexer, IndexNode* node, std::shared_ptr<std::vector<Vertex>> points, int64_t numPoints, int64_t depth = 0);
+			void build_hierarchy(Indexer* indexer, IndexNode* node, std::shared_ptr<std::vector<Vertex>> points, int64_t numPoints, int64_t depth = 0);
 
 			static box3 child_bounding_box_of(const vec3& min, const vec3& max, const int index);
 			
@@ -335,7 +336,6 @@ namespace cgv {
 
 		public:
 			//lod stored in alpha channel of point color
-			//void generate_lods(const std::vector<vec3>& positions, const std::vector<rgba8>& colors);
 			std::vector<Vertex> generate_lods(const std::vector<Vertex>& vertices);
 		};
 	}
