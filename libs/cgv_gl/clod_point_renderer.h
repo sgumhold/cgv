@@ -33,14 +33,11 @@ namespace cgv {
 			bool self_reflect(cgv::reflect::reflection_handler& rh);
 		};
 
-		enum class LoDMode {
-			OCTREE = 1,
-			RANDOM_POISSON = 2,
-			INVALID = -1
-		};
 
+		//*  */
 		class CGV_API clod_point_renderer : public render_types {
 		public:
+			// internal point format
 			struct Point {
 				vec3 position;
 				rgb8 colors;
@@ -60,7 +57,7 @@ namespace cgv {
 			shader_program draw_prog;		// draws render_buffer (vertex, geometry, fragment shader)
 
 			std::vector<Point> input_buffer_data;
-			vertex_buffer vert_input_buffer;
+			//vertex_buffer vert_input_buffer;
 
 
 			GLuint vertex_array = 0;
@@ -78,38 +75,12 @@ namespace cgv {
 
 		protected:
 
-			void generate_lods_poisson();
-
 			void draw_and_compute_impl(context& ctx, PrimitiveType type, size_t start, size_t count);
 
 			const render_style* get_style_ptr() const;
 
 			template <typename T>
 			const T& get_style() const { return *static_cast<const T*>(get_style_ptr()); }
-		public:
-			clod_point_renderer() = default;
-
-			render_style* create_render_style() const;
-
-			bool init(context& ctx);
-
-			bool enable(context& ctx);
-			
-			bool disable(context& ctx);
-
-			void clear(const cgv::render::context& ctx);
-
-			/// @param use_strips : unused
-			/// @param use_adjacency : unused
-			/// @param strip_restart_index : unused
-			void draw(context& ctx, size_t start=0, size_t count=0);
-			/// @param use_strips : unused
-			/// @param use_adjacency : unused
-			/// @param strip_restart_index : unused
-			bool render(context& ctx, size_t start, size_t count);
-
-			// this method can overwrite and reorder the elements of input_buffer_data
-			void generate_lods(const LoDMode mode = LoDMode::RANDOM_POISSON);
 
 			void set_positions(context& ctx, const std::vector<vec3>& positions);
 
@@ -133,211 +104,60 @@ namespace cgv {
 				buffers_outofdate = true;
 			}
 
+		public:
+			clod_point_renderer() = default;
+
+			render_style* create_render_style() const;
+
+			bool init(context& ctx);
+
+			bool enable(context& ctx);
+			
+			bool disable(context& ctx);
+
+			void clear(const cgv::render::context& ctx);
+
+			/// @param use_strips : unused
+			/// @param use_adjacency : unused
+			/// @param strip_restart_index : unused
+			void draw(context& ctx, size_t start=0, size_t count=0);
+			/// @param use_strips : unused
+			/// @param use_adjacency : unused
+			/// @param strip_restart_index : unused
+			bool render(context& ctx, size_t start, size_t count);
+
+			template<typename T>
+			void set_points(const std::vector<T>& pnts) {
+				input_buffer_data.resize(pnts.size());
+				memcpy(input_buffer_data.data(),pnts.data(), sizeof(Point) * pnts.size());
+				buffers_outofdate = true;
+			}
+
+			void set_points(const vec3* positions, const rgb8* colors, const uint8_t* lods, const size_t num_points, const unsigned stride) {
+				std::vector<Point> input_buffer_data(num_points);
+				const uint8_t* pos_end = (uint8_t*)positions + (stride*num_points);
+				
+				auto input_it = input_buffer_data.begin();
+				for (int i = 0; i < num_points;++i) {
+					input_it->position = *positions;
+					input_it->colors = *colors;
+					input_it->level = *lods;
+					++input_it;
+
+					positions = (vec3*)((uint8_t*)positions + stride);
+					colors = (rgb8*)((uint8_t*)colors + stride);
+					lods += stride;
+				}
+			}
+
 			void set_render_style(const render_style& rs);
 
-			uint8_t& point_lod(const int i);
-			rgb8& point_color(const int i);
-			vec3& point_position(const int i);
 		private:
 			void add_shader(context& ctx, shader_program& prog, const std::string& sf, const cgv::render::ShaderType st);
 			void fill_buffers(context& ctx);
 			void clear_buffers(const context& ctx);
 		};
 
-		class octree_lod_generator : public render_types {
-		public:
-			using Vertex = clod_point_renderer::Point;
-
-			struct PointCloud {
-				std::vector<Vertex> vertices;
-				std::atomic_int numPointsWritten = 0;
-				PointCloud() = default;
-				PointCloud(int size) : vertices(size){}
-
-				//write points in a thread safe way
-				void write_points(const Vertex* points, const int size) {
-					int start = numPointsWritten.fetch_add(size);
-					assert(vertices.size() - start >= size);
-					memcpy(vertices.data()+ start, points, size * sizeof(Vertex));
-				}
-			};
-
-			//lookup table used to converting cell indices to linear indices
-			struct NodeLUT {
-				int64_t grid_size;
-				// grid contains index of node in nodes
-				std::vector<int> grid;
-			};
-
-			//nodes creted by chunking phase
-			struct ChunkNode {
-				int level = 0;
-				int x = 0;
-				int y = 0;
-				int z = 0;
-				int size = 0; //cube edge length
-				int numPoints;
-				//point cloud data
-				std::shared_ptr<PointCloud> pc_data;
-				std::string id;
-
-				ChunkNode(std::string node_id,int numPoints) {
-					this->numPoints = numPoints;
-					this->id = node_id;
-					this->pc_data = std::make_shared<PointCloud>(numPoints);
-				}
-			};
-
-			struct Chunks {
-				std::vector<ChunkNode> nodes;
-				vec3 min, max;
-			};
-
-			struct IndexNode {
-
-				std::vector<std::shared_ptr<IndexNode>> children;
-
-				//accepted points, empty if sampled == false
-				std::shared_ptr<std::vector<Vertex>> points;
-				
-				//std::vector<rgb8> accumulated_colors;
-				vec3 min;
-				vec3 max;
-				std::string name;
-
-				int64_t index_start = 0;
-				//number of accepted points
-				int64_t num_points = 0;
-
-				bool sampled = false;
-
-				IndexNode() {}
-
-				IndexNode(const std::string& name,const vec3& min, const vec3& max);
-
-				void traverse_pre(std::function<void(IndexNode*)> callback);
-
-				void traverse_post(std::function<void(IndexNode*)> callback);
-
-				bool is_leaf();
-
-				void add_descendant(std::shared_ptr<IndexNode> descendant);
-
-				int64_t level() {
-					return name.size() - 1;
-				}
-			};
-
-			struct Indexer {
-				//pointer to result vector
-				std::vector<Vertex>* output;
-
-				std::shared_ptr<IndexNode> root;
-
-				std::vector<std::shared_ptr<IndexNode>> detachedParts;
-
-				std::atomic_int64_t byteOffset = 0;
-
-				double scale = 0.001;
-				double spacing = 1.0;
-
-				std::atomic_int64_t dbg = 0;
-
-				std::mutex mtx_depth;
-				int64_t octreeDepth = 0;
-				
-				std::mutex mtx_chunkRoot;
-
-				std::mutex mtx_write;
-
-				Indexer(std::vector<Vertex>* const ptr) {
-					output = ptr;
-				}
-
-				// lock and write node to out
-				void write(IndexNode& node, bool unload = false) {
-					assert(node.sampled);
-					std::lock_guard<std::mutex> lock(mtx_write);
-					for (auto& vert : *node.points) {
-						vert.level = node.level();
-						output->push_back(vert);
-					}
-					if (unload)
-						node.points = nullptr;
-				}
-			};
-
-			struct Sampler {
-
-				Sampler() {}
-
-				virtual void sample(std::shared_ptr<IndexNode> node, double baseSpacing, std::function<void(IndexNode*)> callbackNodeCompleted) = 0;
-			};
-		
-			std::vector<PointCloud> point_clouds;
-
-			static constexpr int max_points_per_index_node = 10'000;
-			int max_points_per_chunk;
-			int grid_size;
-			int currentPass;
-
-			Vertex* source_data;
-			size_t source_data_size;
-
-		protected:
-			std::string to_node_id(int level, int gridSize, int64_t x, int64_t y, int64_t z);
-			
-			//void lod_chunking(const std::vector<vec3>& positions, const vec3& min, const vec3& max);
-			//std::vector<octree_lod_generator::ChunkNode> lod_chunking(const Vertex* vertices, const size_t num_points,const vec3& min, const vec3& max);
-			Chunks lod_chunking(const Vertex* vertices, const size_t num_points,const vec3& min, const vec3& max, const float& size);
-
-			std::vector<std::atomic_int32_t> lod_counting(const Vertex* vertices, const int64_t num_points, int64_t grid_size, const vec3& min, const vec3& max, const float& size);
-			
-			NodeLUT lod_createLUT(std::vector<std::atomic_int32_t>& grid, int64_t grid_size,std::vector<ChunkNode>& nodes);
-			
-			//create chunk nodes
-			void distribute_points(vec3 min, vec3 max, float cube_size, NodeLUT& lut, const Vertex* vertices, const int64_t num_points, const std::vector<ChunkNode>& nodes);
-			//inout chunks, out vertices
-			void lod_indexing(Chunks& chunks, std::vector<Vertex>& vertices, Sampler& sampler);
-			
-			void build_hierarchy(Indexer* indexer, IndexNode* node, std::shared_ptr<std::vector<Vertex>> points, int64_t numPoints, int64_t depth = 0);
-
-			static box3 child_bounding_box_of(const vec3& min, const vec3& max, const int index);
-			
-			int64_t grid_index(const vec3& position, const vec3& min, const float& cube_size, const int& grid_size) const;
-			cgv::render::render_types::ivec3 grid_index_vec(const vec3& position, const vec3& min, const float& cube_size, const int& grid_size) const;
-
-			//only needed for debug purposes
-			int counthierarchy(IndexNode* node) {
-				if (node == nullptr)
-					return 0;
-				int count = (node->points == nullptr) ? 0 : node->points->size();
-				for (auto& child : node->children) {
-					count += counthierarchy(child.get());
-				}
-				return count;
-			};
-
-			//only needed for debug purposes
-			int count_zeros_hierarchy(IndexNode* node) {
-				if (node == nullptr)
-					return 0;
-				int count = 0;
-				if (node->points != nullptr) {
-					for (auto& pnt : *node->points)
-						if (pnt.position == vec3(0))
-							++count;	
-				}
-				for (auto& child : node->children) {
-					count += count_zeros_hierarchy(child.get());
-				}
-				return count;
-			};
-
-		public:
-			//lod stored in alpha channel of point color
-			std::vector<Vertex> generate_lods(const std::vector<Vertex>& vertices);
-		};
 	}
 }
 #include <cgv/config/lib_end.h>
