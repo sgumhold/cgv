@@ -303,6 +303,8 @@ bool vr_view_interactor::init(cgv::render::context& ctx)
 		vr::set_vrmesh_file_name(vr::VRM_TRACKER, "HTC_Vive_Tracker_2017.obj");
 		mesh_scales[vr::VRM_TRACKER] = 0.001f;
 	}
+	if (vr::get_vrmesh_file_name(vr::VRM_BASE).empty())
+		vr::set_vrmesh_file_name(vr::VRM_BASE, "lh_basestation_vive.obj");
 #endif
 	return stereo_view_interactor::init(ctx);
 }
