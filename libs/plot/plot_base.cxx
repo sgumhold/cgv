@@ -33,12 +33,12 @@ plot_base_config::plot_base_config(const std::string& _name, unsigned dim) : nam
 	show_plot = true;
 	begin_sample = 0;
 	end_sample = size_t(-1);
-	ref_size = 3;
+	ref_size = 8;
 	ref_color = rgb(1, 0, 0);
 	ref_opacity = 1.0f;
 	bar_percentual_width = 0.75f;
-	point_halo_width = 1.0f;
-	point_halo_color = rgba(0.5f, 0.5f, 0.5f, 1.0f);
+	//point_halo_width = 1.0f;
+	//point_halo_color = rgba(0.5f, 0.5f, 0.5f, 1.0f);
 	stick_coordinate_index = dim-1;
 	stick_base_window = 0.0f;
 	bar_coordinate_index = dim-1;
@@ -77,6 +77,11 @@ void plot_base_config::set_colors(const rgb& base_color)
 	}
 	if ((sub_plot_influence & SPI_LINE) != 0)
 		line_color.color = 0.25f * rgb(1, 1, 1) + 0.75f * base_color;
+	if ((sub_plot_influence & SPI_LINE_HALO) != 0) {
+		cgv::media::color<float, cgv::media::HLS> hls_base(base_color);
+		hls_base.S() *= 0.6f;
+		line_halo_color.color = hls_base;
+	}
 	if ((sub_plot_influence & SPI_STICK) != 0)
 		stick_color.color = 0.25f * rgb(0, 0, 0) + 0.75f * base_color;
 	if ((sub_plot_influence & SPI_BAR) != 0)
@@ -92,6 +97,8 @@ void plot_base_config::set_color_indices(int idx)
 		point_halo_color.color_idx = idx;
 	if ((sub_plot_influence & SPI_LINE) != 0)
 		line_color.color_idx = idx;
+	if ((sub_plot_influence & SPI_LINE_HALO) != 0)
+		line_halo_color.color_idx = idx;
 	if ((sub_plot_influence & SPI_STICK) != 0)
 		stick_color.color_idx = idx;
 	if ((sub_plot_influence & SPI_BAR) != 0)
@@ -108,6 +115,8 @@ void plot_base_config::set_sizes(float _size)
 		point_halo_width.size = 0.2f * _size;
 	if ((sub_plot_influence & SPI_LINE) != 0)
 		line_width.size = 0.5f * _size;
+	if ((sub_plot_influence & SPI_LINE_HALO) != 0)
+		line_halo_width.size = 0.1f * _size;
 	if ((sub_plot_influence & SPI_STICK) != 0)
 		stick_width.size = 0.4f * _size;
 	if ((sub_plot_influence & SPI_BAR_OUTLINE) != 0)
@@ -121,6 +130,8 @@ void plot_base_config::set_size_indices(int idx)
 		point_halo_width.size_idx = idx;
 	if ((sub_plot_influence & SPI_LINE) != 0)
 		line_width.size_idx = idx;
+	if ((sub_plot_influence & SPI_LINE_HALO) != 0)
+		line_halo_width.size_idx = idx;
 	if ((sub_plot_influence & SPI_STICK) != 0)
 		stick_width.size_idx = idx;
 	if ((sub_plot_influence & SPI_BAR_OUTLINE) != 0)
@@ -135,6 +146,8 @@ void plot_base_config::set_opacities(float _opa)
 		point_halo_color.color.alpha() = _opa;
 	if ((sub_plot_influence & SPI_LINE) != 0)
 		line_color.color.alpha() = pow(_opa, 0.8f);
+	if ((sub_plot_influence & SPI_LINE_HALO) != 0)
+		line_halo_color.color.alpha() = _opa;
 	if ((sub_plot_influence & SPI_STICK) != 0)
 		stick_color.color.alpha() = pow(_opa, 0.9f);
 	if ((sub_plot_influence & SPI_BAR) != 0) 
@@ -150,6 +163,8 @@ void plot_base_config::set_opacity_indices(int idx)
 		point_halo_color.opacity_idx = idx;
 	if ((sub_plot_influence & SPI_LINE) != 0)
 		line_color.opacity_idx = idx;
+	if ((sub_plot_influence & SPI_LINE_HALO) != 0)
+		line_halo_color.opacity_idx = idx;
 	if ((sub_plot_influence & SPI_STICK) != 0)
 		stick_color.opacity_idx = idx;
 	if ((sub_plot_influence & SPI_BAR) != 0)
@@ -937,6 +952,7 @@ void plot_base::update_ref_opacity(unsigned i, cgv::gui::provider& p)
 	p.update_member(&pbc.point_color.color.alpha());
 	p.update_member(&pbc.point_halo_color.color.alpha());
 	p.update_member(&pbc.line_color.color.alpha());
+	p.update_member(&pbc.line_halo_color.color.alpha());
 	p.update_member(&pbc.stick_color.color.alpha());
 	p.update_member(&pbc.bar_color.color.alpha());
 	p.update_member(&pbc.bar_outline_color.color.alpha());
@@ -948,6 +964,7 @@ void plot_base::update_ref_opacity_index(unsigned i, cgv::gui::provider& p)
 	p.update_member(&pbc.point_color.opacity_idx);
 	p.update_member(&pbc.point_halo_color.opacity_idx);
 	p.update_member(&pbc.line_color.opacity_idx);
+	p.update_member(&pbc.line_halo_color.opacity_idx);
 	p.update_member(&pbc.stick_color.opacity_idx);
 	p.update_member(&pbc.bar_color.opacity_idx);
 	p.update_member(&pbc.bar_outline_color.opacity_idx);
@@ -959,6 +976,7 @@ void plot_base::update_ref_color(unsigned i, cgv::gui::provider& p)
 	p.update_member(&pbc.point_color.color);
 	p.update_member(&pbc.point_halo_color.color);
 	p.update_member(&pbc.line_color.color);
+	p.update_member(&pbc.line_halo_color.color);
 	p.update_member(&pbc.stick_color.color);
 	p.update_member(&pbc.bar_color.color);
 	p.update_member(&pbc.bar_outline_color.color);
@@ -970,6 +988,7 @@ void plot_base::update_ref_color_index(unsigned i, cgv::gui::provider& p)
 	p.update_member(&pbc.point_color.color_idx);
 	p.update_member(&pbc.point_halo_color.color_idx);
 	p.update_member(&pbc.line_color.color_idx);
+	p.update_member(&pbc.line_halo_color.color_idx);
 	p.update_member(&pbc.stick_color.color_idx);
 	p.update_member(&pbc.bar_color.color_idx);
 	p.update_member(&pbc.bar_outline_color.color_idx);
@@ -990,6 +1009,7 @@ void plot_base::update_ref_size_index(unsigned i, cgv::gui::provider& p)
 	p.update_member(&pbc.point_size.size_idx);
 	p.update_member(&pbc.point_halo_width.size_idx);
 	p.update_member(&pbc.line_width.size_idx);
+	p.update_member(&pbc.line_halo_width.size_idx);
 	p.update_member(&pbc.stick_width.size_idx);
 	p.update_member(&pbc.bar_outline_width.size_idx);
 }
@@ -1053,7 +1073,9 @@ void plot_base::create_point_config_gui(cgv::base::base* bp, cgv::gui::provider&
 void plot_base::create_line_config_gui(cgv::base::base* bp, cgv::gui::provider& p, plot_base_config& pbc)
 {
 	add_mapped_rgba_control(p, bp, "color", pbc.line_color);
+	add_mapped_rgba_control(p, bp, "halo_color", pbc.line_halo_color);
 	add_mapped_size_control(p, bp, "width", pbc.line_width);
+	add_mapped_size_control(p, bp, "halo_width", pbc.line_halo_width);
 }
 void plot_base::create_stick_config_gui(cgv::base::base* bp, cgv::gui::provider& p, plot_base_config& pbc)
 {

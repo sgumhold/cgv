@@ -12,7 +12,8 @@ namespace stream_vis {
 	public:
 		cgv_declaration_reader(const std::string& _declarations);
 		bool parse_bool(const std::string& name, bool& b);
-		bool parse_float(const std::string& name, float& flt);
+		bool parse_int(const std::string& name, int& i);
+		bool parse_float(const std::string& name, float& f);
 		bool parse_color(const std::string& name, rgb& color);
 		bool parse_color(const std::string& name, rgba& color);
 		bool parse_quat(const std::string& name, quat& quat);

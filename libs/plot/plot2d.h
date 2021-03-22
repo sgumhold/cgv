@@ -42,16 +42,17 @@ protected:
 	std::vector<std::vector<vec2> > samples;
 	/// allow to split series into connected strips that are represented by the number of contained samples
 	std::vector <std::vector<unsigned> > strips;
-	/// whether to manage separate y-axis for each sub plot
-	bool multi_y_axis_mode;
-	/// offset in z-direction between sub plots
-	float dz;
-	///
-	float layer_depth;
 	/// render style of rectangles
 	cgv::render::rectangle_render_style rrs;
 	cgv::render::attribute_array_manager aam_domain, aam_tick_labels;
 public:
+	/// whether to manage separate y-axis for each sub plot
+	bool multi_y_axis_mode;
+	/// offset in z-direction between sub plots
+	float dz;
+	/// depth offset of a single layer
+	float layer_depth;
+
 	/// construct 2D plot with given number of additional attributes and default parameters
 	plot2d(unsigned nr_attributes = 0);
 

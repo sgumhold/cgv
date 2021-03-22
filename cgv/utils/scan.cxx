@@ -45,6 +45,15 @@ char to_lower(char c)
 	}
 }
 
+std::string to_hex(uint8_t v, bool use_upper_case)
+{
+	static const char lc_hex_digits[] = "0123456789abcdef";
+	static const char uc_hex_digits[] = "0123456789ABCDEF";
+	const char* hex_digits = use_upper_case ? uc_hex_digits : lc_hex_digits;
+	char res[2] = { hex_digits[v / 16], hex_digits[v & 15] };
+	return std::string(res, 2);
+}
+
 std::string to_lower(const std::string& _s)
 {
 	std::string s(_s);

@@ -6,8 +6,9 @@ namespace cgv {
 		render_style::~render_style()
 		{
 		}
-		attribute_array_manager::attribute_array_manager()
+		attribute_array_manager::attribute_array_manager(VertexBufferUsage _default_usage)
 		{
+			default_usage = _default_usage;
 		}
 		bool attribute_array_manager::has_attribute(const context& ctx, int loc) const
 		{
