@@ -38,13 +38,6 @@ namespace stream_vis {
 		std::vector<uint16_t> component_indices;
 	};
 
-	enum AABBMode
-	{
-		AM_BRUTE_FORCE,
-		AM_BLOCKED_8,
-		AM_BLOCKED_16
-	};
-
 	class CGV_API stream_vis_context : 
 		public cgv::base::node, 
 		public cgv::render::drawable, 
@@ -86,6 +79,7 @@ namespace stream_vis {
 		void parse_declarations(const std::string& declarations);
 		void show_time_series() const;
 		void show_plots() const;
+		void show_ringbuffers() const;
 		bool is_outofdate() const { return outofdate; }
 		bool handle(cgv::gui::event& e);
 		void stream_help(std::ostream& os);

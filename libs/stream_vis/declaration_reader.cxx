@@ -17,9 +17,9 @@ namespace stream_vis {
 		typed_time_series_ptr = _typed_time_series_ptr;
 		plot_pool_ptr = _plot_pool_ptr;
 	}
-	bool declaration_reader::construct_composed_time_series(const std::string& name, const std::string& type, const std::vector<std::string>& ts_names)
+	bool declaration_reader::construct_time_series(const std::string& name, const std::string& type, const std::vector<std::string>& ts_names)
 	{
-		// for all other declarations extract stream indices
+		// for all declarations extract stream indices
 		std::vector<uint16_t> stream_indices;
 		for (auto ts_name : ts_names) {
 			if (name2index_ptr->find(ts_name) != name2index_ptr->end())
@@ -29,36 +29,84 @@ namespace stream_vis {
 				stream_indices.push_back(0);
 			}
 		}
-		if (type.substr(0, 3) == "vec") {
-			if (type.length() != 4) {
-				std::cerr << "unknown type <" << type << ">" << std::endl;
-				return false;
+		// check if declaration extents input/output stream or defines a composed time series
+		int ts_idx = -1;
+		if (name2index_ptr->find(name) != name2index_ptr->end()) {
+			ts_idx = name2index_ptr->at(name);
+			streaming_time_series* ts_ptr = typed_time_series_ptr->at(ts_idx);
+			if (stream_indices.size() == 0) {
 			}
-			int dim = type[3] - '0';
-			if (stream_indices.size() != dim) {
-				std::cerr << "composed stream of type <" << type << "> needs to be defined from " << dim << " streams, but found only " << stream_indices.size() << " for " << name << ":" << type << std::endl;
-				return false;
+			else if (stream_indices.size() == 2) {
+				if (ts_ptr->get_value_type_id() == cgv::type::info::TI_BOOL)
+					std::cerr << "lower and upper bound declaration of boolean typed time series <" << name << "> not allowed and ignored." << std::endl;
+				else {
+					if (typed_time_series_ptr->at(stream_indices[0])->get_value_type_id() == ts_ptr->get_value_type_id()) 
+						ts_ptr->lower_bound_index = stream_indices[0];
+					else
+						std::cerr << "lower bound time series <" << typed_time_series_ptr->at(stream_indices[0])->name << ":"
+						<< typed_time_series_ptr->at(stream_indices[0])->get_value_type_name() << "> of different type as <"
+						<< ts_ptr->name << ":" << ts_ptr->get_value_type_name() << "> and ignored" << std::endl;
+					if (typed_time_series_ptr->at(stream_indices[1])->get_value_type_id() == ts_ptr->get_value_type_id())
+						ts_ptr->upper_bound_index = stream_indices[1];
+					else
+						std::cerr << "upper bound time series <" << typed_time_series_ptr->at(stream_indices[1])->name << ":"
+						<< typed_time_series_ptr->at(stream_indices[1])->get_value_type_name() << "> of different type as <"
+						<< ts_ptr->name << ":" << ts_ptr->get_value_type_name() << "> and ignored" << std::endl;
+					if (ts_ptr->lower_bound_index != uint16_t(-1) && ts_ptr->upper_bound_index != uint16_t(-1))
+						ts_ptr->aabb_mode = AM_NONE;
+				}
 			}
-			if (dim < 2 || dim > 4) {
-				std::cerr << "only support composed vec type of dim 2-4 but got " << dim << " for " << name << ":" << type << std::endl;
-				return false;
-			}
-			switch (dim) {
-			case 2: typed_time_series_ptr->push_back(new stream_vis::fvec_time_series<2>(stream_indices[0], stream_indices[1])); break;
-			case 3: typed_time_series_ptr->push_back(new stream_vis::fvec_time_series<3>(stream_indices[0], stream_indices[1], stream_indices[2])); break;
-			case 4: typed_time_series_ptr->push_back(new stream_vis::fvec_time_series<4>(stream_indices[0], stream_indices[1], stream_indices[2], stream_indices[3])); break;
+			else {
+				std::cerr << "for redeclaration of <" << ts_ptr->name << ":" << ts_ptr->get_value_type_name()
+					<< "> only zero or two time series allowed in definition but found {";
+				for (auto si : stream_indices)
+					std::cerr << " " << typed_time_series_ptr->at(stream_indices[si])->name;
+				std::cerr << " }" << std::endl;
 			}
 		}
-		else if (type == "quat") {
-			if (stream_indices.size() != 4) {
-				std::cout << "composed stream of type <" << type << "> needs to be defined from 4 streams, but found only " << stream_indices.size() << " in " << name << ":" << type << std::endl;
-				return false;
+		else {
+			//
+			if (type.substr(0, 3) == "vec") {
+				if (type.length() != 4) {
+					std::cerr << "unknown typed declaration <" << name << ":" << type << ">" << std::endl;
+					return false;
+				}
+				int dim = type[3] - '0';
+				if (stream_indices.size() != dim) {
+					std::cerr << "composed stream of type <" << name << ":" << type << "> needs to be defined from " << dim << " streams, but found only " << stream_indices.size() << " for " << name << ":" << type << std::endl;
+					return false;
+				}
+				if (dim < 2 || dim > 4) {
+					std::cerr << "only support composed vec type of dim 2-4 but got " << dim << " for " << name << ":" << type << std::endl;
+					return false;
+				}
+				switch (dim) {
+				case 2: typed_time_series_ptr->push_back(new stream_vis::fvec_time_series<2>(stream_indices[0], stream_indices[1])); break;
+				case 3: typed_time_series_ptr->push_back(new stream_vis::fvec_time_series<3>(stream_indices[0], stream_indices[1], stream_indices[2])); break;
+				case 4: typed_time_series_ptr->push_back(new stream_vis::fvec_time_series<4>(stream_indices[0], stream_indices[1], stream_indices[2], stream_indices[3])); break;
+				}
 			}
-			typed_time_series_ptr->push_back(new stream_vis::quat_time_series(stream_indices[0], stream_indices[1], stream_indices[2], stream_indices[3]));
+			else if (type == "quat") {
+				if (stream_indices.size() != 4) {
+					std::cout << "composed stream of type <" << type << "> needs to be defined from 4 streams, but found only " << stream_indices.size() << " in " << name << ":" << type << std::endl;
+					return false;
+				}
+				typed_time_series_ptr->push_back(new stream_vis::quat_time_series(stream_indices[0], stream_indices[1], stream_indices[2], stream_indices[3]));
+			}
+			typed_time_series_ptr->back()->name = name;
+			typed_time_series_ptr->back()->series().set_ringbuffer_size(1024);
+			ts_idx = (*name2index_ptr)[name] = uint16_t(typed_time_series_ptr->size() - 1);
 		}
-		typed_time_series_ptr->back()->name = name;
-		typed_time_series_ptr->back()->series().set_ringbuffer_size(1024);
-		(*name2index_ptr)[name] = uint16_t(typed_time_series_ptr->size() - 1);
+		if (ts_idx != -1) {
+			streaming_time_series* ts_ptr = typed_time_series_ptr->at(ts_idx);
+			parse_color("color", ts_ptr->default_color);
+			parse_float("opacity", ts_ptr->default_opacity);
+			parse_float("size", ts_ptr->default_size);
+			parse_int("aabb_mode", (int&)ts_ptr->aabb_mode);
+			int ring_buffer_size = 1024;
+			if (parse_int("ring_buffer_size", ring_buffer_size))
+				ts_ptr->series().set_ringbuffer_size(ring_buffer_size);
+		}
 		return true;
 	}
 	bool declaration_reader::construct_mark(const std::string& name, cgv::plot::plot_base_config& cfg, int dim)
@@ -228,14 +276,23 @@ namespace stream_vis {
 		parse_bound_vecn("view_min", pi.domain_adjustment[0], pi.domain_bound_ts_index[0], &pi.fixed_domain.ref_min_pnt()[0], dim);
 		parse_bound_vecn("view_max", pi.domain_adjustment[1], pi.domain_bound_ts_index[1], &pi.fixed_domain.ref_max_pnt()[0], dim);
 		parse_vecn("view_max", &pi.fixed_domain.ref_max_pnt()[0], dim);
+		bool auto_color = false;
+		int nr_attributes = 0;
+		parse_bool("auto_color", auto_color);
+		parse_int("nr_attributes", nr_attributes);
+		pi.nr_axes = dim + nr_attributes;
 		if (dim == 2) {
-			pi.plot_ptr = new cgv::plot::plot2d();
+			auto* plot2d_ptr = new cgv::plot::plot2d(unsigned(nr_attributes));
+			pi.plot_ptr = plot2d_ptr;
 			vec2 ext = vec2(1.0f, 1.0f);
 			parse_vec2("extent", ext);
+			parse_float("dz", plot2d_ptr->dz);
+			parse_bool("multi_y_axis_mode", plot2d_ptr->multi_y_axis_mode);
 			pi.plot_ptr->set_extent(ext.to_vec());
+			pi.plot_ptr->get_domain_config_ptr()->reference_size = 0.003f;
 		}
 		else {
-			pi.plot_ptr = new cgv::plot::plot3d();;
+			pi.plot_ptr = new cgv::plot::plot3d(unsigned(nr_attributes));
 			vec3 ext;
 			if (parse_vec3("extent", ext))
 				pi.plot_ptr->set_extent(ext.to_vec());
@@ -253,6 +310,14 @@ namespace stream_vis {
 			pi.plot_ptr->set_orientation(ori);
 		parse_float("font_size", dom_cfg.label_font_size);
 		parse_subplots(pi, dim);
+		if (auto_color) {
+			unsigned n=pi.plot_ptr->get_nr_sub_plots();
+			if (n > 1) {
+				float scale = 1.0f / n;
+				for (unsigned i = 0; i < n; ++i)
+					pi.plot_ptr->ref_sub_plot_config(i).set_colors(cgv::media::color_scale(scale * i, cgv::media::CS_HUE));
+			}
+		}
 		plot_pool_ptr->push_back(pi);
 	}
 }

@@ -60,6 +60,16 @@ namespace stream_vis {
 		}
 		return false;
 	}
+	bool cgv_declaration_reader::parse_int(const std::string& name, int& i)
+	{
+		auto iter = pp.find(name);
+		if (iter == pp.end())
+			return false;
+		std::string value = iter->second;
+		if (!cgv::utils::is_integer(value, i))
+			return false;
+		return true;
+	}
 	bool cgv_declaration_reader::parse_float(const std::string& name, float& flt)
 	{
 		auto iter = pp.find(name);
@@ -389,7 +399,11 @@ namespace stream_vis {
 						++i;
 					}
 				}
-				construct_composed_time_series(name, type, ts_names);
+				pp.clear();
+				if (has_params) {
+					parse_parameters(toks[ti + 3], pp);
+				}
+				construct_time_series(name, type, ts_names);
 			}
 			ti += delta;
 		}

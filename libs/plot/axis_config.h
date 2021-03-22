@@ -21,7 +21,7 @@ enum TickType
 };
 
 /// tickmark configuration of one tickmark type
-struct tick_config
+struct CGV_API tick_config
 {
 	/// type of tick
 	TickType type;
@@ -42,7 +42,7 @@ struct tick_config
 };
 
 /// configuration information stored per domain axis
-class axis_config : public cgv::render::render_types
+class CGV_API axis_config : public cgv::render::render_types
 {
 private:
 	/// minimum tick space value

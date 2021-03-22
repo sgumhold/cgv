@@ -48,6 +48,8 @@ namespace stream_vis {
 	{
 		/// plot dimension
 		int dim;
+		/// total number of axes including attribute axes
+		unsigned nr_axes;
 		/// plot name
 		std::string name;
 		/// fixed domain definition via view_min and view_max

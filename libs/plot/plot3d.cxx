@@ -181,7 +181,7 @@ bool plot3d::init(cgv::render::context& ctx)
 
 void plot3d::draw_sub_plots(cgv::render::context& ctx)
 {
-	float rs = get_domain_config_ptr()->reference_size;
+	float rs = 0.2f*get_domain_config_ptr()->reference_size;
 	vecn extent = get_extent();
 	double y_view_angle = 45.0f;
 	if (view_ptr)

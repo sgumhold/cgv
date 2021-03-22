@@ -20,6 +20,8 @@ namespace cgv { // @<
 		class CGV_API attribute_array_manager
 		{
 		protected:
+			/// store default buffer usage
+			VertexBufferUsage default_usage; 
 			/// attribue array binding used to store array pointers
 			attribute_array_binding aab;
 			/// store vertex buffers generated per attribute location
@@ -41,7 +43,7 @@ namespace cgv { // @<
 					}
 				}
 				else {
-					vbo_ptr = new vertex_buffer(VBT_INDICES);
+					vbo_ptr = new vertex_buffer(VBT_INDICES, default_usage);
 					res = vbo_ptr->create(ctx, array);
 				}
 				if (res)
@@ -63,7 +65,7 @@ namespace cgv { // @<
 					}
 				}
 				else {
-					vbo_ptr = new vertex_buffer(VBT_INDICES);
+					vbo_ptr = new vertex_buffer(VBT_INDICES, default_usage);
 					res = vbo_ptr->create(ctx, array, count);
 				}
 				if (res)
@@ -88,7 +90,7 @@ namespace cgv { // @<
 					}
 				}
 				else {
-					vbo_ptr = new vertex_buffer();
+					vbo_ptr = new vertex_buffer(VBT_VERTICES, default_usage);
 					res = vbo_ptr->create(ctx, array);
 				}
 				if(res)
@@ -109,7 +111,7 @@ namespace cgv { // @<
 					}
 				}
 				else {
-					vbo_ptr = new vertex_buffer();
+					vbo_ptr = new vertex_buffer(VBT_VERTICES, default_usage);
 					res = vbo_ptr->create(ctx, array_ptr, nr_elements);
 				}
 				if (res)
@@ -132,7 +134,7 @@ namespace cgv { // @<
 					}
 				}
 				else {
-					vbo_ptr = new vertex_buffer();
+					vbo_ptr = new vertex_buffer(VBT_VERTICES, default_usage);
 					res = vbo_ptr->create(ctx, array_ptr, nr_elements);
 				}
 				if (res)
@@ -156,7 +158,7 @@ namespace cgv { // @<
 			}
 		public:
 			/// default initialization
-			attribute_array_manager();
+			attribute_array_manager(VertexBufferUsage _default_usage = VBU_STREAM_DRAW);
 			/// destructor calls destruct
 			~attribute_array_manager();
 			/// check whether the given attribute is available
