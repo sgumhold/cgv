@@ -51,6 +51,7 @@ public:
 		border_color(1,0,0,0), 
 		frame_color(1,1,1,1)
 	{
+		t_ptr = 0;
 		frame_width = 2;
 		object = CUBE;
 		texture_selection = CHECKER;
@@ -97,16 +98,25 @@ public:
 	}
 	bool init(cgv::render::context& ctx)
 	{
-		int di = mat.add_image_file("res://alhambra.png");
-		mat.set_diffuse_index(di);
-		if (mat.ensure_textures(ctx))
-			t_ptr = mat.get_texture(di);
-		else
-			return false;
+	//	int di = mat.add_image_file("res://alhambra.png");
+	//	mat.set_diffuse_index(di);
+	//	if (mat.ensure_textures(ctx))
+	//		t_ptr = mat.get_texture(di);
+	//	else
+	//		return false;
 		return true;
 	}
 	void init_frame(cgv::render::context& ctx)
 	{
+		if (mat.get_diffuse_index() == -1) {
+			int di = mat.add_image_file("res://alhambra.png");
+			mat.set_diffuse_index(di);
+			if (mat.ensure_textures(ctx)) {
+				t_ptr = mat.get_texture(di);
+				post_recreate_gui();
+			}
+		}
+
 		if (t_ptr->is_created())
 			return;
 
@@ -214,13 +224,16 @@ public:
 	{	
 		add_member_control(this, "boost_animation", boost_animation, "check");
 		add_member_control(this, "shape", object, "dropdown", "enums='cube,sphere,square'");
-		add_member_control(this, "mag filter", t_ptr->mag_filter, "dropdown", "enums='nearest,linear'");
-		add_member_control(this, "min filter", t_ptr->min_filter, "dropdown", "enums='nearest,linear,nearest mp nearest,linear mp nearest,nearest mp linear,linear mp linear,anisotropy'");
-		add_member_control(this, "anisotropy", t_ptr->anisotropy, "value_slider", "min=1;max=16;ticks=true;log=true");
-		add_member_control(this, "wrap s", t_ptr->wrap_s, "dropdown", "enums='repeat,clamp,clamp to edge,clamp to border,mirror clamp,mirror clamp to edge,mirror clamp to border,mirrored repeat'");
-		add_member_control(this, "wrap t", t_ptr->wrap_t, "dropdown", "enums='repeat,clamp,clamp to edge,clamp to border,mirror clamp,mirror clamp to edge,mirror clamp to border,mirrored repeat'");
+		if (t_ptr) {
+			add_member_control(this, "mag filter", t_ptr->mag_filter, "dropdown", "enums='nearest,linear'");
+			add_member_control(this, "min filter", t_ptr->min_filter, "dropdown", "enums='nearest,linear,nearest mp nearest,linear mp nearest,nearest mp linear,linear mp linear,anisotropy'");
+			add_member_control(this, "anisotropy", t_ptr->anisotropy, "value_slider", "min=1;max=16;ticks=true;log=true");
+			add_member_control(this, "wrap s", t_ptr->wrap_s, "dropdown", "enums='repeat,clamp,clamp to edge,clamp to border,mirror clamp,mirror clamp to edge,mirror clamp to border,mirrored repeat'");
+			add_member_control(this, "wrap t", t_ptr->wrap_t, "dropdown", "enums='repeat,clamp,clamp to edge,clamp to border,mirror clamp,mirror clamp to edge,mirror clamp to border,mirrored repeat'");
+		}
 		add_member_control(this, "border_color", border_color);
-		add_member_control(this, "priority", t_ptr->priority, "value_slider", "min=0;max=1;ticks=true");
+		if (t_ptr)
+			add_member_control(this, "priority", t_ptr->priority, "value_slider", "min=0;max=1;ticks=true");
 
 		add_decorator("Texture Properties", "heading");
 		add_member_control(this, "texture", texture_selection, "dropdown", "enums='checker,waves,alhambra,cartuja'");
