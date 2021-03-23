@@ -8,26 +8,25 @@
 
 #include "lib_begin.h"
 
+struct LODPoint : public cgv::render::render_types {
+	vec3 position;
+	rgb8 color;
+	uint8_t level = 0;
+};
+
 class CGV_API octree_lod_generator : public cgv::render::render_types {
 	public:
-			
-		struct Vertex {
-			vec3 position;
-			rgb8 colors;
-			uint8_t level = 0;
-		};
-
 		struct PointCloud {
-			std::vector<Vertex> vertices;
+			std::vector<LODPoint> vertices;
 			std::atomic_int numPointsWritten = 0;
 			PointCloud() = default;
 			PointCloud(int size) : vertices(size){}
 
 			//write points in a thread safe way
-			void write_points(const Vertex* points, const int size) {
+			void write_points(const LODPoint* points, const int size) {
 				int start = numPointsWritten.fetch_add(size);
 				assert(vertices.size() - start >= size);
-				memcpy(vertices.data()+ start, points, size * sizeof(Vertex));
+				memcpy(vertices.data()+ start, points, size * sizeof(LODPoint));
 			}
 		};
 
@@ -67,7 +66,7 @@ class CGV_API octree_lod_generator : public cgv::render::render_types {
 			std::vector<std::shared_ptr<IndexNode>> children;
 
 			//accepted points, empty if sampled == false
-			std::shared_ptr<std::vector<Vertex>> points;
+			std::shared_ptr<std::vector<LODPoint>> points;
 				
 			//std::vector<rgb8> accumulated_colors;
 			vec3 min;
@@ -99,7 +98,7 @@ class CGV_API octree_lod_generator : public cgv::render::render_types {
 
 		struct Indexer {
 			//pointer to result vector
-			std::vector<Vertex>* output;
+			std::vector<LODPoint>* output;
 
 			std::shared_ptr<IndexNode> root;
 
@@ -119,7 +118,7 @@ class CGV_API octree_lod_generator : public cgv::render::render_types {
 
 			std::mutex mtx_write;
 
-			Indexer(std::vector<Vertex>* const ptr) {
+			Indexer(std::vector<LODPoint>* const ptr) {
 				output = ptr;
 			}
 
@@ -148,26 +147,26 @@ class CGV_API octree_lod_generator : public cgv::render::render_types {
 		int grid_size;
 		int currentPass;
 
-		Vertex* source_data;
+		LODPoint* source_data;
 		size_t source_data_size;
 
 	protected:
 		std::string to_node_id(int level, int gridSize, int64_t x, int64_t y, int64_t z);
 			
 		//void lod_chunking(const std::vector<vec3>& positions, const vec3& min, const vec3& max);
-		//std::vector<octree_lod_generator::ChunkNode> lod_chunking(const Vertex* vertices, const size_t num_points,const vec3& min, const vec3& max);
-		Chunks lod_chunking(const Vertex* vertices, const size_t num_points,const vec3& min, const vec3& max, const float& size);
+		//std::vector<octree_lod_generator::ChunkNode> lod_chunking(const LODPoint* vertices, const size_t num_points,const vec3& min, const vec3& max);
+		Chunks lod_chunking(const LODPoint* vertices, const size_t num_points,const vec3& min, const vec3& max, const float& size);
 
-		std::vector<std::atomic_int32_t> lod_counting(const Vertex* vertices, const int64_t num_points, int64_t grid_size, const vec3& min, const vec3& max, const float& size);
+		std::vector<std::atomic_int32_t> lod_counting(const LODPoint* vertices, const int64_t num_points, int64_t grid_size, const vec3& min, const vec3& max, const float& size);
 			
 		NodeLUT lod_createLUT(std::vector<std::atomic_int32_t>& grid, int64_t grid_size,std::vector<ChunkNode>& nodes);
 			
 		//create chunk nodes
-		void distribute_points(vec3 min, vec3 max, float cube_size, NodeLUT& lut, const Vertex* vertices, const int64_t num_points, const std::vector<ChunkNode>& nodes);
+		void distribute_points(vec3 min, vec3 max, float cube_size, NodeLUT& lut, const LODPoint* vertices, const int64_t num_points, const std::vector<ChunkNode>& nodes);
 		//inout chunks, out vertices
-		void lod_indexing(Chunks& chunks, std::vector<Vertex>& vertices, Sampler& sampler);
+		void lod_indexing(Chunks& chunks, std::vector<LODPoint>& vertices, Sampler& sampler);
 			
-		void build_hierarchy(Indexer* indexer, IndexNode* node, std::shared_ptr<std::vector<Vertex>> points, int64_t numPoints, int64_t depth = 0);
+		void build_hierarchy(Indexer* indexer, IndexNode* node, std::shared_ptr<std::vector<LODPoint>> points, int64_t numPoints, int64_t depth = 0);
 
 		static box3 child_bounding_box_of(const vec3& min, const vec3& max, const int index);
 			
@@ -203,7 +202,7 @@ class CGV_API octree_lod_generator : public cgv::render::render_types {
 
 	public:
 		//lod stored in alpha channel of point color
-		std::vector<Vertex> generate_lods(const std::vector<Vertex>& vertices);
+		std::vector<LODPoint> generate_lods(const std::vector<LODPoint>& vertices);
 };
 
 #include <cgv/config/lib_end.h>

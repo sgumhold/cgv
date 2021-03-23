@@ -40,7 +40,7 @@ namespace cgv {
 			// internal point format
 			struct Point {
 				vec3 position;
-				rgb8 colors;
+				rgb8 color;
 				uint8_t level = 0;
 			};
 			
@@ -57,7 +57,7 @@ namespace cgv {
 			shader_program draw_prog;		// draws render_buffer (vertex, geometry, fragment shader)
 
 			std::vector<Point> input_buffer_data;
-			//vertex_buffer vert_input_buffer;
+			vertex_buffer vert_input_buffer;
 
 
 			GLuint vertex_array = 0;
@@ -82,28 +82,6 @@ namespace cgv {
 			template <typename T>
 			const T& get_style() const { return *static_cast<const T*>(get_style_ptr()); }
 
-			void set_positions(context& ctx, const std::vector<vec3>& positions);
-
-			// set point colors
-			template<typename T>
-			void set_colors(const context& ctx, const std::vector<T>& colors) {
-				size_t size = std::min(colors.size(), input_buffer_data.size());
-				for (int i = 0; i < size; ++i) {
-					input_buffer_data[i].colors = rgb8(colors[i]);
-				}
-				buffers_outofdate = true;
-			}
-
-			// add lod information for each point
-			template<typename T>
-			void set_lods(const std::vector<T>& lod) {
-				//input_buffer_data.resize(lod.size());
-				for (int i = 0; i < lod.size(); ++i) {
-					input_buffer_data[i].level = lod[i]; //set LOD level (lower levels should be more coarse than higher levels)
-				}
-				buffers_outofdate = true;
-			}
-
 		public:
 			clod_point_renderer() = default;
 
@@ -117,37 +95,49 @@ namespace cgv {
 
 			void clear(const cgv::render::context& ctx);
 
-			/// @param use_strips : unused
-			/// @param use_adjacency : unused
-			/// @param strip_restart_index : unused
 			void draw(context& ctx, size_t start=0, size_t count=0);
-			/// @param use_strips : unused
-			/// @param use_adjacency : unused
-			/// @param strip_restart_index : unused
+			
 			bool render(context& ctx, size_t start, size_t count);
 
 			template<typename T>
-			void set_points(const std::vector<T>& pnts) {
+			void set_points(cgv::render::context& ctx,const std::vector<T>& pnts) {
+				assert(sizeof(T) == sizeof(Point));
 				input_buffer_data.resize(pnts.size());
 				memcpy(input_buffer_data.data(),pnts.data(), sizeof(Point) * pnts.size());
 				buffers_outofdate = true;
 			}
 
-			void set_points(const vec3* positions, const rgb8* colors, const uint8_t* lods, const size_t num_points, const unsigned stride) {
+			/// @param positions : pointer to first points position
+			/// @param color : pointer to first points color
+			/// @param lods : pointer to firsts points level of detail
+			/// @param num_points : number of points to draw
+			/// @param stride : stride in bytes, zero if positions, color and lods are not stored interleaved
+			inline void set_points(cgv::render::context& ctx, const vec3* positions, const rgb8* colors, const uint8_t* lods, const size_t num_points, const unsigned stride=0) {
 				std::vector<Point> input_buffer_data(num_points);
 				const uint8_t* pos_end = (uint8_t*)positions + (stride*num_points);
 				
 				auto input_it = input_buffer_data.begin();
+
 				for (int i = 0; i < num_points;++i) {
 					input_it->position = *positions;
-					input_it->colors = *colors;
+					input_it->color = *colors;
 					input_it->level = *lods;
 					++input_it;
 
-					positions = (vec3*)((uint8_t*)positions + stride);
-					colors = (rgb8*)((uint8_t*)colors + stride);
-					lods += stride;
+					if (stride) {
+						positions = (vec3*)((uint8_t*)positions + stride);
+						colors = (rgb8*)((uint8_t*)colors + stride);
+						lods += stride;
+					}
+					else {
+						++positions;
+						++colors;
+						++lods;
+					}
+
 				}
+				this->input_buffer_data = input_buffer_data;
+				buffers_outofdate = true;
 			}
 
 			void set_render_style(const render_style& rs);

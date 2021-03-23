@@ -98,7 +98,7 @@ namespace cgv {
 #endif // #ifdef NDEBUG
 			}
 			
-			glGenBuffers(1, &input_buffer); //array of {float x;float y;float z;uint colors;};
+			glGenBuffers(1, &input_buffer); //array of {float x;float y;float z;uint color;};
 			glGenBuffers(1, &render_buffer);
 			glGenBuffers(1, &draw_parameter_buffer);
 
@@ -201,15 +201,6 @@ namespace cgv {
 				return true;
 			}
 			return false;
-		}
-
-		void clod_point_renderer::set_positions(context& ctx, const std::vector<vec3>& positions)
-		{
-			input_buffer_data.resize(positions.size());
-			for (int i = 0; i < positions.size(); ++i) {
-				input_buffer_data[i].position = positions[i];
-			}
-			buffers_outofdate = true;
 		}
 
 		void clod_point_renderer::set_render_style(const render_style& rs)

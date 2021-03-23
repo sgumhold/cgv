@@ -47,7 +47,6 @@ namespace {
 			void sample(std::shared_ptr<octree_lod_generator::IndexNode> node, double baseSpacing, std::function<void(octree_lod_generator::IndexNode*)> onNodeCompleted) {
 				using IndexNode = octree_lod_generator::IndexNode;
 				using vec3 = cgv::render::render_types::vec3;
-				using Vertex = octree_lod_generator::Vertex;
 
 				//lambda for bottom up traversal
 				std::function<void(IndexNode*, std::function<void(IndexNode*)>)> traversePost = [&traversePost](IndexNode* node, std::function<void(IndexNode*)> callback) {
@@ -123,7 +122,7 @@ namespace {
 						//shuffle leafs
 						std::shuffle(indices.begin(), indices.end(), std::default_random_engine(seed));
 
-						auto buffer = std::make_shared<std::vector<Vertex>>(node->num_points);
+						auto buffer = std::make_shared<std::vector<LODPoint>>(node->num_points);
 
 						for (int i = 0; i < node->num_points; i++) {
 							buffer->at(indices[i]) = node->points->at(i);
@@ -196,7 +195,7 @@ namespace {
 						numRejectedPerChild.push_back(numRejected);
 					}
 
-					auto accepted = std::make_shared<std::vector<Vertex>>();
+					auto accepted = std::make_shared<std::vector<LODPoint>>();
 					accepted->reserve(numAccepted);
 					for (int childIndex = 0; childIndex < 8; childIndex++) {
 						auto child = node->children[childIndex];
@@ -207,7 +206,7 @@ namespace {
 
 						auto numRejected = numRejectedPerChild[childIndex];
 						auto& acceptedFlags = acceptedChildPointFlags[childIndex];
-						auto rejected = std::make_shared<std::vector<Vertex>>();
+						auto rejected = std::make_shared<std::vector<LODPoint>>();
 						rejected->reserve(numRejected);
 
 						for (int i = 0; i < child->num_points; i++) {
@@ -275,7 +274,7 @@ std::string octree_lod_generator::to_node_id(int level, int gridSize, int64_t x,
 	return id;
 }
 
-octree_lod_generator::Chunks octree_lod_generator::lod_chunking(const Vertex* vertices, const size_t num_points, const vec3& min, const vec3& max, const float& cube_size)
+octree_lod_generator::Chunks octree_lod_generator::lod_chunking(const LODPoint* vertices, const size_t num_points, const vec3& min, const vec3& max, const float& cube_size)
 {
 	// stores chunks created by the chunking phase
 	Chunks chunks;
@@ -339,7 +338,7 @@ octree_lod_generator::Chunks octree_lod_generator::lod_chunking(const Vertex* ve
 }
 
 
-std::vector<std::atomic_int32_t> octree_lod_generator::lod_counting(const Vertex* vertices, const int64_t num_points, int64_t grid_size, const vec3& min, const vec3& max, const float& cube_size)
+std::vector<std::atomic_int32_t> octree_lod_generator::lod_counting(const LODPoint* vertices, const int64_t num_points, int64_t grid_size, const vec3& min, const vec3& max, const float& cube_size)
 {	
 	int64_t points_left = num_points;
 	int64_t batch_size = 1'000'000;
@@ -572,13 +571,13 @@ int64_t octree_lod_generator::grid_index(const vec3& position, const vec3& min, 
 	return index;
 }
 
-void octree_lod_generator::distribute_points(vec3 min, vec3 max, float cube_size, NodeLUT& lut, const Vertex* vertices, const int64_t num_points, const std::vector<ChunkNode>& nodes)
+void octree_lod_generator::distribute_points(vec3 min, vec3 max, float cube_size, NodeLUT& lut, const LODPoint* vertices, const int64_t num_points, const std::vector<ChunkNode>& nodes)
 {
 	//auto start = std::chrono::steady_clock::now();
 
 	auto& grid = lut.grid;
 
-	constexpr int max_chunk_size = 512 * (64 / sizeof(Vertex));
+	constexpr int max_chunk_size = 512 * (64 / sizeof(LODPoint));
 
 	struct Task {
 		int64_t batch_size;
@@ -602,14 +601,14 @@ void octree_lod_generator::distribute_points(vec3 min, vec3 max, float cube_size
 		int batch_size = task->batch_size;
 		int64_t first_point = task->first_point;
 
-		const Vertex* start = vertices + first_point;
-		const Vertex* end = start + batch_size;
+		const LODPoint* start = vertices + first_point;
+		const LODPoint* end = start + batch_size;
 
 		//create a bucket for each chunk
 		int num_buckets = nodes.size();
-		std::vector<std::vector<Vertex>> buckets(num_buckets);
+		std::vector<std::vector<LODPoint>> buckets(num_buckets);
 
-		for (const Vertex* i = start; i < end; ++i) {
+		for (const LODPoint* i = start; i < end; ++i) {
 			vec3 p = i->position;
 			int idx = grid_index(p, min, cube_size, grid_size);
 
@@ -633,7 +632,7 @@ void octree_lod_generator::distribute_points(vec3 min, vec3 max, float cube_size
 		int idx = grid_index(p, min, cube_size, grid_size);
 				
 		auto& node = nodes[grid[idx]];
-		Vertex v = vertices[i];
+		LODPoint v = vertices[i];
 		node.pc_data->write_points(&v, 1);
 		//node.pc_data->vertices.push_back(v);
 	}*/
@@ -642,7 +641,7 @@ void octree_lod_generator::distribute_points(vec3 min, vec3 max, float cube_size
 	//std::printf("distributing: %d ns\n",std::chrono::duration_cast<std::chrono::nanoseconds>(end - start));
 }
 
-void octree_lod_generator::lod_indexing(Chunks& chunks, std::vector<Vertex>& vertices, Sampler& sampler)
+void octree_lod_generator::lod_indexing(Chunks& chunks, std::vector<LODPoint>& vertices, Sampler& sampler)
 {
 	struct Task {
 		ChunkNode* chunk = nullptr;
@@ -704,7 +703,7 @@ void octree_lod_generator::lod_indexing(Chunks& chunks, std::vector<Vertex>& ver
 		auto chunk_root = std::make_shared<IndexNode>(chunk->id, min, max);
 
 		//alias vertices
-		std::shared_ptr<std::vector<Vertex>> points(chunk->pc_data, &(chunk->pc_data->vertices));
+		std::shared_ptr<std::vector<LODPoint>> points(chunk->pc_data, &(chunk->pc_data->vertices));
 
 		build_hierarchy(&indexer, chunk_root.get(), points, points->size());
 
@@ -910,7 +909,7 @@ std::vector<NodeCandidate> createNodes(std::vector<std::vector<int64_t>>& pyrami
 	return nodes;
 }
 		
-void octree_lod_generator::build_hierarchy(Indexer* indexer, IndexNode* node, std::shared_ptr<std::vector<Vertex>> points, int64_t numPoints, int64_t depth)
+void octree_lod_generator::build_hierarchy(Indexer* indexer, IndexNode* node, std::shared_ptr<std::vector<LODPoint>> points, int64_t numPoints, int64_t depth)
 {
 	if (numPoints < max_points_per_index_node) {
 		IndexNode* realization = node;
@@ -958,16 +957,16 @@ void octree_lod_generator::build_hierarchy(Indexer* indexer, IndexNode* node, st
 			offsets[i] = offsets[i - 1] + counters[i - 1];
 		}
 
-		std::vector<Vertex> tmp(numPoints);
+		std::vector<LODPoint> tmp(numPoints);
 
 		for (int64_t i = 0; i < numPoints; i++) {
 			auto index = gridIndexOf(i);
 			auto targetIndex = offsets[index]++;
 
 			tmp[targetIndex] = (*points)[i];
-			memcpy(tmp.data() + targetIndex, points->data() + i, sizeof(Vertex));
+			memcpy(tmp.data() + targetIndex, points->data() + i, sizeof(LODPoint));
 		}
-		memcpy(points->data(), tmp.data(), numPoints * sizeof(Vertex));
+		memcpy(points->data(), tmp.data(), numPoints * sizeof(LODPoint));
 	}
 
 	auto pyramid = createSumPyramid(counters, counterGridSize);
@@ -1019,10 +1018,10 @@ void octree_lod_generator::build_hierarchy(Indexer* indexer, IndexNode* node, st
 		realization->index_start = candidate.indexStart;
 		realization->num_points = candidate.numPoints;
 				
-		auto buffer = std::make_shared<std::vector<Vertex>>(candidate.numPoints); //potential out of memory here
+		auto buffer = std::make_shared<std::vector<LODPoint>>(candidate.numPoints); //potential out of memory here
 		memcpy(buffer->data(),
 			points->data() + candidate.indexStart,
-			candidate.numPoints * sizeof(Vertex)
+			candidate.numPoints * sizeof(LODPoint)
 		);
 
 		realization->points = buffer;
@@ -1130,7 +1129,7 @@ void octree_lod_generator::build_hierarchy(Indexer* indexer, IndexNode* node, st
 				logger::WARN(msg.str());
 				*/
 
-				std::shared_ptr<std::vector<Vertex>> distinctBuffer = std::make_shared<std::vector<Vertex>>(distinct.size());
+				std::shared_ptr<std::vector<LODPoint>> distinctBuffer = std::make_shared<std::vector<LODPoint>>(distinct.size());
 
 				for (int64_t i = 0; i < distinct.size(); i++) {
 					distinctBuffer->data()[i] = buffer->data()[i];
@@ -1154,11 +1153,11 @@ void octree_lod_generator::build_hierarchy(Indexer* indexer, IndexNode* node, st
 	}
 }
 
-std::vector <octree_lod_generator::Vertex> octree_lod_generator::generate_lods(const std::vector<Vertex>& vertices)
+std::vector<LODPoint> octree_lod_generator::generate_lods(const std::vector<LODPoint>& vertices)
 {
-	std::vector<Vertex> out;
+	std::vector<LODPoint> out;
 	out.reserve(vertices.size());
-	this->source_data = (Vertex*)vertices.data();
+	this->source_data = (LODPoint*)vertices.data();
 	this->source_data_size = vertices.size();
 
 	//find min, max
@@ -1195,7 +1194,6 @@ std::vector <octree_lod_generator::Vertex> octree_lod_generator::generate_lods(c
 	lod_indexing(nodes, out, sampler);
 	return out;
 }
-
 
 octree_lod_generator::IndexNode::IndexNode(const std::string& name, const vec3& min, const vec3& max)
 {
