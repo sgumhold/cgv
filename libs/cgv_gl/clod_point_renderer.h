@@ -55,14 +55,13 @@ namespace cgv {
 
 			shader_program reduce_prog;		// filters points from the input buffer and writes them to the render_buffer (compute shader)
 			shader_program draw_prog;		// draws render_buffer (vertex, geometry, fragment shader)
-
-			std::vector<Point> input_buffer_data;
-			vertex_buffer vert_input_buffer;
-
-
+			
 			GLuint vertex_array = 0;
 			GLuint input_buffer = 0, render_buffer = 0, draw_parameter_buffer = 0;
 			const int input_pos = 0, render_pos = 1, drawp_pos = 3;
+
+			GLsizeiptr input_buffer_size = 0;
+			GLuint input_buffer_num_points = 0;
 
 			bool buffers_outofdate = true;
 			// controls execution of the point filter, with values greater than 1 point filtering is scattered across multiple frames, and extended frustum culling is used
@@ -102,8 +101,11 @@ namespace cgv {
 			template<typename T>
 			void set_points(cgv::render::context& ctx,const std::vector<T>& pnts) {
 				assert(sizeof(T) == sizeof(Point));
-				input_buffer_data.resize(pnts.size());
-				memcpy(input_buffer_data.data(),pnts.data(), sizeof(Point) * pnts.size());
+				assert(input_buffer != 0);
+				glBindBuffer(GL_SHADER_STORAGE_BUFFER, input_buffer);
+				glBufferData(GL_SHADER_STORAGE_BUFFER, pnts.size() * sizeof(Point), pnts.data(), GL_STATIC_READ);
+				input_buffer_size = pnts.size() * sizeof(Point);
+				input_buffer_num_points = pnts.size();
 				buffers_outofdate = true;
 			}
 
@@ -136,15 +138,14 @@ namespace cgv {
 					}
 
 				}
-				this->input_buffer_data = input_buffer_data;
-				buffers_outofdate = true;
+				set_points(ctx, input_buffer_data);
 			}
 
 			void set_render_style(const render_style& rs);
 
 		private:
 			void add_shader(context& ctx, shader_program& prog, const std::string& sf, const cgv::render::ShaderType st);
-			void fill_buffers(context& ctx);
+			void resize_buffers(context& ctx);
 			void clear_buffers(const context& ctx);
 		};
 

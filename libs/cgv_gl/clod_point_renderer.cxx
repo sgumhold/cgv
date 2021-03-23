@@ -42,7 +42,7 @@ namespace cgv {
 			glBindBufferBase(GL_SHADER_STORAGE_BUFFER, drawp_pos, draw_parameter_buffer);
 			glBindBufferBase(GL_SHADER_STORAGE_BUFFER, render_pos, render_buffer);
 			glBindBufferBase(GL_SHADER_STORAGE_BUFFER, input_pos, input_buffer);
-			glDispatchCompute((input_buffer_data.size()/128)+1, 1, 1); //with NVIDIA GPUs this will spam notifications about buffer usage in debug mode
+			glDispatchCompute((input_buffer_num_points/128)+1, 1, 1); //with NVIDIA GPUs this will spam notifications about buffer usage in debug mode
 
 			// synchronize
 			glMemoryBarrier(GL_ALL_BARRIER_BITS);
@@ -125,7 +125,7 @@ namespace cgv {
 			}
 
 			if (buffers_outofdate) {
-				fill_buffers(ctx);
+				resize_buffers(ctx);
 				buffers_outofdate = false;
 			}
 
@@ -223,13 +223,10 @@ namespace cgv {
 
 		}
 
-		void clod_point_renderer::fill_buffers(context& ctx)
+		void clod_point_renderer::resize_buffers(context& ctx)
 		{ //  fill buffers for the compute shader
-			glBindBuffer(GL_SHADER_STORAGE_BUFFER, input_buffer);
-			glBufferData(GL_SHADER_STORAGE_BUFFER, input_buffer_data.size() * sizeof(Point), input_buffer_data.data(), GL_STATIC_READ);
-			
 			glBindBuffer(GL_SHADER_STORAGE_BUFFER, render_buffer);
-			glBufferData(GL_SHADER_STORAGE_BUFFER, input_buffer_data.size() * sizeof(Point), nullptr, GL_DYNAMIC_DRAW);
+			glBufferData(GL_SHADER_STORAGE_BUFFER, input_buffer_size, nullptr, GL_DYNAMIC_DRAW);
 			glBindBuffer(GL_SHADER_STORAGE_BUFFER, draw_parameter_buffer);
 			glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(DrawParameters), nullptr, GL_STREAM_DRAW);
 		}
