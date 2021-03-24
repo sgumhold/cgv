@@ -17,6 +17,32 @@ namespace stream_vis {
 		typed_time_series_ptr = _typed_time_series_ptr;
 		plot_pool_ptr = _plot_pool_ptr;
 	}
+
+	void declaration_reader::parse_mapped_rgba(const std::string& name_color, const std::string& name_opacity, cgv::plot::mapped_rgba& color)
+	{
+		parse_color(name_color, color.color);
+		int idx;
+		if (parse_int(name_color + "_idx", idx))
+			if (idx >= -1 && idx < 2)
+				color.color_idx = idx;
+			else
+				std::cerr << "error parsing mapped color: color index " << idx << " out of range [-1,2]." << std::endl;
+		if (parse_int(name_opacity + "_idx", idx))
+			if (idx >= -1 && idx < 2)
+				color.opacity_idx = idx;
+			else
+				std::cerr << "error parsing mapped color: opacity index " << idx << " out of range [-1,2]." << std::endl;
+	}
+	void declaration_reader::parse_mapped_size(const std::string& name, cgv::plot::mapped_size& size)
+	{
+		parse_float(name, size.size);
+		int idx;
+		if (parse_int(name + "_idx", idx))
+			if (idx >= -1 && idx < 2)
+				size.size_idx = idx;
+			else
+				std::cerr << "error parsing mapped size: size index " << idx << " out of range [-1,2]." << std::endl;
+	}
 	bool declaration_reader::construct_time_series(const std::string& name, const std::string& type, const std::vector<std::string>& ts_names)
 	{
 		// for all declarations extract stream indices
@@ -113,27 +139,29 @@ namespace stream_vis {
 	{
 		if (name == "p" || name == "points") {
 			cfg.show_points = true;
-			parse_color("color", cfg.point_color.color);
-			parse_float("size", cfg.point_size.size);
+			parse_mapped_rgba("color", "opacity", cfg.point_color);
+			parse_mapped_size("size", cfg.point_size);
+			parse_mapped_rgba("halo_color", "halo_opacity", cfg.point_halo_color);
+			parse_mapped_size("halo_width", cfg.point_halo_width);
 		}
 		else if (name == "s" || name == "sticks") {
 			cfg.show_sticks = true;
-			parse_color("color", cfg.stick_color.color);
-			parse_float("width", cfg.stick_width.size);
+			parse_mapped_rgba("color", "opacity", cfg.stick_color);
+			parse_mapped_size("width", cfg.stick_width);
 		}
 		else if (name == "b" || name == "bars") {
 			cfg.show_bars = true;
-			parse_color("color", cfg.bar_color.color);
-			parse_color("outline_color", cfg.bar_outline_color.color);
-			parse_float("outline_width", cfg.bar_outline_width.size);
-			parse_float("percentual_width", cfg.bar_percentual_width.size);
+			parse_mapped_rgba("color", "opacity", cfg.bar_color);
+			parse_mapped_rgba("outline_color", "outline_opacity", cfg.bar_outline_color);
+			parse_mapped_size("outline_width", cfg.bar_outline_width);
+			parse_mapped_size("percentual_width", cfg.bar_percentual_width);
 			if (dim == 3)
-				parse_float("percentual_depth", static_cast<cgv::plot::plot3d_config&>(cfg).bar_percentual_depth.size);
+				parse_mapped_size("percentual_depth", static_cast<cgv::plot::plot3d_config&>(cfg).bar_percentual_depth);
 		}
 		else if (name == "l" || name == "lines") {
 			cfg.show_lines = true;
-			parse_color("color", cfg.line_color.color);
-			parse_float("width", cfg.line_width.size);
+			parse_mapped_rgba("color", "opacity", cfg.line_color);
+			parse_mapped_size("width", cfg.line_width);
 			if (dim == 3)
 				parse_bool("show_orientation", static_cast<cgv::plot::plot3d_config&>(cfg).show_line_orientation);
 		}
@@ -222,8 +250,8 @@ namespace stream_vis {
 			ad.accessor = TSA_TIME;
 			ads.insert(ads.begin(), ad);
 		}
-		if (ads.size() > dim + 2) {
-			std::cerr << "subplot" << dim << "d declaration found with " << ads.size() << " accessors and maximum of 2 additional attributes allowed." << std::endl;
+		if (ads.size() > 8) {
+			std::cerr << "subplot" << dim << "d declaration found with " << ads.size() << " accessors out of valid range [2,8]." << std::endl;
 			return false;
 		}
 		// todo add derivation of subplot name from attribute definitions
@@ -240,7 +268,7 @@ namespace stream_vis {
 			subplot_name += get_accessor_string(ad.accessor);			
 		}
 		subplot_name += ">";
-
+		get_value("name", subplot_name);
 		// add subplot info
 		subplot_info spi;
 		spi.attribute_definitions = ads;
@@ -248,14 +276,27 @@ namespace stream_vis {
 		auto& cfg = pi.plot_ptr->ref_sub_plot_config(pi.plot_ptr->add_sub_plot(subplot_name));
 
 		// construct subplot config
+
+		// by default show nothing
 		cfg.show_points = cfg.show_sticks = cfg.show_bars = cfg.show_lines = false;
+
+		// set reference color, opacity and size before specifying marks
+		cfg.sub_plot_influence = cgv::plot::SPI_ALL;
 		if (parse_color("color", cfg.ref_color.color))
 			cfg.set_colors(cfg.ref_color.color);
 		if (parse_float("size", cfg.ref_size.size))
 			cfg.set_sizes(cfg.ref_size.size);
 
-		parse_marks(pi, cfg, dim);
+		cfg.sub_plot_influence = cgv::plot::SPI_POINT;
+		parse_int("sub_plot_influence", (int&)cfg.sub_plot_influence);
+		if (parse_int("color_idx", cfg.ref_color.color_idx))
+			cfg.set_color_indices(cfg.ref_color.color_idx);
+		if (parse_int("opacity_idx", cfg.ref_opacity.opacity_idx))
+			cfg.set_opacity_indices(cfg.ref_opacity.opacity_idx);
+		if (parse_int("size_idx", cfg.ref_size.size_idx))
+			cfg.set_size_indices(cfg.ref_size.size_idx);
 
+		parse_marks(pi, cfg, dim);
 
 		return true;
 
@@ -267,19 +308,18 @@ namespace stream_vis {
 		pi.dim = dim;
 		pi.name = name;
 		pi.fixed_domain = box3(vec3(0.0f), vec3(1.0f));
+		int nr_attributes = 0;
+		parse_int("nr_attributes", nr_attributes);
 		for (int i = 0; i < 2; ++i) {
-			for (int j = 0; j < dim; ++j) {
+			for (int j = 0; j < dim+nr_attributes; ++j) {
 				pi.domain_adjustment[i][j] = DA_COMPUTE;
 				pi.domain_bound_ts_index[i][j] = uint16_t(-1);
 			}
 		}
-		parse_bound_vecn("view_min", pi.domain_adjustment[0], pi.domain_bound_ts_index[0], &pi.fixed_domain.ref_min_pnt()[0], dim);
-		parse_bound_vecn("view_max", pi.domain_adjustment[1], pi.domain_bound_ts_index[1], &pi.fixed_domain.ref_max_pnt()[0], dim);
-		parse_vecn("view_max", &pi.fixed_domain.ref_max_pnt()[0], dim);
+		parse_bound_vecn("view_min", pi.domain_adjustment[0], pi.domain_bound_ts_index[0], &pi.fixed_domain.ref_min_pnt()[0], dim+nr_attributes);
+		parse_bound_vecn("view_max", pi.domain_adjustment[1], pi.domain_bound_ts_index[1], &pi.fixed_domain.ref_max_pnt()[0], dim+nr_attributes);
 		bool auto_color = false;
-		int nr_attributes = 0;
 		parse_bool("auto_color", auto_color);
-		parse_int("nr_attributes", nr_attributes);
 		pi.nr_axes = dim + nr_attributes;
 		if (dim == 2) {
 			auto* plot2d_ptr = new cgv::plot::plot2d(unsigned(nr_attributes));
@@ -309,6 +349,91 @@ namespace stream_vis {
 		if (parse_quat("orientation", ori))
 			pi.plot_ptr->set_orientation(ori);
 		parse_float("font_size", dom_cfg.label_font_size);
+		//LegendComponent legend_components;
+		//vec3 legend_location;
+		//vec2 legend_extent;
+		//rgba legend_color;
+		if (parse_int("primary_color_mapping", pi.plot_ptr->color_mapping[0])) {
+			if (pi.plot_ptr->color_mapping[0] >= (int)pi.nr_axes) {
+				std::cerr << "primary_color_mapping of plot " << name << " with " 
+					<< pi.plot_ptr->color_mapping[0] << " out of valid range [0," 
+					<< pi.nr_axes - 1 << "]" << std::endl;
+				pi.plot_ptr->color_mapping[0] = -1;
+			}
+		}
+		std::string value;
+		if (get_value("primary_color_scale", value)) {
+			cgv::media::ColorScale cs;
+			if (cgv::media::find_color_scale(value, cs))
+				pi.plot_ptr->color_scale_index[0] = cs;
+		}
+		parse_float("primary_color_scale_gamma", pi.plot_ptr->color_scale_gamma[0]);
+		parse_float("primary_window_zero_position", pi.plot_ptr->window_zero_position[0]);
+		if (parse_int("primary_opacity_mapping", pi.plot_ptr->opacity_mapping[0])) {
+			if (pi.plot_ptr->opacity_mapping[0] >= (int)pi.nr_axes) {
+				std::cerr << "primary_opacity_mapping of plot " << name << " with "
+					<< pi.plot_ptr->opacity_mapping[0] << " out of valid range [0,"
+					<< pi.nr_axes - 1 << "]" << std::endl;
+				pi.plot_ptr->opacity_mapping[0] = -1;
+			}
+		}
+		parse_float("primary_opacity_gamma", pi.plot_ptr->opacity_gamma[0]);
+		parse_bool("primary_opacity_is_bipolar", pi.plot_ptr->opacity_is_bipolar[0]);
+		parse_float("primary_opacity_window_zero_position", pi.plot_ptr->opacity_window_zero_position[0]);
+		parse_float("primary_opacity_min", pi.plot_ptr->opacity_min[0]);
+		parse_float("primary_opacity_max", pi.plot_ptr->opacity_max[0]);
+		if (parse_int("primary_size_mapping", pi.plot_ptr->size_mapping[0])) {
+			if (pi.plot_ptr->size_mapping[0] >= (int)pi.nr_axes) {
+				std::cerr << "primary_size_mapping of plot " << name << " with "
+					<< pi.plot_ptr->size_mapping[0] << " out of valid range [0,"
+					<< pi.nr_axes - 1 << "]" << std::endl;
+				pi.plot_ptr->size_mapping[0] = -1;
+			}
+		}
+		parse_float("primary_size_gamma", pi.plot_ptr->size_gamma[0]);
+		parse_float("primary_size_min", pi.plot_ptr->size_min[0]);
+		parse_float("primary_size_max", pi.plot_ptr->size_max[0]);
+
+		if (parse_int("secondary_color_mapping", pi.plot_ptr->color_mapping[1])) {
+			if (pi.plot_ptr->color_mapping[1] >= (int)pi.nr_axes) {
+				std::cerr << "secondary_color_mapping of plot " << name << " with "
+					<< pi.plot_ptr->color_mapping[1] << " out of valid range [0,"
+					<< pi.nr_axes - 1 << "]" << std::endl;
+				pi.plot_ptr->color_mapping[1] = -1;
+			}
+		}
+		if (get_value("secondary_color_scale", value)) {
+			cgv::media::ColorScale cs;
+			if (cgv::media::find_color_scale(value, cs))
+				pi.plot_ptr->color_scale_index[1] = cs;
+		}
+		parse_float("secondary_color_scale_gamma", pi.plot_ptr->color_scale_gamma[1]);
+		parse_float("secondary_window_zero_position", pi.plot_ptr->window_zero_position[1]);
+		if (parse_int("secondary_opacity_mapping", pi.plot_ptr->opacity_mapping[1])) {
+			if (pi.plot_ptr->opacity_mapping[1] >= (int)pi.nr_axes) {
+				std::cerr << "secondary_opacity_mapping of plot " << name << " with "
+					<< pi.plot_ptr->opacity_mapping[1] << " out of valid range [0,"
+					<< pi.nr_axes - 1 << "]" << std::endl;
+				pi.plot_ptr->opacity_mapping[1] = -1;
+			}
+		}
+		parse_float("secondary_opacity_gamma", pi.plot_ptr->opacity_gamma[1]);
+		parse_bool("secondary_opacity_is_bipolar", pi.plot_ptr->opacity_is_bipolar[1]);
+		parse_float("secondary_opacity_window_zero_position", pi.plot_ptr->opacity_window_zero_position[1]);
+		parse_float("secondary_opacity_min", pi.plot_ptr->opacity_min[1]);
+		parse_float("secondary_opacity_max", pi.plot_ptr->opacity_max[1]);
+		if (parse_int("secondary_size_mapping", pi.plot_ptr->size_mapping[1])) {
+			if (pi.plot_ptr->size_mapping[1] >= (int)pi.nr_axes) {
+				std::cerr << "secondary_size_mapping of plot " << name << " with "
+					<< pi.plot_ptr->size_mapping[1] << " out of valid range [0,"
+					<< pi.nr_axes - 1 << "]" << std::endl;
+				pi.plot_ptr->size_mapping[1] = -1;
+			}
+		}
+		parse_float("secondary_size_gamma", pi.plot_ptr->size_gamma[1]);
+		parse_float("secondary_size_min", pi.plot_ptr->size_min[1]);
+		parse_float("secondary_size_max", pi.plot_ptr->size_max[1]);
+
 		parse_subplots(pi, dim);
 		if (auto_color) {
 			unsigned n=pi.plot_ptr->get_nr_sub_plots();

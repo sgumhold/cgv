@@ -338,7 +338,7 @@ protected:
 	/// transform from attribute space to world space
 	vec3 transform_to_world(const vecn& pnt_attr) const;
 	//@}
-
+public:
 	/**@name legend*/
 	//@{
 	/// whether to show legend
@@ -388,7 +388,7 @@ protected:
 	/// min and max of mapped size
 	float size_min[MAX_NR_SIZE_MAPPINGS], size_max[MAX_NR_SIZE_MAPPINGS];
 	//@}
-
+protected:
 	/// store pointer to current font
 	cgv::media::font::font_ptr label_font;
 	/// store pointer to current font face

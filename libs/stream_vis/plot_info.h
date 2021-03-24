@@ -55,9 +55,9 @@ namespace stream_vis {
 		/// fixed domain definition via view_min and view_max
 		box3 fixed_domain;
 		/// for each domain component the mode of adjustment
-		DomainAdjustment domain_adjustment[2][3];
+		DomainAdjustment domain_adjustment[2][8];
 		/// for each domain component the index of the time series used for adjustment
-		uint16_t domain_bound_ts_index[2][3];
+		uint16_t domain_bound_ts_index[2][8];
 		/// pointer to plot instance
 		cgv::plot::plot_base* plot_ptr;
 		/// subplot information
