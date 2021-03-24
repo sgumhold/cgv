@@ -44,6 +44,15 @@ namespace stream_vis {
 			return 0;
 		return v;
 	}
+	bool cgv_declaration_reader::get_value(const std::string& name, std::string& v)
+	{
+		auto iter = pp.find(name);
+		if (iter == pp.end())
+			return false;
+		v = iter->second;
+		return true;
+	}
+
 	bool cgv_declaration_reader::parse_bool(const std::string& name, bool& b)
 	{
 		auto iter = pp.find(name);
