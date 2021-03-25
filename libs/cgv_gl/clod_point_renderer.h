@@ -14,8 +14,12 @@
 namespace cgv {
 	namespace render {
 
+		class clod_point_renderer;
+
+		extern CGV_API clod_point_renderer& ref_clod_point_renderer(context& ctx, int ref_count_change = 0);
+
 		/** render style for sphere rendere */
-		struct CGV_API clod_point_render_style : public group_render_style
+		struct CGV_API clod_point_render_style : public render_style
 		{
 			/*@name clod rendering attributes*/
 			//@{
@@ -26,8 +30,9 @@ namespace cgv {
 			// minimal size of the visible points
 			float min_millimeters = 1.f;
 			float pointSize = 1.f;
+			// allow point subset computation to run across multiple rendered frames
+			int point_filter_delay = 0;
 			//@}
-
 			/// construct with default values
 			clod_point_render_style();
 			bool self_reflect(cgv::reflect::reflection_handler& rh);
@@ -45,7 +50,7 @@ namespace cgv {
 			};
 			
 		private:
-			// stores parameters generated for the draw shaders, for an explaination search for OpenGL Indirect rendering (https://www.khronos.org/opengl/wiki/Vertex_Rendering#Indirect_rendering)
+			// stores parameters generated for the draw shaders, for an explaination search OpenGL Indirect rendering (https://www.khronos.org/opengl/wiki/Vertex_Rendering#Indirect_rendering)
 			struct DrawParameters {
 				GLuint  count = 0; //element count
 				GLuint  primCount = 1;
@@ -57,15 +62,15 @@ namespace cgv {
 			shader_program draw_prog;		// draws render_buffer (vertex, geometry, fragment shader)
 			
 			GLuint vertex_array = 0;
-			GLuint input_buffer = 0, render_buffer = 0, draw_parameter_buffer = 0;
+			GLuint input_buffer = 0, render_buffer = 0, draw_parameter_buffer = 0, render_back_buffer = 0;
 			const int input_pos = 0, render_pos = 1, drawp_pos = 3;
 
 			GLsizeiptr input_buffer_size = 0;
 			GLuint input_buffer_num_points = 0;
+			GLint remaining_batch_start = 0;
 
 			bool buffers_outofdate = true;
-			// controls execution of the point filter, with values greater than 1 point filtering is scattered across multiple frames, and extended frustum culling is used
-			int point_filter_delay = 0;
+
 
 			/// default render style
 			mutable render_style* default_render_style = nullptr;
@@ -142,6 +147,8 @@ namespace cgv {
 			}
 
 			void set_render_style(const render_style& rs);
+
+			void manage_singelton(context& ctx, const std::string& renderer_name, int& ref_count, int ref_count_change);
 
 		private:
 			void add_shader(context& ctx, shader_program& prog, const std::string& sf, const cgv::render::ShaderType st);

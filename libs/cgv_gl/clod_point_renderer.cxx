@@ -9,6 +9,14 @@
 namespace cgv {
 	namespace render {
 
+		clod_point_renderer& ref_clod_point_renderer(context& ctx, int ref_count_change)
+		{
+			static int ref_count = 0;
+			static clod_point_renderer r;
+			r.manage_singelton(ctx, "clod_point_renderer", ref_count, ref_count_change);
+			return r;
+		}
+
 		clod_point_render_style::clod_point_render_style() {}
 
 		bool clod_point_render_style::self_reflect(cgv::reflect::reflection_handler& rh)
@@ -19,7 +27,8 @@ namespace cgv {
 				rh.reflect_member("spacing", spacing) &&
 				rh.reflect_member("scale", scale) &&
 				rh.reflect_member("min_millimeters", min_millimeters) &&
-				rh.reflect_member("point_size", pointSize);
+				rh.reflect_member("point_size", pointSize) && 
+				rh.reflect_member("point_filter_delay", point_filter_delay);
 		}
 
 		void clod_point_renderer::draw_and_compute_impl(context& ctx, PrimitiveType type, size_t start, size_t count)
@@ -27,26 +36,59 @@ namespace cgv {
 			//renderer::draw_impl(ctx, type, start, count, use_strips, use_adjacency, strip_restart_index);
 			
 			//TODO add option to spread calculation over multiple frames
-			//configure shader to compute everything after one frame
-			reduce_prog.set_uniform(ctx, reduce_prog.get_uniform_location(ctx, "uBatchOffset"), 0);
-			reduce_prog.set_uniform(ctx, reduce_prog.get_uniform_location(ctx, "uBatchSize"), (int)count);
-			reduce_prog.set_uniform(ctx, "frustum_extent", 1.0f);
-			//reduce_prog.set_uniform(ctx, "frustum_extent", 2.0f);
+			int point_filter_delay = get_style<clod_point_render_style>().point_filter_delay;
+			
+			if (/*point_filter_delay > 0*/ false ) {
+				GLuint max_batch_size = (count / point_filter_delay) +1;
+				GLint batch_size = std::min(max_batch_size, input_buffer_num_points - remaining_batch_start);
+				reduce_prog.set_uniform(ctx, reduce_prog.get_uniform_location(ctx, "uBatchOffset"), remaining_batch_start);
+				reduce_prog.set_uniform(ctx, reduce_prog.get_uniform_location(ctx, "uBatchSize"), batch_size);
+				reduce_prog.set_uniform(ctx, "frustum_extent", 2.0f);
+				remaining_batch_start += batch_size;
 
-			// reset draw parameters
-			DrawParameters dp = DrawParameters();
-			glNamedBufferSubData(draw_parameter_buffer, 0, sizeof(DrawParameters), &dp);
-			glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
-			// reduce
-			reduce_prog.enable(ctx);
-			glBindBufferBase(GL_SHADER_STORAGE_BUFFER, drawp_pos, draw_parameter_buffer);
-			glBindBufferBase(GL_SHADER_STORAGE_BUFFER, render_pos, render_buffer);
-			glBindBufferBase(GL_SHADER_STORAGE_BUFFER, input_pos, input_buffer);
-			glDispatchCompute((input_buffer_num_points/128)+1, 1, 1); //with NVIDIA GPUs this will spam notifications about buffer usage in debug mode
+				// reset draw parameters
+				DrawParameters dp = DrawParameters();
+				glNamedBufferSubData(draw_parameter_buffer, 0, sizeof(DrawParameters), &dp);
+				glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 
-			// synchronize
-			glMemoryBarrier(GL_ALL_BARRIER_BITS);
-			reduce_prog.disable(ctx);
+				// reduce
+				reduce_prog.enable(ctx);
+				glBindBufferBase(GL_SHADER_STORAGE_BUFFER, drawp_pos, draw_parameter_buffer);
+				glBindBufferBase(GL_SHADER_STORAGE_BUFFER, render_pos, render_back_buffer);
+				glBindBufferBase(GL_SHADER_STORAGE_BUFFER, input_pos, input_buffer);
+				glDispatchCompute((batch_size / 128) + 1, 1, 1);
+				
+				// synchronize
+				glMemoryBarrier(GL_ALL_BARRIER_BITS);
+				reduce_prog.disable(ctx);
+
+				if (remaining_batch_start >= input_buffer_num_points) {
+					//TODO Swap draw buffer
+					remaining_batch_start = 0;
+					glCopyNamedBufferSubData(render_back_buffer, render_buffer, 0, 0, input_buffer_num_points);
+				}
+			}
+			else {
+				//configure shader to compute everything after one frame
+				reduce_prog.set_uniform(ctx, reduce_prog.get_uniform_location(ctx, "uBatchOffset"), 0);
+				reduce_prog.set_uniform(ctx, reduce_prog.get_uniform_location(ctx, "uBatchSize"), (int)count);
+				reduce_prog.set_uniform(ctx, "frustum_extent", 1.0f);
+			
+				// reset draw parameters
+				DrawParameters dp = DrawParameters();
+				glNamedBufferSubData(draw_parameter_buffer, 0, sizeof(DrawParameters), &dp);
+				glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
+				// reduce
+				reduce_prog.enable(ctx);
+				glBindBufferBase(GL_SHADER_STORAGE_BUFFER, drawp_pos, draw_parameter_buffer);
+				glBindBufferBase(GL_SHADER_STORAGE_BUFFER, render_pos, render_buffer);
+				glBindBufferBase(GL_SHADER_STORAGE_BUFFER, input_pos, input_buffer);
+				glDispatchCompute((input_buffer_num_points / 128) + 1, 1, 1); //with NVIDIA GPUs this will spam notifications about buffer usage in debug mode
+
+				// synchronize
+				glMemoryBarrier(GL_ALL_BARRIER_BITS);
+				reduce_prog.disable(ctx);
+			}
 
 			// draw composed buffer
 			draw_prog.enable(ctx);
@@ -98,9 +140,10 @@ namespace cgv {
 #endif // #ifdef NDEBUG
 			}
 			
-			glGenBuffers(1, &input_buffer); //array of {float x;float y;float z;uint color;};
+			glGenBuffers(1, &input_buffer);
 			glGenBuffers(1, &render_buffer);
 			glGenBuffers(1, &draw_parameter_buffer);
+			glGenBuffers(1, &render_back_buffer);
 
 			glGenVertexArrays(1, &vertex_array);
 			glBindVertexArray(vertex_array);
@@ -208,6 +251,31 @@ namespace cgv {
 			this->rs = &rs;
 		}
 
+		void clod_point_renderer::manage_singelton(context& ctx, const std::string& renderer_name, int& ref_count, int ref_count_change)
+		{
+			switch (ref_count_change) {
+			case 1:
+				if (ref_count == 0) {
+					if (!init(ctx))
+						ctx.error(std::string("unable to initialize ") + renderer_name + " singelton");
+				}
+				++ref_count;
+				break;
+			case 0:
+				break;
+			case -1:
+				if (ref_count == 0)
+					ctx.error(std::string("attempt to decrease reference count of ") + renderer_name + " singelton below 0");
+				else {
+					if (--ref_count == 0)
+						clear(ctx);
+				}
+				break;
+			default:
+				ctx.error(std::string("invalid change reference count outside {-1,0,1} for ") + renderer_name + " singelton");
+			}
+		}
+
 		void clod_point_renderer::add_shader(context& ctx, shader_program& prog, const std::string& sf,const cgv::render::ShaderType st)
 		{
 #ifndef NDEBUG
@@ -236,7 +304,8 @@ namespace cgv {
 			glDeleteBuffers(1, &input_buffer);
 			glDeleteBuffers(1, &render_buffer);
 			glDeleteBuffers(1, &draw_parameter_buffer);
-			input_buffer = render_buffer = draw_parameter_buffer = 0;
+			glDeleteBuffers(1, &render_back_buffer);
+			input_buffer = render_buffer = draw_parameter_buffer = render_back_buffer = 0;
 		}
 		
 
@@ -263,6 +332,7 @@ namespace cgv {
 				p->add_member_control(b, "point spacing", rs_ptr->spacing, "value_slider", "min=0.1;max=10;ticks=true");
 				p->add_member_control(b, "point size", rs_ptr->pointSize, "value_slider", "min=0.1;max=10;ticks=true");
 				p->add_member_control(b, "min millimeters", rs_ptr->min_millimeters, "value_slider", "min=0.1;max=10;ticks=true");
+				//p->add_member_control(b, "filter delay", rs_ptr->point_filter_delay, "value_slider", "min=0;max=10;ticks=true");
 				return true;
 			}
 		};
