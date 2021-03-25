@@ -6,7 +6,7 @@ layout(triangle_strip, max_vertices = 4) out;
 
 uniform float pixel_extent_per_depth;
 
-in vec4 color_gs[]; //vColor
+in vec4 color_gs[];
 in float point_size_gs[];
 in float radius_gs[];
 in float linear_depth_gs[];
@@ -45,13 +45,10 @@ void prepare_splat(
 	prepare_splat(reference_point_radius,pixel_extent,0.0,0.0,0.0,percentual_core_size,percentual_point_size,percentual_blend_width,percentual_splat_size);
 }
 
-void emit_corner(in vec3 corner, in float u, in float v)
+void emit_corner(in vec3 corner)
 {
-	uv = vec2(u,v);
-
 	// compute position in clip space
 	gl_Position	   = get_projection_matrix() * vec4(corner,1.0);
-
 	EmitVertex();
 }
 
@@ -79,8 +76,8 @@ void main()
 	dx *= splat_radius;
 	dy *= splat_radius;
 	// generate splat vertices
-	emit_corner(position_eye + dx - dy,  percentual_splat_size, -percentual_splat_size);
-	emit_corner(position_eye + dx + dy,  percentual_splat_size,  percentual_splat_size);
-	emit_corner(position_eye - dx - dy, -percentual_splat_size, -percentual_splat_size);
-	emit_corner(position_eye - dx + dy, -percentual_splat_size,  percentual_splat_size);
+	emit_corner(position_eye + dx - dy);
+	emit_corner(position_eye + dx + dy);
+	emit_corner(position_eye - dx - dy);
+	emit_corner(position_eye - dx + dy);
 }
