@@ -28,13 +28,12 @@ namespace cgv {
 				rh.reflect_member("scale", scale) &&
 				rh.reflect_member("min_millimeters", min_millimeters) &&
 				rh.reflect_member("point_size", pointSize) && 
+				rh.reflect_member("draw_circles", draw_circles) &&
 				rh.reflect_member("point_filter_delay", point_filter_delay);
 		}
 
 		void clod_point_renderer::draw_and_compute_impl(context& ctx, PrimitiveType type, size_t start, size_t count)
 		{
-			//renderer::draw_impl(ctx, type, start, count, use_strips, use_adjacency, strip_restart_index);
-			
 			//TODO add option to spread calculation over multiple frames
 			int point_filter_delay = get_style<clod_point_render_style>().point_filter_delay;
 			
@@ -90,8 +89,10 @@ namespace cgv {
 				reduce_prog.disable(ctx);
 			}
 
+			
+
 			// draw composed buffer
-			draw_prog.enable(ctx);
+			draw_prog->enable(ctx);
 			glBindVertexArray(vertex_array);
 			glBindBuffer(GL_DRAW_INDIRECT_BUFFER, draw_parameter_buffer);
 			glDrawArraysIndirect(GL_POINTS, 0);
@@ -102,7 +103,7 @@ namespace cgv {
 			//glUnmapNamedBuffer(draw_parameter_buffer);
 			
 			glBindVertexArray(0);
-			draw_prog.disable(ctx);
+			draw_prog->disable(ctx);
 		}
 
 		const render_style* clod_point_renderer::get_style_ptr() const
@@ -131,13 +132,17 @@ namespace cgv {
 				std::cerr << reduce_prog.last_error;
 #endif // #ifdef NDEBUG
 			}
-			
 			//create shader program
-			if (!draw_prog.is_created()) {
-				draw_prog.build_program(ctx, "point_clod.glpr", true);
+			if (!draw_squares_prog.is_created()) {
+				draw_squares_prog.build_program(ctx, "point_clod.glpr", true);
 #ifndef NDEBUG
 				std::cerr << draw_prog.last_error;
 #endif // #ifdef NDEBUG
+			}
+
+			//create shader program
+			if (!draw_circle_prog.is_created()) {
+				draw_circle_prog.build_program(ctx, "point_clod_circle.glpr", true);
 			}
 			
 			glGenBuffers(1, &input_buffer);
@@ -158,12 +163,15 @@ namespace cgv {
 			glBindBuffer(GL_ARRAY_BUFFER, 0);
 			glBindVertexArray(0);
 
-			return draw_prog.is_linked() && reduce_prog.is_linked();
+			return draw_squares_prog.is_linked() && reduce_prog.is_linked();
 		}
 
 		bool clod_point_renderer::enable(context& ctx)
 		{
-			if (!draw_prog.is_linked()) {
+			const clod_point_render_style& prs = get_style<clod_point_render_style>();
+			draw_prog = (prs.draw_circles) ? &draw_circle_prog : &draw_squares_prog;
+
+			if (!draw_prog->is_linked()) {
 				return false;
 			}
 
@@ -179,21 +187,20 @@ namespace cgv {
 
 			//mat4 modelview_matrix = ctx.get_modelview_matrix();
 			//mat4 projection_matrix = ctx.get_projection_matrix();
-			
-			const clod_point_render_style& prs = get_style<clod_point_render_style>();
 
-			draw_prog.set_uniform(ctx, "CLOD" , prs.CLOD);
-			draw_prog.set_uniform(ctx, "scale", prs.scale);
-			draw_prog.set_uniform(ctx, "spacing", prs.spacing);
-			draw_prog.set_uniform(ctx, "pointSize", prs.pointSize);
-			draw_prog.set_uniform(ctx, "minMilimeters", prs.min_millimeters);
-			draw_prog.set_uniform(ctx, "screenSize", screenSize);
-			draw_prog.set_uniform(ctx, "pivot", pivot);
+			draw_prog->set_uniform(ctx, "CLOD" , prs.CLOD);
+			draw_prog->set_uniform(ctx, "scale", prs.scale);
+			draw_prog->set_uniform(ctx, "spacing", prs.spacing);
+			draw_prog->set_uniform(ctx, "pointSize", prs.pointSize);
+			draw_prog->set_uniform(ctx, "minMilimeters", prs.min_millimeters);
+			draw_prog->set_uniform(ctx, "screenSize", screenSize);
+			draw_prog->set_uniform(ctx, "pivot", pivot);
+			//draw_squares_prog.set_uniform(ctx, "draw_circles", prs.draw_circles);
 			
 
-			//view.glsl uniforms, set on draw_prog.enable(ctx) and  reduce_prog.enable(ctx)
-			//draw_prog.set_uniform(ctx, "modelview_matrix", modelview_matrix, true);
-			//draw_prog.set_uniform(ctx, "projection_matrix", projection_matrix, true);
+			//view.glsl uniforms are set on draw_squares_prog.enable(ctx) and  reduce_prog.enable(ctx)
+			//draw_squares_prog.set_uniform(ctx, "modelview_matrix", modelview_matrix, true);
+			//draw_squares_prog.set_uniform(ctx, "projection_matrix", projection_matrix, true);
 			//reduce_prog.set_uniform(ctx, "modelview_matrix", modelview_matrix, true);
 			//reduce_prog.set_uniform(ctx, "projection_matrix", projection_matrix, true);
 
@@ -206,15 +213,15 @@ namespace cgv {
 
 			float y_view_angle = 45;
 			//general point renderer uniforms
-			draw_prog.set_uniform(ctx, "use_color_index", false);
-			//draw_prog.set_uniform(ctx, "use_group_point_size", prs.use_group_point_size);
+			draw_prog->set_uniform(ctx, "use_color_index", false);
+			//draw_squares_prog.set_uniform(ctx, "use_group_point_size", prs.use_group_point_size);
 			float pixel_extent_per_depth = (float)(2.0 * tan(0.5 * 0.0174532925199 * y_view_angle) / ctx.get_height());
-			draw_prog.set_uniform(ctx, "pixel_extent_per_depth", pixel_extent_per_depth);
-			//draw_prog.set_uniform(ctx, "blend_width_in_pixel", prs.blend_width_in_pixel);
-			//draw_prog.set_uniform(ctx, "percentual_halo_width", 0.01f * prs.percentual_halo_width);
-			//draw_prog.set_uniform(ctx, "halo_width_in_pixel", prs.halo_width_in_pixel);
-			//draw_prog.set_uniform(ctx, "halo_color", prs.halo_color);
-			//draw_prog.set_uniform(ctx, "halo_color_strength", prs.halo_color_strength);
+			draw_prog->set_uniform(ctx, "pixel_extent_per_depth", pixel_extent_per_depth);
+			//draw_squares_prog.set_uniform(ctx, "blend_width_in_pixel", prs.blend_width_in_pixel);
+			//draw_squares_prog.set_uniform(ctx, "percentual_halo_width", 0.01f * prs.percentual_halo_width);
+			//draw_squares_prog.set_uniform(ctx, "halo_width_in_pixel", prs.halo_width_in_pixel);
+			//draw_squares_prog.set_uniform(ctx, "halo_color", prs.halo_color);
+			//draw_squares_prog.set_uniform(ctx, "halo_color_strength", prs.halo_color_strength);
 			return true;
 		}
 
@@ -228,7 +235,8 @@ namespace cgv {
 		void clod_point_renderer::clear(const cgv::render::context& ctx)
 		{
 			reduce_prog.destruct(ctx);
-			draw_prog.destruct(ctx);
+			draw_squares_prog.destruct(ctx);
+			draw_circle_prog.destruct(ctx);
 			clear_buffers(ctx);
 		}
 
@@ -244,6 +252,34 @@ namespace cgv {
 				return true;
 			}
 			return false;
+		}
+
+		void clod_point_renderer::set_points(cgv::render::context& ctx, const vec3* positions, const rgb8* colors, const uint8_t* lods, const size_t num_points, const unsigned stride)
+		{
+			std::vector<Point> input_buffer_data(num_points);
+			const uint8_t* pos_end = (uint8_t*)positions + (stride * num_points);
+
+			auto input_it = input_buffer_data.begin();
+
+			for (int i = 0; i < num_points; ++i) {
+				input_it->position = *positions;
+				input_it->color = *colors;
+				input_it->level = *lods;
+				++input_it;
+
+				if (stride) {
+					positions = (vec3*)((uint8_t*)positions + stride);
+					colors = (rgb8*)((uint8_t*)colors + stride);
+					lods += stride;
+				}
+				else {
+					++positions;
+					++colors;
+					++lods;
+				}
+
+			}
+			set_points(ctx, input_buffer_data);
 		}
 
 		void clod_point_renderer::set_render_style(const render_style& rs)
@@ -332,6 +368,7 @@ namespace cgv {
 				p->add_member_control(b, "point spacing", rs_ptr->spacing, "value_slider", "min=0.1;max=10;ticks=true");
 				p->add_member_control(b, "point size", rs_ptr->pointSize, "value_slider", "min=0.1;max=10;ticks=true");
 				p->add_member_control(b, "min millimeters", rs_ptr->min_millimeters, "value_slider", "min=0.1;max=10;ticks=true");
+				p->add_member_control(b, "draw circles", rs_ptr->draw_circles, "check");
 				//p->add_member_control(b, "filter delay", rs_ptr->point_filter_delay, "value_slider", "min=0;max=10;ticks=true");
 				return true;
 			}
