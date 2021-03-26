@@ -30,6 +30,8 @@ namespace cgv {
 			// minimal size of the visible points
 			float min_millimeters = 1.f;
 			float pointSize = 1.f;
+			// draw circles instead of squares
+			bool draw_circles = false;
 			// allow point subset computation to run across multiple rendered frames
 			int point_filter_delay = 0;
 			//@}
@@ -59,7 +61,9 @@ namespace cgv {
 			};
 
 			shader_program reduce_prog;		// filters points from the input buffer and writes them to the render_buffer (compute shader)
-			shader_program draw_prog;		// draws render_buffer (vertex, geometry, fragment shader)
+			shader_program* draw_prog;
+			shader_program draw_squares_prog;	// draws render_buffer (vertex, geometry, fragment shader)
+			shader_program draw_circle_prog;
 			
 			GLuint vertex_array = 0;
 			GLuint input_buffer = 0, render_buffer = 0, draw_parameter_buffer = 0, render_back_buffer = 0;
@@ -119,32 +123,7 @@ namespace cgv {
 			/// @param lods : pointer to firsts points level of detail
 			/// @param num_points : number of points to draw
 			/// @param stride : stride in bytes, zero if positions, color and lods are not stored interleaved
-			inline void set_points(cgv::render::context& ctx, const vec3* positions, const rgb8* colors, const uint8_t* lods, const size_t num_points, const unsigned stride=0) {
-				std::vector<Point> input_buffer_data(num_points);
-				const uint8_t* pos_end = (uint8_t*)positions + (stride*num_points);
-				
-				auto input_it = input_buffer_data.begin();
-
-				for (int i = 0; i < num_points;++i) {
-					input_it->position = *positions;
-					input_it->color = *colors;
-					input_it->level = *lods;
-					++input_it;
-
-					if (stride) {
-						positions = (vec3*)((uint8_t*)positions + stride);
-						colors = (rgb8*)((uint8_t*)colors + stride);
-						lods += stride;
-					}
-					else {
-						++positions;
-						++colors;
-						++lods;
-					}
-
-				}
-				set_points(ctx, input_buffer_data);
-			}
+			void set_points(cgv::render::context& ctx, const vec3* positions, const rgb8* colors, const uint8_t* lods, const size_t num_points, const unsigned stride = 0);
 
 			void set_render_style(const render_style& rs);
 
