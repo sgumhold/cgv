@@ -93,6 +93,7 @@ namespace stream_vis {
 	void stream_vis::create_gui()
 	{
 		add_decorator("stream_vis", "heading");
+
 	}
 
 }

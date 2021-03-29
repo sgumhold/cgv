@@ -1,6 +1,8 @@
 #include "stream_vis_context.h"
 #include <cgv/math/ftransform.h>
+#include <cgv/utils/scan.h>
 #include <cgv/utils/advanced_scan.h>
+#include <cgv/gui/key_event.h>
 #include <cgv/utils/file.h>
 #include "cgv_declaration_reader.h"
 #include <nlohmann/json.hpp>
@@ -110,16 +112,26 @@ namespace stream_vis {
 			// in case of use of time component, synchronize time components of referenced time series
 			bool time_access = (ts_accesses[i] & TSA_TIME) != TSA_NONE;
 			uint16_t nr_storage_components = time_access ? 1 : 0;
+			std::vector<component_reference> refs;
 			if (time_access)
-				time_series_ringbuffer_references[i].push_back(component_reference(rb_idx, 0));
+				refs.push_back(component_reference(rb_idx, 0));
 			TimeSeriesAccessor tsa = TSA_FIRST;
 			do {
 				tsa = TimeSeriesAccessor(2 * tsa);
 				if ((ts_accesses[i] & tsa) == TSA_NONE)
 					continue;
-				time_series_ringbuffer_references[i].push_back(component_reference(rb_idx, nr_storage_components));
+				refs.push_back(component_reference(rb_idx, nr_storage_components));
 				if (tsa >= TSA_X && tsa <= TSA_W) {
 					uint16_t referenced_ts_idx = indices[index_location];
+					// if time component of referenced time series is used, also store it for composed time series
+					if (!time_access && (ts_accesses[referenced_ts_idx] & TSA_TIME) != TSA_NONE) {
+						ts_accesses[i] = TimeSeriesAccessor(ts_accesses[i] | TSA_TIME);
+						for (auto& r : refs)
+							++r.component_index;
+						++nr_storage_components;
+						refs.insert(refs.begin(), component_reference(rb_idx, 0));
+						time_access = true;
+					}
 					auto& ts_refs = time_series_component_references[referenced_ts_idx];
 					// if time component is stored, generate reference to composed time series component
 					if (time_access) {
@@ -133,6 +145,7 @@ namespace stream_vis {
 				++nr_storage_components;
 				++index_location;
 			} while (tsa != TSA_LAST);
+			time_series_ringbuffer_references[i] = refs;
 			time_series_ringbuffers.back().storage_buffer_index = 0;
 			time_series_ringbuffers.back().time_series_access = ts_accesses[i];
 			time_series_ringbuffers.back().time_series_index = (uint16_t)i;
@@ -199,11 +212,18 @@ namespace stream_vis {
 		// finally we can allocate the storage buffer
 		storage_buffers.resize(1);
 		storage_buffers.front().resize(storage_buffer_offset);
+
+		show_plots();
+		show_ringbuffers();
+
 		construct_streaming_aabbs();
+
 	}
 
 	stream_vis_context::stream_vis_context(const std::string& name) : node(name)
 	{
+		paused = false;
+		sleep_ms = 20;
 		outofdate = true;
 		last_use_vbo = use_vbo = false;
 		plot_attributes_initialized = false;
@@ -236,6 +256,34 @@ namespace stream_vis {
 	{
 		for (const auto& tts : typed_time_series) {
 			std::cout << tts->name << ":" << tts->get_value_type_name();
+			std::stringstream ss;
+			std::string fill;
+			if (tts->default_color[0] != -1) {
+				rgb8 c = tts->default_color;
+				ss << "color=" << cgv::utils::to_hex(c[0]) << cgv::utils::to_hex(c[1]) << cgv::utils::to_hex(c[2]);
+				fill = ";";
+			}
+			if (tts->default_opacity != -1) {
+				ss << fill << "opacity=" << tts->default_opacity;
+				fill = ";";
+			}
+			if (tts->default_size != -1) {
+				ss << fill << "size=" << tts->default_size;
+				fill = ";";
+			}
+			if (tts->aabb_mode != AM_BLOCKED_16) {
+				ss << fill << "aabb_mode=";
+				switch (tts->aabb_mode)
+				{
+				case AM_NONE: ss << "none"; break;
+				case AM_BRUTE_FORCE: ss << "brute_force"; break;
+				case AM_BLOCKED_8: ss << "block_8"; break;
+				}
+				fill = ";";
+			}
+			ss.flush();
+			if (!ss.str().empty())
+				std::cout << "[" << ss.str() << "]";
 			auto vi = tts->get_io_indices();
 			if (vi.size() > 1) {
 				std::cout << "(";
@@ -248,6 +296,17 @@ namespace stream_vis {
 				}
 				std::cout << ")";
 			}
+			else {
+				if (tts->lower_bound_index != uint16_t(-1) || tts->upper_bound_index != uint16_t(-1)) {
+					std::cout << " = {";
+					if (tts->lower_bound_index != uint16_t(-1))
+						std::cout << typed_time_series[tts->lower_bound_index]->name;
+					std::cout << ", ";
+					if (tts->upper_bound_index != uint16_t(-1))
+						std::cout << typed_time_series[tts->upper_bound_index]->name;
+					std::cout << "}";
+				}
+			}
 			std::cout << std::endl;
 		}
 	}
@@ -257,37 +316,75 @@ namespace stream_vis {
 			std::cout << pl.name << ":";
 			for (const auto& spi : pl.subplot_infos) {
 				std::cout << "<";
+				bool first = true;
 				for (const auto& ad : spi.attribute_definitions) {
-					std::cout << typed_time_series[ad.time_series_index]->name << "." << (int)ad.accessor << "|";
+					if (first)
+						first = false;
+					else
+						std::cout << "|";
+					std::cout << typed_time_series[ad.time_series_index]->name << "." << get_accessor_string(ad.accessor);
 				}
-				std::cout << "> [";
+				std::cout << "> ";
+				first = true;
 				for (const auto& rr : spi.ringbuffer_references) {
-					std::cout << typed_time_series[time_series_ringbuffers[rr.index].time_series_index]->name 
-						<< "." << rr.component_index << "|";
+					if (first)
+						first = false;
+					else
+						std::cout << ",";
+					std::cout << rr.index << ":" << typed_time_series[time_series_ringbuffers[rr.index].time_series_index]->name <<
+						"[" << rr.component_index << "]";
 				}
-				std::cout << "]";
+				std::cout << "; ";
 			}
 			std::cout << std::endl;
 		}
 	}
-
+	void stream_vis_context::show_ringbuffers() const
+	{
+		for (const auto& tsrb : time_series_ringbuffers) {
+			size_t idx = &tsrb - time_series_ringbuffers.data();
+			std::cout << idx << ":" << typed_time_series[tsrb.time_series_index]->name <<
+				"." << get_accessor_string(tsrb.time_series_access) << "|" << tsrb.nr_time_series_components <<
+				" = " << tsrb.nr_samples << "(" << tsrb.time_series_ringbuffer_size << ") -> " <<
+				tsrb.storage_buffer_index << "|" << tsrb.storage_buffer_offset << std::endl;
+		}
+	}
+	bool stream_vis_context::handle(cgv::gui::event& e)
+	{
+		if (e.get_kind() != cgv::gui::EID_KEY)
+			return false;
+		auto& ke = reinterpret_cast<cgv::gui::key_event&>(e);
+		if (ke.get_action() != cgv::gui::KA_RELEASE) {
+			switch (ke.get_char()) {
+			case '+':
+				sleep_ms += 1;
+				on_set(&sleep_ms);
+				return true;
+			case '-':
+				if (sleep_ms > 0) {
+					sleep_ms -= 1;
+					on_set(&sleep_ms);
+				}
+				return true;
+			}
+			switch (ke.get_key()) {
+			case cgv::gui::KEY_Space:
+				paused = !paused;
+				on_set(&paused);
+				return true;
+			}
+		}
+		return false;
+	}
+	void stream_vis_context::stream_help(std::ostream& os)
+	{
+		os << "stream_vis_context: <Space> toggles pause, <+|-> control sleep ms" << std::endl;
+	}
 	bool stream_vis_context::init(cgv::render::context& ctx)
 	{
 		ctx.set_bg_clr_idx(4);
 		bool success = true;
 		for (auto& pl : plot_pool) {
-			if (false && pl.dim == 2) {
-				// create GPU objects for offline rendering
-				pl.tex.set_data_format("[R,G,B,A]");
-				pl.depth.set_component_format("[D]");
-				pl.tex.create(ctx, cgv::render::TT_2D, pl.offline_texture_resolution[0], pl.offline_texture_resolution[1]);
-				pl.depth.create(ctx, pl.offline_texture_resolution[0], pl.offline_texture_resolution[1]);
-				pl.fbo.create(ctx, pl.offline_texture_resolution[0], pl.offline_texture_resolution[1]);
-				pl.fbo.attach(ctx, pl.depth);
-				pl.fbo.attach(ctx, pl.tex);
-				if (!pl.fbo.is_complete(ctx))
-					success = false;
-			}
 			if (!pl.plot_ptr->init(ctx))
 				success = false;
 		}
@@ -295,16 +392,9 @@ namespace stream_vis {
 	}
 	void stream_vis_context::clear(cgv::render::context& ctx)
 	{
-		for (auto& pl : plot_pool) {
+		for (auto& pl : plot_pool)
 			pl.plot_ptr->clear(ctx);
-			if (pl.dim == 2) {
-				pl.depth.destruct(ctx);
-				pl.tex.destruct(ctx);
-				pl.fbo.destruct(ctx);
-			}
-		}
 	}
-
 	void stream_vis_context::update_plot_samples(cgv::render::context& ctx)
 	{
 		// ensure construction of sorage buffers and vbos
@@ -327,7 +417,7 @@ namespace stream_vis {
 						const auto& tsr = time_series_ringbuffers[rr.index];
 						if (use_vbo)
 							pl.plot_ptr->set_sub_plot_attribute(
-							(unsigned)i, (unsigned)ai, storage_vbos[tsr.storage_buffer_index],
+								(unsigned)i, (unsigned)ai, storage_vbos[tsr.storage_buffer_index],
 								(tsr.storage_buffer_offset + rr.component_index) * sizeof(GLfloat),
 								tsr.time_series_ringbuffer_size, tsr.nr_time_series_components * sizeof(GLfloat));
 						else
@@ -354,7 +444,8 @@ namespace stream_vis {
 				size_t si = tsrr.nr_samples + s;
 				size_t csi = si % tsrr.time_series_ringbuffer_size;
 				tts->series().put_sample_as_float(si, storage_ptr + tsrr.nr_time_series_components * csi, tsrr.time_series_access);
-				tsrr.streaming_aabb->add_samples_base(storage_ptr + tsrr.nr_time_series_components * csi, 1);
+				if (tsrr.streaming_aabb)
+					tsrr.streaming_aabb->add_samples_base(storage_ptr + tsrr.nr_time_series_components * csi, 1);
 			}
 			// three cases exist for the upload of the new samples to GPU:
 
@@ -395,7 +486,7 @@ namespace stream_vis {
 				auto& cfg = pl.plot_ptr->ref_sub_plot_config(i);
 				unsigned buffer_size = 0;
 				size_t nr_samples = std::numeric_limits<size_t>::max();
-				for (unsigned ai = 0; ai < unsigned(pl.dim); ++ai) {
+				for (unsigned ai = 0; ai < pl.nr_axes; ++ai) {
 					const auto& rbr = spi.ringbuffer_references[ai];
 					const auto& tsrb = time_series_ringbuffers[rbr.index];
 					nr_samples = std::min(nr_samples, tsrb.nr_samples);
@@ -415,20 +506,19 @@ namespace stream_vis {
 				}
 			}
 			// update plot domain
-			box3 dom;
-			bool compute[2][3] = { {false,false,false}, {false,false,false} };
+			float ranges[2][8];
+			bool compute[2][8] = { {false,false,false,false,false,false,false,false}, {false,false,false,false,false,false,false,false} };
 			int nr_compute = 0;
-			for (unsigned ai = 0; ai < unsigned(pl.dim); ++ai) {
+			for (unsigned ai = 0; ai < pl.nr_axes; ++ai) {
 				for (int j = 0; j < 2; ++j) {
-					vec3& v = (j == 0 ? dom.ref_min_pnt() : dom.ref_max_pnt());
 					switch (pl.domain_adjustment[j][ai]) {
 					case DA_FIXED:
-						v[ai] = (j == 0 ? pl.fixed_domain.get_min_pnt() : pl.fixed_domain.get_max_pnt())[ai];
+						ranges[j][ai] = (j == 0 ? pl.fixed_domain.get_min_pnt() : pl.fixed_domain.get_max_pnt())[ai];
 						break;
 					case DA_TIME_SERIES:
 						typed_time_series[pl.domain_bound_ts_index[j][ai]]->series().put_sample_as_float(
 							typed_time_series[pl.domain_bound_ts_index[j][ai]]->series().get_nr_samples() - 1,
-							&v[ai], TSA_X);
+							&ranges[j][ai], TSA_X);
 						break;
 					case DA_COMPUTE:
 						compute[j][ai] = true;
@@ -438,43 +528,88 @@ namespace stream_vis {
 				}
 			}
 			if (nr_compute > 0) {
-				bool initialized[2][3] = { {false,false,false}, {false,false,false} };
+				bool initialized[2][8] = { {false,false,false,false,false,false,false,false}, {false,false,false,false,false,false,false,false} };
 				for (unsigned i = 0; i < pl.subplot_infos.size(); ++i) {
 					subplot_info& spi = pl.subplot_infos[i];
 					auto& cfg = pl.plot_ptr->ref_sub_plot_config(i);
-					for (unsigned ai = 0; ai < unsigned(pl.dim); ++ai) {
+					for (unsigned ai = 0; ai < pl.nr_axes; ++ai) {
 						if (!compute[0][ai] && !compute[1][ai])
 							continue;
-						const auto& rbr = spi.ringbuffer_references[ai];
-						const auto& tsrb = time_series_ringbuffers[rbr.index];
-						tsrb.streaming_aabb->put_aabb(flt_ptr);
-						for (int j = 0; j < 2; ++j) {
-							float bound = flt_ptr[rbr.component_index+j*tsrb.nr_time_series_components];
-							vec3& v = (j == 0 ? dom.ref_min_pnt() : dom.ref_max_pnt());
-							if (pl.domain_adjustment[j][ai] != DA_COMPUTE)
-								continue;
-							if (initialized[j][ai]) {
-								if (j == 0)
-									v[ai] = std::min(v[ai], bound);
-								else
-									v[ai] = std::max(v[ai], bound);
+						// check if time series has bounds
+						bool has_bound[2] = { false, false };
+						float bound[2];
+						const auto& ad = spi.attribute_definitions[ai];
+						if (ad.accessor != TSA_TIME) {
+							const auto* tts = typed_time_series[ad.time_series_index];
+							// in case of composed time series find component time series
+							const auto& is = tts->get_io_indices();
+							if (is.size() > 1) {
+								switch (ad.accessor) {
+								case TSA_X: tts = typed_time_series[is[0]]; break;
+								case TSA_Y: tts = typed_time_series[is[1]]; break;
+								case TSA_Z:
+									if (is.size() > 2)
+										tts = typed_time_series[is[2]];
+									break;
+								case TSA_W:
+									if (is.size() > 3)
+										tts = typed_time_series[is[3]];
+									break;
+								}
 							}
-							else {
-								v[ai] = bound;
-								initialized[j][ai] = true;
+							// finally check for lower and upper bound
+							if (compute[0][ai] && tts->lower_bound_index != uint16_t(-1)) {
+								const auto& ts_lb = typed_time_series[tts->lower_bound_index]->series();
+								ts_lb.put_sample_as_float(ts_lb.get_nr_samples() - 1, &bound[0], TSA_X);
+								has_bound[0] = true;
+							}
+							if (compute[1][ai] && tts->upper_bound_index != uint16_t(-1)) {
+								const auto& ts_ub = typed_time_series[tts->upper_bound_index]->series();
+								ts_ub.put_sample_as_float(ts_ub.get_nr_samples() - 1, &bound[1], TSA_X);
+								has_bound[1] = true;
 							}
 						}
+						// if not all bounds have been given by time series
+						if ((compute[0][ai] && !has_bound[0]) || (compute[1][ai] && !has_bound[1])) {
+							const auto& rbr = spi.ringbuffer_references[ai];
+							const auto& tsrb = time_series_ringbuffers[rbr.index];
+							// and a streaming aabb is available
+							if (tsrb.streaming_aabb) {
+								tsrb.streaming_aabb->put_aabb(flt_ptr);
+								for (int j = 0; j < 2; ++j) {
+									if (!compute[j][ai] || has_bound[j])
+										continue;
+									bound[j] = flt_ptr[rbr.component_index + j * tsrb.nr_time_series_components];
+									has_bound[j] = true;
+								}
+							}
+						}
+						// update to be computed bounds if values are given
+						if (compute[0][ai] && has_bound[0])
+							if (initialized[0][ai])
+								ranges[0][ai] = std::min(ranges[0][ai], bound[0]);
+							else {
+								ranges[0][ai] = bound[0];
+								initialized[0][ai] = true;
+							}
+						if (compute[1][ai] && has_bound[1])
+							if (initialized[1][ai])
+								ranges[1][ai] = std::max(ranges[1][ai], bound[1]);
+							else {
+								ranges[1][ai] = bound[1];
+								initialized[1][ai] = true;
+							}
 					}
 				}
 			}
-			// validate domain
-			vec3 dom_ext = dom.get_extent();
-			for (unsigned ai = 0; ai < unsigned(pl.dim); ++ai) {
-				if (abs(dom_ext[ai]) < 1e-10)
-					dom.ref_max_pnt()[ai] += 0.1f;
+			// validate axis ranges and set in domain configuration
+			auto& cfg = *pl.plot_ptr->get_domain_config_ptr();
+			for (unsigned ai = 0; ai < pl.nr_axes; ++ai) {
+				if (ranges[1][ai] - ranges[0][ai] < 1e-10)
+					ranges[1][ai] = ranges[0][ai] + 0.1f;
+				cfg.axis_configs[ai].set_attribute_range(ranges[0][ai], ranges[1][ai]);
 			}
-			// set domain
-			pl.plot_ptr->set_domain3(dom);
+			// finally adjust tick marks
 			pl.plot_ptr->adjust_tick_marks();
 		}
 	}
@@ -482,82 +617,20 @@ namespace stream_vis {
 	{
 		update_plot_samples(ctx);
 		update_plot_domains();
-		for (auto& pl : plot_pool) {
+		for (auto& pl : plot_pool)
 			pl.plot_ptr->init_frame(ctx);
-			if (false && pl.dim == 2) {
-				// first call init frame of plot
-				if (!pl.fbo.is_created())
-					continue;
-				if (!pl.outofdate)
-					continue;
-				// if fbo is created, perform offline rendering with world space in the range [-1,1]² and white background
-				pl.fbo.enable(ctx);
-				pl.fbo.push_viewport(ctx);
-				glClearColor(1, 1, 1, 1);
-				glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-				ctx.push_modelview_matrix();
-				ctx.set_modelview_matrix(cgv::math::identity4<double>());
-				ctx.push_projection_matrix();
-				ctx.set_projection_matrix(cgv::math::identity4<double>());
-				glDepthMask(GL_FALSE);
-				vecn ext = pl.plot_ptr->get_extent();
-				vec3 ctr = pl.plot_ptr->get_center();
-				quat ori = pl.plot_ptr->get_orientation();
-				pl.plot_ptr->set_extent(pl.extent_on_texture.to_vec());
-				pl.plot_ptr->place_center(vec3(0.0f));
-				pl.plot_ptr->set_orientation(quat());
-				pl.plot_ptr->draw(ctx);
-				pl.plot_ptr->set_orientation(ori);
-				pl.plot_ptr->place_center(ctr);
-				pl.plot_ptr->set_extent(ext);
-				glDepthMask(GL_TRUE);
-				ctx.pop_projection_matrix();
-				ctx.pop_modelview_matrix();
-
-				pl.fbo.pop_viewport(ctx);
-				pl.fbo.disable(ctx);
-
-				// generate mipmaps in rendered texture and in case of success enable anisotropic filtering
-				if (pl.tex.generate_mipmaps(ctx))
-					pl.tex.set_min_filter(cgv::render::TF_ANISOTROP, 16.0f);
-			}
-		}
 	}
 	void stream_vis_context::draw(cgv::render::context& ctx)
 	{
 		ctx.push_modelview_matrix();
-		for (auto& pl : plot_pool) {			
-			if (pl.dim == 2) {
-				if (false && pl.fbo.is_created()) {
-					// use default shader with texture support to draw offline rendered plot
-					glDisable(GL_CULL_FACE);
-					auto& prog = ctx.ref_default_shader_program(true);
-					pl.tex.enable(ctx);
-					prog.enable(ctx);
-					ctx.set_color(rgba(1, 1, 1, 1));
-					// scale down in y-direction according to texture resolution
-					vecn ext(pl.plot_ptr->get_extent());
-					ctx.push_modelview_matrix();
-					ctx.mul_modelview_matrix(
-						cgv::math::translate4<float>(pl.plot_ptr->get_center())*
-						pl.plot_ptr->get_orientation().get_homogeneous_matrix()
-					);
-					ctx.mul_modelview_matrix(cgv::math::scale4<double>(ext[0]/pl.extent_on_texture[0], ext[1]/pl.extent_on_texture[1], 1.0));
-					ctx.tesselate_unit_square();
-					prog.disable(ctx);
-					pl.tex.disable(ctx);
-					ctx.pop_modelview_matrix();
-					glEnable(GL_CULL_FACE);
-				}
-				else
-					pl.plot_ptr->draw(ctx);
-			}
-			else
-				pl.plot_ptr->draw(ctx);
-		}
+		for (auto& pl : plot_pool)
+			pl.plot_ptr->draw(ctx);
 	}
 	void stream_vis_context::create_gui()
 	{
+		add_decorator("stream vis context", "heading", "level=1");
+		add_member_control(this, "pause", paused, "toggle");
+		add_member_control(this, "sleep_ms", sleep_ms, "value_slider", "min=0;max=1000;log=true;ticks=true");
 		add_member_control(this, "use_vbo", use_vbo, "check");
 		for (auto& pl : plot_pool) {
 			add_decorator(pl.name, "heading", "level=2");

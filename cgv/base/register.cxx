@@ -680,7 +680,6 @@ bool process_config_file_ext(const std::string& _file_name, bool* persistent = 0
 	std::string file_name = get_config_file_name(_file_name);
 	if (file_name.empty())
 		return false;
-
 	// try to read file
 	std::string content;
 	if (!file::read(file_name, content, true)) {
@@ -700,9 +699,54 @@ bool process_config_file_ext(const std::string& _file_name, bool* persistent = 0
 
 	// interpret each line as a command
 	unsigned int i;
+	std::string cfg_file_dir = cgv::utils::file::get_path(_file_name);
 	for (i = 0; i < lines.size(); ++i) {
 		command_info info;
-		analyze_command((token&)(lines[i]), false, &info);
+		std::string line;
+		const char* begin = lines[i].begin;
+		const char* iter = begin;
+		while (iter < lines[i].end) {
+			// find next appearance of '$'
+			iter = std::find(iter, lines[i].end, '$');
+			if (iter == lines[i].end) {
+				if (begin > lines[i].begin)
+					line += std::string(begin, lines[i].end);
+				break;
+			}
+			// check for '('
+			auto jter = iter;
+			std::string value;
+			if (++jter < lines[i].end) {
+				if (*jter == '(') {
+					// extract name of variable up to closing paranthesis
+					std::string var_name;
+					while (++jter < lines[i].end && *jter != ')') {
+						var_name.push_back(*jter);
+					}
+					if (jter < lines[i].end) {
+						// convert to upper case 
+						var_name = cgv::utils::to_upper(var_name);
+						if (var_name == "CFG_FILE_DIR")
+							value = cfg_file_dir;
+						else {
+							value = std::string(getenv(var_name.c_str()));
+						}
+					}
+				}
+			}
+			if (value.empty()) {
+				++iter;
+				continue;
+			}
+			line += std::string(begin, iter);
+			line += value;
+			begin = iter = jter+1;
+		}
+		if (line.empty())
+			analyze_command(lines[i], false, &info);
+		else
+			analyze_command(token(line), false, &info);
+		
 		process_command_ext(info, persistent, cfo, &content[0]);
 		// process_command_ext((token&)(lines[i]), false, persistent, cfo, &content[0]);
 	}
