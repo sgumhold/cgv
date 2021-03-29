@@ -6,8 +6,10 @@
 #include <random>
 #include <sstream>
 
+namespace cgv {	namespace pointcloud {
+
 namespace {
-	static WorkerPool pool(std::thread::hardware_concurrency() - 1);
+	static WorkerPool pool(std::thread::hardware_concurrency()-1);
 
 	template <typename TASK>
 	struct TaskPool {
@@ -32,7 +34,7 @@ namespace {
 	};
 }
 
-	namespace {
+namespace {
 		struct SamplerRandom : public octree_lod_generator::Sampler {
 			
 			template <int GRID_SIZE>
@@ -110,9 +112,6 @@ namespace {
 
 					bool isLeaf = node->is_leaf();
 					if (isLeaf) {
-						//TODO may make skip shuffle an option
-						//return false;
-							
 						std::vector<int> indices(node->num_points);
 						for (int i = 0; i < node->num_points; i++) {
 							indices[i] = i;
@@ -573,8 +572,7 @@ int64_t octree_lod_generator::grid_index(const vec3& position, const vec3& min, 
 
 void octree_lod_generator::distribute_points(vec3 min, vec3 max, float cube_size, NodeLUT& lut, const LODPoint* vertices, const int64_t num_points, const std::vector<ChunkNode>& nodes)
 {
-	//auto start = std::chrono::steady_clock::now();
-
+	auto start = std::chrono::steady_clock::now();
 	auto& grid = lut.grid;
 
 	constexpr int max_chunk_size = 512 * (64 / sizeof(LODPoint));
@@ -585,19 +583,24 @@ void octree_lod_generator::distribute_points(vec3 min, vec3 max, float cube_size
 	};
 
 	TaskPool<Task> tasks;
-			
+	
 	{
+		int max_num_tasks = (num_points / max_chunk_size) + 1;
+		tasks.pool.resize(max_num_tasks);
+		auto it = tasks.pool.begin();
+
 		int64_t i = 0;
 		while (i < num_points) {
-			Task t;
+			Task& t = *it;
 			t.first_point = i;
 			int64_t points_left = num_points - i;
 			t.batch_size = (points_left < max_chunk_size) ? points_left : max_chunk_size;
 			i += t.batch_size;
-			tasks.pool.push_back(t);
+			++it;
 		}
 	}
-	tasks.func = [this,&tasks, &vertices, &min, &cube_size, &grid, &nodes](Task* task) {
+
+	tasks.func = [this, &tasks, &vertices, &min, &cube_size, &grid, &nodes](Task* task) {
 		int batch_size = task->batch_size;
 		int64_t first_point = task->first_point;
 
@@ -611,13 +614,10 @@ void octree_lod_generator::distribute_points(vec3 min, vec3 max, float cube_size
 		for (const LODPoint* i = start; i < end; ++i) {
 			vec3 p = i->position;
 			int idx = grid_index(p, min, cube_size, grid_size);
-
-			//auto& node = nodes[grid[idx]];
 			buckets[grid[idx]].push_back(*i);
-			//node.pc_data->write_points(i,1);
 		}
-				
-		for (int i = 0; i < num_buckets;++i) {
+
+		for (int i = 0; i < num_buckets; ++i) {
 			if (buckets[i].size() > 0)
 				nodes[i].pc_data->write_points(buckets[i].data(), buckets[i].size());
 		}
@@ -626,7 +626,7 @@ void octree_lod_generator::distribute_points(vec3 min, vec3 max, float cube_size
 
 	pool.run([&tasks](int id) {tasks();});
 			
-	/*
+	/* //single thread variant
 	for (int i = 0; i < num_points; ++i) {
 		vec3 p = vertices[i].position;
 		int idx = grid_index(p, min, cube_size, grid_size);
@@ -634,11 +634,9 @@ void octree_lod_generator::distribute_points(vec3 min, vec3 max, float cube_size
 		auto& node = nodes[grid[idx]];
 		LODPoint v = vertices[i];
 		node.pc_data->write_points(&v, 1);
-		//node.pc_data->vertices.push_back(v);
 	}*/
-			
-	//auto end = std::chrono::steady_clock::now();
-	//std::printf("distributing: %d ns\n",std::chrono::duration_cast<std::chrono::nanoseconds>(end - start));
+	auto end = std::chrono::steady_clock::now();
+	std::printf("distributing: %d ns\n",std::chrono::duration_cast<std::chrono::nanoseconds>(end - start));
 }
 
 void octree_lod_generator::lod_indexing(Chunks& chunks, std::vector<LODPoint>& vertices, Sampler& sampler)
@@ -1305,3 +1303,5 @@ void octree_lod_generator::IndexNode::add_descendant(std::shared_ptr<IndexNode> 
 	auto index = descendant->name[descendantLevel] - '0';
 	current->children[index] = descendant;
 }
+
+}} //namespace cgv::pointcloud

@@ -8,6 +8,9 @@
 
 #include "lib_begin.h"
 
+namespace cgv {
+	namespace pointcloud {
+
 struct LODPoint : public cgv::render::render_types {
 	vec3 position;
 	rgb8 color;
@@ -204,5 +207,8 @@ class CGV_API octree_lod_generator : public cgv::render::render_types {
 		//lod stored in alpha channel of point color
 		std::vector<LODPoint> generate_lods(const std::vector<LODPoint>& vertices);
 };
+
+	}
+}
 
 #include <cgv/config/lib_end.h>
