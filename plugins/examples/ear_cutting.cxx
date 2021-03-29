@@ -12,6 +12,8 @@
 #include <cgv/render/texture.h>
 #include <cgv/data/data_view.h>
 #include <cgv_gl/point_renderer.h>
+#include <cgv_gl/line_renderer.h>
+#include <cgv_gl/rectangle_renderer.h>
 #include <cgv/math/ftransform.h>
 #include <cgv/utils/ostream_printf.h>
 #include <cgv_gl/gl/gl.h>
@@ -51,27 +53,45 @@ class ear_cutting :
 	public cgv::gui::provider,
 	public cgv::render::drawable     /// derive from drawable for drawing the cube
 {
-public:
-	typedef cgv::math::fvec<unsigned, 3> ivec3;
-	typedef cgv::media::axis_aligned_box<float, 2> box2;
 protected:
-	vec3 last_pos;
-	vec3 p_edge;
+	vec2 last_pos;
+	vec2 p_edge;
 	unsigned nr_steps;
 	bool wireframe;
 	float lambda;
-	point_render_style prs;
-	point_renderer pnt_renderer;
 	int selected_index;
 	int edge_index;
+	/// style used for point rendering
+	point_render_style prs;
+	/// style used for line rendering
+	line_render_style lrs;
+	/// style used for rectangle rendering
+	rectangle_render_style rrs;
+	/// whether tiangle vbo needs to be recomputed
+	bool pnt_vbo_changed;
+	/// remember number of vertices stored in pnt_vbo
+	size_t pnt_vbo_count;
+	/// vertex buffer to store polygon corners together with point colors
+	vertex_buffer pnt_vbo;
+	/// array manager for point rendering
+	attribute_array_manager pnt_aam;
+	/// array manager for line rendering
+	attribute_array_manager line_aam;
+	/// whether tiangle vbo needs to be recomputed
+	bool tgl_vbo_changed;
+	/// remember number of vertices stored in pnt_vbo
+	size_t tgl_vbo_count;
+	/// vertex buffer to corners of shrinked triangles and per triangle colors
+	vertex_buffer tgl_vbo;
+	/// attribute array binding for triangle rendering
+	attribute_array_binding tgl_aab;
 public:
-	std::vector<vec2> polygon;
-	std::vector<vec3> points;
-	std::vector<rgba> colors;
-	PolygonOrientation orientation;
-	std::vector<ivec3> triangles;
+	std::vector<vec2>         polygon;
+	std::vector<rgb>          colors;
+	PolygonOrientation        orientation;
+	std::vector<ivec3>        triangles;
 	std::vector<polygon_node> nodes;
-	cgv::render::view* view_ptr;
+	cgv::render::view*        view_ptr;
 
 	// polygon rasterization
 	typedef cgv::media::color<cgv::type::uint8_type> brgb_type;
@@ -249,14 +269,13 @@ public:
 		if (nodes.size() == 2)
 			nodes.clear();
 	}
-
 	void reallocate_image()
 	{
 		img.resize(img_width*img_height);
 		clear_image(background_color, background_color2);
 		tex_outofdate = true;
 	}
-	ear_cutting() : node("ear_cutting")
+	ear_cutting() : node("ear_cutting"), pnt_vbo(VBT_VERTICES, VBU_DYNAMIC_DRAW), tgl_vbo(VBT_VERTICES, VBU_DYNAMIC_DRAW)
 	{
 		show_rasterization = false;
 		tex.set_mag_filter(cgv::render::TF_NEAREST);
@@ -277,14 +296,23 @@ public:
 		set_colors();
 		nr_steps = 0;
 		lambda = 0.1f;
-		prs.point_size = 16;
 		view_ptr = 0;
 		selected_index = -1;
 		wireframe = false;
 		edge_index = -1;
-		for (unsigned i = 0; i < polygon.size(); ++i) {
-			points.push_back(vec3(polygon[i](0), polygon[i](1), 0));
-		}
+		pnt_vbo_changed = true;
+		tgl_vbo_changed = true;
+		pnt_vbo_count = tgl_vbo_count = 0;
+		prs.point_size = 12;
+		prs.default_depth_offset = -0.000003f;
+		prs.blend_points = true;
+		prs.measure_point_size_in_pixel = false;
+		lrs.blend_lines = true;
+		lrs.measure_line_width_in_pixel = false;
+		lrs.reference_line_width = 0.01f;
+		lrs.blend_width_in_pixel = 1.0f;
+		rrs.blend_rectangles = true;
+		rrs.map_color_to_material = CM_COLOR_AND_OPACITY;
 	}
 	/// return name of type
 	std::string get_type_name() const 
@@ -299,93 +327,98 @@ public:
 		view_ptr = find_view_as_node();
 		if (!view_ptr)
 			return false;
-		if (pnt_renderer.init(ctx)) {
-			pnt_renderer.set_reference_point_size(0.005f);
-			pnt_renderer.set_y_view_angle(float(view_ptr->get_y_view_angle()));
-			pnt_renderer.set_render_style(prs);
-			return true;
-		}
-		return false;
+		ref_point_renderer(ctx, 1);
+		ref_line_renderer(ctx, 1);
+		ref_rectangle_renderer(ctx, 1);
+		pnt_aam.init(ctx);
+		line_aam.init(ctx);
+		tgl_aab.create(ctx);
+		ctx.ref_default_shader_program();
+		ctx.ref_default_shader_program(true);
+		return true;
 	}
 	void clear(context& ctx)
 	{
-		pnt_renderer.clear(ctx);
+		pnt_vbo.destruct(ctx);
+		tgl_vbo.destruct(ctx);
+		pnt_aam.destruct(ctx);
+		line_aam.destruct(ctx);
+		tgl_aab.destruct(ctx);
+		ref_point_renderer(ctx, -1);
+		ref_line_renderer(ctx, -1);
+		ref_rectangle_renderer(ctx, -1);
 	}
-	void draw_polygon()
+	void init_frame(context& ctx)
 	{
-		if (polygon.size() > 0)
-			glDrawArrays(GL_LINE_LOOP, 0, GLsizei(polygon.size()));
-	}
-	void draw_unprocessed_polygon()
-	{
-		if (nodes.empty())
-			return;
-		std::vector<GLuint> I;
-		for (const auto& n : nodes)
-			I.push_back(n.idx);
-		glDrawElements(GL_LINE_LOOP, GLsizei(I.size()), GL_UNSIGNED_INT, &I[0]);
-	}
-	void draw_triangles(context& ctx, shader_program& prog)
-	{
-		if (triangles.empty())
-			return;
-		// compute vertices of shrinked triangles
-		std::vector<vec2> P;
-		for (const auto& t : triangles) {
-			vec2 ctr = 0.3333333333333f*(polygon[t[0]] + polygon[t[1]] + polygon[t[2]]);
-			for (unsigned i = 0; i < 3; ++i)
-				P.push_back((1 - lambda)*polygon[t[i]] + lambda * ctr);
-		}
-		// set position vertex attribute pointer
-		attribute_array_binding::set_global_attribute_array(ctx, prog.get_position_index(), P);
+		if (!pnt_vbo.is_created() || pnt_vbo_changed) {
+			// collect geometry data in cpu vectors
+			std::vector<vec2> P = polygon;
+			std::vector<rgb>  C = colors;
+			if (selected_index != -1)
+				C[selected_index] = rgb(1.0f, 0.0f, 1.0f);
+			else if (edge_index != -1) {
+				P.push_back(p_edge);
+				C.push_back(rgb(1.0f, 0.0f, 1.0f));
+			}
+			pnt_vbo_count = P.size();
+			// ensure that point buffer has necessary size
+			size_t necessary_size = P.size() * sizeof(vec2) + C.size() * sizeof(rgb);
+			if (pnt_vbo.get_size_in_bytes() < necessary_size)
+				pnt_vbo.destruct(ctx);
+			if (!pnt_vbo.is_created())
+				pnt_vbo.create(ctx, necessary_size);
+			// copy data into point buffer
+			pnt_vbo.replace(ctx, 0, &P.front(), P.size());
+			pnt_vbo.replace(ctx, P.size() * sizeof(vec2), &C.front(), C.size());
+			pnt_vbo_changed = false;
+			// update attribute managers
+			auto& pr = ref_point_renderer(ctx);
+			pr.enable_attribute_array_manager(ctx, pnt_aam);
+			pr.set_position_array<vec2>(ctx, pnt_vbo, 0, pnt_vbo_count);
+			pr.set_color_array<rgb>(ctx, pnt_vbo, pnt_vbo_count*sizeof(vec2), pnt_vbo_count);
+			pr.disable_attribute_array_manager(ctx, pnt_aam);
 
-		if (wireframe) {
-			ctx.set_color(rgb(0, 0, 0));
-			for (int vi = 0; vi < int(P.size()); vi += 3)
-				glDrawArrays(GL_LINE_LOOP, vi, 3);
+			auto& lr = ref_line_renderer(ctx);
+			lr.enable_attribute_array_manager(ctx, line_aam);
+			lr.set_position_array<vec2>(ctx, pnt_vbo, 0, pnt_vbo_count);
+			lr.disable_attribute_array_manager(ctx, line_aam);
+
 		}
-		else {
-			// compute vector C of vertex colors
+		if ((!tgl_vbo.is_created() || tgl_vbo_changed) && !triangles.empty()) {
+			// collect geometry data in cpu vectors
+			std::vector<vec2> P;
 			std::vector<rgb> C;
 			rgb c0(0.0f, 0.0f, 1.0f);
 			rgb c1(1.0f, 1.0f, 0.0f);
 			float scale = 1.0f / (polygon.size() - 2);
 			for (unsigned ti = 0; ti < triangles.size(); ++ti) {
+				const auto& t = triangles[ti];
+				vec2 ctr = 0.3333333333333f * (polygon[t[0]] + polygon[t[1]] + polygon[t[2]]);
 				float lambda_c = scale * ti;
-				rgb c = (1 - lambda_c)*c0 + lambda_c * c1;
-				C.push_back(c);
-				C.push_back(c);
-				C.push_back(c);
+				rgb c = (1 - lambda_c) * c0 + lambda_c * c1;
+				for (unsigned i = 0; i < 3; ++i) {
+					P.push_back((1 - lambda) * polygon[t[i]] + lambda * ctr);
+					C.push_back(c);
+				}
 			}
-			// bind and enable color array
-			attribute_array_binding::set_global_attribute_array(ctx, prog.get_color_index(), C);
-			attribute_array_binding::enable_global_array(ctx, prog.get_color_index());
-			glDrawArrays(GL_TRIANGLES, 0, GLsizei(C.size()));
-			attribute_array_binding::disable_global_array(ctx, prog.get_color_index());
+			tgl_vbo_count = P.size();
+			// ensure that point buffer has necessary size
+			size_t necessary_size = P.size() * sizeof(vec2) + C.size() * sizeof(rgb);
+			if (tgl_vbo.get_size_in_bytes() < necessary_size)
+				tgl_vbo.destruct(ctx);
+			if (!tgl_vbo.is_created())
+				tgl_vbo.create(ctx, necessary_size);
+			// copy data into point buffer
+			tgl_vbo.replace(ctx, 0, &P.front(), P.size());
+			tgl_vbo.replace(ctx, P.size() * sizeof(vec2), &C.front(), C.size());
+			tgl_vbo_changed = false;
+			// update attribute array binding
+			auto& prog = ctx.ref_default_shader_program();
+			vec2 tmp;
+			rgb clr;
+			tgl_aab.set_attribute_array(ctx, prog.get_position_index(), get_element_type(tmp), tgl_vbo, 0, tgl_vbo_count);
+			tgl_aab.set_attribute_array(ctx, prog.get_color_index(), get_element_type(clr), tgl_vbo, tgl_vbo_count * sizeof(vec2), tgl_vbo_count);
 		}
-	}
-	void draw_points(context& ctx)
-	{
-		rgba tmp(1.0f,0.0f,1.0f, 1.0f);
-		if (selected_index != -1)
-			std::swap(tmp, colors[selected_index]);
-		else if (edge_index != -1) {
-			points.push_back(p_edge);
-			colors.push_back(tmp);
-		}
-		pnt_renderer.set_color_array(ctx, colors);
-		pnt_renderer.set_position_array(ctx, points);
-		pnt_renderer.render(ctx, 0, points.size());
-
-		if (selected_index != -1)
-			std::swap(tmp, colors[selected_index]);
-		else if (edge_index != -1) {
-			points.pop_back();
-			colors.pop_back();
-		}
-	}
-	void init_frame(context& ctx)
-	{
 		if (tex_outofdate) {
 			if (tex.is_created())
 				tex.destruct(ctx);
@@ -399,37 +432,94 @@ public:
 	}
 	void draw(context& ctx)
 	{
-		ctx.push_modelview_matrix();
-		ctx.mul_modelview_matrix(scale4<double>(2, 2, 2) * translate4<double>(0, 0, -0.0005));
-		ctx.ref_default_shader_program(show_rasterization).enable(ctx);
-		ctx.set_color(rgb(1, 1, 1));
-		if (show_rasterization)
+		static box2 rectangle(vec2(-2, -2), vec2(2, 2));
+		static vec4 texcoord(0, 0, 1, 1);
+		auto& rr = ref_rectangle_renderer(ctx);
+		rr.set_render_style(rrs);
+		rr.set_rectangle(ctx, rectangle);
+		rr.set_depth_offset(ctx, 0.000001f);
+		rr.set_color(ctx, rgb(1, 1, 1));
+		if (show_rasterization) {
+			rr.set_texcoord(ctx, texcoord);
 			tex.enable(ctx);
-		ctx.tesselate_unit_square();
-		if (show_rasterization)
+			rr.render(ctx, 0, 1);
 			tex.disable(ctx);
-		ctx.ref_default_shader_program(show_rasterization).disable(ctx);
-		ctx.pop_modelview_matrix();
-		
-		shader_program& prog = ctx.ref_default_shader_program();
-		prog.enable(ctx);
-			attribute_array_binding::enable_global_array(ctx, prog.get_position_index());
-			attribute_array_binding::set_global_attribute_array(ctx, prog.get_position_index(), polygon);
-				glLineWidth(2);
-				ctx.set_color(rgb(0.8f, 0, 0.7f));
-				draw_unprocessed_polygon();
-				glLineWidth(5);
-				ctx.set_color(rgb(0.8f, 0.5f, 0));
-				draw_polygon();
-				glLineWidth(1);
-				draw_triangles(ctx, prog);
-			attribute_array_binding::disable_global_array(ctx, prog.get_position_index());
-		prog.disable(ctx);
+		}
+		else
+			rr.render(ctx, 0, 1);
 
-		ctx.push_modelview_matrix();
-		ctx.mul_modelview_matrix(translate4<double>(0.0, 0.0, 0.001));
-		draw_points(ctx);
-		ctx.pop_modelview_matrix();
+		// draw triangles
+		if (!triangles.empty()) {
+			shader_program& prog = ctx.ref_default_shader_program();
+			tgl_aab.enable(ctx);
+			prog.enable(ctx);
+			if (wireframe) {
+				tgl_aab.disable_array(ctx, prog.get_color_index());
+				ctx.set_color(rgb(0, 0, 0));
+				std::vector<GLuint> I;
+				for (GLuint vi = 0; vi < tgl_vbo_count; vi += 3) {
+					if (!I.empty())
+						I.push_back(123456);
+					I.push_back(vi);
+					I.push_back(vi + 1);
+					I.push_back(vi + 2);
+					I.push_back(vi);
+				}
+				glEnable(GL_PRIMITIVE_RESTART);
+				glPrimitiveRestartIndex(123456);
+				glDrawElements(GL_LINE_STRIP, (GLsizei)I.size(), GL_UNSIGNED_INT, I.data());
+				glDisable(GL_PRIMITIVE_RESTART);
+				tgl_aab.enable_array(ctx, prog.get_color_index());
+			}
+			else
+				glDrawArrays(GL_TRIANGLES, 0, (GLsizei)tgl_vbo_count);
+			prog.disable(ctx);
+			tgl_aab.disable(ctx);
+		}
+		
+		// prepare line rendering
+		auto& lr = ref_line_renderer(ctx);
+		lr.set_render_style(lrs);
+		lr.enable_attribute_array_manager(ctx, line_aam);
+		// draw polygon
+		if (polygon.size() > 0) {
+			lr.set_color(ctx, rgb(0.8f, 0.5f, 0));
+			lr.set_line_width(ctx, 5.0f);
+			// collect indices of to render polygon as triangle strip
+			std::vector<GLuint> I;
+			for (GLuint i = 0; i <= polygon.size(); ++i)
+				I.push_back(i % polygon.size());
+			// set indices and render in indexed mode
+			lr.set_indices(ctx, I, true);
+			lr.set_depth_offset(ctx, -0.000001f);
+			lr.render(ctx, 0, I.size(), true);
+		}
+		// draw unprocessed polygon
+		if (!nodes.empty()) {
+			// configure color and line width
+			lr.set_color(ctx, rgb(0.8f, 0, 0.7f));
+			lr.set_line_width(ctx, 2.0f);
+			lr.set_depth_offset(ctx, -0.000002f);
+			// collect indices of to render line loop as triangle strip
+			std::vector<GLuint> I;
+			for (const auto& n : nodes)
+				I.push_back(n.idx);
+			I.push_back(nodes.front().idx);
+			// set indices and render in indexed mode
+			lr.set_indices(ctx, I, true);
+			lr.render(ctx, 0, I.size(), true);
+		}
+		// finish line rendering
+		lr.disable_attribute_array_manager(ctx, line_aam);
+		
+		// draw points
+		if (pnt_vbo_count > 0) {
+			auto& pr = ref_point_renderer(ctx);
+			pr.set_render_style(prs);
+			pr.enable_attribute_array_manager(ctx, pnt_aam);
+			pr.render(ctx, 0, pnt_vbo_count);
+			pr.disable_attribute_array_manager(ctx, pnt_aam);
+		}
 	}
 	bool handle(event& e)
 	{
@@ -462,55 +552,69 @@ public:
 					float epsilon = (float)(prs.point_size * view_ptr->get_y_extent_at_focus() / get_context()->get_height());
 					dvec3 p_d;
 					if (get_world_location(me.get_x(), me.get_y(), *view_ptr, p_d)) {
-						vec3 p = p_d;
-						int last_selected_index = selected_index;
-						selected_index = -1;
+						vec2 p((float)p_d.x(),(float)p_d.y());
+						int min_index = -1;
 						float min_dist = 0;
 						for (unsigned i = 0; i < polygon.size(); ++i) {
-							float dist = (points[i] - p).length();
-							if (dist <= epsilon) {
-								if (selected_index == -1 || dist < min_dist) {
-									min_dist = dist;
-									selected_index = i;
-								}
+							float dist = (polygon[i] - p).length();
+							if (min_index == -1 || dist < min_dist) {
+								min_dist = dist;
+								min_index = i;
 							}
 						}
-						if (last_selected_index != selected_index)
-							on_set(&selected_index);
+						if (min_dist > epsilon)
+							min_index = -1;
+						
+						//std::cout << "<" << epsilon << "> " << p << "[" << selected_index << "|" << min_dist << "|" << min_index << "]";
+						//if (min_index != -1)
+						//	std::cout << " = " << polygon[min_index];
 
+						if (min_index != selected_index) {
+							selected_index = min_index;
+							on_set(&selected_index);
+						}
 						// if no point found, check for edges
 						if (selected_index == -1) {
-							int last_edge_index = edge_index;
-							edge_index = -1;
-							vec3 last_p_edge = p_edge;
+							int min_index = -1;
+							vec2 last_p_edge = p_edge;
 							float min_dist = 0;
 							for (unsigned i = 0; i < polygon.size(); ++i) {
-								const vec3& p0 = points[i];
-								const vec3& p1 = points[(i + 1) % points.size()];
-								vec3 d = p1 - p0;
+								const vec2& p0 = polygon[i];
+								const vec2& p1 = polygon[(i + 1) % polygon.size()];
+								vec2 d = p1 - p0;
 								float lambda = dot(p - p0, d) / dot(d, d);
 								if (lambda > 0 && lambda < 1) {
-									vec3 pp = p0 + lambda*d;
+									vec2 pp = p0 + lambda*d;
 									float dist = (pp - p).length();
 									if (dist < epsilon) {
-										if (edge_index == -1 || dist < min_dist) {
+										if (min_index == -1 || dist < min_dist) {
 											min_dist = dist;
-											edge_index = i;
+											min_index = i;
 											p_edge = pp;
-											p_edge(2) = 0;
 										}
 									}
 								}
 							}
-							if (last_edge_index != edge_index)
+							if (min_dist > epsilon)
+								min_index = -1;
+
+							//std::cout << " (" << edge_index << "|" << min_dist << "|" << min_index << ")";
+							//if (min_index != -1)
+							//	std::cout << " = " << p_edge;
+
+							if (min_index != edge_index) {
+								edge_index = min_index;
 								on_set(&edge_index);
-							else if ((last_p_edge - p_edge).length() > 0.5f*epsilon / prs.point_size) 
-								on_set(&p_edge);
+							}
+							on_set(&p_edge);
 						}
 						else {
-							if (edge_index != -1)
+							if (edge_index != -1) {
 								edge_index = -1;
+								on_set(&edge_index);
+							}
 						}
+						//std::cout << std::endl;
 					}
 				}
 				break;
@@ -519,11 +623,9 @@ public:
 					if (selected_index != -1) {
 						dvec3 p_d;
 						if (get_world_location(me.get_x(), me.get_y(), *view_ptr, p_d)) {
-							vec3 new_pos = p_d;
-							vec3 diff = new_pos - last_pos;
-							diff(2) = 0;
-							points[selected_index] += diff;
-							polygon[selected_index] += vec2(diff(0),diff(1));
+							vec2 new_pos((float)p_d.x(), (float)p_d.y());
+							vec2 diff = new_pos - last_pos;
+							polygon[selected_index] += diff;
 							on_set(polygon[selected_index]);
 							last_pos = new_pos;
 						}
@@ -536,25 +638,23 @@ public:
 					if (selected_index != -1) {
 						dvec3 p_d;
 						if (get_world_location(me.get_x(), me.get_y(), *view_ptr, p_d)) {
-							last_pos = p_d;
+							last_pos = dvec2(p_d.x(), p_d.y());
 						}
 					}
 					else if (edge_index != -1) {
 						dvec3 p_d;
 						if (get_world_location(me.get_x(), me.get_y(), *view_ptr, p_d)) {
-							p_edge = last_pos = p_d;
+							p_edge = last_pos = dvec2(p_d.x(), p_d.y());
 						}
 						else 
 							last_pos = p_edge;
 
-						if (edge_index == points.size() - 1) {
-							points.push_back(p_edge);
-							polygon.push_back(vec2(p_edge(0),p_edge(1)));
+						if (edge_index == polygon.size() - 1) {
+							polygon.push_back(p_edge);
 							colors.push_back(rgb(0.5f, 0.5f, 0.5f));
 						}
 						else {
-							points.insert(points.begin() + edge_index + 1, p_edge);
-							polygon.insert(polygon.begin() + edge_index + 1, vec2(p_edge(0), p_edge(1)));
+							polygon.insert(polygon.begin() + edge_index + 1, p_edge);
 							colors.insert(colors.begin() + edge_index + 1, rgb(0.5f, 0.5f, 0.5f));
 						}
 						selected_index = edge_index + 1;
@@ -575,7 +675,6 @@ public:
 					if (selected_index != -1) {
 						if (polygon.size() > 3) {
 							polygon.erase(polygon.begin() + selected_index);
-							points.erase(points.begin() + selected_index);
 							colors.erase(colors.begin() + selected_index);
 							selected_index = -1;
 							on_set(polygon[0]);
@@ -604,7 +703,6 @@ public:
 		}
 		return false;
 	}
-	/// return a path in the main menu to select the gui
 	std::string get_menu_path() const 
 	{
 		return "example/ear_cutting"; 
@@ -623,7 +721,12 @@ public:
 				}
 			}
 			reallocate_image();
-			rasterize_polygon(polygon, brgb_type(255, 0, 0));
+			rasterize_polygon(polygon, rgb8(255, 0, 0));
+			tex_outofdate = true;
+		}
+		if (member_ptr == &background_color || member_ptr == &background_color2) {
+			clear_image(background_color, background_color2);
+			rasterize_polygon(polygon, rgb8(255, 0, 0));
 			tex_outofdate = true;
 		}
 		if (member_ptr == &nr_steps) {
@@ -631,6 +734,14 @@ public:
 			classify_nodes();
 			find_ears();
 			set_colors();
+			pnt_vbo_changed = tgl_vbo_changed = true;
+		}
+		if (member_ptr >= &p_edge && member_ptr < &p_edge + 1 ||
+			member_ptr == &edge_index || member_ptr == &selected_index) {
+			pnt_vbo_changed = true;
+		}
+		if (member_ptr == &lambda) {
+			tgl_vbo_changed = true;
 		}
 		if (member_ptr >= &polygon[0] && member_ptr < &polygon[0] + polygon.size()) {
 			perform_ear_cutting();
@@ -638,13 +749,12 @@ public:
 			find_ears();
 			set_colors();
 			clear_image(background_color, background_color2);
-			rasterize_polygon(polygon, brgb_type(255, 0, 0));
-			tex_outofdate = true;
+			rasterize_polygon(polygon, rgb8(255, 0, 0));
+			pnt_vbo_changed = tgl_vbo_changed = tex_outofdate = true;
 		}
 		update_member(member_ptr);
 		post_redraw();
 	}
-	/// you must overload this for gui creation
 	void create_gui() 
 	{	
 		add_decorator("ear cutting", "heading");
@@ -664,14 +774,28 @@ public:
 			align("\b");
 			end_tree_node(synch_img_dimensions);
 		}
-		if (begin_tree_node("point rendering", prs)) {
+		if (begin_tree_node("style", pnt_aam)) {
 			align("\a");
-			add_gui("points", prs);
-			align("\b");
-			end_tree_node(prs);
+			if (begin_tree_node("points", prs)) {
+				align("\a");
+				add_gui("points", prs);
+				align("\b");
+				end_tree_node(prs);
+			}
+			if (begin_tree_node("lines", lrs)) {
+				align("\a");
+				add_gui("lines", lrs);
+				align("\b");
+				end_tree_node(lrs);
+			}
+			if (begin_tree_node("rectangles", rrs)) {
+				align("\a");
+				add_gui("rectangles", rrs);
+				align("\b");
+				end_tree_node(rrs);
+			}
 		}
 	}
-
 };
 
 #include <cgv/base/register.h>

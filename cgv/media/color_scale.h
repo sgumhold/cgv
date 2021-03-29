@@ -65,6 +65,25 @@ extern CGV_API double adjust_zero_position(double value, double window_zero_posi
 extern CGV_API void register_named_color_scale(const ::std::string& name, const ::std::vector<color<float, RGB>>& samples, bool is_bipolar = false);
 
 /// <summary>
+/// get name of color scale
+/// </summary>
+/// <param name="cs">color scale enum</param>
+/// <returns>name</returns>
+extern CGV_API std::string get_color_scale_name(ColorScale cs);
+
+/// <param name="cs">color scale name</param>
+/// <returns>name</returns>
+/// 
+
+/// <summary>
+/// find color scale enum from name
+/// </summary>
+/// <param name="name">name of color scale</param>
+/// <param name="cs">reference where to place resulting color scale enum</param>
+/// <returns>where name is a valid color scale name</returns>
+extern CGV_API bool find_color_scale(const std::string& name, ColorScale& cs);
+
+/// <summary>
 /// Return a timestamp that is increased every time a new color scale is registered in order to support checking whether 
 /// a new call to query_color_scale_names() would give a different vector of names
 /// </summary>

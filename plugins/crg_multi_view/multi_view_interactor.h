@@ -96,7 +96,7 @@ protected:
 	/// 
 	int add_controller_as_player;
 	///
-	cgv::render::surface_render_style rrs;
+	cgv::render::rectangle_render_style rrs;
 	///
 	const vr::vr_trackable_state* get_trackable_state(int display_index) const;
 	///

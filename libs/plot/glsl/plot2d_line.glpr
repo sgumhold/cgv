@@ -1,0 +1,11 @@
+vertex_file:plot2d_line.glvs
+vertex_file:color_scale.glsl
+vertex_file:plot_lib.glsl
+vertex_file:view.glsl
+geometry_shader_info:lines;triangle_strip;4
+geometry_file:line.glgs
+geometry_file:splat.glsl
+geometry_file:view.glsl
+fragment_file:line.glfs
+fragment_file:splat.glsl
+fragment_file:fragment.glfs

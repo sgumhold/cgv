@@ -20,8 +20,10 @@ namespace stream_vis {
 			std::map<std::string, uint16_t>* _name2index_ptr,
 			std::vector<stream_vis::streaming_time_series*>* _typed_time_series_ptr,
 			std::vector<plot_info>* _plot_pool_ptr);
-		virtual bool parse_bool (const std::string& name, bool& b) = 0;
-		virtual bool parse_float(const std::string& name, float& flt) = 0;
+		virtual bool get_value(const std::string& name, std::string& v) = 0;
+		virtual bool parse_bool(const std::string& name, bool& b) = 0;
+		virtual bool parse_int(const std::string& name, int& i) = 0;
+		virtual bool parse_float(const std::string& name, float& f) = 0;
 		virtual bool parse_color(const std::string& name, rgb& color) = 0;
 		virtual bool parse_color(const std::string& name, rgba& color) = 0;
 		virtual bool parse_quat (const std::string& name, quat& quat) = 0;
@@ -31,13 +33,16 @@ namespace stream_vis {
 		virtual bool parse_marks(plot_info& pi, cgv::plot::plot_base_config& cfg, int dim) = 0;
 		virtual bool parse_subplots(plot_info& pi, int dim) = 0;
 
+		void parse_mapped_rgba(const std::string& name_color, const std::string& name_opacity, cgv::plot::mapped_rgba& color);
+		void parse_mapped_size(const std::string& name, cgv::plot::mapped_size& size);
+
 		bool parse_vec2(const std::string& name, cgv::render::render_types::vec2& v) { return parse_vecn(name, &v[0], 2); }
 		bool parse_vec3(const std::string& name, cgv::render::render_types::vec3& v) { return parse_vecn(name, &v[0], 3); }
 		bool parse_vec4(const std::string& name, cgv::render::render_types::vec4& v) { return parse_vecn(name, &v[0], 4); }
 		bool parse_ivec2(const std::string& name, cgv::render::render_types::ivec2& v) { return parse_ivecn(name, &v[0], 2); }
 		bool parse_ivec3(const std::string& name, cgv::render::render_types::ivec3& v) { return parse_ivecn(name, &v[0], 3); }
 		bool parse_ivec4(const std::string& name, cgv::render::render_types::ivec4& v) { return parse_ivecn(name, &v[0], 4); }
-		bool construct_composed_time_series(const std::string& name, const std::string& type, const std::vector<std::string>& ts_names);
+		bool construct_time_series(const std::string& name, const std::string& type, const std::vector<std::string>& ts_names);
 		bool construct_attribute_definitions(std::vector<std::string>& defs, std::vector<attribute_definition>& ads);
 		bool construct_mark(const std::string& mark, cgv::plot::plot_base_config& cfg, int dim);
 		bool construct_subplot(plot_info& pi, int dim, std::vector<attribute_definition>& ads);

@@ -59,7 +59,7 @@ protected:
 	std::vector<bool> label_visibilities;
 
 	/// for rectangle renderer a plane_render_style is needed
-	cgv::render::plane_render_style prs;
+	cgv::render::rectangle_render_style prs;
 public:
 	/// different coordinate systems used to place labels
 	enum CoordinateSystem

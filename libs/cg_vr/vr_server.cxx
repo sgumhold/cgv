@@ -50,6 +50,7 @@ namespace cgv {
 			}
 			ce.set_type(CET_GRAB_FOCUS);
 			focus = handler;
+			focus_type = _focus_type;
 			focus->handle(ce);
 			return true;
 		}
@@ -152,7 +153,7 @@ namespace cgv {
 									button_keys[j].key,
 									(CS_new.button_flags & button_keys[j].flag) != 0 ? KA_PRESS : KA_RELEASE,
 									0, 0, time);
-								on_event(vrke);
+								dispatch(vrke);
 							}
 						}
 					}
@@ -175,7 +176,7 @@ namespace cgv {
 						// construct and emit event
 						vr_key_event vrke(kit_handle, kit_index, ci, new_state, key,
 							(CS_new.button_flags & vr::VRF_INPUT0) != 0 ? KA_PRESS : KA_RELEASE, 0,	0, time);
-						on_event(vrke);
+						dispatch(vrke);
 					}
 				}
 			}
@@ -203,7 +204,7 @@ namespace cgv {
 								if (dx != 0) {
 									/// construct a throttle event from value and value change
 									vr_throttle_event vrte(kit_handle, ci, new_state, x, dx, kit_index, ii, time);
-									on_event(vrte);
+									dispatch(vrte);
 								}
 							}
 							++ai;
@@ -230,7 +231,7 @@ namespace cgv {
 									float y = new_state.controller[ci].axes[ai + 1];
 									vr_stick_event vrse(kit_handle, ci, new_state,
 										action, x, y, 0, 0, kit_index, 0, time);
-									on_event(vrse);
+									dispatch(vrse);
 								}
 								// otherwise check for move or drag event
 								else {
@@ -246,7 +247,7 @@ namespace cgv {
 											action = SA_DRAG;
 										vr_stick_event vrse(kit_handle, ci, new_state,
 											action, p(0), p(1), diff(0), diff(1), kit_index, ii, time);
-										on_event(vrse);
+										dispatch(vrse);
 									}
 								}
 							}
@@ -260,13 +261,13 @@ namespace cgv {
 			if ((flags & VRE_POSE) != 0) {
 				if (array_unequal(new_state.hmd.pose, last_state.hmd.pose, 12)) {
 					vr_pose_event vrpe(kit_handle, -1, new_state, new_state.hmd.pose, last_state.hmd.pose, kit_index, time);
-					on_event(vrpe);
+					dispatch(vrpe);
 				}
 				for (int c = 0; c < vr::max_nr_controllers; ++c) 
 					if (new_state.controller[c].status == vr::VRS_TRACKED) {
 						if (array_unequal(new_state.controller[c].pose, last_state.controller[c].pose, 12)) {
 							vr_pose_event vrpe(kit_handle, c, new_state, new_state.controller[c].pose, last_state.controller[c].pose, kit_index, time);
-							on_event(vrpe);
+							dispatch(vrpe);
 						}
 					}
 			}

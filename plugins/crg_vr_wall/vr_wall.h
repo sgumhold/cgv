@@ -17,6 +17,7 @@
 #include <cgv_gl/box_renderer.h>
 #include <cgv_gl/arrow_renderer.h>
 #include <cgv_gl/sphere_renderer.h>
+#include <cgv/render/callback_drawable.h>
 
 #include "lib_begin.h"
 
@@ -76,11 +77,14 @@ namespace vr {
 		int fullscreen, right_fullscreen;
 		/// pointers to wall display windows for left and optionally (stereo_window_mode==SWM_TWO) right eyes
 		cgv::gui::window_ptr window, right_window;
+		cgv::data::ref_ptr<cgv::render::callback_drawable> cbd_ptr, right_cbd_ptr;
 		/// 
-		cgv::gui::window_ptr create_wall_window(const std::string& name, int x, int y, int width, int height, int fullscr, bool is_right = false);
+		cgv::gui::window_ptr create_wall_window(cgv::data::ref_ptr<cgv::render::callback_drawable>& cbd_ptr, 
+			const std::string& name, int x, int y, int width, int height, int fullscr, bool is_right = false);
 		/// helper function to create the window for the wall display
 		void create_wall_windows();
 		/// 
+		void post_redraw_all();
 		///
 		void draw_in_main_context(cgv::render::context& ctx);
 		//@}
@@ -121,24 +125,18 @@ namespace vr {
 		int calib_index;
 		/// position of peek point in controller coordinate system that is used to define 3d calibration points
 		vec3 peek_point;
-		/// 
-		vec3 aim_direction;
+		/// direction in controller coordinates along which to displace eye positions
+		vec3 ctrl_down_dir;
+		/// direction in controller coordinates pointing downwards to check for eye calibration mode
+		vec3 ctrl_forward_dir;
+		/// interpupilar distance
+		float IPD;
 		///
-		float aim_circle_radius;
-		///
-		float aim_width;
-		///
-		float aim_angle;
-		///
-		vec3 aim_center;
-		///
-		float aim_beta;
+		int ctrl_upside_down_index;
 		///
 		vec3 eye_position_tracker[2];
 		///
 		bool eye_calibrated[2];
-		float eye_downset;
-		float eye_backset;
 
 		///
 		cgv::render::shader_program stereo_prog;
@@ -146,8 +144,13 @@ namespace vr {
 		StereoShaderMode stereo_shader_mode;
 		/// current pose matrices of controllers need to render peek point
 		mat34 controller_pose[2], hmd_pose;
+		/// 
+		std::string screen_calibration_file_name;
 		///
-		int box_index;
+		bool read_screen_calibration(const std::string& file_name);
+		///
+		bool write_screen_calibration(const std::string& file_name) const;
+
 		// handle eyes calibration specific keys
 		bool handle_key_event_eyes_calib(cgv::gui::vr_key_event& vrke);
 
@@ -159,48 +162,6 @@ namespace vr {
 		cgv::render::point_renderer pr;
 		/// point render style
 		cgv::render::point_render_style prs;
-		/// method to generate random dots
-		void generate_points(int n);
-		/// use low res image to create point sampling
-		bool generate_points_from_image(const std::string& file_name, float angle);
-		///
-		void generate_eye_calib_points();
-		//@}
-
-		/**@name rendering in main context*/
-		//@{
-		/// sphere render style
-		cgv::render::sphere_render_style srs;
-		/// box render style
-		cgv::render::box_render_style brs;
-		/// arrow render style
-		cgv::render::arrow_render_style ars;
-
-		/// geometry of spheres
-		std::vector<vec3> sphere_positions;
-		std::vector<float> sphere_radii;
-		std::vector<rgb> sphere_colors;
-
-		/// geometry of oriented boxes
-		std::vector<box3> boxes;
-		std::vector<rgb> box_colors;
-		std::vector<vec3> box_translations;
-		std::vector<quat> box_rotations;
-
-		/// geometry of arrows
-		std::vector<vec3> arrow_positions;
-		std::vector<vec3> arrow_directions;
-		std::vector<rgb> arrow_colors;
-
-		/// sample screen
-		vec3 test_screen_center;
-		vec3 test_screen_x;
-		vec3 test_screen_y;
-
-		/// add screen center sphere, x & y arrows and box for extruded screen rectangle
-		void add_screen(const vec3& center, const vec3& x, const vec3& y, const rgb& clr, float lum);
-		/// recompute the geometry based on current available  screens
-		void rebuild_screens();
 		//@}
 	public:
 		/// construct vr wall kit by attaching to another vr kit

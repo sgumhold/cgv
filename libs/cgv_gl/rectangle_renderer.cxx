@@ -25,6 +25,7 @@ namespace cgv {
 			border_width_in_pixel = 0.0f;
 			default_depth_offset = 0.0f;
 			texture_mode = 0;
+			blend_rectangles = false;
 			border_color = rgba(0.0f,0.0f,0.0f,1.0f);
 		}
 
@@ -68,7 +69,17 @@ namespace cgv {
 			has_texcoords = false;
 			has_depth_offsets = false;
 		}
-		
+		void rectangle_renderer::set_textured_rectangle(const context& ctx, const textured_rectangle& tcr)
+		{
+			has_positions = true;
+			has_extents = true;
+			has_texcoords = true;
+			set_position_is_center(false);
+			ref_prog().set_attribute(ctx, ref_prog().get_position_index(), tcr.rectangle.get_min_pnt());
+			ref_prog().set_attribute(ctx, ref_prog().get_attribute_location(ctx, "extent"), tcr.rectangle.get_max_pnt());
+			ref_prog().set_attribute(ctx, ref_prog().get_texcoord_index(), tcr.texcoords);
+		}
+
 		bool rectangle_renderer::init(context& ctx)
 		{
 			bool res = renderer::init(ctx);
@@ -104,6 +115,15 @@ namespace cgv {
 			const rectangle_render_style& rrs = get_style<rectangle_render_style>();
 			if (!has_depth_offsets)
 				ref_prog().set_attribute(ctx, "depth_offset", rrs.default_depth_offset);
+			
+			// configure opengl
+			if (rrs.blend_rectangles) {
+				rrs.is_blend = glIsEnabled(GL_BLEND);
+				glGetIntegerv(GL_BLEND_DST, reinterpret_cast<GLint*>(&rrs.blend_dst));
+				glGetIntegerv(GL_BLEND_SRC, reinterpret_cast<GLint*>(&rrs.blend_src));
+				glEnable(GL_BLEND);
+				glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+			}
 			ref_prog().set_uniform(ctx, "has_rotations", has_rotations);
 			ref_prog().set_uniform(ctx, "has_translations", has_translations);
 			ref_prog().set_uniform(ctx, "position_is_center", position_is_center);
@@ -128,6 +148,12 @@ namespace cgv {
 				has_depth_offsets = false;
 				position_is_center = true;
 			}
+			const rectangle_render_style& rrs = get_style<rectangle_render_style>();
+			if (rrs.blend_rectangles) {
+				if (!rrs.is_blend)
+					glDisable(GL_BLEND);
+				glBlendFunc(rrs.blend_src, rrs.blend_dst);
+			}
 
 			return surface_renderer::disable(ctx);
 		}
@@ -141,6 +167,7 @@ namespace cgv {
 			return
 				rh.reflect_base(*static_cast<surface_render_style*>(this)) &&
 				rh.reflect_member("pixel_blend", pixel_blend) &&
+				rh.reflect_member("blend_rectangles", blend_rectangles) &&
 				rh.reflect_member("percentual_border_width", percentual_border_width) &&
 				rh.reflect_member("border_width_in_pixel", border_width_in_pixel) &&
 				rh.reflect_member("default_depth_offset", default_depth_offset) &&
@@ -174,6 +201,7 @@ namespace cgv {
 
 				p->add_member_control(b, "texture_mode", (cgv::type::DummyEnum&)prs_ptr->texture_mode, "dropdown", "enums='replace,replace alpha,multiply color,multiply border color,colmix col+bd col,colmix bd col+col,redmix col+bd col,redmix bd col+col'");
 				p->add_member_control(b, "pixel_blend", prs_ptr->pixel_blend, "value_slider", "min=0.0;max=2;ticks=true");
+				p->add_member_control(b, "blend", prs_ptr->blend_rectangles, "toggle");
 				p->add_member_control(b, "border_mode", (cgv::type::DummyEnum&)prs_ptr->border_mode, "dropdown", "enums='separate=0,width as ref,height as ref,min(width height)'");
 				p->add_member_control(b, "border_width_in_pixel", prs_ptr->border_width_in_pixel, "value_slider", "min=-10;max=10;ticks=true");
 				p->add_member_control(b, "percentual_border_width", prs_ptr->percentual_border_width, "value_slider", "min=-0.5;max=0.5;ticks=true");

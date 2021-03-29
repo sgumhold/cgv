@@ -97,10 +97,11 @@ enum SubPlotInfluence
 	SPI_POINT = 1,
 	SPI_POINT_HALO = 2,
 	SPI_LINE = 4,
-	SPI_STICK = 8,
-	SPI_BAR = 16,
-	SPI_BAR_OUTLINE = 32,
-	SPI_ALL = 63
+	SPI_LINE_HALO = 8,
+	SPI_STICK = 16,
+	SPI_BAR = 32,
+	SPI_BAR_OUTLINE = 64,
+	SPI_ALL = 127
 };
 
 /** plot independent configuration parameters of one sub plot in a 2d or 3d plot */
@@ -144,6 +145,10 @@ struct CGV_API plot_base_config : public cgv::render::render_types
 	mapped_size line_width;
 	/// line color
 	mapped_rgba line_color;
+	/// width of line halo in pixel
+	mapped_size line_halo_width;
+	/// color of line halo
+	mapped_rgba line_halo_color;
 
 	/// whether to show straight lines to the bottom of the plot, which are called sticks
 	bool show_sticks;
@@ -333,7 +338,7 @@ protected:
 	/// transform from attribute space to world space
 	vec3 transform_to_world(const vecn& pnt_attr) const;
 	//@}
-
+public:
 	/**@name legend*/
 	//@{
 	/// whether to show legend
@@ -383,7 +388,7 @@ protected:
 	/// min and max of mapped size
 	float size_min[MAX_NR_SIZE_MAPPINGS], size_max[MAX_NR_SIZE_MAPPINGS];
 	//@}
-
+protected:
 	/// store pointer to current font
 	cgv::media::font::font_ptr label_font;
 	/// store pointer to current font face

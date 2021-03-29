@@ -46,32 +46,22 @@ namespace stream_vis {
 	/// per plot information
 	struct plot_info : public cgv::render::render_types
 	{
-		/// flag used to check whether offline rendering of 2d plot has to be performed
-		bool outofdate;
 		/// plot dimension
 		int dim;
+		/// total number of axes including attribute axes
+		unsigned nr_axes;
 		/// plot name
 		std::string name;
 		/// fixed domain definition via view_min and view_max
 		box3 fixed_domain;
 		/// for each domain component the mode of adjustment
-		DomainAdjustment domain_adjustment[2][3];
+		DomainAdjustment domain_adjustment[2][8];
 		/// for each domain component the index of the time series used for adjustment
-		uint16_t domain_bound_ts_index[2][3];
-		/// flags telling which domain bounds have been set 
-		ivec2 offline_texture_resolution;
-		/// extent of 2d plot in texture
-		vec2 extent_on_texture;
+		uint16_t domain_bound_ts_index[2][8];
 		/// pointer to plot instance
 		cgv::plot::plot_base* plot_ptr;
 		/// subplot information
 		std::vector<subplot_info> subplot_infos;
-		// texture for offline rendering of 2d plots
-		cgv::render::texture tex;
-		// depth buffer for offline rendering of 2d plots
-		cgv::render::render_buffer depth;
-		// framebuffer obect for offline rendering of 2d plots
-		cgv::render::frame_buffer fbo;
 	};
 
 }
