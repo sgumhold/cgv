@@ -88,6 +88,7 @@ void main()
 		emit_corner(position_eye);
 		emit_corner(position_eye+ verts[i]);
 		emit_corner(position_eye+ verts[i+1]);
+		EndPrimitive();
 	}
 	
 }
