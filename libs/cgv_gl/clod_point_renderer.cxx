@@ -128,16 +128,10 @@ namespace cgv {
 				add_shader(ctx, reduce_prog, "view.glsl", cgv::render::ST_COMPUTE);
 				add_shader(ctx, reduce_prog, "point_clod_filter_points.glcs", cgv::render::ST_COMPUTE);
 				reduce_prog.link(ctx);
-#ifndef NDEBUG
-				std::cerr << reduce_prog.last_error;
-#endif // #ifdef NDEBUG
 			}
 			//create shader program
 			if (!draw_squares_prog.is_created()) {
 				draw_squares_prog.build_program(ctx, "point_clod.glpr", true);
-#ifndef NDEBUG
-				std::cerr << draw_prog.last_error;
-#endif // #ifdef NDEBUG
 			}
 
 			//create shader program
