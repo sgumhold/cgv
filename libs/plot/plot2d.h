@@ -22,8 +22,8 @@ struct CGV_API plot2d_config : public plot_base_config
 class CGV_API plot2d : public plot_base
 {
 protected:
-	cgv::render::shader_program prog;
-	cgv::render::shader_program point_prog, stick_prog;
+	cgv::render::shader_program line_prog;
+	cgv::render::shader_program point_prog;
 	cgv::render::shader_program rectangle_prog;
 	///
 	bool draw_point_plot(cgv::render::context& ctx, int si, int layer_idx);
@@ -42,16 +42,17 @@ protected:
 	std::vector<std::vector<vec2> > samples;
 	/// allow to split series into connected strips that are represented by the number of contained samples
 	std::vector <std::vector<unsigned> > strips;
-	/// whether to manage separate y-axis for each sub plot
-	bool multi_y_axis_mode;
-	/// offset in z-direction between sub plots
-	float dz;
-	///
-	float layer_depth;
 	/// render style of rectangles
 	cgv::render::rectangle_render_style rrs;
 	cgv::render::attribute_array_manager aam_domain, aam_tick_labels;
 public:
+	/// whether to manage separate y-axis for each sub plot
+	bool multi_y_axis_mode;
+	/// offset in z-direction between sub plots
+	float dz;
+	/// depth offset of a single layer
+	float layer_depth;
+
 	/// construct 2D plot with given number of additional attributes and default parameters
 	plot2d(unsigned nr_attributes = 0);
 

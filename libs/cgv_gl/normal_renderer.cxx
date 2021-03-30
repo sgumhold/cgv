@@ -19,23 +19,8 @@ namespace cgv {
 
 		normal_renderer::normal_renderer()
 		{
-			has_normals = false;
 			normal_scale = 1.0f;
 		}
-		/// call this before setting attribute arrays to manage attribute array in given manager
-		void normal_renderer::enable_attribute_array_manager(const context& ctx, attribute_array_manager& aam)
-		{
-			line_renderer::enable_attribute_array_manager(ctx, aam);
-			if (has_attribute(ctx, "normal"))
-				has_normals = true;
-		}
-		/// call this after last render/draw call to ensure that no other users of renderer change attribute arrays of given manager
-		void normal_renderer::disable_attribute_array_manager(const context& ctx, attribute_array_manager& aam)
-		{
-			line_renderer::disable_attribute_array_manager(ctx, aam);
-			has_normals = false;
-		}
-
 		/// the normal scale is multiplied to the normal length of the normal render style
 		void normal_renderer::set_normal_scale(float _normal_scale)
 		{
