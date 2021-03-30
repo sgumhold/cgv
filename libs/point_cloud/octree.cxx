@@ -160,7 +160,7 @@ namespace {
 						for (int i = 0; i < child->num_points; i++) {
 
 							int64_t pointOffset = i;
-							vec3 pos = child->points->at(pointOffset).position;
+							vec3 pos = child->points->at(pointOffset).position();
 
 							CellIndex cellIndex = toCellIndex(pos);
 
@@ -278,18 +278,18 @@ octree_lod_generator::Chunks octree_lod_generator::lod_chunking(const LODPoint* 
 	// stores chunks created by the chunking phase
 	Chunks chunks;
 
-	max_points_per_chunk = std::min<size_t>(source_data_size / 20, 10'000'000ll);
-			
-	if (source_data_size < 4'000'000) {
+	max_points_per_chunk = std::min<size_t>(num_points / 20, 10'000'000ll);
+	
+	if (num_points < 4'000'000) {
 		grid_size = 32;
 	}
-	else if (source_data_size < 20'000'000) {
+	else if (num_points < 20'000'000) {
 		grid_size = 64;
 	}
-	else if (source_data_size < 100'000'000) {
+	else if (num_points < 100'000'000) {
 		grid_size = 128;
 	}
-	else if (source_data_size < 500'000'000) {
+	else if (num_points < 500'000'000) {
 		grid_size = 256;
 	}
 	else {
@@ -297,7 +297,7 @@ octree_lod_generator::Chunks octree_lod_generator::lod_chunking(const LODPoint* 
 	}
 
 	// COUNT
-	auto grid = lod_counting(source_data, source_data_size, grid_size, min, max, cube_size);
+	auto grid = lod_counting(vertices, num_points, grid_size, min, max, cube_size);
 #ifndef NDEBUG
 	{ //Test counting
 		int points = 0;
@@ -349,7 +349,7 @@ std::vector<std::atomic_int32_t> octree_lod_generator::lod_counting(const LODPoi
 
 	auto processor = [this, &grid, &cube_size, grid_size, vertices, &min, &max](int64_t first_point, int64_t num_points) {
 		for (int i = 0; i < num_points; i++) {
-			int64_t index = grid_index(vertices[first_point + i].position, min, cube_size, grid_size);
+			int64_t index = grid_index(vertices[first_point + i].position(), min, cube_size, grid_size);
 			grid[index].fetch_add(1, std::memory_order::memory_order_relaxed);
 		}
 	};
@@ -612,7 +612,7 @@ void octree_lod_generator::distribute_points(vec3 min, vec3 max, float cube_size
 		std::vector<std::vector<LODPoint>> buckets(num_buckets);
 
 		for (const LODPoint* i = start; i < end; ++i) {
-			vec3 p = i->position;
+			vec3 p = i->position();
 			int idx = grid_index(p, min, cube_size, grid_size);
 			buckets[grid[idx]].push_back(*i);
 		}
@@ -689,13 +689,13 @@ void octree_lod_generator::lod_indexing(Chunks& chunks, std::vector<LODPoint>& v
 		vec3 min(Infinity), max(-Infinity);
 
 		for (auto& v : chunk->pc_data->vertices) {
-			min.x() = std::min(min.x(), v.position.x());
-			min.y() = std::min(min.y(), v.position.y());
-			min.z() = std::min(min.z(), v.position.z());
+			min.x() = std::min(min.x(), v.position().x());
+			min.y() = std::min(min.y(), v.position().y());
+			min.z() = std::min(min.z(), v.position().z());
 
-			max.x() = std::max(max.x(), v.position.x());
-			max.y() = std::max(max.y(), v.position.y());
-			max.z() = std::max(max.z(), v.position.z());
+			max.x() = std::max(max.x(), v.position().x());
+			max.y() = std::max(max.y(), v.position().y());
+			max.z() = std::max(max.z(), v.position().z());
 		}
 
 		auto chunk_root = std::make_shared<IndexNode>(chunk->id, min, max);
@@ -927,7 +927,7 @@ void octree_lod_generator::build_hierarchy(Indexer* indexer, IndexNode* node, st
 
 	auto gridIndexOf = [&points, min, size, counterGridSize](int64_t pointIndex) {
 		//float* xyz = reinterpret_cast<float*>(points.get() + pointIndex);
-		vec3 xyz = points->at(pointIndex).position;
+		vec3 xyz = points->at(pointIndex).position();
 		double x = xyz[0];
 		double y = xyz[1];
 		double z = xyz[2];
@@ -1054,7 +1054,7 @@ void octree_lod_generator::build_hierarchy(Indexer* indexer, IndexNode* node, st
 			for (int64_t i = 0; i < numPoints; i++) {
 
 				int64_t sourceOffset = i;
-				vec3 pos = buffer->data()[sourceOffset].position;
+				vec3 pos = buffer->data()[sourceOffset].position();
 						
 				int X=std::floor(pos.x()), Y=std::floor(pos.y()), Z=std::floor(pos.z());
 				std::stringstream ss;
@@ -1095,7 +1095,7 @@ void octree_lod_generator::build_hierarchy(Indexer* indexer, IndexNode* node, st
 
 					int64_t sourceOffset = i;
 
-					vec3 pos = buffer->data()[sourceOffset].position;
+					vec3 pos = buffer->data()[sourceOffset].position();
 
 					int32_t X = std::floor(pos.x()), Y = std::floor(pos.y()), Z = std::floor(pos.z());
 
@@ -1155,8 +1155,9 @@ std::vector<LODPoint> octree_lod_generator::generate_lods(const std::vector<LODP
 {
 	std::vector<LODPoint> out;
 	out.reserve(vertices.size());
-	this->source_data = (LODPoint*)vertices.data();
-	this->source_data_size = vertices.size();
+
+	LODPoint* source_data = (LODPoint*)vertices.data();
+	size_t source_data_size = vertices.size();
 
 	//find min, max
 	static constexpr float Infinity = std::numeric_limits<float>::infinity();
@@ -1164,7 +1165,7 @@ std::vector<LODPoint> octree_lod_generator::generate_lods(const std::vector<LODP
 	vec3 max = { -Infinity , -Infinity , -Infinity };
 
 	for (int i = 0; i < source_data_size; ++i) {
-		vec3& p = source_data[i].position;
+		vec3& p = source_data[i].position();
 		min.x() = std::min(min.x(), p.x());
 		min.y() = std::min(min.y(), p.y());
 		min.z() = std::min(min.z(), p.z());
@@ -1179,7 +1180,7 @@ std::vector<LODPoint> octree_lod_generator::generate_lods(const std::vector<LODP
 
 	max = min + vec3(cube_size, cube_size, cube_size);
 
-	Chunks nodes = lod_chunking(vertices.data(), vertices.size(), min, max, cube_size);
+	Chunks nodes = lod_chunking(source_data, source_data_size, min, max, cube_size);
 
 	int point_count = 0;
 	int point_count_node_info = 0;

@@ -107,17 +107,17 @@ namespace cgv {
 			
 			bool render(context& ctx, size_t start, size_t count);
 
-			template<typename T>
-			void set_points(cgv::render::context& ctx,const std::vector<T>& pnts) {
-				assert(sizeof(T) == sizeof(Point));
+			void set_points(cgv::render::context& ctx,const void* pnts, const size_t num_points) {
+				//assert(sizeof(T) == sizeof(Point));
 				assert(input_buffer != 0);
 				glBindBuffer(GL_SHADER_STORAGE_BUFFER, input_buffer);
-				glBufferData(GL_SHADER_STORAGE_BUFFER, pnts.size() * sizeof(Point), pnts.data(), GL_STATIC_READ);
-				input_buffer_size = pnts.size() * sizeof(Point);
-				input_buffer_num_points = pnts.size();
+				glBufferData(GL_SHADER_STORAGE_BUFFER, num_points * sizeof(Point), pnts, GL_STATIC_READ);
+				input_buffer_size = num_points * sizeof(Point);
+				input_buffer_num_points = num_points;
 				buffers_outofdate = true;
 			}
 
+			/// for using the clod point renderer lods are required, to generate them use the classes inside libs/pointcloud/octree.h
 			/// @param positions : pointer to first points position
 			/// @param color : pointer to first points color
 			/// @param lods : pointer to firsts points level of detail

@@ -34,7 +34,6 @@ namespace cgv {
 
 		void clod_point_renderer::draw_and_compute_impl(context& ctx, PrimitiveType type, size_t start, size_t count)
 		{
-			//TODO add option to spread calculation over multiple frames
 			int point_filter_delay = get_style<clod_point_render_style>().point_filter_delay;
 			
 			if (/*point_filter_delay > 0*/ false ) {
@@ -273,7 +272,7 @@ namespace cgv {
 				}
 
 			}
-			set_points(ctx, input_buffer_data);
+			set_points(ctx, input_buffer_data.data(),input_buffer_data.size());
 		}
 
 		void clod_point_renderer::set_render_style(const render_style& rs)
