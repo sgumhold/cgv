@@ -23,6 +23,13 @@ namespace cgv {
 			float border_width_in_pixel;
 			float default_depth_offset;
 			int texture_mode;
+			// influence on opengl state
+			bool blend_rectangles;
+		protected:
+			friend class rectangle_renderer;
+			mutable GLboolean is_blend;
+			mutable GLint blend_src, blend_dst;
+		public:
 			rectangle_render_style();
 		};
 
@@ -65,6 +72,15 @@ namespace cgv {
 			/// extent array specifies plane side lengths from origin to edge
 			template <typename T>
 			void set_extent_array(const context& ctx, const cgv::math::fvec<T, 2U>* extents, size_t nr_elements, unsigned stride_in_bytes = 0) { has_extents = true;  set_attribute_array(ctx, ref_prog().get_attribute_location(ctx, "extent"), extents, nr_elements, stride_in_bytes); }
+			/// specify a single rectangle without array. This sets position_is_center to false as well as position and extent array
+			template <typename T>
+			void set_rectangle(const context& ctx, const cgv::media::axis_aligned_box<T, 2>& box) {
+				has_positions = true;
+				has_extents = true;
+				set_position_is_center(false);
+				ref_prog().set_attribute(ctx, ref_prog().get_position_index(), box.get_min_pnt());
+				ref_prog().set_attribute(ctx, ref_prog().get_attribute_location(ctx, "extent"), box.get_max_pnt());
+			}
 			/// specify rectangle array directly. This sets position_is_center to false as well as position and extent array
 			template <typename T>
 			void set_rectangle_array(const context& ctx, const std::vector<cgv::media::axis_aligned_box<T, 2> >& boxes) {
@@ -87,6 +103,8 @@ namespace cgv {
 				has_extents = true;
 				set_position_is_center(false);
 			}
+			/// specify rectangle without array. This sets position_is_center to false as well as position and extent array
+			void set_textured_rectangle(const context& ctx, const textured_rectangle& tcr);
 			/// specify rectangle array directly. This sets position_is_center to false as well as position and extent array
 			void set_textured_rectangle_array(const context& ctx, const std::vector<textured_rectangle>& tc_rects) {
 				set_composed_attribute_array(ctx, ref_prog().get_attribute_location(ctx, "position"),
@@ -113,6 +131,9 @@ namespace cgv {
 				has_texcoords = true;
 				set_position_is_center(false);
 			}
+			/// specify a single depth_offset for all lines
+			template <typename T>
+			void set_depth_offset(const context& ctx, const T& depth_offset) { has_depth_offsets = true;  ref_prog().set_attribute(ctx, ref_prog().get_attribute_location(ctx, "depth_offset"), depth_offset); }
 			/// set per rectangle depth offsets
 			template <typename T = float>
 			void set_depth_offset_array(const context& ctx, const std::vector<T>& depth_offsets) { has_depth_offsets = true; set_attribute_array(ctx, ref_prog().get_attribute_location(ctx, "depth_offset"), depth_offsets); }

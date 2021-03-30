@@ -37,7 +37,7 @@ namespace vr {
 	}
 	/// construct
 	vr_kit::vr_kit(vr_driver* _driver, void* _handle, const std::string& _name, unsigned _width, unsigned _height, unsigned _nr_multi_samples) :
-		gl_vr_display(_width, _height, _nr_multi_samples), driver(_driver), handle(_handle), name(_name), camera(nullptr) {}
+		gl_vr_display(_width, _height, _nr_multi_samples), driver(_driver), handle(_handle), name(_name), camera(nullptr), skip_calibration(false) {}
 	/// declare virtual destructor
 	vr_kit::~vr_kit()
 	{
@@ -104,7 +104,7 @@ namespace vr {
 	{
 		bool res = query_state_impl(state, pose_query);
 		const vr_driver* dp = get_driver();
-		if (pose_query == 0 || !dp->is_calibration_transformation_enabled())
+		if (pose_query == 0 || skip_calibration || !dp->is_calibration_transformation_enabled())
 			return res;
 		if (state.hmd.status == VRS_TRACKED)
 			dp->calibrate_pose(state.hmd.pose);

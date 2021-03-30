@@ -19,6 +19,13 @@ namespace stream_vis {
 			value_type value;
 		};
 	}
+	enum AABBMode
+	{
+		AM_NONE,
+		AM_BRUTE_FORCE,
+		AM_BLOCKED_8,
+		AM_BLOCKED_16
+	};
 	/// interface for all time series used in the streaming visualization library
 	class CGV_API streaming_time_series : public cgv::render::render_types
 	{
@@ -30,10 +37,24 @@ namespace stream_vis {
 	public:
 		/// store name of streaming time series
 		std::string name;
+		/// default color
+		rgb default_color;
+		/// default opacity
+		float default_opacity;
+		/// default size
+		float default_size;
+		/// index of time series value defining minimum
+		uint16_t lower_bound_index;
+		/// index of time series value defining minimum
+		uint16_t upper_bound_index;
+		/// type of automatic bound computation
+		AABBMode aabb_mode;
 		/// construct empty streaming time series
 		streaming_time_series(cgv::type::info::TypeId _type_id = cgv::type::info::TI_UNDEF);
 		/// return list of unique indices to defining inputs/outputs
 		virtual std::vector<uint16_t> get_io_indices() const = 0;
+		/// return type id of value
+		virtual cgv::type::info::TypeId get_value_type_id() const;
 		/// return name of value type
 		virtual std::string get_value_type_name() const;
 		/// return reference to time series implementation for access to sample cache

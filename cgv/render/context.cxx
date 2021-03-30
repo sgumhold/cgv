@@ -143,6 +143,7 @@ context::context()
 	nr_identations = 0;
 	at_line_begin = true;
 	enable_vsynch = true;
+	current_color = rgba(1, 1, 1, 1);
 	sRGB_framebuffer = true;
 	gamma = 2.2f;
 
@@ -1496,6 +1497,27 @@ const cgv::media::illum::surface_material* context::get_current_material() const
 	return current_material_ptr;
 }
 
+/// return current color
+const context::rgba& context::get_color() const
+{
+	return current_color;
+}
+
+/// set the current color
+void context::set_color(const rgba& clr)
+{
+	current_color = clr;
+	if (shader_program_stack.empty())
+		return;
+	cgv::render::shader_program& prog = *static_cast<cgv::render::shader_program*>(shader_program_stack.top());
+	if (!prog.does_context_set_color())
+		return;
+	int clr_loc = prog.get_color_index();
+	if (clr_loc == -1)
+		return;
+	prog.set_attribute(*this, clr_loc, clr);
+}
+
 /// set the current material 
 void context::set_material(const cgv::media::illum::surface_material& material)
 {
@@ -1831,6 +1853,11 @@ texture_base::texture_base(TextureType _tt)
 	have_mipmaps = false;
 }
 
+void shader_program_base::allow_context_to_set_color(bool allow)
+{
+	context_sets_color = allow;
+}
+
 shader_program_base::shader_program_base()
 {
 	is_enabled = false;
@@ -1849,6 +1876,7 @@ shader_program_base::shader_program_base()
 	position_index = -1;
 	normal_index = -1;
 	color_index = -1;
+	context_sets_color = false;
 	texcoord_index = -1;
 }
 

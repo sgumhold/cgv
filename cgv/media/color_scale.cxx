@@ -1,6 +1,7 @@
 #include "color_scale.h"
 #include <map>
 #include <algorithm>
+#include <cgv/utils/scan.h>
 
 namespace cgv {
 	namespace media {
@@ -115,6 +116,55 @@ const std::vector<std::string>& query_color_scale_names(int polarity)
 		timestamp[polarity] = get_named_color_scale_timestamp();
 	}
 	return names[polarity];
+}
+
+std::string get_color_scale_name(ColorScale cs)
+{
+	static const char* color_scale_names[] = { "red","green","blue","gray","temperature","hue","hue_luminance" };
+	if (cs < CS_NAMED)
+		return color_scale_names[cs];
+	int idx = cs - CS_NAMED;
+	if (idx < ref_sampled_color_scale_map().size())
+		for (const auto& p : ref_sampled_color_scale_map()) {
+			if (idx == 0)
+				return p.first;
+			--idx;
+		}
+	return std::string();
+}
+
+bool find_color_scale(const std::string& name, ColorScale& cs)
+{
+	const auto& csm = ref_sampled_color_scale_map();
+	if (csm.find(name) != csm.end()) {
+		ColorScale _cs = CS_NAMED;
+		for (const auto& p : csm) {
+			if (p.first == name) {
+				cs = _cs;
+				return true;
+			}
+			++((int&)_cs);
+		}
+		return false;
+	}
+	std::string lname = cgv::utils::to_lower(name);
+	if (lname == "red")
+		cs = CS_RED;
+	else if (lname == "green")
+		cs = CS_GREEN;
+	else if (lname == "blue")
+		cs = CS_BLUE;
+	else if (lname == "gray")
+		cs = CS_GRAY;
+	else if (lname == "temperature")
+		cs = CS_TEMPERATURE;
+	else if (lname == "hue")
+		cs = CS_HUE;
+	else if (lname == "hue_luminance")
+		cs = CS_HUE_LUMINANCE;
+	else 
+		return false;
+	return true;
 }
 
 const std::string& get_color_scale_enum_definition(bool include_fixed, bool include_named, int polarity)
