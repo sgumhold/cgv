@@ -5,17 +5,39 @@
 #include <vector>
 #include <memory>
 #include <mutex>
+#include <tuple>
 
 #include "lib_begin.h"
 
 namespace cgv {
 	namespace pointcloud {
 
-struct LODPoint : public cgv::render::render_types {
-	vec3 position;
-	rgb8 color;
-	uint8_t level = 0;
-};
+	//a tuple with some extra methods, casting pointers should be safe
+	template <size_t POSITION,size_t COLOR, size_t LOD,typename... Attribs>
+	struct GenericLODPoint : public cgv::render::render_types {
+		std::tuple<Attribs...> data;
+
+		inline vec3& position() {
+			return std::get<POSITION>(data);
+		}
+		inline rgb8& color() {
+			return std::get<COLOR>(data);
+		}
+		inline uint8_t& level() {
+			return std::get<LOD>(data);
+		}
+		inline const vec3& position() const {
+			return std::get<POSITION>(data);
+		}
+		inline const rgb8& color() const {
+			return std::get<COLOR>(data);
+		}
+		inline const uint8_t& level() const {
+			return std::get<LOD>(data);
+		}
+	};
+
+	using LODPoint = GenericLODPoint<0, 1, 2, cgv::render::render_types::vec3,cgv::render::render_types::rgb8,uint8_t>;
 
 class CGV_API octree_lod_generator : public cgv::render::render_types {
 	public:
@@ -130,7 +152,7 @@ class CGV_API octree_lod_generator : public cgv::render::render_types {
 				assert(node.sampled);
 				std::lock_guard<std::mutex> lock(mtx_write);
 				for (auto& vert : *node.points) {
-					vert.level = node.level();
+					vert.level() = node.level();
 					output->push_back(vert);
 				}
 				if (unload)
@@ -150,14 +172,9 @@ class CGV_API octree_lod_generator : public cgv::render::render_types {
 		int grid_size;
 		int currentPass;
 
-		LODPoint* source_data;
-		size_t source_data_size;
-
 	protected:
 		std::string to_node_id(int level, int gridSize, int64_t x, int64_t y, int64_t z);
-			
-		//void lod_chunking(const std::vector<vec3>& positions, const vec3& min, const vec3& max);
-		//std::vector<octree_lod_generator::ChunkNode> lod_chunking(const LODPoint* vertices, const size_t num_points,const vec3& min, const vec3& max);
+		
 		Chunks lod_chunking(const LODPoint* vertices, const size_t num_points,const vec3& min, const vec3& max, const float& size);
 
 		std::vector<std::atomic_int32_t> lod_counting(const LODPoint* vertices, const int64_t num_points, int64_t grid_size, const vec3& min, const vec3& max, const float& size);
@@ -194,7 +211,7 @@ class CGV_API octree_lod_generator : public cgv::render::render_types {
 			int count = 0;
 			if (node->points != nullptr) {
 				for (auto& pnt : *node->points)
-					if (pnt.position == vec3(0))
+					if (pnt.position() == vec3(0))
 						++count;	
 			}
 			for (auto& child : node->children) {
