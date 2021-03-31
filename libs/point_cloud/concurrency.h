@@ -3,6 +3,12 @@
 #include <thread>
 #include <vector>
 
+namespace cgv {
+namespace pointcloud {
+namespace utility {
+
+
+
 	//** concurrency classes *//
 	class SenseReversingBarrier
 	{
@@ -209,3 +215,7 @@
 			}
 		} while (is_pool_member);
 	}
+
+} //cgv namespaces
+} //pointcloud namespace
+} //utility namespace
