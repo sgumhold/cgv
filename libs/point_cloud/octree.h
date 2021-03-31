@@ -268,15 +268,23 @@ class octree_lod_generator : public cgv::render::render_types {
 	public:
 		inline static box3 child_bounding_box_of(const vec3& min, const vec3& max, const int index);
 
-		//lod stored in alpha channel of point color
-		inline std::vector<point_t> generate_lods(const std::vector<point_t>& vertices);
+		/// generate points with lod information out of the given vertices
+		inline std::vector<point_t> generate_lods(const std::vector<point_t>& points);
+
+		/// generate points with lod information out of data in structure of arrays layout
+		/// overwrites data pointed to by attr...
+		template <typename... Attribs>
+		void generate_lods_soa(size_t num_points,vec3* positions,uint8_t* level,Attribs*... attr) {
+
+		}
 
 		octree_lod_generator(){
-			pool_ptr = std::make_unique<WorkerPool>((std::thread::hardware_concurrency() - 1));
+			//create a thread pool
+			pool_ptr = std::make_unique<cgv::pointcloud::utility::WorkerPool>((std::thread::hardware_concurrency() - 1));
 		}
 
 	private:
-		std::unique_ptr<WorkerPool> pool_ptr;
+		std::unique_ptr<cgv::pointcloud::utility::WorkerPool> pool_ptr;
 };
 
 // sampler
@@ -1404,13 +1412,13 @@ struct SamplerRandom : public Sampler<point_t> {
 		}
 	}
 	template <typename point_t>
-	std::vector<point_t> octree_lod_generator<point_t>::generate_lods(const std::vector<point_t>& vertices)
+	std::vector<point_t> octree_lod_generator<point_t>::generate_lods(const std::vector<point_t>& points)
 	{
 		std::vector<point_t> out;
-		out.reserve(vertices.size());
+		out.reserve(points.size());
 
-		point_t* source_data = (point_t*)vertices.data();
-		size_t source_data_size = vertices.size();
+		point_t* source_data = (point_t*)points.data();
+		size_t source_data_size = points.size();
 
 		//find min, max
 		static constexpr float Infinity = std::numeric_limits<float>::infinity();
