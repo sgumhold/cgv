@@ -81,14 +81,12 @@ namespace cgv {
 				glBindBufferBase(GL_SHADER_STORAGE_BUFFER, drawp_pos, draw_parameter_buffer);
 				glBindBufferBase(GL_SHADER_STORAGE_BUFFER, render_pos, render_buffer);
 				glBindBufferBase(GL_SHADER_STORAGE_BUFFER, input_pos, input_buffer);
-				glDispatchCompute((input_buffer_num_points / 128) + 1, 1, 1); //with NVIDIA GPUs this will spam notifications about buffer usage in debug mode
+				glDispatchCompute((input_buffer_num_points / 128) + 1, 1, 1); //with NVIDIA GPUs in debug mode this will spam notifications about buffer usage
 
 				// synchronize
 				glMemoryBarrier(GL_ALL_BARRIER_BITS);
 				reduce_prog.disable(ctx);
 			}
-
-			
 
 			// draw composed buffer
 			draw_prog->enable(ctx);
@@ -97,7 +95,7 @@ namespace cgv {
 			glDrawArraysIndirect(GL_POINTS, 0);
 			glBindBuffer(GL_DRAW_INDIRECT_BUFFER,0);
 			
-			//for debugging, map buffer into host address space
+			//map buffer into host address space for debugging
 			//DrawParameters* device_draw_parameters = static_cast<DrawParameters*>(glMapNamedBufferRange(draw_parameter_buffer, 0, sizeof(DrawParameters), GL_MAP_READ_BIT));
 			//glUnmapNamedBuffer(draw_parameter_buffer);
 			
@@ -188,8 +186,6 @@ namespace cgv {
 			draw_prog->set_uniform(ctx, "minMilimeters", prs.min_millimeters);
 			draw_prog->set_uniform(ctx, "screenSize", screenSize);
 			draw_prog->set_uniform(ctx, "pivot", pivot);
-			//draw_squares_prog.set_uniform(ctx, "draw_circles", prs.draw_circles);
-			
 
 			//view.glsl uniforms are set on draw_squares_prog.enable(ctx) and  reduce_prog.enable(ctx)
 			//draw_squares_prog.set_uniform(ctx, "modelview_matrix", modelview_matrix, true);
@@ -207,14 +203,8 @@ namespace cgv {
 			float y_view_angle = 45;
 			//general point renderer uniforms
 			draw_prog->set_uniform(ctx, "use_color_index", false);
-			//draw_squares_prog.set_uniform(ctx, "use_group_point_size", prs.use_group_point_size);
 			float pixel_extent_per_depth = (float)(2.0 * tan(0.5 * 0.0174532925199 * y_view_angle) / ctx.get_height());
 			draw_prog->set_uniform(ctx, "pixel_extent_per_depth", pixel_extent_per_depth);
-			//draw_squares_prog.set_uniform(ctx, "blend_width_in_pixel", prs.blend_width_in_pixel);
-			//draw_squares_prog.set_uniform(ctx, "percentual_halo_width", 0.01f * prs.percentual_halo_width);
-			//draw_squares_prog.set_uniform(ctx, "halo_width_in_pixel", prs.halo_width_in_pixel);
-			//draw_squares_prog.set_uniform(ctx, "halo_color", prs.halo_color);
-			//draw_squares_prog.set_uniform(ctx, "halo_color_strength", prs.halo_color_strength);
 			return true;
 		}
 
