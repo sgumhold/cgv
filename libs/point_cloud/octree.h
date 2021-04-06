@@ -139,6 +139,7 @@ namespace pointcloud {
 		vec3 min, max;
 	};
 
+	// sampler for bottom up sampling
 	template <typename point_t>
 	struct Sampler {
 
@@ -147,11 +148,11 @@ namespace pointcloud {
 		virtual void sample(std::shared_ptr<IndexNode<point_t>> node, double baseSpacing, std::function<void(IndexNode<point_t>*)> callbackNodeCompleted) = 0;
 	};
 
+/// generates octree based lods for point clouds, 
+/// @param type point_t should provide two position() and level() methods like GenericLODPoint, these are used to read the point position and write the LOD
 template <typename point_t>
 class octree_lod_generator : public cgv::render::render_types {
 	public:
-		//using point_t = LODPoint;
-
 		struct Indexer {
 			//pointer to result vector
 			std::vector<point_t>* output;
@@ -240,33 +241,6 @@ class octree_lod_generator : public cgv::render::render_types {
 		inline int64_t grid_index(const vec3& position, const vec3& min, const float& cube_size, const int& grid_size) const;
 		inline cgv::render::render_types::ivec3 grid_index_vec(const vec3& position, const vec3& min, const float& cube_size, const int& grid_size) const;
 
-		//only needed for debug purposes
-		int counthierarchy(IndexNode<point_t>* node) {
-			if (node == nullptr)
-				return 0;
-			int count = (node->points == nullptr) ? 0 : node->points->size();
-			for (auto& child : node->children) {
-				count += counthierarchy(child.get());
-			}
-			return count;
-		};
-
-		//only needed for debug purposes
-		int count_zeros_hierarchy(IndexNode<point_t>* node) {
-			if (node == nullptr)
-				return 0;
-			int count = 0;
-			if (node->points != nullptr) {
-				for (auto& pnt : *node->points)
-					if (pnt.position() == vec3(0))
-						++count;	
-			}
-			for (auto& child : node->children) {
-				count += count_zeros_hierarchy(child.get());
-			}
-			return count;
-		};
-
 	public:
 		inline static box3 child_bounding_box_of(const vec3& min, const vec3& max, const int index);
 
@@ -325,8 +299,6 @@ struct SamplerRandom : public Sampler<point_t> {
 			int64_t gridSize = cgrid.grid_size;
 			std::vector<int64_t>& grid = cgrid.grid;
 			int64_t& iteration = cgrid.iteration;
-			//thread_local std::vector<int64_t> grid(gridSize * gridSize * gridSize, -1);
-			//thread_local int64_t iteration = 0;
 			iteration++;
 
 			auto max = node->max;
@@ -974,9 +946,6 @@ struct SamplerRandom : public Sampler<point_t> {
 			std::shared_ptr<std::vector<point_t>> points(chunk->pc_data, &(chunk->pc_data->vertices));
 
 			build_hierarchy(&indexer, chunk_root.get(), points, points->size());
-
-			//int zeros = count_zeros_hierarchy(chunk_root.get());
-			//assert(zeros == 0);
 
 			auto onNodeCompleted = [&indexer, &chunk_root](IndexNode<point_t>* node) {
 				//write nodes and unload all except the chunk roots
