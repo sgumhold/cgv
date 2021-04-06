@@ -13,17 +13,17 @@
 #include <sstream>
 
 #include "concurrency.h"
+#include "morton.h"
 #include "lib_begin.h"
 
 namespace cgv {
 namespace pointcloud {
-
 		namespace octree {
 
-	/// a tuple with some extra methods, casting pointers should be safe, 
+	/// a tuple with some extra methods 
 	/// the template parameters POSITION,COLOR and LOD give the location of the respective attributes in the tuple
 	/// Attribs are the types of the points attributes
-	/// there has to be at least one vec3, rgb8 and uint8_t in Attribs refered by POSITION,COLOR and LOD
+	/// there has to be at least one vec3, rgb8 and uint8_t in Attribs refered to by POSITION,COLOR and LOD
 	template <size_t POSITION, size_t LOD,typename... Attribs>
 	struct GenericLODPoint : public cgv::render::render_types {
 		std::tuple<Attribs...> data;
@@ -53,28 +53,6 @@ namespace pointcloud {
 	};
 
 	using LODPoint = GenericLODPoint<0, 2, cgv::render::render_types::vec3,cgv::render::render_types::rgb8,uint8_t>;
-
-	template <typename TASK>
-	struct TaskPool {
-		std::vector<TASK> pool;
-		std::atomic_int next_task = 0;
-
-		std::function<void(TASK*)> func;
-
-		void operator()() {
-			while (true) {
-				TASK* task;
-				//get task
-				{
-					int task_id = next_task.fetch_add(1);
-					if (task_id >= pool.size())
-						return;
-					task = &pool[task_id];
-				}
-				func(task);
-			}
-		}
-	};
 
 	//lookup table used to converting cell indices to linear indices
 	struct NodeLUT {
@@ -169,7 +147,7 @@ namespace pointcloud {
 		virtual void sample(std::shared_ptr<IndexNode<point_t>> node, double baseSpacing, std::function<void(IndexNode<point_t>*)> callbackNodeCompleted) = 0;
 	};
 
-template <typename point_t=LODPoint>
+template <typename point_t>
 class octree_lod_generator : public cgv::render::render_types {
 	public:
 		//using point_t = LODPoint;
@@ -217,19 +195,43 @@ class octree_lod_generator : public cgv::render::render_types {
 
 		static constexpr int max_points_per_index_node = 10'000;
 		int max_points_per_chunk = -1;
-		int grid_size = -1;
 
 	protected:
 		inline std::string to_node_id(int level, int gridSize, int64_t x, int64_t y, int64_t z);
+
+		inline int select_grid_size(const int64_t num_points) {
+			int grid_size;
+			if (num_points < 4'000'000) {
+				grid_size = 32;
+			}
+			else if (num_points < 20'000'000) {
+				grid_size = 64;
+			}
+			else if (num_points < 100'000'000) {
+				grid_size = 128;
+			}
+			else if (num_points < 500'000'000) {
+				grid_size = 256;
+			}
+			else {
+				grid_size = 512;
+			}
+			return grid_size;
+		}
 
 		inline Chunks<point_t> lod_chunking(const point_t* vertices, const size_t num_points,const vec3& min, const vec3& max, const float& size);
 
 		inline std::vector<std::atomic_int32_t> lod_counting(const point_t* vertices, const int64_t num_points, int64_t grid_size, const vec3& min, const vec3& max, const float& size);
 			
+		inline std::vector<std::atomic_int32_t> lod_counting(const vec3* positions, const int64_t num_points, int64_t grid_size, const vec3& min, const vec3& max, const float& cube_size);
+
+		inline void lod_counting_core(std::function<void(int64_t first_point, int64_t num_points)>& processor, const int64_t num_points);
+
+
 		inline NodeLUT lod_createLUT(std::vector<std::atomic_int32_t>& grid, int64_t grid_size,std::vector<ChunkNode<point_t>>& nodes);
 			
 		//create chunk nodes
-		inline void distribute_points(vec3 min, vec3 max, float cube_size, NodeLUT& lut, const point_t* vertices, const int64_t num_points, const std::vector<ChunkNode<point_t>>& nodes);
+		inline void distribute_points(vec3 min, vec3 max, float cube_size, int64_t grid_size, NodeLUT& lut, const point_t* vertices, const int64_t num_points, const std::vector<ChunkNode<point_t>>& nodes);
 		//inout chunks, out vertices
 		inline void lod_indexing(Chunks<point_t>& chunks, std::vector<point_t>& vertices, Sampler<point_t>& sampler);
 			
@@ -273,11 +275,7 @@ class octree_lod_generator : public cgv::render::render_types {
 
 		/// generate points with lod information out of data in structure of arrays layout
 		/// overwrites data pointed to by attr...
-		template <typename... Attribs>
-		void generate_lods_soa(size_t num_points,vec3* positions,uint8_t* level,Attribs*... attr) {
-
-		}
-
+		
 		octree_lod_generator(){
 			//create a thread pool
 			pool_ptr = std::make_unique<cgv::pointcloud::utility::WorkerPool>((std::thread::hardware_concurrency() - 1));
@@ -285,6 +283,7 @@ class octree_lod_generator : public cgv::render::render_types {
 
 	private:
 		std::unique_ptr<cgv::pointcloud::utility::WorkerPool> pool_ptr;
+
 };
 
 // sampler
@@ -528,8 +527,7 @@ struct SamplerRandom : public Sampler<point_t> {
 		}
 		return id;
 	}
-
-
+		
 	template <typename point_t>
 	Chunks<point_t> octree_lod_generator<point_t>::lod_chunking(const point_t* vertices, const size_t num_points, const vec3& min, const vec3& max, const float& cube_size)
 	{
@@ -538,21 +536,7 @@ struct SamplerRandom : public Sampler<point_t> {
 
 		max_points_per_chunk = std::min<size_t>(num_points / 20, 10'000'000ll);
 
-		if (num_points < 4'000'000) {
-			grid_size = 32;
-		}
-		else if (num_points < 20'000'000) {
-			grid_size = 64;
-		}
-		else if (num_points < 100'000'000) {
-			grid_size = 128;
-		}
-		else if (num_points < 500'000'000) {
-			grid_size = 256;
-		}
-		else {
-			grid_size = 512;
-		}
+		int64_t grid_size = select_grid_size(num_points);
 
 		// COUNT
 		auto grid = lod_counting(vertices, num_points, grid_size, min, max, cube_size);
@@ -586,31 +570,20 @@ struct SamplerRandom : public Sampler<point_t> {
 		}
 #endif
 
-			distribute_points(min, max, cube_size, lut, vertices, num_points, chunks.nodes);
-	}
+			distribute_points(min, max, cube_size, grid_size, lut, vertices, num_points, chunks.nodes);
+		}
 
 		chunks.min = min;
 		chunks.max = max;
 		return std::move(chunks);
-}
+	}
 
 	template <typename point_t>
-	std::vector<std::atomic_int32_t> octree_lod_generator<point_t>::lod_counting(const point_t* vertices, const int64_t num_points, int64_t grid_size, const vec3& min, const vec3& max, const float& cube_size)
+	void octree_lod_generator<point_t>::lod_counting_core(std::function<void(int64_t first_point, int64_t num_points)>& processor, const int64_t num_points)
 	{
 		int64_t points_left = num_points;
 		int64_t batch_size = 1'000'000;
-		//int64_t batch_size = num_points;
 		int64_t num_read = 0;
-
-		std::vector<std::atomic_int32_t> grid(grid_size * grid_size * grid_size);
-		std::vector<std::thread> threads;
-
-		auto processor = [this, &grid, &cube_size, grid_size, vertices, &min, &max](int64_t first_point, int64_t num_points) {
-			for (int i = 0; i < num_points; i++) {
-				int64_t index = grid_index(vertices[first_point + i].position(), min, cube_size, grid_size);
-				grid[index].fetch_add(1, std::memory_order::memory_order_relaxed);
-			}
-		};
 
 		struct Task {
 			int64_t first_point;
@@ -662,12 +635,48 @@ struct SamplerRandom : public Sampler<point_t> {
 		}
 
 		pool_ptr->run([&tasks](int thread_id) {tasks(); });
+	}
+
+
+	template <typename point_t>
+	std::vector<std::atomic_int32_t> octree_lod_generator<point_t>::lod_counting(const point_t* vertices, const int64_t num_points, int64_t grid_size, const vec3& min, const vec3& max, const float& cube_size)
+	{
+		std::vector<std::atomic_int32_t> grid(grid_size * grid_size * grid_size);
+
+		// count points for each cell
+		std::function<void(int64_t first_point, int64_t num_points)> processor = [this, &grid, &cube_size, grid_size, vertices, &min, &max](int64_t first_point, int64_t num_points) {
+			for (int i = 0; i < num_points; i++) {
+				int64_t index = grid_index(vertices[first_point + i].position(), min, cube_size, grid_size);
+				grid[index].fetch_add(1, std::memory_order::memory_order_relaxed);
+			}
+		};
+
+		lod_counting_core(processor, num_points);
 
 		return std::move(grid);
 	}
 
 	template <typename point_t>
-	void octree_lod_generator<point_t>::distribute_points(vec3 min, vec3 max, float cube_size, NodeLUT& lut, const point_t* vertices, const int64_t num_points, const std::vector<ChunkNode<point_t>>& nodes)
+	std::vector<std::atomic_int32_t> octree_lod_generator<point_t>::lod_counting(const vec3* positions, const int64_t num_points, int64_t grid_size, const vec3& min, const vec3& max, const float& cube_size)
+	{
+		std::vector<std::atomic_int32_t> grid(grid_size * grid_size * grid_size);
+
+		// count points for each cell
+		std::function<void(int64_t first_point, int64_t num_points)> processor = [this, &grid, &cube_size, grid_size, positions, &min, &max](int64_t first_point, int64_t num_points) {
+			for (int i = 0; i < num_points; i++) {
+				int64_t index = grid_index(positions[first_point + i], min, cube_size, grid_size);
+				grid[index].fetch_add(1, std::memory_order::memory_order_relaxed);
+			}
+		};
+
+		lod_counting_core(processor, num_points);
+
+		return std::move(grid);
+	}
+
+
+	template <typename point_t>
+	void octree_lod_generator<point_t>::distribute_points(vec3 min, vec3 max, float cube_size, int64_t grid_size, NodeLUT& lut, const point_t* vertices, const int64_t num_points, const std::vector<ChunkNode<point_t>>& nodes)
 	{
 		auto start = std::chrono::steady_clock::now();
 		auto& grid = lut.grid;
@@ -679,7 +688,7 @@ struct SamplerRandom : public Sampler<point_t> {
 			int64_t first_point;
 		};
 
-		TaskPool<Task> tasks;
+		cgv::pointcloud::utility::TaskPool<Task> tasks;
 
 		{
 			int max_num_tasks = (num_points / max_chunk_size) + 1;
@@ -697,7 +706,7 @@ struct SamplerRandom : public Sampler<point_t> {
 			}
 		}
 
-		tasks.func = [this, &tasks, &vertices, &min, &cube_size, &grid, &nodes](Task* task) {
+		tasks.func = [this, &tasks, &vertices, &min, &cube_size, &grid_size, &grid, &nodes](Task* task) {
 			int batch_size = task->batch_size;
 			int64_t first_point = task->first_point;
 
@@ -1010,19 +1019,6 @@ struct SamplerRandom : public Sampler<point_t> {
 		indexer.write(*indexer.root.get(), true);
 	}
 
-	// see https://www.forceflow.be/2013/10/07/morton-encodingdecoding-through-bit-interleaving-implementations/
-// method to seperate bits from a given integer 3 positions apart
-	inline uint64_t splitBy3(unsigned int a) {
-		uint64_t x = a & 0x1fffff; // we only look at the first 21 bits
-		x = (x | x << 32) & 0x1f00000000ffff; // shift left 32 bits, OR with self, and 00011111000000000000000000000000000000001111111111111111
-		x = (x | x << 16) & 0x1f0000ff0000ff; // shift left 32 bits, OR with self, and 00011111000000000000000011111111000000000000000011111111
-		x = (x | x << 8) & 0x100f00f00f00f00f; // shift left 32 bits, OR with self, and 0001000000001111000000001111000000001111000000001111000000000000
-		x = (x | x << 4) & 0x10c30c30c30c30c3; // shift left 32 bits, OR with self, and 0001000011000011000011000011000011000011000011000011000100000000
-		x = (x | x << 2) & 0x1249249249249249;
-		return x;
-	}
-
-
 	struct NodeCandidate {
 		std::string name = "";
 		int64_t indexStart = 0;
@@ -1032,12 +1028,6 @@ struct SamplerRandom : public Sampler<point_t> {
 		int64_t y = 0;
 		int64_t z = 0;
 	};
-
-	inline uint64_t mortonEncode_magicbits(unsigned int x, unsigned int y, unsigned int z) {
-		uint64_t answer = 0;
-		answer |= splitBy3(x) | splitBy3(y) << 1 | splitBy3(z) << 2;
-		return answer;
-	}
 
 	std::vector<std::vector<int64_t>> createSumPyramid(std::vector<int64_t>& grid, int gridSize) {
 		int maxLevel = std::log2(gridSize);
@@ -1056,8 +1046,8 @@ struct SamplerRandom : public Sampler<point_t> {
 				for (int y = 0; y < currentGridSize; y++) {
 					for (int z = 0; z < currentGridSize; z++) {
 
-						auto index = mortonEncode_magicbits(z, y, x);
-						auto index_p1 = mortonEncode_magicbits(2 * z, 2 * y, 2 * x);
+						auto index = morton_encode_3d(z, y, x);
+						auto index_p1 = morton_encode_3d(2 * z, 2 * y, 2 * x);
 
 						int64_t sum = 0;
 						for (int i = 0; i < 8; i++) {
@@ -1124,7 +1114,7 @@ struct SamplerRandom : public Sampler<point_t> {
 			auto z = candidate.z;
 
 			auto& grid = pyramid[level];
-			auto index = mortonEncode_magicbits(z, y, x);
+			auto index = morton_encode_3d(z, y, x);
 			int64_t numPoints = grid[index];
 
 			if (level == maxLevel) {
@@ -1139,7 +1129,7 @@ struct SamplerRandom : public Sampler<point_t> {
 
 				for (int i = 0; i < 8; i++) {
 
-					auto index_p1 = mortonEncode_magicbits(2 * z, 2 * y, 2 * x) + i;
+					auto index_p1 = morton_encode_3d(2 * z, 2 * y, 2 * x) + i;
 					auto count = pyramid[level + 1][index_p1];
 
 					if (count > 0) {
@@ -1201,7 +1191,7 @@ struct SamplerRandom : public Sampler<point_t> {
 			iy = std::max(int64_t(0), std::min(iy, counterGridSize - 1));
 			iz = std::max(int64_t(0), std::min(iz, counterGridSize - 1));
 
-			return mortonEncode_magicbits(iz, iy, ix); //TODO replace with faster lookup table based morton encoding
+			return morton_encode_3d(iz, iy, ix);
 		};
 
 		// COUNTING

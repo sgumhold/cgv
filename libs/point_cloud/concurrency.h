@@ -215,7 +215,29 @@ namespace utility {
 			}
 		} while (is_pool_member);
 	}
+	
+	template <typename TASK>
+	struct TaskPool {
+		std::vector<TASK> pool;
+		std::atomic_int next_task = 0;
 
-} //cgv namespaces
-} //pointcloud namespace
+		std::function<void(TASK*)> func;
+
+		void operator()() {
+			while (true) {
+				TASK* task;
+				//get task
+				{
+					int task_id = next_task.fetch_add(1);
+					if (task_id >= pool.size())
+						return;
+					task = &pool[task_id];
+				}
+				func(task);
+			}
+		}
+	};
+
 } //utility namespace
+} //pointcloud namespace
+} //cgv namespaces
