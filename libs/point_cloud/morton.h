@@ -140,7 +140,7 @@ inline uint64_t splitBy3(unsigned int a) {
 	return x;
 }
 
-inline uint64_t mortonEncode_magicbits(unsigned int x, unsigned int y, unsigned int z) {
+inline uint64_t morton_encode_magicbits(unsigned int x, unsigned int y, unsigned int z) {
 	uint64_t answer = 0;
 	answer |= splitBy3(x) | splitBy3(y) << 1 | splitBy3(z) << 2;
 	return answer;
