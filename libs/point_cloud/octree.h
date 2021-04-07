@@ -17,6 +17,21 @@
 #include "morton.h"
 #include "lib_begin.h"
 
+/// class definitions for octree generation for point clouds
+/// The implementation is based on https://github.com/potree/PotreeConverter which is avaiable under a BSD 2 clause License
+/// original copyright notice:
+/*
+Copyright 2020 Markus Schütz
+
+Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met :
+
+1. Redistributions of source code must retain the above copyright notice, this list of conditionsand the following disclaimer.
+
+2. Redistributions in binary form must reproduce the above copyright notice, this list of conditionsand the following disclaimer in the documentationand /or other materials provided with the distribution.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+*/
+
 namespace cgv {
 namespace pointcloud {
 		namespace octree {
@@ -62,11 +77,12 @@ namespace pointcloud {
 		std::vector<int> grid;
 	};
 
+	/// octree node which can hold multiple points of type point_t
+	/// adapted from Node struct in PotreeConverter/Converter/include/structures.h
 	template <typename point_t>
 	struct IndexNode : public cgv::render::render_types{
 
 		std::array<std::shared_ptr<IndexNode>, 8> children;
-		//std::vector<std::shared_ptr<IndexNode>> children;
 
 		//accepted points, empty if sampled == false
 		std::shared_ptr<std::vector<point_t>> points;
@@ -114,7 +130,8 @@ namespace pointcloud {
 		}
 	};
 
-	//nodes creted in chunking phase
+	/// stores chunk date created by the chunking phase
+	/// like the node struct in PotreeConverter/Converter/src/chunker_countsort_laszip.cpp except data is stored in the pc_data member instead of a file
 	template <typename point_t>
 	struct ChunkNode {
 		int level = 0;
@@ -152,11 +169,11 @@ namespace pointcloud {
 
 /// generates octree based lods for point clouds, 
 /// @param type point_t should provide two position() and level() methods like GenericLODPoint, these are used to read the point position and write the LOD
-/// implementation based on https://github.com/potree/PotreeConverter which is avaiable under a BSD 2 clause License
 template <typename point_t>
 class octree_lod_generator : public cgv::render::render_types {
 	public:
 
+		// truncated indexer struct for in-core computation
 		struct Indexer {
 			//pointer to result vector
 			std::shared_ptr<IndexNode<point_t>> root;
@@ -179,6 +196,7 @@ class octree_lod_generator : public cgv::render::render_types {
 			}
 		};
 
+		// this indexer writes all nodes to an output vector assigning the nodes level to each point
 		struct FlatIndexer : public Indexer {
 			std::vector<point_t>* output;
 			std::mutex mtx_write;
@@ -264,7 +282,9 @@ class octree_lod_generator : public cgv::render::render_types {
 
 };
 
-// sampler
+/// This point sampler does bottom up sampling on nodes choosing points randomly from the child nodes
+/// This is a modified version of SamplerRandom from PotreeConverter/Converter/include/sampler_random.h
+/// modifications:  changes regarding the removal of the thread_locals in sample() and the addition of the template parameter
 template <typename point_t>
 struct SamplerRandom : public Sampler<point_t> {
 	//using point_t = LODPoint;
@@ -450,7 +470,7 @@ struct SamplerRandom : public Sampler<point_t> {
 
 				if (numRejected == 0) {
 					//no points for the child
-					node->children[childIndex] = nullptr; //this can be a problem for debugging
+					node->children[childIndex] = nullptr;
 				} if (numRejected > 0) {
 					child->points = rejected;
 					child->num_points = numRejected;
@@ -957,9 +977,6 @@ struct SamplerRandom : public Sampler<point_t> {
 
 			sampler.sample(chunk_root, indexer.spacing, onNodeCompleted);
 
-			//in core method does not need flushing
-			//indexer.flushChunkRoot(chunk_root);
-
 			// add chunk root, provided it isn't the root.
 			if (chunk_root->name.size() > 1) {
 				assert(indexer.root != nullptr);
@@ -1000,6 +1017,9 @@ struct SamplerRandom : public Sampler<point_t> {
 		int64_t z = 0;
 	};
 
+	/// here begins mostly unmodified code from potree converter (mostly variable renaming and usage of alternate functions, removal of timers used for performance measurements)
+	
+	
 	std::vector<std::vector<int64_t>> createSumPyramid(std::vector<int64_t>& grid, int gridSize) {
 		int maxLevel = std::log2(gridSize);
 		int currentGridSize = gridSize / 2;
@@ -1371,6 +1391,9 @@ struct SamplerRandom : public Sampler<point_t> {
 			build_hierarchy(indexer, subject, buffer, nextNumPoins, depth + 1);
 		}
 	}
+
+	///  here ends the mostly copy pasta code from potree converter
+
 	template <typename point_t>
 	std::vector<point_t> octree_lod_generator<point_t>::generate_lods(const std::vector<point_t>& points)
 	{
