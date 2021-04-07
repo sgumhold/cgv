@@ -3,6 +3,7 @@
 
 #include <cstdint>
 #include <vector>
+#include <array>
 #include <memory>
 #include <mutex>
 #include <tuple>
@@ -64,7 +65,8 @@ namespace pointcloud {
 	template <typename point_t>
 	struct IndexNode : public cgv::render::render_types{
 
-		std::vector<std::shared_ptr<IndexNode>> children;
+		std::array<std::shared_ptr<IndexNode>, 8> children;
+		//std::vector<std::shared_ptr<IndexNode>> children;
 
 		//accepted points, empty if sampled == false
 		std::shared_ptr<std::vector<point_t>> points;
@@ -150,49 +152,51 @@ namespace pointcloud {
 
 /// generates octree based lods for point clouds, 
 /// @param type point_t should provide two position() and level() methods like GenericLODPoint, these are used to read the point position and write the LOD
+/// implementation based on https://github.com/potree/PotreeConverter which is avaiable under a BSD 2 clause License
 template <typename point_t>
 class octree_lod_generator : public cgv::render::render_types {
 	public:
+
 		struct Indexer {
 			//pointer to result vector
-			std::vector<point_t>* output;
-
 			std::shared_ptr<IndexNode<point_t>> root;
-
-			std::vector<std::shared_ptr<IndexNode<point_t>>> detachedParts;
-
-			std::atomic_int64_t byteOffset = 0;
 
 			double scale = 0.001;
 			double spacing = 1.0;
 
-			std::atomic_int64_t dbg = 0;
-
 			std::mutex mtx_depth;
-			int64_t octreeDepth = 0;
-				
-			std::mutex mtx_chunkRoot;
+			int octreeDepth = 0;
 
+			/// can be used to write a sampled node to an output (see flat indexer)
+			/// finished nodes will not be modified by the indexer anymore
+			virtual void finish_node(IndexNode<point_t>& node) {
+				assert(node.sampled);
+			};
+
+			// returns the octrees root node
+			std::shared_ptr<IndexNode<point_t>> get_root() {
+				return root;
+			}
+		};
+
+		struct FlatIndexer : public Indexer {
+			std::vector<point_t>* output;
 			std::mutex mtx_write;
-
-			Indexer(std::vector<point_t>* const ptr) {
+			FlatIndexer(std::vector<point_t>* const ptr) {
 				output = ptr;
 			}
 
 			// lock and write node to out
-			void write(IndexNode<point_t>& node, bool unload = false) {
+			void finish_node(IndexNode<point_t>& node) override {
 				assert(node.sampled);
 				std::lock_guard<std::mutex> lock(mtx_write);
 				for (auto& vert : *node.points) {
 					vert.level() = node.level();
 					output->push_back(vert);
 				}
-				if (unload)
-					node.points = nullptr;
+				node.points = nullptr;
 			}
 		};
-
-
 
 		static constexpr int max_points_per_index_node = 10'000;
 		int max_points_per_chunk = -1;
@@ -233,8 +237,8 @@ class octree_lod_generator : public cgv::render::render_types {
 			
 		//create chunk nodes
 		inline void distribute_points(vec3 min, vec3 max, float cube_size, int64_t grid_size, NodeLUT& lut, const point_t* vertices, const int64_t num_points, const std::vector<ChunkNode<point_t>>& nodes);
-		//inout chunks, out vertices
-		inline void lod_indexing(Chunks<point_t>& chunks, std::vector<point_t>& vertices, Sampler<point_t>& sampler);
+		//inout chunks
+		inline void indexing(Chunks<point_t>& chunks, Indexer& indexer, Sampler<point_t>& sampler);
 			
 		inline void build_hierarchy(Indexer* indexer, IndexNode<point_t>* node, std::shared_ptr<std::vector<point_t>> points, int64_t numPoints, int64_t depth = 0);
 			
@@ -247,8 +251,8 @@ class octree_lod_generator : public cgv::render::render_types {
 		/// generate points with lod information out of the given vertices
 		inline std::vector<point_t> generate_lods(const std::vector<point_t>& points);
 
-		/// generate points with lod information out of data in structure of arrays layout
-		/// overwrites data pointed to by attr...
+		//creates a octree structure out of IndexNodes and returns a shared pointer to the root
+		inline std::shared_ptr<IndexNode<point_t>> build_octree(const std::vector<point_t>& points);
 		
 		octree_lod_generator(){
 			//create a thread pool
@@ -291,7 +295,7 @@ struct SamplerRandom : public Sampler<point_t> {
 
 		SampleGrid<128> cgrid;
 
-		traversePost(node.get(), [baseSpacing, &onNodeCompleted, &cgrid](IndexNode<point_t>* node) {
+		traversePost(node.get(), [this,baseSpacing, &onNodeCompleted, &cgrid](IndexNode<point_t>* node) {
 			assert((node == nullptr) || (node->num_points == 0 && node->points.get() == nullptr) || (node->num_points == node->points->size()));
 
 			node->sampled = true;
@@ -650,7 +654,7 @@ struct SamplerRandom : public Sampler<point_t> {
 	template <typename point_t>
 	void octree_lod_generator<point_t>::distribute_points(vec3 min, vec3 max, float cube_size, int64_t grid_size, NodeLUT& lut, const point_t* vertices, const int64_t num_points, const std::vector<ChunkNode<point_t>>& nodes)
 	{
-		auto start = std::chrono::steady_clock::now();
+		//auto start = std::chrono::steady_clock::now();
 		auto& grid = lut.grid;
 
 		constexpr int max_chunk_size = 512 * (64 / sizeof(point_t));
@@ -714,7 +718,7 @@ struct SamplerRandom : public Sampler<point_t> {
 			node.pc_data->write_points(&v, 1);
 		}*/
 		auto end = std::chrono::steady_clock::now();
-		std::printf("distributing: %d ns\n", std::chrono::duration_cast<std::chrono::nanoseconds>(end - start));
+		//std::printf("distributing: %d ns\n", std::chrono::duration_cast<std::chrono::nanoseconds>(end - start));
 	}
 
 	template <typename point_t>
@@ -881,7 +885,7 @@ struct SamplerRandom : public Sampler<point_t> {
 	}
 
 	template <typename point_t>
-	void octree_lod_generator<point_t>::lod_indexing(Chunks<point_t>& chunks, std::vector<point_t>& vertices, Sampler<point_t>& sampler)
+	void octree_lod_generator<point_t>::indexing(Chunks<point_t>& chunks, Indexer& indexer, Sampler<point_t>& sampler)
 	{
 		struct Task {
 			ChunkNode<point_t>* chunk = nullptr;
@@ -914,9 +918,7 @@ struct SamplerRandom : public Sampler<point_t> {
 				}
 			}
 		} tasks;
-
-
-		Indexer indexer(&vertices);
+		
 		std::mutex mtx_nodes;
 		std::vector<std::shared_ptr<IndexNode<point_t>>> nodes;
 
@@ -950,7 +952,7 @@ struct SamplerRandom : public Sampler<point_t> {
 			auto onNodeCompleted = [&indexer, &chunk_root](IndexNode<point_t>* node) {
 				//write nodes and unload all except the chunk roots
 				assert(node != chunk_root.get());
-				indexer.write(*node, true);
+				indexer.finish_node(*node);
 			};
 
 			sampler.sample(chunk_root, indexer.spacing, onNodeCompleted);
@@ -981,11 +983,11 @@ struct SamplerRandom : public Sampler<point_t> {
 		}
 		else {
 			auto onNodeCompleted = [&indexer](IndexNode<point_t>* node) {
-				indexer.write(*node, true);
+				indexer.finish_node(*node);
 			};
 			sampler.sample(indexer.root, indexer.spacing, onNodeCompleted);
 		}
-		indexer.write(*indexer.root.get(), true);
+		indexer.finish_node(*indexer.root.get());
 	}
 
 	struct NodeCandidate {
@@ -1211,7 +1213,6 @@ struct SamplerRandom : public Sampler<point_t> {
 					child->min = childBox.get_min_pnt();
 					child->max = childBox.get_max_pnt();
 					child->name = childName;
-					child->children.resize(8);
 
 					currentNode->children[index] = child;
 					currentNode = child.get();
@@ -1228,7 +1229,7 @@ struct SamplerRandom : public Sampler<point_t> {
 
 		std::vector<IndexNode<point_t>*> needRefinement;
 
-		int64_t octreeDepth = 0;
+		int octreeDepth = 0;
 
 		for (NodeCandidate& candidate : nodes) {
 
@@ -1248,7 +1249,7 @@ struct SamplerRandom : public Sampler<point_t> {
 				needRefinement.push_back(realization);
 			}
 
-			octreeDepth = std::max(octreeDepth, realization->level());
+			octreeDepth = std::max(octreeDepth, (int) realization->level());
 		}
 
 		{
@@ -1402,25 +1403,57 @@ struct SamplerRandom : public Sampler<point_t> {
 
 		Chunks<point_t> nodes = lod_chunking(source_data, source_data_size, min, max, cube_size);
 
-		int point_count = 0;
-		int point_count_node_info = 0;
-		for (auto& node : nodes.nodes) {
-			point_count += node.pc_data->vertices.size();
-			point_count_node_info += node.numPoints;
-		}
-
 		SamplerRandom<point_t> sampler;
-		lod_indexing(nodes, out, sampler);
+		FlatIndexer indexer(&out);
+		indexing(nodes, indexer, sampler);
+		assert(out.size() == points.size());
 		return out;
 	}
 	
+
+
+	template <typename point_t>
+	std::shared_ptr<IndexNode<point_t>> octree_lod_generator<point_t>::build_octree(const std::vector<point_t>& points) {
+		const point_t* source_data = points.data();
+		size_t source_data_size = points.size();
+
+		//find min, max
+		static constexpr float Infinity = std::numeric_limits<float>::infinity();
+		vec3 min = { Infinity , Infinity , Infinity };
+		vec3 max = { -Infinity , -Infinity , -Infinity };
+
+		for (int i = 0; i < source_data_size; ++i) {
+			const vec3& p = source_data[i].position();
+			min.x() = std::min(min.x(), p.x());
+			min.y() = std::min(min.y(), p.y());
+			min.z() = std::min(min.z(), p.z());
+
+			max.x() = std::max(max.x(), p.x());
+			max.y() = std::max(max.y(), p.y());
+			max.z() = std::max(max.z(), p.z());
+		}
+
+		vec3 ext = max - min;
+		float cube_size = *std::max_element(ext.begin(), ext.end());
+
+		max = min + vec3(cube_size, cube_size, cube_size);
+
+		Chunks<point_t> nodes = lod_chunking(source_data, source_data_size, min, max, cube_size);
+
+		SamplerRandom<point_t> sampler;
+		Indexer indexer;
+		indexing(nodes, indexer, sampler);
+		return std::move(indexer.get_root());
+	}
+
+
+
 	template <typename point_t>
 	IndexNode<point_t>::IndexNode(const std::string& name, const vec3& min, const vec3& max)
 	{
 		this->name = name;
 		this->min = min;
 		this->max = max;
-		children.resize(8, nullptr);
 	}
 
 	template <typename point_t>
