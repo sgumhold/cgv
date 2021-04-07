@@ -107,8 +107,8 @@ namespace cgv {
 			
 			bool render(context& ctx, size_t start, size_t count);
 
-			void set_points(cgv::render::context& ctx,const void* pnts, const size_t num_points) {
-				//assert(sizeof(T) == sizeof(Point));
+			/// this method can be used if the data format of pnts matches with the internal format given by the Point struct
+			inline void set_points(cgv::render::context& ctx,const void* pnts, const size_t num_points) {
 				assert(input_buffer != 0);
 				glBindBuffer(GL_SHADER_STORAGE_BUFFER, input_buffer);
 				glBufferData(GL_SHADER_STORAGE_BUFFER, num_points * sizeof(Point), pnts, GL_STATIC_READ);
