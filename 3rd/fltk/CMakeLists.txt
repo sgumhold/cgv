@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.14)
 
-project(FLTK2)
+project(fltk)
 
 add_library(fltk
 	# Image

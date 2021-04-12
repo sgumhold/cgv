@@ -13,9 +13,6 @@ set(CGV_COMPONENTS
 	signal
 	type
 	utils
-	
-	# config
-	# defines
 )
 
 # Add a sub directory for each component
@@ -33,7 +30,3 @@ foreach(comp ${CGV_COMPONENTS})
 endforeach()
 
 add_dependencies(cgv ${CGV_COMPONENTS_EXP})
-
-# FIXME find out what these two lines used to do
-# set_target_properties(cgv PROPERTIES FOLDER "${FOLDER_NAME_TOPLEVEL}")
-# build_core_components_finish()

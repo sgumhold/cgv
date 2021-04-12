@@ -1,4 +1,4 @@
-include("pppFunctions.cmake")
+include(ppp.cmake)
 
 add_executable(ppp
 	ppp.cxx

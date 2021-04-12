@@ -1,8 +1,5 @@
 
-# Source files
 file(GLOB_RECURSE SOURCES RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "*.cxx")
-# Header files
-file(GLOB_RECURSE PUBLIC_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "*.h")
 
 add_library(cgv_render ${SOURCES})
 target_compile_definitions(cgv_render PRIVATE CGV_RENDER_EXPORTS)
