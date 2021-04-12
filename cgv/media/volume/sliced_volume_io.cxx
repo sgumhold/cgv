@@ -12,8 +12,8 @@
 #include <sstream>
 
 #if WIN32
-typedef popen _popen;
-typedef pclose _pclose;
+#define popen(...) _popen(__VA_ARGS__);
+#define pclose(...) _pclose(__VA_ARGS__);
 #endif
 
 namespace cgv {

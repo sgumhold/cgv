@@ -1,6 +1,5 @@
 include("pppFunctions.cmake")
 
-# Set source files
 add_executable(ppp
 	ppp.cxx
 	${CGV_DIR}/cgv/utils/scan.cxx
@@ -18,3 +17,4 @@ add_executable(ppp
 	${CGV_DIR}/cgv/ppp/variables.cxx
 )
 target_include_directories(ppp PRIVATE ${CGV_DIR})
+target_compile_definitions(ppp PRIVATE CGV_FORCE_STATIC)

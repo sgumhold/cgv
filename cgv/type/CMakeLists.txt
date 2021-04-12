@@ -14,6 +14,7 @@ ppp_compile("${CGV_DIR}"
 )
 
 add_library(cgv_type ${SOURCES} ${PPP_FILES})
+target_compile_definitions(cgv_type PRIVATE CGV_TYPE_EXPORTS)
 target_include_directories(cgv_type PUBLIC
 	${CGV_DIR}
 	${PPP_INCLUDES}
