@@ -1,4 +1,6 @@
 
+find_package(OpenGL REQUIRED)
+
 add_library(glsu glsu.c glsu.def)
 target_include_directories(glsu PUBLIC
 	${OPENGL_INCLUDE_DIRS}

@@ -33,9 +33,11 @@ target_link_libraries(cgv_gl
 	cgv_gui
 	cgv_reflect_types
 	json
-	${GLEW_LIBRARIES}
+	glew
 	${OPENGL_LIBRARIES}
 )
+
+target_compile_definitions(cgv_gl PRIVATE CGV_RENDER_GL_EXPORTS CGV_GL_EXPORTS)
 
 # FIXME: For unicode support the definitions _UNICODE and UNICODE have to be
 # set. Can we do this better?
