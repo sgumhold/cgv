@@ -1,9 +1,3 @@
-# The CGV framework is needed
-# find_package(cgv COMPONENTS utils type data base signal math media render gui)
-
-# Find 3rd party dependencies
-# cgv_find_package(GLEW)
-# cgv_find_package(OpenGL REQUIRED)
 
 # Source files
 file(GLOB_RECURSE SOURCES RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "*.cxx")

@@ -37,7 +37,7 @@ function(cgv_res_prep_command_add base infile outfile)
 
     # Add the build rule
     add_custom_command(OUTPUT ${OUTPUT_FILE}
-        COMMAND res_prep
+        COMMAND $<TARGET_FILE:res_prep>
         ARGS "${CMAKE_CURRENT_SOURCE_DIR}/${infile}" "${OUTPUT_FILE}"
         DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/${infile}")
     set(${outfile_var} ${OUTPUT_FILE} PARENT_SCOPE)

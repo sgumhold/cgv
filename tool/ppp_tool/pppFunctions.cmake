@@ -39,7 +39,7 @@ function(ppp_command_add base infile outfile_var outinclude_var)
 	message(STATUS "Adding compile command for '${OUTPUT_FILE}'")
 	# Add the build rule
 	add_custom_command(OUTPUT ${OUTPUT_FILE}
-		COMMAND ppp
+		COMMAND $<TARGET_FILE:ppp>
 		ARGS "-CGV_DIR=${CGV_DIR}" "${CMAKE_CURRENT_SOURCE_DIR}/${infile}" "${OUTPUT_FILE}"
 		DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/${infile}"
 		IMPLICIT_DEPENDS ${PPP_WORK_FILES})
