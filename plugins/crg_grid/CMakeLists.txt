@@ -19,5 +19,6 @@ target_link_libraries(crg_grid
 	cgv_data
 	cgv_gl
 )
+target_compile_definitions(crg_grid PRIVATE _USRDLL)
 
 # set_target_properties(crg_grid PROPERTIES FOLDER "${FOLDER_NAME_PLUGINS}")
