@@ -15,5 +15,6 @@ add_executable(ppp
 	${CGV_DIR}/cgv/ppp/operators.cxx
 	${CGV_DIR}/cgv/ppp/ph_processor.cxx
 	${CGV_DIR}/cgv/ppp/ppp_variant.cxx
-	${CGV_DIR}/cgv/ppp/variables.cxx)
+	${CGV_DIR}/cgv/ppp/variables.cxx
+)
 target_include_directories(ppp PRIVATE ${CGV_DIR})

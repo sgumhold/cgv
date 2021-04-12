@@ -1,6 +1,4 @@
-cmake_minimum_required(VERSION 3.14)
-
-project(res_prep)
+include(res_prepFunctions.cmake)
 
 add_executable(res_prep
 	res_prep.cxx
