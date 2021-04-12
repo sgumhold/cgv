@@ -1,11 +1,4 @@
 
-# The CGV framework is needed
-# find_package(cgv COMPONENTS utils type reflect data base media os gui render)
-
-# find_package(cgv_gl)
-
-set(CMAKE_CXX_FLAGS "-std=c++11")
-
 # Source files
 file(GLOB_RECURSE SOURCES RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "*.cxx")
 # Header files
@@ -16,6 +9,7 @@ file(GLOB_RECURSE SHADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "glsl/*.gl*")
 add_library(plot ${SOURCES} ${SHADERS})
 target_include_directories(plot PUBLIC ${CGV_DIR}/libs)
 target_link_libraries(plot
+	cgv_gl
 	cgv_utils
 	cgv_type
 	cgv_reflect
@@ -26,6 +20,7 @@ target_link_libraries(plot
 	cgv_gui
 	cgv_render
 )
+target_compile_definitions(plot PRIVATE PLOT_EXPORTS)
 
 # FIXME: For unicode support the definitions _UNICODE and UNICODE have to be
 # set. Can we do this better?

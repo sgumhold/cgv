@@ -493,8 +493,10 @@ void plot2d::draw_domain(cgv::render::context& ctx, int si, bool no_fill)
 
 void plot2d::draw_tick_labels(cgv::render::context& ctx, int si)
 {
+#if 0
 	if (tick_labels.empty() || label_font_face.empty())
 		return;
+
 	cgv::tt_gl_font_face_ptr ff = dynamic_cast<cgv::tt_gl_font_face*>(&(*label_font_face));
 	if (!ff) {
 		ctx.enable_font_face(label_font_face, get_domain_config_ptr()->label_font_size);
@@ -547,6 +549,7 @@ void plot2d::draw_tick_labels(cgv::render::context& ctx, int si)
 		ff->ref_texture(ctx).disable(ctx);
 		rr.disable_attribute_array_manager(ctx, aam_tick_labels);
 	}
+#endif
 }
 
 void plot2d::draw(cgv::render::context& ctx)
