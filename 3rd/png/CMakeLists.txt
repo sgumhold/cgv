@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.14)
 
-project(PNG)
+project(png)
 
 add_library(png
 	png.c

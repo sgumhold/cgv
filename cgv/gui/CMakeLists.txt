@@ -1,5 +1,4 @@
 
-# Source files
 file(GLOB_RECURSE SOURCES RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "*.cxx")
 
 add_library(cgv_gui ${SOURCES})
@@ -16,10 +15,3 @@ target_link_libraries(cgv_gui PUBLIC
 	cgv_media
 	cgv_signal
 )
-
-# Definition of the component
-# cgv_add_core_component(gui
-# 	SOURCES ${SOURCES}
-# 	PUBLIC_HEADERS ${PUBLIC_HEADERS}
-# 	CGV_DEPENDENCIES )
-

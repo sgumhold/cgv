@@ -1,4 +1,4 @@
-include(res_prepFunctions.cmake)
+include(res_prep.cmake)
 
 add_executable(res_prep
 	res_prep.cxx

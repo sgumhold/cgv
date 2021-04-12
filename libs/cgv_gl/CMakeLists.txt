@@ -1,9 +1,5 @@
 
-# Source files
 file(GLOB_RECURSE SOURCES RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "*.cxx")
-# Header files
-file(GLOB_RECURSE HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "*.h")
-# Shader files
 file(GLOB_RECURSE SHADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "glsl/*.gl*")
 
 ppp_compile("${CGV_DIR}"
@@ -38,13 +34,3 @@ target_link_libraries(cgv_gl
 )
 
 target_compile_definitions(cgv_gl PRIVATE CGV_RENDER_GL_EXPORTS CGV_GL_EXPORTS)
-
-# FIXME: For unicode support the definitions _UNICODE and UNICODE have to be
-# set. Can we do this better?
-# cgv_add_library(cgv_gl 
-# 	SOURCES ${SOURCES} 
-# 	PUBLIC_HEADERS ${HEADERS} ${PPP_FILES}
-# 	SHADERS ${SHADERS}
-# 	DEFINITIONS UNICODE _UNICODE
-# 	SHARED_DEFINITIONS CGV_RENDER_GL_EXPORTS ${GLEW_SHARED_DEFINITIONS}
-# 	STATIC_DEFINITIONS CGV_RENDER_GL_FORCE_STATIC ${GLEW_STATIC_DEFINITIONS})

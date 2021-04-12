@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.14)
 
-project(ZLIB)
+project(zlib)
 
 add_library(zlib
 	adler32.c
