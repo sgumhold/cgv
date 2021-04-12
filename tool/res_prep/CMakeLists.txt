@@ -6,6 +6,5 @@ add_executable(res_prep
     ${CGV_DIR}/cgv/utils/dir.cxx
     ${CGV_DIR}/cgv/utils/file.cxx
 )
-target_include_directories(res_prep PRIVATE
-    ${CGV_DIR}
-)
+target_include_directories(res_prep PRIVATE ${CGV_DIR})
+target_compile_definitions(res_prep PRIVATE CGV_FORCE_STATIC)

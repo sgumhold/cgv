@@ -63,3 +63,4 @@ target_include_directories(shader_test PRIVATE
 	${CGV_DIR}/libs
 	${PPP_INCLUDES}
 )
+target_compile_definitions(shader_test PRIVATE CGV_FORCE_STATIC)
