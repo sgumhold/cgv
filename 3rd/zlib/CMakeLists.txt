@@ -19,6 +19,7 @@ add_library(zlib
 	uncompr.c
 	zutil.c)
 target_include_directories(zlib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+target_compile_definitions(zlib PRIVATE ZLIB_DLL)
 
 # # Include this file for standard build settings
 # include("../../cmake/buildCoreComponents.cmake")
