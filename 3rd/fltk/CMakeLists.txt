@@ -190,13 +190,12 @@ endif()
 target_compile_definitions(fltk PRIVATE
     ${ADD_DEFINITIONS}
     USE_GLEW
-    FL_SHARED
     FL_LIBRARY
     FL_GL_LIBRARY
     FL_GLUT_LIBRARY
     FL_IMAGES_LIBRARY
 )
-
+target_compile_definitions(fltk PUBLIC FL_SHARED)
 
 # target_link_libraries(FLTK2
 # 	${GLEW_LIBRARIES}
