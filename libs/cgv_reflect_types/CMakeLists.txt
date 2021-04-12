@@ -1,6 +1,3 @@
-cmake_minimum_required(VERSION 3.14)
-
-project(cgv_reflect_types)
 
 # Source files
 file(GLOB_RECURSE SOURCES RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "*.cxx")

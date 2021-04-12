@@ -50,3 +50,4 @@ add_library(jpeg
  	jquant2.c
  	jutils.c)
 target_include_directories(jpeg PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+target_compile_definitions(jpeg PRIVATE JPEG_DLL)

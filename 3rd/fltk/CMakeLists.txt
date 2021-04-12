@@ -166,23 +166,37 @@ add_library(fltk
  	src/xbmImage.cxx
  	src/xpmImage.cxx
 )
-
 target_include_directories(fltk PUBLIC
 	${CMAKE_CURRENT_SOURCE_DIR}/include
 	${CMAKE_CURRENT_SOURCE_DIR}/visualc
 	${CMAKE_CURRENT_SOURCE_DIR}/compat
 )
-
 target_link_libraries(fltk
 	jpeg
 	png
 	glew
 	${OPENGL_LIBRARIES}
 	${X11_LIBRARIES}
-	Xext
 )
 
-target_compile_options(fltk PRIVATE -Wno-narrowing)
+if (WIN32)
+	set(ADD_DEFINITIONS "_WIN32" "WIN32_LEAN_AND_MEAN" "VC_EXTRA_LEAN" "WIN32_EXTRA_LEAN")
+    target_link_libraries(fltk ws2_32)
+else()
+    target_link_libraries(fltk Xext)
+    target_compile_options(fltk PRIVATE -Wno-narrowing)
+endif()
+
+target_compile_definitions(fltk PRIVATE
+    ${ADD_DEFINITIONS}
+    USE_GLEW
+    FL_SHARED
+    FL_LIBRARY
+    FL_GL_LIBRARY
+    FL_GLUT_LIBRARY
+    FL_IMAGES_LIBRARY
+)
+
 
 # target_link_libraries(FLTK2
 # 	${GLEW_LIBRARIES}

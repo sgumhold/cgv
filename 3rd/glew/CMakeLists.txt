@@ -5,11 +5,9 @@ project(GLEW)
 find_package(OpenGL REQUIRED)
 
 add_library(glew glew.c)
-target_include_directories(glew PUBLIC ${OPENGL_INCLUDE_DIR})
+target_include_directories(glew PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${OPENGL_INCLUDE_DIR})
 target_link_libraries(glew ${OPENGL_LIBRARIES})
-
-# Include this file for standard build settings
-# include("../../cmake/buildCoreComponents.cmake")
+target_compile_definitions(glew PRIVATE GLEW_BUILD)
 
 # cgv_find_package(OpenGL)
 
