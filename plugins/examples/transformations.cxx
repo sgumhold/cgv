@@ -190,4 +190,4 @@ public:
 	}
 };
 
-cgv::base::factory_registration<transformations> fr_renderer_test("new/demo/transformations", 'T', true);
+cgv::base::factory_registration<transformations> fr_transformations("new/demo/transformations", 'T', true);
