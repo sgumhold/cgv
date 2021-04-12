@@ -3,6 +3,7 @@ lib
 build
 cmake-build
 .vscode
+.vs
 
 # Ignore files generated from .ph template headers
 cgv/base/call_interface_impl.h
