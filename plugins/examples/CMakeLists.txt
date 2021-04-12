@@ -23,6 +23,7 @@ add_library(examples
 target_link_libraries(examples
 	delaunay
 	plot
+	cg_gamepad
 	cgv_gl
 	crg_grid
 	crg_stereo_view
@@ -40,6 +41,7 @@ target_include_directories(examples PRIVATE
 	../../libs 
 	../../libs/delaunay 
 )
+add_dependencies(examples cgv_viewer)
 
 # cgv_test_shaders(examples ${SHADER_SOURCES})
 # set_target_properties(examples PROPERTIES FOLDER "${FOLDER_NAME_APPLICATION_PLUGINS}")

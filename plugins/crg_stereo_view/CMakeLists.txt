@@ -12,6 +12,7 @@ target_link_libraries(crg_stereo_view
 	cgv_gl
 	glsu
 )
+target_compile_definitions(crg_stereo_view PRIVATE CGV_RENDER_STEREO_VIEW_EXPORTS)
 
 # cgv_add_export_definitions(crg_stereo_view CGV_RENDER_STEREO_VIEW)
 #set_target_properties(crg_stereo_view PROPERTIES FOLDER "${FOLDER_NAME_PLUGINS}")
