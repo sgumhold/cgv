@@ -44,7 +44,3 @@ target_include_directories(examples PRIVATE
 add_dependencies(examples cgv_viewer)
 
 # cgv_test_shaders(examples ${SHADER_SOURCES})
-# set_target_properties(examples PROPERTIES FOLDER "${FOLDER_NAME_APPLICATION_PLUGINS}")
-
-set_target_properties(examples PROPERTIES VS_DEBUGGER_COMMAND_ARGUMENTS "plugin:cg_fltk plugin:crg_stereo_view plugin:crg_antialias plugin:crg_depth_of_field plugin:crg_light plugin:cg_ext plugin:cg_icons plugin:cg_meta plugin:cmi_io plugin:cmv_avi plugin:crg_grid plugin:co_web plugin:examples gui:${CGV_DIR}/plugins/examples/examples.gui config:${CGV_DIR}/plugins/examples/config.def type(shader_config):shader_path='${CGV_DIR}/plugins/examples;${CGV_DIR}/libs/plot/glsl;${CGV_DIR}/libs/cgv_gl/glsl'")
-set_target_properties(examples PROPERTIES VS_DEBUGGER_COMMAND $<TARGET_FILE:cgv_viewer>)
