@@ -31,13 +31,13 @@ namespace cgv {
 
 /**************** additional types *********************/
 
-struct registration_info 
+struct registration_info
 {
 	bool registration_enabled;
 	bool permanent_registration;
 	bool registration_event_cleanup;
 	unsigned int nr_events_before_disable;
-	registration_info() 
+	registration_info()
 	{
 		registration_enabled = false;
 		permanent_registration = true;
@@ -51,7 +51,7 @@ struct registration_order_info
 	std::string partial_order;
 	bool before_contructor_execution;
 	std::string when;
-	registration_order_info() : before_contructor_execution(false) 
+	registration_order_info() : before_contructor_execution(false)
 	{
 	}
 	registration_order_info(const std::string& _partial_order, bool _before_contructor_execution, const std::string& _when) :
@@ -167,11 +167,11 @@ std::vector<base_ptr>& ref_listeners()
 
 void show_split_lines(const std::string& s)
 {
-	if (s.empty()) 
+	if (s.empty())
 		return;
 	std::vector<token> toks;
 	bite_all(tokenizer(s).set_ws(";"), toks);
-	for (unsigned i=0; i<toks.size(); ++i) 
+	for (unsigned i=0; i<toks.size(); ++i)
 		std::cout << "\n    " << to_string(toks[i]).c_str();
 }
 
@@ -381,7 +381,7 @@ void enable_registration()
 
 	if (is_registration_debugging_enabled())
 		std::cout << "REG ENABLE <" << (ref_plugin_name().empty() ? ref_prog_name() : ref_plugin_name()) << "> Begin" << std::endl;
-	
+
 	unsigned i, i0 = ref_info().nr_events_before_disable;
 
 	sort_registration_events(true);
@@ -393,9 +393,9 @@ void enable_registration()
 		if (obr) {
 			if (is_registration_debugging_enabled())
 				std::cout << "REG CONSTRUCT " << obr->get_constructed_type_name() << "('" << ref_registration_events()[i].second << "')";
-			
+
 			ref_registration_events()[i].first = obr->construct_object();
-			
+
 			if (is_registration_debugging_enabled()) {
 				std::cout << " -> ";
 				show_object_debug_info(ref_registration_events()[i].first);
@@ -559,7 +559,7 @@ void register_object(base_ptr object, const std::string& options)
 	// if registration is disabled or if registratration event cleanup is disabled, store registration event
 	if (!is_registration_enabled() || !is_registration_event_cleanup_enabled()) {
 		ref_registration_events().push_back(std::pair<base_ptr, std::string>(object, options));
-		
+
 		if (is_registration_debugging_enabled()) {
 			std::cout << "REG EVENT ('" << options << "') ";
 			show_object_debug_info(object);
@@ -724,7 +724,7 @@ bool process_config_file_ext(const std::string& _file_name, bool* persistent = 0
 						var_name.push_back(*jter);
 					}
 					if (jter < lines[i].end) {
-						// convert to upper case 
+						// convert to upper case
 						var_name = cgv::utils::to_upper(var_name);
 						if (var_name == "CFG_FILE_DIR")
 							value = cfg_file_dir;
@@ -746,7 +746,7 @@ bool process_config_file_ext(const std::string& _file_name, bool* persistent = 0
 			analyze_command(lines[i], false, &info);
 		else
 			analyze_command(token(line), false, &info);
-		
+
 		process_command_ext(info, persistent, cfo, &content[0]);
 		// process_command_ext((token&)(lines[i]), false, persistent, cfo, &content[0]);
 	}
@@ -797,7 +797,7 @@ test_registration::test_registration(const std::string& _test_name, bool (*_test
 }
 
 
-/// construct 
+/// construct
 factory::factory(const std::string& _created_type_name, bool _singleton, const std::string& _object_options)
 	: created_type_name(_created_type_name), is_singleton(_singleton), object_options(_object_options)
 {
@@ -817,7 +817,7 @@ std::string factory::get_property_declarations()
 }
 
 
-/// 
+///
 bool factory::set_void(const std::string& property, const std::string& value_type, const void* value_ptr)
 {
 	if (property == "create") {
@@ -831,7 +831,7 @@ bool factory::set_void(const std::string& property, const std::string& value_typ
 		return false;
 }
 
-/// 
+///
 bool factory::get_void(const std::string& property, const std::string& value_type, void* value_ptr)
 {
 	if (property == "create") {
@@ -893,7 +893,7 @@ void register_factory_object(base_ptr fo, const char* item_text, char shortcut)
 }
 
 void register_prog_name(const char* _prog_name)
-{	
+{
 	ref_prog_name() = cgv::utils::file::get_file_name(_prog_name);
 	std::string prog_path_prefix = cgv::utils::file::clean_path(cgv::utils::file::get_path(_prog_name));
 	if (!prog_path_prefix.empty())
@@ -902,13 +902,13 @@ void register_prog_name(const char* _prog_name)
 }
 
 resource_file_info::resource_file_info(
-	unsigned int _file_offset, 
-	unsigned int _file_length, 
-	const char* _file_data, const 
+	unsigned int _file_offset,
+	unsigned int _file_length,
+	const char* _file_data, const
 	std::string& _source_file)
-	: file_offset(_file_offset), 
-	  file_length(_file_length), 
-	  file_data(_file_data), 
+	: file_offset(_file_offset),
+	  file_length(_file_length),
+	  file_data(_file_data),
 	  source_file(_source_file) {}
 
 void register_resource_file(const std::string& file_path, unsigned int file_offset, unsigned int file_length, const char* file_data, const std::string& source_file)
@@ -1222,9 +1222,9 @@ bool process_command_ext(const token& cmd, bool eliminate_quotes, bool* persiste
 	tokenizer(cmd_header).set_sep("()").set_ws("").bite_all(toks);
 
 	// check for name or type command
-	if (toks.size() == 4 && toks[1] == "(" && toks[3] == ")" && 
+	if (toks.size() == 4 && toks[1] == "(" && toks[3] == ")" &&
 		(toks[0]=="name" || toks[0]=="type") ) {
-		
+
 
 		// replace single quotes by double quotes
 		for (unsigned int x=0; x<args.size(); ++x)
@@ -1375,6 +1375,29 @@ std::string extend_plugin_name(const std::string& fn)
 namespace cgv {
 	namespace base {
 
+void *load_plugin_platform(const std::string &name) {
+#ifdef _WIN32
+  SetLastError(0);
+#ifdef _UNICODE
+  return LoadLibrary(cgv::utils::str2wstr(name).c_str());
+#else
+  return LoadLibrary(name.c_str());
+#endif
+#else
+  return dlopen(name.c_str(), RTLD_NOW);
+#endif
+}
+
+void record_error_platform(std::vector<std::string> &errors) {
+#ifdef _WIN32
+  std::string error =
+      "failed with error code " + std::to_string(GetLastError());
+  errors.push_back(error);
+#else
+  errors.emplace_back(dlerror());
+#endif
+}
+
 void* load_plugin(const std::string& file_name)
 {
 	std::vector<token> names;
@@ -1384,36 +1407,42 @@ void* load_plugin(const std::string& file_name)
 	if (enabled)
 		disable_registration();
 
-	void* result = 0;
-	for (unsigned i=0; i<names.size(); ++i) {
+	void* result = nullptr;
+	std::vector<std::string> errors = {};
+        for (unsigned i = 0; i < names.size(); ++i) {
 		std::string fn[2];
 		fn[0] = to_string(names[i]);
 		fn[1] = extend_plugin_name(fn[0]);
-#ifdef NDEBUG
-#else
+#ifndef NDEBUG
 		std::swap(fn[0], fn[1]);
 #endif
-		result = 0;
-		for (int j=0; j<2; ++j) {
+
+		result = nullptr;
+                for (int j = 0; j < 2; ++j) {
 			ref_plugin_name() = fn[j];
-#ifdef _WIN32
-#ifdef _UNICODE
-			result = LoadLibrary(cgv::utils::str2wstr(fn[j]).c_str());
-#else
-			result = LoadLibrary(fn[j].c_str());
-#endif
-#else
-			result = dlopen(fn[j].c_str(), RTLD_NOW);
-#endif
-			if (result)
+			result = load_plugin_platform(fn[j]);
+			if (result) {
 				break;
+                        } else {
+				record_error_platform(errors);
+                        }
 		}
 	}
+
 	if (enabled)
 		enable_registration();
 	ref_plugin_name().clear();
+
+	if (!errors.empty()) {
+		std::cerr << "failed to load plugin " << file_name << std::endl;
+		for (const auto &err:errors) {
+			std::cerr << "    " << err << std::endl;
+		}
+	}
+
 	return result;
 }
+
 bool unload_plugin(void* handle)
 {
 #ifdef _WIN32
