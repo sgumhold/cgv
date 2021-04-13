@@ -3,7 +3,7 @@
 if(WIN32)
 	set(GAMEPAD_LIBS "XInput")
 else()
-	cgv_find_package(X11 REQUIRED COMPONENTS Xinput)
+	find_package(X11 REQUIRED COMPONENTS Xinput)
 	set(GAMEPAD_LIBS ${X11_LIBRARIES})
 endif()
 
