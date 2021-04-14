@@ -1,4 +1,5 @@
 #pragma once
+#include <array>
 
 #include <cgv/math/mat.h>
 #include <cgv/math/svd.h>
@@ -19,9 +20,12 @@ namespace cgv {
 			// input data
 			const matrix_t* A;
 			// output data
-			matrix_t centered_matrix;
-			matrix_t mean_matrix;
-			matrix_t covariance_matrix;
+			mat3 covariance_matrix;
+			
+			std::array<vec3,3> eigen_vector_data;
+			std::array<Real,3> eigen_value_data;
+			vec3 mean_point;
+
 		public:
 			pca() = default;
 			/// principal component analysis for matrix m (computing constructor pattern)
@@ -29,16 +33,43 @@ namespace cgv {
 				compute(input_pnts,size);
 			}
 
+			const size_t num_eigen_values() const {
+				return 3;
+			}
+
+			const vec3* eigen_vectors_ptr() const {
+				return eigen_vector_data.data();
+			}
+
+			const std::vector<vec3> eigen_vectors() const {
+				return std::vector<vec3>(eigen_vectors_ptr(), eigen_vectors_ptr()+3);
+			}
+
+			const Real* eigen_values_ptr() const {
+				return eigen_value_data.data();
+			}
+
+			const std::vector<Real> eigen_values() const {
+				return std::vector<Real>(eigen_values_ptr(), eigen_values_ptr() + 3);
+			}
+
+			const vec3 mean() const {
+				return mean_point;
+			}
+
 		private:
 			void compute(const vec3* input_pnts, const size_t size) {
 				auto centered_pnts = std::vector<vec3>(size);
 				auto mean_pnts = std::vector<vec3>(size);
-				mat3 covariance_matrix;
+				matrix_t U, V;
+				diag_matrix_t sigma;
 				//compute centered matrix by removing mean
 				vec3 mean = vec3(0.0);
 				for (int i = 0; i < size; ++i) {
 					mean += input_pnts[i];
 				}
+				mean /= size;
+				this->mean_point = mean;
 
 				{
 					const vec3* input = input_pnts;
@@ -61,7 +92,17 @@ namespace cgv {
 				}
 				covariance_matrix = covariance_matrix/ (Real)size;
 
-				//TODO solve system, find eigen vectors
+				// do singular value decomposition 
+				matrix_t A = matrix_t(3, 3, covariance_matrix.begin());
+				cgv::math::svd(A, U, sigma, V, false);
+				// columns of U contain vectors spanning the eigenspace and sigma has the eigen values
+				for (int i = 0; i < 3; ++i) {
+					eigen_value_data[i] = sigma(i);
+					for (int j = 0; j < 3; ++j) {
+						eigen_vector_data[i](j) = U(j, i);
+					}
+				}
+				//TODO extent to deal with matrix defect (num_eigen_values() < 3)
 			}
 		};
 	}
