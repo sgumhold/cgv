@@ -32,7 +32,7 @@ namespace cgv {
 				rh.reflect_member("point_filter_delay", point_filter_delay);
 		}
 
-		void clod_point_renderer::draw_and_compute_impl(context& ctx, PrimitiveType type, size_t start, size_t count)
+		void clod_point_renderer::draw_and_compute_impl(context& ctx, size_t start, size_t count)
 		{
 			int point_filter_delay = get_style<clod_point_render_style>().point_filter_delay;
 			
@@ -208,13 +208,6 @@ namespace cgv {
 			return true;
 		}
 
-		bool clod_point_renderer::disable(context& ctx)
-		{
-			
-			const clod_point_render_style& srs = get_style<clod_point_render_style>();			
-			return true;
-		}
-
 		void clod_point_renderer::clear(const cgv::render::context& ctx)
 		{
 			reduce_prog.destruct(ctx);
@@ -225,7 +218,7 @@ namespace cgv {
 
 		void clod_point_renderer::draw(context& ctx, size_t start, size_t count)
 		{
-			draw_and_compute_impl(ctx, cgv::render::PT_POINTS, start, count);
+			draw_and_compute_impl(ctx, start, count);
 		}
 
 		bool clod_point_renderer::render(context& ctx, size_t start, size_t count)

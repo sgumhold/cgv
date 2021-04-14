@@ -83,7 +83,7 @@ namespace cgv {
 
 		protected:
 
-			void draw_and_compute_impl(context& ctx, PrimitiveType type, size_t start, size_t count);
+			void draw_and_compute_impl(context& ctx, size_t start, size_t count);
 
 			const render_style* get_style_ptr() const;
 
@@ -98,8 +98,6 @@ namespace cgv {
 			bool init(context& ctx);
 
 			bool enable(context& ctx);
-			
-			bool disable(context& ctx);
 
 			void clear(const cgv::render::context& ctx);
 
@@ -117,7 +115,7 @@ namespace cgv {
 				buffers_outofdate = true;
 			}
 
-			/// for using the clod point renderer lods are required, to generate them use the classes inside libs/pointcloud/octree.h
+			/// to use the clod point renderer lods are required, to generate them use the classes inside libs/pointcloud/octree.h
 			/// @param positions : pointer to first points position
 			/// @param color : pointer to first points color
 			/// @param lods : pointer to firsts points level of detail
