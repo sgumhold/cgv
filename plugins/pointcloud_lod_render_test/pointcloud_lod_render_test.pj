@@ -1,0 +1,15 @@
+@=
+projectType="application_plugin";
+projectName="pointcloud_lod_render_test";
+projectGUID="E1D5CB13-D9F6-41E1-B605-6B3E94F48E75";
+addIncDirs    =[CGV_DIR."/3rd", CGV_DIR."/libs/point_cloud", CGV_BUILD_DIR."/rgbd_icp_tool"];
+addProjectDirs=[CGV_DIR."/plugins", CGV_DIR."/libs", CGV_DIR."/test", CGV_DIR."/3rd"];
+addProjectDeps=["cgv_utils","cgv_type","cgv_data","cgv_base", "cgv_signal", "cgv_reflect", "cgv_media", "cgv_os", "cgv_gui", "cgv_render", 
+                "cgv_viewer","cgv_gl", "cg_fltk", "cg_ext", "cmi_io", "cmv_avi", "crg_grid", "glew",
+				"point_cloud","crg_vr_view","cg_vr","vr_emulator","openvr_driver" 
+];
+addDependencies=["opengl", "glu"];
+addSharedDefines=["POINTCLOUD_LOD_RENDER_TEST_EXPORTS"];
+addCommandLineArguments=[
+	after("type(shader_config):shader_path='".INPUT_DIR.";".CGV_DIR."/libs/cgv_gl/glsl'","cg_fltk"),	'config:"'.INPUT_DIR.'/config.def"'
+];
