@@ -10,7 +10,7 @@ namespace cgv {
 	namespace pointcloud {
 		/// class containing principal component analysis methods for 3 dimensions
 		template<typename Real>
-		class pca {
+		class pca3 {
 		public:
 			using vec3 = cgv::math::fvec<Real, 3>;
 			using mat3 = cgv::math::fmat<Real, 3,3>;
@@ -27,10 +27,11 @@ namespace cgv {
 			vec3 mean_point;
 
 		public:
-			pca() = default;
+			pca3() = default;
 			/// principal component analysis for matrix m (computing constructor pattern)
-			pca(const vec3* input_pnts, const size_t size) {
-				compute(input_pnts,size);
+			/// if ordering is true eigen values are sorted in descending order, also the eigen vectors are reordered to conserve consistency
+			pca3(const vec3* input_pnts, const size_t size, const bool ordering = true) {
+				compute(input_pnts,size, ordering);
 			}
 
 			const size_t num_eigen_values() const {
@@ -58,7 +59,7 @@ namespace cgv {
 			}
 
 		private:
-			void compute(const vec3* input_pnts, const size_t size) {
+			void compute(const vec3* input_pnts, const size_t size, const bool ordering) {
 				auto centered_pnts = std::vector<vec3>(size);
 				auto mean_pnts = std::vector<vec3>(size);
 				matrix_t U, V;
@@ -94,8 +95,8 @@ namespace cgv {
 
 				// do singular value decomposition 
 				matrix_t A = matrix_t(3, 3, covariance_matrix.begin());
-				cgv::math::svd(A, U, sigma, V, false);
-				// columns of U contain vectors spanning the eigenspace and sigma has the eigen values
+				cgv::math::svd(A, U, sigma, V, ordering);
+				// columns of U contain vectors spanning the eigenspace and sigma contains the eigen values
 				for (int i = 0; i < 3; ++i) {
 					eigen_value_data[i] = sigma(i);
 					for (int j = 0; j < 3; ++j) {
