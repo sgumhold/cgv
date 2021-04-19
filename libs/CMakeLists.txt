@@ -9,11 +9,10 @@ add_subdirectory(plot)
 
 add_custom_target(libs)
 add_dependencies(libs
-    cg_gamepad
-    cgv_gl
-    cgv_reflect_types
-    delaunay
-    gamepad
-    glsu
-    plot
-)
+        cg_gamepad
+        cgv_gl
+        cgv_reflect_types
+        delaunay
+        gamepad
+        glsu
+        plot)
