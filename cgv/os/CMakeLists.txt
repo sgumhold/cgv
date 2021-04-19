@@ -10,5 +10,5 @@ if (WIN32)
     # In windows we also need ws2_32
     target_link_libraries(cgv_os PUBLIC ws2_32)
 else ()
-	target_link_libraries(cgv_os PUBLIC pthread)
+    target_link_libraries(cgv_os PUBLIC pthread)
 endif ()

@@ -38,4 +38,5 @@ target_include_directories(examples PRIVATE
 )
 add_dependencies(examples cgv_viewer)
 
+# TODO activate shader tests again
 # cgv_test_shaders(examples ${SHADER_SOURCES})

@@ -3,17 +3,16 @@ file(GLOB_RECURSE SOURCES RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "*.cxx")
 
 add_library(cg_fltk ${SOURCES})
 target_link_libraries(cg_fltk
-	fltk
-	cgv_gl
-	cgv_gui
-	cgv_render
-	cgv_media
-	cgv_utils
-	cgv_os
-	cgv_base
-	cgv_data
-	cgv_type
-	cgv_signal
-	cgv_reflect
-)
+        fltk
+        cgv_gl
+        cgv_gui
+        cgv_render
+        cgv_media
+        cgv_utils
+        cgv_os
+        cgv_base
+        cgv_data
+        cgv_type
+        cgv_signal
+        cgv_reflect)
 target_compile_definitions(cg_fltk PRIVATE CG_FLTK_EXPORTS CGV_GUI_FLTK_EXPORTS)
