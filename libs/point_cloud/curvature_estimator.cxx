@@ -6,7 +6,7 @@
 
 using namespace cgv::pointcloud;
 
-void curvature_estimator::compute_principal_curvature(std::vector<Dir>& pcv, std::vector<Dir>& pc1, std::vector<Dir>& pc2)
+void curvature_estimator::compute_principal_curvature(std::vector<principal_curvature_estimation>& pce)
 {
 	static constexpr int k = 20;
 	int num_points = pc.get_nr_points();
@@ -21,19 +21,28 @@ void curvature_estimator::compute_principal_curvature(std::vector<Dir>& pcv, std
 	}
 	
 	std::vector<point_cloud::point_cloud_types::Idx> close_pnts;
-	std::vector<point_cloud::point_cloud_types::Nml> normals;
-	pc1.resize(num_points); pc2.resize(num_points);
+	std::vector<point_cloud::point_cloud_types::Nml> projected_normals;
+	pce.resize(num_points);
 
 	for (int i = 0; i < num_points; ++i) {
+		projected_normals.clear();
+		const Dir& point_normal = pc.nml(i);
 		neighborhood.extract_neighbors(i, k, close_pnts);
-		normals.clear();
+		Mat projection_matrix;
+		projection_matrix.identity();
+		projection_matrix -= Mat(point_normal, point_normal);
+
 		for (int j = 0; j < close_pnts.size(); ++j) {
-			// TODO Project normals into the tangent plane
-			normals.push_back(pc.nml(close_pnts[j]));
+			// Project normals into the tangent plane
+			Dir projected_normal = pc.nml(close_pnts[j])*projection_matrix;
+			projected_normals.push_back(projected_normal);
 		}
-		pca3<float> analysis = pca3<float>(normals.data(), k);
+
+		pca3<float> analysis = pca3<float>(projected_normals.data(), k);
 		auto* eigenvalues = analysis.eigen_values_ptr();
-		//TODO extract principal curvature
+		auto* eigenvectors = analysis.eigen_vectors_ptr();
+		//store the two largest eigenvalues as prinicpal curvature
+		pce[i] = principal_curvature_estimation(eigenvectors[0], eigenvalues[0], eigenvalues[1]);
 	}
 }
 
