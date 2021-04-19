@@ -4,7 +4,6 @@ lib
 .vs
 .idea
 build
-cmake-build
 cmake-build-debug
 
 # Ignore files generated from .ph template headers
