@@ -18,21 +18,24 @@ target_link_libraries(examples
         plot
         cg_gamepad
         cgv_gl
+        cgv_signal)
+target_include_directories(examples PRIVATE ../../libs)
+
+add_dependencies(examples
+        cgv_viewer
+
+        cg_ext
+        cg_fltk
+        # cg_icons
+        cg_meta
+        cmi_io
+        cmv_avi
+        co_web
+        crg_antialias
+        crg_depth_of_field
         crg_grid
-        crg_stereo_view
-        cgv_render
-        cgv_gui
-        cgv_base
-        cgv_type
-        cgv_reflect
-        cgv_utils
-        cgv_signal
-        cgv_data
-        cgv_media)
-target_include_directories(examples PRIVATE
-        ../../libs
-        ../../libs/delaunay)
-add_dependencies(examples cgv_viewer)
+        crg_light
+        crg_stereo_view)
 
 # TODO activate shader tests again
 # cgv_test_shaders(examples ${SHADER_SOURCES})
