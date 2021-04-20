@@ -1,7 +1,7 @@
 /* 
    UrlHelper.cpp
 
-   Copyright (C) 2002-2004 Ren� Nyffenegger
+   Copyright (C) 2002-2004 René Nyffenegger
 
    This source code is provided 'as-is', without any express or implied
    warranty. In no event will the author be held liable for any damages
@@ -21,7 +21,7 @@
 
    3. This notice may not be removed or altered from any source distribution.
 
-   Ren� Nyffenegger rene.nyffenegger@adp-gmbh.ch
+   René Nyffenegger rene.nyffenegger@adp-gmbh.ch
 */
 
 
