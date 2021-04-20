@@ -53,6 +53,7 @@ add_executable(shader_test
 target_link_libraries(shader_test
         fltk
         glew
+        X11
         ${OPENGL_LIBRARIES}
         ${CMAKE_DL_LIBS})
 target_include_directories(shader_test PRIVATE
