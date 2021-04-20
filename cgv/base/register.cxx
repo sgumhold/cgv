@@ -1306,7 +1306,7 @@ std::string extend_plugin_name(const std::string& fn)
     n += "d";
 #endif
 #ifdef _WIN32
-#if defined(_MSC_VER) && _MSC_VER < 1500
+    #if defined(_MSC_VER) && _MSC_VER < 1500
     n += "8";
 #elif defined(_MSC_VER) && _MSC_VER < 1600
     n += "9";
@@ -1374,7 +1374,6 @@ void record_error_platform(const std::string &dll_name, std::vector<std::string>
 #else
     auto errPtr = dlerror();
     auto error = std::string(errPtr) + "\n";
-    free(errPtr);
     errors.emplace_back(error);
 #endif
 }
