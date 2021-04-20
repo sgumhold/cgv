@@ -29,7 +29,6 @@
 #include "Tracer.h"
 #include "stdHelpers.h"
 
-// #include <windows.h>
 #include <sstream>
 #include <iostream>
 
