@@ -30,7 +30,7 @@ add_dependencies(examples
         cg_meta
         cmi_io
         cmv_avi
-        co_web
+        # co_web
         crg_antialias
         crg_depth_of_field
         crg_grid
