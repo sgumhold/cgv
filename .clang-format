@@ -2,7 +2,7 @@
 Language: Cpp
 AccessModifierOffset: -2
 AlignAfterOpenBracket: Align
-AlignConsecutiveAssignments: AcrossComments
+AlignConsecutiveAssignments: None
 AlignConsecutiveDeclarations: None
 AlignEscapedNewlines: Right
 AlignOperands: true
@@ -23,14 +23,14 @@ BraceWrapping:
   AfterClass: false
   AfterControlStatement: Always
   AfterEnum: false
-  AfterFunction: false
+  AfterFunction: true
   AfterNamespace: false
   AfterObjCDeclaration: false
   AfterStruct: false
   AfterUnion: false
   AfterExternBlock: false
   BeforeCatch: false
-  BeforeElse: false
+  BeforeElse: true
   IndentBraces: false
   SplitEmptyFunction: true
   SplitEmptyRecord: true
