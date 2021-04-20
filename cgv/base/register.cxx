@@ -1056,32 +1056,6 @@ bool process_command_ext(const command_info& info, bool* persistent, config_file
 		}
 		std::cerr << "error reading plugin " << info.parameters[0] << std::endl;
 
-		// Reaching this point means the library could not be loaded.
-		// Therefore use the approriate system facilities to print an error
-		// message.
-#ifdef _WIN32
-		LPVOID lpMsgBuf;
-		DWORD dw = GetLastError();
-
-		FormatMessage(
-			FORMAT_MESSAGE_ALLOCATE_BUFFER |
-			FORMAT_MESSAGE_FROM_SYSTEM |
-			FORMAT_MESSAGE_IGNORE_INSERTS,
-			NULL,
-			dw,
-			MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
-			(LPTSTR)&lpMsgBuf,
-			0, NULL);
-
-		std::wcerr << (LPTSTR)lpMsgBuf;
-
-		LocalFree(lpMsgBuf);
-#else
-		auto error_string = dlerror();
-		if (nullptr != error_string)
-			std::cerr << error_string;
-#endif
-
 		return false;
 	}
 	case CT_CONFIG:
@@ -1377,24 +1351,28 @@ namespace cgv {
 
 void *load_plugin_platform(const std::string &name) {
 #ifdef _WIN32
-  SetLastError(0);
+    SetLastError(0);
 #ifdef _UNICODE
-  return LoadLibrary(cgv::utils::str2wstr(name).c_str());
+    return LoadLibrary(cgv::utils::str2wstr(name).c_str());
 #else
-  return LoadLibrary(name.c_str());
+    return LoadLibrary(name.c_str());
 #endif
 #else
-  return dlopen(name.c_str(), RTLD_NOW);
+    return dlopen(name.c_str(), RTLD_NOW);
 #endif
 }
 
 void record_error_platform(std::vector<std::string> &errors) {
 #ifdef _WIN32
-  std::string error =
-      "failed with error code " + std::to_string(GetLastError());
-  errors.push_back(error);
+    DWORD dw = GetLastError();
+    LPVOID lpMsgBuf;
+    FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS, NULL, dw,
+                  MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), (LPTSTR)&lpMsgBuf, 0, NULL);
+    auto error = std::string(lpMsgBuf);
+    errors.push_back(error);
+    LocalFree(lpMsgBuf);
 #else
-  errors.emplace_back(dlerror());
+    errors.emplace_back(dlerror());
 #endif
 }
 
@@ -1407,38 +1385,39 @@ void* load_plugin(const std::string& file_name)
 	if (enabled)
 		disable_registration();
 
-	void* result = nullptr;
-	std::vector<std::string> errors = {};
-        for (unsigned i = 0; i < names.size(); ++i) {
-		std::string fn[2];
-		fn[0] = to_string(names[i]);
-		fn[1] = extend_plugin_name(fn[0]);
+    void* result = 0;
+    std::vector<std::string> errors = {};
+    for (unsigned i = 0; i < names.size(); ++i) {
+        std::string fn[2];
+        fn[0] = to_string(names[i]);
+        fn[1] = extend_plugin_name(fn[0]);
+
 #ifndef NDEBUG
-		std::swap(fn[0], fn[1]);
+        std::swap(fn[0], fn[1]);
 #endif
 
-		result = nullptr;
-                for (int j = 0; j < 2; ++j) {
-			ref_plugin_name() = fn[j];
-			result = load_plugin_platform(fn[j]);
-			if (result) {
-				break;
-                        } else {
-				record_error_platform(errors);
-                        }
-		}
-	}
+        result = nullptr;
+        for (auto &j : fn) {
+            ref_plugin_name() = j;
+            result = load_plugin_platform(j);
+            if (result) {
+                break;
+            } else {
+                record_error_platform(errors);
+            }
+        }
+    }
 
-	if (enabled)
-		enable_registration();
-	ref_plugin_name().clear();
+    if (enabled)
+        enable_registration();
+    ref_plugin_name().clear();
 
-	if (!errors.empty()) {
-		std::cerr << "failed to load plugin " << file_name << std::endl;
-		for (const auto &err:errors) {
-			std::cerr << "    " << err << std::endl;
-		}
-	}
+    if (!result && !errors.empty()) {
+        std::cerr << "failed to load plugin " << file_name << std::endl;
+        for (const auto &err:errors) {
+            std::cerr << "    " << err << std::endl;
+        }
+    }
 
 	return result;
 }
