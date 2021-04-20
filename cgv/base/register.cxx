@@ -25,7 +25,7 @@
 using namespace cgv::utils;
 
 namespace cgv {
-	namespace base {
+namespace base {
 
 
 
@@ -55,9 +55,9 @@ struct registration_order_info
 	{
 	}
 	registration_order_info(const std::string& _partial_order, bool _before_contructor_execution, const std::string& _when) :
-		partial_order(_partial_order),
-		before_contructor_execution(_before_contructor_execution),
-		when(_when)
+		  partial_order(_partial_order),
+		  before_contructor_execution(_before_contructor_execution),
+		  when(_when)
 	{
 	}
 };
@@ -172,7 +172,7 @@ void show_split_lines(const std::string& s)
 	std::vector<token> toks;
 	bite_all(tokenizer(s).set_ws(";"), toks);
 	for (unsigned i=0; i<toks.size(); ++i)
-		std::cout << "\n    " << to_string(toks[i]).c_str();
+		std::cout << "\n	" << to_string(toks[i]).c_str();
 }
 
 bool& ref_registration_debugging_enabled()
@@ -434,7 +434,7 @@ void enable_registration()
 		// send all buffered events
 		for (unsigned j=0; j<i0; ++j)
 			object->get_interface<registration_listener>()->register_object(ref_registration_events()[j].first,
-								ref_registration_events()[j].second);
+																			ref_registration_events()[j].second);
 	}
 
 	// next register all remaining objects
@@ -532,8 +532,8 @@ void enable_registration_event_cleanup()
 		ref_registration_events().clear();
 	else
 		ref_registration_events().erase(
-			ref_registration_events().begin(),
-			ref_registration_events().begin()+ref_info().nr_events_before_disable);
+			  ref_registration_events().begin(),
+			  ref_registration_events().begin()+ref_info().nr_events_before_disable);
 	ref_info().nr_events_before_disable = 0;
 }
 
@@ -583,7 +583,7 @@ void register_object(base_ptr object, const std::string& options)
 			// next register all remaining objects
 			for (unsigned i = 0; i<ref_registration_events().size(); ++i)
 				rl->register_object(ref_registration_events()[i].first,
-				ref_registration_events()[i].second);
+									ref_registration_events()[i].second);
 		}
 	}
 
@@ -770,7 +770,7 @@ bool process_gui_file(const std::string& file_name)
 
 
 test::test(const std::string& _test_name, bool (*_test_func)())
-	: test_name(_test_name), test_func(_test_func)
+	  : test_name(_test_name), test_func(_test_func)
 {
 }
 
@@ -799,7 +799,7 @@ test_registration::test_registration(const std::string& _test_name, bool (*_test
 
 /// construct
 factory::factory(const std::string& _created_type_name, bool _singleton, const std::string& _object_options)
-	: created_type_name(_created_type_name), is_singleton(_singleton), object_options(_object_options)
+	  : created_type_name(_created_type_name), is_singleton(_singleton), object_options(_object_options)
 {
 }
 
@@ -902,14 +902,14 @@ void register_prog_name(const char* _prog_name)
 }
 
 resource_file_info::resource_file_info(
-	unsigned int _file_offset,
-	unsigned int _file_length,
-	const char* _file_data, const
-	std::string& _source_file)
-	: file_offset(_file_offset),
-	  file_length(_file_length),
-	  file_data(_file_data),
-	  source_file(_source_file) {}
+	  unsigned int _file_offset,
+	  unsigned int _file_length,
+	  const char* _file_data, const
+	  std::string& _source_file)
+	  : file_offset(_file_offset),
+		file_length(_file_length),
+		file_data(_file_data),
+		source_file(_source_file) {}
 
 void register_resource_file(const std::string& file_path, unsigned int file_offset, unsigned int file_length, const char* file_data, const std::string& source_file)
 {
@@ -1005,7 +1005,7 @@ CommandType analyze_command(const cgv::utils::token& cmd, bool eliminate_quotes,
 	// eliminate quotes around argument, which need to be used in commands specified on the command line
 	if (eliminate_quotes && args_tok.get_length() >= 2 &&
 		((args_tok[0] == '"'  && args_tok[(int)args_tok.get_length() - 1] == '"') ||
-		(args_tok[0] == '\'' && args_tok[(int)args_tok.get_length() - 1] == '\''))) {
+		 (args_tok[0] == '\'' && args_tok[(int)args_tok.get_length() - 1] == '\''))) {
 		++args_tok.begin;
 		--args_tok.end;
 	}
@@ -1056,32 +1056,6 @@ bool process_command_ext(const command_info& info, bool* persistent, config_file
 		}
 		std::cerr << "error reading plugin " << info.parameters[0] << std::endl;
 
-		// Reaching this point means the library could not be loaded.
-		// Therefore use the approriate system facilities to print an error
-		// message.
-#ifdef _WIN32
-		LPVOID lpMsgBuf;
-		DWORD dw = GetLastError();
-
-		FormatMessage(
-			FORMAT_MESSAGE_ALLOCATE_BUFFER |
-			FORMAT_MESSAGE_FROM_SYSTEM |
-			FORMAT_MESSAGE_IGNORE_INSERTS,
-			NULL,
-			dw,
-			MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
-			(LPTSTR)&lpMsgBuf,
-			0, NULL);
-
-		std::wcerr << (LPTSTR)lpMsgBuf;
-
-		LocalFree(lpMsgBuf);
-#else
-		auto error_string = dlerror();
-		if (nullptr != error_string)
-			std::cerr << error_string;
-#endif
-
 		return false;
 	}
 	case CT_CONFIG:
@@ -1100,41 +1074,41 @@ bool process_command_ext(const command_info& info, bool* persistent, config_file
 		return false;
 	case CT_NAME:
 	case CT_TYPE:
-		{
-			base_ptr bp;
-			if (info.command_type == CT_NAME) {
-				named_ptr np = find_object_by_name(to_string(info.parameters[0]));
-				if (np) {
-					std::cout << "name(" << np->get_name().c_str() << ")";
-					bp = np;
-				}
-				else
-					std::cerr << "could not find object of name '" << info.parameters[0] << "'" << std::endl;
+	{
+		base_ptr bp;
+		if (info.command_type == CT_NAME) {
+			named_ptr np = find_object_by_name(to_string(info.parameters[0]));
+			if (np) {
+				std::cout << "name(" << np->get_name().c_str() << ")";
+				bp = np;
 			}
-			else {
-				bp = find_object_by_type(to_string(info.parameters[0]));
-				if (bp)
-					std::cout << "type(" << bp->get_type_name() << ")";
-				else
-					std::cerr << "could not find object of type <" << info.parameters[0] << ">" << std::endl;
-			}
-			if (bp) {
-				std::string args = to_string(info.parameters[1]);
-				// replace single quotes by double quotes
-				for (unsigned int x = 0; x < args.size(); ++x)
-					if (args[x] == '\'')
-						args[x] = '"';
-
-				show_split_lines(args);
-				std::cout << "\n" << std::endl;
-				if (persistent && *persistent && cfo)
-					cfo->multi_observe(bp, args, info.parameters[1].begin - begin);
-				else
-					bp->multi_set(to_string(info.parameters[1]), true);
-				return true;
-			}
-			return false;
+			else
+				std::cerr << "could not find object of name '" << info.parameters[0] << "'" << std::endl;
 		}
+		else {
+			bp = find_object_by_type(to_string(info.parameters[0]));
+			if (bp)
+				std::cout << "type(" << bp->get_type_name() << ")";
+			else
+				std::cerr << "could not find object of type <" << info.parameters[0] << ">" << std::endl;
+		}
+		if (bp) {
+			std::string args = to_string(info.parameters[1]);
+			// replace single quotes by double quotes
+			for (unsigned int x = 0; x < args.size(); ++x)
+				if (args[x] == '\'')
+					args[x] = '"';
+
+			show_split_lines(args);
+			std::cout << "\n" << std::endl;
+			if (persistent && *persistent && cfo)
+				cfo->multi_observe(bp, args, info.parameters[1].begin - begin);
+			else
+				bp->multi_set(to_string(info.parameters[1]), true);
+			return true;
+		}
+		return false;
+	}
 	}
 	return false;
 }
@@ -1356,7 +1330,7 @@ std::string extend_plugin_name(const std::string& fn)
 	return n;
 }
 
-	}
+}
 }
 
 #ifdef _WIN32
@@ -1373,32 +1347,38 @@ std::string extend_plugin_name(const std::string& fn)
 #endif
 
 namespace cgv {
-	namespace base {
+namespace base {
 
 void *load_plugin_platform(const std::string &name) {
 #ifdef _WIN32
-    SetLastError(0);
+	SetLastError(0);
 #ifdef _UNICODE
-    return LoadLibrary(cgv::utils::str2wstr(name).c_str());
+	return LoadLibrary(cgv::utils::str2wstr(name).c_str());
 #else
-    return LoadLibrary(name.c_str());
+	return LoadLibrary(name.c_str());
 #endif
 #else
-    return dlopen(name.c_str(), RTLD_NOW);
+	return dlopen(name.c_str(), RTLD_NOW);
 #endif
 }
 
-void record_error_platform(std::vector<std::string> &errors) {
+void record_error_platform(const std::string &dll_name, std::vector<std::string> &errors) {
 #ifdef _WIN32
-    std::string error = "failed with error code " + std::to_string(GetLastError());
-    errors.push_back(error);
+	DWORD dw = GetLastError();
+	LPVOID lpMsgBuf;
+	FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS, nullptr,
+				  dw, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), (LPTSTR)&lpMsgBuf, 0, nullptr);
+	auto error = dll_name + ": " + std::string(static_cast<const char *>(lpMsgBuf));
+	LocalFree(lpMsgBuf);
+	errors.push_back(error);
 #else
-    errors.emplace_back(dlerror());
+	auto errPtr = dlerror();
+	auto error = std::string(errPtr) + "\n";
+	errors.emplace_back(error);
 #endif
 }
 
-void* load_plugin(const std::string& file_name)
-{
+void* load_plugin(const std::string& file_name) {
 	std::vector<token> names;
 	bite_all(tokenizer(file_name).set_ws(",|;"), names);
 
@@ -1406,26 +1386,26 @@ void* load_plugin(const std::string& file_name)
 	if (enabled)
 		disable_registration();
 
-    void* result = 0;
-    std::vector<std::string> errors = {};
-	for (unsigned i=0; i<names.size(); ++i) {
+	void* result = nullptr;
+	std::vector<std::string> errors = {};
+	for (auto &plugin_name : names) {
 		std::string fn[2];
-		fn[0] = to_string(names[i]);
+		fn[0] = to_string(plugin_name);
 		fn[1] = extend_plugin_name(fn[0]);
 
 #ifndef NDEBUG
 		std::swap(fn[0], fn[1]);
 #endif
 
-		result = 0;
-		for (int j=0; j<2; ++j) {
-			ref_plugin_name() = fn[j];
-            result = load_plugin_platform(fn[j]);
+		result = nullptr;
+		for (auto &dll_name : fn) {
+			ref_plugin_name() = dll_name;
+			result = load_plugin_platform(dll_name);
 			if (result) {
-                break;
-            } else {
-                record_error_platform(errors);
-            }
+				break;
+			} else {
+				record_error_platform(dll_name, errors);
+			}
 		}
 	}
 
@@ -1433,12 +1413,12 @@ void* load_plugin(const std::string& file_name)
 		enable_registration();
 	ref_plugin_name().clear();
 
-    if (!errors.empty()) {
-        std::cerr << "failed to load plugin " << file_name << std::endl;
-        for (const auto &err:errors) {
-            std::cerr << "    " << err << std::endl;
-        }
-    }
+	if (result == nullptr && !errors.empty()) {
+		std::cerr << "failed to load plugin " << file_name << std::endl;
+		for (const auto &err : errors) {
+			std::cerr << "	" << err;
+		}
+	}
 
 	return result;
 }
@@ -1452,5 +1432,5 @@ bool unload_plugin(void* handle)
 #endif
 }
 
-	}
+}
 }
