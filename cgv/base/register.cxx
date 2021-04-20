@@ -1405,7 +1405,7 @@ void* load_plugin(const std::string& file_name) {
             if (result) {
                 break;
             } else {
-                record_error_platform(errors);
+                record_error_platform(dll_name, errors);
             }
         }
     }
