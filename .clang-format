@@ -20,13 +20,13 @@ AlwaysBreakTemplateDeclarations: MultiLine
 BinPackArguments: true
 BinPackParameters: true
 BraceWrapping:
-  AfterClass: false
+  AfterClass: true
   AfterControlStatement: Always
   AfterEnum: false
   AfterFunction: true
   AfterNamespace: false
   AfterObjCDeclaration: false
-  AfterStruct: false
+  AfterStruct: true
   AfterUnion: false
   AfterExternBlock: false
   BeforeCatch: false
@@ -115,6 +115,7 @@ StatementMacros:
   - Q_UNUSED
   - QT_REQUIRE_VERSION
 TabWidth: 4
+UseCRLF: false
 UseTab: ForContinuationAndIndentation
 ...
 
