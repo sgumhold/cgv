@@ -43,22 +43,26 @@ struct fltk_gl_context : public gl::gl_context, public fltk::GlWindow
 	}
 
 	bool is_created() const { return true; }
+	void attach_depth_buffer(bool attach = true) {}
 	bool is_alpha_buffer_attached() const { return true; }
-	void attach_alpha_buffer() {}
+	void attach_alpha_buffer(bool attach = true) {}
 	void detach_alpha_buffer() {}
 	bool is_stencil_buffer_attached() const { return false; }
-	void attach_stencil_buffer() {}
+	void attach_stencil_buffer(bool attach = true) {}
 	void detach_stencil_buffer() {}
 	bool is_quad_buffer_supported() const { return false; }
 	bool is_quad_buffer_attached() const { return false; }
 	void attach_quad_buffer() {}
 	void detach_quad_buffer() {}
 	bool is_accum_buffer_attached() const { return false; }
-	void attach_accum_buffer() {}
-	void detach_accum_buffer() {}
+	void attach_accumulation_buffer(bool attach = true) {}
+	void detach_accumulation_buffer() {}
 	bool is_multisample_enabled() const { return false; }
+	void attach_multi_sample_buffer(bool attach = true) {}
 	void enable_multisample() {}
 	void disable_multisample() {}
+	bool is_stereo_buffer_supported() const { return false; }
+	void attach_stereo_buffer(bool attach = true) {}
 
 
 	/// return the current render pass
@@ -123,7 +127,7 @@ bool convert_to_string(const std::string& in_fn, const std::string& out_fn, bool
 		return false;
 	// encode in base64 if this a cgv option
 	if (cgv::utils::has_option("ENCODE_SHADER_BASE64"))
-		content = std::string("§") + cgv::utils::encode_base64(content);
+		content = std::string("ï¿½") + cgv::utils::encode_base64(content);
 	// stream out the string declaration
 	std::string sn = get_file_name(in_fn);
 	replace(sn, '.', '_');

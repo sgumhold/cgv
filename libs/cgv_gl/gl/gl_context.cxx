@@ -211,8 +211,8 @@ bool gl_context::configure_gl()
 		debug = (context_flags & WGL_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB) != 0;
 		forward_compatible = (context_flags & WGL_CONTEXT_DEBUG_BIT_ARB) != 0;
 #else
-		debug = (context_flags & WGL_CONTEXT_DEBUG_BIT_ARB) != 0;
-		forward_compatible = (context_flags & WGL_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB) != 0;
+		debug = (context_flags & GLX_CONTEXT_DEBUG_BIT_ARB) != 0;
+		forward_compatible = (context_flags & GLX_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB) != 0;
 #endif
 	}
 	else {
@@ -223,7 +223,11 @@ bool gl_context::configure_gl()
 	if (version >= 32) {
 		GLint context_profile;
 		glGetIntegerv(GL_CONTEXT_PROFILE_MASK, &context_profile);
+#ifdef WIN32
 		core_profile = (context_profile & WGL_CONTEXT_CORE_PROFILE_BIT_ARB) != 0;
+#else
+		core_profile = (context_profile & GLX_CONTEXT_CORE_PROFILE_BIT_ARB) != 0;
+#endif
 	}
 	else
 		core_profile = false;

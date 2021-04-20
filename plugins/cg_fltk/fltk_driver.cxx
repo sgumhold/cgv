@@ -376,6 +376,7 @@ void fltk_driver::set_context_creation_attrib_list(cgv::render::context_config& 
 {
 	static std::vector<int> context_creation_attrib_list;
 	context_creation_attrib_list.clear();
+#ifdef _WIN32
 	if (cc.forward_compatible || cc.debug) {
 		context_creation_attrib_list.push_back(WGL_CONTEXT_FLAGS_ARB);
 		context_creation_attrib_list.push_back((cc.forward_compatible ? WGL_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB : 0) + (cc.debug ? WGL_CONTEXT_DEBUG_BIT_ARB : 0));
@@ -390,8 +391,27 @@ void fltk_driver::set_context_creation_attrib_list(cgv::render::context_config& 
 	}
 	context_creation_attrib_list.push_back(WGL_CONTEXT_PROFILE_MASK_ARB);
 	context_creation_attrib_list.push_back(cc.core_profile ? WGL_CONTEXT_CORE_PROFILE_BIT_ARB : WGL_CONTEXT_COMPATIBILITY_PROFILE_BIT_ARB);
+#else
+	if (cc.forward_compatible || cc.debug) {
+		context_creation_attrib_list.push_back(GLX_CONTEXT_FLAGS_ARB);
+		context_creation_attrib_list.push_back((cc.forward_compatible ? GLX_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB : 0) + (cc.debug ? GLX_CONTEXT_DEBUG_BIT_ARB : 0));
+	}
+	if (cc.version_major > 0) {
+		context_creation_attrib_list.push_back(GLX_CONTEXT_MAJOR_VERSION_ARB);
+		context_creation_attrib_list.push_back(cc.version_major);
+	}
+	if (cc.version_minor > 0) {
+		context_creation_attrib_list.push_back(GLX_CONTEXT_MINOR_VERSION_ARB);
+		context_creation_attrib_list.push_back(cc.version_minor);
+	}
+	context_creation_attrib_list.push_back(GLX_CONTEXT_PROFILE_MASK_ARB);
+	context_creation_attrib_list.push_back(cc.core_profile ? GLX_CONTEXT_CORE_PROFILE_BIT_ARB : GLX_CONTEXT_COMPATIBILITY_PROFILE_BIT_ARB);
+#endif
 	context_creation_attrib_list.push_back(0);
+#ifdef _WIN32
+	// FIXME find a way to do this on Unix systems as well
 	fltk::GlChoice::ref_attrib_list() = &context_creation_attrib_list.front();
+#endif
 }
 
 /// create a window of the given type. Currently only the types "viewer with gui", "viewer" and "gui" are supported
