@@ -1,10 +1,5 @@
-#include <cgv/base/node.h>
-#include <cgv/render/drawable.h>
-#include <cgv/gui/event_handler.h>
-#include <cgv/gui/provider.h>
-#include <cgv/base/find_action.h>
-#include <cg_vr/vr_server.h>
 #include "vr_tool.h"
+#include <cgv/base/find_action.h>
 
 namespace vr {
 
