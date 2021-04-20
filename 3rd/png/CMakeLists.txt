@@ -19,6 +19,7 @@ add_library(png
         pngwtran.c
         pngwutil.c)
 target_link_libraries(png zlib)
+target_include_directories(png PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 
 if (WIN32)
     target_compile_definitions(png PRIVATE PNG_BUILD_DLL PNG_NO_MODULEDEF)
