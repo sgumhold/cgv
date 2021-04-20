@@ -288,12 +288,12 @@ public:
 	/// overide this function to process a face, the indices start with 0
 	void process_face(unsigned vcount, int *vertices, int *texcoords, int *normals)
 	{
-		convert_to_positive(vcount, vertices, texcoords, normals, unsigned(mesh.positions.size()), unsigned(mesh.normals.size()), unsigned(mesh.tex_coords.size()));
+		obj_reader_base::convert_to_positive(vcount, vertices, texcoords, normals, unsigned(mesh.positions.size()), unsigned(mesh.normals.size()), unsigned(mesh.tex_coords.size()));
 		mesh.faces.push_back(idx_type(mesh.position_indices.size()));
-		if (get_current_group() != -1)
-			mesh.group_indices.push_back(get_current_group());
-		if (get_current_material() != -1)
-			mesh.material_indices.push_back(get_current_material());
+		if (obj_reader_base::get_current_group() != -1)
+			mesh.group_indices.push_back(obj_reader_base::get_current_group());
+		if (obj_reader_base::get_current_material() != -1)
+			mesh.material_indices.push_back(obj_reader_base::get_current_material());
 		if (texcoords) {
 			if (mesh.tex_coord_indices.size() < mesh.position_indices.size())
 				mesh.tex_coord_indices.resize(mesh.position_indices.size(), 0);

@@ -79,6 +79,7 @@ public:
 		paletted image formats to non paletted ones. In case palettes are used, the components in the file_format
 		will be '0', '1', ... for the components that reference the i-th palette. */
 	image_reader(data_format& file_format, std::vector<data_format>* palette_formats = 0);
+	~image_reader() {}
 	/// overload to return the type name of this object
 	std::string get_type_name() const;
 	/// return a string with a list of supported extensions, where the list entries are separated with the passed character that defaults to a semicolon

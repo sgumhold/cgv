@@ -98,7 +98,8 @@ bool picker::handle(event& e)
 					is_drag_action = drag_pnt_idx == -1;
 					if (is_drag_action) {
 						pnts.push_back(p);
-						clrs.push_back(rgb((const rgb&)(0.5f*(p + 1.0f))));
+						auto c = 0.5f*(p + 1.0f);
+						clrs.push_back(rgb(c.x(), c.y(), c.z()));
 						drag_pnt_idx = (int)pnts.size()-1;
 					}
 					post_redraw();
