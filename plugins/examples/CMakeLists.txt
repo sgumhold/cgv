@@ -29,13 +29,17 @@ add_dependencies(examples
         # cg_icons
         cg_meta
         cmi_io
-        cmv_avi
-        co_web
         crg_antialias
         crg_depth_of_field
         crg_grid
         crg_light
         crg_stereo_view)
+
+if (WIN32)
+    add_dependencies(examples
+            cmv_avi
+            co_web)
+endif ()
 
 # TODO activate shader tests again
 # cgv_test_shaders(examples ${SHADER_SOURCES})
