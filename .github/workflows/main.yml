@@ -24,6 +24,8 @@ jobs:
 
       - run: mkdir build
 
+
+
       - name: Run CMake
         working-directory: ./build
         run: cmake -G Ninja -D CMAKE_C_COMPILER=/usr/bin/clang-11 -D CMAKE_CXX_COMPILER=/usr/bin/clang++-11 -D CMAKE_INSTALL_PREFIX=../install ..
