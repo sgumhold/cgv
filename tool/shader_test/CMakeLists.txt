@@ -1,5 +1,5 @@
 
-ppp_compile(${CGV_DIR} PPP_FILES PPP_INCLUDES
+ppp_compile(${CGV_DIR} PPP_FILES PPP_INCLUDES PPP_INSTALL_DIR
         ../../libs/cgv_gl/gl/gl_context_switch.ph
         ../../cgv/type/traits/method_pointer.ph
         ../../cgv/type/invalid_type.ph
@@ -53,7 +53,7 @@ add_executable(shader_test
 target_link_libraries(shader_test
         fltk
         glew
-        X11
+        ${X11_LIBRARIES}
         ${OPENGL_LIBRARIES}
         ${CMAKE_DL_LIBS})
 target_include_directories(shader_test PRIVATE

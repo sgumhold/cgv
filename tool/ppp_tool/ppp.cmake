@@ -1,6 +1,9 @@
-function(ppp_compile base outfiles_var outinclude_var)
+function(ppp_compile base outfiles_var outinclude_var outinstall_var)
     set(PH_INCLUDE_DIR "${CMAKE_CURRENT_BINARY_DIR}/ph")
+    file(RELATIVE_PATH PH_INSTALL_POSTFIX ${CMAKE_BINARY_DIR} ${CMAKE_CURRENT_BINARY_DIR})
     get_filename_component(PPP_BASE "${base}" ABSOLUTE)
+
+    list(APPEND o_includes ${PH_INCLUDE_DIR})
 
     # Add a custom build rule for every file
     foreach (infile ${ARGN})
@@ -9,10 +12,9 @@ function(ppp_compile base outfiles_var outinclude_var)
         list(APPEND o_includes ${outinclude})
     endforeach ()
 
-    list(APPEND o_includes ${PH_INCLUDE_DIR})
-
     set(${outfiles_var} ${o_files} PARENT_SCOPE)
     set(${outinclude_var} ${o_includes} PARENT_SCOPE)
+    set(${outinstall_var} ${PH_INCLUDE_DIR}/${PH_INSTALL_POSTFIX}/. PARENT_SCOPE)
 endfunction()
 
 function(ppp_command_add base infile outfile_var outinclude_var)
@@ -36,7 +38,6 @@ function(ppp_command_add base infile outfile_var outinclude_var)
     get_filename_component(OUTPUT_FILE "${PH_PATH}/${PH_NAME}.h" ABSOLUTE)
     get_filename_component(PH_SRC_PATH "${infile}" DIRECTORY)
 
-    message(STATUS "Adding compile command for '${OUTPUT_FILE}'")
     # Add the build rule
     add_custom_command(OUTPUT ${OUTPUT_FILE}
             COMMAND $<TARGET_FILE:ppp>

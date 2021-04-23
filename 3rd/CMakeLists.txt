@@ -11,3 +11,5 @@ if (WIN32)
     # FIXME webserver can only be built on Windows
     add_subdirectory(webserver)
 endif ()
+
+install(EXPORT cgv_3rd DESTINATION ${CGV_LIB_DEST})

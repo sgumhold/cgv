@@ -49,5 +49,11 @@ add_library(jpeg
         jquant1.c
         jquant2.c
         jutils.c)
-target_include_directories(jpeg PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 target_compile_definitions(jpeg PRIVATE JPEG_DLL)
+
+target_include_directories(jpeg PUBLIC
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
+        $<INSTALL_INTERFACE:${CGV_3RD_INCLUDE_DEST}/jpeg>)
+
+install(TARGETS jpeg EXPORT cgv_3rd DESTINATION ${CGV_LIB_DEST})
+install(DIRECTORY . DESTINATION ${CGV_3RD_INCLUDE_DEST}/jpeg FILES_MATCHING PATTERN "*.h")

@@ -6,3 +6,5 @@ target_compile_definitions(cmv_avi PRIVATE CGV_MEDIA_VIDEO_WIN_EXPORTS)
 if (WIN32)
     target_link_libraries(cmv_avi Vfw32)
 endif ()
+
+install(TARGETS cmv_avi EXPORT cgv_plugins DESTINATION ${CGV_LIB_DEST})
