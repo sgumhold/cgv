@@ -17,7 +17,7 @@ jobs:
         run: wget https://apt.llvm.org/llvm.sh && chmod +x llvm.sh && sudo ./llvm.sh 11
 
       - name: Install dependcies
-        run: sudo apt-get update && sudo apt-get install -y cmake ninja-build clang-tools-11 clang-11-doc libclang-11-dev libfuzzer-11-dev
+        run: sudo apt-get update && sudo apt-get install -y cmake ninja-build clang-tools-11 clang-11-doc libclang-11-dev libgl1-mesa-dev
 
       - name: Create build directory
         run: mkdir build
