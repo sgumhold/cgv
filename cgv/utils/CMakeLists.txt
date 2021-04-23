@@ -9,4 +9,10 @@ ppp_compile("${CGV_DIR}"
 
 add_library(cgv_utils ${SOURCES} ${PPP_FILES})
 target_compile_definitions(cgv_utils PRIVATE CGV_UTILS_EXPORTS)
-target_include_directories(cgv_utils PUBLIC ${CGV_DIR} ${PPP_INCLUDES})
+target_include_directories(cgv_utils PUBLIC
+        $<BUILD_INTERFACE:${CGV_DIR}>
+        "$<BUILD_INTERFACE:${PPP_INCLUDES}>"
+        $<INSTALL_INTERFACE:include>)
+
+install(TARGETS cgv_utils EXPORT cgv_utils DESTINATION ${CGV_LIB_DEST})
+install(EXPORT cgv_utils DESTINATION ${CGV_LIB_DEST})

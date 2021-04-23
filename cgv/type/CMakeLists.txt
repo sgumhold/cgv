@@ -8,6 +8,14 @@ ppp_compile("${CGV_DIR}"
         ${PPP_SOURCES})
 
 add_library(cgv_type ${SOURCES} ${PPP_FILES})
-target_compile_definitions(cgv_type PRIVATE CGV_TYPE_EXPORTS)
-target_include_directories(cgv_type PUBLIC ${CGV_DIR} ${PPP_INCLUDES})
 target_link_libraries(cgv_type PUBLIC cgv_utils)
+target_compile_definitions(cgv_type PRIVATE CGV_TYPE_EXPORTS)
+target_include_directories(cgv_type PUBLIC
+        $<BUILD_INTERFACE:${CGV_DIR}>
+        "$<BUILD_INTERFACE:${PPP_INCLUDES}>"
+        $<INSTALL_INTERFACE:include>)
+
+install(TARGETS cgv_type EXPORT cgv_type DESTINATION ${CGV_LIB_DEST})
+install(EXPORT cgv_type DESTINATION ${CGV_LIB_DEST})
+list(GET PPP_INCLUDES 0 PPP_BUILD_DIR)
+install(DIRECTORY ${PPP_BUILD_DIR}/cgv/type/. DESTINATION ${CGV_INCLUDE_DEST}/type FILES_MATCHING PATTERN "*.h")
