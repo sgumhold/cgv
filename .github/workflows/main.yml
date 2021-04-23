@@ -4,7 +4,7 @@ on: push
 
 jobs:
   build-ubuntu:
-    name: Build and Install the CGV framework on Ubuntu
+    name: "Ubuntu: Build and Install the CGV framework"
     runs-on: ubuntu-latest
 
     steps:
@@ -33,7 +33,7 @@ jobs:
         run: cmake --build . --target install
 
   build-windows:
-    name: Build and Install the CGV framework on Windows
+    name: "Windows: Build and Install the CGV framework"
     runs-on: windows-latest
 
     steps:
@@ -44,7 +44,8 @@ jobs:
 
       - name: Set up environment variables
 #        run: "C:/Program\ Files\ (x86)/Microsoft\ Visual\ Studio/2019/Enterprise/VC/Auxiliary/Build/vcvars64.bat"
-        run: call "C:/Program Files (x86)/Microsoft Visual Studio/2019/Enterprise/VC/Auxiliary/Build/vcvars64.bat"
+        run: |
+          "C:/Program Files (x86)/Microsoft Visual Studio/2019/Enterprise/VC/Auxiliary/Build/vcvars64.bat"
 
       - run: mkdir build
 
