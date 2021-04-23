@@ -47,6 +47,7 @@ class CGV_API curvature_estimator : public point_cloud_types {
 public:
 	curvature_estimator(point_cloud& spc) : pc(spc){
 	}
+	void compute_unsigned_principal_curvature(std::vector<principal_curvature_estimation>& pce);
 
 	void compute_principal_curvature(std::vector<principal_curvature_estimation>& pce);
 };
