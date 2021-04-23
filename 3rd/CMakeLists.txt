@@ -11,3 +11,5 @@ if (WIN32)
     # FIXME webserver can only be built on Windows
     add_subdirectory(webserver)
 endif ()
+
+install(FILES cgv-3rd-config.cmake DESTINATION ${CGV_3RD_LIB_DEST})

@@ -10,24 +10,8 @@ add_subdirectory(crg_light)
 add_subdirectory(crg_stereo_view)
 add_subdirectory(examples)
 
-add_custom_target(plugins)
-add_dependencies(plugins
-        cg_ext
-        cg_fltk
-        cg_meta
-        cmi_io
-        crg_antialias
-        crg_depth_of_field
-        crg_grid
-        crg_light
-        crg_stereo_view
-        examples)
-
 if (WIN32)
     # FIXME these plugins can only be compiled under Windows for now
     add_subdirectory(cmv_avi)
     add_subdirectory(co_web)
-    add_dependencies(plugins
-            cmv_avi
-            co_web)
 endif ()

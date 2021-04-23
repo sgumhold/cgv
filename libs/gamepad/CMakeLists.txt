@@ -13,7 +13,9 @@ add_library(gamepad ${SOURCES})
 target_compile_definitions(gamepad PRIVATE GAMEPAD_EXPORTS)
 target_link_libraries(gamepad PUBLIC ${GAMEPAD_LIBS})
 target_include_directories(gamepad PUBLIC
-        ${CMAKE_CURRENT_SOURCE_DIR}
-        ${CGV_DIR}
-        ${CGV_DIR}/libs
-        ${X11_INCLUDE_DIRS})
+        $<BUILD_INTERFACE:${CGV_DIR}>
+        $<BUILD_INTERFACE:${CGV_DIR}/libs>
+        $<INSTALL_INTERFACE:${CGV_LIBS_INCLUDE_DEST}>)
+
+install(TARGETS gamepad EXPORT gamepad DESTINATION ${CGV_LIBS_LIB_DEST})
+install(EXPORT gamepad DESTINATION ${CGV_LIBS_LIB_DEST})
