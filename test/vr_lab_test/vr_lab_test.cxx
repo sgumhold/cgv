@@ -30,6 +30,7 @@ class vr_lab_test :
 	public cgv::base::node,
 	public cgv::render::drawable,
 	public cgv::gui::event_handler,
+	public cgv::gui::provider,
 	public vr::vr_tool
 {
 	cgv::render::sphere_render_style srs;

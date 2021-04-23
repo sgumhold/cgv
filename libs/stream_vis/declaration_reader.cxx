@@ -323,6 +323,7 @@ namespace stream_vis {
 		pi.nr_axes = dim + nr_attributes;
 		if (dim == 2) {
 			auto* plot2d_ptr = new cgv::plot::plot2d(unsigned(nr_attributes));
+			plot2d_ptr->disable_depth_mask = true;
 			pi.plot_ptr = plot2d_ptr;
 			vec2 ext = vec2(1.0f, 1.0f);
 			parse_vec2("extent", ext);
