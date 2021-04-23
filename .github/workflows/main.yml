@@ -1,9 +1,9 @@
-name: Build and Install the CGV framework on Ubuntu
+name: Build and Install the CGV framework
 
 on: push
 
 jobs:
-  build-and-test:
+  build-ubuntu:
     name: Build and Install the CGV framework on Ubuntu
     runs-on: ubuntu-latest
 
@@ -31,3 +31,23 @@ jobs:
       - name: Build and Install
         working-directory: ./build
         run: cmake --build . --target install
+
+  build-windows:
+    name: Build and Install the CGV framework on Windows
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+        with:
+          submodules: recursive
+
+      - name: Set up environment variables
+#        run: "C:/Program\ Files\ (x86)/Microsoft\ Visual\ Studio/2019/Enterprise/VC/Auxiliary/Build/vcvars64.bat"
+        run: call "C:/Program Files (x86)/Microsoft Visual Studio/2019/Enterprise/VC/Auxiliary/Build/vcvars64.bat"
+
+      - run: mkdir build
+
+      - name: Run CMake
+        working-directory: build
+        run: cmake -D CMAKE_INTSALL_PREFIX=../install ..
