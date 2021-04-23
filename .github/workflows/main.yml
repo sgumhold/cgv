@@ -1,0 +1,29 @@
+name: Build and Test
+
+on: push
+
+jobs:
+  build-and-test:
+    name: Build and Install the cgv framework
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+        with:
+          submodules: recursive
+
+      - name: Install llvm repository
+        run: wget https://apt.llvm.org/llvm.sh && chmod +x llvm.sh && sudo ./llvm.sh 11
+
+      - name: Install dependcies
+        run: sudo apt-get update && sudo apt-get install -y cmake ninja-build clang-tools-11 clang-11-doc libclang-11-dev libfuzzer-11-dev
+
+      - name: Create build directory
+        run: mkdir build && cd build
+
+      - name: Run CMake
+        run: cmake -G Ninja -D CMAKE_C_COMPILER=/usr/bin/clang-11 -D CMAKE_CXX_COMPILER=/usr/bin/clang++-11 -D CMAKE_INSTALL_PREFIX=../install ..
+
+      - name: Build and Install
+        run: ninja install
