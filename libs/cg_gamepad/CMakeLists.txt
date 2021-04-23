@@ -16,3 +16,6 @@ target_link_libraries(cg_gamepad
         cgv_gui
         cgv_reflect_types
         gamepad)
+
+install(TARGETS cg_gamepad EXPORT cg_gamepad DESTINATION ${CGV_LIBS_LIB_DEST})
+install(EXPORT cg_gamepad DESTINATION ${CGV_LIBS_LIB_DEST})

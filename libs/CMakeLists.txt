@@ -7,12 +7,7 @@ add_subdirectory(gamepad)
 add_subdirectory(glsu)
 add_subdirectory(plot)
 
-add_custom_target(libs)
-add_dependencies(libs
-        cg_gamepad
-        cgv_gl
-        cgv_reflect_types
-        delaunay
-        gamepad
-        glsu
-        plot)
+install(FILES cgv-libs-config.cmake DESTINATION ${CGV_LIBS_LIB_DEST})
+install(DIRECTORY . DESTINATION ${CGV_LIBS_INCLUDE_DEST} FILES_MATCHING PATTERN "*.h")
+# TODO find out why there are *.hh files (maybe rename them to *.h)
+install(DIRECTORY . DESTINATION ${CGV_LIBS_INCLUDE_DEST} FILES_MATCHING PATTERN "*.hh")
