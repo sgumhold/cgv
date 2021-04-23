@@ -16,3 +16,5 @@ target_link_libraries(cg_fltk
         cgv_signal
         cgv_reflect)
 target_compile_definitions(cg_fltk PRIVATE CG_FLTK_EXPORTS CGV_GUI_FLTK_EXPORTS)
+
+install(TARGETS cg_fltk EXPORT cgv_plugins DESTINATION ${CGV_LIB_DEST})

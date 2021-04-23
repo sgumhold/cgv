@@ -15,3 +15,5 @@ if (WIN32)
     add_subdirectory(cmv_avi)
     add_subdirectory(co_web)
 endif ()
+
+install(EXPORT cgv_plugins DESTINATION ${CGV_LIB_DEST})
