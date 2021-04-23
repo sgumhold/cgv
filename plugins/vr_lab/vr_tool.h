@@ -1,10 +1,10 @@
 #include "vr_scene.h"
-#include <cgv/gui/provider.h>
+#include <cgv/signal/abst_signal.h>
 #include "lib_begin.h"
 
 namespace vr {
 
-class CGV_API vr_tool : public cgv::gui::provider
+class CGV_API vr_tool : virtual public cgv::signal::tacker
 {
 private:
 	/// store pointer to scene
