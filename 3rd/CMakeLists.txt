@@ -12,4 +12,4 @@ if (WIN32)
     add_subdirectory(webserver)
 endif ()
 
-install(FILES cgv-3rd-config.cmake DESTINATION ${CGV_3RD_LIB_DEST})
+install(FILES cgv-3rd-config.cmake DESTINATION ${CGV_LIB_DEST})

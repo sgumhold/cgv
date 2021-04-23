@@ -30,6 +30,6 @@ target_include_directories(cgv_gl PUBLIC
         $<BUILD_INTERFACE:${CGV_DIR}/libs>
         $<INSTALL_INTERFACE:${CGV_LIBS_INCLUDE_DEST}>)
 
-install(TARGETS cgv_gl EXPORT cgv_gl DESTINATION ${CGV_LIBS_LIB_DEST})
-install(EXPORT cgv_gl DESTINATION ${CGV_LIBS_LIB_DEST})
+install(TARGETS cgv_gl EXPORT cgv_gl DESTINATION ${CGV_LIB_DEST})
+install(EXPORT cgv_gl DESTINATION ${CGV_LIB_DEST})
 install(DIRECTORY glsl/. DESTINATION ${CGV_LIBS_INCLUDE_DEST}/cgv_gl/glsl)

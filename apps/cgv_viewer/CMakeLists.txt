@@ -8,3 +8,6 @@ target_link_libraries(cgv_viewer
         cgv_gui
         cgv_render
         cg_fltk)
+
+install(TARGETS cgv_viewer EXPORT cgv_viewer DESTINATION ${CGV_LIB_DEST})
+install(EXPORT cgv_viewer DESTINATION ${CGV_LIB_DEST})
