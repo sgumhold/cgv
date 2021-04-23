@@ -16,5 +16,4 @@ target_include_directories(cgv_reflect_types PUBLIC
         $<BUILD_INTERFACE:${CGV_DIR}/libs>
         $<INSTALL_INTERFACE:${CGV_LIBS_INCLUDE_DEST}>)
 
-install(TARGETS cgv_reflect_types EXPORT cgv_reflect_types DESTINATION ${CGV_LIB_DEST})
-install(EXPORT cgv_reflect_types DESTINATION ${CGV_LIB_DEST})
+install(TARGETS cgv_reflect_types EXPORT cgv_libs DESTINATION ${CGV_LIB_DEST})

@@ -12,7 +12,7 @@ add_subdirectory(signal)
 add_subdirectory(type)
 add_subdirectory(utils)
 
-install(FILES cgv-config.cmake DESTINATION ${CGV_LIB_DEST})
+install(EXPORT cgv DESTINATION ${CGV_LIB_DEST})
 install(DIRECTORY . DESTINATION ${CGV_INCLUDE_DEST} FILES_MATCHING PATTERN "*.h")
 # TODO find out why there are *.hh files (maybe rename them to *.h)
 install(DIRECTORY . DESTINATION ${CGV_INCLUDE_DEST} FILES_MATCHING PATTERN "*.hh")
