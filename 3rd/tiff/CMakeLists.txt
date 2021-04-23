@@ -4,7 +4,7 @@ project(tif)
 
 file(GLOB_RECURSE SOURCES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} "*.c")
 
-add_library(tif ${SOURCES})
+add_library(tif ${SOURCES} libtiff.def)
 target_link_libraries(tif jpeg)
 target_include_directories(tif PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 target_compile_definitions(tif PRIVATE
