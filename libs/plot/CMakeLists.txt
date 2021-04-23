@@ -19,6 +19,5 @@ target_include_directories(plot PUBLIC
         $<BUILD_INTERFACE:${CGV_DIR}/libs>
         $<INSTALL_INTERFACE:${CGV_LIBS_INCLUDE_DEST}>)
 
-install(TARGETS plot EXPORT plot DESTINATION ${CGV_LIB_DEST})
-install(EXPORT plot DESTINATION ${CGV_LIB_DEST})
+install(TARGETS plot EXPORT cgv_libs DESTINATION ${CGV_LIB_DEST})
 install(DIRECTORY glsl/. DESTINATION ${CGV_LIBS_INCLUDE_DEST}/plot/glsl)

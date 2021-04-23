@@ -22,6 +22,5 @@ target_include_directories(cgv_base PUBLIC
         "$<BUILD_INTERFACE:${PPP_INCLUDES}>"
         $<INSTALL_INTERFACE:include>)
 
-install(TARGETS cgv_base EXPORT cgv_base DESTINATION ${CGV_LIB_DEST})
-install(EXPORT cgv_base DESTINATION ${CGV_LIB_DEST})
+install(TARGETS cgv_base EXPORT cgv DESTINATION ${CGV_LIB_DEST})
 install(DIRECTORY ${PPP_INSTALL_DIR} DESTINATION ${CGV_INCLUDE_DEST}/base FILES_MATCHING PATTERN "*.h")

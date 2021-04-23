@@ -15,5 +15,4 @@ target_include_directories(cgv_gui PUBLIC
         $<BUILD_INTERFACE:${CGV_DIR}>
         $<INSTALL_INTERFACE:include>)
 
-install(TARGETS cgv_gui EXPORT cgv_gui DESTINATION ${CGV_LIB_DEST})
-install(EXPORT cgv_gui DESTINATION ${CGV_LIB_DEST})
+install(TARGETS cgv_gui EXPORT cgv DESTINATION ${CGV_LIB_DEST})

@@ -22,5 +22,4 @@ target_include_directories(cgv_media PUBLIC
         $<BUILD_INTERFACE:${CGV_DIR}>
         $<INSTALL_INTERFACE:include>)
 
-install(TARGETS cgv_media EXPORT cgv_media DESTINATION ${CGV_LIB_DEST})
-install(EXPORT cgv_media DESTINATION ${CGV_LIB_DEST})
+install(TARGETS cgv_media EXPORT cgv DESTINATION ${CGV_LIB_DEST})
