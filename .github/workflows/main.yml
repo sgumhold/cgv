@@ -20,11 +20,9 @@ jobs:
         run: sudo apt-get update && sudo apt-get install -y cmake ninja-build clang-tools-11 clang-11-doc libclang-11-dev
 
       - name: Install cgv dependencies
-        run: sudo apt install -y libgl1-mesa-dev libx11-dev
+        run: sudo apt install -y libgl1-mesa-dev libx11-dev xorg-dev
 
       - run: mkdir build
-
-
 
       - name: Run CMake
         working-directory: ./build
