@@ -569,8 +569,6 @@ void plot2d::draw(cgv::render::context& ctx)
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glDepthFunc(GL_LEQUAL);
-	if (disable_depth_mask)
-		glDepthMask(GL_FALSE);
 
 	// place plot with modelview matrix
 	ctx.push_modelview_matrix();
@@ -588,7 +586,15 @@ void plot2d::draw(cgv::render::context& ctx)
 		}
 		if (legend_components != LC_HIDDEN)
 			draw_legend(ctx, -5 * layer_depth);
+		if (disable_depth_mask)
+			glDepthMask(GL_FALSE);
+		else
+			glDepthFunc(GL_LEQUAL);
 		draw_sub_plots_jointly(ctx, 6);
+		if (disable_depth_mask)
+			glDepthMask(GL_TRUE);
+		else
+			glDepthFunc(GL_LESS);
 	}
 	// draw subplots with offset in back to front order
 	else {
@@ -612,10 +618,18 @@ void plot2d::draw(cgv::render::context& ctx)
 			}
 			if (legend_components != LC_HIDDEN)
 				draw_legend(ctx, -5 * layer_depth);
+			if (disable_depth_mask)
+				glDepthMask(GL_FALSE);
+			else
+				glDepthFunc(GL_LEQUAL);
 			draw_bar_plot(ctx, i, 6);
 			draw_stick_plot(ctx, i, 7);
 			draw_line_plot(ctx, i, 8);
 			draw_point_plot(ctx, i, 9);
+			if (disable_depth_mask)
+				glDepthMask(GL_TRUE);
+			else
+				glDepthFunc(GL_LESS);
 			ctx.mul_modelview_matrix(cgv::math::translate4<float>(vec3(0, 0, i_delta*dz)));
 			fst = false;
 		}
@@ -632,8 +646,6 @@ void plot2d::draw(cgv::render::context& ctx)
 		glEnable(GL_CULL_FACE);
 	glDepthFunc(depth);
 	glBlendFunc(blend_src, blend_dst);
-	if (disable_depth_mask)
-		glDepthMask(GL_TRUE);
 }
 
 /// create the gui for a point subplot
