@@ -51,4 +51,8 @@ jobs:
 
       - name: Run CMake
         working-directory: build
-        run: cmake -D CMAKE_INTSALL_PREFIX=../install ..
+        run: cmake -D CMAKE_INSTALL_PREFIX=../install ..
+
+      - name: Build and Install
+        working-directory: ./build
+        run: cmake --build . --target install
