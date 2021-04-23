@@ -20,10 +20,12 @@ jobs:
         run: sudo apt-get update && sudo apt-get install -y cmake ninja-build clang-tools-11 clang-11-doc libclang-11-dev libfuzzer-11-dev
 
       - name: Create build directory
-        run: mkdir build && cd build
+        run: mkdir build
 
       - name: Run CMake
+        working-directory: ./build
         run: cmake -G Ninja -D CMAKE_C_COMPILER=/usr/bin/clang-11 -D CMAKE_CXX_COMPILER=/usr/bin/clang++-11 -D CMAKE_INSTALL_PREFIX=../install ..
 
       - name: Build and Install
+        working-directory: ./build
         run: ninja install
