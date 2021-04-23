@@ -5,12 +5,9 @@ project(cgv)
 set(BUILD_SHARED_LIBS ON)
 
 set(CGV_DIR ${PROJECT_SOURCE_DIR})
-set(CGV_BIN_DEST bin)
 set(CGV_LIB_DEST lib/cgv)
 set(CGV_INCLUDE_DEST include/cgv)
-set(CGV_LIBS_LIB_DEST lib/cgv-libs)
 set(CGV_LIBS_INCLUDE_DEST include/cgv-libs)
-set(CGV_3RD_LIB_DEST lib/cgv-3rd)
 set(CGV_3RD_INCLUDE_DEST include/cgv-3rd)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)

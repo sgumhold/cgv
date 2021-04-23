@@ -38,7 +38,6 @@ function(ppp_command_add base infile outfile_var outinclude_var)
     get_filename_component(OUTPUT_FILE "${PH_PATH}/${PH_NAME}.h" ABSOLUTE)
     get_filename_component(PH_SRC_PATH "${infile}" DIRECTORY)
 
-    message(STATUS "Adding compile command for '${OUTPUT_FILE}'")
     # Add the build rule
     add_custom_command(OUTPUT ${OUTPUT_FILE}
             COMMAND $<TARGET_FILE:ppp>

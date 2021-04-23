@@ -35,7 +35,6 @@ function(cgv_res_prep_command_add base infile outfile)
 
     get_filename_component(OUTPUT_FILE "${RP_PATH}/${RP_NAME}.cxx" ABSOLUTE)
 
-    message(STATUS "Adding compile command for '${OUTPUT_FILE}'")
     # Add the build rule
     add_custom_command(OUTPUT ${OUTPUT_FILE}
             COMMAND $<TARGET_FILE:res_prep>

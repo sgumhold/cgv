@@ -17,5 +17,5 @@ target_include_directories(gamepad PUBLIC
         $<BUILD_INTERFACE:${CGV_DIR}/libs>
         $<INSTALL_INTERFACE:${CGV_LIBS_INCLUDE_DEST}>)
 
-install(TARGETS gamepad EXPORT gamepad DESTINATION ${CGV_LIBS_LIB_DEST})
-install(EXPORT gamepad DESTINATION ${CGV_LIBS_LIB_DEST})
+install(TARGETS gamepad EXPORT gamepad DESTINATION ${CGV_LIB_DEST})
+install(EXPORT gamepad DESTINATION ${CGV_LIB_DEST})

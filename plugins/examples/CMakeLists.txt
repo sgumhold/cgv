@@ -19,7 +19,6 @@ target_link_libraries(examples
         cg_gamepad
         cgv_gl
         cgv_signal)
-target_include_directories(examples PRIVATE ../../libs)
 
 add_dependencies(examples
         cgv_viewer
