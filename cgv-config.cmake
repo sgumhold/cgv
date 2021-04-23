@@ -7,3 +7,5 @@ include(${SELF_DIR}/cgv/cgv_3rd.cmake)
 include(${SELF_DIR}/cgv/cgv.cmake)
 include(${SELF_DIR}/cgv/cgv_libs.cmake)
 include(${SELF_DIR}/cgv/cgv_plugins.cmake)
+
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${SELF_DIR}/cgv)
