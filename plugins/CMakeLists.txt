@@ -8,6 +8,7 @@ add_subdirectory(crg_depth_of_field)
 add_subdirectory(crg_grid)
 add_subdirectory(crg_light)
 add_subdirectory(crg_stereo_view)
+add_subdirectory(examples)
 
 add_custom_target(plugins)
 add_dependencies(plugins
@@ -19,18 +20,14 @@ add_dependencies(plugins
         crg_depth_of_field
         crg_grid
         crg_light
-        crg_stereo_view)
+        crg_stereo_view
+        examples)
 
 if (WIN32)
-    # FIXME these plugins can only be compiled under Windows
+    # FIXME these plugins can only be compiled under Windows for now
     add_subdirectory(cmv_avi)
     add_subdirectory(co_web)
     add_dependencies(plugins
             cmv_avi
             co_web)
-endif ()
-
-if (BUILD_EXAMPLE_PLUGIN)
-    add_subdirectory(examples)
-    add_dependencies(plugins examples)
 endif ()

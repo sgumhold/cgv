@@ -2,10 +2,13 @@ cmake_minimum_required(VERSION 3.14)
 
 project(cgv)
 
-option(BUILD_EXAMPLE_PLUGIN "Build the example plugin" ON)
 set(BUILD_SHARED_LIBS ON)
 
 set(CGV_DIR ${PROJECT_SOURCE_DIR})
+set(CGV_BIN_DEST bin)
+set(CGV_LIB_DEST lib/cgv)
+set(CGV_INCLUDE_DEST include/cgv)
+
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)

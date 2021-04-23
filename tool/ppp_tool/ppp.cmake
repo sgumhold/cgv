@@ -2,14 +2,14 @@ function(ppp_compile base outfiles_var outinclude_var)
     set(PH_INCLUDE_DIR "${CMAKE_CURRENT_BINARY_DIR}/ph")
     get_filename_component(PPP_BASE "${base}" ABSOLUTE)
 
+    list(APPEND o_includes ${PH_INCLUDE_DIR})
+
     # Add a custom build rule for every file
     foreach (infile ${ARGN})
         ppp_command_add("${PPP_BASE}" "${infile}" outfile outinclude)
         list(APPEND o_files ${outfile})
         list(APPEND o_includes ${outinclude})
     endforeach ()
-
-    list(APPEND o_includes ${PH_INCLUDE_DIR})
 
     set(${outfiles_var} ${o_files} PARENT_SCOPE)
     set(${outinclude_var} ${o_includes} PARENT_SCOPE)

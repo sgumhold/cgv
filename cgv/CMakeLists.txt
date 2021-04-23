@@ -29,3 +29,8 @@ foreach (comp ${CGV_COMPONENTS})
 endforeach ()
 
 add_dependencies(cgv ${CGV_COMPONENTS_EXP})
+
+install(FILES cgv-config.cmake DESTINATION ${CGV_LIB_DEST})
+install(DIRECTORY . DESTINATION ${CGV_INCLUDE_DEST} FILES_MATCHING PATTERN "*.h")
+# TODO find out why there are *.hh files (maybe rename them to *.h)
+install(DIRECTORY . DESTINATION ${CGV_INCLUDE_DEST} FILES_MATCHING PATTERN "*.hh")
