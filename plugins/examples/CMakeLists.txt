@@ -19,7 +19,6 @@ target_link_libraries(examples
         cg_gamepad
         cgv_gl
         cgv_signal)
-target_include_directories(examples PRIVATE ../../libs)
 
 add_dependencies(examples
         cgv_viewer
@@ -43,3 +42,5 @@ endif ()
 
 # TODO activate shader tests again
 # cgv_test_shaders(examples ${SHADER_SOURCES})
+
+install(TARGETS examples EXPORT cgv_plugins DESTINATION ${CGV_LIB_DEST})

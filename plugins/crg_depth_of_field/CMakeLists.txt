@@ -2,3 +2,5 @@
 add_library(crg_depth_of_field depth_of_field.cxx)
 target_link_libraries(crg_depth_of_field cgv_base cgv_gl)
 target_compile_definitions(crg_depth_of_field PRIVATE CGV_RENDER_DEPTH_OF_FIELD_EXPORTS)
+
+install(TARGETS crg_depth_of_field EXPORT cgv_plugins DESTINATION ${CGV_LIB_DEST})
