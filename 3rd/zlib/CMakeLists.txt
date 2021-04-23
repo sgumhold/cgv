@@ -18,5 +18,11 @@ add_library(zlib
         trees.c
         uncompr.c
         zutil.c)
-target_include_directories(zlib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 target_compile_definitions(zlib PRIVATE ZLIB_DLL)
+
+target_include_directories(zlib PUBLIC
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
+        $<INSTALL_INTERFACE:${CGV_3RD_INCLUDE_DEST}/zlib>)
+
+install(TARGETS zlib EXPORT cgv_3rd DESTINATION ${CGV_LIB_DEST})
+install(DIRECTORY . DESTINATION ${CGV_3RD_INCLUDE_DEST}/zlib FILES_MATCHING PATTERN "*.h")

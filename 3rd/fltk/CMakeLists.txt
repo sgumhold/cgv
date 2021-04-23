@@ -165,10 +165,6 @@ add_library(fltk
         src/WizardGroup.cxx
         src/xbmImage.cxx
         src/xpmImage.cxx)
-target_include_directories(fltk PUBLIC
-        ${CMAKE_CURRENT_SOURCE_DIR}/include
-        ${CMAKE_CURRENT_SOURCE_DIR}/visualc
-        ${CMAKE_CURRENT_SOURCE_DIR}/compat)
 target_link_libraries(fltk
         jpeg
         png
@@ -192,3 +188,12 @@ target_compile_definitions(fltk PRIVATE
         FL_GLUT_LIBRARY
         FL_IMAGES_LIBRARY)
 target_compile_definitions(fltk PUBLIC FL_SHARED)
+
+target_include_directories(fltk PUBLIC
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/visualc>
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/compat>
+        $<INSTALL_INTERFACE:${CGV_3RD_INCLUDE_DEST}>)
+
+install(TARGETS fltk EXPORT cgv_3rd DESTINATION ${CGV_LIB_DEST})
+install(DIRECTORY include/. DESTINATION ${CGV_3RD_INCLUDE_DEST} FILES_MATCHING PATTERN "*.h")
