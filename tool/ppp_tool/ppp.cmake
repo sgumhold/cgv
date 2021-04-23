@@ -1,5 +1,6 @@
-function(ppp_compile base outfiles_var outinclude_var)
+function(ppp_compile base outfiles_var outinclude_var outinstall_var)
     set(PH_INCLUDE_DIR "${CMAKE_CURRENT_BINARY_DIR}/ph")
+    file(RELATIVE_PATH PH_INSTALL_POSTFIX ${CMAKE_BINARY_DIR} ${CMAKE_CURRENT_BINARY_DIR})
     get_filename_component(PPP_BASE "${base}" ABSOLUTE)
 
     list(APPEND o_includes ${PH_INCLUDE_DIR})
@@ -13,6 +14,7 @@ function(ppp_compile base outfiles_var outinclude_var)
 
     set(${outfiles_var} ${o_files} PARENT_SCOPE)
     set(${outinclude_var} ${o_includes} PARENT_SCOPE)
+    set(${outinstall_var} ${PH_INCLUDE_DIR}/${PH_INSTALL_POSTFIX}/. PARENT_SCOPE)
 endfunction()
 
 function(ppp_command_add base infile outfile_var outinclude_var)

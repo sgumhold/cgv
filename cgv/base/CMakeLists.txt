@@ -2,7 +2,11 @@
 file(GLOB_RECURSE SOURCES RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "*.cxx")
 file(GLOB_RECURSE PPP_SOURCES RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "*.ph")
 
-ppp_compile("${CGV_DIR}" PPP_FILES PPP_INCLUDES ${PPP_SOURCES})
+ppp_compile("${CGV_DIR}"
+        PPP_FILES
+        PPP_INCLUDES
+        PPP_INSTALL_DIR
+        ${PPP_SOURCES})
 
 add_library(cgv_base ${SOURCES} ${PPP_FILES})
 target_compile_definitions(cgv_base PRIVATE CGV_BASE_EXPORTS)
@@ -20,5 +24,4 @@ target_include_directories(cgv_base PUBLIC
 
 install(TARGETS cgv_base EXPORT cgv_base DESTINATION ${CGV_LIB_DEST})
 install(EXPORT cgv_base DESTINATION ${CGV_LIB_DEST})
-list(GET PPP_INCLUDES 0 PPP_BUILD_DIR)
-install(DIRECTORY ${PPP_BUILD_DIR}/cgv/base/. DESTINATION ${CGV_INCLUDE_DEST}/base FILES_MATCHING PATTERN "*.h")
+install(DIRECTORY ${PPP_INSTALL_DIR} DESTINATION ${CGV_INCLUDE_DEST}/base FILES_MATCHING PATTERN "*.h")

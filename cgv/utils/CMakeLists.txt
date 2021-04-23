@@ -5,6 +5,7 @@ file(GLOB_RECURSE PPP_SOURCES RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "*.ph")
 ppp_compile("${CGV_DIR}"
         PPP_FILES
         PPP_INCLUDES
+        PPP_INSTALL_DIR
         ${PPP_SOURCES})
 
 add_library(cgv_utils ${SOURCES} ${PPP_FILES})
@@ -16,3 +17,4 @@ target_include_directories(cgv_utils PUBLIC
 
 install(TARGETS cgv_utils EXPORT cgv_utils DESTINATION ${CGV_LIB_DEST})
 install(EXPORT cgv_utils DESTINATION ${CGV_LIB_DEST})
+install(DIRECTORY ${PPP_INSTALL_DIR} DESTINATION ${CGV_INCLUDE_DEST}/utils FILES_MATCHING PATTERN "*.h")

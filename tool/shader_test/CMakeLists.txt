@@ -1,5 +1,5 @@
 
-ppp_compile(${CGV_DIR} PPP_FILES PPP_INCLUDES
+ppp_compile(${CGV_DIR} PPP_FILES PPP_INCLUDES PPP_INSTALL_DIR
         ../../libs/cgv_gl/gl/gl_context_switch.ph
         ../../cgv/type/traits/method_pointer.ph
         ../../cgv/type/invalid_type.ph

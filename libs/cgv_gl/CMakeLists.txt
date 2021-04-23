@@ -5,6 +5,7 @@ file(GLOB_RECURSE SHADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "glsl/*.gl*")
 ppp_compile("${CGV_DIR}"
         PPP_FILES
         PPP_INCLUDES
+        PPP_INSTALL_DIR
         gl/gl_context_switch.ph)
 
 add_library(cgv_gl ${SOURCES})
