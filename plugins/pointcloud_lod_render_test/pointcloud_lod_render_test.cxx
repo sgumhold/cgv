@@ -295,8 +295,8 @@ void pointcloud_lod_render_test::draw(cgv::render::context & ctx)
 				for (int i = 0; i < num_points; ++i) {
 					pnts[i].color() = col_lut[pnts[i].level()];
 				}
-				//cp_renderer.set_points(ctx, pnts.data(), pnts.size());
-				cp_renderer.set_points(ctx,&pnts.data()->position(), &pnts.data()->color(), &pnts.data()->level(), pnts.size(), sizeof(LODPoint));
+				cp_renderer.set_points(ctx, pnts.data(), pnts.size());
+				//cp_renderer.set_points(ctx,&pnts.data()->position(), &pnts.data()->color(), &pnts.data()->level(), pnts.size(), sizeof(LODPoint));
 			}
 			else {
 				cp_renderer.set_points(ctx, &points_with_lod.data()->position(), &points_with_lod.data()->color(), &points_with_lod.data()->level(), points_with_lod.size(), sizeof(LODPoint));

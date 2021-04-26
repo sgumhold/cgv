@@ -148,7 +148,7 @@ namespace cgv {
 			glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, sizeof(Point), (void*)0);
 			glEnableVertexAttribArray(0);
 			//color
-			glVertexAttribPointer(1, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(Point), (void*)(sizeof(Point::position)));
+			glVertexAttribPointer(1, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(Point), (void*)(sizeof(vec3)));
 			glEnableVertexAttribArray(1);
 
 			glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -238,9 +238,9 @@ namespace cgv {
 			auto input_it = input_buffer_data.begin();
 
 			for (int i = 0; i < num_points; ++i) {
-				input_it->position = *positions;
-				input_it->color = *colors;
-				input_it->level = *lods;
+				input_it->position() = *positions;
+				input_it->color() = *colors;
+				input_it->level() = *lods;
 				++input_it;
 
 				if (stride) {
