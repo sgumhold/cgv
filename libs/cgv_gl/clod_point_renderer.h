@@ -46,9 +46,30 @@ namespace cgv {
 		public:
 			// internal point format
 			struct Point {
-				vec3 position;
-				rgb8 color;
-				uint8_t level = 0;
+				vec3 p_position;
+				rgb8 p_color;
+				uint8_t p_level = 0;
+
+				inline vec3& position() {
+					return p_position;
+				}
+				/// returns the level of detail
+				inline uint8_t& level() {
+					return p_level;
+				}
+				inline rgb8& color() {
+					return p_color;
+				}
+				inline const vec3& position() const {
+					return p_position;
+				}
+				/// return the level of detail
+				inline const uint8_t& level() const {
+					return p_level;
+				}
+				inline const rgb8& color() const {
+					return p_color;
+				}
 			};
 			
 		private:
@@ -106,7 +127,7 @@ namespace cgv {
 			bool render(context& ctx, size_t start, size_t count);
 
 			/// this method can be used if the data format of pnts matches with the internal format given by the Point struct
-			inline void set_points(cgv::render::context& ctx,const void* pnts, const size_t num_points) {
+			inline void set_points(cgv::render::context& ctx,const Point* pnts, const size_t num_points) {
 				assert(input_buffer != 0);
 				glBindBuffer(GL_SHADER_STORAGE_BUFFER, input_buffer);
 				glBufferData(GL_SHADER_STORAGE_BUFFER, num_points * sizeof(Point), pnts, GL_STATIC_READ);

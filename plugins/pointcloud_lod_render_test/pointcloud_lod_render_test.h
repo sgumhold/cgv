@@ -45,7 +45,8 @@ class pointcloud_lod_render_test :
 	public cgv::gui::provider
 {
 public:
-	using LODPoint = cgv::pointcloud::SimpleLODPoint;
+	//use internal point format
+	using LODPoint = cgv::render::clod_point_renderer::Point;
 
 	pointcloud_lod_render_test();
 
