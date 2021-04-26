@@ -44,7 +44,7 @@ rgbd_icp_tool::rgbd_icp_tool() {
 
 	rot_intensity = 0.2f;
 	trans_intensity = 0.1;
-	lrs.line_width = 1.0f;
+	//lrs.line_width = 1.0f;
 	rcrs.radius = 0.001f;
 
 	icp_iterations = 50;
