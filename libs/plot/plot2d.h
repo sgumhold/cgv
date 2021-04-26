@@ -35,7 +35,6 @@ protected:
 	void draw_domain(cgv::render::context& ctx, int si = -1, bool no_fill = false);
 	void draw_tick_labels(cgv::render::context& ctx, int si = -1);
 protected:
-	bool disable_depth_mask;
 
 	bool compute_sample_coordinate_interval(int i, int ai, float& samples_min, float& samples_max);
 	/// store 2d samples for data series
@@ -46,6 +45,7 @@ protected:
 	cgv::render::rectangle_render_style rrs;
 	cgv::render::attribute_array_manager aam_domain, aam_tick_labels;
 public:
+	bool disable_depth_mask;
 	/// whether to manage separate y-axis for each sub plot
 	bool multi_y_axis_mode;
 	/// offset in z-direction between sub plots
