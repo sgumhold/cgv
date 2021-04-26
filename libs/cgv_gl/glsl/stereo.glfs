@@ -74,8 +74,8 @@ void main()
 			res = texture2D(right_texture, texcoord_fs);
 		break;
 	default:
-		vec4 L = texture2D(left_texture, texcoord_fs);
-		vec4 R = texture2D(right_texture, texcoord_fs);
+		L = texture2D(left_texture, texcoord_fs);
+		R = texture2D(right_texture, texcoord_fs);
 		res.a = 0.5*(L.a+R.a);
 		switch (stereo_mode) {
 			case 6: res.rgb = red_cyan_anaglyph(L.rgb,R.rgb); break;
