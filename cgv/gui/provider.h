@@ -60,7 +60,7 @@ int wi_get_index(const T& value)
 }
 
 /// derive from this class to provide a gui to the current viewer
-class CGV_API provider : public cgv::signal::tacker
+class CGV_API provider : virtual public cgv::signal::tacker
 {
 protected:
 	/**@name interface used by the parent gui*/
