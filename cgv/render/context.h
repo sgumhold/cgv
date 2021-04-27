@@ -254,7 +254,7 @@ public:
 	/// initialize members
 	render_component();
 	/// return whether component has been created
-	bool is_created() const;
+	virtual bool is_created() const;
 	/// copy the rendering api specific id the component to the memory location of the given pointer. 
 	/// For opengl this the passed pointer should be of type GLint or GLuint.
 	void put_id_void(void* ptr) const;
