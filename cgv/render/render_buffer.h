@@ -24,7 +24,7 @@ public:
 	void destruct(const context& ctx);
 	/** create a render buffer. 
 	    If no extent is specified it is copied from the current viewport. */
-	void create(const context& ctx, int width = -1, int height = -1);
+	bool create(const context& ctx, int width = -1, int height = -1);
 	/// check whether the buffer has been created
 	bool is_created() const override;
 	/// calls the destruct method if necessary
