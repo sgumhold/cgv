@@ -68,6 +68,8 @@ protected:
 	std::vector<data_format>* palette_formats;
 	/// store a pointer to the chosen reader
 	abst_image_reader* rd;
+	/// last error message in case no reader is available
+	std::string last_error;
 	/// abstract interface for the setter, by default it simply returns false
 	bool set_void(const std::string& property, const std::string& type, const void* value);
 	/// abstract interface for the getter, by default it simply returns false
