@@ -30,7 +30,7 @@ jobs:
 
       - name: Build and Install
         working-directory: ./build
-        run: cmake --build . --target install
+        run: xvfb-run cmake --build . --target install
 
   build-windows:
     name: "Windows: Build and Install the CGV framework"
