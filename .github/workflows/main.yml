@@ -20,7 +20,10 @@ jobs:
         run: sudo apt-get update && sudo apt-get install -y cmake ninja-build clang-tools-11 clang-11-doc libclang-11-dev
 
       - name: Install cgv dependencies
-        run: sudo apt install -y mesa libx11-dev xorg-dev
+        run: |
+          sudo add-apt-repository ppa:kisak/kisak-mesa
+          sudo apt update
+          sudo apt install -y mesa libx11-dev xorg-dev
 
       - run: mkdir build
 
