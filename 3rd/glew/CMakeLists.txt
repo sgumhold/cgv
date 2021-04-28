@@ -1,28 +1,15 @@
-cmake_minimum_required(VERSION 2.6)
-project(GLEW)
+cmake_minimum_required(VERSION 3.14)
 
-# Include this file for standard build settings
-include("../../cmake/buildCoreComponents.cmake")
+project(glew)
 
-cgv_find_package(OpenGL)
+find_package(OpenGL REQUIRED)
 
-set(SOURCES
-	glew.c)
+add_library(glew glew.c)
+target_link_libraries(glew ${OPENGL_LIBRARIES})
+target_compile_definitions(glew PRIVATE GLEW_BUILD)
+target_include_directories(glew PUBLIC
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
+        $<INSTALL_INTERFACE:${CGV_3RD_INCLUDE_DEST}>)
 
-set(PUBLIC_HEADERS
-	GL/glew.h
-	GL/glxew.h
-	GL/wglew.h)
-	
-include_directories(${OPENGL_INCLUDE_DIR})
-
-cgv_add_3rd_library(GLEW
-	SOURCES ${SOURCES}
-	PUBLIC_HEADERS ${PUBLIC_HEADERS}
-	SHARED_DEFINITIONS "GLEW_BUILD"
-	STATIC_DEFINITIONS "GLEW_STATIC")
-
-target_link_libraries(GLEW
-	${OPENGL_LIBRARIES})
-
-cgv_write_find_file(GLEW)
+install(TARGETS glew EXPORT cgv_3rd DESTINATION ${CGV_LIB_DEST})
+install(DIRECTORY GL DESTINATION ${CGV_3RD_INCLUDE_DEST} FILES_MATCHING PATTERN "*.h")

@@ -33,16 +33,17 @@ bool render_buffer::is_created() const
 	return handle != 0;
 }
 
-void render_buffer::create(const context& ctx, int _width, int _height)
+bool render_buffer::create(const context& ctx, int _width, int _height)
 {
 	if (ctx_ptr)
 		destruct(*ctx_ptr);
 	else
 		destruct(ctx);
-	ctx.render_buffer_create(*this, *this, _width, _height);
+	bool res = ctx.render_buffer_create(*this, *this, _width, _height);
 	ctx_ptr = &ctx;
 	width = _width;
 	height = _height;
+	return res;
 }
 
 bool render_buffer::is_depth_buffer() const
