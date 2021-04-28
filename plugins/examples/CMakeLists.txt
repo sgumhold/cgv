@@ -3,10 +3,7 @@ file(GLOB_RECURSE SOURCES RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "*.cxx")
 file(GLOB_RECURSE SHADER_SOURCES RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "*.gl*")
 file(GLOB_RECURSE IMAGES RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "*.png")
 
-cgv_prepare_resources(${CMAKE_SOURCE_DIR}
-        IMG_SOURCES
-        IMG_INCLUDES
-        ${IMAGES})
+cgv_prepare_resources(${CMAKE_SOURCE_DIR} IMG_SOURCES ${IMAGES})
 
 add_library(examples
         ${SOURCES}

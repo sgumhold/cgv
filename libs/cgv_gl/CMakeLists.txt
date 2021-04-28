@@ -8,7 +8,13 @@ ppp_compile("${CGV_DIR}"
         PPP_INSTALL_DIR
         gl/gl_context_switch.ph)
 
-add_library(cgv_gl ${SOURCES})
+shader_test("${CGV_DIR}"
+        ST_FILES
+        ST_INCLUDES
+        ST_INSTALL_DIR
+        ${SHADERS})
+
+add_library(cgv_gl ${SOURCES} ${PPP_FILES} ${ST_FILES})
 target_compile_definitions(cgv_gl PRIVATE CGV_RENDER_GL_EXPORTS CGV_GL_EXPORTS)
 target_link_libraries(cgv_gl
         cgv_utils
@@ -28,7 +34,11 @@ target_link_libraries(cgv_gl
 target_include_directories(cgv_gl PUBLIC
         $<BUILD_INTERFACE:${CGV_DIR}>
         $<BUILD_INTERFACE:${CGV_DIR}/libs>
+        "$<BUILD_INTERFACE:${PPP_INCLUDES}>"
+        "$<BUILD_INTERFACE:${ST_INCLUDES}>"
         $<INSTALL_INTERFACE:${CGV_LIBS_INCLUDE_DEST}>)
 
 install(TARGETS cgv_gl EXPORT cgv_libs DESTINATION ${CGV_LIB_DEST})
+install(DIRECTORY ${PPP_INSTALL_DIR} DESTINATION ${CGV_LIBS_INCLUDE_DEST}/cgv_gl FILES_MATCHING PATTERN "*.h")
+install(DIRECTORY ${ST_INSTALL_DIR} DESTINATION ${CGV_LIBS_INCLUDE_DEST}/cgv_gl FILES_MATCHING PATTERN "*.h")
 install(DIRECTORY glsl/. DESTINATION ${CGV_LIBS_INCLUDE_DEST}/cgv_gl/glsl)
