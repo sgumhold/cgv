@@ -8,16 +8,19 @@
 // this helper class stores and computes curvature estimations for a single point
 class principal_curvature_estimation : public point_cloud_types {
 	//principal components of the normals used for computation
-	Dir principal_curvature_vector;
+	std::array<Dir,2> principal_tangent_vectors;
 	//principal curvatures (eigen values)
 	float pc_max;
 	float pc_min;
 public:
 	inline principal_curvature_estimation() = default;
 
-	inline principal_curvature_estimation(const Dir& principal_curvature, const float& principal_max, const float& principal_min) :
-		principal_curvature_vector(principal_curvature),pc_max(principal_max), pc_min(principal_min)
-	{}
+	inline principal_curvature_estimation(const float& principal_max, const float& principal_min, const Dir& principal_tangent_max, const Dir& principal_tangent_min) :
+		pc_max(principal_max), pc_min(principal_min)
+	{
+		principal_tangent_vectors[0] = principal_tangent_max;
+		principal_tangent_vectors[1] = principal_tangent_min;
+	}
 
 	inline const float& min() const {
 		return pc_min;
@@ -36,8 +39,13 @@ public:
 	}
 
 	//returns a pointer to the 3 principal components
-	inline const Dir& principal_curvature() const{
-		return principal_curvature_vector;
+	inline const Dir& principal_tangent_max() const{
+		return principal_tangent_vectors[0];
+	}
+
+	//returns a pointer to the 3 principal components
+	inline const Dir& principal_tangent_min() const {
+		return principal_tangent_vectors[1];
 	}
 };
 
