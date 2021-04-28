@@ -17,3 +17,5 @@ add_executable(ppp
         ${CGV_DIR}/cgv/ppp/variables.cxx)
 target_include_directories(ppp PRIVATE ${CGV_DIR})
 target_compile_definitions(ppp PRIVATE CGV_FORCE_STATIC)
+
+install(TARGETS ppp EXPORT cgv_tools DESTINATION ${CGV_LIB_DEST})

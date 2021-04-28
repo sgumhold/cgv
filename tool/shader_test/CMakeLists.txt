@@ -1,3 +1,4 @@
+include(shader_test.cmake)
 
 ppp_compile(${CGV_DIR} PPP_FILES PPP_INCLUDES PPP_INSTALL_DIR
         ../../libs/cgv_gl/gl/gl_context_switch.ph
@@ -61,3 +62,5 @@ target_include_directories(shader_test PRIVATE
         ${CGV_DIR}/libs
         ${PPP_INCLUDES})
 target_compile_definitions(shader_test PRIVATE CGV_FORCE_STATIC)
+
+install(TARGETS shader_test EXPORT cgv_tools DESTINATION ${CGV_LIB_DEST})

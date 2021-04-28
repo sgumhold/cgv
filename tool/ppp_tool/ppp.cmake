@@ -35,15 +35,15 @@ function(ppp_command_add base infile outfile_var outinclude_var)
         file(MAKE_DIRECTORY "${PH_PATH}")
     endif ()
 
+    set(INPUT_FILE "${CMAKE_CURRENT_SOURCE_DIR}/${infile}")
     get_filename_component(OUTPUT_FILE "${PH_PATH}/${PH_NAME}.h" ABSOLUTE)
     get_filename_component(PH_SRC_PATH "${infile}" DIRECTORY)
 
     # Add the build rule
     add_custom_command(OUTPUT ${OUTPUT_FILE}
             COMMAND $<TARGET_FILE:ppp>
-            ARGS "-CGV_DIR=${CGV_DIR}" "${CMAKE_CURRENT_SOURCE_DIR}/${infile}" "${OUTPUT_FILE}"
-            DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/${infile}"
-            IMPLICIT_DEPENDS ${PPP_WORK_FILES})
+            ARGS "-CGV_DIR=${CGV_DIR}" "${INPUT_FILE}" "${OUTPUT_FILE}"
+            DEPENDS "${INPUT_FILE}")
     set(${outfile_var} ${OUTPUT_FILE} PARENT_SCOPE)
     set(${outinclude_var} ${PH_PATH} PARENT_SCOPE)
 endfunction()

@@ -1,6 +1,6 @@
 
 file(GLOB_RECURSE SOURCES RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "*.cxx")
-message(STATUS "${SOURCES}")
+
 add_library(cgv_os ${SOURCES})
 target_compile_definitions(cgv_os PRIVATE CGV_OS_EXPORTS)
 target_link_libraries(cgv_os PUBLIC cgv_utils)
