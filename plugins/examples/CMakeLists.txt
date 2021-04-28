@@ -18,6 +18,7 @@ target_link_libraries(examples
         plot
         cg_gamepad
         cgv_gl
+        cgv_os
         cgv_signal)
 
 add_dependencies(examples

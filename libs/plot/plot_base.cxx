@@ -14,6 +14,10 @@ namespace cgv {
 std::vector<const char*> plot_base::font_names;
 std::string plot_base::font_name_enum_def;
 
+const unsigned plot_base::MAX_NR_COLOR_MAPPINGS;
+const unsigned plot_base::MAX_NR_OPACITY_MAPPINGS;
+const unsigned plot_base::MAX_NR_SIZE_MAPPINGS;
+
 plot_base::tick_batch_info::tick_batch_info(int _ai, int _aj, bool _primary, unsigned _first_vertex, unsigned _first_label) 
 	: ai(_ai), aj(_aj), primary(_primary), first_vertex(_first_vertex), first_label(_first_label)
 {
