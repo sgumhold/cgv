@@ -37,7 +37,7 @@ function(shader_test_command_add base infile outfile_var outinclude_var)
 
     # Add the build rule
     add_custom_command(OUTPUT ${OUTPUT_FILE}
-            COMMAND CGV_OPTIONS=SHADER_DEVELOPER $<TARGET_FILE:shader_test>
+            COMMAND ${CMAKE_COMMAND} -E env CGV_OPTIONS=SHADER_DEVELOPER $<TARGET_FILE:shader_test>
             ARGS "${INPUT_FILE}" "${OUTPUT_FILE}"
             DEPENDS "${INPUT_FILE}")
     set(${outfile_var} ${OUTPUT_FILE} PARENT_SCOPE)
