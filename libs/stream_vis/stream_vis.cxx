@@ -36,6 +36,7 @@ namespace stream_vis {
 		cgv::base::process_command("plugin:cg_icons");
 		cgv::base::process_command("plugin:cg_fltk");
 		cgv::base::process_command("type(shader_config):shader_path='D:/develop/projects/git/cgv/plugins/examples;D:/develop/projects/git/cgv/libs/plot/glsl;D:/develop/projects/git/cgv/libs/cgv_gl/glsl'");
+		cgv::base::process_command("plugin:cmf_tt_gl_font");
 		cgv::base::process_command("plugin:crg_stereo_view");
 		cgv::base::process_command("plugin:crg_grid");
 		//cgv::base::process_command("plugin:cg_meta");
@@ -92,6 +93,7 @@ namespace stream_vis {
 	void stream_vis::create_gui()
 	{
 		add_decorator("stream_vis", "heading");
+
 	}
 
 }

@@ -28,19 +28,21 @@ namespace cgv {
 			has_radii = false;
 			has_tangents = false;
 		}
-
-		void spline_tube_renderer::set_attribute_array_manager(const context& ctx, attribute_array_manager* _aam_ptr)
+		/// call this before setting attribute arrays to manage attribute array in given manager
+		void spline_tube_renderer::enable_attribute_array_manager(const context& ctx, attribute_array_manager& aam)
 		{
-			surface_renderer::set_attribute_array_manager(ctx, _aam_ptr);
-			if(aam_ptr) {
-				if(aam_ptr->has_attribute(ctx, ref_prog().get_attribute_location(ctx, "radius")))
-					has_radii = true;
-				if(aam_ptr->has_attribute(ctx, ref_prog().get_attribute_location(ctx, "tangent")))
-					has_tangents = true;
-			} else {
-				has_radii = false;
-				has_tangents = false;
-			}
+			surface_renderer::enable_attribute_array_manager(ctx, aam);
+			if (has_attribute(ctx, "radius"))
+				has_radii = true;
+			if (has_attribute(ctx, "tangent"))
+				has_tangents = true;
+		}
+		/// call this after last render/draw call to ensure that no other users of renderer change attribute arrays of given manager
+		void spline_tube_renderer::disable_attribute_array_manager(const context& ctx, attribute_array_manager& aam)
+		{
+			surface_renderer::disable_attribute_array_manager(ctx, aam);
+			has_radii = false;
+			has_tangents = false;
 		}
 
 		bool spline_tube_renderer::validate_attributes(const context& ctx) const

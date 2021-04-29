@@ -20,6 +20,8 @@ namespace cgv { // @<
 		class CGV_API attribute_array_manager
 		{
 		protected:
+			/// store default buffer usage
+			VertexBufferUsage default_usage; 
 			/// attribue array binding used to store array pointers
 			attribute_array_binding aab;
 			/// store vertex buffers generated per attribute location
@@ -41,7 +43,7 @@ namespace cgv { // @<
 					}
 				}
 				else {
-					vbo_ptr = new vertex_buffer(VBT_INDICES);
+					vbo_ptr = new vertex_buffer(VBT_INDICES, default_usage);
 					res = vbo_ptr->create(ctx, array);
 				}
 				if (res)
@@ -63,13 +65,15 @@ namespace cgv { // @<
 					}
 				}
 				else {
-					vbo_ptr = new vertex_buffer(VBT_INDICES);
+					vbo_ptr = new vertex_buffer(VBT_INDICES, default_usage);
 					res = vbo_ptr->create(ctx, array, count);
 				}
 				if (res)
 					res = ctx.set_element_array(&aab, vbo_ptr);
 				return res;
 			}
+			/// whether aam contains an index buffer
+			bool has_index_buffer() const;
 			///
 			void remove_indices(const context& ctx);
 			///
@@ -86,7 +90,7 @@ namespace cgv { // @<
 					}
 				}
 				else {
-					vbo_ptr = new vertex_buffer();
+					vbo_ptr = new vertex_buffer(VBT_VERTICES, default_usage);
 					res = vbo_ptr->create(ctx, array);
 				}
 				if(res)
@@ -107,7 +111,7 @@ namespace cgv { // @<
 					}
 				}
 				else {
-					vbo_ptr = new vertex_buffer();
+					vbo_ptr = new vertex_buffer(VBT_VERTICES, default_usage);
 					res = vbo_ptr->create(ctx, array_ptr, nr_elements);
 				}
 				if (res)
@@ -130,7 +134,7 @@ namespace cgv { // @<
 					}
 				}
 				else {
-					vbo_ptr = new vertex_buffer();
+					vbo_ptr = new vertex_buffer(VBT_VERTICES, default_usage);
 					res = vbo_ptr->create(ctx, array_ptr, nr_elements);
 				}
 				if (res)
@@ -154,7 +158,7 @@ namespace cgv { // @<
 			}
 		public:
 			/// default initialization
-			attribute_array_manager();
+			attribute_array_manager(VertexBufferUsage _default_usage = VBU_STREAM_DRAW);
 			/// destructor calls destruct
 			~attribute_array_manager();
 			/// check whether the given attribute is available
@@ -190,13 +194,21 @@ namespace cgv { // @<
 			cgv::type::info::TypeId index_type;
 			/// count of indices
 			size_t index_count;
+			/// declare default attribute array manager used in core profile
+			attribute_array_manager default_aam;
+			/// if attribute array manager is set, use it for attribute management
+			attribute_array_manager* aam_ptr;
 		protected:
+			/// check for attribute array manager
+			bool has_aam() const { return aam_ptr != 0 && aam_ptr != &default_aam; }
+			/// check for attribute
+			bool has_attribute(const context& ctx, const std::string& attr_name) {
+				return aam_ptr->has_attribute(ctx, ref_prog().get_attribute_location(ctx, attr_name));
+			}
 			/// access to render style
 			const render_style* get_style_ptr() const;
-			/// if attribue array manager is set, use it for attribute management
-			attribute_array_manager* aam_ptr;
 			/// return whether attributes persist after a call to disable
-			bool attributes_persist() const { return aam_ptr != 0; }
+			bool attributes_persist() const { return has_aam(); }
 		public:
 			/// derived renderer classes have access to shader program
 			shader_program& ref_prog() { return *prog_ptr; }
@@ -255,12 +267,20 @@ namespace cgv { // @<
 			virtual ~renderer();
 			/// used by derived classes to manage singeltons
 			void manage_singelton(context& ctx, const std::string& renderer_name, int& ref_count, int ref_count_change);
-			/// provide an attribute manager that is used in successive calls to attribute array setting methods and in the enable and disable method, if a nullptr is provided attributes are managed through deprecated VertexAttributePointers - in this case a call to disable deattaches all attribute arrays which have to be set before the next enable call again
-			virtual void set_attribute_array_manager(const context& ctx, attribute_array_manager* _aam_ptr = 0);
+			/// call this before setting attribute arrays to manage attribute array in given manager
+			virtual void enable_attribute_array_manager(const context& ctx, attribute_array_manager& aam);
+			/// call this after last render/draw call to ensure that no other users of renderer change attribute arrays of given manager
+			virtual void disable_attribute_array_manager(const context& ctx, attribute_array_manager& aam);
+			/// this function is deprecated, please use enable_attribute_array_manager() and disable_attribute_manager() instead
+			DEPRECATED("deprecated, use enable_attribute_array_manager() paired with disable_attribute_manager instead().")
+				virtual void set_attribute_array_manager(const context& ctx, attribute_array_manager* _aam_ptr = 0);
 			/// reference given render style
 			void set_render_style(const render_style& rs);
 			/// abstract initialize method creates default render style, derived renderers to load the shader program
 			virtual bool init(context& ctx);
+			/// templated method to set the position attribute from a single position of type T
+			template <typename T>
+			void set_position(const context& ctx, const T& position) { has_positions = true; ref_prog().set_attribute(ctx, ref_prog().get_attribute_location(ctx, "position"), position); }
 			/// templated method to set the position attribute from a vector of positions of type T
 			template <typename T>
 			void set_position_array(const context& ctx, const std::vector<T>& positions) { has_positions = true; set_attribute_array(ctx, ref_prog().get_attribute_location(ctx, "position"), positions); }
@@ -272,6 +292,9 @@ namespace cgv { // @<
 			/// template method to set the position attribute from a vertex buffer object, the element type must be given as explicit template parameter
 			template <typename T>
 			void set_position_array(const context& ctx, const vertex_buffer& vbo, size_t offset_in_bytes, size_t nr_elements, unsigned stride_in_bytes = 0) { set_position_array(ctx, type_descriptor(element_descriptor_traits<T>::get_type_descriptor(T()), true), vbo, offset_in_bytes, nr_elements, stride_in_bytes); }
+			/// templated method to set the color attribute from a single color of type T
+			template <typename T>
+			void set_color(const context& ctx, const T& color) { has_colors = true; ref_prog().set_attribute(ctx, ref_prog().get_attribute_location(ctx, "color"), color); }
 			/// template method to set the color attribute from a vector of colors of type T
 			template <typename T>
 			void set_color_array(const context& ctx, const std::vector<T>& colors) { has_colors = true;  set_attribute_array(ctx, ref_prog().get_attribute_location(ctx, "color"), colors); }
@@ -283,35 +306,66 @@ namespace cgv { // @<
 			/// template method to set the color attribute from a vertex buffer object, the element type must be given as explicit template parameter
 			template <typename T>
 			void set_color_array(const context& ctx, const vertex_buffer& vbo, size_t offset_in_bytes, size_t nr_elements, unsigned stride_in_bytes = 0) { set_color_array(ctx, type_descriptor(element_descriptor_traits<T>::get_type_descriptor(T()), true), vbo, offset_in_bytes, nr_elements, stride_in_bytes); }
-			/// set the indices for indexed rendering from a vector
+			/// <summary>
+			/// Set the indices for indexed rendering from a vector. If an attribute array manager is
+			/// enabled and keep_on_cpu is false (default), create GPU index buffer and transfer indices 
+			/// into it.
+			/// </summary>
+			/// <typeparam name="T">index type must be uint8_t, uint16_t, or uint32_t</typeparam>
+			/// <param name="ctx">opengl context in which indexed rendering takes place</param>
+			/// <param name="indices">vector of indices</param>
+			/// <param name="keep_on_cpu">flag whether indices should be kept in CPU memory</param>
+			/// <returns>this can only fail if indices cannot be copied to GPU buffer</returns>
 			template <typename T>
-			bool set_indices(const context& ctx, const std::vector<T>& indices) {
+			bool set_indices(const context& ctx, const std::vector<T>& indices, bool keep_on_cpu = false) {
 				this->indices = &indices.front();
 				index_buffer_ptr = 0;
 				index_count = indices.size();
 				index_type = cgv::type::info::type_id<T>::get_id();
-				if (aam_ptr)
+				if (!keep_on_cpu && aam_ptr)
 					return aam_ptr->set_indices(ctx, indices);
 				return true;
 			}
-			/// set the indices for indexed rendering from a pointer and a count 
+			/// <summary>
+			/// Set the indices for indexed rendering from an array given as a pointer. If an attribute array 
+			/// manager is enabled and keep_on_cpu is false (default), create GPU index buffer and transfer 
+			/// indices into it.
+			/// </summary>
+			/// <typeparam name="T">index type must be uint8_t, uint16_t, or uint32_t</typeparam>
+			/// <param name="ctx">opengl context in which indexed rendering takes place</param>
+			/// <param name="indices">pointer to array containing the indices</param>
+			/// <param name="nr_indices">number of indices in the array</param>
+			/// <param name="keep_on_cpu">flag whether indices should be kept in CPU memory</param>
+			/// <returns>this can only fail if indices cannot be copied to GPU buffer</returns>
 			template <typename T>
-			bool set_indices(const context& ctx, const T* indices, size_t nr_indices) {
+			bool set_indices(const context& ctx, const T* indices, size_t nr_indices, bool keep_on_cpu = false) {
 				this->indices = indices;
 				index_buffer_ptr = 0;
 				index_count = nr_indices;
 				index_type = cgv::type::info::type_id<T>::get_id();
-				if (aam_ptr)
+				if (!keep_on_cpu && aam_ptr)
 					return aam_ptr->set_indices(ctx, indices, nr_indices);
 				return true;
 			}
-			/// set the indices for indexed rendering from a vertex buffer
+			/// 
+
+			/// <summary>
+			/// Set the indices for indexed rendering from a GPU buffer. If an attribute array manager
+			/// is enabled its index buffer is removed through this call.
+			/// </summary>
+			/// <typeparam name="T">index type must be uint8_t, uint16_t, or uint32_t</typeparam>
+			/// <param name="ctx">opengl context in which indexed rendering takes place</param>
+			/// <param name="vbo">GPU buffer</param>
+			/// <param name="count">number of indices in the GPU buffer</param>
+			/// <returns>in current implementation this succeeds always</returns>
 			template <typename T>
 			bool set_indices(const context& ctx, const vertex_buffer& vbo, size_t count) { 
 				index_buffer_ptr = &vbo;
 				indices = 0;
 				index_count = count;
 				index_type = cgv::type::info::type_id<T>::get_id();
+				if (aam_ptr)
+					aam_ptr->remove_indices(ctx);
 				return true;
 			}
 			/// return whether indices have been defined

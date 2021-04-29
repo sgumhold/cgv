@@ -11,9 +11,12 @@ namespace stream_vis {
 		cgv::utils::token tok_plot, tok_marks;
 	public:
 		cgv_declaration_reader(const std::string& _declarations);
+		bool get_value(const std::string& name, std::string& v);
 		bool parse_bool(const std::string& name, bool& b);
-		bool parse_float(const std::string& name, float& flt);
+		bool parse_int(const std::string& name, int& i);
+		bool parse_float(const std::string& name, float& f);
 		bool parse_color(const std::string& name, rgb& color);
+		bool parse_color(const std::string& name, rgba& color);
 		bool parse_quat(const std::string& name, quat& quat);
 		bool parse_vecn(const std::string& name, float* v, uint32_t dim);
 		bool parse_ivecn(const std::string& name, int32_t* v, uint32_t dim);

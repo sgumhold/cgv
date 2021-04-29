@@ -9,7 +9,7 @@ addProjectDeps=[
 	"cgv_gl", "cg_vr",
 	"cgv_viewer", 
 	"cg_fltk", "crg_grid", "cg_ext", "cmi_io", "crg_vr_view", "vr_lab",
-	"vr_emulator", "openvr_driver"
+	"vr_emulator", "openvr_driver", "crg_vr_wall"
 ];
 addIncDirs=[INPUT_DIR, CGV_DIR."/libs", CGV_DIR."/test"];
 

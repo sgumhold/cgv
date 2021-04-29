@@ -44,6 +44,15 @@ namespace stream_vis {
 			return 0;
 		return v;
 	}
+	bool cgv_declaration_reader::get_value(const std::string& name, std::string& v)
+	{
+		auto iter = pp.find(name);
+		if (iter == pp.end())
+			return false;
+		v = iter->second;
+		return true;
+	}
+
 	bool cgv_declaration_reader::parse_bool(const std::string& name, bool& b)
 	{
 		auto iter = pp.find(name);
@@ -59,6 +68,16 @@ namespace stream_vis {
 			return true;
 		}
 		return false;
+	}
+	bool cgv_declaration_reader::parse_int(const std::string& name, int& i)
+	{
+		auto iter = pp.find(name);
+		if (iter == pp.end())
+			return false;
+		std::string value = iter->second;
+		if (!cgv::utils::is_integer(value, i))
+			return false;
+		return true;
 	}
 	bool cgv_declaration_reader::parse_float(const std::string& name, float& flt)
 	{
@@ -81,6 +100,20 @@ namespace stream_vis {
 		if (value.size() != 6)
 			return false;
 		for (unsigned j = 0; j < 3; ++j)
+			color[j] = float(16 * parse_hex(value[2 * j]) + parse_hex(value[2 * j + 1])) / 255.0f;
+		return true;
+	}
+	bool cgv_declaration_reader::parse_color(const std::string& name, rgba& color)
+	{
+		auto iter = pp.find(name);
+		if (iter == pp.end())
+			return false;
+		std::string value = iter->second;
+		if (value.size() != 6 && value.size() != 8)
+			return false;
+		size_t cnt = value.size() / 2;
+		color[3] = 1.0f;
+		for (unsigned j = 0; j < cnt; ++j)
 			color[j] = float(16 * parse_hex(value[2 * j]) + parse_hex(value[2 * j + 1])) / 255.0f;
 		return true;
 	}
@@ -319,8 +352,95 @@ namespace stream_vis {
 	}
 	bool cgv_declaration_reader::parse_declarations()
 	{
+		// preprocess to eliminate C-style comments account for strings defined with "" or '' and escape with \ inside of strings
+		char string_open = 0;
+		bool last_was_escape = false;
+		bool last_was_slash = false;
+		bool in_line_comment = false;
+		bool in_block_comment = false;
+		std::string filtered_declarations;
+		for (auto c : declarations) {
+			if (in_line_comment) {
+				switch (c) {
+				case '\n':
+					in_line_comment = false;
+					break;
+				}
+			}
+			else if (in_block_comment) {
+				if (last_was_slash) {
+					switch (c) {
+					case '*':
+						break;
+					case '/':
+						in_block_comment = false;
+					default:
+						last_was_slash = false;
+						break;
+					}
+				}
+				else {
+					switch (c) {
+					case '*':
+						last_was_slash = true;
+						break;
+					}
+				}
+			}
+			else if (string_open) {
+				if (last_was_escape) {
+					last_was_escape = false;
+				}
+				else {
+					if (c == string_open) {
+						string_open = 0;
+					}
+					else if (c == '\\')
+						last_was_escape = true;
+				}
+			}
+			else {
+				if (last_was_slash) {
+					switch (c) {
+					case '"':
+						string_open = '"';
+						break;
+					case '\'':
+						string_open = '\'';
+						break;
+					case '/':
+						in_line_comment = true;
+						break;
+					case '*' :
+						in_block_comment = true;
+						break;
+					}
+					if (!in_line_comment && !in_block_comment) {
+						filtered_declarations.push_back('/');
+						filtered_declarations.push_back(c);
+					}
+					last_was_slash = false;
+				}
+				else {
+					switch (c) {
+					case '"':
+						string_open = '"';
+						break;
+					case '\'':
+						string_open = '\'';
+						break;
+					case '/':
+						last_was_slash = true;
+						break;
+					}
+					if (!last_was_slash)
+						filtered_declarations.push_back(c);
+				}
+			}
+		}
+		std::cout << "filtered declarations=\n" << filtered_declarations << std::endl;
 		std::vector<cgv::utils::token> toks;
-		cgv::utils::split_to_tokens(declarations, toks, ":=", false, "\"'[{", "\"']}");
+		cgv::utils::split_to_tokens(filtered_declarations, toks, ":=", false, "\"'[{", "\"']}");
 		size_t ti = 0;
 		while (ti + 5 <= toks.size()) {
 			bool has_params = toks[ti + 3].begin[-1] == '[';
@@ -375,7 +495,11 @@ namespace stream_vis {
 						++i;
 					}
 				}
-				construct_composed_time_series(name, type, ts_names);
+				pp.clear();
+				if (has_params) {
+					parse_parameters(toks[ti + 3], pp);
+				}
+				construct_time_series(name, type, ts_names);
 			}
 			ti += delta;
 		}

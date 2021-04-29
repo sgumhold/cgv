@@ -63,8 +63,6 @@ namespace cgv { // @<
 		public:
 			/// initializes position_is_center to true 
 			volume_renderer();
-			///
-			void set_attribute_array_manager(const context& ctx, attribute_array_manager* _aam_ptr);
 			/// construct shader programs and return whether this was successful, call inside of init method of drawable
 			bool init(context& ctx);
 			///

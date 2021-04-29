@@ -81,7 +81,7 @@ namespace cgv {
 				return _Left->get_start_time() < _Right->get_start_time();
 			}
 		};
-		class animation_manager : public cgv::signal::tacker
+		class animation_manager : virtual public cgv::signal::tacker
 		{
 			std::multiset<animation_ptr, priority> queue;
 			bool is_connected;

@@ -1,6 +1,7 @@
 #pragma once
 @exclude <cgv/config/ppp.ppp>
 #include <cgv/reflect/reflection_handler.h>
+#include <cgv/type/variant.h>
 
 namespace cgv {
 	namespace reflect {

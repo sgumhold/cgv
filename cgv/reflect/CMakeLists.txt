@@ -1,27 +1,20 @@
-cmake_minimum_required(VERSION 2.6)
 
-# Needed for building components
-include("../../cmake/buildCoreComponents.cmake")
-
-# The PPP is required
-find_package(ppp)
-
-# Source files
 file(GLOB_RECURSE SOURCES RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "*.cxx")
-# Header files
-file(GLOB_RECURSE PUBLIC_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "*.h")
-# Files to be preprocessed by PPP
 file(GLOB_RECURSE PPP_SOURCES RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "*.ph")
 
-# Schedule preprocessing commands
 ppp_compile("${CGV_DIR}"
-			PPP_FILES 
-			${PPP_SOURCES})
+        PPP_FILES
+        PPP_INCLUDES
+        PPP_INSTALL_DIR
+        ${PPP_SOURCES})
 
-# Definition of the component
-cgv_add_core_component(reflect
-	PUBLIC_HEADERS ${PUBLIC_HEADERS}
-	${PPP_FILES}
-	SOURCES ${SOURCES}
-	CGV_DEPENDENCIES utils type)
+add_library(cgv_reflect ${SOURCES} ${PPP_FILES})
+target_link_libraries(cgv_reflect PUBLIC cgv_utils cgv_type)
+target_compile_definitions(cgv_reflect PRIVATE CGV_REFLECT_EXPORTS)
+target_include_directories(cgv_reflect PUBLIC
+        $<BUILD_INTERFACE:${CGV_DIR}>
+        "$<BUILD_INTERFACE:${PPP_INCLUDES}>"
+        $<INSTALL_INTERFACE:include>)
 
+install(TARGETS cgv_reflect EXPORT cgv DESTINATION ${CGV_LIB_DEST})
+install(DIRECTORY ${PPP_INSTALL_DIR} DESTINATION ${CGV_INCLUDE_DEST}/reflect FILES_MATCHING PATTERN "*.h")

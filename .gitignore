@@ -1,6 +1,10 @@
 cmake/local_build_dir.cmake
 lib
+.vscode
+.vs
+.idea
 build
+cmake-build-debug
 
 # Ignore files generated from .ph template headers
 cgv/base/call_interface_impl.h

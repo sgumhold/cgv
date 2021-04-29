@@ -119,6 +119,8 @@ public:
 	fvec<T,N+1> lift() const { fvec<T,N+1> h_v; (fvec<T,N>&)h_v=*this; h_v(N) = 1; return h_v; }
 	/// conversion to vector type
 	vec<T> to_vec() const;
+	/// conversion from vector
+	static fvec<T, N> from_vec(const vec<T>&);
 	//@}
 
 	//@name access to components
@@ -410,6 +412,13 @@ vec<T> fvec<T,N>::to_vec() const {
 	vec<T> r;
 	r.set_extern_data(N,const_cast<T*>(v));
 	return r;
+}
+
+/// conversion from vector
+template <typename T, cgv::type::uint32_type N>
+fvec<T, N> fvec<T, N>::from_vec(const vec<T>& v)
+{
+	return fvec<T, N>(std::min(N, v.dim()), &v[0]);
 }
 
 	}

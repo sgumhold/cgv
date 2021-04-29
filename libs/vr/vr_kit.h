@@ -74,6 +74,8 @@ namespace vr {
 		void* handle;
 		/// pointer to camera
 		vr_camera* camera;
+		/// whether to skip driver calibration - defaults to false
+		bool skip_calibration;
 		/// name in case driver provides this information (not reliable)
 		std::string name;
 		/// store vr kit info to be filled and updated by driver implementations

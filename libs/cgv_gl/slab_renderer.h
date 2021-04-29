@@ -72,7 +72,10 @@ namespace cgv { // @<
 		public:
 			/// initializes position_is_center to true 
 			slab_renderer();
-			void set_attribute_array_manager(const context& ctx, attribute_array_manager* _aam_ptr);
+			/// call this before setting attribute arrays to manage attribute array in given manager
+			void enable_attribute_array_manager(const context& ctx, attribute_array_manager& aam);
+			/// call this after last render/draw call to ensure that no other users of renderer change attribute arrays of given manager
+			void disable_attribute_array_manager(const context& ctx, attribute_array_manager& aam);
 			/// set the flag, whether the position is interpreted as the slab center, true by default
 			void set_position_is_center(bool _position_is_center);
 			/// construct shader programs and return whether this was successful, call inside of init method of drawable

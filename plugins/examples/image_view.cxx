@@ -64,7 +64,7 @@ public:
 		case '-' :
 			if (tex_ids.size() > 1) {
 				if (current_image == 0)
-					current_image = tex_ids.size() - 1;
+					current_image = (unsigned)tex_ids.size() - 1;
 				else
 					--current_image;
 				on_set(&current_image);

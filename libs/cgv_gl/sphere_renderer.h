@@ -53,7 +53,10 @@ namespace cgv { // @<
 		public:
 			///
 			sphere_renderer();
-			void set_attribute_array_manager(const context& ctx, attribute_array_manager* _aam_ptr);
+			/// call this before setting attribute arrays to manage attribute array in given manager
+			void enable_attribute_array_manager(const context& ctx, attribute_array_manager& aam);
+			/// call this after last render/draw call to ensure that no other users of renderer change attribute arrays of given manager
+			void disable_attribute_array_manager(const context& ctx, attribute_array_manager& aam);
 			///
 			bool init(context& ctx);
 			///
@@ -70,8 +73,12 @@ namespace cgv { // @<
 			/// use this function if you store spheres in vec4 with the 4th component the radius
 			template <typename T = float>
 			void set_sphere_array(const context& ctx, const std::vector<cgv::math::fvec<T, 4> >& spheres) {
-				set_position_array(ctx, &(reinterpret_cast<const cgv::math::fvec<T, 3>&>(spheres[0])), spheres.size(), sizeof(cgv::math::fvec<T, 4>));
-				set_radius_array(ctx, &spheres[0][3], spheres.size(), sizeof(cgv::math::fvec<T, 4>));
+				set_composed_attribute_array(ctx, ref_prog().get_attribute_location(ctx, "position"),
+					&spheres.front(), spheres.size(), reinterpret_cast<const cgv::math::fvec<T, 3>&>(spheres.front()));
+				ref_composed_attribute_array(ctx, ref_prog().get_attribute_location(ctx, "radius"),
+					ref_prog().get_attribute_location(ctx, "position"), &spheres.front(), spheres.size(), spheres[0][3]);
+				has_positions = true;
+				has_radii = true;
 			}
 			///
 			bool validate_attributes(const context& ctx) const;
