@@ -1,74 +1,59 @@
-cmake_minimum_required(VERSION 2.6)
-project(JPEG)
+cmake_minimum_required(VERSION 3.14)
 
-# Include this file for standard build settings
-include("../../cmake/buildCoreComponents.cmake")
+project(jpeg)
 
-set(HEADERS
-	jchuff.h
-	jconfig.h
-	jdct.h
-	jdhuff.h
-	jerror.h
-	jinclude.h
-	jmemsys.h
-	jmorecfg.h
-	jpegint.h
-	jpeglib.h
-	jversion.h)
-	
-set(SOURCES
-	jcapimin.c
-	jcapistd.c
-	jccoefct.c
-	jccolor.c
-	jcdctmgr.c
-	jchuff.c
-	jcinit.c
-	jcmainct.c
-	jcmarker.c
-	jcmaster.c
-	jcomapi.c
-	jcparam.c
-	jcphuff.c
-	jcprepct.c
-	jcsample.c
-	jctrans.c
-	jdapimin.c
-	jdapistd.c
-	jdatadst.c
-	jdatasrc.c
-	jdcoefct.c
-	jdcolor.c
-	jddctmgr.c
-	jdhuff.c
-	jdinput.c
-	jdmainct.c
-	jdmarker.c
-	jdmaster.c
-	jdmerge.c
-	jdphuff.c
-	jdpostct.c
-	jdsample.c
-	jdtrans.c
-	jerror.c
-	jfdctflt.c
-	jfdctfst.c
-	jfdctint.c
-	jidctflt.c
-	jidctfst.c
-	jidctint.c
-	jidctred.c
-	jmemansi.c
-	jmemmgr.c
-	jquant1.c
-	jquant2.c
-	jutils.c)
-	
-cgv_add_3rd_library(JPEG
-	SOURCES ${SOURCES}
-	PUBLIC_HEADERS ${HEADERS}
-	SHARED_DEFINITIONS "JPEG_DLL"
-	STATIC_DEFINITIONS "JPEG_STATIC")
-		
-cgv_write_find_file(JPEG)
+add_library(jpeg
+        jcapimin.c
+        jcapistd.c
+        jccoefct.c
+        jccolor.c
+        jcdctmgr.c
+        jchuff.c
+        jcinit.c
+        jcmainct.c
+        jcmarker.c
+        jcmaster.c
+        jcomapi.c
+        jcparam.c
+        jcphuff.c
+        jcprepct.c
+        jcsample.c
+        jctrans.c
+        jdapimin.c
+        jdapistd.c
+        jdatadst.c
+        jdatasrc.c
+        jdcoefct.c
+        jdcolor.c
+        jddctmgr.c
+        jdhuff.c
+        jdinput.c
+        jdmainct.c
+        jdmarker.c
+        jdmaster.c
+        jdmerge.c
+        jdphuff.c
+        jdpostct.c
+        jdsample.c
+        jdtrans.c
+        jerror.c
+        jfdctflt.c
+        jfdctfst.c
+        jfdctint.c
+        jidctflt.c
+        jidctfst.c
+        jidctint.c
+        jidctred.c
+        jmemansi.c
+        jmemmgr.c
+        jquant1.c
+        jquant2.c
+        jutils.c)
+target_compile_definitions(jpeg PRIVATE JPEG_DLL)
+
+target_include_directories(jpeg PUBLIC
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
+        $<INSTALL_INTERFACE:${CGV_3RD_INCLUDE_DEST}/jpeg>)
+
+install(TARGETS jpeg EXPORT cgv_3rd DESTINATION ${CGV_LIB_DEST})
+install(DIRECTORY . DESTINATION ${CGV_3RD_INCLUDE_DEST}/jpeg FILES_MATCHING PATTERN "*.h")

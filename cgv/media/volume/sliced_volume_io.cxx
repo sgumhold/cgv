@@ -11,6 +11,11 @@
 #include <cgv/media/image/image_reader.h>
 #include <sstream>
 
+#if WIN32
+#define popen(...) _popen(__VA_ARGS__);
+#define pclose(...) _pclose(__VA_ARGS__);
+#endif
+
 namespace cgv {
 	namespace media {
 		namespace volume {
@@ -30,12 +35,12 @@ namespace cgv {
 				if (cerr)
 					cmd.append(" 2>&1");
 
-				stream = _popen(cmd.c_str(), "r");
+				stream = popen(cmd.c_str(), "r");
 
 				if (stream) {
 					while (!feof(stream))
 						if (fgets(buffer, max_buffer, stream) != NULL) data.append(buffer);
-					_pclose(stream);
+					pclose(stream);
 				}
 				return data;
 			}
@@ -48,7 +53,7 @@ namespace cgv {
 				FILE* fp;
 				if (use_cerr)
 					cmd.append(" 2>&1");
-				fp = _popen(cmd.c_str(), "rb");
+				fp = popen(cmd.c_str(), "rb");
 				size_t nr_bytes_read = 0;
 				if (fp) {
 					while (nr_bytes_read < buffer_size && !feof(fp)) {
@@ -60,7 +65,7 @@ namespace cgv {
 						if (nr_read < nr_bytes)
 							break;
 					}
-					_pclose(fp);
+					pclose(fp);
 				}
 				return nr_bytes_read;
 			}

@@ -1,48 +1,31 @@
-cmake_minimum_required(VERSION 2.6)
-project(TIFF)
+cmake_minimum_required(VERSION 3.14)
 
-# Include this file for standard build settings
-include("../../cmake/buildCoreComponents.cmake")
+project(tif)
 
+file(GLOB_RECURSE SOURCES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} "*.c")
 
-# define(defFile="$(CGV_DIR)/3rd/tiff/tiff.def")
+add_library(tif ${SOURCES} libtiff.def)
+target_link_libraries(tif jpeg)
+target_compile_definitions(tif PRIVATE
+        _USRDLL
+        _CRT_SECURE_NO_DEPRECATE
+        AVOID_WIN32_FILEIO
+        CHECK_JPEG_YCBCR_SUBSAMPLING
+        DEFAULT_EXTRASAMPLE_AS_ALPHA
+        STRIPCHOP_DEFAULT=TIFF_STRIPCHOP
+        STRIP_SIZE_DEFAULT=8192
+        LOGLUV_SUPPORT
+        NEXT_SUPPORT
+        THUNDER_SUPPORT
+        LZW_SUPPORT
+        PACKBITS_SUPPORT
+        CCITT_SUPPORT
+        TIF_PLATFORM_CONSOLE
+        FILLODER_LSB2MSB)
 
-set(DEFINES
-  "_CRT_SECURE_NO_DEPRECATE"
-  "AVOID_WIN32_FILEIO"
-  "CHECK_JPEG_YCBCR_SUBSAMPLING"
-  "DEFAULT_EXTRASAMPLE_AS_ALPHA"
-  "STRIPCHOP_DEFAULT=TIFF_STRIPCHOP"
-  "STRIP_SIZE_DEFAULT=8192"
-  "LOGLUV_SUPPORT"
-  "NEXT_SUPPORT"
-  "THUNDER_SUPPORT"
-  "LZW_SUPPORT"
-  "PACKBITS_SUPPORT"
-  "CCITT_SUPPORT"
-  "TIF_PLATFORM_CONSOLE"
-  "FILLODER_LSB2MSB"
-)
+target_include_directories(tif PUBLIC
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
+        $<INSTALL_INTERFACE:${CGV_3RD_INCLUDE_DEST}/tif>)
 
-
-cgv_find_package(JPEG)
-
-# Header files
-file(GLOB_RECURSE HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "*.h")
-# Source files
-file(GLOB_RECURSE SOURCES RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "*.c")
-
-include_directories(../jpeg	${JPEG_INCLUDE_DIRS})
-
-cgv_add_3rd_library(TIFF
-	SOURCES ${SOURCES} libtiff.def
-	PUBLIC_HEADERS ${HEADERS}
-	SHARED_DEFINITIONS _USRDLL ${DEFINES}
-	STATIC_DEFINITIONS JPEG_STATIC ${DEFINES}
-)
-	
-target_link_libraries(TIFF 
-  ${JPEG_LIBRARIES}
-)
-
-cgv_write_find_file(TIFF)
+install(TARGETS tif EXPORT cgv_3rd DESTINATION ${CGV_LIB_DEST})
+install(DIRECTORY . DESTINATION ${CGV_3RD_INCLUDE_DEST}/tif FILES_MATCHING PATTERN "*.h")
