@@ -1,17 +1,12 @@
-cmake_minimum_required(VERSION 2.6)
 
-# Needed for building components
-include("../../cmake/buildCoreComponents.cmake")
-
-# Source files
 file(GLOB_RECURSE SOURCES RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "*.cxx")
-# Header files
-file(GLOB_RECURSE PUBLIC_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "*.h")
 
+add_library(cgv_data ${SOURCES})
+target_compile_definitions(cgv_data PRIVATE CGV_DATA_EXPORTS)
+target_link_libraries(cgv_data PUBLIC cgv_utils cgv_type cgv_reflect)
 
-# Definition of the component
-cgv_add_core_component(data
-	SOURCES ${SOURCES}
-	PUBLIC_HEADERS ${PUBLIC_HEADERS}
-	CGV_DEPENDENCIES utils type reflect)
+target_include_directories(cgv_data PUBLIC
+        $<BUILD_INTERFACE:${CGV_DIR}>
+        $<INSTALL_INTERFACE:include>)
 
+install(TARGETS cgv_data EXPORT cgv DESTINATION ${CGV_LIB_DEST})

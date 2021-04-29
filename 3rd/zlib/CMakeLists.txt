@@ -1,42 +1,28 @@
-cmake_minimum_required(VERSION 2.6)
-project(ZLIB)
+cmake_minimum_required(VERSION 3.14)
 
-# Include this file for standard build settings
-include("../../cmake/buildCoreComponents.cmake")
+project(zlib)
 
-set(SOURCES
-	adler32.c
-	compress.c
-	crc32.c
-	deflate.c
-	gzclose.c
-	gzlib.c
-	gzread.c
-	gzwrite.c
-	infback.c
-	inffast.c
-	inflate.c
-	inftrees.c
-	trees.c
-	uncompr.c
-	zutil.c)
-	
-set(HEADERS
-	crc32.h
-	deflate.h
-	gzguts.h
-	inffast.h
-	inffixed.h
-	inflate.h
-	inftrees.h
-	trees.h
-	zconf.h
-	zlib.h
-	zutil.h)
+add_library(zlib
+        adler32.c
+        compress.c
+        crc32.c
+        deflate.c
+        gzclose.c
+        gzlib.c
+        gzread.c
+        gzwrite.c
+        infback.c
+        inffast.c
+        inflate.c
+        inftrees.c
+        trees.c
+        uncompr.c
+        zutil.c)
+target_compile_definitions(zlib PRIVATE ZLIB_DLL)
 
-cgv_add_3rd_library(ZLIB
-	SOURCES ${SOURCES}
-	PUBLIC_HEADERS ${HEADERS}
-	SHARED_DEFINITIONS "ZLIB_DLL")
+target_include_directories(zlib PUBLIC
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
+        $<INSTALL_INTERFACE:${CGV_3RD_INCLUDE_DEST}/zlib>)
 
-cgv_write_find_file(ZLIB)
+install(TARGETS zlib EXPORT cgv_3rd DESTINATION ${CGV_LIB_DEST})
+install(DIRECTORY . DESTINATION ${CGV_3RD_INCLUDE_DEST}/zlib FILES_MATCHING PATTERN "*.h")
