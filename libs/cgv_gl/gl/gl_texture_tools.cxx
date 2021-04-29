@@ -324,7 +324,8 @@ static const char* snorm_texture_formats[] = {
 	"sint16[A]",
 	"sint16[L]",
 	"sint16[L,A]",
-	"sint16[I]"
+	"sint16[I]",
+	0
 };
 
 static const GLenum gl_int_texture_format_ids[] = 
@@ -509,7 +510,7 @@ unsigned find_best_texture_format(const cgv::data::component_format& _cf, cgv::d
 			gl_format = gl_depth_format_ids[i];
 		}
 	}
-	if (ensure_glew_initialized() && GLEW_EXT_texture_snorm) {
+	if (true){//ensure_glew_initialized() && GLEW_EXT_texture_snorm) {
 		i = find_best_match(cf, snorm_texture_formats, best_cf);
 		if (i != -1) {
 			if (best_cf)
@@ -576,9 +577,9 @@ unsigned configure_src_format(const cgv::data::const_data_view& data, GLuint& sr
 				case 'B' : glPixelMapfv(GL_PIXEL_MAP_I_TO_B, pf.get_width(), &tmp.front()); break;
 				case 'A' : glPixelMapfv(GL_PIXEL_MAP_I_TO_A, pf.get_width(), &tmp.front()); break;
 				case 'L' : 
-					glPixelMapfv(GL_PIXEL_MAP_I_TO_R, pf.get_width(), &tmp.front()); 
-					glPixelMapfv(GL_PIXEL_MAP_I_TO_G, pf.get_width(), &tmp.front()); 
-					glPixelMapfv(GL_PIXEL_MAP_I_TO_B, pf.get_width(), &tmp.front()); 
+					glPixelMapfv(GL_PIXEL_MAP_I_TO_R, pf.get_width(), &tmp.front());
+					glPixelMapfv(GL_PIXEL_MAP_I_TO_G, pf.get_width(), &tmp.front());
+					glPixelMapfv(GL_PIXEL_MAP_I_TO_B, pf.get_width(), &tmp.front());
 					break;
 				}
 			}				
@@ -623,8 +624,9 @@ bool load_texture(const cgv::data::const_data_view& data, unsigned gl_tex_format
 		}
 		break;
 	}
-	if (gen_mipmap) 
+	if(gen_mipmap) {
 		gen_mipmap = generate_mipmaps(nr_dim, texture_array);
+	}
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
 	return gen_mipmap;

@@ -27,6 +27,8 @@ extern CGV_API bool is_digit(char c);
 extern CGV_API bool is_letter(char c);
 /// convert char to lower case
 extern CGV_API char to_lower(char c);
+/// convert to hex
+extern CGV_API std::string to_hex(uint8_t v, bool use_upper_case = true);
 /// convert string to lower case
 extern CGV_API std::string to_lower(const std::string& _s);
 /// convert char to upper case

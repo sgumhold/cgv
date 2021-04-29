@@ -61,12 +61,16 @@ namespace vr {
 		void detach();
 		/// initialize render targets and framebuffer objects in current opengl context
 		bool init_fbos(EyeSelection es = ES_BOTH);
+		/// ensure that fbo of given eye is initialized
+		void ensure_fbo(int eye);
 		/// enable the framebuffer object of given eye (0..left, 1..right) 
 		void enable_fbo(int eye);
 		/// disable the framebuffer object of given eye
 		void disable_fbo(int eye);
 		/// initialize render targets and framebuffer objects in current opengl context
 		bool blit_fbo(int eye, int x, int y, int w, int h);
+		/// bind texture of given eye to current texture unit
+		void bind_texture(int eye);
 
 		/// check whether fbos have been initialized
 		bool fbos_initialized(EyeSelection es = ES_BOTH) const;

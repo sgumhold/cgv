@@ -116,7 +116,7 @@ class CGV_API simple_mesh : public simple_mesh_base
 {
 public:
 	/// type of axis aligned 3d box
-	typedef typename simple_mesh<T> mesh_type;
+	typedef simple_mesh<T> mesh_type;
 	/// type of axis aligned 3d box
 	typedef typename cgv::media::axis_aligned_box<T, 3> box_type;
 	/// type of 3d vector

@@ -254,7 +254,7 @@ public:
 	/// initialize members
 	render_component();
 	/// return whether component has been created
-	bool is_created() const;
+	virtual bool is_created() const;
 	/// copy the rendering api specific id the component to the memory location of the given pointer. 
 	/// For opengl this the passed pointer should be of type GLint or GLuint.
 	void put_id_void(void* ptr) const;
@@ -303,6 +303,7 @@ protected:
 	// vertex attribute names
 	int position_index;
 	int color_index;
+	bool context_sets_color;
 	int normal_index;
 	int texcoord_index;
 
@@ -323,8 +324,10 @@ public:
 	bool does_use_gamma() const { return uses_gamma; }
 
 	// vertex attribute names
+	void allow_context_to_set_color(bool allow);
 	int get_position_index() const { return position_index; }
 	int get_color_index() const { return color_index; }
+	bool does_context_set_color() const { return context_sets_color; }
 	int get_normal_index() const { return normal_index; }
 	int get_texcoord_index() const { return texcoord_index; }
 };
@@ -556,6 +559,8 @@ protected:
 	bool debug_render_passes;
 	/// whether vsynch should be enabled
 	bool enable_vsynch;
+	/// current color value
+	rgba current_color;
 	/// whether to use opengl option to support sRGB framebuffer
 	bool sRGB_framebuffer;
 	/// gamma value passed to shader programs that have gamma uniform
@@ -861,7 +866,7 @@ public:
 	/**@name font selection and measure*/
 	//@{
 	/// enable the given font face with the given size in pixels
-	virtual void enable_font_face(media::font::font_face_ptr font_face, float font_size) = 0;
+	virtual void enable_font_face(media::font::font_face_ptr font_face, float font_size);
 	/// return the size in pixels of the currently enabled font face
 	virtual float get_current_font_size() const;
 	/// return the currently enabled font face
@@ -884,8 +889,10 @@ public:
 	virtual void enable_sRGB_framebuffer(bool do_enable = true);
 	/// check whether sRGB framebuffer is enabled
 	bool sRGB_framebuffer_enabled() { return sRGB_framebuffer; }
+	/// return current color
+	const rgba& get_color() const;
 	/// set the current color
-	virtual void set_color(const rgba& clr) = 0;
+	virtual void set_color(const rgba& clr);
 	/// set the current color
 	virtual void set_color(const rgb& clr, float opacity = 1.0f) { set_color(rgba(clr[0], clr[1], clr[2], opacity)); }
 	/// set the current material 

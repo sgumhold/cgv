@@ -43,7 +43,7 @@ public:
 		plot.set_sub_plot_colors(1, rgb(0.1f, 0.0f, 1.0f));
 
 		plot.adjust_domain_to_data();
-		plot.adjust_tick_marks_to_domain();
+		plot.adjust_tick_marks();
 		plot.adjust_extent_to_domain_aspect_ratio();
 	}
 	std::string get_type_name() const
@@ -52,15 +52,16 @@ public:
 	}
 	void on_set(void* member_ptr)
 	{
-		if ((member_ptr >= &plot.ref_domain_min()(0) && member_ptr < &plot.ref_domain_min()(0) + plot.get_dim()) ||
-			(member_ptr >= &plot.ref_domain_max()(0) && member_ptr < &plot.ref_domain_max()(0) + plot.get_dim())) {
-			plot.adjust_tick_marks_to_domain();
-		}
+		//if ((member_ptr >= &plot.ref_domain_min()(0) && member_ptr < &plot.ref_domain_min()(0) + plot.get_dim()) ||
+		//	(member_ptr >= &plot.ref_domain_max()(0) && member_ptr < &plot.ref_domain_max()(0) + plot.get_dim())) {
+		//	plot.adjust_tick_marks();
+		//}
 		update_member(member_ptr);
 		post_redraw();
 	}
 	bool init(cgv::render::context& ctx)
 	{
+		plot.set_view_ptr(find_view_as_node());
 		return plot.init(ctx);
 	}
 	void init_frame(cgv::render::context& ctx)
@@ -91,7 +92,7 @@ protected:
 	// whether to use offscreen rendering
 	bool render_offscreen;
 public:
-	test_plot2d() : cgv::base::node("2d plot tester"), tex("[R,G,B,A]"), depth("[D]")
+	test_plot2d() : cgv::base::node("2d plot tester"), tex("[R,G,B,A]"), depth("[D]"), plot(2)
 	{
 		// compute vector of vec3 with x coordinates and function values of cos and sin
 		unsigned i;
@@ -102,55 +103,38 @@ public:
 		// create two sub plots and configure their colors
 		unsigned p1 = plot.add_sub_plot("cos");
 		unsigned p2 = plot.add_sub_plot("sin");
+		unsigned p3 = plot.add_sub_plot("cos²");
 		plot.set_sub_plot_colors(p1, rgb(1.0f, 0.0f, 0.1f));
-		plot.ref_sub_plot2d_config(p1).set_size(10.0f);
 		plot.set_sub_plot_colors(p2, rgb(0.1f, 0.0f, 1.0f));
-		plot.ref_sub_plot2d_config(p2).set_size(10.0f);
+		plot.set_sub_plot_colors(p3, rgb(0.0f, 1.0f, 0.1f));
 
 		// attach sub plot attributes to previously created vector
 		// CAREFUL: this creates references to P and P is not allowed to be deleted thereafter
 		plot.set_sub_plot_attribute(p1, 0, &P[0][0], P.size(), sizeof(vec4));
 		plot.set_sub_plot_attribute(p1, 1, &P[0][1], P.size(), sizeof(vec4));
-		plot.set_sub_plot_attribute(p1, 2, &P[0][3], P.size(), sizeof(vec4));
+		plot.set_sub_plot_attribute(p1, 2, &P[0][2], P.size(), sizeof(vec4));
+		plot.set_sub_plot_attribute(p1, 3, &P[0][3], P.size(), sizeof(vec4));
 		plot.set_sub_plot_attribute(p2, 0, &P[0][0], P.size(), sizeof(vec4));
 		plot.set_sub_plot_attribute(p2, 1, &P[0][2], P.size(), sizeof(vec4));
-		plot.set_sub_plot_attribute(p2, 2, &P[0][3], P.size(), sizeof(vec4));
+		plot.set_sub_plot_attribute(p2, 2, &P[0][0], P.size(), sizeof(vec4));
+		plot.set_sub_plot_attribute(p2, 3, &P[0][3], P.size(), sizeof(vec4));
+		plot.set_sub_plot_attribute(p3, 0, &P[0][0], P.size(), sizeof(vec4));
+		plot.set_sub_plot_attribute(p3, 1, &P[0][3], P.size(), sizeof(vec4));
+		plot.set_sub_plot_attribute(p3, 2, &P[0][1], P.size(), sizeof(vec4));
+		plot.set_sub_plot_attribute(p3, 3, &P[0][2], P.size(), sizeof(vec4));
 
 		// adjust domain, tick marks and extent in world space (of offline rendering process)
 		plot.adjust_domain_to_data();
-		plot.adjust_tick_marks_to_domain();
-		plot.set_extent(vecn(1.8f, 1.8f));
+		plot.adjust_tick_marks();
 		plot.adjust_extent_to_domain_aspect_ratio();
 		// scale up extent in y-direction where we want to use half the texture resolution
-		vecn ex = plot.get_extent();
-		ex(1) *= 2.0f;
-		plot.set_extent(ex);
-		render_offscreen = true;
+		//vecn ex = plot.get_extent();
+		//ex(1) *= 2.0f;
+		//plot.set_extent(ex);
+		render_offscreen = false;
 	}
 	void on_set(void* member_ptr)
 	{
-		if ((member_ptr >= &plot.ref_domain_min()(0) && member_ptr < &plot.ref_domain_min()(0) + plot.get_dim()) ||
-			(member_ptr >= &plot.ref_domain_max()(0) && member_ptr < &plot.ref_domain_max()(0) + plot.get_dim())) {
-			plot.adjust_tick_marks_to_domain();
-		}
-		for (int si = 0; si < plot.get_nr_sub_plots(); ++si) {
-			auto& spc = plot.ref_sub_plot2d_config(si);
-			if (member_ptr == &spc.ref_size) {
-				spc.set_size(spc.ref_size);
-				update_member(&spc.bar_outline_width);
-				update_member(&spc.point_size);
-				update_member(&spc.line_width);
-				update_member(&spc.stick_width);
-			}
-			else if (member_ptr == &spc.ref_color) {
-				spc.set_colors(spc.ref_color);
-				update_member(&spc.point_color);
-				update_member(&spc.line_color);
-				update_member(&spc.stick_color);
-				update_member(&spc.bar_color);
-				update_member(&spc.bar_outline_color);
-			}
-		}
 		post_redraw();
 		update_member(member_ptr);
 	}
@@ -167,6 +151,7 @@ public:
 		fbo.attach(ctx, depth);
 		fbo.attach(ctx, tex);
 
+		plot.set_view_ptr(find_view_as_node());
 		// and init plot
 		return plot.init(ctx) && fbo.is_complete(ctx);
 	}
@@ -174,10 +159,11 @@ public:
 	{
 		// first call init frame of plot
 		plot.init_frame(ctx);
-		
-		if (!fbo.is_created() && !render_offscreen)
+		if (!fbo.is_created() || !render_offscreen)
 			return;
 		
+		auto ex = plot.get_extent();
+		plot.set_extent(vecn(1.8f, 1.8f));
 		// if fbo is created, perform offline rendering with world space in the range [-1,1]² and white background
 		fbo.enable(ctx);
 		fbo.push_viewport(ctx);
@@ -193,6 +179,7 @@ public:
 		ctx.pop_projection_matrix();
 		ctx.pop_modelview_matrix();
 
+		plot.set_extent(ex);
 		fbo.pop_viewport(ctx);
 		fbo.disable(ctx);
 
@@ -208,10 +195,11 @@ public:
 			auto& prog = ctx.ref_default_shader_program(true);
 			tex.enable(ctx);
 			prog.enable(ctx);
+			prog.set_uniform(ctx, "gamma", 1.0f);
 			ctx.set_color(rgba(1, 1, 1, 1));
 			ctx.push_modelview_matrix();
 			// scale down in y-direction according to texture resolution
-			ctx.mul_modelview_matrix(cgv::math::scale4<double>(1.0, 0.5, 1.0));
+			ctx.mul_modelview_matrix(cgv::math::scale4<double>(0.5555556f*plot.get_extent()(0), 0.5555556f*plot.get_extent()(1), 1.0));
 			ctx.tesselate_unit_square();
 			ctx.pop_modelview_matrix();
 			prog.disable(ctx);

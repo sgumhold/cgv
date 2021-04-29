@@ -5,6 +5,18 @@ namespace stream_vis {
 	streaming_time_series::streaming_time_series(cgv::type::info::TypeId _type_id) : type_id(_type_id)
 	{
 		outofdate = true;
+		// mark default values as undefined
+		default_color = rgb(-1,-1,-1);
+		default_opacity = -1;
+		default_size = -1;
+		lower_bound_index = uint16_t(-1);
+		upper_bound_index = uint16_t(-1);
+		aabb_mode = AM_BLOCKED_16;
+	}
+	/// return type id of value
+	cgv::type::info::TypeId streaming_time_series::get_value_type_id() const
+	{
+		return type_id;
 	}
 	//
 	std::string streaming_time_series::get_value_type_name() const

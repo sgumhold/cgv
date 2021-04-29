@@ -1,18 +1,22 @@
-#version 150
+#version 330 core
 
-uniform int    color_scale_index = 7;
-uniform vec3   color_scale_samples[32];
-uniform int nr_color_scale_samples;
-uniform bool color_scale_is_bipolar = false;
-uniform float window_zero_position = 0.5;
+uniform int    color_scale_index[2] = { 7, 7 };
+uniform vec3   color_scale_samples[64];
+uniform int    nr_color_scale_samples[2];
+uniform int    color_scale_is_bipolar[2] = { 0, 0 };
+uniform float  window_zero_position[2] = { 0.5, 0.5 };
 
 /*
 The following interface is implemented in this shader:
 //***** begin interface of color_scale.glsl ***********************************
-/// adjust value with a gamma mapping, which clamps value to [0,1] and accounts for window zero positions in case of bipolar color scales
+/// gamma adjust value after clamping to [0,1] and in case of uniform color_scale_is_bi_polar[0] accounting for uniform window_zero_position[0]
 float color_scale_gamma_mapping(in float v, in float gamma);
-/// map value with currently selected color scale to rgb color
-vec3 color_scale(in float v);
+/// gamma adjust value after clamping to [0,1] and in case of uniform color_scale_is_bi_polar[idx] accounting for uniform window_zero_position[idx]
+float color_scale_gamma_mapping(in float v, in float gamma, int idx);
+/// map value with color scale selected in uniform color_scale_index[idx=0|1] to rgb color
+vec3 color_scale(in float v, int idx);
+/// map value with color scale selected in uniform color_scale_index[0] to rgb color
+vec3 color_scale(in float v, int idx);
 //***** end interface of color_scale.glsl ***********************************
 */
 
@@ -51,67 +55,73 @@ vec3 hue_luminance_scale(in float v)
 	}
 	return vec3(0.5, 0.5, 0.5);
 }
-vec3 sampled_color_scale(in float value)
+
+vec3 sampled_color_scale(in float value, int idx)
 {
 	// first check if values needs to be clamped to 0
 	if (value <= 0.0)
-		return color_scale_samples[0];
+		return color_scale_samples[32*idx];
 	// than check if values needs to be clamped to 1 and make sure that values is really smaller than 1
 	if (value > 0.99999)
-		return color_scale_samples[nr_color_scale_samples - 1];
+		return color_scale_samples[32*idx + nr_color_scale_samples[idx] - 1];
 	float f,v;
 	int i;
-	if (color_scale_is_bipolar) {
+	if (color_scale_is_bipolar[idx] != 0) {
 		// scale value up to [0,n-2]
-		v = value * (nr_color_scale_samples - 2);
+		v = value * (nr_color_scale_samples[idx] - 2);
 		// compute index of smaller sampled necessary for linear interpolation
 		i = int(v);
 		// compute fractional part
 		f = v - float(i);
 		// correct indices in second half
-		if (i+1 >= nr_color_scale_samples/2)
+		if (i+1 >= nr_color_scale_samples[idx]/2)
 			++i;
 	}
 	else {
 		// scale value up to [0,n-1]
-		v = value * (nr_color_scale_samples - 1);
+		v = value * (nr_color_scale_samples[idx] - 1);
 		// compute index of smaller sampled necessary for linear interpolation
 		i = int(v);
 		// compute fractional part
 		f = v - float(i);
 	}
 	// return affine combination of two adjacent samples
-	return (1.0 - f) * color_scale_samples[i] + f * color_scale_samples[i + 1];
+	return (1.0 - f) * color_scale_samples[32*idx + i] + f * color_scale_samples[32*idx + i+1];
 }
 
-float color_scale_gamma_mapping(in float v, in float gamma)
+float color_scale_gamma_mapping(in float v, in float gamma, int idx)
 {
-	if (color_scale_is_bipolar) {
-		float amplitude = max(window_zero_position, 1.0 - window_zero_position);
-		if (v < window_zero_position)
-			return window_zero_position - pow((window_zero_position - v) / amplitude, gamma) * amplitude;
+	if (color_scale_is_bipolar[idx] != 0) {
+		float amplitude = max(window_zero_position[idx], 1.0 - window_zero_position[idx]);
+		if (v < window_zero_position[idx])
+			return window_zero_position[idx] - pow((window_zero_position[idx] - v) / amplitude, gamma) * amplitude;
 		else
-			return pow((v - window_zero_position) / amplitude, gamma) * amplitude + window_zero_position;
+			return pow((v - window_zero_position[idx]) / amplitude, gamma) * amplitude + window_zero_position[idx];
 	}
 	else
 		return pow(v, gamma);
 }
 
-void adjust_zero_position(inout float v)
+float color_scale_gamma_mapping(in float v, in float gamma)
+{
+	return color_scale_gamma_mapping(v, gamma, 0);
+}
+
+void adjust_zero_position(inout float v, in float window_zero)
 {
 	// map v according to scale*v + offset to a new value such that attribute_zero_position maps to 0.5 
 	// and in case attribute_zero_position <= 0.5 v=1.0 maps to 1.0 and otherwise v=0.0 maps to 0.0
-	if (window_zero_position <= 0.5)
-		v = 1.0 - 0.5 * (1.0 - v) / (1.0 - window_zero_position);
+	if (window_zero <= 0.5)
+		v = 1.0 - 0.5 * (1.0 - v) / (1.0 - window_zero);
 	else
-		v *= 0.5 / window_zero_position;
+		v *= 0.5 / window_zero;
 }
 
-vec3 color_scale(in float v)
+vec3 color_scale(in float v, int idx)
 {
-	if (color_scale_is_bipolar)
-		adjust_zero_position(v);
-	switch (color_scale_index) {
+	if (color_scale_is_bipolar[idx] != 0)
+		adjust_zero_position(v, window_zero_position[idx]);
+	switch (color_scale_index[idx]) {
 	case 0: return vec3(v, 0, 0);
 	case 1: return vec3(0, v, 0);
 	case 2: return vec3(0, 0, v);
@@ -124,7 +134,12 @@ vec3 color_scale(in float v)
 		return vec3(1.0, 1.0, 3.0 * v - 2.0);
 	case 5: return hue_scale(v);
 	case 6: return hue_luminance_scale(v);
-	case 7: return sampled_color_scale(v);
+	case 7: return sampled_color_scale(v, idx);
 	}
 	return vec3(v, v, v);
+}
+
+vec3 color_scale(in float v)
+{
+	return color_scale(v, 0);
 }

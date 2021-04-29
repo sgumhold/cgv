@@ -156,7 +156,6 @@ bool light_interactor::init(context& ctx)
 		intensities[i] = 1;
 		for (unsigned j=0; j<7; ++j)
 			toggles[7*i+j] = j!=0;
-		enabled[i];
 		new_handles[i] = ctx.add_light_source(lights[i], enabled[i]);
 	}
     ctx.set_default_render_pass_flags(

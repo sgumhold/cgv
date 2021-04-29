@@ -60,7 +60,7 @@ int wi_get_index(const T& value)
 }
 
 /// derive from this class to provide a gui to the current viewer
-class CGV_API provider : public cgv::signal::tacker
+class CGV_API provider : virtual public cgv::signal::tacker
 {
 protected:
 	/**@name interface used by the parent gui*/
@@ -132,9 +132,11 @@ public:
 	/*! use this method to add a control of a member and a callback to the on_set
 	    method of the cgv::base::base class. */
 	template <typename T>
-	void add_member_control(cgv::base::base* base_ptr, const std::string& label, T& value, const std::string& gui_type = "", const std::string& options = "", const std::string& align = "\n") {
-		connect_copy(add_control(label, value, gui_type, options, align)->value_change,
+	data::ref_ptr<control<T> > add_member_control(cgv::base::base* base_ptr, const std::string& label, T& value, const std::string& gui_type = "", const std::string& options = "", const std::string& align = "\n") {
+		data::ref_ptr<control<T> > cp = add_control(label, value, gui_type, options, align);
+		connect_copy(cp->value_change,
 			cgv::signal::rebind(base_ptr, &cgv::base::base::on_set, &value));
+		return cp;
 	}
 	//! add a collapsable node to the gui (deprecated)
 	/*! This method is one possibility to support tree like guis with nodes that can be opened or closed.

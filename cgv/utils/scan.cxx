@@ -45,6 +45,15 @@ char to_lower(char c)
 	}
 }
 
+std::string to_hex(uint8_t v, bool use_upper_case)
+{
+	static const char lc_hex_digits[] = "0123456789abcdef";
+	static const char uc_hex_digits[] = "0123456789ABCDEF";
+	const char* hex_digits = use_upper_case ? uc_hex_digits : lc_hex_digits;
+	char res[2] = { hex_digits[v / 16], hex_digits[v & 15] };
+	return std::string(res, 2);
+}
+
 std::string to_lower(const std::string& _s)
 {
 	std::string s(_s);
@@ -292,6 +301,9 @@ bool is_integer(const char* begin, const char* end, int& value)
 {
 	if (begin == end)
 		return false;
+	// skip trailing spaces
+	while (begin < end && *begin == ' ')
+		++begin;
 	// check for hexadecimal case
 	if (end-begin>2 && begin[0] == '0' && to_upper(begin[1]) == 'X') {
 		int new_value = 0, b = 1;
@@ -347,8 +359,10 @@ bool is_double(const char* begin, const char* end, double& value)
 	int nr_dots = 0;
 	int nr_exp = 0;
 	bool sign_may_follow = true;
-	const char* p;
-	for (p = begin; p<end; ++p) {
+	const char* p = begin;
+	while (p < end && *p == ' ')
+		++p;
+	for (p; p<end; ++p) {
 		switch (*p) {
 		case '0' :
 		case '1' :
