@@ -87,8 +87,8 @@ bool shader_program::collect_program(const std::string& file_name, std::vector<s
 	if (!path.empty())
 		get_shader_config()->shader_path = path+";"+get_shader_config()->shader_path;
 
-	for (unsigned int i=0; i<lines.size(); ++i) {
-		std::string l = to_string((const token&)lines[i]);
+	for (auto line : lines) {
+		std::string l = to_string((const token&)line);
 		if (l.substr(0,5) == "file:")
 			added_file = collect_file(l.substr(5), file_names) || added_file;
 		else if (l.substr(0,12) == "vertex_file:")
