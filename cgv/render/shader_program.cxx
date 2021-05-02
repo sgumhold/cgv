@@ -33,7 +33,7 @@ bool shader_program::collect_file(const std::string& file_name, std::vector<std:
 
 bool shader_program::collect_files(const std::string& base_name, std::vector<std::string>& file_names)
 {
-	const char* exts[] = { "glvs", "glgs", "glfs", "glcs", "pglvs", "pglfs", "pglgs", "pglcs", 0 }; 
+	const char* exts[] = { "glvs", "glgs", "glfs", "glcs", "pglvs", "pglfs", "pglgs", "pglcs", 0 };
 	const char** iter = exts;
 	bool added_file = false;
 	while (*iter) {
@@ -77,15 +77,15 @@ bool shader_program::collect_program(const std::string& file_name, std::vector<s
 	std::string content;
 	if (!cgv::base::read_data_file(fn, content, true))
 		return false;
-	if (!content.empty() && content[0] == 'ง')
-		content = cgv::utils::decode_base64(content.substr(1));
+//	if (!content.empty() && content[0] == 'ยง')
+//		content = cgv::utils::decode_base64(content.substr(1));
 	std::vector<line> lines;
 	split_to_lines(content, lines);
 	bool added_file = false;
 	std::string old_shader_path = get_shader_config()->shader_path;
 	std::string path = file::get_path(file_name);
 	if (!path.empty())
-		get_shader_config()->shader_path = path+";"+get_shader_config()->shader_path; 
+		get_shader_config()->shader_path = path+";"+get_shader_config()->shader_path;
 
 	for (unsigned int i=0; i<lines.size(); ++i) {
 		std::string l = to_string((const token&)lines[i]);
@@ -109,7 +109,7 @@ bool shader_program::collect_program(const std::string& file_name, std::vector<s
 
 	get_shader_config()->shader_path = old_shader_path;
 	return added_file;
-}	
+}
 
 ///create empty shader program
 shader_program::shader_program(bool _show_code_errors)
@@ -165,7 +165,7 @@ bool shader_program::attach_code(const context& ctx, const shader_code& code)
 	return true;
 }
 
-/// detach a shader code 
+/// detach a shader code
 bool shader_program::detach_code(const context& ctx, const shader_code& code)
 {
 	if (!handle) {
@@ -244,8 +244,8 @@ bool shader_program::attach_program(const context& ctx, const std::string& file_
 			std::cerr << last_error << std::endl;
 		return false;
 	}
-	if (!content.empty() && content[0] == 'ง')
-		content = cgv::utils::decode_base64(content.substr(1));
+//	if (!content.empty() && content[0] == 'ยง')
+//		content = cgv::utils::decode_base64(content.substr(1));
 	if (get_shader_config()->show_file_paths)
 		std::cout << "read shader program <" << fn << ">" << std::endl;
 	static std::vector<line> lines;
@@ -254,7 +254,7 @@ bool shader_program::attach_program(const context& ctx, const std::string& file_
 	std::string old_shader_path = get_shader_config()->shader_path;
 	std::string path = file::get_path(file_name);
 	if (!path.empty())
-		get_shader_config()->shader_path = path+";"+get_shader_config()->shader_path; 
+		get_shader_config()->shader_path = path+";"+get_shader_config()->shader_path;
 
 	bool no_error = true;
 	std::string error = "2 : attach command failed";
@@ -329,14 +329,14 @@ bool shader_program::attach_program(const context& ctx, const std::string& file_
 			}
 		} else {
 			if (show_error) {
-				std::cerr << fn.c_str() << " (" << i+1 
-					       << "): warning G0001 : syntax error in line '" 
+				std::cerr << fn.c_str() << " (" << i+1
+					       << "): warning G0001 : syntax error in line '"
 							 << l.c_str() << "'" << std::endl;
 			}
 		}
 		if (!success) {
 			if (show_error) {
-				std::cerr << fn.c_str() << " (" << i+1 
+				std::cerr << fn.c_str() << " (" << i+1
 					       << "): error G000" << error.c_str() << std::endl;
 			}
 			no_error = false;
@@ -352,13 +352,13 @@ bool shader_program::attach_program(const context& ctx, const std::string& file_
 /// successively calls create, attach_files and link.
 bool shader_program::build_files(const context& ctx, const std::string& base_name, bool show_error)
 {
-	return (is_created() || create(ctx)) && 
+	return (is_created() || create(ctx)) &&
 		    attach_files(ctx, base_name) && link(ctx, show_error);
 }
 /// successively calls create, attach_dir and link.
 bool shader_program::build_dir(const context& ctx, const std::string& dir_name, bool recursive, bool show_error)
 {
-	return (is_created() || create(ctx)) && 
+	return (is_created() || create(ctx)) &&
 			 attach_dir(ctx, dir_name, recursive) && link(ctx, show_error);
 }
 
