@@ -53,7 +53,8 @@ GLuint map_to_gl(PrimitiveType pt)
 		GL_TRIANGLE_FAN,
 		GL_QUADS,
 		GL_QUAD_STRIP,
-		GL_POLYGON
+		GL_POLYGON,
+		GL_PATCHES
 	};
 	return pt_to_gl[pt];
 }
