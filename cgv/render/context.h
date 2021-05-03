@@ -190,6 +190,7 @@ enum PrimitiveType {
 	PT_QUADS,
 	PT_QUAD_STRIP,
 	PT_POLYGON,
+	PT_PATCHES,
 	PT_LAST
 };
 
