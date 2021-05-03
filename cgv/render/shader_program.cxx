@@ -33,8 +33,8 @@ bool shader_program::collect_file(const std::string& file_name, std::vector<std:
 
 bool shader_program::collect_files(const std::string& base_name, std::vector<std::string>& file_names)
 {
-	const char* exts[] = { "glvs", "glgs", "glfs", "glcs", "pglvs", "pglfs", "pglgs", "pglcs", 0 };
-	const char** iter = exts;
+	const char *exts[] = {"glvs", "glgs", "glfs", "glcs", "gltcs", "gltes", "pglvs", "pglfs", "pglgs", "pglcs", 0};
+	const char **iter = exts;
 	bool added_file = false;
 	while (*iter) {
 		std::string fn = shader_code::find_file(base_name+"."+*iter);
@@ -281,6 +281,10 @@ bool shader_program::attach_program(const context& ctx, const std::string& file_
 			success = attach_file(ctx, l.substr(14), ST_FRAGMENT, defines);
 		else if(l.substr(0, 13) == "compute_file:")
 			success = attach_file(ctx, l.substr(13), ST_COMPUTE, defines);
+		else if (l.substr(0, 18) == "tess_control_file:")
+			success = attach_file(ctx, l.substr(18), ST_TESS_CONTROL, defines);
+		else if (l.substr(0, 21) == "tess_evaluation_file:")
+			success = attach_file(ctx, l.substr(21), ST_TESS_EVALUATION, defines);
 		else if (l.substr(0,6) == "files:")
 			success = attach_files(ctx, l.substr(6), defines);
 		else if (l.substr(0,4) == "dir:")

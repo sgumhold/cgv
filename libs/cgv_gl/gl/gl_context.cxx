@@ -1531,7 +1531,7 @@ bool gl_context::check_shader_support(ShaderType st, const std::string& where, c
 			return false;
 		}
 	case ST_TESS_CONTROL:
-	case ST_TESS_EVALUTION:
+	case ST_TESS_EVALUATION:
 		if (GLEW_VERSION_4_0)
 			return true;
 		else {
