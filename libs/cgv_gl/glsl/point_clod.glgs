@@ -45,8 +45,9 @@ void prepare_splat(
 	prepare_splat(reference_point_radius,pixel_extent,0.0,0.0,0.0,percentual_core_size,percentual_point_size,percentual_blend_width,percentual_splat_size);
 }
 
-void emit_corner(in vec3 corner)
+void emit_corner(in vec3 corner, float u, float v)
 {
+	uv = vec2(u,v);
 	// compute position in clip space
 	gl_Position	   = get_projection_matrix() * vec4(corner,1.0);
 	EmitVertex();
@@ -76,8 +77,8 @@ void main()
 	dx *= splat_radius;
 	dy *= splat_radius;
 	// generate splat vertices
-	emit_corner(position_eye + dx - dy);
-	emit_corner(position_eye + dx + dy);
-	emit_corner(position_eye - dx - dy);
-	emit_corner(position_eye - dx + dy);
+	emit_corner(position_eye + dx - dy, percentual_splat_size, -percentual_splat_size);
+	emit_corner(position_eye + dx + dy, percentual_splat_size, percentual_splat_size);
+	emit_corner(position_eye - dx - dy, -percentual_splat_size, -percentual_splat_size);
+	emit_corner(position_eye - dx + dy, -percentual_splat_size, percentual_splat_size);
 }

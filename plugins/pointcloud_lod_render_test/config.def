@@ -43,4 +43,5 @@ type(pointcloud_lod_render_test):model_rotation_z=0
 type(pointcloud_lod_render_test):model_put_on_table=false
 type(pointcloud_lod_render_test):model_scale=1
 type(pointcloud_lod_render_test):pointcloud_fit_table=false
-type(pointcloud_lod_render_test):point_color_based_on_lod=true
+type(pointcloud_lod_render_test):point_color_based_on_lod=false
+type(pointcloud_lod_render_test):show_environment=true

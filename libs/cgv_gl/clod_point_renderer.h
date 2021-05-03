@@ -1,8 +1,14 @@
 #pragma once
 #include <cgv/render/context.h>
-#include <cgv_gl/point_renderer.h>
+#include <cgv/render/shader_program.h>
+#include <cgv/render/vertex_buffer.h>
+#include <cgv/render/attribute_array_binding.h>
+#include <cgv/reflect/reflect_extern.h>
+#include <cgv_gl/gl/gl_context.h>
+#include <cgv_reflect_types/render/context.h>
 #include <atomic>
 #include <mutex>
+#include "renderer.h"
 
 #include "gl/lib_begin.h"
 
@@ -23,21 +29,41 @@ namespace cgv {
 		{
 			/*@name clod rendering attributes*/
 			//@{
-			float CLOD = 1.f;
-			// root spacing in the paper
-			float spacing = 1.f;
-			float scale = 1.f;
+			// clod factor, affects the distance dependent target spacing
+			float CLOD;
+			/** := root spacing, match this to your inputs point spacing in the octrees root level, 
+				too low values may cause most of the pointcloud to go invisible */
+			float spacing;
+			// scales the target spacing
+			float scale;
 			// minimal size of the visible points
-			float min_millimeters = 1.f;
-			float pointSize = 1.f;
+			float min_millimeters;
+			float pointSize;
 			// draw circles instead of squares
 			bool draw_circles = false;
-			// allow point subset computation to run across multiple rendered frames
+			// allow point subset computation to run across multiple rendered frames (broken)
 			int point_filter_delay = 0;
+			//@}
+
+			/* @name splat rendering attributes*/
+			//@{
+			/// set to 1 in constructor 
+			float blend_width_in_pixel;
+			/// set to 0 in constructor
+			float halo_width_in_pixel;
+			/// set to 0 in constructor
+			float percentual_halo_width;
+			/// color of halo with opacity channel
+			rgba halo_color;
+			/// strength in [0,1] of halo color with respect to color of primitive
+			float halo_color_strength = 0.0;
+			/// set to true in constructor
+			bool orient_splats;
+			/// set to false in constructor
+			bool blend_points;
 			//@}
 			/// construct with default values
 			clod_point_render_style();
-			bool self_reflect(cgv::reflect::reflection_handler& rh);
 		};
 
 
@@ -82,9 +108,8 @@ namespace cgv {
 			};
 
 			shader_program reduce_prog;		// filters points from the input buffer and writes them to the render_buffer (compute shader)
-			shader_program* draw_prog;
-			shader_program draw_squares_prog;	// draws render_buffer (vertex, geometry, fragment shader)
-			shader_program draw_circle_prog;
+			shader_program* draw_prog_ptr;
+			shader_program draw_prog;	// draws render_buffer (vertex, geometry, fragment shader)
 			
 			GLuint vertex_array = 0;
 			GLuint input_buffer = 0, render_buffer = 0, draw_parameter_buffer = 0, render_back_buffer = 0;
@@ -120,6 +145,8 @@ namespace cgv {
 
 			bool enable(context& ctx);
 
+			bool disable(context& ctx);
+
 			void clear(const cgv::render::context& ctx);
 
 			void draw(context& ctx, size_t start=0, size_t count=0);
@@ -148,11 +175,21 @@ namespace cgv {
 
 			void manage_singelton(context& ctx, const std::string& renderer_name, int& ref_count, int ref_count_change);
 
+			/// set a custom shader program that is used for one draw call
+			void set_prog(shader_program& one_shot_prog);
+
 		private:
 			void add_shader(context& ctx, shader_program& prog, const std::string& sf, const cgv::render::ShaderType st);
 			void resize_buffers(context& ctx);
 			void clear_buffers(const context& ctx);
 		};
+
+
+		struct CGV_API clod_point_render_style_reflect : public clod_point_render_style
+		{
+			bool self_reflect(cgv::reflect::reflection_handler& rh);
+		};
+		extern CGV_API cgv::reflect::extern_reflection_traits<clod_point_render_style, clod_point_render_style_reflect> get_reflection_traits(const clod_point_render_style&);
 
 	}
 }

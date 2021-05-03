@@ -58,6 +58,11 @@ pointcloud_lod_render_test::pointcloud_lod_render_test() {
 	//rebuild_ptrs.insert(&color_based_on_lod);
 	//rebuild_ptrs.insert(&max_points);
 	rebuild_ptrs.insert(&pointcloud_fit_table);
+
+	color_based_on_lod = false;
+	show_environment = true;
+	pointcloud_fit_table = false;
+	put_on_table = false;
 }
 
 
@@ -151,7 +156,7 @@ void pointcloud_lod_render_test::on_set(void * member_ptr)
 	else if (member_ptr == &color_based_on_lod) {
 		recolor_point_cloud = true;
 	}
-	recreate_gui();
+	update_member(member_ptr);
 }
 
 void pointcloud_lod_render_test::on_register()
