@@ -18,6 +18,8 @@ protected:
 	int  tex_unit;
 	bool complete_create(const context& ctx, bool created);
 public:
+	using render_component::last_error;
+
 	/**@name methods that can be called without context */
 	//@{
 	/** construct from description string (which defaults to rgba format)

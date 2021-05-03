@@ -1,5 +1,4 @@
 #include "list.h"
-#include <iostream>
 
 namespace cgv {
 	namespace signal {
