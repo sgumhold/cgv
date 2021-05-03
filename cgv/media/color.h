@@ -324,7 +324,7 @@ public:
 	color() { }
 	/// set all components to given value
 	color(const T& c) { *this = c; }
-	/// set first to components to given values
+	/// set first two components to given values
 	color(const T& c0, const T& c1) { 
 		components[0] = c0; 
 		if (nr_components > 1)

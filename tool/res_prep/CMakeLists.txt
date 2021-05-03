@@ -1,17 +1,9 @@
-cmake_minimum_required(VERSION 2.6)
-project(res_prep)
+include(res_prep.cmake)
 
-# Needed for building components
-include("../../cmake/buildCoreComponents.cmake")
-
-# Set source files
-set(SOURCES
-	res_prep.cxx
-	${CGV_DIR}/cgv/utils/scan.cxx
-    ${CGV_DIR}/cgv/utils/dir.cxx
-    ${CGV_DIR}/cgv/utils/file.cxx)
-	
-# Set the project target
-cgv_add_tool(res_prep ${SOURCES})
-
-cgv_write_find_file(res_prep)
+add_executable(res_prep
+        res_prep.cxx
+        ${CGV_DIR}/cgv/utils/scan.cxx
+        ${CGV_DIR}/cgv/utils/dir.cxx
+        ${CGV_DIR}/cgv/utils/file.cxx)
+target_include_directories(res_prep PRIVATE ${CGV_DIR})
+target_compile_definitions(res_prep PRIVATE CGV_FORCE_STATIC)

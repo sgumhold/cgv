@@ -19,29 +19,29 @@ unsigned int delaunay_mesh<T>::find_nearest_neighbor(const point_type& p, unsign
 	}
 	// choose some ci
 	unsigned int ci = ci_start;
-	coord_type min_squared_dist = sqr_dist(p,p_of_vi(vi_of_ci(ci)));
+	coord_type min_squared_dist = T::sqr_dist(p,T::p_of_vi(T::vi_of_ci(ci)));
 	while (true) {
 		unsigned int cj = ci;
 		unsigned int ck = -1;
 		bool jump_boundary = false;
 		coord_type squared_dist = -1;
 		do {
-			coord_type new_squared_dist = sqr_dist(p,p_of_vi(vi_of_ci(next(cj))));
+			coord_type new_squared_dist = T::sqr_dist(p,T::p_of_vi(T::vi_of_ci(T::next(cj))));
 			if (squared_dist == -1 || new_squared_dist < squared_dist) {
 				squared_dist = new_squared_dist;
-				ck = next(cj);
+				ck = T::next(cj);
 			}
 			if (jump_boundary) {
-				cj = next(prev_on_border(cj));
+				cj = T::next(T::prev_on_border(cj));
 				jump_boundary = false;
 			}
 			else
-				if (is_opposite_to_border(next(cj))) {
-					cj = next(cj);
+				if (T::is_opposite_to_border(T::next(cj))) {
+					cj = T::next(cj);
 					jump_boundary = true;
 				}
 				else
-					cj = next(inv(next(cj)));
+					cj = T::next(T::inv(T::next(cj)));
 		} while (jump_boundary || cj != ci);
 
 		if (min_squared_dist <= squared_dist)
@@ -49,7 +49,7 @@ unsigned int delaunay_mesh<T>::find_nearest_neighbor(const point_type& p, unsign
 		ci = ck;
 		min_squared_dist = squared_dist;
 	}
-	return vi_of_ci(ci);
+	return T::vi_of_ci(ci);
 }
 
 
@@ -57,10 +57,10 @@ unsigned int delaunay_mesh<T>::find_nearest_neighbor(const point_type& p, unsign
 template <class T>
 bool delaunay_mesh<T>::is_locally_delaunay(unsigned int ci) const
 {
-	const point_type& p0 = p_of_vi(vi_of_ci(ci));
-	const point_type& p1 = p_of_vi(vi_of_ci(next(ci)));
-	const point_type& p2 = p_of_vi(vi_of_ci(prev(ci)));
-	const point_type& p3 = p_of_vi(vi_of_ci(inv(ci)));
+	const point_type& p0 = T::p_of_vi(T::vi_of_ci(ci));
+	const point_type& p1 = T::p_of_vi(T::vi_of_ci(T::next(ci)));
+	const point_type& p2 = T::p_of_vi(T::vi_of_ci(T::prev(ci)));
+	const point_type& p3 = T::p_of_vi(T::vi_of_ci(T::inv(ci)));
 	const coord_type& x0 = p0.x();
 	const coord_type& y0 = p0.y();
 	      coord_type  r0 = x0*x0+y0*y0;
@@ -106,16 +106,16 @@ bool delaunay_mesh<T>::is_locally_delaunay(unsigned int ci) const
 template <class T>
 typename delaunay_mesh<T>::vertex_insertion_info delaunay_mesh<T>::insert_vertex(unsigned int vi, unsigned int ci_start, std::vector<unsigned int>* touched_corners)
 {
-	unsigned int n = get_nr_triangles();
+	unsigned int n = T::get_nr_triangles();
 	vertex_insertion_info vii = triangle_mesh_type::insert_vertex(vi,ci_start);
 	if (vii.insert_error || vii.is_duplicate)
 		return vii;
 
 	if (vii.extends_border) {
-		n = get_nr_triangles()-n;
+		n = T::get_nr_triangles()-n;
 		unsigned int ci = vii.ci_of_vertex;
-		while (!is_opposite_to_border(prev(ci)))
-			ci = prev(inv(prev(ci)));		
+		while (!T::is_opposite_to_border(T::prev(ci)))
+			ci = T::prev(T::inv(T::prev(ci)));
 		flip_edges_around_vertex_to_validate(ci, n, touched_corners);
 	}
 	else {
@@ -130,14 +130,14 @@ void delaunay_mesh<T>::flip_edges_around_vertex_to_validate(unsigned int ci, uns
 {
 	unsigned int c0 = ci;
 	while (n > 0) {
-		if (is_flipable(ci) && !is_locally_delaunay(ci)) {
-			flip_edge(ci);
+		if (T::is_flipable(ci) && !is_locally_delaunay(ci)) {
+			T::flip_edge(ci);
 			++n;
 		}
 		else {
 			if (touched_corners)
 				touched_corners->push_back(ci);
-			ci = next(inv(next(ci)));
+			ci = T::next(T::inv(T::next(ci)));
 			if (ci == c0)
 				break;
 			--n;
