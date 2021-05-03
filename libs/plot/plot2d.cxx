@@ -121,14 +121,20 @@ bool plot2d::init(cgv::render::context& ctx)
 		std::cerr << "could not build GLSL program from plot2d_line.glpr" << std::endl;
 		return false;
 	}
+	else
+		line_prog.allow_context_to_set_color(false);
 	if (!point_prog.build_program(ctx, "plot2d_point.glpr")) {
 		std::cerr << "could not build GLSL program from plot2d_point.glpr" << std::endl;
 		return false;
 	}
+	else 
+		point_prog.allow_context_to_set_color(false);
 	if (!rectangle_prog.build_program(ctx, "plot2d_rect.glpr")) {
 		std::cerr << "could not build GLSL program from plot2d_rect.glpr" << std::endl;
 		return false;
 	}
+	else
+		rectangle_prog.allow_context_to_set_color(false);
 	return plot_base::init(ctx);
 }
 
