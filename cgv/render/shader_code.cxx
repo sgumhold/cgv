@@ -186,6 +186,10 @@ ShaderType shader_code::detect_shader_type(const std::string& file_name)
 		st = ST_GEOMETRY;
 	else if (ext == "glcs" || ext == "pglcs")
 		st = ST_COMPUTE;
+	else if (ext == "gltcs")
+		st = ST_TESS_CONTROL;
+	else if (ext == "gltes")
+		st = ST_TESS_EVALUATION;
 	return st;
 }
 
