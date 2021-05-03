@@ -1,8 +1,0 @@
-vertex_file:point_clod.glvs
-vertex_file:view.glsl
-geometry_file:point_clod_circle.glgs
-geometry_file:view.glsl
-geometry_file:splat.glsl
-fragment_file:point_clod.glfs
-fragment_file:fragment.glfs
-fragment_file:splat.glsl

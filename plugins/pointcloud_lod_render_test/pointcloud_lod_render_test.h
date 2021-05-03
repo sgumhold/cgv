@@ -138,10 +138,10 @@ private:
 	bool renderer_out_of_date = true;
 	bool recolor_point_cloud = true;
 	
-	bool pointcloud_fit_table = true;
-	bool put_on_table = true;
-	bool color_based_on_lod = false;
-	bool show_environment = true;
+	bool pointcloud_fit_table;
+	bool put_on_table;
+	bool color_based_on_lod;
+	bool show_environment;
 
 	static constexpr float min_level_hue = 230.0/360.0;
 	static constexpr float max_level_hue = 1.0;

@@ -91,7 +91,7 @@ void main()
 		float fullAt = 0.8 * pointSpacing;
 		
 		float u = (targetSpacing - fullAt) / (zeroAt - fullAt);
-		u = 1 - clamp(u, 0, 1);
+		u = 1.0 - clamp(u, 0.0, 1.0);
 
 		gl_PointSize = gl_PointSize * u;
 	}

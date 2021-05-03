@@ -17,21 +17,23 @@ namespace cgv {
 			return r;
 		}
 
-		clod_point_render_style::clod_point_render_style() {}
+		clod_point_render_style::clod_point_render_style() : halo_color(1.0, 1.0, 1.0, 1.0) {
+			CLOD = 1.f;
+			spacing = 1.f;
+			scale = 1.f;
+			min_millimeters = 1.f;
+			pointSize = 1.f;
+			draw_circles = false;
+			point_filter_delay = 0;
+			
+			blend_width_in_pixel = 1.0;
+			halo_width_in_pixel = 0.0;
+			percentual_halo_width = 0.0;
 
-		bool clod_point_render_style::self_reflect(cgv::reflect::reflection_handler& rh)
-		{
-			return
-				//rh.reflect_base(*static_cast<point_render_style*>(this)) &&
-				rh.reflect_member("CLOD_factor", CLOD) &&
-				rh.reflect_member("spacing", spacing) &&
-				rh.reflect_member("scale", scale) &&
-				rh.reflect_member("min_millimeters", min_millimeters) &&
-				rh.reflect_member("point_size", pointSize) && 
-				rh.reflect_member("draw_circles", draw_circles) &&
-				rh.reflect_member("point_filter_delay", point_filter_delay);
+			orient_splats = true;
+			blend_points = false;
 		}
-
+		
 		void clod_point_renderer::draw_and_compute_impl(context& ctx, size_t start, size_t count)
 		{
 			int point_filter_delay = get_style<clod_point_render_style>().point_filter_delay;
@@ -68,7 +70,7 @@ namespace cgv {
 			}
 			else {
 				//configure shader to compute everything after one frame
-				reduce_prog.set_uniform(ctx, reduce_prog.get_uniform_location(ctx, "uBatchOffset"), 0);
+				reduce_prog.set_uniform(ctx, reduce_prog.get_uniform_location(ctx, "uBatchOffset"), (int)start);
 				reduce_prog.set_uniform(ctx, reduce_prog.get_uniform_location(ctx, "uBatchSize"), (int)count);
 				reduce_prog.set_uniform(ctx, "frustum_extent", 1.0f);
 			
@@ -89,7 +91,7 @@ namespace cgv {
 			}
 
 			// draw composed buffer
-			draw_prog->enable(ctx);
+			draw_prog_ptr->enable(ctx);
 			glBindVertexArray(vertex_array);
 			glBindBuffer(GL_DRAW_INDIRECT_BUFFER, draw_parameter_buffer);
 			glDrawArraysIndirect(GL_POINTS, 0);
@@ -100,7 +102,7 @@ namespace cgv {
 			//glUnmapNamedBuffer(draw_parameter_buffer);
 			
 			glBindVertexArray(0);
-			draw_prog->disable(ctx);
+			draw_prog_ptr->disable(ctx);
 		}
 
 		const render_style* clod_point_renderer::get_style_ptr() const
@@ -127,15 +129,10 @@ namespace cgv {
 				reduce_prog.link(ctx);
 			}
 			//create shader program
-			if (!draw_squares_prog.is_created()) {
-				draw_squares_prog.build_program(ctx, "point_clod.glpr", true);
+			if (!draw_prog.is_created()) {
+				draw_prog.build_program(ctx, "point_clod.glpr", true);
 			}
 
-			//create shader program
-			if (!draw_circle_prog.is_created()) {
-				draw_circle_prog.build_program(ctx, "point_clod_circle.glpr", true);
-			}
-			
 			glGenBuffers(1, &input_buffer);
 			glGenBuffers(1, &render_buffer);
 			glGenBuffers(1, &draw_parameter_buffer);
@@ -154,15 +151,17 @@ namespace cgv {
 			glBindBuffer(GL_ARRAY_BUFFER, 0);
 			glBindVertexArray(0);
 
-			return draw_squares_prog.is_linked() && reduce_prog.is_linked();
+			draw_prog_ptr = &draw_prog;
+			return draw_prog.is_linked() && reduce_prog.is_linked();
 		}
 
 		bool clod_point_renderer::enable(context& ctx)
 		{
 			const clod_point_render_style& prs = get_style<clod_point_render_style>();
-			draw_prog = (prs.draw_circles) ? &draw_circle_prog : &draw_squares_prog;
+			
+			//draw_prog_ptr = (prs.draw_circles) ? &draw_circle_prog : &draw_prog;
 
-			if (!draw_prog->is_linked()) {
+			if (!draw_prog_ptr->is_linked()) {
 				return false;
 			}
 
@@ -179,17 +178,21 @@ namespace cgv {
 			//mat4 modelview_matrix = ctx.get_modelview_matrix();
 			//mat4 projection_matrix = ctx.get_projection_matrix();
 
-			draw_prog->set_uniform(ctx, "CLOD" , prs.CLOD);
-			draw_prog->set_uniform(ctx, "scale", prs.scale);
-			draw_prog->set_uniform(ctx, "spacing", prs.spacing);
-			draw_prog->set_uniform(ctx, "pointSize", prs.pointSize);
-			draw_prog->set_uniform(ctx, "minMilimeters", prs.min_millimeters);
-			draw_prog->set_uniform(ctx, "screenSize", screenSize);
-			draw_prog->set_uniform(ctx, "pivot", pivot);
+			draw_prog_ptr->set_uniform(ctx, "CLOD" , prs.CLOD);
+			draw_prog_ptr->set_uniform(ctx, "scale", prs.scale);
+			draw_prog_ptr->set_uniform(ctx, "spacing", prs.spacing);
+			draw_prog_ptr->set_uniform(ctx, "pointSize", prs.pointSize);
+			draw_prog_ptr->set_uniform(ctx, "minMilimeters", prs.min_millimeters);
+			draw_prog_ptr->set_uniform(ctx, "screenSize", screenSize);
+			draw_prog_ptr->set_uniform(ctx, "pivot", pivot);
+			draw_prog_ptr->set_uniform(ctx, "draw_circles", prs.draw_circles);
+			draw_prog_ptr->set_uniform(ctx, "halo_color", prs.halo_color);
+			draw_prog_ptr->set_uniform(ctx, "halo_color_strength", prs.halo_color_strength);
 
-			//view.glsl uniforms are set on draw_squares_prog.enable(ctx) and  reduce_prog.enable(ctx)
-			//draw_squares_prog.set_uniform(ctx, "modelview_matrix", modelview_matrix, true);
-			//draw_squares_prog.set_uniform(ctx, "projection_matrix", projection_matrix, true);
+
+			//view.glsl uniforms are set on draw_prog.enable(ctx) and  reduce_prog.enable(ctx)
+			//draw_prog.set_uniform(ctx, "modelview_matrix", modelview_matrix, true);
+			//draw_prog.set_uniform(ctx, "projection_matrix", projection_matrix, true);
 			//reduce_prog.set_uniform(ctx, "modelview_matrix", modelview_matrix, true);
 			//reduce_prog.set_uniform(ctx, "projection_matrix", projection_matrix, true);
 
@@ -202,17 +205,24 @@ namespace cgv {
 
 			float y_view_angle = 45;
 			//general point renderer uniforms
-			draw_prog->set_uniform(ctx, "use_color_index", false);
+			draw_prog_ptr->set_uniform(ctx, "use_color_index", false);
 			float pixel_extent_per_depth = (float)(2.0 * tan(0.5 * 0.0174532925199 * y_view_angle) / ctx.get_height());
-			draw_prog->set_uniform(ctx, "pixel_extent_per_depth", pixel_extent_per_depth);
+			draw_prog_ptr->set_uniform(ctx, "pixel_extent_per_depth", pixel_extent_per_depth);
 			return true;
+		}
+
+		bool clod_point_renderer::disable(context& ctx)
+		{
+			if (draw_prog_ptr)
+				draw_prog_ptr->disable(ctx);
+			draw_prog_ptr = &draw_prog;
+			return false;
 		}
 
 		void clod_point_renderer::clear(const cgv::render::context& ctx)
 		{
 			reduce_prog.destruct(ctx);
-			draw_squares_prog.destruct(ctx);
-			draw_circle_prog.destruct(ctx);
+			draw_prog.destruct(ctx);
 			clear_buffers(ctx);
 		}
 
@@ -288,6 +298,11 @@ namespace cgv {
 			}
 		}
 
+		void clod_point_renderer::set_prog(shader_program& one_shot_prog)
+		{
+			draw_prog_ptr = &one_shot_prog;
+		}
+
 		void clod_point_renderer::add_shader(context& ctx, shader_program& prog, const std::string& sf,const cgv::render::ShaderType st)
 		{
 #ifndef NDEBUG
@@ -320,7 +335,30 @@ namespace cgv {
 			input_buffer = render_buffer = draw_parameter_buffer = render_back_buffer = 0;
 		}
 		
+		bool clod_point_render_style_reflect::self_reflect(cgv::reflect::reflection_handler& rh)
+		{
+			return
+				//rh.reflect_base(*static_cast<cgv::render::clod_point_render_style*>(this)) &&
+				rh.reflect_member("CLOD_factor", CLOD) &&
+				rh.reflect_member("spacing", spacing) &&
+				rh.reflect_member("scale", scale) &&
+				rh.reflect_member("min_millimeters", min_millimeters) &&
+				rh.reflect_member("point_size", pointSize) &&
+				rh.reflect_member("draw_circles", draw_circles) &&
+				// splat reflects
+				rh.reflect_member("blend_points", blend_points) &&
+				rh.reflect_member("orient_splats", orient_splats) &&
+				rh.reflect_member("blend_width_in_pixel", blend_width_in_pixel) &&
+				rh.reflect_member("halo_width_in_pixel", halo_width_in_pixel) &&
+				//rh.reflect_member("halo_color", halo_color) &&
+				rh.reflect_member("halo_color_strength", halo_color_strength) &&
+				rh.reflect_member("percentual_halo_width", percentual_halo_width);
+		}
 
+		cgv::reflect::extern_reflection_traits<clod_point_render_style, clod_point_render_style_reflect> get_reflection_traits(const clod_point_render_style&)
+		{
+			return cgv::reflect::extern_reflection_traits<clod_point_render_style, clod_point_render_style_reflect>();
+		}
 }
 }
 
