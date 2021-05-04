@@ -97,7 +97,7 @@ namespace cgv {
 					return p_color;
 				}
 			};
-			
+
 		private:
 			// stores parameters generated for the draw shaders, for an explaination search OpenGL Indirect rendering (https://www.khronos.org/opengl/wiki/Vertex_Rendering#Indirect_rendering)
 			struct DrawParameters {
@@ -106,31 +106,38 @@ namespace cgv {
 				GLuint  first = 0;
 				GLuint  baseInstance = 0;
 			};
+			
+			struct NoCullZone {
+				vec3 point[2] = { vec3(0.0),vec3(0.0) };
+				vec2 squareRadius = vec2(0.0);
+			};
 
 			shader_program reduce_prog;		// filters points from the input buffer and writes them to the render_buffer (compute shader)
 			shader_program* draw_prog_ptr;
 			shader_program draw_prog;	// draws render_buffer (vertex, geometry, fragment shader)
 			
 			GLuint vertex_array = 0;
-			GLuint input_buffer = 0, render_buffer = 0, draw_parameter_buffer = 0, render_back_buffer = 0;
-			const int input_pos = 0, render_pos = 1, drawp_pos = 3;
+			GLuint input_buffer = 0, render_buffer = 0, draw_parameter_buffer = 0, render_back_buffer = 0, protection_zone_buffer = 0;
+			/// the refered buffer contains indices of points after reduction step
+			GLuint index_buffer = 0;
+			/// buffer layout positions for the reduce shader program
+			const int input_pos = 0, render_pos = 1, index_pos = 2,drawp_pos = 3, protection_zone_pos = 4;
 
 			GLsizeiptr input_buffer_size = 0;
 			GLuint input_buffer_num_points = 0;
 			GLint remaining_batch_start = 0;
 
-			bool buffers_outofdate = true;
-
+			bool buffers_outofdate = true;	//implies protection zone out of date
+			bool protection_zone_outofdate = true;
 
 			/// default render style
 			mutable render_style* default_render_style = nullptr;
 			/// current render style, can be set by user
 			const render_style* rs = nullptr;
 
-		protected:
+			NoCullZone culling_protection_zone;
 
-			void draw_and_compute_impl(context& ctx, size_t start, size_t count);
-
+		protected:			
 			const render_style* get_style_ptr() const;
 
 			template <typename T>
@@ -143,12 +150,14 @@ namespace cgv {
 
 			bool init(context& ctx);
 
+			/// sets most uniforms and resizes/updates other buffers if needed
 			bool enable(context& ctx);
 
 			bool disable(context& ctx);
 
 			void clear(const cgv::render::context& ctx);
 
+			/// reduces and renders the input by calling reduce_points and draw_points
 			void draw(context& ctx, size_t start=0, size_t count=0);
 			
 			bool render(context& ctx, size_t start, size_t count);
@@ -178,10 +187,43 @@ namespace cgv {
 			/// set a custom shader program that is used for one draw call
 			void set_prog(shader_program& one_shot_prog);
 
+			/* methods for step wise operation */
+
+			/// run point reduction step on the input data, yout need to call enable first
+			void reduce_points(context& ctx, size_t start, size_t count, size_t max_reduced_points);
+			/// render reduced points, you need to call reduce_points first to fill the render_buffer
+			void draw_points(context& ctx);
+
+			/* accessors for opengl buffers */
+
+			/// get the opengl id used to access the index buffer
+			inline GLuint get_index_buffer() {
+				assert(index_buffer != 0);
+				return index_buffer;
+			}
+			/// get the opengl id used to access the draw parameters
+			inline GLuint get_draw_parameters() {
+				assert(draw_parameter_buffer != 0);
+				return draw_parameter_buffer;
+			}
+			/// get the opengl id used to access the draw buffer
+			inline GLuint get_reduced_points() {
+				assert(render_buffer != 0);
+				return render_buffer;
+			}
+
+			inline void set_protection_zone(const vec3 position, const float radius, const unsigned index) {
+				assert(index < 2);
+				culling_protection_zone.point[index] = position;
+				culling_protection_zone.squareRadius[index] = radius * radius;
+				protection_zone_outofdate = true;
+			}
+
 		private:
 			void add_shader(context& ctx, shader_program& prog, const std::string& sf, const cgv::render::ShaderType st);
 			void resize_buffers(context& ctx);
 			void clear_buffers(const context& ctx);
+			void update_protection_zone_buffer(const context& ctx);
 		};
 
 

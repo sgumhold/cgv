@@ -45,6 +45,10 @@ layout(std430, binding = 1) buffer ssTargetBuffer{
 	Vertex targetBuffer[];
 };
 
+layout(std430, binding = 2) buffer ssTargetIndexBuffer{
+	uint targetIndexBuffer[];
+};
+
 //draw parameters for glDrawArraysIndirect
 layout(std430, binding = 3) buffer ssDrawParameters{
 	uint count;
@@ -52,6 +56,12 @@ layout(std430, binding = 3) buffer ssDrawParameters{
 	uint first;
 	uint baseInstance;
 } drawParameters;
+
+//allways draw points in this area
+layout(std430, binding = 4) buffer ssNoCullZone{
+	vec3 point[2];
+	vec2 squareRadius;
+} noCullZone;
 
 layout(location = 21) uniform int uBatchOffset;
 layout(location = 22) uniform int uBatchSize;
@@ -69,6 +79,11 @@ mat4 get_modelview_matrix();
 mat4 get_projection_matrix();
 mat4 get_modelview_projection_matrix();
 //***** end interface of view.glsl ***********************************
+
+float square_distance(in vec3 a,in vec3 b){
+	vec3 d = b-a;
+	return dot(d,d);
+}
 
 float rand(float n){
 	return fract(cos(n) * 123456.789);
@@ -94,46 +109,48 @@ void main(){
 	vec4 projected = (transform * vec4(aPosition, 1));
 	projected.xyz = projected.xyz / projected.w;
 
-	// (extented-)frustum culling
-	if(abs(projected.x) > frustum_extent || abs(projected.y) > frustum_extent){
-		return;
-	}
-	
-	// near-clipping
-	if(projected.w < 0){
-		return;
-	}
-	
-	//vec3 worldPos = (world * vec4(aPosition, 1)).xyz;
-	vec3 modelPos = aPosition;
+	// TODO fix this, use uniforms
+	//vec2 sq_distance_to_no_cull_zone = vec2(square_distance(aPosition,noCullZone.point[0]),square_distance(aPosition,noCullZone.point[1]));
+	//bool allways_accept = any( lessThan(sq_distance_to_no_cull_zone, noCullZone.squareRadius) );
 
-	// without level randomization
-	//float pointSpacing = uScale * uSpacing / pow(2, level);
+	if (true) {
+		// (extented-)frustum culling and near clipping
+		if((frustum_extent < abs(projected.x) ) || ( frustum_extent < abs(projected.y)) || (projected.w < 0) ){
+			return;
+		}
 
-	// with level randomization
-	float pointSpacing = scale * spacing / pow(2, level + aRandom);
+		//vec3 worldPos = (world * vec4(aPosition, 1)).xyz;
+		vec3 modelPos = aPosition;
 
-	float d = distance(modelPos, pivot.xyz);
-	float dc = length((projected.xy/screenSize)-vec2(1.0,1.0)); //distance to center in device coordinates
+		// without level randomization
+		//float pointSpacing = uScale * uSpacing / pow(2, level);
 
-	// targetSpacing dependant on camera distance
-	//float targetSpacing = (CLOD / 1000) * d;
+		// with level randomization
+		float pointSpacing = scale * spacing / pow(2, level + aRandom);
 
-	// dependant on cam distance and distance to center of screen
-	float targetSpacing = (d * CLOD) / (1000 * max(1 - 0.7 * dc , 0.3));
+		float d = distance(modelPos, pivot.xyz);
+		float dc = length((projected.xy/screenSize)-vec2(1.0,1.0)); //distance to center in device coordinates
 
-	// reduce density away from center with the gaussian function
-	// no significant improvement over 1 / (d - dc), so we've settled with the simpler one
-	//float sigma = 0.4;
-	//float gbc = (1 / (sigma * sqrt(2 * 3.1415))) * exp(-0.5 * pow( dc / sigma, 2.0 ));
-	//targetSpacing = (1. * d * CLOD) / (1000 * gbc);
+		// targetSpacing dependant on camera distance
+		//float targetSpacing = (CLOD / 1000) * d;
 
-	if(pointSpacing < targetSpacing){
-		return;
+		// dependant on cam distance and distance to center of screen
+		float targetSpacing = (d * CLOD) / (1000 * max(1 - 0.7 * dc , 0.3));
+
+		// reduce density away from center with the gaussian function
+		// no significant improvement over 1 / (d - dc), so we've settled with the simpler one
+		//float sigma = 0.4;
+		//float gbc = (1 / (sigma * sqrt(2 * 3.1415))) * exp(-0.5 * pow( dc / sigma, 2.0 ));
+		//targetSpacing = (1. * d * CLOD) / (1000 * gbc);
+
+		if(pointSpacing < targetSpacing){
+			return;
+		}
 	}
 
 	int targetIndex = int(atomicAdd(drawParameters.count, 1));
 	targetBuffer[targetIndex] = v;
+	targetIndexBuffer[targetIndex] = inputIndex;
 }
 
 
