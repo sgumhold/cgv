@@ -41,6 +41,8 @@ namespace cgv {
 				reduce_prog.set_uniform(ctx, reduce_prog.get_uniform_location(ctx, "uBatchOffset"), (int)start);
 				reduce_prog.set_uniform(ctx, reduce_prog.get_uniform_location(ctx, "uBatchSize"), (int)count);
 				reduce_prog.set_uniform(ctx, "frustum_extent", 1.0f);
+				reduce_prog.set_uniform_array(ctx, "protectionZoneSquareRadii", culling_protection_zone.squareRadius, 2);
+				reduce_prog.set_uniform_array(ctx, "protectionZonePoints", culling_protection_zone.point, 2);
 
 				// reset draw parameters
 				DrawParameters dp = DrawParameters();
@@ -52,7 +54,6 @@ namespace cgv {
 				glBindBufferBase(GL_SHADER_STORAGE_BUFFER, render_pos, render_buffer);
 				glBindBufferBase(GL_SHADER_STORAGE_BUFFER, input_pos, input_buffer);
 				glBindBufferBase(GL_SHADER_STORAGE_BUFFER, index_pos, index_buffer);
-				glBindBufferBase(GL_SHADER_STORAGE_BUFFER, protection_zone_pos, protection_zone_buffer);
 				glDispatchCompute((input_buffer_num_points / 128) + 1, 1, 1); //with NVIDIA GPUs in debug mode this will spam notifications about buffer usage
 
 				// synchronize
@@ -71,12 +72,9 @@ namespace cgv {
 			glBindBuffer(GL_DRAW_INDIRECT_BUFFER, 0);
 
 			//map buffer into host address space for debugging
-			/*
+			
 			DrawParameters* device_draw_parameters = static_cast<DrawParameters*>(glMapNamedBufferRange(draw_parameter_buffer, 0, sizeof(DrawParameters), GL_MAP_READ_BIT));
-			NoCullZone* cull_parameters = static_cast<NoCullZone*>(glMapNamedBufferRange(protection_zone_buffer, 0, sizeof(NoCullZone), GL_MAP_READ_BIT));
 			glUnmapNamedBuffer(draw_parameter_buffer);
-			glUnmapNamedBuffer(protection_zone_buffer);
-			*/
 
 			glBindVertexArray(0);
 			draw_prog_ptr->disable(ctx);
@@ -115,20 +113,24 @@ namespace cgv {
 			glGenBuffers(1, &index_buffer);
 			glGenBuffers(1, &draw_parameter_buffer);
 			glGenBuffers(1, &render_back_buffer);
-			glGenBuffers(1, &protection_zone_buffer);
 
+			// vertex arrays
 			glGenVertexArrays(1, &vertex_array);
 			glBindVertexArray(vertex_array);
-			//position 
+			// position 
 			glBindBuffer(GL_ARRAY_BUFFER, render_buffer);
 			glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, sizeof(Point), (void*)0);
 			glEnableVertexAttribArray(0);
-			//color
+			// color
 			glVertexAttribPointer(1, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(Point), (void*)(sizeof(vec3)));
 			glEnableVertexAttribArray(1);
 
 			glBindBuffer(GL_ARRAY_BUFFER, 0);
 			glBindVertexArray(0);
+
+			// fixed size buffers
+			glBindBuffer(GL_SHADER_STORAGE_BUFFER, draw_parameter_buffer);
+			glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(DrawParameters), nullptr, GL_STREAM_DRAW);
 
 			draw_prog_ptr = &draw_prog;
 			return draw_prog.is_linked() && reduce_prog.is_linked();
@@ -143,12 +145,7 @@ namespace cgv {
 			if (!draw_prog_ptr->is_linked()) {
 				return false;
 			}
-
-			if (protection_zone_outofdate) {
-				update_protection_zone_buffer(ctx);
-				protection_zone_outofdate = false;
-			}
-
+			
 			if (buffers_outofdate) {
 				resize_buffers(ctx);
 				buffers_outofdate = false;
@@ -303,12 +300,6 @@ namespace cgv {
 
 		}
 
-		void clod_point_renderer::update_protection_zone_buffer(const context& ctx)
-		{
-			glBindBuffer(GL_SHADER_STORAGE_BUFFER, protection_zone_buffer);
-			glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(NoCullZone), &culling_protection_zone, GL_STREAM_DRAW);
-		}
-
 		void clod_point_renderer::resize_buffers(context& ctx)
 		{ //  fill buffers for the compute shader
 			glBindBuffer(GL_SHADER_STORAGE_BUFFER, render_buffer);
@@ -316,9 +307,6 @@ namespace cgv {
 
 			glBindBuffer(GL_SHADER_STORAGE_BUFFER, index_buffer);
 			glBufferData(GL_SHADER_STORAGE_BUFFER, input_buffer_num_points*sizeof(GLuint), nullptr, GL_DYNAMIC_DRAW);
-
-			glBindBuffer(GL_SHADER_STORAGE_BUFFER, draw_parameter_buffer);
-			glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(DrawParameters), nullptr, GL_STREAM_DRAW);
 		}
 
 		void clod_point_renderer::clear_buffers(const context& ctx)
@@ -328,7 +316,6 @@ namespace cgv {
 			glDeleteBuffers(1, &render_buffer);
 			glDeleteBuffers(1, &draw_parameter_buffer);
 			glDeleteBuffers(1, &render_back_buffer);
-			glDeleteBuffers(1, &protection_zone_buffer);
 			
 			input_buffer = render_buffer = draw_parameter_buffer = render_back_buffer = index_buffer = 0;
 		}

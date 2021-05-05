@@ -223,7 +223,7 @@ void pointcloud_lod_render_test::draw(cgv::render::context & ctx)
 		renderer.render(ctx, 0, boxes.size());
 	}
 	cp_renderer.set_render_style(cp_style);
-
+	
 	if (source_pc.get_nr_points() > 0) {
 		if (renderer_out_of_date) {
 			rgb color(1.0, 0.0, 0.0);
