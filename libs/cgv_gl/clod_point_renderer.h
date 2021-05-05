@@ -109,26 +109,24 @@ namespace cgv {
 			
 			struct NoCullZone {
 				vec3 point[2] = { vec3(0.0),vec3(0.0) };
-				vec2 squareRadius = vec2(0.0);
+				float squareRadius[2] = { 0.0,0.0 };
 			};
-
 			shader_program reduce_prog;		// filters points from the input buffer and writes them to the render_buffer (compute shader)
 			shader_program* draw_prog_ptr;
 			shader_program draw_prog;	// draws render_buffer (vertex, geometry, fragment shader)
 			
 			GLuint vertex_array = 0;
-			GLuint input_buffer = 0, render_buffer = 0, draw_parameter_buffer = 0, render_back_buffer = 0, protection_zone_buffer = 0;
+			GLuint input_buffer = 0, render_buffer = 0, draw_parameter_buffer = 0, render_back_buffer = 0;
 			/// the refered buffer contains indices of points after reduction step
 			GLuint index_buffer = 0;
 			/// buffer layout positions for the reduce shader program
-			const int input_pos = 0, render_pos = 1, index_pos = 2,drawp_pos = 3, protection_zone_pos = 4;
+			const int input_pos = 0, render_pos = 1, index_pos = 2,drawp_pos = 3;
 
 			GLsizeiptr input_buffer_size = 0;
 			GLuint input_buffer_num_points = 0;
 			GLint remaining_batch_start = 0;
 
 			bool buffers_outofdate = true;	//implies protection zone out of date
-			bool protection_zone_outofdate = true;
 
 			/// default render style
 			mutable render_style* default_render_style = nullptr;
@@ -216,14 +214,12 @@ namespace cgv {
 				assert(index < 2);
 				culling_protection_zone.point[index] = position;
 				culling_protection_zone.squareRadius[index] = radius * radius;
-				protection_zone_outofdate = true;
 			}
 
 		private:
 			void add_shader(context& ctx, shader_program& prog, const std::string& sf, const cgv::render::ShaderType st);
 			void resize_buffers(context& ctx);
 			void clear_buffers(const context& ctx);
-			void update_protection_zone_buffer(const context& ctx);
 		};
 
 

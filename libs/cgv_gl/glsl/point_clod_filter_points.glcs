@@ -57,11 +57,11 @@ layout(std430, binding = 3) buffer ssDrawParameters{
 	uint baseInstance;
 } drawParameters;
 
+
 //allways draw points in this area
-layout(std430, binding = 4) buffer ssNoCullZone{
-	vec3 point[2];
-	vec2 squareRadius;
-} noCullZone;
+uniform vec3[2] protectionZonePoints;
+uniform float[2] protectionZoneSquareRadii;
+
 
 layout(location = 21) uniform int uBatchOffset;
 layout(location = 22) uniform int uBatchSize;
@@ -109,11 +109,10 @@ void main(){
 	vec4 projected = (transform * vec4(aPosition, 1));
 	projected.xyz = projected.xyz / projected.w;
 
-	// TODO fix this, use uniforms
-	//vec2 sq_distance_to_no_cull_zone = vec2(square_distance(aPosition,noCullZone.point[0]),square_distance(aPosition,noCullZone.point[1]));
-	//bool allways_accept = any( lessThan(sq_distance_to_no_cull_zone, noCullZone.squareRadius) );
+	vec2 sq_distance_to_no_cull_zone = vec2(square_distance(aPosition,protectionZonePoints[0]),square_distance(aPosition,protectionZonePoints[1]));
+	bool allways_accept = any( lessThan(sq_distance_to_no_cull_zone, vec2(protectionZoneSquareRadii[0],protectionZoneSquareRadii[1]) ) );
 
-	if (true) {
+	if (!allways_accept) {
 		// (extented-)frustum culling and near clipping
 		if((frustum_extent < abs(projected.x) ) || ( frustum_extent < abs(projected.y)) || (projected.w < 0) ){
 			return;
