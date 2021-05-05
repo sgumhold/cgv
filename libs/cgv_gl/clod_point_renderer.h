@@ -111,6 +111,7 @@ namespace cgv {
 				vec3 point[2] = { vec3(0.0),vec3(0.0) };
 				float squareRadius[2] = { 0.0,0.0 };
 			};
+
 			shader_program reduce_prog;		// filters points from the input buffer and writes them to the render_buffer (compute shader)
 			shader_program* draw_prog_ptr;
 			shader_program draw_prog;	// draws render_buffer (vertex, geometry, fragment shader)
@@ -126,7 +127,7 @@ namespace cgv {
 			GLuint input_buffer_num_points = 0;
 			GLint remaining_batch_start = 0;
 
-			bool buffers_outofdate = true;	//implies protection zone out of date
+			bool buffers_outofdate = true;
 
 			/// default render style
 			mutable render_style* default_render_style = nullptr;
@@ -161,14 +162,7 @@ namespace cgv {
 			bool render(context& ctx, size_t start, size_t count);
 
 			/// this method can be used if the data format of pnts matches with the internal format given by the Point struct
-			inline void set_points(cgv::render::context& ctx,const Point* pnts, const size_t num_points) {
-				assert(input_buffer != 0);
-				glBindBuffer(GL_SHADER_STORAGE_BUFFER, input_buffer);
-				glBufferData(GL_SHADER_STORAGE_BUFFER, num_points * sizeof(Point), pnts, GL_STATIC_READ);
-				input_buffer_size = num_points * sizeof(Point);
-				input_buffer_num_points = num_points;
-				buffers_outofdate = true;
-			}
+			void set_points(cgv::render::context& ctx, const Point* pnts, const size_t num_points);
 
 			/// to use the clod point renderer lods are required, to generate them use the classes inside libs/pointcloud/octree.h
 			/// @param positions : pointer to first points position
@@ -179,10 +173,10 @@ namespace cgv {
 			void set_points(cgv::render::context& ctx, const vec3* positions, const rgb8* colors, const uint8_t* lods, const size_t num_points, const unsigned stride = 0);
 
 			void set_render_style(const render_style& rs);
-
+			
 			void manage_singelton(context& ctx, const std::string& renderer_name, int& ref_count, int ref_count_change);
 
-			/// set a custom shader program that is used for one draw call
+			/// set a custom shader program that is used for one enable disable cycle
 			void set_prog(shader_program& one_shot_prog);
 
 			/* methods for step wise operation */

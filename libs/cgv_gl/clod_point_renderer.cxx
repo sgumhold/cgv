@@ -219,7 +219,16 @@ namespace cgv {
 				draw(ctx, start, count);
 				return true;
 			}
-			return false;
+			return disable(ctx);
+		}
+
+		void clod_point_renderer::set_points(cgv::render::context& ctx, const Point* pnts, const size_t num_points) {
+			assert(input_buffer != 0);
+			glBindBuffer(GL_SHADER_STORAGE_BUFFER, input_buffer);
+			glBufferData(GL_SHADER_STORAGE_BUFFER, num_points * sizeof(Point), pnts, GL_STATIC_READ);
+			input_buffer_size = num_points * sizeof(Point);
+			input_buffer_num_points = num_points;
+			buffers_outofdate = true;
 		}
 
 		void clod_point_renderer::set_points(cgv::render::context& ctx, const vec3* positions, const rgb8* colors, const uint8_t* lods, const size_t num_points, const unsigned stride)
