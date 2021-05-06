@@ -474,11 +474,15 @@ uint32_t CVRPathRegistry_Public::InitSteamAppId()
 	// Forcefully setting to what it should be before SteamAPI_Init() since SteamVR is more often
 	// started as child processes of the game app and otherwise Steam then considers us as the
 	// wrong app id.
+#ifdef UNICODE
 	std::string said_str = std::to_string(nSteamAppId);
 
 	SetEnvironmentVariable(((std::wstring)L"SteamAppId").c_str(), std::wstring(said_str.begin(), said_str.end()).c_str());
 	SetEnvironmentVariable(((std::wstring)L"SteamGameId").c_str(), std::wstring(said_str.begin(), said_str.end()).c_str());
-
+#else
+	SetEnvironmentVariable("SteamAppId", std::to_string(nSteamAppId).c_str());
+	SetEnvironmentVariable("SteamGameId", std::to_string(nSteamAppId).c_str());
+#endif
 	return nSteamAppId;
 }
 
