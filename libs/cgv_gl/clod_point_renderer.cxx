@@ -124,7 +124,10 @@ namespace cgv {
 			// color
 			glVertexAttribPointer(1, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(Point), (void*)(sizeof(vec3)));
 			glEnableVertexAttribArray(1);
-
+			// index
+			glBindBuffer(GL_ARRAY_BUFFER, index_buffer);
+			glVertexAttribPointer(2, 4, GL_UNSIGNED_INT, GL_FALSE, sizeof(GLuint), (void*)0);
+			glEnableVertexAttribArray(2);
 			glBindBuffer(GL_ARRAY_BUFFER, 0);
 			glBindVertexArray(0);
 
