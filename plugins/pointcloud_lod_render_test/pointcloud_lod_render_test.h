@@ -61,8 +61,9 @@ public:
 	
 	void unregister();
 
-	/// adjust view
 	bool init(cgv::render::context& ctx);
+
+	void init_frame(cgv::render::context& ctx);
 	/// overload to draw the content of this drawable
 	void draw(cgv::render::context& ctx);
 	///
@@ -143,6 +144,11 @@ private:
 	bool color_based_on_lod;
 	bool show_environment;
 
+	bool gui_culling_protection_zone = false;
+	float culling_protection_zone_radii[2];
+	vec3 culling_protection_zone_positions[2];
+	static constexpr int num_culling_protection_zones = 2;
+
 	static constexpr float min_level_hue = 230.0/360.0;
 	static constexpr float max_level_hue = 1.0;
 	
@@ -154,15 +160,20 @@ private:
 	float model_scale = 1.f;
 
 	cgv::render::clod_point_render_style cp_style;
+	cgv::render::rounded_cone_render_style cone_style;
 
+	// environment geometry
 	std::vector<box3> boxes;
 	std::vector<rgb> box_colors;
 	cgv::render::box_render_style style;
 	constexpr static float table_height = 0.7f;
 
+	// octree base lod generator
 	cgv::pointcloud::octree_lod_generator<LODPoint> lod_generator;
-	//stores generated lod points
+	// stores generated lod points
 	std::vector<LODPoint> points_with_lod;
+
+	vr_view_interactor* vr_view_ptr;
 };
 
 #include <cgv/config/lib_end.h>

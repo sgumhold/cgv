@@ -63,6 +63,11 @@ pointcloud_lod_render_test::pointcloud_lod_render_test() {
 	show_environment = true;
 	pointcloud_fit_table = false;
 	put_on_table = false;
+
+	for (int i =0;i<num_culling_protection_zones;++i){
+		culling_protection_zone_positions[i] = vec3(0.f);
+		culling_protection_zone_radii[i] = 0.f;
+	}
 }
 
 
@@ -180,7 +185,7 @@ bool pointcloud_lod_render_test::init(cgv::render::context & ctx)
 		view_ptr->set_focus(vec3(0, 0, 0));
 		//view_ptr->set_eye_keep_view_angle(dvec3(0, 4, -4));
 		// if the view points to a vr_view_interactor
-		vr_view_interactor* vr_view_ptr = dynamic_cast<vr_view_interactor*>(view_ptr);
+		vr_view_ptr = dynamic_cast<vr_view_interactor*>(view_ptr);
 		if (vr_view_ptr) {
 			// configure vr event processing
 			vr_view_ptr->set_event_type_flags(
@@ -210,6 +215,10 @@ bool pointcloud_lod_render_test::init(cgv::render::context & ctx)
 	return true;
 }
 
+void pointcloud_lod_render_test::init_frame(cgv::render::context& ctx)
+{
+}
+
 
 void pointcloud_lod_render_test::draw(cgv::render::context & ctx)
 {
@@ -224,6 +233,10 @@ void pointcloud_lod_render_test::draw(cgv::render::context & ctx)
 	}
 	cp_renderer.set_render_style(cp_style);
 	
+	for (int i = 0; i < num_culling_protection_zones; ++i) {
+		cp_renderer.set_protection_zone(culling_protection_zone_positions[i], culling_protection_zone_radii[i], i);
+	}
+
 	if (source_pc.get_nr_points() > 0) {
 		if (renderer_out_of_date) {
 			rgb color(1.0, 0.0, 0.0);
@@ -324,6 +337,39 @@ void pointcloud_lod_render_test::draw(cgv::render::context & ctx)
 		find_pointcloud(ctx);
 		view_find_point_cloud = false;
 	}
+
+	// draw vr stuff
+	
+	if (vr_view_ptr) {
+		std::array<vec3,4> P;
+		std::array<float,4> R;
+		std::array<rgb,4> C;
+		size_t array_index = 0;
+		constexpr float ray_length = 1.2;
+		const vr::vr_kit_state* state_ptr = vr_view_ptr->get_current_vr_state();
+		if (state_ptr) {
+			for (int ci = 0; ci < 2; ++ci) if (state_ptr->controller[ci].status == vr::VRS_TRACKED) {
+				vec3 ray_origin, ray_direction;
+				state_ptr->controller[ci].put_ray(&ray_origin(0), &ray_direction(0));
+				P[array_index] = ray_origin;
+				R[array_index] = 0.002f;
+				P[array_index+1] = ray_origin + ray_length * ray_direction;
+				R[array_index+1] = 0.003f;
+				rgb c(float(1 - ci), 0.5f, float(ci));
+				C[array_index] = c;
+				C[array_index+1] = c;
+				array_index += 2;
+			}
+		}
+		if (P.size() > 0) {
+			auto& cr = cgv::render::ref_rounded_cone_renderer(ctx);
+			cr.set_render_style(cone_style);
+			cr.set_position_array(ctx, P.data(), array_index);
+			cr.set_color_array(ctx, C.data(), array_index);
+			cr.set_radius_array(ctx, R.data(), array_index);
+			cr.render(ctx, 0, P.size());
+		}
+	}
 }
 
 void pointcloud_lod_render_test::find_pointcloud(cgv::render::context & ctx)
@@ -379,7 +425,16 @@ bool pointcloud_lod_render_test::handle(cgv::gui::event & e)
 			}
 			break;
 		}
-		return true;
+		case cgv::gui::EID_POSE: {
+			cgv::gui::vr_pose_event& vrpe = static_cast<cgv::gui::vr_pose_event&>(e);
+
+			// check for controller pose events
+			int ci = vrpe.get_trackable_index();
+			if (ci < 0 || ci >= 2) {
+				return true;
+			}
+			culling_protection_zone_positions[ci] = vrpe.get_position();
+		}
 	}
 	return false;
 }
@@ -418,6 +473,13 @@ void pointcloud_lod_render_test::create_gui()
 		end_tree_node(cp_style);
 	}
 
+	if (begin_tree_node("cone style", cone_style, false)) {
+		align("\a");
+		add_gui("cone style", cone_style);
+		align("\b");
+		end_tree_node(cone_style);
+	}
+
 	if (begin_tree_node("Model positioning", gui_model_positioning, false)) {
 		align("\a");
 		add_member_control(this, "model scale", model_scale, "value_slider", "min=0.1;max=5.0;log=false;ticks=true");
@@ -429,6 +491,11 @@ void pointcloud_lod_render_test::create_gui()
 		add_member_control(this, "model rotation z", model_rotation.z(), "value_slider", "min=0.0;max=360;log=false;ticks=true");
 		align("\b");
 		end_tree_node(cp_style);
+	}
+
+	if (begin_tree_node("culling protection zones", gui_culling_protection_zone, false)) {
+		add_member_control(this, "radius zone 1", culling_protection_zone_radii[0], "value_slider", "min=0.0;max=10.0;log=false;ticks=true");
+		add_member_control(this, "radius zone 2", culling_protection_zone_radii[1], "value_slider", "min=0.0;max=10.0;log=false;ticks=true");
 	}
 }
 
