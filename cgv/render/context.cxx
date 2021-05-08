@@ -1876,7 +1876,7 @@ shader_program_base::shader_program_base()
 	position_index = -1;
 	normal_index = -1;
 	color_index = -1;
-	context_sets_color = false;
+	context_sets_color = true;
 	texcoord_index = -1;
 }
 

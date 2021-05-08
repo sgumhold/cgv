@@ -144,28 +144,39 @@ bool plot3d::init(cgv::render::context& ctx)
 		success = false;
 		std::cerr << "could not build GLSL program from plot3d_sphere.glpr" << std::endl;
 	}
+	else
+		sphere_prog.allow_context_to_set_color(false);
 	if (!stick_prog.build_program(ctx, "plot3d_stick.glpr")) {
 		success = false;
 		std::cerr << "could not build GLSL program from plot3d_stick.glpr" << std::endl;
 	}
+	else
+		stick_prog.allow_context_to_set_color(false);
 	if (!tick_label_prog.build_program(ctx, "plot3d_tick_label.glpr")) {
 		success = false;
 		std::cerr << "could not build GLSL program from plot3d_tick_label.glpr" << std::endl;
 	}
+	else
+		tick_label_prog.allow_context_to_set_color(false);
 	if (!box_prog.build_program(ctx, "plot3d_box.glpr")) {
 		std::cerr << "could not build GLSL program from plot3d_box.glpr" << std::endl;
 		success = false;
 	}
+	else
+		box_prog.allow_context_to_set_color(false);
 	if (!wirebox_prog.build_program(ctx, "plot3d_box_wire.glpr")) {
 		success = false;
 		std::cerr << "could not build GLSL program from plot3d_box_wire.glpr" << std::endl;
 	}
+	else
+		wirebox_prog.allow_context_to_set_color(false);
 	if (!tube_prog.build_program(ctx, "plot3d_tube.glpr", true)) {
 		std::cerr << "could not build GLSL program from plot3d_tube.glpr" << std::endl;
 		success = false;
 	}
 	else {
 		tube_prog.set_uniform(ctx, "map_color_to_material", 3);
+		tube_prog.allow_context_to_set_color(false);
 	}
 
 	//if (!surface_prog.is_created()) {
