@@ -535,8 +535,17 @@ bool texture::create_from_buffer(const context& ctx, int x, int y, int width, in
 
 /** create texture from data view. Use dimension and resolution
     of data view but the component format of the texture.
-    If level is not specified or set to -1 mipmaps are generated. */
-bool texture::create(const context& ctx, const cgv::data::const_data_view& data, int level, int cube_side, bool is_array, const std::vector<data_view>* palettes)
+	If level is not specified or set to -1 mipmaps are generated. 
+	If cube_side is specified, and data view is 2D, create one of
+	the six sides of a cubemap.
+	If num_array_layers is not zero a texture array is created.
+	Set num_array_layers to -1 to automatically choose the layer
+	number based on the data view dimensions and size, e.g. a 2D/3D
+	data view creates a 1D/2D array with layer count equal to height/depth.
+	Set num_array_layers to > 0 to manually specify the layer count.
+	This can be used to create a one layer 1D/2D texture array from a 1D/2D data view.
+	Cubemap arrays are currently not suported. */
+bool texture::create(const context& ctx, const cgv::data::const_data_view& data, int level, int cube_side, int num_array_layers, const std::vector<data_view>* palettes)
 {
 	const data_format& f = *data.get_format();
 	TextureType tt = (TextureType)f.get_nr_dimensions();
@@ -544,12 +553,21 @@ bool texture::create(const context& ctx, const cgv::data::const_data_view& data,
 	if(cube_side > -1) {
 		if(tt == TT_2D)
 			tt = TT_CUBEMAP;
-	} else if(is_array) {
-		unsigned n_dims = f.get_nr_dimensions();
-		if(n_dims == 2)
-			tt = TT_1D_ARRAY;
-		if(n_dims == 3)
-			tt = TT_2D_ARRAY;
+	} else if(num_array_layers != 0) {
+		if(num_array_layers < 0) {
+			// automatic inference of layers from texture dimensions
+			unsigned n_dims = f.get_nr_dimensions();
+			if(n_dims == 2)
+				tt = TT_1D_ARRAY;
+			if(n_dims == 3)
+				tt = TT_2D_ARRAY;
+		} else {
+			switch(tt) {
+			case TT_1D: tt = TT_1D_ARRAY; break;
+			case TT_2D: tt = TT_2D_ARRAY; break;
+			case TT_3D: tt = TT_2D_ARRAY; break;
+			}
+		}
 	}
 	// TODO: replace is currently only allowed for non-array type textures. If this changes make sure to modify the replace method accordingly including generating mipmaps.
 	if ((tt == TT_1D || tt == TT_2D || tt == TT_3D) && is_created()) {
@@ -576,7 +594,7 @@ bool texture::create(const context& ctx, const cgv::data::const_data_view& data,
 		if (level == -1 || !internal_format)
 			find_best_format(ctx, palettes);
 	}
-	return complete_create(ctx, ctx.texture_create(*this, *this, data, level, cube_side, is_array, palettes));
+	return complete_create(ctx, ctx.texture_create(*this, *this, data, level, cube_side, num_array_layers, palettes));
 }
 
 /** replace a block within a 1d texture with the given data. 

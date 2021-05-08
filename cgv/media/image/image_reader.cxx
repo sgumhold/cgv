@@ -146,7 +146,7 @@ bool image_reader::open(const std::string& file_name)
 		return false;
 	std::string ext = to_lower(file_name.substr(pos+1));
 	std::vector<base_ptr>& readers = reader_listener::ref_readers();
-	std::stringstream all_supported_extensions = {};
+	std::stringstream all_supported_extensions("");
 	for (unsigned int i=0; i<readers.size(); ++i) {
 		if (i != readers.size() - 1) {
             all_supported_extensions << ":";
