@@ -24,6 +24,29 @@ using namespace cgv::pointcloud;
 
 namespace {
 	static cgv::pointcloud::utility::WorkerPool pool(std::thread::hardware_concurrency() - 1);
+	
+	//glCheckError from https://learnopengl.com/In-Practice/Debugging
+	GLenum glCheckError_(const char* file, int line)
+	{
+		GLenum errorCode;
+		while ((errorCode = glGetError()) != GL_NO_ERROR)
+		{
+			std::string error;
+			switch (errorCode)
+			{
+			case GL_INVALID_ENUM:                  error = "INVALID_ENUM"; break;
+			case GL_INVALID_VALUE:                 error = "INVALID_VALUE"; break;
+			case GL_INVALID_OPERATION:             error = "INVALID_OPERATION"; break;
+			case GL_STACK_OVERFLOW:                error = "STACK_OVERFLOW"; break;
+			case GL_STACK_UNDERFLOW:               error = "STACK_UNDERFLOW"; break;
+			case GL_OUT_OF_MEMORY:                 error = "OUT_OF_MEMORY"; break;
+			case GL_INVALID_FRAMEBUFFER_OPERATION: error = "INVALID_FRAMEBUFFER_OPERATION"; break;
+			}
+			std::cout << error << " | " << file << " (" << line << ")" << std::endl;
+		}
+		return errorCode;
+	}
+	#define glCheckError() glCheckError_(__FILE__, __LINE__)
 }
 
 pointcloud_lod_render_test::pointcloud_lod_render_test() {
@@ -204,19 +227,35 @@ bool pointcloud_lod_render_test::init(cgv::render::context & ctx)
 			vr_view_ptr->set_blit_vr_view_width(200);
 		}
 	}
-
-	//cgv::render::ref_point_renderer(ctx, 1);
+	
 	cgv::render::ref_surfel_renderer(ctx, 1);
 	cgv::render::ref_rounded_cone_renderer(ctx, 1);
 	cgv::render::ref_box_renderer(ctx,1);
 	cgv::render::ref_clod_point_renderer(ctx, 1);
-	//cp_renderer.init(ctx);
+	
 	ctx.set_bg_color(0.7, 0.7, 0.8, 1.0);
+
+	//build custom shader prog
+	if (!custom_draw_prog.is_created()) {
+		custom_draw_prog.build_program(ctx, "clod_point_labels.glpr", true);
+	}
+
+	glGenBuffers(1, &point_label_buffer);
+
 	return true;
 }
 
 void pointcloud_lod_render_test::init_frame(cgv::render::context& ctx)
 {
+	if (init_label_buffer && point_labels.size() > 0) {
+		assert(point_label_buffer != 0);
+		glBindBuffer(GL_SHADER_STORAGE_BUFFER, point_label_buffer);
+		glBufferData(GL_SHADER_STORAGE_BUFFER, point_labels.size() * sizeof(GLint), point_labels.data(), GL_STATIC_READ);
+		glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
+		glCheckError();
+		init_label_buffer = false;
+	}
+
 }
 
 
@@ -328,8 +367,28 @@ void pointcloud_lod_render_test::draw(cgv::render::context & ctx)
 		ctx.push_modelview_matrix();
 		ctx.set_modelview_matrix(ctx.get_modelview_matrix()* transform);
 		
-		if (cp_renderer.enable(ctx))
-			cp_renderer.draw(ctx, 0, std::min((size_t)source_pc.get_nr_points(),max_points));
+
+		if (use_label_prog) {
+			cp_renderer.set_prog(custom_draw_prog);
+		}
+
+		if (cp_renderer.enable(ctx)) {
+			cp_renderer.reduce_points(ctx, 0, std::min((size_t)source_pc.get_nr_points(), max_points), (size_t)source_pc.get_nr_points());
+			/*GLint* labels = static_cast<GLint*>(glMapNamedBufferRange(
+				point_label_buffer, 0, source_pc.get_nr_points()*sizeof(GLint), GL_MAP_READ_BIT));
+
+			
+			glCheckError();
+			glUnmapNamedBuffer(point_label_buffer);*/
+			glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 6, point_label_buffer);
+			glCheckError();
+			cp_renderer.draw_points(ctx);
+			glCheckError();
+			//cp_renderer.draw(ctx, 0, std::min((size_t)source_pc.get_nr_points(), max_points));
+			cp_renderer.disable(ctx);
+			glCheckError();
+		}
+			
 		ctx.pop_modelview_matrix();
 	}
 	
@@ -390,7 +449,9 @@ void pointcloud_lod_render_test::find_pointcloud(cgv::render::context & ctx)
 
 void pointcloud_lod_render_test::clear(cgv::render::context & ctx)
 {
-	//cgv::render::ref_point_renderer(ctx, -1);
+	custom_draw_prog.destruct(ctx);
+	glDeleteBuffers(1, &point_label_buffer);
+
 	cgv::render::ref_surfel_renderer(ctx, -1);
 	cgv::render::ref_rounded_cone_renderer(ctx, -1);
 	cgv::render::ref_box_renderer(ctx, -1);
@@ -461,6 +522,8 @@ void pointcloud_lod_render_test::create_gui()
 	add_member_control(this, "show LODs", color_based_on_lod, "toggle");
 	add_member_control(this, "show environment", show_environment, "toggle");
 	add_member_control(this, "point limit", max_points, "value_slider", "min=0;max=1000000000;log=true;ticks=true");
+	add_member_control(this, "use label shader", use_label_prog, "toggle");
+	connect_copy(add_button("random assign deleted label")->click, rebind(this, &pointcloud_lod_render_test::on_random_labels));
 	std::string mode_defs = "enums='random=2;octree=1'";
 	connect_copy(add_control("lod generator", (DummyEnum&)lod_mode, "dropdown", mode_defs)->value_change, rebind(this, &pointcloud_lod_render_test::on_lod_mode_change));
 
@@ -509,6 +572,8 @@ void pointcloud_lod_render_test::on_load_point_cloud_cb()
 {
 	std::string fn = cgv::gui::file_open_dialog("source point cloud(*.obj;*.pobj;*.ply;*.bpc;*.xyz;*.pct;*.points;*.wrl;*.apc;*.pnt;*.txt)", "Point cloud files:*.obj;*.pobj;*.ply;*.bpc;*.xyz;*.pct;*.points;*.wrl;*.apc;*.pnt;*.txt;");
 	source_pc.read(fn);
+	point_labels.resize(source_pc.get_nr_points(), (GLint)point_label::VISIBLE);
+	init_label_buffer = true;
 	renderer_out_of_date = true;
 	post_redraw();
 }
@@ -517,7 +582,6 @@ void pointcloud_lod_render_test::on_load_point_cloud_cb()
 void pointcloud_lod_render_test::on_clear_point_cloud_cb()
 {
 	source_pc.clear();
-	crs_srs_pc.clear();
 	renderer_out_of_date = true;
 	post_redraw();
 }
@@ -586,6 +650,14 @@ void pointcloud_lod_render_test::on_point_cloud_style_cb()
 void pointcloud_lod_render_test::on_lod_mode_change()
 {
 	renderer_out_of_date = true;
+}
+
+void pointcloud_lod_render_test::on_random_labels()
+{
+	for (auto& label : point_labels) {
+		label = label & (rand() & 1);
+	}
+	init_label_buffer = true;
 }
 
 /// construct boxes that represent a table of dimensions tw,td,th and leg width tW
