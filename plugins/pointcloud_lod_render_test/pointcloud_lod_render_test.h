@@ -14,6 +14,7 @@
 #include <cgv_gl/rounded_cone_renderer.h>
 #include <cgv_gl/surfel_renderer.h>
 #include <cgv_gl/clod_point_renderer.h>
+#include <cgv/render/shader_program.h>
 
 #include <point_cloud.h>
 #include <octree.h>
@@ -37,7 +38,13 @@ enum class LoDMode {
 	INVALID = -1
 };
 
-// this is a test VR application for the clod_point_renderer for demonstration purposes
+enum class point_label {
+	DELETED = 0,
+	VISIBLE = 1,
+	UNDEFINED = -1
+};
+
+// this is a VR application using the clod_point_renderer for demonstration purposes
 class pointcloud_lod_render_test :
 	public cgv::base::node,
 	public cgv::render::drawable,
@@ -91,6 +98,7 @@ protected:
 	void on_reg_find_point_cloud_cb();
 	void on_point_cloud_style_cb();
 	void on_lod_mode_change();
+	void on_random_labels();
 
 	void construct_table(float tw, float td, float th, float tW);
 	void construct_room(float w, float d, float h, float W, bool walls, bool ceiling);
@@ -98,7 +106,6 @@ protected:
 	void build_scene(float w, float d, float h, float W, float tw, float td, float th, float tW);
 	void clear_scene();
 	void build_test_object_32();
-
 
 	point_cloud build_test_point_cloud(int x, int y, int z, int grid_size,float cube_size) {
 		double dgrid_size = grid_size;
@@ -126,7 +133,7 @@ private:
 	std::unordered_set<void*> rebuild_ptrs;
 
 	std::string ply_path;
-	point_cloud source_pc, crs_srs_pc;
+	point_cloud source_pc;
 	cgv::render::point_render_style source_prs;
 	cgv::render::surfel_render_style source_srs;
 	cgv::render::rounded_cone_render_style rcrs;
@@ -170,10 +177,17 @@ private:
 
 	// octree base lod generator
 	cgv::pointcloud::octree_lod_generator<LODPoint> lod_generator;
-	// stores generated lod points
+	// storage for generated lod points
 	std::vector<LODPoint> points_with_lod;
 
 	vr_view_interactor* vr_view_ptr;
+
+	// alternative draw programm for labeled points
+	cgv::render::shader_program custom_draw_prog;
+	bool use_label_prog = false;
+	std::vector<GLint> point_labels;
+	GLuint point_label_buffer = 0;
+	bool init_label_buffer = true;
 };
 
 #include <cgv/config/lib_end.h>

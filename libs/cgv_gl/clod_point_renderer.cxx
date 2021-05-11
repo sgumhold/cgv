@@ -44,16 +44,9 @@ namespace cgv {
 				reduce_prog.set_uniform_array(ctx, "protectionZoneSquareRadii", culling_protection_zone.squareRadius, 2);
 				reduce_prog.set_uniform_array(ctx, "protectionZonePoints", culling_protection_zone.point, 2);
 
-				// reset draw parameters
-				DrawParameters dp = DrawParameters();
-				glNamedBufferSubData(draw_parameter_buffer, 0, sizeof(DrawParameters), &dp);
-				glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
-				// reduce
 				reduce_prog.enable(ctx);
-				glBindBufferBase(GL_SHADER_STORAGE_BUFFER, drawp_pos, draw_parameter_buffer);
-				glBindBufferBase(GL_SHADER_STORAGE_BUFFER, render_pos, render_buffer);
-				glBindBufferBase(GL_SHADER_STORAGE_BUFFER, input_pos, input_buffer);
-				glBindBufferBase(GL_SHADER_STORAGE_BUFFER, index_pos, index_buffer);
+
+				// run computation
 				glDispatchCompute((input_buffer_num_points / 128) + 1, 1, 1); //with NVIDIA GPUs in debug mode this will spam notifications about buffer usage
 
 				// synchronize
@@ -69,14 +62,12 @@ namespace cgv {
 			glBindVertexArray(vertex_array);
 			glBindBuffer(GL_DRAW_INDIRECT_BUFFER, draw_parameter_buffer);
 			glDrawArraysIndirect(GL_POINTS, 0);
-			glBindBuffer(GL_DRAW_INDIRECT_BUFFER, 0);
-
+			
 			//map buffer into host address space for debugging
 			
-			DrawParameters* device_draw_parameters = static_cast<DrawParameters*>(glMapNamedBufferRange(draw_parameter_buffer, 0, sizeof(DrawParameters), GL_MAP_READ_BIT));
-			glUnmapNamedBuffer(draw_parameter_buffer);
+			//DrawParameters* device_draw_parameters = static_cast<DrawParameters*>(glMapNamedBufferRange(draw_parameter_buffer, 0, sizeof(DrawParameters), GL_MAP_READ_BIT));
+			//glUnmapNamedBuffer(draw_parameter_buffer);
 
-			glBindVertexArray(0);
 			draw_prog_ptr->disable(ctx);
 		}
 		
@@ -126,7 +117,7 @@ namespace cgv {
 			glEnableVertexAttribArray(1);
 			// index
 			glBindBuffer(GL_ARRAY_BUFFER, index_buffer);
-			glVertexAttribPointer(2, 4, GL_UNSIGNED_INT, GL_FALSE, sizeof(GLuint), (void*)0);
+			glVertexAttribIPointer(2, 1, GL_UNSIGNED_INT, 0, (void*)0);
 			glEnableVertexAttribArray(2);
 			glBindBuffer(GL_ARRAY_BUFFER, 0);
 			glBindVertexArray(0);
@@ -142,8 +133,6 @@ namespace cgv {
 		bool clod_point_renderer::enable(context& ctx)
 		{
 			const clod_point_render_style& prs = get_style<clod_point_render_style>();
-			
-			//draw_prog_ptr = (prs.draw_circles) ? &draw_circle_prog : &draw_prog;
 
 			if (!draw_prog_ptr->is_linked()) {
 				return false;
@@ -192,14 +181,32 @@ namespace cgv {
 			draw_prog_ptr->set_uniform(ctx, "use_color_index", false);
 			float pixel_extent_per_depth = (float)(2.0 * tan(0.5 * 0.0174532925199 * y_view_angle) / ctx.get_height());
 			draw_prog_ptr->set_uniform(ctx, "pixel_extent_per_depth", pixel_extent_per_depth);
+
+
+			// reduce shader buffers
+			
+			// reset draw parameters
+			DrawParameters dp = DrawParameters();
+			glNamedBufferSubData(draw_parameter_buffer, 0, sizeof(DrawParameters), &dp);
+			// glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
+			// bind buffer for reduce shader
+			
+			glBindBufferBase(GL_SHADER_STORAGE_BUFFER, drawp_pos, draw_parameter_buffer);
+			glBindBufferBase(GL_SHADER_STORAGE_BUFFER, render_pos, render_buffer);
+			glBindBufferBase(GL_SHADER_STORAGE_BUFFER, input_pos, input_buffer);
+			glBindBufferBase(GL_SHADER_STORAGE_BUFFER, index_pos, index_buffer);
+
 			return true;
 		}
 
 		bool clod_point_renderer::disable(context& ctx)
 		{
-			if (draw_prog_ptr)
-				draw_prog_ptr->disable(ctx);
 			draw_prog_ptr = &draw_prog;
+			// draw related stuff
+			glBindBuffer(GL_DRAW_INDIRECT_BUFFER, 0);
+			glBindVertexArray(0);
+			// reduce related stuff
+			glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 			return false;
 		}
 
@@ -229,6 +236,7 @@ namespace cgv {
 			assert(input_buffer != 0);
 			glBindBuffer(GL_SHADER_STORAGE_BUFFER, input_buffer);
 			glBufferData(GL_SHADER_STORAGE_BUFFER, num_points * sizeof(Point), pnts, GL_STATIC_READ);
+			glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 			input_buffer_size = num_points * sizeof(Point);
 			input_buffer_num_points = num_points;
 			buffers_outofdate = true;
@@ -319,6 +327,7 @@ namespace cgv {
 
 			glBindBuffer(GL_SHADER_STORAGE_BUFFER, index_buffer);
 			glBufferData(GL_SHADER_STORAGE_BUFFER, input_buffer_num_points*sizeof(GLuint), nullptr, GL_DYNAMIC_DRAW);
+			glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 		}
 
 		void clod_point_renderer::clear_buffers(const context& ctx)
