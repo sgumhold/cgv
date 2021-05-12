@@ -45,13 +45,12 @@ void main()
 		return;
 
 	mat4 transform = get_modelview_projection_matrix();
-	mat4 centralTransform = transform; //TODO change for use with VR
 	
 	color_gs = vec4(color.rgb,1.0);
 	
 	gl_Position = vec4(position, 1.0);
 
-	compute_point_size(position, color, centralTransform, transform, get_modelview_matrix(), get_projection_matrix(), point_size_gs, radius_gs, linear_depth_gs);
+	compute_point_size(position, color, transform, transform, get_modelview_matrix(), get_projection_matrix(), point_size_gs, radius_gs, linear_depth_gs);
 
 	gl_PointSize = point_size_gs*0.8;
 }
