@@ -17,15 +17,6 @@ out float radius_gs;
 out float linear_depth_gs;
 out int label_gs;
 
-// clod renderer uniforms
-uniform float CLOD;
-uniform float scale;
-uniform float spacing; //root_spacings
-uniform float pointSize;
-uniform float minMilimeters;
-uniform vec2 screenSize;
-uniform vec4 pivot; //pivot point in model space, usually the camera position
-
 //***** begin interface of view.glsl **********************************/
 mat4 get_modelview_matrix();
 mat4 get_projection_matrix();
@@ -36,9 +27,9 @@ mat3 get_normal_matrix();
 mat3 get_inverse_normal_matrix();
 //***** end interface of view.glsl ***********************************/
 
-float rand(float n){
-	return fract(cos(n) * 234561.987);
-}
+//***** begin interface of point_clod.glsl **********************************/
+void compute_point_size(in vec3 position, in vec4 color, in mat4 central_transform, in mat4 transform,in mat4 model_view_matrix, in mat4 projection_matrix,out float point_size, out float radius, out float linear_depth);
+//***** end interface of point_clod.glsl **********************************/
 
 void main()
 {
@@ -53,71 +44,14 @@ void main()
 	if (label == 0)
 		return;
 
+	mat4 transform = get_modelview_projection_matrix();
+	mat4 centralTransform = transform; //TODO change for use with VR
+	
 	color_gs = vec4(color.rgb,1.0);
 	
-	mat4 transform = get_modelview_projection_matrix();
-	mat4 centralTransform = transform;
-	
-	gl_Position = vec4(position.xyz, 1.0);
+	gl_Position = vec4(position, 1.0);
 
-	vec4 tpos = transform * vec4(position, 1.0);
-	linear_depth_gs = tpos.w;
+	compute_point_size(position, color, centralTransform, transform, get_modelview_matrix(), get_projection_matrix(), point_size_gs, radius_gs, linear_depth_gs);
 
-	vec4 projected = tpos / tpos.w;
-
-	vec4 centralProjected = centralTransform * vec4(position, 1.0);
-	centralProjected.xyz = centralProjected.xyz / centralProjected.w;
-	
-	float d = distance(position, pivot.xyz);
-	float dc = length(centralProjected.xy);
-	
-	float level = mod(color.a * 255, 128);
-	float random = rand(position.x + position.y + position.z);
-
-	float pointSpacing = scale * spacing / pow(2, level + random);
-
-	float targetSpacing = (d * CLOD) / (1000 * max(1 - 0.7 * dc , 0.3));
-
-	float minPixels = 1;
-	float maxPixels = 80;
-	float sizeMultiplier = 1 * pointSize;
-
-	float minMilimeters = scale * minMilimeters / sizeMultiplier;
-
-	{ // point size based on target spacing
-		float ws = max(targetSpacing, minMilimeters / 1000.0);
-
-		float l = sizeMultiplier * 2.0 * ws;
-		vec4 v1 = get_modelview_matrix() * vec4(position, 1.0);
-		vec4 v2 = vec4(v1.x + l, v1.y + l, v1.z, 1.0);
-
-		vec4 vp1 = get_projection_matrix() * v1;
-		vec4 vp2 = get_projection_matrix() * v2;
-
-		vec2 vs1 = vp1.xy / vp1.w;
-		vec2 vs2 = vp2.xy / vp2.w;
-
-		float ds = distance(vs1, vs2);
-		float dp = ds * screenSize.y;
-
-		gl_PointSize = (dp / 1) * 1;
-
-		gl_PointSize = clamp(gl_PointSize, minPixels, maxPixels);
-
-		radius_gs = ws;
-	}
-
-	{ // adjust point size within blend-in range
-		float zeroAt = pointSpacing;
-		float fullAt = 0.8 * pointSpacing;
-		
-		float u = (targetSpacing - fullAt) / (zeroAt - fullAt);
-		u = 1.0 - clamp(u, 0.0, 1.0);
-
-		gl_PointSize = gl_PointSize * u;
-	}
-
-	point_size_gs = gl_PointSize;
-
-	gl_PointSize *= 0.8;
+	gl_PointSize = point_size_gs*0.8;
 }
