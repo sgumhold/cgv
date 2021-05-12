@@ -125,6 +125,14 @@ namespace cgv {
 				template <typename T>
 				T get_voxel_component(unsigned i, unsigned j, unsigned k, unsigned ci = 0) { return dv.get<T>(ci, k, j, i); }
 				//@}
+
+				/**@name adding and replacing components of volume data*/
+				//@{
+				/// add new component on the end (if result has <=4 components)
+				bool add_new_component(data::data_view& component_dv);
+				/// replace the i-th component in the volume data by the given data
+				bool replace_component(unsigned i, data::data_view& component_dv);
+				//@}
 			};
 		}
 	}
