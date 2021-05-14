@@ -2,6 +2,8 @@
 
 #include <cgv/render/drawable.h>
 #include <cgv/render/shader_program.h>
+#include <cgv/render/vertex_buffer.h>
+#include <cgv/render/attribute_array_binding.h>
 
 #include "lib_begin.h"
 
@@ -23,6 +25,8 @@ protected:
 	unsigned current_image;
 	std::string file_name;
 	std::vector<std::string> files;
+	cgv::render::vertex_buffer vbo;
+	cgv::render::attribute_array_binding aab;
 
 	double start_time;
 	double anim_time;
@@ -30,6 +34,9 @@ protected:
 
 	bool animate;
 	bool use_blending;
+	bool wireframe;
+
+	float tess_level;
 
 	/// extent selection box
 	box2i selection;
@@ -43,6 +50,8 @@ protected:
 	vec4 min_value;
 	vec4 max_value;
 	vec4 gamma4;
+
+	float checker_lambda, k1, k2, k3, k4, k5, k6, p1, p2, cx, cy, s;
 
 	// mixing 
 	bool use_mixing;
