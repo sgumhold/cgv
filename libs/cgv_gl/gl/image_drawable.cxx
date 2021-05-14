@@ -34,10 +34,16 @@ image_drawable::image_drawable() : min_value(0,0,0,0), max_value(1,1,1,1), gamma
 	use_mixing = false;
 	mix_with = -1;
 	mix_param = 0.0f;
+	tess_level = 64.0f;
+	wireframe = false;
 
 	spherical = false;
 	pan_tilt = vec2(0.0f);
 	scale = 1.0f;
+	k1 = k2 = k3 = k4 = k5 = k6 = p1 = p2 = 0.0f;
+	checker_lambda = 0.0f;
+	cx = cy = 0.0f;
+	s = 1.0f;
 }
 
 void image_drawable::timer_event(double t, double dt)
@@ -76,12 +82,29 @@ void image_drawable::timer_event(double t, double dt)
 
 bool image_drawable::init(context& ctx)
 {
+	struct vertex {
+		vec2 position;
+		vec2 texcoord;
+	};
+	std::vector<vertex> V;
+	V.push_back({ vec2(-1.0f,-1.0f), vec2(0.0f,0.0f) });
+	V.push_back({ vec2( 1.0f,-1.0f), vec2(1.0f,0.0f) });
+	V.push_back({ vec2( 1.0f, 1.0f), vec2(1.0f,1.0f) });
+	V.push_back({ vec2(-1.0f, 1.0f), vec2(0.0f,1.0f) });
+	vbo.create(ctx, V);
+	aab.create(ctx);
+	aab.set_attribute_array(ctx, 0, cgv::render::get_element_type(V.front().position), vbo, 0, V.size(), sizeof(vertex));
+	aab.enable_array(ctx, 0);
+	aab.set_attribute_array(ctx, 1, cgv::render::get_element_type(V.front().texcoord), vbo, offsetof(vertex, texcoord), V.size(), sizeof(vertex));
+	aab.enable_array(ctx, 1);
 	return prog.build_program(ctx, "image.glpr");
 }
 
 /// destruct textures and shader program
 void image_drawable::clear(context& ctx)
 {
+	aab.destruct(ctx);
+	vbo.destruct(ctx);
 	prog.destruct(ctx);
 	if (!tex_ids.empty())
 		glDeleteTextures(GLsizei(tex_ids.size()), &tex_ids.front());
@@ -218,81 +241,96 @@ bool image_drawable::save_images(const std::string& output_file_name)
 void image_drawable::draw(context& ctx)
 {
 	ctx.push_modelview_matrix();
-		ctx.mul_modelview_matrix(cgv::math::scale4<double>(aspect, 1, 1));
-		if (show_selection) {
-			ctx.push_modelview_matrix();
-				ctx.mul_modelview_matrix(cgv::math::translate4<double>(-1,-1,0)*cgv::math::scale4<double>(2.0 / W, 2.0 / H, 1));
-				float x = (float)selection.get_min_pnt()(0);
-				float y = (float)selection.get_min_pnt()(1);
-				float w = (float)selection.get_extent()(0);
-				float h = (float)selection.get_extent()(1);
-				std::vector<vec2> P;
-				P.push_back(vec2(x, y,0));
-				P.push_back(vec2(x+w, y,0));
-				P.push_back(vec2(x+w, y+h,0));
-				P.push_back(vec2(x, y+h,0));
-				shader_program& prog = ctx.ref_default_shader_program();
-				prog.enable(ctx);
-					ctx.set_color(rgb(1, 0, 0));
-					attribute_array_binding::set_global_attribute_array(ctx, prog.get_position_index(), P);
-					attribute_array_binding::enable_global_array(ctx, prog.get_position_index());
-						glDrawArrays(GL_LINE_LOOP, 0, 4);
-					attribute_array_binding::disable_global_array(ctx, prog.get_position_index());
-				prog.disable(ctx);
-			ctx.pop_modelview_matrix();
-		}
+	ctx.mul_modelview_matrix(cgv::math::scale4<double>(aspect, 1, 1));
+	if (show_selection) {
+		ctx.push_modelview_matrix();
+		ctx.mul_modelview_matrix(cgv::math::translate4<double>(-1, -1, 0) * cgv::math::scale4<double>(2.0 / W, 2.0 / H, 1));
+		float x = (float)selection.get_min_pnt()(0);
+		float y = (float)selection.get_min_pnt()(1);
+		float w = (float)selection.get_extent()(0);
+		float h = (float)selection.get_extent()(1);
+		std::vector<vec2> P;
+		P.push_back(vec2(x, y, 0));
+		P.push_back(vec2(x + w, y, 0));
+		P.push_back(vec2(x + w, y + h, 0));
+		P.push_back(vec2(x, y + h, 0));
+		shader_program& prog = ctx.ref_default_shader_program();
+		prog.enable(ctx);
+		ctx.set_color(rgb(1, 0, 0));
+		attribute_array_binding::set_global_attribute_array(ctx, prog.get_position_index(), P);
+		attribute_array_binding::enable_global_array(ctx, prog.get_position_index());
+		glDrawArrays(GL_LINE_LOOP, 0, 4);
+		attribute_array_binding::disable_global_array(ctx, prog.get_position_index());
+		prog.disable(ctx);
+		ctx.pop_modelview_matrix();
+	}
 
-		bool mix_enabled = false;
-		if (tex_ids.size()>0) {
-			glActiveTexture(GL_TEXTURE0);
-			glEnable(GL_TEXTURE_2D);
-			glBindTexture(GL_TEXTURE_2D, tex_ids[current_image]);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, spherical ? GL_REPEAT : GL_CLAMP_TO_EDGE);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, spherical ? GL_REPEAT : GL_CLAMP_TO_EDGE);
-			if (use_mixing && mix_with != -1 && mix_with < tex_ids.size()) {
-				glActiveTexture(GL_TEXTURE1);
-				glEnable(GL_TEXTURE_2D);
-				glBindTexture(GL_TEXTURE_2D, tex_ids[mix_with]);
-				mix_enabled = true;
-				glActiveTexture(GL_TEXTURE0);
-			}
-			if (start_time == -2)
-				start_time = -1;
-		}
-		if (prog.is_linked()) {
-			prog.enable(ctx);
-			prog.set_uniform(ctx, "min_value", min_value);
-			prog.set_uniform(ctx, "max_value", max_value);
-			prog.set_uniform(ctx, "gamma4", gamma4);
-			prog.set_uniform(ctx, "image", 0);
-			prog.set_uniform(ctx, "use_texture", tex_ids.size() > 0);
-			prog.set_uniform(ctx, "use_mixing", use_mixing);
-			prog.set_uniform(ctx, "mix_with", 1);
-			prog.set_uniform(ctx, "mix_param", mix_param);
-			prog.set_uniform(ctx, "spherical", spherical);
-			prog.set_uniform(ctx, "pan_tilt", pan_tilt);
-			prog.set_uniform(ctx, "scale", vec2(float(aspect*scale), scale));
-		}
-		if (use_blending) {
-			glEnable(GL_BLEND);
-			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-		}
-		glDisable(GL_CULL_FACE);
-		ctx.mul_modelview_matrix(cgv::math::scale4<double>(1, -1, 1));
-		ctx.tesselate_unit_square();
-		if (use_blending)
-			glDisable(GL_BLEND);
-		glEnable(GL_CULL_FACE);
-		glDisable(GL_TEXTURE_2D);
-		if (mix_enabled) {
+	bool mix_enabled = false;
+	if (tex_ids.size() > 0) {
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, tex_ids[current_image]);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, spherical ? GL_REPEAT : GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, spherical ? GL_REPEAT : GL_CLAMP_TO_EDGE);
+		if (use_mixing && mix_with != -1 && mix_with < tex_ids.size()) {
 			glActiveTexture(GL_TEXTURE1);
-			glDisable(GL_TEXTURE_2D);
+			glBindTexture(GL_TEXTURE_2D, tex_ids[mix_with]);
+			mix_enabled = true;
 			glActiveTexture(GL_TEXTURE0);
 		}
-		if (prog.is_linked())
-			prog.disable(ctx);
+		if (start_time == -2)
+			start_time = -1;
+	}
+	if (use_blending) {
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	}
+	if (wireframe)
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	glDisable(GL_CULL_FACE);
+	ctx.mul_modelview_matrix(cgv::math::scale4<double>(1, -1, 1));
+	if (prog.is_linked()) {
+		prog.enable(ctx);
+		prog.set_uniform(ctx, "min_value", min_value);
+		prog.set_uniform(ctx, "max_value", max_value);
+		prog.set_uniform(ctx, "gamma4", gamma4);
+		prog.set_uniform(ctx, "image", 0);
+		prog.set_uniform(ctx, "checker_lambda", checker_lambda);
+		prog.set_uniform(ctx, "cx", cx);
+		prog.set_uniform(ctx, "cy", cy);
+		prog.set_uniform(ctx, "k1", k1);
+		prog.set_uniform(ctx, "k2", k2);
+		prog.set_uniform(ctx, "k3", k3);
+		prog.set_uniform(ctx, "k4", k4);
+		prog.set_uniform(ctx, "k5", k5);
+		prog.set_uniform(ctx, "k6", k6);
+		prog.set_uniform(ctx, "p1", p1);
+		prog.set_uniform(ctx, "p2", p2);
+		prog.set_uniform(ctx, "s", s);
+		prog.set_uniform(ctx, "use_texture", tex_ids.size() > 0);
+		prog.set_uniform(ctx, "tessellation_level", tess_level);
+		prog.set_uniform(ctx, "use_mixing", use_mixing);
+		prog.set_uniform(ctx, "mix_with", 1);
+		prog.set_uniform(ctx, "mix_param", mix_param);
+		prog.set_uniform(ctx, "spherical", spherical);
+		prog.set_uniform(ctx, "pan_tilt", pan_tilt);
+		prog.set_uniform(ctx, "scale", vec2(float(aspect * scale), scale));
+		aab.enable(ctx);
+		glPatchParameteri(GL_PATCH_VERTICES, 4);
+		glDrawArrays(GL_PATCHES, 0, 4);
+		aab.disable(ctx);
+		prog.disable(ctx);
+	}
+	else
+		ctx.tesselate_unit_square();
+
+	if (use_blending)
+		glDisable(GL_BLEND);
+	if (wireframe)
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	glEnable(GL_CULL_FACE);
 	ctx.pop_modelview_matrix();
 }
+
 		}
 	}
 }
