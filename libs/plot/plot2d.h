@@ -32,6 +32,10 @@ protected:
 	void configure_bar_plot(cgv::render::context& ctx);
 	bool draw_bar_plot(cgv::render::context& ctx, int si, int layer_idx);
 	int draw_sub_plots_jointly(cgv::render::context& ctx, int layer_idx);
+	bool extract_tick_rectangles_and_tick_labels(std::vector<box2>& R, std::vector<rgb>& C, std::vector<float>& D,
+		std::vector<label_info>& tick_labels, int ai, int ti, float he, float z_plot = std::numeric_limits<float>::quiet_NaN());
+	void extract_all_tick_rectangles_and_tick_labels(std::vector<box2>& R, std::vector<rgb>& C, std::vector<float>& D, std::vector<label_info>& tick_labels, std::vector<tick_batch_info>& tick_batches);
+	void extract_domain_rectangles(std::vector<box2>& R, std::vector<rgb>& C,	std::vector<float>& D);
 	void draw_domain(cgv::render::context& ctx, int si = -1, bool no_fill = false);
 	void draw_tick_labels(cgv::render::context& ctx, int si = -1);
 protected:
@@ -46,8 +50,8 @@ protected:
 	cgv::render::attribute_array_manager aam_domain, aam_tick_labels;
 public:
 	bool disable_depth_mask;
-	/// whether to manage separate y-axis for each sub plot
-	bool multi_y_axis_mode;
+	/// whether to manage separate axes for each sub plot
+	bool* multi_axis_modes;
 	/// offset in z-direction between sub plots
 	float dz;
 	/// depth offset of a single layer
@@ -55,7 +59,8 @@ public:
 
 	/// construct 2D plot with given number of additional attributes and default parameters
 	plot2d(unsigned nr_attributes = 0);
-
+	///
+	~plot2d();
 	/**@name management of sub plots*/
 	//@{
 	/// add sub plot and return sub plot index 

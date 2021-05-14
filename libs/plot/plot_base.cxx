@@ -519,13 +519,9 @@ void plot_base::set_view_ptr(cgv::render::view* _view_ptr)
 void plot_base::draw_legend(cgv::render::context& ctx, float depth_offset)
 {
 	legend_prog.set_uniform(ctx, "extent", vec3::from_vec(get_extent()));
+	vec3 loc = legend_location;
+	legend_prog.set_uniform(ctx, "legend_extent", legend_extent);
 	set_mapping_uniforms(ctx, legend_prog);
-	ctx.push_modelview_matrix();
-	// place and size legend
-	ctx.mul_modelview_matrix(
-		cgv::math::translate4<float>(legend_location)*
-		cgv::math::scale4<float>(vec3(legend_extent,1.0f))
-	);
 	// draw legend
 	aab_legend.enable(ctx);
 	legend_prog.enable(ctx);
@@ -533,32 +529,35 @@ void plot_base::draw_legend(cgv::render::context& ctx, float depth_offset)
 	cgv::render::configure_color_scale(ctx, legend_prog, color_scale_index, window_zero_position);
 	legend_prog.set_uniform(ctx, "depth_offset", depth_offset);
 	if ((legend_components & LC_PRIMARY_COLOR) != 0) {
+		legend_prog.set_uniform(ctx, "legend_location", loc);
 		legend_prog.set_uniform(ctx, "color_index", 0);
 		legend_prog.set_uniform(ctx, "opacity_index", -1);
 		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-		ctx.mul_modelview_matrix(cgv::math::translate4<float>(vec3(1.1f, 0.0f, 0.0f)));
+		loc[0] += 1.2f * legend_extent[0];
 	}
 	if ((legend_components & LC_PRIMARY_OPACITY) != 0) {
+		legend_prog.set_uniform(ctx, "legend_location", loc);
 		legend_prog.set_uniform(ctx, "color_index", -1);
 		legend_prog.set_uniform(ctx, "opacity_index", 0);
 		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-		ctx.mul_modelview_matrix(cgv::math::translate4<float>(vec3(1.1f, 0.0f, 0.0f)));
+		loc[0] += 1.2f * legend_extent[0];
 	}
 	if ((legend_components & LC_SECONDARY_COLOR) != 0) {
+		legend_prog.set_uniform(ctx, "legend_location", loc);
 		legend_prog.set_uniform(ctx, "color_index", 1);
 		legend_prog.set_uniform(ctx, "opacity_index", -1);
 		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-		ctx.mul_modelview_matrix(cgv::math::translate4<float>(vec3(1.1f, 0.0f, 0.0f)));
+		loc[0] += 1.2f * legend_extent[0];
 	}
 	if ((legend_components & LC_SECONDARY_OPACITY) != 0) {
+		legend_prog.set_uniform(ctx, "legend_location", loc);
 		legend_prog.set_uniform(ctx, "color_index", -1);
 		legend_prog.set_uniform(ctx, "opacity_index", 1);
 		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-		ctx.mul_modelview_matrix(cgv::math::translate4<float>(vec3(1.1f, 0.0f, 0.0f)));
+		loc[0] += 1.2f * legend_extent[0];
 	}
 	legend_prog.disable(ctx);
 	aab_legend.disable(ctx);
-	ctx.pop_modelview_matrix();
 }
 
 const plot_base::box2 plot_base::get_domain() const
@@ -664,6 +663,52 @@ const plot_base::vec3 plot_base::get_axis_direction(unsigned ai) const
 	a(ai) = 1.0f;
 	return orientation.apply(a);
 }
+
+bool plot_base::determine_axis_extent_from_subplot(unsigned ai, unsigned i, float& samples_min, float& samples_max)
+{
+	if (attribute_source_arrays.size() <= i)
+		return false;
+	if (attribute_source_arrays[i].attribute_sources.size() <= ai)
+		return false;
+	const attribute_source& as = attribute_source_arrays[i].attribute_sources[ai];
+	if (as.source == AS_NONE)
+		return false;
+	bool new_found_sample = false;
+	float new_samples_min, new_samples_max;
+	switch (as.source) {
+	case AS_SAMPLE_CONTAINER:
+	{
+		int j = as.sub_plot_index == -1 ? i : as.sub_plot_index;
+		new_found_sample = compute_sample_coordinate_interval(j, (int)as.offset, new_samples_min, new_samples_max);
+		break;
+	}
+	case AS_POINTER:
+	{
+		const float* ptr = as.pointer;
+		for (unsigned j = 0; j < as.count; ++j) {
+			if (new_found_sample) {
+				new_samples_min = std::min(new_samples_min, *ptr);
+				new_samples_max = std::max(new_samples_max, *ptr);
+			}
+			else {
+				new_samples_min = new_samples_max = *ptr;
+				new_found_sample = true;
+			}
+			reinterpret_cast<const char*&>(ptr) += as.stride;
+		}
+		break;
+	}
+	case AS_VBO:
+		return false;
+	}
+	if (!new_found_sample)
+		return false;
+
+	samples_min = new_samples_min;
+	samples_max = new_samples_max;
+	return true;
+}
+
 void plot_base::adjust_domain_axis_to_data(unsigned ai, bool adjust_min, bool adjust_max, bool only_visible)
 {
 	bool found_sample = false;
@@ -671,43 +716,8 @@ void plot_base::adjust_domain_axis_to_data(unsigned ai, bool adjust_min, bool ad
 	for (unsigned i = 0; i < configs.size(); ++i) {
 		if (only_visible && !ref_sub_plot_config(i).show_plot)
 			continue;
-		if (attribute_source_arrays.size() <= i)
-			continue;
-		if (attribute_source_arrays[i].attribute_sources.size() <= ai)
-			continue;
-		const attribute_source& as = attribute_source_arrays[i].attribute_sources[ai];
-		if (as.source == AS_NONE)
-			continue;
-		bool new_found_sample = false;
 		float new_samples_min, new_samples_max;
-		switch (as.source) {
-		case AS_SAMPLE_CONTAINER:
-		{
-			int j = as.sub_plot_index == -1 ? i : as.sub_plot_index;
-			new_found_sample = compute_sample_coordinate_interval(j, (int)as.offset, new_samples_min, new_samples_max);
-			break;
-		}
-		case AS_POINTER:
-		{
-			const float* ptr = as.pointer;
-			for (unsigned j = 0; j < as.count; ++j) {
-				if (new_found_sample) {
-					new_samples_min = std::min(new_samples_min, *ptr);
-					new_samples_max = std::max(new_samples_max, *ptr);
-				}
-				else {
-					new_samples_min = new_samples_max = *ptr;
-					new_found_sample = true;
-				}
-				reinterpret_cast<const char*&>(ptr) += as.stride;
-			}
-			break;
-		}
-		case AS_VBO:
-			std::cerr << "VBO case not implemented for adjustment of domain axes." << std::endl;
-			break;
-		}
-		if (new_found_sample) {
+		if (determine_axis_extent_from_subplot(ai, i, new_samples_min, new_samples_max)) {
 			if (found_sample) {
 				samples_min = std::min(samples_min, new_samples_min);
 				samples_max = std::max(samples_max, new_samples_max);
@@ -734,6 +744,7 @@ void plot_base::adjust_domain_axis_to_data(unsigned ai, bool adjust_min, bool ad
 	if (acs[ai].get_attribute_min() == acs[ai].get_attribute_max())
 		acs[ai].set_attribute_maximum(acs[ai].get_attribute_max() + 1);
 }
+
 void plot_base::adjust_tick_marks(unsigned max_nr_secondary_ticks, bool adjust_to_attribute_ranges)
 {
 	auto& acs = get_domain_config_ptr()->axis_configs;
@@ -817,6 +828,7 @@ void plot_base::set_sub_plot_colors(unsigned i, const rgb& base_color)
 {
 	ref_sub_plot_config(i).set_colors(base_color);
 }
+
 bool plot_base::init(cgv::render::context& ctx)
 {
 	if (!legend_prog.build_program(ctx, "plot_legend.glpr", true)) {
@@ -841,6 +853,7 @@ bool plot_base::init(cgv::render::context& ctx)
 	aab_legend.set_attribute_array(ctx, val_idx, cgv::render::get_element_type(v0), vbo_legend, sizeof(vec3), P.size(), sizeof(vec4));
 	return true;
 }
+
 void plot_base::clear(cgv::render::context& ctx)
 {
 	aab_legend.destruct(ctx);
@@ -854,13 +867,15 @@ void plot_base::clear(cgv::render::context& ctx)
 
 void plot_base::create_plot_gui(cgv::base::base* bp, cgv::gui::provider& p)
 {
-	const char* axis_names = "xyz";
-
 	ensure_font_names();
 	p.add_member_control(bp, "reference_size", get_domain_config_ptr()->reference_size, "value_slider", "min=0.0001;step=0.00001;max=1;log=true;ticks=true");
 	p.add_member_control(bp, "blend_width_in_pixel", get_domain_config_ptr()->blend_width_in_pixel, "value_slider", "min=0.0001;step=0.0;max=3.0;ticks=true");
 
 	if (p.begin_tree_node("visual variables", dim, false, "level=3")) {
+		std::string attribute_enums = "off=-1";
+		for (unsigned ai = 0; ai < 2 + nr_attributes; ++ai)
+			attribute_enums += std::string(",")+get_domain_config_ptr()->axis_configs[ai].name;
+		std::string dropdown_options("w=92;enums='" + attribute_enums + "'");
 		p.align("\a");
 		bool show;
 		unsigned nr = std::max(MAX_NR_COLOR_MAPPINGS, std::max(MAX_NR_SIZE_MAPPINGS, MAX_NR_OPACITY_MAPPINGS));
@@ -869,7 +884,7 @@ void plot_base::create_plot_gui(cgv::base::base* bp, cgv::gui::provider& p)
 			std::string prefix(prefixes[idx]);
 			if (idx < MAX_NR_COLOR_MAPPINGS) {
 				show = p.begin_tree_node(prefix + "color", color_mapping[idx], false, "level=3;align=' ';options='w=100'");
-				p.add_member_control(bp, "", (cgv::type::DummyEnum&)color_mapping[idx], "dropdown", "w=92;enums='off=-1,attr0,attr1,attr2,attr3,attr4,attr5,attr6,attr7'");
+				p.add_member_control(bp, "", (cgv::type::DummyEnum&)color_mapping[idx], "dropdown", dropdown_options);
 				if (show) {
 					p.align("\a");
 					p.add_member_control(bp, prefix + "color_scale", (cgv::type::DummyEnum&)color_scale_index[idx], "dropdown", cgv::media::get_color_scale_enum_definition());
@@ -881,7 +896,7 @@ void plot_base::create_plot_gui(cgv::base::base* bp, cgv::gui::provider& p)
 			}
 			if (idx < MAX_NR_OPACITY_MAPPINGS) {
 				show = p.begin_tree_node(prefix + "opacity", opacity_mapping[idx], false, "level=3;align=' ';options='w=100'");
-				p.add_member_control(bp, "", (cgv::type::DummyEnum&)opacity_mapping[idx], "dropdown", "w=92;enums='off=-1,attr0,attr1,attr2,attr3,attr4,attr5,attr6,attr7'");
+				p.add_member_control(bp, "", (cgv::type::DummyEnum&)opacity_mapping[idx], "dropdown", dropdown_options);
 				if (show) {
 					p.align("\a");
 					p.add_member_control(bp, prefix + "opacity_gamma", opacity_gamma[idx], "value_slider", "min=0.1;step=0.01;max=10;log=true;ticks=true");
@@ -895,7 +910,7 @@ void plot_base::create_plot_gui(cgv::base::base* bp, cgv::gui::provider& p)
 			}
 			if (idx < MAX_NR_SIZE_MAPPINGS) {
 				show = p.begin_tree_node(prefix + "size", size_mapping[idx], false, "level=3;align=' ';options='w=100'");
-				p.add_member_control(bp, "", (cgv::type::DummyEnum&)size_mapping[idx], "dropdown", "w=92;enums='off=-1,attr0,attr1,attr2,attr3,attr4,attr5,attr6,attr7'");
+				p.add_member_control(bp, "", (cgv::type::DummyEnum&)size_mapping[idx], "dropdown", dropdown_options);
 				if (show) {
 					p.align("\a");
 					p.add_member_control(bp, prefix+"size_gamma", size_gamma[idx], "value_slider", "min=0.1;step=0.01;max=10;log=true;ticks=true");

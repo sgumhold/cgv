@@ -485,6 +485,8 @@ public:
 
 	/**@name helper functions to adjust axes*/
 	//@{
+	/// adjust the domain with respect to \c ai th axis to the i-th subplot
+	bool determine_axis_extent_from_subplot(unsigned ai, unsigned i, float& sample_min, float& sample_max);
 	/// adjust the domain with respect to \c ai th axis to the visible or all data depending on last parameter
 	void adjust_domain_axis_to_data(unsigned ai, bool adjust_min = true, bool adjust_max = true, bool only_visible = true);
 	/// adjust selected axes of domain to the visible or all data depending on last parameter
