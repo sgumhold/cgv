@@ -15,6 +15,8 @@
 #include <cgv_gl/surfel_renderer.h>
 #include <cgv_gl/clod_point_renderer.h>
 #include <cgv/render/shader_program.h>
+#include <cgv_gl/sphere_renderer.h>
+#include <cgv_gl/arrow_renderer.h>
 
 #include <point_cloud.h>
 #include <octree.h>
@@ -130,6 +132,11 @@ protected:
 	}
 
 private:
+	struct vertex {
+		vec3  position;
+		float radius;
+		rgba  color;
+	};
 	std::unordered_set<void*> rebuild_ptrs;
 
 	std::string ply_path;
@@ -137,6 +144,8 @@ private:
 	cgv::render::point_render_style source_prs;
 	cgv::render::surfel_render_style source_srs;
 	cgv::render::rounded_cone_render_style rcrs;
+	cgv::render::sphere_render_style srs;
+	cgv::render::arrow_render_style ars;
 
 	size_t max_points = -1;
 
@@ -181,6 +190,23 @@ private:
 	std::vector<LODPoint> points_with_lod;
 
 	vr_view_interactor* vr_view_ptr;
+
+	vec3 pos;
+	mat3 ori;
+	vec3 c_pos;
+
+	vertex p;
+
+	//coordinate of the controller
+	std::vector<vertex> coordinate_c;
+
+	std::vector<vec3> points;
+	std::vector<rgb> colors;
+	std::vector<vec3> normals;
+
+	std::vector<vec3> forward_points;
+	std::vector<rgb> forward_colors;
+	std::vector<vec3> forward_normals;
 
 	// alternative draw programm for labeled points
 	cgv::render::shader_program custom_draw_prog;
