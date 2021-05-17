@@ -328,7 +328,12 @@ namespace stream_vis {
 			vec2 ext = vec2(1.0f, 1.0f);
 			parse_vec2("extent", ext);
 			parse_float("dz", plot2d_ptr->dz);
-			parse_bool("multi_y_axis_mode", plot2d_ptr->multi_y_axis_mode);
+			parse_bool("multi_x_axis_mode", plot2d_ptr->multi_axis_modes[0]);
+			parse_bool("multi_y_axis_mode", plot2d_ptr->multi_axis_modes[1]);
+			if (pi.nr_axes > 2)
+				parse_bool("multi_0_axis_mode", plot2d_ptr->multi_axis_modes[2]);
+			if (pi.nr_axes > 3)
+				parse_bool("multi_1_axis_mode", plot2d_ptr->multi_axis_modes[3]);
 			pi.plot_ptr->set_extent(ext.to_vec());
 			pi.plot_ptr->get_domain_config_ptr()->reference_size = 0.003f;
 		}

@@ -327,12 +327,15 @@ void plot3d::draw_domain(cgv::render::context& ctx)
 		vec3 origin(0.0f);
 		cgv::render::box_renderer& br = cgv::render::ref_box_renderer(ctx);
 		brs.surface_color = get_domain_config_ptr()->color;
+		bool tmp = br.ref_prog().does_context_set_color();
+		br.ref_prog().allow_context_to_set_color(false);
 		br.set_render_style(brs);
 		br.set_position(ctx, origin);
 		br.set_extent(ctx, extent);
 		br.set_position_is_center(true);
 		br.set_color(ctx, dc.color);
 		br.render(ctx, 0, 1);
+		br.ref_prog().allow_context_to_set_color(tmp);
 	}
 	// draw axes
 	std::vector<vec3> P;

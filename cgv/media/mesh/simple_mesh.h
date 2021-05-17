@@ -194,7 +194,7 @@ public:
 	box_type compute_box() const;
 	/// compute vertex normals by averaging triangle normals
 	void compute_vertex_normals();
-	/// read simple mesh from file (currently only obj is supported)
+	/// read simple mesh from file (currently only obj and stl are supported)
 	bool read(const std::string& file_name);
 	/// write simple mesh to file (currently only obj is supported)
 	bool write(const std::string& file_name) const;

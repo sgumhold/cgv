@@ -17,6 +17,8 @@ uniform vec2 scale = vec2(1.0);
 uniform vec2 pan_tilt = vec2(0.0);
 uniform bool spherical = false;
 
+uniform float checker_lambda = 0.0;
+
 in vec2 tc;
 in vec4 color_fs;
 
@@ -45,6 +47,8 @@ void main()
 			texcoord = 0.318309886*vec2(0.5*phi,theta)+vec2(0.5);
 		}
 		vec4 rgba = pow(clamp((texture2D(image, texcoord) - min_value) / (max_value - min_value),vec4(0.0,0.0,0.0,0.0),vec4(1.0,1.0,1.0,1.0)), gamma4);
+		vec3 checker = vec3(float((int(32.0*texcoord.x)&1)^(int(32.0*texcoord.y)&1)));
+		rgba.rgb = (1.0-checker_lambda)*rgba.rgb+checker_lambda*checker;
 		if (use_mixing) {
 			vec4 rgba_mix = pow(clamp((texture2D(mix_with, texcoord) - min_value) / (max_value - min_value), vec4(0.0, 0.0, 0.0, 0.0), vec4(1.0, 1.0, 1.0, 1.0)), gamma4);
 			rgba = (1.0 - mix_param)*rgba + mix_param * rgba_mix;
