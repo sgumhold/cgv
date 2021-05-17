@@ -125,6 +125,10 @@ namespace cgv {
 			// fixed size buffers
 			glBindBuffer(GL_SHADER_STORAGE_BUFFER, draw_parameter_buffer);
 			glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(DrawParameters), nullptr, GL_STREAM_DRAW);
+			glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
+			// map draw parameter buffer to memory
+			//draw_parameters_mapping = static_cast<const DrawParameters*>(glMapNamedBufferRange(
+			//	draw_parameter_buffer, 0, sizeof(DrawParameters), GL_MAP_READ_BIT | GL_MAP_UNSYNCHRONIZED_BIT | GL_MAP_PERSISTENT_BIT));
 
 			draw_prog_ptr = &draw_prog;
 			return draw_prog.is_linked() && reduce_prog.is_linked();
@@ -185,10 +189,9 @@ namespace cgv {
 
 			// reduce shader buffers
 			
-			// reset draw parameters
+			// reset draw parameters, using SubData version is important here to keep the mapping
 			DrawParameters dp = DrawParameters();
 			glNamedBufferSubData(draw_parameter_buffer, 0, sizeof(DrawParameters), &dp);
-			// glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 			// bind buffer for reduce shader
 			
 			glBindBufferBase(GL_SHADER_STORAGE_BUFFER, drawp_pos, draw_parameter_buffer);
