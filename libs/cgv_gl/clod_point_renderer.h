@@ -135,6 +135,7 @@ namespace cgv {
 			const render_style* rs = nullptr;
 
 			NoCullZone culling_protection_zone;
+			const DrawParameters* draw_parameters_mapping = nullptr;
 
 		protected:			
 			const render_style* get_style_ptr() const;
@@ -202,6 +203,13 @@ namespace cgv {
 			inline GLuint get_reduced_points() {
 				assert(render_buffer != 0);
 				return render_buffer;
+			}
+
+			inline unsigned int num_reduced_points() {
+				DrawParameters* device_draw_parameters = static_cast<DrawParameters*>(glMapNamedBufferRange(draw_parameter_buffer, 0, sizeof(DrawParameters), GL_MAP_READ_BIT));
+				unsigned ret = device_draw_parameters->count;
+				glUnmapNamedBuffer(draw_parameter_buffer);
+				return ret;
 			}
 
 			inline void set_protection_zone(const vec3 position, const float radius, const unsigned index) {
