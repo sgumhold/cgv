@@ -34,6 +34,27 @@ void axis_config::set_attribute_range(float _min, float _max)
 	max_attribute_value = _max;
 	update_tick_range();
 }
+
+/// store current range in backup members
+void axis_config::backup_attribute_range()
+{
+	min_attribute_value_backup = min_attribute_value;
+	max_attribute_value_backup = max_attribute_value;
+}
+
+/// read access to backup attribute range
+void axis_config::put_backup_attribute_range(float& min_val, float& max_val) const
+{
+	min_val = min_attribute_value_backup;
+	max_val = max_attribute_value_backup;
+}
+
+/// store current range from backup members
+void axis_config::restore_attribute_range()
+{
+	set_attribute_range(min_attribute_value_backup, max_attribute_value_backup);
+}
+
 void axis_config::set_attribute_minimum(float _min)
 {
 	min_attribute_value = _min;
