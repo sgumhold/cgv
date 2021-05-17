@@ -113,12 +113,14 @@ protected:
 public:
 	void set_tracking_rotation(float tr) {
 		tracking_rotation = tr;
+		calibrate_driver();
 	}
 	float get_tracking_rotation() {
 		return tracking_rotation;
 	}
 	void set_tracking_origin(vec3 ori) {
 		tracking_origin = ori;
+		calibrate_driver();
 	}
 	vec3 get_tracking_origin() {
 		return tracking_origin;

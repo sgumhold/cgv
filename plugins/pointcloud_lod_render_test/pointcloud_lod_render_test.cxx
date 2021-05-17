@@ -66,6 +66,8 @@ pointcloud_lod_render_test::pointcloud_lod_render_test() {
 	rot_intensity = 0.2f;
 	trans_intensity = 0.1;
 	rcrs.radius = 0.001f;
+	srs.radius = 0.12f;
+	ars.length_scale = 0.05f;
 
 	build_scene(5, 7, 3, 0.2f, 1.6f, 0.8f, table_height, 0.03f);
 
@@ -232,7 +234,9 @@ bool pointcloud_lod_render_test::init(cgv::render::context & ctx)
 	cgv::render::ref_rounded_cone_renderer(ctx, 1);
 	cgv::render::ref_box_renderer(ctx,1);
 	cgv::render::ref_clod_point_renderer(ctx, 1);
-	
+	cgv::render::ref_sphere_renderer(ctx, 1);
+	cgv::render::ref_arrow_renderer(ctx, 1);
+
 	ctx.set_bg_color(0.7, 0.7, 0.8, 1.0);
 
 	//build custom shader prog
@@ -391,6 +395,32 @@ void pointcloud_lod_render_test::draw(cgv::render::context & ctx)
 			
 		ctx.pop_modelview_matrix();
 	}
+
+	cgv::render::sphere_renderer& s_renderer = ref_sphere_renderer(ctx);
+	if (!coordinate_c.empty()) {
+		s_renderer.set_render_style(srs);
+		s_renderer.set_position_array(ctx, &coordinate_c.front().position, coordinate_c.size(), sizeof(vertex));
+		s_renderer.set_radius_array(ctx, &coordinate_c.front().radius, coordinate_c.size(), sizeof(vertex));
+		s_renderer.set_color_array(ctx, &coordinate_c.front().color, coordinate_c.size(), sizeof(vertex));
+		s_renderer.render(ctx, 0, (GLsizei)coordinate_c.size());
+	}
+
+	cgv::render::arrow_renderer& a_renderer = ref_arrow_renderer(ctx);
+	if (!points.empty()) {
+		a_renderer.set_render_style(ars);
+		a_renderer.set_position_array(ctx, points);
+		a_renderer.set_color_array(ctx, colors);
+		a_renderer.set_direction_array(ctx, normals);
+		a_renderer.render(ctx, 0, points.size());
+	}
+
+	if (!forward_points.empty()) {
+		a_renderer.set_render_style(ars);
+		a_renderer.set_position_array(ctx, forward_points);
+		a_renderer.set_color_array(ctx, forward_colors);
+		a_renderer.set_direction_array(ctx, forward_normals);
+		a_renderer.render(ctx, 0, forward_points.size());
+	}
 	
 	if (view_find_point_cloud) {
 		find_pointcloud(ctx);
@@ -456,6 +486,8 @@ void pointcloud_lod_render_test::clear(cgv::render::context & ctx)
 	cgv::render::ref_rounded_cone_renderer(ctx, -1);
 	cgv::render::ref_box_renderer(ctx, -1);
 	cgv::render::ref_clod_point_renderer(ctx, -1);
+	cgv::render::ref_sphere_renderer(ctx, -1);
+	cgv::render::ref_arrow_renderer(ctx, -1);
 }
 
 bool pointcloud_lod_render_test::handle(cgv::gui::event & e)
@@ -463,6 +495,29 @@ bool pointcloud_lod_render_test::handle(cgv::gui::event & e)
 	if ((e.get_flags() & cgv::gui::EF_VR) == 0)
 		return false;
 	switch (e.get_kind()) {
+		case cgv::gui::EID_POSE:
+		{
+			cgv::gui::vr_pose_event& vrpe = static_cast<cgv::gui::vr_pose_event&>(e);
+
+
+			// check for controller pose events
+			int ci = vrpe.get_trackable_index();
+
+			if (ci < 0 || ci >= 2) {
+				return true;
+			}
+			culling_protection_zone_positions[ci] = vrpe.get_position();
+			if (ci != -1) {
+				points.clear();
+				colors.clear();
+				normals.clear();
+				pos = vrpe.get_position();
+				ori = vrpe.get_orientation();
+				points.push_back(pos);
+				colors.push_back(rgb(0.0f, 1.0f, 0.0f));
+				normals.push_back(ori * vec3(0.0f, 0.0f, -1.0f));
+			}
+		}
 		case cgv::gui::EID_KEY:
 		{
 			static const float angle = std::asin(1.f)/3.f;
@@ -478,23 +533,35 @@ bool pointcloud_lod_render_test::handle(cgv::gui::event & e)
 				rotate_pc_y(-angle);
 				break;
 			case vr::VR_DPAD_UP:
-				rotate_pc_x(-angle);
+				//rotate_pc_x(-angle);
+				c_pos = vr_view_ptr->get_tracking_origin();
+				std::cout << "pos: " << c_pos << std::endl;
+
+				forward_points.push_back(c_pos);
+				forward_colors.push_back(rgb(0.0, 0.0, 1.0));
+				forward_normals.push_back(vec3(0.0f, 0.0f, pos.z()) - c_pos);
+				p.position = ori * vec3(0.0f, 0.0f, -1.0f) * 0.1f + c_pos;
+				p.color = rgb(1.0, 0.0, 0.0);
+				p.radius = 0.15f;
+				vr_view_ptr->set_tracking_origin(p.position);
+				coordinate_c.push_back(p);
 				break;
 			case vr::VR_DPAD_DOWN:
-				rotate_pc_x(angle);
+				//rotate_pc_x(angle);
+				c_pos = vr_view_ptr->get_tracking_origin();
+				std::cout << "pos: " << c_pos << std::endl;
+
+				forward_points.push_back(c_pos);
+				forward_colors.push_back(rgb(0.0, 0.0, 1.0));
+				forward_normals.push_back(vec3(0.0f, 0.0f, pos.z()) - c_pos);
+				p.position = ori * vec3(0.0f, 0.0f, 1.0f) * 0.1f + c_pos;
+				p.color = rgb(1.0, 0.0, 0.0);
+				p.radius = 0.15f;
+				vr_view_ptr->set_tracking_origin(p.position);
+				coordinate_c.push_back(p);
 				break;
 			}
 			break;
-		}
-		case cgv::gui::EID_POSE: {
-			cgv::gui::vr_pose_event& vrpe = static_cast<cgv::gui::vr_pose_event&>(e);
-
-			// check for controller pose events
-			int ci = vrpe.get_trackable_index();
-			if (ci < 0 || ci >= 2) {
-				return true;
-			}
-			culling_protection_zone_positions[ci] = vrpe.get_position();
 		}
 	}
 	return false;
