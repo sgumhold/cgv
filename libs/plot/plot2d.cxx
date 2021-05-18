@@ -24,7 +24,8 @@ void plot2d_config::configure_chart(ChartType chart_type)
 /// construct empty plot with default domain [0..1,0..1]
 plot2d::plot2d(unsigned nr_attributes) : plot_base(2, nr_attributes)
 {
-	multi_y_axis_mode = false;
+	multi_axis_modes = new bool[2 + nr_attributes];
+	std::fill(multi_axis_modes, multi_axis_modes+(2+nr_attributes), false);
 	dz = 0.0f;
 	layer_depth = 0.00001f;
 	disable_depth_mask = false;
@@ -36,6 +37,11 @@ plot2d::plot2d(unsigned nr_attributes) : plot_base(2, nr_attributes)
 	acs[1].name = "y";
 	for (unsigned ai =0; ai < nr_attributes; ++ai)
 		acs[ai+2].name = std::string("attribute_")+cgv::utils::to_string(ai);
+}
+
+plot2d::~plot2d()
+{
+	delete[] multi_axis_modes;
 }
 
 bool plot2d::compute_sample_coordinate_interval(int i, int ai, float& samples_min, float& samples_max)
@@ -121,14 +127,20 @@ bool plot2d::init(cgv::render::context& ctx)
 		std::cerr << "could not build GLSL program from plot2d_line.glpr" << std::endl;
 		return false;
 	}
+	else
+		line_prog.allow_context_to_set_color(false);
 	if (!point_prog.build_program(ctx, "plot2d_point.glpr")) {
 		std::cerr << "could not build GLSL program from plot2d_point.glpr" << std::endl;
 		return false;
 	}
+	else 
+		point_prog.allow_context_to_set_color(false);
 	if (!rectangle_prog.build_program(ctx, "plot2d_rect.glpr")) {
 		std::cerr << "could not build GLSL program from plot2d_rect.glpr" << std::endl;
 		return false;
 	}
+	else
+		rectangle_prog.allow_context_to_set_color(false);
 	return plot_base::init(ctx);
 }
 
@@ -340,20 +352,17 @@ int plot2d::draw_sub_plots_jointly(cgv::render::context& ctx, int layer_idx)
 	}
 	return layer_idx;
 }
-void plot2d::draw_domain(cgv::render::context& ctx, int si, bool no_fill)
+
+void plot2d::extract_domain_rectangles(std::vector<box2>& R, std::vector<rgb>& C, std::vector<float>& D)
 {
-	tick_labels.clear();
-	tick_batches.clear();
-	std::vector<box2> R; R.resize(5);
-	std::vector<rgb> C; C.resize(5);
-	std::vector<float> D; D.resize(5);
+	R.resize(5);
+	C.resize(5);
+	D.resize(5);
 	vec2 extent = vec2::from_vec(get_extent());
 	float rs = get_domain_config_ptr()->reference_size;
-	if (get_domain_config_ptr()->fill && !no_fill) {
-		R[0] = box2(-0.5f * extent, 0.5f * extent);
-		C[0] = get_domain_config_ptr()->color;
-		D[0] = 0.0f;
-	}
+	R[0] = box2(-0.5f * extent, 0.5f * extent);
+	C[0] = get_domain_config_ptr()->color;
+	D[0] = 0.0f;
 	for (unsigned ai = 0; ai < 2; ++ai) {
 		axis_config& ac = get_domain_config_ptr()->axis_configs[ai];
 		axis_config& ao = get_domain_config_ptr()->axis_configs[1 - ai];
@@ -365,9 +374,9 @@ void plot2d::draw_domain(cgv::render::context& ctx, int si, bool no_fill)
 		box2 axis_box(-0.5f * axis_extent, 0.5f * axis_extent);
 		axis_box.ref_min_pnt()[1 - ai] += 0.5f * (extent[1 - ai] - lw);
 		axis_box.ref_max_pnt()[1 - ai] += 0.5f * (extent[1 - ai] - lw);
-		R[2 * ai+1] = axis_box;
-		C[2 * ai+1] = col;
-		D[2 * ai+1] = -layer_depth;
+		R[2 * ai + 1] = axis_box;
+		C[2 * ai + 1] = col;
+		D[2 * ai + 1] = -layer_depth;
 		axis_box.ref_min_pnt()[1 - ai] -= extent[1 - ai] - lw;
 		axis_box.ref_max_pnt()[1 - ai] -= extent[1 - ai] - lw;
 		R[2 * ai + 2] = axis_box;
@@ -383,103 +392,131 @@ void plot2d::draw_domain(cgv::render::context& ctx, int si, bool no_fill)
 			D.push_back(-2 * layer_depth);
 		}
 	}
-	for (unsigned ti = 0; ti < 2; ++ti) {
-		for (unsigned ai = 0; ai < 2; ++ai) {
-			axis_config& ac = get_domain_config_ptr()->axis_configs[ai];
-			float acw = 1.5f * ac.line_width * get_domain_config_ptr()->reference_size;
-			axis_config& ao = get_domain_config_ptr()->axis_configs[1 - ai];
-			tick_config& tc = ti == 0 ? ac.primary_ticks : ac.secondary_ticks;
-			if (tc.type == TT_NONE)
-				continue;
-			tick_batches.push_back(tick_batch_info(ai, 1 - ai, ti == 0, 0, (unsigned)tick_labels.size()));
-			float min_tick = ac.tick_space_from_attribute_space(ac.get_attribute_min());
-			float max_tick = ac.tick_space_from_attribute_space(ac.get_attribute_max());
-			int min_i = (int)ceil(min_tick / tc.step - std::numeric_limits<float>::epsilon());
-			int max_i = (int)((max_tick - fmod(max_tick, tc.step)) / tc.step);
-			// ignore secondary ticks on domain boundary
-			if (ti == 1 && min_i * tc.step - min_tick < std::numeric_limits<float>::epsilon())
-				++min_i;
-			if (ti == 1 && max_i * tc.step - max_tick > -std::numeric_limits<float>::epsilon())
-				--max_i;
-			float lw = 0.5f * get_domain_config_ptr()->reference_size * tc.line_width;
-			float dl = 0.5f * get_domain_config_ptr()->reference_size * tc.length;
-			float he = 0.5f * ao.extent;
-			float d = -int(ti + 3) * layer_depth;
-			bool includes_zero = ao.get_attribute_min() < 0.0f && ao.get_attribute_max() > 0.0f;
-			float z_plot = includes_zero ? ao.plot_space_from_attribute_space(0.0f) : 0.0f;
-			for (int i = min_i; i <= max_i; ++i) {
-				float c_tick = (float)(i * tc.step);
-				float c_attr = ac.attribute_space_from_tick_space(c_tick);
-				// ignore secondary ticks on axes
-				if (fabs(c_attr) < std::numeric_limits<float>::epsilon())
-					continue;
-				// ignore secondary ticks on primary ticks
-				if (ti == 1 && fabs(fmod(c_tick, ac.primary_ticks.step)) < 0.00001f)
-					continue;
-				std::string label_str;
-				if (tc.label)
-					label_str = cgv::utils::to_string(c_attr);
-				float c_plot = ac.plot_space_from_window_space(ac.window_space_from_tick_space(c_tick));
-				vec2 mn, mx;
-				mn[ai] = c_plot - lw;
-				mx[ai] = c_plot + lw;
-				switch (tc.type) {
-				case TT_DASH:
-					mn[1 - ai] = -he;
-					mx[1 - ai] = -he + dl;
-					R.push_back(box2(mn, mx));
-					C.push_back(ac.color);
-					D.push_back(d);
-					if (!label_str.empty()) {
-						mx[1 - ai] += acw;
-						tick_labels.push_back(label_info(mx.to_vec(), label_str, ai == 0 ? cgv::render::TA_BOTTOM : cgv::render::TA_LEFT));
-						if (ti == 1)
-							tick_labels.back().scale = 0.75f;
-					}
-					mn[1 - ai] = he - dl;
-					mx[1 - ai] = he;
-					R.push_back(box2(mn, mx));
-					C.push_back(ac.color);
-					D.push_back(d);
-					if (!label_str.empty()) {
-						mn[1 - ai] -= acw;
-						tick_labels.push_back(label_info(mn.to_vec(), label_str, ai == 0 ? cgv::render::TA_TOP : cgv::render::TA_RIGHT));
-						if (ti == 1)
-							tick_labels.back().scale = 0.75f;
-					}
-					if (includes_zero) {
-						mn[1 - ai] = z_plot - dl;
-						mx[1 - ai] = z_plot + dl;
-						R.push_back(box2(mn, mx));
-						C.push_back(ac.color);
-						D.push_back(d);
-					}
-					break;
-				case TT_LINE:
-				case TT_PLANE:
-					mn[1 - ai] = -he;
-					mx[1 - ai] = he;
-					R.push_back(box2(mn, mx));
-					C.push_back(ac.color);
-					D.push_back(d);
-					if (!label_str.empty()) {
-						mn[1 - ai] += acw;
-						mx[1 - ai] -= acw;
-						mn[ai] += 2.5f * lw;
-						mx[ai] += 2.5f * lw;
-						tick_labels.push_back(label_info(mx.to_vec(), label_str, cgv::render::TextAlignment(ai == 0 ? cgv::render::TA_TOP+cgv::render::TA_LEFT : cgv::render::TA_RIGHT+cgv::render::TA_BOTTOM)));
-						if (ti == 1)
-							tick_labels.back().scale = 0.75f;
-						tick_labels.push_back(label_info(mn.to_vec(), label_str, cgv::render::TextAlignment(ai == 0 ? cgv::render::TA_BOTTOM+cgv::render::TA_LEFT : cgv::render::TA_LEFT+ cgv::render::TA_BOTTOM)));
-						if (ti == 1)
-							tick_labels.back().scale = 0.75f;
-					}
-					break;
-				}
+}
+
+bool plot2d::extract_tick_rectangles_and_tick_labels(
+	std::vector<box2>& R, std::vector<rgb>& C, std::vector<float>& D,
+	std::vector<label_info>& tick_labels, int ai, int ti, float he, float z_plot)
+{
+	axis_config& ac = get_domain_config_ptr()->axis_configs[ai];
+	float acw = 1.5f * ac.line_width * get_domain_config_ptr()->reference_size;
+	tick_config& tc = ti == 0 ? ac.primary_ticks : ac.secondary_ticks;
+	if (tc.type == TT_NONE)
+		return false;
+	float min_tick = ac.tick_space_from_attribute_space(ac.get_attribute_min());
+	float max_tick = ac.tick_space_from_attribute_space(ac.get_attribute_max());
+	int min_i = (int)ceil(min_tick / tc.step - std::numeric_limits<float>::epsilon());
+	int max_i = (int)((max_tick - fmod(max_tick, tc.step)) / tc.step);
+	// ignore secondary ticks on domain boundary
+	if (ti == 1 && min_i * tc.step - min_tick < std::numeric_limits<float>::epsilon())
+		++min_i;
+	if (ti == 1 && max_i * tc.step - max_tick > -std::numeric_limits<float>::epsilon())
+		--max_i;
+	float lw = 0.5f * get_domain_config_ptr()->reference_size * tc.line_width;
+	float dl = 0.5f * get_domain_config_ptr()->reference_size * tc.length;
+	float d = -int(ti + 3) * layer_depth;
+	for (int i = min_i; i <= max_i; ++i) {
+		float c_tick = (float)(i * tc.step);
+		float c_attr = ac.attribute_space_from_tick_space(c_tick);
+		// ignore secondary ticks on axes
+		if (fabs(c_attr) < std::numeric_limits<float>::epsilon())
+			continue;
+		// ignore secondary ticks on primary ticks
+		if (ti == 1 && fabs(fmod(c_tick, ac.primary_ticks.step)) < 0.00001f)
+			continue;
+		std::string label_str;
+		if (tc.label)
+			label_str = cgv::utils::to_string(c_attr);
+		float c_plot = ac.plot_space_from_window_space(ac.window_space_from_tick_space(c_tick));
+		vec2 mn, mx;
+		mn[ai] = c_plot - lw;
+		mx[ai] = c_plot + lw;
+		switch (tc.type) {
+		case TT_DASH:
+			mn[1 - ai] = -he;
+			mx[1 - ai] = -he + dl;
+			R.push_back(box2(mn, mx));
+			C.push_back(ac.color);
+			D.push_back(d);
+			if (!label_str.empty()) {
+				mx[1 - ai] += acw;
+				tick_labels.push_back(label_info(mx.to_vec(), label_str, ai == 0 ? cgv::render::TA_BOTTOM : cgv::render::TA_LEFT));
+				if (ti == 1)
+					tick_labels.back().scale = 0.75f;
 			}
-			tick_batches.back().label_count = (unsigned)(tick_labels.size() - tick_batches.back().first_label);
+			mn[1 - ai] = he - dl;
+			mx[1 - ai] = he;
+			R.push_back(box2(mn, mx));
+			C.push_back(ac.color);
+			D.push_back(d);
+			if (!label_str.empty()) {
+				mn[1 - ai] -= acw;
+				tick_labels.push_back(label_info(mn.to_vec(), label_str, ai == 0 ? cgv::render::TA_TOP : cgv::render::TA_RIGHT));
+				if (ti == 1)
+					tick_labels.back().scale = 0.75f;
+			}
+			if (z_plot != std::numeric_limits<float>::quiet_NaN()) {
+				mn[1 - ai] = z_plot - dl;
+				mx[1 - ai] = z_plot + dl;
+				R.push_back(box2(mn, mx));
+				C.push_back(ac.color);
+				D.push_back(d);
+			}
+			break;
+		case TT_LINE:
+		case TT_PLANE:
+			mn[1 - ai] = -he;
+			mx[1 - ai] = he;
+			R.push_back(box2(mn, mx));
+			C.push_back(ac.color);
+			D.push_back(d);
+			if (!label_str.empty()) {
+				mn[1 - ai] += acw;
+				mx[1 - ai] -= acw;
+				mn[ai] += 2.5f * lw;
+				mx[ai] += 2.5f * lw;
+				tick_labels.push_back(label_info(mx.to_vec(), label_str, cgv::render::TextAlignment(ai == 0 ? cgv::render::TA_TOP + cgv::render::TA_LEFT : cgv::render::TA_RIGHT + cgv::render::TA_BOTTOM)));
+				if (ti == 1)
+					tick_labels.back().scale = 0.75f;
+				tick_labels.push_back(label_info(mn.to_vec(), label_str, cgv::render::TextAlignment(ai == 0 ? cgv::render::TA_BOTTOM + cgv::render::TA_LEFT : cgv::render::TA_LEFT + cgv::render::TA_BOTTOM)));
+				if (ti == 1)
+					tick_labels.back().scale = 0.75f;
+			}
+			break;
 		}
 	}
+	return true;
+}
+
+void plot2d::extract_all_tick_rectangles_and_tick_labels(
+	std::vector<box2>& R, std::vector<rgb>& C, std::vector<float>& D,
+	std::vector<label_info>& tick_labels, std::vector<tick_batch_info>& tick_batches)
+{
+	tick_labels.clear();
+	tick_batches.clear();
+	for (unsigned ti = 0; ti < 2; ++ti) {
+		for (unsigned ai = 0; ai < 2; ++ai) {
+			axis_config& ao = get_domain_config_ptr()->axis_configs[1 - ai];
+			float z_plot = (ao.get_attribute_min() < 0.0f && ao.get_attribute_max() > 0.0f) ?
+				ao.plot_space_from_attribute_space(0.0f) : std::numeric_limits<float>::quiet_NaN();
+			tick_batch_info tbi(ai, 1 - ai, ti == 0, 0, (unsigned)tick_labels.size());
+			if (extract_tick_rectangles_and_tick_labels(R, C, D, tick_labels, ai, ti, 0.5f * ao.extent, z_plot)) {
+				if ((tbi.label_count = (unsigned)(tick_labels.size() - tbi.first_label)) > 0)
+					tick_batches.push_back(tbi);
+			}
+		}
+	}
+}
+
+
+void plot2d::draw_domain(cgv::render::context& ctx, int si, bool no_fill)
+{
+	std::vector<box2> R;
+	std::vector<rgb> C; 
+	std::vector<float> D;
+	extract_domain_rectangles(R, C, D);
+	extract_all_tick_rectangles_and_tick_labels(R, C, D, tick_labels, tick_batches);
+
 	auto& rr = cgv::render::ref_rectangle_renderer(ctx);
 	rr.set_render_style(rrs);
 	rr.enable_attribute_array_manager(ctx, aam_domain);
@@ -493,7 +530,6 @@ void plot2d::draw_domain(cgv::render::context& ctx, int si, bool no_fill)
 
 void plot2d::draw_tick_labels(cgv::render::context& ctx, int si)
 {
-#if 0
 	if (tick_labels.empty() || label_font_face.empty())
 		return;
 
@@ -549,7 +585,6 @@ void plot2d::draw_tick_labels(cgv::render::context& ctx, int si)
 		ff->ref_texture(ctx).disable(ctx);
 		rr.disable_attribute_array_manager(ctx, aam_tick_labels);
 	}
-#endif
 }
 
 void plot2d::draw(cgv::render::context& ctx)
@@ -611,8 +646,24 @@ void plot2d::draw(cgv::render::context& ctx)
 		}
 		// traverse all subplots in back to front order
 		bool fst = true;
+		unsigned ai;
+		for (ai=0; ai<2+nr_attributes; ++ai)
+			if (multi_axis_modes[ai])
+				get_domain_config_ptr()->axis_configs[ai].backup_attribute_range();
 		for (int i = i_begin; i != i_end; i += i_delta) {
+			// adapt all axes in multi axis mode
+			for (ai = 0; ai < 2 + nr_attributes; ++ai) {
+				if (multi_axis_modes[ai]) {
+					auto& ac = get_domain_config_ptr()->axis_configs[ai];
+					float min_val, max_val;
+					ac.put_backup_attribute_range(min_val, max_val);
+					if (determine_axis_extent_from_subplot(ai, i, min_val, max_val))
+						ac.set_attribute_range(min_val, max_val);
+
+				}
+			}
 			if (get_domain_config_ptr()->show_domain) {
+				// draw potentially adapted domain with tick labels
 				draw_domain(ctx, i, !fst);
 				draw_tick_labels(ctx, i);
 			}
@@ -633,6 +684,9 @@ void plot2d::draw(cgv::render::context& ctx)
 			ctx.mul_modelview_matrix(cgv::math::translate4<float>(vec3(0, 0, i_delta*dz)));
 			fst = false;
 		}
+		for (ai = 0; ai < 2 + nr_attributes; ++ai)
+			if (multi_axis_modes[ai])
+				get_domain_config_ptr()->axis_configs[ai].restore_attribute_range();
 	}
 
 	ctx.pop_modelview_matrix();
@@ -677,7 +731,13 @@ void plot2d::create_config_gui(cgv::base::base* bp, cgv::gui::provider& p, unsig
 void plot2d::create_gui(cgv::base::base* bp, cgv::gui::provider& p)
 {
 	p.add_decorator("plot2d", "heading");
-	p.add_member_control(bp, "multi_y_axis_mode", multi_y_axis_mode, "toggle");
+	if (p.begin_tree_node("multi modes", multi_axis_modes, false, "level=3")) {
+		p.align("\a");
+		for (unsigned ai = 0; ai < 2 + nr_attributes; ++ai)
+			p.add_member_control(bp, get_domain_config_ptr()->axis_configs[ai].name, multi_axis_modes[ai], "toggle");
+		p.align("\b");
+		p.end_tree_node(rrs);
+	}
 	p.add_member_control(bp, "dz", dz, "value_slider", "min=-1;max=1;step=0.1;ticks=true");
 	plot_base::create_gui(bp, p);
 	p.add_member_control(bp, "disable_depth_mask", disable_depth_mask, "toggle");
@@ -686,6 +746,7 @@ void plot2d::create_gui(cgv::base::base* bp, cgv::gui::provider& p)
 		p.add_member_control(bp, "layer_depth", layer_depth, "value_slider", "min=0.000001;max=0.01;step=0.0000001;log=true;ticks=true");
 		p.add_gui("rectangle style", rrs);
 		p.align("\b");
+		p.end_tree_node(rrs);
 	}
 }
 
