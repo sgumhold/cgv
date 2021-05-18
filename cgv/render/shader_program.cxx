@@ -98,10 +98,10 @@ bool shader_program::collect_program(const std::string& file_name, std::vector<s
 			added_file = collect_file(l.substr(12), file_names) || added_file;
 		else if (l.substr(0, 14) == "geometry_file:")
 			added_file = collect_file(l.substr(14), file_names) || added_file;
-		else if (l.substr(0, 25) == "tesselation_control_file:")
-			added_file = collect_file(l.substr(25), file_names) || added_file;
-		else if (l.substr(0, 28) == "tesselation_evaluation_file:")
-			added_file = collect_file(l.substr(28), file_names) || added_file;
+		else if (l.substr(0, 26) == "tessellation_control_file:")
+			added_file = collect_file(l.substr(26), file_names) || added_file;
+		else if (l.substr(0, 29) == "tessellation_evaluation_file:")
+			added_file = collect_file(l.substr(29), file_names) || added_file;
 		else if (l.substr(0,14) == "fragment_file:")
 			added_file = collect_file(l.substr(14), file_names) || added_file;
 		else if (l.substr(0,6) == "files:")
@@ -287,10 +287,10 @@ bool shader_program::attach_program(const context& ctx, const std::string& file_
 			success = attach_file(ctx, l.substr(12), ST_VERTEX, defines);
 		else if (l.substr(0,14) == "geometry_file:")
 			success = attach_file(ctx, l.substr(14), ST_GEOMETRY, defines);
-		else if (l.substr(0, 25) == "tesselation_control_file:")
-			success = attach_file(ctx, l.substr(25), ST_TESS_CONTROL, defines);
-		else if (l.substr(0, 28) == "tesselation_evaluation_file:")
-			success = attach_file(ctx, l.substr(28), ST_TESS_EVALUATION, defines);
+		else if (l.substr(0, 26) == "tessellation_control_file:")
+			success = attach_file(ctx, l.substr(26), ST_TESS_CONTROL, defines);
+		else if (l.substr(0, 29) == "tessellation_evaluation_file:")
+			success = attach_file(ctx, l.substr(29), ST_TESS_EVALUATION, defines);
 		else if (l.substr(0,14) == "fragment_file:")
 			success = attach_file(ctx, l.substr(14), ST_FRAGMENT, defines);
 		else if(l.substr(0, 13) == "compute_file:")
