@@ -51,6 +51,8 @@ private:
 	float max_tick_value;
 	///
 	void update_tick_range();
+	///
+	float min_attribute_value_backup, max_attribute_value_backup;
 protected:
 	/// minimum attribute value
 	float min_attribute_value;
@@ -69,6 +71,8 @@ public:
 	float get_attribute_min() const { return min_attribute_value; }
 	/// read access to attrbribute maximum value
 	float get_attribute_max() const { return max_attribute_value; }
+	/// read access to backup attribute range
+	void put_backup_attribute_range(float& min_val, float& max_val) const;
 	/// compute the extent in attribute space
 	float get_attribute_extent() const { return get_attribute_max() - get_attribute_min(); }
 	/// read access to log scale flag
@@ -77,6 +81,10 @@ public:
 	float get_log_minimum() const { return log_minimum; }
 	/// write access to attribute range
 	void set_attribute_range(float _min, float _max);
+	/// store current range in backup members
+	void backup_attribute_range();
+	/// store current range from backup members
+	void restore_attribute_range();
 	/// write access to attribute minimum value
 	void set_attribute_minimum(float _min);
 	/// write access to attribute maximum value

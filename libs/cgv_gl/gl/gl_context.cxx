@@ -1668,10 +1668,10 @@ bool gl_context::texture_create(texture_base& tb, cgv::data::data_format& df) co
 }
 
 bool gl_context::texture_create(
-							texture_base& tb, 
-							cgv::data::data_format& target_format, 
-							const cgv::data::const_data_view& data, 
-							int level, int cube_side, bool is_array, const std::vector<cgv::data::data_view>* palettes) const
+							texture_base& tb,
+							cgv::data::data_format& target_format,
+							const cgv::data::const_data_view& data,
+							int level, int cube_side, int num_array_layers, const std::vector<cgv::data::data_view>* palettes) const
 {
 	// query the format to be used for the texture
 	GLuint gl_tex_format = (const GLuint&) tb.internal_format;
@@ -1681,12 +1681,21 @@ bool gl_context::texture_create(
 	if(cube_side > -1) {
 		if(tb.tt == TT_2D)
 			tb.tt = TT_CUBEMAP;
-	} else if(is_array) {
-		unsigned n_dims = data.get_format()->get_nr_dimensions();
-		if(n_dims == 2)
-			tb.tt = TT_1D_ARRAY;
-		if(n_dims == 3)
-			tb.tt = TT_2D_ARRAY;
+	} else if(num_array_layers != 0) {
+		if(num_array_layers < 0) {
+			// automatic inference of layers from texture dimensions
+			unsigned n_dims = data.get_format()->get_nr_dimensions();
+			if(n_dims == 2)
+				tb.tt = TT_1D_ARRAY;
+			if(n_dims == 3)
+				tb.tt = TT_2D_ARRAY;
+		} else {
+			switch(tb.tt) {
+			case TT_1D: tb.tt = TT_1D_ARRAY; break;
+			case TT_2D: tb.tt = TT_2D_ARRAY; break;
+			case TT_3D: tb.tt = TT_2D_ARRAY; break;
+			}
+		}
 	}
 	// create texture is not yet done
 	GLuint tex_id;
@@ -1703,7 +1712,7 @@ bool gl_context::texture_create(
 	GLuint tmp_id = texture_bind(tb.tt, tex_id);
 
 	// load data to texture
-	tb.have_mipmaps = load_texture(data, gl_tex_format, level, cube_side, is_array, palettes);
+	tb.have_mipmaps = load_texture(data, gl_tex_format, level, cube_side, num_array_layers, palettes);
 	bool result = !check_gl_error("gl_context::texture_create", &tb);
 	// restore old texture
 	texture_unbind(tb.tt, tmp_id);

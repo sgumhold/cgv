@@ -186,10 +186,10 @@ ShaderType shader_code::detect_shader_type(const std::string& file_name)
 		st = ST_GEOMETRY;
 	else if (ext == "glcs" || ext == "pglcs")
 		st = ST_COMPUTE;
-	else if (ext == "gltcs")
+	else if (ext == "gltc" || ext == "pgltc")
 		st = ST_TESS_CONTROL;
-	else if (ext == "gltes")
-		st = ST_TESS_EVALUATION;
+	else if (ext == "glte" || ext == "pglte")
+		st = ST_TESS_EVALUTION;
 	return st;
 }
 
@@ -220,7 +220,7 @@ std::string shader_code::read_code_file(const std::string &file_name, std::strin
 	}
 	if (get_shader_config()->show_file_paths)
 		std::cout << "read shader code <" << fn << ">" << std::endl;
-	if (!source.empty() && source[0] == '§')
+	if (!source.empty() && source[0] == 'ï¿½')
 		source = cgv::utils::decode_base64(source.substr(1));
 	if (get_extension(file_name)[0] == 'p') {
 		std::string code;

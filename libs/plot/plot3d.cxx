@@ -144,28 +144,39 @@ bool plot3d::init(cgv::render::context& ctx)
 		success = false;
 		std::cerr << "could not build GLSL program from plot3d_sphere.glpr" << std::endl;
 	}
+	else
+		sphere_prog.allow_context_to_set_color(false);
 	if (!stick_prog.build_program(ctx, "plot3d_stick.glpr")) {
 		success = false;
 		std::cerr << "could not build GLSL program from plot3d_stick.glpr" << std::endl;
 	}
+	else
+		stick_prog.allow_context_to_set_color(false);
 	if (!tick_label_prog.build_program(ctx, "plot3d_tick_label.glpr")) {
 		success = false;
 		std::cerr << "could not build GLSL program from plot3d_tick_label.glpr" << std::endl;
 	}
+	else
+		tick_label_prog.allow_context_to_set_color(false);
 	if (!box_prog.build_program(ctx, "plot3d_box.glpr")) {
 		std::cerr << "could not build GLSL program from plot3d_box.glpr" << std::endl;
 		success = false;
 	}
+	else
+		box_prog.allow_context_to_set_color(false);
 	if (!wirebox_prog.build_program(ctx, "plot3d_box_wire.glpr")) {
 		success = false;
 		std::cerr << "could not build GLSL program from plot3d_box_wire.glpr" << std::endl;
 	}
+	else
+		wirebox_prog.allow_context_to_set_color(false);
 	if (!tube_prog.build_program(ctx, "plot3d_tube.glpr", true)) {
 		std::cerr << "could not build GLSL program from plot3d_tube.glpr" << std::endl;
 		success = false;
 	}
 	else {
 		tube_prog.set_uniform(ctx, "map_color_to_material", 3);
+		tube_prog.allow_context_to_set_color(false);
 	}
 
 	//if (!surface_prog.is_created()) {
@@ -316,12 +327,15 @@ void plot3d::draw_domain(cgv::render::context& ctx)
 		vec3 origin(0.0f);
 		cgv::render::box_renderer& br = cgv::render::ref_box_renderer(ctx);
 		brs.surface_color = get_domain_config_ptr()->color;
+		bool tmp = br.ref_prog().does_context_set_color();
+		br.ref_prog().allow_context_to_set_color(false);
 		br.set_render_style(brs);
 		br.set_position(ctx, origin);
 		br.set_extent(ctx, extent);
 		br.set_position_is_center(true);
 		br.set_color(ctx, dc.color);
 		br.render(ctx, 0, 1);
+		br.ref_prog().allow_context_to_set_color(tmp);
 	}
 	// draw axes
 	std::vector<vec3> P;
