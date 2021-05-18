@@ -6,6 +6,7 @@ add_subdirectory(delaunay)
 add_subdirectory(gamepad)
 add_subdirectory(glsu)
 add_subdirectory(plot)
+add_subdirectory(tt_gl_font)
 
 install(EXPORT cgv_libs DESTINATION ${CGV_LIB_DEST})
 install(DIRECTORY . DESTINATION ${CGV_LIBS_INCLUDE_DEST} FILES_MATCHING PATTERN "*.h")

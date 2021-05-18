@@ -109,7 +109,7 @@ vec4 compute_reflected_radiance(in Material M, vec3 position_eye, vec3 normal_ey
 	vec4 res = vec4(0.0, 0.0, 0.0, 1.0-M.transparency);
 	for (int i = 0; i < get_nr_light_sources(); ++i) {
 		LightSource L = get_light_source(i);
-		// add ambient constribution
+		// add ambient contribution
 		res.rgb += M.diffuse_reflectance * M.ambient_occlusion * L.ambient_scale * L.emission;
 		// compute direct lighting
 		vec3 omega_in;

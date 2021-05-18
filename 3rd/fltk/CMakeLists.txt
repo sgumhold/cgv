@@ -177,7 +177,12 @@ if (WIN32)
     target_link_libraries(fltk ws2_32)
 else ()
     target_link_libraries(fltk Xext)
-    target_compile_options(fltk PRIVATE -Wno-narrowing)
+endif ()
+
+if (MSVC)
+    target_compile_options(fltk PRIVATE /w)
+else ()
+    target_compile_options(fltk PRIVATE -w -Wno-narrowing)
 endif ()
 
 target_compile_definitions(fltk PRIVATE

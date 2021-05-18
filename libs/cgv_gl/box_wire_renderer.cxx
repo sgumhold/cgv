@@ -14,7 +14,7 @@ namespace cgv {
 		{
 			static int ref_count = 0;
 			static box_wire_renderer r;
-			r.manage_singelton(ctx, "box_wire_renderer", ref_count, ref_count_change);
+			r.manage_singleton(ctx, "box_wire_renderer", ref_count, ref_count_change);
 			return r;
 		}
 

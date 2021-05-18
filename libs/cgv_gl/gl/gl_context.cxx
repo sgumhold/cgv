@@ -53,7 +53,8 @@ GLuint map_to_gl(PrimitiveType pt)
 		GL_TRIANGLE_FAN,
 		GL_QUADS,
 		GL_QUAD_STRIP,
-		GL_POLYGON
+		GL_POLYGON,
+		GL_PATCHES
 	};
 	return pt_to_gl[pt];
 }
@@ -1531,11 +1532,11 @@ bool gl_context::check_shader_support(ShaderType st, const std::string& where, c
 			return false;
 		}
 	case ST_TESS_CONTROL:
-	case ST_TESS_EVALUTION:
+	case ST_TESS_EVALUATION:
 		if (GLEW_VERSION_4_0)
 			return true;
 		else {
-			error(where+": tesselation shader need not supported OpenGL version 4.0", rc);
+			error(where+": tessellation shader need not supported OpenGL version 4.0", rc);
 			return false;
 		}
 	case ST_GEOMETRY:
