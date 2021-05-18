@@ -14,7 +14,8 @@ target_link_libraries(plot
         cgv_media
         cgv_os
         cgv_gui
-        cgv_render)
+        cgv_render
+        tt_gl_font)
 target_include_directories(plot PUBLIC
         $<BUILD_INTERFACE:${CGV_DIR}/libs>
         $<INSTALL_INTERFACE:${CGV_LIBS_INCLUDE_DEST}>)
