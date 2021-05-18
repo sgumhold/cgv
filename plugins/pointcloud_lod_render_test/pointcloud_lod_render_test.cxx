@@ -239,9 +239,21 @@ bool pointcloud_lod_render_test::init(cgv::render::context & ctx)
 
 	ctx.set_bg_color(0.7, 0.7, 0.8, 1.0);
 
-	//build custom shader prog
+	//build custom shader progs
 	if (!custom_draw_prog.is_created()) {
 		custom_draw_prog.build_program(ctx, "clod_point_labels.glpr", true);
+	}
+
+	if (!labeling_prog.is_created()) {
+		labeling_prog.create(ctx);
+		labeling_prog.attach_file(ctx, "point_labeler.glcs", cgv::render::ST_COMPUTE);
+#ifndef NDEBUG
+		if (labeling_prog.last_error.size() > 0) {
+			std::cerr << labeling_prog.last_error << '\n';
+			labeling_prog.last_error = "";
+		}
+#endif // #ifdef NDEBUG
+		labeling_prog.link(ctx);
 	}
 
 	glGenBuffers(1, &point_label_buffer);
@@ -260,6 +272,18 @@ void pointcloud_lod_render_test::init_frame(cgv::render::context& ctx)
 		init_label_buffer = false;
 	}
 
+	//run queued actions which require an opengl context
+	if (!queued_actions.empty()) {
+		cgv::render::clod_point_renderer& cp_renderer = ref_clod_point_renderer(ctx);
+		GLuint reduced_points = cp_renderer.get_reduced_points();
+		GLuint point_indices = cp_renderer.get_index_buffer();
+		GLuint num_points = cp_renderer.num_reduced_points();
+
+		for (auto& action : queued_actions) {
+			label_points(ctx, action.label, action.position, action.radius, reduced_points, point_indices, num_points);
+		}
+		queued_actions.clear();
+	}
 }
 
 
@@ -277,7 +301,10 @@ void pointcloud_lod_render_test::draw(cgv::render::context & ctx)
 	cp_renderer.set_render_style(cp_style);
 	
 	for (int i = 0; i < num_culling_protection_zones; ++i) {
-		cp_renderer.set_protection_zone(culling_protection_zone_positions[i], culling_protection_zone_radii[i], i);
+		vec4 cps = culling_protection_zone_positions[i].lift();
+		mat4 view = ctx.get_modelview_matrix();
+		cps = view * cps;
+		cp_renderer.set_protection_zone(vec3(cps.x(),cps.y(),cps.z()), culling_protection_zone_radii[i], i);
 	}
 
 	if (source_pc.get_nr_points() > 0) {
@@ -367,9 +394,9 @@ void pointcloud_lod_render_test::draw(cgv::render::context & ctx)
 		}
 
 		// apply transform and draw
-		dmat4 transform = cgv::math::translate4(model_position)* cgv::math::rotate4<float>(model_rotation) * cgv::math::scale4(model_scale, model_scale, model_scale);
+		model_transform = cgv::math::translate4(model_position)* cgv::math::rotate4<float>(model_rotation) * cgv::math::scale4(model_scale, model_scale, model_scale);
 		ctx.push_modelview_matrix();
-		ctx.set_modelview_matrix(ctx.get_modelview_matrix()* transform);
+		ctx.set_modelview_matrix(ctx.get_modelview_matrix()* model_transform);
 		
 
 		if (use_label_prog) {
@@ -560,6 +587,19 @@ bool pointcloud_lod_render_test::handle(cgv::gui::event & e)
 				vr_view_ptr->set_tracking_origin(p.position);
 				coordinate_c.push_back(p);
 				break;
+			case vr::VR_GRIP: {
+				// hide points by adding a relabeling action to the queue
+				int ci = vrke.get_controller_index();
+				if (ci < 0 || ci >= 2)
+					return true;
+				point_labeling_intend action;
+				action.label = (int)point_label::DELETED;
+				action.position = culling_protection_zone_positions[ci];
+				action.radius = culling_protection_zone_radii[ci];
+				queued_actions.push_back(action);
+				break;
+				}
+
 			}
 			break;
 		}
@@ -623,9 +663,9 @@ void pointcloud_lod_render_test::create_gui()
 		end_tree_node(cp_style);
 	}
 
-	if (begin_tree_node("culling protection zones", gui_culling_protection_zone, false)) {
-		add_member_control(this, "radius zone 1", culling_protection_zone_radii[0], "value_slider", "min=0.0;max=10.0;log=false;ticks=true");
-		add_member_control(this, "radius zone 2", culling_protection_zone_radii[1], "value_slider", "min=0.0;max=10.0;log=false;ticks=true");
+	if (begin_tree_node("point cloud cleaning[grip]", gui_culling_protection_zone, false)) {
+		add_member_control(this, "radius controller 1", culling_protection_zone_radii[0], "value_slider", "min=0.0;max=10.0;log=false;ticks=true");
+		add_member_control(this, "radius controller 2", culling_protection_zone_radii[1], "value_slider", "min=0.0;max=10.0;log=false;ticks=true");
 	}
 }
 
@@ -806,6 +846,51 @@ void pointcloud_lod_render_test::build_test_object_32()
 	int grid_size = 64;
 	source_pc = build_test_point_cloud(grid_size, grid_size, grid_size, grid_size, 1.0f);
 	renderer_out_of_date = true;
+}
+
+
+void pointcloud_lod_render_test::label_points(cgv::render::context& ctx, GLint label, const vec3 position, const float radius,
+	GLuint reduced_points, GLuint reduced_points_indices, const unsigned num_reduced_points)
+{
+	if (num_reduced_points == 0) {
+		return;
+	}
+	glGetError();
+
+	// shader layout constants
+	constexpr int points_pos = 1, index_pos = 2, labels_pos = 6;
+	mat4 model_transform_f = model_transform;
+	labeling_prog.set_uniform(ctx, "sphere_position", position,true);
+	labeling_prog.set_uniform(ctx, "sphere_radius", radius,true);
+	labeling_prog.set_uniform(ctx, "point_label", label,true);
+	labeling_prog.set_uniform(ctx, "batch_size", (GLint)num_reduced_points,true);
+	labeling_prog.set_uniform(ctx, "batch_offset", (GLint)0,true);
+	labeling_prog.set_uniform(ctx, "model_transform", model_transform_f,true);
+
+	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, points_pos, reduced_points);
+	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, index_pos, reduced_points_indices);
+	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, labels_pos, point_label_buffer);
+
+	labeling_prog.enable(ctx);
+
+	// run computation
+	glDispatchCompute((num_reduced_points / 128) + 1, 1, 1);
+	
+	// synchronize
+	glMemoryBarrier(GL_ALL_BARRIER_BITS);
+	labeling_prog.disable(ctx);
+	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
+
+	//copy labels for debugging
+	/*GLint* indices = static_cast<GLint*>(glMapNamedBufferRange(reduced_points_indices, 0, num_reduced_points*sizeof(int), GL_MAP_READ_BIT));
+	GLint* labels = static_cast<GLint*>(glMapNamedBufferRange(point_label_buffer, 0, point_labels.size()*sizeof(int), GL_MAP_READ_BIT));
+	memcpy(point_labels.data(), labels, point_labels.size() * sizeof(int));
+	std::vector<int> reduced_point_indices_v; reduced_point_indices_v.resize(num_reduced_points);
+	memcpy(reduced_point_indices_v.data(), indices, reduced_point_indices_v.size() * sizeof(int));
+	auto first_zero = std::find(point_labels.rbegin(), point_labels.rend(), 0);
+	glUnmapNamedBuffer(point_label_buffer);
+	glUnmapNamedBuffer(reduced_points_indices);
+	*/
 }
 
 void pointcloud_lod_render_test::clear_scene()
