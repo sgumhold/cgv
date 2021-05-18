@@ -167,7 +167,7 @@ namespace cgv {
 				p->add_member_control(b, "culling_mode", srs_ptr->culling_mode, "dropdown", "enums='off,backface,frontface'");
 				if (p->begin_tree_node("color and materials", srs_ptr->surface_color, false, "level=3")) {
 					p->align("\a");
-					p->add_member_control(b, "surface_color", srs_ptr->surface_color, "", "w=160", " ");
+					p->add_member_control(b, "surface_color", srs_ptr->surface_color);
 					if (p->begin_tree_node("material", srs_ptr->material, false, "level=3")) {
 						p->align("\a");
 						p->add_gui("front_material", srs_ptr->material);
