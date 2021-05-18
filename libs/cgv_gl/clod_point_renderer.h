@@ -8,6 +8,7 @@
 #include <cgv_reflect_types/render/context.h>
 #include <atomic>
 #include <mutex>
+#include <array>
 #include "renderer.h"
 
 #include "gl/lib_begin.h"
@@ -108,8 +109,17 @@ namespace cgv {
 			};
 			
 			struct NoCullZone {
-				vec3 point[2] = { vec3(0.0),vec3(0.0) };
-				float squareRadius[2] = { 0.0,0.0 };
+				vec4 point = vec4(0.0);
+
+				float& squareRadius() {
+					return point.w();
+				}
+
+				inline void transform(const mat4& transform) {
+					float sq_radius = squareRadius();
+					point = transform * point;
+					squareRadius() = transform(0, 0) * sq_radius;
+				}
 			};
 
 			shader_program reduce_prog;		// filters points from the input buffer and writes them to the render_buffer (compute shader)
@@ -134,7 +144,7 @@ namespace cgv {
 			/// current render style, can be set by user
 			const render_style* rs = nullptr;
 
-			NoCullZone culling_protection_zone;
+			std::array<NoCullZone,2> culling_protection_zones;
 			const DrawParameters* draw_parameters_mapping = nullptr;
 
 		protected:			
@@ -212,10 +222,12 @@ namespace cgv {
 				return ret;
 			}
 
+			// set a no culling zone in view space
 			inline void set_protection_zone(const vec3 position, const float radius, const unsigned index) {
 				assert(index < 2);
-				culling_protection_zone.point[index] = position;
-				culling_protection_zone.squareRadius[index] = radius * radius;
+				vec4 p = position.lift();
+				p.w() = radius*radius;
+				culling_protection_zones[index].point = p;
 			}
 
 		private:

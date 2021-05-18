@@ -41,8 +41,10 @@ namespace cgv {
 				reduce_prog.set_uniform(ctx, reduce_prog.get_uniform_location(ctx, "uBatchOffset"), (int)start);
 				reduce_prog.set_uniform(ctx, reduce_prog.get_uniform_location(ctx, "uBatchSize"), (int)count);
 				reduce_prog.set_uniform(ctx, "frustum_extent", 1.0f);
-				reduce_prog.set_uniform_array(ctx, "protectionZoneSquareRadii", culling_protection_zone.squareRadius, 2);
-				reduce_prog.set_uniform_array(ctx, "protectionZonePoints", culling_protection_zone.point, 2);
+				//auto transformed_cp = culling_protection_zone;
+				//transformed_cp.point
+				//reduce_prog.set_uniform_array(ctx, "protectionZoneSquareRadii", culling_protection_zone.squareRadius, 2);
+				reduce_prog.set_uniform_array(ctx, "protectionZonePoints", &culling_protection_zones[0].point, 2);
 
 				reduce_prog.enable(ctx);
 
