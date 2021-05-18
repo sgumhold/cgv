@@ -33,8 +33,8 @@ bool shader_program::collect_file(const std::string& file_name, std::vector<std:
 
 bool shader_program::collect_files(const std::string& base_name, std::vector<std::string>& file_names)
 {
-	const char *exts[] = {"glvs", "glgs", "glfs", "glcs", "gltcs", "gltes", "pglvs", "pglfs", "pglgs", "pglcs", 0};
-	const char **iter = exts;
+	const char* exts[] = { "glvs", "glgs", "glfs", "glcs", "gltc", "glte", "pglvs", "pglfs", "pglgs", "pglcs", "pgltc", "pglte", 0 };
+	const char** iter = exts;
 	bool added_file = false;
 	while (*iter) {
 		std::string fn = shader_code::find_file(base_name+"."+*iter);
@@ -93,8 +93,12 @@ bool shader_program::collect_program(const std::string& file_name, std::vector<s
 			added_file = collect_file(l.substr(5), file_names) || added_file;
 		else if (l.substr(0,12) == "vertex_file:")
 			added_file = collect_file(l.substr(12), file_names) || added_file;
-		else if (l.substr(0,14) == "geometry_file:")
+		else if (l.substr(0, 14) == "geometry_file:")
 			added_file = collect_file(l.substr(14), file_names) || added_file;
+		else if (l.substr(0, 25) == "tesselation_control_file:")
+			added_file = collect_file(l.substr(25), file_names) || added_file;
+		else if (l.substr(0, 28) == "tesselation_evaluation_file:")
+			added_file = collect_file(l.substr(28), file_names) || added_file;
 		else if (l.substr(0,14) == "fragment_file:")
 			added_file = collect_file(l.substr(14), file_names) || added_file;
 		else if (l.substr(0,6) == "files:")
@@ -277,14 +281,14 @@ bool shader_program::attach_program(const context& ctx, const std::string& file_
 			success = attach_file(ctx, l.substr(12), ST_VERTEX, defines);
 		else if (l.substr(0,14) == "geometry_file:")
 			success = attach_file(ctx, l.substr(14), ST_GEOMETRY, defines);
+		else if (l.substr(0, 25) == "tesselation_control_file:")
+			success = attach_file(ctx, l.substr(25), ST_TESS_CONTROL, defines);
+		else if (l.substr(0, 28) == "tesselation_evaluation_file:")
+			success = attach_file(ctx, l.substr(28), ST_TESS_EVALUTION, defines);
 		else if (l.substr(0,14) == "fragment_file:")
 			success = attach_file(ctx, l.substr(14), ST_FRAGMENT, defines);
 		else if(l.substr(0, 13) == "compute_file:")
 			success = attach_file(ctx, l.substr(13), ST_COMPUTE, defines);
-		else if (l.substr(0, 18) == "tess_control_file:")
-			success = attach_file(ctx, l.substr(18), ST_TESS_CONTROL, defines);
-		else if (l.substr(0, 21) == "tess_evaluation_file:")
-			success = attach_file(ctx, l.substr(21), ST_TESS_EVALUATION, defines);
 		else if (l.substr(0,6) == "files:")
 			success = attach_files(ctx, l.substr(6), defines);
 		else if (l.substr(0,4) == "dir:")

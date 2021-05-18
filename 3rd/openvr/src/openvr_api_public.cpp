@@ -102,7 +102,9 @@ uint32_t VR_InitInternal( EVRInitError *peError, vr::EVRApplicationType eApplica
 void VR_ShutdownInternal()
 {
 	std::lock_guard<std::recursive_mutex> lock( ref_g_mutexSystem() );
-	
+#if !defined( VR_API_PUBLIC )
+	CleanupInternalInterfaces();
+#endif
 	if ( ref_g_pHmdSystem() )
 	{
 		ref_g_pHmdSystem()->Cleanup();
@@ -113,10 +115,6 @@ void VR_ShutdownInternal()
 		SharedLib_Unload( ref_g_pVRModule() );
 		ref_g_pVRModule() = NULL;
 	}
-
-#if !defined( VR_API_PUBLIC )
-	CleanupInternalInterfaces();
-#endif
 
 	++g_nVRToken;
 }
