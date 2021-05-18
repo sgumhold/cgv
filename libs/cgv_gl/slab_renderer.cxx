@@ -8,7 +8,7 @@ namespace cgv {
 		{
 			static int ref_count = 0;
 			static slab_renderer r;
-			r.manage_singelton(ctx, "slab_renderer", ref_count, ref_count_change);
+			r.manage_singleton(ctx, "slab_renderer", ref_count, ref_count_change);
 			return r;
 		}
 

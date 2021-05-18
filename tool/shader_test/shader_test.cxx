@@ -184,7 +184,7 @@ context* g_ctx_ptr;
 int perform_test()
 {
 	bool shader_developer = cgv::utils::has_option("SHADER_DEVELOPER");
-	bool exit_code = 0;
+	int exit_code = 0;
 	if (get_shader_config()->shader_path.empty() && getenv("CGV_DIR") != 0) {
 		get_shader_config()->shader_path = 
 			std::string(getenv("CGV_DIR")) + "/libs/cgv_gl/glsl;"+
@@ -211,29 +211,18 @@ int perform_test()
 		}
 	}
 	else {
-//		if (ext[0] != 'p') {
-			// otherwise read and compile code
-			shader_code code;
-			if (code.read_and_compile(*g_ctx_ptr, g_argv[1], cgv::render::ST_DETECT, shader_developer)) {
-				// convert the input file to a string declaration with the string
-				convert_to_string(g_argv[1],g_argv[2]);
-				//write(g_argv[2], "ok", 2, true);
-				std::cout << "shader code ok (" << g_argv[1] << ")" << std::endl;
-			}
-			else {
-				if (!shader_developer)
-					convert_to_string(g_argv[1],g_argv[2]);
-				else
-					exit_code = 1;
-			}
-//		}
-/*		else {
+		shader_code code;
+		if (code.read_and_compile(*g_ctx_ptr, g_argv[1], cgv::render::ST_DETECT, shader_developer)) {
 			// convert the input file to a string declaration with the string
-			convert_to_string(g_argv[1],g_argv[2]);
-			//write(g_argv[2], "ok", 2, true);
-			std::cout << "pre-shader code transformed to log file only (" << g_argv[1] << ")" << std::endl;
+			convert_to_string(g_argv[1], g_argv[2]);
+			// write(g_argv[2], "ok", 2, true);
+			std::cout << "shader code ok (" << g_argv[1] << ")" << std::endl;
+		} else {
+			if (!shader_developer)
+				convert_to_string(g_argv[1], g_argv[2]);
+			else
+				exit_code = 1;
 		}
-		*/
 	}
 	return exit_code;
 }
@@ -257,13 +246,13 @@ int main(int argc, char** argv)
 		std::cout << "error: could not create context!" << std::endl;
 		return -1;
 	}
-	g_argc= argc;
+	g_argc = argc;
 	g_argv = argv;
 	g_ctx_ptr = ctx_ptr;
 #ifdef WIN32
 	exit_code = perform_test();
 #else
-	fltk::run();
+	exit_code = fltk::run();
 #endif
 	// destroy context
 	delete ctx_ptr;

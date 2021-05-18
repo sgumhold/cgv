@@ -1,7 +1,7 @@
 #include "clipboard.h"
 
 #include <iostream>
- 
+
 #ifdef WIN32
 #include <windows.h>
 #endif
@@ -112,7 +112,7 @@ bool copy_rgb_image_to_clipboard(int w, int h, const unsigned char* image_buffer
 		dst += dst_line_length;
 		src += src_line_length;
 	}
-	GlobalUnlock(hglbCopy); 
+	GlobalUnlock(hglbCopy);
 
 	if ( ::SetClipboardData( CF_DIB, hglbCopy) == NULL )
 	{
@@ -124,6 +124,18 @@ bool copy_rgb_image_to_clipboard(int w, int h, const unsigned char* image_buffer
 	CloseClipboard();
 	return true;
 }
+#else
+
+bool copy_text_to_clipboard(const char* text) {
+	// FIXME implement this (for now this is a no-op on non-windows systems)
+	return false;
+}
+
+bool copy_rgb_image_to_clipboard(int w, int h, const unsigned char* image_buffer) {
+    // FIXME implement this (for now this is a no-op on non-windows systems)
+    return false;
+}
+
 #endif
 
 	}

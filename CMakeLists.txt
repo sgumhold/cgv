@@ -3,6 +3,7 @@ cmake_minimum_required(VERSION 3.14)
 project(cgv)
 
 set(BUILD_SHARED_LIBS ON)
+option(SHADER_DEVELOPER OFF)
 
 set(CGV_DIR ${PROJECT_SOURCE_DIR})
 set(CGV_LIB_DEST lib/cgv)
