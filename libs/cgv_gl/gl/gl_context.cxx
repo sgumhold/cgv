@@ -1536,7 +1536,7 @@ bool gl_context::check_shader_support(ShaderType st, const std::string& where, c
 		if (GLEW_VERSION_4_0)
 			return true;
 		else {
-			error(where+": tesselation shader need not supported OpenGL version 4.0", rc);
+			error(where+": tessellation shader need not supported OpenGL version 4.0", rc);
 			return false;
 		}
 	case ST_GEOMETRY:
