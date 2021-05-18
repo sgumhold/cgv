@@ -102,16 +102,16 @@ void main(){
 
 	Vertex v = inputBuffer[inputIndex];
 
-	vec3 aPosition = vec3(v.x, v.y, v.z);
+	vec3 position = vec3(v.x, v.y, v.z);
 	float level = float((v.colors & 0xFF000000) >> 24);
 	float aRandom = rand(v.x + v.y + v.z);
 
-	vec4 projected = (transform * vec4(aPosition, 1));
+	vec4 projected = (transform * vec4(position, 1));
 	projected.xyz = projected.xyz / projected.w;
 
-	vec4 view_position =  get_modelview_matrix()*vec4(aPosition,1.0);
+	vec4 view_position =  get_modelview_matrix()*vec4(position,1.0);
 	vec2 sq_distance_to_no_cull_zone = vec2(square_distance(view_position.xyz,protectionZonePoints[0].xyz),square_distance(view_position.xyz,protectionZonePoints[1].xyz));
-	bool allways_accept = any( lessThan(sq_distance_to_no_cull_zone, vec2(protectionZonePoints[0].w,protectionZonePoints[0].w) ) );
+	bool allways_accept = any( lessThan(sq_distance_to_no_cull_zone, vec2(protectionZonePoints[0].w,protectionZonePoints[1].w) ) );
 
 	if (!allways_accept) {
 		// (extented-)frustum culling and near clipping
@@ -119,8 +119,8 @@ void main(){
 			return;
 		}
 
-		//vec3 worldPos = (world * vec4(aPosition, 1)).xyz;
-		vec3 modelPos = aPosition;
+		//vec3 worldPos = (world * vec4(position, 1)).xyz;
+		vec3 modelPos = position;
 
 		// without level randomization
 		//float pointSpacing = uScale * uSpacing / pow(2, level);
