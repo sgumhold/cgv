@@ -77,8 +77,11 @@ bool shader_program::collect_program(const std::string& file_name, std::vector<s
 	std::string content;
 	if (!cgv::base::read_data_file(fn, content, true))
 		return false;
+#if WIN32
+	// TODO § is considered two characters on Linux
 	if (!content.empty() && content[0] == '§')
 		content = cgv::utils::decode_base64(content.substr(1));
+#endif
 	std::vector<line> lines;
 	split_to_lines(content, lines);
 	bool added_file = false;
@@ -248,8 +251,11 @@ bool shader_program::attach_program(const context& ctx, const std::string& file_
 			std::cerr << last_error << std::endl;
 		return false;
 	}
+#if WIN32
+	// TODO § is considered two characters on Linux
 	if (!content.empty() && content[0] == '§')
 		content = cgv::utils::decode_base64(content.substr(1));
+#endif
 	if (get_shader_config()->show_file_paths)
 		std::cout << "read shader program <" << fn << ">" << std::endl;
 	static std::vector<line> lines;
@@ -284,7 +290,7 @@ bool shader_program::attach_program(const context& ctx, const std::string& file_
 		else if (l.substr(0, 25) == "tesselation_control_file:")
 			success = attach_file(ctx, l.substr(25), ST_TESS_CONTROL, defines);
 		else if (l.substr(0, 28) == "tesselation_evaluation_file:")
-			success = attach_file(ctx, l.substr(28), ST_TESS_EVALUTION, defines);
+			success = attach_file(ctx, l.substr(28), ST_TESS_EVALUATION, defines);
 		else if (l.substr(0,14) == "fragment_file:")
 			success = attach_file(ctx, l.substr(14), ST_FRAGMENT, defines);
 		else if(l.substr(0, 13) == "compute_file:")
