@@ -46,6 +46,12 @@ enum class point_label {
 	UNDEFINED = -1
 };
 
+struct point_labeling_intend : public cgv::render::render_types {
+	vec3 position;
+	float radius;
+	int label;
+};
+
 // this is a VR application using the clod_point_renderer for demonstration purposes
 class pointcloud_lod_render_test :
 	public cgv::base::node,
@@ -108,6 +114,11 @@ protected:
 	void build_scene(float w, float d, float h, float W, float tw, float td, float th, float tW);
 	void clear_scene();
 	void build_test_object_32();
+
+	/// @param[in]	reduced_points opengl buffer storing points
+	/// @param[in]	indices_reduced_points opengl buffer storing position in point_label_buffer associated with the point in reduced_points
+	void label_points(cgv::render::context& ctx, GLint label, const vec3 position, const float radius,
+		GLuint reduced_points, GLuint reduced_points_indices, const unsigned num_reduced_points);
 
 	point_cloud build_test_point_cloud(int x, int y, int z, int grid_size,float cube_size) {
 		double dgrid_size = grid_size;
@@ -174,6 +185,7 @@ private:
 	vec3 model_position= vec3(0);
 	vec3 model_rotation = vec3(0);
 	float model_scale = 1.f;
+	dmat4 model_transform;
 
 	cgv::render::clod_point_render_style cp_style;
 	cgv::render::rounded_cone_render_style cone_style;
@@ -209,11 +221,16 @@ private:
 	std::vector<vec3> forward_normals;
 
 	// alternative draw programm for labeled points
-	cgv::render::shader_program custom_draw_prog;
+	cgv::render::shader_program custom_draw_prog, labeling_prog;
+	std::array<float,2> labeling_radius;
 	bool use_label_prog = false;
 	std::vector<GLint> point_labels;
 	GLuint point_label_buffer = 0;
 	bool init_label_buffer = true;
+
+
+	// queue for actions
+	std::vector<point_labeling_intend> queued_actions;
 };
 
 #include <cgv/config/lib_end.h>
