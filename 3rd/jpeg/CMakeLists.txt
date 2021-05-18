@@ -51,6 +51,12 @@ add_library(jpeg
         jutils.c)
 target_compile_definitions(jpeg PRIVATE JPEG_DLL)
 
+if (MSVC)
+    target_compile_options(jpeg PRIVATE /w)
+else ()
+    target_compile_options(jpeg PRIVATE -w)
+endif ()
+
 target_include_directories(jpeg PUBLIC
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
         $<INSTALL_INTERFACE:${CGV_3RD_INCLUDE_DEST}/jpeg>)
