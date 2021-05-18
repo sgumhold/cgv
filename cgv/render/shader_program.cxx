@@ -248,8 +248,8 @@ bool shader_program::attach_program(const context& ctx, const std::string& file_
 			std::cerr << last_error << std::endl;
 		return false;
 	}
-//	if (!content.empty() && content[0] == '§')
-//		content = cgv::utils::decode_base64(content.substr(1));
+	if (!content.empty() && content[0] == '§')
+		content = cgv::utils::decode_base64(content.substr(1));
 	if (get_shader_config()->show_file_paths)
 		std::cout << "read shader program <" << fn << ">" << std::endl;
 	static std::vector<line> lines;
