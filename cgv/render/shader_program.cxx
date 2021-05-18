@@ -77,8 +77,8 @@ bool shader_program::collect_program(const std::string& file_name, std::vector<s
 	std::string content;
 	if (!cgv::base::read_data_file(fn, content, true))
 		return false;
-//	if (!content.empty() && content[0] == '§')
-//		content = cgv::utils::decode_base64(content.substr(1));
+	if (!content.empty() && content[0] == '§')
+		content = cgv::utils::decode_base64(content.substr(1));
 	std::vector<line> lines;
 	split_to_lines(content, lines);
 	bool added_file = false;
