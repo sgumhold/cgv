@@ -23,6 +23,12 @@ target_compile_definitions(tif PRIVATE
         TIF_PLATFORM_CONSOLE
         FILLODER_LSB2MSB)
 
+if (MSVC)
+    target_compile_options(tif PRIVATE /w)
+else ()
+    target_compile_options(tif PRIVATE -w)
+endif ()
+
 target_include_directories(tif PUBLIC
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
         $<INSTALL_INTERFACE:${CGV_3RD_INCLUDE_DEST}/tif>)
