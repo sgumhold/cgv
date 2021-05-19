@@ -902,7 +902,7 @@ std::string to_string(PrimitiveType pt)
 	const char* pt_str[] = {
 		"undef", "points", "lines", "lines_adjacency", "line_strip", "line_strip_adjacency", "line_loop", 
 		"triangles", "triangles_adjacency", "triangle_strip", "triangle_strip_adjacency", "triangle_fan", 
-		"quads", "quad_strip", "polygon"
+		"quads", "quad_strip", "polygon", "patches"
 	};
 	return pt_str[pt];
 }

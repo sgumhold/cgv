@@ -99,7 +99,7 @@ namespace cgv {
   events with the vr_server::on_status_change signal and all others via the vr_server::on_event
   signal.
 
-  There is a signelton vr_server instance provided with cgv::gui::ref_vr_server().
+  There is a singleton vr_server instance provided with cgv::gui::ref_vr_server().
   The current vr_kit states are polled with	the check_and_emit_events() or in
   case some other class has queried the states with the check_new_state() functions for each
   vr_kit separately. In an interval of get_device_scan_interval() seconds the vr_kits are
@@ -109,28 +109,28 @@ namespace cgv {
   vr_server::on_device_change or vr_server::on_status_change signals in order to receive
   device change or status change events.
 
-  1. call the cgv::gui::connect_vr_server() function in the contructor of one of your
-     plugin classes with *false* as function paramter. Then a predefined callback function
-	 is attached to the animation trigger singelton (accessed through the header <cgv/gui/trigger.h>)
-	 that calls the vr_server singelton's check_and_emit_events() function with 60Hz.
-	 The vr_server::on_event signal is attached to a callback that displatches the events
+  1. call the cgv::gui::connect_vr_server() function in the constructor of one of your
+     plugin classes with *false* as function parameter. Then a predefined callback function
+	 is attached to the animation trigger singleton (accessed through the header <cgv/gui/trigger.h>)
+	 that calls the vr_server singleton's check_and_emit_events() function with 60Hz.
+	 The vr_server::on_event signal is attached to a callback that dispatches the events
 	 with the standard event processing of the framework. All registered classes derived
 	 from cgv::gui::event_handler will see the events and can process them. 
 	
-  2. call the cgv::gui::connect_vr_server() function in the contructor of one of your
-     plugin classes with *true* as function paramter. Again a callback function
-	 is attached to the animation trigger singelton but it calls the 
-	 vr_server singelton's check_device_changes() such that only device change events
+  2. call the cgv::gui::connect_vr_server() function in the constructor of one of your
+     plugin classes with *true* as function parameter. Again a callback function
+	 is attached to the animation trigger singleton but it calls the
+	 vr_server singleton's check_device_changes() such that only device change events
 	 are generated. In this case you or the crg_vr_view plugin have to poll the vr_kit 
 	 states and call the vr_server's check_new_state() function. Again the 
-	 vr_server::on_event signal is attached to a callback that displatches the events
+	 vr_server::on_event signal is attached to a callback that dispatches the events
 	 to all registered cgv::gui::event_handler instances.
 
   3. connect directly to the vr_server::on_event signal and a timer event function to
      the animation trigger. Then you need to call the vr_server's check_and_emit_events() 
 	 or check_new_state() function in your timer event function. In this approach all
 	 vr events are dispatched only to the callback function that you attach to the 
-	 vr_server::on_event signal of the vr_server singelton.
+	 vr_server::on_event signal of the vr_server singleton.
   */
 		class CGV_API vr_server
 		{
@@ -190,7 +190,7 @@ namespace cgv {
 			void disable_log(const int kit_index=0);
 			/// return a reference to the used vr_log object
 			vr::vr_log& ref_log(const int kit_index=0);
-			/// returns a pointer to the active log data container, ment for extending the lifetime of the log data beyond a new enable_log call
+			/// returns a pointer to the active log data container, meant for extending the lifetime of the log data beyond a new enable_log call
 			cgv::data::ref_ptr<vr::vr_log> get_log(const int kit_index=0);
 		};
 
