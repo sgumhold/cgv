@@ -8,7 +8,7 @@ namespace cgv {
 		{
 			static int ref_count = 0;
 			static spline_tube_renderer r;
-			r.manage_singelton(ctx, "spline_tube_renderer", ref_count, ref_count_change);
+			r.manage_singleton(ctx, "spline_tube_renderer", ref_count, ref_count_change);
 			return r;
 		}
 

@@ -10,7 +10,7 @@ namespace cgv {
 		{
 			static int ref_count = 0;
 			static line_renderer r;
-			r.manage_singelton(ctx, "line_renderer", ref_count, ref_count_change);
+			r.manage_singleton(ctx, "line_renderer", ref_count, ref_count_change);
 			return r;
 		}
 		render_style* line_renderer::create_render_style() const

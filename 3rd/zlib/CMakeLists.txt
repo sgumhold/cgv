@@ -20,6 +20,12 @@ add_library(zlib
         zutil.c)
 target_compile_definitions(zlib PRIVATE ZLIB_DLL)
 
+if (MSVC)
+    target_compile_options(zlib PRIVATE /w)
+else ()
+    target_compile_options(zlib PRIVATE -w)
+endif ()
+
 target_include_directories(zlib PUBLIC
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
         $<INSTALL_INTERFACE:${CGV_3RD_INCLUDE_DEST}/zlib>)
