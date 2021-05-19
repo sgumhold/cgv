@@ -1,0 +1,6 @@
+file(GLOB_RECURSE SOURCES RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "*.cxx")
+file(GLOB_RECURSE IMAGES RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "*.png")
+cgv_prepare_resources(${CMAKE_SOURCE_DIR} IMG_SOURCES ${IMAGES})
+add_library(cg_icons ${SOURCES} ${IMG_SOURCES} ${IMAGES})
+target_link_libraries(cg_icons cgv_base)
+install(TARGETS cg_icons EXPORT cgv_plugins DESTINATION ${CGV_LIB_DEST})
