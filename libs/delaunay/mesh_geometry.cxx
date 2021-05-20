@@ -1,5 +1,6 @@
 #include "epsilon.h"
 #include "mesh_geometry.h"
+#include <random>
 #include <algorithm>
 #include <math.h>
 
@@ -114,8 +115,10 @@ void mesh_geometry<C,P>::generate_sample_data_set(unsigned int n, SamplingType s
 		}
 	}
 
-	if (do_random_shuffle)
-		std::random_shuffle(P.begin()+N, P.end());
+	if (do_random_shuffle) {
+		std::default_random_engine r;
+		std::shuffle(P.begin() + N, P.end(), r);
+	}
 }
 
 
