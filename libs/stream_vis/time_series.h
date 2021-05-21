@@ -81,7 +81,7 @@ namespace stream_vis {
 		/// access sample of given sample index and store components specified in tsa in passed float array that must have sufficient space
 		virtual bool put_sample_as_float(size_t sample_index, float* output, TimeSeriesAccessor tsa = TSA_ALL) const = 0;
 	};
-	
+
 	/// template class that optionally allows to subtract value offset from stored values
 	template <typename Time, typename Store, typename Value, bool use_value_offset = true>
 	class time_series_value_offset : public time_series_base
@@ -135,9 +135,9 @@ namespace stream_vis {
 	class time_series_cache : public time_series_value_offset<Time,Store,Value,use_value_offset>
 	{
 	public:
-		typedef typename Time time_type;
-		typedef typename Value value_type;
-		typedef typename Store stored_type;
+		typedef Time time_type;
+		typedef Value value_type;
+		typedef Store stored_type;
 		typedef typename std::pair<double, Value> sample_type;
 		typedef typename std::pair<Time, Store> stored_sample_type;
 	protected:
@@ -150,9 +150,9 @@ namespace stream_vis {
 		/// return current number of cached samples
 		size_t get_nr_cached_samples() const { return sample_cache.size(); }
 		/// return const pointer to stored sample of given index or null if this sample is currently not cached
-		const stored_sample_type* get_sample_ptr(size_t si) const { return convert_to_cached_sample_index(si) ? &sample_cache[si] : 0; }
+		const stored_sample_type* get_sample_ptr(size_t si) const { return this->convert_to_cached_sample_index(si) ? &sample_cache[si] : 0; }
 		/// return pointer to stored sample of given index or null if this sample is currently not cached
-		stored_sample_type* get_sample_ptr(size_t si) { return convert_to_cached_sample_index(si) ? &sample_cache[si] : 0; }
+		stored_sample_type* get_sample_ptr(size_t si) { return this->convert_to_cached_sample_index(si) ? &sample_cache[si] : 0; }
 		/// return const void pointer to stored sample
 		const void* get_void_sample_ptr(size_t si) const { return get_sample_ptr(si); }
 		/// return void pointer to stored sample
@@ -160,19 +160,19 @@ namespace stream_vis {
 		/// set new time offset and update time values of already stored samples
 		void set_time_offset(double offset)
 		{
-			if (initialized) // update time of already stored samples to new offset
-				for (size_t si = get_sample_index_of_first_cached_sample(); si < get_nr_samples(); ++si) {
+			if (this->initialized) // update time of already stored samples to new offset
+				for (size_t si = this->get_sample_index_of_first_cached_sample(); si < this->get_nr_samples(); ++si) {
 					auto& t = reinterpret_cast<stored_sample_type*>(get_void_sample_ptr(si))->first;
-					t = Time(time_offset + t - offset);
+					t = Time(this->time_offset + t - offset);
 				}
 			else
-				initialized = true;
-			time_offset = offset;
+				this->initialized = true;
+			this->time_offset = offset;
 		}
 		/// construct stored time
-		Time construct_stored_time(const double& time) const { return Time(time - time_offset); }
+		Time construct_stored_time(const double& time) const { return Time(time - this->time_offset); }
 		/// reconstruct value from stored value
-		double reconstruct_time(const Time& stored_time) const { return time_offset + stored_time; }
+		double reconstruct_time(const Time& stored_time) const { return this->time_offset + stored_time; }
 		/// reconstruct sample from stored sample
 		sample_type reconstruct_sample(const stored_sample_type& stored_sample)
 		{
@@ -181,24 +181,24 @@ namespace stream_vis {
 		/// append a new sample by conversion to internal types
 		void append_sample(double time, const Value& value)
 		{
-			if (!initialized) {
-				time_offset = time;
-				initialized = true;
-				if (has_ringbuffer())
-					sample_cache.reserve(get_ringbuffer_size());
+			if (!this->initialized) {
+				this->time_offset = time;
+				this->initialized = true;
+				if (this->has_ringbuffer())
+					sample_cache.reserve(this->get_ringbuffer_size());
 			}
-			stored_sample_type s(construct_stored_time(time), construct_stored_value(value));
-			if (has_ringbuffer() && get_nr_samples() >= ringbuffer_size)
-				sample_cache[get_cached_sample_index(get_nr_samples())] = s;
+			stored_sample_type s(this->construct_stored_time(time), this->construct_stored_value(value));
+			if (this->has_ringbuffer() && this->get_nr_samples() >= this->ringbuffer_size)
+				sample_cache[this->get_cached_sample_index(this->get_nr_samples())] = s;
 			else
 				sample_cache.push_back(s);
-			++nr_samples;
+			++this->nr_samples;
 		}
-		void set_ringbuffer_size(size_t rbs) 
+		void set_ringbuffer_size(size_t rbs)
 		{
 			time_series_base::set_ringbuffer_size(rbs);
-			if (ringbuffer_size > 0)
-				sample_cache.reserve(ringbuffer_size);
+			if (this->ringbuffer_size > 0)
+				sample_cache.reserve(this->ringbuffer_size);
 		}
 	};
 
@@ -213,9 +213,9 @@ namespace stream_vis {
 		/// put time and value of queried sample component into passed references and return whether sample of given index was available
 		bool put_sample_as_float(size_t fst_si_then_csi, float* output, TimeSeriesAccessor tsa = TSA_ALL) const
 		{
-			if (!convert_to_cached_sample_index(fst_si_then_csi))
+			if (!this->convert_to_cached_sample_index(fst_si_then_csi))
 				return false;
-			const stored_sample_type& s = sample_cache[fst_si_then_csi];
+			const typename time_series_cache<Time, Store, Value, use_value_offset>::stored_sample_type& s = this->sample_cache[fst_si_then_csi];
 			if ((tsa & TSA_TIME) != 0)
 				*output++ = s.first;
 			if ((tsa & TSA_X) != 0)
@@ -239,9 +239,9 @@ namespace stream_vis {
 		/// put time and value of queried sample component into passed references and return whether sample of given index was available
 		bool put_sample_as_float(size_t fst_si_snd_csi, float* output, TimeSeriesAccessor tsa = TSA_ALL) const
 		{
-			if (!convert_to_cached_sample_index(fst_si_snd_csi))
+			if (!this->convert_to_cached_sample_index(fst_si_snd_csi))
 				return false;
-			const stored_sample_type& s = sample_cache[fst_si_snd_csi];
+			const typename time_series_cache<Time, cgv::math::fvec<Store, N>, cgv::math::fvec<Value, N>, use_value_offset>::stored_sample_type& s = this->sample_cache[fst_si_snd_csi];
 			if ((tsa & TSA_TIME) != 0)
 				*output++ = s.first;
 			if ((tsa & TSA_X) != 0)
@@ -282,9 +282,9 @@ namespace stream_vis {
 		/// put time and value of queried sample component into passed references and return whether sample of given index was available
 		bool put_sample_as_float(size_t fst_si_then_csi, float* output, TimeSeriesAccessor tsa = TSA_ALL) const
 		{
-			if (!convert_to_cached_sample_index(fst_si_then_csi))
+			if (!this->convert_to_cached_sample_index(fst_si_then_csi))
 				return false;
-			const stored_sample_type& s = sample_cache[fst_si_then_csi];
+			const typename time_series_cache<Time, cgv::math::quaternion<Store>, cgv::math::quaternion<Value>, use_value_offset>::stored_sample_type& s = this->sample_cache[fst_si_then_csi];
 			if ((tsa & TSA_TIME) != 0)
 				*output++ = s.first;
 			if ((tsa & TSA_X) != 0)

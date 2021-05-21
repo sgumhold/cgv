@@ -4,7 +4,6 @@ vertex_file:view.glsl
 vertex_file:quaternion.glsl
 vertex_file:sphere_lib.glvs
 vertex_file:plot_lib.glsl
-geometry_shader_info:points;triangle_strip;4
 geometry_file:sphere.glgs
 geometry_file:sphere_lib.glgs
 geometry_file:splat.glsl

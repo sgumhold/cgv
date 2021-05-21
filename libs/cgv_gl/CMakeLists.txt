@@ -14,7 +14,7 @@ shader_test("${CGV_DIR}"
         ST_INSTALL_DIR
         ${SHADERS})
 
-add_library(cgv_gl ${SOURCES} ${PPP_FILES} ${ST_FILES})
+add_library(cgv_gl ${SOURCES} ${PPP_FILES} ${ST_FILES} ${SHADERS})
 target_compile_definitions(cgv_gl PRIVATE CGV_RENDER_GL_EXPORTS CGV_GL_EXPORTS)
 target_link_libraries(cgv_gl
         cgv_utils
