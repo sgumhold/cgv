@@ -155,7 +155,7 @@ namespace stream_vis {
 			}
 			if (cnt != N)
 				return false;
-			append_sample(timestamp, pos);
+			this->append_sample(timestamp, pos);
 			return true;
 		}
 		const time_series_base& series() const { return *this; }

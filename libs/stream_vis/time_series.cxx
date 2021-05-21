@@ -96,9 +96,9 @@ namespace stream_vis {
 		time_offset = 0;
 	}
 
-	template time_series<float, bool, bool>;
-	template time_series<float, int32_t, int64_t>;
-	template time_series<float, uint32_t, uint64_t>;
-	template time_series<float, cgv::math::fvec<float, 3>, cgv::math::fvec<double, 3>>;
-	template time_series<float, cgv::math::quaternion<float>, cgv::math::quaternion<double>>;
+	template class time_series<float, bool, bool>;
+	template class time_series<float, int32_t, int64_t>;
+	template class time_series<float, uint32_t, uint64_t>;
+	template class time_series<float, cgv::math::fvec<float, 3>, cgv::math::fvec<double, 3>>;
+	template class time_series<float, cgv::math::quaternion<float>, cgv::math::quaternion<double>>;
 }
