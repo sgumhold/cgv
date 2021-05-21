@@ -70,7 +70,7 @@ public:
 	void set(const vec_type& axis, coord_type angle)
 	{
 		angle *= (coord_type)0.5;
-		set(cos(angle), sin(angle)*axis);
+		set(cos(angle), coord_type(sin(angle))*axis);
 	}
 	/// setter from quaternion
 	void set(const quaternion<T>& quat) { *this = quat; }
