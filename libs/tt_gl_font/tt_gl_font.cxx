@@ -176,6 +176,16 @@ namespace cgv {
 		return rrs;
 	}
 
+	cgv::render::attribute_array_manager& ref_attribute_manager(cgv::render::context& ctx)
+	{
+		static cgv::render::attribute_array_manager aam;
+		static bool initialized = false;
+		if (!initialized) {
+			aam.init(ctx);
+		}
+		return aam;
+	}
+
 	struct ext_font_face_info : public font_face_info
 	{
 		std::string font_name;
@@ -416,6 +426,7 @@ namespace cgv {
 		if (init_rr)
 			init_rr = 0;
 		rr.set_render_style(ref_rectangle_render_style());
+		rr.enable_attribute_array_manager(*ctx_ptr, ref_attribute_manager(*ctx_ptr));
 		rr.set_textured_rectangle_array(*ctx_ptr, Q);
 		rr.set_color(*ctx_ptr, ctx_ptr->get_color());
 		ref_texture(*ctx_ptr).enable(*ctx_ptr);
@@ -428,6 +439,7 @@ namespace cgv {
 		glDisable(GL_DEPTH_TEST);
 		glDepthMask(GL_FALSE);
 		rr.render(*ctx_ptr, 0, (GLsizei)Q.size());
+		rr.disable_attribute_array_manager(*ctx_ptr, ref_attribute_manager(*ctx_ptr));
 		glBlendFunc(blend_src, blend_dst);
 		glDepthMask(GL_TRUE);
 		if (!blend)
