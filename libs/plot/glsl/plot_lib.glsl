@@ -192,7 +192,7 @@ float opacity_gamma_mapping(in float v, in float gamma)
 
 float map_opacity(in float v, int idx)
 {
-	return (opacity_min[idx] + (opacity_max[idx] - opacity_min[idx])) * opacity_gamma_mapping(v, opacity_gamma[idx], idx);
+	return (opacity_max[idx] - opacity_min[idx]) * opacity_gamma_mapping(v, opacity_gamma[idx], idx) + opacity_min[idx];
 }
 
 float map_opacity(in float v)

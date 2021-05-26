@@ -7,6 +7,7 @@
 #include <cgv/render/attribute_array_binding.h>
 #include <cgv/render/vertex_buffer.h>
 #include <cgv/render/shader_program.h>
+#include <libs/cgv_gl/rectangle_renderer.h>
 #include <cgv/media/color.h>
 #include <cgv/media/color_scale.h>
 #include <cgv/media/font/font.h>
@@ -257,7 +258,7 @@ struct sample_access
 };
 
 /** base class for plot2d and plot3d, which can have several sub plots each */
-class CGV_API plot_base : public cgv::render::drawable
+class CGV_API plot_base : public cgv::render::drawable, virtual public cgv::signal::tacker
 {
 	/**@name tick render information management */
 	//@{
@@ -294,12 +295,12 @@ protected:
 		///
 		tick_batch_info(int _ai, int _aj, bool _primary, unsigned _first_vertex = 0, unsigned _first_label = 0);
 	};
-	/// all vertex locations of tick lines
-	std::vector<vec2> tick_vertices, legend_tick_vertices;
 	/// all tick labels 
 	std::vector<label_info> tick_labels, legend_tick_labels;
 	/// twice number of axis pairs with index of first tick label and number of tick labels for primary and secondary ticks
 	std::vector<tick_batch_info> tick_batches, legend_tick_batches;
+	/// depth offset of a single layer
+	float layer_depth;
 
 	/**@name font name handling*/
 	//@{
@@ -347,6 +348,8 @@ public:
 	vec3 legend_location;
 	/// width of legend
 	vec2 legend_extent;
+	/// coordinate direction along which to draw legend
+	int legend_axis;
 	/// color and opacity of legend
 	rgba legend_color;
 	//@}
@@ -399,7 +402,8 @@ protected:
 	cgv::render::attribute_array_binding aab_legend;
 	/// attribute sources
 	std::vector<attribute_source_array> attribute_source_arrays;
-
+	///
+	void on_legend_axis_change(cgv::gui::provider& p, cgv::gui::control<int>& ctrl);
 	/// callback to change fonts
 	void on_font_selection();
 	/// callback to change font face
@@ -412,6 +416,15 @@ private:
 	/// dimension independent implementation of attribute enabling
 	size_t enable_attributes(cgv::render::context& ctx, int i, const sample_access& sa);
 protected:
+	/// render style of rectangles
+	cgv::render::rectangle_render_style rrs, font_rrs;
+	cgv::render::attribute_array_manager aam_legend, aam_legend_ticks;
+	///
+	void draw_rectangles(cgv::render::context& ctx, cgv::render::attribute_array_manager& aam, 
+		std::vector<box2>& R, std::vector<rgb>& C, std::vector<float>& D, size_t offset = 0);
+	///
+	void draw_tick_labels(cgv::render::context& ctx, cgv::render::attribute_array_manager& aam_ticks, 
+		std::vector<label_info>& tick_labels, std::vector<tick_batch_info>& tick_batches, const std::string& title, const rgba& title_color, float depth);
 	/// set vertex shader input attributes based on attribute source information
 	size_t enable_attributes(cgv::render::context& ctx, int i, const std::vector<std::vector<vec2>>& samples);
 	/// set vertex shader input attributes based on attribute source information
@@ -425,7 +438,17 @@ protected:
 	///
 	void draw_sub_plot_samples(int count, const plot_base_config& spc, bool strip = false);
 	///
-	void draw_legend(cgv::render::context& ctx, float depth_offset = 0.0f);
+	void draw_legend(cgv::render::context& ctx, int layer_idx = 0);
+	///
+	bool extract_tick_rectangles_and_tick_labels(
+		std::vector<box2>& R, std::vector<rgb>& C, std::vector<float>& D,
+		std::vector<label_info>& tick_labels, int ai, int ci, int ti, float he, 
+		float z_plot, float plot_scale = 1.0f, vec2 plot_offset = vec2(0.0f,0.0f), float d = 5.0f, bool multi_axis = true);
+	///
+	void extract_legend_tick_rectangles_and_tick_labels(
+		std::vector<box2>& R, std::vector<rgb>& C, std::vector<float>& D,
+		std::vector<label_info>& tick_labels, std::vector<tick_batch_info>& tick_batches, float d, bool clear_cache = false);
+
 public:
 	/// construct from plot dimension and number of additional attributes with default parameters
 	plot_base(unsigned dim, unsigned nr_attributes = 0);
