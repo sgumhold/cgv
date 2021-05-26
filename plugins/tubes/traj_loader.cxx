@@ -51,10 +51,8 @@ struct trajectory_handler_registry : public cgv::base::base, public cgv::base::r
 	void unregister_object(cgv::base::base_ptr object, const std::string &)
 	{
 		for (unsigned i=0; i<handlers().size(); i++)
-		{
 			if (object == handlers()[i])
 				handlers().erase(handlers().begin()+i);
-		}
 	}
 };
 
