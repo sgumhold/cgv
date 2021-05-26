@@ -242,8 +242,6 @@ class octree_lod_generator : public cgv::render::render_types {
 			return grid_size;
 		}
 
-		inline Chunks<point_t> lod_chunking(const point_t* vertices, const size_t num_points,const vec3& min, const vec3& max, const float& size);
-
 		inline std::vector<std::atomic_int32_t> lod_counting(const point_t* vertices, const int64_t num_points, int64_t grid_size, const vec3& min, const vec3& max, const float& size);
 			
 		inline std::vector<std::atomic_int32_t> lod_counting(const vec3* positions, const int64_t num_points, int64_t grid_size, const vec3& min, const vec3& max, const float& cube_size);
@@ -272,6 +270,9 @@ class octree_lod_generator : public cgv::render::render_types {
 		//creates a octree structure out of IndexNodes and returns a shared pointer to the root
 		inline std::shared_ptr<IndexNode<point_t>> build_octree(const std::vector<point_t>& points);
 		
+		//splits points into chunks
+		inline Chunks<point_t> chunking(const point_t* vertices, const size_t num_points, const vec3& min, const vec3& max, const float& size);
+
 		octree_lod_generator(){
 			//create a thread pool
 			pool_ptr = std::make_unique<cgv::pointcloud::utility::WorkerPool>((std::thread::hardware_concurrency() - 1));
@@ -525,7 +526,7 @@ struct SamplerRandom : public Sampler<point_t> {
 	}
 		
 	template <typename point_t>
-	Chunks<point_t> octree_lod_generator<point_t>::lod_chunking(const point_t* vertices, const size_t num_points, const vec3& min, const vec3& max, const float& cube_size)
+	Chunks<point_t> octree_lod_generator<point_t>::chunking(const point_t* vertices, const size_t num_points, const vec3& min, const vec3& max, const float& cube_size)
 	{
 		// stores chunks created by the chunking phase
 		Chunks<point_t> chunks;
@@ -1424,7 +1425,7 @@ struct SamplerRandom : public Sampler<point_t> {
 
 		max = min + vec3(cube_size, cube_size, cube_size);
 
-		Chunks<point_t> nodes = lod_chunking(source_data, source_data_size, min, max, cube_size);
+		Chunks<point_t> nodes = chunking(source_data, source_data_size, min, max, cube_size);
 
 		SamplerRandom<point_t> sampler;
 		FlatIndexer indexer(&out);
@@ -1461,7 +1462,7 @@ struct SamplerRandom : public Sampler<point_t> {
 
 		max = min + vec3(cube_size, cube_size, cube_size);
 
-		Chunks<point_t> nodes = lod_chunking(source_data, source_data_size, min, max, cube_size);
+		Chunks<point_t> nodes = chunking(source_data, source_data_size, min, max, cube_size);
 
 		SamplerRandom<point_t> sampler;
 		Indexer indexer;
