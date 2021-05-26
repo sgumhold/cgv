@@ -61,7 +61,7 @@ void main()
 	if (!computer_ray_sphere_intersection(fi.percentual_splat_size, p_eye, n_eye, tc, gl_FragDepth, side, percentual_radial_position))
 		discard;
 
-	vec4 color = compute_reflected_appearance_texture(p_eye, n_eye, tc, fi.color, side);
+	vec4 color = compute_reflected_appearance(p_eye, n_eye, fi.color, side);
 	vec4 halo_color = vec4(mix(fi.color.rgb, fi.halo_color.rgb, halo_color_strength), fi.halo_color.a);
 	vec4 blend_color = compute_blended_color_with_halo(percentual_radial_position, color, fi.percentual_core_size, halo_color, fi.percentual_point_size, fi.percentual_blend_width);
 	finish_fragment(blend_color);

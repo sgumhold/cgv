@@ -185,13 +185,12 @@ std::string get_severity_tag_name(GLenum tag)
 
 void GLAPIENTRY debug_callback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam)
 {
+	if (severity == GL_DEBUG_SEVERITY_NOTIFICATION)
+		return;
 	const gl_context* ctx = reinterpret_cast<const gl_context*>(userParam);
 	std::string msg(message, length);
 	msg = std::string("GLDebug Message[") + cgv::utils::to_string(id) + "] from " + get_source_tag_name(source) + " of type " + get_type_tag_name(type) + " of severity " + get_severity_tag_name(severity) + "\n" + msg;
-	if (severity == GL_DEBUG_SEVERITY_NOTIFICATION)
-		std::cerr << msg << std::endl;
-	else
-		ctx->error(msg);
+	ctx->error(msg);
 }
 
 /// define lighting mode, viewing pyramid and the rendering mode
@@ -243,7 +242,7 @@ bool gl_context::configure_gl()
 				glDebugMessageCallback(debug_callback, this);
 		}
 	}
-	enable_font_face(info_font_face, info_font_size);
+	//enable_font_face(info_font_face, info_font_size);
 	// use the eye location to compute the specular lighting
 	if (!core_profile) {
 		glLightModelf(GL_LIGHT_MODEL_LOCAL_VIEWER, 0);
