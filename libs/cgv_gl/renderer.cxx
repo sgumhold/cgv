@@ -131,7 +131,7 @@ namespace cgv {
 			if (_aam_ptr)
 				enable_attribute_array_manager(ctx, *_aam_ptr);
 			else
-				disable_attribute_array_manager(ctx, *_aam_ptr);
+				disable_attribute_array_manager(ctx, *aam_ptr);
 		}
 		bool renderer::set_attribute_array(const context& ctx, int loc, type_descriptor element_type, const vertex_buffer& vbo, size_t offset_in_bytes, size_t nr_elements, unsigned stride_in_bytes)
 		{
