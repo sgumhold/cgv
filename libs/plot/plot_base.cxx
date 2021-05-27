@@ -33,6 +33,11 @@ domain_config::domain_config(unsigned nr_axes) : color(0.85f,0.85f,0.85f), axis_
 	label_font_index = -1;
 	label_font_size = 24.0f;
 	label_ffa = cgv::media::font::FFA_BOLD_ITALIC;
+	title_color = rgba(0.2f, 0.2f, 0.2f, 1.0f);
+	title_font_index = -1;
+	title_font_size = 36.0f;
+	title_ffa = cgv::media::font::FFA_BOLD;
+	title_pos = vecn(0.0f, 0.0f);
 }
 plot_base_config::plot_base_config(const std::string& _name, unsigned dim) : name(_name)
 {
@@ -283,6 +288,15 @@ void plot_base::ensure_font_names()
 			}
 		on_font_selection();
 	}
+	if (!title_font) {
+		get_domain_config_ptr()->title_font_index = 0;
+		for (auto iter = font_names.begin(); iter != font_names.end(); ++iter)
+			if (std::string(*iter) == "Times New Roman") {
+				get_domain_config_ptr()->title_font_index = (unsigned)(iter - font_names.begin());
+				break;
+			}
+		on_font_selection();
+	}
 }
 
 void plot_base::on_legend_axis_change(cgv::gui::provider& p, cgv::gui::control<int>& ctrl)
@@ -298,12 +312,18 @@ void plot_base::on_legend_axis_change(cgv::gui::provider& p, cgv::gui::control<i
 }
 void plot_base::on_font_selection()
 {
-	label_font = cgv::media::font::find_font(font_names[get_domain_config_ptr()->label_font_index]);
+	if (get_domain_config_ptr()->label_font_index != -1)
+		label_font = cgv::media::font::find_font(font_names[get_domain_config_ptr()->label_font_index]);
+	if (get_domain_config_ptr()->title_font_index != -1)
+		title_font = cgv::media::font::find_font(font_names[get_domain_config_ptr()->title_font_index]);
 	on_font_face_selection();
 }
 void plot_base::on_font_face_selection()
 {
-	label_font_face = label_font->get_font_face(get_domain_config_ptr()->label_ffa);
+	if (label_font)
+		label_font_face = label_font->get_font_face(get_domain_config_ptr()->label_ffa);
+	if (title_font)
+		title_font_face = title_font->get_font_face(get_domain_config_ptr()->title_ffa);
 }
 void plot_base::set_plot_uniforms(cgv::render::context& ctx, cgv::render::shader_program& prog)
 {
@@ -321,6 +341,7 @@ void plot_base::set_plot_uniforms(cgv::render::context& ctx, cgv::render::shader
 	}
 	vec3 E(extent.size(), &extent(0));
 	prog.set_uniform(ctx, "extent", E);
+	prog.set_uniform(ctx, "out_of_range_mode", out_of_range_mode);
 	prog.set_uniform_array(ctx, "attribute_min", attribute_min);
 	prog.set_uniform_array(ctx, "attribute_max", attribute_max);
 	prog.set_uniform_array(ctx, "axis_log_scale", axis_log_scale);
@@ -513,6 +534,7 @@ plot_base::plot_base(unsigned _dim, unsigned _nr_attributes) : dom_cfg(_dim+_nr_
 	vbo_legend(cgv::render::VBT_VERTICES, cgv::render::VBU_STREAM_DRAW)
 {
 	dim = _dim;
+	out_of_range_mode = ivec4(0);
 	view_ptr = 0;
 	nr_attributes = _nr_attributes;
 	layer_depth = 0.00001f;
@@ -694,8 +716,56 @@ void plot_base::extract_legend_tick_rectangles_and_tick_labels(
 	}
 }
 
+void plot_base::draw_title(cgv::render::context& ctx, vec2 pos, float depth, int si)
+{
+	// enable title font face
+	if (title_font_face.empty())
+		return;
+	cgv::tt_gl_font_face_ptr ff = dynamic_cast<cgv::tt_gl_font_face*>(&(*title_font_face));
+	if (!ff)
+		return;
+	float rs = 0.2f * get_domain_config_ptr()->reference_size;
+	ctx.enable_font_face(ff, 5 * get_domain_config_ptr()->title_font_size);
+	
+	// collect all colored quads
+	std::vector<cgv::render::textured_rectangle> Q;
+	std::vector<rgba> C;
+
+	auto* cfg = get_domain_config_ptr();
+	if (si <= 0) {
+		vec2 pos_aligned = ff->align_text(pos, cfg->title, cgv::render::TA_NONE, rs, true);
+		unsigned cnt = ff->text_to_quads(pos_aligned, cfg->title, Q, rs, true);
+		for (unsigned j = 0; j < cnt; ++j)
+			C.push_back(cfg->title_color);
+	}
+	pos[1] -= 5.0f * cfg->title_font_size * rs;
+	for (unsigned i = 0; i < get_nr_sub_plots(); ++i) {
+		if (si != -1 && i != si)
+			continue;
+		const auto& spc = ref_sub_plot_config(i);
+		vec2 pos_aligned = ff->align_text(pos, cfg->title, cgv::render::TA_NONE, rs, true);
+		unsigned cnt = ff->text_to_quads(pos_aligned, spc.name, Q, 0.8f * rs, true);
+		for (unsigned j = 0; j < cnt; ++j)
+			C.push_back(spc.ref_color.color);
+		pos[1] -= 4.0f * cfg->title_font_size * rs;
+	}
+	if (Q.empty())
+		return;
+
+	auto& rr = cgv::render::ref_rectangle_renderer(ctx);
+	font_rrs.default_depth_offset = depth;
+	rr.set_render_style(font_rrs);
+	rr.enable_attribute_array_manager(ctx, aam_title);
+	rr.set_textured_rectangle_array(ctx, Q);
+	rr.set_color_array(ctx, C);
+	ff->ref_texture(ctx).enable(ctx);
+	rr.render(ctx, 0, Q.size());
+	ff->ref_texture(ctx).disable(ctx);
+	rr.disable_attribute_array_manager(ctx, aam_title);
+}
+
 void plot_base::draw_tick_labels(cgv::render::context& ctx, cgv::render::attribute_array_manager& aam_ticks, 
-	std::vector<label_info>& tick_labels, std::vector<tick_batch_info>& tick_batches, const std::string& title, const rgba& title_color, float depth)
+	std::vector<label_info>& tick_labels, std::vector<tick_batch_info>& tick_batches, float depth)
 {
 	if (tick_labels.empty() || label_font_face.empty())
 		return;
@@ -728,14 +798,6 @@ void plot_base::draw_tick_labels(cgv::render::context& ctx, cgv::render::attribu
 				for (unsigned i = 0; i < cnt; ++i)
 					C.push_back(get_domain_config_ptr()->axis_configs[tbc.ai].color);
 			}
-		}
-		if (!title.empty()) {
-			vec2 p(0.0f, 0.1f);
-			vec2 pos = ff->align_text(p, title, cgv::render::TA_NONE, 1.3f * rs, true);
-			unsigned cnt = ff->text_to_quads(pos, title, Q, 1.3f * rs, true);
-			for (unsigned i = 0; i < cnt; ++i)
-				C.push_back(title_color);
-			p[1] -= 1.3f * rs * 20 * get_domain_config_ptr()->label_font_size;
 		}
 		if (Q.empty())
 			return;
@@ -819,7 +881,7 @@ void plot_base::draw_legend(cgv::render::context& ctx, int layer_idx, bool is_fi
 	std::string title;
 	rgba title_color;
 	++layer_idx;
-	draw_tick_labels(ctx, aam_legend_ticks, legend_tick_labels, legend_tick_batches, title, title_color, -layer_idx * layer_depth);
+	draw_tick_labels(ctx, aam_legend_ticks, legend_tick_labels, legend_tick_batches, -layer_idx * layer_depth);
 	ctx.pop_modelview_matrix();
 }
 
@@ -1097,6 +1159,7 @@ bool plot_base::init(cgv::render::context& ctx)
 	font_rrs = cgv::ref_rectangle_render_style();
 	ensure_font_names();
 	cgv::render::ref_rectangle_renderer(ctx, 1);
+	aam_title.init(ctx);
 	aam_legend.init(ctx);
 	aam_legend_ticks.init(ctx);
 	if (!legend_prog.build_program(ctx, "plot_legend.glpr", true)) {
@@ -1129,6 +1192,7 @@ bool plot_base::init(cgv::render::context& ctx)
 void plot_base::clear(cgv::render::context& ctx)
 {
 	cgv::render::ref_rectangle_renderer(ctx, -1);
+	aam_title.destruct(ctx);
 	aam_legend.destruct(ctx);
 	aam_legend_ticks.destruct(ctx);
 	aab_legend.destruct(ctx);
@@ -1225,14 +1289,37 @@ void plot_base::create_plot_gui(cgv::base::base* bp, cgv::gui::provider& p)
 	p.add_member_control(bp, "fill", get_domain_config_ptr()->fill, "toggle", "w=40");
 	if (open) {
 		p.align("\a");
+		p.add_member_control(bp, "out_of_range_mode_x", (cgv::type::DummyEnum&)out_of_range_mode[0], "dropdown", "enums='keep,discard,clamp'");
+		p.add_member_control(bp, "out_of_range_mode_y", (cgv::type::DummyEnum&)out_of_range_mode[1], "dropdown", "enums='keep,discard,clamp'");
+		if (get_dim() == 2) {
+			p.add_member_control(bp, "out_of_range_mode_a0", (cgv::type::DummyEnum&)out_of_range_mode[2], "dropdown", "enums='keep,discard,clamp'");
+			p.add_member_control(bp, "out_of_range_mode_a1", (cgv::type::DummyEnum&)out_of_range_mode[3], "dropdown", "enums='keep,discard,clamp'");
+		}
+		else {
+			p.add_member_control(bp, "out_of_range_mode_z", (cgv::type::DummyEnum&)out_of_range_mode[2], "dropdown", "enums='keep,discard,clamp'");
+			p.add_member_control(bp, "out_of_range_mode_a", (cgv::type::DummyEnum&)out_of_range_mode[3], "dropdown", "enums='keep,discard,clamp'");
+		}
 		p.add_member_control(bp, "fill color", get_domain_config_ptr()->color);
 		for (unsigned i = 0; i < get_domain_config_ptr()->axis_configs.size(); ++i)
 			get_domain_config_ptr()->axis_configs[i].create_gui(bp, p);
-		p.add_member_control(bp, "font_size", get_domain_config_ptr()->label_font_size, "value_slider", "min=8;max=40;log=false;ticks=true");
-		p.add_member_control(bp, "font", (cgv::type::DummyEnum&)get_domain_config_ptr()->label_font_index, "dropdown", font_name_enum_def);
+		p.add_member_control(bp, "title", get_domain_config_ptr()->title);
+		p.add_member_control(bp, "title_pos_x", get_domain_config_ptr()->title_pos[0], "value_slider", "min=-1;max=1;step=0.02;ticks=true");
+		p.add_member_control(bp, "title_pos_y", get_domain_config_ptr()->title_pos[1], "value_slider", "min=-1;max=1;step=0.02;ticks=true");
+		if (get_dim() == 3)
+			p.add_member_control(bp, "title_pos_z", get_domain_config_ptr()->title_pos[2], "value_slider", "min=-1;max=1;step=0.02;ticks=true");
+		p.add_member_control(bp, "title_font_size", get_domain_config_ptr()->title_font_size, "value_slider", "min=8;max=40;log=false;ticks=true");
+		p.add_member_control(bp, "title_font", (cgv::type::DummyEnum&)get_domain_config_ptr()->title_font_index, "dropdown", font_name_enum_def);
+		connect_copy(p.find_control((cgv::type::DummyEnum&)get_domain_config_ptr()->title_font_index)->value_change,
+			cgv::signal::rebind(this, &plot_base::on_font_selection));
+		p.add_member_control(bp, "title_font_face", get_domain_config_ptr()->title_ffa, "dropdown", "enums='normal,bold,italics,bold italics'");
+		connect_copy(p.find_control(get_domain_config_ptr()->title_ffa)->value_change,
+			cgv::signal::rebind(this, &plot_base::on_font_face_selection));
+
+		p.add_member_control(bp, "label_font_size", get_domain_config_ptr()->label_font_size, "value_slider", "min=8;max=40;log=false;ticks=true");
+		p.add_member_control(bp, "label_font", (cgv::type::DummyEnum&)get_domain_config_ptr()->label_font_index, "dropdown", font_name_enum_def);
 		connect_copy(p.find_control((cgv::type::DummyEnum&)get_domain_config_ptr()->label_font_index)->value_change,
 			cgv::signal::rebind(this, &plot_base::on_font_selection));
-		p.add_member_control(bp, "face", get_domain_config_ptr()->label_ffa, "dropdown", "enums='normal,bold,italics,bold italics'");
+		p.add_member_control(bp, "label_font_face", get_domain_config_ptr()->label_ffa, "dropdown", "enums='normal,bold,italics,bold italics'");
 		connect_copy(p.find_control(get_domain_config_ptr()->label_ffa)->value_change,
 			cgv::signal::rebind(this, &plot_base::on_font_face_selection));
 		p.align("\b");

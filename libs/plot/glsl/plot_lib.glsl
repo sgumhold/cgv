@@ -5,6 +5,7 @@ The following interface is implemented in this shader:
 //***** begin interface of plot_lib.glsl ***********************************
 uniform float attribute_min[8];
 uniform float attribute_max[8];
+bool discard_vertex(inout float attributes[8]);
 float tick_space_from_attribute_space(int ai, float value);
 float attribute_space_from_tick_space(int ai, float value);
 float window_space_from_tick_space(int ai, float value);
@@ -57,6 +58,12 @@ vec3 color_scale(in float v, int idx);
 vec3 color_scale(in float v, int idx);
 //***** end interface of color_scale.glsl ***********************************
 
+// for first three attributes the mode of handling data that is out of range
+// 0 .. keep
+// 1 .. discard
+// 2 .. clamp
+uniform ivec4 out_of_range_mode = ivec4(0, 0, 0, 0);
+
 // tick space transform
 uniform int axis_log_scale[8];
 uniform float axis_log_minimum[8];
@@ -91,6 +98,23 @@ uniform int   size_mapping[MAX_NR_SIZE_MAPPINGS] = { -1, -1 };
 uniform float size_gamma[MAX_NR_SIZE_MAPPINGS] = { 1.0, 1.0 };
 uniform float size_max[MAX_NR_SIZE_MAPPINGS] = { 1.0, 1.0 };
 uniform float size_min[MAX_NR_SIZE_MAPPINGS] = { 0.2, 0.2 };
+
+bool discard_vertex(inout float attributes[8])
+{
+	for (int ai = 0; ai < 4; ++ai) {
+		switch (out_of_range_mode[ai]) {
+		case 0: continue;
+		case 1:
+			if (attributes[ai] < attribute_min[ai] || attributes[ai] > attribute_max[ai])
+				return true;
+			break;
+		case 2:
+			attributes[ai] = clamp(attributes[ai], attribute_min[ai], attribute_max[ai]);
+			break;
+		}
+	}
+	return false;
+}
 
 float tick_space_from_attribute_space(int ai, float value)
 {

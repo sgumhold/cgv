@@ -281,20 +281,20 @@ namespace stream_vis {
 		cfg.show_points = cfg.show_sticks = cfg.show_bars = cfg.show_lines = false;
 
 		// set reference color, opacity and size before specifying marks
-		cfg.sub_plot_influence = cgv::plot::SPI_ALL;
-		if (parse_color("color", cfg.ref_color.color))
-			cfg.set_colors(cfg.ref_color.color);
-		if (parse_float("size", cfg.ref_size.size))
-			cfg.set_sizes(cfg.ref_size.size);
-
 		cfg.sub_plot_influence = cgv::plot::SPI_POINT;
-		parse_int("sub_plot_influence", (int&)cfg.sub_plot_influence);
+		bool spi_set = parse_int("sub_plot_influence", (int&)cfg.sub_plot_influence);
 		if (parse_int("color_idx", cfg.ref_color.color_idx))
 			cfg.set_color_indices(cfg.ref_color.color_idx);
 		if (parse_int("opacity_idx", cfg.ref_opacity.opacity_idx))
 			cfg.set_opacity_indices(cfg.ref_opacity.opacity_idx);
 		if (parse_int("size_idx", cfg.ref_size.size_idx))
 			cfg.set_size_indices(cfg.ref_size.size_idx);
+		if (!spi_set)
+			cfg.sub_plot_influence = cgv::plot::SPI_ALL;
+		if (parse_color("color", cfg.ref_color.color))
+			cfg.set_colors(cfg.ref_color.color);
+		if (parse_float("size", cfg.ref_size.size))
+			cfg.set_sizes(cfg.ref_size.size);
 
 		parse_marks(pi, cfg, dim);
 
@@ -322,16 +322,21 @@ namespace stream_vis {
 		parse_bool("auto_color", auto_color);
 		pi.nr_axes = dim + nr_attributes;
 		if (dim == 2) {
-			auto* plot2d_ptr = new cgv::plot::plot2d(unsigned(nr_attributes));
-			plot2d_ptr->disable_depth_mask = true;
+			auto* plot2d_ptr = new cgv::plot::plot2d(name, unsigned(nr_attributes));
 			pi.plot_ptr = plot2d_ptr;
 			vec2 ext = vec2(1.0f, 1.0f);
 			parse_vec2("extent", ext);
+			parse_bool("disable_depth_mask", plot2d_ptr->disable_depth_mask);
 			parse_float("dx", plot2d_ptr->sub_plot_delta[0]);
 			parse_float("dy", plot2d_ptr->sub_plot_delta[1]);
 			parse_float("dz", plot2d_ptr->sub_plot_delta[2]);
+			vec2 title_pos = vec2::from_vec(plot2d_ptr->get_domain_config_ptr()->title_pos);
+			if (parse_vec2("title_pos", title_pos))
+				plot2d_ptr->get_domain_config_ptr()->title_pos = title_pos.to_vec();
 			parse_bool("multi_x_axis_mode", plot2d_ptr->multi_axis_modes[0]);
 			parse_bool("multi_y_axis_mode", plot2d_ptr->multi_axis_modes[1]);
+			parse_int("out_of_range_mode_a0", pi.plot_ptr->out_of_range_mode[2]);
+			parse_int("out_of_range_mode_a1", pi.plot_ptr->out_of_range_mode[3]);
 			if (pi.nr_axes > 2)
 				parse_bool("multi_0_axis_mode", plot2d_ptr->multi_axis_modes[2]);
 			if (pi.nr_axes > 3)
@@ -344,8 +349,14 @@ namespace stream_vis {
 			vec3 ext;
 			if (parse_vec3("extent", ext))
 				pi.plot_ptr->set_extent(ext.to_vec());
+			parse_int("out_of_range_mode_z", pi.plot_ptr->out_of_range_mode[2]);
+			parse_int("out_of_range_mode_a0", pi.plot_ptr->out_of_range_mode[3]);
 		}
 		vec3 center;
+		get_value("title", pi.plot_ptr->get_domain_config_ptr()->title);
+		parse_int("title_font_face", (int&)pi.plot_ptr->get_domain_config_ptr()->title_ffa);
+		parse_float("title_font_size", pi.plot_ptr->get_domain_config_ptr()->title_font_size);
+		parse_color("title_color", pi.plot_ptr->get_domain_config_ptr()->title_color);
 		if (parse_vec3("center", center))
 			pi.plot_ptr->place_center(center);
 		vec2 leg_ctr;
@@ -361,11 +372,13 @@ namespace stream_vis {
 		dom_cfg.fill = false;
 		parse_bool("fill_domain", dom_cfg.fill);
 		parse_bool("show_domain", dom_cfg.show_domain);
+		parse_int("out_of_range_mode_x", pi.plot_ptr->out_of_range_mode[0]);
+		parse_int("out_of_range_mode_y", pi.plot_ptr->out_of_range_mode[1]);
 		parse_color("domain_color", dom_cfg.color);
 		quat ori;
 		if (parse_quat("orientation", ori))
 			pi.plot_ptr->set_orientation(ori);
-		parse_float("font_size", dom_cfg.label_font_size);
+		parse_float("label_font_size", dom_cfg.label_font_size);
 		//LegendComponent legend_components;
 		//vec3 legend_location;
 		//vec2 legend_extent;
@@ -456,8 +469,9 @@ namespace stream_vis {
 				unsigned n = pi.plot_ptr->get_nr_sub_plots();
 				if (n > 1) {
 					float scale = 1.0f / n;
-					for (unsigned i = 0; i < n; ++i)
+					for (unsigned i = 0; i < n; ++i) {
 						pi.plot_ptr->ref_sub_plot_config(i).set_colors(cgv::media::color_scale(scale * i, cgv::media::CS_HUE));
+					}
 				}
 			}
 			plot_pool_ptr->push_back(pi);

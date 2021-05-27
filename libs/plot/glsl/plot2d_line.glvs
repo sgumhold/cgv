@@ -48,6 +48,7 @@ mat3 get_inverse_normal_matrix();
 //***** begin interface of plot_lib.glsl ***********************************
 uniform float attribute_min[8];
 uniform float attribute_max[8];
+bool discard_vertex(inout float attributes[8]);
 float tick_space_from_attribute_space(int ai, float value);
 float attribute_space_from_tick_space(int ai, float value);
 float window_space_from_tick_space(int ai, float value);
@@ -81,11 +82,16 @@ void main()
 	attributes[5] = attribute5;
 	attributes[6] = attribute6;
 	attributes[7] = attribute7;
+	
+	if (discard_vertex(attributes)) {
+		vo.depth_offset = 110000.0;
+		return;
+	}
 
 	// compute position in window coordinates
 	vec3 position_window = vec3(
-		window_space_from_tick_space(0, tick_space_from_attribute_space(0, attribute0)),
-		window_space_from_tick_space(1, tick_space_from_attribute_space(1, attribute1)), 0.0);
+		window_space_from_tick_space(0, tick_space_from_attribute_space(0, attributes[0])),
+		window_space_from_tick_space(1, tick_space_from_attribute_space(1, attributes[1])), 0.0);
 
 	// map to visual attributes
 	vo.position_eye = (get_modelview_matrix()*vec4(plot_space_from_window_space(position_window)+sub_plot_delta, 1.0)).xyz;
