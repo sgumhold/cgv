@@ -48,6 +48,10 @@ namespace stream_vis {
 	public:
 		/// construct time series - ring buffering is turned of if size parameter is 0
 		time_series_base(size_t _ringbuffer_size = 0);
+		/// return name of time series
+		const std::string& get_name() const;
+		/// set a new name for time series
+		void set_name(const std::string& new_name);
 		/// return number of components per sample
 		virtual unsigned get_nr_components() const = 0;
 		/// return current number of cached samples

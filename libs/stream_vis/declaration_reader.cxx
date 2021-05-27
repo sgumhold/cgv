@@ -69,24 +69,24 @@ namespace stream_vis {
 					if (typed_time_series_ptr->at(stream_indices[0])->get_value_type_id() == ts_ptr->get_value_type_id()) 
 						ts_ptr->lower_bound_index = stream_indices[0];
 					else
-						std::cerr << "lower bound time series <" << typed_time_series_ptr->at(stream_indices[0])->name << ":"
+						std::cerr << "lower bound time series <" << typed_time_series_ptr->at(stream_indices[0])->get_name() << ":"
 						<< typed_time_series_ptr->at(stream_indices[0])->get_value_type_name() << "> of different type as <"
-						<< ts_ptr->name << ":" << ts_ptr->get_value_type_name() << "> and ignored" << std::endl;
+						<< ts_ptr->get_name() << ":" << ts_ptr->get_value_type_name() << "> and ignored" << std::endl;
 					if (typed_time_series_ptr->at(stream_indices[1])->get_value_type_id() == ts_ptr->get_value_type_id())
 						ts_ptr->upper_bound_index = stream_indices[1];
 					else
-						std::cerr << "upper bound time series <" << typed_time_series_ptr->at(stream_indices[1])->name << ":"
+						std::cerr << "upper bound time series <" << typed_time_series_ptr->at(stream_indices[1])->get_name() << ":"
 						<< typed_time_series_ptr->at(stream_indices[1])->get_value_type_name() << "> of different type as <"
-						<< ts_ptr->name << ":" << ts_ptr->get_value_type_name() << "> and ignored" << std::endl;
+						<< ts_ptr->get_name() << ":" << ts_ptr->get_value_type_name() << "> and ignored" << std::endl;
 					if (ts_ptr->lower_bound_index != uint16_t(-1) && ts_ptr->upper_bound_index != uint16_t(-1))
 						ts_ptr->aabb_mode = AM_NONE;
 				}
 			}
 			else {
-				std::cerr << "for redeclaration of <" << ts_ptr->name << ":" << ts_ptr->get_value_type_name()
+				std::cerr << "for redeclaration of <" << ts_ptr->get_name() << ":" << ts_ptr->get_value_type_name()
 					<< "> only zero or two time series allowed in definition but found {";
 				for (auto si : stream_indices)
-					std::cerr << " " << typed_time_series_ptr->at(stream_indices[si])->name;
+					std::cerr << " " << typed_time_series_ptr->at(stream_indices[si])->get_name();
 				std::cerr << " }" << std::endl;
 			}
 		}
@@ -119,7 +119,7 @@ namespace stream_vis {
 				}
 				typed_time_series_ptr->push_back(new stream_vis::quat_time_series(stream_indices[0], stream_indices[1], stream_indices[2], stream_indices[3]));
 			}
-			typed_time_series_ptr->back()->name = name;
+			typed_time_series_ptr->back()->set_name(name);
 			typed_time_series_ptr->back()->series().set_ringbuffer_size(1024);
 			ts_idx = (*name2index_ptr)[name] = uint16_t(typed_time_series_ptr->size() - 1);
 		}
@@ -262,7 +262,7 @@ namespace stream_vis {
 				if (last_time_series_index != 65535)
 					subplot_name += ",";
 				last_time_series_index = ad.time_series_index;
-				subplot_name += typed_time_series_ptr->at(ad.time_series_index)->name;
+				subplot_name += typed_time_series_ptr->at(ad.time_series_index)->get_name();
 				subplot_name += ".";
 			}
 			subplot_name += get_accessor_string(ad.accessor);			
@@ -327,7 +327,9 @@ namespace stream_vis {
 			pi.plot_ptr = plot2d_ptr;
 			vec2 ext = vec2(1.0f, 1.0f);
 			parse_vec2("extent", ext);
-			parse_float("dz", plot2d_ptr->dz);
+			parse_float("dx", plot2d_ptr->sub_plot_delta[0]);
+			parse_float("dy", plot2d_ptr->sub_plot_delta[1]);
+			parse_float("dz", plot2d_ptr->sub_plot_delta[2]);
 			parse_bool("multi_x_axis_mode", plot2d_ptr->multi_axis_modes[0]);
 			parse_bool("multi_y_axis_mode", plot2d_ptr->multi_axis_modes[1]);
 			if (pi.nr_axes > 2)
@@ -346,6 +348,15 @@ namespace stream_vis {
 		vec3 center;
 		if (parse_vec3("center", center))
 			pi.plot_ptr->place_center(center);
+		vec2 leg_ctr;
+		if (parse_vec2("legend_center", leg_ctr))
+			pi.plot_ptr->legend_location = vec3(leg_ctr,0.0f);
+		vec2 extent;
+		if (parse_vec2("legend_extent", extent))
+			pi.plot_ptr->legend_extent = extent;
+
+		parse_int("legend_axis", pi.plot_ptr->legend_axis);
+		parse_int("legend_components", (int&)pi.plot_ptr->legend_components);
 		auto& dom_cfg = *pi.plot_ptr->get_domain_config_ptr();
 		dom_cfg.fill = false;
 		parse_bool("fill_domain", dom_cfg.fill);
@@ -440,15 +451,18 @@ namespace stream_vis {
 		parse_float("secondary_size_min", pi.plot_ptr->size_min[1]);
 		parse_float("secondary_size_max", pi.plot_ptr->size_max[1]);
 
-		parse_subplots(pi, dim);
-		if (auto_color) {
-			unsigned n=pi.plot_ptr->get_nr_sub_plots();
-			if (n > 1) {
-				float scale = 1.0f / n;
-				for (unsigned i = 0; i < n; ++i)
-					pi.plot_ptr->ref_sub_plot_config(i).set_colors(cgv::media::color_scale(scale * i, cgv::media::CS_HUE));
+		if (parse_subplots(pi, dim)) {
+			if (auto_color) {
+				unsigned n = pi.plot_ptr->get_nr_sub_plots();
+				if (n > 1) {
+					float scale = 1.0f / n;
+					for (unsigned i = 0; i < n; ++i)
+						pi.plot_ptr->ref_sub_plot_config(i).set_colors(cgv::media::color_scale(scale * i, cgv::media::CS_HUE));
+				}
 			}
+			plot_pool_ptr->push_back(pi);
 		}
-		plot_pool_ptr->push_back(pi);
+		else
+			delete pi.plot_ptr;
 	}
 }

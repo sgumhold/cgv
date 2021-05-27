@@ -657,7 +657,8 @@ bool plot_base::extract_tick_rectangles_and_tick_labels(
 
 void plot_base::extract_legend_tick_rectangles_and_tick_labels(
 	std::vector<box2>& R, std::vector<rgb>& C, std::vector<float>& D,
-	std::vector<label_info>& tick_labels, std::vector<tick_batch_info>& tick_batches, float d, bool clear_cache)
+	std::vector<label_info>& tick_labels, std::vector<tick_batch_info>& tick_batches, float d, 
+	bool clear_cache, bool is_first, bool* multi_axis_modes)
 {
 	if (clear_cache) {
 		tick_labels.clear();
@@ -675,8 +676,11 @@ void plot_base::extract_legend_tick_rectangles_and_tick_labels(
 	for (unsigned ti = 0; ti < 2; ++ti) {
 		vec2 loc = loc0;
 		for (int j = 0; j < nr_lcs; ++j) {
+
 			if ((legend_components & lcs[j]) != 0) {
 				if (ai[j] == -1)
+					continue;
+				if (multi_axis_modes && !is_first && !multi_axis_modes[ai[j]])
 					continue;
 				tick_batch_info tbi(ai[j], 1 - legend_axis, ti == 0, 0, (unsigned)tick_labels.size());
 				if (extract_tick_rectangles_and_tick_labels(R, C, D, tick_labels, ai[j], legend_axis, ti,
@@ -748,7 +752,7 @@ void plot_base::draw_tick_labels(cgv::render::context& ctx, cgv::render::attribu
 	}
 }
 
-void plot_base::draw_legend(cgv::render::context& ctx, int layer_idx)
+void plot_base::draw_legend(cgv::render::context& ctx, int layer_idx, bool is_first, bool* multi_axis_modes)
 {
 	// draw legend rectangles with legend program
 	vec3 E = vec3::from_vec(get_extent());
@@ -764,31 +768,39 @@ void plot_base::draw_legend(cgv::render::context& ctx, int layer_idx)
 	int j = 1 - legend_axis;
 	int off = 4*j;
 	if ((legend_components & LC_PRIMARY_COLOR) != 0) {
-		legend_prog.set_uniform(ctx, "legend_location", loc);
-		legend_prog.set_uniform(ctx, "color_index", 0);
-		legend_prog.set_uniform(ctx, "opacity_index", -1);
-		glDrawArrays(GL_TRIANGLE_STRIP, off, 4);
+		if (!multi_axis_modes || is_first || color_mapping[0] == -1 || multi_axis_modes[color_mapping[0]]) {
+			legend_prog.set_uniform(ctx, "legend_location", loc);
+			legend_prog.set_uniform(ctx, "color_index", 0);
+			legend_prog.set_uniform(ctx, "opacity_index", -1);
+			glDrawArrays(GL_TRIANGLE_STRIP, off, 4);
+		}
 		loc[j] += 1.2f * legend_extent[j];
 	}
 	if ((legend_components & LC_PRIMARY_OPACITY) != 0) {
-		legend_prog.set_uniform(ctx, "legend_location", loc);
-		legend_prog.set_uniform(ctx, "color_index", -1);
-		legend_prog.set_uniform(ctx, "opacity_index", 0);
-		glDrawArrays(GL_TRIANGLE_STRIP, off, 4);
+		if (!multi_axis_modes || is_first || opacity_mapping[0] == -1 || multi_axis_modes[opacity_mapping[0]]) {
+			legend_prog.set_uniform(ctx, "legend_location", loc);
+			legend_prog.set_uniform(ctx, "color_index", -1);
+			legend_prog.set_uniform(ctx, "opacity_index", 0);
+			glDrawArrays(GL_TRIANGLE_STRIP, off, 4);
+		}
 		loc[j] += 1.2f * legend_extent[j];
 	}
 	if ((legend_components & LC_SECONDARY_COLOR) != 0) {
-		legend_prog.set_uniform(ctx, "legend_location", loc);
-		legend_prog.set_uniform(ctx, "color_index", 1);
-		legend_prog.set_uniform(ctx, "opacity_index", -1);
-		glDrawArrays(GL_TRIANGLE_STRIP, off, 4);
+		if (!multi_axis_modes || is_first || color_mapping[1] == -1 || multi_axis_modes[color_mapping[1]]) {
+			legend_prog.set_uniform(ctx, "legend_location", loc);
+			legend_prog.set_uniform(ctx, "color_index", 1);
+			legend_prog.set_uniform(ctx, "opacity_index", -1);
+			glDrawArrays(GL_TRIANGLE_STRIP, off, 4);
+		}
 		loc[j] += 1.2f * legend_extent[j];
 	}
 	if ((legend_components & LC_SECONDARY_OPACITY) != 0) {
-		legend_prog.set_uniform(ctx, "legend_location", loc);
-		legend_prog.set_uniform(ctx, "color_index", -1);
-		legend_prog.set_uniform(ctx, "opacity_index", 1);
-		glDrawArrays(GL_TRIANGLE_STRIP, off, 4);
+		if (!multi_axis_modes || is_first || opacity_mapping[0] == -1 || multi_axis_modes[opacity_mapping[1]]) {
+			legend_prog.set_uniform(ctx, "legend_location", loc);
+			legend_prog.set_uniform(ctx, "color_index", -1);
+			legend_prog.set_uniform(ctx, "opacity_index", 1);
+			glDrawArrays(GL_TRIANGLE_STRIP, off, 4);
+		}
 		loc[j] += 1.2f * legend_extent[j];
 	}
 	legend_prog.disable(ctx);
@@ -798,7 +810,9 @@ void plot_base::draw_legend(cgv::render::context& ctx, int layer_idx)
 	std::vector<rgb> C;
 	std::vector<float> D;
 	++layer_idx;
-	extract_legend_tick_rectangles_and_tick_labels(R, C, D, legend_tick_labels, legend_tick_batches, -layer_idx*layer_depth, true);
+	extract_legend_tick_rectangles_and_tick_labels(R, C, D, legend_tick_labels, legend_tick_batches, -layer_idx*layer_depth, true, is_first, multi_axis_modes);
+	if (R.empty())
+		return;
 	ctx.push_modelview_matrix();
 	ctx.mul_modelview_matrix(cgv::math::translate4<float>(0.0f, 0.0f, E[2] * (legend_location[2] - 0.5f)));
 	draw_rectangles(ctx, aam_legend, R, C, D);
@@ -1081,7 +1095,7 @@ void plot_base::set_sub_plot_colors(unsigned i, const rgb& base_color)
 bool plot_base::init(cgv::render::context& ctx)
 {
 	font_rrs = cgv::ref_rectangle_render_style();
-
+	ensure_font_names();
 	cgv::render::ref_rectangle_renderer(ctx, 1);
 	aam_legend.init(ctx);
 	aam_legend_ticks.init(ctx);

@@ -7,7 +7,7 @@ uniform int   secondary_opacity_index = -1;
 uniform int   size_index = -1;
 uniform int   secondary_size_index = -1;
 uniform float depth_offset = 0.0;
-
+uniform vec3  sub_plot_delta = vec3(0.0,0.0,0.0);
 uniform float halo_width_in_pixel = 0.0;
 uniform float percentual_halo_width = 0.0;
 
@@ -102,7 +102,7 @@ void main()
 	if (secondary_size_index >= 0)
 		vo.percentual_halo_width = map_size(attributes, vo.percentual_halo_width, secondary_size_index);
 
-	gl_Position = vec4(plot_space_from_window_space(position_window), 1.0);
+	gl_Position = vec4(plot_space_from_window_space(position_window)+sub_plot_delta, 1.0);
 	vo.halo_width_in_pixel = halo_width_in_pixel;
 	vo.depth_offset = depth_offset;
 }

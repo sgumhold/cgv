@@ -49,8 +49,8 @@ public:
 	bool disable_depth_mask;
 	/// whether to manage separate axes for each sub plot
 	bool* multi_axis_modes;
-	/// offset in z-direction between sub plots
-	float dz;
+	/// offset in between sub plots in x, y and z direction
+	vec3 sub_plot_delta;
 
 	/// construct 2D plot with given number of additional attributes and default parameters
 	plot2d(unsigned nr_attributes = 0);

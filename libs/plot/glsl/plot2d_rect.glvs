@@ -7,6 +7,7 @@ uniform int   secondary_opacity_index = -1;
 uniform int   size_index = -1;
 uniform int   secondary_size_index = -1;
 
+uniform vec3  sub_plot_delta = vec3(0.0,0.0,0.0);
 uniform int   rectangle_coordinate_index = 1;
 uniform float rectangle_base_window  = 0.0;
 uniform float rectangle_border_width = 0.0; 
@@ -118,7 +119,7 @@ void main()
 	// compute extent and center position
 	vo.extent = vec2(width);
 	vo.extent[rectangle_coordinate_index] = top_plot[rectangle_coordinate_index]-bottom_plot[rectangle_coordinate_index];
-	gl_Position = vec4(0.5*(bottom_plot+top_plot), 1.0);
+	gl_Position = vec4(0.5*(bottom_plot+top_plot)+sub_plot_delta, 1.0);
 
 	// compute/set remaining outputs
 	vo.modelview = get_modelview_matrix();

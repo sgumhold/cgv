@@ -255,7 +255,7 @@ namespace stream_vis {
 	void stream_vis_context::show_time_series() const
 	{
 		for (const auto& tts : typed_time_series) {
-			std::cout << tts->name << ":" << tts->get_value_type_name();
+			std::cout << tts->get_name() << ":" << tts->get_value_type_name();
 			std::stringstream ss;
 			std::string fill;
 			if (tts->default_color[0] != -1) {
@@ -291,7 +291,7 @@ namespace stream_vis {
 				for (uint16_t i : vi) {
 					if (!first)
 						std::cout << ",";
-					std::cout << typed_time_series[i]->name;
+					std::cout << typed_time_series[i]->get_name();
 					first = false;
 				}
 				std::cout << ")";
@@ -300,10 +300,10 @@ namespace stream_vis {
 				if (tts->lower_bound_index != uint16_t(-1) || tts->upper_bound_index != uint16_t(-1)) {
 					std::cout << " = {";
 					if (tts->lower_bound_index != uint16_t(-1))
-						std::cout << typed_time_series[tts->lower_bound_index]->name;
+						std::cout << typed_time_series[tts->lower_bound_index]->get_name();
 					std::cout << ", ";
 					if (tts->upper_bound_index != uint16_t(-1))
-						std::cout << typed_time_series[tts->upper_bound_index]->name;
+						std::cout << typed_time_series[tts->upper_bound_index]->get_name();
 					std::cout << "}";
 				}
 			}
@@ -322,7 +322,7 @@ namespace stream_vis {
 						first = false;
 					else
 						std::cout << "|";
-					std::cout << typed_time_series[ad.time_series_index]->name << "." << get_accessor_string(ad.accessor);
+					std::cout << typed_time_series[ad.time_series_index]->get_name() << "." << get_accessor_string(ad.accessor);
 				}
 				std::cout << "> ";
 				first = true;
@@ -331,7 +331,7 @@ namespace stream_vis {
 						first = false;
 					else
 						std::cout << ",";
-					std::cout << rr.index << ":" << typed_time_series[time_series_ringbuffers[rr.index].time_series_index]->name <<
+					std::cout << rr.index << ":" << typed_time_series[time_series_ringbuffers[rr.index].time_series_index]->get_name() <<
 						"[" << rr.component_index << "]";
 				}
 				std::cout << "; ";
@@ -343,7 +343,7 @@ namespace stream_vis {
 	{
 		for (const auto& tsrb : time_series_ringbuffers) {
 			size_t idx = &tsrb - time_series_ringbuffers.data();
-			std::cout << idx << ":" << typed_time_series[tsrb.time_series_index]->name <<
+			std::cout << idx << ":" << typed_time_series[tsrb.time_series_index]->get_name() <<
 				"." << get_accessor_string(tsrb.time_series_access) << "|" << tsrb.nr_time_series_components <<
 				" = " << tsrb.nr_samples << "(" << tsrb.time_series_ringbuffer_size << ") -> " <<
 				tsrb.storage_buffer_index << "|" << tsrb.storage_buffer_offset << std::endl;
@@ -368,6 +368,14 @@ namespace stream_vis {
 				return true;
 			}
 			switch (ke.get_key()) {
+			case 'X':
+				sleep_ms = 0;
+				on_set(&sleep_ms);
+				return true;
+			case 'S':
+				sleep_ms = 20;
+				on_set(&sleep_ms);
+				return true;
 			case cgv::gui::KEY_Space:
 				paused = !paused;
 				on_set(&paused);
@@ -477,6 +485,7 @@ namespace stream_vis {
 	}
 	void stream_vis_context::update_plot_domains()
 	{
+		std::vector<bool> update_tts(typed_time_series.size(), false);
 		std::vector<float> tmp_buffer(18);
 		float* flt_ptr = &tmp_buffer.front();
 		for (auto& pl : plot_pool) {
@@ -523,6 +532,12 @@ namespace stream_vis {
 					case DA_COMPUTE:
 						compute[j][ai] = true;
 						++nr_compute;
+						break;
+					case DA_SHIFTED_TIME_SERIES:
+						typed_time_series[pl.domain_bound_ts_index[j][ai]]->series().put_sample_as_float(
+							typed_time_series[pl.domain_bound_ts_index[j][ai]]->series().get_nr_samples() - 1,
+							&ranges[j][ai], TSA_X);
+						ranges[j][ai] += (j == 0 ? pl.fixed_domain.get_min_pnt() : pl.fixed_domain.get_max_pnt())[ai];
 						break;
 					}
 				}
@@ -633,9 +648,12 @@ namespace stream_vis {
 		add_member_control(this, "sleep_ms", sleep_ms, "value_slider", "min=0;max=1000;log=true;ticks=true");
 		add_member_control(this, "use_vbo", use_vbo, "check");
 		for (auto& pl : plot_pool) {
-			add_decorator(pl.name, "heading", "level=2");
-			pl.plot_ptr->create_gui(this, *this);
-			add_decorator("separator", "separator");
+			if (begin_tree_node(pl.name + std::string(pl.dim == 2 ? ":plot2d" : ":plot3d"), pl)) {
+				align("\a");
+				pl.plot_ptr->create_gui(this, *this);
+				align("\b");
+				end_tree_node(pl.name);
+			}
 		}
 	}
 
