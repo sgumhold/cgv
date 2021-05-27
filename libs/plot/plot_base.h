@@ -36,20 +36,32 @@ struct domain_config : public cgv::render::render_types
 	bool show_domain;
 	/// whether to fill the domain
 	bool fill;
+	/// plot title
+	std::string title;
+	/// position of title
+	vecn title_pos;
 	/// color of the domain fill
 	rgb color;
+	/// color of the title
+	rgba title_color;
 	/// store size of virtual pixel based measurement
 	float reference_size;
 	/// store blend width in screen pixels used for antialiasing
 	float blend_width_in_pixel;
 	/// store a vector of axis configurations (2/3 for plot2/3d plus several attribute axes)
 	std::vector<axis_config> axis_configs;
-	/// store index of selected font
+	/// store index of selected label font
 	unsigned label_font_index;
-	/// store selected font size
+	/// store selected label font size
 	float label_font_size;
-	/// store selected font face attributes
+	/// store selected label font face attributes
 	cgv::media::font::FontFaceAttributes label_ffa;
+	/// store index of selected title font
+	unsigned title_font_index;
+	/// store selected title font size
+	float title_font_size;
+	/// store selected title font face attributes
+	cgv::media::font::FontFaceAttributes title_ffa;
 	/// set default values
 	domain_config(unsigned nr_axes);
 };
@@ -353,9 +365,10 @@ public:
 	/// color and opacity of legend
 	rgba legend_color;
 	//@}
-
 	/**@name visual attribute mapping*/
 	//@{
+	/// handling of values that are out of range
+	ivec4 out_of_range_mode;
 	/// define maximum number of color mappings
 	static const unsigned MAX_NR_COLOR_MAPPINGS = 2;
 	/// index of attribute mapped to primary and secondary color
@@ -392,10 +405,14 @@ public:
 	float size_min[MAX_NR_SIZE_MAPPINGS], size_max[MAX_NR_SIZE_MAPPINGS];
 	//@}
 protected:
-	/// store pointer to current font
+	/// store pointer to label font
 	cgv::media::font::font_ptr label_font;
-	/// store pointer to current font face
+	/// store pointer to label font face
 	cgv::media::font::font_face_ptr label_font_face;
+	/// store pointer to title font
+	cgv::media::font::font_ptr title_font;
+	/// store pointer to title font face
+	cgv::media::font::font_face_ptr title_font_face;
 	/// vbo for legend drawing
 	cgv::render::vertex_buffer vbo_legend;
 	/// manage attributes for legend drawing
@@ -418,13 +435,13 @@ private:
 protected:
 	/// render style of rectangles
 	cgv::render::rectangle_render_style rrs, font_rrs;
-	cgv::render::attribute_array_manager aam_legend, aam_legend_ticks;
+	cgv::render::attribute_array_manager aam_legend, aam_legend_ticks, aam_title;
 	///
 	void draw_rectangles(cgv::render::context& ctx, cgv::render::attribute_array_manager& aam, 
 		std::vector<box2>& R, std::vector<rgb>& C, std::vector<float>& D, size_t offset = 0);
 	///
 	void draw_tick_labels(cgv::render::context& ctx, cgv::render::attribute_array_manager& aam_ticks, 
-		std::vector<label_info>& tick_labels, std::vector<tick_batch_info>& tick_batches, const std::string& title, const rgba& title_color, float depth);
+		std::vector<label_info>& tick_labels, std::vector<tick_batch_info>& tick_batches, float depth);
 	/// set vertex shader input attributes based on attribute source information
 	size_t enable_attributes(cgv::render::context& ctx, int i, const std::vector<std::vector<vec2>>& samples);
 	/// set vertex shader input attributes based on attribute source information
@@ -437,6 +454,8 @@ protected:
 	virtual bool compute_sample_coordinate_interval(int i, int ai, float& samples_min, float& samples_max) = 0;
 	///
 	void draw_sub_plot_samples(int count, const plot_base_config& spc, bool strip = false);
+	///
+	void draw_title(cgv::render::context& ctx, vec2 pos, float depth, int si = -1);
 	///
 	void draw_legend(cgv::render::context& ctx, int layer_idx = 0, bool is_first = true, bool* multi_axis_modes = 0);
 	///

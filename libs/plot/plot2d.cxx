@@ -21,13 +21,14 @@ void plot2d_config::configure_chart(ChartType chart_type)
 }
 
 /// construct empty plot with default domain [0..1,0..1]
-plot2d::plot2d(unsigned nr_attributes) : plot_base(2, nr_attributes)
+plot2d::plot2d(const std::string& title, unsigned nr_attributes) : plot_base(2, nr_attributes)
 {
 	multi_axis_modes = new bool[2 + nr_attributes];
 	std::fill(multi_axis_modes, multi_axis_modes+(2+nr_attributes), false);
 	sub_plot_delta = vec3(0.0f);
 	disable_depth_mask = false;
 	//legend_components = LC_ANY;
+	get_domain_config_ptr()->title = title;
 	auto& acs = get_domain_config_ptr()->axis_configs;
 	acs[0].name = "x";
 	acs[1].name = "y";
@@ -518,14 +519,8 @@ void plot2d::draw_domain(cgv::render::context& ctx, int si, bool no_fill)
 	extract_domain_rectangles(R, C, D);
 	extract_domain_tick_rectangles_and_tick_labels(R, C, D, tick_labels, tick_batches);
 	draw_rectangles(ctx, aam_domain, R, C, D, (get_domain_config_ptr()->fill && !no_fill) ? 0 : 1);
-	std::string title;
-	rgba title_color;
-	if (si != -1) {
-		auto& spc = ref_sub_plot2d_config(si);
-		title = spc.name;
-		title_color = spc.ref_color.color;
-	}
-	draw_tick_labels(ctx, aam_domain_tick_labels, tick_labels, tick_batches, title, title_color, -4 * layer_depth);
+	draw_title(ctx, vec2::from_vec(get_domain_config_ptr()->title_pos), -3 * layer_depth, si);
+	draw_tick_labels(ctx, aam_domain_tick_labels, tick_labels, tick_batches, -4 * layer_depth);
 }
 
 void plot2d::draw(cgv::render::context& ctx)
