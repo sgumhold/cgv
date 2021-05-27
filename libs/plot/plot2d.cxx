@@ -25,7 +25,7 @@ plot2d::plot2d(unsigned nr_attributes) : plot_base(2, nr_attributes)
 {
 	multi_axis_modes = new bool[2 + nr_attributes];
 	std::fill(multi_axis_modes, multi_axis_modes+(2+nr_attributes), false);
-	dz = 0.0f;
+	sub_plot_delta = vec3(0.0f);
 	disable_depth_mask = false;
 	//legend_components = LC_ANY;
 	auto& acs = get_domain_config_ptr()->axis_configs;
@@ -160,6 +160,7 @@ bool plot2d::draw_point_plot(cgv::render::context& ctx, int i, int layer_idx)
 		if (spc.show_points && point_prog.is_linked()) {
 			set_plot_uniforms(ctx, point_prog);
 			set_mapping_uniforms(ctx, point_prog);
+			point_prog.set_uniform(ctx, "sub_plot_delta", float(i) * sub_plot_delta);
 			point_prog.set_uniform(ctx, "depth_offset", -layer_idx * layer_depth);
 			point_prog.set_uniform(ctx, "reference_point_size", get_domain_config_ptr()->reference_size);
 			point_prog.set_uniform(ctx, "blend_width_in_pixel", get_domain_config_ptr()->blend_width_in_pixel);
@@ -198,6 +199,7 @@ bool plot2d::draw_line_plot(cgv::render::context& ctx, int i, int layer_idx)
 		if (spc.show_lines && line_prog.is_linked()) {
 			set_plot_uniforms(ctx, line_prog);
 			set_mapping_uniforms(ctx, line_prog);
+			line_prog.set_uniform(ctx, "sub_plot_delta", float(i) * sub_plot_delta);
 			line_prog.set_uniform(ctx, "depth_offset", -layer_idx * layer_depth);
 			line_prog.set_uniform(ctx, "reference_line_width", get_domain_config_ptr()->reference_size);
 			line_prog.set_uniform(ctx, "blend_width_in_pixel", get_domain_config_ptr()->blend_width_in_pixel);
@@ -245,6 +247,7 @@ bool plot2d::draw_stick_plot(cgv::render::context& ctx, int i, int layer_idx)
 		const plot2d_config& spc = ref_sub_plot2d_config(i);
 		if (spc.show_sticks && rectangle_prog.is_linked()) {
 			// configure vertex shader
+			rectangle_prog.set_uniform(ctx, "sub_plot_delta", float(i) * sub_plot_delta);
 			rectangle_prog.set_uniform(ctx, "color_index", spc.stick_color.color_idx);
 			rectangle_prog.set_uniform(ctx, "secondary_color_index", -1);
 			rectangle_prog.set_uniform(ctx, "opacity_index", spc.stick_color.opacity_idx);
@@ -296,6 +299,7 @@ bool plot2d::draw_bar_plot(cgv::render::context& ctx, int i, int layer_idx)
 		const plot2d_config& spc = ref_sub_plot2d_config(i);
 		if (spc.show_bars && rectangle_prog.is_linked()) {
 			// configure vertex shader
+			rectangle_prog.set_uniform(ctx, "sub_plot_delta", float(i) * sub_plot_delta);
 			rectangle_prog.set_uniform(ctx, "color_index", spc.bar_color.color_idx);
 			rectangle_prog.set_uniform(ctx, "secondary_color_index", spc.bar_outline_color.color_idx);
 			rectangle_prog.set_uniform(ctx, "opacity_index", spc.bar_color.opacity_idx);
@@ -356,6 +360,7 @@ void plot2d::extract_domain_rectangles(std::vector<box2>& R, std::vector<rgb>& C
 	vec2 extent = vec2::from_vec(get_extent());
 	float rs = get_domain_config_ptr()->reference_size;
 	R[0] = box2(-0.5f * extent, 0.5f * extent);
+	R[0].add_point(0.5f * extent + float(get_nr_sub_plots() - 1) * vec2(sub_plot_delta[0], sub_plot_delta[1]));
 	C[0] = get_domain_config_ptr()->color;
 	D[0] = 0.0f;
 	for (unsigned ai = 0; ai < 2; ++ai) {
@@ -497,7 +502,7 @@ void plot2d::extract_domain_tick_rectangles_and_tick_labels(
 			float z_plot = (ao.get_attribute_min() < 0.0f && ao.get_attribute_max() > 0.0f) ?
 				ao.plot_space_from_attribute_space(0.0f) : std::numeric_limits<float>::quiet_NaN();
 			tick_batch_info tbi(ai, 1 - ai, ti == 0, 0, (unsigned)tick_labels.size());
-			if (extract_tick_rectangles_and_tick_labels(R, C, D, tick_labels, ai, ai, ti, 0.5f * ao.extent, z_plot)) {
+			if (extract_tick_rectangles_and_tick_labels(R, C, D, tick_labels, ai, ai, ti, 0.5f * ao.extent, z_plot, 1.0f, vec2(0.0f), -3 * layer_depth)) {
 				if ((tbi.label_count = (unsigned)(tick_labels.size() - tbi.first_label)) > 0)
 					tick_batches.push_back(tbi);
 			}
@@ -550,7 +555,7 @@ void plot2d::draw(cgv::render::context& ctx)
 	// configure bar prog only once
 	configure_bar_plot(ctx);
 	// draw all subplots jointly in one plane
-	if (dz == 0.0f) {
+	if (sub_plot_delta[2] == 0.0f) {
 		if (get_domain_config_ptr()->show_domain)
 			draw_domain(ctx);
 		if (legend_components != LC_HIDDEN)
@@ -572,11 +577,11 @@ void plot2d::draw(cgv::render::context& ctx)
 		double plot_z_eye_z = M(2, 2);
 		int i_begin = 0, i_end = get_nr_sub_plots(), i_delta = 1;
 		// check if we can not use default order
-		if (plot_pos_eye_z * plot_z_eye_z * dz > 0) {
+		if (plot_pos_eye_z * plot_z_eye_z * sub_plot_delta[2] > 0) {
 			i_begin = i_end - 1;
 			i_end = -1;
 			i_delta = -1;
-			ctx.mul_modelview_matrix(cgv::math::translate4<float>(vec3(0, 0, (get_nr_sub_plots()-1) * dz)));
+			ctx.mul_modelview_matrix(cgv::math::translate4<float>(vec3(0, 0, (get_nr_sub_plots()-1) * sub_plot_delta[2])));
 		}
 		// traverse all subplots in back to front order
 		bool fst = true;
@@ -599,7 +604,7 @@ void plot2d::draw(cgv::render::context& ctx)
 			if (get_domain_config_ptr()->show_domain)
 				draw_domain(ctx, i, !fst);
 			if (legend_components != LC_HIDDEN)
-				draw_legend(ctx, 5);
+				draw_legend(ctx, 5, i == i_begin, multi_axis_modes);
 			if (disable_depth_mask)
 				glDepthMask(GL_FALSE);
 			else
@@ -612,7 +617,7 @@ void plot2d::draw(cgv::render::context& ctx)
 				glDepthMask(GL_TRUE);
 			else
 				glDepthFunc(GL_LESS);
-			ctx.mul_modelview_matrix(cgv::math::translate4<float>(vec3(0, 0, i_delta*dz)));
+			ctx.mul_modelview_matrix(cgv::math::translate4<float>(vec3(0, 0, i_delta* sub_plot_delta[2])));
 			fst = false;
 		}
 		for (ai = 0; ai < 2 + nr_attributes; ++ai)
@@ -661,7 +666,6 @@ void plot2d::create_config_gui(cgv::base::base* bp, cgv::gui::provider& p, unsig
 
 void plot2d::create_gui(cgv::base::base* bp, cgv::gui::provider& p)
 {
-	p.add_decorator("plot2d", "heading");
 	if (p.begin_tree_node("multi modes", multi_axis_modes, false, "level=3")) {
 		p.align("\a");
 		for (unsigned ai = 0; ai < 2 + nr_attributes; ++ai)
@@ -669,7 +673,9 @@ void plot2d::create_gui(cgv::base::base* bp, cgv::gui::provider& p)
 		p.align("\b");
 		p.end_tree_node(rrs);
 	}
-	p.add_member_control(bp, "dz", dz, "value_slider", "min=-1;max=1;step=0.1;ticks=true");
+	p.add_member_control(bp, "dx", sub_plot_delta[0], "value_slider", "min=-1;max=1;step=0.001;ticks=true");
+	p.add_member_control(bp, "dy", sub_plot_delta[1], "value_slider", "min=-1;max=1;step=0.001;ticks=true");
+	p.add_member_control(bp, "dz", sub_plot_delta[2], "value_slider", "min=-1;max=1;step=0.02;ticks=true");
 	plot_base::create_gui(bp, p);
 	p.add_member_control(bp, "disable_depth_mask", disable_depth_mask, "toggle");
 }

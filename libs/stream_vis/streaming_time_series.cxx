@@ -1,10 +1,22 @@
 #include "streaming_time_series.h"
 
 namespace stream_vis {
+	/// return name
+	const std::string& streaming_time_series::get_name() const
+	{
+		return name;
+	}
+	/// 
+	void streaming_time_series::set_name(const std::string& new_name)
+	{
+		name = new_name;
+		series().set_name(new_name);
+	}
 
 	streaming_time_series::streaming_time_series(cgv::type::info::TypeId _type_id) : type_id(_type_id)
 	{
 		outofdate = true;
+		first_visible_sample_index = 0;
 		// mark default values as undefined
 		default_color = rgb(-1,-1,-1);
 		default_opacity = -1;
@@ -104,6 +116,7 @@ namespace stream_vis {
 				append_sample(timestamp, reinterpret_cast<const bool&>(values[i].value[0]));
 				outofdate = true;
 				lock.unlock();
+	//			std::cout << streaming_time_series::get_name() << "(" << construct_stored_time(timestamp)  << ")" << reinterpret_cast<const uint64_t&>(values[i].value[0]) << " = " << (reinterpret_cast<const bool&>(values[i].value[0]) ? "true" : "false") << std::endl;
 				return true;
 			}
 		}

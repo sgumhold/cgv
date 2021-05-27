@@ -95,6 +95,16 @@ namespace stream_vis {
 		nr_samples = 0;
 		time_offset = 0;
 	}
+	/// return name of time series
+	const std::string& time_series_base::get_name() const
+	{
+		return name;
+	}
+	/// set a new name for time series
+	void time_series_base::set_name(const std::string& new_name)
+	{
+		name = new_name;
+	}
 
 	template class time_series<float, bool, bool>;
 	template class time_series<float, int32_t, int64_t>;

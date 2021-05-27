@@ -34,9 +34,11 @@ namespace stream_vis {
 		mutable bool outofdate;
 		/// store id of value type
 		cgv::type::info::TypeId type_id;
-	public:
 		/// store name of streaming time series
 		std::string name;
+	public:
+		/// store index of first visible sample
+		size_t first_visible_sample_index;
 		/// default color
 		rgb default_color;
 		/// default opacity
@@ -49,6 +51,10 @@ namespace stream_vis {
 		uint16_t upper_bound_index;
 		/// type of automatic bound computation
 		AABBMode aabb_mode;
+		/// return name
+		const std::string& get_name() const;
+		/// 
+		void set_name(const std::string& new_name);
 		/// construct empty streaming time series
 		streaming_time_series(cgv::type::info::TypeId _type_id = cgv::type::info::TI_UNDEF);
 		/// return list of unique indices to defining inputs/outputs

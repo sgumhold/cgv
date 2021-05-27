@@ -438,16 +438,17 @@ protected:
 	///
 	void draw_sub_plot_samples(int count, const plot_base_config& spc, bool strip = false);
 	///
-	void draw_legend(cgv::render::context& ctx, int layer_idx = 0);
+	void draw_legend(cgv::render::context& ctx, int layer_idx = 0, bool is_first = true, bool* multi_axis_modes = 0);
 	///
 	bool extract_tick_rectangles_and_tick_labels(
 		std::vector<box2>& R, std::vector<rgb>& C, std::vector<float>& D,
 		std::vector<label_info>& tick_labels, int ai, int ci, int ti, float he, 
-		float z_plot, float plot_scale = 1.0f, vec2 plot_offset = vec2(0.0f,0.0f), float d = 5.0f, bool multi_axis = true);
+		float z_plot, float plot_scale = 1.0f, vec2 plot_offset = vec2(0.0f,0.0f), float d = 0.0f, bool multi_axis = true);
 	///
 	void extract_legend_tick_rectangles_and_tick_labels(
 		std::vector<box2>& R, std::vector<rgb>& C, std::vector<float>& D,
-		std::vector<label_info>& tick_labels, std::vector<tick_batch_info>& tick_batches, float d, bool clear_cache = false);
+		std::vector<label_info>& tick_labels, std::vector<tick_batch_info>& tick_batches, float d, 
+		bool clear_cache = false, bool is_first = true, bool* multi_axis_modes = 0);
 
 public:
 	/// construct from plot dimension and number of additional attributes with default parameters
