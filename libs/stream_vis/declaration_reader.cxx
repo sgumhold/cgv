@@ -11,10 +11,12 @@ namespace stream_vis {
 	void declaration_reader::init(
 		std::map<std::string, uint16_t>* _name2index_ptr,
 		std::vector<stream_vis::streaming_time_series*>* _typed_time_series_ptr,
+		std::vector<stream_vis::offset_info>* _offset_infos_ptr,
 		std::vector<plot_info>* _plot_pool_ptr)
 	{
 		name2index_ptr = _name2index_ptr;
 		typed_time_series_ptr = _typed_time_series_ptr;
+		offset_infos_ptr = _offset_infos_ptr;
 		plot_pool_ptr = _plot_pool_ptr;
 	}
 
@@ -107,9 +109,21 @@ namespace stream_vis {
 					return false;
 				}
 				switch (dim) {
-				case 2: typed_time_series_ptr->push_back(new stream_vis::fvec_time_series<2>(stream_indices[0], stream_indices[1])); break;
-				case 3: typed_time_series_ptr->push_back(new stream_vis::fvec_time_series<3>(stream_indices[0], stream_indices[1], stream_indices[2])); break;
-				case 4: typed_time_series_ptr->push_back(new stream_vis::fvec_time_series<4>(stream_indices[0], stream_indices[1], stream_indices[2], stream_indices[3])); break;
+				case 2: typed_time_series_ptr->push_back(
+					new stream_vis::fvec_time_series<2>(stream_indices[0], stream_indices[1],
+						typed_time_series_ptr->at(stream_indices[0])->get_value_type_id(),
+						typed_time_series_ptr->at(stream_indices[1])->get_value_type_id())); break;
+				case 3: typed_time_series_ptr->push_back(
+					new stream_vis::fvec_time_series<3>(stream_indices[0], stream_indices[1], stream_indices[2],
+						typed_time_series_ptr->at(stream_indices[0])->get_value_type_id(),
+						typed_time_series_ptr->at(stream_indices[1])->get_value_type_id(),
+						typed_time_series_ptr->at(stream_indices[2])->get_value_type_id())); break;
+				case 4: typed_time_series_ptr->push_back(
+					new stream_vis::fvec_time_series<4>(stream_indices[0], stream_indices[1], stream_indices[2], stream_indices[3],
+						typed_time_series_ptr->at(stream_indices[0])->get_value_type_id(),
+						typed_time_series_ptr->at(stream_indices[1])->get_value_type_id(),
+						typed_time_series_ptr->at(stream_indices[2])->get_value_type_id(),
+						typed_time_series_ptr->at(stream_indices[3])->get_value_type_id())); break;
 				}
 			}
 			else if (type == "quat") {
@@ -171,6 +185,19 @@ namespace stream_vis {
 		}
 		return true;
 	}
+	bool declaration_reader::parse_accessor(char swizzle, TimeSeriesAccessor& tsa)
+	{
+		switch (swizzle) {
+		case 't': tsa = TSA_TIME; break;
+		case 'x': tsa = TSA_X; break;
+		case 'y': tsa = TSA_Y; break;
+		case 'z': tsa = TSA_Z; break;
+		case 'l': tsa = TSA_LENGTH; break;
+		case 'd': tsa = TSA_DIRECTION_X; break;
+		default: return false;
+		}
+		return true;
+	}
 	bool declaration_reader::construct_attribute_definitions(std::vector<std::string>& defs, std::vector<attribute_definition>& ads)
 	{
 		for (auto ts_name : defs) {
@@ -209,25 +236,21 @@ namespace stream_vis {
 			// in case of swizzle add one accessor per swizzle entry
 			else {
 				for (auto s : swizzle) {
-					switch (s) {
-					case 't': ad.accessor = TSA_TIME; break;
-					case 'x': ad.accessor = TSA_X; break;
-					case 'y': ad.accessor = TSA_Y; break;
-					case 'z': ad.accessor = TSA_Z; break;
-					case 'l': ad.accessor = TSA_LENGTH; break;
-					case 'd': {
-						ad.accessor = TSA_DIRECTION_X;
-						size_t dim = typed_time_series_ptr->at(ad.time_series_index)->get_io_indices().size();
-						if (dim > 1) {
-							int delta = 2;
-							for (size_t d = 0; d + 1 < dim; ++d) {
-								ads.push_back(ad);
-								ad.accessor = TimeSeriesAccessor(ad.accessor * 2);
+					TimeSeriesAccessor ac;
+					if (parse_accessor(s, ac)) {
+						ad.accessor = ac;
+						if (ac == TSA_DIRECTION_X) {
+							size_t dim = typed_time_series_ptr->at(ad.time_series_index)->get_io_indices().size();
+							if (dim > 1) {
+								int delta = 2;
+								for (size_t d = 0; d + 1 < dim; ++d) {
+									ads.push_back(ad);
+									ad.accessor = TimeSeriesAccessor(ad.accessor * 2);
+								}
 							}
 						}
-						break;
 					}
-					default:
+					else {
 						std::cerr << "encountered unknown swizzle <" << s << "> and ignoring it" << std::endl;
 						continue;
 					}
@@ -299,9 +322,48 @@ namespace stream_vis {
 		parse_marks(pi, cfg, dim);
 
 		return true;
-
-
 	}
+	void declaration_reader::construct_offset(const std::string& name, std::vector<std::string>& offset_refs)
+	{
+		offset_info oi;
+		oi.name = name;
+		oi.mode = OIM_FIRST;
+		oi.offset_value = 0.0;
+		oi.initialized = false;
+		std::string mode_str;
+		if (get_value("mode", mode_str)) {
+			if (mode_str == "fixed")
+				oi.mode = OIM_FIXED;
+			else if (mode_str == "first")
+				oi.mode = OIM_FIRST;
+			else
+				std::cerr << "WARNING: offset " << name << ": unknown mode <" << mode_str << "> defaults to 'first'" << std::endl;
+		}
+		parse_double("offset", oi.offset_value);
+
+		// for all declarations extract stream indices
+		for (auto offset_ref : offset_refs) {
+			// first check for accessors
+			if (offset_ref[0] == '.') {
+				for (size_t i = 1; i < offset_ref.size(); ++i) {
+					TimeSeriesAccessor tsa;
+					if (parse_accessor(offset_ref[i], tsa))
+						oi.accessors.push_back(tsa);
+					else
+						std::cerr << "unknown time series accessor <" << offset_ref[i] << "> ignored in offset declaration" << std::endl;
+				}
+			}
+			else if (name2index_ptr->find(offset_ref) != name2index_ptr->end()) {
+				oi.time_series_indices.push_back(name2index_ptr->at(offset_ref));
+				oi.time_series_names.push_back(offset_ref);
+			}
+			else {
+				std::cerr << "could not find name " << offset_ref << " in inputs or outputs" << std::endl;
+			}
+		}
+		offset_infos_ptr->push_back(oi);
+	}
+
 	void declaration_reader::construct_plot(const std::string& name, int dim)
 	{
 		plot_info pi;

@@ -73,6 +73,7 @@ namespace stream_vis {
 
 	int_time_series::int_time_series(uint16_t i) : streaming_time_series(cgv::type::info::TI_INT64), index(i)
 	{
+		set_value_offset(0);
 	}
 
 	bool int_time_series::extract_from_values(uint16_t num_values, indexed_value* values, double timestamp)
@@ -91,6 +92,7 @@ namespace stream_vis {
 
 	uint_time_series::uint_time_series(uint16_t i) : streaming_time_series(cgv::type::info::TI_UINT64), index(i)
 	{
+		set_value_offset(0);
 	}
 	bool uint_time_series::extract_from_values(uint16_t num_values, indexed_value* values, double timestamp)
 	{

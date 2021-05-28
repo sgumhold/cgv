@@ -119,25 +119,43 @@ namespace stream_vis {
 	struct fvec_time_series : public streaming_time_series, public time_series<float, cgv::math::fvec<float, N>, cgv::math::fvec<double, N>>
 	{
 		uint16_t indices[N];
-		fvec_time_series(uint16_t i0, uint16_t i1) : streaming_time_series(cgv::type::info::TI_ARRAY)
+		cgv::type::info::TypeId source_types[N];
+		fvec_time_series(uint16_t i0, uint16_t i1, 
+			cgv::type::info::TypeId t0 = cgv::type::info::TI_FLT64, cgv::type::info::TypeId t1 = cgv::type::info::TI_FLT64) : streaming_time_series(cgv::type::info::TI_ARRAY)
 		{
 			indices[0] = i0;
 			indices[1] = i1;
+			source_types[0] = t0;
+			source_types[1] = t1;
+			set_value_offset(cgv::math::fvec<double, N>(0.0));
 		}
-		fvec_time_series(uint16_t i0, uint16_t i1, uint16_t i2) : streaming_time_series(cgv::type::info::TI_ARRAY)
+		fvec_time_series(uint16_t i0, uint16_t i1, uint16_t i2,
+			cgv::type::info::TypeId t0 = cgv::type::info::TI_FLT64, cgv::type::info::TypeId t1 = cgv::type::info::TI_FLT64, 
+			cgv::type::info::TypeId t2 = cgv::type::info::TI_FLT64) : streaming_time_series(cgv::type::info::TI_ARRAY)
 		{
 			indices[0] = i0;
 			indices[1] = i1;
 			indices[2] = i2;
+			source_types[0] = t0;
+			source_types[1] = t1;
+			source_types[2] = t2;
+			set_value_offset(cgv::math::fvec<double, N>(0.0));
 		}
-		fvec_time_series(uint16_t i0, uint16_t i1, uint16_t i2, uint16_t i3) : streaming_time_series(cgv::type::info::TI_ARRAY)
+		fvec_time_series(uint16_t i0, uint16_t i1, uint16_t i2, uint16_t i3,
+			cgv::type::info::TypeId t0 = cgv::type::info::TI_FLT64, cgv::type::info::TypeId t1 = cgv::type::info::TI_FLT64, 
+			cgv::type::info::TypeId t2 = cgv::type::info::TI_FLT64, cgv::type::info::TypeId t3 = cgv::type::info::TI_FLT64) : streaming_time_series(cgv::type::info::TI_ARRAY)
 		{
 			indices[0] = i0;
 			indices[1] = i1;
 			indices[2] = i2;
 			indices[3] = i3;
+			source_types[0] = t0;
+			source_types[1] = t1;
+			source_types[2] = t2;
+			source_types[3] = t3;
+			set_value_offset(cgv::math::fvec<double, N>(0.0));
 		}
-		std::vector<uint16_t> get_io_indices() const { return std::vector<uint16_t>(indices, indices+N); }
+		std::vector<uint16_t> get_io_indices() const { return std::vector<uint16_t>(indices, indices + N); }
 		/// return name of value type
 		std::string get_value_type_name() const
 		{
@@ -155,7 +173,11 @@ namespace stream_vis {
 			for (uint16_t i = 0; i < num_values; ++i) {
 				for (int c = 0; c < N; ++c)
 					if (values[i].index == indices[c]) {
-						pos[c] = reinterpret_cast<const double&>(values[i].value[0]);
+						switch (source_types[c]) {
+						case cgv::type::info::TI_FLT64: pos[c] = reinterpret_cast<const double&>(values[i].value[0]); break;
+						case cgv::type::info::TI_UINT64: pos[c] = (double)reinterpret_cast<const uint64_t&>(values[i].value[0]); break;
+						case cgv::type::info::TI_INT64: pos[c] = (double)reinterpret_cast<const int64_t&>(values[i].value[0]); break;
+						}
 						++cnt;
 					}
 			}

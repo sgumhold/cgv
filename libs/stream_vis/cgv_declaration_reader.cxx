@@ -91,6 +91,16 @@ namespace stream_vis {
 		flt = float(d);
 		return true;
 	}
+	bool cgv_declaration_reader::parse_double(const std::string& name, double& d)
+	{
+		auto iter = pp.find(name);
+		if (iter == pp.end())
+			return false;
+		std::string value = iter->second;
+		if (!cgv::utils::is_double(value, d))
+			return false;
+		return true;
+	}
 	bool cgv_declaration_reader::parse_color(const std::string& name, rgb& color)
 	{
 		auto iter = pp.find(name);
@@ -492,8 +502,30 @@ namespace stream_vis {
 			}
 			std::string name = to_string(toks[ti]);
 			std::string type = to_string(toks[ti + 2]);
-			// first check for plot declarations
-			if (type.substr(0, 4) == "plot") {
+			// first check for offset declarations
+			if (type == "offset") {
+				std::vector<cgv::utils::token> tokens;
+				std::vector<std::string> offset_refs;
+				cgv::utils::split_to_tokens(toks[di], tokens, ",", false);
+				size_t i = 0;
+				while (i < tokens.size()) {
+					offset_refs.push_back(cgv::utils::to_string(tokens[i]));
+					if (++i < tokens.size()) {
+						if (tokens[i] != ",") {
+							std::cerr << "expected offset references to be separated by ','" << std::endl;
+							break;
+						}
+						++i;
+					}
+				}
+				pp.clear();
+				if (has_params) {
+					parse_parameters(toks[ti + 3], pp);
+				}
+				construct_offset(name, offset_refs);
+			}
+			// then check for plot declarations
+			else if (type.substr(0, 4) == "plot") {
 				if (type.length() < 6 || type[5] != 'd') {
 					std::cout << "unknown type <" << type << ">" << std::endl;
 					ti += delta;
