@@ -121,7 +121,7 @@ namespace stream_vis {
 			return Store(value - value_offset);
 		}
 	};
-
+	
 	/// specialization of time_series_value_offset for case where no offset is used
 	template <typename Time, typename Store, typename Value>
 	class time_series_value_offset<Time,Store,Value,false> : public time_series_base

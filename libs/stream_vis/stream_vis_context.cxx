@@ -248,9 +248,11 @@ namespace stream_vis {
 				content_ptr = &content;
 		}
 		cgv_declaration_reader reader(*content_ptr);
-		reader.init(&name2index, &typed_time_series, &plot_pool);
-		if (reader.parse_declarations())
+		reader.init(&name2index, &typed_time_series, &offset_infos, &plot_pool);
+		if (reader.parse_declarations()) {
+			nr_uninitialized_offsets = offset_infos.size();
 			return;
+		}
 	}
 	void stream_vis_context::show_time_series() const
 	{
@@ -310,6 +312,101 @@ namespace stream_vis {
 			std::cout << std::endl;
 		}
 	}
+	void stream_vis_context::announce_values(uint16_t num_values, indexed_value* values, double timestamp)
+	{
+		if (nr_uninitialized_offsets == 0)
+			return;
+		for (auto& oi : offset_infos) {
+			if (oi.initialized)
+				continue;
+			if (oi.mode == OIM_FIRST) {
+				// check for accessors
+				if (!oi.accessors.empty() && oi.accessors.front() == TSA_TIME) {
+					oi.offset_value = timestamp;
+				}
+				else {
+					// check if values contain first value
+					bool found = false;
+					for (uint16_t vi = 0; !found && (vi < num_values); ++vi) {
+						for (auto idx : oi.time_series_indices) {
+							if (values[vi].index == idx) {
+								switch (typed_time_series[idx]->get_value_type_id()) {
+								case cgv::type::info::TI_FLT64:
+									oi.offset_value = reinterpret_cast<const double&>(values[vi].value[0]);
+									break;
+								case cgv::type::info::TI_UINT64:
+									oi.offset_value = (double)reinterpret_cast<const uint64_t&>(values[vi].value[0]);
+									break;
+								case cgv::type::info::TI_INT64:
+									oi.offset_value = (double)reinterpret_cast<const int64_t&>(values[vi].value[0]);
+									break;
+								default:
+									std::cerr << "unknown offset type" << std::endl;
+								}
+								found = true;
+								break;
+							}
+						}
+					}
+					if (!found)
+						continue;
+				}
+			}
+			// go through all time series and set offset
+			for (auto* ts_ptr : typed_time_series) {
+				// check for time offset
+				if (oi.accessors.size() > 0 && oi.accessors.front() == TSA_TIME) {
+					ts_ptr->series().set_time_offset(oi.offset_value);
+				}
+				std::vector<uint16_t> ids = ts_ptr->get_io_indices();
+				for (int i = 0; i < ids.size(); ++i) {
+					for (auto idx : oi.time_series_indices) {
+						if (ids[i] == idx) {
+							if (ids.size() == 1) {
+								// set value offset in scalar time series
+								switch (typed_time_series[idx]->get_value_type_id()) {
+								case cgv::type::info::TI_FLT64:
+									dynamic_cast<float_time_series*>(ts_ptr)->set_value_offset(oi.offset_value);
+									break;
+								case cgv::type::info::TI_UINT64:
+									dynamic_cast<uint_time_series*>(ts_ptr)->set_value_offset(uint64_t(oi.offset_value));
+									break;
+								case cgv::type::info::TI_INT64:
+									dynamic_cast<int_time_series*>(ts_ptr)->set_value_offset(int64_t(oi.offset_value));
+									break;
+								}
+							}
+							else {
+								switch (ids.size()) {
+								case 2: {
+									dvec2 voff = dynamic_cast<fvec_time_series<2>*>(ts_ptr)->get_value_offset();
+									voff[i] = oi.offset_value;
+									dynamic_cast<fvec_time_series<2>*>(ts_ptr)->set_value_offset(voff);
+									break;
+								}
+								case 3: {
+									dvec3 voff = dynamic_cast<fvec_time_series<3>*>(ts_ptr)->get_value_offset();
+									voff[i] = oi.offset_value;
+									dynamic_cast<fvec_time_series<3>*>(ts_ptr)->set_value_offset(voff);
+									break;
+								}
+								case 4: {
+									dvec4 voff = dynamic_cast<fvec_time_series<4>*>(ts_ptr)->get_value_offset();
+									voff[i] = oi.offset_value;
+									dynamic_cast<fvec_time_series<4>*>(ts_ptr)->set_value_offset(voff);
+									break;
+								}
+								}
+							}
+						}
+					}
+				}
+			}
+			oi.initialized = true;
+			--nr_uninitialized_offsets;
+		}
+	}
+
 	void stream_vis_context::show_plots() const
 	{
 		for (const auto& pl : plot_pool) {
