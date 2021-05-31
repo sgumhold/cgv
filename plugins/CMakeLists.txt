@@ -12,6 +12,11 @@ add_subdirectory(crg_light)
 add_subdirectory(crg_stereo_view)
 add_subdirectory(examples)
 
+add_subdirectory(crg_vr_wall)
+add_subdirectory(openvr_driver)
+add_subdirectory(crg_vr_view)
+add_subdirectory(vr_test)
+
 if (WIN32)
     # FIXME these plugins can only be compiled under Windows for now
     add_subdirectory(cmv_avi)
