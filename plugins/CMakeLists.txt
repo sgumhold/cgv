@@ -1,5 +1,7 @@
 
 add_subdirectory(cg_ext)
+add_subdirectory(cg_icons)
+add_subdirectory(cmf_tt_gl_font)
 add_subdirectory(cg_fltk)
 add_subdirectory(cg_meta)
 add_subdirectory(cmi_io)

@@ -26,6 +26,14 @@ namespace stream_vis {
 		AM_BLOCKED_8,
 		AM_BLOCKED_16
 	};
+	enum NanMappingMode
+	{
+		NMM_DEFAULT,
+		NMM_ATTRIBUTE_ZERO,
+		NMM_ATTRIBUTE_ONE,
+		NMM_ATTRIBUTE_MIN,
+		NMM_ATTRIBUTE_MAX
+	};
 	/// interface for all time series used in the streaming visualization library
 	class CGV_API streaming_time_series : public cgv::render::render_types
 	{
@@ -34,9 +42,20 @@ namespace stream_vis {
 		mutable bool outofdate;
 		/// store id of value type
 		cgv::type::info::TypeId type_id;
-	public:
 		/// store name of streaming time series
 		std::string name;
+		///
+		bool last_had_new_values;
+	public:
+		virtual bool is_resample() const;
+		/// whether NAN-values are used; defaults to false
+		bool uses_nan;
+		/// float encoding of nan value; defaults to std::numeric_limits<float>::quiet_NaN()
+		float nan_value;
+		/// mode of how to map nan values; defaults to NMM_DEFAULT
+		NanMappingMode nan_mapping_mode;
+		/// store index of first visible sample
+		size_t first_visible_sample_index;
 		/// default color
 		rgb default_color;
 		/// default opacity
@@ -49,8 +68,18 @@ namespace stream_vis {
 		uint16_t upper_bound_index;
 		/// type of automatic bound computation
 		AABBMode aabb_mode;
+		/// return name
+		const std::string& get_name() const;
+		/// 
+		void set_name(const std::string& new_name);
+		/// check for new value
+		bool has_new_value() const;
+		/// set status of new value
+		void set_new_value(bool has_new);
 		/// construct empty streaming time series
 		streaming_time_series(cgv::type::info::TypeId _type_id = cgv::type::info::TI_UNDEF);
+		/// construct a time series that resamples this time series according to the sampling time series passed in the argument
+		virtual streaming_time_series* construct_resampled_time_series(const std::string& name, streaming_time_series* sampling_ts) const;
 		/// return list of unique indices to defining inputs/outputs
 		virtual std::vector<uint16_t> get_io_indices() const = 0;
 		/// return type id of value
@@ -77,8 +106,19 @@ namespace stream_vis {
 		bool extract_from_values(uint16_t num_values, indexed_value* values, double timestamp);
 		const time_series_base& series() const { return *this; }
 		time_series_base& series() { return *this; }
+		streaming_time_series* construct_resampled_time_series(const std::string& name, streaming_time_series* sampling_ts) const;
 	};
+	struct CGV_API resampled_float_time_series : public float_time_series
+	{
+		streaming_time_series* sampling_ts_ptr;
+		bool have_new_value;
+		float new_value;
+		double new_timestamp;
 
+		bool is_resample() const;
+		resampled_float_time_series(const std::string& name, streaming_time_series* _sampling_ts_ptr);
+		bool extract_from_values(uint16_t num_values, indexed_value* values, double timestamp);
+	};
 	struct CGV_API int_time_series : public streaming_time_series, public time_series<float, int32_t, int64_t>
 	{
 		uint16_t index;
@@ -107,31 +147,57 @@ namespace stream_vis {
 		bool extract_from_values(uint16_t num_values, indexed_value* values, double timestamp);
 		const time_series_base& series() const { return *this; }
 		time_series_base& series() { return *this; }
+		streaming_time_series* construct_resampled_time_series(const std::string& name, streaming_time_series* sampling_ts) const;
+	};
+	struct CGV_API resampled_bool_time_series : public bool_time_series
+	{
+		streaming_time_series* sampling_ts_ptr;
+		bool is_resample() const;
+		resampled_bool_time_series(const std::string& name, streaming_time_series* _sampling_ts_ptr);
+		bool extract_from_values(uint16_t num_values, indexed_value* values, double timestamp);
 	};
 
 	template <uint32_t N>
 	struct fvec_time_series : public streaming_time_series, public time_series<float, cgv::math::fvec<float, N>, cgv::math::fvec<double, N>>
 	{
 		uint16_t indices[N];
-		fvec_time_series(uint16_t i0, uint16_t i1) : streaming_time_series(cgv::type::info::TI_ARRAY)
+		cgv::type::info::TypeId source_types[N];
+		fvec_time_series(uint16_t i0, uint16_t i1, 
+			cgv::type::info::TypeId t0 = cgv::type::info::TI_FLT64, cgv::type::info::TypeId t1 = cgv::type::info::TI_FLT64) : streaming_time_series(cgv::type::info::TI_ARRAY)
 		{
 			indices[0] = i0;
 			indices[1] = i1;
+			source_types[0] = t0;
+			source_types[1] = t1;
+			set_value_offset(cgv::math::fvec<double, N>(0.0));
 		}
-		fvec_time_series(uint16_t i0, uint16_t i1, uint16_t i2) : streaming_time_series(cgv::type::info::TI_ARRAY)
+		fvec_time_series(uint16_t i0, uint16_t i1, uint16_t i2,
+			cgv::type::info::TypeId t0 = cgv::type::info::TI_FLT64, cgv::type::info::TypeId t1 = cgv::type::info::TI_FLT64, 
+			cgv::type::info::TypeId t2 = cgv::type::info::TI_FLT64) : streaming_time_series(cgv::type::info::TI_ARRAY)
 		{
 			indices[0] = i0;
 			indices[1] = i1;
 			indices[2] = i2;
+			source_types[0] = t0;
+			source_types[1] = t1;
+			source_types[2] = t2;
+			set_value_offset(cgv::math::fvec<double, N>(0.0));
 		}
-		fvec_time_series(uint16_t i0, uint16_t i1, uint16_t i2, uint16_t i3) : streaming_time_series(cgv::type::info::TI_ARRAY)
+		fvec_time_series(uint16_t i0, uint16_t i1, uint16_t i2, uint16_t i3,
+			cgv::type::info::TypeId t0 = cgv::type::info::TI_FLT64, cgv::type::info::TypeId t1 = cgv::type::info::TI_FLT64, 
+			cgv::type::info::TypeId t2 = cgv::type::info::TI_FLT64, cgv::type::info::TypeId t3 = cgv::type::info::TI_FLT64) : streaming_time_series(cgv::type::info::TI_ARRAY)
 		{
 			indices[0] = i0;
 			indices[1] = i1;
 			indices[2] = i2;
 			indices[3] = i3;
+			source_types[0] = t0;
+			source_types[1] = t1;
+			source_types[2] = t2;
+			source_types[3] = t3;
+			set_value_offset(cgv::math::fvec<double, N>(0.0));
 		}
-		std::vector<uint16_t> get_io_indices() const { return std::vector<uint16_t>(indices, indices+N); }
+		std::vector<uint16_t> get_io_indices() const { return std::vector<uint16_t>(indices, indices + N); }
 		/// return name of value type
 		std::string get_value_type_name() const
 		{
@@ -149,13 +215,17 @@ namespace stream_vis {
 			for (uint16_t i = 0; i < num_values; ++i) {
 				for (int c = 0; c < N; ++c)
 					if (values[i].index == indices[c]) {
-						pos[c] = reinterpret_cast<const double&>(values[i].value[0]);
+						switch (source_types[c]) {
+						case cgv::type::info::TI_FLT64: pos[c] = reinterpret_cast<const double&>(values[i].value[0]); break;
+						case cgv::type::info::TI_UINT64: pos[c] = (double)reinterpret_cast<const uint64_t&>(values[i].value[0]); break;
+						case cgv::type::info::TI_INT64: pos[c] = (double)reinterpret_cast<const int64_t&>(values[i].value[0]); break;
+						}
 						++cnt;
 					}
 			}
 			if (cnt != N)
 				return false;
-			append_sample(timestamp, pos);
+			this->append_sample(timestamp, pos);
 			return true;
 		}
 		const time_series_base& series() const { return *this; }

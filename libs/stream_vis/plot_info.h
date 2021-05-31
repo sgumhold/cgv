@@ -40,7 +40,8 @@ namespace stream_vis {
 	{
 		DA_FIXED,
 		DA_COMPUTE,
-		DA_TIME_SERIES
+		DA_TIME_SERIES,
+		DA_SHIFTED_TIME_SERIES
 	};
 
 	/// per plot information

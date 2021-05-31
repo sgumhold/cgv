@@ -103,6 +103,9 @@ namespace stream_vis {
 			// ignore composed time series without reference
 			if (ts_accesses[i] == TSA_NONE)
 				continue;
+			// ignore resample time series
+			if (typed_time_series[i]->is_resample())
+				continue;
 			// add a new time series ringbuffer entry
 			uint16_t rb_idx = uint16_t(time_series_ringbuffers.size());
 			time_series_ringbuffers.resize(time_series_ringbuffers.size() + 1);
@@ -157,7 +160,9 @@ namespace stream_vis {
 			storage_buffer_offset += nr_storage_components * typed_time_series[i]->series().get_ringbuffer_size();
 		}
 		// add ringbuffer entries for non referenced but accessed remaining non composed time series
-		for (i = 0; i < get_first_composed_index(); ++i) {
+		for (i = 0; i < typed_time_series.size(); ++i) {
+			if (i >= get_first_composed_index() && !typed_time_series[i]->is_resample())
+				continue;
 			// ignore time series without reference
 			if (ts_accesses[i] == TSA_NONE)
 				continue;
@@ -248,14 +253,16 @@ namespace stream_vis {
 				content_ptr = &content;
 		}
 		cgv_declaration_reader reader(*content_ptr);
-		reader.init(&name2index, &typed_time_series, &plot_pool);
-		if (reader.parse_declarations())
+		reader.init(&name2index, &typed_time_series, &offset_infos, &plot_pool);
+		if (reader.parse_declarations()) {
+			nr_uninitialized_offsets = offset_infos.size();
 			return;
+		}
 	}
 	void stream_vis_context::show_time_series() const
 	{
 		for (const auto& tts : typed_time_series) {
-			std::cout << tts->name << ":" << tts->get_value_type_name();
+			std::cout << tts->get_name() << ":" << tts->get_value_type_name();
 			std::stringstream ss;
 			std::string fill;
 			if (tts->default_color[0] != -1) {
@@ -291,7 +298,7 @@ namespace stream_vis {
 				for (uint16_t i : vi) {
 					if (!first)
 						std::cout << ",";
-					std::cout << typed_time_series[i]->name;
+					std::cout << typed_time_series[i]->get_name();
 					first = false;
 				}
 				std::cout << ")";
@@ -300,16 +307,111 @@ namespace stream_vis {
 				if (tts->lower_bound_index != uint16_t(-1) || tts->upper_bound_index != uint16_t(-1)) {
 					std::cout << " = {";
 					if (tts->lower_bound_index != uint16_t(-1))
-						std::cout << typed_time_series[tts->lower_bound_index]->name;
+						std::cout << typed_time_series[tts->lower_bound_index]->get_name();
 					std::cout << ", ";
 					if (tts->upper_bound_index != uint16_t(-1))
-						std::cout << typed_time_series[tts->upper_bound_index]->name;
+						std::cout << typed_time_series[tts->upper_bound_index]->get_name();
 					std::cout << "}";
 				}
 			}
 			std::cout << std::endl;
 		}
 	}
+	void stream_vis_context::announce_values(uint16_t num_values, indexed_value* values, double timestamp)
+	{
+		if (nr_uninitialized_offsets == 0)
+			return;
+		for (auto& oi : offset_infos) {
+			if (oi.initialized)
+				continue;
+			if (oi.mode == OIM_FIRST) {
+				// check for accessors
+				if (!oi.accessors.empty() && oi.accessors.front() == TSA_TIME) {
+					oi.offset_value = timestamp;
+				}
+				else {
+					// check if values contain first value
+					bool found = false;
+					for (uint16_t vi = 0; !found && (vi < num_values); ++vi) {
+						for (auto idx : oi.time_series_indices) {
+							if (values[vi].index == idx) {
+								switch (typed_time_series[idx]->get_value_type_id()) {
+								case cgv::type::info::TI_FLT64:
+									oi.offset_value = reinterpret_cast<const double&>(values[vi].value[0]);
+									break;
+								case cgv::type::info::TI_UINT64:
+									oi.offset_value = (double)reinterpret_cast<const uint64_t&>(values[vi].value[0]);
+									break;
+								case cgv::type::info::TI_INT64:
+									oi.offset_value = (double)reinterpret_cast<const int64_t&>(values[vi].value[0]);
+									break;
+								default:
+									std::cerr << "unknown offset type" << std::endl;
+								}
+								found = true;
+								break;
+							}
+						}
+					}
+					if (!found)
+						continue;
+				}
+			}
+			// go through all time series and set offset
+			for (auto* ts_ptr : typed_time_series) {
+				// check for time offset
+				if (oi.accessors.size() > 0 && oi.accessors.front() == TSA_TIME) {
+					ts_ptr->series().set_time_offset(oi.offset_value);
+				}
+				std::vector<uint16_t> ids = ts_ptr->get_io_indices();
+				for (int i = 0; i < ids.size(); ++i) {
+					for (auto idx : oi.time_series_indices) {
+						if (ids[i] == idx) {
+							if (ids.size() == 1) {
+								// set value offset in scalar time series
+								switch (typed_time_series[idx]->get_value_type_id()) {
+								case cgv::type::info::TI_FLT64:
+									dynamic_cast<float_time_series*>(ts_ptr)->set_value_offset(oi.offset_value);
+									break;
+								case cgv::type::info::TI_UINT64:
+									dynamic_cast<uint_time_series*>(ts_ptr)->set_value_offset(uint64_t(oi.offset_value));
+									break;
+								case cgv::type::info::TI_INT64:
+									dynamic_cast<int_time_series*>(ts_ptr)->set_value_offset(int64_t(oi.offset_value));
+									break;
+								}
+							}
+							else {
+								switch (ids.size()) {
+								case 2: {
+									dvec2 voff = dynamic_cast<fvec_time_series<2>*>(ts_ptr)->get_value_offset();
+									voff[i] = oi.offset_value;
+									dynamic_cast<fvec_time_series<2>*>(ts_ptr)->set_value_offset(voff);
+									break;
+								}
+								case 3: {
+									dvec3 voff = dynamic_cast<fvec_time_series<3>*>(ts_ptr)->get_value_offset();
+									voff[i] = oi.offset_value;
+									dynamic_cast<fvec_time_series<3>*>(ts_ptr)->set_value_offset(voff);
+									break;
+								}
+								case 4: {
+									dvec4 voff = dynamic_cast<fvec_time_series<4>*>(ts_ptr)->get_value_offset();
+									voff[i] = oi.offset_value;
+									dynamic_cast<fvec_time_series<4>*>(ts_ptr)->set_value_offset(voff);
+									break;
+								}
+								}
+							}
+						}
+					}
+				}
+			}
+			oi.initialized = true;
+			--nr_uninitialized_offsets;
+		}
+	}
+
 	void stream_vis_context::show_plots() const
 	{
 		for (const auto& pl : plot_pool) {
@@ -322,7 +424,7 @@ namespace stream_vis {
 						first = false;
 					else
 						std::cout << "|";
-					std::cout << typed_time_series[ad.time_series_index]->name << "." << get_accessor_string(ad.accessor);
+					std::cout << typed_time_series[ad.time_series_index]->get_name() << "." << get_accessor_string(ad.accessor);
 				}
 				std::cout << "> ";
 				first = true;
@@ -331,7 +433,7 @@ namespace stream_vis {
 						first = false;
 					else
 						std::cout << ",";
-					std::cout << rr.index << ":" << typed_time_series[time_series_ringbuffers[rr.index].time_series_index]->name <<
+					std::cout << rr.index << ":" << typed_time_series[time_series_ringbuffers[rr.index].time_series_index]->get_name() <<
 						"[" << rr.component_index << "]";
 				}
 				std::cout << "; ";
@@ -343,7 +445,7 @@ namespace stream_vis {
 	{
 		for (const auto& tsrb : time_series_ringbuffers) {
 			size_t idx = &tsrb - time_series_ringbuffers.data();
-			std::cout << idx << ":" << typed_time_series[tsrb.time_series_index]->name <<
+			std::cout << idx << ":" << typed_time_series[tsrb.time_series_index]->get_name() <<
 				"." << get_accessor_string(tsrb.time_series_access) << "|" << tsrb.nr_time_series_components <<
 				" = " << tsrb.nr_samples << "(" << tsrb.time_series_ringbuffer_size << ") -> " <<
 				tsrb.storage_buffer_index << "|" << tsrb.storage_buffer_offset << std::endl;
@@ -368,6 +470,14 @@ namespace stream_vis {
 				return true;
 			}
 			switch (ke.get_key()) {
+			case 'X':
+				sleep_ms = 0;
+				on_set(&sleep_ms);
+				return true;
+			case 'S':
+				sleep_ms = 20;
+				on_set(&sleep_ms);
+				return true;
 			case cgv::gui::KEY_Space:
 				paused = !paused;
 				on_set(&paused);
@@ -477,6 +587,7 @@ namespace stream_vis {
 	}
 	void stream_vis_context::update_plot_domains()
 	{
+		std::vector<bool> update_tts(typed_time_series.size(), false);
 		std::vector<float> tmp_buffer(18);
 		float* flt_ptr = &tmp_buffer.front();
 		for (auto& pl : plot_pool) {
@@ -523,6 +634,12 @@ namespace stream_vis {
 					case DA_COMPUTE:
 						compute[j][ai] = true;
 						++nr_compute;
+						break;
+					case DA_SHIFTED_TIME_SERIES:
+						typed_time_series[pl.domain_bound_ts_index[j][ai]]->series().put_sample_as_float(
+							typed_time_series[pl.domain_bound_ts_index[j][ai]]->series().get_nr_samples() - 1,
+							&ranges[j][ai], TSA_X);
+						ranges[j][ai] += (j == 0 ? pl.fixed_domain.get_min_pnt() : pl.fixed_domain.get_max_pnt())[ai];
 						break;
 					}
 				}
@@ -633,9 +750,12 @@ namespace stream_vis {
 		add_member_control(this, "sleep_ms", sleep_ms, "value_slider", "min=0;max=1000;log=true;ticks=true");
 		add_member_control(this, "use_vbo", use_vbo, "check");
 		for (auto& pl : plot_pool) {
-			add_decorator(pl.name, "heading", "level=2");
-			pl.plot_ptr->create_gui(this, *this);
-			add_decorator("separator", "separator");
+			if (begin_tree_node(pl.name + std::string(pl.dim == 2 ? ":plot2d" : ":plot3d"), pl)) {
+				align("\a");
+				pl.plot_ptr->create_gui(this, *this);
+				align("\b");
+				end_tree_node(pl.name);
+			}
 		}
 	}
 
