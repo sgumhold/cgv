@@ -591,8 +591,11 @@ void plot2d::draw(cgv::render::context& ctx)
 					auto& ac = get_domain_config_ptr()->axis_configs[ai];
 					float min_val, max_val;
 					ac.put_backup_attribute_range(min_val, max_val);
-					if (determine_axis_extent_from_subplot(ai, i, min_val, max_val))
+					if (determine_axis_extent_from_subplot(ai, i, min_val, max_val)) {
+						if (fabs(max_val - min_val) < 10.0f * std::numeric_limits<float>::epsilon())
+							max_val = min_val + 1;
 						ac.set_attribute_range(min_val, max_val);
+					}
 
 				}
 			}

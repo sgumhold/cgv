@@ -47,11 +47,13 @@ namespace stream_vis {
 		bool parse_ivec2(const std::string& name, cgv::render::render_types::ivec2& v) { return parse_ivecn(name, &v[0], 2); }
 		bool parse_ivec3(const std::string& name, cgv::render::render_types::ivec3& v) { return parse_ivecn(name, &v[0], 3); }
 		bool parse_ivec4(const std::string& name, cgv::render::render_types::ivec4& v) { return parse_ivecn(name, &v[0], 4); }
+		void finalize_time_series(uint16_t ts_idx, int default_ringbuffer_size = 1024);
 		bool construct_time_series(const std::string& name, const std::string& type, const std::vector<std::string>& ts_names);
 		bool construct_attribute_definitions(std::vector<std::string>& defs, std::vector<attribute_definition>& ads);
 		bool construct_mark(const std::string& mark, cgv::plot::plot_base_config& cfg, int dim);
 		bool construct_subplot(plot_info& pi, int dim, std::vector<attribute_definition>& ads);
 		void construct_plot(const std::string& name, int dim);
+		void construct_resample(const std::string& name, const std::string& resampled_ts, const std::string& sampling_ts);
 		void construct_offset(const std::string& name, std::vector<std::string>& offset_refs);
 		virtual bool parse_declarations() = 0;
 	};

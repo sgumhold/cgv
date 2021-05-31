@@ -524,6 +524,32 @@ namespace stream_vis {
 				}
 				construct_offset(name, offset_refs);
 			}
+			// next check for resampled time series
+			else if (type == "resample") {
+				std::vector<cgv::utils::token> tokens;
+				std::vector<std::string> ts_refs;
+				cgv::utils::split_to_tokens(toks[di], tokens, ",", false);
+				size_t i = 0;
+				while (i < tokens.size()) {
+					ts_refs.push_back(cgv::utils::to_string(tokens[i]));
+					if (++i < tokens.size()) {
+						if (tokens[i] != ",") {
+							std::cerr << "expected time series references to be separated by ','" << std::endl;
+							break;
+						}
+						++i;
+					}
+				}
+				pp.clear();
+				if (has_params) {
+					parse_parameters(toks[ti + 3], pp);
+				}
+				if (ts_refs.size() != 2) {
+					std::cerr << "expected resample definition to be based of exactly two time series references!" << std::endl;
+					continue;
+				}
+				construct_resample(name, ts_refs[0], ts_refs[1]);
+			}
 			// then check for plot declarations
 			else if (type.substr(0, 4) == "plot") {
 				if (type.length() < 6 || type[5] != 'd') {

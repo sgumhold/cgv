@@ -103,6 +103,9 @@ namespace stream_vis {
 			// ignore composed time series without reference
 			if (ts_accesses[i] == TSA_NONE)
 				continue;
+			// ignore resample time series
+			if (typed_time_series[i]->is_resample())
+				continue;
 			// add a new time series ringbuffer entry
 			uint16_t rb_idx = uint16_t(time_series_ringbuffers.size());
 			time_series_ringbuffers.resize(time_series_ringbuffers.size() + 1);
@@ -157,7 +160,9 @@ namespace stream_vis {
 			storage_buffer_offset += nr_storage_components * typed_time_series[i]->series().get_ringbuffer_size();
 		}
 		// add ringbuffer entries for non referenced but accessed remaining non composed time series
-		for (i = 0; i < get_first_composed_index(); ++i) {
+		for (i = 0; i < typed_time_series.size(); ++i) {
+			if (i >= get_first_composed_index() && !typed_time_series[i]->is_resample())
+				continue;
 			// ignore time series without reference
 			if (ts_accesses[i] == TSA_NONE)
 				continue;
