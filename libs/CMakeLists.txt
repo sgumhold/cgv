@@ -1,5 +1,6 @@
 
 add_subdirectory(cg_gamepad)
+add_subdirectory(cg_vr)
 add_subdirectory(cgv_gl)
 add_subdirectory(cgv_reflect_types)
 add_subdirectory(delaunay)
@@ -8,6 +9,7 @@ add_subdirectory(glsu)
 add_subdirectory(plot)
 add_subdirectory(tt_gl_font)
 add_subdirectory(stream_vis)
+add_subdirectory(vr)
 
 install(EXPORT cgv_libs DESTINATION ${CGV_LIB_DEST})
 install(DIRECTORY . DESTINATION ${CGV_LIBS_INCLUDE_DEST} FILES_MATCHING PATTERN "*.h")
