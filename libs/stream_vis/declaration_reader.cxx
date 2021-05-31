@@ -1,6 +1,7 @@
 #include "declaration_reader.h"
 #include <libs/plot/plot2d.h>
 #include <libs/plot/plot3d.h>
+#include <cgv/utils/scan.h>
 
 namespace stream_vis {
 
@@ -137,17 +138,57 @@ namespace stream_vis {
 			typed_time_series_ptr->back()->series().set_ringbuffer_size(1024);
 			ts_idx = (*name2index_ptr)[name] = uint16_t(typed_time_series_ptr->size() - 1);
 		}
-		if (ts_idx != -1) {
-			streaming_time_series* ts_ptr = typed_time_series_ptr->at(ts_idx);
-			parse_color("color", ts_ptr->default_color);
-			parse_float("opacity", ts_ptr->default_opacity);
-			parse_float("size", ts_ptr->default_size);
-			parse_int("aabb_mode", (int&)ts_ptr->aabb_mode);
-			int ring_buffer_size = 1024;
-			if (parse_int("ring_buffer_size", ring_buffer_size))
-				ts_ptr->series().set_ringbuffer_size(ring_buffer_size);
-		}
+		if (ts_idx != -1)
+			finalize_time_series(ts_idx);
 		return true;
+	}
+	void declaration_reader::finalize_time_series(uint16_t ts_idx, int default_ringbuffer_size)
+	{
+		streaming_time_series* ts_ptr = typed_time_series_ptr->at(ts_idx);
+		parse_color("color", ts_ptr->default_color);
+		parse_float("opacity", ts_ptr->default_opacity);
+		parse_float("size", ts_ptr->default_size);
+		std::string identifier;
+		if (get_value("aabb_mode", identifier)) {
+			int value;
+			if (cgv::utils::is_integer(identifier, value)) {
+				(int&)ts_ptr->aabb_mode = value;
+			}
+			else if (identifier == "none")
+				ts_ptr->aabb_mode = AM_NONE;
+			else if (identifier == "brute_force")
+				ts_ptr->aabb_mode = AM_BRUTE_FORCE;
+			else if (identifier == "blocked_8")
+				ts_ptr->aabb_mode = AM_BLOCKED_8;
+			else if (identifier == "blocked_16")
+				ts_ptr->aabb_mode = AM_BLOCKED_16;
+			else
+				std::cerr << "unknown aabb mode <" << identifier << ">" << std::endl;
+		}
+		if (get_value("nan_mapping_mode", identifier)) {
+			int value;
+			if (cgv::utils::is_integer(identifier, value)) {
+				(int&)ts_ptr->nan_mapping_mode = value;
+			}
+			else if (identifier == "default")
+				ts_ptr->nan_mapping_mode = NMM_DEFAULT;
+			else if (identifier == "zero")
+				ts_ptr->nan_mapping_mode = NMM_ATTRIBUTE_ZERO;
+			else if (identifier == "one")
+				ts_ptr->nan_mapping_mode = NMM_ATTRIBUTE_ONE;
+			else if (identifier == "min")
+				ts_ptr->nan_mapping_mode = NMM_ATTRIBUTE_MIN;
+			else if (identifier == "max")
+				ts_ptr->nan_mapping_mode = NMM_ATTRIBUTE_MAX;
+			else
+				std::cerr << "unknown nan mapping mode <" << identifier << ">" << std::endl;
+		}
+		parse_float("nan", ts_ptr->nan_value);
+		parse_bool("uses_nan", ts_ptr->uses_nan);
+		int ring_buffer_size = default_ringbuffer_size;
+		if (parse_int("ring_buffer_size", ring_buffer_size))
+			ts_ptr->series().set_ringbuffer_size(ring_buffer_size);
+
 	}
 	bool declaration_reader::construct_mark(const std::string& name, cgv::plot::plot_base_config& cfg, int dim)
 	{
@@ -322,6 +363,27 @@ namespace stream_vis {
 		parse_marks(pi, cfg, dim);
 
 		return true;
+	}
+	void declaration_reader::construct_resample(const std::string& name, const std::string& resampled_ts, const std::string& sampling_ts)
+	{
+		if (name2index_ptr->find(resampled_ts) == name2index_ptr->end()) {
+			std::cerr << "construct_resample: could not find to be resampled time series <" << resampled_ts << ">" << std::endl;
+			return;
+		}
+		if (name2index_ptr->find(sampling_ts) == name2index_ptr->end()) {
+			std::cerr << "construct_resample: could not find sampling time series <" << sampling_ts << ">" << std::endl;
+			return;
+		}
+		uint16_t ri = name2index_ptr->at(resampled_ts);
+		uint16_t si = name2index_ptr->at(sampling_ts);
+		stream_vis::streaming_time_series* sts_ptr = typed_time_series_ptr->at(si);
+		stream_vis::streaming_time_series* rts_ptr = typed_time_series_ptr->at(ri)->construct_resampled_time_series(name,sts_ptr);
+		typed_time_series_ptr->push_back(rts_ptr);
+		typed_time_series_ptr->back()->set_name(std::string("resample ") + name);
+		typed_time_series_ptr->back()->series().set_ringbuffer_size(sts_ptr->series().get_ringbuffer_size());
+		uint16_t ts_idx = uint16_t(typed_time_series_ptr->size() - 1);
+		(*name2index_ptr)[name] = ts_idx;
+		finalize_time_series(ts_idx, (int)sts_ptr->series().get_ringbuffer_size());
 	}
 	void declaration_reader::construct_offset(const std::string& name, std::vector<std::string>& offset_refs)
 	{
