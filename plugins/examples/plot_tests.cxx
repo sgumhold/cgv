@@ -13,14 +13,14 @@ class test_plot3d : public cgv::base::node, public cgv::render::drawable, public
 {
 protected:
 	cgv::plot::plot3d plot;
+	// persistent vector with plot data
+	std::vector<vec4> P1, P2;
 public:
-	test_plot3d() : cgv::base::node("3d plot tester")
+	test_plot3d() : cgv::base::node("3d plot tester"), plot(1)
 	{
 		unsigned i, j;
 		unsigned pi1 = plot.add_sub_plot("x*y");
 		unsigned pi2 = plot.add_sub_plot("x²+y²");
-		std::vector<vec3>& P1 = plot.ref_sub_plot_samples(pi1);
-		std::vector<vec3>& P2 = plot.ref_sub_plot_samples(pi2);
 		plot.set_samples_per_row(pi1, 30);
 		plot.set_samples_per_row(pi2, 50);
 		for (j = 0; j < 50; ++j) {
@@ -28,7 +28,8 @@ public:
 			for (i = 0; i < 30; ++i) {
 				float x = 0.5f * i;
 				float z = 0.1f * x * y;
-				P1.push_back(vec3(x, y, z));
+				float w = 0.1f * ((x - 7.0f) * (x - 7.0f) + (y - 7.0f) * (y - 3.0f));
+				P1.push_back(vec4(x, y, z, w));
 			}
 		}
 		for (j = 0; j < 30; ++j) {
@@ -36,11 +37,20 @@ public:
 			for (i = 0; i < 50; ++i) {
 				float x = 0.3f * i;
 				float z = 0.1f * ((x - 7.0f) * (x - 7.0f) + (y - 7.0f) * (y - 3.0f));
-				P2.push_back(vec3(x, y, z));
+				float w = 0.1f * x * y;
+				P2.push_back(vec4(x, y, z, w));
 			}
+		}
+		for (unsigned c = 0; c < 4; ++c) {
+			plot.set_sub_plot_attribute(0, c, &P1[0][c], P1.size(), sizeof(vec4));
+			plot.set_sub_plot_attribute(1, c, &P2[0][c], P2.size(), sizeof(vec4));
 		}
 		plot.set_sub_plot_colors(0, rgb(1.0f, 0.0f, 0.1f));
 		plot.set_sub_plot_colors(1, rgb(0.1f, 0.0f, 1.0f));
+
+		plot.legend_components = cgv::plot::LegendComponent(cgv::plot::LC_PRIMARY_COLOR + cgv::plot::LC_PRIMARY_OPACITY);
+		plot.color_mapping[0] = 3;
+		plot.opacity_mapping[0] = 3;
 
 		plot.adjust_domain_to_data();
 		plot.adjust_tick_marks();
@@ -92,7 +102,7 @@ protected:
 	// whether to use offscreen rendering
 	bool render_offscreen;
 public:
-	test_plot2d() : cgv::base::node("2d plot tester"), tex("[R,G,B,A]"), depth("[D]"), plot(2)
+	test_plot2d() : cgv::base::node("2d plot tester"), tex("[R,G,B,A]"), depth("[D]"), plot("trigonometry", 2)
 	{
 		// compute vector of vec3 with x coordinates and function values of cos and sin
 		unsigned i;
@@ -123,6 +133,10 @@ public:
 		plot.set_sub_plot_attribute(p3, 2, &P[0][1], P.size(), sizeof(vec4));
 		plot.set_sub_plot_attribute(p3, 3, &P[0][2], P.size(), sizeof(vec4));
 
+		plot.legend_components = cgv::plot::LegendComponent(cgv::plot::LC_PRIMARY_COLOR + cgv::plot::LC_PRIMARY_OPACITY);
+		plot.color_mapping[0] = 2;
+		plot.opacity_mapping[0] = 3;
+
 		// adjust domain, tick marks and extent in world space (of offline rendering process)
 		plot.adjust_domain_to_data();
 		plot.adjust_tick_marks();
@@ -132,6 +146,7 @@ public:
 		//ex(1) *= 2.0f;
 		//plot.set_extent(ex);
 		render_offscreen = false;
+		
 	}
 	void on_set(void* member_ptr)
 	{

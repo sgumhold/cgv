@@ -8,7 +8,7 @@ struct sphere_splat_info
 	float inv_e;
 	vec2 e_zw_clip;
 	vec2 v_zw_clip;
-	vec3 v;
+//	vec3 v;
 	vec3 v_eye;
 };
 

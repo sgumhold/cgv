@@ -7,6 +7,7 @@
 #include <cgv/render/attribute_array_binding.h>
 #include <cgv/render/vertex_buffer.h>
 #include <cgv/render/shader_program.h>
+#include <libs/cgv_gl/rectangle_renderer.h>
 #include <cgv/media/color.h>
 #include <cgv/media/color_scale.h>
 #include <cgv/media/font/font.h>
@@ -35,20 +36,32 @@ struct domain_config : public cgv::render::render_types
 	bool show_domain;
 	/// whether to fill the domain
 	bool fill;
+	/// plot title
+	std::string title;
+	/// position of title
+	vecn title_pos;
 	/// color of the domain fill
 	rgb color;
+	/// color of the title
+	rgba title_color;
 	/// store size of virtual pixel based measurement
 	float reference_size;
 	/// store blend width in screen pixels used for antialiasing
 	float blend_width_in_pixel;
 	/// store a vector of axis configurations (2/3 for plot2/3d plus several attribute axes)
 	std::vector<axis_config> axis_configs;
-	/// store index of selected font
+	/// store index of selected label font
 	unsigned label_font_index;
-	/// store selected font size
+	/// store selected label font size
 	float label_font_size;
-	/// store selected font face attributes
+	/// store selected label font face attributes
 	cgv::media::font::FontFaceAttributes label_ffa;
+	/// store index of selected title font
+	unsigned title_font_index;
+	/// store selected title font size
+	float title_font_size;
+	/// store selected title font face attributes
+	cgv::media::font::FontFaceAttributes title_ffa;
 	/// set default values
 	domain_config(unsigned nr_axes);
 };
@@ -257,7 +270,7 @@ struct sample_access
 };
 
 /** base class for plot2d and plot3d, which can have several sub plots each */
-class CGV_API plot_base : public cgv::render::drawable
+class CGV_API plot_base : public cgv::render::drawable, virtual public cgv::signal::tacker
 {
 	/**@name tick render information management */
 	//@{
@@ -294,12 +307,12 @@ protected:
 		///
 		tick_batch_info(int _ai, int _aj, bool _primary, unsigned _first_vertex = 0, unsigned _first_label = 0);
 	};
-	/// all vertex locations of tick lines
-	std::vector<vec2> tick_vertices, legend_tick_vertices;
 	/// all tick labels 
 	std::vector<label_info> tick_labels, legend_tick_labels;
 	/// twice number of axis pairs with index of first tick label and number of tick labels for primary and secondary ticks
 	std::vector<tick_batch_info> tick_batches, legend_tick_batches;
+	/// depth offset of a single layer
+	float layer_depth;
 
 	/**@name font name handling*/
 	//@{
@@ -347,12 +360,15 @@ public:
 	vec3 legend_location;
 	/// width of legend
 	vec2 legend_extent;
+	/// coordinate direction along which to draw legend
+	int legend_axis;
 	/// color and opacity of legend
 	rgba legend_color;
 	//@}
-
 	/**@name visual attribute mapping*/
 	//@{
+	/// handling of values that are out of range
+	ivec4 out_of_range_mode;
 	/// define maximum number of color mappings
 	static const unsigned MAX_NR_COLOR_MAPPINGS = 2;
 	/// index of attribute mapped to primary and secondary color
@@ -389,17 +405,22 @@ public:
 	float size_min[MAX_NR_SIZE_MAPPINGS], size_max[MAX_NR_SIZE_MAPPINGS];
 	//@}
 protected:
-	/// store pointer to current font
+	/// store pointer to label font
 	cgv::media::font::font_ptr label_font;
-	/// store pointer to current font face
+	/// store pointer to label font face
 	cgv::media::font::font_face_ptr label_font_face;
+	/// store pointer to title font
+	cgv::media::font::font_ptr title_font;
+	/// store pointer to title font face
+	cgv::media::font::font_face_ptr title_font_face;
 	/// vbo for legend drawing
 	cgv::render::vertex_buffer vbo_legend;
 	/// manage attributes for legend drawing
 	cgv::render::attribute_array_binding aab_legend;
 	/// attribute sources
 	std::vector<attribute_source_array> attribute_source_arrays;
-
+	///
+	void on_legend_axis_change(cgv::gui::provider& p, cgv::gui::control<int>& ctrl);
 	/// callback to change fonts
 	void on_font_selection();
 	/// callback to change font face
@@ -412,6 +433,15 @@ private:
 	/// dimension independent implementation of attribute enabling
 	size_t enable_attributes(cgv::render::context& ctx, int i, const sample_access& sa);
 protected:
+	/// render style of rectangles
+	cgv::render::rectangle_render_style rrs, font_rrs;
+	cgv::render::attribute_array_manager aam_legend, aam_legend_ticks, aam_title;
+	///
+	void draw_rectangles(cgv::render::context& ctx, cgv::render::attribute_array_manager& aam, 
+		std::vector<box2>& R, std::vector<rgb>& C, std::vector<float>& D, size_t offset = 0);
+	///
+	void draw_tick_labels(cgv::render::context& ctx, cgv::render::attribute_array_manager& aam_ticks, 
+		std::vector<label_info>& tick_labels, std::vector<tick_batch_info>& tick_batches, float depth);
 	/// set vertex shader input attributes based on attribute source information
 	size_t enable_attributes(cgv::render::context& ctx, int i, const std::vector<std::vector<vec2>>& samples);
 	/// set vertex shader input attributes based on attribute source information
@@ -425,7 +455,20 @@ protected:
 	///
 	void draw_sub_plot_samples(int count, const plot_base_config& spc, bool strip = false);
 	///
-	void draw_legend(cgv::render::context& ctx, float depth_offset = 0.0f);
+	void draw_title(cgv::render::context& ctx, vec2 pos, float depth, int si = -1);
+	///
+	void draw_legend(cgv::render::context& ctx, int layer_idx = 0, bool is_first = true, bool* multi_axis_modes = 0);
+	///
+	bool extract_tick_rectangles_and_tick_labels(
+		std::vector<box2>& R, std::vector<rgb>& C, std::vector<float>& D,
+		std::vector<label_info>& tick_labels, int ai, int ci, int ti, float he, 
+		float z_plot, float plot_scale = 1.0f, vec2 plot_offset = vec2(0.0f,0.0f), float d = 0.0f, bool multi_axis = true);
+	///
+	void extract_legend_tick_rectangles_and_tick_labels(
+		std::vector<box2>& R, std::vector<rgb>& C, std::vector<float>& D,
+		std::vector<label_info>& tick_labels, std::vector<tick_batch_info>& tick_batches, float d, 
+		bool clear_cache = false, bool is_first = true, bool* multi_axis_modes = 0);
+
 public:
 	/// construct from plot dimension and number of additional attributes with default parameters
 	plot_base(unsigned dim, unsigned nr_attributes = 0);

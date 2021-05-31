@@ -63,6 +63,8 @@ void emit_corner(in vec3 corner_eye, in vec2 texcoord, in vec2 uv)
 
 void main()
 {
+	if (gi[0].depth_offset > 100000.0)
+		return;
 	fo.depth_offset = gi[0].depth_offset;
 	fo.color        = gi[0].color;
 	fo.border_color = gi[0].border_color;
