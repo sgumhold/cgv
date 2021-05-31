@@ -36,5 +36,6 @@ add_subdirectory(cgv)
 add_subdirectory(libs)
 add_subdirectory(apps)
 add_subdirectory(plugins)
+add_subdirectory(test)
 
 install(FILES cgv-config.cmake DESTINATION lib)
