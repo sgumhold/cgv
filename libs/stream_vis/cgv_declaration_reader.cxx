@@ -91,6 +91,16 @@ namespace stream_vis {
 		flt = float(d);
 		return true;
 	}
+	bool cgv_declaration_reader::parse_double(const std::string& name, double& d)
+	{
+		auto iter = pp.find(name);
+		if (iter == pp.end())
+			return false;
+		std::string value = iter->second;
+		if (!cgv::utils::is_double(value, d))
+			return false;
+		return true;
+	}
 	bool cgv_declaration_reader::parse_color(const std::string& name, rgb& color)
 	{
 		auto iter = pp.find(name);
@@ -208,6 +218,7 @@ namespace stream_vis {
 		std::vector<std::string> bounds;
 		bounds.resize(dim);
 		// first check for vector definition with n '|'-separated values
+		std::vector<bool> i_set(dim, false);
 		auto iter = pp.find(name);
 		if (iter != pp.end()) {
 			std::string value = iter->second;
@@ -216,14 +227,19 @@ namespace stream_vis {
 			int j = 0;
 			// in case only a single bound specification is given, copy this to all coords
 			if (tokens.size() == 1 && tokens[0] != "|") {
-				for (int i = 0; i < dim; ++i)
+				for (int i = 0; i < dim; ++i) {
 					bounds[i] = cgv::utils::to_string(tokens.front());
+					i_set[i] = true;
+				}
 			}
 			// otherwise extract given values and skip empty slots
 			else {
 				for (uint32_t i = 0; i < tokens.size(); ++i) {
-					if (tokens[i] == "|")
+					if (tokens[i] == "|") {
+						i_set[j] = true;
 						++j;
+						i_set[j] = true;
+					}
 					else
 						if (j < dim)
 							bounds[j] = cgv::utils::to_string(tokens[i]);
@@ -235,29 +251,52 @@ namespace stream_vis {
 		int i;
 		for (i = 0; i < dim; ++i) {
 			auto iter = pp.find(name + '_' + comp[i]);
-			if (iter != pp.end())
+			if (iter != pp.end()) {
 				bounds[i] = iter->second;
+				i_set[i] = true;
+			}
 		}
 		// check all bound definitions
 		for (i = 0; i < dim; ++i) {
+			if (!i_set[i])
+				continue;
 			//domain_adjustments, uint16_t* bound_ts_indices, float* fixed_vec
 			if (bounds[i].empty() || cgv::utils::to_lower(bounds[i]) == "compute")
 				domain_adjustments[i] = DA_COMPUTE;
 			else {
-				double d;
-				if (cgv::utils::is_double(bounds[i], d)) {
-					domain_adjustments[i] = DA_FIXED;
-					fixed_vec[i] = float(d);
-				}
-				else {
-					auto iter = name2index_ptr->find(bounds[i]);
-					if (iter == name2index_ptr->end()) {
-						std::cerr << "WARNING: Did not find bound reference <" << bounds[i] << std::endl;
-						domain_adjustments[i] = DA_COMPUTE;
+				std::vector<cgv::utils::token> toks;
+				cgv::utils::split_to_tokens(bounds[i], toks, "+-");
+				if (toks.size() == 3) {
+					double d;
+					auto iter = name2index_ptr->find(to_string(toks[0]));
+					if (iter != name2index_ptr->end() && cgv::utils::is_double(toks[2].begin, toks[2].end, d)) {
+						if (*toks[1].begin == '-')
+							d = -d;
+						domain_adjustments[i] = DA_SHIFTED_TIME_SERIES;
+						fixed_vec[i] = float(d);
+						bound_ts_indices[i] = iter->second;
 					}
 					else {
-						domain_adjustments[i] = DA_TIME_SERIES;
-						bound_ts_indices[i] = iter->second;
+						std::cerr << "WARNING: Did not understand bound definition <" << bounds[i] << ">" << std::endl;
+						domain_adjustments[i] = DA_COMPUTE;
+					}
+				}
+				else {
+					double d;
+					if (cgv::utils::is_double(bounds[i], d)) {
+						domain_adjustments[i] = DA_FIXED;
+						fixed_vec[i] = float(d);
+					}
+					else {
+						auto iter = name2index_ptr->find(bounds[i]);
+						if (iter == name2index_ptr->end()) {
+							std::cerr << "WARNING: Did not find bound reference <" << bounds[i] << ">" << std::endl;
+							domain_adjustments[i] = DA_COMPUTE;
+						}
+						else {
+							domain_adjustments[i] = DA_TIME_SERIES;
+							bound_ts_indices[i] = iter->second;
+						}
 					}
 				}
 			}
@@ -310,6 +349,7 @@ namespace stream_vis {
 	}
 	bool cgv_declaration_reader::parse_subplots(plot_info& pi, int dim)
 	{		
+		bool at_least_one_sub_plot = false;
 		std::vector<cgv::utils::token> toks;
 		cgv::utils::split_to_tokens(tok_plot, toks, ";=", false, "\"'<[(", "\"'>])");
 		size_t ti = 0;
@@ -336,9 +376,11 @@ namespace stream_vis {
 			if (has_params)
 				parse_parameters(toks[ti + 1], pp);
 			std::vector<attribute_definition> ads;
-			parse_components(toks[ti], ads);
-			tok_marks = toks[ti + di + 1];
-			construct_subplot(pi, dim, ads);
+			if (parse_components(toks[ti], ads)) {
+				tok_marks = toks[ti + di + 1];
+				if (construct_subplot(pi, dim, ads))
+					at_least_one_sub_plot = true;
+			}
 			ti += di + 2;
 			if (ti < toks.size()) {
 				if (toks[ti] != ";") {
@@ -348,7 +390,7 @@ namespace stream_vis {
 				++ti;
 			}
 		}
-		return true;
+		return at_least_one_sub_plot;
 	}
 	bool cgv_declaration_reader::parse_declarations()
 	{
@@ -460,8 +502,56 @@ namespace stream_vis {
 			}
 			std::string name = to_string(toks[ti]);
 			std::string type = to_string(toks[ti + 2]);
-			// first check for plot declarations
-			if (type.substr(0, 4) == "plot") {
+			// first check for offset declarations
+			if (type == "offset") {
+				std::vector<cgv::utils::token> tokens;
+				std::vector<std::string> offset_refs;
+				cgv::utils::split_to_tokens(toks[di], tokens, ",", false);
+				size_t i = 0;
+				while (i < tokens.size()) {
+					offset_refs.push_back(cgv::utils::to_string(tokens[i]));
+					if (++i < tokens.size()) {
+						if (tokens[i] != ",") {
+							std::cerr << "expected offset references to be separated by ','" << std::endl;
+							break;
+						}
+						++i;
+					}
+				}
+				pp.clear();
+				if (has_params) {
+					parse_parameters(toks[ti + 3], pp);
+				}
+				construct_offset(name, offset_refs);
+			}
+			// next check for resampled time series
+			else if (type == "resample") {
+				std::vector<cgv::utils::token> tokens;
+				std::vector<std::string> ts_refs;
+				cgv::utils::split_to_tokens(toks[di], tokens, ",", false);
+				size_t i = 0;
+				while (i < tokens.size()) {
+					ts_refs.push_back(cgv::utils::to_string(tokens[i]));
+					if (++i < tokens.size()) {
+						if (tokens[i] != ",") {
+							std::cerr << "expected time series references to be separated by ','" << std::endl;
+							break;
+						}
+						++i;
+					}
+				}
+				pp.clear();
+				if (has_params) {
+					parse_parameters(toks[ti + 3], pp);
+				}
+				if (ts_refs.size() != 2) {
+					std::cerr << "expected resample definition to be based of exactly two time series references!" << std::endl;
+					continue;
+				}
+				construct_resample(name, ts_refs[0], ts_refs[1]);
+			}
+			// then check for plot declarations
+			else if (type.substr(0, 4) == "plot") {
 				if (type.length() < 6 || type[5] != 'd') {
 					std::cout << "unknown type <" << type << ">" << std::endl;
 					ti += delta;

@@ -128,7 +128,7 @@ namespace cgv {
 		}
 		void renderer::set_attribute_array_manager(const context& ctx, attribute_array_manager* _aam_ptr)
 		{
-			if (aam_ptr)
+			if (_aam_ptr)
 				enable_attribute_array_manager(ctx, *_aam_ptr);
 			else
 				disable_attribute_array_manager(ctx, *aam_ptr);

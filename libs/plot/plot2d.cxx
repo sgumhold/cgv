@@ -3,7 +3,6 @@
 #include <cgv/media/color_scale.h>
 #include <cgv/render/attribute_array_binding.h>
 #include <cgv/math/ftransform.h>
-#include <libs/tt_gl_font/tt_gl_font.h>
 
 namespace cgv {
 	namespace plot {
@@ -22,16 +21,14 @@ void plot2d_config::configure_chart(ChartType chart_type)
 }
 
 /// construct empty plot with default domain [0..1,0..1]
-plot2d::plot2d(unsigned nr_attributes) : plot_base(2, nr_attributes)
+plot2d::plot2d(const std::string& title, unsigned nr_attributes) : plot_base(2, nr_attributes)
 {
 	multi_axis_modes = new bool[2 + nr_attributes];
 	std::fill(multi_axis_modes, multi_axis_modes+(2+nr_attributes), false);
-	dz = 0.0f;
-	layer_depth = 0.00001f;
+	sub_plot_delta = vec3(0.0f);
 	disable_depth_mask = false;
 	//legend_components = LC_ANY;
-	rrs.illumination_mode = cgv::render::IM_OFF;
-	rrs.map_color_to_material = cgv::render::CM_COLOR_AND_OPACITY;
+	get_domain_config_ptr()->title = title;
 	auto& acs = get_domain_config_ptr()->axis_configs;
 	acs[0].name = "x";
 	acs[1].name = "y";
@@ -67,7 +64,6 @@ bool plot2d::compute_sample_coordinate_interval(int i, int ai, float& samples_mi
 	}
 	return false;
 }
-
 
 unsigned plot2d::add_sub_plot(const std::string& name)
 {
@@ -120,9 +116,8 @@ std::vector<unsigned>& plot2d::ref_sub_plot_strips(unsigned i)
 
 bool plot2d::init(cgv::render::context& ctx)
 {
-	cgv::render::ref_rectangle_renderer(ctx, 1);
 	aam_domain.init(ctx);
-	aam_tick_labels.init(ctx);
+	aam_domain_tick_labels.init(ctx);
 	if (!line_prog.build_program(ctx, "plot2d_line.glpr", true)) {
 		std::cerr << "could not build GLSL program from plot2d_line.glpr" << std::endl;
 		return false;
@@ -146,9 +141,8 @@ bool plot2d::init(cgv::render::context& ctx)
 
 void plot2d::clear(cgv::render::context& ctx)
 {
-	cgv::render::ref_rectangle_renderer(ctx, -1);
 	aam_domain.destruct(ctx);
-	aam_tick_labels.destruct(ctx);
+	aam_domain_tick_labels.destruct(ctx);
 	point_prog.destruct(ctx);
 	line_prog.destruct(ctx);
 	rectangle_prog.destruct(ctx);
@@ -167,6 +161,7 @@ bool plot2d::draw_point_plot(cgv::render::context& ctx, int i, int layer_idx)
 		if (spc.show_points && point_prog.is_linked()) {
 			set_plot_uniforms(ctx, point_prog);
 			set_mapping_uniforms(ctx, point_prog);
+			point_prog.set_uniform(ctx, "sub_plot_delta", float(i) * sub_plot_delta);
 			point_prog.set_uniform(ctx, "depth_offset", -layer_idx * layer_depth);
 			point_prog.set_uniform(ctx, "reference_point_size", get_domain_config_ptr()->reference_size);
 			point_prog.set_uniform(ctx, "blend_width_in_pixel", get_domain_config_ptr()->blend_width_in_pixel);
@@ -205,6 +200,7 @@ bool plot2d::draw_line_plot(cgv::render::context& ctx, int i, int layer_idx)
 		if (spc.show_lines && line_prog.is_linked()) {
 			set_plot_uniforms(ctx, line_prog);
 			set_mapping_uniforms(ctx, line_prog);
+			line_prog.set_uniform(ctx, "sub_plot_delta", float(i) * sub_plot_delta);
 			line_prog.set_uniform(ctx, "depth_offset", -layer_idx * layer_depth);
 			line_prog.set_uniform(ctx, "reference_line_width", get_domain_config_ptr()->reference_size);
 			line_prog.set_uniform(ctx, "blend_width_in_pixel", get_domain_config_ptr()->blend_width_in_pixel);
@@ -252,6 +248,7 @@ bool plot2d::draw_stick_plot(cgv::render::context& ctx, int i, int layer_idx)
 		const plot2d_config& spc = ref_sub_plot2d_config(i);
 		if (spc.show_sticks && rectangle_prog.is_linked()) {
 			// configure vertex shader
+			rectangle_prog.set_uniform(ctx, "sub_plot_delta", float(i) * sub_plot_delta);
 			rectangle_prog.set_uniform(ctx, "color_index", spc.stick_color.color_idx);
 			rectangle_prog.set_uniform(ctx, "secondary_color_index", -1);
 			rectangle_prog.set_uniform(ctx, "opacity_index", spc.stick_color.opacity_idx);
@@ -291,6 +288,7 @@ void plot2d::configure_bar_plot(cgv::render::context& ctx)
 	rectangle_prog.set_uniform(ctx, "map_color_to_material", 7);
 	rectangle_prog.set_uniform(ctx, "illumination_mode", 0);
 }
+
 bool plot2d::draw_bar_plot(cgv::render::context& ctx, int i, int layer_idx)
 {
 	// skip unvisible and empty sub plots
@@ -302,6 +300,7 @@ bool plot2d::draw_bar_plot(cgv::render::context& ctx, int i, int layer_idx)
 		const plot2d_config& spc = ref_sub_plot2d_config(i);
 		if (spc.show_bars && rectangle_prog.is_linked()) {
 			// configure vertex shader
+			rectangle_prog.set_uniform(ctx, "sub_plot_delta", float(i) * sub_plot_delta);
 			rectangle_prog.set_uniform(ctx, "color_index", spc.bar_color.color_idx);
 			rectangle_prog.set_uniform(ctx, "secondary_color_index", spc.bar_outline_color.color_idx);
 			rectangle_prog.set_uniform(ctx, "opacity_index", spc.bar_color.opacity_idx);
@@ -327,6 +326,7 @@ bool plot2d::draw_bar_plot(cgv::render::context& ctx, int i, int layer_idx)
 	disable_attributes(ctx, i);
 	return result;
 }
+
 int plot2d::draw_sub_plots_jointly(cgv::render::context& ctx, int layer_idx)
 {
 	// first draw all bar plots
@@ -361,6 +361,7 @@ void plot2d::extract_domain_rectangles(std::vector<box2>& R, std::vector<rgb>& C
 	vec2 extent = vec2::from_vec(get_extent());
 	float rs = get_domain_config_ptr()->reference_size;
 	R[0] = box2(-0.5f * extent, 0.5f * extent);
+	R[0].add_point(0.5f * extent + float(get_nr_sub_plots() - 1) * vec2(sub_plot_delta[0], sub_plot_delta[1]));
 	C[0] = get_domain_config_ptr()->color;
 	D[0] = 0.0f;
 	for (unsigned ai = 0; ai < 2; ++ai) {
@@ -394,6 +395,7 @@ void plot2d::extract_domain_rectangles(std::vector<box2>& R, std::vector<rgb>& C
 	}
 }
 
+/*
 bool plot2d::extract_tick_rectangles_and_tick_labels(
 	std::vector<box2>& R, std::vector<rgb>& C, std::vector<float>& D,
 	std::vector<label_info>& tick_labels, int ai, int ti, float he, float z_plot)
@@ -487,8 +489,9 @@ bool plot2d::extract_tick_rectangles_and_tick_labels(
 	}
 	return true;
 }
+*/
 
-void plot2d::extract_all_tick_rectangles_and_tick_labels(
+void plot2d::extract_domain_tick_rectangles_and_tick_labels(
 	std::vector<box2>& R, std::vector<rgb>& C, std::vector<float>& D,
 	std::vector<label_info>& tick_labels, std::vector<tick_batch_info>& tick_batches)
 {
@@ -500,7 +503,7 @@ void plot2d::extract_all_tick_rectangles_and_tick_labels(
 			float z_plot = (ao.get_attribute_min() < 0.0f && ao.get_attribute_max() > 0.0f) ?
 				ao.plot_space_from_attribute_space(0.0f) : std::numeric_limits<float>::quiet_NaN();
 			tick_batch_info tbi(ai, 1 - ai, ti == 0, 0, (unsigned)tick_labels.size());
-			if (extract_tick_rectangles_and_tick_labels(R, C, D, tick_labels, ai, ti, 0.5f * ao.extent, z_plot)) {
+			if (extract_tick_rectangles_and_tick_labels(R, C, D, tick_labels, ai, ai, ti, 0.5f * ao.extent, z_plot, 1.0f, vec2(0.0f), -3 * layer_depth)) {
 				if ((tbi.label_count = (unsigned)(tick_labels.size() - tbi.first_label)) > 0)
 					tick_batches.push_back(tbi);
 			}
@@ -508,83 +511,16 @@ void plot2d::extract_all_tick_rectangles_and_tick_labels(
 	}
 }
 
-
 void plot2d::draw_domain(cgv::render::context& ctx, int si, bool no_fill)
 {
 	std::vector<box2> R;
-	std::vector<rgb> C; 
+	std::vector<rgb> C;
 	std::vector<float> D;
 	extract_domain_rectangles(R, C, D);
-	extract_all_tick_rectangles_and_tick_labels(R, C, D, tick_labels, tick_batches);
-
-	auto& rr = cgv::render::ref_rectangle_renderer(ctx);
-	rr.set_render_style(rrs);
-	rr.enable_attribute_array_manager(ctx, aam_domain);
-	rr.set_rectangle_array(ctx, R);
-	rr.set_color_array(ctx, C);
-	rr.set_depth_offset_array(ctx, D);
-	size_t offset = (get_domain_config_ptr()->fill && !no_fill) ? 0 : 1;
-	rr.render(ctx, offset, R.size()-offset);
-	rr.disable_attribute_array_manager(ctx, aam_domain);
-}
-
-void plot2d::draw_tick_labels(cgv::render::context& ctx, int si)
-{
-	if (tick_labels.empty() || label_font_face.empty())
-		return;
-
-	cgv::tt_gl_font_face_ptr ff = dynamic_cast<cgv::tt_gl_font_face*>(&(*label_font_face));
-	if (!ff) {
-		ctx.enable_font_face(label_font_face, get_domain_config_ptr()->label_font_size);
-		for (const auto& tbc : tick_batches) if (tbc.label_count > 0) {
-			ctx.set_color(get_domain_config_ptr()->axis_configs[tbc.ai].color);
-			for (unsigned i = tbc.first_label; i < tbc.first_label + tbc.label_count; ++i) {
-				const label_info& li = tick_labels[i];
-				ctx.set_cursor(li.position, li.label, li.align);
-				ctx.output_stream() << li.label;
-				ctx.output_stream().flush();
-			}
-		}
-		return;
-	}
-	else {
-		float rs = 0.2f*get_domain_config_ptr()->reference_size;
-		ctx.enable_font_face(ff, 5*get_domain_config_ptr()->label_font_size);
-		std::vector<cgv::render::textured_rectangle> Q;
-		std::vector<rgba> C;
-		for (const auto& tbc : tick_batches) if (tbc.label_count > 0) {
-			for (unsigned i = tbc.first_label; i < tbc.first_label + tbc.label_count; ++i) {
-				const label_info& li = tick_labels[i];
-				vec2 pos = vec2::from_vec(li.position);
-				pos = ff->align_text(pos, li.label, li.align, li.scale*rs, true);
-				unsigned cnt = ff->text_to_quads(pos, li.label, Q, li.scale*rs, true);
-				for (unsigned i = 0; i < cnt; ++i)
-					C.push_back(get_domain_config_ptr()->axis_configs[tbc.ai].color);
-			}
-		}
-		if (si != -1) {
-			vec2 p(0.0f, 0.1f);
-			auto& spc = ref_sub_plot2d_config(si);
-			vec2 pos = ff->align_text(p, spc.name, cgv::render::TA_NONE, 1.3f * rs, true);
-			unsigned cnt = ff->text_to_quads(pos, spc.name, Q, 1.3f * rs, true);
-			for (unsigned i = 0; i < cnt; ++i)
-				C.push_back(rgb(spc.ref_color.color[0], spc.ref_color.color[1], spc.ref_color.color[2]));
-			p[1] -= 1.3f * rs * 20 * get_domain_config_ptr()->label_font_size;
-		}
-		if (Q.empty())
-			return;
-		auto& rr = cgv::render::ref_rectangle_renderer(ctx);
-		cgv::render::rectangle_render_style rrs = cgv::ref_rectangle_render_style();
-		rrs.default_depth_offset = -4 * layer_depth;
-		rr.set_render_style(rrs);
-		rr.enable_attribute_array_manager(ctx, aam_tick_labels);
-		rr.set_textured_rectangle_array(ctx, Q);
-		rr.set_color_array(ctx, C);
-		ff->ref_texture(ctx).enable(ctx);
-		rr.render(ctx, 0, Q.size());
-		ff->ref_texture(ctx).disable(ctx);
-		rr.disable_attribute_array_manager(ctx, aam_tick_labels);
-	}
+	extract_domain_tick_rectangles_and_tick_labels(R, C, D, tick_labels, tick_batches);
+	draw_rectangles(ctx, aam_domain, R, C, D, (get_domain_config_ptr()->fill && !no_fill) ? 0 : 1);
+	draw_title(ctx, vec2::from_vec(get_domain_config_ptr()->title_pos), -3 * layer_depth, si);
+	draw_tick_labels(ctx, aam_domain_tick_labels, tick_labels, tick_batches, -4 * layer_depth);
 }
 
 void plot2d::draw(cgv::render::context& ctx)
@@ -614,18 +550,16 @@ void plot2d::draw(cgv::render::context& ctx)
 	// configure bar prog only once
 	configure_bar_plot(ctx);
 	// draw all subplots jointly in one plane
-	if (dz == 0.0f) {
-		if (get_domain_config_ptr()->show_domain) {
+	if (sub_plot_delta[2] == 0.0f) {
+		if (get_domain_config_ptr()->show_domain)
 			draw_domain(ctx);
-			draw_tick_labels(ctx);
-		}
 		if (legend_components != LC_HIDDEN)
-			draw_legend(ctx, -5 * layer_depth);
+			draw_legend(ctx, 5);
 		if (disable_depth_mask)
 			glDepthMask(GL_FALSE);
 		else
 			glDepthFunc(GL_LEQUAL);
-		draw_sub_plots_jointly(ctx, 6);
+		draw_sub_plots_jointly(ctx, 8);
 		if (disable_depth_mask)
 			glDepthMask(GL_TRUE);
 		else
@@ -638,11 +572,11 @@ void plot2d::draw(cgv::render::context& ctx)
 		double plot_z_eye_z = M(2, 2);
 		int i_begin = 0, i_end = get_nr_sub_plots(), i_delta = 1;
 		// check if we can not use default order
-		if (plot_pos_eye_z * plot_z_eye_z * dz > 0) {
+		if (plot_pos_eye_z * plot_z_eye_z * sub_plot_delta[2] > 0) {
 			i_begin = i_end - 1;
 			i_end = -1;
 			i_delta = -1;
-			ctx.mul_modelview_matrix(cgv::math::translate4<float>(vec3(0, 0, (get_nr_sub_plots()-1) * dz)));
+			ctx.mul_modelview_matrix(cgv::math::translate4<float>(vec3(0, 0, (get_nr_sub_plots()-1) * sub_plot_delta[2])));
 		}
 		// traverse all subplots in back to front order
 		bool fst = true;
@@ -657,31 +591,31 @@ void plot2d::draw(cgv::render::context& ctx)
 					auto& ac = get_domain_config_ptr()->axis_configs[ai];
 					float min_val, max_val;
 					ac.put_backup_attribute_range(min_val, max_val);
-					if (determine_axis_extent_from_subplot(ai, i, min_val, max_val))
+					if (determine_axis_extent_from_subplot(ai, i, min_val, max_val)) {
+						if (fabs(max_val - min_val) < 10.0f * std::numeric_limits<float>::epsilon())
+							max_val = min_val + 1;
 						ac.set_attribute_range(min_val, max_val);
+					}
 
 				}
 			}
-			if (get_domain_config_ptr()->show_domain) {
-				// draw potentially adapted domain with tick labels
+			if (get_domain_config_ptr()->show_domain)
 				draw_domain(ctx, i, !fst);
-				draw_tick_labels(ctx, i);
-			}
 			if (legend_components != LC_HIDDEN)
-				draw_legend(ctx, -5 * layer_depth);
+				draw_legend(ctx, 5, i == i_begin, multi_axis_modes);
 			if (disable_depth_mask)
 				glDepthMask(GL_FALSE);
 			else
 				glDepthFunc(GL_LEQUAL);
-			draw_bar_plot(ctx, i, 6);
-			draw_stick_plot(ctx, i, 7);
-			draw_line_plot(ctx, i, 8);
-			draw_point_plot(ctx, i, 9);
+			draw_bar_plot(ctx, i, 8);
+			draw_stick_plot(ctx, i, 9);
+			draw_line_plot(ctx, i, 10);
+			draw_point_plot(ctx, i, 11);
 			if (disable_depth_mask)
 				glDepthMask(GL_TRUE);
 			else
 				glDepthFunc(GL_LESS);
-			ctx.mul_modelview_matrix(cgv::math::translate4<float>(vec3(0, 0, i_delta*dz)));
+			ctx.mul_modelview_matrix(cgv::math::translate4<float>(vec3(0, 0, i_delta* sub_plot_delta[2])));
 			fst = false;
 		}
 		for (ai = 0; ai < 2 + nr_attributes; ++ai)
@@ -730,7 +664,6 @@ void plot2d::create_config_gui(cgv::base::base* bp, cgv::gui::provider& p, unsig
 
 void plot2d::create_gui(cgv::base::base* bp, cgv::gui::provider& p)
 {
-	p.add_decorator("plot2d", "heading");
 	if (p.begin_tree_node("multi modes", multi_axis_modes, false, "level=3")) {
 		p.align("\a");
 		for (unsigned ai = 0; ai < 2 + nr_attributes; ++ai)
@@ -738,16 +671,11 @@ void plot2d::create_gui(cgv::base::base* bp, cgv::gui::provider& p)
 		p.align("\b");
 		p.end_tree_node(rrs);
 	}
-	p.add_member_control(bp, "dz", dz, "value_slider", "min=-1;max=1;step=0.1;ticks=true");
+	p.add_member_control(bp, "dx", sub_plot_delta[0], "value_slider", "min=-1;max=1;step=0.001;ticks=true");
+	p.add_member_control(bp, "dy", sub_plot_delta[1], "value_slider", "min=-1;max=1;step=0.001;ticks=true");
+	p.add_member_control(bp, "dz", sub_plot_delta[2], "value_slider", "min=-1;max=1;step=0.02;ticks=true");
 	plot_base::create_gui(bp, p);
 	p.add_member_control(bp, "disable_depth_mask", disable_depth_mask, "toggle");
-	if (p.begin_tree_node("rectangle", rrs, false, "level=3")) {
-		p.align("\a");
-		p.add_member_control(bp, "layer_depth", layer_depth, "value_slider", "min=0.000001;max=0.01;step=0.0000001;log=true;ticks=true");
-		p.add_gui("rectangle style", rrs);
-		p.align("\b");
-		p.end_tree_node(rrs);
-	}
 }
 
 	}

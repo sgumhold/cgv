@@ -113,8 +113,16 @@ protected:
 public:
 	tubes() : node("tubes_instance")
 	{
-		// adjusted rounded cone renderer defaults
-		render.rounded_cone_rstyle.enable_ambient_occlusion = true;
+		// adjust render style defaults
+		render_cfg.render_style.material.set_brdf_type(
+			(cgv::media::illum::BrdfType)(  cgv::media::illum::BrdfType::BT_STRAUSS_DIFFUSE
+			                              | cgv::media::illum::BrdfType::BT_COOK_TORRANCE)
+		);
+		render_cfg.render_style.material.set_roughness(0.25);
+		render_cfg.render_style.material.set_metalness(0.25);
+		render_cfg.render_style.material.set_ambient_occlusion(0.75);
+		render_cfg.render_style.material.set_emission({0.25f, 0.25f, 0.25f});
+		render_cfg.render_style.material.set_specular_reflectance({0.04f, 0.04f, 0.04f});
 	}
 
 	void handle_args (std::vector<std::string> &args)

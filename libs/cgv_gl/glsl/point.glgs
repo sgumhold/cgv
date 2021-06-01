@@ -55,6 +55,8 @@ void emit_corner(in vec3 corner_eye, in float u, in float v)
 
 void main()
 {
+	if (gi[0].depth_offset > 100000.0)
+		return;
 	// set color to color attribute
 	go.color = gi[0].color;
 	go.halo_color = gi[0].halo_color;

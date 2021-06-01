@@ -1,6 +1,7 @@
 #pragma once
 
 #include "plot_info.h"
+#include "offset_info.h"
 #include "streaming_time_series.h"
 #include "streaming_aabb.h"
 #include <cgv/base/node.h>
@@ -50,6 +51,9 @@ namespace stream_vis {
 		AABBMode aabb_mode, last_aabb_mode;
 		std::map<std::string, uint16_t> name2index;
 		std::vector<stream_vis::streaming_time_series*> typed_time_series;
+		std::vector<offset_info> offset_infos;
+		size_t nr_uninitialized_offsets;
+
 		std::vector<plot_info> plot_pool;
 
 		bool paused;
@@ -73,6 +77,7 @@ namespace stream_vis {
 		stream_vis_context(const std::string& name);
 		~stream_vis_context();
 		virtual size_t get_first_composed_index() const = 0;
+		void announce_values(uint16_t num_values, indexed_value* values, double timestamp, const uint16_t* val_idx_from_ts_idx);
 		void on_set(void* member_ptr);
 		std::string get_type_name() const { return "stream_vis_context"; }
 		virtual void extract_time_series() = 0;

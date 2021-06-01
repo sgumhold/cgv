@@ -7,6 +7,7 @@ uniform int   secondary_opacity_index = -1;
 uniform int   size_index = -1;
 uniform int   secondary_size_index = -1;
 
+uniform vec3  sub_plot_delta = vec3(0.0,0.0,0.0);
 uniform int   rectangle_coordinate_index = 1;
 uniform float rectangle_base_window  = 0.0;
 uniform float rectangle_border_width = 0.0; 
@@ -50,6 +51,7 @@ mat3 get_inverse_normal_matrix();
 //***** begin interface of plot_lib.glsl ***********************************
 uniform float attribute_min[8];
 uniform float attribute_max[8];
+bool discard_vertex(inout float attributes[8]);
 float tick_space_from_attribute_space(int ai, float value);
 float attribute_space_from_tick_space(int ai, float value);
 float window_space_from_tick_space(int ai, float value);
@@ -84,10 +86,14 @@ void main()
 	attributes[6] = attribute6;
 	attributes[7] = attribute7;
 
+	if (discard_vertex(attributes)) {
+		vo.depth_offset = 110000.0;
+		return;
+	}
 	// compute position in window coordinates
 	vec3 position_window = vec3(
-		window_space_from_tick_space(0, tick_space_from_attribute_space(0, attribute0)),
-		window_space_from_tick_space(1, tick_space_from_attribute_space(1, attribute1)), 0.0);
+		window_space_from_tick_space(0, tick_space_from_attribute_space(0, attributes[0])),
+		window_space_from_tick_space(1, tick_space_from_attribute_space(1, attributes[1])), 0.0);
 
 	// map to visual attributes
 	vo.color = color;
@@ -118,7 +124,7 @@ void main()
 	// compute extent and center position
 	vo.extent = vec2(width);
 	vo.extent[rectangle_coordinate_index] = top_plot[rectangle_coordinate_index]-bottom_plot[rectangle_coordinate_index];
-	gl_Position = vec4(0.5*(bottom_plot+top_plot), 1.0);
+	gl_Position = vec4(0.5*(bottom_plot+top_plot)+sub_plot_delta, 1.0);
 
 	// compute/set remaining outputs
 	vo.modelview = get_modelview_matrix();
