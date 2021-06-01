@@ -269,7 +269,7 @@ namespace stream_vis {
 					int delta = 1;
 					for (size_t d = 1; d < dim; ++d) {
 						delta *= 2;
-						ad.accessor = TimeSeriesAccessor(TSA_X + delta);
+						ad.accessor = TimeSeriesAccessor(ad.accessor + delta);
 						ads.push_back(ad);
 					}
 				}
