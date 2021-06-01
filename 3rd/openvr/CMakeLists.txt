@@ -12,7 +12,10 @@ add_library(openvr
         src/vrcommon/sharedlibtools_public.cpp
         src/vrcommon/strtools_public.cpp
         src/vrcommon/vrpathregistry_public.cpp)
-target_compile_definitions(openvr PRIVATE VR_API_PUBLIC)
+target_compile_definitions(openvr PRIVATE
+        VR_API_PUBLIC
+        $<$<PLATFORM_ID:Linux>:LINUX>
+        $<$<PLATFORM_ID:Linux>:POSIX>)
 target_include_directories(openvr PUBLIC
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/headers>
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>

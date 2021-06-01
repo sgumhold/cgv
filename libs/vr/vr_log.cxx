@@ -1,5 +1,7 @@
 #include "vr_log.h"
 
+#include <sstream>
+
 /* Logfile lines
 <pose> : 12 floats representing a 4*3 matrix (column major)
 <button-mask>: 32 bit integer
@@ -350,7 +352,8 @@ bool vr::vr_log::load_state(std::istringstream& is) {
 				else if (tokens[0].type == token::NAME) {
 					if (tokens.size() >= 2 && tokens[0].text == "filters" && tokens[1].type == token::COMPOUND) {
 						found_filters = true;
-						filters = parse_filter_string(std::istringstream(tokens[1].text));
+						auto text = std::istringstream(tokens[1].text);
+						filters = parse_filter_string(text);
 					}
 				}
 				else {
