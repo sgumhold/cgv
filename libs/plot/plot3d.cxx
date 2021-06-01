@@ -76,6 +76,8 @@ plot3d::plot3d(unsigned nr_attributes) : plot_base(3, nr_attributes)
 	brs.map_color_to_material = cgv::render::CM_COLOR;
 	brs.illumination_mode = cgv::render::IM_TWO_SIDED;
 
+	get_domain_config_ptr()->blend_width_in_pixel = 0.0f;
+
 	legend_location[2] = 0.01f;
 }
 
