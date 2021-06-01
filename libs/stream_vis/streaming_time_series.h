@@ -38,16 +38,22 @@ namespace stream_vis {
 	class CGV_API streaming_time_series : public cgv::render::render_types
 	{
 	protected:
+		/// mutex used to support parallel appending of new values
 		mutable cgv::os::mutex lock;
+		/// keep track whether time series is out of date due to new sample
 		mutable bool outofdate;
 		/// store id of value type
 		cgv::type::info::TypeId type_id;
 		/// store name of streaming time series
 		std::string name;
-		///
+		/// whether a new value is not yet processed
 		bool last_had_new_values;
+
+		/// used for resampled time series to keep track whether new value is cached
+		bool have_new_value;
+		/// used for resampled time series to cached timestamp of new value
+		double new_timestamp;
 	public:
-		virtual bool is_resample() const;
 		/// whether NAN-values are used; defaults to false
 		bool uses_nan;
 		/// float encoding of nan value; defaults to std::numeric_limits<float>::quiet_NaN()
@@ -76,6 +82,10 @@ namespace stream_vis {
 		bool has_new_value() const;
 		/// set status of new value
 		void set_new_value(bool has_new);
+		/// return whether time series is a resampled time series
+		virtual bool is_resample() const;
+		/// copy all type independent members from another time series
+		virtual void copy_from(const streaming_time_series& sts);
 		/// construct empty streaming time series
 		streaming_time_series(cgv::type::info::TypeId _type_id = cgv::type::info::TI_UNDEF);
 		/// construct a time series that resamples this time series according to the sampling time series passed in the argument
@@ -95,7 +105,7 @@ namespace stream_vis {
 		/// append all cached samples converted to float at end of given samples container
 		//void append_cached_samples(std::vector<vec2>& samples, unsigned component_index = 0) const;
 		/// extract new sample and return whether new value was provided in given values
-		virtual bool extract_from_values(uint16_t num_values, indexed_value* values, double timestamp) = 0;
+		virtual bool extract_from_values(uint16_t num_values, indexed_value* values, double timestamp, const uint16_t* val_idx_from_ts_idx) = 0;
 	};
 
 	struct CGV_API float_time_series : public streaming_time_series, public time_series<float, float, double>
@@ -103,7 +113,7 @@ namespace stream_vis {
 		uint16_t index;
 		float_time_series(uint16_t i);
 		std::vector<uint16_t> get_io_indices() const { return std::vector<uint16_t>(1, index); }
-		bool extract_from_values(uint16_t num_values, indexed_value* values, double timestamp);
+		bool extract_from_values(uint16_t num_values, indexed_value* values, double timestamp, const uint16_t* val_idx_from_ts_idx);
 		const time_series_base& series() const { return *this; }
 		time_series_base& series() { return *this; }
 		streaming_time_series* construct_resampled_time_series(const std::string& name, streaming_time_series* sampling_ts) const;
@@ -111,22 +121,29 @@ namespace stream_vis {
 	struct CGV_API resampled_float_time_series : public float_time_series
 	{
 		streaming_time_series* sampling_ts_ptr;
-		bool have_new_value;
 		float new_value;
-		double new_timestamp;
-
 		bool is_resample() const;
 		resampled_float_time_series(const std::string& name, streaming_time_series* _sampling_ts_ptr);
-		bool extract_from_values(uint16_t num_values, indexed_value* values, double timestamp);
+		bool extract_from_values(uint16_t num_values, indexed_value* values, double timestamp, const uint16_t* val_idx_from_ts_idx);
 	};
+
 	struct CGV_API int_time_series : public streaming_time_series, public time_series<float, int32_t, int64_t>
 	{
 		uint16_t index;
 		int_time_series(uint16_t i);
 		std::vector<uint16_t> get_io_indices() const { return std::vector<uint16_t>(1, index); }
-		bool extract_from_values(uint16_t num_values, indexed_value* values, double timestamp);
+		bool extract_from_values(uint16_t num_values, indexed_value* values, double timestamp, const uint16_t* val_idx_from_ts_idx);
 		const time_series_base& series() const { return *this; }
 		time_series_base& series() { return *this; }
+		streaming_time_series* construct_resampled_time_series(const std::string& name, streaming_time_series* sampling_ts) const;
+	};
+	struct CGV_API resampled_int_time_series : public int_time_series
+	{
+		streaming_time_series* sampling_ts_ptr;
+		int32_t new_value;
+		bool is_resample() const;
+		resampled_int_time_series(const std::string& name, streaming_time_series* _sampling_ts_ptr);
+		bool extract_from_values(uint16_t num_values, indexed_value* values, double timestamp, const uint16_t* val_idx_from_ts_idx);
 	};
 
 	struct CGV_API uint_time_series : public streaming_time_series, public time_series<float, uint32_t, uint64_t>
@@ -134,9 +151,18 @@ namespace stream_vis {
 		uint16_t index;
 		uint_time_series(uint16_t i);
 		std::vector<uint16_t> get_io_indices() const { return std::vector<uint16_t>(1, index); }
-		bool extract_from_values(uint16_t num_values, indexed_value* values, double timestamp);
+		bool extract_from_values(uint16_t num_values, indexed_value* values, double timestamp, const uint16_t* val_idx_from_ts_idx);
 		const time_series_base& series() const { return *this; }
 		time_series_base& series() { return *this; }
+		streaming_time_series* construct_resampled_time_series(const std::string& name, streaming_time_series* sampling_ts) const;
+	};
+	struct CGV_API resampled_uint_time_series : public uint_time_series
+	{
+		streaming_time_series* sampling_ts_ptr;
+		uint32_t new_value;
+		bool is_resample() const;
+		resampled_uint_time_series(const std::string& name, streaming_time_series* _sampling_ts_ptr);
+		bool extract_from_values(uint16_t num_values, indexed_value* values, double timestamp, const uint16_t* val_idx_from_ts_idx);
 	};
 
 	struct CGV_API bool_time_series : public streaming_time_series, public time_series<float, uint8_t, bool, false>
@@ -144,7 +170,7 @@ namespace stream_vis {
 		uint16_t index;
 		bool_time_series(uint16_t i);
 		std::vector<uint16_t> get_io_indices() const { return std::vector<uint16_t>(1, index); }
-		bool extract_from_values(uint16_t num_values, indexed_value* values, double timestamp);
+		bool extract_from_values(uint16_t num_values, indexed_value* values, double timestamp, const uint16_t* val_idx_from_ts_idx);
 		const time_series_base& series() const { return *this; }
 		time_series_base& series() { return *this; }
 		streaming_time_series* construct_resampled_time_series(const std::string& name, streaming_time_series* sampling_ts) const;
@@ -152,9 +178,10 @@ namespace stream_vis {
 	struct CGV_API resampled_bool_time_series : public bool_time_series
 	{
 		streaming_time_series* sampling_ts_ptr;
+		bool new_value;
 		bool is_resample() const;
 		resampled_bool_time_series(const std::string& name, streaming_time_series* _sampling_ts_ptr);
-		bool extract_from_values(uint16_t num_values, indexed_value* values, double timestamp);
+		bool extract_from_values(uint16_t num_values, indexed_value* values, double timestamp, const uint16_t* val_idx_from_ts_idx);
 	};
 
 	template <uint32_t N>
@@ -208,24 +235,23 @@ namespace stream_vis {
 			}
 			return "vecn";
 		}
-		bool extract_from_values(uint16_t num_values, indexed_value* values, double timestamp)
+		bool extract_from_values(uint16_t num_values, indexed_value* values, double timestamp, const uint16_t* val_idx_from_ts_idx)
 		{
 			cgv::math::fvec<double, N> pos;
-			int cnt = 0;
-			for (uint16_t i = 0; i < num_values; ++i) {
-				for (int c = 0; c < N; ++c)
-					if (values[i].index == indices[c]) {
-						switch (source_types[c]) {
-						case cgv::type::info::TI_FLT64: pos[c] = reinterpret_cast<const double&>(values[i].value[0]); break;
-						case cgv::type::info::TI_UINT64: pos[c] = (double)reinterpret_cast<const uint64_t&>(values[i].value[0]); break;
-						case cgv::type::info::TI_INT64: pos[c] = (double)reinterpret_cast<const int64_t&>(values[i].value[0]); break;
-						}
-						++cnt;
-					}
+			for (int ci = 0; ci < N; ++ci) {
+				uint16_t vi = val_idx_from_ts_idx[indices[ci]];
+				if (vi == uint16_t(-1))
+					return false;
+				switch (source_types[ci]) {
+				case cgv::type::info::TI_FLT64: pos[ci] = reinterpret_cast<const double&>(values[vi].value[0]); break;
+				case cgv::type::info::TI_UINT64: pos[ci] = (double)reinterpret_cast<const uint64_t&>(values[vi].value[0]); break;
+				case cgv::type::info::TI_INT64: pos[ci] = (double)reinterpret_cast<const int64_t&>(values[vi].value[0]); break;
+				}
 			}
-			if (cnt != N)
-				return false;
+			lock.lock();
 			this->append_sample(timestamp, pos);
+			outofdate = true;
+			lock.unlock();
 			return true;
 		}
 		const time_series_base& series() const { return *this; }
@@ -238,7 +264,7 @@ namespace stream_vis {
 		std::vector<uint16_t> get_io_indices() const { return std::vector<uint16_t>(indices, indices+4); }
 		/// return name of value type
 		std::string get_value_type_name() const;
-		bool extract_from_values(uint16_t num_values, indexed_value* values, double timestamp);
+		bool extract_from_values(uint16_t num_values, indexed_value* values, double timestamp, const uint16_t* val_idx_from_ts_idx);
 		const time_series_base& series() const { return *this; }
 		time_series_base& series() { return *this; }
 	};
