@@ -196,7 +196,7 @@ namespace stream_vis {
 			indices[1] = i1;
 			source_types[0] = t0;
 			source_types[1] = t1;
-			set_value_offset(cgv::math::fvec<double, N>(0.0));
+			this->set_value_offset(cgv::math::fvec<double, N>(0.0));
 		}
 		fvec_time_series(uint16_t i0, uint16_t i1, uint16_t i2,
 			cgv::type::info::TypeId t0 = cgv::type::info::TI_FLT64, cgv::type::info::TypeId t1 = cgv::type::info::TI_FLT64, 
@@ -208,7 +208,7 @@ namespace stream_vis {
 			source_types[0] = t0;
 			source_types[1] = t1;
 			source_types[2] = t2;
-			set_value_offset(cgv::math::fvec<double, N>(0.0));
+			this->set_value_offset(cgv::math::fvec<double, N>(0.0));
 		}
 		fvec_time_series(uint16_t i0, uint16_t i1, uint16_t i2, uint16_t i3,
 			cgv::type::info::TypeId t0 = cgv::type::info::TI_FLT64, cgv::type::info::TypeId t1 = cgv::type::info::TI_FLT64, 
@@ -222,7 +222,7 @@ namespace stream_vis {
 			source_types[1] = t1;
 			source_types[2] = t2;
 			source_types[3] = t3;
-			set_value_offset(cgv::math::fvec<double, N>(0.0));
+			this->set_value_offset(cgv::math::fvec<double, N>(0.0));
 		}
 		std::vector<uint16_t> get_io_indices() const { return std::vector<uint16_t>(indices, indices + N); }
 		/// return name of value type

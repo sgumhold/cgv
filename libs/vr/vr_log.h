@@ -4,6 +4,7 @@
 #include <unordered_map>
 #include <ostream>
 #include <sstream>
+#include <memory>
 
 #include <libs/vr/vr_state.h>
 #include <cgv/data/ref_counted.h>
