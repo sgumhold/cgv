@@ -44,7 +44,7 @@ namespace vr {
 		/// transform to coordinate system of screen with [0,0,0] in center and corners [+-aspect,+-1,0]; z is signed distance to screen in world unites (typically meters) 
 		vec3 transform_world_to_screen(const vec3& p) const;
 		/// transform from coordinate system of screen with [0,0,0] in center and corners [+-aspect,+-1,0]; z is signed distance to screen in world unites (typically meters) 
-		vec3 vr_wall_kit::transform_screen_to_world(const vec3& p) const;
+		vec3 transform_screen_to_world(const vec3& p) const;
 		/// eye = 0 ..left | 1 ..right
 		inline vec3 get_eye_position_tracker(int eye) const { return eye_center_tracker + ((eye-0.5f)*eye_separation)*eye_separation_dir_tracker; }
 		/// eye = 0 ..left | 1 ..right

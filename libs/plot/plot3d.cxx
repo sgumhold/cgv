@@ -69,12 +69,14 @@ plot3d::plot3d(unsigned nr_attributes) : plot_base(3, nr_attributes)
 	acs[0].name = "x"; acs[0].color = rgb(0.4f, 0.2f, 0.2f);
 	acs[1].name = "y"; acs[1].color = rgb(0.2f, 0.4f, 0.2f);
 	acs[2].name = "z"; acs[2].color = rgb(0.2f, 0.2f, 0.4f);
-	for (unsigned ai = 0; ai < nr_attributes; ai)
+	for (unsigned ai = 0; ai < nr_attributes; ++ai)
 		acs[ai + 3].name = std::string("attribute_") + cgv::utils::to_string(ai);
 
 	brs.culling_mode = cgv::render::CM_FRONTFACE;
 	brs.map_color_to_material = cgv::render::CM_COLOR;
 	brs.illumination_mode = cgv::render::IM_TWO_SIDED;
+
+	get_domain_config_ptr()->blend_width_in_pixel = 0.0f;
 
 	legend_location[2] = 0.01f;
 }
@@ -515,11 +517,10 @@ void plot3d::draw(cgv::render::context& ctx)
 	ctx.mul_modelview_matrix(cgv::math::translate4<float>(center_location) * R);
 	if (get_domain_config_ptr()->show_domain) {
 		draw_domain(ctx);
-		ctx.enable_font_face(label_font_face, get_domain_config_ptr()->label_font_size);
 		draw_ticks(ctx);
 	}
 	if (legend_components != LC_HIDDEN)
-		draw_legend(ctx, 0.0f);
+		draw_legend(ctx);
 
 	draw_sub_plots(ctx);
 	ctx.pop_modelview_matrix();
