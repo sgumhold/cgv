@@ -52,7 +52,7 @@ std::string Path_GetExecutablePath()
 		return rchPath;
 	else
 		return "";
-#elif defined LINUX
+#elif defined( LINUX )
 	char rchPath[1024];
 	size_t nBuff = sizeof( rchPath );
 	ssize_t nRead = readlink("/proc/self/exe", rchPath, nBuff-1 );
