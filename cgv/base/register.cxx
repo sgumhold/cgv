@@ -1358,8 +1358,9 @@ void *load_plugin_platform(const std::string &name) {
 	return LoadLibrary(name.c_str());
 #endif
 #else
-    std::string ext_name = std::string("~/develop/build/cgv/bin/")+name;
-    std::cout << "try to load " << ext_name << std::endl;
+ //   std::string ext_name = std::string("/home/vicci/develop/cgv/build/bin/")+name;
+//    std::cout << "try to load " << ext_name << std::endl;
+	std::string ext_name = name;
 	return dlopen(ext_name.c_str(), RTLD_NOW);
 #endif
 }

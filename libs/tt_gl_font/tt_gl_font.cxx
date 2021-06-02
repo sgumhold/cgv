@@ -285,7 +285,7 @@ namespace cgv {
 		if (font_directory.empty())
 			font_directory = default_font_path;
 		std::vector<std::string> file_names;
-		cgv::utils::dir::glob(default_font_path, file_names, "*.ttf", true);
+		cgv::utils::dir::glob(font_directory, file_names, "*.ttf", true);
 		scan_fonts(file_names);
 	}
 
