@@ -297,7 +297,7 @@ void gl_context::init_render_pass()
 		if (info_font.empty()) {
 			info_font = find_font("Courier");
 			if (info_font.empty()) {
-				info_font = find_font("system");
+				info_font = find_font("FreeMono");
 			}
 		}
 		if (!info_font.empty()) {
