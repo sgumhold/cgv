@@ -59,12 +59,11 @@ layout(std430, binding = 3) buffer ssDrawParameters{
 
 
 //no culling zones given in in model space
-uniform vec4[2] protectionZonePoints; //point format : (x,y,z,square_radius)
-//uniform float[2] protectionZoneSquareRadii;
+uniform vec4[2] protection_zone_points; //point format : (x,y,z,square_radius)
 
 
-layout(location = 21) uniform int uBatchOffset;
-layout(location = 22) uniform int uBatchSize;
+layout(location = 21) uniform int batch_offset;
+layout(location = 22) uniform int batch_size;
 
 uniform float CLOD;
 uniform float scale;
@@ -94,11 +93,11 @@ void main(){
 	
 	uint inputIndex = gl_GlobalInvocationID.x;
 
-	if(inputIndex > uBatchSize){
+	if(inputIndex > batch_size){
 		return;
 	}
 
-	inputIndex = inputIndex + uBatchOffset;
+	inputIndex = inputIndex + batch_offset;
 
 	Vertex v = inputBuffer[inputIndex];
 
@@ -110,8 +109,8 @@ void main(){
 	projected.xyz = projected.xyz / projected.w;
 
 	vec4 view_position =  get_modelview_matrix()*vec4(position,1.0);
-	vec2 sq_distance_to_no_cull_zone = vec2(square_distance(view_position.xyz,protectionZonePoints[0].xyz),square_distance(view_position.xyz,protectionZonePoints[1].xyz));
-	bool allways_accept = any( lessThan(sq_distance_to_no_cull_zone, vec2(protectionZonePoints[0].w,protectionZonePoints[1].w) ) );
+	vec2 sq_distance_to_no_cull_zone = vec2(square_distance(view_position.xyz,protection_zone_points[0].xyz),square_distance(view_position.xyz,protection_zone_points[1].xyz));
+	bool allways_accept = any( lessThan(sq_distance_to_no_cull_zone, vec2(protection_zone_points[0].w,protection_zone_points[1].w) ) );
 
 	if (!allways_accept) {
 		// (extented-)frustum culling and near clipping

@@ -145,7 +145,19 @@ namespace cgv {
 			const render_style* rs = nullptr;
 
 			std::array<NoCullZone,2> culling_protection_zones;
-			const DrawParameters* draw_parameters_mapping = nullptr;
+
+			//cached uniform locations
+			struct uniform_locations {
+				int batch_offset,
+					batch_size,
+					CLOD,
+					scale,
+					spacing,
+					screenSize,
+					pivot,
+					frustum_extent,
+					protection_zone_points;
+			} uniforms;
 
 		protected:			
 			const render_style* get_style_ptr() const;
@@ -192,8 +204,13 @@ namespace cgv {
 
 			/* methods for step wise operation */
 
-			/// run point reduction step on the input data, yout need to call enable first
+			/// run point reduction step on the input data, you need to call enable first
 			void reduce_points(context& ctx, size_t start, size_t count, size_t max_reduced_points);
+			/// do a point reduction over preselected segments of the input buffer
+			/// @param chunk_starts index of the first point in a chunk
+			/// @param chunk_point_counts number of points in each chunk
+			/// @param reduction_sources ids of chunks considered for reduction
+			void reduce_chunks(context& ctx, const uint32_t* chunk_starts, const uint32_t* chunk_point_counts, const uint32_t* reduction_sources, uint32_t num_reduction_sources);
 			/// render reduced points, you need to call reduce_points first to fill the render_buffer
 			void draw_points(context& ctx);
 

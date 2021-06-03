@@ -38,14 +38,10 @@ namespace cgv {
 		{
 			{
 				//configure shader to compute everything after one frame
-				reduce_prog.set_uniform(ctx, reduce_prog.get_uniform_location(ctx, "uBatchOffset"), (int)start);
-				reduce_prog.set_uniform(ctx, reduce_prog.get_uniform_location(ctx, "uBatchSize"), (int)count);
-				reduce_prog.set_uniform(ctx, "frustum_extent", 1.0f);
-				//auto transformed_cp = culling_protection_zone;
-				//transformed_cp.point
-				//reduce_prog.set_uniform_array(ctx, "protectionZoneSquareRadii", culling_protection_zone.squareRadius, 2);
-				reduce_prog.set_uniform_array(ctx, "protectionZonePoints", &culling_protection_zones[0].point, 2);
-
+				reduce_prog.set_uniform(ctx, uniforms.batch_offset, (int)start);
+				reduce_prog.set_uniform(ctx, uniforms.batch_size, (int)count);
+				reduce_prog.set_uniform(ctx, uniforms.frustum_extent, 1.0f);
+				reduce_prog.set_uniform_array(ctx, "protection_zone_points", &culling_protection_zones[0].point, 2);
 				reduce_prog.enable(ctx);
 
 				// run computation
@@ -55,6 +51,24 @@ namespace cgv {
 				glMemoryBarrier(GL_ALL_BARRIER_BITS);
 				reduce_prog.disable(ctx);
 			}
+		}
+
+		void clod_point_renderer::reduce_chunks(context& ctx, const uint32_t* chunk_starts, const uint32_t* chunk_point_counts, const uint32_t* reduction_sources, uint32_t num_reduction_sources)
+		{
+			reduce_prog.set_uniform(ctx, uniforms.frustum_extent, 1.0f);
+			reduce_prog.set_uniform_array(ctx, "protection_zone_points", &culling_protection_zones[0].point, 2);
+			reduce_prog.enable(ctx);
+
+			for (int i = 0; i < num_reduction_sources; ++i) {
+				auto chunk_id = reduction_sources[i];
+				reduce_prog.set_uniform(ctx, uniforms.batch_offset, (int)chunk_starts[chunk_id]);
+				reduce_prog.set_uniform(ctx, uniforms.batch_size, (int)chunk_point_counts[chunk_id]);
+				glDispatchCompute((chunk_point_counts[chunk_id] / 128) + 1, 1, 1);
+			}
+
+			// synchronize
+			glMemoryBarrier(GL_ALL_BARRIER_BITS);
+			reduce_prog.disable(ctx);
 		}
 
 		void clod_point_renderer::draw_points(context& ctx)
@@ -95,6 +109,16 @@ namespace cgv {
 				add_shader(ctx, reduce_prog, "view.glsl", cgv::render::ST_COMPUTE);
 				add_shader(ctx, reduce_prog, "point_clod_filter_points.glcs", cgv::render::ST_COMPUTE);
 				reduce_prog.link(ctx);
+
+				uniforms.batch_offset = reduce_prog.get_uniform_location(ctx, "batch_offset");
+				uniforms.batch_size = reduce_prog.get_uniform_location(ctx, "batch_size");
+				uniforms.CLOD = reduce_prog.get_uniform_location(ctx, "CLOD");
+				uniforms.frustum_extent = reduce_prog.get_uniform_location(ctx, "frustum_extent");
+				uniforms.pivot = reduce_prog.get_uniform_location(ctx, "pivot");
+				uniforms.protection_zone_points = reduce_prog.get_uniform_location(ctx, "protection_zone_points");
+				uniforms.scale = reduce_prog.get_uniform_location(ctx, "scale");
+				uniforms.screenSize = reduce_prog.get_uniform_location(ctx, "screenSize");
+				uniforms.spacing = reduce_prog.get_uniform_location(ctx, "spacing");
 			}
 			//create shader program
 			if (!draw_prog.is_created()) {
@@ -176,11 +200,11 @@ namespace cgv {
 			//reduce_prog.set_uniform(ctx, "projection_matrix", projection_matrix, true);
 
 			// compute shader
-			reduce_prog.set_uniform(ctx, "CLOD", prs.CLOD);
-			reduce_prog.set_uniform(ctx, "scale", prs.scale);
-			reduce_prog.set_uniform(ctx, "spacing", prs.spacing);
-			reduce_prog.set_uniform(ctx, reduce_prog.get_uniform_location(ctx, "pivot"), pivot);
-			reduce_prog.set_uniform(ctx, reduce_prog.get_uniform_location(ctx, "screenSize"), screenSize);
+			reduce_prog.set_uniform(ctx, uniforms.CLOD, prs.CLOD);
+			reduce_prog.set_uniform(ctx, uniforms.scale, prs.scale);
+			reduce_prog.set_uniform(ctx, uniforms.spacing, prs.spacing);
+			reduce_prog.set_uniform(ctx, uniforms.pivot, pivot);
+			reduce_prog.set_uniform(ctx, uniforms.screenSize, screenSize);
 
 			float y_view_angle = 45;
 			//general point renderer uniforms
