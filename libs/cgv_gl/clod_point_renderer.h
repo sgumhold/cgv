@@ -77,6 +77,16 @@ namespace cgv {
 				rgb8 p_color;
 				uint8_t p_level = 0;
 
+				Point() = default;
+
+				//conversion from other point formats
+				template <typename P>
+				Point(const P& pnt) {
+					p_position = pnt.position();
+					p_color = pnt.color();
+					p_level = pnt.level();
+				}
+
 				inline vec3& position() {
 					return p_position;
 				}
