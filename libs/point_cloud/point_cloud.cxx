@@ -457,6 +457,8 @@ bool point_cloud::read(const string& _file_name)
 	bool success = false;
 	if (ext == "bpc")
 		success = read_bin(_file_name);
+	if (ext == "lpc")
+		success = read_lpc(_file_name);
 	if (ext == "xyz")
 		success = read_xyz(_file_name);
 	if (ext == "pct")
@@ -621,6 +623,8 @@ bool point_cloud::write(const string& _file_name)
 	string ext = to_lower(get_extension(_file_name));
 	if (ext == "bpc")
 		return write_bin(_file_name);
+	if (ext == "lpc")
+		return write_lpc(_file_name);
 	if (ext == "apc" || ext == "pnt")
 		return write_ascii(_file_name, (ext == "apc") && has_normals());
 	if (ext == "obj" || ext == "pobj")
@@ -937,6 +941,87 @@ enum BPCFlags
 	BPC_HAS_COMP_TRANS = 64,
 	BPC_HAS_BYTE_CLRS = 128
 };
+
+enum LPCFlags
+{
+	LPC_HAS_CLRS = 1,
+	LPC_HAS_NMLS = 2,
+	LPC_HAS_TCS = 4,
+	LPC_HAS_PIXCRDS = 8,
+	LPC_HAS_COMPS = 16,
+	LPC_HAS_COMP_CLRS = 32,
+	LPC_HAS_COMP_TRANS = 64,
+	LPC_HAS_BYTE_CLRS = 128,
+
+	//
+	LPC_HAS_LODS = 256,
+	LPC_HAS_TRANSFORMATION_MAT = 512
+};
+
+bool point_cloud::read_lpc(const std::string& file_name) {
+	FILE* fp = fopen(file_name.c_str(), "rb");
+	if (!fp)
+		return false;
+	Cnt n;
+	cgv::type::uint32_type flags = 0;
+	bool success = true;
+
+	// read the header 
+	success = success && fread(&n, sizeof(Cnt), 1, fp) == 1;
+	success = success && fread(&flags, sizeof(cgv::type::uint32_type), 1, fp) == 1;
+
+	// read file content 
+	P.resize(n);
+	success = fread(&P[0][0], sizeof(Pnt), n, fp) == n;
+	if (flags & LPC_HAS_CLRS) {
+		C.resize(n);
+		success = success && fread(&C[0][0], sizeof(Clr), n, fp) == n; 
+	}
+	if (flags & LPC_HAS_NMLS) {
+		N.resize(n);
+		success = success && (fread(&N[0][0], sizeof(Nml), n, fp) == n);
+	}
+	if (flags & LPC_HAS_LODS) {
+		lods.resize(n);
+		success = success && (fread(&lods[0], sizeof(uint8_t), n, fp) == n);
+	}
+	if (flags & LPC_HAS_TRANSFORMATION_MAT)
+		success = success && fread(&last_additional_model_matrix, sizeof(HMat), 1, fp) == 1;
+
+	return fclose(fp) == 0 && success;
+}
+
+bool point_cloud::write_lpc(const std::string& file_name) {
+	FILE* fp = fopen(file_name.c_str(), "wb");
+	if (!fp)
+		return false;
+	cgv::type::uint32_type flags = 0;
+	bool success = true;
+
+	// set the header 
+	Cnt n = (Cnt)P.size();
+	flags += has_colors() ? LPC_HAS_CLRS : 0;
+	flags += has_normals() ? LPC_HAS_NMLS : 0;
+	flags += has_lods() ? LPC_HAS_LODS : 0;
+	flags += LPC_HAS_TRANSFORMATION_MAT; // write transformation matrix by default 
+
+	// write header 
+	success = success && fwrite(&n, sizeof(Cnt), 1, fp) == 1;
+	success = success && fwrite(&flags, sizeof(cgv::type::uint32_type), 1, fp) == 1;
+
+	// write the content 
+	success = fwrite(&P[0][0], sizeof(Pnt), n, fp) == n;
+	if (flags & LPC_HAS_CLRS) 
+		success = success && fwrite(&C[0][0], sizeof(Clr), n, fp) == n;
+	if (flags & LPC_HAS_NMLS) 
+		success = success && (fwrite(&N[0][0], sizeof(Nml), n, fp) == n);
+	if (flags & LPC_HAS_LODS) 
+		success = success && (fwrite(&lods[0], sizeof(uint8_t), n, fp) == n);
+	if (flags & LPC_HAS_TRANSFORMATION_MAT)
+		success = success && fwrite(&last_additional_model_matrix, sizeof(HMat), 1, fp) == 1;
+
+	return fclose(fp) == 0 && success;
+}
 
 bool point_cloud::read_bin(const string& file_name)
 {

@@ -119,6 +119,8 @@ protected:
 	std::vector<TexCrd> T;
 	/// container for point pixel coordinates 
 	std::vector<PixCrd> I;
+	/// one byte per point lod information 
+	std::vector<uint8_t> lods;
 
 	/// container to store  one component index per point
 	std::vector<unsigned> component_indices;
@@ -157,6 +159,8 @@ private:
 	mutable bool box_out_of_date;
 	/// flag to remember whether pixel coordinate range is out of date and will be recomputed in the pixel_range() method
 	mutable bool pixel_range_out_of_date;
+	/// transformation matrix that not applied to point cloud, used for rendering 
+	HMat last_additional_model_matrix;
 protected:
 	/// when true, second vector is interpreted as normals when reading an ascii format
 	bool no_normals_contained;
@@ -186,11 +190,16 @@ protected:
 	bool read_wrl(const std::string& file_name);
 	/// same as read_points but supports files with lines of <x y z r g b> in case that the internal flag no_normals_contained is set before calling read
 	bool read_ascii(const std::string& file_name);
+	/// file io for point cloud with level of detail 
+	bool read_lpc(const std::string& file_name);
+	///
+	bool write_lpc(const std::string& file_name);
 	//! read binary format
 	/*! Binary format has 8 bytes header encoding two 32-bit unsigned ints n and m.
 	    n is the number of points. In case no colors are provided m is the number of normals, i.e. m=0 in case no normals are provided.
 		In case colors are present there must be the same number n of colors as points and m is set to 2*n+nr_normals. This is a hack
 		resulting from the extension of the format with colors. */
+	///
 	bool read_bin(const std::string& file_name);
 	//! read a ply format.
 	/*! Ignores all but the vertex elements and from the vertex elements the properties x,y,z,nx,ny,nz:Float32 and red,green,blue,alpha:Uint8.
@@ -271,6 +280,15 @@ public:
 	Pnt& pnt(size_t i) { return P[i]; }
 	/// return the i_th point, in case components and component transformations are created, transform point with its compontent's transformation before returning it 
 	Pnt transformed_pnt(size_t i) const;
+
+	/// 
+	bool has_lods() { return lods.size() > 0; }
+	/// return i-th lod as const reference
+	const uint8_t& lod(size_t i) const { return lods[i]; }
+	/// return i-th lod 
+	uint8_t& lod(size_t i) { return lods[i]; }
+	/// resize to the same size as the points 
+	void resize_lods() { lods.resize(get_nr_points()); }
 
 	/// return whether the point cloud has normals
 	bool has_normals() const;
