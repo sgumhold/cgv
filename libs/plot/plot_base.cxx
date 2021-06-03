@@ -32,11 +32,11 @@ domain_config::domain_config(unsigned nr_axes) : color(0.85f,0.85f,0.85f), axis_
 	blend_width_in_pixel = 1.0f;
 	label_font_index = -1;
 	label_font_size = 24.0f;
-	label_ffa = cgv::media::font::FFA_BOLD_ITALIC;
+	label_ffa = cgv::media::font::FFA_REGULAR;
 	title_color = rgba(0.2f, 0.2f, 0.2f, 1.0f);
 	title_font_index = -1;
 	title_font_size = 36.0f;
-	title_ffa = cgv::media::font::FFA_BOLD;
+	title_ffa = cgv::media::font::FFA_REGULAR;
 	title_pos = vecn(0.0f, 0.0f);
 }
 plot_base_config::plot_base_config(const std::string& _name, unsigned dim) : name(_name)
@@ -281,8 +281,9 @@ void plot_base::ensure_font_names()
 	}
 	if (!label_font) {
 		get_domain_config_ptr()->label_font_index = 0;
+		std::string font_name = cgv::media::font::default_font(true)->get_name();
 		for (auto iter = font_names.begin(); iter != font_names.end(); ++iter)
-			if (std::string(*iter) == "Times New Roman") {
+			if (std::string(*iter) == font_name) {
 				get_domain_config_ptr()->label_font_index = (unsigned)(iter - font_names.begin());
 				break;
 			}
@@ -290,8 +291,9 @@ void plot_base::ensure_font_names()
 	}
 	if (!title_font) {
 		get_domain_config_ptr()->title_font_index = 0;
+		std::string font_name = cgv::media::font::default_font(false)->get_name();
 		for (auto iter = font_names.begin(); iter != font_names.end(); ++iter)
-			if (std::string(*iter) == "Times New Roman") {
+			if (std::string(*iter) == font_name) {
 				get_domain_config_ptr()->title_font_index = (unsigned)(iter - font_names.begin());
 				break;
 			}
