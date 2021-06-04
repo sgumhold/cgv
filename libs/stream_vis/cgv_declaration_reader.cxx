@@ -480,6 +480,13 @@ namespace stream_vis {
 				}
 			}
 		}
+		std::string temp = filtered_declarations;
+		filtered_declarations = "";
+		for (auto C : temp) {
+			if (C == '\r')
+				continue;
+			filtered_declarations.push_back(C);
+		}
 		std::cout << "filtered declarations=\n" << filtered_declarations << std::endl;
 		std::vector<cgv::utils::token> toks;
 		cgv::utils::split_to_tokens(filtered_declarations, toks, ":=", false, "\"'[{", "\"']}");
