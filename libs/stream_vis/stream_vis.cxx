@@ -1,5 +1,6 @@
 #include "stream_vis.h"
 #include <cgv/base/register.h>
+#include <cgv/utils/file.h>
 #include <cgv/gui/application.h>
 #include <cgv/gui/trigger.h>
 #include <cgv/gui/gui_driver.h>
@@ -29,18 +30,18 @@ namespace stream_vis {
 		cgv::base::disable_registration_event_cleanup();
 		cgv::base::enable_permanent_registration();
 		cgv::base::enable_registration();
-		//std::string cgv_dir = getenv("CGV_DIR");
-		//std::string shader_config_cmd = "type(shader_config):shader_path='"+cgv_dir+"/libs/plot/glsl;D:/develop/projects/git/cgv/libs/cgv_gl/glsl
+		std::string cgv_dir = cgv::utils::file::clean_path(getenv("CGV_DIR"));
+		std::string shader_config_cmd = "type(shader_config):shader_path='" +
+			cgv_dir + "/libs/plot/glsl;" +
+			cgv_dir + "/libs/cgv_gl/glsl'";
 		cgv::base::process_command("plugin:cg_ext");
 		cgv::base::process_command("plugin:cmi_io");
 		cgv::base::process_command("plugin:cg_icons");
 		cgv::base::process_command("plugin:cg_fltk");
-//		cgv::base::process_command("type(shader_config):shader_path='D:/develop/projects/git/cgv/plugins/examples;D:/develop/projects/git/cgv/libs/plot/glsl;D:/develop/projects/git/cgv/libs/cgv_gl/glsl'");
-		cgv::base::process_command("type(shader_config):shader_path='/home/vicci/develop/cgv/plugins/examples;/home/vicci/develop/cgv/libs/plot/glsl;/home/vicci/develop/cgv/libs/cgv_gl/glsl'");
+		cgv::base::process_command(shader_config_cmd);
 		cgv::base::process_command("plugin:cmf_tt_gl_font");
 		cgv::base::process_command("plugin:crg_stereo_view");
 		cgv::base::process_command("plugin:crg_grid");
-		//cgv::base::process_command("plugin:cg_meta");
 		//  cgv::base::register_object(console::get_console());
 		//	process_config_file(cfg_file_name);
 		cgv::base::register_object(cgv::base::group_ptr(this));
