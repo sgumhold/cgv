@@ -282,6 +282,9 @@ public:
 	Pnt transformed_pnt(size_t i) const;
 
 	/// 
+	HMat& ref_transform_matrix() { return last_additional_model_matrix; }
+
+	/// 
 	bool has_lods() { return lods.size() > 0; }
 	/// return i-th lod as const reference
 	const uint8_t& lod(size_t i) const { return lods[i]; }

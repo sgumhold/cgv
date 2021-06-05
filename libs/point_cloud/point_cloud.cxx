@@ -128,6 +128,9 @@ void point_cloud::clear()
 	T.clear();
 	I.clear();
 
+	lods.clear();
+	last_additional_model_matrix.identity();
+
 	/// container to store  one component index per point
 	component_indices.clear();
 	components.clear();

@@ -1,4 +1,4 @@
-#include <cgv/base/node.h>
+ï»¿#include <cgv/base/node.h>
 #include <plot/plot2d.h>
 #include <plot/plot3d.h>
 #include <cgv/math/ftransform.h>
@@ -18,7 +18,7 @@ public:
 	{
 		unsigned i, j;
 		unsigned pi1 = plot.add_sub_plot("x*y");
-		unsigned pi2 = plot.add_sub_plot("x²+y²");
+		unsigned pi2 = plot.add_sub_plot("xÂ²+yÂ²");
 		std::vector<vec3>& P1 = plot.ref_sub_plot_samples(pi1);
 		std::vector<vec3>& P2 = plot.ref_sub_plot_samples(pi2);
 		plot.set_samples_per_row(pi1, 30);
@@ -103,7 +103,7 @@ public:
 		// create two sub plots and configure their colors
 		unsigned p1 = plot.add_sub_plot("cos");
 		unsigned p2 = plot.add_sub_plot("sin");
-		unsigned p3 = plot.add_sub_plot("cos²");
+		unsigned p3 = plot.add_sub_plot("cosÂ²");
 		plot.set_sub_plot_colors(p1, rgb(1.0f, 0.0f, 0.1f));
 		plot.set_sub_plot_colors(p2, rgb(0.1f, 0.0f, 1.0f));
 		plot.set_sub_plot_colors(p3, rgb(0.0f, 1.0f, 0.1f));
@@ -164,7 +164,7 @@ public:
 		
 		auto ex = plot.get_extent();
 		plot.set_extent(vecn(1.8f, 1.8f));
-		// if fbo is created, perform offline rendering with world space in the range [-1,1]² and white background
+		// if fbo is created, perform offline rendering with world space in the range [-1,1]?and white background
 		fbo.enable(ctx);
 		fbo.push_viewport(ctx);
 		glClearColor(1, 1, 1, 1);
