@@ -4,15 +4,47 @@ using namespace cgv;
 
 /*! \page install Installation and Conventions
 
-\section download Download and Fast Start
+\section prereq Prerequisits
 
-The current version of the framework can be found on github https://github.com/sgumhold/cgv.
+-# windows or linux (manual was tested on ubuntu 20.4)
+-# install git
+-# install cmake (on Windows internal build system can be used instead of cmake)
+-# install compiler (gcc,clang,visual studio)
+-# open shell/command prompt in parent of source directory (**avoid paths with spaces such as windows desktop, home or library paths**)
+-# clone current version with git \code git clone https://github.com/sgumhold/cgv.git \endcode
+
+\section cmake Using CMake
+
+-# switch to \b develop branch \code git checkout -t develop \endcode
+-# set environment variable \c CGV_DIR to cgv directory created by git
+  - windows: \code reg ADD HKEY_CURRENT_USER\Environment /v CGV_DIR /t REG_SZ /d source_parent_dir\cgv \endcode
+  - ubuntu: append \code export CGV_DIR=source_parent_dir/cgv \endcode to \c ~/.bashrc and restart shell
+-# use cmake or cmake-gui as usual with your favorite generator (choosing a build directory serving also as cmake cache)
+  - for debug support on linux set \c CMAKE_BUILD_TYPE=Debug.
+  - during development enable shared libraries with \c BUILD_SHARED_LIBS=True
+  - when using Visual Studio ensure choose configuration after starting
+  - on windows building and starting without specific choice of generator could look like this
+\code
+  mkdir build
+  cd build
+  cmake .. -DBUILD_SHARED_LIBS=True
+  cmake --build . --target examples --config Debug
+  bin\Debug\cgv_viewer.exe plugin:cg_fltk plugin:cg_ext plugin:cg_icons plugin:crg_stereo_view plugin:crg_antialias plugin:crg_depth_of_field plugin:crg_light plugin:cg_meta plugin:cmi_io plugin:cmv_avi plugin:crg_grid plugin:co_web plugin:cmf_tt_gl_font plugin:examples
+\endcode
+  - on linux building and starting without specific choice of generator could look like this
+\code
+  mkdir build
+  cd build
+  cmake .. -DCMAKE_BUILD_TYPE=Debug -DBUILD_SHARED_LIBS=True
+  cmake --build . --target examples
+  bin/cgv_viewer plugin:cg_fltk plugin:cg_ext plugin:cg_icons plugin:crg_stereo_view plugin:crg_antialias plugin:crg_depth_of_field plugin:crg_light plugin:cg_meta plugin:cmi_io plugin:cmv_avi plugin:crg_grid plugin:co_web plugin:cmf_tt_gl_font plugin:examples
+\endcode
+  - to debug in IDE add launch target with \c cgv_viewer as program and command line arguments as in examples above
+
+\section ppp Using Internal Build System (Windows only)
 
 For a fast start under windows with visual studio do the following:
-- Choose directory (**avoid paths with spaces such as windows desktop, home or library paths**) into which to clone the cgv source tree and run the following commands:
-\code
-git clone https://github.com/sgumhold/cgv.git
-\endcode
+- Choose directory  into which to clone the cgv source tree and run the following commands:
 - create a build directory where the temporary files should be stored
 - in case you want to use the x64 platform start the define_platform.bat script and follow instructions
 - in case you do not want to use the most current visual studio toolset start the define_windows_sdk.bat script and follow instructions
@@ -42,21 +74,18 @@ define_system_variables.bat <global-path-to-build-directory>
 In order to be able to work with the cgv framework, the following environment
 variables need to be set
 - obligatory: CGV_DIR ... path of cgv framework
-- obligatory: CGV_INSTALL ... path, where compiled libraries and applications are installed.
+- CGV_INSTALL ... path, where compiled libraries and applications are installed.
 If not defined the Windows build rules for resource files and shaders won't find the corresponding
 tools and therefore fail. If these are not needed, CGV_INSTALL defaults to CGV_DIR. Executables
 and shared libraries / dlls are copied to "$(CGV_INSTALL)/bin" and libraries to "$(CGV_INSTALL)/lib"
 - optional: PATH ... the directories "$(CGV_INSTALL)/bin" and "$(CGV_DIR)/bin" should be added to the path variable
 - optional: CGV_BUILD ... path, where the intermediate files are created. For example 
-"c:/temp/build_cgv" under windows or "~/temp" under linux. If not set,
-CGV_BUILD defaults to CGV_DIR/build.
-- optional: CGV_PLATFORM ... only under windows; is WIN32 or x64 and can be defined with define_platform.bat script (defaults to WIN32)
-- optional: CGV_WINDOWS_SDK ... only under windows since VS 2017; is one of the installed toolsets of visual studio and can be defined with define_windows_sdk.bat (defaults to most current toolset version of selected visual studio version)
+\c "c:/temp/build_cgv". If not set,\c CGV_BUILD defaults to \c CGV_DIR/build.
+- optional: CGV_PLATFORM ... can be WIN32 or x64 and can be defined with define_platform.bat script (defaults to WIN32)
+- optional: CGV_WINDOWS_SDK ... since VS 2017; can be one of the installed toolsets of visual studio and can be defined with define_windows_sdk.bat (defaults to most current toolset version of selected visual studio version)
 - optional: CGV_CHARSET ... only for Visual Studio; can be MultiByte (char is 8 bit) or Unicode (char is 16 bit) and defaults to MultiByte. Use define_charset.bat to change the value.
 - optional: CGV_OPTIONS ... semicolon separated further options, where currently only NO_OPENVR is supported to avoid initialization of steam vr. Use define_options.bat to change the value.
 - optional: CGV_DATA ... the root paths for datasets which are used in the cgv_data to find files.
-- optional: CGV_PROJECT_DIR ... path to repository with further common projects that build on the cgv core libraries
-- optional: CGV_SUPPORT_DIR ... path to repository with libraries and plugins that build on 3rd party libraries that do not come with a free license
 
 Under windows the following six scripts - located in the root directory
 of the cgv framework - help to manage the necessary environment variables. 
@@ -99,13 +128,9 @@ libraries with completely free licenses
 - libpng
 - libtiff
 - fltk
-- ann
+- ann (used in point_cloud lib to build knn graph)
 - glew
-- pthread (deprecated since the introduction of threads to the C++-standard)
-- webserver (pretty unknown little lib)
-
-Sources of the standard libraries are included primarily for the windows 
-distribution, where these libraries can be compiled on demand. 
+- webserver (no real dependency, pretty unknown little lib)
 
 \b glew is included on both plattforms. When using the cgv framework, the
 \c GL/glew.h header need not be included directly. Normally, one includes
@@ -114,36 +139,15 @@ the header cgv/render/gl/gl.h, which includes the glew header. If the
 For all other libraries except \b ann, one typically installs them independent
 of the cgv framework.
 
-3rd party libraries with more restrive licenses or which are platform dependent
-are located in the \b support repository https://141.76.62.199/svn/support. It 
-currently includes the libraries
-- dx9
-- sapi51
-- platform_sdk
-- devIL (only to some special image formats such as gif)
-- strmbase
-- CBLAS (used by the superLU library in the superlu_wrapper plugin)
-- superlu (sparse linear equation solver used by superlu_wrapper plugin, 
-  which implements the interface in cgv/math/sparse_les.h
-- csparse (sparse symmetric linear equation solver used by csparse_wrapper 
-  plugin, which implements the interface in cgv/math/sparse_les.h
-- gecko-sdk (used for netscape browser plugins)
-
 The following third party libraries are used and are typically preinstalled
 on most platforms
 - opengl
 - glu
 
-In order for the framework to find headers and libraries of libraries, which 
-are not included in the framework, one has to add the paths to one of the following 
-environment variables, that store lists of paths as semicolon separated strings:
-- INCLUDE ... for additional include directories
-- LIBRARY (windows) / LD_LIBRARY_PATH (linux) ... for additional 
-	library paths
+\section makegen Internal Makefiles (Windows only)
 
-\section makegen Makefile Generation
-The cgv framework comes with a platform independent makefile
-generation scheme. It is based on cgv specific project files 
+The cgv framework comes with a generator for visual studio solutions. 
+It is based on cgv specific project files 
 with the extension ".pj". All project files are located in the
 source directories. Currently, the following target platforms 
 are supported
@@ -157,21 +161,15 @@ are supported
 - Visual Studio 2017 (vs141)
 - Visual Studio 2019 (vs142)
 
-Under development is the support for gcc under linux (gcc).
-vs8, vs9, vs9e, vs10, vs12, vs14, vs141, vs142 and gcc are the shortcuts 
+vs8, vs9, vs9e, vs10, vs12, vs14, vs141, and vs142 are the shortcuts 
 for the target compiler / development environment. The environment variable
-CGV_COMPILER is to be set to this shortcut (under windows with the script
-define_system_variables.bat)
+CGV_COMPILER is to be set to this shortcut (with the script define_system_variables.bat)
 
 \a Hint: A template project file is located at \c CGV_DIR/make/ppp/templates/pj.ppp.
 It documents all possible entries to a project file. To write a new
 project file, one typically copies this template, renames it to something
 like "my_project.pj" and edits it with a favorite text editor. The current
 version of this file is inserted to the end of this page
-
-Furthermore, CMakeFiles are provided to build the framework under linux and windows.
-
-\subsection windows Creating Target Files on Windows
 
 After a project file has been created, one can simply transform it
 to the target platform by passing the file as command line argument
@@ -197,17 +195,6 @@ arguments are not updated and newly added plugins won't be read when starting th
 application from Visual Studio. Thus take care to close or unload the main project 
 in Visual Studio before rebuilding changed user files.
 
-\subsection linux Creating Target Files under Linux
-
-To be described
-
-\subsection deps Dependent Projects
-
-All projects that are specified as dependent projects in the project
-files are generated automatically with the current project and will also
-be updated if they have changed. 
-
-\subsection pjTemp Project Template
 The current version of the template for project files is
 
 \c make/ppp/templates/pj.ppp
