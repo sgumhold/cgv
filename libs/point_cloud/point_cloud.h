@@ -8,6 +8,8 @@
 #include <cgv/media/color.h>
 #include <cgv/media/axis_aligned_box.h>
 
+#include <cgv_gl/clod_point_renderer.h>
+
 #include "lib_begin.h"
 
 #define BYTE_COLORS
@@ -160,7 +162,15 @@ private:
 	/// flag to remember whether pixel coordinate range is out of date and will be recomputed in the pixel_range() method
 	mutable bool pixel_range_out_of_date;
 	/// transformation matrix that not applied to point cloud, used for rendering 
-	HMat last_additional_model_matrix;
+	//HMat last_additional_model_matrix;
+
+	/// save individual parts instead
+	float point_cloud_scale = 1.f;
+	Dir point_cloud_position= Dir(0);
+	Dir point_cloud_rotation = Dir(0);
+	
+	/// dedicated rendering mode for specific point cloud (point spacing etc.)
+	cgv::render::clod_point_render_style cp_render_style;
 protected:
 	/// when true, second vector is interpreted as normals when reading an ascii format
 	bool no_normals_contained;
@@ -281,8 +291,16 @@ public:
 	/// return the i_th point, in case components and component transformations are created, transform point with its compontent's transformation before returning it 
 	Pnt transformed_pnt(size_t i) const;
 
-	/// 
-	HMat& ref_transform_matrix() { return last_additional_model_matrix; }
+	/// return render style as reference 
+	cgv::render::clod_point_render_style& ref_render_style() { return cp_render_style; }
+
+	/// return transformation matrix for positioning in vr as reference 
+	//HMat& ref_transform_matrix() { return last_additional_model_matrix; }
+
+	/// reture references to positioning components  
+	float& ref_point_cloud_scale() { return point_cloud_scale; }
+	Dir& ref_point_cloud_position() { return point_cloud_position; }
+	Dir& ref_point_cloud_rotation() { return point_cloud_rotation; }
 
 	/// 
 	bool has_lods() { return lods.size() > 0; }
