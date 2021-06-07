@@ -123,7 +123,7 @@ bool convert_to_string(const std::string& in_fn, const std::string& out_fn, bool
 		return false;
 	// encode in base64 if this a cgv option
 	if (cgv::utils::has_option("ENCODE_SHADER_BASE64"))
-		content = std::string("¡ì") + cgv::utils::encode_base64(content);
+		content = std::string("§") + cgv::utils::encode_base64(content);
 	// stream out the string declaration
 	std::string sn = get_file_name(in_fn);
 	replace(sn, '.', '_');
