@@ -129,7 +129,11 @@ void point_cloud::clear()
 	I.clear();
 
 	lods.clear();
-	last_additional_model_matrix.identity();
+	//last_additional_model_matrix.identity();
+	point_cloud_scale = 1;
+	point_cloud_position = Dir(0);
+	point_cloud_rotation = Dir(0);
+	
 
 	/// container to store  one component index per point
 	component_indices.clear();
@@ -958,7 +962,10 @@ enum LPCFlags
 
 	//
 	LPC_HAS_LODS = 256,
-	LPC_HAS_TRANSFORMATION_MAT = 512
+	LPC_HAS_TRANSFORMATION_MAT = 512,
+	LPC_HAS_RENDER_STYLE = 1024, 
+	LPC_HAS_TRANS_VECTORS = 2 * 1024
+
 };
 
 bool point_cloud::read_lpc(const std::string& file_name) {
@@ -988,8 +995,20 @@ bool point_cloud::read_lpc(const std::string& file_name) {
 		lods.resize(n);
 		success = success && (fread(&lods[0], sizeof(uint8_t), n, fp) == n);
 	}
-	if (flags & LPC_HAS_TRANSFORMATION_MAT)
-		success = success && fread(&last_additional_model_matrix, sizeof(HMat), 1, fp) == 1;
+
+	if (flags & LPC_HAS_TRANSFORMATION_MAT) { // read to tmp varible to move the reading pointer
+		HMat tmpmat;
+		success = success && fread(&tmpmat, sizeof(HMat), 1, fp) == 1;
+	}
+
+	if (flags & LPC_HAS_TRANS_VECTORS){ // read transformation matrix if present, legacy lpc files supported 
+		success = success && fread(&point_cloud_scale, sizeof(float), 1, fp) == 1;
+		success = success && fread(&point_cloud_position, sizeof(Dir), 1, fp) == 1;
+		success = success && fread(&point_cloud_rotation, sizeof(Dir), 1, fp) == 1;
+	}
+
+	if (flags & LPC_HAS_RENDER_STYLE) // read render style if present, legacy lpc files supported 
+		success = success && fread(&cp_render_style, sizeof(cgv::render::clod_point_render_style), 1, fp) == 1;
 
 	return fclose(fp) == 0 && success;
 }
@@ -1006,7 +1025,8 @@ bool point_cloud::write_lpc(const std::string& file_name) {
 	flags += has_colors() ? LPC_HAS_CLRS : 0;
 	flags += has_normals() ? LPC_HAS_NMLS : 0;
 	flags += has_lods() ? LPC_HAS_LODS : 0;
-	flags += LPC_HAS_TRANSFORMATION_MAT; // write transformation matrix by default 
+	flags += LPC_HAS_TRANS_VECTORS; // write transformation matrix by default 
+	flags += LPC_HAS_RENDER_STYLE; // write render styles from now on 
 
 	// write header 
 	success = success && fwrite(&n, sizeof(Cnt), 1, fp) == 1;
@@ -1020,8 +1040,13 @@ bool point_cloud::write_lpc(const std::string& file_name) {
 		success = success && (fwrite(&N[0][0], sizeof(Nml), n, fp) == n);
 	if (flags & LPC_HAS_LODS) 
 		success = success && (fwrite(&lods[0], sizeof(uint8_t), n, fp) == n);
-	if (flags & LPC_HAS_TRANSFORMATION_MAT)
-		success = success && fwrite(&last_additional_model_matrix, sizeof(HMat), 1, fp) == 1;
+	if (flags & LPC_HAS_TRANS_VECTORS) {
+		success = success && fwrite(&point_cloud_scale, sizeof(float), 1, fp) == 1;
+		success = success && fwrite(&point_cloud_position, sizeof(Dir), 1, fp) == 1;
+		success = success && fwrite(&point_cloud_rotation, sizeof(Dir), 1, fp) == 1;
+	}
+	if (flags & LPC_HAS_RENDER_STYLE) 
+		success = success && fwrite(&cp_render_style, sizeof(cgv::render::clod_point_render_style), 1, fp) == 1;
 
 	return fclose(fp) == 0 && success;
 }
