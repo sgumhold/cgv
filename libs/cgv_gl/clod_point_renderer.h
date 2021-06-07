@@ -215,7 +215,7 @@ namespace cgv {
 			/* methods for step wise operation */
 
 			/// run point reduction step on the input data, you need to call enable first
-			void reduce_points(context& ctx, size_t start, size_t count, size_t max_reduced_points);
+			void reduce_points(context& ctx, size_t start, size_t count);
 			/// do a point reduction over preselected segments of the input buffer
 			/// @param chunk_starts index of the first point in a chunk
 			/// @param chunk_point_counts number of points in each chunk

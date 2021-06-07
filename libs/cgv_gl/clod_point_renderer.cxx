@@ -34,7 +34,7 @@ namespace cgv {
 			blend_points = false;
 		}
 		
-		void clod_point_renderer::reduce_points(context& ctx, size_t start, size_t count, size_t max_reduced_points)
+		void clod_point_renderer::reduce_points(context& ctx, size_t start, size_t count)
 		{
 			{
 				//configure shader to compute everything after one frame
@@ -212,7 +212,6 @@ namespace cgv {
 			float pixel_extent_per_depth = (float)(2.0 * tan(0.5 * 0.0174532925199 * y_view_angle) / ctx.get_height());
 			draw_prog_ptr->set_uniform(ctx, "pixel_extent_per_depth", pixel_extent_per_depth);
 
-
 			// reduce shader buffers
 			
 			// reset draw parameters, using SubData version is important here to keep the mapping
@@ -248,7 +247,7 @@ namespace cgv {
 
 		void clod_point_renderer::draw(context& ctx, size_t start, size_t count)
 		{
-			reduce_points(ctx, start, count, count);
+			reduce_points(ctx, start, count);
 			draw_points(ctx);
 		}
 
