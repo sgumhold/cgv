@@ -164,7 +164,7 @@ public:
 		
 		auto ex = plot.get_extent();
 		plot.set_extent(vecn(1.8f, 1.8f));
-		// if fbo is created, perform offline rendering with world space in the range [-1,1]?and white background
+		// if fbo is created, perform offline rendering with world space in the range [-1,1]² and white background
 		fbo.enable(ctx);
 		fbo.push_viewport(ctx);
 		glClearColor(1, 1, 1, 1);

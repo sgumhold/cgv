@@ -216,7 +216,7 @@ std::string shader_code::read_code_file(const std::string &file_name, std::strin
 	}
 	if (get_shader_config()->show_file_paths)
 		std::cout << "read shader code <" << fn << ">" << std::endl;
-	if (!source.empty() && source[0] == '¡ì')
+	if (!source.empty() && source[0] == '§')
 		source = cgv::utils::decode_base64(source.substr(1));
 	if (get_extension(file_name)[0] == 'p') {
 		std::string code;
