@@ -36,8 +36,8 @@ using namespace cgv;
   mkdir build
   cd build
   cmake .. -DCMAKE_BUILD_TYPE=Debug -DBUILD_SHARED_LIBS=True
-  cmake --build . --target examples
-  bin/cgv_viewer plugin:cg_fltk plugin:cg_ext plugin:cg_icons plugin:crg_stereo_view plugin:crg_antialias plugin:crg_depth_of_field plugin:crg_light plugin:cg_meta plugin:cmi_io plugin:cmv_avi plugin:crg_grid plugin:co_web plugin:cmf_tt_gl_font plugin:examples
+  cmake --build . --target examples -j8
+  bin/cgv_viewer plugin:cg_fltk plugin:cg_ext plugin:cg_icons plugin:crg_stereo_view plugin:crg_antialias plugin:crg_depth_of_field plugin:crg_light plugin:cg_meta plugin:cmi_io plugin:crg_grid plugin:cmf_tt_gl_font plugin:examples
 \endcode
   - to debug in IDE add launch target with \c cgv_viewer as program and command line arguments as in examples above
 
