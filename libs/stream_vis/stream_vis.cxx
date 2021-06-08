@@ -30,6 +30,10 @@ namespace stream_vis {
 		cgv::base::disable_registration_event_cleanup();
 		cgv::base::enable_permanent_registration();
 		cgv::base::enable_registration();
+		if (!getenv("CGV_DIR")) {
+			std::cerr << "please set CGV_DIR environment variable first!" << std::endl;
+			abort();
+		}
 		std::string cgv_dir = cgv::utils::file::clean_path(getenv("CGV_DIR"));
 		std::string shader_config_cmd = "type(shader_config):shader_path='" +
 			cgv_dir + "/libs/plot/glsl;" +
