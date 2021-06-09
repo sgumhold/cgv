@@ -1396,9 +1396,11 @@ void* load_plugin(const std::string& file_name) {
 		fn[0] = to_string(plugin_name);
 		fn[1] = extend_plugin_name(fn[0]);
 #ifdef WIN32
-		fn[0] += ".dll";
+		if (cgv::utils::to_lower(cgv::utils::file::get_extension(fn[0]) != "dll"))
+			fn[0] += ".dll";
 #else
-		fn[0] = std::string("lib")+fn[0]+".so";
+		if (cgv::utils::to_lower(cgv::utils::file::get_extension(fn[0]) != "so"))
+			fn[0] = std::string("lib")+fn[0]+".so";
 #endif
 #ifndef NDEBUG
 		std::swap(fn[0], fn[1]);
