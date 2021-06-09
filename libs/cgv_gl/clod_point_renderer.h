@@ -71,7 +71,7 @@ namespace cgv {
 		//*  */
 		class CGV_API clod_point_renderer : public render_types {
 		public:
-			// internal point format
+			// internal point format, made to fit inside 16 bytes
 			struct Point {
 				vec3 p_position;
 				rgb8 p_color;
@@ -204,6 +204,12 @@ namespace cgv {
 			/// @param num_points : number of points to draw
 			/// @param stride : stride in bytes, zero if positions, color and lods are not stored interleaved
 			void set_points(cgv::render::context& ctx, const vec3* positions, const rgb8* colors, const uint8_t* lods, const size_t num_points, const unsigned stride = 0);
+			/*
+			// sets an already existing buffer as input
+			void set_points(cgv::render::context& ctx, GLint input_buffer, const size_t num_points);
+			
+
+			*/
 
 			void set_render_style(const render_style& rs);
 			
@@ -240,6 +246,10 @@ namespace cgv {
 			inline GLuint get_reduced_points() {
 				assert(render_buffer != 0);
 				return render_buffer;
+			}
+			/// get the opengl id used to access the input buffer
+			inline GLuint get_input_buffer() {
+				return input_buffer;
 			}
 
 			inline unsigned int num_reduced_points() {
