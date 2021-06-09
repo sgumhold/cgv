@@ -6,16 +6,18 @@ using namespace cgv;
 
 \section prereq Prerequisits
 
+-# GPU and GPU drivers supporting OpenGL 3.3 minimum but better 4.6
 -# windows or linux (manual was tested on ubuntu 20.4)
 -# install git
 -# install cmake (on Windows internal build system can be used instead of cmake)
 -# install compiler (gcc,clang,visual studio)
+-# on linux install \c libXi-devel by, for example with \code sudo apt-get install libxi-dev\endcode
 -# open shell/command prompt in parent of source directory (**avoid paths with spaces such as windows desktop, home or library paths**)
 -# clone current version with git \code git clone https://github.com/sgumhold/cgv.git \endcode
 
 \section cmake Using CMake
 
--# switch to \b develop branch \code git checkout -t develop \endcode
+-# switch to \b develop branch \code git checkout develop \endcode
 -# set environment variable \c CGV_DIR to cgv directory created by git
   - windows: \code reg ADD HKEY_CURRENT_USER\Environment /v CGV_DIR /t REG_SZ /d source_parent_dir\cgv \endcode
   - ubuntu: append \code export CGV_DIR=source_parent_dir/cgv \endcode to \c ~/.bashrc and restart shell
