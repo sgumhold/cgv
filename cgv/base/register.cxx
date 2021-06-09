@@ -1338,12 +1338,7 @@ std::string extend_plugin_name(const std::string& fn)
 #	include <winbase.h>
 #else
 #	include <unistd.h>
-#	ifdef __APPLE__
-#		include "dlload_osx.cxx"
-#		define RTLD_NOW 1 // set to anything for now
-#	else
-#		include <dlfcn.h>
-#	endif
+#	include <dlfcn.h>
 #endif
 
 namespace cgv {
@@ -1398,9 +1393,12 @@ void* load_plugin(const std::string& file_name) {
 #ifdef WIN32
 		if (cgv::utils::to_lower(cgv::utils::file::get_extension(fn[0]) != "dll"))
 			fn[0] += ".dll";
+#elif __APPLE__
+		if (cgv::utils::to_lower(cgv::utils::file::get_extension(fn[0]) != "dylib"))
+			fn[0] = std::string("lib")+fn[0]+".dylib";
 #else
 		if (cgv::utils::to_lower(cgv::utils::file::get_extension(fn[0]) != "so"))
-			fn[0] = std::string("lib")+fn[0]+".so";
+			fn[0] = std::string("lib") + fn[0] + ".so";
 #endif
 #ifndef NDEBUG
 		std::swap(fn[0], fn[1]);
