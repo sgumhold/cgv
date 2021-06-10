@@ -55,3 +55,8 @@ jobs:
       - name: Build and Install
         working-directory: ./build
         run: cmake --build . --target install
+
+    - uses: actions/upload-artifact@v2
+      with:
+        name: cgv-install
+        path: ./install
