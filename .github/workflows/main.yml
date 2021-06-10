@@ -28,42 +28,42 @@ jobs:
         working-directory: ./build
         run: cmake -G Ninja -D CMAKE_C_COMPILER=/usr/bin/clang-11 -D CMAKE_CXX_COMPILER=/usr/bin/clang++-11 -D CMAKE_INSTALL_PREFIX=../install ..
 
-      - name: Build and Install
-        working-directory: ./build
-        run: xvfb-run cmake --build . --target install
+#      - name: Build and Install
+#        working-directory: ./build
+#        run: xvfb-run cmake --build . --target install
 
       - name: Upload Install zip for Ubuntu
         uses: actions/upload-artifact@v2
         with:
           name: cgv-install-ubuntu
-          path: ./install
+          path: ./build
 
-  build-windows:
-    name: "Windows: Build and Install the CGV framework"
-    runs-on: windows-latest
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-        with:
-          submodules: recursive
-
-      - name: Set up environment variables
-        run: |
-          "C:/Program Files (x86)/Microsoft Visual Studio/2019/Enterprise/VC/Auxiliary/Build/vcvars64.bat"
-
-      - run: mkdir build
-
-      - name: Run CMake
-        working-directory: build
-        run: cmake -D CMAKE_INSTALL_PREFIX=../install ..
-
-      - name: Build and Install
-        working-directory: ./build
-        run: cmake --build . --target install
-
-      - name: Upload Install zip for Windows
-        uses: actions/upload-artifact@v2
-        with:
-          name: cgv-install-windows
-          path: ./install
+#  build-windows:
+#    name: "Windows: Build and Install the CGV framework"
+#    runs-on: windows-latest
+#
+#    steps:
+#      - name: Checkout code
+#        uses: actions/checkout@v2
+#        with:
+#          submodules: recursive
+#
+#      - name: Set up environment variables
+#        run: |
+#          "C:/Program Files (x86)/Microsoft Visual Studio/2019/Enterprise/VC/Auxiliary/Build/vcvars64.bat"
+#
+#      - run: mkdir build
+#
+#      - name: Run CMake
+#        working-directory: build
+#        run: cmake -D CMAKE_INSTALL_PREFIX=../install ..
+#
+#      - name: Build and Install
+#        working-directory: ./build
+#        run: cmake --build . --target install
+#
+#      - name: Upload Install zip for Windows
+#        uses: actions/upload-artifact@v2
+#        with:
+#          name: cgv-install-windows
+#          path: ./install
