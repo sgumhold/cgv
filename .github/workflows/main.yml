@@ -10,8 +10,6 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-        with:
-          submodules: recursive
 
       - name: Install llvm repository
         run: wget https://apt.llvm.org/llvm.sh && chmod +x llvm.sh && sudo ./llvm.sh 11
@@ -45,8 +43,6 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-        with:
-          submodules: recursive
 
       - name: Set up environment variables
         run: |
@@ -74,8 +70,9 @@ jobs:
     needs: [build-ubuntu, build-windows]
     steps:
       - uses: actions/download-artifact@v2
-      - run: zip -r cgv-install-ubuntu.zip cgv-install-ubuntu
-      - run: zip -r cgv-install-windows.zip cgv-install-windows
+
+      - run: zip -r cgv-install-ubuntu.zip cgv-install-ubuntu/
+      - run: zip -r cgv-install-windows.zip cgv-install-windows/
 
       - name: Release
         uses: softprops/action-gh-release@v1
