@@ -5,6 +5,7 @@
 #include <cgv_gl/rectangle_renderer.h>
 #include <cgv/render/texture.h>
 #include <cgv/render/frame_buffer.h>
+#include <memory>
 
 #include "lib_begin.h"
 
@@ -106,8 +107,8 @@ public:
 	uint32_t get_nr_labels() const { return uint32_t(labels.size()); }
 	/// return specific label
 	const label& get_label(uint32_t i) const { return labels[i]; }
-	//! update text of given label 
-	/*! if label is not a fixed label set packing out of date otherwise 
+	//! update text of given label
+	/*! if label is not a fixed label set packing out of date otherwise
 	    only texture computation is set out of date */
 	void update_label_text(uint32_t i, const std::string& new_text);
 	/// update label size, what always sets packing out of date
@@ -117,8 +118,8 @@ public:
 	/// call init() function from within the init function of your drawable
 	void init(cgv::render::context& ctx);
 	//! call this function to ensure that texture is up to date
-	/*! this function automatically calls the compute_label_sizes(), pack_labels(), and draw_labels() 
-	    functions in case this is necessary due to changes done to labels since last atlas texture 
+	/*! this function automatically calls the compute_label_sizes(), pack_labels(), and draw_labels()
+	    functions in case this is necessary due to changes done to labels since last atlas texture
 		computation.*/
 	void ensure_texture_uptodate(cgv::render::context& ctx);
 	/// return whether texture is out of date
