@@ -1,6 +1,6 @@
 
 # TODO this fixes this error:
-#   The imported target "vr_test" references the file "C:/Users/henne/Workspace/cgv-install/lib/cgv/vr_test.lib" but this file does not exist.
+#   The imported target "vr_test" references the file ".../cgv-install/lib/cgv/vr_test.lib" but this file does not exist.
 #   it is unclear whether this causes any other unintended side effects
 set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
 
