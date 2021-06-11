@@ -16,6 +16,10 @@ shader_test("${CGV_DIR}"
 
 add_library(cgv_gl ${SOURCES} ${PPP_FILES} ${ST_FILES} ${SHADERS})
 target_compile_definitions(cgv_gl PRIVATE CGV_RENDER_GL_EXPORTS CGV_GL_EXPORTS)
+if(APPLE)
+    target_compile_definitions(cgv_gl PRIVATE __APPLGLSU__ GL_SILENCE_DEPRECATION)
+endif()
+
 target_link_libraries(cgv_gl
         cgv_utils
         cgv_type
