@@ -77,7 +77,7 @@ namespace stream_vis {
 		stream_vis_context(const std::string& name);
 		~stream_vis_context();
 		virtual size_t get_first_composed_index() const = 0;
-		void announce_values(uint16_t num_values, indexed_value* values, double timestamp);
+		void announce_values(uint16_t num_values, indexed_value* values, double timestamp, const uint16_t* val_idx_from_ts_idx);
 		void on_set(void* member_ptr);
 		std::string get_type_name() const { return "stream_vis_context"; }
 		virtual void extract_time_series() = 0;

@@ -293,13 +293,7 @@ media::font::font_face_ptr gl_context::get_current_font_face() const
 void gl_context::init_render_pass()
 {
 	if (info_font_face.empty()) {
-		font_ptr info_font = find_font("Consolas");
-		if (info_font.empty()) {
-			info_font = find_font("Courier");
-			if (info_font.empty()) {
-				info_font = find_font("system");
-			}
-		}
+		font_ptr info_font = default_font(true);
 		if (!info_font.empty()) {
 			info_font_face = info_font->get_font_face(FFA_REGULAR);
 			info_font_face->enable(this, info_font_size);
