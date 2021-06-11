@@ -1,7 +1,7 @@
 
 file(GLOB_RECURSE SOURCES RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "*.cxx")
 file(GLOB_RECURSE SHADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "*.gl*")
-file(GLOB_RECURSE IMAGES RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "*.png")
+file(GLOB_RECURSE IMAGES RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "*.png" "*.bmp")
 
 cgv_prepare_resources(${CMAKE_SOURCE_DIR} IMG_SOURCES ${IMAGES})
 
@@ -30,9 +30,10 @@ add_dependencies(examples
 
         cg_ext
         cg_fltk
-        # cg_icons
+        cg_icons
         cg_meta
         cmi_io
+	cmf_tt_gl_font
         crg_antialias
         crg_depth_of_field
         crg_grid

@@ -1338,12 +1338,7 @@ std::string extend_plugin_name(const std::string& fn)
 #	include <winbase.h>
 #else
 #	include <unistd.h>
-#	ifdef __APPLE__
-#		include "dlload_osx.cxx"
-#		define RTLD_NOW 1 // set to anything for now
-#	else
-#		include <dlfcn.h>
-#	endif
+#	include <dlfcn.h>
 #endif
 
 namespace cgv {
@@ -1358,7 +1353,10 @@ void *load_plugin_platform(const std::string &name) {
 	return LoadLibrary(name.c_str());
 #endif
 #else
-	return dlopen(name.c_str(), RTLD_NOW);
+ //   std::string ext_name = std::string("/home/vicci/develop/cgv/build/bin/")+name;
+//    std::cout << "try to load " << ext_name << std::endl;
+	std::string ext_name = name;
+	return dlopen(ext_name.c_str(), RTLD_NOW);
 #endif
 }
 
@@ -1392,7 +1390,16 @@ void* load_plugin(const std::string& file_name) {
 		std::string fn[2];
 		fn[0] = to_string(plugin_name);
 		fn[1] = extend_plugin_name(fn[0]);
-
+#ifdef WIN32
+		if (cgv::utils::to_lower(cgv::utils::file::get_extension(fn[0]) != "dll"))
+			fn[0] += ".dll";
+#elif __APPLE__
+		if (cgv::utils::to_lower(cgv::utils::file::get_extension(fn[0]) != "dylib"))
+			fn[0] = std::string("lib")+fn[0]+".dylib";
+#else
+		if (cgv::utils::to_lower(cgv::utils::file::get_extension(fn[0]) != "so"))
+			fn[0] = std::string("lib") + fn[0] + ".so";
+#endif
 #ifndef NDEBUG
 		std::swap(fn[0], fn[1]);
 #endif

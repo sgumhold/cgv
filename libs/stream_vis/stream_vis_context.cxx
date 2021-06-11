@@ -317,7 +317,7 @@ namespace stream_vis {
 			std::cout << std::endl;
 		}
 	}
-	void stream_vis_context::announce_values(uint16_t num_values, indexed_value* values, double timestamp)
+	void stream_vis_context::announce_values(uint16_t num_values, indexed_value* values, double timestamp, const uint16_t* val_idx_from_ts_idx)
 	{
 		if (nr_uninitialized_offsets == 0)
 			return;
@@ -332,26 +332,25 @@ namespace stream_vis {
 				else {
 					// check if values contain first value
 					bool found = false;
-					for (uint16_t vi = 0; !found && (vi < num_values); ++vi) {
-						for (auto idx : oi.time_series_indices) {
-							if (values[vi].index == idx) {
-								switch (typed_time_series[idx]->get_value_type_id()) {
-								case cgv::type::info::TI_FLT64:
-									oi.offset_value = reinterpret_cast<const double&>(values[vi].value[0]);
-									break;
-								case cgv::type::info::TI_UINT64:
-									oi.offset_value = (double)reinterpret_cast<const uint64_t&>(values[vi].value[0]);
-									break;
-								case cgv::type::info::TI_INT64:
-									oi.offset_value = (double)reinterpret_cast<const int64_t&>(values[vi].value[0]);
-									break;
-								default:
-									std::cerr << "unknown offset type" << std::endl;
-								}
-								found = true;
-								break;
-							}
+					for (auto idx : oi.time_series_indices) {
+						uint16_t vi = val_idx_from_ts_idx[idx];
+						if (vi == uint16_t(-1))
+							continue;
+						switch (typed_time_series[idx]->get_value_type_id()) {
+						case cgv::type::info::TI_FLT64:
+							oi.offset_value = reinterpret_cast<const double&>(values[vi].value[0]);
+							break;
+						case cgv::type::info::TI_UINT64:
+							oi.offset_value = (double)reinterpret_cast<const uint64_t&>(values[vi].value[0]);
+							break;
+						case cgv::type::info::TI_INT64:
+							oi.offset_value = (double)reinterpret_cast<const int64_t&>(values[vi].value[0]);
+							break;
+						default:
+							std::cerr << "unknown offset type" << std::endl;
 						}
+						found = true;
+						break;
 					}
 					if (!found)
 						continue;

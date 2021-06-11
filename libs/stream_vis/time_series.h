@@ -32,7 +32,7 @@ namespace stream_vis {
 	extern CGV_API std::string get_accessor_string(TimeSeriesAccessor tsa);
 
 	/** Base class of time series that optionally organizes samples in a ring buffer and provides untyped access to stored data samples.
-	    When ringbuffer is used not all samples are stored and one distinguishes between sample index (si) and cached 
+	    When ringbuffer is used not all samples are stored and one distinguishes between sample index (si) and cached
 		sample index (csi). These can be converted into each other with convert_to_cached_sample_index() and
 		get_cached_sample_index()
 	*/

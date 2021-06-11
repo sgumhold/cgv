@@ -280,6 +280,9 @@ control_ptr create_valuator_1(const std::string& label, void* value_ptr,
 	if (value_type == "flt64")
 		return control_ptr(new fltk_value_control<cgv::type::flt64_type,B>(
 			label, *static_cast<cgv::type::flt64_type*>(value_ptr), acp, x, y, w, h));
+	if (value_type == cgv::type::info::type_name<size_t>::get_name())
+		return control_ptr(new fltk_value_control<size_t,B>(
+			label, *static_cast<size_t*>(value_ptr), acp, x, y, w, h));
 	return control_ptr();
 }
 

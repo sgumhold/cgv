@@ -47,6 +47,11 @@ shader_config_ptr get_shader_config()
 		config = shader_config_ptr(new shader_config); 
 		if (getenv("CGV_SHADER_PATH"))
 			config->shader_path = getenv("CGV_SHADER_PATH");
+		else if (getenv("CGV_DIR"))
+			config->shader_path = 
+				std::string(getenv("CGV_DIR"))+"/libs/cgv_gl/glsl;"+
+				std::string(getenv("CGV_DIR"))+"/libs/plot/glsl;"+
+				std::string(getenv("CGV_DIR")) + "/plugins/examples";
 	}
 	return config;
 }

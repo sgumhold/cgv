@@ -122,8 +122,10 @@ public:
 		show_wireframe = true;
 
 		show_vertices = true;
-		M.read(QUOTE_SYMBOL_VALUE(INPUT_DIR) "/res/example.obj");
-		
+		if (getenv("CGV_DIR"))
+			M.read(std::string(getenv("CGV_DIR")) + "/plugins/examples/res/example.obj");
+		else
+			M.construct_conway_polyhedron("adtD");
 		sphere_style.radius = float(0.05*sqrt(M.compute_box().get_extent().sqr_length() / M.get_nr_positions()));
 		sphere_style.surface_color = rgb(0.8f, 0.3f, 0.3f);
 		
