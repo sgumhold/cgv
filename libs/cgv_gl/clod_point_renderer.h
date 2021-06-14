@@ -149,6 +149,8 @@ namespace cgv {
 
 			bool buffers_outofdate = true;
 
+			GLuint max_drawn_points = 500000;
+
 			/// default render style
 			mutable render_style* default_render_style = nullptr;
 			/// current render style, can be set by user
@@ -166,7 +168,8 @@ namespace cgv {
 					screenSize,
 					pivot,
 					frustum_extent,
-					protection_zone_points;
+					protection_zone_points,
+					target_buffer_size;
 			} uniforms;
 
 		protected:			
@@ -210,6 +213,8 @@ namespace cgv {
 			
 
 			*/
+
+			void set_max_drawn_points(cgv::render::context& ctx, const unsigned max_points);
 
 			void set_render_style(const render_style& rs);
 			
