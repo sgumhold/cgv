@@ -73,6 +73,8 @@ uniform vec4 pivot; //pivot point in model space, usually the camera position
 
 uniform float frustum_extent;
 
+uniform uint target_buffer_size;
+
 //***** begin interface of view.glsl ***********************************
 mat4 get_modelview_matrix();
 mat4 get_projection_matrix();
@@ -148,8 +150,12 @@ void main(){
 	}
 
 	int targetIndex = int(atomicAdd(drawParameters.count, 1));
-	targetBuffer[targetIndex] = v;
-	targetIndexBuffer[targetIndex] = inputIndex;
+	if (targetIndex < target_buffer_size){
+		targetBuffer[targetIndex] = v;
+		targetIndexBuffer[targetIndex] = inputIndex;
+	} else {
+		drawParameters.count = target_buffer_size;
+	}
 }
 
 

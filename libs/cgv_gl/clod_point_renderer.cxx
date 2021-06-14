@@ -41,6 +41,7 @@ namespace cgv {
 				reduce_prog.set_uniform(ctx, uniforms.batch_offset, (int)start);
 				reduce_prog.set_uniform(ctx, uniforms.batch_size, (int)count);
 				reduce_prog.set_uniform(ctx, uniforms.frustum_extent, 1.0f);
+				reduce_prog.set_uniform(ctx, uniforms.target_buffer_size, max_drawn_points);
 				reduce_prog.set_uniform_array(ctx, "protection_zone_points", &culling_protection_zones[0].point, 2);
 				reduce_prog.enable(ctx);
 
@@ -57,6 +58,7 @@ namespace cgv {
 		{
 			reduce_prog.set_uniform(ctx, uniforms.frustum_extent, 1.0f);
 			reduce_prog.set_uniform_array(ctx, "protection_zone_points", &culling_protection_zones[0].point, 2);
+			reduce_prog.set_uniform(ctx, uniforms.target_buffer_size, max_drawn_points);
 			reduce_prog.enable(ctx);
 
 			for (int i = 0; i < num_reduction_sources; ++i) {
@@ -119,6 +121,7 @@ namespace cgv {
 				uniforms.scale = reduce_prog.get_uniform_location(ctx, "scale");
 				uniforms.screenSize = reduce_prog.get_uniform_location(ctx, "screenSize");
 				uniforms.spacing = reduce_prog.get_uniform_location(ctx, "spacing");
+				uniforms.target_buffer_size = reduce_prog.get_uniform_location(ctx, "target_buffer_size");
 			}
 			//create shader program
 			if (!draw_prog.is_created()) {
@@ -298,6 +301,16 @@ namespace cgv {
 			set_points(ctx, input_buffer_data.data(),input_buffer_data.size());
 		}
 
+		void clod_point_renderer::set_max_drawn_points(cgv::render::context& ctx, const unsigned max_points)
+		{
+			if (max_drawn_points != max_points) {
+				max_drawn_points = max_points;
+				if (render_buffer != 0) {
+					resize_buffers(ctx);
+				}
+			}
+		}
+
 		void clod_point_renderer::set_render_style(const render_style& rs)
 		{
 			this->rs = &rs;
@@ -351,10 +364,10 @@ namespace cgv {
 		void clod_point_renderer::resize_buffers(context& ctx)
 		{ //  fill buffers for the compute shader
 			glBindBuffer(GL_SHADER_STORAGE_BUFFER, render_buffer);
-			glBufferData(GL_SHADER_STORAGE_BUFFER, input_buffer_size, nullptr, GL_DYNAMIC_DRAW);
+			glBufferData(GL_SHADER_STORAGE_BUFFER, max_drawn_points*sizeof(Point), nullptr, GL_DYNAMIC_DRAW);
 
 			glBindBuffer(GL_SHADER_STORAGE_BUFFER, index_buffer);
-			glBufferData(GL_SHADER_STORAGE_BUFFER, input_buffer_num_points*sizeof(GLuint), nullptr, GL_DYNAMIC_DRAW);
+			glBufferData(GL_SHADER_STORAGE_BUFFER, max_drawn_points *sizeof(GLuint), nullptr, GL_DYNAMIC_DRAW);
 			glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 		}
 
