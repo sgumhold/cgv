@@ -5,6 +5,8 @@ project(cgv)
 set(BUILD_SHARED_LIBS ON)
 option(SHADER_DEVELOPER OFF)
 
+set (CMAKE_CXX_STANDARD_REQUIRED 14)
+
 set(CGV_DIR ${PROJECT_SOURCE_DIR})
 set(CGV_LIB_DEST lib/cgv)
 set(CGV_INCLUDE_DEST include/cgv)
