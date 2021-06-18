@@ -1,8 +1,11 @@
-#version 150 
+#version 330 core
 
 uniform bool has_rotations;
 uniform bool has_translations;
 uniform bool position_is_center = true;
+uniform vec4 border_color;
+uniform float percentual_border_width = 0.0;
+uniform float border_width_in_pixel = 0.0; 
 
 in vec4 position;
 in vec2 extent;
@@ -11,11 +14,19 @@ in vec4 texcoord;
 in int group_index;
 in vec4 rotation;
 in vec3 translation;
+in float depth_offset;
 
-out mat3 NM;
-out mat4 PM;
-out vec4 color_gs;
-out vec4 texcoord_gs;
+out RECTANGLE_GS {
+	mat4  modelview;
+	vec3  normal_eye;
+	vec2  extent;
+	vec4  color;
+	vec4  border_color;
+	float percentual_border_width;
+	float border_width_in_pixel; 
+	vec4  texcoord;
+	float depth_offset;
+} vo;
 
 //***** begin interface of quaternion.glsl ***********************************
 vec4 unit_quaternion();
@@ -48,48 +59,41 @@ mat3 get_inverse_normal_matrix();
 
 void main()
 {
-	color_gs = group_color(color, group_index);
-	texcoord_gs = texcoord;
-	// compute normal transformation matrix from rotation and group rotation
-	NM = get_normal_matrix();
-	if (has_rotations)
-		right_multiply_group_normal_matrix_and_rotation(NM, group_index, rotation);
-	else
-		right_multiply_group_normal_matrix(NM, group_index);
+	vo.color        = group_color(color, group_index);
+	vo.border_color = border_color;
+	vo.texcoord     = texcoord;
+	vo.depth_offset = depth_offset;
+	vo.percentual_border_width = percentual_border_width;
+	vo.border_width_in_pixel   = border_width_in_pixel; 
+	// compute modelview and normal transformation matrices
+	mat3 normal_matrix = get_normal_matrix();
+	if (has_rotations) {
+		right_multiply_group_normal_matrix_and_rotation(normal_matrix, group_index, rotation);
+	}
+	else {
+		right_multiply_group_normal_matrix(normal_matrix, group_index);
+	}
+	vo.normal_eye = normal_matrix*vec3(0.0, 0.0, 1.0);
 
-	// compute position transformation matrix
-
-	// extract center position and compute scaling part of transformation 
+	// extract extent and center position
 	vec3 center_position;
-	mat4 S = mat4(0.0);
 	if (position_is_center) {
-		S[0][0] = extent.x;
-		S[1][1] = extent.y;
-		S[2][2] = 1.0f;
+		vo.extent = extent;
 		center_position = position.xyz;
 	}
 	else {
-		S[0][0] = extent.x-position.x;
-		S[1][1] = extent.y-position.y;
-		S[2][2] = 1.0f;
+		vo.extent = extent-position.xy;
 		center_position = vec3(0.5*(position.xy+extent),position.z);
 	}
-	S[3] = vec4(0.0,0.0,0.0,1.0);
-
-	// setup position matrix from modelview, rotations and translations 
-	PM = get_modelview_matrix();
-
+	vo.modelview = get_modelview_matrix();
 	vec4 q;
 	if (has_rotations)
 		q = rotation;
 	else
 		q = unit_quaternion();
-	vec3 t = center_position.xyz;
+	vec3 t = center_position;
 	if (has_translations)
 		t += translation;
-	right_multiply_group_position_matrix_and_rigid(PM, group_index, q, t);
-	
-	PM = PM * S;
-
-	gl_Position = position;
+	right_multiply_group_position_matrix_and_rigid(vo.modelview, group_index, q, t);
+	gl_Position = vec4(vec3(0.0),1.0);
 }

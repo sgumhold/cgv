@@ -742,17 +742,18 @@ void vr_test::draw(cgv::render::context& ctx)
 			std::vector<rgb> C;
 			const vr::vr_kit_state* state_ptr = vr_view_ptr->get_current_vr_state();
 			if (state_ptr) {
-				for (int ci = 0; ci < 4; ++ci) if (state_ptr->controller[ci].status == vr::VRS_TRACKED) {
-					vec3 ray_origin, ray_direction;
-					state_ptr->controller[ci].put_ray(&ray_origin(0), &ray_direction(0));
-					P.push_back(ray_origin);
-					R.push_back(0.002f);
-					P.push_back(ray_origin + ray_length * ray_direction);
-					R.push_back(0.003f);
-					rgb c(float(1 - ci), 0.5f * (int)state[ci], float(ci));
-					C.push_back(c);
-					C.push_back(c);
-				}
+				for (int ci = 0; ci < 2; ++ci) 
+					if (state_ptr->controller[ci].status == vr::VRS_TRACKED) {
+						vec3 ray_origin, ray_direction;
+						state_ptr->controller[ci].put_ray(&ray_origin(0), &ray_direction(0));
+						P.push_back(ray_origin);
+						R.push_back(0.002f);
+						P.push_back(ray_origin + ray_length * ray_direction);
+						R.push_back(0.003f);
+						rgb c(float(1 - ci), 0.5f * (int)state[ci], float(ci));
+						C.push_back(c);
+						C.push_back(c);
+					}
 			}
 			if (P.size() > 0) {
 				auto& cr = cgv::render::ref_rounded_cone_renderer(ctx);
@@ -822,7 +823,7 @@ void vr_test::draw(cgv::render::context& ctx)
 		int pi = prog.get_position_index();
 		int ti = prog.get_texcoord_index();
 		vec3 p(0, 1.5f, 0);
-		vec3 y = label_upright ? vec3(0, 1.0f, 0) : normalize(vr_view_ptr->get_view_up_dir_of_kit());
+		vec3 y = label_upright ? cgv::math::fvec<double, 3>(0, 1.0, 0) : normalize(vr_view_ptr->get_view_up_dir_of_kit());
 		vec3 x = normalize(cross(vec3(vr_view_ptr->get_view_dir_of_kit()), y));
 		float w = 0.5f, h = 0.5f;
 		std::vector<vec3> P;

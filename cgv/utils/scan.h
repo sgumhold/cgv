@@ -17,7 +17,7 @@ namespace cgv {
 extern CGV_API const char* skip_spaces(const char* begin, const char* end);
 /// return new end pointer by cutting off spaces at the end
 extern CGV_API const char* cutoff_spaces(const char* begin, const char* end);
-/// check if char is a letter
+/// check if char is a whitespace
 extern CGV_API bool is_space(char c);
 /// check if char is a special character from an url
 extern CGV_API bool is_url_special(char c);
@@ -27,6 +27,8 @@ extern CGV_API bool is_digit(char c);
 extern CGV_API bool is_letter(char c);
 /// convert char to lower case
 extern CGV_API char to_lower(char c);
+/// convert to hex
+extern CGV_API std::string to_hex(uint8_t v, bool use_upper_case = true);
 /// convert string to lower case
 extern CGV_API std::string to_lower(const std::string& _s);
 /// convert char to upper case

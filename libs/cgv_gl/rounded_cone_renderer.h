@@ -14,9 +14,6 @@ namespace cgv { // @<
 			counter decreases to 0, singelton renderer is destructed. */
 		extern CGV_API rounded_cone_renderer& ref_rounded_cone_renderer(context& ctx, int ref_count_change = 0);
 
-		/// rounded cones use surface render styles
-		//typedef surface_render_style rounded_cone_render_style;
-
 		struct CGV_API rounded_cone_render_style : public surface_render_style
 		{	
 			/// multiplied to the sphere radii, initialized to 1
@@ -39,7 +36,7 @@ namespace cgv { // @<
 			rounded_cone_render_style();
 		};
 
-		/// renderer that supports point splatting
+		/// renderer that supports raycasting of rounded cones
 		class CGV_API rounded_cone_renderer : public surface_renderer
 		{
 		protected:
@@ -49,9 +46,12 @@ namespace cgv { // @<
 			/// overload to allow instantiation of rounded_cone_renderer
 			render_style* create_render_style() const;
 		public:
-			/// initializes position_is_center to true 
+			/// initializes member variables
 			rounded_cone_renderer();
-			void set_attribute_array_manager(const context& ctx, attribute_array_manager* _aam_ptr);
+			/// call this before setting attribute arrays to manage attribute array in given manager
+			void enable_attribute_array_manager(const context& ctx, attribute_array_manager& aam);
+			/// call this after last render/draw call to ensure that no other users of renderer change attribute arrays of given manager
+			void disable_attribute_array_manager(const context& ctx, attribute_array_manager& aam);
 			/// construct shader programs and return whether this was successful, call inside of init method of drawable
 			bool init(context& ctx);
 			///

@@ -33,7 +33,7 @@ bool shader_program::collect_file(const std::string& file_name, std::vector<std:
 
 bool shader_program::collect_files(const std::string& base_name, std::vector<std::string>& file_names)
 {
-	const char* exts[] = { "glvs", "glgs", "glfs", "glcs", "pglvs", "pglfs", "pglgs", "pglcs", 0 }; 
+	const char* exts[] = { "glvs", "glgs", "glfs", "glcs", "gltc", "glte", "pglvs", "pglfs", "pglgs", "pglcs", "pgltc", "pglte", 0 };
 	const char** iter = exts;
 	bool added_file = false;
 	while (*iter) {
@@ -77,24 +77,31 @@ bool shader_program::collect_program(const std::string& file_name, std::vector<s
 	std::string content;
 	if (!cgv::base::read_data_file(fn, content, true))
 		return false;
-	if (!content.empty() && content[0] == '�')
+#if WIN32
+	// TODO § is considered two characters on Linux
+	if (!content.empty() && content[0] == '§')
 		content = cgv::utils::decode_base64(content.substr(1));
+#endif
 	std::vector<line> lines;
 	split_to_lines(content, lines);
 	bool added_file = false;
 	std::string old_shader_path = get_shader_config()->shader_path;
 	std::string path = file::get_path(file_name);
 	if (!path.empty())
-		get_shader_config()->shader_path = path+";"+get_shader_config()->shader_path; 
+		get_shader_config()->shader_path = path+";"+get_shader_config()->shader_path;
 
-	for (unsigned int i=0; i<lines.size(); ++i) {
-		std::string l = to_string((const token&)lines[i]);
+	for (auto line : lines) {
+		std::string l = to_string((const token&)line);
 		if (l.substr(0,5) == "file:")
 			added_file = collect_file(l.substr(5), file_names) || added_file;
 		else if (l.substr(0,12) == "vertex_file:")
 			added_file = collect_file(l.substr(12), file_names) || added_file;
-		else if (l.substr(0,14) == "geometry_file:")
+		else if (l.substr(0, 14) == "geometry_file:")
 			added_file = collect_file(l.substr(14), file_names) || added_file;
+		else if (l.substr(0, 26) == "tessellation_control_file:")
+			added_file = collect_file(l.substr(26), file_names) || added_file;
+		else if (l.substr(0, 29) == "tessellation_evaluation_file:")
+			added_file = collect_file(l.substr(29), file_names) || added_file;
 		else if (l.substr(0,14) == "fragment_file:")
 			added_file = collect_file(l.substr(14), file_names) || added_file;
 		else if (l.substr(0,6) == "files:")
@@ -109,7 +116,7 @@ bool shader_program::collect_program(const std::string& file_name, std::vector<s
 
 	get_shader_config()->shader_path = old_shader_path;
 	return added_file;
-}	
+}
 
 ///create empty shader program
 shader_program::shader_program(bool _show_code_errors)
@@ -165,7 +172,7 @@ bool shader_program::attach_code(const context& ctx, const shader_code& code)
 	return true;
 }
 
-/// detach a shader code 
+/// detach a shader code
 bool shader_program::detach_code(const context& ctx, const shader_code& code)
 {
 	if (!handle) {
@@ -244,8 +251,11 @@ bool shader_program::attach_program(const context& ctx, const std::string& file_
 			std::cerr << last_error << std::endl;
 		return false;
 	}
-	if (!content.empty() && content[0] == '�')
+#if WIN32
+	// TODO § is considered two characters on Linux
+	if (!content.empty() && content[0] == '§')
 		content = cgv::utils::decode_base64(content.substr(1));
+#endif
 	if (get_shader_config()->show_file_paths)
 		std::cout << "read shader program <" << fn << ">" << std::endl;
 	static std::vector<line> lines;
@@ -254,7 +264,7 @@ bool shader_program::attach_program(const context& ctx, const std::string& file_
 	std::string old_shader_path = get_shader_config()->shader_path;
 	std::string path = file::get_path(file_name);
 	if (!path.empty())
-		get_shader_config()->shader_path = path+";"+get_shader_config()->shader_path; 
+		get_shader_config()->shader_path = path+";"+get_shader_config()->shader_path;
 
 	bool no_error = true;
 	std::string error = "2 : attach command failed";
@@ -277,10 +287,14 @@ bool shader_program::attach_program(const context& ctx, const std::string& file_
 			success = attach_file(ctx, l.substr(12), ST_VERTEX, defines);
 		else if (l.substr(0,14) == "geometry_file:")
 			success = attach_file(ctx, l.substr(14), ST_GEOMETRY, defines);
+		else if (l.substr(0, 26) == "tessellation_control_file:")
+			success = attach_file(ctx, l.substr(26), ST_TESS_CONTROL, defines);
+		else if (l.substr(0, 29) == "tessellation_evaluation_file:")
+			success = attach_file(ctx, l.substr(29), ST_TESS_EVALUATION, defines);
 		else if (l.substr(0,14) == "fragment_file:")
 			success = attach_file(ctx, l.substr(14), ST_FRAGMENT, defines);
-		else if(l.substr(0, 14) == "compute_file:")
-			success = attach_file(ctx, l.substr(14), ST_COMPUTE, defines);
+		else if(l.substr(0, 13) == "compute_file:")
+			success = attach_file(ctx, l.substr(13), ST_COMPUTE, defines);
 		else if (l.substr(0,6) == "files:")
 			success = attach_files(ctx, l.substr(6), defines);
 		else if (l.substr(0,4) == "dir:")
@@ -329,14 +343,14 @@ bool shader_program::attach_program(const context& ctx, const std::string& file_
 			}
 		} else {
 			if (show_error) {
-				std::cerr << fn.c_str() << " (" << i+1 
-					       << "): warning G0001 : syntax error in line '" 
+				std::cerr << fn.c_str() << " (" << i+1
+					       << "): warning G0001 : syntax error in line '"
 							 << l.c_str() << "'" << std::endl;
 			}
 		}
 		if (!success) {
 			if (show_error) {
-				std::cerr << fn.c_str() << " (" << i+1 
+				std::cerr << fn.c_str() << " (" << i+1
 					       << "): error G000" << error.c_str() << std::endl;
 			}
 			no_error = false;
@@ -352,13 +366,13 @@ bool shader_program::attach_program(const context& ctx, const std::string& file_
 /// successively calls create, attach_files and link.
 bool shader_program::build_files(const context& ctx, const std::string& base_name, bool show_error)
 {
-	return (is_created() || create(ctx)) && 
+	return (is_created() || create(ctx)) &&
 		    attach_files(ctx, base_name) && link(ctx, show_error);
 }
 /// successively calls create, attach_dir and link.
 bool shader_program::build_dir(const context& ctx, const std::string& dir_name, bool recursive, bool show_error)
 {
-	return (is_created() || create(ctx)) && 
+	return (is_created() || create(ctx)) &&
 			 attach_dir(ctx, dir_name, recursive) && link(ctx, show_error);
 }
 

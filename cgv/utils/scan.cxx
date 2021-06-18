@@ -24,17 +24,34 @@ bool is_letter(char c)
 	return c >= 'a' && c <= 'z';
 }
 
+// C++-Version:
+const unsigned char AE = static_cast<unsigned char>(142);
+const unsigned char ae = static_cast<unsigned char>(132);
+const unsigned char OE = static_cast<unsigned char>(153);
+const unsigned char oe = static_cast<unsigned char>(148);
+const unsigned char UE = static_cast<unsigned char>(154);
+const unsigned char ue = static_cast<unsigned char>(129);
+const unsigned char ss = static_cast<unsigned char>(225);
 
 char to_lower(char c)
 {
 	if (c >= 'A' && c <= 'Z')
 		return (c-'A')+'a';
 	switch (c) {
-		case 'Ö' : return 'ö';
-		case 'Ü' : return 'ü';
-		case 'Ä' : return 'ä';
+		case OE : return oe;
+		case UE : return ue;
+		case AE : return ae;
 		default: return c;
 	}
+}
+
+std::string to_hex(uint8_t v, bool use_upper_case)
+{
+	static const char lc_hex_digits[] = "0123456789abcdef";
+	static const char uc_hex_digits[] = "0123456789ABCDEF";
+	const char* hex_digits = use_upper_case ? uc_hex_digits : lc_hex_digits;
+	char res[2] = { hex_digits[v / 16], hex_digits[v & 15] };
+	return std::string(res, 2);
 }
 
 std::string to_lower(const std::string& _s)
@@ -50,9 +67,9 @@ char to_upper(char c)
 	if (c >= 'a' && c <= 'z')
 		return (c-'a')+'A';
 	switch (c) {
-		case 'ö' : return 'Ö';
-		case 'ü' : return 'Ü';
-		case 'ä' : return 'Ä';
+		case oe: return OE;
+		case ue: return UE;
+		case ae: return AE;
 		default: return c;
 	}
 }
@@ -70,13 +87,13 @@ std::string replace_special(const std::string& _s)
 	std::string s;
 	for (unsigned int i=0; i<_s.size(); ++i) {
 		switch (_s[i]) {
-		case 'Ä' : s += "Ae"; break;
-		case 'Ö' : s += "Oe"; break;
-		case 'Ü' : s += "Ue"; break;
-		case 'ä' : s += "ae"; break;
-		case 'ö' : s += "oe"; break;
-		case 'ü' : s += "ue"; break;
-		case 'ß' : s += "ss"; break;
+		case AE: s += "Ae"; break;
+		case OE: s += "Oe"; break;
+		case UE: s += "Ue"; break;
+		case ae: s += "ae"; break;
+		case oe: s += "oe"; break;
+		case ue: s += "ue"; break;
+		case ss: s += "ss"; break;
 		default  : s += _s[i]; break;
 		}
 	}
@@ -284,6 +301,9 @@ bool is_integer(const char* begin, const char* end, int& value)
 {
 	if (begin == end)
 		return false;
+	// skip trailing spaces
+	while (begin < end && *begin == ' ')
+		++begin;
 	// check for hexadecimal case
 	if (end-begin>2 && begin[0] == '0' && to_upper(begin[1]) == 'X') {
 		int new_value = 0, b = 1;
@@ -339,8 +359,10 @@ bool is_double(const char* begin, const char* end, double& value)
 	int nr_dots = 0;
 	int nr_exp = 0;
 	bool sign_may_follow = true;
-	const char* p;
-	for (p = begin; p<end; ++p) {
+	const char* p = begin;
+	while (p < end && *p == ' ')
+		++p;
+	for (p; p<end; ++p) {
 		switch (*p) {
 		case '0' :
 		case '1' :

@@ -109,7 +109,7 @@ vec4 compute_reflected_radiance(in Material M, vec3 position_eye, vec3 normal_ey
 	vec4 res = vec4(0.0, 0.0, 0.0, 1.0-M.transparency);
 	for (int i = 0; i < get_nr_light_sources(); ++i) {
 		LightSource L = get_light_source(i);
-		// add ambient constribution
+		// add ambient contribution
 		res.rgb += M.diffuse_reflectance * M.ambient_occlusion * L.ambient_scale * L.emission;
 		// compute direct lighting
 		vec3 omega_in;
@@ -247,19 +247,17 @@ void update_material_from_texture(inout Material M, in vec2 texcoords)
 
 vec4 compute_reflected_appearance_texture(vec3 position_eye, vec3 normal_eye, vec2 texcoords, vec4 color, int side)
 {
+	Material M = material;
+	update_material_from_texture(M, texcoords);
 	if (illumination_mode == 0) {
-		vec3 col = material.diffuse_reflectance;
-		float tra = material.transparency;
+		vec3 col = M.diffuse_reflectance;
+		float tra = M.transparency;
 		update_material_color_and_transparency(col, tra, side, color);
 		return vec4(col, 1.0 - tra);
 	}
-	Material M = material;
 	update_material_color_and_transparency(M.diffuse_reflectance, M.transparency, side, color);
-	update_material_from_texture(M, texcoords);
 	update_normal_from_material(position_eye, normal_eye, M, texcoords);
 	update_normal(normal_eye, side);
 	return compute_reflected_radiance(M, position_eye, normal_eye);
-	//return vec4(1.0, 0.0, 0.0, 1.0);
-
 }
 

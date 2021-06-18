@@ -21,6 +21,7 @@
 #endif
 
 #include <algorithm>
+#include <sstream>
 
 #ifndef VRLog
 	#if defined( __MINGW32__ )
@@ -437,5 +438,51 @@ bool CVRPathRegistry_Public::GetPaths( std::string *psRuntimePath, std::string *
 	}
 
 	return bLoadedRegistry;
+}
+
+//-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
+uint32_t CVRPathRegistry_Public::GetSteamAppId()
+{
+#if !defined( REL_BRANCH_ONLY )
+	uint32_t nSteamAppId = k_unSteamVRMainAppId;
+#else
+	uint32_t nSteamAppId = k_unSteamVRAppId;
+#endif
+
+	return nSteamAppId;
+}
+
+
+//-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
+bool CVRPathRegistry_Public::IsSteamVRMain()
+{
+#if defined( REL_BRANCH_ONLY )
+	return false;
+#else
+	return true;
+#endif
+}
+
+//-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
+uint32_t CVRPathRegistry_Public::InitSteamAppId()
+{
+	uint32_t nSteamAppId = CVRPathRegistry_Public::GetSteamAppId();
+
+	// Forcefully setting to what it should be before SteamAPI_Init() since SteamVR is more often
+	// started as child processes of the game app and otherwise Steam then considers us as the
+	// wrong app id.
+#ifdef UNICODE
+	std::string said_str = std::to_string(nSteamAppId);
+
+	SetEnvironmentVariable(((std::wstring)L"SteamAppId").c_str(), std::wstring(said_str.begin(), said_str.end()).c_str());
+	SetEnvironmentVariable(((std::wstring)L"SteamGameId").c_str(), std::wstring(said_str.begin(), said_str.end()).c_str());
+#else
+	SetEnvironmentVariable("SteamAppId", std::to_string(nSteamAppId).c_str());
+	SetEnvironmentVariable("SteamGameId", std::to_string(nSteamAppId).c_str());
+#endif
+	return nSteamAppId;
 }
 

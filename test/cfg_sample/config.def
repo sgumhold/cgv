@@ -1,0 +1,14 @@
+// find instance by type name and set string member
+//type(cfg_sample):s="test cfg"
+// find instance by instance name and set vector valued members from string
+name(cfg_sample_instance):p="1 -0.5 1";c="0 0.5 1"
+
+// line with "persistent" keyword makes successive declarations persistent over several runs
+// for this newly adjusted values are written into the config file
+persistent
+name(cfg_sample_instance):n=16;i=126
+
+// string definition of vector valued members are not allowed and lead to an abort of the program
+// instead one needs to define individual components
+name(cfg_sample_instance):p.coords[0]=0.5;c.components[2]=0.5
+type(cfg_sample):s="geheimwie jhwdjo"

@@ -49,7 +49,7 @@ template <class T>
 void delaunay_mesh_with_hierarchy<T>::configure_hierarchy(unsigned int n)
 {
 	if (n == -1)
-		n = get_nr_vertices();
+		n = T::get_nr_vertices();
 	unsigned int fk = 1;
 	while (fk * hierarchy_factor * hierarchy_factor < n)
 		fk *= hierarchy_factor;
@@ -64,7 +64,7 @@ typename delaunay_mesh_with_hierarchy<T>::point_location_info delaunay_mesh_with
 	unsigned int vi = 0;
 	for (unsigned int hi = 0; hi < H.size(); ++hi)
 		vi = H[hi]->find_nearest_neighbor(p, H[hi]->ci_of_vi(vi));
-	return delaunay_mesh_type::triangle_mesh_type::localize_point(p, ci_of_vi(vi));
+	return delaunay_mesh_type::triangle_mesh_type::localize_point(p, T::ci_of_vi(vi));
 }
 
 /// return index of the nearest neighbor of the given point
@@ -74,7 +74,7 @@ unsigned int delaunay_mesh_with_hierarchy<T>::find_nearest_neighbor(const point_
 	unsigned int vi = 0;
 	for (unsigned int hi = 0; hi < H.size(); ++hi)
 		vi = H[hi]->find_nearest_neighbor(p, H[hi]->ci_of_vi(vi));
-	return delaunay_mesh_type::find_nearest_neighbor(p, ci_of_vi(vi));
+	return delaunay_mesh_type::find_nearest_neighbor(p, T::ci_of_vi(vi));
 }
 
 /// insert a vertex by keeping a delaunay triangulation. If a vertex with the same location already exists, ignore vertex and return index of vertex with identical location

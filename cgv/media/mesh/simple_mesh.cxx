@@ -1,5 +1,7 @@
 #include "simple_mesh.h"
+#include "stl_reader.h"
 #include <cgv/math/inv.h>
+#include <cgv/utils/scan.h>
 #include <cgv/media/mesh/obj_reader.h>
 #include <cgv/math/bucket_sort.h>
 #include <fstream>
@@ -7,6 +9,40 @@
 namespace cgv {
 	namespace media {
 		namespace mesh {
+
+/// default constructor
+simple_mesh_base::simple_mesh_base() 
+{
+
+}
+/// copy constructor
+simple_mesh_base::simple_mesh_base(const simple_mesh_base& smb) :
+	colored_model(smb),
+	position_indices(smb.position_indices),
+	normal_indices(smb.normal_indices),
+	tex_coord_indices(smb.tex_coord_indices),
+	faces(smb.faces),
+	group_indices(smb.group_indices),
+	group_names(smb.group_names),
+	material_indices(smb.material_indices),
+	materials(smb.materials)
+{
+}
+/// assignment operator
+simple_mesh_base& simple_mesh_base::operator=(const simple_mesh_base& smb)
+{
+	colored_model::operator=(smb);
+	position_indices=smb.position_indices;
+	normal_indices=smb.normal_indices;
+	tex_coord_indices=smb.tex_coord_indices;
+	faces=smb.faces;
+	group_indices=smb.group_indices;
+	group_names=smb.group_names;
+	material_indices=smb.material_indices;
+	materials = smb.materials;
+	return *this;
+}
+
 
 /// create a new empty face to which new corners are added and return face index
 simple_mesh_base::idx_type simple_mesh_base::start_face()
@@ -254,12 +290,20 @@ public:
 	/// overide this function to process a face, the indices start with 0
 	void process_face(unsigned vcount, int *vertices, int *texcoords, int *normals)
 	{
-		convert_to_positive(vcount, vertices, texcoords, normals, unsigned(mesh.positions.size()), unsigned(mesh.normals.size()), unsigned(mesh.tex_coords.size()));
+		obj_reader_base::convert_to_positive(vcount, vertices, texcoords, normals, unsigned(mesh.positions.size()), unsigned(mesh.normals.size()), unsigned(mesh.tex_coords.size()));
 		mesh.faces.push_back(idx_type(mesh.position_indices.size()));
-		if (get_current_group() != -1)
-			mesh.group_indices.push_back(get_current_group());
-		if (get_current_material() != -1)
-			mesh.material_indices.push_back(get_current_material());
+		if (obj_reader_base::get_current_group() != -1)
+			mesh.group_indices.push_back(obj_reader_base::get_current_group());
+		if (obj_reader_base::get_current_material() != -1)
+			mesh.material_indices.push_back(obj_reader_base::get_current_material());
+		if (texcoords) {
+			if (mesh.tex_coord_indices.size() < mesh.position_indices.size())
+				mesh.tex_coord_indices.resize(mesh.position_indices.size(), 0);
+		}
+		if (normals) {
+			if (mesh.normal_indices.size() < mesh.position_indices.size())
+				mesh.normal_indices.resize(mesh.position_indices.size(), 0);
+		}
 		for (idx_type i = 0; i < vcount; ++i) {
 			mesh.position_indices.push_back(idx_type(vertices[i]));
 			if (texcoords)
@@ -281,6 +325,24 @@ public:
 		mesh.materials[idx] = mtl;
 	}
 };
+
+
+/// construct from string corresponding to Conway notation (defaults to empty mesh)
+template <typename T>
+simple_mesh<T>::simple_mesh(const simple_mesh<T>& sm) : simple_mesh_base(sm), positions(sm.positions), normals(sm.normals), tex_coords(sm.tex_coords)
+{
+}
+
+/// construct from string corresponding to Conway notation (defaults to empty mesh)
+template <typename T>
+simple_mesh<T>& simple_mesh<T>::operator = (const simple_mesh<T>& sm)
+{
+	simple_mesh_base::operator = (sm);
+	positions = sm.positions;
+	normals = sm.normals;
+	tex_coords = sm.tex_coords;
+	return *this;
+}
 
 /// clear simple mesh
 template <typename T>
@@ -304,8 +366,37 @@ void simple_mesh<T>::clear()
 template <typename T>
 bool simple_mesh<T>::read(const std::string& file_name)
 { 
-	simple_mesh_obj_reader<T> reader(*this);
-	return reader.read_obj(file_name);
+	std::string ext = cgv::utils::to_lower(cgv::utils::file::get_extension(file_name));
+	if (ext == "obj") {
+		simple_mesh_obj_reader<T> reader(*this);
+		return reader.read_obj(file_name);
+	}
+	if (ext == "stl") {
+		try {
+			stl_reader::StlMesh <T, unsigned> mesh(file_name);
+
+			// copy vertices
+			for (size_t vi = 0; vi < mesh.num_vrts(); ++vi)
+				new_position(cgv::math::fvec<T, 3>(3, mesh.vrt_coords(vi)));
+
+			// copy triangles and normals
+			bool has_normals = mesh.raw_normals();
+			for (size_t ti = 0; ti < mesh.num_tris(); ++ti) {
+				if (has_normals)
+					new_normal(cgv::math::fvec<T, 3>(3, mesh.tri_normal(ti)));
+				start_face();
+				for (size_t ci = 0; ci < 3; ++ci)
+					new_corner(mesh.tri_corner_ind(ti, ci), has_normals ? (unsigned)ti : -1);
+			}
+			return true;
+		}
+		catch (std::exception& e) {
+			std::cout << e.what() << std::endl;
+			return false;
+		}
+	}
+	std::cerr << "unknown mesh file extension '*." << ext << "'" << std::endl;
+	return false;
 }
 
 /// write simple mesh to file (currently only obj is supported)
@@ -398,7 +489,8 @@ unsigned simple_mesh<T>::extract_vertex_attribute_buffer(
 	include_normals = include_normals && !normal_indices.empty() && !normals.empty();
 	bool include_colors = false;
 	if (include_colors_ptr)
-		*include_colors_ptr = include_colors = has_colors() && *include_colors_ptr;
+		*include_colors_ptr = include_colors = 
+			has_colors() && get_nr_colors() > 0 && *include_colors_ptr;
 
 	// determine number floats per vertex
 	unsigned nr_floats = 3;
@@ -785,10 +877,8 @@ template <typename T> void simple_mesh<T>::construct_conway_polyhedron(const std
 	}
 }
 
-
 template class simple_mesh<float>;
 template class simple_mesh<double>;
-
 
 		}
 	}

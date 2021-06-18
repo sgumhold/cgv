@@ -64,8 +64,12 @@ namespace cgv {
 
 		int64_t element_count(at::Tensor t) {
 			int64_t count = 0;
-			for(int64_t i = 0; i < t.ndimension(); ++i)
-				count += t.size(i);
+			int64_t ndims = t.ndimension();
+
+			if(ndims > 0)
+				count = t.size(0);
+			for(int64_t i = 1; i < ndims; ++i)
+				count *= t.size(i);
 			return count;
 		}
 
@@ -74,8 +78,11 @@ namespace cgv {
 			int64_t count = element_count(t);
 			int64_t size = typesize(t.scalar_type());
 
+			// TODO: cannot copy a non contiguous vector yet
+			assert(t.is_contiguous());
+			
 			std::vector<float> v(0);
-			if(size == 4) {
+			if(count > 0 && size == 4) {
 				v.resize(count);
 				memcpy((void*)v.data(), (void*)(t.data<float>()), size * count);
 			}
@@ -87,8 +94,11 @@ namespace cgv {
 			int64_t count = element_count(t);
 			int64_t size = typesize(t.scalar_type());
 
+			// TODO: cannot copy a non contiguous vector yet
+			assert(t.is_contiguous());
+
 			std::vector<double> v(0);
-			if(size == 8) {
+			if(count > 0 && size == 8) {
 				v.resize(count);
 				memcpy((void*)v.data(), (void*)(t.data<double>()), size * count);
 			}

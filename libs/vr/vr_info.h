@@ -11,7 +11,6 @@
 
 ///
 namespace vr {
-
 	/// information provided for any device type
 	struct CGV_API vr_device_info
 	{
@@ -91,6 +90,15 @@ namespace vr {
 		VRC_CONTROLLER = 1,
 		VRC_TRACKER = 2
 	};
+	/// role of controller
+	enum VRControllerRole {
+		VRC_NOT_ASSIGNED = 0,
+		VRC_LEFT_HAND,
+		VRC_RIGHT_HAND,
+		VRC_TREADMILL,
+		VRC_STYLUS,
+		VRC_ROLE_END
+	};
 	/// different controller input types
 	enum VRInputType {
 		VRI_NONE,
@@ -112,17 +120,19 @@ namespace vr {
 	{
 		/// controller type
 		VRControllerType type;
+		/// controller role
+		VRControllerRole role;
 		/// number of used inputs
 		int32_t nr_inputs;
-		/// type of up to 5 inputs built into the controller
-		VRInputType input_type[5];
+		/// type of up to 5\c vr::max_nr_controller_inputs inputs built into the controller
+		VRInputType input_type[max_nr_controller_inputs];
 		/// total number of axes provided by all inputs
 		int32_t nr_axes;
-		//! axis type for each of the 8 axes in the state
+		//! axis type for each of the \c vr::max_nr_controller_axes axes in the state
 		/*! axes are enumerated in the order of the inputs. Typically, the first is
 		    a 2d input (pad or stick) with the corresponding axes indexed with 0 and 1.
 			The first axis of the second input is in this case 2. */
-		VRAxisType axis_type[8];
+		VRAxisType axis_type[max_nr_controller_axes];
 		/// one flag per button telling whether it is supported
 		VRButtonStateFlags supported_buttons;
 		/// construct with default
@@ -139,7 +149,7 @@ namespace vr {
 		/// information for head mounted display
 		vr_hmd_info hmd;
 		/// information for attached controllers and trackers
-		vr_controller_info controller[4];
+		vr_controller_info controller[max_nr_controllers];
 		/// construct with default values
 		vr_kit_info();
 	};

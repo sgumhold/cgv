@@ -5,5 +5,6 @@ vertex_file:quaternion.glsl
 geometry_shader_info:points;line_strip;16
 geometry_file:box_wire.glgs
 geometry_file:group.glsl
+geometry_file:view.glsl
 fragment_file:default.glfs
 fragment_file:fragment.glfs

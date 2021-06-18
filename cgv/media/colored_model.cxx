@@ -9,6 +9,17 @@ namespace cgv {
 		{
 			color_storage_ptr = 0;
 		}
+		/// copy constructur
+		colored_model::colored_model(const colored_model& cm)
+		{
+			color_storage_ptr = cm.color_storage_ptr ? cm.color_storage_ptr->clone() : 0;
+		}
+		/// assignment operator
+		colored_model& colored_model::operator = (const colored_model& cm)
+		{
+			color_storage_ptr = cm.color_storage_ptr ? cm.color_storage_ptr->clone() : 0;
+			return *this;
+		}
 		/// destruct colored model
 		colored_model::~colored_model()
 		{
@@ -128,7 +139,8 @@ namespace cgv {
 				case CT_RGB8:  color_storage_ptr = new color_storage<rgb8>(); break;
 				case CT_RGBA8: color_storage_ptr = new color_storage<rgba8>(); break;
 				}
-				color_storage_ptr->resize(nr_colors);
+				if (nr_colors != -1)
+					color_storage_ptr->resize(nr_colors);
 			}
 		}
 		/// destruct color storage

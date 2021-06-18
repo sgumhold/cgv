@@ -1,0 +1,8 @@
+files:slab
+vertex_file:group.glsl
+vertex_file:quaternion.glsl
+vertex_file:view.glsl
+geometry_file:group.glsl
+geometry_file:view.glsl
+fragment_file:view.glsl
+fragment_file:fragment.glfs

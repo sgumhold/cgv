@@ -228,7 +228,7 @@ protected:
 	std::string created_type_name;
 	/// store whether the factory can only create one object
 	bool is_singleton;
-	/// pointer to the single object created by the factory in case is_singelton is true
+	/// pointer to the single object created by the factory in case is_singleton is true
 	base_ptr singleton;
 	/// store the options used for registering newly created objects
 	std::string object_options;

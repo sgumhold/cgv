@@ -51,10 +51,11 @@ bool point_cloud_interactable::save(const std::string& fn)
 	update_file_name(fn);
 	return true;
 }
-bool point_cloud_interactable::open(const std::string& fn)
+bool point_cloud_interactable::open(const std::string& _file_name)
 {
-	if (!read(fn)) {
-		cgv::gui::message(std::string("could not read ") + fn);
+	std::string fn = _file_name;
+	if (!read(fn, &data_path)) {
+		cgv::gui::message(last_error);
 		return false;
 	}
 	on_point_cloud_change_callback(PCC_NEW_POINT_CLOUD);
@@ -94,10 +95,11 @@ bool point_cloud_interactable::open_directory(const std::string& dn)
 	update_file_name(dn);
 	return true;
 }
-bool point_cloud_interactable::open_and_append(const std::string& fn)
+bool point_cloud_interactable::open_and_append(const std::string& _file_name)
 {
-	if (!append(fn)) {
-		cgv::gui::message(std::string("could not append ") + fn);
+	std::string fn = _file_name;
+	if (!append(fn, pc.get_nr_points() > 0, &data_path)) {
+		cgv::gui::message(last_error);
 		return false;
 	}
 	on_point_cloud_change_callback(PointCloudChangeEvent(PCC_POINTS_RESIZE + PCC_COMPONENTS_RESIZE));
@@ -365,7 +367,8 @@ std::string point_cloud_interactable::get_type_name() const
 }
 bool point_cloud_interactable::self_reflect(cgv::reflect::reflection_handler& srh)
 {
-	if (srh.reflect_member("do_append", do_append) &&
+	return
+		srh.reflect_member("do_append", do_append) &&
 		srh.reflect_member("use_component_colors", use_component_colors) &&
 		srh.reflect_member("use_component_transformations", use_component_transformations) &&
 		srh.reflect_member("do_auto_view", do_auto_view) &&
@@ -381,12 +384,11 @@ bool point_cloud_interactable::self_reflect(cgv::reflect::reflection_handler& sr
 		srh.reflect_member("show_nmls", show_nmls) &&
 		srh.reflect_member("show_boxes", show_boxes) &&
 		srh.reflect_member("show_box", show_box) &&
+		srh.reflect_member("sort_points", sort_points) &&
 		srh.reflect_member("show_neighbor_graph", show_neighbor_graph) &&
 		srh.reflect_member("k", k) &&
 		srh.reflect_member("do_symmetrize", do_symmetrize) &&
-		srh.reflect_member("reorient_normals", reorient_normals))
-		return true;
-	return false;
+		srh.reflect_member("reorient_normals", reorient_normals);
 }
 void point_cloud_interactable::stream_help(std::ostream& os)
 {
@@ -419,7 +421,7 @@ void point_cloud_interactable::draw_graph(cgv::render::context& ctx)
 
 	glDisable(GL_LIGHTING);
 	glColor3f(0.5f, 0.5f, 0.5f);
-	glLineWidth(normal_style.line_width);
+	glLineWidth(1.0f);
 	glBegin(GL_LINES);
 	for (unsigned int vi = 0; vi<ng.size(); ++vi) {
 		const std::vector<Idx> &Ni = ng[vi];

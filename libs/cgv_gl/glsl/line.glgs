@@ -1,0 +1,89 @@
+#version 330 core
+
+layout(lines) in;
+layout(triangle_strip, max_vertices = 4) out;
+
+uniform bool  measure_line_width_in_pixel = true;
+uniform float reference_line_width = 1.0;
+uniform float blend_width_in_pixel = 1.0;
+uniform float viewport_height = 1080.0;
+
+in LINE_GS {
+	vec3  position_eye;
+	vec3  normal_eye;
+	float line_width;
+	vec4  color;
+	vec4  halo_color;
+	float halo_width_in_pixel;
+	float percentual_halo_width;
+	float depth_offset;
+} gi[];
+
+out LINE_FS {
+	vec4  color;
+	vec4  halo_color;
+	vec3  side_vector_eye;
+	vec3  center_position_eye;
+	vec3  position_eye;
+	float percentual_blend_width;
+	float percentual_core_size;
+	float percentual_point_size;
+	float percentual_splat_size;
+	float depth_offset;
+} fo;
+
+//***** begin interface of view.glsl ***********************************
+mat4 get_modelview_matrix();
+mat4 get_projection_matrix();
+mat4 get_modelview_projection_matrix();
+mat4 get_inverse_modelview_matrix();
+mat4 get_inverse_modelview_projection_matrix();
+mat3 get_normal_matrix();
+mat3 get_inverse_normal_matrix();
+//***** end interface of view.glsl ***********************************
+
+//***** begin interface of splat.glsl ***********************************
+void prepare_splat(
+	in float reference_point_radius, in float pixel_extent,
+	in float blend_width_in_pixel, in float halo_width_in_pixel, in float percentual_halo_width,
+	out float percentual_core_size, out float percentual_point_size,
+	out float percentual_blend_width, out float percentual_splat_size);
+//***** end interface of surface.glsl ***********************************
+
+void emit_corner(in vec3 pos_eye, in float param)
+{
+	fo.position_eye = pos_eye;
+	gl_Position	= get_projection_matrix() * vec4(pos_eye,1.0);
+	EmitVertex();
+}
+
+void emit_edge(in vec3 dir_eye, int i)
+{
+	fo.color = gi[i].color;
+	fo.depth_offset = gi[i].depth_offset;
+	fo.halo_color = gi[i].halo_color;
+	vec3 side_dir_eye = normalize(cross(gi[i].normal_eye, dir_eye));
+	float pixel_extent = 2.0*abs(gi[i].position_eye.z/(viewport_height*get_projection_matrix()[1][1]));
+	float reference_width = 0.5*gi[i].line_width*(measure_line_width_in_pixel ? pixel_extent : reference_line_width);
+	
+	prepare_splat(reference_width, pixel_extent, blend_width_in_pixel, gi[i].halo_width_in_pixel, gi[i].percentual_halo_width,
+				  fo.percentual_core_size, fo.percentual_point_size,fo.percentual_blend_width, fo.percentual_splat_size);
+
+	fo.side_vector_eye = reference_width*side_dir_eye;
+	vec3 d_eye = fo.percentual_splat_size*reference_width*side_dir_eye;
+	fo.center_position_eye = gi[i].position_eye;
+	emit_corner(gi[i].position_eye + d_eye,  fo.percentual_splat_size);
+	emit_corner(gi[i].position_eye - d_eye, -fo.percentual_splat_size);
+}
+
+void main()
+{
+	if (gi[0].depth_offset > 100000.0)
+		return;
+	if (gi[1].depth_offset > 100000.0)
+		return;
+	vec3 tangent_eye = gi[1].position_eye - gi[0].position_eye;
+	emit_edge(tangent_eye, 0);
+	emit_edge(tangent_eye, 1);
+}
+	

@@ -1,17 +1,27 @@
-#version 150
+#version 330 core
 
 uniform bool use_group_point_size;
 uniform float group_point_sizes[250];
 uniform bool use_color_index;
 uniform vec4 palette[16];
+uniform vec4 halo_color;
+uniform float halo_width_in_pixel = 0.0;
+uniform float percentual_halo_width = 0.0;
 
 in vec4 position;
 in float point_size;
 in vec4 color;
 in int group_index;
 in uint color_index;
+in float depth_offset;
 
-out vec4 color_gs;
+out POINT_GS {
+	vec4 color;
+	vec4 halo_color;
+	float halo_width_in_pixel;
+	float percentual_halo_width;
+	float depth_offset;
+} vo;
 
 //***** begin interface of group.glsl ***********************************
 vec4 group_color(in vec4 color, int group_index);
@@ -25,15 +35,11 @@ void right_multiply_group_position_matrix_and_rigid(inout mat4 PM, int group_ind
 
 void main()
 {
-	if (use_group_point_size) {
-		gl_PointSize = group_point_sizes[group_index];
-	}
-	else {
-		gl_PointSize = point_size;
-	}
-	if (use_color_index)
-		color_gs = group_color(vec4(palette[color_index]), group_index);
-	else
-		color_gs = group_color(color, group_index);
+	vo.color = use_color_index ? group_color(vec4(palette[color_index]), group_index) : group_color(color, group_index);
+	vo.halo_color = halo_color;
+	vo.halo_width_in_pixel = halo_width_in_pixel;
+	vo.percentual_halo_width = percentual_halo_width;
+	vo.depth_offset = depth_offset;
 	gl_Position = vec4(group_transformed_position(position.xyz, group_index), 1.0);
+	gl_PointSize = use_group_point_size? group_point_sizes[group_index] : point_size;
 }

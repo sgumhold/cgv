@@ -5,10 +5,9 @@
 namespace vr {
 
 /// construct
-gl_vr_display::gl_vr_display(unsigned _width, unsigned _height, vr_driver* _driver, void* _handle, const std::string& _name)
-	: width(_width), height(_height), vr_kit(_driver, _handle, _name)
+gl_vr_display::gl_vr_display(unsigned _width, unsigned _height, unsigned _nr_multi_samples)
+	: width(_width), height(_height), nr_multi_samples(_nr_multi_samples)
 {
-	nr_multi_samples = 4;
 	for (unsigned i = 0; i < 2; ++i) {
 		multi_depth_buffer_id[i] = 0;
 		multi_tex_id[i] = 0;
@@ -16,6 +15,17 @@ gl_vr_display::gl_vr_display(unsigned _width, unsigned _height, vr_driver* _driv
 		tex_id[i] = 0;
 		fbo_id[i] = 0;
 	}
+}
+
+/// declare virtual destructor
+gl_vr_display::~gl_vr_display() 
+{
+}
+
+/// return last error of vr_kit
+const std::string& gl_vr_display::get_last_error() const 
+{
+	return last_error; 
 }
 
 /// allow to set a different size
@@ -36,21 +46,28 @@ int gl_vr_display::get_height() const
 	return height;
 }
 
-/// declare virtual destructor
-gl_vr_display::~gl_vr_display()
-{
-}
-
 /// check whether fbos have been initialized
-bool gl_vr_display::fbos_initialized() const
+bool gl_vr_display::fbos_initialized(EyeSelection es) const
 {
-	return fbo_id[0] != 0 && fbo_id[1] != 0 && multi_fbo_id[0] != 0 && multi_fbo_id[1] != 0;
+	switch (es) {
+	case ES_BOTH :
+		return fbo_id[0] != 0 && fbo_id[1] != 0 && multi_fbo_id[0] != 0 && multi_fbo_id[1] != 0;
+	case ES_LEFT:
+		return fbo_id[0] != 0 && multi_fbo_id[0];
+	case ES_RIGHT:
+		return fbo_id[1] != 0 && multi_fbo_id[1] != 0;
+	}
+	return false;
 }
 
 /// destruct render targets and framebuffer objects in current opengl context
-void gl_vr_display::destruct_fbos()
+void gl_vr_display::destruct_fbos(EyeSelection es)
 {
 	for (unsigned i = 0; i < 2; ++i) {
+		if (es == ES_LEFT && i == 1)
+			continue;
+		if (es == ES_RIGHT && i == 0)
+			continue;
 		if (multi_depth_buffer_id[i] != 0) {
 			glDeleteRenderbuffers(1, &multi_depth_buffer_id[i]);
 			multi_depth_buffer_id[i] = 0;
@@ -75,9 +92,14 @@ void gl_vr_display::destruct_fbos()
 }
 
 /// initialize render targets and framebuffer objects in current opengl context
-bool gl_vr_display::init_fbos()
+bool gl_vr_display::init_fbos(EyeSelection es)
 {
 	for (unsigned i = 0; i < 2; ++i) {
+		if (es == ES_LEFT && i == 1)
+			continue;
+		if (es == ES_RIGHT && i == 0)
+			continue;
+
 		glGenFramebuffers(1, &multi_fbo_id[i]);
 		glBindFramebuffer(GL_FRAMEBUFFER, multi_fbo_id[i]);
 

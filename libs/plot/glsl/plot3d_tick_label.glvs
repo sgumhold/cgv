@@ -10,7 +10,7 @@ in vec4 color;
 
 out vec4 color_fs;
 
-vec4 map_plot_to_screen3(in vec3 pnt);
+//vec4 map_plot_to_screen3(in vec3 pnt);
 
 void main()
 {
@@ -25,6 +25,6 @@ void main()
 	vec3 p = vec3(default_value);
 	p[ai] = position[a0];
 	p[aj] = position[a1];
-	gl_Position = map_plot_to_screen3(p.xyz);
+	gl_Position = vec4(p.xyz,1.0);
 	color_fs = color;
 }

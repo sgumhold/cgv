@@ -57,6 +57,8 @@ public:
 	bool is_stereo_enabled() const { return stereo_enabled; }
 	virtual void enable_stereo(bool e = true) { stereo_enabled = e; on_set(&stereo_enabled); }
 protected:
+	/// whether messages should be shown to user in case something fails
+	bool enable_messages;
 	double z_near_derived, z_far_derived;
 	float depth_offset, depth_scale;
 	bool auto_view_images;
@@ -222,6 +224,7 @@ private:
 	bool do_viewport_splitting;
 	unsigned nr_viewport_columns;
 	unsigned nr_viewport_rows;
+	unsigned viewport_shrinkage;
 	std::vector<dmat4> MPWs, MPWs_right;
 	std::vector<cgv::render::view> views;
 	std::vector<bool> use_individual_view;

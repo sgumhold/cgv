@@ -1,0 +1,99 @@
+#version 150 
+
+in vec3 normal;
+in vec4 color_fs;
+in vec3 position;
+flat in int side;
+
+uniform float eps = 0.001;
+uniform float noise_zoom = 500.0;
+uniform float noise_bump_scale = 1.0;
+uniform float noise_color_scale = 1.0;
+uniform int noise_type = 3;
+uniform int nr_octaves = 4;
+uniform float lacunarity = 2.0;
+uniform float gain = 0.5;
+uniform float offset = 0.9;
+
+//***** begin interface of fragment.glfs ***********************************
+uniform float gamma = 2.2;
+void finish_fragment(vec4 color);
+//***** end interface of fragment.glfs ***********************************
+
+//***** begin interface of surface.glsl ***********************************
+vec4 compute_reflected_appearance(vec3 position_eye, vec3 normal_eye, vec4 color, int side);
+//***** end interface of surface.glsl ***********************************
+
+//***** begin interface of view.glsl ***********************************
+mat4 get_modelview_matrix();
+mat4 get_projection_matrix();
+mat4 get_modelview_projection_matrix();
+mat4 get_inverse_modelview_matrix();
+mat4 get_inverse_modelview_projection_matrix();
+mat3 get_normal_matrix();
+mat3 get_inverse_normal_matrix();
+//***** end interface of view.glsl ***********************************
+
+//***** begin interface of ?noise.glsl *********************************
+float snoise(vec3 v);
+float cnoise(vec3 v);
+float noise(vec3 v);
+float noise2(vec3 v);
+//***** end interface of ?noise.glsl ***********************************
+
+// Ridged multifractal
+// See "Texturing & Modeling, A Procedural Approach", Chapter 12
+float ridge(float h, float offset) {
+    h = abs(h);     // create creases
+    h = offset - h; // invert so creases are at top
+    h = h * h;      // sharpen creases
+    return h;
+}
+
+float sample_noise(vec3 p, in float zoom) {
+	p *= zoom;
+    float sum = 0.0;
+    float freq = 1.0, amp = 0.5;
+    float prev = 1.0;
+    for(int i=0; i < nr_octaves; i++) {
+		float noi = 0.5;
+		switch (noise_type) {
+		case 0 : noi = noise(p*freq); break;
+		case 1 : noi = noise2(p*freq); break;
+		case 2 : noi = cnoise(p*freq); break;
+		case 3 : noi = snoise(p*freq); break;
+		}
+		float n;
+		if (i == 2) {
+			float q = mod(10.0*noi,1.0);
+			q = sin(3.14*q);
+			n = q*q;
+		}
+		else
+			n = ridge(noi, offset);
+        sum += n*amp;
+        sum += n*amp*prev;  // scale by previous octave
+        prev = n;
+        freq *= lacunarity;
+        amp *= gain;
+    }
+    return sum;
+}
+
+vec3 estimate_noise_gradient(in vec3 p, in float scale_factor)
+{
+    float x = sample_noise(vec3(p.x + eps, p.y, p.z), scale_factor) - sample_noise(vec3(p.x - eps, p.y, p.z), scale_factor);
+    float y = sample_noise(vec3(p.x, p.y + eps, p.z), scale_factor) - sample_noise(vec3(p.x, p.y - eps, p.z), scale_factor);
+    float z = sample_noise(vec3(p.x, p.y, p.z + eps), scale_factor) - sample_noise(vec3(p.x, p.y, p.z - eps), scale_factor);
+    return normalize(vec3(x, y, z));
+}
+
+void main()
+{
+	vec4 color = color_fs;
+	vec4 pos_model = get_inverse_modelview_matrix()*vec4(position, 1.0);
+	color.rgb = clamp(color.rgb - noise_color_scale*vec3(2.0*sample_noise(pos_model.xyz, noise_zoom)-1.0),0.0f,1.0f);
+	vec3 nml = normal + get_normal_matrix()*noise_bump_scale*estimate_noise_gradient(pos_model.xyz, noise_zoom);
+	// illumination
+	finish_fragment(compute_reflected_appearance(position, normalize(nml), color, side));
+}

@@ -41,7 +41,7 @@ protected:
 	double start_time;
 
 	// for rectangle renderer a plane_render_style is needed
-	cgv::render::plane_render_style prs;
+	cgv::render::rectangle_render_style rrs;
 
 	// keep pointer to other objects
 	cgv::render::view* view_ptr;
@@ -93,7 +93,7 @@ public:
 		dynamic_labels_out_of_date = true;
 		view_ptr = 0;
 		start_time = cgv::gui::get_animation_trigger().get_current_time();
-		prs.illumination_mode = cgv::render::IM_OFF;
+		rrs.illumination_mode = cgv::render::IM_OFF;
 		connect(cgv::gui::get_animation_trigger().shoot, this, &hello_label::timer_event);
 	}
 	void timer_event(double t, double dt)
@@ -180,11 +180,11 @@ public:
 	void create_gui()
 	{
 		add_decorator("hello_label", "heading");
-		if (begin_tree_node("rectangle rendering", prs)) {
+		if (begin_tree_node("rectangle rendering", rrs)) {
 			align("\a");
-			add_gui("rectangles", prs);
+			add_gui("rectangles", rrs);
 			align("\b");
-			end_tree_node(prs);
+			end_tree_node(rrs);
 		}
 	}
 };

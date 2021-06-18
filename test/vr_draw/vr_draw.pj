@@ -1,0 +1,21 @@
+@=
+projectType="application_plugin";
+projectName="vr_draw";
+projectGUID="7829D0B0-8AEE-4ED5-9EA2-90D7FDAD1585";
+//referenceDeps = 0;
+addProjectDirs=[CGV_DIR."/plugins", CGV_DIR."/libs", CGV_DIR."/test"];
+addProjectDeps=[
+	"cgv_utils", "cgv_type", "cgv_data", "cgv_base", "cgv_math", "cgv_media", "cgv_gui", "cgv_render", 
+	"cgv_gl", "cg_vr",
+	"cgv_viewer", 
+	"cg_fltk", "crg_grid", "cg_ext", "cmi_io", "crg_vr_view", "vr_lab",
+	"vr_emulator", "openvr_driver", "crg_vr_wall"
+];
+addIncDirs=[INPUT_DIR, CGV_DIR."/libs", CGV_DIR."/test"];
+
+addSharedDefines=["VR_DRAW_EXPORTS"];
+
+addCommandLineArguments=[
+	after("type(shader_config):shader_path='".INPUT_DIR.";".CGV_DIR."/plugins/crg_vr_view;".CGV_DIR."/plugins/vr_lab;".CGV_DIR."/libs/cgv_gl/glsl;".CGV_DIR."/libs/cgv_proc'","cg_fltk"),
+	'config:"'.INPUT_DIR.'/config.def"'
+];

@@ -1,0 +1,420 @@
+#version 460
+
+#define ITERATION_COUNT 10
+#define FLT_EPS 1.19209290e-07
+#define POS_INF 3e+37
+#define N0 3
+#define N1 5
+
+//***** begin interface of view.glsl ***********************************
+mat4 get_modelview_matrix();
+mat4 get_projection_matrix();
+mat4 get_modelview_projection_matrix();
+mat4 get_inverse_modelview_matrix();
+mat4 get_inverse_modelview_projection_matrix();
+mat3 get_normal_matrix();
+mat3 get_inverse_normal_matrix();
+//***** end interface of view.glsl ***********************************
+////***** begin interface of surface.glsl ***********************************
+vec4 compute_reflected_appearance(vec3 position_eye, vec3 normal_eye, vec4 color, int side);
+////***** end interface of surface.glsl ***********************************
+//***** begin interface of fragment.glfs ***********************************
+uniform float gamma = 2.2;
+void finish_fragment(vec4 color);
+//***** end interface of fragment.glfs ***********************************
+
+struct QTubeNode {
+	vec3 pos;
+	float rad;
+};
+struct QTube {
+	QTubeNode s;
+	QTubeNode h;
+	QTubeNode e;
+};
+struct Hit {
+	float l;
+	float t;
+	vec3 normal;
+};
+
+in vec3 position_fs;
+in flat float l_offset_fs;
+in flat vec3 color0_fs;
+in flat vec3 color1_fs;
+in flat QTube qTube_fs;
+
+float Pow2(float x) { return x * x; }
+float Pow3(float x) { return x * x * x; }
+
+vec2 SolveQuadratic(float a, float b, float c) {
+    if(abs(a) < FLT_EPS) {
+		if(abs(b) < FLT_EPS)
+			return vec2(-2.0, 2.0);
+		else
+			return vec2(-c / b, 2.0);
+    } else {
+		float discr = b * b - 4.0 * a * c;
+		if(abs(discr) < FLT_EPS) return vec2(-b / (2.0 * a), 2.0);
+		if(discr < 0.0) return vec2(-2.0, 2.0);
+		vec2 r = (-vec2(b) + vec2(-1.0, 1.0) * vec2(sqrt(discr))) / (2.0 * a);
+		return r.x < r.y ? r.xy : r.yx;
+    }
+}
+
+void Pow2(in float c[3], out float o_c[5]) {
+	o_c[0] = c[0] * c[0]; 
+	o_c[1] =  2.0 * c[0] * c[1];
+	o_c[2] = c[1] * c[1] +  2.0 * c[0] * c[2];
+	o_c[3] =  2.0 * c[2] * c[1];
+	o_c[4] = c[2] * c[2];
+}
+
+void Sub(in float a[5], in float b[5], out float o_c[5]) {
+	o_c[0] = a[0] - b[0];
+	o_c[1] = a[1] - b[1];
+	o_c[2] = a[2] - b[2];
+	o_c[3] = a[3] - b[3];
+	o_c[4] = a[4] - b[4];
+}
+
+float EvalPoly(float x, float c0, float c1, float c2, float c3, float c4, float c5, float c6) { return x * (x * (x * (x * (x * (x * c6 + c5) + c4) + c3) + c2) + c1) + c0; }
+float EvalPoly(float x, float c0, float c1, float c2, float c3, float c4, float c5) { return EvalPoly(x, c0,c1,c2,c3,c4,c5,0.0); }
+float EvalPoly(float x, float c0, float c1, float c2, float c3, float c4) { return EvalPoly(x, c0,c1,c2,c3,c4,0.0,0.0); }
+float EvalPoly(float x, float c0, float c1, float c2, float c3) { return EvalPoly(x, c0,c1,c2,c3,0.0,0.0,0.0); }
+float EvalPoly(float x, float c0, float c1, float c2) { return EvalPoly(x, c0,c1,c2,0.0,0.0,0.0,0.0); }
+float EvalPoly(float x, float c0, float c1) { return EvalPoly(x, c0,c1,0.0,0.0,0.0,0.0,0.0); }
+float EvalPoly(float x, float c0) { return EvalPoly(x, c0,0.0,0.0,0.0,0.0,0.0,0.0); }
+
+//float EvalPolyD0(float x, float c[3]) { return EvalPoly(x, c[0], c[1], c[2]); }
+//float EvalPolyD1(float x, float c[3]) { return EvalPoly(x, c[1], c[2] * 2.0); }
+//float EvalPolyD2(float x, float c[3]) { return EvalPoly(x, c[2] * 2.0);       }
+//float EvalPolyD0(float x, float c[5]) { return EvalPoly(x, c[0], c[1], c[2], c[3], c[4]);             }
+//float EvalPolyD1(float x, float c[5]) { return EvalPoly(x, c[1], c[2] * 2.0, c[3] * 3.0, c[4] * 4.0); }
+//float EvalPolyD2(float x, float c[5]) { return EvalPoly(x, c[2] * 2.0, c[3] * 6.0, c[4] * 12.0);      }
+//float EvalPolyD3(float x, float c[5]) { return EvalPoly(x, c[3] * 6.0, c[4] * 24.0);                  }
+
+// same as above, but multiplication wit 2, 3, or 4 is replaced with addition (gives a small performance boost)
+float EvalPolyD0(float x, float c[3]) { return EvalPoly(x, c[0], c[1], c[2]); }
+float EvalPolyD1(float x, float c[3]) { return EvalPoly(x, c[1], c[2] + c[2]); }
+float EvalPolyD2(float x, float c[3]) { return EvalPoly(x, c[2] + c[2]); }
+float EvalPolyD0(float x, float c[5]) { return EvalPoly(x, c[0], c[1], c[2], c[3], c[4]); }
+float EvalPolyD1(float x, float c[5]) { return EvalPoly(x, c[1], c[2] + c[2], c[3] + c[3] + c[3], c[4] + c[4] + c[4] + c[4]); }
+float EvalPolyD2(float x, float c[5]) { return EvalPoly(x, c[2] + c[2], c[3] * 6.0, c[4] * 12.0); }
+float EvalPolyD3(float x, float c[5]) { return EvalPoly(x, c[3] * 6.0, c[4] * 24.0); }
+
+vec3 EvalCSpline(vec3 p1, vec3 t1, vec3 p2, vec3 t2, float l) {
+	vec3 h1 = p1 + t1 / 3.0;
+	vec3 h2 = p2 - t2 / 3.0;
+	vec3 a1 = mix(p1, h1, l);
+	vec3 a2 = mix(h1, h2, l);
+	vec3 a3 = mix(h2, p2, l);
+	vec3 b1 = mix(a1, a2, l);
+	vec3 b2 = mix(a2, a3, l);
+	return mix(b1, b2, l);
+}
+
+#define DEF_FINDROOTS(N, D)																			  \
+void FindRoots##D(float poly_C[N1], float x_i[N], int m_i[N], out float x_o[N+1], out int m_o[N+1]) { \
+    m_o[0] = m_o[N] = 1;																			  \
+	x_o[0] = x_i[0];                                                                                  \
+	uint j = 0;                                                                                       \
+	float x_l = x_i[0];                                                                               \
+	float y_l = EvalPoly##D(x_l, poly_C);                                                             \
+	float sy_l = sign(y_l);                                                                           \
+	for(uint i = 1; i < N; ++i) {                                                                     \
+		float x_r = x_i[i];                                                                           \
+		float y_r = EvalPoly##D(x_r, poly_C);                                                         \
+		float sy_r = sign(y_r);                                                                       \
+		x_o[i] = 0.0;                                                                                 \
+		if(m_i[i] == 1) {                                                                             \
+			if(sy_l != sy_r) {                                                                        \
+				float n = x_l;                                                                        \
+				float p = x_r;                                                                        \
+				float ny = EvalPoly##D(n, poly_C);                                                    \
+				float py = EvalPoly##D(p, poly_C);                                                    \
+				if(ny > 0.0 && py < 0.0) {                                                            \
+					float t = n;                                                                      \
+					n = p; p = t;                                                                     \
+				}                                                                                     \
+				for(uint j = 0; j < ITERATION_COUNT; ++j) {                                           \
+					float m = (n + p) * 0.5;                                                          \
+					float f = EvalPoly##D(m, poly_C);                                                 \
+					if(f < 0.0) n = m;                                                                \
+					else p = m;                                                                       \
+				}                                                                                     \
+				x_o[i] = (n + p) * 0.5;                                                               \
+				m_o[i] = 1;                                                                           \
+			} else {			                                                                      \
+				m_o[i] = 0;                                                                           \
+			}                                                                                         \
+			x_l = x_r;                                                                                \
+			y_l = y_r;                                                                                \
+			sy_l = sy_r;                                                                              \
+		} else {                                                                                      \
+			m_o[i] = 0;                                                                               \
+		}                                                                                             \
+	}                                                                                                 \
+	x_o[N] = x_i[N - 1];                                                                              \
+}
+DEF_FINDROOTS(4, D1)
+DEF_FINDROOTS(5, D0)
+
+//-----------------------------------------------------------//
+// Produces an orthogonal vector to v. Doesn’t require the input
+// to be normalized and doesn’t normalise the output. 
+// source: http://lolengine.net/blog/2013/09/21/picking-orthogonal-vector-combing-coconuts
+vec3 GetOrthoVec(vec3 v) {
+    return abs(v.x) > abs(v.z) ? vec3(-v.y, v.x, 0.0f) : vec3(0.0f, -v.z, v.y);
+}
+
+void SplinePointsToPolyCoeffs(float p0, float h, float p1, out float o_c[3]) {
+	o_c[0] = p0;
+	o_c[1] = -2.0 * p0 + 2.0 * h;
+	o_c[2] =   p0 + p1 - 2.0 * h;
+}
+
+vec3 qSplineEval(float l, float curveX[N0], float curveY[N0], float curveZ[N0]) {
+	return vec3(EvalPolyD0(l, curveX), EvalPolyD0(l, curveY), EvalPolyD0(l, curveZ));
+}
+
+float qSplineIDistEval(float t, float curveX[N0], float polyB_C[N1]) {		
+	float term  = EvalPolyD0(t, curveX);
+	float discr = EvalPolyD0(t, polyB_C);
+	if(discr < 0.0) return POS_INF;
+	else return term - sqrt(discr);
+}
+#define qSplineIDist_ParasDec float curveX[N0], float polyB_C[N1]
+#define qSplineIDist_Paras curveX, polyB_C
+
+float qSplineD1Eval(float t, float curveX[N0], float polyB_C[N1]) {	 		
+	float f1D1 = EvalPolyD1(t, curveX);	
+	float f2D0 = EvalPolyD0(t, polyB_C);
+	float f2D1 = EvalPolyD1(t, polyB_C);
+	return f1D1 - f2D1 * 0.5 * inversesqrt(max(0.0, f2D0));
+}
+#define qSplineD1_ParasDec float curveX[N0], float polyB_C[N1]
+#define qSplineD1_Paras curveX, polyB_C
+
+float qSplineD2Eval(float t, float curveX[N0], float polyB_C[N1]) {		
+	float f1D1 = EvalPolyD1(t, curveX);
+	float f1D2 = EvalPolyD2(t, curveX);
+	float f2D0 = EvalPolyD0(t, polyB_C);
+	float f2D1 = EvalPolyD1(t, polyB_C);
+	float f2D2 = EvalPolyD2(t, polyB_C);
+	f2D0 = max(0.0, f2D0);
+	return (Pow2(f2D1) / f2D0 * 0.25 - f2D2 * 0.5) * inversesqrt(f2D0) + f1D2;
+}
+#define qSplineD2_ParasDec float curveX[N0], float polyB_C[N1]
+#define qSplineD2_Paras curveX, polyB_C
+
+float qSplineD3Eval(float t, float polyB_C[N1]) {
+	float f2D0 = EvalPolyD0(t, polyB_C);
+	float f2D1 = EvalPolyD1(t, polyB_C);
+	float f2D2 = EvalPolyD2(t, polyB_C);
+	float f2D3 = EvalPolyD3(t, polyB_C);
+	f2D0 = max(0.0, f2D0);
+	return (-3.0 * Pow3(f2D1) + 6.0 * f2D0 * f2D1 * f2D2 - 4.0 * Pow2(f2D0) * f2D3) / Pow2(f2D0) * inversesqrt(f2D0);
+}
+#define qSplineD3_ParasDec float polyB_C[N1]
+#define qSplineD3_Paras polyB_C
+
+#define DEF_binRootFinder(func)										 \
+float func##_BinRootFinder_Eval(float n, float p, func##_ParasDec) { \
+	if(func##Eval(n, func##_Paras) > 0.0) return n;					 \
+	if(func##Eval(p, func##_Paras) < 0.0) return p;					 \
+																	 \
+	for(uint i = 0; i < ITERATION_COUNT; ++i) {                      \
+		float m = (n + p) * 0.5;                                     \
+		float f = func##Eval(m, func##_Paras);                       \
+			                                                         \
+		if(f < 0.0) n = m;                                           \
+		else p = m;                                                  \
+	}                                                                \
+		                                                             \
+	return (n + p) * 0.5;                                            \
+}
+
+DEF_binRootFinder(qSplineIDist)
+DEF_binRootFinder(qSplineD1)
+DEF_binRootFinder(qSplineD2)
+DEF_binRootFinder(qSplineD3)
+
+#define binRootFinder_Eval(n, p, func) func##_BinRootFinder_Eval(n, p, func##_Paras)
+
+Hit EvalSplineISect(vec3 dir, vec3 s, vec3 h, vec3 t, float rs, float rh, float rt) {
+	Hit hit;
+	hit.l = 0.0;
+	hit.t = POS_INF;
+	hit.normal = vec3(0.0);
+	
+	mat3 RM;
+	RM[0] = dir;
+	RM[1] = normalize(GetOrthoVec(dir));
+	RM[2] = cross(dir, RM[1]);
+	
+	s *= RM;
+	t *= RM;
+	h *= RM;
+
+	float curveX[N0];
+	float curveY[N0];
+	float curveZ[N0];
+
+	float rcurve[N0];
+	
+	SplinePointsToPolyCoeffs(s.x, h.x, t.x, curveX);
+	SplinePointsToPolyCoeffs(s.y, h.y, t.y, curveY);
+	SplinePointsToPolyCoeffs(s.z, h.z, t.z, curveZ);	
+	SplinePointsToPolyCoeffs(rs, rh, rt, rcurve);
+	
+	float polyB_C[N1];
+	Pow2(rcurve, polyB_C);
+	{
+		float c[N1];
+		Pow2(curveY, c);
+		Sub(polyB_C, c, polyB_C);
+	}
+	{
+		float c[N1];
+		Pow2(curveZ, c);
+		Sub(polyB_C, c, polyB_C);
+	}
+	float l1 = 0.0;
+	float l2 = 0.0;
+	
+	vec4 roots = vec4(-1.0);
+	float x2[4];
+	int m2[4];
+	
+	vec2 r = SolveQuadratic(polyB_C[4] * 12.0, polyB_C[3] * 6.0, polyB_C[2] * 2.0);
+	x2[0] = 0.0;
+	x2[1] = r.x;
+	x2[2] = r.y;
+	x2[3] = 1.0;
+	m2[0] = 1;
+	m2[1] = (x2[1] <= 0.0 || x2[1] >= 1.0) ? 0 : 1;
+	m2[2] = (x2[2] <= 0.0 || x2[2] >= 1.0) ? 0 : 1;
+	m2[3] = 1;
+
+	float x3[5];
+	int m3[5];
+	FindRootsD1(polyB_C, x2, m2, x3, m3);
+
+	float x4[6];
+	int m4[6];
+	
+	{		
+		FindRootsD0(polyB_C, x3, m3, x4, m4);
+
+		int rootType = 0;
+		int rn = 0;
+		
+		if(EvalPolyD0(0.0, polyB_C) >= 0.0) {
+								  roots.x =  0; rn = 1; rootType = 15;
+		}
+		if(m4[1] == 1) {
+			if(rn == 0) 		{ roots.x = x4[1]; rn = 1; rootType = 15;						}
+			else				{ roots.y = x4[1]; rn = 2; rootType = 10; 						}	
+		} else if(rootType == 15) {
+			rootType = 0;
+		}
+		if(m4[2] == 1) {
+			if     (rn == 0) 	{ roots.x = x4[2]; rn = 1; rootType = 15;						}
+			else if(rn == 1)	{ roots.y = x4[2]; rn = 2; rootType = rootType == 0 ? 30 : 10;	}	
+			else 				{ roots.z = x4[2]; rn = 3; rootType = 20; 						}	
+		} else if(rootType == 15) {
+			rootType = 0;
+		}
+		if(m4[3] == 1) {
+			if     (rn == 0) 	{ roots.x = x4[3]; rn = 1; rootType = 15;						}
+			else if(rn == 1)	{ roots.y = x4[3]; rn = 2; rootType = rootType == 0 ? 30 : 10;	}	
+			else if(rn == 2)	{ roots.z = x4[3]; rn = 3; rootType = 20; 						}	
+			else 				{ roots.w = x4[3]; rn = 4; rootType = 20; 						}	
+		} else if(rootType == 15) {
+			rootType = 0;
+		}
+		if(m4[4] == 1) {
+			if     (rn == 0) 	{ roots.x = x4[4]; rn = 1; rootType = 15;						}
+			else if(rn == 1)	{ roots.y = x4[4]; rn = 2; rootType = rootType == 0 ? 30 : 10;	}	
+			else if(rn == 2)	{ roots.z = x4[4]; rn = 3; rootType = 20; 						}	
+			else 				{ roots.w = x4[4]; rn = 4; rootType = 20; 						}	
+		} else if(rootType == 15) {
+			rootType = 0;
+		}
+		if(EvalPolyD0(1.0, polyB_C) > 0.0) {
+			if     (rn == 1)	{ roots.y =   1.0; rn = 1; rootType = rootType == 0 ? 30 : 10;	}
+			else				{ roots.w =   1.0; rn = 2; rootType = 20; 						}	
+		}
+		if(rootType == 10 || rootType == 15) rootType = 30;
+		//region finalize
+		if(rootType > 0) {
+			if(rootType == 30) {
+				float rootD3 = binRootFinder_Eval(roots.x, roots.y, qSplineD3);
+				
+				vec2 rootsD2;
+				rootsD2.x = binRootFinder_Eval(rootD3, roots.x, qSplineD2);
+				rootsD2.y = binRootFinder_Eval(rootD3, roots.y, qSplineD2);
+				
+				l1 = binRootFinder_Eval(roots.x, rootsD2.x, qSplineD1);
+				l2 = binRootFinder_Eval(rootsD2.y, roots.y, qSplineD1);
+			} else {
+				l1 = binRootFinder_Eval(roots.x, roots.y, qSplineD1);
+				
+				if(rootType == 20)
+					l2 = binRootFinder_Eval(roots.z, roots.w, qSplineD1);
+				else
+					l2 = l1;
+			}
+			float t1 = qSplineIDistEval(l1, curveX, polyB_C);
+			float t2 = qSplineIDistEval(l2, curveX, polyB_C);
+			float r1 = EvalPolyD0(l1, rcurve);
+			float r2 = EvalPolyD0(l2, rcurve);
+			bool hit1 = t1 > 0.0 && r1 > 0.0;
+			bool hit2 = t2 > 0.0 && r2 > 0.0;
+			if(hit1) {
+				if(t1 < t2 || !hit2) {
+					hit.t = t1;
+					hit.l = l1;
+				} else {
+					hit.t = t2;
+					hit.l = l2;
+				}
+			} else {
+				hit.t = t2;
+				hit.l = l2;
+			}
+			// get the position on the spline at l
+			vec3 sp = qSplineEval(hit.l, curveX, curveY, curveZ);
+			// transform from ray space to eye space
+			sp = RM * sp;
+			// calculate the intersection point of the ray with the spline tube
+			vec3 ip = hit.t * dir;
+			hit.normal = normalize(ip - sp);
+		}
+		//endregion
+	}
+	return hit;
+}
+
+void main() {
+	/* Uncomment to show the boundign box
+	vec3 normal = normalize(cross(dFdx(position_fs), dFdy(position_fs)));
+	finish_fragment(vec4(normal * 0.5 + 0.5, 1.0));
+	return;
+	*/
+	vec3 direction = normalize(position_fs);
+	Hit hit = EvalSplineISect(direction,
+		qTube_fs.s.pos, qTube_fs.h.pos, qTube_fs.e.pos,
+		qTube_fs.s.rad, qTube_fs.h.rad, qTube_fs.e.rad
+	);
+	vec4 frag_color = vec4(0.5, 0.5, 0.5, 1.0);
+	// TODO: color tangent is not supported (do we need this?)
+	frag_color.rgb = EvalCSpline(color0_fs, vec3(0.0), color1_fs, vec3(0.0), hit.l * 0.5 + l_offset_fs);
+	if(hit.t == POS_INF) discard;
+	vec3 hit_pos_eye = direction * hit.t;
+	vec4 v_eye = vec4(hit_pos_eye, 1.0);
+	vec4 depth = get_projection_matrix() * v_eye;
+	gl_FragDepth = 0.5*(depth.z / depth.w) + 0.5;
+	finish_fragment(compute_reflected_appearance(hit_pos_eye, hit.normal, frag_color, 1));
+}

@@ -64,7 +64,7 @@ public:
 		case '-' :
 			if (tex_ids.size() > 1) {
 				if (current_image == 0)
-					current_image = tex_ids.size() - 1;
+					current_image = (unsigned)tex_ids.size() - 1;
 				else
 					--current_image;
 				on_set(&current_image);
@@ -141,9 +141,28 @@ public:
 			end_tree_node(file_name);
 		}
 
+		if (begin_tree_node("distortion", k1)) {
+			align("\a");
+			add_member_control(this, "tess_level", tess_level, "value_slider", "min=1;max=64;log=true;ticks=true");
+			add_member_control(this, "checker_lambda", checker_lambda, "value_slider", "min=0.0;max=1.0;log=true;ticks=true");
+			add_member_control(this, "s", s, "value_slider", "min=0.1;max=10;log=true;ticks=true");
+			add_member_control(this, "cx", cx, "value_slider", "min=-1.0;max=1.0;log=true;ticks=true");
+			add_member_control(this, "cy", cy, "value_slider", "min=-1.0;max=1.0;log=true;ticks=true");
+			add_member_control(this, "k1", k1, "value_slider", "min=-1.0;max=1.0;log=true;ticks=true");
+			add_member_control(this, "k2", k2, "value_slider", "min=-1.0;max=1.0;log=true;ticks=true");
+			add_member_control(this, "k3", k3, "value_slider", "min=-1.0;max=1.0;log=true;ticks=true");
+			add_member_control(this, "k4", k4, "value_slider", "min=-1.0;max=1.0;log=true;ticks=true");
+			add_member_control(this, "k5", k5, "value_slider", "min=-1.0;max=1.0;log=true;ticks=true");
+			add_member_control(this, "k6", k6, "value_slider", "min=-1.0;max=1.0;log=true;ticks=true");
+			add_member_control(this, "p1", p1, "value_slider", "min=-1.0;max=1.0;log=true;ticks=true");
+			add_member_control(this, "p2", p2, "value_slider", "min=-1.0;max=1.0;log=true;ticks=true");
+			align("\b");
+			end_tree_node(k1);
+		}
 		if (begin_tree_node("rendering", use_blending)) {
 			align("\a");
 			add_member_control(this, "use_blending", use_blending, "check");
+			add_member_control(this, "wireframe", wireframe, "check");
 			add_gui("gamma4", gamma4, "vector", "main_label='heading';components='rgba';options='min=0.01;max=100;ticks=true;log=true'");
 			add_gui("min_value", min_value, "vector", "main_label='heading';components='rgba';options='min=0;max=1;ticks=true;step=0.00001;log=true'");
 			add_gui("max_value", max_value, "vector", "main_label='heading';components='rgba';options='min=0;max=1;ticks=true;step=0.00001;log=true'");

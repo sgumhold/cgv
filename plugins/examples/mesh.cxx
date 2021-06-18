@@ -93,8 +93,12 @@ public:
 	bool show_vertices;
 	sphere_render_style sphere_style;
 
+	bool sphere_aam_out_of_date;
+	attribute_array_manager sphere_aam;
+
 	bool show_wireframe;
 	rounded_cone_render_style cone_style;
+	attribute_array_manager cone_aam;
 
 	std::string file_name;
 
@@ -118,13 +122,18 @@ public:
 		show_wireframe = true;
 
 		show_vertices = true;
-		M.read(QUOTE_SYMBOL_VALUE(INPUT_DIR) "/res/example.obj");
-		
+		if (getenv("CGV_DIR"))
+			M.read(std::string(getenv("CGV_DIR")) + "/plugins/examples/res/example.obj");
+		else
+			M.construct_conway_polyhedron("adtD");
 		sphere_style.radius = float(0.05*sqrt(M.compute_box().get_extent().sqr_length() / M.get_nr_positions()));
 		sphere_style.surface_color = rgb(0.8f, 0.3f, 0.3f);
 		
 		cone_style.radius = 0.5f*sphere_style.radius;
 		cone_style.surface_color = rgb(0.6f, 0.5f, 0.4f);
+
+		sphere_aam_out_of_date = true;
+		
 		file_name = "example.obj";
 		have_new_mesh = true;
 
@@ -174,7 +183,10 @@ public:
 	{
 		if (member_ptr == &file_name) {
 			mesh_type tmp;
+			tmp.ensure_colors(cgv::media::CT_RGB);
 			if (tmp.read(file_name)) {
+				if (tmp.get_nr_colors() == 0)
+					tmp.destruct_colors();
 				M = tmp;
 				sphere_style.radius = float(0.05*sqrt(M.compute_box().get_extent().sqr_length() / M.get_nr_positions()));
 				on_set(&sphere_style.radius);
@@ -268,12 +280,16 @@ public:
 	{
 		ref_sphere_renderer(ctx, 1);
 		ref_rounded_cone_renderer(ctx, 1);
+		sphere_aam.init(ctx);
+		cone_aam.init(ctx);
 		return true;
 	}
-	void destruct(context& ctx)
+	void clear(context& ctx)
 	{
 		ref_rounded_cone_renderer(ctx, -1);
 		ref_sphere_renderer(ctx, -1);
+		sphere_aam.destruct(ctx);
+		cone_aam.destruct(ctx);
 	}
 	void init_frame(context& ctx)
 	{
@@ -290,7 +306,8 @@ public:
 			// ensure that materials are presented in gui
 			post_recreate_gui();
 			have_new_mesh = false;
-
+			sphere_aam_out_of_date = true;
+			
 			// focus view on new mesh
 			clipped_view* view_ptr = dynamic_cast<clipped_view*>(find_view_as_node());
 			if (view_ptr) {
@@ -323,8 +340,8 @@ public:
 		prog.set_uniform(ctx, "illumination_mode", (int)illumination_mode);
 		// set default surface color for color mapping which only affects 
 		// rendering if mesh does not have per vertex colors and color_mapping is on
-		prog.set_attribute(ctx, prog.get_color_index(), surface_color);
-
+		//prog.set_attribute(ctx, prog.get_color_index(), surface_color);
+		ctx.set_color(surface_color);
 		// render the mesh from the vertex buffers with selected program
 		mesh_info.draw_all(ctx, opaque_part, !opaque_part);
 
@@ -341,10 +358,15 @@ public:
 		if (show_vertices) {
 			sphere_renderer& sr = ref_sphere_renderer(ctx);
 			sr.set_render_style(sphere_style);
-			sr.set_position_array(ctx, M.get_positions());
-			if (M.has_colors())
-				sr.set_color_array(ctx, *reinterpret_cast<const std::vector<rgb>*>(M.get_color_data_vector_ptr()));
+			sr.enable_attribute_array_manager(ctx, sphere_aam);
+			if (sphere_aam_out_of_date) {
+				sr.set_position_array(ctx, M.get_positions());
+				if (M.has_colors())
+					sr.set_color_array(ctx, *reinterpret_cast<const std::vector<rgb>*>(M.get_color_data_vector_ptr()));
+				sphere_aam_out_of_date = false;
+			}
 			sr.render(ctx, 0, M.get_nr_positions());
+			sr.disable_attribute_array_manager(ctx, sphere_aam);
 		}
 		if (show_wireframe) {
 			rounded_cone_renderer& cr = ref_rounded_cone_renderer(ctx);

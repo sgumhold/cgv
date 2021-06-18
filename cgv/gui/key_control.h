@@ -13,7 +13,7 @@ namespace cgv {
 
 
 template <typename T>
-class CGV_API key_control : public control<T>, public event_handler, public cgv::signal::tacker
+class CGV_API key_control : public control<T>, public event_handler, virtual public cgv::signal::tacker
 {
 private:
 	double increase_pressed_time;

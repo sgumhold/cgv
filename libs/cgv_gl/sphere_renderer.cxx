@@ -8,7 +8,7 @@ namespace cgv {
 		{
 			static int ref_count = 0;
 			static sphere_renderer r;
-			r.manage_singelton(ctx, "sphere_renderer", ref_count, ref_count_change);
+			r.manage_singleton(ctx, "sphere_renderer", ref_count, ref_count_change);
 			return r;
 		}
 
@@ -23,7 +23,7 @@ namespace cgv {
 			radius = 1;
 			use_group_radius = false;
 
-			blend_width_in_pixel = 1.0f;
+			blend_width_in_pixel = 0.0f;
 			halo_width_in_pixel = 0.0f;
 			percentual_halo_width = 0.0;
 			halo_color_strength = 0.5f;
@@ -35,16 +35,18 @@ namespace cgv {
 			has_group_radii = false;
 			cull_per_primitive = false;
 		}
-		void sphere_renderer::set_attribute_array_manager(const context& ctx, attribute_array_manager* _aam_ptr)
+		/// call this before setting attribute arrays to manage attribute array in given manager
+		void sphere_renderer::enable_attribute_array_manager(const context& ctx, attribute_array_manager& aam)
 		{
-			surface_renderer::set_attribute_array_manager(ctx, _aam_ptr);
-			if (aam_ptr) {
-				if (aam_ptr->has_attribute(ctx, ref_prog().get_attribute_location(ctx, "radius")))
-					has_radii = true;
-			}
-			else {
-				has_radii = false;
-			}
+			surface_renderer::enable_attribute_array_manager(ctx, aam);
+			if (has_attribute(ctx, "radius"))
+				has_radii = true;
+		}
+		/// call this after last render/draw call to ensure that no other users of renderer change attribute arrays of given manager
+		void sphere_renderer::disable_attribute_array_manager(const context& ctx, attribute_array_manager& aam)
+		{
+			surface_renderer::disable_attribute_array_manager(ctx, aam);
+			has_radii = false;
 		}
 		///
 		void sphere_renderer::set_y_view_angle(float _y_view_angle)

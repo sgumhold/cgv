@@ -110,42 +110,55 @@ if (SYSTEM == "windows") {
 }
 
 cgv_compiler_version = -1;
+vs_version = -1;
+vs_file_format = 11;
 project_folder_support=1;
 if (CGV_COMPILER == "vs8") {
 	cgv_compiler_version = 8;
-	project_folder_support=1
+	project_folder_support=1;
+	vs_version = 2005;
 }
 elif (CGV_COMPILER == "vs9") {
 	cgv_compiler_version = 9;
-	project_folder_support=1
+	project_folder_support=1;
+	vs_version = 2008;
 }
 elif (CGV_COMPILER == "vs9e") {
 	cgv_compiler_version = 9;
-	project_folder_support=0
+	project_folder_support=0;
+	vs_version = 2008;
 }
 elif (CGV_COMPILER == "vs10") {
 	cgv_compiler_version = 10;
-	project_folder_support=1
+	project_folder_support=1;
+	vs_version = 2010;
 }
 elif (CGV_COMPILER == "vs11") {
 	cgv_compiler_version = 11;
-	project_folder_support=1
+	project_folder_support=1;
+	vs_version = 2012;
 }
 elif (CGV_COMPILER == "vs12") {
 	cgv_compiler_version = 12;
-	project_folder_support=1
+	project_folder_support=1;
+	vs_version = 2013;
 }
 elif (CGV_COMPILER == "vs14") {
 	cgv_compiler_version = 14;
-	project_folder_support=1
+	project_folder_support=1;
+	vs_version = 2015;
 }
 elif (CGV_COMPILER == "vs141") {
 	cgv_compiler_version = 141;
-	project_folder_support=1
+	project_folder_support=1;
+	vs_version = 15;
+	vs_file_format = 12;
 }
 elif (CGV_COMPILER == "vs142") {
 	cgv_compiler_version = 142;
-	project_folder_support=1
+	project_folder_support=1;
+	vs_version = "Version 16";
+	vs_file_format = 12;
 }
 
 rules = [
@@ -279,13 +292,13 @@ project_folders=["plugin","application_plugin","test","application","library","s
 // encode in a list that text should be placed after ref
 func(after; :>text="", :>ref = "", :>return="") 
 {
-	return = [text, "AFTER", ref];
+	return = ['"'.text.'"', "AFTER", ref];
 }
 
 // encode in a list that text should be placed before ref
 func(before; :>text="", :>ref = "", :>return="") 
 {
-	return = [text, "BEFORE", ref];
+	return = ['"'.text.'"', "BEFORE", ref];
 }
 
 // check whether an element has an encoded reference and return "" if not or the type of reference "AFTER" or "BEFORE"

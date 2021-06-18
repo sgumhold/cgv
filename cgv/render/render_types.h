@@ -87,5 +87,12 @@ namespace cgv {
 			typedef cgv::math::fvec<uint32_t, 4> uvec4;
 		};
 
+		/// simple helper class to store rectangles with texture coordinates
+		struct textured_rectangle : public cgv::render::render_types
+		{
+			box2 rectangle;
+			vec4 texcoords;
+		};
+
 	}
 }

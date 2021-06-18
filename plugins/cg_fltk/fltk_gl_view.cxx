@@ -32,7 +32,8 @@ using namespace cgv::utils;
 
 void fltk_gl_view::process_text_1(const std::string& text)
 {
-	process_text(text);
+	if (!text.empty())
+		process_text(text);
 }
 
 class MyGlWindow : public fltk::Window
@@ -144,7 +145,7 @@ void fltk_gl_view::on_set(void* member_ptr)
 /// returns the property declaration
 std::string fltk_gl_view::get_property_declarations()
 {
-	return fltk_base::get_property_declarations()+";"+cgv::base::group::get_property_declarations()+";stencil_buffer:bool;accum_buffer:bool;quad_buffer:bool;multisample:bool";
+	return fltk_base::get_property_declarations()+";"+cgv::base::group::get_property_declarations()+";stencil_buffer:bool;accum_buffer:bool;stereo_buffer:bool;multisample:bool";
 }
 
 void fltk_gl_view::change_mode(int m)
@@ -397,6 +398,7 @@ void fltk_gl_view::create()
 void fltk_gl_view::destroy()
 {
 	make_current();
+	destruct_render_objects();
 	if (!in_recreate_context) {
 		remove_all_children();
 		no_more_context = true;
@@ -406,7 +408,7 @@ void fltk_gl_view::destroy()
 		for (unsigned i=0; i<get_nr_children(); ++i)
 			traverser(sma, "nc").traverse(get_child(i));
 	}
-	destruct_render_objects();
+	//destruct_render_objects();
 	fltk::GlWindow::destroy();
 }
 
@@ -757,32 +759,16 @@ void fltk_gl_view::force_redraw()
 /// select a font given by a font handle
 void fltk_gl_view::enable_font_face(font_face_ptr font_face, float font_size)
 {
-	
-	//if (!(font_face == current_font_face) || font_size != current_font_size) {
-		fltk_font_face_ptr fff = font_face.up_cast<fltk_font_face>();
-		if (fff.empty()) {
-			std::cerr << "could not use font face together with fltk" << std::endl;
-			return;
-		}
+	fltk_font_face_ptr fff = dynamic_cast<fltk_font_face*>(&*font_face);
+	if (fff.empty())
+		gl_context::enable_font_face(font_face, font_size);
+	else {
+		// avoid fltk fonts in core profile
 		if (!core_profile)
-			fltk::glsetfont(fff->get_fltk_font(),font_size);
+			fff->enable(static_cast<cgv::render::context*>(this), font_size);
 		current_font_face = font_face;
 		current_font_size = font_size;
-	//}
-}
-
-void fltk_gl_view::draw_text(const std::string& text)
-{
-	if (text.empty())
-		return;
-	glRasterPos2i(cursor_x,cursor_y);
-	GLint r_prev[4];
-	glGetIntegerv(GL_CURRENT_RASTER_POSITION, r_prev);
-	fltk::gldrawtext(text.c_str(), (int)text.size());
-	GLint r[4];
-	glGetIntegerv(GL_CURRENT_RASTER_POSITION, r);
-	cursor_x += r[0]-r_prev[0];
-	cursor_y -= r[1]-r_prev[1];
+	}
 }
 
 bool fltk_gl_view::dispatch_event(const event& e)
@@ -853,9 +839,13 @@ int fltk_gl_view::handle(int ei)
 			return 1;
 		break;
 	case fltk::DND_ENTER:
-		if (dispatch_event(cgv_mouse_event(MA_ENTER, EF_DND)))
+	{
+		cgv::gui::mouse_event me = cgv_mouse_event(MA_ENTER, EF_DND);
+		me.set_dnd_text(fltk::event_text());
+		if (dispatch_event(me))
 			return 1;
 		break;
+	}
 	case fltk::DND_DRAG :
 		if (dx != 0 || dy != 0) {
 			if (dispatch_event(cgv_mouse_event(MA_DRAG,EF_DND,dx,dy)))

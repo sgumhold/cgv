@@ -2,7 +2,6 @@
 
 #include <vr/vr_kit.h>
 #include <vr/vr_state.h>
-#include <vr/gl_vr_display.h>
 #include <cgv/signal/signal.h>
 #include <cgv/render/render_types.h>
 
@@ -13,7 +12,7 @@
 
 ///
 namespace vr {
-	class CGV_API vr_wall_kit : public gl_vr_display, public cgv::render::render_types
+	class CGV_API vr_wall_kit : public vr_kit, public cgv::render::render_types
 	{
 	public:
 		typedef cgv::math::fmat<float, 3, 4> mat34;
@@ -45,7 +44,7 @@ namespace vr {
 		/// transform to coordinate system of screen with [0,0,0] in center and corners [+-aspect,+-1,0]; z is signed distance to screen in world unites (typically meters) 
 		vec3 transform_world_to_screen(const vec3& p) const;
 		/// transform from coordinate system of screen with [0,0,0] in center and corners [+-aspect,+-1,0]; z is signed distance to screen in world unites (typically meters) 
-		vec3 vr_wall_kit::transform_screen_to_world(const vec3& p) const;
+		vec3 transform_screen_to_world(const vec3& p) const;
 		/// eye = 0 ..left | 1 ..right
 		inline vec3 get_eye_position_tracker(int eye) const { return eye_center_tracker + ((eye-0.5f)*eye_separation)*eye_separation_dir_tracker; }
 		/// eye = 0 ..left | 1 ..right
@@ -61,18 +60,22 @@ namespace vr {
 		/// detach wall vr kit from current parent
 		void detach();
 		/// initialize render targets and framebuffer objects in current opengl context
-		bool init_fbos();
+		bool init_fbos(EyeSelection es = ES_BOTH);
+		/// ensure that fbo of given eye is initialized
+		void ensure_fbo(int eye);
 		/// enable the framebuffer object of given eye (0..left, 1..right) 
 		void enable_fbo(int eye);
 		/// disable the framebuffer object of given eye
 		void disable_fbo(int eye);
 		/// initialize render targets and framebuffer objects in current opengl context
 		bool blit_fbo(int eye, int x, int y, int w, int h);
+		/// bind texture of given eye to current texture unit
+		void bind_texture(int eye);
 
 		/// check whether fbos have been initialized
-		bool fbos_initialized() const;
+		bool fbos_initialized(EyeSelection es = ES_BOTH) const;
 		/// destruct render targets and framebuffer objects in current opengl context
-		void destruct_fbos();
+		void destruct_fbos(EyeSelection es = ES_BOTH);
 		///
 		bool set_vibration(unsigned controller_index, float low_frequency_strength, float high_frequency_strength);
 		/// access to 3x4 matrix in column major format for transformation from eye (0..left, 1..right) to head coordinates

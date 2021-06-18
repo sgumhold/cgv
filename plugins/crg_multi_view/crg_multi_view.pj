@@ -1,0 +1,20 @@
+@=
+projectType="plugin";
+projectName="crg_multi_view";
+projectGUID="5EC8DA24-C288-4526-8EC7-FC9684466B5E";
+addProjectDeps=[
+	"cgv_type", "cgv_utils", "cgv_base", "cgv_data", "cgv_signal", "cgv_reflect", "cgv_reflect_types", 
+	"cgv_render", "cgv_gui", "cg_ext", "glsu", "cgv_gl", "crg_stereo_view_lib", "crg_vr_view_lib", "vr", "cg_vr",
+	"vr_emulator", "openvr_driver"];
+addProjectDirs=[
+	CGV_DIR."/libs", 
+	CGV_DIR."/test", 
+	CGV_DIR."/plugins"
+];
+addIncDirs=[
+	CGV_DIR."/libs", 
+	CGV_DIR."/test",
+	[INPUT_DIR, "all"],  
+	[ CGV_DIR."/libs/vr", "all" ]
+];
+addSharedDefines=["CGV_MULTI_VIEW_EXPORTS"];

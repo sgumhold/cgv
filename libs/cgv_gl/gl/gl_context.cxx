@@ -13,6 +13,7 @@
 #include <cgv/render/drawable.h>
 #include <cgv/render/shader_program.h>
 #include <cgv/render/attribute_array_binding.h>
+#include <cgv/render/vertex_buffer.h>
 #include <cgv/render/textured_material.h>
 #include <cgv/utils/scan.h>
 #include <cgv/media/image/image_writer.h>
@@ -52,7 +53,8 @@ GLuint map_to_gl(PrimitiveType pt)
 		GL_TRIANGLE_FAN,
 		GL_QUADS,
 		GL_QUAD_STRIP,
-		GL_POLYGON
+		GL_POLYGON,
+		GL_PATCHES
 	};
 	return pt_to_gl[pt];
 }
@@ -126,21 +128,9 @@ void gl_set_material(const cgv::media::illum::phong_material& mat, MaterialSide 
 gl_context::gl_context()
 {
 	frame_buffer_stack.top()->handle = get_handle(0);
-
 	max_nr_indices = 0;
 	max_nr_vertices = 0;
 	info_font_size = 14;
-	// check if a new context has been created or if the size of the viewport has been changed
-	font_ptr info_font = find_font("Courier New");
-	if (info_font.empty()) {
-		info_font = find_font("Courier");
-		if (info_font.empty()) {
-			info_font = find_font("system");
-		}
-	}
-	if (!info_font.empty())
-		info_font_face = info_font->get_font_face(FFA_REGULAR);
-
 	show_help = false;
 	show_stats = false;
 }
@@ -195,13 +185,12 @@ std::string get_severity_tag_name(GLenum tag)
 
 void GLAPIENTRY debug_callback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam)
 {
+	if (severity == GL_DEBUG_SEVERITY_NOTIFICATION)
+		return;
 	const gl_context* ctx = reinterpret_cast<const gl_context*>(userParam);
 	std::string msg(message, length);
 	msg = std::string("GLDebug Message[") + cgv::utils::to_string(id) + "] from " + get_source_tag_name(source) + " of type " + get_type_tag_name(type) + " of severity " + get_severity_tag_name(severity) + "\n" + msg;
-	if (severity == GL_DEBUG_SEVERITY_NOTIFICATION)
-		std::cerr << msg << std::endl;
-	else
-		ctx->error(msg);
+	ctx->error(msg);
 }
 
 /// define lighting mode, viewing pyramid and the rendering mode
@@ -222,8 +211,8 @@ bool gl_context::configure_gl()
 		debug = (context_flags & WGL_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB) != 0;
 		forward_compatible = (context_flags & WGL_CONTEXT_DEBUG_BIT_ARB) != 0;
 #else
-		debug = (context_flags & WGL_CONTEXT_DEBUG_BIT_ARB) != 0;
-		forward_compatible = (context_flags & WGL_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB) != 0;
+		debug = (context_flags & GLX_CONTEXT_DEBUG_BIT_ARB) != 0;
+		forward_compatible = (context_flags & GLX_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB) != 0;
 #endif
 	}
 	else {
@@ -234,7 +223,11 @@ bool gl_context::configure_gl()
 	if (version >= 32) {
 		GLint context_profile;
 		glGetIntegerv(GL_CONTEXT_PROFILE_MASK, &context_profile);
+#ifdef WIN32
 		core_profile = (context_profile & WGL_CONTEXT_CORE_PROFILE_BIT_ARB) != 0;
+#else
+		core_profile = (context_profile & GLX_CONTEXT_CORE_PROFILE_BIT_ARB) != 0;
+#endif
 	}
 	else
 		core_profile = false;
@@ -249,7 +242,7 @@ bool gl_context::configure_gl()
 				glDebugMessageCallback(debug_callback, this);
 		}
 	}
-	enable_font_face(info_font_face, info_font_size);
+	//enable_font_face(info_font_face, info_font_size);
 	// use the eye location to compute the specular lighting
 	if (!core_profile) {
 		glLightModelf(GL_LIGHT_MODEL_LOCAL_VIEWER, 0);
@@ -299,6 +292,15 @@ media::font::font_face_ptr gl_context::get_current_font_face() const
 
 void gl_context::init_render_pass()
 {
+	if (info_font_face.empty()) {
+		font_ptr info_font = default_font(true);
+		if (!info_font.empty()) {
+			info_font_face = info_font->get_font_face(FFA_REGULAR);
+			info_font_face->enable(this, info_font_size);
+			if (current_font_face.empty())
+				enable_font_face(info_font_face, info_font_size);
+		}
+	}
 #ifdef WIN32
 	wglSwapIntervalEXT(enable_vsynch ? 1 : 0);
 #else
@@ -411,37 +413,42 @@ struct format_callback_handler : public traverse_callback_handler
 void gl_context::draw_textual_info()
 {
 	if (show_help || show_stats) {
-		if (!core_profile) {
-			glPushAttrib(GL_CURRENT_BIT | GL_ENABLE_BIT);
-			glDisable(GL_DEPTH_TEST);
-			if (bg_r + bg_g + bg_b < 1.5f)
-				glColor4f(1, 1, 1, 1);
-			else
-				glColor4f(0, 0, 0, 1);
+		rgba tmp = current_color;
+		GLboolean depth_test = glIsEnabled(GL_DEPTH_TEST);
+		glDisable(GL_DEPTH_TEST);
 
-			push_pixel_coords();
-			enable_font_face(info_font_face, info_font_size);
-			format_callback_handler fch(output_stream());
-			set_cursor(20, 20);
-			group_ptr grp(dynamic_cast<group*>(this));
-			if (grp && show_stats) {
-				single_method_action<cgv::base::base, void, std::ostream&> sma(output_stream(), &cgv::base::base::stream_stats, false, false);
-				traverser(sma, "nc").traverse(grp, &fch);
-				output_stream() << std::endl;
-			}
-			if (bg_r + bg_g + bg_b < 1.5f)
-				glColor4f(1, 1, 0, 1);
-			else
-				glColor4f(0.4f, 0.3f, 0, 1);
-			if (grp && show_help) {
-				// collect help from myself and all children
-				single_method_action<event_handler, void, std::ostream&> sma(output_stream(), &event_handler::stream_help, false, false);
-				traverser(sma, "nc").traverse(grp, &fch);
-				output_stream().flush();
-			}
-			pop_pixel_coords();
-			glPopAttrib();
+		push_pixel_coords();
+		enable_font_face(info_font_face, info_font_size);
+
+		set_cursor(20, 20);
+
+		if (bg_r + bg_g + bg_b < 1.5f)
+			set_color(rgba(1, 1, 1, 1));
+		else
+			set_color(rgba(0, 0, 0, 1));
+
+		// traverse objects for show_stats callback
+		format_callback_handler fch(output_stream());
+		group_ptr grp(dynamic_cast<group*>(this));
+		if (grp && show_stats) {
+			single_method_action<cgv::base::base, void, std::ostream&> sma(output_stream(), &cgv::base::base::stream_stats, false, false);
+			traverser(sma, "nc").traverse(grp, &fch);
+			output_stream() << std::endl;
 		}
+		if (bg_r + bg_g + bg_b < 1.5f)
+			set_color(rgba(1, 1, 0, 1));
+		else
+			set_color(rgba(0.4f, 0.3f, 0, 1));
+
+		if (grp && show_help) {
+			// collect help from myself and all children
+			single_method_action<event_handler, void, std::ostream&> sma(output_stream(), &event_handler::stream_help, false, false);
+			traverser(sma, "nc").traverse(grp, &fch);
+			output_stream().flush();
+		}
+		pop_pixel_coords();
+		if (depth_test)
+			glEnable(GL_DEPTH_TEST);
 	}
 }
 
@@ -515,17 +522,18 @@ void gl_context::enumerate_program_attributes(shader_program& prog, std::vector<
 /// set the current color
 void gl_context::set_color(const rgba& clr)
 {
+	current_color = clr;
 	if (support_compatibility_mode && !core_profile) {
 		glColor4fv(&clr[0]);
 	}
 	if (shader_program_stack.empty())
 		return;
-
 	cgv::render::shader_program& prog = *static_cast<cgv::render::shader_program*>(shader_program_stack.top());
+	if (!prog.does_context_set_color())
+		return;
 	int clr_loc = prog.get_color_index();
 	if (clr_loc == -1)
 		return;
-
 	prog.set_attribute(*this, clr_loc, clr);
 }
 
@@ -576,6 +584,7 @@ shader_program& gl_context::ref_default_shader_program(bool texture_support)
 			}
 			progs[0].specify_standard_uniforms(true, false, false, true);
 			progs[0].specify_standard_vertex_attribute_names(*this, true, false, false);
+			progs[0].allow_context_to_set_color(true);
 		}
 		return progs[0];
 	}
@@ -587,6 +596,7 @@ shader_program& gl_context::ref_default_shader_program(bool texture_support)
 		progs[1].set_uniform(*this, "texture", 0);
 		progs[1].specify_standard_uniforms(true, false, false, true);
 		progs[1].specify_standard_vertex_attribute_names(*this, true, false, true);
+		progs[1].allow_context_to_set_color(true);
 	}
 	return progs[1];
 }
@@ -602,6 +612,7 @@ shader_program& gl_context::ref_surface_shader_program(bool texture_support)
 			}
 			progs[2].specify_standard_uniforms(true, true, true, true);
 			progs[2].specify_standard_vertex_attribute_names(*this, true, true, false);
+			progs[2].allow_context_to_set_color(true);
 		}
 		return progs[2];
 	}
@@ -612,6 +623,7 @@ shader_program& gl_context::ref_surface_shader_program(bool texture_support)
 		}
 		progs[3].specify_standard_uniforms(true, true, true, true);
 		progs[3].specify_standard_vertex_attribute_names(*this, true, true, true);
+		progs[3].allow_context_to_set_color(true);
 	}
 	return progs[3];
 }
@@ -917,16 +929,44 @@ void render_vertex(int k, const float* vertices, const float* normals, const flo
 	glVertex3fv(vertices+3*vertex_indices[k]);
 }
 
+attribute_array_binding*& get_aab_ptr()
+{
+	static attribute_array_binding* aab_ptr = 0;
+	return aab_ptr;
+}
+
+vertex_buffer*& get_vbo_ptr()
+{
+	static vertex_buffer* vbo_ptr = 0;
+	return vbo_ptr;
+}
+
 bool gl_context::release_attributes(const float* normals, const float* tex_coords, const int* normal_indices, const int* tex_coord_indices) const
 {
 	shader_program* prog_ptr = static_cast<shader_program*>(get_current_program());
 	if (!prog_ptr || prog_ptr->get_position_index() == -1)
 		return false;
-	attribute_array_binding::disable_global_array(*this, prog_ptr->get_position_index());
-	if (prog_ptr->get_normal_index() != -1 && normals && normal_indices)
-		attribute_array_binding::disable_global_array(*this, prog_ptr->get_normal_index());
-	if (prog_ptr->get_texcoord_index() != -1 && tex_coords && tex_coord_indices)
-		attribute_array_binding::disable_global_array(*this, prog_ptr->get_texcoord_index());
+
+	attribute_array_binding*& aab_ptr = get_aab_ptr();
+	if (!aab_ptr) {
+		attribute_array_binding::disable_global_array(*this, prog_ptr->get_position_index());
+		if (prog_ptr->get_normal_index() != -1 && normals && normal_indices)
+			attribute_array_binding::disable_global_array(*this, prog_ptr->get_normal_index());
+		if (prog_ptr->get_texcoord_index() != -1 && tex_coords && tex_coord_indices)
+			attribute_array_binding::disable_global_array(*this, prog_ptr->get_texcoord_index());
+	}
+	else {
+		aab_ptr->disable(const_cast<gl_context&>(*this));
+		aab_ptr->disable_array(*this, prog_ptr->get_position_index());
+		if (prog_ptr->get_normal_index() != -1 && normals && normal_indices)
+			aab_ptr->disable_global_array(*this, prog_ptr->get_normal_index());
+		if (prog_ptr->get_texcoord_index() != -1 && tex_coords && tex_coord_indices)
+			aab_ptr->disable_global_array(*this, prog_ptr->get_texcoord_index());
+		vertex_buffer*& vbo_ptr = get_vbo_ptr();
+		vbo_ptr->destruct(*this);
+		delete vbo_ptr;
+		vbo_ptr = 0;
+	}
 	return true;
 }
 
@@ -941,32 +981,84 @@ bool gl_context::prepare_attributes(std::vector<vec3>& P, std::vector<vec3>& N, 
 	P.resize(nr_vertices);
 	for (i = 0; i < nr_vertices; ++i)
 		P[i] = *reinterpret_cast<const vec3*>(vertices + 3 * vertex_indices[i]);
-	attribute_array_binding::set_global_attribute_array<>(*this, prog_ptr->get_position_index(), P);
-	attribute_array_binding::enable_global_array(*this, prog_ptr->get_position_index());
-	if (prog_ptr->get_normal_index() != -1) {
-		if (normals && normal_indices) {
-			N.resize(nr_vertices);
-			for (i = 0; i < nr_vertices; ++i) {
-				N[i] = *reinterpret_cast<const vec3*>(normals + 3 * normal_indices[i]);
-				if (flip_normals)
-					N[i] = -N[i];
-			}
-			attribute_array_binding::set_global_attribute_array<>(*this, prog_ptr->get_normal_index(), N);
-			attribute_array_binding::enable_global_array(*this, prog_ptr->get_normal_index());
+
+	if (prog_ptr->get_normal_index() != -1 && normals && normal_indices) {
+		N.resize(nr_vertices);
+		for (i = 0; i < nr_vertices; ++i) {
+			N[i] = *reinterpret_cast<const vec3*>(normals + 3 * normal_indices[i]);
+			if (flip_normals)
+				N[i] = -N[i];
 		}
-		else
-			attribute_array_binding::disable_global_array(*this, prog_ptr->get_normal_index());
 	}
-	if (prog_ptr->get_texcoord_index() != -1) {
-		if (tex_coords && tex_coord_indices) {
-			T.resize(nr_vertices);
-			for (i = 0; i < nr_vertices; ++i)
-				T[i] = *reinterpret_cast<const vec2*>(tex_coords + 2 * tex_coord_indices[i]);
-			attribute_array_binding::set_global_attribute_array<>(*this, prog_ptr->get_texcoord_index(), T);
-			attribute_array_binding::enable_global_array(*this, prog_ptr->get_texcoord_index());
+	if (prog_ptr->get_texcoord_index() != -1 && tex_coords && tex_coord_indices) {
+		T.resize(nr_vertices);
+		for (i = 0; i < nr_vertices; ++i)
+			T[i] = *reinterpret_cast<const vec2*>(tex_coords + 2 * tex_coord_indices[i]);
+	}
+
+	attribute_array_binding*& aab_ptr = get_aab_ptr();
+	if (core_profile && !aab_ptr) {
+		aab_ptr = new attribute_array_binding();
+		aab_ptr->create(*this);
+	}
+	if (!aab_ptr) {
+		attribute_array_binding::set_global_attribute_array<>(*this, prog_ptr->get_position_index(), P);
+		attribute_array_binding::enable_global_array(*this, prog_ptr->get_position_index());
+		if (prog_ptr->get_normal_index() != -1) {
+			if (normals && normal_indices) {
+				attribute_array_binding::set_global_attribute_array<>(*this, prog_ptr->get_normal_index(), N);
+				attribute_array_binding::enable_global_array(*this, prog_ptr->get_normal_index());
+			}
+			else
+				attribute_array_binding::disable_global_array(*this, prog_ptr->get_normal_index());
 		}
+		if (prog_ptr->get_texcoord_index() != -1) {
+			if (tex_coords && tex_coord_indices) {
+				attribute_array_binding::set_global_attribute_array<>(*this, prog_ptr->get_texcoord_index(), T);
+				attribute_array_binding::enable_global_array(*this, prog_ptr->get_texcoord_index());
+			}
+			else
+				attribute_array_binding::disable_global_array(*this, prog_ptr->get_texcoord_index());
+		}
+	}
+	else {
+		vertex_buffer*& vbo_ptr = get_vbo_ptr();
+		if (!vbo_ptr)
+			vbo_ptr = new vertex_buffer();
 		else
-			attribute_array_binding::disable_global_array(*this, prog_ptr->get_texcoord_index());
+			vbo_ptr->destruct(*this);
+		vbo_ptr->create(*this, P.size() * sizeof(vec3) + N.size() * sizeof(vec3) + T.size() * sizeof(vec2));
+		vbo_ptr->replace(const_cast<gl_context&>(*this), 0, &P.front(), P.size());
+		size_t nml_off = P.size() * sizeof(vec3);
+		size_t tex_off = nml_off;
+		if (!N.empty()) {
+			vbo_ptr->replace(const_cast<gl_context&>(*this), nml_off, &N.front(), N.size());
+			tex_off += N.size() * sizeof(vec2);
+		}
+		if (!T.empty())
+			vbo_ptr->replace(const_cast<gl_context&>(*this), tex_off, &T.front(), T.size());
+
+		type_descriptor td3 = element_descriptor_traits<vec3>::get_type_descriptor(P.front());
+		aab_ptr->set_attribute_array(*this, prog_ptr->get_position_index(), td3, *vbo_ptr, 0, P.size());
+		aab_ptr->enable_array(*this, prog_ptr->get_position_index());
+		if (prog_ptr->get_normal_index() != -1) {
+			if (normals && normal_indices) {
+				aab_ptr->set_attribute_array(*this, prog_ptr->get_normal_index(), td3, *vbo_ptr, nml_off, N.size());
+				aab_ptr->enable_array(*this, prog_ptr->get_normal_index());
+			}
+			else
+				aab_ptr->disable_array(*this, prog_ptr->get_normal_index());
+		}
+		if (prog_ptr->get_texcoord_index() != -1) {
+			if (tex_coords && tex_coord_indices) {
+				type_descriptor td2 = element_descriptor_traits<vec2>::get_type_descriptor(T.front());
+				aab_ptr->set_attribute_array(*this, prog_ptr->get_texcoord_index(), td2, *vbo_ptr, tex_off, T.size());
+				aab_ptr->enable_array(*this, prog_ptr->get_texcoord_index());
+			}
+			else
+				aab_ptr->disable_array(*this, prog_ptr->get_texcoord_index());
+		}
+		aab_ptr->enable(const_cast<gl_context&>(*this));
 	}
 	return true;
 }
@@ -1332,12 +1424,12 @@ static const char* color_buffer_formats[] =
 
 
 GLuint get_tex_dim(TextureType tt) {
-	static GLuint tex_dim[] = { 0, GL_TEXTURE_1D, GL_TEXTURE_2D, GL_TEXTURE_3D, GL_TEXTURE_CUBE_MAP };
+	static GLuint tex_dim[] = { 0, GL_TEXTURE_1D, GL_TEXTURE_2D, GL_TEXTURE_3D, GL_TEXTURE_1D_ARRAY, GL_TEXTURE_2D_ARRAY, GL_TEXTURE_CUBE_MAP };
 	return tex_dim[tt];
 }
 
 GLuint get_tex_bind(TextureType tt) {
-	static GLuint tex_bind[] = { 0, GL_TEXTURE_BINDING_1D, GL_TEXTURE_BINDING_2D, GL_TEXTURE_BINDING_3D, GL_TEXTURE_BINDING_CUBE_MAP, GL_TEXTURE_BUFFER };
+	static GLuint tex_bind[] = { 0, GL_TEXTURE_BINDING_1D, GL_TEXTURE_BINDING_2D, GL_TEXTURE_BINDING_3D, GL_TEXTURE_BINDING_1D_ARRAY, GL_TEXTURE_BINDING_2D_ARRAY, GL_TEXTURE_BINDING_CUBE_MAP, GL_TEXTURE_BUFFER };
 	return tex_bind[tt];
 }
 
@@ -1433,11 +1525,11 @@ bool gl_context::check_shader_support(ShaderType st, const std::string& where, c
 			return false;
 		}
 	case ST_TESS_CONTROL:
-	case ST_TESS_EVALUTION:
+	case ST_TESS_EVALUATION:
 		if (GLEW_VERSION_4_0)
 			return true;
 		else {
-			error(where+": tesselation shader need not supported OpenGL version 4.0", rc);
+			error(where+": tessellation shader need not supported OpenGL version 4.0", rc);
 			return false;
 		}
 	case ST_GEOMETRY:
@@ -1525,9 +1617,17 @@ bool gl_context::texture_create(texture_base& tb, cgv::data::data_format& df) co
 		glTexImage1D(GL_TEXTURE_1D, 0, 
 			gl_format, df.get_width(), 0, transfer_format, GL_UNSIGNED_BYTE, 0);
 		break;
+	case TT_1D_ARRAY :
+		glTexImage2D(GL_TEXTURE_1D_ARRAY, 0,
+			gl_format, df.get_width(), df.get_height(), 0, transfer_format, GL_UNSIGNED_BYTE, 0);
+		break;
 	case TT_2D :
 		glTexImage2D(GL_TEXTURE_2D, 0, 
 			gl_format, df.get_width(), df.get_height(), 0, transfer_format, GL_UNSIGNED_BYTE, 0);
+		break;
+	case TT_2D_ARRAY :
+		glTexImage3D(GL_TEXTURE_2D_ARRAY, 0,
+			gl_format, df.get_width(), df.get_height(), df.get_depth(), 0, transfer_format, GL_UNSIGNED_BYTE, 0);
 		break;
 	case TT_3D :
 		glTexImage3D(GL_TEXTURE_3D, 0,
@@ -1561,19 +1661,35 @@ bool gl_context::texture_create(texture_base& tb, cgv::data::data_format& df) co
 }
 
 bool gl_context::texture_create(
-							texture_base& tb, 
-							cgv::data::data_format& target_format, 
-							const cgv::data::const_data_view& data, 
-							int level, int cube_side, const std::vector<cgv::data::data_view>* palettes) const
+							texture_base& tb,
+							cgv::data::data_format& target_format,
+							const cgv::data::const_data_view& data,
+							int level, int cube_side, int num_array_layers, const std::vector<cgv::data::data_view>* palettes) const
 {
 	// query the format to be used for the texture
 	GLuint gl_tex_format = (const GLuint&) tb.internal_format;
 
 	// define the texture type from the data format and the cube_side parameter
 	tb.tt = (TextureType)data.get_format()->get_nr_dimensions();
-	if (tb.tt == TT_2D && cube_side != -1)
-		tb.tt = TT_CUBEMAP;
-	
+	if(cube_side > -1) {
+		if(tb.tt == TT_2D)
+			tb.tt = TT_CUBEMAP;
+	} else if(num_array_layers != 0) {
+		if(num_array_layers < 0) {
+			// automatic inference of layers from texture dimensions
+			unsigned n_dims = data.get_format()->get_nr_dimensions();
+			if(n_dims == 2)
+				tb.tt = TT_1D_ARRAY;
+			if(n_dims == 3)
+				tb.tt = TT_2D_ARRAY;
+		} else {
+			switch(tb.tt) {
+			case TT_1D: tb.tt = TT_1D_ARRAY; break;
+			case TT_2D: tb.tt = TT_2D_ARRAY; break;
+			case TT_3D: tb.tt = TT_2D_ARRAY; break;
+			}
+		}
+	}
 	// create texture is not yet done
 	GLuint tex_id;
 	if (tb.is_created()) 
@@ -1589,7 +1705,7 @@ bool gl_context::texture_create(
 	GLuint tmp_id = texture_bind(tb.tt, tex_id);
 
 	// load data to texture
-	tb.have_mipmaps = load_texture(data, gl_tex_format, level, cube_side, palettes);
+	tb.have_mipmaps = load_texture(data, gl_tex_format, level, cube_side, num_array_layers, palettes);
 	bool result = !check_gl_error("gl_context::texture_create", &tb);
 	// restore old texture
 	texture_unbind(tb.tt, tmp_id);
@@ -1680,7 +1796,7 @@ bool gl_context::texture_replace(
 			return false;
 		}
 		if (z < 0 || z > 5) {
-			error("gl_context::texture_replace: replace on cubemap without invalid side specification", &tb);
+			error("gl_context::texture_replace: replace on cubemap with invalid side specification", &tb);
 			return false;
 		}
 	}
@@ -1757,8 +1873,9 @@ bool gl_context::texture_generate_mipmaps(texture_base& tb, unsigned int dim) co
 {
 	GLuint tmp_id = texture_bind(tb.tt,get_gl_id(tb.handle));
 
+	bool is_array = tb.tt == TT_1D_ARRAY || tb.tt == TT_2D_ARRAY;
 	std::string error_string;
-	bool result = generate_mipmaps(dim, &error_string);
+	bool result = generate_mipmaps(dim, is_array, &error_string);
 	if (result)
 		tb.have_mipmaps = true;
 	else
@@ -1798,13 +1915,14 @@ bool gl_context::texture_set_state(const texture_base& tb) const
 	glTexParameteri(get_tex_dim(tb.tt), GL_TEXTURE_MAG_FILTER, map_to_gl(tb.mag_filter));
 	glTexParameteri(get_tex_dim(tb.tt), GL_TEXTURE_COMPARE_FUNC, map_to_gl(tb.compare_function));
 	glTexParameteri(get_tex_dim(tb.tt), GL_TEXTURE_COMPARE_MODE, (tb.use_compare_function ? GL_COMPARE_REF_TO_TEXTURE : GL_NONE));
-	glTexParameterf(get_tex_dim(tb.tt), GL_TEXTURE_PRIORITY, tb.priority);
+	if (!core_profile)
+		glTexParameterf(get_tex_dim(tb.tt), GL_TEXTURE_PRIORITY, tb.priority);
 	if (tb.min_filter == TF_ANISOTROP)
 		glTexParameterf(get_tex_dim(tb.tt), GL_TEXTURE_MAX_ANISOTROPY_EXT, tb.anisotropy);
 	else
 		glTexParameterf(get_tex_dim(tb.tt), GL_TEXTURE_MAX_ANISOTROPY_EXT, 1.0f);
-	if (tb.border_color[0] >= 0.0f)
-		glTexParameterfv(get_tex_dim(tb.tt), GL_TEXTURE_BORDER_COLOR, tb.border_color);
+//	if (tb.border_color[0] >= 0.0f)
+	glTexParameterfv(get_tex_dim(tb.tt), GL_TEXTURE_BORDER_COLOR, tb.border_color);
 	glTexParameteri(get_tex_dim(tb.tt), GL_TEXTURE_WRAP_S, map_to_gl(tb.wrap_s));
 	if (tb.tt > TT_1D)
 		glTexParameteri(get_tex_dim(tb.tt), GL_TEXTURE_WRAP_T, map_to_gl(tb.wrap_t));
@@ -1840,7 +1958,9 @@ bool gl_context::texture_enable(
 	glGetIntegerv(get_tex_bind(tb.tt), &old_binding);
 	++old_binding;
 	glBindTexture(get_tex_dim(tb.tt), tex_id);
-	glEnable(get_tex_dim(tb.tt));
+	// glEnable is not needed for texture arrays and will throw an invalid enum error
+	//if(!(tb.tt == TT_1D_ARRAY || tb.tt == TT_2D_ARRAY))
+	//	glEnable(get_tex_dim(tb.tt));
 	bool result = !check_gl_error("gl_context::texture_enable", &tb);
 	if (tex_unit >= 0)
 		glActiveTexture(GL_TEXTURE0);
@@ -1863,7 +1983,9 @@ bool gl_context::texture_disable(
 	--old_binding;
 	if (tex_unit >= 0)
 		glActiveTexture(GL_TEXTURE0+tex_unit);
-	glDisable(get_tex_dim(tb.tt));
+	// glDisable is not needed for texture arrays and will throw an invalid enum error
+	//if(!(tb.tt == TT_1D_ARRAY || tb.tt == TT_2D_ARRAY))
+	//	glDisable(get_tex_dim(tb.tt));
 	bool result = !check_gl_error("gl_context::texture_disable", &tb);
 	glBindTexture(get_tex_dim(tb.tt), old_binding);
 	if (tex_unit >= 0)
@@ -2227,8 +2349,7 @@ bool gl_context::shader_program_enable(shader_program_base& spb)
 {
 	if (!context::shader_program_enable(spb))
 		return false;
-	glUseProgram(get_gl_id(spb.handle));
-	
+	glUseProgram(get_gl_id(spb.handle));	
 	shader_program& prog = static_cast<shader_program&>(spb);
 	if (auto_set_lights_in_current_shader_program && spb.does_use_lights())
 		set_current_lights(prog);
@@ -2238,6 +2359,8 @@ bool gl_context::shader_program_enable(shader_program_base& spb)
 		set_current_view(prog);
 	if (auto_set_gamma_in_current_shader_program && spb.does_use_gamma())
 		prog.set_uniform(*this, "gamma", gamma);
+	if (prog.does_context_set_color() && prog.get_color_index() >= 0)
+		prog.set_attribute(*this, prog.get_color_index(), current_color);
 	return true;
 }
 
@@ -2705,6 +2828,7 @@ bool gl_context::attribute_array_binding_create(attribute_array_binding_base& aa
 		error(std::string("gl_context::attribute_array_binding_create(): ") + gl_error(), &aab);
 		return false;
 	}
+	aab.ctx_ptr = this;
 	aab.handle = get_handle(a_id);
 	return true;
 }

@@ -1,0 +1,61 @@
+#version 330 core
+
+in float value_fs;
+in vec4 color_fs;
+
+uniform int color_index = 0;
+uniform int opacity_index = -1;
+uniform float depth_offset = 0.0;
+
+//***** begin interface of plot_lib.glsl ***********************************
+uniform float attribute_min[8];
+uniform float attribute_max[8];
+float tick_space_from_attribute_space(int ai, float value);
+float attribute_space_from_tick_space(int ai, float value);
+float window_space_from_tick_space(int ai, float value);
+float tick_space_from_window_space(int ai, float value);
+vec3 plot_space_from_window_space(vec3 pnt);
+vec3 window_space_from_plot_space(vec3 pnt);
+vec3 world_space_from_plot_space(vec3 pnt);
+vec3 map_color(in float v_window, int idx);
+vec3 map_color(in float attributes[8], in vec3 base_color, int idx);
+float map_opacity(in float v_window, int idx);
+float map_opacity(in float attributes[8], in float base_opacity, int idx);
+float map_size(in float v_window, int idx);
+float map_size(in float attributes[8], in float base_size, int idx);
+vec3 map_color(in float v_window);
+vec3 map_color(in float attributes[8], in vec3 base_color);
+float map_opacity(in float v_window);
+float map_opacity(in float attributes[8], in float base_opacity);
+float map_size(in float v_window);
+float map_size(in float attributes[8], in float base_size);
+//***** end interface of plot_lib.glsl ***********************************
+
+
+//***** begin interface of color_scale.glsl ***********************************
+/// gamma adjust value after clamping to [0,1] and in case of uniform color_scale_is_bi_polar[0] accounting for uniform window_zero_position[0]
+float color_scale_gamma_mapping(in float v, in float gamma);
+/// gamma adjust value after clamping to [0,1] and in case of uniform color_scale_is_bi_polar[idx] accounting for uniform window_zero_position[idx]
+float color_scale_gamma_mapping(in float v, in float gamma, int idx);
+/// map value with color scale selected in uniform color_scale_index[idx=0|1] to rgb color
+vec3 color_scale(in float v, int idx);
+/// map value with color scale selected in uniform color_scale_index[0] to rgb color
+vec3 color_scale(in float v, int idx);
+//***** end interface of color_scale.glsl ***********************************
+
+//***** begin interface of fragment.glfs ***********************************
+uniform float gamma = 2.2;
+void finish_fragment(vec4 color);
+//***** end interface of fragment.glfs ***********************************
+
+void main()
+{
+	vec4 color = color_fs;
+	if (color_index >= 0 && color_index < 2)
+		color.rgb = map_color(value_fs,color_index);
+	if (opacity_index >= 0 && opacity_index < 2)
+		color.a = map_opacity(value_fs, opacity_index)*color.a;
+	vec3 bg_color = vec3(float(((int(gl_FragCoord.x)+int(gl_FragCoord.y))&1)));
+	finish_fragment(vec4(color.a*color.rgb+(1.0-color.a)*bg_color, 1.0));
+	gl_FragDepth = gl_FragCoord.z+depth_offset;
+}

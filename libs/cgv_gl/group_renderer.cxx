@@ -19,16 +19,17 @@ namespace cgv {
 			has_group_translations = false;
 			has_group_rotations = false;
 		}
-		void group_renderer::set_attribute_array_manager(const context& ctx, attribute_array_manager* _aam_ptr)
+		/// call this before setting attribute arrays to manage attribute array in given manager
+		void group_renderer::enable_attribute_array_manager(const context& ctx, attribute_array_manager& aam)
 		{
-			renderer::set_attribute_array_manager(ctx, _aam_ptr);
-			if (aam_ptr) {
-				if (aam_ptr->has_attribute(ctx, ref_prog().get_attribute_location(ctx, "group_index")))
-					has_group_indices = true;
-			}
-			else {
-				has_group_indices = false;
-			}
+			renderer::enable_attribute_array_manager(ctx, aam);
+			if (has_attribute(ctx, "group_index"))
+				has_group_indices = true;
+		}
+		/// call this after last render/draw call to ensure that no other users of renderer change attribute arrays of given manager
+		void group_renderer::disable_attribute_array_manager(const context& ctx, attribute_array_manager& aam)
+		{
+			has_group_indices = false;
 		}
 
 		void group_renderer::set_group_index_array(const context& ctx, const std::vector<unsigned>& group_indices)
@@ -92,7 +93,7 @@ namespace cgv {
 		{
 			bool res = renderer::disable(ctx);
 			if (!attributes_persist())
-				has_group_indices;
+				has_group_indices = false;
 			return res;
 		}
 

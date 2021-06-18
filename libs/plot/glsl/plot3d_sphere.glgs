@@ -1,5 +1,7 @@
-#version 150
-#extension GL_EXT_geometry_shader4 : enable
+#version 330 core
+
+layout(points) in;
+layout(triangle_strip, max_vertices = 4) out;
 
 //***** begin interface of sphere_lib.glgs ***********************************
 struct sphere_parameter_space
@@ -25,5 +27,5 @@ out vec4  color_fs;
 void main()
 {
 	color_fs = color_gs[0];
-	generate_sphere_cover_splat(gl_PositionIn[0], sps[0], 1.0);
+	generate_sphere_cover_splat(gl_in[0].gl_Position, sps[0], 1.0);
 }

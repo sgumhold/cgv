@@ -108,9 +108,9 @@ namespace vr {
 	{
 		type = VRC_NONE;
 		nr_inputs = 0;
-		std::fill(input_type, input_type + 5, VRI_NONE);
+		std::fill(input_type, input_type + max_nr_controller_inputs, VRI_NONE);
 		nr_axes = 0;
-		std::fill(axis_type, axis_type + 8, VRA_NONE);
+		std::fill(axis_type, axis_type + max_nr_controller_axes, VRA_NONE);
 		supported_buttons = VRButtonStateFlags(0);
 	}
 	std::ostream& operator << (std::ostream& os, const vr_controller_info& CI)
@@ -148,7 +148,7 @@ namespace vr {
 	std::ostream& operator << (std::ostream& os, const vr_kit_info& VI)
 	{
 		os << "VR KIT\n->HMD\n" << VI.hmd;
-		for (int ci = 0; ci < 4; ++ci)
+		for (int ci = 0; ci < max_nr_controllers; ++ci)
 			os << "->CONTROLLER[" << ci << "]\n" << VI.controller[ci];
 		return os;
 	}
