@@ -41,11 +41,12 @@ namespace cgv {
 				M(2, 2) = c + a(2) * a(2)*(T(1) - c);
 				return M;
 			}
+
 		/// construct 3x3 rotation matrix from kardan angles (roll, pitch, yaw) in degrees
 		template <typename T> fmat<T, 3, 3>
 			rotate3(const fvec<T, 3>& A) {
 				fmat<T, 3, 3>  M;
-				fvec<T, 3> angles = cgv::math::fvec<T, 3>(T(0.01745329252))*A;
+				fvec<T, 3> angles = cgv::math::fvec<T, 3>(0.01745329252)*A;
 				T cx = cos(angles[0]);
 				T sx = sin(angles[0]);
 				T cy = cos(angles[1]);
@@ -63,6 +64,7 @@ namespace cgv {
 				M(2, 2) = cx * cy;
 				return M;
 			}
+
 		/// construct 4x4 rotation matrix from angle in degrees and axis 
 		template <typename T> fmat<T, 4, 4>
 			rotate4(const T& A, const fvec<T, 3>& a) { 
