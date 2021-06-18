@@ -8,13 +8,13 @@ namespace cgv {
 		{
 			static int ref_count = 0;
 			static rounded_cone_renderer r;
-			r.manage_singelton(ctx, "rounded_cone_renderer", ref_count, ref_count_change);
+			r.manage_singleton(ctx, "rounded_cone_renderer", ref_count, ref_count_change);
 			return r;
 		}
 
 		render_style* rounded_cone_renderer::create_render_style() const
 		{
-			return new surface_render_style();
+			return new rounded_cone_render_style();
 		}
 
 		rounded_cone_render_style::rounded_cone_render_style()
@@ -45,15 +45,18 @@ namespace cgv {
 			shader_defines = "";
 		}
 
-		void rounded_cone_renderer::set_attribute_array_manager(const context& ctx, attribute_array_manager* _aam_ptr)
+		/// call this before setting attribute arrays to manage attribute array in given manager
+		void rounded_cone_renderer::enable_attribute_array_manager(const context& ctx, attribute_array_manager& aam)
 		{
-			surface_renderer::set_attribute_array_manager(ctx, _aam_ptr);
-			if(aam_ptr) {
-				if(aam_ptr->has_attribute(ctx, ref_prog().get_attribute_location(ctx, "radius")))
-					has_radii = true;
-			} else {
-				has_radii = false;
-			}
+			surface_renderer::enable_attribute_array_manager(ctx, aam);
+			if (has_attribute(ctx, "radius"))
+				has_radii = true;
+		}
+		/// call this after last render/draw call to ensure that no other users of renderer change attribute arrays of given manager
+		void rounded_cone_renderer::disable_attribute_array_manager(const context& ctx, attribute_array_manager& aam)
+		{
+			surface_renderer::disable_attribute_array_manager(ctx, aam);
+			has_radii = false;
 		}
 
 		bool rounded_cone_renderer::validate_attributes(const context& ctx) const
@@ -191,6 +194,5 @@ namespace cgv {
 #include "gl/lib_begin.h"
 
 		CGV_API cgv::gui::gui_creator_registration<rounded_cone_render_style_gui_creator> rounded_cone_rs_gc_reg("rounded_cone_render_style_gui_creator");
-
 	}
 }

@@ -17,16 +17,15 @@ class mat;
 
 
 template <typename RandomAccessIterator>
-struct step_iterator:
-	public std::iterator<typename std::random_access_iterator_tag,typename std::iterator_traits<RandomAccessIterator>::value_type>
-
+struct step_iterator
 {
 public:
-	typedef std::iterator<typename std::random_access_iterator_tag,typename std::iterator_traits<RandomAccessIterator>::value_type> base_type;
+	typedef RandomAccessIterator base_type;
 	typedef typename base_type::pointer pointer;
 	typedef typename base_type::reference reference;
 	typedef typename base_type::value_type value_type;
 	typedef typename base_type::difference_type difference_type;
+	typedef typename base_type::iterator_category iterator_category;
 private:
 	RandomAccessIterator internal_iter;
 	int step;

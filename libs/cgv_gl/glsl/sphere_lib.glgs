@@ -1,5 +1,4 @@
-#version 150
-#extension GL_EXT_geometry_shader4 : enable
+#version 330 core
 
 /*
 The following interface is implemented in this shader:
@@ -39,7 +38,7 @@ struct sphere_splat_info
 	float inv_e;
 	vec2 e_zw_clip;
 	vec2 v_zw_clip;
-	vec3 v;
+//	vec3 v;
 	vec3 v_eye;
 };
 
@@ -74,7 +73,7 @@ void generate_sphere_splat_vertex(in vec4 sphere, in vec2 t, in sphere_parameter
 	// compute components to compute normal in eye space
 	ssi.inv_T_square_v = NM * (v_tilde);
 
-	ssi.v = -normalize(ssi.v_eye);
+//	ssi.v = -normalize(ssi.v_eye);
 
 	gl_Position = MVP * V;
 

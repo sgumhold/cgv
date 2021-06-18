@@ -94,6 +94,8 @@ protected:
 			update_views();
 		}
 	}
+	// return pointer to value or 0 if not available
+	const T* get_value_ptr() const { return cp ? 0 : value_ptr; }
 public:
 	/// type of the value check signal
 	typedef cgv::signal::bool_signal<control<T>&> value_check_signal_type;

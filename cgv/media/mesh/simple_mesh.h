@@ -39,6 +39,12 @@ protected:
 	std::vector<idx_type> material_indices;
 	std::vector<mat_type> materials;
 public:
+	/// default constructor
+	simple_mesh_base();
+	/// copy constructor
+	simple_mesh_base(const simple_mesh_base& smb);
+	/// assignment operator
+	simple_mesh_base& operator=(const simple_mesh_base& smb);
 	/// position count
 	virtual idx_type get_nr_positions() const = 0;
 	/// create a new empty face to which new corners are added and return face index
@@ -110,7 +116,7 @@ class CGV_API simple_mesh : public simple_mesh_base
 {
 public:
 	/// type of axis aligned 3d box
-	typedef typename simple_mesh<T> mesh_type;
+	typedef simple_mesh<T> mesh_type;
 	/// type of axis aligned 3d box
 	typedef typename cgv::media::axis_aligned_box<T, 3> box_type;
 	/// type of 3d vector
@@ -134,7 +140,11 @@ protected:
 	vec3 compute_normal(const vec3& p0, const vec3& p1, const vec3& p2);
 public:
 	/// construct from string corresponding to Conway notation (defaults to empty mesh)
+	simple_mesh(const simple_mesh<T>& sm);
+	/// construct from string corresponding to Conway notation (defaults to empty mesh)
 	simple_mesh(const std::string& conway_notation = "");
+	/// construct from string corresponding to Conway notation (defaults to empty mesh)
+	simple_mesh<T>& operator = (const simple_mesh<T>& sm);
 	/// clear simple mesh
 	void clear();
 
@@ -163,7 +173,7 @@ public:
 	const vec2& tex_coord(idx_type ti) const { return tex_coords[ti]; }
 	/// compute per face normals (ensure that per corner normal indices are set correspondingly)
 	void compute_face_normals();
-	// /Conway ambo operator
+	/// Conway ambo operator
 	void ambo();
 	/// Conway truncate operator
 	void truncate(T lambda = 0.33333f);
@@ -184,7 +194,7 @@ public:
 	box_type compute_box() const;
 	/// compute vertex normals by averaging triangle normals
 	void compute_vertex_normals();
-	/// read simple mesh from file (currently only obj is supported)
+	/// read simple mesh from file (currently only obj and stl are supported)
 	bool read(const std::string& file_name);
 	/// write simple mesh to file (currently only obj is supported)
 	bool write(const std::string& file_name) const;

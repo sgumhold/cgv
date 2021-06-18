@@ -61,7 +61,7 @@ namespace vr {
 	protected:
 		/// write access to driver index is restricted to the register_driver() function
 		void set_index(unsigned _idx);
-		friend extern void CGV_API register_driver(vr_driver* vrd);
+		friend void CGV_API register_driver(vr_driver* vrd);
 		/// call this method during scanning of vr kits. In case vr kit handle had been registered before, previous copy is deleted and a warning is issued
 		void register_vr_kit(void* handle, vr_kit* kit);
 		/// call this method during replacement of vr kits. In case vr kit handle had been registered before it is replaced, otherwise it is registered

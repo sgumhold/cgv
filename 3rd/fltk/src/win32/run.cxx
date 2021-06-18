@@ -931,7 +931,7 @@ static void pasteA(Widget& receiver, char* txt) {
 }
 
 /* Handle CF_UNICODETEXT paste */
-static void pasteW(Widget& receiver, wchar_t* ucs) {
+static void pasteW(Widget& receiver, wchar_t* ucs, bool call_paste = true) {
   int ucslen = wcslen(ucs);
   int len = utf8fromwc(previous_buffer, previous_length, ucs, ucslen);
   if (len >= previous_length) {
@@ -951,7 +951,8 @@ static void pasteW(Widget& receiver, wchar_t* ucs) {
   }
   *b = 0;
   e_length = b - e_text;
-  receiver.handle(PASTE);
+  if (call_paste)
+	receiver.handle(PASTE);
 }
 
 // Call this when a "paste" operation happens:
@@ -1061,29 +1062,114 @@ public:
     //if (nTemp==0) delete this; // we don't really destroy it
     return nTemp;
   }
-  HRESULT STDMETHODCALLTYPE DragEnter( IDataObject *pDataObj, DWORD grfKeyState, POINTL pt, DWORD *pdwEffect) {
-    if( !pDataObj ) return E_INVALIDARG;
-    // set e_modifiers here from grfKeyState, set e_x and e_root_x
-    // check if FLTK handles this drag and return if it can't (i.e. BMP drag without filename)
-    POINT ppt;
-    e_x_root = ppt.x = pt.x;
-    e_y_root = ppt.y = pt.y;
-    HWND hWnd = WindowFromPoint( ppt );
-    Window *target = find( hWnd );
-    if (target) {
-      e_x = e_x_root-target->x();
-      e_y = e_y_root-target->y();
-    }
-    dnd_target_window = target;
-    px = pt.x; py = pt.y;
-      // FLTK has no mechanism yet for the different drop effects, so we allow move and copy
-    if ( target && handle( DND_ENTER, target ) )
-      *pdwEffect = DROPEFFECT_MOVE|DROPEFFECT_COPY; //|DROPEFFECT_LINK;
-    else
-      *pdwEffect = DROPEFFECT_NONE;
-    lastEffect = *pdwEffect;
-    flush(); // get the display to update for local drags
-    return S_OK;
+  HRESULT STDMETHODCALLTYPE DragEnter(IDataObject* pDataObj, DWORD grfKeyState, POINTL pt, DWORD* pdwEffect)
+  {
+	  if (!pDataObj) return E_INVALIDARG;
+	  // set e_modifiers here from grfKeyState, set e_x and e_root_x
+	  // check if FLTK handles this drag and return if it can't (i.e. BMP drag without filename)
+	  POINT ppt;
+	  e_x_root = ppt.x = pt.x;
+	  e_y_root = ppt.y = pt.y;
+	  HWND hWnd = WindowFromPoint(ppt);
+	  Window* target = find(hWnd);
+	  if (target) {
+		  e_x = e_x_root - target->x();
+		  e_y = e_y_root - target->y();
+	  }
+	  dnd_target_window = target;
+	  px = pt.x; py = pt.y;
+	
+	  
+	  
+	  
+	  
+	  
+	  
+	  FORMATETC fmt = { 0 };
+	  STGMEDIUM medium = { 0 };
+
+	  fmt.tymed = TYMED_HGLOBAL;
+	  fmt.dwAspect = DVASPECT_CONTENT;
+	  fmt.lindex = -1;
+	  fmt.cfFormat = CF_UNICODETEXT;
+	  // if it is ASCII text, send an PASTE with that text
+	  if (pDataObj->GetData(&fmt, &medium) == S_OK) {
+		  pasteW(*target, (wchar_t*)GlobalLock(medium.hGlobal), false);
+		  GlobalUnlock(medium.hGlobal);
+		  ReleaseStgMedium(&medium);
+	  }
+	  else {
+		  fmt.tymed = TYMED_HGLOBAL;
+		  fmt.dwAspect = DVASPECT_CONTENT;
+		  fmt.lindex = -1;
+		  fmt.cfFormat = CF_TEXT;
+		  // if it is ASCII text, send an PASTE with that text
+		  if (pDataObj->GetData(&fmt, &medium) == S_OK)
+		  {
+			  void* stuff = GlobalLock(medium.hGlobal);
+			  e_length = strlen((char*)stuff); // min(strlen, len)
+			  static char* previous_buffer = 0;
+			  delete[] previous_buffer;
+			  previous_buffer = new char[e_length + 1];
+			  strcpy(previous_buffer, (char*)stuff);
+			  e_text = previous_buffer;
+			  GlobalUnlock(medium.hGlobal);
+			  ReleaseStgMedium(&medium);
+		  }
+		  else {
+			  fmt.tymed = TYMED_HGLOBAL;
+			  fmt.dwAspect = DVASPECT_CONTENT;
+			  fmt.lindex = -1;
+			  fmt.cfFormat = CF_HDROP;
+			  // if it is a pathname list, send an PASTE with a \n seperated list of filepaths
+			  if (pDataObj->GetData(&fmt, &medium) == S_OK)
+			  {
+				  HDROP hdrop = (HDROP)medium.hGlobal;
+				  int i, n, nn = 0, nf = DragQueryFileA(hdrop, (UINT)-1, 0, 0);
+				  for (i = 0; i < nf; i++) nn += DragQueryFileA(hdrop, i, 0, 0);
+				  nn += nf;
+				  if (has_unicode()) {
+					  static wchar_t* previous_buffer = 0;
+					  delete[] previous_buffer;
+					  previous_buffer = new wchar_t[nn + 1];
+					  wchar_t* buffer = previous_buffer;
+					  wchar_t* dst = buffer;
+					  for (i = 0; i < nf; i++) {
+						  n = DragQueryFileW(hdrop, i, dst, nn);
+						  dst += n;
+						  if (i < nf - 1) *dst++ = '\n';
+					  }
+					  *dst = 0;
+					  pasteW(*target, buffer, false);
+				  }
+				  else {
+					  static char* previous_buffer = 0;
+					  delete[] previous_buffer;
+					  previous_buffer = new char[nn + 1];
+					  char* buffer = previous_buffer;
+					  e_length = nn;
+					  char* dst = buffer;
+					  e_text = buffer;
+					  for (i = 0; i < nf; i++) {
+						  n = DragQueryFileA(hdrop, i, dst, nn);
+						  dst += n;
+						  if (i < nf - 1) *dst++ = '\n';
+					  }
+					  *dst = 0;
+				  }
+				  ReleaseStgMedium(&medium);
+			  }
+		  }
+	  }
+	  // FLTK has no mechanism yet for the different drop effects, so we allow move and copy
+	  if (target && handle(DND_ENTER, target))
+		  *pdwEffect = DROPEFFECT_MOVE | DROPEFFECT_COPY; //|DROPEFFECT_LINK;
+	  else
+		  *pdwEffect = DROPEFFECT_NONE;
+	  lastEffect = *pdwEffect;
+	  flush(); // get the display to update for local drags
+	  e_length = 0;
+	  return S_OK;
   }
   HRESULT STDMETHODCALLTYPE DragOver( DWORD grfKeyState, POINTL pt, DWORD *pdwEffect) {
 		if ( px==pt.x && py==pt.y )

@@ -8,7 +8,7 @@ namespace cgv {
 		{
 			static int ref_count = 0;
 			static arrow_renderer r;
-			r.manage_singelton(ctx, "arrow_renderer", ref_count, ref_count_change);
+			r.manage_singleton(ctx, "arrow_renderer", ref_count, ref_count_change);
 			return r;
 		}
 
@@ -19,7 +19,7 @@ namespace cgv {
 
 		arrow_render_style::arrow_render_style() 
 		{
-			radius_lower_bound = 0.001f;
+			radius_lower_bound = 0.00001f;
 			inner_outer_lambda = 0.5f;
 			radius_relative_to_length = 0.1f;
 			head_radius_scale = 2.0f;
@@ -32,18 +32,19 @@ namespace cgv {
 			length_eps = 0.000001f;
 			nr_subdivisions = 8;
 		}
-		void arrow_renderer::set_attribute_array_manager(const context& ctx, attribute_array_manager* _aam_ptr)
+		/// call this before setting attribute arrays to manage attribute array in given manager
+		void arrow_renderer::enable_attribute_array_manager(const context& ctx, attribute_array_manager& aam)
 		{
-			surface_renderer::set_attribute_array_manager(ctx, _aam_ptr);
-			if (aam_ptr) {
-				if (aam_ptr->has_attribute(ctx, ref_prog().get_attribute_location(ctx, "direction")))
-					has_directions = true;
-			}
-			else {
-				has_directions = false;
-			}
+			surface_renderer::enable_attribute_array_manager(ctx, aam);
+			if (has_attribute(ctx, "direction"))
+				has_directions = true;
 		}
-
+		/// call this after last render/draw call to ensure that no other users of renderer change attribute arrays of given manager
+		void arrow_renderer::disable_attribute_array_manager(const context& ctx, attribute_array_manager& aam)
+		{
+			surface_renderer::disable_attribute_array_manager(ctx, aam);
+			has_directions = false;
+		}
 		arrow_renderer::arrow_renderer()
 		{
 			has_directions = false;
@@ -171,7 +172,7 @@ namespace cgv {
 				if (p->begin_tree_node("radius", ars_ptr->radius_lower_bound, true, "level=3")) {
 					p->align("\a");
 					p->add_member_control(b, "radius_relative_to_length", ars_ptr->radius_relative_to_length, "value_slider", "min=0;max=1;ticks=true");
-					p->add_member_control(b, "radius_lower_bound", ars_ptr->radius_lower_bound, "value_slider", "min=0;max=1;log=true;ticks=true");
+					p->add_member_control(b, "radius_lower_bound", ars_ptr->radius_lower_bound, "value_slider", "min=0.00000001;step=0.000000001;max=0.01;log=true;ticks=true");
 					p->add_member_control(b, "inner_outer_lambda", ars_ptr->inner_outer_lambda, "value_slider", "min=0;max=1;ticks=true");
 					p->align("\b");
 					p->end_tree_node(ars_ptr->radius_lower_bound);

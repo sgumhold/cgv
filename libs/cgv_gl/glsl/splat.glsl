@@ -1,9 +1,5 @@
 #version 150
 
-uniform float blend_width_in_pixel = 1.0;
-uniform float halo_width_in_pixel = 0.0;
-uniform float percentual_halo_width = 0.0;
-
 /*
 The following interface is implemented in this shader:
 //***** begin interface of splat.glsl ***********************************
@@ -16,6 +12,7 @@ vec4 compute_blended_color_with_halo(
 /// prepare spat size parameters
 void prepare_splat(
 	in float reference_point_radius, in float pixel_extent,
+	in float blend_width_in_pixel, in float halo_width_in_pixel, in float percentual_halo_width,
 	out float percentual_core_size, out float percentual_point_size,
 	out float percentual_blend_width, out float percentual_splat_size);
 //***** end interface of splat.glsl ***********************************
@@ -72,6 +69,7 @@ vec4 compute_blended_color_with_halo(
 
 void prepare_splat(
 	in float reference_point_radius, in float pixel_extent,
+	in float blend_width_in_pixel, in float halo_width_in_pixel, in float percentual_halo_width,
 	out float percentual_core_size, out float percentual_point_size,
 	out float percentual_blend_width, out float percentual_splat_size)
 {

@@ -1,0 +1,119 @@
+#version 330
+
+uniform int   color_index = -1;
+uniform int   secondary_color_index = -1;
+uniform int   opacity_index = -1;
+uniform int   secondary_opacity_index = -1;
+uniform int   size_index = -1;
+uniform int   secondary_size_index = -1;
+uniform float depth_offset = 0.0;
+uniform vec3  sub_plot_delta = vec3(0.0,0.0,0.0);
+uniform float halo_width_in_pixel = 0.0;
+uniform float percentual_halo_width = 0.0;
+
+layout(location = 0) in float attribute0;
+layout(location = 1) in float attribute1;
+layout(location = 2) in float attribute2;
+layout(location = 3) in float attribute3;
+layout(location = 4) in float attribute4;
+layout(location = 5) in float attribute5;
+layout(location = 6) in float attribute6;
+layout(location = 7) in float attribute7;
+
+in vec4 color;
+in vec4 secondary_color;
+in float size;
+
+out LINE_GS {
+	vec3  position_eye;
+	vec3  normal_eye;
+	float line_width;
+	vec4  color;
+	vec4  halo_color;
+	float halo_width_in_pixel;
+	float percentual_halo_width;
+	float depth_offset;
+} vo;
+
+//***** begin interface of view.glsl ***********************************
+mat4 get_modelview_matrix();
+mat4 get_projection_matrix();
+mat4 get_modelview_projection_matrix();
+mat4 get_inverse_modelview_matrix();
+mat4 get_inverse_modelview_projection_matrix();
+mat3 get_normal_matrix();
+mat3 get_inverse_normal_matrix();
+//***** end interface of view.glsl ***********************************
+
+//***** begin interface of plot_lib.glsl ***********************************
+uniform float attribute_min[8];
+uniform float attribute_max[8];
+bool discard_vertex(inout float attributes[8]);
+float tick_space_from_attribute_space(int ai, float value);
+float attribute_space_from_tick_space(int ai, float value);
+float window_space_from_tick_space(int ai, float value);
+float tick_space_from_window_space(int ai, float value);
+vec3 plot_space_from_window_space(vec3 pnt);
+vec3 window_space_from_plot_space(vec3 pnt);
+vec3 world_space_from_plot_space(vec3 pnt);
+vec3 map_color(in float v_window, int idx);
+vec3 map_color(in float attributes[8], in vec3 base_color, int idx);
+float map_opacity(in float v_window, int idx);
+float map_opacity(in float attributes[8], in float base_opacity, int idx);
+float map_size(in float v_window, int idx);
+float map_size(in float attributes[8], in float base_size, int idx);
+vec3 map_color(in float v_window);
+vec3 map_color(in float attributes[8], in vec3 base_color);
+float map_opacity(in float v_window);
+float map_opacity(in float attributes[8], in float base_opacity);
+float map_size(in float v_window);
+float map_size(in float attributes[8], in float base_size);
+//***** end interface of plot_lib.glsl ***********************************
+
+void main()
+{
+	// collect attributes
+	float attributes[8];
+	attributes[0] = attribute0;
+	attributes[1] = attribute1;
+	attributes[2] = attribute2;
+	attributes[3] = attribute3;
+	attributes[4] = attribute4;
+	attributes[5] = attribute5;
+	attributes[6] = attribute6;
+	attributes[7] = attribute7;
+	
+	if (discard_vertex(attributes)) {
+		vo.depth_offset = 110000.0;
+		return;
+	}
+
+	// compute position in window coordinates
+	vec3 position_window = vec3(
+		window_space_from_tick_space(0, tick_space_from_attribute_space(0, attributes[0])),
+		window_space_from_tick_space(1, tick_space_from_attribute_space(1, attributes[1])), 0.0);
+
+	// map to visual attributes
+	vo.position_eye = (get_modelview_matrix()*vec4(plot_space_from_window_space(position_window)+sub_plot_delta, 1.0)).xyz;
+	vo.normal_eye = get_normal_matrix()*vec3(0.0,0.0,1.0);
+	vo.color = color;
+
+	if (color_index >=0)
+		vo.color.rgb = map_color(attributes, vo.color.rgb, color_index);
+	if (opacity_index >= 0)
+		vo.color.a = map_opacity(attributes, vo.color.a, opacity_index);
+	vo.halo_color = secondary_color;
+	if (secondary_color_index >=0)
+		vo.halo_color.rgb = map_color(attributes, vo.halo_color.rgb, secondary_color_index);
+	if (secondary_opacity_index >= 0)
+		vo.halo_color.a = map_opacity(attributes, vo.halo_color.a, secondary_opacity_index);
+	vo.line_width = size;
+	if (size_index >= 0)
+		vo.line_width = map_size(attributes, size, size_index);
+	vo.percentual_halo_width = percentual_halo_width;
+	if (secondary_size_index >= 0)
+		vo.percentual_halo_width = map_size(attributes, vo.percentual_halo_width, secondary_size_index);
+
+	vo.halo_width_in_pixel = halo_width_in_pixel;
+	vo.depth_offset = depth_offset;
+}

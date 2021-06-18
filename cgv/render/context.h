@@ -157,6 +157,8 @@ enum TextureType {
 	TT_1D = 1,
 	TT_2D,
 	TT_3D,
+	TT_1D_ARRAY,
+	TT_2D_ARRAY,
 	TT_CUBEMAP,
 	TT_BUFFER
 };
@@ -188,6 +190,7 @@ enum PrimitiveType {
 	PT_QUADS,
 	PT_QUAD_STRIP,
 	PT_POLYGON,
+	PT_PATCHES,
 	PT_LAST
 };
 
@@ -252,7 +255,7 @@ public:
 	/// initialize members
 	render_component();
 	/// return whether component has been created
-	bool is_created() const;
+	virtual bool is_created() const;
 	/// copy the rendering api specific id the component to the memory location of the given pointer. 
 	/// For opengl this the passed pointer should be of type GLint or GLuint.
 	void put_id_void(void* ptr) const;
@@ -301,6 +304,7 @@ protected:
 	// vertex attribute names
 	int position_index;
 	int color_index;
+	bool context_sets_color;
 	int normal_index;
 	int texcoord_index;
 
@@ -321,8 +325,10 @@ public:
 	bool does_use_gamma() const { return uses_gamma; }
 
 	// vertex attribute names
+	void allow_context_to_set_color(bool allow);
 	int get_position_index() const { return position_index; }
 	int get_color_index() const { return color_index; }
+	bool does_context_set_color() const { return context_sets_color; }
 	int get_normal_index() const { return normal_index; }
 	int get_texcoord_index() const { return texcoord_index; }
 };
@@ -382,7 +388,7 @@ public:
 };
 
 /// different shader types
-enum ShaderType { ST_DETECT, ST_COMPUTE, ST_VERTEX, ST_TESS_CONTROL, ST_TESS_EVALUTION, ST_GEOMETRY, ST_FRAGMENT };
+enum ShaderType { ST_DETECT, ST_COMPUTE, ST_VERTEX, ST_TESS_CONTROL, ST_TESS_EVALUATION, ST_GEOMETRY, ST_FRAGMENT };
 
 /// different frame buffer types which can be combined together with or
 enum FrameBufferType {
@@ -554,6 +560,8 @@ protected:
 	bool debug_render_passes;
 	/// whether vsynch should be enabled
 	bool enable_vsynch;
+	/// current color value
+	rgba current_color;
 	/// whether to use opengl option to support sRGB framebuffer
 	bool sRGB_framebuffer;
 	/// gamma value passed to shader programs that have gamma uniform
@@ -648,7 +656,7 @@ protected:
 
 	virtual cgv::data::component_format texture_find_best_format(const cgv::data::component_format& cf, render_component& rc, const std::vector<cgv::data::data_view>* palettes = 0) const = 0;
 	virtual bool texture_create				(texture_base& tb, cgv::data::data_format& df) const = 0;
-	virtual bool texture_create				(texture_base& tb, cgv::data::data_format& target_format, const cgv::data::const_data_view& data, int level, int cube_side = -1, const std::vector<cgv::data::data_view>* palettes = 0) const = 0;
+	virtual bool texture_create				(texture_base& tb, cgv::data::data_format& target_format, const cgv::data::const_data_view& data, int level, int cube_side = -1, int num_array_layers = 0, const std::vector<cgv::data::data_view>* palettes = 0) const = 0;
 	virtual bool texture_create_from_buffer (texture_base& tb, cgv::data::data_format& df, int x, int y, int level) const = 0;
 	virtual bool texture_replace			(texture_base& tb, int x, int y, int z_or_cube_side, const cgv::data::const_data_view& data, int level, const std::vector<cgv::data::data_view>* palettes = 0) const = 0;
 	virtual bool texture_replace_from_buffer(texture_base& tb, int x, int y, int z_or_cube_side, int x_buffer, int y_buffer, unsigned int width, unsigned int height, int level) const = 0;
@@ -859,7 +867,7 @@ public:
 	/**@name font selection and measure*/
 	//@{
 	/// enable the given font face with the given size in pixels
-	virtual void enable_font_face(media::font::font_face_ptr font_face, float font_size) = 0;
+	virtual void enable_font_face(media::font::font_face_ptr font_face, float font_size);
 	/// return the size in pixels of the currently enabled font face
 	virtual float get_current_font_size() const;
 	/// return the currently enabled font face
@@ -882,8 +890,10 @@ public:
 	virtual void enable_sRGB_framebuffer(bool do_enable = true);
 	/// check whether sRGB framebuffer is enabled
 	bool sRGB_framebuffer_enabled() { return sRGB_framebuffer; }
+	/// return current color
+	const rgba& get_color() const;
 	/// set the current color
-	virtual void set_color(const rgba& clr) = 0;
+	virtual void set_color(const rgba& clr);
 	/// set the current color
 	virtual void set_color(const rgb& clr, float opacity = 1.0f) { set_color(rgba(clr[0], clr[1], clr[2], opacity)); }
 	/// set the current material 

@@ -25,17 +25,18 @@ namespace vr {
 		driver = const_cast<vr::vr_driver*>(parent_kit->get_driver());
 		handle = parent_kit->get_handle();
 		info = parent_kit->get_device_info();
+		std::cout << "attached kit:\n" << info << std::endl;
 		return true;
 	}
 
 	/// initialize render targets and framebuffer objects in current opengl context
-	bool vr_wall_kit::init_fbos()
+	bool vr_wall_kit::init_fbos(EyeSelection es)
 	{
 		if (wall_context) {
-			if (!gl_vr_display::fbos_initialized()) {
+			if (!gl_vr_display::fbos_initialized(es)) {
 				// check whether we can do share render buffers and textures
 				gl_vr_display* parent_gl_kit = dynamic_cast<gl_vr_display*>(parent_kit);
-				if (!parent_gl_kit || !parent_gl_kit->fbos_initialized())
+				if (!parent_gl_kit || !parent_gl_kit->fbos_initialized(es))
 					return false;
 					//return gl_vr_display::init_fbos();
 				// create fbos with textures shared with parent kit
@@ -43,6 +44,11 @@ namespace vr {
 				//std::cout << "init_fbos(wall): " << wglGetCurrentContext() << std::endl;
 				
 				for (unsigned i = 0; i < 2; ++i) {
+					if (es == ES_LEFT && i == 1)
+						continue;
+					if (es == ES_RIGHT && i == 0)
+						continue;
+
 					glGenFramebuffers(1, &multi_fbo_id[i]);
 					glBindFramebuffer(GL_FRAMEBUFFER, multi_fbo_id[i]);
 					multi_depth_buffer_id[i] = parent_gl_kit->multi_depth_buffer_id[i];
@@ -72,39 +78,48 @@ namespace vr {
 		}
 		else {
 			// std::cout << "init_fbos(main): " << wglGetCurrentContext() << std::endl;
-			if (!parent_kit->fbos_initialized())
-				return parent_kit->init_fbos();
+			if (!parent_kit->fbos_initialized(es))
+				return parent_kit->init_fbos(es);
 		}
 		return false;
 	}
 	/// check whether fbos have been initialized
-	bool vr_wall_kit::fbos_initialized() const
+	bool vr_wall_kit::fbos_initialized(EyeSelection es) const
 	{
 		if (wall_context)
-			return gl_vr_display::fbos_initialized();
+			return gl_vr_display::fbos_initialized(es);
 		else {
 			// ensure same size of textures
 			if (parent_kit->get_width() != width || parent_kit->get_height() != height) {
-				if (parent_kit->fbos_initialized())
-					parent_kit->destruct_fbos();
+				if (parent_kit->fbos_initialized(es))
+					parent_kit->destruct_fbos(es);
 				dynamic_cast<vr::gl_vr_display*>(parent_kit)->set_size(width, height);
 			}
-			return parent_kit->fbos_initialized();
+			return parent_kit->fbos_initialized(es);
 		}
 	}
 	/// destruct render targets and framebuffer objects in current opengl context
-	void vr_wall_kit::destruct_fbos()
+	void vr_wall_kit::destruct_fbos(EyeSelection es)
 	{
 		if (wall_context)
-			gl_vr_display::destruct_fbos();
+			gl_vr_display::destruct_fbos(es);
 		else
-			parent_kit->destruct_fbos();
+			parent_kit->destruct_fbos(es);
+	}
+	void vr_wall_kit::ensure_fbo(int eye)
+	{
+		EyeSelection es = eye == 0 ? ES_LEFT : ES_RIGHT;
+		if (fbos_initialized(es))
+			return;
+		init_fbos(es);
 	}
 	/// enable the framebuffer object of given eye (0..left, 1..right) 
 	void vr_wall_kit::enable_fbo(int eye)
 	{
-		if (wall_context)
+		if (wall_context) {
+			ensure_fbo(eye);
 			gl_vr_display::enable_fbo(eye);
+		}
 		else
 			parent_kit->enable_fbo(eye);
 	}
@@ -120,11 +135,18 @@ namespace vr {
 	bool vr_wall_kit::blit_fbo(int eye, int x, int y, int w, int h)
 	{
 		if (wall_context) {
-			// std::cout << "blit(wall):" << wglGetCurrentContext() << std::endl;
+			ensure_fbo(eye);
 			return gl_vr_display::blit_fbo(eye, x, y, w, h);
 		}
-		// std::cout << "blit(main):" << wglGetCurrentContext() << std::endl;
 		return parent_kit->blit_fbo(eye, x, y, w, h);
+	}
+	/// bind texture of given eye to current texture unit
+	void vr_wall_kit::bind_texture(int eye)
+	{
+		if (wall_context)
+			return gl_vr_display::bind_texture(eye);
+		else
+			return parent_kit->bind_texture(eye);
 	}
 	/// transform to coordinate system of screen with [0,0,0] in center and corners [+-aspect,+-1,0]; z is signed distance to screen in world unites (typically meters) 
 	vr_wall_kit::vec3 vr_wall_kit::transform_world_to_screen(const vec3& p) const
@@ -144,9 +166,10 @@ namespace vr {
 	}
 	/// construct vr wall kit by attaching to another vr kit
 	vr_wall_kit::vr_wall_kit(int vr_kit_parent_index, unsigned _width, unsigned _height, const std::string& _name) :
-		gl_vr_display(width, height, 0, 0, _name)
+		vr_kit(0, 0, _name, width, height)
 	{
 		wall_context = false;
+		skip_calibration = true;
 		in_calibration = false;
 		parent_kit = 0;
 		if (attach(vr_kit_parent_index))

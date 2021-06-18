@@ -111,9 +111,8 @@ std::string image_reader::construct_filter_string()
 /// return a reference to the last error message
 const std::string& image_reader::get_last_error() const
 {
-	static std::string dummy;
 	if (!rd)
-		return dummy;
+		return last_error;
 	return rd->get_last_error();
 }
 
@@ -137,7 +136,6 @@ bool image_reader::read_image(const std::string& file_name, const data_view& dv,
 	return true;
 }
 
-
 /// open the file and read the image header in order to determine the data format
 bool image_reader::open(const std::string& file_name)
 {
@@ -148,12 +146,20 @@ bool image_reader::open(const std::string& file_name)
 		return false;
 	std::string ext = to_lower(file_name.substr(pos+1));
 	std::vector<base_ptr>& readers = reader_listener::ref_readers();
+	std::stringstream all_supported_extensions("");
 	for (unsigned int i=0; i<readers.size(); ++i) {
-		if (cgv::utils::is_element(ext, readers[i]->get_interface<abst_image_reader>()->get_supported_extensions())) {
+		if (i != readers.size() - 1) {
+            all_supported_extensions << ":";
+		}
+		const std::string &supported_extensions = readers[i]->get_interface<abst_image_reader>()->get_supported_extensions();
+		all_supported_extensions << supported_extensions;
+		if (cgv::utils::is_element(ext, supported_extensions)) {
 			rd = readers[i]->get_interface<abst_image_reader>()->clone();
 			return rd->open(file_name, *file_format_ptr, palette_formats);
 		}
 	}
+	last_error = "could not find a suitable reader for " + file_name + " (supported formats are " +
+				 all_supported_extensions.str() + ")";
 	return false;
 }
 

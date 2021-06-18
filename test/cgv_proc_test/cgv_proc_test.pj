@@ -1,0 +1,37 @@
+@=
+projectType="application_plugin";
+projectName="cgv_proc_test";
+projectGUID="DCA10C03-8E7F-46CC-866E-8DB86FC51025";
+//referenceDeps = 0;
+addProjectDirs=[CGV_DIR."/plugins", CGV_DIR."/libs", CGV_DIR."/test"];
+addProjectDeps=[
+	"cgv_utils", "cgv_type", "cgv_data", "cgv_base", "cgv_math", "cgv_media", "cgv_gui", "cgv_render", 
+	"cgv_gl", 
+	"cgv_viewer", 
+	"cg_fltk", "crg_stereo_view", "crg_grid", "cg_ext", "cmi_io"
+];
+addIncDirs=[INPUT_DIR, CGV_DIR."/libs", CGV_BUILD_DIR."/".projectName];
+
+addSharedDefines=["CGV_PROC_TEST_EXPORTS"];
+if(SYSTEM=="windows") {
+	addStaticDefines=["REGISTER_SHADER_FILES"];
+}
+
+addCommandLineArguments=[
+	after("type(shader_config):shader_path='".INPUT_DIR.";".CGV_DIR."/libs/cgv_gl/glsl;".CGV_DIR."/libs/cgv_proc'","cg_fltk"),
+	'config:"'.INPUT_DIR.'/config.def"'
+];
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -70,7 +70,7 @@ public:
 	void set(const vec_type& axis, coord_type angle)
 	{
 		angle *= (coord_type)0.5;
-		set(cos(angle), sin(angle)*axis);
+		set(cos(angle), coord_type(sin(angle))*axis);
 	}
 	/// setter from quaternion
 	void set(const quaternion<T>& quat) { *this = quat; }
@@ -103,7 +103,7 @@ public:
 		}
 	}
 	/// initialize quaternion directly
-	void set(coord_type re, coord_type ix, coord_type iy, coord_type iz) 
+	void set(coord_type re, coord_type ix, coord_type iy, coord_type iz)
 	{
 		this->x() = ix;
 		this->y() = iy;
@@ -111,9 +111,9 @@ public:
 		this->w() = re;
 	}
 	/// initialize quaternion from real part and vector
-	void set(coord_type re, const vec_type& im) 
-	{ 
-		set(re, im.x(), im.y(), im.z()); 
+	void set(coord_type re, const vec_type& im)
+	{
+		set(re, im.x(), im.y(), im.z());
 	}
 	//@}
 	/**@name{\large d) conversions and application}*/
@@ -179,7 +179,7 @@ public:
 	}
 	/// rotate vector according to quaternion
 	void rotate(vec_type& v) const { vec_type tmp; put_image(v, tmp); v = tmp; }
-	/// return rotated vector 
+	/// return rotated vector
 	vec_type get_rotated(const vec_type& v) const { vec_type tmp; put_image(v, tmp); return tmp; }
 	/// Rotate a frame according to quaternion.
 	void rotate(mat_type& m) const
@@ -218,9 +218,9 @@ public:
 	{
 		conjugate();
 		coord_type sn = this->sqr_length();
-		if (sn < EPSILON*EPSILON) 
+		if (sn < EPSILON*EPSILON)
 			base_type::operator *= ((coord_type) 1e14);
-		else 
+		else
 			base_type::operator /= (sn);
 	}
 	/// compute affin combination with angular interpolation
@@ -256,7 +256,7 @@ public:
 	/// field multiplication
 	quaternion<T>& operator*=(const quaternion<T>& q)
 	{
-		 // Fastmul-Alg. siehe Seidel-Paper p.4 
+		 // Fastmul-Alg. siehe Seidel-Paper p.4
 		coord_type s[9], t;
 		s[0] = (this->z()-this->y())*(q.y()-q.z());
 		s[1] = (this->w()+this->x())*(q.w()+q.x());
@@ -298,7 +298,7 @@ public:
 		}
 		coord_type angle = 2 * acos(re());
 		coord_type s = sqrt(1 - re()*re());
-		if (s < (coord_type)EPSILON) { 
+		if (s < (coord_type)EPSILON) {
 			v = vec_type(0,0,1);
 			return 0;
 		}
@@ -336,9 +336,9 @@ public:
 
 ///returns the product of a scalar s and vector v
 template <typename T>
-quaternion<T> operator * (const T& s, const quaternion<T>& v) 
+quaternion<T> operator * (const T& s, const quaternion<T>& v)
 {
-	quaternion<T> r = v; r *= s; return r; 
+	quaternion<T> r = v; r *= s; return r;
 }
 
 

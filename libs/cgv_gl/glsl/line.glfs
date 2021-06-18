@@ -1,0 +1,41 @@
+#version 330 core
+
+uniform float halo_color_strength = 1.0;
+
+in LINE_FS {
+	vec4  color;
+	vec4  halo_color;
+	vec3  side_vector_eye;
+	vec3  center_position_eye;
+	vec3  position_eye;
+	float percentual_blend_width;
+	float percentual_core_size;
+	float percentual_point_size;
+	float percentual_splat_size;
+	float depth_offset;
+} fi;
+
+//***** begin interface of fragment.glfs ***********************************
+uniform float gamma = 2.2;
+void finish_fragment(vec4 color);
+//***** end interface of fragment.glfs ***********************************
+
+//***** begin interface of splat.glsl ***********************************
+vec4 compute_blended_color_with_halo(
+	in float percentual_radial_position,
+	in vec4 core_color, in float percentual_core_size,
+	in vec4 halo_color, in float percentual_point_size,
+	in float percentual_blend_width);
+//***** end interface of surface.glsl ***********************************
+
+void main()
+{
+	vec4 plane = vec4(fi.side_vector_eye, -dot(fi.side_vector_eye, fi.center_position_eye));
+	plane *= 1.0 / dot(fi.side_vector_eye, fi.side_vector_eye);
+	float splat_pos = dot(plane,vec4(fi.position_eye,1.0));
+	finish_fragment(compute_blended_color_with_halo(
+		abs(splat_pos), fi.color, fi.percentual_core_size,
+		vec4(mix(fi.color.rgb, fi.halo_color.rgb,halo_color_strength), fi.halo_color.a), fi.percentual_point_size, fi.percentual_blend_width
+	));
+	gl_FragDepth = gl_FragCoord.z+fi.depth_offset;
+}

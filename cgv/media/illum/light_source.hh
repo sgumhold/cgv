@@ -39,7 +39,7 @@ protected: //@<
 	float quadratic_attenuation;
 	///@>direction of spot light
 	vec3 spot_direction;
-	///@>splot exponent
+	///@>spot exponent
 	float spot_exponent;
 	///@>spot cutoff in degrees
 	float spot_cutoff;

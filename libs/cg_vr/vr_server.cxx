@@ -35,7 +35,6 @@ namespace cgv {
 			vr::VRButtonStateFlags flag;
 			vr::VRKeys key;
 		};
-
 		/// grab the event focus to the given event handler and return whether this was possible
 		bool vr_server::grab_focus(VRFocus _focus_type, event_handler* handler)
 		{
@@ -51,6 +50,7 @@ namespace cgv {
 			}
 			ce.set_type(CET_GRAB_FOCUS);
 			focus = handler;
+			focus_type = _focus_type;
 			focus->handle(ce);
 			return true;
 		}
@@ -126,14 +126,14 @@ namespace cgv {
 			if ((flags & VRE_STATUS) != 0) {
 				if (new_state.hmd.status != last_state.hmd.status)
 					on_status_change(kit_handle, -1, last_state.hmd.status, new_state.hmd.status);
-				for (int ci = 0; ci < 4; ++ci) {
+				for (int ci = 0; ci < vr::max_nr_controllers; ++ci) {
 					if (new_state.controller[ci].status != last_state.controller[ci].status)
 						on_status_change(kit_handle, ci, last_state.controller[ci].status, new_state.controller[ci].status);
 				}
 			}
 			// check for key changes and emit key_event 
 			if ((flags & (VRE_KEY | VRE_ONE_AXIS_GENERATES_KEY | VRE_TWO_AXES_GENERATES_DPAD)) != 0) {
-				for (int ci = 0; ci < 4; ++ci) {
+				for (int ci = 0; ci < vr::max_nr_controllers; ++ci) {
 					const auto& CS_new = new_state.controller[ci];
 					const auto& CS_lst = last_state.controller[ci];
 					// ignore cases when controller changed attachment
@@ -153,7 +153,7 @@ namespace cgv {
 									button_keys[j].key,
 									(CS_new.button_flags & button_keys[j].flag) != 0 ? KA_PRESS : KA_RELEASE,
 									0, 0, time);
-								on_event(vrke);
+								dispatch(vrke);
 							}
 						}
 					}
@@ -176,20 +176,20 @@ namespace cgv {
 						// construct and emit event
 						vr_key_event vrke(kit_handle, kit_index, ci, new_state, key,
 							(CS_new.button_flags & vr::VRF_INPUT0) != 0 ? KA_PRESS : KA_RELEASE, 0,	0, time);
-						on_event(vrke);
+						dispatch(vrke);
 					}
 				}
 			}
 			// check for axes input events
 			if (kit_ptr && ((flags & (VRE_ONE_AXIS|VRE_TWO_AXES)) != 0)) {
-				for (int ci = 0; ci < 4; ++ci) {
+				for (int ci = 0; ci < vr::max_nr_controllers; ++ci) {
 					const auto& CS_new = new_state.controller[ci];
 					const auto& CS_lst = last_state.controller[ci];
 					// iterate all controller inputs
 					vr::VRButtonStateFlags input_flag = vr::VRF_INPUT0;
 					vr::VRButtonStateFlags touch_flag = vr::VRF_INPUT0_TOUCH;
 					int ai = 0;
-					for (int ii = 0; ii < 5; ++ii,
+					for (int ii = 0; ii < vr::max_nr_controller_inputs; ++ii,
 						input_flag = vr::VRButtonStateFlags(4 * input_flag),
 						touch_flag = vr::VRButtonStateFlags(4 * touch_flag)) {
 						// determine input type
@@ -204,7 +204,7 @@ namespace cgv {
 								if (dx != 0) {
 									/// construct a throttle event from value and value change
 									vr_throttle_event vrte(kit_handle, ci, new_state, x, dx, kit_index, ii, time);
-									on_event(vrte);
+									dispatch(vrte);
 								}
 							}
 							++ai;
@@ -231,7 +231,7 @@ namespace cgv {
 									float y = new_state.controller[ci].axes[ai + 1];
 									vr_stick_event vrse(kit_handle, ci, new_state,
 										action, x, y, 0, 0, kit_index, 0, time);
-									on_event(vrse);
+									dispatch(vrse);
 								}
 								// otherwise check for move or drag event
 								else {
@@ -247,7 +247,7 @@ namespace cgv {
 											action = SA_DRAG;
 										vr_stick_event vrse(kit_handle, ci, new_state,
 											action, p(0), p(1), diff(0), diff(1), kit_index, ii, time);
-										on_event(vrse);
+										dispatch(vrse);
 									}
 								}
 							}
@@ -261,15 +261,20 @@ namespace cgv {
 			if ((flags & VRE_POSE) != 0) {
 				if (array_unequal(new_state.hmd.pose, last_state.hmd.pose, 12)) {
 					vr_pose_event vrpe(kit_handle, -1, new_state, new_state.hmd.pose, last_state.hmd.pose, kit_index, time);
-					on_event(vrpe);
+					dispatch(vrpe);
 				}
-				for (int c = 0; c < 4; ++c) 
-					if (new_state.controller[c].status != vr::VRS_DETACHED) {
+				for (int c = 0; c < vr::max_nr_controllers; ++c) 
+					if (new_state.controller[c].status == vr::VRS_TRACKED) {
 						if (array_unequal(new_state.controller[c].pose, last_state.controller[c].pose, 12)) {
 							vr_pose_event vrpe(kit_handle, c, new_state, new_state.controller[c].pose, last_state.controller[c].pose, kit_index, time);
-							on_event(vrpe);
+							dispatch(vrpe);
 						}
 					}
+			}
+
+			//write log
+			if (log_data[kit_index] && !(new_state == last_state)) {
+				log_data[kit_index]->log_vr_state(new_state,time);
 			}
 			last_state = new_state;
 		}
@@ -353,6 +358,41 @@ namespace cgv {
 			}
 			return on_event(e);
 		}
+		void vr_server::enable_log(std::string fn, bool in_memory_log, int filter, int kit_index)
+		{
+			auto it = log_data.find(kit_index);
+			if (log_data[kit_index]) {
+				log_data[kit_index]->disable_log();
+				log_data[kit_index] = nullptr;
+			}
+			log_data[kit_index] = new vr::vr_log();
+			vr::vr_log& log = *log_data[kit_index];
+			
+			if (fn.size() > 0) {
+				auto p = std::make_shared<std::ofstream>(fn);
+				log.enable_ostream_log(p);
+			}
+			if (in_memory_log)
+				log.enable_in_memory_log();
+
+			log.set_filter(filter);
+			log.lock_settings();
+		}
+		void vr_server::disable_log(int kit_index)
+		{
+			auto it = log_data.find(kit_index);
+			if (it != log_data.end() && it->second)
+				it->second->disable_log();
+		}
+
+		vr::vr_log& vr_server::ref_log(const int kit_index)
+		{
+			return *log_data[kit_index];
+		}
+		cgv::data::ref_ptr<vr::vr_log> vr_server::get_log(const int kit_index)
+		{
+			return log_data[kit_index];
+		}
 		/// return a reference to gamepad server singleton
 		vr_server& ref_vr_server()
 		{
@@ -375,12 +415,14 @@ namespace cgv {
 		{
 			if (w.empty())
 				w = application::get_window(0);
-			ref_dispatch_window_pointer_vr() = w;
-			connect(ref_vr_server().on_event, dispatch_vr_event);
-			if (connect_device_change_only_to_animation_trigger)
-				connect_copy(get_animation_trigger().shoot, cgv::signal::rebind(&ref_vr_server(), &vr_server::check_device_changes, cgv::signal::_1));
-			else
-				connect_copy(get_animation_trigger().shoot, cgv::signal::rebind(&ref_vr_server(), &vr_server::check_and_emit_events, cgv::signal::_1));
+			if (ref_dispatch_window_pointer_vr() != w) {
+				ref_dispatch_window_pointer_vr() = w;
+				connect(ref_vr_server().on_event, dispatch_vr_event);
+				if (connect_device_change_only_to_animation_trigger)
+					connect_copy(get_animation_trigger().shoot, cgv::signal::rebind(&ref_vr_server(), &vr_server::check_device_changes, cgv::signal::_1));
+				else
+					connect_copy(get_animation_trigger().shoot, cgv::signal::rebind(&ref_vr_server(), &vr_server::check_and_emit_events, cgv::signal::_1));
+			}
 		}
 
 	}

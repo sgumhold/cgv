@@ -156,7 +156,7 @@ void analyze_tracking_reference(vr::IVRSystem* hmd_ptr, vr::TrackedDeviceIndex_t
 
 /// construct
 openvr_kit::openvr_kit(unsigned _width, unsigned _height, vr_driver* _driver, vr::IVRSystem* _hmd, const std::string& _name)
-	: gl_vr_display(_width, _height, _driver, _hmd, _name)
+	: vr_kit(_driver, _hmd, _name, _width, _height)
 {
 	camera = new openvr_camera(_hmd);
 	info.force_feedback_support = true;
@@ -297,15 +297,33 @@ void openvr_kit::update_controller_info(int ci, vr::TrackedDeviceIndex_t device_
 	}	
 	update_trackable_info(CI, device_index, false);
 	CI.type = VRC_CONTROLLER;
+	CI.role = VRC_NOT_ASSIGNED;
+	switch (get_hmd()->GetControllerRoleForTrackedDeviceIndex(device_index)) {
+	case TrackedControllerRole_Invalid :
+	case TrackedControllerRole_LeftHand :
+		CI.role = VRC_LEFT_HAND;
+		break;
+	case TrackedControllerRole_RightHand :
+		CI.role = VRC_RIGHT_HAND;
+		break;
+	case TrackedControllerRole_OptOut :
+		break;
+	case TrackedControllerRole_Treadmill :
+		CI.role = VRC_TREADMILL;
+		break;
+	case TrackedControllerRole_Stylus :
+		CI.role = VRC_STYLUS;
+		break;
+	}
 	CI.serial_number = serial_number;
 //	std::string attached_device_id = get_string_property(get_hmd(), device_index, Prop_AttachedDeviceId_String);
 //	if (!attached_device_id.empty())
 //		CI.variable_parameters["attached_device_id"] = attached_device_id;
-	std::fill(CI.input_type, CI.input_type + 5, VRI_NONE);
-	std::fill(CI.axis_type, CI.axis_type + 8, VRA_NONE);
+	std::fill(CI.input_type, CI.input_type + vr::max_nr_controller_inputs, VRI_NONE);
+	std::fill(CI.axis_type, CI.axis_type + vr::max_nr_controller_axes, VRA_NONE);
 	int ai = 0;
 	CI.nr_inputs = 0;
-	for (int ii = 0; ii < 5; ++ii)
+	for (int ii = 0; ii < vr::max_nr_controller_inputs; ++ii)
 		switch (get_int32_property(get_hmd(), device_index, ETrackedDeviceProperty(Prop_Axis0Type_Int32 + ii), false)) {
 		case k_eControllerAxis_None: 
 			break;
@@ -380,6 +398,8 @@ void openvr_kit::update_tracker_info(int ci, vr::TrackedDeviceIndex_t device_ind
 	}
 	update_trackable_info(CI, device_index, false);
 	CI.serial_number = serial_number;
+	CI.type = VRC_TRACKER;
+	CI.role = VRC_NOT_ASSIGNED;
 }
 
 /// update tracker info
@@ -418,6 +438,8 @@ bool openvr_kit::query_state_impl(vr_kit_state& state, int pose_query)
 	if (vr::VRCompositor())
 		tuo = vr::VRCompositor()->GetTrackingSpace();
 
+	// special query for controllers assigned to hands
+	bool updated[2] = { false, false };
 	for (int ci = 0; ci < 2; ++ci) {
 		if (controller_only && !controller_onlys[1 - ci])
 			continue;
@@ -435,6 +457,7 @@ bool openvr_kit::query_state_impl(vr_kit_state& state, int pose_query)
 			}
 			extract_controller_state(controller_state, ci, state.controller[ci]);
 			update_controller_info(ci, dis[ci]);
+			updated[ci] = true;
 		}
 	}
 
@@ -455,8 +478,8 @@ bool openvr_kit::query_state_impl(vr_kit_state& state, int pose_query)
 		state.hmd.status = vr::VRS_DETACHED;
 	}
 	int next_generic_controller_index = 2;
-	state.controller[2].status = vr::VRS_DETACHED;
-	state.controller[3].status = vr::VRS_DETACHED;
+	for (int ci = 2; ci < vr::max_nr_controllers; ++ci)
+		state.controller[ci].status = vr::VRS_DETACHED;
 	clear_tracking_reference_states();
 	for (int device_index = 0; device_index < vr::k_unMaxTrackedDeviceCount; ++device_index)
 	{
@@ -468,8 +491,30 @@ bool openvr_kit::query_state_impl(vr_kit_state& state, int pose_query)
 				tracked_pose_ptr = &state.hmd;
 				update_hmd_info();
 				break;
-			case TrackedDeviceClass_GenericTracker :
-				if (next_generic_controller_index < 4) {
+			case TrackedDeviceClass_Controller:
+				// check for controllers corresponding to left and right hand which are assigned 
+				// to controller indices 0 and 1
+				if (device_index == dis[0] || device_index == dis[1]) {
+					int ci = (device_index == dis[0] ? 0 : 1);
+					// only update state if not yet done before
+					if (!updated[ci]) {
+						tracked_pose_ptr = &state.controller[ci];
+						state.controller[ci].status = vr::VRS_TRACKED;
+						update_controller_info(ci, device_index);
+					}
+				}
+				// otherwise we found a new controller
+				else {
+					if (next_generic_controller_index < vr::max_nr_controllers) {
+						tracked_pose_ptr = &state.controller[next_generic_controller_index];
+						state.controller[next_generic_controller_index].status = vr::VRS_TRACKED;
+						update_controller_info(next_generic_controller_index, device_index);
+						++next_generic_controller_index;
+					}
+				}
+				break;
+			case TrackedDeviceClass_GenericTracker:
+				if (next_generic_controller_index < vr::max_nr_controllers) {
 					tracked_pose_ptr = &state.controller[next_generic_controller_index];
 					state.controller[next_generic_controller_index].status = vr::VRS_TRACKED;
 					update_tracker_info(next_generic_controller_index, device_index);
@@ -513,7 +558,6 @@ bool openvr_kit::set_vibration(unsigned controller_index, float low_frequency_st
 		0, 5);
 	return true;
 }
-
 
 /// access to 3x4 matrix in column major format for transformation from eye (0..left, 1..right) to head coordinates
 void openvr_kit::put_eye_to_head_matrix(int eye, float* pose_matrix) const

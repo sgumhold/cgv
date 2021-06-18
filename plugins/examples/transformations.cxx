@@ -102,10 +102,10 @@ public:
 		// increase reference counts of used renderer singeltons
 		cgv::render::ref_point_renderer(ctx, 1);
 		auto& sr = cgv::render::ref_sphere_renderer  (ctx, 1);
-		sr.set_attribute_array_manager(ctx, &manager);
+		sr.enable_attribute_array_manager(ctx, manager);
 		sr.set_position_array(ctx, points);
 		sr.set_color_array(ctx, colors);
-		sr.set_attribute_array_manager(ctx, 0);
+		sr.disable_attribute_array_manager(ctx, manager);
 		return true;
 	}
 	void draw_points(cgv::render::context& ctx)
@@ -113,15 +113,15 @@ public:
 		cgv::render::renderer& r = (render_mode == RM_POINTS ? 
 			static_cast<cgv::render::renderer&>(cgv::render::ref_point_renderer(ctx)) : 
 			static_cast<cgv::render::renderer&>(cgv::render::ref_sphere_renderer(ctx)));
-		r.set_attribute_array_manager(ctx, &manager);
+		r.enable_attribute_array_manager(ctx, manager);
 		r.set_render_style(render_mode == RM_POINTS ?
 			static_cast<cgv::render::render_style&>(point_style) :
 			static_cast<cgv::render::render_style&>(sphere_style));
 		if (r.validate_and_enable(ctx)) {
-			glDrawArrays(GL_POINTS, 0, points.size());
+			glDrawArrays(GL_POINTS, 0, GLsizei(points.size()));
 			r.disable(ctx);
 		}
-		r.set_attribute_array_manager(ctx, 0);
+		r.disable_attribute_array_manager(ctx, manager);
 	}
 	void draw(cgv::render::context& ctx)
 	{
@@ -190,4 +190,4 @@ public:
 	}
 };
 
-cgv::base::factory_registration<transformations> fr_renderer_test("new/demo/transformations", 'T', true);
+cgv::base::factory_registration<transformations> fr_transformations("new/demo/transformations", 'T', true);

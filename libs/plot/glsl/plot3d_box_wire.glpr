@@ -1,0 +1,11 @@
+vertex_file:plot3d_box.glvs
+vertex_file:plot_lib.glsl
+vertex_file:color_scale.glsl
+vertex_file:view.glsl
+vertex_file:group.glsl
+geometry_shader_info:points;line_strip;16
+geometry_file:box_wire.glgs
+geometry_file:view.glsl
+geometry_file:group.glsl
+fragment_file:default.glfs
+fragment_file:fragment.glfs

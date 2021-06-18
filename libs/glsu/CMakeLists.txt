@@ -1,31 +1,10 @@
-cmake_minimum_required(VERSION 2.6)
-project(glsu)
 
-# Needed for cgv_ commands
-find_package(cgv COMPONENTS)
+find_package(OpenGL REQUIRED)
 
-cgv_find_package(OpenGL)
-
-set(HEADERS GL/glsu.h)
-
-set(SOURCES 
-	glsu.c
-)
-
-# Also add the .def-file to the sources. CMake will know what to do with it
-# FIXME: Do not check for WIN32, but for VisualStudio
-if (WIN32)
-	set(SOURCES ${SOURCES} glsu.def)
-endif()
-
-include_directories(${OPENGL_INCLUDE_DIRS} "${CMAKE_CURRENT_SOURCE_DIR}")
-
-cgv_add_library(glsu 
-	SOURCES ${SOURCES} 
-	HEADERS ${HEADERS})
-
+add_library(glsu glsu.c glsu.def)
 target_link_libraries(glsu ${OPENGL_LIBRARIES})
+target_include_directories(glsu PUBLIC
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
+        $<INSTALL_INTERFACE:${CGV_LIBS_INCLUDE_DEST}/glsu>)
 
-
-cgv_write_find_file(glsu)
-
+install(TARGETS glsu EXPORT cgv_libs DESTINATION ${CGV_LIB_DEST})

@@ -10,6 +10,8 @@
 #include <set>
 
 #if defined(_WIN32)
+#include <Windows.h>
+#include <strsafe.h>
 #if defined(NDEBUG)
 #define CGV_NDEBUG
 #endif
@@ -23,19 +25,19 @@
 using namespace cgv::utils;
 
 namespace cgv {
-	namespace base {
+namespace base {
 
 
 
 /**************** additional types *********************/
 
-struct registration_info 
+struct registration_info
 {
 	bool registration_enabled;
 	bool permanent_registration;
 	bool registration_event_cleanup;
 	unsigned int nr_events_before_disable;
-	registration_info() 
+	registration_info()
 	{
 		registration_enabled = false;
 		permanent_registration = true;
@@ -49,13 +51,13 @@ struct registration_order_info
 	std::string partial_order;
 	bool before_contructor_execution;
 	std::string when;
-	registration_order_info() : before_contructor_execution(false) 
+	registration_order_info() : before_contructor_execution(false)
 	{
 	}
 	registration_order_info(const std::string& _partial_order, bool _before_contructor_execution, const std::string& _when) :
-		partial_order(_partial_order),
-		before_contructor_execution(_before_contructor_execution),
-		when(_when)
+		  partial_order(_partial_order),
+		  before_contructor_execution(_before_contructor_execution),
+		  when(_when)
 	{
 	}
 };
@@ -165,12 +167,12 @@ std::vector<base_ptr>& ref_listeners()
 
 void show_split_lines(const std::string& s)
 {
-	if (s.empty()) 
+	if (s.empty())
 		return;
 	std::vector<token> toks;
 	bite_all(tokenizer(s).set_ws(";"), toks);
-	for (unsigned i=0; i<toks.size(); ++i) 
-		std::cout << "\n    " << to_string(toks[i]).c_str();
+	for (unsigned i=0; i<toks.size(); ++i)
+		std::cout << "\n	" << to_string(toks[i]).c_str();
 }
 
 bool& ref_registration_debugging_enabled()
@@ -379,7 +381,7 @@ void enable_registration()
 
 	if (is_registration_debugging_enabled())
 		std::cout << "REG ENABLE <" << (ref_plugin_name().empty() ? ref_prog_name() : ref_plugin_name()) << "> Begin" << std::endl;
-	
+
 	unsigned i, i0 = ref_info().nr_events_before_disable;
 
 	sort_registration_events(true);
@@ -391,9 +393,9 @@ void enable_registration()
 		if (obr) {
 			if (is_registration_debugging_enabled())
 				std::cout << "REG CONSTRUCT " << obr->get_constructed_type_name() << "('" << ref_registration_events()[i].second << "')";
-			
+
 			ref_registration_events()[i].first = obr->construct_object();
-			
+
 			if (is_registration_debugging_enabled()) {
 				std::cout << " -> ";
 				show_object_debug_info(ref_registration_events()[i].first);
@@ -432,7 +434,7 @@ void enable_registration()
 		// send all buffered events
 		for (unsigned j=0; j<i0; ++j)
 			object->get_interface<registration_listener>()->register_object(ref_registration_events()[j].first,
-								ref_registration_events()[j].second);
+																			ref_registration_events()[j].second);
 	}
 
 	// next register all remaining objects
@@ -530,8 +532,8 @@ void enable_registration_event_cleanup()
 		ref_registration_events().clear();
 	else
 		ref_registration_events().erase(
-			ref_registration_events().begin(),
-			ref_registration_events().begin()+ref_info().nr_events_before_disable);
+			  ref_registration_events().begin(),
+			  ref_registration_events().begin()+ref_info().nr_events_before_disable);
 	ref_info().nr_events_before_disable = 0;
 }
 
@@ -557,7 +559,7 @@ void register_object(base_ptr object, const std::string& options)
 	// if registration is disabled or if registratration event cleanup is disabled, store registration event
 	if (!is_registration_enabled() || !is_registration_event_cleanup_enabled()) {
 		ref_registration_events().push_back(std::pair<base_ptr, std::string>(object, options));
-		
+
 		if (is_registration_debugging_enabled()) {
 			std::cout << "REG EVENT ('" << options << "') ";
 			show_object_debug_info(object);
@@ -581,7 +583,7 @@ void register_object(base_ptr object, const std::string& options)
 			// next register all remaining objects
 			for (unsigned i = 0; i<ref_registration_events().size(); ++i)
 				rl->register_object(ref_registration_events()[i].first,
-				ref_registration_events()[i].second);
+									ref_registration_events()[i].second);
 		}
 	}
 
@@ -678,7 +680,6 @@ bool process_config_file_ext(const std::string& _file_name, bool* persistent = 0
 	std::string file_name = get_config_file_name(_file_name);
 	if (file_name.empty())
 		return false;
-
 	// try to read file
 	std::string content;
 	if (!file::read(file_name, content, true)) {
@@ -698,9 +699,54 @@ bool process_config_file_ext(const std::string& _file_name, bool* persistent = 0
 
 	// interpret each line as a command
 	unsigned int i;
+	std::string cfg_file_dir = cgv::utils::file::get_path(_file_name);
 	for (i = 0; i < lines.size(); ++i) {
 		command_info info;
-		analyze_command((token&)(lines[i]), false, &info);
+		std::string line;
+		const char* begin = lines[i].begin;
+		const char* iter = begin;
+		while (iter < lines[i].end) {
+			// find next appearance of '$'
+			iter = std::find(iter, lines[i].end, '$');
+			if (iter == lines[i].end) {
+				if (begin > lines[i].begin)
+					line += std::string(begin, lines[i].end);
+				break;
+			}
+			// check for '('
+			auto jter = iter;
+			std::string value;
+			if (++jter < lines[i].end) {
+				if (*jter == '(') {
+					// extract name of variable up to closing paranthesis
+					std::string var_name;
+					while (++jter < lines[i].end && *jter != ')') {
+						var_name.push_back(*jter);
+					}
+					if (jter < lines[i].end) {
+						// convert to upper case
+						var_name = cgv::utils::to_upper(var_name);
+						if (var_name == "CFG_FILE_DIR")
+							value = cfg_file_dir;
+						else {
+							value = std::string(getenv(var_name.c_str()));
+						}
+					}
+				}
+			}
+			if (value.empty()) {
+				++iter;
+				continue;
+			}
+			line += std::string(begin, iter);
+			line += value;
+			begin = iter = jter+1;
+		}
+		if (line.empty())
+			analyze_command(lines[i], false, &info);
+		else
+			analyze_command(token(line), false, &info);
+
 		process_command_ext(info, persistent, cfo, &content[0]);
 		// process_command_ext((token&)(lines[i]), false, persistent, cfo, &content[0]);
 	}
@@ -724,7 +770,7 @@ bool process_gui_file(const std::string& file_name)
 
 
 test::test(const std::string& _test_name, bool (*_test_func)())
-	: test_name(_test_name), test_func(_test_func)
+	  : test_name(_test_name), test_func(_test_func)
 {
 }
 
@@ -751,9 +797,9 @@ test_registration::test_registration(const std::string& _test_name, bool (*_test
 }
 
 
-/// construct 
+/// construct
 factory::factory(const std::string& _created_type_name, bool _singleton, const std::string& _object_options)
-	: created_type_name(_created_type_name), is_singleton(_singleton), object_options(_object_options)
+	  : created_type_name(_created_type_name), is_singleton(_singleton), object_options(_object_options)
 {
 }
 
@@ -771,7 +817,7 @@ std::string factory::get_property_declarations()
 }
 
 
-/// 
+///
 bool factory::set_void(const std::string& property, const std::string& value_type, const void* value_ptr)
 {
 	if (property == "create") {
@@ -785,7 +831,7 @@ bool factory::set_void(const std::string& property, const std::string& value_typ
 		return false;
 }
 
-/// 
+///
 bool factory::get_void(const std::string& property, const std::string& value_type, void* value_ptr)
 {
 	if (property == "create") {
@@ -847,7 +893,7 @@ void register_factory_object(base_ptr fo, const char* item_text, char shortcut)
 }
 
 void register_prog_name(const char* _prog_name)
-{	
+{
 	ref_prog_name() = cgv::utils::file::get_file_name(_prog_name);
 	std::string prog_path_prefix = cgv::utils::file::clean_path(cgv::utils::file::get_path(_prog_name));
 	if (!prog_path_prefix.empty())
@@ -856,14 +902,14 @@ void register_prog_name(const char* _prog_name)
 }
 
 resource_file_info::resource_file_info(
-	unsigned int _file_offset, 
-	unsigned int _file_length, 
-	const char* _file_data, const 
-	std::string& _source_file)
-	: file_offset(_file_offset), 
-	  file_length(_file_length), 
-	  file_data(_file_data), 
-	  source_file(_source_file) {}
+	  unsigned int _file_offset,
+	  unsigned int _file_length,
+	  const char* _file_data, const
+	  std::string& _source_file)
+	  : file_offset(_file_offset),
+		file_length(_file_length),
+		file_data(_file_data),
+		source_file(_source_file) {}
 
 void register_resource_file(const std::string& file_path, unsigned int file_offset, unsigned int file_length, const char* file_data, const std::string& source_file)
 {
@@ -959,7 +1005,7 @@ CommandType analyze_command(const cgv::utils::token& cmd, bool eliminate_quotes,
 	// eliminate quotes around argument, which need to be used in commands specified on the command line
 	if (eliminate_quotes && args_tok.get_length() >= 2 &&
 		((args_tok[0] == '"'  && args_tok[(int)args_tok.get_length() - 1] == '"') ||
-		(args_tok[0] == '\'' && args_tok[(int)args_tok.get_length() - 1] == '\''))) {
+		 (args_tok[0] == '\'' && args_tok[(int)args_tok.get_length() - 1] == '\''))) {
 		++args_tok.begin;
 		--args_tok.end;
 	}
@@ -1003,13 +1049,15 @@ bool process_command_ext(const command_info& info, bool* persistent, config_file
 		if (persistent)
 			*persistent = false;
 		return true;
-	case CT_PLUGIN:
+	case CT_PLUGIN: {
 		if (load_plugin(to_string(info.parameters[0]))) {
 			std::cout << "read plugin " << info.parameters[0] << std::endl;
 			return true;
 		}
 		std::cerr << "error reading plugin " << info.parameters[0] << std::endl;
+
 		return false;
+	}
 	case CT_CONFIG:
 		if (process_config_file_ext(to_string(info.parameters[0]), persistent)) {
 			std::cout << "read config file " << get_config_file_name(to_string(info.parameters[0])) << std::endl;
@@ -1026,41 +1074,41 @@ bool process_command_ext(const command_info& info, bool* persistent, config_file
 		return false;
 	case CT_NAME:
 	case CT_TYPE:
-		{
-			base_ptr bp;
-			if (info.command_type == CT_NAME) {
-				named_ptr np = find_object_by_name(to_string(info.parameters[0]));
-				if (np) {
-					std::cout << "name(" << np->get_name().c_str() << ")";
-					bp = np;
-				}
-				else
-					std::cerr << "could not find object of name '" << info.parameters[0] << "'" << std::endl;
+	{
+		base_ptr bp;
+		if (info.command_type == CT_NAME) {
+			named_ptr np = find_object_by_name(to_string(info.parameters[0]));
+			if (np) {
+				std::cout << "name(" << np->get_name().c_str() << ")";
+				bp = np;
 			}
-			else {
-				bp = find_object_by_type(to_string(info.parameters[0]));
-				if (bp)
-					std::cout << "type(" << bp->get_type_name() << ")";
-				else
-					std::cerr << "could not find object of type <" << info.parameters[0] << ">" << std::endl;
-			}
-			if (bp) {
-				std::string args = to_string(info.parameters[1]);
-				// replace single quotes by double quotes
-				for (unsigned int x = 0; x < args.size(); ++x)
-					if (args[x] == '\'')
-						args[x] = '"';
-
-				show_split_lines(args);
-				std::cout << "\n" << std::endl;
-				if (persistent && *persistent && cfo)
-					cfo->multi_observe(bp, args, info.parameters[1].begin - begin);
-				else
-					bp->multi_set(to_string(info.parameters[1]), true);
-				return true;
-			}
-			return false;
+			else
+				std::cerr << "could not find object of name '" << info.parameters[0] << "'" << std::endl;
 		}
+		else {
+			bp = find_object_by_type(to_string(info.parameters[0]));
+			if (bp)
+				std::cout << "type(" << bp->get_type_name() << ")";
+			else
+				std::cerr << "could not find object of type <" << info.parameters[0] << ">" << std::endl;
+		}
+		if (bp) {
+			std::string args = to_string(info.parameters[1]);
+			// replace single quotes by double quotes
+			for (unsigned int x = 0; x < args.size(); ++x)
+				if (args[x] == '\'')
+					args[x] = '"';
+
+			show_split_lines(args);
+			std::cout << "\n" << std::endl;
+			if (persistent && *persistent && cfo)
+				cfo->multi_observe(bp, args, info.parameters[1].begin - begin);
+			else
+				bp->multi_set(to_string(info.parameters[1]), true);
+			return true;
+		}
+		return false;
+	}
 	}
 	return false;
 }
@@ -1148,9 +1196,9 @@ bool process_command_ext(const token& cmd, bool eliminate_quotes, bool* persiste
 	tokenizer(cmd_header).set_sep("()").set_ws("").bite_all(toks);
 
 	// check for name or type command
-	if (toks.size() == 4 && toks[1] == "(" && toks[3] == ")" && 
+	if (toks.size() == 4 && toks[1] == "(" && toks[3] == ")" &&
 		(toks[0]=="name" || toks[0]=="type") ) {
-		
+
 
 		// replace single quotes by double quotes
 		for (unsigned int x=0; x<args.size(); ++x)
@@ -1270,8 +1318,10 @@ std::string extend_plugin_name(const std::string& fn)
 	n += "12";
 #elif defined(_MSC_VER) && _MSC_VER < 1910
 	n += "14";
-#elif defined(_MSC_VER)
+#elif defined(_MSC_VER) && _MSC_VER < 1920
 	n += "141";
+#elif defined(_MSC_VER)
+	n += "142";
 #endif
 	n += ".dll";
 #else
@@ -1280,7 +1330,7 @@ std::string extend_plugin_name(const std::string& fn)
 	return n;
 }
 
-	}
+}
 }
 
 #ifdef _WIN32
@@ -1288,19 +1338,45 @@ std::string extend_plugin_name(const std::string& fn)
 #	include <winbase.h>
 #else
 #	include <unistd.h>
-#	ifdef __APPLE__
-#		include "dlload_osx.cxx"
-#		define RTLD_NOW 1 // set to anything for now
-#	else
-#		include <dlfcn.h>
-#	endif
+#	include <dlfcn.h>
 #endif
 
 namespace cgv {
-	namespace base {
+namespace base {
 
-void* load_plugin(const std::string& file_name)
-{
+void *load_plugin_platform(const std::string &name) {
+#ifdef _WIN32
+	SetLastError(0);
+#ifdef _UNICODE
+	return LoadLibrary(cgv::utils::str2wstr(name).c_str());
+#else
+	return LoadLibrary(name.c_str());
+#endif
+#else
+ //   std::string ext_name = std::string("/home/vicci/develop/cgv/build/bin/")+name;
+//    std::cout << "try to load " << ext_name << std::endl;
+	std::string ext_name = name;
+	return dlopen(ext_name.c_str(), RTLD_NOW);
+#endif
+}
+
+void record_error_platform(const std::string &dll_name, std::vector<std::string> &errors) {
+#ifdef _WIN32
+	DWORD dw = GetLastError();
+	LPVOID lpMsgBuf;
+	FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS, nullptr,
+				  dw, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), (LPTSTR)&lpMsgBuf, 0, nullptr);
+	auto error = dll_name + ": " + std::string(static_cast<const char *>(lpMsgBuf));
+	LocalFree(lpMsgBuf);
+	errors.push_back(error);
+#else
+	auto errPtr = dlerror();
+	auto error = std::string(errPtr) + "\n";
+	errors.emplace_back(error);
+#endif
+}
+
+void* load_plugin(const std::string& file_name) {
 	std::vector<token> names;
 	bite_all(tokenizer(file_name).set_ws(",|;"), names);
 
@@ -1308,36 +1384,52 @@ void* load_plugin(const std::string& file_name)
 	if (enabled)
 		disable_registration();
 
-	void* result = 0;
-	for (unsigned i=0; i<names.size(); ++i) {
+	void* result = nullptr;
+	std::vector<std::string> errors = {};
+	for (auto &plugin_name : names) {
 		std::string fn[2];
-		fn[0] = to_string(names[i]);
+		fn[0] = to_string(plugin_name);
 		fn[1] = extend_plugin_name(fn[0]);
-#ifdef NDEBUG
+#ifdef WIN32
+		if (cgv::utils::to_lower(cgv::utils::file::get_extension(fn[0]) != "dll"))
+			fn[0] += ".dll";
+#elif __APPLE__
+		if (cgv::utils::to_lower(cgv::utils::file::get_extension(fn[0]) != "dylib"))
+			fn[0] = std::string("lib")+fn[0]+".dylib";
 #else
+		if (cgv::utils::to_lower(cgv::utils::file::get_extension(fn[0]) != "so"))
+			fn[0] = std::string("lib") + fn[0] + ".so";
+#endif
+#ifndef NDEBUG
 		std::swap(fn[0], fn[1]);
 #endif
-		result = 0;
-		for (int j=0; j<2; ++j) {
-			ref_plugin_name() = fn[j];
-#ifdef _WIN32
-#ifdef _UNICODE
-			result = LoadLibrary(cgv::utils::str2wstr(fn[j]).c_str());
-#else
-			result = LoadLibrary(fn[j].c_str());
-#endif
-#else
-			result = dlopen(fn[j].c_str(), RTLD_NOW);
-#endif
-			if (result)
+
+		result = nullptr;
+		for (auto &dll_name : fn) {
+			ref_plugin_name() = dll_name;
+			result = load_plugin_platform(dll_name);
+			if (result) {
 				break;
+			} else {
+				record_error_platform(dll_name, errors);
+			}
 		}
 	}
+
 	if (enabled)
 		enable_registration();
 	ref_plugin_name().clear();
+
+	if (result == nullptr && !errors.empty()) {
+		std::cerr << "failed to load plugin " << file_name << std::endl;
+		for (const auto &err : errors) {
+			std::cerr << "	" << err;
+		}
+	}
+
 	return result;
 }
+
 bool unload_plugin(void* handle)
 {
 #ifdef _WIN32
@@ -1347,5 +1439,5 @@ bool unload_plugin(void* handle)
 #endif
 }
 
-	}
+}
 }

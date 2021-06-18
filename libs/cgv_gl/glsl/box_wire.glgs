@@ -9,11 +9,11 @@ in vec4 color_gs[];
 
 out vec4 color_fs;
 
-int surface_side_handling(in vec3 position, inout vec3 normal, inout vec4 color);
+mat4 get_projection_matrix();
 
 void emit_vertex(in vec4 p)
 {
-	gl_Position = gl_ProjectionMatrix * p;
+	gl_Position = get_projection_matrix() * p;
 	EmitVertex();
 }
 

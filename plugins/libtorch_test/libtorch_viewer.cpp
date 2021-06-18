@@ -7,8 +7,6 @@
 
 #include <libtorch.h>
 
-//#include <fltk/Image.h>
-
 libtorch_viewer::libtorch_viewer() {
 
 	set_name("Libtorch MNIST");

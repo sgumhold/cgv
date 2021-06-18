@@ -1,4 +1,24 @@
-#version 150
+#version 330 core
+
+uniform float radius_scale = 1.0;
+uniform vec4 halo_color;
+uniform float halo_width_in_pixel = 0.0;
+uniform float percentual_halo_width = 0.0;
+
+in vec4  position;
+in float radius;
+in vec4  color;
+in int   group_index;
+
+out SPHERE_GS {
+	mat3 normal_matrix;
+	mat4 model_view_matrix;
+	mat4 model_view_projection_matrix;
+	vec4 color;
+	vec4 halo_color;
+	float halo_width_in_pixel;
+	float percentual_halo_width;
+} vo;
 
 //***** begin interface of view.glsl ***********************************
 mat4 get_modelview_matrix();
@@ -11,22 +31,8 @@ mat3 get_inverse_normal_matrix();
 //***** end interface of view.glsl ***********************************
 
 //***** begin interface of sphere_lib.glvs ***********************************
-void output_sphere_parameter_space(in vec4 sphere);
 void output_sphere_parameter_space(in vec4 sphere, in mat4 MV, in mat4 MVP, in mat3 NM);
-void output_sphere_parameter_space(in vec4 sphere, in mat4 MV, in mat4 MVP, in mat3 NM, in mat4 iMV);
 //***** end interface of sphere_lib.glvs ***********************************
-
-uniform float radius_scale;
-
-in vec4  position;
-in float radius;
-in vec4  color;
-in int   group_index;
-
-out mat3  NM;
-out mat4  MV;
-out mat4  MVP;
-out vec4  color_gs;
 
 //***** begin interface of group.glsl ***********************************
 vec4 group_color(in vec4 color, int group_index);
@@ -41,18 +47,21 @@ void right_multiply_group_position_matrix_and_rigid(inout mat4 MV, int group_ind
 void main()
 {
 	// compute normal transformation matrix
-	NM = get_normal_matrix();
-	right_multiply_group_normal_matrix(NM, group_index);
+	vo.normal_matrix = get_normal_matrix();
+	right_multiply_group_normal_matrix(vo.normal_matrix, group_index);
 	// compute position transformation matrix
-	MV = get_modelview_matrix();
-	right_multiply_group_position_matrix(MV, group_index);
-	MVP = get_modelview_projection_matrix();
-	right_multiply_group_position_matrix(MVP, group_index);
+	vo.model_view_matrix = get_modelview_matrix();
+	right_multiply_group_position_matrix(vo.model_view_matrix, group_index);
+	vo.model_view_projection_matrix = get_modelview_projection_matrix();
+	right_multiply_group_position_matrix(vo.model_view_projection_matrix, group_index);
 	// compute sphere color
-	color_gs = group_color(color, group_index);
+	vo.color = group_color(color, group_index);
 	// output sphere parameter space for geometry shader
 	gl_Position = position;
 	gl_Position.xyz = gl_Position.xyz / gl_Position.w;
 	gl_Position.w = radius_scale * radius;
-	output_sphere_parameter_space(gl_Position, MV, MVP, NM);
+	vo.halo_width_in_pixel = halo_width_in_pixel;
+	vo.percentual_halo_width = percentual_halo_width;
+	vo.halo_color = halo_color;
+	output_sphere_parameter_space(gl_Position, vo.model_view_matrix, vo.model_view_projection_matrix, vo.normal_matrix);
 }

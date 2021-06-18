@@ -55,6 +55,7 @@ class CGV_API shader_code : public render_component
 protected:
 	/// store the shader type
 	ShaderType st;
+
 public:
 	///create shader a shader code object
 	shader_code();

@@ -20,6 +20,8 @@ class huge :
 	public cgv::gui::provider
 {
 protected:
+	bool aam_out_of_date;
+	cgv::render::attribute_array_manager aam;
 	// per vertex location
 	std::vector<vec4> spheres;
 	std::vector<rgba> colors;
@@ -49,6 +51,7 @@ protected:
 			spheres[i] = vec4(d(g), d(g), d(g), (d(g)+0.2f)*radius);
 			colors[i] = rgba(d(g), d(g), d(g), 0.5f*d(g) + 0.5f);
 		}
+		aam_out_of_date = true;
 	}
 public:
 	/// define format and texture filters in constructor
@@ -85,8 +88,10 @@ public:
 
 		if (!s_renderer.init(ctx))
 			return false;
+		aam.init(ctx);
 		s_renderer.set_y_view_angle(float(view_ptr->get_y_view_angle()));
 		s_renderer.set_render_style(sphere_style);
+		s_renderer.enable_attribute_array_manager(ctx, aam);
 		return true;
 	}
 
@@ -119,9 +124,11 @@ public:
 			glEnable(GL_BLEND);
 			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		}
-
-		s_renderer.set_sphere_array(ctx, spheres);
-		s_renderer.set_color_array(ctx, colors);
+		if (aam_out_of_date) {
+			s_renderer.set_sphere_array(ctx, spheres);
+			s_renderer.set_color_array(ctx, colors);
+			aam_out_of_date = false;
+		}
 		render_points(ctx, s_renderer);
 		if (blend)
 			glDisable(GL_BLEND);
@@ -129,11 +136,11 @@ public:
 	void clear(cgv::render::context& ctx)
 	{
 		s_renderer.clear(ctx);
+		aam.destruct(ctx);
 	}
 	void create_gui()
 	{
 		add_decorator("huge", "heading");
-
 		add_member_control(this, "nr_primitives", nr_primitives, "value_slider", "min=1;max=494967296;log=true;ticks=true");
 		add_member_control(this, "sort", sort_points, "toggle", "shortcut='S'");
 		add_member_control(this, "blend", blend, "toggle", "shortcut='B'");

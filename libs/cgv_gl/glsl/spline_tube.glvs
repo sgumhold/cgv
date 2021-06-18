@@ -1,0 +1,21 @@
+#version 460 
+
+in vec4 position;
+in float radius;
+in vec4 color;
+in int group_index;
+in vec4 tangent;
+
+out flat vec4 tangent_gs;
+out flat vec4 color_gs;
+
+uniform float radius_scale;
+
+void main()
+{
+	// TODO: group color and transformations not yet supported
+	//color_gs = group_color(color, group_index);
+	color_gs = color;
+	tangent_gs = tangent;
+	gl_Position = vec4(position.xyz, radius * radius_scale);
+}

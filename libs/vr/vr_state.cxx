@@ -14,7 +14,7 @@ namespace vr {
 	{
 		time_stamp = 0;
 		button_flags = 0;
-		for (unsigned i = 0; i < 8; ++i)
+		for (unsigned i = 0; i < max_nr_controller_axes; ++i)
 			axes[i] = 0;
 		vibration[0] = vibration[1] = 0;
 	}		/// place the 3d ray origin and the 3d ray direction into the given arrays

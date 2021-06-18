@@ -11,48 +11,51 @@ namespace cgv {
 /** extend common plot configuration with parameters specific to 2d plot */
 struct CGV_API plot2d_config : public plot_base_config
 {
-	/// whether to connect data points with lines
-	bool show_lines;
-	/// line width
-	float line_width;
-	/// line color
-	rgb line_color;
 	/// set default values
 	plot2d_config(const std::string& _name);
 	/// configure the sub plot to a specific chart type
 	void configure_chart(ChartType chart_type);
-	/// add line color setting
-	void set_colors(const rgb& base_color);
 };
 
 /** The \c plot2d class draws 2d plots with potentially several sub plots of different chart types */
 class CGV_API plot2d : public plot_base
 {
 protected:
-	cgv::render::shader_program prog;
-	cgv::render::shader_program stick_prog;
-	cgv::render::shader_program bar_prog, bar_outline_prog;
-
-	/// overloaded in derived classes to compute complete tick render information
-	void compute_tick_render_information();
+	cgv::render::shader_program line_prog;
+	cgv::render::shader_program point_prog;
+	cgv::render::shader_program rectangle_prog;
 	///
-	void draw_sub_plot(cgv::render::context& ctx, unsigned i);
-	void draw_domain(cgv::render::context& ctx);
-	void draw_axes(cgv::render::context& ctx);
-	void draw_ticks(cgv::render::context& ctx);
-	void draw_tick_labels(cgv::render::context& ctx);
+	bool draw_point_plot(cgv::render::context& ctx, int si, int layer_idx);
+	bool draw_line_plot(cgv::render::context& ctx, int si, int layer_idx);
+	bool draw_stick_plot(cgv::render::context& ctx, int si, int layer_idx);
+	void configure_bar_plot(cgv::render::context& ctx);
+	bool draw_bar_plot(cgv::render::context& ctx, int si, int layer_idx);
+	int draw_sub_plots_jointly(cgv::render::context& ctx, int layer_idx);
+	//bool extract_tick_rectangles_and_tick_labels(std::vector<box2>& R, std::vector<rgb>& C, std::vector<float>& D,
+	//	std::vector<label_info>& tick_labels, int ai, int ti, float he, float z_plot = std::numeric_limits<float>::quiet_NaN());
+	void extract_domain_rectangles(std::vector<box2>& R, std::vector<rgb>& C, std::vector<float>& D);
+	void extract_domain_tick_rectangles_and_tick_labels(std::vector<box2>& R, std::vector<rgb>& C, std::vector<float>& D, std::vector<label_info>& tick_labels, std::vector<tick_batch_info>& tick_batches);
+	void draw_domain(cgv::render::context& ctx, int si = -1, bool no_fill = false);
 protected:
-	void set_uniforms(cgv::render::context& ctx, cgv::render::shader_program& prog, unsigned i = -1);
-	bool compute_sample_coordinate_interval(int i, int ai, float& samples_min, float& samples_max);
 
+	bool compute_sample_coordinate_interval(int i, int ai, float& samples_min, float& samples_max);
 	/// store 2d samples for data series
 	std::vector<std::vector<vec2> > samples;
 	/// allow to split series into connected strips that are represented by the number of contained samples
 	std::vector <std::vector<unsigned> > strips;
+	/// attribute managers for domain rectangles and domain tick labels
+	cgv::render::attribute_array_manager aam_domain, aam_domain_tick_labels;
 public:
-	/// construct empty plot with default domain [0..1,0..1]
-	plot2d();
+	bool disable_depth_mask;
+	/// whether to manage separate axes for each sub plot
+	bool* multi_axis_modes;
+	/// offset in between sub plots in x, y and z direction
+	vec3 sub_plot_delta;
 
+	/// construct 2D plot with given number of additional attributes and default parameters
+	plot2d(const std::string& title, unsigned nr_attributes = 0);
+	///
+	~plot2d();
 	/**@name management of sub plots*/
 	//@{
 	/// add sub plot and return sub plot index 
@@ -67,14 +70,22 @@ public:
 	std::vector<unsigned>& ref_sub_plot_strips(unsigned i = 0);
 	//@}
 
-	/// create the gui for a configuration, overload to specialize for extended configs
-	void create_config_gui(cgv::base::base* bp, cgv::gui::provider& p, unsigned i);
 	/// construct shader programs
 	bool init(cgv::render::context& ctx);
 	/// draw plot
 	void draw(cgv::render::context& ctx);
 	/// destruct shader programs
 	void clear(cgv::render::context& ctx);
+
+	/// create the gui for a point subplot
+	void create_point_config_gui(cgv::base::base* bp, cgv::gui::provider& p, plot_base_config& pbc);
+	/// create the gui for a stick subplot
+	void create_stick_config_gui(cgv::base::base* bp, cgv::gui::provider& p, plot_base_config& pbc);
+	/// create the gui for a bar subplot
+	void create_bar_config_gui(cgv::base::base* bp, cgv::gui::provider& p, plot_base_config& pbc);
+	///
+	void create_config_gui(cgv::base::base* bp, cgv::gui::provider& p, unsigned i);
+	void create_gui(cgv::base::base* bp, cgv::gui::provider& p);
 };
 
 	}

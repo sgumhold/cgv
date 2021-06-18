@@ -47,6 +47,11 @@ shader_config_ptr get_shader_config()
 		config = shader_config_ptr(new shader_config); 
 		if (getenv("CGV_SHADER_PATH"))
 			config->shader_path = getenv("CGV_SHADER_PATH");
+		else if (getenv("CGV_DIR"))
+			config->shader_path = 
+				std::string(getenv("CGV_DIR"))+"/libs/cgv_gl/glsl;"+
+				std::string(getenv("CGV_DIR"))+"/libs/plot/glsl;"+
+				std::string(getenv("CGV_DIR")) + "/plugins/examples";
 	}
 	return config;
 }
@@ -186,6 +191,10 @@ ShaderType shader_code::detect_shader_type(const std::string& file_name)
 		st = ST_GEOMETRY;
 	else if (ext == "glcs" || ext == "pglcs")
 		st = ST_COMPUTE;
+	else if (ext == "gltc" || ext == "pgltc")
+		st = ST_TESS_CONTROL;
+	else if (ext == "glte" || ext == "pglte")
+		st = ST_TESS_EVALUATION;
 	return st;
 }
 
@@ -216,8 +225,11 @@ std::string shader_code::read_code_file(const std::string &file_name, std::strin
 	}
 	if (get_shader_config()->show_file_paths)
 		std::cout << "read shader code <" << fn << ">" << std::endl;
-	if (!source.empty() && source[0] == '�')
+#if WIN32
+	// TODO § is considered two characters on Linux
+	if (!source.empty() && source[0] == '§')
 		source = cgv::utils::decode_base64(source.substr(1));
+#endif
 	if (get_extension(file_name)[0] == 'p') {
 		std::string code;
 		get_shader_config()->inserted_shader_file_names.clear();

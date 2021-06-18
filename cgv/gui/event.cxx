@@ -1,7 +1,7 @@
 #include "event.h"
 
 #include <cgv/utils/scan.h>
-
+#include <iomanip>
 namespace cgv {
 	namespace gui {
 
@@ -149,7 +149,7 @@ void event::stream_out(std::ostream& os) const
 	};
 	const char* kind_strs[] = { "none", "key", "mouse", "throttle", "stick", "pose" };
 
-	os << kind_strs[kind] << "[" << time << "] ";
+	os << kind_strs[kind] << "[" << std::fixed << std::showpoint << std::setprecision(3) << time << "] ";
 	if (get_toggle_keys() != 0) {
 		os << "(";
 		bool last = false;

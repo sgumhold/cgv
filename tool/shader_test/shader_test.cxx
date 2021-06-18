@@ -43,22 +43,26 @@ struct fltk_gl_context : public gl::gl_context, public fltk::GlWindow
 	}
 
 	bool is_created() const { return true; }
+	void attach_depth_buffer(bool attach = true) {}
 	bool is_alpha_buffer_attached() const { return true; }
-	void attach_alpha_buffer() {}
+	void attach_alpha_buffer(bool attach = true) {}
 	void detach_alpha_buffer() {}
 	bool is_stencil_buffer_attached() const { return false; }
-	void attach_stencil_buffer() {}
+	void attach_stencil_buffer(bool attach = true) {}
 	void detach_stencil_buffer() {}
 	bool is_quad_buffer_supported() const { return false; }
 	bool is_quad_buffer_attached() const { return false; }
 	void attach_quad_buffer() {}
 	void detach_quad_buffer() {}
 	bool is_accum_buffer_attached() const { return false; }
-	void attach_accum_buffer() {}
-	void detach_accum_buffer() {}
+	void attach_accumulation_buffer(bool attach = true) {}
+	void detach_accumulation_buffer() {}
 	bool is_multisample_enabled() const { return false; }
+	void attach_multi_sample_buffer(bool attach = true) {}
 	void enable_multisample() {}
 	void disable_multisample() {}
+	bool is_stereo_buffer_supported() const { return false; }
+	void attach_stereo_buffer(bool attach = true) {}
 
 
 	/// return the current render pass
@@ -123,7 +127,7 @@ bool convert_to_string(const std::string& in_fn, const std::string& out_fn, bool
 		return false;
 	// encode in base64 if this a cgv option
 	if (cgv::utils::has_option("ENCODE_SHADER_BASE64"))
-		content = std::string("§") + cgv::utils::encode_base64(content);
+		content = std::string("ï¿½") + cgv::utils::encode_base64(content);
 	// stream out the string declaration
 	std::string sn = get_file_name(in_fn);
 	replace(sn, '.', '_');
@@ -180,9 +184,13 @@ context* g_ctx_ptr;
 int perform_test()
 {
 	bool shader_developer = cgv::utils::has_option("SHADER_DEVELOPER");
-	bool exit_code = 0;
-	if (getenv("CGV_DIR") != 0)
-		get_shader_config()->shader_path = std::string(getenv("CGV_DIR"))+"/libs/cgv_gl/glsl";
+	int exit_code = 0;
+	if (get_shader_config()->shader_path.empty() && getenv("CGV_DIR") != 0) {
+		get_shader_config()->shader_path = 
+			std::string(getenv("CGV_DIR")) + "/libs/cgv_gl/glsl;"+
+			std::string(getenv("CGV_DIR")) + "/libs/plot/glsl;" +
+			std::string(getenv("CGV_DIR")) + "/libs/cgv_proc";
+	}
 	// check input file extension
 	std::string ext = to_lower(get_extension(g_argv[1]));
 	if (ext == "glpr") {
@@ -203,29 +211,18 @@ int perform_test()
 		}
 	}
 	else {
-//		if (ext[0] != 'p') {
-			// otherwise read and compile code
-			shader_code code;
-			if (code.read_and_compile(*g_ctx_ptr, g_argv[1], cgv::render::ST_DETECT, shader_developer)) {
-				// convert the input file to a string declaration with the string
-				convert_to_string(g_argv[1],g_argv[2]);
-				//write(g_argv[2], "ok", 2, true);
-				std::cout << "shader code ok (" << g_argv[1] << ")" << std::endl;
-			}
-			else {
-				if (!shader_developer)
-					convert_to_string(g_argv[1],g_argv[2]);
-				else
-					exit_code = 1;
-			}
-//		}
-/*		else {
+		shader_code code;
+		if (code.read_and_compile(*g_ctx_ptr, g_argv[1], cgv::render::ST_DETECT, shader_developer)) {
 			// convert the input file to a string declaration with the string
-			convert_to_string(g_argv[1],g_argv[2]);
-			//write(g_argv[2], "ok", 2, true);
-			std::cout << "pre-shader code transformed to log file only (" << g_argv[1] << ")" << std::endl;
+			convert_to_string(g_argv[1], g_argv[2]);
+			// write(g_argv[2], "ok", 2, true);
+			std::cout << "shader code ok (" << g_argv[1] << ")" << std::endl;
+		} else {
+			if (!shader_developer)
+				convert_to_string(g_argv[1], g_argv[2]);
+			else
+				exit_code = 1;
 		}
-		*/
 	}
 	return exit_code;
 }
@@ -249,13 +246,13 @@ int main(int argc, char** argv)
 		std::cout << "error: could not create context!" << std::endl;
 		return -1;
 	}
-	g_argc= argc;
+	g_argc = argc;
 	g_argv = argv;
 	g_ctx_ptr = ctx_ptr;
 #ifdef WIN32
 	exit_code = perform_test();
 #else
-	fltk::run();
+	exit_code = fltk::run();
 #endif
 	// destroy context
 	delete ctx_ptr;

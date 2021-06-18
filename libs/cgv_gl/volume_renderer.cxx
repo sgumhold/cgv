@@ -8,7 +8,7 @@ namespace cgv {
 		{
 			static int ref_count = 0;
 			static volume_renderer r;
-			r.manage_singelton(ctx, "volume_renderer", ref_count, ref_count_change);
+			r.manage_singleton(ctx, "volume_renderer", ref_count, ref_count_change);
 			return r;
 		}
 
@@ -36,11 +36,6 @@ namespace cgv {
 			volume_texture_size = vec3(1.0f);
 		}
 
-		void volume_renderer::set_attribute_array_manager(const context& ctx, attribute_array_manager* _aam_ptr)
-		{
-			renderer::set_attribute_array_manager(ctx, _aam_ptr);
-		}
-
 		bool volume_renderer::validate_attributes(const context& ctx) const
 		{
 			// validate set attributes
@@ -58,7 +53,7 @@ namespace cgv {
 			}
 
 			res = res && aa_manager.init(ctx);
-			set_attribute_array_manager(ctx, &aa_manager);
+			enable_attribute_array_manager(ctx, aa_manager);
 
 			eye_position = vec3(0.0f);
 			std::vector<vec3> vertices = {
