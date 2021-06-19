@@ -454,6 +454,10 @@ void point_cloud::resize(size_t nr_points)
 		I.resize(nr_points);
 	if (has_components())
 		component_indices.resize(nr_points);
+	if (has_lods())
+		lods.resize(nr_points);
+	if (has_labels())
+		labels.resize(nr_points);
 	P.resize(nr_points);
 }
 
@@ -964,7 +968,8 @@ enum LPCFlags
 	LPC_HAS_LODS = 256,
 	LPC_HAS_TRANSFORMATION_MAT = 512,
 	LPC_HAS_RENDER_STYLE = 1024, 
-	LPC_HAS_TRANS_VECTORS = 2 * 1024
+	LPC_HAS_TRANS_VECTORS = 2 * 1024,
+	LPC_HAS_LABELS= 4 * 1024
 
 };
 
@@ -1006,9 +1011,13 @@ bool point_cloud::read_lpc(const std::string& file_name) {
 		success = success && fread(&point_cloud_position, sizeof(Dir), 1, fp) == 1;
 		success = success && fread(&point_cloud_rotation, sizeof(Dir), 1, fp) == 1;
 	}
-
-	if (flags & LPC_HAS_RENDER_STYLE) // read render style if present, legacy lpc files supported 
+	if (flags & LPC_HAS_RENDER_STYLE) {// read render style if present, legacy lpc files supported 
 		success = success && fread(&cp_render_style, sizeof(cgv::render::clod_point_render_style), 1, fp) == 1;
+	}
+	if (flags & LPC_HAS_LABELS) {
+		labels.resize(n);
+		success = success && (fread(&labels[0], sizeof(GLint), n, fp) == n);
+	}
 
 	return fclose(fp) == 0 && success;
 }
@@ -1027,6 +1036,7 @@ bool point_cloud::write_lpc(const std::string& file_name) {
 	flags += has_lods() ? LPC_HAS_LODS : 0;
 	flags += LPC_HAS_TRANS_VECTORS; // write transformation matrix by default 
 	flags += LPC_HAS_RENDER_STYLE; // write render styles from now on 
+	flags += has_labels() ? LPC_HAS_LABELS : 0;
 
 	// write header 
 	success = success && fwrite(&n, sizeof(Cnt), 1, fp) == 1;
@@ -1045,8 +1055,12 @@ bool point_cloud::write_lpc(const std::string& file_name) {
 		success = success && fwrite(&point_cloud_position, sizeof(Dir), 1, fp) == 1;
 		success = success && fwrite(&point_cloud_rotation, sizeof(Dir), 1, fp) == 1;
 	}
-	if (flags & LPC_HAS_RENDER_STYLE) 
+	if (flags & LPC_HAS_RENDER_STYLE) {
 		success = success && fwrite(&cp_render_style, sizeof(cgv::render::clod_point_render_style), 1, fp) == 1;
+	}
+	if (flags & LPC_HAS_LABELS) {
+		success = success && (fwrite(&labels[0], sizeof(GLint), n, fp) == n);
+	}
 
 	return fclose(fp) == 0 && success;
 }
