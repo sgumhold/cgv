@@ -123,6 +123,8 @@ protected:
 	std::vector<PixCrd> I;
 	/// one byte per point lod information 
 	std::vector<uint8_t> lods;
+	/// per point label, used for holding the data downloaded from GPU in the Point Cleaning Project 
+	std::vector<GLint> labels;
 
 	/// container to store  one component index per point
 	std::vector<unsigned> component_indices;
@@ -302,7 +304,7 @@ public:
 	Dir& ref_point_cloud_position() { return point_cloud_position; }
 	Dir& ref_point_cloud_rotation() { return point_cloud_rotation; }
 
-	/// 
+	/// return if the current point cloud has level of detail as per point attribute 
 	bool has_lods() { return lods.size() > 0; }
 	/// return i-th lod as const reference
 	const uint8_t& lod(size_t i) const { return lods[i]; }
@@ -310,6 +312,17 @@ public:
 	uint8_t& lod(size_t i) { return lods[i]; }
 	/// resize to the same size as the points 
 	void resize_lods() { lods.resize(get_nr_points()); }
+
+	/// return if the current point cloud has label attribute 
+	bool has_labels() { return labels.size() > 0; }
+	/// return i-th label as const 
+	const GLint& label(size_t i) const { return labels[i]; }
+	/// return i-th label refernce
+	GLint& label(size_t i) { return labels[i]; }
+	/// resize to the same size as the points 
+	void resize_labels() { labels.resize(get_nr_points()); }
+	/// ref label vector to fill data 
+	std::vector<GLint>* ref_label_vector() { return &labels;}
 
 	/// return whether the point cloud has normals
 	bool has_normals() const;
