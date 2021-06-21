@@ -45,11 +45,32 @@ namespace cgv {
 				reduce_prog.set_uniform_array(ctx, "protection_zone_points", &culling_protection_zones[0].point, 2);
 				reduce_prog.enable(ctx);
 
+				GLuint64 startTime, stopTime;
+				unsigned int queryID[2];
+				glGenQueries(2, queryID);
+				glQueryCounter(queryID[0], GL_TIMESTAMP);
+
 				// run computation
 				glDispatchCompute((input_buffer_num_points / 128) + 1, 1, 1); //with NVIDIA GPUs in debug mode this will spam notifications about buffer usage
 
 				// synchronize
 				glMemoryBarrier(GL_ALL_BARRIER_BITS);
+
+				glQueryCounter(queryID[1], GL_TIMESTAMP);
+
+				GLint stopTimerAvailable = 0;
+				while (!stopTimerAvailable) {
+					glGetQueryObjectiv(queryID[1],
+						GL_QUERY_RESULT_AVAILABLE,
+						&stopTimerAvailable);
+				}
+
+				// get query results
+				glGetQueryObjectui64v(queryID[0], GL_QUERY_RESULT, &startTime);
+				glGetQueryObjectui64v(queryID[1], GL_QUERY_RESULT, &stopTime);
+
+				//std::cout << "Time spent of point reduction on the GPU: " << (stopTime - startTime) / 1000000.0 << "ms\n" << std::endl;
+
 				reduce_prog.disable(ctx);
 			}
 		}
@@ -77,6 +98,12 @@ namespace cgv {
 		{
 			// draw composed buffer
 			draw_prog_ptr->enable(ctx);
+
+			GLuint64 startTime, stopTime;
+			unsigned int queryID[2];
+			glGenQueries(2, queryID);
+			glQueryCounter(queryID[0], GL_TIMESTAMP);
+
 			glBindVertexArray(vertex_array);
 			glBindBuffer(GL_DRAW_INDIRECT_BUFFER, draw_parameter_buffer);
 			glDrawArraysIndirect(GL_POINTS, 0);
@@ -85,6 +112,21 @@ namespace cgv {
 			
 			//DrawParameters* device_draw_parameters = static_cast<DrawParameters*>(glMapNamedBufferRange(draw_parameter_buffer, 0, sizeof(DrawParameters), GL_MAP_READ_BIT));
 			//glUnmapNamedBuffer(draw_parameter_buffer);
+
+			glQueryCounter(queryID[1], GL_TIMESTAMP);
+
+			GLint stopTimerAvailable = 0;
+			while (!stopTimerAvailable) {
+				glGetQueryObjectiv(queryID[1],
+					GL_QUERY_RESULT_AVAILABLE,
+					&stopTimerAvailable);
+			}
+
+			// get query results
+			glGetQueryObjectui64v(queryID[0], GL_QUERY_RESULT, &startTime);
+			glGetQueryObjectui64v(queryID[1], GL_QUERY_RESULT, &stopTime);
+
+			//std::cout << "Time spent of drawing points on the GPU: " << (stopTime - startTime) / 1000000.0 << "ms\n" << std::endl;
 
 			draw_prog_ptr->disable(ctx);
 		}
