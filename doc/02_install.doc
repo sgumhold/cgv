@@ -163,7 +163,7 @@ add_dependencies(my_plugin cg_fltk crg_stereo_view)
 
 The following commands will run CMake and then build your plugin.
 "<path to cgv>" has to point to either the locally checked out git repository, or a downloaded release of the cgv framework.
-The latest release can be found here: https://github.com/sgumhold/cgv/releases
+The latest release can be found here: https://github.com/sgumhold/cgv/releases/latest
 
 \code
 mkdir build
