@@ -1,4 +1,9 @@
 
+# TODO this fixes this error:
+#   The imported target "vr_test" references the file ".../cgv-install/lib/cgv/vr_test.lib" but this file does not exist.
+#   it is unclear whether this causes any other unintended side effects
+set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
+
 add_library(vr_test vr_test.cxx)
 target_link_libraries(vr_test
         cgv_utils cgv_type cgv_data cgv_base cgv_math
@@ -16,3 +21,5 @@ add_dependencies(vr_test
         cg_vr vr_emulator openvr_driver)
 
 install(TARGETS vr_test EXPORT cgv_plugins DESTINATION ${CGV_LIB_DEST})
+
+set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS OFF)

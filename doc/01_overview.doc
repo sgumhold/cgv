@@ -40,9 +40,9 @@ Currently the following system configurations are supported
     - Visual Studio 2015 (abbreviated by vs14)
     - Visual Studio 2017 (abbreviated by vs141)
     - Visual Studio 2019 (abbreviated by vs142)
-  - cmake
+  - CMake
 - Linux
-  - cmake
+  - CMake
 
 Under windows all compilers can be used at the same time. The
 postfix "_8", "_9", "_9e", "_10", "_12", "_14", "_141" is used for applications and libraries to distinguish
@@ -167,9 +167,9 @@ least one registered object instance that provides a gui.
 
 In the main menu the
 item "new" is meant for entries of factories that create new object instances. A factory
-can be tagged singelton, in which case only one instance can be created. There is also
+can be tagged singleton, in which case only one instance can be created. There is also
 a shortcut assigned to each factory, for example <Ctrl-Q>. If pressed, a new object instance
-is created. In case of a singelton factory, pressing the shortcut again will toggle visibility
+is created. In case of a singleton factory, pressing the shortcut again will toggle visibility
 of the object instance in the 3d view and select its gui in the tab group of guis.
 
 \section configFiles Configuration Files
