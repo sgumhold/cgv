@@ -12,6 +12,7 @@ include(${SELF_DIR}/lib/cgv_3rd.cmake)
 include(${SELF_DIR}/lib/cgv_libs.cmake)
 include(${SELF_DIR}/lib/cgv_plugins.cmake)
 include(${SELF_DIR}/lib/cgv_tools.cmake)
+include(${SELF_DIR}/lib/cgv_viewer.cmake)
 include(${SELF_DIR}/lib/set_ide_params.cmake)
 
 endif()
