@@ -114,7 +114,7 @@ public:
 		unsigned p1 = plot.add_sub_plot("cos");
 		unsigned p2 = plot.add_sub_plot("sin");
 		unsigned p3 = plot.add_sub_plot("cos²");
-		plot.set_sub_plot_colors(p1, rgb(1.0f, 0.0f, 0.1f));
+		//plot.set_sub_plot_colors(p1, rgb(1.0f, 0.0f, 0.1f));	// will be set later to the attribute with index 2
 		plot.set_sub_plot_colors(p2, rgb(0.1f, 0.0f, 1.0f));
 		plot.set_sub_plot_colors(p3, rgb(0.0f, 1.0f, 0.1f));
 
@@ -135,7 +135,11 @@ public:
 
 		plot.legend_components = cgv::plot::LegendComponent(cgv::plot::LC_PRIMARY_COLOR + cgv::plot::LC_PRIMARY_OPACITY);
 		plot.color_mapping[0] = 2;
+		plot.color_scale_index[0] = cgv::media::CS_HUE;
 		plot.opacity_mapping[0] = 3;
+
+		plot.ref_sub_plot2d_config(0).set_color_indices(0);
+		plot.ref_sub_plot2d_config(0).line_halo_color.color_idx = 0;
 
 		// adjust domain, tick marks and extent in world space (of offline rendering process)
 		plot.adjust_domain_to_data();
