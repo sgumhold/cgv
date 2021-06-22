@@ -192,7 +192,7 @@ public:
 			return false;
 		if (!rc_manager.init(ctx))
 			return false;
-		// increase reference counts of used renderer singeltons
+		// increase reference counts of used renderer singletons
 		cgv::render::ref_point_renderer			(ctx, 1);
 		cgv::render::ref_surfel_renderer		(ctx, 1);
 		cgv::render::ref_box_renderer			(ctx, 1);
@@ -399,7 +399,7 @@ public:
 		s_manager.destruct(ctx);
 		rc_manager.destruct(ctx);
 
-		// decrease reference counts of used renderer singeltons
+		// decrease reference counts of used renderer singletons
 		cgv::render::ref_point_renderer			(ctx, -1);
 		cgv::render::ref_surfel_renderer		(ctx, -1);
 		cgv::render::ref_box_renderer			(ctx, -1);
