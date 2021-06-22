@@ -753,7 +753,7 @@ fltk::Menu* fltk_viewer_window::get_menu()
 }
 
 
-/// handle on remove signals of the view to ensure that a singelton is dereferenced
+/// handle on remove signals of the view to ensure that a singleton is dereferenced
 void fltk_viewer_window::unregister_object(base_ptr c, const std::string& options)
 {
 	if (c->get_const_interface<cgv::gui::window>())

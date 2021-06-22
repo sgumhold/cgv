@@ -20,7 +20,7 @@ namespace cgv { // @<
 		//! reference to a singleton volume renderer that is shared among drawables
 		/*! the second parameter is used for reference counting. Use +1 in your init method,
 			-1 in your clear method and default 0 argument otherwise. If internal reference
-			counter decreases to 0, singelton renderer is destructed. */
+			counter decreases to 0, singleton renderer is destructed. */
 		extern CGV_API volume_renderer& ref_volume_renderer(context& ctx, int ref_count_change = 0);
 
 		/** style of a volume */

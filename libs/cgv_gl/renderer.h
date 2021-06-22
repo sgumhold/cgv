@@ -265,7 +265,7 @@ namespace cgv { // @<
 			renderer();
 			/// destructor deletes default renderer style
 			virtual ~renderer();
-			/// used by derived classes to manage singeltons
+			/// used by derived classes to manage singletons
 			void manage_singleton(context& ctx, const std::string& renderer_name, int& ref_count, int ref_count_change);
 			/// call this before setting attribute arrays to manage attribute array in given manager
 			virtual void enable_attribute_array_manager(const context& ctx, attribute_array_manager& aam);
