@@ -1,0 +1,12 @@
+@=
+projectType="library";
+projectName="cgv_imgui";
+projectGUID="40175540-390A-4B32-8BBA-74E757A50C47";
+addSharedDefines=["CGV_IMGUI_EXPORTS"];
+addIncDirs=[INPUT_DIR, CGV_DIR."/libs"];
+addProjectDeps=[
+	"cgv_utils", "cgv_type", "cgv_reflect", "cgv_reflect_types", "cgv_data", 
+	"cgv_signal", "cgv_os", "cgv_base", "cgv_math", "cgv_media", "cgv_gui",
+	"cgv_gl"
+];
+addSharedDefines=["CGV_IMGUI_EXPORTS"];
