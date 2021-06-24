@@ -16,7 +16,8 @@ data_format::data_format()
 /// construct from description string
 data_format::data_format(const std::string& description)
 {
-	set_data_format(description);
+	if (!set_data_format(description))
+		std::cerr << "ERROR " << last_error << " in format <" << description << ">" << std::endl;
 }
 
 /// set the data format from a description string

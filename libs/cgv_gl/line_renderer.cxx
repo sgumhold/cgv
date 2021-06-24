@@ -84,12 +84,21 @@ namespace cgv {
 			// set program attributes
 			if (!has_colors)
 				ctx.set_color(lrs.default_color);
-			if (!has_normals)
-				ref_prog().set_attribute(ctx, "normal", lrs.default_normal);
-			if (!has_depth_offsets)
-				ref_prog().set_attribute(ctx, "depth_offset", lrs.default_depth_offset);
-			if (!has_line_widths)
-				ref_prog().set_attribute(ctx, "line_width", lrs.default_line_width);
+			if (!has_normals) {
+				int li = ref_prog().get_attribute_location(ctx, "normal");
+				if (li != -1)
+					ref_prog().set_attribute(ctx, li, lrs.default_normal);
+			}
+			if (!has_depth_offsets) {
+				int li = ref_prog().get_attribute_location(ctx, "depth_offset");
+				if (li != -1)
+					ref_prog().set_attribute(ctx, "depth_offset", lrs.default_depth_offset);
+			}
+			if (!has_line_widths) {
+				int li = ref_prog().get_attribute_location(ctx, "line_width");
+				if (li != -1)
+					ref_prog().set_attribute(ctx, li, lrs.default_line_width);
+			}
 
 			// configure opengl
 			if (lrs.blend_lines) {
