@@ -12,7 +12,12 @@ struct cgv_imgui_test :
 	public cgv::gui::provider
 {
 	float angle;
-	cgv_imgui_test() : node("cgv imgui test"), cgv_imgui(false)
+	cgv_imgui_test() : node("cgv imgui test"), cgv_imgui(false
+#ifdef WIN32
+		, "C:\\Windows\\Fonts\\OpenSans-Regular.ttf"
+		, 18
+#endif
+	)
 	{
 		angle = 0;
 		connect(cgv::gui::get_animation_trigger().shoot, this, &cgv_imgui_test::timer_event);

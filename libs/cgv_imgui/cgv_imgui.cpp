@@ -2,6 +2,7 @@
 #include "imgui.h"
 #include "imgui_impl_opengl3.h"
 #include <cgv/gui/key_event.h>
+#include <cgv/utils/file.h>
 #include <cgv/gui/mouse_event.h>
 #include <cgv/gui/trigger.h>
 #include <cgv_gl/gl/gl.h>
@@ -10,10 +11,14 @@
 namespace cgv {
 	namespace imgui {
 
-cgv_imgui::cgv_imgui(bool _use_offline_rendering) : tex("uint8[R,G,B,A]")
+cgv_imgui::cgv_imgui(bool _use_offline_rendering, const char* _ttf_font_file_name, float _ttf_font_size) : tex("uint8[R,G,B,A]")
 {
+    if (_ttf_font_file_name)
+        ttf_font_file_name = _ttf_font_file_name;
+    ttf_font_size = _ttf_font_size;
 	width = 0;
 	height = 0;
+    font_atlas = 0;
     use_offline_rendering = _use_offline_rendering;
     has_focus = false;
     cursor_x = -1;
@@ -24,19 +29,40 @@ cgv_imgui::cgv_imgui(bool _use_offline_rendering) : tex("uint8[R,G,B,A]")
 
     mouse_down[0] = mouse_down[1] = mouse_down[2] = false;
 }
+
+/// destructor
+cgv_imgui::~cgv_imgui()
+{
+    if (font_atlas) {
+        ImFontAtlas* atlas_ptr = reinterpret_cast<ImFontAtlas*>(font_atlas);
+        delete atlas_ptr;
+    }
+}
+
 void cgv_imgui::resize(unsigned int w, unsigned int h)
 {
 	width = w;
 	height = h;
 	post_redraw();
 }
+
+void cgv_imgui::clear(cgv::render::context& ctx)
+{
+
+}
+
 /// construct offline render target
 bool cgv_imgui::init(cgv::render::context& ctx)
 {
 	// Setup Dear ImGui context
 	IMGUI_CHECKVERSION();
-	ImGui::CreateContext();
-	ImGuiIO& io = ImGui::GetIO(); (void)io;
+    ImFontAtlas* atlas_ptr = 0;
+    if (!ttf_font_file_name.empty() && cgv::utils::file::exists(ttf_font_file_name)) {
+        atlas_ptr = new ImFontAtlas();
+        atlas_ptr->AddFontFromFileTTF(ttf_font_file_name.c_str(), ttf_font_size);
+    }
+	ImGui::CreateContext(atlas_ptr);
+	ImGuiIO& io = ImGui::GetIO(); 
 	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
 	//io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
 

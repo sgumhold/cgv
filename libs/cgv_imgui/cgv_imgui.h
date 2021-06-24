@@ -13,6 +13,9 @@ namespace cgv {
 
 		class CGV_API cgv_imgui : public cgv::render::drawable, public cgv::gui::event_handler
 		{
+			void* font_atlas;
+			std::string ttf_font_file_name;
+			float ttf_font_size;
 		protected:
 			unsigned width, height;
 			cgv::render::texture tex;
@@ -29,13 +32,17 @@ namespace cgv {
 			void draw_imgui_data(cgv::render::context& ctx, bool do_clear = true);
 		public:
 			/// construct
-			cgv_imgui(bool _use_offline_rendering);
+			cgv_imgui(bool _use_offline_rendering, const char* _ttf_font_file_name = 0, float _ttf_font_size = 18.0f);
+			/// destructor
+			~cgv_imgui();
 			/// overload to create ui
 			virtual void create_imgui();
 			/// update window size
 			void resize(unsigned int w, unsigned int h);
 			/// construct offline render target
 			bool init(cgv::render::context& ctx);
+			/// destruct offline render targets
+			void clear(cgv::render::context& ctx);
 			/// evaluate user interface
 			void init_frame(cgv::render::context& ctx);
 			/// draw user interface
