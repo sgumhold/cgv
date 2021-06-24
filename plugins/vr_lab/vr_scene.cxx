@@ -151,7 +151,8 @@ bool vr_scene::init(cgv::render::context& ctx)
 	cgv::render::ref_rounded_cone_renderer(ctx, 1);
 	cgv::gui::connect_vr_server(true);
 	lm.init(ctx);
-	cgv::media::font::font_ptr f = cgv::media::font::find_font("Courier New");
+	cgv::media::font::font_ptr f = cgv::media::font::default_font(true);
+	ctx.enable_font_face(f->get_font_face(cgv::media::font::FFA_BOLD), 36.0f);
 	lm.set_font_face(f->get_font_face(cgv::media::font::FFA_BOLD));
 	lm.set_font_size(36.0f);
 	lm.set_text_color(rgba(0, 0, 0, 1));

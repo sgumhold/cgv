@@ -37,10 +37,11 @@ char to_lower(char c)
 {
 	if (c >= 'A' && c <= 'Z')
 		return (c-'A')+'a';
-	switch (c) {
-		case OE : return oe;
-		case UE : return ue;
-		case AE : return ae;
+	unsigned char uc = c;
+	switch (uc) {
+		case OE : return (char)oe;
+		case UE : return (char)ue;
+		case AE : return (char)ae;
 		default: return c;
 	}
 }
@@ -66,10 +67,11 @@ char to_upper(char c)
 {
 	if (c >= 'a' && c <= 'z')
 		return (c-'a')+'A';
-	switch (c) {
-		case oe: return OE;
-		case ue: return UE;
-		case ae: return AE;
+	unsigned char uc = c;
+	switch (uc) {
+		case oe: return (char)OE;
+		case ue: return (char)UE;
+		case ae: return (char)AE;
 		default: return c;
 	}
 }
@@ -86,7 +88,7 @@ std::string replace_special(const std::string& _s)
 {
 	std::string s;
 	for (unsigned int i=0; i<_s.size(); ++i) {
-		switch (_s[i]) {
+		switch ((unsigned char)s[i]) {
 		case AE: s += "Ae"; break;
 		case OE: s += "Oe"; break;
 		case UE: s += "Ue"; break;
