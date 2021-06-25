@@ -35,9 +35,10 @@ void compute_point_size(in vec3 position, in vec4 color, in mat4 central_transfo
 
 	float level = mod(color.a * 255, 128);
 	float random = rand(position.x + position.y + position.z);
-
+	// use random to produce smooth transition in continuous level of detail rendring
 	float pointSpacing = scale * spacing / pow(2, level + random);
 	// expected spacing
+	// tragetSpacingVR = targetSpacingDesktop/max(1-a·dc, minDensity)
 	float targetSpacing = (d * CLOD) / (1000 * max(1 - 0.7 * dc, 0.3));
 
 	float minPixels = 1;
