@@ -22,6 +22,9 @@ protected:
 public:
 	///
 	glfw_imgui_driver();
+	///
+	void on_register();
+
 	/**@name application management*/
 	//@{
 	/// fill list of monitor descriptions

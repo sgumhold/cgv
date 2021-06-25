@@ -11,7 +11,8 @@
 namespace cgv {
 	namespace imgui {
 
-cgv_imgui::cgv_imgui(bool _use_offline_rendering, const char* _ttf_font_file_name, float _ttf_font_size) : tex("uint8[R,G,B,A]")
+cgv_imgui::cgv_imgui(bool _use_offline_rendering, const char* _ttf_font_file_name, float _ttf_font_size) 
+    : tex("uint16[R,G,B,A]")
 {
     if (_ttf_font_file_name)
         ttf_font_file_name = _ttf_font_file_name;
@@ -25,8 +26,9 @@ cgv_imgui::cgv_imgui(bool _use_offline_rendering, const char* _ttf_font_file_nam
     cursor_y = -1;
     show_demo_window = true;
     show_another_window = true;
-    clear_color = rgba(0.45f, 0.55f, 0.60f, 0.0f);
-
+    clear_color = rgba(0.0f, 0.0f, 0.0f, 0.0f);
+    tex.set_mag_filter(cgv::render::TF_LINEAR);
+    tex.set_min_filter(cgv::render::TF_LINEAR);
     mouse_down[0] = mouse_down[1] = mouse_down[2] = false;
 }
 
@@ -214,6 +216,7 @@ void cgv_imgui::init_frame(cgv::render::context& ctx)
     fbo.enable(ctx, 0);
     draw_imgui_data(ctx);
     fbo.disable(ctx);
+    tex.write_to_file(ctx, "d:\\tex.png");
 }
 
 /// draw user interface
@@ -222,12 +225,15 @@ void cgv_imgui::after_finish(cgv::render::context& ctx)
     if (use_offline_rendering) {
         auto is_blend = glIsEnabled(GL_BLEND);
         auto is_depth = glIsEnabled(GL_DEPTH_TEST);
-        ctx.set_color(rgb(1, 1, 1));
+        ctx.set_color(rgba(1, 1, 1, 1));
         glDisable(GL_DEPTH_TEST);
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         tex.enable(ctx);
+        float gamma = ctx.get_gamma();
+        ctx.set_gamma(1.0f);
         cgv::render::gl::cover_screen(ctx, &ctx.ref_default_shader_program(true));
+        ctx.set_gamma(gamma);
         tex.disable(ctx);
         if (!is_blend)
             glDisable(GL_BLEND);

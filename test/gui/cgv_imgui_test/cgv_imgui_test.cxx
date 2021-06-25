@@ -12,7 +12,7 @@ struct cgv_imgui_test :
 	public cgv::gui::provider
 {
 	float angle;
-	cgv_imgui_test() : node("cgv imgui test"), cgv_imgui(false
+	cgv_imgui_test() : node("cgv imgui test"), cgv_imgui(true
 #ifdef WIN32
 		, "C:\\Windows\\Fonts\\OpenSans-Regular.ttf"
 		, 18
