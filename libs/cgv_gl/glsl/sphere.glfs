@@ -51,7 +51,6 @@ void finish_fragment(vec4 color);
 
 void main()
 {
-	
 	vec3 p_eye;
 	vec3 n_eye;
 	int side;

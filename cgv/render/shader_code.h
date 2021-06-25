@@ -21,6 +21,10 @@ namespace cgv {
 	 To set the shader path at runtime, query the shader_config with the
 	 get_shader_config() function.
 */
+
+	/// typedef for shader define map data structure
+	typedef std::map<std::string, std::string> shader_define_map;
+
 struct CGV_API shader_config : public cgv::base::base
 {
 	/// the path used to find shaders with the cgv::utils::file::find_in_paths function
@@ -85,11 +89,11 @@ public:
 	/** read shader code from file that is searched for with find_file.
 	    If the shader type defaults to ST_DETECT, the detect_shader_type()
 		 method is applied to the file name.*/
-	bool read_code(const context& ctx, const std::string &file_name, ShaderType st = ST_DETECT, std::string defines = "");
+	bool read_code(const context& ctx, const std::string &file_name, ShaderType st = ST_DETECT, const shader_define_map& defines = shader_define_map());
 	/// set shader code from string
 	bool set_code(const context& ctx, const std::string &source, ShaderType st);
 	/// set shader code defines
-	void set_defines(std::string& source, const std::string& defines);
+	void set_defines(std::string& source, const shader_define_map& defines);
 	/// return the shader type of this code
 	ShaderType get_shader_type() const;
 	///compile attached source; returns true if successful
@@ -97,7 +101,7 @@ public:
 	/** read shader code with read_code and compile. If show_error is true
 	    print error messages formated with the get_last_error method in case
 		 an error arose. */
-	bool read_and_compile(const context& ctx, const std::string &file_name, ShaderType st = ST_DETECT, bool show_error = true, std::string defines = "");
+	bool read_and_compile(const context& ctx, const std::string &file_name, ShaderType st = ST_DETECT, bool show_error = true, const shader_define_map& defines = shader_define_map());
 	/// return whether shader has been compiled successfully
 	bool is_compiled() const;
 };

@@ -99,7 +99,7 @@ namespace cgv {
 		{
 			return
 				rh.reflect_base(*static_cast<spline_tube_render_style*>(this)) &&
-				rh.reflect_member("radius", radius);
+				rh.reflect_member("radius", radius) &&
 				rh.reflect_member("radius_scale", radius_scale);
 		}
 
