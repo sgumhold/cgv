@@ -37,6 +37,8 @@ bool data_format::set_data_format(const std::string& description)
 	if (!component_format::set_component_format(description.substr(0,p+1)))
 		return false;
 	std::string sub_descr = description.substr(p+1);
+	if (sub_descr.empty())
+		return true;
 	std::vector<token> toks;
 	tokenizer(sub_descr).set_sep("():|,").bite_all(toks);
 	if (toks.size() < 3) {

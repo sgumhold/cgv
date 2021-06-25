@@ -1,7 +1,5 @@
 #include "glfw_imgui_driver.h"
-
-//#include "imgui.h"
-
+#include "imgui.h"
 #include <cgv/gui/base_provider_generator.h>
 #include <cgv/gui/menu_provider.h>
 #include <cgv/gui/event_handler.h>
@@ -431,7 +429,8 @@ protected:
 					monitor = monitors[config_ptr->fullscreen_monitor];
 			}
 		}
-		GLFWwindow* new_glfw_window = glfwCreateWindow(W, H, title.c_str(), monitor, share->glfw_window);
+		glfwInit();
+		GLFWwindow* new_glfw_window = glfwCreateWindow(W, H, title.c_str(), monitor, share ? share->glfw_window : 0);
 		if (new_glfw_window == NULL)
 			return false;
 		if (glfw_window) {
@@ -802,11 +801,6 @@ public:
 	{
 		redraw_request = true;
 	}
-	/// enable the given font face with the given size in pixels
-	void enable_font_face(cgv::media::font::font_face_ptr font_face, float font_size)
-	{
-
-	}
 	/// return whether the graphics card supports quad buffer mode
 	bool is_quad_buffer_supported() const 
 	{
@@ -843,6 +837,7 @@ void glfw_imgui_driver::remove_window(window_ptr w)
 bool glfw_imgui_driver::set_focus(const_window_ptr w)
 {
 	glfwFocusWindow(const_cast<GLFWwindow*>(reinterpret_cast<const GLFWwindow*>(w->get_user_data())));
+	return true;
 }
 /// return the number of created windows
 unsigned int glfw_imgui_driver::get_nr_windows()
@@ -857,6 +852,74 @@ window_ptr glfw_imgui_driver::get_window(unsigned int i)
 /// run the main loop of the window system
 bool glfw_imgui_driver::run()
 {
+	glfwSwapInterval(1); // Enable vsync
+	while (true) {
+		for (auto wp : windows) {
+			if (glfwWindowShouldClose(wp->get_user_data()))
+	{
+		// Poll and handle events (inputs, window resize, etc.)
+		// You can read the io.WantCaptureMouse, io.WantCaptureKeyboard flags to tell if dear imgui wants to use your inputs.
+		// - When io.WantCaptureMouse is true, do not dispatch mouse input data to your main application.
+		// - When io.WantCaptureKeyboard is true, do not dispatch keyboard input data to your main application.
+		// Generally you may always pass all inputs to dear imgui, and hide them from your application based on those two flags.
+		glfwPollEvents();
+
+		// Start the Dear ImGui frame
+		ImGui_ImplOpenGL3_NewFrame();
+		ImGui_ImplGlfw_NewFrame();
+		ImGui::NewFrame();
+
+		// 1. Show the big demo window (Most of the sample code is in ImGui::ShowDemoWindow()! You can browse its code to learn more about Dear ImGui!).
+		if (show_demo_window)
+			ImGui::ShowDemoWindow(&show_demo_window);
+
+		// 2. Show a simple window that we create ourselves. We use a Begin/End pair to created a named window.
+		{
+			static float f = 0.0f;
+			static int counter = 0;
+
+			ImGui::Begin("Hello, world!");                          // Create a window called "Hello, world!" and append into it.
+
+			ImGui::Text("This is some useful text.");               // Display some text (you can use a format strings too)
+			ImGui::Checkbox("Demo Window", &show_demo_window);      // Edit bools storing our window open/close state
+			ImGui::Checkbox("Another Window", &show_another_window);
+
+			ImGui::SliderFloat("float", &f, 0.0f, 1.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
+			ImGui::ColorEdit3("clear color", (float*)&clear_color); // Edit 3 floats representing a color
+
+			if (ImGui::Button("Button"))                            // Buttons return true when clicked (most widgets return true when edited/activated)
+				counter++;
+			ImGui::SameLine();
+			ImGui::Text("counter = %d", counter);
+
+			ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+			ImGui::End();
+		}
+
+		// 3. Show another simple window.
+		if (show_another_window)
+		{
+			ImGui::Begin("Another Window", &show_another_window);   // Pass a pointer to our bool variable (the window will have a closing button that will clear the bool when clicked)
+			ImGui::Text("Hello from another window!");
+			if (ImGui::Button("Close Me"))
+				show_another_window = false;
+			ImGui::End();
+		}
+
+		// Rendering
+		ImGui::Render();
+		int display_w, display_h;
+		glfwGetFramebufferSize(window, &display_w, &display_h);
+		glViewport(0, 0, display_w, display_h);
+		glClearColor(clear_color.x, clear_color.y, clear_color.z, clear_color.w);
+		glClear(GL_COLOR_BUFFER_BIT);
+		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
+		glfwSwapBuffers(window);
+	}
+	glfwDestroyWindow(window);
+	glfwTerminate();
+
 	return false;
 }
 /// quit the application by closing all windows
@@ -896,22 +959,22 @@ bool glfw_imgui_driver::query(const std::string& question, std::string& text, bo
 /// create a text editor
 text_editor_ptr glfw_imgui_driver::create_text_editor(unsigned int w, unsigned int h, const std::string& title, int x, int y)
 {
-
+	return text_editor_ptr();
 }
 /// ask user for an open dialog that can select multiple files, return common path prefix and fill field of filenames
 std::string glfw_imgui_driver::files_open_dialog(std::vector<std::string>& file_names, const std::string& title, const std::string& filter, const std::string& path)
 {
-
+	return std::string();
 }
 /// ask user for a file to open
 std::string glfw_imgui_driver::file_open_dialog(const std::string& title, const std::string& filter, const std::string& path)
 {
-
+	return std::string();
 }
 /// ask user for a file to save
 std::string glfw_imgui_driver::file_save_dialog(const std::string& title, const std::string& filter, const std::string& path)
 {
-
+	return std::string();
 }
 //@}
 
@@ -975,33 +1038,77 @@ bool glfw_imgui_driver::process_gui_file(const std::string& file_name)
 	return bpg->parse_gui_file(file_name);
 }
 /// add a new gui group to the given parent group
-gui_group_ptr glfw_imgui_driver::add_group(gui_group_ptr parent, const std::string& label, const std::string& group_type, const std::string& options, const std::string& align);
+gui_group_ptr glfw_imgui_driver::add_group(gui_group_ptr parent, const std::string& label, const std::string& group_type, const std::string& options, const std::string& align)
+{
+	return gui_group_ptr();
+}
 /// add a newly created decorator to the parent group
-base_ptr glfw_imgui_driver::add_decorator(gui_group_ptr parent, const std::string& label, const std::string& decorator_type, const std::string& options, const std::string& align);
+base_ptr glfw_imgui_driver::add_decorator(gui_group_ptr parent, const std::string& label, const std::string& decorator_type, const std::string& options, const std::string& align)
+{
+	return base_ptr();
+}
 /// add new button to the parent group
-button_ptr glfw_imgui_driver::add_button(gui_group_ptr parent, const std::string& label, const std::string& options, const std::string& align);
+button_ptr glfw_imgui_driver::add_button(gui_group_ptr parent, const std::string& label, const std::string& options, const std::string& align)
+{
+	return button_ptr();
+}
 /// add new view to the parent group
-view_ptr glfw_imgui_driver::add_view(gui_group_ptr parent, const std::string& label, const void* value_ptr, const std::string& value_type, const std::string& gui_type, const std::string& options, const std::string& align);
+view_ptr glfw_imgui_driver::add_view(gui_group_ptr parent, const std::string& label, const void* value_ptr, const std::string& value_type, const std::string& gui_type, const std::string& options, const std::string& align)
+{
+	return view_ptr();
+}
 /// find a view in the group
-view_ptr glfw_imgui_driver::find_view(gui_group_ptr parent, const void* value_ptr, int* idx_ptr);
+view_ptr glfw_imgui_driver::find_view(gui_group_ptr parent, const void* value_ptr, int* idx_ptr)
+{
+	return view_ptr();
+}
 /// add new control to the parent group
-control_ptr glfw_imgui_driver::add_control(gui_group_ptr parent, const std::string& label, void* value_ptr, abst_control_provider* acp, const std::string& value_type, const std::string& gui_type, const std::string& options, const std::string& align);
+control_ptr glfw_imgui_driver::add_control(gui_group_ptr parent, const std::string& label, void* value_ptr, abst_control_provider* acp, const std::string& value_type, const std::string& gui_type, const std::string& options, const std::string& align)
+{
+	return control_ptr();
+}
 /// find a control in a group
-control_ptr glfw_imgui_driver::find_control(gui_group_ptr parent, void* value_ptr, int* idx_ptr);
+control_ptr glfw_imgui_driver::find_control(gui_group_ptr parent, void* value_ptr, int* idx_ptr)
+{
+	return control_ptr();
+}
+
 //@}
 
 /**@name menu elements */
 //@{
 /// add a newly created decorator to the menu
-base_ptr glfw_imgui_driver::add_menu_separator(const std::string& menu_path);
+base_ptr glfw_imgui_driver::add_menu_separator(const std::string& menu_path)
+{
+	return base_ptr();
+}
 /// use the current gui driver to append a new button in the menu, where menu path is a '/' separated path
-button_ptr glfw_imgui_driver::add_menu_button(const std::string& menu_path, const std::string& options);
+button_ptr glfw_imgui_driver::add_menu_button(const std::string& menu_path, const std::string& options)
+{
+	return button_ptr();
+}
+
 /// use this to add a new control to the gui with a given value type, gui type and init options
-cgv::data::ref_ptr<control<bool> > glfw_imgui_driver::add_menu_bool_control(const std::string& menu_path, bool& value, const std::string& options);
+cgv::data::ref_ptr<control<bool> > glfw_imgui_driver::add_menu_bool_control(const std::string& menu_path, bool& value, const std::string& options)
+{
+	return cgv::data::ref_ptr<control<bool> >();
+}
+
 /// return the element of the given menu path
-base_ptr glfw_imgui_driver::find_menu_element(const std::string& menu_path) const;
+base_ptr glfw_imgui_driver::find_menu_element(const std::string& menu_path) const
+{
+	return base_ptr();
+}
+
 /// remove a single element from the gui
-void glfw_imgui_driver::remove_menu_element(base_ptr);
+void glfw_imgui_driver::remove_menu_element(base_ptr)
+{
+}
+
+void glfw_imgui_driver::on_register()
+{
+	register_gui_driver(gui_driver_ptr(this));
+}
 //@}
 
 struct menu_listener : public cgv::base::base, public cgv::base::registration_listener
@@ -1023,5 +1130,5 @@ struct menu_listener : public cgv::base::base, public cgv::base::registration_li
 	}
 };
 
-object_registration<glfw_imgui_driver> glfw_imgui_driver_registration("fltk driver");
-object_registration<menu_listener> fml_reg("fltk menu driver");
+cgv::base::object_registration<glfw_imgui_driver> glfw_imgui_driver_registration("glfw_imgui driver");
+cgv::base::object_registration<menu_listener> fml_reg("fltk menu driver");

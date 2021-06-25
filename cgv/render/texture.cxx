@@ -441,7 +441,8 @@ bool texture::write_to_file(context& ctx, const std::string& file_name, unsigned
 		}
 	}
 	bool is_depth = get_standard_component_format() == CF_D;
-	data_format df("uint8[R,G,B]");
+	bool has_alpha = get_standard_component_format() == CF_RGBA;
+	data_format df(has_alpha ? "uint8[R,G,B,A]" : "uint8[R,G,B]");
 	if (is_depth) {
 		render_buffer rb("[R,G,B]");
 		df = data_format("uint32[D]");
@@ -460,7 +461,8 @@ bool texture::write_to_file(context& ctx, const std::string& file_name, unsigned
 		df.set_width(get_width());
 		df.set_height(get_height());
 		data_view dv(&df);
-		ctx.read_frame_buffer(dv, 0, 0, cgv::render::FB_0);
+		ctx.read_frame_buffer(dv, 0, 0, cgv::render::FB_0, cgv::type::info::TI_UINT8, 
+			has_alpha?cgv::data::CF_RGBA : cgv::data::CF_RGB);
 	fb.disable(ctx);
 
 	if (is_depth) {
