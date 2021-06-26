@@ -152,9 +152,9 @@ template <Endian src, uint32_t type_size>
 inline void convert_endian_from(void* values, size_t cnt)
 {
 	switch (get_endian()) {
-	case E_LITTLE: convert_endian<src, E_LITTLE, type_size>(value, cnt); break;
-	case E_BIG_32: convert_endian<src, E_BIG_32, type_size>(value, cnt); break;
-	case E_BIG_64: convert_endian<src, E_BIG_64, type_size>(value, cnt); break;
+	case E_LITTLE: convert_endian<src, E_LITTLE, type_size>(values, cnt); break;
+	case E_BIG_32: convert_endian<src, E_BIG_32, type_size>(values, cnt); break;
+	case E_BIG_64: convert_endian<src, E_BIG_64, type_size>(values, cnt); break;
 	}
 }
 
@@ -180,13 +180,13 @@ inline void convert_endian_to(T& value)
 }
 
 /// specialization for vector
-template <Endian src, typename T>
+template <Endian tar, typename T>
 inline void convert_endian_to(std::vector<T>& vector)
 {
 	switch (get_endian()) {
-	case E_LITTLE: convert_endian<E_LITTLE, tar>(value); break;
-	case E_BIG_32: convert_endian<E_BIG_32, tar>(value); break;
-	case E_BIG_64: convert_endian<E_BIG_64, tar>(value); break;
+	case E_LITTLE: convert_endian<E_LITTLE, tar>(vector); break;
+	case E_BIG_32: convert_endian<E_BIG_32, tar>(vector); break;
+	case E_BIG_64: convert_endian<E_BIG_64, tar>(vector); break;
 	}
 }
 
@@ -195,9 +195,9 @@ template <Endian tar, uint32_t type_size>
 inline void convert_endian_to(void* values, size_t cnt)
 {
 	switch (get_endian()) {
-	case E_LITTLE: convert_endian<E_LITTLE, tar, type_size>(value, cnt); break;
-	case E_BIG_32: convert_endian<E_BIG_32, tar, type_size>(value, cnt); break;
-	case E_BIG_64: convert_endian<E_BIG_64, tar, type_size>(value, cnt); break;
+	case E_LITTLE: convert_endian<E_LITTLE, tar, type_size>(values, cnt); break;
+	case E_BIG_32: convert_endian<E_BIG_32, tar, type_size>(values, cnt); break;
+	case E_BIG_64: convert_endian<E_BIG_64, tar, type_size>(values, cnt); break;
 	}
 }
 
