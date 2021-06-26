@@ -4,7 +4,7 @@ SCRIPT_DIR=$(dirname "$(readlink -f "$0")")
 LIBS_DIR=${SCRIPT_DIR}/../include/cgv-libs
 PLUGINS_DIR=${SCRIPT_DIR}/../include/cgv-plugins
 
-cgv_viewer \
+${SCRIPT_DIR}/cgv_viewer \
   plugin:cg_fltk \
   "type(shader_config):shader_path='${PLUGINS_DIR}/examples;${LIBS_DIR}/plot/glsl;${LIBS_DIR}/cgv_gl/glsl'" \
   plugin:cg_ext \
