@@ -117,7 +117,7 @@ struct font_file_info {
 
 typedef std::map<std::string, font_file_info> font_map_type;
 
-font_map_type ref_font_map_type()
+font_map_type& ref_font_map_type()
 {
 	static font_map_type font_map;
 	return font_map;
