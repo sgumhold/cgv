@@ -12,16 +12,16 @@ jobs:
 
       - name: Install and Build
         env:
-          CGV_DIR: /home/runner/work/cgv
-          CGV_BUILD: abc
+          CGV_DIR: /home/runner/work/cgv/cgv
+          CGV_BUILD: /home/runner/work/cgv/cgv/build
         run: |
-          pwd
-          ls -la
+          sudo apt-get update
           sudo apt-get install -y doxygen
-#          doxygen doc/cgv.dox
+          mkdir build
+          doxygen doc/cgv.dox
 
-#      - name: Deploy
-#        uses: JamesIves/github-pages-deploy-action@4.1.4
-#        with:
-#          branch: gh-pages # The branch the action should deploy to.
-#          folder: build # The folder the action should deploy.
+      - name: Deploy
+        uses: JamesIves/github-pages-deploy-action@4.1.4
+        with:
+          branch: gh-pages
+          folder: build
