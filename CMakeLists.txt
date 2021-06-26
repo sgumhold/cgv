@@ -40,4 +40,6 @@ add_subdirectory(apps)
 add_subdirectory(plugins)
 add_subdirectory(test)
 
+set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT examples)
+
 install(FILES cgv-config.cmake DESTINATION .)
