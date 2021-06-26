@@ -1,8 +1,0 @@
-digraph "Graphical Class Hierarchy"
-{
-  bgcolor="transparent";
-  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
-  node [fontname="Helvetica",fontsize="10",shape=record];
-  rankdir="LR";
-  Node1 [label="cgv::data::ref_ptr\l_impl\< T, is_ref_counted\l \>::counter_type",height=0.2,width=0.4,color="black",URL="$a00076.html",tooltip="struct to store the pointer with a count "];
-}

@@ -1,8 +1,0 @@
-digraph "Graphical Class Hierarchy"
-{
-  bgcolor="transparent";
-  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
-  node [fontname="Helvetica",fontsize="10",shape=record];
-  rankdir="LR";
-  Node1 [label="cgv::media::xyz_color\l_interface\< ta_derived \>",height=0.2,width=0.4,color="black",URL="$a00183.html",tooltip="the xyz_color_interface adds access function to the X, Y, and Z-channels of the color, where write access is only granted for an XYZ-color "];
-}

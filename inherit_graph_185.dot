@@ -1,8 +1,0 @@
-digraph "Graphical Class Hierarchy"
-{
-  bgcolor="transparent";
-  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
-  node [fontname="Helvetica",fontsize="10",shape=record];
-  rankdir="LR";
-  Node1 [label="cgv::type::traits::\lmethod_pointer\< R(X\l::*)(T1, T2)\>",height=0.2,width=0.4,color="black",URL="$a00297.html",tooltip="specialize method_pointer template for non const method with 2 arguments "];
-}

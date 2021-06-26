@@ -1,8 +1,0 @@
-digraph "Graphical Class Hierarchy"
-{
-  bgcolor="transparent";
-  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
-  node [fontname="Helvetica",fontsize="10",shape=record];
-  rankdir="LR";
-  Node1 [label="cgv::media::transparency\l_alpha_interface\< ta_derived \>",height=0.2,width=0.4,color="black",URL="$a00174.html",tooltip="the transparency_alpha_interface adds access function to the opacity, where write access is only gran..."];
-}

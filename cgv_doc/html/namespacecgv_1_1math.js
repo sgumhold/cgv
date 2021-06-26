@@ -1,0 +1,27 @@
+var namespacecgv_1_1math =
+[
+    [ "adjacency_list", "classcgv_1_1math_1_1adjacency__list.html", "classcgv_1_1math_1_1adjacency__list" ],
+    [ "diag_mat", "structcgv_1_1math_1_1diag__mat.html", "structcgv_1_1math_1_1diag__mat" ],
+    [ "fibo_heap", "classcgv_1_1math_1_1fibo__heap.html", "classcgv_1_1math_1_1fibo__heap" ],
+    [ "fmat", "classcgv_1_1math_1_1fmat.html", "classcgv_1_1math_1_1fmat" ],
+    [ "fvec", "classcgv_1_1math_1_1fvec.html", "classcgv_1_1math_1_1fvec" ],
+    [ "interval", "classcgv_1_1math_1_1interval.html", "classcgv_1_1math_1_1interval" ],
+    [ "mat", "classcgv_1_1math_1_1mat.html", "classcgv_1_1math_1_1mat" ],
+    [ "mfunc", "classcgv_1_1math_1_1mfunc.html", "classcgv_1_1math_1_1mfunc" ],
+    [ "perm_mat", "structcgv_1_1math_1_1perm__mat.html", "structcgv_1_1math_1_1perm__mat" ],
+    [ "qem", "classcgv_1_1math_1_1qem.html", "classcgv_1_1math_1_1qem" ],
+    [ "quaternion", "classcgv_1_1math_1_1quaternion.html", "classcgv_1_1math_1_1quaternion" ],
+    [ "random", "structcgv_1_1math_1_1random.html", "structcgv_1_1math_1_1random" ],
+    [ "register_sparse_les_factory", "structcgv_1_1math_1_1register__sparse__les__factory.html", null ],
+    [ "rigid_transform", "classcgv_1_1math_1_1rigid__transform.html", "classcgv_1_1math_1_1rigid__transform" ],
+    [ "sparse_les", "classcgv_1_1math_1_1sparse__les.html", "classcgv_1_1math_1_1sparse__les" ],
+    [ "sparse_les_factory", "classcgv_1_1math_1_1sparse__les__factory.html", "classcgv_1_1math_1_1sparse__les__factory" ],
+    [ "sparse_les_factory_impl", "classcgv_1_1math_1_1sparse__les__factory__impl.html", "classcgv_1_1math_1_1sparse__les__factory__impl" ],
+    [ "thin_hyper_plate_spline", "structcgv_1_1math_1_1thin__hyper__plate__spline.html", "structcgv_1_1math_1_1thin__hyper__plate__spline" ],
+    [ "thin_plate_spline", "structcgv_1_1math_1_1thin__plate__spline.html", "structcgv_1_1math_1_1thin__plate__spline" ],
+    [ "tri_diag_mat", "classcgv_1_1math_1_1tri__diag__mat.html", "classcgv_1_1math_1_1tri__diag__mat" ],
+    [ "union_find", "structcgv_1_1math_1_1union__find.html", "structcgv_1_1math_1_1union__find" ],
+    [ "v2_func", "classcgv_1_1math_1_1v2__func.html", "classcgv_1_1math_1_1v2__func" ],
+    [ "v3_func", "classcgv_1_1math_1_1v3__func.html", "classcgv_1_1math_1_1v3__func" ],
+    [ "vec", "classcgv_1_1math_1_1vec.html", "classcgv_1_1math_1_1vec" ]
+];
