@@ -313,9 +313,9 @@ void shader_code::set_defines(std::string& source, const shader_define_map& defi
 		}
 	}*/
 
-	for(auto& it = defines.begin(); it != defines.end(); ++it) {
-		std::string name = it->first;
-		std::string value = it->second;
+	for (const auto &entry : defines) {
+		std::string name = entry.first;
+		std::string value = entry.second;
 		
 		if(name.empty())
 			continue;
