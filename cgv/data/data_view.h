@@ -180,9 +180,22 @@ public:
 		 manage_ptr flag is true. In this case the pointer is deleted on
 		 destruction with the delete [] operator of type (unsigned char*). */
 	data_view(const data_format* _format, unsigned char* _data_ptr, bool manage_ptr);
+	/** construct a data view as a copy of the given data view. Copy the
+		data and own the pointer. The data_view will view the complete data
+		set as defined in the format. */
+	data_view(const data_view& other) : data_view(other.format) {
+		const cgv::type::uint8_type* src_ptr = other.get_ptr<cgv::type::uint8_type>();
+		cgv::type::uint8_type* dst_ptr = get_ptr<cgv::type::uint8_type>();
+
+		memcpy(dst_ptr, src_ptr, other.format->get_nr_bytes());
+	}
 	/** the assignment operator takes over the data format and data pointers
 	    in case they are managed by the source data view */
 	data_view& operator = (const data_view& dv);
+	/** return a copy of this data_view and tha data via the copy constructor */
+	data_view copy() {
+		return data_view(*this);
+	}
 	/** set a different data pointer that will be deleted with the 
 	    delete [] operator of type (unsigned char*) on destruction 
 		 if the manage_ptr flag is true */

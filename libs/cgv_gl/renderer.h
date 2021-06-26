@@ -16,6 +16,8 @@ namespace cgv { // @<
 		{
 			virtual ~render_style();
 		};
+		/// forward declaration of renderer
+		class CGV_API renderer;
 		/// attribute array manager used to upload arrays to gpu
 		class CGV_API attribute_array_manager
 		{
@@ -163,6 +165,16 @@ namespace cgv { // @<
 			~attribute_array_manager();
 			/// check whether the given attribute is available
 			bool has_attribute(const context& ctx, int loc) const;
+			/// returns the handle to the OpenGL buffer as managed by the attribute array manager if specified
+			int get_buffer_handle(int loc) const {
+				auto it = vbos.find(loc);
+				if(it != vbos.end()) {
+					const vertex_buffer* vbo_ptr = it->second;// vbos[loc];
+					if(vbo_ptr->handle)
+						return (const int&)vbo_ptr->handle - 1;
+				}
+				return (const int&)-1;
+			}
 			///
 			bool init(context& ctx);
 			///
@@ -372,6 +384,20 @@ namespace cgv { // @<
 			bool has_indices() const { return index_count > 0; }
 			/// remove previously set indices
 			void remove_indices(const context& ctx);
+			/*! Returns the OpenGL handle to the buffer of the given attribute name as managed by the attribute array manager.
+				Returns -1 if the buffer or attribute array manager does not exist.
+				Take caution when manipulating the buffer. */
+				//int get_vbo_handle(const context& ctx, const std::string& attr_name) {
+			int get_vbo_handle(const context& ctx, const attribute_array_manager& aam, const std::string& attr_name) {
+				
+				return aam.get_buffer_handle(ref_prog().get_attribute_location(ctx, attr_name));
+			}
+			/*! Returns the OpenGL handle to the element buffer holding the indices for indexed rendering as managed by the attribute array manager.
+				Returns -1 if the buffer or attribute array manager does not exist.
+				Take caution when manipulating the buffer. */
+			int get_index_buffer_handle(const attribute_array_manager& aam) {
+				return aam.get_buffer_handle(-1);
+			}
 			/// call to validate, whether essential position attribute is defined
 			virtual bool validate_attributes(const context& ctx) const;
 			/// validate attributes and if successful, enable renderer
@@ -407,24 +433,6 @@ namespace cgv { // @<
 				bool use_strips = false, bool use_adjacency = false, uint32_t strip_restart_index = -1);
 			/// the clear function destructs the shader program
 			virtual void clear(const context& ctx);
-
-
-			// TODO: should this be done this way?
-			int get_vbo(const context& ctx, const std::string attr_name) {
-
-				if(aam_ptr) {
-					int loc = ref_prog().get_attribute_location(ctx, attr_name);
-					auto it = aam_ptr->vbos.find(loc);
-					if(it != aam_ptr->vbos.end()) {
-						vertex_buffer* vbo_ptr = aam_ptr->vbos[loc];
-						if(vbo_ptr->handle) {
-							return (const int&)vbo_ptr->handle - 1;
-						}
-					}
-				}
-
-				return (const int&)-1;
-			}
 		};
 	}
 }

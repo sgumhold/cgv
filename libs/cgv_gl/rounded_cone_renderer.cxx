@@ -42,7 +42,7 @@ namespace cgv {
 		rounded_cone_renderer::rounded_cone_renderer()
 		{
 			has_radii = false;
-			shader_defines = "";
+			shader_defines = shader_define_map();
 		}
 
 		/// call this before setting attribute arrays to manage attribute array in given manager
@@ -69,21 +69,21 @@ namespace cgv {
 		{
 			bool res = renderer::init(ctx);
 			if (!ref_prog().is_created()) {
-				res = res && build_shader(ctx, build_define_string());
+				res = res && build_shader(ctx, build_define_map());
 			}
 			return res;
 		}
 
-		std::string rounded_cone_renderer::build_define_string()
+		shader_define_map rounded_cone_renderer::build_define_map()
 		{
 			const rounded_cone_render_style& rcrs = get_style<rounded_cone_render_style>();
 
-			std::string defines = "ENABLE_AMBIENT_OCCLUSION=";
-			defines += std::to_string((int)rcrs.enable_ambient_occlusion);
+			shader_define_map defines;
+			defines["ENABLE_AMBIENT_OCCLUSION"] = std::to_string((int)rcrs.enable_ambient_occlusion);
 			return defines;
 		}
 
-		bool rounded_cone_renderer::build_shader(context& ctx, std::string defines)
+		bool rounded_cone_renderer::build_shader(context& ctx, const shader_define_map& defines)
 		{
 			shader_defines = defines;
 			if(ref_prog().is_created())
@@ -103,7 +103,7 @@ namespace cgv {
 		{
 			const rounded_cone_render_style& rcrs = get_style<rounded_cone_render_style>();
 
-			std::string defines = build_define_string();
+			shader_define_map defines = build_define_map();
 			if(defines != shader_defines) {
 				if(!build_shader(ctx, defines))
 					return false;

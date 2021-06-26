@@ -41,8 +41,8 @@ namespace cgv { // @<
 		{
 		protected:
 			bool has_radii;
-			/// whether the shader should be rebuilt after a define update
-			std::string shader_defines;
+			/// the shader defines used to build the shader, used to comapre against new defines to determine if the shader needs to be rebuilt
+			shader_define_map shader_defines;
 			/// overload to allow instantiation of rounded_cone_renderer
 			render_style* create_render_style() const;
 		public:
@@ -55,9 +55,9 @@ namespace cgv { // @<
 			/// construct shader programs and return whether this was successful, call inside of init method of drawable
 			bool init(context& ctx);
 			///
-			std::string build_define_string();
+			shader_define_map build_define_map();
 			///
-			bool build_shader(context& ctx, std::string defines = "");
+			bool build_shader(context& ctx, const shader_define_map& defines = shader_define_map());
 			///
 			bool enable(context& ctx);
 			///

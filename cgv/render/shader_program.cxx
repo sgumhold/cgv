@@ -13,11 +13,14 @@ namespace cgv {
 	namespace render {
 
 /// attach a list of files
-bool shader_program::attach_files(const context& ctx, const std::vector<std::string>& file_names, std::string defines)
+bool shader_program::attach_files(const context& ctx, const std::vector<std::string>& file_names, const shader_define_map& defines)
 {
 	bool no_error = true;
-	for (unsigned int i = 0; i < file_names.size(); ++i)
+	for(unsigned int i = 0; i < file_names.size(); ++i) {
 		no_error = attach_file(ctx, file_names[i], ST_DETECT, defines) && no_error;
+		if(!no_error)
+			std::cout << last_error << std::endl;
+	}
 	return no_error;
 }
 
@@ -205,7 +208,7 @@ bool shader_program::attach_code(const context& ctx, const std::string& source, 
 
 
 /// read shader code from file, compile and attach to program
-bool shader_program::attach_file(const context& ctx, const std::string& file_name, ShaderType st, std::string defines)
+bool shader_program::attach_file(const context& ctx, const std::string& file_name, ShaderType st, const shader_define_map& defines)
 {
 	shader_code* code_ptr = new shader_code;
 	if (!code_ptr->read_and_compile(ctx,file_name,st,show_code_errors,defines)) {
@@ -218,7 +221,7 @@ bool shader_program::attach_file(const context& ctx, const std::string& file_nam
 }
 
 /// read shader code from files with the given base name, compile and attach them
-bool shader_program::attach_files(const context& ctx, const std::string& base_name, std::string defines)
+bool shader_program::attach_files(const context& ctx, const std::string& base_name, const shader_define_map& defines)
 {
 	std::vector<std::string> file_names;
 	if (!collect_files(base_name,file_names))
@@ -235,7 +238,7 @@ bool shader_program::attach_dir(const context& ctx, const std::string& dir_name,
 }
 
 /// collect shader code files declared in shader program file, compile and attach them
-bool shader_program::attach_program(const context& ctx, const std::string& file_name, bool show_error, std::string defines)
+bool shader_program::attach_program(const context& ctx, const std::string& file_name, bool show_error, const shader_define_map& defines)
 {
 	std::string fn = shader_code::find_file(file_name);
 	if (fn.empty()) {
@@ -364,10 +367,10 @@ bool shader_program::attach_program(const context& ctx, const std::string& file_
 }
 
 /// successively calls create, attach_files and link.
-bool shader_program::build_files(const context& ctx, const std::string& base_name, bool show_error)
+bool shader_program::build_files(const context& ctx, const std::string& base_name, bool show_error, const shader_define_map& defines)
 {
 	return (is_created() || create(ctx)) &&
-		    attach_files(ctx, base_name) && link(ctx, show_error);
+		    attach_files(ctx, base_name, defines) && link(ctx, show_error);
 }
 /// successively calls create, attach_dir and link.
 bool shader_program::build_dir(const context& ctx, const std::string& dir_name, bool recursive, bool show_error)
@@ -377,7 +380,7 @@ bool shader_program::build_dir(const context& ctx, const std::string& dir_name, 
 }
 
 /// successively calls create, attach_program and link.
-bool shader_program::build_program(const context& ctx, const std::string& file_name, bool show_error, std::string defines)
+bool shader_program::build_program(const context& ctx, const std::string& file_name, bool show_error, const shader_define_map& defines)
 {
 	if (!(is_created() || create(ctx)))
 		return false;

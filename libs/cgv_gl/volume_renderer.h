@@ -56,8 +56,8 @@ namespace cgv { // @<
 			vec3 volume_texture_size;
 			/// the eye position in world space
 			vec3 eye_position;
-			/// whether the shader should be rebuilt after a define update
-			std::string shader_defines;
+			/// the shader defines used to build the shader, used to comapre against new defines to determine if the shader needs to be rebuilt
+			shader_define_map shader_defines;
 			/// overload to allow instantiation of volume_renderer
 			render_style* create_render_style() const;
 		public:
@@ -70,9 +70,9 @@ namespace cgv { // @<
 			///
 			void set_eye_position(vec3 _eye_position);
 			///
-			std::string build_define_string();
+			shader_define_map build_define_map();
 			///
-			bool build_shader(context& ctx, std::string defines = "");
+			bool build_shader(context& ctx, const shader_define_map& defines = shader_define_map());
 			///
 			bool enable(context& ctx);
 			///
