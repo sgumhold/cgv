@@ -33,7 +33,7 @@ add_dependencies(examples
         cg_icons
         cg_meta
         cmi_io
-	cmf_tt_gl_font
+        cmf_tt_gl_font
         crg_antialias
         crg_depth_of_field
         crg_grid
@@ -45,5 +45,7 @@ if (WIN32)
             cmv_avi
             co_web)
 endif ()
+
+set_ide_params(examples "plugin:cg_fltk plugin:cg_ext plugin:cg_icons plugin:crg_stereo_view plugin:crg_antialias plugin:crg_depth_of_field plugin:crg_light plugin:cg_meta plugin:cmi_io plugin:cmv_avi plugin:crg_grid plugin:co_web plugin:cmf_tt_gl_font plugin:examples")
 
 install(TARGETS examples EXPORT cgv_plugins DESTINATION ${CGV_LIB_DEST})
