@@ -398,7 +398,7 @@ Hit EvalSplineISect(vec3 dir, vec3 s, vec3 h, vec3 t, float rs, float rh, float 
 }
 
 void main() {
-	/* Uncomment to show the boundign box
+	/* Uncomment to show the bounding box
 	vec3 normal = normalize(cross(dFdx(position_fs), dFdy(position_fs)));
 	finish_fragment(vec4(normal * 0.5 + 0.5, 1.0));
 	return;
