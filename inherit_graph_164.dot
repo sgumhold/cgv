@@ -1,8 +1,0 @@
-digraph "Graphical Class Hierarchy"
-{
-  bgcolor="transparent";
-  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
-  node [fontname="Helvetica",fontsize="10",shape=record];
-  rankdir="LR";
-  Node1 [label="cgv::type::info::type\l_ptr\< type_id \>",height=0.2,width=0.4,color="black",URL="$a00276.html",tooltip="template to cast a pointer into a type known at compile time and specified as TypeId ..."];
-}

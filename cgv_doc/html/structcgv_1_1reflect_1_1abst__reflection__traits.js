@@ -1,0 +1,25 @@
+var structcgv_1_1reflect_1_1abst__reflection__traits =
+[
+    [ "~abst_reflection_traits", "structcgv_1_1reflect_1_1abst__reflection__traits.html#a6ac53bf0165696c2fbf571f8f4cbcfe3", null ],
+    [ "clone", "structcgv_1_1reflect_1_1abst__reflection__traits.html#a4b2c5118e86aaf4965f4c7417695732b", null ],
+    [ "delete_instance", "structcgv_1_1reflect_1_1abst__reflection__traits.html#a4aee781e31073a13686816137e50e7e3", null ],
+    [ "delete_instances", "structcgv_1_1reflect_1_1abst__reflection__traits.html#a17447d86cc25b83d93babc9be8e1c741", null ],
+    [ "external_implementation", "structcgv_1_1reflect_1_1abst__reflection__traits.html#aea0ce2d0df181d5a953610c242cc3681", null ],
+    [ "get_enum_name", "structcgv_1_1reflect_1_1abst__reflection__traits.html#a00a8b2abc9da7a9cda0184c1e211a5dd", null ],
+    [ "get_enum_value", "structcgv_1_1reflect_1_1abst__reflection__traits.html#a4f1099b775183803c79fdead0b23f4e4", null ],
+    [ "get_nr_enum_items", "structcgv_1_1reflect_1_1abst__reflection__traits.html#afc5b137983f4c516229642e260eaf0c5", null ],
+    [ "get_to_string", "structcgv_1_1reflect_1_1abst__reflection__traits.html#aade7c3a52889a38379285581d491c318", null ],
+    [ "get_type_id", "structcgv_1_1reflect_1_1abst__reflection__traits.html#a4fef602387cc22c097a6f4b0ce909d23", null ],
+    [ "get_type_name", "structcgv_1_1reflect_1_1abst__reflection__traits.html#aa00b01c2252909e01eb154c6170df6d2", null ],
+    [ "has_enum_interface", "structcgv_1_1reflect_1_1abst__reflection__traits.html#ac9413a20e338263007c6c814c5e8a378", null ],
+    [ "has_external_implementation", "structcgv_1_1reflect_1_1abst__reflection__traits.html#a8d778150c538b7c521a3abe04ca5e45c", null ],
+    [ "has_string_conversions", "structcgv_1_1reflect_1_1abst__reflection__traits.html#a49b8a684cf72158e439f162db66b2061", null ],
+    [ "is_enum_type", "structcgv_1_1reflect_1_1abst__reflection__traits.html#a41ed31cc8eb0ad3813519a0a40f1f32c", null ],
+    [ "new_instance", "structcgv_1_1reflect_1_1abst__reflection__traits.html#a29573f1adf9a50572b3237070a85196e", null ],
+    [ "new_instances", "structcgv_1_1reflect_1_1abst__reflection__traits.html#a7de2d68752be1d8832828e6f19888f77", null ],
+    [ "set_from_string", "structcgv_1_1reflect_1_1abst__reflection__traits.html#af926d70eab7ea31fab672ee3340c6f56", null ],
+    [ "size", "structcgv_1_1reflect_1_1abst__reflection__traits.html#a40091b56e03db408773ef751e32aecf8", null ],
+    [ "has_enum", "structcgv_1_1reflect_1_1abst__reflection__traits.html#ae9407db561b5f8dfc5a0b2746b639b8d", null ],
+    [ "has_external", "structcgv_1_1reflect_1_1abst__reflection__traits.html#a030a300624506ba9a9835594b32b282f", null ],
+    [ "has_string", "structcgv_1_1reflect_1_1abst__reflection__traits.html#a963342e9e85bba748e7dea2141ca774a", null ]
+];
