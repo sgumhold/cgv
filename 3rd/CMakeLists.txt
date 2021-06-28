@@ -14,4 +14,4 @@ if (WIN32)
     add_subdirectory(webserver)
 endif ()
 
-install(EXPORT cgv_3rd DESTINATION ${CGV_LIB_DEST})
+install(EXPORT cgv_3rd DESTINATION ${CGV_BIN_DEST})

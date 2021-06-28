@@ -22,5 +22,5 @@ target_include_directories(openvr PUBLIC
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src/vrcommon>
         $<INSTALL_INTERFACE:${CGV_3RD_INCLUDE_DEST}/openvr>)
 
-install(TARGETS openvr EXPORT cgv_3rd DESTINATION ${CGV_LIB_DEST})
+install(TARGETS openvr EXPORT cgv_3rd DESTINATION ${CGV_BIN_DEST})
 install(DIRECTORY ./headers DESTINATION ${CGV_3RD_INCLUDE_DEST}/openvr FILES_MATCHING PATTERN "*.h")

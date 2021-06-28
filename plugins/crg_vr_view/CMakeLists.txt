@@ -15,4 +15,4 @@ add_dependencies(crg_vr_view
         cg_fltk crg_grid cg_ext cgv_gl
         cg_vr vr_emulator openvr_driver)
 
-install(TARGETS crg_vr_view EXPORT cgv_plugins DESTINATION ${CGV_LIB_DEST})
+install(TARGETS crg_vr_view EXPORT cgv_plugins DESTINATION ${CGV_BIN_DEST})

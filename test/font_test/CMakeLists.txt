@@ -11,6 +11,6 @@ target_link_libraries(font_test
 add_dependencies(font_test
         cgv_viewer cg_fltk cg_icons cmi_io cg_ext crg_stereo_view cmf_tt_gl_font)
 
-install(TARGETS font_test EXPORT cgv_plugins DESTINATION ${CGV_LIB_DEST})
+install(TARGETS font_test EXPORT cgv_plugins DESTINATION ${CGV_BIN_DEST})
 
 set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS OFF)

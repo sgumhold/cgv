@@ -1,8 +1,11 @@
-include(set_ide_params.cmake)
+include(set_plugin_execution_params.cmake)
 
 add_subdirectory(ppp_tool)
 add_subdirectory(shader_test)
 add_subdirectory(res_prep)
 
-install(FILES set_ide_params.cmake DESTINATION ${CGV_LIB_DEST})
-install(EXPORT cgv_tools DESTINATION ${CGV_LIB_DEST})
+install(FILES set_plugin_execution_params.cmake DESTINATION ${CGV_BIN_DEST})
+install(EXPORT cgv_tools DESTINATION ${CGV_BIN_DEST})
+
+install(FILES run_examples.sh DESTINATION ${CGV_BIN_DEST})
+install(FILES run_examples.bat DESTINATION ${CGV_BIN_DEST})
