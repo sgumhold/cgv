@@ -8,4 +8,4 @@ target_link_libraries(cg_vr
         cgv_signal cgv_os cgv_base cgv_math cgv_media cgv_gui
         vr)
 
-install(TARGETS cg_vr EXPORT cgv_libs DESTINATION ${CGV_LIB_DEST})
+install(TARGETS cg_vr EXPORT cgv_libs DESTINATION ${CGV_BIN_DEST})

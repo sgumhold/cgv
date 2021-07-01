@@ -6,4 +6,4 @@ target_link_libraries(cmf_tt_gl_font
 target_include_directories(cmf_tt_gl_font PUBLIC
         $<BUILD_INTERFACE:${CGV_DIR}/libs>
         $<INSTALL_INTERFACE:${CGV_LIBS_INCLUDE_DEST}>)
-install(TARGETS cmf_tt_gl_font EXPORT cgv_libs DESTINATION ${CGV_LIB_DEST})
+install(TARGETS cmf_tt_gl_font EXPORT cgv_libs DESTINATION ${CGV_BIN_DEST})

@@ -21,4 +21,4 @@ target_include_directories(stream_vis PUBLIC
         $<BUILD_INTERFACE:${CGV_DIR}/libs>
         $<INSTALL_INTERFACE:${CGV_LIBS_INCLUDE_DEST}>)
 
-install(TARGETS stream_vis EXPORT cgv_libs DESTINATION ${CGV_LIB_DEST})
+install(TARGETS stream_vis EXPORT cgv_libs DESTINATION ${CGV_BIN_DEST})

@@ -12,4 +12,4 @@ target_link_libraries(crg_grid
         cgv_gl)
 target_compile_definitions(crg_grid PRIVATE _USRDLL)
 
-install(TARGETS crg_grid EXPORT cgv_plugins DESTINATION ${CGV_LIB_DEST})
+install(TARGETS crg_grid EXPORT cgv_plugins DESTINATION ${CGV_BIN_DEST})

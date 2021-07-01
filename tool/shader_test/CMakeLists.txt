@@ -63,4 +63,4 @@ target_include_directories(shader_test PRIVATE
         ${PPP_INCLUDES})
 target_compile_definitions(shader_test PRIVATE CGV_FORCE_STATIC)
 
-install(TARGETS shader_test EXPORT cgv_tools DESTINATION ${CGV_LIB_DEST})
+install(TARGETS shader_test EXPORT cgv_tools DESTINATION ${CGV_BIN_DEST})

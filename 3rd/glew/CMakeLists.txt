@@ -14,5 +14,5 @@ if(APPLE)
    target_include_directories(glew PUBLIC "/opt/X11/include")
 endif()
 
-install(TARGETS glew EXPORT cgv_3rd DESTINATION ${CGV_LIB_DEST})
+install(TARGETS glew EXPORT cgv_3rd DESTINATION ${CGV_BIN_DEST})
 install(DIRECTORY GL DESTINATION ${CGV_3RD_INCLUDE_DEST} FILES_MATCHING PATTERN "*.h")

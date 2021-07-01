@@ -7,4 +7,4 @@ if (WIN32)
     target_link_libraries(cmv_avi Vfw32)
 endif ()
 
-install(TARGETS cmv_avi EXPORT cgv_plugins DESTINATION ${CGV_LIB_DEST})
+install(TARGETS cmv_avi EXPORT cgv_plugins DESTINATION ${CGV_BIN_DEST})

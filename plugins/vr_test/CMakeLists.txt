@@ -20,6 +20,20 @@ add_dependencies(vr_test
         crg_vr_wall
         cg_vr vr_emulator openvr_driver)
 
-install(TARGETS vr_test EXPORT cgv_plugins DESTINATION ${CGV_LIB_DEST})
+set_plugin_execution_params(vr_test "plugin:cmi_io \
+plugin:cg_fltk \
+\"type(shader_config):shader_path='${CGV_DIR}/plugins/vr_test;${CGV_DIR}/plugins/crg_vr_view;${CGV_DIR}/libs/cgv_gl/glsl'\" \
+plugin:crg_grid \
+plugin:cg_ext \
+plugin:cg_icons \
+plugin:crg_vr_view \
+plugin:crg_vr_wall \
+plugin:vr_emulator \
+plugin:openvr_driver \
+plugin:vr_test \
+config:\"${CGV_DIR}/plugins/vr_test/config.def \
+")
+
+install(TARGETS vr_test EXPORT cgv_plugins DESTINATION ${CGV_BIN_DEST})
 
 set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS OFF)
