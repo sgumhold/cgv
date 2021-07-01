@@ -9,4 +9,4 @@ target_include_directories(vr PUBLIC
         $<BUILD_INTERFACE:${CGV_DIR}/libs>
         $<INSTALL_INTERFACE:${CGV_LIBS_INCLUDE_DEST}>)
 
-install(TARGETS vr EXPORT cgv_libs DESTINATION ${CGV_LIB_DEST})
+install(TARGETS vr EXPORT cgv_libs DESTINATION ${CGV_BIN_DEST})

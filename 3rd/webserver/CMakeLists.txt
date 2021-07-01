@@ -14,5 +14,5 @@ target_include_directories(webserver PUBLIC
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
         $<INSTALL_INTERFACE:${CGV_3RD_INCLUDE_DEST}/webserver>)
 
-install(TARGETS webserver EXPORT cgv_3rd DESTINATION ${CGV_LIB_DEST})
+install(TARGETS webserver EXPORT cgv_3rd DESTINATION ${CGV_BIN_DEST})
 install(DIRECTORY . DESTINATION ${CGV_3RD_INCLUDE_DEST}/webserver FILES_MATCHING PATTERN "*.h")

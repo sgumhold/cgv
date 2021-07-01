@@ -24,4 +24,5 @@ if (WIN32)
     add_subdirectory(co_web)
 endif ()
 
-install(EXPORT cgv_plugins DESTINATION ${CGV_LIB_DEST})
+install(EXPORT cgv_plugins DESTINATION ${CGV_BIN_DEST})
+install(DIRECTORY . DESTINATION ${CGV_PLUGINS_INCLUDE_DEST} FILES_MATCHING PATTERN "*.h")

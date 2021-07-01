@@ -8,10 +8,11 @@ option(SHADER_DEVELOPER OFF)
 set (CMAKE_CXX_STANDARD_REQUIRED 14)
 
 set(CGV_DIR ${PROJECT_SOURCE_DIR})
-set(CGV_LIB_DEST lib)
+set(CGV_BIN_DEST bin)
 set(CGV_INCLUDE_DEST include/cgv)
-set(CGV_LIBS_INCLUDE_DEST include/cgv-libs)
 set(CGV_3RD_INCLUDE_DEST include/cgv-3rd)
+set(CGV_LIBS_INCLUDE_DEST include/cgv-libs)
+set(CGV_PLUGINS_INCLUDE_DEST include/cgv-plugins)
 
 # setting up correct RPATH as per: https://gitlab.kitware.com/cmake/community/-/wikis/doc/cmake/RPATH-handling
 set(CMAKE_SKIP_BUILD_RPATH  FALSE)
@@ -39,5 +40,8 @@ add_subdirectory(libs)
 add_subdirectory(apps)
 add_subdirectory(plugins)
 add_subdirectory(test)
+add_subdirectory(doc)
+
+set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT examples)
 
 install(FILES cgv-config.cmake DESTINATION .)

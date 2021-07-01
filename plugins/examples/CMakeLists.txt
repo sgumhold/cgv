@@ -1,5 +1,6 @@
 
 file(GLOB_RECURSE SOURCES RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "*.cxx")
+file(GLOB_RECURSE HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "*.h")
 file(GLOB_RECURSE SHADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "*.gl*")
 file(GLOB_RECURSE IMAGES RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "*.png" "*.bmp")
 
@@ -33,7 +34,7 @@ add_dependencies(examples
         cg_icons
         cg_meta
         cmi_io
-	cmf_tt_gl_font
+        cmf_tt_gl_font
         crg_antialias
         crg_depth_of_field
         crg_grid
@@ -46,4 +47,25 @@ if (WIN32)
             co_web)
 endif ()
 
-install(TARGETS examples EXPORT cgv_plugins DESTINATION ${CGV_LIB_DEST})
+set_plugin_execution_params(examples "plugin:cg_fltk \
+\"type(shader_config):shader_path='${CGV_DIR}/plugins/examples;${CGV_DIR}/libs/cgv_gl/glsl'\" \
+plugin:cg_ext \
+plugin:cg_icons \
+plugin:crg_stereo_view \
+plugin:crg_antialias \
+plugin:crg_depth_of_field \
+plugin:crg_light \
+plugin:cg_meta \
+plugin:cmi_io \
+plugin:cmv_avi \
+plugin:crg_grid \
+plugin:co_web \
+plugin:cmf_tt_gl_font \
+plugin:examples \
+gui:\"${CGV_DIR}/plugins/examples/examples.gui\" \
+config:\"${CGV_DIR}/plugins/examples/config.def\"\
+")
+
+install(TARGETS examples EXPORT cgv_plugins DESTINATION ${CGV_BIN_DEST})
+install(FILES config.def examples.gui DESTINATION ${CGV_PLUGINS_INCLUDE_DEST}/examples)
+install(DIRECTORY . DESTINATION ${CGV_PLUGINS_INCLUDE_DEST}/examples FILES_MATCHING PATTERN "*.gl*")

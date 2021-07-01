@@ -6,8 +6,8 @@
 # This is the official URL to get the prebuilt binaries as debug API with CUDA.
 # If a release or updated version should be used change this variable.
 # Appropriate URLs can be found on https://pytorch.org/get-started/locally/
-$debug_url = "https://download.pytorch.org/libtorch/cpu/libtorch-win-shared-with-deps-debug-1.7.1%2Bcpu.zip"
-$release_url = "https://download.pytorch.org/libtorch/cpu/libtorch-win-shared-with-deps-1.7.1%2Bcpu.zip"
+$debug_url = "https://download.pytorch.org/libtorch/cpu/libtorch-win-shared-with-deps-debug-1.9.0%2Bcpu.zip"
+$release_url = "https://download.pytorch.org/libtorch/cpu/libtorch-win-shared-with-deps-1.9.0%2Bcpu.zip"
 
 $debug_zip_file = $PSScriptRoot + "\" + $debug_url.Substring($debug_url.LastIndexOf("/") + 1)
 $release_zip_file = $PSScriptRoot + "\" + $release_url.Substring($release_url.LastIndexOf("/") + 1)

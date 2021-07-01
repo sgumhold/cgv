@@ -12,7 +12,7 @@ add_subdirectory(tt_gl_font)
 add_subdirectory(stream_vis)
 add_subdirectory(vr)
 
-install(EXPORT cgv_libs DESTINATION ${CGV_LIB_DEST})
+install(EXPORT cgv_libs DESTINATION ${CGV_BIN_DEST})
 install(DIRECTORY . DESTINATION ${CGV_LIBS_INCLUDE_DEST} FILES_MATCHING PATTERN "*.h")
 # TODO find out why there are *.hh files (maybe rename them to *.h)
 install(DIRECTORY . DESTINATION ${CGV_LIBS_INCLUDE_DEST} FILES_MATCHING PATTERN "*.hh")
