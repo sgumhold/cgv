@@ -169,6 +169,7 @@ namespace cgv {
 				if (p->begin_tree_node("color and materials", srs_ptr->surface_color, false, "level=3")) {
 					p->align("\a");
 					p->add_member_control(b, "surface_color", srs_ptr->surface_color);
+					p->add_member_control(b, "surface_opacity", srs_ptr->surface_opacity, "value_slider", "min=0.0;step=0.01;max=1.0;log=false;ticks=true");
 					if (p->begin_tree_node("material", srs_ptr->material, false, "level=3")) {
 						p->align("\a");
 						p->add_gui("front_material", srs_ptr->material);
