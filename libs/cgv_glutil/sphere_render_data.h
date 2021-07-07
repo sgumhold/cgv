@@ -29,6 +29,8 @@ private:
 				r.set_color_array(ctx, col);
 			if(idx.size() > 0)
 				r.set_indices(ctx, idx);
+			else
+				r.remove_indices(ctx);
 		}
 		out_of_date = false;
 	}
@@ -65,8 +67,6 @@ public:
 		rad.clear();
 		col.clear();
 		idx.clear();
-		if(aam_ptr)
-			aam_ptr->remove_indices();
 		
 		out_of_date = true;
 	}
