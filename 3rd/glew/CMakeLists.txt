@@ -22,7 +22,7 @@ install(TARGETS glew EXPORT cgv_3rd DESTINATION ${CGV_BIN_DEST})
 # Static Library
 add_library(glew_static STATIC glew.c)
 target_link_libraries(glew_static ${OPENGL_LIBRARIES})
-target_compile_definitions(glew_static PRIVATE GLEW_STATIC)
+target_compile_definitions(glew_static PUBLIC GLEW_STATIC)
 target_include_directories(glew_static PUBLIC
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
         $<INSTALL_INTERFACE:${CGV_3RD_INCLUDE_DEST}>)

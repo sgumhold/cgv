@@ -1,7 +1,7 @@
 
 file(GLOB_RECURSE SOURCES RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "*.cxx")
 
-cgv_create_core_lib(cgv_os SOURCES ${SOURCES} DEPENDENCIES cgv_utils)
+cgv_create_lib(cgv_os CORE_LIB SOURCES ${SOURCES} DEPENDENCIES cgv_utils)
 if (WIN32)
     # In windows we also need ws2_32
     target_link_libraries(cgv_os PUBLIC ws2_32)

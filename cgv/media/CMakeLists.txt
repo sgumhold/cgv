@@ -1,7 +1,7 @@
 
 file(GLOB_RECURSE SOURCES RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "*.cxx")
 
-cgv_create_core_lib(cgv_media SOURCES ${SOURCES}
+cgv_create_lib(cgv_media CORE_LIB SOURCES ${SOURCES}
         DEPENDENCIES cgv_utils cgv_type cgv_data cgv_base)
 
 target_compile_definitions(cgv_media PRIVATE
