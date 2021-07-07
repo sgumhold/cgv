@@ -8,13 +8,7 @@ ppp_compile("${CGV_DIR}"
         PPP_INSTALL_DIR
         ${PPP_SOURCES})
 
-add_library(cgv_signal ${SOURCES} ${PPP_FILES})
-target_link_libraries(cgv_signal PUBLIC cgv_type)
-target_compile_definitions(cgv_signal PRIVATE CGV_SIGNAL_EXPORTS)
-target_include_directories(cgv_signal PUBLIC
-        $<BUILD_INTERFACE:${CGV_DIR}>
-        "$<BUILD_INTERFACE:${PPP_INCLUDES}>"
-        $<INSTALL_INTERFACE:include>)
-
-install(TARGETS cgv_signal EXPORT cgv DESTINATION ${CGV_BIN_DEST})
 install(DIRECTORY ${PPP_INSTALL_DIR} DESTINATION ${CGV_INCLUDE_DEST}/signal FILES_MATCHING PATTERN "*.h")
+
+cgv_create_core_lib(cgv_signal SOURCES ${SOURCES} PPP_FILES ${PPP_FILES} PPP_INCLUDES ${PPP_INCLUDES}
+        DEPENDENCIES cgv_type)
