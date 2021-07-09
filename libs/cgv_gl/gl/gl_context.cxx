@@ -3011,7 +3011,9 @@ bool gl_context::is_attribute_array_enabled(const attribute_array_binding_base* 
 
 GLenum buffer_target(VertexBufferType vbt)
 {
-	static GLenum buffer_targets[] = { GL_ARRAY_BUFFER, GL_ELEMENT_ARRAY_BUFFER, GL_TEXTURE_BUFFER, GL_UNIFORM_BUFFER, GL_TRANSFORM_FEEDBACK_BUFFER };
+	static GLenum buffer_targets[] = {
+		GL_ARRAY_BUFFER, GL_ELEMENT_ARRAY_BUFFER, GL_TEXTURE_BUFFER, GL_UNIFORM_BUFFER, GL_TRANSFORM_FEEDBACK_BUFFER, GL_SHADER_STORAGE_BUFFER
+	};
 	return buffer_targets[vbt];
 }
 

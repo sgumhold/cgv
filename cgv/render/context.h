@@ -352,7 +352,8 @@ enum VertexBufferType {
 	VBT_INDICES,
 	VBT_TEXTURE,
 	VBT_UNIFORM,
-	VBT_FEEDBACK
+	VBT_FEEDBACK,
+	VBT_STORAGE
 };
 
 /// different vertex buffer usages as defined in OpenGL
