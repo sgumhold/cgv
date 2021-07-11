@@ -47,6 +47,10 @@ public:
 
 	bool ensure(context& ctx);
 
+	bool enable(context& ctx);
+	
+	bool disable(context& ctx);
+
 	frame_buffer& ref_frame_buffer() { return fb; }
 };
 
