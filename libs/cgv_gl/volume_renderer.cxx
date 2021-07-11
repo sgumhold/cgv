@@ -14,7 +14,7 @@ namespace cgv {
 
 		render_style* volume_renderer::create_render_style() const
 		{
-			return new render_style();
+			return new volume_render_style();
 		}
 
 		volume_render_style::volume_render_style()
