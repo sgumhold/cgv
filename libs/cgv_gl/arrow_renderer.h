@@ -14,6 +14,16 @@ namespace cgv {
 			counter decreases to 0, singleton renderer is destructed. */
 		extern CGV_API arrow_renderer& ref_arrow_renderer(context& ctx, int ref_count_change = 0);
 
+		/// <summary>
+		/// different modes to compute the head length of an arrow
+		/// </summary>
+		enum ArrowHeadLengthMode
+		{
+			AHLM_RELATIVE_TO_RADIUS = 1, ///
+			AHLM_RELATIVE_TO_LENGTH = 2,///
+			AHLM_MINIMUM_OF_RADIUS_AND_LENGTH = 3///
+		};
+
 		/** style of a point */
 		struct CGV_API arrow_render_style : public surface_render_style
 		{
@@ -25,6 +35,8 @@ namespace cgv {
 			float radius_relative_to_length;
 			/// scaling factor of head radius with respect to tail radius
 			float head_radius_scale;
+			///
+			ArrowHeadLengthMode head_length_mode;
 			/// 
 			float head_length_relative_to_radius;
 			/// 
