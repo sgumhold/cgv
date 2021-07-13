@@ -179,7 +179,7 @@ namespace cgv {
 					p->align("\b");
 					p->end_tree_node(ars_ptr->radius_lower_bound);
 				}
-				if (p->begin_tree_node("radius", ars_ptr->head_radius_scale, true, "level=3")) {
+				if (p->begin_tree_node("head radius", ars_ptr->head_radius_scale, true, "level=3")) {
 					p->align("\a");
 					p->add_member_control(b, "head_length_mode", ars_ptr->head_length_mode, "dropdown", "enums='relative_to_radius=1,relative_to_length=2,minimum_of_radius_and_length=3'");
 					p->add_member_control(b, "head_length_relative_to_radius", ars_ptr->head_length_relative_to_radius, "value_slider", "min=0.1;max=5;ticks=true");

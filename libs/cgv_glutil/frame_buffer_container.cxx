@@ -76,6 +76,19 @@ bool frame_buffer_container::ensure(context& ctx) {
 	return false;
 }
 
+bool frame_buffer_container::enable(context& ctx) {
+
+	bool success = fb.enable(ctx);
+	fb.push_viewport(ctx);
+	return success;
+}
+
+bool frame_buffer_container::disable(context& ctx) {
+
+	fb.pop_viewport(ctx);
+	return fb.disable(ctx);
+}
+
 bool frame_buffer_container::create_and_validate(context& ctx) {
 
 	unsigned w = size[0];
