@@ -42,7 +42,6 @@ namespace cgv {
 				reduce_prog.set_uniform(ctx, uniforms.batch_size, (int)count);
 				reduce_prog.set_uniform(ctx, uniforms.frustum_extent, 1.0f);
 				reduce_prog.set_uniform(ctx, uniforms.target_buffer_size, max_drawn_points);
-				reduce_prog.set_uniform_array(ctx, "protection_zone_points", &culling_protection_zones[0].point, 2);
 				reduce_prog.enable(ctx);
 
 				GLuint64 startTime, stopTime;
@@ -78,7 +77,6 @@ namespace cgv {
 		void clod_point_renderer::reduce_chunks(context& ctx, const uint32_t* chunk_starts, const uint32_t* chunk_point_counts, const uint32_t* reduction_sources, uint32_t num_reduction_sources)
 		{
 			reduce_prog.set_uniform(ctx, uniforms.frustum_extent, 1.0f);
-			reduce_prog.set_uniform_array(ctx, "protection_zone_points", &culling_protection_zones[0].point, 2);
 			reduce_prog.set_uniform(ctx, uniforms.target_buffer_size, max_drawn_points);
 			reduce_prog.enable(ctx);
 
@@ -251,10 +249,31 @@ namespace cgv {
 			reduce_prog.set_uniform(ctx, uniforms.pivot, pivot);
 			reduce_prog.set_uniform(ctx, uniforms.screenSize, screenSize);
 
+
+			//extract frustum
+			dmat4 transform = ctx.get_projection_matrix() * ctx.get_modelview_matrix();
+			vec4 p4 = transform.row(3);
+			
+			double view_angle[2];
+
+			/*
+			for (int i = 0; i < 2; ++i) {
+				vec4 hpa = p4 - transform.row(i);
+				vec4 hpb = p4 + transform.row(i);
+
+				vec3 pa = vec3(hpa.x(), hpa.y(), hpa.z());
+				vec3 pb = vec3(hpb.x(), hpb.y(), hpb.z());
+
+				view_angle[i] = acos(dot(pa, pb) / (pa.length() * pb.length()));
+			}
+			*/
+			//double min_view_angle = 0.5*std::min(view_angle[0], view_angle[1]);
+
 			float y_view_angle = 45;
 			//general point renderer uniforms
 			draw_prog_ptr->set_uniform(ctx, "use_color_index", false);
 			float pixel_extent_per_depth = (float)(2.0 * tan(0.5 * 0.0174532925199 * y_view_angle) / ctx.get_height());
+			//float pixel_extent_per_depth = (float)(2.0 * tan(0.5 * min_view_angle) / ctx.get_height());
 			draw_prog_ptr->set_uniform(ctx, "pixel_extent_per_depth", pixel_extent_per_depth);
 
 			// reduce shader buffers

@@ -58,10 +58,6 @@ layout(std430, binding = 3) buffer ssDrawParameters{
 } drawParameters;
 
 
-//no culling zones given in in model space
-uniform vec4[2] protection_zone_points; //point format : (x,y,z,square_radius)
-
-
 layout(location = 21) uniform int batch_offset;
 layout(location = 22) uniform int batch_size;
 
@@ -74,6 +70,9 @@ uniform vec4 pivot; //pivot point in model space, usually the camera position
 uniform float frustum_extent;
 
 uniform uint target_buffer_size;
+
+uniform float density_decrease= 0.5;
+uniform float min_density = 0.3;
 
 //***** begin interface of view.glsl ***********************************
 mat4 get_modelview_matrix();
@@ -110,43 +109,31 @@ void main(){
 	vec4 projected = (transform * vec4(position, 1));
 	projected.xyz = projected.xyz / projected.w;
 
-	vec4 view_position =  get_modelview_matrix()*vec4(position,1.0);
-	vec2 sq_distance_to_no_cull_zone = vec2(square_distance(view_position.xyz,protection_zone_points[0].xyz),square_distance(view_position.xyz,protection_zone_points[1].xyz));
-	bool allways_accept = any( lessThan(sq_distance_to_no_cull_zone, vec2(protection_zone_points[0].w,protection_zone_points[1].w) ) );
+	// (extented-)frustum culling and near clipping
+	if((frustum_extent < abs(projected.x) ) || ( frustum_extent < abs(projected.y)) || (projected.w < 0) ){
+		return;
+	}
 
-	if (!allways_accept) {
-		// (extented-)frustum culling and near clipping
-		if((frustum_extent < abs(projected.x) ) || ( frustum_extent < abs(projected.y)) || (projected.w < 0) ){
-			return;
-		}
+	//vec3 worldPos = (world * vec4(position, 1)).xyz;
+	vec3 modelPos = position;
 
-		//vec3 worldPos = (world * vec4(position, 1)).xyz;
-		vec3 modelPos = position;
+	// without level randomization
+	//float pointSpacing = uScale * uSpacing / pow(2, level);
 
-		// without level randomization
-		//float pointSpacing = uScale * uSpacing / pow(2, level);
+	// with level randomization
+	float pointSpacing = scale * spacing / pow(2, level + aRandom);
 
-		// with level randomization
-		float pointSpacing = scale * spacing / pow(2, level + aRandom);
+	float d = distance(modelPos, pivot.xyz);
+	float dc = length((projected.xy/screenSize)-vec2(1.0,1.0)); //distance to center in device coordinates
 
-		float d = distance(modelPos, pivot.xyz);
-		float dc = length((projected.xy/screenSize)-vec2(1.0,1.0)); //distance to center in device coordinates
+	// targetSpacing dependant on camera distance
+	//float targetSpacing = (CLOD / 1000) * d;
 
-		// targetSpacing dependant on camera distance
-		//float targetSpacing = (CLOD / 1000) * d;
-
-		// dependant on cam distance and distance to center of screen
-		float targetSpacing = (d * CLOD) / (1000 * max(1 - 0.7 * dc , 0.3));
-
-		// reduce density away from center with the gaussian function
-		// no significant improvement over 1 / (d - dc), so we've settled with the simpler one
-		//float sigma = 0.4;
-		//float gbc = (1 / (sigma * sqrt(2 * 3.1415))) * exp(-0.5 * pow( dc / sigma, 2.0 ));
-		//targetSpacing = (1. * d * CLOD) / (1000 * gbc);
-
-		if(pointSpacing < targetSpacing){
-			return;
-		}
+	// dependant on cam distance and distance to center of screen
+	float targetSpacing = (d * CLOD) / (1000 * max(1 - density_decrease * dc , min_density));
+	
+	if(pointSpacing < targetSpacing){
+		return;
 	}
 
 	int targetIndex = int(atomicAdd(drawParameters.count, 1));

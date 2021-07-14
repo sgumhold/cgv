@@ -118,20 +118,6 @@ namespace cgv {
 				GLuint  baseInstance = 0;
 			};
 			
-			struct NoCullZone {
-				vec4 point = vec4(0.0);
-
-				float& squareRadius() {
-					return point.w();
-				}
-
-				inline void transform(const mat4& transform) {
-					float sq_radius = squareRadius();
-					point = transform * point;
-					squareRadius() = transform(0, 0) * sq_radius;
-				}
-			};
-
 			shader_program reduce_prog;		// filters points from the input buffer and writes them to the render_buffer (compute shader)
 			shader_program* draw_prog_ptr;
 			shader_program draw_prog;	// draws render_buffer (vertex, geometry, fragment shader)
@@ -155,8 +141,6 @@ namespace cgv {
 			mutable render_style* default_render_style = nullptr;
 			/// current render style, can be set by user
 			const render_style* rs = nullptr;
-
-			std::array<NoCullZone,2> culling_protection_zones;
 
 			//cached uniform locations
 			struct uniform_locations {
@@ -262,14 +246,6 @@ namespace cgv {
 				unsigned ret = device_draw_parameters->count;
 				glUnmapNamedBuffer(draw_parameter_buffer);
 				return ret;
-			}
-
-			// set a no culling zone in view space
-			inline void set_protection_zone(const vec3 position, const float radius, const unsigned index) {
-				assert(index < 2);
-				vec4 p = position.lift();
-				p.w() = radius*radius;
-				culling_protection_zones[index].point = p;
 			}
 
 		private:
