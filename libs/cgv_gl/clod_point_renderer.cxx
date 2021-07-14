@@ -2,6 +2,7 @@
 #include <random>
 #include <unordered_map>
 #include <sstream>
+#include <cgv/math/constants.h>
 #include "clod_point_renderer.h"
 
 //**
@@ -251,29 +252,23 @@ namespace cgv {
 
 
 			//extract frustum
-			dmat4 transform = ctx.get_projection_matrix() * ctx.get_modelview_matrix();
+			//dmat4 transform = ctx.get_projection_matrix() * ctx.get_modelview_matrix();
+			dmat4 transform = ctx.get_projection_matrix();
 			vec4 p4 = transform.row(3);
+						
+			vec4 hpa = p4 - transform.row(1);
+			vec4 hpb = p4 + transform.row(1);
+
+			vec3 pa = vec3(hpa.x(), hpa.y(), hpa.z());
+			vec3 pb = vec3(hpb.x(), hpb.y(), hpb.z());
+
+			double y_view_angle = PI - acos(dot(pa, pb) / (pa.length() * pb.length()));
 			
-			double view_angle[2];
-
-			/*
-			for (int i = 0; i < 2; ++i) {
-				vec4 hpa = p4 - transform.row(i);
-				vec4 hpb = p4 + transform.row(i);
-
-				vec3 pa = vec3(hpa.x(), hpa.y(), hpa.z());
-				vec3 pb = vec3(hpb.x(), hpb.y(), hpb.z());
-
-				view_angle[i] = acos(dot(pa, pb) / (pa.length() * pb.length()));
-			}
-			*/
-			//double min_view_angle = 0.5*std::min(view_angle[0], view_angle[1]);
-
-			float y_view_angle = 45;
+			//float y_view_angle = 45;
 			//general point renderer uniforms
 			draw_prog_ptr->set_uniform(ctx, "use_color_index", false);
-			float pixel_extent_per_depth = (float)(2.0 * tan(0.5 * 0.0174532925199 * y_view_angle) / ctx.get_height());
-			//float pixel_extent_per_depth = (float)(2.0 * tan(0.5 * min_view_angle) / ctx.get_height());
+			//float pixel_extent_per_depth = (float)(2.0 * tan(0.5 * 0.0174532925199 * 0.5* min_view_angle) / ctx.get_height());
+			float pixel_extent_per_depth = (float)(2.0 * tan(0.5* y_view_angle) / ctx.get_height());
 			draw_prog_ptr->set_uniform(ctx, "pixel_extent_per_depth", pixel_extent_per_depth);
 
 			// reduce shader buffers
