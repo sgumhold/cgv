@@ -74,6 +74,8 @@ namespace stream_vis {
 		uint16_t upper_bound_index;
 		/// type of automatic bound computation
 		AABBMode aabb_mode;
+		/// message currently used only for triggers
+		std::string message;
 		/// return name
 		const std::string& get_name() const;
 		/// 
