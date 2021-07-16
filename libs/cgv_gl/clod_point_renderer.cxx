@@ -104,7 +104,7 @@ namespace cgv {
 			glQueryCounter(queryID[0], GL_TIMESTAMP);
 
 			glBindVertexArray(vertex_array);
-			glBindBuffer(GL_DRAW_INDIRECT_BUFFER, draw_parameter_buffer);
+			glBindBuffer(GL_DRAW_INDIRECT_BUFFER, active_draw_parameter_buffer);
 			glDrawArraysIndirect(GL_POINTS, 0);
 			
 			//map buffer into host address space for debugging
@@ -201,6 +201,9 @@ namespace cgv {
 			//	draw_parameter_buffer, 0, sizeof(DrawParameters), GL_MAP_READ_BIT | GL_MAP_UNSYNCHRONIZED_BIT | GL_MAP_PERSISTENT_BIT));
 
 			draw_prog_ptr = &draw_prog;
+			active_render_buffer = render_buffer;
+			active_draw_parameter_buffer = draw_parameter_buffer;
+
 			return draw_prog.is_linked() && reduce_prog.is_linked();
 		}
 
@@ -252,7 +255,6 @@ namespace cgv {
 
 
 			//extract frustum
-			//dmat4 transform = ctx.get_projection_matrix() * ctx.get_modelview_matrix();
 			dmat4 transform = ctx.get_projection_matrix();
 			vec4 p4 = transform.row(3);
 						
@@ -263,23 +265,21 @@ namespace cgv {
 			vec3 pb = vec3(hpb.x(), hpb.y(), hpb.z());
 
 			double y_view_angle = PI - acos(dot(pa, pb) / (pa.length() * pb.length()));
-			
-			//float y_view_angle = 45;
+			float pixel_extent_per_depth = (float)(2.0 * tan(0.5 * y_view_angle) / ctx.get_height());
+
 			//general point renderer uniforms
 			draw_prog_ptr->set_uniform(ctx, "use_color_index", false);
-			//float pixel_extent_per_depth = (float)(2.0 * tan(0.5 * 0.0174532925199 * 0.5* min_view_angle) / ctx.get_height());
-			float pixel_extent_per_depth = (float)(2.0 * tan(0.5* y_view_angle) / ctx.get_height());
 			draw_prog_ptr->set_uniform(ctx, "pixel_extent_per_depth", pixel_extent_per_depth);
 
 			// reduce shader buffers
 			
-			// reset draw parameters, using SubData version is important here to keep the mapping
+			// reset draw parameters, using SubData version is important here to keep any mapping
 			DrawParameters dp = DrawParameters();
 			glNamedBufferSubData(draw_parameter_buffer, 0, sizeof(DrawParameters), &dp);
 			// bind buffer for reduce shader
 			
-			glBindBufferBase(GL_SHADER_STORAGE_BUFFER, drawp_pos, draw_parameter_buffer);
-			glBindBufferBase(GL_SHADER_STORAGE_BUFFER, render_pos, render_buffer);
+			glBindBufferBase(GL_SHADER_STORAGE_BUFFER, drawp_pos, active_draw_parameter_buffer);
+			glBindBufferBase(GL_SHADER_STORAGE_BUFFER, render_pos, active_render_buffer);
 			glBindBufferBase(GL_SHADER_STORAGE_BUFFER, input_pos, input_buffer);
 			glBindBufferBase(GL_SHADER_STORAGE_BUFFER, index_pos, index_buffer);
 
@@ -289,6 +289,9 @@ namespace cgv {
 		bool clod_point_renderer::disable(context& ctx)
 		{
 			draw_prog_ptr = &draw_prog;
+			active_draw_parameter_buffer = draw_parameter_buffer;
+			active_render_buffer = render_buffer;
+
 			// draw related stuff
 			glBindBuffer(GL_DRAW_INDIRECT_BUFFER, 0);
 			glBindVertexArray(0);
@@ -400,6 +403,13 @@ namespace cgv {
 		void clod_point_renderer::set_prog(shader_program& one_shot_prog)
 		{
 			draw_prog_ptr = &one_shot_prog;
+		}
+
+		void clod_point_renderer::set_reduced_buffer(const GLuint render_buffer, const GLuint draw_parameters)
+		{
+			assert(render_buffer != 0 && draw_parameters != 0);
+			active_render_buffer = render_buffer;
+			active_draw_parameter_buffer = draw_parameters;
 		}
 
 		void clod_point_renderer::add_shader(context& ctx, shader_program& prog, const std::string& sf,const cgv::render::ShaderType st)
