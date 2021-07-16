@@ -123,7 +123,10 @@ namespace cgv {
 			shader_program draw_prog;	// draws render_buffer (vertex, geometry, fragment shader)
 			
 			GLuint vertex_array = 0;
+			//internal buffer
 			GLuint input_buffer = 0, render_buffer = 0, draw_parameter_buffer = 0, render_back_buffer = 0;
+			//active buffers (may be externals)
+			GLuint active_render_buffer = 0, active_draw_parameter_buffer = 0;
 			/// the refered buffer contains indices of points after reduction step
 			GLuint index_buffer = 0;
 			/// buffer layout positions for the reduce shader program
@@ -132,7 +135,7 @@ namespace cgv {
 			GLsizeiptr input_buffer_size = 0;
 			GLuint input_buffer_num_points = 0;
 			GLint remaining_batch_start = 0;
-
+			
 			bool buffers_outofdate = true;
 
 			GLuint max_drawn_points = 500000;
@@ -169,7 +172,7 @@ namespace cgv {
 
 			bool init(context& ctx);
 
-			/// sets most uniforms and resizes/updates other buffers if needed
+			/// sets most uniforms and resizes/updates other buffers if needed, clears the internal draw_parameter_buffer
 			bool enable(context& ctx);
 
 			bool disable(context& ctx);
@@ -206,6 +209,9 @@ namespace cgv {
 
 			/// set a custom shader program that is used for one enable disable cycle
 			void set_prog(shader_program& one_shot_prog);
+			
+			/// set an external buffer that is used for one enable disable cycle
+			void set_reduced_buffer(const GLuint render_buffer, const GLuint draw_parameters);
 
 			/* methods for step wise operation */
 
@@ -226,12 +232,12 @@ namespace cgv {
 				assert(index_buffer != 0);
 				return index_buffer;
 			}
-			/// get the opengl id used to access the draw parameters
+			/// get the opengl id used to access the internal draw parameters
 			inline GLuint get_draw_parameters() {
 				assert(draw_parameter_buffer != 0);
 				return draw_parameter_buffer;
 			}
-			/// get the opengl id used to access the draw buffer
+			/// get the opengl id used to access the internal draw buffer
 			inline GLuint get_reduced_points() {
 				assert(render_buffer != 0);
 				return render_buffer;
