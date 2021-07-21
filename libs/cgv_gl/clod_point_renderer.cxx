@@ -149,7 +149,6 @@ namespace cgv {
 		{
 			if (!reduce_prog.is_created()) {
 				reduce_prog.create(ctx);
-				add_shader(ctx, reduce_prog, "view.glsl", cgv::render::ST_COMPUTE);
 				add_shader(ctx, reduce_prog, "point_clod_filter_points.glcs", cgv::render::ST_COMPUTE);
 				reduce_prog.link(ctx);
 
@@ -225,9 +224,6 @@ namespace cgv {
 			//transform to model space since there is no view matrix
 			vec4 pivot = inv(ctx.get_modelview_matrix())*dvec4(0.0,0.0,0.0,1.0);
 
-			//mat4 modelview_matrix = ctx.get_modelview_matrix();
-			//mat4 projection_matrix = ctx.get_projection_matrix();
-
 			draw_prog_ptr->set_uniform(ctx, "CLOD" , prs.CLOD);
 			draw_prog_ptr->set_uniform(ctx, "scale", prs.scale);
 			draw_prog_ptr->set_uniform(ctx, "spacing", prs.spacing);
@@ -241,10 +237,15 @@ namespace cgv {
 
 
 			//view.glsl uniforms are set on draw_prog.enable(ctx) and  reduce_prog.enable(ctx)
-			//draw_prog.set_uniform(ctx, "modelview_matrix", modelview_matrix, true);
-			//draw_prog.set_uniform(ctx, "projection_matrix", projection_matrix, true);
-			//reduce_prog.set_uniform(ctx, "modelview_matrix", modelview_matrix, true);
-			//reduce_prog.set_uniform(ctx, "projection_matrix", projection_matrix, true);
+			mat4 modelview_matrix = ctx.get_modelview_matrix();
+			mat4 projection_matrix = ctx.get_projection_matrix();
+			mat4 mvp_matrix = projection_matrix * modelview_matrix;
+			draw_prog_ptr->set_uniform(ctx, "modelview", modelview_matrix);
+			draw_prog_ptr->set_uniform(ctx, "projection", projection_matrix);
+			//add precomputed model view projection matrix
+			draw_prog_ptr->set_uniform(ctx, "model_view_projection", mvp_matrix);
+			reduce_prog.set_uniform(ctx, "model_view_projection", mvp_matrix);
+			//reduce_prog.set_uniform(ctx, "projection", projection_matrix, true);
 
 			// compute shader
 			reduce_prog.set_uniform(ctx, uniforms.CLOD, prs.CLOD);
