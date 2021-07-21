@@ -74,11 +74,7 @@ uniform uint target_buffer_size;
 uniform float density_decrease= 0.5;
 uniform float min_density = 0.3;
 
-//***** begin interface of view.glsl ***********************************
-mat4 get_modelview_matrix();
-mat4 get_projection_matrix();
-mat4 get_modelview_projection_matrix();
-//***** end interface of view.glsl ***********************************
+uniform mat4 model_view_projection;
 
 float square_distance(in vec3 a,in vec3 b){
 	vec3 d = b-a;
@@ -90,8 +86,6 @@ float rand(float n){
 }
 
 void main(){
-	mat4 transform = get_modelview_projection_matrix();
-	
 	uint inputIndex = gl_GlobalInvocationID.x;
 
 	if(inputIndex > batch_size){
@@ -106,7 +100,7 @@ void main(){
 	float level = float((v.colors & 0xFF000000) >> 24);
 	float aRandom = rand(v.x + v.y + v.z);
 
-	vec4 projected = (transform * vec4(position, 1));
+	vec4 projected = (model_view_projection * vec4(position, 1));
 	projected.xyz = projected.xyz / projected.w;
 
 	// (extented-)frustum culling and near clipping
