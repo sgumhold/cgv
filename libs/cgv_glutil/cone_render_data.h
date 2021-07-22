@@ -9,7 +9,7 @@ using namespace cgv::render;
 namespace cgv {
 namespace glutil {
 
-template <typename Color_Type = render_types::rgb>
+template <typename ColorType = render_types::rgb>
 class cone_render_data : public render_types {
 private:
 	attribute_array_manager* aam_ptr;
@@ -17,7 +17,7 @@ private:
 
 	std::vector<vec3> pos;
 	std::vector<float> rad;
-	std::vector<Color_Type> col;
+	std::vector<ColorType> col;
 	std::vector<unsigned> idx;
 
 	void transfer(context& ctx, rounded_cone_renderer& r) {
@@ -98,24 +98,34 @@ public:
 		rad.push_back(r1);
 	}
 
-	void adds(const Color_Type& c) {
+	void adds(const ColorType& c) {
 		col.push_back(c);
 	}
 
-	void add(const Color_Type& c) {
+	void add(const ColorType& c) {
 		col.push_back(c);
 		col.push_back(c);
 	}
 
-	void add(const Color_Type& c0, const Color_Type& c1) {
+	void add(const ColorType& c0, const ColorType& c1) {
 		col.push_back(c0);
 		col.push_back(c1);
 	}
 
-	void add(const vec3& p0, const vec3& p1, const float r, const Color_Type& c) {
+	void add(const vec3& p0, const vec3& p1, const float r, const ColorType& c) {
 		add(p0, p1);
 		add(r);
 		add(c);
+	}
+
+	void fill(const float& r) {
+		for(size_t i = rad.size(); i < pos.size(); ++i)
+			rad.push_back(r);
+	}
+
+	void fill(const ColorType& c) {
+		for(size_t i = col.size(); i < pos.size(); ++i)
+			col.push_back(c);
 	}
 
 	void add_idx(const unsigned int i) {
@@ -124,7 +134,7 @@ public:
 
 	std::vector<vec3>&		 ref_pos() { return pos; }
 	std::vector<float>&		 ref_rad() { return rad; }
-	std::vector<Color_Type>& ref_col() { return col; }
+	std::vector<ColorType>& ref_col() { return col; }
 	std::vector<unsigned>&	 ref_idx() { return idx; }
 
 	attribute_array_manager* get_aam_ptr() { return aam_ptr; }
