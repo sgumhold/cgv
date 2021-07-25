@@ -1,5 +1,7 @@
 #pragma once
 
+#include <unordered_map>
+
 #include <cgv/render/context.h>
 #include <cgv/render/frame_buffer.h>
 #include <cgv/render/render_types.h>
@@ -24,7 +26,7 @@ protected:
 	};
 
 	frame_buffer fb;
-	std::map<std::string, attachment> attachments;
+	std::unordered_map<std::string, attachment> attachments;
 	uvec2 size;
 
 	bool create_and_validate(context& ctx);
@@ -39,11 +41,13 @@ public:
 	// Set this to uvec2(0) to use the size from the context
 	void set_size(uvec2 size) { this->size = size; }
 
-	void add_attachment(std::string name, std::string format = "uint8[R,G,B]", TextureFilter tf = TF_NEAREST, bool attach = true);
+	void add_attachment(const std::string& name, const std::string& format = "uint8[R,G,B]", TextureFilter tf = TF_NEAREST, bool attach = true);
 
-	bool enable_attachment(context& ctx, std::string name, int tex_unit = -1);
+	bool enable_attachment(context& ctx, const std::string& name, int tex_unit = -1);
 
-	bool disable_attachment(context& ctx, std::string name);
+	bool disable_attachment(context& ctx, const std::string& name);
+
+	texture* attachment_texture_ptr(const std::string& name);
 
 	bool ensure(context& ctx);
 
