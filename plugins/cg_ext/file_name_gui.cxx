@@ -79,14 +79,23 @@ struct file_name_gui_creator : public cgv::gui::gui_creator
 			else
 				p->add_control(label, v, "", options, " ");
 		}
+
+		std::string image_size = "32";
+		std::string button_size = "32";
+		bool small_icon = false;
+		if(cgv::base::has_property(options, "small_icon", small_icon, true) && small_icon) {
+			image_size = "18";
+			button_size = "20";
+		}
+
 		if (open)
 			connect_copy(
-				p->add_button(label, "image='res://open32.png';w=32;h=32;label=''", save ? std::string(" ") : align_gui)->click,
+				p->add_button(label, "image='res://open" + image_size + ".png';w=" + button_size + ";h=" + button_size + ";label=''", save ? std::string(" ") : align_gui)->click,
 				rebind(this, &file_name_gui_creator::button_cb, &v, b, options, false)
 			);
 		if (save)
 			connect_copy(
-				p->add_button(label, "image='res://save32.png';w=32;h=32;label=''", align_gui)->click,
+				p->add_button(label, "image='res://save" + image_size + ".png';w=" + button_size + ";h=" + button_size + ";label=''", align_gui)->click,
 				rebind(this, &file_name_gui_creator::button_cb, &v, b, options, true)
 			);
 		if (!open && !save)
