@@ -47,6 +47,8 @@ bool shader_program::collect_files(const std::string& base_name, std::vector<std
 		}
 		++iter;
 	}
+	if(!added_file)
+		std::cerr << "could not find shader file " << base_name.c_str() << std::endl;
 	return added_file;
 }
 
