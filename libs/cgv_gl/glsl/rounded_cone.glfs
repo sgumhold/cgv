@@ -1,5 +1,9 @@
 #version 430
-#define ENABLE_AMBIENT_OCCLUSION 1
+#define ENABLE_TEXTURING 0
+#define TEXTURE_BLEND_MODE 0
+#define ENABLE_AMBIENT_OCCLUSION 0
+
+#define M_PI 3.14159265359
 
 //***** begin interface of view.glsl ***********************************
 mat4 get_modelview_matrix();
@@ -20,9 +24,14 @@ void finish_fragment(vec4 color);
 vec4 compute_reflected_appearance(vec3 position_eye, vec3 normal_eye, vec4 color, int side);
 //***** end interface of surface.glsl ***********************************
 
-uniform sampler3D density_tex;
+#if ENABLE_TEXTURING == 1
+layout (binding = 0) uniform sampler2D albedo_tex;
+#endif
+#if ENABLE_AMBIENT_OCCLUSION == 1
+layout (binding = 1) uniform sampler3D density_tex;
+#endif
 
-layout (binding = 0) uniform sampler2D glyph_tex;
+uniform float texture_blend_factor;
 
 // ambient occlusion parameters
 uniform float ao_offset;
@@ -38,15 +47,34 @@ uniform vec3 sample_dirs[3];
 in vec3 position;
 in flat vec4 start_fs;
 in flat vec4 end_fs;
-in flat vec4 tp2;
-in flat vec4 tp3;
-in vec4 color_start_fs;
-in vec4 color_end_fs;
+in flat vec3 normal_fs;
+in flat vec3 binormal_fs;
+in flat vec4 color_start_fs;
+in flat vec4 color_end_fs;
 
-//in vec3 uu;
-//in vec3 vv;
+vec2 get_tex_coords(vec3 pos) {
+	
+	vec3 delta = end_fs.xyz - start_fs.xyz;
 
-out vec4 frag_out;
+	vec3 a = start_fs.xyz - start_fs.w*delta;
+	vec3 b = end_fs.xyz + end_fs.w*delta;
+			
+	vec3 d = b - a;
+	vec3 cd = a - pos;
+
+	float t = - dot(cd, d) / dot(d, d);
+	t = clamp(t, 0.0, 1.0);
+
+	vec3 x = a + t*d;
+
+	vec3 pn = normalize(pos - x);
+
+	float dnu = dot(pn, normal_fs);
+	float dnv = dot(pn, binormal_fs);
+			
+	float rads = atan(dnv, dnu);
+	return vec2(t, (rads + M_PI) / (2.0*M_PI));
+}
 
 void main()
 {
@@ -54,9 +82,13 @@ void main()
 	//vec3 org = vec3(0.0);
 	//vec3 dir = normalize(position);
 	//vec3 org = (get_inverse_modelview_matrix() * vec4(vec3(0.0), 1.0)).xyz;
-	// Intersection is performed in eye space => eye position is at vec3(0.0) and this fragment is located at "position"
+	
+	// TODO: improve comment
+
+	// Intersection is performed in object space.
+	// eye position is at vec3(0.0) and this fragment is located at "position"
 	// By moving the eye position closer to the fragment position we can improve the numerical accuracy of the resulting
-	// transformed vectors anmd directions.
+	// transformed vectors and directions.
 	//vec3 org = (get_inverse_modelview_matrix() * vec4(0.98*position, 1.0)).xyz;
 	//vec3 dir = normalize((get_inverse_modelview_matrix() * vec4(normalize(position), 0.0)).xyz);
 	vec3 org = (get_inverse_modelview_matrix() * vec4(0.0, 0.0, 0.0, 1.0)).xyz;
@@ -87,7 +119,6 @@ void main()
 
 	if(h < 0.0) {
 		discard;
-		//frag_out = vec4(1.0, 0.0, 1.0, 1.0);
 		return;
 	}
 
@@ -130,42 +161,26 @@ void main()
 	}
 
 	if(hit) {
-		vec3 hit_pos = t * dir;
+		// finally get the hit position in object space
+		vec3 hit_pos = org + t * dir;
 		vec4 color = mix(color_start_fs, color_end_fs, l);
 
+#if ENABLE_TEXTURING == 1
+		vec2 uv = get_tex_coords(hit_pos);
 
+#if TEXTURE_BLEND_MODE == 0
+		color = mix(color, texture(albedo_tex, uv), texture_blend_factor);
+#elif TEXTURE_BLEND_MODE == 1
+		color = mix(color, 0.5*(color + texture(albedo_tex, uv)), texture_blend_factor);
+#elif TEXTURE_BLEND_MODE == 2
+		color *= 1.0 - texture_blend_factor * (1.0 - texture(albedo_tex, uv));
+#elif TEXTURE_BLEND_MODE == 3
+		color *= 1.0 - texture_blend_factor * texture(albedo_tex, uv);
+#else
+		color += texture_blend_factor * texture(albedo_tex, uv);
+#endif
 
-
-/*
-		
-		//vec3 pn = normalize((get_inverse_modelview_matrix() * vec4(hit_pos, 1.0)).xyz - (start_fs.xyz + l * ba));
-		vec3 pn = normalize(hit_pos - (start_fs.xyz + l * ba));
-
-		float dnu = dot(pn, uu);
-		float dnv = dot(pn, vv);
-		dnv = 1.0f - 0.31830988618 * acos(dnv);
-
-		vec2 uv = vec2(1.0 - 0.5 * (sign(dnu) * (dnv + 1.0) + 2.0), l);
-		//uv.x += 0.125;
-		//uv.x *= 4.0;
-		//uv.y *= length(ba) / 1.0;//texture_scale;
-		
-		//color = vec4(t, 0.0, 0.0, 1.0);
-		color = vec4((start_fs.xyz + l * ba) * 0.5 + 0.5, 1.0);
-		color = vec4(hit_pos * 0.5 + 0.5, 1.0);
-		//color = vec4(uv.x, uv.y, 0.0, 1.0);
-		//frag_color *= 1.0 - texture_blend * texture(arrow_tex, uv).r;
-		//color *= 1.0 - texture_blend * texture(glyph_tex, uv).r;
-		//color *= 1.0 * texture(glyph_tex, uv.yx).r;
-		
-
-		//color.xyz = normalize(ba);
-		//color.xyz = vv;
-
-		*/
-
-
-
+#endif
 
 #if ENABLE_AMBIENT_OCCLUSION == 1
 		// Voxel cone tracing
@@ -212,22 +227,14 @@ void main()
 		color *= ao_factor;
 #endif
 	
-		vec3 hit_pos_eye = (get_modelview_matrix() * vec4(hit_pos + org, 1.0)).xyz;
+		vec3 hit_pos_eye = (get_modelview_matrix() * vec4(hit_pos, 1.0)).xyz;
 		vec3 normal_eye = normalize(get_normal_matrix() * normal);
 		finish_fragment(vec4(compute_reflected_appearance(hit_pos_eye, normal_eye, vec4(color.xyz, 1.0), 1).rgb, color.a));
 
-		//finish_fragment(color);
-		//frag_out = color;
-		
 		vec4 v_eye = vec4(hit_pos_eye, 1.0);
-		float depth = dot(tp2, v_eye);
-		float depth_w = dot(tp3, v_eye);
-		gl_FragDepth = 0.5*(depth / depth_w) + 0.5;
+		vec4 depth = get_projection_matrix() * v_eye;
+		gl_FragDepth = 0.5*(depth.z / depth.w) + 0.5;
 	} else {
-		//frag_out = vec4(1.0);
-
-		
-
 		discard;
 	}
 }

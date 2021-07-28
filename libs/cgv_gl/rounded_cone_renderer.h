@@ -21,6 +21,16 @@ namespace cgv { // @<
 			/// default value assigned to radius attribute in \c enable method of rounded cone renderer, set to 1 in constructor
 			float radius;
 
+			bool enable_texturing;
+			enum TextureBlendMode {
+				TBM_MIX = 0,
+				TBM_AVERAGE = 1,
+				TBM_MULTIPLY = 2,
+				TBM_INVERSE_MULTIPLY = 3,
+				TBM_ADD = 4,
+			} texture_blend_mode;
+			float texture_blend_factor;
+
 			bool enable_ambient_occlusion;
 			float ao_offset;
 			float ao_distance;
@@ -45,6 +55,10 @@ namespace cgv { // @<
 			shader_define_map shader_defines;
 			/// overload to allow instantiation of rounded_cone_renderer
 			render_style* create_render_style() const;
+
+			texture* albedo_texture;
+			texture* density_texture;
+
 		public:
 			/// initializes member variables
 			rounded_cone_renderer();
@@ -54,6 +68,10 @@ namespace cgv { // @<
 			void disable_attribute_array_manager(const context& ctx, attribute_array_manager& aam);
 			/// construct shader programs and return whether this was successful, call inside of init method of drawable
 			bool init(context& ctx);
+
+			bool set_albedo_texture(texture* tex);
+			bool set_density_texture(texture* tex);
+
 			///
 			shader_define_map build_define_map();
 			///
