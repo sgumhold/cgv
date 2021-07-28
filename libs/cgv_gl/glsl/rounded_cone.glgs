@@ -24,6 +24,9 @@ out flat vec4 tp3;
 out vec4 color_start_fs;
 out vec4 color_end_fs;
 
+//out vec3 uu;
+//out vec3 vv;
+
 vec3 ortho_vec(vec3 v) {
 
 	return abs(v.x) > abs(v.z) ? vec3(-v.y, v.x, 0.0f) : vec3(0.0f, -v.z, v.y);
@@ -54,6 +57,9 @@ void main()
 	R[2] = vec4(cross(delta, R[1].xyz), 0.0);
 	R[3] = vec4(center, 1.0); // translation part
 
+	//uu = R[1].xyz;
+	//vv = R[2].xyz;
+
 	// scale part
 	R[0] *= l + start.w + end.w;
 	R[1] *= max_d;
@@ -70,6 +76,9 @@ void main()
 
 	color_start_fs = color_gs[0];
 	color_end_fs = color_gs[1];
+
+	//uu = aligned_up;
+	//vv = cross(aligned_up, delta);
 
 	/*
 	vec4 C0 = M * vec4(-0.5, -0.5, -0.5, 1.0);
