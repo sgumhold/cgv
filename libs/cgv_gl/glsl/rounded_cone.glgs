@@ -19,13 +19,10 @@ in vec4 color_gs[];
 out vec3 position;
 out flat vec4 start_fs;
 out flat vec4 end_fs;
-out flat vec4 tp2;
-out flat vec4 tp3;
-out vec4 color_start_fs;
-out vec4 color_end_fs;
-
-//out vec3 uu;
-//out vec3 vv;
+out flat vec3 normal_fs;
+out flat vec3 binormal_fs;
+out flat vec4 color_start_fs;
+out flat vec4 color_end_fs;
 
 vec3 ortho_vec(vec3 v) {
 
@@ -42,10 +39,6 @@ void main()
 
 	float max_d = 2 * max(start.w, end.w);
 
-	mat4 p = get_projection_matrix();
-	tp2 = vec4(p[0][2], p[1][2], p[2][2], p[3][2]);
-	tp3 = vec4(p[0][3], p[1][3], p[2][3], p[3][3]);
-
 	vec3 center = start.xyz + end.xyz + delta*(end.w - start.w);
 	center *= 0.5;
 
@@ -57,8 +50,9 @@ void main()
 	R[2] = vec4(cross(delta, R[1].xyz), 0.0);
 	R[3] = vec4(center, 1.0); // translation part
 
-	//uu = R[1].xyz;
-	//vv = R[2].xyz;
+	// get tangent frame from rotation matrix before scaling is applied
+	normal_fs = R[1].xyz;
+	binormal_fs = R[2].xyz;
 
 	// scale part
 	R[0] *= l + start.w + end.w;
