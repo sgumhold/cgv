@@ -25,10 +25,9 @@ namespace cgv { // @<
 			enum TextureBlendMode {
 				TBM_MIX = 0,
 				TBM_TINT = 1,
-				TBM_AVERAGE = 2,
-				TBM_MULTIPLY = 3,
-				TBM_INVERSE_MULTIPLY = 4,
-				TBM_ADD = 5,
+				TBM_MULTIPLY = 2,
+				TBM_INVERSE_MULTIPLY = 3,
+				TBM_ADD = 4,
 			} texture_blend_mode;
 			float texture_blend_factor;
 			bool texture_tile_from_center;
