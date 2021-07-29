@@ -202,10 +202,8 @@ void main()
 		float luminance = 0.2126*albedo.r + 0.7152*albedo.g + 0.0722*albedo.b;
 		color.rgb = mix(color.rgb, luminance * color.rgb, texture_blend_factor);
 #elif TEXTURE_BLEND_MODE == 2
-		color = mix(color, 0.5*(color + texture(albedo_tex, uv)), texture_blend_factor);
-#elif TEXTURE_BLEND_MODE == 3
 		color *= 1.0 - texture_blend_factor * (1.0 - texture(albedo_tex, uv));
-#elif TEXTURE_BLEND_MODE == 4
+#elif TEXTURE_BLEND_MODE == 3
 		color *= 1.0 - texture_blend_factor * texture(albedo_tex, uv);
 #else
 		color += texture_blend_factor * texture(albedo_tex, uv);
