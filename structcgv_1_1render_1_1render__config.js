@@ -19,6 +19,7 @@ var structcgv_1_1render_1_1render__config =
     [ "get_void", "structcgv_1_1render_1_1render__config.html#aec0cf2e6e9275472854996435e25fe17", null ],
     [ "is_property", "structcgv_1_1render_1_1render__config.html#ad796aa58a0b7d9c52d724a99366f58ae", null ],
     [ "multi_set", "structcgv_1_1render_1_1render__config.html#afbfaded48bb322a4b77350ca73c9e1a2", null ],
+    [ "on_exit_request", "structcgv_1_1render_1_1render__config.html#a313232084b52192201cecaf4ae257ee8", null ],
     [ "on_register", "structcgv_1_1render_1_1render__config.html#a2f074aea5bf4b0bfeb00845750d27623", null ],
     [ "on_set", "structcgv_1_1render_1_1render__config.html#a6d54b3a4cef6b98b98b0d97d41cad410", null ],
     [ "self_reflect", "structcgv_1_1render_1_1render__config.html#a91eabc5d1bee4696cce6de5ad05dfbe8", null ],

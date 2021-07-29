@@ -41,6 +41,7 @@ var classcgv_1_1gui_1_1gui__driver =
     [ "lock", "classcgv_1_1gui_1_1gui__driver.html#a223bfa75af10e85ea5a1c7ac60a72a49", null ],
     [ "message", "classcgv_1_1gui_1_1gui__driver.html#ac0701ad49dd0df7e3916f85f8ee76150", null ],
     [ "multi_set", "classcgv_1_1gui_1_1gui__driver.html#afbfaded48bb322a4b77350ca73c9e1a2", null ],
+    [ "on_exit_request", "classcgv_1_1gui_1_1gui__driver.html#a313232084b52192201cecaf4ae257ee8", null ],
     [ "on_register", "classcgv_1_1gui_1_1gui__driver.html#a2f074aea5bf4b0bfeb00845750d27623", null ],
     [ "on_set", "classcgv_1_1gui_1_1gui__driver.html#a6d54b3a4cef6b98b98b0d97d41cad410", null ],
     [ "paste_from_clipboard", "classcgv_1_1gui_1_1gui__driver.html#aefef4d65635bdc2636d7633971d21768", null ],

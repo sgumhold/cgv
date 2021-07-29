@@ -73,6 +73,7 @@ var structcgv_1_1render_1_1callback__drawable =
     [ "is_property", "structcgv_1_1render_1_1callback__drawable.html#ad796aa58a0b7d9c52d724a99366f58ae", null ],
     [ "is_visible", "structcgv_1_1render_1_1callback__drawable.html#afffd8ead513770ac167efd9a2a56fdf5", null ],
     [ "multi_set", "structcgv_1_1render_1_1callback__drawable.html#afbfaded48bb322a4b77350ca73c9e1a2", null ],
+    [ "on_exit_request", "structcgv_1_1render_1_1callback__drawable.html#a313232084b52192201cecaf4ae257ee8", null ],
     [ "on_register", "structcgv_1_1render_1_1callback__drawable.html#a2f074aea5bf4b0bfeb00845750d27623", null ],
     [ "on_set", "structcgv_1_1render_1_1callback__drawable.html#a6d54b3a4cef6b98b98b0d97d41cad410", null ],
     [ "post_redraw", "structcgv_1_1render_1_1callback__drawable.html#ae75519749727672fc4f46f925ac2af79", null ],

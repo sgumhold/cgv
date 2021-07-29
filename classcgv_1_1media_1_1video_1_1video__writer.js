@@ -24,6 +24,7 @@ var classcgv_1_1media_1_1video_1_1video__writer =
     [ "get_void", "classcgv_1_1media_1_1video_1_1video__writer.html#a90f05725f03c58306d1d3a35157517c4", null ],
     [ "is_property", "classcgv_1_1media_1_1video_1_1video__writer.html#ad796aa58a0b7d9c52d724a99366f58ae", null ],
     [ "multi_set", "classcgv_1_1media_1_1video_1_1video__writer.html#afbfaded48bb322a4b77350ca73c9e1a2", null ],
+    [ "on_exit_request", "classcgv_1_1media_1_1video_1_1video__writer.html#a313232084b52192201cecaf4ae257ee8", null ],
     [ "on_register", "classcgv_1_1media_1_1video_1_1video__writer.html#a2f074aea5bf4b0bfeb00845750d27623", null ],
     [ "on_set", "classcgv_1_1media_1_1video_1_1video__writer.html#a6d54b3a4cef6b98b98b0d97d41cad410", null ],
     [ "open", "classcgv_1_1media_1_1video_1_1video__writer.html#a6c90b6fed445b177b79e277581339c2d", null ],

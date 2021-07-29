@@ -56,6 +56,7 @@ var classcgv_1_1gui_1_1window =
     [ "link", "classcgv_1_1gui_1_1window.html#ae39d55bc26d5afbbe71f12dd89cc4b92", null ],
     [ "multi_set", "classcgv_1_1gui_1_1window.html#afbfaded48bb322a4b77350ca73c9e1a2", null ],
     [ "multiple_selection", "classcgv_1_1gui_1_1window.html#a63546812022df51b25221fef314f2509", null ],
+    [ "on_exit_request", "classcgv_1_1gui_1_1window.html#a313232084b52192201cecaf4ae257ee8", null ],
     [ "on_register", "classcgv_1_1gui_1_1window.html#a2f074aea5bf4b0bfeb00845750d27623", null ],
     [ "on_set", "classcgv_1_1gui_1_1window.html#a6d54b3a4cef6b98b98b0d97d41cad410", null ],
     [ "open_child_group", "classcgv_1_1gui_1_1window.html#ae6d09394fb51122f4d51d8f6cec46baf", null ],
