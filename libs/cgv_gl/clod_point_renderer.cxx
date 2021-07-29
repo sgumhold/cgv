@@ -202,6 +202,7 @@ namespace cgv {
 			draw_prog_ptr = &draw_prog;
 			active_render_buffer = render_buffer;
 			active_draw_parameter_buffer = draw_parameter_buffer;
+			active_index_buffer = index_buffer;
 
 			return draw_prog.is_linked() && reduce_prog.is_linked();
 		}
@@ -282,7 +283,7 @@ namespace cgv {
 			glBindBufferBase(GL_SHADER_STORAGE_BUFFER, drawp_pos, active_draw_parameter_buffer);
 			glBindBufferBase(GL_SHADER_STORAGE_BUFFER, render_pos, active_render_buffer);
 			glBindBufferBase(GL_SHADER_STORAGE_BUFFER, input_pos, input_buffer);
-			glBindBufferBase(GL_SHADER_STORAGE_BUFFER, index_pos, index_buffer);
+			glBindBufferBase(GL_SHADER_STORAGE_BUFFER, index_pos, active_index_buffer);
 
 			return true;
 		}
@@ -292,6 +293,7 @@ namespace cgv {
 			draw_prog_ptr = &draw_prog;
 			active_draw_parameter_buffer = draw_parameter_buffer;
 			active_render_buffer = render_buffer;
+			active_index_buffer = index_buffer;
 
 			// draw related stuff
 			glBindBuffer(GL_DRAW_INDIRECT_BUFFER, 0);
@@ -405,11 +407,12 @@ namespace cgv {
 		{
 			draw_prog_ptr = &one_shot_prog;
 		}
-
-		void clod_point_renderer::set_reduced_buffer(const GLuint render_buffer, const GLuint draw_parameters)
+		
+		void clod_point_renderer::set_reduced_buffer(const GLuint ext_render_buffer, const GLuint ext_index_buffer, const GLuint draw_parameters)
 		{
 			assert(render_buffer != 0 && draw_parameters != 0);
-			active_render_buffer = render_buffer;
+			active_render_buffer = ext_render_buffer;
+			active_index_buffer = ext_index_buffer;
 			active_draw_parameter_buffer = draw_parameters;
 		}
 
@@ -436,6 +439,26 @@ namespace cgv {
 			glBindBuffer(GL_SHADER_STORAGE_BUFFER, index_buffer);
 			glBufferData(GL_SHADER_STORAGE_BUFFER, max_drawn_points *sizeof(GLuint), nullptr, GL_DYNAMIC_DRAW);
 			glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
+		}
+
+		int clod_point_renderer::resize_external_buffers(context& ctx, const int old_size)
+		{
+			if (old_size != max_drawn_points) {
+				if (active_index_buffer != index_buffer && active_index_buffer != 0) {
+					glBindBuffer(GL_SHADER_STORAGE_BUFFER, active_index_buffer);
+					glBufferData(GL_SHADER_STORAGE_BUFFER, max_drawn_points * sizeof(GLuint), nullptr, GL_DYNAMIC_DRAW);
+				}
+				if (active_render_buffer != render_buffer && active_render_buffer != 0) {
+					glBindBuffer(GL_SHADER_STORAGE_BUFFER, active_render_buffer);
+					glBufferData(GL_SHADER_STORAGE_BUFFER, max_drawn_points * sizeof(Point), nullptr, GL_DYNAMIC_DRAW);
+				}
+				if (active_draw_parameter_buffer != draw_parameter_buffer && active_draw_parameter_buffer != 0) {
+					glBindBuffer(GL_SHADER_STORAGE_BUFFER, active_draw_parameter_buffer);
+					glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(DrawParameters), nullptr, GL_STREAM_DRAW);
+				}
+				glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
+			}
+			return max_drawn_points;
 		}
 
 		void clod_point_renderer::clear_buffers(const context& ctx)

@@ -126,7 +126,7 @@ namespace cgv {
 			//internal buffer
 			GLuint input_buffer = 0, render_buffer = 0, draw_parameter_buffer = 0, render_back_buffer = 0;
 			//active buffers (may be externals)
-			GLuint active_render_buffer = 0, active_draw_parameter_buffer = 0;
+			GLuint active_render_buffer = 0, active_draw_parameter_buffer = 0, active_index_buffer = 0;
 			/// the refered buffer contains indices of points after reduction step
 			GLuint index_buffer = 0;
 			/// buffer layout positions for the reduce shader program
@@ -211,7 +211,7 @@ namespace cgv {
 			void set_prog(shader_program& one_shot_prog);
 			
 			/// set an external buffer that is used for one enable disable cycle
-			void set_reduced_buffer(const GLuint render_buffer, const GLuint draw_parameters);
+			void set_reduced_buffer(const GLuint ext_render_buffer, const GLuint ext_index_buffer, const GLuint draw_parameters);
 
 			/* methods for step wise operation */
 
@@ -254,6 +254,8 @@ namespace cgv {
 				return ret;
 			}
 
+			/// resizes external buffers to fit the renderers settings, returns new size, the old size parameter only exists to prevent resizing in the case the buffer sizes already match
+			int resize_external_buffers(context& ctx, const int old_size=-1);
 		private:
 			void add_shader(context& ctx, shader_program& prog, const std::string& sf, const cgv::render::ShaderType st);
 			void resize_buffers(context& ctx);
