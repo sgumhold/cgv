@@ -1,6 +1,8 @@
 #version 430
 #define ENABLE_TEXTURING 0
 #define TEXTURE_BLEND_MODE 0
+#define TEXTURE_TILE_FROM_CENTER 0
+#define TEXTURE_USE_REFERENCE_LENGTH 0
 #define ENABLE_AMBIENT_OCCLUSION 0
 
 #define M_PI 3.14159265359
@@ -32,6 +34,9 @@ layout (binding = 1) uniform sampler3D density_tex;
 #endif
 
 uniform float texture_blend_factor;
+uniform vec2 texture_offset;
+uniform vec2 texture_tiling;
+uniform float texture_reference_length;
 
 // ambient occlusion parameters
 uniform float ao_offset;
@@ -56,6 +61,8 @@ vec2 get_tex_coords(vec3 pos) {
 	
 	vec3 delta = end_fs.xyz - start_fs.xyz;
 
+	float len = 1.0;
+
 	vec3 a = start_fs.xyz - start_fs.w*delta;
 	vec3 b = end_fs.xyz + end_fs.w*delta;
 			
@@ -73,7 +80,27 @@ vec2 get_tex_coords(vec3 pos) {
 	float dnv = dot(pn, binormal_fs);
 			
 	float rads = atan(dnv, dnu);
-	return vec2(t, (rads + M_PI) / (2.0*M_PI));
+
+#if TEXTURE_USE_REFERENCE_LENGTH == 1
+	len = length(delta) / texture_reference_length;
+	t *= len;
+#endif
+
+	vec2 uv = vec2(t, (rads + M_PI) / (2.0*M_PI));
+
+#if TEXTURE_TILE_FROM_CENTER == 1
+	uv.x -= 0.5*len;
+	uv.y -= 0.5;
+	uv *= texture_tiling;
+	uv.x += 0.5*len;
+	uv.y += 0.5;
+	
+#else
+	uv *= texture_tiling;
+#endif
+
+	uv += texture_offset;
+	return uv;
 }
 
 void main()
@@ -171,10 +198,14 @@ void main()
 #if TEXTURE_BLEND_MODE == 0
 		color = mix(color, texture(albedo_tex, uv), texture_blend_factor);
 #elif TEXTURE_BLEND_MODE == 1
-		color = mix(color, 0.5*(color + texture(albedo_tex, uv)), texture_blend_factor);
+		vec4 albedo = texture(albedo_tex, uv);
+		float luminance = 0.2126*albedo.r + 0.7152*albedo.g + 0.0722*albedo.b;
+		color.rgb = mix(color.rgb, luminance * color.rgb, texture_blend_factor);
 #elif TEXTURE_BLEND_MODE == 2
-		color *= 1.0 - texture_blend_factor * (1.0 - texture(albedo_tex, uv));
+		color = mix(color, 0.5*(color + texture(albedo_tex, uv)), texture_blend_factor);
 #elif TEXTURE_BLEND_MODE == 3
+		color *= 1.0 - texture_blend_factor * (1.0 - texture(albedo_tex, uv));
+#elif TEXTURE_BLEND_MODE == 4
 		color *= 1.0 - texture_blend_factor * texture(albedo_tex, uv);
 #else
 		color += texture_blend_factor * texture(albedo_tex, uv);

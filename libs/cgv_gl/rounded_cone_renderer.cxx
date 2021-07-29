@@ -23,8 +23,13 @@ namespace cgv {
 			radius_scale = 1.0f;
 			
 			enable_texturing = false;
-			texture_blend_factor = 1.0f;
 			texture_blend_mode = TBM_MIX;
+			texture_blend_factor = 1.0f;
+			texture_tile_from_center = false;
+			texture_offset = vec2(0.0f);
+			texture_tiling = vec2(1.0f);
+			texture_use_reference_length = false;
+			texture_reference_length = 1.0f;
 
 			enable_ambient_occlusion = false;
 			ao_offset = 0.04f;
@@ -99,6 +104,8 @@ namespace cgv {
 			shader_define_map defines;
 			defines["ENABLE_TEXTURING"] = rcrs.enable_texturing ? "1" : "0";
 			defines["TEXTURE_BLEND_MODE"] = std::to_string((unsigned)rcrs.texture_blend_mode);
+			defines["TEXTURE_TILE_FROM_CENTER"] = rcrs.texture_tile_from_center ? "1" : "0";
+			defines["TEXTURE_USE_REFERENCE_LENGTH"] = rcrs.texture_use_reference_length ? "1" : "0";
 			defines["ENABLE_AMBIENT_OCCLUSION"] = rcrs.enable_ambient_occlusion ? "1" : "0";
 			return defines;
 		}
@@ -156,11 +163,13 @@ namespace cgv {
 				ref_prog().set_uniform(ctx, "texel_size", rcrs.texel_size);
 				ref_prog().set_uniform(ctx, "cone_angle_factor", rcrs.cone_angle_factor);
 				ref_prog().set_uniform_array(ctx, "sample_dirs", rcrs.sample_dirs);
-				
 			}
 
 			if(albedo_texture) {
 				ref_prog().set_uniform(ctx, "texture_blend_factor", rcrs.texture_blend_factor);
+				ref_prog().set_uniform(ctx, "texture_offset", rcrs.texture_offset);
+				ref_prog().set_uniform(ctx, "texture_tiling", rcrs.texture_tiling);
+				ref_prog().set_uniform(ctx, "texture_reference_length", rcrs.texture_reference_length);
 				albedo_texture->enable(ctx, 0);
 			}
 			if(density_texture) density_texture->enable(ctx, 1);
@@ -219,8 +228,26 @@ namespace cgv {
 				if(p->begin_tree_node("texturing", rcrs_ptr->enable_texturing, false)) {
 					p->align("\a");
 					p->add_member_control(b, "enable", rcrs_ptr->enable_texturing, "check");
-					p->add_member_control(b, "blend mode", rcrs_ptr->texture_blend_mode, "dropdown", "enums='mix,average,multiply,inverse multiply,add'");
+					p->add_member_control(b, "blend mode", rcrs_ptr->texture_blend_mode, "dropdown", "enums='mix,tint,average,multiply,inverse multiply,add'");
 					p->add_member_control(b, "blend factor", rcrs_ptr->texture_blend_factor, "value_slider", "min=0.0;step=0.0001;max=1.0;ticks=true");
+					//p->add_member_control(b, "texcoord offset", rcrs_ptr->texcoord_offset, "value_slider", "min=-1.0;step=0.0001;max=1.0;ticks=true");
+					//p->add_member_control(b, "texcoord scale", rcrs_ptr->texcoord_scale, "value_slider", "min=-10.0;step=0.0001;max=10.0;ticks=true");
+
+					p->add_member_control(b, "tile from center", rcrs_ptr->texture_tile_from_center, "check");
+
+					p->add_member_control(b, "offset", rcrs_ptr->texture_offset[0], "value", "w=95;min=-1;max=1;step=0.001", " ");
+					p->add_member_control(b, "", rcrs_ptr->texture_offset[1], "value", "w=95;min=-1;max=1;step=0.001");
+					p->add_member_control(b, "", rcrs_ptr->texture_offset[0], "slider", "w=95;min=-1;max=1;step=0.001;ticks=true", " ");
+					p->add_member_control(b, "", rcrs_ptr->texture_offset[1], "slider", "w=95;min=-1;max=1;step=0.001;ticks=true");
+
+					p->add_member_control(b, "tiling", rcrs_ptr->texture_tiling[0], "value", "w=95;min=-5;max=5;step=0.001", " ");
+					p->add_member_control(b, "", rcrs_ptr->texture_tiling[1], "value", "w=95;min=-5;max=5;step=0.001");
+					p->add_member_control(b, "", rcrs_ptr->texture_tiling[0], "slider", "w=95;min=-5;max=5;step=0.001;log=true;ticks=true", " ");
+					p->add_member_control(b, "", rcrs_ptr->texture_tiling[1], "slider", "w=95;min=-5;max=5;step=0.001;log=true;ticks=true");
+					
+					p->add_member_control(b, "use reference length", rcrs_ptr->texture_use_reference_length, "check");
+					p->add_member_control(b, "reference length", rcrs_ptr->texture_reference_length, "value_slider", "min=0.0;step=0.0001;max=5.0;log=true;ticks=true");
+
 					p->align("\b");
 					p->end_tree_node(rcrs_ptr->enable_texturing);
 				}
