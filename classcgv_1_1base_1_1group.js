@@ -27,6 +27,7 @@ var classcgv_1_1base_1_1group =
     [ "is_property", "classcgv_1_1base_1_1group.html#ad796aa58a0b7d9c52d724a99366f58ae", null ],
     [ "link", "classcgv_1_1base_1_1group.html#ae39d55bc26d5afbbe71f12dd89cc4b92", null ],
     [ "multi_set", "classcgv_1_1base_1_1group.html#afbfaded48bb322a4b77350ca73c9e1a2", null ],
+    [ "on_exit_request", "classcgv_1_1base_1_1group.html#a313232084b52192201cecaf4ae257ee8", null ],
     [ "on_register", "classcgv_1_1base_1_1group.html#a2f074aea5bf4b0bfeb00845750d27623", null ],
     [ "on_set", "classcgv_1_1base_1_1group.html#a6d54b3a4cef6b98b98b0d97d41cad410", null ],
     [ "remove_all_children", "classcgv_1_1base_1_1group.html#ab0deb75eca28f6e4b58222208562cc4e", null ],

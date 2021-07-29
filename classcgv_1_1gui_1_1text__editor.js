@@ -28,6 +28,7 @@ var classcgv_1_1gui_1_1text__editor =
     [ "is_property", "classcgv_1_1gui_1_1text__editor.html#ad796aa58a0b7d9c52d724a99366f58ae", null ],
     [ "is_visible", "classcgv_1_1gui_1_1text__editor.html#a6515fd5fd8833470d1566267f971d9ce", null ],
     [ "multi_set", "classcgv_1_1gui_1_1text__editor.html#afbfaded48bb322a4b77350ca73c9e1a2", null ],
+    [ "on_exit_request", "classcgv_1_1gui_1_1text__editor.html#a313232084b52192201cecaf4ae257ee8", null ],
     [ "on_register", "classcgv_1_1gui_1_1text__editor.html#a2f074aea5bf4b0bfeb00845750d27623", null ],
     [ "on_set", "classcgv_1_1gui_1_1text__editor.html#a6d54b3a4cef6b98b98b0d97d41cad410", null ],
     [ "read", "classcgv_1_1gui_1_1text__editor.html#adf6f56e9c143766cd08b0f38925b3119", null ],

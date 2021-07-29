@@ -24,6 +24,7 @@ var structcgv_1_1base_1_1factory__impl =
     [ "is_property", "structcgv_1_1base_1_1factory__impl.html#ad796aa58a0b7d9c52d724a99366f58ae", null ],
     [ "is_singleton_factory", "structcgv_1_1base_1_1factory__impl.html#a43a20e1a6323f634c51762ad21dbed62", null ],
     [ "multi_set", "structcgv_1_1base_1_1factory__impl.html#afbfaded48bb322a4b77350ca73c9e1a2", null ],
+    [ "on_exit_request", "structcgv_1_1base_1_1factory__impl.html#a313232084b52192201cecaf4ae257ee8", null ],
     [ "on_register", "structcgv_1_1base_1_1factory__impl.html#a2f074aea5bf4b0bfeb00845750d27623", null ],
     [ "on_set", "structcgv_1_1base_1_1factory__impl.html#a6d54b3a4cef6b98b98b0d97d41cad410", null ],
     [ "release_singleton", "structcgv_1_1base_1_1factory__impl.html#ac8d1d8c83d2a4095d8bdae1a617a0f8c", null ],

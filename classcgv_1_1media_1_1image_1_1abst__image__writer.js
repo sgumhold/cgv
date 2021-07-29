@@ -23,6 +23,7 @@ var classcgv_1_1media_1_1image_1_1abst__image__writer =
     [ "is_format_supported", "classcgv_1_1media_1_1image_1_1abst__image__writer.html#aae515b596ac954571c18c99e6ca1b211", null ],
     [ "is_property", "classcgv_1_1media_1_1image_1_1abst__image__writer.html#ad796aa58a0b7d9c52d724a99366f58ae", null ],
     [ "multi_set", "classcgv_1_1media_1_1image_1_1abst__image__writer.html#afbfaded48bb322a4b77350ca73c9e1a2", null ],
+    [ "on_exit_request", "classcgv_1_1media_1_1image_1_1abst__image__writer.html#a313232084b52192201cecaf4ae257ee8", null ],
     [ "on_register", "classcgv_1_1media_1_1image_1_1abst__image__writer.html#a2f074aea5bf4b0bfeb00845750d27623", null ],
     [ "on_set", "classcgv_1_1media_1_1image_1_1abst__image__writer.html#a6d54b3a4cef6b98b98b0d97d41cad410", null ],
     [ "open", "classcgv_1_1media_1_1image_1_1abst__image__writer.html#a275771aa26008695649dd6002602f7b8", null ],
