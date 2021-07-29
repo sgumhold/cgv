@@ -128,6 +128,9 @@ Functions</h2></td></tr>
 <tr class="separator:a368148a2c0ea1d7feded535e8d325b24"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac6db9d2c2746d9ad3e380c5ff689b64b"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1utils.html#ac6db9d2c2746d9ad3e380c5ff689b64b">balanced_find_content</a> (const char *begin, const char *end, <a class="el" href="structcgv_1_1utils_1_1token.html">token</a> &amp;content, char open_parenthesis, char close_parenthesis)</td></tr>
 <tr class="separator:ac6db9d2c2746d9ad3e380c5ff689b64b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a88174e77ea4ee1dbaef45334df8d5333"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1utils.html#a88174e77ea4ee1dbaef45334df8d5333">strip_cpp_comments</a> (const std::string &amp;source, bool correct_new_lines=true)</td></tr>
+<tr class="memdesc:a88174e77ea4ee1dbaef45334df8d5333"><td class="mdescLeft">&#160;</td><td class="mdescRight">remove cpp-style comments from string  <a href="namespacecgv_1_1utils.html#a88174e77ea4ee1dbaef45334df8d5333">More...</a><br /></td></tr>
+<tr class="separator:a88174e77ea4ee1dbaef45334df8d5333"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa4b71707e6790fc2c35ca52f8a04ad44"><td class="memItemLeft" align="right" valign="top"><a id="aa4b71707e6790fc2c35ca52f8a04ad44"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1utils.html#aa4b71707e6790fc2c35ca52f8a04ad44">split_to_tokens</a> (const <a class="el" href="structcgv_1_1utils_1_1token.html">token</a> &amp;tok, std::vector&lt; <a class="el" href="structcgv_1_1utils_1_1token.html">token</a> &gt; &amp;tokens, const std::string &amp;separators, bool merge_separators=true, const std::string &amp;open_parenthesis=&quot;&quot;, const std::string &amp;close_parenthesis=&quot;&quot;, const std::string &amp;whitespaces=&quot; \t\n&quot;, unsigned int=-1)</td></tr>
 <tr class="memdesc:aa4b71707e6790fc2c35ca52f8a04ad44"><td class="mdescLeft">&#160;</td><td class="mdescRight">text range given as token <br /></td></tr>
@@ -627,6 +630,44 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="name
 <p>Hello world... This is a "split to tokens" test line. {copyright: S. G.}</p>
 <p>generates the following tokens:</p>
 <p>Hello world ... This is a split to tokens test line copyright: S. G. </p>
+
+</div>
+</div>
+<a id="a88174e77ea4ee1dbaef45334df8d5333"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a88174e77ea4ee1dbaef45334df8d5333">&#9670;&nbsp;</a></span>strip_cpp_comments()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">CGV_API std::string cgv::utils::strip_cpp_comments </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>source</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>correct_new_lines</em> = <code>true</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>remove cpp-style comments from string </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">source</td><td>source string from which to strip cpp style comments</td></tr>
+    <tr><td class="paramname">correct_new_lines</td><td>whether to replace two character new lines with single character new lines</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>source string without any comments</dd></dl>
 
 </div>
 </div>
