@@ -1,7 +1,8 @@
 
 file(GLOB_RECURSE SOURCES RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "*.cxx")
+file(GLOB_RECURSE HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "*.h")
 
-add_library(stream_vis ${SOURCES})
+add_library(stream_vis ${SOURCES} ${HEADERS})
 target_compile_definitions(stream_vis PRIVATE STREAM_VIS_EXPORTS)
 target_link_libraries(stream_vis
         cgv_utils 
