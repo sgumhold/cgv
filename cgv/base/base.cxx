@@ -41,6 +41,12 @@ void base::unregister()
 {
 }
 
+/// overload to handle the appication exit request, return true if exiting is allowed and false otherwise
+bool base::on_exit_request()
+{
+	return true;
+}
+
 /// cast upward to named
 data::ref_ptr<named,true> base::get_named()
 {
