@@ -186,15 +186,18 @@ $(document).ready(function(){initNavTree('advanced__scan_8h_source.html',''); in
 <div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160;                content,open_parenthesis,close_parenthesis);</div>
 <div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160;}</div>
 <div class="line"><a name="l00161"></a><span class="lineno">  161</span>&#160; </div>
-<div class="line"><a name="l00162"></a><span class="lineno">  162</span>&#160;        }</div>
-<div class="line"><a name="l00163"></a><span class="lineno">  163</span>&#160;}</div>
-<div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160; </div>
-<div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160;<span class="preprocessor">#include &lt;cgv/config/lib_end.h&gt;</span></div>
+<div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160;<span class="keyword">extern</span> CGV_API std::string <a class="code" href="namespacecgv_1_1utils.html#a88174e77ea4ee1dbaef45334df8d5333">strip_cpp_comments</a>(<span class="keyword">const</span> std::string&amp; source, <span class="keywordtype">bool</span> correct_new_lines = <span class="keyword">true</span>);</div>
+<div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160; </div>
+<div class="line"><a name="l00170"></a><span class="lineno">  170</span>&#160;        }</div>
+<div class="line"><a name="l00171"></a><span class="lineno">  171</span>&#160;}</div>
+<div class="line"><a name="l00172"></a><span class="lineno">  172</span>&#160; </div>
+<div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160;<span class="preprocessor">#include &lt;cgv/config/lib_end.h&gt;</span></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <div class="ttc" id="ascan_8h_html"><div class="ttname"><a href="scan_8h.html">scan.h</a></div></div>
 <div class="ttc" id="anamespacecgv_1_1utils_html_a065a09a703ff8a7a3ab31b387f1c0468"><div class="ttname"><a href="namespacecgv_1_1utils.html#a065a09a703ff8a7a3ab31b387f1c0468">cgv::utils::token_type</a></div><div class="ttdeci">token_type</div><div class="ttdoc">different types that a typed_token can have</div><div class="ttdef"><b>Definition:</b> advanced_scan.h:25</div></div>
 <div class="ttc" id="astructcgv_1_1utils_1_1token_html"><div class="ttname"><a href="structcgv_1_1utils_1_1token.html">cgv::utils::token</a></div><div class="ttdef"><b>Definition:</b> token.h:15</div></div>
+<div class="ttc" id="anamespacecgv_1_1utils_html_a88174e77ea4ee1dbaef45334df8d5333"><div class="ttname"><a href="namespacecgv_1_1utils.html#a88174e77ea4ee1dbaef45334df8d5333">cgv::utils::strip_cpp_comments</a></div><div class="ttdeci">std::string strip_cpp_comments(const std::string &amp;source, bool correct_new_lines)</div><div class="ttdoc">remove cpp-style comments from string</div><div class="ttdef"><b>Definition:</b> advanced_scan.cxx:115</div></div>
 <div class="ttc" id="anamespacecgv_1_1utils_html_a368148a2c0ea1d7feded535e8d325b24"><div class="ttname"><a href="namespacecgv_1_1utils.html#a368148a2c0ea1d7feded535e8d325b24">cgv::utils::split_to_lines</a></div><div class="ttdeci">void split_to_lines(const char *global_begin, const char *global_end, std::vector&lt; line &gt; &amp;lines, bool truncate_trailing_spaces)</div><div class="ttdef"><b>Definition:</b> advanced_scan.cxx:65</div></div>
 <div class="ttc" id="anamespacecgv_1_1utils_html_ac6db9d2c2746d9ad3e380c5ff689b64b"><div class="ttname"><a href="namespacecgv_1_1utils.html#ac6db9d2c2746d9ad3e380c5ff689b64b">cgv::utils::balanced_find_content</a></div><div class="ttdeci">bool balanced_find_content(const char *begin, const char *end, token &amp;content, char open_parenthesis, char close_parenthesis)</div><div class="ttdef"><b>Definition:</b> advanced_scan.cxx:87</div></div>
 <div class="ttc" id="astructcgv_1_1utils_1_1line_html"><div class="ttname"><a href="structcgv_1_1utils_1_1line.html">cgv::utils::line</a></div><div class="ttdef"><b>Definition:</b> advanced_scan.h:18</div></div>

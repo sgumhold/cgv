@@ -1,5 +1,6 @@
 var NAVTREEINDEX34 =
 {
+"functions_vars_i.html":[11,3,2,9],
 "functions_vars_k.html":[11,3,2,10],
 "functions_vars_l.html":[11,3,2,11],
 "functions_vars_m.html":[11,3,2,12],
@@ -162,8 +163,8 @@ var NAVTREEINDEX34 =
 "namespacecgv_1_1type_1_1cond.html":[11,0,0,11,0],
 "namespacecgv_1_1type_1_1func.html":[10,0,0,7,1],
 "namespacecgv_1_1type_1_1func.html":[11,0,0,11,2],
-"namespacecgv_1_1type_1_1info.html":[11,0,0,11,3],
 "namespacecgv_1_1type_1_1info.html":[10,0,0,7,2],
+"namespacecgv_1_1type_1_1info.html":[11,0,0,11,3],
 "namespacecgv_1_1utils.html":[11,0,0,12],
 "namespacecgv_1_1utils.html":[10,0,0,8],
 "namespacemembers.html":[10,1,0,0],
@@ -248,6 +249,5 @@ var NAVTREEINDEX34 =
 "overview.html#configFiles":[0,6],
 "overview.html#configs":[0,2],
 "overview.html#directories":[0,4],
-"overview.html#platforms":[0,1],
-"overview.html#plugins":[0,3]
+"overview.html#platforms":[0,1]
 };

@@ -9,5 +9,6 @@ var advanced__scan_8h =
     [ "split_to_lines", "advanced__scan_8h.html#ac2dfa4155639ce028b6b01bbb1b49b67", null ],
     [ "split_to_tokens", "advanced__scan_8h.html#ae4162fc13f546dbaba3661b771e1e727", null ],
     [ "split_to_tokens", "advanced__scan_8h.html#aa5974d68ba0d5ff0f7572f5736492ebf", null ],
-    [ "split_to_tokens", "advanced__scan_8h.html#aa4b71707e6790fc2c35ca52f8a04ad44", null ]
+    [ "split_to_tokens", "advanced__scan_8h.html#aa4b71707e6790fc2c35ca52f8a04ad44", null ],
+    [ "strip_cpp_comments", "advanced__scan_8h.html#a88174e77ea4ee1dbaef45334df8d5333", null ]
 ];

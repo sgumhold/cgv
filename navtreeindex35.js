@@ -1,5 +1,6 @@
 var NAVTREEINDEX35 =
 {
+"overview.html#plugins":[0,3],
 "overview.html#viewer":[0,5],
 "packing__info_8h_source.html":[12,0,0,2,10],
 "pages.html":[],
@@ -248,6 +249,5 @@ var NAVTREEINDEX35 =
 "structcgv_1_1base_1_1factory__impl.html#afbfaded48bb322a4b77350ca73c9e1a2":[11,0,0,0,12,23],
 "structcgv_1_1base_1_1factory__impl__1.html":[11,0,0,0,13],
 "structcgv_1_1base_1_1factory__impl__1.html#a03229b698d12d0da2cae1b769f0ee40e":[11,0,0,0,13,32],
-"structcgv_1_1base_1_1factory__impl__1.html#a091de6a8db8fdd3235975606dc50735b":[11,0,0,0,13,39],
-"structcgv_1_1base_1_1factory__impl__1.html#a0b3db0f57373229e66422eeeb6750ebc":[11,0,0,0,13,34]
+"structcgv_1_1base_1_1factory__impl__1.html#a091de6a8db8fdd3235975606dc50735b":[11,0,0,0,13,39]
 };
