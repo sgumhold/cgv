@@ -505,6 +505,12 @@ text_editor_ptr fltk_driver::create_text_editor(unsigned int w, unsigned int h, 
 	return text_editor_ptr(e);
 }
 
+/// show the user a \c _message that can be dismissed with the \c answer
+void fltk_driver::message(const std::string& _message)
+{
+	fltk::message(_message.c_str());
+}
+
 /// ask the user with \c _question to select one of the \c answers, where \c default_answer specifies index of default answer
 int fltk_driver::question(const std::string& _question, const std::vector<std::string>& answers, int default_answer)
 {
@@ -517,10 +523,11 @@ int fltk_driver::question(const std::string& _question, const std::vector<std::s
 		default_answer_string = std::string("*")+answers[default_answer];
 		answer_ptrs[default_answer] = default_answer_string.c_str();
 	}
+
 	switch (answers.size()) {
-	case 0 :
-	case 1 : fltk::message(_question.c_str()); return 0;
-	case 2 : return fltk::ask(_question.c_str());
+	case 0 : return fltk::ask(_question.c_str());
+	case 1 : return fltk::ask(_question.c_str());
+	case 2 : return fltk::ask(_question.c_str(), answer_ptrs[0], answer_ptrs[1]);
 	case 3 : return fltk::choice(_question.c_str(), answer_ptrs[0], answer_ptrs[1], answer_ptrs[2]);
 	case 4 : return fltk::choice(_question.c_str(), answer_ptrs[0], answer_ptrs[1], answer_ptrs[2], answer_ptrs[3]);
 	case 5 : return fltk::choice(_question.c_str(), answer_ptrs[0], answer_ptrs[1], answer_ptrs[2], answer_ptrs[3], answer_ptrs[4]);

@@ -17,7 +17,7 @@ void message(const std::string& _message)
 	if (d.empty())
 		return;
 
-	d->question(_message,std::vector<std::string>());
+	d->message(_message);
 }
 
 /// ask the user with \c question to select one of the \c answers, where \c default_answer specifies index of default answer
