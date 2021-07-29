@@ -14,6 +14,7 @@
 #include <cgv/media/mesh/simple_mesh.h>
 #include <cgv/gui/key_event.h>
 #include <cgv/gui/provider.h>
+#include <cgv/gui/dialog.h>
 #include <cgv/math/ftransform.h>
 
 using namespace cgv::base;
@@ -142,6 +143,10 @@ public:
 		lb = 0.01f;
 		ub = 2.0f;
 		n = m = 20;
+	}
+	bool on_exit_request()
+	{
+		return cgv::gui::question("Are you sure to leave mesh view?", "Yes,No,Cancel", 2) == 0;
 	}
 	void generate_dini_surface()
 	{

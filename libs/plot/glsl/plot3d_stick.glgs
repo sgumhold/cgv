@@ -15,8 +15,8 @@ out flat vec4 start_fs;
 out flat vec4 end_fs;
 out flat vec4 tp2;
 out flat vec4 tp3;
-out vec4 color_start_fs;
-out vec4 color_end_fs;
+out flat vec4 color_start_fs;
+out flat vec4 color_end_fs;
 
 vec3 ortho_vec(vec3 v) {
 
