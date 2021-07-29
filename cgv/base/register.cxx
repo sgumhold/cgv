@@ -102,6 +102,15 @@ struct object_collection
 		}
 		return base_ptr();
 	}
+	bool request_exit_from_all_objects()
+	{
+		bool exit = true;
+		for(unsigned int oi = 0; oi < objects.size(); ++oi) {
+			base_ptr bp = objects[oi];
+			exit = exit && bp->on_exit_request();
+		}
+		return exit;
+	}
 };
 
 
@@ -488,6 +497,11 @@ void enable_permanent_registration()
 void unregister_all_objects()
 {
 	ref_object_collection().unregister_all_objects();
+}
+
+bool request_exit_from_all_objects()
+{
+	return ref_object_collection().request_exit_from_all_objects();
 }
 
 /// access to number of permanently registered objects

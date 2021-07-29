@@ -392,6 +392,25 @@ int fltk::ask(const char *fmt, ...) {
 }
 
 /*!
+  \image html fl_ask.gif
+  Displays a printf-style message in a pop-up box with an "Yes" and
+  "No" button and waits for the user to hit a button. The return value
+  is 1 if the user hits Yes, 0 if they pick No. The enter key is a
+  shortcut for Yes and ESC is a shortcut for No.
+
+  If message_window_timeout is used, then -1 will be returned if the
+  timeout expires.
+*/
+int fltk::ask(const char *fmt,const char *b0,const char *b1, ...) {
+	if(fltk::beep_on_dialog()) (fltk::beep(BEEP_QUESTION));
+	va_list ap;
+	va_start(ap, fmt);
+	int r = innards("?", 0, 0, fmt, ap, b1, b0, 0);
+	va_end(ap);
+	return r;
+}
+
+/*!
   \image html fl_choice.gif
   Shows the message with three buttons below it marked with the
   strings b0, b1, and b2. Returns 0, 1, or 2 depending on which button

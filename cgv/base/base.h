@@ -77,6 +77,8 @@ public:
 	virtual void on_register();
 	/// overload to handle unregistration of instances
 	virtual void unregister();
+	/// overload to handle the appication exit request, return true if exiting is allowed and false otherwise
+	virtual bool on_exit_request();
 	/// overload to show the content of this object
 	virtual void stream_stats(std::ostream&);
 	/// cast upward to named

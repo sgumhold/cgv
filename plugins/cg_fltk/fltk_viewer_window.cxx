@@ -41,6 +41,9 @@ using namespace cgv::utils;
 
 void destroy_callback(fltk::Widget* w)
 {
+	if(!cgv::base::request_exit_from_all_objects())
+		return;
+
 	fltk_viewer_window* v = static_cast<fltk_viewer_window*>(w);
 	if (!v->get_view().empty())
 		v->get_view()->destroy();
