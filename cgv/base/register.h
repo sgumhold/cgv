@@ -64,6 +64,8 @@ extern void CGV_API disable_permanent_registration();
 extern bool CGV_API is_permanent_registration_enabled();
 /// unregister all existing objects to clean up
 extern void CGV_API unregister_all_objects();
+/// calls the on_exit_request method for all registered objects and return true if exiting is allowed
+extern bool CGV_API request_exit_from_all_objects();
 /// access to number of permanently registered objects
 extern unsigned CGV_API get_nr_permanently_registered_objects();
 /// access to i-th permanently registered object

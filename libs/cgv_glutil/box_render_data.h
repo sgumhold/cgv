@@ -1,6 +1,6 @@
 #pragma once
 
-#include <cgv_gl/sphere_renderer.h>
+#include <cgv_gl/box_renderer.h>
 
 #include "lib_begin.h"
 
@@ -10,21 +10,24 @@ namespace cgv {
 namespace glutil {
 
 template <typename ColorType = render_types::rgb>
-class sphere_render_data : public render_types {
+class box_render_data : public render_types {
 private:
 	attribute_array_manager* aam_ptr;
 	bool out_of_date;
 
 	std::vector<vec3> pos;
-	std::vector<float> rad;
+	std::vector<vec3> ext;
+	std::vector<quat> rot;
 	std::vector<ColorType> col;
 	std::vector<unsigned> idx;
 
-	void transfer(context& ctx, sphere_renderer& r) {
+	void transfer(context& ctx, box_renderer& r) {
 		if(pos.size() > 0) {
 			r.set_position_array(ctx, pos);
-			if(rad.size() == pos.size())
-				r.set_radius_array(ctx, rad);
+			if(ext.size() == pos.size())
+				r.set_extent_array(ctx, ext);
+			if(rot.size() == pos.size())
+				r.set_rotation_array(ctx, rot);
 			if(col.size() == pos.size())
 				r.set_color_array(ctx, col);
 			if(idx.size() > 0)
@@ -36,7 +39,7 @@ private:
 	}
 
 public:
-	sphere_render_data(bool use_attribute_array_manager = false) {
+	box_render_data(bool use_attribute_array_manager = false) {
 		aam_ptr = nullptr;
 		out_of_date = false;
 
@@ -45,7 +48,7 @@ public:
 		}
 	}
 
-	~sphere_render_data() { clear(); }
+	~box_render_data() { clear(); }
 
 	bool init(context& ctx) {
 		if(aam_ptr)
@@ -64,7 +67,8 @@ public:
 
 	void clear() {
 		pos.clear();
-		rad.clear();
+		ext.clear();
+		rot.clear();
 		col.clear();
 		idx.clear();
 		
@@ -79,23 +83,22 @@ public:
 		pos.push_back(p);
 	}
 
-	void add(const float r) {
-		rad.push_back(r);
+	void add(const vec3& p, const vec3& e) {
+		pos.push_back(p);
+		ext.push_back(e);
+	}
+
+	void add(const quat& r) {
+		rot.push_back(r);
 	}
 
 	void add(const ColorType& c) {
 		col.push_back(c);
 	}
 
-	void add(const vec3& p, const float r, const ColorType& c) {
-		add(p);
-		add(r);
+	void add(const vec3& p, const vec3& e, const ColorType& c) {
+		add(p, e);
 		add(c);
-	}
-
-	void add(const vec3& p, const float r) {
-		add(p);
-		add(r);
 	}
 
 	void add(const vec3& p, const ColorType& c) {
@@ -108,13 +111,14 @@ public:
 	}
 
 	std::vector<vec3>&		 ref_pos() { return pos; }
-	std::vector<float>&		 ref_rad() { return rad; }
+	std::vector<vec3>&		 ref_ext() { return ext; }
+	std::vector<quat>&		 ref_rot() { return rot; }
 	std::vector<ColorType>& ref_col() { return col; }
 	std::vector<unsigned>&	 ref_idx() { return idx; }
 
 	attribute_array_manager* get_aam_ptr() { return aam_ptr; }
 
-	void render(context& ctx, sphere_renderer&r, sphere_render_style& s, unsigned offset = 0, int count = -1) {
+	void render(context& ctx, box_renderer& r, box_render_style& s, unsigned offset = 0, int count = -1) {
 		if(size() > 0) {
 			r.set_render_style(s);
 			if(aam_ptr) {
