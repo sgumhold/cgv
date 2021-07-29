@@ -112,6 +112,105 @@ bool balanced_find_content(
 	return false;
 }
 
+std::string strip_cpp_comments(const std::string& source, bool correct_new_lines)
+{
+	// preprocess to eliminate C-style comments account for strings defined with "" or '' and escape with \ inside of strings
+	char string_open = 0;
+	bool last_was_escape = false;
+	bool last_was_slash = false;
+	bool in_line_comment = false;
+	bool in_block_comment = false;
+	std::string filtered_source;
+	for (auto c : source) {
+		if (in_line_comment) {
+			switch (c) {
+			case '\n':
+				in_line_comment = false;
+				break;
+			}
+		}
+		else if (in_block_comment) {
+			if (last_was_slash) {
+				switch (c) {
+				case '*':
+					break;
+				case '/':
+					in_block_comment = false;
+				default:
+					last_was_slash = false;
+					break;
+				}
+			}
+			else {
+				switch (c) {
+				case '*':
+					last_was_slash = true;
+					break;
+				}
+			}
+		}
+		else if (string_open) {
+			if (last_was_escape) {
+				last_was_escape = false;
+			}
+			else {
+				if (c == string_open) {
+					string_open = 0;
+				}
+				else if (c == '\\')
+					last_was_escape = true;
+			}
+		}
+		else {
+			if (last_was_slash) {
+				switch (c) {
+				case '"':
+					string_open = '"';
+					break;
+				case '\'':
+					string_open = '\'';
+					break;
+				case '/':
+					in_line_comment = true;
+					break;
+				case '*':
+					in_block_comment = true;
+					break;
+				}
+				if (!in_line_comment && !in_block_comment) {
+					filtered_source.push_back('/');
+					filtered_source.push_back(c);
+				}
+				last_was_slash = false;
+			}
+			else {
+				switch (c) {
+				case '"':
+					string_open = '"';
+					break;
+				case '\'':
+					string_open = '\'';
+					break;
+				case '/':
+					last_was_slash = true;
+					break;
+				}
+				if (!last_was_slash)
+					filtered_source.push_back(c);
+			}
+		}
+	}
+	if (correct_new_lines) {
+		std::string temp = filtered_source;
+		filtered_source = "";
+		for (auto C : temp) {
+			if (C == '\r')
+				continue;
+			filtered_source.push_back(C);
+		}
+	}
+	return filtered_source;
+}
 
 	}
 }
