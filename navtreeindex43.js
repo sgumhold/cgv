@@ -1,5 +1,6 @@
 var NAVTREEINDEX43 =
 {
+"structcgv_1_1render_1_1textured__rectangle.html#a3563b70772c201cb2bd6533c31a3930e":[11,0,0,9,51,24],
 "structcgv_1_1render_1_1textured__rectangle.html#a3850221d245b353028eca7e9306769aa":[11,0,0,9,51,33],
 "structcgv_1_1render_1_1textured__rectangle.html#a38863e19ba391222d8ab4dc71e3f4000":[11,0,0,9,51,23],
 "structcgv_1_1render_1_1textured__rectangle.html#a38dd03f0b24790b4f25dd4c23bddc11c":[11,0,0,9,51,16],
@@ -248,6 +249,5 @@ var NAVTREEINDEX43 =
 "structvr_1_1vr__device__info.html#a3796546b1bfe4f298f0850bed956da9c":[11,0,3,7,2],
 "structvr_1_1vr__device__info.html#a6249918c4aff25c404da1ddda9fb9b19":[11,0,3,7,0],
 "structvr_1_1vr__device__info.html#ac111a52252e426ef0a885ba4bb4ae176":[11,0,3,7,1],
-"structvr_1_1vr__device__info.html#af60c8e4e6ca4eb993050a3b9b1a0c9ab":[11,0,3,7,3],
-"structvr_1_1vr__hmd__info.html":[11,0,3,9]
+"structvr_1_1vr__device__info.html#af60c8e4e6ca4eb993050a3b9b1a0c9ab":[11,0,3,7,3]
 };

@@ -1,5 +1,6 @@
 var NAVTREEINDEX36 =
 {
+"structcgv_1_1base_1_1factory__impl__1.html#ad796aa58a0b7d9c52d724a99366f58ae":[11,0,0,0,13,21],
 "structcgv_1_1base_1_1factory__impl__1.html#ad8d0e6ffe70e6d8adc43876dfca2e84a":[11,0,0,0,13,2],
 "structcgv_1_1base_1_1factory__impl__1.html#ae8d8ca1142c33e11db79395fd85047a4":[11,0,0,0,13,18],
 "structcgv_1_1base_1_1factory__impl__1.html#aed62898813a55528e2b4c2c9e57cdf15":[11,0,0,0,13,19],
@@ -248,6 +249,5 @@ var NAVTREEINDEX36 =
 "structcgv_1_1math_1_1union__find.html#ab2f21dd48851dd4495bdfd35edae39b6":[11,0,0,3,20,5],
 "structcgv_1_1math_1_1union__find.html#af34748cfca3e07c7cb7b265646151814":[11,0,0,3,20,4],
 "structcgv_1_1media_1_1color__storage__traits.html":[11,0,0,4,10],
-"structcgv_1_1media_1_1color__storage__types.html":[11,0,0,4,11],
-"structcgv_1_1media_1_1color__storage__types.html#a2b0606813dd8c5d4f17bb10afaae5c22":[11,0,0,4,11,0]
+"structcgv_1_1media_1_1color__storage__types.html":[11,0,0,4,11]
 };

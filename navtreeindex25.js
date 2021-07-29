@@ -1,5 +1,6 @@
 var NAVTREEINDEX25 =
 {
+"classcgv_1_1render_1_1mesh__render__info.html#a87034fc60b5826249e209d9cfc7ccbb2":[11,0,0,9,21,10],
 "classcgv_1_1render_1_1mesh__render__info.html#a8a5acbe912fb04ad0abac9689882f0e4":[11,0,0,9,21,5],
 "classcgv_1_1render_1_1mesh__render__info.html#a8c4aa01d63b1590a225755a516170851":[11,0,0,9,21,51],
 "classcgv_1_1render_1_1mesh__render__info.html#a8f6fdf00ab6917209d081ffe691c75f3":[11,0,0,9,21,36],
@@ -248,6 +249,5 @@ var NAVTREEINDEX25 =
 "classcgv_1_1render_1_1point__renderer.html#a38dd03f0b24790b4f25dd4c23bddc11c":[11,0,0,9,26,16],
 "classcgv_1_1render_1_1point__renderer.html#a3b86e875524318c8e1bd8c2b5592f29f":[11,0,0,9,26,77],
 "classcgv_1_1render_1_1point__renderer.html#a3bf1a0f5d32ed0c6b44728595f6c8201":[11,0,0,9,26,21],
-"classcgv_1_1render_1_1point__renderer.html#a3c7629ba424e76bc30d86630e5da15e3":[11,0,0,9,26,54],
-"classcgv_1_1render_1_1point__renderer.html#a3d32da2c98f4d937a6b859758310dd79":[11,0,0,9,26,73]
+"classcgv_1_1render_1_1point__renderer.html#a3c7629ba424e76bc30d86630e5da15e3":[11,0,0,9,26,54]
 };

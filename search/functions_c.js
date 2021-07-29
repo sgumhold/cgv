@@ -27,7 +27,7 @@ var searchData=
   ['merge_5findices_4928',['merge_indices',['../classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a147da5e12a835aad4bb144ce903b9232',1,'cgv::media::mesh::simple_mesh_base']]],
   ['mesh_5fdrawable_4929',['mesh_drawable',['../classcgv_1_1render_1_1gl_1_1mesh__drawable.html#a9fcb4c06c730bb5ebf4cb6d11bbe6ad8',1,'cgv::render::gl::mesh_drawable']]],
   ['mesh_5frender_5finfo_4930',['mesh_render_info',['../classcgv_1_1render_1_1mesh__render__info.html#a943fca991d25a02fd5b1148de955320b',1,'cgv::render::mesh_render_info']]],
-  ['message_4931',['message',['../namespacecgv_1_1gui.html#a4605f7e12a3064b7a1c44870cb7bce96',1,'cgv::gui']]],
+  ['message_4931',['message',['../classcgv_1_1gui_1_1gui__driver.html#ac0701ad49dd0df7e3916f85f8ee76150',1,'cgv::gui::gui_driver::message()'],['../namespacecgv_1_1gui.html#a4605f7e12a3064b7a1c44870cb7bce96',1,'cgv::gui::message()']]],
   ['method_5faction_4932',['method_action',['../classcgv_1_1base_1_1method__action.html#add3e66b611ac34044a0ca3fda461e2a6',1,'cgv::base::method_action']]],
   ['method_5faction_5f2_4933',['method_action_2',['../classcgv_1_1base_1_1method__action__2.html#a1f80c037efc16d1fcc2241b56c686f22',1,'cgv::base::method_action_2']]],
   ['min_5findex_4934',['min_index',['../namespacecgv_1_1math.html#ab9f32aff46cb5d2962caf1123ac1be20',1,'cgv::math::min_index(const fvec&lt; T, N &gt; &amp;v)'],['../namespacecgv_1_1math.html#aad026e67ce49ceabab907db2eb48d418',1,'cgv::math::min_index(const vec&lt; T &gt; &amp;v)']]],
