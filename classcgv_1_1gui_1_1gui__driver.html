@@ -208,6 +208,10 @@ virtual std::string&#160;</td><td class="memItemRight" valign="bottom"><a class=
 <tr class="memdesc:aefef4d65635bdc2636d7633971d21768"><td class="mdescLeft">&#160;</td><td class="mdescRight">retreive text from clipboard <br /></td></tr>
 <tr class="separator:aefef4d65635bdc2636d7633971d21768"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr><td colspan="2"><div class="groupHeader">some basic functionality</div></td></tr>
+<tr class="memitem:ac0701ad49dd0df7e3916f85f8ee76150"><td class="memItemLeft" align="right" valign="top"><a id="ac0701ad49dd0df7e3916f85f8ee76150"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1gui_1_1gui__driver.html#ac0701ad49dd0df7e3916f85f8ee76150">message</a> (const std::string &amp;_message)=0</td></tr>
+<tr class="memdesc:ac0701ad49dd0df7e3916f85f8ee76150"><td class="mdescLeft">&#160;</td><td class="mdescRight">show the user a <code>_message</code> that can be dismissed with the <code>answer</code> <br /></td></tr>
+<tr class="separator:ac0701ad49dd0df7e3916f85f8ee76150"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2e31bb9989904d45d9d6e6d082a03d27"><td class="memItemLeft" align="right" valign="top"><a id="a2e31bb9989904d45d9d6e6d082a03d27"></a>
 virtual int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1gui_1_1gui__driver.html#a2e31bb9989904d45d9d6e6d082a03d27">question</a> (const std::string &amp;_question, const std::vector&lt; std::string &gt; &amp;answers, int default_answer=-1)=0</td></tr>
 <tr class="memdesc:a2e31bb9989904d45d9d6e6d082a03d27"><td class="mdescLeft">&#160;</td><td class="mdescRight">ask the user with <code>_question</code> to select one of the <code>answers</code>, where <code>default_answer</code> specifies index of default answer <br /></td></tr>
@@ -239,7 +243,7 @@ virtual std::string&#160;</td><td class="memItemRight" valign="bottom"><a class=
 virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1gui_1_1gui__driver.html#a158d5253cd4c17d9fea7de2413087163">unlock</a> ()=0</td></tr>
 <tr class="memdesc:a158d5253cd4c17d9fea7de2413087163"><td class="mdescLeft">&#160;</td><td class="mdescRight">unlock the main thread <br /></td></tr>
 <tr class="separator:a158d5253cd4c17d9fea7de2413087163"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5cf3be19fdfb6c085d5e4f8fcc46bdd7"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1gui_1_1gui__driver.html#a5cf3be19fdfb6c085d5e4f8fcc46bdd7">wake</a> (const std::string &amp;<a class="el" href="namespacecgv_1_1gui.html#a4605f7e12a3064b7a1c44870cb7bce96">message</a>=&quot;&quot;)=0</td></tr>
+<tr class="memitem:a5cf3be19fdfb6c085d5e4f8fcc46bdd7"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1gui_1_1gui__driver.html#a5cf3be19fdfb6c085d5e4f8fcc46bdd7">wake</a> (const std::string &amp;<a class="el" href="classcgv_1_1gui_1_1gui__driver.html#ac0701ad49dd0df7e3916f85f8ee76150">message</a>=&quot;&quot;)=0</td></tr>
 <tr class="memdesc:a5cf3be19fdfb6c085d5e4f8fcc46bdd7"><td class="mdescLeft">&#160;</td><td class="mdescRight">wake main thread.  <a href="classcgv_1_1gui_1_1gui__driver.html#a5cf3be19fdfb6c085d5e4f8fcc46bdd7">More...</a><br /></td></tr>
 <tr class="separator:a5cf3be19fdfb6c085d5e4f8fcc46bdd7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a419bd468300a898a5f4a70d1e788e6c5"><td class="memItemLeft" align="right" valign="top"><a id="a419bd468300a898a5f4a70d1e788e6c5"></a>
