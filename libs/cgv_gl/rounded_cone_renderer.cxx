@@ -228,7 +228,7 @@ namespace cgv {
 				if(p->begin_tree_node("texturing", rcrs_ptr->enable_texturing, false)) {
 					p->align("\a");
 					p->add_member_control(b, "enable", rcrs_ptr->enable_texturing, "check");
-					p->add_member_control(b, "blend mode", rcrs_ptr->texture_blend_mode, "dropdown", "enums='mix,tint,average,multiply,inverse multiply,add'");
+					p->add_member_control(b, "blend mode", rcrs_ptr->texture_blend_mode, "dropdown", "enums='mix,tint,multiply,inverse multiply,add'");
 					p->add_member_control(b, "blend factor", rcrs_ptr->texture_blend_factor, "value_slider", "min=0.0;step=0.0001;max=1.0;ticks=true");
 					//p->add_member_control(b, "texcoord offset", rcrs_ptr->texcoord_offset, "value_slider", "min=-1.0;step=0.0001;max=1.0;ticks=true");
 					//p->add_member_control(b, "texcoord scale", rcrs_ptr->texcoord_scale, "value_slider", "min=-10.0;step=0.0001;max=10.0;ticks=true");
@@ -242,8 +242,8 @@ namespace cgv {
 
 					p->add_member_control(b, "tiling", rcrs_ptr->texture_tiling[0], "value", "w=95;min=-5;max=5;step=0.001", " ");
 					p->add_member_control(b, "", rcrs_ptr->texture_tiling[1], "value", "w=95;min=-5;max=5;step=0.001");
-					p->add_member_control(b, "", rcrs_ptr->texture_tiling[0], "slider", "w=95;min=-5;max=5;step=0.001;log=true;ticks=true", " ");
-					p->add_member_control(b, "", rcrs_ptr->texture_tiling[1], "slider", "w=95;min=-5;max=5;step=0.001;log=true;ticks=true");
+					p->add_member_control(b, "", rcrs_ptr->texture_tiling[0], "slider", "w=95;min=-5;max=5;step=0.001;ticks=true", " ");
+					p->add_member_control(b, "", rcrs_ptr->texture_tiling[1], "slider", "w=95;min=-5;max=5;step=0.001;ticks=true");
 					
 					p->add_member_control(b, "use reference length", rcrs_ptr->texture_use_reference_length, "check");
 					p->add_member_control(b, "reference length", rcrs_ptr->texture_reference_length, "value_slider", "min=0.0;step=0.0001;max=5.0;log=true;ticks=true");
