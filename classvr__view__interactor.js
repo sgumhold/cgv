@@ -22,6 +22,8 @@ var classvr__view__interactor =
     [ "get_eye_of_kit", "classvr__view__interactor.html#a442bccf7e301566eff517a9384710f21", null ],
     [ "get_rendered_display", "classvr__view__interactor.html#afdd979ebb68c515b9a8eb7da706f275b", null ],
     [ "get_rendered_eye", "classvr__view__interactor.html#a0603604176f414e7da4f1b72684a1474", null ],
+    [ "get_rendered_vr_kit", "classvr__view__interactor.html#a40b012f3ed5e2a7bf91be763717bd045", null ],
+    [ "get_rendered_vr_kit_index", "classvr__view__interactor.html#a78ea5d57770123831aa78ec154e1ac68", null ],
     [ "get_type_name", "classvr__view__interactor.html#a5ec66b40b68b4e4a7f9a4c9d7c310ee8", null ],
     [ "get_view_dir_of_kit", "classvr__view__interactor.html#aaed3b229921b8f5e7d5c06670918f9fc", null ],
     [ "get_view_up_dir_of_kit", "classvr__view__interactor.html#a52ea2c50a1d56304ebe0adfcb109e8f2", null ],
