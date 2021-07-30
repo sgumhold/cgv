@@ -1,5 +1,7 @@
 var NAVTREEINDEX44 =
 {
+"structgamepad_1_1gamepad__state.html#ad0cb46d3168be6f56d1ea2861432f458":[11,0,1,4,1],
+"structgamepad_1_1gamepad__state.html#af831e999b64b14fadfa637c651f6c3fc":[11,0,1,4,0],
 "structgamepad_1_1gamepad__state.html#afe65228383bfc1464c99cecb6c917bef":[11,0,1,4,5],
 "structvr_1_1controller__input__config.html":[11,0,3,0],
 "structvr_1_1controller__input__config.html#a99fc84ca300b055a49c7739b26696f89":[11,0,3,0,2],
