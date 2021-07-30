@@ -270,8 +270,10 @@ public:
 	/// return the vr kit currently rendered
 	/// return a pointer to the current vr kit
 	vr::gl_vr_display* get_rendered_display() const { return rendered_display_ptr; }
-	///
+	/// return pointer to rendered vr kit or nullptr if birds eye view is rendered
 	vr::vr_kit* get_rendered_vr_kit() const { return static_cast<vr::vr_kit*>(rendered_display_ptr); }
+	/// return index of rendered vr kit or -1 if birds eye view is rendered
+	int get_rendered_vr_kit_index() const { return rendered_display_index; }
 	//@}
 	/// 
 	void on_set(void* member_ptr);
