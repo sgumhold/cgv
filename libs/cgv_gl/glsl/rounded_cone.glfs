@@ -62,9 +62,10 @@ vec2 get_tex_coords(vec3 pos) {
 	vec3 delta = end_fs.xyz - start_fs.xyz;
 
 	float len = 1.0;
+	vec3 delta_dir = normalize(delta);
 
-	vec3 a = start_fs.xyz - start_fs.w*delta;
-	vec3 b = end_fs.xyz + end_fs.w*delta;
+	vec3 a = start_fs.xyz - start_fs.w*delta_dir;
+	vec3 b = end_fs.xyz + end_fs.w*delta_dir;
 			
 	vec3 d = b - a;
 	vec3 cd = a - pos;
