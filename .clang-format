@@ -21,7 +21,7 @@ BinPackArguments: true
 BinPackParameters: true
 BraceWrapping:
   AfterClass: true
-  AfterControlStatement: Always
+  AfterControlStatement: MultiLine
   AfterEnum: false
   AfterFunction: true
   AfterNamespace: false
@@ -36,7 +36,7 @@ BraceWrapping:
   SplitEmptyRecord: true
   SplitEmptyNamespace: true
 BreakBeforeBinaryOperators: None
-BreakBeforeBraces: Attach
+BreakBeforeBraces: Custom
 BreakBeforeInheritanceComma: false
 BreakInheritanceList: BeforeColon
 BreakBeforeTernaryOperators: true
@@ -91,7 +91,7 @@ PenaltyBreakString: 1000
 PenaltyBreakTemplateDeclaration: 10
 PenaltyExcessCharacter: 1000000
 PenaltyReturnTypeOnItsOwnLine: 60
-PointerAlignment: Right
+PointerAlignment: Left
 ReflowComments: true
 SortIncludes: false
 SortUsingDeclarations: true
@@ -116,6 +116,6 @@ StatementMacros:
   - QT_REQUIRE_VERSION
 TabWidth: 4
 UseCRLF: false
-UseTab: ForContinuationAndIndentation
+UseTab: Always
 ...
 

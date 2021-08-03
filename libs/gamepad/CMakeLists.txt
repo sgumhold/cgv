@@ -9,12 +9,6 @@ endif ()
 
 file(GLOB_RECURSE SOURCES RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "*.cxx")
 
-add_library(gamepad ${SOURCES})
-target_compile_definitions(gamepad PRIVATE GAMEPAD_EXPORTS)
+cgv_create_lib(gamepad SOURCES ${SOURCES})
 target_link_libraries(gamepad PUBLIC ${GAMEPAD_LIBS})
-target_include_directories(gamepad PUBLIC
-        $<BUILD_INTERFACE:${CGV_DIR}>
-        $<BUILD_INTERFACE:${CGV_DIR}/libs>
-        $<INSTALL_INTERFACE:${CGV_LIBS_INCLUDE_DEST}>)
-
-install(TARGETS gamepad EXPORT cgv_libs DESTINATION ${CGV_BIN_DEST})
+target_link_libraries(gamepad_static PUBLIC ${GAMEPAD_LIBS})

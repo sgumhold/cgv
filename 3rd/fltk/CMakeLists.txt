@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.15)
 
 project(fltk)
 
-add_library(fltk
+set(SOURCES
         # Image
         images/FileIcon2.cxx
         images/Fl_Guess_Image.cxx
@@ -165,6 +165,11 @@ add_library(fltk
         src/WizardGroup.cxx
         src/xbmImage.cxx
         src/xpmImage.cxx)
+
+install(DIRECTORY include/. DESTINATION ${CGV_3RD_INCLUDE_DEST} FILES_MATCHING PATTERN "*.h")
+
+# Shared Library
+add_library(fltk SHARED ${SOURCES})
 target_link_libraries(fltk
         jpeg
         png
@@ -201,4 +206,41 @@ target_include_directories(fltk PUBLIC
         $<INSTALL_INTERFACE:${CGV_3RD_INCLUDE_DEST}>)
 
 install(TARGETS fltk EXPORT cgv_3rd DESTINATION ${CGV_BIN_DEST})
-install(DIRECTORY include/. DESTINATION ${CGV_3RD_INCLUDE_DEST} FILES_MATCHING PATTERN "*.h")
+
+# Static Library
+add_library(fltk_static STATIC ${SOURCES})
+target_link_libraries(fltk_static
+        jpeg_static
+        png_static
+        glew_static
+        ${OPENGL_LIBRARIES}
+        ${X11_LIBRARIES})
+
+if (WIN32)
+    set(ADD_DEFINITIONS "_WIN32" "WIN32_LEAN_AND_MEAN" "VC_EXTRA_LEAN" "WIN32_EXTRA_LEAN")
+    target_link_libraries(fltk_static ws2_32)
+else ()
+    target_link_libraries(fltk_static Xext)
+endif ()
+
+if (MSVC)
+    target_compile_options(fltk_static PRIVATE /w)
+else ()
+    target_compile_options(fltk_static PRIVATE -w -Wno-narrowing)
+endif ()
+
+target_compile_definitions(fltk_static PRIVATE
+        ${ADD_DEFINITIONS}
+        USE_GLEW
+        FL_LIBRARY
+        FL_GL_LIBRARY
+        FL_GLUT_LIBRARY
+        FL_IMAGES_LIBRARY)
+
+target_include_directories(fltk_static PUBLIC
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/visualc>
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/compat>
+        $<INSTALL_INTERFACE:${CGV_3RD_INCLUDE_DEST}>)
+
+install(TARGETS fltk_static EXPORT cgv_3rd DESTINATION ${CGV_BIN_DEST})

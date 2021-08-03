@@ -12,12 +12,9 @@ shader_test("${CGV_DIR}"
         ST_INSTALL_DIR
         ${SHADERS})
 
-add_library(examples
-        ${SOURCES}
-        ${IMG_SOURCES}
-        ${ST_FILES}
-        ${SHADERS}
-        ${IMAGES})
+set(ALL_SOURCES ${SOURCES} ${IMG_SOURCES} ${ST_FILES} ${SHADERS} ${IMAGES})
+
+add_library(examples ${ALL_SOURCES})
 target_link_libraries(examples
         delaunay
         plot
@@ -69,3 +66,33 @@ config:\"${CGV_DIR}/plugins/examples/config.def\"\
 install(TARGETS examples EXPORT cgv_plugins DESTINATION ${CGV_BIN_DEST})
 install(FILES config.def examples.gui DESTINATION ${CGV_PLUGINS_INCLUDE_DEST}/examples)
 install(DIRECTORY . DESTINATION ${CGV_PLUGINS_INCLUDE_DEST}/examples FILES_MATCHING PATTERN "*.gl*")
+
+if (MSVC)
+    add_executable(examples_static ${ALL_SOURCES})
+    target_compile_definitions(examples_static PRIVATE CGV_FORCE_STATIC)
+    target_link_libraries(examples_static PRIVATE
+            cgv_viewer_main
+
+            glew_static
+            delaunay_static
+            plot_static
+            cg_gamepad_static
+            cgv_gl_static
+            cgv_os_static
+            cgv_signal_static
+
+            cg_fltk_static
+            crg_stereo_view_static
+
+            #        cg_ext_static
+            #        cg_icons_static
+            #        cg_meta_static
+            #        cmi_io_static
+            #        cmf_tt_gl_font_static
+            #        crg_antialias_static
+            #        crg_depth_of_field_static
+            #        crg_grid_static
+            #        crg_light_static
+            )
+    target_link_options(examples_static PRIVATE /WHOLEARCHIVE:cg_fltk_static.lib /WHOLEARCHIVE:crg_stereo_view_static.lib)
+endif ()

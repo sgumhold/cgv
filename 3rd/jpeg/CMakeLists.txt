@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.15)
 
 project(jpeg)
 
-add_library(jpeg
+set(SOURCES
         jcapimin.c
         jcapistd.c
         jccoefct.c
@@ -49,6 +49,11 @@ add_library(jpeg
         jquant1.c
         jquant2.c
         jutils.c)
+
+install(DIRECTORY . DESTINATION ${CGV_3RD_INCLUDE_DEST}/jpeg FILES_MATCHING PATTERN "*.h")
+
+# Shared Library
+add_library(jpeg SHARED ${SOURCES})
 target_compile_definitions(jpeg PRIVATE JPEG_DLL)
 
 if (MSVC)
@@ -62,4 +67,19 @@ target_include_directories(jpeg PUBLIC
         $<INSTALL_INTERFACE:${CGV_3RD_INCLUDE_DEST}/jpeg>)
 
 install(TARGETS jpeg EXPORT cgv_3rd DESTINATION ${CGV_BIN_DEST})
-install(DIRECTORY . DESTINATION ${CGV_3RD_INCLUDE_DEST}/jpeg FILES_MATCHING PATTERN "*.h")
+
+# Static Library
+add_library(jpeg_static STATIC ${SOURCES})
+target_compile_definitions(jpeg_static PRIVATE JPEG_STATIC)
+
+if (MSVC)
+    target_compile_options(jpeg_static PRIVATE /w)
+else ()
+    target_compile_options(jpeg_static PRIVATE -w)
+endif ()
+
+target_include_directories(jpeg_static PUBLIC
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
+        $<INSTALL_INTERFACE:${CGV_3RD_INCLUDE_DEST}/jpeg>)
+
+install(TARGETS jpeg_static EXPORT cgv_3rd DESTINATION ${CGV_BIN_DEST})
