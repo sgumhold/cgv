@@ -23,6 +23,7 @@ namespace cgv {
 			inner_outer_lambda = 0.5f;
 			radius_relative_to_length = 0.1f;
 			head_radius_scale = 2.0f;
+			head_length_mode = AHLM_MINIMUM_OF_RADIUS_AND_LENGTH;
 			head_length_relative_to_radius = 2.0f;
 			head_length_relative_to_length = 0.3f;
 			length_scale = 1.0f;
@@ -87,6 +88,7 @@ namespace cgv {
 				ref_prog().set_uniform(ctx, "radius_lower_bound", ars.radius_lower_bound);
 				ref_prog().set_uniform(ctx, "radius_relative_to_length", ars.radius_relative_to_length);
 				ref_prog().set_uniform(ctx, "head_radius_scale", ars.head_radius_scale);
+				ref_prog().set_uniform(ctx, "head_length_mode", (int&)ars.head_length_mode);
 				ref_prog().set_uniform(ctx, "head_length_relative_to_radius", ars.head_length_relative_to_radius);
 				ref_prog().set_uniform(ctx, "head_length_relative_to_length", ars.head_length_relative_to_length);
 				ref_prog().set_uniform(ctx, "length_scale", ars.length_scale);
@@ -179,6 +181,7 @@ namespace cgv {
 				}
 				if (p->begin_tree_node("head radius", ars_ptr->head_radius_scale, true, "level=3")) {
 					p->align("\a");
+					p->add_member_control(b, "head_length_mode", ars_ptr->head_length_mode, "dropdown", "enums='relative_to_radius=1,relative_to_length=2,minimum_of_radius_and_length=3'");
 					p->add_member_control(b, "head_length_relative_to_radius", ars_ptr->head_length_relative_to_radius, "value_slider", "min=0.1;max=5;ticks=true");
 					p->add_member_control(b, "head_length_relative_to_length", ars_ptr->head_length_relative_to_length, "value_slider", "min=0;max=1;ticks=true");
 					p->add_member_control(b, "head_radius_scale", ars_ptr->head_radius_scale, "value_slider", "min=1;max=3;ticks=true");

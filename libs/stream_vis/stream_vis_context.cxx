@@ -263,6 +263,8 @@ namespace stream_vis {
 	{
 		for (const auto& tts : typed_time_series) {
 			std::cout << tts->get_name() << ":" << tts->get_value_type_name();
+			if (!tts->message.empty())
+				std::cout << " '" << tts->message << "'";
 			std::stringstream ss;
 			std::string fill;
 			if (tts->default_color[0] != -1) {

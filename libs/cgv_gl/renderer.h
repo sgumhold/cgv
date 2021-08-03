@@ -381,15 +381,17 @@ namespace cgv { // @<
 				return true;
 			}
 			/// return whether indices have been defined
-			bool has_indices() const { return index_count > 0; }
+			bool has_indices() const {
+				if(aam_ptr)
+					return aam_ptr->has_index_buffer();
+				return index_count > 0;
+			}
 			/// remove previously set indices
 			void remove_indices(const context& ctx);
 			/*! Returns the OpenGL handle to the buffer of the given attribute name as managed by the attribute array manager.
 				Returns -1 if the buffer or attribute array manager does not exist.
 				Take caution when manipulating the buffer. */
-				//int get_vbo_handle(const context& ctx, const std::string& attr_name) {
 			int get_vbo_handle(const context& ctx, const attribute_array_manager& aam, const std::string& attr_name) {
-				
 				return aam.get_buffer_handle(ref_prog().get_attribute_location(ctx, attr_name));
 			}
 			/*! Returns the OpenGL handle to the element buffer holding the indices for indexed rendering as managed by the attribute array manager.
