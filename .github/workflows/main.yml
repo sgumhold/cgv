@@ -26,7 +26,7 @@ jobs:
 
       - name: Run CMake
         working-directory: ./build
-        run: cmake .. -G Ninja -D CMAKE_BUILD_TYPE=Release -D CMAKE_C_COMPILER=/usr/bin/clang-12 -D CMAKE_CXX_COMPILER=/usr/bin/clang++-12 -D CMAKE_INSTALL_PREFIX=../install
+        run: cmake .. -G Ninja -D CMAKE_BUILD_TYPE=Release -D CMAKE_INSTALL_PREFIX=../install -D CMAKE_C_COMPILER=/usr/bin/clang-12 -D CMAKE_CXX_COMPILER=/usr/bin/clang++-12
 
       - name: Build and Install
         uses: GabrielBB/xvfb-action@v1
@@ -50,17 +50,15 @@ jobs:
       - name: Install Ninja
         uses: seanmiddleditch/gha-setup-ninja@master
 
-#      - name: Set up environment variables
-#        run: |
-#          "C:/Program Files (x86)/Microsoft Visual Studio/2019/Enterprise/VC/Auxiliary/Build/vcvars64.bat"
+      - name: Set up environment variables
+        run: |
+          "C:/Program Files (x86)/Microsoft Visual Studio/2019/Enterprise/VC/Auxiliary/Build/vcvars64.bat"
 
       - run: mkdir build
 
       - name: Run CMake
         working-directory: build
-        run: |
-          "C:/Program Files (x86)/Microsoft Visual Studio/2019/Enterprise/VC/Auxiliary/Build/vcvars64.bat"
-          cmake .. -G Ninja -D CMAKE_BUILD_TYPE=Release -D CMAKE_INSTALL_PREFIX=../install
+        run: cmake .. -G Ninja -D CMAKE_BUILD_TYPE=Release -D CMAKE_INSTALL_PREFIX=../install -D CMAKE_C_COMPILER=cl -D CMAKE_CXX_COMPILER=cl
 
       - name: Build and Install
         working-directory: ./build
