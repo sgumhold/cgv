@@ -5,6 +5,7 @@ lib
 .idea
 build
 cmake-build-debug
+cmake-build-release
 
 # Ignore files generated from .ph template headers
 cgv/base/call_interface_impl.h

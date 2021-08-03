@@ -10,12 +10,14 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
+      - name: Install Ninja
+        uses: seanmiddleditch/gha-setup-ninja@master
 
       - name: Install llvm repository
         run: wget https://apt.llvm.org/llvm.sh && chmod +x llvm.sh && sudo ./llvm.sh 12 && sudo apt-get update
 
       - name: Install build tools
-        run: sudo apt-get install -y cmake ninja-build clang-tools-12 libclang-12-dev
+        run: sudo apt-get install -y cmake clang-tools-12 libclang-12-dev
 
       - name: Install cgv dependencies
         run: sudo apt-get install -y libgl1-mesa-dev libglu1-mesa-dev libx11-dev xorg-dev
@@ -24,7 +26,7 @@ jobs:
 
       - name: Run CMake
         working-directory: ./build
-        run: cmake -G Ninja -D CMAKE_C_COMPILER=/usr/bin/clang-12 -D CMAKE_CXX_COMPILER=/usr/bin/clang++-12 -D CMAKE_INSTALL_PREFIX=../install ..
+        run: cmake .. -G Ninja -D CMAKE_BUILD_TYPE=Release -D CMAKE_C_COMPILER=/usr/bin/clang-12 -D CMAKE_CXX_COMPILER=/usr/bin/clang++-12 -D CMAKE_INSTALL_PREFIX=../install
 
       - name: Build and Install
         uses: GabrielBB/xvfb-action@v1
@@ -45,6 +47,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
+      - name: Install Ninja
+        uses: seanmiddleditch/gha-setup-ninja@master
 
       - name: Set up environment variables
         run: |
@@ -54,7 +58,7 @@ jobs:
 
       - name: Run CMake
         working-directory: build
-        run: cmake -D CMAKE_INSTALL_PREFIX=../install ..
+        run: cmake .. -G Ninja -D CMAKE_BUILD_TYPE=Release -D CMAKE_INSTALL_PREFIX=../install
 
       - name: Build and Install
         working-directory: ./build
