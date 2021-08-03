@@ -58,7 +58,7 @@ jobs:
 
       - name: Run CMake
         working-directory: build
-        run: cmake .. -G Ninja -D CMAKE_BUILD_TYPE=Release -D CMAKE_INSTALL_PREFIX=../install -D CMAKE_C_COMPILER=cl -D CMAKE_CXX_COMPILER=cl
+        run: cmake .. -G Ninja -D CMAKE_BUILD_TYPE=Release -D CMAKE_INSTALL_PREFIX=../install -D CMAKE_C_COMPILER="cl.exe" -D CMAKE_CXX_COMPILER="cl.exe"
 
       - name: Build and Install
         working-directory: ./build
