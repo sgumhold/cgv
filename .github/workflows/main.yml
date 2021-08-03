@@ -50,15 +50,17 @@ jobs:
       - name: Install Ninja
         uses: seanmiddleditch/gha-setup-ninja@master
 
-      - name: Set up environment variables
-        run: |
-          "C:/Program Files (x86)/Microsoft Visual Studio/2019/Enterprise/VC/Auxiliary/Build/vcvars64.bat"
+#      - name: Set up environment variables
+#        run: |
+#          "C:/Program Files (x86)/Microsoft Visual Studio/2019/Enterprise/VC/Auxiliary/Build/vcvars64.bat"
 
       - run: mkdir build
 
       - name: Run CMake
         working-directory: build
-        run: cmake .. -G Ninja -D CMAKE_BUILD_TYPE=Release -D CMAKE_INSTALL_PREFIX=../install
+        run: |
+          "C:/Program Files (x86)/Microsoft Visual Studio/2019/Enterprise/VC/Auxiliary/Build/vcvars64.bat"
+          cmake .. -G Ninja -D CMAKE_BUILD_TYPE=Release -D CMAKE_INSTALL_PREFIX=../install
 
       - name: Build and Install
         working-directory: ./build
