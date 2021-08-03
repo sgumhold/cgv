@@ -2,4 +2,4 @@
 projectName="rect_pack";
 projectType="library";
 projectGUID="A2B45FF0-78D4-4991-B070-5B3C0582B35E";
-addSharedDefines=["RECT_PACK_EXPORT"];
+addSharedDefines=["RECT_PACK_EXPORTS"];
