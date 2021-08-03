@@ -555,7 +555,7 @@ void register_object(base_ptr object, const std::string& options)
 {
 	// if registration is disabled or if registratration event cleanup is disabled, store registration event
 	if (!is_registration_enabled() || !is_registration_event_cleanup_enabled()) {
-		ref_registration_events().push_back(std::pair<base_ptr, std::string>(object, options));
+		ref_registration_events().emplace_back(object, options);
 
 		if (is_registration_debugging_enabled()) {
 			std::cout << "REG EVENT ('" << options << "') ";

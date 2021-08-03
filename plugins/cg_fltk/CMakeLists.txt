@@ -22,7 +22,7 @@ install(TARGETS cg_fltk EXPORT cgv_plugins DESTINATION ${CGV_BIN_DEST})
 
 # Static library
 add_library(cg_fltk_static STATIC ${SOURCES})
-target_link_libraries(cg_fltk_static
+target_link_libraries(cg_fltk_static PUBLIC
         fltk_static
         cgv_gl_static
         cgv_gui_static
@@ -35,6 +35,6 @@ target_link_libraries(cg_fltk_static
         cgv_type_static
         cgv_signal_static
         cgv_reflect_static)
-target_compile_definitions(cg_fltk_static PRIVATE CGV_GUI_FLTK_FORCE_STATIC)
+target_compile_definitions(cg_fltk_static PUBLIC CGV_GUI_FLTK_FORCE_STATIC)
 
 install(TARGETS cg_fltk_static EXPORT cgv_plugins DESTINATION ${CGV_BIN_DEST})

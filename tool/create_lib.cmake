@@ -59,7 +59,7 @@ function(cgv_create_lib NAME)
 
     # Static Library
     add_library(${NAME_STATIC} STATIC ${ALL_SOURCES})
-    target_compile_definitions(${NAME_STATIC} PRIVATE CGV_FORCE_STATIC)
+    target_compile_definitions(${NAME_STATIC} PUBLIC CGV_FORCE_STATIC)
     foreach (DEPENDENCY ${ARGS_DEPENDENCIES})
         if (${DEPENDENCY} STREQUAL "${CMAKE_DL_LIBS}")
             continue()

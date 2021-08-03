@@ -24,7 +24,7 @@ namespace cgv {
 /**@name control over the registration process */
 //@{
 //! Enable registration (default is that registration is disabled).
-/*! If registration has been disabled before, send all registration events that 
+/*! If registration has been disabled before, send all registration events that
     where emitted during disabled registration. */
 extern void CGV_API enable_registration();
 /// if registration is disable, all registration events are stored and sent at the momement when registration is enabled again. This feature is used when loading dlls
@@ -34,8 +34,8 @@ extern bool CGV_API is_registration_enabled();
 //! specify a partial order of objects for registration
 /*! \c partial_order is a semicolon separated list of type names that can ignore name spaces.
     \c before_constructor_execution tells whether the reordering should happen before constructors of delayed registration events are called.
-	\c when specifies in which call to \c enable_registration the reordering should happen. Possible values are 
-	- "always" 
+	\c when specifies in which call to \c enable_registration the reordering should happen. Possible values are
+	- "always"
 	- "program" only once for the enable event of the executed program
 	- "plugins" for enable events of all loaded plugins
 	- <plugin_name> only for the enable event of the plugin with the given name
@@ -71,7 +71,7 @@ extern base_ptr CGV_API get_permanently_registered_object(unsigned i);
 
 
 //! Enable cleanup of registration events (default).
-/*! If registration event cleanup is disabled, registration events are not 
+/*! If registration event cleanup is disabled, registration events are not
     discarded as soon as objects have been registered. This makes objects
 	available to listeners that are registered later. */
 extern void CGV_API enable_registration_event_cleanup();
@@ -85,7 +85,7 @@ extern bool CGV_API is_registration_event_cleanup_enabled();
 /**@name object registration */
 //@{
 //! register an object.
-/*! This will send an event to all currently registered registration listeners. The options parameter 
+/*! This will send an event to all currently registered registration listeners. The options parameter
     can be used to select a specific listener. */
 extern void CGV_API register_object(base_ptr object, const std::string& options = "");
 /// unregister an object and send event to all currently registered registration listeners
@@ -102,7 +102,7 @@ public:
 	/// creation function
 	virtual base_ptr construct_object() const = 0;
 };
-	
+
 // type specific specialization of helper class to perform delayed registration and creation of objects in case that the registration is disabled
 template <class T>
 class object_constructor_impl : public object_constructor
@@ -153,10 +153,10 @@ public:
 
 /// convenience class to register an object of the given class type
 template <class T>
-struct object_registration 
+struct object_registration
 {
 	/// pass information about the target registration listener in the options argument
-	object_registration(const std::string& options) {
+	explicit object_registration(const std::string& options) {
 		if (is_registration_enabled())
 			register_object(base_ptr(new T()),options);
 		else
@@ -233,7 +233,7 @@ protected:
 	/// store the options used for registering newly created objects
 	std::string object_options;
 public:
-	/// construct 
+	/// construct
 	factory(const std::string& _created_type_name, bool _singleton = false, const std::string& _object_options = "");
 	/// return the options string used for object registration
 	virtual std::string get_object_options() const;
@@ -241,9 +241,9 @@ public:
 	const std::string& get_created_type_name() const;
 	/// support creation of object by setting create property to true
 	std::string get_property_declarations();
-	/// 
+	///
 	bool set_void(const std::string& property, const std::string& value_type, const void* value_ptr);
-	/// 
+	///
 	bool get_void(const std::string& property, const std::string& value_type, void* value_ptr);
 	/// return whether the factory can only generate one instance of the given type
 	bool is_singleton_factory() const;
@@ -261,7 +261,7 @@ public:
 template <class T>
 struct factory_impl : public factory
 {
-	inline factory_impl(const std::string& _created_type_name, bool _is_singleton = false, const std::string& _object_options = "") : 
+	inline factory_impl(const std::string& _created_type_name, bool _is_singleton = false, const std::string& _object_options = "") :
 				factory(_created_type_name, _is_singleton, _object_options) {}
 	inline base_ptr create_object_impl() { return base_ptr(new T()); }
 	std::string get_type_name() const { return std::string("factory_impl<")+get_created_type_name()+">"; }
@@ -272,7 +272,7 @@ template <class T, typename CA>
 struct factory_impl_1 : public factory
 {
 	CA ca;
-	inline factory_impl_1(CA _ca, const std::string& _created_type_name, bool is_singleton = false, const std::string& _object_options = "") : 
+	inline factory_impl_1(CA _ca, const std::string& _created_type_name, bool is_singleton = false, const std::string& _object_options = "") :
 		factory(_created_type_name, is_singleton, _object_options), ca(_ca) {}
 	inline base_ptr create_object_impl() { return base_ptr(new T(ca)); }
 	std::string get_type_name() const { return std::string("factory_impl_1<")+get_created_type_name()+">"; }
@@ -284,7 +284,7 @@ struct factory_impl_2 : public factory
 {
 	CA1 ca1;
 	CA2 ca2;
-	inline factory_impl_2(CA1 _ca1, CA2 _ca2, const std::string& _created_type_name, bool is_singleton = false, const std::string& _object_options = "") : 
+	inline factory_impl_2(CA1 _ca1, CA2 _ca2, const std::string& _created_type_name, bool is_singleton = false, const std::string& _object_options = "") :
 		factory(_created_type_name, is_singleton, _object_options), ca1(_ca1), ca2(_ca2) {}
 	inline base_ptr create_object_impl() { return base_ptr(new T(ca2)); }
 	std::string get_type_name() const { return std::string("factory_impl_2<")+get_created_type_name()+">"; }
@@ -295,12 +295,12 @@ extern void CGV_API register_factory_object(base_ptr fo, const char* item_text, 
 
 /// convenience class to register a factory of the given class type
 template <class T>
-struct factory_registration 
+struct factory_registration
 {
 	//! this registers an instance of the default factory implementation
 	/*! parameters:
 	    - \c _created_type_name ... name of the type of the instances created by the factory
-	    - \c _options ... semicolon separated options used to register the factory. For gui 
+	    - \c _options ... semicolon separated options used to register the factory. For gui
 		                  integration these can include assignments to "menu_path" and "shortcut"
 	    - \c _is_singleton ... whether the factory can create only one instance
 		- \c _object_options ... options used to register created instances
@@ -309,7 +309,7 @@ struct factory_registration
 		register_object(new factory_impl<T>(_created_type_name, _is_singleton, _object_options), _options);
 	}
 	//! this constructor is only provided for downward compatibility and should not be used anymore.
-	/*! Item text and shortcut can be specified in the option string via 
+	/*! Item text and shortcut can be specified in the option string via
 	    "menu_path=\"geometry/sphere\";shortcut='Q'". */
 	factory_registration(const char* item_text, char shortcut, bool is_singleton = false) {
 		register_factory_object(new factory_impl<T>(guess_created_type_name(item_text), is_singleton), item_text, shortcut);
@@ -318,7 +318,7 @@ struct factory_registration
 
 /// convenience class to register a factory of the given class type that uses a constructor with one argument of type CA
 template <class T, typename CA>
-struct factory_registration_1 
+struct factory_registration_1
 {
 	//! this registers an instance of a standard factory implementation
 	/*! parameters:
@@ -332,7 +332,7 @@ struct factory_registration_1
 		register_object(new factory_impl_1<T,CA>(_ca, _created_type_name, _is_singleton, _object_options), _options);
 	}
 	//! this constructor is only provided for downward compatibility and should not be used anymore.
-	/*! Item text and shortcut can be specified in the option string via 
+	/*! Item text and shortcut can be specified in the option string via
 	    "menu_path=\"geometry/sphere\";shortcut='Q'". */
 	factory_registration_1(const char* item_text, char shortcut, const CA& _ca, bool is_singleton = false) {
 		register_factory_object(new factory_impl_1<T,CA>(_ca, guess_created_type_name(item_text), is_singleton), item_text, shortcut);
@@ -418,15 +418,15 @@ struct CGV_API resource_file_info
 	unsigned int file_offset;
 	/// length of the resource file in bytes
 	unsigned int file_length;
-	/// pointer to 
+	/// pointer to
 	const char* file_data;
-	/// name of 
+	/// name of
 	std::string source_file;
 	/// construct resource file info
 	resource_file_info(
-		unsigned int _file_offset = 0, 
-		unsigned int _file_length = 0, 
-		const char* _file_data = 0, 
+		unsigned int _file_offset = 0,
+		unsigned int _file_length = 0,
+		const char* _file_data = 0,
 		const std::string& _source_file = "");
 };
 
@@ -498,7 +498,7 @@ extern bool CGV_API process_command(const command_info& info);
 //@{
 
 //! process a command given as string.
-/*! Return whether the command was processed correctly. If eliminate_quotes is 
+/*! Return whether the command was processed correctly. If eliminate_quotes is
     set to true, quotes around the command arguments are eliminated. This feature
 	is used for commands specified on the command line, where spaces in the command
 	arguments would split one command into pieces. Quotes are used then to protect the
@@ -513,7 +513,7 @@ extern bool CGV_API process_command(const command_info& info);
 	- type(yyy):assignment list  ... find registered object by type yyy and process assignments on them
 
 	The assigment list in the name and type commands are of the form:
-	
+
 	member_name_1=value_1;member_name_2=value_2;...
 */
 extern bool CGV_API process_command(const std::string& cmd, bool eliminate_quotes = true);
