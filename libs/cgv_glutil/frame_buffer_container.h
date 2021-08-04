@@ -24,9 +24,18 @@ protected:
 		std::string format;
 		TextureFilter tf;
 		texture texture;
+
+		bool is_depth_attachment() {
+			return
+				format == "[D]" ||
+				format == "uint16[D]" ||
+				format == "uint32[D:24]" ||
+				format == "uint32[D]";
+		}
 	};
 
 	frame_buffer fb;
+	unsigned index_counter = 0;
 	std::unordered_map<std::string, attachment> attachments;
 	uvec2 size;
 
