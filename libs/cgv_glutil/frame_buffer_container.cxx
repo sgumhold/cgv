@@ -26,6 +26,7 @@ void frame_buffer_container::clear(context& ctx) {
 void frame_buffer_container::add_attachment(const std::string& name, const std::string& format, TextureFilter tf, bool attach) {
 
 	attachment a;
+	a.index = attachments.size();
 	a.attach = attach;
 	a.format = format;
 	a.tf = tf;
@@ -112,7 +113,6 @@ bool frame_buffer_container::create_and_validate(context& ctx) {
 
 	fb.create(ctx, w, h);
 
-	unsigned i = 0;
 	for(auto it = attachments.begin(); it != attachments.end(); ++it) {
 		attachment& a = (*it).second;
 
@@ -136,8 +136,7 @@ bool frame_buffer_container::create_and_validate(context& ctx) {
 			fb.attach(ctx, a.texture);
 		} else {
 			if(a.attach) {
-				fb.attach(ctx, a.texture, 0, i);
-				++i;
+				fb.attach(ctx, a.texture, 0, a.index);
 			}
 		}
 	}

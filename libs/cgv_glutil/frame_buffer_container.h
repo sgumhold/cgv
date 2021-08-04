@@ -19,6 +19,7 @@ class CGV_API frame_buffer_container : public render_types
 {
 protected:
 	struct attachment {
+		unsigned index;
 		bool attach;
 		std::string format;
 		TextureFilter tf;
