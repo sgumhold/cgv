@@ -27,7 +27,8 @@ struct fltk_heading_decorator : public cgv::base::named, public fltk_base
 		w->flags(ALIGN_INSIDE_LEFT);
 		w->user_data(static_cast<cgv::base::base*>(this));
 		level = 0;
-		w->labelfont(TIMES_BOLD);
+		//w->labelfont(TIMES_BOLD);
+		w->labelfont(HELVETICA_BOLD);
 		w->labelsize(16);
 		w->box(NO_BOX);
 	}
