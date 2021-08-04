@@ -5,6 +5,7 @@ namespace glutil {
 
 frame_buffer_container::frame_buffer_container() {
 
+	index_counter = 0;
 	size = uvec2(0);
 }
 
@@ -17,6 +18,7 @@ void frame_buffer_container::clear(context& ctx) {
 
 	fb.destruct(ctx);
 
+	index_counter = 0;
 	for(auto it = attachments.begin(); it != attachments.end(); ++it) {
 		attachment& a = (*it).second;
 		a.texture.destruct(ctx);
@@ -26,10 +28,17 @@ void frame_buffer_container::clear(context& ctx) {
 void frame_buffer_container::add_attachment(const std::string& name, const std::string& format, TextureFilter tf, bool attach) {
 
 	attachment a;
-	a.index = attachments.size();
 	a.attach = attach;
 	a.format = format;
 	a.tf = tf;
+
+	if(a.is_depth_attachment()) {
+		a.index = 0;
+	} else {
+		a.index = index_counter;
+		++index_counter;
+	}
+
 	attachments.insert(std::make_pair(name, a));
 }
 
@@ -118,9 +127,9 @@ bool frame_buffer_container::create_and_validate(context& ctx) {
 
 		unsigned filter_specifier = (unsigned)a.tf;
 
-		// Even filter specifiers are nearest and odd are linear
+		// even filter specifiers are nearest and odd are linear
 		TextureFilter mag_filter = (filter_specifier & 1) ? TF_LINEAR : TF_NEAREST;
-		// Specifiers larger than 1 are using mipmaps
+		// specifiers larger than 1 are using mipmaps
 		bool use_mipmaps = filter_specifier > 1;
 
 		a.texture = texture(a.format, mag_filter, a.tf);
@@ -129,10 +138,7 @@ bool frame_buffer_container::create_and_validate(context& ctx) {
 		if(use_mipmaps)
 			a.texture.generate_mipmaps(ctx);
 
-		if(a.format == "[D]" ||
-			a.format == "uint16[D]" ||
-			a.format == "uint32[D:24]" ||
-			a.format == "uint32[D]") {
+		if(a.is_depth_attachment()) {
 			fb.attach(ctx, a.texture);
 		} else {
 			if(a.attach) {
