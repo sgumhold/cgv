@@ -132,10 +132,10 @@ public:
 		idx.push_back(i);
 	}
 
-	std::vector<vec3>&		 ref_pos() { return pos; }
-	std::vector<float>&		 ref_rad() { return rad; }
-	std::vector<ColorType>& ref_col() { return col; }
-	std::vector<unsigned>&	 ref_idx() { return idx; }
+	std::vector<vec3>&		ref_pos() { return pos; }
+	std::vector<float>&		ref_rad() { return rad; }
+	std::vector<ColorType>&	ref_col() { return col; }
+	std::vector<unsigned>&	ref_idx() { return idx; }
 
 	attribute_array_manager* get_aam_ptr() { return aam_ptr; }
 

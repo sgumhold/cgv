@@ -103,14 +103,24 @@ public:
 		add(c);
 	}
 
+	void fill(const float& r) {
+		for(size_t i = rad.size(); i < pos.size(); ++i)
+			rad.push_back(r);
+	}
+
+	void fill(const ColorType& c) {
+		for(size_t i = col.size(); i < pos.size(); ++i)
+			col.push_back(c);
+	}
+
 	void add_idx(const unsigned int i) {
 		idx.push_back(i);
 	}
 
-	std::vector<vec3>&		 ref_pos() { return pos; }
-	std::vector<float>&		 ref_rad() { return rad; }
-	std::vector<ColorType>& ref_col() { return col; }
-	std::vector<unsigned>&	 ref_idx() { return idx; }
+	std::vector<vec3>&		ref_pos() { return pos; }
+	std::vector<float>&		ref_rad() { return rad; }
+	std::vector<ColorType>&	ref_col() { return col; }
+	std::vector<unsigned>&	ref_idx() { return idx; }
 
 	attribute_array_manager* get_aam_ptr() { return aam_ptr; }
 
