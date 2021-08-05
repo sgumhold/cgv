@@ -106,15 +106,30 @@ public:
 		add(c);
 	}
 
+	void fill(const vec3& e) {
+		for(size_t i = ext.size(); i < ext.size(); ++i)
+			ext.push_back(e);
+	}
+
+	void fill(const quat& r) {
+		for(size_t i = rot.size(); i < rot.size(); ++i)
+			rot.push_back(r);
+	}
+
+	void fill(const ColorType& c) {
+		for(size_t i = col.size(); i < pos.size(); ++i)
+			col.push_back(c);
+	}
+
 	void add_idx(const unsigned int i) {
 		idx.push_back(i);
 	}
 
-	std::vector<vec3>&		 ref_pos() { return pos; }
-	std::vector<vec3>&		 ref_ext() { return ext; }
-	std::vector<quat>&		 ref_rot() { return rot; }
-	std::vector<ColorType>& ref_col() { return col; }
-	std::vector<unsigned>&	 ref_idx() { return idx; }
+	std::vector<vec3>&		ref_pos() { return pos; }
+	std::vector<vec3>&		ref_ext() { return ext; }
+	std::vector<quat>&		ref_rot() { return rot; }
+	std::vector<ColorType>&	ref_col() { return col; }
+	std::vector<unsigned>&	ref_idx() { return idx; }
 
 	attribute_array_manager* get_aam_ptr() { return aam_ptr; }
 
