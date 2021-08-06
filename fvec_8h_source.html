@@ -424,58 +424,74 @@ $(document).ready(function(){initNavTree('fvec_8h_source.html',''); initResizabl
 <div class="line"><a name="l00455"></a><span class="lineno">  455</span>&#160;        <span class="keywordflow">return</span> c;</div>
 <div class="line"><a name="l00456"></a><span class="lineno">  456</span>&#160;}</div>
 <div class="line"><a name="l00457"></a><span class="lineno">  457</span>&#160; </div>
-<div class="line"><a name="l00458"></a><span class="lineno">  458</span>&#160;        }</div>
-<div class="line"><a name="l00459"></a><span class="lineno">  459</span>&#160;}</div>
-<div class="line"><a name="l00460"></a><span class="lineno">  460</span>&#160; </div>
-<div class="line"><a name="l00461"></a><span class="lineno">  461</span>&#160; </div>
-<div class="line"><a name="l00462"></a><span class="lineno">  462</span>&#160;<span class="preprocessor">#include &quot;vec.h&quot;</span></div>
-<div class="line"><a name="l00463"></a><span class="lineno">  463</span>&#160; </div>
-<div class="line"><a name="l00464"></a><span class="lineno">  464</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacecgv.html">cgv</a> {</div>
-<div class="line"><a name="l00465"></a><span class="lineno">  465</span>&#160;        <span class="keyword">namespace </span>math {</div>
+<div class="line"><a name="l00459"></a><span class="lineno">  459</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T, cgv::type::u<span class="keywordtype">int</span>32_type N&gt;</div>
+<div class="line"><a name="l00460"></a><span class="lineno"><a class="line" href="namespacecgv_1_1math.html#ab41dd3e7ea6d0410abba813f0c6067b6">  460</a></span>&#160;<span class="keyword">const</span> <a class="code" href="classcgv_1_1math_1_1fvec.html">fvec&lt;T, N&gt;</a> <a class="code" href="namespacecgv_1_1math.html#ab41dd3e7ea6d0410abba813f0c6067b6">pow</a>(<span class="keyword">const</span> <a class="code" href="classcgv_1_1math_1_1fvec.html">fvec&lt;T, N&gt;</a>&amp; v, T e) {</div>
+<div class="line"><a name="l00461"></a><span class="lineno">  461</span>&#160;        <a class="code" href="classcgv_1_1math_1_1fvec.html">fvec&lt;T, N&gt;</a> c;</div>
+<div class="line"><a name="l00462"></a><span class="lineno">  462</span>&#160;        <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> i = 0; i &lt; N; ++i)</div>
+<div class="line"><a name="l00463"></a><span class="lineno">  463</span>&#160;                c(i) = <a class="code" href="namespacecgv_1_1math.html#ab41dd3e7ea6d0410abba813f0c6067b6">pow</a>(v(i), e);</div>
+<div class="line"><a name="l00464"></a><span class="lineno">  464</span>&#160;        <span class="keywordflow">return</span> c;</div>
+<div class="line"><a name="l00465"></a><span class="lineno">  465</span>&#160;}</div>
 <div class="line"><a name="l00466"></a><span class="lineno">  466</span>&#160; </div>
 <div class="line"><a name="l00468"></a><span class="lineno">  468</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T, cgv::type::u<span class="keywordtype">int</span>32_type N&gt;</div>
-<div class="line"><a name="l00469"></a><span class="lineno"><a class="line" href="classcgv_1_1math_1_1fvec.html#a9e07f200dccec2bf7decb19bae51080f">  469</a></span>&#160;<a class="code" href="classcgv_1_1math_1_1vec.html">vec&lt;T&gt;</a> <a class="code" href="classcgv_1_1math_1_1fvec.html#a9e07f200dccec2bf7decb19bae51080f">fvec&lt;T,N&gt;::to_vec</a>()<span class="keyword"> const </span>{</div>
-<div class="line"><a name="l00470"></a><span class="lineno">  470</span>&#160;        <a class="code" href="classcgv_1_1math_1_1vec.html">vec&lt;T&gt;</a> r;</div>
-<div class="line"><a name="l00471"></a><span class="lineno">  471</span>&#160;        r.<a class="code" href="classcgv_1_1math_1_1vec.html#a127258bf934408a83b214d6d3624d491">set_extern_data</a>(N,<span class="keyword">const_cast&lt;</span>T*<span class="keyword">&gt;</span>(v));</div>
-<div class="line"><a name="l00472"></a><span class="lineno">  472</span>&#160;        <span class="keywordflow">return</span> r;</div>
-<div class="line"><a name="l00473"></a><span class="lineno">  473</span>&#160;}</div>
-<div class="line"><a name="l00474"></a><span class="lineno">  474</span>&#160; </div>
-<div class="line"><a name="l00476"></a><span class="lineno">  476</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T, cgv::type::u<span class="keywordtype">int</span>32_type N&gt;</div>
-<div class="line"><a name="l00477"></a><span class="lineno"><a class="line" href="classcgv_1_1math_1_1fvec.html#a6deaaa9cc232afe687c0de21e0b01907">  477</a></span>&#160;<a class="code" href="classcgv_1_1math_1_1fvec.html">fvec&lt;T, N&gt;</a> <a class="code" href="classcgv_1_1math_1_1fvec.html#a6deaaa9cc232afe687c0de21e0b01907">fvec&lt;T, N&gt;::from_vec</a>(<span class="keyword">const</span> <a class="code" href="classcgv_1_1math_1_1vec.html">vec&lt;T&gt;</a>&amp; v)</div>
-<div class="line"><a name="l00478"></a><span class="lineno">  478</span>&#160;{</div>
-<div class="line"><a name="l00479"></a><span class="lineno">  479</span>&#160;        <span class="keywordflow">return</span> <a class="code" href="classcgv_1_1math_1_1fvec.html">fvec&lt;T, N&gt;</a>(std::min(N, v.<a class="code" href="classcgv_1_1math_1_1vec.html#a8fced6bbff7ff0bc3d82eeac04085b11">dim</a>()), &amp;v[0]);</div>
-<div class="line"><a name="l00480"></a><span class="lineno">  480</span>&#160;}</div>
+<div class="line"><a name="l00469"></a><span class="lineno"><a class="line" href="namespacecgv_1_1math.html#a5a8905e503619bb28d6234127a5d8b6a">  469</a></span>&#160;<span class="keyword">const</span> <a class="code" href="classcgv_1_1math_1_1fvec.html">fvec&lt;T, N&gt;</a> <a class="code" href="namespacecgv_1_1math.html#ab41dd3e7ea6d0410abba813f0c6067b6">pow</a>(<span class="keyword">const</span> <a class="code" href="classcgv_1_1math_1_1fvec.html">fvec&lt;T, N&gt;</a>&amp; v, <span class="keyword">const</span> <a class="code" href="classcgv_1_1math_1_1fvec.html">fvec&lt;T, N&gt;</a>&amp; e) {</div>
+<div class="line"><a name="l00470"></a><span class="lineno">  470</span>&#160;        <a class="code" href="classcgv_1_1math_1_1fvec.html">fvec&lt;T, N&gt;</a> c;</div>
+<div class="line"><a name="l00471"></a><span class="lineno">  471</span>&#160;        <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> i = 0; i &lt; N; ++i)</div>
+<div class="line"><a name="l00472"></a><span class="lineno">  472</span>&#160;                c(i) = <a class="code" href="namespacecgv_1_1math.html#ab41dd3e7ea6d0410abba813f0c6067b6">pow</a>(v(i), e(i));</div>
+<div class="line"><a name="l00473"></a><span class="lineno">  473</span>&#160;        <span class="keywordflow">return</span> c;</div>
+<div class="line"><a name="l00474"></a><span class="lineno">  474</span>&#160;}</div>
+<div class="line"><a name="l00475"></a><span class="lineno">  475</span>&#160; </div>
+<div class="line"><a name="l00476"></a><span class="lineno">  476</span>&#160;        }</div>
+<div class="line"><a name="l00477"></a><span class="lineno">  477</span>&#160;}</div>
+<div class="line"><a name="l00478"></a><span class="lineno">  478</span>&#160; </div>
+<div class="line"><a name="l00479"></a><span class="lineno">  479</span>&#160; </div>
+<div class="line"><a name="l00480"></a><span class="lineno">  480</span>&#160;<span class="preprocessor">#include &quot;vec.h&quot;</span></div>
 <div class="line"><a name="l00481"></a><span class="lineno">  481</span>&#160; </div>
-<div class="line"><a name="l00482"></a><span class="lineno">  482</span>&#160;        }</div>
-<div class="line"><a name="l00483"></a><span class="lineno">  483</span>&#160;}</div>
+<div class="line"><a name="l00482"></a><span class="lineno">  482</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacecgv.html">cgv</a> {</div>
+<div class="line"><a name="l00483"></a><span class="lineno">  483</span>&#160;        <span class="keyword">namespace </span>math {</div>
 <div class="line"><a name="l00484"></a><span class="lineno">  484</span>&#160; </div>
-<div class="line"><a name="l00485"></a><span class="lineno">  485</span>&#160;<span class="comment">/*</span></div>
-<div class="line"><a name="l00486"></a><span class="lineno">  486</span>&#160;<span class="comment">#include &lt;cgv/utils/convert_string.h&gt;</span></div>
-<div class="line"><a name="l00487"></a><span class="lineno">  487</span>&#160;<span class="comment">#include &lt;cgv/type/info/type_name.h&gt;</span></div>
-<div class="line"><a name="l00488"></a><span class="lineno">  488</span>&#160;<span class="comment"></span> </div>
-<div class="line"><a name="l00489"></a><span class="lineno">  489</span>&#160;<span class="comment">namespace cgv {</span></div>
-<div class="line"><a name="l00490"></a><span class="lineno">  490</span>&#160;<span class="comment">        namespace type {</span></div>
-<div class="line"><a name="l00491"></a><span class="lineno">  491</span>&#160;<span class="comment">                namespace info {</span></div>
-<div class="line"><a name="l00492"></a><span class="lineno">  492</span>&#160;<span class="comment"></span> </div>
-<div class="line"><a name="l00493"></a><span class="lineno">  493</span>&#160;<span class="comment">template &lt;typename T, cgv::type::uint32_type N&gt;</span></div>
-<div class="line"><a name="l00494"></a><span class="lineno">  494</span>&#160;<span class="comment">struct type_name&lt;cgv::math::fvec&lt;T,N&gt; &gt;</span></div>
-<div class="line"><a name="l00495"></a><span class="lineno">  495</span>&#160;<span class="comment">{</span></div>
-<div class="line"><a name="l00496"></a><span class="lineno">  496</span>&#160;<span class="comment">        static const char* get_name() { </span></div>
-<div class="line"><a name="l00497"></a><span class="lineno">  497</span>&#160;<span class="comment">                static std::string name;</span></div>
-<div class="line"><a name="l00498"></a><span class="lineno">  498</span>&#160;<span class="comment">                if (name.empty()) {</span></div>
-<div class="line"><a name="l00499"></a><span class="lineno">  499</span>&#160;<span class="comment">                        name = &quot;fvec&lt;&quot;;</span></div>
-<div class="line"><a name="l00500"></a><span class="lineno">  500</span>&#160;<span class="comment">                        name += type_name&lt;T&gt;::get_name();</span></div>
-<div class="line"><a name="l00501"></a><span class="lineno">  501</span>&#160;<span class="comment">                        name += &#39;,&#39;;</span></div>
-<div class="line"><a name="l00502"></a><span class="lineno">  502</span>&#160;<span class="comment">                        name += cgv::utils::to_string(N);</span></div>
-<div class="line"><a name="l00503"></a><span class="lineno">  503</span>&#160;<span class="comment">                        name += &#39;&gt;&#39;;</span></div>
-<div class="line"><a name="l00504"></a><span class="lineno">  504</span>&#160;<span class="comment">                }</span></div>
-<div class="line"><a name="l00505"></a><span class="lineno">  505</span>&#160;<span class="comment">                return name.c_str(); </span></div>
-<div class="line"><a name="l00506"></a><span class="lineno">  506</span>&#160;<span class="comment">        }</span></div>
-<div class="line"><a name="l00507"></a><span class="lineno">  507</span>&#160;<span class="comment">};</span></div>
-<div class="line"><a name="l00508"></a><span class="lineno">  508</span>&#160;<span class="comment">                }</span></div>
-<div class="line"><a name="l00509"></a><span class="lineno">  509</span>&#160;<span class="comment">        }</span></div>
-<div class="line"><a name="l00510"></a><span class="lineno">  510</span>&#160;<span class="comment">}</span></div>
-<div class="line"><a name="l00511"></a><span class="lineno">  511</span>&#160;<span class="comment">*/</span></div>
+<div class="line"><a name="l00486"></a><span class="lineno">  486</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T, cgv::type::u<span class="keywordtype">int</span>32_type N&gt;</div>
+<div class="line"><a name="l00487"></a><span class="lineno"><a class="line" href="classcgv_1_1math_1_1fvec.html#a9e07f200dccec2bf7decb19bae51080f">  487</a></span>&#160;<a class="code" href="classcgv_1_1math_1_1vec.html">vec&lt;T&gt;</a> <a class="code" href="classcgv_1_1math_1_1fvec.html#a9e07f200dccec2bf7decb19bae51080f">fvec&lt;T,N&gt;::to_vec</a>()<span class="keyword"> const </span>{</div>
+<div class="line"><a name="l00488"></a><span class="lineno">  488</span>&#160;        <a class="code" href="classcgv_1_1math_1_1vec.html">vec&lt;T&gt;</a> r;</div>
+<div class="line"><a name="l00489"></a><span class="lineno">  489</span>&#160;        r.<a class="code" href="classcgv_1_1math_1_1vec.html#a127258bf934408a83b214d6d3624d491">set_extern_data</a>(N,<span class="keyword">const_cast&lt;</span>T*<span class="keyword">&gt;</span>(v));</div>
+<div class="line"><a name="l00490"></a><span class="lineno">  490</span>&#160;        <span class="keywordflow">return</span> r;</div>
+<div class="line"><a name="l00491"></a><span class="lineno">  491</span>&#160;}</div>
+<div class="line"><a name="l00492"></a><span class="lineno">  492</span>&#160; </div>
+<div class="line"><a name="l00494"></a><span class="lineno">  494</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T, cgv::type::u<span class="keywordtype">int</span>32_type N&gt;</div>
+<div class="line"><a name="l00495"></a><span class="lineno"><a class="line" href="classcgv_1_1math_1_1fvec.html#a6deaaa9cc232afe687c0de21e0b01907">  495</a></span>&#160;<a class="code" href="classcgv_1_1math_1_1fvec.html">fvec&lt;T, N&gt;</a> <a class="code" href="classcgv_1_1math_1_1fvec.html#a6deaaa9cc232afe687c0de21e0b01907">fvec&lt;T, N&gt;::from_vec</a>(<span class="keyword">const</span> <a class="code" href="classcgv_1_1math_1_1vec.html">vec&lt;T&gt;</a>&amp; v)</div>
+<div class="line"><a name="l00496"></a><span class="lineno">  496</span>&#160;{</div>
+<div class="line"><a name="l00497"></a><span class="lineno">  497</span>&#160;        <span class="keywordflow">return</span> <a class="code" href="classcgv_1_1math_1_1fvec.html">fvec&lt;T, N&gt;</a>(std::min(N, v.<a class="code" href="classcgv_1_1math_1_1vec.html#a8fced6bbff7ff0bc3d82eeac04085b11">dim</a>()), &amp;v[0]);</div>
+<div class="line"><a name="l00498"></a><span class="lineno">  498</span>&#160;}</div>
+<div class="line"><a name="l00499"></a><span class="lineno">  499</span>&#160; </div>
+<div class="line"><a name="l00500"></a><span class="lineno">  500</span>&#160;        }</div>
+<div class="line"><a name="l00501"></a><span class="lineno">  501</span>&#160;}</div>
+<div class="line"><a name="l00502"></a><span class="lineno">  502</span>&#160; </div>
+<div class="line"><a name="l00503"></a><span class="lineno">  503</span>&#160;<span class="comment">/*</span></div>
+<div class="line"><a name="l00504"></a><span class="lineno">  504</span>&#160;<span class="comment">#include &lt;cgv/utils/convert_string.h&gt;</span></div>
+<div class="line"><a name="l00505"></a><span class="lineno">  505</span>&#160;<span class="comment">#include &lt;cgv/type/info/type_name.h&gt;</span></div>
+<div class="line"><a name="l00506"></a><span class="lineno">  506</span>&#160;<span class="comment"></span> </div>
+<div class="line"><a name="l00507"></a><span class="lineno">  507</span>&#160;<span class="comment">namespace cgv {</span></div>
+<div class="line"><a name="l00508"></a><span class="lineno">  508</span>&#160;<span class="comment">        namespace type {</span></div>
+<div class="line"><a name="l00509"></a><span class="lineno">  509</span>&#160;<span class="comment">                namespace info {</span></div>
+<div class="line"><a name="l00510"></a><span class="lineno">  510</span>&#160;<span class="comment"></span> </div>
+<div class="line"><a name="l00511"></a><span class="lineno">  511</span>&#160;<span class="comment">template &lt;typename T, cgv::type::uint32_type N&gt;</span></div>
+<div class="line"><a name="l00512"></a><span class="lineno">  512</span>&#160;<span class="comment">struct type_name&lt;cgv::math::fvec&lt;T,N&gt; &gt;</span></div>
+<div class="line"><a name="l00513"></a><span class="lineno">  513</span>&#160;<span class="comment">{</span></div>
+<div class="line"><a name="l00514"></a><span class="lineno">  514</span>&#160;<span class="comment">        static const char* get_name() { </span></div>
+<div class="line"><a name="l00515"></a><span class="lineno">  515</span>&#160;<span class="comment">                static std::string name;</span></div>
+<div class="line"><a name="l00516"></a><span class="lineno">  516</span>&#160;<span class="comment">                if (name.empty()) {</span></div>
+<div class="line"><a name="l00517"></a><span class="lineno">  517</span>&#160;<span class="comment">                        name = &quot;fvec&lt;&quot;;</span></div>
+<div class="line"><a name="l00518"></a><span class="lineno">  518</span>&#160;<span class="comment">                        name += type_name&lt;T&gt;::get_name();</span></div>
+<div class="line"><a name="l00519"></a><span class="lineno">  519</span>&#160;<span class="comment">                        name += &#39;,&#39;;</span></div>
+<div class="line"><a name="l00520"></a><span class="lineno">  520</span>&#160;<span class="comment">                        name += cgv::utils::to_string(N);</span></div>
+<div class="line"><a name="l00521"></a><span class="lineno">  521</span>&#160;<span class="comment">                        name += &#39;&gt;&#39;;</span></div>
+<div class="line"><a name="l00522"></a><span class="lineno">  522</span>&#160;<span class="comment">                }</span></div>
+<div class="line"><a name="l00523"></a><span class="lineno">  523</span>&#160;<span class="comment">                return name.c_str(); </span></div>
+<div class="line"><a name="l00524"></a><span class="lineno">  524</span>&#160;<span class="comment">        }</span></div>
+<div class="line"><a name="l00525"></a><span class="lineno">  525</span>&#160;<span class="comment">};</span></div>
+<div class="line"><a name="l00526"></a><span class="lineno">  526</span>&#160;<span class="comment">                }</span></div>
+<div class="line"><a name="l00527"></a><span class="lineno">  527</span>&#160;<span class="comment">        }</span></div>
+<div class="line"><a name="l00528"></a><span class="lineno">  528</span>&#160;<span class="comment">}</span></div>
+<div class="line"><a name="l00529"></a><span class="lineno">  529</span>&#160;<span class="comment">*/</span></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <div class="ttc" id="aclasscgv_1_1math_1_1fvec_html_ab2de7d24f958c8f77470e906f7eef73d"><div class="ttname"><a href="classcgv_1_1math_1_1fvec.html#ab2de7d24f958c8f77470e906f7eef73d">cgv::math::fvec::rend</a></div><div class="ttdeci">const_reverse_iterator rend() const</div><div class="ttdoc">reverse iterator pointing to the end of reverse iteration</div><div class="ttdef"><b>Definition:</b> fvec.h:66</div></div>
@@ -509,6 +525,7 @@ $(document).ready(function(){initNavTree('fvec_8h_source.html',''); initResizabl
 <div class="ttc" id="aclasscgv_1_1math_1_1fvec_html_aef7d0aaa94606f0d0a8d85f3afcae8ed"><div class="ttname"><a href="classcgv_1_1math_1_1fvec.html#aef7d0aaa94606f0d0a8d85f3afcae8ed">cgv::math::fvec::operator()</a></div><div class="ttdeci">T &amp; operator()(const int i)</div><div class="ttdoc">access i'th element</div><div class="ttdef"><b>Definition:</b> fvec.h:148</div></div>
 <div class="ttc" id="aclasscgv_1_1math_1_1fvec_html_a5f04e9eab2e30bac293f9e8abe140dd1"><div class="ttname"><a href="classcgv_1_1math_1_1fvec.html#a5f04e9eab2e30bac293f9e8abe140dd1">cgv::math::fvec::w</a></div><div class="ttdeci">T &amp; w()</div><div class="ttdoc">fourth element</div><div class="ttdef"><b>Definition:</b> fvec.h:144</div></div>
 <div class="ttc" id="aclasscgv_1_1math_1_1fvec_html_a4d69cebfc8f4972a224469770a538b9b"><div class="ttname"><a href="classcgv_1_1math_1_1fvec.html#a4d69cebfc8f4972a224469770a538b9b">cgv::math::fvec::operator*=</a></div><div class="ttdeci">fvec&lt; T, N &gt; &amp; operator*=(const T &amp;s)</div><div class="ttdoc">in place multiplication with s</div><div class="ttdef"><b>Definition:</b> fvec.h:166</div></div>
+<div class="ttc" id="anamespacecgv_1_1math_html_ab41dd3e7ea6d0410abba813f0c6067b6"><div class="ttname"><a href="namespacecgv_1_1math.html#ab41dd3e7ea6d0410abba813f0c6067b6">cgv::math::pow</a></div><div class="ttdeci">const fvec&lt; T, N &gt; pow(const fvec&lt; T, N &gt; &amp;v, T e)</div><div class="ttdoc">pow function for fvec type</div><div class="ttdef"><b>Definition:</b> fvec.h:460</div></div>
 <div class="ttc" id="anamespacecgv_1_1math_html_a2a4f53fc7cb7dbcb1fa07ec66d99915d"><div class="ttname"><a href="namespacecgv_1_1math.html#a2a4f53fc7cb7dbcb1fa07ec66d99915d">cgv::math::floor</a></div><div class="ttdeci">fvec&lt; T, N &gt; floor(const fvec&lt; T, N &gt; &amp;v)</div><div class="ttdoc">apply floor function component wise to vector</div><div class="ttdef"><b>Definition:</b> fvec.h:325</div></div>
 <div class="ttc" id="aclasscgv_1_1math_1_1fvec_html_a98d9df4a703533529929618c91ceb7fb"><div class="ttname"><a href="classcgv_1_1math_1_1fvec.html#a98d9df4a703533529929618c91ceb7fb">cgv::math::fvec::fvec</a></div><div class="ttdeci">fvec(const fvec&lt; S1, N - 1 &gt; &amp;fv, S2 w)</div><div class="ttdoc">construct from vector of one dimension less plus a scalar</div><div class="ttdef"><b>Definition:</b> fvec.h:101</div></div>
 <div class="ttc" id="aclasscgv_1_1math_1_1fvec_html_ac1352402a484b3bbc14bf220fc1ae740"><div class="ttname"><a href="classcgv_1_1math_1_1fvec.html#ac1352402a484b3bbc14bf220fc1ae740">cgv::math::fvec::set</a></div><div class="ttdeci">void set(const T &amp;x, const T &amp;y)</div><div class="ttdoc">set the first two components</div><div class="ttdef"><b>Definition:</b> fvec.h:110</div></div>
@@ -518,7 +535,7 @@ $(document).ready(function(){initNavTree('fvec_8h_source.html',''); initResizabl
 <div class="ttc" id="anamespacecgv_1_1math_html_a92f496231d4b5519a815e6be9387f851"><div class="ttname"><a href="namespacecgv_1_1math.html#a92f496231d4b5519a815e6be9387f851">cgv::math::max_index</a></div><div class="ttdeci">unsigned max_index(const fvec&lt; T, N &gt; &amp;v)</div><div class="ttdoc">return the index of the largest entry</div><div class="ttdef"><b>Definition:</b> fvec.h:377</div></div>
 <div class="ttc" id="anamespacecgv_1_1math_html_a096cb2f44ab3eef36e4fc867e5c2ab99"><div class="ttname"><a href="namespacecgv_1_1math.html#a096cb2f44ab3eef36e4fc867e5c2ab99">cgv::math::abs</a></div><div class="ttdeci">fvec&lt; T, N &gt; abs(const fvec&lt; T, N &gt; &amp;v)</div><div class="ttdoc">apply abs function component wise to vector</div><div class="ttdef"><b>Definition:</b> fvec.h:317</div></div>
 <div class="ttc" id="aclasscgv_1_1math_1_1fvec_html_a5cd801220df833f820048962abe40d89"><div class="ttname"><a href="classcgv_1_1math_1_1fvec.html#a5cd801220df833f820048962abe40d89">cgv::math::fvec::sqr_length</a></div><div class="ttdeci">T sqr_length() const</div><div class="ttdoc">square length of vector</div><div class="ttdef"><b>Definition:</b> fvec.h:255</div></div>
-<div class="ttc" id="aclasscgv_1_1math_1_1fvec_html_a9e07f200dccec2bf7decb19bae51080f"><div class="ttname"><a href="classcgv_1_1math_1_1fvec.html#a9e07f200dccec2bf7decb19bae51080f">cgv::math::fvec::to_vec</a></div><div class="ttdeci">vec&lt; T &gt; to_vec() const</div><div class="ttdoc">conversion to vector type</div><div class="ttdef"><b>Definition:</b> fvec.h:469</div></div>
+<div class="ttc" id="aclasscgv_1_1math_1_1fvec_html_a9e07f200dccec2bf7decb19bae51080f"><div class="ttname"><a href="classcgv_1_1math_1_1fvec.html#a9e07f200dccec2bf7decb19bae51080f">cgv::math::fvec::to_vec</a></div><div class="ttdeci">vec&lt; T &gt; to_vec() const</div><div class="ttdoc">conversion to vector type</div><div class="ttdef"><b>Definition:</b> fvec.h:487</div></div>
 <div class="ttc" id="aclasscgv_1_1math_1_1fvec_html_a306998e8905416d17894fd66d8a15b0b"><div class="ttname"><a href="classcgv_1_1math_1_1fvec.html#a306998e8905416d17894fd66d8a15b0b">cgv::math::fvec::x</a></div><div class="ttdeci">T &amp; x()</div><div class="ttdoc">first element</div><div class="ttdef"><b>Definition:</b> fvec.h:132</div></div>
 <div class="ttc" id="anamespacecgv_1_1math_html_a72cf634eb03e767e64433f0e69d27442"><div class="ttname"><a href="namespacecgv_1_1math.html#a72cf634eb03e767e64433f0e69d27442">cgv::math::lerp</a></div><div class="ttdeci">const fmat&lt; T, N, M &gt; lerp(const fmat&lt; T, N, M &gt; &amp;m1, const fmat&lt; T, N, M &gt; &amp;m2, T t)</div><div class="ttdoc">linear interpolation returns (1-t)*m1 + t*m2</div><div class="ttdef"><b>Definition:</b> fmat.h:259</div></div>
 <div class="ttc" id="aclasscgv_1_1math_1_1fvec_html_aec33769cb2cac546b11724683feb1098"><div class="ttname"><a href="classcgv_1_1math_1_1fvec.html#aec33769cb2cac546b11724683feb1098">cgv::math::fvec::ceil</a></div><div class="ttdeci">void ceil()</div><div class="ttdoc">ceil componentwise</div><div class="ttdef"><b>Definition:</b> fvec.h:236</div></div>
@@ -535,7 +552,7 @@ $(document).ready(function(){initNavTree('fvec_8h_source.html',''); initResizabl
 <div class="ttc" id="anamespacecgv_1_1math_html_a4bdff18efd6afb8e7d19406cb7664e51"><div class="ttname"><a href="namespacecgv_1_1math.html#a4bdff18efd6afb8e7d19406cb7664e51">cgv::math::operator&gt;&gt;</a></div><div class="ttdeci">std::istream &amp; operator&gt;&gt;(std::istream &amp;in, diag_mat&lt; T &gt; &amp;m)</div><div class="ttdoc">input of a diagonal matrix from an istream</div><div class="ttdef"><b>Definition:</b> diag_mat.h:453</div></div>
 <div class="ttc" id="anamespacecgv_1_1math_html_a94f7f6756f02d9477d4522f74dfa0ff4"><div class="ttname"><a href="namespacecgv_1_1math.html#a94f7f6756f02d9477d4522f74dfa0ff4">cgv::math::max_value</a></div><div class="ttdeci">T max_value(const fvec&lt; T, N &gt; &amp;v)</div><div class="ttdoc">return the value of the largest entry</div><div class="ttdef"><b>Definition:</b> fvec.h:384</div></div>
 <div class="ttc" id="anamespacecgv_1_1type_html_a946d7ae2eaadfe30e5b2c66601d64822"><div class="ttname"><a href="namespacecgv_1_1type.html#a946d7ae2eaadfe30e5b2c66601d64822">cgv::type::uint32_type</a></div><div class="ttdeci">unsigned int uint32_type</div><div class="ttdoc">this type provides an 32 bit unsigned integer type</div><div class="ttdef"><b>Definition:</b> standard_types.h:20</div></div>
-<div class="ttc" id="aclasscgv_1_1math_1_1fvec_html_a6deaaa9cc232afe687c0de21e0b01907"><div class="ttname"><a href="classcgv_1_1math_1_1fvec.html#a6deaaa9cc232afe687c0de21e0b01907">cgv::math::fvec::from_vec</a></div><div class="ttdeci">static fvec&lt; T, N &gt; from_vec(const vec&lt; T &gt; &amp;)</div><div class="ttdoc">conversion from vector</div><div class="ttdef"><b>Definition:</b> fvec.h:477</div></div>
+<div class="ttc" id="aclasscgv_1_1math_1_1fvec_html_a6deaaa9cc232afe687c0de21e0b01907"><div class="ttname"><a href="classcgv_1_1math_1_1fvec.html#a6deaaa9cc232afe687c0de21e0b01907">cgv::math::fvec::from_vec</a></div><div class="ttdeci">static fvec&lt; T, N &gt; from_vec(const vec&lt; T &gt; &amp;)</div><div class="ttdoc">conversion from vector</div><div class="ttdef"><b>Definition:</b> fvec.h:495</div></div>
 <div class="ttc" id="anamespacecgv_1_1math_html_ac62eea7ce2b3664181282b42f3de50d8"><div class="ttname"><a href="namespacecgv_1_1math.html#ac62eea7ce2b3664181282b42f3de50d8">cgv::math::hom</a></div><div class="ttdeci">fvec&lt; T, N+1 &gt; hom(const fvec&lt; T, N &gt; &amp;v)</div><div class="ttdoc">returns the cross product of vector v and w</div><div class="ttdef"><b>Definition:</b> fvec.h:352</div></div>
 <div class="ttc" id="aclasscgv_1_1math_1_1fvec_html_a655d751227845c3147ab4c2eab42f6af"><div class="ttname"><a href="classcgv_1_1math_1_1fvec.html#a655d751227845c3147ab4c2eab42f6af">cgv::math::fvec::set</a></div><div class="ttdeci">void set(const T &amp;x, const T &amp;y, const T &amp;z)</div><div class="ttdoc">set the first three components</div><div class="ttdef"><b>Definition:</b> fvec.h:112</div></div>
 <div class="ttc" id="aclasscgv_1_1math_1_1fvec_html_a48276d69a1fcb17585c9808fb19f59a2"><div class="ttname"><a href="classcgv_1_1math_1_1fvec.html#a48276d69a1fcb17585c9808fb19f59a2">cgv::math::fvec::operator=</a></div><div class="ttdeci">fvec &amp; operator=(const fvec&lt; T, N &gt; &amp;rhs)</div><div class="ttdoc">assign vector rhs, if vector and rhs have different sizes, vector has been resized to match the size ...</div><div class="ttdef"><b>Definition:</b> fvec.h:106</div></div>
