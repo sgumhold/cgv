@@ -10,6 +10,7 @@ var classcgv_1_1math_1_1fvec =
     [ "fvec", "classcgv_1_1math_1_1fvec.html#a9566895513eb483b6f2af1929dad68a6", null ],
     [ "fvec", "classcgv_1_1math_1_1fvec.html#aa8f52347ef7d9930ca063169a59191bb", null ],
     [ "fvec", "classcgv_1_1math_1_1fvec.html#a98d9df4a703533529929618c91ceb7fb", null ],
+    [ "fvec", "classcgv_1_1math_1_1fvec.html#a9865b7726be9d9e62abd6476faad68cd", null ],
     [ "abs", "classcgv_1_1math_1_1fvec.html#ae7bc649c7bfbebbe65cd504fe06f9637", null ],
     [ "ceil", "classcgv_1_1math_1_1fvec.html#aec33769cb2cac546b11724683feb1098", null ],
     [ "fill", "classcgv_1_1math_1_1fvec.html#af567dd18d8822167ab6ea37a20d81b6e", null ],

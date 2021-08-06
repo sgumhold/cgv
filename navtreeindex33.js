@@ -1,5 +1,6 @@
 var NAVTREEINDEX33 =
 {
+"classvr_1_1vr__log.html#a38dd03f0b24790b4f25dd4c23bddc11c":[11,0,3,13,16],
 "classvr_1_1vr__log.html#a3bf1a0f5d32ed0c6b44728595f6c8201":[11,0,3,13,21],
 "classvr_1_1vr__log.html#a3f4c54c23e849fa07adeca68dd718966":[11,0,3,13,2],
 "classvr_1_1vr__log.html#a43f4d9d35d8723d8466bfedd1cb09cfc":[11,0,3,13,42],
@@ -196,8 +197,8 @@ var NAVTREEINDEX33 =
 "functions_e.html":[11,3,0,5],
 "functions_enum.html":[11,3,4],
 "functions_f.html":[11,3,0,6],
-"functions_func.html":[11,3,1,0],
 "functions_func.html":[11,3,1],
+"functions_func.html":[11,3,1,0],
 "functions_func_b.html":[11,3,1,1],
 "functions_func_c.html":[11,3,1,2],
 "functions_func_d.html":[11,3,1,3],
@@ -248,6 +249,5 @@ var NAVTREEINDEX33 =
 "functions_vars_b.html":[11,3,2,2],
 "functions_vars_c.html":[11,3,2,3],
 "functions_vars_d.html":[11,3,2,4],
-"functions_vars_e.html":[11,3,2,5],
-"functions_vars_f.html":[11,3,2,6]
+"functions_vars_e.html":[11,3,2,5]
 };
