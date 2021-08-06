@@ -721,10 +721,10 @@ $(document).ready(function(){initNavTree('vec_8h_source.html',''); initResizable
 <div class="line"><a name="l00709"></a><span class="lineno">  709</span>&#160; </div>
 <div class="line"><a name="l00710"></a><span class="lineno">  710</span>&#160;        <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> i = 0; i &lt; N;i++)</div>
 <div class="line"><a name="l00711"></a><span class="lineno">  711</span>&#160;        {</div>
-<div class="line"><a name="l00712"></a><span class="lineno">  712</span>&#160;                n+=pow(fabs(values(i)),(T)p);</div>
+<div class="line"><a name="l00712"></a><span class="lineno">  712</span>&#160;                n+=<a class="code" href="namespacecgv_1_1math.html#ab41dd3e7ea6d0410abba813f0c6067b6">pow</a>(fabs(values(i)),(T)p);</div>
 <div class="line"><a name="l00713"></a><span class="lineno">  713</span>&#160;        }</div>
 <div class="line"><a name="l00714"></a><span class="lineno">  714</span>&#160; </div>
-<div class="line"><a name="l00715"></a><span class="lineno">  715</span>&#160;        <span class="keywordflow">return</span> pow(n,(T)(1.0/(T)p));</div>
+<div class="line"><a name="l00715"></a><span class="lineno">  715</span>&#160;        <span class="keywordflow">return</span> <a class="code" href="namespacecgv_1_1math.html#ab41dd3e7ea6d0410abba813f0c6067b6">pow</a>(n,(T)(1.0/(T)p));</div>
 <div class="line"><a name="l00716"></a><span class="lineno">  716</span>&#160;}</div>
 <div class="line"><a name="l00717"></a><span class="lineno">  717</span>&#160; </div>
 <div class="line"><a name="l00719"></a><span class="lineno">  719</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
@@ -1140,14 +1140,14 @@ $(document).ready(function(){initNavTree('vec_8h_source.html',''); initResizable
 <div class="line"><a name="l01179"></a><span class="lineno"> 1179</span>&#160;        <a class="code" href="classcgv_1_1math_1_1vec.html">vec&lt;T&gt;</a> lv(N);</div>
 <div class="line"><a name="l01180"></a><span class="lineno"> 1180</span>&#160;        <span class="keywordflow">if</span>(N == 1)</div>
 <div class="line"><a name="l01181"></a><span class="lineno"> 1181</span>&#160;        {</div>
-<div class="line"><a name="l01182"></a><span class="lineno"> 1182</span>&#160;                lv(0) = pow((T)10.0,last_pow_of_10);</div>
+<div class="line"><a name="l01182"></a><span class="lineno"> 1182</span>&#160;                lv(0) = <a class="code" href="namespacecgv_1_1math.html#ab41dd3e7ea6d0410abba813f0c6067b6">pow</a>((T)10.0,last_pow_of_10);</div>
 <div class="line"><a name="l01183"></a><span class="lineno"> 1183</span>&#160;                <span class="keywordflow">return</span> lv;</div>
 <div class="line"><a name="l01184"></a><span class="lineno"> 1184</span>&#160;        }</div>
 <div class="line"><a name="l01185"></a><span class="lineno"> 1185</span>&#160;        T diff = last_pow_of_10 - first_pow_of_10;</div>
 <div class="line"><a name="l01186"></a><span class="lineno"> 1186</span>&#160; </div>
 <div class="line"><a name="l01187"></a><span class="lineno"> 1187</span>&#160;        <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> i = 0; i &lt; N; i++)</div>
 <div class="line"><a name="l01188"></a><span class="lineno"> 1188</span>&#160;        {</div>
-<div class="line"><a name="l01189"></a><span class="lineno"> 1189</span>&#160;                lv(i) = pow((T)10.0,(T)first_pow_of_10 + (T)i*diff/((T)N-(T)1.0));</div>
+<div class="line"><a name="l01189"></a><span class="lineno"> 1189</span>&#160;                lv(i) = <a class="code" href="namespacecgv_1_1math.html#ab41dd3e7ea6d0410abba813f0c6067b6">pow</a>((T)10.0,(T)first_pow_of_10 + (T)i*diff/((T)N-(T)1.0));</div>
 <div class="line"><a name="l01190"></a><span class="lineno"> 1190</span>&#160;        }</div>
 <div class="line"><a name="l01191"></a><span class="lineno"> 1191</span>&#160;        <span class="keywordflow">return</span> lv;</div>
 <div class="line"><a name="l01192"></a><span class="lineno"> 1192</span>&#160;}</div>
@@ -1233,6 +1233,7 @@ $(document).ready(function(){initNavTree('vec_8h_source.html',''); initResizable
 <div class="ttc" id="aclasscgv_1_1math_1_1vec_html_a5b6f1bc13794db994fb8669d37cd9764"><div class="ttname"><a href="classcgv_1_1math_1_1vec.html#a5b6f1bc13794db994fb8669d37cd9764">cgv::math::vec::copy</a></div><div class="ttdeci">void copy(unsigned ifrom, unsigned s, vec&lt; T &gt; &amp;subvec) const</div><div class="ttdoc">copy sub vector beginning at index ifrom with given size s into subvec</div><div class="ttdef"><b>Definition:</b> vec.h:669</div></div>
 <div class="ttc" id="aclasscgv_1_1math_1_1vec_html_af53bd11ca5134bc307187fb63d79e3a4"><div class="ttname"><a href="classcgv_1_1math_1_1vec.html#af53bd11ca5134bc307187fb63d79e3a4">cgv::math::vec::first</a></div><div class="ttdeci">const T &amp; first() const</div><div class="ttdoc">const element accessor for the first element</div><div class="ttdef"><b>Definition:</b> vec.h:318</div></div>
 <div class="ttc" id="anamespacecgv_1_1math_html_a3b51b9b6a031832d8f5e61daae591d23"><div class="ttname"><a href="namespacecgv_1_1math.html#a3b51b9b6a031832d8f5e61daae591d23">cgv::math::range_value</a></div><div class="ttdeci">T range_value(const vec&lt; T &gt; &amp;values)</div><div class="ttdoc">compute the range of all values</div><div class="ttdef"><b>Definition:</b> vec.h:994</div></div>
+<div class="ttc" id="anamespacecgv_1_1math_html_ab41dd3e7ea6d0410abba813f0c6067b6"><div class="ttname"><a href="namespacecgv_1_1math.html#ab41dd3e7ea6d0410abba813f0c6067b6">cgv::math::pow</a></div><div class="ttdeci">const fvec&lt; T, N &gt; pow(const fvec&lt; T, N &gt; &amp;v, T e)</div><div class="ttdoc">pow function for fvec type</div><div class="ttdef"><b>Definition:</b> fvec.h:460</div></div>
 <div class="ttc" id="anamespacecgv_1_1math_html_a2a4f53fc7cb7dbcb1fa07ec66d99915d"><div class="ttname"><a href="namespacecgv_1_1math.html#a2a4f53fc7cb7dbcb1fa07ec66d99915d">cgv::math::floor</a></div><div class="ttdeci">fvec&lt; T, N &gt; floor(const fvec&lt; T, N &gt; &amp;v)</div><div class="ttdoc">apply floor function component wise to vector</div><div class="ttdef"><b>Definition:</b> fvec.h:325</div></div>
 <div class="ttc" id="anamespacecgv_1_1math_html_a10a8c243810ff53fe2dba27b052ae806"><div class="ttname"><a href="namespacecgv_1_1math.html#a10a8c243810ff53fe2dba27b052ae806">cgv::math::var_and_mean_value</a></div><div class="ttdeci">void var_and_mean_value(const vec&lt; T &gt; &amp;values, T &amp;mu, T &amp;var)</div><div class="ttdoc">compute the mean and the variance (sigma^2) of all values</div><div class="ttdef"><b>Definition:</b> vec.h:1021</div></div>
 <div class="ttc" id="aclasscgv_1_1math_1_1vec_html_ad397c1a505ce48bedbe8a801cf11b039"><div class="ttname"><a href="classcgv_1_1math_1_1vec.html#ad397c1a505ce48bedbe8a801cf11b039">cgv::math::vec::normalize</a></div><div class="ttdeci">void normalize()</div><div class="ttdoc">normalize the vector using the L2-Norm</div><div class="ttdef"><b>Definition:</b> vec.h:649</div></div>
