@@ -135,7 +135,7 @@ public:
 			member_ptr == &growth_factor ||
 			member_ptr == &angle_factor ||
 			member_ptr == &radius_factor) {
-			n = cgv::math::clamp(n, 0u, 5u);
+			n = cgv::math::clamp(n, 0u, 10u);
 			std::string sentence = generate(n);
 			//std::cout << sentence << std::endl;
 			create_tree(sentence);
@@ -175,10 +175,12 @@ public:
 			return false;
 		} else {
 			tex.create(ctx, tex_data, 0);
-			tex.set_min_filter(cgv::render::TextureFilter::TF_LINEAR);
+			tex.set_min_filter(cgv::render::TextureFilter::TF_ANISOTROP);
 			tex.set_mag_filter(cgv::render::TextureFilter::TF_LINEAR);
 			tex.set_wrap_s(cgv::render::TextureWrap::TW_REPEAT);
 			tex.set_wrap_t(cgv::render::TextureWrap::TW_REPEAT);
+			tex.anisotropy = 16.0f;
+			tex.generate_mipmaps(ctx);
 		}
 		image.close();
 
