@@ -99,6 +99,9 @@ public:
 	/// construct from vector of one dimension less plus a scalar
 	template <typename S1, typename S2>
 	fvec(const fvec<S1, N - 1>& fv, S2 w) { for (unsigned i = 0; i < N - 1; ++i) v[i] = (T)fv(i); v[N - 1] = (T)w; }
+	/// construct from vector of one dimension higher by cutting of the highest dimension
+	template <typename S>
+	fvec(const fvec<S, N + 1>& fv) { for (unsigned i = 0; i < N; ++i) v[i] = (T)fv(i); }
 	///assign vector rhs, if vector and rhs have different sizes, vector has been resized to match the size of
 	fvec & operator = (const fvec<T,N> &rhs) { if (this != &rhs) std::copy(rhs.v, rhs.v+N, v); return *this; }
 	/// set all components of vector to constant value a
@@ -392,9 +395,64 @@ const fvec<T, N> lerp(const fvec<T, N>& v1, const fvec<T, N>& v2, T t)
 
 ///linear interpolation returns (1-t)*v1 + t*v2
 template <typename T, cgv::type::uint32_type N>
-const fvec<T, N> lerp(const fvec<T, N>& v1, const fvec<T, N>& v2, fvec<T, N> t)
+const fvec<T, N> lerp(const fvec<T, N>& v1, const fvec<T, N>& v2, const fvec<T, N>& t)
 {
 	return (fvec<T, N>(1) - t)*v1 + t * v2;
+}
+
+///return a vector containing the minimum value of each component of v and the scalar t
+template <typename T, cgv::type::uint32_type N>
+const fvec<T, N> min(const fvec<T, N>& v, T t) {
+	fvec<T, N> c;
+	for(unsigned i = 0; i < N; ++i)
+		c(i) = std::min(v(i), t);
+	return c;
+}
+
+///return a vector containing the component-wise minimum value
+template <typename T, cgv::type::uint32_type N>
+const fvec<T, N> min(const fvec<T, N>& v, const fvec<T, N>& t) {
+	fvec<T, N> c;
+	for(unsigned i = 0; i < N; ++i)
+		c(i) = std::min(v(i), t(i));
+	return c;
+}
+
+///return a vector containing the maximum value of each component of v and the scalar t
+template <typename T, cgv::type::uint32_type N>
+const fvec<T, N> max(const fvec<T, N>& v, T t) {
+	fvec<T, N> c;
+	for(unsigned i = 0; i < N; ++i)
+		c(i) = std::max(v(i), t);
+	return c;
+}
+
+///return a vector containing the component-wise maximum value
+template <typename T, cgv::type::uint32_type N>
+const fvec<T, N> max(const fvec<T, N>& v, const fvec<T, N>& t) {
+	fvec<T, N> c;
+	for(unsigned i = 0; i < N; ++i)
+		c(i) = std::max(v(i), t(i));
+	return c;
+}
+
+///clamp the components to the given range
+template <typename T, cgv::type::uint32_type N>
+const fvec<T, N> clamp(const fvec<T, N>& v, T l, T r) {
+	fvec<T, N> c;
+	for(unsigned i = 0; i < N; ++i)
+		c(i) = cgv::math::clamp(v(i), l, r);
+	return c;
+}
+
+///clamp the components to the given range
+template <typename T, cgv::type::uint32_type N>
+const fvec<T, N> clamp(const fvec<T, N>& v, const fvec<T, N>& vl, const fvec<T, N>& vr)
+{
+	fvec<T, N> c;
+	for(unsigned i = 0; i < N; ++i)
+		c(i) = cgv::math::clamp(v(i), vl(i), vr(i));
+	return c;
 }
 
 	}
