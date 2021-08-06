@@ -133,6 +133,16 @@ public:
 
 	attribute_array_manager* get_aam_ptr() { return aam_ptr; }
 
+	void early_transfer(context& ctx, box_renderer& r) {
+		if(aam_ptr) {
+			r.enable_attribute_array_manager(ctx, *aam_ptr);
+			if(out_of_date) transfer(ctx, r);
+			r.disable_attribute_array_manager(ctx, *aam_ptr);
+		} else {
+			transfer(ctx, r);
+		}
+	}
+
 	void render(context& ctx, box_renderer& r, box_render_style& s, unsigned offset = 0, int count = -1) {
 		if(size() > 0) {
 			r.set_render_style(s);
