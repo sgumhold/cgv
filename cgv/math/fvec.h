@@ -455,6 +455,24 @@ const fvec<T, N> clamp(const fvec<T, N>& v, const fvec<T, N>& vl, const fvec<T, 
 	return c;
 }
 
+///pow function for fvec type
+template <typename T, cgv::type::uint32_type N>
+const fvec<T, N> pow(const fvec<T, N>& v, T e) {
+	fvec<T, N> c;
+	for(unsigned i = 0; i < N; ++i)
+		c(i) = pow(v(i), e);
+	return c;
+}
+
+///pow function for fvec type
+template <typename T, cgv::type::uint32_type N>
+const fvec<T, N> pow(const fvec<T, N>& v, const fvec<T, N>& e) {
+	fvec<T, N> c;
+	for(unsigned i = 0; i < N; ++i)
+		c(i) = pow(v(i), e(i));
+	return c;
+}
+
 	}
 }
 
