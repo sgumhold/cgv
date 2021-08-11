@@ -20,6 +20,7 @@ var NAVTREEINDEX0 =
 "VR.html#VREmul":[7,2],
 "VR.html#VRInfo":[7,4],
 "VR.html#VRIntro":[7,0],
+"a__buffer_8h_source.html":[12,0,1,2,1],
 "action_8h_source.html":[12,0,0,0,0],
 "adjacency__list_8h_source.html":[12,0,0,5,0],
 "advanced__scan_8h.html":[12,0,0,13,0],
@@ -37,7 +38,7 @@ var NAVTREEINDEX0 =
 "animate_8h_source.html":[12,0,0,4,0],
 "annotated.html":[11,0],
 "application_8h_source.html":[12,0,0,4,1],
-"arrow__renderer_8h_source.html":[12,0,1,2,1],
+"arrow__renderer_8h_source.html":[12,0,1,2,2],
 "ascii__io__reflection__handlers_8h_source.html":[12,0,0,2,0],
 "assert_8h_source.html":[12,0,0,3,0],
 "attach__slot_8h_source.html":[12,0,0,0,1],
@@ -63,8 +64,8 @@ var NAVTREEINDEX0 =
 "bmp__reader_8h_source.html":[12,0,0,6,2,0],
 "bmp__writer_8h_source.html":[12,0,0,6,2,1],
 "bool__combiner_8h_source.html":[12,0,0,11,0],
-"box__renderer_8h_source.html":[12,0,1,2,2],
-"box__wire__renderer_8h_source.html":[12,0,1,2,3],
+"box__renderer_8h_source.html":[12,0,1,2,3],
+"box__wire__renderer_8h_source.html":[12,0,1,2,4],
 "bucket__sort_8h_source.html":[12,0,0,5,3],
 "button_8h_source.html":[12,0,0,4,4],
 "callback__drawable_8h_source.html":[12,0,0,10,1],
@@ -248,6 +249,5 @@ var NAVTREEINDEX0 =
 "classcgv_1_1base_1_1group.html#a6746cd9f70fefe5a4f2b72534869fcc3":[11,0,0,0,19,2],
 "classcgv_1_1base_1_1group.html#a67b5dba890a068acef62d9c026c05320":[11,0,0,0,19,18],
 "classcgv_1_1base_1_1group.html#a6d54b3a4cef6b98b98b0d97d41cad410":[11,0,0,0,19,29],
-"classcgv_1_1base_1_1group.html#a746bbe7e49b1fae8253a8b06ce9ad4c3":[11,0,0,0,19,14],
-"classcgv_1_1base_1_1group.html#a76be0133a536877803a27cbc32bf5027":[11,0,0,0,19,13]
+"classcgv_1_1base_1_1group.html#a746bbe7e49b1fae8253a8b06ce9ad4c3":[11,0,0,0,19,14]
 };
