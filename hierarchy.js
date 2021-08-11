@@ -349,6 +349,7 @@ var hierarchy =
     [ "cgv::reflect::self_reflection_tag", "structcgv_1_1reflect_1_1self__reflection__tag.html", [
       [ "cgv::base::base", "classcgv_1_1base_1_1base.html", null ]
     ] ],
+    [ "cgv::render::a_buffer", "classcgv_1_1render_1_1a__buffer.html", null ],
     [ "cgv::render::attribute_array_manager", "classcgv_1_1render_1_1attribute__array__manager.html", null ],
     [ "cgv::render::context::light_source_status", "structcgv_1_1render_1_1context_1_1light__source__status.html", null ],
     [ "cgv::render::context::render_info", "structcgv_1_1render_1_1context_1_1render__info.html", null ],
