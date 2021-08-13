@@ -82,24 +82,24 @@ public:
 		this->y() = sqrt(plus(T(0.25)*(-M(0, 0) + M(1, 1) - M(2, 2) + T(1))));
 		this->z() = sqrt(plus(T(0.25)*(-M(0, 0) - M(1, 1) + M(2, 2) + T(1))));
 		if (this->w() >= this->x() && this->w() >= this->y() && this->w() >= this->z()) {
-			this->x() *= sign(M(2, 1) - M(1, 2));
-			this->y() *= sign(M(0, 2) - M(2, 0));
-			this->z() *= sign(M(1, 0) - M(0, 1));
+			this->x() *= cgv::math::sign(M(2, 1) - M(1, 2));
+			this->y() *= cgv::math::sign(M(0, 2) - M(2, 0));
+			this->z() *= cgv::math::sign(M(1, 0) - M(0, 1));
 		}
 		else if (this->x() >= this->y() && this->x() >= this->z()) {
-			this->w() *= sign(M(2, 1) - M(1, 2));
-			this->y() *= sign(M(0, 1) + M(1, 0));
-			this->z() *= sign(M(2, 0) + M(0, 2));
+			this->w() *= cgv::math::sign(M(2, 1) - M(1, 2));
+			this->y() *= cgv::math::sign(M(0, 1) + M(1, 0));
+			this->z() *= cgv::math::sign(M(2, 0) + M(0, 2));
 		}
 		else if (this->y() >= this->z()) {
-			this->w() *= sign(M(0, 2) - M(2, 0));
-			this->x() *= sign(M(0, 1) + M(1, 0));
-			this->z() *= sign(M(1, 2) + M(2, 1));
+			this->w() *= cgv::math::sign(M(0, 2) - M(2, 0));
+			this->x() *= cgv::math::sign(M(0, 1) + M(1, 0));
+			this->z() *= cgv::math::sign(M(1, 2) + M(2, 1));
 		}
 		else {
-			this->w() *= sign(M(1, 0) - M(0, 1));
-			this->x() *= sign(M(0, 2) + M(2, 0));
-			this->y() *= sign(M(1, 2) + M(2, 1));
+			this->w() *= cgv::math::sign(M(1, 0) - M(0, 1));
+			this->x() *= cgv::math::sign(M(0, 2) + M(2, 0));
+			this->y() *= cgv::math::sign(M(1, 2) + M(2, 1));
 		}
 	}
 	/// initialize quaternion directly

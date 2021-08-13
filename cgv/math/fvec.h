@@ -224,6 +224,12 @@ public:
 		return (T)sqrt((double)sqr_length());
 	}
 
+	///componentwise sign values
+	void sign() {
+		for(unsigned i = 0; i < N; i++)
+			v[i] = cgv::math::sign(v[i]);
+	}
+
 	///componentwise absolute values
 	void abs() {	
 		if(std::numeric_limits<T>::is_signed) {
@@ -311,6 +317,10 @@ inline T dot(const fvec<T,N>& v, const fvec<T,N>& w)
 ///returns the length of vector v 
 template <typename T, cgv::type::uint32_type N>
 inline T length(const fvec<T, N>& v) { return sqrt(dot(v, v)); }
+
+/// apply sign function component wise to vector
+template <typename T, cgv::type::uint32_type N>
+inline fvec<T, N> sign(const fvec<T, N>& v) { fvec<T, N> r(v); r.sign(); return r; }
 
 /// apply abs function component wise to vector
 template <typename T, cgv::type::uint32_type N>
@@ -460,7 +470,7 @@ template <typename T, cgv::type::uint32_type N>
 const fvec<T, N> pow(const fvec<T, N>& v, T e) {
 	fvec<T, N> c;
 	for(unsigned i = 0; i < N; ++i)
-		c(i) = pow(v(i), e);
+		c(i) = std::pow(v(i), e);
 	return c;
 }
 
@@ -469,7 +479,7 @@ template <typename T, cgv::type::uint32_type N>
 const fvec<T, N> pow(const fvec<T, N>& v, const fvec<T, N>& e) {
 	fvec<T, N> c;
 	for(unsigned i = 0; i < N; ++i)
-		c(i) = pow(v(i), e(i));
+		c(i) = std::pow(v(i), e(i));
 	return c;
 }
 
