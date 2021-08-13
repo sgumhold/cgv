@@ -80,7 +80,7 @@ namespace cgv {
 				unsigned int component_number_of_dimensions = component_format_ptr->get_nr_dimensions();
 				unsigned int existing_number_of_dimensions = existing_format_ptr->get_nr_dimensions();
 
-				if(component_number_of_dimensions < 3 || component_number_of_dimensions > 4 || component_number_of_dimensions == existing_number_of_dimensions)
+				if(component_number_of_dimensions < 3 || component_number_of_dimensions > 4 || component_number_of_dimensions != existing_number_of_dimensions)
 				{
 					std::cerr << "Both data views need to have 3 or 4 dimensions (and both the same number). They have " << std::to_string(existing_number_of_dimensions) << " (existing) and" << std::to_string(component_number_of_dimensions) << " (new component)." << std::endl;
 					return false;
@@ -118,16 +118,17 @@ namespace cgv {
 				//component_type
 				unsigned component_size = cgv::type::info::get_type_size(existing_component_type);
 
-				for (unsigned i = 0; i < t; ++i) {
-					for (unsigned z = 0; z < d; ++z) {
-						for (unsigned y = 0; y < h; ++y) {
-							for (unsigned x = 0; x < w; ++x) {
+				for (unsigned x = 0; x < w; ++x) {
+					for (unsigned y = 0; y < h; ++y) {
+						for (unsigned z = 0; z < d; ++z) {
+							for (unsigned i = 0; i < t; ++i) {
 
-								unsigned char* existing_ptr = dv.get_ptr<unsigned char>(x, y, z, mask_t*i);
-								unsigned char* component_ptr = component_dv.get_ptr<unsigned char>(x, y, z, mask_t*i);
-								unsigned char* result_ptr = combined_dv.get_ptr<unsigned char>(x, y, z, mask_t*i);
+								unsigned char* existing_ptr = dv.get_ptr<unsigned char>(x, y, z , mask_t* i);
+								unsigned char* component_ptr = component_dv.get_ptr<unsigned char>(x, y, z, mask_t* i);
+								unsigned char* result_ptr = combined_dv.get_ptr<unsigned char>(x, y, z, mask_t* i);
 
-								memcpy(result_ptr, existing_ptr, nr_existing_components * component_size);
+								const unsigned copy_size = component_size * nr_existing_components;
+								memcpy(result_ptr, existing_ptr, copy_size);
 								memcpy(result_ptr, component_ptr, component_size);
 
 							}
@@ -135,7 +136,6 @@ namespace cgv {
 					}
 				}
 
-				delete& dv;
 				dv = combined_dv;
 				return true;
 				
