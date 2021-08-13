@@ -8,6 +8,7 @@ The following interface is implemented in this shader:
 //***** begin interface of fragment.glfs ***********************************
 uniform float gamma = 2.2;
 void finish_fragment(vec4 color);
+void finish_fragment(vec4 color, float depth);
 //***** end interface of fragment.glfs ***********************************
 */
 
@@ -35,5 +36,20 @@ void finish_fragment(vec4 color)
 	frag_color.rgb = clamp(pow(frag_color.rgb, vec3(gamma)),0.0,0.9999999);
 #else
 	a_buffer_insert_fragment(gl_FragCoord.xyz, color);
+#endif
+}
+
+void finish_fragment(vec4 color, float depth)
+{
+	// alpha test
+	if (alpha_test && color.a <= alpha_cutoff)
+		discard;
+#if USE_A_BUFFER == 0
+	frag_color = color;
+	// perform inverse gamma correction and clamp to avoid problems with on laptop screens
+	frag_color.rgb = clamp(pow(frag_color.rgb, vec3(gamma)),0.0,0.9999999);
+	gl_FragDepth = depth;
+#else
+	a_buffer_insert_fragment(vec3(gl_FragCoord.xy, depth), color);
 #endif
 }

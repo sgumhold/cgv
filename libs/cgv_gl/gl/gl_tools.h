@@ -107,6 +107,22 @@ extern CGV_API bool complete_program_form_render_to_texture3D(cgv::render::conte
 	\c gl_FragData[] array. All target textures must have the same resolution. */
 extern CGV_API bool render_to_texture3D(context& ctx, shader_program& prog, TextureSampling texture_sampling, texture& target_tex, texture* target_tex2 = 0, texture* target_tex3 = 0, texture* target_tex4 = 0);
 
+/// different program interfaces
+enum ProgramInterface {
+	PI_UNIFORM,
+	PI_UNIFORM_BLOCK,
+	PI_PROGRAM_INPUT,
+	PI_PROGRAM_OUTPUT,
+	PI_VERTEX_SUBROUTINE, PI_TESS_CONTROL_SUBROUTINE, PI_TESS_EVALUATION_SUBROUTINE, PI_GEOMETRY_SUBROUTINE, PI_FRAGMENT_SUBROUTINE, PI_COMPUTE_SUBROUTINE,
+	PI_VERTEX_SUBROUTINE_UNIFORM, PI_TESS_CONTROL_SUBROUTINE_UNIFORM, PI_TESS_EVALUATION_SUBROUTINE_UNIFORM, PI_GEOMETRY_SUBROUTINE_UNIFORM, PI_FRAGMENT_SUBROUTINE_UNIFORM, PI_COMPUTE_SUBROUTINE_UNIFORM,
+	PI_TRANSFORM_FEEDBACK_VARYING,
+	PI_BUFFER_VARIABLE,
+	PI_SHADER_STORAGE_BLOCK
+};
+/// print program resources for given interface
+extern CGV_API void print_program_ressources(shader_program& prog, const std::string& interface_name, ProgramInterface prog_intf);
+
+
 		}
 	}
 }

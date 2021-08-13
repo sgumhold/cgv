@@ -55,16 +55,10 @@ namespace cgv {
 		{
 			position_is_center = _position_is_center;
 		}
-		bool box_renderer::init(cgv::render::context& ctx)
+		/// build box program
+		bool box_renderer::build_shader_program(context& ctx, shader_program& prog, const shader_define_map& defines)
 		{
-			bool res = renderer::init(ctx);
-			if (!ref_prog().is_created()) {
-				if (!ref_prog().build_program(ctx, "box.glpr", true)) {
-					std::cerr << "ERROR in box_renderer::init() ... could not build program box.glpr" << std::endl;
-					return false;
-				}
-			}
-			return res;
+			return prog.build_program(ctx, "box.glpr", true, defines);
 		}
 		/// 
 		bool box_renderer::enable(context& ctx)

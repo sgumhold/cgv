@@ -31,7 +31,6 @@ namespace cgv {
 
 		volume_renderer::volume_renderer()
 		{
-			shader_defines = shader_define_map();
 			volume_texture = nullptr;
 			volume_texture_size = vec3(1.0f);
 		}
@@ -44,14 +43,21 @@ namespace cgv {
 			res = res && (volume_texture != nullptr);
 			return res;
 		}
-
+		bool volume_renderer::build_shader_program(context& ctx, shader_program& prog, const shader_define_map& defines)
+		{
+			return prog.build_program(ctx, "volume.glpr", true, defines);
+		}
+		void volume_renderer::update_defines(shader_define_map& defines)
+		{
+			const volume_render_style& vrs = get_style<volume_render_style>();
+			if (vrs.interpolation_mode != IP_NEAREST)
+				defines["INTERPOLATION_MODE"] = std::to_string((int)vrs.interpolation_mode);
+			else
+				defines.erase("INTERPOLATION_MODE");
+		}
 		bool volume_renderer::init(cgv::render::context& ctx)
 		{
 			bool res = renderer::init(ctx);
-			if (!ref_prog().is_created()) {
-				res = res && build_shader(ctx, build_define_map());
-			}
-
 			res = res && aa_manager.init(ctx);
 			enable_attribute_array_manager(ctx, aa_manager);
 
@@ -73,7 +79,6 @@ namespace cgv {
 				vec3(1.0f, 1.0f, 1.0f)
 			};
 			set_position_array(ctx, vertices);
-
 			return res;
 		}
 
@@ -93,41 +98,9 @@ namespace cgv {
 		{
 			eye_position = _eye_position;
 		}
-
-		shader_define_map volume_renderer::build_define_map()
-		{
-			const volume_render_style& vrs = get_style<volume_render_style>();
-
-			shader_define_map defines;
-			defines["INTERPOLATION_MODE"] = std::to_string((int)vrs.interpolation_mode);
-			return defines;
-		}
-
-		bool volume_renderer::build_shader(context& ctx, const shader_define_map& defines)
-		{
-			shader_defines = defines;
-			if(ref_prog().is_created())
-				ref_prog().destruct(ctx);
-
-			if(!ref_prog().is_created()) {
-				if(!ref_prog().build_program(ctx, "volume.glpr", true, defines)) {
-					std::cerr << "ERROR in volume_renderer::init() ... could not build program volume.glpr" << std::endl;
-					return false;
-				}
-			}
-			return true;
-		}
-
 		bool volume_renderer::enable(context& ctx)
 		{
 			const volume_render_style& vrs = get_style<volume_render_style>();
-
-			shader_define_map defines = build_define_map();
-			if(defines != shader_defines) {
-				if(!build_shader(ctx, defines))
-					return false;
-			}
-
 			if (!renderer::enable(ctx))
 				return false;
 			ref_prog().set_uniform(ctx, "volume_tex", 0);

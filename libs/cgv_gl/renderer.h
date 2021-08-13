@@ -192,6 +192,10 @@ namespace cgv { // @<
 			shader_program prog;
 			/// shader program
 			shader_program* prog_ptr;
+			/// shader define maps
+			shader_define_map defines;
+			/// last shader define maps
+			shader_define_map last_defines;
 			/// otherwise keep track of enabled arrays
 			std::set<int> enabled_attribute_arrays;
 			/// default render style
@@ -221,10 +225,16 @@ namespace cgv { // @<
 			const render_style* get_style_ptr() const;
 			/// return whether attributes persist after a call to disable
 			bool attributes_persist() const { return has_aam(); }
+			/// overload to update the shader defines based on the current render style; only called if internal shader program is used
+			virtual void update_defines(shader_define_map& defines) {}
+			/// overload to build shader program based on the passed defines
+			virtual bool build_shader_program(context& ctx, shader_program& prog, const shader_define_map& defines) { return false; }
 		public:
+			/// access to shader define map to update defines not handled by render style
+			shader_define_map& ref_defines() { return defines; }
 			/// derived renderer classes have access to shader program
 			shader_program& ref_prog() { return *prog_ptr; }
-			/// set external shader program up to next call to the disable() function, which is also called by the render() function
+			/// set external shader program up to next call to disable() or render()
 			void set_prog(shader_program& one_shot_prog);
 		protected:
 			/// access to style
@@ -288,7 +298,10 @@ namespace cgv { // @<
 				virtual void set_attribute_array_manager(const context& ctx, attribute_array_manager* _aam_ptr = 0);
 			/// reference given render style
 			void set_render_style(const render_style& rs);
-			/// abstract initialize method creates default render style, derived renderers to load the shader program
+			//! call init() once before using renderer
+			/*! creates default render style and builds shader program based on defines that can be
+			    configured with ref_defines() before calling init(). Reconfiguring defines after init() causes
+				rebuild of shader program in enable() function. */
 			virtual bool init(context& ctx);
 			/// templated method to set the position attribute from a single position of type T
 			template <typename T>
@@ -404,7 +417,9 @@ namespace cgv { // @<
 			virtual bool validate_attributes(const context& ctx) const;
 			/// validate attributes and if successful, enable renderer
 			bool validate_and_enable(context& ctx);
-			/// enable renderer
+			//! enables renderer
+			/*! if internal program is used, first update defines with update_defines() and rebuild 
+			    program if it changed due updating or external modification via ref_defines()*/
 			virtual bool enable(context& ctx);
 			//! Draw a range of vertices or indexed elements.
 			/*! Call this function only successful enabeling via validate_and_enable() or enable().

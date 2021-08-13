@@ -53,18 +53,10 @@ namespace cgv {
 		{
 			y_view_angle = _y_view_angle;
 		}
-		bool sphere_renderer::init(context& ctx)
+		bool sphere_renderer::build_shader_program(context& ctx, shader_program& prog, const shader_define_map& defines)
 		{
-			bool res = surface_renderer::init(ctx);
-			if (!ref_prog().is_created()) {
-				if (!ref_prog().build_program(ctx, "sphere.glpr", true)) {
-					std::cerr << "ERROR in sphere_renderer::init() ... could not build program sphere.glpr" << std::endl;
-					return false;
-				}
-			}
-			return res;
+			return prog.build_program(ctx, "sphere.glpr", true, defines);
 		}
-		
 		bool sphere_renderer::validate_attributes(const context& ctx) const
 		{
 			const sphere_render_style& srs = get_style<sphere_render_style>();

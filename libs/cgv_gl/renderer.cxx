@@ -198,11 +198,18 @@ namespace cgv {
 				if (!aam_ptr)
 					aam_ptr = &default_aam;
 			}
-			if (!default_render_style) {
+			if (!default_render_style)
 				default_render_style = create_render_style();
-			}
+
 			if (!rs)
 				rs = default_render_style;
+
+			if (prog_ptr == &prog) {
+				update_defines(defines);
+				if (!build_shader_program(ctx, prog, defines))
+					return false;
+				last_defines = defines;
+			}
 			return default_render_style != 0;
 		}
 
@@ -216,6 +223,16 @@ namespace cgv {
 
 		bool renderer::enable(context& ctx)
 		{
+			if (prog_ptr == &prog) {
+				update_defines(defines);
+				if (defines != last_defines) {
+					if (prog.is_created())
+						prog.destruct(ctx);
+					if (!build_shader_program(ctx, prog, defines))
+						return false;
+				}
+				last_defines = defines;
+			}
 			bool res = ref_prog().enable(ctx);
 			if (aam_ptr)
 				res = aam_ptr->enable(ctx);

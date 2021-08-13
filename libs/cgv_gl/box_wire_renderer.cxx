@@ -57,17 +57,10 @@ namespace cgv {
 			position_is_center = _position_is_center;
 		}
 
-
-		bool box_wire_renderer::init(context& ctx)
+		/// build box wire program
+		bool box_wire_renderer::build_shader_program(context& ctx, shader_program& prog, const shader_define_map& defines)
 		{
-			bool res = renderer::init(ctx);
-			if (!ref_prog().is_created()) {
-				if (!ref_prog().build_program(ctx, "box_wire.glpr", true)) {
-					std::cerr << "ERROR in box_wire_renderer::init() ... could not build program box_wire.glpr" << std::endl;
-					return false;
-				}
-			}
-			return res;
+			return prog.build_program(ctx, "box_wire.glpr", true, defines);
 		}
 		/// 
 		bool box_wire_renderer::enable(context& ctx)

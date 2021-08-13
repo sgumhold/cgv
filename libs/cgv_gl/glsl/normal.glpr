@@ -5,3 +5,4 @@ geometry_shader_info:points;line_strip;2
 geometry_file:normal.glgs
 fragment_file:default.glfs
 fragment_file:fragment.glfs
+fragment_file:a_buffer_lib.glfs

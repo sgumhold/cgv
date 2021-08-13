@@ -33,11 +33,13 @@ class a_buffer_test :
 	public provider
 {
 protected:
-	bool animate;
-	bool use_a_buffer;
-	int time_step;
-	size_t nr_time_steps;
+	// rendering configuration
+	bool use_a_buffer_for_triangles;
+	bool use_a_buffer_for_spheres;
+	bool show_triangles;
+	bool show_spheres;
 
+	// triangle geometry
 	struct Vertex {
 		vec3 p;
 		rgba c;
@@ -45,21 +47,25 @@ protected:
 	};
 	std::vector<Vertex> V;
 
+	// sphere geometry
 	std::vector<vec4> S;
-	std::vector<rgb> C;
+	std::vector<rgba> C;
+
+	// render objects
+	shader_define_map triangle_defines;
+
+	vertex_buffer triangle_vbo;
+	attribute_array_binding triangle_aab;
+	shader_program triangle_prog;
 
 	sphere_render_style srs;
-	bool show_spheres;
+	attribute_array_manager sphere_aam;
+	sphere_renderer sr;
 
-	shader_program surface_prog;
-	shader_define_map defines;
-	
+	// a buffer instance
 	a_buffer a_b;
 	size_t node_cnt;
-	vertex_buffer vbo;
-	attribute_array_binding a_buffer_aab;
-	attribute_array_binding aab;
-	attribute_array_manager aam;
+	float fullness;
 
 	void create_triangles(size_t count, float delta)
 	{
@@ -85,37 +91,32 @@ protected:
 		std::uniform_real_distribution<float> d(-1.0f, 1.0f);
 		for (size_t i = 0; i < count; ++i) {
 			vec4 s(d(e), d(e), d(e), radius * (d(e) + 1.5f));
-			rgba c(0.5f * d(e) + 0.5f, 0.25f * d(e) + 0.5f, 0.25f * d(e) + 0.5f);
+			rgba c(0.5f * d(e) + 0.5f, 0.25f * d(e) + 0.5f, 0.25f * d(e) + 0.5f, 0.25f * d(e) + 0.65f);
 			S.push_back(s);
 			C.push_back(c);
 		}
 	}
-	shader_define_map build_defines()
+	shader_define_map build_defines(bool use_a_buffer)
 	{
 		shader_define_map defines;
-		defines["USE_A_BUFFER"] = use_a_buffer ? "1" : "0";
+		if (use_a_buffer) {
+			defines["USE_A_BUFFER"] = "1";
+			a_b.update_defines(defines);
+		}
 		return defines;
 	}
 
 public:
-	a_buffer_test()
+	a_buffer_test() : a_b(32, 64)
 	{
 		set_name("a_buffer_test");
-		animate = false;
-		time_step = 0;
-		nr_time_steps = 20;
 		node_cnt = 0;
-		use_a_buffer = true;
+		fullness = 0;
+		show_triangles = true;
+		use_a_buffer_for_triangles = true;
 		show_spheres = true;
+		use_a_buffer_for_spheres = true;
 		srs.map_color_to_material = CM_COLOR_AND_OPACITY;
-		connect(get_animation_trigger().shoot, this, &a_buffer_test::timer_event);
-	}
-	void timer_event(double, double)
-	{
-		if (!animate)
-			return;
-		++nr_time_steps;
-		on_set(&time_step);
 	}
 	void on_set(void* member_ptr)
 	{
@@ -126,56 +127,77 @@ public:
 	void create_gui()
 	{
 		add_decorator("a_buffer", "heading", "level=1");
+		add_member_control(this, "fragments_per_pixel", a_b.fragments_per_pixel, "value_slider", "min=1;max=64;log=true;ticks=true");
+		add_member_control(this, "nodes_per_pixel", a_b.nodes_per_pixel, "value_slider", "min=1;max=64;log=true;ticks=true");
 		add_view("node_cnt", node_cnt);
-		add_member_control(this, "use_a_buffer", use_a_buffer, "check");
-		add_member_control(this, "show_spheres", show_spheres, "check");
-		add_member_control(this, "time_step", time_step, "value_slider", "min=0;ticks=true")->set("max", nr_time_steps - 1);
+		add_view("fullness", fullness);
+		add_decorator("internal", "heading", "level=2");
+		add_member_control(this, "depth_tex_unit", a_b.ref_depth_tex_unit(), "value_slider", "min=0;max=7;ticks=true");
+		add_member_control(this, "node_counter_binding_point", a_b.ref_node_counter_binding_point(), "value_slider", "min=0;max=7;ticks=true");
+		add_member_control(this, "head_pointers_binding_point", a_b.ref_head_pointers_binding_point(), "value_slider", "min=0;max=7;ticks=true");
+		add_member_control(this, "nodes_binding_point", a_b.ref_nodes_binding_point(), "value_slider", "min=0;max=7;ticks=true");
+		add_decorator("render config", "heading", "level=1");
+		add_member_control(this, "show_triangles", show_triangles, "check", "shortcut='T'");
+		add_member_control(this, "use_a_buffer_for_triangles", use_a_buffer_for_triangles, "check", "shortcut='A'");
+		add_member_control(this, "show_spheres", show_spheres, "check", "shortcut='S'");
+		add_member_control(this, "use_a_buffer_for_spheres", use_a_buffer_for_spheres, "check", "shortcut='B'");
+		add_decorator("sphere style", "heading", "level=1");
+		add_gui("sphere style", srs);
 	}
 	bool init(context& ctx)
 	{
-		defines = build_defines();
+		// init the a buffer
 		if (!a_b.init(ctx))
 			return false;
-		if (!surface_prog.build_program(ctx, "a_buffer_surface.glpr", true, defines))
+		// construct triangle defines
+		triangle_defines = build_defines(use_a_buffer_for_triangles);	
+		// and provide them to build program function
+		if (!triangle_prog.build_program(ctx, "default_surface.glpr", true, triangle_defines))
 			return false;
 		create_triangles(200, 0.8f);
+		triangle_vbo.create(ctx, V);
+		triangle_aab.create(ctx);
+		triangle_aab.set_attribute_array(ctx, triangle_prog.get_position_index(), get_element_type(V.front().p), triangle_vbo, 0, V.size(), sizeof(Vertex));
+		triangle_aab.set_attribute_array(ctx, triangle_prog.get_color_index(), get_element_type(V.front().c), triangle_vbo, offsetof(Vertex, c), V.size(), sizeof(Vertex));
+		triangle_aab.set_attribute_array(ctx, triangle_prog.get_normal_index(), get_element_type(V.front().n), triangle_vbo, offsetof(Vertex, n), V.size(), sizeof(Vertex));
+
 		create_spheres(60, 0.2f);
-
-		vbo.create(ctx, V);
-		shader_program& prog = ctx.ref_surface_shader_program();
-		aab.create(ctx);
-		aab.set_attribute_array(ctx, prog.get_position_index(), get_element_type(V.front().p), vbo, 0, V.size(), sizeof(Vertex));
-		aab.set_attribute_array(ctx, prog.get_color_index(), get_element_type(V.front().c), vbo, offsetof(Vertex, c), V.size(), sizeof(Vertex));
-		aab.set_attribute_array(ctx, prog.get_normal_index(), get_element_type(V.front().n), vbo, offsetof(Vertex, n), V.size(), sizeof(Vertex));
-
-		a_buffer_aab.create(ctx);
-		a_buffer_aab.set_attribute_array(ctx, surface_prog.get_position_index(), get_element_type(V.front().p), vbo, 0, V.size(), sizeof(Vertex));
-		a_buffer_aab.set_attribute_array(ctx, surface_prog.get_color_index(), get_element_type(V.front().c), vbo, offsetof(Vertex, c), V.size(), sizeof(Vertex));
-		a_buffer_aab.set_attribute_array(ctx, surface_prog.get_normal_index(), get_element_type(V.front().n), vbo, offsetof(Vertex, n), V.size(), sizeof(Vertex));
-
-		aam.init(ctx);
-		auto& sr = ref_sphere_renderer(ctx, 1);
-		sr.enable_attribute_array_manager(ctx, aam);
+		// configure defines before init
+		sr.ref_defines() = build_defines(use_a_buffer_for_spheres);
+		sr.init(ctx);
+		sr.set_render_style(srs);
+		sphere_aam.init(ctx);
+		sr.enable_attribute_array_manager(ctx, sphere_aam);
 		sr.set_sphere_array(ctx, S);
 		sr.set_color_array(ctx, C);
-		sr.disable_attribute_array_manager(ctx, aam);
 		return true;
 	}
 	void destruct(context& ctx)
 	{
-		ref_sphere_renderer(ctx, -1);
+		triangle_vbo.destruct(ctx);
+		triangle_aab.destruct(ctx);
+		triangle_prog.destruct(ctx);
+
+		sr.disable_attribute_array_manager(ctx, sphere_aam);
+		sr.clear(ctx);
+		sphere_aam.destruct(ctx);
+
 		a_b.destruct(ctx);
 	}
 	void init_frame(context& ctx)
 	{
-		shader_define_map new_defines = build_defines();
-		if (new_defines != defines) {
-			defines = new_defines;
-			if (surface_prog.is_created())
-				surface_prog.destruct(ctx);
-			surface_prog.build_program(ctx, "a_buffer_surface.glpr", true, defines);
+		// rebuild triangle program if defines changes
+		shader_define_map new_triangle_defines = build_defines(use_a_buffer_for_triangles);
+		if (new_triangle_defines != triangle_defines) {
+			triangle_defines = new_triangle_defines;
+			if (triangle_prog.is_created())
+				triangle_prog.destruct(ctx);
+			triangle_prog.build_program(ctx, "default_surface.glpr", true, triangle_defines);
 		}
-		if (use_a_buffer)
+		// update defines for sphere renderer
+		sr.ref_defines() = build_defines(use_a_buffer_for_spheres);
+		// init frame for a buffer
+		if (use_a_buffer_for_triangles || use_a_buffer_for_spheres)
 			a_b.init_frame(ctx);
 	}
 	void draw_triangles(context& ctx, shader_program& prog, attribute_array_binding& aab)
@@ -194,30 +216,32 @@ public:
 	}
 	void draw(context& ctx)
 	{
-		if (show_spheres) {
-			// draw opaque spheres
-			auto& sr = ref_sphere_renderer(ctx);
-			sr.set_render_style(srs);
-			sr.enable_attribute_array_manager(ctx, aam);
+		if (show_triangles && !use_a_buffer_for_triangles)
+			draw_triangles(ctx, triangle_prog, triangle_aab);
+		if (show_spheres && !use_a_buffer_for_spheres)
 			sr.render(ctx, 0, S.size());
-			sr.disable_attribute_array_manager(ctx, aam);
-		}
 	}
 	void finish_frame(context& ctx)
 	{
-		if (use_a_buffer) {
-			a_b.enable(ctx, surface_prog);
-			draw_triangles(ctx, surface_prog, a_buffer_aab);
+		if (!(show_triangles && use_a_buffer_for_triangles) && !(show_spheres && use_a_buffer_for_spheres))
+			return;
+		if (show_triangles && use_a_buffer_for_triangles) {
+			a_b.enable(ctx, triangle_prog);
+			draw_triangles(ctx, triangle_prog, triangle_aab);
 			node_cnt = a_b.disable(ctx);
-			update_member(&node_cnt);
-			a_b.finish_frame(ctx);
 		}
-		else {
-			glEnable(GL_BLEND);
-			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-			draw_triangles(ctx, ctx.ref_surface_shader_program(), aab);
-			glDisable(GL_BLEND);
+		if (show_spheres && use_a_buffer_for_spheres) {
+			if (sr.enable(ctx)) {
+				a_b.enable(ctx, sr.ref_prog());
+				sr.draw(ctx, 0, S.size());
+				node_cnt = a_b.disable(ctx);
+				sr.disable(ctx);
+			}
 		}
+		a_b.finish_frame(ctx);
+		update_member(&node_cnt);
+		fullness = float(node_cnt) / (ctx.get_width() * ctx.get_height() * a_b.nodes_per_pixel);
+		update_member(&fullness);
 	}
 };
 

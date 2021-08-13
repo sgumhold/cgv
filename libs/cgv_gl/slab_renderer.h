@@ -69,6 +69,8 @@ namespace cgv { // @<
 			bool has_thicknesses;
 			/// overload to allow instantiation of box_renderer
 			render_style* create_render_style() const;
+			/// build slab program
+			bool build_shader_program(context& ctx, shader_program& prog, const shader_define_map& defines);
 		public:
 			/// initializes position_is_center to true 
 			slab_renderer();
@@ -78,8 +80,6 @@ namespace cgv { // @<
 			void disable_attribute_array_manager(const context& ctx, attribute_array_manager& aam);
 			/// set the flag, whether the position is interpreted as the slab center, true by default
 			void set_position_is_center(bool _position_is_center);
-			/// construct shader programs and return whether this was successful, call inside of init method of drawable
-			bool init(context& ctx);
 			/// 
 			bool enable(context& ctx);
 			/// specify a single extent for all slabs

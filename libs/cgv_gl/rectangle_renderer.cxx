@@ -79,16 +79,15 @@ namespace cgv {
 			ref_prog().set_attribute(ctx, ref_prog().get_attribute_location(ctx, "extent"), tcr.rectangle.get_max_pnt());
 			ref_prog().set_attribute(ctx, ref_prog().get_texcoord_index(), tcr.texcoords);
 		}
+		/// build rectangle program
+		bool rectangle_renderer::build_shader_program(context& ctx, shader_program& prog, const shader_define_map& defines)
+		{
+			return prog.build_program(ctx, "rectangle.glpr", true, defines);
+		}
 
 		bool rectangle_renderer::init(context& ctx)
 		{
 			bool res = renderer::init(ctx);
-			if (!ref_prog().is_created()) {
-				if (!ref_prog().build_program(ctx, "rectangle.glpr", true)) {
-					std::cerr << "ERROR in rectangle_renderer::init() ... could not build program plane.glpr" << std::endl;
-					return false;
-				}
-			}
 			ref_prog().set_attribute(ctx, "depth_offset", 0.0f);
 			return res;
 		}

@@ -16,6 +16,7 @@ in POINT_FS {
 //***** begin interface of fragment.glfs ***********************************
 uniform float gamma = 2.2;
 void finish_fragment(vec4 color);
+void finish_fragment(vec4 color, float depth);
 //***** end interface of fragment.glfs ***********************************
 
 
@@ -37,6 +38,5 @@ void main()
 	finish_fragment(compute_blended_color_with_halo(
 		percentual_radial_position, fi.color, fi.percentual_core_size,
 		vec4(mix(fi.color.rgb, fi.halo_color.rgb,halo_color_strength), fi.halo_color.a), fi.percentual_point_size, fi.percentual_blend_width
-	));
-	gl_FragDepth = gl_FragCoord.z+fi.depth_offset;
+	), gl_FragCoord.z+fi.depth_offset);
 }

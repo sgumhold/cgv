@@ -37,6 +37,8 @@ namespace cgv { // @<
 
 			/// overload to allow instantiation of spline_tube_renderer
 			render_style* create_render_style() const;
+			/// build spline tube program
+			bool build_shader_program(context& ctx, shader_program& prog, const shader_define_map& defines);
 		public:
 
 
@@ -49,8 +51,6 @@ namespace cgv { // @<
 			void enable_attribute_array_manager(const context& ctx, attribute_array_manager& aam);
 			/// call this after last render/draw call to ensure that no other users of renderer change attribute arrays of given manager
 			void disable_attribute_array_manager(const context& ctx, attribute_array_manager& aam);
-			/// construct shader programs and return whether this was successful, call inside of init method of drawable
-			bool init(context& ctx);
 			///
 			template <typename T = float>
 			void set_radius_array(const context& ctx, const std::vector<T>& radii) { has_radii = true; set_attribute_array(ctx, ref_prog().get_attribute_location(ctx, "radius"), radii); }

@@ -30,6 +30,7 @@ in RECTANGLE_FS {
 //***** begin interface of fragment.glfs ***********************************
 uniform float gamma = 2.2;
 void finish_fragment(vec4 color);
+void finish_fragment(vec4 color, float depth);
 //***** end interface of fragment.glfs ***********************************
 
 //***** begin interface of surface.glsl ***********************************
@@ -97,6 +98,5 @@ void main()
 
 	// illumination
 	color = compute_reflected_appearance(fi.position_eye, normalize(fi.normal_eye), color, fi.side);
-	finish_fragment(color);
-	gl_FragDepth = gl_FragCoord.z+fi.depth_offset;
+	finish_fragment(color, gl_FragCoord.z+fi.depth_offset);
 }
