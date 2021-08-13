@@ -2,11 +2,6 @@
 #include <cgv/signal/rebind.h>
 #include <cgv/base/register.h>
 #include <cgv/gui/provider.h>
-#include <cgv/gui/trigger.h>
-#include <cgv/gui/file_dialog.h>
-#include <cgv/utils/file.h>
-#include <cgv/utils/scan.h>
-#include <cgv/utils/tokenizer.h>
 #include <cgv/render/drawable.h>
 #include <cgv/render/shader_program.h>
 #include <cgv/render/vertex_buffer.h>
@@ -15,10 +10,7 @@
 #include <cgv_gl/gl/gl.h>
 #include <cgv_gl/sphere_renderer.h>
 #include <cgv_gl/a_buffer.h>
-#include <string>
-#include <fstream>
 #include <random>
-#include <cgv/utils/stopwatch.h>
 
 using namespace cgv::base;
 using namespace cgv::signal;
