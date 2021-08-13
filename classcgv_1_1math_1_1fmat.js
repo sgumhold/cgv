@@ -66,6 +66,7 @@ var classcgv_1_1math_1_1fmat =
     [ "set", "classcgv_1_1math_1_1fmat.html#abd1455b91a56873d3297cd942e27386e", null ],
     [ "set_col", "classcgv_1_1math_1_1fmat.html#a61dc8be04288445175a30b15864121c7", null ],
     [ "set_row", "classcgv_1_1math_1_1fmat.html#ac8d7fd7f3ce8ec07957a19a05b27e69a", null ],
+    [ "sign", "classcgv_1_1math_1_1fmat.html#a4e8ab8f759404ce077e80a9fd47f370d", null ],
     [ "size", "classcgv_1_1math_1_1fmat.html#afea901268f6ba41a98e59d08b417f024", null ],
     [ "sqr_length", "classcgv_1_1math_1_1fmat.html#a5cd801220df833f820048962abe40d89", null ],
     [ "to_vec", "classcgv_1_1math_1_1fmat.html#a9e07f200dccec2bf7decb19bae51080f", null ],

@@ -1,5 +1,8 @@
 var NAVTREEINDEX37 =
 {
+"structcgv_1_1gui_1_1control__provider.html":[11,0,0,2,7],
+"structcgv_1_1gui_1_1control__provider.html#a161d55666be9921d8b8c26489f3219c9":[11,0,0,2,7,2],
+"structcgv_1_1gui_1_1control__provider.html#ad10eeb6479c8d0b149fa29f585bfddcf":[11,0,0,2,7,0],
 "structcgv_1_1gui_1_1control__provider.html#afb380b9d79e3b74ecd85f821874d81d1":[11,0,0,2,7,1],
 "structcgv_1_1gui_1_1gui__creator.html":[11,0,0,2,14],
 "structcgv_1_1gui_1_1gui__creator.html#a21ba9a35036ae6f60d5d9e1e577e0465":[11,0,0,2,14,0],
@@ -246,8 +249,5 @@ var NAVTREEINDEX37 =
 "structcgv_1_1media_1_1mesh_1_1cell__info.html":[11,0,0,4,3,1],
 "structcgv_1_1media_1_1mesh_1_1convex__polyhedron_1_1vertex__type.html":[11,0,0,4,3,2,0],
 "structcgv_1_1media_1_1mesh_1_1dc__slice__info.html":[11,0,0,4,3,4],
-"structcgv_1_1media_1_1mesh_1_1dc__slice__info.html#a9cb40cef3bb5dd7a1677a624977cbd44":[11,0,0,4,3,4,0],
-"structcgv_1_1media_1_1mesh_1_1face__info.html":[11,0,0,4,3,6],
-"structcgv_1_1media_1_1mesh_1_1face__info.html#a2d06eb6303ec537bce4f735d04fd44c2":[11,0,0,4,3,6,4],
-"structcgv_1_1media_1_1mesh_1_1face__info.html#a2fc6a42ac79588c4c01918a870e3696e":[11,0,0,4,3,6,2]
+"structcgv_1_1media_1_1mesh_1_1dc__slice__info.html#a9cb40cef3bb5dd7a1677a624977cbd44":[11,0,0,4,3,4,0]
 };
