@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['a_5fbuffer_4',['a_buffer',['../classcgv_1_1render_1_1a__buffer.html',1,'cgv::render::a_buffer'],['../classcgv_1_1render_1_1a__buffer.html#ad65b22bfb634db96f5025a9d7f497c35',1,'cgv::render::a_buffer::a_buffer()']]],
+  ['a_5fbuffer_4',['a_buffer',['../classcgv_1_1render_1_1a__buffer.html',1,'cgv::render::a_buffer'],['../classcgv_1_1render_1_1a__buffer.html#a24f8cfb9af8acbb02f52735dc409e160',1,'cgv::render::a_buffer::a_buffer()']]],
   ['aab_5',['aab',['../classcgv_1_1render_1_1attribute__array__manager.html#aada2b020a230d0392294576224148e27',1,'cgv::render::attribute_array_manager']]],
   ['aab_5flegend_6',['aab_legend',['../classcgv_1_1plot_1_1plot__base.html#a921ba3f5165eadab9c23b10a19783f9e',1,'cgv::plot::plot_base']]],
   ['aam_5fdomain_7',['aam_domain',['../classcgv_1_1plot_1_1plot2d.html#a4e42d5e540839187533376d29cdf91da',1,'cgv::plot::plot2d']]],
