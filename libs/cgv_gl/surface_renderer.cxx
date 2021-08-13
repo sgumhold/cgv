@@ -157,7 +157,7 @@ namespace cgv {
 					return false;
 				cgv::render::surface_render_style* srs_ptr = reinterpret_cast<cgv::render::surface_render_style*>(value_ptr);
 				cgv::base::base* b = dynamic_cast<cgv::base::base*>(p);
-				if (p->begin_tree_node("color_mapping", srs_ptr->map_color_to_material)) {
+				if (p->begin_tree_node("color_mapping", srs_ptr->map_color_to_material, false, "level=3")) {
 					p->align("\a");
 					p->add_gui("map_color_to_material", srs_ptr->map_color_to_material, "bit_field_control",
 						"enums='COLOR_FRONT=1,COLOR_BACK=2,OPACITY_FRONT=4,OPACITY_BACK=8'");

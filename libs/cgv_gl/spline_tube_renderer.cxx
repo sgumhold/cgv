@@ -51,19 +51,10 @@ namespace cgv {
 			bool res = surface_renderer::validate_attributes(ctx);
 			return res;
 		}
-		bool spline_tube_renderer::init(cgv::render::context& ctx)
+		bool spline_tube_renderer::build_shader_program(context& ctx, shader_program& prog, const shader_define_map& defines)
 		{
-			bool res = surface_renderer::init(ctx);
-			if(!ref_prog().is_created()) {
-				if(!ref_prog().build_program(ctx, "spline_tube.glpr", true)) {
-					std::cerr << "ERROR in spline_tube_renderer::init() ... could not build program spline_tube.glpr" << std::endl;
-					return false;
-				}
-			}
-			return res;
+			return prog.build_program(ctx, "spline_tube.glpr", true, defines);
 		}
-
-		/// 
 		bool spline_tube_renderer::enable(context& ctx)
 		{
 			const spline_tube_render_style& strs = get_style<spline_tube_render_style>();

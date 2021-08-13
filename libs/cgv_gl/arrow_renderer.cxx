@@ -52,18 +52,9 @@ namespace cgv {
 			position_is_center = false;
 			direction_is_end_point = false;
 		}
-		bool arrow_renderer::init(context& ctx)
+		bool arrow_renderer::build_shader_program(context& ctx, shader_program& prog, const shader_define_map& defines)
 		{
-			bool res = renderer::init(ctx);
-			if (!ref_prog().is_created()) {
-				if (!ref_prog().build_program(ctx, "arrow.glpr", true)) {
-					std::cerr << "ERROR in arrow_renderer::init() ... could not build program arrow.glpr" << std::endl;
-					return false;
-				}
-//				std::vector<std::string> names;
-//				ctx.enumerate_program_attributes(ref_prog(), names, 0, 0, 0, true);
-			}
-			return res;
+			return prog.build_program(ctx, "arrow.glpr", true, defines);
 		}
 
 		bool arrow_renderer::validate_attributes(const context& ctx) const

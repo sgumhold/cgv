@@ -38,6 +38,8 @@ namespace cgv { // @<
 			bool position_is_center;
 			/// overload to allow instantiation of box_wire_renderer
 			render_style* create_render_style() const;
+			/// build box wire program
+			bool build_shader_program(context& ctx, shader_program& prog, const shader_define_map& defines);
 		public:
 			box_wire_renderer();
 			/// call this before setting attribute arrays to manage attribute array in given manager
@@ -46,9 +48,7 @@ namespace cgv { // @<
 			void disable_attribute_array_manager(const context& ctx, attribute_array_manager& aam);
 			/// set the flag, whether the position is interpreted as the box center
 			void set_position_is_center(bool _position_is_center);
-			/// construct shader programs and return whether this was successful, call inside of init method of drawable
-			bool init(context& ctx);
-			/// 
+			/// enable box wire renderer
 			bool enable(context& ctx);
 			/// extent array specifies box extends in case of position_is_center=true, otherwise the maximum point of each box
 			template <typename T>

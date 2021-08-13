@@ -72,19 +72,10 @@ namespace cgv {
 		{
 			y_view_angle = _y_view_angle;
 		}
-
-		bool point_renderer::init(context& ctx)
+		bool point_renderer::build_shader_program(context& ctx, shader_program& prog, const shader_define_map& defines)
 		{
-			bool res = renderer::init(ctx);
-			if (!ref_prog().is_created()) {
-				if (!ref_prog().build_program(ctx, "point.glpr", true)) {
-					std::cerr << "ERROR in point_renderer::init() ... could not build program point.glpr" << std::endl;
-					return false;
-				}
-			}
-			return res;
+			return prog.build_program(ctx, "point.glpr", true, defines);
 		}
-
 		bool point_renderer::validate_attributes(const context& ctx) const
 		{
 			const point_render_style& prs = get_style<point_render_style>();

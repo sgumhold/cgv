@@ -69,6 +69,8 @@ namespace cgv {
 			bool direction_is_end_point;
 			/// overload to allow instantiation of arrow_renderer
 			render_style* create_render_style() const;
+			/// build arrow program
+			bool build_shader_program(context& ctx, shader_program& prog, const shader_define_map& defines);
 		public:
 			///
 			arrow_renderer();
@@ -88,8 +90,6 @@ namespace cgv {
 			/// templated method to set the end_point attribute from an array of end_points of type T, which should have 3 components
 			template <typename T>
 			void set_end_point_array(const context& ctx, const T* end_points, size_t nr_elements, unsigned stride_in_bytes = 0) { has_directions = true; direction_is_end_point = true; set_attribute_array(ctx, ref_prog().get_attribute_location(ctx, "direction"), end_points, nr_elements, stride_in_bytes); }
-			///
-			bool init(context& ctx);
 			///
 			bool validate_attributes(const context& ctx) const;
 			///

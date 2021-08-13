@@ -60,6 +60,10 @@ namespace cgv { // @<
 			shader_define_map shader_defines;
 			/// overload to allow instantiation of rounded_cone_renderer
 			render_style* create_render_style() const;
+			/// update shader defines based on render style
+			void update_defines(shader_define_map& defines);
+			/// build rounded cone program
+			bool build_shader_program(context& ctx, shader_program& prog, const shader_define_map& defines);
 
 			texture* albedo_texture;
 			texture* density_texture;
@@ -71,16 +75,8 @@ namespace cgv { // @<
 			void enable_attribute_array_manager(const context& ctx, attribute_array_manager& aam);
 			/// call this after last render/draw call to ensure that no other users of renderer change attribute arrays of given manager
 			void disable_attribute_array_manager(const context& ctx, attribute_array_manager& aam);
-			/// construct shader programs and return whether this was successful, call inside of init method of drawable
-			bool init(context& ctx);
-
 			bool set_albedo_texture(texture* tex);
 			bool set_density_texture(texture* tex);
-
-			///
-			shader_define_map build_define_map();
-			///
-			bool build_shader(context& ctx, const shader_define_map& defines = shader_define_map());
 			///
 			bool enable(context& ctx);
 			///

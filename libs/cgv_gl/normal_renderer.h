@@ -29,12 +29,14 @@ namespace cgv {
 			float normal_scale;
 			/// overload to allow instantiation of box_wire_renderer
 			render_style* create_render_style() const;
+			/// build normal program
+			bool build_shader_program(context& ctx, shader_program& prog, const shader_define_map& defines);
 			bool validate_attributes(const context& ctx) const;
 		public:
 			normal_renderer();
 			/// the normal scale is multiplied to the normal length of the normal render style
 			void set_normal_scale(float _normal_scale);
-			bool init(context& ctx);
+			/// enable normal renderer
 			bool enable(context& ctx);
 			/// convenience function to render with default settings
 			void draw(context& ctx, size_t start, size_t count,

@@ -66,6 +66,8 @@ namespace cgv { // @<
 			bool has_depth_offsets;
 			/// 
 			render_style* create_render_style() const;
+			/// build line program
+			bool build_shader_program(context& ctx, shader_program& prog, const shader_define_map& defines);
 		public:
 			/// construct line rendering
 			line_renderer();

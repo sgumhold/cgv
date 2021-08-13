@@ -74,13 +74,34 @@ namespace cgv {
 			bool res = surface_renderer::validate_attributes(ctx);
 			return res;
 		}
-		bool rounded_cone_renderer::init(cgv::render::context& ctx)
+		void rounded_cone_renderer::update_defines(shader_define_map& defines)
 		{
-			bool res = renderer::init(ctx);
-			if (!ref_prog().is_created()) {
-				res = res && build_shader(ctx, build_define_map());
-			}
-			return res;
+			const rounded_cone_render_style& rcrs = get_style<rounded_cone_render_style>();
+			if (rcrs.enable_texturing)
+				defines["ENABLE_TEXTURING"] = "1";
+			else
+				defines.erase("ENABLE_TEXTURING");
+			if (rcrs.texture_blend_mode != rounded_cone_render_style::TBM_MIX)
+				defines["TEXTURE_BLEND_MODE"] = std::to_string((unsigned)rcrs.texture_blend_mode);
+			else
+				defines.erase("TEXTURE_BLEND_MODE");
+			if (rcrs.texture_tile_from_center)
+				defines["TEXTURE_TILE_FROM_CENTER"] = "1";
+			else
+				defines.erase("TEXTURE_TILE_FROM_CENTER");
+
+			if (rcrs.texture_use_reference_length)
+				defines["TEXTURE_USE_REFERENCE_LENGTH"] = "1";
+			else
+				defines.erase("TEXTURE_USE_REFERENCE_LENGTH");
+			if (rcrs.enable_ambient_occlusion)
+				defines["ENABLE_AMBIENT_OCCLUSION"] = "1";
+			else
+				defines.erase("ENABLE_AMBIENT_OCCLUSION");
+		}
+		bool rounded_cone_renderer::build_shader_program(context& ctx, shader_program& prog, const shader_define_map& defines)
+		{
+			return prog.build_program(ctx, "rounded_cone.glpr", true, defines);
 		}
 		bool rounded_cone_renderer::set_albedo_texture(texture* tex)
 		{
@@ -96,52 +117,16 @@ namespace cgv {
 			density_texture = tex;
 			return true;
 		}
-
-		shader_define_map rounded_cone_renderer::build_define_map()
-		{
-			const rounded_cone_render_style& rcrs = get_style<rounded_cone_render_style>();
-
-			shader_define_map defines;
-			defines["ENABLE_TEXTURING"] = rcrs.enable_texturing ? "1" : "0";
-			defines["TEXTURE_BLEND_MODE"] = std::to_string((unsigned)rcrs.texture_blend_mode);
-			defines["TEXTURE_TILE_FROM_CENTER"] = rcrs.texture_tile_from_center ? "1" : "0";
-			defines["TEXTURE_USE_REFERENCE_LENGTH"] = rcrs.texture_use_reference_length ? "1" : "0";
-			defines["ENABLE_AMBIENT_OCCLUSION"] = rcrs.enable_ambient_occlusion ? "1" : "0";
-			return defines;
-		}
-
-		bool rounded_cone_renderer::build_shader(context& ctx, const shader_define_map& defines)
-		{
-			shader_defines = defines;
-			if(ref_prog().is_created())
-				ref_prog().destruct(ctx);
-
-			if(!ref_prog().is_created()) {
-				if(!ref_prog().build_program(ctx, "rounded_cone.glpr", true, defines)) {
-					std::cerr << "ERROR in rounded_cone_renderer::init() ... could not build program rounded_cone.glpr" << std::endl;
-					return false;
-				}
-			}
-			return true;
-		}
-
 		/// 
 		bool rounded_cone_renderer::enable(context& ctx)
 		{
-			const rounded_cone_render_style& rcrs = get_style<rounded_cone_render_style>();
-
-			shader_define_map defines = build_define_map();
-			if(defines != shader_defines) {
-				if(!build_shader(ctx, defines))
-					return false;
-			}
-
 			if (!surface_renderer::enable(ctx))
 				return false;
 
 			if(!ref_prog().is_linked())
 				return false;
 
+			const rounded_cone_render_style& rcrs = get_style<rounded_cone_render_style>();
 			if(!has_radii)
 				ref_prog().set_attribute(ctx, "radius", rcrs.radius);
 
