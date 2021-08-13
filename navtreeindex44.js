@@ -1,5 +1,8 @@
 var NAVTREEINDEX44 =
 {
+"structcgv_1_1type_1_1func_1_1drop__pointer_3_01T_01_5_01_4.html":[11,0,0,11,2,7],
+"structcgv_1_1type_1_1func_1_1drop__pointer_3_01T_01_5_01_4.html#afa65e76a2c69cd78768ee0e1f33380c9":[11,0,0,11,2,7,0],
+"structcgv_1_1type_1_1func_1_1drop__ref.html":[11,0,0,11,2,8],
 "structcgv_1_1type_1_1func_1_1drop__ref.html#a95bad19320825640538a1caf3e9b8fb2":[11,0,0,11,2,8,0],
 "structcgv_1_1type_1_1func_1_1drop__ref_3_01T_01_6_01_4.html":[11,0,0,11,2,9],
 "structcgv_1_1type_1_1func_1_1drop__ref_3_01T_01_6_01_4.html#a9b69a1cb2f948f640c1a52398b3b0b87":[11,0,0,11,2,9,0],
@@ -246,8 +249,5 @@ var NAVTREEINDEX44 =
 "volume__renderer_8h_source.html":[12,0,1,2,17],
 "vr__calib_8h_source.html":[12,0,1,1,1],
 "vr__camera_8h.html":[12,0,1,5,2],
-"vr__camera_8h.html#a4d435c9cc7df8e3d66348f2eca4fd18a":[12,0,1,5,2,2],
-"vr__camera_8h.html#a61f728d7ccfe3b3871e6c66d0855aea1":[12,0,1,5,2,3],
-"vr__camera_8h.html#aa7ff189a9f487df57ab41daf2a8b5214":[12,0,1,5,2,1],
-"vr__camera_8h_source.html":[12,0,1,5,2]
+"vr__camera_8h.html#a4d435c9cc7df8e3d66348f2eca4fd18a":[12,0,1,5,2,2]
 };

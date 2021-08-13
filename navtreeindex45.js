@@ -1,5 +1,8 @@
 var NAVTREEINDEX45 =
 {
+"vr__camera_8h.html#a61f728d7ccfe3b3871e6c66d0855aea1":[12,0,1,5,2,3],
+"vr__camera_8h.html#aa7ff189a9f487df57ab41daf2a8b5214":[12,0,1,5,2,1],
+"vr__camera_8h_source.html":[12,0,1,5,2],
 "vr__driver_8h.html":[12,0,1,5,3],
 "vr__driver_8h.html#a3420569d66aab89ad53aa8ee86f76733":[12,0,1,5,3,4],
 "vr__driver_8h.html#a47b17f79c10c7253e14cefa9de1e018e":[12,0,1,5,3,9],

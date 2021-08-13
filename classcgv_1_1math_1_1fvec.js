@@ -50,6 +50,7 @@ var classcgv_1_1math_1_1fvec =
     [ "set", "classcgv_1_1math_1_1fvec.html#ac1352402a484b3bbc14bf220fc1ae740", null ],
     [ "set", "classcgv_1_1math_1_1fvec.html#a655d751227845c3147ab4c2eab42f6af", null ],
     [ "set", "classcgv_1_1math_1_1fvec.html#abd1455b91a56873d3297cd942e27386e", null ],
+    [ "sign", "classcgv_1_1math_1_1fvec.html#a4e8ab8f759404ce077e80a9fd47f370d", null ],
     [ "size", "classcgv_1_1math_1_1fvec.html#afea901268f6ba41a98e59d08b417f024", null ],
     [ "sqr_length", "classcgv_1_1math_1_1fvec.html#a5cd801220df833f820048962abe40d89", null ],
     [ "to_vec", "classcgv_1_1math_1_1fvec.html#a9e07f200dccec2bf7decb19bae51080f", null ],
