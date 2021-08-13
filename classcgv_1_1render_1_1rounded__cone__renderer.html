@@ -269,10 +269,6 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1rounded__cone__renderer.html#a3ec70972893aec5c871d2c9599565675">disable_attribute_array_manager</a> (const <a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx, <a class="el" href="classcgv_1_1render_1_1attribute__array__manager.html">attribute_array_manager</a> &amp;aam)</td></tr>
 <tr class="memdesc:a3ec70972893aec5c871d2c9599565675"><td class="mdescLeft">&#160;</td><td class="mdescRight">call this after last render/draw call to ensure that no other users of renderer change attribute arrays of given manager <br /></td></tr>
 <tr class="separator:a3ec70972893aec5c871d2c9599565675"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a42f03c5303aa80751fa8b633f6373610"><td class="memItemLeft" align="right" valign="top"><a id="a42f03c5303aa80751fa8b633f6373610"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1rounded__cone__renderer.html#a42f03c5303aa80751fa8b633f6373610">init</a> (<a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx)</td></tr>
-<tr class="memdesc:a42f03c5303aa80751fa8b633f6373610"><td class="mdescLeft">&#160;</td><td class="mdescRight">construct shader programs and return whether this was successful, call inside of init method of drawable <br /></td></tr>
-<tr class="separator:a42f03c5303aa80751fa8b633f6373610"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0f0c770ccc0eea04735a5532b8b662fa"><td class="memItemLeft" align="right" valign="top"><a id="a0f0c770ccc0eea04735a5532b8b662fa"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1rounded__cone__renderer.html#a0f0c770ccc0eea04735a5532b8b662fa">enable</a> (<a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx)</td></tr>
 <tr class="memdesc:a0f0c770ccc0eea04735a5532b8b662fa"><td class="mdescLeft">&#160;</td><td class="mdescRight">overload to activate group style <br /></td></tr>
@@ -383,12 +379,16 @@ template&lt;typename T &gt; </td></tr>
 <tr class="memitem:a05278277d5068970525f0b7b79f0ea11"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1group__renderer.html#a05278277d5068970525f0b7b79f0ea11">set_group_rotations</a> (const <a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx, const T *group_rotations, size_t nr_elements)</td></tr>
 <tr class="memdesc:a05278277d5068970525f0b7b79f0ea11"><td class="mdescLeft">&#160;</td><td class="mdescRight">template method to set the group rotation from a vector of quaternions of type T, which should have 4 components <br /></td></tr>
 <tr class="separator:a05278277d5068970525f0b7b79f0ea11"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5197e3fceefa155374b62bf32b336b35"><td class="memItemLeft" align="right" valign="top"><a id="a5197e3fceefa155374b62bf32b336b35"></a>
+<a class="el" href="namespacecgv_1_1render.html#a0e875e06326ba0599a1289f0bacdb116">shader_define_map</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1renderer.html#a5197e3fceefa155374b62bf32b336b35">ref_defines</a> ()</td></tr>
+<tr class="memdesc:a5197e3fceefa155374b62bf32b336b35"><td class="mdescLeft">&#160;</td><td class="mdescRight">access to shader define map to update defines not handled by render style <br /></td></tr>
+<tr class="separator:a5197e3fceefa155374b62bf32b336b35"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4a2d7ec910f589aaaf436f1df09c1ab9"><td class="memItemLeft" align="right" valign="top"><a id="a4a2d7ec910f589aaaf436f1df09c1ab9"></a>
 <a class="el" href="classcgv_1_1render_1_1shader__program.html">shader_program</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1renderer.html#a4a2d7ec910f589aaaf436f1df09c1ab9">ref_prog</a> ()</td></tr>
 <tr class="memdesc:a4a2d7ec910f589aaaf436f1df09c1ab9"><td class="mdescLeft">&#160;</td><td class="mdescRight">derived renderer classes have access to shader program <br /></td></tr>
 <tr class="separator:a4a2d7ec910f589aaaf436f1df09c1ab9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad127e0d0fe08047250168ea6b2274f3f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1renderer.html#ad127e0d0fe08047250168ea6b2274f3f">set_prog</a> (<a class="el" href="classcgv_1_1render_1_1shader__program.html">shader_program</a> &amp;one_shot_prog)</td></tr>
-<tr class="memdesc:ad127e0d0fe08047250168ea6b2274f3f"><td class="mdescLeft">&#160;</td><td class="mdescRight">set external shader program up to next call to the <a class="el" href="classcgv_1_1render_1_1renderer.html#aeeeaaf42d6cde37f6d166197e70ba977" title="disable renderer">disable()</a> function, which is also called by the <a class="el" href="classcgv_1_1render_1_1renderer.html#ae7ad80376b8aad17791972a347afa839" title="Convenience function that draws vertex or indexed element with this renderer.">render()</a> function  <a href="classcgv_1_1render_1_1renderer.html#ad127e0d0fe08047250168ea6b2274f3f">More...</a><br /></td></tr>
+<tr class="memdesc:ad127e0d0fe08047250168ea6b2274f3f"><td class="mdescLeft">&#160;</td><td class="mdescRight">set external shader program up to next call to <a class="el" href="classcgv_1_1render_1_1renderer.html#aeeeaaf42d6cde37f6d166197e70ba977" title="disable renderer">disable()</a> or <a class="el" href="classcgv_1_1render_1_1renderer.html#ae7ad80376b8aad17791972a347afa839" title="Convenience function that draws vertex or indexed element with this renderer.">render()</a>  <a href="classcgv_1_1render_1_1renderer.html#ad127e0d0fe08047250168ea6b2274f3f">More...</a><br /></td></tr>
 <tr class="separator:ad127e0d0fe08047250168ea6b2274f3f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a11131970359c4fb2f97876f66884b235"><td class="memItemLeft" align="right" valign="top"><a id="a11131970359c4fb2f97876f66884b235"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1renderer.html#a11131970359c4fb2f97876f66884b235">manage_singleton</a> (<a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx, const std::string &amp;renderer_name, int &amp;ref_count, int ref_count_change)</td></tr>
@@ -402,6 +402,9 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1renderer.html#ab6695b268a77fb5e369308ffa7e06c03">set_render_style</a> (const <a class="el" href="structcgv_1_1render_1_1render__style.html">render_style</a> &amp;rs)</td></tr>
 <tr class="memdesc:ab6695b268a77fb5e369308ffa7e06c03"><td class="mdescLeft">&#160;</td><td class="mdescRight">reference given render style <br /></td></tr>
 <tr class="separator:ab6695b268a77fb5e369308ffa7e06c03"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a34c48876c6ea23dd8e7deacb30faa220"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1renderer.html#a34c48876c6ea23dd8e7deacb30faa220">init</a> (<a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx)</td></tr>
+<tr class="memdesc:a34c48876c6ea23dd8e7deacb30faa220"><td class="mdescLeft">&#160;</td><td class="mdescRight">call <a class="el" href="classcgv_1_1render_1_1renderer.html#a34c48876c6ea23dd8e7deacb30faa220" title="call init() once before using renderer">init()</a> once before using renderer  <a href="classcgv_1_1render_1_1renderer.html#a34c48876c6ea23dd8e7deacb30faa220">More...</a><br /></td></tr>
+<tr class="separator:a34c48876c6ea23dd8e7deacb30faa220"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac0dbf6b3b6681408a28e6c1888fd2a08"><td class="memTemplParams" colspan="2"><a id="ac0dbf6b3b6681408a28e6c1888fd2a08"></a>
 template&lt;typename T &gt; </td></tr>
 <tr class="memitem:ac0dbf6b3b6681408a28e6c1888fd2a08"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1renderer.html#ac0dbf6b3b6681408a28e6c1888fd2a08">set_position</a> (const <a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx, const T &amp;position)</td></tr>
@@ -492,6 +495,14 @@ Protected Member Functions</h2></td></tr>
 <a class="el" href="structcgv_1_1render_1_1render__style.html">render_style</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1rounded__cone__renderer.html#a0ba79b6bc7c5fbe61119629ab402f01c">create_render_style</a> () const</td></tr>
 <tr class="memdesc:a0ba79b6bc7c5fbe61119629ab402f01c"><td class="mdescLeft">&#160;</td><td class="mdescRight">overload to allow instantiation of <a class="el" href="classcgv_1_1render_1_1rounded__cone__renderer.html" title="renderer that supports raycasting of rounded cones">rounded_cone_renderer</a> <br /></td></tr>
 <tr class="separator:a0ba79b6bc7c5fbe61119629ab402f01c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0d4baeac8078a2c58ed3067ca4d66554"><td class="memItemLeft" align="right" valign="top"><a id="a0d4baeac8078a2c58ed3067ca4d66554"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1rounded__cone__renderer.html#a0d4baeac8078a2c58ed3067ca4d66554">update_defines</a> (<a class="el" href="namespacecgv_1_1render.html#a0e875e06326ba0599a1289f0bacdb116">shader_define_map</a> &amp;defines)</td></tr>
+<tr class="memdesc:a0d4baeac8078a2c58ed3067ca4d66554"><td class="mdescLeft">&#160;</td><td class="mdescRight">update shader defines based on render style <br /></td></tr>
+<tr class="separator:a0d4baeac8078a2c58ed3067ca4d66554"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a264ce27491ce23472788a01532c622bb"><td class="memItemLeft" align="right" valign="top"><a id="a264ce27491ce23472788a01532c622bb"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1rounded__cone__renderer.html#a264ce27491ce23472788a01532c622bb">build_shader_program</a> (<a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx, <a class="el" href="classcgv_1_1render_1_1shader__program.html">shader_program</a> &amp;prog, const <a class="el" href="namespacecgv_1_1render.html#a0e875e06326ba0599a1289f0bacdb116">shader_define_map</a> &amp;defines)</td></tr>
+<tr class="memdesc:a264ce27491ce23472788a01532c622bb"><td class="mdescLeft">&#160;</td><td class="mdescRight">build rounded cone program <br /></td></tr>
+<tr class="separator:a264ce27491ce23472788a01532c622bb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7264fd5effbc1beb4cc03be79c501b3c"><td class="memItemLeft" align="right" valign="top"><a id="a7264fd5effbc1beb4cc03be79c501b3c"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1renderer.html#a7264fd5effbc1beb4cc03be79c501b3c">has_aam</a> () const</td></tr>
 <tr class="memdesc:a7264fd5effbc1beb4cc03be79c501b3c"><td class="mdescLeft">&#160;</td><td class="mdescRight">check for attribute array manager <br /></td></tr>
@@ -617,6 +628,37 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 </table>
 </div><div class="memdoc">
 <p>Returns the OpenGL handle to the buffer of the given attribute name as managed by the attribute array manager. Returns -1 if the buffer or attribute array manager does not exist. Take caution when manipulating the buffer. </p>
+
+</div>
+</div>
+<a id="a34c48876c6ea23dd8e7deacb30faa220"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a34c48876c6ea23dd8e7deacb30faa220">&#9670;&nbsp;</a></span>init()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool cgv::render::renderer::init </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;&#160;</td>
+          <td class="paramname"><em>ctx</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">virtual</span><span class="mlabel">inherited</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>call <a class="el" href="classcgv_1_1render_1_1renderer.html#a34c48876c6ea23dd8e7deacb30faa220" title="call init() once before using renderer">init()</a> once before using renderer </p>
+<p>creates default render style and builds shader program based on defines that can be configured with <a class="el" href="classcgv_1_1render_1_1renderer.html#a5197e3fceefa155374b62bf32b336b35" title="access to shader define map to update defines not handled by render style">ref_defines()</a> before calling <a class="el" href="classcgv_1_1render_1_1renderer.html#a34c48876c6ea23dd8e7deacb30faa220" title="call init() once before using renderer">init()</a>. Reconfiguring defines after <a class="el" href="classcgv_1_1render_1_1renderer.html#a34c48876c6ea23dd8e7deacb30faa220" title="call init() once before using renderer">init()</a> causes rebuild of shader program in <a class="el" href="classcgv_1_1render_1_1rounded__cone__renderer.html#a0f0c770ccc0eea04735a5532b8b662fa" title="overload to activate group style">enable()</a> function. </p>
+
+<p>Reimplemented in <a class="el" href="classcgv_1_1render_1_1line__renderer.html#a09617d0d9b29219f05d2020a4bd2bc2f">cgv::render::line_renderer</a>, <a class="el" href="classcgv_1_1render_1_1volume__renderer.html#ad63d829e3c16b43f41efcb3d3ac922a0">cgv::render::volume_renderer</a>, and <a class="el" href="classcgv_1_1render_1_1rectangle__renderer.html#a859d3dcafedba0bdbddc447a66e7e2e3">cgv::render::rectangle_renderer</a>.</p>
 
 </div>
 </div>
@@ -962,7 +1004,7 @@ template&lt;typename T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>set external shader program up to next call to the <a class="el" href="classcgv_1_1render_1_1rounded__cone__renderer.html#a0647e36649cf0fe096891ed4e48534f4" title="disable renderer">disable()</a> function, which is also called by the <a class="el" href="classcgv_1_1render_1_1renderer.html#ae7ad80376b8aad17791972a347afa839" title="Convenience function that draws vertex or indexed element with this renderer.">render()</a> function </p>
+<p>set external shader program up to next call to <a class="el" href="classcgv_1_1render_1_1rounded__cone__renderer.html#a0647e36649cf0fe096891ed4e48534f4" title="disable renderer">disable()</a> or <a class="el" href="classcgv_1_1render_1_1renderer.html#ae7ad80376b8aad17791972a347afa839" title="Convenience function that draws vertex or indexed element with this renderer.">render()</a> </p>
 <p>set external shader program for successive draw call only </p>
 
 </div>
