@@ -263,6 +263,22 @@ Public Member Functions</h2></td></tr>
 bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1volume__renderer.html#ad63d829e3c16b43f41efcb3d3ac922a0">init</a> (<a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx)</td></tr>
 <tr class="memdesc:ad63d829e3c16b43f41efcb3d3ac922a0"><td class="mdescLeft">&#160;</td><td class="mdescRight">construct shader programs and return whether this was successful, call inside of init method of drawable <br /></td></tr>
 <tr class="separator:ad63d829e3c16b43f41efcb3d3ac922a0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab7c24b5845b03cc1db4029a8b500b7cf"><td class="memItemLeft" align="right" valign="top"><a id="ab7c24b5845b03cc1db4029a8b500b7cf"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1volume__renderer.html#ab7c24b5845b03cc1db4029a8b500b7cf">set_volume_texture</a> (<a class="el" href="classcgv_1_1render_1_1texture.html">texture</a> *tex)</td></tr>
+<tr class="memdesc:ab7c24b5845b03cc1db4029a8b500b7cf"><td class="mdescLeft">&#160;</td><td class="mdescRight">sets the 3D volume texture containing scalar values (density or other measured quantities) <br /></td></tr>
+<tr class="separator:ab7c24b5845b03cc1db4029a8b500b7cf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7c4cd2f0460bdb5f05f7fa520c476a08"><td class="memItemLeft" align="right" valign="top"><a id="a7c4cd2f0460bdb5f05f7fa520c476a08"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1volume__renderer.html#a7c4cd2f0460bdb5f05f7fa520c476a08">set_transfer_function_texture</a> (<a class="el" href="classcgv_1_1render_1_1texture.html">texture</a> *tex)</td></tr>
+<tr class="memdesc:a7c4cd2f0460bdb5f05f7fa520c476a08"><td class="mdescLeft">&#160;</td><td class="mdescRight">sets the transfer function used for classification; must be 1D or 2D (as loaded from an image) <br /></td></tr>
+<tr class="separator:a7c4cd2f0460bdb5f05f7fa520c476a08"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a29e5e7347fda8f78eb05b22ca6169baa"><td class="memItemLeft" align="right" valign="top"><a id="a29e5e7347fda8f78eb05b22ca6169baa"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1volume__renderer.html#a29e5e7347fda8f78eb05b22ca6169baa">set_gradient_texture</a> (<a class="el" href="classcgv_1_1render_1_1texture.html">texture</a> *tex)</td></tr>
+<tr class="memdesc:a29e5e7347fda8f78eb05b22ca6169baa"><td class="mdescLeft">&#160;</td><td class="mdescRight">sets the gradient texture used for lighting <br /></td></tr>
+<tr class="separator:a29e5e7347fda8f78eb05b22ca6169baa"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ace19d995dc487ec5efd577632a3e8434"><td class="memItemLeft" align="right" valign="top"><a id="ace19d995dc487ec5efd577632a3e8434"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1volume__renderer.html#ace19d995dc487ec5efd577632a3e8434">set_depth_texture</a> (<a class="el" href="classcgv_1_1render_1_1texture.html">texture</a> *tex)</td></tr>
+<tr class="memdesc:ace19d995dc487ec5efd577632a3e8434"><td class="mdescLeft">&#160;</td><td class="mdescRight">sets the depth texture needed for rendering with additional opaque geometry <br /></td></tr>
+<tr class="separator:ace19d995dc487ec5efd577632a3e8434"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a383df61b6daba9143d6fec3aa7f089e4"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1volume__renderer.html#a383df61b6daba9143d6fec3aa7f089e4">enable</a> (<a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx)</td></tr>
 <tr class="memdesc:a383df61b6daba9143d6fec3aa7f089e4"><td class="mdescLeft">&#160;</td><td class="mdescRight">enables renderer  <a href="classcgv_1_1render_1_1volume__renderer.html#a383df61b6daba9143d6fec3aa7f089e4">More...</a><br /></td></tr>
 <tr class="separator:a383df61b6daba9143d6fec3aa7f089e4"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -406,6 +422,10 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1volume__renderer.html#a0a09a99aebeee5a8f731c1645bcaf2e2">build_shader_program</a> (<a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx, <a class="el" href="classcgv_1_1render_1_1shader__program.html">shader_program</a> &amp;prog, const <a class="el" href="namespacecgv_1_1render.html#a0e875e06326ba0599a1289f0bacdb116">shader_define_map</a> &amp;defines)</td></tr>
 <tr class="memdesc:a0a09a99aebeee5a8f731c1645bcaf2e2"><td class="mdescLeft">&#160;</td><td class="mdescRight">build volume program <br /></td></tr>
 <tr class="separator:a0a09a99aebeee5a8f731c1645bcaf2e2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a57b5f07bda8cdaf8f214f5305e16b7c8"><td class="memItemLeft" align="right" valign="top"><a id="a57b5f07bda8cdaf8f214f5305e16b7c8"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1volume__renderer.html#a57b5f07bda8cdaf8f214f5305e16b7c8">init_noise_texture</a> (<a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx)</td></tr>
+<tr class="memdesc:a57b5f07bda8cdaf8f214f5305e16b7c8"><td class="mdescLeft">&#160;</td><td class="mdescRight">initializes the noise texture with random values <br /></td></tr>
+<tr class="separator:a57b5f07bda8cdaf8f214f5305e16b7c8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7264fd5effbc1beb4cc03be79c501b3c"><td class="memItemLeft" align="right" valign="top"><a id="a7264fd5effbc1beb4cc03be79c501b3c"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1renderer.html#a7264fd5effbc1beb4cc03be79c501b3c">has_aam</a> () const</td></tr>
 <tr class="memdesc:a7264fd5effbc1beb4cc03be79c501b3c"><td class="mdescLeft">&#160;</td><td class="mdescRight">check for attribute array manager <br /></td></tr>
@@ -452,14 +472,30 @@ Protected Attributes</h2></td></tr>
 <a class="el" href="classcgv_1_1render_1_1texture.html">texture</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1volume__renderer.html#ad1c939fab9bfd4c78c17e1e84db52425">volume_texture</a></td></tr>
 <tr class="memdesc:ad1c939fab9bfd4c78c17e1e84db52425"><td class="mdescLeft">&#160;</td><td class="mdescRight">the 3D texture used for rendering <br /></td></tr>
 <tr class="separator:ad1c939fab9bfd4c78c17e1e84db52425"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac164d2613ea87cf7fa5fd77d1b3fc2bb"><td class="memItemLeft" align="right" valign="top"><a id="ac164d2613ea87cf7fa5fd77d1b3fc2bb"></a>
-vec3&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1volume__renderer.html#ac164d2613ea87cf7fa5fd77d1b3fc2bb">volume_texture_size</a></td></tr>
-<tr class="memdesc:ac164d2613ea87cf7fa5fd77d1b3fc2bb"><td class="mdescLeft">&#160;</td><td class="mdescRight">the size of the volume texture <br /></td></tr>
-<tr class="separator:ac164d2613ea87cf7fa5fd77d1b3fc2bb"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a35a4b33b2c634cc05ee20ce8d199082b"><td class="memItemLeft" align="right" valign="top"><a id="a35a4b33b2c634cc05ee20ce8d199082b"></a>
-vec3&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1volume__renderer.html#a35a4b33b2c634cc05ee20ce8d199082b">eye_position</a></td></tr>
-<tr class="memdesc:a35a4b33b2c634cc05ee20ce8d199082b"><td class="mdescLeft">&#160;</td><td class="mdescRight">the eye position in world space <br /></td></tr>
-<tr class="separator:a35a4b33b2c634cc05ee20ce8d199082b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4fc90fb932d742397d9cd8f8992c66a5"><td class="memItemLeft" align="right" valign="top"><a id="a4fc90fb932d742397d9cd8f8992c66a5"></a>
+<a class="el" href="classcgv_1_1render_1_1texture.html">texture</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1volume__renderer.html#a4fc90fb932d742397d9cd8f8992c66a5">transfer_function_texture</a></td></tr>
+<tr class="memdesc:a4fc90fb932d742397d9cd8f8992c66a5"><td class="mdescLeft">&#160;</td><td class="mdescRight">the 2D transfer function texture used for classification of the volume values <br /></td></tr>
+<tr class="separator:a4fc90fb932d742397d9cd8f8992c66a5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae603a80a42facf41d3c09c4cefa7252a"><td class="memItemLeft" align="right" valign="top"><a id="ae603a80a42facf41d3c09c4cefa7252a"></a>
+<a class="el" href="classcgv_1_1render_1_1texture.html">texture</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1volume__renderer.html#ae603a80a42facf41d3c09c4cefa7252a">noise_texture</a></td></tr>
+<tr class="memdesc:ae603a80a42facf41d3c09c4cefa7252a"><td class="mdescLeft">&#160;</td><td class="mdescRight">a 2D texture containing random noise used to offset ray start positions in order to reduce ring artifacts <br /></td></tr>
+<tr class="separator:ae603a80a42facf41d3c09c4cefa7252a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a09f8fc2a62b764b6e757a33463be0da5"><td class="memItemLeft" align="right" valign="top"><a id="a09f8fc2a62b764b6e757a33463be0da5"></a>
+<a class="el" href="classcgv_1_1render_1_1texture.html">texture</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1volume__renderer.html#a09f8fc2a62b764b6e757a33463be0da5">gradient_texture</a></td></tr>
+<tr class="memdesc:a09f8fc2a62b764b6e757a33463be0da5"><td class="mdescLeft">&#160;</td><td class="mdescRight">the 3D texture containing vector gradients used for lighting normal calculation <br /></td></tr>
+<tr class="separator:a09f8fc2a62b764b6e757a33463be0da5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4e81f5b1ae053817d2ac1713ec2bb9cc"><td class="memItemLeft" align="right" valign="top"><a id="a4e81f5b1ae053817d2ac1713ec2bb9cc"></a>
+<a class="el" href="classcgv_1_1render_1_1texture.html">texture</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1volume__renderer.html#a4e81f5b1ae053817d2ac1713ec2bb9cc">depth_texture</a></td></tr>
+<tr class="memdesc:a4e81f5b1ae053817d2ac1713ec2bb9cc"><td class="mdescLeft">&#160;</td><td class="mdescRight">a 2D texture from a frame buffer depth buffer used to combine volume rendering with opaque geometry <br /></td></tr>
+<tr class="separator:a4e81f5b1ae053817d2ac1713ec2bb9cc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af23b7cbcaeab32bdda3eea4d25e92e6a"><td class="memItemLeft" align="right" valign="top"><a id="af23b7cbcaeab32bdda3eea4d25e92e6a"></a>
+box3&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1volume__renderer.html#af23b7cbcaeab32bdda3eea4d25e92e6a">bounding_box</a></td></tr>
+<tr class="memdesc:af23b7cbcaeab32bdda3eea4d25e92e6a"><td class="mdescLeft">&#160;</td><td class="mdescRight">the bounding box of the volume in scene units <br /></td></tr>
+<tr class="separator:af23b7cbcaeab32bdda3eea4d25e92e6a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a64bff9397a371bf8d9120424b3ff24ea"><td class="memItemLeft" align="right" valign="top"><a id="a64bff9397a371bf8d9120424b3ff24ea"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1volume__renderer.html#a64bff9397a371bf8d9120424b3ff24ea">apply_bounding_box_transformation</a></td></tr>
+<tr class="memdesc:a64bff9397a371bf8d9120424b3ff24ea"><td class="mdescLeft">&#160;</td><td class="mdescRight">whether to translate and scale the volume to the given bounding box during rendering <br /></td></tr>
+<tr class="separator:a64bff9397a371bf8d9120424b3ff24ea"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a89daadf6757c440ad97b20f3f5e00ad8"><td class="memItemLeft" align="right" valign="top"><a id="a89daadf6757c440ad97b20f3f5e00ad8"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1renderer.html#a89daadf6757c440ad97b20f3f5e00ad8">has_colors</a></td></tr>
 <tr class="memdesc:a89daadf6757c440ad97b20f3f5e00ad8"><td class="mdescLeft">&#160;</td><td class="mdescRight">track whether color attribute is defined <br /></td></tr>

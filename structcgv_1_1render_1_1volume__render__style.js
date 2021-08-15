@@ -36,11 +36,14 @@ var structcgv_1_1render_1_1volume__render__style =
     [ "vec3", "structcgv_1_1render_1_1volume__render__style.html#a3850221d245b353028eca7e9306769aa", null ],
     [ "vec4", "structcgv_1_1render_1_1volume__render__style.html#a8f6fdf00ab6917209d081ffe691c75f3", null ],
     [ "vecn", "structcgv_1_1render_1_1volume__render__style.html#aa4274bbe9929cab87164fda32123be1a", null ],
+    [ "IntegrationQuality", "structcgv_1_1render_1_1volume__render__style.html#af489215bcca2772220c2f5e7993465a2", null ],
+    [ "InterpolationMode", "structcgv_1_1render_1_1volume__render__style.html#ad280746a4e9d6301086e34e1bc7bd4e7", null ],
     [ "volume_render_style", "structcgv_1_1render_1_1volume__render__style.html#aacc940494f593fa97d6e30cfd5839198", null ],
-    [ "alpha", "structcgv_1_1render_1_1volume__render__style.html#a7e7ed034fe9747a6fdff2dbc0f71d6fa", null ],
-    [ "interpolation_mode", "structcgv_1_1render_1_1volume__render__style.html#a1facc0a7ea73e854e961356d5c39486c", null ],
-    [ "level_of_detail", "structcgv_1_1render_1_1volume__render__style.html#abb0c9d62ac8bab153ee553ba023d1841", null ],
-    [ "step_size", "structcgv_1_1render_1_1volume__render__style.html#ab5575b9670d5132302d5e5e40246fcc2", null ],
-    [ "transfer_function_texture_unit", "structcgv_1_1render_1_1volume__render__style.html#a2322b24b1a7b211762cabc77525495ee", null ],
-    [ "transformation_matrix", "structcgv_1_1render_1_1volume__render__style.html#a19597e199847bda7c798df4d1e1b802a", null ]
+    [ "clip_box", "structcgv_1_1render_1_1volume__render__style.html#ade3c6324e8ad62a764e67664511bbad0", null ],
+    [ "enable_depth_test", "structcgv_1_1render_1_1volume__render__style.html#a4b0ec1dbb83ef922d9fb7b4f6cb07b7c", null ],
+    [ "enable_lighting", "structcgv_1_1render_1_1volume__render__style.html#a1086664ce53ea03d65e8c2889fb8aedf", null ],
+    [ "enable_noise_offset", "structcgv_1_1render_1_1volume__render__style.html#a052d61d3fe887de64cc77e67b374480a", null ],
+    [ "enable_scale_adjustment", "structcgv_1_1render_1_1volume__render__style.html#afb48f68ee68c20ed3cc60288bf70861d", null ],
+    [ "opacity_scale", "structcgv_1_1render_1_1volume__render__style.html#a5835a37fdd8c840d705e3e1235c4b2e5", null ],
+    [ "size_scale", "structcgv_1_1render_1_1volume__render__style.html#aaea56f5757c3d62891523f3256053393", null ]
 ];
