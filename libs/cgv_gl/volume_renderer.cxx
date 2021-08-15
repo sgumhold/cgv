@@ -1,6 +1,17 @@
 #include "volume_renderer.h"
+#include <random>
+#include <cgv/math/ftransform.h>
 #include <cgv_gl/gl/gl.h>
 #include <cgv_gl/gl/gl_tools.h>
+
+#define P_000 vec3(-0.5f,-0.5f,-0.5f)
+#define P_001 vec3(-0.5f,-0.5f,+0.5f)
+#define P_010 vec3(-0.5f,+0.5f,-0.5f)
+#define P_011 vec3(-0.5f,+0.5f,+0.5f)
+#define P_100 vec3(+0.5f,-0.5f,-0.5f)
+#define P_101 vec3(+0.5f,-0.5f,+0.5f)
+#define P_110 vec3(+0.5f,+0.5f,-0.5f)
+#define P_111 vec3(+0.5f,+0.5f,+0.5f)
 
 namespace cgv {
 	namespace render {
@@ -19,20 +30,49 @@ namespace cgv {
 
 		volume_render_style::volume_render_style()
 		{
-			transfer_function_texture_unit = 1;
-			alpha = 1.0f;
-			level_of_detail = 0.0f;
-			step_size = 0.002f;
-			transformation_matrix = mat4(0.0f);
-			transformation_matrix.identity();
-
+			integration_quality = IQ_128;
 			interpolation_mode = IP_LINEAR;
+			enable_noise_offset = true;
+			opacity_scale = 1.0f;
+			enable_scale_adjustment = true;
+			size_scale = 100.0f;
+			clip_box = box3(vec3(0.0f), vec3(1.0f));
+			enable_lighting = false;
+			enable_depth_test = false;
 		}
 
-		volume_renderer::volume_renderer()
+		volume_renderer::volume_renderer() : noise_texture("flt32[R]")
 		{
 			volume_texture = nullptr;
-			volume_texture_size = vec3(1.0f);
+			transfer_function_texture = nullptr;
+			gradient_texture = nullptr;
+			depth_texture = nullptr;
+
+			noise_texture.set_min_filter(TF_LINEAR);
+			noise_texture.set_mag_filter(TF_LINEAR);
+			noise_texture.set_wrap_s(TW_REPEAT);
+			noise_texture.set_wrap_t(TW_REPEAT);
+
+			bounding_box = box3(vec3(0.0f), vec3(1.0f));
+			apply_bounding_box_transformation = false;
+		}
+
+		void volume_renderer::init_noise_texture(context& ctx)
+		{
+			if(noise_texture.is_created())
+				noise_texture.destruct(ctx);
+
+			unsigned size = 64;
+			std::vector<float> noise_data(size*size);
+
+			std::default_random_engine rng(42);
+			std::uniform_real_distribution<float> dist(0.0f, 1.0f);
+
+			for(size_t i = 0; i < noise_data.size(); ++i)
+				noise_data[i] = dist(rng);
+
+			cgv::data::data_view dv = cgv::data::data_view(new cgv::data::data_format(size, size, TI_FLT32, cgv::data::CF_R), noise_data.data());
+			noise_texture.create(ctx, dv, 0);
 		}
 
 		bool volume_renderer::validate_attributes(const context& ctx) const
@@ -50,96 +90,177 @@ namespace cgv {
 		void volume_renderer::update_defines(shader_define_map& defines)
 		{
 			const volume_render_style& vrs = get_style<volume_render_style>();
-			if (vrs.interpolation_mode != IP_NEAREST)
-				defines["INTERPOLATION_MODE"] = std::to_string((int)vrs.interpolation_mode);
-			else
-				defines.erase("INTERPOLATION_MODE");
+
+			shader_code::set_define(defines, "NUM_STEPS", vrs.integration_quality, volume_render_style::IQ_128);
+			shader_code::set_define(defines, "INTERPOLATION_MODE", vrs.interpolation_mode, volume_render_style::IP_LINEAR);
+			shader_code::set_define(defines, "ENABLE_NOISE_OFFSET", vrs.enable_noise_offset, true);
+			shader_code::set_define(defines, "ENABLE_SCALE_ADJUSTMENT", vrs.enable_scale_adjustment, false);
+			shader_code::set_define(defines, "ENABLE_LIGHTING", vrs.enable_lighting, false);
+			shader_code::set_define(defines, "ENABLE_DEPTH_TEST", vrs.enable_depth_test, false);
+			if(transfer_function_texture)
+				shader_code::set_define(defines, "TRANSFER_FUNCTION_SAMPLER_DIMENSIONS", transfer_function_texture->get_nr_dimensions(), 1u);
 		}
 		bool volume_renderer::init(cgv::render::context& ctx)
 		{
 			bool res = renderer::init(ctx);
+			// TOOD: use aam from renderer base class
 			res = res && aa_manager.init(ctx);
 			enable_attribute_array_manager(ctx, aa_manager);
 
-			eye_position = vec3(0.0f);
-			std::vector<vec3> vertices = {
-				vec3(0.0f, 1.0f, 0.0f),
-				vec3(1.0f, 1.0f, 0.0f),
-				vec3(0.0f, 0.0f, 0.0f),
-				vec3(1.0f, 0.0f, 0.0f),
-				vec3(1.0f, 0.0f, 1.0f),
-				vec3(1.0f, 1.0f, 0.0f),
-				vec3(1.0f, 1.0f, 1.0f),
-				vec3(0.0f, 1.0f, 0.0f),
-				vec3(0.0f, 1.0f, 1.0f),
-				vec3(0.0f, 0.0f, 0.0f),
-				vec3(0.0f, 0.0f, 1.0f),
-				vec3(1.0f, 0.0f, 1.0f),
-				vec3(0.0f, 1.0f, 1.0f),
-				vec3(1.0f, 1.0f, 1.0f)
+			/*std::vector<vec3> positions = {
+				// front
+				P_001, P_101, P_111,
+				P_001, P_111, P_011,
+				// back
+				P_000, P_110, P_100,
+				P_000, P_010, P_110,
+				// left
+				P_000, P_011, P_010,
+				P_000, P_001, P_011,
+				// right
+				P_100, P_110, P_111,
+				P_100, P_111, P_101,
+				// top
+				P_010, P_111, P_110,
+				P_010, P_011, P_111,
+				// bottom
+				P_000, P_100, P_101,
+				P_000, P_101, P_001,
+			};*/
+
+			// use a single optimized triangle strip to define a cube
+			std::vector<vec3> positions = {
+				vec3(-0.5f, +0.5f, -0.5f),
+				vec3(+0.5f, +0.5f, -0.5f),
+				vec3(-0.5f, -0.5f, -0.5f),
+				vec3(+0.5f, -0.5f, -0.5f),
+				vec3(+0.5f, -0.5f, +0.5f),
+				vec3(+0.5f, +0.5f, -0.5f),
+				vec3(+0.5f, +0.5f, +0.5f),
+				vec3(-0.5f, +0.5f, -0.5f),
+				vec3(-0.5f, +0.5f, +0.5f),
+				vec3(-0.5f, -0.5f, -0.5f),
+				vec3(-0.5f, -0.5f, +0.5f),
+				vec3(+0.5f, -0.5f, +0.5f),
+				vec3(-0.5f, +0.5f, +0.5f),
+				vec3(+0.5f, +0.5f, +0.5f)
 			};
-			set_position_array(ctx, vertices);
+			set_position_array(ctx, positions);
+			
+			if(!noise_texture.is_created())
+				init_noise_texture(ctx);
+
 			return res;
 		}
 
-		bool volume_renderer::set_volume_texture(texture* _volume_texture)
-		{
-			if(!_volume_texture)
+		bool volume_renderer::set_volume_texture(texture* tex) {
+			if(!tex || tex->get_nr_dimensions() != 3)
 				return false;
-			if(_volume_texture->get_nr_dimensions() != 3)
-				return false;
-
-			volume_texture = _volume_texture;
-			volume_texture_size = vec3(float(volume_texture->get_width()), float(volume_texture->get_height()), float(volume_texture->get_depth()));
+			volume_texture = tex;
 			return true;
 		}
 
-		void volume_renderer::set_eye_position(vec3 _eye_position)
-		{
-			eye_position = _eye_position;
+		bool volume_renderer::set_transfer_function_texture(texture* tex) {
+			if(!tex || tex->get_nr_dimensions() > 2)
+				return false;
+			transfer_function_texture = tex;
+			return true;
 		}
+
+		bool volume_renderer::set_gradient_texture(texture* tex) {
+			if(!tex || tex->get_nr_dimensions() != 3)
+				return false;
+			gradient_texture = tex;
+			return true;
+		}
+
+		bool volume_renderer::set_depth_texture(texture* tex) {
+			if(!tex || tex->get_nr_dimensions() != 2)
+				return false;
+			depth_texture = tex;
+			return true;
+		}
+		
+		void volume_renderer::set_bounding_box(const box3& bbox)
+		{
+			bounding_box = bbox;
+		}
+		
+		void volume_renderer::transform_to_bounding_box(bool flag)
+		{
+			apply_bounding_box_transformation = flag;
+		}
+
 		bool volume_renderer::enable(context& ctx)
 		{
 			const volume_render_style& vrs = get_style<volume_render_style>();
 			if (!renderer::enable(ctx))
 				return false;
-			ref_prog().set_uniform(ctx, "volume_tex", 0);
-			ref_prog().set_uniform(ctx, "transfer_function_tex", vrs.transfer_function_texture_unit);
-			ref_prog().set_uniform(ctx, "eye_position", eye_position);
-			ref_prog().set_uniform(ctx, "alpha_coeff", vrs.alpha);
-			ref_prog().set_uniform(ctx, "lod", vrs.level_of_detail);
-			ref_prog().set_uniform(ctx, "step_size", vrs.step_size);
-			ref_prog().set_uniform(ctx, "tex_size", volume_texture_size);
-			ref_prog().set_uniform(ctx, "tex_coord_scaling", vec3(cgv::math::max_value(volume_texture_size)) / volume_texture_size);
-			ref_prog().set_uniform(ctx, "transformation_matrix", vrs.transformation_matrix);
 
+			ref_prog().set_uniform(ctx, "viewport_dims", vec2(ctx.get_width(), ctx.get_height()));
+			ref_prog().set_uniform(ctx, "opacity_scale", vrs.opacity_scale);
+			ref_prog().set_uniform(ctx, "size_scale", vrs.size_scale);
+			ref_prog().set_uniform(ctx, "clip_box_min", vrs.clip_box.get_min_pnt());
+			ref_prog().set_uniform(ctx, "clip_box_max", vrs.clip_box.get_max_pnt());
+
+			glDisable(GL_DEPTH_TEST);
 			glEnable(GL_BLEND);
 			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
 			glCullFace(GL_FRONT);
 			glEnable(GL_CULL_FACE);
-			volume_texture->enable(ctx, 0);
+
+			if(volume_texture) volume_texture->enable(ctx, 0);
+			if(transfer_function_texture) transfer_function_texture->enable(ctx, 1);
+			noise_texture.enable(ctx, 2);
+			if(gradient_texture) gradient_texture->enable(ctx, 3);
+			if(depth_texture) depth_texture->enable(ctx, 4);
 			return true;
 		}
 		///
 		bool volume_renderer::disable(context& ctx)
 		{
-			volume_texture->disable(ctx);
+			if(volume_texture) volume_texture->disable(ctx);
+			if(transfer_function_texture) transfer_function_texture->disable(ctx);
+			noise_texture.disable(ctx);
+			if(gradient_texture) gradient_texture->disable(ctx);
+			if(depth_texture) depth_texture->disable(ctx);
 
-			glDisable(GL_BLEND);
 			glDisable(GL_CULL_FACE);
-
-			if (!attributes_persist()) {}
+			glDisable(GL_BLEND);
+			glEnable(GL_DEPTH_TEST);
 
 			return renderer::disable(ctx);
 		}
 		///
 		void volume_renderer::draw(context& ctx, size_t start, size_t count, bool use_strips, bool use_adjacency, uint32_t strip_restart_index)
 		{
-			glDrawArrays(GL_TRIANGLE_STRIP, 0, (GLsizei)14);
+			if(apply_bounding_box_transformation) {
+				mat4 scale = cgv::math::scale4(bounding_box.get_extent());
+				mat4 translation = cgv::math::translate4(bounding_box.get_center());
+
+				ctx.push_modelview_matrix();
+				ctx.mul_modelview_matrix(translation);
+				ctx.mul_modelview_matrix(scale);
+
+				glDrawArrays(GL_TRIANGLE_STRIP, 0, (GLsizei)14);
+
+				ctx.pop_modelview_matrix();
+			} else {
+				glDrawArrays(GL_TRIANGLE_STRIP, 0, (GLsizei)14);
+				//glDrawArrays(GL_TRIANGLES, 0, (GLsizei)36);
+			}
 		}
 	}
 }
+
+#undef P_000
+#undef P_001
+#undef P_010
+#undef P_011
+#undef P_100
+#undef P_101
+#undef P_110
+#undef P_111
 
 #include <cgv/gui/provider.h>
 
@@ -156,10 +277,30 @@ namespace cgv {
 				cgv::render::volume_render_style* vrs_ptr = reinterpret_cast<cgv::render::volume_render_style*>(value_ptr);
 				cgv::base::base* b = dynamic_cast<cgv::base::base*>(p);
 
-				p->add_member_control(b, "alpha", vrs_ptr->alpha, "value_slider", "min=0.0;step=0.001;max=1.0;ticks=true");
-				p->add_member_control(b, "lod", vrs_ptr->level_of_detail, "value_slider", "min=0.0;max=9.0;ticks=true");
-				p->add_member_control(b, "step_size", vrs_ptr->step_size, "value_slider", "min=0.0005;step=0.00001;max=0.01;log=true;ticks=true");
-				p->add_member_control(b, "interpolation", vrs_ptr->interpolation_mode, "dropdown", "enums=nearest,linear,smooth,cubic");
+				p->add_member_control(b, "Quality", vrs_ptr->integration_quality, "dropdown", "enums='8=8,16=16,32=32,64=64,128=128,256=256,512=512,1024=1024'");
+				p->add_member_control(b, "Interpolation", vrs_ptr->interpolation_mode, "dropdown", "enums=Nearest,Linear,Smooth,Cubic");
+				p->add_member_control(b, "Use Noise", vrs_ptr->enable_noise_offset, "check");
+				p->add_member_control(b, "Scale Adjustment", vrs_ptr->size_scale, "value_slider", "w=170;min=0.0;step=0.001;max=500.0;log=true;ticks=true", " ");
+				p->add_member_control(b, "", vrs_ptr->enable_scale_adjustment, "check", "w=30");
+				p->add_member_control(b, "Opacity Scale", vrs_ptr->opacity_scale, "value_slider", "min=0.0;step=0.001;max=1.0;ticks=true");
+
+				p->add_member_control(b, "Lighting", vrs_ptr->enable_lighting, "check");
+				p->add_member_control(b, "Depth Test", vrs_ptr->enable_depth_test, "check");
+
+				p->add_member_control(b, "Box Min", vrs_ptr->clip_box.ref_min_pnt()[0], "value", "w=55;min=0;max=1", " ");
+				p->add_member_control(b, "", vrs_ptr->clip_box.ref_min_pnt()[1], "value", "w=55;min=0;max=1", " ");
+				p->add_member_control(b, "", vrs_ptr->clip_box.ref_min_pnt()[2], "value", "w=55;min=0;max=1");
+				p->add_member_control(b, "", vrs_ptr->clip_box.ref_min_pnt()[0], "slider", "w=55;min=0;step=0.0001;max=1;ticks=true", " ");
+				p->add_member_control(b, "", vrs_ptr->clip_box.ref_min_pnt()[1], "slider", "w=55;min=0;step=0.0001;max=1;ticks=true", " ");
+				p->add_member_control(b, "", vrs_ptr->clip_box.ref_min_pnt()[2], "slider", "w=55;min=0;step=0.0001;max=1;ticks=true");
+
+				p->add_member_control(b, "Box Max", vrs_ptr->clip_box.ref_max_pnt()[0], "value", "w=55;max=0;max=1", " ");
+				p->add_member_control(b, "", vrs_ptr->clip_box.ref_max_pnt()[1], "value", "w=55;max=0;max=1", " ");
+				p->add_member_control(b, "", vrs_ptr->clip_box.ref_max_pnt()[2], "value", "w=55;max=0;max=1");
+				p->add_member_control(b, "", vrs_ptr->clip_box.ref_max_pnt()[0], "slider", "w=55;max=0;step=0.0001;max=1;ticks=true", " ");
+				p->add_member_control(b, "", vrs_ptr->clip_box.ref_max_pnt()[1], "slider", "w=55;max=0;step=0.0001;max=1;ticks=true", " ");
+				p->add_member_control(b, "", vrs_ptr->clip_box.ref_max_pnt()[2], "slider", "w=55;max=0;step=0.0001;max=1;ticks=true");
+
 				return true;
 			}
 		};
