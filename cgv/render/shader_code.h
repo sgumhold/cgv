@@ -56,6 +56,39 @@ extern CGV_API shader_config_ptr get_shader_config();
 	 program. */
 class CGV_API shader_code : public render_component
 {
+public:
+	template<typename T, typename std::enable_if<!std::is_enum<T>::value, bool>::type = true>
+	static void set_define(shader_define_map& defines, const std::string& name, const T& value, const T& default_value) {
+		if(value != default_value)
+			defines[name] = std::to_string(value);
+		else
+			defines.erase(name);
+	}
+	
+	template<typename T, typename std::enable_if<std::is_enum<T>::value, bool>::type = true>
+	static void set_define(shader_define_map& defines, const std::string& name, const T& value, const T& default_value) {
+		if(value != default_value)
+			defines[name] = std::to_string((unsigned)value);
+		else
+			defines.erase(name);
+	}
+
+	template<>
+	static void set_define(shader_define_map& defines, const std::string& name, const std::string& value, const std::string& default_value) {
+		if(value != default_value)
+			defines[name] = value;
+		else
+			defines.erase(name);
+	}
+
+	template<>
+	static void set_define(shader_define_map& defines, const std::string& name, const bool& value, const bool& default_value) {
+		if(value != default_value)
+			defines[name] = value ? "1" : "0";
+		else
+			defines.erase(name);
+	}
+
 protected:
 	/// store the shader type
 	ShaderType st;
