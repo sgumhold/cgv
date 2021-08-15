@@ -1,5 +1,17 @@
 var NAVTREEINDEX44 =
 {
+"structcgv_1_1type_1_1ctrl_1_1if__.html":[11,0,0,11,1,0],
+"structcgv_1_1type_1_1func_1_1Promote_1_1promotion__rank.html":[11,0,0,11,2,0,0],
+"structcgv_1_1type_1_1func_1_1clean.html":[11,0,0,11,2,1],
+"structcgv_1_1type_1_1func_1_1clean__traits.html":[11,0,0,11,2,2],
+"structcgv_1_1type_1_1func_1_1drop__const.html":[11,0,0,11,2,3],
+"structcgv_1_1type_1_1func_1_1drop__const.html#a0722721b66d95e42f409360f5dc47710":[11,0,0,11,2,3,0],
+"structcgv_1_1type_1_1func_1_1drop__const_3_01T_01_6_01_4.html":[11,0,0,11,2,5],
+"structcgv_1_1type_1_1func_1_1drop__const_3_01T_01_6_01_4.html#afcf7c4c5226571911e93c80eea180ca9":[11,0,0,11,2,5,0],
+"structcgv_1_1type_1_1func_1_1drop__const_3_01const_01T_01_4.html":[11,0,0,11,2,4],
+"structcgv_1_1type_1_1func_1_1drop__const_3_01const_01T_01_4.html#adfb5f6a73d0554a6d776951d0c1b9121":[11,0,0,11,2,4,0],
+"structcgv_1_1type_1_1func_1_1drop__pointer.html":[11,0,0,11,2,6],
+"structcgv_1_1type_1_1func_1_1drop__pointer.html#a8265ac660b54286b44d71f6a590a9560":[11,0,0,11,2,6,0],
 "structcgv_1_1type_1_1func_1_1drop__pointer_3_01T_01_5_01_4.html":[11,0,0,11,2,7],
 "structcgv_1_1type_1_1func_1_1drop__pointer_3_01T_01_5_01_4.html#afa65e76a2c69cd78768ee0e1f33380c9":[11,0,0,11,2,7,0],
 "structcgv_1_1type_1_1func_1_1drop__ref.html":[11,0,0,11,2,8],
@@ -237,17 +249,5 @@ var NAVTREEINDEX44 =
 "type__id_8h_source.html":[12,0,0,12,3,1],
 "type__name_8h_source.html":[12,0,0,12,3,2],
 "type__ptr_8h_source.html":[12,0,0,12,3,3],
-"up__tri__mat_8h_source.html":[12,0,0,5,54],
-"utils_2statistics_8h_source.html":[12,0,0,13,14],
-"variables_8h_source.html":[12,0,0,8,5],
-"vec_8h_source.html":[12,0,0,5,55],
-"vertex__buffer_8h_source.html":[12,0,0,10,17],
-"video__reader_8h_source.html":[12,0,0,6,4,1],
-"video__writer_8h_source.html":[12,0,0,6,4,2],
-"volume_8h_source.html":[12,0,0,6,5,2],
-"volume__io_8h_source.html":[12,0,0,6,5,3],
-"volume__renderer_8h_source.html":[12,0,1,2,17],
-"vr__calib_8h_source.html":[12,0,1,1,1],
-"vr__camera_8h.html":[12,0,1,5,2],
-"vr__camera_8h.html#a4d435c9cc7df8e3d66348f2eca4fd18a":[12,0,1,5,2,2]
+"up__tri__mat_8h_source.html":[12,0,0,5,54]
 };
