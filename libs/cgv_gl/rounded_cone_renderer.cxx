@@ -52,6 +52,8 @@ namespace cgv {
 		{
 			has_radii = false;
 			shader_defines = shader_define_map();
+			albedo_texture = nullptr;
+			density_texture = nullptr;
 		}
 
 		/// call this before setting attribute arrays to manage attribute array in given manager
