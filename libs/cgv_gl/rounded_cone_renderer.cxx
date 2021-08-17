@@ -79,27 +79,11 @@ namespace cgv {
 		void rounded_cone_renderer::update_defines(shader_define_map& defines)
 		{
 			const rounded_cone_render_style& rcrs = get_style<rounded_cone_render_style>();
-			if (rcrs.enable_texturing)
-				defines["ENABLE_TEXTURING"] = "1";
-			else
-				defines.erase("ENABLE_TEXTURING");
-			if (rcrs.texture_blend_mode != rounded_cone_render_style::TBM_MIX)
-				defines["TEXTURE_BLEND_MODE"] = std::to_string((unsigned)rcrs.texture_blend_mode);
-			else
-				defines.erase("TEXTURE_BLEND_MODE");
-			if (rcrs.texture_tile_from_center)
-				defines["TEXTURE_TILE_FROM_CENTER"] = "1";
-			else
-				defines.erase("TEXTURE_TILE_FROM_CENTER");
-
-			if (rcrs.texture_use_reference_length)
-				defines["TEXTURE_USE_REFERENCE_LENGTH"] = "1";
-			else
-				defines.erase("TEXTURE_USE_REFERENCE_LENGTH");
-			if (rcrs.enable_ambient_occlusion)
-				defines["ENABLE_AMBIENT_OCCLUSION"] = "1";
-			else
-				defines.erase("ENABLE_AMBIENT_OCCLUSION");
+			shader_code::set_define(defines, "ENABLE_TEXTURING", rcrs.enable_texturing, false);
+			shader_code::set_define(defines, "ENABLE_TEXTURING", rcrs.texture_blend_mode, rounded_cone_render_style::TBM_MIX);
+			shader_code::set_define(defines, "TEXTURE_TILE_FROM_CENTER", rcrs.texture_tile_from_center, false);
+			shader_code::set_define(defines, "TEXTURE_USE_REFERENCE_LENGTH", rcrs.texture_use_reference_length, false);
+			shader_code::set_define(defines, "ENABLE_AMBIENT_OCCLUSION", rcrs.enable_ambient_occlusion, false);
 		}
 		bool rounded_cone_renderer::build_shader_program(context& ctx, shader_program& prog, const shader_define_map& defines)
 		{
