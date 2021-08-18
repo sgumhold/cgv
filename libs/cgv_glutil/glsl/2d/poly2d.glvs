@@ -1,0 +1,19 @@
+#version 150
+
+in vec2 position;
+in vec4 color;
+
+uniform vec2 resolution;
+
+out vec4 col;
+
+void main() {
+	
+	col = color;
+
+	// transform to window space
+	vec2 pos = (2.0*position) / resolution;
+	pos -= 1.0;
+
+	gl_Position = vec4(pos, 0.0, 1.0);
+}

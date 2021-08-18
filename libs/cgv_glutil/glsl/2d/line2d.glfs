@@ -1,0 +1,65 @@
+#version 430
+
+#define USE_ROUNDED_CAPS 0
+
+//***** begin interface of fragment2d.glfs ***********************************
+vec4 get_color();
+void override_color(vec4 color);
+void finish_fragment2d(in vec2 texcoords);
+void finish_fragment2d();
+//***** end interface of fragment2d.glfs ***********************************
+
+#if USE_ROUNDED_CAPS == 0
+in vec4 color_fs;
+#else
+in flat vec4 color0_fs;
+in flat vec4 color1_fs;
+#endif
+in vec2 tex_coord_fs;
+in flat float length_fs;
+
+/** 2d oriented box and segment sdfs are from:
+	https://www.iquilezles.org/www/articles/distfunctions2d/distfunctions2d.htm
+*/
+float sd_box(in vec2 p, in vec2 b) {
+    vec2 d = abs(p) - b;
+    return length(max(d, 0.0)) + min(max(d.x, d.y), 0.0);
+}
+
+float sd_segment(in vec2 p, in vec2 a, in vec2 b) {
+    vec2 pa = p - a, ba = b - a;
+    float h = clamp(dot(pa, ba) / dot(ba, ba), 0.0, 1.0);
+    return length(pa - ba * h);
+}
+
+void main() {
+
+#if USE_ROUNDED_CAPS == 0
+	vec2 p = 2.0 * tex_coord_fs - 1.0;
+	float dist = 1.0 + sd_box(p, vec2(2.0*length_fs, 1.0));
+	
+	vec4 color = color_fs;
+
+	float delta = fwidth(dist);
+	float alpha = smoothstep(1.0 - delta, 1.0, dist);
+	color.a *= 1.0-alpha;
+
+	override_color(color);
+	finish_fragment2d();
+#else
+	vec2 p = tex_coord_fs;
+	float dist = sd_segment(p, vec2(0.0, 0.5), vec2(length_fs, 0.5));
+	if(dist > 0.5) discard;
+
+	//float t = (tex_coord_fs.x - 0.5) / (length_fs - 1.0);
+	float t = tex_coord_fs.x / length_fs;
+	vec4 color = mix(color0_fs, color1_fs, clamp(t, 0.0, 1.0));
+
+	float delta = fwidth(dist);
+	float alpha = smoothstep(0.5 - delta, 0.5, dist);
+	color.a *= 1.0-alpha;
+
+	override_color(color);
+	finish_fragment2d();
+#endif
+}

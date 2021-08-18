@@ -1,0 +1,46 @@
+#version 150
+
+uniform sampler2D tex;
+
+uniform vec4 color;
+uniform bool use_color = true;
+uniform bool use_blending = false;
+uniform bool apply_gamma = true;
+uniform vec2 tex_scaling = vec2(1.0);
+
+out vec4 frag_color;
+
+vec4 final_color = color;
+bool force_use_color = use_color;
+
+// returns the current color that will be used when use_color is enabled
+vec4 get_color() {
+	return final_color;
+}
+
+// overrides the color that will be used when use_color is enabled
+void override_color(vec4 color) {
+	final_color = color;
+}
+
+// output a fragemnt with the final color or the color from the texture if use_color is disabled
+void finish_fragment2d(in vec2 texcoords) {
+	
+	if(force_use_color)
+		frag_color = final_color;
+	else
+		frag_color = vec4(texture(tex, tex_scaling * texcoords).rgba);
+
+	if(apply_gamma)
+		frag_color.rgb = clamp(pow(frag_color.rgb, vec3(2.2)), 0.0, 0.9999999);
+
+	if(!use_blending)
+		frag_color.a = 1.0;
+}
+
+// output a fragment with the color given by the uniform variable (no texturing)
+void finish_fragment2d() {
+	
+	force_use_color = true;
+	finish_fragment2d(vec2(0.0));
+}
