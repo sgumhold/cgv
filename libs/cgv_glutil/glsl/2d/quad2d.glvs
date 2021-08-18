@@ -1,0 +1,32 @@
+#version 150
+
+const vec2 corners[4] = vec2[](
+	vec2(0.0, 0.0),
+	vec2(1.0, 0.0),
+	vec2(0.0, 1.0),
+	vec2(1.0, 1.0)
+);
+
+uniform vec2 resolution;
+uniform vec2 position;
+uniform vec2 size;
+
+out vec2 tex_coord;
+
+void main() {
+	int id = gl_VertexID;
+	vec2 corner = corners[id];
+
+	tex_coord = corner;
+
+	// transform to pixel coordinates
+	corner *= size;
+	// offset
+	corner += position;
+
+	// transform to window space
+	corner = (2.0*corner) / resolution;
+	corner -= 1.0;
+
+	gl_Position = vec4(corner, 0.0, 1.0);
+}
