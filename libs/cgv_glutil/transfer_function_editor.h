@@ -23,6 +23,7 @@ class CGV_API overlay :
 	public cgv::render::render_types,
 	public cgv::gui::event_handler
 {
+
 public:
 	struct rect {
 		typedef cgv::media::axis_aligned_box<unsigned, 2> ubox2;
@@ -52,11 +53,22 @@ public:
 	};
 
 protected:
-
+	/// a pointer to the parent event handler
+	cgv::gui::event_handler* parent_handler = nullptr;
 
 public:
+	/// sets the parent event handler which gets called in the handle method (the parent shall always handle events first)
+	void set_parent_handler(cgv::gui::event_handler* parent_handler) {
+		this->parent_handler = parent_handler;
+	}
+
 	/// overload this method to handle events
-	virtual bool handle(cgv::gui::event& e) { return false; };
+	virtual bool handle_event(cgv::gui::event& e) { return false; };
+
+	/// finalize the handle method to prevent overloading in implementations of this class, use handle_events instead
+	virtual bool handle(cgv::gui::event& e) final {
+		return parent_handler->handle(e);
+	};
 	/// overload to stream help information to the given output stream
 	virtual void stream_help(std::ostream& os) {};
 
@@ -341,12 +353,12 @@ protected:
 	point* dragged_point = nullptr;
 	vec2 offset_pos;
 
-	void add_point(context& ctx, const vec2& pos);
-	bool remove_point(context& ctx, const point* ptr);
+	void add_point(const vec2& pos);
+	void remove_point(const point* ptr);
 	point* get_hit_point(const vec2& pos);
 	void init_transfer_function_texture(context& ctx);
-	void update_all_transfer_functions(context& ctx);
-	void update_transfer_function(context& ctx);
+	void update();
+	void update_transfer_function();
 
 	bool load_from_xml(const std::string& file_name);
 	bool save_to_xml(const std::string& file_name);
@@ -361,7 +373,7 @@ public:
 	bool self_reflect(cgv::reflect::reflection_handler& _rh);
 	void stream_help(std::ostream& os) {}
 
-	bool handle(cgv::gui::event& e);
+	bool handle_event(cgv::gui::event& e);
 	void on_set(void* member_ptr);
 
 	bool init(cgv::render::context& ctx);

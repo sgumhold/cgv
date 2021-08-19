@@ -67,18 +67,19 @@ bool transfer_function_editor::self_reflect(cgv::reflect::reflection_handler& _r
 	return _rh.reflect_member("file_name", file_name);
 }
 
-bool transfer_function_editor::handle(cgv::gui::event& e) {
+bool transfer_function_editor::handle_event(cgv::gui::event& e) {
 
 	// return true if the event gets handled and stopped here or false if you want to pass it to the next plugin
 	unsigned et = e.get_kind();
 	unsigned char modifiers = e.get_modifiers();
 
-	context* ctx_ptr = get_context();
-
-	if(!show || !ctx_ptr)
+	if(!show)
 		return false;
 
-	if(et == cgv::gui::EID_MOUSE) {
+	if(et == cgv::gui::EID_KEY) {
+		cgv::gui::key_event& ke = (cgv::gui::key_event&) e;
+		std::cout << "tf_editor:: " << ke.get_key() << std::endl;
+	} else if(et == cgv::gui::EID_MOUSE) {
 		cgv::gui::mouse_event& me = (cgv::gui::mouse_event&) e;
 		cgv::gui::MouseAction ma = me.get_action();
 		
@@ -102,53 +103,42 @@ bool transfer_function_editor::handle(cgv::gui::event& e) {
 		}
 
 		if(me.get_button_state() & cgv::gui::MouseButton::MB_LEFT_BUTTON) {
-			bool is_on_overlay = layout.is_hit(mpos);
-
-			if(is_on_overlay && me.get_button() == cgv::gui::MouseButton::MB_LEFT_BUTTON) {
-				has_captured_mouse = true;
-			}
-
-			if(is_on_overlay || has_captured_mouse) {
-				if(ma == cgv::gui::MouseAction::MA_PRESS && modifiers > 0) {
-					switch(modifiers) {
-					case cgv::gui::EM_CTRL:
-						if(!get_hit_point(mpos))
-							add_point(*ctx_ptr, mpos);
-						break;
-					case cgv::gui::EM_ALT:
-					{
-						point* hit_point = get_hit_point(mpos);
-						if(hit_point)
-							if(remove_point(*ctx_ptr, hit_point))
-								update_transfer_function(*ctx_ptr);
-						if(hit_point == selected_point) {
-							selected_point = nullptr;
-							post_recreate_gui();
-						}
-					}
+			if(ma == cgv::gui::MouseAction::MA_PRESS && modifiers > 0) {
+				switch(modifiers) {
+				case cgv::gui::EM_CTRL:
+					if(!get_hit_point(mpos))
+						add_point(mpos);
 					break;
-					}
-				} else {
-					if(dragged_point) {
-						dragged_point->pos = mpos + offset_pos;
-						dragged_point->update_val(layout, opacity_scale_exponent);
-						update_transfer_function(*ctx_ptr);
-					} else {
-						if(ma == cgv::gui::MouseAction::MA_PRESS) {
-							dragged_point = get_hit_point(mpos);
-							if(dragged_point)
-								offset_pos = dragged_point->pos - mpos;
-							selected_point = dragged_point;
-							post_recreate_gui();
-						}
+				case cgv::gui::EM_ALT:
+				{
+					point* hit_point = get_hit_point(mpos);
+					if(hit_point)
+						remove_point(hit_point);
+					if(hit_point == selected_point) {
+						selected_point = nullptr;
+						post_recreate_gui();
 					}
 				}
-
-				post_redraw();
-				return true;
+				break;
+				}
+			} else {
+				if(dragged_point) {
+					dragged_point->pos = mpos + offset_pos;
+					dragged_point->update_val(layout, opacity_scale_exponent);
+					update_transfer_function();
+				} else {
+					if(ma == cgv::gui::MouseAction::MA_PRESS) {
+						dragged_point = get_hit_point(mpos);
+						if(dragged_point)
+							offset_pos = dragged_point->pos - mpos;
+						selected_point = dragged_point;
+						post_recreate_gui();
+					}
+				}
 			}
 
-			return has_captured_mouse;
+			post_redraw();
+			return true;
 		}
 
 		return false;
@@ -169,18 +159,20 @@ void transfer_function_editor::on_set(void* member_ptr) {
 		//	file_name = debug_file_name + "/" + file_name;
 		//}
 #endif
-		if(!load_from_xml(file_name)) {
+		if(!load_from_xml(file_name))
 			tfc = tf_container();
-		}
 
-		context* ctx_ptr = get_context();
-		if(ctx_ptr)
-			update_all_transfer_functions(*ctx_ptr);
-
+		update();
 		post_recreate_gui();
 	}
 
 	if(member_ptr == &save_file_name) {
+		std::string extension = cgv::utils::to_upper(cgv::utils::file::get_extension(save_file_name));
+		if(extension == "")
+			save_file_name += ".xml";
+		else if(extension == "XML") {
+			finish
+		}
 		if(cgv::utils::to_upper(cgv::utils::file::get_extension(save_file_name)) == "XML") {
 			if(save_to_xml(save_file_name)) {
 				file_name = save_file_name;
@@ -209,17 +201,13 @@ void transfer_function_editor::on_set(void* member_ptr) {
 
 	if(member_ptr == &opacity_scale_exponent) {
 		opacity_scale_exponent = cgv::math::clamp(opacity_scale_exponent, 1.0f, 5.0f);
-		context* ctx_ptr = get_context();
-		if(ctx_ptr)
-			update_all_transfer_functions(*ctx_ptr);
+		update();
 	}
 
 	auto& points = tfc.points;
 	for(unsigned i = 0; i < points.size(); ++i) {
 		if(member_ptr == &points[i].col) {
-			context* ctx_ptr = get_context();
-			if(ctx_ptr)
-				update_transfer_function(*ctx_ptr);
+			update_transfer_function();
 			break;
 		}
 	}
@@ -338,7 +326,7 @@ void transfer_function_editor::init_frame(cgv::render::context& ctx) {
 		bg_prog.set_uniform(ctx, "size", vec2(layout.editor_rect.size()));
 		bg_prog.disable(ctx);
 
-		update_all_transfer_functions(ctx);
+		update();
 		update_layout = false;
 	}
 }
@@ -565,7 +553,7 @@ bool transfer_function_editor::set_histogram(const std::vector<unsigned>& data) 
 	return true;
 }
 
-void transfer_function_editor::add_point(context& ctx, const vec2& pos) {
+void transfer_function_editor::add_point(const vec2& pos) {
 
 	point p;
 	p.pos = pos - p.radius;
@@ -573,13 +561,13 @@ void transfer_function_editor::add_point(context& ctx, const vec2& pos) {
 	p.col = tfc.tf.interpolate_color(p.val.x());
 	tfc.points.push_back(p);
 
-	update_transfer_function(ctx);
+	update_transfer_function();
 }
 
-bool transfer_function_editor::remove_point(context& ctx, const point* ptr) {
+void transfer_function_editor::remove_point(const point* ptr) {
 
 	if(tfc.points.size() < 3)
-		return false;
+		return;
 
 	bool removed = false;
 	std::vector<point> next_points;
@@ -590,7 +578,9 @@ bool transfer_function_editor::remove_point(context& ctx, const point* ptr) {
 			removed = true;
 	}
 	tfc.points = std::move(next_points);
-	return removed;
+	
+	if(removed)
+		update_transfer_function();
 }
 
 transfer_function_editor::point* transfer_function_editor::get_hit_point(const transfer_function_editor::vec2& pos) {
@@ -616,19 +606,23 @@ void transfer_function_editor::init_transfer_function_texture(context& ctx) {
 	tf_tex.create(ctx, tf_dv, 0);
 }
 
-void transfer_function_editor::update_all_transfer_functions(context& ctx) {
+void transfer_function_editor::update() {
 
 	for(unsigned i = 0; i < tfc.points.size(); ++i)
 		tfc.points[i].update_pos(layout, opacity_scale_exponent);
 
-	update_transfer_function(ctx);
+	update_transfer_function();
 	
 	has_unsaved_changes = false;
 	on_set(&has_unsaved_changes);
 }
 
-void transfer_function_editor::update_transfer_function(context& ctx) {
+void transfer_function_editor::update_transfer_function() {
 	
+	context* ctx_ptr = get_context();
+	if(!ctx_ptr) return;
+	context& ctx = *ctx_ptr;
+
 	auto& tf = tfc.tf;
 	auto& tex = tfc.tex;
 	auto& points = tfc.points;
@@ -640,9 +634,6 @@ void transfer_function_editor::update_transfer_function(context& ctx) {
 	for(unsigned i = 0; i < points.size(); ++i) {
 		const point& p = points[i];
 		tf.add_color_point(p.val.x(), p.col);
-
-		//float opacity = std::pow(p.val.y(), 1.0f / opacity_scale_exponent);
-		//opacity = cgv::math::clamp(opacity, 0.0f, 1.0f);
 		tf.add_opacity_point(p.val.x(), p.val.y());
 	}
 
@@ -987,9 +978,6 @@ bool transfer_function_editor::save_to_xml(const std::string& file_name) {
 
 	const auto& points = tfc.points;
 
-	//content += tab + "<TransferFunction>\n";
-	//tab = "    ";
-
 	for(unsigned j = 0; j < points.size(); ++j) {
 		const point& p = points[j];
 
@@ -1001,8 +989,6 @@ bool transfer_function_editor::save_to_xml(const std::string& file_name) {
 		content += "opacity=\"" + std::to_string(p.val.y()) + "\"";
 		content += "/>\n";
 	}
-	//tab = "  ";
-	//content += tab + "</TransferFunction>\n";
 	
 	content += "</TransferFunction>\n";
 
