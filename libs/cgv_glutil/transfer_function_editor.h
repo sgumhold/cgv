@@ -23,7 +23,6 @@ class CGV_API overlay :
 	public cgv::render::render_types,
 	public cgv::gui::event_handler
 {
-
 public:
 	struct rect {
 		typedef cgv::media::axis_aligned_box<unsigned, 2> ubox2;
@@ -56,7 +55,15 @@ protected:
 	/// a pointer to the parent event handler
 	cgv::gui::event_handler* parent_handler = nullptr;
 
+	//ivec2 margin;
+	//rect container_rect;
+
 public:
+	//overlay() {
+	//	container_rect.set_pos(uvec2(0u));
+	//	container_rect.set_size(uvec2(0u));
+	//}
+
 	/// sets the parent event handler which gets called in the handle method (the parent shall always handle events first)
 	void set_parent_handler(cgv::gui::event_handler* parent_handler) {
 		this->parent_handler = parent_handler;
@@ -74,6 +81,12 @@ public:
 
 	virtual bool is_hit(const ivec2& mouse_pos) {
 		return false;
+
+		//const ivec2& pos = container_rect.pos();
+		//const ivec2& size = container_rect.size();
+		//return
+		//	mouse_pos.x() >= pos.x() && mouse_pos.x() <= pos.x() + size.x() &&
+		//	mouse_pos.y() >= pos.y() && mouse_pos.y() <= pos.y() + size.y();
 	};
 };
 
@@ -236,6 +249,7 @@ protected:
 		rect editor_rect;
 		rect color_scale_rect;
 
+		//void update(const rect& container_rect, const vec2& viewport_size) {
 		void update(const vec2& viewport_size) {
 
 			// viewport origin is in lower left corner
@@ -322,6 +336,61 @@ protected:
 	texture bg_tex;
 	texture tf_tex;
 
+	template<typename PosType, typename ColType>
+	struct plain_geometry {
+		struct vertex_type {
+			PosType pos;
+			ColType col;
+		};
+
+		std::vector<vertex_type> vertices;
+
+		type_descriptor pos_type_descriptor = cgv::render::element_descriptor_traits<PosType>::get_type_descriptor(PosType());
+		type_descriptor col_type_descriptor = cgv::render::element_descriptor_traits<ColType>::get_type_descriptor(ColType());
+
+		vertex_buffer vb;
+		attribute_array_binding aab;
+
+		size_t size() { return vertices.size(); }
+
+		void clear(context& ctx) {
+			vertices.clear();
+
+			if(vb.is_created())
+				vb.destruct(ctx);
+			if(aab.is_created())
+				aab.destruct(ctx);
+		}
+
+		bool create(context& ctx, const shader_program& prog) {
+			bool success = true;
+			success &= vb.create(ctx, &(vertices[0]), vertices.size());
+			success &= aab.create(ctx);
+			success &= aab.set_attribute_array(ctx, prog.get_position_index(), pos_type_descriptor, vb, 0, vertices.size(), sizeof(vertex_type));
+			success &= aab.set_attribute_array(ctx, prog.get_color_index(), col_type_descriptor, vb, sizeof(PosType), vertices.size(), sizeof(vertex_type));
+			return success;
+		}
+
+		void add(const PosType& pos, const ColType& col) {
+			vertices.push_back({ pos, col });
+		}
+
+		void render(context& ctx, PrimitiveType type, shader_program& prog) {
+			render(ctx, type, 0, size(), prog);
+		}
+
+		void render(context& ctx, PrimitiveType type, int offset, size_t count, shader_program& prog) {
+			if(aab.is_created()) {
+				prog.enable(ctx);
+				aab.enable(ctx);
+				GLenum mode = gl::map_to_gl(type);
+				glDrawArrays(mode, (GLint)offset, (GLsizei)count);
+				aab.disable(ctx);
+				prog.disable(ctx);
+			}
+		}
+	};
+
 	struct tf_container {
 		std::vector<point> points;
 
@@ -331,13 +400,8 @@ protected:
 		texture hist_tex;
 		unsigned hist_max;
 
-		std::vector<vertex> vertices;
-		vertex_buffer vb;
-		attribute_array_binding vertex_array;
-
-		std::vector<vertex2> line_vertices;
-		vertex_buffer line_vb;
-		attribute_array_binding line_vertex_array;
+		plain_geometry<vec2, rgba> triangles;
+		plain_geometry<vec2, rgb> lines;
 
 		tf_container() {
 

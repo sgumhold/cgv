@@ -163,17 +163,22 @@ void transfer_function_editor::on_set(void* member_ptr) {
 			tfc = tf_container();
 
 		update();
+
+		has_unsaved_changes = false;
+		on_set(&has_unsaved_changes);
+
 		post_recreate_gui();
 	}
 
 	if(member_ptr == &save_file_name) {
-		std::string extension = cgv::utils::to_upper(cgv::utils::file::get_extension(save_file_name));
-		if(extension == "")
-			save_file_name += ".xml";
-		else if(extension == "XML") {
-			finish
+		std::string extension = cgv::utils::file::get_extension(save_file_name);
+
+		if(extension == "") {
+			extension = "xml";
+			save_file_name += "." + extension;
 		}
-		if(cgv::utils::to_upper(cgv::utils::file::get_extension(save_file_name)) == "XML") {
+
+		if(cgv::utils::to_upper(extension) == "XML") {
 			if(save_to_xml(save_file_name)) {
 				file_name = save_file_name;
 				update_member(&file_name);
@@ -183,7 +188,6 @@ void transfer_function_editor::on_set(void* member_ptr) {
 				std::cout << "Error: Could not write transfer function to file: " << save_file_name << std::endl;
 			}
 		} else {
-			// TODO: suffix name with .xml if not done by user
 			std::cout << "Please specify a xml file name." << std::endl;
 		}
 	}
@@ -270,6 +274,10 @@ bool transfer_function_editor::init(cgv::render::context& ctx) {
 	if(!load_from_xml(file_name)) {
 		tfc = tf_container();
 	}
+	
+	has_unsaved_changes = false;
+	on_set(&has_unsaved_changes);
+
 	init_transfer_function_texture(ctx);
 
 	rgb a(0.6f);
@@ -326,7 +334,16 @@ void transfer_function_editor::init_frame(cgv::render::context& ctx) {
 		bg_prog.set_uniform(ctx, "size", vec2(layout.editor_rect.size()));
 		bg_prog.disable(ctx);
 
+		bool had_unsaved_changes = has_unsaved_changes;
+
 		update();
+
+		if(has_unsaved_changes != had_unsaved_changes) {
+			has_unsaved_changes = has_unsaved_changes;
+			has_unsaved_changes = false;
+			on_set(&has_unsaved_changes);
+		}
+
 		update_layout = false;
 	}
 }
@@ -418,29 +435,10 @@ void transfer_function_editor::draw(cgv::render::context& ctx) {
 	}
 
 	// draw transfer function area polygon
-	if(tfc.vertex_array.is_created()) {
-		shader_program& poly_prog = shaders.get("polygon");
-		poly_prog.enable(ctx);
-
-		tfc.vertex_array.enable(ctx);
-		glDrawArrays(GL_TRIANGLE_STRIP, 0, (GLsizei)tfc.vertices.size());
-		tfc.vertex_array.disable(ctx);
-
-		poly_prog.disable(ctx);
-	}
-
+	tfc.triangles.render(ctx, PT_TRIANGLE_STRIP, shaders.get("polygon"));
 	// draw transfer function lines
-	if(tfc.line_vertex_array.is_created()) {
-		shader_program& line_prog = shaders.get("line");
-		line_prog.enable(ctx);
-
-		tfc.line_vertex_array.enable(ctx);
-		glDrawArrays(GL_LINE_STRIP, 0, (GLsizei)tfc.line_vertices.size());
-		tfc.line_vertex_array.disable(ctx);
-
-		line_prog.disable(ctx);
-	}
-
+	tfc.lines.render(ctx, PT_LINE_STRIP, shaders.get("line"));
+	
 	// draw control points
 	shader_program& point_prog = shaders.get("ellipse");
 	point_prog.enable(ctx);
@@ -612,9 +610,6 @@ void transfer_function_editor::update() {
 		tfc.points[i].update_pos(layout, opacity_scale_exponent);
 
 	update_transfer_function();
-	
-	has_unsaved_changes = false;
-	on_set(&has_unsaved_changes);
 }
 
 void transfer_function_editor::update_transfer_function() {
@@ -626,9 +621,7 @@ void transfer_function_editor::update_transfer_function() {
 	auto& tf = tfc.tf;
 	auto& tex = tfc.tex;
 	auto& points = tfc.points;
-	auto& vertices = tfc.vertices;
-	auto& line_vertices = tfc.line_vertices;
-
+	
 	tf.clear();
 
 	for(unsigned i = 0; i < points.size(); ++i) {
@@ -673,13 +666,8 @@ void transfer_function_editor::update_transfer_function() {
 		tf_tex.replace(ctx, 0, dv1d);
 	}
 
-	vertices.clear();
-	tfc.vb.destruct(ctx);
-	tfc.vertex_array.destruct(ctx);
-
-	line_vertices.clear();
-	tfc.line_vb.destruct(ctx);
-	tfc.line_vertex_array.destruct(ctx);
+	tfc.triangles.clear(ctx);
+	tfc.lines.clear(ctx);
 
 	// TODO: return success
 	bool success = true;
@@ -721,58 +709,33 @@ void transfer_function_editor::update_transfer_function() {
 		const point& pl = sorted_points[0];
 		rgba coll = tf.interpolate(pl.val.x());
 
-		line_vertices.push_back({ vec2(layout.editor_rect.pos().x(), pl.center().y()) , rgb(coll) });
+		tfc.lines.add(vec2(layout.editor_rect.pos().x(), pl.center().y()), rgb(coll));
 
-		vertices.push_back({ vec2(layout.editor_rect.pos().x(), pl.center().y()) , coll });
-		vertices.push_back({ layout.editor_rect.pos(), coll });
+		tfc.triangles.add(vec2(layout.editor_rect.pos().x(), pl.center().y()), coll);
+		tfc.triangles.add(layout.editor_rect.pos(), coll);
 
 		for(unsigned i = 0; i < sorted_points.size(); ++i) {
 			vec2 pos = sorted_points[i].center();
 			rgba col = tf.interpolate(sorted_points[i].val.x());
 
-			line_vertices.push_back({ pos, rgb(col) });
+			tfc.lines.add(pos, rgb(col));
 
-			vertices.push_back({ pos, col });
-			vertices.push_back({ vec2(pos.x(), layout.editor_rect.pos().y()), col });
+			tfc.triangles.add(pos, col);
+			tfc.triangles.add(vec2(pos.x(), layout.editor_rect.pos().y()), col);
 		}
 
 		const point& pr = sorted_points[sorted_points.size() - 1];
 		rgba colr = tf.interpolate(pr.val.x());
 		vec2 max_pos = layout.editor_rect.pos() + vec2(1.0f, 0.0f) * layout.editor_rect.size();
 		
-		line_vertices.push_back({ vec2(max_pos.x(), pr.center().y()) , rgb(colr) });
+		tfc.lines.add(vec2(max_pos.x(), pr.center().y()), rgb(colr));
 
-		vertices.push_back({ vec2(max_pos.x(), pr.center().y()) , colr });
-		vertices.push_back({ max_pos, colr });
+		tfc.triangles.add(vec2(max_pos.x(), pr.center().y()), colr);
+		tfc.triangles.add(max_pos, colr);
 
-		type_descriptor vec2_type = cgv::render::element_descriptor_traits<cgv::render::render_types::vec2>::get_type_descriptor(vertices[0].pos);
-		type_descriptor	rgba_type = cgv::render::element_descriptor_traits<cgv::render::render_types::rgba>::get_type_descriptor(vertices[0].col);
-		type_descriptor	rgb_type = cgv::render::element_descriptor_traits<cgv::render::render_types::rgb>::get_type_descriptor(line_vertices[0].col);
+		tfc.triangles.create(ctx, shaders.get("polygon"));
+		tfc.lines.create(ctx, shaders.get("line"));
 
-		// TODO: replace if size is the same
-
-		// create buffer objects
-		if(tfc.vb.is_created())
-			tfc.vb.destruct(ctx);
-		if(tfc.vertex_array.is_created())
-			tfc.vertex_array.destruct(ctx);
-
-		shader_program& poly_prog = shaders.get("polygon");
-		success &= tfc.vb.create(ctx, &(vertices[0]), vertices.size());
-		success &= tfc.vertex_array.create(ctx);
-		success &= tfc.vertex_array.set_attribute_array(ctx, poly_prog.get_position_index(), vec2_type, tfc.vb, 0, vertices.size(), sizeof(vertex));
-		success &= tfc.vertex_array.set_attribute_array(ctx, poly_prog.get_color_index(), rgba_type, tfc.vb, sizeof(cgv::render::render_types::vec2), vertices.size(), sizeof(vertex));
-
-		if(tfc.line_vb.is_created())
-			tfc.line_vb.destruct(ctx);
-		if(tfc.line_vertex_array.is_created())
-			tfc.line_vertex_array.destruct(ctx);
-
-		shader_program& line_prog = shaders.get("line");
-		success &= tfc.line_vb.create(ctx, &(line_vertices[0]), line_vertices.size());
-		success &= tfc.line_vertex_array.create(ctx);
-		success &= tfc.line_vertex_array.set_attribute_array(ctx, line_prog.get_position_index(), vec2_type, tfc.line_vb, 0, line_vertices.size(), sizeof(vertex2));
-		success &= tfc.line_vertex_array.set_attribute_array(ctx, line_prog.get_color_index(), rgb_type, tfc.line_vb, sizeof(cgv::render::render_types::vec2), line_vertices.size(), sizeof(vertex2));
 	} else {
 		success = false;
 	}
