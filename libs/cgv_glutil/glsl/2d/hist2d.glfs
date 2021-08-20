@@ -9,7 +9,7 @@ void finish_fragment2d();
 
 uniform sampler1D hist_tex;
 
-uniform vec2 resolution;
+uniform ivec2 resolution;
 uniform vec4 border_color = vec4(1.0);
 uniform uint border_width_in_pixel = 0u;
 

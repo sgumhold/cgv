@@ -2,103 +2,20 @@
 
 #include <cgv/gui/event_handler.h>
 #include <cgv/gui/provider.h>
+#include <cgv/render/attribute_array_binding.h>
 #include <cgv/render/drawable.h>
 #include <cgv/render/shader_program.h>
 #include <cgv/render/texture.h>
+#include <cgv/render/vertex_buffer.h>
 #include <cgv_gl/box_renderer.h>
 #include <cgv_glutil/frame_buffer_container.h>
+#include <cgv_glutil/overlay.h>
 #include <cgv_glutil/shader_library.h>
-
-
-#include <cgv/render/vertex_buffer.h>
-#include <cgv/render/attribute_array_binding.h>
 
 #include "lib_begin.h"
 
 namespace cgv {
 namespace glutil{
-
-class CGV_API overlay :
-	public cgv::base::node,
-	public cgv::render::render_types,
-	public cgv::gui::event_handler
-{
-public:
-	struct rect {
-		typedef cgv::media::axis_aligned_box<unsigned, 2> ubox2;
-
-		ubox2 box;
-
-		rect() {
-			box = ubox2(uvec2(0), uvec2(0));
-		}
-
-		uvec2 pos() const {
-			return box.get_min_pnt();
-		}
-
-		uvec2 size() const {
-			return box.get_extent();
-		}
-
-		void set_pos(uvec2 p) {
-			box.ref_min_pnt() = p;
-		}
-
-		void set_size(uvec2 s) {
-			box.ref_max_pnt() = box.ref_min_pnt() + s;
-		}
-
-	};
-
-protected:
-	/// a pointer to the parent event handler
-	cgv::gui::event_handler* parent_handler = nullptr;
-
-	//ivec2 margin;
-	//rect container_rect;
-
-public:
-	//overlay() {
-	//	container_rect.set_pos(uvec2(0u));
-	//	container_rect.set_size(uvec2(0u));
-	//}
-
-	/// sets the parent event handler which gets called in the handle method (the parent shall always handle events first)
-	void set_parent_handler(cgv::gui::event_handler* parent_handler) {
-		this->parent_handler = parent_handler;
-	}
-
-	/// overload this method to handle events
-	virtual bool handle_event(cgv::gui::event& e) { return false; };
-
-	/// finalize the handle method to prevent overloading in implementations of this class, use handle_events instead
-	virtual bool handle(cgv::gui::event& e) final {
-		return parent_handler->handle(e);
-	};
-	/// overload to stream help information to the given output stream
-	virtual void stream_help(std::ostream& os) {};
-
-	virtual bool is_hit(const ivec2& mouse_pos) {
-		return false;
-
-		//const ivec2& pos = container_rect.pos();
-		//const ivec2& size = container_rect.size();
-		//return
-		//	mouse_pos.x() >= pos.x() && mouse_pos.x() <= pos.x() + size.x() &&
-		//	mouse_pos.y() >= pos.y() && mouse_pos.y() <= pos.y() + size.y();
-	};
-};
-
-
-
-
-
-
-
-
-
-
 
 class CGV_API transfer_function : public cgv::render::render_types {
 public:
@@ -212,67 +129,35 @@ public:
 
 
 
-class CGV_API transfer_function_editor :
-	public overlay,
-	public cgv::render::drawable,
-	public cgv::gui::provider
-{
+class CGV_API transfer_function_editor : public overlay {
 protected:
 	cgv::glutil::frame_buffer_container fbc;
 	cgv::glutil::shader_library shaders;
 
 	bool show;
-	bool left_mouse_button_pressed;
-	bool has_captured_mouse;
-
+	
 	float opacity_scale_exponent;
-
-	vec2 last_viewport_size;
 
 	std::string file_name;
 	std::string save_file_name;
 	bool has_unsaved_changes = false;
 
-	bool update_layout;
-	unsigned height;
-
 	struct layout_attributes {
-		unsigned margin;
-		unsigned padding;
-
-		unsigned color_scale_height = 30;
-
-		// width is set by viewport extent, height is set by user
-		rect container_rect;
+		int padding;
+		int total_height;
+		int color_scale_height;
 
 		// dependent members
 		rect editor_rect;
 		rect color_scale_rect;
 
-		//void update(const rect& container_rect, const vec2& viewport_size) {
-		void update(const vec2& viewport_size) {
+		void update(const ivec2& parent_size) {
 
-			// viewport origin is in lower left corner
-			container_rect.set_pos(uvec2(0u));
-			container_rect.set_size(uvec2(viewport_size.x() - 2 * margin, container_rect.size().y()));
-			
-			uvec2 pos = container_rect.pos();
-			uvec2 size = container_rect.size();
+			editor_rect.set_pos(ivec2(padding) + ivec2(0, color_scale_height + 1)); // add one for a small border
+			editor_rect.set_size(parent_size - 2 * padding - ivec2(0, color_scale_height + 1));
 
-			editor_rect.set_pos(pos + padding + uvec2(0, color_scale_height + 1)); // add one for small border
-			editor_rect.set_size(size - 2 * padding - uvec2(0, color_scale_height + 1));
-
-			color_scale_rect.set_pos(pos + padding);
-			color_scale_rect.set_size(uvec2(size.x() - 2*padding, color_scale_height));
-		}
-
-		bool is_hit(const ivec2& mpos) {
-
-			const ivec2& pos = container_rect.pos();
-			const ivec2& size = container_rect.size();
-			return
-				mpos.x() >= pos.x() && mpos.x() <= pos.x() + size.x() &&
-				mpos.y() >= pos.y() && mpos.y() <= pos.y() + size.y();
+			color_scale_rect.set_pos(ivec2(padding));
+			color_scale_rect.set_size(ivec2(parent_size.x() - 2*padding, color_scale_height));
 		}
 	} layout;
 	
@@ -439,6 +324,7 @@ public:
 
 	bool handle_event(cgv::gui::event& e);
 	void on_set(void* member_ptr);
+	//void on_overlay_layout_change();
 
 	bool init(cgv::render::context& ctx);
 	void init_frame(cgv::render::context& ctx);
@@ -447,7 +333,6 @@ public:
 	void create_gui();
 	void create_gui(cgv::gui::provider& p);
 
-	bool is_hit(const ivec2& mouse_pos);
 	void is_visible(bool visible);
 	void toggle_visibility();
 
