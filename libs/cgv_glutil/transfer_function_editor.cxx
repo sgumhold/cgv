@@ -23,17 +23,17 @@ transfer_function_editor::transfer_function_editor() {
 	file_name += "/res/default.xml";
 #endif
 
-	last_viewport_size = vec2(-1.0f);
+	layout.padding = 10;
+	layout.total_height = 200;
+	layout.color_scale_height = 30;
 
-	update_layout = false;
-	height = 200u;
-
-	layout.margin = 20u;
-	layout.padding = 10u;
-	layout.container_rect.set_size(uvec2(600u, height));
-
+	set_overlay_alignment(AO_START, AO_START);
+	set_overlay_stretch(SO_HORIZONTAL);
+	set_overlay_margin(ivec2(20));
+	set_overlay_size(ivec2(600u, layout.total_height));
+	
 	fbc.add_attachment("color", "flt32[R,G,B,A]");
-	fbc.set_size(layout.container_rect.size());
+	fbc.set_size(get_overlay_size());
 
 	shaders.add("rectangle", "rect2d.glpr");
 	shaders.add("ellipse", "ellipse2d.glpr");
@@ -43,8 +43,6 @@ transfer_function_editor::transfer_function_editor() {
 	shaders.add("background", "bg2d.glpr");
 
 	show = true;
-	left_mouse_button_pressed = false;
-	has_captured_mouse = false;
 
 	opacity_scale_exponent = 1.0f;
 }
@@ -83,13 +81,10 @@ bool transfer_function_editor::handle_event(cgv::gui::event& e) {
 		cgv::gui::mouse_event& me = (cgv::gui::mouse_event&) e;
 		cgv::gui::MouseAction ma = me.get_action();
 		
-		ivec2 mpos(me.get_x(), me.get_y());
-		mpos.y() = last_viewport_size.y() - mpos.y();
-		mpos -= layout.margin;
+		ivec2 mpos = get_local_mouse_pos(ivec2(me.get_x(), me.get_y()));
 
 		if(me.get_button() == cgv::gui::MouseButton::MB_LEFT_BUTTON) {
 			if(ma == cgv::gui::MouseAction::MA_RELEASE) {
-				has_captured_mouse = false;
 
 				if(dragged_point) {
 					selected_point = dragged_point;
@@ -198,14 +193,26 @@ void transfer_function_editor::on_set(void* member_ptr) {
 			ctrl->set("color", has_unsaved_changes ? "0xff6666" : "0xffffff");
 	}
 	
-	if(member_ptr == &height) {
-		layout.container_rect.set_size(ivec2(layout.container_rect.size().x(), height));
-		update_layout = true;
+	if(member_ptr == &layout.total_height) {
+		ivec2 size = get_overlay_size();
+		size.y() = layout.total_height;
+		set_overlay_size(size);
 	}
 
 	if(member_ptr == &opacity_scale_exponent) {
 		opacity_scale_exponent = cgv::math::clamp(opacity_scale_exponent, 1.0f, 5.0f);
+		
+		bool had_unsaved_changes = has_unsaved_changes;
+
+		// TODO: make individual update methods for positions texture and geometry
+		// split into updates that dont affect the data but only the gui widget and ones who affect the data
 		update();
+
+		if(has_unsaved_changes != had_unsaved_changes) {
+			has_unsaved_changes = has_unsaved_changes;
+			has_unsaved_changes = false;
+			on_set(&has_unsaved_changes);
+		}
 	}
 
 	auto& points = tfc.points;
@@ -219,6 +226,11 @@ void transfer_function_editor::on_set(void* member_ptr) {
 	update_member(member_ptr);
 	post_redraw();
 }
+
+//void transfer_function_editor::on_overlay_layout_change() {
+//
+//	FOO
+//}
 
 bool transfer_function_editor::init(cgv::render::context& ctx) {
 	
@@ -294,16 +306,12 @@ bool transfer_function_editor::init(cgv::render::context& ctx) {
 
 void transfer_function_editor::init_frame(cgv::render::context& ctx) {
 
-	vec2 viewport_size(ctx.get_width(), ctx.get_height());
-	if(last_viewport_size != viewport_size || update_layout) {
-		last_viewport_size = viewport_size;
+	if(ensure_overlay_layout(ctx)) {
+		ivec2 container_size = get_overlay_size();
+		layout.update(container_size);
 
-		layout.update(viewport_size);
-
-		fbc.set_size(layout.container_rect.size());
+		fbc.set_size(container_size);
 		fbc.ensure(ctx);
-
-		vec2 container_size(layout.container_rect.size());
 
 		shader_program& point_prog = shaders.get("ellipse");
 		point_prog.enable(ctx);
@@ -323,15 +331,15 @@ void transfer_function_editor::init_frame(cgv::render::context& ctx) {
 		shader_program& hist_prog = shaders.get("histogram");
 		hist_prog.enable(ctx);
 		hist_prog.set_uniform(ctx, "resolution", container_size);
-		hist_prog.set_uniform(ctx, "position", vec2(layout.padding));
-		hist_prog.set_uniform(ctx, "size", vec2(layout.editor_rect.size()));
+		hist_prog.set_uniform(ctx, "position", ivec2(layout.padding));
+		hist_prog.set_uniform(ctx, "size", layout.editor_rect.size());
 		hist_prog.disable(ctx);
 
 		shader_program& bg_prog = shaders.get("background");
 		bg_prog.enable(ctx);
 		bg_prog.set_uniform(ctx, "resolution", container_size);
-		bg_prog.set_uniform(ctx, "position", vec2(layout.editor_rect.pos()));
-		bg_prog.set_uniform(ctx, "size", vec2(layout.editor_rect.size()));
+		bg_prog.set_uniform(ctx, "position", ivec2(layout.editor_rect.pos()));
+		bg_prog.set_uniform(ctx, "size", layout.editor_rect.size());
 		bg_prog.disable(ctx);
 
 		bool had_unsaved_changes = has_unsaved_changes;
@@ -343,8 +351,6 @@ void transfer_function_editor::init_frame(cgv::render::context& ctx) {
 			has_unsaved_changes = false;
 			on_set(&has_unsaved_changes);
 		}
-
-		update_layout = false;
 	}
 }
 
@@ -362,7 +368,7 @@ void transfer_function_editor::draw(cgv::render::context& ctx) {
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-	vec2 container_size(layout.container_rect.size());
+	ivec2 container_size = get_overlay_size();
 
 	// draw container border
 	shader_program& rect_prog = shaders.get("rectangle");
@@ -370,22 +376,22 @@ void transfer_function_editor::draw(cgv::render::context& ctx) {
 	rect_prog.set_uniform(ctx, "resolution", container_size);
 	rect_prog.set_uniform(ctx, "use_color", true);
 	rect_prog.set_uniform(ctx, "use_blending", false);
-	rect_prog.set_uniform(ctx, "position", vec2(0.0f));
+	rect_prog.set_uniform(ctx, "position", ivec2(0));
 	rect_prog.set_uniform(ctx, "size", container_size);
 	rect_prog.set_uniform(ctx, "color", vec4(0.0f, 0.0f, 0.0f, 1.0f));
 
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 
 	// draw container background
-	rect_prog.set_uniform(ctx, "position", vec2(1.0f));
+	rect_prog.set_uniform(ctx, "position", ivec2(1));
 	rect_prog.set_uniform(ctx, "size", container_size - 2.0f);
 	rect_prog.set_uniform(ctx, "color", vec4(0.6f, 0.6f, 0.6f, 1.0f));
 	
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 
 	// draw inner border
-	rect_prog.set_uniform(ctx, "position", vec2(layout.padding - 1.0f));
-	rect_prog.set_uniform(ctx, "size", vec2(layout.container_rect.size() - 2*layout.padding) + 2.0f);
+	rect_prog.set_uniform(ctx, "position", ivec2(layout.padding - 1));
+	rect_prog.set_uniform(ctx, "size", container_size - 2*layout.padding + 2);
 	rect_prog.set_uniform(ctx, "color", vec4(0.48f, 0.48f, 0.48f, 1.0f));
 	
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
@@ -407,8 +413,8 @@ void transfer_function_editor::draw(cgv::render::context& ctx) {
 	// draw color scale texture
 	rect_prog.enable(ctx);
 	rect_prog.set_uniform(ctx, "use_color", false);
-	rect_prog.set_uniform(ctx, "position", vec2(layout.color_scale_rect.pos()));
-	rect_prog.set_uniform(ctx, "size", vec2(layout.color_scale_rect.size()));
+	rect_prog.set_uniform(ctx, "position", layout.color_scale_rect.pos());
+	rect_prog.set_uniform(ctx, "size", layout.color_scale_rect.size());
 	rect_prog.set_uniform(ctx, "tex_scaling", vec2(1.0f));
 	rect_prog.set_uniform(ctx, "apply_gamma", false);
 
@@ -423,8 +429,8 @@ void transfer_function_editor::draw(cgv::render::context& ctx) {
 		shader_program& hist_prog = shaders.get("histogram");
 		hist_prog.enable(ctx);
 		hist_prog.set_uniform(ctx, "hist_tex", 0);
-		hist_prog.set_uniform(ctx, "position", vec2(layout.editor_rect.pos()));
-		hist_prog.set_uniform(ctx, "size", vec2(layout.editor_rect.size()));
+		hist_prog.set_uniform(ctx, "position", layout.editor_rect.pos());
+		hist_prog.set_uniform(ctx, "size", layout.editor_rect.size());
 		hist_prog.set_uniform(ctx, "max_value", tfc.hist_max);
 
 		tfc.hist_tex.enable(ctx, 0);
@@ -445,13 +451,13 @@ void transfer_function_editor::draw(cgv::render::context& ctx) {
 	
 	for(unsigned i = 0; i < tfc.points.size(); ++i) {
 		const point& p = tfc.points[i];
-		point_prog.set_uniform(ctx, "position", p.pos);
-		point_prog.set_uniform(ctx, "size", vec2(2.0f * p.radius));
+		point_prog.set_uniform(ctx, "position", ivec2(p.pos + 0.5f));
+		point_prog.set_uniform(ctx, "size", ivec2(2 * p.radius));
 		point_prog.set_uniform(ctx, "color", rgba(0.0f, 0.0f, 0.0f, 1.0f));
 		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 
-		point_prog.set_uniform(ctx, "position", p.pos + 2.0f);
-		point_prog.set_uniform(ctx, "size", vec2(2.0f * p.radius - 4.0f));
+		point_prog.set_uniform(ctx, "position", ivec2(p.pos + 0.5f + 2.0f));
+		point_prog.set_uniform(ctx, "size", ivec2(2 * p.radius - 4));
 		point_prog.set_uniform(ctx, "color",
 			selected_point == &p ? vec4(0.25f, 0.5f, 1.0f, 1.0f) : vec4(0.9f, 0.9f, 0.9f, 1.0f)
 		);
@@ -467,8 +473,8 @@ void transfer_function_editor::draw(cgv::render::context& ctx) {
 
 	// draw frame buffer texture to screen
 	rect_prog.enable(ctx);
-	rect_prog.set_uniform(ctx, "resolution", last_viewport_size);
-	rect_prog.set_uniform(ctx, "position", vec2(layout.margin));
+	rect_prog.set_uniform(ctx, "resolution", get_viewport_size());
+	rect_prog.set_uniform(ctx, "position", get_overlay_position());
 	rect_prog.set_uniform(ctx, "size", container_size);
 	rect_prog.set_uniform(ctx, "use_color", false);
 	rect_prog.set_uniform(ctx, "use_blending", false);
@@ -485,13 +491,15 @@ void transfer_function_editor::create_gui() {
 
 	add_decorator("Transfer Function Editor", "heading", "level=2");
 
+	create_overlay_gui();
+
 	add_decorator("File", "heading", "level=3");
 	std::string filter = "XML Files (xml):*.xml|All Files:*.*";
 	add_gui("File", file_name, "file_name", "title='Open Transfer Function';filter='" + filter + "';save=false;w=136;small_icon=true;align_gui=' ';color=" + (has_unsaved_changes ? "0xff6666" : "0xffffff"));
 	add_gui("save_file_name", save_file_name, "file_name", "title='Save Transfer Function';filter='" + filter + "';save=true;control=false;small_icon=true");
 
 	add_decorator("Settings", "heading", "level=3");
-	add_member_control(this, "Height", height, "value_slider", "min=100;max=500;step=10;ticks=true");
+	add_member_control(this, "Height", layout.total_height, "value_slider", "min=100;max=500;step=10;ticks=true");
 	add_member_control(this, "Opacity Scale Exponent", opacity_scale_exponent, "value_slider", "min=1.0;max=5.0;step=0.001;ticks=true");
 
 	add_decorator("Control Points", "heading", "level=3");
@@ -504,14 +512,6 @@ void transfer_function_editor::create_gui() {
 void transfer_function_editor::create_gui(cgv::gui::provider& p) {
 
 	p.add_member_control(this, "Show", show, "check");
-}
-
-bool transfer_function_editor::is_hit(const ivec2& mouse_pos) {
-
-	ivec2 test_pos = mouse_pos;
-	test_pos.y() = last_viewport_size.y() - test_pos.y();
-	test_pos -= layout.margin;
-	return layout.is_hit(test_pos);
 }
 
 void transfer_function_editor::is_visible(bool visible) {

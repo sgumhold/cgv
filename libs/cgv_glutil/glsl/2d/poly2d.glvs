@@ -3,7 +3,7 @@
 in vec2 position;
 in vec4 color;
 
-uniform vec2 resolution;
+uniform ivec2 resolution;
 
 out vec4 col;
 
