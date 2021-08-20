@@ -3,6 +3,7 @@
 #include <unordered_map>
 
 #include <cgv/render/context.h>
+#include <cgv_gl/gl/gl_context.h>
 #include <cgv/render/frame_buffer.h>
 #include <cgv/render/render_types.h>
 #include <cgv/render/shader_program.h>
@@ -17,6 +18,11 @@ namespace glutil {
 /// provides a shader library that handles shader loading
 class CGV_API frame_buffer_container : public render_types
 {
+private:
+	ivec2 get_actual_size(context& ctx);
+
+	bool create_and_validate(context& ctx, const ivec2& size);
+
 protected:
 	struct attachment {
 		unsigned index;
@@ -37,9 +43,7 @@ protected:
 	frame_buffer fb;
 	unsigned index_counter = 0;
 	std::unordered_map<std::string, attachment> attachments;
-	uvec2 size;
-
-	bool create_and_validate(context& ctx);
+	ivec2 size;
 
 public:
 	frame_buffer_container();
@@ -48,8 +52,12 @@ public:
 
 	void clear(context& ctx);
 
-	// Set this to uvec2(0) to use the size from the context
-	void set_size(uvec2 size) { this->size = size; }
+	/** Sets the size of the framebuffer renderbuffers.
+		Set the x and/or y-component to <= 0 to use the width/height from the context.
+		Returns false if the size is larger than the maximum allowed render buffer size,
+		as given by the OpenGL API.
+	*/
+	bool set_size(const ivec2& size);
 
 	void add_attachment(const std::string& name, const std::string& format = "uint8[R,G,B]", TextureFilter tf = TF_NEAREST, bool attach = true);
 

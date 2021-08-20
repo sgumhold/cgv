@@ -6,7 +6,7 @@ namespace glutil {
 frame_buffer_container::frame_buffer_container() {
 
 	index_counter = 0;
-	size = uvec2(0);
+	size = ivec2(0);
 }
 
 frame_buffer_container::~frame_buffer_container() {
@@ -23,6 +23,19 @@ void frame_buffer_container::clear(context& ctx) {
 		attachment& a = (*it).second;
 		a.texture.destruct(ctx);
 	}
+}
+
+bool frame_buffer_container::set_size(const ivec2& size) {
+
+	GLint max_render_buffer_size;
+	glGetIntegerv(GL_MAX_RENDERBUFFER_SIZE_EXT, &max_render_buffer_size);
+
+	if(size.x() > max_render_buffer_size || size.y() > max_render_buffer_size) {
+		this->size = ivec2(-1);
+		return false;
+	}
+	this->size = size;
+	return true;
 }
 
 void frame_buffer_container::add_attachment(const std::string& name, const std::string& format, TextureFilter tf, bool attach) {
@@ -77,17 +90,11 @@ texture* frame_buffer_container::attachment_texture_ptr(const std::string& name)
 
 bool frame_buffer_container::ensure(context& ctx) {
 
-	unsigned w = size[0];
-	unsigned h = size[1];
+	ivec2 actual_size = get_actual_size(ctx);
 
-	if(size == uvec2(0)) {
-		w = ctx.get_width();
-		h = ctx.get_height();
-	}
-
-	if(!fb.is_created() || fb.get_width() != w || fb.get_height() != h) {
+	if(!fb.is_created() || fb.get_width() != actual_size.x() || fb.get_height() != actual_size.y()) {
 		clear(ctx);
-		if(!create_and_validate(ctx)) {
+		if(!create_and_validate(ctx, actual_size)) {
 			std::cerr << "Error: fbo not complete" << std::endl;
 			abort();
 		}
@@ -110,17 +117,9 @@ bool frame_buffer_container::disable(context& ctx) {
 	return fb.disable(ctx);
 }
 
-bool frame_buffer_container::create_and_validate(context& ctx) {
+bool frame_buffer_container::create_and_validate(context& ctx, const ivec2& size) {
 
-	unsigned w = size[0];
-	unsigned h = size[1];
-
-	if(size == uvec2(0)) {
-		w = ctx.get_width();
-		h = ctx.get_height();
-	}
-
-	fb.create(ctx, w, h);
+	fb.create(ctx, size.x(), size.y());
 
 	for(auto it = attachments.begin(); it != attachments.end(); ++it) {
 		attachment& a = (*it).second;
@@ -133,7 +132,7 @@ bool frame_buffer_container::create_and_validate(context& ctx) {
 		bool use_mipmaps = filter_specifier > 1;
 
 		a.texture = texture(a.format, mag_filter, a.tf);
-		a.texture.create(ctx, TT_2D, w, h);
+		a.texture.create(ctx, TT_2D, size.x(), size.y());
 
 		if(use_mipmaps)
 			a.texture.generate_mipmaps(ctx);
@@ -148,6 +147,16 @@ bool frame_buffer_container::create_and_validate(context& ctx) {
 	}
 
 	return fb.is_complete(ctx);
+}
+
+frame_buffer_container::ivec2 frame_buffer_container::get_actual_size(context& ctx) {
+
+	ivec2 actual_size(size);
+	if(size.x() <= 0)
+		actual_size.x() = ctx.get_width();
+	if(size.y() <= 0)
+		actual_size.y() = ctx.get_height();
+	return actual_size;
 }
 
 }
