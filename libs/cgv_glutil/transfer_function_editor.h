@@ -137,6 +137,7 @@ protected:
 	bool show;
 	
 	float opacity_scale_exponent;
+	cgv::type::DummyEnum resolution;
 
 	std::string file_name;
 	std::string save_file_name;
@@ -305,9 +306,14 @@ protected:
 	void add_point(const vec2& pos);
 	void remove_point(const point* ptr);
 	point* get_hit_point(const vec2& pos);
+	
 	void init_transfer_function_texture(context& ctx);
-	void update();
-	void update_transfer_function();
+
+
+	void sort_points();
+	void update_point_positions();
+	void update_transfer_function(bool is_data_change);
+	bool update_geometry();
 
 	bool load_from_xml(const std::string& file_name);
 	bool save_to_xml(const std::string& file_name);
@@ -324,7 +330,6 @@ public:
 
 	bool handle_event(cgv::gui::event& e);
 	void on_set(void* member_ptr);
-	//void on_overlay_layout_change();
 
 	bool init(cgv::render::context& ctx);
 	void init_frame(cgv::render::context& ctx);

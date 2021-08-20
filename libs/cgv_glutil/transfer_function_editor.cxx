@@ -45,6 +45,7 @@ transfer_function_editor::transfer_function_editor() {
 	show = true;
 
 	opacity_scale_exponent = 1.0f;
+	resolution = (cgv::type::DummyEnum)512;
 }
 
 bool transfer_function_editor::on_exit_request() {
@@ -120,7 +121,7 @@ bool transfer_function_editor::handle_event(cgv::gui::event& e) {
 				if(dragged_point) {
 					dragged_point->pos = mpos + offset_pos;
 					dragged_point->update_val(layout, opacity_scale_exponent);
-					update_transfer_function();
+					update_transfer_function(true);
 				} else {
 					if(ma == cgv::gui::MouseAction::MA_PRESS) {
 						dragged_point = get_hit_point(mpos);
@@ -157,11 +158,12 @@ void transfer_function_editor::on_set(void* member_ptr) {
 		if(!load_from_xml(file_name))
 			tfc = tf_container();
 
-		update();
+		update_point_positions();
+		update_transfer_function(false);
 
 		has_unsaved_changes = false;
 		on_set(&has_unsaved_changes);
-
+		
 		post_recreate_gui();
 	}
 
@@ -201,24 +203,23 @@ void transfer_function_editor::on_set(void* member_ptr) {
 
 	if(member_ptr == &opacity_scale_exponent) {
 		opacity_scale_exponent = cgv::math::clamp(opacity_scale_exponent, 1.0f, 5.0f);
-		
-		bool had_unsaved_changes = has_unsaved_changes;
 
-		// TODO: make individual update methods for positions texture and geometry
-		// split into updates that dont affect the data but only the gui widget and ones who affect the data
-		update();
+		update_point_positions();
+		sort_points();
+		update_geometry();
+	}
 
-		if(has_unsaved_changes != had_unsaved_changes) {
-			has_unsaved_changes = has_unsaved_changes;
-			has_unsaved_changes = false;
-			on_set(&has_unsaved_changes);
-		}
+	if(member_ptr == &resolution) {
+		context* ctx_ptr = get_context();
+		if(ctx_ptr)
+			init_transfer_function_texture(*ctx_ptr);
+		update_transfer_function(false);
 	}
 
 	auto& points = tfc.points;
 	for(unsigned i = 0; i < points.size(); ++i) {
 		if(member_ptr == &points[i].col) {
-			update_transfer_function();
+			update_transfer_function(true);
 			break;
 		}
 	}
@@ -226,11 +227,6 @@ void transfer_function_editor::on_set(void* member_ptr) {
 	update_member(member_ptr);
 	post_redraw();
 }
-
-//void transfer_function_editor::on_overlay_layout_change() {
-//
-//	FOO
-//}
 
 bool transfer_function_editor::init(cgv::render::context& ctx) {
 	
@@ -287,10 +283,8 @@ bool transfer_function_editor::init(cgv::render::context& ctx) {
 		tfc = tf_container();
 	}
 	
-	has_unsaved_changes = false;
-	on_set(&has_unsaved_changes);
-
 	init_transfer_function_texture(ctx);
+	update_transfer_function(false);
 
 	rgb a(0.6f);
 	rgb b(0.8f);
@@ -342,15 +336,9 @@ void transfer_function_editor::init_frame(cgv::render::context& ctx) {
 		bg_prog.set_uniform(ctx, "size", layout.editor_rect.size());
 		bg_prog.disable(ctx);
 
-		bool had_unsaved_changes = has_unsaved_changes;
-
-		update();
-
-		if(has_unsaved_changes != had_unsaved_changes) {
-			has_unsaved_changes = has_unsaved_changes;
-			has_unsaved_changes = false;
-			on_set(&has_unsaved_changes);
-		}
+		update_point_positions();
+		sort_points();
+		update_geometry();
 	}
 }
 
@@ -501,6 +489,7 @@ void transfer_function_editor::create_gui() {
 	add_decorator("Settings", "heading", "level=3");
 	add_member_control(this, "Height", layout.total_height, "value_slider", "min=100;max=500;step=10;ticks=true");
 	add_member_control(this, "Opacity Scale Exponent", opacity_scale_exponent, "value_slider", "min=1.0;max=5.0;step=0.001;ticks=true");
+	add_member_control(this, "Resolution", resolution, "dropdown", "enums='2=2,4=4,8=8,16=16,32=32,64=64,128=128,256=256,512=512,1024=1024,2048=2048'");
 
 	add_decorator("Control Points", "heading", "level=3");
 	// TODO: add parameters for t and alpha?
@@ -559,7 +548,7 @@ void transfer_function_editor::add_point(const vec2& pos) {
 	p.col = tfc.tf.interpolate_color(p.val.x());
 	tfc.points.push_back(p);
 
-	update_transfer_function();
+	update_transfer_function(true);
 }
 
 void transfer_function_editor::remove_point(const point* ptr) {
@@ -578,7 +567,7 @@ void transfer_function_editor::remove_point(const point* ptr) {
 	tfc.points = std::move(next_points);
 	
 	if(removed)
-		update_transfer_function();
+		update_transfer_function(true);
 }
 
 transfer_function_editor::point* transfer_function_editor::get_hit_point(const transfer_function_editor::vec2& pos) {
@@ -595,24 +584,59 @@ transfer_function_editor::point* transfer_function_editor::get_hit_point(const t
 
 void transfer_function_editor::init_transfer_function_texture(context& ctx) {
 
-	unsigned size = 512;
-	std::vector<uint8_t> data(size * 4, 0u);
+	std::vector<uint8_t> data(resolution * 4, 0u);
 
 	tf_tex.destruct(ctx);
-	cgv::data::data_view tf_dv = cgv::data::data_view(new cgv::data::data_format(size, TI_UINT8, cgv::data::CF_RGBA), data.data());
+	cgv::data::data_view tf_dv = cgv::data::data_view(new cgv::data::data_format(resolution, TI_UINT8, cgv::data::CF_RGBA), data.data());
 	tf_tex = texture("uint8[R,G,B,A]", TF_LINEAR, TF_LINEAR);
 	tf_tex.create(ctx, tf_dv, 0);
 }
 
-void transfer_function_editor::update() {
+void transfer_function_editor::sort_points() {
+
+	auto& points = tfc.points;
+
+	if(points.size() > 1) {
+		int dragged_point_idx = -1;
+		int selected_point_idx = -1;
+
+		std::vector<std::pair<point, int>> sorted(points.size());
+
+		for(unsigned i = 0; i < points.size(); ++i) {
+			sorted[i].first = points[i];
+			sorted[i].second = i;
+
+			if(dragged_point == &points[i])
+				dragged_point_idx = i;
+			if(selected_point == &points[i])
+				selected_point_idx = i;
+		}
+
+		std::sort(sorted.begin(), sorted.end(),
+			[](const auto& a, const auto& b) -> bool {
+				return a.first.val.x() < b.first.val.x();
+			}
+		);
+
+		for(unsigned i = 0; i < sorted.size(); ++i) {
+			points[i] = sorted[i].first;
+			if(dragged_point_idx == sorted[i].second) {
+				dragged_point = &points[i];
+			}
+			if(selected_point_idx == sorted[i].second) {
+				selected_point = &points[i];
+			}
+		}
+	}
+}
+
+void transfer_function_editor::update_point_positions() {
 
 	for(unsigned i = 0; i < tfc.points.size(); ++i)
 		tfc.points[i].update_pos(layout, opacity_scale_exponent);
-
-	update_transfer_function();
 }
 
-void transfer_function_editor::update_transfer_function() {
+void transfer_function_editor::update_transfer_function(bool is_data_change) {
 	
 	context* ctx_ptr = get_context();
 	if(!ctx_ptr) return;
@@ -622,6 +646,8 @@ void transfer_function_editor::update_transfer_function() {
 	auto& tex = tfc.tex;
 	auto& points = tfc.points;
 	
+	sort_points();
+
 	tf.clear();
 
 	for(unsigned i = 0; i < points.size(); ++i) {
@@ -632,7 +658,7 @@ void transfer_function_editor::update_transfer_function() {
 
 	std::vector<rgba> tf_data;
 
-	unsigned size = 512;
+	unsigned size = resolution;
 	float step = 1.0f / static_cast<float>(size - 1);
 
 	for(unsigned i = 0; i < size; ++i) {
@@ -666,82 +692,71 @@ void transfer_function_editor::update_transfer_function() {
 		tf_tex.replace(ctx, 0, dv1d);
 	}
 
-	tfc.triangles.clear(ctx);
-	tfc.lines.clear(ctx);
+	if(is_data_change) {
+		has_unsaved_changes = true;
+		on_set(&has_unsaved_changes);
+	} else {
+		bool had_unsaved_changes = has_unsaved_changes;
+		if(has_unsaved_changes != had_unsaved_changes) {
+			has_unsaved_changes = has_unsaved_changes;
+			has_unsaved_changes = false;
+			on_set(&has_unsaved_changes);
+		}
+	}
 
-	// TODO: return success
+	update_geometry();
+}
+
+bool transfer_function_editor::update_geometry() {
+
+	context* ctx_ptr = get_context();
+	if(!ctx_ptr) return false;
+	context& ctx = *ctx_ptr;
+
+	auto& tf = tfc.tf;
+	auto& points = tfc.points;
+	auto& lines = tfc.lines;
+	auto& triangles = tfc.triangles;
+
+	triangles.clear(ctx);
+	lines.clear(ctx);
+
 	bool success = true;
 
 	if(points.size() > 1) {
-		int dragged_point_idx = -1;
-		int selected_point_idx = -1;
-
-		std::vector<std::pair<point, int>> sorted(points.size());
-
-		for(unsigned i = 0; i < points.size(); ++i) {
-			sorted[i].first = points[i];
-			sorted[i].second = i;
-
-			if(dragged_point == &points[i])
-				dragged_point_idx = i;
-			if(selected_point == &points[i])
-				selected_point_idx = i;
-		}
-
-		std::sort(sorted.begin(), sorted.end(),
-			[](const auto& a, const auto& b) -> bool {
-				return a.first.val.x() < b.first.val.x();
-			}
-		);
-
-		for(unsigned i = 0; i < sorted.size(); ++i) {
-			points[i] = sorted[i].first;
-			if(dragged_point_idx == sorted[i].second) {
-				dragged_point = &points[i];
-			}
-			if(selected_point_idx == sorted[i].second) {
-				selected_point = &points[i];
-			}
-		}
-
-		std::vector<point>& sorted_points = points;
-
-		const point& pl = sorted_points[0];
+		const point& pl = points[0];
 		rgba coll = tf.interpolate(pl.val.x());
 
-		tfc.lines.add(vec2(layout.editor_rect.pos().x(), pl.center().y()), rgb(coll));
+		lines.add(vec2(layout.editor_rect.pos().x(), pl.center().y()), rgb(coll));
 
-		tfc.triangles.add(vec2(layout.editor_rect.pos().x(), pl.center().y()), coll);
-		tfc.triangles.add(layout.editor_rect.pos(), coll);
+		triangles.add(vec2(layout.editor_rect.pos().x(), pl.center().y()), coll);
+		triangles.add(layout.editor_rect.pos(), coll);
 
-		for(unsigned i = 0; i < sorted_points.size(); ++i) {
-			vec2 pos = sorted_points[i].center();
-			rgba col = tf.interpolate(sorted_points[i].val.x());
+		for(unsigned i = 0; i < points.size(); ++i) {
+			vec2 pos = points[i].center();
+			rgba col = tf.interpolate(points[i].val.x());
 
-			tfc.lines.add(pos, rgb(col));
+			lines.add(pos, rgb(col));
 
-			tfc.triangles.add(pos, col);
-			tfc.triangles.add(vec2(pos.x(), layout.editor_rect.pos().y()), col);
+			triangles.add(pos, col);
+			triangles.add(vec2(pos.x(), layout.editor_rect.pos().y()), col);
 		}
 
-		const point& pr = sorted_points[sorted_points.size() - 1];
+		const point& pr = points[points.size() - 1];
 		rgba colr = tf.interpolate(pr.val.x());
 		vec2 max_pos = layout.editor_rect.pos() + vec2(1.0f, 0.0f) * layout.editor_rect.size();
-		
-		tfc.lines.add(vec2(max_pos.x(), pr.center().y()), rgb(colr));
 
-		tfc.triangles.add(vec2(max_pos.x(), pr.center().y()), colr);
-		tfc.triangles.add(max_pos, colr);
+		lines.add(vec2(max_pos.x(), pr.center().y()), rgb(colr));
 
-		tfc.triangles.create(ctx, shaders.get("polygon"));
-		tfc.lines.create(ctx, shaders.get("line"));
+		triangles.add(vec2(max_pos.x(), pr.center().y()), colr);
+		triangles.add(max_pos, colr);
 
+		success &= triangles.create(ctx, shaders.get("polygon"));
+		success &= lines.create(ctx, shaders.get("line"));
 	} else {
 		success = false;
 	}
-
-	has_unsaved_changes = true;
-	on_set(&has_unsaved_changes);
+	return success;
 }
 
 // TODO: move these three methods to some string lib
