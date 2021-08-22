@@ -23,7 +23,7 @@ void override_color(vec4 color) {
 	final_color = color;
 }
 
-// output a fragemnt with the final color or the color from the texture if use_color is disabled
+// output a fragment with the final color or the color from the texture if use_color is disabled
 void finish_fragment2d(in vec2 texcoords) {
 	
 	if(force_use_color)

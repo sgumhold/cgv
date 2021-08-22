@@ -46,6 +46,14 @@ transfer_function_editor::transfer_function_editor() {
 
 	opacity_scale_exponent = 1.0f;
 	resolution = (cgv::type::DummyEnum)512;
+
+	show_histogram = true;
+	histogram_color = rgba(1.0f, 1.0f, 1.0f, 0.5f);
+	histogram_border_color = rgba(0.0f, 0.0f, 0.0f, 1.0f);
+	histogram_border_width = 0u;
+
+	show_cursor = false;
+	cursor_pos = ivec2(-100);
 }
 
 bool transfer_function_editor::on_exit_request() {
@@ -77,16 +85,37 @@ bool transfer_function_editor::handle_event(cgv::gui::event& e) {
 
 	if(et == cgv::gui::EID_KEY) {
 		cgv::gui::key_event& ke = (cgv::gui::key_event&) e;
-		std::cout << "tf_editor:: " << ke.get_key() << std::endl;
+		std::cout << ke.get_key() << std::endl;
+		if(ke.get_key() == cgv::gui::KEY_Left_Ctrl) {
+			if(ke.get_action() == cgv::gui::KA_PRESS) {
+				show_cursor = true;
+				post_redraw();
+			} else if(ke.get_action() == cgv::gui::KA_RELEASE) {
+				show_cursor = false;
+				post_redraw();
+			}
+		}
+		// no key action
 	} else if(et == cgv::gui::EID_MOUSE) {
 		cgv::gui::mouse_event& me = (cgv::gui::mouse_event&) e;
 		cgv::gui::MouseAction ma = me.get_action();
 		
 		ivec2 mpos = get_local_mouse_pos(ivec2(me.get_x(), me.get_y()));
 
+
+
+		if(ma == cgv::gui::MA_MOVE) {
+			if(show_cursor) {
+				cursor_pos = ivec2(me.get_x(), me.get_y());
+				post_redraw();
+			}
+		}
+
+
+
+
 		if(me.get_button() == cgv::gui::MouseButton::MB_LEFT_BUTTON) {
 			if(ma == cgv::gui::MouseAction::MA_RELEASE) {
-
 				if(dragged_point) {
 					selected_point = dragged_point;
 					dragged_point = nullptr;
@@ -263,9 +292,6 @@ bool transfer_function_editor::init(cgv::render::context& ctx) {
 
 	shader_program& hist_prog = shaders.get("histogram");
 	hist_prog.enable(ctx);
-	hist_prog.set_uniform(ctx, "color", rgba(1.0f, 1.0f, 1.0f, 0.5f));
-	hist_prog.set_uniform(ctx, "border_color", rgba(0.0f, 0.0f, 0.0f, 1.0f));
-	hist_prog.set_uniform(ctx, "border_width_in_pixel", 0u);
 	hist_prog.set_uniform(ctx, "use_blending", true);
 	hist_prog.set_uniform(ctx, "apply_gamma", false);
 	hist_prog.disable(ctx);
@@ -413,13 +439,17 @@ void transfer_function_editor::draw(cgv::render::context& ctx) {
 	rect_prog.disable(ctx);
 	
 	// draw histogranm texture
-	if(tfc.hist_tex.is_created()) {
+	if(show_histogram && tfc.hist_tex.is_created()) {
 		shader_program& hist_prog = shaders.get("histogram");
 		hist_prog.enable(ctx);
 		hist_prog.set_uniform(ctx, "hist_tex", 0);
 		hist_prog.set_uniform(ctx, "position", layout.editor_rect.pos());
 		hist_prog.set_uniform(ctx, "size", layout.editor_rect.size());
 		hist_prog.set_uniform(ctx, "max_value", tfc.hist_max);
+
+		hist_prog.set_uniform(ctx, "color", histogram_color);
+		hist_prog.set_uniform(ctx, "border_color", histogram_border_color);
+		hist_prog.set_uniform(ctx, "border_width_in_pixel", histogram_border_width);
 
 		tfc.hist_tex.enable(ctx, 0);
 		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
@@ -439,13 +469,17 @@ void transfer_function_editor::draw(cgv::render::context& ctx) {
 	
 	for(unsigned i = 0; i < tfc.points.size(); ++i) {
 		const point& p = tfc.points[i];
-		point_prog.set_uniform(ctx, "position", ivec2(p.pos + 0.5f));
-		point_prog.set_uniform(ctx, "size", ivec2(2 * p.radius));
+
+		ivec2 pos = p.get_render_position();
+		ivec2 size = p.get_render_size();
+
+		point_prog.set_uniform(ctx, "position", pos);
+		point_prog.set_uniform(ctx, "size", size);
 		point_prog.set_uniform(ctx, "color", rgba(0.0f, 0.0f, 0.0f, 1.0f));
 		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 
-		point_prog.set_uniform(ctx, "position", ivec2(p.pos + 0.5f + 2.0f));
-		point_prog.set_uniform(ctx, "size", ivec2(2 * p.radius - 4));
+		point_prog.set_uniform(ctx, "position", pos + 2);
+		point_prog.set_uniform(ctx, "size", size - 4);
 		point_prog.set_uniform(ctx, "color",
 			selected_point == &p ? vec4(0.25f, 0.5f, 1.0f, 1.0f) : vec4(0.9f, 0.9f, 0.9f, 1.0f)
 		);
@@ -473,6 +507,31 @@ void transfer_function_editor::draw(cgv::render::context& ctx) {
 	fbc.disable_attachment(ctx, "color");
 
 	rect_prog.disable(ctx);
+
+
+
+
+
+	if(show_cursor) {
+		static const rgb dnd_col(1.0f);
+
+		std::cout << "show" << std::endl;
+
+		float w = 0, s = ctx.get_current_font_size();
+		std::string dnd_drawtext = "+";
+
+		ivec2 pos = cursor_pos  - ivec2(20, 10);
+
+		// draw the text
+		ctx.push_pixel_coords();
+		ctx.set_color(dnd_col);
+		ctx.set_cursor(vecn(float(pos.x()), float(pos.y())), "", cgv::render::TA_TOP_LEFT);
+		ctx.output_stream() << dnd_drawtext;
+		ctx.output_stream().flush();
+		ctx.pop_pixel_coords();
+		//show_cursor = false;
+	}
+
 }
 
 void transfer_function_editor::create_gui() {
@@ -486,10 +545,25 @@ void transfer_function_editor::create_gui() {
 	add_gui("File", file_name, "file_name", "title='Open Transfer Function';filter='" + filter + "';save=false;w=136;small_icon=true;align_gui=' ';color=" + (has_unsaved_changes ? "0xff6666" : "0xffffff"));
 	add_gui("save_file_name", save_file_name, "file_name", "title='Save Transfer Function';filter='" + filter + "';save=true;control=false;small_icon=true");
 
-	add_decorator("Settings", "heading", "level=3");
-	add_member_control(this, "Height", layout.total_height, "value_slider", "min=100;max=500;step=10;ticks=true");
-	add_member_control(this, "Opacity Scale Exponent", opacity_scale_exponent, "value_slider", "min=1.0;max=5.0;step=0.001;ticks=true");
-	add_member_control(this, "Resolution", resolution, "dropdown", "enums='2=2,4=4,8=8,16=16,32=32,64=64,128=128,256=256,512=512,1024=1024,2048=2048'");
+	if(begin_tree_node("Settings", layout, false)) {
+		align("\a");
+		//add_decorator("Settings", "heading", "level=3");
+		add_member_control(this, "Height", layout.total_height, "value_slider", "min=100;max=500;step=10;ticks=true");
+		add_member_control(this, "Opacity Scale Exponent", opacity_scale_exponent, "value_slider", "min=1.0;max=5.0;step=0.001;ticks=true");
+		add_member_control(this, "Resolution", resolution, "dropdown", "enums='2=2,4=4,8=8,16=16,32=32,64=64,128=128,256=256,512=512,1024=1024,2048=2048'");
+		align("\b");
+		end_tree_node(layout);
+	}
+
+	if(begin_tree_node("Histogram", show_histogram, false)) {
+		align("\a");
+		add_member_control(this, "Show", show_histogram, "check");
+		add_member_control(this, "Fill Color", histogram_color, "");
+		add_member_control(this, "Border Color", histogram_border_color, "");
+		add_member_control(this, "Border Width", histogram_border_width, "value_slider", "min=0;max=10;step=1;ticks=true");
+		align("\b");
+		end_tree_node(show_histogram);
+	}
 
 	add_decorator("Control Points", "heading", "level=3");
 	// TODO: add parameters for t and alpha?
@@ -543,7 +617,7 @@ bool transfer_function_editor::set_histogram(const std::vector<unsigned>& data) 
 void transfer_function_editor::add_point(const vec2& pos) {
 
 	point p;
-	p.pos = pos - p.radius;
+	p.pos = pos - p.size;
 	p.update_val(layout, opacity_scale_exponent);
 	p.col = tfc.tf.interpolate_color(p.val.x());
 	tfc.points.push_back(p);
@@ -575,7 +649,7 @@ transfer_function_editor::point* transfer_function_editor::get_hit_point(const t
 	point* hit = nullptr;
 	for(unsigned i = 0; i < tfc.points.size(); ++i) {
 		point& p = tfc.points[i];
-		if(p.is_hit(pos))
+		if(p.is_inside(pos))
 			hit = &p;
 	}
 

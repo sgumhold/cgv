@@ -129,19 +129,41 @@ public:
 
 
 
+
+
+
+
+
+
+
+
+
+
 class CGV_API transfer_function_editor : public overlay {
 protected:
-	cgv::glutil::frame_buffer_container fbc;
-	cgv::glutil::shader_library shaders;
-
 	bool show;
 	
-	float opacity_scale_exponent;
-	cgv::type::DummyEnum resolution;
-
 	std::string file_name;
 	std::string save_file_name;
 	bool has_unsaved_changes = false;
+
+	cgv::glutil::frame_buffer_container fbc;
+	cgv::glutil::shader_library shaders;
+
+	float opacity_scale_exponent;
+	cgv::type::DummyEnum resolution;
+
+	bool show_histogram;
+	rgba histogram_color;
+	rgba histogram_border_color;
+	unsigned histogram_border_width;
+
+
+
+	bool show_cursor;
+	ivec2 cursor_pos;
+
+
 
 	struct layout_attributes {
 		int padding;
@@ -162,7 +184,56 @@ protected:
 		}
 	} layout;
 	
-	struct point {
+	struct draggable {
+		vec2 pos;
+		vec2 size;
+
+		enum ConstrainReference {
+			CR_CENTER,
+			CR_MIN_POINT,
+			CR_MAX_POINT,
+			CR_FULL_SIZE
+		} constrain_reference;
+
+		draggable() {
+			constrain_reference = CR_FULL_SIZE;
+		}
+
+		vec2 center() const {
+
+			return pos + size;
+		}
+
+		void apply_constraint(const rect& area) {
+
+			switch(constrain_reference) {
+			case CR_CENTER:
+				pos = cgv::math::clamp(pos, vec2(area.box.get_min_pnt()) - size, vec2(area.box.get_max_pnt()) - size);
+				break;
+			case CR_MIN_POINT:
+				pos = cgv::math::clamp(pos, vec2(area.box.get_min_pnt()), vec2(area.box.get_max_pnt()));
+				break;
+			case CR_MAX_POINT:
+				pos = cgv::math::clamp(pos, vec2(area.box.get_min_pnt()) - 2.0f*size, vec2(area.box.get_max_pnt()) - 2.0f*size);
+				break;
+			case CR_FULL_SIZE:
+				pos = cgv::math::clamp(pos, vec2(area.box.get_min_pnt()), vec2(area.box.get_max_pnt()) - 2.0f*size);
+				break;
+			default: break;
+			}
+		}
+
+		virtual bool is_inside(const ivec2& p) const {
+
+			vec2 a = pos;
+			vec2 b = pos + size;
+			return
+				p.x() >= a.x() && p.x() <= b.x() &&
+				p.y() >= a.y() && p.y() <= b.y();
+		}
+	};
+
+	/*struct point {
 		static constexpr float radius = 10.0f;
 		vec2 val;
 		vec2 pos;
@@ -207,16 +278,52 @@ protected:
 			float dist = length(mp - (pos + radius));
 			return dist <= radius;
 		}
-	};
+	};*/
 
-	struct vertex {
-		vec2 pos;
-		rgba col;
-	};
-
-	struct vertex2 {
-		vec2 pos;
+	struct point : public draggable {
+		vec2 val;
 		rgb col;
+
+		point() {
+			constrain_reference = CR_CENTER;
+			size = vec2(10.0f);
+		}
+
+		void update_val(const layout_attributes& la, const float scale_exponent) {
+
+			apply_constraint(la.editor_rect);
+
+			vec2 p = (pos + size) - la.editor_rect.pos();
+			val = p / la.editor_rect.size();
+			
+			val = cgv::math::clamp(val, 0.0f, 1.0f);
+			val.y() = cgv::math::clamp(std::pow(val.y(), scale_exponent), 0.0f, 1.0f);
+		}
+
+		void update_pos(const layout_attributes& la, const float scale_exponent) {
+
+			val = cgv::math::clamp(val, 0.0f, 1.0f);
+
+			vec2 t = val;
+
+			t.y() = cgv::math::clamp(std::pow(t.y(), 1.0f / scale_exponent), 0.0f, 1.0f);
+
+			pos = la.editor_rect.pos() + t * la.editor_rect.size() - size;
+		}
+
+		bool is_inside(const vec2& mp) const {
+
+			float dist = length(mp - center());
+			return dist <= size.x();
+		}
+
+		ivec2 get_render_position() const {
+			return ivec2(pos + 0.5f);
+		}
+
+		ivec2 get_render_size() const {
+			return 2 * ivec2(size);
+		}
 	};
 
 	texture bg_tex;
