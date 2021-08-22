@@ -6,6 +6,7 @@
 #include <iostream>
 #include <cmath>
 #include <cgv/type/standard_types.h>
+#include <cgv/math/functions.h>
 
 namespace cgv {
 	namespace math {
