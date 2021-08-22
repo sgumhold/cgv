@@ -23,15 +23,29 @@ void main() {
 
 	float height = texture(hist_tex, tex_coord.x).r / float(max_value);
 
-	if(tex_coord.y <= height) {
+	float border = 0.0f;
+
+	if(border_width_in_pixel > 0u)
+		border = float(border_width_in_pixel) / resolution.y;
+
+
+	if(tex_coord.y <= height + border) {
+		final_color = border_color;
+		
+		if(tex_coord.y <= height)
+			final_color = get_color();	
+	}
+
+
+	/*if(tex_coord.y <= height) {
 		final_color = get_color();
 
 		if(border_width_in_pixel > 0u) {
-			float border = float(border_width_in_pixel) * resolution.y;
+			float border = float(border_width_in_pixel) / resolution.y;
 			if(tex_coord.y >= height - border)
 				final_color = border_color;
 		}
-	}
+	}*/
 
 	override_color(final_color);
 	finish_fragment2d();
