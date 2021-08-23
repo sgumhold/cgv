@@ -1,4 +1,4 @@
-#version 150
+#version 450
 
 /*
 The following interface is implemented in this shader:
@@ -30,7 +30,6 @@ uniform vec4 color;
 uniform vec4 border_color = vec4(1.0);
 uniform float border_width = 0.0;
 uniform float border_radius = 0.0;
-
 uniform vec2 tex_scaling = vec2(1.0);
 
 // options
@@ -72,16 +71,32 @@ void finish_sdf_fragment2d(in float signed_distance, in vec2 texcoords) {
 	else
 		frag_color = vec4(texture(tex, tex_scaling * texcoords).rgba);
 
-	if(border_width > 0.0) {
-		float border_delta = fwidth(signed_distance + border_width);
-		float border_mix = smoothstep(0.5 - border_delta, 0.5, signed_distance + border_width);
-		frag_color = mix(frag_color, border_color, border_mix);
+	float dx = abs(dFdx(signed_distance));
+	float dy = abs(dFdy(signed_distance));
+		
+	// dirty hack to fix the differentiation errors introduced by dFdx and dFdy
+	if(dx < 0.05 && dy < 0.05) {
+		dx = 1.0;
+		dy = 0.0;
+	}
+	if(dx > 0.99 && dy > 0.99) {
+		dx = 1.0;
+		dy = 0.0;
 	}
 
-	float delta = fwidth(signed_distance);
+	float delta = dx + dy;
+
+	if(border_width > 0.0) {
+		float border_mix = smoothstep(0.5 - delta, 0.5, signed_distance + border_width);
+		frag_color = mix(frag_color, border_color, border_mix);	
+	}
+
+	// enable to show derivatives
+	//frag_color = vec4((border_width+1) * dx, (border_width+1) * dy, 0.0, 1.0);
+	
 	float alpha = smoothstep(0.5 - delta, 0.5, signed_distance);
 	frag_color.a *= 1.0-alpha;
-
+	
 	if(apply_gamma)
 		frag_color.rgb = clamp(pow(frag_color.rgb, vec3(2.2)), 0.0, 0.9999999);
 

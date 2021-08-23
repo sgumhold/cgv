@@ -33,7 +33,7 @@ void main() {
 		final_color = border_color;
 		
 		if(tex_coord.y <= height)
-			final_color = get_color();	
+			final_color = get_color();
 	}
 
 

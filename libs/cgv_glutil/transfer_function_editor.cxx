@@ -326,9 +326,9 @@ bool transfer_function_editor::init(cgv::render::context& ctx) {
 
 	shader_program& line_prog = shaders.get("line");
 	line_prog.enable(ctx);
-	line_prog.set_uniform(ctx, "use_blending", false);
+	line_prog.set_uniform(ctx, "use_blending", true);
 	line_prog.set_uniform(ctx, "apply_gamma", false);
-	line_prog.set_uniform(ctx, "width", 2.0f);
+	line_prog.set_uniform(ctx, "width", 3.0f);
 	line_prog.disable(ctx);
 
 	shader_program& hist_prog = shaders.get("histogram");
@@ -429,7 +429,6 @@ void transfer_function_editor::draw(cgv::render::context& ctx) {
 
 
 	// TODO: flag to place border on outside or inside
-	// TODO: fwidth for border creates small artifacts in left corners
 
 	shader_program& rect_prog = shaders.get("rectangle");
 	rect_prog.enable(ctx);
@@ -441,7 +440,7 @@ void transfer_function_editor::draw(cgv::render::context& ctx) {
 	rect_prog.set_uniform(ctx, "size", container_size);
 	rect_prog.set_uniform(ctx, "color", vec4(0.9f, 0.9f, 0.9f, 1.0f));
 	rect_prog.set_uniform(ctx, "border_color", vec4(0.2f, 0.2f, 0.2f, 1.0f));
-	rect_prog.set_uniform(ctx, "border_width", A);
+	rect_prog.set_uniform(ctx, "border_width", 1.0f);
 	
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 	
@@ -452,6 +451,18 @@ void transfer_function_editor::draw(cgv::render::context& ctx) {
 	rect_prog.set_uniform(ctx, "border_width", 0.0f);
 	
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+
+	// draw color scale texture
+	rect_prog.set_uniform(ctx, "use_color", false);
+	rect_prog.set_uniform(ctx, "position", layout.color_scale_rect.pos());
+	rect_prog.set_uniform(ctx, "size", layout.color_scale_rect.size());
+	rect_prog.set_uniform(ctx, "tex_scaling", vec2(1.0f));
+	rect_prog.set_uniform(ctx, "apply_gamma", false);
+
+	tfc.tex.enable(ctx, 0);
+	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+	tfc.tex.disable(ctx);
+
 	rect_prog.disable(ctx);
 
 	// draw editor checkerboard background
@@ -467,20 +478,6 @@ void transfer_function_editor::draw(cgv::render::context& ctx) {
 	bg_tex.disable(ctx);
 	bg_prog.disable(ctx);
 
-	// draw color scale texture
-	rect_prog.enable(ctx);
-	rect_prog.set_uniform(ctx, "use_color", false);
-	rect_prog.set_uniform(ctx, "position", layout.color_scale_rect.pos());
-	rect_prog.set_uniform(ctx, "size", layout.color_scale_rect.size());
-	rect_prog.set_uniform(ctx, "tex_scaling", vec2(1.0f));
-	rect_prog.set_uniform(ctx, "apply_gamma", false);
-
-	tfc.tex.enable(ctx, 0);
-	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-	tfc.tex.disable(ctx);
-
-	rect_prog.disable(ctx);
-	
 	// draw histogranm texture
 	if(show_histogram && tfc.hist_tex.is_created()) {
 		shader_program& hist_prog = shaders.get("histogram");
@@ -524,7 +521,7 @@ void transfer_function_editor::draw(cgv::render::context& ctx) {
 	
 	point_prog.set_uniform(ctx, "position_is_center", true);
 	point_prog.set_uniform(ctx, "border_color", rgba(0.2f, 0.2f, 0.2f, 1.0f));
-	point_prog.set_uniform(ctx, "border_width", 1.0f);
+	point_prog.set_uniform(ctx, "border_width", 1.5f);
 
 	for(unsigned i = 0; i < tfc.points.size(); ++i) {
 		const point& p = tfc.points[i];
