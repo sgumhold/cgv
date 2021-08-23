@@ -147,6 +147,12 @@ protected:
 	std::string save_file_name;
 	bool has_unsaved_changes = false;
 
+	bool mouse_is_on_overlay;
+	bool show_cursor;
+	ivec2 cursor_pos;
+	std::string cursor_drawtext;
+	cgv::media::font::font_face_ptr cursor_font_face;
+
 	cgv::glutil::frame_buffer_container fbc;
 	cgv::glutil::shader_library shaders;
 
@@ -159,11 +165,8 @@ protected:
 	unsigned histogram_border_width;
 
 
-
-	bool show_cursor;
-	ivec2 cursor_pos;
-
-
+	float A = 0.0f;
+	float B = 0.0f;
 
 	struct layout_attributes {
 		int padding;
@@ -195,17 +198,24 @@ protected:
 			CR_FULL_SIZE
 		} constrain_reference;
 
+		bool position_is_center;
+
 		draggable() {
+			position_is_center = false;
 			constrain_reference = CR_FULL_SIZE;
 		}
 
 		vec2 center() const {
 
-			return pos + size;
+			if(position_is_center)
+				return pos;
+			else
+				return pos + size;
 		}
 
 		void apply_constraint(const rect& area) {
 
+			// TODO: incorporate position is center
 			switch(constrain_reference) {
 			case CR_CENTER:
 				pos = cgv::math::clamp(pos, vec2(area.box.get_min_pnt()) - size, vec2(area.box.get_max_pnt()) - size);
@@ -285,15 +295,18 @@ protected:
 		rgb col;
 
 		point() {
-			constrain_reference = CR_CENTER;
-			size = vec2(10.0f);
+			position_is_center = true;
+			//constrain_reference = CR_CENTER;
+			constrain_reference = CR_MIN_POINT;
+			size = vec2(8.0f);
 		}
 
 		void update_val(const layout_attributes& la, const float scale_exponent) {
 
 			apply_constraint(la.editor_rect);
 
-			vec2 p = (pos + size) - la.editor_rect.pos();
+			//vec2 p = (pos + size) - la.editor_rect.pos();
+			vec2 p = pos - la.editor_rect.pos();
 			val = p / la.editor_rect.size();
 			
 			val = cgv::math::clamp(val, 0.0f, 1.0f);
@@ -308,7 +321,8 @@ protected:
 
 			t.y() = cgv::math::clamp(std::pow(t.y(), 1.0f / scale_exponent), 0.0f, 1.0f);
 
-			pos = la.editor_rect.pos() + t * la.editor_rect.size() - size;
+			//pos = la.editor_rect.pos() + t * la.editor_rect.size() - size;
+			pos = la.editor_rect.pos() + t * la.editor_rect.size();
 		}
 
 		bool is_inside(const vec2& mp) const {

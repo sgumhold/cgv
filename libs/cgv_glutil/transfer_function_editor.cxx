@@ -23,7 +23,7 @@ transfer_function_editor::transfer_function_editor() {
 	file_name += "/res/default.xml";
 #endif
 
-	layout.padding = 10;
+	layout.padding = 8;
 	layout.total_height = 200;
 	layout.color_scale_height = 30;
 
@@ -36,7 +36,7 @@ transfer_function_editor::transfer_function_editor() {
 	fbc.set_size(get_overlay_size());
 
 	shaders.add("rectangle", "rect2d.glpr");
-	shaders.add("ellipse", "ellipse2d.glpr");
+	shaders.add("circle", "circle2d.glpr");
 	shaders.add("polygon", "poly2d.glpr");
 	shaders.add("line", "line2d.glpr");
 	shaders.add("histogram", "hist2d.glpr");
@@ -48,12 +48,14 @@ transfer_function_editor::transfer_function_editor() {
 	resolution = (cgv::type::DummyEnum)512;
 
 	show_histogram = true;
-	histogram_color = rgba(1.0f, 1.0f, 1.0f, 0.5f);
+	histogram_color = rgba(0.5f, 0.5f, 0.5f, 0.75f);
 	histogram_border_color = rgba(0.0f, 0.0f, 0.0f, 1.0f);
 	histogram_border_width = 0u;
 
+	mouse_is_on_overlay = false;
 	show_cursor = false;
 	cursor_pos = ivec2(-100);
+	cursor_drawtext = "";
 }
 
 bool transfer_function_editor::on_exit_request() {
@@ -85,37 +87,70 @@ bool transfer_function_editor::handle_event(cgv::gui::event& e) {
 
 	if(et == cgv::gui::EID_KEY) {
 		cgv::gui::key_event& ke = (cgv::gui::key_event&) e;
-		std::cout << ke.get_key() << std::endl;
-		if(ke.get_key() == cgv::gui::KEY_Left_Ctrl) {
-			if(ke.get_action() == cgv::gui::KA_PRESS) {
+
+		if(ke.get_action() == cgv::gui::KA_PRESS) {
+			switch(ke.get_key()) {
+			case cgv::gui::KEY_Left_Ctrl:
 				show_cursor = true;
+				cursor_drawtext = "+";
 				post_redraw();
-			} else if(ke.get_action() == cgv::gui::KA_RELEASE) {
+				break;
+			case cgv::gui::KEY_Left_Alt:
+				show_cursor = true;
+				cursor_drawtext = "-";
+				post_redraw();
+				break;
+			}
+		} else if(ke.get_action() == cgv::gui::KA_RELEASE) {
+			switch(ke.get_key()) {
+			case cgv::gui::KEY_Left_Ctrl:
 				show_cursor = false;
 				post_redraw();
+				break;
+			case cgv::gui::KEY_Left_Alt:
+				show_cursor = false;
+				post_redraw();
+				break;
 			}
 		}
-		// no key action
 	} else if(et == cgv::gui::EID_MOUSE) {
 		cgv::gui::mouse_event& me = (cgv::gui::mouse_event&) e;
 		cgv::gui::MouseAction ma = me.get_action();
-		
+
+		/*if(ma == cgv::gui::MA_ENTER)
+			std::cout << "Enter" << std::endl;
+		if(ma == cgv::gui::MA_MOVE)
+			std::cout << "Move" << std::endl;
+		if(ma == cgv::gui::MA_LEAVE)
+			std::cout << "Leave" << std::endl;
+		if(ma == cgv::gui::MA_PRESS)
+			std::cout << "Press" << std::endl;
+		if(ma == cgv::gui::MA_RELEASE)
+			std::cout << "Release" << std::endl;
+		if(ma == cgv::gui::MA_DRAG)
+			std::cout << "Drag" << std::endl;
+		if(ma == cgv::gui::MA_WHEEL)
+			std::cout << "Wheel" << std::endl;*/
+
 		ivec2 mpos = get_local_mouse_pos(ivec2(me.get_x(), me.get_y()));
 
-
-
-		if(ma == cgv::gui::MA_MOVE) {
-			if(show_cursor) {
-				cursor_pos = ivec2(me.get_x(), me.get_y());
+		switch(ma) {
+		case cgv::gui::MA_ENTER:
+			mouse_is_on_overlay = true;
+			break;
+		case cgv::gui::MA_LEAVE:
+			mouse_is_on_overlay = false;
+			post_redraw();
+			break;
+		case cgv::gui::MA_MOVE:
+			cursor_pos = ivec2(me.get_x(), me.get_y());
+			if(show_cursor)
 				post_redraw();
-			}
+			break;
 		}
 
-
-
-
-		if(me.get_button() == cgv::gui::MouseButton::MB_LEFT_BUTTON) {
-			if(ma == cgv::gui::MouseAction::MA_RELEASE) {
+		if(me.get_button() == cgv::gui::MB_LEFT_BUTTON) {
+			if(ma == cgv::gui::MA_RELEASE) {
 				if(dragged_point) {
 					selected_point = dragged_point;
 					dragged_point = nullptr;
@@ -127,8 +162,8 @@ bool transfer_function_editor::handle_event(cgv::gui::event& e) {
 			}
 		}
 
-		if(me.get_button_state() & cgv::gui::MouseButton::MB_LEFT_BUTTON) {
-			if(ma == cgv::gui::MouseAction::MA_PRESS && modifiers > 0) {
+		if(me.get_button_state() & cgv::gui::MB_LEFT_BUTTON) {
+			if(ma == cgv::gui::MA_PRESS && modifiers > 0) {
 				switch(modifiers) {
 				case cgv::gui::EM_CTRL:
 					if(!get_hit_point(mpos))
@@ -152,7 +187,7 @@ bool transfer_function_editor::handle_event(cgv::gui::event& e) {
 					dragged_point->update_val(layout, opacity_scale_exponent);
 					update_transfer_function(true);
 				} else {
-					if(ma == cgv::gui::MouseAction::MA_PRESS) {
+					if(ma == cgv::gui::MA_PRESS) {
 						dragged_point = get_hit_point(mpos);
 						if(dragged_point)
 							offset_pos = dragged_point->pos - mpos;
@@ -259,6 +294,12 @@ void transfer_function_editor::on_set(void* member_ptr) {
 
 bool transfer_function_editor::init(cgv::render::context& ctx) {
 	
+	// get a bold font face to use for the cursor
+	auto font = cgv::media::font::find_font("Arial");
+	if(!font.empty()) {
+		cursor_font_face = font->get_font_face(cgv::media::font::FFA_BOLD);
+	}
+
 	fbc.ensure(ctx);
 	shaders.load_shaders(ctx);
 
@@ -270,7 +311,7 @@ bool transfer_function_editor::init(cgv::render::context& ctx) {
 	rect_prog.set_uniform(ctx, "apply_gamma", false);
 	rect_prog.disable(ctx);
 
-	shader_program& point_prog = shaders.get("ellipse");
+	shader_program& point_prog = shaders.get("circle");
 	point_prog.enable(ctx);
 	point_prog.set_uniform(ctx, "use_blending", true);
 	point_prog.set_uniform(ctx, "use_color", true);
@@ -312,8 +353,8 @@ bool transfer_function_editor::init(cgv::render::context& ctx) {
 	init_transfer_function_texture(ctx);
 	update_transfer_function(false);
 
-	rgb a(0.6f);
-	rgb b(0.8f);
+	rgb a(0.75f);
+	rgb b(0.9f);
 	std::vector<rgb> bg_data = { a, b, b, a };
 	
 	bg_tex.destruct(ctx);
@@ -333,7 +374,7 @@ void transfer_function_editor::init_frame(cgv::render::context& ctx) {
 		fbc.set_size(container_size);
 		fbc.ensure(ctx);
 
-		shader_program& point_prog = shaders.get("ellipse");
+		shader_program& point_prog = shaders.get("circle");
 		point_prog.enable(ctx);
 		point_prog.set_uniform(ctx, "resolution", container_size);
 		point_prog.disable(ctx);
@@ -384,29 +425,31 @@ void transfer_function_editor::draw(cgv::render::context& ctx) {
 
 	ivec2 container_size = get_overlay_size();
 
-	// draw container border
+
+
+
+	// TODO: flag to place border on outside or inside
+	// TODO: fwidth for border creates small artifacts in left corners
+
 	shader_program& rect_prog = shaders.get("rectangle");
 	rect_prog.enable(ctx);
 	rect_prog.set_uniform(ctx, "resolution", container_size);
 	rect_prog.set_uniform(ctx, "use_color", true);
 	rect_prog.set_uniform(ctx, "use_blending", false);
+	rect_prog.set_uniform(ctx, "apply_gamma", false);
 	rect_prog.set_uniform(ctx, "position", ivec2(0));
 	rect_prog.set_uniform(ctx, "size", container_size);
-	rect_prog.set_uniform(ctx, "color", vec4(0.0f, 0.0f, 0.0f, 1.0f));
-
-	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-
-	// draw container background
-	rect_prog.set_uniform(ctx, "position", ivec2(1));
-	rect_prog.set_uniform(ctx, "size", container_size - 2.0f);
-	rect_prog.set_uniform(ctx, "color", vec4(0.6f, 0.6f, 0.6f, 1.0f));
+	rect_prog.set_uniform(ctx, "color", vec4(0.9f, 0.9f, 0.9f, 1.0f));
+	rect_prog.set_uniform(ctx, "border_color", vec4(0.2f, 0.2f, 0.2f, 1.0f));
+	rect_prog.set_uniform(ctx, "border_width", A);
 	
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-
+	
 	// draw inner border
 	rect_prog.set_uniform(ctx, "position", ivec2(layout.padding - 1));
 	rect_prog.set_uniform(ctx, "size", container_size - 2*layout.padding + 2);
-	rect_prog.set_uniform(ctx, "color", vec4(0.48f, 0.48f, 0.48f, 1.0f));
+	rect_prog.set_uniform(ctx, "color", vec4(0.2f, 0.2f, 0.2f, 1.0f));
+	rect_prog.set_uniform(ctx, "border_width", 0.0f);
 	
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 	rect_prog.disable(ctx);
@@ -463,10 +506,26 @@ void transfer_function_editor::draw(cgv::render::context& ctx) {
 	// draw transfer function lines
 	tfc.lines.render(ctx, PT_LINE_STRIP, shaders.get("line"));
 	
+	// draw separator line
+	rect_prog.enable(ctx);
+	rect_prog.set_uniform(ctx, "position", ivec2(
+		layout.color_scale_rect.pos().x(),
+		layout.color_scale_rect.box.get_max_pnt().y()
+	));
+	rect_prog.set_uniform(ctx, "size", ivec2(container_size.x() - 2 * layout.padding, 1));
+	rect_prog.set_uniform(ctx, "color", vec4(0.2f, 0.2f, 0.2f, 1.0f));
+
+	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+	rect_prog.disable(ctx);
+
 	// draw control points
-	shader_program& point_prog = shaders.get("ellipse");
+	shader_program& point_prog = shaders.get("circle");
 	point_prog.enable(ctx);
 	
+	point_prog.set_uniform(ctx, "position_is_center", true);
+	point_prog.set_uniform(ctx, "border_color", rgba(0.2f, 0.2f, 0.2f, 1.0f));
+	point_prog.set_uniform(ctx, "border_width", 1.0f);
+
 	for(unsigned i = 0; i < tfc.points.size(); ++i) {
 		const point& p = tfc.points[i];
 
@@ -475,20 +534,15 @@ void transfer_function_editor::draw(cgv::render::context& ctx) {
 
 		point_prog.set_uniform(ctx, "position", pos);
 		point_prog.set_uniform(ctx, "size", size);
-		point_prog.set_uniform(ctx, "color", rgba(0.0f, 0.0f, 0.0f, 1.0f));
-		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-
-		point_prog.set_uniform(ctx, "position", pos + 2);
-		point_prog.set_uniform(ctx, "size", size - 4);
 		point_prog.set_uniform(ctx, "color",
-			selected_point == &p ? vec4(0.25f, 0.5f, 1.0f, 1.0f) : vec4(0.9f, 0.9f, 0.9f, 1.0f)
+			selected_point == &p ? vec4(0.5f, 0.5f, 0.5f, 1.0f) : vec4(0.9f, 0.9f, 0.9f, 1.0f)
 		);
+
 		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 	}
 
 	point_prog.disable(ctx);
 	
-	glEnable(GL_DEPTH_TEST);
 	glDisable(GL_BLEND);
 
 	fbc.disable(ctx);
@@ -498,6 +552,7 @@ void transfer_function_editor::draw(cgv::render::context& ctx) {
 	rect_prog.set_uniform(ctx, "resolution", get_viewport_size());
 	rect_prog.set_uniform(ctx, "position", get_overlay_position());
 	rect_prog.set_uniform(ctx, "size", container_size);
+	rect_prog.set_uniform(ctx, "border_width", 0.0f);
 	rect_prog.set_uniform(ctx, "use_color", false);
 	rect_prog.set_uniform(ctx, "use_blending", false);
 	rect_prog.set_uniform(ctx, "apply_gamma", true);
@@ -508,30 +563,26 @@ void transfer_function_editor::draw(cgv::render::context& ctx) {
 
 	rect_prog.disable(ctx);
 
+	// draw cursor decorators to show interaction hints
+	if(mouse_is_on_overlay && show_cursor) {
+		ivec2 pos = cursor_pos + ivec2(7, 4);
 
+		auto fntf_ptr = ctx.get_current_font_face();
+		auto s = ctx.get_current_font_size();
 
+		ctx.enable_font_face(cursor_font_face, s);
 
-
-	if(show_cursor) {
-		static const rgb dnd_col(1.0f);
-
-		std::cout << "show" << std::endl;
-
-		float w = 0, s = ctx.get_current_font_size();
-		std::string dnd_drawtext = "+";
-
-		ivec2 pos = cursor_pos  - ivec2(20, 10);
-
-		// draw the text
 		ctx.push_pixel_coords();
-		ctx.set_color(dnd_col);
+		ctx.set_color(rgb(0.0f));
 		ctx.set_cursor(vecn(float(pos.x()), float(pos.y())), "", cgv::render::TA_TOP_LEFT);
-		ctx.output_stream() << dnd_drawtext;
+		ctx.output_stream() << cursor_drawtext;
 		ctx.output_stream().flush();
 		ctx.pop_pixel_coords();
-		//show_cursor = false;
+
+		ctx.enable_font_face(fntf_ptr, s);
 	}
 
+	glEnable(GL_DEPTH_TEST);
 }
 
 void transfer_function_editor::create_gui() {
@@ -547,7 +598,6 @@ void transfer_function_editor::create_gui() {
 
 	if(begin_tree_node("Settings", layout, false)) {
 		align("\a");
-		//add_decorator("Settings", "heading", "level=3");
 		add_member_control(this, "Height", layout.total_height, "value_slider", "min=100;max=500;step=10;ticks=true");
 		add_member_control(this, "Opacity Scale Exponent", opacity_scale_exponent, "value_slider", "min=1.0;max=5.0;step=0.001;ticks=true");
 		add_member_control(this, "Resolution", resolution, "dropdown", "enums='2=2,4=4,8=8,16=16,32=32,64=64,128=128,256=256,512=512,1024=1024,2048=2048'");
@@ -570,6 +620,9 @@ void transfer_function_editor::create_gui() {
 	auto& points = tfc.points;
 	for(unsigned i = 0; i < points.size(); ++i)
 		add_member_control(this, "Color " + std::to_string(i), points[i].col, "", &points[i] == selected_point ? "label_color=0x4080ff" : "");
+
+	add_member_control(this, "A", A, "value_slider", "min=0;max=20;step=0.5;ticks=true");
+	add_member_control(this, "B", B, "value_slider", "min=0;max=20;step=0.5;ticks=true");
 }
 
 void transfer_function_editor::create_gui(cgv::gui::provider& p) {
@@ -617,7 +670,7 @@ bool transfer_function_editor::set_histogram(const std::vector<unsigned>& data) 
 void transfer_function_editor::add_point(const vec2& pos) {
 
 	point p;
-	p.pos = pos - p.size;
+	p.pos = pos;// -p.size;
 	p.update_val(layout, opacity_scale_exponent);
 	p.col = tfc.tf.interpolate_color(p.val.x());
 	tfc.points.push_back(p);
