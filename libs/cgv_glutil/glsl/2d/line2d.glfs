@@ -3,11 +3,16 @@
 #define USE_ROUNDED_CAPS 0
 
 //***** begin interface of fragment2d.glfs ***********************************
+vec2 get_shape_size();
 vec4 get_color();
-void override_color(vec4 color);
+void override_color(in vec4 color);
+void finish_sdf_fragment2d(in float signed_distance, in vec2 texcoords);
+void finish_sdf_fragment2d(in float signed_distance);
 void finish_fragment2d(in vec2 texcoords);
 void finish_fragment2d();
 //***** end interface of fragment2d.glfs ***********************************
+
+uniform float width = 1.0;
 
 #if USE_ROUNDED_CAPS == 0
 in vec4 color_fs;
@@ -16,7 +21,11 @@ in flat vec4 color0_fs;
 in flat vec4 color1_fs;
 #endif
 in vec2 tex_coord_fs;
+in vec2 pix_coord_fs;
 in flat float length_fs;
+in flat vec2 size_fs;
+in vec2 u_dir_fs;
+in vec2 v_dir_fs;
 
 // https://iquilezles.org/www/articles/distfunctions2d/distfunctions2d.htm
 float sd_box(in vec2 p, in vec2 b) {
@@ -34,7 +43,23 @@ float sd_segment(in vec2 p, in vec2 a, in vec2 b) {
 void main() {
 
 #if USE_ROUNDED_CAPS == 0
-	vec2 p = 2.0 * tex_coord_fs - 1.0;
+
+	//float dist = sd_box(pix_coord_fs, 0.5*size_fs);
+
+	float feather = 1.0;
+	float pd = length(v_dir_fs);
+	pd -= 0.5*width - feather;
+
+	//float t = clamp((pd - a) / (b - a), 0.0, 1.0);
+	float t = clamp(pd / feather, 0.0, 1.0);
+
+	vec4 color = color_fs;
+	color.a = 1.0 - t;
+
+	override_color(color);
+	finish_fragment2d();
+
+	/*vec2 p = 2.0 * tex_coord_fs - 1.0;
 	float dist = 1.0 + sd_box(p, vec2(2.0*length_fs, 1.0));
 	
 	vec4 color = color_fs;
@@ -44,7 +69,7 @@ void main() {
 	color.a *= 1.0-alpha;
 
 	override_color(color);
-	finish_fragment2d();
+	finish_fragment2d();*/
 #else
 	vec2 p = tex_coord_fs;
 	float dist = sd_segment(p, vec2(0.0, 0.5), vec2(length_fs, 0.5));

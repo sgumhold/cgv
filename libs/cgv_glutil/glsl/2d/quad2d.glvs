@@ -21,22 +21,16 @@ void main() {
 
 	tex_coord = corner;
 
-	
-
 	// transform to pixel coordinates
 	corner *= size;
 
-
 	pix_coord = corner - 0.5*size;
-
 
 	// offset
 	corner += position;
 
-
 	if(position_is_center)
 		corner -= 0.5*size;
-
 
 	// transform to window space
 	corner = (2.0*corner) / resolution;

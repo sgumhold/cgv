@@ -25,7 +25,10 @@ out flat vec4 color0_fs;
 out flat vec4 color1_fs;
 #endif
 out vec2 tex_coord_fs;
+out vec2 pix_coord_fs;
 out flat float length_fs;
+out flat vec2 size_fs;
+out vec2 v_dir_fs;
 
 vec2 ortho2d(vec2 v) {
 	return vec2(v.y, -v.x);
@@ -47,25 +50,40 @@ void main() {
 	vec2 u_dir = delta / length_fs;
 	vec2 v_dir = ortho2d(u_dir.xy);
 
+
+	size_fs = vec2(length_fs, width);
+
+
 	length_fs /= width;
 
 	u_dir *= 0.5*width;
 	v_dir *= 0.5*width;
 
+
+	//float hw = 0.5*width;
+
 #if USE_ROUNDED_CAPS == 0
 	color_fs = color_gs[0];
 	tex_coord_fs = corners[2];
+	pix_coord_fs = size_fs*corners[2] - 0.5*size_fs;
+	v_dir_fs = -v_dir;
 	gl_Position = to_window_space(start.xy - v_dir);
 	EmitVertex();
 	tex_coord_fs = corners[0];
+	pix_coord_fs = size_fs*corners[0] - 0.5*size_fs;
+	v_dir_fs = +v_dir;
 	gl_Position = to_window_space(start.xy + v_dir);
 	EmitVertex();
 
 	color_fs = color_gs[1];
 	tex_coord_fs = corners[3] * vec2(length_fs, 1.0);
+	pix_coord_fs = size_fs*corners[3] - 0.5*size_fs;
+	v_dir_fs = -v_dir;
 	gl_Position = to_window_space(end.xy - v_dir);
 	EmitVertex();
 	tex_coord_fs = corners[1] * vec2(length_fs, 1.0);
+	pix_coord_fs = size_fs*corners[1] - 0.5*size_fs;
+	v_dir_fs = +v_dir;
 	gl_Position = to_window_space(end.xy + v_dir);;
 	EmitVertex();
 #else

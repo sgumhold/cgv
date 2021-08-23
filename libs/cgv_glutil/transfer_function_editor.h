@@ -165,7 +165,7 @@ protected:
 	unsigned histogram_border_width;
 
 
-	float A = 0.0f;
+	float A = 2.0f;
 	float B = 0.0f;
 
 	struct layout_attributes {
