@@ -1,26 +1,99 @@
 #version 150
 
+/*
+The following interface is implemented in this shader:
+//***** begin interface of fragment2d.glsl ***********************************
+// return the size of the shape, whcih is half the actual size minus the border radius
+vec2 get_shape_size();
+// return the current color that will be used when use_color is enabled
+vec4 get_color();
+// override the color that will be used when use_color is enabled
+void override_color(in vec4 color);
+// output a fragment originating from a sdf with the final color or the color from the texture if use_color is disabled
+void finish_sdf_fragment2d(in float signed_distance, in vec2 texcoords);
+// output a fragment originating from a sdf with the color given by the uniform variable (no texturing)
+void finish_sdf_fragment2d(in float signed_distance);
+// output a fragment with the final color or the color from the texture if use_color is disabled
+void finish_fragment2d(in vec2 texcoords);
+// output a fragment with the color given by the uniform variable (no texturing)
+void finish_fragment2d();
+//***** end interface of fragment2d.glsl ***********************************
+*/
+
 uniform sampler2D tex;
 
+// shape paramaters
+uniform ivec2 size;
+
+// appearance
 uniform vec4 color;
+uniform vec4 border_color = vec4(1.0);
+uniform float border_width = 0.0;
+uniform float border_radius = 0.0;
+
+uniform vec2 tex_scaling = vec2(1.0);
+
+// options
 uniform bool use_color = true;
 uniform bool use_blending = false;
 uniform bool apply_gamma = true;
-uniform vec2 tex_scaling = vec2(1.0);
 
 out vec4 frag_color;
 
+// local variables
 vec4 final_color = color;
 bool force_use_color = use_color;
 
-// returns the current color that will be used when use_color is enabled
+// return the size of the shape, whcih is half the actual size minus the border radius
+vec2 get_shape_size() {
+	return 0.5 * size - border_radius;
+}
+
+// return the current color that will be used when use_color is enabled
 vec4 get_color() {
 	return final_color;
 }
 
-// overrides the color that will be used when use_color is enabled
-void override_color(vec4 color) {
+// override the color that will be used when use_color is enabled
+void override_color(in vec4 color) {
 	final_color = color;
+}
+
+// output a fragment originating from a sdf with the final color or the color from the texture if use_color is disabled
+void finish_sdf_fragment2d(in float signed_distance, in vec2 texcoords) {
+	
+	signed_distance -= border_radius;
+
+	if(signed_distance > 0.0 && !use_blending)
+		discard;
+	
+	if(force_use_color)
+		frag_color = final_color;
+	else
+		frag_color = vec4(texture(tex, tex_scaling * texcoords).rgba);
+
+	if(border_width > 0.0) {
+		float border_delta = fwidth(signed_distance + border_width);
+		float border_mix = smoothstep(0.5 - border_delta, 0.5, signed_distance + border_width);
+		frag_color = mix(frag_color, border_color, border_mix);
+	}
+
+	float delta = fwidth(signed_distance);
+	float alpha = smoothstep(0.5 - delta, 0.5, signed_distance);
+	frag_color.a *= 1.0-alpha;
+
+	if(apply_gamma)
+		frag_color.rgb = clamp(pow(frag_color.rgb, vec3(2.2)), 0.0, 0.9999999);
+
+	if(!use_blending)
+		frag_color.a = 1.0;
+}
+
+// output a fragment originating from a sdf with the color given by the uniform variable (no texturing)
+void finish_sdf_fragment2d(in float signed_distance) {
+	
+	force_use_color = true;
+	finish_sdf_fragment2d(signed_distance, vec2(0.0));
 }
 
 // output a fragment with the final color or the color from the texture if use_color is disabled

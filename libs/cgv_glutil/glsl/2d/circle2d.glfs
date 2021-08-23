@@ -14,24 +14,13 @@ in vec2 pix_coord;
 in vec2 tex_coord;
 
 // https://iquilezles.org/www/articles/distfunctions2d/distfunctions2d.htm
-float sd_box(in vec2 p, in vec2 b)
+float sd_circle(vec2 p, float r)
 {
-    vec2 d = abs(p) - b;
-    return length(max(d, 0.0)) + min(max(d.x, d.y), 0.0);
-}
-
-// https://iquilezles.org/www/articles/distfunctions2d/distfunctions2d.htm
-float sd_rounded_box(in vec2 p, in vec2 b, in vec4 r)
-{
-    r.xy = (p.x > 0.0) ? r.xy : r.zw;
-    r.x  = (p.y > 0.0) ? r.x  : r.y;
-    vec2 q = abs(p) - b + r.x;
-    return min(max(q.x, q.y), 0.0) + length(max(q, 0.0)) - r.x;
+    return length(p) - r;
 }
 
 void main() {
 	
-	//float dist = sd_rounded_box(pix_coord, 0.5*size, vec4(border_radius, 2*border_radius, 3*border_radius, 4*border_radius));
-	float dist = sd_box(pix_coord, get_shape_size());
+	float dist = sd_circle(pix_coord, get_shape_size().x);
 	finish_sdf_fragment2d(dist, tex_coord);
 }
