@@ -51,6 +51,7 @@ transfer_function_editor::transfer_function_editor() {
 	histogram_color = rgba(0.5f, 0.5f, 0.5f, 0.75f);
 	histogram_border_color = rgba(0.0f, 0.0f, 0.0f, 1.0f);
 	histogram_border_width = 0u;
+	histogram_smoothing = 0.5f;
 
 	mouse_is_on_overlay = false;
 	show_cursor = false;
@@ -416,12 +417,12 @@ void transfer_function_editor::draw(cgv::render::context& ctx) {
 
 	fbc.enable(ctx);
 	
-	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-	glClear(GL_COLOR_BUFFER_BIT);
-
 	glDisable(GL_DEPTH_TEST);
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+	glClear(GL_COLOR_BUFFER_BIT);
 
 	ivec2 container_size = get_overlay_size();
 
@@ -486,6 +487,7 @@ void transfer_function_editor::draw(cgv::render::context& ctx) {
 		hist_prog.set_uniform(ctx, "position", layout.editor_rect.pos());
 		hist_prog.set_uniform(ctx, "size", layout.editor_rect.size());
 		hist_prog.set_uniform(ctx, "max_value", tfc.hist_max);
+		hist_prog.set_uniform(ctx, "nearest_linear_mix", histogram_smoothing);
 
 		hist_prog.set_uniform(ctx, "color", histogram_color);
 		hist_prog.set_uniform(ctx, "border_color", histogram_border_color);
@@ -608,6 +610,7 @@ void transfer_function_editor::create_gui() {
 		add_member_control(this, "Fill Color", histogram_color, "");
 		add_member_control(this, "Border Color", histogram_border_color, "");
 		add_member_control(this, "Border Width", histogram_border_width, "value_slider", "min=0;max=10;step=1;ticks=true");
+		add_member_control(this, "Smoothing", histogram_smoothing, "value_slider", "min=0;max=1;step=0.01;ticks=true");
 		align("\b");
 		end_tree_node(show_histogram);
 	}
@@ -617,9 +620,6 @@ void transfer_function_editor::create_gui() {
 	auto& points = tfc.points;
 	for(unsigned i = 0; i < points.size(); ++i)
 		add_member_control(this, "Color " + std::to_string(i), points[i].col, "", &points[i] == selected_point ? "label_color=0x4080ff" : "");
-
-	add_member_control(this, "A", A, "value_slider", "min=0;max=20;step=0.5;ticks=true");
-	add_member_control(this, "B", B, "value_slider", "min=0;max=20;step=0.5;ticks=true");
 }
 
 void transfer_function_editor::create_gui(cgv::gui::provider& p) {

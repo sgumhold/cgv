@@ -163,10 +163,7 @@ protected:
 	rgba histogram_color;
 	rgba histogram_border_color;
 	unsigned histogram_border_width;
-
-
-	float A = 2.0f;
-	float B = 0.0f;
+	float histogram_smoothing;
 
 	struct layout_attributes {
 		int padding;
