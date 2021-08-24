@@ -14,20 +14,46 @@ uniform vec4 border_color = vec4(1.0);
 uniform uint border_width_in_pixel = 0u;
 
 uniform uint max_value = 1u;
+uniform float nearest_linear_mix = 1.0;
+
+uniform float A;
 
 in vec2 tex_coord;
+
+float texture_nearest(sampler1D tex, float coord) {
+	int tex_size = textureSize(tex, 0);
+	int u = int(coord * tex_size);
+
+	return texelFetch(tex, u, 0).r;
+}
+
+// smooth filtering from https://www.shadertoy.com/view/XsfGDn
+float texture_smooth(in sampler1D tex, in float coord) {
+	float tex_size = textureSize(tex, 0);
+	float u = coord * tex_size + 0.5;
+
+	float iu = floor(u);
+	float fu = fract(u);
+
+	u = iu + fu*fu*(3.0-2.0*fu); // fuv*fuv*fuv*(fuv*(fuv*6.0-15.0)+10.0);
+	u = (u - 0.5)/tex_size;
+
+	return textureLod(tex, u, 0).r;
+}
 
 void main() {
 	
 	vec4 final_color = vec4(0.0);
 
-	float height = texture(hist_tex, tex_coord.x).r / float(max_value);
+	float height_nearest = texture_nearest(hist_tex, tex_coord.x) / float(max_value);
+	float height_linear = texture(hist_tex, tex_coord.x).r / float(max_value);
+
+	float height = mix(height_nearest, height_linear, nearest_linear_mix);
 
 	float border = 0.0f;
 
 	if(border_width_in_pixel > 0u)
 		border = float(border_width_in_pixel) / resolution.y;
-
 
 	if(tex_coord.y <= height + border) {
 		final_color = border_color;
@@ -35,17 +61,6 @@ void main() {
 		if(tex_coord.y <= height)
 			final_color = get_color();
 	}
-
-
-	/*if(tex_coord.y <= height) {
-		final_color = get_color();
-
-		if(border_width_in_pixel > 0u) {
-			float border = float(border_width_in_pixel) / resolution.y;
-			if(tex_coord.y >= height - border)
-				final_color = border_color;
-		}
-	}*/
 
 	override_color(final_color);
 	finish_fragment2d();
