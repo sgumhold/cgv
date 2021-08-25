@@ -30,11 +30,14 @@ uniform vec4 color;
 uniform vec4 border_color = vec4(1.0);
 uniform float border_width = 0.0;
 uniform float border_radius = 0.0;
+uniform float feather_width = 1.0;
+uniform float feather_origin = 0.5;
 uniform vec2 tex_scaling = vec2(1.0);
 
-// options
+// render options
 uniform bool use_color = true;
 uniform bool use_blending = false;
+uniform bool use_smooth_feather = false;
 uniform bool apply_gamma = true;
 
 out vec4 frag_color;
@@ -43,9 +46,9 @@ out vec4 frag_color;
 vec4 final_color = color;
 bool force_use_color = use_color;
 
-// return the size of the shape, whcih is half the actual size minus the border radius
+// return the size of the shape, which is half the actual size minus the border radius
 vec2 get_shape_size() {
-	return 0.5 * size - border_radius;
+	return 0.5 * size - border_radius + feather_origin*feather_width;
 }
 
 // return the current color that will be used when use_color is enabled
@@ -71,6 +74,7 @@ void finish_sdf_fragment2d(in float signed_distance, in vec2 texcoords) {
 	else
 		frag_color = vec4(texture(tex, tex_scaling * texcoords).rgba);
 
+	// get the derivatives of the distance over neighbouring fragments to calculate an antialiasing factor
 	float dx = abs(dFdx(signed_distance));
 	float dy = abs(dFdy(signed_distance));
 		
@@ -85,17 +89,30 @@ void finish_sdf_fragment2d(in float signed_distance, in vec2 texcoords) {
 	}
 
 	float delta = dx + dy;
+	float antialias_alpha = 1.0 - smoothstep(0.5 - delta, 0.5, signed_distance);
+	
+	// calcualte an alpha factor for feathered shape borders
+	float inv_feather = 1.0/feather_width;
 
+	float feather_alpha = use_smooth_feather ?
+		1.0 - smoothstep(0.0, 1.0, (signed_distance + feather_width) * inv_feather) :
+		1.0 - clamp((signed_distance + feather_width) * inv_feather, 0.0, 1.0);
+	
 	if(border_width > 0.0) {
-		float border_mix = smoothstep(0.5 - delta, 0.5, signed_distance + border_width);
-		frag_color = mix(frag_color, border_color, border_mix);	
+		float border_distance = -border_width - feather_width;
+
+		float border_feather_alpha = use_smooth_feather ?
+			smoothstep(0.0, 1.0, (signed_distance - border_distance) * inv_feather) :
+			clamp((signed_distance - border_distance) * inv_feather, 0.0, 1.0);
+
+		float border_antialias_alpha = smoothstep(0.5 - delta, 0.5, signed_distance + border_width);
+		frag_color = mix(frag_color, border_color, min(border_antialias_alpha + border_feather_alpha, 1.0));
 	}
 
-	// enable to show derivatives
+	// enable to show derivatives for debugging
 	//frag_color = vec4((border_width+1) * dx, (border_width+1) * dy, 0.0, 1.0);
 	
-	float alpha = smoothstep(0.5 - delta, 0.5, signed_distance);
-	frag_color.a *= 1.0-alpha;
+	frag_color.a *= antialias_alpha * feather_alpha;
 	
 	if(apply_gamma)
 		frag_color.rgb = clamp(pow(frag_color.rgb, vec3(2.2)), 0.0, 0.9999999);

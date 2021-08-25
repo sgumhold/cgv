@@ -1,5 +1,10 @@
 #version 150
 
+//***** begin interface of fragment2d.glsl ***********************************
+uniform float feather_width = 1.0;
+uniform float feather_origin = 0.5;
+//***** end interface of fragment2d.glsl ***********************************
+
 const vec2 corners[4] = vec2[](
 	vec2(0.0, 0.0),
 	vec2(1.0, 0.0),
@@ -21,16 +26,20 @@ void main() {
 
 	tex_coord = corner;
 
-	// transform to pixel coordinates
-	corner *= size;
+	vec2 final_size = size + 2.0*feather_origin*feather_width;
 
-	pix_coord = corner - 0.5*size;
+	// transform to pixel coordinates
+	corner *= final_size;
+
+	pix_coord = corner - 0.5*final_size;
 
 	// offset
 	corner += position;
 
 	if(position_is_center)
-		corner -= 0.5*size;
+		corner -= 0.5*final_size;
+	else
+		corner -= feather_origin*feather_width;
 
 	// transform to window space
 	corner = (2.0*corner) / resolution;
