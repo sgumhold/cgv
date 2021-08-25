@@ -212,22 +212,33 @@ protected:
 
 		void apply_constraint(const rect& area) {
 
-			// TODO: incorporate position is center
+			vec2 min_pnt = vec2(area.box.get_min_pnt());
+			vec2 max_pnt = vec2(area.box.get_max_pnt());
+
 			switch(constrain_reference) {
-			case CR_CENTER:
-				pos = cgv::math::clamp(pos, vec2(area.box.get_min_pnt()) - size, vec2(area.box.get_max_pnt()) - size);
-				break;
 			case CR_MIN_POINT:
-				pos = cgv::math::clamp(pos, vec2(area.box.get_min_pnt()), vec2(area.box.get_max_pnt()));
+				min_pnt += size;
+				max_pnt += size;
 				break;
 			case CR_MAX_POINT:
-				pos = cgv::math::clamp(pos, vec2(area.box.get_min_pnt()) - 2.0f*size, vec2(area.box.get_max_pnt()) - 2.0f*size);
+				min_pnt -= size;
+				max_pnt -= size;
 				break;
 			case CR_FULL_SIZE:
-				pos = cgv::math::clamp(pos, vec2(area.box.get_min_pnt()), vec2(area.box.get_max_pnt()) - 2.0f*size);
+				min_pnt += size;
+				max_pnt -= size;
 				break;
-			default: break;
+			case CR_CENTER:
+			default:
+				break;
 			}
+			
+			if(!position_is_center) {
+				min_pnt -= size;
+				max_pnt -= size;
+			}
+
+			pos = cgv::math::clamp(pos, min_pnt, max_pnt);
 		}
 
 		virtual bool is_inside(const ivec2& p) const {
@@ -240,69 +251,20 @@ protected:
 		}
 	};
 
-	/*struct point {
-		static constexpr float radius = 10.0f;
-		vec2 val;
-		vec2 pos;
-
-		rgb col;
-
-		vec2 center() const { return pos + radius; }
-
-		void update_val(const layout_attributes& la, const float scale_exponent) {
-
-			vec2 min = la.editor_rect.pos() - radius;
-			vec2 max = min + la.editor_rect.size();
-
-			pos.x() = cgv::math::clamp(pos.x(), min.x(), max.x());
-			pos.y() = cgv::math::clamp(pos.y(), min.y(), max.y());
-
-			vec2 p = (pos + radius) - la.editor_rect.pos();
-			val = p / la.editor_rect.size();
-			val.x() = cgv::math::clamp(val.x(), 0.0f, 1.0f);
-
-			val.y() = cgv::math::clamp(val.y(), 0.0f, 1.0f);
-
-			val.y() = std::pow(val.y(), scale_exponent);
-			val.y() = cgv::math::clamp(val.y(), 0.0f, 1.0f);
-		}
-
-		void update_pos(const layout_attributes& la, const float scale_exponent) {
-
-			val.x() = cgv::math::clamp(val.x(), 0.0f, 1.0f);
-			val.y() = cgv::math::clamp(val.y(), 0.0f, 1.0f);
-
-			vec2 t = val;
-
-			t.y() = std::pow(t.y(), 1.0f/scale_exponent);
-			t.y() = cgv::math::clamp(t.y(), 0.0f, 1.0f);
-
-			pos = la.editor_rect.pos() + t * la.editor_rect.size() - radius;
-		}
-
-		bool is_hit(const vec2& mp) const {
-
-			float dist = length(mp - (pos + radius));
-			return dist <= radius;
-		}
-	};*/
-
 	struct point : public draggable {
 		vec2 val;
 		rgb col;
 
 		point() {
-			position_is_center = true;
-			//constrain_reference = CR_CENTER;
-			constrain_reference = CR_MIN_POINT;
 			size = vec2(8.0f);
+			position_is_center = true;
+			constrain_reference = CR_CENTER;
 		}
 
 		void update_val(const layout_attributes& la, const float scale_exponent) {
 
 			apply_constraint(la.editor_rect);
 
-			//vec2 p = (pos + size) - la.editor_rect.pos();
 			vec2 p = pos - la.editor_rect.pos();
 			val = p / la.editor_rect.size();
 			
@@ -318,7 +280,6 @@ protected:
 
 			t.y() = cgv::math::clamp(std::pow(t.y(), 1.0f / scale_exponent), 0.0f, 1.0f);
 
-			//pos = la.editor_rect.pos() + t * la.editor_rect.size() - size;
 			pos = la.editor_rect.pos() + t * la.editor_rect.size();
 		}
 
