@@ -442,7 +442,7 @@ void transfer_function_editor::draw(cgv::render::context& ctx) {
 	rect_prog.set_uniform(ctx, "color", vec4(0.9f, 0.9f, 0.9f, 1.0f));
 	rect_prog.set_uniform(ctx, "border_color", vec4(0.2f, 0.2f, 0.2f, 1.0f));
 	rect_prog.set_uniform(ctx, "border_width", 1.0f);
-	
+
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 	
 	// draw inner border
@@ -524,7 +524,7 @@ void transfer_function_editor::draw(cgv::render::context& ctx) {
 	point_prog.set_uniform(ctx, "position_is_center", true);
 	point_prog.set_uniform(ctx, "border_color", rgba(0.2f, 0.2f, 0.2f, 1.0f));
 	point_prog.set_uniform(ctx, "border_width", 1.5f);
-
+	
 	for(unsigned i = 0; i < tfc.points.size(); ++i) {
 		const point& p = tfc.points[i];
 
@@ -555,6 +555,8 @@ void transfer_function_editor::draw(cgv::render::context& ctx) {
 	rect_prog.set_uniform(ctx, "use_color", false);
 	rect_prog.set_uniform(ctx, "use_blending", false);
 	rect_prog.set_uniform(ctx, "apply_gamma", true);
+	rect_prog.set_uniform(ctx, "feather_width", 0.0f);
+	rect_prog.set_uniform(ctx, "feather_origin", 0.5f);
 
 	fbc.enable_attachment(ctx, "color", 0);
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
