@@ -5,6 +5,9 @@
 //***** begin interface of fragment2d.glfs ***********************************
 uniform vec4 border_color = vec4(1.0);
 uniform float border_width = 0.0;
+uniform float feather_width = 1.0;
+
+uniform bool use_smooth_feather = false;
 
 vec2 get_shape_size();
 vec4 get_color();
@@ -16,7 +19,6 @@ void finish_fragment2d();
 //***** end interface of fragment2d.glfs ***********************************
 
 uniform float dash_length = 0.0;
-uniform float feather_width = 1.0;
 
 #if USE_ROUNDED_CAPS == 0
 in vec4 color_fs;
@@ -46,7 +48,7 @@ void main() {
 #if USE_ROUNDED_CAPS == 0
 	vec4 color = color_fs;
 
-	float dist_since_start = pix_coord_fs.x + 0.5*size_fs.x;
+	float dist_since_start = pix_coord_fs.x + 0.5*size_fs.x - feather_width;
 	dist_since_start = mod(dist_since_start, dash_length);
 	float dash_coord = dist_since_start - 0.25*dash_length;
 
@@ -62,9 +64,19 @@ void main() {
 	
 	float inv_feather = 1.0/feather_width;
 
-	float tt = clamp((tangential_dist - tangential_limit) * inv_feather, 0.0, 1.0);
-	float tp = clamp((perpendicular_dist - perpendicular_limit) * inv_feather, 0.0, 1.0);
-	float td = clamp((dash_dist - dash_limit) * inv_feather, 0.0, 1.0);
+	float tt = 0.0f;
+	float tp = 0.0f;
+	float td = 0.0f;
+
+	if(use_smooth_feather) {
+		tt = smoothstep(0.0, 1.0, (tangential_dist - tangential_limit) * inv_feather);
+		tp = smoothstep(0.0, 1.0, (perpendicular_dist - perpendicular_limit) * inv_feather);
+		td = smoothstep(0.0, 1.0, (dash_dist - dash_limit) * inv_feather);
+	} else {
+		tt = clamp((tangential_dist - tangential_limit) * inv_feather, 0.0, 1.0);
+		tp = clamp((perpendicular_dist - perpendicular_limit) * inv_feather, 0.0, 1.0);
+		td = clamp((dash_dist - dash_limit) * inv_feather, 0.0, 1.0);
+	}
 
 	if(border_width > 0.0) {
 		float border_limit = 0.5*size_fs.y - border_width - feather_width;
@@ -76,6 +88,13 @@ void main() {
 
 	override_color(color);
 	finish_fragment2d();
+
+
+
+
+
+
+
 
 	/*vec2 p = 2.0 * tex_coord_fs - 1.0;
 	float dist = 1.0 + sd_box(p, vec2(2.0*length_fs, 1.0));

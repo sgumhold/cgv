@@ -3,6 +3,10 @@
 
 #define USE_ROUNDED_CAPS 0
 
+//***** begin interface of fragment2d.glsl ***********************************
+uniform float feather_width = 1.0;
+//***** end interface of fragment2d.glsl ***********************************
+
 layout(lines) in;
 layout(triangle_strip, max_vertices = 4) out;
 
@@ -15,7 +19,7 @@ const vec2 corners[4] = vec2[](
 
 uniform ivec2 resolution;
 uniform float width = 1.0;
-uniform float feather_width = 1.0;
+//uniform float line_feather = 1.0;
 
 in vec4 color_gs[];
 
