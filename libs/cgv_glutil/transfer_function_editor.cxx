@@ -516,6 +516,8 @@ void transfer_function_editor::draw(cgv::render::context& ctx) {
 	));
 	rect_prog.set_uniform(ctx, "size", ivec2(container_size.x() - 2 * layout.padding, 1));
 	rect_prog.set_uniform(ctx, "color", vec4(0.2f, 0.2f, 0.2f, 1.0f));
+	rect_prog.set_uniform(ctx, "use_color", true);
+	rect_prog.set_uniform(ctx, "use_blending", true);
 
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 	rect_prog.disable(ctx);
@@ -555,6 +557,7 @@ void transfer_function_editor::draw(cgv::render::context& ctx) {
 	rect_prog.set_uniform(ctx, "position", get_overlay_position());
 	rect_prog.set_uniform(ctx, "size", container_size);
 	rect_prog.set_uniform(ctx, "border_width", 0.0f);
+	rect_prog.set_uniform(ctx, "feather_width", 0.0f);
 	rect_prog.set_uniform(ctx, "use_color", false);
 	rect_prog.set_uniform(ctx, "use_blending", false);
 	rect_prog.set_uniform(ctx, "apply_gamma", true);
