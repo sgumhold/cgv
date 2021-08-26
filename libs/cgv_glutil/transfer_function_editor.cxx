@@ -442,6 +442,7 @@ void transfer_function_editor::draw(cgv::render::context& ctx) {
 	rect_prog.set_uniform(ctx, "color", vec4(0.9f, 0.9f, 0.9f, 1.0f));
 	rect_prog.set_uniform(ctx, "border_color", vec4(0.2f, 0.2f, 0.2f, 1.0f));
 	rect_prog.set_uniform(ctx, "border_width", 1.0f);
+	rect_prog.set_uniform(ctx, "feather_width", 0.0f);
 
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 	
@@ -470,6 +471,7 @@ void transfer_function_editor::draw(cgv::render::context& ctx) {
 	shader_program& bg_prog = shaders.get("background");
 	bg_prog.enable(ctx);
 	bg_prog.set_uniform(ctx, "tex", 0);
+	bg_prog.set_uniform(ctx, "feather_width", 0.0f);
 	float width_factor = static_cast<float>(layout.editor_rect.size().x()) / static_cast<float>(layout.editor_rect.size().y());
 	bg_prog.set_uniform(ctx, "tex_scaling", vec2(5.0f * width_factor, 5.0f));
 	bg_prog.set_uniform(ctx, "scale_exponent", opacity_scale_exponent);
@@ -492,6 +494,7 @@ void transfer_function_editor::draw(cgv::render::context& ctx) {
 		hist_prog.set_uniform(ctx, "color", histogram_color);
 		hist_prog.set_uniform(ctx, "border_color", histogram_border_color);
 		hist_prog.set_uniform(ctx, "border_width_in_pixel", histogram_border_width);
+		hist_prog.set_uniform(ctx, "feather_width", 0.0f);
 
 		tfc.hist_tex.enable(ctx, 0);
 		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
@@ -555,9 +558,7 @@ void transfer_function_editor::draw(cgv::render::context& ctx) {
 	rect_prog.set_uniform(ctx, "use_color", false);
 	rect_prog.set_uniform(ctx, "use_blending", false);
 	rect_prog.set_uniform(ctx, "apply_gamma", true);
-	rect_prog.set_uniform(ctx, "feather_width", 0.0f);
-	rect_prog.set_uniform(ctx, "feather_origin", 0.5f);
-
+	
 	fbc.enable_attachment(ctx, "color", 0);
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 	fbc.disable_attachment(ctx, "color");

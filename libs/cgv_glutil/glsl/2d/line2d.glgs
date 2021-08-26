@@ -61,23 +61,25 @@ void main() {
 
 #if USE_ROUNDED_CAPS == 0
 	color_fs = color_gs[0];
-	tex_coord_fs = corners[2];
-	pix_coord_fs = size_fs*corners[2] - 0.5*size_fs;
-	gl_Position = to_window_space(start.xy - u_dir - v_dir);
-	EmitVertex();
 	tex_coord_fs = corners[0];
 	pix_coord_fs = size_fs*corners[0] - 0.5*size_fs;
 	gl_Position = to_window_space(start.xy - u_dir + v_dir);
 	EmitVertex();
+	color_fs = color_gs[1];
+	tex_coord_fs = corners[1];
+	pix_coord_fs = size_fs*corners[1] - 0.5*size_fs;
+	gl_Position = to_window_space(end.xy + u_dir + v_dir);
+	EmitVertex();
 
+	color_fs = color_gs[0];
+	tex_coord_fs = corners[2];
+	pix_coord_fs = size_fs*corners[2] - 0.5*size_fs;
+	gl_Position = to_window_space(start.xy - u_dir - v_dir);
+	EmitVertex();
 	color_fs = color_gs[1];
 	tex_coord_fs = corners[3];
 	pix_coord_fs = size_fs*corners[3] - 0.5*size_fs;
-	gl_Position = to_window_space(end.xy + u_dir - v_dir);
-	EmitVertex();
-	tex_coord_fs = corners[1];
-	pix_coord_fs = size_fs*corners[1] - 0.5*size_fs;
-	gl_Position = to_window_space(end.xy + u_dir + v_dir);;
+	gl_Position = to_window_space(end.xy + u_dir - v_dir);;
 	EmitVertex();
 #else
 	color0_fs = color_gs[0];
