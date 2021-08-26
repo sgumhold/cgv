@@ -19,6 +19,7 @@ void finish_fragment2d();
 //***** end interface of fragment2d.glfs ***********************************
 
 uniform float dash_length = 0.0;
+uniform float dash_ratio = 0.5;
 
 #if USE_ROUNDED_CAPS == 0
 in vec4 color_fs;
@@ -50,7 +51,7 @@ void main() {
 
 	float dist_since_start = pix_coord_fs.x + 0.5*size_fs.x - feather_width;
 	dist_since_start = mod(dist_since_start, dash_length);
-	float dash_coord = dist_since_start - 0.25*dash_length;
+	float dash_coord = dist_since_start - (0.5*dash_ratio*dash_length);
 
 	// get the tangential and perpendicular distance to the line segment
 	float tangential_dist = abs(pix_coord_fs.x);
@@ -60,7 +61,7 @@ void main() {
 
 	float tangential_limit = 0.5*size_fs.x - feather_width;
 	float perpendicular_limit = 0.5*size_fs.y - feather_width;
-	float dash_limit = 0.25*dash_length - feather_width;
+	float dash_limit = (0.5*dash_ratio*dash_length) - feather_width;
 	
 	float inv_feather = 1.0/feather_width;
 

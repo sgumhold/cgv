@@ -30,6 +30,7 @@ uniform vec4 color;
 uniform vec4 border_color = vec4(1.0);
 uniform float border_width = 0.0;
 uniform float border_radius = 0.0;
+uniform float ring_width = 0.0;
 uniform float feather_width = 1.0;
 uniform float feather_origin = 0.5;
 uniform vec2 tex_scaling = vec2(1.0);
@@ -65,6 +66,11 @@ void override_color(in vec4 color) {
 void finish_sdf_fragment2d(in float signed_distance, in vec2 texcoords) {
 	
 	signed_distance -= border_radius;
+
+	if(ring_width > 0.01)
+		// TODO: enable to control ring origin with "+ ring_width"
+		// --> needs to enlarge quad
+		signed_distance = abs(signed_distance + ring_width) - ring_width;
 
 	if(signed_distance > 0.0 && !use_blending)
 		discard;
