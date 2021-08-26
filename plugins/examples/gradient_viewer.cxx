@@ -255,7 +255,7 @@ bool gradient_viewer::init(cgv::render::context& ctx)
 
 	std::vector<unsigned char> tf_data(4*w, 0u);
 
-	for(int i = 0; i < w; ++i) {
+	for(unsigned i = 0; i < w; ++i) {
 		float alpha = static_cast<float>(i / 4) / static_cast<float>(w);
 		tf_data[4 * i + 0] = src_ptr[3 * i + 0];
 		tf_data[4 * i + 1] = src_ptr[3 * i + 1];
