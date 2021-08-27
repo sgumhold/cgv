@@ -288,6 +288,7 @@ public:
 		shaders.add("arrow", "arrow2d.glpr");
 		shaders.add("line", "line2d.glpr");
 		shaders.add("spline", "cubic_spline2d.glpr");
+		shaders.add("text", "sdf_text2d.glpr");
 	}
 	void stream_help(std::ostream& os) {
 		return;
@@ -395,10 +396,10 @@ public:
 			cgv::media::image::image_reader image(tex_format);
 			cgv::data::data_view tex_data;
 
-			std::string file_name = "res://alhambra.png";
+			std::string file_name = "res://arial_atlas.bmp";
 			if(!image.read_image(file_name, tex_data)) {
 				std::cout << "Error: Could not read image file " << file_name << std::endl;
-				return false;
+				success = false;
 			} else {
 				image_tex.create(ctx, tex_data, 0);
 				image_tex.set_min_filter(cgv::render::TextureFilter::TF_LINEAR);
@@ -440,6 +441,7 @@ public:
 			set_resolution_uniform(ctx, shaders.get("arrow"));
 			set_resolution_uniform(ctx, shaders.get("line"));
 			set_resolution_uniform(ctx, shaders.get("spline"));
+			set_resolution_uniform(ctx, shaders.get("text"));
 		}
 	}
 	void draw(cgv::render::context& ctx) {
@@ -513,6 +515,15 @@ public:
 
 		draw_control_lines(ctx);
 		draw_draggables(ctx);
+
+		shader_program& text_prog = shaders.get("text");
+		text_prog.enable(ctx);
+		text_prog.set_uniform(ctx, "use_color", false);
+		text_prog.set_uniform(ctx, "position", ivec2(0, viewport_rect.size().y() - 256));
+		text_prog.set_uniform(ctx, "size", ivec2(256, 256));
+		set_shared_uniforms(ctx, text_prog);
+		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+		text_prog.disable(ctx);
 
 		image_tex.disable(ctx);
 
