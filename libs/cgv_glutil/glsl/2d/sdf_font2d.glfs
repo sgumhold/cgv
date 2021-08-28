@@ -1,0 +1,77 @@
+#version 150
+
+//***** begin interface of fragment2d.glfs ***********************************
+uniform sampler2D tex;
+
+uniform vec4 border_color = vec4(1.0);
+uniform float border_width = 0.0;
+
+vec2 get_shape_size();
+vec4 get_color();
+void override_color(in vec4 color);
+void finish_sdf_fragment2d(in float signed_distance, in vec2 texcoords);
+void finish_sdf_fragment2d(in float signed_distance);
+void finish_fragment2d(in vec2 texcoords);
+void finish_fragment2d();
+//***** end interface of fragment2d.glfs ***********************************
+
+uniform float font_size;
+
+in vec2 pix_coord;
+in vec2 tex_coord;
+
+float median(float r, float g, float b) {
+	return max(min(r, g), min(max(r, g), b));
+}
+
+float screenPxRange() {
+	float screen_size = font_size;
+	float src_size = 64.0;
+	float pixel_range = 2.0;
+	return max((screen_size/src_size) * pixel_range, 1.0);
+}
+
+void main() {
+	
+	vec4 mtsd = texture(tex, vec2(tex_coord.x, 1.0 - tex_coord.y)).rgba;
+	float sd = median(mtsd.r, mtsd.g, mtsd.b);
+	float screenPxDistance = screenPxRange()*(sd - 0.5);
+	float opacity = clamp(screenPxDistance + 0.5, 0.0, 1.0);
+
+	vec4 bgColor = vec4(0.0, 0.0, 0.0, 0.0);
+	vec4 fgColor = vec4(0.0, 0.0, 0.0, 1.0);
+
+	//vec4 color = mix(vec4(0.0), get_color(), opacity);
+
+	vec4 color = get_color();
+	
+
+	//color.rgb = msd;
+	//color.a = 1.0;
+
+
+	/*float signed_distance = -(screenPxRange()*(mtsd.a - 0.5) + 0.5);
+
+	if(border_width > 0.0) {
+		float border_distance = -border_width;// - feather_width;
+
+		float border_feather_alpha =// use_smooth_feather ?
+		//	smoothstep(0.0, 1.0, (signed_distance - border_distance) * inv_feather) :
+			//clamp((signed_distance - border_distance) * inv_feather, 0.0, 1.0);
+			clamp((signed_distance - border_distance), 0.0, 1.0);
+
+		//float border_antialias_alpha = smoothstep(0.5 - delta, 0.5, signed_distance + border_width);
+		//frag_color = mix(frag_color, border_color, min(border_antialias_alpha + border_feather_alpha, 1.0));
+		color = mix(color, border_color, border_feather_alpha);
+	}*/
+
+	color.a *= opacity;
+
+
+	override_color(color);
+	finish_fragment2d();
+
+	//float dist = sd_box(pix_coord, get_shape_size());
+	//override_color(vec4(1.0));
+	//finish_sdf_fragment2d(-(screenPxRange()*(sd-0.5) + 0.5));
+}

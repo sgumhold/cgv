@@ -11,6 +11,8 @@
 #include <cgv/render/texture.h>
 #include <cgv/render/vertex_buffer.h>
 #include <cgv/render/attribute_array_binding.h>
+#include <cgv/utils/file.h>
+#include <cgv/utils/tokenizer.h>
 #include <cgv_gl/gl/gl_context.h>
 #include <cgv_glutil/shader_library.h>
 
@@ -134,6 +136,150 @@ private:
 			}
 		}
 	};
+
+
+
+
+
+
+
+
+
+	struct text_geometry {
+		struct vertex_type {
+			vec4 position;
+			vec4 texcoord;
+		};
+
+		struct rope_option {
+			int offset;
+			int count;
+			ivec2 position;
+			vec2 size;
+			cgv::render::TextAlignment alignment;
+		};
+
+		std::vector<vertex_type> vertices;
+		std::vector<rope_option> rope_options;
+
+		//type_descriptor type_descriptor = cgv::render::element_descriptor_traits<vec4>::get_type_descriptor(vec4());
+		//
+		//vertex_buffer vb;
+		//attribute_array_binding aab;
+
+		GLuint ssbo;
+
+		size_t size() { return vertices.size(); }
+
+		void clear(context& ctx) {
+			vertices.clear();
+			rope_options.clear();
+
+			if(ssbo != 0) {
+				glDeleteBuffers(1, &ssbo);
+				ssbo = 0;
+			}
+
+			//if(vb.is_created())
+			//	vb.destruct(ctx);
+			//if(aab.is_created())
+			//	aab.destruct(ctx);
+		}
+
+		bool create(context& ctx, const shader_program& prog) {
+
+			if(ssbo != 0) {
+				glDeleteBuffers(1, &ssbo);
+				ssbo = 0;
+			}
+
+			glGenBuffers(1, &ssbo);
+			glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssbo);
+			glBufferData(GL_SHADER_STORAGE_BUFFER, size() * sizeof(vertex_type), vertices.data(), GL_STATIC_DRAW);
+			glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
+		
+			return true;
+		}
+
+		void add(const vec4& pos, const vec4& txc) {
+			vertices.push_back({ pos, txc });
+		}
+
+		void end_rope(const ivec2& position, const vec2& size, const cgv::render::TextAlignment alignment) {
+			rope_option ro;
+
+			if(rope_options.size() > 0) {
+				const rope_option& lro = *rope_options.rbegin();
+				ro.offset = lro.offset + lro.count;
+				ro.count = vertices.size() - ro.offset;
+			} else {
+				ro.offset = 0;
+				ro.count = vertices.size();
+			}
+
+			ro.position = position;
+			ro.size = size;
+			ro.alignment = alignment;
+			rope_options.push_back(ro);
+		}
+
+		void render(context& ctx, shader_program& prog) {
+			prog.enable(ctx);
+			
+			glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, ssbo);
+
+			for(const auto& ro : rope_options) {
+
+				vec2 position(ro.position);
+				vec2 size = ro.size;
+
+				/*
+				TA_NONE = 0,
+				TA_LEFT = 1,    // center of left edge of text bounds
+				TA_RIGHT = 2,   // center of right edge of text bounds
+				TA_TOP = 4,     // center of top edge of text bounds
+				TA_BOTTOM = 8,  // center of bottom edge of text bounds
+				TA_TOP_LEFT = TA_LEFT + TA_TOP,    // top left corner of text bounds
+				TA_TOP_RIGHT = TA_RIGHT + TA_TOP,  // top right corner of text bounds
+				TA_BOTTOM_LEFT = TA_LEFT + TA_BOTTOM,   // bottom left corner of text bounds
+				TA_BOTTOM_RIGHT = TA_RIGHT + TA_BOTTOM  // bottom right corner of text bounds
+				*/
+
+				position -= 0.5f * size;
+
+				if(ro.alignment != TA_NONE) {
+					//position = vec2(0.0f);
+
+					if(ro.alignment & cgv::render::TA_LEFT)
+						position.x() += 0.5f * size.x();
+					else if(ro.alignment & cgv::render::TA_RIGHT)
+						position.x() -= 0.5f * size.x();
+
+					if(ro.alignment & cgv::render::TA_TOP)
+						position.y() -= 0.5f * size.y();
+					else if(ro.alignment & cgv::render::TA_BOTTOM)
+						position.y() += 0.5f * size.y();
+				}
+
+				prog.set_uniform(ctx, "position", ivec2(round(position)));
+				//glDrawArraysInstanced(GL_TRIANGLE_STRIP, 0, 4, size());
+				glDrawArraysInstancedBaseInstance(GL_TRIANGLE_STRIP, 0, 4, ro.count, ro.offset);
+			}
+			glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
+
+			prog.disable(ctx);
+		}
+	};
+
+
+
+
+
+
+
+
+
+
 
 	struct draggable {
 		vec2 pos;
@@ -270,6 +416,20 @@ protected:
 	bool use_smooth_feather = false;
 	bool apply_gamma = true;
 
+
+
+
+	struct glyph {
+		float advance;
+		vec4 plane_bounds;
+		vec4 atlas_bounds;
+	};
+
+	std::vector<glyph> glyphs;
+
+	text_geometry text;
+	float font_size = 32.0f;
+
 public:
 	shapes_2d() : cgv::base::node("shapes 2d test") {
 		viewport_rect.set_pos(ivec2(0));
@@ -288,7 +448,7 @@ public:
 		shaders.add("arrow", "arrow2d.glpr");
 		shaders.add("line", "line2d.glpr");
 		shaders.add("spline", "cubic_spline2d.glpr");
-		shaders.add("text", "sdf_text2d.glpr");
+		shaders.add("text", "sdf_font2d.glpr");
 	}
 	void stream_help(std::ostream& os) {
 		return;
@@ -313,7 +473,6 @@ public:
 					} else {
 						selected_point = get_hit_point(mpos);
 					}
-					post_recreate_gui();
 					post_redraw();
 				}
 			}
@@ -363,6 +522,12 @@ public:
 			}
 		}
 
+		if(member_ptr == &font_size) {
+			cgv::render::context* ctx_ptr = get_context();
+			if(ctx_ptr)
+				create_text_render_data(*ctx_ptr);
+		}
+
 		post_redraw();
 		update_member(member_ptr);
 	}
@@ -396,7 +561,8 @@ public:
 			cgv::media::image::image_reader image(tex_format);
 			cgv::data::data_view tex_data;
 
-			std::string file_name = "res://arial_atlas.bmp";
+			// TODO: png images are flipped in y direction
+			std::string file_name = "res://segoeui2.png";
 			if(!image.read_image(file_name, tex_data)) {
 				std::cout << "Error: Could not read image file " << file_name << std::endl;
 				success = false;
@@ -410,6 +576,8 @@ public:
 			image.close();
 		}
 
+		success &= read_glyph_atlas();
+		
 		// add two control points for the arrow
 		points.push_back(point(ivec2(600, 600)));
 		points.push_back(point(ivec2(700, 600)));
@@ -424,6 +592,7 @@ public:
 		
 		success &= create_line_render_data(ctx);
 		success &= create_curve_render_data(ctx);
+		success &= create_text_render_data(ctx);
 
 		return success;
 	}
@@ -518,12 +687,14 @@ public:
 
 		shader_program& text_prog = shaders.get("text");
 		text_prog.enable(ctx);
+		text_prog.set_uniform(ctx, "position", ivec2(500, 150));
+		text_prog.set_uniform(ctx, "font_size", font_size);
 		text_prog.set_uniform(ctx, "use_color", false);
-		text_prog.set_uniform(ctx, "position", ivec2(0, viewport_rect.size().y() - 256));
-		text_prog.set_uniform(ctx, "size", ivec2(256, 256));
+		//text_prog.set_uniform(ctx, "position", ivec2(0, viewport_rect.size().y() - 256));
+		//text_prog.set_uniform(ctx, "size", ivec2(256, 256));
 		set_shared_uniforms(ctx, text_prog);
-		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 		text_prog.disable(ctx);
+		text.render(ctx, shaders.get("text"));
 
 		image_tex.disable(ctx);
 
@@ -632,6 +803,50 @@ public:
 			curves.create(ctx, shaders.get("spline")) &&
 			control_lines.create(ctx, shaders.get("line"));
 	}
+	bool create_text_render_data(cgv::render::context& ctx) {
+		text.clear(ctx);
+
+		std::vector<std::string> texts;
+		texts.push_back("Hello World!");
+		texts.push_back("CGV Framework");
+		std::vector<ivec2> positions;
+		positions.push_back(ivec2(750, 150));
+		positions.push_back(ivec2(500, 450));
+
+		//std::string str = "Hello World!";
+		//vec2 pos(500, 50);
+
+		for(unsigned i = 0; i < 2; ++i) {
+			std::string str = texts[i];
+
+			float acc_advance = 0.0f;
+			vec2 atlas_size(image_tex.get_width(), image_tex.get_height());
+
+			vec2 text_size(0.0f, font_size);
+
+			for(char c : str) {
+				auto& g = glyphs[c];
+				vec4 texcoord;
+				texcoord = g.atlas_bounds / vec4(atlas_size.x(), atlas_size.y(), atlas_size.x(), atlas_size.y());
+
+				vec2 pa(g.plane_bounds.x(), g.plane_bounds.y());
+				vec2 pb(g.plane_bounds.z(), g.plane_bounds.w());
+
+				vec2 ps = pb - pa;
+
+				vec2 min_pos = pa * font_size + vec2(acc_advance, 0.0f);
+				vec2 max_pos = ps * font_size; // the size of this glyph quad
+
+				text_size.x() = acc_advance + max_pos.x();
+				acc_advance += g.advance * font_size;
+
+				text.add(vec4(min_pos.x(), min_pos.y(), max_pos.x(), max_pos.y()), texcoord);
+			}
+			text.end_rope(positions[i], text_size, cgv::render::TA_NONE);
+		}
+
+		return text.create(ctx, shaders.get("text"));
+	}
 	void set_resolution_uniform(cgv::render::context& ctx, cgv::render::shader_program& prog) {
 		prog.enable(ctx);
 		//prog.set_uniform(ctx, "resolution", last_viewport_resolution);
@@ -663,6 +878,69 @@ public:
 				hit = &p;
 		}
 		return hit;
+	}
+	bool read_glyph_atlas() {
+		
+		glyphs.resize(256);
+
+		std::string filename = "D:/develop/cgv/plugins/examples/res/segoeui2.csv";
+		if(!cgv::utils::file::exists(filename))
+			return false;
+
+		std::string content;
+
+		if(!cgv::utils::file::read(filename, content, false))
+			return false;
+
+		if(content.length() > 0) {
+			bool read_lines = true;
+			size_t split_pos = content.find_first_of('\n');
+			size_t line_offset = 0;
+
+			while(read_lines) {
+				std::string line = "";
+
+				if(split_pos == std::string::npos) {
+					read_lines = false;
+					line = content.substr(line_offset, std::string::npos);
+				} else {
+					size_t next_line_offset = split_pos;
+					line = content.substr(line_offset, next_line_offset - line_offset);
+					line_offset = next_line_offset + 1;
+					split_pos = content.find_first_of('\n', line_offset);
+				}
+
+				if(!line.empty()) {
+					std::vector<cgv::utils::token> tokens;
+
+					cgv::utils::tokenizer tknzr(line);
+					tknzr.set_ws(",");
+					//tknzr.set_sep(",");
+					tknzr.bite_all(tokens);
+						
+					if(tokens.size() == 10) {
+						int id = std::strtol(to_string(tokens[0]).c_str(), 0, 10);
+
+						if(id > 0 && id < 256) {
+							auto& g = glyphs[id];
+							g.advance = std::strtof(to_string(tokens[1]).c_str(), 0);
+							
+							g.plane_bounds.x() = std::strtof(to_string(tokens[2]).c_str(), 0);
+							g.plane_bounds.y() = std::strtof(to_string(tokens[3]).c_str(), 0);
+							g.plane_bounds.z() = std::strtof(to_string(tokens[4]).c_str(), 0);
+							g.plane_bounds.w() = std::strtof(to_string(tokens[5]).c_str(), 0);
+
+							g.atlas_bounds.x() = std::strtof(to_string(tokens[6]).c_str(), 0);
+							g.atlas_bounds.y() = std::strtof(to_string(tokens[7]).c_str(), 0);
+							g.atlas_bounds.z() = std::strtof(to_string(tokens[8]).c_str(), 0);
+							g.atlas_bounds.w() = std::strtof(to_string(tokens[9]).c_str(), 0);
+						}
+					}
+				}
+			}
+		}
+		
+		return true;
 	}
 	void create_gui() {
 		add_decorator("Shapes 2D", "heading");
@@ -696,6 +974,9 @@ public:
 		add_member_control(this, "Width", line_width, "value_slider", "min=0;max=40;step=0.5;ticks=true");
 		add_member_control(this, "Dash Length", dash_length, "value_slider", "min=0;max=100;step=0.5;ticks=true");
 		add_member_control(this, "Dash Ratio", dash_ratio, "value_slider", "min=0;max=1;step=0.01;ticks=true");
+
+		add_decorator("Text Appearance", "heading", "level=3");
+		add_member_control(this, "Font Size", font_size, "value_slider", "min=1;max=256;step=0.5;ticks=true");
 	}
 };
 
