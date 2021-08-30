@@ -5,6 +5,9 @@ uniform sampler2D tex;
 
 uniform vec4 border_color = vec4(1.0);
 uniform float border_width = 0.0;
+uniform float border_radius = 0.0;
+uniform float feather_width = 1.0;
+uniform float feather_origin = 0.5;
 
 vec2 get_shape_size();
 vec4 get_color();
@@ -26,8 +29,8 @@ float median(float r, float g, float b) {
 
 float screenPxRange() {
 	float screen_size = font_size;
-	float src_size = 64.0;
-	float pixel_range = 6.0;
+	float src_size = 48.0;
+	float pixel_range = 8.0;
 	return max((screen_size/src_size) * pixel_range, 1.0);
 }
 
@@ -72,5 +75,10 @@ void main() {
 
 	//float dist = sd_box(pix_coord, get_shape_size());
 	//override_color(vec4(1.0));
-	finish_sdf_fragment2d(-(screenPxRange()*(sd-0.5) + 0.5));
+
+	float signed_distance = -(screenPxRange()*(sd-0.5) + 0.5);
+	signed_distance -= border_radius;
+	signed_distance -= feather_origin*feather_width;
+
+	finish_sdf_fragment2d(signed_distance);
 }
