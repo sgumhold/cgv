@@ -562,7 +562,7 @@ public:
 			cgv::data::data_view tex_data;
 
 			// TODO: png images are flipped in y direction
-			std::string file_name = "res://segoeui2.png";
+			std::string file_name = "res://segoeui3.png";
 			if(!image.read_image(file_name, tex_data)) {
 				std::cout << "Error: Could not read image file " << file_name << std::endl;
 				success = false;
@@ -883,7 +883,7 @@ public:
 		
 		glyphs.resize(256);
 
-		std::string filename = "D:/develop/cgv/plugins/examples/res/segoeui2.csv";
+		std::string filename = "D:/develop/cgv/plugins/examples/res/segoeui3.csv";
 		if(!cgv::utils::file::exists(filename))
 			return false;
 
