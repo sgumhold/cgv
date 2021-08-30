@@ -140,6 +140,11 @@ namespace cgv {
 
 			GLuint max_drawn_points = 500000;
 
+			vec4 pivot_point_in_view_space;
+
+			mat4 model_matrix, view_matrix, projection_matrix;
+
+
 			/// default render style
 			mutable render_style* default_render_style = nullptr;
 			/// current render style, can be set by user
@@ -166,7 +171,7 @@ namespace cgv {
 			const T& get_style() const { return *static_cast<const T*>(get_style_ptr()); }
 
 		public:
-			clod_point_renderer() = default;
+			clod_point_renderer();
 
 			render_style* create_render_style() const;
 
@@ -202,6 +207,9 @@ namespace cgv {
 			*/
 
 			void set_max_drawn_points(cgv::render::context& ctx, const unsigned max_points);
+			
+			//sets the pivot point in view space coordinates
+			void set_pivot_point(const vec4& pivot);
 
 			void set_render_style(const render_style& rs);
 			
@@ -247,12 +255,8 @@ namespace cgv {
 				return input_buffer;
 			}
 
-			inline unsigned int num_reduced_points() {
-				DrawParameters* device_draw_parameters = static_cast<DrawParameters*>(glMapNamedBufferRange(draw_parameter_buffer, 0, sizeof(DrawParameters), GL_MAP_READ_BIT));
-				unsigned ret = device_draw_parameters->count;
-				glUnmapNamedBuffer(draw_parameter_buffer);
-				return ret;
-			}
+			/// gives the number of points written to the reduction buffer
+			unsigned int num_reduced_points();
 
 			/// resizes external buffers to fit the renderers settings, returns new size, the old size parameter only exists to prevent resizing in the case the buffer sizes already match
 			int resize_external_buffers(context& ctx, const int old_size=-1);
@@ -260,6 +264,10 @@ namespace cgv {
 			void add_shader(context& ctx, shader_program& prog, const std::string& sf, const cgv::render::ShaderType st);
 			void resize_buffers(context& ctx);
 			void clear_buffers(const context& ctx);
+			static void reset_draw_parameters(context& ctx, GLuint& draw_parameter_buffer);
+
+			/// constructs a vertex array from 
+			static void define_vertex_array(context& ctx, GLuint& vertex_array, const GLuint render_buffer, const GLuint index_buffer);
 		};
 
 

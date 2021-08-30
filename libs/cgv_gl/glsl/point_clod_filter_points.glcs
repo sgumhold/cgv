@@ -65,7 +65,7 @@ uniform float CLOD;
 uniform float scale;
 uniform float spacing; //root_spacings
 uniform vec2 screenSize;
-uniform vec4 pivot; //pivot point in model space, usually the camera position
+uniform vec4 pivot; //pivot point in view space, usually the camera position
 
 uniform float frustum_extent;
 
@@ -75,11 +75,7 @@ uniform float density_decrease= 0.5;
 uniform float min_density = 0.3;
 
 uniform mat4 model_view_projection;
-
-float square_distance(in vec3 a,in vec3 b){
-	vec3 d = b-a;
-	return dot(d,d);
-}
+uniform mat4 model_view;
 
 float rand(float n){
 	return fract(cos(n) * 123456.789);
@@ -110,14 +106,15 @@ void main(){
 
 	//vec3 worldPos = (world * vec4(position, 1)).xyz;
 	vec3 modelPos = position;
+	vec3 viewPos = (model_view*vec4(position,1.0)).xyz;
 
 	// without level randomization
 	//float pointSpacing = uScale * uSpacing / pow(2, level);
 
 	// with level randomization
 	float pointSpacing = scale * spacing / pow(2, level + aRandom);
-
-	float d = distance(modelPos, pivot.xyz);
+	
+	float d = distance(viewPos, pivot.xyz);
 	float dc = length((projected.xy/screenSize)-vec2(1.0,1.0)); //distance to center in device coordinates
 
 	// targetSpacing dependant on camera distance
