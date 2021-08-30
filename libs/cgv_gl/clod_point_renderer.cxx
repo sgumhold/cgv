@@ -38,6 +38,8 @@ namespace cgv {
 		void clod_point_renderer::reduce_points(context& ctx, size_t start, size_t count)
 		{
 			{
+				reset_draw_parameters(ctx,active_draw_parameter_buffer);
+
 				//configure shader to compute everything after one frame
 				reduce_prog.set_uniform(ctx, uniforms.batch_offset, (int)start);
 				reduce_prog.set_uniform(ctx, uniforms.batch_size, (int)count);
@@ -77,6 +79,8 @@ namespace cgv {
 
 		void clod_point_renderer::reduce_chunks(context& ctx, const uint32_t* chunk_starts, const uint32_t* chunk_point_counts, const uint32_t* reduction_sources, uint32_t num_reduction_sources)
 		{
+			reset_draw_parameters(ctx, active_draw_parameter_buffer);
+
 			reduce_prog.set_uniform(ctx, uniforms.frustum_extent, 1.0f);
 			reduce_prog.set_uniform(ctx, uniforms.target_buffer_size, max_drawn_points);
 			reduce_prog.enable(ctx);
@@ -140,6 +144,11 @@ namespace cgv {
 			return default_render_style;
 		}
 
+		clod_point_renderer::clod_point_renderer()
+		{
+			pivot_point_in_view_space = vec4(0.0, 0.0, 0.0, 1.0);
+		}
+
 		render_style* clod_point_renderer::create_render_style() const
 		{
 			return new clod_point_render_style();
@@ -176,6 +185,8 @@ namespace cgv {
 
 			// vertex arrays
 			glGenVertexArrays(1, &vertex_array);
+			define_vertex_array(ctx, vertex_array, render_buffer, index_buffer);
+			/*
 			glBindVertexArray(vertex_array);
 			// position 
 			glBindBuffer(GL_ARRAY_BUFFER, render_buffer);
@@ -190,7 +201,7 @@ namespace cgv {
 			glEnableVertexAttribArray(2);
 			glBindBuffer(GL_ARRAY_BUFFER, 0);
 			glBindVertexArray(0);
-
+			*/
 			// fixed size buffers
 			glBindBuffer(GL_SHADER_STORAGE_BUFFER, draw_parameter_buffer);
 			glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(DrawParameters), nullptr, GL_STREAM_DRAW);
@@ -222,16 +233,14 @@ namespace cgv {
 
 			//const clod_point_render_style& srs = get_style<clod_point_render_style>();
 			vec2 screenSize(ctx.get_width(), ctx.get_height());
-			//transform to model space since there is no view matrix
-			vec4 pivot = inv(ctx.get_modelview_matrix())*dvec4(0.0,0.0,0.0,1.0);
-
+			
 			draw_prog_ptr->set_uniform(ctx, "CLOD" , prs.CLOD);
 			draw_prog_ptr->set_uniform(ctx, "scale", prs.scale);
 			draw_prog_ptr->set_uniform(ctx, "spacing", prs.spacing);
 			draw_prog_ptr->set_uniform(ctx, "pointSize", prs.pointSize);
 			draw_prog_ptr->set_uniform(ctx, "minMilimeters", prs.min_millimeters);
 			draw_prog_ptr->set_uniform(ctx, "screenSize", screenSize);
-			draw_prog_ptr->set_uniform(ctx, "pivot", pivot);
+			draw_prog_ptr->set_uniform(ctx, "pivot", pivot_point_in_view_space);
 			draw_prog_ptr->set_uniform(ctx, "draw_circles", prs.draw_circles);
 			draw_prog_ptr->set_uniform(ctx, "halo_color", prs.halo_color);
 			draw_prog_ptr->set_uniform(ctx, "halo_color_strength", prs.halo_color_strength);
@@ -245,14 +254,16 @@ namespace cgv {
 			draw_prog_ptr->set_uniform(ctx, "projection", projection_matrix);
 			//add precomputed model view projection matrix
 			draw_prog_ptr->set_uniform(ctx, "model_view_projection", mvp_matrix);
+			//
 			reduce_prog.set_uniform(ctx, "model_view_projection", mvp_matrix);
+			reduce_prog.set_uniform(ctx, "model_view", modelview_matrix);
 			//reduce_prog.set_uniform(ctx, "projection", projection_matrix, true);
 
 			// compute shader
 			reduce_prog.set_uniform(ctx, uniforms.CLOD, prs.CLOD);
 			reduce_prog.set_uniform(ctx, uniforms.scale, prs.scale);
 			reduce_prog.set_uniform(ctx, uniforms.spacing, prs.spacing);
-			reduce_prog.set_uniform(ctx, uniforms.pivot, pivot);
+			reduce_prog.set_uniform(ctx, uniforms.pivot, pivot_point_in_view_space);
 			reduce_prog.set_uniform(ctx, uniforms.screenSize, screenSize);
 
 
@@ -275,9 +286,6 @@ namespace cgv {
 
 			// reduce shader buffers
 			
-			// reset draw parameters, using SubData version is important here to keep any mapping
-			DrawParameters dp = DrawParameters();
-			glNamedBufferSubData(draw_parameter_buffer, 0, sizeof(DrawParameters), &dp);
 			// bind buffer for reduce shader
 			
 			glBindBufferBase(GL_SHADER_STORAGE_BUFFER, drawp_pos, active_draw_parameter_buffer);
@@ -373,6 +381,11 @@ namespace cgv {
 			}
 		}
 
+		void clod_point_renderer::set_pivot_point(const vec4& pivot)
+		{
+			pivot_point_in_view_space = pivot;
+		}
+
 		void clod_point_renderer::set_render_style(const render_style& rs)
 		{
 			this->rs = &rs;
@@ -441,6 +454,14 @@ namespace cgv {
 			glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 		}
 
+		unsigned int clod_point_renderer::num_reduced_points()
+		{
+			DrawParameters* device_draw_parameters = static_cast<DrawParameters*>(glMapNamedBufferRange(active_draw_parameter_buffer, 0, sizeof(DrawParameters), GL_MAP_READ_BIT));
+			unsigned ret = device_draw_parameters->count;
+			glUnmapNamedBuffer(active_draw_parameter_buffer);
+			return ret;
+		}
+
 		int clod_point_renderer::resize_external_buffers(context& ctx, const int old_size)
 		{
 			if (old_size != max_drawn_points) {
@@ -470,6 +491,31 @@ namespace cgv {
 			glDeleteBuffers(1, &render_back_buffer);
 			
 			input_buffer = render_buffer = draw_parameter_buffer = render_back_buffer = index_buffer = 0;
+		}
+
+		void clod_point_renderer::reset_draw_parameters(context& ctx, GLuint& draw_parameter_buffer)
+		{
+			// reset draw parameters, using SubData version is important here to keep any mapping
+			DrawParameters dp = DrawParameters();
+			glNamedBufferSubData(draw_parameter_buffer, 0, sizeof(DrawParameters), &dp);
+		}
+
+		void clod_point_renderer::define_vertex_array(context& ctx, GLuint& vertex_array, const GLuint render_buffer, const GLuint index_buffer)
+		{
+			glBindVertexArray(vertex_array);
+			// position 
+			glBindBuffer(GL_ARRAY_BUFFER, render_buffer);
+			glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, sizeof(Point), (void*)0);
+			glEnableVertexAttribArray(0);
+			// color
+			glVertexAttribPointer(1, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(Point), (void*)(sizeof(vec3)));
+			glEnableVertexAttribArray(1);
+			// index
+			glBindBuffer(GL_ARRAY_BUFFER, index_buffer);
+			glVertexAttribIPointer(2, 1, GL_UNSIGNED_INT, 0, (void*)0);
+			glEnableVertexAttribArray(2);
+			glBindBuffer(GL_ARRAY_BUFFER, 0);
+			glBindVertexArray(0);
 		}
 		
 		bool clod_point_render_style_reflect::self_reflect(cgv::reflect::reflection_handler& rh)

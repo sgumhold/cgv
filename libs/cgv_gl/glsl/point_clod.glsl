@@ -6,7 +6,7 @@ uniform float spacing; //root_spacings
 uniform float pointSize;
 uniform float minMilimeters;
 uniform vec2 screenSize;
-uniform vec4 pivot; //pivot point in model space, usually the camera position
+uniform vec4 pivot; //pivot point in view space, usually the camera position
 
 //some special parameters affecting point size calculation
 uniform float density_decrease= 0.5;
@@ -36,7 +36,10 @@ void compute_point_size(in vec3 position, in vec4 color, in mat4 central_transfo
 	vec4 projected = tpos / tpos.w;
 	vec4 centralProjected = central_transform * vec4(position, 1.0);
 	centralProjected.xyz = centralProjected.xyz / centralProjected.w;
-	float d = distance(position, pivot.xyz);
+	
+	vec4 viewPosition = model_view_matrix * vec4(position, 1.0);
+	
+	float d = distance(viewPosition.xyz, pivot.xyz);
 	float dc = length(centralProjected.xy);
 
 	float level = mod(color.a * 255, 128);
@@ -44,7 +47,7 @@ void compute_point_size(in vec3 position, in vec4 color, in mat4 central_transfo
 	// use random to produce smooth transition in continuous level of detail rendring
 	float pointSpacing = scale * spacing / pow(2, level + random);
 	
-	// tragetSpacingVR = targetSpacingDesktop/max(1-a·dc, minDensity)
+	// targetSpacingVR = targetSpacingDesktop/max(1-a·dc, minDensity)
 	float targetSpacing = (d * CLOD) / (1000 * max(1 - density_decrease * dc, min_density));
 
 	const float minPixels = 1;
@@ -58,7 +61,7 @@ void compute_point_size(in vec3 position, in vec4 color, in mat4 central_transfo
 		//expected distance between points
 		float l = sizeMultiplier * 2.0 * ws;
 		//calculate required size to fill spaces
-		vec4 v1 = model_view_matrix * vec4(position, 1.0);
+		vec4 v1 = viewPosition;
 		vec4 v2 = vec4(v1.x + l, v1.y + l, v1.z, 1.0);
 
 		vec4 vp1 = projection_matrix * v1;
