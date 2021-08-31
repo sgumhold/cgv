@@ -6,224 +6,20 @@
 #include <cgv/gui/event_handler.h>
 #include <cgv/gui/mouse_event.h>
 #include <cgv/gui/provider.h>
+#include <cgv/math/ftransform.h>
 #include <cgv/media/image/image.h>
 #include <cgv/media/image/image_reader.h>
 #include <cgv/render/drawable.h>
 #include <cgv/render/texture.h>
 #include <cgv/render/vertex_buffer.h>
 #include <cgv/render/attribute_array_binding.h>
-//#include <cgv/utils/file.h>
 #include <cgv/utils/tokenizer.h>
 #include <cgv_gl/gl/gl_context.h>
 #include <cgv_glutil/shader_library.h>
 
-#include <cgv_glutil/overlay.h>
-
-
-
-
-struct draggable : public cgv::render::render_types {
-	vec2 pos;
-	vec2 size;
-
-	enum ConstrainReference {
-		CR_CENTER,
-		CR_MIN_POINT,
-		CR_MAX_POINT,
-		CR_FULL_SIZE
-	} constrain_reference;
-
-	bool position_is_center;
-
-	draggable() {
-		position_is_center = false;
-		constrain_reference = CR_FULL_SIZE;
-	}
-
-	vec2 center() const {
-
-		if(position_is_center)
-			return pos;
-		else
-			return pos + size;
-	}
-
-	void apply_constraint(const cgv::glutil::overlay::rect& area) {
-
-		vec2 min_pnt = vec2(area.box.get_min_pnt());
-		vec2 max_pnt = vec2(area.box.get_max_pnt());
-
-		switch(constrain_reference) {
-		case CR_MIN_POINT:
-			min_pnt += size;
-			max_pnt += size;
-			break;
-		case CR_MAX_POINT:
-			min_pnt -= size;
-			max_pnt -= size;
-			break;
-		case CR_FULL_SIZE:
-			min_pnt += size;
-			max_pnt -= size;
-			break;
-		case CR_CENTER:
-		default:
-			break;
-		}
-
-		if(!position_is_center) {
-			min_pnt -= size;
-			max_pnt -= size;
-		}
-
-		pos = cgv::math::clamp(pos, min_pnt, max_pnt);
-	}
-
-	virtual bool is_inside(const ivec2& p) const {
-
-		vec2 a = pos;
-		vec2 b = pos + size;
-		return
-			p.x() >= a.x() && p.x() <= b.x() &&
-			p.y() >= a.y() && p.y() <= b.y();
-	}
-};
-
-template<class T>
-class draggables_collection : public cgv::render::render_types {
-protected:
-	typedef typename std::remove_pointer<T>::type T_;
-	typedef typename T_* T_ptr;
-
-	static_assert(std::is_base_of<draggable, T_>::value, "T must inherit from draggable");
-
-	T_ptr get_ptr(T_& obj) { return &obj; }
-	T_ptr get_ptr(T_ptr obj) { return obj; }
-
-	bool has_constraint = false;
-	cgv::glutil::overlay::rect constraint_area;
-
-	std::vector<T> draggables;
-
-	T_ptr dragged;
-	T_ptr selected;
-
-	ivec2 offset;
-
-	std::function<void(void)> drag_start_callback;
-	std::function<void(void)> drag_callback;
-	std::function<void(void)> drag_end_callback;
-
-	T_ptr get_hit_draggable(const ivec2& pos) {
-		T_ptr hit = nullptr;
-		for(unsigned i = 0; i < draggables.size(); ++i) {
-			T_ptr d = get_ptr(draggables[i]);
-			
-			if(d && d->is_inside(pos))
-				hit = d;
-		}
-		return hit;
-	}
-
-public:
-	draggables_collection() {
-		dragged = nullptr;
-		selected = nullptr;
-	}
-
-	void add(T obj) {
-		draggables.push_back(obj);
-	}
-
-	size_t size() { return draggables.size(); }
-
-	std::vector<T>& ref_draggables() { return draggables; }
-
-	T operator[](int i) {
-		return draggables[i];
-	}
-
-	T get_dragged() {
-		return dragged;
-	}
-
-	T get_selected() {
-		return selected;
-	}
-
-	void set_constraint(const cgv::glutil::overlay::rect& area) {
-		constraint_area = area;
-		has_constraint = true;
-	}
-
-	void remove_constraint() {
-		constraint_area = cgv::glutil::overlay::rect();
-		has_constraint = false;
-	}
-
-	void set_drag_start_callback(std::function<void(void)> func) {
-		drag_start_callback = func;
-	}
-
-	void set_drag_callback(std::function<void(void)> func) {
-		drag_callback = func;
-	}
-
-	void set_drag_end_callback(std::function<void(void)> func) {
-		drag_end_callback = func;
-	}
-
-	bool handle(cgv::gui::event& e, const ivec2& viewport_size) {
-		unsigned et = e.get_kind();
-		unsigned char modifiers = e.get_modifiers();
-
-		if(et == cgv::gui::EID_MOUSE) {
-			cgv::gui::mouse_event& me = (cgv::gui::mouse_event&) e;
-			cgv::gui::MouseAction ma = me.get_action();
-
-			ivec2 mpos(me.get_x(), me.get_y());
-			mpos.y() = viewport_size.y() - mpos.y();
-
-			if(me.get_button() == cgv::gui::MB_LEFT_BUTTON) {
-				if(ma == cgv::gui::MA_RELEASE) {
-					if(dragged) {
-						selected = dragged;
-						dragged = nullptr;
-					} else {
-						selected = get_hit_draggable(mpos);
-					}
-					if(drag_end_callback) drag_end_callback();
-				}
-			}
-
-			if(me.get_button_state() & cgv::gui::MB_LEFT_BUTTON) {
-				if(dragged) {
-					dragged->pos = mpos + offset;
-					if(has_constraint)
-						dragged->apply_constraint(constraint_area);
-					if(drag_callback) drag_callback();
-				} else {
-					if(ma == cgv::gui::MA_PRESS) {
-						dragged = get_hit_draggable(mpos);
-						selected = dragged;
-						if(dragged) {
-							offset = dragged->pos - mpos;
-							if(drag_start_callback) drag_start_callback();
-						}
-					}
-				}
-				return true;
-			}
-
-			return false;
-		} else {
-			return false;
-		}
-	}
-};
-
-
-
+#include <cgv_glutil/2d/draggable.h>
+#include <cgv_glutil/2d/draggables_collection.h>
+#include <cgv_glutil/2d/rect.h>
 
 class shapes_2d :
 	public cgv::base::node,
@@ -358,7 +154,7 @@ private:
 			vec4 texcoord;
 		};
 
-		struct rope_option {
+		struct text_info {
 			int offset;
 			int count;
 			ivec2 position;
@@ -367,7 +163,7 @@ private:
 		};
 
 		std::vector<vertex_type> vertices;
-		std::vector<rope_option> rope_options;
+		std::vector<text_info> texts;
 
 		GLuint ssbo;
 
@@ -375,7 +171,7 @@ private:
 
 		void clear(context& ctx) {
 			vertices.clear();
-			rope_options.clear();
+			texts.clear();
 
 			if(ssbo != 0) {
 				glDeleteBuffers(1, &ssbo);
@@ -402,22 +198,22 @@ private:
 			vertices.push_back({ pos, txc });
 		}
 
-		void end_rope(const ivec2& position, const vec2& size, const cgv::render::TextAlignment alignment) {
-			rope_option ro;
+		void end_text(const ivec2& position, const vec2& size, const cgv::render::TextAlignment alignment) {
+			text_info text;
 
-			if(rope_options.size() > 0) {
-				const rope_option& lro = *rope_options.rbegin();
-				ro.offset = lro.offset + lro.count;
-				ro.count = vertices.size() - ro.offset;
+			if(texts.size() > 0) {
+				const text_info& last_text = *texts.rbegin();
+				text.offset = last_text.offset + last_text.count;
+				text.count = vertices.size() - text.offset;
 			} else {
-				ro.offset = 0;
-				ro.count = vertices.size();
+				text.offset = 0;
+				text.count = vertices.size();
 			}
 
-			ro.position = position;
-			ro.size = size;
-			ro.alignment = alignment;
-			rope_options.push_back(ro);
+			text.position = position;
+			text.size = size;
+			text.alignment = alignment;
+			texts.push_back(text);
 		}
 
 		void render(context& ctx, shader_program& prog) {
@@ -425,24 +221,24 @@ private:
 			
 			glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, ssbo);
 
-			for(const auto& ro : rope_options) {
-				vec2 position(ro.position);
-				vec2 size = ro.size;
+			for(const auto& text : texts) {
+				vec2 position(text.position);
+				vec2 size = text.size;
 
 				position -= 0.5f * size;
 
-				if(ro.alignment & cgv::render::TA_LEFT)
+				if(text.alignment & cgv::render::TA_LEFT)
 					position.x() += 0.5f * size.x();
-				else if(ro.alignment & cgv::render::TA_RIGHT)
+				else if(text.alignment & cgv::render::TA_RIGHT)
 					position.x() -= 0.5f * size.x();
 
-				if(ro.alignment & cgv::render::TA_TOP)
+				if(text.alignment & cgv::render::TA_TOP)
 					position.y() -= 0.5f * size.y();
-				else if(ro.alignment & cgv::render::TA_BOTTOM)
+				else if(text.alignment & cgv::render::TA_BOTTOM)
 					position.y() += 0.5f * size.y();
 				
 				prog.set_uniform(ctx, "position", ivec2(round(position)));
-				glDrawArraysInstancedBaseInstance(GL_TRIANGLE_STRIP, 0, 4, ro.count, ro.offset);
+				glDrawArraysInstancedBaseInstance(GL_TRIANGLE_STRIP, 0, 4, text.count, text.offset);
 			}
 			glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 
@@ -461,16 +257,17 @@ private:
 
 
 	
-
-	struct point : public draggable {
+	/** Define a helper struct for a circle-shaped draggable control point.
+	*/
+	struct point : public cgv::glutil::draggable {
 		point(const ivec2& pos) {
 			this->pos = pos;
 			size = vec2(8.0f);
 			position_is_center = true;
-			constrain_reference = CR_FULL_SIZE;
+			constraint_reference = CR_FULL_SIZE;
 		}
 
-		virtual bool is_inside(const vec2& mp) const {
+		bool is_inside(const vec2& mp) const {
 
 			float dist = length(mp - center());
 			return dist <= size.x();
@@ -486,23 +283,19 @@ private:
 	};
 
 protected:
-	cgv::glutil::overlay::rect viewport_rect;
+	cgv::glutil::rect viewport_rect;
 
 	cgv::glutil::shader_library shaders;
 
 	bool show_background;
 	cgv::render::texture background_tex;
 	cgv::render::texture image_tex;
-
+	
 	std::vector<point> points;
-	draggables_collection<point*> line_handles;
-	draggables_collection<point*> arrow_handles;
-	draggables_collection<point*> curve_handles;
-	draggables_collection<point*> text_handles;
-
-	//point* dragged_point;
-	//point* selected_point;
-	//ivec2 drag_offset_pos;
+	cgv::glutil::draggables_collection<point*> line_handles;
+	cgv::glutil::draggables_collection<point*> arrow_handles;
+	cgv::glutil::draggables_collection<point*> curve_handles;
+	cgv::glutil::draggables_collection<point*> text_handles;
 
 	plain_geometry<vec2, rgba> lines;
 	spline_geometry curves;
@@ -546,9 +339,15 @@ protected:
 	};
 
 	std::vector<glyph> glyphs;
+	cgv::render::texture atlas_tex;
 	
 	text_geometry text;
-	
+
+
+
+	float angle = 0.0f;
+
+
 public:
 	shapes_2d() : cgv::base::node("shapes 2d test") {
 		viewport_rect.set_pos(ivec2(0));
@@ -617,9 +416,10 @@ public:
 		background_tex.destruct(ctx);
 	}
 	bool init(cgv::render::context& ctx) {
-		
 		bool success = true;
 		success &= shaders.load_shaders(ctx);
+
+		// TODO: png images are flipped in y direction, when reading with an image reader first and then creating a texture from the data view
 
 		// create a checkerboard texture to use as the background
 		{
@@ -635,23 +435,16 @@ public:
 
 		// load an image to use as a texture
 		{
-			cgv::data::data_format tex_format;
-			cgv::media::image::image_reader image(tex_format);
-			cgv::data::data_view tex_data;
-
-			// TODO: png images are flipped in y direction
-			std::string file_name = "res://segoeui_atlas.png";
-			if(!image.read_image(file_name, tex_data)) {
-				std::cout << "Error: Could not read image file " << file_name << std::endl;
-				success = false;
-			} else {
-				image_tex.create(ctx, tex_data, 0);
-				image_tex.set_min_filter(cgv::render::TextureFilter::TF_LINEAR);
-				image_tex.set_mag_filter(cgv::render::TextureFilter::TF_LINEAR);
-				image_tex.set_wrap_s(cgv::render::TextureWrap::TW_REPEAT);
-				image_tex.set_wrap_t(cgv::render::TextureWrap::TW_REPEAT);
-			}
-			image.close();
+			cgv::data::data_format image_format;
+			cgv::data::data_view image_data;
+			image_tex.create_from_image(image_format, image_data, ctx, "res://alhambra.png", (unsigned char*)0, 0);
+		}
+		
+		// load the font atlas used for text rendering as a texture
+		{
+			cgv::data::data_format atlas_format;
+			cgv::data::data_view atlas_data;
+			atlas_tex.create_from_image(atlas_format, atlas_data, ctx, "res://segoeui_atlas.png", (unsigned char*)0, 0);
 		}
 
 		success &= read_glyph_atlas();
@@ -671,7 +464,7 @@ public:
 		points.push_back(point(ivec2(750, 150)));
 		points.push_back(point(ivec2(500, 450)));
 		
-		// put pointers to the points into their respective draggables colection
+		// put pointers to the control points into their respective draggables collection
 		arrow_handles.add(&points[0]);
 		arrow_handles.add(&points[1]);
 
@@ -782,6 +575,8 @@ public:
 		spline_prog.disable(ctx);
 		curves.render(ctx, spline_prog);
 
+		image_tex.disable(ctx);
+
 		shader_program& text_prog = shaders.get("text");
 		text_prog.enable(ctx);
 		text_prog.set_uniform(ctx, "position", ivec2(500, 150));
@@ -789,10 +584,10 @@ public:
 		text_prog.set_uniform(ctx, "use_color", false);
 		set_shared_uniforms(ctx, text_prog);
 		text_prog.disable(ctx);
+		atlas_tex.enable(ctx, 0);
 		text.render(ctx, shaders.get("text"));
-
-		image_tex.disable(ctx);
-
+		atlas_tex.disable(ctx);
+		
 		draw_control_lines(ctx);
 		draw_draggables(ctx);
 
@@ -942,7 +737,7 @@ public:
 
 				text.add(vec4(min_pos.x(), min_pos.y(), max_pos.x(), max_pos.y()), texcoord);
 			}
-			text.end_rope(text_handles[i]->pos, text_size, static_cast<cgv::render::TextAlignment>(text_align_h | text_align_v));
+			text.end_text(text_handles[i]->pos, text_size, static_cast<cgv::render::TextAlignment>(text_align_h | text_align_v));
 		}
 
 		text.create(ctx, shaders.get("text"));
@@ -954,6 +749,15 @@ public:
 		prog.disable(ctx);
 	}
 	void set_shared_uniforms(cgv::render::context& ctx, cgv::render::shader_program& prog) {
+
+		//vec2 vs(viewport_rect.size());
+		//mat4 PM = cgv::math::ortho4(0.0f, vs.x(), 0.0f, vs.y(), 0.0f, 10.0f);
+		//prog.set_uniform(ctx, "projection_matrix", PM);
+		//
+		//mat2 MM = cgv::math::rotate2(angle);
+		//
+		//prog.set_uniform(ctx, "model_matrix", MM);
+
 		// appearance
 		prog.set_uniform(ctx, "color", color);
 		prog.set_uniform(ctx, "border_color", border_color);
@@ -1078,17 +882,8 @@ public:
 		add_member_control(this, "Horizontal Alignment", text_align_h, "dropdown", "enums='Center=0,Left=1,Right=2'");
 		add_member_control(this, "Vertical Alignment", text_align_v, "dropdown", "enums='Center=0,Top=4,Botom=8'");
 
-		/*
-		TA_NONE = 0,
-	TA_LEFT = 1,    // center of left edge of text bounds
-	TA_RIGHT = 2,   // center of right edge of text bounds
-	TA_TOP = 4,     // center of top edge of text bounds
-	TA_BOTTOM = 8,  // center of bottom edge of text bounds
-	TA_TOP_LEFT = TA_LEFT+TA_TOP,    // top left corner of text bounds
-	TA_TOP_RIGHT = TA_RIGHT+TA_TOP,  // top right corner of text bounds
-	TA_BOTTOM_LEFT = TA_LEFT+TA_BOTTOM,   // bottom left corner of text bounds
-	TA_BOTTOM_RIGHT = TA_RIGHT+TA_BOTTOM  // bottom right corner of text bounds
-		*/
+		add_decorator("Test Variables", "heading", "level=3");
+		add_member_control(this, "Angle", angle, "value_slider", "min=0;max=360;step=0.5;ticks=true");
 	}
 };
 

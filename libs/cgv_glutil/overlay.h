@@ -5,6 +5,8 @@
 #include <cgv/render/context.h>
 #include <cgv/render/drawable.h>
 
+#include "2d/rect.h"
+
 #include "lib_begin.h"
 
 namespace cgv {
@@ -36,7 +38,7 @@ public:
 		Abstracts the box min and max points to provide position and size member
 		functionality.
 	*/
-	struct rect {
+	/*struct rect {
 		typedef cgv::media::axis_aligned_box<int, 2> ibox2;
 
 		ibox2 box;
@@ -70,7 +72,7 @@ public:
 				p.x() >= a.x() && p.x() <= b.x() &&
 				p.y() >= a.y() && p.y() <= b.y();
 		}
-	};
+	};*/
 
 private:
 	/// the last recorded size of the viewport, is kept current with ensure_viewport
