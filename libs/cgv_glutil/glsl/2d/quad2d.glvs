@@ -1,10 +1,13 @@
 #version 150
 
+#define USE_MATRICES 0
+
 //***** begin interface of fragment2d.glsl ***********************************
 uniform float feather_width = 1.0;
 uniform float feather_origin = 0.5;
 //***** end interface of fragment2d.glsl ***********************************
 
+#if USE_MATRICES == 0
 const vec2 corners[4] = vec2[](
 	vec2(0.0, 0.0),
 	vec2(1.0, 0.0),
@@ -27,7 +30,7 @@ void main() {
 	tex_coord = corner;
 
 	vec2 final_size = size + 2.0*feather_origin*feather_width;
-
+	
 	// transform to pixel coordinates
 	corner *= final_size;
 
@@ -47,3 +50,53 @@ void main() {
 
 	gl_Position = vec4(corner, 0.0, 1.0);
 }
+#else
+const vec2 corners[4] = vec2[](
+	vec2(-0.5, -0.5),
+	vec2(+0.5, -0.5),
+	vec2(-0.5, +0.5),
+	vec2(+0.5, +0.5)
+);
+
+uniform mat2 model_matrix = mat2(1.0);
+
+uniform ivec2 resolution;
+uniform ivec2 position;
+uniform ivec2 size;
+uniform bool position_is_center = false;
+
+out vec2 pix_coord;
+out vec2 tex_coord;
+
+void main() {
+	int id = gl_VertexID;
+	vec2 corner = corners[id];
+
+	tex_coord = corner;
+
+	vec2 final_size = size + 2.0*feather_origin*feather_width;
+	pix_coord = final_size*corner;// - 0.5*final_size;
+
+	// transform to pixel coordinates
+	corner *= final_size;
+
+	corner = model_matrix * corner;
+
+	// offset
+	corner += position;
+
+	if(!position_is_center)
+		//corner -= 0.5*final_size + feather_origin*feather_width;
+	//else
+		corner += 0.5*final_size - feather_origin*feather_width;
+
+
+	//corner = (projection_matrix * vec4(corner, 0.0, 1.0)).xy;
+
+	// transform to window space
+	corner = (2.0*corner) / resolution;
+	corner -= 1.0;
+
+	gl_Position = vec4(corner, 0.0, 1.0);
+}
+#endif
