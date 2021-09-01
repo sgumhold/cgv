@@ -38,7 +38,7 @@ namespace cgv {
 			size_scale = 100.0f;
 			clip_box = box3(vec3(0.0f), vec3(1.0f));
 			enable_lighting = false;
-			enable_depth_test = false;
+			enable_depth_test = true;
 		}
 
 		volume_renderer::volume_renderer() : noise_texture("flt32[R]")
@@ -197,7 +197,7 @@ namespace cgv {
 			if (!renderer::enable(ctx))
 				return false;
 
-			ref_prog().set_uniform(ctx, "viewport_dims", vec2(ctx.get_width(), ctx.get_height()));
+			ref_prog().set_uniform(ctx, "viewport_dims", vec2(float(ctx.get_width()), float(ctx.get_height())));
 			ref_prog().set_uniform(ctx, "opacity_scale", vrs.opacity_scale);
 			ref_prog().set_uniform(ctx, "size_scale", vrs.size_scale);
 			ref_prog().set_uniform(ctx, "clip_box_min", vrs.clip_box.get_min_pnt());
