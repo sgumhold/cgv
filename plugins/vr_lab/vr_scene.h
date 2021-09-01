@@ -100,6 +100,10 @@ public:
 	}
 	/// update label text
 	void update_label_text(uint32_t li, const std::string& text) { lm.update_label_text(li, text); }
+	/// update label size in texel
+	void update_label_size(uint32_t li, int w, int h) { lm.update_label_size(li, w, h); }
+	/// update label background color
+	void update_label_background_color(uint32_t li, const rgba& bgclr) { lm.update_label_background_color(li, bgclr); }
 	/// fix the label size based on the font metrics even when text is changed later on
 	void fix_label_size(uint32_t li) { lm.fix_label_size(li); }
 	/// place a label relative to given coordinate system

@@ -37,6 +37,8 @@ class vr_lab_test :
 	cgv::render::rounded_cone_render_style rcrs;
 	/// label index to show statistics
 	uint32_t li_stats;
+	/// background color of statistics label
+	rgba stats_bgclr;
 	/// labels to show help on controllers
 	uint32_t li_help[2];
 public:
@@ -58,9 +60,13 @@ public:
 	{
 		li_help[0] = li_help[1] = -1;
 		li_stats = -1;
+		stats_bgclr = rgba(0.8f, 0.6f, 0.0f, 0.6f);
 	}
 	void on_set(void* member_ptr)
 	{
+		if (member_ptr == &stats_bgclr && li_stats != -1)
+			get_scene_ptr()->update_label_background_color(li_stats, stats_bgclr);
+
 		update_member(member_ptr);
 		post_redraw();
 	}
@@ -205,7 +211,7 @@ public:
 			li_stats = scene_ptr->add_label(
 				"drawing index: 000000\n"
 				"nr vertices:   000000\n"
-				"nr edges:      000000", rgba(0.8f, 0.6f, 0.0f, 0.6f));
+				"nr edges:      000000", stats_bgclr);
 			scene_ptr->fix_label_size(li_stats);
 			scene_ptr->place_label(li_stats, vec3(0.0f, 0.01f, 0.0f), quat(vec3(1, 0, 0), -1.5f), vr::vr_scene::CS_TABLE);
 			for (int ci = 0; ci < 2; ++ci) {
@@ -367,6 +373,7 @@ public:
 	void create_gui()
 	{
 		add_decorator("vr_lab_test", "heading");
+		add_member_control(this, "stats_bgclr", stats_bgclr);
 		if (begin_tree_node("rendering", srs.material)) {
 			align("\a");
 			if (begin_tree_node("spheres", srs)) {

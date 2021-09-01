@@ -113,6 +113,8 @@ public:
 	void update_label_text(uint32_t i, const std::string& new_text);
 	/// update label size, what always sets packing out of date
 	void update_label_size(uint32_t i, int w, int h);
+	/// update label color, what always sets packing out of date
+	void update_label_background_color(uint32_t i, const rgba& background_color);
 	/// you can enforce texture recomputation in ensure_texture_uptodate() by calling this function (typically you do not need this function)
 	void set_texture_outofdate() { texture_outofdate = true; }
 	/// call init() function from within the init function of your drawable
