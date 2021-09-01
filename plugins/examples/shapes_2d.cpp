@@ -2,7 +2,7 @@
 #include <unordered_map>
 
 #include <cgv/base/node.h>
-#include <cgv/base/import.h>
+//#include <cgv/base/import.h>
 #include <cgv/gui/event_handler.h>
 #include <cgv/gui/mouse_event.h>
 #include <cgv/gui/provider.h>
@@ -13,13 +13,24 @@
 #include <cgv/render/texture.h>
 #include <cgv/render/vertex_buffer.h>
 #include <cgv/render/attribute_array_binding.h>
-#include <cgv/utils/tokenizer.h>
+//#include <cgv/utils/tokenizer.h>
 #include <cgv_gl/gl/gl_context.h>
 #include <cgv_glutil/shader_library.h>
 
 #include <cgv_glutil/2d/draggable.h>
 #include <cgv_glutil/2d/draggables_collection.h>
 #include <cgv_glutil/2d/rect.h>
+
+
+
+
+
+#include <cgv_glutil/msdf_font_renderer.h>
+
+
+
+
+
 
 class shapes_2d :
 	public cgv::base::node,
@@ -148,7 +159,7 @@ private:
 
 
 
-	struct text_geometry {
+	/*struct text_geometry {
 		struct vertex_type {
 			vec4 position;
 			vec4 texcoord;
@@ -244,7 +255,7 @@ private:
 
 			prog.disable(ctx);
 		}
-	};
+	};*/
 
 
 
@@ -332,20 +343,24 @@ protected:
 	float font_size = 32.0f;
 	cgv::render::TextAlignment text_align_h, text_align_v;
 
-	struct glyph {
-		float advance;
-		vec4 plane_bounds;
-		vec4 atlas_bounds;
-	};
+	//struct glyph {
+	//	float advance;
+	//	vec4 plane_bounds;
+	//	vec4 atlas_bounds;
+	//};
 
-	std::vector<glyph> glyphs;
-	cgv::render::texture atlas_tex;
-	
-	text_geometry text;
+	//std::vector<glyph> glyphs;
+	//cgv::render::texture atlas_tex;
+	//
+	//text_geometry text;
 
 
 
 	float angle = 0.0f;
+
+	cgv::glutil::msdf_font msdf_font;
+	cgv::glutil::msdf_text_geometry texts;
+	cgv::glutil::msdf_font_renderer font_renderer;
 
 
 public:
@@ -362,7 +377,7 @@ public:
 		shaders.add("arrow", "arrow2d.glpr");
 		shaders.add("line", "line2d.glpr");
 		shaders.add("spline", "cubic_spline2d.glpr");
-		shaders.add("text", "sdf_font2d.glpr");
+		//shaders.add("text", "sdf_font2d.glpr");
 
 		text_align_h = text_align_v = cgv::render::TA_NONE;
 
@@ -440,14 +455,20 @@ public:
 			image_tex.create_from_image(image_format, image_data, ctx, "res://alhambra.png", (unsigned char*)0, 0);
 		}
 		
-		// load the font atlas used for text rendering as a texture
-		{
-			cgv::data::data_format atlas_format;
-			cgv::data::data_view atlas_data;
-			atlas_tex.create_from_image(atlas_format, atlas_data, ctx, "res://segoeui_atlas.png", (unsigned char*)0, 0);
-		}
 
-		success &= read_glyph_atlas();
+		success &= msdf_font.init(ctx);
+		success &= font_renderer.init(ctx);
+		texts.set_msdf_font(&msdf_font);
+		texts.set_font_size(font_size);
+
+		// load the font atlas used for text rendering as a texture
+		//{
+		//	cgv::data::data_format atlas_format;
+		//	cgv::data::data_view atlas_data;
+		//	atlas_tex.create_from_image(atlas_format, atlas_data, ctx, "res://segoeui_atlas.png", (unsigned char*)0, 0);
+		//}
+
+		//success &= read_glyph_atlas();
 		
 		// add 2 control points for the arrow
 		points.push_back(point(ivec2(600, 600)));
@@ -497,7 +518,7 @@ public:
 			set_resolution_uniform(ctx, shaders.get("arrow"));
 			set_resolution_uniform(ctx, shaders.get("line"));
 			set_resolution_uniform(ctx, shaders.get("spline"));
-			set_resolution_uniform(ctx, shaders.get("text"));
+			//set_resolution_uniform(ctx, shaders.get("text"));
 
 			// update the constraint for all draggables
 			arrow_handles.set_constraint(viewport_rect);
@@ -577,7 +598,7 @@ public:
 
 		image_tex.disable(ctx);
 
-		shader_program& text_prog = shaders.get("text");
+		/*shader_program& text_prog = shaders.get("text");
 		text_prog.enable(ctx);
 		text_prog.set_uniform(ctx, "position", ivec2(500, 150));
 		text_prog.set_uniform(ctx, "font_size", font_size);
@@ -586,7 +607,8 @@ public:
 		text_prog.disable(ctx);
 		atlas_tex.enable(ctx, 0);
 		text.render(ctx, shaders.get("text"));
-		atlas_tex.disable(ctx);
+		atlas_tex.disable(ctx);*/
+		font_renderer.render(ctx, viewport_rect.size(), texts);
 		
 		draw_control_lines(ctx);
 		draw_draggables(ctx);
@@ -705,7 +727,17 @@ public:
 			return;
 		cgv::render::context& ctx = *ctx_ptr;
 
-		text.clear(ctx);
+		std::vector<std::string> labels;
+		labels.push_back("Hello World!");
+		labels.push_back("CGV Framework");
+
+		texts.clear();
+		for(unsigned i = 0; i < 2; ++i) {
+			std::string str = labels[i];
+			texts.add_text(str, text_handles[i]->pos, static_cast<cgv::render::TextAlignment>(text_align_h | text_align_v));
+		}
+
+		/*text.clear(ctx);
 
 		std::vector<std::string> texts;
 		texts.push_back("Hello World!");
@@ -715,7 +747,7 @@ public:
 			std::string str = texts[i];
 
 			float acc_advance = 0.0f;
-			vec2 atlas_size(image_tex.get_width(), image_tex.get_height());
+			vec2 atlas_size(atlas_tex.get_width(), atlas_tex.get_height());
 
 			vec2 text_size(0.0f, font_size);
 
@@ -740,7 +772,7 @@ public:
 			text.end_text(text_handles[i]->pos, text_size, static_cast<cgv::render::TextAlignment>(text_align_h | text_align_v));
 		}
 
-		text.create(ctx, shaders.get("text"));
+		text.create(ctx, shaders.get("text"));*/
 	}
 	void set_resolution_uniform(cgv::render::context& ctx, cgv::render::shader_program& prog) {
 		prog.enable(ctx);
@@ -782,7 +814,7 @@ public:
 		}
 		return hit;
 	}
-	bool read_glyph_atlas() {
+	/*bool read_glyph_atlas() {
 		
 		glyphs.resize(256);
 
@@ -843,7 +875,7 @@ public:
 		}
 		
 		return true;
-	}
+	}*/
 	void create_gui() {
 		add_decorator("Shapes 2D", "heading");
 
