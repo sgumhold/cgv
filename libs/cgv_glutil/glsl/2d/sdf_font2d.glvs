@@ -1,0 +1,63 @@
+#version 460
+
+//***** begin interface of fragment2d.glsl ***********************************
+//uniform float feather_width = 1.0;
+//uniform float feather_origin = 0.5;
+//***** end interface of fragment2d.glsl ***********************************
+
+const vec2 corners[4] = vec2[](
+	vec2(0.0, 0.0),
+	vec2(1.0, 0.0),
+	vec2(0.0, 1.0),
+	vec2(1.0, 1.0)
+);
+
+struct vertex {
+	vec4 position;
+	vec4 texcoord;
+};
+
+layout (std430, binding = 0) readonly buffer data_buffer {
+	vertex in_data[];
+};
+
+uniform ivec2 resolution;
+uniform ivec2 position;
+//uniform ivec2 size;
+//uniform bool position_is_center = false;
+
+out vec2 pix_coord;
+out vec2 tex_coord;
+
+void main() {
+	int id = gl_VertexID;
+	vec2 corner = corners[id];
+
+	vertex v = in_data[gl_BaseInstance + gl_InstanceID];
+
+	tex_coord = vec2(mix(v.texcoord.xy, v.texcoord.zw, corner));//corner;
+
+	vec2 final_position = position + v.position.xy;
+	vec2 size = v.position.zw;// - position;// vec2(32);
+	
+	//vec2 final_size = size + 2.0*feather_origin*feather_width;
+
+	// transform to pixel coordinates
+	corner *= size;//final_size;
+
+	pix_coord = corner - 0.5*size;//final_size;
+
+	// offset
+	corner += final_position;
+
+	//if(position_is_center)
+	//	corner -= 0.5*final_size;
+	//else
+	//	corner -= feather_origin*feather_width;
+
+	// transform to window space
+	corner = (2.0*corner) / resolution;
+	corner -= 1.0;
+
+	gl_Position = vec4(corner, 0.0, 1.0);
+}
