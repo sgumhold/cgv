@@ -13,8 +13,8 @@ const vec2 corners[4] = vec2[](
 );
 
 struct vertex {
-	vec4 position;
-	vec4 texcoord;
+	vec4 position_size;
+	vec4 texcoords;
 };
 
 layout (std430, binding = 0) readonly buffer data_buffer {
@@ -23,8 +23,6 @@ layout (std430, binding = 0) readonly buffer data_buffer {
 
 uniform ivec2 resolution;
 uniform ivec2 position;
-//uniform ivec2 size;
-//uniform bool position_is_center = false;
 
 out vec2 pix_coord;
 out vec2 tex_coord;
@@ -35,25 +33,18 @@ void main() {
 
 	vertex v = in_data[gl_BaseInstance + gl_InstanceID];
 
-	tex_coord = vec2(mix(v.texcoord.xy, v.texcoord.zw, corner));//corner;
+	tex_coord = vec2(mix(v.texcoords.xy, v.texcoords.zw, corner));
 
-	vec2 final_position = position + v.position.xy;
-	vec2 size = v.position.zw;// - position;// vec2(32);
+	vec2 final_position = position + v.position_size.xy;
+	vec2 size = v.position_size.zw;
 	
-	//vec2 final_size = size + 2.0*feather_origin*feather_width;
-
 	// transform to pixel coordinates
-	corner *= size;//final_size;
+	corner *= size;
 
-	pix_coord = corner - 0.5*size;//final_size;
+	pix_coord = corner - 0.5*size;
 
 	// offset
 	corner += final_position;
-
-	//if(position_is_center)
-	//	corner -= 0.5*final_size;
-	//else
-	//	corner -= feather_origin*feather_width;
 
 	// transform to window space
 	corner = (2.0*corner) / resolution;

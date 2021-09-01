@@ -33,48 +33,7 @@ protected:
 		SO_BOTH			// width and height are stretched to cover viewport
 	};
 
-public:
-	/** A wrapper class for a 2d axis aligned bounding box with integer coordinates.
-		Abstracts the box min and max points to provide position and size member
-		functionality.
-	*/
-	/*struct rect {
-		typedef cgv::media::axis_aligned_box<int, 2> ibox2;
-
-		ibox2 box;
-
-		rect() {
-			box = ibox2(ivec2(0), ivec2(0));
-		}
-
-		ivec2 pos() const {
-			return box.get_min_pnt();
-		}
-
-		ivec2 size() const {
-			return box.get_extent();
-		}
-
-		void set_pos(ivec2 p) {
-			ivec2 s = size();
-			box.ref_min_pnt() = p;
-			set_size(s);
-		}
-
-		void set_size(ivec2 s) {
-			box.ref_max_pnt() = box.ref_min_pnt() + s;
-		}
-
-		bool is_inside(ivec2 p) {
-			const ivec2& a = pos();
-			const ivec2& b = a + size();
-			return
-				p.x() >= a.x() && p.x() <= b.x() &&
-				p.y() >= a.y() && p.y() <= b.y();
-		}
-	};*/
-
-private:
+protected:
 	/// the last recorded size of the viewport, is kept current with ensure_viewport
 	ivec2 last_viewport_size;
 
@@ -173,8 +132,6 @@ public:
 	bool ensure_viewport(cgv::render::context& ctx);
 
 	bool ensure_overlay_layout(cgv::render::context& ctx) {
-
-
 		ivec2 viewport_size(ctx.get_width(), ctx.get_height());
 		if(last_viewport_size != viewport_size) {
 			last_viewport_size = viewport_size;
@@ -188,10 +145,6 @@ public:
 		}
 
 		return false;
-
-
-
-
 	}
 
 	/** Tests if the mouse pointer is hovering over this overlay and returns
