@@ -165,6 +165,13 @@ void label_manager::update_label_size(uint32_t i, int w, int h)
 	packing_outofdate = true;
 }
 
+void label_manager::update_label_background_color(uint32_t i, const rgba& background_color)
+{
+	labels[i].background_color = background_color;
+	label_states[i] |= LS_NEW_COLOR;
+	set_texture_outofdate();
+}
+
 void label_manager::init(cgv::render::context& ctx)
 {
 	cgv::render::ref_rectangle_renderer(ctx, 1);
