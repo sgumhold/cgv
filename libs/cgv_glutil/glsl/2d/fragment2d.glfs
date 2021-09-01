@@ -1,0 +1,157 @@
+#version 450
+
+/*
+The following interface is implemented in this shader:
+//***** begin interface of fragment2d.glsl ***********************************
+// return the size of the shape, whcih is half the actual size minus the border radius
+vec2 get_shape_size();
+// return the current color that will be used when use_color is enabled
+vec4 get_color();
+// override the color that will be used when use_color is enabled
+void override_color(in vec4 color);
+// output a fragment originating from a sdf with the final color or the color from the texture if use_color is disabled
+void finish_sdf_fragment2d(in float signed_distance, in vec2 texcoords);
+// output a fragment originating from a sdf with the color given by the uniform variable (no texturing)
+void finish_sdf_fragment2d(in float signed_distance);
+// output a fragment with the final color or the color from the texture if use_color is disabled
+void finish_fragment2d(in vec2 texcoords);
+// output a fragment with the color given by the uniform variable (no texturing)
+void finish_fragment2d();
+//***** end interface of fragment2d.glsl ***********************************
+*/
+
+uniform sampler2D tex;
+
+// shape paramaters
+uniform ivec2 size;
+
+// appearance
+uniform vec4 color;
+uniform vec4 border_color = vec4(1.0);
+uniform float border_width = 0.0;
+uniform float border_radius = 0.0;
+uniform float ring_width = 0.0;
+uniform float feather_width = 1.0;
+uniform float feather_origin = 0.5;
+uniform vec2 tex_scaling = vec2(1.0);
+
+// render options
+uniform bool use_color = true;
+uniform bool use_blending = false;
+uniform bool use_smooth_feather = false;
+uniform bool apply_gamma = true;
+
+out vec4 frag_color;
+
+// local variables
+vec4 final_color = color;
+bool force_use_color = use_color;
+
+// return the size of the shape, which is half the actual size minus the border radius
+vec2 get_shape_size() {
+	return 0.5 * size - border_radius + feather_origin*feather_width;
+}
+
+// return the current color that will be used when use_color is enabled
+vec4 get_color() {
+	return final_color;
+}
+
+// override the color that will be used when use_color is enabled
+void override_color(in vec4 color) {
+	final_color = color;
+}
+
+// output a fragment originating from a sdf with the final color or the color from the texture if use_color is disabled
+void finish_sdf_fragment2d(in float signed_distance, in vec2 texcoords) {
+	
+	signed_distance -= border_radius;
+
+	if(ring_width > 0.01)
+		// TODO: enable to control ring origin with "+ ring_width"
+		// --> needs to enlarge quad
+		signed_distance = abs(signed_distance + ring_width) - ring_width;
+
+	if(signed_distance > 0.0 && !use_blending)
+		discard;
+	
+	if(force_use_color)
+		frag_color = final_color;
+	else
+		frag_color = vec4(texture(tex, tex_scaling * texcoords).rgba);
+
+	// get the derivatives of the distance over neighbouring fragments to calculate an antialiasing factor
+	float dx = abs(dFdx(signed_distance));
+	float dy = abs(dFdy(signed_distance));
+		
+	// dirty hack to fix the differentiation errors introduced by dFdx and dFdy
+	if(dx < 0.05 && dy < 0.05) {
+		dx = 1.0;
+		dy = 0.0;
+	}
+	if(dx > 0.99 && dy > 0.99) {
+		dx = 1.0;
+		dy = 0.0;
+	}
+
+	float delta = dx + dy;
+	float antialias_alpha = 1.0 - smoothstep(0.5 - delta, 0.5, signed_distance);
+	
+	// calcualte an alpha factor for feathered shape borders
+	float inv_feather = 1.0/feather_width;
+
+	float feather_alpha = use_smooth_feather ?
+		1.0 - smoothstep(0.0, 1.0, (signed_distance + feather_width) * inv_feather) :
+		1.0 - clamp((signed_distance + feather_width) * inv_feather, 0.0, 1.0);
+	
+	if(border_width > 0.0) {
+		float border_distance = -border_width - feather_width;
+
+		float border_feather_alpha = use_smooth_feather ?
+			smoothstep(0.0, 1.0, (signed_distance - border_distance) * inv_feather) :
+			clamp((signed_distance - border_distance) * inv_feather, 0.0, 1.0);
+
+		float border_antialias_alpha = smoothstep(0.5 - delta, 0.5, signed_distance + border_width);
+		frag_color = mix(frag_color, border_color, min(border_antialias_alpha + border_feather_alpha, 1.0));
+	}
+
+	// enable to show derivatives for debugging
+	//frag_color = vec4((border_width+1) * dx, (border_width+1) * dy, 0.0, 1.0);
+	
+	frag_color.a *= antialias_alpha * feather_alpha;
+	
+	if(apply_gamma)
+		frag_color.rgb = clamp(pow(frag_color.rgb, vec3(2.2)), 0.0, 0.9999999);
+
+	if(!use_blending)
+		frag_color.a = 1.0;
+}
+
+// output a fragment originating from a sdf with the color given by the uniform variable (no texturing)
+void finish_sdf_fragment2d(in float signed_distance) {
+	
+	force_use_color = true;
+	finish_sdf_fragment2d(signed_distance, vec2(0.0));
+}
+
+// output a fragment with the final color or the color from the texture if use_color is disabled
+void finish_fragment2d(in vec2 texcoords) {
+	
+	if(force_use_color)
+		frag_color = final_color;
+	else
+		frag_color = vec4(texture(tex, tex_scaling * texcoords).rgba);
+
+	if(apply_gamma)
+		frag_color.rgb = clamp(pow(frag_color.rgb, vec3(2.2)), 0.0, 0.9999999);
+
+	if(!use_blending)
+		frag_color.a = 1.0;
+}
+
+// output a fragment with the color given by the uniform variable (no texturing)
+void finish_fragment2d() {
+	
+	force_use_color = true;
+	finish_fragment2d(vec2(0.0));
+}

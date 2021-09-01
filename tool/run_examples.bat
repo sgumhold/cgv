@@ -2,7 +2,7 @@ REM @ECHO OFF
 
 cgv_viewer^
  plugin:cg_fltk^
- "type(shader_config):shader_path='C:\Users\henne\Workspace\cgv\plugins\examples;C:\Users\henne\Workspace\cgv/libs/plot/glsl;C:\Users\henne\Workspace\cgv/libs/cgv_gl/glsl'"^
+ "type(shader_config):shader_path='%CGV_DIR%/cgv/plugins/examples;%CGV_DIR%/cgv/libs/plot/glsl;%CGV_DIR%/cgv/libs/cgv_gl/glsl'"^
  plugin:cg_ext^
  plugin:cg_icons^
  plugin:crg_stereo_view^
@@ -16,5 +16,5 @@ cgv_viewer^
  plugin:co_web^
  plugin:cmf_tt_gl_font^
  plugin:examples^
- gui:"C:\Users\henne\Workspace\cgv/plugins/examples/examples.gui"^
- config:"C:\Users\henne\Workspace\cgv/plugins/examples/config.def"
+ gui:"%CGV_DIR%/cgv/plugins/examples/examples.gui"^
+ config:"%CGV_DIR%/cgv/plugins/examples/config.def"

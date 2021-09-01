@@ -1,0 +1,3 @@
+vertex_file:quad2d.glvs
+fragment_file:rect2d.glfs
+fragment_file:fragment2d.glfs

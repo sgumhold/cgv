@@ -321,7 +321,7 @@ public:
 				break;
 			case ']':
 				leaves.add(pos);
-				leaves.add(1.5f * (0.8f*distr(rng) + 0.2 * rad));
+				leaves.add(1.5f * (0.8f*distr(rng) + 0.2f * rad));
 
 				pos = pos_stack.top();
 				dir = dir_stack.top();
