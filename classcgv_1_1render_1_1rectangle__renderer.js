@@ -122,6 +122,5 @@ var classcgv_1_1render_1_1rectangle__renderer =
     [ "has_extents", "classcgv_1_1render_1_1rectangle__renderer.html#a07e47a8489136a677ea44d91c4e83f03", null ],
     [ "has_positions", "classcgv_1_1render_1_1rectangle__renderer.html#a8dc91474133a744cfe2667c9cc517cbe", null ],
     [ "has_rotations", "classcgv_1_1render_1_1rectangle__renderer.html#ac3f149528002dd8f218d004d578599e0", null ],
-    [ "has_translations", "classcgv_1_1render_1_1rectangle__renderer.html#a930ca93185271bafc2a27f484fc565ed", null ],
-    [ "position_is_center", "classcgv_1_1render_1_1rectangle__renderer.html#ad75d487c602597ef3128a94edb2e37ae", null ]
+    [ "has_translations", "classcgv_1_1render_1_1rectangle__renderer.html#a930ca93185271bafc2a27f484fc565ed", null ]
 ];
