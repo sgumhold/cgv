@@ -1,6 +1,5 @@
 var NAVTREEINDEX44 =
 {
-"structcgv_1_1type_1_1ctrl_1_1if__.html":[11,0,0,11,1,0],
 "structcgv_1_1type_1_1func_1_1Promote_1_1promotion__rank.html":[11,0,0,11,2,0,0],
 "structcgv_1_1type_1_1func_1_1clean.html":[11,0,0,11,2,1],
 "structcgv_1_1type_1_1func_1_1clean__traits.html":[11,0,0,11,2,2],
@@ -249,5 +248,6 @@ var NAVTREEINDEX44 =
 "type__id_8h_source.html":[12,0,0,12,3,1],
 "type__name_8h_source.html":[12,0,0,12,3,2],
 "type__ptr_8h_source.html":[12,0,0,12,3,3],
-"up__tri__mat_8h_source.html":[12,0,0,5,54]
+"up__tri__mat_8h_source.html":[12,0,0,5,54],
+"utils_2statistics_8h_source.html":[12,0,0,13,14]
 };

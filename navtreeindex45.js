@@ -1,6 +1,5 @@
 var NAVTREEINDEX45 =
 {
-"utils_2statistics_8h_source.html":[12,0,0,13,14],
 "variables_8h_source.html":[12,0,0,8,5],
 "vec_8h_source.html":[12,0,0,5,55],
 "vertex__buffer_8h_source.html":[12,0,0,10,17],
