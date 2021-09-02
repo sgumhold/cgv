@@ -18,12 +18,15 @@ void finish_fragment2d(in vec2 texcoords);
 void finish_fragment2d();
 //***** end interface of fragment2d.glfs ***********************************
 
-uniform float font_size = 32.0;
-uniform float src_size = 48.0;
-uniform float pixel_range = 8.0;
+uniform float src_size = 32.0;
+uniform float pixel_range = 2.0;
+uniform float font_size;
+uniform float true_sdf_mix_factor = 0.0;
 
 in vec2 pix_coord;
 in vec2 tex_coord;
+
+// Try cubic filtering
 
 float median(float r, float g, float b) {
 	return max(min(r, g), min(max(r, g), b));
@@ -38,16 +41,20 @@ float screenPxRange() {
 
 void main() {
 	
-	override_color(vec4(1.0, 0.0, 0.0, 1.0));
-	finish_fragment2d();
-	return;
+	//override_color(vec4(1.0, 0.0, 0.0, 1.0));
+	//vec4 col = texture(tex, tex_coord);
+	//col.rgb *= col.a;
+	//col.a = 1.0;
+	//override_color(col);
+	//finish_fragment2d();
+	//return;
 
 	vec4 mtsd = texture(tex, tex_coord).rgba;
-	float sd = median(mtsd.r, mtsd.g, mtsd.b);
-	float screenPxDistance = screenPxRange()*(sd - 0.5);
-	float opacity = clamp(screenPxDistance + 0.5, 0.0, 1.0);
+	float sd = median(mtsd.r, mtsd.g, mtsd.b) * mix(1.0, mtsd.a, true_sdf_mix_factor);
+	//float screenPxDistance = screenPxRange()*(sd - 0.5);
+	//float opacity = clamp(screenPxDistance + 0.5, 0.0, 1.0);
 
-	if(sd == 0.0)
+	if(sd <= 0.0)
 		discard;
 
 	float signed_distance = -(screenPxRange()*(sd-0.5) + 0.5);

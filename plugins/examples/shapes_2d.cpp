@@ -25,7 +25,7 @@
 
 
 
-#include <cgv_glutil/msdf_font_renderer.h>
+#include <cgv_glutil/msdf_gl_font_renderer.h>
 
 
 
@@ -360,7 +360,7 @@ protected:
 
 	cgv::glutil::msdf_font msdf_font;
 	cgv::glutil::msdf_text_geometry texts;
-	cgv::glutil::msdf_font_renderer font_renderer;
+	cgv::glutil::msdf_gl_font_renderer font_renderer;
 
 
 public:
@@ -384,7 +384,7 @@ public:
 		// set callbacks for changes to draggable control points
 		line_handles.set_drag_callback(std::bind(&shapes_2d::create_line_render_data, this));
 		curve_handles.set_drag_callback(std::bind(&shapes_2d::create_curve_render_data, this));
-		text_handles.set_drag_callback(std::bind(&shapes_2d::create_text_render_data, this));
+		text_handles.set_drag_callback(std::bind(&shapes_2d::set_text_positions, this));
 	}
 	void stream_help(std::ostream& os) {
 		return;
@@ -416,8 +416,13 @@ public:
 			create_curve_render_data();
 		}
 
-		if(member_ptr == &font_size || member_ptr == &text_align_h || member_ptr == &text_align_v) {
-			create_text_render_data();
+		if(member_ptr == &text_align_h || member_ptr == &text_align_v) {
+			for(size_t i = 0; i < texts.size(); ++i)
+				texts.set_alignment(i, static_cast<cgv::render::TextAlignment>(text_align_h | text_align_v));
+		}
+
+		if(member_ptr == &font_size) {
+			texts.set_font_size(font_size);
 		}
 
 		post_redraw();
@@ -429,6 +434,9 @@ public:
 	void clear(cgv::render::context& ctx) {
 		shaders.clear(ctx);
 		background_tex.destruct(ctx);
+
+		msdf_font.destruct(ctx);
+		font_renderer.destruct(ctx);
 	}
 	bool init(cgv::render::context& ctx) {
 		bool success = true;
@@ -459,7 +467,6 @@ public:
 		success &= msdf_font.init(ctx);
 		success &= font_renderer.init(ctx);
 		texts.set_msdf_font(&msdf_font);
-		texts.set_font_size(font_size);
 
 		// load the font atlas used for text rendering as a texture
 		//{
@@ -608,6 +615,7 @@ public:
 		atlas_tex.enable(ctx, 0);
 		text.render(ctx, shaders.get("text"));
 		atlas_tex.disable(ctx);*/
+		set_shared_uniforms(ctx, font_renderer.ref_prog());
 		font_renderer.render(ctx, viewport_rect.size(), texts);
 		
 		draw_control_lines(ctx);
@@ -736,43 +744,18 @@ public:
 			std::string str = labels[i];
 			texts.add_text(str, text_handles[i]->pos, static_cast<cgv::render::TextAlignment>(text_align_h | text_align_v));
 		}
+	}
+	void set_text_positions() {
+		for(size_t i = 0; i < 2; ++i)
+			texts.set_position(i, text_handles[i]->pos);
 
-		/*text.clear(ctx);
-
-		std::vector<std::string> texts;
-		texts.push_back("Hello World!");
-		texts.push_back("CGV Framework");
-		
-		for(unsigned i = 0; i < 2; ++i) {
-			std::string str = texts[i];
-
-			float acc_advance = 0.0f;
-			vec2 atlas_size(atlas_tex.get_width(), atlas_tex.get_height());
-
-			vec2 text_size(0.0f, font_size);
-
-			for(char c : str) {
-				auto& g = glyphs[static_cast<unsigned char>(c)];
-				vec4 texcoord;
-				texcoord = g.atlas_bounds / vec4(atlas_size.x(), atlas_size.y(), atlas_size.x(), atlas_size.y());
-
-				vec2 pa(g.plane_bounds.x(), g.plane_bounds.y());
-				vec2 pb(g.plane_bounds.z(), g.plane_bounds.w());
-
-				vec2 ps = pb - pa;
-
-				vec2 min_pos = pa * font_size + vec2(acc_advance, 0.0f);
-				vec2 max_pos = ps * font_size; // the size of this glyph quad
-
-				text_size.x() = acc_advance + max_pos.x();
-				acc_advance += g.advance * font_size;
-
-				text.add(vec4(min_pos.x(), min_pos.y(), max_pos.x(), max_pos.y()), texcoord);
-			}
-			text.end_text(text_handles[i]->pos, text_size, static_cast<cgv::render::TextAlignment>(text_align_h | text_align_v));
-		}
-
-		text.create(ctx, shaders.get("text"));*/
+		ivec2 p(text_handles[0]->pos);
+		std::string pos_str = "(";
+		pos_str += std::to_string(p.x());
+		pos_str += ", ";
+		pos_str += std::to_string(p.y());
+		pos_str += ")";
+		texts.set_text(0, pos_str);
 	}
 	void set_resolution_uniform(cgv::render::context& ctx, cgv::render::shader_program& prog) {
 		prog.enable(ctx);
