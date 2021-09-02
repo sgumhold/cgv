@@ -66,6 +66,7 @@ protected:
 	int safety_extension;
 	rgba text_color;
 	cgv::render::rectangle_render_style rrs;
+	cgv::render::attribute_array_manager aam;
 	bool ensure_tex_fbo_combi(cgv::render::context& ctx, cgv::render::texture& tex, cgv::render::frame_buffer& fbo, int width, int height);
 	void draw_label_backgrounds(cgv::render::context& ctx, const std::vector<uint32_t>& indices, bool all, bool swap);
 	void draw_label_texts(cgv::render::context& ctx, const std::vector<uint32_t>& indices, int height, bool all, bool swap);

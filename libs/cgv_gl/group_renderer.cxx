@@ -29,6 +29,7 @@ namespace cgv {
 		/// call this after last render/draw call to ensure that no other users of renderer change attribute arrays of given manager
 		void group_renderer::disable_attribute_array_manager(const context& ctx, attribute_array_manager& aam)
 		{
+			renderer::disable_attribute_array_manager(ctx, aam);
 			has_group_indices = false;
 		}
 
