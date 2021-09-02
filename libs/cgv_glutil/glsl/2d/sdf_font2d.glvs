@@ -23,6 +23,7 @@ layout (std430, binding = 0) readonly buffer data_buffer {
 
 uniform ivec2 resolution;
 uniform ivec2 position;
+uniform float font_size = 32.0;
 
 out vec2 pix_coord;
 out vec2 tex_coord;
@@ -32,6 +33,7 @@ void main() {
 	vec2 corner = corners[id];
 
 	vertex v = in_data[gl_BaseInstance + gl_InstanceID];
+	v.position_size *= font_size;
 
 	tex_coord = vec2(mix(v.texcoords.xy, v.texcoords.zw, corner));
 
