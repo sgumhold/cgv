@@ -26,6 +26,7 @@ namespace cgv {
 			default_depth_offset = 0.0f;
 			texture_mode = 0;
 			blend_rectangles = false;
+			position_is_center = true;
 			border_color = rgba(0.0f,0.0f,0.0f,1.0f);
 		}
 
@@ -34,7 +35,6 @@ namespace cgv {
 			has_translations = false;
 			has_rotations = false;
 			has_texcoords = false;
-			position_is_center = true;
 			has_depth_offsets = false;
 			y_view_angle = 45;
 		}
@@ -92,7 +92,7 @@ namespace cgv {
 		/// set the flag, whether the position is interpreted as the rectangle center, true by default
 		void rectangle_renderer::set_position_is_center(bool _position_is_center)
 		{
-			position_is_center = _position_is_center;
+			get_style<rectangle_render_style>().position_is_center = _position_is_center;
 		}
 
 		bool rectangle_renderer::validate_attributes(const context& ctx) const
@@ -123,7 +123,7 @@ namespace cgv {
 			}
 			ref_prog().set_uniform(ctx, "has_rotations", has_rotations);
 			ref_prog().set_uniform(ctx, "has_translations", has_translations);
-			ref_prog().set_uniform(ctx, "position_is_center", position_is_center);
+			ref_prog().set_uniform(ctx, "position_is_center", get_style<rectangle_render_style>().position_is_center);
 			ref_prog().set_uniform(ctx, "use_texture", has_texcoords);
 			ref_prog().set_uniform(ctx, "viewport_height", (float)ctx.get_height());
 			ref_prog().set_uniform(ctx, "texture_mode", rrs.texture_mode);
@@ -142,7 +142,6 @@ namespace cgv {
 				has_rotations = false;
 				has_translations = false;
 				has_depth_offsets = false;
-				position_is_center = true;
 			}
 			const rectangle_render_style& rrs = get_style<rectangle_render_style>();
 			if (rrs.blend_rectangles) {
@@ -203,6 +202,7 @@ namespace cgv {
 				p->add_member_control(b, "percentual_border_width", prs_ptr->percentual_border_width, "value_slider", "min=-0.5;max=0.5;ticks=true");
 				p->add_member_control(b, "border_color", prs_ptr->border_color);
 				p->add_member_control(b, "default_depth_offset", prs_ptr->default_depth_offset, "value_slider", "min=0.000001;max=0.1;step=0.0000001;log=true;ticks=true");
+				p->add_member_control(b, "position_is_center", prs_ptr->position_is_center, "toggle");
 				
 				if (p->begin_tree_node("surface", prs_ptr->use_group_color, false, "level=3")) {
 					p->align("\a");

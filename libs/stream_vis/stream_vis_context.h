@@ -49,12 +49,18 @@ namespace stream_vis {
 		std::atomic<bool> outofdate;
 		bool use_vbo, last_use_vbo, plot_attributes_initialized;
 		AABBMode aabb_mode, last_aabb_mode;
+		/// maps name to time series indices
 		std::map<std::string, uint16_t> name2index;
+		/// vector with all time series
 		std::vector<stream_vis::streaming_time_series*> typed_time_series;
+		/// vector with all offset infos
 		std::vector<offset_info> offset_infos;
+		/// keep track if there are uninitialized offset definitions
 		size_t nr_uninitialized_offsets;
-
+		/// vector of all plots
 		std::vector<plot_info> plot_pool;
+		/// vector of all layouts
+//		std::vector<layout_info> layouts;
 
 		bool paused;
 		unsigned sleep_ms;

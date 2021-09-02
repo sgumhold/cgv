@@ -16,6 +16,8 @@ namespace cgv {
 
 		struct CGV_API rectangle_render_style : public surface_render_style
 		{
+			/// flag whether position is center is only member of style that can be set by rectangle_renderer
+			mutable bool position_is_center;
 			int border_mode;
 			rgba border_color;
 			float pixel_blend;
@@ -43,8 +45,6 @@ namespace cgv {
 			bool has_translations;
 			/// whether rotation array has been specified
 			bool has_rotations;
-			/// whether position is rectangle center, if not it is lower left corner
-			bool position_is_center;
 			/// whether depth offset array has been specified
 			bool has_depth_offsets;
 			float y_view_angle;
@@ -63,7 +63,7 @@ namespace cgv {
 			void disable_attribute_array_manager(const context& ctx, attribute_array_manager& aam);
 			///
 			bool init(context& ctx);
-			/// set the flag, whether the position is interpreted as the box center, true by default
+			/// set the flag of the render style, whether the position is interpreted as the box center
 			void set_position_is_center(bool _position_is_center);
 			/// specify a single extent for all boxes
 			template <typename T>
