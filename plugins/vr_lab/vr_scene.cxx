@@ -149,6 +149,8 @@ bool vr_scene::init(cgv::render::context& ctx)
 	cgv::render::ref_sphere_renderer(ctx, 1);
 	cgv::render::ref_box_renderer(ctx, 1);
 	cgv::render::ref_rounded_cone_renderer(ctx, 1);
+	cgv::render::ref_rectangle_renderer(ctx, 1);
+	aam.init(ctx);
 	cgv::gui::connect_vr_server(true);
 	lm.init(ctx);
 	cgv::media::font::font_ptr f = cgv::media::font::default_font(true);
@@ -189,8 +191,12 @@ void vr_scene::init_frame(cgv::render::context& ctx)
 
 void vr_scene::clear(cgv::render::context& ctx)
 {
+	cgv::render::ref_sphere_renderer(ctx, -1);
 	cgv::render::ref_box_renderer(ctx,-1);
+	cgv::render::ref_rounded_cone_renderer(ctx, -1);
+	aam.destruct(ctx);
 	lm.destruct(ctx);
+	cgv::render::ref_rectangle_renderer(ctx, -1);
 }
 
 void vr_scene::draw(cgv::render::context& ctx)
@@ -253,9 +259,6 @@ void vr_scene::finish_frame(cgv::render::context& ctx)
 	}
 	// draw labels
 	if (!P.empty()) {
-		auto& rr = cgv::render::ref_rectangle_renderer(ctx);
-		rr.set_render_style(rrs);
-
 		GLboolean blend = glIsEnabled(GL_BLEND); glEnable(GL_BLEND);
 		GLenum blend_src, blend_dst, depth;
 		glGetIntegerv(GL_BLEND_DST, reinterpret_cast<GLint*>(&blend_dst));
@@ -264,6 +267,9 @@ void vr_scene::finish_frame(cgv::render::context& ctx)
 
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
+		auto& rr = cgv::render::ref_rectangle_renderer(ctx);
+		rr.set_render_style(rrs);
+		rr.enable_attribute_array_manager(ctx, aam);
 		rr.set_position_array(ctx, P);
 		rr.set_rotation_array(ctx, Q);
 		rr.set_extent_array(ctx, E);
@@ -271,6 +277,7 @@ void vr_scene::finish_frame(cgv::render::context& ctx)
 		lm.get_texture()->enable(ctx);
 		rr.render(ctx, 0, P.size());
 		lm.get_texture()->disable(ctx);
+		rr.disable_attribute_array_manager(ctx, aam);
 
 		if (!blend)
 			glDisable(GL_BLEND);
