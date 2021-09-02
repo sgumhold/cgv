@@ -268,7 +268,6 @@ void vr_scene::finish_frame(cgv::render::context& ctx)
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 		auto& rr = cgv::render::ref_rectangle_renderer(ctx);
-		rr.set_position_is_center(true);
 		rr.set_render_style(rrs);
 		rr.enable_attribute_array_manager(ctx, aam);
 		rr.set_position_array(ctx, P);
