@@ -1,5 +1,6 @@
 #include <cgv/base/node.h>
 #include <cgv/render/drawable.h>
+#include <cgv_gl/rectangle_renderer.h>
 #include <cgv_gl/sphere_renderer.h>
 #include <cgv_gl/box_renderer.h>
 #include <cgv_gl/rounded_cone_renderer.h>
@@ -64,6 +65,8 @@ protected:
 
 	/// for rectangle renderer a rectangle_render_style is needed
 	cgv::render::rectangle_render_style rrs;
+	/// attribute array manager for rectangle renderer
+	cgv::render::attribute_array_manager aam;
 public:
 	/// different coordinate systems used to place labels
 	enum CoordinateSystem

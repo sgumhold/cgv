@@ -36,6 +36,7 @@ namespace cgv {
 		{
 			cull_per_primitive = true;
 			has_normals = false;
+			has_texcoords = false;
 		}
 		/// call this before setting attribute arrays to manage attribute array in given manager
 		void surface_renderer::enable_attribute_array_manager(const context& ctx, attribute_array_manager& aam)
@@ -119,8 +120,10 @@ namespace cgv {
 				if (srs.culling_mode != CM_OFF)
 					glDisable(GL_CULL_FACE);
 			}
-			if (!attributes_persist())
+			if (!attributes_persist()) {
 				has_normals = false;
+				has_texcoords = false;
+			}
 			return group_renderer::disable(ctx);
 		}
 		bool surface_render_style_reflect::self_reflect(cgv::reflect::reflection_handler& rh)

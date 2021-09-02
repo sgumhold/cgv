@@ -54,8 +54,6 @@ namespace cgv {
 				has_translations = true;
 			if (has_attribute(ctx, "rotation"))
 				has_rotations = true;
-			if (has_attribute(ctx, "texcoord"))
-				has_texcoords = true;
 			if (has_attribute(ctx, "depth_offset"))
 				has_depth_offsets = true;
 		}
@@ -66,7 +64,6 @@ namespace cgv {
 			has_extents = false;
 			has_translations = false;
 			has_rotations = false;
-			has_texcoords = false;
 			has_depth_offsets = false;
 		}
 		void rectangle_renderer::set_textured_rectangle(const context& ctx, const textured_rectangle& tcr)
@@ -144,7 +141,6 @@ namespace cgv {
 				has_extents = false;
 				has_rotations = false;
 				has_translations = false;
-				has_texcoords = false;
 				has_depth_offsets = false;
 				position_is_center = true;
 			}
