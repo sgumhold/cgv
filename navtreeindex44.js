@@ -1,5 +1,6 @@
 var NAVTREEINDEX44 =
 {
+"structcgv_1_1type_1_1ctrl_1_1if__.html":[11,0,0,11,1,0],
 "structcgv_1_1type_1_1func_1_1Promote_1_1promotion__rank.html":[11,0,0,11,2,0,0],
 "structcgv_1_1type_1_1func_1_1clean.html":[11,0,0,11,2,1],
 "structcgv_1_1type_1_1func_1_1clean__traits.html":[11,0,0,11,2,2],
@@ -220,8 +221,8 @@ var NAVTREEINDEX44 =
 "structvr_1_1vr__tracking__system__info.html#a5bb53c2b00af106f32ae2d114d542131":[11,0,3,17,1],
 "structvr_1_1vr__tracking__system__info.html#ac64158c2683e083a5e4d4dd92b4f1e91":[11,0,3,17,2],
 "surface__material_8h_source.html":[12,0,0,6,1,4],
-"surface__renderer_8h_source.html":[12,0,1,2,15],
-"surfel__renderer_8h_source.html":[12,0,1,2,16],
+"surface__renderer_8h_source.html":[12,0,1,2,16],
+"surfel__renderer_8h_source.html":[12,0,1,2,17],
 "svd_8h_source.html":[12,0,0,5,49],
 "test_2vr_2lib__begin_8h_source.html":[12,0,3,0,0],
 "text__editor_8h_source.html":[12,0,0,4,28],
@@ -248,6 +249,5 @@ var NAVTREEINDEX44 =
 "type__id_8h_source.html":[12,0,0,12,3,1],
 "type__name_8h_source.html":[12,0,0,12,3,2],
 "type__ptr_8h_source.html":[12,0,0,12,3,3],
-"up__tri__mat_8h_source.html":[12,0,0,5,54],
-"utils_2statistics_8h_source.html":[12,0,0,13,14]
+"up__tri__mat_8h_source.html":[12,0,0,5,54]
 };

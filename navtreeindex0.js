@@ -43,6 +43,7 @@ var NAVTREEINDEX0 =
 "assert_8h_source.html":[12,0,0,3,0],
 "attach__slot_8h_source.html":[12,0,0,0,1],
 "attribute__array__binding_8h_source.html":[12,0,0,10,0],
+"attribute__array__manager_8h_source.html":[12,0,1,2,3],
 "axis__aligned__box_8h_source.html":[12,0,0,6,6],
 "axis__config_8h_source.html":[12,0,1,4,0],
 "baseNS.html":[3],
@@ -64,8 +65,8 @@ var NAVTREEINDEX0 =
 "bmp__reader_8h_source.html":[12,0,0,6,2,0],
 "bmp__writer_8h_source.html":[12,0,0,6,2,1],
 "bool__combiner_8h_source.html":[12,0,0,11,0],
-"box__renderer_8h_source.html":[12,0,1,2,3],
-"box__wire__renderer_8h_source.html":[12,0,1,2,4],
+"box__renderer_8h_source.html":[12,0,1,2,4],
+"box__wire__renderer_8h_source.html":[12,0,1,2,5],
 "bucket__sort_8h_source.html":[12,0,0,5,3],
 "button_8h_source.html":[12,0,0,4,4],
 "callback__drawable_8h_source.html":[12,0,0,10,1],
@@ -248,6 +249,5 @@ var NAVTREEINDEX0 =
 "classcgv_1_1base_1_1group.html#a62d3cd5ae49c3e261f5c0e52bc59bd4f":[11,0,0,0,19,38],
 "classcgv_1_1base_1_1group.html#a6746cd9f70fefe5a4f2b72534869fcc3":[11,0,0,0,19,2],
 "classcgv_1_1base_1_1group.html#a67b5dba890a068acef62d9c026c05320":[11,0,0,0,19,18],
-"classcgv_1_1base_1_1group.html#a6d54b3a4cef6b98b98b0d97d41cad410":[11,0,0,0,19,29],
-"classcgv_1_1base_1_1group.html#a746bbe7e49b1fae8253a8b06ce9ad4c3":[11,0,0,0,19,14]
+"classcgv_1_1base_1_1group.html#a6d54b3a4cef6b98b98b0d97d41cad410":[11,0,0,0,19,29]
 };

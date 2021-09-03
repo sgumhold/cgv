@@ -1,5 +1,6 @@
 var NAVTREEINDEX5 =
 {
+"classcgv_1_1gui_1_1gamepad__key__event.html#af8c6041e3055dc0c6325dfed9a773dbb":[11,0,0,2,11,14],
 "classcgv_1_1gui_1_1gamepad__key__event.html#afee8ba3f73e81ad3f56db5ba494c2354":[11,0,0,2,11,18],
 "classcgv_1_1gui_1_1gamepad__stick__event.html":[11,0,0,2,12],
 "classcgv_1_1gui_1_1gamepad__stick__event.html#a032e412c6246130d8df65098166c14cb":[11,0,0,2,12,32],
@@ -248,6 +249,5 @@ var NAVTREEINDEX5 =
 "classcgv_1_1gui_1_1key__event.html#aab1416286305286b19ebfccc165abf67":[11,0,0,2,18,4],
 "classcgv_1_1gui_1_1key__event.html#ab7d648a2a73c8b7eee4caec3e83c14ee":[11,0,0,2,18,5],
 "classcgv_1_1gui_1_1key__event.html#ac31bd0c22ff8cd2fffbf5c17610fb9fd":[11,0,0,2,18,26],
-"classcgv_1_1gui_1_1key__event.html#ac4bd23e1fa0d8597c5b354970209d9a7":[11,0,0,2,18,22],
-"classcgv_1_1gui_1_1key__event.html#acc59ba1e03d8497b4a72ab4a3b9399a6":[11,0,0,2,18,1]
+"classcgv_1_1gui_1_1key__event.html#ac4bd23e1fa0d8597c5b354970209d9a7":[11,0,0,2,18,22]
 };

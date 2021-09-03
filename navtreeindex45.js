@@ -1,5 +1,6 @@
 var NAVTREEINDEX45 =
 {
+"utils_2statistics_8h_source.html":[12,0,0,13,14],
 "variables_8h_source.html":[12,0,0,8,5],
 "vec_8h_source.html":[12,0,0,5,55],
 "vertex__buffer_8h_source.html":[12,0,0,10,17],
@@ -7,7 +8,7 @@ var NAVTREEINDEX45 =
 "video__writer_8h_source.html":[12,0,0,6,4,2],
 "volume_8h_source.html":[12,0,0,6,5,2],
 "volume__io_8h_source.html":[12,0,0,6,5,3],
-"volume__renderer_8h_source.html":[12,0,1,2,17],
+"volume__renderer_8h_source.html":[12,0,1,2,18],
 "vr__calib_8h_source.html":[12,0,1,1,1],
 "vr__camera_8h.html":[12,0,1,5,2],
 "vr__camera_8h.html#a4d435c9cc7df8e3d66348f2eca4fd18a":[12,0,1,5,2,2],
