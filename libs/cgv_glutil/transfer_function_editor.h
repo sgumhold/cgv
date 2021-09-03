@@ -13,6 +13,7 @@
 #include <cgv_glutil/shader_library.h>
 
 #include "transfer_function.h"
+#include "2d/draggables_collection.h"
 
 #include "lib_begin.h"
 
@@ -64,73 +65,6 @@ protected:
 		}
 	} layout;
 	
-	struct draggable {
-		vec2 pos;
-		vec2 size;
-
-		enum ConstrainReference {
-			CR_CENTER,
-			CR_MIN_POINT,
-			CR_MAX_POINT,
-			CR_FULL_SIZE
-		} constrain_reference;
-
-		bool position_is_center;
-
-		draggable() {
-			position_is_center = false;
-			constrain_reference = CR_FULL_SIZE;
-		}
-
-		vec2 center() const {
-
-			if(position_is_center)
-				return pos;
-			else
-				return pos + size;
-		}
-
-		void apply_constraint(const rect& area) {
-
-			vec2 min_pnt = vec2(area.box.get_min_pnt());
-			vec2 max_pnt = vec2(area.box.get_max_pnt());
-
-			switch(constrain_reference) {
-			case CR_MIN_POINT:
-				min_pnt += size;
-				max_pnt += size;
-				break;
-			case CR_MAX_POINT:
-				min_pnt -= size;
-				max_pnt -= size;
-				break;
-			case CR_FULL_SIZE:
-				min_pnt += size;
-				max_pnt -= size;
-				break;
-			case CR_CENTER:
-			default:
-				break;
-			}
-			
-			if(!position_is_center) {
-				min_pnt -= size;
-				max_pnt -= size;
-			}
-
-			pos = cgv::math::clamp(pos, min_pnt, max_pnt);
-		}
-
-		virtual bool is_inside(const ivec2& p) const {
-
-			vec2 a = pos;
-			vec2 b = pos + size;
-			return
-				p.x() >= a.x() && p.x() <= b.x() &&
-				p.y() >= a.y() && p.y() <= b.y();
-		}
-	};
-
 	struct point : public draggable {
 		vec2 val;
 		rgb col;
@@ -138,16 +72,14 @@ protected:
 		point() {
 			size = vec2(8.0f);
 			position_is_center = true;
-			constrain_reference = CR_CENTER;
+			constraint_reference = CR_CENTER;
 		}
 
 		void update_val(const layout_attributes& la, const float scale_exponent) {
 
-			apply_constraint(la.editor_rect);
-
 			vec2 p = pos - la.editor_rect.pos();
 			val = p / la.editor_rect.size();
-			
+
 			val = cgv::math::clamp(val, 0.0f, 1.0f);
 			val.y() = cgv::math::clamp(std::pow(val.y(), scale_exponent), 0.0f, 1.0f);
 		}
@@ -237,7 +169,7 @@ protected:
 	};
 
 	struct tf_container {
-		std::vector<point> points;
+		cgv::glutil::draggables_collection<point> points;
 
 		transfer_function tf;
 		texture tex;
@@ -248,19 +180,20 @@ protected:
 		plain_geometry<vec2, rgba> triangles;
 		plain_geometry<vec2, rgb> lines;
 
-		tf_container() {
+		void reset() {
+			points.clear();
 
-			points.resize(2);
-			points[0].val = vec2(0.0f);
-			points[0].col = rgb(0.0f);
-			points[1].val = vec2(1.0f);
-			points[1].col = rgb(1.0f);
+			point p;
+			p.val = vec2(0.0f);
+			p.col = rgb(0.0f);
+			points.add(p);
+
+			p = point();
+			p.val = vec2(1.0f);
+			p.col = rgb(1.0f);
+			points.add(p);
 		}
 	} tfc;
-
-	point* selected_point = nullptr;
-	point* dragged_point = nullptr;
-	vec2 offset_pos;
 
 	void add_point(const vec2& pos);
 	void remove_point(const point* ptr);
@@ -268,7 +201,8 @@ protected:
 	
 	void init_transfer_function_texture(context& ctx);
 
-
+	void handle_drag();
+	void handle_drag_end();
 	void sort_points();
 	void update_point_positions();
 	void update_transfer_function(bool is_data_change);

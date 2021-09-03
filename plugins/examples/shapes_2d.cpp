@@ -463,20 +463,10 @@ public:
 			image_tex.create_from_image(image_format, image_data, ctx, "res://alhambra.png", (unsigned char*)0, 0);
 		}
 		
-
 		success &= msdf_font.init(ctx);
 		success &= font_renderer.init(ctx);
 		texts.set_msdf_font(&msdf_font);
 
-		// load the font atlas used for text rendering as a texture
-		//{
-		//	cgv::data::data_format atlas_format;
-		//	cgv::data::data_view atlas_data;
-		//	atlas_tex.create_from_image(atlas_format, atlas_data, ctx, "res://segoeui_atlas.png", (unsigned char*)0, 0);
-		//}
-
-		//success &= read_glyph_atlas();
-		
 		// add 2 control points for the arrow
 		points.push_back(point(ivec2(600, 600)));
 		points.push_back(point(ivec2(700, 600)));
