@@ -86,8 +86,7 @@ $(document).ready(function(){initNavTree('namespacecgv_1_1render.html',''); init
 <a href="#nested-classes">Classes</a> &#124;
 <a href="#typedef-members">Typedefs</a> &#124;
 <a href="#enum-members">Enumerations</a> &#124;
-<a href="#func-members">Functions</a> &#124;
-<a href="#var-members">Variables</a>  </div>
+<a href="#func-members">Functions</a>  </div>
   <div class="headertitle">
 <div class="title">cgv::render Namespace Reference</div>  </div>
 </div><!--header-->
@@ -453,12 +452,6 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="name
 <tr class="memitem:a61032957d1ebbec2abf7260ee4c522c5"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcgv_1_1render_1_1volume__renderer.html">volume_renderer</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1render.html#a61032957d1ebbec2abf7260ee4c522c5">ref_volume_renderer</a> (<a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx, int ref_count_change=0)</td></tr>
 <tr class="memdesc:a61032957d1ebbec2abf7260ee4c522c5"><td class="mdescLeft">&#160;</td><td class="mdescRight">reference to a singleton volume renderer that is shared among drawables  <a href="namespacecgv_1_1render.html#a61032957d1ebbec2abf7260ee4c522c5">More...</a><br /></td></tr>
 <tr class="separator:a61032957d1ebbec2abf7260ee4c522c5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="var-members"></a>
-Variables</h2></td></tr>
-<tr class="memitem:ad238abfc0f07d68a0959df4af6c20869"><td class="memItemLeft" align="right" valign="top">class CGV_API&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1render.html#ad238abfc0f07d68a0959df4af6c20869">renderer</a></td></tr>
-<tr class="memdesc:ad238abfc0f07d68a0959df4af6c20869"><td class="mdescLeft">&#160;</td><td class="mdescRight">forward declaration of renderer  <a href="namespacecgv_1_1render.html#ad238abfc0f07d68a0959df4af6c20869">More...</a><br /></td></tr>
-<tr class="separator:ad238abfc0f07d68a0959df4af6c20869"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>namespace for api independent GPU programming </p>
@@ -1169,24 +1162,6 @@ Variables</h2></td></tr>
 
 <p>reference to a singleton volume renderer that is shared among drawables </p>
 <p>the second parameter is used for reference counting. Use +1 in your init method, -1 in your clear method and default 0 argument otherwise. If internal reference counter decreases to 0, singleton renderer is destructed. </p>
-
-</div>
-</div>
-<h2 class="groupheader">Variable Documentation</h2>
-<a id="ad238abfc0f07d68a0959df4af6c20869"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad238abfc0f07d68a0959df4af6c20869">&#9670;&nbsp;</a></span>renderer</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">class CGV_API <a class="el" href="classcgv_1_1render_1_1renderer.html">cgv::render::renderer</a></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>forward declaration of renderer </p>
-<p>give renderer access to protected members </p>
 
 </div>
 </div>

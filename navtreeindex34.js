@@ -1,5 +1,6 @@
 var NAVTREEINDEX34 =
 {
+"dir_6e3689650c6effb3b07875eecab1ea11.html":[12,0,0,12],
 "dir_845fb1858fee56cb66c892004e14d559.html":[12,0,0,12,3],
 "dir_8d260369be1e95d856a80aadc2cdcc55.html":[12,0,0,6,1],
 "dir_8h_source.html":[12,0,0,13,6],
@@ -161,7 +162,7 @@ var NAVTREEINDEX34 =
 "group__VR.html#ga785410ea03ccab5a21dfa1dbf16c380d":[9,0,6],
 "group__detail.html":[9,1],
 "group__detail.html#ga5cc650905883cc409861c2d98a6cce93":[9,1,5],
-"group__renderer_8h_source.html":[12,0,1,2,5],
+"group__renderer_8h_source.html":[12,0,1,2,6],
 "guiNS.html":[5],
 "guiNS.html#AbstGUI":[5,0],
 "guiNS.html#cg_fltk":[5,2],
@@ -216,7 +217,7 @@ var NAVTREEINDEX34 =
 "libs_2vr_2lib__begin_8h_source.html":[12,0,1,5,1],
 "light__source_8hh_source.html":[12,0,0,6,1,1],
 "lin__solve_8h_source.html":[12,0,0,5,22],
-"line__renderer_8h_source.html":[12,0,1,2,6],
+"line__renderer_8h_source.html":[12,0,1,2,7],
 "list_8h_source.html":[12,0,0,11,3],
 "low__tri__mat_8h_source.html":[12,0,0,5,23],
 "lu_8h_source.html":[12,0,0,5,24],
@@ -248,6 +249,5 @@ var NAVTREEINDEX34 =
 "mutex__pthread_8h_source.html":[12,0,0,7,6],
 "mutex__std__thread_8h_source.html":[12,0,0,7,7],
 "named_8h_source.html":[12,0,0,0,9],
-"namespacecgv.html":[10,0,0],
-"namespacecgv.html":[11,0,0]
+"namespacecgv.html":[10,0,0]
 };
