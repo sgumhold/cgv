@@ -523,6 +523,7 @@ public:
 				do {
 					new_frame = false;
 					bool new_color_frame_changed = rgbd_inp.get_frame(rgbd::IS_COLOR, color_frame, 0);
+					//TODO add ORB feature extraction and estimate camera pose
 					if (new_color_frame_changed) {
 						++nr_color_frames;
 						color_frame_changed = new_color_frame_changed;
