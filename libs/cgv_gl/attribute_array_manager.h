@@ -161,6 +161,8 @@ public:
 		return (const int&)-1;
 	}
 	///
+	bool is_created();
+	///
 	bool init(context& ctx);
 	///
 	bool enable(context& ctx);

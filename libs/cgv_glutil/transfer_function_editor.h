@@ -168,6 +168,161 @@ protected:
 		}
 	};
 
+	class generic_renderer;
+	class generic_geometry {
+		friend class generic_renderer;
+	private:
+		attribute_array_manager aam;
+		bool state_out_of_date = true;
+
+	protected:
+		template <typename T>
+		bool set_attribute_array(const context& ctx, const shader_program& prog, const std::string& name, const T& array) {
+			int loc = prog.get_attribute_location(ctx, name);
+			if(loc > -1)
+				return aam.set_attribute_array(ctx, loc, array);
+			return false;
+		}
+
+		virtual bool transfer(context& ctx, shader_program& prog) = 0;
+
+		bool enable(context& ctx, shader_program& prog) {
+			if(!aam.is_created())
+				aam.init(ctx);
+			if(state_out_of_date)
+				transfer(ctx, prog);
+			state_out_of_date = false;
+			return aam.enable(ctx);
+		}
+
+		bool disable(context& ctx) {
+			return aam.disable(ctx);
+		}
+
+	public:
+		void destruct(const context& ctx) {
+			aam.destruct(ctx);
+		}
+
+		bool init(context& ctx) {
+			return aam.init(ctx);
+		}
+
+		void set_out_of_date() {
+			state_out_of_date = true;
+		}
+
+		virtual size_t size() = 0;
+	};
+
+	class generic_renderer {
+	protected:
+		std::string prog_name = "";
+		shader_program prog;
+		shader_define_map defines, last_defines;
+
+		bool build_shader_program(const context& ctx, const shader_define_map& defines) {
+			if(prog.build_program(ctx, prog_name, true, defines)) {
+				last_defines = defines;
+				return true;
+			}
+			return false;
+		}
+
+	public:
+		generic_renderer() {}
+		generic_renderer(const std::string& prog_name) : prog_name(prog_name) {}
+
+		void destruct(const context& ctx) {
+			prog.destruct(ctx);
+		}
+
+		bool init(context& ctx) {
+			bool success = true;
+			success &= build_shader_program(ctx, defines);
+			return success;
+		}
+
+		shader_program& ref_prog() { return prog; }
+
+		bool enable(context& ctx, generic_geometry& geometry) {
+			if(defines != last_defines) {
+				if(prog.is_created())
+					prog.destruct(ctx);
+				if(!build_shader_program(ctx, defines))
+					return false;
+			}
+			bool res = prog.enable(ctx);
+			res &= geometry.enable(ctx, prog);
+			return res;
+		}
+
+		bool disable(context& ctx, generic_geometry& geometry) {
+			bool res = geometry.disable(ctx);
+			res &= prog.disable(ctx);
+			return res;
+		}
+
+		void draw(context& ctx, PrimitiveType type, size_t start, size_t count) {
+			GLenum pt = gl::map_to_gl(type);
+			glDrawArrays(pt, (GLint)start, (GLsizei)count);
+		}
+
+		bool render(context& ctx, generic_geometry& geometry, PrimitiveType type, size_t start = 0, size_t count = 0) {
+			if(!enable(ctx, geometry))
+				return false;
+			draw(ctx, type, start, count ? count : geometry.size());
+			return disable(ctx, geometry);
+		}
+	};
+
+	generic_renderer line_renderer;
+	
+
+
+	class line_geometry : public generic_geometry {
+	protected:
+		bool transfer(context& ctx, shader_program& prog) {
+			bool success = true;
+			success &= set_attribute_array(ctx, prog, "position", positions);
+			success &= set_attribute_array(ctx, prog, "color", colors);
+			return success;
+		}
+	public:
+		std::vector<vec2> positions;
+		std::vector<rgb> colors;
+
+		size_t size() { return positions.size(); };
+
+		void clear() {
+			positions.clear();
+			colors.clear();
+		}
+
+		void add(const vec2& pos, const rgb& col) {
+			positions.push_back(pos);
+			colors.push_back(col);
+		}
+	};
+
+	line_geometry lines;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 	struct tf_container {
 		cgv::glutil::draggables_collection<point> points;
 
@@ -178,8 +333,7 @@ protected:
 		unsigned hist_max;
 
 		plain_geometry<vec2, rgba> triangles;
-		plain_geometry<vec2, rgb> lines;
-
+		
 		void reset() {
 			points.clear();
 
