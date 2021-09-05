@@ -38,7 +38,7 @@ transfer_function_editor::transfer_function_editor() {
 	shaders.add("rectangle", "rect2d.glpr");
 	shaders.add("circle", "circle2d.glpr");
 	shaders.add("polygon", "poly2d.glpr");
-	shaders.add("line", "line2d.glpr");
+	//shaders.add("line", "line2d.glpr");
 	shaders.add("histogram", "hist2d.glpr");
 	shaders.add("background", "bg2d.glpr");
 
@@ -61,6 +61,8 @@ transfer_function_editor::transfer_function_editor() {
 	tfc.points.set_drag_callback(std::bind(&transfer_function_editor::handle_drag, this));
 	tfc.points.set_drag_end_callback(std::bind(&transfer_function_editor::handle_drag_end, this));
 	tfc.points.set_constraint(layout.editor_rect);
+
+	line_renderer = generic_renderer("line2d.glpr");
 }
 
 bool transfer_function_editor::on_exit_request() {
@@ -260,8 +262,11 @@ bool transfer_function_editor::init(cgv::render::context& ctx) {
 		cursor_font_face = font->get_font_face(cgv::media::font::FFA_BOLD);
 	}
 
-	fbc.ensure(ctx);
-	shaders.load_shaders(ctx);
+	bool success = true;
+
+	success &= fbc.ensure(ctx);
+	success &= shaders.load_shaders(ctx);
+	success &= line_renderer.init(ctx);
 
 	shader_program& rect_prog = shaders.get("rectangle");
 	rect_prog.enable(ctx);
@@ -284,7 +289,14 @@ bool transfer_function_editor::init(cgv::render::context& ctx) {
 	poly_prog.set_uniform(ctx, "apply_gamma", false);
 	poly_prog.disable(ctx);
 
-	shader_program& line_prog = shaders.get("line");
+	//shader_program& line_prog = shaders.get("line");
+	//line_prog.enable(ctx);
+	//line_prog.set_uniform(ctx, "use_blending", true);
+	//line_prog.set_uniform(ctx, "apply_gamma", false);
+	//line_prog.set_uniform(ctx, "width", 3.0f);
+	//line_prog.disable(ctx);
+
+	shader_program& line_prog = line_renderer.ref_prog();
 	line_prog.enable(ctx);
 	line_prog.set_uniform(ctx, "use_blending", true);
 	line_prog.set_uniform(ctx, "apply_gamma", false);
@@ -306,6 +318,8 @@ bool transfer_function_editor::init(cgv::render::context& ctx) {
 	bg_prog.set_uniform(ctx, "scale_exponent", 1.0f);
 	bg_prog.disable(ctx);
 
+	//tfc.lines.init(ctx);
+
 	if(!load_from_xml(file_name))
 		tfc.reset();
 	
@@ -319,9 +333,9 @@ bool transfer_function_editor::init(cgv::render::context& ctx) {
 	bg_tex.destruct(ctx);
 	cgv::data::data_view bg_dv = cgv::data::data_view(new cgv::data::data_format(2, 2, TI_FLT32, cgv::data::CF_RGB), bg_data.data());
 	bg_tex = texture("flt32[R,G,B]", TF_NEAREST, TF_NEAREST, TW_REPEAT, TW_REPEAT);
-	bg_tex.create(ctx, bg_dv, 0);
+	success &= bg_tex.create(ctx, bg_dv, 0);
 
-	return true;
+	return success;
 }
 
 void transfer_function_editor::init_frame(cgv::render::context& ctx) {
@@ -343,7 +357,8 @@ void transfer_function_editor::init_frame(cgv::render::context& ctx) {
 		poly_prog.set_uniform(ctx, "resolution", container_size);
 		poly_prog.disable(ctx);
 
-		shader_program& line_prog = shaders.get("line");
+		//shader_program& line_prog = shaders.get("line");
+		shader_program& line_prog = line_renderer.ref_prog();
 		line_prog.enable(ctx);
 		line_prog.set_uniform(ctx, "resolution", container_size);
 		line_prog.disable(ctx);
@@ -461,7 +476,21 @@ void transfer_function_editor::draw(cgv::render::context& ctx) {
 	// draw transfer function area polygon
 	tfc.triangles.render(ctx, PT_TRIANGLE_STRIP, shaders.get("polygon"));
 	// draw transfer function lines
-	tfc.lines.render(ctx, PT_LINE_STRIP, shaders.get("line"));
+
+	/*if(tfc.lines.enable(ctx)) {
+		auto& lines_prog = shaders.get("line");
+		lines_prog.enable(ctx);
+
+		GLenum pt = gl::map_to_gl(PT_LINE_STRIP);
+		glDrawArrays(pt, (GLint)0, (GLsizei)tfc.line_vertex_count);
+
+		lines_prog.disable(ctx);
+		tfc.lines.disable(ctx);
+	}*/
+	line_renderer.render(ctx, lines, PT_LINE_STRIP);
+
+
+	//tfc.lines.render(ctx, PT_LINE_STRIP, shaders.get("line"));
 	
 	// draw separator line
 	rect_prog.enable(ctx);
@@ -822,12 +851,14 @@ bool transfer_function_editor::update_geometry() {
 
 	auto& tf = tfc.tf;
 	auto& points = tfc.points;
-	auto& lines = tfc.lines;
+	//auto& lines = tfc.lines;
 	auto& triangles = tfc.triangles;
 
 	triangles.clear(ctx);
-	lines.clear(ctx);
-
+	lines.clear();
+	//std::vector<vec2> line_positions;
+	//std::vector<rgb> line_colors;
+	
 	bool success = true;
 
 	if(points.size() > 1) {
@@ -835,6 +866,8 @@ bool transfer_function_editor::update_geometry() {
 		rgba coll = tf.interpolate(pl.val.x());
 
 		lines.add(vec2(layout.editor_rect.pos().x(), pl.center().y()), rgb(coll));
+		//line_positions.push_back(vec2(layout.editor_rect.pos().x(), pl.center().y()));
+		//line_colors.push_back(rgb(coll));
 
 		triangles.add(vec2(layout.editor_rect.pos().x(), pl.center().y()), coll);
 		triangles.add(layout.editor_rect.pos(), coll);
@@ -844,6 +877,8 @@ bool transfer_function_editor::update_geometry() {
 			rgba col = tf.interpolate(points[i].val.x());
 
 			lines.add(pos, rgb(col));
+			//line_positions.push_back(pos);
+			//line_colors.push_back(rgb(col));
 
 			triangles.add(pos, col);
 			triangles.add(vec2(pos.x(), layout.editor_rect.pos().y()), col);
@@ -854,12 +889,29 @@ bool transfer_function_editor::update_geometry() {
 		vec2 max_pos = layout.editor_rect.pos() + vec2(1.0f, 0.0f) * layout.editor_rect.size();
 
 		lines.add(vec2(max_pos.x(), pr.center().y()), rgb(colr));
+		//line_positions.push_back(vec2(max_pos.x(), pr.center().y()));
+		//line_colors.push_back(rgb(colr));
 
 		triangles.add(vec2(max_pos.x(), pr.center().y()), colr);
 		triangles.add(max_pos, colr);
 
 		success &= triangles.create(ctx, shaders.get("polygon"));
-		success &= lines.create(ctx, shaders.get("line"));
+		
+
+
+		//success &= lines.create(ctx, shaders.get("line"));
+
+		//tfc.line_vertex_count = line_positions.size();
+		//auto& line_prog = shaders.get("line");
+		//lines.set_attribute_array(ctx, line_prog.get_attribute_location(ctx, "position"), line_positions);
+		//lines.set_attribute_array(ctx, line_prog.get_attribute_location(ctx, "color"), line_colors);
+
+		//line_renderer.set_vertex_count(line_positions.size());
+		////auto& line_prog = shaders.get("line");
+		//line_renderer.set_attribute_array(ctx, "position", line_positions);
+		//line_renderer.set_attribute_array(ctx, "color", line_colors);
+		lines.set_out_of_date();
+
 	} else {
 		success = false;
 	}

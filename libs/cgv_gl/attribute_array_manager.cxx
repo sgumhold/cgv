@@ -32,7 +32,9 @@ void attribute_array_manager::remove_indices(const context& ctx) {
 		vbos[-1] = 0;
 	}
 }
-
+bool attribute_array_manager::is_created() {
+	return aab.is_created();
+}
 bool attribute_array_manager::init(context& ctx) {
 	return aab.create(ctx);
 }
