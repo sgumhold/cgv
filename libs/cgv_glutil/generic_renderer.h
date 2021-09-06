@@ -66,7 +66,7 @@ public:
 		glDrawArrays(pt, (GLint)start, (GLsizei)count);
 	}
 
-	bool render(cgv::render::context& ctx, generic_render_data& geometry, cgv::render::PrimitiveType type, size_t start = 0, size_t count = 0) {
+	bool render(cgv::render::context& ctx, cgv::render::PrimitiveType type, generic_render_data& geometry, size_t start = 0, size_t count = 0) {
 		if(!enable(ctx, geometry))
 			return false;
 		draw(ctx, type, start, count ? count : geometry.size());

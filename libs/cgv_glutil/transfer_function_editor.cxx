@@ -467,9 +467,9 @@ void transfer_function_editor::draw(cgv::render::context& ctx) {
 	}
 
 	// draw transfer function area polygon
-	polygon_renderer.render(ctx, tfc.triangles, PT_TRIANGLE_STRIP);
+	polygon_renderer.render(ctx, PT_TRIANGLE_STRIP, tfc.triangles);
 	// draw transfer function lines
-	line_renderer.render(ctx, tfc.lines, PT_LINE_STRIP);
+	line_renderer.render(ctx, PT_LINE_STRIP, tfc.lines);
 
 
 	//tfc.lines.render(ctx, PT_LINE_STRIP, shaders.get("line"));

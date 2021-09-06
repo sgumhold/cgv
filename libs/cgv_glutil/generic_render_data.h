@@ -109,6 +109,9 @@ public:
 	virtual size_t size() = 0;
 };
 
+}
+}
+
 /** This macro provides a shortcut to define a class that inherits from the abstract generic render data base class,
 	that can be used with a generic renderer.
 	Arguments taken are (class name, attribute count, [type, name], [...])
@@ -127,7 +130,7 @@ public:
 
 	Use the macro like this in your own implementation:
 	DEFINE_GENERIC_RENDER_DATA_CLASS(example_geometry, 2, vec2, position, rgb, color);
-	
+
 	This will create a definition for a class named example_geometry, which contains
 	two vectors of vertex attributes:
 		position of type vec2
@@ -160,7 +163,7 @@ public:
 	};
 */
 #define DEFINE_GENERIC_RENDER_DATA_CLASS(name, attrib_count, ...)\
-class name : public generic_render_data {\
+class name : public cgv::glutil::generic_render_data {\
 protected:\
 	bool transfer(cgv::render::context& ctx, cgv::render::shader_program& prog) {\
 		bool success = true;\
@@ -177,8 +180,5 @@ public:\
 		GRD_APPLY_FUNC_N(attrib_count, GRD_CALL_PUSH_BACK_FUNC, GRD_SEP_NULL, __VA_ARGS__)\
 	}\
 };
-
-}
-}
 
 #include <cgv/config/lib_end.h>
