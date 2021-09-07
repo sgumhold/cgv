@@ -37,8 +37,6 @@ transfer_function_editor::transfer_function_editor() {
 
 	shaders.add("rectangle", "rect2d.glpr");
 	shaders.add("circle", "circle2d.glpr");
-	//shaders.add("polygon", "poly2d.glpr");
-	//shaders.add("line", "line2d.glpr");
 	shaders.add("histogram", "hist2d.glpr");
 	shaders.add("background", "bg2d.glpr");
 
@@ -597,16 +595,6 @@ void transfer_function_editor::create_gui() {
 void transfer_function_editor::create_gui(cgv::gui::provider& p) {
 
 	p.add_member_control(this, "Show", show, "check");
-}
-
-void transfer_function_editor::is_visible(bool visible) {
-
-	show = visible;
-}
-
-void transfer_function_editor::toggle_visibility() {
-
-	show = !show;
 }
 
 texture& transfer_function_editor::ref_tex() {
