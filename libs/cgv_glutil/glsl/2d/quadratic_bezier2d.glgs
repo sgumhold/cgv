@@ -57,6 +57,7 @@ vec4 bbox_bezier(in vec2 p0, in vec2 p1, in vec2 p2) {
 }
 
 vec4 to_window_space(vec2 p) {
+	// transform to window space
 	vec2 pos = (2.0*p) / resolution;
 	return vec4(pos - 1.0, 0.0, 1.0);
 }

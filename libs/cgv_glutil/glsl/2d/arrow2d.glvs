@@ -20,6 +20,9 @@ const vec2 direction_factors[4] = vec2[](
 	vec2(+1.0, -1.0)
 );
 
+uniform mat3 model_matrix = mat3(1.0);
+uniform mat3 view_matrix = mat3(1.0);
+
 uniform ivec2 resolution;
 uniform ivec2 position_a;
 uniform ivec2 position_b;
@@ -38,8 +41,12 @@ vec2 ortho2d(vec2 v) {
 	return vec2(v.y, -v.x);
 }
 
-vec4 to_window_space(vec2 p) {
-	vec2 pos = (2.0*p) / resolution;
+vec4 world_to_window_space(vec2 p) {
+	// apply view transformation
+	vec2 pos = (view_matrix * vec3(p, 1.0)).xy;
+
+	// transform to window space
+	pos = (2.0*pos) / resolution;
 	return vec4(pos - 1.0, 0.0, 1.0);
 }
 
@@ -76,5 +83,5 @@ void main() {
 
 	tex_coord = corner;
 	pix_coord = corner_position;
-	gl_Position = to_window_space(corner_position);
+	gl_Position = world_to_window_space(corner_position);
 }
