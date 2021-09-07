@@ -43,6 +43,7 @@ protected:
 	StretchOption stretch;
 	ivec2 margin;
 	ivec2 size;
+	bool show; /// whether the overlay is visible
 
 	/// rectangle area of this overlay is fully contained whithin
 	rect container;
@@ -50,6 +51,9 @@ protected:
 
 	/// a pointer to the parent event handler
 	cgv::gui::event_handler* parent_handler = nullptr;
+
+	/// called when the overlay visibility is changed through the default gui
+	void on_visibility_change();
 
 	/// called when the overlay layout parameters are changed through the default gui
 	void on_layout_change();
@@ -123,6 +127,14 @@ public:
 	void set_overlay_size(const ivec2& s) {
 		size = s;
 		update_overlay_layout();
+	}
+
+	/// return the visibility state of the overlay
+	bool is_visible() { return show; }
+
+	/// sets the visibility of the overlay to flag
+	void set_visibility(bool flag) {
+		show = flag;
 	}
 
 	/** Checks whether the viewport size has changed since the last call to

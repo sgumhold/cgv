@@ -20,8 +20,6 @@ namespace glutil{
 
 class CGV_API transfer_function_editor : public overlay {
 protected:
-	bool show;
-	
 	std::string file_name;
 	std::string save_file_name;
 	bool has_unsaved_changes = false;
@@ -179,9 +177,6 @@ public:
 	
 	void create_gui();
 	void create_gui(cgv::gui::provider& p);
-
-	void is_visible(bool visible);
-	void toggle_visibility();
 
 	texture& ref_tex();
 
