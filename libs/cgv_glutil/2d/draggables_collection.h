@@ -49,6 +49,14 @@ protected:
 		return hit;
 	}
 
+
+
+	//mat3 transformation;
+	//mat3 inv_transformation;
+
+
+
+
 public:
 	draggables_collection() {
 		clear();
@@ -58,6 +66,9 @@ public:
 		dragged = nullptr;
 		selected = nullptr;
 		draggables.clear();
+
+		//transformation.identity();
+		//inv_transformation.identity();
 	}
 
 	void add(T obj) {
@@ -112,6 +123,14 @@ public:
 		drag_end_callback = func;
 	}
 
+
+
+	//void set_transformation(const mat3& matrix) {
+	//	transformation = matrix;
+	//	inv_transformation = cgv::math::inv(transformation);
+	//}
+
+
 	bool handle(cgv::gui::event& e, const ivec2& viewport_size, const rect& container = rect()) {
 		unsigned et = e.get_kind();
 		unsigned char modifiers = e.get_modifiers();
@@ -123,6 +142,10 @@ public:
 			ivec2 mpos(me.get_x(), me.get_y());
 			mpos.y() = viewport_size.y() - mpos.y();
 			mpos -= container.pos();
+
+			//vec3 tmp = transformation * vec3(mpos, 1.0f);
+			//mpos.x() = tmp.x();
+			//mpos.y() = tmp.y();
 
 			if(me.get_button() == cgv::gui::MB_LEFT_BUTTON) {
 				if(ma == cgv::gui::MA_RELEASE) {
@@ -142,6 +165,7 @@ public:
 					if(has_constraint)
 						dragged->apply_constraint(constraint_area);
 					if(drag_callback) drag_callback();
+					return true;
 				} else {
 					if(ma == cgv::gui::MA_PRESS) {
 						dragged = get_hit_draggable(mpos);
@@ -149,10 +173,10 @@ public:
 						if(dragged) {
 							offset = dragged->pos - mpos;
 							if(drag_start_callback) drag_start_callback();
+							return true;
 						}
 					}
 				}
-				return true;
 			}
 
 			return false;

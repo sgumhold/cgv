@@ -24,6 +24,45 @@
 
 
 
+
+
+
+namespace cgv {
+namespace math {
+/// construct homogeneous 2x2 translation matrix from vec2
+template <typename T> fmat<T, 3, 3>
+	translate2h(const fvec<T, 2>& t) { fmat<T, 3, 3> M; M.identity(); M(0, 2) = t(0); M(1, 2) = t(1); return M; }
+/// construct homogeneous 2x2 translation matrix from xy components
+template <typename T> fmat<T, 3, 3>
+	translate2h(const T& tx, const T& ty) { return scale2h(fvec<T, 2>(tx, ty)); }
+/// construct homogeneous 2x2 scale matrix from vec2
+template <typename T> fmat<T, 3, 3>
+	scale2h(const fvec<T, 2>& s) { fmat<T, 3, 3> M; M.identity(); M(0, 0) = s(0); M(1, 1) = s(1); return M; }
+/// construct homogeneous 2x2 scale matrix from xy components
+template <typename T> fmat<T, 3, 3>
+	scale2h(const T& sx, const T& sy) { return scale2h(fvec<T, 2>(sx, sy)); }
+/// construct homogeneous 2x2 rotation matrix from angle in degrees
+template <typename T> fmat<T, 3, 3>
+	rotate2h(const T& A) {
+		fmat<T, 3, 3> M;
+		M.identity();
+		T angle = T(0.01745329252)*A;
+		T c = cos(angle);
+		T s = sin(angle);
+		M(0, 0) = c;
+		M(0, 1) = -s;
+		M(1, 0) = s;
+		M(1, 1) = c;
+		return M;
+	}
+}
+}
+
+
+
+
+
+
 class shapes_2d :
 	public cgv::base::node,
 	public cgv::render::drawable,
@@ -116,9 +155,11 @@ protected:
 	cgv::glutil::msdf_gl_font_renderer font_renderer;
 
 	// test variables
-	vec2 translation = vec2(0.0f);
-	float scale = 1.0f;
-	float angle = 0.0f;
+	struct {
+		vec2 translation = vec2(0.0f);
+		float scale = 1.0f;
+		float angle = 0.0f;
+	} view_params, model_params;
 
 public:
 	shapes_2d() : cgv::base::node("shapes 2d test") {
@@ -148,10 +189,56 @@ public:
 	}
 	bool handle(cgv::gui::event& e) {
 		bool handled = false;
+
+		//mat3 M = get_view_matrix();
+		//arrow_handles.set_transformation(M);
+		//line_handles.set_transformation(M);
+		//curve_handles.set_transformation(M);
+		//text_handles.set_transformation(M);
+
 		handled |= arrow_handles.handle(e, viewport_rect.size());
 		handled |= line_handles.handle(e, viewport_rect.size());
 		handled |= curve_handles.handle(e, viewport_rect.size());
 		handled |= text_handles.handle(e, viewport_rect.size());
+
+		if(true/*!handled*/) {
+			unsigned et = e.get_kind();
+			unsigned char modifiers = e.get_modifiers();
+
+			if(et == cgv::gui::EID_MOUSE) {
+				cgv::gui::mouse_event& me = (cgv::gui::mouse_event&) e;
+				cgv::gui::MouseAction ma = me.get_action();
+
+				if(ma == cgv::gui::MA_PRESS) {
+					if(me.get_button() == cgv::gui::MB_MIDDLE_BUTTON) {
+						handled = true;
+					}
+				}
+
+				if(ma == cgv::gui::MA_DRAG && me.get_button_state() & cgv::gui::MB_MIDDLE_BUTTON) {
+					//std::cout << "dragging" << std::endl;
+					view_params.translation += vec2(me.get_dx(), -me.get_dy());
+				}
+
+				if(ma == cgv::gui::MA_WHEEL) {
+					ivec2 mpos(me.get_x(), me.get_y());
+					mpos.y() = viewport_rect.size().y() - mpos.y();
+
+					vec2 origin = viewport_rect.box.get_center();
+					vec2 offset = origin - mpos + view_params.translation;
+
+					float scale = view_params.scale;
+					scale *= me.get_dy() > 0 ? 0.5 : 2.0;
+
+					view_params.translation += me.get_dy() > 0 ? -0.5f*offset : offset;
+					view_params.scale = std::max(scale, 0.5f);
+					update_member(&view_params.scale);
+					update_member(&view_params.translation[0]);
+					update_member(&view_params.translation[1]);
+					handled = true;
+				}
+			}
+		}
 
 		if(handled)
 			post_redraw();
@@ -346,8 +433,6 @@ public:
 		spline_prog.enable(ctx);
 		set_shared_uniforms(ctx, spline_prog);
 		spline_prog.set_uniform(ctx, "width", line_width);
-		spline_prog.set_uniform(ctx, "dash_length", dash_length);
-		spline_prog.set_uniform(ctx, "dash_ratio", dash_ratio);
 		spline_prog.disable(ctx);
 		spline_renderer.render(ctx, PT_LINES, curves);
 
@@ -366,8 +451,10 @@ public:
 		shader_program& rect_prog = shaders.get("rectangle");
 		rect_prog.enable(ctx);
 
-		//mat2 MM = cgv::math::rotate2(angle);
-		//rect_prog.set_uniform(ctx, "model_matrix", MM);
+		mat3 I;
+		I.identity();
+		rect_prog.set_uniform(ctx, "model_matrix", I);
+		rect_prog.set_uniform(ctx, "view_matrix", I);
 
 		rect_prog.set_uniform(ctx, "position", ivec2(0));
 		rect_prog.set_uniform(ctx, "size", viewport_rect.size());
@@ -398,7 +485,7 @@ public:
 		line_prog.set_uniform(ctx, "border_width", 0.0f);
 		line_prog.set_uniform(ctx, "dash_length", 10.0f);
 		line_prog.set_uniform(ctx, "dash_ratio", 0.75f);
-		line_prog.set_uniform(ctx, "feather_width", 1.0f);
+		line_prog.set_uniform(ctx, "feather_width", 1.0f / view_params.scale);
 
 		line_prog.set_uniform(ctx, "use_color", true);
 		line_prog.set_uniform(ctx, "use_blending", true);
@@ -416,7 +503,7 @@ public:
 		point_prog.set_uniform(ctx, "border_width", 1.5f);
 		point_prog.set_uniform(ctx, "border_radius", 0.0f);
 		point_prog.set_uniform(ctx, "ring_width", 0.0f);
-		point_prog.set_uniform(ctx, "feather_width", 1.0f);
+		point_prog.set_uniform(ctx, "feather_width", 1.0f / view_params.scale);
 		point_prog.set_uniform(ctx, "feather_origin", 0.5f);
 
 		point_prog.set_uniform(ctx, "use_color", true);
@@ -496,25 +583,26 @@ public:
 	}
 	void set_shared_uniforms(cgv::render::context& ctx, cgv::render::shader_program& prog) {
 
-		/*vec2 vs(viewport_rect.size());
+		vec2 vs(viewport_rect.size());
 		mat4 PM = cgv::math::ortho4(0.0f, vs.x(), 0.0f, vs.y(), 0.0f, 10.0f);
 		prog.set_uniform(ctx, "projection_matrix", PM);
 		
-		//mat2 T = cgv::math::translate2(vec2(translation));
-		mat2 S = cgv::math::scale2(vec2(scale));
-		mat2 R = cgv::math::rotate2(angle);
-
-		mat2 MM = S * R;
+		{
+			mat3 T = cgv::math::translate2h(vec2(model_params.translation));
+			mat3 S = cgv::math::scale2h(vec2(model_params.scale));
+			mat3 R = cgv::math::rotate2h(model_params.angle);
+			mat3 MM = T * S * R;
+			prog.set_uniform(ctx, "model_matrix", MM);
+		}
+		prog.set_uniform(ctx, "view_matrix", get_view_matrix());
 		
-		prog.set_uniform(ctx, "model_matrix", MM);*/
-
 		// appearance
 		prog.set_uniform(ctx, "color", color);
 		prog.set_uniform(ctx, "border_color", border_color);
 		prog.set_uniform(ctx, "border_width", border_width);
 		prog.set_uniform(ctx, "border_radius", border_radius);
 		prog.set_uniform(ctx, "ring_width", ring_width);
-		prog.set_uniform(ctx, "feather_width", feather_width);
+		prog.set_uniform(ctx, "feather_width", feather_width / view_params.scale);
 		prog.set_uniform(ctx, "feather_origin", feather_origin);
 
 		// options
@@ -522,6 +610,15 @@ public:
 		prog.set_uniform(ctx, "use_blending", use_blending);
 		prog.set_uniform(ctx, "use_smooth_feather", use_smooth_feather);
 		prog.set_uniform(ctx, "apply_gamma", apply_gamma);
+	}
+	mat3 get_view_matrix() {
+		mat3 T0 = cgv::math::translate2h(vec2(-viewport_rect.box.get_center()));
+		mat3 T1 = cgv::math::translate2h(vec2(viewport_rect.box.get_center()));
+		mat3 T = cgv::math::translate2h(vec2(view_params.translation));
+		mat3 S = cgv::math::scale2h(vec2(view_params.scale));
+		mat3 R = cgv::math::rotate2h(view_params.angle);
+		//return T * S * R; // pivot is in lower left corner
+		return T * T1 * S * R * T0; // pivot is in viewport center
 	}
 	point* get_hit_point(const ivec2& pos) {
 		point* hit = nullptr;
@@ -570,11 +667,16 @@ public:
 		add_member_control(this, "Horizontal Alignment", text_align_h, "dropdown", "enums='Center=0,Left=1,Right=2'");
 		add_member_control(this, "Vertical Alignment", text_align_v, "dropdown", "enums='Center=0,Top=4,Botom=8'");
 
-		add_decorator("Test Variables", "heading", "level=3");
-		add_member_control(this, "Translation X", translation[0], "value_slider", "min=-100;max=100;step=0.5;ticks=true");
-		add_member_control(this, "Translation Y", translation[1], "value_slider", "min=-100;max=100;step=0.5;ticks=true");
-		add_member_control(this, "Scale", scale, "value_slider", "min=1;max=5;step=0.1;ticks=true");
-		add_member_control(this, "Angle", angle, "value_slider", "min=0;max=360;step=0.5;ticks=true");
+		add_decorator("View Transformation", "heading", "level=3");
+		//add_member_control(this, "Translation X", model_params.translation[0], "value_slider", "min=-100;max=100;step=0.5;ticks=true");
+		//add_member_control(this, "Translation Y", model_params.translation[1], "value_slider", "min=-100;max=100;step=0.5;ticks=true");
+		//add_member_control(this, "Scale", model_params.scale, "value_slider", "min=1;max=5;step=0.1;ticks=true");
+		//add_member_control(this, "Angle", model_params.angle, "value_slider", "min=0;max=360;step=0.5;ticks=true");
+
+		add_member_control(this, "Translation X", view_params.translation[0], "wheel", "min=-10000;max=10000;step=0.5;ticks=true");
+		add_member_control(this, "Translation Y", view_params.translation[1], "wheel", "min=-10000;max=10000;step=0.5;ticks=true");
+		add_member_control(this, "Scale", view_params.scale, "value_slider", "min=1;max=64;step=0.1;ticks=true");
+		add_member_control(this, "Angle", view_params.angle, "value_slider", "min=0;max=360;step=0.5;ticks=true");
 	}
 };
 
