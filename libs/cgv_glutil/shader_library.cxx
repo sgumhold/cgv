@@ -35,38 +35,21 @@ bool shader_library::load_shaders(context& ctx) {
 	for(auto& elem : shaders) {
 		shader_program_pair& pair = elem.second;
 
-		success &= load_shader(ctx, pair.first, pair.second);
+		success &= load(ctx, pair.first, pair.second);
 	}
 
 	return success;
 }
 
-/*bool shader_library::load_shader(context& ctx, shader_program& prog, const std::string& name, const bool reload, const std::string& defines, const std::string& where) {
-
-	if(prog.is_created()) {
-		if(reload) prog.destruct(ctx);
-		else return true;
+bool shader_library::reload(context& ctx, const std::string& name, const shader_define_map& defines, const std::string& where) {
+	
+	auto it = shaders.find(name);
+	if(it != shaders.end()) {
+		shader_program_pair& pair = (*it).second;
+		return load(ctx, pair.first, pair.second, defines, true, where);
 	}
-
-	std::string function_context = where == "" ? "shader_library::load_shader()" : where;
-
-	if(!prog.is_created()) {
-		bool from_program_file = name.substr(name.length() - 5) == ".glpr";
-
-		if(from_program_file) {
-			if(!prog.build_program(ctx, name, true, defines)) {
-				std::cerr << "ERROR in " << function_context << " ... could not build shader program " << name << std::endl;
-				return false;
-			}
-		} else {
-			if(!prog.build_files(ctx, name, true)) {
-				std::cerr << "ERROR in " << function_context << " ... could not build shader files " << name << std::endl;
-				return false;
-			}
-		}
-	}
-	return true;
-}*/
+	return false;
+}
 
 }
 }

@@ -51,8 +51,8 @@ protected:
 
 
 
-	//mat3 transformation;
-	//mat3 inv_transformation;
+	mat3 transformation;
+	mat3 inv_transformation;
 
 
 
@@ -67,8 +67,8 @@ public:
 		selected = nullptr;
 		draggables.clear();
 
-		//transformation.identity();
-		//inv_transformation.identity();
+		transformation.identity();
+		inv_transformation.identity();
 	}
 
 	void add(T obj) {
@@ -125,10 +125,10 @@ public:
 
 
 
-	//void set_transformation(const mat3& matrix) {
-	//	transformation = matrix;
-	//	inv_transformation = cgv::math::inv(transformation);
-	//}
+	void set_transformation(const mat3& matrix) {
+		transformation = matrix;
+		inv_transformation = cgv::math::inv(transformation);
+	}
 
 
 	bool handle(cgv::gui::event& e, const ivec2& viewport_size, const rect& container = rect()) {
@@ -143,9 +143,9 @@ public:
 			mpos.y() = viewport_size.y() - mpos.y();
 			mpos -= container.pos();
 
-			//vec3 tmp = transformation * vec3(mpos, 1.0f);
-			//mpos.x() = tmp.x();
-			//mpos.y() = tmp.y();
+			vec3 tmp = inv_transformation * vec3(mpos, 1.0f);
+			mpos.x() = tmp.x();
+			mpos.y() = tmp.y();
 
 			if(me.get_button() == cgv::gui::MB_LEFT_BUTTON) {
 				if(ma == cgv::gui::MA_RELEASE) {
