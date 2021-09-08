@@ -348,7 +348,6 @@ void transfer_function_editor::init_frame(cgv::render::context& ctx) {
 		poly_prog.set_uniform(ctx, "resolution", container_size);
 		poly_prog.disable(ctx);
 
-		//shader_program& line_prog = shaders.get("line");
 		shader_program& line_prog = line_renderer.ref_prog();
 		line_prog.enable(ctx);
 		line_prog.set_uniform(ctx, "resolution", container_size);
@@ -391,7 +390,7 @@ void transfer_function_editor::draw(cgv::render::context& ctx) {
 
 	ivec2 container_size = get_overlay_size();
 
-	// TODO: flag to place border on outside or inside
+	// TODO: should there be a border orign like the feather origin?
 	shader_program& rect_prog = shaders.get("rectangle");
 	rect_prog.enable(ctx);
 	rect_prog.set_uniform(ctx, "resolution", container_size);
@@ -469,9 +468,6 @@ void transfer_function_editor::draw(cgv::render::context& ctx) {
 	// draw transfer function lines
 	line_renderer.render(ctx, PT_LINE_STRIP, tfc.lines);
 
-
-	//tfc.lines.render(ctx, PT_LINE_STRIP, shaders.get("line"));
-	
 	// draw separator line
 	rect_prog.enable(ctx);
 	rect_prog.set_uniform(ctx, "position", ivec2(

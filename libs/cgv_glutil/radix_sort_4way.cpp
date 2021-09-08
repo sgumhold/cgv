@@ -17,10 +17,10 @@ bool radix_sort_4way::load_shader_programs(context& ctx) {
 	if(key_definition != "")
 		distance_defines["KEY_DEFINITION"] = key_definition;
 
-	res = res && shader_library::load_shader(ctx, distance_prog, "distance", distance_defines, true, where);
-	res = res && shader_library::load_shader(ctx, scan_local_prog, "scan_local", true, where);
-	res = res && shader_library::load_shader(ctx, scan_global_prog, "scan_global", true, where);
-	res = res && shader_library::load_shader(ctx, scatter_prog, "scatter", { {"VALUE_TYPE_DEFINITION", value_type_def} }, true, where);
+	res = res && shader_library::load(ctx, distance_prog, "distance", distance_defines, true, where);
+	res = res && shader_library::load(ctx, scan_local_prog, "scan_local", true, where);
+	res = res && shader_library::load(ctx, scan_global_prog, "scan_global", true, where);
+	res = res && shader_library::load(ctx, scatter_prog, "scatter", { {"VALUE_TYPE_DEFINITION", value_type_def} }, true, where);
 
 	return res;
 }

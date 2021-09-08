@@ -190,18 +190,18 @@ public:
 	bool handle(cgv::gui::event& e) {
 		bool handled = false;
 
-		//mat3 M = get_view_matrix();
-		//arrow_handles.set_transformation(M);
-		//line_handles.set_transformation(M);
-		//curve_handles.set_transformation(M);
-		//text_handles.set_transformation(M);
+		mat3 M = get_view_matrix();
+		arrow_handles.set_transformation(M);
+		line_handles.set_transformation(M);
+		curve_handles.set_transformation(M);
+		text_handles.set_transformation(M);
 
 		handled |= arrow_handles.handle(e, viewport_rect.size());
 		handled |= line_handles.handle(e, viewport_rect.size());
 		handled |= curve_handles.handle(e, viewport_rect.size());
 		handled |= text_handles.handle(e, viewport_rect.size());
 
-		if(true/*!handled*/) {
+		if(!handled) {
 			unsigned et = e.get_kind();
 			unsigned char modifiers = e.get_modifiers();
 
@@ -209,14 +209,7 @@ public:
 				cgv::gui::mouse_event& me = (cgv::gui::mouse_event&) e;
 				cgv::gui::MouseAction ma = me.get_action();
 
-				if(ma == cgv::gui::MA_PRESS) {
-					if(me.get_button() == cgv::gui::MB_MIDDLE_BUTTON) {
-						handled = true;
-					}
-				}
-
 				if(ma == cgv::gui::MA_DRAG && me.get_button_state() & cgv::gui::MB_MIDDLE_BUTTON) {
-					//std::cout << "dragging" << std::endl;
 					view_params.translation += vec2(me.get_dx(), -me.get_dy());
 				}
 
@@ -230,11 +223,15 @@ public:
 					float scale = view_params.scale;
 					scale *= me.get_dy() > 0 ? 0.5 : 2.0;
 
-					view_params.translation += me.get_dy() > 0 ? -0.5f*offset : offset;
-					view_params.scale = std::max(scale, 0.5f);
-					update_member(&view_params.scale);
-					update_member(&view_params.translation[0]);
-					update_member(&view_params.translation[1]);
+					scale = cgv::math::clamp(scale, 0.5f, 64.0f);
+
+					if(view_params.scale != scale) {
+						view_params.translation += me.get_dy() > 0 ? -0.5f*offset : offset;
+						view_params.scale = scale;
+						update_member(&view_params.scale);
+						update_member(&view_params.translation[0]);
+						update_member(&view_params.translation[1]);
+					}
 					handled = true;
 				}
 			}
@@ -668,10 +665,10 @@ public:
 		add_member_control(this, "Vertical Alignment", text_align_v, "dropdown", "enums='Center=0,Top=4,Botom=8'");
 
 		add_decorator("View Transformation", "heading", "level=3");
-		//add_member_control(this, "Translation X", model_params.translation[0], "value_slider", "min=-100;max=100;step=0.5;ticks=true");
-		//add_member_control(this, "Translation Y", model_params.translation[1], "value_slider", "min=-100;max=100;step=0.5;ticks=true");
-		//add_member_control(this, "Scale", model_params.scale, "value_slider", "min=1;max=5;step=0.1;ticks=true");
-		//add_member_control(this, "Angle", model_params.angle, "value_slider", "min=0;max=360;step=0.5;ticks=true");
+		add_member_control(this, "Translation X", model_params.translation[0], "value_slider", "min=-100;max=100;step=0.5;ticks=true");
+		add_member_control(this, "Translation Y", model_params.translation[1], "value_slider", "min=-100;max=100;step=0.5;ticks=true");
+		add_member_control(this, "Scale", model_params.scale, "value_slider", "min=1;max=5;step=0.1;ticks=true");
+		add_member_control(this, "Angle", model_params.angle, "value_slider", "min=0;max=360;step=0.5;ticks=true");
 
 		add_member_control(this, "Translation X", view_params.translation[0], "wheel", "min=-10000;max=10000;step=0.5;ticks=true");
 		add_member_control(this, "Translation Y", view_params.translation[1], "wheel", "min=-10000;max=10000;step=0.5;ticks=true");

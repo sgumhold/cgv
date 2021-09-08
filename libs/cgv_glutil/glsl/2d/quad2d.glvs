@@ -73,7 +73,7 @@ void main() {
 	int id = gl_VertexID;
 	vec2 corner = corners[id];
 
-	tex_coord = corner;
+	tex_coord = corner + 0.5;
 
 	vec2 final_size = size + 2.0*feather_origin*feather_width;
 	pix_coord = final_size*corner;
@@ -81,18 +81,14 @@ void main() {
 	// transform to pixel coordinates
 	corner *= final_size;
 
-	vec2 offset = vec2(0.0);
 	if(!position_is_center)
-		offset = 0.5*size;// 0.5 * final_size - feather_origin*feather_width;
+		corner += 0.5*size;
 
-	corner = (model_matrix * vec3(corner + offset, 1.0)).xy - offset;
-
-	// offset
+	// offset by position
 	corner += position;
-	corner += offset;
 
-	// apply view transformation
-	corner = (view_matrix * vec3(corner, 1.0)).xy;
+	// apply model and view transformation
+	corner = (view_matrix * model_matrix * vec3(corner, 1.0)).xy;
 
 	// transform to window space
 	corner = (2.0*corner) / resolution;
