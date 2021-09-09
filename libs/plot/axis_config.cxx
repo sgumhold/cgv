@@ -177,6 +177,7 @@ axis_config::axis_config() : primary_ticks(true), secondary_ticks(false), color(
 	log_minimum = 1e-10f;
 	update_tick_range();
 	extent = 1.0f;
+	extent_scaling = 0.0f;
 	line_width = 3.0f;
 	auto_adjust_max_snd_ticks = 20;
 }
@@ -211,6 +212,7 @@ void axis_config::create_gui(cgv::base::base* bp, cgv::gui::provider& p)
 	if (show) {
 		p.align("\a");
 		p.add_member_control(bp, "extent", extent, "value_slider", "min=0.1;max=10;log=true;ticks=true");
+		p.add_member_control(bp, "extent_scaling", extent_scaling, "value_slider", "min=0;max=10;log=true;ticks=true");
 		connect_copy(p.add_member_control(bp, "attribute_min", min_attribute_value, "value_slider", "min=-10;max=10;log=true;ticks=true")->value_change,
 			cgv::signal::rebind(this, &axis_config::update_tick_range));
 		connect_copy(p.add_member_control(bp, "attribute_max", max_attribute_value, "value_slider", "min=-10;max=10;log=true;ticks=true")->value_change,
