@@ -62,6 +62,7 @@ var classcgv_1_1plot_1_1axis__config =
     [ "auto_adjust_max_snd_ticks", "classcgv_1_1plot_1_1axis__config.html#a046b6e008909a15ae1c5c9be0e657ed8", null ],
     [ "color", "classcgv_1_1plot_1_1axis__config.html#adf910b20d32614577d30b9c7fba041c3", null ],
     [ "extent", "classcgv_1_1plot_1_1axis__config.html#a0c50aa56a133b0182cdd5c583a809391", null ],
+    [ "extent_scaling", "classcgv_1_1plot_1_1axis__config.html#a4cb316064ed79fddab10266ebd61936c", null ],
     [ "line_width", "classcgv_1_1plot_1_1axis__config.html#a788fc8363317919a5a160bfb51a8b1a2", null ],
     [ "log_minimum", "classcgv_1_1plot_1_1axis__config.html#a13f9a8ee094f5e9994ee72e465173dc4", null ],
     [ "log_scale", "classcgv_1_1plot_1_1axis__config.html#a618a1a91a1f0dd1568189cb134ac800b", null ],

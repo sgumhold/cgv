@@ -351,6 +351,9 @@ std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1plot_1_1axis__config.html#a0c50aa56a133b0182cdd5c583a809391">extent</a></td></tr>
 <tr class="memdesc:a0c50aa56a133b0182cdd5c583a809391"><td class="mdescLeft">&#160;</td><td class="mdescRight">extent in world space <br /></td></tr>
 <tr class="separator:a0c50aa56a133b0182cdd5c583a809391"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4cb316064ed79fddab10266ebd61936c"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1plot_1_1axis__config.html#a4cb316064ed79fddab10266ebd61936c">extent_scaling</a></td></tr>
+<tr class="memdesc:a4cb316064ed79fddab10266ebd61936c"><td class="mdescLeft">&#160;</td><td class="mdescRight">potential constraint for scaling of plot extent in world space  <a href="classcgv_1_1plot_1_1axis__config.html#a4cb316064ed79fddab10266ebd61936c">More...</a><br /></td></tr>
+<tr class="separator:a4cb316064ed79fddab10266ebd61936c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a788fc8363317919a5a160bfb51a8b1a2"><td class="memItemLeft" align="right" valign="top"><a id="a788fc8363317919a5a160bfb51a8b1a2"></a>
 float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1plot_1_1axis__config.html#a788fc8363317919a5a160bfb51a8b1a2">line_width</a></td></tr>
 <tr class="memdesc:a788fc8363317919a5a160bfb51a8b1a2"><td class="mdescLeft">&#160;</td><td class="mdescRight">line width <br /></td></tr>
@@ -393,7 +396,25 @@ unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>configuration information stored per domain axis </p>
-</div><hr/>The documentation for this class was generated from the following files:<ul>
+</div><h2 class="groupheader">Member Data Documentation</h2>
+<a id="a4cb316064ed79fddab10266ebd61936c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4cb316064ed79fddab10266ebd61936c">&#9670;&nbsp;</a></span>extent_scaling</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">float cgv::plot::axis_config::extent_scaling</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>potential constraint for scaling of plot extent in world space </p>
+<p>if 0, axis scaling is not constraint (default) if &gt; 0 ensure that world extents of all axes where constraint is &gt; 0 are in same ratio as extent_scaling values </p>
+
+</div>
+</div>
+<hr/>The documentation for this class was generated from the following files:<ul>
 <li>libs/plot/<a class="el" href="axis__config_8h_source.html">axis_config.h</a></li>
 <li>libs/plot/axis_config.cxx</li>
 </ul>
