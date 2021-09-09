@@ -37,7 +37,7 @@ public:
 		std::sort(control_points.begin(), control_points.end(), [](const control_point& a, const control_point& b) { return a.first < b.first; });
 	}
 
-	T interpolate(float t) {
+	T interpolate(float t) const {
 		unsigned count = control_points.size();
 
 		if(count == 0)

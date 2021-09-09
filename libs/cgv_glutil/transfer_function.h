@@ -39,12 +39,12 @@ public:
 		return color_interpolator.interpolate(t);
 	}
 
-	float interpolate_opacity(float t) {
+	float interpolate_opacity(float t) const {
 
 		return opacity_interpolator.interpolate(t);
 	}
 
-	rgba interpolate(float t) {
+	rgba interpolate(float t) const {
 
 		rgb color = color_interpolator.interpolate(t);
 		float opacity = opacity_interpolator.interpolate(t);
