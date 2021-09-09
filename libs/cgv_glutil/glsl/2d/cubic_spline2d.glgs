@@ -27,6 +27,9 @@ const vec2 corners[4] = vec2[](
 	vec2(1.0, 1.0)
 );
 
+uniform mat3 model_matrix = mat3(1.0);
+uniform mat3 view_matrix = mat3(1.0);
+
 uniform ivec2 resolution;
 uniform float width = 1.0;
 uniform float feather_width = 1.0;
@@ -101,8 +104,12 @@ vec4 bbox_bezier(in vec2 p0, in vec2 p1, in vec2 p2) {
     return vec4( mi, ma );
 }
 
-vec4 to_window_space(vec2 p) {
-	vec2 pos = (2.0*p) / resolution;
+vec4 world_to_window_space(vec2 p) {
+	// apply view transformation
+	vec2 pos = (view_matrix * vec3(p, 1.0)).xy;
+
+	// transform to window space
+	pos = (2.0*pos) / resolution;
 	return vec4(pos - 1.0, 0.0, 1.0);
 }
 
@@ -130,20 +137,20 @@ void emit_bounding_box(in quadratic_segment qseg0, in quadratic_segment qseg1) {
 
 	tex_coord_fs = corners[0];
 	pix_coord_fs = size_fs*corners[0] + org;
-	gl_Position = to_window_space(box.xy);
+	gl_Position = world_to_window_space(box.xy);
 	EmitVertex();
 	tex_coord_fs = corners[1];
 	pix_coord_fs = size_fs*corners[1] + org;
-	gl_Position = to_window_space(box.zy);
+	gl_Position = world_to_window_space(box.zy);
 	EmitVertex();
 
 	tex_coord_fs = corners[2];
 	pix_coord_fs = size_fs*corners[2] + org;
-	gl_Position = to_window_space(box.xw);
+	gl_Position = world_to_window_space(box.xw);
 	EmitVertex();
 	tex_coord_fs = corners[3];
 	pix_coord_fs = size_fs*corners[3] + org;
-	gl_Position = to_window_space(box.zw);
+	gl_Position = world_to_window_space(box.zw);
 	EmitVertex();
 }
 

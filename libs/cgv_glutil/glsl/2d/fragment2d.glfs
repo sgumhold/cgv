@@ -112,13 +112,15 @@ void finish_sdf_fragment2d(in float signed_distance, in vec2 texcoords) {
 			clamp((signed_distance - border_distance) * inv_feather, 0.0, 1.0);
 
 		float border_antialias_alpha = smoothstep(0.5 - delta, 0.5, signed_distance + border_width);
-		frag_color = mix(frag_color, border_color, min(border_antialias_alpha + border_feather_alpha, 1.0));
+		//frag_color = mix(frag_color, border_color, min(border_antialias_alpha + border_feather_alpha, 1.0));
+		frag_color = mix(frag_color, border_color, border_feather_alpha);
 	}
 
 	// enable to show derivatives for debugging
 	//frag_color = vec4((border_width+1) * dx, (border_width+1) * dy, 0.0, 1.0);
 	
-	frag_color.a *= antialias_alpha * feather_alpha;
+	//frag_color.a *= antialias_alpha * feather_alpha;
+	frag_color.a *= feather_alpha;
 	
 	if(apply_gamma)
 		frag_color.rgb = clamp(pow(frag_color.rgb, vec3(2.2)), 0.0, 0.9999999);

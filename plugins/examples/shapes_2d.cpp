@@ -2,7 +2,6 @@
 #include <unordered_map>
 
 #include <cgv/base/node.h>
-//#include <cgv/base/import.h>
 #include <cgv/gui/event_handler.h>
 #include <cgv/gui/mouse_event.h>
 #include <cgv/gui/provider.h>
@@ -13,9 +12,11 @@
 #include <cgv/render/texture.h>
 #include <cgv/render/vertex_buffer.h>
 #include <cgv/render/attribute_array_binding.h>
-//#include <cgv/utils/tokenizer.h>
 #include <cgv_gl/gl/gl_context.h>
 #include <cgv_glutil/shader_library.h>
+
+#include <cgv_glutil/msdf_gl_font_renderer.h>
+#include <cgv_glutil/generic_renderer.h>
 
 #include <cgv_glutil/2d/draggable.h>
 #include <cgv_glutil/2d/draggables_collection.h>
@@ -25,7 +26,37 @@
 
 
 
-#include <cgv_glutil/msdf_font_renderer.h>
+
+namespace cgv {
+namespace math {
+/// construct homogeneous 2x2 translation matrix from vec2
+template <typename T> fmat<T, 3, 3>
+	translate2h(const fvec<T, 2>& t) { fmat<T, 3, 3> M; M.identity(); M(0, 2) = t(0); M(1, 2) = t(1); return M; }
+/// construct homogeneous 2x2 translation matrix from xy components
+template <typename T> fmat<T, 3, 3>
+	translate2h(const T& tx, const T& ty) { return scale2h(fvec<T, 2>(tx, ty)); }
+/// construct homogeneous 2x2 scale matrix from vec2
+template <typename T> fmat<T, 3, 3>
+	scale2h(const fvec<T, 2>& s) { fmat<T, 3, 3> M; M.identity(); M(0, 0) = s(0); M(1, 1) = s(1); return M; }
+/// construct homogeneous 2x2 scale matrix from xy components
+template <typename T> fmat<T, 3, 3>
+	scale2h(const T& sx, const T& sy) { return scale2h(fvec<T, 2>(sx, sy)); }
+/// construct homogeneous 2x2 rotation matrix from angle in degrees
+template <typename T> fmat<T, 3, 3>
+	rotate2h(const T& A) {
+		fmat<T, 3, 3> M;
+		M.identity();
+		T angle = T(0.01745329252)*A;
+		T c = cos(angle);
+		T s = sin(angle);
+		M(0, 0) = c;
+		M(0, 1) = -s;
+		M(1, 0) = s;
+		M(1, 1) = c;
+		return M;
+	}
+}
+}
 
 
 
@@ -39,235 +70,6 @@ class shapes_2d :
 	public cgv::gui::event_handler
 {
 private:
-	// a helper class to store geometry in vertex buffers and manage binding to an attribute array
-	template<typename PosType, typename ColType>
-	struct plain_geometry {
-		struct vertex_type {
-			PosType pos;
-			ColType col;
-		};
-
-		std::vector<vertex_type> vertices;
-
-		type_descriptor pos_type_descriptor = cgv::render::element_descriptor_traits<PosType>::get_type_descriptor(PosType());
-		type_descriptor col_type_descriptor = cgv::render::element_descriptor_traits<ColType>::get_type_descriptor(ColType());
-
-		vertex_buffer vb;
-		attribute_array_binding aab;
-
-		size_t size() { return vertices.size(); }
-
-		void clear(context& ctx) {
-			vertices.clear();
-
-			if(vb.is_created())
-				vb.destruct(ctx);
-			if(aab.is_created())
-				aab.destruct(ctx);
-		}
-
-		bool create(context& ctx, const shader_program& prog) {
-			bool success = true;
-			success &= vb.create(ctx, &(vertices[0]), vertices.size());
-			success &= aab.create(ctx);
-			success &= aab.set_attribute_array(ctx, prog.get_position_index(), pos_type_descriptor, vb, 0, vertices.size(), sizeof(vertex_type));
-			success &= aab.set_attribute_array(ctx, prog.get_color_index(), col_type_descriptor, vb, sizeof(PosType), vertices.size(), sizeof(vertex_type));
-			return success;
-		}
-
-		void add(const PosType& pos, const ColType& col) {
-			vertices.push_back({ pos, col });
-		}
-
-		void render(context& ctx, PrimitiveType type, shader_program& prog) {
-			render(ctx, type, 0, size(), prog);
-		}
-
-		void render(context& ctx, PrimitiveType type, int offset, size_t count, shader_program& prog) {
-			if(aab.is_created()) {
-				prog.enable(ctx);
-				aab.enable(ctx);
-				GLenum mode = gl::map_to_gl(type);
-				glDrawArrays(mode, (GLint)offset, (GLsizei)count);
-				aab.disable(ctx);
-				prog.disable(ctx);
-			}
-		}
-	};
-
-	struct spline_geometry {
-		struct vertex_type {
-			vec2 pos;
-			vec2 tan;
-			rgba col;
-		};
-
-		std::vector<vertex_type> vertices;
-
-		type_descriptor pos_type_descriptor = cgv::render::element_descriptor_traits<vec2>::get_type_descriptor(vec2());
-		type_descriptor col_type_descriptor = cgv::render::element_descriptor_traits<rgba>::get_type_descriptor(rgba());
-
-		vertex_buffer vb;
-		attribute_array_binding aab;
-
-		size_t size() { return vertices.size(); }
-
-		void clear(context& ctx) {
-			vertices.clear();
-
-			if(vb.is_created())
-				vb.destruct(ctx);
-			if(aab.is_created())
-				aab.destruct(ctx);
-		}
-
-		bool create(context& ctx, const shader_program& prog) {
-			bool success = true;
-			success &= vb.create(ctx, &(vertices[0]), vertices.size());
-			success &= aab.create(ctx);
-			success &= aab.set_attribute_array(ctx, prog.get_position_index(), pos_type_descriptor, vb, 0, vertices.size(), sizeof(vertex_type));
-			success &= aab.set_attribute_array(ctx, prog.get_attribute_location(ctx, "tangent"), pos_type_descriptor, vb, sizeof(vec2), vertices.size(), sizeof(vertex_type));
-			success &= aab.set_attribute_array(ctx, prog.get_color_index(), col_type_descriptor, vb, 2*sizeof(vec2), vertices.size(), sizeof(vertex_type));
-			return success;
-		}
-
-		void add(const vec2& pos, const vec2& tan, const rgba& col) {
-			vertices.push_back({ pos, tan, col });
-		}
-
-		void render(context& ctx, shader_program& prog) {
-			render(ctx, 0, size(), prog);
-		}
-
-		void render(context& ctx, int offset, size_t count, shader_program& prog) {
-			if(aab.is_created()) {
-				prog.enable(ctx);
-				aab.enable(ctx);
-				GLenum mode = gl::map_to_gl(PT_LINES);
-				glDrawArrays(mode, (GLint)offset, (GLsizei)count);
-				aab.disable(ctx);
-				prog.disable(ctx);
-			}
-		}
-	};
-
-
-
-
-
-
-
-
-
-	/*struct text_geometry {
-		struct vertex_type {
-			vec4 position;
-			vec4 texcoord;
-		};
-
-		struct text_info {
-			int offset;
-			int count;
-			ivec2 position;
-			vec2 size;
-			cgv::render::TextAlignment alignment;
-		};
-
-		std::vector<vertex_type> vertices;
-		std::vector<text_info> texts;
-
-		GLuint ssbo;
-
-		size_t size() { return vertices.size(); }
-
-		void clear(context& ctx) {
-			vertices.clear();
-			texts.clear();
-
-			if(ssbo != 0) {
-				glDeleteBuffers(1, &ssbo);
-				ssbo = 0;
-			}
-		}
-
-		bool create(context& ctx, const shader_program& prog) {
-
-			if(ssbo != 0) {
-				glDeleteBuffers(1, &ssbo);
-				ssbo = 0;
-			}
-
-			glGenBuffers(1, &ssbo);
-			glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssbo);
-			glBufferData(GL_SHADER_STORAGE_BUFFER, size() * sizeof(vertex_type), vertices.data(), GL_STATIC_DRAW);
-			glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
-		
-			return true;
-		}
-
-		void add(const vec4& pos, const vec4& txc) {
-			vertices.push_back({ pos, txc });
-		}
-
-		void end_text(const ivec2& position, const vec2& size, const cgv::render::TextAlignment alignment) {
-			text_info text;
-
-			if(texts.size() > 0) {
-				const text_info& last_text = *texts.rbegin();
-				text.offset = last_text.offset + last_text.count;
-				text.count = vertices.size() - text.offset;
-			} else {
-				text.offset = 0;
-				text.count = vertices.size();
-			}
-
-			text.position = position;
-			text.size = size;
-			text.alignment = alignment;
-			texts.push_back(text);
-		}
-
-		void render(context& ctx, shader_program& prog) {
-			prog.enable(ctx);
-			
-			glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, ssbo);
-
-			for(const auto& text : texts) {
-				vec2 position(text.position);
-				vec2 size = text.size;
-
-				position -= 0.5f * size;
-
-				if(text.alignment & cgv::render::TA_LEFT)
-					position.x() += 0.5f * size.x();
-				else if(text.alignment & cgv::render::TA_RIGHT)
-					position.x() -= 0.5f * size.x();
-
-				if(text.alignment & cgv::render::TA_TOP)
-					position.y() -= 0.5f * size.y();
-				else if(text.alignment & cgv::render::TA_BOTTOM)
-					position.y() += 0.5f * size.y();
-				
-				prog.set_uniform(ctx, "position", ivec2(round(position)));
-				glDrawArraysInstancedBaseInstance(GL_TRIANGLE_STRIP, 0, 4, text.count, text.offset);
-			}
-			glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
-
-			prog.disable(ctx);
-		}
-	};*/
-
-
-
-
-
-
-
-
-
-
-
-	
 	/** Define a helper struct for a circle-shaped draggable control point.
 	*/
 	struct point : public cgv::glutil::draggable {
@@ -308,9 +110,14 @@ protected:
 	cgv::glutil::draggables_collection<point*> curve_handles;
 	cgv::glutil::draggables_collection<point*> text_handles;
 
-	plain_geometry<vec2, rgba> lines;
+	cgv::glutil::generic_renderer line_renderer;
+	cgv::glutil::generic_renderer spline_renderer;
+
+	DEFINE_GENERIC_RENDER_DATA_CLASS(line_geometry, 2, vec2, position, rgba, color);
+	line_geometry lines, control_lines;
+
+	DEFINE_GENERIC_RENDER_DATA_CLASS(spline_geometry, 3, vec2, position, vec2, tangent, rgba, color);
 	spline_geometry curves;
-	plain_geometry<vec2, rgba> control_lines;
 
 	// shape appearance attributes
 	rgba color = rgba(0.7f, 0.7f, 1.0f, 1.0f);
@@ -343,25 +150,16 @@ protected:
 	float font_size = 32.0f;
 	cgv::render::TextAlignment text_align_h, text_align_v;
 
-	//struct glyph {
-	//	float advance;
-	//	vec4 plane_bounds;
-	//	vec4 atlas_bounds;
-	//};
-
-	//std::vector<glyph> glyphs;
-	//cgv::render::texture atlas_tex;
-	//
-	//text_geometry text;
-
-
-
-	float angle = 0.0f;
-
 	cgv::glutil::msdf_font msdf_font;
 	cgv::glutil::msdf_text_geometry texts;
-	cgv::glutil::msdf_font_renderer font_renderer;
+	cgv::glutil::msdf_gl_font_renderer font_renderer;
 
+	// test variables
+	struct {
+		vec2 translation = vec2(0.0f);
+		float scale = 1.0f;
+		float angle = 0.0f;
+	} view_params, model_params;
 
 public:
 	shapes_2d() : cgv::base::node("shapes 2d test") {
@@ -375,26 +173,69 @@ public:
 		shaders.add("circle", "circle2d.glpr");
 		shaders.add("ellipse", "ellipse2d.glpr");
 		shaders.add("arrow", "arrow2d.glpr");
-		shaders.add("line", "line2d.glpr");
-		shaders.add("spline", "cubic_spline2d.glpr");
-		//shaders.add("text", "sdf_font2d.glpr");
+		
+		line_renderer = cgv::glutil::generic_renderer("line2d.glpr");
+		spline_renderer = cgv::glutil::generic_renderer("cubic_spline2d.glpr");
 
 		text_align_h = text_align_v = cgv::render::TA_NONE;
 
 		// set callbacks for changes to draggable control points
 		line_handles.set_drag_callback(std::bind(&shapes_2d::create_line_render_data, this));
 		curve_handles.set_drag_callback(std::bind(&shapes_2d::create_curve_render_data, this));
-		text_handles.set_drag_callback(std::bind(&shapes_2d::create_text_render_data, this));
+		text_handles.set_drag_callback(std::bind(&shapes_2d::set_text_positions, this));
 	}
 	void stream_help(std::ostream& os) {
 		return;
 	}
 	bool handle(cgv::gui::event& e) {
 		bool handled = false;
+
+		mat3 M = get_view_matrix();
+		arrow_handles.set_transformation(M);
+		line_handles.set_transformation(M);
+		curve_handles.set_transformation(M);
+		text_handles.set_transformation(M);
+
 		handled |= arrow_handles.handle(e, viewport_rect.size());
 		handled |= line_handles.handle(e, viewport_rect.size());
 		handled |= curve_handles.handle(e, viewport_rect.size());
 		handled |= text_handles.handle(e, viewport_rect.size());
+
+		if(!handled) {
+			unsigned et = e.get_kind();
+			unsigned char modifiers = e.get_modifiers();
+
+			if(et == cgv::gui::EID_MOUSE) {
+				cgv::gui::mouse_event& me = (cgv::gui::mouse_event&) e;
+				cgv::gui::MouseAction ma = me.get_action();
+
+				if(ma == cgv::gui::MA_DRAG && me.get_button_state() & cgv::gui::MB_MIDDLE_BUTTON) {
+					view_params.translation += vec2(me.get_dx(), -me.get_dy());
+				}
+
+				if(ma == cgv::gui::MA_WHEEL) {
+					ivec2 mpos(me.get_x(), me.get_y());
+					mpos.y() = viewport_rect.size().y() - mpos.y();
+
+					vec2 origin = viewport_rect.box.get_center();
+					vec2 offset = origin - mpos + view_params.translation;
+
+					float scale = view_params.scale;
+					scale *= me.get_dy() > 0 ? 0.5 : 2.0;
+
+					scale = cgv::math::clamp(scale, 0.5f, 64.0f);
+
+					if(view_params.scale != scale) {
+						view_params.translation += me.get_dy() > 0 ? -0.5f*offset : offset;
+						view_params.scale = scale;
+						update_member(&view_params.scale);
+						update_member(&view_params.translation[0]);
+						update_member(&view_params.translation[1]);
+					}
+					handled = true;
+				}
+			}
+		}
 
 		if(handled)
 			post_redraw();
@@ -416,8 +257,13 @@ public:
 			create_curve_render_data();
 		}
 
-		if(member_ptr == &font_size || member_ptr == &text_align_h || member_ptr == &text_align_v) {
-			create_text_render_data();
+		if(member_ptr == &text_align_h || member_ptr == &text_align_v) {
+			for(size_t i = 0; i < texts.size(); ++i)
+				texts.set_alignment(i, static_cast<cgv::render::TextAlignment>(text_align_h | text_align_v));
+		}
+
+		if(member_ptr == &font_size) {
+			texts.set_font_size(font_size);
 		}
 
 		post_redraw();
@@ -429,10 +275,15 @@ public:
 	void clear(cgv::render::context& ctx) {
 		shaders.clear(ctx);
 		background_tex.destruct(ctx);
+
+		msdf_font.destruct(ctx);
+		font_renderer.destruct(ctx);
 	}
 	bool init(cgv::render::context& ctx) {
 		bool success = true;
 		success &= shaders.load_shaders(ctx);
+		success &= line_renderer.init(ctx);
+		success &= spline_renderer.init(ctx);
 
 		// TODO: png images are flipped in y direction, when reading with an image reader first and then creating a texture from the data view
 
@@ -455,21 +306,10 @@ public:
 			image_tex.create_from_image(image_format, image_data, ctx, "res://alhambra.png", (unsigned char*)0, 0);
 		}
 		
-
 		success &= msdf_font.init(ctx);
 		success &= font_renderer.init(ctx);
 		texts.set_msdf_font(&msdf_font);
-		texts.set_font_size(font_size);
 
-		// load the font atlas used for text rendering as a texture
-		//{
-		//	cgv::data::data_format atlas_format;
-		//	cgv::data::data_view atlas_data;
-		//	atlas_tex.create_from_image(atlas_format, atlas_data, ctx, "res://segoeui_atlas.png", (unsigned char*)0, 0);
-		//}
-
-		//success &= read_glyph_atlas();
-		
 		// add 2 control points for the arrow
 		points.push_back(point(ivec2(600, 600)));
 		points.push_back(point(ivec2(700, 600)));
@@ -516,9 +356,8 @@ public:
 			set_resolution_uniform(ctx, shaders.get("circle"));
 			set_resolution_uniform(ctx, shaders.get("ellipse"));
 			set_resolution_uniform(ctx, shaders.get("arrow"));
-			set_resolution_uniform(ctx, shaders.get("line"));
-			set_resolution_uniform(ctx, shaders.get("spline"));
-			//set_resolution_uniform(ctx, shaders.get("text"));
+			set_resolution_uniform(ctx, line_renderer.ref_prog());
+			set_resolution_uniform(ctx, spline_renderer.ref_prog());
 
 			// update the constraint for all draggables
 			arrow_handles.set_constraint(viewport_rect);
@@ -578,36 +417,25 @@ public:
 		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 		arrow_prog.disable(ctx);
 
-		shader_program& line_prog = shaders.get("line");
+		shader_program& line_prog = line_renderer.ref_prog();
 		line_prog.enable(ctx);
 		set_shared_uniforms(ctx, line_prog);
 		line_prog.set_uniform(ctx, "width", line_width);
 		line_prog.set_uniform(ctx, "dash_length", dash_length);
 		line_prog.set_uniform(ctx, "dash_ratio", dash_ratio);
 		line_prog.disable(ctx);
-		lines.render(ctx, PT_LINES, line_prog);
+		line_renderer.render(ctx, PT_LINES, lines);
 
-		shader_program& spline_prog = shaders.get("spline");
+		shader_program& spline_prog = spline_renderer.ref_prog();
 		spline_prog.enable(ctx);
 		set_shared_uniforms(ctx, spline_prog);
 		spline_prog.set_uniform(ctx, "width", line_width);
-		spline_prog.set_uniform(ctx, "dash_length", dash_length);
-		spline_prog.set_uniform(ctx, "dash_ratio", dash_ratio);
 		spline_prog.disable(ctx);
-		curves.render(ctx, spline_prog);
+		spline_renderer.render(ctx, PT_LINES, curves);
 
 		image_tex.disable(ctx);
 
-		/*shader_program& text_prog = shaders.get("text");
-		text_prog.enable(ctx);
-		text_prog.set_uniform(ctx, "position", ivec2(500, 150));
-		text_prog.set_uniform(ctx, "font_size", font_size);
-		text_prog.set_uniform(ctx, "use_color", false);
-		set_shared_uniforms(ctx, text_prog);
-		text_prog.disable(ctx);
-		atlas_tex.enable(ctx, 0);
-		text.render(ctx, shaders.get("text"));
-		atlas_tex.disable(ctx);*/
+		set_shared_uniforms(ctx, font_renderer.ref_prog());
 		font_renderer.render(ctx, viewport_rect.size(), texts);
 		
 		draw_control_lines(ctx);
@@ -619,6 +447,11 @@ public:
 	void draw_background(cgv::render::context& ctx) {
 		shader_program& rect_prog = shaders.get("rectangle");
 		rect_prog.enable(ctx);
+
+		mat3 I;
+		I.identity();
+		rect_prog.set_uniform(ctx, "model_matrix", I);
+		rect_prog.set_uniform(ctx, "view_matrix", I);
 
 		rect_prog.set_uniform(ctx, "position", ivec2(0));
 		rect_prog.set_uniform(ctx, "size", viewport_rect.size());
@@ -642,21 +475,21 @@ public:
 		rect_prog.disable(ctx);
 	}
 	void draw_control_lines(cgv::render::context& ctx) {
-		shader_program& line_prog = shaders.get("line");
+		shader_program& line_prog = line_renderer.ref_prog();
 		line_prog.enable(ctx);
 
 		line_prog.set_uniform(ctx, "width", 2.0f);
 		line_prog.set_uniform(ctx, "border_width", 0.0f);
 		line_prog.set_uniform(ctx, "dash_length", 10.0f);
 		line_prog.set_uniform(ctx, "dash_ratio", 0.75f);
-		line_prog.set_uniform(ctx, "feather_width", 1.0f);
+		line_prog.set_uniform(ctx, "feather_width", 1.0f / view_params.scale);
 
 		line_prog.set_uniform(ctx, "use_color", true);
 		line_prog.set_uniform(ctx, "use_blending", true);
 		line_prog.set_uniform(ctx, "apply_gamma", true);
 		line_prog.disable(ctx);
 
-		control_lines.render(ctx, PT_LINES, line_prog);
+		line_renderer.render(ctx, PT_LINES, control_lines);
 	}
 	void draw_draggables(cgv::render::context& ctx) {
 		shader_program& point_prog = shaders.get("circle");
@@ -667,7 +500,7 @@ public:
 		point_prog.set_uniform(ctx, "border_width", 1.5f);
 		point_prog.set_uniform(ctx, "border_radius", 0.0f);
 		point_prog.set_uniform(ctx, "ring_width", 0.0f);
-		point_prog.set_uniform(ctx, "feather_width", 1.0f);
+		point_prog.set_uniform(ctx, "feather_width", 1.0f / view_params.scale);
 		point_prog.set_uniform(ctx, "feather_origin", 0.5f);
 
 		point_prog.set_uniform(ctx, "use_color", true);
@@ -685,28 +518,18 @@ public:
 		point_prog.disable(ctx);
 	}
 	void create_line_render_data() {
-		cgv::render::context* ctx_ptr = get_context();
-		if(!ctx_ptr)
-			return;
-		cgv::render::context& ctx = *ctx_ptr;
-
-		lines.clear(ctx);
+		lines.clear();
 		for(unsigned  i = 0; i < 2; ++i) {
 			float brightness = static_cast<float>(i) / 1;
 			lines.add(line_handles[i]->pos, brightness * color);
 		}
-		lines.create(ctx, shaders.get("line"));
+		lines.set_out_of_date();
 	}
 	void create_curve_render_data() {
-		cgv::render::context* ctx_ptr = get_context();
-		if(!ctx_ptr)
-			return;
-		cgv::render::context& ctx = *ctx_ptr;
-
 		auto& control_points = curve_handles.ref_draggables();
 
-		curves.clear(ctx);
-		control_lines.clear(ctx);
+		curves.clear();
+		control_lines.clear();
 		for(unsigned i = 0; i < 2; ++i) {
 			unsigned idx = 2*i;
 			unsigned si = idx;
@@ -718,8 +541,8 @@ public:
 			control_lines.add(control_points[si]->pos, rgba(0.7f, 0.2f, 0.2f, 1.0f));
 			control_lines.add(control_points[ei]->pos, rgba(0.7f, 0.2f, 0.2f, 1.0f));
 		}
-		curves.create(ctx, shaders.get("spline")) &&
-		control_lines.create(ctx, shaders.get("line"));
+		curves.set_out_of_date();
+		control_lines.set_out_of_date();
 	}
 	void create_text_render_data() {
 		cgv::render::context* ctx_ptr = get_context();
@@ -736,43 +559,18 @@ public:
 			std::string str = labels[i];
 			texts.add_text(str, text_handles[i]->pos, static_cast<cgv::render::TextAlignment>(text_align_h | text_align_v));
 		}
+	}
+	void set_text_positions() {
+		for(size_t i = 0; i < 2; ++i)
+			texts.set_position(i, text_handles[i]->pos);
 
-		/*text.clear(ctx);
-
-		std::vector<std::string> texts;
-		texts.push_back("Hello World!");
-		texts.push_back("CGV Framework");
-		
-		for(unsigned i = 0; i < 2; ++i) {
-			std::string str = texts[i];
-
-			float acc_advance = 0.0f;
-			vec2 atlas_size(atlas_tex.get_width(), atlas_tex.get_height());
-
-			vec2 text_size(0.0f, font_size);
-
-			for(char c : str) {
-				auto& g = glyphs[static_cast<unsigned char>(c)];
-				vec4 texcoord;
-				texcoord = g.atlas_bounds / vec4(atlas_size.x(), atlas_size.y(), atlas_size.x(), atlas_size.y());
-
-				vec2 pa(g.plane_bounds.x(), g.plane_bounds.y());
-				vec2 pb(g.plane_bounds.z(), g.plane_bounds.w());
-
-				vec2 ps = pb - pa;
-
-				vec2 min_pos = pa * font_size + vec2(acc_advance, 0.0f);
-				vec2 max_pos = ps * font_size; // the size of this glyph quad
-
-				text_size.x() = acc_advance + max_pos.x();
-				acc_advance += g.advance * font_size;
-
-				text.add(vec4(min_pos.x(), min_pos.y(), max_pos.x(), max_pos.y()), texcoord);
-			}
-			text.end_text(text_handles[i]->pos, text_size, static_cast<cgv::render::TextAlignment>(text_align_h | text_align_v));
-		}
-
-		text.create(ctx, shaders.get("text"));*/
+		ivec2 p(text_handles[0]->pos);
+		std::string pos_str = "(";
+		pos_str += std::to_string(p.x());
+		pos_str += ", ";
+		pos_str += std::to_string(p.y());
+		pos_str += ")";
+		texts.set_text(0, pos_str);
 	}
 	void set_resolution_uniform(cgv::render::context& ctx, cgv::render::shader_program& prog) {
 		prog.enable(ctx);
@@ -782,21 +580,26 @@ public:
 	}
 	void set_shared_uniforms(cgv::render::context& ctx, cgv::render::shader_program& prog) {
 
-		//vec2 vs(viewport_rect.size());
-		//mat4 PM = cgv::math::ortho4(0.0f, vs.x(), 0.0f, vs.y(), 0.0f, 10.0f);
-		//prog.set_uniform(ctx, "projection_matrix", PM);
-		//
-		//mat2 MM = cgv::math::rotate2(angle);
-		//
-		//prog.set_uniform(ctx, "model_matrix", MM);
-
+		vec2 vs(viewport_rect.size());
+		mat4 PM = cgv::math::ortho4(0.0f, vs.x(), 0.0f, vs.y(), 0.0f, 10.0f);
+		prog.set_uniform(ctx, "projection_matrix", PM);
+		
+		{
+			mat3 T = cgv::math::translate2h(vec2(model_params.translation));
+			mat3 S = cgv::math::scale2h(vec2(model_params.scale));
+			mat3 R = cgv::math::rotate2h(model_params.angle);
+			mat3 MM = T * S * R;
+			prog.set_uniform(ctx, "model_matrix", MM);
+		}
+		prog.set_uniform(ctx, "view_matrix", get_view_matrix());
+		
 		// appearance
 		prog.set_uniform(ctx, "color", color);
 		prog.set_uniform(ctx, "border_color", border_color);
 		prog.set_uniform(ctx, "border_width", border_width);
 		prog.set_uniform(ctx, "border_radius", border_radius);
 		prog.set_uniform(ctx, "ring_width", ring_width);
-		prog.set_uniform(ctx, "feather_width", feather_width);
+		prog.set_uniform(ctx, "feather_width", feather_width / view_params.scale);
 		prog.set_uniform(ctx, "feather_origin", feather_origin);
 
 		// options
@@ -804,6 +607,15 @@ public:
 		prog.set_uniform(ctx, "use_blending", use_blending);
 		prog.set_uniform(ctx, "use_smooth_feather", use_smooth_feather);
 		prog.set_uniform(ctx, "apply_gamma", apply_gamma);
+	}
+	mat3 get_view_matrix() {
+		mat3 T0 = cgv::math::translate2h(vec2(-viewport_rect.box.get_center()));
+		mat3 T1 = cgv::math::translate2h(vec2(viewport_rect.box.get_center()));
+		mat3 T = cgv::math::translate2h(vec2(view_params.translation));
+		mat3 S = cgv::math::scale2h(vec2(view_params.scale));
+		mat3 R = cgv::math::rotate2h(view_params.angle);
+		//return T * S * R; // pivot is in lower left corner
+		return T * T1 * S * R * T0; // pivot is in viewport center
 	}
 	point* get_hit_point(const ivec2& pos) {
 		point* hit = nullptr;
@@ -814,68 +626,6 @@ public:
 		}
 		return hit;
 	}
-	/*bool read_glyph_atlas() {
-		
-		glyphs.resize(256);
-
-		std::string filename = "res://segoeui_meta.png";
-		
-		std::string content;
-		if(!cgv::base::read_data_file(filename, content, false))
-			return false;
-
-		if(content.length() > 0) {
-			bool read_lines = true;
-			size_t split_pos = content.find_first_of('\n');
-			size_t line_offset = 0;
-
-			while(read_lines) {
-				std::string line = "";
-
-				if(split_pos == std::string::npos) {
-					read_lines = false;
-					line = content.substr(line_offset, std::string::npos);
-				} else {
-					size_t next_line_offset = split_pos;
-					line = content.substr(line_offset, next_line_offset - line_offset);
-					line_offset = next_line_offset + 1;
-					split_pos = content.find_first_of('\n', line_offset);
-				}
-
-				if(!line.empty()) {
-					std::vector<cgv::utils::token> tokens;
-
-					cgv::utils::tokenizer tknzr(line);
-					tknzr.set_ws(",");
-					//tknzr.set_sep(",");
-					tknzr.bite_all(tokens);
-						
-					// TODO: generate full ascii table in atlas (including ÄÖÜ  etc.)
-
-					if(tokens.size() == 10) {
-						int id = std::strtol(to_string(tokens[0]).c_str(), 0, 10);
-
-						if(id > 0 && id < 256) {
-							auto& g = glyphs[id];
-							g.advance = std::strtof(to_string(tokens[1]).c_str(), 0);
-							
-							g.plane_bounds.x() = std::strtof(to_string(tokens[2]).c_str(), 0);
-							g.plane_bounds.y() = std::strtof(to_string(tokens[3]).c_str(), 0);
-							g.plane_bounds.z() = std::strtof(to_string(tokens[4]).c_str(), 0);
-							g.plane_bounds.w() = std::strtof(to_string(tokens[5]).c_str(), 0);
-
-							g.atlas_bounds.x() = std::strtof(to_string(tokens[6]).c_str(), 0);
-							g.atlas_bounds.y() = std::strtof(to_string(tokens[7]).c_str(), 0);
-							g.atlas_bounds.z() = std::strtof(to_string(tokens[8]).c_str(), 0);
-							g.atlas_bounds.w() = std::strtof(to_string(tokens[9]).c_str(), 0);
-						}
-					}
-				}
-			}
-		}
-		
-		return true;
-	}*/
 	void create_gui() {
 		add_decorator("Shapes 2D", "heading");
 
@@ -914,8 +664,16 @@ public:
 		add_member_control(this, "Horizontal Alignment", text_align_h, "dropdown", "enums='Center=0,Left=1,Right=2'");
 		add_member_control(this, "Vertical Alignment", text_align_v, "dropdown", "enums='Center=0,Top=4,Botom=8'");
 
-		add_decorator("Test Variables", "heading", "level=3");
-		add_member_control(this, "Angle", angle, "value_slider", "min=0;max=360;step=0.5;ticks=true");
+		add_decorator("View Transformation", "heading", "level=3");
+		add_member_control(this, "Translation X", model_params.translation[0], "value_slider", "min=-100;max=100;step=0.5;ticks=true");
+		add_member_control(this, "Translation Y", model_params.translation[1], "value_slider", "min=-100;max=100;step=0.5;ticks=true");
+		add_member_control(this, "Scale", model_params.scale, "value_slider", "min=1;max=5;step=0.1;ticks=true");
+		add_member_control(this, "Angle", model_params.angle, "value_slider", "min=0;max=360;step=0.5;ticks=true");
+
+		add_member_control(this, "Translation X", view_params.translation[0], "wheel", "min=-10000;max=10000;step=0.5;ticks=true");
+		add_member_control(this, "Translation Y", view_params.translation[1], "wheel", "min=-10000;max=10000;step=0.5;ticks=true");
+		add_member_control(this, "Scale", view_params.scale, "value_slider", "min=1;max=64;step=0.1;ticks=true");
+		add_member_control(this, "Angle", view_params.angle, "value_slider", "min=0;max=360;step=0.5;ticks=true");
 	}
 };
 

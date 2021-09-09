@@ -5,6 +5,7 @@
 #include <cgv/render/render_types.h>
 
 #include "rect.h"
+#include "draggable.h"
 
 #include "../lib_begin.h"
 
@@ -14,21 +15,22 @@ namespace glutil {
 template<class T>
 class draggables_collection : public cgv::render::render_types {
 protected:
-	typedef typename std::remove_pointer<T>::type T_;
-	typedef typename T_* T_ptr;
+	typedef typename std::remove_pointer<T>::type raw_type;
+	typedef typename raw_type* ptr_type;
+	typedef typename std::conditional<std::is_pointer<T>::value, ptr_type, raw_type&>::type accessor_type;
 
-	static_assert(std::is_base_of<draggable, T_>::value, "T must inherit from draggable");
+	static_assert(std::is_base_of<draggable, raw_type>::value, "T must inherit from draggable");
 
-	T_ptr get_ptr(T_& obj) { return &obj; }
-	T_ptr get_ptr(T_ptr obj) { return obj; }
+	ptr_type get_ptr(raw_type& obj) { return &obj; }
+	ptr_type get_ptr(ptr_type obj) { return obj; }
 
 	bool has_constraint = false;
 	rect constraint_area;
 
 	std::vector<T> draggables;
 
-	T_ptr dragged;
-	T_ptr selected;
+	ptr_type dragged;
+	ptr_type selected;
 
 	ivec2 offset;
 
@@ -36,10 +38,10 @@ protected:
 	std::function<void(void)> drag_callback;
 	std::function<void(void)> drag_end_callback;
 
-	T_ptr get_hit_draggable(const ivec2& pos) {
-		T_ptr hit = nullptr;
+	ptr_type get_hit_draggable(const ivec2& pos) {
+		ptr_type hit = nullptr;
 		for(unsigned i = 0; i < draggables.size(); ++i) {
-			T_ptr d = get_ptr(draggables[i]);
+			ptr_type d = get_ptr(draggables[i]);
 
 			if(d && d->is_inside(pos))
 				hit = d;
@@ -47,30 +49,56 @@ protected:
 		return hit;
 	}
 
+
+
+	mat3 transformation;
+	mat3 inv_transformation;
+
+
+
+
 public:
 	draggables_collection() {
+		clear();
+	}
+
+	void clear() {
 		dragged = nullptr;
 		selected = nullptr;
+		draggables.clear();
+
+		transformation.identity();
+		inv_transformation.identity();
 	}
 
 	void add(T obj) {
 		draggables.push_back(obj);
 	}
 
-	size_t size() { return draggables.size(); }
+	size_t size() const { return draggables.size(); }
 
 	std::vector<T>& ref_draggables() { return draggables; }
 
-	T operator[](int i) {
+	accessor_type operator[](int i) {
 		return draggables[i];
 	}
 
-	T get_dragged() {
+	ptr_type get_dragged() {
 		return dragged;
 	}
 
-	T get_selected() {
+	void set_dragged(int i) {
+		if(i >= 0 && i < draggables.size())
+			dragged = get_ptr(draggables[i]);
+	}
+
+	ptr_type get_selected() {
 		return selected;
+	}
+
+	void set_selected(int i) {
+		if(i >= 0 && i < draggables.size())
+			selected = get_ptr(draggables[i]);
 	}
 
 	void set_constraint(const rect& area) {
@@ -95,7 +123,15 @@ public:
 		drag_end_callback = func;
 	}
 
-	bool handle(cgv::gui::event& e, const ivec2& viewport_size) {
+
+
+	void set_transformation(const mat3& matrix) {
+		transformation = matrix;
+		inv_transformation = cgv::math::inv(transformation);
+	}
+
+
+	bool handle(cgv::gui::event& e, const ivec2& viewport_size, const rect& container = rect()) {
 		unsigned et = e.get_kind();
 		unsigned char modifiers = e.get_modifiers();
 
@@ -105,6 +141,11 @@ public:
 
 			ivec2 mpos(me.get_x(), me.get_y());
 			mpos.y() = viewport_size.y() - mpos.y();
+			mpos -= container.pos();
+
+			vec3 tmp = inv_transformation * vec3(mpos, 1.0f);
+			mpos.x() = tmp.x();
+			mpos.y() = tmp.y();
 
 			if(me.get_button() == cgv::gui::MB_LEFT_BUTTON) {
 				if(ma == cgv::gui::MA_RELEASE) {
@@ -124,6 +165,7 @@ public:
 					if(has_constraint)
 						dragged->apply_constraint(constraint_area);
 					if(drag_callback) drag_callback();
+					return true;
 				} else {
 					if(ma == cgv::gui::MA_PRESS) {
 						dragged = get_hit_draggable(mpos);
@@ -131,10 +173,10 @@ public:
 						if(dragged) {
 							offset = dragged->pos - mpos;
 							if(drag_start_callback) drag_start_callback();
+							return true;
 						}
 					}
 				}
-				return true;
 			}
 
 			return false;

@@ -2,147 +2,24 @@
 
 #include <cgv/gui/event_handler.h>
 #include <cgv/gui/provider.h>
-#include <cgv/render/attribute_array_binding.h>
 #include <cgv/render/drawable.h>
-#include <cgv/render/shader_program.h>
 #include <cgv/render/texture.h>
-#include <cgv/render/vertex_buffer.h>
-#include <cgv_gl/box_renderer.h>
 #include <cgv_glutil/frame_buffer_container.h>
 #include <cgv_glutil/overlay.h>
 #include <cgv_glutil/shader_library.h>
+
+#include "generic_render_data.h"
+#include "generic_renderer.h"
+#include "transfer_function.h"
+#include "2d/draggables_collection.h"
 
 #include "lib_begin.h"
 
 namespace cgv {
 namespace glutil{
 
-class CGV_API transfer_function : public cgv::render::render_types {
-public:
-	typedef std::pair<float, rgb> color_node;
-	typedef std::pair<float, float> opacity_node;
-
-private:
-	std::vector<color_node> color_nodes;
-	std::vector<opacity_node> opacity_nodes;
-
-public:
-	transfer_function() {
-
-		color_nodes.clear();
-		opacity_nodes.clear();
-	}
-
-	~transfer_function() {
-
-		color_nodes.clear();
-		opacity_nodes.clear();
-	}
-
-	void clear() {
-
-		color_nodes.clear();
-		opacity_nodes.clear();
-	}
-
-	void add_color_point(float t, rgb color) {
-
-		// make sure t is in the interval [0,1]
-		t = cgv::math::clamp(t, 0.0f, 1.0f);
-		color_nodes.push_back(std::make_pair(t, color));
-		std::sort(color_nodes.begin(), color_nodes.end(), [](const color_node& a, const color_node& b) { return a.first < b.first; });
-	}
-
-	void add_opacity_point(float t, float opacity) {
-
-		t = cgv::math::clamp(t, 0.0f, 1.0f);
-		opacity_nodes.push_back(std::make_pair(t, opacity));
-		std::sort(opacity_nodes.begin(), opacity_nodes.end(), [](const opacity_node& a, const opacity_node& b) { return a.first < b.first; });
-	}
-
-	const std::vector<color_node>& ref_color_nodes() { return color_nodes; }
-	const std::vector<opacity_node>& ref_opacity_nodes() { return opacity_nodes; }
-
-	template<typename T>
-	T interpolate_type(std::vector<std::pair<float, T>>& nodes, float t) {
-
-		unsigned count = nodes.size();
-
-		if(count == 0)
-			return (T)0;
-
-		if(count == 1)
-			return nodes[0].second;
-
-		t = cgv::math::clamp(t, 0.0f, 1.0f);
-
-		if(t > nodes[0].first) {
-			unsigned idx = 0;
-
-			for(unsigned i = 1; i < count; ++i) {
-				if(nodes[idx].first <= t && nodes[i].first > t)
-					break;
-				idx = i;
-			}
-
-			if(idx < count - 1) {
-				std::pair<float, T> n0 = nodes[idx];
-				std::pair<float, T> n1 = nodes[idx + 1];
-
-				float t0 = n0.first;
-				float t1 = n1.first;
-
-				float a = (t - t0) / (t1 - t0);
-
-				return (T)((1.0f - a) * n0.second + a * n1.second);
-			} else {
-				return nodes[idx].second;
-			}
-		} else {
-			return nodes[0].second;
-		}
-	}
-
-	rgb interpolate_color(float t) {
-
-		return interpolate_type<rgb>(color_nodes, t);
-	}
-
-	float interpolate_alpha(float t) {
-
-		return interpolate_type<float>(opacity_nodes, t);
-	}
-
-	rgba interpolate(float t) {
-
-		rgb color = interpolate_type<rgb>(color_nodes, t);
-		float opacity = interpolate_type<float>(opacity_nodes, t);
-
-		return rgba(color.R(), color.G(), color.B(), opacity);
-	}
-};
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 class CGV_API transfer_function_editor : public overlay {
 protected:
-	bool show;
-	
 	std::string file_name;
 	std::string save_file_name;
 	bool has_unsaved_changes = false;
@@ -184,73 +61,6 @@ protected:
 		}
 	} layout;
 	
-	struct draggable {
-		vec2 pos;
-		vec2 size;
-
-		enum ConstrainReference {
-			CR_CENTER,
-			CR_MIN_POINT,
-			CR_MAX_POINT,
-			CR_FULL_SIZE
-		} constrain_reference;
-
-		bool position_is_center;
-
-		draggable() {
-			position_is_center = false;
-			constrain_reference = CR_FULL_SIZE;
-		}
-
-		vec2 center() const {
-
-			if(position_is_center)
-				return pos;
-			else
-				return pos + size;
-		}
-
-		void apply_constraint(const rect& area) {
-
-			vec2 min_pnt = vec2(area.box.get_min_pnt());
-			vec2 max_pnt = vec2(area.box.get_max_pnt());
-
-			switch(constrain_reference) {
-			case CR_MIN_POINT:
-				min_pnt += size;
-				max_pnt += size;
-				break;
-			case CR_MAX_POINT:
-				min_pnt -= size;
-				max_pnt -= size;
-				break;
-			case CR_FULL_SIZE:
-				min_pnt += size;
-				max_pnt -= size;
-				break;
-			case CR_CENTER:
-			default:
-				break;
-			}
-			
-			if(!position_is_center) {
-				min_pnt -= size;
-				max_pnt -= size;
-			}
-
-			pos = cgv::math::clamp(pos, min_pnt, max_pnt);
-		}
-
-		virtual bool is_inside(const ivec2& p) const {
-
-			vec2 a = pos;
-			vec2 b = pos + size;
-			return
-				p.x() >= a.x() && p.x() <= b.x() &&
-				p.y() >= a.y() && p.y() <= b.y();
-		}
-	};
-
 	struct point : public draggable {
 		vec2 val;
 		rgb col;
@@ -258,16 +68,14 @@ protected:
 		point() {
 			size = vec2(8.0f);
 			position_is_center = true;
-			constrain_reference = CR_CENTER;
+			constraint_reference = CR_CENTER;
 		}
 
 		void update_val(const layout_attributes& la, const float scale_exponent) {
 
-			apply_constraint(la.editor_rect);
-
 			vec2 p = pos - la.editor_rect.pos();
 			val = p / la.editor_rect.size();
-			
+
 			val = cgv::math::clamp(val, 0.0f, 1.0f);
 			val.y() = cgv::math::clamp(std::pow(val.y(), scale_exponent), 0.0f, 1.0f);
 		}
@@ -301,63 +109,14 @@ protected:
 	texture bg_tex;
 	texture tf_tex;
 
-	template<typename PosType, typename ColType>
-	struct plain_geometry {
-		struct vertex_type {
-			PosType pos;
-			ColType col;
-		};
-
-		std::vector<vertex_type> vertices;
-
-		type_descriptor pos_type_descriptor = cgv::render::element_descriptor_traits<PosType>::get_type_descriptor(PosType());
-		type_descriptor col_type_descriptor = cgv::render::element_descriptor_traits<ColType>::get_type_descriptor(ColType());
-
-		vertex_buffer vb;
-		attribute_array_binding aab;
-
-		size_t size() { return vertices.size(); }
-
-		void clear(context& ctx) {
-			vertices.clear();
-
-			if(vb.is_created())
-				vb.destruct(ctx);
-			if(aab.is_created())
-				aab.destruct(ctx);
-		}
-
-		bool create(context& ctx, const shader_program& prog) {
-			bool success = true;
-			success &= vb.create(ctx, &(vertices[0]), vertices.size());
-			success &= aab.create(ctx);
-			success &= aab.set_attribute_array(ctx, prog.get_position_index(), pos_type_descriptor, vb, 0, vertices.size(), sizeof(vertex_type));
-			success &= aab.set_attribute_array(ctx, prog.get_color_index(), col_type_descriptor, vb, sizeof(PosType), vertices.size(), sizeof(vertex_type));
-			return success;
-		}
-
-		void add(const PosType& pos, const ColType& col) {
-			vertices.push_back({ pos, col });
-		}
-
-		void render(context& ctx, PrimitiveType type, shader_program& prog) {
-			render(ctx, type, 0, size(), prog);
-		}
-
-		void render(context& ctx, PrimitiveType type, int offset, size_t count, shader_program& prog) {
-			if(aab.is_created()) {
-				prog.enable(ctx);
-				aab.enable(ctx);
-				GLenum mode = gl::map_to_gl(type);
-				glDrawArrays(mode, (GLint)offset, (GLsizei)count);
-				aab.disable(ctx);
-				prog.disable(ctx);
-			}
-		}
-	};
-
+	generic_renderer line_renderer;
+	generic_renderer polygon_renderer;
+	
+	DEFINE_GENERIC_RENDER_DATA_CLASS(line_geometry, 2, vec2, position, rgb, color);
+	DEFINE_GENERIC_RENDER_DATA_CLASS(polygon_geometry, 2, vec2, position, rgba, color);
+	
 	struct tf_container {
-		std::vector<point> points;
+		cgv::glutil::draggables_collection<point> points;
 
 		transfer_function tf;
 		texture tex;
@@ -365,22 +124,23 @@ protected:
 		texture hist_tex;
 		unsigned hist_max;
 
-		plain_geometry<vec2, rgba> triangles;
-		plain_geometry<vec2, rgb> lines;
+		line_geometry lines;
+		polygon_geometry triangles;
+		
+		void reset() {
+			points.clear();
 
-		tf_container() {
+			point p;
+			p.val = vec2(0.0f);
+			p.col = rgb(0.0f);
+			points.add(p);
 
-			points.resize(2);
-			points[0].val = vec2(0.0f);
-			points[0].col = rgb(0.0f);
-			points[1].val = vec2(1.0f);
-			points[1].col = rgb(1.0f);
+			p = point();
+			p.val = vec2(1.0f);
+			p.col = rgb(1.0f);
+			points.add(p);
 		}
 	} tfc;
-
-	point* selected_point = nullptr;
-	point* dragged_point = nullptr;
-	vec2 offset_pos;
 
 	void add_point(const vec2& pos);
 	void remove_point(const point* ptr);
@@ -388,7 +148,8 @@ protected:
 	
 	void init_transfer_function_texture(context& ctx);
 
-
+	void handle_drag();
+	void handle_drag_end();
 	void sort_points();
 	void update_point_positions();
 	void update_transfer_function(bool is_data_change);
@@ -416,9 +177,6 @@ public:
 	
 	void create_gui();
 	void create_gui(cgv::gui::provider& p);
-
-	void is_visible(bool visible);
-	void toggle_visibility();
 
 	texture& ref_tex();
 

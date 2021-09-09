@@ -16,6 +16,11 @@ overlay::overlay() {
 	last_size = ivec2(-1);
 }
 
+void overlay::on_visibility_change() {
+
+	post_redraw();
+}
+
 void overlay::on_layout_change() {
 
 	update_overlay_layout();
@@ -108,6 +113,11 @@ void overlay::create_overlay_gui() {
 	if(begin_tree_node("Overlay", horizontal_alignment, false)) {
 		align("\a");
 		
+		cgv::signal::connect_copy(
+			add_control("Show", show, "check")->value_change,
+			cgv::signal::rebind(this, &overlay::on_layout_change)
+		);
+
 		cgv::signal::connect_copy(
 			add_control("Horizontal Alignment", horizontal_alignment, "dropdown", "enums='Free,Left,Center,Right'")->value_change,
 			cgv::signal::rebind(this, &overlay::on_layout_change)
