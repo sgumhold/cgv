@@ -21,8 +21,12 @@ layout (std430, binding = 0) readonly buffer data_buffer {
 	vertex in_data[];
 };
 
+uniform mat3 model_matrix = mat3(1.0);
+uniform mat3 view_matrix = mat3(1.0);
+
 uniform ivec2 resolution;
 uniform ivec2 position;
+uniform float font_size = 32.0;
 
 out vec2 pix_coord;
 out vec2 tex_coord;
@@ -32,6 +36,7 @@ void main() {
 	vec2 corner = corners[id];
 
 	vertex v = in_data[gl_BaseInstance + gl_InstanceID];
+	v.position_size *= font_size;
 
 	tex_coord = vec2(mix(v.texcoords.xy, v.texcoords.zw, corner));
 
@@ -45,6 +50,9 @@ void main() {
 
 	// offset
 	corner += final_position;
+
+	// apply view transformation
+	corner = (view_matrix * vec3(corner, 1.0)).xy;
 
 	// transform to window space
 	corner = (2.0*corner) / resolution;

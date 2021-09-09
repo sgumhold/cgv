@@ -28,12 +28,14 @@ public:
 
 	bool load_shaders(context& ctx);
 
-	static bool load_shader(context& ctx, shader_program& prog, const std::string& name, const bool reload = false, const std::string& where = "") {
+	bool reload(context& ctx, const std::string& name, const shader_define_map& defines = {}, const std::string& where = "");
 
-		return load_shader(ctx, prog, name, shader_define_map(), reload, where);
+	static bool load(context& ctx, shader_program& prog, const std::string& name, const bool reload = false, const std::string& where = "") {
+
+		return load(ctx, prog, name, shader_define_map(), reload, where);
 	}
 
-	static bool load_shader(context& ctx, shader_program& prog, const std::string& name, const shader_define_map& defines, const bool reload = false, const std::string& where = "") {
+	static bool load(context& ctx, shader_program& prog, const std::string& name, const shader_define_map& defines, const bool reload = false, const std::string& where = "") {
 
 		if(prog.is_created()) {
 			if(reload) prog.destruct(ctx);
@@ -59,8 +61,6 @@ public:
 		}
 		return true;
 	}
-
-	//TODO: add a reload function for the shaders in the library
 };
 }
 }

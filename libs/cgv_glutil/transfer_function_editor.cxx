@@ -37,8 +37,6 @@ transfer_function_editor::transfer_function_editor() {
 
 	shaders.add("rectangle", "rect2d.glpr");
 	shaders.add("circle", "circle2d.glpr");
-	shaders.add("polygon", "poly2d.glpr");
-	shaders.add("line", "line2d.glpr");
 	shaders.add("histogram", "hist2d.glpr");
 	shaders.add("background", "bg2d.glpr");
 
@@ -57,6 +55,13 @@ transfer_function_editor::transfer_function_editor() {
 	show_cursor = false;
 	cursor_pos = ivec2(-100);
 	cursor_drawtext = "";
+
+	tfc.points.set_drag_callback(std::bind(&transfer_function_editor::handle_drag, this));
+	tfc.points.set_drag_end_callback(std::bind(&transfer_function_editor::handle_drag_end, this));
+	tfc.points.set_constraint(layout.editor_rect);
+
+	line_renderer = generic_renderer("line2d.glpr");
+	polygon_renderer = generic_renderer("poly2d.glpr");
 }
 
 bool transfer_function_editor::on_exit_request() {
@@ -118,23 +123,6 @@ bool transfer_function_editor::handle_event(cgv::gui::event& e) {
 		cgv::gui::mouse_event& me = (cgv::gui::mouse_event&) e;
 		cgv::gui::MouseAction ma = me.get_action();
 
-		/*if(ma == cgv::gui::MA_ENTER)
-			std::cout << "Enter" << std::endl;
-		if(ma == cgv::gui::MA_MOVE)
-			std::cout << "Move" << std::endl;
-		if(ma == cgv::gui::MA_LEAVE)
-			std::cout << "Leave" << std::endl;
-		if(ma == cgv::gui::MA_PRESS)
-			std::cout << "Press" << std::endl;
-		if(ma == cgv::gui::MA_RELEASE)
-			std::cout << "Release" << std::endl;
-		if(ma == cgv::gui::MA_DRAG)
-			std::cout << "Drag" << std::endl;
-		if(ma == cgv::gui::MA_WHEEL)
-			std::cout << "Wheel" << std::endl;*/
-
-		ivec2 mpos = get_local_mouse_pos(ivec2(me.get_x(), me.get_y()));
-
 		switch(ma) {
 		case cgv::gui::MA_ENTER:
 			mouse_is_on_overlay = true;
@@ -144,27 +132,17 @@ bool transfer_function_editor::handle_event(cgv::gui::event& e) {
 			post_redraw();
 			break;
 		case cgv::gui::MA_MOVE:
+		case cgv::gui::MA_DRAG:
 			cursor_pos = ivec2(me.get_x(), me.get_y());
 			if(show_cursor)
 				post_redraw();
 			break;
 		}
 
-		if(me.get_button() == cgv::gui::MB_LEFT_BUTTON) {
-			if(ma == cgv::gui::MA_RELEASE) {
-				if(dragged_point) {
-					selected_point = dragged_point;
-					dragged_point = nullptr;
-				} else {
-					selected_point = get_hit_point(mpos);
-				}
-				post_recreate_gui();
-				post_redraw();
-			}
-		}
-
 		if(me.get_button_state() & cgv::gui::MB_LEFT_BUTTON) {
 			if(ma == cgv::gui::MA_PRESS && modifiers > 0) {
+				ivec2 mpos = get_local_mouse_pos(ivec2(me.get_x(), me.get_y()));
+
 				switch(modifiers) {
 				case cgv::gui::EM_CTRL:
 					if(!get_hit_point(mpos))
@@ -175,32 +153,13 @@ bool transfer_function_editor::handle_event(cgv::gui::event& e) {
 					point* hit_point = get_hit_point(mpos);
 					if(hit_point)
 						remove_point(hit_point);
-					if(hit_point == selected_point) {
-						selected_point = nullptr;
-						post_recreate_gui();
-					}
 				}
 				break;
 				}
-			} else {
-				if(dragged_point) {
-					dragged_point->pos = mpos + offset_pos;
-					dragged_point->update_val(layout, opacity_scale_exponent);
-					update_transfer_function(true);
-				} else {
-					if(ma == cgv::gui::MA_PRESS) {
-						dragged_point = get_hit_point(mpos);
-						if(dragged_point)
-							offset_pos = dragged_point->pos - mpos;
-						selected_point = dragged_point;
-						post_recreate_gui();
-					}
-				}
 			}
-
-			post_redraw();
-			return true;
 		}
+
+		return tfc.points.handle(e, last_viewport_size, container);
 
 		return false;
 	} else {
@@ -211,6 +170,7 @@ bool transfer_function_editor::handle_event(cgv::gui::event& e) {
 void transfer_function_editor::on_set(void* member_ptr) {
 
 	if(member_ptr == &file_name) {
+/*
 #ifndef CGV_FORCE_STATIC
 		// TODO: implemenmt
 		std::cout << "IMPLEMENT" << std::endl;
@@ -220,8 +180,9 @@ void transfer_function_editor::on_set(void* member_ptr) {
 		//	file_name = debug_file_name + "/" + file_name;
 		//}
 #endif
+*/
 		if(!load_from_xml(file_name))
-			tfc = tf_container();
+			tfc.reset();
 
 		update_point_positions();
 		update_transfer_function(false);
@@ -281,9 +242,8 @@ void transfer_function_editor::on_set(void* member_ptr) {
 		update_transfer_function(false);
 	}
 
-	auto& points = tfc.points;
-	for(unsigned i = 0; i < points.size(); ++i) {
-		if(member_ptr == &points[i].col) {
+	for(unsigned i = 0; i < tfc.points.size(); ++i) {
+		if(member_ptr == &tfc.points[i].col) {
 			update_transfer_function(true);
 			break;
 		}
@@ -301,8 +261,12 @@ bool transfer_function_editor::init(cgv::render::context& ctx) {
 		cursor_font_face = font->get_font_face(cgv::media::font::FFA_BOLD);
 	}
 
-	fbc.ensure(ctx);
-	shaders.load_shaders(ctx);
+	bool success = true;
+
+	success &= fbc.ensure(ctx);
+	success &= shaders.load_shaders(ctx);
+	success &= line_renderer.init(ctx);
+	success &= polygon_renderer.init(ctx);
 
 	shader_program& rect_prog = shaders.get("rectangle");
 	rect_prog.enable(ctx);
@@ -319,13 +283,13 @@ bool transfer_function_editor::init(cgv::render::context& ctx) {
 	point_prog.set_uniform(ctx, "apply_gamma", false);
 	point_prog.disable(ctx);
 
-	shader_program& poly_prog = shaders.get("polygon");
+	shader_program& poly_prog = polygon_renderer.ref_prog();
 	poly_prog.enable(ctx);
 	poly_prog.set_uniform(ctx, "use_blending", true);
 	poly_prog.set_uniform(ctx, "apply_gamma", false);
 	poly_prog.disable(ctx);
 
-	shader_program& line_prog = shaders.get("line");
+	shader_program& line_prog = line_renderer.ref_prog();
 	line_prog.enable(ctx);
 	line_prog.set_uniform(ctx, "use_blending", true);
 	line_prog.set_uniform(ctx, "apply_gamma", false);
@@ -347,9 +311,8 @@ bool transfer_function_editor::init(cgv::render::context& ctx) {
 	bg_prog.set_uniform(ctx, "scale_exponent", 1.0f);
 	bg_prog.disable(ctx);
 
-	if(!load_from_xml(file_name)) {
-		tfc = tf_container();
-	}
+	if(!load_from_xml(file_name))
+		tfc.reset();
 	
 	init_transfer_function_texture(ctx);
 	update_transfer_function(false);
@@ -361,9 +324,9 @@ bool transfer_function_editor::init(cgv::render::context& ctx) {
 	bg_tex.destruct(ctx);
 	cgv::data::data_view bg_dv = cgv::data::data_view(new cgv::data::data_format(2, 2, TI_FLT32, cgv::data::CF_RGB), bg_data.data());
 	bg_tex = texture("flt32[R,G,B]", TF_NEAREST, TF_NEAREST, TW_REPEAT, TW_REPEAT);
-	bg_tex.create(ctx, bg_dv, 0);
+	success &= bg_tex.create(ctx, bg_dv, 0);
 
-	return true;
+	return success;
 }
 
 void transfer_function_editor::init_frame(cgv::render::context& ctx) {
@@ -380,12 +343,12 @@ void transfer_function_editor::init_frame(cgv::render::context& ctx) {
 		point_prog.set_uniform(ctx, "resolution", container_size);
 		point_prog.disable(ctx);
 
-		shader_program& poly_prog = shaders.get("polygon");
+		shader_program& poly_prog = polygon_renderer.ref_prog();
 		poly_prog.enable(ctx);
 		poly_prog.set_uniform(ctx, "resolution", container_size);
 		poly_prog.disable(ctx);
 
-		shader_program& line_prog = shaders.get("line");
+		shader_program& line_prog = line_renderer.ref_prog();
 		line_prog.enable(ctx);
 		line_prog.set_uniform(ctx, "resolution", container_size);
 		line_prog.disable(ctx);
@@ -407,6 +370,7 @@ void transfer_function_editor::init_frame(cgv::render::context& ctx) {
 		update_point_positions();
 		sort_points();
 		update_geometry();
+		tfc.points.set_constraint(layout.editor_rect);
 	}
 }
 
@@ -426,11 +390,7 @@ void transfer_function_editor::draw(cgv::render::context& ctx) {
 
 	ivec2 container_size = get_overlay_size();
 
-
-
-
-	// TODO: flag to place border on outside or inside
-
+	// TODO: should there be a border orign like the feather origin?
 	shader_program& rect_prog = shaders.get("rectangle");
 	rect_prog.enable(ctx);
 	rect_prog.set_uniform(ctx, "resolution", container_size);
@@ -504,10 +464,10 @@ void transfer_function_editor::draw(cgv::render::context& ctx) {
 	}
 
 	// draw transfer function area polygon
-	tfc.triangles.render(ctx, PT_TRIANGLE_STRIP, shaders.get("polygon"));
+	polygon_renderer.render(ctx, PT_TRIANGLE_STRIP, tfc.triangles);
 	// draw transfer function lines
-	tfc.lines.render(ctx, PT_LINE_STRIP, shaders.get("line"));
-	
+	line_renderer.render(ctx, PT_LINE_STRIP, tfc.lines);
+
 	// draw separator line
 	rect_prog.enable(ctx);
 	rect_prog.set_uniform(ctx, "position", ivec2(
@@ -539,7 +499,7 @@ void transfer_function_editor::draw(cgv::render::context& ctx) {
 		point_prog.set_uniform(ctx, "position", pos);
 		point_prog.set_uniform(ctx, "size", size);
 		point_prog.set_uniform(ctx, "color",
-			selected_point == &p ? vec4(0.5f, 0.5f, 0.5f, 1.0f) : vec4(0.9f, 0.9f, 0.9f, 1.0f)
+			tfc.points.get_selected() == &p ? vec4(0.5f, 0.5f, 0.5f, 1.0f) : vec4(0.9f, 0.9f, 0.9f, 1.0f)
 		);
 
 		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
@@ -625,22 +585,12 @@ void transfer_function_editor::create_gui() {
 	// TODO: add parameters for t and alpha?
 	auto& points = tfc.points;
 	for(unsigned i = 0; i < points.size(); ++i)
-		add_member_control(this, "Color " + std::to_string(i), points[i].col, "", &points[i] == selected_point ? "label_color=0x4080ff" : "");
+		add_member_control(this, "Color " + std::to_string(i), points[i].col, "", &points[i] == tfc.points.get_selected() ? "label_color=0x4080ff" : "");
 }
 
 void transfer_function_editor::create_gui(cgv::gui::provider& p) {
 
 	p.add_member_control(this, "Show", show, "check");
-}
-
-void transfer_function_editor::is_visible(bool visible) {
-
-	show = visible;
-}
-
-void transfer_function_editor::toggle_visibility() {
-
-	show = !show;
 }
 
 texture& transfer_function_editor::ref_tex() {
@@ -673,10 +623,10 @@ bool transfer_function_editor::set_histogram(const std::vector<unsigned>& data) 
 void transfer_function_editor::add_point(const vec2& pos) {
 
 	point p;
-	p.pos = pos;// -p.size;
+	p.pos = pos;
 	p.update_val(layout, opacity_scale_exponent);
 	p.col = tfc.tf.interpolate_color(p.val.x());
-	tfc.points.push_back(p);
+	tfc.points.add(p);
 
 	update_transfer_function(true);
 }
@@ -694,7 +644,7 @@ void transfer_function_editor::remove_point(const point* ptr) {
 		else
 			removed = true;
 	}
-	tfc.points = std::move(next_points);
+	tfc.points.ref_draggables() = std::move(next_points);
 	
 	if(removed)
 		update_transfer_function(true);
@@ -722,6 +672,19 @@ void transfer_function_editor::init_transfer_function_texture(context& ctx) {
 	tf_tex.create(ctx, tf_dv, 0);
 }
 
+void transfer_function_editor::handle_drag() {
+
+	tfc.points.get_dragged()->update_val(layout, opacity_scale_exponent);
+	update_transfer_function(true);
+	post_redraw();
+}
+
+void transfer_function_editor::handle_drag_end() {
+
+	post_recreate_gui();
+	post_redraw();
+}
+
 void transfer_function_editor::sort_points() {
 
 	auto& points = tfc.points;
@@ -729,6 +692,9 @@ void transfer_function_editor::sort_points() {
 	if(points.size() > 1) {
 		int dragged_point_idx = -1;
 		int selected_point_idx = -1;
+
+		const point* dragged_point = points.get_dragged();
+		const point* selected_point = points.get_selected();
 
 		std::vector<std::pair<point, int>> sorted(points.size());
 
@@ -748,15 +714,21 @@ void transfer_function_editor::sort_points() {
 			}
 		);
 
+		int new_dragged_point_idx = -1;
+		int new_selected_point_idx = -1;
+
 		for(unsigned i = 0; i < sorted.size(); ++i) {
 			points[i] = sorted[i].first;
 			if(dragged_point_idx == sorted[i].second) {
-				dragged_point = &points[i];
+				new_dragged_point_idx = i;
 			}
 			if(selected_point_idx == sorted[i].second) {
-				selected_point = &points[i];
+				new_selected_point_idx = i;
 			}
 		}
+
+		points.set_dragged(new_dragged_point_idx);
+		points.set_selected(new_selected_point_idx);
 	}
 }
 
@@ -848,9 +820,9 @@ bool transfer_function_editor::update_geometry() {
 	auto& lines = tfc.lines;
 	auto& triangles = tfc.triangles;
 
-	triangles.clear(ctx);
-	lines.clear(ctx);
-
+	triangles.clear();
+	lines.clear();
+	
 	bool success = true;
 
 	if(points.size() > 1) {
@@ -858,7 +830,7 @@ bool transfer_function_editor::update_geometry() {
 		rgba coll = tf.interpolate(pl.val.x());
 
 		lines.add(vec2(layout.editor_rect.pos().x(), pl.center().y()), rgb(coll));
-
+		
 		triangles.add(vec2(layout.editor_rect.pos().x(), pl.center().y()), coll);
 		triangles.add(layout.editor_rect.pos(), coll);
 
@@ -867,7 +839,7 @@ bool transfer_function_editor::update_geometry() {
 			rgba col = tf.interpolate(points[i].val.x());
 
 			lines.add(pos, rgb(col));
-
+			
 			triangles.add(pos, col);
 			triangles.add(vec2(pos.x(), layout.editor_rect.pos().y()), col);
 		}
@@ -877,12 +849,13 @@ bool transfer_function_editor::update_geometry() {
 		vec2 max_pos = layout.editor_rect.pos() + vec2(1.0f, 0.0f) * layout.editor_rect.size();
 
 		lines.add(vec2(max_pos.x(), pr.center().y()), rgb(colr));
-
+		
 		triangles.add(vec2(max_pos.x(), pr.center().y()), colr);
 		triangles.add(max_pos, colr);
 
-		success &= triangles.create(ctx, shaders.get("polygon"));
-		success &= lines.create(ctx, shaders.get("line"));
+		lines.set_out_of_date();
+		triangles.set_out_of_date();
+
 	} else {
 		success = false;
 	}
@@ -1065,7 +1038,7 @@ bool transfer_function_editor::load_from_xml(const std::string& file_name) {
 				p.col = col;
 				p.val.x() = cgv::math::clamp(pos, 0.0f, 1.0f);
 				p.val.y() = alpha;
-				tfc.points.push_back(p);
+				tfc.points.add(p);
 			}
 		}
 	}
@@ -1084,10 +1057,8 @@ bool transfer_function_editor::save_to_xml(const std::string& file_name) {
 	content += "<TransferFunction>\n";
 	std::string tab = "  ";
 
-	const auto& points = tfc.points;
-
-	for(unsigned j = 0; j < points.size(); ++j) {
-		const point& p = points[j];
+	for(unsigned i = 0; i < tfc.points.size(); ++i) {
+		const point& p = tfc.points[i];
 
 		content += tab + "<Point ";
 		content += "position=\"" + std::to_string(p.val.x()) + "\" ";

@@ -1,6 +1,6 @@
 #version 150
 
-#define USE_MATRICES 0
+#define USE_MATRICES 1
 
 //***** begin interface of fragment2d.glsl ***********************************
 uniform float feather_width = 1.0;
@@ -58,7 +58,8 @@ const vec2 corners[4] = vec2[](
 	vec2(+0.5, +0.5)
 );
 
-uniform mat2 model_matrix = mat2(1.0);
+uniform mat3 model_matrix = mat3(1.0);
+uniform mat3 view_matrix = mat3(1.0);
 
 uniform ivec2 resolution;
 uniform ivec2 position;
@@ -72,26 +73,22 @@ void main() {
 	int id = gl_VertexID;
 	vec2 corner = corners[id];
 
-	tex_coord = corner;
+	tex_coord = corner + 0.5;
 
 	vec2 final_size = size + 2.0*feather_origin*feather_width;
-	pix_coord = final_size*corner;// - 0.5*final_size;
+	pix_coord = final_size*corner;
 
 	// transform to pixel coordinates
 	corner *= final_size;
 
-	corner = model_matrix * corner;
+	if(!position_is_center)
+		corner += 0.5*size;
 
-	// offset
+	// offset by position
 	corner += position;
 
-	if(!position_is_center)
-		//corner -= 0.5*final_size + feather_origin*feather_width;
-	//else
-		corner += 0.5*final_size - feather_origin*feather_width;
-
-
-	//corner = (projection_matrix * vec4(corner, 0.0, 1.0)).xy;
+	// apply model and view transformation
+	corner = (view_matrix * model_matrix * vec3(corner, 1.0)).xy;
 
 	// transform to window space
 	corner = (2.0*corner) / resolution;

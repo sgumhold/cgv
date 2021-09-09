@@ -21,7 +21,7 @@ bool application_plugin::handle(cgv::gui::event& e) {
 
 			blocking_overlay_ptr = nullptr;
 			for(auto overlay_ptr : overlays) {
-				if(overlay_ptr->is_hit(mpos)) {
+				if(overlay_ptr->is_visible() && overlay_ptr->is_hit(mpos)) {
 					blocking_overlay_ptr = overlay_ptr;
 					break;
 				}

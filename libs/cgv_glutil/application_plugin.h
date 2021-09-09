@@ -24,6 +24,7 @@ protected:
 	overlay* blocking_overlay_ptr;
 
 public:
+	// TODO: unregister and destruct overlays when application plugin gets destroyed
 	application_plugin(const std::string& name);
 
 	template<class T>
