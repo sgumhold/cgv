@@ -62,8 +62,8 @@ struct domain_config : public cgv::render::render_types
 	float title_font_size;
 	/// store selected title font face attributes
 	cgv::media::font::FontFaceAttributes title_ffa;
-	/// set default values
-	domain_config(unsigned nr_axes);
+	/// set default values based on plot dimension and nr additional attribute axes
+	domain_config(unsigned dim, unsigned nr_attrs);
 };
 
 /// different chart types
@@ -425,6 +425,10 @@ protected:
 	void on_font_selection();
 	/// callback to change font face
 	void on_font_face_selection();
+	/// extents used for drawing current 
+	vec3 extent;
+	/// prepare extents for drawing
+	void prepare_extents();
 	/// set the uniforms for plot configurations
 	void set_plot_uniforms(cgv::render::context& ctx, cgv::render::shader_program& prog);
 	/// set the uniforms for defining the mappings to visual variables
@@ -502,6 +506,10 @@ public:
 	void set_extent(const vecn& new_extent);
 	/// query the plot extend in 2D coordinates
 	vecn get_extent() const;
+	//! set extent_scaling values for all axes
+	/*! for all axes with extent_scaling > 0 (axes values default to 0) ensure that world extents 
+	    are in same ratio as extent_scaling values */
+	void set_extent_scaling(float x_scale, float y_scale, float z_scale = 0);
 	/// set the plot width to given value and if constrained == true the height, such that the aspect ration is the same as the aspect ratio of the domain
 	void set_width(float new_width, bool constrained = true);
 	/// set the plot height to given value and if constrained == true the width, such that the aspect ration is the same as the aspect ratio of the domain

@@ -97,6 +97,10 @@ public:
 	void set_log_config(bool enabled, float _min);
 	/// extent in world space
 	float extent;
+	//! potential constraint for scaling of plot extent in world space
+	/*! if 0, axis scaling is not constraint (default)
+	    if > 0 ensure that world extents of all axes where constraint is > 0 are in same ratio as extent_scaling values */
+	float extent_scaling;
 	/// line width
 	float line_width;
 	/// color of axis
