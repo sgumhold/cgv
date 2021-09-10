@@ -485,6 +485,11 @@ template&lt;typename T &gt; </td></tr>
 <tr class="memitem:a6d164d4a63cb11523ffbbcc5178fe2f2"><td class="memTemplItemLeft" align="right" valign="top">T&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1math.html#a6d164d4a63cb11523ffbbcc5178fe2f2">clamp</a> (const T &amp;v, const T &amp;a, const T &amp;b)</td></tr>
 <tr class="memdesc:a6d164d4a63cb11523ffbbcc5178fe2f2"><td class="mdescLeft">&#160;</td><td class="mdescRight">clamp v at [a,b] <br /></td></tr>
 <tr class="separator:a6d164d4a63cb11523ffbbcc5178fe2f2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a109be23833f4f021174bc42277b3a128"><td class="memTemplParams" colspan="2"><a id="a109be23833f4f021174bc42277b3a128"></a>
+template&lt;typename T &gt; </td></tr>
+<tr class="memitem:a109be23833f4f021174bc42277b3a128"><td class="memTemplItemLeft" align="right" valign="top">T&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1math.html#a109be23833f4f021174bc42277b3a128">saturate</a> (const T &amp;v)</td></tr>
+<tr class="memdesc:a109be23833f4f021174bc42277b3a128"><td class="mdescLeft">&#160;</td><td class="mdescRight">clamp v at [0,1] <br /></td></tr>
+<tr class="separator:a109be23833f4f021174bc42277b3a128"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a29647d32e032cc35e52b51591295ca60"><td class="memTemplParams" colspan="2"><a id="a29647d32e032cc35e52b51591295ca60"></a>
 template&lt;typename T &gt; </td></tr>
 <tr class="memitem:a29647d32e032cc35e52b51591295ca60"><td class="memTemplItemLeft" align="right" valign="top">T&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1math.html#a29647d32e032cc35e52b51591295ca60">erf</a> (const T x)</td></tr>
@@ -650,6 +655,11 @@ template&lt;typename T , cgv::type::uint32_type N&gt; </td></tr>
 <tr class="memitem:a0007918c8ff8b1fb4b50857a9cf335a7"><td class="memTemplItemLeft" align="right" valign="top">const <a class="el" href="classcgv_1_1math_1_1fvec.html">fvec</a>&lt; T, N &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1math.html#a0007918c8ff8b1fb4b50857a9cf335a7">clamp</a> (const <a class="el" href="classcgv_1_1math_1_1fvec.html">fvec</a>&lt; T, N &gt; &amp;v, const <a class="el" href="classcgv_1_1math_1_1fvec.html">fvec</a>&lt; T, N &gt; &amp;vl, const <a class="el" href="classcgv_1_1math_1_1fvec.html">fvec</a>&lt; T, N &gt; &amp;vr)</td></tr>
 <tr class="memdesc:a0007918c8ff8b1fb4b50857a9cf335a7"><td class="mdescLeft">&#160;</td><td class="mdescRight">clamp the components to the given range <br /></td></tr>
 <tr class="separator:a0007918c8ff8b1fb4b50857a9cf335a7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a675dd131c6bf12085fcd7d676c1d0ee6"><td class="memTemplParams" colspan="2"><a id="a675dd131c6bf12085fcd7d676c1d0ee6"></a>
+template&lt;typename T , cgv::type::uint32_type N&gt; </td></tr>
+<tr class="memitem:a675dd131c6bf12085fcd7d676c1d0ee6"><td class="memTemplItemLeft" align="right" valign="top">const <a class="el" href="classcgv_1_1math_1_1fvec.html">fvec</a>&lt; T, N &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1math.html#a675dd131c6bf12085fcd7d676c1d0ee6">saturate</a> (const <a class="el" href="classcgv_1_1math_1_1fvec.html">fvec</a>&lt; T, N &gt; &amp;v)</td></tr>
+<tr class="memdesc:a675dd131c6bf12085fcd7d676c1d0ee6"><td class="mdescLeft">&#160;</td><td class="mdescRight">shortcut to clamp the components to [0,1] <br /></td></tr>
+<tr class="separator:a675dd131c6bf12085fcd7d676c1d0ee6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab41dd3e7ea6d0410abba813f0c6067b6"><td class="memTemplParams" colspan="2"><a id="ab41dd3e7ea6d0410abba813f0c6067b6"></a>
 template&lt;typename T , cgv::type::uint32_type N&gt; </td></tr>
 <tr class="memitem:ab41dd3e7ea6d0410abba813f0c6067b6"><td class="memTemplItemLeft" align="right" valign="top">const <a class="el" href="classcgv_1_1math_1_1fvec.html">fvec</a>&lt; T, N &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1math.html#ab41dd3e7ea6d0410abba813f0c6067b6">pow</a> (const <a class="el" href="classcgv_1_1math_1_1fvec.html">fvec</a>&lt; T, N &gt; &amp;v, T e)</td></tr>
@@ -660,6 +670,21 @@ template&lt;typename T , cgv::type::uint32_type N&gt; </td></tr>
 <tr class="memitem:a5a8905e503619bb28d6234127a5d8b6a"><td class="memTemplItemLeft" align="right" valign="top">const <a class="el" href="classcgv_1_1math_1_1fvec.html">fvec</a>&lt; T, N &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1math.html#a5a8905e503619bb28d6234127a5d8b6a">pow</a> (const <a class="el" href="classcgv_1_1math_1_1fvec.html">fvec</a>&lt; T, N &gt; &amp;v, const <a class="el" href="classcgv_1_1math_1_1fvec.html">fvec</a>&lt; T, N &gt; &amp;e)</td></tr>
 <tr class="memdesc:a5a8905e503619bb28d6234127a5d8b6a"><td class="mdescLeft">&#160;</td><td class="mdescRight">pow function for fvec type <br /></td></tr>
 <tr class="separator:a5a8905e503619bb28d6234127a5d8b6a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a72c72e72ef2bc54eaf28001e05518b23"><td class="memTemplParams" colspan="2"><a id="a72c72e72ef2bc54eaf28001e05518b23"></a>
+template&lt;typename T , cgv::type::uint32_type N&gt; </td></tr>
+<tr class="memitem:a72c72e72ef2bc54eaf28001e05518b23"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classcgv_1_1math_1_1fvec.html">fvec</a>&lt; T, N &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1math.html#a72c72e72ef2bc54eaf28001e05518b23">ortho</a> (const <a class="el" href="classcgv_1_1math_1_1fvec.html">fvec</a>&lt; T, N &gt; &amp;v)=delete</td></tr>
+<tr class="memdesc:a72c72e72ef2bc54eaf28001e05518b23"><td class="mdescLeft">&#160;</td><td class="mdescRight">returns an orthogonal vector to v (only defined for 2d and 3d case) <br /></td></tr>
+<tr class="separator:a72c72e72ef2bc54eaf28001e05518b23"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a08d211a0f56ebfffb14bc900d8d9075c"><td class="memTemplParams" colspan="2"><a id="a08d211a0f56ebfffb14bc900d8d9075c"></a>
+template&lt;typename T &gt; </td></tr>
+<tr class="memitem:a08d211a0f56ebfffb14bc900d8d9075c"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classcgv_1_1math_1_1fvec.html">fvec</a>&lt; T, 2 &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1math.html#a08d211a0f56ebfffb14bc900d8d9075c">ortho</a> (const <a class="el" href="classcgv_1_1math_1_1fvec.html">fvec</a>&lt; T, 2 &gt; &amp;v)</td></tr>
+<tr class="memdesc:a08d211a0f56ebfffb14bc900d8d9075c"><td class="mdescLeft">&#160;</td><td class="mdescRight">returns an orthogonal vector to v <br /></td></tr>
+<tr class="separator:a08d211a0f56ebfffb14bc900d8d9075c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acae09866cba732f8e281ff52a735a9fb"><td class="memTemplParams" colspan="2"><a id="acae09866cba732f8e281ff52a735a9fb"></a>
+template&lt;typename T &gt; </td></tr>
+<tr class="memitem:acae09866cba732f8e281ff52a735a9fb"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classcgv_1_1math_1_1fvec.html">fvec</a>&lt; T, 3 &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1math.html#acae09866cba732f8e281ff52a735a9fb">ortho</a> (const <a class="el" href="classcgv_1_1math_1_1fvec.html">fvec</a>&lt; T, 3 &gt; &amp;v)</td></tr>
+<tr class="memdesc:acae09866cba732f8e281ff52a735a9fb"><td class="mdescLeft">&#160;</td><td class="mdescRight">returns an orthogonal vector to v <br /></td></tr>
+<tr class="separator:acae09866cba732f8e281ff52a735a9fb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab20031ad94f8b2a051428afe3a8ba59d"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
 <tr class="memitem:ab20031ad94f8b2a051428afe3a8ba59d"><td class="memTemplItemLeft" align="right" valign="top">bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1math.html#ab20031ad94f8b2a051428afe3a8ba59d">gaussj</a> (<a class="el" href="classcgv_1_1math_1_1mat.html">mat</a>&lt; T &gt; &amp;a, <a class="el" href="classcgv_1_1math_1_1mat.html">mat</a>&lt; T &gt; &amp;b)</td></tr>
 <tr class="separator:ab20031ad94f8b2a051428afe3a8ba59d"><td class="memSeparator" colspan="2">&#160;</td></tr>

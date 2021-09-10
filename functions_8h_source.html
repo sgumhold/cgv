@@ -105,235 +105,238 @@ $(document).ready(function(){initNavTree('functions_8h_source.html',''); initRes
 <div class="line"><a name="l00021"></a><span class="lineno"><a class="line" href="namespacecgv_1_1math.html#a83ad51a58298ebc80b25c9776e9245a9">   21</a></span>&#160;                T <a class="code" href="namespacecgv_1_1math.html#a83ad51a58298ebc80b25c9776e9245a9">plus</a>(<span class="keyword">const</span> T&amp; v) { <span class="keywordflow">return</span> v &gt;= T(0) ? v : T(0); }</div>
 <div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;                <span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</div>
 <div class="line"><a name="l00024"></a><span class="lineno"><a class="line" href="namespacecgv_1_1math.html#a6d164d4a63cb11523ffbbcc5178fe2f2">   24</a></span>&#160;                T <a class="code" href="namespacecgv_1_1math.html#a6d164d4a63cb11523ffbbcc5178fe2f2">clamp</a>(<span class="keyword">const</span> T&amp; v, <span class="keyword">const</span> T&amp; a, <span class="keyword">const</span> T&amp; b) { <span class="keywordflow">return</span> v &gt; b ? b : (v &lt; a ? a : v); }</div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;                <span class="keyword">namespace </span>detail {</div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;                        <span class="comment">//helper function to compute cheb approximation of erf functions</span></div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;                        <span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;                        T erfccheb(<span class="keyword">const</span> T z)</div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;                        {</div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;                                <span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">int</span> ncof = 28;</div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;                                <span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">double</span> cof[28] = { -1.3026537197817094, 6.4196979235649026e-1,</div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;                                1.9476473204185836e-2,-9.561514786808631e-3,-9.46595344482036e-4,</div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;                                3.66839497852761e-4,4.2523324806907e-5,-2.0278578112534e-5,</div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;                                -1.624290004647e-6,1.303655835580e-6,1.5626441722e-8,-8.5238095915e-8,</div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;                                6.529054439e-9,5.059343495e-9,-9.91364156e-10,-2.27365122e-10,</div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;                                9.6467911e-11, 2.394038e-12,-6.886027e-12,8.94487e-13, 3.13092e-13,</div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;                                -1.12708e-13,3.81e-16,7.106e-15,-1.523e-15,-9.4e-17,1.21e-16,-2.8e-17 };</div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160; </div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;                                <span class="keywordtype">int</span> j;</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;                                <span class="keywordtype">double</span> t, ty, tmp, d = 0., dd = 0.;</div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;                                assert(z &gt;= 0.);</div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160; </div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;                                t = 2. / (2. + z);</div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;                                ty = 4.*t - 2.;</div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;                                <span class="keywordflow">for</span> (j = ncof - 1; j &gt; 0; j--)</div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;                                {</div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;                                        tmp = d;</div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;                                        d = ty * d - dd + cof[j];</div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;                                        dd = tmp;</div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;                                }</div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;                                <span class="keywordflow">return</span> (T)(t*exp(-z * z + 0.5*(cof[0] + ty * d) - dd));</div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;                        }</div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;                }</div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;                <span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l00056"></a><span class="lineno"><a class="line" href="namespacecgv_1_1math.html#a29647d32e032cc35e52b51591295ca60">   56</a></span>&#160;                T <a class="code" href="namespacecgv_1_1math.html#a29647d32e032cc35e52b51591295ca60">erf</a>(<span class="keyword">const</span> T x)</div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;                {</div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;                        <span class="keywordflow">if</span> (x &gt;= 0.)</div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;                                <span class="keywordflow">return</span> T(1.0) - detail::erfccheb(x);</div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;                        <span class="keywordflow">else</span></div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;                                <span class="keywordflow">return</span> detail::erfccheb(-x) - T(1.0);</div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;                }</div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160; </div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;                <span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l00066"></a><span class="lineno"><a class="line" href="namespacecgv_1_1math.html#a0d3c0f788a80d7dd395ab7585f94ab97">   66</a></span>&#160;                T <a class="code" href="namespacecgv_1_1math.html#a0d3c0f788a80d7dd395ab7585f94ab97">erfc</a>(<span class="keyword">const</span> T x)</div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;                {</div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;                        <span class="keywordflow">if</span> (x &gt;= 0.)</div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;                                <span class="keywordflow">return</span> detail::erfccheb(x);</div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;                        <span class="keywordflow">else</span></div>
-<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;                                <span class="keywordflow">return</span> 2.0 - detail::erfccheb(-x);</div>
-<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;                }</div>
-<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160; </div>
-<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;                <span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l00076"></a><span class="lineno"><a class="line" href="namespacecgv_1_1math.html#a4ce1cee7f941d273e312febdc800adb6">   76</a></span>&#160;                T <a class="code" href="namespacecgv_1_1math.html#a4ce1cee7f941d273e312febdc800adb6">erfcx</a>(<span class="keyword">const</span> T x)</div>
-<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;                {</div>
-<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;                        <span class="keywordflow">return</span> exp(x*x)* erfccheb(x);</div>
-<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;                }</div>
-<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160; </div>
-<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;                <span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l00083"></a><span class="lineno"><a class="line" href="namespacecgv_1_1math.html#ad6333ed98afd5457f68b69cd20e69be0">   83</a></span>&#160;                T <a class="code" href="namespacecgv_1_1math.html#ad6333ed98afd5457f68b69cd20e69be0">erfc_inv</a>(<span class="keyword">const</span> T p)</div>
-<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;                {</div>
-<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;                        <span class="keywordtype">double</span> x, err, t, pp;</div>
-<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;                        <span class="keywordflow">if</span> (p &gt;= 2.0) <span class="keywordflow">return</span> -100.;</div>
-<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;                        <span class="keywordflow">if</span> (p &lt;= 0.0) <span class="keywordflow">return</span> 100.;</div>
-<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;                        pp = (p &lt; 1.0) ? p : 2. - p;</div>
-<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;                        t = sqrt(-2.*log(pp / 2.));</div>
-<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;                        x = -0.70711*((2.30753 + t * 0.27061) / (1. + t * (0.99229 + t * 0.04481)) - t);</div>
-<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;                        <span class="keywordflow">for</span> (<span class="keywordtype">int</span> j = 0; j &lt; 2; j++) {</div>
-<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;                                err = <a class="code" href="namespacecgv_1_1math.html#a0d3c0f788a80d7dd395ab7585f94ab97">erfc</a>(x) - pp;</div>
-<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;                                x += err / (1.12837916709551257*exp(-(x*x)) - x * err);</div>
-<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;                        }</div>
-<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;                        <span class="keywordflow">return</span> (p &lt; 1.0 ? x : -x);</div>
-<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;                }</div>
-<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160; </div>
-<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;                <span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l00100"></a><span class="lineno"><a class="line" href="namespacecgv_1_1math.html#a94aee89324bc58017a87e0e4c91a36a7">  100</a></span>&#160;                T <a class="code" href="namespacecgv_1_1math.html#a94aee89324bc58017a87e0e4c91a36a7">erf_inv</a>(<span class="keyword">const</span> T p)</div>
-<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;                {</div>
-<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;                        <span class="keywordflow">return</span> <a class="code" href="namespacecgv_1_1math.html#ad6333ed98afd5457f68b69cd20e69be0">erfc_inv</a>(1. - p);</div>
-<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;                }</div>
-<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160; </div>
-<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160; </div>
-<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;                <span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l00108"></a><span class="lineno"><a class="line" href="namespacecgv_1_1math.html#ad4e38d3a09f964017cf36143d2d1f0a9">  108</a></span>&#160;                T <a class="code" href="namespacecgv_1_1math.html#ad4e38d3a09f964017cf36143d2d1f0a9">Phi</a>(<span class="keyword">const</span> T&amp; x)</div>
-<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;                {</div>
-<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;                        <span class="keywordflow">return</span> (T)(0.5*<a class="code" href="namespacecgv_1_1math.html#a0d3c0f788a80d7dd395ab7585f94ab97">erfc</a>(-x*sqrt(0.5)));</div>
-<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;                }</div>
-<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160; </div>
-<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;                <span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l00115"></a><span class="lineno"><a class="line" href="namespacecgv_1_1math.html#a04435f4678d0f753e16f9617551ed2f9">  115</a></span>&#160;                T <a class="code" href="namespacecgv_1_1math.html#a04435f4678d0f753e16f9617551ed2f9">inv_Phi</a>(<span class="keyword">const</span> T&amp; p)</div>
-<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;                {</div>
-<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;                        <span class="keyword">static</span> T a[] = {(T)-3.969683028665376e+01,(T) 2.209460984245205e+02,(T) -2.759285104469687e+02,(T) 1.383577518672690e+02,(T) -3.066479806614716e+01,(T) 2.506628277459239e+00};</div>
-<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;                        <span class="keyword">static</span> T b[] = {(T)-5.447609879822406e+01,(T) 1.615858368580409e+02,(T) -1.556989798598866e+02,(T) 6.680131188771972e+01,(T) -1.328068155288572e+01};</div>
-<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;                        <span class="keyword">static</span> T c[] = {(T)-7.784894002430293e-03,(T)-3.223964580411365e-01,(T)-2.400758277161838e+00,(T)-2.549732539343734e+00,(T) 4.374664141464968e+00,(T) 2.938163982698783e+00};</div>
-<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;                        <span class="keyword">static</span> T d[] = {(T)7.784695709041462e-03,(T)3.224671290700398e-01,(T)2.445134137142996e+00,(T)3.754408661907416e+00};</div>
-<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160; </div>
-<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;                        <span class="keywordflow">if</span> (p &lt;= 0)</div>
-<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;                                <span class="keywordflow">return</span> -std::numeric_limits&lt;T&gt;::infinity();</div>
-<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;                        <span class="keywordflow">if</span> (p &gt;= 1)</div>
-<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;                                <span class="keywordflow">return</span>  std::numeric_limits&lt;T&gt;::infinity();</div>
-<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;                        T x;</div>
-<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;                        <span class="keywordflow">if</span> (p &lt; (T)0.02425) {</div>
-<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;                                T q = sqrt(-(T)2.0*log(p));</div>
-<div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;                                x = (((((c(1)*q+c(2))*q+c(3))*q+c(4))*q+c(5))*q+c(6)) /</div>
-<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160;                                        ((((d(1)*q+d(2))*q+d(3))*q+d(4))*q+1);</div>
-<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;                        }</div>
-<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;                        <span class="keywordflow">else</span> <span class="keywordflow">if</span> (p &lt;= (T)0.97575) {</div>
-<div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160;                          T q = p - (T)0.5;</div>
-<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160;                          T r = q*q;</div>
-<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160;                          x = (((((a(1)*r+a(2))*r+a(3))*r+a(4))*r+a(5))*r+a(6))*q /</div>
-<div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160;                                   (((((b(1)*r+b(2))*r+b(3))*r+b(4))*r+b(5))*r+1);</div>
-<div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160;                        }</div>
-<div class="line"><a name="l00138"></a><span class="lineno">  138</span>&#160;                        <span class="keywordflow">else</span> {</div>
-<div class="line"><a name="l00139"></a><span class="lineno">  139</span>&#160;                          T q = sqrt(-(T)2.0*log(1-p));</div>
-<div class="line"><a name="l00140"></a><span class="lineno">  140</span>&#160;                          x = -(((((c(1)*q+c(2))*q+c(3))*q+c(4))*q+c(5))*q+c(6)) /</div>
-<div class="line"><a name="l00141"></a><span class="lineno">  141</span>&#160;                                         ((((d(1)*q+d(2))*q+d(3))*q+d(4))*q+1);</div>
-<div class="line"><a name="l00142"></a><span class="lineno">  142</span>&#160;                        }</div>
-<div class="line"><a name="l00143"></a><span class="lineno">  143</span>&#160;                        <span class="keywordflow">return</span> x;</div>
-<div class="line"><a name="l00144"></a><span class="lineno">  144</span>&#160;                }</div>
-<div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160;                <span class="keyword">extern</span> CGV_API <span class="keywordtype">double</span> <a class="code" href="namespacecgv_1_1math.html#a2a4a644a254ea830977b0d01fe93d91f">compute_unit_ball_volume</a>(<span class="keywordtype">unsigned</span> n);</div>
-<div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160;                <span class="keyword">extern</span> CGV_API <span class="keywordtype">double</span> <a class="code" href="namespacecgv_1_1math.html#a1cf9b277cd0690655f553db567b1c053">compute_ball_volume</a>(<span class="keywordtype">unsigned</span> n, <span class="keywordtype">double</span> R);</div>
-<div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160;                <span class="keyword">extern</span> CGV_API <span class="keywordtype">double</span> <a class="code" href="namespacecgv_1_1math.html#ad3d907d9219c652396ff81057de4bae6">compute_unit_sphere_area</a>(<span class="keywordtype">unsigned</span> n);</div>
-<div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160;                <span class="keyword">extern</span> CGV_API <span class="keywordtype">double</span> <a class="code" href="namespacecgv_1_1math.html#acf4fd0c1095e3805f69c1f5df116ca00">compute_sphere_area</a>(<span class="keywordtype">unsigned</span> n, <span class="keywordtype">double</span> R);</div>
-<div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160; </div>
-<div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160;                <span class="comment">//returns v*v</span></div>
-<div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160;                <span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l00156"></a><span class="lineno">  156</span>&#160;                T sqr(<span class="keyword">const</span> T&amp; v)</div>
-<div class="line"><a name="l00157"></a><span class="lineno">  157</span>&#160;                {</div>
-<div class="line"><a name="l00158"></a><span class="lineno">  158</span>&#160;                        <span class="keywordflow">return</span> v*v;</div>
-<div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160;                }</div>
-<div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160; </div>
-<div class="line"><a name="l00161"></a><span class="lineno">  161</span>&#160;                <span class="comment">//return the maximum of a and b</span></div>
-<div class="line"><a name="l00162"></a><span class="lineno">  162</span>&#160;                <span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l00163"></a><span class="lineno">  163</span>&#160;                T maximum(<span class="keyword">const</span> T&amp; a, <span class="keyword">const</span> T&amp;b)</div>
-<div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160;                {</div>
-<div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160;                        <span class="keywordflow">return</span> a &gt; b ? a : b;</div>
-<div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160;                }</div>
-<div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160; </div>
-<div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160;                <span class="comment">//return minimum of a and b</span></div>
-<div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160;                <span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l00170"></a><span class="lineno">  170</span>&#160;                T minimum(<span class="keyword">const</span> T &amp;a, <span class="keyword">const</span> T&amp;b)</div>
-<div class="line"><a name="l00171"></a><span class="lineno">  171</span>&#160;                {</div>
-<div class="line"><a name="l00172"></a><span class="lineno">  172</span>&#160;                        <span class="keywordflow">return</span> a &lt; b ? a : b;</div>
-<div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160;                }</div>
-<div class="line"><a name="l00174"></a><span class="lineno">  174</span>&#160; </div>
-<div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160;                <span class="comment">//return the maximum of a, b and c</span></div>
-<div class="line"><a name="l00176"></a><span class="lineno">  176</span>&#160;                <span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l00177"></a><span class="lineno">  177</span>&#160;                T maximum(<span class="keyword">const</span> T&amp; a, <span class="keyword">const</span> T&amp;b, <span class="keyword">const</span> T&amp; c)</div>
-<div class="line"><a name="l00178"></a><span class="lineno">  178</span>&#160;                {</div>
-<div class="line"><a name="l00179"></a><span class="lineno">  179</span>&#160;                        <span class="keywordflow">if</span>(a &gt; b)</div>
-<div class="line"><a name="l00180"></a><span class="lineno">  180</span>&#160;                        {</div>
-<div class="line"><a name="l00181"></a><span class="lineno">  181</span>&#160;                                <span class="keywordflow">return</span> a &gt; c ? a : c;</div>
-<div class="line"><a name="l00182"></a><span class="lineno">  182</span>&#160;                        }</div>
-<div class="line"><a name="l00183"></a><span class="lineno">  183</span>&#160;                        <span class="keywordflow">else</span></div>
-<div class="line"><a name="l00184"></a><span class="lineno">  184</span>&#160;                        {</div>
-<div class="line"><a name="l00185"></a><span class="lineno">  185</span>&#160;                                <span class="keywordflow">return</span> b &gt; c ? b : c;</div>
-<div class="line"><a name="l00186"></a><span class="lineno">  186</span>&#160;                        }</div>
-<div class="line"><a name="l00187"></a><span class="lineno">  187</span>&#160;                }</div>
-<div class="line"><a name="l00188"></a><span class="lineno">  188</span>&#160; </div>
-<div class="line"><a name="l00189"></a><span class="lineno">  189</span>&#160;                <span class="comment">//return the minimum of a, b and c</span></div>
-<div class="line"><a name="l00190"></a><span class="lineno">  190</span>&#160;                <span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l00191"></a><span class="lineno">  191</span>&#160;                T minimum(<span class="keyword">const</span> T&amp; a, <span class="keyword">const</span> T&amp;b, <span class="keyword">const</span> T&amp; c)</div>
-<div class="line"><a name="l00192"></a><span class="lineno">  192</span>&#160;                {</div>
-<div class="line"><a name="l00193"></a><span class="lineno">  193</span>&#160;                        <span class="keywordflow">if</span>(a &lt; b)</div>
-<div class="line"><a name="l00194"></a><span class="lineno">  194</span>&#160;                        {</div>
-<div class="line"><a name="l00195"></a><span class="lineno">  195</span>&#160;                                <span class="keywordflow">return</span> a &lt; c ? a : c;</div>
-<div class="line"><a name="l00196"></a><span class="lineno">  196</span>&#160;                        }</div>
-<div class="line"><a name="l00197"></a><span class="lineno">  197</span>&#160;                        <span class="keywordflow">else</span></div>
-<div class="line"><a name="l00198"></a><span class="lineno">  198</span>&#160;                        {</div>
-<div class="line"><a name="l00199"></a><span class="lineno">  199</span>&#160;                                <span class="keywordflow">return</span> b &lt; c ? b : c;</div>
-<div class="line"><a name="l00200"></a><span class="lineno">  200</span>&#160;                        }</div>
-<div class="line"><a name="l00201"></a><span class="lineno">  201</span>&#160;                }</div>
-<div class="line"><a name="l00202"></a><span class="lineno">  202</span>&#160; </div>
-<div class="line"><a name="l00203"></a><span class="lineno">  203</span>&#160; </div>
-<div class="line"><a name="l00204"></a><span class="lineno">  204</span>&#160; </div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;                <span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</div>
+<div class="line"><a name="l00027"></a><span class="lineno"><a class="line" href="namespacecgv_1_1math.html#a109be23833f4f021174bc42277b3a128">   27</a></span>&#160;                T <a class="code" href="namespacecgv_1_1math.html#a109be23833f4f021174bc42277b3a128">saturate</a>(<span class="keyword">const</span> T&amp; v) { <span class="keywordflow">return</span> v &gt; T(1) ? T(1) : (v &lt; T(0) ? T(0) : v); }</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;                <span class="keyword">namespace </span>detail {</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;                        <span class="comment">//helper function to compute cheb approximation of erf functions</span></div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;                        <span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;                        T erfccheb(<span class="keyword">const</span> T z)</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;                        {</div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;                                <span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">int</span> ncof = 28;</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;                                <span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">double</span> cof[28] = { -1.3026537197817094, 6.4196979235649026e-1,</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;                                1.9476473204185836e-2,-9.561514786808631e-3,-9.46595344482036e-4,</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;                                3.66839497852761e-4,4.2523324806907e-5,-2.0278578112534e-5,</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;                                -1.624290004647e-6,1.303655835580e-6,1.5626441722e-8,-8.5238095915e-8,</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;                                6.529054439e-9,5.059343495e-9,-9.91364156e-10,-2.27365122e-10,</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;                                9.6467911e-11, 2.394038e-12,-6.886027e-12,8.94487e-13, 3.13092e-13,</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;                                -1.12708e-13,3.81e-16,7.106e-15,-1.523e-15,-9.4e-17,1.21e-16,-2.8e-17 };</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160; </div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;                                <span class="keywordtype">int</span> j;</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;                                <span class="keywordtype">double</span> t, ty, tmp, d = 0., dd = 0.;</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;                                assert(z &gt;= 0.);</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160; </div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;                                t = 2. / (2. + z);</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;                                ty = 4.*t - 2.;</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;                                <span class="keywordflow">for</span> (j = ncof - 1; j &gt; 0; j--)</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;                                {</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;                                        tmp = d;</div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;                                        d = ty * d - dd + cof[j];</div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;                                        dd = tmp;</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;                                }</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;                                <span class="keywordflow">return</span> (T)(t*exp(-z * z + 0.5*(cof[0] + ty * d) - dd));</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;                        }</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;                }</div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;                <span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
+<div class="line"><a name="l00059"></a><span class="lineno"><a class="line" href="namespacecgv_1_1math.html#a29647d32e032cc35e52b51591295ca60">   59</a></span>&#160;                T <a class="code" href="namespacecgv_1_1math.html#a29647d32e032cc35e52b51591295ca60">erf</a>(<span class="keyword">const</span> T x)</div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;                {</div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;                        <span class="keywordflow">if</span> (x &gt;= 0.)</div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;                                <span class="keywordflow">return</span> T(1.0) - detail::erfccheb(x);</div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;                        <span class="keywordflow">else</span></div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;                                <span class="keywordflow">return</span> detail::erfccheb(-x) - T(1.0);</div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;                }</div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160; </div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;                <span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
+<div class="line"><a name="l00069"></a><span class="lineno"><a class="line" href="namespacecgv_1_1math.html#a0d3c0f788a80d7dd395ab7585f94ab97">   69</a></span>&#160;                T <a class="code" href="namespacecgv_1_1math.html#a0d3c0f788a80d7dd395ab7585f94ab97">erfc</a>(<span class="keyword">const</span> T x)</div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;                {</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;                        <span class="keywordflow">if</span> (x &gt;= 0.)</div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;                                <span class="keywordflow">return</span> detail::erfccheb(x);</div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;                        <span class="keywordflow">else</span></div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;                                <span class="keywordflow">return</span> 2.0 - detail::erfccheb(-x);</div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;                }</div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160; </div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;                <span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
+<div class="line"><a name="l00079"></a><span class="lineno"><a class="line" href="namespacecgv_1_1math.html#a4ce1cee7f941d273e312febdc800adb6">   79</a></span>&#160;                T <a class="code" href="namespacecgv_1_1math.html#a4ce1cee7f941d273e312febdc800adb6">erfcx</a>(<span class="keyword">const</span> T x)</div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;                {</div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;                        <span class="keywordflow">return</span> exp(x*x)* erfccheb(x);</div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;                }</div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160; </div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;                <span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
+<div class="line"><a name="l00086"></a><span class="lineno"><a class="line" href="namespacecgv_1_1math.html#ad6333ed98afd5457f68b69cd20e69be0">   86</a></span>&#160;                T <a class="code" href="namespacecgv_1_1math.html#ad6333ed98afd5457f68b69cd20e69be0">erfc_inv</a>(<span class="keyword">const</span> T p)</div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;                {</div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;                        <span class="keywordtype">double</span> x, err, t, pp;</div>
+<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;                        <span class="keywordflow">if</span> (p &gt;= 2.0) <span class="keywordflow">return</span> -100.;</div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;                        <span class="keywordflow">if</span> (p &lt;= 0.0) <span class="keywordflow">return</span> 100.;</div>
+<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;                        pp = (p &lt; 1.0) ? p : 2. - p;</div>
+<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;                        t = sqrt(-2.*log(pp / 2.));</div>
+<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;                        x = -0.70711*((2.30753 + t * 0.27061) / (1. + t * (0.99229 + t * 0.04481)) - t);</div>
+<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;                        <span class="keywordflow">for</span> (<span class="keywordtype">int</span> j = 0; j &lt; 2; j++) {</div>
+<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;                                err = <a class="code" href="namespacecgv_1_1math.html#a0d3c0f788a80d7dd395ab7585f94ab97">erfc</a>(x) - pp;</div>
+<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;                                x += err / (1.12837916709551257*exp(-(x*x)) - x * err);</div>
+<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;                        }</div>
+<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;                        <span class="keywordflow">return</span> (p &lt; 1.0 ? x : -x);</div>
+<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;                }</div>
+<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160; </div>
+<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;                <span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
+<div class="line"><a name="l00103"></a><span class="lineno"><a class="line" href="namespacecgv_1_1math.html#a94aee89324bc58017a87e0e4c91a36a7">  103</a></span>&#160;                T <a class="code" href="namespacecgv_1_1math.html#a94aee89324bc58017a87e0e4c91a36a7">erf_inv</a>(<span class="keyword">const</span> T p)</div>
+<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;                {</div>
+<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;                        <span class="keywordflow">return</span> <a class="code" href="namespacecgv_1_1math.html#ad6333ed98afd5457f68b69cd20e69be0">erfc_inv</a>(1. - p);</div>
+<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;                }</div>
+<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160; </div>
+<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160; </div>
+<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;                <span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
+<div class="line"><a name="l00111"></a><span class="lineno"><a class="line" href="namespacecgv_1_1math.html#ad4e38d3a09f964017cf36143d2d1f0a9">  111</a></span>&#160;                T <a class="code" href="namespacecgv_1_1math.html#ad4e38d3a09f964017cf36143d2d1f0a9">Phi</a>(<span class="keyword">const</span> T&amp; x)</div>
+<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;                {</div>
+<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;                        <span class="keywordflow">return</span> (T)(0.5*<a class="code" href="namespacecgv_1_1math.html#a0d3c0f788a80d7dd395ab7585f94ab97">erfc</a>(-x*sqrt(0.5)));</div>
+<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;                }</div>
+<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160; </div>
+<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;                <span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
+<div class="line"><a name="l00118"></a><span class="lineno"><a class="line" href="namespacecgv_1_1math.html#a04435f4678d0f753e16f9617551ed2f9">  118</a></span>&#160;                T <a class="code" href="namespacecgv_1_1math.html#a04435f4678d0f753e16f9617551ed2f9">inv_Phi</a>(<span class="keyword">const</span> T&amp; p)</div>
+<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;                {</div>
+<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;                        <span class="keyword">static</span> T a[] = {(T)-3.969683028665376e+01,(T) 2.209460984245205e+02,(T) -2.759285104469687e+02,(T) 1.383577518672690e+02,(T) -3.066479806614716e+01,(T) 2.506628277459239e+00};</div>
+<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;                        <span class="keyword">static</span> T b[] = {(T)-5.447609879822406e+01,(T) 1.615858368580409e+02,(T) -1.556989798598866e+02,(T) 6.680131188771972e+01,(T) -1.328068155288572e+01};</div>
+<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;                        <span class="keyword">static</span> T c[] = {(T)-7.784894002430293e-03,(T)-3.223964580411365e-01,(T)-2.400758277161838e+00,(T)-2.549732539343734e+00,(T) 4.374664141464968e+00,(T) 2.938163982698783e+00};</div>
+<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;                        <span class="keyword">static</span> T d[] = {(T)7.784695709041462e-03,(T)3.224671290700398e-01,(T)2.445134137142996e+00,(T)3.754408661907416e+00};</div>
+<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160; </div>
+<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;                        <span class="keywordflow">if</span> (p &lt;= 0)</div>
+<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;                                <span class="keywordflow">return</span> -std::numeric_limits&lt;T&gt;::infinity();</div>
+<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;                        <span class="keywordflow">if</span> (p &gt;= 1)</div>
+<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;                                <span class="keywordflow">return</span>  std::numeric_limits&lt;T&gt;::infinity();</div>
+<div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;                        T x;</div>
+<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160;                        <span class="keywordflow">if</span> (p &lt; (T)0.02425) {</div>
+<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;                                T q = sqrt(-(T)2.0*log(p));</div>
+<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;                                x = (((((c(1)*q+c(2))*q+c(3))*q+c(4))*q+c(5))*q+c(6)) /</div>
+<div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160;                                        ((((d(1)*q+d(2))*q+d(3))*q+d(4))*q+1);</div>
+<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160;                        }</div>
+<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160;                        <span class="keywordflow">else</span> <span class="keywordflow">if</span> (p &lt;= (T)0.97575) {</div>
+<div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160;                          T q = p - (T)0.5;</div>
+<div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160;                          T r = q*q;</div>
+<div class="line"><a name="l00138"></a><span class="lineno">  138</span>&#160;                          x = (((((a(1)*r+a(2))*r+a(3))*r+a(4))*r+a(5))*r+a(6))*q /</div>
+<div class="line"><a name="l00139"></a><span class="lineno">  139</span>&#160;                                   (((((b(1)*r+b(2))*r+b(3))*r+b(4))*r+b(5))*r+1);</div>
+<div class="line"><a name="l00140"></a><span class="lineno">  140</span>&#160;                        }</div>
+<div class="line"><a name="l00141"></a><span class="lineno">  141</span>&#160;                        <span class="keywordflow">else</span> {</div>
+<div class="line"><a name="l00142"></a><span class="lineno">  142</span>&#160;                          T q = sqrt(-(T)2.0*log(1-p));</div>
+<div class="line"><a name="l00143"></a><span class="lineno">  143</span>&#160;                          x = -(((((c(1)*q+c(2))*q+c(3))*q+c(4))*q+c(5))*q+c(6)) /</div>
+<div class="line"><a name="l00144"></a><span class="lineno">  144</span>&#160;                                         ((((d(1)*q+d(2))*q+d(3))*q+d(4))*q+1);</div>
+<div class="line"><a name="l00145"></a><span class="lineno">  145</span>&#160;                        }</div>
+<div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160;                        <span class="keywordflow">return</span> x;</div>
+<div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160;                }</div>
+<div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160;                <span class="keyword">extern</span> CGV_API <span class="keywordtype">double</span> <a class="code" href="namespacecgv_1_1math.html#a2a4a644a254ea830977b0d01fe93d91f">compute_unit_ball_volume</a>(<span class="keywordtype">unsigned</span> n);</div>
+<div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160;                <span class="keyword">extern</span> CGV_API <span class="keywordtype">double</span> <a class="code" href="namespacecgv_1_1math.html#a1cf9b277cd0690655f553db567b1c053">compute_ball_volume</a>(<span class="keywordtype">unsigned</span> n, <span class="keywordtype">double</span> R);</div>
+<div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160;                <span class="keyword">extern</span> CGV_API <span class="keywordtype">double</span> <a class="code" href="namespacecgv_1_1math.html#ad3d907d9219c652396ff81057de4bae6">compute_unit_sphere_area</a>(<span class="keywordtype">unsigned</span> n);</div>
+<div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160;                <span class="keyword">extern</span> CGV_API <span class="keywordtype">double</span> <a class="code" href="namespacecgv_1_1math.html#acf4fd0c1095e3805f69c1f5df116ca00">compute_sphere_area</a>(<span class="keywordtype">unsigned</span> n, <span class="keywordtype">double</span> R);</div>
+<div class="line"><a name="l00156"></a><span class="lineno">  156</span>&#160; </div>
+<div class="line"><a name="l00157"></a><span class="lineno">  157</span>&#160;                <span class="comment">//returns v*v</span></div>
+<div class="line"><a name="l00158"></a><span class="lineno">  158</span>&#160;                <span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
+<div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160;                T sqr(<span class="keyword">const</span> T&amp; v)</div>
+<div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160;                {</div>
+<div class="line"><a name="l00161"></a><span class="lineno">  161</span>&#160;                        <span class="keywordflow">return</span> v*v;</div>
+<div class="line"><a name="l00162"></a><span class="lineno">  162</span>&#160;                }</div>
+<div class="line"><a name="l00163"></a><span class="lineno">  163</span>&#160; </div>
+<div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160;                <span class="comment">//return the maximum of a and b</span></div>
+<div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160;                <span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
+<div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160;                T maximum(<span class="keyword">const</span> T&amp; a, <span class="keyword">const</span> T&amp;b)</div>
+<div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160;                {</div>
+<div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160;                        <span class="keywordflow">return</span> a &gt; b ? a : b;</div>
+<div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160;                }</div>
+<div class="line"><a name="l00170"></a><span class="lineno">  170</span>&#160; </div>
+<div class="line"><a name="l00171"></a><span class="lineno">  171</span>&#160;                <span class="comment">//return minimum of a and b</span></div>
+<div class="line"><a name="l00172"></a><span class="lineno">  172</span>&#160;                <span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</div>
+<div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160;                T minimum(<span class="keyword">const</span> T &amp;a, <span class="keyword">const</span> T&amp;b)</div>
+<div class="line"><a name="l00174"></a><span class="lineno">  174</span>&#160;                {</div>
+<div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160;                        <span class="keywordflow">return</span> a &lt; b ? a : b;</div>
+<div class="line"><a name="l00176"></a><span class="lineno">  176</span>&#160;                }</div>
+<div class="line"><a name="l00177"></a><span class="lineno">  177</span>&#160; </div>
+<div class="line"><a name="l00178"></a><span class="lineno">  178</span>&#160;                <span class="comment">//return the maximum of a, b and c</span></div>
+<div class="line"><a name="l00179"></a><span class="lineno">  179</span>&#160;                <span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
+<div class="line"><a name="l00180"></a><span class="lineno">  180</span>&#160;                T maximum(<span class="keyword">const</span> T&amp; a, <span class="keyword">const</span> T&amp;b, <span class="keyword">const</span> T&amp; c)</div>
+<div class="line"><a name="l00181"></a><span class="lineno">  181</span>&#160;                {</div>
+<div class="line"><a name="l00182"></a><span class="lineno">  182</span>&#160;                        <span class="keywordflow">if</span>(a &gt; b)</div>
+<div class="line"><a name="l00183"></a><span class="lineno">  183</span>&#160;                        {</div>
+<div class="line"><a name="l00184"></a><span class="lineno">  184</span>&#160;                                <span class="keywordflow">return</span> a &gt; c ? a : c;</div>
+<div class="line"><a name="l00185"></a><span class="lineno">  185</span>&#160;                        }</div>
+<div class="line"><a name="l00186"></a><span class="lineno">  186</span>&#160;                        <span class="keywordflow">else</span></div>
+<div class="line"><a name="l00187"></a><span class="lineno">  187</span>&#160;                        {</div>
+<div class="line"><a name="l00188"></a><span class="lineno">  188</span>&#160;                                <span class="keywordflow">return</span> b &gt; c ? b : c;</div>
+<div class="line"><a name="l00189"></a><span class="lineno">  189</span>&#160;                        }</div>
+<div class="line"><a name="l00190"></a><span class="lineno">  190</span>&#160;                }</div>
+<div class="line"><a name="l00191"></a><span class="lineno">  191</span>&#160; </div>
+<div class="line"><a name="l00192"></a><span class="lineno">  192</span>&#160;                <span class="comment">//return the minimum of a, b and c</span></div>
+<div class="line"><a name="l00193"></a><span class="lineno">  193</span>&#160;                <span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
+<div class="line"><a name="l00194"></a><span class="lineno">  194</span>&#160;                T minimum(<span class="keyword">const</span> T&amp; a, <span class="keyword">const</span> T&amp;b, <span class="keyword">const</span> T&amp; c)</div>
+<div class="line"><a name="l00195"></a><span class="lineno">  195</span>&#160;                {</div>
+<div class="line"><a name="l00196"></a><span class="lineno">  196</span>&#160;                        <span class="keywordflow">if</span>(a &lt; b)</div>
+<div class="line"><a name="l00197"></a><span class="lineno">  197</span>&#160;                        {</div>
+<div class="line"><a name="l00198"></a><span class="lineno">  198</span>&#160;                                <span class="keywordflow">return</span> a &lt; c ? a : c;</div>
+<div class="line"><a name="l00199"></a><span class="lineno">  199</span>&#160;                        }</div>
+<div class="line"><a name="l00200"></a><span class="lineno">  200</span>&#160;                        <span class="keywordflow">else</span></div>
+<div class="line"><a name="l00201"></a><span class="lineno">  201</span>&#160;                        {</div>
+<div class="line"><a name="l00202"></a><span class="lineno">  202</span>&#160;                                <span class="keywordflow">return</span> b &lt; c ? b : c;</div>
+<div class="line"><a name="l00203"></a><span class="lineno">  203</span>&#160;                        }</div>
+<div class="line"><a name="l00204"></a><span class="lineno">  204</span>&#160;                }</div>
 <div class="line"><a name="l00205"></a><span class="lineno">  205</span>&#160; </div>
-<div class="line"><a name="l00206"></a><span class="lineno">  206</span>&#160;                <span class="comment">//convert angles measured in degree to angles measured in rad</span></div>
-<div class="line"><a name="l00207"></a><span class="lineno">  207</span>&#160;                <span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l00208"></a><span class="lineno">  208</span>&#160;                T deg2rad(<span class="keyword">const</span> T&amp; deg)</div>
-<div class="line"><a name="l00209"></a><span class="lineno">  209</span>&#160;                {</div>
-<div class="line"><a name="l00210"></a><span class="lineno">  210</span>&#160;                        <span class="keywordflow">return</span> (T)(deg *3.14159/180.0);</div>
-<div class="line"><a name="l00211"></a><span class="lineno">  211</span>&#160;                }</div>
-<div class="line"><a name="l00212"></a><span class="lineno">  212</span>&#160; </div>
-<div class="line"><a name="l00213"></a><span class="lineno">  213</span>&#160; </div>
-<div class="line"><a name="l00214"></a><span class="lineno">  214</span>&#160;                <span class="comment">//convert angles measured in rad to angles measured in degree</span></div>
-<div class="line"><a name="l00215"></a><span class="lineno">  215</span>&#160;                <span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l00216"></a><span class="lineno">  216</span>&#160;                T rad2deg(<span class="keyword">const</span> T&amp; rad)</div>
-<div class="line"><a name="l00217"></a><span class="lineno">  217</span>&#160;                {</div>
-<div class="line"><a name="l00218"></a><span class="lineno">  218</span>&#160;                        <span class="keywordflow">return</span> (T)(rad*180.0/3.14159);</div>
-<div class="line"><a name="l00219"></a><span class="lineno">  219</span>&#160;                }</div>
-<div class="line"><a name="l00220"></a><span class="lineno">  220</span>&#160; </div>
-<div class="line"><a name="l00221"></a><span class="lineno">  221</span>&#160;                <span class="comment">//ln(gamma(x))</span></div>
-<div class="line"><a name="l00222"></a><span class="lineno">  222</span>&#160;                <span class="keyword">extern</span> CGV_API <span class="keywordtype">double</span> gamma_ln(<span class="keyword">const</span> <span class="keywordtype">double</span> xx);</div>
+<div class="line"><a name="l00206"></a><span class="lineno">  206</span>&#160; </div>
+<div class="line"><a name="l00207"></a><span class="lineno">  207</span>&#160; </div>
+<div class="line"><a name="l00208"></a><span class="lineno">  208</span>&#160; </div>
+<div class="line"><a name="l00209"></a><span class="lineno">  209</span>&#160;                <span class="comment">//convert angles measured in degree to angles measured in rad</span></div>
+<div class="line"><a name="l00210"></a><span class="lineno">  210</span>&#160;                <span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
+<div class="line"><a name="l00211"></a><span class="lineno">  211</span>&#160;                T deg2rad(<span class="keyword">const</span> T&amp; deg)</div>
+<div class="line"><a name="l00212"></a><span class="lineno">  212</span>&#160;                {</div>
+<div class="line"><a name="l00213"></a><span class="lineno">  213</span>&#160;                        <span class="keywordflow">return</span> (T)(deg *3.14159/180.0);</div>
+<div class="line"><a name="l00214"></a><span class="lineno">  214</span>&#160;                }</div>
+<div class="line"><a name="l00215"></a><span class="lineno">  215</span>&#160; </div>
+<div class="line"><a name="l00216"></a><span class="lineno">  216</span>&#160; </div>
+<div class="line"><a name="l00217"></a><span class="lineno">  217</span>&#160;                <span class="comment">//convert angles measured in rad to angles measured in degree</span></div>
+<div class="line"><a name="l00218"></a><span class="lineno">  218</span>&#160;                <span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
+<div class="line"><a name="l00219"></a><span class="lineno">  219</span>&#160;                T rad2deg(<span class="keyword">const</span> T&amp; rad)</div>
+<div class="line"><a name="l00220"></a><span class="lineno">  220</span>&#160;                {</div>
+<div class="line"><a name="l00221"></a><span class="lineno">  221</span>&#160;                        <span class="keywordflow">return</span> (T)(rad*180.0/3.14159);</div>
+<div class="line"><a name="l00222"></a><span class="lineno">  222</span>&#160;                }</div>
 <div class="line"><a name="l00223"></a><span class="lineno">  223</span>&#160; </div>
-<div class="line"><a name="l00224"></a><span class="lineno">  224</span>&#160;                <span class="comment">//factorial of n  (n!)</span></div>
-<div class="line"><a name="l00225"></a><span class="lineno">  225</span>&#160;                <span class="keyword">extern</span> CGV_API <span class="keywordtype">double</span> fac(<span class="keyword">const</span> <span class="keywordtype">int</span> n);</div>
+<div class="line"><a name="l00224"></a><span class="lineno">  224</span>&#160;                <span class="comment">//ln(gamma(x))</span></div>
+<div class="line"><a name="l00225"></a><span class="lineno">  225</span>&#160;                <span class="keyword">extern</span> CGV_API <span class="keywordtype">double</span> gamma_ln(<span class="keyword">const</span> <span class="keywordtype">double</span> xx);</div>
 <div class="line"><a name="l00226"></a><span class="lineno">  226</span>&#160; </div>
-<div class="line"><a name="l00227"></a><span class="lineno">  227</span>&#160;                <span class="comment">//returns ln(n!)</span></div>
-<div class="line"><a name="l00228"></a><span class="lineno">  228</span>&#160;                <span class="keyword">extern</span> CGV_API <span class="keywordtype">double</span> fac_ln(<span class="keyword">const</span> <span class="keywordtype">int</span> n);</div>
+<div class="line"><a name="l00227"></a><span class="lineno">  227</span>&#160;                <span class="comment">//factorial of n  (n!)</span></div>
+<div class="line"><a name="l00228"></a><span class="lineno">  228</span>&#160;                <span class="keyword">extern</span> CGV_API <span class="keywordtype">double</span> fac(<span class="keyword">const</span> <span class="keywordtype">int</span> n);</div>
 <div class="line"><a name="l00229"></a><span class="lineno">  229</span>&#160; </div>
-<div class="line"><a name="l00230"></a><span class="lineno">  230</span>&#160;                <span class="comment">//beta function</span></div>
-<div class="line"><a name="l00231"></a><span class="lineno">  231</span>&#160;                <span class="keyword">extern</span> CGV_API <span class="keywordtype">double</span> beta(<span class="keyword">const</span> <span class="keywordtype">double</span> z, <span class="keyword">const</span> <span class="keywordtype">double</span> w);</div>
+<div class="line"><a name="l00230"></a><span class="lineno">  230</span>&#160;                <span class="comment">//returns ln(n!)</span></div>
+<div class="line"><a name="l00231"></a><span class="lineno">  231</span>&#160;                <span class="keyword">extern</span> CGV_API <span class="keywordtype">double</span> fac_ln(<span class="keyword">const</span> <span class="keywordtype">int</span> n);</div>
 <div class="line"><a name="l00232"></a><span class="lineno">  232</span>&#160; </div>
-<div class="line"><a name="l00233"></a><span class="lineno">  233</span>&#160;                <span class="comment">//binomial coefficient n over k</span></div>
-<div class="line"><a name="l00234"></a><span class="lineno">  234</span>&#160;                <span class="keyword">extern</span> CGV_API <span class="keywordtype">double</span> nchoosek(<span class="keyword">const</span> <span class="keywordtype">int</span> n, <span class="keyword">const</span> <span class="keywordtype">int</span> k);</div>
+<div class="line"><a name="l00233"></a><span class="lineno">  233</span>&#160;                <span class="comment">//beta function</span></div>
+<div class="line"><a name="l00234"></a><span class="lineno">  234</span>&#160;                <span class="keyword">extern</span> CGV_API <span class="keywordtype">double</span> beta(<span class="keyword">const</span> <span class="keywordtype">double</span> z, <span class="keyword">const</span> <span class="keywordtype">double</span> w);</div>
 <div class="line"><a name="l00235"></a><span class="lineno">  235</span>&#160; </div>
-<div class="line"><a name="l00236"></a><span class="lineno">  236</span>&#160;                <span class="comment">//returns 0 if v &lt; th otherwise 1</span></div>
-<div class="line"><a name="l00237"></a><span class="lineno">  237</span>&#160;                <span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l00238"></a><span class="lineno">  238</span>&#160;                T thresh(<span class="keyword">const</span> T v,<span class="keyword">const</span> T th)</div>
-<div class="line"><a name="l00239"></a><span class="lineno">  239</span>&#160;                {</div>
-<div class="line"><a name="l00240"></a><span class="lineno">  240</span>&#160;                        <span class="keywordflow">if</span>(v &lt; th)</div>
-<div class="line"><a name="l00241"></a><span class="lineno">  241</span>&#160;                                <span class="keywordflow">return</span> (T)0;</div>
-<div class="line"><a name="l00242"></a><span class="lineno">  242</span>&#160;                        <span class="keywordflow">else</span></div>
-<div class="line"><a name="l00243"></a><span class="lineno">  243</span>&#160;                                <span class="keywordflow">return</span> (T)1;</div>
-<div class="line"><a name="l00244"></a><span class="lineno">  244</span>&#160;                }</div>
-<div class="line"><a name="l00245"></a><span class="lineno">  245</span>&#160;        }</div>
-<div class="line"><a name="l00246"></a><span class="lineno">  246</span>&#160;}</div>
-<div class="line"><a name="l00247"></a><span class="lineno">  247</span>&#160; </div>
-<div class="line"><a name="l00248"></a><span class="lineno">  248</span>&#160;<span class="preprocessor">#include &lt;cgv/config/lib_end.h&gt;</span></div>
+<div class="line"><a name="l00236"></a><span class="lineno">  236</span>&#160;                <span class="comment">//binomial coefficient n over k</span></div>
+<div class="line"><a name="l00237"></a><span class="lineno">  237</span>&#160;                <span class="keyword">extern</span> CGV_API <span class="keywordtype">double</span> nchoosek(<span class="keyword">const</span> <span class="keywordtype">int</span> n, <span class="keyword">const</span> <span class="keywordtype">int</span> k);</div>
+<div class="line"><a name="l00238"></a><span class="lineno">  238</span>&#160; </div>
+<div class="line"><a name="l00239"></a><span class="lineno">  239</span>&#160;                <span class="comment">//returns 0 if v &lt; th otherwise 1</span></div>
+<div class="line"><a name="l00240"></a><span class="lineno">  240</span>&#160;                <span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
+<div class="line"><a name="l00241"></a><span class="lineno">  241</span>&#160;                T thresh(<span class="keyword">const</span> T v,<span class="keyword">const</span> T th)</div>
+<div class="line"><a name="l00242"></a><span class="lineno">  242</span>&#160;                {</div>
+<div class="line"><a name="l00243"></a><span class="lineno">  243</span>&#160;                        <span class="keywordflow">if</span>(v &lt; th)</div>
+<div class="line"><a name="l00244"></a><span class="lineno">  244</span>&#160;                                <span class="keywordflow">return</span> (T)0;</div>
+<div class="line"><a name="l00245"></a><span class="lineno">  245</span>&#160;                        <span class="keywordflow">else</span></div>
+<div class="line"><a name="l00246"></a><span class="lineno">  246</span>&#160;                                <span class="keywordflow">return</span> (T)1;</div>
+<div class="line"><a name="l00247"></a><span class="lineno">  247</span>&#160;                }</div>
+<div class="line"><a name="l00248"></a><span class="lineno">  248</span>&#160;        }</div>
+<div class="line"><a name="l00249"></a><span class="lineno">  249</span>&#160;}</div>
+<div class="line"><a name="l00250"></a><span class="lineno">  250</span>&#160; </div>
+<div class="line"><a name="l00251"></a><span class="lineno">  251</span>&#160;<span class="preprocessor">#include &lt;cgv/config/lib_end.h&gt;</span></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
-<div class="ttc" id="anamespacecgv_1_1math_html_a04435f4678d0f753e16f9617551ed2f9"><div class="ttname"><a href="namespacecgv_1_1math.html#a04435f4678d0f753e16f9617551ed2f9">cgv::math::inv_Phi</a></div><div class="ttdeci">T inv_Phi(const T &amp;p)</div><div class="ttdoc">evaluate the inverse of the error function Phi^(-1)(p), p=0..1</div><div class="ttdef"><b>Definition:</b> functions.h:115</div></div>
-<div class="ttc" id="anamespacecgv_1_1math_html_ad4e38d3a09f964017cf36143d2d1f0a9"><div class="ttname"><a href="namespacecgv_1_1math.html#ad4e38d3a09f964017cf36143d2d1f0a9">cgv::math::Phi</a></div><div class="ttdeci">T Phi(const T &amp;x)</div><div class="ttdoc">evaluate the cummulative normal distribution function</div><div class="ttdef"><b>Definition:</b> functions.h:108</div></div>
+<div class="ttc" id="anamespacecgv_1_1math_html_a04435f4678d0f753e16f9617551ed2f9"><div class="ttname"><a href="namespacecgv_1_1math.html#a04435f4678d0f753e16f9617551ed2f9">cgv::math::inv_Phi</a></div><div class="ttdeci">T inv_Phi(const T &amp;p)</div><div class="ttdoc">evaluate the inverse of the error function Phi^(-1)(p), p=0..1</div><div class="ttdef"><b>Definition:</b> functions.h:118</div></div>
+<div class="ttc" id="anamespacecgv_1_1math_html_ad4e38d3a09f964017cf36143d2d1f0a9"><div class="ttname"><a href="namespacecgv_1_1math.html#ad4e38d3a09f964017cf36143d2d1f0a9">cgv::math::Phi</a></div><div class="ttdeci">T Phi(const T &amp;x)</div><div class="ttdoc">evaluate the cummulative normal distribution function</div><div class="ttdef"><b>Definition:</b> functions.h:111</div></div>
 <div class="ttc" id="anamespacecgv_1_1math_html_a1cf9b277cd0690655f553db567b1c053"><div class="ttname"><a href="namespacecgv_1_1math.html#a1cf9b277cd0690655f553db567b1c053">cgv::math::compute_ball_volume</a></div><div class="ttdeci">double compute_ball_volume(unsigned n, double R)</div><div class="ttdoc">compute volume of n-ball of radius R living in n-dimensional space with n&gt;=1; results are cached for ...</div><div class="ttdef"><b>Definition:</b> functions.cxx:23</div></div>
 <div class="ttc" id="anamespacecgv_1_1math_html_a2eb93f97516015984f2581e7ff178b3f"><div class="ttname"><a href="namespacecgv_1_1math.html#a2eb93f97516015984f2581e7ff178b3f">cgv::math::sign</a></div><div class="ttdeci">T sign(const T &amp;a, const T &amp;b)</div><div class="ttdoc">returns the abs(a)*sign(b)</div><div class="ttdef"><b>Definition:</b> functions.h:15</div></div>
-<div class="ttc" id="anamespacecgv_1_1math_html_ad6333ed98afd5457f68b69cd20e69be0"><div class="ttname"><a href="namespacecgv_1_1math.html#ad6333ed98afd5457f68b69cd20e69be0">cgv::math::erfc_inv</a></div><div class="ttdeci">T erfc_inv(const T p)</div><div class="ttdoc">inverse complementary error function</div><div class="ttdef"><b>Definition:</b> functions.h:83</div></div>
+<div class="ttc" id="anamespacecgv_1_1math_html_a109be23833f4f021174bc42277b3a128"><div class="ttname"><a href="namespacecgv_1_1math.html#a109be23833f4f021174bc42277b3a128">cgv::math::saturate</a></div><div class="ttdeci">T saturate(const T &amp;v)</div><div class="ttdoc">clamp v at [0,1]</div><div class="ttdef"><b>Definition:</b> functions.h:27</div></div>
+<div class="ttc" id="anamespacecgv_1_1math_html_ad6333ed98afd5457f68b69cd20e69be0"><div class="ttname"><a href="namespacecgv_1_1math.html#ad6333ed98afd5457f68b69cd20e69be0">cgv::math::erfc_inv</a></div><div class="ttdeci">T erfc_inv(const T p)</div><div class="ttdoc">inverse complementary error function</div><div class="ttdef"><b>Definition:</b> functions.h:86</div></div>
 <div class="ttc" id="anamespacecgv_1_1math_html_a6d164d4a63cb11523ffbbcc5178fe2f2"><div class="ttname"><a href="namespacecgv_1_1math.html#a6d164d4a63cb11523ffbbcc5178fe2f2">cgv::math::clamp</a></div><div class="ttdeci">T clamp(const T &amp;v, const T &amp;a, const T &amp;b)</div><div class="ttdoc">clamp v at [a,b]</div><div class="ttdef"><b>Definition:</b> functions.h:24</div></div>
-<div class="ttc" id="anamespacecgv_1_1math_html_a94aee89324bc58017a87e0e4c91a36a7"><div class="ttname"><a href="namespacecgv_1_1math.html#a94aee89324bc58017a87e0e4c91a36a7">cgv::math::erf_inv</a></div><div class="ttdeci">T erf_inv(const T p)</div><div class="ttdoc">inverse error function</div><div class="ttdef"><b>Definition:</b> functions.h:100</div></div>
-<div class="ttc" id="anamespacecgv_1_1math_html_a0d3c0f788a80d7dd395ab7585f94ab97"><div class="ttname"><a href="namespacecgv_1_1math.html#a0d3c0f788a80d7dd395ab7585f94ab97">cgv::math::erfc</a></div><div class="ttdeci">T erfc(const T x)</div><div class="ttdoc">complementary error function</div><div class="ttdef"><b>Definition:</b> functions.h:66</div></div>
+<div class="ttc" id="anamespacecgv_1_1math_html_a94aee89324bc58017a87e0e4c91a36a7"><div class="ttname"><a href="namespacecgv_1_1math.html#a94aee89324bc58017a87e0e4c91a36a7">cgv::math::erf_inv</a></div><div class="ttdeci">T erf_inv(const T p)</div><div class="ttdoc">inverse error function</div><div class="ttdef"><b>Definition:</b> functions.h:103</div></div>
+<div class="ttc" id="anamespacecgv_1_1math_html_a0d3c0f788a80d7dd395ab7585f94ab97"><div class="ttname"><a href="namespacecgv_1_1math.html#a0d3c0f788a80d7dd395ab7585f94ab97">cgv::math::erfc</a></div><div class="ttdeci">T erfc(const T x)</div><div class="ttdoc">complementary error function</div><div class="ttdef"><b>Definition:</b> functions.h:69</div></div>
 <div class="ttc" id="anamespacecgv_1_1math_html_ad3d907d9219c652396ff81057de4bae6"><div class="ttname"><a href="namespacecgv_1_1math.html#ad3d907d9219c652396ff81057de4bae6">cgv::math::compute_unit_sphere_area</a></div><div class="ttdeci">double compute_unit_sphere_area(unsigned n)</div><div class="ttdoc">compute surface area of a unit n-ball living in n-dimensional space with n&gt;=2 (this is a n-1 dimensio...</div><div class="ttdef"><b>Definition:</b> functions.cxx:28</div></div>
 <div class="ttc" id="anamespacecgv_1_1math_html_acf4fd0c1095e3805f69c1f5df116ca00"><div class="ttname"><a href="namespacecgv_1_1math.html#acf4fd0c1095e3805f69c1f5df116ca00">cgv::math::compute_sphere_area</a></div><div class="ttdeci">double compute_sphere_area(unsigned n, double R)</div><div class="ttdoc">compute surface area of a n-ball of radius R living in n-dimensional space with n&gt;=2 (this is a n-1 d...</div><div class="ttdef"><b>Definition:</b> functions.cxx:35</div></div>
 <div class="ttc" id="anamespacecgv_1_1math_html_a83ad51a58298ebc80b25c9776e9245a9"><div class="ttname"><a href="namespacecgv_1_1math.html#a83ad51a58298ebc80b25c9776e9245a9">cgv::math::plus</a></div><div class="ttdeci">T plus(const T &amp;v)</div><div class="ttdoc">if v &gt;= 0 returns v or 0 otherwise</div><div class="ttdef"><b>Definition:</b> functions.h:21</div></div>
-<div class="ttc" id="anamespacecgv_1_1math_html_a29647d32e032cc35e52b51591295ca60"><div class="ttname"><a href="namespacecgv_1_1math.html#a29647d32e032cc35e52b51591295ca60">cgv::math::erf</a></div><div class="ttdeci">T erf(const T x)</div><div class="ttdoc">error function</div><div class="ttdef"><b>Definition:</b> functions.h:56</div></div>
+<div class="ttc" id="anamespacecgv_1_1math_html_a29647d32e032cc35e52b51591295ca60"><div class="ttname"><a href="namespacecgv_1_1math.html#a29647d32e032cc35e52b51591295ca60">cgv::math::erf</a></div><div class="ttdeci">T erf(const T x)</div><div class="ttdoc">error function</div><div class="ttdef"><b>Definition:</b> functions.h:59</div></div>
 <div class="ttc" id="anamespacecgv_1_1math_html_a2a4a644a254ea830977b0d01fe93d91f"><div class="ttname"><a href="namespacecgv_1_1math.html#a2a4a644a254ea830977b0d01fe93d91f">cgv::math::compute_unit_ball_volume</a></div><div class="ttdeci">double compute_unit_ball_volume(unsigned n)</div><div class="ttdoc">compute volume of unit n-ball living in n-dimensional space with n&gt;=1; results are cached for O(1) ru...</div><div class="ttdef"><b>Definition:</b> functions.cxx:8</div></div>
-<div class="ttc" id="anamespacecgv_1_1math_html_a4ce1cee7f941d273e312febdc800adb6"><div class="ttname"><a href="namespacecgv_1_1math.html#a4ce1cee7f941d273e312febdc800adb6">cgv::math::erfcx</a></div><div class="ttdeci">T erfcx(const T x)</div><div class="ttdoc">scaled complementary error function</div><div class="ttdef"><b>Definition:</b> functions.h:76</div></div>
+<div class="ttc" id="anamespacecgv_1_1math_html_a4ce1cee7f941d273e312febdc800adb6"><div class="ttname"><a href="namespacecgv_1_1math.html#a4ce1cee7f941d273e312febdc800adb6">cgv::math::erfcx</a></div><div class="ttdeci">T erfcx(const T x)</div><div class="ttdoc">scaled complementary error function</div><div class="ttdef"><b>Definition:</b> functions.h:79</div></div>
 <div class="ttc" id="anamespacecgv_html"><div class="ttname"><a href="namespacecgv.html">cgv</a></div><div class="ttdoc">the cgv namespace</div><div class="ttdef"><b>Definition:</b> vr_calib.cxx:9</div></div>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
