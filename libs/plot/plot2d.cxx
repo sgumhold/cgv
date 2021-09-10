@@ -312,7 +312,7 @@ bool plot2d::draw_bar_plot(cgv::render::context& ctx, int i, int layer_idx)
 			rectangle_prog.set_uniform(ctx, "rectangle_border_width", spc.bar_outline_width.size * get_domain_config_ptr()->reference_size);
 			rectangle_prog.set_attribute(ctx, rectangle_prog.get_color_index(), spc.bar_color.color);
 			rectangle_prog.set_attribute(ctx, "secondary_color", spc.bar_outline_color.color);
-			rectangle_prog.set_attribute(ctx, "size", get_extent()[0] / count * spc.bar_percentual_width.size);
+			rectangle_prog.set_attribute(ctx, "size", extent[0] / count * spc.bar_percentual_width.size);
 			rectangle_prog.set_attribute(ctx, "depth_offset", -layer_idx * layer_depth);
 			// configure geometry shader
 			rectangle_prog.set_uniform(ctx, "border_mode", spc.bar_coordinate_index == 0 ? 2 : 1);
@@ -358,7 +358,7 @@ void plot2d::extract_domain_rectangles(std::vector<box2>& R, std::vector<rgb>& C
 	R.resize(5);
 	C.resize(5);
 	D.resize(5);
-	vec2 extent = vec2::from_vec(get_extent());
+	vec2 extent = vec2(this->extent[0], this->extent[1]);
 	float rs = get_domain_config_ptr()->reference_size;
 	R[0] = box2(-0.5f * extent, 0.5f * extent);
 	R[0].add_point(0.5f * extent + float(get_nr_sub_plots() - 1) * vec2(sub_plot_delta[0], sub_plot_delta[1]));
@@ -495,6 +495,8 @@ void plot2d::extract_domain_tick_rectangles_and_tick_labels(
 	std::vector<box2>& R, std::vector<rgb>& C, std::vector<float>& D,
 	std::vector<label_info>& tick_labels, std::vector<tick_batch_info>& tick_batches)
 {
+	vecn E = get_extent();
+	set_extent(vecn(2, &extent[0]));
 	tick_labels.clear();
 	tick_batches.clear();
 	for (unsigned ti = 0; ti < 2; ++ti) {
@@ -509,6 +511,7 @@ void plot2d::extract_domain_tick_rectangles_and_tick_labels(
 			}
 		}
 	}
+	set_extent(E);
 }
 
 void plot2d::draw_domain(cgv::render::context& ctx, int si, bool no_fill)
@@ -525,6 +528,8 @@ void plot2d::draw_domain(cgv::render::context& ctx, int si, bool no_fill)
 
 void plot2d::draw(cgv::render::context& ctx)
 {
+	prepare_extents();
+
 	// store to be changed opengl state
 	GLboolean line_smooth = glIsEnabled(GL_LINE_SMOOTH); 
 	GLboolean blend = glIsEnabled(GL_BLEND); 
