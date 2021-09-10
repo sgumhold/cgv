@@ -346,7 +346,6 @@ inline T sqr_length(const fvec<T,N>& v)
 	return dot(v,v);
 }
 
-
 ///returns the cross product of vector v and w
 template < typename T, cgv::type::uint32_type N>
 inline fvec<T,N> cross(const fvec<T,N>& v, const fvec<T,N>& w) 
@@ -466,6 +465,12 @@ const fvec<T, N> clamp(const fvec<T, N>& v, const fvec<T, N>& vl, const fvec<T, 
 	return c;
 }
 
+///shortcut to clamp the components to [0,1]
+template <typename T, cgv::type::uint32_type N>
+const fvec<T, N> saturate(const fvec<T, N>& v) {
+	return clamp(v, T(0), T(1));
+}
+
 ///pow function for fvec type
 template <typename T, cgv::type::uint32_type N>
 const fvec<T, N> pow(const fvec<T, N>& v, T e) {
@@ -482,6 +487,22 @@ const fvec<T, N> pow(const fvec<T, N>& v, const fvec<T, N>& e) {
 	for(unsigned i = 0; i < N; ++i)
 		c(i) = std::pow(v(i), e(i));
 	return c;
+}
+
+/// returns an orthogonal vector to v (only defined for 2d and 3d case)
+template <typename T, cgv::type::uint32_type N>
+fvec<T, N> ortho(const fvec<T, N>& v) = delete;
+
+/// returns an orthogonal vector to v
+template <typename T>
+fvec<T, 2> ortho(const fvec<T, 2>& v) {
+	return fvec<T, 2>(v.y(), -v.x());
+}
+
+/// returns an orthogonal vector to v
+template <typename T>
+fvec<T, 3> ortho(const fvec<T, 3>& v) {
+	return std::abs(v.x()) > std::abs(v.z()) ? fvec<T, 3>(-v.y(), v.x(), T(0)) : fvec<T, 3>(T(0), -v.z(), v.y());
 }
 
 	}

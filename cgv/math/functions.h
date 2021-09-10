@@ -22,6 +22,9 @@ namespace cgv{
 		/// clamp v at [a,b]
 		template<typename T>
 		T clamp(const T& v, const T& a, const T& b) { return v > b ? b : (v < a ? a : v); }
+		/// clamp v at [0,1]
+		template<typename T>
+		T saturate(const T& v) { return v > T(1) ? T(1) : (v < T(0) ? T(0) : v); }
 		namespace detail {
 			//helper function to compute cheb approximation of erf functions
 			template <typename T>
