@@ -24,7 +24,7 @@ plot_base::tick_batch_info::tick_batch_info(int _ai, int _aj, bool _primary, uns
 	: ai(_ai), aj(_aj), primary(_primary), first_vertex(_first_vertex), first_label(_first_label)
 {
 }
-domain_config::domain_config(unsigned nr_axes) : color(0.85f,0.85f,0.85f), axis_configs(nr_axes)
+domain_config::domain_config(unsigned dim, unsigned nr_attrs) : color(0.85f,0.85f,0.85f), axis_configs(dim+nr_attrs)
 {
 	show_domain = true;
 	fill = true;
@@ -37,8 +37,9 @@ domain_config::domain_config(unsigned nr_axes) : color(0.85f,0.85f,0.85f), axis_
 	title_font_index = -1;
 	title_font_size = 36.0f;
 	title_ffa = cgv::media::font::FFA_REGULAR;
-	title_pos = vecn(0.0f, 0.0f);
+	title_pos.zeros(dim);
 }
+
 plot_base_config::plot_base_config(const std::string& _name, unsigned dim) : name(_name)
 {
 	show_plot = true;
@@ -327,17 +328,46 @@ void plot_base::on_font_face_selection()
 	if (title_font)
 		title_font_face = title_font->get_font_face(get_domain_config_ptr()->title_ffa);
 }
+
+void plot_base::prepare_extents()
+{
+	extent = vec3(0.0f);
+	unsigned max_ai = std::min(unsigned(get_domain_config_ptr()->axis_configs.size()), get_dim());
+	unsigned F_count = 0;
+	float F;
+	for (unsigned ai = 0; ai < max_ai; ++ai) {
+		const auto& ac = get_domain_config_ptr()->axis_configs[ai];
+		extent[ai] = ac.extent;
+		if (ac.extent_scaling == 0.0f)
+			continue;
+		// (E1 * ES1) / A1 = (E2 * ES2) / A2 = F
+		// 	F = E * ES / A;
+		// 	E = F * A / ES;
+		float f = ac.extent * ac.extent_scaling / ac.get_attribute_extent();
+		if (F_count)
+			F = std::min(F, f);
+		else
+			F = f;
+		++F_count;
+	}
+	if (F_count > 1) {
+		for (unsigned ai = 0; ai < max_ai; ++ai) {
+			const auto& ac = get_domain_config_ptr()->axis_configs[ai];
+			if (ac.extent_scaling == 0.0f)
+				continue;
+			extent[ai] = F * ac.get_attribute_extent() / ac.extent_scaling;
+		}
+	}
+}
+
 void plot_base::set_plot_uniforms(cgv::render::context& ctx, cgv::render::shader_program& prog)
 {
-	vec3 extent(0.0f);
 	vecn attribute_min(8u, 0.0f), attribute_max(8u, 1.0f), axis_log_minimum(8u, 0.000001f);
 	cgv::math::vec<int> axis_log_scale(8u, 0);
 	for (unsigned ai = 0; ai < get_domain_config_ptr()->axis_configs.size(); ++ai) {
 		const auto& ac = get_domain_config_ptr()->axis_configs[ai];
 		attribute_min(ai) = ac.get_attribute_min();
 		attribute_max(ai) = ac.get_attribute_max();
-		if (ai < get_dim())
-			extent(ai) = ac.extent;
 		axis_log_scale(ai) = ac.get_log_scale() ? 1 : 0;
 		axis_log_minimum(ai) = ac.get_log_minimum();
 	}
@@ -532,7 +562,7 @@ void plot_base::update_samples_out_of_date_flag()
 		asa.samples_out_of_date = false;
 }
 
-plot_base::plot_base(unsigned _dim, unsigned _nr_attributes) : dom_cfg(_dim+_nr_attributes), 
+plot_base::plot_base(unsigned _dim, unsigned _nr_attributes) : dom_cfg(_dim, _nr_attributes), 
 	vbo_legend(cgv::render::VBT_VERTICES, cgv::render::VBU_STREAM_DRAW)
 {
 	dim = _dim;
@@ -927,6 +957,16 @@ void plot_base::set_extent(const vecn& new_extent)
 	for (unsigned ai = 0; ai < n; ++ai)
 		acs[ai].extent = new_extent(ai);
 }
+
+void plot_base::set_extent_scaling(float x_scale, float y_scale, float z_scale)
+{
+	auto& acs = get_domain_config_ptr()->axis_configs;
+	acs[0].extent_scaling = x_scale;
+	acs[1].extent_scaling = y_scale;
+	if (get_dim() > 2)
+		acs[2].extent_scaling = z_scale;
+}
+
 void plot_base::set_width(float new_width, bool constrained)
 {
 	auto& acs = get_domain_config_ptr()->axis_configs;

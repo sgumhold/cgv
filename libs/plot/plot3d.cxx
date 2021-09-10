@@ -195,7 +195,7 @@ bool plot3d::init(cgv::render::context& ctx)
 void plot3d::draw_sub_plots(cgv::render::context& ctx)
 {
 	float rs = 0.2f*get_domain_config_ptr()->reference_size;
-	vecn extent = get_extent();
+	vecn extent = this->extent.to_vec();
 	double y_view_angle = 45.0f;
 	if (view_ptr)
 		y_view_angle = view_ptr->get_y_view_angle();
@@ -324,7 +324,8 @@ void plot3d::draw_domain(cgv::render::context& ctx)
 	tick_labels.clear();
 	tick_batches.clear();
 	const domain_config& dc = *get_domain_config_ptr();
-	vec3 extent = vec3::from_vec(get_extent());
+	vecn E = get_extent();
+	set_extent(extent.to_vec());
 	if (dc.fill) {
 		vec3 origin(0.0f);
 		cgv::render::box_renderer& br = cgv::render::ref_box_renderer(ctx);
@@ -472,6 +473,7 @@ void plot3d::draw_domain(cgv::render::context& ctx)
 			}
 		}
 	}
+	set_extent(E);
 
 	auto& rcr = cgv::render::ref_rounded_cone_renderer(ctx);
 	rcr.set_render_style(rcrs);
@@ -501,6 +503,8 @@ void plot3d::draw_ticks(cgv::render::context& ctx)
 
 void plot3d::draw(cgv::render::context& ctx)
 {	
+	prepare_extents();
+
 	GLboolean blend = glIsEnabled(GL_BLEND); 
 	GLenum blend_src, blend_dst, depth;
 	glGetIntegerv(GL_BLEND_DST, reinterpret_cast<GLint*>(&blend_dst));
