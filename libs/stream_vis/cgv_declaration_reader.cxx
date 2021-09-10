@@ -169,7 +169,7 @@ namespace stream_vis {
 		}
 		return false;
 	}
-	bool cgv_declaration_reader::parse_vecn(const std::string& name, float* v, uint32_t dim)
+	bool cgv_declaration_reader::parse_dvecn(const std::string& name, double* v, uint32_t dim)
 	{
 		auto iter = pp.find(name);
 		if (iter == pp.end())
@@ -184,11 +184,18 @@ namespace stream_vis {
 			if (tokens[2 * i + 1] != "|")
 				return false;
 		for (i = 0; i < dim; ++i) {
-			double d;
-			if (!cgv::utils::is_double(tokens[2 * i].begin, tokens[2 * i].end, d))
+			if (!cgv::utils::is_double(tokens[2 * i].begin, tokens[2 * i].end, v[i]))
 				return false;
-			v[i] = float(d);
 		}
+		return true;
+	}
+	bool cgv_declaration_reader::parse_vecn(const std::string& name, float* v, uint32_t dim)
+	{
+		dvecn V(dim);
+		if (!parse_dvecn(name, V, dim))
+			return false;
+		for (unsigned i = 0; i < dim; ++i)
+			v[i] = float(V[i]);
 		return true;
 	}
 	bool cgv_declaration_reader::parse_ivecn(const std::string& name, int32_t* v, uint32_t dim)
@@ -213,19 +220,20 @@ namespace stream_vis {
 		}
 		return true;
 	}
-	bool cgv_declaration_reader::parse_bound_vecn(const std::string& name, DomainAdjustment domain_adjustments[3], uint16_t bound_ts_indices[3], float* fixed_vec, int dim)
+	bool cgv_declaration_reader::parse_bound_vecn(const std::string& name, DomainAdjustment domain_adjustments[3], uint16_t bound_ts_indices[3], float* fixed_vec, int dim, int nr_attributes)
 	{
 		std::vector<std::string> bounds;
-		bounds.resize(dim);
+		int n = dim+nr_attributes;
+		bounds.resize(n);
 		// first check for vector definition with n '|'-separated values
-		std::vector<bool> i_set(dim, false);
+		std::vector<bool> i_set(n, false);
 		auto iter = pp.find(name);
 		if (iter != pp.end()) {
 			std::string value = iter->second;
 			std::vector<cgv::utils::token> tokens;
 			cgv::utils::split_to_tokens(value, tokens, "|", false);
 			int j = 0;
-			// in case only a single bound specification is given, copy this to all coords
+			// in case only a single bound specification is given, copy this to all spatial coords
 			if (tokens.size() == 1 && tokens[0] != "|") {
 				for (int i = 0; i < dim; ++i) {
 					bounds[i] = cgv::utils::to_string(tokens.front());
@@ -241,7 +249,7 @@ namespace stream_vis {
 						i_set[j] = true;
 					}
 					else
-						if (j < dim)
+						if (j < n)
 							bounds[j] = cgv::utils::to_string(tokens[i]);
 				}
 			}
@@ -249,7 +257,7 @@ namespace stream_vis {
 		// next check for component definitions
 		static char comp[4] = { 'x', 'y', 'z', 'w' };
 		int i;
-		for (i = 0; i < dim; ++i) {
+		for (i = 0; i < n; ++i) {
 			auto iter = pp.find(name + '_' + comp[i]);
 			if (iter != pp.end()) {
 				bounds[i] = iter->second;
@@ -257,7 +265,7 @@ namespace stream_vis {
 			}
 		}
 		// check all bound definitions
-		for (i = 0; i < dim; ++i) {
+		for (i = 0; i < n; ++i) {
 			if (!i_set[i])
 				continue;
 			//domain_adjustments, uint16_t* bound_ts_indices, float* fixed_vec
