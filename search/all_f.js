@@ -84,7 +84,7 @@ var searchData=
   ['orient_5fsplats_1934',['orient_splats',['../structcgv_1_1render_1_1surfel__render__style.html#a7dcb5f4ba047993daa2d11d93a828cc6',1,'cgv::render::surfel_render_style']]],
   ['orientation_1935',['orientation',['../classcgv_1_1plot_1_1plot__base.html#a596d6232da547724f735eb908fbd7a2c',1,'cgv::plot::plot_base']]],
   ['orientation_5fmatch_1936',['orientation_match',['../classcgv_1_1media_1_1mesh_1_1convex__polyhedron.html#adb291d621532dcdd5705aae5bad75a10',1,'cgv::media::mesh::convex_polyhedron']]],
-  ['ortho_1937',['ortho',['../classcgv_1_1media_1_1mesh_1_1simple__mesh.html#a5ad2bb66489e81898cb1143952a16791',1,'cgv::media::mesh::simple_mesh']]],
+  ['ortho_1937',['ortho',['../classcgv_1_1media_1_1mesh_1_1simple__mesh.html#a5ad2bb66489e81898cb1143952a16791',1,'cgv::media::mesh::simple_mesh::ortho()'],['../namespacecgv_1_1math.html#a72c72e72ef2bc54eaf28001e05518b23',1,'cgv::math::ortho(const fvec&lt; T, N &gt; &amp;v)=delete'],['../namespacecgv_1_1math.html#a08d211a0f56ebfffb14bc900d8d9075c',1,'cgv::math::ortho(const fvec&lt; T, 2 &gt; &amp;v)'],['../namespacecgv_1_1math.html#acae09866cba732f8e281ff52a735a9fb',1,'cgv::math::ortho(const fvec&lt; T, 3 &gt; &amp;v)']]],
   ['ortho2d_5f44_1938',['ortho2d_44',['../namespacecgv_1_1math.html#a0df8b010b858a0a2fd2913861084c5c2',1,'cgv::math']]],
   ['ortho4_1939',['ortho4',['../namespacecgv_1_1math.html#a2f2977addf3435b7a68d37a81f8dff5a',1,'cgv::math']]],
   ['ortho_5f44_1940',['ortho_44',['../namespacecgv_1_1math.html#a6c8f1728daa988d11083043934c019d6',1,'cgv::math']]],
