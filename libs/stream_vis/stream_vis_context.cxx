@@ -306,12 +306,13 @@ namespace stream_vis {
 				std::cout << ")";
 			}
 			else {
-				if (tts->lower_bound_index != uint16_t(-1) || tts->upper_bound_index != uint16_t(-1)) {
+				static const uint16_t nv = -1;
+				if (tts->lower_bound_index != nv || tts->upper_bound_index != nv) {
 					std::cout << " = {";
-					if (tts->lower_bound_index != uint16_t(-1))
+					if (tts->lower_bound_index != nv)
 						std::cout << typed_time_series[tts->lower_bound_index]->get_name();
 					std::cout << ", ";
-					if (tts->upper_bound_index != uint16_t(-1))
+					if (tts->upper_bound_index != nv)
 						std::cout << typed_time_series[tts->upper_bound_index]->get_name();
 					std::cout << "}";
 				}
@@ -628,9 +629,14 @@ namespace stream_vis {
 						ranges[j][ai] = (j == 0 ? pl.fixed_domain.get_min_pnt() : pl.fixed_domain.get_max_pnt())[ai];
 						break;
 					case DA_TIME_SERIES:
+					{
+						TimeSeriesAccessor ta = TSA_X;
+						if (ai > 0 && typed_time_series[pl.domain_bound_ts_index[j][ai]]->series().get_nr_components() - 1 >= ai)
+							ta = ((ai == 1) ? TSA_Y : TSA_Z);
 						typed_time_series[pl.domain_bound_ts_index[j][ai]]->series().put_sample_as_float(
 							typed_time_series[pl.domain_bound_ts_index[j][ai]]->series().get_nr_samples() - 1,
-							&ranges[j][ai], TSA_X);
+							&ranges[j][ai], ta);
+					}
 						break;
 					case DA_COMPUTE:
 						compute[j][ai] = true;
