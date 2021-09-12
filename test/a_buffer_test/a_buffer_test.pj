@@ -1,0 +1,11 @@
+@=
+projectType="application_plugin";
+projectName="a_buffer_test";
+projectGUID="0E6025EE-1A0C-4D8F-BCEB-63C6E40DC3C1";
+addProjectDirs=[CGV_DIR."/plugins"];
+addProjectDeps=["cgv_utils", "cgv_type", "cgv_data", "cgv_base", "cgv_math",
+				"cgv_media", "cgv_gui", "cgv_render", "cgv_viewer", "cg_fltk", 
+				"crg_grid", "cg_ext", "crg_stereo_view", "cgv_gl"];
+addIncDirs=[INPUT_DIR];
+addCommandLineArguments=[after("type(shader_config):shader_path='".CGV_DIR."/libs/cgv_gl/glsl'","cg_fltk")];
+

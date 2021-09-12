@@ -1,13 +1,15 @@
-cmake_minimum_required(VERSION 2.6)
-project(tools)
+include(set_plugin_execution_params.cmake)
+include(create_lib.cmake)
 
 add_subdirectory(ppp_tool)
 add_subdirectory(shader_test)
 add_subdirectory(res_prep)
 
-add_custom_target(tools)
-add_dependencies(tools ppp shader_test)
+install(FILES set_plugin_execution_params.cmake DESTINATION ${CGV_BIN_DEST})
+install(EXPORT cgv_tools DESTINATION ${CGV_BIN_DEST})
 
-set_target_properties(tools PROPERTIES FOLDER "${FOLDER_NAME_TOPLEVEL}")
-
-
+if (WIN32)
+    install(FILES run_examples.bat DESTINATION ${CGV_BIN_DEST})
+else ()
+    install(FILES run_examples.sh DESTINATION ${CGV_BIN_DEST})
+endif ()

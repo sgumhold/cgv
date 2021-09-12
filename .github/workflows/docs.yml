@@ -1,0 +1,27 @@
+name: Documentation
+on:
+  push:
+    branches:
+      - develop
+jobs:
+  documentation:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2.3.1
+
+      - name: Install and Build
+        env:
+          CGV_DIR: /home/runner/work/cgv/cgv
+          CGV_BUILD: /home/runner/work/cgv/cgv/build
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y doxygen
+          mkdir build
+          doxygen doc/cgv.dox
+
+      - name: Deploy
+        uses: JamesIves/github-pages-deploy-action@4.1.4
+        with:
+          branch: gh-pages
+          folder: build/cgv_doc/html

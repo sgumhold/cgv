@@ -36,6 +36,14 @@ font_ptr find_font(const std::string& font_name)
 	return font_ptr();
 }
 
+/// return platform dependend default font
+font_ptr default_font(bool mono_space)
+{
+	if (get_font_server())
+		return get_font_server()->default_font(mono_space);
+	return font_ptr();	
+}
+
 /// enumerate the names of all installed fonts
 void enumerate_font_names(std::vector<const char*>& font_names)
 {

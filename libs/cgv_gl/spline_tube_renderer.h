@@ -11,7 +11,7 @@ namespace cgv { // @<
 		//! reference to a singleton spline tube renderer that is shared among drawables
 		/*! the second parameter is used for reference counting. Use +1 in your init method,
 			-1 in your clear method and default 0 argument otherwise. If internal reference
-			counter decreases to 0, singelton renderer is destructed. */
+			counter decreases to 0, singleton renderer is destructed. */
 		extern CGV_API spline_tube_renderer& ref_spline_tube_renderer(context& ctx, int ref_count_change = 0);
 
 		struct CGV_API spline_tube_render_style : public surface_render_style
@@ -37,6 +37,8 @@ namespace cgv { // @<
 
 			/// overload to allow instantiation of spline_tube_renderer
 			render_style* create_render_style() const;
+			/// build spline tube program
+			bool build_shader_program(context& ctx, shader_program& prog, const shader_define_map& defines);
 		public:
 
 
@@ -49,8 +51,6 @@ namespace cgv { // @<
 			void enable_attribute_array_manager(const context& ctx, attribute_array_manager& aam);
 			/// call this after last render/draw call to ensure that no other users of renderer change attribute arrays of given manager
 			void disable_attribute_array_manager(const context& ctx, attribute_array_manager& aam);
-			/// construct shader programs and return whether this was successful, call inside of init method of drawable
-			bool init(context& ctx);
 			///
 			template <typename T = float>
 			void set_radius_array(const context& ctx, const std::vector<T>& radii) { has_radii = true; set_attribute_array(ctx, ref_prog().get_attribute_location(ctx, "radius"), radii); }

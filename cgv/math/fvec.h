@@ -6,6 +6,7 @@
 #include <iostream>
 #include <cmath>
 #include <cgv/type/standard_types.h>
+#include <cgv/math/functions.h>
 
 namespace cgv {
 	namespace math {
@@ -99,6 +100,9 @@ public:
 	/// construct from vector of one dimension less plus a scalar
 	template <typename S1, typename S2>
 	fvec(const fvec<S1, N - 1>& fv, S2 w) { for (unsigned i = 0; i < N - 1; ++i) v[i] = (T)fv(i); v[N - 1] = (T)w; }
+	/// construct from vector of one dimension higher by cutting of the highest dimension
+	template <typename S>
+	fvec(const fvec<S, N + 1>& fv) { for (unsigned i = 0; i < N; ++i) v[i] = (T)fv(i); }
 	///assign vector rhs, if vector and rhs have different sizes, vector has been resized to match the size of
 	fvec & operator = (const fvec<T,N> &rhs) { if (this != &rhs) std::copy(rhs.v, rhs.v+N, v); return *this; }
 	/// set all components of vector to constant value a
@@ -221,6 +225,12 @@ public:
 		return (T)sqrt((double)sqr_length());
 	}
 
+	///componentwise sign values
+	void sign() {
+		for(unsigned i = 0; i < N; i++)
+			v[i] = cgv::math::sign(v[i]);
+	}
+
 	///componentwise absolute values
 	void abs() {	
 		if(std::numeric_limits<T>::is_signed) {
@@ -309,6 +319,10 @@ inline T dot(const fvec<T,N>& v, const fvec<T,N>& w)
 template <typename T, cgv::type::uint32_type N>
 inline T length(const fvec<T, N>& v) { return sqrt(dot(v, v)); }
 
+/// apply sign function component wise to vector
+template <typename T, cgv::type::uint32_type N>
+inline fvec<T, N> sign(const fvec<T, N>& v) { fvec<T, N> r(v); r.sign(); return r; }
+
 /// apply abs function component wise to vector
 template <typename T, cgv::type::uint32_type N>
 inline fvec<T, N> abs(const fvec<T, N>& v) { fvec<T, N> r(v); r.abs(); return r; }
@@ -331,7 +345,6 @@ inline T sqr_length(const fvec<T,N>& v)
 {
 	return dot(v,v);
 }
-
 
 ///returns the cross product of vector v and w
 template < typename T, cgv::type::uint32_type N>
@@ -392,9 +405,104 @@ const fvec<T, N> lerp(const fvec<T, N>& v1, const fvec<T, N>& v2, T t)
 
 ///linear interpolation returns (1-t)*v1 + t*v2
 template <typename T, cgv::type::uint32_type N>
-const fvec<T, N> lerp(const fvec<T, N>& v1, const fvec<T, N>& v2, fvec<T, N> t)
+const fvec<T, N> lerp(const fvec<T, N>& v1, const fvec<T, N>& v2, const fvec<T, N>& t)
 {
 	return (fvec<T, N>(1) - t)*v1 + t * v2;
+}
+
+///return a vector containing the minimum value of each component of v and the scalar t
+template <typename T, cgv::type::uint32_type N>
+const fvec<T, N> min(const fvec<T, N>& v, T t) {
+	fvec<T, N> c;
+	for(unsigned i = 0; i < N; ++i)
+		c(i) = std::min(v(i), t);
+	return c;
+}
+
+///return a vector containing the component-wise minimum value
+template <typename T, cgv::type::uint32_type N>
+const fvec<T, N> min(const fvec<T, N>& v, const fvec<T, N>& t) {
+	fvec<T, N> c;
+	for(unsigned i = 0; i < N; ++i)
+		c(i) = std::min(v(i), t(i));
+	return c;
+}
+
+///return a vector containing the maximum value of each component of v and the scalar t
+template <typename T, cgv::type::uint32_type N>
+const fvec<T, N> max(const fvec<T, N>& v, T t) {
+	fvec<T, N> c;
+	for(unsigned i = 0; i < N; ++i)
+		c(i) = std::max(v(i), t);
+	return c;
+}
+
+///return a vector containing the component-wise maximum value
+template <typename T, cgv::type::uint32_type N>
+const fvec<T, N> max(const fvec<T, N>& v, const fvec<T, N>& t) {
+	fvec<T, N> c;
+	for(unsigned i = 0; i < N; ++i)
+		c(i) = std::max(v(i), t(i));
+	return c;
+}
+
+///clamp the components to the given range
+template <typename T, cgv::type::uint32_type N>
+const fvec<T, N> clamp(const fvec<T, N>& v, T l, T r) {
+	fvec<T, N> c;
+	for(unsigned i = 0; i < N; ++i)
+		c(i) = cgv::math::clamp(v(i), l, r);
+	return c;
+}
+
+///clamp the components to the given range
+template <typename T, cgv::type::uint32_type N>
+const fvec<T, N> clamp(const fvec<T, N>& v, const fvec<T, N>& vl, const fvec<T, N>& vr)
+{
+	fvec<T, N> c;
+	for(unsigned i = 0; i < N; ++i)
+		c(i) = cgv::math::clamp(v(i), vl(i), vr(i));
+	return c;
+}
+
+///shortcut to clamp the components to [0,1]
+template <typename T, cgv::type::uint32_type N>
+const fvec<T, N> saturate(const fvec<T, N>& v) {
+	return clamp(v, T(0), T(1));
+}
+
+///pow function for fvec type
+template <typename T, cgv::type::uint32_type N>
+const fvec<T, N> pow(const fvec<T, N>& v, T e) {
+	fvec<T, N> c;
+	for(unsigned i = 0; i < N; ++i)
+		c(i) = std::pow(v(i), e);
+	return c;
+}
+
+///pow function for fvec type
+template <typename T, cgv::type::uint32_type N>
+const fvec<T, N> pow(const fvec<T, N>& v, const fvec<T, N>& e) {
+	fvec<T, N> c;
+	for(unsigned i = 0; i < N; ++i)
+		c(i) = std::pow(v(i), e(i));
+	return c;
+}
+
+/// returns an orthogonal vector to v (only defined for 2d and 3d case)
+template <typename T, cgv::type::uint32_type N>
+fvec<T, N> ortho(const fvec<T, N>& v) = delete;
+
+/// returns an orthogonal vector to v
+template <typename T>
+fvec<T, 2> ortho(const fvec<T, 2>& v) {
+	return fvec<T, 2>(v.y(), -v.x());
+}
+
+/// returns an orthogonal vector to v
+template <typename T>
+fvec<T, 3> ortho(const fvec<T, 3>& v) {
+	return std::abs(v.x()) > std::abs(v.z()) ? fvec<T, 3>(-v.y(), v.x(), T(0)) : fvec<T, 3>(T(0), -v.z(), v.y());
 }
 
 	}

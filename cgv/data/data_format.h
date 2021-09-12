@@ -1,6 +1,7 @@
 #pragma once
 
 #include "component_format.h"
+#include <cstring>
 
 #include "lib_begin.h"
 

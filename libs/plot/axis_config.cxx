@@ -34,6 +34,27 @@ void axis_config::set_attribute_range(float _min, float _max)
 	max_attribute_value = _max;
 	update_tick_range();
 }
+
+/// store current range in backup members
+void axis_config::backup_attribute_range()
+{
+	min_attribute_value_backup = min_attribute_value;
+	max_attribute_value_backup = max_attribute_value;
+}
+
+/// read access to backup attribute range
+void axis_config::put_backup_attribute_range(float& min_val, float& max_val) const
+{
+	min_val = min_attribute_value_backup;
+	max_val = max_attribute_value_backup;
+}
+
+/// store current range from backup members
+void axis_config::restore_attribute_range()
+{
+	set_attribute_range(min_attribute_value_backup, max_attribute_value_backup);
+}
+
 void axis_config::set_attribute_minimum(float _min)
 {
 	min_attribute_value = _min;
@@ -156,6 +177,7 @@ axis_config::axis_config() : primary_ticks(true), secondary_ticks(false), color(
 	log_minimum = 1e-10f;
 	update_tick_range();
 	extent = 1.0f;
+	extent_scaling = 0.0f;
 	line_width = 3.0f;
 	auto_adjust_max_snd_ticks = 20;
 }
@@ -190,6 +212,7 @@ void axis_config::create_gui(cgv::base::base* bp, cgv::gui::provider& p)
 	if (show) {
 		p.align("\a");
 		p.add_member_control(bp, "extent", extent, "value_slider", "min=0.1;max=10;log=true;ticks=true");
+		p.add_member_control(bp, "extent_scaling", extent_scaling, "value_slider", "min=0;max=10;log=true;ticks=true");
 		connect_copy(p.add_member_control(bp, "attribute_min", min_attribute_value, "value_slider", "min=-10;max=10;log=true;ticks=true")->value_change,
 			cgv::signal::rebind(this, &axis_config::update_tick_range));
 		connect_copy(p.add_member_control(bp, "attribute_max", max_attribute_value, "value_slider", "min=-10;max=10;log=true;ticks=true")->value_change,

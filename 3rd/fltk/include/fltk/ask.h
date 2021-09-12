@@ -45,6 +45,8 @@ enum {
 FL_API void message(const char *, ...);
 FL_API void alert(const char *, ...);
 FL_API int  ask(const char *, ...);
+FL_API int  ask(const char *q,
+		  const char *b0, const char *b1, ...);
 FL_API int  choice(const char *q,
 		  const char *b0, const char *b1, const char *b2, ...);
 FL_API int  choice_alert(const char *q,

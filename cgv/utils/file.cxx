@@ -242,6 +242,11 @@ char* read(const std::string& file_name, bool ascii, size_t* size_ptr, size_t ad
 	return buffer;
 }
 
+bool write(const std::string& filename, const std::string& content, bool ascii)
+{
+	return write(filename, content.c_str(), content.length(), ascii);
+}
+
 bool write(const std::string& file_name, const char* ptr, size_t size, bool ascii)
 {
 	bool res = false;

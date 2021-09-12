@@ -11,6 +11,11 @@
 #include <cgv/media/image/image_reader.h>
 #include <sstream>
 
+#if WIN32
+#define popen(...) _popen(__VA_ARGS__);
+#define pclose(...) _pclose(__VA_ARGS__);
+#endif
+
 namespace cgv {
 	namespace media {
 		namespace volume {
@@ -30,12 +35,12 @@ namespace cgv {
 				if (cerr)
 					cmd.append(" 2>&1");
 
-				stream = _popen(cmd.c_str(), "r");
+				stream = popen(cmd.c_str(), "r");
 
 				if (stream) {
 					while (!feof(stream))
 						if (fgets(buffer, max_buffer, stream) != NULL) data.append(buffer);
-					_pclose(stream);
+					pclose(stream);
 				}
 				return data;
 			}
@@ -48,7 +53,7 @@ namespace cgv {
 				FILE* fp;
 				if (use_cerr)
 					cmd.append(" 2>&1");
-				fp = _popen(cmd.c_str(), "rb");
+				fp = popen(cmd.c_str(), "rb");
 				size_t nr_bytes_read = 0;
 				if (fp) {
 					while (nr_bytes_read < buffer_size && !feof(fp)) {
@@ -60,14 +65,14 @@ namespace cgv {
 						if (nr_read < nr_bytes)
 							break;
 					}
-					_pclose(fp);
+					pclose(fp);
 				}
 				return nr_bytes_read;
 			}
 
 			bool read_volume_from_video_with_ffmpeg(volume& V, const std::string& file_name,
 				volume::dimension_type dims, volume::extent_type extent, const cgv::data::component_format& cf,
-				size_t offset)
+				size_t offset, FlipType flip_t)
 			{
 				std::string fn_in_quotes = std::string("\"") + cgv::utils::file::platform_path(file_name) + "\"";
 				if (dims(0) == -1 || dims(1) == -1 || dims(2) == -1) {
@@ -133,6 +138,17 @@ namespace cgv {
 					cmd += " -vf \"select=gte(n\\,";
 					cmd += cgv::utils::to_string(offset);
 					cmd += ")\" ";
+				}
+				if(flip_t != FT_NO_FLIP)
+				{
+					if (offset == 0)
+						cmd += " -vf ";
+					if (flip_t == FT_HORIZONTAL)
+						cmd += "hflip ";
+					if (flip_t == FT_VERTICAL)
+						cmd += "vflip ";
+					if (flip_t == FT_HORIZONTAL)
+						cmd += "hflip vflip ";
 				}
 				cmd += " -f rawvideo -pix_fmt ";
 				switch (cf.get_standard_component_format()) {

@@ -37,7 +37,7 @@ extern CGV_API bool generate_mipmaps(unsigned int dim, bool is_array = false, st
 extern CGV_API unsigned find_best_texture_format(const cgv::data::component_format& cf, cgv::data::component_format* best_cf = 0, const std::vector<cgv::data::data_view>* palettes = 0);
 
 /// load data to a texture with the glTexImage commands and generate mipmaps if the level parameter is -1, return whether mipmaps were created
-extern CGV_API bool load_texture(const cgv::data::const_data_view& data, unsigned gl_tex_format, unsigned level = -1, unsigned cube_side = -1, bool is_array = false, const std::vector<cgv::data::data_view>* palettes = 0);
+extern CGV_API bool load_texture(const cgv::data::const_data_view& data, unsigned gl_tex_format, unsigned level = -1, unsigned cube_side = -1, int num_array_layers = 0, const std::vector<cgv::data::data_view>* palettes = 0);
 
 /// create a texture from the given data view creating a mipmap pyramid
 extern CGV_API unsigned int create_texture(const cgv::data::const_data_view& dv, bool mipmap = true, const std::vector<cgv::data::data_view>* palettes = 0, unsigned tex_id = -1);
@@ -106,6 +106,22 @@ extern CGV_API bool complete_program_form_render_to_texture3D(cgv::render::conte
 	are provided, they are attached as additional targets during render to texture. Then the fragment shader should access the different targets through the
 	\c gl_FragData[] array. All target textures must have the same resolution. */
 extern CGV_API bool render_to_texture3D(context& ctx, shader_program& prog, TextureSampling texture_sampling, texture& target_tex, texture* target_tex2 = 0, texture* target_tex3 = 0, texture* target_tex4 = 0);
+
+/// different program interfaces
+enum ProgramInterface {
+	PI_UNIFORM,
+	PI_UNIFORM_BLOCK,
+	PI_PROGRAM_INPUT,
+	PI_PROGRAM_OUTPUT,
+	PI_VERTEX_SUBROUTINE, PI_TESS_CONTROL_SUBROUTINE, PI_TESS_EVALUATION_SUBROUTINE, PI_GEOMETRY_SUBROUTINE, PI_FRAGMENT_SUBROUTINE, PI_COMPUTE_SUBROUTINE,
+	PI_VERTEX_SUBROUTINE_UNIFORM, PI_TESS_CONTROL_SUBROUTINE_UNIFORM, PI_TESS_EVALUATION_SUBROUTINE_UNIFORM, PI_GEOMETRY_SUBROUTINE_UNIFORM, PI_FRAGMENT_SUBROUTINE_UNIFORM, PI_COMPUTE_SUBROUTINE_UNIFORM,
+	PI_TRANSFORM_FEEDBACK_VARYING,
+	PI_BUFFER_VARIABLE,
+	PI_SHADER_STORAGE_BLOCK
+};
+/// print program resources for given interface
+extern CGV_API void print_program_ressources(shader_program& prog, const std::string& interface_name, ProgramInterface prog_intf);
+
 
 		}
 	}

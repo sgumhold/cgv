@@ -8,7 +8,7 @@ namespace cgv {
 		{
 			static int ref_count = 0;
 			static spline_tube_renderer r;
-			r.manage_singelton(ctx, "spline_tube_renderer", ref_count, ref_count_change);
+			r.manage_singleton(ctx, "spline_tube_renderer", ref_count, ref_count_change);
 			return r;
 		}
 
@@ -51,19 +51,10 @@ namespace cgv {
 			bool res = surface_renderer::validate_attributes(ctx);
 			return res;
 		}
-		bool spline_tube_renderer::init(cgv::render::context& ctx)
+		bool spline_tube_renderer::build_shader_program(context& ctx, shader_program& prog, const shader_define_map& defines)
 		{
-			bool res = surface_renderer::init(ctx);
-			if(!ref_prog().is_created()) {
-				if(!ref_prog().build_program(ctx, "spline_tube.glpr", true)) {
-					std::cerr << "ERROR in spline_tube_renderer::init() ... could not build program spline_tube.glpr" << std::endl;
-					return false;
-				}
-			}
-			return res;
+			return prog.build_program(ctx, "spline_tube.glpr", true, defines);
 		}
-
-		/// 
 		bool spline_tube_renderer::enable(context& ctx)
 		{
 			const spline_tube_render_style& strs = get_style<spline_tube_render_style>();
@@ -99,7 +90,7 @@ namespace cgv {
 		{
 			return
 				rh.reflect_base(*static_cast<spline_tube_render_style*>(this)) &&
-				rh.reflect_member("radius", radius);
+				rh.reflect_member("radius", radius) &&
 				rh.reflect_member("radius_scale", radius_scale);
 		}
 

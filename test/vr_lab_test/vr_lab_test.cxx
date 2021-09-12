@@ -18,13 +18,7 @@
 #include <cgv/math/ftransform.h>
 #include <cgv/utils/file.h>
 #include <fstream>
-
-std::string to_hex(uint8_t v)
-{
-	static const char hex_digits[] = "0123456789abcdef";
-	char res[2] = { hex_digits[v / 16], hex_digits[v & 15] };
-	return std::string(res,2);
-}
+#include <libs/plot/plot2d.h>
 
 class vr_lab_test : 
 	public cgv::base::node,
@@ -37,8 +31,17 @@ class vr_lab_test :
 	cgv::render::rounded_cone_render_style rcrs;
 	/// label index to show statistics
 	uint32_t li_stats;
+	/// background color of statistics label
+	rgba stats_bgclr;
 	/// labels to show help on controllers
 	uint32_t li_help[2];
+
+	// whether to show plot
+	bool show_plot;
+	// plot that can manage several 2d sub plots
+	cgv::plot::plot2d plot;
+	// persistent vector with plot data
+	std::vector<vec4> P;
 public:
 	std::string get_type_name() const
 	{
@@ -54,13 +57,60 @@ public:
 		return mat34(3, 4, pose) * vec4(p, 1.0f);
 	}
 public:
-	vr_lab_test() : cgv::base::node("vr lab test")
+	vr_lab_test() : cgv::base::node("vr lab test"), plot("trigonometry", 2)
 	{
 		li_help[0] = li_help[1] = -1;
 		li_stats = -1;
+		stats_bgclr = rgba(0.8f, 0.6f, 0.0f, 0.6f);
+
+		show_plot = false;
+		// compute vector of vec3 with x coordinates and function values of cos and sin
+		unsigned i;
+		for (i = 1; i < 50; ++i) {
+			float x = 0.1f * i;
+			P.push_back(vec4(x, cos(x), sin(x), cos(x) * cos(x)));
+		}
+		// create two sub plots and configure their colors
+		unsigned p1 = plot.add_sub_plot("cos");
+		unsigned p2 = plot.add_sub_plot("sin");
+		unsigned p3 = plot.add_sub_plot("cos²");
+		//plot.set_sub_plot_colors(p1, rgb(1.0f, 0.0f, 0.1f));	// will be set later to the attribute with index 2
+		plot.set_sub_plot_colors(p2, rgb(0.1f, 0.0f, 1.0f));
+		plot.set_sub_plot_colors(p3, rgb(0.0f, 1.0f, 0.1f));
+
+		// attach sub plot attributes to previously created vector
+		// CAREFUL: this creates references to P and P is not allowed to be deleted thereafter
+		plot.set_sub_plot_attribute(p1, 0, &P[0][0], P.size(), sizeof(vec4));
+		plot.set_sub_plot_attribute(p1, 1, &P[0][1], P.size(), sizeof(vec4));
+		plot.set_sub_plot_attribute(p1, 2, &P[0][2], P.size(), sizeof(vec4));
+		plot.set_sub_plot_attribute(p1, 3, &P[0][3], P.size(), sizeof(vec4));
+		plot.set_sub_plot_attribute(p2, 0, &P[0][0], P.size(), sizeof(vec4));
+		plot.set_sub_plot_attribute(p2, 1, &P[0][2], P.size(), sizeof(vec4));
+		plot.set_sub_plot_attribute(p2, 2, &P[0][0], P.size(), sizeof(vec4));
+		plot.set_sub_plot_attribute(p2, 3, &P[0][3], P.size(), sizeof(vec4));
+		plot.set_sub_plot_attribute(p3, 0, &P[0][0], P.size(), sizeof(vec4));
+		plot.set_sub_plot_attribute(p3, 1, &P[0][3], P.size(), sizeof(vec4));
+		plot.set_sub_plot_attribute(p3, 2, &P[0][1], P.size(), sizeof(vec4));
+		plot.set_sub_plot_attribute(p3, 3, &P[0][2], P.size(), sizeof(vec4));
+
+		plot.legend_components = cgv::plot::LegendComponent(cgv::plot::LC_PRIMARY_COLOR + cgv::plot::LC_PRIMARY_OPACITY);
+		plot.color_mapping[0] = 2;
+		plot.color_scale_index[0] = cgv::media::CS_HUE;
+		plot.opacity_mapping[0] = 3;
+
+		plot.ref_sub_plot2d_config(0).set_color_indices(0);
+		plot.ref_sub_plot2d_config(0).line_halo_color.color_idx = 0;
+
+		// adjust domain, tick marks and extent in world space (of offline rendering process)
+		plot.adjust_domain_to_data();
+		plot.adjust_tick_marks();
+		plot.adjust_extent_to_domain_aspect_ratio();
 	}
 	void on_set(void* member_ptr)
 	{
+		if (member_ptr == &stats_bgclr && li_stats != -1)
+			get_scene_ptr()->update_label_background_color(li_stats, stats_bgclr);
+
 		update_member(member_ptr);
 		post_redraw();
 	}
@@ -68,144 +118,24 @@ public:
 	{
 		cgv::render::ref_sphere_renderer(ctx, 1);
 		cgv::render::ref_rounded_cone_renderer(ctx, 1);
-		return true;
-	}
-	struct tud_color
-	{
-		std::string function;
-		std::string name;
-		ivec4 cymk_color;
-		rgb8 rgb_color;
-	};
-	struct kostenstelle
-	{
-		int nummer;
-		std::string name;
-		rgb8 color;
-	};
-	std::vector<std::pair<int,std::vector<kostenstelle>>> kostenstellen;
-	std::vector<tud_color> tud_colors;
-	std::vector<int> tud_color_lis;
-	void read_kostenstellen()
-	{
-		std::string content;
-		cgv::utils::file::read("D:/admin/räume/RE-FX/2021_03_04_Raumliste.txt", content, true);
-		std::vector<cgv::utils::line> lines;
-		cgv::utils::split_to_lines(content, lines);
-		int ii = -1;
-		for (unsigned li = 0; li < lines.size(); ++li) {
-			std::vector<cgv::utils::token> tokens;
-			cgv::utils::split_to_tokens(lines[li], tokens, "\t", false, "\"'", "\"'", "");
-			if (tokens.size() != 3) {
-				if (tokens.size() == 1) {
-					int ci;
-					if (cgv::utils::is_integer(tokens[0].begin, tokens[0].end, ci)) {
-						++ii;
-						kostenstellen.resize(ii + 1);
-						kostenstellen.back().first = ci;
-					}
-				}
-				continue;
-			}
-			kostenstelle kst;
-			kst.name = cgv::utils::to_string(tokens[2]);
-			if (!cgv::utils::is_integer(tokens[0].begin, tokens[0].end, kst.nummer))
-				continue;
-			kostenstellen[ii].second.push_back(kst);
-		}
-		std::cout << "read " << kostenstellen.size() << " Kostenstellen" << std::endl;
-	}
-	void read_tud_colors()
-	{
-		std::string content;
-		cgv::utils::file::read("D:/admin/räume/RE-FX/TUD CD Colors.txt", content, true);
-		std::vector<cgv::utils::line> lines;
-		cgv::utils::split_to_lines(content, lines);
-		for (unsigned li = 1; li < lines.size(); ++li) {
-			std::vector<cgv::utils::token> tokens;
-			cgv::utils::split_to_tokens(lines[li], tokens, ",", false, "\"'", "\"'", "");
-			if (tokens.size() != 17)
-				continue;
-			tud_color tc;
-			tc.function = cgv::utils::to_string(tokens[0]);
-			tc.name = cgv::utils::to_string(tokens[2]);
-			int v[7];
-			for (int i = 0; i < 7; ++i) {
-				if (!cgv::utils::is_integer(tokens[2 * i + 4].begin, tokens[2 * i + 4].end, v[i]))
-					continue;
-			}
-			
-			tc.cymk_color = ivec4(v[0], v[1], v[2], v[3]);
-			tc.rgb_color = rgb8((uint8_t)v[4], (uint8_t)v[5], (uint8_t)v[6]);
-			tud_colors.push_back(tc);
-		}
-		std::ofstream os("D:/admin/räume/RE-FX/hex_colors.txt");
-		for (auto tc : tud_colors) {
-			os << tc.function << ", " << tc.name << ": " << 
-				(int)tc.rgb_color[0] << "/" << (int)tc.rgb_color[1] << "/" << (int)tc.rgb_color[2] <<
-				" = #" << to_hex(tc.rgb_color[0]) << to_hex(tc.rgb_color[1]) << to_hex(tc.rgb_color[2]) << std::endl;
-		}
-		std::cout << "read " << tud_colors.size() << " tud colors" << std::endl;
+
+		plot.set_view_ptr(find_view_as_node());
+		// and init plot
+		return plot.init(ctx);
 	}
 	void init_frame(cgv::render::context& ctx)
 	{
+		plot.init_frame(ctx);
+
 		vr::vr_scene* scene_ptr = get_scene_ptr();
 		if (!scene_ptr)
 			return;
-		if (tud_colors.empty()) {
-			read_tud_colors();
-			read_kostenstellen();
-			float h = 3.0f;
-			int gi = 0;
-			for (const auto& kst_grp : kostenstellen) {
-				rgb C_rgb = tud_colors[kst_grp.first].rgb_color;
-				cgv::media::color<float, cgv::media::HLS> C_hls = C_rgb;
-				float s = 1.0f/(kst_grp.second.size()+1);
-				int n = int(kst_grp.second.size());
-				int i = 0;
-				for (auto kst : kst_grp.second) {
-					rgb C = C_hls;
-					kst.color = C;
-					std::cout << kst.nummer << ": #" 
-						<< to_hex(kst.color[0]) << to_hex(kst.color[1]) << to_hex(kst.color[2]) << " ("
-						<< int(kst.color[0]) << "," << int(kst.color[1]) << "," << int(kst.color[2]) << 
-						")" << std::endl;
-					int li = scene_ptr->add_label(kst.name, C);
-					scene_ptr->fix_label_size(li);
-					scene_ptr->place_label(li, vec3(0.0f, h, 0.0f), quat(1.0f, vec3(0.0f)), 
-										vr::vr_scene::CS_TABLE, vr::vr_scene::LA_CENTER);
-					h -= 0.05f;
-					++i;
-					if (gi < 2) {
-						C_hls[1] -= 0.3f * s;
-						C_hls[2] -= 0.6f * s;
-					}
-					else {
-						if (gi < 6)
-							C_hls[2] -= (n-i)*0.2f * s;
-						C_hls[1] += (0.25f) * s;
-					}
-				}
-				++gi;
-			}
-
-//			float h = 0.1f * tud_colors.size() + 0.1f;
-//			int i = 0;
-//			for (const auto& tc : tud_colors) {
-//				int li = scene_ptr->add_label(tc.function + "\n" + cgv::utils::to_string(i++)+" "+tc.name, tc.rgb_color);
-//				tud_color_lis.push_back(li);
-//				scene_ptr->fix_label_size(li);
-//				scene_ptr->place_label(li, vec3(0.0f, h, 0.0f), quat(1.0f, vec3(0.0f)), 
-//					vr::vr_scene::CS_TABLE, vr::vr_scene::LA_CENTER);
-//				h -= 0.1f;
-//			}
-		}
 		// if not done before, create labels
 		if (li_help[0] == -1) {
 			li_stats = scene_ptr->add_label(
 				"drawing index: 000000\n"
 				"nr vertices:   000000\n"
-				"nr edges:      000000", rgba(0.8f, 0.6f, 0.0f, 0.6f));
+				"nr edges:      000000", stats_bgclr);
 			scene_ptr->fix_label_size(li_stats);
 			scene_ptr->place_label(li_stats, vec3(0.0f, 0.01f, 0.0f), quat(vec3(1, 0, 0), -1.5f), vr::vr_scene::CS_TABLE);
 			for (int ci = 0; ci < 2; ++ci) {
@@ -264,9 +194,12 @@ public:
 	void draw(cgv::render::context& ctx)
 	{
 		ctx.push_modelview_matrix();
-		ctx.mul_modelview_matrix(
-			cgv::math::translate4<float>(vec3(0, 1.5f, 0)) *
-			cgv::math::scale4<float>(vec3(0.25f)));
+		ctx.mul_modelview_matrix(cgv::math::translate4<float>(vec3(0, 1.5f, 0)));
+	
+		if (show_plot)
+			plot.draw(ctx);
+
+		ctx.mul_modelview_matrix(cgv::math::scale4<float>(vec3(0.25f)));
 		// draw tool in case it is active and we have access to state 
 		vr::vr_kit* kit_ptr = get_kit_ptr();
 		vr_view_interactor* vr_view_ptr = get_view_ptr();
@@ -313,7 +246,9 @@ public:
 			if (ke.get_action() == cgv::gui::KA_RELEASE)
 				return false;
 			switch (ke.get_key()) {
-			case 'M': 
+			case 'P': 
+				show_plot = !show_plot;
+				on_set(&show_plot);
 				return true;
 			}
 			return false;
@@ -367,6 +302,7 @@ public:
 	void create_gui()
 	{
 		add_decorator("vr_lab_test", "heading");
+		add_member_control(this, "stats_bgclr", stats_bgclr);
 		if (begin_tree_node("rendering", srs.material)) {
 			align("\a");
 			if (begin_tree_node("spheres", srs)) {
@@ -383,6 +319,13 @@ public:
 			}
 			align("\b");
 			end_tree_node(srs.material);
+		}
+		add_member_control(this, "show_plot", show_plot, "check");
+		if (begin_tree_node("plot", plot)) {
+			align("\a");
+			plot.create_gui(this, *this);
+			align("\b");
+			end_tree_node(plot);
 		}
 	}
 };

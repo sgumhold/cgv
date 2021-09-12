@@ -7,7 +7,7 @@ uniform int   secondary_opacity_index = -1;
 uniform int   size_index = -1;
 uniform int   secondary_size_index = -1;
 uniform float depth_offset = 0.0;
-
+uniform vec3  sub_plot_delta = vec3(0.0,0.0,0.0);
 uniform float halo_width_in_pixel = 0.0;
 uniform float percentual_halo_width = 0.0;
 
@@ -45,6 +45,7 @@ mat3 get_inverse_normal_matrix();
 //***** begin interface of plot_lib.glsl ***********************************
 uniform float attribute_min[8];
 uniform float attribute_max[8];
+bool discard_vertex(inout float attributes[8]);
 float tick_space_from_attribute_space(int ai, float value);
 float attribute_space_from_tick_space(int ai, float value);
 float window_space_from_tick_space(int ai, float value);
@@ -79,10 +80,14 @@ void main()
 	attributes[6] = attribute6;
 	attributes[7] = attribute7;
 
+	if (discard_vertex(attributes)) {
+		vo.depth_offset = 110000.0;
+		return;
+	}
 	// compute position in window coordinates
 	vec3 position_window = vec3(
-		window_space_from_tick_space(0, tick_space_from_attribute_space(0, attribute0)),
-		window_space_from_tick_space(1, tick_space_from_attribute_space(1, attribute1)), 0.0);
+		window_space_from_tick_space(0, tick_space_from_attribute_space(0, attributes[0])),
+		window_space_from_tick_space(1, tick_space_from_attribute_space(1, attributes[1])), 0.0);
 
 	// map to visual attributes
 	vo.color = color;
@@ -102,7 +107,7 @@ void main()
 	if (secondary_size_index >= 0)
 		vo.percentual_halo_width = map_size(attributes, vo.percentual_halo_width, secondary_size_index);
 
-	gl_Position = vec4(plot_space_from_window_space(position_window), 1.0);
+	gl_Position = vec4(plot_space_from_window_space(position_window)+sub_plot_delta, 1.0);
 	vo.halo_width_in_pixel = halo_width_in_pixel;
 	vo.depth_offset = depth_offset;
 }

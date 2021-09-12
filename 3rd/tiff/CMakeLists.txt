@@ -1,48 +1,58 @@
-cmake_minimum_required(VERSION 2.6)
-project(TIFF)
+cmake_minimum_required(VERSION 3.15)
 
-# Include this file for standard build settings
-include("../../cmake/buildCoreComponents.cmake")
+project(tif)
 
+file(GLOB_RECURSE SOURCES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} "*.c")
 
-# define(defFile="$(CGV_DIR)/3rd/tiff/tiff.def")
+set(DEFINES _CRT_SECURE_NO_DEPRECATE
+        AVOID_WIN32_FILEIO
+        CHECK_JPEG_YCBCR_SUBSAMPLING
+        DEFAULT_EXTRASAMPLE_AS_ALPHA
+        STRIPCHOP_DEFAULT=TIFF_STRIPCHOP
+        STRIP_SIZE_DEFAULT=8192
+        LOGLUV_SUPPORT
+        NEXT_SUPPORT
+        THUNDER_SUPPORT
+        LZW_SUPPORT
+        PACKBITS_SUPPORT
+        CCITT_SUPPORT
+        TIF_PLATFORM_CONSOLE
+        FILLODER_LSB2MSB)
 
-set(DEFINES
-  "_CRT_SECURE_NO_DEPRECATE"
-  "AVOID_WIN32_FILEIO"
-  "CHECK_JPEG_YCBCR_SUBSAMPLING"
-  "DEFAULT_EXTRASAMPLE_AS_ALPHA"
-  "STRIPCHOP_DEFAULT=TIFF_STRIPCHOP"
-  "STRIP_SIZE_DEFAULT=8192"
-  "LOGLUV_SUPPORT"
-  "NEXT_SUPPORT"
-  "THUNDER_SUPPORT"
-  "LZW_SUPPORT"
-  "PACKBITS_SUPPORT"
-  "CCITT_SUPPORT"
-  "TIF_PLATFORM_CONSOLE"
-  "FILLODER_LSB2MSB"
-)
+install(DIRECTORY . DESTINATION ${CGV_3RD_INCLUDE_DEST}/tif FILES_MATCHING PATTERN "*.h")
 
+# Shared Library
+add_library(tif SHARED ${SOURCES} libtiff.def)
+target_link_libraries(tif jpeg)
+target_compile_definitions(tif PRIVATE
+        _USRDLL
+        ${DEFINES})
 
-cgv_find_package(JPEG)
+if (MSVC)
+    target_compile_options(tif PRIVATE /w)
+else ()
+    target_compile_options(tif PRIVATE -w)
+endif ()
 
-# Header files
-file(GLOB_RECURSE HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "*.h")
-# Source files
-file(GLOB_RECURSE SOURCES RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "*.c")
+target_include_directories(tif PUBLIC
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
+        $<INSTALL_INTERFACE:${CGV_3RD_INCLUDE_DEST}/tif>)
 
-include_directories(../jpeg	${JPEG_INCLUDE_DIRS})
+install(TARGETS tif EXPORT cgv_3rd DESTINATION ${CGV_BIN_DEST})
 
-cgv_add_3rd_library(TIFF
-	SOURCES ${SOURCES} libtiff.def
-	PUBLIC_HEADERS ${HEADERS}
-	SHARED_DEFINITIONS _USRDLL ${DEFINES}
-	STATIC_DEFINITIONS JPEG_STATIC ${DEFINES}
-)
-	
-target_link_libraries(TIFF 
-  ${JPEG_LIBRARIES}
-)
+# Static Library
+add_library(tif_static STATIC ${SOURCES} libtiff.def)
+target_link_libraries(tif_static jpeg_static)
+target_compile_definitions(tif_static PRIVATE ${DEFINES})
 
-cgv_write_find_file(TIFF)
+if (MSVC)
+    target_compile_options(tif_static PRIVATE /w)
+else ()
+    target_compile_options(tif_static PRIVATE -w)
+endif ()
+
+target_include_directories(tif_static PUBLIC
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
+        $<INSTALL_INTERFACE:${CGV_3RD_INCLUDE_DEST}/tif>)
+
+install(TARGETS tif_static EXPORT cgv_3rd DESTINATION ${CGV_BIN_DEST})

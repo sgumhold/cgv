@@ -26,6 +26,8 @@ namespace cgv { // @<
 		{
 			/// default value for color when map color to material is used
 			cgv::media::illum::surface_material::color_type surface_color;
+			/// default value for the surface opacity when map color to material is used
+			float surface_opacity;
 			/// culling mode for point splats, set to CM_OFF in constructor
 			CullingMode culling_mode;
 			/// illumination mode defaults to \c IM_ONE_SIDED

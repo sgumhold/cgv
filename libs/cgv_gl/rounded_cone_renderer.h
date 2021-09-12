@@ -11,7 +11,7 @@ namespace cgv { // @<
 		//! reference to a singleton rounded cone renderer that is shared among drawables
 		/*! the second parameter is used for reference counting. Use +1 in your init method,
 			-1 in your clear method and default 0 argument otherwise. If internal reference
-			counter decreases to 0, singelton renderer is destructed. */
+			counter decreases to 0, singleton renderer is destructed. */
 		extern CGV_API rounded_cone_renderer& ref_rounded_cone_renderer(context& ctx, int ref_count_change = 0);
 
 		/// rounded cones use surface render styles
@@ -23,6 +23,21 @@ namespace cgv { // @<
 			float radius_scale;
 			/// default value assigned to radius attribute in \c enable method of rounded cone renderer, set to 1 in constructor
 			float radius;
+
+			bool enable_texturing;
+			enum TextureBlendMode {
+				TBM_MIX = 0,
+				TBM_TINT = 1,
+				TBM_MULTIPLY = 2,
+				TBM_INVERSE_MULTIPLY = 3,
+				TBM_ADD = 4,
+			} texture_blend_mode;
+			float texture_blend_factor;
+			bool texture_tile_from_center;
+			vec2 texture_offset;
+			vec2 texture_tiling;
+			bool texture_use_reference_length;
+			float texture_reference_length;
 
 			bool enable_ambient_occlusion;
 			float ao_offset;
@@ -44,10 +59,18 @@ namespace cgv { // @<
 		{
 		protected:
 			bool has_radii;
-			/// whether the shader should be rebuilt after a define update
-			std::string shader_defines;
+			/// the shader defines used to build the shader, used to comapre against new defines to determine if the shader needs to be rebuilt
+			shader_define_map shader_defines;
 			/// overload to allow instantiation of rounded_cone_renderer
 			render_style* create_render_style() const;
+			/// update shader defines based on render style
+			void update_defines(shader_define_map& defines);
+			/// build rounded cone program
+			bool build_shader_program(context& ctx, shader_program& prog, const shader_define_map& defines);
+
+			texture* albedo_texture;
+			texture* density_texture;
+
 		public:
 			/// initializes member variables
 			rounded_cone_renderer();
@@ -55,12 +78,8 @@ namespace cgv { // @<
 			void enable_attribute_array_manager(const context& ctx, attribute_array_manager& aam);
 			/// call this after last render/draw call to ensure that no other users of renderer change attribute arrays of given manager
 			void disable_attribute_array_manager(const context& ctx, attribute_array_manager& aam);
-			/// construct shader programs and return whether this was successful, call inside of init method of drawable
-			bool init(context& ctx);
-			///
-			std::string build_define_string();
-			///
-			bool build_shader(context& ctx, std::string defines = "");
+			bool set_albedo_texture(texture* tex);
+			bool set_density_texture(texture* tex);
 			///
 			bool enable(context& ctx);
 			///

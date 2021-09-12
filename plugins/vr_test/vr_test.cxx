@@ -840,7 +840,7 @@ void vr_test::draw(cgv::render::context& ctx)
 		int pi = prog.get_position_index();
 		int ti = prog.get_texcoord_index();
 		vec3 p(0, 1.5f, 0);
-		vec3 y = label_upright ? vec3(0, 1.0f, 0) : normalize(vr_view_ptr->get_view_up_dir_of_kit());
+		vec3 y = label_upright ? cgv::math::fvec<double, 3>(0, 1.0, 0) : normalize(vr_view_ptr->get_view_up_dir_of_kit());
 		vec3 x = normalize(cross(vec3(vr_view_ptr->get_view_dir_of_kit()), y));
 		float w = 0.5f, h = 0.5f;
 		std::vector<vec3> P;

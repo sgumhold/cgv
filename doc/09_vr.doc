@@ -59,7 +59,7 @@ The following list gives a brief overview:
 
   This plugin extends the stereo_view_interactor class of the crg_stereo_view plugin with
   vr support to the vr_view_interactor class. It connects to the on_device_change 
-  signal of the cgv::gui::vr_server singelton and keeps track of device changes in order 
+  signal of the cgv::gui::vr_server singleton and keeps track of device changes in order
   to initialize and destruct their framebuffers in the opengl context of the vr_view_interactor.
   
   It keeps a current vr_kit which can be selected with \sc{Ctrl-Alt-0..3} or through the 

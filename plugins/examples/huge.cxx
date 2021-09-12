@@ -141,7 +141,6 @@ public:
 	void create_gui()
 	{
 		add_decorator("huge", "heading");
-
 		add_member_control(this, "nr_primitives", nr_primitives, "value_slider", "min=1;max=494967296;log=true;ticks=true");
 		add_member_control(this, "sort", sort_points, "toggle", "shortcut='S'");
 		add_member_control(this, "blend", blend, "toggle", "shortcut='B'");

@@ -133,6 +133,35 @@ shader_program& ref_textured_material_prog(context& ctx)
 	return prog;
 }
 
+static GLenum interface_ids[] = {
+	GL_UNIFORM,
+	GL_UNIFORM_BLOCK,
+	GL_PROGRAM_INPUT,
+	GL_PROGRAM_OUTPUT,
+	GL_VERTEX_SUBROUTINE, GL_TESS_CONTROL_SUBROUTINE, GL_TESS_EVALUATION_SUBROUTINE, GL_GEOMETRY_SUBROUTINE, GL_FRAGMENT_SUBROUTINE, GL_COMPUTE_SUBROUTINE,
+	GL_VERTEX_SUBROUTINE_UNIFORM, GL_TESS_CONTROL_SUBROUTINE_UNIFORM, GL_TESS_EVALUATION_SUBROUTINE_UNIFORM, GL_GEOMETRY_SUBROUTINE_UNIFORM, GL_FRAGMENT_SUBROUTINE_UNIFORM, GL_COMPUTE_SUBROUTINE_UNIFORM,
+	GL_TRANSFORM_FEEDBACK_VARYING,
+	GL_BUFFER_VARIABLE,
+	GL_SHADER_STORAGE_BLOCK
+};
+
+void print_program_ressources(shader_program& prog, const std::string& interface_name, ProgramInterface prog_intf)
+{
+	GLuint prog_id;
+	prog.put_id(prog_id);
+	GLint nr;
+	GLenum interface_id = interface_ids[prog_intf];
+	glGetProgramInterfaceiv(prog_id, interface_id, GL_ACTIVE_RESOURCES, &nr);
+	if (nr == -1)
+		return;
+	for (GLuint i = 0; i < GLuint(nr); ++i) {
+		char name[512];
+		GLsizei length;
+		glGetProgramResourceName(prog_id, interface_id, i, 512, &length, name);
+		std::cout << interface_name << "(" << i << ")=" << name << std::endl;
+	}
+}
+
 
 		}
 	}

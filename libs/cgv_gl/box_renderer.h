@@ -11,7 +11,7 @@ namespace cgv { // @<
 		//! reference to a singleton box renderer that is shared among drawables
 		/*! the second parameter is used for reference counting. Use +1 in your init method,
 			-1 in your clear method and default 0 argument otherwise. If internal reference
-			counter decreases to 0, singelton renderer is destructed. */
+			counter decreases to 0, singleton renderer is destructed. */
 		extern CGV_API box_renderer& ref_box_renderer(context& ctx, int ref_count_change = 0);
 
 		/// boxes use surface render styles
@@ -39,6 +39,8 @@ namespace cgv { // @<
 			bool position_is_center;
 			/// overload to allow instantiation of box_renderer
 			render_style* create_render_style() const;
+			/// build box program
+			bool build_shader_program(context& ctx, shader_program& prog, const shader_define_map& defines);
 		public:
 			/// initializes position_is_center to true 
 			box_renderer();
@@ -48,9 +50,7 @@ namespace cgv { // @<
 			void disable_attribute_array_manager(const context& ctx, attribute_array_manager& aam);
 			/// set the flag, whether the position is interpreted as the box center, true by default
 			void set_position_is_center(bool _position_is_center);
-			/// construct shader programs and return whether this was successful, call inside of init method of drawable
-			bool init(context& ctx);
-			/// 
+			/// enable box renderer
 			bool enable(context& ctx);
 			/// specify a single extent for all boxes
 			template <typename T>

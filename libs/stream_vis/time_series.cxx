@@ -95,10 +95,20 @@ namespace stream_vis {
 		nr_samples = 0;
 		time_offset = 0;
 	}
+	/// return name of time series
+	const std::string& time_series_base::get_name() const
+	{
+		return name;
+	}
+	/// set a new name for time series
+	void time_series_base::set_name(const std::string& new_name)
+	{
+		name = new_name;
+	}
 
-	template time_series<float, bool, bool>;
-	template time_series<float, int32_t, int64_t>;
-	template time_series<float, uint32_t, uint64_t>;
-	template time_series<float, cgv::math::fvec<float, 3>, cgv::math::fvec<double, 3>>;
-	template time_series<float, cgv::math::quaternion<float>, cgv::math::quaternion<double>>;
+	template class time_series<float, bool, bool>;
+	template class time_series<float, int32_t, int64_t>;
+	template class time_series<float, uint32_t, uint64_t>;
+	template class time_series<float, cgv::math::fvec<float, 3>, cgv::math::fvec<double, 3>>;
+	template class time_series<float, cgv::math::quaternion<float>, cgv::math::quaternion<double>>;
 }

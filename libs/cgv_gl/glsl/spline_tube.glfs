@@ -21,6 +21,7 @@ vec4 compute_reflected_appearance(vec3 position_eye, vec3 normal_eye, vec4 color
 //***** begin interface of fragment.glfs ***********************************
 uniform float gamma = 2.2;
 void finish_fragment(vec4 color);
+void finish_fragment(vec4 color, float depth);
 //***** end interface of fragment.glfs ***********************************
 
 struct QTubeNode {
@@ -398,7 +399,7 @@ Hit EvalSplineISect(vec3 dir, vec3 s, vec3 h, vec3 t, float rs, float rh, float 
 }
 
 void main() {
-	/* Uncomment to show the boundign box
+	/* Uncomment to show the bounding box
 	vec3 normal = normalize(cross(dFdx(position_fs), dFdy(position_fs)));
 	finish_fragment(vec4(normal * 0.5 + 0.5, 1.0));
 	return;
@@ -415,6 +416,5 @@ void main() {
 	vec3 hit_pos_eye = direction * hit.t;
 	vec4 v_eye = vec4(hit_pos_eye, 1.0);
 	vec4 depth = get_projection_matrix() * v_eye;
-	gl_FragDepth = 0.5*(depth.z / depth.w) + 0.5;
-	finish_fragment(compute_reflected_appearance(hit_pos_eye, hit.normal, frag_color, 1));
+	finish_fragment(compute_reflected_appearance(hit_pos_eye, hit.normal, frag_color, 1), 0.5*(depth.z / depth.w) + 0.5);
 }

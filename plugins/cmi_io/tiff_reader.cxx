@@ -100,7 +100,7 @@ bool tiff_reader::open(const std::string& file_name, data_format& df, std::vecto
 		return false;
 
 	nr_images = -1;
-
+	
 	uint32 width, height;		/* image width & height */	
 	uint16 format, components, config, bps;
 	TIFFGetField(fp, TIFFTAG_IMAGEWIDTH, &width);

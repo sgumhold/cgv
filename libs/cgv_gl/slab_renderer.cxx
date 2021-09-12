@@ -8,7 +8,7 @@ namespace cgv {
 		{
 			static int ref_count = 0;
 			static slab_renderer r;
-			r.manage_singelton(ctx, "slab_renderer", ref_count, ref_count_change);
+			r.manage_singleton(ctx, "slab_renderer", ref_count, ref_count_change);
 			return r;
 		}
 
@@ -81,16 +81,10 @@ namespace cgv {
 			}
 			return res;
 		}
-		bool slab_renderer::init(cgv::render::context& ctx)
+		/// build slab program
+		bool slab_renderer::build_shader_program(context& ctx, shader_program& prog, const shader_define_map& defines)
 		{
-			bool res = renderer::init(ctx);
-			if (!ref_prog().is_created()) {
-				if (!ref_prog().build_program(ctx, "slab.glpr", true)) {
-					std::cerr << "ERROR in slab_renderer::init() ... could not build program slab.glpr" << std::endl;
-					return false;
-				}
-			}
-			return res;
+			return prog.build_program(ctx, "slab.glpr", true, defines);
 		}
 		/// 
 		bool slab_renderer::enable(context& ctx)
