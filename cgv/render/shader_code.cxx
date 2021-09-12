@@ -47,6 +47,11 @@ shader_config_ptr get_shader_config()
 		config = shader_config_ptr(new shader_config); 
 		if (getenv("CGV_SHADER_PATH"))
 			config->shader_path = getenv("CGV_SHADER_PATH");
+		else if (getenv("CGV_DIR"))
+			config->shader_path = 
+				std::string(getenv("CGV_DIR"))+"/libs/cgv_gl/glsl;"+
+				std::string(getenv("CGV_DIR"))+"/libs/plot/glsl;"+
+				std::string(getenv("CGV_DIR")) + "/plugins/examples";
 	}
 	return config;
 }
@@ -186,6 +191,10 @@ ShaderType shader_code::detect_shader_type(const std::string& file_name)
 		st = ST_GEOMETRY;
 	else if (ext == "glcs" || ext == "pglcs")
 		st = ST_COMPUTE;
+	else if (ext == "gltc" || ext == "pgltc")
+		st = ST_TESS_CONTROL;
+	else if (ext == "glte" || ext == "pglte")
+		st = ST_TESS_EVALUATION;
 	return st;
 }
 
@@ -216,8 +225,11 @@ std::string shader_code::read_code_file(const std::string &file_name, std::strin
 	}
 	if (get_shader_config()->show_file_paths)
 		std::cout << "read shader code <" << fn << ">" << std::endl;
-	if (!source.empty() && source[0] == '�')
+#if WIN32
+	// TODO § is considered two characters on Linux
+	if (!source.empty() && source[0] == '§')
 		source = cgv::utils::decode_base64(source.substr(1));
+#endif
 	if (get_extension(file_name)[0] == 'p') {
 		std::string code;
 		get_shader_config()->inserted_shader_file_names.clear();
@@ -238,7 +250,7 @@ std::string shader_code::read_code_file(const std::string &file_name, std::strin
 }
 
 /// read shader code from file
-bool shader_code::read_code(const context& ctx, const std::string &file_name, ShaderType st, std::string defines)
+bool shader_code::read_code(const context& ctx, const std::string &file_name, ShaderType st, const shader_define_map& defines)
 {
 	if (st == ST_DETECT)
 		st = detect_shader_type(file_name);
@@ -264,9 +276,9 @@ bool shader_code::set_code(const context& ctx, const std::string &source, Shader
 }
 
 /// set shader code defines
-void shader_code::set_defines(std::string& source, const std::string& defines) {
+void shader_code::set_defines(std::string& source, const shader_define_map& defines) {
 
-	size_t current, previous = 0;
+	/*size_t current, previous = 0;
 	current = defines.find_first_of(';');
 	std::vector<std::string> tokens;
 	while(current != std::string::npos) {
@@ -299,6 +311,27 @@ void shader_code::set_defines(std::string& source, const std::string& defines) {
 			source = first_part + value + second_part;
 			source += "";
 		}
+	}*/
+
+	for (const auto &entry : defines) {
+		std::string name = entry.first;
+		std::string value = entry.second;
+		
+		if(name.empty())
+			continue;
+
+		size_t define_pos = source.find("#define " + name);
+		if(define_pos == std::string::npos)
+			continue;
+
+		size_t overwrite_pos = define_pos + 8 + name.length() + 1; // length of: #define <NAME><SINGLE_SPACE>
+		std::string first_part = source.substr(0, overwrite_pos);
+		size_t new_line_pos = source.find_first_of('\n', overwrite_pos);
+		if(new_line_pos != std::string::npos) {
+			std::string second_part = source.substr(new_line_pos);
+			source = first_part + value + second_part;
+			source += "";
+		}
 	}
 }
 
@@ -315,7 +348,7 @@ bool shader_code::compile(const context& ctx)
 }
 
 /// read shader code from file, compile and print error message if necessary
-bool shader_code::read_and_compile(const context& ctx, const std::string &file_name, ShaderType st, bool show_error, std::string defines)
+bool shader_code::read_and_compile(const context& ctx, const std::string &file_name, ShaderType st, bool show_error, const shader_define_map& defines)
 {
 	if (!read_code(ctx,file_name,st,defines))
 		return false;

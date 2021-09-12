@@ -7,6 +7,9 @@ in float value;
 out vec4 color_fs;
 out float value_fs;
 
+uniform vec3 legend_location;
+uniform vec2 legend_extent;
+
 //***** begin interface of view.glsl ***********************************
 mat4 get_modelview_matrix();
 mat4 get_projection_matrix();
@@ -44,7 +47,7 @@ float map_size(in float attributes[8], in float base_size);
 void main()
 {
 	// transform vertex to clip space
-	vec4 pos = vec4(plot_space_from_window_space(position.xyz),1.0);
+	vec4 pos = vec4(plot_space_from_window_space(vec3(position.xy*legend_extent,position.z)+legend_location),1.0);
 	gl_Position = get_modelview_projection_matrix()*pos;
 	value_fs = value;
 	color_fs = color;

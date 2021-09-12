@@ -40,10 +40,8 @@
 
 typedef std::basic_string<_TCHAR> tstring;
 
-void prepare_ofn_struct(OPENFILENAME& ofn, _TCHAR *szFile, int file_size,
-	const std::string& title, tstring& wtitle,
-	const std::string& filter, tstring& wfilter,
-	const std::string& path, tstring& wpath)
+void prepare_ofn_struct(OPENFILENAME& ofn, _TCHAR* szFile, int file_size, const std::string& title, tstring& wtitle,
+						const std::string& filter, tstring& wfilter, const std::string& path, tstring& wpath)
 {
 	ZeroMemory(&ofn, sizeof(ofn));
 	ofn.lStructSize = sizeof(ofn);
@@ -72,7 +70,7 @@ void prepare_ofn_struct(OPENFILENAME& ofn, _TCHAR *szFile, int file_size,
 	ofn.lpstrTitle = wtitle.c_str();
 	if (!cgv::utils::dir::exists(p)) {
 		unsigned i;
-		for (i = 0; i<wpath.size(); ++i) {
+		for (i = 0; i < wpath.size(); ++i) {
 			szFile[i] = wpath[i];
 			if (i + 2 == file_size)
 				break;
@@ -88,23 +86,19 @@ void prepare_ofn_struct(OPENFILENAME& ofn, _TCHAR *szFile, int file_size,
 
 // CALLBACK message procedure for the browse folder dialog
 // this callback procedure sets the initial folder of the browse folder dialog
-int CALLBACK BrowseCallbackProc(HWND hwnd, UINT uMsg,
-	LPARAM lParam, LPARAM lpData)
+int CALLBACK BrowseCallbackProc(HWND hwnd, UINT uMsg, LPARAM lParam, LPARAM lpData)
 {
 	TCHAR initialPath[MAX_PATH];
 
-	switch (uMsg)
-	{
+	switch (uMsg) {
 
 	case BFFM_INITIALIZED:
 		// check whether initial folder is give
-		if (lpData)
-		{
+		if (lpData) {
 			// so set the initial folder
 			_tcscpy(initialPath, (TCHAR*)lpData);
 		}
-		else
-		{
+		else {
 			// otherwise use current folder als initial folder
 			GetCurrentDirectory(sizeof(initialPath) / sizeof(TCHAR), initialPath);
 		}
@@ -116,10 +110,8 @@ int CALLBACK BrowseCallbackProc(HWND hwnd, UINT uMsg,
 	return 0;
 }
 
-void prepare_bi_struct(BROWSEINFO& bi, _TCHAR *wszPath,
-	const std::string& title, tstring& wtitle,
-	const std::string& path, tstring& wpath
-	)
+void prepare_bi_struct(BROWSEINFO& bi, _TCHAR* wszPath, const std::string& title, tstring& wtitle,
+					   const std::string& path, tstring& wpath)
 {
 	ZeroMemory(&bi, sizeof(bi));
 	bi.hwndOwner = GetForegroundWindow();
@@ -133,16 +125,14 @@ void prepare_bi_struct(BROWSEINFO& bi, _TCHAR *wszPath,
 #else
 	wtitle = title;
 	wpath = windows_path;
-#endif    
+#endif
 
 	bi.pidlRoot = NULL;
 	bi.lpszTitle = wtitle.c_str();
-	bi.pszDisplayName = wszPath; // in this variable the choosen folder will be saved
-	bi.lpfn = BrowseCallbackProc; // set the callback procedure (used for initial folder setting)
-	bi.lParam = (LPARAM)wpath.c_str(); // remember the initial folder for the callback function (lpfn)    			
+	bi.pszDisplayName = wszPath;	   // in this variable the choosen folder will be saved
+	bi.lpfn = BrowseCallbackProc;	   // set the callback procedure (used for initial folder setting)
+	bi.lParam = (LPARAM)wpath.c_str(); // remember the initial folder for the callback function (lpfn)
 }
-
-
 
 #endif
 
@@ -162,13 +152,11 @@ std::string directory_open_dialog(const std::string& title, const std::string& p
 
 	HRESULT hr = CoInitialize(NULL);
 
-	if (SUCCEEDED(hr))
-	{
+	if (SUCCEEDED(hr)) {
 		prepare_bi_struct(bi, szPath, title, wtitle, path, wpath);
 		LPITEMIDLIST item = SHBrowseForFolder(&bi);
 
-		if (item != NULL)
-		{
+		if (item != NULL) {
 			SHGetPathFromIDList(item, szPath);
 			CoTaskMemFree(item);
 			CoUninitialize();
@@ -180,8 +168,7 @@ std::string directory_open_dialog(const std::string& title, const std::string& p
 			cgv::utils::replace(result, "\\", "/");
 			return result;
 		}
-		else
-		{
+		else {
 			CoUninitialize();
 			return "";
 		}
@@ -232,7 +219,8 @@ std::string fltk_driver::file_open_dialog(const std::string& title, const std::s
 }
 
 /// ask user for a open dialog that can select multiple files
-std::string fltk_driver::files_open_dialog(std::vector<std::string>& file_names, const std::string& title, const std::string& filter, const std::string& path)
+std::string fltk_driver::files_open_dialog(std::vector<std::string>& file_names, const std::string& title,
+										   const std::string& filter, const std::string& path)
 {
 #ifdef USE_WIN32
 	OPENFILENAME ofn;
@@ -295,7 +283,7 @@ std::string fltk_driver::file_save_dialog(const std::string& title, const std::s
 	return "";
 }
 
-//TODO: Remove?
+// TODO: Remove?
 /*#ifdef _WIN32
 #undef TA_LEFT
 #undef TA_TOP
@@ -323,7 +311,6 @@ std::string fltk_driver::file_save_dialog(const std::string& title, const std::s
 
 using namespace cgv::base;
 
-
 void ensure_lock()
 {
 	static bool lock_set = false;
@@ -341,9 +328,9 @@ void fltk_driver::on_register()
 /// remove a window that has been destroyed
 void fltk_driver::remove_window(window_ptr w)
 {
-	for (unsigned i=0; i<windows.size(); ++i) {
+	for (unsigned i = 0; i < windows.size(); ++i) {
 		if (windows[i] == w) {
-			windows.erase(windows.begin()+i);
+			windows.erase(windows.begin() + i);
 			--i;
 		}
 	}
@@ -376,9 +363,11 @@ void fltk_driver::set_context_creation_attrib_list(cgv::render::context_config& 
 {
 	static std::vector<int> context_creation_attrib_list;
 	context_creation_attrib_list.clear();
+#ifdef _WIN32
 	if (cc.forward_compatible || cc.debug) {
 		context_creation_attrib_list.push_back(WGL_CONTEXT_FLAGS_ARB);
-		context_creation_attrib_list.push_back((cc.forward_compatible ? WGL_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB : 0) + (cc.debug ? WGL_CONTEXT_DEBUG_BIT_ARB : 0));
+		context_creation_attrib_list.push_back((cc.forward_compatible ? WGL_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB : 0) +
+											   (cc.debug ? WGL_CONTEXT_DEBUG_BIT_ARB : 0));
 	}
 	if (cc.version_major > 0) {
 		context_creation_attrib_list.push_back(WGL_CONTEXT_MAJOR_VERSION_ARB);
@@ -389,9 +378,31 @@ void fltk_driver::set_context_creation_attrib_list(cgv::render::context_config& 
 		context_creation_attrib_list.push_back(cc.version_minor);
 	}
 	context_creation_attrib_list.push_back(WGL_CONTEXT_PROFILE_MASK_ARB);
-	context_creation_attrib_list.push_back(cc.core_profile ? WGL_CONTEXT_CORE_PROFILE_BIT_ARB : WGL_CONTEXT_COMPATIBILITY_PROFILE_BIT_ARB);
+	context_creation_attrib_list.push_back(cc.core_profile ? WGL_CONTEXT_CORE_PROFILE_BIT_ARB
+														   : WGL_CONTEXT_COMPATIBILITY_PROFILE_BIT_ARB);
+#else
+	if (cc.forward_compatible || cc.debug) {
+		context_creation_attrib_list.push_back(GLX_CONTEXT_FLAGS_ARB);
+		context_creation_attrib_list.push_back((cc.forward_compatible ? GLX_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB : 0) +
+											   (cc.debug ? GLX_CONTEXT_DEBUG_BIT_ARB : 0));
+	}
+	if (cc.version_major > 0) {
+		context_creation_attrib_list.push_back(GLX_CONTEXT_MAJOR_VERSION_ARB);
+		context_creation_attrib_list.push_back(cc.version_major);
+	}
+	if (cc.version_minor > 0) {
+		context_creation_attrib_list.push_back(GLX_CONTEXT_MINOR_VERSION_ARB);
+		context_creation_attrib_list.push_back(cc.version_minor);
+	}
+	context_creation_attrib_list.push_back(GLX_CONTEXT_PROFILE_MASK_ARB);
+	context_creation_attrib_list.push_back(cc.core_profile ? GLX_CONTEXT_CORE_PROFILE_BIT_ARB
+														   : GLX_CONTEXT_COMPATIBILITY_PROFILE_BIT_ARB);
+#endif
 	context_creation_attrib_list.push_back(0);
+#ifdef _WIN32
+	// FIXME find a way to do this on Unix systems as well
 	fltk::GlChoice::ref_attrib_list() = &context_creation_attrib_list.front();
+#endif
 }
 
 /// create a window of the given type. Currently only the types "viewer with gui", "viewer" and "gui" are supported
@@ -401,8 +412,7 @@ window_ptr fltk_driver::create_window(int w, int h, const std::string& title, co
 	window_ptr wp;
 	if (window_type == "viewer")
 		wp = window_ptr(new fltk_viewer_window(w, h, title));
-	else
-	if (window_type == "generic")
+	else if (window_type == "generic")
 		wp = window_ptr(new fltk_generic_window(0, 0, w, h, title));
 	if (wp.empty())
 		return wp;
@@ -411,7 +421,7 @@ window_ptr fltk_driver::create_window(int w, int h, const std::string& title, co
 }
 
 /// set the input focus to the given window
-bool fltk_driver::set_focus(const_window_ptr )
+bool fltk_driver::set_focus(const_window_ptr)
 {
 	std::cerr << "set focus of fltk_driver not implemented" << std::endl;
 	return false;
@@ -419,7 +429,7 @@ bool fltk_driver::set_focus(const_window_ptr )
 /// return the number of created windows
 unsigned int fltk_driver::get_nr_windows()
 {
-	return (unsigned int) windows.size();
+	return (unsigned int)windows.size();
 }
 
 /// return the i-th created window
@@ -438,7 +448,7 @@ bool fltk_driver::run()
 /// quit the application by closing all windows
 void fltk_driver::quit(int exit_code)
 {
-	for (unsigned int i=0; i<windows.size(); ++i) {
+	for (unsigned int i = 0; i < windows.size(); ++i) {
 		static_cast<fltk::Window*>(static_cast<fltk::Widget*>(windows[i]->get_user_data()))->hide();
 	}
 #ifdef _WIN32
@@ -451,13 +461,13 @@ void fltk_driver::quit(int exit_code)
 /// copy text to the clipboard
 void fltk_driver::copy_to_clipboard(const std::string& s)
 {
-	fltk::copy(s.c_str(), (int) s.length(), true);
+	fltk::copy(s.c_str(), (int)s.length(), true);
 }
 
 struct PasteWidget : public fltk::Widget
 {
 	std::string clipboard;
-	PasteWidget() : fltk::Widget(0,0,0,0) {}
+	PasteWidget() : fltk::Widget(0, 0, 0, 0) {}
 	int handle(int event)
 	{
 		if (event == fltk::PASTE) {
@@ -480,46 +490,61 @@ std::string fltk_driver::paste_from_clipboard()
 text_editor_ptr fltk_driver::create_text_editor(unsigned int w, unsigned int h, const std::string& title, int x, int y)
 {
 	ensure_lock();
-	fltk_text_editor* e = new fltk_text_editor(title,w,h,title.c_str());
-	e->position(x,y);
+	fltk_text_editor* e = new fltk_text_editor(title, w, h, title.c_str());
+	e->position(x, y);
 	return text_editor_ptr(e);
 }
 
-/// ask the user with \c _question to select one of the \c answers, where \c default_answer specifies index of default answer
+/// show the user a \c _message that can be dismissed with the \c answer
+void fltk_driver::message(const std::string& _message)
+{
+	fltk::message(_message.c_str());
+}
+
+/// ask the user with \c _question to select one of the \c answers, where \c default_answer specifies index of default
+/// answer
 int fltk_driver::question(const std::string& _question, const std::vector<std::string>& answers, int default_answer)
 {
 	std::vector<const char*> answer_ptrs;
 	answer_ptrs.resize(answers.size());
-	for (unsigned i=0; i<answers.size(); ++i)
+	for (unsigned i = 0; i < answers.size(); ++i)
 		answer_ptrs[i] = answers[i].c_str();
 	std::string default_answer_string;
 	if (default_answer > -1 && default_answer < (int)answers.size()) {
-		default_answer_string = std::string("*")+answers[default_answer];
+		default_answer_string = std::string("*") + answers[default_answer];
 		answer_ptrs[default_answer] = default_answer_string.c_str();
 	}
+
 	switch (answers.size()) {
-	case 0 :
-	case 1 : fltk::message(_question.c_str()); return 0;
-	case 2 : return fltk::ask(_question.c_str(), answer_ptrs[0], answer_ptrs[1]);
-	case 3 : return fltk::choice(_question.c_str(), answer_ptrs[0], answer_ptrs[1], answer_ptrs[2]);
-	case 4 : return fltk::choice(_question.c_str(), answer_ptrs[0], answer_ptrs[1], answer_ptrs[2], answer_ptrs[3]);
-	case 5 : return fltk::choice(_question.c_str(), answer_ptrs[0], answer_ptrs[1], answer_ptrs[2], answer_ptrs[3], answer_ptrs[4]);
-	case 6 : return fltk::choice(_question.c_str(), answer_ptrs[0], answer_ptrs[1], answer_ptrs[2], answer_ptrs[3], answer_ptrs[4], answer_ptrs[5]);
+	case 0:
+		return fltk::ask(_question.c_str());
+	case 1:
+		return fltk::ask(_question.c_str());
+	case 2:
+		return fltk::ask(_question.c_str(), answer_ptrs[0], answer_ptrs[1]);
+	case 3:
+		return fltk::choice(_question.c_str(), answer_ptrs[0], answer_ptrs[1], answer_ptrs[2]);
+	case 4:
+		return fltk::choice(_question.c_str(), answer_ptrs[0], answer_ptrs[1], answer_ptrs[2], answer_ptrs[3]);
+	case 5:
+		return fltk::choice(_question.c_str(), answer_ptrs[0], answer_ptrs[1], answer_ptrs[2], answer_ptrs[3],
+							answer_ptrs[4]);
+	case 6:
+		return fltk::choice(_question.c_str(), answer_ptrs[0], answer_ptrs[1], answer_ptrs[2], answer_ptrs[3],
+							answer_ptrs[4], answer_ptrs[5]);
 	}
 	return -1;
 }
 
 bool fltk_driver::query(const std::string& question, std::string& text, bool password)
 {
-	const char* answer = password ? 
-		fltk::password(question.c_str(), text.c_str()) :
-		fltk::input(question.c_str(), text.c_str());
+	const char* answer =
+		  password ? fltk::password(question.c_str(), text.c_str()) : fltk::input(question.c_str(), text.c_str());
 	if (answer == 0)
 		return false;
 	text = answer;
 	return true;
 }
-
 
 void fltk_driver::lock()
 {
@@ -542,7 +567,7 @@ void fltk_driver::wake(const std::string& message)
 
 std::string fltk_driver::get_wakeup_message()
 {
-	const char* message = (const char*) fltk::thread_message();
+	const char* message = (const char*)fltk::thread_message();
 	if (message)
 		return std::string(message);
 	return "";
@@ -554,27 +579,27 @@ void fltk_driver::sleep(float time_in_seconds)
 	fltk::wait(time_in_seconds);
 }
 
-
 /// add a new gui group to the given parent group
-gui_group_ptr fltk_driver::add_group(gui_group_ptr parent, const std::string& label, const std::string& group_type, const std::string& options, const std::string& align)
+gui_group_ptr fltk_driver::add_group(gui_group_ptr parent, const std::string& label, const std::string& group_type,
+									 const std::string& options, const std::string& align)
 {
 	ensure_lock();
-	int x,y,w,h;
+	int x, y, w, h;
 	fltk_gui_group* fggp = parent->get_interface<fltk_gui_group>();
-	fggp->prepare_new_element(parent,x,y,w,h);
+	fggp->prepare_new_element(parent, x, y, w, h);
 
-		gui_group_ptr gg;
-		if (group_type.empty() || group_type == "align_group")
-			gg = gui_group_ptr(new fltk_align_group(x,y,w,h,label));
-		else if (group_type == "tab_group")
-			gg = gui_group_ptr(new fltk_tab_group(x,y,w,h,label));
-		else if (group_type == "dockable_group")
-			gg = gui_group_ptr(new fltk_dockable_group(x,y,w,h,label));
-		else if (group_type == "layout_group")
-			gg = gui_group_ptr(new fltk_layout_group(x,y,w,h,label));
-		else if (group_type == "tree_group")
-			gg = gui_group_ptr(new fltk_tree_group(x,y,w,h,label));
-		// add further group types here
+	gui_group_ptr gg;
+	if (group_type.empty() || group_type == "align_group")
+		gg = gui_group_ptr(new fltk_align_group(x, y, w, h, label));
+	else if (group_type == "tab_group")
+		gg = gui_group_ptr(new fltk_tab_group(x, y, w, h, label));
+	else if (group_type == "dockable_group")
+		gg = gui_group_ptr(new fltk_dockable_group(x, y, w, h, label));
+	else if (group_type == "layout_group")
+		gg = gui_group_ptr(new fltk_layout_group(x, y, w, h, label));
+	else if (group_type == "tree_group")
+		gg = gui_group_ptr(new fltk_tree_group(x, y, w, h, label));
+	// add further group types here
 
 	if (!gg.empty()) {
 		if (!options.empty())
@@ -586,58 +611,60 @@ gui_group_ptr fltk_driver::add_group(gui_group_ptr parent, const std::string& la
 }
 
 /// add a newly created decorator to the parent group
-base_ptr fltk_driver::add_decorator(gui_group_ptr parent, const std::string& label, 
-												const std::string& decorator_type, const std::string& options, 
-												const std::string& align)
+base_ptr fltk_driver::add_decorator(gui_group_ptr parent, const std::string& label, const std::string& decorator_type,
+									const std::string& options, const std::string& align)
 {
 	ensure_lock();
-	int x,y,w,h;
+	int x, y, w, h;
 	fltk_gui_group* fggp = parent->get_interface<fltk_gui_group>();
-	fggp->prepare_new_element(parent,x,y,w,h);
+	fggp->prepare_new_element(parent, x, y, w, h);
 
-		base_ptr d = create_decorator(label,decorator_type,x,y,w,h);
+	base_ptr d = create_decorator(label, decorator_type, x, y, w, h);
 
 	if (!d.empty()) {
 		if (!options.empty())
 			d->multi_set(options);
 
-		fggp->finalize_new_element(parent,align, d);
+		fggp->finalize_new_element(parent, align, d);
 	}
 	return d;
 }
 
-button_ptr fltk_driver::add_button(gui_group_ptr parent, const std::string& label, const std::string& options, const std::string& align)
+button_ptr fltk_driver::add_button(gui_group_ptr parent, const std::string& label, const std::string& options,
+								   const std::string& align)
 {
 	ensure_lock();
-	int x,y,w,h;
+	int x, y, w, h;
 	fltk_gui_group* fggp = parent->get_interface<fltk_gui_group>();
-	fggp->prepare_new_element(parent,x,y,w,h);
+	fggp->prepare_new_element(parent, x, y, w, h);
 
-	button_ptr b(new fltk_button(label,x,y,w,h));
+	button_ptr b(new fltk_button(label, x, y, w, h));
 
 	if (!b.empty()) {
 		if (!options.empty())
 			b->multi_set(options);
 
-		fggp->finalize_new_element(parent,align, b);
+		fggp->finalize_new_element(parent, align, b);
 	}
 	return b;
 }
 
-view_ptr fltk_driver::add_view(gui_group_ptr parent, const std::string& label, const void* value_ptr, const std::string& value_type, const std::string& gui_type, const std::string& options, const std::string& align)
+view_ptr fltk_driver::add_view(gui_group_ptr parent, const std::string& label, const void* value_ptr,
+							   const std::string& value_type, const std::string& gui_type, const std::string& options,
+							   const std::string& align)
 {
 	ensure_lock();
-	int x,y,w,h;
+	int x, y, w, h;
 	fltk_gui_group* fggp = parent->get_interface<fltk_gui_group>();
-	fggp->prepare_new_element(parent,x,y,w,h);
+	fggp->prepare_new_element(parent, x, y, w, h);
 
 	view_ptr v = create_view(label, value_ptr, value_type, gui_type, x, y, w, h);
 
 	if (!v.empty()) {
 		if (!options.empty())
 			v->multi_set(options);
-		
-		fggp->finalize_new_element(parent,align, v);
+
+		fggp->finalize_new_element(parent, align, v);
 	}
 	return v;
 }
@@ -646,10 +673,10 @@ view_ptr fltk_driver::find_view(gui_group_ptr parent, const void* value_ptr, int
 {
 	ensure_lock();
 	int n = parent->get_nr_children();
-	int i=0;
+	int i = 0;
 	if (idx_ptr)
 		i = *idx_ptr;
-	for (; i<n; ++i) {
+	for (; i < n; ++i) {
 		abst_view* v = parent->get_child(i)->get_interface<abst_view>();
 		if (v) {
 			if (v->shows(value_ptr)) {
@@ -662,39 +689,34 @@ view_ptr fltk_driver::find_view(gui_group_ptr parent, const void* value_ptr, int
 	return view_ptr();
 }
 
-
-control_ptr fltk_driver::add_control(gui_group_ptr parent, const std::string& label, 
-												 void* value_ptr, abst_control_provider* acp,
-												 const std::string& value_type, 
-												 const std::string& gui_type, 
-												 const std::string& options, 
-												 const std::string& align)
+control_ptr fltk_driver::add_control(gui_group_ptr parent, const std::string& label, void* value_ptr,
+									 abst_control_provider* acp, const std::string& value_type,
+									 const std::string& gui_type, const std::string& options, const std::string& align)
 {
 	ensure_lock();
-	int x,y,w,h;
+	int x, y, w, h;
 	fltk_gui_group* fggp = parent->get_interface<fltk_gui_group>();
-	fggp->prepare_new_element(parent,x,y,w,h);
+	fggp->prepare_new_element(parent, x, y, w, h);
 
 	control_ptr c = create_control(label, value_ptr, acp, value_type, gui_type, options, x, y, w, h);
 
 	if (!c.empty()) {
 		if (!options.empty())
 			c->multi_set(options);
-		
-		fggp->finalize_new_element(parent,align, c);
+
+		fggp->finalize_new_element(parent, align, c);
 	}
 	return c;
 }
-
 
 control_ptr fltk_driver::find_control(gui_group_ptr parent, void* value_ptr, int* idx_ptr)
 {
 	ensure_lock();
 	int n = parent->get_nr_children();
-	int i=0;
+	int i = 0;
 	if (idx_ptr)
 		i = *idx_ptr;
-	for (; i<n; ++i) {
+	for (; i < n; ++i) {
 		abst_control* c = parent->get_child(i)->get_interface<abst_control>();
 		if (c && c->controls(value_ptr)) {
 			if (idx_ptr)
@@ -706,7 +728,8 @@ control_ptr fltk_driver::find_control(gui_group_ptr parent, void* value_ptr, int
 }
 
 /// analyze a menu path description, search for the menu that will contain the path and split path in path and item name
-fltk::Menu* fltk_driver::resolve_menu_path(const std::string& menu_path, std::string& path, std::string& name, bool ensure_created) const
+fltk::Menu* fltk_driver::resolve_menu_path(const std::string& menu_path, std::string& path, std::string& name,
+										   bool ensure_created) const
 {
 	if (windows.empty())
 		return 0;
@@ -715,26 +738,25 @@ fltk::Menu* fltk_driver::resolve_menu_path(const std::string& menu_path, std::st
 	if (pos == std::string::npos)
 		path = menu_path;
 	else {
-		path = menu_path.substr(pos+1);
-		window_name = menu_path.substr(0,pos);
+		path = menu_path.substr(pos + 1);
+		window_name = menu_path.substr(0, pos);
 	}
 	pos = path.find_last_of('/');
 	if (pos == std::string::npos)
 		name = path;
 	else
-		name = path.substr(pos+1);
+		name = path.substr(pos + 1);
 	fltk::Menu* m = 0;
-	for (unsigned int i=0; i<windows.size(); ++i) {
-		if (window_name.empty() || window_name == windows[i]->get_name() || 
-			window_name == windows[i]->get_type_name()) {
-				fltk_viewer_window* fvw = windows[i]->get_interface<fltk_viewer_window>();
-				if (fvw) {
-					m = fvw->get_menu();
-					if (m)
-						break;
-				}
+	for (unsigned int i = 0; i < windows.size(); ++i) {
+		if (window_name.empty() || window_name == windows[i]->get_name() || window_name == windows[i]->get_type_name())
+		{
+			fltk_viewer_window* fvw = windows[i]->get_interface<fltk_viewer_window>();
+			if (fvw) {
+				m = fvw->get_menu();
+				if (m)
+					break;
+			}
 		}
-
 	}
 	if (m) {
 		fltk::Widget* w = m->find(menu_path.c_str());
@@ -750,9 +772,9 @@ fltk::Menu* fltk_driver::resolve_menu_path(const std::string& menu_path, std::st
 struct fltk_separator : public named
 {
 	fltk::Widget* w;
-	void* get_user_data() 
+	void* get_user_data()
 	{
-		return w; 
+		return w;
 	}
 	fltk_separator(const std::string& name) : named(name)
 	{
@@ -760,16 +782,16 @@ struct fltk_separator : public named
 	}
 	void self_unref()
 	{
-		set_ref_count(get_ref_count()-1);
+		set_ref_count(get_ref_count() - 1);
 	}
 };
 
 struct fltk_menu_button : public button, public fltk_base
 {
 	fltk::Widget* w;
-	void* get_user_data() 
+	void* get_user_data()
 	{
-		return w; 
+		return w;
 	}
 	static void menu_cb(fltk::Widget* w, void* p)
 	{
@@ -797,23 +819,22 @@ struct fltk_menu_button : public button, public fltk_base
 	}
 	void self_unref()
 	{
-		set_ref_count(get_ref_count()-1);
+		set_ref_count(get_ref_count() - 1);
 	}
 };
-
 
 /// add a newly created decorator to the menu
 base_ptr fltk_driver::add_menu_separator(const std::string& menu_path)
 {
 	std::string path, name;
-	fltk::Menu* mp = resolve_menu_path(menu_path, path, name,true);
+	fltk::Menu* mp = resolve_menu_path(menu_path, path, name, true);
 	if (mp) {
 		mp->begin();
 		new fltk::Divider();
 		mp->end();
 		return base_ptr();
 		/*
-		fltk_separator* sep = new fltk_separator(path); 
+		fltk_separator* sep = new fltk_separator(path);
 		fltk::Widget* w = mp->add(sep->get_name().c_str(), 0, 0, sep->get_interface<base>());
 		sep->w = w;
 		return base_ptr(sep);*/
@@ -825,9 +846,9 @@ base_ptr fltk_driver::add_menu_separator(const std::string& menu_path)
 button_ptr fltk_driver::add_menu_button(const std::string& menu_path, const std::string& options)
 {
 	std::string path, name;
-	fltk::Menu* mp = resolve_menu_path(menu_path, path, name,true);
+	fltk::Menu* mp = resolve_menu_path(menu_path, path, name, true);
 	if (mp) {
-		fltk_menu_button* b = new fltk_menu_button(path); 
+		fltk_menu_button* b = new fltk_menu_button(path);
 		fltk::Widget* w = mp->add(b->get_name().c_str(), 0, fltk_menu_button::menu_cb, b->get_interface<base>());
 		b->w = w;
 		b->multi_set(options);
@@ -836,9 +857,10 @@ button_ptr fltk_driver::add_menu_button(const std::string& menu_path, const std:
 	return button_ptr();
 }
 /// use this to add a new control to the gui with a given value type, gui type and init options
-cgv::data::ref_ptr<control<bool> > fltk_driver::add_menu_bool_control(const std::string& menu_path, bool& value, const std::string& options)
+cgv::data::ref_ptr<control<bool>> fltk_driver::add_menu_bool_control(const std::string& menu_path, bool& value,
+																	 const std::string& options)
 {
-	return cgv::data::ref_ptr<control<bool> >();
+	return cgv::data::ref_ptr<control<bool>>();
 }
 
 /// return the element of the given menu path
@@ -889,24 +911,28 @@ base_ptr get_base_provider_generator(bool unregister = false)
 /// process the gui declarations in the given gui file
 bool fltk_driver::process_gui_file(const std::string& file_name)
 {
-	cgv::gui::base_provider_generator* bpg = get_base_provider_generator()->get_interface<cgv::gui::base_provider_generator>();
+	cgv::gui::base_provider_generator* bpg =
+		  get_base_provider_generator()->get_interface<cgv::gui::base_provider_generator>();
 	return bpg->parse_gui_file(file_name);
 }
 
 struct menu_listener : public cgv::base::base, public registration_listener
 {
-	std::string get_type_name() const { return "menu_listener"; }
+	std::string get_type_name() const
+	{
+		return "menu_listener";
+	}
 	void register_object(base_ptr object, const std::string& options)
 	{
 		menu_provider* mp = object->get_interface<menu_provider>();
-		if (!mp) 
+		if (!mp)
 			return;
 		mp->create_menu();
 	}
 	void unregister_object(base_ptr object, const std::string& options)
 	{
 		menu_provider* mp = object->get_interface<menu_provider>();
-		if (!mp) 
+		if (!mp)
 			return;
 		mp->destroy_menu();
 	}
@@ -914,6 +940,3 @@ struct menu_listener : public cgv::base::base, public registration_listener
 
 object_registration<fltk_driver> fltk_driver_registration("fltk driver");
 object_registration<menu_listener> fml_reg("fltk menu driver");
-
-//object_registration<fltk_driver> fltk_driver_registration;
-//object_registration<menu_listener> fml_reg;

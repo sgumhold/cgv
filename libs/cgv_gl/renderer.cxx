@@ -6,65 +6,6 @@ namespace cgv {
 		render_style::~render_style()
 		{
 		}
-		attribute_array_manager::attribute_array_manager(VertexBufferUsage _default_usage)
-		{
-			default_usage = _default_usage;
-		}
-		bool attribute_array_manager::has_attribute(const context& ctx, int loc) const
-		{
-			return aab.is_array_enabled(ctx, loc);
-		}
-		attribute_array_manager::~attribute_array_manager()
-		{
-			if (aab.is_created() && aab.ctx_ptr && aab.ctx_ptr->make_current())
-				destruct(*aab.ctx_ptr);
-		}
-		bool attribute_array_manager::set_attribute_array(const context& ctx, int loc, type_descriptor element_type, const vertex_buffer& vbo, size_t offset_in_bytes, size_t nr_elements, unsigned stride_in_bytes)
-		{
-			return ctx.set_attribute_array_void(&aab, loc, element_type, &vbo, reinterpret_cast<const void*>(offset_in_bytes), nr_elements, stride_in_bytes);
-		}
-		/// whether aam contains an index buffer
-		bool attribute_array_manager::has_index_buffer() const 
-		{ 
-			auto iter = vbos.find(-1);
-			if (iter == vbos.end())
-				return false;
-			return iter->second != 0; 
-		}
-		///
-		void attribute_array_manager::remove_indices(const context& ctx)
-		{
-			vertex_buffer*& vbo_ptr = vbos[-1];
-			if (vbo_ptr) {
-				vbo_ptr->destruct(ctx);
-				delete vbo_ptr;
-				vbos[-1] = 0;
-			}
-		}
-
-		bool attribute_array_manager::init(context& ctx)
-		{
-			return aab.create(ctx);
-		}
-		bool attribute_array_manager::enable(context& ctx)
-		{
-			return aab.enable(ctx);
-		}
-		bool attribute_array_manager::disable(context& ctx)
-		{
-			return aab.disable(ctx);
-		}
-		///
-		void attribute_array_manager::destruct(const context& ctx)
-		{
-			for (auto& p : vbos) {
-				p.second->destruct(ctx);
-				delete p.second;
-				p.second = 0;
-			}
-			vbos.clear();
-			aab.destruct(ctx);
-		}
 		renderer::renderer()
 		{
 			has_colors = false;
@@ -77,13 +18,13 @@ namespace cgv {
 			index_count = 0;
 			prog_ptr = &prog;
 		}
-		void renderer::manage_singelton(context& ctx, const std::string& renderer_name, int& ref_count, int ref_count_change)
+		void renderer::manage_singleton(context& ctx, const std::string& renderer_name, int& ref_count, int ref_count_change)
 		{
 			switch (ref_count_change) {
 			case 1:
 				if (ref_count == 0) {
 					if (!init(ctx))
-						ctx.error(std::string("unable to initialize ") + renderer_name + " singelton");
+						ctx.error(std::string("unable to initialize ") + renderer_name + " singleton");
 				}
 				++ref_count;
 				break;
@@ -91,14 +32,14 @@ namespace cgv {
 				break;
 			case -1:
 				if (ref_count == 0)
-					ctx.error(std::string("attempt to decrease reference count of ") + renderer_name + " singelton below 0");
+					ctx.error(std::string("attempt to decrease reference count of ") + renderer_name + " singleton below 0");
 				else {
 					if (--ref_count == 0)
 						clear(ctx);
 				}
 				break;
 			default:
-				ctx.error(std::string("invalid change reference count outside {-1,0,1} for ") + renderer_name + " singelton");
+				ctx.error(std::string("invalid change reference count outside {-1,0,1} for ") + renderer_name + " singleton");
 			}
 		}
 		renderer::~renderer()
@@ -128,7 +69,7 @@ namespace cgv {
 		}
 		void renderer::set_attribute_array_manager(const context& ctx, attribute_array_manager* _aam_ptr)
 		{
-			if (aam_ptr)
+			if (_aam_ptr)
 				enable_attribute_array_manager(ctx, *_aam_ptr);
 			else
 				disable_attribute_array_manager(ctx, *aam_ptr);
@@ -198,11 +139,18 @@ namespace cgv {
 				if (!aam_ptr)
 					aam_ptr = &default_aam;
 			}
-			if (!default_render_style) {
+			if (!default_render_style)
 				default_render_style = create_render_style();
-			}
+
 			if (!rs)
 				rs = default_render_style;
+
+			if (prog_ptr == &prog) {
+				update_defines(defines);
+				if (!build_shader_program(ctx, prog, defines))
+					return false;
+				last_defines = defines;
+			}
 			return default_render_style != 0;
 		}
 
@@ -216,6 +164,16 @@ namespace cgv {
 
 		bool renderer::enable(context& ctx)
 		{
+			if (prog_ptr == &prog) {
+				update_defines(defines);
+				if (defines != last_defines) {
+					if (prog.is_created())
+						prog.destruct(ctx);
+					if (!build_shader_program(ctx, prog, defines))
+						return false;
+				}
+				last_defines = defines;
+			}
 			bool res = ref_prog().enable(ctx);
 			if (aam_ptr)
 				res = aam_ptr->enable(ctx);

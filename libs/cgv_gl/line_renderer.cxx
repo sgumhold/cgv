@@ -10,7 +10,7 @@ namespace cgv {
 		{
 			static int ref_count = 0;
 			static line_renderer r;
-			r.manage_singelton(ctx, "line_renderer", ref_count, ref_count_change);
+			r.manage_singleton(ctx, "line_renderer", ref_count, ref_count_change);
 			return r;
 		}
 		render_style* line_renderer::create_render_style() const
@@ -60,16 +60,14 @@ namespace cgv {
 			has_line_widths = false;
 			has_depth_offsets = false;
 		}
+		bool line_renderer::build_shader_program(context& ctx, shader_program& prog, const shader_define_map& defines)
+		{
+			return prog.build_program(ctx, "line.glpr", true, defines);
+		}
 
 		bool line_renderer::init(context& ctx)
 		{
 			bool res = renderer::init(ctx);
-			if (!ref_prog().is_created()) {
-				if (!ref_prog().build_program(ctx, "line.glpr", true)) {
-					std::cerr << "ERROR in my_line_renderer::init() ... could not build program line.glpr" << std::endl;
-					return false;
-				}
-			}
 			ref_prog().set_attribute(ctx, "normal", vec3(0.0f,0.0f,1.0f));
 			ref_prog().set_attribute(ctx, "depth_offset", 0.0f);
 			ref_prog().set_attribute(ctx, "line_width", 1.0f);

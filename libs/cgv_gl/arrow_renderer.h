@@ -11,8 +11,18 @@ namespace cgv {
 		//! reference to a singleton surfel renderer that can be shared among drawables
 		/*! the second parameter is used for reference counting. Use +1 in your init method,
 			-1 in your clear method and default 0 argument otherwise. If internal reference
-			counter decreases to 0, singelton renderer is destructed. */
+			counter decreases to 0, singleton renderer is destructed. */
 		extern CGV_API arrow_renderer& ref_arrow_renderer(context& ctx, int ref_count_change = 0);
+
+		/// <summary>
+		/// different modes to compute the head length of an arrow
+		/// </summary>
+		enum ArrowHeadLengthMode
+		{
+			AHLM_RELATIVE_TO_RADIUS = 1, ///
+			AHLM_RELATIVE_TO_LENGTH = 2,///
+			AHLM_MINIMUM_OF_RADIUS_AND_LENGTH = 3///
+		};
 
 		/** style of a point */
 		struct CGV_API arrow_render_style : public surface_render_style
@@ -25,6 +35,8 @@ namespace cgv {
 			float radius_relative_to_length;
 			/// scaling factor of head radius with respect to tail radius
 			float head_radius_scale;
+			///
+			ArrowHeadLengthMode head_length_mode;
 			/// 
 			float head_length_relative_to_radius;
 			/// 
@@ -57,6 +69,8 @@ namespace cgv {
 			bool direction_is_end_point;
 			/// overload to allow instantiation of arrow_renderer
 			render_style* create_render_style() const;
+			/// build arrow program
+			bool build_shader_program(context& ctx, shader_program& prog, const shader_define_map& defines);
 		public:
 			///
 			arrow_renderer();
@@ -76,8 +90,6 @@ namespace cgv {
 			/// templated method to set the end_point attribute from an array of end_points of type T, which should have 3 components
 			template <typename T>
 			void set_end_point_array(const context& ctx, const T* end_points, size_t nr_elements, unsigned stride_in_bytes = 0) { has_directions = true; direction_is_end_point = true; set_attribute_array(ctx, ref_prog().get_attribute_location(ctx, "direction"), end_points, nr_elements, stride_in_bytes); }
-			///
-			bool init(context& ctx);
 			///
 			bool validate_attributes(const context& ctx) const;
 			///

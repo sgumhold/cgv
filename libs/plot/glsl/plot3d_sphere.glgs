@@ -1,5 +1,8 @@
 #version 330 core
 
+layout(points) in;
+layout(triangle_strip, max_vertices = 4) out;
+
 //***** begin interface of sphere_lib.glgs ***********************************
 struct sphere_parameter_space
 {

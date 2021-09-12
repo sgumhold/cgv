@@ -8,7 +8,7 @@ namespace cgv {
 		{
 			static int ref_count = 0;
 			static arrow_renderer r;
-			r.manage_singelton(ctx, "arrow_renderer", ref_count, ref_count_change);
+			r.manage_singleton(ctx, "arrow_renderer", ref_count, ref_count_change);
 			return r;
 		}
 
@@ -23,6 +23,7 @@ namespace cgv {
 			inner_outer_lambda = 0.5f;
 			radius_relative_to_length = 0.1f;
 			head_radius_scale = 2.0f;
+			head_length_mode = AHLM_MINIMUM_OF_RADIUS_AND_LENGTH;
 			head_length_relative_to_radius = 2.0f;
 			head_length_relative_to_length = 0.3f;
 			length_scale = 1.0f;
@@ -51,18 +52,9 @@ namespace cgv {
 			position_is_center = false;
 			direction_is_end_point = false;
 		}
-		bool arrow_renderer::init(context& ctx)
+		bool arrow_renderer::build_shader_program(context& ctx, shader_program& prog, const shader_define_map& defines)
 		{
-			bool res = renderer::init(ctx);
-			if (!ref_prog().is_created()) {
-				if (!ref_prog().build_program(ctx, "arrow.glpr", true)) {
-					std::cerr << "ERROR in arrow_renderer::init() ... could not build program arrow.glpr" << std::endl;
-					return false;
-				}
-//				std::vector<std::string> names;
-//				ctx.enumerate_program_attributes(ref_prog(), names, 0, 0, 0, true);
-			}
-			return res;
+			return prog.build_program(ctx, "arrow.glpr", true, defines);
 		}
 
 		bool arrow_renderer::validate_attributes(const context& ctx) const
@@ -87,6 +79,7 @@ namespace cgv {
 				ref_prog().set_uniform(ctx, "radius_lower_bound", ars.radius_lower_bound);
 				ref_prog().set_uniform(ctx, "radius_relative_to_length", ars.radius_relative_to_length);
 				ref_prog().set_uniform(ctx, "head_radius_scale", ars.head_radius_scale);
+				ref_prog().set_uniform(ctx, "head_length_mode", (int&)ars.head_length_mode);
 				ref_prog().set_uniform(ctx, "head_length_relative_to_radius", ars.head_length_relative_to_radius);
 				ref_prog().set_uniform(ctx, "head_length_relative_to_length", ars.head_length_relative_to_length);
 				ref_prog().set_uniform(ctx, "length_scale", ars.length_scale);
@@ -177,8 +170,9 @@ namespace cgv {
 					p->align("\b");
 					p->end_tree_node(ars_ptr->radius_lower_bound);
 				}
-				if (p->begin_tree_node("radius", ars_ptr->head_radius_scale, true, "level=3")) {
+				if (p->begin_tree_node("head radius", ars_ptr->head_radius_scale, true, "level=3")) {
 					p->align("\a");
+					p->add_member_control(b, "head_length_mode", ars_ptr->head_length_mode, "dropdown", "enums='relative_to_radius=1,relative_to_length=2,minimum_of_radius_and_length=3'");
 					p->add_member_control(b, "head_length_relative_to_radius", ars_ptr->head_length_relative_to_radius, "value_slider", "min=0.1;max=5;ticks=true");
 					p->add_member_control(b, "head_length_relative_to_length", ars_ptr->head_length_relative_to_length, "value_slider", "min=0;max=1;ticks=true");
 					p->add_member_control(b, "head_radius_scale", ars_ptr->head_radius_scale, "value_slider", "min=1;max=3;ticks=true");

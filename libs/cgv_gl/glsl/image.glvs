@@ -1,26 +1,15 @@
-#version 150
+#version 330
 
-in vec4 position;
-in vec4 color;
-in vec2 texcoord;
+layout(location = 0) in vec2 position;
+layout(location = 1) in vec2 texcoord;
+layout(location = 2) in vec4 color;
 
-out vec2 tc;
-out vec4 color_fs;
-
-//***** begin interface of view.glsl ***********************************
-mat4 get_modelview_matrix();
-mat4 get_projection_matrix();
-mat4 get_modelview_projection_matrix();
-mat4 get_inverse_modelview_matrix();
-mat4 get_inverse_modelview_projection_matrix();
-mat3 get_normal_matrix();
-mat3 get_inverse_normal_matrix();
-//***** end interface of view.glsl ***********************************
+out vec2 texcoord_tc;
+out vec4 color_tc;
 
 void main()
 {
-	tc = texcoord;
-	color_fs = color;
-	
-	gl_Position = get_modelview_projection_matrix()*position;
+	texcoord_tc = texcoord;
+	color_tc    = color;	
+	gl_Position = vec4(vec3(position,0.0),1.0);
 }

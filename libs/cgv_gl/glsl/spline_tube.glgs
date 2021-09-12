@@ -50,7 +50,6 @@ out flat vec3 color0_fs;
 out flat vec3 color1_fs;
 out flat QTube qTube_fs;
 
-
 #define BBOX_LEFT_DN_FRNT bbox[0]
 #define BBOX_LEFT_UP_FRNT bbox[1]
 #define BBOX_RGHT_DN_FRNT bbox[2]

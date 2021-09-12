@@ -8,7 +8,7 @@ namespace cgv {
 		{
 			static int ref_count = 0;
 			static normal_renderer r;
-			r.manage_singelton(ctx, "normal_renderer", ref_count, ref_count_change);
+			r.manage_singleton(ctx, "normal_renderer", ref_count, ref_count_change);
 			return r;
 		}
 
@@ -41,16 +41,9 @@ namespace cgv {
 			}
 			return res;
 		}
-
-		bool normal_renderer::init(context& ctx)
+		bool normal_renderer::build_shader_program(context& ctx, shader_program& prog, const shader_define_map& defines)
 		{
-			if (!ref_prog().is_created()) {
-				if (!ref_prog().build_program(ctx, "normal.glpr", true)) {
-					std::cerr << "ERROR in normal_renderer::init() ... could not build program nml.glpr" << std::endl;
-					return false;
-				}
-			}
-			return true;
+			return prog.build_program(ctx, "normal.glpr", true, defines);
 		}
 
 		bool normal_renderer::enable(context& ctx)

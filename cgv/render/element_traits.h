@@ -66,7 +66,7 @@ namespace cgv {
 		template <typename T>
 		type_descriptor get_element_type(const T& element)
 		{
-			return typename element_descriptor_traits<T>::get_type_descriptor(element);
+			return element_descriptor_traits<T>::get_type_descriptor(element);
 		}
 
 		template <typename T>

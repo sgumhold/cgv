@@ -1,0 +1,59 @@
+#version 430
+
+/*
+	0 : ascending (front-to-back)
+	1 : descending (back-to-front)
+*/
+#define ORDER 0
+
+#define INITIALIZE_VALUES 1
+
+#define DATA_TYPE_DEFINITION float x; float y; float z;
+#define VALUE_TYPE_DEFINITION uint
+
+#define KEY_DEFINITION data_type p = data[idx]; vec3 eye_to_pos = vec3(p.x, p.y, p.z) - eye_pos; float key = dot(eye_to_pos, eye_to_pos);
+
+layout(local_size_x = 256) in;
+
+struct data_type {
+	DATA_TYPE_DEFINITION
+};
+
+layout(std430, binding = 0) readonly buffer data_buffer {
+    data_type data[];
+};
+
+layout(std430, binding = 1) writeonly buffer keys_buffer {
+    uint keys[];
+};
+
+layout(std430, binding = 2) buffer values_buffer {
+    VALUE_TYPE_DEFINITION values[];
+};
+
+uniform uint n;
+uniform uint n_padded;
+
+uniform vec3 eye_pos;
+
+void main() {
+
+    for(uint idx = gl_WorkGroupID.x*gl_WorkGroupSize.x + gl_LocalInvocationID.x; idx < n_padded; idx += gl_WorkGroupSize.x*gl_NumWorkGroups.x) {
+        if(idx < n) {	
+			KEY_DEFINITION
+#if ORDER == 0
+            keys[idx] = floatBitsToUint(key);
+#else
+			keys[idx] = ~floatBitsToUint(key);
+#endif
+        } else {
+            keys[idx] = 0xFFFFFFFF;
+#if INITIALIZE_VALUES == 0
+			values[idx] = VALUE_TYPE_DEFINITION(0xFFFFFFFF);
+#endif
+        }
+#if INITIALIZE_VALUES == 1
+		values[idx] = VALUE_TYPE_DEFINITION(idx);
+#endif
+    }
+}

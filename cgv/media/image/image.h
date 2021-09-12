@@ -3,6 +3,7 @@
 #include <algorithm>
 #include "image_reader.h"
 #include "image_writer.h"
+#include <cgv/math/functions.h>
 
 #include "lib_begin.h"
 

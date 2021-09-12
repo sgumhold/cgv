@@ -1,8 +1,6 @@
 #pragma once
 
-#if !defined(_MSC_VER) || (_MSC_VER < 1400)
-#include <tr1/type_traits>
-#endif
+#include <type_traits>
 
 namespace cgv {
 	namespace type {
@@ -12,12 +10,7 @@ namespace cgv {
 template <typename T>
 struct has_virtual_destructor
 { 
-	static const bool value = 
-#if _MSC_VER >= 1400
-		__has_virtual_destructor(T); 
-#else
-		std::tr1::has_virtual_destructor<T>::value;
-#endif
+	static const bool value = std::has_virtual_destructor<T>::value;
 };
 		}
 	}

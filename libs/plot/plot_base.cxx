@@ -6,6 +6,8 @@
 #include <cgv/render/attribute_array_binding.h>
 #include <libs/cgv_gl/gl/gl.h>
 #include <cgv/render/color_scale.h>
+#include <libs/cgv_gl/rectangle_renderer.h>
+#include <libs/tt_gl_font/tt_gl_font.h>
 #include <algorithm>
 
 namespace cgv {
@@ -14,11 +16,15 @@ namespace cgv {
 std::vector<const char*> plot_base::font_names;
 std::string plot_base::font_name_enum_def;
 
+const unsigned plot_base::MAX_NR_COLOR_MAPPINGS;
+const unsigned plot_base::MAX_NR_OPACITY_MAPPINGS;
+const unsigned plot_base::MAX_NR_SIZE_MAPPINGS;
+
 plot_base::tick_batch_info::tick_batch_info(int _ai, int _aj, bool _primary, unsigned _first_vertex, unsigned _first_label) 
 	: ai(_ai), aj(_aj), primary(_primary), first_vertex(_first_vertex), first_label(_first_label)
 {
 }
-domain_config::domain_config(unsigned nr_axes) : color(0.85f,0.85f,0.85f), axis_configs(nr_axes)
+domain_config::domain_config(unsigned dim, unsigned nr_attrs) : color(0.85f,0.85f,0.85f), axis_configs(dim+nr_attrs)
 {
 	show_domain = true;
 	fill = true;
@@ -26,8 +32,14 @@ domain_config::domain_config(unsigned nr_axes) : color(0.85f,0.85f,0.85f), axis_
 	blend_width_in_pixel = 1.0f;
 	label_font_index = -1;
 	label_font_size = 24.0f;
-	label_ffa = cgv::media::font::FFA_BOLD_ITALIC;
+	label_ffa = cgv::media::font::FFA_REGULAR;
+	title_color = rgba(0.2f, 0.2f, 0.2f, 1.0f);
+	title_font_index = -1;
+	title_font_size = 36.0f;
+	title_ffa = cgv::media::font::FFA_REGULAR;
+	title_pos.zeros(dim);
 }
+
 plot_base_config::plot_base_config(const std::string& _name, unsigned dim) : name(_name)
 {
 	show_plot = true;
@@ -197,12 +209,27 @@ attribute_source::attribute_source(const attribute_source& as)
 	count  = as.count;
 	stride = as.stride;
 }
-attribute_source_array::attribute_source_array()
+attribute_source_array::attribute_source_array() : vbo(cgv::render::VBT_VERTICES, cgv::render::VBU_STREAM_DRAW)
 {
 	samples_out_of_date = true;
 	sources_out_of_date = true;
 	count = 0;
 }
+
+void plot_base::draw_rectangles(cgv::render::context& ctx, cgv::render::attribute_array_manager& aam, 
+	std::vector<box2>& R, std::vector<rgb>& C, std::vector<float>& D, size_t offset)
+{
+	auto& rr = cgv::render::ref_rectangle_renderer(ctx);
+	rr.set_render_style(rrs);
+	rr.enable_attribute_array_manager(ctx, aam);
+	rr.set_rectangle_array(ctx, R);
+	rr.set_color_array(ctx, C);
+	rr.set_depth_offset_array(ctx, D);
+	rr.render(ctx, offset, R.size() - offset);
+	rr.disable_attribute_array_manager(ctx, aam);
+}
+
+
 void plot_base::draw_sub_plot_samples(int count, const plot_base_config& spc, bool strip)
 {
 	if (spc.begin_sample >= spc.end_sample) {
@@ -255,39 +282,98 @@ void plot_base::ensure_font_names()
 	}
 	if (!label_font) {
 		get_domain_config_ptr()->label_font_index = 0;
+		std::string font_name = cgv::media::font::default_font(true)->get_name();
 		for (auto iter = font_names.begin(); iter != font_names.end(); ++iter)
-			if (std::string(*iter) == "Times New Roman") {
+			if (std::string(*iter) == font_name) {
 				get_domain_config_ptr()->label_font_index = (unsigned)(iter - font_names.begin());
 				break;
 			}
 		on_font_selection();
 	}
+	if (!title_font) {
+		get_domain_config_ptr()->title_font_index = 0;
+		std::string font_name = cgv::media::font::default_font(false)->get_name();
+		for (auto iter = font_names.begin(); iter != font_names.end(); ++iter)
+			if (std::string(*iter) == font_name) {
+				get_domain_config_ptr()->title_font_index = (unsigned)(iter - font_names.begin());
+				break;
+			}
+		on_font_selection();
+	}
+}
+
+void plot_base::on_legend_axis_change(cgv::gui::provider& p, cgv::gui::control<int>& ctrl)
+{
+	if (ctrl.get_old_value() != ctrl.get_value()) {
+		std::swap(legend_extent[0], legend_extent[1]);
+		std::swap(legend_location[0], legend_location[1]);
+		p.update_member(&legend_extent[0]);
+		p.update_member(&legend_extent[1]);
+		p.update_member(&legend_location[0]);
+		p.update_member(&legend_location[1]);
+	}
 }
 void plot_base::on_font_selection()
 {
-	label_font = cgv::media::font::find_font(font_names[get_domain_config_ptr()->label_font_index]);
+	if (get_domain_config_ptr()->label_font_index != -1)
+		label_font = cgv::media::font::find_font(font_names[get_domain_config_ptr()->label_font_index]);
+	if (get_domain_config_ptr()->title_font_index != -1)
+		title_font = cgv::media::font::find_font(font_names[get_domain_config_ptr()->title_font_index]);
 	on_font_face_selection();
 }
 void plot_base::on_font_face_selection()
 {
-	label_font_face = label_font->get_font_face(get_domain_config_ptr()->label_ffa);
+	if (label_font)
+		label_font_face = label_font->get_font_face(get_domain_config_ptr()->label_ffa);
+	if (title_font)
+		title_font_face = title_font->get_font_face(get_domain_config_ptr()->title_ffa);
 }
+
+void plot_base::prepare_extents()
+{
+	extent = vec3(0.0f);
+	unsigned max_ai = std::min(unsigned(get_domain_config_ptr()->axis_configs.size()), get_dim());
+	unsigned F_count = 0;
+	float F;
+	for (unsigned ai = 0; ai < max_ai; ++ai) {
+		const auto& ac = get_domain_config_ptr()->axis_configs[ai];
+		extent[ai] = ac.extent;
+		if (ac.extent_scaling == 0.0f)
+			continue;
+		// (E1 * ES1) / A1 = (E2 * ES2) / A2 = F
+		// 	F = E * ES / A;
+		// 	E = F * A / ES;
+		float f = ac.extent * ac.extent_scaling / ac.get_attribute_extent();
+		if (F_count)
+			F = std::min(F, f);
+		else
+			F = f;
+		++F_count;
+	}
+	if (F_count > 1) {
+		for (unsigned ai = 0; ai < max_ai; ++ai) {
+			const auto& ac = get_domain_config_ptr()->axis_configs[ai];
+			if (ac.extent_scaling == 0.0f)
+				continue;
+			extent[ai] = F * ac.get_attribute_extent() / ac.extent_scaling;
+		}
+	}
+}
+
 void plot_base::set_plot_uniforms(cgv::render::context& ctx, cgv::render::shader_program& prog)
 {
-	vec3 extent(0.0f);
 	vecn attribute_min(8u, 0.0f), attribute_max(8u, 1.0f), axis_log_minimum(8u, 0.000001f);
 	cgv::math::vec<int> axis_log_scale(8u, 0);
 	for (unsigned ai = 0; ai < get_domain_config_ptr()->axis_configs.size(); ++ai) {
 		const auto& ac = get_domain_config_ptr()->axis_configs[ai];
 		attribute_min(ai) = ac.get_attribute_min();
 		attribute_max(ai) = ac.get_attribute_max();
-		if (ai < get_dim())
-			extent(ai) = ac.extent;
 		axis_log_scale(ai) = ac.get_log_scale() ? 1 : 0;
 		axis_log_minimum(ai) = ac.get_log_minimum();
 	}
 	vec3 E(extent.size(), &extent(0));
 	prog.set_uniform(ctx, "extent", E);
+	prog.set_uniform(ctx, "out_of_range_mode", out_of_range_mode);
 	prog.set_uniform_array(ctx, "attribute_min", attribute_min);
 	prog.set_uniform_array(ctx, "attribute_max", attribute_max);
 	prog.set_uniform_array(ctx, "axis_log_scale", axis_log_scale);
@@ -476,15 +562,21 @@ void plot_base::update_samples_out_of_date_flag()
 		asa.samples_out_of_date = false;
 }
 
-plot_base::plot_base(unsigned _dim, unsigned _nr_attributes) : dom_cfg(_dim+_nr_attributes)
+plot_base::plot_base(unsigned _dim, unsigned _nr_attributes) : dom_cfg(_dim, _nr_attributes), 
+	vbo_legend(cgv::render::VBT_VERTICES, cgv::render::VBU_STREAM_DRAW)
 {
 	dim = _dim;
+	out_of_range_mode = ivec4(0);
 	view_ptr = 0;
 	nr_attributes = _nr_attributes;
+	layer_depth = 0.00001f;
 	dom_cfg_ptr = &dom_cfg;
+	rrs.illumination_mode = cgv::render::IM_OFF;
+	rrs.map_color_to_material = cgv::render::CM_COLOR_AND_OPACITY;
 	legend_components = LC_HIDDEN;
 	legend_location = vec3(0.8f, 0.6f, 0.0f);
 	legend_extent = vec2(0.05f,0.7f);
+	legend_axis = 1;
 	legend_color = rgba(0.3f, 0.2f, 0.8f, 1.0f);
 	orientation = quat(1.0f, 0.0f, 0.0f, 0.0f);
 	center_location = vec3(0.0f);
@@ -516,48 +608,312 @@ void plot_base::set_view_ptr(cgv::render::view* _view_ptr)
 	view_ptr = _view_ptr;
 }
 
-void plot_base::draw_legend(cgv::render::context& ctx, float depth_offset)
+bool plot_base::extract_tick_rectangles_and_tick_labels(
+	std::vector<box2>& R, std::vector<rgb>& C, std::vector<float>& D,
+	std::vector<label_info>& tick_labels, int ai, int ci, int ti, float he, 
+	float z_plot, float plot_scale, vec2 plot_offset, float d, bool multi_axis)
 {
-	legend_prog.set_uniform(ctx, "extent", vec3::from_vec(get_extent()));
+	axis_config& ac = get_domain_config_ptr()->axis_configs[ai];
+	float acw = 1.5f * ac.line_width * get_domain_config_ptr()->reference_size;
+	tick_config& tc = ti == 0 ? ac.primary_ticks : ac.secondary_ticks;
+	if (tc.type == TT_NONE)
+		return false;
+	float min_tick = ac.tick_space_from_attribute_space(ac.get_attribute_min());
+	float max_tick = ac.tick_space_from_attribute_space(ac.get_attribute_max());
+	int min_i = (int)ceil(min_tick / tc.step - std::numeric_limits<float>::epsilon());
+	int max_i = (int)((max_tick - fmod(max_tick, tc.step)) / tc.step);
+	// ignore secondary ticks on domain boundary
+	if (multi_axis) {
+		if (ti == 1 && min_i * tc.step - min_tick < std::numeric_limits<float>::epsilon())
+			++min_i;
+		if (ti == 1 && max_i * tc.step - max_tick > -std::numeric_limits<float>::epsilon())
+			--max_i;
+	}
+	float lw = 0.5f * get_domain_config_ptr()->reference_size * tc.line_width;
+	float dl = 0.5f * get_domain_config_ptr()->reference_size * tc.length;
+	for (int i = min_i; i <= max_i; ++i) {
+		float c_tick = (float)(i * tc.step);
+		float c_attr = ac.attribute_space_from_tick_space(c_tick);
+		// ignore ticks on axes
+		if (multi_axis && (fabs(c_attr) < std::numeric_limits<float>::epsilon()))
+			continue;
+		// ignore secondary ticks on primary ticks
+		if (ti == 1 && fabs(fmod(c_tick, ac.primary_ticks.step)) < 0.00001f)
+			continue;
+		std::string label_str;
+		if (tc.label)
+			label_str = cgv::utils::to_string(c_attr);
+		float c_plot = plot_scale*ac.plot_space_from_window_space(ac.window_space_from_tick_space(c_tick))+plot_offset(ci);
+		vec2 mn, mx;
+		mn[ci] = c_plot - lw;
+		mx[ci] = c_plot + lw;
+		switch (tc.type) {
+		case TT_DASH:
+			mn[1 - ci] = -he + plot_offset(1-ci);
+			mx[1 - ci] = -he + dl + plot_offset(1 - ci);
+			R.push_back(box2(mn, mx));
+			C.push_back(ac.color);
+			D.push_back(d);
+			if (!label_str.empty()) {
+				mx[1 - ci] += acw;
+				tick_labels.push_back(label_info(mx.to_vec(), label_str, ci == 0 ? cgv::render::TA_BOTTOM : cgv::render::TA_LEFT));
+				if (ti == 1)
+					tick_labels.back().scale = 0.75f;
+			}
+			if (multi_axis) {
+				mn[1 - ci] = he - dl + plot_offset(1 - ci);
+				mx[1 - ci] = he + plot_offset(1 - ci);
+				R.push_back(box2(mn, mx));
+				C.push_back(ac.color);
+				D.push_back(d);
+				if (!label_str.empty()) {
+					mn[1 - ci] -= acw;
+					tick_labels.push_back(label_info(mn.to_vec(), label_str, ci == 0 ? cgv::render::TA_TOP : cgv::render::TA_RIGHT));
+					if (ti == 1)
+						tick_labels.back().scale = 0.75f;
+				}
+				if (z_plot != std::numeric_limits<float>::quiet_NaN()) {
+					mn[1 - ci] = z_plot - dl + plot_offset(1 - ci);
+					mx[1 - ci] = z_plot + dl + plot_offset(1 - ci);
+					R.push_back(box2(mn, mx));
+					C.push_back(ac.color);
+					D.push_back(d);
+				}
+			}
+			break;
+		case TT_LINE:
+		case TT_PLANE:
+			mn[1 - ci] = -he + plot_offset(1-ci);
+			mx[1 - ci] =  he + plot_offset(1-ci);
+			R.push_back(box2(mn, mx));
+			C.push_back(ac.color);
+			D.push_back(d);
+			if (!label_str.empty()) {
+				mn[1 - ci] += acw;
+				mx[1 - ci] -= acw;
+				mn[ci] += 2.5f * lw;
+				mx[ci] += 2.5f * lw;
+				if (multi_axis) {
+					tick_labels.push_back(label_info(mx.to_vec(), label_str, cgv::render::TextAlignment(ci == 0 ? cgv::render::TA_TOP + cgv::render::TA_LEFT : cgv::render::TA_RIGHT + cgv::render::TA_BOTTOM)));
+					if (ti == 1)
+						tick_labels.back().scale = 0.75f;
+				}
+				tick_labels.push_back(label_info(mn.to_vec(), label_str, cgv::render::TextAlignment(ci == 0 ? cgv::render::TA_BOTTOM + cgv::render::TA_LEFT : cgv::render::TA_LEFT + cgv::render::TA_BOTTOM)));
+				if (ti == 1)
+					tick_labels.back().scale = 0.75f;
+
+			}
+			break;
+		}
+	}
+	return true;
+}
+
+void plot_base::extract_legend_tick_rectangles_and_tick_labels(
+	std::vector<box2>& R, std::vector<rgb>& C, std::vector<float>& D,
+	std::vector<label_info>& tick_labels, std::vector<tick_batch_info>& tick_batches, float d, 
+	bool clear_cache, bool is_first, bool* multi_axis_modes)
+{
+	if (clear_cache) {
+		tick_labels.clear();
+		tick_batches.clear();
+	}
+	const unsigned nr_lcs = 4;
+	static LegendComponent lcs[nr_lcs] = { LC_PRIMARY_COLOR, LC_PRIMARY_OPACITY, LC_SECONDARY_COLOR, LC_SECONDARY_OPACITY };
+	int ai[nr_lcs] = { color_mapping[0], opacity_mapping[0], color_mapping[1], opacity_mapping[1] };
+	const axis_config* acs[2] = { &get_domain_config_ptr()->axis_configs[0], &get_domain_config_ptr()->axis_configs[1] };
+	vec2 loc0(acs[0]->plot_space_from_window_space(legend_location(0)),
+			  acs[1]->plot_space_from_window_space(legend_location(1)));
+	int l = 1 - legend_axis;
+	float main_extent = legend_extent[legend_axis] * acs[legend_axis]->extent;
+	float side_extent = legend_extent[l] * acs[l]->extent;
+	for (unsigned ti = 0; ti < 2; ++ti) {
+		vec2 loc = loc0;
+		for (int j = 0; j < nr_lcs; ++j) {
+
+			if ((legend_components & lcs[j]) != 0) {
+				if (ai[j] == -1)
+					continue;
+				if (multi_axis_modes && !is_first && !multi_axis_modes[ai[j]])
+					continue;
+				tick_batch_info tbi(ai[j], 1 - legend_axis, ti == 0, 0, (unsigned)tick_labels.size());
+				if (extract_tick_rectangles_and_tick_labels(R, C, D, tick_labels, ai[j], legend_axis, ti,
+					0.5f*side_extent, std::numeric_limits<float>::quiet_NaN(), main_extent, loc, d, false)) {
+					if ((tbi.label_count = (unsigned)(tick_labels.size() - tbi.first_label)) > 0)
+						tick_batches.push_back(tbi);
+				}
+				loc[l] += 1.2f*side_extent;
+			}
+		}
+	}
+}
+
+void plot_base::draw_title(cgv::render::context& ctx, vec2 pos, float depth, int si)
+{
+	// enable title font face
+	if (title_font_face.empty())
+		return;
+	cgv::tt_gl_font_face_ptr ff = dynamic_cast<cgv::tt_gl_font_face*>(&(*title_font_face));
+	if (!ff)
+		return;
+	float rs = 0.2f * get_domain_config_ptr()->reference_size;
+	ctx.enable_font_face(ff, 5 * get_domain_config_ptr()->title_font_size);
+	
+	// collect all colored quads
+	std::vector<cgv::render::textured_rectangle> Q;
+	std::vector<rgba> C;
+
+	auto* cfg = get_domain_config_ptr();
+	if (si <= 0) {
+		vec2 pos_aligned = ff->align_text(pos, cfg->title, cgv::render::TA_NONE, rs, true);
+		unsigned cnt = ff->text_to_quads(pos_aligned, cfg->title, Q, rs, true);
+		for (unsigned j = 0; j < cnt; ++j)
+			C.push_back(cfg->title_color);
+	}
+	pos[1] -= 5.0f * cfg->title_font_size * rs;
+	for (unsigned i = 0; i < get_nr_sub_plots(); ++i) {
+		if (si != -1 && i != si)
+			continue;
+		const auto& spc = ref_sub_plot_config(i);
+		vec2 pos_aligned = ff->align_text(pos, cfg->title, cgv::render::TA_NONE, rs, true);
+		unsigned cnt = ff->text_to_quads(pos_aligned, spc.name, Q, 0.8f * rs, true);
+		for (unsigned j = 0; j < cnt; ++j)
+			C.push_back(spc.ref_color.color);
+		pos[1] -= 4.0f * cfg->title_font_size * rs;
+	}
+	if (Q.empty())
+		return;
+
+	auto& rr = cgv::render::ref_rectangle_renderer(ctx);
+	font_rrs.default_depth_offset = depth;
+	rr.set_render_style(font_rrs);
+	rr.enable_attribute_array_manager(ctx, aam_title);
+	rr.set_textured_rectangle_array(ctx, Q);
+	rr.set_color_array(ctx, C);
+	ff->ref_texture(ctx).enable(ctx);
+	rr.render(ctx, 0, Q.size());
+	ff->ref_texture(ctx).disable(ctx);
+	rr.disable_attribute_array_manager(ctx, aam_title);
+}
+
+void plot_base::draw_tick_labels(cgv::render::context& ctx, cgv::render::attribute_array_manager& aam_ticks, 
+	std::vector<label_info>& tick_labels, std::vector<tick_batch_info>& tick_batches, float depth)
+{
+	if (tick_labels.empty() || label_font_face.empty())
+		return;
+
+	cgv::tt_gl_font_face_ptr ff = dynamic_cast<cgv::tt_gl_font_face*>(&(*label_font_face));
+	if (!ff) {
+		ctx.enable_font_face(label_font_face, get_domain_config_ptr()->label_font_size);
+		for (const auto& tbc : tick_batches) if (tbc.label_count > 0) {
+			ctx.set_color(get_domain_config_ptr()->axis_configs[tbc.ai].color);
+			for (unsigned i = tbc.first_label; i < tbc.first_label + tbc.label_count; ++i) {
+				const label_info& li = tick_labels[i];
+				ctx.set_cursor(li.position, li.label, li.align);
+				ctx.output_stream() << li.label;
+				ctx.output_stream().flush();
+			}
+		}
+		return;
+	}
+	else {
+		float rs = 0.2f * get_domain_config_ptr()->reference_size;
+		ctx.enable_font_face(ff, 5 * get_domain_config_ptr()->label_font_size);
+		std::vector<cgv::render::textured_rectangle> Q;
+		std::vector<rgba> C;
+		for (const auto& tbc : tick_batches) if (tbc.label_count > 0) {
+			for (unsigned i = tbc.first_label; i < tbc.first_label + tbc.label_count; ++i) {
+				const label_info& li = tick_labels[i];
+				vec2 pos = vec2::from_vec(li.position);
+				pos = ff->align_text(pos, li.label, li.align, li.scale * rs, true);
+				unsigned cnt = ff->text_to_quads(pos, li.label, Q, li.scale * rs, true);
+				for (unsigned i = 0; i < cnt; ++i)
+					C.push_back(get_domain_config_ptr()->axis_configs[tbc.ai].color);
+			}
+		}
+		if (Q.empty())
+			return;
+		auto& rr = cgv::render::ref_rectangle_renderer(ctx);
+		font_rrs.default_depth_offset = depth;
+		rr.set_render_style(font_rrs);
+		rr.enable_attribute_array_manager(ctx, aam_ticks);
+		rr.set_textured_rectangle_array(ctx, Q);
+		rr.set_color_array(ctx, C);
+		ff->ref_texture(ctx).enable(ctx);
+		rr.render(ctx, 0, Q.size());
+		ff->ref_texture(ctx).disable(ctx);
+		rr.disable_attribute_array_manager(ctx, aam_ticks);
+	}
+}
+
+void plot_base::draw_legend(cgv::render::context& ctx, int layer_idx, bool is_first, bool* multi_axis_modes)
+{
+	// draw legend rectangles with legend program
+	vec3 E = vec3::from_vec(get_extent());
+	legend_prog.set_uniform(ctx, "extent", E);
+	vec3 loc = legend_location;
+	legend_prog.set_uniform(ctx, "legend_extent", legend_extent);
 	set_mapping_uniforms(ctx, legend_prog);
-	ctx.push_modelview_matrix();
-	// place and size legend
-	ctx.mul_modelview_matrix(
-		cgv::math::translate4<float>(legend_location)*
-		cgv::math::scale4<float>(vec3(legend_extent,1.0f))
-	);
-	// draw legend
 	aab_legend.enable(ctx);
 	legend_prog.enable(ctx);
 	ctx.set_color(legend_color);
 	cgv::render::configure_color_scale(ctx, legend_prog, color_scale_index, window_zero_position);
-	legend_prog.set_uniform(ctx, "depth_offset", depth_offset);
+	legend_prog.set_uniform(ctx, "depth_offset", -layer_idx * layer_depth);
+	int j = 1 - legend_axis;
+	int off = 4*j;
 	if ((legend_components & LC_PRIMARY_COLOR) != 0) {
-		legend_prog.set_uniform(ctx, "color_index", 0);
-		legend_prog.set_uniform(ctx, "opacity_index", -1);
-		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-		ctx.mul_modelview_matrix(cgv::math::translate4<float>(vec3(1.1f, 0.0f, 0.0f)));
+		if (!multi_axis_modes || is_first || color_mapping[0] == -1 || multi_axis_modes[color_mapping[0]]) {
+			legend_prog.set_uniform(ctx, "legend_location", loc);
+			legend_prog.set_uniform(ctx, "color_index", 0);
+			legend_prog.set_uniform(ctx, "opacity_index", -1);
+			glDrawArrays(GL_TRIANGLE_STRIP, off, 4);
+		}
+		loc[j] += 1.2f * legend_extent[j];
 	}
 	if ((legend_components & LC_PRIMARY_OPACITY) != 0) {
-		legend_prog.set_uniform(ctx, "color_index", -1);
-		legend_prog.set_uniform(ctx, "opacity_index", 0);
-		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-		ctx.mul_modelview_matrix(cgv::math::translate4<float>(vec3(1.1f, 0.0f, 0.0f)));
+		if (!multi_axis_modes || is_first || opacity_mapping[0] == -1 || multi_axis_modes[opacity_mapping[0]]) {
+			legend_prog.set_uniform(ctx, "legend_location", loc);
+			legend_prog.set_uniform(ctx, "color_index", -1);
+			legend_prog.set_uniform(ctx, "opacity_index", 0);
+			glDrawArrays(GL_TRIANGLE_STRIP, off, 4);
+		}
+		loc[j] += 1.2f * legend_extent[j];
 	}
 	if ((legend_components & LC_SECONDARY_COLOR) != 0) {
-		legend_prog.set_uniform(ctx, "color_index", 1);
-		legend_prog.set_uniform(ctx, "opacity_index", -1);
-		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-		ctx.mul_modelview_matrix(cgv::math::translate4<float>(vec3(1.1f, 0.0f, 0.0f)));
+		if (!multi_axis_modes || is_first || color_mapping[1] == -1 || multi_axis_modes[color_mapping[1]]) {
+			legend_prog.set_uniform(ctx, "legend_location", loc);
+			legend_prog.set_uniform(ctx, "color_index", 1);
+			legend_prog.set_uniform(ctx, "opacity_index", -1);
+			glDrawArrays(GL_TRIANGLE_STRIP, off, 4);
+		}
+		loc[j] += 1.2f * legend_extent[j];
 	}
 	if ((legend_components & LC_SECONDARY_OPACITY) != 0) {
-		legend_prog.set_uniform(ctx, "color_index", -1);
-		legend_prog.set_uniform(ctx, "opacity_index", 1);
-		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-		ctx.mul_modelview_matrix(cgv::math::translate4<float>(vec3(1.1f, 0.0f, 0.0f)));
+		if (!multi_axis_modes || is_first || opacity_mapping[0] == -1 || multi_axis_modes[opacity_mapping[1]]) {
+			legend_prog.set_uniform(ctx, "legend_location", loc);
+			legend_prog.set_uniform(ctx, "color_index", -1);
+			legend_prog.set_uniform(ctx, "opacity_index", 1);
+			glDrawArrays(GL_TRIANGLE_STRIP, off, 4);
+		}
+		loc[j] += 1.2f * legend_extent[j];
 	}
 	legend_prog.disable(ctx);
 	aab_legend.disable(ctx);
+	// extract tickmark information for legend and draw it
+	std::vector<box2> R;
+	std::vector<rgb> C;
+	std::vector<float> D;
+	++layer_idx;
+	extract_legend_tick_rectangles_and_tick_labels(R, C, D, legend_tick_labels, legend_tick_batches, -layer_idx*layer_depth, true, is_first, multi_axis_modes);
+	if (R.empty())
+		return;
+	ctx.push_modelview_matrix();
+	ctx.mul_modelview_matrix(cgv::math::translate4<float>(0.0f, 0.0f, E[2] * (legend_location[2] - 0.5f)));
+	draw_rectangles(ctx, aam_legend, R, C, D);
+	std::string title;
+	rgba title_color;
+	++layer_idx;
+	draw_tick_labels(ctx, aam_legend_ticks, legend_tick_labels, legend_tick_batches, -layer_idx * layer_depth);
 	ctx.pop_modelview_matrix();
 }
 
@@ -601,6 +957,16 @@ void plot_base::set_extent(const vecn& new_extent)
 	for (unsigned ai = 0; ai < n; ++ai)
 		acs[ai].extent = new_extent(ai);
 }
+
+void plot_base::set_extent_scaling(float x_scale, float y_scale, float z_scale)
+{
+	auto& acs = get_domain_config_ptr()->axis_configs;
+	acs[0].extent_scaling = x_scale;
+	acs[1].extent_scaling = y_scale;
+	if (get_dim() > 2)
+		acs[2].extent_scaling = z_scale;
+}
+
 void plot_base::set_width(float new_width, bool constrained)
 {
 	auto& acs = get_domain_config_ptr()->axis_configs;
@@ -664,6 +1030,52 @@ const plot_base::vec3 plot_base::get_axis_direction(unsigned ai) const
 	a(ai) = 1.0f;
 	return orientation.apply(a);
 }
+
+bool plot_base::determine_axis_extent_from_subplot(unsigned ai, unsigned i, float& samples_min, float& samples_max)
+{
+	if (attribute_source_arrays.size() <= i)
+		return false;
+	if (attribute_source_arrays[i].attribute_sources.size() <= ai)
+		return false;
+	const attribute_source& as = attribute_source_arrays[i].attribute_sources[ai];
+	if (as.source == AS_NONE)
+		return false;
+	bool new_found_sample = false;
+	float new_samples_min, new_samples_max;
+	switch (as.source) {
+	case AS_SAMPLE_CONTAINER:
+	{
+		int j = as.sub_plot_index == -1 ? i : as.sub_plot_index;
+		new_found_sample = compute_sample_coordinate_interval(j, (int)as.offset, new_samples_min, new_samples_max);
+		break;
+	}
+	case AS_POINTER:
+	{
+		const float* ptr = as.pointer;
+		for (unsigned j = 0; j < as.count; ++j) {
+			if (new_found_sample) {
+				new_samples_min = std::min(new_samples_min, *ptr);
+				new_samples_max = std::max(new_samples_max, *ptr);
+			}
+			else {
+				new_samples_min = new_samples_max = *ptr;
+				new_found_sample = true;
+			}
+			reinterpret_cast<const char*&>(ptr) += as.stride;
+		}
+		break;
+	}
+	case AS_VBO:
+		return false;
+	}
+	if (!new_found_sample)
+		return false;
+
+	samples_min = new_samples_min;
+	samples_max = new_samples_max;
+	return true;
+}
+
 void plot_base::adjust_domain_axis_to_data(unsigned ai, bool adjust_min, bool adjust_max, bool only_visible)
 {
 	bool found_sample = false;
@@ -671,43 +1083,8 @@ void plot_base::adjust_domain_axis_to_data(unsigned ai, bool adjust_min, bool ad
 	for (unsigned i = 0; i < configs.size(); ++i) {
 		if (only_visible && !ref_sub_plot_config(i).show_plot)
 			continue;
-		if (attribute_source_arrays.size() <= i)
-			continue;
-		if (attribute_source_arrays[i].attribute_sources.size() <= ai)
-			continue;
-		const attribute_source& as = attribute_source_arrays[i].attribute_sources[ai];
-		if (as.source == AS_NONE)
-			continue;
-		bool new_found_sample = false;
 		float new_samples_min, new_samples_max;
-		switch (as.source) {
-		case AS_SAMPLE_CONTAINER:
-		{
-			int j = as.sub_plot_index == -1 ? i : as.sub_plot_index;
-			new_found_sample = compute_sample_coordinate_interval(j, (int)as.offset, new_samples_min, new_samples_max);
-			break;
-		}
-		case AS_POINTER:
-		{
-			const float* ptr = as.pointer;
-			for (unsigned j = 0; j < as.count; ++j) {
-				if (new_found_sample) {
-					new_samples_min = std::min(new_samples_min, *ptr);
-					new_samples_max = std::max(new_samples_max, *ptr);
-				}
-				else {
-					new_samples_min = new_samples_max = *ptr;
-					new_found_sample = true;
-				}
-				reinterpret_cast<const char*&>(ptr) += as.stride;
-			}
-			break;
-		}
-		case AS_VBO:
-			std::cerr << "VBO case not implemented for adjustment of domain axes." << std::endl;
-			break;
-		}
-		if (new_found_sample) {
+		if (determine_axis_extent_from_subplot(ai, i, new_samples_min, new_samples_max)) {
 			if (found_sample) {
 				samples_min = std::min(samples_min, new_samples_min);
 				samples_max = std::max(samples_max, new_samples_max);
@@ -734,6 +1111,7 @@ void plot_base::adjust_domain_axis_to_data(unsigned ai, bool adjust_min, bool ad
 	if (acs[ai].get_attribute_min() == acs[ai].get_attribute_max())
 		acs[ai].set_attribute_maximum(acs[ai].get_attribute_max() + 1);
 }
+
 void plot_base::adjust_tick_marks(unsigned max_nr_secondary_ticks, bool adjust_to_attribute_ranges)
 {
 	auto& acs = get_domain_config_ptr()->axis_configs;
@@ -817,8 +1195,15 @@ void plot_base::set_sub_plot_colors(unsigned i, const rgb& base_color)
 {
 	ref_sub_plot_config(i).set_colors(base_color);
 }
+
 bool plot_base::init(cgv::render::context& ctx)
 {
+	font_rrs = cgv::ref_rectangle_render_style();
+	ensure_font_names();
+	cgv::render::ref_rectangle_renderer(ctx, 1);
+	aam_title.init(ctx);
+	aam_legend.init(ctx);
+	aam_legend_ticks.init(ctx);
 	if (!legend_prog.build_program(ctx, "plot_legend.glpr", true)) {
 		std::cerr << "could not build GLSL program from plot_legend.glpr" << std::endl;
 		return false;
@@ -829,6 +1214,10 @@ bool plot_base::init(cgv::render::context& ctx)
 	P.push_back(vec4( 0.5f, -0.5f, 0.0f, 0.0f));
 	P.push_back(vec4(-0.5f, 0.5f, 0.0f, 1.0f));
 	P.push_back(vec4( 0.5f, 0.5f, 0.0f, 1.0f));
+	P.push_back(vec4(-0.5f, -0.5f, 0.0f, 0.0f));
+	P.push_back(vec4(0.5f, -0.5f, 0.0f, 1.0f));
+	P.push_back(vec4(-0.5f, 0.5f, 0.0f, 0.0f));
+	P.push_back(vec4(0.5f, 0.5f, 0.0f, 1.0f));
 	vbo_legend.create(ctx, P);
 	aab_legend.create(ctx);
 	int pos_idx = legend_prog.get_attribute_location(ctx, "position");
@@ -841,8 +1230,13 @@ bool plot_base::init(cgv::render::context& ctx)
 	aab_legend.set_attribute_array(ctx, val_idx, cgv::render::get_element_type(v0), vbo_legend, sizeof(vec3), P.size(), sizeof(vec4));
 	return true;
 }
+
 void plot_base::clear(cgv::render::context& ctx)
 {
+	cgv::render::ref_rectangle_renderer(ctx, -1);
+	aam_title.destruct(ctx);
+	aam_legend.destruct(ctx);
+	aam_legend_ticks.destruct(ctx);
 	aab_legend.destruct(ctx);
 	vbo_legend.destruct(ctx);
 	legend_prog.destruct(ctx);
@@ -854,13 +1248,15 @@ void plot_base::clear(cgv::render::context& ctx)
 
 void plot_base::create_plot_gui(cgv::base::base* bp, cgv::gui::provider& p)
 {
-	const char* axis_names = "xyz";
-
 	ensure_font_names();
 	p.add_member_control(bp, "reference_size", get_domain_config_ptr()->reference_size, "value_slider", "min=0.0001;step=0.00001;max=1;log=true;ticks=true");
 	p.add_member_control(bp, "blend_width_in_pixel", get_domain_config_ptr()->blend_width_in_pixel, "value_slider", "min=0.0001;step=0.0;max=3.0;ticks=true");
 
 	if (p.begin_tree_node("visual variables", dim, false, "level=3")) {
+		std::string attribute_enums = "off=-1";
+		for (unsigned ai = 0; ai < get_dim() + nr_attributes; ++ai)
+			attribute_enums += std::string(",")+get_domain_config_ptr()->axis_configs[ai].name;
+		std::string dropdown_options("w=92;enums='" + attribute_enums + "'");
 		p.align("\a");
 		bool show;
 		unsigned nr = std::max(MAX_NR_COLOR_MAPPINGS, std::max(MAX_NR_SIZE_MAPPINGS, MAX_NR_OPACITY_MAPPINGS));
@@ -869,7 +1265,7 @@ void plot_base::create_plot_gui(cgv::base::base* bp, cgv::gui::provider& p)
 			std::string prefix(prefixes[idx]);
 			if (idx < MAX_NR_COLOR_MAPPINGS) {
 				show = p.begin_tree_node(prefix + "color", color_mapping[idx], false, "level=3;align=' ';options='w=100'");
-				p.add_member_control(bp, "", (cgv::type::DummyEnum&)color_mapping[idx], "dropdown", "w=92;enums='off=-1,attr0,attr1,attr2,attr3,attr4,attr5,attr6,attr7'");
+				p.add_member_control(bp, "", (cgv::type::DummyEnum&)color_mapping[idx], "dropdown", dropdown_options);
 				if (show) {
 					p.align("\a");
 					p.add_member_control(bp, prefix + "color_scale", (cgv::type::DummyEnum&)color_scale_index[idx], "dropdown", cgv::media::get_color_scale_enum_definition());
@@ -881,7 +1277,7 @@ void plot_base::create_plot_gui(cgv::base::base* bp, cgv::gui::provider& p)
 			}
 			if (idx < MAX_NR_OPACITY_MAPPINGS) {
 				show = p.begin_tree_node(prefix + "opacity", opacity_mapping[idx], false, "level=3;align=' ';options='w=100'");
-				p.add_member_control(bp, "", (cgv::type::DummyEnum&)opacity_mapping[idx], "dropdown", "w=92;enums='off=-1,attr0,attr1,attr2,attr3,attr4,attr5,attr6,attr7'");
+				p.add_member_control(bp, "", (cgv::type::DummyEnum&)opacity_mapping[idx], "dropdown", dropdown_options);
 				if (show) {
 					p.align("\a");
 					p.add_member_control(bp, prefix + "opacity_gamma", opacity_gamma[idx], "value_slider", "min=0.1;step=0.01;max=10;log=true;ticks=true");
@@ -895,7 +1291,7 @@ void plot_base::create_plot_gui(cgv::base::base* bp, cgv::gui::provider& p)
 			}
 			if (idx < MAX_NR_SIZE_MAPPINGS) {
 				show = p.begin_tree_node(prefix + "size", size_mapping[idx], false, "level=3;align=' ';options='w=100'");
-				p.add_member_control(bp, "", (cgv::type::DummyEnum&)size_mapping[idx], "dropdown", "w=92;enums='off=-1,attr0,attr1,attr2,attr3,attr4,attr5,attr6,attr7'");
+				p.add_member_control(bp, "", (cgv::type::DummyEnum&)size_mapping[idx], "dropdown", dropdown_options);
 				if (show) {
 					p.align("\a");
 					p.add_member_control(bp, prefix+"size_gamma", size_gamma[idx], "value_slider", "min=0.1;step=0.01;max=10;log=true;ticks=true");
@@ -915,6 +1311,10 @@ void plot_base::create_plot_gui(cgv::base::base* bp, cgv::gui::provider& p)
 		p.add_gui("legend_components", legend_components, "bit_field_control", "enums='primary color=1,secondary color=2,primary opacity=4,secondary opacity=8,primary size=16,secondary size=32'");
 		p.add_gui("center", legend_location, "vector", "main_label='heading';gui_type='value_slider';options='min=-1.2;max=1.2;log=true;ticks=true'");
 		p.add_gui("extent", legend_extent, "vector", "main_label='heading';gui_type='value_slider';options='min=0.01;max=10;step=0.001;log=true;ticks=true'");
+		p.add_member_control(bp, "axis", legend_axis, "value_slider", "min=0;max=1");
+		connect_copy(p.find_control(legend_axis)->value_change, 
+			cgv::signal::rebind(this, &plot_base::on_legend_axis_change,cgv::signal::_r(p),cgv::signal::_1));
+		
 		p.align("\b");
 		p.end_tree_node(legend_components);
 	}
@@ -931,18 +1331,48 @@ void plot_base::create_plot_gui(cgv::base::base* bp, cgv::gui::provider& p)
 	p.add_member_control(bp, "fill", get_domain_config_ptr()->fill, "toggle", "w=40");
 	if (open) {
 		p.align("\a");
+		p.add_member_control(bp, "out_of_range_mode_x", (cgv::type::DummyEnum&)out_of_range_mode[0], "dropdown", "enums='keep,discard,clamp'");
+		p.add_member_control(bp, "out_of_range_mode_y", (cgv::type::DummyEnum&)out_of_range_mode[1], "dropdown", "enums='keep,discard,clamp'");
+		if (get_dim() == 2) {
+			p.add_member_control(bp, "out_of_range_mode_a0", (cgv::type::DummyEnum&)out_of_range_mode[2], "dropdown", "enums='keep,discard,clamp'");
+			p.add_member_control(bp, "out_of_range_mode_a1", (cgv::type::DummyEnum&)out_of_range_mode[3], "dropdown", "enums='keep,discard,clamp'");
+		}
+		else {
+			p.add_member_control(bp, "out_of_range_mode_z", (cgv::type::DummyEnum&)out_of_range_mode[2], "dropdown", "enums='keep,discard,clamp'");
+			p.add_member_control(bp, "out_of_range_mode_a", (cgv::type::DummyEnum&)out_of_range_mode[3], "dropdown", "enums='keep,discard,clamp'");
+		}
 		p.add_member_control(bp, "fill color", get_domain_config_ptr()->color);
 		for (unsigned i = 0; i < get_domain_config_ptr()->axis_configs.size(); ++i)
 			get_domain_config_ptr()->axis_configs[i].create_gui(bp, p);
-		p.add_member_control(bp, "font_size", get_domain_config_ptr()->label_font_size, "value_slider", "min=8;max=40;log=false;ticks=true");
-		p.add_member_control(bp, "font", (cgv::type::DummyEnum&)get_domain_config_ptr()->label_font_index, "dropdown", font_name_enum_def);
+		p.add_member_control(bp, "title", get_domain_config_ptr()->title);
+		p.add_member_control(bp, "title_pos_x", get_domain_config_ptr()->title_pos[0], "value_slider", "min=-1;max=1;step=0.02;ticks=true");
+		p.add_member_control(bp, "title_pos_y", get_domain_config_ptr()->title_pos[1], "value_slider", "min=-1;max=1;step=0.02;ticks=true");
+		if (get_dim() == 3)
+			p.add_member_control(bp, "title_pos_z", get_domain_config_ptr()->title_pos[2], "value_slider", "min=-1;max=1;step=0.02;ticks=true");
+		p.add_member_control(bp, "title_font_size", get_domain_config_ptr()->title_font_size, "value_slider", "min=8;max=40;log=false;ticks=true");
+		p.add_member_control(bp, "title_font", (cgv::type::DummyEnum&)get_domain_config_ptr()->title_font_index, "dropdown", font_name_enum_def);
+		connect_copy(p.find_control((cgv::type::DummyEnum&)get_domain_config_ptr()->title_font_index)->value_change,
+			cgv::signal::rebind(this, &plot_base::on_font_selection));
+		p.add_member_control(bp, "title_font_face", get_domain_config_ptr()->title_ffa, "dropdown", "enums='normal,bold,italics,bold italics'");
+		connect_copy(p.find_control(get_domain_config_ptr()->title_ffa)->value_change,
+			cgv::signal::rebind(this, &plot_base::on_font_face_selection));
+
+		p.add_member_control(bp, "label_font_size", get_domain_config_ptr()->label_font_size, "value_slider", "min=8;max=40;log=false;ticks=true");
+		p.add_member_control(bp, "label_font", (cgv::type::DummyEnum&)get_domain_config_ptr()->label_font_index, "dropdown", font_name_enum_def);
 		connect_copy(p.find_control((cgv::type::DummyEnum&)get_domain_config_ptr()->label_font_index)->value_change,
 			cgv::signal::rebind(this, &plot_base::on_font_selection));
-		p.add_member_control(bp, "face", get_domain_config_ptr()->label_ffa, "dropdown", "enums='normal,bold,italics,bold italics'");
+		p.add_member_control(bp, "label_font_face", get_domain_config_ptr()->label_ffa, "dropdown", "enums='normal,bold,italics,bold italics'");
 		connect_copy(p.find_control(get_domain_config_ptr()->label_ffa)->value_change,
 			cgv::signal::rebind(this, &plot_base::on_font_face_selection));
 		p.align("\b");
 		p.end_tree_node(get_domain_config_ptr()->show_domain);
+	}
+	if (p.begin_tree_node("rectangle", rrs, false, "level=3")) {
+		p.align("\a");
+		p.add_member_control(bp, "layer_depth", layer_depth, "value_slider", "min=0.000001;max=0.01;step=0.0000001;log=true;ticks=true");
+		p.add_gui("rectangle style", rrs);
+		p.align("\b");
+		p.end_tree_node(rrs);
 	}
 }
 void plot_base::update_ref_opacity(unsigned i, cgv::gui::provider& p)

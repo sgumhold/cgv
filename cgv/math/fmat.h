@@ -69,7 +69,7 @@ public:
 		return *this; 
 	}
 	///returns true if matrix is a square matrix
-	bool is_square() const { N == M; }
+	bool is_square() const { return N == M; }
 	///access to the element in the ith row in column j
 	T& operator () (unsigned i, unsigned j) {
 		assert(i < N && j < M);

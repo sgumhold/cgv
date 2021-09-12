@@ -3,7 +3,6 @@ vertex_file:view.glsl
 vertex_file:quaternion.glsl
 vertex_file:group.glsl
 vertex_file:sphere_lib.glvs
-geometry_shader_info:points;triangle_strip;4
 geometry_file:splat.glsl
 geometry_file:sphere_lib.glgs
 fragment_file:sphere_lib.glfs
@@ -14,5 +13,7 @@ fragment_file:brdf.glsl
 fragment_file:bump_map.glfs
 fragment_file:surface.glsl
 fragment_file:fragment.glfs
+fragment_file:a_buffer_lib.glfs
+
 
 

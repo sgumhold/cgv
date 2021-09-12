@@ -8,6 +8,14 @@ namespace cgv {
 	namespace media {
 		namespace volume {
 
+			enum FlipType
+			{
+				FT_NO_FLIP,
+				FT_VERTICAL,
+				FT_HORIZONTAL,
+				FT_VERTICAL_AND_HORIZONTAL
+			};
+			
 			/// <summary>
 			/// read volume from a video file with commands ffprobe and ffmpeg which must be found in system path
 			/// </summary>
@@ -20,7 +28,7 @@ namespace cgv {
 			/// <returns>returns whether volume reading was successful </returns>
 			extern CGV_API bool read_volume_from_video_with_ffmpeg(volume& V, const std::string& file_name,
 				volume::dimension_type dims, volume::extent_type extent, const cgv::data::component_format& cf,
-				size_t offset = 0);
+				size_t offset = 0, FlipType flip_t = FT_NO_FLIP);
 			/// <summary>
 			/// read volume from .svx header in which dimensions, extent, file name pattern and frame offset are specified; uses read_volume_from_video_with_ffmpeg in case file name pattern corresponds to video format for which no video reader has been registered
 			/// </summary>

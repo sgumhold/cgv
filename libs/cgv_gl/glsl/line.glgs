@@ -78,6 +78,10 @@ void emit_edge(in vec3 dir_eye, int i)
 
 void main()
 {
+	if (gi[0].depth_offset > 100000.0)
+		return;
+	if (gi[1].depth_offset > 100000.0)
+		return;
 	vec3 tangent_eye = gi[1].position_eye - gi[0].position_eye;
 	emit_edge(tangent_eye, 0);
 	emit_edge(tangent_eye, 1);

@@ -11,7 +11,7 @@ namespace cgv {
 		//! reference to a singleton normal renderer that can be shared among drawables
 		/*! the second parameter is used for reference counting. Use +1 in your init method,
 			-1 in your clear method and default 0 argument otherwise. If internal reference
-			counter decreases to 0, singelton renderer is destructed. */
+			counter decreases to 0, singleton renderer is destructed. */
 		extern CGV_API normal_renderer& ref_normal_renderer(context& ctx, int ref_count_change = 0);
 
 
@@ -29,12 +29,14 @@ namespace cgv {
 			float normal_scale;
 			/// overload to allow instantiation of box_wire_renderer
 			render_style* create_render_style() const;
+			/// build normal program
+			bool build_shader_program(context& ctx, shader_program& prog, const shader_define_map& defines);
 			bool validate_attributes(const context& ctx) const;
 		public:
 			normal_renderer();
 			/// the normal scale is multiplied to the normal length of the normal render style
 			void set_normal_scale(float _normal_scale);
-			bool init(context& ctx);
+			/// enable normal renderer
 			bool enable(context& ctx);
 			/// convenience function to render with default settings
 			void draw(context& ctx, size_t start, size_t count,

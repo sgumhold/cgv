@@ -15,6 +15,7 @@ namespace cgv {
 				return ret;
 			} catch(const c10::Error& e) {
 				std::cerr << "Error: Could not load the PyTorch model!" << std::endl;
+				std::cerr << "\t" << e.what_without_backtrace() << std::endl;
 				if(success)
 					*success = false;
 				return {};

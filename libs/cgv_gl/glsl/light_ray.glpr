@@ -1,4 +1,5 @@
 files:light_ray
 vertex_file:view.glsl
 fragment_file:fragment.glfs
+fragment_file:a_buffer_lib.glfs
 fragment_file:lights.glsl

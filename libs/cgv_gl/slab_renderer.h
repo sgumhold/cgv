@@ -11,7 +11,7 @@ namespace cgv { // @<
 		//! reference to a singleton slab renderer that is shared among drawables
 		/*! the second parameter is used for reference counting. Use +1 in your init method,
 			-1 in your clear method and default 0 argument otherwise. If internal reference
-			counter decreases to 0, singelton renderer is destructed. */
+			counter decreases to 0, singleton renderer is destructed. */
 		extern CGV_API slab_renderer& ref_slab_renderer(context& ctx, int ref_count_change = 0);
 
 		/*!	Style to control the look of slabs. The slab renderer uses texture arrays for rendering.
@@ -69,6 +69,8 @@ namespace cgv { // @<
 			bool has_thicknesses;
 			/// overload to allow instantiation of box_renderer
 			render_style* create_render_style() const;
+			/// build slab program
+			bool build_shader_program(context& ctx, shader_program& prog, const shader_define_map& defines);
 		public:
 			/// initializes position_is_center to true 
 			slab_renderer();
@@ -78,8 +80,6 @@ namespace cgv { // @<
 			void disable_attribute_array_manager(const context& ctx, attribute_array_manager& aam);
 			/// set the flag, whether the position is interpreted as the slab center, true by default
 			void set_position_is_center(bool _position_is_center);
-			/// construct shader programs and return whether this was successful, call inside of init method of drawable
-			bool init(context& ctx);
 			/// 
 			bool enable(context& ctx);
 			/// specify a single extent for all slabs
