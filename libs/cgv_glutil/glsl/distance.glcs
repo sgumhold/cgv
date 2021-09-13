@@ -5,11 +5,12 @@
 	1 : descending (back-to-front)
 */
 #define ORDER 0
-
 #define INITIALIZE_VALUES 1
+#define USE_AUXILIARY_BUFFER 0
 
 #define DATA_TYPE_DEFINITION float x; float y; float z;
 #define VALUE_TYPE_DEFINITION uint
+#define AUXILIARY_TYPE_DEFINITION float x;
 
 #define KEY_DEFINITION data_type p = data[idx]; vec3 eye_to_pos = vec3(p.x, p.y, p.z) - eye_pos; float key = dot(eye_to_pos, eye_to_pos);
 
@@ -30,6 +31,16 @@ layout(std430, binding = 1) writeonly buffer keys_buffer {
 layout(std430, binding = 2) buffer values_buffer {
     VALUE_TYPE_DEFINITION values[];
 };
+
+#if USE_AUXILIARY_BUFFER == 1
+struct aux_type {
+	AUXILIARY_TYPE_DEFINITION
+};
+
+layout(std430, binding = 3) readonly buffer auxiliary_buffer {
+    aux_type aux_values[];
+};
+#endif
 
 uniform uint n;
 uniform uint n_padded;

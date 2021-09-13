@@ -16,7 +16,7 @@ public:
 	radix_sort_4way() : gpu_sorter() {}
 
 	bool init(context& ctx, size_t count);
-	void sort(context& ctx, GLuint data_buffer, GLuint value_buffer, vec3 eye_pos);
+	void sort(context& ctx, GLuint data_buffer, GLuint value_buffer, vec3 eye_pos, GLuint auxiliary_buffer = 0);
 };
 
 }

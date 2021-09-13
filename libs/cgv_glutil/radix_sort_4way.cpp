@@ -9,13 +9,25 @@ bool radix_sort_4way::load_shader_programs(context& ctx) {
 	std::string where = "radix_sort_4way::load_shader_programs()";
 
 	shader_define_map distance_defines;
-	distance_defines["ORDER"] = std::to_string((int)sort_order);
+	shader_code::set_define(distance_defines, "ORDER", sort_order, SO_ASCENDING);
+	shader_code::set_define(distance_defines, "INITIALIZE_VALUES", value_init_override, true);
+	shader_code::set_define(distance_defines, "USE_AUXILIARY_BUFFER", auxiliary_type_def != "", false);
+	shader_code::set_define(distance_defines, "VALUE_TYPE_DEFINITION", value_type_def, std::string("uint"));
+
+	if(data_type_def != "")
+		distance_defines["DATA_TYPE_DEFINITION"] = data_type_def;
+	if(auxiliary_type_def != "")
+		distance_defines["AUXILIARY_TYPE_DEFINITION"] = auxiliary_type_def;
+	if(key_definition != "")
+		distance_defines["KEY_DEFINITION"] = key_definition;
+
+	/*distance_defines["ORDER"] = std::to_string((int)sort_order);
 	distance_defines["INITIALIZE_VALUES"] = value_init_override ? "1" : "0";
 	distance_defines["VALUE_TYPE_DEFINITION"] = value_type_def;
 	if(data_type_definition != "")
 		distance_defines["DATA_TYPE_DEFINITION"] = data_type_definition;
 	if(key_definition != "")
-		distance_defines["KEY_DEFINITION"] = key_definition;
+		distance_defines["KEY_DEFINITION"] = key_definition;*/
 
 	res = res && shader_library::load(ctx, distance_prog, "distance", distance_defines, true, where);
 	res = res && shader_library::load(ctx, scan_local_prog, "scan_local", true, where);
@@ -87,7 +99,7 @@ bool radix_sort_4way::init(context& ctx, size_t count) {
 	return true;
 }
 
-void radix_sort_4way::sort(context& ctx, GLuint data_buffer, GLuint value_buffer, vec3 eye_pos) {
+void radix_sort_4way::sort(context& ctx, GLuint data_buffer, GLuint value_buffer, vec3 eye_pos, GLuint auxiliary_buffer) {
 
 	GLuint values_in_buffer = value_buffer;
 
@@ -96,6 +108,8 @@ void radix_sort_4way::sort(context& ctx, GLuint data_buffer, GLuint value_buffer
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, data_buffer);
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, keys_in_ssbo);
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 2, values_in_buffer);
+	if(auxiliary_type_def != "" && auxiliary_buffer > 0)
+		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 3, auxiliary_buffer);
 
 	distance_prog.enable(ctx);
 	distance_prog.set_uniform(ctx, "eye_pos", eye_pos);
