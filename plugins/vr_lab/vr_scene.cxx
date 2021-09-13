@@ -60,6 +60,9 @@ void vr_scene::construct_room(float w, float d, float h, float W, bool walls, bo
 
 		boxes.push_back(box3(vec3(0.5f * w, -W, -0.5f * d - W), vec3(0.5f * w + W, h, 0.5f * d + W)));
 		box_colors.push_back(rgb(0.5f, 0.8f, 0.5f));
+
+		boxes.push_back(box3(vec3(-0.5f * w, -W, -0.5f * d - W), vec3(-0.5f * w - W, h, 0.5f * d + W)));
+		box_colors.push_back(rgb(0.5f, 0.8f, 0.5f));
 	}
 	if (ceiling) {
 		// construct ceiling
@@ -91,9 +94,15 @@ void vr_scene::construct_environment(float s, float ew, float ed, float w, float
 
 void vr_scene::build_scene(float w, float d, float h, float W)
 {
-	construct_room(w, d, h, W, false, false);
-	construct_environment(0.3f, 3 * w, 3 * d, w, d, h);
-	construct_table(table_width, table_depth, table_height, leg_width, leg_offset, table_color, leg_color);
+	if (draw_room) {
+		construct_room(w, d, h, W, false, false);
+	}
+	if (draw_environment) {
+		construct_environment(0.3f, 3 * w, 3 * d, w, d, h);
+	}
+	if (draw_table) {
+		construct_table(table_width, table_depth, table_height, leg_width, leg_offset, table_color, leg_color);
+	}
 }
 
 vr_scene::vr_scene()
@@ -101,6 +110,11 @@ vr_scene::vr_scene()
 	set_name("vr_scene");
 	vr_view_ptr = 0;
 
+	draw_table = true;
+	draw_room = true;
+	draw_environment = true;
+	draw_walls = false;
+	draw_ceiling = false;
 	table_color = rgb(0.3f, 0.2f, 0.0f);
 	table_width = 1.6f;
 	table_depth = 0.8f;
@@ -113,7 +127,11 @@ vr_scene::vr_scene()
 	rrs.border_mode = 3;
 	rrs.illumination_mode = cgv::render::IM_OFF;
 
-	build_scene(5, 7, 3, 0.2f);
+	room_width = 5;
+	room_depth = 7;
+	room_height = 3;
+	wall_width = 0.2f;
+	build_scene(room_width, room_depth, room_height, wall_width);
 
 	pixel_scale = 0.001f;
 
@@ -123,13 +141,22 @@ vr_scene::vr_scene()
 bool vr_scene::self_reflect(cgv::reflect::reflection_handler& rh)
 {
 	return 		
+		rh.reflect_member("draw_table", draw_table) &&
 		rh.reflect_member("table_color", table_color) &&
 		rh.reflect_member("table_width", table_width) &&
 		rh.reflect_member("table_depth", table_depth) &&
 		rh.reflect_member("table_height", table_height) &&
 		rh.reflect_member("table_leg color", leg_color) &&
 		rh.reflect_member("table_legs", leg_width) &&
-		rh.reflect_member("table_offset", leg_offset);
+		rh.reflect_member("table_offset", leg_offset) &&
+		rh.reflect_member("draw_room", draw_room) &&
+		rh.reflect_member("room_width", room_width) &&
+		rh.reflect_member("room_depth", room_depth) &&
+		rh.reflect_member("room_height", room_height) &&
+		rh.reflect_member("wall_width", wall_width) &&
+		rh.reflect_member("draw_walls", draw_walls) &&
+		rh.reflect_member("draw_ceiling", draw_ceiling) &&
+		rh.reflect_member("draw_environment", draw_environment);
 
 }
 
@@ -139,6 +166,20 @@ void vr_scene::on_set(void* member_ptr)
 		boxes.resize(boxes.size() - 5);
 		box_colors.resize(box_colors.size() - 5);
 		construct_table(table_width, table_depth, table_height, leg_width, leg_offset, table_color, leg_color);
+	}
+	if (member_ptr == &draw_table || member_ptr == &draw_room || member_ptr == &draw_environment || member_ptr == &draw_walls || member_ptr == &draw_ceiling || (member_ptr >= &room_width && member_ptr < &wall_width + 1)) {
+
+		boxes.clear();
+		box_colors.clear();
+		if (draw_room) {
+			construct_room(room_width, room_depth, room_height, wall_width, draw_walls, draw_ceiling);
+		}
+		if (draw_environment) {
+			construct_environment(0.3f, 3 * room_width, 3 * room_depth, room_width, room_depth, room_height);
+		}
+		if (draw_table) {
+			construct_table(table_width, table_depth, table_height, leg_width, leg_offset, table_color, leg_color);
+		}
 	}
 	update_member(member_ptr);
 	post_redraw();
@@ -208,14 +249,16 @@ void vr_scene::draw(cgv::render::context& ctx)
 			label_texture_ranges[li] = lm.get_texcoord_range(li);
 	}
 
-	// activate render styles
-	auto& br = cgv::render::ref_box_renderer(ctx);
-	br.set_render_style(style);
-	
-	// draw static part
-	br.set_box_array(ctx, boxes);
-	br.set_color_array(ctx, box_colors);
-	br.render(ctx, 0, boxes.size());
+	if (draw_environment || draw_room || draw_table) {
+		// activate render styles
+		auto& br = cgv::render::ref_box_renderer(ctx);
+		br.set_render_style(style);
+
+		// draw static part
+		br.set_box_array(ctx, boxes);
+		br.set_color_array(ctx, box_colors);
+		br.render(ctx, 0, boxes.size());
+	}
 }
 
 /// draw transparent part here
@@ -298,8 +341,22 @@ bool vr_scene::handle(cgv::gui::event& e)
 void vr_scene::create_gui()
 {
 	add_decorator("vr_scene", "heading");
+	if (begin_tree_node("room", boxes)) {
+		align("\a");
+		add_member_control(this, "draw room", draw_room, "check");
+		add_member_control(this, "draw walls", draw_walls, "check");
+		add_member_control(this, "draw ceiling", draw_ceiling, "check");
+		add_member_control(this, "width", room_width, "value_slider", "min=0.1;max=20.0;ticks=true");
+		add_member_control(this, "depth", room_depth, "value_slider", "min=0.1;max=20.0;ticks=true");
+		add_member_control(this, "height", room_height, "value_slider", "min=0.1;max=10.0;ticks=true");
+		add_member_control(this, "wall width", wall_width, "value_slider", "min=0.1;max=2.0;ticks=true");
+		add_member_control(this, "draw boxes", draw_environment, "check");
+		align("\b");
+		end_tree_node(boxes);
+	}
 	if (begin_tree_node("table", table_width)) {
 		align("\a");
+		add_member_control(this, "draw table", draw_table, "check");
 		add_member_control(this, "color", table_color);
 		add_member_control(this, "width", table_width, "value_slider", "min=0.1;max=3.0;ticks=true");
 		add_member_control(this, "depth", table_depth, "value_slider", "min=0.1;max=3.0;ticks=true");
