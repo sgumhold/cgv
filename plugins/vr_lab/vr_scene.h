@@ -32,8 +32,12 @@ protected:
 	std::vector<rgb> box_colors;
 
 	// ui parameters for table construction
+	bool draw_table;
 	float table_width, table_depth, table_height, leg_width, leg_offset;
 	rgb table_color, leg_color;
+
+	bool draw_environment, draw_room, draw_walls, draw_ceiling;
+	float room_width, room_depth, room_height, wall_width;
 
 	// rendering style for rendering of boxes
 	cgv::render::box_render_style style;
