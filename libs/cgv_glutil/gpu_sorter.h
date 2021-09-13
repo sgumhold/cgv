@@ -34,7 +34,8 @@ protected:
 	cgv::type::info::TypeId value_type = TI_UINT32;
 	unsigned value_component_count = 1;
 	std::string value_type_def = "uint";
-	std::string data_type_definition = "";
+	std::string data_type_def = "";
+	std::string auxiliary_type_def = "";
 	std::string key_definition = "";
 
 	unsigned n = 0;
@@ -93,11 +94,13 @@ public:
 
 	/// returns the number of padding elements used to make the total count a multiple of group size
 	unsigned int get_padding() { return n_pad; }
+
 	/// the number of OpenGL work groups used
 	unsigned int get_num_groups() { return num_groups; }
 
 	/// whether to sort ascending or descending
 	void set_sort_order(SortOrder order) { sort_order = order; }
+
 	/** Specifies the format of the to-be-sorted values consisting of type and
 		component count and maps to the GLSL type.
 		Supported types are TI_INT32, TI_UINT32 and TI_FLT32.
@@ -105,11 +108,13 @@ public:
 		Example: to sort a pair of two unsigned integers use: (TI_UINT32, 2),
 		which wil use uvec2 in the shader. */
 	void set_value_format(cgv::type::info::TypeId type, unsigned component_count);
+
 	/** Specifies whether to initialize all values in ascending order based on
 		their array index in the initial key generation on each sort run. This
 		may only be useful when sorting a single index buffer for visibility sorting etc.
 		When sorting paris of indices or predetermined indices, set this to false.*/
 	void initialize_values_on_sort(bool flag) { value_init_override = flag; }
+
 	/** GLSL code to define the data type and structure of one element of the input data buffer.
 		This effectively defines the contents of a struct used to represent one array element.
 		The default value is "float x, y, z;" to map the buffer contents to an array of vec3, e.g.
@@ -117,9 +122,21 @@ public:
 		Careful: vec3 cannot be used directly with a shader storage buffer, hence the three
 		separate coordinates! However, vec4 works as expected. */
 	void set_data_type_override(const std::string& def);
+
 	/** Resets the data type definition to an empty string, which will not override the default
 		definition int the shader. */
-	void reset_data_type_override() { data_type_definition = ""; }
+	void reset_data_type_override() { data_type_def = ""; }
+
+	/** GLSL code to define the data type and structure of one element of the auxiliary data buffer.
+		This will activate an additional buffer that may be used to access additional data needed
+		for calculations. The auxiliary data is accessible through the aux_values array and is
+		represented with the aux_type type. */
+	void set_auxiliary_type_override(const std::string& def);
+
+	/** Resets the auxiliary data type definition to an empty string, which will also deactivate
+		the usage of an auxiliary buffer. */
+	void reset_auxiliary_type_override() { auxiliary_type_def = ""; }
+
 	/** GLSL code to define the calculation of the key value used to sort the buffer.
 		The default definition expects positions as vec3 in the data buffer and calculates the
 		distance to the eye position as the key.
@@ -135,12 +152,13 @@ public:
 			values - the values to be sorted
 		*/
 	void set_key_definition_override(const std::string& def);
+
 	/** Resets the key definition to an empty string, which will not override the default
 		definition int the shader. */
 	void reset_key_definition_override() { key_definition = ""; }
 
 	virtual bool init(context& ctx, size_t count) = 0;
-	virtual void sort(context& ctx, GLuint data_buffer, GLuint value_buffer, vec3 eye_pos) = 0;
+	virtual void sort(context& ctx, GLuint data_buffer, GLuint value_buffer, vec3 eye_pos, GLuint auxiliary_buffer = 0) = 0;
 };
 
 }
