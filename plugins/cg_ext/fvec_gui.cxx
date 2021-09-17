@@ -5,6 +5,7 @@
 #include <cgv/utils/scan.h>
 #include <cgv/type/info/type_id.h>
 #include <cgv/math/fvec.h>
+#include <cgv/math/quaternion.h>
 #include <cgv/math/vec.h>
 #include <limits>
 
@@ -158,6 +159,7 @@ struct vec_gui_creator : public cgv::gui::gui_creator
 {
 	static std::string fvec_prefix;
 	static std::string vec_prefix;
+	static std::string quat_prefix;
 
 	vec_gui_creator()
 	{
@@ -167,6 +169,8 @@ struct vec_gui_creator : public cgv::gui::gui_creator
 			fvec_prefix = fvec_prefix.substr(0, fvec_prefix.find_first_of('<'));
 			vec_prefix = cgv::type::info::type_name<vec<int> >::get_name();
 			vec_prefix = vec_prefix.substr(0, vec_prefix.find_first_of('<'));
+			quat_prefix = cgv::type::info::type_name<quaternion<float> >::get_name();
+			quat_prefix = quat_prefix.substr(0, quat_prefix.find_first_of('<'));
 		}
 	}
 	bool is_vec_type(void* value_ptr, const std::string& value_type, cgv::type::info::TypeId& type_id, int& dim, unsigned char*& crd_ptr) const
@@ -204,6 +208,16 @@ struct vec_gui_creator : public cgv::gui::gui_creator
 			// determine dimension
 			dim = (int)(static_cast<cgv::math::vec<unsigned char>*>(value_ptr)->size());
 		}
+		else if (value_type.size() > quat_prefix.size() + 2 && (value_type.substr(0, quat_prefix.size()) == quat_prefix)) {
+			// determine coordinate type
+			std::string::size_type p0 = quat_prefix.size() + 1;
+			std::string coordinate_type = value_type.substr(p0, value_type.size() - 1 - p0);
+			type_id = cgv::type::info::get_type_id(coordinate_type);
+			if (!cgv::type::info::is_number(type_id))
+				return false;
+			crd_ptr = (unsigned char*)value_ptr;
+			dim = 4;
+		}
 		else
 			return false;
 		return true;
@@ -222,6 +236,10 @@ struct vec_gui_creator : public cgv::gui::gui_creator
 			dim = 4;
 			return true;
 		}
+		if (value_type == cgv::type::info::type_name<quaternion<float> >::get_name()) {
+			dim = 4;
+			return true;
+		}
 		if (value_type == cgv::type::info::type_name<vec<float> >::get_name()) {
 			dim = (int)reinterpret_cast<vec<float>*>(value_ptr)->size();
 			crd_ptr = reinterpret_cast<unsigned char*>(&(*reinterpret_cast<vec<float>*>(value_ptr))(0));
@@ -237,6 +255,10 @@ struct vec_gui_creator : public cgv::gui::gui_creator
 			return true;
 		}
 		if (value_type == cgv::type::info::type_name<fvec<double, 4> >::get_name()) {
+			dim = 4;
+			return true;
+		}
+		if (value_type == cgv::type::info::type_name<quaternion<double> >::get_name()) {
 			dim = 4;
 			return true;
 		}
@@ -397,5 +419,6 @@ struct vec_gui_creator : public cgv::gui::gui_creator
 
 std::string vec_gui_creator::fvec_prefix;
 std::string vec_gui_creator::vec_prefix;
+std::string vec_gui_creator::quat_prefix;
 
 cgv::gui::gui_creator_registration<vec_gui_creator> flt2vector_gc_reg("vec_gui_creator");
