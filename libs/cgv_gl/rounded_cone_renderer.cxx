@@ -162,7 +162,7 @@ namespace cgv {
 		bool rounded_cone_render_style_reflect::self_reflect(cgv::reflect::reflection_handler& rh)
 		{
 			return
-				rh.reflect_base(*static_cast<rounded_cone_render_style*>(this)) &&
+				rh.reflect_base(*static_cast<surface_render_style*>(this)) &&
 				rh.reflect_member("radius", radius);
 		}
 
