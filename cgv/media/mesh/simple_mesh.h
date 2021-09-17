@@ -17,6 +17,9 @@ namespace cgv {
 template <typename T>
 class simple_mesh_obj_reader;
 
+template <typename T>
+class CGV_API obj_loader_generic;
+
 /** coordinate type independent base class of simple mesh data structure that handles indices and colors. */
 class CGV_API simple_mesh_base : public colored_model
 {
@@ -55,8 +58,12 @@ public:
 	idx_type c2p(idx_type ci) const { return position_indices[ci]; }
 	/// return normal index of corner
 	idx_type c2n(idx_type ci) const { return normal_indices[ci]; }
+	/// return whether normal indices are stored
+	bool has_normal_indices() const { return normal_indices.size() > 0 && normal_indices.size() == position_indices.size(); }
 	/// return texture index of corner
 	idx_type c2t(idx_type ci) const { return tex_coord_indices[ci]; }
+	/// return whether texture coordinate indices are stored
+	bool has_tex_coord_indices() const { return tex_coord_indices.size() > 0 && tex_coord_indices.size() == position_indices.size(); }
 	/// return the number of faces
 	idx_type get_nr_faces() const { return idx_type(faces.size()); }
 	/// return the number of corners
@@ -163,6 +170,7 @@ public:
 	idx_type get_nr_normals() const { return idx_type(normals.size()); }
 	vec3& normal(idx_type ni) { return normals[ni]; }
 	const vec3& normal(idx_type ni) const { return normals[ni]; }
+	const std::vector<vec3>& get_normals() const { return normals; }
 
 	/// add a new normal and return normal index
 	idx_type new_tex_coord(const vec2& tc) { tex_coords.push_back(tc); return idx_type(tex_coords.size() - 1); }
@@ -171,8 +179,10 @@ public:
 	idx_type get_nr_tex_coords() const { return idx_type(tex_coords.size()); }
 	vec2& tex_coord(idx_type ti) { return tex_coords[ti]; }
 	const vec2& tex_coord(idx_type ti) const { return tex_coords[ti]; }
+	/// compute face center
+	vec3 compute_face_center(idx_type fi) const;
 	/// compute per face normals (ensure that per corner normal indices are set correspondingly)
-	void compute_face_normals();
+	void compute_face_normals(bool construct_normal_indices = true);
 	/// Conway ambo operator
 	void ambo();
 	/// Conway truncate operator
@@ -194,6 +204,8 @@ public:
 	box_type compute_box() const;
 	/// compute vertex normals by averaging triangle normals
 	void compute_vertex_normals();
+	/// construct from obj loader
+	void construct(const obj_loader_generic<T>& loader, bool copy_grp_info, bool copy_material_info);
 	/// read simple mesh from file (currently only obj and stl are supported)
 	bool read(const std::string& file_name);
 	/// write simple mesh to file (currently only obj is supported)

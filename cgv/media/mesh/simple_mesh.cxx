@@ -1,5 +1,6 @@
 #include "simple_mesh.h"
 #include "stl_reader.h"
+#include "obj_loader.h"
 #include <cgv/math/inv.h>
 #include <cgv/utils/scan.h>
 #include <cgv/media/mesh/obj_reader.h>
@@ -258,6 +259,39 @@ void simple_mesh_base::compute_c2f(std::vector<uint32_t>& c2f)
 	for (uint32_t fi = 0; fi < get_nr_faces(); ++fi) {
 		for (uint32_t ci = begin_corner(fi); ci < end_corner(fi); ++ci)
 			c2f[ci] = fi;
+	}
+}
+
+/// construct from obj loader
+template <typename T>
+void simple_mesh<T>::construct(const obj_loader_generic<T>& loader, bool copy_grp_info, bool copy_material_info)
+{
+	for (unsigned vi = 0; vi < loader.vertices.size(); ++vi)
+		new_position(loader.vertices[vi]);
+	for (unsigned ni = 0; ni < loader.normals.size(); ++ni)
+		new_normal(loader.normals[ni]);
+	for (unsigned ti = 0; ti < loader.texcoords.size(); ++ti)
+		new_tex_coord(loader.texcoords[ti]);
+	if (copy_grp_info)
+		for (unsigned gi = 0; gi < loader.groups.size(); ++gi)
+			new_group(loader.groups[gi].name);
+	if (copy_material_info)
+		for (unsigned mi = 0; mi < loader.materials.size(); ++mi)
+			ref_material(new_material()) = loader.materials[mi];	
+	for (unsigned fi = 0; fi < loader.faces.size(); ++fi) {
+		start_face();
+		const auto& F = loader.faces[fi];
+		if (copy_grp_info && !loader.groups.empty())
+			group_index(fi) = F.group_index;
+		if (copy_material_info && !loader.materials.empty())
+			material_index(fi) = F.material_index;
+		for (unsigned i = 0; i < F.degree; ++i) {
+			new_corner(
+				loader.vertex_indices[F.first_vertex_index + i], 
+				F.first_normal_index != -1 ? loader.normal_indices[F.first_normal_index + i] : -1, 
+				F.first_texcoord_index != -1 ? loader.texcoord_indices[F.first_texcoord_index + i] : -1
+			);
+		}
 	}
 }
 
@@ -549,14 +583,27 @@ simple_mesh<T>::simple_mesh(const std::string& conway_notation)
 		construct_conway_polyhedron(conway_notation);
 }
 
-template <typename T> void simple_mesh<T>::compute_face_normals()
+template <typename T> 
+typename simple_mesh<T>::vec3 simple_mesh<T>::compute_face_center(idx_type fi) const
+{
+	vec3 ctr = vec3(0.0f);
+	uint32_t nr = 0;
+	for (uint32_t ci = begin_corner(fi); ci < end_corner(fi); ++ci) {
+		ctr += position(c2p(ci));
+		++nr;
+	}
+	ctr /= float(nr);
+	return ctr;
+}
+
+template <typename T> void simple_mesh<T>::compute_face_normals(bool construct_normal_indices)
 {
 	// compute per face normals
 	for (uint32_t fi = 0; fi < get_nr_faces(); ++fi) {
 		std::vector<vec3> P;
-		vec3 ctr = vec3(0.0f);
-		uint32_t nr = 0;
-		for (uint32_t ci = begin_corner(fi); ci < end_corner(fi); ++ci) {
+		vec3 ctr(0.0f);
+		uint32_t ci, nr = 0;
+		for (ci = begin_corner(fi); ci < end_corner(fi); ++ci) {
 			P.push_back(position(c2p(ci)));
 			ctr += P.back();
 			++nr;
@@ -570,7 +617,12 @@ template <typename T> void simple_mesh<T>::compute_face_normals()
 			prev_p = p;
 		}
 		nml.normalize();
-		new_normal(nml);
+		uint32_t ni = new_normal(nml);
+		if (construct_normal_indices) {
+			for (ci = begin_corner(fi); ci < end_corner(fi); ++ci) {
+				normal_indices.push_back(ni);
+			}
+		}
 	}
 }
 
