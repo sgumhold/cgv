@@ -105,9 +105,14 @@ void gpu_sorter::set_value_format(cgv::type::info::TypeId type, unsigned compone
 	value_type = type;
 }
 
+void gpu_sorter::set_auxiliary_type_override(const std::string& def) {
+
+	auxiliary_type_def = def;
+}
+
 void gpu_sorter::set_data_type_override(const std::string& def) {
 
-	data_type_definition = def;
+	data_type_def = def;
 }
 
 void gpu_sorter::set_key_definition_override(const std::string& def) {
