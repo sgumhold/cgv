@@ -47,9 +47,11 @@ bool attribute_array_manager::disable(context& ctx) {
 ///
 void attribute_array_manager::destruct(const context& ctx) {
 	for(auto& p : vbos) {
-		p.second->destruct(ctx);
-		delete p.second;
-		p.second = 0;
+		if (p.second) {
+			p.second->destruct(ctx);
+			delete p.second;
+			p.second = 0;
+		}
 	}
 	vbos.clear();
 	aab.destruct(ctx);
