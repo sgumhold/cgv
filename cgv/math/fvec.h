@@ -169,16 +169,16 @@ public:
 	fvec<T,N>& operator /= (const T& s) { for (unsigned i=0;i<N;++i) v[i] /= s; return *this; }
 	///in place vector addition
 	template <typename S> 
-	fvec<T,N>& operator += (const fvec<S,N>& _v)  { for (unsigned i=0; i<N;++i) v[i] += _v(i); return *this; }
+	fvec<T,N>& operator += (const fvec<S,N>& _v)  { for (unsigned i=0; i<N;++i) v[i] += T(_v(i)); return *this; }
 	///in place vector subtraction
 	template <typename S> 
-	fvec<T,N>& operator -= (const fvec<S,N>& _v) { for (unsigned i=0; i<N;++i) v[i] -= _v(i); return *this; }
+	fvec<T,N>& operator -= (const fvec<S,N>& _v) { for (unsigned i=0; i<N;++i) v[i] -= T(_v(i)); return *this; }
 	///in place componentwise vector multiplication
 	template <typename S> 
-	fvec<T,N>& operator *= (const fvec<S,N>& _v) { for (unsigned i=0; i<N;++i) v[i] *= _v(i); return *this; }
+	fvec<T,N>& operator *= (const fvec<S,N>& _v) { for (unsigned i=0; i<N;++i) v[i] *= T(_v(i)); return *this; }
 	///in place componentwise vector division
 	template <typename S> 
-	fvec<T,N>& operator /= (const fvec<S,N>& _v) { for (unsigned i=0; i<N;++i) v[i] /= _v(i); return *this; }
+	fvec<T,N>& operator /= (const fvec<S,N>& _v) { for (unsigned i=0; i<N;++i) v[i] /= T(_v(i)); return *this; }
 	///vector addition
 	template <typename S> 
 	fvec<T,N> operator + (const fvec<S,N>& v) const { fvec<T,N> r = *this; r += v; return r; }
