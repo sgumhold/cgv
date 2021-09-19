@@ -520,6 +520,7 @@ void context::set_current_view(shader_program& prog, bool modelview_deps, bool p
 	if (projection_deps) {
 		cgv::math::fmat<float, 4, 4> P(projection_matrix_stack.top());
 		prog.set_uniform(*this, "projection_matrix", P);
+		prog.set_uniform(*this, "inverse_projection_matrix", inv(P));
 	}
 }
 
