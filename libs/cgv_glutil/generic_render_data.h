@@ -83,9 +83,12 @@ protected:
 	bool enable(cgv::render::context& ctx, cgv::render::shader_program& prog) {
 		if(!aam.is_created())
 			aam.init(ctx);
+		bool res = true;
 		if(state_out_of_date)
 			transfer(ctx, prog);
 		state_out_of_date = false;
+		if(!res)
+			return false;
 		return aam.enable(ctx);
 	}
 
@@ -141,6 +144,7 @@ public:
 	protected:
 		bool transfer(context& ctx, shader_program& prog) {
 			bool success = true;
+			if(size() == 0) return false;\
 			success &= set_attribute_array(ctx, prog, "position", positions);
 			success &= set_attribute_array(ctx, prog, "color", colors);
 			return success;
@@ -167,6 +171,7 @@ class name : public cgv::glutil::generic_render_data {\
 protected:\
 	bool transfer(cgv::render::context& ctx, cgv::render::shader_program& prog) {\
 		bool success = true;\
+		if(size() == 0) return false;\
 		GRD_APPLY_FUNC_N(attrib_count, GRD_SET_ATTRIB_ARRAY, GRD_SEP_NULL, __VA_ARGS__)\
 		return success;\
 	}\
