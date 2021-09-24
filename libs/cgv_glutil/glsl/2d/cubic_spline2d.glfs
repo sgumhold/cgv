@@ -17,9 +17,11 @@ void finish_fragment2d();
 //***** end interface of fragment2d.glfs ***********************************
 
 uniform float width = 1.0;
+uniform float dash_length = 0.0;
+uniform float dash_ratio = 0.5;
 
-in flat int idx_fs;
-in vec4 color_fs;
+in flat vec4 color0_fs;
+in flat vec4 color1_fs;
 in flat vec2 size_fs;
 in vec2 tex_coord_fs;
 in vec2 pix_coord_fs;
@@ -48,52 +50,57 @@ float op_subtraction(float d1, float d2)
 }
 
 // https://www.shadertoy.com/view/MlKcDD
-float ud_bezier(in vec2 pos, in vec2 A, in vec2 B, in vec2 C)
-{    
-    vec2 a = B - A;
-    vec2 b = A - 2.0*B + C;
-    vec2 c = a * 2.0;
-    vec2 d = A - pos;
+vec2 ud_bezier2(in vec2 pos, in vec2 A, in vec2 B, in vec2 C) {
+	vec2 a = B - A;
+	vec2 b = A - 2.0*B + C;
+	vec2 c = a * 2.0;
+	vec2 d = A - pos;
 
-    float kk = 1.0/dot(b,b);
-    float kx = kk * dot(a,b);
-    float ky = kk * (2.0*dot(a,a)+dot(d,b))/3.0;
-    float kz = kk * dot(d,a);      
+	float kk = 1.0 / dot(b, b);
+	float kx = kk * dot(a, b);
+	float ky = kk * (2.0*dot(a, a) + dot(d, b)) / 3.0;
+	float kz = kk * dot(d, a);
 
-    float res = 0.0;
+	vec2 res;
 
-    float p = ky - kx*kx;
-    float p3 = p*p*p;
-    float q = kx*(2.0*kx*kx - 3.0*ky) + kz;
-    float h = q*q + 4.0*p3;
+	float p = ky - kx * kx;
+	float p3 = p * p * p;
+	float q = kx * (2.0*kx*kx - 3.0*ky) + kz;
+	float h = q * q + 4.0*p3;
 
-    if( h>=0.0 ) 
-    {   // 1 root
-        h = sqrt(h);
-        vec2 x = (vec2(h,-h)-q)/2.0;
-        vec2 uv = sign(x)*pow(abs(x), vec2(1.0/3.0));
-        float t = clamp( uv.x+uv.y-kx, 0.0, 1.0 );
-        res = dot2(d+(c+b*t)*t);
-    }
-    else 
-    {   // 3 roots
-        float z = sqrt(-p);
-        float v = acos(q/(p*z*2.0))/3.0;
-        float m = cos(v);
-        float n = sin(v)*1.732050808;
-        vec3  t = clamp( vec3(m+m,-n-m,n-m)*z-kx, 0.0, 1.0 );
-        res = min( dot2(d+(c+b*t.x)*t.x),
-                   dot2(d+(c+b*t.y)*t.y) );
-        // the third root cannot be the closest. See https://www.shadertoy.com/view/4dsfRS
+	if(h >= 0.0) {
+		h = sqrt(h);
+		vec2 x = (vec2(h, -h) - q) / 2.0;
+		vec2 uv = sign(x)*pow(abs(x), vec2(1.0 / 3.0));
+		float t = clamp(uv.x + uv.y - kx, 0.0, 1.0);
+
+		// 1 root
+		res = vec2(dot2(d + (c + b * t)*t), t);
+	} else {
+		float z = sqrt(-p);
+		float v = acos(q / (p*z*2.0)) / 3.0;
+		float m = cos(v);
+		float n = sin(v) * 1.732050808;
+		vec3 t = clamp(vec3(m + m, -n - m, n - m) * z - kx, 0.0, 1.0);
+
+		// 3 roots, but only need two
+		float dis = dot2(d + (c + b * t.x) * t.x);
+		res = vec2(dis, t.x);
+
+		dis = dot2(d + (c + b * t.y) * t.y);
+		if(dis < res.x) res = vec2(dis, t.y);
+
+		// the third root cannot be the closest. See https://www.shadertoy.com/view/4dsfRS
         // res = min(res,dot2(d+(c+b*t.z)*t.z));
-    }
-    
-    return sqrt(res);
+	}
+
+	res.x = sqrt(res.x);
+	return res;
 }
 
-void main() {
-	vec4 color = color_fs;
 
+void main() {
+	/*
 	float dist0 = ud_bezier(pix_coord_fs, pos_a_fs, pos_b_fs, pos_c_fs);
 	float dist1 = ud_bezier(pix_coord_fs, pos_c_fs, pos_d_fs, pos_e_fs);
 	
@@ -101,9 +108,37 @@ void main() {
 	dist1 -= 0.5*width;
 
 	float dist = op_union(dist0, dist1);
+	*/
 
-	if(dist > 0.5*feather_width)
+	vec2 dist0 = ud_bezier2(pix_coord_fs, pos_a_fs, pos_b_fs, pos_c_fs);
+	vec2 dist1 = ud_bezier2(pix_coord_fs, pos_c_fs, pos_d_fs, pos_e_fs);
+
+	// union with selection of curve parameter t
+	float dist, t;
+	if(dist0.x < dist1.x) {
+		dist = dist0.x;
+		t = dist0.y;
+	} else {
+		dist = dist1.x;
+		t = dist1.y + 1.0;
+	}
+
+	dist -= 0.5 * width;
+	t *= 0.5;
+
+	if(dist.x > 0.5*feather_width)
 		discard;
+
+	// texture coordinates
+	vec2 uv = vec2(t, -2.0 * dist / width);
+
+	float dist_since_start = t * (size_fs.x - feather_width);
+	dist_since_start = mod(dist_since_start, dash_length);
+	float dash_coord = dist_since_start - (0.5*dash_ratio*dash_length);
+	float dash_dist = abs(dash_coord);
+	float dash_limit = (0.5*dash_ratio*dash_length) - feather_width;
+
+	vec4 color = mix(color0_fs, color1_fs, t);
 
 	float limit = -0.5*feather_width;
 	float inv_feather = 1.0 / feather_width;
@@ -118,7 +153,9 @@ void main() {
 		color = mix(color, border_color, border_feather_alpha);
 	}
 	
-	color.a *= feather_alpha;
+	float dash_alpha = 1.0 - clamp((dash_dist - dash_limit) * inv_feather, 0.0, 1.0);
+
+	color.a *= feather_alpha * dash_alpha;
 	
 	override_color(color);
 	finish_fragment2d();

@@ -26,6 +26,9 @@ public:
 
 	shader_program& get(const std::string& name) { return shaders.at(name).first; }
 
+	std::map<std::string, shader_program_pair>::iterator begin() { return shaders.begin(); }
+	std::map<std::string, shader_program_pair>::iterator end() { return shaders.end(); }
+	
 	bool load_shaders(context& ctx);
 
 	bool reload(context& ctx, const std::string& name, const shader_define_map& defines = {}, const std::string& where = "");

@@ -20,7 +20,7 @@ void finish_fragment2d();
 //***** end interface of fragment2d.glsl ***********************************
 */
 
-uniform sampler2D tex;
+uniform layout(binding = 0) sampler2D tex;
 
 // shape paramaters
 uniform ivec2 size;

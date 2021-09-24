@@ -22,6 +22,7 @@
 #include <cgv_glutil/2d/draggables_collection.h>
 #include <cgv_glutil/2d/rect.h>
 
+#include <cgv_glutil/2d/shape2d_styles.h>
 
 
 
@@ -61,8 +62,6 @@ template <typename T> fmat<T, 3, 3>
 
 
 
-
-
 class shapes_2d :
 	public cgv::base::node,
 	public cgv::render::drawable,
@@ -98,6 +97,11 @@ private:
 protected:
 	cgv::glutil::rect viewport_rect;
 
+	cgv::glutil::canvas canvas;
+	cgv::glutil::shape2d_style rect_style, circle_style;
+	cgv::glutil::line2d_style line_style;
+	cgv::glutil::arrow2d_style arrow_style;
+
 	cgv::glutil::shader_library shaders;
 
 	bool show_background;
@@ -120,6 +124,9 @@ protected:
 	spline_geometry curves;
 
 	// shape appearance attributes
+	const rgba light_blue = rgba(0.7f, 0.7f, 1.0f, 1.0f);
+	const rgba blue = rgba(0.4f, 0.4f, 0.9f, 1.0f);
+
 	rgba color = rgba(0.7f, 0.7f, 1.0f, 1.0f);
 	rgba border_color = rgba(0.4f, 0.4f, 0.9f, 1.0f);
 	float border_width = 5.0f;
@@ -168,11 +175,16 @@ public:
 		
 		show_background = true;
 
+		canvas.register_shader("rectangle", "rect2d.glpr");
+		canvas.register_shader("circle", "circle2d.glpr");
+		canvas.register_shader("ellipse", "ellipse2d.glpr");
+		canvas.register_shader("arrow", "arrow2d.glpr");
+
 		// load some specific 2d shaders
-		shaders.add("rectangle", "rect2d.glpr");
-		shaders.add("circle", "circle2d.glpr");
-		shaders.add("ellipse", "ellipse2d.glpr");
-		shaders.add("arrow", "arrow2d.glpr");
+		//shaders.add("rectangle", "rect2d.glpr");
+		//shaders.add("circle", "circle2d.glpr");
+		//shaders.add("ellipse", "ellipse2d.glpr");
+		//shaders.add("arrow", "arrow2d.glpr");
 		
 		line_renderer = cgv::glutil::generic_renderer("line2d.glpr");
 		spline_renderer = cgv::glutil::generic_renderer("cubic_spline2d.glpr");
@@ -281,6 +293,9 @@ public:
 	}
 	bool init(cgv::render::context& ctx) {
 		bool success = true;
+
+		success &= canvas.init(ctx);
+
 		success &= shaders.load_shaders(ctx);
 		success &= line_renderer.init(ctx);
 		success &= spline_renderer.init(ctx);
@@ -352,10 +367,12 @@ public:
 		if(viewport_resolution != viewport_rect.size()) {
 			viewport_rect.set_size(viewport_resolution);
 
-			set_resolution_uniform(ctx, shaders.get("rectangle"));
-			set_resolution_uniform(ctx, shaders.get("circle"));
-			set_resolution_uniform(ctx, shaders.get("ellipse"));
-			set_resolution_uniform(ctx, shaders.get("arrow"));
+			canvas.set_resolution(ctx, viewport_rect.size());
+
+			//set_resolution_uniform(ctx, shaders.get("rectangle"));
+			//set_resolution_uniform(ctx, shaders.get("circle"));
+			//set_resolution_uniform(ctx, shaders.get("ellipse"));
+			//set_resolution_uniform(ctx, shaders.get("arrow"));
 			set_resolution_uniform(ctx, line_renderer.ref_prog());
 			set_resolution_uniform(ctx, spline_renderer.ref_prog());
 
@@ -377,59 +394,89 @@ public:
 		if(show_background)
 			draw_background(ctx);
 
+		canvas.push_modelview_matrix();
+		canvas.mul_modelview_matrix(ctx, get_view_matrix());
+
+		{
+			mat3 T = cgv::math::translate2h(vec2(model_params.translation));
+			mat3 S = cgv::math::scale2h(vec2(model_params.scale));
+			mat3 R = cgv::math::rotate2h(model_params.angle);
+			mat3 M = T * S * R;
+			canvas.push_modelview_matrix();
+			canvas.mul_modelview_matrix(ctx, M);
+		}
+
 		image_tex.enable(ctx, 0);
 
-		shader_program& rect_prog = shaders.get("rectangle");
-		rect_prog.enable(ctx);
+		//shader_program& rect_prog = shaders.get("rectangle");
+		//rect_prog.enable(ctx);
+		auto& rect_prog = canvas.enable_shader(ctx, "rectangle");
 		rect_prog.set_uniform(ctx, "position", ivec2(100, 100));
 		rect_prog.set_uniform(ctx, "size", ivec2(200, 100));
-		set_shared_uniforms(ctx, rect_prog);
+		//set_shared_uniforms(ctx, rect_prog);
+		rect_style.apply(ctx, rect_prog);
 		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-		rect_prog.disable(ctx);
+		//rect_prog.disable(ctx);
+		canvas.disable_current_shader(ctx);
 
-		shader_program& circle_prog = shaders.get("circle");
-		circle_prog.enable(ctx);
+		//shader_program& circle_prog = shaders.get("circle");
+		//circle_prog.enable(ctx);
+		auto& circle_prog = canvas.enable_shader(ctx, "circle");
 		circle_prog.set_uniform(ctx, "position", ivec2(500, 150));
 		circle_prog.set_uniform(ctx, "size", ivec2(100)); // size defines the diameter, both components must be set to the same value
-		circle_prog.set_uniform(ctx, "position_is_center", true);
-		set_shared_uniforms(ctx, circle_prog);
+		//circle_prog.set_uniform(ctx, "position_is_center", true);
+		//set_shared_uniforms(ctx, circle_prog);
+		circle_style.apply(ctx, circle_prog);
 		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-		circle_prog.disable(ctx);
+		//circle_prog.disable(ctx);
+		canvas.disable_current_shader(ctx);
 
-		shader_program& ellipse_prog = shaders.get("ellipse");
-		ellipse_prog.enable(ctx);
+		//shader_program& ellipse_prog = shaders.get("ellipse");
+		//ellipse_prog.enable(ctx);
+		auto& ellipse_prog = canvas.enable_shader(ctx, "ellipse");
 		ellipse_prog.set_uniform(ctx, "position", ivec2(200, 300));
 		ellipse_prog.set_uniform(ctx, "size", ivec2(200, 100));
-		ellipse_prog.set_uniform(ctx, "position_is_center", true);
-		set_shared_uniforms(ctx, ellipse_prog);
+		//ellipse_prog.set_uniform(ctx, "position_is_center", true);
+		//set_shared_uniforms(ctx, ellipse_prog);
+		circle_style.apply(ctx, ellipse_prog);
 		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-		ellipse_prog.disable(ctx);
+		//ellipse_prog.disable(ctx);
+		canvas.disable_current_shader(ctx);
 
-		shader_program& arrow_prog = shaders.get("arrow");
-		arrow_prog.enable(ctx);
+		//shader_program& arrow_prog = shaders.get("arrow");
+		//arrow_prog.enable(ctx);
+		auto& arrow_prog = canvas.enable_shader(ctx, "arrow");
 		arrow_prog.set_uniform(ctx, "position_a", ivec2(arrow_handles[0]->pos));
 		arrow_prog.set_uniform(ctx, "position_b", ivec2(arrow_handles[1]->pos));
-		arrow_prog.set_uniform(ctx, "stem_width", stem_width);
-		arrow_prog.set_uniform(ctx, "head_width", head_width);
-		arrow_prog.set_uniform(ctx, "head_length", head_length_is_relative ? relative_head_length : absolute_head_length);
-		arrow_prog.set_uniform(ctx, "head_length_is_relative", head_length_is_relative);
-		set_shared_uniforms(ctx, arrow_prog);
+		//arrow_prog.set_uniform(ctx, "stem_width", stem_width);
+		//arrow_prog.set_uniform(ctx, "head_width", head_width);
+		//arrow_prog.set_uniform(ctx, "head_length", head_length_is_relative ? relative_head_length : absolute_head_length);
+		//arrow_prog.set_uniform(ctx, "head_length_is_relative", head_length_is_relative);
+		//set_shared_uniforms(ctx, arrow_prog);
+		arrow_style.apply(ctx, arrow_prog);
 		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-		arrow_prog.disable(ctx);
+		//arrow_prog.disable(ctx);
+		canvas.disable_current_shader(ctx);
 
 		shader_program& line_prog = line_renderer.ref_prog();
 		line_prog.enable(ctx);
-		set_shared_uniforms(ctx, line_prog);
-		line_prog.set_uniform(ctx, "width", line_width);
-		line_prog.set_uniform(ctx, "dash_length", dash_length);
-		line_prog.set_uniform(ctx, "dash_ratio", dash_ratio);
+		line_style.apply(ctx, line_prog);
+		canvas.set_view(ctx, line_prog);
+		//set_shared_uniforms(ctx, line_prog);
+		//line_prog.set_uniform(ctx, "width", line_width);
+		//line_prog.set_uniform(ctx, "dash_length", dash_length);
+		//line_prog.set_uniform(ctx, "dash_ratio", dash_ratio);
 		line_prog.disable(ctx);
 		line_renderer.render(ctx, PT_LINES, lines);
 
 		shader_program& spline_prog = spline_renderer.ref_prog();
 		spline_prog.enable(ctx);
-		set_shared_uniforms(ctx, spline_prog);
-		spline_prog.set_uniform(ctx, "width", line_width);
+		canvas.set_view(ctx, spline_prog);
+		//set_shared_uniforms(ctx, spline_prog);
+		line_style.apply(ctx, spline_prog);
+		//spline_prog.set_uniform(ctx, "width", line_width);
+		//spline_prog.set_uniform(ctx, "dash_length", dash_length);
+		//spline_prog.set_uniform(ctx, "dash_ratio", dash_ratio);
 		spline_prog.disable(ctx);
 		spline_renderer.render(ctx, PT_LINES, curves);
 
@@ -441,17 +488,20 @@ public:
 		draw_control_lines(ctx);
 		draw_draggables(ctx);
 
+		canvas.pop_modelview_matrix(ctx);
+		canvas.pop_modelview_matrix(ctx);
+
 		glDisable(GL_BLEND);
 		glEnable(GL_DEPTH_TEST);
 	}
 	void draw_background(cgv::render::context& ctx) {
-		shader_program& rect_prog = shaders.get("rectangle");
-		rect_prog.enable(ctx);
+		//shader_program& rect_prog = shaders.get("rectangle");
+		//rect_prog.enable(ctx);
+		auto& rect_prog = canvas.enable_shader(ctx, "rectangle");
 
-		mat3 I;
-		I.identity();
-		rect_prog.set_uniform(ctx, "model_matrix", I);
-		rect_prog.set_uniform(ctx, "view_matrix", I);
+		//mat3 I;
+		//I.identity();
+		//rect_prog.set_uniform(ctx, "modelview2d_matrix", I);
 
 		rect_prog.set_uniform(ctx, "position", ivec2(0));
 		rect_prog.set_uniform(ctx, "size", viewport_rect.size());
@@ -472,7 +522,8 @@ public:
 
 		rect_prog.set_uniform(ctx, "tex_scaling", vec2(1.0f));
 
-		rect_prog.disable(ctx);
+		//rect_prog.disable(ctx);
+		canvas.disable_current_shader(ctx);
 	}
 	void draw_control_lines(cgv::render::context& ctx) {
 		shader_program& line_prog = line_renderer.ref_prog();
@@ -492,8 +543,9 @@ public:
 		line_renderer.render(ctx, PT_LINES, control_lines);
 	}
 	void draw_draggables(cgv::render::context& ctx) {
-		shader_program& point_prog = shaders.get("circle");
-		point_prog.enable(ctx);
+		//shader_program& point_prog = shaders.get("circle");
+		//point_prog.enable(ctx);
+		auto& point_prog = canvas.enable_shader(ctx, "circle");
 
 		point_prog.set_uniform(ctx, "position_is_center", true);
 		point_prog.set_uniform(ctx, "border_color", rgba(0.2f, 0.2f, 0.2f, 1.0f));
@@ -515,7 +567,8 @@ public:
 			glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 		}
 
-		point_prog.disable(ctx);
+		//point_prog.disable(ctx);
+		canvas.disable_current_shader(ctx);
 	}
 	void create_line_render_data() {
 		lines.clear();
@@ -528,6 +581,11 @@ public:
 	void create_curve_render_data() {
 		auto& control_points = curve_handles.ref_draggables();
 
+		const rgba colors[2] = {
+			rgba(1.0f, 0.0f, 0.0f, 1.0f),
+			rgba(1.0f, 1.0f, 0.0f, 1.0f)
+		};
+
 		curves.clear();
 		control_lines.clear();
 		for(unsigned i = 0; i < 2; ++i) {
@@ -537,7 +595,7 @@ public:
 			unsigned pi = (i % 2) ? ei : si;
 			vec2 tangent = 3.0f * (control_points[ei]->pos - control_points[si]->pos);
 			
-			curves.add(control_points[pi]->pos, tangent, color);
+			curves.add(control_points[pi]->pos, tangent, colors[i]);
 			control_lines.add(control_points[si]->pos, rgba(0.7f, 0.2f, 0.2f, 1.0f));
 			control_lines.add(control_points[ei]->pos, rgba(0.7f, 0.2f, 0.2f, 1.0f));
 		}
@@ -575,23 +633,17 @@ public:
 	void set_resolution_uniform(cgv::render::context& ctx, cgv::render::shader_program& prog) {
 		prog.enable(ctx);
 		prog.set_uniform(ctx, "resolution", viewport_rect.size());
-		prog.set_uniform(ctx, "tex", 0);
 		prog.disable(ctx);
 	}
 	void set_shared_uniforms(cgv::render::context& ctx, cgv::render::shader_program& prog) {
 
-		vec2 vs(viewport_rect.size());
-		mat4 PM = cgv::math::ortho4(0.0f, vs.x(), 0.0f, vs.y(), 0.0f, 10.0f);
-		prog.set_uniform(ctx, "projection_matrix", PM);
-		
 		{
 			mat3 T = cgv::math::translate2h(vec2(model_params.translation));
 			mat3 S = cgv::math::scale2h(vec2(model_params.scale));
 			mat3 R = cgv::math::rotate2h(model_params.angle);
-			mat3 MM = T * S * R;
-			prog.set_uniform(ctx, "model_matrix", MM);
+			mat3 M = T * S * R;
+			prog.set_uniform(ctx, "modelview2d_matrix", get_view_matrix() * M);
 		}
-		prog.set_uniform(ctx, "view_matrix", get_view_matrix());
 		
 		// appearance
 		prog.set_uniform(ctx, "color", color);
@@ -631,6 +683,34 @@ public:
 
 		add_decorator("Example Settings", "heading", "level=3");
 		add_member_control(this, "Show Background", show_background, "check");
+
+		if(begin_tree_node("Rectangle Style", rect_style, false)) {
+			align("\a");
+			add_gui("rect_style", rect_style);
+			align("\b");
+			end_tree_node(rect_style);
+		}
+
+		if(begin_tree_node("Circle Style", circle_style, false)) {
+			align("\a");
+			add_gui("circle_style", circle_style);
+			align("\b");
+			end_tree_node(circle_style);
+		}
+
+		if(begin_tree_node("Line Style", line_style, false)) {
+			align("\a");
+			add_gui("line_style", line_style);
+			align("\b");
+			end_tree_node(line_style);
+		}
+
+		if(begin_tree_node("Arrow Style", arrow_style, false)) {
+			align("\a");
+			add_gui("arrow_style", arrow_style);
+			align("\b");
+			end_tree_node(arrow_style);
+		}
 
 		add_decorator("Render Options", "heading", "level=3");
 		add_member_control(this, "Use Color", use_color, "check");
