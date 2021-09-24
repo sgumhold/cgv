@@ -87,5 +87,8 @@ void main() {
 	
 	vec2 thickness = 0.5*vec2(stem_width, head_width);
 	float dist = sd_arrow(pix_coord, pos_a, pos_b, thickness - border_radius + feather_origin*feather_width);
+
+	vec4 color = mix(vec4(1,0,0,1),vec4(0,1,0,1), tex_coord.x);
+	override_color(color);
 	finish_sdf_fragment2d(dist, tex_coord);
 }
