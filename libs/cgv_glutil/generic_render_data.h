@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cgv/render/context.h>
+#include <cgv/render/render_types.h>
 #include <cgv/render/shader_program.h>
 #include <cgv/render/attribute_array_binding.h>
 #include <cgv_gl/attribute_array_manager.h>
@@ -23,14 +24,14 @@
 #define GRD_SEP_NULL(x)
 #define GRD_SEP_COMMA(x) ,
 
-#define GRD_APPLY_FUNC1(f, t0, i0) f(t0, i0)
+#define GRD_APPLY_FUNC1(f, s, t0, i0) f(t0, i0)
 
 #define GRD_APPLY_FUNC2(f, s, t0, i0, t1, i1)\
-	GRD_APPLY_FUNC1(f, t0, i0) s(0)\
-	GRD_APPLY_FUNC1(f, t1, i1)
+	GRD_APPLY_FUNC1(f, s, t0, i0) s(0)\
+	GRD_APPLY_FUNC1(f, s, t1, i1)
 
 #define GRD_APPLY_FUNC3(f, s, t0, i0, t1, i1, t2, i2)\
-	GRD_APPLY_FUNC1(f, t0, i0) s(0)\
+	GRD_APPLY_FUNC1(f, s, t0, i0) s(0)\
 	GRD_APPLY_FUNC2(f, s, t1, i1, t2, i2)
 
 #define GRD_APPLY_FUNC4(f, s, t0, i0, t1, i1, t2, i2, t3, i3)\
@@ -66,7 +67,7 @@ class generic_renderer;
 class generic_render_data : public cgv::render::render_types {
 	friend class generic_renderer;
 private:
-	attribute_array_manager aam;
+	cgv::render::attribute_array_manager aam;
 	bool state_out_of_date = true;
 
 protected:

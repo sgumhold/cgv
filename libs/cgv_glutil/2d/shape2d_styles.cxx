@@ -30,8 +30,8 @@ struct shape2d_style_gui_creator : public gui_creator {
 		p->add_member_control(b, "Feather Width", s_ptr->feather_width, "value_slider", "min=0;max=20;step=0.5;ticks=true");
 		p->add_member_control(b, "Feather Origin", s_ptr->feather_origin, "value_slider", "min=0;max=1;step=0.01;ticks=true");
 
-		p->add_member_control(b, "Texcoord Scaling", s_ptr->texcoord_scaling[0], "value", "min=-10;max=10;step=0.01;ticks=true;w=90", " ");
-		p->add_member_control(b, "", s_ptr->texcoord_scaling[1], "value", "min=-10;max=10;step=0.01;ticks=true;w=90");
+		p->add_member_control(b, "Texcoord Scaling", s_ptr->texcoord_scaling[0], "value", "min=-2;max=2;step=0.01;ticks=true;w=95", " ");
+		p->add_member_control(b, "", s_ptr->texcoord_scaling[1], "value", "min=-2;max=2;step=0.01;ticks=true;w=95");
 
 		//connect_copy(
 		//	p->add_member_control(b, "Cone Angle", s_ptr->cone_angle, "value_slider", "min=10.0;step=0.0001;max=90.0;ticks=true")->value_change,

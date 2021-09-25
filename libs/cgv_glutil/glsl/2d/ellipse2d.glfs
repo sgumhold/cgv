@@ -1,20 +1,20 @@
 #version 150
 
-//***** begin interface of fragment2d.glfs ***********************************
-vec2 get_shape_size();
+//***** begin interface of shape2d.glsl ***********************************
+vec2 get_adjusted_size(vec2 size);
 vec4 get_color();
 void override_color(in vec4 color);
-void finish_sdf_fragment2d(in float signed_distance, in vec2 texcoords);
+vec4 transform_world_to_window_space(vec2 p);
+//***** end interface of shape2d.glsl ***********************************
+
+//***** begin interface of fragment2d.glfs ***********************************
 void finish_sdf_fragment2d(in float signed_distance);
-void finish_fragment2d(in vec2 texcoords);
+void finish_sdf_fragment2d(in float signed_distance, in vec2 texcoords);
 void finish_fragment2d();
+void finish_fragment2d(in vec2 texcoords);
 //***** end interface of fragment2d.glfs ***********************************
 
-uniform ivec2 size;
-
-uniform float border_width = 0.0;
-uniform vec4 border_color = vec4(1.0);
-
+flat in vec2 size;
 in vec2 pix_coord;
 in vec2 tex_coord;
 
@@ -57,6 +57,6 @@ float sd_ellipse(in vec2 p, in vec2 ab)
 
 void main() {
 	
-	float dist = sd_ellipse(pix_coord, get_shape_size());
+	float dist = sd_ellipse(pix_coord, get_adjusted_size(size));
 	finish_sdf_fragment2d(dist, tex_coord);
 }
