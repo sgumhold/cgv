@@ -3,6 +3,7 @@
 #include <cgv/render/context.h>
 #include <cgv/render/render_types.h>
 #include <cgv/render/shader_program.h>
+#include <cgv_gl/gl/gl_context.h>
 
 #include "../shader_library.h"
 
@@ -115,13 +116,52 @@ public:
 		prog.set_uniform(ctx, "modelview2d_matrix", modelview_matrix_stack.top());
 		prog.set_uniform(ctx, "feather_scale", feather_scale);
 	}
+
+	template<typename T>
+	void draw_shape(const cgv::render::context& ctx, const cgv::math::fvec<T, 2u>& position, const cgv::math::fvec<T, 2>& size) {
+		if(current_shader_program) {
+			current_shader_program->set_attribute(ctx, "position", static_cast<cgv::math::fvec<T, 2u>>(position));
+			current_shader_program->set_attribute(ctx, "size", static_cast<cgv::math::fvec<T, 2u>>(size));
+			glDrawArrays(GL_POINTS, 0, 1);
+		}
+	}
+
+	template<typename T>
+	void draw_shape(const cgv::render::context& ctx, const cgv::math::fvec<T, 2u>& position, const cgv::math::fvec<T, 2>& size, const rgba& color) {
+		if(current_shader_program) {
+			current_shader_program->set_attribute(ctx, "position", static_cast<cgv::math::fvec<T, 2u>>(position));
+			current_shader_program->set_attribute(ctx, "size", static_cast<cgv::math::fvec<T, 2u>>(size));
+			current_shader_program->set_attribute(ctx, "color", color);
+			glDrawArrays(GL_POINTS, 0, 1);
+		}
+	}
+
+	template<typename T>
+	void draw_shape2(const cgv::render::context& ctx, const cgv::math::fvec<T, 2u>& position0, const cgv::math::fvec<T, 2u>& position1) {
+		if(current_shader_program) {
+			current_shader_program->set_attribute(ctx, "position0", static_cast<cgv::math::fvec<T, 2u>>(position0));
+			current_shader_program->set_attribute(ctx, "position1", static_cast<cgv::math::fvec<T, 2u>>(position1));
+			glDrawArrays(GL_POINTS, 0, 1);
+		}
+	}
+
+	template<typename T>
+	void draw_shape2(const cgv::render::context& ctx, const cgv::math::fvec<T, 2u>& position0, const cgv::math::fvec<T, 2u>& position1, const rgba& color0, const rgba& color1) {
+		if(current_shader_program) {
+			current_shader_program->set_attribute(ctx, "position0", static_cast<cgv::math::fvec<T, 2u>>(position0));
+			current_shader_program->set_attribute(ctx, "position1", static_cast<cgv::math::fvec<T, 2u>>(position1));
+			current_shader_program->set_attribute(ctx, "color0", color0);
+			current_shader_program->set_attribute(ctx, "color1", color1);
+			glDrawArrays(GL_POINTS, 0, 1);
+		}
+	}
 };
 
 struct shape2d_style : cgv::render::render_types {
 	// placement options
 	bool position_is_center = false;
 	// appearance options
-	rgba color = rgba(1.0f);
+	rgba fill_color = rgba(1.0f);
 	rgba border_color = rgba(0.0f, 0.0f, 0.0f, 1.0f);
 	float border_width = 0.0f;
 	float border_radius = 0.0f;
@@ -130,7 +170,8 @@ struct shape2d_style : cgv::render::render_types {
 	float feather_origin = 0.5f;
 	vec2 texcoord_scaling = vec2(1.0f);
 	// render options
-	bool use_color = true;
+	bool use_fill_color = true;
+	bool use_texture = false;
 	bool use_blending = false;
 	bool use_smooth_feather = false;
 	bool apply_gamma = true; // TOOD: maybe move to global 2d uniforms
@@ -138,7 +179,7 @@ struct shape2d_style : cgv::render::render_types {
 	void apply(cgv::render::context & ctx, cgv::render::shader_program& prog) {
 		prog.set_uniform(ctx, "position_is_center", position_is_center);
 
-		prog.set_uniform(ctx, "color", color);
+		prog.set_uniform(ctx, "fill_color", fill_color);
 		prog.set_uniform(ctx, "border_color", border_color);
 		prog.set_uniform(ctx, "border_width", border_width);
 		prog.set_uniform(ctx, "border_radius", border_radius);
@@ -147,7 +188,8 @@ struct shape2d_style : cgv::render::render_types {
 		prog.set_uniform(ctx, "feather_origin", feather_origin);
 		prog.set_uniform(ctx, "tex_scaling", texcoord_scaling);
 
-		prog.set_uniform(ctx, "use_color", use_color);
+		prog.set_uniform(ctx, "use_fill_color", use_fill_color);
+		prog.set_uniform(ctx, "use_texture", use_texture);
 		prog.set_uniform(ctx, "use_blending", use_blending);
 		prog.set_uniform(ctx, "use_smooth_feather", use_smooth_feather);
 		prog.set_uniform(ctx, "apply_gamma", apply_gamma);

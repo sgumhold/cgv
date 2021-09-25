@@ -1,12 +1,37 @@
 #version 150
 
+/*
+	0: SINGLE
+	1: ARRAY
+*/
+#define MODE 1
+
+#if MODE == 0
+in vec2 position0;
+in vec2 position1;
+in vec4 color0;
+in vec4 color1;
+
+flat out vec4 color0_gs;
+flat out vec4 color1_gs;
+
+void main() {
+	
+	color0_gs = color0;
+	color1_gs = color1;
+	gl_Position = vec4(position0, position1);
+}
+
+#else
+
 in vec2 position;
 in vec4 color;
 
-out vec4 color_gs;
+flat out vec4 color_gs;
 
 void main() {
 	
 	color_gs = color;
 	gl_Position = vec4(position, 0.0, 1.0);
 }
+#endif

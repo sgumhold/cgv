@@ -1,5 +1,7 @@
 #version 430
 
+#define MODE 1
+
 //***** begin interface of shape2d.glsl ***********************************
 uniform float border_radius = 0.0;
 uniform float feather_origin = 0.5;
@@ -33,8 +35,12 @@ uniform float head_width;
 uniform float head_length;
 uniform bool head_length_is_relative;
 
+#if MODE == 0
 in flat vec4 color0_gs[];
 in flat vec4 color1_gs[];
+#else
+in flat vec4 color_gs[];
+#endif
 
 out vec2 pix_coord;
 out vec2 tex_coord;
@@ -74,25 +80,33 @@ void main() {
 	pos0 -= u_dir;
 	pos1 += u_dir;
 
-	col = color0_gs[0];
+#if MODE == 0
+	vec4 color0 = color0_gs[0];
+	vec4 color1 = color1_gs[0];
+#else
+	vec4 color0 = color_gs[0];
+	vec4 color1 = color_gs[1];
+#endif
+
+	col = color0;
 	pix_coord = position_a + direction_factors[0].x*u_dir + direction_factors[0].y*v_dir;
 	tex_coord = corners[0];
 	gl_Position = transform_world_to_window_space(pix_coord);
 	EmitVertex();
 
-	col = color1_gs[0];
+	col = color1;
 	pix_coord = position_b + direction_factors[1].x*u_dir + direction_factors[1].y*v_dir;
 	tex_coord = corners[1];
 	gl_Position = transform_world_to_window_space(pix_coord);
 	EmitVertex();
 
-	col = color0_gs[0];
+	col = color0;
 	pix_coord = position_a + direction_factors[2].x*u_dir + direction_factors[2].y*v_dir;
 	tex_coord = corners[2];
 	gl_Position = transform_world_to_window_space(pix_coord);
 	EmitVertex();
 
-	col = color1_gs[0];
+	col = color1;
 	pix_coord = position_b + direction_factors[3].x*u_dir + direction_factors[3].y*v_dir;
 	tex_coord = corners[3];
 	gl_Position = transform_world_to_window_space(pix_coord);

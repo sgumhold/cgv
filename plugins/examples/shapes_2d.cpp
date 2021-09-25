@@ -401,35 +401,24 @@ public:
 		image_tex.enable(ctx, 0);
 
 		auto& rect_prog = canvas.enable_shader(ctx, "rectangle");
-		rect_prog.set_attribute(ctx, "position", ivec2(100, 100));
-		rect_prog.set_attribute(ctx, "size", ivec2(200, 100));
 		rect_style.apply(ctx, rect_prog);
-		glDrawArrays(GL_POINTS, 0, 1);
+		canvas.draw_shape(ctx, ivec2(100, 100), ivec2(200, 100), rgba(1, 0, 0, 1));
 		canvas.disable_current_shader(ctx);
 
 		auto& circle_prog = canvas.enable_shader(ctx, "circle");
-		circle_prog.set_attribute(ctx, "position", ivec2(500, 150));
-		circle_prog.set_attribute(ctx, "size", ivec2(100)); // size defines the diameter, both components must be set to the same value
 		circle_style.apply(ctx, circle_prog);
-		glDrawArrays(GL_POINTS, 0, 1);
+		// size defines the diameter, both components must be set to the same value
+		canvas.draw_shape(ctx, ivec2(500, 100), ivec2(100), rgba(0, 1, 0, 1));
 		canvas.disable_current_shader(ctx);
 
 		auto& ellipse_prog = canvas.enable_shader(ctx, "ellipse");
-		ellipse_prog.set_attribute(ctx, "position", ivec2(200, 300));
-		ellipse_prog.set_attribute(ctx, "size", ivec2(200, 100));
 		circle_style.apply(ctx, ellipse_prog);
-		glDrawArrays(GL_POINTS, 0, 1);
+		canvas.draw_shape(ctx, ivec2(200, 300), ivec2(200, 100), rgba(0, 1, 1, 1));
 		canvas.disable_current_shader(ctx);
 
 		auto& arrow_prog = canvas.enable_shader(ctx, "arrow");
-		//arrow_prog.set_attribute(ctx, "position0", ivec2(arrow_handles[0]->pos));
-		//arrow_prog.set_attribute(ctx, "position1", ivec2(arrow_handles[1]->pos));
-		arrow_prog.set_attribute(ctx, "position0", vec2(arrow_handles[0]->pos));
-		arrow_prog.set_attribute(ctx, "position1", vec2(arrow_handles[1]->pos));
-		arrow_prog.set_attribute(ctx, "color0", rgba(1.0f, 0.0f, 1.0f, 1.0f));
-		arrow_prog.set_attribute(ctx, "color1", rgba(0.0f, 0.0f, 1.0f, 1.0f));
 		arrow_style.apply(ctx, arrow_prog);
-		glDrawArrays(GL_POINTS, 0, 1);
+		canvas.draw_shape2(ctx, arrow_handles[0]->pos, arrow_handles[1]->pos, rgba(1.0f, 0.0f, 1.0f, 1.0f), rgba(0.0f, 0.0f, 1.0f, 1.0f));
 		canvas.disable_current_shader(ctx);
 
 		shader_program& line_prog = line_renderer.ref_prog();
@@ -447,6 +436,12 @@ public:
 		spline_renderer.render(ctx, PT_LINES, curves);
 
 		image_tex.disable(ctx);
+
+		//TODO
+		/*
+		Shader defines for canvas to use single mode by default
+		Make a finish fragment func that takes an alpha multiplier for lines and curves
+		*/
 
 		// TODO: use style as a parameter in the font renderer render method
 		auto& font_prog = font_renderer.ref_prog();
@@ -575,7 +570,7 @@ public:
 	void set_default_styles() {
 		// set background style
 		bg_style.feather_width = 0.0f;
-		bg_style.use_color = false;
+		bg_style.use_texture = true;
 		bg_style.use_blending = false;
 
 		// set control line style
@@ -587,7 +582,7 @@ public:
 
 		// set draggable point style
 		draggable_style.position_is_center = true;
-		draggable_style.color = rgba(0.9f, 0.9f, 0.9f, 1.0f);
+		draggable_style.fill_color = rgba(0.9f, 0.9f, 0.9f, 1.0f);
 		draggable_style.border_color = rgba(0.2f, 0.2f, 0.2f, 1.0f);
 		draggable_style.border_width = 1.5f;
 		draggable_style.use_blending = true;
@@ -603,7 +598,7 @@ public:
 		arrow_style.head_width = 40.0f;
 	}
 	void set_default_shape_style(cgv::glutil::shape2d_style& s) {
-		s.color = light_blue;
+		s.fill_color = light_blue;
 		s.border_color = blue;
 		s.border_width = 5.0f;
 		s.use_blending = true;

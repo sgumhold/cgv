@@ -16,7 +16,7 @@ void finish_fragment2d(in vec2 texcoords);
 uniform ivec2 resolution;
 uniform mat3 modelview2d_matrix = mat3(1.0);
 
-uniform vec4 color;
+uniform vec4 fill_color;
 uniform vec4 border_color = vec4(1.0);
 uniform float border_width = 0.0;
 uniform float border_radius = 0.0;
@@ -25,7 +25,8 @@ uniform float feather_width = 1.0;
 uniform float feather_origin = 0.5;
 uniform vec2 tex_scaling = vec2(1.0);
 
-uniform bool use_color = true;
+uniform bool use_fill_color = true;
+uniform bool use_texture = false;
 uniform bool use_blending = false;
 uniform bool use_smooth_feather = false;
 uniform bool apply_gamma = true;
@@ -54,6 +55,9 @@ void finish_sdf_fragment2d(in float signed_distance) {
 	if(signed_distance > 0.0 && !use_blending)
 		discard;
 	
+	if(use_fill_color && !use_texture)
+		override_color(fill_color);
+
 	frag_color = get_color();
 
 	// get the derivatives of the distance over neighbouring fragments to calculate an antialiasing factor
@@ -109,7 +113,7 @@ void finish_sdf_fragment2d(in float signed_distance) {
 // output a fragment originating from a sdf with the color as set in shape2d or the color from the texture if use_color is disabled
 void finish_sdf_fragment2d(in float signed_distance, in vec2 texcoords) {
 	
-	if(!use_color)
+	if(use_texture)
 		override_color(texture(tex, tex_scaling * texcoords));
 
 	finish_sdf_fragment2d(signed_distance);
@@ -118,6 +122,9 @@ void finish_sdf_fragment2d(in float signed_distance, in vec2 texcoords) {
 // output a fragment with the color as set in shape2d (no texturing by default)
 void finish_fragment2d() {
 	
+	if(use_fill_color && !use_texture)
+		override_color(fill_color);
+
 	frag_color = get_color();
 	
 	if(apply_gamma)
@@ -130,7 +137,7 @@ void finish_fragment2d() {
 // output a fragment with the final color as set in shape2d or the color from the texture if use_color is disabled
 void finish_fragment2d(in vec2 texcoords) {
 	
-	if(!use_color)
+	if(use_texture)
 		override_color(texture(tex, tex_scaling * texcoords));
 
 	finish_fragment2d();

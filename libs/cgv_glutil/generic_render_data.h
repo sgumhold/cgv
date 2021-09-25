@@ -110,7 +110,7 @@ public:
 		state_out_of_date = true;
 	}
 
-	virtual size_t size() = 0;
+	virtual size_t get_vertex_count() = 0;
 };
 
 }
@@ -172,13 +172,13 @@ class name : public cgv::glutil::generic_render_data {\
 protected:\
 	bool transfer(cgv::render::context& ctx, cgv::render::shader_program& prog) {\
 		bool success = true;\
-		if(size() == 0) return false;\
+		if(get_vertex_count() == 0) return false;\
 		GRD_APPLY_FUNC_N(attrib_count, GRD_SET_ATTRIB_ARRAY, GRD_SEP_NULL, __VA_ARGS__)\
 		return success;\
 	}\
 public:\
 	GRD_APPLY_FUNC_N(attrib_count, GRD_DECL_VEC_MEMBER, GRD_SEP_NULL, __VA_ARGS__)\
-	size_t size() { return GRD_GET_FIRST_PAIR(GRD_CALL_SIZE_FUNC, __VA_ARGS__) };\
+	size_t get_vertex_count() { return GRD_GET_FIRST_PAIR(GRD_CALL_SIZE_FUNC, __VA_ARGS__) };\
 	void clear() {\
 		GRD_APPLY_FUNC_N(attrib_count, GRD_CALL_CLEAR_FUNC, GRD_SEP_NULL, __VA_ARGS__)\
 	}\
