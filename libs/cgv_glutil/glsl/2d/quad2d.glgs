@@ -22,9 +22,12 @@ const vec2 corners[4] = vec2[](
 
 uniform bool position_is_center = false;
 
+flat in vec4 color_gs[];
+
 flat out vec2 size;
 out vec2 pix_coord;
 out vec2 tex_coord;
+flat out vec4 color_fs;
 
 void emit_corner(int id, vec2 final_size) {
 	vec2 corner = corners[id];
@@ -46,6 +49,8 @@ void emit_corner(int id, vec2 final_size) {
 }
 
 void main() {
+	color_fs = color_gs[0];
+
 	size = gl_in[0].gl_Position.zw;
 	vec2 final_size = size + 2.0*feather_origin*get_feather_width();
 

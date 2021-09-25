@@ -17,6 +17,7 @@ void finish_fragment2d(in vec2 texcoords);
 flat in vec2 size;
 in vec2 pix_coord;
 in vec2 tex_coord;
+flat in vec4 color_fs;
 
 // https://iquilezles.org/www/articles/distfunctions2d/distfunctions2d.htm
 float sd_ellipse(in vec2 p, in vec2 ab)
@@ -58,5 +59,6 @@ float sd_ellipse(in vec2 p, in vec2 ab)
 void main() {
 	
 	float dist = sd_ellipse(pix_coord, get_adjusted_size(size));
+	override_color(color_fs);
 	finish_sdf_fragment2d(dist, tex_coord);
 }
