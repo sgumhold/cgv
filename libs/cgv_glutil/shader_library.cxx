@@ -13,7 +13,7 @@ shader_library::~shader_library() {
 	shaders.clear();
 }
 
-void shader_library::clear(context& ctx) {
+void shader_library::clear(cgv::render::context& ctx) {
 
 	shaders.clear();
 }
@@ -21,7 +21,7 @@ void shader_library::clear(context& ctx) {
 bool shader_library::add(const std::string& name, const std::string& file) {
 
 	if(shaders.find(name) == shaders.end()) {
-		shader_program prog;
+		cgv::render::shader_program prog;
 		shader_program_pair elem = std::make_pair(prog, file);
 		shaders.insert({ name, elem });
 		return true;
@@ -29,7 +29,7 @@ bool shader_library::add(const std::string& name, const std::string& file) {
 	return false;
 }
 
-bool shader_library::load_shaders(context& ctx) {
+bool shader_library::load_shaders(cgv::render::context& ctx) {
 
 	bool success = true;
 	for(auto& elem : shaders) {
@@ -41,7 +41,7 @@ bool shader_library::load_shaders(context& ctx) {
 	return success;
 }
 
-bool shader_library::reload(context& ctx, const std::string& name, const shader_define_map& defines, const std::string& where) {
+bool shader_library::reload(cgv::render::context& ctx, const std::string& name, const cgv::render::shader_define_map& defines, const std::string& where) {
 	
 	auto it = shaders.find(name);
 	if(it != shaders.end()) {

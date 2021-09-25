@@ -15,6 +15,7 @@ class canvas : public cgv::render::render_types {
 protected:
 	cgv::glutil::shader_library shaders;
 	ivec2 resolution;
+	float feather_scale;
 
 	std::stack<mat3> modelview_matrix_stack;
 
@@ -22,6 +23,8 @@ protected:
 
 public:
 	canvas() {
+		resolution = ivec2(100);
+		feather_scale = 1.0f;
 		initialize_modelview_matrix_stack();
 		current_shader_program = nullptr;
 	}
@@ -58,11 +61,15 @@ public:
 		this->resolution = resolution;
 
 		for(auto it = shaders.begin(); it != shaders.end(); ++it) {
-			auto prog = it->second.first;
+			auto& prog = it->second.first;
 			prog.enable(ctx);
 			prog.set_uniform(ctx, "resolution", resolution);
 			prog.disable(ctx);
 		}
+	}
+
+	void set_feather_scale(float s) {
+		feather_scale = s;
 	}
 
 	void initialize_modelview_matrix_stack() {
@@ -106,6 +113,7 @@ public:
 
 	void set_view(cgv::render::context& ctx, cgv::render::shader_program& prog) {
 		prog.set_uniform(ctx, "modelview2d_matrix", modelview_matrix_stack.top());
+		prog.set_uniform(ctx, "feather_scale", feather_scale);
 	}
 };
 
@@ -165,7 +173,7 @@ struct arrow2d_style : public shape2d_style {
 	float head_width = 2.0f;
 	float absolute_head_length = 0.5f;
 	float relative_head_length = 0.5f;
-	bool head_length_is_relative = false;
+	bool head_length_is_relative = true;
 
 	void apply(cgv::render::context & ctx, cgv::render::shader_program& prog) {
 		shape2d_style::apply(ctx, prog);

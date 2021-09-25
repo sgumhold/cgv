@@ -1,15 +1,20 @@
 #version 150
 
-//***** begin interface of fragment2d.glfs ***********************************
-vec2 get_shape_size();
+//***** begin interface of shape2d.glsl ***********************************
+vec2 get_adjusted_size(vec2 size);
 vec4 get_color();
 void override_color(in vec4 color);
-void finish_sdf_fragment2d(in float signed_distance, in vec2 texcoords);
+vec4 transform_world_to_window_space(vec2 p);
+//***** end interface of shape2d.glsl ***********************************
+
+//***** begin interface of fragment2d.glfs ***********************************
 void finish_sdf_fragment2d(in float signed_distance);
-void finish_fragment2d(in vec2 texcoords);
+void finish_sdf_fragment2d(in float signed_distance, in vec2 texcoords);
 void finish_fragment2d();
+void finish_fragment2d(in vec2 texcoords);
 //***** end interface of fragment2d.glfs ***********************************
 
+flat in vec2 size;
 in vec2 pix_coord;
 in vec2 tex_coord;
 
@@ -32,6 +37,7 @@ float sd_rounded_box(in vec2 p, in vec2 b, in vec4 r)
 void main() {
 	
 	//float dist = sd_rounded_box(pix_coord, 0.5*size, vec4(border_radius, 2*border_radius, 3*border_radius, 4*border_radius));
-	float dist = sd_box(pix_coord, get_shape_size());
+	//float dist = sd_box(pix_coord, get_shape_size());
+	float dist = sd_box(pix_coord, get_adjusted_size(size));
 	finish_sdf_fragment2d(dist, tex_coord);
 }
