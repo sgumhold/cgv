@@ -1490,7 +1490,12 @@ bool gl_context::check_gl_error(const std::string& where, const cgv::render::ren
 	GLenum eid = glGetError();
 	if (eid == GL_NO_ERROR)
 		return false;
-	std::string error_string = where + ": " + std::string((const char*)gluErrorString(eid));
+	const GLubyte* raw_error_string = gluErrorString(eid);
+	std::string error_string = where + ": ";
+	if(raw_error_string)
+		error_string += std::string((const char*)raw_error_string);
+	else
+		error_string += "undefined error (id: " + std::to_string(eid) + ")";
 	error(error_string, rc);
 	return true;
 }
@@ -1874,8 +1879,9 @@ bool gl_context::texture_generate_mipmaps(texture_base& tb, unsigned int dim) co
 	GLuint tmp_id = texture_bind(tb.tt,get_gl_id(tb.handle));
 
 	bool is_array = tb.tt == TT_1D_ARRAY || tb.tt == TT_2D_ARRAY;
+	bool is_cubemap = tb.tt == TT_CUBEMAP;
 	std::string error_string;
-	bool result = generate_mipmaps(dim, is_array, &error_string);
+	bool result = generate_mipmaps(dim, is_cubemap, is_array, &error_string);
 	if (result)
 		tb.have_mipmaps = true;
 	else
@@ -2142,8 +2148,8 @@ bool gl_context::frame_buffer_attach(frame_buffer_base& fbb,
 	}
 	else {
 		if (t.tt == TT_CUBEMAP) {
-			glFramebufferTexture2D(GL_FRAMEBUFFER, 
-				GL_COLOR_ATTACHMENT0+i, 
+			glFramebufferTexture2D(GL_FRAMEBUFFER,
+				GL_COLOR_ATTACHMENT0+i,
 				get_gl_cube_map_target(z_or_cube_side), get_gl_id(t.handle), level);
 		}
 		else {
