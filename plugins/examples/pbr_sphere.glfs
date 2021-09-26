@@ -1,0 +1,127 @@
+#version 430
+
+uniform layout(binding = 0) samplerCube irradiance_map;
+uniform layout(binding = 1) samplerCube prefiltered_specular_map;
+uniform layout(binding = 2) sampler2D brdf_lut;
+
+uniform vec3 eye_pos;
+uniform vec3 F0;
+uniform float roughness;
+
+uniform float halo_color_strength = 0.5;
+
+in SPHERE_FS {
+	vec4  color;
+	vec4  halo_color;
+	float percentual_blend_width;
+	float percentual_point_size;
+	float percentual_core_size;
+	float percentual_splat_size;
+} fi;
+
+//***** begin interface of view.glsl ***********************************
+mat4 get_modelview_matrix();
+mat4 get_projection_matrix();
+mat4 get_modelview_projection_matrix();
+mat4 get_inverse_modelview_matrix();
+mat4 get_inverse_modelview_projection_matrix();
+mat3 get_normal_matrix();
+mat3 get_inverse_normal_matrix();
+//***** end interface of view.glsl ***********************************
+
+//***** begin interface of sphere_lib.glfs ***********************************
+bool computer_ray_sphere_intersection(out vec3 p_eye, out vec3 n_eye, out vec2 splat_tc, out float clip_depth, out int side);
+bool computer_ray_sphere_intersection(in float percentual_splat_size, out vec3 p_eye, out vec3 n_eye, out vec2 splat_tc, out float clip_depth, out int side, out float percentual_radial_position);
+//***** end interface of sphere_lib.glfs ***********************************
+
+//***** begin interface of splat.glsl ***********************************
+vec4 compute_blended_color_with_halo(
+	in float percentual_radial_position,
+	in vec4 core_color, in float percentual_core_size,
+	in vec4 halo_color, in float percentual_point_size,
+	in float percentual_blend_width);
+//***** end interface of splat.glsl ***********************************
+
+//***** begin interface of surface.glsl ***********************************
+struct Material {
+	int brdf_type;
+	vec3 diffuse_reflectance;
+	float roughness;
+	float metalness;
+	float ambient_occlusion;
+	vec3 emission;
+	float transparency;
+	vec2 propagation_slow_down;
+	float roughness_anisotropy;
+	float roughness_orientation;
+	vec3 specular_reflectance;
+};
+
+vec4 compute_reflected_radiance(in Material M, vec3 position_eye, vec3 normal_eye);
+vec4 compute_reflected_appearance(vec3 position_eye, vec3 normal_eye, vec4 color_fs, int side);
+vec4 compute_reflected_appearance_texture(vec3 position_eye, vec3 normal_eye, vec2 texcoords, vec4 color_fs, int side);
+//***** end interface of surface.glsl ***********************************
+
+//***** begin interface of fragment.glfs ***********************************
+uniform float gamma = 2.2;
+void finish_fragment(vec4 color);
+void finish_fragment(vec4 color, float depth);
+//***** end interface of fragment.glfs ***********************************
+
+out vec4 frag_color;
+
+vec3 fresnelSchlickRoughness(float cosTheta, vec3 F0, float roughness)
+{
+    return F0 + (max(vec3(1.0 - roughness), F0) - F0) * pow(clamp(1.0 - cosTheta, 0.0, 1.0), 5.0);
+}
+
+void main()
+{
+	vec3 p_eye;
+	vec3 n_eye;
+	int side;
+	vec2 tc;
+	float percentual_radial_position;
+	float depth;
+	if (!computer_ray_sphere_intersection(fi.percentual_splat_size, p_eye, n_eye, tc, depth, side, percentual_radial_position))
+		discard;
+
+	//vec4 color = compute_reflected_appearance(p_eye, n_eye, fi.color, side);
+	//vec4 halo_color = vec4(mix(fi.color.rgb, fi.halo_color.rgb, halo_color_strength), fi.halo_color.a);
+	//vec4 blend_color = compute_blended_color_with_halo(percentual_radial_position, color, fi.percentual_core_size, halo_color, fi.percentual_point_size, fi.percentual_blend_width);
+
+	vec3 p_world = (get_inverse_modelview_matrix() * vec4(p_eye, 1.0)).xyz;
+	vec3 n_world = normalize(get_inverse_normal_matrix() * n_eye);
+	
+	vec3 V = normalize(eye_pos - p_world);
+	vec3 N = n_world;
+
+	//vec3 N = n_eye;
+	//vec3 V = normalize(-p_eye);
+	vec3 R = reflect(-V, N);
+
+	const float MAX_REFLECTION_LOD = 4.0;
+    vec3 prefilteredColor = textureLod(prefiltered_specular_map, R,  roughness * MAX_REFLECTION_LOD).rgb;
+
+	//vec3 F0 = vec3(0.5);
+	float ao = 1.0;
+
+	//vec3 ambient = texture(irradiance_map, N).rgb;
+	vec3 kS = fresnelSchlickRoughness(max(dot(N, V), 0.0), F0, roughness);
+	vec3 kD = 1.0 - kS;
+
+	vec2 envBRDF  = texture(brdf_lut, vec2(max(dot(N, V), 0.0), roughness)).rg;
+
+	//vec3 irradiance = texture(irradiance_map, normalize(get_inverse_normal_matrix() * N)).rgb;
+	vec3 irradiance = texture(irradiance_map, N).rgb;
+	vec3 diffuse    = irradiance * fi.color.rgb;
+	
+	vec3 specular = prefilteredColor * (kS * envBRDF.x + envBRDF.y);
+	vec3 ambient    = (kD * diffuse + specular) * ao;
+
+	// normal light computation here:
+	// ...
+
+	frag_color = vec4(ambient, 1.0);
+	gl_FragDepth = depth;
+}
