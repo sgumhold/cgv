@@ -121,7 +121,7 @@ unsigned get_gl_cube_map_target(unsigned side)
 
 GLuint gl_tex_dim[] = { GL_TEXTURE_1D, GL_TEXTURE_2D, GL_TEXTURE_3D, GL_TEXTURE_1D_ARRAY, GL_TEXTURE_2D_ARRAY, GL_TEXTURE_CUBE_MAP_EXT };
 
-bool generate_mipmaps(unsigned int dim, bool is_array, std::string* last_error)
+bool generate_mipmaps(unsigned int dim, bool is_cubemap, bool is_array, std::string* last_error)
 {
 	if (dim == 0 || dim > 3) {
 		if (last_error)
@@ -133,6 +133,11 @@ bool generate_mipmaps(unsigned int dim, bool is_array, std::string* last_error)
 			*last_error = "wrong dimension for array texture";
 		return false;
 	}
+	if(is_cubemap && dim != 2) {
+		if(last_error)
+			*last_error = "wrong dimension for cubemap texture";
+		return false;
+	}
 	if (!(ensure_glew_initialized() && GLEW_EXT_framebuffer_object)) {
 		if (last_error)
 			*last_error = "automatic generation of mipmaps not supported";
@@ -140,6 +145,8 @@ bool generate_mipmaps(unsigned int dim, bool is_array, std::string* last_error)
 	}
 	if(is_array)
 		dim += 2;
+	if(is_cubemap)
+		dim = 6;
 	glGenerateMipmap(gl_tex_dim[dim-1]);
 	return true;
 }
