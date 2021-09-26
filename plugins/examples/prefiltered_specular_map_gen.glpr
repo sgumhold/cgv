@@ -1,0 +1,9 @@
+vertex_file:cubemap_gen.glvs
+vertex_file:group.glsl
+vertex_file:quaternion.glsl
+vertex_file:view.glsl
+geometry_file:cubemap_gen.glgs
+geometry_file:group.glsl
+geometry_file:view.glsl
+geometry_file:side.glsl
+fragment_file:prefiltered_specular_map_gen.glfs

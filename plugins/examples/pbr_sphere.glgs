@@ -1,0 +1,69 @@
+#version 330 core
+
+layout(points) in;
+layout(triangle_strip, max_vertices = 4) out;
+
+uniform float blend_width_in_pixel = 1.0;
+uniform float pixel_extent_per_depth = 0.001;
+
+in SPHERE_GS {
+	mat3 normal_matrix;
+	mat4 model_view_matrix;
+	mat4 model_view_projection_matrix;
+	vec4 color;
+	vec4 halo_color;
+	float halo_width_in_pixel;
+	float percentual_halo_width;
+} gi[];
+
+//***** begin interface of sphere_lib.glgs ***********************************
+struct sphere_parameter_space
+{
+	vec3  m_tilde;
+	vec3  x_tilde;
+	vec3  y_tilde;
+	vec3  e_tilde;
+	float inv_e_vs;
+	vec3  inv_T_square_e_c_vs;
+	vec2  e_zw_clip_vs;
+};
+
+void generate_sphere_cover_splat(in vec4 sphere, in sphere_parameter_space sps, in mat4 MV, in mat4 MVP, in mat3 NM, in float splat_size);
+//***** end interface of sphere_lib.glgs ***********************************
+
+in sphere_parameter_space sps[];
+
+out SPHERE_FS {
+	vec4  color;
+	vec4  halo_color;
+	float percentual_blend_width;
+	float percentual_point_size;
+	float percentual_core_size;
+	float percentual_splat_size;
+} fo;
+
+//***** begin interface of splat.glsl ***********************************
+void prepare_splat(
+	in float reference_point_radius, in float pixel_extent,
+	in float blend_width_in_pixel, in float halo_width_in_pixel, in float percentual_halo_width,
+	out float percentual_core_size, out float percentual_point_size,
+	out float percentual_blend_width, out float percentual_splat_size);
+//***** end interface of surface.glsl ***********************************
+
+void main()
+{
+	fo.color = gi[0].color;
+	fo.halo_color = gi[0].halo_color;
+	// compute depth of sphere center
+	float depth = abs((gi[0].model_view_matrix * vec4(gl_in[0].gl_Position.xyz, 1.0)).z);
+	// compute extent of a pixel at sphere center depth 
+	float pixel_extent = pixel_extent_per_depth * depth;
+	// compute splat parameters for fragment shader
+	prepare_splat(gl_in[0].gl_Position.w, pixel_extent,
+		blend_width_in_pixel, gi[0].halo_width_in_pixel, gi[0].percentual_halo_width,
+		fo.percentual_core_size, fo.percentual_point_size,
+		fo.percentual_blend_width, fo.percentual_splat_size);
+
+	generate_sphere_cover_splat(gl_in[0].gl_Position, sps[0], gi[0].model_view_matrix, 
+								gi[0].model_view_projection_matrix, gi[0].normal_matrix, fo.percentual_splat_size);
+}
