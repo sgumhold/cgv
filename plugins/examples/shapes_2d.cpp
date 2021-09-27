@@ -23,42 +23,6 @@
 
 #include <cgv_glutil/2d/shape2d_styles.h>
 
-
-
-
-
-namespace cgv {
-namespace math {
-/// construct homogeneous 2x2 translation matrix from vec2
-template <typename T> fmat<T, 3, 3>
-	translate2h(const fvec<T, 2>& t) { fmat<T, 3, 3> M; M.identity(); M(0, 2) = t(0); M(1, 2) = t(1); return M; }
-/// construct homogeneous 2x2 translation matrix from xy components
-template <typename T> fmat<T, 3, 3>
-	translate2h(const T& tx, const T& ty) { return scale2h(fvec<T, 2>(tx, ty)); }
-/// construct homogeneous 2x2 scale matrix from vec2
-template <typename T> fmat<T, 3, 3>
-	scale2h(const fvec<T, 2>& s) { fmat<T, 3, 3> M; M.identity(); M(0, 0) = s(0); M(1, 1) = s(1); return M; }
-/// construct homogeneous 2x2 scale matrix from xy components
-template <typename T> fmat<T, 3, 3>
-	scale2h(const T& sx, const T& sy) { return scale2h(fvec<T, 2>(sx, sy)); }
-/// construct homogeneous 2x2 rotation matrix from angle in degrees
-template <typename T> fmat<T, 3, 3>
-	rotate2h(const T& A) {
-		fmat<T, 3, 3> M;
-		M.identity();
-		T angle = T(0.01745329252)*A;
-		T c = cos(angle);
-		T s = sin(angle);
-		M(0, 0) = c;
-		M(0, 1) = -s;
-		M(1, 0) = s;
-		M(1, 1) = c;
-		return M;
-	}
-}
-}
-
-
 using namespace cgv::render;
 
 class shapes_2d :
@@ -101,8 +65,6 @@ protected:
 	cgv::glutil::line2d_style line_style, control_line_style;
 	cgv::glutil::arrow2d_style arrow_style;
 
-	//cgv::glutil::shader_library shaders;
-
 	bool show_background;
 	cgv::render::texture background_tex;
 	cgv::render::texture image_tex;
@@ -115,9 +77,8 @@ protected:
 
 	cgv::glutil::generic_renderer line_renderer, spline_renderer, point_renderer;
 	
-	// TODO: allow attribute named size
 	// TODO: find way to use ivec2 and vec2 as attribs
-	DEFINE_GENERIC_RENDER_DATA_CLASS(point_geometry, 1, ivec2, position);
+	DEFINE_GENERIC_RENDER_DATA_CLASS(point_geometry, 1, vec2, position);
 	point_geometry draggable_points;
 
 	DEFINE_GENERIC_RENDER_DATA_CLASS(line_geometry, 2, vec2, position, rgba, color);
@@ -295,7 +256,6 @@ public:
 
 		success &= canvas.init(ctx);
 
-		//success &= shaders.load_shaders(ctx);
 		success &= line_renderer.init(ctx);
 		success &= spline_renderer.init(ctx);
 		success &= point_renderer.init(ctx);
@@ -413,6 +373,7 @@ public:
 
 		auto& ellipse_prog = canvas.enable_shader(ctx, "ellipse");
 		circle_style.apply(ctx, ellipse_prog);
+		// size defines the two diameters
 		canvas.draw_shape(ctx, ivec2(200, 300), ivec2(200, 100), rgba(0, 1, 1, 1));
 		canvas.disable_current_shader(ctx);
 
@@ -437,12 +398,6 @@ public:
 
 		image_tex.disable(ctx);
 
-		//TODO
-		/*
-		Shader defines for canvas to use single mode by default
-		Make a finish fragment func that takes an alpha multiplier for lines and curves
-		*/
-
 		// TODO: use style as a parameter in the font renderer render method
 		auto& font_prog = font_renderer.ref_prog();
 		font_prog.enable(ctx);
@@ -462,13 +417,11 @@ public:
 	}
 	void draw_background(cgv::render::context& ctx) {
 		auto& rect_prog = canvas.enable_shader(ctx, "rectangle");
-		rect_prog.set_attribute(ctx, "position", ivec2(0));
-		rect_prog.set_attribute(ctx, "size", viewport_rect.size());
 		bg_style.texcoord_scaling = vec2(viewport_rect.size()) / 20.0f;
 		bg_style.apply(ctx, rect_prog);
-		
+
 		background_tex.enable(ctx, 0);
-		glDrawArrays(GL_POINTS, 0, 1);
+		canvas.draw_shape(ctx, ivec2(0), viewport_rect.size());
 		background_tex.disable(ctx);
 
 		canvas.disable_current_shader(ctx);
@@ -498,7 +451,7 @@ public:
 		point_prog.enable(ctx);
 		canvas.set_view(ctx, point_prog);
 		draggable_style.apply(ctx, point_prog);
-		point_prog.set_attribute(ctx, "size", render_size);
+		point_prog.set_attribute(ctx, "size", vec2(render_size));
 		point_prog.disable(ctx);
 		point_renderer.render(ctx, PT_POINTS, draggable_points);
 	}
@@ -574,6 +527,7 @@ public:
 		bg_style.use_blending = false;
 
 		// set control line style
+		control_line_style.use_fill_color = false;
 		control_line_style.width = 2.0f;
 		control_line_style.border_width = 0.0f;
 		control_line_style.dash_length = 10.0f;

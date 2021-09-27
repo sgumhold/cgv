@@ -1,23 +1,23 @@
 #version 430
 
 //***** begin interface of shape2d.glsl ***********************************
+uniform vec4 fill_color;
 uniform float border_radius = 0.0;
 uniform float feather_origin = 0.5;
 
 float get_feather_width();
 vec2 get_shape_size();
-vec4 get_color();
-void override_color(in vec4 color);
+vec4 get_active_color(vec4 color);
 vec4 transform_world_to_window_space(vec2 p);
 //***** end interface of shape2d.glsl ***********************************
 
 //***** begin interface of fragment2d.glfs ***********************************
 uniform layout(binding = 0) sampler2D tex;
 
-void finish_sdf_fragment2d(in float signed_distance);
-void finish_sdf_fragment2d(in float signed_distance, in vec2 texcoords);
-void finish_fragment2d();
-void finish_fragment2d(in vec2 texcoords);
+void finish_sdf_fragment2d(in float signed_distance, in vec4 color);
+void finish_sdf_fragment2d(in float signed_distance, in vec4 color, in vec2 texcoords);
+void finish_fragment2d(in vec4 color);
+void finish_fragment2d(in vec4 color, in vec2 texcoords);
 //***** end interface of fragment2d.glfs ***********************************
 
 uniform float src_size = 32.0;
@@ -132,5 +132,5 @@ void main() {
 	signed_distance -= border_radius;
 	signed_distance -= feather_origin*get_feather_width();
 
-	finish_sdf_fragment2d(signed_distance);
+	finish_sdf_fragment2d(signed_distance, get_active_color(fill_color));
 }

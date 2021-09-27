@@ -11,12 +11,24 @@ namespace cgv {
 		/// construct 4x4 identity matrix
 		template <typename T> fmat<T, 4, 4>
 			identity4() { fmat<T, 4, 4> M; M.identity(); return M; }
+		/// construct homogeneous 2x2 translation matrix from vec2
+		template <typename T> fmat<T, 3, 3>
+			translate2h(const fvec<T, 2>& t) { fmat<T, 3, 3> M; M.identity(); M(0, 2) = t(0); M(1, 2) = t(1); return M; }
+		/// construct homogeneous 2x2 translation matrix from xy components
+		template <typename T> fmat<T, 3, 3>
+			translate2h(const T& tx, const T& ty) { return scale2h(fvec<T, 2>(tx, ty)); }
 		/// construct 4x4 translation matrix from vec3
 		template <typename T> fmat<T, 4, 4>
 			translate4(const fvec<T, 3>& t) { fmat<T, 4, 4> M; M.identity(); M(0, 3) = t(0); M(1, 3) = t(1); M(2, 3) = t(2); return M; }
 		/// construct 4x4 translation matrix from xyz components
 		template <typename T> fmat<T, 4, 4>
 			translate4(const T& tx, const T& ty, const T& tz) { return translate4(fvec<T, 3>(tx, ty, tz)); }
+		/// construct homogeneous 2x2 scale matrix from vec2
+		template <typename T> fmat<T, 3, 3>
+			scale2h(const fvec<T, 2>& s) { fmat<T, 3, 3> M; M.identity(); M(0, 0) = s(0); M(1, 1) = s(1); return M; }
+		/// construct homogeneous 2x2 scale matrix from xy components
+		template <typename T> fmat<T, 3, 3>
+			scale2h(const T& sx, const T& sy) { return scale2h(fvec<T, 2>(sx, sy)); }
 		/// construct 2x2 scale matrix from xy scales
 		template <typename T> fmat<T, 2, 2>
 			scale2(const fvec<T, 2>& s) { fmat<T, 2, 2> M; M.identity(); M(0, 0) = s(0); M(1, 1) = s(1); return M; }
@@ -33,6 +45,20 @@ namespace cgv {
 		template <typename T> fmat<T, 2, 2>
 			rotate2(const T& A) {
 				fmat<T, 2, 2> M;
+				T angle = T(0.01745329252)*A;
+				T c = cos(angle);
+				T s = sin(angle);
+				M(0, 0) = c;
+				M(0, 1) = -s;
+				M(1, 0) = s;
+				M(1, 1) = c;
+				return M;
+			}
+		/// construct homogeneous 2x2 rotation matrix from angle in degrees
+		template <typename T> fmat<T, 3, 3>
+			rotate2h(const T& A) {
+				fmat<T, 3, 3> M;
+				M.identity();
 				T angle = T(0.01745329252)*A;
 				T c = cos(angle);
 				T s = sin(angle);
