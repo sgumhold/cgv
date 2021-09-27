@@ -67,11 +67,11 @@ bool terrain_renderer::init(cgv::render::context& ctx)
 
 bool terrain_renderer::enable(cgv::render::context& ctx)
 {
-	if (!surface_renderer::enable(ctx)) {
+	if (!ref_prog().is_linked()) {
 		return false;
 	}
 
-	if (!ref_prog().is_linked()) {
+	if (!surface_renderer::enable(ctx)) {
 		return false;
 	}
 
@@ -86,7 +86,6 @@ bool terrain_renderer::enable(cgv::render::context& ctx)
 	//	if (!ref_prog().set_uniform(ctx, "grassTexture", 0)) {
 	//		return false;
 	//	}
-
 	//	if (!dirt_texture.enable(ctx, 1)) {
 	//		return false;
 	//	}
@@ -101,22 +100,11 @@ bool terrain_renderer::enable(cgv::render::context& ctx)
 	//		return false;
 	//	}
 
-	if (!ref_prog().set_uniform(ctx, "tessellation", style.tessellation)) {
-		return false;
-	}
-	if (!ref_prog().set_uniform(ctx, "uvScaleFactor", style.uv_scale_factor)) {
-		return false;
-	}
-
-	if (!ref_prog().set_uniform(ctx, "grassLevel", style.levels.grassLevel)) {
-		return false;
-	}
-	if (!ref_prog().set_uniform(ctx, "rockLevel", style.levels.rockLevel)) {
-		return false;
-	}
-	if (!ref_prog().set_uniform(ctx, "blur", style.levels.blur)) {
-		return false;
-	}
+	ref_prog().set_uniform(ctx, "tessellation", style.tessellation);
+	ref_prog().set_uniform(ctx, "uvScaleFactor", style.uv_scale_factor);
+	ref_prog().set_uniform(ctx, "grassLevel", style.levels.grassLevel);
+	ref_prog().set_uniform(ctx, "rockLevel", style.levels.rockLevel);
+	ref_prog().set_uniform(ctx, "blur", style.levels.blur);
 
 	for (int i = 0; i < static_cast<int64_t>(style.noise_layers.size()); i++) {
 		ref_prog().set_uniform(ctx, "noiseLayers[" + std::to_string(i) + "].amplitude",
@@ -126,8 +114,11 @@ bool terrain_renderer::enable(cgv::render::context& ctx)
 		ref_prog().set_uniform(ctx, "noiseLayers[" + std::to_string(i) + "].enabled", style.noise_layers[i].enabled);
 	}
 	ref_prog().set_uniform(ctx, "numNoiseLayers", static_cast<int>(style.noise_layers.size()));
+	ref_prog().set_uniform(ctx, "shouldApplyPower", style.should_apply_power);
 	ref_prog().set_uniform(ctx, "power", style.power);
+	ref_prog().set_uniform(ctx, "shouldApplyBowl", style.should_apply_bowl);
 	ref_prog().set_uniform(ctx, "bowlStrength", style.bowl_strength);
+	ref_prog().set_uniform(ctx, "shouldApplyPlatform", style.should_apply_platform);
 	ref_prog().set_uniform(ctx, "platformHeight", style.platform_height);
 	ref_prog().set_uniform(ctx, "seed", style.seed);
 
@@ -179,14 +170,34 @@ struct terrain_render_style_gui_creator : public cgv::gui::gui_creator
 		p->add_member_control(b, "Rock Level", style->levels.rockLevel);
 		p->add_member_control(b, "Level Blur", style->levels.blur);
 
-		p->add_decorator("", "separator");
-		for (int i = 0; i < style->noise_layers.size(); i++) {
-			auto& layer = style->noise_layers[i];
-			const std::string& iStr = std::to_string(i);
-			p->add_member_control(b, "Enabled " + iStr, layer.enabled);
-			p->add_member_control(b, "Frequency " + iStr, layer.frequency, "value_slider", "min=0.001;max=1000;log=true;ticks=true");
-			p->add_member_control(b, "Amplitude " + iStr, layer.amplitude, "value_slider", "min=0.001;max=1000;log=true;ticks=true");
+		p->add_member_control(b, "should apply power", style->should_apply_power);
+		p->add_member_control(b, "power", style->power, "value_slider", "min=0.9;max=1.5;ticks=true");
+
+		p->add_member_control(b, "should apply bowl", style->should_apply_bowl);
+		p->add_member_control(b, "bowl strength", style->bowl_strength);
+
+		p->add_member_control(b, "should apply platform height", style->should_apply_platform);
+		p->add_member_control(b, "platform height", style->platform_height);
+
+		if (p->begin_tree_node("Noise Layers", style->noise_layers, false, "level=2")) {
+			p->align("\a");
+			for (int i = 0; i < style->noise_layers.size(); i++) {
+				auto& layer = style->noise_layers[i];
+				const std::string& iStr = std::to_string(i);
+				p->add_member_control(b, "Enabled " + iStr, layer.enabled);
+				p->add_member_control(b, "Frequency " + iStr, layer.frequency, "value_slider",
+									  "min=0.001;max=1000;log=true;ticks=true");
+				p->add_member_control(b, "Amplitude " + iStr, layer.amplitude, "value_slider",
+									  "min=0.001;max=1000;log=true;ticks=true");
+			}
+			p->align("\b");
+			p->end_tree_node(style->noise_layers);
 		}
+
+		p->add_gui<cgv::render::surface_render_style>("surface_render_style",
+													  *reinterpret_cast<cgv::render::surface_render_style*>(value_ptr));
+
+		p->add_decorator("", "separator");
 
 		return true;
 	}

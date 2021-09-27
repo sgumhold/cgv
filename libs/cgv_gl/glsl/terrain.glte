@@ -18,23 +18,33 @@ struct NoiseLayer {
     bool enabled;
 };
 vec3 snoise2(vec2 P);
-vec4 generateHeight(in vec2 pos, in NoiseLayer noiseLayers[MAX_NUM_NOISE_LAYERS], in int numNoiseLayers,
-in float power, in float bowlStrength, in float platformHeight, in int seed);
+vec4 generateHeight(in vec2 pos,
+in NoiseLayer noiseLayers[MAX_NUM_NOISE_LAYERS], in int numNoiseLayers,
+in bool shouldApplyPower, in float power,
+in bool shouldApplyBowl, in float bowlStrength,
+in bool shouldApplyPlatform, in float platformHeight,
+in int seed
+);
 //***** end interface of noice_lib.glsl ***********************************
 
 layout (triangles, equal_spacing, cw) in;
 
 in vec4 position_tes[];
+in vec4 color_tes[];
 
 uniform float uvScaleFactor;
 
 uniform NoiseLayer noiseLayers[MAX_NUM_NOISE_LAYERS];
 uniform int numNoiseLayers;
+uniform bool shouldApplyPower;
 uniform float power;
+uniform bool shouldApplyBowl;
 uniform float bowlStrength;
+uniform bool shouldApplyPlatform;
 uniform float platformHeight;
 uniform int seed;
 
+out vec4 color_fs;
 out vec2 uv_fs;
 out vec3 normal_eye;
 out vec3 tangent_eye;
@@ -46,9 +56,18 @@ void main() {
     vec4 pos = gl_TessCoord.x * position_tes[0];
     pos     += gl_TessCoord.y * position_tes[1];
     pos     += gl_TessCoord.z * position_tes[2];
+    color_fs  = gl_TessCoord.x * color_tes[0];
+    color_fs += gl_TessCoord.y * color_tes[1];
+    color_fs += gl_TessCoord.z * color_tes[2];
 
     vec2 pos2 = vec2(pos.x, pos.y);
-    vec4 noise = generateHeight(pos2, noiseLayers, numNoiseLayers, power, bowlStrength, platformHeight, seed);
+    vec4 noise = generateHeight(pos2,
+    noiseLayers, numNoiseLayers,
+    shouldApplyPower, power,
+    shouldApplyBowl, bowlStrength,
+    shouldApplyPlatform, platformHeight,
+    seed
+    );
     normalized_height_fs = noise.w;
     tangent_eye = vec3(1.0F, noise.y, 0.0F);
     bitangent_eye = vec3(0.0F, noise.z, 1.0F);

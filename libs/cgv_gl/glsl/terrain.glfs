@@ -1,5 +1,6 @@
 #version 330 core
 
+in vec4 color_fs;
 in vec2 uv_fs;
 in vec3 normal_eye;
 in vec3 position_eye;
@@ -82,7 +83,6 @@ uniform sampler2D rockTexture;
 //}
 
 void main() {
-    vec4 color_fs = vec4(1,0,0,1);
     vec3 normal = normalize(normal_eye);
     int side;
     if (!keep_this_side(position_eye, normal, side)) {

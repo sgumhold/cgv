@@ -30,8 +30,11 @@ struct terrain_render_style : public cgv::render::surface_render_style
 	terrain_render_style() = default;
 
 	int seed = 1337;
+	bool should_apply_power = true;
 	float power = 1.1F;
+	bool should_apply_bowl = true;
 	float bowl_strength = 20.0F;
+	bool should_apply_platform = true;
 	float platform_height = 0.15F;
 
 	std::vector<NoiseLayer> noise_layers;
