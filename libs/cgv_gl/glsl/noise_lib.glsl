@@ -10,8 +10,13 @@ struct NoiseLayer {
     bool enabled;
 };
 vec3 snoise2(vec2 P);
-vec4 generateHeight(in vec2 pos, in NoiseLayer noiseLayers[MAX_NUM_NOISE_LAYERS], in int numNoiseLayers,
-in float power, in float bowlStrength, in float platformHeight, in int seed);
+vec4 generateHeight(in vec2 pos,
+in NoiseLayer noiseLayers[MAX_NUM_NOISE_LAYERS], in int numNoiseLayers,
+in bool shouldApplyPower, in float power,
+in bool shouldApplyBowl, in float bowlStrength,
+in bool shouldApplyPlatform, in float platformHeight,
+in int seed
+);
 //***** end interface of noice_lib.glsl ***********************************
 */
 
@@ -183,7 +188,9 @@ void applyPlatform(inout vec3 noise, in float noiseMax, in vec2 pos, in float pl
 
 vec4 generateHeight(in vec2 pos,
 in NoiseLayer noiseLayers[MAX_NUM_NOISE_LAYERS], in int numNoiseLayers,
-in float power, in float bowlStrength, in float platformHeight,
+in bool shouldApplyPower, in float power,
+in bool shouldApplyBowl, in float bowlStrength,
+in bool shouldApplyPlatform, in float platformHeight,
 in int seed
 ) {
     vec3 noise = vec3(0.0F);
@@ -207,12 +214,18 @@ in int seed
         noiseMax += amplitude;
     }
 
-    applyPower(noise, noiseMax, power);
-    applyBowlEffect(noise, noiseMax, pos, bowlStrength);
-    //    applyPlatform(noise, noiseMax, pos, platformHeight);
-
     noise.x -= noiseMin;
     noiseMax -= noiseMin;
+
+    if (shouldApplyPower) {
+        applyPower(noise, noiseMax, power);
+    }
+    if (shouldApplyBowl) {
+        applyBowlEffect(noise, noiseMax, pos, bowlStrength);
+    }
+    if (shouldApplyPlatform) {
+        applyPlatform(noise, noiseMax, pos, platformHeight);
+    }
 
     float normalizedHeight = noise.x / noiseMax;
     vec4 result = vec4(noise, normalizedHeight);

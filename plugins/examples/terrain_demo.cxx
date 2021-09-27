@@ -8,7 +8,6 @@
 #include <cgv/utils/ostream_printf.h>
 #include <cgv/gui/provider.h>
 #include <cgv/math/ftransform.h>
-#include <cgv/media/illum/surface_material.h>
 #include <cgv_gl/terrain_renderer.h>
 
 using namespace cgv::base;
@@ -27,7 +26,6 @@ class terrain_demo : public base,		   // base class of all to be registered clas
 	bool toggle;
 
   protected:
-	cgv::media::illum::surface_material material;
 	std::vector<vec2> custom_positions;
 	std::vector<unsigned int> custom_indices;
 	terrain_render_style terrain_style;
@@ -40,8 +38,6 @@ class terrain_demo : public base,		   // base class of all to be registered clas
 	/// initialize rotation angle
 	terrain_demo() : toggle(false)
 	{
-		material.set_diffuse_reflectance(rgb(0.7f, 0.2f, 0.4f));
-
 		terrain_style.noise_layers.emplace_back(450.0F, 20.0F);
 		terrain_style.noise_layers.emplace_back(300.0F, 15.0F);
 		terrain_style.noise_layers.emplace_back(200.0F, 10.0F);
@@ -69,13 +65,6 @@ class terrain_demo : public base,		   // base class of all to be registered clas
 		return "terrain_demo";
 	}
 
-	/// show statistic information
-	void stream_stats(std::ostream& os) override
-	{
-		//		cgv::utils::oprintf(os, "simple_cube: depth = %d, angle = %.1f, speed = %.1f\n", rec_depth, angle,
-		// speed);
-	}
-
 	/// show help information
 	void stream_help(std::ostream& os) override
 	{
@@ -83,18 +72,6 @@ class terrain_demo : public base,		   // base class of all to be registered clas
 		   << "   change recursion depth: <up/down arrow>\n"
 		   << "   change speed: <left/right arrow>\n"
 		   << "   reset angle:  <space>\b\n";
-	}
-
-	/// declare timer_event method to connect the shoot signal of the trigger
-	void timer_event(double, double dt)
-	{
-		//		if (animate) {
-		//			angle += speed * dt;
-		//			if (angle > 360)
-		//				angle -= 360;
-		//			update_member(&angle);
-		//			post_redraw();
-		//		}
 	}
 
 	bool init(context& ctx) override
@@ -145,16 +122,6 @@ class terrain_demo : public base,		   // base class of all to be registered clas
 	/// setting the view transform yourself
 	void draw(context& ctx) override
 	{
-		//		GLboolean was_culling = glIsEnabled(GL_CULL_FACE);
-		//		glDisable(GL_CULL_FACE);
-		//		ctx.ref_surface_shader_program().enable(ctx);
-		//		ctx.set_material(material);
-		//		ctx.push_modelview_matrix();
-		//		//		ctx.mul_modelview_matrix(cgv::math::rotate4<double>(angle, 0, 1, 0) *
-		// cgv::math::scale4<double>(0.5,
-		//		// 0.5, 0.5));
-		//		ctx.set_color(rgb(0, 1, 0.2f));
-
 		static int prev_grid_width = 0;
 		static int prev_grid_height = 0;
 		if (grid_width != prev_grid_width || grid_height != prev_grid_height) {
@@ -175,27 +142,17 @@ class terrain_demo : public base,		   // base class of all to be registered clas
 		tr.render(ctx, 0, custom_indices.size());
 
 		ctx.pop_modelview_matrix();
-		//		ctx.ref_surface_shader_program().disable(ctx);
-		//		if (was_culling)
-		//			glEnable(GL_CULL_FACE);
 	}
 	/// overload the create gui method
 	void create_gui() override
 	{
 		add_decorator("Terrain Demo GUI", "heading", "level=1"); // level=1 is default and can be skipped
 
-		if (begin_tree_node("Material Settings", material, false, "level=2")) {
-			align("\a");				   // increases identation level
-			add_gui("material", material); // use gui registered for surface_material type
-			align("\b");				   // decreases identation level
-			end_tree_node(material);	   // ensure same unique reference passed as in corresponding begin_tree_node
-		}
-
 		if (begin_tree_node("Terrain Settings", terrain_style, false, "level=2")) {
 			align("\a");
 			add_gui("terrain_render_style", terrain_style);
 			align("\b");
-			end_tree_node(material);
+			end_tree_node(terrain_style);
 		}
 
 		add_member_control(this, "Grid Width", grid_width);
@@ -206,4 +163,5 @@ class terrain_demo : public base,		   // base class of all to be registered clas
 };
 
 // register a newly created cube without options
+// TODO change 'item_text' to "new/terrain demo"
 factory_registration<terrain_demo> terrain_demo_fac("new/terrain demo", 'T', true);
