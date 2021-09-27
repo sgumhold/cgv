@@ -364,6 +364,7 @@ var hierarchy =
       [ "cgv::render::gl::gl_transparent_renderer", "classcgv_1_1render_1_1gl_1_1gl__transparent__renderer.html", null ]
     ] ],
     [ "cgv::render::gl::gl_traits< T >", "structcgv_1_1render_1_1gl_1_1gl__traits.html", null ],
+    [ "cgv::render::NoiseLayer", "structcgv_1_1render_1_1NoiseLayer.html", null ],
     [ "cgv::render::performance_monitor", "classcgv_1_1render_1_1performance__monitor.html", null ],
     [ "cgv::render::render_component", "classcgv_1_1render_1_1render__component.html", [
       [ "cgv::render::attribute_array_binding_base", "classcgv_1_1render_1_1attribute__array__binding__base.html", [
@@ -418,11 +419,13 @@ var hierarchy =
           [ "cgv::render::rounded_cone_renderer", "classcgv_1_1render_1_1rounded__cone__renderer.html", null ],
           [ "cgv::render::sphere_renderer", "classcgv_1_1render_1_1sphere__renderer.html", null ],
           [ "cgv::render::spline_tube_renderer", "classcgv_1_1render_1_1spline__tube__renderer.html", null ],
-          [ "cgv::render::surfel_renderer", "classcgv_1_1render_1_1surfel__renderer.html", null ]
+          [ "cgv::render::surfel_renderer", "classcgv_1_1render_1_1surfel__renderer.html", null ],
+          [ "cgv::render::terrain_renderer", "classcgv_1_1render_1_1terrain__renderer.html", null ]
         ] ]
       ] ],
       [ "cgv::render::volume_renderer", "classcgv_1_1render_1_1volume__renderer.html", null ]
     ] ],
+    [ "cgv::render::TerrainLevels", "structcgv_1_1render_1_1TerrainLevels.html", null ],
     [ "cgv::render::textured_rectangle", "structcgv_1_1render_1_1textured__rectangle.html", null ],
     [ "cgv::render::type_descriptor", "structcgv_1_1render_1_1type__descriptor.html", null ],
     [ "cgv::render::view", "classcgv_1_1render_1_1view.html", [
