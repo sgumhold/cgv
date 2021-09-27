@@ -23,8 +23,7 @@ uniform bool apply_gamma = true;
 
 float get_feather_width();
 vec2 get_adjusted_size(vec2 size);
-vec4 get_color();
-void override_color(in vec4 color);
+vec4 get_active_color(vec4 color);
 vec4 transform_world_to_window_space(vec2 p);
 //***** end interface of shape2d.glsl ***********************************
 */
@@ -51,9 +50,6 @@ uniform bool use_blending = false;
 uniform bool use_smooth_feather = false;
 uniform bool apply_gamma = true;
 
-// local variables
-vec4 final_color = fill_color;
-
 // returns the adjusted feather width
 float get_feather_width() {
 	return feather_scale * feather_width;
@@ -64,15 +60,20 @@ vec2 get_adjusted_size(vec2 size) {
 	return 0.5 * size - border_radius + feather_origin*get_feather_width();
 }
 
-// return the current color that will be used when use_color is enabled
-vec4 get_color() {
-	return final_color;
+// return the active color: fill color if use fill color is true and color otherwise
+vec4 get_active_color(vec4 color) {
+	return use_fill_color ? fill_color : color;
 }
 
-// override the color that will be used when use_color is enabled
-void override_color(in vec4 color) {
-	final_color = color;
+// return the current alpha factor
+/*float get_alpha_factor() {
+	return alpha_factor;
 }
+
+// set a factor that will be multiplied with the final alpha value
+void set_alpha_factor(in float alpha) {
+	alpha_factor = alpha;
+}*/
 
 // transform a world space position into window space
 vec4 transform_world_to_window_space(vec2 p) {

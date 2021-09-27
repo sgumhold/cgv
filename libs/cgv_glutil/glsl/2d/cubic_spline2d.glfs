@@ -9,16 +9,15 @@ uniform bool use_smooth_feather = false;
 
 float get_feather_width();
 vec2 get_shape_size();
-vec4 get_color();
-void override_color(in vec4 color);
+vec4 get_active_color(vec4 color);
 vec4 transform_world_to_window_space(vec2 p);
 //***** end interface of shape2d.glsl ***********************************
 
 //***** begin interface of fragment2d.glfs ***********************************
-void finish_sdf_fragment2d(in float signed_distance);
-void finish_sdf_fragment2d(in float signed_distance, in vec2 texcoords);
-void finish_fragment2d();
-void finish_fragment2d(in vec2 texcoords);
+void finish_sdf_fragment2d(in float signed_distance, in vec4 color);
+void finish_sdf_fragment2d(in float signed_distance, in vec4 color, in vec2 texcoords);
+void finish_fragment2d(in vec4 color);
+void finish_fragment2d(in vec4 color, in vec2 texcoords);
 //***** end interface of fragment2d.glfs ***********************************
 
 uniform float width = 1.0;
@@ -145,6 +144,7 @@ void main() {
 	float dash_limit = (0.5*dash_ratio*dash_length) - fw;
 
 	vec4 color = mix(color0_fs, color1_fs, t);
+	color = get_active_color(color);
 
 	float limit = -0.5*fw;
 	float inv_feather = 1.0 / fw;
@@ -163,6 +163,5 @@ void main() {
 
 	color.a *= feather_alpha * dash_alpha;
 	
-	override_color(color);
-	finish_fragment2d();
+	finish_fragment2d(color);
 }

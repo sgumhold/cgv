@@ -11,15 +11,16 @@ namespace glutil {
 /// provides a shader library that handles shader loading
 class CGV_API shader_library {
 protected:
-	/*struct shader_info {
+	struct shader_info {
 		std::string filename = "";
-		shader_program prog;
-		shader_define_map defines = {};
-	};*/
+		cgv::render::shader_program prog;
+		cgv::render::shader_define_map defines = {};
+	};
 
-	typedef std::pair<cgv::render::shader_program, std::string> shader_program_pair;
-	std::map<std::string, shader_program_pair> shaders;
-	//std::map<std::string, shader_info> shaders;
+	//typedef std::pair<cgv::render::shader_program, std::string> shader_program_pair;
+	//std::map<std::string, shader_program_pair> shaders;
+	typedef std::map<std::string, shader_info> shader_lib_map;
+	shader_lib_map shaders;
 
 public:
 	shader_library();
@@ -27,12 +28,12 @@ public:
 
 	void clear(cgv::render::context& ctx);
 
-	bool add(const std::string& name, const std::string& file);
+	bool add(const std::string& name, const std::string& file, const cgv::render::shader_define_map& defines = {});
 
-	cgv::render::shader_program& get(const std::string& name) { return shaders.at(name).first; }
+	cgv::render::shader_program& get(const std::string& name) { return shaders.at(name).prog; }
 
-	std::map<std::string, shader_program_pair>::iterator begin() { return shaders.begin(); }
-	std::map<std::string, shader_program_pair>::iterator end() { return shaders.end(); }
+	shader_lib_map::iterator begin() { return shaders.begin(); }
+	shader_lib_map::iterator end() { return shaders.end(); }
 	
 	bool load_shaders(cgv::render::context& ctx);
 

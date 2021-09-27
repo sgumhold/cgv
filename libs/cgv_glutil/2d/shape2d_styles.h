@@ -36,8 +36,12 @@ public:
 		shaders.clear(ctx);
 	}
 
-	void register_shader(const std::string& name, const std::string& filename) {
-		shaders.add(name, filename);
+	void register_shader(const std::string& name, const std::string& filename, bool multi_primitive_mode = false) {
+		cgv::render::shader_define_map defines;
+		if(!multi_primitive_mode) {
+			defines["MODE"] = "0";
+		}
+		shaders.add(name, filename, defines);
 	}
 
 	bool init(cgv::render::context& ctx) {
@@ -62,7 +66,7 @@ public:
 		this->resolution = resolution;
 
 		for(auto it = shaders.begin(); it != shaders.end(); ++it) {
-			auto& prog = it->second.first;
+			auto& prog = it->second.prog;
 			prog.enable(ctx);
 			prog.set_uniform(ctx, "resolution", resolution);
 			prog.disable(ctx);
@@ -118,19 +122,19 @@ public:
 	}
 
 	template<typename T>
-	void draw_shape(const cgv::render::context& ctx, const cgv::math::fvec<T, 2u>& position, const cgv::math::fvec<T, 2>& size) {
+	void draw_shape(const cgv::render::context& ctx, const cgv::math::fvec<T, 2u>& position, const cgv::math::fvec<T, 2u>& size) {
 		if(current_shader_program) {
-			current_shader_program->set_attribute(ctx, "position", static_cast<cgv::math::fvec<T, 2u>>(position));
-			current_shader_program->set_attribute(ctx, "size", static_cast<cgv::math::fvec<T, 2u>>(size));
+			current_shader_program->set_attribute(ctx, "position", static_cast<cgv::math::fvec<float, 2u>>(position));
+			current_shader_program->set_attribute(ctx, "size", static_cast<cgv::math::fvec<float, 2u>>(size));
 			glDrawArrays(GL_POINTS, 0, 1);
 		}
 	}
 
 	template<typename T>
-	void draw_shape(const cgv::render::context& ctx, const cgv::math::fvec<T, 2u>& position, const cgv::math::fvec<T, 2>& size, const rgba& color) {
+	void draw_shape(const cgv::render::context& ctx, const cgv::math::fvec<T, 2u>& position, const cgv::math::fvec<T, 2u>& size, const rgba& color) {
 		if(current_shader_program) {
-			current_shader_program->set_attribute(ctx, "position", static_cast<cgv::math::fvec<T, 2u>>(position));
-			current_shader_program->set_attribute(ctx, "size", static_cast<cgv::math::fvec<T, 2u>>(size));
+			current_shader_program->set_attribute(ctx, "position", static_cast<cgv::math::fvec<float, 2u>>(position));
+			current_shader_program->set_attribute(ctx, "size", static_cast<cgv::math::fvec<float, 2u>>(size));
 			current_shader_program->set_attribute(ctx, "color", color);
 			glDrawArrays(GL_POINTS, 0, 1);
 		}
@@ -139,8 +143,8 @@ public:
 	template<typename T>
 	void draw_shape2(const cgv::render::context& ctx, const cgv::math::fvec<T, 2u>& position0, const cgv::math::fvec<T, 2u>& position1) {
 		if(current_shader_program) {
-			current_shader_program->set_attribute(ctx, "position0", static_cast<cgv::math::fvec<T, 2u>>(position0));
-			current_shader_program->set_attribute(ctx, "position1", static_cast<cgv::math::fvec<T, 2u>>(position1));
+			current_shader_program->set_attribute(ctx, "position0", static_cast<cgv::math::fvec<float, 2u>>(position0));
+			current_shader_program->set_attribute(ctx, "position1", static_cast<cgv::math::fvec<float, 2u>>(position1));
 			glDrawArrays(GL_POINTS, 0, 1);
 		}
 	}
@@ -148,8 +152,8 @@ public:
 	template<typename T>
 	void draw_shape2(const cgv::render::context& ctx, const cgv::math::fvec<T, 2u>& position0, const cgv::math::fvec<T, 2u>& position1, const rgba& color0, const rgba& color1) {
 		if(current_shader_program) {
-			current_shader_program->set_attribute(ctx, "position0", static_cast<cgv::math::fvec<T, 2u>>(position0));
-			current_shader_program->set_attribute(ctx, "position1", static_cast<cgv::math::fvec<T, 2u>>(position1));
+			current_shader_program->set_attribute(ctx, "position0", static_cast<cgv::math::fvec<float, 2u>>(position0));
+			current_shader_program->set_attribute(ctx, "position1", static_cast<cgv::math::fvec<float, 2u>>(position1));
 			current_shader_program->set_attribute(ctx, "color0", color0);
 			current_shader_program->set_attribute(ctx, "color1", color1);
 			glDrawArrays(GL_POINTS, 0, 1);
