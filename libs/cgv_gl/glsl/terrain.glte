@@ -1,0 +1,62 @@
+#version 400 core
+
+//***** begin interface of view.glsl ***********************************
+mat4 get_modelview_matrix();
+mat4 get_projection_matrix();
+mat4 get_modelview_projection_matrix();
+mat4 get_inverse_modelview_matrix();
+mat4 get_inverse_modelview_projection_matrix();
+mat3 get_normal_matrix();
+mat3 get_inverse_normal_matrix();
+//***** end interface of view.glsl ***********************************
+
+//***** begin interface of noice_lib.glsl ***********************************
+const int MAX_NUM_NOISE_LAYERS = 15;
+struct NoiseLayer {
+    float frequency;
+    float amplitude;
+    bool enabled;
+};
+vec3 snoise2(vec2 P);
+vec4 generateHeight(in vec2 pos, in NoiseLayer noiseLayers[MAX_NUM_NOISE_LAYERS], in int numNoiseLayers,
+in float power, in float bowlStrength, in float platformHeight, in int seed);
+//***** end interface of noice_lib.glsl ***********************************
+
+layout (triangles, equal_spacing, cw) in;
+
+in vec4 position_tes[];
+
+uniform float uvScaleFactor;
+
+uniform NoiseLayer noiseLayers[MAX_NUM_NOISE_LAYERS];
+uniform int numNoiseLayers;
+uniform float power;
+uniform float bowlStrength;
+uniform float platformHeight;
+uniform int seed;
+
+out vec2 uv_fs;
+out vec3 normal_eye;
+out vec3 tangent_eye;
+out vec3 bitangent_eye;
+out vec3 position_eye;
+out float normalized_height_fs;
+
+void main() {
+    vec4 pos = gl_TessCoord.x * position_tes[0];
+    pos     += gl_TessCoord.y * position_tes[1];
+    pos     += gl_TessCoord.z * position_tes[2];
+
+    vec2 pos2 = vec2(pos.x, pos.y);
+    vec4 noise = generateHeight(pos2, noiseLayers, numNoiseLayers, power, bowlStrength, platformHeight, seed);
+    normalized_height_fs = noise.w;
+    tangent_eye = vec3(1.0F, noise.y, 0.0F);
+    bitangent_eye = vec3(0.0F, noise.z, 1.0F);
+    normal_eye = -normalize(cross(tangent_eye, bitangent_eye));
+
+    vec4 position = get_modelview_matrix() * vec4(pos.x, noise.x, pos.y, 1.0F);
+
+    position_eye = position.xyz;
+    uv_fs = pos2 / uvScaleFactor;
+    gl_Position = get_projection_matrix() * position;
+}
