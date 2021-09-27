@@ -1,5 +1,6 @@
 #version 150
 
+// use cgv/render/context/IlluminationMode enum (0 .. off, 1 .. one sided, 2 .. two sided)
 uniform int illumination_mode = 2;
 uniform bool sRGBA_textures = true;
 
