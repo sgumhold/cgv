@@ -35,23 +35,23 @@
 	GRD_APPLY_FUNC2(f, s, t1, i1, t2, i2)
 
 #define GRD_APPLY_FUNC4(f, s, t0, i0, t1, i1, t2, i2, t3, i3)\
-	GRD_APPLY_FUNC1(f, t0, i0) s(0)\
+	GRD_APPLY_FUNC1(f, s, t0, i0) s(0)\
 	GRD_APPLY_FUNC3(f, s, t1, i1, t2, i2, t3, i3)
 
 #define GRD_APPLY_FUNC5(f, s, t0, i0, t1, i1, t2, i2, t3, i3, t4, i4)\
-	GRD_APPLY_FUNC1(f, t0, i0) s(0)\
+	GRD_APPLY_FUNC1(f, s, t0, i0) s(0)\
 	GRD_APPLY_FUNC4(f, s, t1, i1, t2, i2, t3, i3, t4, i4)
 
 #define GRD_APPLY_FUNC6(f, s, t0, i0, t1, i1, t2, i2, t3, i3, t4, i4, t5, i5)\
-	GRD_APPLY_FUNC1(f, t0, i0) s(0)\
+	GRD_APPLY_FUNC1(f, s, t0, i0) s(0)\
 	GRD_APPLY_FUNC5(f, s, t1, i1, t2, i2, t3, i3, t4, i4, t5, i5)
 
 #define GRD_APPLY_FUNC7(f, s, t0, i0, t1, i1, t2, i2, t3, i3, t4, i4, t5, i5, t6, i6)\
-	GRD_APPLY_FUNC1(f, t0, i0) s(0)\
+	GRD_APPLY_FUNC1(f, s, t0, i0) s(0)\
 	GRD_APPLY_FUNC6(f, s, t1, i1, t2, i2, t3, i3, t4, i4, t5, i5, t6, i6)
 
 #define GRD_APPLY_FUNC8(f, s, t0, i0, t1, i1, t2, i2, t3, i3, t4, i4, t5, i5, t6, i6, t7, i7)\
-	GRD_APPLY_FUNC1(f, t0, i0) s(0)\
+	GRD_APPLY_FUNC1(f, s, t0, i0) s(0)\
 	GRD_APPLY_FUNC7(f, s, t1, i1, t2, i2, t3, i3, t4, i4, t5, i5, t6, i6, t7, i7)
 
 #define GRD_APPLY_FUNC_N(n, f, s, ...) GRD_EXPAND( GRD_APPLY_FUNC##n(f, s, __VA_ARGS__) )
@@ -145,7 +145,7 @@ public:
 	protected:
 		bool transfer(context& ctx, shader_program& prog) {
 			bool success = true;
-			if(size() == 0) return false;\
+			if(get_vertex_count() == 0) return false;\
 			success &= set_attribute_array(ctx, prog, "position", positions);
 			success &= set_attribute_array(ctx, prog, "color", colors);
 			return success;
@@ -154,7 +154,7 @@ public:
 		std::vector<vec2> positions;
 		std::vector<rgb> colors;
 
-		size_t size() { return positions.size(); };
+		size_t get_vertex_count() { return positions.size(); };
 
 		void clear() {
 			positions.clear();
