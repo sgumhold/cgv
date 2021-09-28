@@ -23,7 +23,7 @@ void main()
 {
 	position_eye = get_modelview_matrix() * position;
 	position_light_space = light_space_matrix * position;
-	//position_light_space.xyz /= position_light_space.w;
+	position_light_space.xyz /= position_light_space.w;
 
 	normal_eye = normalize(get_normal_matrix() * normal);
 	texcoord_fs = texcoord;
