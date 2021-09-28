@@ -1,2 +1,3 @@
 files:poly2d
+fragment_file:shape2d.glsl
 fragment_file:fragment2d.glfs
