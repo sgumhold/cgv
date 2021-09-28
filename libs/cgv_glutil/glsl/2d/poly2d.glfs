@@ -1,16 +1,23 @@
 #version 150
 
+//***** begin interface of shape2d.glsl ***********************************
+float get_feather_width();
+vec2 get_adjusted_size(vec2 size);
+vec4 get_active_color(vec4 color);
+vec4 transform_world_to_window_space(vec2 p);
+//***** end interface of shape2d.glsl ***********************************
+
 //***** begin interface of fragment2d.glfs ***********************************
-vec4 get_color();
-void override_color(vec4 color);
-void finish_fragment2d(in vec2 texcoords);
-void finish_fragment2d();
+void finish_sdf_fragment2d(in float signed_distance, in vec4 color);
+void finish_sdf_fragment2d(in float signed_distance, in vec4 color, in vec2 texcoords);
+void finish_fragment2d(in vec4 color);
+void finish_fragment2d(in vec4 color, in vec2 texcoords);
 //***** end interface of fragment2d.glfs ***********************************
 
 in vec4 col;
 
 void main() {
 
-	override_color(col);
-	finish_fragment2d();
+	vec4 color = get_active_color(col);
+	finish_fragment2d(color);
 }

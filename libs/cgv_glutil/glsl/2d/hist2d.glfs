@@ -1,17 +1,26 @@
 #version 430
 
+//***** begin interface of shape2d.glsl ***********************************
+uniform ivec2 resolution;
+
+uniform vec4 fill_color;
+uniform vec4 border_color = vec4(1.0);
+uniform float border_width = 0.0;
+
+float get_feather_width();
+vec2 get_shape_size();
+vec4 get_active_color(vec4 color);
+vec4 transform_world_to_window_space(vec2 p);
+//***** end interface of shape2d.glsl ***********************************
+
 //***** begin interface of fragment2d.glfs ***********************************
-vec4 get_color();
-void override_color(vec4 color);
-void finish_fragment2d(in vec2 texcoords);
-void finish_fragment2d();
+void finish_sdf_fragment2d(in float signed_distance, in vec4 color);
+void finish_sdf_fragment2d(in float signed_distance, in vec4 color, in vec2 texcoords);
+void finish_fragment2d(in vec4 color);
+void finish_fragment2d(in vec4 color, in vec2 texcoords);
 //***** end interface of fragment2d.glfs ***********************************
 
-uniform layout(location = 0) sampler1D hist_tex;
-
-uniform ivec2 resolution;
-uniform vec4 border_color = vec4(1.0);
-uniform uint border_width_in_pixel = 0u;
+uniform layout(binding = 1) sampler1D hist_tex;
 
 uniform uint max_value = 1u;
 uniform float nearest_linear_mix = 1.0;
@@ -52,18 +61,17 @@ void main() {
 
 	float border = 0.0f;
 
-	if(border_width_in_pixel > 0u)
-		border = float(border_width_in_pixel) / resolution.y;
+	if(border_width > 0.1)
+		border = border_width / resolution.y;
 
 	if(tex_coord.y <= height + border) {
 		final_color = border_color;
 		
 		if(tex_coord.y <= height)
-			final_color = get_color();
+			final_color = fill_color;
 	}
 
-	override_color(final_color);
-	finish_fragment2d();
+	finish_fragment2d(final_color);
 
 	// Smoothstep
 	/*int size = textureSize(tex, 0);
