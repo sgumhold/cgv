@@ -2,6 +2,8 @@
 
 #include <cgv_gl/surface_renderer.h>
 
+#include "gl/lib_begin.h"
+
 namespace cgv {
 namespace render {
 
@@ -24,7 +26,7 @@ struct TerrainLevels
 	float blur = 0.05F;
 };
 
-struct terrain_render_style : public cgv::render::surface_render_style
+struct CGV_API terrain_render_style : public cgv::render::surface_render_style
 {
 	/// construct with default values
 	terrain_render_style() = default;
@@ -50,7 +52,7 @@ struct terrain_render_style : public cgv::render::surface_render_style
 };
 
 /// renderer that supports point splatting
-class terrain_renderer : public cgv::render::surface_renderer
+class CGV_API terrain_renderer : public cgv::render::surface_renderer
 {
   protected:
 	/// overload to allow instantiation of terrain_renderer
@@ -69,18 +71,20 @@ class terrain_renderer : public cgv::render::surface_renderer
 			  uint32_t strip_restart_index) override;
 };
 
-struct terrain_render_style_reflect : public terrain_render_style
+struct CGV_API terrain_render_style_reflect : public terrain_render_style
 {
 	bool self_reflect(cgv::reflect::reflection_handler& rh);
 };
-extern cgv::reflect::extern_reflection_traits<terrain_render_style, terrain_render_style_reflect>
+extern CGV_API cgv::reflect::extern_reflection_traits<terrain_render_style, terrain_render_style_reflect>
 get_reflection_traits(const terrain_render_style&);
 
 //! reference to a singleton terrain renderer that is shared among drawables
 /*! the second parameter is used for reference counting. Use +1 in your init method,
 	-1 in your clear method and default 0 argument otherwise. If internal reference
 	counter decreases to 0, singleton renderer is destructed. */
-extern terrain_renderer& ref_terrain_renderer(cgv::render::context& ctx, int ref_count_change = 0);
+extern CGV_API terrain_renderer& ref_terrain_renderer(cgv::render::context& ctx, int ref_count_change = 0);
 
 } // namespace render
 } // namespace cgv
+
+#include <cgv/config/lib_end.h>
