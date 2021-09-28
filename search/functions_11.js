@@ -95,7 +95,7 @@ var searchData=
   ['ref_5fsub_5fplot_5fstrips_5331',['ref_sub_plot_strips',['../classcgv_1_1plot_1_1plot2d.html#a7220d912e40c66e64877757ed8511f41',1,'cgv::plot::plot2d']]],
   ['ref_5fsurface_5fshader_5fprogram_5332',['ref_surface_shader_program',['../classcgv_1_1render_1_1context.html#a6a26ce9b9278534c75ca4a90b9456961',1,'cgv::render::context::ref_surface_shader_program()'],['../classcgv_1_1render_1_1gl_1_1gl__context.html#a0c6ee03056a67dbf7fd293766e5451fa',1,'cgv::render::gl::gl_context::ref_surface_shader_program()']]],
   ['ref_5fsurfel_5frenderer_5333',['ref_surfel_renderer',['../namespacecgv_1_1render.html#ad3af6ff95e60082b36ea3b3ebd634f02',1,'cgv::render']]],
-  ['ref_5fterrain_5frenderer_5334',['ref_terrain_renderer',['../namespacecgv_1_1render.html#aee528e5ac31d1ad57acfa5bfb0c3eda1',1,'cgv::render']]],
+  ['ref_5fterrain_5frenderer_5334',['ref_terrain_renderer',['../namespacecgv_1_1render.html#a6ddaa5ca822f57f3d63a968047b63a38',1,'cgv::render']]],
   ['ref_5ftextures_5335',['ref_textures',['../classcgv_1_1render_1_1render__info.html#a28eb9c93ab8c9eea1d34627804513f10',1,'cgv::render::render_info']]],
   ['ref_5ftracking_5freference_5fstate_5336',['ref_tracking_reference_state',['../classvr_1_1vr__driver.html#aa16c5d1a283ab6f9ed4424a44e0ff2fa',1,'vr::vr_driver::ref_tracking_reference_state()'],['../classvr_1_1vr__kit.html#a14301982c37970e84499102f71dfe91e',1,'vr::vr_kit::ref_tracking_reference_state()']]],
   ['ref_5ftracking_5fsystem_5finfo_5337',['ref_tracking_system_info',['../classvr_1_1vr__kit.html#af302f93d6029234bf2b0b8dd603e58da',1,'vr::vr_kit']]],
