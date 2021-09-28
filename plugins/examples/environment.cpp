@@ -25,7 +25,7 @@ protected:
 
 	cgv::glutil::shader_library shaders;
 
-	unsigned shadow_map_resolution = 256u;
+	unsigned shadow_map_resolution = 2*256u;
 	texture depth_map;
 	texture color_map;
 	frame_buffer depth_map_fb;
@@ -53,6 +53,8 @@ protected:
 
 	float near_plane = 1.0f, far_plane = 10.0f;
 
+	float shadow_blur = 0.5f;
+
 public:
 	environment_demo() : cgv::base::node("environment demo") {
 		view_ptr = nullptr;
@@ -65,6 +67,7 @@ public:
 		shaders.add("screen", "screen.glpr");
 
 		shaders.add("pbr_surface", "pbr_surface.glpr");
+		shaders.add("surface_depth", "surface_depth.glpr");
 
 		sun_position = vec2(0.0f, 0.6f);
 
@@ -86,6 +89,10 @@ public:
 		if(member_ptr == &sun_position[0] || member_ptr == &sun_position[1]) {
 			context& ctx = *get_context();
 			generate_sky_cubemap(ctx);
+		}
+
+		if(member_ptr == &show_shadow_map) {
+			depth_map.set_compare_mode(!show_shadow_map);
 		}
 
 		post_redraw();
@@ -134,8 +141,8 @@ public:
 		box_mesh_info.construct(ctx, box_mesh);
 		obj_mesh_info.construct(ctx, obj_mesh);
 		// bind mesh attributes to pbr surface shader program
-		box_mesh_info.bind(ctx, shaders.get("pbr_surface"), true);
-		obj_mesh_info.bind(ctx, shaders.get("pbr_surface"), true);
+		//box_mesh_info.bind(ctx, shaders.get("pbr_surface"), true);
+		//obj_mesh_info.bind(ctx, shaders.get("pbr_surface"), true);
 
 		/*if(car_mesh.read("res://example.obj")) {
 			car_mesh_info.construct(ctx, car_mesh);
@@ -151,12 +158,14 @@ public:
 		depth_map.create(ctx, TT_2D, shadow_map_resolution, shadow_map_resolution);
 		depth_map.set_wrap_s(TW_CLAMP_TO_BORDER);
 		depth_map.set_wrap_t(TW_CLAMP_TO_BORDER);
+		//depth_map.set_wrap_s(TW_CLAMP_TO_EDGE);
+		//depth_map.set_wrap_t(TW_CLAMP_TO_EDGE);
 		//depth_map.set_min_filter(TF_NEAREST);
 		//depth_map.set_mag_filter(TF_NEAREST);
 		depth_map.set_min_filter(TF_LINEAR);
 		depth_map.set_mag_filter(TF_LINEAR);
-		depth_map.set_compare_mode(true);
 		depth_map.set_border_color(1.0f, 1.0f, 1.0f, 1.0f);
+		depth_map.set_compare_mode(!show_shadow_map);
 
 		color_map.set_data_format("flt32[R,G,B]");
 		color_map.create(ctx, TT_2D, shadow_map_resolution, shadow_map_resolution);
@@ -224,6 +233,12 @@ public:
 
 
 
+
+
+
+
+
+
 		vec3 light_direction = compute_sphere_normal(sun_position, 0.0f, 2.0 * M_PI, 0.0f, M_PI);
 
 		mat4 light_projection = cgv::math::ortho4(-5.0f, 5.0f, -5.0f, 5.0f, near_plane, far_plane);
@@ -235,6 +250,11 @@ public:
 		bias_matrix.set_col(2, vec4(0.0f, 0.0f, 0.5f, 0.0f));
 		bias_matrix.set_col(3, vec4(0.5f, 0.5f, 0.5f, 1.0f));
 			
+		auto& depth_prog = shaders.get("surface_depth");
+		depth_prog.enable(ctx);
+		depth_prog.set_uniform(ctx, "light_space_matrix", light_projection * light_view);
+		depth_prog.disable(ctx);
+
 		auto& pbr_prog = shaders.get("pbr_surface");
 		pbr_prog.enable(ctx);
 		pbr_prog.set_uniform(ctx, "eye_pos", eye_pos);
@@ -243,6 +263,7 @@ public:
 
 		pbr_prog.set_uniform(ctx, "F0", F0);
 		pbr_prog.set_uniform(ctx, "roughness", roughness);
+		pbr_prog.set_uniform(ctx, "shadow_blur", shadow_blur);
 		pbr_prog.disable(ctx);
 
 
@@ -253,6 +274,8 @@ public:
 		sphere_prog.set_uniform(ctx, "F0", F0);
 		sphere_prog.set_uniform(ctx, "roughness", roughness);
 
+
+		//glCullFace(GL_FRONT);
 
 		
 		//vec3 light_direction = vec3(4.0f, 4.0f, -2.0f);
@@ -282,15 +305,18 @@ public:
 		//brdf_lut.enable(ctx, 2);
 		//spheres.render(ctx, sr, sphere_style, 1, 2);
 
-		irradiance_map.enable(ctx, 0);
-		prefiltered_specular_map.enable(ctx, 1);
-		brdf_lut.enable(ctx, 2);
-		depth_map.enable(ctx, 3);
+		//irradiance_map.enable(ctx, 0);
+		//prefiltered_specular_map.enable(ctx, 1);
+		//brdf_lut.enable(ctx, 2);
+		//depth_map.enable(ctx, 3);
+
+		box_mesh_info.bind(ctx, shaders.get("surface_depth"), true);
+		obj_mesh_info.bind(ctx, shaders.get("surface_depth"), true);
 
 		//ctx.push_modelview_matrix();
 		//ctx.mul_modelview_matrix(cgv::math::scale4(vec3(10.0f, 0.2f, 10.0f)));
 		//ctx.mul_modelview_matrix(cgv::math::translate4(vec3(0.0f, -0.1f, 0.0f)));
-		//box_mesh_info.draw_all(ctx, false, false, false);
+		box_mesh_info.draw_all(ctx, false, false, false);
 		//ctx.pop_modelview_matrix();
 
 		//ctx.push_modelview_matrix();
@@ -298,10 +324,10 @@ public:
 		obj_mesh_info.draw_all(ctx, false, false, false);
 		//ctx.pop_modelview_matrix();
 
-		irradiance_map.disable(ctx);
-		prefiltered_specular_map.disable(ctx);
-		brdf_lut.disable(ctx);
-		depth_map.disable(ctx);
+		//irradiance_map.disable(ctx);
+		//prefiltered_specular_map.disable(ctx);
+		//brdf_lut.disable(ctx);
+		//depth_map.disable(ctx);
 
 		//irradiance_map.disable(ctx);
 		//prefiltered_specular_map.disable(ctx);
@@ -314,7 +340,7 @@ public:
 		
 
 		
-
+		//glCullFace(GL_BACK);
 
 		// restore previous viewport
 		glViewport(old_viewport[0], old_viewport[1], old_viewport[2], old_viewport[3]);
@@ -342,7 +368,8 @@ public:
 			brdf_lut.enable(ctx, 2);
 			depth_map.enable(ctx, 3);
 
-
+			box_mesh_info.bind(ctx, shaders.get("pbr_surface"), true);
+			obj_mesh_info.bind(ctx, shaders.get("pbr_surface"), true);
 
 			//ctx.push_modelview_matrix();
 			//ctx.mul_modelview_matrix(cgv::math::scale4(vec3(10.0f, 0.2f, 10.0f)));
@@ -579,6 +606,7 @@ public:
 		add_member_control(this, "Far", far_plane, "value_slider", "min=1.0;max=30.0;step=0.1;ticks=true");
 		
 		add_member_control(this, "Show Shadow Map", show_shadow_map, "check");
+		add_member_control(this, "Shadow Blur", shadow_blur, "value_slider", "min=0.0;max=10.0;step=0.1;ticks=true");
 
 		if(begin_tree_node("Sphere Style", sphere_style, true)) {
 			align("\a");
