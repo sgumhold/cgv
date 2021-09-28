@@ -21,6 +21,7 @@
 #include <cgv_glutil/2d/draggables_collection.h>
 #include <cgv_glutil/2d/rect.h>
 
+#include <cgv_glutil/2d/canvas.h>
 #include <cgv_glutil/2d/shape2d_styles.h>
 
 using namespace cgv::render;
