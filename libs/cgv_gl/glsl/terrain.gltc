@@ -1,0 +1,23 @@
+#version 400 core
+
+layout (vertices = 3) out;
+
+in vec4 position_tcs[];
+in vec4 color_tcs[];
+
+uniform float tessellation;
+
+out vec4 position_tes[];
+out vec4 color_tes[];
+
+void main() {
+    // TODO calculate tessellation with distance to camera
+    gl_TessLevelInner[0] = tessellation;
+
+    gl_TessLevelOuter[0] = tessellation;
+    gl_TessLevelOuter[1] = tessellation;
+    gl_TessLevelOuter[2] = tessellation;
+
+    position_tes[gl_InvocationID] = position_tcs[gl_InvocationID];
+    color_tes[gl_InvocationID] = color_tcs[gl_InvocationID];
+}
