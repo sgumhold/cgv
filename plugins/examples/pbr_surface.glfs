@@ -255,11 +255,14 @@ void main()
 	vec3 irradiance = texture(irradiance_map, N).rgb;
 	vec3 diffuse    = irradiance * color_fs.rgb;
 	
-	//float ndl = max(dot(n_world, light_dir), 0.0);
-	//float shd = cs(position_light_space, n_world);
-	//diffuse *= 1.0 - 0.5*(1.0 - shd * ndl);
+	float ndl = max(dot(n_world, light_dir), 0.0);
+	float shadow = compute_shadow_factor(position_light_space, n_world);
+	float shadow_factor = 1.0 - 0.5*(1.0 - shadow * ndl);
+	diffuse *= shadow_factor;
 
 	vec3 specular = prefilteredColor * (kS * envBRDF.x + envBRDF.y);
+	specular *= mix(1.0, shadow_factor, roughness);
+
 	vec3 ambient    = (kD * diffuse + specular) * ao;
 
 	// normal light computation here:

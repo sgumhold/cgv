@@ -38,7 +38,6 @@ protected:
 
 	cgv::glutil::box_render_data<> boxes;
 	cgv::glutil::sphere_render_data<> spheres;
-	box_render_style box_style;
 	sphere_render_style sphere_style;
 
 	texture environment_map;
@@ -69,7 +68,6 @@ public:
 		shaders.add("irradiance_map_gen", "irradiance_map_gen.glpr");
 		shaders.add("prefiltered_specular_map_gen", "prefiltered_specular_map_gen.glpr");
 		shaders.add("brdf_lut_gen", "brdf_lut_gen.glpr");
-		shaders.add("pbr_sphere", "pbr_sphere.glpr");
 		shaders.add("screen", "screen.glpr");
 
 		shaders.add("pbr_surface", "pbr_surface.glpr");
@@ -80,8 +78,6 @@ public:
 		boxes = cgv::glutil::box_render_data<>(true);
 		spheres = cgv::glutil::sphere_render_data<>(true);
 		
-		box_style.surface_color = rgb(0.5f);
-
 		sphere_style.surface_color = rgb(0.5f);
 		sphere_style.radius = 0.02f;
 	}
@@ -120,13 +116,7 @@ public:
 
 		bool success = true;
 		success &= shaders.load_shaders(ctx);
-		if(boxes.init(ctx)) {
-			boxes.add(vec3(0.0f, -0.1f, 0.0f), vec3(10.0f, 0.2f, 10.0f));
-			//boxes.add(vec3(0.0f, 0.5f, 0.0f), vec3(1));
-			boxes.set_out_of_date();
-		} else {
-			success = false;
-		}
+		success &= boxes.init(ctx);
 
 		if(spheres.init(ctx)) {
 			spheres.add(vec3(0.0f, -50.0f, 0.0f), 50.0f);
@@ -184,13 +174,14 @@ public:
 		depth_map_fb.create(ctx, shadow_map_resolution, shadow_map_resolution);
 		depth_map_fb.attach(ctx, depth_map);
 		// color buffer is not needed for shadow map but fb with only depth buffer is not valid (solution below still produces framework errors but works fine)
-		depth_map_fb.attach(ctx, color_map, 0);
+		//depth_map_fb.attach(ctx, color_map, 0);
 
-		//unsigned dmfbo_handle = (unsigned)depth_map_fb.handle - 1;
-		//glBindFramebuffer(GL_FRAMEBUFFER, dmfbo_handle);
-		//glDrawBuffer(GL_NONE);
-		//glReadBuffer(GL_NONE);
-		//glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		// TODO: make framebuffer option to use no draw buffer (only depth) and make this not throw an error
+		unsigned dmfbo_handle = (unsigned)depth_map_fb.handle - 1;
+		glBindFramebuffer(GL_FRAMEBUFFER, dmfbo_handle);
+		glDrawBuffer(GL_NONE);
+		glReadBuffer(GL_NONE);
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 		glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
 		generate_sky_cubemap(ctx);
@@ -333,11 +324,6 @@ public:
 
 					jitter_data[(k * size * size + j * size + i)] = static_cast<cvec4>(127.0f * d);
 					//jitter_data[(k * size * size + j * size + i)] = d;
-
-					//jitter_data[(k * size * size + j * size + i) * 4 + 0] = (signed char)(d[0] * 127);
-					//jitter_data[(k * size * size + j * size + i) * 4 + 1] = (signed char)(d[1] * 127);
-					//jitter_data[(k * size * size + j * size + i) * 4 + 2] = (signed char)(d[2] * 127);
-					//jitter_data[(k * size * size + j * size + i) * 4 + 3] = (signed char)(d[3] * 127);
 				}
 
 				int iii = 0;
@@ -434,26 +420,16 @@ public:
 
 
 
-		auto& sr = ref_sphere_renderer(ctx);
-		auto& sphere_prog = shaders.get("pbr_sphere");
-		sphere_prog.set_uniform(ctx, "eye_pos", eye_pos);
-		sphere_prog.set_uniform(ctx, "F0", F0);
-		sphere_prog.set_uniform(ctx, "roughness", roughness);
+		
 
 
 		//glCullFace(GL_FRONT);
 
 		
-		//vec3 light_direction = vec3(4.0f, 4.0f, -2.0f);
 
-		// TODO: try
-		//ctx.push_window_transformation_array();
+		ctx.push_window_transformation_array();
+		ctx.set_viewport(ivec4(0, 0, shadow_map_resolution, shadow_map_resolution));
 
-		GLint old_viewport[4];
-		glGetIntegerv(GL_VIEWPORT, old_viewport);
-
-		glViewport(0, 0, shadow_map_resolution, shadow_map_resolution);
-		
 		depth_map_fb.enable(ctx);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -461,12 +437,6 @@ public:
 		ctx.push_modelview_matrix();
 		ctx.set_projection_matrix(light_projection);
 		ctx.set_modelview_matrix(light_view);
-
-		//boxes.render(ctx, ref_box_renderer(ctx), box_style);
-
-		//sphere_style.culling_mode = CM_FRONTFACE;
-		//sr.set_prog(sphere_prog);
-		//spheres.render(ctx, sr, sphere_style, 1, 2);
 
 		box_mesh_info.bind(ctx, shaders.get("surface_depth"), true);
 		obj_mesh_info.bind(ctx, shaders.get("surface_depth"), true);
@@ -492,7 +462,7 @@ public:
 		//glCullFace(GL_BACK);
 
 		// restore previous viewport
-		glViewport(old_viewport[0], old_viewport[1], old_viewport[2], old_viewport[3]);
+		ctx.pop_window_transformation_array();
 
 		if(show_shadow_map) {
 			depth_map.enable(ctx, 0);
@@ -529,6 +499,7 @@ public:
 
 			//ctx.push_modelview_matrix();
 			//ctx.mul_modelview_matrix(cgv::math::translate4(vec3(0.0f, 1.0f, 0.0f)));
+			//ctx.mul_modelview_matrix(cgv::math::rotate4(45.0f, vec3(0.0f, 0.0f, 1.0f)));
 			obj_mesh_info.draw_all(ctx, false, false, false);
 			//ctx.pop_modelview_matrix();
 
@@ -632,9 +603,6 @@ public:
 		   cgv::math::look_at4(vec3(0.0f, 0.0f, 0.0f), vec3(0.0f,  0.0f,  1.0f), vec3(0.0f, -1.0f,  0.0f)),
 		   cgv::math::look_at4(vec3(0.0f, 0.0f, 0.0f), vec3(0.0f,  0.0f, -1.0f), vec3(0.0f, -1.0f,  0.0f))
 		};
-
-		GLint old_viewport[4];
-		glGetIntegerv(GL_VIEWPORT, old_viewport);
 		
 		auto& br = ref_box_renderer(ctx);
 	
@@ -645,8 +613,9 @@ public:
 		ctx.push_modelview_matrix();
 		ctx.set_projection_matrix(capture_projection);
 		
-		// configure the viewport to the capture dimensions
-		glViewport(0, 0, environment_resolution, environment_resolution);
+		// safe default viewport and configure the viewport to the capture dimensions
+		ctx.push_window_transformation_array();
+		ctx.set_viewport(ivec4(0, 0, environment_resolution, environment_resolution));
 
 		auto& sky_cubemap_gen = shaders.get("sky_cubemap_gen");
 		sky_cubemap_gen.set_uniform(ctx, "sun_pos", sun_position);
@@ -665,7 +634,7 @@ public:
 		}
 
 		// configure the viewport to the capture dimensions
-		glViewport(0, 0, irradiance_resolution, irradiance_resolution);
+		ctx.set_viewport(ivec4(0, 0, irradiance_resolution, irradiance_resolution));
 
 		auto& irradiance_map_gen = shaders.get("irradiance_map_gen");
 		
@@ -714,7 +683,7 @@ public:
 		ctx.pop_projection_matrix();
 		ctx.pop_modelview_matrix();
 
-		glViewport(0, 0, lut_resolution, lut_resolution);
+		ctx.set_viewport(ivec4(0, 0, lut_resolution, lut_resolution));
 
 		lut_fb.enable(ctx, 0);
 		glClear(GL_COLOR_BUFFER_BIT);
@@ -735,7 +704,7 @@ public:
 		pfs_fb.destruct(ctx);
 
 		// restore previous viewport
-		glViewport(old_viewport[0], old_viewport[1], old_viewport[2], old_viewport[3]);
+		ctx.pop_window_transformation_array();
 	}
 	vec3 compute_sphere_normal(vec2 coord, float phiStart, float phiLength, float thetaStart, float thetaLength) {
 		vec3 normal;
@@ -775,5 +744,5 @@ public:
 #include <cgv/base/register.h>
 
 /// register a factory to create new rounded cone texturing tests
-//cgv::base::factory_registration<environment_demo> environment_demo_fac("new/demo/environment_demo");
-cgv::base::object_registration<environment_demo> environment_demo_fac("new/demo/environment_demo");
+cgv::base::factory_registration<environment_demo> environment_demo_fac("new/demo/environment_demo");
+//cgv::base::object_registration<environment_demo> environment_demo_fac("new/demo/environment_demo");
