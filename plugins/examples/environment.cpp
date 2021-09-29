@@ -1,3 +1,5 @@
+#include <random>
+
 #include <cgv/base/node.h>
 #include <cgv/gui/event_handler.h>
 #include <cgv/gui/mouse_event.h>
@@ -21,11 +23,13 @@ class environment_demo :
 	public cgv::gui::event_handler
 {
 protected:
+	typedef cgv::math::fvec<signed char, 4u> cvec4;
+
 	view* view_ptr;
 
 	cgv::glutil::shader_library shaders;
 
-	unsigned shadow_map_resolution = 2*256u;
+	unsigned shadow_map_resolution = 4*256u;
 	texture depth_map;
 	texture color_map;
 	frame_buffer depth_map_fb;
@@ -53,7 +57,9 @@ protected:
 
 	float near_plane = 1.0f, far_plane = 10.0f;
 
-	float shadow_blur = 0.5f;
+	float shadow_blur = 2.0f;
+
+	texture jitter_tex;
 
 public:
 	environment_demo() : cgv::base::node("environment demo") {
@@ -77,6 +83,7 @@ public:
 		box_style.surface_color = rgb(0.5f);
 
 		sphere_style.surface_color = rgb(0.5f);
+		sphere_style.radius = 0.02f;
 	}
 	void stream_help(std::ostream& os) {
 		return;
@@ -185,10 +192,170 @@ public:
 		//glReadBuffer(GL_NONE);
 		//glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-		//bool co = depth_map_fb.is_complete(ctx);
-
 		glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
 		generate_sky_cubemap(ctx);
+
+
+
+
+
+		std::mt19937 rng(42);
+		std::uniform_real_distribution<float> distr(-1.0f, 1.0f);
+
+		unsigned jitter_resolution = 16;
+		int size = jitter_resolution;
+		int samples_u = 8;
+		int samples_v = 8;
+
+		
+
+		std::vector<cvec4> jitter_data(size * size * samples_u * samples_v / 2);
+		//std::vector<vec4> jitter_data(size * size * samples_u * samples_v / 2);
+
+		int idx = 0;
+
+		float min_u = 1000.0f;
+		float max_u = -1000.0f;
+
+		float min_v = 1000.0f;
+		float max_v = -1000.0f;
+
+		
+		const rgb white = rgb(1.0f);
+		const rgb red = rgb(1.0f, 0.0f, 0.0f);
+		const rgb green = rgb(0.0f, 1.0f, 0.0f);
+		const rgb blue = rgb(0.0f, 0.0f, 1.0f);
+
+		spheres.clear();
+		for(unsigned i = 0; i < 3; ++i) {
+			spheres.add(vec3(0.0f, 0.0f, 0.1f*i));
+			spheres.add(vec3(1.0f, 0.0f, 0.1f*i));
+			spheres.add(vec3(0.0f, 1.0f, 0.1f*i));
+			spheres.add(vec3(1.0f, 1.0f, 0.1f*i));
+		}
+		spheres.fill(white);
+
+
+		for(int i = 0; i < size; i++) {
+			for(int j = 0; j < size; j++) {
+				float rot_offset = ((float)rand() / RAND_MAX - 1) * 2 * 3.1415926f;
+				for(int k = 0; k < samples_u*samples_v / 2; k++) {
+
+					int x, y;
+					vec4 v;
+
+					x = k % (samples_u / 2);
+					y = (samples_v - 1) - k / (samples_u / 2);
+
+					// generate points on a regular samples_u x samples_v rectangular grid
+					v[0] = (float)(x * 2 + 0.5f) / samples_u;
+					v[1] = (float)(y + 0.5f) / samples_v;
+					v[2] = (float)(x * 2 + 1 + 0.5f) / samples_u;
+					v[3] = v[1];
+
+
+
+					if(i == 0 && j == 0) {
+						//spheres.add(vec3(v[0], v[1], 0.0f), red);
+						//spheres.add(vec3(v[2], v[3], 0.0f), red);
+					}
+
+					
+
+					// jitter position
+					v[0] += distr(rng) * (0.5f / samples_u);
+					v[1] += distr(rng) * (0.5f / samples_v);
+					v[2] += distr(rng) * (0.5f / samples_u);
+					v[3] += distr(rng) * (0.5f / samples_v);
+
+
+					if(i == 0 && j == 0) {
+						//spheres.add(vec3(v[0], v[1], 0.1f), green);
+						//spheres.add(vec3(v[2], v[3], 0.1f), green);
+					}
+
+
+
+					min_u = std::min(min_u, v[0]);
+					min_u = std::min(min_u, v[2]);
+					max_u = std::max(max_u, v[0]);
+					max_u = std::max(max_u, v[2]);
+
+					min_v = std::min(min_v, v[1]);
+					min_v = std::min(min_v, v[3]);
+					max_v = std::max(max_v, v[1]);
+					max_v = std::max(max_v, v[3]);
+
+					// warp to disk
+					vec4 d;
+					//d[0] = sqrt(v[1]) * cos(2.0f * M_PI * v[0]);
+					//d[1] = sqrt(v[1]) * sin(2.0f * M_PI * v[0]);
+					//d[2] = sqrt(v[3]) * cos(2.0f * M_PI * v[2]);
+					//d[3] = sqrt(v[3]) * sin(2.0f * M_PI * v[2]);
+					//d = 0.5f * d + 0.5f;
+
+					d = v;
+
+					if(i == 1 && j == 0) {
+						rgb col = k < 2 ? red : green;
+						spheres.add(vec3(d[0], d[1], 0.2f), col);
+						spheres.add(vec3(d[2], d[3], 0.2f), col);
+					}
+
+
+
+					//d[0] = v[0];
+					//d[1] = v[1];
+					//d[2] = v[2];
+					//d[3] = v[3];
+
+					/*if(idx == 0) {
+						d[0] = -1.0f;
+						d[1] = -1.0f;
+						d[2] = +1.0f;
+						d[3] = -1.0f;
+					} else {
+						d[0] = -1.0f;
+						d[1] = +1.0f;
+						d[2] = +1.0f;
+						d[3] = +1.0f;
+					}*/
+
+					idx += 1;
+					idx &= 1;
+
+					//d = 2.0f * d - 1.0f;
+
+					//d[0] = distr(rng);
+					//d[1] = distr(rng);
+					//d[2] = distr(rng);
+					//d[3] = distr(rng);
+
+					jitter_data[(k * size * size + j * size + i)] = static_cast<cvec4>(127.0f * d);
+					//jitter_data[(k * size * size + j * size + i)] = d;
+
+					//jitter_data[(k * size * size + j * size + i) * 4 + 0] = (signed char)(d[0] * 127);
+					//jitter_data[(k * size * size + j * size + i) * 4 + 1] = (signed char)(d[1] * 127);
+					//jitter_data[(k * size * size + j * size + i) * 4 + 2] = (signed char)(d[2] * 127);
+					//jitter_data[(k * size * size + j * size + i) * 4 + 3] = (signed char)(d[3] * 127);
+				}
+
+				int iii = 0;
+			}
+		}
+
+		cgv::data::data_view jitter_dv = cgv::data::data_view(new cgv::data::data_format(size, size, samples_u * samples_v / 2, TI_INT8, cgv::data::CF_RGBA), jitter_data.data());
+		jitter_tex.create(ctx, jitter_dv, 0);
+		jitter_tex.set_wrap_s(TW_REPEAT);
+		jitter_tex.set_wrap_t(TW_REPEAT);
+		jitter_tex.set_wrap_r(TW_REPEAT);
+		jitter_tex.set_min_filter(TF_NEAREST);
+		jitter_tex.set_mag_filter(TF_NEAREST);
+
+
+
+
+
 
 		return success;
 	}
@@ -230,9 +397,8 @@ public:
 
 		
 
-
-
-
+		//spheres.render(ctx, ref_sphere_renderer(ctx), sphere_style);
+		//return;
 
 
 
@@ -300,15 +466,7 @@ public:
 
 		//sphere_style.culling_mode = CM_FRONTFACE;
 		//sr.set_prog(sphere_prog);
-		//irradiance_map.enable(ctx, 0);
-		//prefiltered_specular_map.enable(ctx, 1);
-		//brdf_lut.enable(ctx, 2);
 		//spheres.render(ctx, sr, sphere_style, 1, 2);
-
-		//irradiance_map.enable(ctx, 0);
-		//prefiltered_specular_map.enable(ctx, 1);
-		//brdf_lut.enable(ctx, 2);
-		//depth_map.enable(ctx, 3);
 
 		box_mesh_info.bind(ctx, shaders.get("surface_depth"), true);
 		obj_mesh_info.bind(ctx, shaders.get("surface_depth"), true);
@@ -324,21 +482,12 @@ public:
 		obj_mesh_info.draw_all(ctx, false, false, false);
 		//ctx.pop_modelview_matrix();
 
-		//irradiance_map.disable(ctx);
-		//prefiltered_specular_map.disable(ctx);
-		//brdf_lut.disable(ctx);
-		//depth_map.disable(ctx);
-
-		//irradiance_map.disable(ctx);
-		//prefiltered_specular_map.disable(ctx);
-		//brdf_lut.disable(ctx);
-
 		ctx.pop_projection_matrix();
 		ctx.pop_modelview_matrix();
 
 		depth_map_fb.disable(ctx);
 		
-
+		
 		
 		//glCullFace(GL_BACK);
 
@@ -367,6 +516,7 @@ public:
 			prefiltered_specular_map.enable(ctx, 1);
 			brdf_lut.enable(ctx, 2);
 			depth_map.enable(ctx, 3);
+			jitter_tex.enable(ctx, 4);
 
 			box_mesh_info.bind(ctx, shaders.get("pbr_surface"), true);
 			obj_mesh_info.bind(ctx, shaders.get("pbr_surface"), true);
@@ -391,6 +541,7 @@ public:
 			prefiltered_specular_map.disable(ctx);
 			brdf_lut.disable(ctx);
 			depth_map.disable(ctx);
+			jitter_tex.disable(ctx);
 		}
 
 
