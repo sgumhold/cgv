@@ -153,9 +153,9 @@ std::set&lt; std::string &gt;&#160;</td><td class="memItemRight" valign="bottom"
 <a class="el" href="classcgv_1_1media_1_1mesh_1_1obj__reader__base.html#a84b30587cd5fdfc8a17bccf7ab78e8eb">color_type</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1mesh_1_1obj__reader__base.html#a4e0b20e0fcd5c0617f45c434b2bbbd59">parse_color</a> (const std::vector&lt; <a class="el" href="structcgv_1_1utils_1_1token.html">cgv::utils::token</a> &gt; &amp;t, unsigned off=0) const</td></tr>
 <tr class="memdesc:a4e0b20e0fcd5c0617f45c434b2bbbd59"><td class="mdescLeft">&#160;</td><td class="mdescRight">parse a color, if alpha not given it defaults to 1 <br /></td></tr>
 <tr class="separator:a4e0b20e0fcd5c0617f45c434b2bbbd59"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac841bfa0f65924f4984d64250706a3ec"><td class="memItemLeft" align="right" valign="top"><a id="ac841bfa0f65924f4984d64250706a3ec"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>parse_face</b> (const std::vector&lt; <a class="el" href="structcgv_1_1utils_1_1token.html">cgv::utils::token</a> &gt; &amp;tokens)</td></tr>
-<tr class="separator:ac841bfa0f65924f4984d64250706a3ec"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae6c1d64d72611965d342ed36d7070833"><td class="memItemLeft" align="right" valign="top"><a id="ae6c1d64d72611965d342ed36d7070833"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>parse_face</b> (const std::vector&lt; <a class="el" href="structcgv_1_1utils_1_1token.html">cgv::utils::token</a> &gt; &amp;tokens, bool is_line=false)</td></tr>
+<tr class="separator:ae6c1d64d72611965d342ed36d7070833"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2275e1e0a57902f4098cb261df860a99"><td class="memItemLeft" align="right" valign="top"><a id="a2275e1e0a57902f4098cb261df860a99"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>parse_material</b> (const std::vector&lt; <a class="el" href="structcgv_1_1utils_1_1token.html">cgv::utils::token</a> &gt; &amp;tokens)</td></tr>
 <tr class="separator:a2275e1e0a57902f4098cb261df860a99"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -197,6 +197,9 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1mesh_1_1obj__reader__base.html#aff83e230e74d2e65638b1bb437c82d7d">convert_to_positive</a> (unsigned vcount, int *vertices, int *texcoords, int *normals, unsigned v, unsigned n, unsigned t)</td></tr>
 <tr class="memdesc:aff83e230e74d2e65638b1bb437c82d7d"><td class="mdescLeft">&#160;</td><td class="mdescRight">convert negative indices to positive ones by adding the number of elements <br /></td></tr>
 <tr class="separator:aff83e230e74d2e65638b1bb437c82d7d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1592b07ff5da3b03dd7750cb33e6dc0d"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1mesh_1_1obj__reader__base.html#a1592b07ff5da3b03dd7750cb33e6dc0d">process_line</a> (unsigned vcount, int *vertices, int *texcoords=0, int *normals=0)</td></tr>
+<tr class="memdesc:a1592b07ff5da3b03dd7750cb33e6dc0d"><td class="mdescLeft">&#160;</td><td class="mdescRight">overide this function to process a line strip, the indices start with 0  <a href="classcgv_1_1media_1_1mesh_1_1obj__reader__base.html#a1592b07ff5da3b03dd7750cb33e6dc0d">More...</a><br /></td></tr>
+<tr class="separator:a1592b07ff5da3b03dd7750cb33e6dc0d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acb612714c1a6c8a25597d8db22649b81"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1mesh_1_1obj__reader__base.html#acb612714c1a6c8a25597d8db22649b81">process_face</a> (unsigned vcount, int *vertices, int *texcoords=0, int *normals=0)</td></tr>
 <tr class="memdesc:acb612714c1a6c8a25597d8db22649b81"><td class="mdescLeft">&#160;</td><td class="mdescRight">overide this function to process a face, the indices start with 0  <a href="classcgv_1_1media_1_1mesh_1_1obj__reader__base.html#acb612714c1a6c8a25597d8db22649b81">More...</a><br /></td></tr>
 <tr class="separator:acb612714c1a6c8a25597d8db22649b81"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -307,6 +310,59 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
 <p>overide this function to process a face </p>
 
 <p>Reimplemented in <a class="el" href="classcgv_1_1media_1_1mesh_1_1obj__loader__generic.html#a6a482156cb74eb0ffd342b37510cb516">cgv::media::mesh::obj_loader_generic&lt; T &gt;</a>.</p>
+
+</div>
+</div>
+<a id="a1592b07ff5da3b03dd7750cb33e6dc0d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1592b07ff5da3b03dd7750cb33e6dc0d">&#9670;&nbsp;</a></span>process_line()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void cgv::media::mesh::obj_reader_base::process_line </td>
+          <td>(</td>
+          <td class="paramtype">unsigned&#160;</td>
+          <td class="paramname"><em>vcount</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int *&#160;</td>
+          <td class="paramname"><em>vertices</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int *&#160;</td>
+          <td class="paramname"><em>texcoords</em> = <code>0</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int *&#160;</td>
+          <td class="paramname"><em>normals</em> = <code>0</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>overide this function to process a line strip, the indices start with 0 </p>
+<p>overide this function to process a line given by two indices that start with 0 </p>
+
+<p>Reimplemented in <a class="el" href="classcgv_1_1media_1_1mesh_1_1obj__loader__generic.html#aceebbf54db6e8f650e716519e976a4da">cgv::media::mesh::obj_loader_generic&lt; T &gt;</a>.</p>
 
 </div>
 </div>

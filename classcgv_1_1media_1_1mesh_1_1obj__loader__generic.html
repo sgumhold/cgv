@@ -166,6 +166,10 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1mesh_1_1obj__loader__generic.html#a861fce02390bfa8d3988925ed29ee940">process_color</a> (const <a class="el" href="classcgv_1_1media_1_1color.html">color_type</a> &amp;c)</td></tr>
 <tr class="memdesc:a861fce02390bfa8d3988925ed29ee940"><td class="mdescLeft">&#160;</td><td class="mdescRight">overide this function to process a color (this called for vc prefixes which is is not in the standard but for example used in pobj-files) <br /></td></tr>
 <tr class="separator:a861fce02390bfa8d3988925ed29ee940"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aceebbf54db6e8f650e716519e976a4da"><td class="memItemLeft" align="right" valign="top"><a id="aceebbf54db6e8f650e716519e976a4da"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1mesh_1_1obj__loader__generic.html#aceebbf54db6e8f650e716519e976a4da">process_line</a> (unsigned vcount, int *vertices, int *texcoords=0, int *normals=0)</td></tr>
+<tr class="memdesc:aceebbf54db6e8f650e716519e976a4da"><td class="mdescLeft">&#160;</td><td class="mdescRight">overide this function to process a line <br /></td></tr>
+<tr class="separator:aceebbf54db6e8f650e716519e976a4da"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6a482156cb74eb0ffd342b37510cb516"><td class="memItemLeft" align="right" valign="top"><a id="a6a482156cb74eb0ffd342b37510cb516"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1mesh_1_1obj__loader__generic.html#a6a482156cb74eb0ffd342b37510cb516">process_face</a> (unsigned vcount, int *vertices, int *texcoords=0, int *normals=0)</td></tr>
 <tr class="memdesc:a6a482156cb74eb0ffd342b37510cb516"><td class="mdescLeft">&#160;</td><td class="mdescRight">overide this function to process a face <br /></td></tr>
@@ -205,9 +209,9 @@ helpers for reading</h2></td></tr>
 <a class="el" href="classcgv_1_1media_1_1color.html">color_type</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1mesh_1_1obj__reader__base.html#a4e0b20e0fcd5c0617f45c434b2bbbd59">parse_color</a> (const std::vector&lt; <a class="el" href="structcgv_1_1utils_1_1token.html">cgv::utils::token</a> &gt; &amp;t, unsigned off=0) const</td></tr>
 <tr class="memdesc:a4e0b20e0fcd5c0617f45c434b2bbbd59"><td class="mdescLeft">&#160;</td><td class="mdescRight">parse a color, if alpha not given it defaults to 1 <br /></td></tr>
 <tr class="separator:a4e0b20e0fcd5c0617f45c434b2bbbd59"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac841bfa0f65924f4984d64250706a3ec"><td class="memItemLeft" align="right" valign="top"><a id="ac841bfa0f65924f4984d64250706a3ec"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>parse_face</b> (const std::vector&lt; <a class="el" href="structcgv_1_1utils_1_1token.html">cgv::utils::token</a> &gt; &amp;tokens)</td></tr>
-<tr class="separator:ac841bfa0f65924f4984d64250706a3ec"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae6c1d64d72611965d342ed36d7070833"><td class="memItemLeft" align="right" valign="top"><a id="ae6c1d64d72611965d342ed36d7070833"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>parse_face</b> (const std::vector&lt; <a class="el" href="structcgv_1_1utils_1_1token.html">cgv::utils::token</a> &gt; &amp;tokens, bool is_line=false)</td></tr>
+<tr class="separator:ae6c1d64d72611965d342ed36d7070833"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2275e1e0a57902f4098cb261df860a99"><td class="memItemLeft" align="right" valign="top"><a id="a2275e1e0a57902f4098cb261df860a99"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>parse_material</b> (const std::vector&lt; <a class="el" href="structcgv_1_1utils_1_1token.html">cgv::utils::token</a> &gt; &amp;tokens)</td></tr>
 <tr class="separator:a2275e1e0a57902f4098cb261df860a99"><td class="memSeparator" colspan="2">&#160;</td></tr>

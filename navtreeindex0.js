@@ -75,7 +75,7 @@ var NAVTREEINDEX0 =
 "cgv_2config_2lib__begin_8h_source.html":[12,0,0,1,1],
 "cgv_2data_2lib__begin_8h_source.html":[12,0,0,2,9],
 "cgv_2gui_2lib__begin_8h_source.html":[12,0,0,4,20],
-"cgv_2math_2lib__begin_8h_source.html":[12,0,0,5,21],
+"cgv_2math_2lib__begin_8h_source.html":[12,0,0,5,22],
 "cgv_2media_2font_2lib__begin_8h_source.html":[12,0,0,6,0,2],
 "cgv_2media_2illum_2lib__begin_8h_source.html":[12,0,0,6,1,0],
 "cgv_2media_2image_2lib__begin_8h_source.html":[12,0,0,6,2,6],

@@ -240,6 +240,7 @@ var hierarchy =
     [ "cgv::media::mesh::dc_slice_info< T >", "structcgv_1_1media_1_1mesh_1_1dc__slice__info.html", null ],
     [ "cgv::media::mesh::face_info", "structcgv_1_1media_1_1mesh_1_1face__info.html", null ],
     [ "cgv::media::mesh::group_info", "structcgv_1_1media_1_1mesh_1_1group__info.html", null ],
+    [ "cgv::media::mesh::line_info", "structcgv_1_1media_1_1mesh_1_1line__info.html", null ],
     [ "cgv::media::mesh::obj_reader_base", "classcgv_1_1media_1_1mesh_1_1obj__reader__base.html", [
       [ "cgv::media::mesh::obj_reader_generic< T >", "classcgv_1_1media_1_1mesh_1_1obj__reader__generic.html", [
         [ "cgv::media::mesh::obj_loader_generic< T >", "classcgv_1_1media_1_1mesh_1_1obj__loader__generic.html", null ]

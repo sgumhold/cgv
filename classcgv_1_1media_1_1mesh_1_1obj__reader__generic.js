@@ -16,6 +16,7 @@ var classcgv_1_1media_1_1mesh_1_1obj__reader__generic =
     [ "process_comment", "classcgv_1_1media_1_1mesh_1_1obj__reader__generic.html#a6cfab20fd65a0f0f6dc5fff3e441fc62", null ],
     [ "process_face", "classcgv_1_1media_1_1mesh_1_1obj__reader__generic.html#acb612714c1a6c8a25597d8db22649b81", null ],
     [ "process_group", "classcgv_1_1media_1_1mesh_1_1obj__reader__generic.html#aa8ab93241e89010c51cbca68dd0352b2", null ],
+    [ "process_line", "classcgv_1_1media_1_1mesh_1_1obj__reader__generic.html#a1592b07ff5da3b03dd7750cb33e6dc0d", null ],
     [ "process_material", "classcgv_1_1media_1_1mesh_1_1obj__reader__generic.html#a8011a92a914f5c33343abb7df9c8068b", null ],
     [ "process_normal", "classcgv_1_1media_1_1mesh_1_1obj__reader__generic.html#a2d0d8a56a425143c5422ce6c36c9d793", null ],
     [ "process_texcoord", "classcgv_1_1media_1_1mesh_1_1obj__reader__generic.html#ac9919655aeaa5200fd25ff73f8c8742d", null ],
