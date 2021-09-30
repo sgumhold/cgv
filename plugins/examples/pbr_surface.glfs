@@ -37,8 +37,10 @@ uniform float roughness;
 uniform float shadow_blur;
 
 in vec4 position_eye;
+in vec4 position_model;
 in vec4 position_light_space;
 in vec3 normal_eye;
+in vec3 normal_model;
 in vec2 texcoord_fs;
 in vec4 color_fs;
 
@@ -226,8 +228,8 @@ float compute_shadow_factor(vec4 p_light_space, vec3 normal) {
 
 void main()
 {
-	vec3 p_world = (get_inverse_modelview_matrix() * position_eye).xyz;
-	vec3 n_world = normalize(get_inverse_normal_matrix() * normal_eye);
+	vec3 p_world = position_model.xyz;//(get_inverse_modelview_matrix() * position_eye).xyz;
+	vec3 n_world = normal_model;//normalize(get_inverse_normal_matrix() * normal_eye);
 	
 	//vec4 p_light_space = light_space_matrix * vec4(p_world, 1.0);
 

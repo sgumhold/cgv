@@ -6,10 +6,7 @@
 
 uniform layout(binding = 0) samplerCube environment_map;
 
-in vec3 normal;
-in vec4 color_fs;
 in vec3 position;
-flat in int side;
 
 out vec4 frag_color;
 

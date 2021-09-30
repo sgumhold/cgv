@@ -9,7 +9,6 @@
 #include <cgv/render/drawable.h>
 #include <cgv_gl/gl/gl_context.h>
 #include <cgv_gl/gl/mesh_render_info.h>
-#include <cgv_glutil/box_render_data.h>
 #include <cgv_glutil/sphere_render_data.h>
 #include <cgv_glutil/frame_buffer_container.h>
 #include <cgv_glutil/shader_library.h>
@@ -36,7 +35,6 @@ protected:
 
 	vec2 sun_position;
 
-	cgv::glutil::box_render_data<> boxes;
 	cgv::glutil::sphere_render_data<> spheres;
 	sphere_render_style sphere_style;
 
@@ -60,10 +58,41 @@ protected:
 
 	texture jitter_tex;
 
+	unsigned environment_resolution = 512u;
+	unsigned irradiance_resolution = 32u;
+	unsigned prefiltered_specular_resolution = 128u;
+
+	struct matrix_stack {
+		std::stack<mat4> s;
+
+		matrix_stack() { init(); }
+
+		void init() {
+			mat4 M;
+			M.identity();
+			s.push(M);
+		}
+
+		void push() { s.push(s.top()); }
+
+		void pop() {
+			s.pop();
+			if(s.empty())
+				init();
+		}
+
+		void set(const mat4& M) { s.top() = M; }
+
+		const mat4& get() { return s.top(); }
+
+		void mul(const mat4& M) { set(get() * M); }
+	};
+	
+
 public:
 	environment_demo() : cgv::base::node("environment demo") {
 		view_ptr = nullptr;
-		shaders.add("sky", "sky.glpr");
+		shaders.add("cubemap", "cubemap.glpr");
 		shaders.add("sky_cubemap_gen", "sky_cubemap_gen.glpr");
 		shaders.add("irradiance_map_gen", "irradiance_map_gen.glpr");
 		shaders.add("prefiltered_specular_map_gen", "prefiltered_specular_map_gen.glpr");
@@ -75,7 +104,6 @@ public:
 
 		sun_position = vec2(0.0f, 0.6f);
 
-		boxes = cgv::glutil::box_render_data<>(true);
 		spheres = cgv::glutil::sphere_render_data<>(true);
 		
 		sphere_style.surface_color = rgb(0.5f);
@@ -91,7 +119,7 @@ public:
 		
 		if(member_ptr == &sun_position[0] || member_ptr == &sun_position[1]) {
 			context& ctx = *get_context();
-			generate_sky_cubemap(ctx);
+			generate_ibl_maps(ctx);
 		}
 
 		if(member_ptr == &show_shadow_map) {
@@ -105,19 +133,17 @@ public:
 		return "environment_demo";
 	}
 	void clear(cgv::render::context& ctx) {
-		ref_box_renderer(ctx, -1);
 		ref_sphere_renderer(ctx, -1);
+		spheres.destruct(ctx);
 
 		shaders.clear(ctx);
 	}
 	bool init(cgv::render::context& ctx) {
-		ref_box_renderer(ctx, 1);
 		ref_sphere_renderer(ctx, 1);
 
 		bool success = true;
 		success &= shaders.load_shaders(ctx);
-		success &= boxes.init(ctx);
-
+		
 		if(spheres.init(ctx)) {
 			spheres.add(vec3(0.0f, -50.0f, 0.0f), 50.0f);
 			spheres.add(vec3(0.0f, 0.5f, 0.0f), 0.5f);
@@ -155,36 +181,15 @@ public:
 		depth_map.create(ctx, TT_2D, shadow_map_resolution, shadow_map_resolution);
 		depth_map.set_wrap_s(TW_CLAMP_TO_BORDER);
 		depth_map.set_wrap_t(TW_CLAMP_TO_BORDER);
-		//depth_map.set_wrap_s(TW_CLAMP_TO_EDGE);
-		//depth_map.set_wrap_t(TW_CLAMP_TO_EDGE);
-		//depth_map.set_min_filter(TF_NEAREST);
-		//depth_map.set_mag_filter(TF_NEAREST);
 		depth_map.set_min_filter(TF_LINEAR);
 		depth_map.set_mag_filter(TF_LINEAR);
 		depth_map.set_border_color(1.0f, 1.0f, 1.0f, 1.0f);
 		depth_map.set_compare_mode(!show_shadow_map);
 
-		color_map.set_data_format("flt32[R,G,B]");
-		color_map.create(ctx, TT_2D, shadow_map_resolution, shadow_map_resolution);
-		color_map.set_wrap_s(TW_REPEAT);
-		color_map.set_wrap_t(TW_REPEAT);
-		color_map.set_min_filter(TF_LINEAR);
-		color_map.set_mag_filter(TF_LINEAR);
-		
 		depth_map_fb.create(ctx, shadow_map_resolution, shadow_map_resolution);
 		depth_map_fb.attach(ctx, depth_map);
-		// color buffer is not needed for shadow map but fb with only depth buffer is not valid (solution below still produces framework errors but works fine)
-		//depth_map_fb.attach(ctx, color_map, 0);
-
-		// TODO: make framebuffer option to use no draw buffer (only depth) and make this not throw an error
-		unsigned dmfbo_handle = (unsigned)depth_map_fb.handle - 1;
-		glBindFramebuffer(GL_FRAMEBUFFER, dmfbo_handle);
-		glDrawBuffer(GL_NONE);
-		glReadBuffer(GL_NONE);
-		glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
-		glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
-		generate_sky_cubemap(ctx);
+		
+		
 
 
 
@@ -339,8 +344,10 @@ public:
 		jitter_tex.set_mag_filter(TF_NEAREST);
 
 
-
-
+		glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
+		init_ibl_textures(ctx);
+		generate_ibl_maps(ctx);
+		compute_brdf_lut(ctx);
 
 
 		return success;
@@ -350,6 +357,21 @@ public:
 			if(view_ptr = find_view_as_node()) {}
 		}
 	}
+	mat3 get_normal_matrix(const mat4& M) {
+		cgv::math::fmat<float, 3, 3> NM;
+		NM(0, 0) = M(0, 0);
+		NM(0, 1) = M(0, 1);
+		NM(0, 2) = M(0, 2);
+		NM(1, 0) = M(1, 0);
+		NM(1, 1) = M(1, 1);
+		NM(1, 2) = M(1, 2);
+		NM(2, 0) = M(2, 0);
+		NM(2, 1) = M(2, 1);
+		NM(2, 2) = M(2, 2);
+		NM.transpose();
+		NM = inv(NM);
+		return NM;
+	}
 	void draw(cgv::render::context& ctx) {
 		if(!view_ptr)
 			return;
@@ -357,31 +379,8 @@ public:
 		vec3 eye_pos = vec3(view_ptr->get_eye());
 
 		vec2 resolution(ctx.get_width(), ctx.get_height());
-		auto& sky_prog = shaders.get("sky");
-		sky_prog.enable(ctx);
-		sky_prog.set_uniform(ctx, "resolution", resolution);
-		sky_prog.set_uniform(ctx, "eye_pos", eye_pos);
-		sky_prog.set_uniform(ctx, "sun_pos", sun_position);
-		sky_prog.set_uniform(ctx, "lod", lod);
 
-		glDisable(GL_DEPTH_TEST);
 
-		environment_map.enable(ctx, 0);
-		//irradiance_map.enable(ctx, 0);
-		//prefiltered_specular_map.enable(ctx, 0);
-
-		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-
-		environment_map.disable(ctx);
-		//irradiance_map.disable(ctx);
-		//prefiltered_specular_map.disable(ctx);
-
-		glEnable(GL_DEPTH_TEST);
-		glCullFace(GL_BACK);
-
-		sky_prog.disable(ctx);
-
-		
 
 		//spheres.render(ctx, ref_sphere_renderer(ctx), sphere_style);
 		//return;
@@ -402,28 +401,22 @@ public:
 		bias_matrix.set_col(2, vec4(0.0f, 0.0f, 0.5f, 0.0f));
 		bias_matrix.set_col(3, vec4(0.5f, 0.5f, 0.5f, 1.0f));
 			
+		matrix_stack light_matrix;
+		light_matrix.set(light_view);
+		matrix_stack model_matrix;
+		
+		// at this point the modelview matrix is just the view matrix
+		mat4 view_matrix = ctx.get_modelview_matrix();
+
 		auto& depth_prog = shaders.get("surface_depth");
-		depth_prog.enable(ctx);
-		depth_prog.set_uniform(ctx, "light_space_matrix", light_projection * light_view);
-		depth_prog.disable(ctx);
+		
 
-		auto& pbr_prog = shaders.get("pbr_surface");
-		pbr_prog.enable(ctx);
-		pbr_prog.set_uniform(ctx, "eye_pos", eye_pos);
-		pbr_prog.set_uniform(ctx, "light_dir", light_direction);
-		pbr_prog.set_uniform(ctx, "light_space_matrix", bias_matrix * light_projection * light_view);
-
-		pbr_prog.set_uniform(ctx, "F0", F0);
-		pbr_prog.set_uniform(ctx, "roughness", roughness);
-		pbr_prog.set_uniform(ctx, "shadow_blur", shadow_blur);
-		pbr_prog.disable(ctx);
+		
 
 
 
 		
 
-
-		//glCullFace(GL_FRONT);
 
 		
 
@@ -444,13 +437,36 @@ public:
 		//ctx.push_modelview_matrix();
 		//ctx.mul_modelview_matrix(cgv::math::scale4(vec3(10.0f, 0.2f, 10.0f)));
 		//ctx.mul_modelview_matrix(cgv::math::translate4(vec3(0.0f, -0.1f, 0.0f)));
+
+		light_matrix.push();
+		light_matrix.mul(cgv::math::translate4(vec3(0.0f, -1.5f, 0.0f)));
+
+		depth_prog.enable(ctx);
+		depth_prog.set_uniform(ctx, "light_space_matrix", light_projection * light_matrix.get());
+		depth_prog.disable(ctx);
+
 		box_mesh_info.draw_all(ctx, false, false, false);
+		light_matrix.pop();
 		//ctx.pop_modelview_matrix();
+
+
+
+		light_matrix.push();
+		light_matrix.mul(cgv::math::translate4(vec3(0.0f, 1.0f, 0.0f)));
+		
+		depth_prog.enable(ctx);
+		depth_prog.set_uniform(ctx, "light_space_matrix", light_projection * light_matrix.get());
+		depth_prog.disable(ctx);
+		
 
 		//ctx.push_modelview_matrix();
 		//ctx.mul_modelview_matrix(cgv::math::translate4(vec3(0.0f, 1.0f, 0.0f)));
 		obj_mesh_info.draw_all(ctx, false, false, false);
+		light_matrix.pop();
 		//ctx.pop_modelview_matrix();
+
+		
+
 
 		ctx.pop_projection_matrix();
 		ctx.pop_modelview_matrix();
@@ -459,7 +475,6 @@ public:
 		
 		
 		
-		//glCullFace(GL_BACK);
 
 		// restore previous viewport
 		ctx.pop_window_transformation_array();
@@ -476,11 +491,22 @@ public:
 			depth_map.disable(ctx);
 			//color_map.disable(ctx);
 		} else {
+			auto& pbr_prog = shaders.get("pbr_surface");
+			pbr_prog.enable(ctx);
+			pbr_prog.set_uniform(ctx, "eye_pos", eye_pos);
+			pbr_prog.set_uniform(ctx, "light_dir", light_direction);
+			//pbr_prog.set_uniform(ctx, "light_space_matrix", bias_matrix * light_projection * light_view);
+
+			pbr_prog.set_uniform(ctx, "F0", F0);
+			pbr_prog.set_uniform(ctx, "roughness", roughness);
+			pbr_prog.set_uniform(ctx, "shadow_blur", shadow_blur);
+			pbr_prog.disable(ctx);
 
 			//boxes.render(ctx, ref_box_renderer(ctx), box_style);
 
 			//sphere_style.culling_mode = CM_BACKFACE;
 
+			ctx.push_modelview_matrix();
 
 			irradiance_map.enable(ctx, 0);
 			prefiltered_specular_map.enable(ctx, 1);
@@ -491,17 +517,42 @@ public:
 			box_mesh_info.bind(ctx, shaders.get("pbr_surface"), true);
 			obj_mesh_info.bind(ctx, shaders.get("pbr_surface"), true);
 
-			//ctx.push_modelview_matrix();
-			//ctx.mul_modelview_matrix(cgv::math::scale4(vec3(10.0f, 0.2f, 10.0f)));
-			//ctx.mul_modelview_matrix(cgv::math::translate4(vec3(0.0f, -0.1f, 0.0f)));
-			box_mesh_info.draw_all(ctx, false, false, false);
-			//ctx.pop_modelview_matrix();
+			
+			model_matrix.push();
 
+			//light_matrix.push();
+			//light_matrix.mul(cgv::math::translate4(vec3(0.0f, -1.5f, 0.0f)));
+
+			model_matrix.mul(cgv::math::translate4(vec3(0.0f, -1.5f, 0.0f)));
+			pbr_prog.enable(ctx);
+			pbr_prog.set_uniform(ctx, "model_matrix", model_matrix.get());
+			pbr_prog.set_uniform(ctx, "model_normal_matrix", get_normal_matrix(model_matrix.get()));
+			pbr_prog.set_uniform(ctx, "light_space_matrix", bias_matrix * light_projection * light_matrix.get() * model_matrix.get());
+			pbr_prog.disable(ctx);
+			//ctx.mul_modelview_matrix(cgv::math::scale4(vec3(10.0f, 0.2f, 10.0f)));
+
+			ctx.set_modelview_matrix(view_matrix * model_matrix.get());
+			box_mesh_info.draw_all(ctx, false, false, false);
+
+			//light_matrix.pop();
+			model_matrix.pop();
+
+			model_matrix.push();
+			model_matrix.mul(cgv::math::translate4(vec3(0.0f, 1.0f, 0.0f)));
 			//ctx.push_modelview_matrix();
 			//ctx.mul_modelview_matrix(cgv::math::translate4(vec3(0.0f, 1.0f, 0.0f)));
 			//ctx.mul_modelview_matrix(cgv::math::rotate4(45.0f, vec3(0.0f, 0.0f, 1.0f)));
+
+			pbr_prog.enable(ctx);
+			pbr_prog.set_uniform(ctx, "model_matrix", model_matrix.get());
+			pbr_prog.set_uniform(ctx, "model_normal_matrix", get_normal_matrix(model_matrix.get()));
+			pbr_prog.set_uniform(ctx, "light_space_matrix", bias_matrix * light_projection * light_matrix.get() * model_matrix.get());
+			pbr_prog.disable(ctx);
+
+			ctx.set_modelview_matrix(view_matrix * model_matrix.get());
 			obj_mesh_info.draw_all(ctx, false, false, false);
-			//ctx.pop_modelview_matrix();
+			model_matrix.pop();
+			
 
 			//sphere_prog.set_uniform(ctx, "light_space_matrix", light_projection * light_view);
 			//sphere_prog.set_uniform(ctx, "light_dir", light_direction);
@@ -513,45 +564,48 @@ public:
 			brdf_lut.disable(ctx);
 			depth_map.disable(ctx);
 			jitter_tex.disable(ctx);
+
+
+			ctx.pop_modelview_matrix();
 		}
 
 
 		
+		// lastly render the environment
+		auto& cubemap_prog = shaders.get("cubemap");
+		cubemap_prog.enable(ctx);
+		cubemap_prog.set_uniform(ctx, "resolution", resolution);
+		cubemap_prog.set_uniform(ctx, "eye_pos", eye_pos);
+
+		glDepthFunc(GL_LEQUAL);
+
+		environment_map.enable(ctx, 0);
+		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+		environment_map.disable(ctx);
+
+		glDepthFunc(GL_LESS);
 		
-		
-
-
-
-
-
-
-
-		
-		
-		
+		cubemap_prog.disable(ctx);
 	}
-	void generate_sky_cubemap(context& ctx) {
-		unsigned environment_resolution = 512u;
-		unsigned irradiance_resolution = 32u;
-		unsigned prefiltered_specular_resolution = 128u;
-		unsigned lut_resolution = 512u;
+	bool init_ibl_textures(context& ctx) {
+		bool success = true;
 
 		if(environment_map.is_created()) {
 			environment_map.destruct(ctx);
 		}
 		environment_map.set_data_format("flt32[R,G,B]");
-		environment_map.create(ctx, TT_CUBEMAP, environment_resolution, environment_resolution);
+		success &= environment_map.create(ctx, TT_CUBEMAP, environment_resolution, environment_resolution);
 		environment_map.set_wrap_s(TW_CLAMP_TO_EDGE);
 		environment_map.set_wrap_t(TW_CLAMP_TO_EDGE);
 		environment_map.set_wrap_r(TW_CLAMP_TO_EDGE);
 		environment_map.set_min_filter(TF_LINEAR);
 		environment_map.set_mag_filter(TF_LINEAR);
-		
+
 		if(irradiance_map.is_created()) {
 			irradiance_map.destruct(ctx);
 		}
 		irradiance_map.set_data_format("flt32[R,G,B]");
-		irradiance_map.create(ctx, TT_CUBEMAP, irradiance_resolution, irradiance_resolution);
+		success &= irradiance_map.create(ctx, TT_CUBEMAP, irradiance_resolution, irradiance_resolution);
 		irradiance_map.set_wrap_s(TW_CLAMP_TO_EDGE);
 		irradiance_map.set_wrap_t(TW_CLAMP_TO_EDGE);
 		irradiance_map.set_wrap_r(TW_CLAMP_TO_EDGE);
@@ -562,13 +616,89 @@ public:
 			prefiltered_specular_map.destruct(ctx);
 		}
 		prefiltered_specular_map.set_data_format("flt32[R,G,B]");
-		prefiltered_specular_map.create(ctx, TT_CUBEMAP, prefiltered_specular_resolution, prefiltered_specular_resolution);
+		success &= prefiltered_specular_map.create(ctx, TT_CUBEMAP, prefiltered_specular_resolution, prefiltered_specular_resolution);
 		prefiltered_specular_map.set_wrap_s(TW_CLAMP_TO_EDGE);
 		prefiltered_specular_map.set_wrap_t(TW_CLAMP_TO_EDGE);
 		prefiltered_specular_map.set_wrap_r(TW_CLAMP_TO_EDGE);
 		prefiltered_specular_map.set_min_filter(TF_LINEAR_MIPMAP_LINEAR);
 		prefiltered_specular_map.set_mag_filter(TF_LINEAR);
 		prefiltered_specular_map.generate_mipmaps(ctx);
+
+		return success;
+	}
+	void generate_ibl_maps(context& ctx) {
+		
+		glDisable(GL_DEPTH_TEST);
+
+		// create a frame buffer object to capture the computed values for al IBL maps
+		frame_buffer capture_fbo;
+		capture_fbo.create(ctx, 0, 0);
+		
+		// safe default viewport and configure the viewport to the capture dimensions of the environment map
+		ctx.push_window_transformation_array();
+		ctx.set_viewport(ivec4(0, 0, environment_resolution, environment_resolution));
+
+		auto& sky_cubemap_gen = shaders.get("sky_cubemap_gen");
+		sky_cubemap_gen.set_uniform(ctx, "sun_pos", sun_position);
+
+		unsigned fbo_id = (unsigned)capture_fbo.handle - 1;
+		glBindFramebuffer(GL_FRAMEBUFFER, fbo_id);
+
+		glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, (unsigned)environment_map.handle - 1, 0);
+
+		glClear(GL_COLOR_BUFFER_BIT);
+
+		sky_cubemap_gen.enable(ctx);
+		glDrawArrays(GL_POINTS, 0, 6);
+		sky_cubemap_gen.disable(ctx);
+
+		// configure the viewport to the capture dimensions of the irradiance map
+		ctx.set_viewport(ivec4(0, 0, irradiance_resolution, irradiance_resolution));
+
+		environment_map.enable(ctx, 0);
+
+		auto& irradiance_map_gen = shaders.get("irradiance_map_gen");
+
+		glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, (unsigned)irradiance_map.handle - 1, 0);
+		glClear(GL_COLOR_BUFFER_BIT);
+
+		irradiance_map_gen.enable(ctx);
+		glDrawArrays(GL_POINTS, 0, 6);
+		irradiance_map_gen.disable(ctx);
+
+		auto& prefiltered_specular_map_gen = shaders.get("prefiltered_specular_map_gen");
+
+		unsigned int maxMipLevels = 5;
+		for(unsigned int mip = 0; mip < maxMipLevels; ++mip) {
+			unsigned int mip_resolution = prefiltered_specular_resolution * std::pow(0.5, mip);
+			// configure the viewport to the capture dimensions of the prefiltered specular map mipmap level
+			ctx.set_viewport(ivec4(0, 0, mip_resolution, mip_resolution));
+
+			float roughness = (float)mip / (float)(maxMipLevels - 1);
+			prefiltered_specular_map_gen.set_uniform(ctx, "roughness", roughness);
+
+			glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, (unsigned)prefiltered_specular_map.handle - 1, mip);
+			glClear(GL_COLOR_BUFFER_BIT);
+
+			prefiltered_specular_map_gen.enable(ctx);
+			glDrawArrays(GL_POINTS, 0, 6);
+			prefiltered_specular_map_gen.disable(ctx);
+
+		}
+
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+			
+		environment_map.disable(ctx);
+		
+		glEnable(GL_DEPTH_TEST);
+
+		capture_fbo.destruct(ctx);
+		
+		// restore previous viewport
+		ctx.pop_window_transformation_array();
+	}
+	void compute_brdf_lut(context& ctx) {
+		unsigned lut_resolution = 512u;
 
 		if(brdf_lut.is_created()) {
 			brdf_lut.destruct(ctx);
@@ -580,110 +710,15 @@ public:
 		brdf_lut.set_min_filter(TF_LINEAR);
 		brdf_lut.set_mag_filter(TF_LINEAR);
 
-		frame_buffer env_fb, irr_fb, pfs_fb, lut_fb;
-		env_fb.create(ctx, environment_resolution, environment_resolution);
-		irr_fb.create(ctx, irradiance_resolution, irradiance_resolution);
-		pfs_fb.create(ctx, prefiltered_specular_resolution, prefiltered_specular_resolution);
+		frame_buffer lut_fb;
 		lut_fb.create(ctx, lut_resolution, lut_resolution);
-
 		lut_fb.attach(ctx, brdf_lut, 0);
 
-		cgv::glutil::box_render_data<> box(true);
-		box.init(ctx);
-		box.add(vec3(0.0f), vec3(2.0f));
-		box.set_out_of_date();
-
-		mat4 capture_projection = cgv::math::perspective4(90.0f, 1.0f, 0.1f, 10.0f);
-		mat4 capture_views[] =
-		{
-		   cgv::math::look_at4(vec3(0.0f, 0.0f, 0.0f), vec3(1.0f,  0.0f,  0.0f), vec3(0.0f, -1.0f,  0.0f)),
-		   cgv::math::look_at4(vec3(0.0f, 0.0f, 0.0f), vec3(-1.0f,  0.0f,  0.0f), vec3(0.0f, -1.0f,  0.0f)),
-		   cgv::math::look_at4(vec3(0.0f, 0.0f, 0.0f), vec3(0.0f,  1.0f,  0.0f), vec3(0.0f,  0.0f,  1.0f)),
-		   cgv::math::look_at4(vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, -1.0f,  0.0f), vec3(0.0f,  0.0f, -1.0f)),
-		   cgv::math::look_at4(vec3(0.0f, 0.0f, 0.0f), vec3(0.0f,  0.0f,  1.0f), vec3(0.0f, -1.0f,  0.0f)),
-		   cgv::math::look_at4(vec3(0.0f, 0.0f, 0.0f), vec3(0.0f,  0.0f, -1.0f), vec3(0.0f, -1.0f,  0.0f))
-		};
-		
-		auto& br = ref_box_renderer(ctx);
-	
-		glDisable(GL_DEPTH_TEST);
-		glCullFace(GL_BACK);
-
-		ctx.push_projection_matrix();
-		ctx.push_modelview_matrix();
-		ctx.set_projection_matrix(capture_projection);
-		
-		// safe default viewport and configure the viewport to the capture dimensions
+		// safe main viewport and set viewport to lut resolution
 		ctx.push_window_transformation_array();
-		ctx.set_viewport(ivec4(0, 0, environment_resolution, environment_resolution));
-
-		auto& sky_cubemap_gen = shaders.get("sky_cubemap_gen");
-		sky_cubemap_gen.set_uniform(ctx, "sun_pos", sun_position);
-
-		for(unsigned int i = 0; i < 6; ++i) {
-			ctx.set_modelview_matrix(capture_views[i]);
-			
-			env_fb.attach(ctx, environment_map, i, 0, 0);
-			env_fb.enable(ctx, 0);
-			glClear(GL_COLOR_BUFFER_BIT);
-
-			br.set_prog(sky_cubemap_gen);
-			box.render(ctx, br, box_render_style());
-
-			env_fb.disable(ctx);
-		}
-
-		// configure the viewport to the capture dimensions
-		ctx.set_viewport(ivec4(0, 0, irradiance_resolution, irradiance_resolution));
-
-		auto& irradiance_map_gen = shaders.get("irradiance_map_gen");
-		
-		environment_map.enable(ctx, 0);
-
-		for(unsigned int i = 0; i < 6; ++i) {
-			ctx.set_modelview_matrix(capture_views[i]);
-
-			irr_fb.attach(ctx, irradiance_map, i, 0, 0);
-			irr_fb.enable(ctx, 0);
-			glClear(GL_COLOR_BUFFER_BIT);
-
-			br.set_prog(irradiance_map_gen);
-			box.render(ctx, br, box_render_style());
-
-			irr_fb.disable(ctx);
-		}
-		
-		auto& prefiltered_specular_map_gen = shaders.get("prefiltered_specular_map_gen");
-
-		unsigned int maxMipLevels = 5;
-		for(unsigned int mip = 0; mip < maxMipLevels; ++mip) {
-			unsigned int mipWidth = prefiltered_specular_resolution * std::pow(0.5, mip);
-			unsigned int mipHeight = prefiltered_specular_resolution * std::pow(0.5, mip);
-			glViewport(0, 0, mipWidth, mipHeight);
-
-			float roughness = (float)mip / (float)(maxMipLevels - 1);
-			prefiltered_specular_map_gen.set_uniform(ctx, "roughness", roughness);
-			for(unsigned int i = 0; i < 6; ++i) {
-				ctx.set_modelview_matrix(capture_views[i]);
-
-				pfs_fb.attach(ctx, prefiltered_specular_map, i, mip, 0);
-				pfs_fb.enable(ctx, 0);
-				
-				glClear(GL_COLOR_BUFFER_BIT);
-
-				br.set_prog(prefiltered_specular_map_gen);
-				box.render(ctx, br, box_render_style());
-
-				pfs_fb.disable(ctx);
-			}
-		}
-
-		environment_map.disable(ctx);
-		
-		ctx.pop_projection_matrix();
-		ctx.pop_modelview_matrix();
-
 		ctx.set_viewport(ivec4(0, 0, lut_resolution, lut_resolution));
+
+		glDisable(GL_DEPTH_TEST);
 
 		lut_fb.enable(ctx, 0);
 		glClear(GL_COLOR_BUFFER_BIT);
@@ -699,9 +734,7 @@ public:
 
 		glEnable(GL_DEPTH_TEST);
 
-		env_fb.destruct(ctx);
-		irr_fb.destruct(ctx);
-		pfs_fb.destruct(ctx);
+		lut_fb.destruct(ctx);
 
 		// restore previous viewport
 		ctx.pop_window_transformation_array();
@@ -744,5 +777,5 @@ public:
 #include <cgv/base/register.h>
 
 /// register a factory to create new rounded cone texturing tests
-cgv::base::factory_registration<environment_demo> environment_demo_fac("new/demo/environment_demo");
-//cgv::base::object_registration<environment_demo> environment_demo_fac("new/demo/environment_demo");
+//cgv::base::factory_registration<environment_demo> environment_demo_fac("new/demo/environment_demo");
+cgv::base::object_registration<environment_demo> environment_demo_fac("new/demo/environment_demo");
