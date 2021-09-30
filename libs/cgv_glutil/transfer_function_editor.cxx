@@ -35,10 +35,12 @@ transfer_function_editor::transfer_function_editor() {
 	fbc.add_attachment("color", "flt32[R,G,B,A]");
 	fbc.set_size(get_overlay_size());
 
-	shaders.add("rectangle", "rect2d.glpr");
-	shaders.add("circle", "circle2d.glpr");
-	shaders.add("histogram", "hist2d.glpr");
-	shaders.add("background", "bg2d.glpr");
+	canvas.register_shader("rectangle", "rect2d.glpr");
+	canvas.register_shader("circle", "circle2d.glpr");
+	canvas.register_shader("histogram", "hist2d.glpr");
+	canvas.register_shader("background", "bg2d.glpr");
+
+	overlay_canvas.register_shader("rectangle", "rect2d.glpr");
 
 	show = true;
 
@@ -62,6 +64,7 @@ transfer_function_editor::transfer_function_editor() {
 
 	line_renderer = generic_renderer("line2d.glpr");
 	polygon_renderer = generic_renderer("poly2d.glpr");
+	point_renderer = generic_renderer("circle2d.glpr");
 }
 
 bool transfer_function_editor::on_exit_request() {
@@ -73,7 +76,8 @@ bool transfer_function_editor::on_exit_request() {
 
 void transfer_function_editor::clear(cgv::render::context& ctx) {
 
-	shaders.clear(ctx);
+	canvas.destruct(ctx);
+	overlay_canvas.destruct(ctx);
 	fbc.clear(ctx);
 }
 
@@ -264,52 +268,14 @@ bool transfer_function_editor::init(cgv::render::context& ctx) {
 	bool success = true;
 
 	success &= fbc.ensure(ctx);
-	success &= shaders.load_shaders(ctx);
+	success &= canvas.init(ctx);
+	success &= overlay_canvas.init(ctx);
 	success &= line_renderer.init(ctx);
 	success &= polygon_renderer.init(ctx);
+	success &= point_renderer.init(ctx);
 
-	shader_program& rect_prog = shaders.get("rectangle");
-	rect_prog.enable(ctx);
-	rect_prog.set_uniform(ctx, "tex", 0);
-	rect_prog.set_uniform(ctx, "use_blending", false);
-	rect_prog.set_uniform(ctx, "use_color", true);
-	rect_prog.set_uniform(ctx, "apply_gamma", false);
-	rect_prog.disable(ctx);
-
-	shader_program& point_prog = shaders.get("circle");
-	point_prog.enable(ctx);
-	point_prog.set_uniform(ctx, "use_blending", true);
-	point_prog.set_uniform(ctx, "use_color", true);
-	point_prog.set_uniform(ctx, "apply_gamma", false);
-	point_prog.disable(ctx);
-
-	shader_program& poly_prog = polygon_renderer.ref_prog();
-	poly_prog.enable(ctx);
-	poly_prog.set_uniform(ctx, "use_blending", true);
-	poly_prog.set_uniform(ctx, "apply_gamma", false);
-	poly_prog.disable(ctx);
-
-	shader_program& line_prog = line_renderer.ref_prog();
-	line_prog.enable(ctx);
-	line_prog.set_uniform(ctx, "use_blending", true);
-	line_prog.set_uniform(ctx, "apply_gamma", false);
-	line_prog.set_uniform(ctx, "width", 3.0f);
-	line_prog.disable(ctx);
-
-	shader_program& hist_prog = shaders.get("histogram");
-	hist_prog.enable(ctx);
-	hist_prog.set_uniform(ctx, "use_blending", true);
-	hist_prog.set_uniform(ctx, "apply_gamma", false);
-	hist_prog.disable(ctx);
-
-	shader_program& bg_prog = shaders.get("background");
-	bg_prog.enable(ctx);
-	bg_prog.set_uniform(ctx, "tex", 0);
-	bg_prog.set_uniform(ctx, "use_blending", false);
-	bg_prog.set_uniform(ctx, "use_color", false);
-	bg_prog.set_uniform(ctx, "apply_gamma", false);
-	bg_prog.set_uniform(ctx, "scale_exponent", 1.0f);
-	bg_prog.disable(ctx);
+	if(success)
+		init_styles(ctx);
 
 	if(!load_from_xml(file_name))
 		tfc.reset();
@@ -338,34 +304,14 @@ void transfer_function_editor::init_frame(cgv::render::context& ctx) {
 		fbc.set_size(container_size);
 		fbc.ensure(ctx);
 
-		shader_program& point_prog = shaders.get("circle");
-		point_prog.enable(ctx);
-		point_prog.set_uniform(ctx, "resolution", container_size);
-		point_prog.disable(ctx);
+		canvas.set_resolution(ctx, container_size);
+		overlay_canvas.set_resolution(ctx, get_viewport_size());
 
-		shader_program& poly_prog = polygon_renderer.ref_prog();
-		poly_prog.enable(ctx);
-		poly_prog.set_uniform(ctx, "resolution", container_size);
-		poly_prog.disable(ctx);
-
-		shader_program& line_prog = line_renderer.ref_prog();
-		line_prog.enable(ctx);
-		line_prog.set_uniform(ctx, "resolution", container_size);
-		line_prog.disable(ctx);
-
-		shader_program& hist_prog = shaders.get("histogram");
-		hist_prog.enable(ctx);
-		hist_prog.set_uniform(ctx, "resolution", container_size);
-		hist_prog.set_uniform(ctx, "position", ivec2(layout.padding));
-		hist_prog.set_uniform(ctx, "size", layout.editor_rect.size());
-		hist_prog.disable(ctx);
-
-		shader_program& bg_prog = shaders.get("background");
-		bg_prog.enable(ctx);
-		bg_prog.set_uniform(ctx, "resolution", container_size);
-		bg_prog.set_uniform(ctx, "position", ivec2(layout.editor_rect.pos()));
-		bg_prog.set_uniform(ctx, "size", layout.editor_rect.size());
-		bg_prog.disable(ctx);
+		auto& bg_prog = canvas.enable_shader(ctx, "background");
+		float width_factor = static_cast<float>(layout.editor_rect.size().x()) / static_cast<float>(layout.editor_rect.size().y());
+		bg_style.texcoord_scaling = vec2(5.0f * width_factor, 5.0f);
+		bg_style.apply(ctx, bg_prog);
+		canvas.disable_current_shader(ctx);
 
 		update_point_positions();
 		sort_points();
@@ -387,146 +333,93 @@ void transfer_function_editor::draw(cgv::render::context& ctx) {
 
 	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
-
+	
 	ivec2 container_size = get_overlay_size();
-
-	// TODO: should there be a border orign like the feather origin?
-	shader_program& rect_prog = shaders.get("rectangle");
-	rect_prog.enable(ctx);
-	rect_prog.set_uniform(ctx, "resolution", container_size);
-	rect_prog.set_uniform(ctx, "use_color", true);
-	rect_prog.set_uniform(ctx, "use_blending", false);
-	rect_prog.set_uniform(ctx, "apply_gamma", false);
-	rect_prog.set_uniform(ctx, "position", ivec2(0));
-	rect_prog.set_uniform(ctx, "size", container_size);
-	rect_prog.set_uniform(ctx, "color", vec4(0.9f, 0.9f, 0.9f, 1.0f));
-	rect_prog.set_uniform(ctx, "border_color", vec4(0.2f, 0.2f, 0.2f, 1.0f));
-	rect_prog.set_uniform(ctx, "border_width", 1.0f);
-	rect_prog.set_uniform(ctx, "feather_width", 0.0f);
-
-	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+	
+	// draw container
+	auto& rect_prog = canvas.enable_shader(ctx, "rectangle");
+	container_style.apply(ctx, rect_prog);
+	canvas.draw_shape(ctx, ivec2(0), container_size);
 	
 	// draw inner border
-	rect_prog.set_uniform(ctx, "position", ivec2(layout.padding - 1));
-	rect_prog.set_uniform(ctx, "size", container_size - 2*layout.padding + 2);
-	rect_prog.set_uniform(ctx, "color", vec4(0.2f, 0.2f, 0.2f, 1.0f));
-	rect_prog.set_uniform(ctx, "border_width", 0.0f);
+	border_style.apply(ctx, rect_prog);
+	canvas.draw_shape(ctx, ivec2(layout.padding - 1), container_size - 2*layout.padding + 2);
 	
-	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-
 	// draw color scale texture
-	rect_prog.set_uniform(ctx, "use_color", false);
-	rect_prog.set_uniform(ctx, "position", layout.color_scale_rect.pos());
-	rect_prog.set_uniform(ctx, "size", layout.color_scale_rect.size());
-	rect_prog.set_uniform(ctx, "tex_scaling", vec2(1.0f));
-	rect_prog.set_uniform(ctx, "apply_gamma", false);
-
+	color_scale_style.apply(ctx, rect_prog);
 	tfc.tex.enable(ctx, 0);
-	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+	canvas.draw_shape(ctx, layout.color_scale_rect.pos(), layout.color_scale_rect.size());
 	tfc.tex.disable(ctx);
-
-	rect_prog.disable(ctx);
+	canvas.disable_current_shader(ctx);
 
 	// draw editor checkerboard background
-	shader_program& bg_prog = shaders.get("background");
-	bg_prog.enable(ctx);
-	bg_prog.set_uniform(ctx, "tex", 0);
-	bg_prog.set_uniform(ctx, "feather_width", 0.0f);
-	float width_factor = static_cast<float>(layout.editor_rect.size().x()) / static_cast<float>(layout.editor_rect.size().y());
-	bg_prog.set_uniform(ctx, "tex_scaling", vec2(5.0f * width_factor, 5.0f));
+	auto& bg_prog = canvas.enable_shader(ctx, "background");
 	bg_prog.set_uniform(ctx, "scale_exponent", opacity_scale_exponent);
-	
 	bg_tex.enable(ctx, 0);
-	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+	canvas.draw_shape(ctx, layout.editor_rect.pos(), layout.editor_rect.size());
 	bg_tex.disable(ctx);
-	bg_prog.disable(ctx);
+	canvas.disable_current_shader(ctx);
 
-	// draw histogranm texture
+	// draw histogram texture
 	if(show_histogram && tfc.hist_tex.is_created()) {
-		shader_program& hist_prog = shaders.get("histogram");
-		hist_prog.enable(ctx);
-		hist_prog.set_uniform(ctx, "hist_tex", 0);
-		hist_prog.set_uniform(ctx, "position", layout.editor_rect.pos());
-		hist_prog.set_uniform(ctx, "size", layout.editor_rect.size());
+		hist_style.fill_color = histogram_color;
+		hist_style.border_color = histogram_border_color;
+		hist_style.border_width = histogram_border_width;
+
+		auto& hist_prog = canvas.enable_shader(ctx, "histogram");
 		hist_prog.set_uniform(ctx, "max_value", tfc.hist_max);
 		hist_prog.set_uniform(ctx, "nearest_linear_mix", histogram_smoothing);
+		hist_style.apply(ctx, hist_prog);
 
-		hist_prog.set_uniform(ctx, "color", histogram_color);
-		hist_prog.set_uniform(ctx, "border_color", histogram_border_color);
-		hist_prog.set_uniform(ctx, "border_width_in_pixel", histogram_border_width);
-		hist_prog.set_uniform(ctx, "feather_width", 0.0f);
-
-		tfc.hist_tex.enable(ctx, 0);
-		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+		tfc.hist_tex.enable(ctx, 1);
+		canvas.draw_shape(ctx, layout.editor_rect.pos(), layout.editor_rect.size());
 		tfc.hist_tex.disable(ctx);
-
-		hist_prog.disable(ctx);
+		canvas.disable_current_shader(ctx);
 	}
 
 	// draw transfer function area polygon
+	auto& poly_prog = polygon_renderer.ref_prog();
+	poly_prog.enable(ctx);
+	canvas.set_view(ctx, poly_prog);
+	poly_prog.disable(ctx);
 	polygon_renderer.render(ctx, PT_TRIANGLE_STRIP, tfc.triangles);
+
 	// draw transfer function lines
+	auto& line_prog = line_renderer.ref_prog();
+	line_prog.enable(ctx);
+	canvas.set_view(ctx, line_prog);
+	line_prog.disable(ctx);
 	line_renderer.render(ctx, PT_LINE_STRIP, tfc.lines);
 
 	// draw separator line
-	rect_prog.enable(ctx);
-	rect_prog.set_uniform(ctx, "position", ivec2(
-		layout.color_scale_rect.pos().x(),
-		layout.color_scale_rect.box.get_max_pnt().y()
-	));
-	rect_prog.set_uniform(ctx, "size", ivec2(container_size.x() - 2 * layout.padding, 1));
-	rect_prog.set_uniform(ctx, "color", vec4(0.2f, 0.2f, 0.2f, 1.0f));
-	rect_prog.set_uniform(ctx, "use_color", true);
-	rect_prog.set_uniform(ctx, "use_blending", true);
-
-	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-	rect_prog.disable(ctx);
+	rect_prog = canvas.enable_shader(ctx, "rectangle");
+	border_style.apply(ctx, rect_prog);
+	canvas.draw_shape(ctx,
+		ivec2(layout.color_scale_rect.pos().x(), layout.color_scale_rect.box.get_max_pnt().y()),
+		ivec2(container_size.x() - 2 * layout.padding, 1)
+	);
+	canvas.disable_current_shader(ctx);
 
 	// draw control points
-	shader_program& point_prog = shaders.get("circle");
+	auto& point_prog = point_renderer.ref_prog();
 	point_prog.enable(ctx);
-	
-	point_prog.set_uniform(ctx, "position_is_center", true);
-	point_prog.set_uniform(ctx, "border_color", rgba(0.2f, 0.2f, 0.2f, 1.0f));
-	point_prog.set_uniform(ctx, "border_width", 1.5f);
-	
-	for(unsigned i = 0; i < tfc.points.size(); ++i) {
-		const point& p = tfc.points[i];
-
-		ivec2 pos = p.get_render_position();
-		ivec2 size = p.get_render_size();
-
-		point_prog.set_uniform(ctx, "position", pos);
-		point_prog.set_uniform(ctx, "size", size);
-		point_prog.set_uniform(ctx, "color",
-			tfc.points.get_selected() == &p ? vec4(0.5f, 0.5f, 0.5f, 1.0f) : vec4(0.9f, 0.9f, 0.9f, 1.0f)
-		);
-
-		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-	}
-
+	canvas.set_view(ctx, point_prog);
+	// size is constant for all points
+	point_prog.set_attribute(ctx, "size", vec2(tfc.points[0].get_render_size()));
 	point_prog.disable(ctx);
-	
+	point_renderer.render(ctx, PT_POINTS, tfc.point_geometry);
+
 	glDisable(GL_BLEND);
 
 	fbc.disable(ctx);
 
 	// draw frame buffer texture to screen
-	rect_prog.enable(ctx);
-	rect_prog.set_uniform(ctx, "resolution", get_viewport_size());
-	rect_prog.set_uniform(ctx, "position", get_overlay_position());
-	rect_prog.set_uniform(ctx, "size", container_size);
-	rect_prog.set_uniform(ctx, "border_width", 0.0f);
-	rect_prog.set_uniform(ctx, "feather_width", 0.0f);
-	rect_prog.set_uniform(ctx, "use_color", false);
-	rect_prog.set_uniform(ctx, "use_blending", false);
-	rect_prog.set_uniform(ctx, "apply_gamma", true);
-	
+	auto& final_prog = overlay_canvas.enable_shader(ctx, "rectangle");
 	fbc.enable_attachment(ctx, "color", 0);
-	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+	overlay_canvas.draw_shape(ctx, get_overlay_position(), container_size);
 	fbc.disable_attachment(ctx, "color");
 
-	rect_prog.disable(ctx);
+	overlay_canvas.disable_current_shader(ctx);
 
 	// draw cursor decorators to show interaction hints
 	if(mouse_is_on_overlay && show_cursor) {
@@ -620,6 +513,98 @@ bool transfer_function_editor::set_histogram(const std::vector<unsigned>& data) 
 	return true;
 }
 
+void transfer_function_editor::init_styles(context& ctx) {
+
+	// configure style for the container rectangle
+	container_style.apply_gamma = false;
+	container_style.fill_color = rgba(0.9f, 0.9f, 0.9f, 1.0f);
+	container_style.border_color = rgba(0.2f, 0.2f, 0.2f, 1.0f);
+	container_style.border_width = 1.0f;
+	container_style.feather_width = 0.0f;
+	
+	// configure style for the border rectangles
+	border_style = container_style;
+	border_style.fill_color = rgba(0.2f, 0.2f, 0.2f, 1.0f);
+	border_style.border_width = 0.0f;
+	
+	// configure style for the color scale rectangle
+	color_scale_style = border_style;
+	color_scale_style.use_texture = true;
+
+	// configure style for background
+	bg_style.use_texture = true;
+	bg_style.apply_gamma = false;
+	bg_style.feather_width = 0.0f;
+	bg_style.texcoord_scaling = vec2(5.0f, 5.0f);
+
+	auto& bg_prog = canvas.enable_shader(ctx, "background");
+	bg_prog.set_uniform(ctx, "scale_exponent", opacity_scale_exponent);
+	bg_style.apply(ctx, bg_prog);
+	canvas.disable_current_shader(ctx);
+
+	// configure style for histogram
+	hist_style.use_blending = true;
+	hist_style.apply_gamma = false;
+	hist_style.feather_width = 0.0f;
+
+	auto& hist_prog = canvas.enable_shader(ctx, "histogram");
+	hist_style.apply(ctx, hist_prog);
+	canvas.disable_current_shader(ctx);
+
+	// configure style for control points
+	cgv::glutil::shape2d_style point_style;
+	point_style.use_blending = true;
+	point_style.apply_gamma = false;
+	point_style.use_fill_color = false;
+	point_style.position_is_center = true;
+	point_style.border_color = rgba(0.2f, 0.2f, 0.2f, 1.0f);
+	point_style.border_width = 1.5f;
+
+	auto& point_prog = point_renderer.ref_prog();
+	point_prog.enable(ctx);
+	point_style.apply(ctx, point_prog);
+	point_prog.disable(ctx);
+
+	// configure style for the lines and polygon
+	cgv::glutil::line2d_style line_style;
+	line_style.use_blending = true;
+	line_style.use_fill_color = false;
+	line_style.apply_gamma = false;
+	line_style.width = 3.0f;
+
+	auto& line_prog = line_renderer.ref_prog();
+	line_prog.enable(ctx);
+	line_style.apply(ctx, line_prog);
+	line_prog.disable(ctx);
+
+	auto& poly_prog = polygon_renderer.ref_prog();
+	poly_prog.enable(ctx);
+	cgv::glutil::shape2d_style poly_style = static_cast<cgv::glutil::shape2d_style>(line_style);
+	poly_style.apply(ctx, poly_prog);
+	poly_prog.disable(ctx);
+
+	// configure style for final blitting of overlay into main frame buffer
+	cgv::glutil::shape2d_style final_style;
+	final_style.fill_color = rgba(1.0f);
+	final_style.use_texture = true;
+	final_style.use_blending = false;
+	final_style.feather_width = 0.0f;
+
+	auto& final_prog = overlay_canvas.enable_shader(ctx, "rectangle");
+	final_style.apply(ctx, final_prog);
+	overlay_canvas.disable_current_shader(ctx);
+}
+
+void transfer_function_editor::init_transfer_function_texture(context& ctx) {
+
+	std::vector<uint8_t> data(resolution * 4, 0u);
+
+	tf_tex.destruct(ctx);
+	cgv::data::data_view tf_dv = cgv::data::data_view(new cgv::data::data_format(resolution, TI_UINT8, cgv::data::CF_RGBA), data.data());
+	tf_tex = texture("uint8[R,G,B,A]", TF_LINEAR, TF_LINEAR);
+	tf_tex.create(ctx, tf_dv, 0);
+}
+
 void transfer_function_editor::add_point(const vec2& pos) {
 
 	point p;
@@ -660,16 +645,6 @@ transfer_function_editor::point* transfer_function_editor::get_hit_point(const t
 	}
 
 	return hit;
-}
-
-void transfer_function_editor::init_transfer_function_texture(context& ctx) {
-
-	std::vector<uint8_t> data(resolution * 4, 0u);
-
-	tf_tex.destruct(ctx);
-	cgv::data::data_view tf_dv = cgv::data::data_view(new cgv::data::data_format(resolution, TI_UINT8, cgv::data::CF_RGBA), data.data());
-	tf_tex = texture("uint8[R,G,B,A]", TF_LINEAR, TF_LINEAR);
-	tf_tex.create(ctx, tf_dv, 0);
 }
 
 void transfer_function_editor::handle_drag() {
@@ -819,9 +794,11 @@ bool transfer_function_editor::update_geometry() {
 	auto& points = tfc.points;
 	auto& lines = tfc.lines;
 	auto& triangles = tfc.triangles;
+	auto& point_geometry = tfc.point_geometry;
 
-	triangles.clear();
 	lines.clear();
+	triangles.clear();
+	point_geometry.clear();
 	
 	bool success = true;
 
@@ -835,13 +812,16 @@ bool transfer_function_editor::update_geometry() {
 		triangles.add(layout.editor_rect.pos(), coll);
 
 		for(unsigned i = 0; i < points.size(); ++i) {
-			vec2 pos = points[i].center();
+			const auto& p = points[i];
+			vec2 pos = p.center();
 			rgba col = tf.interpolate(points[i].val.x());
 
 			lines.add(pos, rgb(col));
-			
 			triangles.add(pos, col);
 			triangles.add(vec2(pos.x(), layout.editor_rect.pos().y()), col);
+			point_geometry.add(pos,
+				tfc.points.get_selected() == &p ? rgba(0.5f, 0.5f, 0.5f, 1.0f) : rgba(0.9f, 0.9f, 0.9f, 1.0f)
+			);
 		}
 
 		const point& pr = points[points.size() - 1];
@@ -855,6 +835,7 @@ bool transfer_function_editor::update_geometry() {
 
 		lines.set_out_of_date();
 		triangles.set_out_of_date();
+		point_geometry.set_out_of_date();
 
 	} else {
 		success = false;

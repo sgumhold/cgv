@@ -1,0 +1,40 @@
+#version 330 
+
+const vec3 origins[6] = vec3[6](
+	vec3(+1.0, +1.0, +1.0),
+	vec3(-1.0, +1.0, -1.0),
+	vec3(-1.0, +1.0, -1.0),
+	vec3(-1.0, -1.0, +1.0),
+	vec3(-1.0, +1.0, +1.0),
+	vec3(+1.0, +1.0, -1.0)
+);
+
+const vec3 edges0[6] = vec3[6](
+	vec3(+0.0, +0.0, -1.0),
+	vec3(+0.0, +0.0, +1.0),
+	vec3(+1.0, +0.0, +0.0),
+	vec3(+1.0, +0.0, +0.0),
+	vec3(+1.0, +0.0, +0.0),
+	vec3(-1.0, +0.0, +0.0)
+);
+
+const vec3 edges1[6] = vec3[6](
+	vec3(+0.0, -1.0, +0.0),
+	vec3(+0.0, -1.0, +0.0),
+	vec3(+0.0, +0.0, +1.0),
+	vec3(+0.0, +0.0, -1.0),
+	vec3(+0.0, -1.0, +0.0),
+	vec3(+0.0, -1.0, +0.0)
+);
+
+flat out vec3 edge0;
+flat out vec3 edge1;
+flat out int cube_face_idx;
+
+void main()
+{
+	cube_face_idx = gl_VertexID;
+	edge0 = 2.0*edges0[gl_VertexID];
+	edge1 = 2.0*edges1[gl_VertexID];
+	gl_Position = vec4(origins[gl_VertexID], 1.0);
+}

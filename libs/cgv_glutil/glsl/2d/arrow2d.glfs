@@ -1,17 +1,25 @@
 #version 430
 
-//***** begin interface of fragment2d.glfs ***********************************
+//***** begin interface of shape2d.glsl ***********************************
+uniform vec4 border_color = vec4(1.0);
+uniform float border_width = 0.0;
 uniform float border_radius = 0.0;
-uniform float feather_width = 1.0;
 uniform float feather_origin = 0.5;
+//uniform vec2 tex_scaling = vec2(1.0);
 
+uniform bool use_smooth_feather = false;
+
+float get_feather_width();
 vec2 get_shape_size();
-vec4 get_color();
-void override_color(in vec4 color);
-void finish_sdf_fragment2d(in float signed_distance, in vec2 texcoords);
-void finish_sdf_fragment2d(in float signed_distance);
-void finish_fragment2d(in vec2 texcoords);
-void finish_fragment2d();
+vec4 get_active_color(vec4 color);
+vec4 transform_world_to_window_space(vec2 p);
+//***** end interface of shape2d.glsl ***********************************
+
+//***** begin interface of fragment2d.glfs ***********************************
+void finish_sdf_fragment2d(in float signed_distance, in vec4 color);
+void finish_sdf_fragment2d(in float signed_distance, in vec4 color, in vec2 texcoords);
+void finish_fragment2d(in vec4 color);
+void finish_fragment2d(in vec4 color, in vec2 texcoords);
 //***** end interface of fragment2d.glfs ***********************************
 
 uniform float stem_width;
@@ -19,20 +27,21 @@ uniform float head_width;
 
 in vec2 pix_coord;
 in vec2 tex_coord;
-in flat vec2 pos_a;
-in flat vec2 pos_b;
+in flat vec2 pos0;
+in flat vec2 pos1;
+in vec4 col;
 in flat float hl;
 
 // https://www.shadertoy.com/view/slj3Dd
 // The arrow goes from a to b. It's thickness is w.x. The arrow
 // head's thickness is w.y.
-float sd_arrow(in vec2 p, vec2 a, vec2 b, vec2 w)
+float sd_arrow(in vec2 p, vec2 a, vec2 b, vec2 w, float fw)
 {
 	float cc = 0.5*head_width;
 	float dd = border_radius / cc;
 
 	float head_length = hl + dd*hl;
-	float head_ratio = (2.0*head_length - feather_origin*feather_width) / (head_width + feather_origin*feather_width);
+	float head_ratio = (2.0*head_length - feather_origin*fw) / (head_width + feather_origin*fw);
 
     // constant setup
     const float k = head_ratio;
@@ -85,7 +94,10 @@ float sd_arrow(in vec2 p, vec2 a, vec2 b, vec2 w)
 
 void main() {
 	
+	float fw = get_feather_width();
 	vec2 thickness = 0.5*vec2(stem_width, head_width);
-	float dist = sd_arrow(pix_coord, pos_a, pos_b, thickness - border_radius + feather_origin*feather_width);
-	finish_sdf_fragment2d(dist, tex_coord);
+	float dist = sd_arrow(pix_coord, pos0, pos1, thickness - border_radius + feather_origin*fw, fw);
+
+	vec4 color = get_active_color(col);
+	finish_sdf_fragment2d(dist, color, tex_coord);
 }

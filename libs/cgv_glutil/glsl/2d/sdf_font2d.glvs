@@ -1,9 +1,11 @@
 #version 460
 
-//***** begin interface of fragment2d.glsl ***********************************
-//uniform float feather_width = 1.0;
-//uniform float feather_origin = 0.5;
-//***** end interface of fragment2d.glsl ***********************************
+//***** begin interface of shape2d.glsl ***********************************
+vec2 get_shape_size();
+vec4 get_color();
+void override_color(in vec4 color);
+vec4 transform_world_to_window_space(vec2 p);
+//***** end interface of shape2d.glsl ***********************************
 
 const vec2 corners[4] = vec2[](
 	vec2(0.0, 0.0),
@@ -21,10 +23,6 @@ layout (std430, binding = 0) readonly buffer data_buffer {
 	vertex in_data[];
 };
 
-uniform mat3 model_matrix = mat3(1.0);
-uniform mat3 view_matrix = mat3(1.0);
-
-uniform ivec2 resolution;
 uniform ivec2 position;
 uniform float font_size = 32.0;
 
@@ -51,12 +49,5 @@ void main() {
 	// offset
 	corner += final_position;
 
-	// apply view transformation
-	corner = (view_matrix * vec3(corner, 1.0)).xy;
-
-	// transform to window space
-	corner = (2.0*corner) / resolution;
-	corner -= 1.0;
-
-	gl_Position = vec4(corner, 0.0, 1.0);
+	gl_Position = transform_world_to_window_space(corner);
 }

@@ -1,0 +1,114 @@
+#version 430
+
+#define MODE 1
+
+//***** begin interface of shape2d.glsl ***********************************
+uniform float border_radius = 0.0;
+uniform float feather_origin = 0.5;
+
+float get_feather_width();
+vec2 get_shape_size();
+vec4 get_color();
+void override_color(in vec4 color);
+vec4 transform_world_to_window_space(vec2 p);
+//***** end interface of shape2d.glsl ***********************************
+
+layout(points) in;
+layout(triangle_strip, max_vertices = 4) out;
+
+const vec2 corners[4] = vec2[](
+	vec2(0.0, 0.0),
+	vec2(1.0, 0.0),
+	vec2(0.0, 1.0),
+	vec2(1.0, 1.0)
+);
+
+const vec2 direction_factors[4] = vec2[](
+	vec2(-1.0, +1.0),
+	vec2(+1.0, +1.0),
+	vec2(-1.0, -1.0),
+	vec2(+1.0, -1.0)
+);
+
+uniform float stem_width;
+uniform float head_width;
+uniform float head_length;
+uniform bool head_length_is_relative;
+
+#if MODE == 0
+in flat vec4 color0_gs[];
+in flat vec4 color1_gs[];
+#else
+in flat vec4 color_gs[];
+#endif
+
+out vec2 pix_coord;
+out vec2 tex_coord;
+out flat vec2 pos0;
+out flat vec2 pos1;
+out vec4 col;
+out flat float hl;
+
+vec2 ortho2d(vec2 v) {
+	return vec2(v.y, -v.x);
+}
+
+void main() {	
+	vec2 position_a = gl_in[0].gl_Position.xy;
+	vec2 position_b = gl_in[0].gl_Position.zw;
+
+	float width = max(stem_width, head_width);
+	
+	vec2 delta = position_b - position_a;
+	float len = length(delta);
+
+	hl = head_length_is_relative ? head_length * len : head_length;
+
+	vec2 u_dir = delta / len;
+	vec2 v_dir = ortho2d(u_dir.xy);
+
+	float fw = get_feather_width();
+	float final_width = width + 2.0*feather_origin*fw;
+
+	v_dir *= 0.5*final_width;
+
+	pos0 = position_a + border_radius*u_dir; 
+	pos1 = position_b - border_radius*u_dir;
+
+	u_dir *= feather_origin*fw;
+
+	pos0 -= u_dir;
+	pos1 += u_dir;
+
+#if MODE == 0
+	vec4 color0 = color0_gs[0];
+	vec4 color1 = color1_gs[0];
+#else
+	vec4 color0 = color_gs[0];
+	vec4 color1 = color_gs[1];
+#endif
+
+	col = color0;
+	pix_coord = position_a + direction_factors[0].x*u_dir + direction_factors[0].y*v_dir;
+	tex_coord = corners[0];
+	gl_Position = transform_world_to_window_space(pix_coord);
+	EmitVertex();
+
+	col = color1;
+	pix_coord = position_b + direction_factors[1].x*u_dir + direction_factors[1].y*v_dir;
+	tex_coord = corners[1];
+	gl_Position = transform_world_to_window_space(pix_coord);
+	EmitVertex();
+
+	col = color0;
+	pix_coord = position_a + direction_factors[2].x*u_dir + direction_factors[2].y*v_dir;
+	tex_coord = corners[2];
+	gl_Position = transform_world_to_window_space(pix_coord);
+	EmitVertex();
+
+	col = color1;
+	pix_coord = position_b + direction_factors[3].x*u_dir + direction_factors[3].y*v_dir;
+	tex_coord = corners[3];
+	gl_Position = transform_world_to_window_space(pix_coord);
+	EmitVertex();
+}
