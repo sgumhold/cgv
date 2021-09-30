@@ -230,8 +230,8 @@ namespace cgv { // @<
 			}
 			/// return whether indices have been defined
 			bool has_indices() const {
-				if(aam_ptr)
-					return aam_ptr->has_index_buffer();
+				if(aam_ptr && aam_ptr->has_index_buffer())
+					return true;
 				return index_count > 0;
 			}
 			/// remove previously set indices
