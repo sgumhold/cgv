@@ -27,6 +27,8 @@ uniform layout(binding = 1) samplerCube prefiltered_specular_map;
 uniform layout(binding = 2) sampler2D brdf_lut;
 uniform layout(binding = 3) sampler2DShadow shadow_map;
 uniform layout(binding = 4) sampler3D jitter_tex;
+//uniform layout(binding = 5) sampler2D albedo_tex;
+//uniform layout(binding = 6) sampler2D roughness_tex;
 
 uniform vec3 eye_pos;
 uniform vec3 light_dir;
@@ -241,6 +243,8 @@ void main()
 
 	vec3 R = reflect(-V, N);
 
+	//float roughness2 = texture(roughness_tex, texcoord_fs).r;
+
 	const float MAX_REFLECTION_LOD = 4.0;
     vec3 prefilteredColor = textureLod(prefiltered_specular_map, R,  roughness * MAX_REFLECTION_LOD).rgb;
 
@@ -253,9 +257,12 @@ void main()
 
 	vec2 envBRDF  = texture(brdf_lut, vec2(max(dot(N, V), 0.0), roughness)).rg;
 
+	//vec3 albedo = texture(albedo_tex, texcoord_fs).rgb;
+
 	//vec3 irradiance = texture(irradiance_map, normalize(get_inverse_normal_matrix() * N)).rgb;
 	vec3 irradiance = texture(irradiance_map, N).rgb;
 	vec3 diffuse    = irradiance * color_fs.rgb;
+	//vec3 diffuse    = irradiance * albedo;
 	
 	float ndl = max(dot(n_world, light_dir), 0.0);
 	float shadow = compute_shadow_factor(position_light_space, n_world);
