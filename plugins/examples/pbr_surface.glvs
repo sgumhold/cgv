@@ -11,9 +11,9 @@ uniform mat3 model_normal_matrix;
 uniform mat4 light_space_matrix;
 
 layout(location = 0) in vec4 position;
-layout(location = 1) in vec4 color;
-layout(location = 2) in vec3 normal;
-layout(location = 3) in vec2 texcoord;
+layout(location = 1) in vec3 normal;
+layout(location = 2) in vec2 texcoord;
+layout(location = 3) in vec4 color;
 
 out vec4 position_eye;
 out vec4 position_model;
