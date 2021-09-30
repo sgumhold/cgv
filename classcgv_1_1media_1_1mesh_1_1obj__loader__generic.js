@@ -12,6 +12,7 @@ var classcgv_1_1media_1_1mesh_1_1obj__loader__generic =
     [ "process_comment", "classcgv_1_1media_1_1mesh_1_1obj__loader__generic.html#a6cfab20fd65a0f0f6dc5fff3e441fc62", null ],
     [ "process_face", "classcgv_1_1media_1_1mesh_1_1obj__loader__generic.html#a6a482156cb74eb0ffd342b37510cb516", null ],
     [ "process_group", "classcgv_1_1media_1_1mesh_1_1obj__loader__generic.html#a9793776013f18f16c793f809ce4e036b", null ],
+    [ "process_line", "classcgv_1_1media_1_1mesh_1_1obj__loader__generic.html#aceebbf54db6e8f650e716519e976a4da", null ],
     [ "process_material", "classcgv_1_1media_1_1mesh_1_1obj__loader__generic.html#a70b5455f33f6dcc78ab36797cef497e5", null ],
     [ "process_normal", "classcgv_1_1media_1_1mesh_1_1obj__loader__generic.html#ac5124539a9a4d85cf9e1b4c7292e4f05", null ],
     [ "process_normal", "classcgv_1_1media_1_1mesh_1_1obj__loader__generic.html#a2d0d8a56a425143c5422ce6c36c9d793", null ],

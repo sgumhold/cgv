@@ -23,6 +23,7 @@ var namespacecgv =
         [ "dual_contouring", "classcgv_1_1media_1_1mesh_1_1dual__contouring.html", "classcgv_1_1media_1_1mesh_1_1dual__contouring" ],
         [ "face_info", "structcgv_1_1media_1_1mesh_1_1face__info.html", "structcgv_1_1media_1_1mesh_1_1face__info" ],
         [ "group_info", "structcgv_1_1media_1_1mesh_1_1group__info.html", "structcgv_1_1media_1_1mesh_1_1group__info" ],
+        [ "line_info", "structcgv_1_1media_1_1mesh_1_1line__info.html", "structcgv_1_1media_1_1mesh_1_1line__info" ],
         [ "marching_cubes", "classcgv_1_1media_1_1mesh_1_1marching__cubes.html", "classcgv_1_1media_1_1mesh_1_1marching__cubes" ],
         [ "marching_cubes_base", "classcgv_1_1media_1_1mesh_1_1marching__cubes__base.html", "classcgv_1_1media_1_1mesh_1_1marching__cubes__base" ],
         [ "obj_loader_generic", "classcgv_1_1media_1_1mesh_1_1obj__loader__generic.html", "classcgv_1_1media_1_1mesh_1_1obj__loader__generic" ],

@@ -34,6 +34,8 @@ var classcgv_1_1media_1_1mesh_1_1simple__mesh__base =
     [ "group_name", "classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a43c14b33087541466612a77c1dcbbac0", null ],
     [ "group_name", "classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a8fbc265f4af1306baac766d4fbc21d7f", null ],
     [ "has_colors", "classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a88886e9e71f4a41d2ab88b44cea50e02", null ],
+    [ "has_normal_indices", "classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a6bd633dd7a1af803c20e4744e388b5f0", null ],
+    [ "has_tex_coord_indices", "classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a8dcd7270d700f49416aa3efe26844ce0", null ],
     [ "material_index", "classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#abd74ae75e2198a5c87893dea27acfc67", null ],
     [ "material_index", "classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a04acd6db9ad1935576138e9d71a02c70", null ],
     [ "merge_indices", "classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a147da5e12a835aad4bb144ce903b9232", null ],
