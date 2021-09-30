@@ -2076,7 +2076,8 @@ bool gl_context::frame_buffer_enable(frame_buffer_base& fbb)
 	if (!context::frame_buffer_enable(fbb))
 		return false;
 	std::vector<int> buffers;
-	get_buffer_list(fbb, buffers, GL_COLOR_ATTACHMENT0);
+	bool depth_buffer = false;
+	get_buffer_list(fbb, depth_buffer, buffers, GL_COLOR_ATTACHMENT0);
 	glBindFramebuffer(GL_FRAMEBUFFER, get_gl_id(fbb.handle));
 
 	if (buffers.size() == 1)
@@ -2084,7 +2085,10 @@ bool gl_context::frame_buffer_enable(frame_buffer_base& fbb)
 	else if (buffers.size() > 1) {
 		glDrawBuffers(GLsizei(buffers.size()), reinterpret_cast<GLenum*>(&buffers[0]));
 	}
-	else {
+	else if(depth_buffer) {
+		glDrawBuffer(GL_NONE);
+		//glReadBuffer(GL_NONE);
+	} else {
 		error("gl_context::frame_buffer_enable: no attached draw buffer selected!!", &fbb);
 		return false;
 	}

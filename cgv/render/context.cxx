@@ -2080,10 +2080,11 @@ frame_buffer_base::frame_buffer_base()
 	is_enabled = false;
 	width = -1;
 	height = -1;
+	depth_attached = false;
 	std::fill(attached, attached+16,false);
 }
 
-void context::get_buffer_list(frame_buffer_base& fbb, std::vector<int>& buffers, int offset)
+void context::get_buffer_list(frame_buffer_base& fbb, bool& depth_buffer, std::vector<int>& buffers, int offset)
 {
 	if (fbb.enabled_color_attachments.size() == 0) {
 		for (int i = 0; i < 16; ++i)
@@ -2095,6 +2096,7 @@ void context::get_buffer_list(frame_buffer_base& fbb, std::vector<int>& buffers,
 			if (fbb.attached[fbb.enabled_color_attachments[i]])
 				buffers.push_back(fbb.enabled_color_attachments[i]+offset);
 	}
+	depth_buffer = fbb.depth_attached;
 }
 
 bool context::frame_buffer_create(frame_buffer_base& fbb) const
@@ -2116,7 +2118,9 @@ bool context::frame_buffer_attach(frame_buffer_base& fbb, const render_component
 		error("gl_context::frame_buffer_attach: attempt to attach empty render buffer", &fbb);
 		return false;
 	}
-	if (!is_depth)
+	if (is_depth)
+		fbb.depth_attached = true;
+	else
 		fbb.attached[i] = true;
 
 	return true;
@@ -2132,7 +2136,9 @@ bool context::frame_buffer_attach(frame_buffer_base& fbb, const texture_base& t,
 		error("context::frame_buffer_attach: attempt to attach texture that is not created", &fbb);
 		return false;
 	}
-	if (!is_depth)
+	if(is_depth)
+		fbb.depth_attached = true;
+	else
 		fbb.attached[i] = true;
 	
 	return true;

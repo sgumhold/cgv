@@ -381,6 +381,7 @@ protected:
 	friend class context;
 	bool is_enabled;
 	std::vector<int> enabled_color_attachments;
+	bool depth_attached;
 	bool attached[16];
 	int width, height;
 public:
@@ -670,7 +671,7 @@ protected:
 	virtual bool render_buffer_create       (render_component& rc, cgv::data::component_format& cf, int& _width, int& _height) const = 0;
 	virtual bool render_buffer_destruct     (render_component& rc) const = 0;
 
-	static void get_buffer_list(frame_buffer_base& fbb, std::vector<int>& buffers, int offset = 0);
+	static void get_buffer_list(frame_buffer_base& fbb, bool& depth_buffer, std::vector<int>& buffers, int offset = 0);
 	virtual bool frame_buffer_create		   (frame_buffer_base& fbb) const;
 	virtual bool frame_buffer_attach		   (frame_buffer_base& fbb, const render_component& rb, bool is_depth, int i) const;
 	virtual bool frame_buffer_attach		   (frame_buffer_base& fbb, const texture_base& t, bool is_depth, int level, int i, int z) const;
