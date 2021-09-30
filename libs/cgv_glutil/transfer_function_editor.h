@@ -6,12 +6,14 @@
 #include <cgv/render/texture.h>
 #include <cgv_glutil/frame_buffer_container.h>
 #include <cgv_glutil/overlay.h>
-#include <cgv_glutil/shader_library.h>
 
 #include "generic_render_data.h"
 #include "generic_renderer.h"
 #include "transfer_function.h"
 #include "2d/draggables_collection.h"
+
+#include "2d/canvas.h"
+#include "2d/shape2d_styles.h"
 
 #include "lib_begin.h"
 
@@ -31,8 +33,10 @@ protected:
 	cgv::media::font::font_face_ptr cursor_font_face;
 
 	cgv::glutil::frame_buffer_container fbc;
-	cgv::glutil::shader_library shaders;
 
+	cgv::glutil::canvas canvas, overlay_canvas;
+	cgv::glutil::shape2d_style container_style, border_style, color_scale_style, bg_style, hist_style;
+	
 	float opacity_scale_exponent;
 	cgv::type::DummyEnum resolution;
 
@@ -109,8 +113,7 @@ protected:
 	texture bg_tex;
 	texture tf_tex;
 
-	generic_renderer line_renderer;
-	generic_renderer polygon_renderer;
+	generic_renderer line_renderer, polygon_renderer, point_renderer;
 	
 	DEFINE_GENERIC_RENDER_DATA_CLASS(line_geometry, 2, vec2, position, rgb, color);
 	DEFINE_GENERIC_RENDER_DATA_CLASS(polygon_geometry, 2, vec2, position, rgba, color);
@@ -126,6 +129,7 @@ protected:
 
 		line_geometry lines;
 		polygon_geometry triangles;
+		polygon_geometry point_geometry;
 		
 		void reset() {
 			points.clear();
@@ -142,12 +146,13 @@ protected:
 		}
 	} tfc;
 
+	void init_styles(context& ctx);
+	void init_transfer_function_texture(context& ctx);
+
 	void add_point(const vec2& pos);
 	void remove_point(const point* ptr);
 	point* get_hit_point(const vec2& pos);
 	
-	void init_transfer_function_texture(context& ctx);
-
 	void handle_drag();
 	void handle_drag_end();
 	void sort_points();

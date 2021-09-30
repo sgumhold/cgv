@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cgv/render/context.h>
+#include <cgv/render/render_types.h>
 #include <cgv/render/shader_program.h>
 #include <cgv/render/attribute_array_binding.h>
 #include <cgv_gl/attribute_array_manager.h>
@@ -23,34 +24,34 @@
 #define GRD_SEP_NULL(x)
 #define GRD_SEP_COMMA(x) ,
 
-#define GRD_APPLY_FUNC1(f, t0, i0) f(t0, i0)
+#define GRD_APPLY_FUNC1(f, s, t0, i0) f(t0, i0)
 
 #define GRD_APPLY_FUNC2(f, s, t0, i0, t1, i1)\
-	GRD_APPLY_FUNC1(f, t0, i0) s(0)\
-	GRD_APPLY_FUNC1(f, t1, i1)
+	GRD_APPLY_FUNC1(f, s, t0, i0) s(0)\
+	GRD_APPLY_FUNC1(f, s, t1, i1)
 
 #define GRD_APPLY_FUNC3(f, s, t0, i0, t1, i1, t2, i2)\
-	GRD_APPLY_FUNC1(f, t0, i0) s(0)\
+	GRD_APPLY_FUNC1(f, s, t0, i0) s(0)\
 	GRD_APPLY_FUNC2(f, s, t1, i1, t2, i2)
 
 #define GRD_APPLY_FUNC4(f, s, t0, i0, t1, i1, t2, i2, t3, i3)\
-	GRD_APPLY_FUNC1(f, t0, i0) s(0)\
+	GRD_APPLY_FUNC1(f, s, t0, i0) s(0)\
 	GRD_APPLY_FUNC3(f, s, t1, i1, t2, i2, t3, i3)
 
 #define GRD_APPLY_FUNC5(f, s, t0, i0, t1, i1, t2, i2, t3, i3, t4, i4)\
-	GRD_APPLY_FUNC1(f, t0, i0) s(0)\
+	GRD_APPLY_FUNC1(f, s, t0, i0) s(0)\
 	GRD_APPLY_FUNC4(f, s, t1, i1, t2, i2, t3, i3, t4, i4)
 
 #define GRD_APPLY_FUNC6(f, s, t0, i0, t1, i1, t2, i2, t3, i3, t4, i4, t5, i5)\
-	GRD_APPLY_FUNC1(f, t0, i0) s(0)\
+	GRD_APPLY_FUNC1(f, s, t0, i0) s(0)\
 	GRD_APPLY_FUNC5(f, s, t1, i1, t2, i2, t3, i3, t4, i4, t5, i5)
 
 #define GRD_APPLY_FUNC7(f, s, t0, i0, t1, i1, t2, i2, t3, i3, t4, i4, t5, i5, t6, i6)\
-	GRD_APPLY_FUNC1(f, t0, i0) s(0)\
+	GRD_APPLY_FUNC1(f, s, t0, i0) s(0)\
 	GRD_APPLY_FUNC6(f, s, t1, i1, t2, i2, t3, i3, t4, i4, t5, i5, t6, i6)
 
 #define GRD_APPLY_FUNC8(f, s, t0, i0, t1, i1, t2, i2, t3, i3, t4, i4, t5, i5, t6, i6, t7, i7)\
-	GRD_APPLY_FUNC1(f, t0, i0) s(0)\
+	GRD_APPLY_FUNC1(f, s, t0, i0) s(0)\
 	GRD_APPLY_FUNC7(f, s, t1, i1, t2, i2, t3, i3, t4, i4, t5, i5, t6, i6, t7, i7)
 
 #define GRD_APPLY_FUNC_N(n, f, s, ...) GRD_EXPAND( GRD_APPLY_FUNC##n(f, s, __VA_ARGS__) )
@@ -66,7 +67,7 @@ class generic_renderer;
 class generic_render_data : public cgv::render::render_types {
 	friend class generic_renderer;
 private:
-	attribute_array_manager aam;
+	cgv::render::attribute_array_manager aam;
 	bool state_out_of_date = true;
 
 protected:
@@ -83,9 +84,12 @@ protected:
 	bool enable(cgv::render::context& ctx, cgv::render::shader_program& prog) {
 		if(!aam.is_created())
 			aam.init(ctx);
+		bool res = true;
 		if(state_out_of_date)
 			transfer(ctx, prog);
 		state_out_of_date = false;
+		if(!res)
+			return false;
 		return aam.enable(ctx);
 	}
 
@@ -106,7 +110,7 @@ public:
 		state_out_of_date = true;
 	}
 
-	virtual size_t size() = 0;
+	virtual size_t get_vertex_count() = 0;
 };
 
 }
@@ -141,6 +145,7 @@ public:
 	protected:
 		bool transfer(context& ctx, shader_program& prog) {
 			bool success = true;
+			if(get_vertex_count() == 0) return false;\
 			success &= set_attribute_array(ctx, prog, "position", positions);
 			success &= set_attribute_array(ctx, prog, "color", colors);
 			return success;
@@ -149,7 +154,7 @@ public:
 		std::vector<vec2> positions;
 		std::vector<rgb> colors;
 
-		size_t size() { return positions.size(); };
+		size_t get_vertex_count() { return positions.size(); };
 
 		void clear() {
 			positions.clear();
@@ -167,12 +172,13 @@ class name : public cgv::glutil::generic_render_data {\
 protected:\
 	bool transfer(cgv::render::context& ctx, cgv::render::shader_program& prog) {\
 		bool success = true;\
+		if(get_vertex_count() == 0) return false;\
 		GRD_APPLY_FUNC_N(attrib_count, GRD_SET_ATTRIB_ARRAY, GRD_SEP_NULL, __VA_ARGS__)\
 		return success;\
 	}\
 public:\
 	GRD_APPLY_FUNC_N(attrib_count, GRD_DECL_VEC_MEMBER, GRD_SEP_NULL, __VA_ARGS__)\
-	size_t size() { return GRD_GET_FIRST_PAIR(GRD_CALL_SIZE_FUNC, __VA_ARGS__) };\
+	size_t get_vertex_count() { return GRD_GET_FIRST_PAIR(GRD_CALL_SIZE_FUNC, __VA_ARGS__) };\
 	void clear() {\
 		GRD_APPLY_FUNC_N(attrib_count, GRD_CALL_CLEAR_FUNC, GRD_SEP_NULL, __VA_ARGS__)\
 	}\
