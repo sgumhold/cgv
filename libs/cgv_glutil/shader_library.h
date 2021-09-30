@@ -30,7 +30,14 @@ public:
 
 	bool add(const std::string& name, const std::string& file, const cgv::render::shader_define_map& defines = {});
 
-	cgv::render::shader_program& get(const std::string& name) { return shaders.at(name).prog; }
+	cgv::render::shader_program& get(const std::string& name) {
+		if(shaders.find(name) != shaders.end()) {
+			return shaders.at(name).prog;
+		} else {
+			std::cerr << "Error: shader_library::get shader with name " << name << " not found!" << std::endl;
+			return cgv::render::shader_program();
+		}
+	}
 
 	shader_lib_map::iterator begin() { return shaders.begin(); }
 	shader_lib_map::iterator end() { return shaders.end(); }
