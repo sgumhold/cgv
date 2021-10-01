@@ -113,7 +113,7 @@ void msdf_text_geometry::end_text(text_info text) {
 	text.offset = 0;
 	if(texts.size() > 0) {
 		const text_info& last_text = *texts.rbegin();
-		text.offset = last_text.offset + last_text.str.size();
+		text.offset = int(last_text.offset + last_text.str.size());
 	}
 	texts.push_back(text);
 }
@@ -123,7 +123,7 @@ void msdf_text_geometry::update_offsets_and_counts() {
 
 	for(text_info& text : texts) {
 		text.offset = offset;
-		offset += text.str.size();
+		offset += int(text.str.size());
 	}
 }
 

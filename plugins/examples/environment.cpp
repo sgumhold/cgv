@@ -378,7 +378,7 @@ public:
 
 		vec3 eye_pos = vec3(view_ptr->get_eye());
 
-		vec2 resolution(ctx.get_width(), ctx.get_height());
+		vec2 resolution(float(ctx.get_width()), float(ctx.get_height()));
 
 
 
@@ -390,7 +390,7 @@ public:
 
 
 
-		vec3 light_direction = compute_sphere_normal(sun_position, 0.0f, 2.0 * M_PI, 0.0f, M_PI);
+		vec3 light_direction = compute_sphere_normal(sun_position, 0.0f, float(2.0 * M_PI), 0.0f, float(M_PI));
 
 		mat4 light_projection = cgv::math::ortho4(-5.0f, 5.0f, -5.0f, 5.0f, near_plane, far_plane);
 		mat4 light_view = cgv::math::look_at4(5.0f * light_direction, vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 1.0f, 0.0f));
@@ -777,5 +777,5 @@ public:
 #include <cgv/base/register.h>
 
 /// register a factory to create new rounded cone texturing tests
-//cgv::base::factory_registration<environment_demo> environment_demo_fac("new/demo/environment_demo");
-cgv::base::object_registration<environment_demo> environment_demo_fac("new/demo/environment_demo");
+cgv::base::factory_registration<environment_demo> environment_demo_fac("new/demo/environment_demo");
+//cgv::base::object_registration<environment_demo> environment_demo_fac("new/demo/environment_demo");
