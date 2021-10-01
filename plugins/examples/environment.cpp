@@ -91,10 +91,33 @@ protected:
 		void mul(const mat4& M) { set(get() * M); }
 	};
 
-	texture albedo_tex, roughness_tex;
+	texture albedo_tex, metallic_tex, roughness_tex, normal_tex;
 	
+	struct scene_object {
+		vec3 position = vec3(0.0f);
+		vec3 rotation = vec3(0.0f);
+		vec3 scale = vec3(1.0f);
+
+		mat4 transformation;
+
+		scene_object() {
+			transformation.identity();
+		}
+
+		void compute_transformation() {
+			transformation =
+				cgv::math::translate4(position) *
+				cgv::math::rotate4(rotation) *
+				cgv::math::scale4(scale);
+		}
+	};
+
+	bool animate = false;
+
 	float rot_angle = 0.0f;
 	float height_offset = 0.0f;
+
+	float normal_map_scale = 1.0f;
 
 public:
 	environment_demo() : cgv::base::node("environment demo") {
@@ -106,7 +129,11 @@ public:
 		shaders.add("brdf_lut_gen", "brdf_lut_gen.glpr");
 		shaders.add("screen", "screen.glpr");
 
+		shader_define_map defines;
+		shader_code::set_define(defines, "ENABLE_TEXTURES", true, false);
+
 		shaders.add("pbr_surface", "pbr_surface.glpr");
+		shaders.add("pbr_surface_textured", "pbr_surface.glpr", defines);
 		shaders.add("surface_depth", "surface_depth.glpr");
 
 		sun_position = vec2(0.0f, 0.6f);
@@ -167,8 +194,11 @@ public:
 
 		if(getenv("CGV_DIR")) {
 			box_mesh.read(std::string(getenv("CGV_DIR")) + "/plugins/examples/res/box.obj");
-			obj_mesh.read(std::string(getenv("CGV_DIR")) + "/plugins/examples/res/blob.obj");
+			obj_mesh.read(std::string(getenv("CGV_DIR")) + "/plugins/examples/res/sphere.obj");
 		}
+
+		//box_mesh.compute_face_tangents();
+		obj_mesh.compute_face_tangents();
 
 		box_mesh_info.construct(ctx, box_mesh);
 		obj_mesh_info.construct(ctx, obj_mesh);
@@ -201,10 +231,19 @@ public:
 		
 		//TODO: add message if plugin init returns false
 
-
-		//success &= read_texture(ctx, albedo_tex, "C:/Users/Dave/Downloads/TexturesCom_Pavement_TerracottaAntique_2K_albedo.tif");
-		//success &= read_texture(ctx, roughness_tex, "C:/Users/Dave/Downloads/TexturesCom_Pavement_TerracottaAntique_2K_roughness.tif");
-
+		/*std::cout << "reading albedo texture" << std::endl;
+		success &= read_texture(ctx, albedo_tex, "C:/Users/David Gross/Desktop/pbr_materials/rusted_iron/rustediron2_basecolor.png");
+		//success &= read_texture(ctx, albedo_tex, "C:/Users/David Gross/Desktop/pbr_materials/rock-slab-wall1-bl/rock-slab-wall_albedo.png");
+		std::cout << "reading metallic texture" << std::endl;
+		success &= read_texture(ctx, metallic_tex, "C:/Users/David Gross/Desktop/pbr_materials/rusted_iron/rustediron2_metallic.png");
+		//success &= read_texture(ctx, metallic_tex, "C:/Users/David Gross/Desktop/pbr_materials/rock-slab-wall1-bl/rock-slab-wall_metallic.png");
+		std::cout << "reading roughness texture" << std::endl;
+		success &= read_texture(ctx, roughness_tex, "C:/Users/David Gross/Desktop/pbr_materials/rusted_iron/rustediron2_roughness.png");
+		//success &= read_texture(ctx, roughness_tex, "C:/Users/David Gross/Desktop/pbr_materials/rock-slab-wall1-bl/rock-slab-wall_roughness.png");
+		std::cout << "reading normal texture" << std::endl;
+		success &= read_texture(ctx, normal_tex, "C:/Users/David Gross/Desktop/pbr_materials/rusted_iron/rustediron2_normal.png");
+		//success &= read_texture(ctx, normal_tex, "C:/Users/David Gross/Desktop/pbr_materials/rock-slab-wall1-bl/rock-slab-wall_normal-ogl.png");
+		*/
 
 
 		glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
@@ -217,7 +256,7 @@ public:
 		return success;
 	}
 	void timer_event(double tt, double dt) {
-		if(true) {
+		if(animate) {
 			rot_angle += 20.0f * dt;
 			if(rot_angle > 360.0f) {
 				rot_angle = 0.0;
@@ -361,8 +400,21 @@ public:
 
 			pbr_prog.set_uniform(ctx, "F0", F0);
 			pbr_prog.set_uniform(ctx, "roughness", roughness);
+
 			pbr_prog.set_uniform(ctx, "shadow_blur", shadow_blur);
 			pbr_prog.disable(ctx);
+
+			auto& pbr_tex_prog = shaders.get("pbr_surface_textured");
+			pbr_tex_prog.enable(ctx);
+			pbr_tex_prog.set_uniform(ctx, "eye_pos", eye_pos);
+			pbr_tex_prog.set_uniform(ctx, "light_dir", light_direction);
+
+			pbr_tex_prog.set_uniform(ctx, "F0", F0);
+			pbr_tex_prog.set_uniform(ctx, "roughness", roughness);
+			pbr_tex_prog.set_uniform(ctx, "normal_map_scale", normal_map_scale);
+
+			pbr_tex_prog.set_uniform(ctx, "shadow_blur", shadow_blur);
+			pbr_tex_prog.disable(ctx);
 
 			ctx.push_modelview_matrix();
 
@@ -371,13 +423,15 @@ public:
 			brdf_lut.enable(ctx, 2);
 			depth_map.enable(ctx, 3);
 			jitter_tex.enable(ctx, 4);
+
 			//albedo_tex.enable(ctx, 5);
-			//roughness_tex.enable(ctx, 6);
+			//metallic_tex.enable(ctx, 6);
+			//roughness_tex.enable(ctx, 7);
+			//normal_tex.enable(ctx, 8);
 
-			box_mesh_info.bind(ctx, shaders.get("pbr_surface"), true);
-			obj_mesh_info.bind(ctx, shaders.get("pbr_surface"), true);
+			box_mesh_info.bind(ctx, pbr_prog, true);
+			obj_mesh_info.bind(ctx, pbr_prog, true);
 
-			
 			model_matrix.push();
 			model_matrix.mul(cgv::math::translate4(vec3(0.0f, -1.0f, 0.0f)));
 			model_matrix.mul(cgv::math::scale4(vec3(10.0f, 0.2f, 10.0f)));
@@ -412,8 +466,11 @@ public:
 			brdf_lut.disable(ctx);
 			depth_map.disable(ctx);
 			jitter_tex.disable(ctx);
+
 			//albedo_tex.disable(ctx);
+			//metallic_tex.disable(ctx);
 			//roughness_tex.disable(ctx);
+			//normal_tex.disable(ctx);
 
 
 			ctx.pop_modelview_matrix();
@@ -718,6 +775,9 @@ public:
 
 		add_member_control(this, "F0", F0);
 		add_member_control(this, "Roughness", roughness, "value_slider", "min=0;max=1;step=0.01;ticks=true");
+		add_member_control(this, "Normal Map Scale", normal_map_scale, "value_slider", "min=0;max=1;step=0.01;ticks=true");
+
+		add_member_control(this, "Animate", animate, "toggle");
 
 		/*if(begin_tree_node("Sphere Style", sphere_style, true)) {
 			align("\a");

@@ -11,13 +11,18 @@ mat3 get_normal_matrix();
 mat3 get_inverse_normal_matrix();
 //***** end interface of view.glsl ***********************************
 
+//***** begin interface of fragment.glfs ***********************************
+uniform float gamma = 2.2;
+void finish_fragment(vec4 color);
+//***** end interface of fragment.glfs ***********************************
+
 uniform layout(binding = 0) samplerCube environment_map;
 
 uniform vec3 eye_pos;
 
 in vec2 texcoord_fs;
 
-out vec4 frag_color;
+//out vec4 frag_color;
 
 void main()
 {
@@ -33,7 +38,5 @@ void main()
     // calculate the viewing ray in object space
     vec3 ray = normalize(coord.xyz - eye_pos);
 
-	vec4 col = texture(environment_map, ray);
-
-	frag_color = col;
+	finish_fragment(texture(environment_map, ray));
 }
