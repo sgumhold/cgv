@@ -44,7 +44,7 @@ bool radix_sort_4way::init(context& ctx, size_t count) {
 
 	delete_buffers();
 
-	n = count;
+	n = unsigned(count);
 	group_size = 64;
 
 	unsigned int block_size = 4 * group_size;
@@ -56,7 +56,7 @@ bool radix_sort_4way::init(context& ctx, size_t count) {
 
 	num_groups = (n + n_pad + group_size - 1) / group_size;
 	num_scan_groups = (n + n_pad + block_size - 1) / block_size;
-	unsigned int blocksum_offset_shift = static_cast<unsigned int>(log2f(block_size));
+	unsigned int blocksum_offset_shift = static_cast<unsigned int>(log2f(float(block_size)));
 
 	num_blocksums = num_scan_groups;
 

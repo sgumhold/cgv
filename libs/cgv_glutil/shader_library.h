@@ -35,7 +35,7 @@ public:
 			return shaders.at(name).prog;
 		} else {
 			std::cerr << "Error: shader_library::get shader with name " << name << " not found!" << std::endl;
-			return cgv::render::shader_program();
+			abort();
 		}
 	}
 

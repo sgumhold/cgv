@@ -108,7 +108,7 @@ bool msdf_font::load_atlas_metadata(const std::string& filename) {
 }
 
 void msdf_font::compute_derived_glyph_attributes() {
-	vec2 atlas_dimensions(atlas_texture.get_width(), atlas_texture.get_height());
+	vec2 atlas_dimensions(float(atlas_texture.get_width()), float(atlas_texture.get_height()));
 	vec4 inv_dimensions = vec4(1.0f) / vec4(atlas_dimensions.x(), atlas_dimensions.y(), atlas_dimensions.x(), atlas_dimensions.y());
 
 	for(size_t i = 0; i < glyphs.size(); ++i) {
