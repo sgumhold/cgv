@@ -1,5 +1,12 @@
 var NAVTREEINDEX45 =
 {
+"structgamepad_1_1gamepad__driver.html#ac74802108435066efc452cc162577cb8":[11,0,1,3,6],
+"structgamepad_1_1gamepad__driver.html#ae35233c535694e3883e0c3c5fd82afd7":[11,0,1,3,1],
+"structgamepad_1_1gamepad__state.html":[11,0,1,4],
+"structgamepad_1_1gamepad__state.html#a085176ecd68c889a3f508dacf9018795":[11,0,1,4,3],
+"structgamepad_1_1gamepad__state.html#a8111170499d3033b263b92b92ac1115a":[11,0,1,4,4],
+"structgamepad_1_1gamepad__state.html#a8fca7b1a05bec5e5d3ca58081ca0b1cb":[11,0,1,4,2],
+"structgamepad_1_1gamepad__state.html#ad0cb46d3168be6f56d1ea2861432f458":[11,0,1,4,1],
 "structgamepad_1_1gamepad__state.html#af831e999b64b14fadfa637c651f6c3fc":[11,0,1,4,0],
 "structgamepad_1_1gamepad__state.html#afe65228383bfc1464c99cecb6c917bef":[11,0,1,4,5],
 "structvr_1_1controller__input__config.html":[11,0,3,0],
