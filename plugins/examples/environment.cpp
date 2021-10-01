@@ -4,7 +4,10 @@
 #include <cgv/gui/event_handler.h>
 #include <cgv/gui/mouse_event.h>
 #include <cgv/gui/provider.h>
+#include <cgv/gui/trigger.h>
 #include <cgv/math/ftransform.h>
+#include <cgv/media/image/image.h>
+#include <cgv/media/image/image_reader.h>
 #include <cgv/media/mesh/simple_mesh.h>
 #include <cgv/render/drawable.h>
 #include <cgv_gl/gl/gl_context.h>
@@ -87,7 +90,11 @@ protected:
 
 		void mul(const mat4& M) { set(get() * M); }
 	};
+
+	texture albedo_tex, roughness_tex;
 	
+	float rot_angle = 0.0f;
+	float height_offset = 0.0f;
 
 public:
 	environment_demo() : cgv::base::node("environment demo") {
@@ -108,6 +115,8 @@ public:
 		
 		sphere_style.surface_color = rgb(0.5f);
 		sphere_style.radius = 0.02f;
+
+		cgv::signal::connect(cgv::gui::get_animation_trigger().shoot, this, &environment_demo::timer_event);
 	}
 	void stream_help(std::ostream& os) {
 		return;
@@ -157,7 +166,7 @@ public:
 		cgv::media::mesh::simple_mesh<> box_mesh, obj_mesh;
 
 		if(getenv("CGV_DIR")) {
-			box_mesh.read(std::string(getenv("CGV_DIR")) + "/plugins/examples/res/flat_box.obj");
+			box_mesh.read(std::string(getenv("CGV_DIR")) + "/plugins/examples/res/box.obj");
 			obj_mesh.read(std::string(getenv("CGV_DIR")) + "/plugins/examples/res/blob.obj");
 		}
 
@@ -190,167 +199,33 @@ public:
 		depth_map_fb.attach(ctx, depth_map);
 		
 		
+		//TODO: add message if plugin init returns false
 
 
+		//success &= read_texture(ctx, albedo_tex, "C:/Users/Dave/Downloads/TexturesCom_Pavement_TerracottaAntique_2K_albedo.tif");
+		//success &= read_texture(ctx, roughness_tex, "C:/Users/Dave/Downloads/TexturesCom_Pavement_TerracottaAntique_2K_roughness.tif");
 
-
-
-		std::mt19937 rng(42);
-		std::uniform_real_distribution<float> distr(-1.0f, 1.0f);
-
-		unsigned jitter_resolution = 16;
-		int size = jitter_resolution;
-		int samples_u = 8;
-		int samples_v = 8;
-
-		
-
-		std::vector<cvec4> jitter_data(size * size * samples_u * samples_v / 2);
-		//std::vector<vec4> jitter_data(size * size * samples_u * samples_v / 2);
-
-		int idx = 0;
-
-		float min_u = 1000.0f;
-		float max_u = -1000.0f;
-
-		float min_v = 1000.0f;
-		float max_v = -1000.0f;
-
-		
-		const rgb white = rgb(1.0f);
-		const rgb red = rgb(1.0f, 0.0f, 0.0f);
-		const rgb green = rgb(0.0f, 1.0f, 0.0f);
-		const rgb blue = rgb(0.0f, 0.0f, 1.0f);
-
-		spheres.clear();
-		for(unsigned i = 0; i < 3; ++i) {
-			spheres.add(vec3(0.0f, 0.0f, 0.1f*i));
-			spheres.add(vec3(1.0f, 0.0f, 0.1f*i));
-			spheres.add(vec3(0.0f, 1.0f, 0.1f*i));
-			spheres.add(vec3(1.0f, 1.0f, 0.1f*i));
-		}
-		spheres.fill(white);
-
-
-		for(int i = 0; i < size; i++) {
-			for(int j = 0; j < size; j++) {
-				float rot_offset = ((float)rand() / RAND_MAX - 1) * 2 * 3.1415926f;
-				for(int k = 0; k < samples_u*samples_v / 2; k++) {
-
-					int x, y;
-					vec4 v;
-
-					x = k % (samples_u / 2);
-					y = (samples_v - 1) - k / (samples_u / 2);
-
-					// generate points on a regular samples_u x samples_v rectangular grid
-					v[0] = (float)(x * 2 + 0.5f) / samples_u;
-					v[1] = (float)(y + 0.5f) / samples_v;
-					v[2] = (float)(x * 2 + 1 + 0.5f) / samples_u;
-					v[3] = v[1];
-
-
-
-					if(i == 0 && j == 0) {
-						//spheres.add(vec3(v[0], v[1], 0.0f), red);
-						//spheres.add(vec3(v[2], v[3], 0.0f), red);
-					}
-
-					
-
-					// jitter position
-					v[0] += distr(rng) * (0.5f / samples_u);
-					v[1] += distr(rng) * (0.5f / samples_v);
-					v[2] += distr(rng) * (0.5f / samples_u);
-					v[3] += distr(rng) * (0.5f / samples_v);
-
-
-					if(i == 0 && j == 0) {
-						//spheres.add(vec3(v[0], v[1], 0.1f), green);
-						//spheres.add(vec3(v[2], v[3], 0.1f), green);
-					}
-
-
-
-					min_u = std::min(min_u, v[0]);
-					min_u = std::min(min_u, v[2]);
-					max_u = std::max(max_u, v[0]);
-					max_u = std::max(max_u, v[2]);
-
-					min_v = std::min(min_v, v[1]);
-					min_v = std::min(min_v, v[3]);
-					max_v = std::max(max_v, v[1]);
-					max_v = std::max(max_v, v[3]);
-
-					// warp to disk
-					vec4 d;
-					//d[0] = sqrt(v[1]) * cos(2.0f * M_PI * v[0]);
-					//d[1] = sqrt(v[1]) * sin(2.0f * M_PI * v[0]);
-					//d[2] = sqrt(v[3]) * cos(2.0f * M_PI * v[2]);
-					//d[3] = sqrt(v[3]) * sin(2.0f * M_PI * v[2]);
-					//d = 0.5f * d + 0.5f;
-
-					d = v;
-
-					if(i == 1 && j == 0) {
-						rgb col = k < 2 ? red : green;
-						spheres.add(vec3(d[0], d[1], 0.2f), col);
-						spheres.add(vec3(d[2], d[3], 0.2f), col);
-					}
-
-
-
-					//d[0] = v[0];
-					//d[1] = v[1];
-					//d[2] = v[2];
-					//d[3] = v[3];
-
-					/*if(idx == 0) {
-						d[0] = -1.0f;
-						d[1] = -1.0f;
-						d[2] = +1.0f;
-						d[3] = -1.0f;
-					} else {
-						d[0] = -1.0f;
-						d[1] = +1.0f;
-						d[2] = +1.0f;
-						d[3] = +1.0f;
-					}*/
-
-					idx += 1;
-					idx &= 1;
-
-					//d = 2.0f * d - 1.0f;
-
-					//d[0] = distr(rng);
-					//d[1] = distr(rng);
-					//d[2] = distr(rng);
-					//d[3] = distr(rng);
-
-					jitter_data[(k * size * size + j * size + i)] = static_cast<cvec4>(127.0f * d);
-					//jitter_data[(k * size * size + j * size + i)] = d;
-				}
-
-				int iii = 0;
-			}
-		}
-
-		cgv::data::data_view jitter_dv = cgv::data::data_view(new cgv::data::data_format(size, size, samples_u * samples_v / 2, TI_INT8, cgv::data::CF_RGBA), jitter_data.data());
-		jitter_tex.create(ctx, jitter_dv, 0);
-		jitter_tex.set_wrap_s(TW_REPEAT);
-		jitter_tex.set_wrap_t(TW_REPEAT);
-		jitter_tex.set_wrap_r(TW_REPEAT);
-		jitter_tex.set_min_filter(TF_NEAREST);
-		jitter_tex.set_mag_filter(TF_NEAREST);
 
 
 		glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
 		init_ibl_textures(ctx);
 		generate_ibl_maps(ctx);
 		compute_brdf_lut(ctx);
+		generate_jitter_texture(ctx);
 
 
 		return success;
+	}
+	void timer_event(double tt, double dt) {
+		if(true) {
+			rot_angle += 20.0f * dt;
+			if(rot_angle > 360.0f) {
+				rot_angle = 0.0;
+			}
+			height_offset = 0.5f * sin(tt) + 0.5f;
+			//update_member(&angle);
+			post_redraw();
+		}
 	}
 	void init_frame(cgv::render::context& ctx) {
 		if(!view_ptr) {
@@ -401,8 +276,8 @@ public:
 		bias_matrix.set_col(2, vec4(0.0f, 0.0f, 0.5f, 0.0f));
 		bias_matrix.set_col(3, vec4(0.5f, 0.5f, 0.5f, 1.0f));
 			
-		matrix_stack light_matrix;
-		light_matrix.set(light_view);
+		mat4 light_matrix = light_projection * light_view;
+
 		matrix_stack model_matrix;
 		
 		// at this point the modelview matrix is just the view matrix
@@ -426,52 +301,40 @@ public:
 		depth_map_fb.enable(ctx);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		ctx.push_projection_matrix();
-		ctx.push_modelview_matrix();
-		ctx.set_projection_matrix(light_projection);
-		ctx.set_modelview_matrix(light_view);
-
 		box_mesh_info.bind(ctx, shaders.get("surface_depth"), true);
 		obj_mesh_info.bind(ctx, shaders.get("surface_depth"), true);
 
-		//ctx.push_modelview_matrix();
-		//ctx.mul_modelview_matrix(cgv::math::scale4(vec3(10.0f, 0.2f, 10.0f)));
-		//ctx.mul_modelview_matrix(cgv::math::translate4(vec3(0.0f, -0.1f, 0.0f)));
-
-		light_matrix.push();
-		light_matrix.mul(cgv::math::translate4(vec3(0.0f, -1.5f, 0.0f)));
+		
+		model_matrix.push();
+		model_matrix.mul(cgv::math::translate4(vec3(0.0f, -1.0f, 0.0f)));
+		model_matrix.mul(cgv::math::scale4(vec3(10.0f, 0.2f, 10.0f)));
 
 		depth_prog.enable(ctx);
-		depth_prog.set_uniform(ctx, "light_space_matrix", light_projection * light_matrix.get());
+		depth_prog.set_uniform(ctx, "light_space_matrix", light_matrix * model_matrix.get());
 		depth_prog.disable(ctx);
 
 		box_mesh_info.draw_all(ctx, false, false, false);
-		light_matrix.pop();
-		//ctx.pop_modelview_matrix();
+		model_matrix.pop();
 
 
 
-		light_matrix.push();
-		light_matrix.mul(cgv::math::translate4(vec3(0.0f, 1.0f, 0.0f)));
 		
+		model_matrix.push();
+		model_matrix.mul(cgv::math::translate4(vec3(0.0f, height_offset, 0.0f)));
+		model_matrix.mul(cgv::math::rotate4(rot_angle, vec3(0.0f, 1.0f, 0.0f)));
+
 		depth_prog.enable(ctx);
-		depth_prog.set_uniform(ctx, "light_space_matrix", light_projection * light_matrix.get());
+		depth_prog.set_uniform(ctx, "light_space_matrix", light_matrix * model_matrix.get());
 		depth_prog.disable(ctx);
 		
 
-		//ctx.push_modelview_matrix();
-		//ctx.mul_modelview_matrix(cgv::math::translate4(vec3(0.0f, 1.0f, 0.0f)));
 		obj_mesh_info.draw_all(ctx, false, false, false);
-		light_matrix.pop();
-		//ctx.pop_modelview_matrix();
-
-		
-
-
-		ctx.pop_projection_matrix();
-		ctx.pop_modelview_matrix();
+		model_matrix.pop();
 
 		depth_map_fb.disable(ctx);
+
+
+		light_matrix = bias_matrix * light_matrix;
 		
 		
 		
@@ -495,16 +358,11 @@ public:
 			pbr_prog.enable(ctx);
 			pbr_prog.set_uniform(ctx, "eye_pos", eye_pos);
 			pbr_prog.set_uniform(ctx, "light_dir", light_direction);
-			//pbr_prog.set_uniform(ctx, "light_space_matrix", bias_matrix * light_projection * light_view);
 
 			pbr_prog.set_uniform(ctx, "F0", F0);
 			pbr_prog.set_uniform(ctx, "roughness", roughness);
 			pbr_prog.set_uniform(ctx, "shadow_blur", shadow_blur);
 			pbr_prog.disable(ctx);
-
-			//boxes.render(ctx, ref_box_renderer(ctx), box_style);
-
-			//sphere_style.culling_mode = CM_BACKFACE;
 
 			ctx.push_modelview_matrix();
 
@@ -513,57 +371,49 @@ public:
 			brdf_lut.enable(ctx, 2);
 			depth_map.enable(ctx, 3);
 			jitter_tex.enable(ctx, 4);
+			//albedo_tex.enable(ctx, 5);
+			//roughness_tex.enable(ctx, 6);
 
 			box_mesh_info.bind(ctx, shaders.get("pbr_surface"), true);
 			obj_mesh_info.bind(ctx, shaders.get("pbr_surface"), true);
 
 			
 			model_matrix.push();
+			model_matrix.mul(cgv::math::translate4(vec3(0.0f, -1.0f, 0.0f)));
+			model_matrix.mul(cgv::math::scale4(vec3(10.0f, 0.2f, 10.0f)));
 
-			//light_matrix.push();
-			//light_matrix.mul(cgv::math::translate4(vec3(0.0f, -1.5f, 0.0f)));
-
-			model_matrix.mul(cgv::math::translate4(vec3(0.0f, -1.5f, 0.0f)));
 			pbr_prog.enable(ctx);
 			pbr_prog.set_uniform(ctx, "model_matrix", model_matrix.get());
 			pbr_prog.set_uniform(ctx, "model_normal_matrix", get_normal_matrix(model_matrix.get()));
-			pbr_prog.set_uniform(ctx, "light_space_matrix", bias_matrix * light_projection * light_matrix.get() * model_matrix.get());
+			pbr_prog.set_uniform(ctx, "light_space_matrix", light_matrix * model_matrix.get());
 			pbr_prog.disable(ctx);
-			//ctx.mul_modelview_matrix(cgv::math::scale4(vec3(10.0f, 0.2f, 10.0f)));
 
 			ctx.set_modelview_matrix(view_matrix * model_matrix.get());
 			box_mesh_info.draw_all(ctx, false, false, false);
-
-			//light_matrix.pop();
+			
 			model_matrix.pop();
 
 			model_matrix.push();
-			model_matrix.mul(cgv::math::translate4(vec3(0.0f, 1.0f, 0.0f)));
-			//ctx.push_modelview_matrix();
-			//ctx.mul_modelview_matrix(cgv::math::translate4(vec3(0.0f, 1.0f, 0.0f)));
-			//ctx.mul_modelview_matrix(cgv::math::rotate4(45.0f, vec3(0.0f, 0.0f, 1.0f)));
+			model_matrix.mul(cgv::math::translate4(vec3(0.0f, height_offset, 0.0f)));
+			model_matrix.mul(cgv::math::rotate4(rot_angle, vec3(0.0f, 1.0f, 0.0f)));
 
 			pbr_prog.enable(ctx);
 			pbr_prog.set_uniform(ctx, "model_matrix", model_matrix.get());
 			pbr_prog.set_uniform(ctx, "model_normal_matrix", get_normal_matrix(model_matrix.get()));
-			pbr_prog.set_uniform(ctx, "light_space_matrix", bias_matrix * light_projection * light_matrix.get() * model_matrix.get());
+			pbr_prog.set_uniform(ctx, "light_space_matrix", light_matrix * model_matrix.get());
 			pbr_prog.disable(ctx);
 
 			ctx.set_modelview_matrix(view_matrix * model_matrix.get());
 			obj_mesh_info.draw_all(ctx, false, false, false);
 			model_matrix.pop();
 			
-
-			//sphere_prog.set_uniform(ctx, "light_space_matrix", light_projection * light_view);
-			//sphere_prog.set_uniform(ctx, "light_dir", light_direction);
-			//sr.set_prog(sphere_prog);
-			//spheres.render(ctx, sr, sphere_style);
-
 			irradiance_map.disable(ctx);
 			prefiltered_specular_map.disable(ctx);
 			brdf_lut.disable(ctx);
 			depth_map.disable(ctx);
 			jitter_tex.disable(ctx);
+			//albedo_tex.disable(ctx);
+			//roughness_tex.disable(ctx);
 
 
 			ctx.pop_modelview_matrix();
@@ -590,9 +440,8 @@ public:
 	bool init_ibl_textures(context& ctx) {
 		bool success = true;
 
-		if(environment_map.is_created()) {
+		if(environment_map.is_created())
 			environment_map.destruct(ctx);
-		}
 		environment_map.set_data_format("flt32[R,G,B]");
 		success &= environment_map.create(ctx, TT_CUBEMAP, environment_resolution, environment_resolution);
 		environment_map.set_wrap_s(TW_CLAMP_TO_EDGE);
@@ -601,9 +450,8 @@ public:
 		environment_map.set_min_filter(TF_LINEAR);
 		environment_map.set_mag_filter(TF_LINEAR);
 
-		if(irradiance_map.is_created()) {
+		if(irradiance_map.is_created())
 			irradiance_map.destruct(ctx);
-		}
 		irradiance_map.set_data_format("flt32[R,G,B]");
 		success &= irradiance_map.create(ctx, TT_CUBEMAP, irradiance_resolution, irradiance_resolution);
 		irradiance_map.set_wrap_s(TW_CLAMP_TO_EDGE);
@@ -612,9 +460,8 @@ public:
 		irradiance_map.set_min_filter(TF_LINEAR);
 		irradiance_map.set_mag_filter(TF_LINEAR);
 
-		if(prefiltered_specular_map.is_created()) {
+		if(prefiltered_specular_map.is_created())
 			prefiltered_specular_map.destruct(ctx);
-		}
 		prefiltered_specular_map.set_data_format("flt32[R,G,B]");
 		success &= prefiltered_specular_map.create(ctx, TT_CUBEMAP, prefiltered_specular_resolution, prefiltered_specular_resolution);
 		prefiltered_specular_map.set_wrap_s(TW_CLAMP_TO_EDGE);
@@ -746,6 +593,114 @@ public:
 		normal.z() = -sin(thetaStart + coord.y() * thetaLength) * cos(phiStart + coord.x() * phiLength);
 		return normalize(normal);
 	}
+	bool generate_jitter_texture(context& ctx) {
+		bool success = true;
+
+		std::mt19937 rng(42);
+		std::uniform_real_distribution<float> distr(-1.0f, 1.0f);
+
+		// xy resolution of jitter texture
+		int size = 16;
+		// totl number of samples is samples_u * samples_v
+		int samples_u = 8;
+		int samples_v = 8;
+
+		std::vector<cvec4> jitter_data(size * size * samples_u * samples_v / 2);
+
+		/*const rgb white = rgb(1.0f);
+		const rgb red = rgb(1.0f, 0.0f, 0.0f);
+		const rgb green = rgb(0.0f, 1.0f, 0.0f);
+		const rgb blue = rgb(0.0f, 0.0f, 1.0f);
+
+		spheres.clear();
+		for(unsigned i = 0; i < 3; ++i) {
+			spheres.add(vec3(0.0f, 0.0f, 0.1f*i));
+			spheres.add(vec3(1.0f, 0.0f, 0.1f*i));
+			spheres.add(vec3(0.0f, 1.0f, 0.1f*i));
+			spheres.add(vec3(1.0f, 1.0f, 0.1f*i));
+		}
+		spheres.fill(white);*/
+
+		for(int i = 0; i < size; i++) {
+			for(int j = 0; j < size; j++) {
+				float rot_offset = ((float)rand() / RAND_MAX - 1) * 2 * 3.1415926f;
+				for(int k = 0; k < samples_u*samples_v / 2; k++) {
+
+					int x, y;
+					vec4 v;
+
+					x = k % (samples_u / 2);
+					y = (samples_v - 1) - k / (samples_u / 2);
+
+					// generate points on a regular rectangular grid with dimensions samples_u x samples_v
+					v[0] = (float)(x * 2 + 0.5f) / samples_u;
+					v[1] = (float)(y + 0.5f) / samples_v;
+					v[2] = (float)(x * 2 + 1 + 0.5f) / samples_u;
+					v[3] = v[1];
+
+					/*if(i == 0 && j == 0) {
+						spheres.add(vec3(v[0], v[1], 0.0f), red);
+						spheres.add(vec3(v[2], v[3], 0.0f), red);
+					}*/
+
+					// jitter position
+					v[0] += distr(rng) * (0.5f / samples_u);
+					v[1] += distr(rng) * (0.5f / samples_v);
+					v[2] += distr(rng) * (0.5f / samples_u);
+					v[3] += distr(rng) * (0.5f / samples_v);
+
+
+					/*if(i == 0 && j == 0) {
+						spheres.add(vec3(v[0], v[1], 0.1f), green);
+						spheres.add(vec3(v[2], v[3], 0.1f), green);
+					}*/
+
+					// warp to disk (does not perform as well as square samples)
+					vec4 d;
+					//d[0] = sqrt(v[1]) * cos(2.0f * M_PI * v[0]);
+					//d[1] = sqrt(v[1]) * sin(2.0f * M_PI * v[0]);
+					//d[2] = sqrt(v[3]) * cos(2.0f * M_PI * v[2]);
+					//d[3] = sqrt(v[3]) * sin(2.0f * M_PI * v[2]);
+					//d = 0.5f * d + 0.5f;
+
+					// take samples as is
+					d = v;
+
+					/*if(i == 1 && j == 0) {
+						rgb col = k < 2 ? red : green;
+						spheres.add(vec3(d[0], d[1], 0.2f), col);
+						spheres.add(vec3(d[2], d[3], 0.2f), col);
+					}*/
+
+					// save samples as signed bytes to reduce memory requirements
+					jitter_data[(k * size * size + j * size + i)] = static_cast<cvec4>(127.0f * d);
+				}
+			}
+		}
+
+		if(jitter_tex.is_created())
+			jitter_tex.destruct(ctx);
+
+		cgv::data::data_view jitter_dv = cgv::data::data_view(new cgv::data::data_format(size, size, samples_u * samples_v / 2, TI_INT8, cgv::data::CF_RGBA), jitter_data.data());
+		success &= jitter_tex.create(ctx, jitter_dv, 0);
+		jitter_tex.set_wrap_s(TW_REPEAT);
+		jitter_tex.set_wrap_t(TW_REPEAT);
+		jitter_tex.set_wrap_r(TW_REPEAT);
+		jitter_tex.set_min_filter(TF_NEAREST);
+		jitter_tex.set_mag_filter(TF_NEAREST);
+
+		return success;
+	}
+	bool read_texture(context& ctx, texture& tex, const std::string& file_name) {
+		cgv::data::data_format df;
+		cgv::data::data_view dv;
+		bool success = tex.create_from_image(df, dv, ctx, file_name);
+		tex.set_wrap_s(TW_REPEAT);
+		tex.set_wrap_t(TW_REPEAT);
+		tex.set_min_filter(TF_LINEAR);
+		tex.set_mag_filter(TF_LINEAR);
+		return success;
+	}
 	void create_gui() {
 		add_decorator("Environment Demo", "heading");
 
@@ -761,16 +716,15 @@ public:
 		add_member_control(this, "Show Shadow Map", show_shadow_map, "check");
 		add_member_control(this, "Shadow Blur", shadow_blur, "value_slider", "min=0.0;max=10.0;step=0.1;ticks=true");
 
-		if(begin_tree_node("Sphere Style", sphere_style, true)) {
+		add_member_control(this, "F0", F0);
+		add_member_control(this, "Roughness", roughness, "value_slider", "min=0;max=1;step=0.01;ticks=true");
+
+		/*if(begin_tree_node("Sphere Style", sphere_style, true)) {
 			align("\a");
 			add_gui("sphere_style", sphere_style);
-			add_member_control(this, "F0", F0);
-			add_member_control(this, "Roughness", roughness, "value_slider", "min=0;max=1;step=0.01;ticks=true");
 			align("\b");
 			end_tree_node(sphere_style);
-		}
-
-		//add_gui("box_style", box_style);
+		}*/
 	}
 };
 
