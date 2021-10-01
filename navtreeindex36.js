@@ -1,5 +1,12 @@
 var NAVTREEINDEX36 =
 {
+"performance__monitor_8h_source.html":[12,0,0,10,9],
+"perm__mat_8h_source.html":[12,0,0,5,31],
+"permute_8h_source.html":[12,0,0,5,32],
+"ph__processor_8h_source.html":[12,0,0,8,4],
+"phong__material_8hh_source.html":[12,0,0,6,1,3],
+"plot2d_8h_source.html":[12,0,1,4,2],
+"plot3d_8h_source.html":[12,0,1,4,3],
 "plot__base_8h_source.html":[12,0,1,4,4],
 "plugins_2crg__vr__view_2lib__begin_8h_source.html":[12,0,2,0,0],
 "point__operations_8h_source.html":[12,0,0,5,34],
@@ -242,12 +249,5 @@ var NAVTREEINDEX36 =
 "structcgv_1_1base_1_1factory__impl__1.html#a0b3db0f57373229e66422eeeb6750ebc":[11,0,0,0,13,34],
 "structcgv_1_1base_1_1factory__impl__1.html#a0c603bd79a0180ecd47ea0e6e318e924":[11,0,0,0,13,37],
 "structcgv_1_1base_1_1factory__impl__1.html#a13fba2d51c6d80777189202cee4dd63a":[11,0,0,0,13,38],
-"structcgv_1_1base_1_1factory__impl__1.html#a1ff38549b7f5c57918898543e78a416d":[11,0,0,0,13,29],
-"structcgv_1_1base_1_1factory__impl__1.html#a2342d533452b40ec0a9187739cb6f878":[11,0,0,0,13,3],
-"structcgv_1_1base_1_1factory__impl__1.html#a2640a9d180d0acebaada5e837a47b474":[11,0,0,0,13,4],
-"structcgv_1_1base_1_1factory__impl__1.html#a27c758bf88e8503dacd5f51cff5e4c65":[11,0,0,0,13,36],
-"structcgv_1_1base_1_1factory__impl__1.html#a2f074aea5bf4b0bfeb00845750d27623":[11,0,0,0,13,25],
-"structcgv_1_1base_1_1factory__impl__1.html#a313232084b52192201cecaf4ae257ee8":[11,0,0,0,13,24],
-"structcgv_1_1base_1_1factory__impl__1.html#a322bdd4891db870dafaba22e40d99bff":[11,0,0,0,13,7],
-"structcgv_1_1base_1_1factory__impl__1.html#a3e1dd0ff6fa2baf3dc2149d3acfecd45":[11,0,0,0,13,35]
+"structcgv_1_1base_1_1factory__impl__1.html#a1ff38549b7f5c57918898543e78a416d":[11,0,0,0,13,29]
 };

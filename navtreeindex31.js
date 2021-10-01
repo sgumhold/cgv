@@ -1,5 +1,12 @@
 var NAVTREEINDEX31 =
 {
+"classcgv_1_1render_1_1surfel__renderer.html#a721896846fecb8500533c1048c1b1632":[11,0,0,9,49,46],
+"classcgv_1_1render_1_1surfel__renderer.html#a723a0a3000a8117c13c8682adb72df39":[11,0,0,9,49,11],
+"classcgv_1_1render_1_1surfel__renderer.html#a7264fd5effbc1beb4cc03be79c501b3c":[11,0,0,9,49,52],
+"classcgv_1_1render_1_1surfel__renderer.html#a78cd29d5497c8a9d3c554266e7b171ee":[11,0,0,9,49,38],
+"classcgv_1_1render_1_1surfel__renderer.html#a792a522d7f726b34aeabd8a1addd0a40":[11,0,0,9,49,68],
+"classcgv_1_1render_1_1surfel__renderer.html#a79f6ef6d03e7f4b4d90577f22be2f592":[11,0,0,9,49,90],
+"classcgv_1_1render_1_1surfel__renderer.html#a7ec27e7f56aa1a03d9db1a659d9c8b09":[11,0,0,9,49,62],
 "classcgv_1_1render_1_1surfel__renderer.html#a8089202eec1e378ee65bc3c7b2e677a4":[11,0,0,9,49,31],
 "classcgv_1_1render_1_1surfel__renderer.html#a80b014437e13646d13f5b2bababda520":[11,0,0,9,49,48],
 "classcgv_1_1render_1_1surfel__renderer.html#a833ac9b3d6db813a49425067c317402b":[11,0,0,9,49,42],
@@ -242,12 +249,5 @@ var NAVTREEINDEX31 =
 "classcgv_1_1render_1_1texture.html#ab3c6d5ae5c290f47eb5b2cf326aebe4e":[11,0,0,9,52,34],
 "classcgv_1_1render_1_1texture.html#ab5967492788c5bc01af2d9bb6a9ff612":[11,0,0,9,52,4],
 "classcgv_1_1render_1_1texture.html#ab6c6a7065549455b3bde094a37f9272b":[11,0,0,9,52,101],
-"classcgv_1_1render_1_1texture.html#ab6c76c071b0951591bc930b4a34f8db3":[11,0,0,9,52,89],
-"classcgv_1_1render_1_1texture.html#ab82e113559b9ea5c687152fbd298798f":[11,0,0,9,52,86],
-"classcgv_1_1render_1_1texture.html#ab9164d8d4aba4431e8d8ff9f4a1e71e4":[11,0,0,9,52,59],
-"classcgv_1_1render_1_1texture.html#ab9cf885cb5f8e866d710206d484a16b0":[11,0,0,9,52,40],
-"classcgv_1_1render_1_1texture.html#ab9e20b698e4a244dbeb95bf50474a923":[11,0,0,9,52,52],
-"classcgv_1_1render_1_1texture.html#abb567e728873a51dc5e56ebca014dbf6":[11,0,0,9,52,26],
-"classcgv_1_1render_1_1texture.html#abcacd2546a54336c4963d904f25e7219":[11,0,0,9,52,91],
-"classcgv_1_1render_1_1texture.html#abded6c3f51802b693e176c274bba3ed3":[11,0,0,9,52,108]
+"classcgv_1_1render_1_1texture.html#ab6c76c071b0951591bc930b4a34f8db3":[11,0,0,9,52,89]
 };
