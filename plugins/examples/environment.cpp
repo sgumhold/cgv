@@ -9,6 +9,7 @@
 #include <cgv/media/image/image.h>
 #include <cgv/media/image/image_reader.h>
 #include <cgv/media/mesh/simple_mesh.h>
+#include <cgv/media/illum/textured_surface_material.h>
 #include <cgv/render/drawable.h>
 #include <cgv_gl/gl/gl_context.h>
 #include <cgv_gl/gl/mesh_render_info.h>
@@ -91,26 +92,97 @@ protected:
 		void mul(const mat4& M) { set(get() * M); }
 	};
 
-	texture albedo_tex, metallic_tex, roughness_tex, normal_tex;
-	
+	struct render_context {
+		context* ctx = nullptr;
+		mat4 view_matrix;
+		mat4 light_matrix;
+
+		void store_view() {
+			// if not previously altered the modelview matrix is just the view matrix
+			view_matrix = ctx->get_modelview_matrix();
+		}
+
+		mat3 get_normal_matrix(const mat4& M) {
+			cgv::math::fmat<float, 3, 3> NM;
+			NM(0, 0) = M(0, 0);
+			NM(0, 1) = M(0, 1);
+			NM(0, 2) = M(0, 2);
+			NM(1, 0) = M(1, 0);
+			NM(1, 1) = M(1, 1);
+			NM(1, 2) = M(1, 2);
+			NM(2, 0) = M(2, 0);
+			NM(2, 1) = M(2, 1);
+			NM(2, 2) = M(2, 2);
+			NM.transpose();
+			NM = inv(NM);
+			return NM;
+		}
+	};
+
 	struct scene_object {
 		vec3 position = vec3(0.0f);
 		vec3 rotation = vec3(0.0f);
 		vec3 scale = vec3(1.0f);
+		vec2 uv_scale = vec2(1.0f);
 
-		mat4 transformation;
+		mat4 transformation_matrix;
+
+		mesh_render_info mri;
+
+		texture albedo_tex, metallic_tex, roughness_tex, normal_tex;
 
 		scene_object() {
-			transformation.identity();
+			transformation_matrix.identity();
 		}
 
 		void compute_transformation() {
-			transformation =
+			transformation_matrix =
 				cgv::math::translate4(position) *
 				cgv::math::rotate4(rotation) *
 				cgv::math::scale4(scale);
 		}
+
+		void draw(render_context& rctx, shader_program& shader) {
+			context& ctx = *rctx.ctx;
+
+			shader.enable(ctx);
+			shader.set_uniform(ctx, "model_matrix", transformation_matrix);
+			shader.set_uniform(ctx, "model_normal_matrix", rctx.get_normal_matrix(transformation_matrix));
+			shader.set_uniform(ctx, "light_space_matrix", rctx.light_matrix * transformation_matrix);
+			shader.set_uniform(ctx, "uv_scale", uv_scale);
+			shader.disable(ctx);
+
+			ctx.set_modelview_matrix(rctx.view_matrix * transformation_matrix);
+
+			albedo_tex.enable(ctx, 5);
+			metallic_tex.enable(ctx, 6);
+			roughness_tex.enable(ctx, 7);
+			normal_tex.enable(ctx, 8);
+
+			mri.bind(ctx, shader, true);
+			mri.draw_all(ctx, false, false, false);
+
+			albedo_tex.disable(ctx);
+			metallic_tex.disable(ctx);
+			roughness_tex.disable(ctx);
+			normal_tex.disable(ctx);
+		}
+
+		void draw_depth(render_context& rctx, shader_program& shader) {
+			context& ctx = *rctx.ctx;
+			
+			shader.enable(ctx);
+			shader.set_uniform(ctx, "light_space_matrix", rctx.light_matrix * transformation_matrix);
+			shader.disable(ctx);
+
+			mri.bind(ctx, shader, true);
+			mri.draw_all(ctx, false, false, false);
+		}
 	};
+
+	scene_object floor, obj;
+
+	render_context rctx;
 
 	bool animate = false;
 
@@ -189,32 +261,25 @@ public:
 			success = false;
 		}
 
-		// load a mesh file
+		// load mesh files to use as scene objects
 		cgv::media::mesh::simple_mesh<> box_mesh, obj_mesh;
 
 		if(getenv("CGV_DIR")) {
-			box_mesh.read(std::string(getenv("CGV_DIR")) + "/plugins/examples/res/box.obj");
-			obj_mesh.read(std::string(getenv("CGV_DIR")) + "/plugins/examples/res/sphere.obj");
-		}
-
-		//box_mesh.compute_face_tangents();
-		obj_mesh.compute_face_tangents();
-
-		box_mesh_info.construct(ctx, box_mesh);
-		obj_mesh_info.construct(ctx, obj_mesh);
-		// bind mesh attributes to pbr surface shader program
-		//box_mesh_info.bind(ctx, shaders.get("pbr_surface"), true);
-		//obj_mesh_info.bind(ctx, shaders.get("pbr_surface"), true);
-
-		/*if(car_mesh.read("res://example.obj")) {
-			car_mesh_info.construct(ctx, car_mesh);
-			car_mesh_info.bind(ctx, ctx.ref_surface_shader_program(true), true);
-			auto& mats = car_mesh_info.get_materials();
-			if(mats.size() > 0) {
-				mats[0]->set_diffuse_reflectance(rgb(0.7f, 0.6f, 0.1f));
-				mats[0]->set_roughness(0.5f);
+			if(box_mesh.read(std::string(getenv("CGV_DIR")) + "/plugins/examples/res/box.obj")) {
+				box_mesh.compute_face_tangents();
+				floor.mri.construct(ctx, box_mesh);
+				floor.position = vec3(0.0f, -1.0f, 0.0f);
+				floor.scale = vec3(10.0f, 0.2f, 10.0f);
+				floor.compute_transformation();
+				floor.uv_scale = vec2(4.0f);
 			}
-		}*/
+
+			if(obj_mesh.read(std::string(getenv("CGV_DIR")) + "/plugins/examples/res/blob.obj")) {
+				obj_mesh.compute_face_tangents();
+				obj.mri.construct(ctx, obj_mesh);
+				obj.uv_scale = vec2(2.0f);
+			}
+		}
 
 		depth_map.set_data_format("uint16[D]");
 		depth_map.create(ctx, TT_2D, shadow_map_resolution, shadow_map_resolution);
@@ -229,21 +294,19 @@ public:
 		depth_map_fb.attach(ctx, depth_map);
 		
 		
-		//TODO: add message if plugin init returns false
 
-		/*std::cout << "reading albedo texture" << std::endl;
-		success &= read_texture(ctx, albedo_tex, "C:/Users/David Gross/Desktop/pbr_materials/rusted_iron/rustediron2_basecolor.png");
-		//success &= read_texture(ctx, albedo_tex, "C:/Users/David Gross/Desktop/pbr_materials/rock-slab-wall1-bl/rock-slab-wall_albedo.png");
-		std::cout << "reading metallic texture" << std::endl;
-		success &= read_texture(ctx, metallic_tex, "C:/Users/David Gross/Desktop/pbr_materials/rusted_iron/rustediron2_metallic.png");
-		//success &= read_texture(ctx, metallic_tex, "C:/Users/David Gross/Desktop/pbr_materials/rock-slab-wall1-bl/rock-slab-wall_metallic.png");
-		std::cout << "reading roughness texture" << std::endl;
-		success &= read_texture(ctx, roughness_tex, "C:/Users/David Gross/Desktop/pbr_materials/rusted_iron/rustediron2_roughness.png");
-		//success &= read_texture(ctx, roughness_tex, "C:/Users/David Gross/Desktop/pbr_materials/rock-slab-wall1-bl/rock-slab-wall_roughness.png");
-		std::cout << "reading normal texture" << std::endl;
-		success &= read_texture(ctx, normal_tex, "C:/Users/David Gross/Desktop/pbr_materials/rusted_iron/rustediron2_normal.png");
-		//success &= read_texture(ctx, normal_tex, "C:/Users/David Gross/Desktop/pbr_materials/rock-slab-wall1-bl/rock-slab-wall_normal-ogl.png");
-		*/
+		// TODO: use framework textured surface materialto handle textures?
+		success &= read_texture(ctx, floor.albedo_tex,	 "res://octostone_albedo.png");
+		success &= read_texture(ctx, floor.metallic_tex, "res://octostone_metallic.png");
+		success &= read_texture(ctx, floor.roughness_tex,"res://octostone_roughness.png");
+		success &= read_texture(ctx, floor.normal_tex,	 "res://octostone_normal.png");
+
+		success &= read_texture(ctx, obj.albedo_tex,	"res://ornatebrass_albedo.png");
+		success &= read_texture(ctx, obj.metallic_tex,	"res://ornatebrass_metallic.png");
+		success &= read_texture(ctx, obj.roughness_tex,	"res://ornatebrass_roughness.png");
+		success &= read_texture(ctx, obj.normal_tex,	"res://ornatebrass_normal.png");
+		
+
 
 
 		glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
@@ -253,6 +316,9 @@ public:
 		generate_jitter_texture(ctx);
 
 
+		rctx.ctx = &ctx;
+
+		//TODO: add message if plugin init returns false
 		return success;
 	}
 	void timer_event(double tt, double dt) {
@@ -290,14 +356,17 @@ public:
 		if(!view_ptr)
 			return;
 
-		vec3 eye_pos = vec3(view_ptr->get_eye());
-
-		vec2 resolution(ctx.get_width(), ctx.get_height());
-
-
-
+		// render debug spheres
 		//spheres.render(ctx, ref_sphere_renderer(ctx), sphere_style);
 		//return;
+
+		vec3 eye_pos = vec3(view_ptr->get_eye());
+		
+		
+
+
+
+		
 
 
 
@@ -317,65 +386,33 @@ public:
 			
 		mat4 light_matrix = light_projection * light_view;
 
-		matrix_stack model_matrix;
 		
-		// at this point the modelview matrix is just the view matrix
-		mat4 view_matrix = ctx.get_modelview_matrix();
+		
+		
+
+
+		rctx.store_view();
+		rctx.light_matrix = light_matrix;
+
+
 
 		auto& depth_prog = shaders.get("surface_depth");
 		
-
-		
-
-
-
-		
-
-
-		
-
 		ctx.push_window_transformation_array();
 		ctx.set_viewport(ivec4(0, 0, shadow_map_resolution, shadow_map_resolution));
 
 		depth_map_fb.enable(ctx);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		box_mesh_info.bind(ctx, shaders.get("surface_depth"), true);
-		obj_mesh_info.bind(ctx, shaders.get("surface_depth"), true);
-
-		
-		model_matrix.push();
-		model_matrix.mul(cgv::math::translate4(vec3(0.0f, -1.0f, 0.0f)));
-		model_matrix.mul(cgv::math::scale4(vec3(10.0f, 0.2f, 10.0f)));
-
-		depth_prog.enable(ctx);
-		depth_prog.set_uniform(ctx, "light_space_matrix", light_matrix * model_matrix.get());
-		depth_prog.disable(ctx);
-
-		box_mesh_info.draw_all(ctx, false, false, false);
-		model_matrix.pop();
-
-
-
-		
-		model_matrix.push();
-		model_matrix.mul(cgv::math::translate4(vec3(0.0f, height_offset, 0.0f)));
-		model_matrix.mul(cgv::math::rotate4(rot_angle, vec3(0.0f, 1.0f, 0.0f)));
-
-		depth_prog.enable(ctx);
-		depth_prog.set_uniform(ctx, "light_space_matrix", light_matrix * model_matrix.get());
-		depth_prog.disable(ctx);
-		
-
-		obj_mesh_info.draw_all(ctx, false, false, false);
-		model_matrix.pop();
+		floor.draw_depth(rctx, depth_prog);
+		obj.draw_depth(rctx, depth_prog);
 
 		depth_map_fb.disable(ctx);
 
 
+
 		light_matrix = bias_matrix * light_matrix;
-		
-		
+		rctx.light_matrix = light_matrix;
 		
 
 		// restore previous viewport
@@ -424,64 +461,29 @@ public:
 			depth_map.enable(ctx, 3);
 			jitter_tex.enable(ctx, 4);
 
-			//albedo_tex.enable(ctx, 5);
-			//metallic_tex.enable(ctx, 6);
-			//roughness_tex.enable(ctx, 7);
-			//normal_tex.enable(ctx, 8);
+			floor.draw(rctx, pbr_tex_prog);
 
-			box_mesh_info.bind(ctx, pbr_prog, true);
-			obj_mesh_info.bind(ctx, pbr_prog, true);
+			obj.position.y() = height_offset;
+			obj.rotation.y() = rot_angle;
+			obj.compute_transformation();
 
-			model_matrix.push();
-			model_matrix.mul(cgv::math::translate4(vec3(0.0f, -1.0f, 0.0f)));
-			model_matrix.mul(cgv::math::scale4(vec3(10.0f, 0.2f, 10.0f)));
+			obj.draw(rctx, pbr_tex_prog);
 
-			pbr_prog.enable(ctx);
-			pbr_prog.set_uniform(ctx, "model_matrix", model_matrix.get());
-			pbr_prog.set_uniform(ctx, "model_normal_matrix", get_normal_matrix(model_matrix.get()));
-			pbr_prog.set_uniform(ctx, "light_space_matrix", light_matrix * model_matrix.get());
-			pbr_prog.disable(ctx);
-
-			ctx.set_modelview_matrix(view_matrix * model_matrix.get());
-			box_mesh_info.draw_all(ctx, false, false, false);
-			
-			model_matrix.pop();
-
-			model_matrix.push();
-			model_matrix.mul(cgv::math::translate4(vec3(0.0f, height_offset, 0.0f)));
-			model_matrix.mul(cgv::math::rotate4(rot_angle, vec3(0.0f, 1.0f, 0.0f)));
-
-			pbr_prog.enable(ctx);
-			pbr_prog.set_uniform(ctx, "model_matrix", model_matrix.get());
-			pbr_prog.set_uniform(ctx, "model_normal_matrix", get_normal_matrix(model_matrix.get()));
-			pbr_prog.set_uniform(ctx, "light_space_matrix", light_matrix * model_matrix.get());
-			pbr_prog.disable(ctx);
-
-			ctx.set_modelview_matrix(view_matrix * model_matrix.get());
-			obj_mesh_info.draw_all(ctx, false, false, false);
-			model_matrix.pop();
-			
 			irradiance_map.disable(ctx);
 			prefiltered_specular_map.disable(ctx);
 			brdf_lut.disable(ctx);
 			depth_map.disable(ctx);
 			jitter_tex.disable(ctx);
 
-			//albedo_tex.disable(ctx);
-			//metallic_tex.disable(ctx);
-			//roughness_tex.disable(ctx);
-			//normal_tex.disable(ctx);
-
-
 			ctx.pop_modelview_matrix();
 		}
 
 
-		
+
 		// lastly render the environment
 		auto& cubemap_prog = shaders.get("cubemap");
 		cubemap_prog.enable(ctx);
-		cubemap_prog.set_uniform(ctx, "resolution", resolution);
+		cubemap_prog.set_uniform(ctx, "resolution", vec2(ctx.get_width(), ctx.get_height()));
 		cubemap_prog.set_uniform(ctx, "eye_pos", eye_pos);
 
 		glDepthFunc(GL_LEQUAL);
@@ -754,8 +756,9 @@ public:
 		bool success = tex.create_from_image(df, dv, ctx, file_name);
 		tex.set_wrap_s(TW_REPEAT);
 		tex.set_wrap_t(TW_REPEAT);
-		tex.set_min_filter(TF_LINEAR);
+		tex.set_min_filter(TF_ANISOTROP, 16.0f);
 		tex.set_mag_filter(TF_LINEAR);
+		tex.generate_mipmaps(ctx);
 		return success;
 	}
 	void create_gui() {

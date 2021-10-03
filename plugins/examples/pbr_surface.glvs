@@ -8,6 +8,8 @@ uniform mat4 model_matrix;
 uniform mat3 model_normal_matrix;
 uniform mat4 light_space_matrix;
 
+uniform vec2 uv_scale;
+
 layout(location = 0) in vec4 position;
 layout(location = 1) in vec3 normal;
 layout(location = 2) in vec3 tangent;
@@ -30,7 +32,7 @@ void main()
 
 	normal_model = normalize(model_normal_matrix * normal);
 	tangent_model = normalize(model_normal_matrix * tangent);
-	texcoord_fs = texcoord;
+	texcoord_fs = texcoord * uv_scale;
 	color_fs = vec4(0.5);//color;
 
 	gl_Position = get_modelview_projection_matrix() * position;
