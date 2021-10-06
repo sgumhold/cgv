@@ -35,6 +35,39 @@ namespace cgv {
 			blend_points = false;
 		}
 		
+		/// enables the reduction compute shader and sets invariant uniforms
+		void clod_point_renderer::reduce_buffer_init(context& ctx)
+		{
+			reset_draw_parameters(ctx, active_draw_parameter_buffer);
+			reduce_prog.set_uniform(ctx, uniforms.frustum_extent, 1.0f);
+			reduce_prog.set_uniform(ctx, uniforms.target_buffer_size, max_drawn_points);
+			reduce_prog.enable(ctx);
+		}
+
+		void clod_point_renderer::reduce_buffer(context& ctx, const GLuint buffer, const GLuint point_id_buffer, size_t start, size_t count)
+		{
+			//  allows the use of the points' indices as id in point_id_buffer else the content of a provided point id buffer is used
+			//bool use_index_as_id = true;
+			// this will replace the buffer set by enable
+			glBindBufferBase(GL_SHADER_STORAGE_BUFFER, input_pos, buffer);
+			if (point_id_buffer != -1) {
+				glBindBufferBase(GL_SHADER_STORAGE_BUFFER, input_id_pos, point_id_buffer);
+				reduce_prog.set_uniform(ctx, "use_index_as_id", false);
+			}
+			
+			reduce_prog.set_uniform(ctx, uniforms.batch_offset, (int)start);
+			reduce_prog.set_uniform(ctx, uniforms.batch_size, (int)count);
+
+			glDispatchCompute((count / 128) + 1, 1, 1); //with NVIDIA GPUs in debug mode this will spam notifications about buffer usage
+		}
+
+		/// synchronizes and disables the shader prog.
+		void clod_point_renderer::reduce_buffer_finish(context& ctx)
+		{
+			glMemoryBarrier(GL_ALL_BARRIER_BITS);
+			reduce_prog.disable(ctx);
+		}
+
 		void clod_point_renderer::reduce_points(context& ctx, size_t start, size_t count)
 		{
 			{
@@ -47,32 +80,12 @@ namespace cgv {
 				reduce_prog.set_uniform(ctx, uniforms.target_buffer_size, max_drawn_points);
 				reduce_prog.enable(ctx);
 
-				GLuint64 startTime, stopTime;
-				unsigned int queryID[2];
-				glGenQueries(2, queryID);
-				glQueryCounter(queryID[0], GL_TIMESTAMP);
-
 				// run computation
 				glDispatchCompute((input_buffer_num_points / 128) + 1, 1, 1); //with NVIDIA GPUs in debug mode this will spam notifications about buffer usage
 
 				// synchronize
 				glMemoryBarrier(GL_ALL_BARRIER_BITS);
-
-				glQueryCounter(queryID[1], GL_TIMESTAMP);
-
-				GLint stopTimerAvailable = 0;
-				while (!stopTimerAvailable) {
-					glGetQueryObjectiv(queryID[1],
-						GL_QUERY_RESULT_AVAILABLE,
-						&stopTimerAvailable);
-				}
-
-				// get query results
-				glGetQueryObjectui64v(queryID[0], GL_QUERY_RESULT, &startTime);
-				glGetQueryObjectui64v(queryID[1], GL_QUERY_RESULT, &stopTime);
-
-				//std::cout << "Time spent of point reduction on the GPU: " << (stopTime - startTime) / 1000000.0 << "ms\n" << std::endl;
-
+				
 				reduce_prog.disable(ctx);
 			}
 		}
@@ -179,29 +192,13 @@ namespace cgv {
 
 			glGenBuffers(1, &input_buffer);
 			glGenBuffers(1, &render_buffer);
-			glGenBuffers(1, &index_buffer);
+			glGenBuffers(1, &point_id_buffer);
 			glGenBuffers(1, &draw_parameter_buffer);
-			glGenBuffers(1, &render_back_buffer);
 
 			// vertex arrays
 			glGenVertexArrays(1, &vertex_array);
-			define_vertex_array(ctx, vertex_array, render_buffer, index_buffer);
-			/*
-			glBindVertexArray(vertex_array);
-			// position 
-			glBindBuffer(GL_ARRAY_BUFFER, render_buffer);
-			glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, sizeof(Point), (void*)0);
-			glEnableVertexAttribArray(0);
-			// color
-			glVertexAttribPointer(1, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(Point), (void*)(sizeof(vec3)));
-			glEnableVertexAttribArray(1);
-			// index
-			glBindBuffer(GL_ARRAY_BUFFER, index_buffer);
-			glVertexAttribIPointer(2, 1, GL_UNSIGNED_INT, 0, (void*)0);
-			glEnableVertexAttribArray(2);
-			glBindBuffer(GL_ARRAY_BUFFER, 0);
-			glBindVertexArray(0);
-			*/
+			define_vertex_array(ctx, vertex_array, render_buffer, point_id_buffer);
+			
 			// fixed size buffers
 			glBindBuffer(GL_SHADER_STORAGE_BUFFER, draw_parameter_buffer);
 			glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(DrawParameters), nullptr, GL_STREAM_DRAW);
@@ -213,7 +210,7 @@ namespace cgv {
 			draw_prog_ptr = &draw_prog;
 			active_render_buffer = render_buffer;
 			active_draw_parameter_buffer = draw_parameter_buffer;
-			active_index_buffer = index_buffer;
+			active_index_buffer = point_id_buffer;
 
 			return draw_prog.is_linked() && reduce_prog.is_linked();
 		}
@@ -301,7 +298,7 @@ namespace cgv {
 			draw_prog_ptr = &draw_prog;
 			active_draw_parameter_buffer = draw_parameter_buffer;
 			active_render_buffer = render_buffer;
-			active_index_buffer = index_buffer;
+			active_index_buffer = point_id_buffer;
 
 			// draw related stuff
 			glBindBuffer(GL_DRAW_INDIRECT_BUFFER, 0);
@@ -449,7 +446,7 @@ namespace cgv {
 			glBindBuffer(GL_SHADER_STORAGE_BUFFER, render_buffer);
 			glBufferData(GL_SHADER_STORAGE_BUFFER, max_drawn_points*sizeof(Point), nullptr, GL_DYNAMIC_DRAW);
 
-			glBindBuffer(GL_SHADER_STORAGE_BUFFER, index_buffer);
+			glBindBuffer(GL_SHADER_STORAGE_BUFFER, point_id_buffer);
 			glBufferData(GL_SHADER_STORAGE_BUFFER, max_drawn_points *sizeof(GLuint), nullptr, GL_DYNAMIC_DRAW);
 			glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 		}
@@ -465,7 +462,7 @@ namespace cgv {
 		int clod_point_renderer::resize_external_buffers(context& ctx, const int old_size)
 		{
 			if (old_size != max_drawn_points) {
-				if (active_index_buffer != index_buffer && active_index_buffer != 0) {
+				if (active_index_buffer != point_id_buffer && active_index_buffer != 0) {
 					glBindBuffer(GL_SHADER_STORAGE_BUFFER, active_index_buffer);
 					glBufferData(GL_SHADER_STORAGE_BUFFER, max_drawn_points * sizeof(GLuint), nullptr, GL_DYNAMIC_DRAW);
 				}
@@ -485,22 +482,21 @@ namespace cgv {
 		void clod_point_renderer::clear_buffers(const context& ctx)
 		{
 			glDeleteBuffers(1, &input_buffer);
-			glDeleteBuffers(1, &index_buffer);
+			glDeleteBuffers(1, &point_id_buffer);
 			glDeleteBuffers(1, &render_buffer);
 			glDeleteBuffers(1, &draw_parameter_buffer);
-			glDeleteBuffers(1, &render_back_buffer);
 			
-			input_buffer = render_buffer = draw_parameter_buffer = render_back_buffer = index_buffer = 0;
+			input_buffer = render_buffer = draw_parameter_buffer = point_id_buffer = 0;
 		}
 
 		void clod_point_renderer::reset_draw_parameters(context& ctx, GLuint& draw_parameter_buffer)
 		{
-			// reset draw parameters, using SubData version is important here to keep any mapping
+			// reset draw parameters. using SubData version is important here to keep any mapping
 			DrawParameters dp = DrawParameters();
 			glNamedBufferSubData(draw_parameter_buffer, 0, sizeof(DrawParameters), &dp);
 		}
 
-		void clod_point_renderer::define_vertex_array(context& ctx, GLuint& vertex_array, const GLuint render_buffer, const GLuint index_buffer)
+		void clod_point_renderer::define_vertex_array(context& ctx, GLuint& vertex_array, const GLuint render_buffer, const GLuint point_id_buffer)
 		{
 			glBindVertexArray(vertex_array);
 			// position 
@@ -511,7 +507,7 @@ namespace cgv {
 			glVertexAttribPointer(1, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(Point), (void*)(sizeof(vec3)));
 			glEnableVertexAttribArray(1);
 			// index
-			glBindBuffer(GL_ARRAY_BUFFER, index_buffer);
+			glBindBuffer(GL_ARRAY_BUFFER, point_id_buffer);
 			glVertexAttribIPointer(2, 1, GL_UNSIGNED_INT, 0, (void*)0);
 			glEnableVertexAttribArray(2);
 			glBindBuffer(GL_ARRAY_BUFFER, 0);
