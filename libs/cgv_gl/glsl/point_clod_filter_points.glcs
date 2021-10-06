@@ -57,6 +57,9 @@ layout(std430, binding = 3) buffer ssDrawParameters{
 	uint baseInstance;
 } drawParameters;
 
+layout(std430, binding = 4) buffer ssInputIdBuffer{
+	uint inputIdBuffer[];
+};
 
 layout(location = 21) uniform int batch_offset;
 layout(location = 22) uniform int batch_size;
@@ -76,6 +79,8 @@ uniform float min_density = 0.3;
 
 uniform mat4 model_view_projection;
 uniform mat4 model_view;
+
+uniform bool use_index_as_id = true;
 
 float rand(float n){
 	return fract(cos(n) * 123456.789);
@@ -130,7 +135,11 @@ void main(){
 	int targetIndex = int(atomicAdd(drawParameters.count, 1));
 	if (targetIndex < target_buffer_size){
 		targetBuffer[targetIndex] = v;
-		targetIndexBuffer[targetIndex] = inputIndex;
+		if (use_index_as_id){
+			targetIndexBuffer[targetIndex] = inputIndex;
+		} else { 
+			targetIndexBuffer[targetIndex] = inputIdBuffer[inputIndex];
+		}
 	} else {
 		drawParameters.count = target_buffer_size;
 	}
