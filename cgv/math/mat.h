@@ -20,7 +20,7 @@ template <typename RandomAccessIterator>
 struct step_iterator
 {
 public:
-	typedef typename RandomAccessIterator base_type;
+	typedef RandomAccessIterator base_type;
 	typedef typename base_type::pointer pointer;
 	typedef typename base_type::reference reference;
 	typedef typename base_type::value_type value_type;

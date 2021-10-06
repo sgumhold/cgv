@@ -159,6 +159,14 @@ inline bool balanced_find_content(
 		content,open_parenthesis,close_parenthesis);
 }
 
+/// <summary>
+/// remove cpp-style comments from string
+/// </summary>
+/// <param name="source">source string from which to strip cpp style comments</param>
+/// <param name="correct_new_lines">whether to replace two character new lines with single character new lines</param>
+/// <returns>source string without any comments</returns>
+extern CGV_API std::string strip_cpp_comments(const std::string& source, bool correct_new_lines = true);
+
 	}
 }
 

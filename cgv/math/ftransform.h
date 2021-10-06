@@ -17,13 +17,32 @@ namespace cgv {
 		/// construct 4x4 translation matrix from xyz components
 		template <typename T> fmat<T, 4, 4>
 			translate4(const T& tx, const T& ty, const T& tz) { return translate4(fvec<T, 3>(tx, ty, tz)); }
+		/// construct 2x2 scale matrix from xy scales
+		template <typename T> fmat<T, 2, 2>
+			scale2(const fvec<T, 2>& s) { fmat<T, 2, 2> M; M.identity(); M(0, 0) = s(0); M(1, 1) = s(1); return M; }
+		/// construct 2x2 scale matrix from xy scales
+		template <typename T> fmat<T, 2, 2>
+			scale2(const T& sx, const T& sy) { return scale2(fvec<T, 2>(sx, sy)); }
 		/// construct 4x4 scale matrix from xyz scales
 		template <typename T> fmat<T, 4, 4>
 			scale4(const fvec<T, 3>& s) { fmat<T, 4, 4> M; M.identity(); M(0, 0) = s(0); M(1, 1) = s(1); M(2, 2) = s(2); return M; }
 		/// construct 4x4 scale matrix from xyz scales
 		template <typename T> fmat<T, 4, 4>
 			scale4(const T& sx, const T& sy, const T& sz) { return scale4(fvec<T, 3>(sx, sy, sz)); }
-		/// construct 4x4 rotation matrix from angle in degrees and axis 
+		/// construct 2x2 rotation matrix from angle in degrees
+		template <typename T> fmat<T, 2, 2>
+			rotate2(const T& A) {
+				fmat<T, 2, 2> M;
+				T angle = T(0.01745329252)*A;
+				T c = cos(angle);
+				T s = sin(angle);
+				M(0, 0) = c;
+				M(0, 1) = -s;
+				M(1, 0) = s;
+				M(1, 1) = c;
+				return M;
+			}
+		/// construct 3x3 rotation matrix from angle in degrees and axis 
 		template <typename T> fmat<T, 3, 3>
 			rotate3(const T& A, const fvec<T, 3>& a) {
 				fmat<T, 3, 3> M;

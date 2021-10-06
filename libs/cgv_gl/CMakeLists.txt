@@ -1,47 +1,19 @@
-cmake_minimum_required(VERSION 2.6)
-project(cgv_gl)
 
-# The CGV framework is needed
-find_package(cgv COMPONENTS  utils type data base signal math media render gui)
-
-# The PPP is needed
-find_package(ppp)
-find_package(cgv_reflect_types)
-
-# Find 3rd party dependencies
-cgv_find_package(GLEW)
-cgv_find_package(OpenGL REQUIRED)
-
-# Source files
 file(GLOB_RECURSE SOURCES RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "*.cxx")
-# Header files
-file(GLOB_RECURSE HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "*.h")
-# Shader files
+file(GLOB_RECURSE PPP_SOURCES RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "*.ph")
 file(GLOB_RECURSE SHADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "glsl/*.gl*")
 
-set(PH_SOURCES gl/gl_context_switch.ph)
+cgv_create_lib(cgv_gl SOURCES ${SOURCES} PPP_SOURCES ${PPP_SOURCES} SHADER_SOURCES ${SHADERS}
+        DEPENDENCIES cgv_utils cgv_type cgv_data cgv_base cgv_signal cgv_math cgv_media cgv_render cgv_gui cgv_reflect_types json glew)
 
-ppp_compile("${CGV_DIR}"
-		PPP_FILES 
-		${PH_SOURCES})
+target_compile_definitions(cgv_gl PRIVATE CGV_RENDER_GL_EXPORTS)
+target_compile_definitions(cgv_gl_static PRIVATE CGV_RENDER_GL_FORCE_STATIC)
+if (APPLE)
+    target_compile_definitions(cgv_gl PRIVATE __APPLGLSU__ GL_SILENCE_DEPRECATION)
+    target_compile_definitions(cgv_gl_static PRIVATE __APPLGLSU__ GL_SILENCE_DEPRECATION)
+endif ()
 
-include_directories(${GLEW_INCLUDE_PATH}
-	${OPENGL_INCLUDE_DIR} 
-	"${CGV_DIR}/libs"
-	"${cgv_INCLUDE_DIRS}")
+target_link_libraries(cgv_gl PUBLIC ${OPENGL_LIBRARIES})
+target_link_libraries(cgv_gl_static PUBLIC ${OPENGL_LIBRARIES})
 
-# FIXME: For unicode support the definitions _UNICODE and UNICODE have to be
-# set. Can we do this better?
-cgv_add_library(cgv_gl 
-	SOURCES ${SOURCES} 
-	PUBLIC_HEADERS ${HEADERS} ${PPP_FILES}
-	SHADERS ${SHADERS}
-	DEFINITIONS UNICODE _UNICODE
-	SHARED_DEFINITIONS CGV_RENDER_GL_EXPORTS ${GLEW_SHARED_DEFINITIONS}
-	STATIC_DEFINITIONS CGV_RENDER_GL_FORCE_STATIC ${GLEW_STATIC_DEFINITIONS})
-
-	
-target_link_libraries(cgv_gl ${cgv_reflect_types_LIBRARIES} ${cgv_LIBRARIES} ${GLEW_LIBRARIES} ${OPENGL_LIBRARIES})
-
-cgv_write_find_file(cgv_gl)
-
+install(DIRECTORY glsl/. DESTINATION ${CGV_LIBS_INCLUDE_DEST}/cgv_gl/glsl)

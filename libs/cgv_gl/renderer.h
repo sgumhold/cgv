@@ -2,9 +2,11 @@
 
 #include <cgv/render/context.h>
 #include <cgv/render/shader_program.h>
-#include <cgv/render/vertex_buffer.h>
-#include <cgv/render/attribute_array_binding.h>
+//#include <cgv/render/vertex_buffer.h>
+//#include <cgv/render/attribute_array_binding.h>
 #include <cgv_gl/gl/gl_context.h>
+
+#include "attribute_array_manager.h"
 
 #include "gl/lib_begin.h"
 
@@ -16,162 +18,7 @@ namespace cgv { // @<
 		{
 			virtual ~render_style();
 		};
-		/// attribute array manager used to upload arrays to gpu
-		class CGV_API attribute_array_manager
-		{
-		protected:
-			/// store default buffer usage
-			VertexBufferUsage default_usage; 
-			/// attribue array binding used to store array pointers
-			attribute_array_binding aab;
-			/// store vertex buffers generated per attribute location
-			std::map<int, vertex_buffer*> vbos;
-			/// give renderer access to protected members
-			friend class renderer;
-			/// 
-			template <typename T>
-			bool set_indices(const context& ctx, const T& array)
-			{
-				bool res;
-				vertex_buffer*& vbo_ptr = vbos[-1];
-				if (vbo_ptr) {
-					if (vbo_ptr->get_size_in_bytes() == array_descriptor_traits <T>::get_size(array))
-						res = vbo_ptr->replace(ctx, 0, array_descriptor_traits <T>::get_address(array), array_descriptor_traits < T>::get_nr_elements(array));
-					else {
-						vbo_ptr->destruct(ctx);
-						res = vbo_ptr->create(ctx, array);
-					}
-				}
-				else {
-					vbo_ptr = new vertex_buffer(VBT_INDICES, default_usage);
-					res = vbo_ptr->create(ctx, array);
-				}
-				if (res)
-					res = ctx.set_element_array(&aab, vbo_ptr);
-				return res;
-			}
-			/// 
-			template <typename T>
-			bool set_indices(const context& ctx, const T* array, size_t count)
-			{
-				bool res;
-				vertex_buffer*& vbo_ptr = vbos[-1];
-				if (vbo_ptr) {
-					if (vbo_ptr->get_size_in_bytes() == count * get_type_size(cgv::type::info::type_id<T>::get_id()))
-						res = vbo_ptr->replace(ctx, 0, array, count);
-					else {
-						vbo_ptr->destruct(ctx);
-						res = vbo_ptr->create(ctx, array, count);
-					}
-				}
-				else {
-					vbo_ptr = new vertex_buffer(VBT_INDICES, default_usage);
-					res = vbo_ptr->create(ctx, array, count);
-				}
-				if (res)
-					res = ctx.set_element_array(&aab, vbo_ptr);
-				return res;
-			}
-			/// whether aam contains an index buffer
-			bool has_index_buffer() const;
-			///
-			void remove_indices(const context& ctx);
-			///
-			template <typename T>
-			bool set_attribute_array(const context& ctx, int loc, const T& array) {
-				bool res;
-				vertex_buffer*& vbo_ptr = vbos[loc];
-				if (vbo_ptr) {
-					if (vbo_ptr->get_size_in_bytes() == array_descriptor_traits <T>::get_size(array))
-						res = vbo_ptr->replace(ctx, 0, array_descriptor_traits <T>::get_address(array), array_descriptor_traits < T>::get_nr_elements(array));
-					else {
-						vbo_ptr->destruct(ctx);
-						res = vbo_ptr->create(ctx, array);
-					}
-				}
-				else {
-					vbo_ptr = new vertex_buffer(VBT_VERTICES, default_usage);
-					res = vbo_ptr->create(ctx, array);
-				}
-				if(res)
-					res = ctx.set_attribute_array_void(&aab, loc, array_descriptor_traits <T>::get_type_descriptor(array), vbo_ptr, 0, array_descriptor_traits < T>::get_nr_elements(array));
-				return res;
-			}
-			///
-			template <typename T>
-			bool set_attribute_array(const context& ctx, int loc, const T* array_ptr, size_t nr_elements, unsigned stride) {
-				bool res;
-				vertex_buffer*& vbo_ptr = vbos[loc];
-				if (vbo_ptr) {
-					if (vbo_ptr->get_size_in_bytes() == nr_elements * sizeof(T))
-						res = vbo_ptr->replace(ctx, 0, array_ptr, nr_elements);
-					else {
-						vbo_ptr->destruct(ctx);
-						res = vbo_ptr->create(ctx, array_ptr, nr_elements);
-					}
-				}
-				else {
-					vbo_ptr = new vertex_buffer(VBT_VERTICES, default_usage);
-					res = vbo_ptr->create(ctx, array_ptr, nr_elements);
-				}
-				if (res)
-					res = ctx.set_attribute_array_void(&aab, loc, type_descriptor(element_descriptor_traits<T>::get_type_descriptor(*array_ptr), true), vbo_ptr, 0, nr_elements);
-				return res;
-			}
-			///
-			bool set_attribute_array(const context& ctx, int loc, type_descriptor element_type, const vertex_buffer& vbo, size_t offset_in_bytes, size_t nr_elements, unsigned stride_in_bytes);
-
-			template <typename C, typename T>
-			bool set_composed_attribute_array(const context& ctx, int loc, const C* array_ptr, size_t nr_elements, const T& elem) {
-				bool res;
-				vertex_buffer*& vbo_ptr = vbos[loc];
-				if (vbo_ptr) {
-					if (vbo_ptr->get_size_in_bytes() == nr_elements * sizeof(C))
-						res = vbo_ptr->replace(ctx, 0, array_ptr, nr_elements);
-					else {
-						vbo_ptr->destruct(ctx);
-						res = vbo_ptr->create(ctx, array_ptr, nr_elements);
-					}
-				}
-				else {
-					vbo_ptr = new vertex_buffer(VBT_VERTICES, default_usage);
-					res = vbo_ptr->create(ctx, array_ptr, nr_elements);
-				}
-				if (res)
-					res = ctx.set_attribute_array_void(&aab, loc, 
-						type_descriptor(element_descriptor_traits<T>::get_type_descriptor(elem), true), 
-						vbo_ptr, 
-						reinterpret_cast<const void*>(reinterpret_cast<const cgv::type::uint8_type*>(&elem) - reinterpret_cast<const cgv::type::uint8_type*>(array_ptr)), 
-						nr_elements, sizeof(C));
-				return res;
-			}
-			template <typename C, typename T>
-			bool ref_composed_attribute_array(const context& ctx, int loc, int loc_ref, const C* array_ptr, size_t nr_elements, const T& elem) {
-				vertex_buffer*& vbo_ptr = vbos[loc_ref];
-				if (!vbo_ptr)
-					return false;
-				return ctx.set_attribute_array_void(&aab, loc,
-					type_descriptor(element_descriptor_traits<T>::get_type_descriptor(elem), true),
-					vbo_ptr,
-					reinterpret_cast<const void*>(reinterpret_cast<const cgv::type::uint8_type*>(&elem) - reinterpret_cast<const cgv::type::uint8_type*>(array_ptr)),
-					nr_elements, sizeof(C));
-			}
-		public:
-			/// default initialization
-			attribute_array_manager(VertexBufferUsage _default_usage = VBU_STREAM_DRAW);
-			/// destructor calls destruct
-			~attribute_array_manager();
-			/// check whether the given attribute is available
-			bool has_attribute(const context& ctx, int loc) const;
-			///
-			bool init(context& ctx);
-			///
-			bool enable(context& ctx);
-			///
-			bool disable(context& ctx);
-			///
-			void destruct(const context& ctx);
-		};
+		
 		/// abstract base class for all renderers that handles a shader program and position / color attribute
 		class CGV_API renderer : public render_types
 		{
@@ -180,6 +27,10 @@ namespace cgv { // @<
 			shader_program prog;
 			/// shader program
 			shader_program* prog_ptr;
+			/// shader define maps
+			shader_define_map defines;
+			/// last shader define maps
+			shader_define_map last_defines;
 			/// otherwise keep track of enabled arrays
 			std::set<int> enabled_attribute_arrays;
 			/// default render style
@@ -209,10 +60,16 @@ namespace cgv { // @<
 			const render_style* get_style_ptr() const;
 			/// return whether attributes persist after a call to disable
 			bool attributes_persist() const { return has_aam(); }
+			/// overload to update the shader defines based on the current render style; only called if internal shader program is used
+			virtual void update_defines(shader_define_map& defines) {}
+			/// overload to build shader program based on the passed defines
+			virtual bool build_shader_program(context& ctx, shader_program& prog, const shader_define_map& defines) { return false; }
 		public:
+			/// access to shader define map to update defines not handled by render style
+			shader_define_map& ref_defines() { return defines; }
 			/// derived renderer classes have access to shader program
 			shader_program& ref_prog() { return *prog_ptr; }
-			/// set external shader program up to next call to the disable() function, which is also called by the render() function
+			/// set external shader program up to next call to disable() or render()
 			void set_prog(shader_program& one_shot_prog);
 		protected:
 			/// access to style
@@ -265,8 +122,8 @@ namespace cgv { // @<
 			renderer();
 			/// destructor deletes default renderer style
 			virtual ~renderer();
-			/// used by derived classes to manage singeltons
-			void manage_singelton(context& ctx, const std::string& renderer_name, int& ref_count, int ref_count_change);
+			/// used by derived classes to manage singletons
+			void manage_singleton(context& ctx, const std::string& renderer_name, int& ref_count, int ref_count_change);
 			/// call this before setting attribute arrays to manage attribute array in given manager
 			virtual void enable_attribute_array_manager(const context& ctx, attribute_array_manager& aam);
 			/// call this after last render/draw call to ensure that no other users of renderer change attribute arrays of given manager
@@ -276,7 +133,10 @@ namespace cgv { // @<
 				virtual void set_attribute_array_manager(const context& ctx, attribute_array_manager* _aam_ptr = 0);
 			/// reference given render style
 			void set_render_style(const render_style& rs);
-			/// abstract initialize method creates default render style, derived renderers to load the shader program
+			//! call init() once before using renderer
+			/*! creates default render style and builds shader program based on defines that can be
+			    configured with ref_defines() before calling init(). Reconfiguring defines after init() causes
+				rebuild of shader program in enable() function. */
 			virtual bool init(context& ctx);
 			/// templated method to set the position attribute from a single position of type T
 			template <typename T>
@@ -369,14 +229,32 @@ namespace cgv { // @<
 				return true;
 			}
 			/// return whether indices have been defined
-			bool has_indices() const { return index_count > 0; }
+			bool has_indices() const {
+				if(aam_ptr)
+					return aam_ptr->has_index_buffer();
+				return index_count > 0;
+			}
 			/// remove previously set indices
 			void remove_indices(const context& ctx);
+			/*! Returns the OpenGL handle to the buffer of the given attribute name as managed by the attribute array manager.
+				Returns -1 if the buffer or attribute array manager does not exist.
+				Take caution when manipulating the buffer. */
+			int get_vbo_handle(const context& ctx, const attribute_array_manager& aam, const std::string& attr_name) {
+				return aam.get_buffer_handle(ref_prog().get_attribute_location(ctx, attr_name));
+			}
+			/*! Returns the OpenGL handle to the element buffer holding the indices for indexed rendering as managed by the attribute array manager.
+				Returns -1 if the buffer or attribute array manager does not exist.
+				Take caution when manipulating the buffer. */
+			int get_index_buffer_handle(const attribute_array_manager& aam) {
+				return aam.get_buffer_handle(-1);
+			}
 			/// call to validate, whether essential position attribute is defined
 			virtual bool validate_attributes(const context& ctx) const;
 			/// validate attributes and if successful, enable renderer
 			bool validate_and_enable(context& ctx);
-			/// enable renderer
+			//! enables renderer
+			/*! if internal program is used, first update defines with update_defines() and rebuild 
+			    program if it changed due updating or external modification via ref_defines()*/
 			virtual bool enable(context& ctx);
 			//! Draw a range of vertices or indexed elements.
 			/*! Call this function only successful enabeling via validate_and_enable() or enable().
@@ -407,24 +285,6 @@ namespace cgv { // @<
 				bool use_strips = false, bool use_adjacency = false, uint32_t strip_restart_index = -1);
 			/// the clear function destructs the shader program
 			virtual void clear(const context& ctx);
-
-
-			// TODO: should this be done this way?
-			int get_vbo(const context& ctx, const std::string attr_name) {
-
-				if(aam_ptr) {
-					int loc = ref_prog().get_attribute_location(ctx, attr_name);
-					auto it = aam_ptr->vbos.find(loc);
-					if(it != aam_ptr->vbos.end()) {
-						vertex_buffer* vbo_ptr = aam_ptr->vbos[loc];
-						if(vbo_ptr->handle) {
-							return (const int&)vbo_ptr->handle - 1;
-						}
-					}
-				}
-
-				return (const int&)-1;
-			}
 		};
 	}
 }

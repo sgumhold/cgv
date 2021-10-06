@@ -245,7 +245,7 @@ void ValueInput::value_damage() {
       const double A = value();
       // parse the existing text and see if it is close enough to number
       char* p; double v = strtod(input.text(), &p);
-      if (*p || p == input.text() || rint(A) != rint(v) ||
+      if (*p || p == input.text() || rint(A) != rint(v) || signbit(A) != signbit(v) ||
 #ifdef _WIN32
 	  (v ? (fabs(fabs(A/v)-1) > 1.2e-7) : (A != 0))
 #else

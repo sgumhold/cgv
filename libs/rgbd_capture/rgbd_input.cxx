@@ -329,7 +329,7 @@ bool rgbd_input::write_protocol_frame_async(const std::string& fn, const frame_t
 	if (fu.valid()) {
 		fu.wait();
 	}
-	fu = std::async(std::launch::async, cgv::utils::file::write,fn, &frame.frame_data.front(), frame.frame_data.size(), false);
+	//fu = std::async(std::launch::async, cgv::utils::file::write, fn, &frame.frame_data.front(), frame.frame_data.size(), false);
 	return true;
 }
 

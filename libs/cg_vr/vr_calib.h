@@ -23,7 +23,7 @@ namespace cgv {
 			/// constructor is protected to forbid construction of more than one singleton
 			vr_calibration();
 			/// allow ref_vr_calibration() function to construct one instance
-			friend extern CGV_API vr_calibration& ref_vr_calibration();
+			friend CGV_API vr_calibration& ref_vr_calibration();
 		public:
 			/// iterate vr drivers and copy calibration information into map
 			void update_calibration_info();

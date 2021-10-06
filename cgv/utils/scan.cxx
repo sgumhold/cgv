@@ -36,15 +36,17 @@ const unsigned char ss = static_cast<unsigned char>(225);
 char to_lower(char c)
 {
 	if (c >= 'A' && c <= 'Z')
-		return (c-'A')+'a';
-	switch (c) {
-		case 'Ä' : return 'ä';
-		case 'Ö' : return 'ö';
-		case 'Ü' : return 'ü';
-		case OE : return oe;
-		case UE : return ue;
-		case AE : return ae;
-		default: return c;
+		return (c - 'A') + 'a';
+	unsigned char uc = c;
+	switch (uc) {
+	case OE:
+		return (char)oe;
+	case UE:
+		return (char)ue;
+	case AE:
+		return (char)ae;
+	default:
+		return c;
 	}
 }
 
@@ -60,7 +62,7 @@ std::string to_hex(uint8_t v, bool use_upper_case)
 std::string to_lower(const std::string& _s)
 {
 	std::string s(_s);
-	for (unsigned int i=0; i<s.size(); ++i)
+	for (unsigned int i = 0; i < s.size(); ++i)
 		s[i] = to_lower(s[i]);
 	return s;
 }
@@ -68,22 +70,24 @@ std::string to_lower(const std::string& _s)
 char to_upper(char c)
 {
 	if (c >= 'a' && c <= 'z')
-		return (c-'a')+'A';
-	switch (c) {
-		case 'ä' : return 'Ä';
-		case 'ö' : return 'Ö';
-		case 'ü' : return 'Ü';
-		case oe: return OE;
-		case ue: return UE;
-		case ae: return AE;
-		default: return c;
+		return (c - 'a') + 'A';
+	unsigned char uc = c;
+	switch (uc) {
+	case oe:
+		return (char)OE;
+	case ue:
+		return (char)UE;
+	case ae:
+		return (char)AE;
+	default:
+		return c;
 	}
 }
 
 std::string to_upper(const std::string& _s)
 {
 	std::string s(_s);
-	for (unsigned int i=0; i<s.size(); ++i)
+	for (unsigned int i = 0; i < s.size(); ++i)
 		s[i] = to_upper(s[i]);
 	return s;
 }
@@ -92,14 +96,7 @@ std::string replace_special(const std::string& _s)
 {
 	std::string s;
 	for (unsigned int i=0; i<_s.size(); ++i) {
-		switch (_s[i]) {
-		case 'Ä' : s += "Ae"; break;
-		case 'Ö' : s += "Oe"; break;
-		case 'Ü' : s += "Ue"; break;
-		case 'ä' : s += "ae"; break;
-		case 'ö' : s += "oe"; break;
-		case 'ü' : s += "ue"; break;
-		case 'ß' : s += "ss"; break;
+		switch ((unsigned char)s[i]) {
 		case AE: s += "Ae"; break;
 		case OE: s += "Oe"; break;
 		case UE: s += "Ue"; break;

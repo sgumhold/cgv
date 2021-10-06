@@ -1,7 +1,7 @@
 #pragma once
 
 #include <cgv/base/node.h>
-#include <delaunay_mesh_with_hierarchy.h>
+#include <delaunay/delaunay_mesh_with_hierarchy.h>
 #include <cgv/render/drawable.h>
 #include <cgv/gui/provider.h>
 

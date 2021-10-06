@@ -45,9 +45,11 @@ protected:
 	std::vector<rgb> colors;
 
 	// Volume rendering
+	box3 volume_bounding_box;
 	cgv::render::texture tf_tex;
 	cgv::render::texture volume_tex;
 	cgv::render::texture gradient_tex;
+	cgv::render::texture depth_tex;
 
 	// Render members
 	cgv::render::view* view_ptr;

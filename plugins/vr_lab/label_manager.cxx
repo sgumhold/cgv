@@ -165,9 +165,17 @@ void label_manager::update_label_size(uint32_t i, int w, int h)
 	packing_outofdate = true;
 }
 
+void label_manager::update_label_background_color(uint32_t i, const rgba& background_color)
+{
+	labels[i].background_color = background_color;
+	label_states[i] |= LS_NEW_COLOR;
+	set_texture_outofdate();
+}
+
 void label_manager::init(cgv::render::context& ctx)
 {
 	cgv::render::ref_rectangle_renderer(ctx, 1);
+	aam.init(ctx);
 }
 
 bool label_manager::ensure_tex_fbo_combi(cgv::render::context& ctx, cgv::render::texture& tex, cgv::render::frame_buffer& fbo, int width, int height)
@@ -196,6 +204,7 @@ bool label_manager::ensure_tex_fbo_combi(cgv::render::context& ctx, cgv::render:
 void label_manager::draw_label_backgrounds(cgv::render::context& ctx, const std::vector<uint32_t>& indices, bool all, bool swap)
 {
 	auto& rr = cgv::render::ref_rectangle_renderer(ctx);
+	rr.enable_attribute_array_manager(ctx, aam);
 	rr.set_render_style(rrs);
 	std::vector<vec4> positions;
 	std::vector<vec2> extents;
@@ -218,11 +227,12 @@ void label_manager::draw_label_backgrounds(cgv::render::context& ctx, const std:
 	rr.set_extent_array(ctx, extents);
 	rr.set_color_array(ctx, colors);
 	rr.render(ctx, 0, positions.size());
+	rr.disable_attribute_array_manager(ctx, aam);
 }
 
 void label_manager::draw_label_texts(cgv::render::context& ctx, const std::vector<uint32_t>& indices, int height, bool all, bool swap)
 {
-	glColor4fv(&text_color[0]);
+	ctx.set_color(text_color);
 	glEnable(GL_SCISSOR_TEST);
 	ctx.enable_font_face(font_face, font_size);
 	for (uint32_t i : indices) {
@@ -294,6 +304,7 @@ void label_manager::draw_labels(cgv::render::context& ctx, bool all)
 	// copy rotated labels with rectangle renderer to main texture
 	if (!rotated_labels.empty()) {
 		auto& rr = cgv::render::ref_rectangle_renderer(ctx);
+		rr.enable_attribute_array_manager(ctx, aam);
 		rr.set_render_style(rrs);
 		std::vector<vec3> positions;
 		std::vector<vec4> texcoords;
@@ -334,6 +345,7 @@ void label_manager::draw_labels(cgv::render::context& ctx, bool all)
 		tmp_tex.enable(ctx);
 		rr.render(ctx, 0, positions.size());
 		tmp_tex.disable(ctx);
+		rr.disable_attribute_array_manager(ctx, aam);
 	}
 	ctx.pop_pixel_coords();
 	fbo.disable(ctx);
@@ -357,6 +369,7 @@ void label_manager::destruct(cgv::render::context& ctx)
 	tex = 0;
 	fbo.destruct(ctx);
 	cgv::render::ref_rectangle_renderer(ctx, -1);
+	aam.destruct(ctx);
 }
 
 void label_manager::ensure_texture_uptodate(cgv::render::context& ctx)

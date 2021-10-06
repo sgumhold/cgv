@@ -25,6 +25,7 @@ namespace cgv {
 		surface_render_style::surface_render_style() : material("default")
 		{
 			surface_color = cgv::media::illum::surface_material::color_type(0.4f, 0.1f, 0.7f);
+			surface_opacity = 1.0f;
 			culling_mode = CM_OFF;
 			illumination_mode = IM_ONE_SIDED;
 			map_color_to_material = CM_COLOR;
@@ -35,6 +36,7 @@ namespace cgv {
 		{
 			cull_per_primitive = true;
 			has_normals = false;
+			has_texcoords = false;
 		}
 		/// call this before setting attribute arrays to manage attribute array in given manager
 		void surface_renderer::enable_attribute_array_manager(const context& ctx, attribute_array_manager& aam)
@@ -100,7 +102,7 @@ namespace cgv {
 			}
 			if (ref_prog().is_linked()) {
 				if (!has_colors)
-					ctx.set_color(srs.surface_color);
+					ctx.set_color(srs.surface_color, srs.surface_opacity);
 				ctx.set_material(srs.material);
 				ref_prog().set_uniform(ctx, "map_color_to_material", int(srs.map_color_to_material));
 				ref_prog().set_uniform(ctx, "culling_mode", int(srs.culling_mode));
@@ -118,8 +120,10 @@ namespace cgv {
 				if (srs.culling_mode != CM_OFF)
 					glDisable(GL_CULL_FACE);
 			}
-			if (!attributes_persist())
+			if (!attributes_persist()) {
 				has_normals = false;
+				has_texcoords = false;
+			}
 			return group_renderer::disable(ctx);
 		}
 		bool surface_render_style_reflect::self_reflect(cgv::reflect::reflection_handler& rh)
@@ -156,7 +160,7 @@ namespace cgv {
 					return false;
 				cgv::render::surface_render_style* srs_ptr = reinterpret_cast<cgv::render::surface_render_style*>(value_ptr);
 				cgv::base::base* b = dynamic_cast<cgv::base::base*>(p);
-				if (p->begin_tree_node("color_mapping", srs_ptr->map_color_to_material)) {
+				if (p->begin_tree_node("color_mapping", srs_ptr->map_color_to_material, false, "level=3")) {
 					p->align("\a");
 					p->add_gui("map_color_to_material", srs_ptr->map_color_to_material, "bit_field_control",
 						"enums='COLOR_FRONT=1,COLOR_BACK=2,OPACITY_FRONT=4,OPACITY_BACK=8'");
@@ -167,7 +171,8 @@ namespace cgv {
 				p->add_member_control(b, "culling_mode", srs_ptr->culling_mode, "dropdown", "enums='off,backface,frontface'");
 				if (p->begin_tree_node("color and materials", srs_ptr->surface_color, false, "level=3")) {
 					p->align("\a");
-					p->add_member_control(b, "surface_color", srs_ptr->surface_color, "", "w=160", " ");
+					p->add_member_control(b, "surface_color", srs_ptr->surface_color);
+					p->add_member_control(b, "surface_opacity", srs_ptr->surface_opacity, "value_slider", "min=0.0;step=0.01;max=1.0;log=false;ticks=true");
 					if (p->begin_tree_node("material", srs_ptr->material, false, "level=3")) {
 						p->align("\a");
 						p->add_gui("front_material", srs_ptr->material);

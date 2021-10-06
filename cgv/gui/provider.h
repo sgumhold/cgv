@@ -134,8 +134,9 @@ public:
 	template <typename T>
 	data::ref_ptr<control<T> > add_member_control(cgv::base::base* base_ptr, const std::string& label, T& value, const std::string& gui_type = "", const std::string& options = "", const std::string& align = "\n") {
 		data::ref_ptr<control<T> > cp = add_control(label, value, gui_type, options, align);
-		connect_copy(cp->value_change,
-			cgv::signal::rebind(base_ptr, &cgv::base::base::on_set, &value));
+		if (cp)
+			connect_copy(cp->value_change,
+				cgv::signal::rebind(base_ptr, &cgv::base::base::on_set, &value));
 		return cp;
 	}
 	//! add a collapsable node to the gui (deprecated)

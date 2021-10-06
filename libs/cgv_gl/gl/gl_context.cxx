@@ -53,7 +53,8 @@ GLuint map_to_gl(PrimitiveType pt)
 		GL_TRIANGLE_FAN,
 		GL_QUADS,
 		GL_QUAD_STRIP,
-		GL_POLYGON
+		GL_POLYGON,
+		GL_PATCHES
 	};
 	return pt_to_gl[pt];
 }
@@ -184,13 +185,12 @@ std::string get_severity_tag_name(GLenum tag)
 
 void GLAPIENTRY debug_callback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam)
 {
+	if (severity == GL_DEBUG_SEVERITY_NOTIFICATION)
+		return;
 	const gl_context* ctx = reinterpret_cast<const gl_context*>(userParam);
 	std::string msg(message, length);
 	msg = std::string("GLDebug Message[") + cgv::utils::to_string(id) + "] from " + get_source_tag_name(source) + " of type " + get_type_tag_name(type) + " of severity " + get_severity_tag_name(severity) + "\n" + msg;
-	if (severity == GL_DEBUG_SEVERITY_NOTIFICATION)
-		std::cerr << msg << std::endl;
-	else
-		ctx->error(msg);
+	ctx->error(msg);
 }
 
 /// define lighting mode, viewing pyramid and the rendering mode
@@ -211,8 +211,8 @@ bool gl_context::configure_gl()
 		debug = (context_flags & WGL_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB) != 0;
 		forward_compatible = (context_flags & WGL_CONTEXT_DEBUG_BIT_ARB) != 0;
 #else
-		debug = (context_flags & WGL_CONTEXT_DEBUG_BIT_ARB) != 0;
-		forward_compatible = (context_flags & WGL_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB) != 0;
+		debug = (context_flags & GLX_CONTEXT_DEBUG_BIT_ARB) != 0;
+		forward_compatible = (context_flags & GLX_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB) != 0;
 #endif
 	}
 	else {
@@ -223,7 +223,11 @@ bool gl_context::configure_gl()
 	if (version >= 32) {
 		GLint context_profile;
 		glGetIntegerv(GL_CONTEXT_PROFILE_MASK, &context_profile);
+#ifdef WIN32
 		core_profile = (context_profile & WGL_CONTEXT_CORE_PROFILE_BIT_ARB) != 0;
+#else
+		core_profile = (context_profile & GLX_CONTEXT_CORE_PROFILE_BIT_ARB) != 0;
+#endif
 	}
 	else
 		core_profile = false;
@@ -238,7 +242,7 @@ bool gl_context::configure_gl()
 				glDebugMessageCallback(debug_callback, this);
 		}
 	}
-	enable_font_face(info_font_face, info_font_size);
+	//enable_font_face(info_font_face, info_font_size);
 	// use the eye location to compute the specular lighting
 	if (!core_profile) {
 		glLightModelf(GL_LIGHT_MODEL_LOCAL_VIEWER, 0);
@@ -289,13 +293,7 @@ media::font::font_face_ptr gl_context::get_current_font_face() const
 void gl_context::init_render_pass()
 {
 	if (info_font_face.empty()) {
-		font_ptr info_font = find_font("Consolas");
-		if (info_font.empty()) {
-			info_font = find_font("Courier");
-			if (info_font.empty()) {
-				info_font = find_font("system");
-			}
-		}
+		font_ptr info_font = default_font(true);
 		if (!info_font.empty()) {
 			info_font_face = info_font->get_font_face(FFA_REGULAR);
 			info_font_face->enable(this, info_font_size);
@@ -1527,11 +1525,11 @@ bool gl_context::check_shader_support(ShaderType st, const std::string& where, c
 			return false;
 		}
 	case ST_TESS_CONTROL:
-	case ST_TESS_EVALUTION:
+	case ST_TESS_EVALUATION:
 		if (GLEW_VERSION_4_0)
 			return true;
 		else {
-			error(where+": tesselation shader need not supported OpenGL version 4.0", rc);
+			error(where+": tessellation shader need not supported OpenGL version 4.0", rc);
 			return false;
 		}
 	case ST_GEOMETRY:
@@ -1663,10 +1661,10 @@ bool gl_context::texture_create(texture_base& tb, cgv::data::data_format& df) co
 }
 
 bool gl_context::texture_create(
-							texture_base& tb, 
-							cgv::data::data_format& target_format, 
-							const cgv::data::const_data_view& data, 
-							int level, int cube_side, bool is_array, const std::vector<cgv::data::data_view>* palettes) const
+							texture_base& tb,
+							cgv::data::data_format& target_format,
+							const cgv::data::const_data_view& data,
+							int level, int cube_side, int num_array_layers, const std::vector<cgv::data::data_view>* palettes) const
 {
 	// query the format to be used for the texture
 	GLuint gl_tex_format = (const GLuint&) tb.internal_format;
@@ -1676,12 +1674,21 @@ bool gl_context::texture_create(
 	if(cube_side > -1) {
 		if(tb.tt == TT_2D)
 			tb.tt = TT_CUBEMAP;
-	} else if(is_array) {
-		unsigned n_dims = data.get_format()->get_nr_dimensions();
-		if(n_dims == 2)
-			tb.tt = TT_1D_ARRAY;
-		if(n_dims == 3)
-			tb.tt = TT_2D_ARRAY;
+	} else if(num_array_layers != 0) {
+		if(num_array_layers < 0) {
+			// automatic inference of layers from texture dimensions
+			unsigned n_dims = data.get_format()->get_nr_dimensions();
+			if(n_dims == 2)
+				tb.tt = TT_1D_ARRAY;
+			if(n_dims == 3)
+				tb.tt = TT_2D_ARRAY;
+		} else {
+			switch(tb.tt) {
+			case TT_1D: tb.tt = TT_1D_ARRAY; break;
+			case TT_2D: tb.tt = TT_2D_ARRAY; break;
+			case TT_3D: tb.tt = TT_2D_ARRAY; break;
+			}
+		}
 	}
 	// create texture is not yet done
 	GLuint tex_id;
@@ -1698,7 +1705,7 @@ bool gl_context::texture_create(
 	GLuint tmp_id = texture_bind(tb.tt, tex_id);
 
 	// load data to texture
-	tb.have_mipmaps = load_texture(data, gl_tex_format, level, cube_side, is_array, palettes);
+	tb.have_mipmaps = load_texture(data, gl_tex_format, level, cube_side, num_array_layers, palettes);
 	bool result = !check_gl_error("gl_context::texture_create", &tb);
 	// restore old texture
 	texture_unbind(tb.tt, tmp_id);
@@ -3004,7 +3011,9 @@ bool gl_context::is_attribute_array_enabled(const attribute_array_binding_base* 
 
 GLenum buffer_target(VertexBufferType vbt)
 {
-	static GLenum buffer_targets[] = { GL_ARRAY_BUFFER, GL_ELEMENT_ARRAY_BUFFER, GL_TEXTURE_BUFFER, GL_UNIFORM_BUFFER, GL_TRANSFORM_FEEDBACK_BUFFER };
+	static GLenum buffer_targets[] = {
+		GL_ARRAY_BUFFER, GL_ELEMENT_ARRAY_BUFFER, GL_TEXTURE_BUFFER, GL_UNIFORM_BUFFER, GL_TRANSFORM_FEEDBACK_BUFFER, GL_SHADER_STORAGE_BUFFER
+	};
 	return buffer_targets[vbt];
 }
 

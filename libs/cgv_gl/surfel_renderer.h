@@ -11,7 +11,7 @@ namespace cgv {
 		//! reference to a singleton surfel renderer that can be shared among drawables
 		/*! the second parameter is used for reference counting. Use +1 in your init method,
 			-1 in your clear method and default 0 argument otherwise. If internal reference
-			counter decreases to 0, singelton renderer is destructed. */
+			counter decreases to 0, singleton renderer is destructed. */
 		extern CGV_API surfel_renderer& ref_surfel_renderer(context& ctx, int ref_count_change = 0);
 
 		/** style of a point */
@@ -58,6 +58,8 @@ namespace cgv {
 			float y_view_angle;
 			/// overload to allow instantiation of surfel_renderer
 			render_style* create_render_style() const;
+			/// build surfel program
+			bool build_shader_program(context& ctx, shader_program& prog, const shader_define_map& defines);
 		public:
 			///
 			surfel_renderer();
@@ -65,8 +67,6 @@ namespace cgv {
 			void enable_attribute_array_manager(const context& ctx, attribute_array_manager& aam);
 			/// call this after last render/draw call to ensure that no other users of renderer change attribute arrays of given manager
 			void disable_attribute_array_manager(const context& ctx, attribute_array_manager& aam);
-			///
-			bool init(context& ctx);
 			///
 			void set_reference_point_size(float _reference_point_size);
 			///

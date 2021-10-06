@@ -1,0 +1,127 @@
+#version 430
+
+#define USE_ROUNDED_CAPS 0
+
+//***** begin interface of fragment2d.glfs ***********************************
+uniform vec4 border_color = vec4(1.0);
+uniform float border_width = 0.0;
+uniform float feather_width = 1.0;
+
+uniform bool use_smooth_feather = false;
+
+vec2 get_shape_size();
+vec4 get_color();
+void override_color(in vec4 color);
+void finish_sdf_fragment2d(in float signed_distance, in vec2 texcoords);
+void finish_sdf_fragment2d(in float signed_distance);
+void finish_fragment2d(in vec2 texcoords);
+void finish_fragment2d();
+//***** end interface of fragment2d.glfs ***********************************
+
+uniform float dash_length = 0.0;
+uniform float dash_ratio = 0.5;
+
+#if USE_ROUNDED_CAPS == 0
+in vec4 color_fs;
+#else
+in flat vec4 color0_fs;
+in flat vec4 color1_fs;
+#endif
+in flat vec2 size_fs;
+in vec2 tex_coord_fs;
+in vec2 pix_coord_fs;
+
+// https://iquilezles.org/www/articles/distfunctions2d/distfunctions2d.htm
+float sd_box(in vec2 p, in vec2 b) {
+    vec2 d = abs(p) - b;
+    return length(max(d, 0.0)) + min(max(d.x, d.y), 0.0);
+}
+
+// https://iquilezles.org/www/articles/distfunctions2d/distfunctions2d.htm
+float sd_segment(in vec2 p, in vec2 a, in vec2 b) {
+    vec2 pa = p - a, ba = b - a;
+    float h = clamp(dot(pa, ba) / dot(ba, ba), 0.0, 1.0);
+    return length(pa - ba * h);
+}
+
+void main() {
+
+#if USE_ROUNDED_CAPS == 0
+	vec4 color = color_fs;
+
+	float dist_since_start = pix_coord_fs.x + 0.5*size_fs.x - feather_width;
+	dist_since_start = mod(dist_since_start, dash_length);
+	float dash_coord = dist_since_start - (0.5*dash_ratio*dash_length);
+
+	// get the tangential and perpendicular distance to the line segment
+	float tangential_dist = abs(pix_coord_fs.x);
+	float perpendicular_dist = abs(pix_coord_fs.y);
+	// tangential distance inside the dash from the dash center
+	float dash_dist = abs(dash_coord);
+
+	float tangential_limit = 0.5*size_fs.x - feather_width;
+	float perpendicular_limit = 0.5*size_fs.y - feather_width;
+	float dash_limit = (0.5*dash_ratio*dash_length) - feather_width;
+	
+	float inv_feather = 1.0/feather_width;
+
+	float tt = 0.0f;
+	float tp = 0.0f;
+	float td = 0.0f;
+
+	if(use_smooth_feather) {
+		tt = smoothstep(0.0, 1.0, (tangential_dist - tangential_limit) * inv_feather);
+		tp = smoothstep(0.0, 1.0, (perpendicular_dist - perpendicular_limit) * inv_feather);
+		td = smoothstep(0.0, 1.0, (dash_dist - dash_limit) * inv_feather);
+	} else {
+		tt = clamp((tangential_dist - tangential_limit) * inv_feather, 0.0, 1.0);
+		tp = clamp((perpendicular_dist - perpendicular_limit) * inv_feather, 0.0, 1.0);
+		td = clamp((dash_dist - dash_limit) * inv_feather, 0.0, 1.0);
+	}
+
+	if(border_width > 0.0) {
+		float border_limit = 0.5*size_fs.y - border_width - feather_width;
+		float tb = clamp((perpendicular_dist - border_limit) * inv_feather, 0.0, 1.0);
+		color = mix(color, border_color, tb);
+	}
+
+	color.a *= (1.0 - tt) * (1.0 - tp) * (1.0 - td);
+
+	override_color(color);
+	finish_fragment2d();
+
+
+
+
+
+
+
+
+	/*vec2 p = 2.0 * tex_coord_fs - 1.0;
+	float dist = 1.0 + sd_box(p, vec2(2.0*length_fs, 1.0));
+	
+	vec4 color = color_fs;
+
+	float delta = fwidth(dist);
+	float alpha = smoothstep(1.0 - delta, 1.0, dist);
+	color.a *= 1.0-alpha;
+
+	override_color(color);
+	finish_fragment2d();*/
+#else
+	vec2 p = tex_coord_fs;
+	float dist = sd_segment(p, vec2(0.0, 0.5), vec2(length_fs, 0.5));
+	if(dist > 0.5) discard;
+
+	//float t = (tex_coord_fs.x - 0.5) / (length_fs - 1.0);
+	float t = tex_coord_fs.x / length_fs;
+	vec4 color = mix(color0_fs, color1_fs, clamp(t, 0.0, 1.0));
+
+	float delta = fwidth(dist);
+	float alpha = smoothstep(0.5 - delta, 0.5, dist);
+	color.a *= 1.0-alpha;
+
+	override_color(color);
+	finish_fragment2d();
+#endif
+}

@@ -110,7 +110,7 @@ public:
 		use_blending = true;
 		on_set(&font_idx); // ensure that font and font face pointers are set
 
-		text = "This demo shows how to render text with the tt_gl_font library including <äöüßÄÜÖ>!";
+		text = "This demo shows how to render text with the tt_gl_font library including <ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½>!";
 		pixel_position = ivec2(100, 100);
 		use_colors = true;
 		subpixel_offset = vec2(0.0f);
@@ -370,7 +370,8 @@ public:
 			else {
 				// otherwise convert to textured rectangles
 				std::vector<cgv::render::textured_rectangle> Q;
-				font_face_ptr->text_to_quads(vec2(pixel_position), text, Q);
+				vec2 fpix_pos(pixel_position);
+				font_face_ptr->text_to_quads(fpix_pos, text, Q);
 				if (!Q.empty()) {
 					// define color array
 					std::vector<rgba> C(Q.size());

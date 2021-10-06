@@ -8,7 +8,7 @@ namespace cgv {
 		{
 			static int ref_count = 0;
 			static rounded_cone_renderer r;
-			r.manage_singelton(ctx, "rounded_cone_renderer", ref_count, ref_count_change);
+			r.manage_singleton(ctx, "rounded_cone_renderer", ref_count, ref_count_change);
 			return r;
 		}
 
@@ -22,6 +22,15 @@ namespace cgv {
 			radius = 1.0f;
 			radius_scale = 1.0f;
 			
+			enable_texturing = false;
+			texture_blend_mode = TBM_MIX;
+			texture_blend_factor = 1.0f;
+			texture_tile_from_center = false;
+			texture_offset = vec2(0.0f);
+			texture_tiling = vec2(1.0f);
+			texture_use_reference_length = false;
+			texture_reference_length = 1.0f;
+
 			enable_ambient_occlusion = false;
 			ao_offset = 0.04f;
 			ao_distance = 0.8f;
@@ -42,7 +51,9 @@ namespace cgv {
 		rounded_cone_renderer::rounded_cone_renderer()
 		{
 			has_radii = false;
-			shader_defines = "";
+			shader_defines = shader_define_map();
+			albedo_texture = nullptr;
+			density_texture = nullptr;
 		}
 
 		/// call this before setting attribute arrays to manage attribute array in given manager
@@ -65,60 +76,53 @@ namespace cgv {
 			bool res = surface_renderer::validate_attributes(ctx);
 			return res;
 		}
-		bool rounded_cone_renderer::init(cgv::render::context& ctx)
-		{
-			bool res = renderer::init(ctx);
-			if (!ref_prog().is_created()) {
-				res = res && build_shader(ctx, build_define_string());
-			}
-			return res;
-		}
-
-		std::string rounded_cone_renderer::build_define_string()
+		void rounded_cone_renderer::update_defines(shader_define_map& defines)
 		{
 			const rounded_cone_render_style& rcrs = get_style<rounded_cone_render_style>();
-
-			std::string defines = "ENABLE_AMBIENT_OCCLUSION=";
-			defines += std::to_string((int)rcrs.enable_ambient_occlusion);
-			return defines;
+			shader_code::set_define(defines, "ENABLE_TEXTURING", rcrs.enable_texturing, false);
+			shader_code::set_define(defines, "ENABLE_TEXTURING", rcrs.texture_blend_mode, rounded_cone_render_style::TBM_MIX);
+			shader_code::set_define(defines, "TEXTURE_TILE_FROM_CENTER", rcrs.texture_tile_from_center, false);
+			shader_code::set_define(defines, "TEXTURE_USE_REFERENCE_LENGTH", rcrs.texture_use_reference_length, false);
+			shader_code::set_define(defines, "ENABLE_AMBIENT_OCCLUSION", rcrs.enable_ambient_occlusion, false);
 		}
-
-		bool rounded_cone_renderer::build_shader(context& ctx, std::string defines)
+		bool rounded_cone_renderer::build_shader_program(context& ctx, shader_program& prog, const shader_define_map& defines)
 		{
-			shader_defines = defines;
-			if(ref_prog().is_created())
-				ref_prog().destruct(ctx);
-
-			if(!ref_prog().is_created()) {
-				if(!ref_prog().build_program(ctx, "rounded_cone.glpr", true, defines)) {
-					std::cerr << "ERROR in rounded_cone_renderer::init() ... could not build program rounded_cone.glpr" << std::endl;
-					return false;
-				}
-			}
+			return prog.build_program(ctx, "rounded_cone.glpr", true, defines);
+		}
+		bool rounded_cone_renderer::set_albedo_texture(texture* tex)
+		{
+			if(!tex || tex->get_nr_dimensions() != 2)
+				return false;
+			albedo_texture = tex;
 			return true;
 		}
-
+		bool rounded_cone_renderer::set_density_texture(texture* tex)
+		{
+			if(!tex || tex->get_nr_dimensions() != 3)
+				return false;
+			density_texture = tex;
+			return true;
+		}
 		/// 
 		bool rounded_cone_renderer::enable(context& ctx)
 		{
-			const rounded_cone_render_style& rcrs = get_style<rounded_cone_render_style>();
-
-			std::string defines = build_define_string();
-			if(defines != shader_defines) {
-				if(!build_shader(ctx, defines))
-					return false;
-			}
-
 			if (!surface_renderer::enable(ctx))
 				return false;
 
 			if(!ref_prog().is_linked())
 				return false;
 
+			const rounded_cone_render_style& rcrs = get_style<rounded_cone_render_style>();
 			if(!has_radii)
 				ref_prog().set_attribute(ctx, "radius", rcrs.radius);
 
 			ref_prog().set_uniform(ctx, "radius_scale", rcrs.radius_scale);
+			
+			if(rcrs.enable_texturing && !albedo_texture)
+				return false;
+
+			if(rcrs.enable_ambient_occlusion && !density_texture)
+				return false;
 
 			if(rcrs.enable_ambient_occlusion) {
 				ref_prog().set_uniform(ctx, "ao_offset", rcrs.ao_offset);
@@ -131,11 +135,24 @@ namespace cgv {
 				ref_prog().set_uniform(ctx, "cone_angle_factor", rcrs.cone_angle_factor);
 				ref_prog().set_uniform_array(ctx, "sample_dirs", rcrs.sample_dirs);
 			}
+
+			if(albedo_texture) {
+				ref_prog().set_uniform(ctx, "texture_blend_factor", rcrs.texture_blend_factor);
+				ref_prog().set_uniform(ctx, "texture_offset", rcrs.texture_offset);
+				ref_prog().set_uniform(ctx, "texture_tiling", rcrs.texture_tiling);
+				ref_prog().set_uniform(ctx, "texture_reference_length", rcrs.texture_reference_length);
+				albedo_texture->enable(ctx, 0);
+			}
+			if(density_texture) density_texture->enable(ctx, 1);
+
 			return true;
 		}
 		///
 		bool rounded_cone_renderer::disable(context& ctx)
 		{
+			if(albedo_texture) albedo_texture->disable(ctx);
+			if(density_texture) density_texture->disable(ctx);
+
 			if(!attributes_persist()) {
 				has_radii = false;
 			}
@@ -178,14 +195,43 @@ namespace cgv {
 
 				p->add_member_control(b, "default radius", rcrs_ptr->radius, "value_slider", "min=0.001;step=0.0001;max=10.0;log=true;ticks=true");
 				p->add_member_control(b, "radius scale", rcrs_ptr->radius_scale, "value_slider", "min=0.01;step=0.0001;max=100.0;log=true;ticks=true");
-				
-				// ambient occlusion
-				p->add_decorator("ambient occlusion", "heading", "level=4");
-				p->add_member_control(b, "enable", rcrs_ptr->enable_ambient_occlusion, "check");
-				p->add_member_control(b, "ao offset", rcrs_ptr->ao_offset, "value_slider", "min=0.0;step=0.0001;max=0.2;log=true;ticks=true");
-				p->add_member_control(b, "ao distance", rcrs_ptr->ao_distance, "value_slider", "min=0.0;step=0.0001;max=1.0;log=true;ticks=true");
-				p->add_member_control(b, "ao strength", rcrs_ptr->ao_strength, "value_slider", "min=0.0;step=0.0001;max=10.0;log=true;ticks=true");
 
+				if(p->begin_tree_node("texturing", rcrs_ptr->enable_texturing, false)) {
+					p->align("\a");
+					p->add_member_control(b, "enable", rcrs_ptr->enable_texturing, "check");
+					p->add_member_control(b, "blend mode", rcrs_ptr->texture_blend_mode, "dropdown", "enums='mix,tint,multiply,inverse multiply,add'");
+					p->add_member_control(b, "blend factor", rcrs_ptr->texture_blend_factor, "value_slider", "min=0.0;step=0.0001;max=1.0;ticks=true");
+					//p->add_member_control(b, "texcoord offset", rcrs_ptr->texcoord_offset, "value_slider", "min=-1.0;step=0.0001;max=1.0;ticks=true");
+					//p->add_member_control(b, "texcoord scale", rcrs_ptr->texcoord_scale, "value_slider", "min=-10.0;step=0.0001;max=10.0;ticks=true");
+
+					p->add_member_control(b, "tile from center", rcrs_ptr->texture_tile_from_center, "check");
+
+					p->add_member_control(b, "offset", rcrs_ptr->texture_offset[0], "value", "w=95;min=-1;max=1;step=0.001", " ");
+					p->add_member_control(b, "", rcrs_ptr->texture_offset[1], "value", "w=95;min=-1;max=1;step=0.001");
+					p->add_member_control(b, "", rcrs_ptr->texture_offset[0], "slider", "w=95;min=-1;max=1;step=0.001;ticks=true", " ");
+					p->add_member_control(b, "", rcrs_ptr->texture_offset[1], "slider", "w=95;min=-1;max=1;step=0.001;ticks=true");
+
+					p->add_member_control(b, "tiling", rcrs_ptr->texture_tiling[0], "value", "w=95;min=-5;max=5;step=0.001", " ");
+					p->add_member_control(b, "", rcrs_ptr->texture_tiling[1], "value", "w=95;min=-5;max=5;step=0.001");
+					p->add_member_control(b, "", rcrs_ptr->texture_tiling[0], "slider", "w=95;min=-5;max=5;step=0.001;ticks=true", " ");
+					p->add_member_control(b, "", rcrs_ptr->texture_tiling[1], "slider", "w=95;min=-5;max=5;step=0.001;ticks=true");
+					
+					p->add_member_control(b, "use reference length", rcrs_ptr->texture_use_reference_length, "check");
+					p->add_member_control(b, "reference length", rcrs_ptr->texture_reference_length, "value_slider", "min=0.0;step=0.0001;max=5.0;log=true;ticks=true");
+
+					p->align("\b");
+					p->end_tree_node(rcrs_ptr->enable_texturing);
+				}
+
+				if(p->begin_tree_node("ambient occlusion", rcrs_ptr->enable_ambient_occlusion, false)) {
+					p->align("\a");
+					p->add_member_control(b, "enable", rcrs_ptr->enable_ambient_occlusion, "check");
+					p->add_member_control(b, "offset", rcrs_ptr->ao_offset, "value_slider", "min=0.0;step=0.0001;max=0.2;log=true;ticks=true");
+					p->add_member_control(b, "distance", rcrs_ptr->ao_distance, "value_slider", "min=0.0;step=0.0001;max=1.0;log=true;ticks=true");
+					p->add_member_control(b, "strength", rcrs_ptr->ao_strength, "value_slider", "min=0.0;step=0.0001;max=10.0;log=true;ticks=true");
+					p->align("\b");
+				}
+				
 				p->add_gui("surface_render_style", *static_cast<cgv::render::surface_render_style*>(rcrs_ptr));
 				return true;
 			}

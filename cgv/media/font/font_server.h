@@ -15,6 +15,8 @@ class CGV_API font_server : public cgv::base::base, public cgv::base::server
 public:
 	/// find an installed font by name
 	virtual font_ptr find_font(const std::string& font_name) = 0;
+	/// return potentially font driver and platform specific default font
+	virtual font_ptr default_font(bool mono_space);
 	/// enumerate the names of all installed fonts
 	virtual void enumerate_font_names(std::vector<const char*>& font_names) = 0;
 };

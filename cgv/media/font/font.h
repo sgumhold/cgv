@@ -73,6 +73,10 @@ typedef data::ref_ptr<font> font_ptr;
 /// find an installed font by name
 extern CGV_API font_ptr find_font(const std::string& font_name);
 
+/// return potentially font driver and platform specific default font
+extern CGV_API font_ptr default_font(bool mono_space = false);
+
+
 /// enumerate the names of all installed fonts
 extern CGV_API void enumerate_font_names(std::vector<const char*>& font_names);
 

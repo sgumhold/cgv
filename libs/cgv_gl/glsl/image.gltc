@@ -1,0 +1,26 @@
+#version 430
+
+layout(vertices = 4) out;
+
+in vec2 texcoord_tc[];
+in vec4 color_tc[];
+
+out vec4 patch_position[];
+out vec2 patch_tex_coord[];
+out vec4 patch_color[];
+
+uniform float tessellation_level = 8;
+
+void main()
+{
+	patch_position[gl_InvocationID] = gl_in[gl_InvocationID].gl_Position;
+	patch_tex_coord[gl_InvocationID] = texcoord_tc[gl_InvocationID];	
+	patch_color[gl_InvocationID] = color_tc[gl_InvocationID];	
+
+	gl_TessLevelOuter[0] = tessellation_level;  
+	gl_TessLevelOuter[1] = tessellation_level;  
+	gl_TessLevelOuter[2] = tessellation_level;  	 
+	gl_TessLevelOuter[3] = tessellation_level;  	 
+	gl_TessLevelInner[0] = tessellation_level;  
+	gl_TessLevelInner[1] = tessellation_level;  
+}

@@ -69,12 +69,14 @@ plot3d::plot3d(unsigned nr_attributes) : plot_base(3, nr_attributes)
 	acs[0].name = "x"; acs[0].color = rgb(0.4f, 0.2f, 0.2f);
 	acs[1].name = "y"; acs[1].color = rgb(0.2f, 0.4f, 0.2f);
 	acs[2].name = "z"; acs[2].color = rgb(0.2f, 0.2f, 0.4f);
-	for (unsigned ai = 0; ai < nr_attributes; ai)
+	for (unsigned ai = 0; ai < nr_attributes; ++ai)
 		acs[ai + 3].name = std::string("attribute_") + cgv::utils::to_string(ai);
 
 	brs.culling_mode = cgv::render::CM_FRONTFACE;
 	brs.map_color_to_material = cgv::render::CM_COLOR;
 	brs.illumination_mode = cgv::render::IM_TWO_SIDED;
+
+	get_domain_config_ptr()->blend_width_in_pixel = 0.0f;
 
 	legend_location[2] = 0.01f;
 }
@@ -144,28 +146,39 @@ bool plot3d::init(cgv::render::context& ctx)
 		success = false;
 		std::cerr << "could not build GLSL program from plot3d_sphere.glpr" << std::endl;
 	}
+	else
+		sphere_prog.allow_context_to_set_color(false);
 	if (!stick_prog.build_program(ctx, "plot3d_stick.glpr")) {
 		success = false;
 		std::cerr << "could not build GLSL program from plot3d_stick.glpr" << std::endl;
 	}
+	else
+		stick_prog.allow_context_to_set_color(false);
 	if (!tick_label_prog.build_program(ctx, "plot3d_tick_label.glpr")) {
 		success = false;
 		std::cerr << "could not build GLSL program from plot3d_tick_label.glpr" << std::endl;
 	}
+	else
+		tick_label_prog.allow_context_to_set_color(false);
 	if (!box_prog.build_program(ctx, "plot3d_box.glpr")) {
 		std::cerr << "could not build GLSL program from plot3d_box.glpr" << std::endl;
 		success = false;
 	}
+	else
+		box_prog.allow_context_to_set_color(false);
 	if (!wirebox_prog.build_program(ctx, "plot3d_box_wire.glpr")) {
 		success = false;
 		std::cerr << "could not build GLSL program from plot3d_box_wire.glpr" << std::endl;
 	}
+	else
+		wirebox_prog.allow_context_to_set_color(false);
 	if (!tube_prog.build_program(ctx, "plot3d_tube.glpr", true)) {
 		std::cerr << "could not build GLSL program from plot3d_tube.glpr" << std::endl;
 		success = false;
 	}
 	else {
 		tube_prog.set_uniform(ctx, "map_color_to_material", 3);
+		tube_prog.allow_context_to_set_color(false);
 	}
 
 	//if (!surface_prog.is_created()) {
@@ -182,7 +195,7 @@ bool plot3d::init(cgv::render::context& ctx)
 void plot3d::draw_sub_plots(cgv::render::context& ctx)
 {
 	float rs = 0.2f*get_domain_config_ptr()->reference_size;
-	vecn extent = get_extent();
+	vecn extent = this->extent.to_vec();
 	double y_view_angle = 45.0f;
 	if (view_ptr)
 		y_view_angle = view_ptr->get_y_view_angle();
@@ -311,17 +324,21 @@ void plot3d::draw_domain(cgv::render::context& ctx)
 	tick_labels.clear();
 	tick_batches.clear();
 	const domain_config& dc = *get_domain_config_ptr();
-	vec3 extent = vec3::from_vec(get_extent());
+	vecn E = get_extent();
+	set_extent(extent.to_vec());
 	if (dc.fill) {
 		vec3 origin(0.0f);
 		cgv::render::box_renderer& br = cgv::render::ref_box_renderer(ctx);
 		brs.surface_color = get_domain_config_ptr()->color;
+		bool tmp = br.ref_prog().does_context_set_color();
+		br.ref_prog().allow_context_to_set_color(false);
 		br.set_render_style(brs);
 		br.set_position(ctx, origin);
 		br.set_extent(ctx, extent);
 		br.set_position_is_center(true);
 		br.set_color(ctx, dc.color);
 		br.render(ctx, 0, 1);
+		br.ref_prog().allow_context_to_set_color(tmp);
 	}
 	// draw axes
 	std::vector<vec3> P;
@@ -456,6 +473,7 @@ void plot3d::draw_domain(cgv::render::context& ctx)
 			}
 		}
 	}
+	set_extent(E);
 
 	auto& rcr = cgv::render::ref_rounded_cone_renderer(ctx);
 	rcr.set_render_style(rcrs);
@@ -485,6 +503,8 @@ void plot3d::draw_ticks(cgv::render::context& ctx)
 
 void plot3d::draw(cgv::render::context& ctx)
 {	
+	prepare_extents();
+
 	GLboolean blend = glIsEnabled(GL_BLEND); 
 	GLenum blend_src, blend_dst, depth;
 	glGetIntegerv(GL_BLEND_DST, reinterpret_cast<GLint*>(&blend_dst));
@@ -501,11 +521,10 @@ void plot3d::draw(cgv::render::context& ctx)
 	ctx.mul_modelview_matrix(cgv::math::translate4<float>(center_location) * R);
 	if (get_domain_config_ptr()->show_domain) {
 		draw_domain(ctx);
-		ctx.enable_font_face(label_font_face, get_domain_config_ptr()->label_font_size);
 		draw_ticks(ctx);
 	}
 	if (legend_components != LC_HIDDEN)
-		draw_legend(ctx, 0.0f);
+		draw_legend(ctx);
 
 	draw_sub_plots(ctx);
 	ctx.pop_modelview_matrix();

@@ -347,6 +347,14 @@ void vr_emulator::timer_event(double t, double dt)
 			break;
 		case IM_LEFT_HAND:
 		case IM_RIGHT_HAND:
+			if (home_ctrl || end_ctrl) {
+				float& value = kits[current_kit_index]->state.controller[interaction_mode - IM_LEFT_HAND].axes[2];
+				value += 1.0f * float(home_ctrl ? -dt : dt);
+				value = std::max(std::min(1.0f, value), 0.0f);
+				update_member(&value);
+				post_redraw();
+				break;
+			}
 		case IM_TRACKER_1:
 		case IM_TRACKER_2:
 		case IM_TRACKER_3:
@@ -660,6 +668,7 @@ void vr_emulator::stream_help(std::ostream& os)
 	   << "  <0-9> select <body|left hand|right hand|tracker 1|tracker 2|tracker 3|tracker 4|base 1|base 2|base 3> for control\n"
 	   << "    body: <up|down> .. move,  <left|right> .. turn, <pgup|pgdn> .. bend, \n"
 	   << "          <home|end> .. gear, <alt>+<left|right> .. side step\n"
+	   << "    hand: <home|end> .. trigger\n"
 	   << "    hand&tracker: <left|right|up|down|pgdn|pgup> .. rotate or with <alt> translate\n"
 	   << "  <W|X|Q|E|C|A|S:I|N|O|U|B|K|J> to toggle left:right controller buttons\n"
 	   << "  <Shift>-<QWE:ASD:YXC>|<UIO:HJK:BNM> to set left:right controller touch xy to -1|0|+1\n"

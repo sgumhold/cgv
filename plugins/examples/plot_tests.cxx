@@ -1,4 +1,4 @@
-ï»¿#include <cgv/base/node.h>
+#include <cgv/base/node.h>
 #include <plot/plot2d.h>
 #include <plot/plot3d.h>
 #include <cgv/math/ftransform.h>
@@ -11,16 +11,17 @@
 
 class test_plot3d : public cgv::base::node, public cgv::render::drawable, public cgv::gui::provider
 {
-protected:
+  protected:
 	cgv::plot::plot3d plot;
-public:
-	test_plot3d() : cgv::base::node("3d plot tester")
+	// persistent vector with plot data
+	std::vector<vec4> P1, P2;
+
+  public:
+	test_plot3d() : cgv::base::node("3d plot tester"), plot(1)
 	{
 		unsigned i, j;
 		unsigned pi1 = plot.add_sub_plot("x*y");
-		unsigned pi2 = plot.add_sub_plot("xÂ²+yÂ²");
-		std::vector<vec3>& P1 = plot.ref_sub_plot_samples(pi1);
-		std::vector<vec3>& P2 = plot.ref_sub_plot_samples(pi2);
+		unsigned pi2 = plot.add_sub_plot("x²+y²");
 		plot.set_samples_per_row(pi1, 30);
 		plot.set_samples_per_row(pi2, 50);
 		for (j = 0; j < 50; ++j) {
@@ -28,7 +29,8 @@ public:
 			for (i = 0; i < 30; ++i) {
 				float x = 0.5f * i;
 				float z = 0.1f * x * y;
-				P1.push_back(vec3(x, y, z));
+				float w = 0.1f * ((x - 7.0f) * (x - 7.0f) + (y - 7.0f) * (y - 3.0f));
+				P1.push_back(vec4(x, y, z, w));
 			}
 		}
 		for (j = 0; j < 30; ++j) {
@@ -36,11 +38,21 @@ public:
 			for (i = 0; i < 50; ++i) {
 				float x = 0.3f * i;
 				float z = 0.1f * ((x - 7.0f) * (x - 7.0f) + (y - 7.0f) * (y - 3.0f));
-				P2.push_back(vec3(x, y, z));
+				float w = 0.1f * x * y;
+				P2.push_back(vec4(x, y, z, w));
 			}
+		}
+		for (unsigned c = 0; c < 4; ++c) {
+			plot.set_sub_plot_attribute(0, c, &P1[0][c], P1.size(), sizeof(vec4));
+			plot.set_sub_plot_attribute(1, c, &P2[0][c], P2.size(), sizeof(vec4));
 		}
 		plot.set_sub_plot_colors(0, rgb(1.0f, 0.0f, 0.1f));
 		plot.set_sub_plot_colors(1, rgb(0.1f, 0.0f, 1.0f));
+
+		plot.legend_components =
+			  cgv::plot::LegendComponent(cgv::plot::LC_PRIMARY_COLOR + cgv::plot::LC_PRIMARY_OPACITY);
+		plot.color_mapping[0] = 3;
+		plot.opacity_mapping[0] = 3;
 
 		plot.adjust_domain_to_data();
 		plot.adjust_tick_marks();
@@ -52,7 +64,7 @@ public:
 	}
 	void on_set(void* member_ptr)
 	{
-		//if ((member_ptr >= &plot.ref_domain_min()(0) && member_ptr < &plot.ref_domain_min()(0) + plot.get_dim()) ||
+		// if ((member_ptr >= &plot.ref_domain_min()(0) && member_ptr < &plot.ref_domain_min()(0) + plot.get_dim()) ||
 		//	(member_ptr >= &plot.ref_domain_max()(0) && member_ptr < &plot.ref_domain_max()(0) + plot.get_dim())) {
 		//	plot.adjust_tick_marks();
 		//}
@@ -80,31 +92,32 @@ public:
 
 class test_plot2d : public cgv::base::node, public cgv::render::drawable, public cgv::gui::provider
 {
-protected:
+  protected:
 	// plot that can manage several 2d sub plots
 	cgv::plot::plot2d plot;
 	// persistent vector with plot data
 	std::vector<vec4> P;
-	// GPU objects for offline 
+	// GPU objects for offline
 	cgv::render::texture tex;
 	cgv::render::render_buffer depth;
 	cgv::render::frame_buffer fbo;
 	// whether to use offscreen rendering
 	bool render_offscreen;
-public:
-	test_plot2d() : cgv::base::node("2d plot tester"), tex("[R,G,B,A]"), depth("[D]"), plot(2)
+
+  public:
+	test_plot2d() : cgv::base::node("2d plot tester"), tex("[R,G,B,A]"), depth("[D]"), plot("trigonometry", 2)
 	{
 		// compute vector of vec3 with x coordinates and function values of cos and sin
 		unsigned i;
 		for (i = 1; i < 50; ++i) {
 			float x = 0.1f * i;
-			P.push_back(vec4(x, cos(x), sin(x), cos(x)*cos(x)));
+			P.push_back(vec4(x, cos(x), sin(x), cos(x) * cos(x)));
 		}
 		// create two sub plots and configure their colors
 		unsigned p1 = plot.add_sub_plot("cos");
 		unsigned p2 = plot.add_sub_plot("sin");
-		unsigned p3 = plot.add_sub_plot("cosÂ²");
-		plot.set_sub_plot_colors(p1, rgb(1.0f, 0.0f, 0.1f));
+		unsigned p3 = plot.add_sub_plot("cos²");
+		// plot.set_sub_plot_colors(p1, rgb(1.0f, 0.0f, 0.1f));	// will be set later to the attribute with index 2
 		plot.set_sub_plot_colors(p2, rgb(0.1f, 0.0f, 1.0f));
 		plot.set_sub_plot_colors(p3, rgb(0.0f, 1.0f, 0.1f));
 
@@ -123,14 +136,23 @@ public:
 		plot.set_sub_plot_attribute(p3, 2, &P[0][1], P.size(), sizeof(vec4));
 		plot.set_sub_plot_attribute(p3, 3, &P[0][2], P.size(), sizeof(vec4));
 
+		plot.legend_components =
+			  cgv::plot::LegendComponent(cgv::plot::LC_PRIMARY_COLOR + cgv::plot::LC_PRIMARY_OPACITY);
+		plot.color_mapping[0] = 2;
+		plot.color_scale_index[0] = cgv::media::CS_HUE;
+		plot.opacity_mapping[0] = 3;
+
+		plot.ref_sub_plot2d_config(0).set_color_indices(0);
+		plot.ref_sub_plot2d_config(0).line_halo_color.color_idx = 0;
+
 		// adjust domain, tick marks and extent in world space (of offline rendering process)
 		plot.adjust_domain_to_data();
 		plot.adjust_tick_marks();
 		plot.adjust_extent_to_domain_aspect_ratio();
 		// scale up extent in y-direction where we want to use half the texture resolution
-		//vecn ex = plot.get_extent();
-		//ex(1) *= 2.0f;
-		//plot.set_extent(ex);
+		// vecn ex = plot.get_extent();
+		// ex(1) *= 2.0f;
+		// plot.set_extent(ex);
 		render_offscreen = false;
 	}
 	void on_set(void* member_ptr)
@@ -161,10 +183,10 @@ public:
 		plot.init_frame(ctx);
 		if (!fbo.is_created() || !render_offscreen)
 			return;
-		
+
 		auto ex = plot.get_extent();
 		plot.set_extent(vecn(1.8f, 1.8f));
-		// if fbo is created, perform offline rendering with world space in the range [-1,1]Â² and white background
+		// if fbo is created, perform offline rendering with world space in the range [-1,1]? and white background
 		fbo.enable(ctx);
 		fbo.push_viewport(ctx);
 		glClearColor(1, 1, 1, 1);
@@ -199,7 +221,8 @@ public:
 			ctx.set_color(rgba(1, 1, 1, 1));
 			ctx.push_modelview_matrix();
 			// scale down in y-direction according to texture resolution
-			ctx.mul_modelview_matrix(cgv::math::scale4<double>(0.5555556f*plot.get_extent()(0), 0.5555556f*plot.get_extent()(1), 1.0));
+			ctx.mul_modelview_matrix(
+				  cgv::math::scale4<double>(0.5555556f * plot.get_extent()(0), 0.5555556f * plot.get_extent()(1), 1.0));
 			ctx.tesselate_unit_square();
 			ctx.pop_modelview_matrix();
 			prog.disable(ctx);

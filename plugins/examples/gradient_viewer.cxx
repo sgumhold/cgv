@@ -17,8 +17,10 @@ namespace cgv {
 
 gradient_viewer::gradient_viewer ()
 // configure texture format, filtering and wrapping (no context necessary)
-	: tf_tex("[R,G,B,A]"), volume_tex("flt32[R]"), gradient_tex("flt32[R,G,B,A]")
+	: tf_tex("[R,G,B,A]"), volume_tex("flt32[R]"), gradient_tex("flt32[R,G,B,A]"), depth_tex("[D]")
 {
+	volume_bounding_box = box3(vec3(0.0f), vec3(1.0f));
+
 	tf_tex.set_min_filter(cgv::render::TextureFilter::TF_LINEAR);
 	tf_tex.set_mag_filter(cgv::render::TextureFilter::TF_LINEAR);
 	tf_tex.set_wrap_s(cgv::render::TextureWrap::TW_CLAMP_TO_EDGE);
@@ -36,6 +38,10 @@ gradient_viewer::gradient_viewer ()
 	gradient_tex.set_wrap_s(cgv::render::TW_CLAMP_TO_EDGE);
 	gradient_tex.set_wrap_t(cgv::render::TW_CLAMP_TO_EDGE);
 	gradient_tex.set_wrap_r(cgv::render::TW_CLAMP_TO_EDGE);
+
+	// an extra depth texture is used to enable mixing of opaque geometry and the volume
+	depth_tex.set_min_filter(cgv::render::TF_NEAREST);
+	depth_tex.set_mag_filter(cgv::render::TF_NEAREST);
 
 	set_name("Gradient Viewer");
 
@@ -59,7 +65,7 @@ void gradient_viewer::stream_stats(std::ostream& os)
 	os << "gradient_viewer: resolution=" << vres[0] << "x" << vres[1] << "x" << vres[2] << std::endl;
 }
 
-bool gradient_viewer::self_reflect(cgv::reflect::reflection_handler& rh) 
+bool gradient_viewer::self_reflect(cgv::reflect::reflection_handler& rh)
 {
 	return 
 		rh.reflect_member("show_gradients", show_gradients)&&
@@ -131,8 +137,9 @@ void gradient_viewer::create_test_volume(cgv::render::context& ctx)
 	volume_tex.create(ctx, vol_dv, 0);
 	volume_tex.generate_mipmaps(ctx);
 
-	// set transformation in volume rendering style
-	vstyle.transformation_matrix = cgv::math::translate4(vbox_min) * cgv::math::scale4(vbox_ext);
+	// set the volume bounding box to later scale the rendering accordingly
+	volume_bounding_box.ref_min_pnt() = vbox_min;
+	volume_bounding_box.ref_max_pnt() = vbox_min + vbox_ext;
 
 	// make sure gradient texture is recomputed
 	do_calculate_gradients = true;
@@ -237,11 +244,27 @@ bool gradient_viewer::init(cgv::render::context& ctx)
 	// load image data of transfer function to texture
 	cgv::data::data_format format;
 	cgv::media::image::image_reader image(format);
-	cgv::data::data_view tf_data;
+	cgv::data::data_view image_data;
 	//if (!image.read_image(QUOTE_SYMBOL_VALUE(INPUT_DIR) "/res/inferno.bmp", tf_data) &&
-	if (!image.read_image("res://inferno.bmp", tf_data))
+	if (!image.read_image("res://inferno.bmp", image_data))
 		abort();
-	tf_tex.create(ctx, tf_data, 0);
+
+	// add an opacity channel to the transfer function
+	unsigned w = image_data.get_format()->get_width();
+	unsigned char* src_ptr = image_data.get_ptr<unsigned char>();
+
+	std::vector<unsigned char> tf_data(4*w, 0u);
+
+	for(unsigned i = 0; i < w; ++i) {
+		float alpha = static_cast<float>(i / 4) / static_cast<float>(w);
+		tf_data[4 * i + 0] = src_ptr[3 * i + 0];
+		tf_data[4 * i + 1] = src_ptr[3 * i + 1];
+		tf_data[4 * i + 2] = src_ptr[3 * i + 2];
+		tf_data[4 * i + 3] = static_cast<unsigned char>(255.0f * alpha);
+	}
+
+	cgv::data::data_view tf_data_view = cgv::data::data_view(new cgv::data::data_format(w, 1, TI_UINT8, cgv::data::CF_RGBA), tf_data.data());
+	tf_tex.create(ctx, tf_data_view, 0);
 
 	create_test_volume(ctx);
 	return true;
@@ -253,6 +276,12 @@ void gradient_viewer::init_frame(cgv::render::context& ctx) {
 		calculate_gradient_texture(ctx);
 		update_member(&do_calculate_gradients);
 	}
+
+	if(depth_tex.is_created() && (ctx.get_width() != depth_tex.get_width() || ctx.get_height() != depth_tex.get_height()))
+		depth_tex.destruct(ctx);
+
+	if(!depth_tex.is_created())
+		depth_tex.create(ctx, cgv::render::TT_2D, ctx.get_width(), ctx.get_height());
 }
 
 void gradient_viewer::draw(cgv::render::context& ctx) 
@@ -272,19 +301,21 @@ void gradient_viewer::after_finish(cgv::render::context& ctx)
 	if (!view_ptr)
 		return;
 
+	// copy the contents of the depth buffer from the opaque geometry into the extra depth texture
+	depth_tex.replace_from_buffer(ctx, 0, 0, 0, 0, ctx.get_width(), ctx.get_height());
+
 	vec3 eye_pos = view_ptr->get_eye();
 	vec3 view_dir = view_ptr->get_view_dir();
 	if (show_volume) {
-		vstyle.transfer_function_texture_unit = 1;
 		auto& vr = cgv::render::ref_volume_renderer(ctx);
-		vr.set_volume_texture(&volume_tex);
-		//vr.set_volume_texture(&gradient_tex);
-		vr.set_eye_position(eye_pos);
 		vr.set_render_style(vstyle);
+		vr.set_volume_texture(&volume_tex);
+		vr.set_transfer_function_texture(&tf_tex);
+		vr.set_depth_texture(&depth_tex);
+		vr.set_bounding_box(volume_bounding_box);
+		vr.transform_to_bounding_box(true);
 
-		tf_tex.enable(ctx, vstyle.transfer_function_texture_unit);
 		vr.render(ctx, 0, 0);
-		tf_tex.disable(ctx);
 	}
 }
 

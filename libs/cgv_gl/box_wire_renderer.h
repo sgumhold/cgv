@@ -11,7 +11,7 @@ namespace cgv { // @<
 		//! reference to a singleton box_wire renderer that can be shared among drawables
 		/*! the second parameter is used for reference counting. Use +1 in your init method,
 			-1 in your clear method and default 0 argument otherwise. If internal reference
-			counter decreases to 0, singelton renderer is destructed. */
+			counter decreases to 0, singleton renderer is destructed. */
 		extern CGV_API box_wire_renderer& ref_box_wire_renderer(context& ctx, int ref_count_change = 0);
 
 		/// box wires extend line render styles
@@ -38,6 +38,8 @@ namespace cgv { // @<
 			bool position_is_center;
 			/// overload to allow instantiation of box_wire_renderer
 			render_style* create_render_style() const;
+			/// build box wire program
+			bool build_shader_program(context& ctx, shader_program& prog, const shader_define_map& defines);
 		public:
 			box_wire_renderer();
 			/// call this before setting attribute arrays to manage attribute array in given manager
@@ -46,9 +48,7 @@ namespace cgv { // @<
 			void disable_attribute_array_manager(const context& ctx, attribute_array_manager& aam);
 			/// set the flag, whether the position is interpreted as the box center
 			void set_position_is_center(bool _position_is_center);
-			/// construct shader programs and return whether this was successful, call inside of init method of drawable
-			bool init(context& ctx);
-			/// 
+			/// enable box wire renderer
 			bool enable(context& ctx);
 			/// extent array specifies box extends in case of position_is_center=true, otherwise the maximum point of each box
 			template <typename T>

@@ -99,7 +99,7 @@ public:
 		// create attribute managers
 		if (!manager.init(ctx))
 			return false;
-		// increase reference counts of used renderer singeltons
+		// increase reference counts of used renderer singletons
 		cgv::render::ref_point_renderer(ctx, 1);
 		auto& sr = cgv::render::ref_sphere_renderer  (ctx, 1);
 		sr.enable_attribute_array_manager(ctx, manager);
@@ -147,7 +147,7 @@ public:
 		// clear attribute managers
 		manager.destruct(ctx);
 
-		// decrease reference counts of used renderer singeltons
+		// decrease reference counts of used renderer singletons
 		cgv::render::ref_sphere_renderer  (ctx, -1);
 	}
 	void identity_callback()
@@ -190,4 +190,4 @@ public:
 	}
 };
 
-cgv::base::factory_registration<transformations> fr_renderer_test("new/demo/transformations", 'T', true);
+cgv::base::factory_registration<transformations> fr_transformations("new/demo/transformations", 'T', true);

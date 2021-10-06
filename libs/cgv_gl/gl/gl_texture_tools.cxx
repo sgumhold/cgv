@@ -588,13 +588,13 @@ unsigned configure_src_format(const cgv::data::const_data_view& data, GLuint& sr
 	return nr_comp;
 }
 
-bool load_texture(const cgv::data::const_data_view& data, unsigned gl_tex_format, unsigned level, unsigned cube_side, bool is_array, const std::vector<data_view>* palettes)
+bool load_texture(const cgv::data::const_data_view& data, unsigned gl_tex_format, unsigned level, unsigned cube_side, int num_array_layers, const std::vector<data_view>* palettes)
 {
 	unsigned nr_dim = data.get_format()->get_nr_dimensions();
 	const unsigned char* data_ptr = data.get_ptr<unsigned char>();
 	unsigned w = data.get_format()->get_width();
 	bool cube_map = (nr_dim == 2) && (cube_side != -1);
-	bool texture_array = (nr_dim > 1) && (nr_dim < 4) && !cube_map && is_array;
+	bool texture_array = (nr_dim > 0) && (nr_dim < 4) && !cube_map && num_array_layers != 0;
 
 	if(!(ensure_glew_initialized() && GLEW_EXT_texture_array))
 		texture_array = false;
@@ -607,11 +607,21 @@ bool load_texture(const cgv::data::const_data_view& data, unsigned gl_tex_format
 		level = 0;
 	switch(nr_dim) {
 	case 1:
-		glTexImage1D(GL_TEXTURE_1D, level, gl_tex_format, w, 0, src_fmt, src_type, data_ptr);
+		if(texture_array) {
+			glTexImage2D(GL_TEXTURE_1D_ARRAY, level, gl_tex_format, w, 1, 0, src_fmt, src_type, data_ptr);
+		} else {
+			glTexImage1D(GL_TEXTURE_1D, level, gl_tex_format, w, 0, src_fmt, src_type, data_ptr);
+		}
 		break;
 	case 2:
 		if(texture_array) {
-			glTexImage2D(GL_TEXTURE_1D_ARRAY, level, gl_tex_format, w, data.get_format()->get_height(), 0, src_fmt, src_type, data_ptr);
+			if(num_array_layers < 0) {
+				glTexImage2D(GL_TEXTURE_1D_ARRAY, level, gl_tex_format, w, data.get_format()->get_height(), 0, src_fmt, src_type, data_ptr);
+			} else {
+				if(ensure_glew_initialized() && GLEW_EXT_texture3D) {
+					glTexImage3D(GL_TEXTURE_2D_ARRAY, level, gl_tex_format, w, data.get_format()->get_height(), 1, 0, src_fmt, src_type, data_ptr);
+				}
+			}
 		} else {
 			glTexImage2D(cube_map ? get_gl_cube_map_target(cube_side) : GL_TEXTURE_2D, level,
 				gl_tex_format, w, data.get_format()->get_height(), 0, src_fmt, src_type, data_ptr);
@@ -619,8 +629,17 @@ bool load_texture(const cgv::data::const_data_view& data, unsigned gl_tex_format
 		break;
 	case 3:
 		if(ensure_glew_initialized() && GLEW_EXT_texture3D) {
-			glTexImage3D(texture_array ? GL_TEXTURE_2D_ARRAY : GL_TEXTURE_3D, level, gl_tex_format, w, data.get_format()->get_height(),
-				data.get_format()->get_depth(), 0, src_fmt, src_type, data_ptr);
+			if(texture_array) {
+				int num_layers = data.get_format()->get_depth();
+				if(num_array_layers > 0)
+					num_layers = std::min(data.get_format()->get_depth(), (unsigned)num_array_layers);
+
+				glTexImage3D(GL_TEXTURE_2D_ARRAY, level, gl_tex_format, w, data.get_format()->get_height(),
+					num_layers, 0, src_fmt, src_type, data_ptr);
+			} else {
+				glTexImage3D(GL_TEXTURE_3D, level, gl_tex_format, w, data.get_format()->get_height(),
+					data.get_format()->get_depth(), 0, src_fmt, src_type, data_ptr);
+			}
 		}
 		break;
 	}

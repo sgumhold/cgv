@@ -101,6 +101,20 @@ bool recursive_glob(const std::string& dir_name, const std::string& sub_path, st
 		}
 		handle = file::find_next(handle);
 	}
+	if (recursive) {
+		search_path = dir_name + sub_path + "*";
+		void* handle = file::find_first(search_path);
+		while (handle != 0) {
+			std::string file_name = (short_file_names ? sub_path : dir_name + sub_path) + file::find_name(handle);
+			if (file::find_directory(handle) && file::find_name(handle) != "." && file::find_name(handle) != "..") {
+				if (subdir_names)
+					subdir_names->push_back(file_name);
+				if (recursive)
+					recursive_glob(dir_name, sub_path + file::find_name(handle) + "/", file_names, filter, true, short_file_names, subdir_names);
+			}			
+			handle = file::find_next(handle);
+		}
+	}
 	return true;
 }
 

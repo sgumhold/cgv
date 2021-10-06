@@ -18,6 +18,8 @@ protected:
 	int  tex_unit;
 	bool complete_create(const context& ctx, bool created);
 public:
+	using render_component::last_error;
+
 	/**@name methods that can be called without context */
 	//@{
 	/** construct from description string (which defaults to rgba format)
@@ -154,10 +156,14 @@ public:
 	    If level is not specified or set to -1 mipmaps are generated. 
 		If cube_side is specified, and data view is 2D, create one of
 		the six sides of a cubemap.
-		If is_array is true and data view is 2D or 3D, create
-		a texture array layer.
+		If num_array_layers is not zero a texture array is created.
+		Set num_array_layers to -1 to automatically choose the layer
+		number based on the data view dimensions and size, e.g. a 2D/3D
+		data view creates a 1D/2D array with layer count equal to height/depth.
+		Set num_array_layers to > 0 to manually specify the layer count.
+		This can be used to create a one layer 1D/2D texture array from a 1D/2D data view.
 		Cubemap arrays are currently not suported. */
-	bool create(const context& ctx, const cgv::data::const_data_view& data, int level = -1, int cube_side = -1, bool is_array = false, const std::vector<cgv::data::data_view>* palettes = 0);
+	bool create(const context& ctx, const cgv::data::const_data_view& data, int level = -1, int cube_side = -1, int num_array_layers = 0, const std::vector<cgv::data::data_view>* palettes = 0);
 	/** replace a block within a 1d texture with the given data. 
 	    If level is not specified, level 0 is set and if a mipmap 
 		 has been created before, coarser levels are updated also. */

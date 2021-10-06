@@ -20,6 +20,11 @@ uniform float radius_relative_to_length = 0.1;
 uniform float head_radius_scale = 2.0;
 uniform float head_length_relative_to_radius = 1.7;
 uniform float head_length_relative_to_length = 0.0;
+/// mode of determining the head length:
+/// 1 ... use relative radius only
+/// 2 ... use relative length only
+/// 3 ... use minimum out of 1 and 2
+uniform int   head_length_mode = 3;
 uniform float length_scale = 1.0;
 uniform float color_scale = 1.0;
 uniform bool normalize_length = false;
@@ -48,7 +53,15 @@ void main()
 	float l = length(dir);
 	radius_gs = max(radius_lower_bound, l*radius_relative_to_length);
 	head_radius_gs = head_radius_scale * radius_gs;
-	head_length_gs = min(head_length_relative_to_radius * head_radius_gs, head_length_relative_to_length * l);
+	float radius_relative_to_radius = head_length_relative_to_radius * head_radius_gs;
+	float radius_relative_to_length = head_length_relative_to_length * l;
+	switch (head_length_mode) {
+	case 1 : head_length_gs = radius_relative_to_radius; break;
+	case 2 : head_length_gs = radius_relative_to_length; break;
+	default : 
+	head_length_gs = min(radius_relative_to_radius, radius_relative_to_length); 
+	break;
+	}
 	pm_gs = mix(p1_gs, p0_gs, (l > length_eps) ? head_length_gs/l : 0.5);
 	t_gs = (l > length_eps) ? normalize(dir) : vec3(1.0,0.0,0.0);
 }
