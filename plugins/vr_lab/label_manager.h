@@ -5,6 +5,7 @@
 #include <cgv_gl/rectangle_renderer.h>
 #include <cgv/render/texture.h>
 #include <cgv/render/frame_buffer.h>
+#include <memory>
 
 #include "lib_begin.h"
 
@@ -65,6 +66,7 @@ protected:
 	int safety_extension;
 	rgba text_color;
 	cgv::render::rectangle_render_style rrs;
+	cgv::render::attribute_array_manager aam;
 	bool ensure_tex_fbo_combi(cgv::render::context& ctx, cgv::render::texture& tex, cgv::render::frame_buffer& fbo, int width, int height);
 	void draw_label_backgrounds(cgv::render::context& ctx, const std::vector<uint32_t>& indices, bool all, bool swap);
 	void draw_label_texts(cgv::render::context& ctx, const std::vector<uint32_t>& indices, int height, bool all, bool swap);
@@ -106,19 +108,21 @@ public:
 	uint32_t get_nr_labels() const { return uint32_t(labels.size()); }
 	/// return specific label
 	const label& get_label(uint32_t i) const { return labels[i]; }
-	//! update text of given label 
-	/*! if label is not a fixed label set packing out of date otherwise 
+	//! update text of given label
+	/*! if label is not a fixed label set packing out of date otherwise
 	    only texture computation is set out of date */
 	void update_label_text(uint32_t i, const std::string& new_text);
 	/// update label size, what always sets packing out of date
 	void update_label_size(uint32_t i, int w, int h);
+	/// update label color, what always sets packing out of date
+	void update_label_background_color(uint32_t i, const rgba& background_color);
 	/// you can enforce texture recomputation in ensure_texture_uptodate() by calling this function (typically you do not need this function)
 	void set_texture_outofdate() { texture_outofdate = true; }
 	/// call init() function from within the init function of your drawable
 	void init(cgv::render::context& ctx);
 	//! call this function to ensure that texture is up to date
-	/*! this function automatically calls the compute_label_sizes(), pack_labels(), and draw_labels() 
-	    functions in case this is necessary due to changes done to labels since last atlas texture 
+	/*! this function automatically calls the compute_label_sizes(), pack_labels(), and draw_labels()
+	    functions in case this is necessary due to changes done to labels since last atlas texture
 		computation.*/
 	void ensure_texture_uptodate(cgv::render::context& ctx);
 	/// return whether texture is out of date

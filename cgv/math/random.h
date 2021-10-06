@@ -10,6 +10,7 @@
 #include <cgv/math/up_tri_mat.h>
 #include <cgv/math/low_tri_mat.h>
 #include <cgv/math/quat.h>
+#include <cmath>
 #include <set>
 //#include <cgv/math/constants.h>
 
@@ -514,7 +515,7 @@ public:
 		uniform_direction(p);
 		double r;
 		uniform(r);
-		r = pow(r, 1.0/p.size());
+		r = std::pow(r, 1.0/p.size());
 		p *= r;
 	}
 	///creates an uniform distributed random point in triangle p1,p2,p3

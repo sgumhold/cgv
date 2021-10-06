@@ -1,6 +1,7 @@
 #pragma once
 
 #include "plot_info.h"
+#include "offset_info.h"
 #include "streaming_time_series.h"
 #include "streaming_aabb.h"
 #include <cgv/base/node.h>
@@ -48,9 +49,18 @@ namespace stream_vis {
 		std::atomic<bool> outofdate;
 		bool use_vbo, last_use_vbo, plot_attributes_initialized;
 		AABBMode aabb_mode, last_aabb_mode;
+		/// maps name to time series indices
 		std::map<std::string, uint16_t> name2index;
+		/// vector with all time series
 		std::vector<stream_vis::streaming_time_series*> typed_time_series;
+		/// vector with all offset infos
+		std::vector<offset_info> offset_infos;
+		/// keep track if there are uninitialized offset definitions
+		size_t nr_uninitialized_offsets;
+		/// vector of all plots
 		std::vector<plot_info> plot_pool;
+		/// vector of all layouts
+//		std::vector<layout_info> layouts;
 
 		bool paused;
 		unsigned sleep_ms;
@@ -73,6 +83,7 @@ namespace stream_vis {
 		stream_vis_context(const std::string& name);
 		~stream_vis_context();
 		virtual size_t get_first_composed_index() const = 0;
+		void announce_values(uint16_t num_values, indexed_value* values, double timestamp, const uint16_t* val_idx_from_ts_idx);
 		void on_set(void* member_ptr);
 		std::string get_type_name() const { return "stream_vis_context"; }
 		virtual void extract_time_series() = 0;

@@ -36,10 +36,10 @@ namespace cgv {
 class CGV_API stopwatch
 {
 public:
-	//standard constructor starts time measurement
-	stopwatch();
+	//standard constructor starts time measurement; if silent is true the stopwatch does not print time upon destruction
+	stopwatch(bool silent = false);
 	//start counting time
-	stopwatch(double *result);
+	stopwatch(double *result, bool silent = false);
 	// add_time adds the time ellapsed thus far
 	void add_time();
 	//destructor stops time measurement and puts the result into cout
@@ -52,7 +52,8 @@ private:
 	void init();
 	double get_current_time(long long& end) const;
 	long long start;
-	double *resultd;	
+	double *resultd;
+	bool silent;
 };
 
 	}

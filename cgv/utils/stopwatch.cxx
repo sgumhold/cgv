@@ -33,14 +33,14 @@ void stopwatch::init()
 }
 
 //standard constructor starts time measurement
-stopwatch::stopwatch()
+stopwatch::stopwatch(bool silent) : silent(silent)
 {
 	resultd = 0;
 	init();
 } 
 
 //start counting time
-stopwatch::stopwatch(double *result)
+stopwatch::stopwatch(double *result, bool silent) : silent(silent)
 {
 	this->resultd = result;
 	init();
@@ -90,7 +90,7 @@ void stopwatch::add_time()
 	
 	if(resultd)
 		*resultd += time;	
-	else
+	else if(!silent)
 		std::cout << "elapsed time in seconds: " << time << std::endl;
 }
 

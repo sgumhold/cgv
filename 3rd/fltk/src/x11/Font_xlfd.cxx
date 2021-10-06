@@ -557,6 +557,7 @@ void fltk::setfont(Font* font, float psize) {
     t->xlist = XListFonts(xdisplay, t->system_name, 100, &(t->n));
     if (!t->xlist || t->n<=0) {	// use variable if no matching font...
       t->first = f = new FontSize("variable",0);
+//      t->first = f = new FontSize("-*-*-*-o-semicondensed-*-*-*-*-*-*-*-*-*",0);
       f->minsize = 0;
       f->maxsize = 32767;
       goto DONE;

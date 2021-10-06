@@ -87,6 +87,7 @@ component_format::component_format(TypeId _type_id,
 component_format::component_format(const std::string& description)
 {
 	set_component_format(description);
+	extract_components();
 }
 
 bool extract_special_type(const std::string& tok, TypeId& component_type, ComponentIntegerInterpretation& cii)
@@ -375,6 +376,7 @@ void component_format::set_component_names(const std::string& _component_name_li
 void component_format::set_component_format(ComponentFormat _cf)
 {
 	component_string = component_formats[_cf];
+	extract_components();
 }
 
 /// return the component type

@@ -6,7 +6,7 @@ name(main):W=1280;H=720
 name(main):gamma=1.0
 
 // construct an emulated vr kit 
-//type(vr_emulator):current_kit_index=0
+type(vr_emulator):current_kit_index=0
 
 // configure table dimension
 type(vr_scene):table_width=0.80
@@ -31,19 +31,19 @@ type(vr_view_interactor):up_dir_y=1.0
 type(vr_view_interactor):up_dir_z=0.0
 
 // set mesh file name for hmd
-type(vr_view_interactor):hmd_mesh_file_name="generic_hmd.obj"
+//type(vr_view_interactor):hmd_mesh_file_name="generic_hmd.obj"
 // set scaling factor for hmd mesh to scale it to meter
-type(vr_view_interactor):hmd_scale=1.0	
+//type(vr_view_interactor):hmd_scale=1.0	
 // set mesh file name for controllers
-type(vr_view_interactor):controller_mesh_file_name="vr_controller_vive_1_5.obj"
+//type(vr_view_interactor):controller_mesh_file_name="vr_controller_vive_1_5.obj"
 // set scaling factor for controllers
-type(vr_view_interactor):controller_scale=1.0
+//type(vr_view_interactor):controller_scale=1.0
 // set mesh file name for trackers
-type(vr_view_interactor):tracker_mesh_file_name="HTC_Vive_Tracker_2017.obj"
+//type(vr_view_interactor):tracker_mesh_file_name="HTC_Vive_Tracker_2017.obj"
 // set scaling factor for trackers (here mesh was specified in mm units requiring 0.001 as scale factor)
-type(vr_view_interactor):tracker_scale=0.001
+//type(vr_view_interactor):tracker_scale=0.001
 // set mesh file name for base stations
-type(vr_view_interactor):base_mesh_file_name="lh_basestation_vive.obj"
+//type(vr_view_interactor):base_mesh_file_name="lh_basestation_vive.obj"
 // set scaling factor for base stations
-type(vr_view_interactor):base_scale=1.0
+//type(vr_view_interactor):base_scale=1.0
 

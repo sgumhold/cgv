@@ -6,3 +6,5 @@ geometry_file:group.glsl
 geometry_file:view.glsl
 fragment_file:view.glsl
 fragment_file:fragment.glfs
+fragment_file:a_buffer_lib.glfs
+

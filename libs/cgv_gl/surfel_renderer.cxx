@@ -8,7 +8,7 @@ namespace cgv {
 		{
 			static int ref_count = 0;
 			static surfel_renderer r;
-			r.manage_singelton(ctx, "surfel_renderer", ref_count, ref_count_change);
+			r.manage_singleton(ctx, "surfel_renderer", ref_count, ref_count_change);
 			return r;
 		}
 
@@ -55,29 +55,18 @@ namespace cgv {
 			reference_point_size = 0.01f;
 			y_view_angle = 45;
 		}
-		///
 		void surfel_renderer::set_reference_point_size(float _reference_point_size)
 		{
 			reference_point_size = _reference_point_size;
 		}
-		///
 		void surfel_renderer::set_y_view_angle(float _y_view_angle)
 		{
 			y_view_angle = _y_view_angle;
 		}
-
-		bool surfel_renderer::init(context& ctx)
+		bool surfel_renderer::build_shader_program(context& ctx, shader_program& prog, const shader_define_map& defines)
 		{
-			bool res = renderer::init(ctx);
-			if (!ref_prog().is_created()) {
-				if (!ref_prog().build_program(ctx, "surfel.glpr", true)) {
-					std::cerr << "ERROR in surfel_renderer::init() ... could not build program surfel.glpr" << std::endl;
-					return false;
-				}
-			}
-			return res;
+			return prog.build_program(ctx, "surfel.glpr", true, defines);
 		}
-
 		bool surfel_renderer::validate_attributes(const context& ctx) const
 		{
 			const surfel_render_style& srs = get_style<surfel_render_style>();

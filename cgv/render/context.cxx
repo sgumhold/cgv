@@ -902,7 +902,7 @@ std::string to_string(PrimitiveType pt)
 	const char* pt_str[] = {
 		"undef", "points", "lines", "lines_adjacency", "line_strip", "line_strip_adjacency", "line_loop", 
 		"triangles", "triangles_adjacency", "triangle_strip", "triangle_strip_adjacency", "triangle_fan", 
-		"quads", "quad_strip", "polygon"
+		"quads", "quad_strip", "polygon", "patches"
 	};
 	return pt_str[pt];
 }
@@ -953,7 +953,7 @@ void compute_face_normals(const float* vertices, float* normals, const int* vert
 	}
 }
 
-/// tesselate a unit cube with extent from [-1,-1,-1] to [1,1,1] with face normals that can be flipped
+/// tessellate a unit cube with extent from [-1,-1,-1] to [1,1,1] with face normals that can be flipped
 void context::tesselate_unit_cube(bool flip_normals, bool edges)
 {
 	static float V[8*3] = {
@@ -1006,7 +1006,7 @@ void context::tesselate_unit_cube(bool flip_normals, bool edges)
 		draw_faces(V,N,T,F,FN,FT,6,4, flip_normals);
 }
 
-/// tesselate an axis aligned box in single precision
+/// tessellate an axis aligned box in single precision
 void context::tesselate_box(const cgv::media::axis_aligned_box<double, 3>& B, bool flip_normals, bool edges) const
 {
 	static float N[6 * 3] = {
@@ -1040,7 +1040,7 @@ void context::tesselate_box(const cgv::media::axis_aligned_box<double, 3>& B, bo
 		draw_faces(V, N, 0, F, FN, 0, 6, 4, flip_normals);
 }
 
-/// tesselate a prism 
+/// tessellate a prism
 void context::tesselate_unit_prism(bool flip_normals, bool edges)
 {
 	static const float V[6*3] = {
@@ -1075,7 +1075,7 @@ void context::tesselate_unit_prism(bool flip_normals, bool edges)
 	}
 }
 
-/// tesselate a circular disk of radius 1
+/// tessellate a circular disk of radius 1
 void context::tesselate_unit_disk(int resolution, bool flip_normals, bool edges)
 {
 	std::vector<float> V; V.reserve(3*(resolution+1));
@@ -1107,7 +1107,7 @@ void context::tesselate_unit_disk(int resolution, bool flip_normals, bool edges)
 		draw_faces(&V[0], &N[0], &T[0], &F[0], &F[0], &F[0], 1, resolution + 1, flip_normals);
 }
 
-/// tesselate a cone of radius 1
+/// tessellate a cone of radius 1
 void context::tesselate_unit_cone(int resolution, bool flip_normals, bool edges)
 {
 	std::vector<float> V; V.reserve(6*(resolution+1));
@@ -1151,7 +1151,7 @@ void context::tesselate_unit_cone(int resolution, bool flip_normals, bool edges)
 		draw_strip_or_fan(&V[0], &N[0], &T[0], &F[0], &F[0], &F[0], resolution, 4, false, flip_normals);
 }
 
-/// tesselate a cylinder of radius 1
+/// tessellate a cylinder of radius 1
 void context::tesselate_unit_cylinder(int resolution, bool flip_normals, bool edges)
 {
 	std::vector<float> V; V.reserve(6*(resolution+1));
@@ -1193,7 +1193,7 @@ void context::tesselate_unit_cylinder(int resolution, bool flip_normals, bool ed
 		draw_strip_or_fan(&V[0], &N[0], &T[0], &F[0], &F[0], &F[0], resolution, 4, false, flip_normals);
 }
 
-/// tesselate a torus with major radius of one and given minor radius
+/// tessellate a torus with major radius of one and given minor radius
 void context::tesselate_unit_torus(float minor_radius, int resolution, bool flip_normals, bool edges)
 {
 	std::vector<float> V; V.resize(6*(resolution+1));
@@ -1243,7 +1243,7 @@ void context::tesselate_unit_torus(float minor_radius, int resolution, bool flip
 			draw_strip_or_fan(&V[0],&N[0],&T[0],&F[0],&F[0],&F[0],resolution,4,false, flip_normals);
 	}
 }
-/// tesselate a sphere of radius 1
+/// tessellate a sphere of radius 1
 void context::tesselate_unit_sphere(int resolution, bool flip_normals, bool edges)
 {
 	std::vector<float> V; V.resize(6*(resolution+1));
@@ -1294,7 +1294,7 @@ void context::tesselate_unit_sphere(int resolution, bool flip_normals, bool edge
 	}
 
 }
-/// tesselate a tetrahedron
+/// tessellate a tetrahedron
 void context::tesselate_unit_tetrahedron(bool flip_normals, bool edges)
 {
 	static const float a = float(1.0/(2*sqrt(3.0)));
@@ -1322,7 +1322,7 @@ void context::tesselate_unit_tetrahedron(bool flip_normals, bool edges)
 }
 
 
-/// tesselate a unit square 
+/// tessellate a unit square
 void context::tesselate_unit_square(bool flip_normals, bool edges)
 {
 	static float N[1*3] = {
@@ -1349,7 +1349,7 @@ void context::tesselate_unit_square(bool flip_normals, bool edges)
 }
 
 
-/// tesselate a octahedron
+/// tessellate a octahedron
 void context::tesselate_unit_octahedron(bool flip_normals, bool edges)
 {
 	static float N[8*3] = {
@@ -1464,12 +1464,12 @@ void tesselate_unit_dodecahedron_or_icosahedron(context& c, bool dual, bool flip
 	}
 }
 
-/// tesselate a dodecahedron
+/// tessellate a dodecahedron
 void context::tesselate_unit_dodecahedron(bool flip_normals, bool edges)
 {
 	tesselate_unit_dodecahedron_or_icosahedron(*this, true, flip_normals, edges);
 }
-/// tesselate an icosahedron
+/// tessellate an icosahedron
 void context::tesselate_unit_icosahedron(bool flip_normals, bool edges)
 {
 	tesselate_unit_dodecahedron_or_icosahedron(*this, false, flip_normals, edges);
@@ -1876,7 +1876,7 @@ shader_program_base::shader_program_base()
 	position_index = -1;
 	normal_index = -1;
 	color_index = -1;
-	context_sets_color = false;
+	context_sets_color = true;
 	texcoord_index = -1;
 }
 

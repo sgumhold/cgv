@@ -16,15 +16,17 @@ class CGV_API render_buffer
 {
 	int width, height;
 public:
+	using render_component::last_error;
+
 	/// construct from description of component format, where the default format specifies a color buffer with alpha channel
 	render_buffer(const std::string& description = "[R,G,B,A]");
 	/// destruct the render buffer
 	void destruct(const context& ctx);
 	/** create a render buffer. 
 	    If no extent is specified it is copied from the current viewport. */
-	void create(const context& ctx, int width = -1, int height = -1);
+	bool create(const context& ctx, int width = -1, int height = -1);
 	/// check whether the buffer has been created
-	bool is_created() const;
+	bool is_created() const override;
 	/// calls the destruct method if necessary
 	~render_buffer();
 	/// return the width in pixels of the buffer

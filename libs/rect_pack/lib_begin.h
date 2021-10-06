@@ -1,4 +1,4 @@
-#ifdef RECT_PACK_EXPORT
+#ifdef RECT_PACK_EXPORTS
 #	define CGV_EXPORTS
 #endif
 

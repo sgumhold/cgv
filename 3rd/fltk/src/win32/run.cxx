@@ -1749,9 +1749,9 @@ static LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
   }
 
   case WM_GETMINMAXINFO:
-    if (window) CreatedWindow::find(window)->set_minmax((LPMINMAXINFO)lParam);
+    if (window) 
+        CreatedWindow::find(window)->set_minmax((LPMINMAXINFO)lParam);
     break;
-
   case WM_SHOWWINDOW:
     if (!window) break;
     if (wParam) { // Map event
@@ -2261,7 +2261,23 @@ void Window::size_range_() {
 void CreatedWindow::set_minmax(LPMINMAXINFO minmax)
 {
   fltk::Rectangle r; window->borders(&r);
-
+  // get rectangle of primary screen
+  int screen_width  = GetDeviceCaps(GetDC(NULL), HORZRES);
+  int screen_height = GetDeviceCaps(GetDC(NULL), VERTRES);
+  // check if window maximizes to primary screen based on window center
+  int ctr_x = (window->x() + window->w()) / 2;
+  int ctr_y = (window->y() + window->h()) / 2;
+  if (ctr_x >= 0 && ctr_x <= screen_width &&
+      ctr_y >= 0 && ctr_y <= screen_height) {
+      // get work area without task bar
+      RECT workarea;
+      BOOL fResult = SystemParametersInfo(SPI_GETWORKAREA, 0, &workarea, 0);
+      // and adapt max extent of window
+      minmax->ptMaxSize.x += workarea.right - workarea.left - screen_width;
+      minmax->ptMaxSize.y += workarea.bottom - workarea.top - screen_height;
+      minmax->ptMaxPosition.x += workarea.left;
+      minmax->ptMaxPosition.y += workarea.top;
+  }
   minmax->ptMinTrackSize.x = window->minw + r.w();
   minmax->ptMinTrackSize.y = window->minh + r.h();
   if (window->maxw) {

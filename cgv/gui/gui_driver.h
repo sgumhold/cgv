@@ -45,6 +45,8 @@ public:
 
 	/**@name some basic functionality */
 	//@{
+	/// show the user a \c _message that can be dismissed with the \c answer
+	virtual void message(const std::string& _message) = 0;
 	/// ask the user with \c _question to select one of the \c answers, where \c default_answer specifies index of default answer
 	virtual int question(const std::string& _question, const std::vector<std::string>& answers, int default_answer = -1) = 0;
 	//! query the user for a text, where the second parameter is the default \c text as well as the returned text. 

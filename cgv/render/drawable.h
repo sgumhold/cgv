@@ -45,7 +45,7 @@ public:
 
 	/// this method is called after creation or recreation of the context, return whether all necessary functionality is supported
 	virtual bool init(context&);
-	/// callback to anounce resizing of the output window
+	/// callback to announce resizing of the output window
 	virtual void resize(unsigned int w, unsigned int h);
 	/// this method is called in one pass over all drawables before the draw method
 	virtual void init_frame(context&);

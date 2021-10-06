@@ -190,6 +190,7 @@ enum PrimitiveType {
 	PT_QUADS,
 	PT_QUAD_STRIP,
 	PT_POLYGON,
+	PT_PATCHES,
 	PT_LAST
 };
 
@@ -254,7 +255,7 @@ public:
 	/// initialize members
 	render_component();
 	/// return whether component has been created
-	bool is_created() const;
+	virtual bool is_created() const;
 	/// copy the rendering api specific id the component to the memory location of the given pointer. 
 	/// For opengl this the passed pointer should be of type GLint or GLuint.
 	void put_id_void(void* ptr) const;
@@ -351,7 +352,8 @@ enum VertexBufferType {
 	VBT_INDICES,
 	VBT_TEXTURE,
 	VBT_UNIFORM,
-	VBT_FEEDBACK
+	VBT_FEEDBACK,
+	VBT_STORAGE
 };
 
 /// different vertex buffer usages as defined in OpenGL
@@ -387,7 +389,7 @@ public:
 };
 
 /// different shader types
-enum ShaderType { ST_DETECT, ST_COMPUTE, ST_VERTEX, ST_TESS_CONTROL, ST_TESS_EVALUTION, ST_GEOMETRY, ST_FRAGMENT };
+enum ShaderType { ST_DETECT, ST_COMPUTE, ST_VERTEX, ST_TESS_CONTROL, ST_TESS_EVALUATION, ST_GEOMETRY, ST_FRAGMENT };
 
 /// different frame buffer types which can be combined together with or
 enum FrameBufferType {
@@ -655,7 +657,7 @@ protected:
 
 	virtual cgv::data::component_format texture_find_best_format(const cgv::data::component_format& cf, render_component& rc, const std::vector<cgv::data::data_view>* palettes = 0) const = 0;
 	virtual bool texture_create				(texture_base& tb, cgv::data::data_format& df) const = 0;
-	virtual bool texture_create				(texture_base& tb, cgv::data::data_format& target_format, const cgv::data::const_data_view& data, int level, int cube_side = -1, bool is_array = false, const std::vector<cgv::data::data_view>* palettes = 0) const = 0;
+	virtual bool texture_create				(texture_base& tb, cgv::data::data_format& target_format, const cgv::data::const_data_view& data, int level, int cube_side = -1, int num_array_layers = 0, const std::vector<cgv::data::data_view>* palettes = 0) const = 0;
 	virtual bool texture_create_from_buffer (texture_base& tb, cgv::data::data_format& df, int x, int y, int level) const = 0;
 	virtual bool texture_replace			(texture_base& tb, int x, int y, int z_or_cube_side, const cgv::data::const_data_view& data, int level, const std::vector<cgv::data::data_view>* palettes = 0) const = 0;
 	virtual bool texture_replace_from_buffer(texture_base& tb, int x, int y, int z_or_cube_side, int x_buffer, int y_buffer, unsigned int width, unsigned int height, int level) const = 0;

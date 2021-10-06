@@ -34,6 +34,7 @@ protected:
 	std::vector<vec3> transformed_points;
 	std::vector<unsigned> group_indices;
 	std::vector<vec3> normals;
+	std::vector<vec3> directions;
 	std::vector<vec4> colors;
 	std::vector<box3> boxes;
 	bool use_box_array;
@@ -118,6 +119,7 @@ public:
 			vertices.back().normal = normals.back();
 			vertices.back().color = colors.back();
 			sizes.push_back(vec3(0.03f*d(g) + 0.001f, 0.03f*d(g) + 0.001f, 0.03f*d(g) + 0.001f));
+			directions.push_back(100*sizes.back()[0] * normals.back());
 			boxes.push_back(box3(points.back() - 0.5f * sizes.back(), points.back() + 0.5f * sizes.back()));
 		}
 
@@ -192,7 +194,7 @@ public:
 			return false;
 		if (!rc_manager.init(ctx))
 			return false;
-		// increase reference counts of used renderer singeltons
+		// increase reference counts of used renderer singletons
 		cgv::render::ref_point_renderer			(ctx, 1);
 		cgv::render::ref_surfel_renderer		(ctx, 1);
 		cgv::render::ref_box_renderer			(ctx, 1);
@@ -351,7 +353,7 @@ public:
 			a_renderer.enable_attribute_array_manager(ctx, a_manager);
 			a_renderer.set_position_array(ctx, points);
 			a_renderer.set_color_array(ctx, colors);
-			a_renderer.set_direction_array(ctx, normals);
+			a_renderer.set_direction_array(ctx, directions);
 			a_renderer.render(ctx, 0, points.size());
 			a_renderer.disable_attribute_array_manager(ctx, a_manager);
 		}	break;
@@ -399,7 +401,7 @@ public:
 		s_manager.destruct(ctx);
 		rc_manager.destruct(ctx);
 
-		// decrease reference counts of used renderer singeltons
+		// decrease reference counts of used renderer singletons
 		cgv::render::ref_point_renderer			(ctx, -1);
 		cgv::render::ref_surfel_renderer		(ctx, -1);
 		cgv::render::ref_box_renderer			(ctx, -1);

@@ -133,7 +133,8 @@ bool extract_font_name(stbtt_fontinfo& f, std::string& font_name)
 
 typedef std::pair<std::string, int> ff_cache_key;
 typedef std::tuple<float, unsigned, unsigned> tex_cache_key;
-typedef std::map<tex_cache_key, cgv::render::texture*> tex_cache_type;
+typedef std::pair< cgv::render::texture*, std::vector<stbtt_bakedchar> > tex_cache_entry_type;
+typedef std::map<tex_cache_key, tex_cache_entry_type> tex_cache_type;
 typedef std::map<ff_cache_key, tex_cache_type> ff_cache_type;
 
 ff_cache_type& ref_ff_cache()
@@ -142,12 +143,12 @@ ff_cache_type& ref_ff_cache()
 	return cache;
 }
 
-void add_texture_to_cache(cgv::render::texture* tex_ptr, const std::string& font_name, int ffa, float font_size, unsigned fst_char, unsigned nr_chars)
+void add_texture_to_cache(cgv::render::texture* tex_ptr, const std::vector<stbtt_bakedchar>& baked_chars, const std::string& font_name, int ffa, float font_size, unsigned fst_char, unsigned nr_chars)
 {
-	ref_ff_cache()[ff_cache_key(font_name, ffa)][tex_cache_key(font_size, fst_char, nr_chars)] = tex_ptr;
+	ref_ff_cache()[ff_cache_key(font_name, ffa)][tex_cache_key(font_size, fst_char, nr_chars)] = tex_cache_entry_type(tex_ptr, baked_chars);
 }
 
-cgv::render::texture* get_texture_from_cache(const std::string& font_name, int ffa, float font_size, unsigned fst_char, unsigned nr_chars)
+cgv::render::texture* get_texture_from_cache(std::vector<stbtt_bakedchar>& baked_chars, const std::string& font_name, int ffa, float font_size, unsigned fst_char, unsigned nr_chars)
 {
 	auto iter = ref_ff_cache().find(ff_cache_key(font_name, ffa));
 	if (iter == ref_ff_cache().end())
@@ -155,7 +156,8 @@ cgv::render::texture* get_texture_from_cache(const std::string& font_name, int f
 	auto jter = iter->second.find(tex_cache_key(font_size, fst_char, nr_chars));
 	if (jter == iter->second.end())
 		return 0;
-	return jter->second;
+	baked_chars = jter->second.second;
+	return jter->second.first;
 }
 
 
@@ -172,6 +174,16 @@ namespace cgv {
 			rrs.illumination_mode = cgv::render::IM_OFF;
 		}
 		return rrs;
+	}
+
+	cgv::render::attribute_array_manager& ref_attribute_manager(cgv::render::context& ctx)
+	{
+		static cgv::render::attribute_array_manager aam;
+		static bool initialized = false;
+		if (!initialized) {
+			aam.init(ctx);
+		}
+		return aam;
 	}
 
 	struct ext_font_face_info : public font_face_info
@@ -273,7 +285,7 @@ namespace cgv {
 		if (font_directory.empty())
 			font_directory = default_font_path;
 		std::vector<std::string> file_names;
-		cgv::utils::dir::glob(default_font_path, file_names, "*.ttf", true);
+		cgv::utils::dir::glob(font_directory, file_names, "*.ttf", true);
 		scan_fonts(file_names);
 	}
 
@@ -312,7 +324,7 @@ namespace cgv {
 		tex_ptr->replace(ctx, 0, 0, dv);
 		
 		tex_ptr->generate_mipmaps(ctx);
-		add_texture_to_cache(tex_ptr, font_name, ffa, font_size, fst_char, nr_chars);
+		add_texture_to_cache(tex_ptr, baked_chars, font_name, ffa, font_size, fst_char, nr_chars);
 		tex_out_of_date = false;
 	}
 	bool tt_gl_font_face::read_font(const std::string& file_name, int fi)
@@ -333,6 +345,7 @@ namespace cgv {
 		if (!extract_font_name(f, font_name))
 			return false;
 		ffa = extract_font_face(font_name);
+		this->font_name = font_name;
 		bitmap_out_of_date = true;
 		tex_out_of_date = true;
 		return true;
@@ -413,6 +426,7 @@ namespace cgv {
 		if (init_rr)
 			init_rr = 0;
 		rr.set_render_style(ref_rectangle_render_style());
+		rr.enable_attribute_array_manager(*ctx_ptr, ref_attribute_manager(*ctx_ptr));
 		rr.set_textured_rectangle_array(*ctx_ptr, Q);
 		rr.set_color(*ctx_ptr, ctx_ptr->get_color());
 		ref_texture(*ctx_ptr).enable(*ctx_ptr);
@@ -425,6 +439,7 @@ namespace cgv {
 		glDisable(GL_DEPTH_TEST);
 		glDepthMask(GL_FALSE);
 		rr.render(*ctx_ptr, 0, (GLsizei)Q.size());
+		rr.disable_attribute_array_manager(*ctx_ptr, ref_attribute_manager(*ctx_ptr));
 		glBlendFunc(blend_src, blend_dst);
 		glDepthMask(GL_TRUE);
 		if (!blend)
@@ -440,7 +455,7 @@ namespace cgv {
 		if (fst_char != _fst_char || nr_chars != _nr_chars) {
 			fst_char = _fst_char;
 			nr_chars = _nr_chars;
-			tex_ptr = get_texture_from_cache(font_name, ffa, font_size, fst_char, nr_chars);
+			tex_ptr = get_texture_from_cache(baked_chars, font_name, ffa, font_size, fst_char, nr_chars);
 			if (tex_ptr == 0) {
 				bitmap_out_of_date = true;
 				tex_out_of_date = true;
@@ -451,10 +466,14 @@ namespace cgv {
 	{
 		if (font_size != _font_size) {
 			font_size = _font_size;
-			tex_ptr = get_texture_from_cache(font_name, ffa, font_size, fst_char, nr_chars);
+			tex_ptr = get_texture_from_cache(baked_chars, font_name, ffa, font_size, fst_char, nr_chars);
 			if (tex_ptr == 0) {
 				bitmap_out_of_date = true;
 				tex_out_of_date = true;
+			}
+			else {
+				bitmap_width = tex_ptr->get_width();
+				bitmap_height = tex_ptr->get_height();
 			}
 		}
 	}
