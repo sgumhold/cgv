@@ -58,7 +58,7 @@ namespace cgv {
 			reduce_prog.set_uniform(ctx, uniforms.batch_offset, (int)start);
 			reduce_prog.set_uniform(ctx, uniforms.batch_size, (int)count);
 
-			glDispatchCompute((count / 128) + 1, 1, 1); //with NVIDIA GPUs in debug mode this will spam notifications about buffer usage
+			glDispatchCompute((count / clod_reduce_group_size) + 1, 1, 1); // with NVIDIA GPUs this will spam notifications about buffer usage if gl debug messages are enabled
 		}
 
 		/// synchronizes and disables the shader prog.
@@ -81,7 +81,7 @@ namespace cgv {
 				reduce_prog.enable(ctx);
 
 				// run computation
-				glDispatchCompute((input_buffer_num_points / 128) + 1, 1, 1); //with NVIDIA GPUs in debug mode this will spam notifications about buffer usage
+				glDispatchCompute((input_buffer_num_points / clod_reduce_group_size) + 1, 1, 1); // with NVIDIA GPUs in debug mode this will spam notifications about buffer usage
 
 				// synchronize
 				glMemoryBarrier(GL_ALL_BARRIER_BITS);
@@ -102,7 +102,7 @@ namespace cgv {
 				auto chunk_id = reduction_sources[i];
 				reduce_prog.set_uniform(ctx, uniforms.batch_offset, (int)chunk_starts[chunk_id]);
 				reduce_prog.set_uniform(ctx, uniforms.batch_size, (int)chunk_point_counts[chunk_id]);
-				glDispatchCompute((chunk_point_counts[chunk_id] / 128) + 1, 1, 1);
+				glDispatchCompute((chunk_point_counts[chunk_id] / clod_reduce_group_size) + 1, 1, 1);
 			}
 
 			// synchronize
