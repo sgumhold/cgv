@@ -118,6 +118,8 @@ namespace cgv {
 				GLuint  baseInstance = 0;
 			};
 			
+			static constexpr int clod_reduce_group_size = 256;
+
 			shader_program reduce_prog;		// filters points from the input buffer and writes them to the render_buffer (compute shader)
 			shader_program* draw_prog_ptr;
 			shader_program draw_prog;	// draws render_buffer (vertex, geometry, fragment shader)
