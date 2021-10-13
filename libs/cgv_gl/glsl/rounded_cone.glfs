@@ -58,6 +58,10 @@ in flat vec3 binormal_fs;
 in flat vec4 color_start_fs;
 in flat vec4 color_end_fs;
 
+out layout(location = 0) vec4 frag_color;
+out layout(location = 1) vec4 frag_position;
+out layout(location = 2) vec3 frag_normal;
+
 vec2 get_tex_coords(vec3 pos) {
 	
 	vec3 delta = end_fs.xyz - start_fs.xyz;
@@ -262,7 +266,14 @@ void main()
 		vec3 normal_eye = normalize(get_normal_matrix() * normal);
 		vec4 v_eye = vec4(hit_pos_eye, 1.0);
 		vec4 depth = get_projection_matrix() * v_eye;
-		finish_fragment(vec4(compute_reflected_appearance(hit_pos_eye, normal_eye, vec4(color.xyz, 1.0), 1).rgb, color.a), 0.5*(depth.z / depth.w) + 0.5);
+		//finish_fragment(vec4(compute_reflected_appearance(hit_pos_eye, normal_eye, vec4(color.xyz, 1.0), 1).rgb, color.a), 0.5*(depth.z / depth.w) + 0.5);
+		
+		vec4 final_color = vec4(compute_reflected_appearance(hit_pos_eye, normal_eye, vec4(color.xyz, 1.0), 1).rgb, color.a);
+		final_color.rgb = pow(final_color.rgb, vec3(gamma));
+		frag_color = final_color;
+		frag_position = vec4(hit_pos_eye, 1.0);
+		frag_normal = normal_eye;
+		gl_FragDepth = 0.5*(depth.z / depth.w) + 0.5;
 	} else {
 		discard;
 	}

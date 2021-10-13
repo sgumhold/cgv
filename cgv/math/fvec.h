@@ -267,7 +267,7 @@ public:
 	}
 
 	/// normalize the vector using the L2-Norm and return the length
-	double normalize()  {
+	T normalize()  {
 		T l     = length();
 		T inv_l = (T)1.0/l;
 		for(unsigned i = 0; i<N; i++)
