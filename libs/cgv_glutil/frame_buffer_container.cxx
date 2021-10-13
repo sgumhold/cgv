@@ -25,6 +25,11 @@ void frame_buffer_container::clear(context& ctx) {
 	}
 }
 
+frame_buffer_container::ivec2 frame_buffer_container::get_size() {
+
+	return ivec2(fb.get_width(), fb.get_height());
+}
+
 bool frame_buffer_container::set_size(const ivec2& size) {
 
 	GLint max_render_buffer_size;
@@ -38,12 +43,13 @@ bool frame_buffer_container::set_size(const ivec2& size) {
 	return true;
 }
 
-void frame_buffer_container::add_attachment(const std::string& name, const std::string& format, TextureFilter tf, bool attach) {
+void frame_buffer_container::add_attachment(const std::string& name, const std::string& format, TextureFilter tf, TextureWrap tw, bool attach) {
 
 	attachment a;
 	a.attach = attach;
 	a.format = format;
 	a.tf = tf;
+	a.tw = tw;
 
 	if(a.is_depth_attachment()) {
 		a.index = 0;
@@ -131,7 +137,7 @@ bool frame_buffer_container::create_and_validate(context& ctx, const ivec2& size
 		// specifiers larger than 1 are using mipmaps
 		bool use_mipmaps = filter_specifier > 1;
 
-		a.texture = texture(a.format, mag_filter, a.tf);
+		a.texture = texture(a.format, mag_filter, a.tf, a.tw, a.tw);
 		a.texture.create(ctx, TT_2D, size.x(), size.y());
 
 		if(use_mipmaps)
