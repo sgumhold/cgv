@@ -25,11 +25,11 @@ void mesh_render_info::construct_vbos_base(
 	cgv::render::context& ctx,
 	const cgv::media::mesh::simple_mesh_base& mesh,
 	std::vector<idx_type>& vertex_indices,
-	std::vector<vec3i>& unique_triples,
+	std::vector<vec4i>& unique_quadruples,
 	std::vector<idx_type>& triangle_element_buffer,
 	std::vector<idx_type>& edge_element_buffer)
 {
-	include_tex_coords = include_normals = include_colors = true;
+	include_tex_coords = include_normals = include_tangents = include_colors = true;
 
 	// load material textures
 	for (unsigned i = 0; i < mesh.get_nr_materials(); ++i) {
@@ -44,8 +44,8 @@ void mesh_render_info::construct_vbos_base(
 		perm_ptr = new std::vector<idx_type>();
 		mesh.sort_faces(*perm_ptr, sort_by_groups, sort_by_materials);
 	}
-	mesh.merge_indices(vertex_indices, unique_triples, &include_tex_coords, &include_normals);
-	nr_vertices = unique_triples.size();
+	mesh.merge_indices(vertex_indices, unique_quadruples, &include_tex_coords, &include_normals, &include_tangents);
+	nr_vertices = unique_quadruples.size();
 	mesh.extract_triangle_element_buffer(vertex_indices, triangle_element_buffer, perm_ptr, mesh.get_nr_materials() > 0 ? &material_primitive_start : 0);
 	if (perm_ptr) {
 		delete perm_ptr;
@@ -107,6 +107,8 @@ void mesh_render_info::construct_draw_calls(cgv::render::context& ctx)
 		stride += 2;
 	if (include_normals)
 		stride += 3;
+	if(include_tangents)
+		stride += 3;
 	stride += uint32_t(color_increment);
 	if (stride == 3)
 		stride = 0;
@@ -127,6 +129,11 @@ void mesh_render_info::construct_draw_calls(cgv::render::context& ctx)
 	if (include_normals) {
 		aa.add_attribute(position_descr, 0, offset, nr_vertices, stride, cgv::render::VA_NORMAL);
 		wire_aa.add_attribute(position_descr, 0, offset, nr_vertices, stride, cgv::render::VA_NORMAL);
+		offset += 3 * element_size;
+	}
+	if(include_tangents) {
+		aa.add_attribute(position_descr, 0, offset, nr_vertices, stride, cgv::render::VA_BY_NAME, "tangent");
+		wire_aa.add_attribute(position_descr, 0, offset, nr_vertices, stride, cgv::render::VA_BY_NAME, "tangent");
 		offset += 3 * element_size;
 	}
 	if (color_increment > 0) {
