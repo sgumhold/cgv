@@ -243,7 +243,7 @@ void main()
     vec3 L = ComputeSphereNormal(sun_pos, 0.0, PI_2, 0.0, PI);
     
 	ScatteringParams setting;
-	setting.sunRadius = 500.0;
+	setting.sunRadius = 2000.0;
 	setting.sunRadiance = 20.0;
 	setting.mieG = 0.76;
 	setting.mieHeight = 1200.0;
@@ -259,10 +259,10 @@ void main()
     // see https://www.shadertoy.com/view/MllBR2
 	setting.waveLambdaOzone = vec3(1.36820899679147, 3.31405330400124, 0.13601728252538) * 0.6e-6 * 2.504;
 	
-    vec3 eye = vec3(0,1000.0,0);
+    vec3 eye = vec3(0.0, 1000.0, 0.0);
    	vec4 sky = ComputeSkyInscattering(setting, eye, ray, L);
     sky.rgb = TonemapACES(sky.rgb * 2.0);
-    //sky.rgb = pow(sky.rgb, vec3(1.0 / 2.2)); // gamma
+    sky.rgb = pow(sky.rgb, vec3(1.0 / 2.2)); // gamma correction
     //sky.rgb += noise(uv*iTime) / 255.0; // dither
    
 	vec4 color = vec4(sky.rgb, 1.0);

@@ -1,5 +1,7 @@
 #version 430
 
+#define ENABLE_TEXTURES 0
+
 #define M_PI 3.1415926535f
 
 #define SAMPLES_COUNT 64
@@ -27,22 +29,28 @@ uniform layout(binding = 1) samplerCube prefiltered_specular_map;
 uniform layout(binding = 2) sampler2D brdf_lut;
 uniform layout(binding = 3) sampler2DShadow shadow_map;
 uniform layout(binding = 4) sampler3D jitter_tex;
-//uniform layout(binding = 5) sampler2D albedo_tex;
-//uniform layout(binding = 6) sampler2D roughness_tex;
+#if ENABLE_TEXTURES == 1
+uniform layout(binding = 5) sampler2D albedo_tex;
+uniform layout(binding = 6) sampler2D metallic_tex;
+uniform layout(binding = 7) sampler2D roughness_tex;
+uniform layout(binding = 8) sampler2D normal_tex;
+#endif
 
 uniform vec3 eye_pos;
 uniform vec3 light_dir;
 
 uniform vec3 F0;
 uniform float roughness;
+#if ENABLE_TEXTURES == 1
+uniform float normal_map_scale;
+#endif
 
 uniform float shadow_blur;
 
-in vec4 position_eye;
 in vec4 position_model;
 in vec4 position_light_space;
-in vec3 normal_eye;
 in vec3 normal_model;
+in vec3 tangent_model;
 in vec2 texcoord_fs;
 in vec4 color_fs;
 
@@ -230,47 +238,53 @@ float compute_shadow_factor(vec4 p_light_space, vec3 normal) {
 
 void main()
 {
-	vec3 p_world = position_model.xyz;//(get_inverse_modelview_matrix() * position_eye).xyz;
-	vec3 n_world = normal_model;//normalize(get_inverse_normal_matrix() * normal_eye);
-	
-	//vec4 p_light_space = light_space_matrix * vec4(p_world, 1.0);
+#if ENABLE_TEXTURES == 1
+	vec3 albedo = texture(albedo_tex, texcoord_fs).rgb;
+	vec3 _F0 = texture(metallic_tex, texcoord_fs).rgb;
+	float _roughness = texture(roughness_tex, texcoord_fs).r;
+	vec3 _normal = 2.0 * texture(normal_tex, texcoord_fs).xyz - 1.0; // load and rescale normal to [-1,1]
+#else
+	vec3 albedo = color_fs.rgb;
+	vec3 _F0 = F0;
+	float _roughness = roughness;
+#endif
 
-	vec3 V = normalize(eye_pos - p_world);
-	vec3 N = n_world;
+	vec3 V = normalize(eye_pos - position_model.xyz);
+	vec3 N = normalize(normal_model);
 
-	//vec3 V = normalize(-position_eye.xyz);
-	//vec3 N = normal_eye;
+#if ENABLE_TEXTURES == 1
+	// re-orthogonalize T with respect to N using Gram-Schmidt process
+	vec3 T = normalize(tangent_model - dot(tangent_model, normal_model) * normal_model);
+	// then retrieve perpendicular bitangent vector with the cross product of T and N
+	vec3 bitangent_model = cross(normal_model, normalize(tangent_model));
+	mat3 TBN = mat3(tangent_model, bitangent_model, normal_model);
+	N = mix(N, normalize(TBN * _normal), normal_map_scale);
+#endif
+
 
 	vec3 R = reflect(-V, N);
 
-	//float roughness2 = texture(roughness_tex, texcoord_fs).r;
-
 	const float MAX_REFLECTION_LOD = 4.0;
-    vec3 prefilteredColor = textureLod(prefiltered_specular_map, R,  roughness * MAX_REFLECTION_LOD).rgb;
+    vec3 prefilteredColor = textureLod(prefiltered_specular_map, R,  _roughness * MAX_REFLECTION_LOD).rgb;
 
-	//vec3 F0 = vec3(0.5);
 	float ao = 1.0;
 
-	//vec3 ambient = texture(irradiance_map, N).rgb;
-	vec3 kS = fresnelSchlickRoughness(max(dot(N, V), 0.0), F0, roughness);
+	vec3 kS = fresnelSchlickRoughness(max(dot(N, V), 0.0), _F0*albedo, _roughness);
 	vec3 kD = 1.0 - kS;
 
-	vec2 envBRDF  = texture(brdf_lut, vec2(max(dot(N, V), 0.0), roughness)).rg;
+	vec2 envBRDF  = texture(brdf_lut, vec2(max(dot(N, V), 0.0), _roughness)).rg;
 
-	//vec3 albedo = texture(albedo_tex, texcoord_fs).rgb;
-
-	//vec3 irradiance = texture(irradiance_map, normalize(get_inverse_normal_matrix() * N)).rgb;
 	vec3 irradiance = texture(irradiance_map, N).rgb;
-	vec3 diffuse    = irradiance * color_fs.rgb;
-	//vec3 diffuse    = irradiance * albedo;
+	vec3 diffuse    = irradiance * albedo;
+	//vec3 diffuse    = albedo;
 	
-	float ndl = max(dot(n_world, light_dir), 0.0);
-	float shadow = compute_shadow_factor(position_light_space, n_world);
-	float shadow_factor = 1.0 - 0.5*(1.0 - shadow * ndl);
-	diffuse *= shadow_factor;
+	float ndl = max(dot(N, light_dir), 0.0);
+	float shadow = compute_shadow_factor(position_light_space, N);
+	float visibility = 1.0 - 0.5*(1.0 - shadow * ndl);
+	diffuse *= visibility;
 
 	vec3 specular = prefilteredColor * (kS * envBRDF.x + envBRDF.y);
-	specular *= mix(1.0, shadow_factor, roughness);
+	specular *= mix(1.0, shadow, _roughness);
 
 	vec3 ambient    = (kD * diffuse + specular) * ao;
 
@@ -281,6 +295,8 @@ void main()
 	//float visibility = compute_visibility_factor(position_light_space, n_world);
 
 	vec4 frag_color = vec4(ambient, 1.0);
+	//vec4 frag_color = vec4(0.5*tangent_model + 0.5, 1.0);
+	//vec4 frag_color = vec4(texcoord_fs, 0.0, 1.0);
 
 	finish_fragment(frag_color);
 }

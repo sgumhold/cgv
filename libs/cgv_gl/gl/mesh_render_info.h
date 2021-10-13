@@ -17,6 +17,8 @@ class CGV_API mesh_render_info : public render_info
 public:
 	/// index triple type
 	typedef cgv::math::fvec<idx_type, 3> vec3i;
+	/// index quartuple type
+	typedef cgv::math::fvec<idx_type, 4> vec4i;
 protected:
 	/// store list of primitive names
 	std::vector<std::string> primitive_names;
@@ -26,6 +28,8 @@ protected:
 	bool include_tex_coords;
 	/// store whether normals are in vbo
 	bool include_normals;
+	/// store whether tangents are in vbo
+	bool include_tangents;
 	/// store whether colors are in vbo
 	bool include_colors;
 	/// number of vertices
@@ -48,7 +52,7 @@ protected:
 	cgv::media::ColorType ct;
 	/// helper function to construct vbos
 	void construct_vbos_base(cgv::render::context& c, const cgv::media::mesh::simple_mesh_base& mesh,
-		std::vector<idx_type>& vertex_indices, std::vector<vec3i>& unique_triples,
+		std::vector<idx_type>& vertex_indices, std::vector<vec4i>& unique_quartuples,
 		std::vector<idx_type>& triangle_element_buffer, std::vector<idx_type>& edge_element_buffer);
 	/// helper function for mesh render info consrtuctions
 	void finish_construct_vbos_base(cgv::render::context& ctx,
@@ -69,12 +73,12 @@ public:
 	{
 		// construct render buffers
 		std::vector<idx_type> vertex_indices;
-		std::vector<vec3i> unique_triples;
+		std::vector<vec4i> unique_quartuples;
 		std::vector<idx_type> triangle_element_buffer;
 		std::vector<idx_type> edge_element_buffer;
-		construct_vbos_base(ctx, mesh, vertex_indices, unique_triples, triangle_element_buffer, edge_element_buffer);
+		construct_vbos_base(ctx, mesh, vertex_indices, unique_quartuples, triangle_element_buffer, edge_element_buffer);
 		std::vector<T> attrib_buffer;
-		color_increment = mesh.extract_vertex_attribute_buffer(vertex_indices, unique_triples, include_tex_coords, include_normals, attrib_buffer, &include_colors);
+		color_increment = mesh.extract_vertex_attribute_buffer(vertex_indices, unique_quartuples, include_tex_coords, include_normals, include_tangents, attrib_buffer, &include_colors);
 		ref_vbos().push_back(new cgv::render::vertex_buffer(cgv::render::VBT_VERTICES));
 		ref_vbos().back()->create(ctx, attrib_buffer);
 		element_size = sizeof(T);
