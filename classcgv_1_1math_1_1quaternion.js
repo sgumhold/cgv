@@ -38,7 +38,7 @@ var classcgv_1_1math_1_1quaternion =
     [ "log", "classcgv_1_1math_1_1quaternion.html#acd164b04c6171e064847d83caed36e34", null ],
     [ "negate", "classcgv_1_1math_1_1quaternion.html#af56d9974185332beb4bc8e67a1d5852c", null ],
     [ "negated", "classcgv_1_1math_1_1quaternion.html#a0b95a88c83074794c6ff5a3f94ad7a85", null ],
-    [ "normalize", "classcgv_1_1math_1_1quaternion.html#ace2a128546a86b0aad003faa2f0eb796", null ],
+    [ "normalize", "classcgv_1_1math_1_1quaternion.html#a170e4ee6c48d7bfc16d4a89c0bbf3f8b", null ],
     [ "ones", "classcgv_1_1math_1_1quaternion.html#a5e0224aeeadb733046bf3dcd83cd494a", null ],
     [ "operator const T *", "classcgv_1_1math_1_1quaternion.html#a92e7cdb2f9ce7d3a14926541b664c20a", null ],
     [ "operator T*", "classcgv_1_1math_1_1quaternion.html#a078a38ed0a539340e851ef0e8b955449", null ],
