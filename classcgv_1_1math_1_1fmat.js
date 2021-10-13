@@ -20,7 +20,7 @@ var classcgv_1_1math_1_1fmat =
     [ "length", "classcgv_1_1math_1_1fmat.html#a68f4c962a48bde5bf2b65494c6e89985", null ],
     [ "lift", "classcgv_1_1math_1_1fmat.html#a4ee22fc08e1e775657e053d9ee759777", null ],
     [ "ncols", "classcgv_1_1math_1_1fmat.html#adc7071e3642f03245c0865c5f762cbf1", null ],
-    [ "normalize", "classcgv_1_1math_1_1fmat.html#ace2a128546a86b0aad003faa2f0eb796", null ],
+    [ "normalize", "classcgv_1_1math_1_1fmat.html#a170e4ee6c48d7bfc16d4a89c0bbf3f8b", null ],
     [ "nrows", "classcgv_1_1math_1_1fmat.html#ab7e30ca4789e5503be7cab6e18279d81", null ],
     [ "ones", "classcgv_1_1math_1_1fmat.html#a5e0224aeeadb733046bf3dcd83cd494a", null ],
     [ "operator const T *", "classcgv_1_1math_1_1fmat.html#a92e7cdb2f9ce7d3a14926541b664c20a", null ],

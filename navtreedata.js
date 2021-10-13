@@ -128,7 +128,7 @@ var NAVTREEINDEX =
 "classcgv_1_1gui_1_1throttle__event.html#a2cf741ae08d04f325553109e11d1c146",
 "classcgv_1_1gui_1_1vr__throttle__event.html#afee8ba3f73e81ad3f56db5ba494c2354",
 "classcgv_1_1math_1_1fvec.html#ad1f2755e812b233b6f04174b8af8c4ad",
-"classcgv_1_1math_1_1quaternion.html#a7eec780035216de2a63dd3516cef61e8",
+"classcgv_1_1math_1_1quaternion.html#a7e7dfcb4bf4a4a7ef28b1ac5d925ef0e",
 "classcgv_1_1media_1_1color.html#a2148abe28906edb6519c7ee5f99df545",
 "classcgv_1_1media_1_1illum_1_1surface__material.html#a612bd2956c621fa487d9ddc4e37ec686",
 "classcgv_1_1media_1_1image_1_1image__reader.html#a9ddc1db8060bc3db63e484d33d6d92d7",

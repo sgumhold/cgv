@@ -18,7 +18,7 @@ var classcgv_1_1math_1_1fvec =
     [ "from_vec", "classcgv_1_1math_1_1fvec.html#a6deaaa9cc232afe687c0de21e0b01907", null ],
     [ "length", "classcgv_1_1math_1_1fvec.html#a68f4c962a48bde5bf2b65494c6e89985", null ],
     [ "lift", "classcgv_1_1math_1_1fvec.html#a4ee22fc08e1e775657e053d9ee759777", null ],
-    [ "normalize", "classcgv_1_1math_1_1fvec.html#ace2a128546a86b0aad003faa2f0eb796", null ],
+    [ "normalize", "classcgv_1_1math_1_1fvec.html#a170e4ee6c48d7bfc16d4a89c0bbf3f8b", null ],
     [ "ones", "classcgv_1_1math_1_1fvec.html#a5e0224aeeadb733046bf3dcd83cd494a", null ],
     [ "operator const T *", "classcgv_1_1math_1_1fvec.html#a92e7cdb2f9ce7d3a14926541b664c20a", null ],
     [ "operator T*", "classcgv_1_1math_1_1fvec.html#a078a38ed0a539340e851ef0e8b955449", null ],
