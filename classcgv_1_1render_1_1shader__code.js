@@ -3,6 +3,7 @@ var classcgv_1_1render_1_1shader__code =
     [ "shader_code", "classcgv_1_1render_1_1shader__code.html#a32fe65ad2235260282c7584d02b1e754", null ],
     [ "~shader_code", "classcgv_1_1render_1_1shader__code.html#a96ea9f862242ac02c03a6eaf69e5a8f3", null ],
     [ "compile", "classcgv_1_1render_1_1shader__code.html#abbb6273475e91ead58130e5ffdda7770", null ],
+    [ "decode_if_base64", "classcgv_1_1render_1_1shader__code.html#a9714d2e8ba8d61e6e676928747fd606d", null ],
     [ "destruct", "classcgv_1_1render_1_1shader__code.html#a8a3cf5e1a75373cba0a1da8ed9672318", null ],
     [ "detect_shader_type", "classcgv_1_1render_1_1shader__code.html#af74bcb73f79aafe7f783c9a8f416ce8b", null ],
     [ "find_file", "classcgv_1_1render_1_1shader__code.html#a67a995a8da53b28c0a250d685642e61b", null ],
