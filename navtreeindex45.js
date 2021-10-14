@@ -1,5 +1,6 @@
 var NAVTREEINDEX45 =
 {
+"structgamepad_1_1gamepad__driver.html#aba4f05de4ca91bd7e2a3d2dae5200bb6":[11,0,1,3,5],
 "structgamepad_1_1gamepad__driver.html#ac74802108435066efc452cc162577cb8":[11,0,1,3,6],
 "structgamepad_1_1gamepad__driver.html#ae35233c535694e3883e0c3c5fd82afd7":[11,0,1,3,1],
 "structgamepad_1_1gamepad__state.html":[11,0,1,4],
