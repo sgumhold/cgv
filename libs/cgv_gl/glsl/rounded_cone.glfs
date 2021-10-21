@@ -124,7 +124,7 @@ void main()
 	// transformed vectors and directions.
 	//vec3 org = (get_inverse_modelview_matrix() * vec4(0.98*position, 1.0)).xyz;
 	//vec3 dir = normalize((get_inverse_modelview_matrix() * vec4(normalize(position), 0.0)).xyz);
-	vec3 org = (get_inverse_modelview_matrix() * vec4(0.0, 0.0, 0.0, 1.0)).xyz;
+	vec3 org = (get_inverse_modelview_matrix() * vec4(0.98*position, 1.0)).xyz;
 	vec3 dir = normalize((get_inverse_modelview_matrix() * vec4(normalize(position), 0.0)).xyz);
 	
 	float ra = start_fs.w;

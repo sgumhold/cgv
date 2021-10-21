@@ -80,7 +80,7 @@ namespace cgv {
 		{
 			const rounded_cone_render_style& rcrs = get_style<rounded_cone_render_style>();
 			shader_code::set_define(defines, "ENABLE_TEXTURING", rcrs.enable_texturing, false);
-			shader_code::set_define(defines, "ENABLE_TEXTURING", rcrs.texture_blend_mode, rounded_cone_render_style::TBM_MIX);
+			shader_code::set_define(defines, "TEXTURE_BLEND_MODE", rcrs.texture_blend_mode, rounded_cone_render_style::TBM_MIX);
 			shader_code::set_define(defines, "TEXTURE_TILE_FROM_CENTER", rcrs.texture_tile_from_center, false);
 			shader_code::set_define(defines, "TEXTURE_USE_REFERENCE_LENGTH", rcrs.texture_use_reference_length, false);
 			shader_code::set_define(defines, "ENABLE_AMBIENT_OCCLUSION", rcrs.enable_ambient_occlusion, false);
