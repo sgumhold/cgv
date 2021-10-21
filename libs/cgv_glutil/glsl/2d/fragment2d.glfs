@@ -1,4 +1,4 @@
-#version 450
+#version 430
 
 /*
 The following interface is implemented in this shader:
@@ -57,7 +57,7 @@ void finish_sdf_fragment2d(in float signed_distance, in vec4 color) {
 	frag_color = color;
 
 	// get the derivatives of the distance over neighbouring fragments to calculate an antialiasing factor
-	float dx = abs(dFdx(signed_distance));
+	/*float dx = abs(dFdx(signed_distance));
 	float dy = abs(dFdy(signed_distance));
 		
 	// dirty hack to fix the differentiation errors introduced by dFdx and dFdy
@@ -71,7 +71,7 @@ void finish_sdf_fragment2d(in float signed_distance, in vec4 color) {
 	}
 
 	float delta = dx + dy;
-	float antialias_alpha = 1.0 - smoothstep(0.5 - delta, 0.5, signed_distance);
+	float antialias_alpha = 1.0 - smoothstep(0.5 - delta, 0.5, signed_distance);*/
 	
 	// calcualte an alpha factor for feathered shape borders
 	float fw = get_feather_width();
@@ -88,7 +88,7 @@ void finish_sdf_fragment2d(in float signed_distance, in vec4 color) {
 			smoothstep(0.0, 1.0, (signed_distance - border_distance) * inv_feather) :
 			clamp((signed_distance - border_distance) * inv_feather, 0.0, 1.0);
 
-		float border_antialias_alpha = smoothstep(0.5 - delta, 0.5, signed_distance + border_width);
+		//float border_antialias_alpha = smoothstep(0.5 - delta, 0.5, signed_distance + border_width);
 		//frag_color = mix(frag_color, border_color, min(border_antialias_alpha + border_feather_alpha, 1.0));
 		frag_color = mix(frag_color, border_color, border_feather_alpha);
 	}
@@ -110,7 +110,6 @@ void finish_sdf_fragment2d(in float signed_distance, in vec4 color) {
 void finish_sdf_fragment2d(in float signed_distance, in vec4 color, in vec2 texcoords) {
 	
 	if(use_texture)
-		//override_color(texture(tex, tex_scaling * texcoords));
 		color = texture(tex, tex_scaling * texcoords);
 
 	finish_sdf_fragment2d(signed_distance, color);

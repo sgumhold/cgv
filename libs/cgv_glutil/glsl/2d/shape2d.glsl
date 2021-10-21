@@ -1,4 +1,4 @@
-#version 450
+#version 430
 
 /*
 The following interface is implemented in this shader:
