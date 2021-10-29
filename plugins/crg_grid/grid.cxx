@@ -337,7 +337,7 @@ void grid::create_gui()
 	add_member_control(this, "threshold", threshold, "value_slider", "min=0;max=20;ticks=true;log=false");
 	add_member_control(this, "opacity", alpha, "value_slider", "min=0;max=1;ticks=true");
 	add_member_control(this, "axes", show_axes, "check");
-	add_member_control(this, "arrow_length", arrow_length, "value_slider", "min=0;max=10000;step=0.0001;log=true;ticks=true");
+	add_member_control(this, "arrow_length", arrow_length, "value_slider", "min=0.001;max=1000;step=0.0001;log=true;ticks=true");
 	add_member_control(this, "arrow_aspect", arrow_aspect, "value_slider", "min=0.001;max=1;step=0.0005;log=true;ticks=true");
 	add_member_control(this, "arrow_rel_tip_radius", arrow_rel_tip_radius, "value_slider", "min=1;max=10;log=true;ticks=true");
 	add_member_control(this, "arrow_tip_aspect", arrow_tip_aspect, "value_slider", "min=0.1;max=10;log=true;ticks=true");

@@ -360,22 +360,7 @@ public:
 		//spheres.render(ctx, ref_sphere_renderer(ctx), sphere_style);
 		//return;
 
-<<<<<<< HEAD
-		vec2 resolution(float(ctx.get_width()), float(ctx.get_height()));
-=======
 		vec3 eye_pos = vec3(view_ptr->get_eye());
-		
-		
->>>>>>> dddd2f87961fffe2d8e8c0204a41f389728a441e
-
-
-
-		
-
-
-
-
-
 
 		vec3 light_direction = compute_sphere_normal(sun_position, 0.0f, float(2.0 * M_PI), 0.0f, float(M_PI));
 
