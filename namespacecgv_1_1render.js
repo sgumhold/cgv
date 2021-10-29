@@ -29,6 +29,7 @@ var namespacecgv_1_1render =
     [ "performance_monitor", "classcgv_1_1render_1_1performance__monitor.html", "classcgv_1_1render_1_1performance__monitor" ],
     [ "point_render_style", "structcgv_1_1render_1_1point__render__style.html", "structcgv_1_1render_1_1point__render__style" ],
     [ "point_renderer", "classcgv_1_1render_1_1point__renderer.html", "classcgv_1_1render_1_1point__renderer" ],
+    [ "rectangle_render_style", "structcgv_1_1render_1_1rectangle__render__style.html", "structcgv_1_1render_1_1rectangle__render__style" ],
     [ "rectangle_renderer", "classcgv_1_1render_1_1rectangle__renderer.html", "classcgv_1_1render_1_1rectangle__renderer" ],
     [ "render_buffer", "classcgv_1_1render_1_1render__buffer.html", "classcgv_1_1render_1_1render__buffer" ],
     [ "render_component", "classcgv_1_1render_1_1render__component.html", "classcgv_1_1render_1_1render__component" ],

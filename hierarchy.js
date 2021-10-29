@@ -399,6 +399,7 @@ var hierarchy =
         [ "cgv::render::surface_render_style", "structcgv_1_1render_1_1surface__render__style.html", [
           [ "cgv::render::arrow_render_style", "structcgv_1_1render_1_1arrow__render__style.html", null ],
           [ "cgv::render::box_render_style", "structcgv_1_1render_1_1box__render__style.html", null ],
+          [ "cgv::render::rectangle_render_style", "structcgv_1_1render_1_1rectangle__render__style.html", null ],
           [ "cgv::render::sphere_render_style", "structcgv_1_1render_1_1sphere__render__style.html", null ],
           [ "cgv::render::surfel_render_style", "structcgv_1_1render_1_1surfel__render__style.html", null ]
         ] ]
