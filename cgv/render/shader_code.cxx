@@ -56,6 +56,22 @@ shader_config_ptr get_shader_config()
 	return config;
 }
 
+void shader_code::decode_if_base64(std::string& content) {
+	// TODO § is considered two characters on Linux
+	//if (!content.empty() && content[0] == '§') {
+	if(!content.empty()) {
+		// TODO: on some occasions the encoded string starts with other characters than § (why is this the case?)
+		if(content[0] == '§') {
+			content = cgv::utils::decode_base64(content.substr(1));
+		} else if(
+			(int)content[0] == -17 &&
+			(int)content[1] == -65 &&
+			(int)content[2] == -67) {
+			content = cgv::utils::decode_base64(content.substr(3));
+		}
+	}
+}
+
 /** query the last error in a way that developer environments can 
     locate errors in the source file */
 std::string shader_code::get_last_error(const std::string& file_name, const std::string& last_error)
@@ -226,9 +242,7 @@ std::string shader_code::read_code_file(const std::string &file_name, std::strin
 	if (get_shader_config()->show_file_paths)
 		std::cout << "read shader code <" << fn << ">" << std::endl;
 #if WIN32
-	// TODO § is considered two characters on Linux
-	if (!source.empty() && source[0] == '§')
-		source = cgv::utils::decode_base64(source.substr(1));
+	decode_if_base64(source);
 #endif
 	if (get_extension(file_name)[0] == 'p') {
 		std::string code;
@@ -276,43 +290,8 @@ bool shader_code::set_code(const context& ctx, const std::string &source, Shader
 }
 
 /// set shader code defines
-void shader_code::set_defines(std::string& source, const shader_define_map& defines) {
-
-	/*size_t current, previous = 0;
-	current = defines.find_first_of(';');
-	std::vector<std::string> tokens;
-	while(current != std::string::npos) {
-		tokens.push_back(defines.substr(previous, current - previous));
-		previous = current + 1;
-		current = defines.find_first_of(';', previous);
-	}
-	tokens.push_back(defines.substr(previous, current - previous));
-
-	for(size_t i = 0; i < tokens.size(); ++i) {
-		std::string token = tokens[i];
-		size_t pos = token.find('=');
-		if(pos == std::string::npos)
-			continue;
-
-		std::string name = token.substr(0, pos);
-		std::string value = token.substr(pos + 1);
-		if(name.empty())
-			continue;
-
-		size_t define_pos = source.find("#define " + name);
-		if(define_pos == std::string::npos)
-			continue;
-
-		size_t overwrite_pos = define_pos + 8 + name.length() + 1; // length of: #define <NAME><SINGLE_SPACE>
-		std::string first_part = source.substr(0, overwrite_pos);
-		size_t new_line_pos = source.find_first_of('\n', overwrite_pos);
-		if(new_line_pos != std::string::npos) {
-			std::string second_part = source.substr(new_line_pos);
-			source = first_part + value + second_part;
-			source += "";
-		}
-	}*/
-
+void shader_code::set_defines(std::string& source, const shader_define_map& defines)
+{
 	for (const auto &entry : defines) {
 		std::string name = entry.first;
 		std::string value = entry.second;

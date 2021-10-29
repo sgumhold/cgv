@@ -68,9 +68,10 @@ class generic_render_data : public cgv::render::render_types {
 	friend class generic_renderer;
 private:
 	cgv::render::attribute_array_manager aam;
+	
+protected:
 	bool state_out_of_date = true;
 
-protected:
 	template <typename T>
 	bool set_attribute_array(const cgv::render::context& ctx, const cgv::render::shader_program& prog, const std::string& name, const T& array) {
 		int loc = prog.get_attribute_location(ctx, name);
@@ -159,6 +160,7 @@ public:
 		void clear() {
 			positions.clear();
 			colors.clear();
+			state_out_of_date = true;
 		}
 
 		void add(const vec2& pos, const rgb& col) {
@@ -181,6 +183,7 @@ public:\
 	size_t get_vertex_count() { return GRD_GET_FIRST_PAIR(GRD_CALL_SIZE_FUNC, __VA_ARGS__) };\
 	void clear() {\
 		GRD_APPLY_FUNC_N(attrib_count, GRD_CALL_CLEAR_FUNC, GRD_SEP_NULL, __VA_ARGS__)\
+		state_out_of_date = true;\
 	}\
 	void add(GRD_APPLY_FUNC_N(attrib_count, GRD_DEF_CONST_REF_PARAM, GRD_SEP_COMMA, __VA_ARGS__)) {\
 		GRD_APPLY_FUNC_N(attrib_count, GRD_CALL_PUSH_BACK_FUNC, GRD_SEP_NULL, __VA_ARGS__)\

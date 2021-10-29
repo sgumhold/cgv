@@ -21,6 +21,9 @@ namespace cgv { // @<
 			/// default value assigned to radius attribute in \c enable method of rounded cone renderer, set to 1 in constructor
 			float radius;
 
+			bool show_caps;
+			bool rounded_caps;
+
 			bool enable_texturing;
 			enum TextureBlendMode {
 				TBM_MIX = 0,

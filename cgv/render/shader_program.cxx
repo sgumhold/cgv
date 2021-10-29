@@ -83,9 +83,7 @@ bool shader_program::collect_program(const std::string& file_name, std::vector<s
 	if (!cgv::base::read_data_file(fn, content, true))
 		return false;
 #if WIN32
-	// TODO § is considered two characters on Linux
-	if (!content.empty() && content[0] == '§')
-		content = cgv::utils::decode_base64(content.substr(1));
+	shader_code::decode_if_base64(content);
 #endif
 	std::vector<line> lines;
 	split_to_lines(content, lines);
@@ -167,39 +165,37 @@ bool shader_program::attach_code(const context& ctx, const shader_code& code)
 		last_error = "attempt to attach_code that is not created to shader program";
 		return false;
 	}
-	if (!code.is_compiled()) {
+	if(!code.is_compiled()) {
 		last_error = "attempt to attach_code that is not compiled to shader program";
 		return false;
 	}
 	ctx.shader_program_attach(*this, code);
-	if (code.get_shader_type() == ST_GEOMETRY)
+	if(code.get_shader_type() == ST_GEOMETRY)
 		++nr_attached_geometry_shaders;
 	return true;
 }
 
 /// detach a shader code
-bool shader_program::detach_code(const context& ctx, const shader_code& code)
-{
-	if (!handle) {
+bool shader_program::detach_code(const context& ctx, const shader_code& code) {
+	if(!handle) {
 		last_error = "detach_code from shader program that was not created";
 		return false;
 	}
-	if (!code.handle) {
+	if(!code.handle) {
 		last_error = "attempt to detach_code that is not created to shader program";
 		return false;
 	}
 	ctx.shader_program_detach(*this, code);
-	if (code.get_shader_type() == ST_GEOMETRY)
+	if(code.get_shader_type() == ST_GEOMETRY)
 		--nr_attached_geometry_shaders;
 	return true;
 }
 
 
 /// attach a shader code given as string and managed the created shader code object
-bool shader_program::attach_code(const context& ctx, const std::string& source, ShaderType st)
-{
+bool shader_program::attach_code(const context& ctx, const std::string& source, ShaderType st) {
 	shader_code* code_ptr = new shader_code;
-	if (code_ptr->set_code(ctx,source,st) && code_ptr->compile(ctx)) {
+	if(code_ptr->set_code(ctx, source, st) && code_ptr->compile(ctx)) {
 		managed_codes.push_back(code_ptr);
 		return attach_code(ctx, *code_ptr);
 	}
@@ -210,10 +206,9 @@ bool shader_program::attach_code(const context& ctx, const std::string& source, 
 
 
 /// read shader code from file, compile and attach to program
-bool shader_program::attach_file(const context& ctx, const std::string& file_name, ShaderType st, const shader_define_map& defines)
-{
+bool shader_program::attach_file(const context& ctx, const std::string& file_name, ShaderType st, const shader_define_map& defines) {
 	shader_code* code_ptr = new shader_code;
-	if (!code_ptr->read_and_compile(ctx,file_name,st,show_code_errors,defines)) {
+	if(!code_ptr->read_and_compile(ctx, file_name, st, show_code_errors, defines)) {
 		last_error = code_ptr->last_error;
 		delete code_ptr;
 		return false;
@@ -223,43 +218,38 @@ bool shader_program::attach_file(const context& ctx, const std::string& file_nam
 }
 
 /// read shader code from files with the given base name, compile and attach them
-bool shader_program::attach_files(const context& ctx, const std::string& base_name, const shader_define_map& defines)
-{
+bool shader_program::attach_files(const context& ctx, const std::string& base_name, const shader_define_map& defines) {
 	std::vector<std::string> file_names;
-	if (!collect_files(base_name,file_names))
+	if(!collect_files(base_name, file_names))
 		return false;
 	return attach_files(ctx, file_names, defines);
 }
 /// collect shader code files from directory, compile and attach.
-bool shader_program::attach_dir(const context& ctx, const std::string& dir_name, bool recursive)
-{
+bool shader_program::attach_dir(const context& ctx, const std::string& dir_name, bool recursive) {
 	std::vector<std::string> file_names;
-	if (!collect_dir(dir_name,recursive,file_names))
+	if(!collect_dir(dir_name, recursive, file_names))
 		return false;
 	return attach_files(ctx, file_names);
 }
 
 /// collect shader code files declared in shader program file, compile and attach them
-bool shader_program::attach_program(const context& ctx, const std::string& file_name, bool show_error, const shader_define_map& defines)
-{
+bool shader_program::attach_program(const context& ctx, const std::string& file_name, bool show_error, const shader_define_map& defines) {
 	std::string fn = shader_code::find_file(file_name);
-	if (fn.empty()) {
-		last_error = "could not find shader program file "+file_name;
-		if (show_error)
+	if(fn.empty()) {
+		last_error = "could not find shader program file " + file_name;
+		if(show_error)
 			std::cerr << last_error << std::endl;
 		return false;
 	}
 	std::string content;
-	if (!cgv::base::read_data_file(fn, content, true)) {
-		last_error = "could not read shader program file "+file_name;
-		if (show_error)
+	if(!cgv::base::read_data_file(fn, content, true)) {
+		last_error = "could not read shader program file " + file_name;
+		if(show_error)
 			std::cerr << last_error << std::endl;
 		return false;
 	}
 #if WIN32
-	// TODO § is considered two characters on Linux
-	if (!content.empty() && content[0] == '§')
-		content = cgv::utils::decode_base64(content.substr(1));
+	shader_code::decode_if_base64(content);
 #endif
 	if (get_shader_config()->show_file_paths)
 		std::cout << "read shader program <" << fn << ">" << std::endl;

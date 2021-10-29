@@ -1,6 +1,9 @@
 #version 430
 #extension GL_EXT_geometry_shader4 : enable
 
+#define CAPS 1
+#define CAP_TYPE 0
+
 //***** begin interface of view.glsl ***********************************
 mat4 get_modelview_matrix();
 mat4 get_projection_matrix();
@@ -37,30 +40,40 @@ void main()
 	float l = length(end.xyz - start.xyz);
 	vec3 delta = (end.xyz - start.xyz) / l;
 
-	float max_d = 2 * max(start.w, end.w);
+	float rs = start.w;
+	float re = end.w;
 
-	vec3 center = start.xyz + end.xyz + delta*(end.w - start.w);
+	float max_d = 2 * max(rs, re);
+
+	vec3 center = start.xyz + end.xyz;
+#if CAP_TYPE == 1
+	center += delta*(re - rs);
+#endif
 	center *= 0.5;
 
 	// create transformation matrix as modelview * translation * rotation * scale
 	// rotation part
-	mat4 R = mat4(1.0);
-	R[0] = vec4(delta, 0.0);
-	R[1] = vec4(normalize(ortho_vec(delta)), 0.0);
-	R[2] = vec4(cross(delta, R[1].xyz), 0.0);
-	R[3] = vec4(center, 1.0); // translation part
+	mat4 T = mat4(1.0);
+	T[0] = vec4(delta, 0.0);
+	T[1] = vec4(normalize(ortho_vec(delta)), 0.0);
+	T[2] = vec4(cross(delta, T[1].xyz), 0.0);
+	T[3] = vec4(center, 1.0); // translation part
 
 	// get tangent frame from rotation matrix before scaling is applied
-	normal_fs = R[1].xyz;
-	binormal_fs = R[2].xyz;
+	normal_fs = T[1].xyz;
+	binormal_fs = T[2].xyz;
 
 	// scale part
-	R[0] *= l + start.w + end.w;
-	R[1] *= max_d;
-	R[2] *= max_d;
+#if CAP_TYPE == 1
+	T[0] *= l + rs + re;
+#else
+	T[0] *= l;
+#endif
+	//T[1] *= max_d;
+	//T[2] *= max_d;
 
 	// transform to eye space
-	mat4 M = get_modelview_matrix() * R;
+	mat4 M = get_modelview_matrix() * T;
 	
 	// transform cone start and end position to eye space
 	//start_fs = vec4((get_modelview_matrix() * vec4(start.xyz, 1.0)).xyz, start.w);
@@ -86,6 +99,19 @@ void main()
 	*/
 
 	// generate transformed base vector corners of the box
+#if CAP_TYPE == 0
+	vec4 C0 = M * vec4(-0.5, -rs, -rs, 1.0);
+	vec4 C1 = M * vec4(-0.5, -rs, +rs, 1.0);
+	vec4 C2 = M * vec4(-0.5, +rs, -rs, 1.0);
+	
+	vec4 C4 = M * vec4(+0.5, -re, -re, 1.0);
+	vec4 C5 = M * vec4(+0.5, -re, +re, 1.0);
+	vec4 C6 = M * vec4(+0.5, +re, -re, 1.0);
+	
+	// calculate remaining corners
+	vec4 C3 = C1 + C2 - C0;
+	vec4 C7 = C5 + C6 - C4;
+#else
 	vec4 C0 = M * vec4(-0.5, -0.5, -0.5, 1.0);
 	vec4 C1 = M * vec4(0.5, -0.5, -0.5, 1.0);
 	vec4 C2 = M * vec4(-0.5, 0.5, -0.5, 1.0);
@@ -98,6 +124,7 @@ void main()
 	vec4 C5 = C1 + C4-C0;
 	vec4 C6 = C4 + D20;
 	vec4 C7 = C5 + D20;
+#endif
 	
 	mat4 PM = get_projection_matrix();
 

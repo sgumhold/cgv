@@ -33,11 +33,14 @@ frame_buffer_container::ivec2 frame_buffer_container::get_size() {
 bool frame_buffer_container::set_size(const ivec2& size) {
 
 	GLint max_render_buffer_size;
-	glGetIntegerv(GL_MAX_RENDERBUFFER_SIZE_EXT, &max_render_buffer_size);
+	glGetIntegerv(GL_MAX_RENDERBUFFER_SIZE, &max_render_buffer_size);
 
-	if(size.x() > max_render_buffer_size || size.y() > max_render_buffer_size) {
-		this->size = ivec2(-1);
-		return false;
+	// TODO: in static builds (exe) the max render buffer size does not return useful values when this method is called in a drawable constructor
+	if(max_render_buffer_size > 0) {
+		if(size.x() > max_render_buffer_size || size.y() > max_render_buffer_size) {
+			this->size = ivec2(-1);
+			return false;
+		}
 	}
 	this->size = size;
 	return true;
