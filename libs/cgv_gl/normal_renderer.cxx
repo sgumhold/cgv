@@ -90,7 +90,7 @@ namespace cgv {
 					return false;
 				cgv::render::normal_render_style* nrs_ptr = reinterpret_cast<cgv::render::normal_render_style*>(value_ptr);
 				cgv::base::base* b = dynamic_cast<cgv::base::base*>(p);
-				p->add_member_control(b, "normal_length", nrs_ptr->normal_length, "value_slider", "min=0.0001;max=10;log=true;ticks=true");
+				p->add_member_control(b, "normal_length", nrs_ptr->normal_length, "value_slider", "min=0.0001;step=0.0000001;max=10;log=true;ticks=true");
 				p->add_gui("line render style", *static_cast<cgv::render::line_render_style*>(nrs_ptr));
 				return true;
 			}

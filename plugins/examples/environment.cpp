@@ -361,19 +361,8 @@ public:
 		//return;
 
 		vec3 eye_pos = vec3(view_ptr->get_eye());
-		
-		
 
-
-
-		
-
-
-
-
-
-
-		vec3 light_direction = compute_sphere_normal(sun_position, 0.0f, 2.0 * M_PI, 0.0f, M_PI);
+		vec3 light_direction = compute_sphere_normal(sun_position, 0.0f, float(2.0 * M_PI), 0.0f, float(M_PI));
 
 		mat4 light_projection = cgv::math::ortho4(-5.0f, 5.0f, -5.0f, 5.0f, near_plane, far_plane);
 		mat4 light_view = cgv::math::look_at4(5.0f * light_direction, vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 1.0f, 0.0f));

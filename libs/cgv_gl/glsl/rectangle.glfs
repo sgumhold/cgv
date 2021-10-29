@@ -17,6 +17,7 @@ in RECTANGLE_FS {
 	vec3 normal_eye;
 	vec2 texcoord;
 	vec4 color;
+	vec4 secondary_color;
 	vec4 border_color;
 	float depth_offset;
 	flat int side; // 0 is back facing and 1 is front facing
@@ -81,15 +82,18 @@ void main()
 	if (use_texture) {
 		core_color = texture(tex, fi.texcoord);
 		switch (texture_mode) {
-		case 1 : core_color.a = core_color.r;
-		         core_color.rgb = fi.color.rgb; 
-				 break;
+		case 1 : core_color = vec4(fi.color.rgb, core_color.r); break;
 		case 2 : core_color *= fi.color; break;
-		case 3 : core_color *= fi.border_color; break;
-		case 4 : core_color = mix(fi.color, fi.border_color, core_color); break;
-		case 5 : core_color = mix(fi.border_color, fi.color, core_color); break;
-		case 6 : core_color = mix(fi.color, fi.border_color, core_color.x); break;
-		case 7 : core_color = mix(fi.border_color, fi.color, core_color.x); break;
+		case 3 : core_color *= fi.secondary_color; break;
+		case 4 : core_color *= fi.border_color; break;
+		case 5 : core_color = mix(fi.color, fi.secondary_color, core_color); break;
+		case 6 : core_color = mix(fi.color, fi.border_color, core_color); break;
+		case 7 : core_color = mix(fi.secondary_color, fi.color, core_color); break;
+		case 8 : core_color = mix(fi.border_color, fi.color, core_color); break;
+		case 9 : core_color = mix(fi.color, fi.secondary_color, core_color.r); break;
+		case 10 : core_color = mix(fi.color, fi.border_color, core_color.r); break;
+		case 11 : core_color = mix(fi.secondary_color, fi.color, core_color.r); break;
+		case 12 : core_color = mix(fi.border_color, fi.color, core_color.r); break;
 		}
 	}
 	vec2 u = compute_blended_factors(fi.splatcoord[0], fi.percentual_core_size[0], fi.percentual_rectangle_size[0], fi.percentual_blend_width[0]);

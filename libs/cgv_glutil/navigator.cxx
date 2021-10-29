@@ -62,7 +62,7 @@ navigator::navigator() {
 	rectangle_style.surface_opacity = 0.75f;
 	rectangle_style.pixel_blend = 0.0f;
 	rectangle_style.percentual_border_width = 0.1f;
-	rectangle_style.border_color = rgba(0.15f, 0.4f, 0.9f, 0.75f);
+	rectangle_style.default_border_color = rgba(0.15f, 0.4f, 0.9f, 0.75f);
 
 	mouse_is_on_overlay = false;
 	show_cursor = false;
