@@ -572,7 +572,7 @@ struct SamplerRandom : public Sampler<point_t> {
 
 		chunks.min = min;
 		chunks.max = max;
-		return std::move(chunks);
+		return chunks;
 	}
 
 	template <typename point_t>
