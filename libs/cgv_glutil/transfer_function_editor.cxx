@@ -42,8 +42,6 @@ transfer_function_editor::transfer_function_editor() {
 
 	overlay_canvas.register_shader("rectangle", "rect2d.glpr");
 
-	show = true;
-
 	opacity_scale_exponent = 1.0f;
 	resolution = (cgv::type::DummyEnum)512;
 
@@ -164,8 +162,6 @@ bool transfer_function_editor::handle_event(cgv::gui::event& e) {
 		}
 
 		return tfc.points.handle(e, last_viewport_size, container);
-
-		return false;
 	} else {
 		return false;
 	}
