@@ -1,6 +1,6 @@
 #pragma once
 
-#include <cgv_gl/rounded_cone_renderer.h>
+#include <cgv_gl/cone_renderer.h>
 
 #include "lib_begin.h"
 
@@ -20,7 +20,7 @@ private:
 	std::vector<ColorType> col;
 	std::vector<unsigned> idx;
 
-	void transfer(context& ctx, rounded_cone_renderer& r) {
+	void transfer(context& ctx, cone_renderer& r) {
 		if(pos.size() > 0) {
 			r.set_position_array(ctx, pos);
 			if(rad.size() == pos.size())
@@ -139,7 +139,7 @@ public:
 
 	attribute_array_manager* get_aam_ptr() { return aam_ptr; }
 
-	void early_transfer(context& ctx, rounded_cone_renderer& r) {
+	void early_transfer(context& ctx, cone_renderer& r) {
 		if(aam_ptr) {
 			r.enable_attribute_array_manager(ctx, *aam_ptr);
 			if(out_of_date) transfer(ctx, r);
@@ -149,7 +149,7 @@ public:
 		}
 	}
 
-	void render(context& ctx, rounded_cone_renderer& r, rounded_cone_render_style& s, unsigned offset = 0, int count = -1) {
+	void render(context& ctx, cone_renderer& r, cone_render_style& s, unsigned offset = 0, int count = -1) {
 		if(size() > 0) {
 			r.set_render_style(s);
 			if(aam_ptr) {

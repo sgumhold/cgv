@@ -1,0 +1,39 @@
+#version 430
+
+//***** begin interface of view.glsl ***********************************
+mat4 get_modelview_projection_matrix();
+//***** end interface of view.glsl ***********************************
+
+uniform mat4 model_matrix;
+uniform mat3 model_normal_matrix;
+uniform mat4 light_space_matrix;
+
+uniform vec2 uv_scale;
+
+layout(location = 0) in vec4 position;
+layout(location = 1) in vec3 normal;
+layout(location = 2) in vec3 tangent;
+layout(location = 3) in vec2 texcoord;
+layout(location = 4) in vec4 color;
+
+out vec4 position_model;
+out vec4 position_light_space;
+out vec3 normal_model;
+out vec3 tangent_model;
+out vec2 texcoord_fs;
+out vec4 color_fs;
+
+void main()
+{
+	position_model = model_matrix * position;
+	position_light_space = light_space_matrix * position;
+	// light space projection is orthographic => w-component is 1
+	//position_light_space.xyz /= position_light_space.w;
+
+	normal_model = normalize(model_normal_matrix * normal);
+	tangent_model = normalize(model_normal_matrix * tangent);
+	texcoord_fs = texcoord * uv_scale;
+	color_fs = vec4(0.5);//color;
+
+	gl_Position = get_modelview_projection_matrix() * position;
+}

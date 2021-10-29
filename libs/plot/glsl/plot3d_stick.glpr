@@ -7,7 +7,7 @@ geometry_file:plot3d_stick.glgs
 geometry_file:quaternion.glsl
 geometry_file:view.glsl
 geometry_shader_info:points;line_strip;2
-fragment_file:rounded_cone.glfs
+fragment_file:cone.glfs
 fragment_file:view.glsl
 fragment_file:fragment.glfs
 fragment_file:side.glsl

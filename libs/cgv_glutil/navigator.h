@@ -60,7 +60,7 @@ protected:
 	sphere_render_style sphere_style;
 
 	cgv::glutil::cone_render_data<> cone_data;
-	rounded_cone_render_style cone_style;
+	cone_render_style cone_style;
 
 	rectangle_render_style rectangle_style;
 	

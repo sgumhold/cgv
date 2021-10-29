@@ -44,6 +44,7 @@ gl_implicit_surface_drawable_base::gl_implicit_surface_drawable_base() : box(dve
 	srs.surface_color = rgb(1, 1, 0.5f);
 	crs.radius = 0.04f;
 	crs.surface_color = rgb(0.3f, 0.46f, 0.43f);
+	crs.rounded_caps = true;
 	ars.radius_relative_to_length = 0.05f;
 	consistency_threshold = 0.01;
 	max_nr_iters = 8;
@@ -425,7 +426,7 @@ bool gl_implicit_surface_drawable_base::init(context& ctx)
 {
 	ref_box_renderer(ctx, 1);
 	ref_sphere_renderer(ctx, 1);
-	ref_rounded_cone_renderer(ctx, 1);
+	ref_cone_renderer(ctx, 1);
 	ref_arrow_renderer(ctx, 1);
 	return true;
 }
@@ -433,7 +434,7 @@ bool gl_implicit_surface_drawable_base::init(context& ctx)
 void gl_implicit_surface_drawable_base::clear(context& ctx)
 {
 	ref_box_renderer(ctx, -1);
-	ref_rounded_cone_renderer(ctx, -1);
+	ref_cone_renderer(ctx, -1);
 	ref_sphere_renderer(ctx, -1);
 	ref_arrow_renderer(ctx, -1);
 }
@@ -447,7 +448,7 @@ void gl_implicit_surface_drawable_base::draw(context& ctx)
 		if (mesh.get_nr_faces() > 0) {
 			mri.construct(ctx, mesh);
 			mri.bind(ctx, ctx.ref_surface_shader_program(false), true);
-			mri.bind_wireframe(ctx, ref_rounded_cone_renderer(ctx).ref_prog(), true);
+			mri.bind_wireframe(ctx, ref_cone_renderer(ctx).ref_prog(), true);
 		}
 		outofdate = false;
 	}
@@ -552,7 +553,7 @@ void gl_implicit_surface_drawable_base::finish_frame(context& ctx)
 			}
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-		auto& cr = ref_rounded_cone_renderer(ctx);
+		auto& cr = ref_cone_renderer(ctx);
 		cr.set_render_style(crs);
 		cr.set_position_array(ctx, G);
 		if (cr.validate_and_enable(ctx)) {
@@ -573,7 +574,7 @@ void gl_implicit_surface_drawable_base::draw_implicit_surface(context& ctx)
 		sr.render(ctx, 0, mesh.get_nr_positions());
 	}
 	if (show_wireframe) {
-		rounded_cone_renderer& cr = ref_rounded_cone_renderer(ctx);
+		cone_renderer& cr = ref_cone_renderer(ctx);
 		cr.set_render_style(crs);
 		if (cr.enable(ctx)) {
 			mri.draw_wireframe(ctx);
