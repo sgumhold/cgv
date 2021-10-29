@@ -52,6 +52,7 @@ var structcgv_1_1plot_1_1plot2d__config =
     [ "line_halo_color", "structcgv_1_1plot_1_1plot2d__config.html#a88f2134c8c5ada0f129be062ca1021d2", null ],
     [ "line_halo_width", "structcgv_1_1plot_1_1plot2d__config.html#a0677b9747fc4a7651ae79ad91ee43ea8", null ],
     [ "line_width", "structcgv_1_1plot_1_1plot2d__config.html#a10744f61185783e6879372cf58022e79", null ],
+    [ "marks", "structcgv_1_1plot_1_1plot2d__config.html#acfc2c9c298c5ce326eee31059bd13c4f", null ],
     [ "name", "structcgv_1_1plot_1_1plot2d__config.html#a2f0ebb384c7f9b553c46d744e2641861", null ],
     [ "point_color", "structcgv_1_1plot_1_1plot2d__config.html#a959405bbca84dbaa7053759c6cfe3381", null ],
     [ "point_halo_color", "structcgv_1_1plot_1_1plot2d__config.html#af28b3de60af8e1543333bf20bf3d22e2", null ],
