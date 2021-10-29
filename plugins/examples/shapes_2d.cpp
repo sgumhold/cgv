@@ -65,6 +65,7 @@ protected:
 	cgv::glutil::shape2d_style bg_style, rect_style, circle_style, text_style, draggable_style;
 	cgv::glutil::line2d_style line_style, control_line_style;
 	cgv::glutil::arrow2d_style arrow_style;
+	cgv::glutil::grid2d_style grid_style;
 
 	bool show_background;
 	cgv::render::texture background_tex;
@@ -144,6 +145,7 @@ public:
 		canvas.register_shader("circle", "circle2d.glpr");
 		canvas.register_shader("ellipse", "ellipse2d.glpr");
 		canvas.register_shader("arrow", "arrow2d.glpr");
+		canvas.register_shader("grid", "grid2d.glpr");
 
 		line_renderer = cgv::glutil::generic_renderer("line2d.glpr");
 		spline_renderer = cgv::glutil::generic_renderer("cubic_spline2d.glpr");
@@ -417,13 +419,23 @@ public:
 		glEnable(GL_DEPTH_TEST);
 	}
 	void draw_background(cgv::render::context& ctx) {
-		auto& rect_prog = canvas.enable_shader(ctx, "rectangle");
+		/*auto& rect_prog = canvas.enable_shader(ctx, "rectangle");
 		bg_style.texcoord_scaling = vec2(viewport_rect.size()) / 20.0f;
 		bg_style.apply(ctx, rect_prog);
 
 		background_tex.enable(ctx, 0);
 		canvas.draw_shape(ctx, ivec2(0), viewport_rect.size());
 		background_tex.disable(ctx);
+
+		canvas.disable_current_shader(ctx);*/
+
+		auto& grid_prog = canvas.enable_shader(ctx, "grid");
+		grid_style.texcoord_scaling = vec2(viewport_rect.size()) / 20.0f;
+		grid_style.apply(ctx, grid_prog);
+
+		//background_tex.enable(ctx, 0);
+		canvas.draw_shape(ctx, ivec2(0), viewport_rect.size());
+		//background_tex.disable(ctx);
 
 		canvas.disable_current_shader(ctx);
 	}
@@ -527,6 +539,11 @@ public:
 		bg_style.use_texture = true;
 		bg_style.use_blending = false;
 
+		grid_style.fill_color = rgba(1.0f);
+		grid_style.border_color = rgba(0.9f, 0.9f, 0.9f, 1.0f);
+		grid_style.pattern = cgv::glutil::grid2d_style::GP_CHECKER;
+		grid_style.scale = 0.5f;
+
 		// set control line style
 		control_line_style.use_fill_color = false;
 		control_line_style.width = 2.0f;
@@ -587,6 +604,13 @@ public:
 
 		add_decorator("Example Settings", "heading", "level=3");
 		add_member_control(this, "Show Background", show_background, "check");
+
+		if(begin_tree_node("Grid Style", grid_style, false)) {
+			align("\a");
+			add_gui("grid_style", grid_style);
+			align("\b");
+			end_tree_node(grid_style);
+		}
 
 		if(begin_tree_node("Rectangle Style", rect_style, false)) {
 			align("\a");

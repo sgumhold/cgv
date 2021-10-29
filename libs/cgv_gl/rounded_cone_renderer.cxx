@@ -22,6 +22,9 @@ namespace cgv {
 			radius = 1.0f;
 			radius_scale = 1.0f;
 			
+			show_caps = true;
+			rounded_caps = false;
+
 			enable_texturing = false;
 			texture_blend_mode = TBM_MIX;
 			texture_blend_factor = 1.0f;
@@ -79,8 +82,9 @@ namespace cgv {
 		void rounded_cone_renderer::update_defines(shader_define_map& defines)
 		{
 			const rounded_cone_render_style& rcrs = get_style<rounded_cone_render_style>();
-			shader_code::set_define(defines, "ENABLE_TEXTURING", rcrs.enable_texturing, false);
-			shader_code::set_define(defines, "ENABLE_TEXTURING", rcrs.texture_blend_mode, rounded_cone_render_style::TBM_MIX);
+			shader_code::set_define(defines, "CAPS", rcrs.show_caps, true);
+			shader_code::set_define(defines, "CAP_TYPE", rcrs.rounded_caps, false);
+			shader_code::set_define(defines, "TEXTURE_BLEND_MODE", rcrs.texture_blend_mode, rounded_cone_render_style::TBM_MIX);
 			shader_code::set_define(defines, "TEXTURE_TILE_FROM_CENTER", rcrs.texture_tile_from_center, false);
 			shader_code::set_define(defines, "TEXTURE_USE_REFERENCE_LENGTH", rcrs.texture_use_reference_length, false);
 			shader_code::set_define(defines, "ENABLE_AMBIENT_OCCLUSION", rcrs.enable_ambient_occlusion, false);
@@ -195,6 +199,9 @@ namespace cgv {
 
 				p->add_member_control(b, "default radius", rcrs_ptr->radius, "value_slider", "min=0.001;step=0.0001;max=10.0;log=true;ticks=true");
 				p->add_member_control(b, "radius scale", rcrs_ptr->radius_scale, "value_slider", "min=0.01;step=0.0001;max=100.0;log=true;ticks=true");
+
+				p->add_member_control(b, "show caps", rcrs_ptr->show_caps, "check");
+				p->add_member_control(b, "rounded caps", rcrs_ptr->rounded_caps, "check");
 
 				if(p->begin_tree_node("texturing", rcrs_ptr->enable_texturing, false)) {
 					p->align("\a");

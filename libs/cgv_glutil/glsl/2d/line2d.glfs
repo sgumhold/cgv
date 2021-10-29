@@ -26,7 +26,7 @@ uniform float dash_length = 0.0;
 uniform float dash_ratio = 0.5;
 
 #if USE_ROUNDED_CAPS == 0
-in vec4 color_fs;
+flat in vec4 color_fs;
 #else
 in flat vec4 color0_fs;
 in flat vec4 color1_fs;

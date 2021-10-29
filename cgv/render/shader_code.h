@@ -98,6 +98,8 @@ public:
 	shader_code();
 	/// calls the destruct method
 	~shader_code();
+	/// decode a string if it is base64 encoded
+	static void decode_if_base64(std::string& content);
 	/** Check if file exists. If not, check if a resource file of this
 	    file_name has been registered. If not search it recursively in the 
 	    shader_path of the shader_config that can be accessed with the
