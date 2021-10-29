@@ -697,15 +697,19 @@ bool stereo_view_interactor::handle(event& e)
 				else
 					break;
 				return true;
+			case KEY_Num_Add:
 			case KEY_Page_Up:
-				if (ke.get_modifiers() == 0) {
+				if ((ke.get_key() == KEY_Page_Up && ke.get_modifiers() == 0) ||
+					(ke.get_key() == KEY_Num_Add && ke.get_modifiers() == EM_CTRL)) {
 					y_extent_at_focus /= pow(1.2, 1 / zoom_sensitivity);
 					on_set(&y_extent_at_focus);
 					return true;
 				}
 				break;
+			case KEY_Num_Sub:
 			case KEY_Page_Down:
-				if (ke.get_modifiers() == 0) {
+				if ((ke.get_key() == KEY_Page_Down && ke.get_modifiers() == 0) ||
+					(ke.get_key() == KEY_Num_Sub && ke.get_modifiers() == EM_CTRL)) {
 					y_extent_at_focus *= pow(1.2, 1 / zoom_sensitivity);
 					on_set(&y_extent_at_focus);
 					return true;

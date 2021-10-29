@@ -10,7 +10,7 @@ namespace vr {
 /// set the common border color of labels
 void vr_scene::set_label_border_color(const rgba& border_color)
 {
-	rrs.border_color = border_color;
+	rrs.default_border_color = border_color;
 	update_member(&rrs.percentual_border_width);
 }
 /// set the common border width in percent of the minimal extent
@@ -105,7 +105,7 @@ void vr_scene::build_scene(float w, float d, float h, float W)
 	}
 }
 
-vr_scene::vr_scene()
+vr_scene::vr_scene() : lm(false)
 {
 	set_name("vr_scene");
 	vr_view_ptr = 0;
@@ -124,7 +124,8 @@ vr_scene::vr_scene()
 	leg_offset = 0.0f;
 
 	rrs.map_color_to_material = cgv::render::CM_COLOR_AND_OPACITY;
-	rrs.border_mode = 3;
+	rrs.border_mode = cgv::render::RBM_MIN;
+	rrs.texture_mode = cgv::render::RTM_RED_MIX_COLOR_AND_SECONDARY_COLOR;
 	rrs.illumination_mode = cgv::render::IM_OFF;
 
 	room_width = 5;
@@ -269,6 +270,7 @@ void vr_scene::finish_frame(cgv::render::context& ctx)
 	std::vector<quat> Q;
 	std::vector<vec2> E;
 	std::vector<vec4> T;
+	std::vector<rgba> C;
 	mat34 ID; ID.identity();
 	mat34 pose[5] = { ID, ID };
 	bool valid[5] = { true, true, false, false, false };
@@ -291,14 +293,15 @@ void vr_scene::finish_frame(cgv::render::context& ctx)
 	}
 	// set poses of visible labels in valid coordinate systems
 	for (uint32_t li = 0; li < label_coord_systems.size(); ++li) {
-		if (label_visibilities[li] == 0 || !valid[label_coord_systems[li]])
-			continue;
+		//if (label_visibilities[li] == 0 || !valid[label_coord_systems[li]])
+		//	continue;
 		mat34 label_pose = cgv::math::pose_construct(label_orientations[li], label_positions[li]);
 		cgv::math::pose_transform(pose[label_coord_systems[li]], label_pose);
 		P.push_back(cgv::math::pose_position(label_pose));
 		Q.push_back(quat(cgv::math::pose_orientation(label_pose)));
 		E.push_back(label_extents[li]);
 		T.push_back(label_texture_ranges[li]);
+		C.push_back(lm.get_label(li).background_color);
 	}
 	// draw labels
 	if (!P.empty()) {
@@ -317,6 +320,8 @@ void vr_scene::finish_frame(cgv::render::context& ctx)
 		rr.set_rotation_array(ctx, Q);
 		rr.set_extent_array(ctx, E);
 		rr.set_texcoord_array(ctx, T);
+		rr.set_color_array(ctx, C);
+		rr.set_secondary_color(ctx, lm.get_text_color());
 		lm.get_texture()->enable(ctx);
 		rr.render(ctx, 0, P.size());
 		lm.get_texture()->disable(ctx);

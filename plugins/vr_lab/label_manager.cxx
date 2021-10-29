@@ -5,7 +5,7 @@
 
 namespace vr {
 
-label_manager::label_manager(cgv::media::font::font_face_ptr _font_face, float _font_size)
+label_manager::label_manager(bool _render_texture_with_color, cgv::media::font::font_face_ptr _font_face, float _font_size)
 {
 	text_color = rgba(0, 0, 0, 1);
 	safety_extension = 12;
@@ -17,36 +17,36 @@ label_manager::label_manager(cgv::media::font::font_face_ptr _font_face, float _
 	packing_outofdate = true;
 	texture_outofdate = true;
 	texture_content_outofdate = true;
-	tex = std::make_shared<cgv::render::texture>("[R,G,B,A]");
+	render_texture_with_color = _render_texture_with_color;
+
+	const char* data_format = render_texture_with_color ? "[R,G,B,A]" : "[R]";
+	tex = std::make_shared<cgv::render::texture>(data_format);
+	tmp_tex.set_data_format(data_format);
+
 	rrs.culling_mode = cgv::render::CM_OFF;
 	rrs.illumination_mode = cgv::render::IM_OFF;
 	rrs.map_color_to_material = cgv::render::CM_COLOR_AND_OPACITY;
 }
-
 void label_manager::set_font_face(cgv::media::font::font_face_ptr _font_face)
 {
 	font_face = _font_face;
 	packing_outofdate = true;
 	texture_outofdate = true;
 }
-
 void label_manager::set_font_size(float _font_size)
 {
 	font_size = _font_size;
 	packing_outofdate = true;
 	texture_outofdate = true;
 }
-
-/// set default text color active at begin of each label, defaults to opaque black
 void label_manager::set_text_color(const rgba& clr)
 {
 	text_color = clr;
-	texture_outofdate = true;
+	if (render_texture_with_color)
+		texture_outofdate = true;
 	for (auto& s : label_states)
 		s |= LS_NEW_COLOR;
 }
-
-
 uint32_t label_manager::add_label(const std::string& _text,
 	const rgba& bg_clr, int _border_x, int _border_y,
 	int _width, int _height)
@@ -66,7 +66,6 @@ uint32_t label_manager::add_label(const std::string& _text,
 	texture_content_outofdate = true;
 	return (uint32_t)(labels.size() - 1);
 }
-
 void label_manager::compute_label_size(label& l)
 {
 	int nr_lines = -1;
@@ -91,7 +90,6 @@ void label_manager::compute_label_size(label& l)
 		l.height = -(int)(2*l.border_y + nr_lines*h + 0.2f*font_size*(nr_lines-1));
 	}
 }
-
 void label_manager::fix_label_size(uint32_t li)
 {
 	if (li >= labels.size())
@@ -100,7 +98,6 @@ void label_manager::fix_label_size(uint32_t li)
 	l.width = l.get_width();
 	l.height = l.get_height();
 }
-
 void label_manager::pack_labels()
 {
 	std::vector<rect_pack::rectangle> rectangles;
@@ -143,7 +140,6 @@ label_manager::vec4 label_manager::get_texcoord_range(uint32_t label_index)
 		(float)(tex_height - (R.get_min_pnt()(1) + safety_extension)) / tex_height
 	);
 }
-
 void label_manager::update_label_text(uint32_t i, const std::string& new_text)
 {
 	labels[i].text = new_text;
@@ -155,7 +151,6 @@ void label_manager::update_label_text(uint32_t i, const std::string& new_text)
 		compute_label_size(labels[i]);
 	}
 }
-
 void label_manager::update_label_size(uint32_t i, int w, int h)
 {
 	labels[i].width = w;
@@ -164,20 +159,18 @@ void label_manager::update_label_size(uint32_t i, int w, int h)
 	label_states[i] |= LS_NEW_SIZE;
 	packing_outofdate = true;
 }
-
 void label_manager::update_label_background_color(uint32_t i, const rgba& background_color)
 {
 	labels[i].background_color = background_color;
 	label_states[i] |= LS_NEW_COLOR;
-	set_texture_outofdate();
+	if (render_texture_with_color)
+		set_texture_outofdate();
 }
-
 void label_manager::init(cgv::render::context& ctx)
 {
 	cgv::render::ref_rectangle_renderer(ctx, 1);
 	aam.init(ctx);
 }
-
 bool label_manager::ensure_tex_fbo_combi(cgv::render::context& ctx, cgv::render::texture& tex, cgv::render::frame_buffer& fbo, int width, int height)
 {
 	bool created = false;
@@ -200,7 +193,6 @@ bool label_manager::ensure_tex_fbo_combi(cgv::render::context& ctx, cgv::render:
 	}
 	return created;
 }
-
 void label_manager::draw_label_backgrounds(cgv::render::context& ctx, const std::vector<uint32_t>& indices, bool all, bool swap)
 {
 	auto& rr = cgv::render::ref_rectangle_renderer(ctx);
@@ -229,14 +221,14 @@ void label_manager::draw_label_backgrounds(cgv::render::context& ctx, const std:
 	rr.render(ctx, 0, positions.size());
 	rr.disable_attribute_array_manager(ctx, aam);
 }
-
 void label_manager::draw_label_texts(cgv::render::context& ctx, const std::vector<uint32_t>& indices, int height, bool all, bool swap)
 {
-	ctx.set_color(text_color);
+	ctx.set_color(render_texture_with_color ? text_color: rgba(1,1,1,1));
 	glEnable(GL_SCISSOR_TEST);
 	ctx.enable_font_face(font_face, font_size);
 	for (uint32_t i : indices) {
-		if (!all && ((label_states[i] & (LS_NEW_TEXT | LS_NEW_COLOR)) == 0))
+		uint8_t mask = render_texture_with_color ? (LS_NEW_TEXT + LS_NEW_COLOR) : LS_NEW_TEXT;
+		if (!all && ((label_states[i] & mask) == 0))
 			continue;
 		ibox2 tr = tex_ranges[i];
 		if (swap) {
@@ -257,7 +249,6 @@ void label_manager::draw_label_texts(cgv::render::context& ctx, const std::vecto
 	}
 	glDisable(GL_SCISSOR_TEST);
 }
-
 void label_manager::draw_labels(cgv::render::context& ctx, bool all)
 {
 	if (labels.empty()) {
@@ -272,7 +263,7 @@ void label_manager::draw_labels(cgv::render::context& ctx, bool all)
 	glGetBooleanv(GL_SCISSOR_TEST, &is_scissor);
 	glDisable(GL_DEPTH_TEST);
 	glDisable(GL_SCISSOR_TEST);
-	glClearColor(0.5f, 0.5f, 0.5f, 1);
+	glClearColor(0.0f, 0.0f, 0.0f, 1);
 	ctx.push_window_transformation_array();
 	float gamma = ctx.get_gamma();
 	ctx.set_gamma(1.0f);
@@ -285,7 +276,8 @@ void label_manager::draw_labels(cgv::render::context& ctx, bool all)
 		ctx.push_pixel_coords();
 		if (created || texture_outofdate)
 			glClear(GL_COLOR_BUFFER_BIT);
-		draw_label_backgrounds(ctx, rotated_labels, all, true);
+		if (render_texture_with_color)
+			draw_label_backgrounds(ctx, rotated_labels, all, true);
 		draw_label_texts(ctx, rotated_labels, tex_width, all, true);
 		ctx.pop_pixel_coords();
 		tmp_fbo.disable(ctx);
@@ -296,10 +288,11 @@ void label_manager::draw_labels(cgv::render::context& ctx, bool all)
 	fbo.enable(ctx, 0);
 	ctx.set_viewport(ivec4(0, 0, tex_width, tex_height));
 	ctx.push_pixel_coords();
-	glClearColor(0.9f, 0.5f, 0.5f, 1);
+	glClearColor(0, 0, 0, 1);
 	if (created || texture_outofdate)
 		glClear(GL_COLOR_BUFFER_BIT);
-	draw_label_backgrounds(ctx, not_rotated_labels, all, false);
+	if (render_texture_with_color)
+		draw_label_backgrounds(ctx, not_rotated_labels, all, false);
 	draw_label_texts(ctx, not_rotated_labels, tex_height, all, false);
 	// copy rotated labels with rectangle renderer to main texture
 	if (!rotated_labels.empty()) {
@@ -362,7 +355,6 @@ void label_manager::draw_labels(cgv::render::context& ctx, bool all)
 	texture_outofdate = false;
 	texture_content_outofdate = false;
 }
-
 void label_manager::destruct(cgv::render::context& ctx)
 {
 	tex->destruct(ctx);
@@ -371,7 +363,6 @@ void label_manager::destruct(cgv::render::context& ctx)
 	cgv::render::ref_rectangle_renderer(ctx, -1);
 	aam.destruct(ctx);
 }
-
 void label_manager::ensure_texture_uptodate(cgv::render::context& ctx)
 {
 	if (packing_outofdate)
