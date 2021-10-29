@@ -41,7 +41,7 @@ private:
 public:
 	box_render_data(bool use_attribute_array_manager = false) {
 		aam_ptr = nullptr;
-		out_of_date = false;
+		out_of_date = true;
 
 		if(use_attribute_array_manager) {
 			aam_ptr = new attribute_array_manager();
