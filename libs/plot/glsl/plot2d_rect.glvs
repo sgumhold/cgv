@@ -6,6 +6,7 @@ uniform int   opacity_index = -1;
 uniform int   secondary_opacity_index = -1;
 uniform int   size_index = -1;
 uniform int   secondary_size_index = -1;
+uniform int   border_mode = 3;
 
 uniform vec3  sub_plot_delta = vec3(0.0,0.0,0.0);
 uniform int   rectangle_coordinate_index = 1;
@@ -31,9 +32,11 @@ out RECTANGLE_GS {
 	vec3  normal_eye;
 	vec2  extent;
 	vec4  color;
+	vec4  secondary_color;
 	vec4  border_color;
 	float percentual_border_width;
 	float border_width_in_pixel; 
+	int   border_mode;
 	vec4  texcoord;
 	float depth_offset;
 } vo;
@@ -102,6 +105,8 @@ void main()
 	if (opacity_index >= 0)
 		vo.color.a = map_opacity(attributes, vo.color.a, opacity_index);
 	vo.border_color = secondary_color;
+	vo.border_mode = border_mode;
+	vo.secondary_color = vec4(0.0);
 	if (secondary_color_index >=0)
 		vo.border_color.rgb = map_color(attributes, vo.border_color.rgb, secondary_color_index);
 	if (secondary_opacity_index >= 0)

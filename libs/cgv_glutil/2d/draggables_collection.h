@@ -70,7 +70,7 @@ public:
 
 	std::vector<T>& ref_draggables() { return draggables; }
 
-	accessor_type operator[](int i) {
+	accessor_type operator[](size_t i) {
 		return draggables[i];
 	}
 
@@ -131,8 +131,8 @@ public:
 			mpos -= container.pos();
 
 			vec3 tmp = inv_transformation * vec3(mpos, 1.0f);
-			mpos.x() = tmp.x();
-			mpos.y() = tmp.y();
+			mpos.x() = int(tmp.x());
+			mpos.y() = int(tmp.y());
 
 			if(me.get_button() == cgv::gui::MB_LEFT_BUTTON) {
 				if(ma == cgv::gui::MA_RELEASE) {

@@ -1,19 +1,19 @@
 #version 330 core
 
-uniform bool has_rotations;
-uniform bool has_translations;
-uniform bool position_is_center = true;
-uniform vec4 border_color;
-uniform float percentual_border_width = 0.0;
-uniform float border_width_in_pixel = 0.0; 
+uniform bool  has_rotations;
+uniform bool  has_translations;
+uniform bool  position_is_center = true;
 
-in vec4 position;
-in vec2 extent;
-in vec4 color;
-in vec4 texcoord;
-in int group_index;
-in vec4 rotation;
-in vec3 translation;
+in vec4  position;
+in vec2  extent;
+in vec4  color;
+in vec4  secondary_color;
+in vec4  border_color;
+in vec3  border_info;
+in vec4  texcoord;
+in int   group_index;
+in vec4  rotation;
+in vec3  translation;
 in float depth_offset;
 
 out RECTANGLE_GS {
@@ -21,9 +21,11 @@ out RECTANGLE_GS {
 	vec3  normal_eye;
 	vec2  extent;
 	vec4  color;
+	vec4  secondary_color;
 	vec4  border_color;
 	float percentual_border_width;
 	float border_width_in_pixel; 
+	int   border_mode;
 	vec4  texcoord;
 	float depth_offset;
 } vo;
@@ -59,12 +61,14 @@ mat3 get_inverse_normal_matrix();
 
 void main()
 {
-	vo.color        = group_color(color, group_index);
-	vo.border_color = border_color;
-	vo.texcoord     = texcoord;
-	vo.depth_offset = depth_offset;
-	vo.percentual_border_width = percentual_border_width;
-	vo.border_width_in_pixel   = border_width_in_pixel; 
+	vo.color                   = group_color(color, group_index);
+	vo.secondary_color         = secondary_color;
+	vo.border_color            = border_color;
+	vo.texcoord                = texcoord;
+	vo.depth_offset            = depth_offset;
+	vo.border_width_in_pixel   = border_info.x; 
+	vo.percentual_border_width = border_info.y;
+	vo.border_mode             = int(border_info.z);
 	// compute modelview and normal transformation matrices
 	mat3 normal_matrix = get_normal_matrix();
 	if (has_rotations) {

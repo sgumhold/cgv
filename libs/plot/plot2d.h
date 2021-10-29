@@ -1,12 +1,14 @@
 #pragma once
 
 #include "plot_base.h"
+#include "mark2d_provider.h"
 #include <cgv/render/shader_program.h>
 
 #include "lib_begin.h"
 
 namespace cgv {
 	namespace plot {
+
 
 /** extend common plot configuration with parameters specific to 2d plot */
 struct CGV_API plot2d_config : public plot_base_config
@@ -15,6 +17,8 @@ struct CGV_API plot2d_config : public plot_base_config
 	plot2d_config(const std::string& _name);
 	/// configure the sub plot to a specific chart type
 	void configure_chart(ChartType chart_type);
+	/// list of styles for provider based marks
+	std::vector<std::pair<mark2d_provider*, mark_style*>> marks;
 };
 
 /** The \c plot2d class draws 2d plots with potentially several sub plots of different chart types */
@@ -51,7 +55,6 @@ public:
 	bool* multi_axis_modes;
 	/// offset in between sub plots in x, y and z direction
 	vec3 sub_plot_delta;
-
 	/// construct 2D plot with given number of additional attributes and default parameters
 	plot2d(const std::string& title, unsigned nr_attributes = 0);
 	///

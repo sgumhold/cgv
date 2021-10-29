@@ -104,6 +104,11 @@ struct mapped_rgba : public cgv::render::render_types
 
 };
 
+extern CGV_API void add_mapped_size_control(cgv::gui::provider& p, cgv::base::base* bp, const std::string& name, mapped_size& ms, std::string options = "");
+extern CGV_API void add_mapped_rgb_control(cgv::gui::provider& p, cgv::base::base* bp, const std::string& name, mapped_rgb& ms);
+extern CGV_API void add_mapped_rgba_control(cgv::gui::provider& p, cgv::base::base* bp, const std::string& name, mapped_rgba& ms);
+extern CGV_API void add_mapped_opacity_control(cgv::gui::provider& p, cgv::base::base* bp, const std::string& name, mapped_opacity& ms);
+
 enum SubPlotInfluence
 {
 	SPI_NONE = 0,
@@ -586,10 +591,6 @@ protected:
 	void update_ref_size_index(unsigned i, cgv::gui::provider& p);
 	void update_ref_color(unsigned i, cgv::gui::provider& p);
 	void update_ref_color_index(unsigned i, cgv::gui::provider& p);
-	void add_mapped_size_control(cgv::gui::provider& p, cgv::base::base* bp, const std::string& name, mapped_size& ms, std::string options = "");
-	void add_mapped_rgb_control(cgv::gui::provider& p, cgv::base::base* bp, const std::string& name, mapped_rgb& ms);
-	void add_mapped_rgba_control(cgv::gui::provider& p, cgv::base::base* bp, const std::string& name, mapped_rgba& ms);
-	void add_mapped_opacity_control(cgv::gui::provider& p, cgv::base::base* bp, const std::string& name, mapped_opacity& ms);
 
 public:
 	/// create the gui for the plot without gui for sub plots

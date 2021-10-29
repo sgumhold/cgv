@@ -1,6 +1,6 @@
 #version 430
 
-#define MODE 1
+#define MODE 0
 
 //***** begin interface of shape2d.glsl ***********************************
 uniform float border_radius = 0.0;
