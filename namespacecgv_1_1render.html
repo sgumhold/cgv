@@ -134,6 +134,9 @@ Classes</h2></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1clipped__view.html">clipped_view</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1cone__renderer.html">cone_renderer</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">renderer that supports raycasting of cones  <a href="classcgv_1_1render_1_1cone__renderer.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html">context</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1render_1_1context__config.html">context_config</a></td></tr>
@@ -192,9 +195,6 @@ Classes</h2></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1renderer.html">renderer</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">abstract base class for all renderers that handles a shader program and position / color attribute  <a href="classcgv_1_1render_1_1renderer.html#details">More...</a><br /></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1rounded__cone__renderer.html">rounded_cone_renderer</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">renderer that supports raycasting of rounded cones  <a href="classcgv_1_1render_1_1rounded__cone__renderer.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1shader__code.html">shader_code</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -428,6 +428,9 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="name
 <tr class="memitem:a7fafbbe77ca934f780fb7456aee4e9cb"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcgv_1_1render_1_1box__wire__renderer.html">box_wire_renderer</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1render.html#a7fafbbe77ca934f780fb7456aee4e9cb">ref_box_wire_renderer</a> (<a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx, int ref_count_change=0)</td></tr>
 <tr class="memdesc:a7fafbbe77ca934f780fb7456aee4e9cb"><td class="mdescLeft">&#160;</td><td class="mdescRight">reference to a singleton box_wire renderer that can be shared among drawables  <a href="namespacecgv_1_1render.html#a7fafbbe77ca934f780fb7456aee4e9cb">More...</a><br /></td></tr>
 <tr class="separator:a7fafbbe77ca934f780fb7456aee4e9cb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a41a6e252b09926b43b640b2141c8fb24"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcgv_1_1render_1_1cone__renderer.html">cone_renderer</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1render.html#a41a6e252b09926b43b640b2141c8fb24">ref_cone_renderer</a> (<a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx, int ref_count_change=0)</td></tr>
+<tr class="memdesc:a41a6e252b09926b43b640b2141c8fb24"><td class="mdescLeft">&#160;</td><td class="mdescRight">reference to a singleton cone renderer that is shared among drawables  <a href="namespacecgv_1_1render.html#a41a6e252b09926b43b640b2141c8fb24">More...</a><br /></td></tr>
+<tr class="separator:a41a6e252b09926b43b640b2141c8fb24"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7f104db7ff3601b636c876ff92ab8852"><td class="memItemLeft" align="right" valign="top"><a id="a7f104db7ff3601b636c876ff92ab8852"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1render.html#a7f104db7ff3601b636c876ff92ab8852">extract_additional_information</a> (const fx::gltf::Document &amp;doc, <a class="el" href="classcgv_1_1media_1_1axis__aligned__box.html">cgv::render::render_types::box3</a> &amp;box, size_t &amp;vertex_count)</td></tr>
 <tr class="memdesc:a7f104db7ff3601b636c876ff92ab8852"><td class="mdescLeft">&#160;</td><td class="mdescRight">extract bounding box and vertex count from gltf document <br /></td></tr>
@@ -460,9 +463,6 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="name
 <tr class="memitem:a3511c2e6386806c6b4d7dbedd83bcbf0"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcgv_1_1render_1_1rectangle__renderer.html">rectangle_renderer</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1render.html#a3511c2e6386806c6b4d7dbedd83bcbf0">ref_rectangle_renderer</a> (<a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx, int ref_count_change=0)</td></tr>
 <tr class="memdesc:a3511c2e6386806c6b4d7dbedd83bcbf0"><td class="mdescLeft">&#160;</td><td class="mdescRight">reference to a singleton plane renderer that can be shared among drawables  <a href="namespacecgv_1_1render.html#a3511c2e6386806c6b4d7dbedd83bcbf0">More...</a><br /></td></tr>
 <tr class="separator:a3511c2e6386806c6b4d7dbedd83bcbf0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac859ed11aa0a808a44e0f19e65558b00"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcgv_1_1render_1_1rounded__cone__renderer.html">rounded_cone_renderer</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1render.html#ac859ed11aa0a808a44e0f19e65558b00">ref_rounded_cone_renderer</a> (<a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx, int ref_count_change=0)</td></tr>
-<tr class="memdesc:ac859ed11aa0a808a44e0f19e65558b00"><td class="mdescLeft">&#160;</td><td class="mdescRight">reference to a singleton rounded cone renderer that is shared among drawables  <a href="namespacecgv_1_1render.html#ac859ed11aa0a808a44e0f19e65558b00">More...</a><br /></td></tr>
-<tr class="separator:ac859ed11aa0a808a44e0f19e65558b00"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a357b2c7107ff872aa762543c1d2efdaa"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcgv_1_1render_1_1slab__renderer.html">slab_renderer</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1render.html#a357b2c7107ff872aa762543c1d2efdaa">ref_slab_renderer</a> (<a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx, int ref_count_change=0)</td></tr>
 <tr class="memdesc:a357b2c7107ff872aa762543c1d2efdaa"><td class="mdescLeft">&#160;</td><td class="mdescRight">reference to a singleton slab renderer that is shared among drawables  <a href="namespacecgv_1_1render.html#a357b2c7107ff872aa762543c1d2efdaa">More...</a><br /></td></tr>
 <tr class="separator:a357b2c7107ff872aa762543c1d2efdaa"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -915,6 +915,37 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="name
 
 </div>
 </div>
+<a id="a41a6e252b09926b43b640b2141c8fb24"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a41a6e252b09926b43b640b2141c8fb24">&#9670;&nbsp;</a></span>ref_cone_renderer()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">CGV_API <a class="el" href="classcgv_1_1render_1_1cone__renderer.html">cone_renderer</a> &amp; cgv::render::ref_cone_renderer </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;&#160;</td>
+          <td class="paramname"><em>ctx</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>ref_count_change</em> = <code>0</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>reference to a singleton cone renderer that is shared among drawables </p>
+<p>the second parameter is used for reference counting. Use +1 in your init method, -1 in your clear method and default 0 argument otherwise. If internal reference counter decreases to 0, singleton renderer is destructed. </p>
+
+</div>
+</div>
 <a id="a2ac436989b3edb8b08ebf49363187414"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a2ac436989b3edb8b08ebf49363187414">&#9670;&nbsp;</a></span>ref_normal_renderer()</h2>
 
@@ -1004,37 +1035,6 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="name
 </div><div class="memdoc">
 
 <p>reference to a singleton plane renderer that can be shared among drawables </p>
-<p>the second parameter is used for reference counting. Use +1 in your init method, -1 in your clear method and default 0 argument otherwise. If internal reference counter decreases to 0, singleton renderer is destructed. </p>
-
-</div>
-</div>
-<a id="ac859ed11aa0a808a44e0f19e65558b00"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac859ed11aa0a808a44e0f19e65558b00">&#9670;&nbsp;</a></span>ref_rounded_cone_renderer()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">CGV_API <a class="el" href="classcgv_1_1render_1_1rounded__cone__renderer.html">rounded_cone_renderer</a> &amp; cgv::render::ref_rounded_cone_renderer </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;&#160;</td>
-          <td class="paramname"><em>ctx</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>ref_count_change</em> = <code>0</code>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>reference to a singleton rounded cone renderer that is shared among drawables </p>
 <p>the second parameter is used for reference counting. Use +1 in your init method, -1 in your clear method and default 0 argument otherwise. If internal reference counter decreases to 0, singleton renderer is destructed. </p>
 
 </div>

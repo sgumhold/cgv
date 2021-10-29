@@ -9,7 +9,7 @@ var searchData=
   ['selection_6510',['selection',['../classcgv_1_1render_1_1gl_1_1image__drawable.html#a2726e485d16f1ac5e692af89d54373b2',1,'cgv::render::gl::image_drawable']]],
   ['separate_5fview_6511',['separate_view',['../classvr__view__interactor.html#a61de97a1f3e1f388ba2db52722a4f002',1,'vr_view_interactor']]],
   ['serial_5fnumber_6512',['serial_number',['../structvr_1_1vr__device__info.html#a3796546b1bfe4f298f0850bed956da9c',1,'vr::vr_device_info']]],
-  ['shader_5fdefines_6513',['shader_defines',['../classcgv_1_1render_1_1rounded__cone__renderer.html#a3af17ae572c5c5e3e658663cc83ace1d',1,'cgv::render::rounded_cone_renderer']]],
+  ['shader_5fdefines_6513',['shader_defines',['../classcgv_1_1render_1_1cone__renderer.html#a95ee9063dd292a0bd3dfef3edebb91a6',1,'cgv::render::cone_renderer']]],
   ['shader_5fprogram_5fstack_6514',['shader_program_stack',['../classcgv_1_1render_1_1context.html#a3c994c70ab71063250711517d65da2ef',1,'cgv::render::context']]],
   ['shininess_6515',['shininess',['../classcgv_1_1media_1_1illum_1_1phong__material.html#ae9aa56ed4d22d32c5cdfbd24adcf9b12',1,'cgv::media::illum::phong_material']]],
   ['shoot_6516',['shoot',['../classcgv_1_1gui_1_1trigger.html#a2cc50a83bb4fd7c407e50b5b78082073',1,'cgv::gui::trigger']]],

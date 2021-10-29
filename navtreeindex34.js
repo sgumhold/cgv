@@ -109,6 +109,7 @@ var NAVTREEINDEX34 =
 "command__token_8h_source.html":[12,0,0,8,0],
 "common__std__thread_8h_source.html":[12,0,0,7,1],
 "component__format_8h_source.html":[12,0,0,2,2],
+"cone__renderer_8h_source.html":[12,0,1,2,6],
 "console_8h_source.html":[12,0,0,0,4],
 "constants_8h_source.html":[12,0,0,5,6],
 "context_8h_source.html":[12,0,0,10,4],
@@ -198,8 +199,8 @@ var NAVTREEINDEX34 =
 "font__server_8h_source.html":[12,0,0,6,0,1],
 "frame__buffer_8h_source.html":[12,0,0,10,7],
 "ftransform_8h_source.html":[12,0,0,5,13],
-"functions.html":[11,3,0],
 "functions.html":[11,3,0,0],
+"functions.html":[11,3,0],
 "functions_8h_source.html":[12,0,0,5,14],
 "functions_a.html":[11,3,0,1],
 "functions_b.html":[11,3,0,2],
@@ -248,6 +249,5 @@ var NAVTREEINDEX34 =
 "functions_p.html":[11,3,0,16],
 "functions_q.html":[11,3,0,17],
 "functions_r.html":[11,3,0,18],
-"functions_rela.html":[11,3,5],
-"functions_s.html":[11,3,0,19]
+"functions_rela.html":[11,3,5]
 };

@@ -417,8 +417,8 @@ var hierarchy =
         [ "cgv::render::surface_renderer", "classcgv_1_1render_1_1surface__renderer.html", [
           [ "cgv::render::arrow_renderer", "classcgv_1_1render_1_1arrow__renderer.html", null ],
           [ "cgv::render::box_renderer", "classcgv_1_1render_1_1box__renderer.html", null ],
+          [ "cgv::render::cone_renderer", "classcgv_1_1render_1_1cone__renderer.html", null ],
           [ "cgv::render::rectangle_renderer", "classcgv_1_1render_1_1rectangle__renderer.html", null ],
-          [ "cgv::render::rounded_cone_renderer", "classcgv_1_1render_1_1rounded__cone__renderer.html", null ],
           [ "cgv::render::sphere_renderer", "classcgv_1_1render_1_1sphere__renderer.html", null ],
           [ "cgv::render::spline_tube_renderer", "classcgv_1_1render_1_1spline__tube__renderer.html", null ],
           [ "cgv::render::surfel_renderer", "classcgv_1_1render_1_1surfel__renderer.html", null ],

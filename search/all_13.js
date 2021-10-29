@@ -292,7 +292,7 @@ var searchData=
   ['shader_5fcode_2733',['shader_code',['../classcgv_1_1render_1_1shader__code.html',1,'cgv::render::shader_code'],['../classcgv_1_1render_1_1shader__code.html#a32fe65ad2235260282c7584d02b1e754',1,'cgv::render::shader_code::shader_code()']]],
   ['shader_5fconfig_5fptr_2734',['shader_config_ptr',['../namespacecgv_1_1render.html#aa37e7abafc356dc57179bc80e61b77c4',1,'cgv::render']]],
   ['shader_5fdefine_5fmap_2735',['shader_define_map',['../namespacecgv_1_1render.html#a0e875e06326ba0599a1289f0bacdb116',1,'cgv::render']]],
-  ['shader_5fdefines_2736',['shader_defines',['../classcgv_1_1render_1_1rounded__cone__renderer.html#a3af17ae572c5c5e3e658663cc83ace1d',1,'cgv::render::rounded_cone_renderer']]],
+  ['shader_5fdefines_2736',['shader_defines',['../classcgv_1_1render_1_1cone__renderer.html#a95ee9063dd292a0bd3dfef3edebb91a6',1,'cgv::render::cone_renderer']]],
   ['shader_5fprogram_2737',['shader_program',['../classcgv_1_1render_1_1shader__program.html',1,'cgv::render::shader_program'],['../classcgv_1_1render_1_1shader__program.html#a107cd1f3364e7137b5267d0070be98db',1,'cgv::render::shader_program::shader_program()']]],
   ['shader_5fprogram_5fbase_2738',['shader_program_base',['../classcgv_1_1render_1_1shader__program__base.html',1,'cgv::render::shader_program_base'],['../classcgv_1_1render_1_1shader__program__base.html#a2c9d125a4403ed98b7cc46424095ddc9',1,'cgv::render::shader_program_base::shader_program_base()']]],
   ['shader_5fprogram_5fstack_2739',['shader_program_stack',['../classcgv_1_1render_1_1context.html#a3c994c70ab71063250711517d65da2ef',1,'cgv::render::context']]],
