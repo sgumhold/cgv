@@ -66,11 +66,11 @@ void main()
 	// scale part
 #if CAP_TYPE == 1
 	T[0] *= l + rs + re;
+	T[1] *= max_d;
+	T[2] *= max_d;
 #else
 	T[0] *= l;
 #endif
-	//T[1] *= max_d;
-	//T[2] *= max_d;
 
 	// transform to eye space
 	mat4 M = get_modelview_matrix() * T;

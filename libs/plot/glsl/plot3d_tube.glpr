@@ -3,9 +3,9 @@ vertex_file:color_scale.glsl
 vertex_file:quaternion.glsl
 vertex_file:plot_lib.glsl
 vertex_file:group.glsl
-geometry_file:rounded_cone.glgs
+geometry_file:cone.glgs
 geometry_file:view.glsl
-fragment_file:rounded_cone.glfs
+fragment_file:cone.glfs
 fragment_file:view.glsl
 fragment_file:fragment.glfs
 fragment_file:side.glsl
