@@ -136,7 +136,7 @@ namespace cgv {
 			rotate4(const fvec<T, 3>& A) {
 				fmat<T, 4, 4>  M;
 				M.identity();
-				fvec<T, 3> angles = cgv::math::fvec<T, 3>(0.01745329252)*A;
+				fvec<T, 3> angles = cgv::math::fvec<T, 3>(T(0.01745329252))*A;
 				T cx = cos(angles[0]);
 				T sx = sin(angles[0]);
 				T cy = cos(angles[1]);
