@@ -82,6 +82,23 @@ struct arrow2d_style : public shape2d_style {
 	}
 };
 
+struct grid2d_style : public shape2d_style {
+	enum GridPattern {
+		GP_GRID,
+		GP_SQUARES,
+		GP_CHECKER
+	};
+	GridPattern pattern = GP_GRID;
+	float scale = 0.5f;
+
+	void apply(cgv::render::context & ctx, cgv::render::shader_program& prog) {
+		shape2d_style::apply(ctx, prog);
+
+		prog.set_uniform(ctx, "pattern", static_cast<int>(pattern));
+		prog.set_uniform(ctx, "scale", scale);
+	}
+};
+
 }
 }
 
