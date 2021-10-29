@@ -90,7 +90,7 @@ $(document).ready(function(){initNavTree('plot3d_8h_source.html',''); initResiza
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="preprocessor">#include &quot;plot_base.h&quot;</span></div>
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="preprocessor">#include &lt;cgv/render/shader_program.h&gt;</span></div>
 <div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="preprocessor">#include &lt;libs/cgv_gl/box_renderer.h&gt;</span></div>
-<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="preprocessor">#include &lt;cgv_gl/rounded_cone_renderer.h&gt;</span></div>
+<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="preprocessor">#include &lt;cgv_gl/cone_renderer.h&gt;</span></div>
 <div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160; </div>
 <div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="preprocessor">#include &quot;lib_begin.h&quot;</span></div>
 <div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160; </div>
@@ -127,7 +127,7 @@ $(document).ready(function(){initNavTree('plot3d_8h_source.html',''); initResiza
 <div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;        <a class="code" href="classcgv_1_1render_1_1shader__program.html">cgv::render::shader_program</a> tube_prog;</div>
 <div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;        <span class="comment">//cgv::render::shader_program surface_prog;</span></div>
 <div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;        <a class="code" href="structcgv_1_1render_1_1box__render__style.html">cgv::render::box_render_style</a> brs;</div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;        cgv::render::rounded_cone_render_style rcrs;</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;        cgv::render::cone_render_style rcrs;</div>
 <div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;        <a class="code" href="classcgv_1_1render_1_1attribute__array__manager.html">cgv::render::attribute_array_manager</a> aam_domain;</div>
 <div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160; </div>
 <div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;        <span class="keywordtype">bool</span> compute_sample_coordinate_interval(<span class="keywordtype">int</span> i, <span class="keywordtype">int</span> ai, <span class="keywordtype">float</span>&amp; samples_min, <span class="keywordtype">float</span>&amp; samples_max);</div>
