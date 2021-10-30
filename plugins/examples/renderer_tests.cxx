@@ -13,7 +13,7 @@
 #include <cgv_gl/normal_renderer.h>
 #include <cgv_gl/box_renderer.h>
 #include <cgv_gl/box_wire_renderer.h>
-#include <cgv_gl/rounded_cone_renderer.h>
+#include <cgv_gl/cone_renderer.h>
 #include <cgv_gl/gl/gl.h>
 #include <random>
 
@@ -23,7 +23,7 @@ class renderer_tests :
 	public cgv::gui::provider
 {
 public:
-	enum RenderMode { RM_POINTS, RM_SURFELS, RM_BOXES, RM_BOX_WIRES, RM_NORMALS, RM_ARROWS, RM_SPHERES, RM_ROUNDED_CONES };
+	enum RenderMode { RM_POINTS, RM_SURFELS, RM_BOXES, RM_BOX_WIRES, RM_NORMALS, RM_ARROWS, RM_SPHERES, RM_CONES };
 	struct vertex {
 		vec3 point;
 		vec3 normal;
@@ -67,7 +67,7 @@ protected:
 	cgv::render::normal_render_style normal_style;
 	cgv::render::arrow_render_style arrow_style;
 	cgv::render::sphere_render_style sphere_style;
-	cgv::render::rounded_cone_render_style rounded_cone_style;
+	cgv::render::cone_render_style cone_style;
 
 	// declare attribute managers
 	cgv::render::attribute_array_manager p_manager;
@@ -137,7 +137,8 @@ public:
 		arrow_style.length_scale = 0.01f;
 		sphere_style.radius = 0.01f;
 		sphere_style.use_group_color = true;
-		rounded_cone_style.radius = 0.01f;
+		cone_style.radius = 0.01f;
+		cone_style.rounded_caps = true;
 	}
 	std::string get_type_name() const
 	{
@@ -202,7 +203,7 @@ public:
 		cgv::render::ref_normal_renderer		(ctx, 1);
 		cgv::render::ref_arrow_renderer			(ctx, 1);
 		cgv::render::ref_sphere_renderer		(ctx, 1);
-		cgv::render::ref_rounded_cone_renderer	(ctx, 1);
+		cgv::render::ref_cone_renderer	(ctx, 1);
 		return true;
 	}
 
@@ -369,10 +370,10 @@ public:
 			render_points(ctx, s_renderer);
 			s_renderer.disable_attribute_array_manager(ctx, s_manager);
 		}	break;
-		case RM_ROUNDED_CONES:
+		case RM_CONES:
 		{
-			cgv::render::rounded_cone_renderer& rc_renderer = cgv::render::ref_rounded_cone_renderer(ctx);
-			rc_renderer.set_render_style(rounded_cone_style);
+			cgv::render::cone_renderer& rc_renderer = cgv::render::ref_cone_renderer(ctx);
+			rc_renderer.set_render_style(cone_style);
 			rc_renderer.enable_attribute_array_manager(ctx, rc_manager);
 			set_geometry(ctx, rc_renderer);
 			render_points(ctx, rc_renderer);
@@ -409,7 +410,7 @@ public:
 		cgv::render::ref_normal_renderer		(ctx, -1);
 		cgv::render::ref_arrow_renderer			(ctx, -1);
 		cgv::render::ref_sphere_renderer		(ctx, -1);
-		cgv::render::ref_rounded_cone_renderer  (ctx, -1);
+		cgv::render::ref_cone_renderer  (ctx, -1);
 	}
 	void create_gui()
 	{
@@ -505,11 +506,11 @@ public:
 			align("\b");
 			end_tree_node(sphere_style);
 		}
-		if(begin_tree_node("Rounded Cone Rendering", rounded_cone_style, false)) {
+		if(begin_tree_node("Cone Rendering", cone_style, false)) {
 			align("\a");
-			add_gui("rounded_cone_style", rounded_cone_style);
+			add_gui("cone_style", cone_style);
 			align("\b");
-			end_tree_node(rounded_cone_style);
+			end_tree_node(cone_style);
 		}
 	}
 };

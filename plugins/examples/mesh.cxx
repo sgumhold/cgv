@@ -5,7 +5,7 @@
 #include <cgv/render/clipped_view.h>
 #include <cgv_gl/gl/gl.h>
 #include <cgv_gl/sphere_renderer.h>
-#include <cgv_gl/rounded_cone_renderer.h>
+#include <cgv_gl/cone_renderer.h>
 #include <cgv_gl/gl/mesh_render_info.h>
 #include <cgv_gl/gl/gl_context.h>
 #include <cgv/render/attribute_array_binding.h>
@@ -98,7 +98,7 @@ public:
 	attribute_array_manager sphere_aam;
 
 	bool show_wireframe;
-	rounded_cone_render_style cone_style;
+	cone_render_style cone_style;
 	attribute_array_manager cone_aam;
 
 	std::string file_name;
@@ -284,14 +284,14 @@ public:
 	bool init(context& ctx)
 	{
 		ref_sphere_renderer(ctx, 1);
-		ref_rounded_cone_renderer(ctx, 1);
+		ref_cone_renderer(ctx, 1);
 		sphere_aam.init(ctx);
 		cone_aam.init(ctx);
 		return true;
 	}
 	void clear(context& ctx)
 	{
-		ref_rounded_cone_renderer(ctx, -1);
+		ref_cone_renderer(ctx, -1);
 		ref_sphere_renderer(ctx, -1);
 		sphere_aam.destruct(ctx);
 		cone_aam.destruct(ctx);
@@ -307,7 +307,7 @@ public:
 			mesh_info.construct(ctx, M);
 			// bind mesh attributes to standard surface shader program
 			mesh_info.bind(ctx, ctx.ref_surface_shader_program(true), true);
-			mesh_info.bind_wireframe(ctx, ref_rounded_cone_renderer(ctx).ref_prog(), true);
+			mesh_info.bind_wireframe(ctx, ref_cone_renderer(ctx).ref_prog(), true);
 			// ensure that materials are presented in gui
 			post_recreate_gui();
 			have_new_mesh = false;
@@ -374,7 +374,7 @@ public:
 			sr.disable_attribute_array_manager(ctx, sphere_aam);
 		}
 		if (show_wireframe) {
-			rounded_cone_renderer& cr = ref_rounded_cone_renderer(ctx);
+			cone_renderer& cr = ref_cone_renderer(ctx);
 			cr.set_render_style(cone_style);
 			if (cr.enable(ctx)) {
 				mesh_info.draw_wireframe(ctx);

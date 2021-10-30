@@ -78,7 +78,7 @@ void navigator::clear(cgv::render::context& ctx) {
 
 	ref_box_renderer(ctx, -1);
 	ref_sphere_renderer(ctx, -1);
-	ref_rounded_cone_renderer(ctx, -1);
+	ref_cone_renderer(ctx, -1);
 	ref_rectangle_renderer(ctx, -1);
 }
 
@@ -357,7 +357,7 @@ bool navigator::init(cgv::render::context& ctx) {
 
 	ref_box_renderer(ctx, 1);
 	ref_sphere_renderer(ctx, 1);
-	ref_rounded_cone_renderer(ctx, 1);
+	ref_cone_renderer(ctx, 1);
 	ref_rectangle_renderer(ctx, 1);
 
 	if(success) {
@@ -413,7 +413,7 @@ void navigator::finish_draw(cgv::render::context& ctx) {
 	ctx.set_modelview_matrix(get_view_matrix(ctx) * get_model_matrix(ctx));
 
 	sphere_data.render(ctx, ref_sphere_renderer(ctx), sphere_style);
-	cone_data.render(ctx, ref_rounded_cone_renderer(ctx), cone_style);
+	cone_data.render(ctx, ref_cone_renderer(ctx), cone_style);
 
 	glDisable(GL_DEPTH_TEST);
 	glEnable(GL_BLEND);
@@ -457,38 +457,6 @@ void navigator::create_gui() {
 	add_decorator("Transfer Function Editor", "heading", "level=2");
 
 	create_overlay_gui();
-
-	/*add_decorator("File", "heading", "level=3");
-	std::string filter = "XML Files (xml):*.xml|All Files:*.*";
-	add_gui("File", file_name, "file_name", "title='Open Transfer Function';filter='" + filter + "';save=false;w=136;small_icon=true;align_gui=' ';color=" + (has_unsaved_changes ? "0xff6666" : "0xffffff"));
-	add_gui("save_file_name", save_file_name, "file_name", "title='Save Transfer Function';filter='" + filter + "';save=true;control=false;small_icon=true");
-
-	if(begin_tree_node("Settings", layout, false)) {
-		align("\a");
-		add_member_control(this, "Height", layout.total_height, "value_slider", "min=100;max=500;step=10;ticks=true");
-		add_member_control(this, "Opacity Scale Exponent", opacity_scale_exponent, "value_slider", "min=1.0;max=5.0;step=0.001;ticks=true");
-		add_member_control(this, "Resolution", resolution, "dropdown", "enums='2=2,4=4,8=8,16=16,32=32,64=64,128=128,256=256,512=512,1024=1024,2048=2048'");
-		align("\b");
-		end_tree_node(layout);
-	}
-
-	if(begin_tree_node("Histogram", show_histogram, false)) {
-		align("\a");
-		add_member_control(this, "Show", show_histogram, "check");
-		add_member_control(this, "Fill Color", histogram_color, "");
-		add_member_control(this, "Border Color", histogram_border_color, "");
-		add_member_control(this, "Border Width", histogram_border_width, "value_slider", "min=0;max=10;step=1;ticks=true");
-		add_member_control(this, "Smoothing", histogram_smoothing, "value_slider", "min=0;max=1;step=0.01;ticks=true");
-		align("\b");
-		end_tree_node(show_histogram);
-	}
-
-	add_decorator("Control Points", "heading", "level=3");
-	// TODO: add parameters for t and alpha?
-	auto& points = tfc.points;
-	for(unsigned i = 0; i < points.size(); ++i)
-		add_member_control(this, "Color " + std::to_string(i), points[i].col, "", &points[i] == tfc.points.get_selected() ? "label_color=0x4080ff" : "");
-	*/
 }
 
 void navigator::create_gui(cgv::gui::provider& p) {
@@ -543,204 +511,6 @@ bool navigator::intersect_box(const vec3 &origin, const vec3& direction, float& 
 	t = t_min;
 	return t_max > std::max(t_min, 0.0f);
 }
-
-/*
-void transfer_function_editor::handle_drag() {
-
-	tfc.points.get_dragged()->update_val(layout, opacity_scale_exponent);
-	update_transfer_function(true);
-	post_redraw();
-}
-
-void transfer_function_editor::handle_drag_end() {
-
-	post_recreate_gui();
-	post_redraw();
-}
-
-void transfer_function_editor::sort_points() {
-
-	auto& points = tfc.points;
-
-	if(points.size() > 1) {
-		int dragged_point_idx = -1;
-		int selected_point_idx = -1;
-
-		const point* dragged_point = points.get_dragged();
-		const point* selected_point = points.get_selected();
-
-		std::vector<std::pair<point, int>> sorted(points.size());
-
-		for(unsigned i = 0; i < points.size(); ++i) {
-			sorted[i].first = points[i];
-			sorted[i].second = i;
-
-			if(dragged_point == &points[i])
-				dragged_point_idx = i;
-			if(selected_point == &points[i])
-				selected_point_idx = i;
-		}
-
-		std::sort(sorted.begin(), sorted.end(),
-			[](const auto& a, const auto& b) -> bool {
-				return a.first.val.x() < b.first.val.x();
-			}
-		);
-
-		int new_dragged_point_idx = -1;
-		int new_selected_point_idx = -1;
-
-		for(unsigned i = 0; i < sorted.size(); ++i) {
-			points[i] = sorted[i].first;
-			if(dragged_point_idx == sorted[i].second) {
-				new_dragged_point_idx = i;
-			}
-			if(selected_point_idx == sorted[i].second) {
-				new_selected_point_idx = i;
-			}
-		}
-
-		points.set_dragged(new_dragged_point_idx);
-		points.set_selected(new_selected_point_idx);
-	}
-}
-
-void transfer_function_editor::update_point_positions() {
-
-	for(unsigned i = 0; i < tfc.points.size(); ++i)
-		tfc.points[i].update_pos(layout, opacity_scale_exponent);
-}
-
-void transfer_function_editor::update_transfer_function(bool is_data_change) {
-	
-	context* ctx_ptr = get_context();
-	if(!ctx_ptr) return;
-	context& ctx = *ctx_ptr;
-
-	auto& tf = tfc.tf;
-	auto& tex = tfc.tex;
-	auto& points = tfc.points;
-	
-	sort_points();
-
-	tf.clear();
-
-	for(unsigned i = 0; i < points.size(); ++i) {
-		const point& p = points[i];
-		tf.add_color_point(p.val.x(), p.col);
-		tf.add_opacity_point(p.val.x(), p.val.y());
-	}
-
-	std::vector<rgba> tf_data;
-
-	unsigned size = resolution;
-	float step = 1.0f / static_cast<float>(size - 1);
-
-	for(unsigned i = 0; i < size; ++i) {
-		float t = i * step;
-		rgba col = tf.interpolate(t);
-		tf_data.push_back(col);
-	}
-
-	std::vector<rgba> data2d(2 * size);
-	for(unsigned i = 0; i < size; ++i) {
-		data2d[i + 0] = tf_data[i];
-		data2d[i + size] = tf_data[i];
-	}
-
-	tex.destruct(ctx);
-	cgv::data::data_view dv = cgv::data::data_view(new cgv::data::data_format(size, 2, TI_FLT32, cgv::data::CF_RGBA), data2d.data());
-	tex = texture("flt32[R,G,B,A]", TF_LINEAR, TF_LINEAR);
-	tex.create(ctx, dv, 0);
-
-	if(tf_tex.is_created()) {
-		std::vector<uint8_t> tf_data_8(4*tf_data.size());
-		for(unsigned i = 0; i < tf_data.size(); ++i) {
-			rgba col = tf_data[i];
-			tf_data_8[4 * i + 0] = static_cast<uint8_t>(255.0f * col.R());
-			tf_data_8[4 * i + 1] = static_cast<uint8_t>(255.0f * col.G());
-			tf_data_8[4 * i + 2] = static_cast<uint8_t>(255.0f * col.B());
-			tf_data_8[4 * i + 3] = static_cast<uint8_t>(255.0f * col.alpha());
-		}
-
-		cgv::data::data_view dv1d = cgv::data::data_view(new cgv::data::data_format(size, TI_UINT8, cgv::data::CF_RGBA), tf_data_8.data());
-		tf_tex.replace(ctx, 0, dv1d);
-	}
-
-	if(is_data_change) {
-		has_unsaved_changes = true;
-		on_set(&has_unsaved_changes);
-	} else {
-		bool had_unsaved_changes = has_unsaved_changes;
-		if(has_unsaved_changes != had_unsaved_changes) {
-			has_unsaved_changes = has_unsaved_changes;
-			has_unsaved_changes = false;
-			on_set(&has_unsaved_changes);
-		}
-	}
-
-	update_geometry();
-}
-
-bool transfer_function_editor::update_geometry() {
-
-	context* ctx_ptr = get_context();
-	if(!ctx_ptr) return false;
-	context& ctx = *ctx_ptr;
-
-	auto& tf = tfc.tf;
-	auto& points = tfc.points;
-	auto& lines = tfc.lines;
-	auto& triangles = tfc.triangles;
-	auto& point_geometry = tfc.point_geometry;
-
-	lines.clear();
-	triangles.clear();
-	point_geometry.clear();
-	
-	bool success = true;
-
-	if(points.size() > 1) {
-		const point& pl = points[0];
-		rgba coll = tf.interpolate(pl.val.x());
-
-		lines.add(vec2(layout.editor_rect.pos().x(), pl.center().y()), rgb(coll));
-		
-		triangles.add(vec2(layout.editor_rect.pos().x(), pl.center().y()), coll);
-		triangles.add(layout.editor_rect.pos(), coll);
-
-		for(unsigned i = 0; i < points.size(); ++i) {
-			const auto& p = points[i];
-			vec2 pos = p.center();
-			rgba col = tf.interpolate(points[i].val.x());
-
-			lines.add(pos, rgb(col));
-			triangles.add(pos, col);
-			triangles.add(vec2(pos.x(), layout.editor_rect.pos().y()), col);
-			point_geometry.add(pos,
-				tfc.points.get_selected() == &p ? rgba(0.5f, 0.5f, 0.5f, 1.0f) : rgba(0.9f, 0.9f, 0.9f, 1.0f)
-			);
-		}
-
-		const point& pr = points[points.size() - 1];
-		rgba colr = tf.interpolate(pr.val.x());
-		vec2 max_pos = layout.editor_rect.pos() + vec2(1.0f, 0.0f) * layout.editor_rect.size();
-
-		lines.add(vec2(max_pos.x(), pr.center().y()), rgb(colr));
-		
-		triangles.add(vec2(max_pos.x(), pr.center().y()), colr);
-		triangles.add(max_pos, colr);
-
-		lines.set_out_of_date();
-		triangles.set_out_of_date();
-		point_geometry.set_out_of_date();
-
-	} else {
-		success = false;
-	}
-	return success;
-}
-*/
 
 }
 }

@@ -6,19 +6,19 @@
 
 namespace cgv { // @<
 	namespace render { // @<
-		class CGV_API rounded_cone_renderer;
+		class CGV_API cone_renderer;
 
-		//! reference to a singleton rounded cone renderer that is shared among drawables
+		//! reference to a singleton cone renderer that is shared among drawables
 		/*! the second parameter is used for reference counting. Use +1 in your init method,
 			-1 in your clear method and default 0 argument otherwise. If internal reference
 			counter decreases to 0, singleton renderer is destructed. */
-		extern CGV_API rounded_cone_renderer& ref_rounded_cone_renderer(context& ctx, int ref_count_change = 0);
+		extern CGV_API cone_renderer& ref_cone_renderer(context& ctx, int ref_count_change = 0);
 
-		struct CGV_API rounded_cone_render_style : public surface_render_style
+		struct CGV_API cone_render_style : public surface_render_style
 		{	
 			/// multiplied to the sphere radii, initialized to 1
 			float radius_scale;
-			/// default value assigned to radius attribute in \c enable method of rounded cone renderer, set to 1 in constructor
+			/// default value assigned to radius attribute in \c enable method of cone renderer, set to 1 in constructor
 			float radius;
 
 			bool show_caps;
@@ -51,21 +51,21 @@ namespace cgv { // @<
 			float cone_angle_factor;
 			std::vector<vec3> sample_dirs;
 			/// construct with default values
-			rounded_cone_render_style();
+			cone_render_style();
 		};
 
-		/// renderer that supports raycasting of rounded cones
-		class CGV_API rounded_cone_renderer : public surface_renderer
+		/// renderer that supports raycasting of cones
+		class CGV_API cone_renderer : public surface_renderer
 		{
 		protected:
 			bool has_radii;
 			/// the shader defines used to build the shader, used to comapre against new defines to determine if the shader needs to be rebuilt
 			shader_define_map shader_defines;
-			/// overload to allow instantiation of rounded_cone_renderer
+			/// overload to allow instantiation of cone_renderer
 			render_style* create_render_style() const;
 			/// update shader defines based on render style
 			void update_defines(shader_define_map& defines);
-			/// build rounded cone program
+			/// build cone program
 			bool build_shader_program(context& ctx, shader_program& prog, const shader_define_map& defines);
 
 			texture* albedo_texture;
@@ -73,7 +73,7 @@ namespace cgv { // @<
 
 		public:
 			/// initializes member variables
-			rounded_cone_renderer();
+			cone_renderer();
 			/// call this before setting attribute arrays to manage attribute array in given manager
 			void enable_attribute_array_manager(const context& ctx, attribute_array_manager& aam);
 			/// call this after last render/draw call to ensure that no other users of renderer change attribute arrays of given manager
@@ -97,11 +97,11 @@ namespace cgv { // @<
 				bool use_strips = false, bool use_adjacency = false, uint32_t strip_restart_index = -1);
 		};
 
-		struct CGV_API rounded_cone_render_style_reflect : public rounded_cone_render_style
+		struct CGV_API cone_render_style_reflect : public cone_render_style
 		{
 			bool self_reflect(cgv::reflect::reflection_handler& rh);
 		};
-		extern CGV_API cgv::reflect::extern_reflection_traits<rounded_cone_render_style, rounded_cone_render_style_reflect> get_reflection_traits(const rounded_cone_render_style&);
+		extern CGV_API cgv::reflect::extern_reflection_traits<cone_render_style, cone_render_style_reflect> get_reflection_traits(const cone_render_style&);
 	}
 }
 
