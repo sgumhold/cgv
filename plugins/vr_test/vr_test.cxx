@@ -513,7 +513,7 @@ bool vr_test::init(cgv::render::context& ctx)
 
 	cgv::render::ref_box_renderer(ctx, 1);
 	cgv::render::ref_sphere_renderer(ctx, 1);
-	cgv::render::ref_rounded_cone_renderer(ctx, 1);
+	cgv::render::ref_cone_renderer(ctx, 1);
 	return true;
 }
 
@@ -521,7 +521,7 @@ void vr_test::clear(cgv::render::context& ctx)
 {
 	cgv::render::ref_box_renderer(ctx, -1);
 	cgv::render::ref_sphere_renderer(ctx, -1);
-	cgv::render::ref_rounded_cone_renderer(ctx, -1);
+	cgv::render::ref_cone_renderer(ctx, -1);
 }
 
 void vr_test::init_frame(cgv::render::context& ctx)
@@ -756,7 +756,7 @@ void vr_test::draw(cgv::render::context& ctx)
 					}
 			}
 			if (P.size() > 0) {
-				auto& cr = cgv::render::ref_rounded_cone_renderer(ctx);
+				auto& cr = cgv::render::ref_cone_renderer(ctx);
 				cr.set_render_style(cone_style);
 				//cr.set_eye_position(vr_view_ptr->get_eye_of_kit());
 				cr.set_position_array(ctx, P);

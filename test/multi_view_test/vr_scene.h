@@ -2,7 +2,7 @@
 #include <cgv/render/drawable.h>
 #include <cgv_gl/sphere_renderer.h>
 #include <cgv_gl/box_renderer.h>
-#include <cgv_gl/rounded_cone_renderer.h>
+#include <cgv_gl/cone_renderer.h>
 #include <cgv/gui/event_handler.h>
 #include <cgv/gui/provider.h>
 #include <vr_view_interactor.h>

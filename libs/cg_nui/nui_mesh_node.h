@@ -5,7 +5,7 @@
 #include <cgv/gui/provider.h>
 #include <cgv/media/mesh/simple_mesh.h>
 #include <cgv_gl/gl/mesh_render_info.h>
-#include <cgv_gl/rounded_cone_renderer.h>
+#include <cgv_gl/cone_renderer.h>
 #include "nui_node.h"
 
 #include "lib_begin.h"
@@ -35,7 +35,7 @@ namespace cgv {
 			///
 			bool show_wireframe;
 			//
-			cgv::render::rounded_cone_render_style cone_style;
+			cgv::render::cone_render_style cone_style;
 		public:
 			nui_mesh_node(const std::string& _name, ScalingMode _scaling_mode = SM_NONE);
 			virtual ~nui_mesh_node();
