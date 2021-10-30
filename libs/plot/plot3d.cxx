@@ -188,7 +188,7 @@ bool plot3d::init(cgv::render::context& ctx)
 	//}
 	aam_domain.init(ctx);
 	cgv::render::ref_box_renderer(ctx, 1);
-	cgv::render::ref_rounded_cone_renderer(ctx, 1);
+	cgv::render::ref_cone_renderer(ctx, 1);
 	return plot_base::init(ctx);
 }
 
@@ -475,7 +475,7 @@ void plot3d::draw_domain(cgv::render::context& ctx)
 	}
 	set_extent(E);
 
-	auto& rcr = cgv::render::ref_rounded_cone_renderer(ctx);
+	auto& rcr = cgv::render::ref_cone_renderer(ctx);
 	rcr.set_render_style(rcrs);
 	rcr.enable_attribute_array_manager(ctx, aam_domain);
 	rcr.set_position_array(ctx, P);
@@ -544,7 +544,7 @@ void plot3d::clear(cgv::render::context& ctx)
 	tube_prog.destruct(ctx);
 //	surface_prog.destruct(ctx);
 	cgv::render::ref_box_renderer(ctx, -1);
-	cgv::render::ref_rounded_cone_renderer(ctx, -1);
+	cgv::render::ref_cone_renderer(ctx, -1);
 	aam_domain.destruct(ctx);
 	plot_base::clear(ctx);
 }

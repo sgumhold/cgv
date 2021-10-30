@@ -10,7 +10,7 @@
 #include <cgv_gl/box_renderer.h>
 #include <cgv_gl/sphere_renderer.h>
 #include <cgv_gl/arrow_renderer.h>
-#include <cgv_gl/rounded_cone_renderer.h>
+#include <cgv_gl/cone_renderer.h>
 
 #include "lib_begin.h" // @<
 
@@ -87,7 +87,7 @@ protected: //@<
 
 	box_render_style brs;
 	sphere_render_style srs;
-	rounded_cone_render_style crs;
+	cone_render_style crs;
 	arrow_render_style ars;
 
 	//@>

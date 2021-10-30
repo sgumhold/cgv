@@ -3,7 +3,7 @@
 #include "plot_base.h"
 #include <cgv/render/shader_program.h>
 #include <libs/cgv_gl/box_renderer.h>
-#include <cgv_gl/rounded_cone_renderer.h>
+#include <cgv_gl/cone_renderer.h>
 
 #include "lib_begin.h"
 
@@ -52,7 +52,7 @@ class CGV_API plot3d : public plot_base
 	cgv::render::shader_program tube_prog;
 	//cgv::render::shader_program surface_prog;
 	cgv::render::box_render_style brs;
-	cgv::render::rounded_cone_render_style rcrs;
+	cgv::render::cone_render_style rcrs;
 	cgv::render::attribute_array_manager aam_domain;
 
 	bool compute_sample_coordinate_interval(int i, int ai, float& samples_min, float& samples_max);
