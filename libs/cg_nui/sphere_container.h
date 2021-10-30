@@ -2,7 +2,7 @@
 
 #include "primitive_container.h"
 #include <cgv_gl/sphere_renderer.h>
-#include <cgv_gl/rounded_cone_renderer.h>
+#include <cgv_gl/cone_renderer.h>
 
 #include "lib_begin.h"
 
@@ -20,7 +20,7 @@ namespace cgv {
 		{
 		protected:
 			cgv::render::sphere_render_style srs;
-			cgv::render::rounded_cone_render_style rcrs;
+			cgv::render::cone_render_style rcrs;
 			SphereRenderType render_type;
 			std::vector<uint32_t> indices;
 			void prepare_render(cgv::render::context& ctx, cgv::render::renderer& r, const cgv::render::render_style& rs, const std::vector<uint32_t>* indices_ptr = 0) const;

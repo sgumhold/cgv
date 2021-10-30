@@ -22,14 +22,14 @@ controller_tool::controller_tool(const std::string& _name, int32_t _controller_i
 
 bool controller_tool::init(cgv::render::context& ctx)
 {
-	cgv::render::ref_rounded_cone_renderer(ctx, 1);
+	cgv::render::ref_cone_renderer(ctx, 1);
 	cgv::render::ref_box_wire_renderer(ctx, 1);
 	cgv::render::ref_sphere_renderer(ctx, 1);
 	return true;
 }
 void controller_tool::clear(cgv::render::context& ctx)
 {
-	cgv::render::ref_rounded_cone_renderer(ctx, -1);
+	cgv::render::ref_cone_renderer(ctx, -1);
 	cgv::render::ref_box_wire_renderer(ctx, -1);
 	cgv::render::ref_sphere_renderer(ctx, -1);
 }

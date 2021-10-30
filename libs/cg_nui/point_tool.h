@@ -3,7 +3,7 @@
 #include "controller_tool.h"
 #include "nui_node.h"
 #include <cgv_gl/gl/mesh_render_info.h>
-#include <cgv_gl/rounded_cone_renderer.h>
+#include <cgv_gl/cone_renderer.h>
 #include <cgv_gl/sphere_renderer.h>
 #include <cg_vr/vr_events.h>
 
