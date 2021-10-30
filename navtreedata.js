@@ -158,13 +158,13 @@ var NAVTREEINDEX =
 "structcgv_1_1base_1_1factory__impl.html#aae2e9d39b7dafc4fe87bb1263a29365f",
 "structcgv_1_1math_1_1random.html#a60c0b961c092805db81f624a381b8fa0",
 "structcgv_1_1media_1_1video_1_1video__reader__listener.html#a8788f2494d5cbf82c7e89acd859338cd",
-"structcgv_1_1plot_1_1plot3d__config.html#a3bf1a0f5d32ed0c6b44728595f6c8201",
-"structcgv_1_1reflect_1_1extern__string__reflection__traits.html#a035479a02a1b4f6b5f6b92837fbe95e9",
-"structcgv_1_1render_1_1box__wire__render__style.html#af36c04fdeb21290f87a81d9bfae4ad32",
-"structcgv_1_1render_1_1point__render__style.html#ab9e51ddef8a68db550e09b61fe6129c4",
-"structcgv_1_1render_1_1sphere__render__style.html#ab3ed34e8e12b57fe744b2dc2e65b82f7",
-"structcgv_1_1type_1_1traits_1_1max.html",
-"vr__log_8h_source.html"
+"structcgv_1_1plot_1_1plot3d__config.html#a3f4c54c23e849fa07adeca68dd718966",
+"structcgv_1_1reflect_1_1extern__string__reflection__traits.html#a14b785fd66dd21e16d4a67a5bc1d2a15",
+"structcgv_1_1render_1_1callback__drawable.html",
+"structcgv_1_1render_1_1point__render__style.html#abcd4a3a1ac9d67a85d9b38956b943dad",
+"structcgv_1_1render_1_1sphere__render__style.html#ab4d9c32401403aab72ca0d21ae276c4c",
+"structcgv_1_1type_1_1traits_1_1max__fct.html",
+"vr__render__helpers_8h_source.html"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

@@ -88,7 +88,7 @@ $(document).ready(function(){initNavTree('plot2d_8h_source.html',''); initResiza
 <div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="preprocessor">#pragma once</span></div>
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160; </div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="preprocessor">#include &quot;plot_base.h&quot;</span></div>
-<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="preprocessor">#include &quot;mark2d_provider.h&quot;</span></div>
+<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="comment">//#include &quot;mark2d_provider.h&quot;</span></div>
 <div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="preprocessor">#include &lt;cgv/render/shader_program.h&gt;</span></div>
 <div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160; </div>
 <div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="preprocessor">#include &quot;lib_begin.h&quot;</span></div>
@@ -101,7 +101,7 @@ $(document).ready(function(){initNavTree('plot2d_8h_source.html',''); initResiza
 <div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;{</div>
 <div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;        <a class="code" href="structcgv_1_1plot_1_1plot2d__config.html">plot2d_config</a>(<span class="keyword">const</span> std::string&amp; _name);</div>
 <div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;        <span class="keywordtype">void</span> configure_chart(ChartType chart_type);</div>
-<div class="line"><a name="l00021"></a><span class="lineno"><a class="line" href="structcgv_1_1plot_1_1plot2d__config.html#acfc2c9c298c5ce326eee31059bd13c4f">   21</a></span>&#160;        std::vector&lt;std::pair&lt;mark2d_provider*, mark_style*&gt;&gt; <a class="code" href="structcgv_1_1plot_1_1plot2d__config.html#acfc2c9c298c5ce326eee31059bd13c4f">marks</a>;</div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;        <span class="comment">//std::vector&lt;std::pair&lt;mark2d_provider*, mark_style*&gt;&gt; marks;</span></div>
 <div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;};</div>
 <div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160; </div>
 <div class="line"><a name="l00025"></a><span class="lineno"><a class="line" href="classcgv_1_1plot_1_1plot2d.html">   25</a></span>&#160;<span class="keyword">class </span>CGV_API <a class="code" href="classcgv_1_1plot_1_1plot2d.html">plot2d</a> : <span class="keyword">public</span> <a class="code" href="classcgv_1_1plot_1_1plot__base.html">plot_base</a></div>
@@ -167,7 +167,6 @@ $(document).ready(function(){initNavTree('plot2d_8h_source.html',''); initResiza
 <div class="ttc" id="aclasscgv_1_1plot_1_1plot2d_html"><div class="ttname"><a href="classcgv_1_1plot_1_1plot2d.html">cgv::plot::plot2d</a></div><div class="ttdef"><b>Definition:</b> plot2d.h:25</div></div>
 <div class="ttc" id="aclasscgv_1_1base_1_1base_html"><div class="ttname"><a href="classcgv_1_1base_1_1base.html">cgv::base::base</a></div><div class="ttdef"><b>Definition:</b> base.h:56</div></div>
 <div class="ttc" id="aclasscgv_1_1plot_1_1plot2d_html_a8852b4161456d79afb08461c8419c672"><div class="ttname"><a href="classcgv_1_1plot_1_1plot2d.html#a8852b4161456d79afb08461c8419c672">cgv::plot::plot2d::multi_axis_modes</a></div><div class="ttdeci">bool * multi_axis_modes</div><div class="ttdoc">whether to manage separate axes for each sub plot</div><div class="ttdef"><b>Definition:</b> plot2d.h:55</div></div>
-<div class="ttc" id="astructcgv_1_1plot_1_1plot2d__config_html_acfc2c9c298c5ce326eee31059bd13c4f"><div class="ttname"><a href="structcgv_1_1plot_1_1plot2d__config.html#acfc2c9c298c5ce326eee31059bd13c4f">cgv::plot::plot2d_config::marks</a></div><div class="ttdeci">std::vector&lt; std::pair&lt; mark2d_provider *, mark_style * &gt; &gt; marks</div><div class="ttdoc">list of styles for provider based marks</div><div class="ttdef"><b>Definition:</b> plot2d.h:21</div></div>
 <div class="ttc" id="aclasscgv_1_1plot_1_1plot2d_html_a4e42d5e540839187533376d29cdf91da"><div class="ttname"><a href="classcgv_1_1plot_1_1plot2d.html#a4e42d5e540839187533376d29cdf91da">cgv::plot::plot2d::aam_domain</a></div><div class="ttdeci">cgv::render::attribute_array_manager aam_domain</div><div class="ttdoc">attribute managers for domain rectangles and domain tick labels</div><div class="ttdef"><b>Definition:</b> plot2d.h:51</div></div>
 <div class="ttc" id="anamespacecgv_html"><div class="ttname"><a href="namespacecgv.html">cgv</a></div><div class="ttdoc">the cgv namespace</div><div class="ttdef"><b>Definition:</b> vr_calib.cxx:9</div></div>
 <div class="ttc" id="aclasscgv_1_1render_1_1context_html"><div class="ttname"><a href="classcgv_1_1render_1_1context.html">cgv::render::context</a></div><div class="ttdef"><b>Definition:</b> context.h:526</div></div>
