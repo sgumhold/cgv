@@ -6,7 +6,7 @@
 #include <cgv/render/shader_program.h>
 #include <cgv_gl/gl/mesh_render_info.h>
 #include <cgv_gl/sphere_renderer.h>
-#include <cgv_gl/rounded_cone_renderer.h>
+#include <cgv_gl/cone_renderer.h>
 #include <cgv/gui/event_handler.h>
 #include <vr/vr_state.h>
 #include <vr/vr_kit.h>
@@ -28,7 +28,7 @@ class vr_lab_test :
 	public vr::vr_tool
 {
 	cgv::render::sphere_render_style srs;
-	cgv::render::rounded_cone_render_style rcrs;
+	cgv::render::cone_render_style rcrs;
 	/// label index to show statistics
 	uint32_t li_stats;
 	/// background color of statistics label
@@ -117,7 +117,7 @@ public:
 	bool init(cgv::render::context& ctx)
 	{
 		cgv::render::ref_sphere_renderer(ctx, 1);
-		cgv::render::ref_rounded_cone_renderer(ctx, 1);
+		cgv::render::ref_cone_renderer(ctx, 1);
 
 		plot.set_view_ptr(find_view_as_node());
 		// and init plot
@@ -189,7 +189,7 @@ public:
 	void clear(cgv::render::context& ctx)
 	{
 		cgv::render::ref_sphere_renderer(ctx, -1);
-		cgv::render::ref_rounded_cone_renderer(ctx, -1);
+		cgv::render::ref_cone_renderer(ctx, -1);
 	}
 	void draw(cgv::render::context& ctx)
 	{
@@ -211,7 +211,7 @@ public:
 
 		auto& sr = cgv::render::ref_sphere_renderer(ctx);
 		sr.set_render_style(srs);
-		auto& rcr = cgv::render::ref_rounded_cone_renderer(ctx);
+		auto& rcr = cgv::render::ref_cone_renderer(ctx);
 		rcr.set_render_style(rcrs);
 		// draw spheres that represent the pen
 		std::vector<vec3> P;
