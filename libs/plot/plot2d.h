@@ -1,7 +1,7 @@
 #pragma once
 
 #include "plot_base.h"
-#include "mark2d_provider.h"
+//#include "mark2d_provider.h"
 #include <cgv/render/shader_program.h>
 
 #include "lib_begin.h"
@@ -18,7 +18,7 @@ struct CGV_API plot2d_config : public plot_base_config
 	/// configure the sub plot to a specific chart type
 	void configure_chart(ChartType chart_type);
 	/// list of styles for provider based marks
-	std::vector<std::pair<mark2d_provider*, mark_style*>> marks;
+	//std::vector<std::pair<mark2d_provider*, mark_style*>> marks;
 };
 
 /** The \c plot2d class draws 2d plots with potentially several sub plots of different chart types */
