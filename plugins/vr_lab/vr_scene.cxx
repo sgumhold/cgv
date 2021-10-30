@@ -190,7 +190,7 @@ bool vr_scene::init(cgv::render::context& ctx)
 {
 	cgv::render::ref_sphere_renderer(ctx, 1);
 	cgv::render::ref_box_renderer(ctx, 1);
-	cgv::render::ref_rounded_cone_renderer(ctx, 1);
+	cgv::render::ref_cone_renderer(ctx, 1);
 	cgv::render::ref_rectangle_renderer(ctx, 1);
 	aam.init(ctx);
 	cgv::gui::connect_vr_server(true);
@@ -235,7 +235,7 @@ void vr_scene::clear(cgv::render::context& ctx)
 {
 	cgv::render::ref_sphere_renderer(ctx, -1);
 	cgv::render::ref_box_renderer(ctx,-1);
-	cgv::render::ref_rounded_cone_renderer(ctx, -1);
+	cgv::render::ref_cone_renderer(ctx, -1);
 	aam.destruct(ctx);
 	lm.destruct(ctx);
 	cgv::render::ref_rectangle_renderer(ctx, -1);
