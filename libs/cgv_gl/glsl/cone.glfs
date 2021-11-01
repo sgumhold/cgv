@@ -264,7 +264,7 @@ void main()
 	float t = intersect_rounded_cone(org, dir, start_fs.xyz, end_fs.xyz, start_fs.w, end_fs.w, normal, l);
 #endif
 
-	if(t > 0.0) {
+	if(t >= 0.0) {
 		// get the hit position in object space
 		vec3 hit_pos = org + t * dir;
 		vec4 color = mix(color_start_fs, color_end_fs, l);

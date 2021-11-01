@@ -106,7 +106,9 @@ namespace cgv {
 		void arrow_renderer::draw(context& ctx, size_t start, size_t count, bool use_strips, bool use_adjacency, uint32_t strip_restart_index)
 		{
 			const arrow_render_style& ars = get_style<arrow_render_style>();
-			draw_impl_instanced(ctx, PT_POINTS, start, count, ars.nr_subdivisions, false, false, -1);
+			//draw_impl_instanced(ctx, PT_POINTS, start, count, ars.nr_subdivisions, false, false, -1);
+
+			draw_impl(ctx, PT_POINTS, start, count, false, false, -1);
 		}
 
 		bool arrow_render_style_reflect::self_reflect(cgv::reflect::reflection_handler& rh)
