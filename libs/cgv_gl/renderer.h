@@ -84,13 +84,17 @@ namespace cgv { // @<
 
 			template <typename T>
 			bool set_attribute_array(const context& ctx, int loc, const T& array) {
-				if (aam_ptr)
+				if(loc < 0)
+					return false;
+				if(aam_ptr)
 					return aam_ptr->set_attribute_array(ctx, loc, array);
 				enabled_attribute_arrays.insert(loc);
 				return attribute_array_binding::set_global_attribute_array(ctx, loc, array);
 			}
 			template <typename T>
 			bool set_attribute_array(const context& ctx, int loc, const T* array_ptr, size_t nr_elements, unsigned stride) {
+				if(loc < 0)
+					return false;
 				if (aam_ptr)
 					return aam_ptr->set_attribute_array(ctx, loc, array_ptr, nr_elements, stride);
 				enabled_attribute_arrays.insert(loc);
@@ -100,6 +104,8 @@ namespace cgv { // @<
 			/// in case that several attributes are stored interleaved, call this function for the first and ref_composed_attribute_array() for all others
 			template <typename C, typename T>
 			bool set_composed_attribute_array(const context& ctx, int loc, const C* array_ptr, size_t nr_elements, const T& elem) {
+				if(loc < 0)
+					return false;
 				if (aam_ptr)
 					return aam_ptr->set_composed_attribute_array(ctx, loc, array_ptr, nr_elements, elem);
 				enabled_attribute_arrays.insert(loc);
@@ -108,6 +114,8 @@ namespace cgv { // @<
 			/// in case that several attributes are stored interleaved, call set_composed_attribute_array() for the first and this function for all others
 			template <typename C, typename T>
 			bool ref_composed_attribute_array(const context& ctx, int loc, int loc_ref, const C* array_ptr, size_t nr_elements, const T& elem) {
+				if(loc < 0)
+					return false;
 				if (aam_ptr)
 					return aam_ptr->ref_composed_attribute_array(ctx, loc, loc_ref, array_ptr, nr_elements, elem);
 				enabled_attribute_arrays.insert(loc);
