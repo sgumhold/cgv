@@ -51,7 +51,7 @@ var searchData=
   ['ref_5fbox_5fwire_5frenderer_5332',['ref_box_wire_renderer',['../namespacecgv_1_1render.html#a7fafbbe77ca934f780fb7456aee4e9cb',1,'cgv::render']]],
   ['ref_5fbump_5fscale_5333',['ref_bump_scale',['../classcgv_1_1media_1_1illum_1_1obj__material.html#ae2701575708738fe68a7e32b8bc86262',1,'cgv::media::illum::obj_material::ref_bump_scale()'],['../classcgv_1_1media_1_1illum_1_1textured__surface__material.html#ab447b1448a22c74b69b089fe09129ba7',1,'cgv::media::illum::textured_surface_material::ref_bump_scale()']]],
   ['ref_5fbump_5ftexture_5fname_5334',['ref_bump_texture_name',['../classcgv_1_1media_1_1illum_1_1obj__material.html#a66a99f2911ba222a3039d43ae334b6a0',1,'cgv::media::illum::obj_material']]],
-  ['ref_5fcomposed_5fattribute_5farray_5335',['ref_composed_attribute_array',['../classcgv_1_1render_1_1renderer.html#ae8d5de11d3946433c389c2b08f3d21be',1,'cgv::render::renderer']]],
+  ['ref_5fcomposed_5fattribute_5farray_5335',['ref_composed_attribute_array',['../classcgv_1_1render_1_1renderer.html#a21168f6f906f8dc8349d9e79cb9215d0',1,'cgv::render::renderer']]],
   ['ref_5fcone_5frenderer_5336',['ref_cone_renderer',['../namespacecgv_1_1render.html#a41a6e252b09926b43b640b2141c8fb24',1,'cgv::render']]],
   ['ref_5fcounted_5337',['ref_counted',['../classcgv_1_1data_1_1ref__counted.html#a4abba9349b8891152032f9b386e26ab1',1,'cgv::data::ref_counted']]],
   ['ref_5fcurrent_5fmodifiers_5338',['ref_current_modifiers',['../namespacecgv_1_1gui.html#a288447aa0263b968550c61424241470d',1,'cgv::gui']]],
