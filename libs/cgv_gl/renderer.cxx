@@ -76,6 +76,8 @@ namespace cgv {
 		}
 		bool renderer::set_attribute_array(const context& ctx, int loc, type_descriptor element_type, const vertex_buffer& vbo, size_t offset_in_bytes, size_t nr_elements, unsigned stride_in_bytes)
 		{
+			if(loc < 0)
+				return false;
 			if (aam_ptr)
 				return aam_ptr->set_attribute_array(ctx, loc, element_type, vbo, offset_in_bytes, nr_elements, stride_in_bytes);
 			enabled_attribute_arrays.insert(loc);
