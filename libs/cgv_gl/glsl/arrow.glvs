@@ -12,7 +12,7 @@ out vec4 color_gs;
 out float radius_gs;
 out float head_radius_gs;
 out float head_length_gs;
-out int i_gs;
+out int i_gs;//
 
 uniform float radius_lower_bound = 0.0;
 uniform float length_eps = 0.000001;
@@ -35,7 +35,7 @@ void main()
 {
 	color_gs = color;
 	color_gs.rgb *= color_scale;
-	i_gs = gl_InstanceID;
+
 	p0_gs  = position.xyz;
 	p1_gs  = direction;
 	vec3 dir = direction;
@@ -50,11 +50,15 @@ void main()
 		p0_gs -= relative_location_of_position * dir;
 		p1_gs  = p0_gs + dir;
 	}
+
 	float l = length(dir);
+
 	radius_gs = max(radius_lower_bound, l*radius_relative_to_length);
 	head_radius_gs = head_radius_scale * radius_gs;
+
 	float radius_relative_to_radius = head_length_relative_to_radius * head_radius_gs;
 	float radius_relative_to_length = head_length_relative_to_length * l;
+
 	switch (head_length_mode) {
 	case 1 : head_length_gs = radius_relative_to_radius; break;
 	case 2 : head_length_gs = radius_relative_to_length; break;
@@ -62,6 +66,7 @@ void main()
 	head_length_gs = min(radius_relative_to_radius, radius_relative_to_length); 
 	break;
 	}
+
 	pm_gs = mix(p1_gs, p0_gs, (l > length_eps) ? head_length_gs/l : 0.5);
 	t_gs = (l > length_eps) ? normalize(dir) : vec3(1.0,0.0,0.0);
 }

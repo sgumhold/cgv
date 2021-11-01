@@ -352,8 +352,9 @@ public:
 			cgv::render::arrow_renderer& a_renderer = cgv::render::ref_arrow_renderer(ctx);
 			a_renderer.set_render_style(arrow_style);
 			a_renderer.enable_attribute_array_manager(ctx, a_manager);
-			a_renderer.set_position_array(ctx, points);
-			a_renderer.set_color_array(ctx, colors);
+			set_geometry(ctx, a_renderer);
+			//a_renderer.set_position_array(ctx, points);
+			//a_renderer.set_color_array(ctx, colors);
 			a_renderer.set_direction_array(ctx, directions);
 			a_renderer.render(ctx, 0, points.size());
 			a_renderer.disable_attribute_array_manager(ctx, a_manager);
