@@ -84,20 +84,18 @@ namespace cgv { // @<
 			bool enable(context& ctx);
 			/// specify a single extent for all slabs
 			template <typename T>
-			void set_extent(const context& ctx, const T& extent) { has_extents = true;  ref_prog().set_attribute(ctx, ref_prog().get_attribute_location(ctx, "extent"), extent); }
+			void set_extent(const context& ctx, const T& extent) { has_extents = true;  ref_prog().set_attribute(ctx, get_prog_attribute_location(ctx, "extent"), extent); }
 			/// extent array specifies slab extends in case of position_is_center=true, otherwise the maximum point of each slab
 			template <typename T>
-			void set_extent_array(const context& ctx, const std::vector<T>& extents) { has_extents = true; set_attribute_array(ctx, ref_prog().get_attribute_location(ctx, "extent"), extents); }
+			void set_extent_array(const context& ctx, const std::vector<T>& extents) { has_extents = true; set_attribute_array(ctx,  "extent", extents); }
 			/// extent array specifies slab extends in case of position_is_center=true, otherwise the maximum point of each slab
 			template <typename T>
-			void set_extent_array(const context& ctx, const T* extents, size_t nr_elements, unsigned stride_in_bytes = 0) { has_extents = true;  set_attribute_array(ctx, ref_prog().get_attribute_location(ctx, "extent"), extents, nr_elements, stride_in_bytes); }
+			void set_extent_array(const context& ctx, const T* extents, size_t nr_elements, unsigned stride_in_bytes = 0) { has_extents = true;  set_attribute_array(ctx, "extent", extents, nr_elements, stride_in_bytes); }
 			/// specify box array directly. This sets position_is_center to false as well as position and extent array
 			template <typename T>
 			void set_box_array(const context& ctx, const std::vector<cgv::media::axis_aligned_box<T, 3> >& box) {
-				set_composed_attribute_array(ctx, ref_prog().get_attribute_location(ctx, "position"),
-					&box.front(), box.size(), box[0].get_min_pnt());
-				ref_composed_attribute_array(ctx, ref_prog().get_attribute_location(ctx, "extent"), 
-					ref_prog().get_attribute_location(ctx, "position"), &box.front(), box.size(), box[0].get_max_pnt());
+				set_composed_attribute_array(ctx, "position", &box.front(), box.size(), box[0].get_min_pnt());
+				ref_composed_attribute_array(ctx, "extent", "position", &box.front(), box.size(), box[0].get_max_pnt());
 				has_positions = true;
 				has_extents = true;
 				set_position_is_center(false);
@@ -105,36 +103,30 @@ namespace cgv { // @<
 			/// specify box array directly. This sets position_is_center to false as well as position and extent array
 			template <typename T>
 			void set_box_array(const context& ctx, const cgv::media::axis_aligned_box<T, 3>* box, size_t count) {
-				set_composed_attribute_array(ctx, ref_prog().get_attribute_location(ctx, "position"), 
-					box, count, box[0].get_min_pnt());
-				ref_composed_attribute_array(ctx, ref_prog().get_attribute_location(ctx, "extent"), 
-					ref_prog().get_attribute_location(ctx, "position"), box, count, box[0].get_max_pnt());
+				set_composed_attribute_array(ctx, "position", box, count, box[0].get_min_pnt());
+				ref_composed_attribute_array(ctx, "extent", "position", box, count, box[0].get_max_pnt());
 				has_positions = true;
 				has_extents = true;
 				set_position_is_center(false);
 			}
 			/// template method to set the translations from a vector of vectors of type T, which should have 3 components
 			template <typename T>
-			void set_translation_array(const context& ctx, const std::vector<T>& translations) { has_translations = true; set_attribute_array(ctx, ref_prog().get_attribute_location(ctx, "translation"), translations); }
+			void set_translation_array(const context& ctx, const std::vector<T>& translations) { has_translations = true; set_attribute_array(ctx, "translation", translations); }
 			/// template method to set the translations from a vector of vectors of type T, which should have 3 components
 			template <typename T>
-			void set_translation_array(const context& ctx, const T* translations, size_t nr_elements, unsigned stride) { has_translations = true; set_attribute_array(ctx, ref_prog().get_attribute_location(ctx, "translation"), translations, nr_elements, stride); }
+			void set_translation_array(const context& ctx, const T* translations, size_t nr_elements, unsigned stride) { has_translations = true; set_attribute_array(ctx, "translation", translations, nr_elements, stride); }
 			/// template method to set the rotation from a vector of quaternions of type T, which should have 4 components
 			template <typename T>
-			void set_rotation_array(const context& ctx, const std::vector<T>& rotations) { has_rotations = true; set_attribute_array(ctx, ref_prog().get_attribute_location(ctx, "rotation"), rotations); }
+			void set_rotation_array(const context& ctx, const std::vector<T>& rotations) { has_rotations = true; set_attribute_array(ctx, "rotation", rotations); }
 			/// template method to set the rotation from a vector of quaternions of type T, which should have 4 components
 			template <typename T>
-			void set_rotation_array(const context& ctx, const T* rotations, size_t nr_elements, unsigned stride) { has_rotations = true; set_attribute_array(ctx, ref_prog().get_attribute_location(ctx, "rotation"), rotations, nr_elements, stride); }
+			void set_rotation_array(const context& ctx, const T* rotations, size_t nr_elements, unsigned stride) { has_rotations = true; set_attribute_array(ctx, "rotation", rotations, nr_elements, stride); }
 			/// extent array specifies slab extends in case of position_is_center=true, otherwise the maximum point of each slab
 			template <typename T>
-			void set_texture_index_array(const context& ctx, const std::vector<T>& texture_indices) {
-				has_texture_indices = true;
-				int loc = ref_prog().get_attribute_location(ctx, "texture_index");
-				set_attribute_array(ctx, loc, texture_indices);
-			}
+			void set_texture_index_array(const context& ctx, const std::vector<T>& texture_indices) { has_texture_indices = true; set_attribute_array(ctx, "texture_index", texture_indices); }
 			/// extent array specifies slab extends in case of position_is_center=true, otherwise the maximum point of each slab
 			template <typename T>
-			void set_texture_index_array(const context& ctx, const T* texture_indices, size_t nr_elements, unsigned stride_in_bytes = 0) { has_texture_indices = true;  set_attribute_array(ctx, ref_prog().get_attribute_location(ctx, "texture_index"), texture_indices, nr_elements, stride_in_bytes); }
+			void set_texture_index_array(const context& ctx, const T* texture_indices, size_t nr_elements, unsigned stride_in_bytes = 0) { has_texture_indices = true;  set_attribute_array(ctx, "texture_index", texture_indices, nr_elements, stride_in_bytes); }
 			///
 			bool validate_attributes(const context& ctx) const;
 			///

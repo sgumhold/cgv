@@ -57,7 +57,7 @@ protected:
 	std::vector<unsigned> indices;
 	RenderMode mode;
 	cgv::render::view* view_ptr;
-	bool p_vbos_out_of_date, sl_vbos_out_of_date, b_vbos_out_of_date;
+	bool p_vbos_out_of_date, sl_vbos_out_of_date, b_vbos_out_of_date, a_vbos_out_of_date;
 
 	// declare render styles
 	cgv::render::point_render_style point_style;
@@ -94,6 +94,7 @@ public:
 		p_vbos_out_of_date = true;
 		sl_vbos_out_of_date = true;
 		b_vbos_out_of_date = true;
+		a_vbos_out_of_date = true;
 		interleaved_mode = false;
 		normal_style.normal_length = 0.01f;
 		// generate random geometry
@@ -160,6 +161,9 @@ public:
 		if ((member_ptr >= &T && member_ptr < &T + 1) || (member_ptr >= &t && member_ptr < &t + 1) || (member_ptr == &lambda) || member_ptr == &transform_points_only) {
 			compute_transformed_points();
 			p_vbos_out_of_date = true;
+			sl_vbos_out_of_date = true;
+			b_vbos_out_of_date = true;
+			a_vbos_out_of_date = true;
 		}
 		if (member_ptr == &sort_points) {
 			disable_depth = sort_points;
@@ -352,9 +356,10 @@ public:
 			cgv::render::arrow_renderer& a_renderer = cgv::render::ref_arrow_renderer(ctx);
 			a_renderer.set_render_style(arrow_style);
 			a_renderer.enable_attribute_array_manager(ctx, a_manager);
-			set_geometry(ctx, a_renderer);
-			//a_renderer.set_position_array(ctx, points);
-			//a_renderer.set_color_array(ctx, colors);
+			if(a_vbos_out_of_date) {
+				set_geometry(ctx, a_renderer);
+				a_vbos_out_of_date = false;
+			}
 			a_renderer.set_direction_array(ctx, directions);
 			a_renderer.render(ctx, 0, points.size());
 			a_renderer.disable_attribute_array_manager(ctx, a_manager);

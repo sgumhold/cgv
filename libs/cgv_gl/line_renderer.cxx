@@ -69,13 +69,13 @@ namespace cgv {
 		{
 			bool res = renderer::init(ctx);
 			int li;
-			li = ref_prog().get_attribute_location(ctx, "normal");
+			li = get_prog_attribute_location(ctx, "normal", false);
 			if (li != -1)
 				ref_prog().set_attribute(ctx, li, vec3(0.0f,0.0f,1.0f));
-			li = ref_prog().get_attribute_location(ctx, "depth_offset");
+			li = get_prog_attribute_location(ctx, "depth_offset", false);
 			if (li != -1)
 				ref_prog().set_attribute(ctx, li, 0.0f);
-			li = ref_prog().get_attribute_location(ctx, "line_width");
+			li = get_prog_attribute_location(ctx, "line_width", false);
 			if (li != -1)
 				ref_prog().set_attribute(ctx, li, 1.0f);
 			return res;
@@ -90,17 +90,17 @@ namespace cgv {
 			if (!has_colors)
 				ctx.set_color(lrs.default_color);
 			if (!has_normals) {
-				int li = ref_prog().get_attribute_location(ctx, "normal");
+				int li = get_prog_attribute_location(ctx, "normal", false);
 				if (li != -1)
 					ref_prog().set_attribute(ctx, li, lrs.default_normal);
 			}
 			if (!has_depth_offsets) {
-				int li = ref_prog().get_attribute_location(ctx, "depth_offset");
+				int li = get_prog_attribute_location(ctx, "depth_offset", false);
 				if (li != -1)
 					ref_prog().set_attribute(ctx, li, lrs.default_depth_offset);
 			}
 			if (!has_line_widths) {
-				int li = ref_prog().get_attribute_location(ctx, "line_width");
+				int li = get_prog_attribute_location(ctx, "line_width", false);
 				if (li != -1)
 					ref_prog().set_attribute(ctx, li, lrs.default_line_width);
 			}
