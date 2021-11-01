@@ -163,7 +163,9 @@ bool navigator::handle_event(cgv::gui::event& e) {
 				//char v = hit_pos[mi] < 0.0f ? '-' : '+';
 
 				//hit_box = true;
-				hit_axis = hit_pos[mi] < 0.0f ? -(mi+1) : (mi+1);
+				hit_axis = static_cast<int>(mi) + 1;
+				if(hit_pos[mi] < 0.0f)
+					hit_axis = -hit_axis;
 				//hit_normal = vec3(0.0f);
 				//hit_normal[mi] = hit_pos[mi] < 0.0f ? -1.0f : 1.0f;
 

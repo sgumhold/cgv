@@ -52,9 +52,9 @@ namespace cgv {
 		void renderer::enable_attribute_array_manager(const context& ctx, attribute_array_manager& aam)
 		{
 			aam_ptr = &aam;
-			if (aam_ptr->has_attribute(ctx, ref_prog().get_attribute_location(ctx, "position")))
+			if (aam_ptr->has_attribute(ctx, get_prog_attribute_location(ctx, "position")))
 				has_positions = true;
-			if (aam_ptr->has_attribute(ctx, ref_prog().get_attribute_location(ctx, "color")))
+			if (aam_ptr->has_attribute(ctx, get_prog_attribute_location(ctx, "color")))
 				has_colors = true;
 		}
 		/// call this after last render/draw call to ensure that no other users of renderer change attribute arrays of given manager
@@ -74,8 +74,9 @@ namespace cgv {
 			else
 				disable_attribute_array_manager(ctx, *aam_ptr);
 		}
-		bool renderer::set_attribute_array(const context& ctx, int loc, type_descriptor element_type, const vertex_buffer& vbo, size_t offset_in_bytes, size_t nr_elements, unsigned stride_in_bytes)
+		bool renderer::set_attribute_array(const context& ctx, const std::string& name, type_descriptor element_type, const vertex_buffer& vbo, size_t offset_in_bytes, size_t nr_elements, unsigned stride_in_bytes)
 		{
+			int loc = get_prog_attribute_location(ctx, name);
 			if(loc < 0)
 				return false;
 			if (aam_ptr)
@@ -86,12 +87,12 @@ namespace cgv {
 		void renderer::set_position_array(const context& ctx, type_descriptor element_type, const vertex_buffer& vbo, size_t offset_in_bytes, size_t nr_elements, unsigned stride_in_bytes)
 		{
 			has_positions = true;
-			set_attribute_array(ctx, ref_prog().get_attribute_location(ctx, "position"), element_type, vbo, offset_in_bytes, nr_elements, stride_in_bytes);
+			set_attribute_array(ctx, "position", element_type, vbo, offset_in_bytes, nr_elements, stride_in_bytes);
 		}
 		void renderer::set_color_array(const context& ctx, type_descriptor element_type, const vertex_buffer& vbo, size_t offset_in_bytes, size_t nr_elements, unsigned stride_in_bytes)
 		{
 			has_colors = true;
-			set_attribute_array(ctx, ref_prog().get_attribute_location(ctx, "color"), element_type, vbo, offset_in_bytes, nr_elements, stride_in_bytes);
+			set_attribute_array(ctx, "color", element_type, vbo, offset_in_bytes, nr_elements, stride_in_bytes);
 		}
 		void renderer::remove_indices(const context& ctx)
 		{

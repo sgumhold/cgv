@@ -126,29 +126,27 @@ namespace cgv {
 			void set_position_is_center(bool _position_is_center);
 			/// specify a single extent for all boxes
 			template <typename T>
-			void set_extent(const context& ctx, const cgv::math::fvec<T, 2U>& extent) { has_extents = true;  ref_prog().set_attribute(ctx, ref_prog().get_attribute_location(ctx, "extent"), extent); }
+			void set_extent(const context& ctx, const cgv::math::fvec<T, 2U>& extent) { has_extents = true;  ref_prog().set_attribute(ctx, get_prog_attribute_location(ctx, "extent"), extent); }
 			/// extent array specifies plane side lengths from origin to edge
 			template <typename T>
-			void set_extent_array(const context& ctx, const std::vector<cgv::math::fvec<T, 2U>>& extents) { has_extents = true;  set_attribute_array(ctx, ref_prog().get_attribute_location(ctx, "extent"), extents); }
+			void set_extent_array(const context& ctx, const std::vector<cgv::math::fvec<T, 2U>>& extents) { has_extents = true;  set_attribute_array(ctx, "extent", extents); }
 			/// extent array specifies plane side lengths from origin to edge
 			template <typename T>
-			void set_extent_array(const context& ctx, const cgv::math::fvec<T, 2U>* extents, size_t nr_elements, unsigned stride_in_bytes = 0) { has_extents = true;  set_attribute_array(ctx, ref_prog().get_attribute_location(ctx, "extent"), extents, nr_elements, stride_in_bytes); }
+			void set_extent_array(const context& ctx, const cgv::math::fvec<T, 2U>* extents, size_t nr_elements, unsigned stride_in_bytes = 0) { has_extents = true;  set_attribute_array(ctx, "extent", extents, nr_elements, stride_in_bytes); }
 			/// specify a single rectangle without array. This sets position_is_center to false as well as position and extent array
 			template <typename T>
 			void set_rectangle(const context& ctx, const cgv::media::axis_aligned_box<T, 2>& box) {
 				has_positions = true;
 				has_extents = true;
 				set_position_is_center(false);
-				ref_prog().set_attribute(ctx, ref_prog().get_position_index(), box.get_min_pnt());
-				ref_prog().set_attribute(ctx, ref_prog().get_attribute_location(ctx, "extent"), box.get_max_pnt());
+				ref_prog().set_attribute(ctx, "position", box.get_min_pnt());
+				ref_prog().set_attribute(ctx, "extent", box.get_max_pnt());
 			}
 			/// specify rectangle array directly. This sets position_is_center to false as well as position and extent array
 			template <typename T>
 			void set_rectangle_array(const context& ctx, const std::vector<cgv::media::axis_aligned_box<T, 2> >& boxes) {
-				set_composed_attribute_array(ctx, ref_prog().get_attribute_location(ctx, "position"),
-					&boxes.front(), boxes.size(), boxes[0].get_min_pnt());
-				ref_composed_attribute_array(ctx, ref_prog().get_attribute_location(ctx, "extent"),
-					ref_prog().get_attribute_location(ctx, "position"), &boxes.front(), boxes.size(), boxes[0].get_max_pnt());
+				set_composed_attribute_array(ctx, "position", &boxes.front(), boxes.size(), boxes[0].get_min_pnt());
+				ref_composed_attribute_array(ctx, "extent", "position", &boxes.front(), boxes.size(), boxes[0].get_max_pnt());
 				has_positions = true;
 				has_extents = true;
 				set_position_is_center(false);
@@ -156,10 +154,8 @@ namespace cgv {
 			/// specify ractangle array directly. This sets position_is_center to false as well as position and extent array
 			template <typename T>
 			void set_rectangle_array(const context& ctx, const cgv::media::axis_aligned_box<T, 2>* boxes, size_t count) {
-				set_composed_attribute_array(ctx, ref_prog().get_attribute_location(ctx, "position"),
-					boxes, count, boxes[0].get_min_pnt());
-				ref_composed_attribute_array(ctx, ref_prog().get_attribute_location(ctx, "extent"),
-					ref_prog().get_attribute_location(ctx, "position"), boxes, count, boxes[0].get_max_pnt());
+				set_composed_attribute_array(ctx, "position", boxes, count, boxes[0].get_min_pnt());
+				ref_composed_attribute_array(ctx, "extent", "position", boxes, count, boxes[0].get_max_pnt());
 				has_positions = true;
 				has_extents = true;
 				set_position_is_center(false);
@@ -168,12 +164,9 @@ namespace cgv {
 			void set_textured_rectangle(const context& ctx, const textured_rectangle& tcr);
 			/// specify rectangle array directly. This sets position_is_center to false as well as position and extent array
 			void set_textured_rectangle_array(const context& ctx, const std::vector<textured_rectangle>& tc_rects) {
-				set_composed_attribute_array(ctx, ref_prog().get_attribute_location(ctx, "position"),
-					&tc_rects.front(), tc_rects.size(), tc_rects[0].rectangle.get_min_pnt());
-				ref_composed_attribute_array(ctx, ref_prog().get_attribute_location(ctx, "extent"),
-					ref_prog().get_attribute_location(ctx, "position"), &tc_rects.front(), tc_rects.size(), tc_rects[0].rectangle.get_max_pnt());
-				ref_composed_attribute_array(ctx, ref_prog().get_attribute_location(ctx, "texcoord"),
-					ref_prog().get_attribute_location(ctx, "position"), &tc_rects.front(), tc_rects.size(), tc_rects[0].texcoords);
+				set_composed_attribute_array(ctx, "position", &tc_rects.front(), tc_rects.size(), tc_rects[0].rectangle.get_min_pnt());
+				ref_composed_attribute_array(ctx, "extent", "position", &tc_rects.front(), tc_rects.size(), tc_rects[0].rectangle.get_max_pnt());
+				ref_composed_attribute_array(ctx, "texcoord", "position", &tc_rects.front(), tc_rects.size(), tc_rects[0].texcoords);
 				has_positions = true;
 				has_extents = true;
 				has_texcoords = true;
@@ -181,12 +174,9 @@ namespace cgv {
 			}
 			/// specify ractangle array directly. This sets position_is_center to false as well as position and extent array
 			void set_textured_rectangle_array(const context& ctx, const textured_rectangle* tc_rects, size_t count) {
-				set_composed_attribute_array(ctx, ref_prog().get_attribute_location(ctx, "position"),
-					tc_rects, count, tc_rects[0].rectangle.get_min_pnt());
-				ref_composed_attribute_array(ctx, ref_prog().get_attribute_location(ctx, "extent"),
-					ref_prog().get_attribute_location(ctx, "position"), tc_rects, count, tc_rects[0].rectangle.get_max_pnt());
-				ref_composed_attribute_array(ctx, ref_prog().get_attribute_location(ctx, "texcoord"),
-					ref_prog().get_attribute_location(ctx, "position"), tc_rects, count, tc_rects[0].texcoords);
+				set_composed_attribute_array(ctx, "position", tc_rects, count, tc_rects[0].rectangle.get_min_pnt());
+				ref_composed_attribute_array(ctx, "extent", "position", tc_rects, count, tc_rects[0].rectangle.get_max_pnt());
+				ref_composed_attribute_array(ctx, "texcoord", "position", tc_rects, count, tc_rects[0].texcoords);
 				has_positions = true;
 				has_extents = true;
 				has_texcoords = true;
@@ -194,13 +184,13 @@ namespace cgv {
 			}
 			/// templated method to set the secondary color attribute from a single color of type T
 			template <typename T>
-			void set_secondary_color(const context& ctx, const T& color) { has_secondary_colors = true; ref_prog().set_attribute(ctx, ref_prog().get_attribute_location(ctx, "secondary_color"), color); }
+			void set_secondary_color(const context& ctx, const T& color) { has_secondary_colors = true; ref_prog().set_attribute(ctx, "secondary_color", color); }
 			/// template method to set the secondary color attribute from a vector of colors of type T
 			template <typename T>
-			void set_secondary_color_array(const context& ctx, const std::vector<T>& colors) { has_secondary_colors = true;  set_attribute_array(ctx, ref_prog().get_attribute_location(ctx, "secondary_color"), colors); }
+			void set_secondary_color_array(const context& ctx, const std::vector<T>& colors) { has_secondary_colors = true;  set_attribute_array(ctx, "secondary_color", colors); }
 			/// template method to set the secondary color attribute from a vector of colors of type T
 			template <typename T>
-			void set_secondary_color_array(const context& ctx, const T* colors, size_t nr_elements, unsigned stride_in_bytes = 0) { has_secondary_colors = true;  set_attribute_array(ctx, ref_prog().get_attribute_location(ctx, "secondary_color"), colors, nr_elements, stride_in_bytes); }
+			void set_secondary_color_array(const context& ctx, const T* colors, size_t nr_elements, unsigned stride_in_bytes = 0) { has_secondary_colors = true;  set_attribute_array(ctx, "secondary_color", colors, nr_elements, stride_in_bytes); }
 			/// method to set the secondary color attribute from a vertex buffer object, the element type must be given as explicit template parameter
 			void set_secondary_color_array(const context& ctx, type_descriptor element_type, const vertex_buffer& vbo, size_t offset_in_bytes, size_t nr_elements, unsigned stride_in_bytes = 0);
 			/// template method to set the secondary color attribute from a vertex buffer object, the element type must be given as explicit template parameter
@@ -209,13 +199,13 @@ namespace cgv {
 
 			/// templated method to set the border color attribute from a single color of type T
 			template <typename T>
-			void set_border_color(const context& ctx, const T& color) { has_border_colors = true; ref_prog().set_attribute(ctx, ref_prog().get_attribute_location(ctx, "border_color"), color); }
+			void set_border_color(const context& ctx, const T& color) { has_border_colors = true; ref_prog().set_attribute(ctx, get_prog_attribute_location(ctx, "border_color"), color); }
 			/// template method to set the border color attribute from a vector of colors of type T
 			template <typename T>
-			void set_border_color_array(const context& ctx, const std::vector<T>& colors) { has_border_colors = true;  set_attribute_array(ctx, ref_prog().get_attribute_location(ctx, "border_color"), colors); }
+			void set_border_color_array(const context& ctx, const std::vector<T>& colors) { has_border_colors = true;  set_attribute_array(ctx, "border_color", colors); }
 			/// template method to set the border color attribute from a vector of colors of type T
 			template <typename T>
-			void set_border_color_array(const context& ctx, const T* colors, size_t nr_elements, unsigned stride_in_bytes = 0) { has_border_colors = true;  set_attribute_array(ctx, ref_prog().get_attribute_location(ctx, "border_color"), colors, nr_elements, stride_in_bytes); }
+			void set_border_color_array(const context& ctx, const T* colors, size_t nr_elements, unsigned stride_in_bytes = 0) { has_border_colors = true;  set_attribute_array(ctx, "border_color", colors, nr_elements, stride_in_bytes); }
 			/// method to set the border color attribute from a vertex buffer object, the element type must be given as explicit template parameter
 			void set_border_color_array(const context& ctx, type_descriptor element_type, const vertex_buffer& vbo, size_t offset_in_bytes, size_t nr_elements, unsigned stride_in_bytes = 0);
 			/// template method to set the border color attribute from a vertex buffer object, the element type must be given as explicit template parameter
@@ -223,13 +213,13 @@ namespace cgv {
 			void set_border_color_array(const context& ctx, const vertex_buffer& vbo, size_t offset_in_bytes, size_t nr_elements, unsigned stride_in_bytes = 0) { set_border_color_array(ctx, type_descriptor(element_descriptor_traits<T>::get_type_descriptor(T()), true), vbo, offset_in_bytes, nr_elements, stride_in_bytes); }
 			/// specify a single border_info for all lines
 			template <typename T>
-			void set_border_info(const context& ctx, const cgv::math::fvec<T, 3>& border_info) { has_border_infos = true;  ref_prog().set_attribute(ctx, ref_prog().get_attribute_location(ctx, "border_info"), border_info); }
+			void set_border_info(const context& ctx, const cgv::math::fvec<T, 3>& border_info) { has_border_infos = true;  ref_prog().set_attribute(ctx, get_prog_attribute_location(ctx, "border_info"), border_info); }
 			/// templated method to set the border_info attribute array from a vector of border_infos of type T, which should have 3 components
 			template <typename T>
-			void set_border_info_array(const context& ctx, const std::vector<T>& border_infos) { has_border_infos = true;  set_attribute_array(ctx, ref_prog().get_attribute_location(ctx, "border_info"), border_infos); }
+			void set_border_info_array(const context& ctx, const std::vector<T>& border_infos) { has_border_infos = true;  set_attribute_array(ctx, "border_info", border_infos); }
 			/// templated method to set the border_info attribute from an array of border_infos of type T, which should have 3 components
 			template <typename T>
-			void set_border_info_array(const context& ctx, const T* border_infos, size_t nr_elements, unsigned stride_in_bytes = 0) { has_border_infos = true;  set_attribute_array(ctx, ref_prog().get_attribute_location(ctx, "border_info"), border_infos, nr_elements, stride_in_bytes); }
+			void set_border_info_array(const context& ctx, const T* border_infos, size_t nr_elements, unsigned stride_in_bytes = 0) { has_border_infos = true;  set_attribute_array(ctx, "border_info", border_infos, nr_elements, stride_in_bytes); }
 			/// method to set the border_info attribute from a vertex buffer object, the element type must be given as explicit template parameter
 			void set_border_info_array(const context& ctx, type_descriptor element_type, const vertex_buffer& vbo, size_t offset_in_bytes, size_t nr_elements, unsigned stride_in_bytes = 0);
 			/// template method to set the border_info attribute from a vertex buffer object, the element type must be given as explicit template parameter
@@ -238,22 +228,22 @@ namespace cgv {
 
 			/// specify a single depth_offset for all lines
 			template <typename T>
-			void set_depth_offset(const context& ctx, const T& depth_offset) { has_depth_offsets = true;  ref_prog().set_attribute(ctx, ref_prog().get_attribute_location(ctx, "depth_offset"), depth_offset); }
+			void set_depth_offset(const context& ctx, const T& depth_offset) { has_depth_offsets = true;  ref_prog().set_attribute(ctx, get_prog_attribute_location(ctx, "depth_offset"), depth_offset); }
 			/// set per rectangle depth offsets
 			template <typename T = float>
-			void set_depth_offset_array(const context& ctx, const std::vector<T>& depth_offsets) { has_depth_offsets = true; set_attribute_array(ctx, ref_prog().get_attribute_location(ctx, "depth_offset"), depth_offsets); }
+			void set_depth_offset_array(const context& ctx, const std::vector<T>& depth_offsets) { has_depth_offsets = true; set_attribute_array(ctx, "depth_offset", depth_offsets); }
 			/// template method to set the translations from a vector of vectors of type T, which should have 3 components
 			template <typename T>
-			void set_translation_array(const context& ctx, const std::vector<T>& translations) { has_translations = true; set_attribute_array(ctx, ref_prog().get_attribute_location(ctx, "translation"), translations); }
+			void set_translation_array(const context& ctx, const std::vector<T>& translations) { has_translations = true; set_attribute_array(ctx, "translation", translations); }
 			/// template method to set the translations from a vector of vectors of type T, which should have 3 components
 			template <typename T>
-			void set_translation_array(const context& ctx, const T* translations, size_t nr_elements, unsigned stride) { has_translations = true; set_attribute_array(ctx, ref_prog().get_attribute_location(ctx, "translation"), translations, nr_elements, stride); }
+			void set_translation_array(const context& ctx, const T* translations, size_t nr_elements, unsigned stride) { has_translations = true; set_attribute_array(ctx, "translation", translations, nr_elements, stride); }
 			/// template method to set the rotation from a vector of quaternions of type T, which should have 4 components
 			template <typename T>
-			void set_rotation_array(const context& ctx, const std::vector<T>& rotations) { has_rotations = true; set_attribute_array(ctx, ref_prog().get_attribute_location(ctx, "rotation"), rotations); }
+			void set_rotation_array(const context& ctx, const std::vector<T>& rotations) { has_rotations = true; set_attribute_array(ctx, "rotation", rotations); }
 			/// template method to set the rotation from a vector of quaternions of type T, which should have 4 components
 			template <typename T>
-			void set_rotation_array(const context& ctx, const T* rotations, size_t nr_elements, unsigned stride = 0) { has_rotations = true; set_attribute_array(ctx, ref_prog().get_attribute_location(ctx, "rotation"), rotations, nr_elements, stride); }
+			void set_rotation_array(const context& ctx, const T* rotations, size_t nr_elements, unsigned stride = 0) { has_rotations = true; set_attribute_array(ctx, "rotation", rotations, nr_elements, stride); }
 			///
 			bool validate_attributes(const context& ctx) const;
 			///

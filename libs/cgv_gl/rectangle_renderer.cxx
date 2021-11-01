@@ -83,17 +83,17 @@ namespace cgv {
 		void rectangle_renderer::set_secondary_color_array(const context& ctx, type_descriptor element_type, const vertex_buffer& vbo, size_t offset_in_bytes, size_t nr_elements, unsigned stride_in_bytes)
 		{
 			has_secondary_colors = true;
-			set_attribute_array(ctx, ref_prog().get_attribute_location(ctx, "secondary_color"), element_type, vbo, offset_in_bytes, nr_elements, stride_in_bytes);
+			set_attribute_array(ctx, "secondary_color", element_type, vbo, offset_in_bytes, nr_elements, stride_in_bytes);
 		}
 		void rectangle_renderer::set_border_color_array(const context& ctx, type_descriptor element_type, const vertex_buffer& vbo, size_t offset_in_bytes, size_t nr_elements, unsigned stride_in_bytes)
 		{
 			has_border_colors = true;
-			set_attribute_array(ctx, ref_prog().get_attribute_location(ctx, "border_color"), element_type, vbo, offset_in_bytes, nr_elements, stride_in_bytes);
+			set_attribute_array(ctx, "border_color", element_type, vbo, offset_in_bytes, nr_elements, stride_in_bytes);
 		}
 		void rectangle_renderer::rectangle_renderer::set_border_info_array(const context& ctx, type_descriptor element_type, const vertex_buffer& vbo, size_t offset_in_bytes, size_t nr_elements, unsigned stride_in_bytes)
 		{
 			has_border_infos = true;
-			set_attribute_array(ctx, ref_prog().get_attribute_location(ctx, "border_info"), element_type, vbo, offset_in_bytes, nr_elements, stride_in_bytes);
+			set_attribute_array(ctx, "border_info", element_type, vbo, offset_in_bytes, nr_elements, stride_in_bytes);
 		}
 		void rectangle_renderer::enable_attribute_array_manager(const context& ctx, attribute_array_manager& aam)
 		{
@@ -130,9 +130,9 @@ namespace cgv {
 			has_extents = true;
 			has_texcoords = true;
 			set_position_is_center(false);
-			ref_prog().set_attribute(ctx, ref_prog().get_position_index(), tcr.rectangle.get_min_pnt());
-			ref_prog().set_attribute(ctx, ref_prog().get_attribute_location(ctx, "extent"), tcr.rectangle.get_max_pnt());
-			ref_prog().set_attribute(ctx, ref_prog().get_texcoord_index(), tcr.texcoords);
+			ref_prog().set_attribute(ctx, "position", tcr.rectangle.get_min_pnt());
+			ref_prog().set_attribute(ctx, "extent", tcr.rectangle.get_max_pnt());
+			ref_prog().set_attribute(ctx, "texcoord", tcr.texcoords);
 		}
 		bool rectangle_renderer::build_shader_program(context& ctx, shader_program& prog, const shader_define_map& defines)
 		{

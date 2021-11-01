@@ -53,8 +53,8 @@ namespace cgv { // @<
 			/// check for attribute array manager
 			bool has_aam() const { return aam_ptr != 0 && aam_ptr != &default_aam; }
 			/// check for attribute
-			bool has_attribute(const context& ctx, const std::string& attr_name) {
-				return aam_ptr->has_attribute(ctx, ref_prog().get_attribute_location(ctx, attr_name));
+			bool has_attribute(const context& ctx, const std::string& name) {
+				return aam_ptr->has_attribute(ctx, get_prog_attribute_location(ctx, name, false));
 			}
 			/// access to render style
 			const render_style* get_style_ptr() const;
@@ -82,8 +82,19 @@ namespace cgv { // @<
 			/// virtual method that creates a default render style
 			virtual render_style* create_render_style() const = 0;
 
+			int get_prog_attribute_location(const context& ctx, const std::string & name, bool error_check = true) {
+				int loc = ref_prog().get_attribute_location(ctx, name);
+#ifdef _DEBUG
+				if(loc < 0 && error_check)
+					std::cerr << "Warning: cgv_gl::renderer attribute " << name << " not supported by current shader program" << std::endl;
+#endif
+				return loc;
+			}
+
 			template <typename T>
-			bool set_attribute_array(const context& ctx, int loc, const T& array) {
+			bool set_attribute_array(const context& ctx, const std::string& name, const T& array) {
+			//bool set_attribute_array(const context& ctx, int loc, const T& array) {
+				int loc = get_prog_attribute_location(ctx, name);
 				if(loc < 0)
 					return false;
 				if(aam_ptr)
@@ -92,7 +103,9 @@ namespace cgv { // @<
 				return attribute_array_binding::set_global_attribute_array(ctx, loc, array);
 			}
 			template <typename T>
-			bool set_attribute_array(const context& ctx, int loc, const T* array_ptr, size_t nr_elements, unsigned stride) {
+			bool set_attribute_array(const context& ctx, const std::string& name, const T* array_ptr, size_t nr_elements, unsigned stride) {
+			//bool set_attribute_array(const context& ctx, int loc, const T* array_ptr, size_t nr_elements, unsigned stride) {
+				int loc = get_prog_attribute_location(ctx, name);
 				if(loc < 0)
 					return false;
 				if (aam_ptr)
@@ -100,10 +113,13 @@ namespace cgv { // @<
 				enabled_attribute_arrays.insert(loc);
 				return attribute_array_binding::set_global_attribute_array(ctx, loc, array_ptr, nr_elements, stride);
 			}
-			bool set_attribute_array(const context& ctx, int loc, type_descriptor element_type, const vertex_buffer& vbo, size_t offset_in_bytes, size_t nr_elements, unsigned stride_in_bytes);
+			bool set_attribute_array(const context& ctx, const std::string& name, type_descriptor element_type, const vertex_buffer& vbo, size_t offset_in_bytes, size_t nr_elements, unsigned stride_in_bytes);
+			//bool set_attribute_array(const context& ctx, int loc, type_descriptor element_type, const vertex_buffer& vbo, size_t offset_in_bytes, size_t nr_elements, unsigned stride_in_bytes);
 			/// in case that several attributes are stored interleaved, call this function for the first and ref_composed_attribute_array() for all others
 			template <typename C, typename T>
-			bool set_composed_attribute_array(const context& ctx, int loc, const C* array_ptr, size_t nr_elements, const T& elem) {
+			bool set_composed_attribute_array(const context& ctx, const std::string& name, const C* array_ptr, size_t nr_elements, const T& elem) {
+			//bool set_composed_attribute_array(const context& ctx, int loc, const C* array_ptr, size_t nr_elements, const T& elem) {
+				int loc = get_prog_attribute_location(ctx, name);
 				if(loc < 0)
 					return false;
 				if (aam_ptr)
@@ -113,8 +129,11 @@ namespace cgv { // @<
 			}
 			/// in case that several attributes are stored interleaved, call set_composed_attribute_array() for the first and this function for all others
 			template <typename C, typename T>
-			bool ref_composed_attribute_array(const context& ctx, int loc, int loc_ref, const C* array_ptr, size_t nr_elements, const T& elem) {
-				if(loc < 0)
+			bool ref_composed_attribute_array(const context& ctx, const std::string& name, const std::string& name_ref, const C* array_ptr, size_t nr_elements, const T& elem) {
+			//bool ref_composed_attribute_array(const context& ctx, int loc, int loc_ref, const C* array_ptr, size_t nr_elements, const T& elem) {
+				int loc = get_prog_attribute_location(ctx, name);
+				int loc_ref = get_prog_attribute_location(ctx, name_ref);
+				if(loc < 0 || loc_ref < 0)
 					return false;
 				if (aam_ptr)
 					return aam_ptr->ref_composed_attribute_array(ctx, loc, loc_ref, array_ptr, nr_elements, elem);
@@ -148,13 +167,13 @@ namespace cgv { // @<
 			virtual bool init(context& ctx);
 			/// templated method to set the position attribute from a single position of type T
 			template <typename T>
-			void set_position(const context& ctx, const T& position) { has_positions = true; ref_prog().set_attribute(ctx, ref_prog().get_attribute_location(ctx, "position"), position); }
+			void set_position(const context& ctx, const T& position) { has_positions = true; ref_prog().set_attribute(ctx, get_prog_attribute_location(ctx, "position"), position); }
 			/// templated method to set the position attribute from a vector of positions of type T
 			template <typename T>
-			void set_position_array(const context& ctx, const std::vector<T>& positions) { has_positions = true; set_attribute_array(ctx, ref_prog().get_attribute_location(ctx, "position"), positions); }
+			void set_position_array(const context& ctx, const std::vector<T>& positions) { has_positions = true; set_attribute_array(ctx, "position", positions); }
 			/// templated method to set the position attribute from a vector of positions of type T
 			template <typename T>
-			void set_position_array(const context& ctx, const T* positions, size_t nr_elements, unsigned stride_in_bytes = 0) { has_positions = true; set_attribute_array(ctx, ref_prog().get_attribute_location(ctx, "position"), positions, nr_elements, stride_in_bytes); }
+			void set_position_array(const context& ctx, const T* positions, size_t nr_elements, unsigned stride_in_bytes = 0) { has_positions = true; set_attribute_array(ctx, "position", positions, nr_elements, stride_in_bytes); }
 			/// method to set the position attribute from a vertex buffer object
 			void set_position_array(const context& ctx, type_descriptor element_type, const vertex_buffer& vbo, size_t offset_in_bytes, size_t nr_elements, unsigned stride_in_bytes);
 			/// template method to set the position attribute from a vertex buffer object, the element type must be given as explicit template parameter
@@ -162,13 +181,13 @@ namespace cgv { // @<
 			void set_position_array(const context& ctx, const vertex_buffer& vbo, size_t offset_in_bytes, size_t nr_elements, unsigned stride_in_bytes = 0) { set_position_array(ctx, type_descriptor(element_descriptor_traits<T>::get_type_descriptor(T()), true), vbo, offset_in_bytes, nr_elements, stride_in_bytes); }
 			/// templated method to set the color attribute from a single color of type T
 			template <typename T>
-			void set_color(const context& ctx, const T& color) { has_colors = true; ref_prog().set_attribute(ctx, ref_prog().get_attribute_location(ctx, "color"), color); }
+			void set_color(const context& ctx, const T& color) { has_colors = true; ref_prog().set_attribute(ctx, get_prog_attribute_location(ctx, "color"), color); }
 			/// template method to set the color attribute from a vector of colors of type T
 			template <typename T>
-			void set_color_array(const context& ctx, const std::vector<T>& colors) { has_colors = true;  set_attribute_array(ctx, ref_prog().get_attribute_location(ctx, "color"), colors); }
+			void set_color_array(const context& ctx, const std::vector<T>& colors) { has_colors = true;  set_attribute_array(ctx, "color", colors); }
 			/// template method to set the color attribute from a vector of colors of type T
 			template <typename T>
-			void set_color_array(const context& ctx, const T* colors, size_t nr_elements, unsigned stride_in_bytes = 0) { has_colors = true;  set_attribute_array(ctx, ref_prog().get_attribute_location(ctx, "color"), colors, nr_elements, stride_in_bytes); }
+			void set_color_array(const context& ctx, const T* colors, size_t nr_elements, unsigned stride_in_bytes = 0) { has_colors = true;  set_attribute_array(ctx, "color", colors, nr_elements, stride_in_bytes); }
 			/// method to set the color attribute from a vertex buffer object, the element type must be given as explicit template parameter
 			void set_color_array(const context& ctx, type_descriptor element_type, const vertex_buffer& vbo, size_t offset_in_bytes, size_t nr_elements, unsigned stride_in_bytes = 0);
 			/// template method to set the color attribute from a vertex buffer object, the element type must be given as explicit template parameter
@@ -248,7 +267,7 @@ namespace cgv { // @<
 				Returns -1 if the buffer or attribute array manager does not exist.
 				Take caution when manipulating the buffer. */
 			int get_vbo_handle(const context& ctx, const attribute_array_manager& aam, const std::string& attr_name) {
-				return aam.get_buffer_handle(ref_prog().get_attribute_location(ctx, attr_name));
+				return aam.get_buffer_handle(get_prog_attribute_location(ctx, attr_name));
 			}
 			/*! Returns the OpenGL handle to the element buffer holding the indices for indexed rendering as managed by the attribute array manager.
 				Returns -1 if the buffer or attribute array manager does not exist.
