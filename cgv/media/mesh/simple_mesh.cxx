@@ -647,14 +647,14 @@ template <typename T> void simple_mesh<T>::compute_face_tangents(bool construct_
 		return;
 
 	for(uint32_t fi = 0; fi < get_nr_faces(); ++fi) {
-		std::vector<vec3> P;
-		std::vector<vec2> T;
+		std::vector<vec3> _P;
+		std::vector<vec2> _T;
 		vec3 ctr(0.0f);
 		uint32_t ci, nr = 0;
 		for(ci = begin_corner(fi); ci < end_corner(fi); ++ci) {
-			P.push_back(position(c2p(ci)));
-			T.push_back(tex_coord(c2t(ci)));
-			ctr += P.back();
+			_P.push_back(position(c2p(ci)));
+			_T.push_back(tex_coord(c2t(ci)));
+			ctr += _P.back();
 			++nr;
 		}
 
@@ -662,11 +662,11 @@ template <typename T> void simple_mesh<T>::compute_face_tangents(bool construct_
 
 		// calculate tangents for faces with at least three corners
 		// for more than 3 corners only use the first two edges and assume the face to be planar
-		if(P.size() > 2) {
-			vec3 edge0 = P[1] - P[0];
-			vec3 edge1 = P[2] - P[0];
-			vec2 delta_uv0 = T[1] - T[0];
-			vec2 delta_uv1 = T[2] - T[0];
+		if(_P.size() > 2) {
+			vec3 edge0 = _P[1] - _P[0];
+			vec3 edge1 = _P[2] - _P[0];
+			vec2 delta_uv0 = _T[1] - _T[0];
+			vec2 delta_uv1 = _T[2] - _T[0];
 
 			float dir_correction = (delta_uv1.x() * delta_uv0.y() - delta_uv1.y() * delta_uv0.x()) < 0.0f ? -1.0f : 1.0f;
 
