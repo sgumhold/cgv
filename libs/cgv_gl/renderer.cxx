@@ -167,14 +167,22 @@ namespace cgv {
 
 		bool renderer::enable(context& ctx)
 		{
-			if (prog_ptr == &prog) {
+			if(prog_ptr == &prog) {
 				update_defines(defines);
-				if (defines != last_defines) {
-					if (prog.is_created())
+				if(defines != last_defines) {
+					if(prog.is_created())
 						prog.destruct(ctx);
-					if (!build_shader_program(ctx, prog, defines))
+					if(!build_shader_program(ctx, prog, defines))
 						return false;
+#ifndef _DEBUG
 				}
+#else
+					if(current_prog_render_count < 10)
+						std::cerr << "Performance warning: shader is rebuild! Consider using multiple instances of the renderer." << std::endl;
+					current_prog_render_count = 0;
+				}
+				++current_prog_render_count;
+#endif
 				last_defines = defines;
 			}
 			bool res = ref_prog().enable(ctx);
