@@ -323,11 +323,11 @@ public:
 	}
 	void timer_event(double tt, double dt) {
 		if(animate) {
-			rot_angle += 20.0f * dt;
+			rot_angle += 20.0f * float(dt);
 			if(rot_angle > 360.0f) {
 				rot_angle = 0.0;
 			}
-			height_offset = 0.5f * sin(tt) + 0.5f;
+			height_offset = 0.5f * float(sin(tt)) + 0.5f;
 			//update_member(&angle);
 			post_redraw();
 		}
@@ -472,7 +472,7 @@ public:
 		// lastly render the environment
 		auto& cubemap_prog = shaders.get("cubemap");
 		cubemap_prog.enable(ctx);
-		cubemap_prog.set_uniform(ctx, "resolution", vec2(ctx.get_width(), ctx.get_height()));
+		cubemap_prog.set_uniform(ctx, "resolution", vec2((float)ctx.get_width(), (float)ctx.get_height()));
 		cubemap_prog.set_uniform(ctx, "eye_pos", eye_pos);
 
 		glDepthFunc(GL_LEQUAL);
@@ -536,10 +536,10 @@ public:
 		auto& sky_cubemap_gen = shaders.get("sky_cubemap_gen");
 		sky_cubemap_gen.set_uniform(ctx, "sun_pos", sun_position);
 
-		unsigned fbo_id = (unsigned)capture_fbo.handle - 1;
+		unsigned fbo_id = (unsigned)((size_t)capture_fbo.handle) - 1;
 		glBindFramebuffer(GL_FRAMEBUFFER, fbo_id);
 
-		glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, (unsigned)environment_map.handle - 1, 0);
+		glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, (unsigned)((size_t)environment_map.handle) - 1, 0);
 
 		glClear(GL_COLOR_BUFFER_BIT);
 
@@ -554,7 +554,7 @@ public:
 
 		auto& irradiance_map_gen = shaders.get("irradiance_map_gen");
 
-		glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, (unsigned)irradiance_map.handle - 1, 0);
+		glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, (unsigned)((size_t)irradiance_map.handle) - 1, 0);
 		glClear(GL_COLOR_BUFFER_BIT);
 
 		irradiance_map_gen.enable(ctx);
@@ -565,14 +565,14 @@ public:
 
 		unsigned int maxMipLevels = 5;
 		for(unsigned int mip = 0; mip < maxMipLevels; ++mip) {
-			unsigned int mip_resolution = prefiltered_specular_resolution * std::pow(0.5, mip);
+			unsigned int mip_resolution = (unsigned)(float(prefiltered_specular_resolution) * std::pow(0.5f, float(mip)));
 			// configure the viewport to the capture dimensions of the prefiltered specular map mipmap level
 			ctx.set_viewport(ivec4(0, 0, mip_resolution, mip_resolution));
 
 			float roughness = (float)mip / (float)(maxMipLevels - 1);
 			prefiltered_specular_map_gen.set_uniform(ctx, "roughness", roughness);
 
-			glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, (unsigned)prefiltered_specular_map.handle - 1, mip);
+			glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, (unsigned)((size_t)prefiltered_specular_map.handle) - 1, mip);
 			glClear(GL_COLOR_BUFFER_BIT);
 
 			prefiltered_specular_map_gen.enable(ctx);

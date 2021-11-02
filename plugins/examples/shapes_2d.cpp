@@ -184,7 +184,7 @@ public:
 				cgv::gui::MouseAction ma = me.get_action();
 
 				if(ma == cgv::gui::MA_DRAG && me.get_button_state() & cgv::gui::MB_MIDDLE_BUTTON) {
-					view_params.translation += vec2(me.get_dx(), -me.get_dy());
+					view_params.translation += vec2((float)me.get_dx(), (float)-me.get_dy());
 				}
 
 				if(ma == cgv::gui::MA_WHEEL) {
@@ -195,7 +195,7 @@ public:
 					vec2 offset = origin - mpos + view_params.translation;
 
 					float scale = view_params.scale;
-					scale *= me.get_dy() > 0 ? 0.5 : 2.0;
+					scale *= ((float)me.get_dy()) > 0 ? 0.5f : 2.0f;
 
 					scale = cgv::math::clamp(scale, 0.5f, 64.0f);
 
@@ -232,7 +232,7 @@ public:
 		}
 
 		if(member_ptr == &text_align_h || member_ptr == &text_align_v) {
-			for(size_t i = 0; i < texts.size(); ++i)
+			for(unsigned i=0; i<(unsigned)texts.size(); ++i)
 				texts.set_alignment(i, static_cast<cgv::render::TextAlignment>(text_align_h | text_align_v));
 		}
 
@@ -511,13 +511,13 @@ public:
 		labels.push_back("CGV Framework");
 
 		texts.clear();
-		for(unsigned i = 0; i < 2; ++i) {
+		for(unsigned i=0; i<2; ++i) {
 			std::string str = labels[i];
 			texts.add_text(str, text_handles[i]->pos, static_cast<cgv::render::TextAlignment>(text_align_h | text_align_v));
 		}
 	}
 	void set_text_positions() {
-		for(size_t i = 0; i < 2; ++i)
+		for(unsigned i=0; i<2; ++i)
 			texts.set_position(i, text_handles[i]->pos);
 
 		ivec2 p(text_handles[0]->pos);
