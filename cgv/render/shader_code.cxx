@@ -57,19 +57,32 @@ shader_config_ptr get_shader_config()
 }
 
 void shader_code::decode_if_base64(std::string& content) {
-	// TODO § is considered two characters on Linux
-	//if (!content.empty() && content[0] == '§') {
-	if(!content.empty()) {
-		// TODO: on some occasions the encoded string starts with other characters than § (why is this the case?)
-		if(content[0] == '§') {
+	// TODO: on some occasions the encoded string starts with other characters than § (why is this the case?)
+#ifdef _WIN32
+	if (!content.empty()) {
+		if(content[0] == '§')
 			content = cgv::utils::decode_base64(content.substr(1));
-		} else if(
+		else if (
+			content.size() > 2 &&
 			(int)content[0] == -17 &&
 			(int)content[1] == -65 &&
 			(int)content[2] == -67) {
 			content = cgv::utils::decode_base64(content.substr(3));
 		}
 	}
+#else
+	if (content.size() > 1) {
+		if (content[0]==0xC2 && content[1]==0xA7) // UTF-8 for '§'
+			content = cgv::utils::decode_base64(content.substr(2));
+		else if (
+			content.size() > 2 &&
+			(int)content[0] == -17 &&
+			(int)content[1] == -65 &&
+			(int)content[2] == -67) {
+			content = cgv::utils::decode_base64(content.substr(3));
+		}
+	}
+#endif
 }
 
 /** query the last error in a way that developer environments can 
