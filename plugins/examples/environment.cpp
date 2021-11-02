@@ -210,8 +210,6 @@ public:
 
 		sun_position = vec2(0.0f, 0.6f);
 
-		spheres = cgv::glutil::sphere_render_data<>(true);
-		
 		sphere_style.surface_color = rgb(0.5f);
 		sphere_style.radius = 0.02f;
 

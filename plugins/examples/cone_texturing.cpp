@@ -24,7 +24,6 @@ public:
 		cone_style.surface_color = rgb(1.0f, 0.5f, 0.2f);
 		cone_style.enable_texturing = true;
 		cone_style.texture_blend_mode = cgv::render::cone_render_style::TBM_TINT;
-		rd = cgv::glutil::cone_render_data<>(true);
 	}
 	void on_set(void* member_ptr) {
 		post_redraw();
@@ -121,8 +120,6 @@ public:
 		stem_style.texture_tiling.y() = 2.0f;
 		stem_style.texture_use_reference_length = true;
 		stem_style.texture_reference_length = 0.75f;
-		stems = cgv::glutil::cone_render_data<>(true);
-		leaves = cgv::glutil::sphere_render_data<>(true);
 
 		axiom = "X";
 		rules['X'] = "F+[[X]-X]-F[-FX]+X";

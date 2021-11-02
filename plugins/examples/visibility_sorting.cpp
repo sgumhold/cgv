@@ -27,7 +27,6 @@ public:
 		sphere_style.radius = 0.01f;
 		sphere_style.surface_color = rgb(1.0f, 0.5f, 0.2f);
 		sphere_style.map_color_to_material = CM_COLOR_AND_OPACITY;
-		rd = cgv::glutil::sphere_render_data<rgba>(true);
 		do_sort = true;
 	}
 	void on_set(void* member_ptr)
@@ -81,11 +80,11 @@ public:
 
 		int pos_handle = 0;
 		int idx_handle = 0;
-		auto* aam_ptr = rd.get_aam_ptr();
-		if(aam_ptr) {
-			pos_handle = sr.get_vbo_handle(ctx, *aam_ptr, "position");
-			idx_handle = sr.get_index_buffer_handle(*aam_ptr);
-		}
+		auto& aam = rd.ref_aam();
+		
+		pos_handle = sr.get_vbo_handle(ctx, aam, "position");
+		idx_handle = sr.get_index_buffer_handle(aam);
+		
 
 		if(pos_handle > 0 && idx_handle > 0 && do_sort) {
 			sorter->sort(ctx, pos_handle, idx_handle, view_ptr->get_eye());

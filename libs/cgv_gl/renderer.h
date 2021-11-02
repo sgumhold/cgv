@@ -31,6 +31,10 @@ namespace cgv { // @<
 			shader_define_map defines;
 			/// last shader define maps
 			shader_define_map last_defines;
+#ifdef _DEBUG
+			/// count of render calls with current program configuration (used to detect frequent rebuilds)
+			int current_prog_render_count;
+#endif
 			/// otherwise keep track of enabled arrays
 			std::set<int> enabled_attribute_arrays;
 			/// default render style

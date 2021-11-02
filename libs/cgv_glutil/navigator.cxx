@@ -42,9 +42,9 @@ navigator::navigator() {
 	//hit_box = false;
 	hit_axis = 0;
 
-	box_data = cgv::glutil::box_render_data<>(true);
-	sphere_data = cgv::glutil::sphere_render_data<>(true);
-	cone_data = cgv::glutil::cone_render_data<>(true);
+	//box_data = cgv::glutil::box_render_data<>(true);
+	//sphere_data = cgv::glutil::sphere_render_data<>(true);
+	//cone_data = cgv::glutil::cone_render_data<>(true);
 
 	box_style.default_extent = vec3(1.0f);
 	box_style.map_color_to_material = CM_COLOR_AND_OPACITY;
