@@ -98,6 +98,9 @@ namespace pointcloud {
 
 		bool sampled = false;
 
+		// if too high this tells build_hierarchy to accept this node regardless of checks, this is usually the case if deduplication is dissallowed and a pointcloud with badly distributed points is used
+		int rejected_dedups = 0;
+
 		IndexNode() {}
 
 		IndexNode(const std::string& name, const vec3& min, const vec3& max);
@@ -215,11 +218,11 @@ class octree_lod_generator : public cgv::render::render_types {
 				node.points = nullptr;
 			}
 		};
-
-		static constexpr int max_points_per_index_node = 10'000;
+		
 		int max_points_per_chunk = -1;
 
 	protected:
+
 		inline std::string to_node_id(int level, int gridSize, int64_t x, int64_t y, int64_t z);
 
 		inline int select_grid_size(const int64_t num_points) {
@@ -256,12 +259,17 @@ class octree_lod_generator : public cgv::render::render_types {
 		//inout chunks
 		inline void indexing(Chunks<point_t>& chunks, Indexer& indexer, Sampler<point_t>& sampler);
 			
-		inline void build_hierarchy(Indexer* indexer, IndexNode<point_t>* node, std::shared_ptr<std::vector<point_t>> points, int64_t numPoints, int64_t depth = 0);
+		void build_hierarchy(Indexer* indexer, IndexNode<point_t>* node, std::shared_ptr<std::vector<point_t>> points, int64_t numPoints, int64_t depth = 0, int max_points_per_index_node = 10000);
 			
 		inline int64_t grid_index(const vec3& position, const vec3& min, const float& cube_size, const int& grid_size) const;
 		inline cgv::render::render_types::ivec3 grid_index_vec(const vec3& position, const vec3& min, const float& cube_size, const int& grid_size) const;
 
 	public:
+		// allow or disallow duplicate elimination to take place
+		inline bool& allow_dedup() {
+			return allow_duplicate_elimination;
+		}
+
 		inline static box3 child_bounding_box_of(const vec3& min, const vec3& max, const int index);
 
 		/// generate points with lod information out of the given vertices
@@ -280,7 +288,7 @@ class octree_lod_generator : public cgv::render::render_types {
 
 	private:
 		std::unique_ptr<cgv::pointcloud::utility::WorkerPool> pool_ptr;
-
+		bool allow_duplicate_elimination = true;
 };
 
 /// This point sampler does bottom up sampling on nodes choosing points randomly from the child nodes
@@ -378,7 +386,8 @@ struct SamplerRandom : public Sampler<point_t> {
 				}
 
 				node->points = buffer;
-
+				//node->num_points = buffer->size();
+				assert(node->num_points == node->points->size());
 				return false;
 			}
 
@@ -482,7 +491,7 @@ struct SamplerRandom : public Sampler<point_t> {
 
 			node->points = accepted;
 			node->num_points = numAccepted;
-
+			assert(node->num_points == node->points->size());
 			return true;
 			});
 	}
@@ -1150,7 +1159,7 @@ struct SamplerRandom : public Sampler<point_t> {
 	}
 
 	template <typename point_t>
-	void octree_lod_generator<point_t>::build_hierarchy(Indexer* indexer, IndexNode<point_t>* node, std::shared_ptr<std::vector<point_t>> points, int64_t numPoints, int64_t depth)
+	void octree_lod_generator<point_t>::build_hierarchy(Indexer* indexer, IndexNode<point_t>* node, std::shared_ptr<std::vector<point_t>> points, int64_t numPoints, int64_t depth, int max_points_per_index_node)
 	{
 		if (numPoints < max_points_per_index_node) {
 			IndexNode<point_t>* realization = node;
@@ -1234,6 +1243,7 @@ struct SamplerRandom : public Sampler<point_t> {
 					child->min = childBox.get_min_pnt();
 					child->max = childBox.get_max_pnt();
 					child->name = childName;
+					child->rejected_dedups = currentNode->rejected_dedups;
 
 					currentNode->children[index] = child;
 					currentNode = child.get();
@@ -1279,17 +1289,12 @@ struct SamplerRandom : public Sampler<point_t> {
 			indexer->octreeDepth = std::max(indexer->octreeDepth, octreeDepth);
 		}
 
-		int64_t sanityCheck = 0;
 		for (int64_t nodeIndex = 0; nodeIndex < needRefinement.size(); nodeIndex++) {
 			auto subject = needRefinement[nodeIndex];
 			auto buffer = subject->points;
 
-			if (sanityCheck > needRefinement.size() * 2) {
-				//failed to partition point cloud in indexer::build_hierarchy();
-			}
-
 			if (subject->num_points == numPoints) {
-				// the subsplit has the same number of points than the input -> ERROR
+				// the subsplit has the same number of points than the input, may need to deduplicate
 
 				std::unordered_map<std::string, int> counters;
 
@@ -1312,17 +1317,8 @@ struct SamplerRandom : public Sampler<point_t> {
 
 				if (numDuplicates < max_points_per_index_node / 2) {
 					// few uniques, just unfavouribly distributed points
-					// print warning but continue
-					/*
-					std::stringstream ss;
-					ss << "Encountered unfavourable point distribution. Conversion continues anyway because not many duplicates were encountered. ";
-					ss << "However, issues may arise. If you find an error, please report it at github. \n";
-					ss << "#points in box: " << numPointsInBox << ", #unique points in box: " << numUniquePoints << ", ";
-					ss << "min: " << subject->min.toString() << ", max: " << subject->max.toString();
-					*/
-					//logger::WARN(ss.str());
 				}
-				else {
+				else if (allow_duplicate_elimination){
 
 					// remove the duplicates, then try again
 
@@ -1358,17 +1354,6 @@ struct SamplerRandom : public Sampler<point_t> {
 
 					}
 
-					//cout << "#distinct: " << distinct.size() << endl;
-					/*
-					std::stringstream msg;
-					msg << "Too many duplicate points were encountered. #points: " << subject->numPoints;
-					msg << ", #unique points: " << distinct.size() << std::endl;
-					msg << "Duplicates inside node will be dropped! ";
-					msg << "min: " << subject->min.toString() << ", max: " << subject->max.toString();
-
-					logger::WARN(msg.str());
-					*/
-
 					std::shared_ptr<std::vector<point_t>> distinctBuffer = std::make_shared<std::vector<point_t>>(distinct.size());
 
 					for (int64_t i = 0; i < distinct.size(); i++) {
@@ -1381,15 +1366,21 @@ struct SamplerRandom : public Sampler<point_t> {
 					// try again
 					nodeIndex--;
 				}
-
+				else {
+					//removal of duplicates is disallowed
+					subject->rejected_dedups+=1;
+				}
 			}
 
-			int64_t nextNumPoins = subject->num_points;
+
+			int64_t nextNumPoints = subject->num_points;
+			buffer = subject->points;
+			assert(nextNumPoints == buffer->size());
 
 			subject->points = nullptr;
 			subject->num_points = 0;
 
-			build_hierarchy(indexer, subject, buffer, nextNumPoins, depth + 1);
+			build_hierarchy(indexer, subject, buffer, nextNumPoints, depth + 1, (subject->rejected_dedups +1)*max_points_per_index_node);
 		}
 	}
 
@@ -1430,7 +1421,10 @@ struct SamplerRandom : public Sampler<point_t> {
 		SamplerRandom<point_t> sampler;
 		FlatIndexer indexer(&out);
 		indexing(nodes, indexer, sampler);
-		assert(out.size() == points.size());
+		//assert(out.size() == points.size()); //can happen if duplicates were eliminated
+		if (out.size() != points.size()) {
+			std::cout << "lod generator: some points were eliminated!\n";
+		}
 		return out;
 	}
 	
