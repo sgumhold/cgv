@@ -1,5 +1,6 @@
 var NAVTREEINDEX46 =
 {
+"vr__log_8h_source.html":[12,0,1,5,6],
 "vr__render__helpers_8h_source.html":[12,0,2,0,1],
 "vr__server_8h_source.html":[12,0,1,1,3],
 "vr__state_8h.html":[12,0,1,5,7],

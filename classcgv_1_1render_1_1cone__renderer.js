@@ -94,6 +94,7 @@ var classcgv_1_1render_1_1cone__renderer =
     [ "set_position_array", "classcgv_1_1render_1_1cone__renderer.html#a79f6ef6d03e7f4b4d90577f22be2f592", null ],
     [ "set_prog", "classcgv_1_1render_1_1cone__renderer.html#ad127e0d0fe08047250168ea6b2274f3f", null ],
     [ "set_render_style", "classcgv_1_1render_1_1cone__renderer.html#ab6695b268a77fb5e369308ffa7e06c03", null ],
+    [ "set_sphere_array", "classcgv_1_1render_1_1cone__renderer.html#a1194c8ac04628b46da649c0c79fa0428", null ],
     [ "set_texcoord", "classcgv_1_1render_1_1cone__renderer.html#a23e3feda58fd42fdcc9bd06503c81e40", null ],
     [ "set_texcoord_array", "classcgv_1_1render_1_1cone__renderer.html#a16fc63cdd0b4671308c4f89570fc804a", null ],
     [ "set_texcoord_array", "classcgv_1_1render_1_1cone__renderer.html#a06347854ea6ca483f982a58e22820a4a", null ],
