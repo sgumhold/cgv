@@ -160,7 +160,7 @@ public:
 	}
 
 	/** Tests if the mouse pointer is hovering over this overlay and returns
-		true if this is the case. Specifically it cehcks if the mouse position
+		true if this is the case. Specifically it checks if the mouse position
 		is inside the rectangle defined by container. Override this method to
 		implement your own check, i.e. for different overlay shapes.
 	*/
