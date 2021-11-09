@@ -22,7 +22,7 @@ struct NoiseLayer
 struct TerrainLevels
 {
 	float grassLevel = 0.4F;
-	float rockLevel = 1.0F;
+	float rockLevel = 0.6F;
 	float blur = 0.05F;
 };
 
@@ -46,9 +46,14 @@ struct CGV_API terrain_render_style : public cgv::render::surface_render_style
 	float tessellation = 60.0F;
 	float uv_scale_factor = 20.0F;
 
-	cgv::render::texture grass_texture = {};
-	cgv::render::texture dirt_texture = {};
-	cgv::render::texture rock_texture = {};
+	bool load_default_textures(cgv::render::context& ctx);
+
+	bool use_grass_texture = true;
+	bool use_dirt_texture = true;
+	bool use_rock_texture = true;
+	mutable cgv::render::texture grass_texture = {};
+	mutable cgv::render::texture dirt_texture = {};
+	mutable cgv::render::texture rock_texture = {};
 };
 
 /// renderer that supports point splatting

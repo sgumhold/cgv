@@ -52,35 +52,34 @@ uniform float grassLevel;
 uniform float rockLevel;
 uniform float blur;
 
+uniform float grassDamper = 0.75f;
+uniform float dirtDamper = 0.9f;
+
+uniform bool useGrassTexture;
+uniform bool useDirtTexture;
+uniform bool useRockTexture;
+
 uniform sampler2D grassTexture;
 uniform sampler2D dirtTexture;
 uniform sampler2D rockTexture;
 
-//vec3 getSurfaceColor(float height) {
-//    // TODO make color dependent on normal
-//    const float grassDamper = 0.75F;
-//    const float dirtDamper = 0.9F;
-//    if (height < grassLevel-blur) {
-//        vec3 grassColor = texture(grassTexture, uv_fs).rgb * grassDamper;
-//        return grassColor;
-//    } else if (height < grassLevel+blur) {
-//        vec3 grassColor = texture(grassTexture, uv_fs).rgb * grassDamper;
-//        vec3 dirtColor = texture(dirtTexture, uv_fs).rgb * dirtDamper;
-//        float t = (height-(grassLevel-blur)) / (2.0F*blur);
-//        return mix(grassColor, dirtColor, t);
-//    } else if (height < rockLevel-blur){
-//        vec3 dirtColor = texture(dirtTexture, uv_fs).rgb * dirtDamper;
-//        return dirtColor;
-//    } else if (height < rockLevel+blur) {
-//        vec3 dirtColor = texture(dirtTexture, uv_fs).rgb * dirtDamper;
-//        vec3 rockColor = texture(rockTexture, uv_fs).rgb;
-//        float t = (height-(rockLevel-blur)) / (2.0F*blur);
-//        return mix(dirtColor, rockColor, t);
-//    } else {
-//        vec3 rockColor = texture(rockTexture, uv_fs).rgb;
-//        return rockColor;
-//    }
-//}
+vec3 get_grass_color() { return (useGrassTexture ? texture(grassTexture, uv_fs).rgb : vec3(0.2,0.9,0.1)) * grassDamper; }
+vec3 get_dirt_color()  { return (useDirtTexture ? texture(dirtTexture, uv_fs).rgb : vec3(0.4,0.3,0.0)) * dirtDamper; }
+vec3 get_rock_color()  { return useRockTexture ? texture(rockTexture, uv_fs).rgb : vec3(0.5,0.5,0.5); }
+
+vec3 getSurfaceColor(float height) {
+    // TODO make color dependent on normal
+    if (height < grassLevel-blur)
+        return get_grass_color();
+    else if (height < grassLevel+blur)
+        return mix(get_grass_color(), get_dirt_color(), (height-(grassLevel-blur)) / (2.0F*blur));
+    else if (height < rockLevel-blur)
+        return get_dirt_color();
+    else if (height < rockLevel+blur)
+        return mix(get_dirt_color(), get_rock_color(), (height-(rockLevel-blur)) / (2.0F*blur));
+    else
+        return get_rock_color();
+}
 
 void main() {
     vec3 normal = normalize(normal_eye);
@@ -88,5 +87,5 @@ void main() {
     if (!keep_this_side(position_eye, normal, side)) {
         discard;
     }
-    finish_fragment(compute_reflected_appearance(position_eye, normal, color_fs, side));
+    finish_fragment(compute_reflected_appearance(position_eye, normal, vec4(getSurfaceColor(normalized_height_fs),color_fs.a), side));
 }

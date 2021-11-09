@@ -32,7 +32,7 @@ class terrain_demo : public base,		   // base class of all to be registered clas
 	int grid_width = 10;
 	int grid_height = 10;
 
-	cgv::math::fvec<double, 3> translation = {-500, -250, -500};
+	cgv::math::fvec<double, 3> translation = {0, -250, 0};
 
   public:
 	/// initialize rotation angle
@@ -46,6 +46,10 @@ class terrain_demo : public base,		   // base class of all to be registered clas
 		terrain_style.noise_layers.emplace_back(80.0F, 4.0F);
 		terrain_style.noise_layers.emplace_back(30.0F, 2.0F);
 		terrain_style.noise_layers.emplace_back(7.5F, 0.75F);
+
+		terrain_style.material.set_brdf_type(cgv::media::illum::BT_OREN_NAYAR);
+		terrain_style.material.set_roughness(1.0f);
+		terrain_style.material.set_ambient_occlusion(0.5f);
 	}
 
 	bool handle(event& e) override
@@ -76,11 +80,8 @@ class terrain_demo : public base,		   // base class of all to be registered clas
 
 	bool init(context& ctx) override
 	{
-		auto& tr = cgv::render::ref_terrain_renderer(ctx, 1);
-		if (!tr.init(ctx)) {
-			return false;
-		}
-
+		cgv::render::ref_terrain_renderer(ctx, 1);
+		terrain_style.load_default_textures(ctx);
 		return true;
 	}
 
@@ -90,17 +91,17 @@ class terrain_demo : public base,		   // base class of all to be registered clas
 		custom_indices.clear();
 
 		std::vector<float> quadVertices = {
-			  0.0F, 0.0F, //
-			  1.0F, 0.0F, //
-			  1.0F, 1.0F, //
-			  0.0F, 1.0F, //
+			  0.0f, 0.0f, //
+			  1.0f, 0.0f, //
+			  1.0f, 1.0f, //
+			  0.0f, 1.0f, //
 		};
 
 		for (int row = 0; row < grid_height; row++) {
 			for (int col = 0; col < grid_width; col++) {
 				for (int i = 0; i < static_cast<int64_t>(quadVertices.size() / 2); i++) {
-					float x = (quadVertices[i * 2] + static_cast<float>(row)) * 100;
-					float y = (quadVertices[i * 2 + 1] + static_cast<float>(col)) * 100;
+					float x = (quadVertices[i * 2] + static_cast<float>(row- grid_height/2)) * 100;
+					float y = (quadVertices[i * 2 + 1] + static_cast<float>(col-grid_width/2)) * 100;
 					custom_positions.emplace_back(x, y);
 				}
 			}
