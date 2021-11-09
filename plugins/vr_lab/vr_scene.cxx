@@ -20,9 +20,9 @@ void vr_scene::set_label_border_width(float border_width)
 	update_member(&rrs.percentual_border_width);
 }
 
-
-void vr_scene::construct_table(float tw, float td, float th, float tW, float tO, rgb table_clr, rgb leg_clr) 
+void vr_scene::construct_rectangular_table(float tw, float td, float th, float tW, float tpO, rgb table_clr, rgb leg_clr) 
 {
+	float tO = tpO * tw;
 	float x0 = -0.5f * tw;
 	float x1 = -0.5f * tw + tO;
 	float x2 = -0.5f * tw + tO + tW;
@@ -44,6 +44,41 @@ void vr_scene::construct_table(float tw, float td, float th, float tW, float tO,
 	boxes.push_back(box3(vec3(x3, y0, z1), vec3(x4, y1, z2))); box_colors.push_back(leg_clr);
 	boxes.push_back(box3(vec3(x3, y0, z3), vec3(x4, y1, z4))); box_colors.push_back(leg_clr);
 	boxes.push_back(box3(vec3(x1, y0, z3), vec3(x2, y1, z4))); box_colors.push_back(leg_clr);
+}
+
+void vr_scene::construct_round_table(float ttr, float tbr, float th, float tW, float tpO, rgb table_clr, rgb leg_clr)
+{
+	float r0 = 0.5f*tbr;
+	float r1 = 0.5f*(1.0f-tpO)*tbr;
+	float r2 = 2*tW;
+	float r3 = 2*tW;
+	float r4 = 0.5f*(1.0f - tpO)*ttr;
+	float r5 = 0.5f*ttr;
+	float y0 = 0;
+	float y1 = tW;
+	float y2 = 5 * tW;
+	float y3 = th - 5 * tW;
+	float y4 = th - tW;
+	float y5 = th;
+	cone_vertices.push_back(vec4(0, y0, 0, r0));
+	cone_vertices.push_back(vec4(0, y1, 0, r0));
+	
+	cone_vertices.push_back(vec4(0, y1, 0, r1));
+	cone_vertices.push_back(vec4(0, y2, 0, r2));
+	
+	cone_vertices.push_back(vec4(0, y2, 0, r2));
+	cone_vertices.push_back(vec4(0, y3, 0, r3));
+
+	cone_vertices.push_back(vec4(0, y3, 0, r3));
+	cone_vertices.push_back(vec4(0, y4, 0, r4));
+	cone_colors.push_back(table_clr);
+	cone_colors.push_back(table_clr);
+	for (size_t i = 2; i < cone_vertices.size(); ++i)
+		cone_colors.push_back(leg_clr);
+	cone_vertices.push_back(vec4(0, y4, 0, r5));
+	cone_vertices.push_back(vec4(0, y5, 0, r5));
+	cone_colors.push_back(table_clr);
+	cone_colors.push_back(table_clr);
 }
 
 void vr_scene::construct_room(float w, float d, float h, float W, bool walls, bool ceiling) {
@@ -100,9 +135,24 @@ void vr_scene::build_scene(float w, float d, float h, float W)
 	if (draw_environment) {
 		construct_environment(0.3f, 3 * w, 3 * d, w, d, h);
 	}
-	if (draw_table) {
-		construct_table(table_width, table_depth, table_height, leg_width, leg_offset, table_color, leg_color);
+	switch (table_mode) {
+	case TM_RECTANGULAR:
+		construct_rectangular_table(table_width, table_depth, table_height, leg_width, percentual_leg_offset, table_color, leg_color);
+		break;
+	case TM_ROUND:
+		construct_round_table(table_top_radius, table_bottom_radius, table_height, leg_width, percentual_leg_offset, table_color, leg_color);
+		break;
+	default:
+		break;
 	}
+}
+
+void vr_scene::clear_scene()
+{
+	boxes.clear();
+	box_colors.clear();
+	cone_vertices.clear();
+	cone_colors.clear();
 }
 
 vr_scene::vr_scene() : lm(false)
@@ -110,7 +160,7 @@ vr_scene::vr_scene() : lm(false)
 	set_name("vr_scene");
 	vr_view_ptr = 0;
 
-	draw_table = true;
+	table_mode = TM_ROUND;
 	draw_room = true;
 	draw_environment = true;
 	draw_walls = false;
@@ -120,8 +170,8 @@ vr_scene::vr_scene() : lm(false)
 	table_depth = 0.8f;
 	table_height = 0.7f;
 	leg_color = rgb(0.2f, 0.1f, 0.1f);
-	leg_width = 0.04f;
-	leg_offset = 0.0f;
+	leg_width = 0.03f;
+	percentual_leg_offset = 0.03f;
 
 	rrs.map_color_to_material = cgv::render::CM_COLOR_AND_OPACITY;
 	rrs.border_mode = cgv::render::RBM_MIN;
@@ -139,17 +189,22 @@ vr_scene::vr_scene() : lm(false)
 	on_set(&table_width);
 }
 
+cgv::reflect::enum_reflection_traits<TableMode> get_reflection_traits(const TableMode& tm)
+{
+	return cgv::reflect::enum_reflection_traits<TableMode>("HIDE,RECTANGULAR,ROUND");
+}
+
 bool vr_scene::self_reflect(cgv::reflect::reflection_handler& rh)
 {
 	return 		
-		rh.reflect_member("draw_table", draw_table) &&
+		rh.reflect_member("table_mode", table_mode) &&
 		rh.reflect_member("table_color", table_color) &&
 		rh.reflect_member("table_width", table_width) &&
 		rh.reflect_member("table_depth", table_depth) &&
 		rh.reflect_member("table_height", table_height) &&
 		rh.reflect_member("table_leg color", leg_color) &&
 		rh.reflect_member("table_legs", leg_width) &&
-		rh.reflect_member("table_offset", leg_offset) &&
+		rh.reflect_member("percentual_leg_offset", percentual_leg_offset) &&
 		rh.reflect_member("draw_room", draw_room) &&
 		rh.reflect_member("room_width", room_width) &&
 		rh.reflect_member("room_depth", room_depth) &&
@@ -158,29 +213,29 @@ bool vr_scene::self_reflect(cgv::reflect::reflection_handler& rh)
 		rh.reflect_member("draw_walls", draw_walls) &&
 		rh.reflect_member("draw_ceiling", draw_ceiling) &&
 		rh.reflect_member("draw_environment", draw_environment);
-
 }
 
 void vr_scene::on_set(void* member_ptr)
 {
 	if (member_ptr >= &table_width && member_ptr < &leg_color + 1) {
-		boxes.resize(boxes.size() - 5);
-		box_colors.resize(box_colors.size() - 5);
-		construct_table(table_width, table_depth, table_height, leg_width, leg_offset, table_color, leg_color);
+		switch (table_mode) {
+		case TM_RECTANGULAR :
+			boxes.resize(boxes.size() - 5);
+			box_colors.resize(box_colors.size() - 5);
+			construct_rectangular_table(table_width, table_depth, table_height, leg_width, percentual_leg_offset, table_color, leg_color);
+			break;
+		case TM_ROUND:
+			cone_vertices.clear();
+			cone_colors.clear();
+			construct_round_table(table_top_radius, table_bottom_radius, table_height, leg_width, percentual_leg_offset, table_color, leg_color);
+			break;
+		}
 	}
-	if (member_ptr == &draw_table || member_ptr == &draw_room || member_ptr == &draw_environment || member_ptr == &draw_walls || member_ptr == &draw_ceiling || (member_ptr >= &room_width && member_ptr < &wall_width + 1)) {
-
-		boxes.clear();
-		box_colors.clear();
-		if (draw_room) {
-			construct_room(room_width, room_depth, room_height, wall_width, draw_walls, draw_ceiling);
-		}
-		if (draw_environment) {
-			construct_environment(0.3f, 3 * room_width, 3 * room_depth, room_width, room_depth, room_height);
-		}
-		if (draw_table) {
-			construct_table(table_width, table_depth, table_height, leg_width, leg_offset, table_color, leg_color);
-		}
+	if (member_ptr == &table_mode || member_ptr == &draw_room || member_ptr == &draw_environment || member_ptr == &draw_walls || member_ptr == &draw_ceiling || (member_ptr >= &room_width && member_ptr < &wall_width + 1)) {
+		clear_scene();
+		build_scene(room_width, room_depth, room_height, wall_width);
+		if (member_ptr == &table_mode)
+			update_table_labels();
 	}
 	update_member(member_ptr);
 	post_redraw();
@@ -250,15 +305,23 @@ void vr_scene::draw(cgv::render::context& ctx)
 			label_texture_ranges[li] = lm.get_texcoord_range(li);
 	}
 
-	if (draw_environment || draw_room || draw_table) {
+	if (draw_environment || draw_room || table_mode != TM_HIDE) {
 		// activate render styles
 		auto& br = cgv::render::ref_box_renderer(ctx);
-		br.set_render_style(style);
+		br.set_render_style(box_style);
 
 		// draw static part
 		br.set_box_array(ctx, boxes);
 		br.set_color_array(ctx, box_colors);
 		br.render(ctx, 0, boxes.size());
+
+		if (!cone_vertices.empty()) {
+			auto& cr = cgv::render::ref_cone_renderer(ctx);
+			cr.set_render_style(cone_style);
+			cr.set_sphere_array(ctx, cone_vertices);
+			cr.set_color_array(ctx, cone_colors);
+			cr.render(ctx, 0, cone_vertices.size());
+		}
 	}
 }
 
@@ -343,6 +406,16 @@ bool vr_scene::handle(cgv::gui::event& e)
 	return false;
 }
 
+void vr_scene::update_table_labels()
+{
+	auto cp = find_control(table_width);
+	if (cp)
+		cp->set("label", table_mode == TM_ROUND ? "top_radius" : "table_width");
+	cp = find_control(table_depth);
+	if (cp)
+		cp->set("label", table_mode == TM_ROUND ? "bottom_radius" : "table_depth");
+}
+
 void vr_scene::create_gui()
 {
 	add_decorator("vr_scene", "heading");
@@ -361,14 +434,15 @@ void vr_scene::create_gui()
 	}
 	if (begin_tree_node("table", table_width)) {
 		align("\a");
-		add_member_control(this, "draw table", draw_table, "check");
+		add_member_control(this, "table", table_mode, "dropdown", "enums='HIDE,RECTANGULAR,ROUND'");
 		add_member_control(this, "color", table_color);
 		add_member_control(this, "width", table_width, "value_slider", "min=0.1;max=3.0;ticks=true");
 		add_member_control(this, "depth", table_depth, "value_slider", "min=0.1;max=3.0;ticks=true");
+		update_table_labels();
 		add_member_control(this, "height", table_height, "value_slider", "min=0.1;max=3.0;ticks=true");
 		add_member_control(this, "leg color", leg_color);
 		add_member_control(this, "legs", leg_width, "value_slider", "min=0.0;max=0.3;ticks=true");
-		add_member_control(this, "offset", leg_offset, "value_slider", "min=0.0;max=0.5;ticks=true");
+		add_member_control(this, "percentual_offset", percentual_leg_offset, "value_slider", "min=0.0;max=0.5;ticks=true");
 		align("\b");
 		end_tree_node(table_width);
 	}
