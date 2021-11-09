@@ -13,6 +13,17 @@
 
 namespace vr {
 
+/// different table types
+enum TableMode
+{
+	TM_HIDE,
+	TM_RECTANGULAR,
+	TM_ROUND
+};
+
+/// support self reflection of table mode
+extern CGV_API cgv::reflect::enum_reflection_traits<TableMode> get_reflection_traits(const TableMode&);
+
 /// class manages static and dynamic parts of scene
 class vr_scene :
 	public cgv::base::node,
@@ -31,25 +42,60 @@ protected:
 	std::vector<box3> boxes;
 	std::vector<rgb> box_colors;
 
-	// ui parameters for table construction
-	bool draw_table;
-	float table_width, table_depth, table_height, leg_width, leg_offset;
+	// rendering style for rendering of boxes
+	cgv::render::box_render_style box_style;
+
+	// use cones for the turn table
+	std::vector<vec4> cone_vertices;
+	std::vector<rgb> cone_colors;
+
+	// rendering style for rendering of cones
+	cgv::render::cone_render_style cone_style;
+
+	/**@name ui parameters for table construction*/
+	//@{
+	/// table mode
+	TableMode table_mode;
+	/// global sizes 
+	union {
+		/// width of rectangular table
+		float table_width;
+		/// top radius of round table
+		float table_top_radius;
+	};
+	union {
+		/// depth of rectangular table
+		float table_depth;
+		/// bottom radius of round table
+		float table_bottom_radius;
+	};
+	/// height of table measured from ground to top face
+	float table_height;
+	/// width of legs of rectangular table or radius of central leg of round table
+	float leg_width;
+	/// offset of legs relative to table width/radius 
+	float percentual_leg_offset;
+	/// color of table top and legs
 	rgb table_color, leg_color;
+	//@}
 
 	bool draw_environment, draw_room, draw_walls, draw_ceiling;
 	float room_width, room_depth, room_height, wall_width;
 
-	// rendering style for rendering of boxes
-	cgv::render::box_render_style style;
-
-	/// construct boxes that represent a table of dimensions tw,td,th and leg width tW
-	void construct_table(float tw, float td, float th, float tW, float tO, rgb table_clr, rgb leg_clr);
+	/// construct boxes that represent a rectangular table of dimensions tw,td,th, leg width tW, percentual leg offset and table/leg colors
+	void construct_rectangular_table(float tw, float td, float th, float tW, float tpO, rgb table_clr, rgb leg_clr);
+	/// construct cones that represent a round table of dimensions top/bottom radius ttr/tbr, height th, leg width tW, percentual leg offset and table/leg colors
+	void construct_round_table(float ttr, float tbr, float th, float tW, float tpO, rgb table_clr, rgb leg_clr);
 	/// construct boxes that represent a room of dimensions w,d,h and wall width W
 	void construct_room(float w, float d, float h, float W, bool walls, bool ceiling);
 	/// construct boxes for environment
 	void construct_environment(float s, float ew, float ed, float w, float d, float h);
 	/// construct a scene with a table
 	void build_scene(float w, float d, float h, float W);
+	/// clear scene geometry containers
+	void clear_scene();
+	/// update labels in ui that change based on table type
+	void update_table_labels();
 	//@}
 
 
