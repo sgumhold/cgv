@@ -1,5 +1,6 @@
 var NAVTREEINDEX45 =
 {
+"structcgv_1_1type_1_1traits_1_1max.html":[11,0,0,11,4,0],
 "structcgv_1_1type_1_1traits_1_1max__fct.html":[11,0,0,11,4,1],
 "structcgv_1_1type_1_1traits_1_1member__pointer.html":[11,0,0,11,4,2],
 "structcgv_1_1type_1_1traits_1_1min.html":[11,0,0,11,4,3],
@@ -248,6 +249,5 @@ var NAVTREEINDEX45 =
 "vr__emulator_8h_source.html":[12,0,3,0,1],
 "vr__events_8h_source.html":[12,0,1,1,2],
 "vr__info_8h_source.html":[12,0,1,5,4],
-"vr__kit_8h_source.html":[12,0,1,5,5],
-"vr__log_8h_source.html":[12,0,1,5,6]
+"vr__kit_8h_source.html":[12,0,1,5,5]
 };

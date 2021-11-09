@@ -1,5 +1,6 @@
 var NAVTREEINDEX42 =
 {
+"structcgv_1_1render_1_1box__wire__render__style.html#af36c04fdeb21290f87a81d9bfae4ad32":[11,0,0,9,9,25],
 "structcgv_1_1render_1_1callback__drawable.html":[11,0,0,9,11],
 "structcgv_1_1render_1_1callback__drawable.html#a0492ee8d0e1c7867d0a9bc01dfae38e4":[11,0,0,9,11,14],
 "structcgv_1_1render_1_1callback__drawable.html#a0552924c9c708e0b6eaa2ffc667fb5d7":[11,0,0,9,11,18],
@@ -248,6 +249,5 @@ var NAVTREEINDEX42 =
 "structcgv_1_1render_1_1point__render__style.html#ab3ed34e8e12b57fe744b2dc2e65b82f7":[11,0,0,9,28,8],
 "structcgv_1_1render_1_1point__render__style.html#ab4d9c32401403aab72ca0d21ae276c4c":[11,0,0,9,28,20],
 "structcgv_1_1render_1_1point__render__style.html#ab510d7e1706c6061a03086d28b9b33d3":[11,0,0,9,28,27],
-"structcgv_1_1render_1_1point__render__style.html#ab9dec72a3e70241c8d69d5e17c30105d":[11,0,0,9,28,32],
-"structcgv_1_1render_1_1point__render__style.html#ab9e51ddef8a68db550e09b61fe6129c4":[11,0,0,9,28,0]
+"structcgv_1_1render_1_1point__render__style.html#ab9dec72a3e70241c8d69d5e17c30105d":[11,0,0,9,28,32]
 };
