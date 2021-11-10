@@ -1,5 +1,11 @@
 var NAVTREEINDEX45 =
 {
+"structcgv_1_1type_1_1info_1_1type__access.html#a22443b1e04979e01a33f638280423bdd":[11,0,0,11,3,0,0],
+"structcgv_1_1type_1_1info_1_1type__access.html#a2eb3866ac712c9a5bfdc8ebfe717d8a6":[11,0,0,11,3,0,1],
+"structcgv_1_1type_1_1info_1_1type__id.html":[11,0,0,11,3,1],
+"structcgv_1_1type_1_1info_1_1type__name.html":[11,0,0,11,3,2],
+"structcgv_1_1type_1_1info_1_1type__name.html#a7dcb7c43dbf01bd9276508eb7e2295aa":[11,0,0,11,3,2,0],
+"structcgv_1_1type_1_1info_1_1type__ptr.html":[11,0,0,11,3,3],
 "structcgv_1_1type_1_1traits_1_1max.html":[11,0,0,11,4,0],
 "structcgv_1_1type_1_1traits_1_1max__fct.html":[11,0,0,11,4,1],
 "structcgv_1_1type_1_1traits_1_1member__pointer.html":[11,0,0,11,4,2],
@@ -200,9 +206,9 @@ var NAVTREEINDEX45 =
 "textured__material_8h_source.html":[12,0,0,10,16],
 "textured__surface__material_8h_source.html":[12,0,0,6,1,5],
 "thin__plate__spline_8h_source.html":[12,0,0,5,51],
-"thread_8h_source.html":[12,0,0,7,10],
-"thread__pthread_8h_source.html":[12,0,0,7,11],
-"thread__std__thread_8h_source.html":[12,0,0,7,12],
+"thread_8h_source.html":[12,0,0,7,11],
+"thread__pthread_8h_source.html":[12,0,0,7,12],
+"thread__std__thread_8h_source.html":[12,0,0,7,13],
 "throttle__event_8h_source.html":[12,0,0,4,29],
 "todo.html":[8],
 "token_8h_source.html":[12,0,0,13,16],
@@ -243,11 +249,5 @@ var NAVTREEINDEX45 =
 "vr__driver_8h.html#a848c5ddba64a8edf61f153c9660ef1ad":[12,0,1,5,3,8],
 "vr__driver_8h.html#ab44c0434e588c29a2cae378a2967fa41":[12,0,1,5,3,7],
 "vr__driver_8h.html#ab59f7687898060ad12fa2009c6cd9cbf":[12,0,1,5,3,6],
-"vr__driver_8h.html#ad99996e738d108251465649bee84c178":[12,0,1,5,3,10],
-"vr__driver_8h_source.html":[12,0,1,5,3],
-"vr__emulator_8h.html":[12,0,3,0,1],
-"vr__emulator_8h_source.html":[12,0,3,0,1],
-"vr__events_8h_source.html":[12,0,1,1,2],
-"vr__info_8h_source.html":[12,0,1,5,4],
-"vr__kit_8h_source.html":[12,0,1,5,5]
+"vr__driver_8h.html#ad99996e738d108251465649bee84c178":[12,0,1,5,3,10]
 };

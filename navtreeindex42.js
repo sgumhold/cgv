@@ -1,5 +1,11 @@
 var NAVTREEINDEX42 =
 {
+"structcgv_1_1render_1_1box__wire__render__style.html#ad6cd67abc2b77e76500d387bb85ce300":[11,0,0,9,9,17],
+"structcgv_1_1render_1_1box__wire__render__style.html#adf935427999ed33a4eb7be3bcf9512ad":[11,0,0,9,9,29],
+"structcgv_1_1render_1_1box__wire__render__style.html#ae157c607d60955c0586e5275bcc19b49":[11,0,0,9,9,13],
+"structcgv_1_1render_1_1box__wire__render__style.html#ae258474beb4324bce84ec0c866f430eb":[11,0,0,9,9,38],
+"structcgv_1_1render_1_1box__wire__render__style.html#aecb36a2425963ed10456f952cfffeb4f":[11,0,0,9,9,22],
+"structcgv_1_1render_1_1box__wire__render__style.html#aefe4161943c1abac1a582f2745c13698":[11,0,0,9,9,7],
 "structcgv_1_1render_1_1box__wire__render__style.html#af36c04fdeb21290f87a81d9bfae4ad32":[11,0,0,9,9,25],
 "structcgv_1_1render_1_1callback__drawable.html":[11,0,0,9,11],
 "structcgv_1_1render_1_1callback__drawable.html#a0492ee8d0e1c7867d0a9bc01dfae38e4":[11,0,0,9,11,14],
@@ -243,11 +249,5 @@ var NAVTREEINDEX42 =
 "structcgv_1_1render_1_1point__render__style.html#a9ca3090f2e5ce4fca48a1945308c96f3":[11,0,0,9,28,26],
 "structcgv_1_1render_1_1point__render__style.html#aa4274bbe9929cab87164fda32123be1a":[11,0,0,9,28,35],
 "structcgv_1_1render_1_1point__render__style.html#aa43cb0dae0419ff4da7c26b4c0879ca6":[11,0,0,9,28,4],
-"structcgv_1_1render_1_1point__render__style.html#aaeef17e385a1d3ae754742b2619bd55c":[11,0,0,9,28,47],
-"structcgv_1_1render_1_1point__render__style.html#ab2e37794911e2c59e69d30fdf83d9748":[11,0,0,9,28,41],
-"structcgv_1_1render_1_1point__render__style.html#ab30de78655fba045823d9e81badaef87":[11,0,0,9,28,30],
-"structcgv_1_1render_1_1point__render__style.html#ab3ed34e8e12b57fe744b2dc2e65b82f7":[11,0,0,9,28,8],
-"structcgv_1_1render_1_1point__render__style.html#ab4d9c32401403aab72ca0d21ae276c4c":[11,0,0,9,28,20],
-"structcgv_1_1render_1_1point__render__style.html#ab510d7e1706c6061a03086d28b9b33d3":[11,0,0,9,28,27],
-"structcgv_1_1render_1_1point__render__style.html#ab9dec72a3e70241c8d69d5e17c30105d":[11,0,0,9,28,32]
+"structcgv_1_1render_1_1point__render__style.html#aaeef17e385a1d3ae754742b2619bd55c":[11,0,0,9,28,47]
 };

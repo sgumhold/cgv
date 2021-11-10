@@ -1,5 +1,6 @@
 var NAVTREEINDEX37 =
 {
+"structcgv_1_1base_1_1factory__impl.html#aa4d907250a697d6c8368140133c9d719":[11,0,0,0,12,20],
 "structcgv_1_1base_1_1factory__impl.html#aaadcb676b15e72fce5acdd9af0e9fac9":[11,0,0,0,12,8],
 "structcgv_1_1base_1_1factory__impl.html#aae2e9d39b7dafc4fe87bb1263a29365f":[11,0,0,0,12,17],
 "structcgv_1_1base_1_1factory__impl.html#abceffe95f08d3fc13cf9286cf360e705":[11,0,0,0,12,31],
@@ -158,6 +159,11 @@ var NAVTREEINDEX37 =
 "structcgv_1_1base_1_1server.html":[11,0,0,0,34],
 "structcgv_1_1base_1_1test__registration.html":[11,0,0,0,38],
 "structcgv_1_1base_1_1test__registration.html#a6404ab30e59a2f7c7afbcb8c45eeac82":[11,0,0,0,38,0],
+"structcgv_1_1base_1_1user__feedback.html":[11,0,0,0,42],
+"structcgv_1_1base_1_1user__feedback.html#a4ec32a78c50ddef599a3b0c010016aab":[11,0,0,0,42,2],
+"structcgv_1_1base_1_1user__feedback.html#a8729ff7ac11599b7afc257e686a7ea2a":[11,0,0,0,42,3],
+"structcgv_1_1base_1_1user__feedback.html#ad716ac4e972ed278e0f978ad9beb4565":[11,0,0,0,42,0],
+"structcgv_1_1base_1_1user__feedback.html#afd8900ae34cf9c27a15591021da1b7c0":[11,0,0,0,42,1],
 "structcgv_1_1data_1_1dynamic__priority__queue_1_1extended__element.html":[11,0,0,1,12,0],
 "structcgv_1_1gui_1_1abst__control__provider.html":[11,0,0,2,1],
 "structcgv_1_1gui_1_1abst__control__provider.html#ab4c2359e97a4421e3001df9e7f99ad0a":[11,0,0,2,1,0],
@@ -243,11 +249,5 @@ var NAVTREEINDEX37 =
 "structcgv_1_1math_1_1random.html#a274bfa67af8cba8ef1de47bca7733777":[11,0,0,3,11,9],
 "structcgv_1_1math_1_1random.html#a2e9af174856024a226e425673477b1d2":[11,0,0,3,11,12],
 "structcgv_1_1math_1_1random.html#a3067c5fe9eb1479ff453e2406578afb2":[11,0,0,3,11,17],
-"structcgv_1_1math_1_1random.html#a36a8daff4f5830636006430acbda63c8":[11,0,0,3,11,46],
-"structcgv_1_1math_1_1random.html#a395c079938876188f3177320cda6a409":[11,0,0,3,11,27],
-"structcgv_1_1math_1_1random.html#a3a5ae5f85807ac5304fa8c221e375dfe":[11,0,0,3,11,22],
-"structcgv_1_1math_1_1random.html#a4981fb5ed4caa81ca5ca8355f65cdd13":[11,0,0,3,11,19],
-"structcgv_1_1math_1_1random.html#a514d7cf6032b47f02ed652c227b1d676":[11,0,0,3,11,25],
-"structcgv_1_1math_1_1random.html#a538c8578c12e1657112600a45a56e8c6":[11,0,0,3,11,43],
-"structcgv_1_1math_1_1random.html#a53e7b6cebaee9aa30e5fc5aa94db3815":[11,0,0,3,11,40]
+"structcgv_1_1math_1_1random.html#a36a8daff4f5830636006430acbda63c8":[11,0,0,3,11,46]
 };

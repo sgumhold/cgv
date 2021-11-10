@@ -63,6 +63,7 @@ var hierarchy =
       ] ]
     ] ],
     [ "cgv::base::traverser", "classcgv_1_1base_1_1traverser.html", null ],
+    [ "cgv::base::user_feedback", "structcgv_1_1base_1_1user__feedback.html", null ],
     [ "cgv::data::data_view_base", "classcgv_1_1data_1_1data__view__base.html", [
       [ "cgv::data::data_view_impl< D, P >", "classcgv_1_1data_1_1data__view__impl.html", null ],
       [ "cgv::data::data_view_impl< const_data_view, const unsigned char * >", "classcgv_1_1data_1_1data__view__impl.html", [

@@ -208,6 +208,9 @@ Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1base_1_1traverser.html">traverser</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">class used to traverse a tree structure  <a href="classcgv_1_1base_1_1traverser.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1base_1_1user__feedback.html">user_feedback</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">function pointers implementing user feedback functionality of <a class="el" href="namespacecgv_1_1base.html#abfdc3a305f30d82368fcedc7121132f2">find_or_download_data_file()</a> function  <a href="structcgv_1_1base_1_1user__feedback.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="typedef-members"></a>
 Typedefs</h2></td></tr>
@@ -291,6 +294,24 @@ template&lt;class X , typename T &gt; </td></tr>
 <tr class="separator:a36bdb717a44db6f25d51ffb3a110d6aa"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a87c767fdeab1d282ea353800d967ca44"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1base.html#a87c767fdeab1d282ea353800d967ca44">find_data_file</a> (const std::string &amp;file_name, const std::string &amp;strategy, const std::string &amp;sub_directory, const std::string &amp;master_path)</td></tr>
 <tr class="separator:a87c767fdeab1d282ea353800d967ca44"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afda62b3d37fc0252179d50ff291551be"><td class="memItemLeft" align="right" valign="top"><a id="afda62b3d37fc0252179d50ff291551be"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1base.html#afda62b3d37fc0252179d50ff291551be">stdout_message</a> (const std::string &amp;text)</td></tr>
+<tr class="memdesc:afda62b3d37fc0252179d50ff291551be"><td class="mdescLeft">&#160;</td><td class="mdescRight">std::cout based implementation of the <code>message</code> function for first argument to the <code><a class="el" href="structcgv_1_1base_1_1user__feedback.html" title="function pointers implementing user feedback functionality of find_or_download_data_file() function">user_feedback</a></code> constructor <br /></td></tr>
+<tr class="separator:afda62b3d37fc0252179d50ff291551be"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a59ff9ff796a8f99aaa4efa9b1edaa211"><td class="memItemLeft" align="right" valign="top"><a id="a59ff9ff796a8f99aaa4efa9b1edaa211"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1base.html#a59ff9ff796a8f99aaa4efa9b1edaa211">stderr_message</a> (const std::string &amp;text)</td></tr>
+<tr class="memdesc:a59ff9ff796a8f99aaa4efa9b1edaa211"><td class="mdescLeft">&#160;</td><td class="mdescRight">std::cerr based implementation of the <code>message</code> function for first argument to the <code><a class="el" href="structcgv_1_1base_1_1user__feedback.html" title="function pointers implementing user feedback functionality of find_or_download_data_file() function">user_feedback</a></code> constructor <br /></td></tr>
+<tr class="separator:a59ff9ff796a8f99aaa4efa9b1edaa211"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6ad51064d139d1e466114e44ba23ac6c"><td class="memItemLeft" align="right" valign="top"><a id="a6ad51064d139d1e466114e44ba23ac6c"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1base.html#a6ad51064d139d1e466114e44ba23ac6c">std_query</a> (const std::string &amp;text, const std::string &amp;answers, int default_answer)</td></tr>
+<tr class="memdesc:a6ad51064d139d1e466114e44ba23ac6c"><td class="mdescLeft">&#160;</td><td class="mdescRight">std::cout and std::cin based implementation of the <code>query</code> function for second argument to the <code><a class="el" href="structcgv_1_1base_1_1user__feedback.html" title="function pointers implementing user feedback functionality of find_or_download_data_file() function">user_feedback</a></code> constructor <br /></td></tr>
+<tr class="separator:a6ad51064d139d1e466114e44ba23ac6c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a09823546be3c2201d20125b59e10333b"><td class="memItemLeft" align="right" valign="top"><a id="a09823546be3c2201d20125b59e10333b"></a>
+std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1base.html#a09823546be3c2201d20125b59e10333b">std_ask_dir</a> (const std::string &amp;text, const std::string &amp;path)</td></tr>
+<tr class="memdesc:a09823546be3c2201d20125b59e10333b"><td class="mdescLeft">&#160;</td><td class="mdescRight">std::cout and std::cin based implementation of the <code>ask_dir</code> function for third argument to the <code><a class="el" href="structcgv_1_1base_1_1user__feedback.html" title="function pointers implementing user feedback functionality of find_or_download_data_file() function">user_feedback</a></code> constructor <br /></td></tr>
+<tr class="separator:a09823546be3c2201d20125b59e10333b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abfdc3a305f30d82368fcedc7121132f2"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1base.html#abfdc3a305f30d82368fcedc7121132f2">find_or_download_data_file</a> (const std::string &amp;file_name, const std::string &amp;find_strategy, const std::string &amp;url, const std::string &amp;cache_strategy, const std::string &amp;producer, const std::string &amp;sub_directory, const std::string &amp;master_path, <a class="el" href="structcgv_1_1base_1_1user__feedback.html">user_feedback</a> uf)</td></tr>
+<tr class="separator:abfdc3a305f30d82368fcedc7121132f2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab6e30b157762c186c5c0d60359e36b5c"><td class="memItemLeft" align="right" valign="top"><a id="ab6e30b157762c186c5c0d60359e36b5c"></a>
 std::vector&lt; std::string &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1base.html#ab6e30b157762c186c5c0d60359e36b5c">ref_data_path_list</a> ()</td></tr>
 <tr class="memdesc:ab6e30b157762c186c5c0d60359e36b5c"><td class="mdescLeft">&#160;</td><td class="mdescRight">return a reference to the data path list, which is constructed from the environment variable CGV_DATA <br /></td></tr>
@@ -556,6 +577,74 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="name
 <li>p/P ... search the path of the parent on the parent path stack that is controlled with <a class="el" href="namespacecgv_1_1base.html#a90c98c559c9c197551a146a91a704e4b" title="extract a valid path from the given argument and push it onto the stack of parent paths....">push_file_parent()</a> and <a class="el" href="namespacecgv_1_1base.html#a8117654ca2eb262f18fc1093c0fdf828" title="pop the latestly pushed parent path from the parent path stack.">pop_file_parent()</a></li>
 <li>a/A ... search all anchester paths of the all parents on the parent path stack that is controlled with <a class="el" href="namespacecgv_1_1base.html#a90c98c559c9c197551a146a91a704e4b" title="extract a valid path from the given argument and push it onto the stack of parent paths....">push_file_parent()</a> and <a class="el" href="namespacecgv_1_1base.html#a8117654ca2eb262f18fc1093c0fdf828" title="pop the latestly pushed parent path from the parent path stack.">pop_file_parent()</a> As an example the strategy "cpmD" first looks in the current directory, then in the parent directory, then in the master path and finally recursively in each of the registered data paths. </li>
 </ul>
+
+</div>
+</div>
+<a id="abfdc3a305f30d82368fcedc7121132f2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abfdc3a305f30d82368fcedc7121132f2">&#9670;&nbsp;</a></span>find_or_download_data_file()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">CGV_API std::string cgv::base::find_or_download_data_file </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>file_name</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>find_strategy</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>url</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>cache_strategy</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>producer</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>sub_directory</em> = <code>&quot;&quot;</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>master_path</em> = <code>&quot;&quot;</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="structcgv_1_1base_1_1user__feedback.html">user_feedback</a>&#160;</td>
+          <td class="paramname"><em>uf</em> = <code><a class="el" href="structcgv_1_1base_1_1user__feedback.html">user_feedback</a>()</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>same as <a class="el" href="namespacecgv_1_1base.html#a87c767fdeab1d282ea353800d967ca44">find_data_file()</a> but in case file is not found, it is downloaded from the provided url and stored in a directory searched for with the parameter <code>cache_strategy</code>. One can use letters as in the <code>strategy</code> parameter to <a class="el" href="namespacecgv_1_1base.html#a87c767fdeab1d282ea353800d967ca44">find_data_file()</a> but recursion and ressources are ignored. With the <code><a class="el" href="structcgv_1_1base_1_1user__feedback.html" title="function pointers implementing user feedback functionality of find_or_download_data_file() function">user_feedback</a></code> argument one can control how messages, queries and asking for a path is cast on to the user. By default an empty user feedback is used. To use std in and out you could use the following as the last parameter:</p>
+<p><code> <a class="el" href="structcgv_1_1base_1_1user__feedback.html" title="function pointers implementing user feedback functionality of find_or_download_data_file() function">cgv::base::user_feedback(&amp;cgv::base::stdout_message, &amp;cgv::base::std_query, &amp;cgv::base::std_ask_dir)</a> </code></p>
+<p>If a gui driver is available one can use the following alternative after including &lt;<a class="el" href="dialog_8h_source.html">cgv/gui/dialog.h</a>&gt; and &lt;<a class="el" href="file__dialog_8h_source.html">cgv/gui/file_dialog.h</a>&gt;</p>
+<p><code> <a class="el" href="structcgv_1_1base_1_1user__feedback.html" title="function pointers implementing user feedback functionality of find_or_download_data_file() function">cgv::base::user_feedback(&amp;cgv::gui::message, &amp;cgv::gui::question, &amp;cgv::gui::directory_save_dialog)</a> </code> </p>
 
 </div>
 </div>
