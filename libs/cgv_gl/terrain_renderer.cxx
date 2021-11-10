@@ -2,6 +2,8 @@
 
 #include <cgv_gl/gl/gl_tools.h>
 #include <cgv/gui/provider.h>
+#include <cgv/gui/dialog.h>
+#include <cgv/gui/file_dialog.h>
 #include <cgv/defines/quote.h>
 #include <cgv/utils/dir.h>
 #include <cgv/utils/file.h>
@@ -48,8 +50,8 @@ std::string find_or_download_data_file(const std::string& file_name, const std::
 	
 	// if not found find directory in which to cache download according to \c cache_strategy
 	size_t i = 0;
-	while (i < find_strategy.size() && file_path.empty()) {
-		switch (find_strategy[i++]) {
+	while (i < cache_strategy.size() && file_path.empty()) {
+		switch (cache_strategy[i++]) {
 		case 'c':
 		case 'C': file_path = "."; break;
 		case 'm':
@@ -89,19 +91,27 @@ std::string find_or_download_data_file(const std::string& file_name, const std::
 		}
 	}
 	if (file_path.empty()) {
-		std::cerr << "could not find a path to cache downloads" << std::endl;
-		return "";
+		if (cgv::gui::question(std::string("terrain_renderer wants to download <")+file_name+"> but has no path to store it. Do you want to specify a path to store the download?", 
+			"Yes,No", 0) != 1)
+			return "";
+		file_path = cgv::gui::directory_save_dialog("specify path to store terrain_renderer downloads");
+		if (file_path.empty())
+			return "";
 	}
 	// extend file path with subdirectory
 	if (!sub_directory.empty()) {
 		if (file_path.back() != '/' && file_path.back() != '\\')
 			file_path += '/';
 		file_path += sub_directory;
-		if (!cgv::utils::dir::exists(file_path))
+		if (!cgv::utils::dir::exists(file_path)) {
+			if (cgv::gui::question(std::string("terrain_renderer wants to create directory <") + file_path + "> to store downloads. Do you allow this?",
+				"Yes,No", 0) != 1)
+				return "";
 			if (!cgv::utils::dir::mkdir(file_path)) {
-				std::cerr << "could not create subdirectory <" << sub_directory << "> in cache path <" << file_path << std::endl;
+				cgv::gui::message(std::string("could not create subdirectory <") + sub_directory + "> in cache path");
 				return "";
 			}
+		}
 	}
 	// append file name
 	if (file_path.back() != '/' && file_path.back() != '\\')
@@ -110,11 +120,17 @@ std::string find_or_download_data_file(const std::string& file_name, const std::
 	// try to download file
 	std::string cmd = "curl --output \"";
 	cmd += file_path + "\" " + url;
-	int result = system(cmd.c_str());
-	if (result == -1)
-		return "";
-	if (!cgv::utils::file::exists(file_path))
-		return "";
+	bool retry;
+	do {
+		retry = false;
+		int result = system(cmd.c_str());
+		if (result == -1 || !cgv::utils::file::exists(file_path)) {
+			if (cgv::gui::question(std::string("download of <") + file_name + "> failed. Please check internet connectivity! Try again?",
+				"Yes,No", 0) != 1)
+				return "";
+			retry = true;
+		}
+	} while (retry);
 	return file_path;
 }
 
