@@ -20,6 +20,8 @@ navigator::navigator() {
 	view_ptr = nullptr;
 	navigator_eye_pos = vec3(0.0f, 0.0f, 4.0f);
 
+	check_for_click = -1;
+
 	layout.padding = 8;
 	layout.total_height = 200;
 	layout.color_scale_height = 30;
@@ -130,8 +132,6 @@ bool navigator::handle_event(cgv::gui::event& e) {
 
 		int last_hit_axis = hit_axis;
 		hit_axis = 0;
-		//bool last_hit_box = hit_box;
-		//hit_box = false;
 
 		if(get_context()) {
 			cgv::render::context& ctx = *get_context();
@@ -159,168 +159,57 @@ bool navigator::handle_event(cgv::gui::event& e) {
 				vec3 hit_pos = origin + t * direction;
 
 				unsigned mi = cgv::math::max_index(cgv::math::abs(hit_pos));
-				//char cc[3] = { 'x', 'y', 'z' };
-				//char v = hit_pos[mi] < 0.0f ? '-' : '+';
-
-				//hit_box = true;
+				
 				hit_axis = static_cast<int>(mi) + 1;
 				if(hit_pos[mi] < 0.0f)
 					hit_axis = -hit_axis;
-				//hit_normal = vec3(0.0f);
-				//hit_normal[mi] = hit_pos[mi] < 0.0f ? -1.0f : 1.0f;
-
-				//std::cout << v << cc[mi] << std::endl;
 			}
-			//if(last_hit_box != hit_box || last_hit_axis != hit_axis)
+			
 			if(last_hit_axis != hit_axis)
 				post_redraw();
 		}
 
 		switch(ma) {
-			/*case MA_PRESS:
-				if(me.get_button() == MB_LEFT_BUTTON && me.get_modifiers() == 0) {
-					check_for_click = me.get_time();
-					return true;
-				}
-				if(((me.get_button() == MB_LEFT_BUTTON) &&
-					((me.get_modifiers() == 0) || (me.get_modifiers() == EM_SHIFT))) ||
-					((me.get_button() == MB_RIGHT_BUTTON) && (me.get_modifiers() == 0)) ||
-					((me.get_button() == MB_MIDDLE_BUTTON) && (me.get_modifiers() == 0)))
-					return true;
-				break;*/
+		case cgv::gui::MA_PRESS:
+			if(me.get_button() == cgv::gui::MB_LEFT_BUTTON) {
+				check_for_click = me.get_time();
+				return true;
+			}
+			break;
 		case cgv::gui::MA_RELEASE:
-			//if(check_for_click != -1) {
-			//	double dt = me.get_time() - check_for_click;
-			//	if(dt < 0.2) {
+			if(check_for_click != -1) {
+				double dt = me.get_time() - check_for_click;
+				if(dt < 0.2) {
+					if(hit_axis != 0) {
+						int axis_idx = abs(hit_axis) - 1;
 
-		/*if(get_context() && view_ptr) {
-			cgv::render::context& ctx = *get_context();
+						vec3 direction(0.0f);
+						direction[axis_idx] = hit_axis < 0.0f ? -1.0f : 1.0f;
 
-			ivec2 mpos(static_cast<int>(me.get_x()), static_cast<int>(me.get_y()));
-			mpos = get_transformed_mouse_pos(mpos);
-			vec2 window_coord = vec2(mpos) * vec2(2.0f)/last_viewport_size - vec2(1.0f);
-			
-			mat4 MVP = ctx.get_projection_matrix() * ctx.get_modelview_matrix();
-
-			vec4 world_coord(window_coord.x(), window_coord.y(), 1.0f, 1.0f);
-			world_coord = inv(MVP) * world_coord;
-			world_coord /= world_coord.w();
-
-			vec3 direction = normalize(vec3(world_coord) - view_ptr->get_eye());
-			std::cout << direction << std::endl;
-		}*/
-
-
-
-		/*{
-			// RAYCASTING
-			// Transform fragment coordinates from window coordinates to view coordinates.
-			coord = gl_FragCoord
-				* vec4(view.viewAttributes.z, view.viewAttributes.w, 2.0, 0.0)
-				+ vec4(-1.0, -1.0, -1.0, 1.0);
-
-			// Transform fragment coordinates from view coordinates to object coordinates-
-			coord = ubo.modelViewProjectionMatrixInverse * coord;
-			coord /= coord.w;
-			coord -= in_pos; // and to glyph space
-
-			// Calculate the viewing ray.
-			ray = normalize(coord.xyz - camPos.xyz);
-		}*/
-
-
-					if(get_context() && view_ptr) {
-						cgv::render::context& ctx = *get_context();
-						dvec3 p;
-						double z = view_ptr->get_z_and_unproject(ctx, me.get_x(), me.get_y(), p);
-						if(z > 0 && z < 1) {
+						if(view_ptr) {
+							vec3 focus = view_ptr->get_focus();
+							float dist = (focus - view_ptr->get_eye()).length();
 							
-							dvec3 e = view_ptr->get_eye();
-							double l_old = (e - view_ptr->get_focus()).length();
-							double l_new = dot(p - e, view_ptr->get_view_dir());
+							std::cout << hit_axis << std::endl;
+							std::cout << axis_idx << std::endl;
 
-							//cgv::gui::animate_with_geometric_blend(view_ptr->ref_y_extent_at_focus(), view_ptr->get_y_extent_at_focus() * l_new / l_old, 0.5)->set_base_ptr(this);
-							//
-							//cgv::gui::animate_with_linear_blend(view_ptr->ref_focus(), p, 0.5)->configure(cgv::gui::APM_SIN_SQUARED, this);
+							vec3 up_dir(0.0f, 1.0f, 0.0f);
+							if(axis_idx == 1)
+								up_dir = vec3(0.0f, 0.0f, hit_axis < 0 ? 1.0f : -1.0f);
+							
+							view_ptr->set_eye_keep_extent(focus + dist * direction);
+							view_ptr->set_view_up_dir(up_dir);
+							
+							std::cout << direction << std::endl;
+							std::cout << up_dir << std::endl;
 
-							std::cout << p << std::endl;
-
-							//update_vec_member(view::focus);
 							post_redraw();
-							return true;
 						}
 					}
-				//}
-				//check_for_click = -1;
-			//}
-			//if((me.get_button() == MB_LEFT_BUTTON && (me.get_modifiers() == 0 || me.get_modifiers() == EM_SHIFT)) ||
-			//	me.get_button() == MB_RIGHT_BUTTON && me.get_modifiers() == 0)
-			//	return true;
-			break;
-		}
-
-		/*
-		if (get_context()) {
-						cgv::render::context& ctx = *get_context();
-						dvec3 p;
-						double z = get_z_and_unproject(ctx, me.get_x(), me.get_y(), p);
-						if (z > 0 && z < 1) {
-							if (y_view_angle > 0.1) {
-								dvec3 e = view_ptr->get_eye();
-								double l_old = (e - view_ptr->get_focus()).length();
-								double l_new = dot(p - e, view_ptr->get_view_dir());
-
-								cgv::gui::animate_with_geometric_blend(view_ptr->ref_y_extent_at_focus(), view_ptr->get_y_extent_at_focus() * l_new / l_old, 0.5)->set_base_ptr(this);
-							}
-							cgv::gui::animate_with_linear_blend(view_ptr->ref_focus(), p, 0.5)->configure(cgv::gui::APM_SIN_SQUARED, this);
-
-							update_vec_member(view::focus);
-							post_redraw();
-							return true;
-						}
-					}
-		*/
-
-
-
-
-		/*switch(ma) {
-		case cgv::gui::MA_ENTER:
-			mouse_is_on_overlay = true;
-			break;
-		case cgv::gui::MA_LEAVE:
-			mouse_is_on_overlay = false;
-			post_redraw();
-			break;
-		case cgv::gui::MA_MOVE:
-		case cgv::gui::MA_DRAG:
-			cursor_pos = ivec2(me.get_x(), me.get_y());
-			if(show_cursor)
-				post_redraw();
-			break;
-		}
-
-		if(me.get_button_state() & cgv::gui::MB_LEFT_BUTTON) {
-			if(ma == cgv::gui::MA_PRESS && modifiers > 0) {
-				ivec2 mpos = get_local_mouse_pos(ivec2(me.get_x(), me.get_y()));
-
-				switch(modifiers) {
-				case cgv::gui::EM_CTRL:
-					//if(!get_hit_point(mpos))
-					//	add_point(mpos);
-					break;
-				case cgv::gui::EM_ALT:
-				{
-					//point* hit_point = get_hit_point(mpos);
-					//if(hit_point)
-					//	remove_point(hit_point);
-				}
-				break;
 				}
 			}
+			break;
 		}
-
-		//return tfc.points.handle(e, last_viewport_size, container);*/
 
 		return false;
 	} else {
@@ -411,6 +300,9 @@ void navigator::finish_draw(cgv::render::context& ctx) {
 	//glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 	//glClear(GL_COLOR_BUFFER_BIT);
 	
+	ctx.push_projection_matrix();
+	ctx.set_projection_matrix(cgv::math::perspective4(45.0f, 1.0f, 0.1f, 10.0f));
+
 	ctx.push_modelview_matrix();
 	ctx.set_modelview_matrix(get_view_matrix(ctx) * get_model_matrix(ctx));
 
@@ -449,6 +341,7 @@ void navigator::finish_draw(cgv::render::context& ctx) {
 	}
 
 	ctx.pop_modelview_matrix();
+	ctx.pop_projection_matrix();
 
 	glDisable(GL_BLEND);
 	glEnable(GL_DEPTH_TEST);
