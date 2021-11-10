@@ -32,7 +32,8 @@ layout (triangles, equal_spacing, cw) in;
 in vec4 position_tes[];
 in vec4 color_tes[];
 
-uniform float uvScaleFactor;
+uniform vec3 uv_scale_factor;
+uniform vec3 aspect_ratio;
 
 uniform NoiseLayer noiseLayers[MAX_NUM_NOISE_LAYERS];
 uniform int numNoiseLayers;
@@ -45,7 +46,7 @@ uniform float platformHeight;
 uniform int seed;
 
 out vec4 color_fs;
-out vec2 uv_fs;
+out mat3x2 uv_fs;
 out vec3 normal_eye;
 out vec3 tangent_eye;
 out vec3 bitangent_eye;
@@ -76,6 +77,8 @@ void main() {
     vec4 position = get_modelview_matrix() * vec4(pos.x, noise.x, pos.y, 1.0F);
 
     position_eye = position.xyz;
-    uv_fs = pos2 / uvScaleFactor;
+    uv_fs[0] = vec2(pos2.x,pos.y*aspect_ratio[0])/uv_scale_factor[0];
+    uv_fs[1] = vec2(pos2.x,pos.y*aspect_ratio[1])/uv_scale_factor[1];
+    uv_fs[2] = vec2(pos2.x,pos.y*aspect_ratio[2])/uv_scale_factor[2];
     gl_Position = get_projection_matrix() * position;
 }

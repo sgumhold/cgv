@@ -5,8 +5,6 @@
 #include <cgv/gui/dialog.h>
 #include <cgv/gui/file_dialog.h>
 #include <cgv/defines/quote.h>
-#include <cgv/utils/dir.h>
-#include <cgv/utils/file.h>
 #include <cgv/base/import.h>
 namespace cgv {
 namespace render {
@@ -34,109 +32,14 @@ void update_texture_settings(cgv::render::texture& texture)
 {
 	texture.set_min_filter(cgv::render::TF_ANISOTROP, 8.0f);
 	texture.set_mag_filter(cgv::render::TF_LINEAR);
-	texture.set_wrap_r(cgv::render::TW_REPEAT);
 	texture.set_wrap_s(cgv::render::TW_REPEAT);
 	texture.set_wrap_t(cgv::render::TW_REPEAT);
 }
 
-std::string find_or_download_data_file(const std::string& file_name, const std::string& find_strategy,
-	const std::string& url, const std::string& cache_strategy,
-	const std::string& sub_directory = "", const std::string& master_path = "")
-{
-	// first try to find file 
-	std::string file_path = cgv::base::find_data_file(file_name, find_strategy, sub_directory, master_path);
-	if (!file_path.empty())
-		return file_path;
-	
-	// if not found find directory in which to cache download according to \c cache_strategy
-	size_t i = 0;
-	while (i < cache_strategy.size() && file_path.empty()) {
-		switch (cache_strategy[i++]) {
-		case 'c':
-		case 'C': file_path = "."; break;
-		case 'm':
-		case 'M': if (cgv::utils::dir::exists(master_path))
-			file_path = master_path;
-			break;
-		case 'd':
-		case 'D': {
-			const std::vector<std::string>& path_list = cgv::base::ref_data_path_list();
-			for (unsigned int i = 0; i < path_list.size(); ++i)
-				if (cgv::utils::dir::exists(path_list[i])) {
-					file_path = path_list[i];
-					break;
-				}
-			break;
-		}
-		case 'p':
-		case 'P': {
-			const std::vector<std::string>& parent_stack = cgv::base::ref_parent_file_stack();
-			if (!parent_stack.empty()) {
-				if (cgv::utils::dir::exists(parent_stack.back()))
-					file_path = parent_stack.back();
-			}
-			break;
-		}
-		case 'a':
-		case 'A': {
-			const std::vector<std::string>& parent_stack = cgv::base::ref_parent_file_stack();
-			for (size_t i = parent_stack.size(); i > 0; --i) {
-				if (cgv::utils::dir::exists(parent_stack[i])) {
-					file_path = parent_stack[i];
-					break;
-				}
-			}
-			break;
-		}
-		}
-	}
-	if (file_path.empty()) {
-		if (cgv::gui::question(std::string("terrain_renderer wants to download <")+file_name+"> but has no path to store it. Do you want to specify a path to store the download?", 
-			"Yes,No", 0) != 1)
-			return "";
-		file_path = cgv::gui::directory_save_dialog("specify path to store terrain_renderer downloads");
-		if (file_path.empty())
-			return "";
-	}
-	// extend file path with subdirectory
-	if (!sub_directory.empty()) {
-		if (file_path.back() != '/' && file_path.back() != '\\')
-			file_path += '/';
-		file_path += sub_directory;
-		if (!cgv::utils::dir::exists(file_path)) {
-			if (cgv::gui::question(std::string("terrain_renderer wants to create directory <") + file_path + "> to store downloads. Do you allow this?",
-				"Yes,No", 0) != 1)
-				return "";
-			if (!cgv::utils::dir::mkdir(file_path)) {
-				cgv::gui::message(std::string("could not create subdirectory <") + sub_directory + "> in cache path");
-				return "";
-			}
-		}
-	}
-	// append file name
-	if (file_path.back() != '/' && file_path.back() != '\\')
-		file_path += '/';
-	file_path += file_name;
-	// try to download file
-	std::string cmd = "curl --output \"";
-	cmd += file_path + "\" " + url;
-	bool retry;
-	do {
-		retry = false;
-		int result = system(cmd.c_str());
-		if (result == -1 || !cgv::utils::file::exists(file_path)) {
-			if (cgv::gui::question(std::string("download of <") + file_name + "> failed. Please check internet connectivity! Try again?",
-				"Yes,No", 0) != 1)
-				return "";
-			retry = true;
-		}
-	} while (retry);
-	return file_path;
-}
-
 bool find_or_download_texture(cgv::render::context& ctx, const std::string& name, cgv::render::texture& tex, const std::string& file_name, const std::string& url)
 {
-	std::string file_path = find_or_download_data_file(file_name, "cmD", url, "Dcm", "textures", QUOTE_SYMBOL_VALUE(INPUT_DIR));
+	std::string file_path = cgv::base::find_or_download_data_file(file_name, "cmD", url, "Dcm", "terrain_renderer", "textures", QUOTE_SYMBOL_VALUE(INPUT_DIR), 
+		cgv::base::user_feedback(&cgv::gui::message, &cgv::gui::question, &cgv::gui::directory_save_dialog));
 	if (file_path.empty()) {
 		std::cerr << "could not find " << name << " texture" << std::endl;
 		return false;
@@ -157,10 +60,29 @@ bool terrain_render_style::load_default_textures(cgv::render::context& ctx)
 	//    grass texture: "../../assets/textures/Ground037_1K_Color.png"
 	//    dirt texture: "../../assets/textures/Ground039_1K_Color.png"
 	//    rock texture: "../../assets/textures/Ground022_1K_Color.png"
-	return
-		find_or_download_texture(ctx, "grass", grass_texture, "terrain_grass_texture.jpg", "https://3djungle.net/download/texture/XLs0Lg==/") &&
-		find_or_download_texture(ctx, "dirt", dirt_texture, "terrain_dirt_texture.jpg", "https://3djungle.net/download/texture/Wr42JQ==/") &&
-		find_or_download_texture(ctx, "rock", rock_texture, "terrain_rock_texture.jpg", "https://3djungle.net/download/texture/W7k0Lw==/");
+	if (find_or_download_texture(ctx, "grass", grass_texture, "terrain_grass_texture.jpg", "https://3djungle.net/download/texture/XLs0Lg==/")) {
+		damp_factor_grass = 0.8f;
+		uv_scale_factor_grass = 10.0f;
+		aspect_ratio_grass = 1.0f;
+	}
+	else 
+		success = false;
+
+	if (find_or_download_texture(ctx, "dirt", dirt_texture, "terrain_dirt_texture.jpg", "https://3djungle.net/download/texture/Wr42JQ==/")) {
+		damp_factor_dirt = 0.6f;
+		uv_scale_factor_dirt = 40.0f;
+		aspect_ratio_dirt = 1.0f;
+	}
+	else
+		success = false;
+	if (find_or_download_texture(ctx, "rock", rock_texture, "terrain_rock_texture.jpg", "https://3djungle.net/download/texture/W7k0Lw==/")) {
+		damp_factor_rock = 0.8f;
+		uv_scale_factor_rock = 20.0f;
+		aspect_ratio_rock = 2.0f;
+	}
+	else
+		success = false;
+	return success;
 }
 
 bool terrain_renderer::init(cgv::render::context& ctx)
@@ -194,7 +116,9 @@ bool terrain_renderer::enable(cgv::render::context& ctx)
 	ref_prog().set_uniform(ctx, "useRockTexture",
 		style.use_rock_texture && style.rock_texture.is_created() && style.rock_texture.enable(ctx, 2) && ref_prog().set_uniform(ctx, "rockTexture", 2));
 	ref_prog().set_uniform(ctx, "tessellation", style.tessellation);
-	ref_prog().set_uniform(ctx, "uvScaleFactor", style.uv_scale_factor);
+	ref_prog().set_uniform(ctx, "uv_scale_factor", vec3(style.uv_scale_factor_grass, style.uv_scale_factor_dirt, style.uv_scale_factor_rock));
+	ref_prog().set_uniform(ctx, "aspect_ratio", vec3(style.aspect_ratio_grass, style.aspect_ratio_dirt, style.aspect_ratio_rock));
+	ref_prog().set_uniform(ctx, "damp_factor", vec3(style.damp_factor_grass, style.damp_factor_dirt, style.damp_factor_rock));
 	ref_prog().set_uniform(ctx, "grassLevel", style.levels.grassLevel);
 	ref_prog().set_uniform(ctx, "rockLevel", style.levels.rockLevel);
 	ref_prog().set_uniform(ctx, "blur", style.levels.blur);
@@ -263,26 +187,39 @@ struct terrain_render_style_gui_creator : public cgv::gui::gui_creator
 
 		auto* style = reinterpret_cast<cgv::render::terrain_render_style*>(value_ptr);
 		auto* b = dynamic_cast<cgv::base::base*>(p);
-		p->add_member_control(b, "Show Wireframe", style->wireframe, "check");
-		p->add_member_control(b, "Tessellation", style->tessellation, "value_slider", "min=1;max=80;log=true;ticks=true");
-		p->add_member_control(b, "UV Scale Factor", style->uv_scale_factor, "value_slider", "min=1;max=500;log=true;ticks=true");
-		p->add_member_control(b, "Grass Level", style->levels.grassLevel, "value_slider", "min=0;max=2;ticks=true");
-		p->add_member_control(b, "Rock Level", style->levels.rockLevel, "value_slider", "min=0;max=2;ticks=true");
-		p->add_member_control(b, "Level Blur", style->levels.blur, "value_slider", "min=0;max=0.2;ticks=true");
-		p->add_member_control(b, "use Grass Texture", style->use_grass_texture, "check");
-		p->add_member_control(b, "use Dirt Texture", style->use_dirt_texture, "check");
-		p->add_member_control(b, "use Rock Texture", style->use_rock_texture, "check");
-
+		p->add_member_control(b, "show wireframe", style->wireframe, "check");
+		p->add_member_control(b, "tessellation", style->tessellation, "value_slider", "min=1;max=80;log=true;ticks=true");
 		p->add_member_control(b, "should apply power", style->should_apply_power, "check");
 		p->add_member_control(b, "power", style->power, "value_slider", "min=0.9;max=1.5;ticks=true");
-
 		p->add_member_control(b, "should apply bowl", style->should_apply_bowl, "check");
 		p->add_member_control(b, "bowl strength", style->bowl_strength, "value_slider", "min=0;max=500;ticks=true;log=true");
-
 		p->add_member_control(b, "should apply platform height", style->should_apply_platform, "check");
 		p->add_member_control(b, "platform height", style->platform_height, "value_slider", "min=0;max=0.5;ticks=true");
+		if (p->begin_tree_node("Textures", style->levels.grassLevel, false, "level=3")) {
+			p->align("\a");
+			p->add_member_control(b, "grass level", style->levels.grassLevel, "value_slider", "min=0;max=2;ticks=true");
+			p->add_member_control(b, "rock level", style->levels.rockLevel, "value_slider", "min=0;max=2;ticks=true");
+			p->add_member_control(b, "level blur", style->levels.blur, "value_slider", "min=0;max=0.2;ticks=true");
+			p->add_decorator("grass", "heading", "level=3");
+			p->add_member_control(b, "use texture", style->use_grass_texture, "check");
+			p->add_member_control(b, "damp factor", style->damp_factor_grass, "value_slider", "min=0;max=2;ticks=true");
+			p->add_member_control(b, "uv scale factor", style->uv_scale_factor_grass, "value_slider", "min=1;max=500;log=true;ticks=true");
+			p->add_member_control(b, "aspect ratio", style->aspect_ratio_grass, "value_slider", "min=0.2;max=5;log=true;ticks=true");
+			p->add_decorator("dirt", "heading", "level=3");
+			p->add_member_control(b, "use texture", style->use_dirt_texture, "check");
+			p->add_member_control(b, "damp factor", style->damp_factor_dirt, "value_slider", "min=0;max=2;ticks=true");
+			p->add_member_control(b, "uv scale factor", style->uv_scale_factor_dirt, "value_slider", "min=1;max=500;log=true;ticks=true");
+			p->add_member_control(b, "aspect ratio", style->aspect_ratio_dirt, "value_slider", "min=0.2;max=5;log=true;ticks=true");
+			p->add_decorator("rock", "heading", "level=3");
+			p->add_member_control(b, "use texture", style->use_rock_texture, "check");
+			p->add_member_control(b, "damp factor", style->damp_factor_rock, "value_slider", "min=0;max=2;ticks=true");
+			p->add_member_control(b, "uv scale factor", style->uv_scale_factor_rock, "value_slider", "min=1;max=500;log=true;ticks=true");
+			p->add_member_control(b, "aspect ratio", style->aspect_ratio_rock, "value_slider", "min=0.2;max=5;log=true;ticks=true");
+			p->align("\b");
+			p->end_tree_node(style->levels.grassLevel);
+		}
 
-		if (p->begin_tree_node("Noise Layers", style->noise_layers, false, "level=2")) {
+		if (p->begin_tree_node("Noise Layers", style->noise_layers, false, "level=3")) {
 			p->align("\a");
 			for (int i = 0; i < style->noise_layers.size(); i++) {
 				auto& layer = style->noise_layers[i];
@@ -297,11 +234,13 @@ struct terrain_render_style_gui_creator : public cgv::gui::gui_creator
 			p->end_tree_node(style->noise_layers);
 		}
 
-		p->add_gui<cgv::render::surface_render_style>("surface_render_style",
+		if (p->begin_tree_node("Surface", style->damp_factor_dirt, false, "level=3")) {
+			p->align("\a");
+			p->add_gui<cgv::render::surface_render_style>("surface_render_style",
 													  *reinterpret_cast<cgv::render::surface_render_style*>(value_ptr));
-
-		p->add_decorator("", "separator");
-
+			p->align("\b");
+			p->end_tree_node(style->damp_factor_dirt);
+		}
 		return true;
 	}
 };
