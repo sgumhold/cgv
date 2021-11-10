@@ -21,6 +21,8 @@ protected:
 	view* view_ptr;
 	vec3 navigator_eye_pos;
 
+	double check_for_click;
+
 	bool mouse_is_on_overlay;
 	bool show_cursor;
 	ivec2 cursor_pos;
