@@ -1,5 +1,6 @@
 var NAVTREEINDEX36 =
 {
+"node_8h_source.html":[12,0,0,0,10],
 "normal__estimation_8h_source.html":[12,0,0,5,30],
 "normal__renderer_8h_source.html":[12,0,1,2,9],
 "obj__loader_8h_source.html":[12,0,0,6,3,4],
@@ -58,7 +59,7 @@ var NAVTREEINDEX36 =
 "ppp.html#motivation":[6,1],
 "ppp.html#user_guide":[6,2],
 "ppp_2variant_8h_source.html":[12,0,0,8,6],
-"priority_8h_source.html":[12,0,0,7,8],
+"priority_8h_source.html":[12,0,0,7,9],
 "profiler_8h_source.html":[12,0,0,13,10],
 "progression_8h_source.html":[12,0,0,13,11],
 "promote_8h_source.html":[12,0,0,12,2,8],
@@ -150,7 +151,7 @@ var NAVTREEINDEX36 =
 "slab__renderer_8h_source.html":[12,0,1,2,13],
 "sliced__volume_8h_source.html":[12,0,0,6,5,0],
 "sliced__volume__io_8h_source.html":[12,0,0,6,5,1],
-"socket_8h_source.html":[12,0,0,7,9],
+"socket_8h_source.html":[12,0,0,7,10],
 "solve__polynom_8h_source.html":[12,0,0,5,45],
 "sparse__les_8h_source.html":[12,0,0,5,46],
 "sparse__mat_8h_source.html":[12,0,0,5,47],
@@ -248,6 +249,5 @@ var NAVTREEINDEX36 =
 "structcgv_1_1base_1_1factory__impl.html#a79a9ca57ee7e6364153cda52223b8501":[11,0,0,0,12,9],
 "structcgv_1_1base_1_1factory__impl.html#a95bafefa81ebfa3206014eb198e49459":[11,0,0,0,12,33],
 "structcgv_1_1base_1_1factory__impl.html#aa0fe4266b74ebe49de68faaab3ca7a7a":[11,0,0,0,12,28],
-"structcgv_1_1base_1_1factory__impl.html#aa2b866151a23c63b3e8029849e71a796":[11,0,0,0,12,11],
-"structcgv_1_1base_1_1factory__impl.html#aa4d907250a697d6c8368140133c9d719":[11,0,0,0,12,20]
+"structcgv_1_1base_1_1factory__impl.html#aa2b866151a23c63b3e8029849e71a796":[11,0,0,0,12,11]
 };

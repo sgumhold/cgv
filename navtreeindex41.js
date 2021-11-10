@@ -1,5 +1,11 @@
 var NAVTREEINDEX41 =
 {
+"structcgv_1_1reflect_1_1extern__reflection__traits__impl.html#ab6ce68d09d03de499a0e76a63edf6e77":[11,0,0,8,5,0],
+"structcgv_1_1reflect_1_1extern__reflection__traits__impl.html#af28433dbef8de26008b6cef141d9c5b5":[11,0,0,8,5,1],
+"structcgv_1_1reflect_1_1extern__reflection__traits__impl.html#afd376b385eec750434800be17d458c93":[11,0,0,8,5,2],
+"structcgv_1_1reflect_1_1extern__reflection__traits__impl.html#afebb677cba1b4e9616770c64bb3022e1":[11,0,0,8,5,3],
+"structcgv_1_1reflect_1_1extern__string__reflection__traits.html":[11,0,0,8,6],
+"structcgv_1_1reflect_1_1extern__string__reflection__traits.html#a00a8b2abc9da7a9cda0184c1e211a5dd":[11,0,0,8,6,5],
 "structcgv_1_1reflect_1_1extern__string__reflection__traits.html#a035479a02a1b4f6b5f6b92837fbe95e9":[11,0,0,8,6,19],
 "structcgv_1_1reflect_1_1extern__string__reflection__traits.html#a14b785fd66dd21e16d4a67a5bc1d2a15":[11,0,0,8,6,3],
 "structcgv_1_1reflect_1_1extern__string__reflection__traits.html#a29573f1adf9a50572b3237070a85196e":[11,0,0,8,6,20],
@@ -243,11 +249,5 @@ var NAVTREEINDEX41 =
 "structcgv_1_1render_1_1box__wire__render__style.html#abd786e7db60f6ea70f54ee2b4cd452e8":[11,0,0,9,9,44],
 "structcgv_1_1render_1_1box__wire__render__style.html#acbbd4166ce26167c5f143eff371aff6d":[11,0,0,9,9,47],
 "structcgv_1_1render_1_1box__wire__render__style.html#ad4dd35d4fafc71b4aedfb032e92335f6":[11,0,0,9,9,36],
-"structcgv_1_1render_1_1box__wire__render__style.html#ad55c8cf5d87080cc934b6d9ee364e704":[11,0,0,9,9,6],
-"structcgv_1_1render_1_1box__wire__render__style.html#ad6cd67abc2b77e76500d387bb85ce300":[11,0,0,9,9,17],
-"structcgv_1_1render_1_1box__wire__render__style.html#adf935427999ed33a4eb7be3bcf9512ad":[11,0,0,9,9,29],
-"structcgv_1_1render_1_1box__wire__render__style.html#ae157c607d60955c0586e5275bcc19b49":[11,0,0,9,9,13],
-"structcgv_1_1render_1_1box__wire__render__style.html#ae258474beb4324bce84ec0c866f430eb":[11,0,0,9,9,38],
-"structcgv_1_1render_1_1box__wire__render__style.html#aecb36a2425963ed10456f952cfffeb4f":[11,0,0,9,9,22],
-"structcgv_1_1render_1_1box__wire__render__style.html#aefe4161943c1abac1a582f2745c13698":[11,0,0,9,9,7]
+"structcgv_1_1render_1_1box__wire__render__style.html#ad55c8cf5d87080cc934b6d9ee364e704":[11,0,0,9,9,6]
 };

@@ -41,5 +41,6 @@ var namespacecgv_1_1base =
     [ "test_registration", "structcgv_1_1base_1_1test__registration.html", "structcgv_1_1base_1_1test__registration" ],
     [ "traverse_callback_handler", "classcgv_1_1base_1_1traverse__callback__handler.html", "classcgv_1_1base_1_1traverse__callback__handler" ],
     [ "traverse_policy", "classcgv_1_1base_1_1traverse__policy.html", "classcgv_1_1base_1_1traverse__policy" ],
-    [ "traverser", "classcgv_1_1base_1_1traverser.html", "classcgv_1_1base_1_1traverser" ]
+    [ "traverser", "classcgv_1_1base_1_1traverser.html", "classcgv_1_1base_1_1traverser" ],
+    [ "user_feedback", "structcgv_1_1base_1_1user__feedback.html", "structcgv_1_1base_1_1user__feedback" ]
 ];
