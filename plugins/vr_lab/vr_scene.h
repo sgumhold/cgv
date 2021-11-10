@@ -4,6 +4,7 @@
 #include <cgv_gl/sphere_renderer.h>
 #include <cgv_gl/box_renderer.h>
 #include <cgv_gl/cone_renderer.h>
+#include <cgv_gl/terrain_renderer.h>
 #include <cgv/gui/event_handler.h>
 #include <cgv/gui/provider.h>
 #include <vr_view_interactor.h>
@@ -21,8 +22,17 @@ enum TableMode
 	TM_ROUND
 };
 
+enum EnvironmentMode {
+	EM_EMPTY,
+	EM_BOXES,
+	EM_TERRAIN
+};
+
 /// support self reflection of table mode
 extern CGV_API cgv::reflect::enum_reflection_traits<TableMode> get_reflection_traits(const TableMode&);
+
+/// support self reflection of environment mode
+extern CGV_API cgv::reflect::enum_reflection_traits<EnvironmentMode> get_reflection_traits(const EnvironmentMode& em);
 
 /// class manages static and dynamic parts of scene
 class vr_scene :
@@ -79,7 +89,17 @@ protected:
 	rgb table_color, leg_color;
 	//@}
 
-	bool draw_environment, draw_room, draw_walls, draw_ceiling;
+	EnvironmentMode environment_mode;
+	// terrain members
+	std::vector<vec2> custom_positions;
+	std::vector<unsigned int> custom_indices;
+	cgv::render::terrain_render_style terrain_style;
+	int grid_width;
+	int grid_height;
+	dvec3 terrain_translation;
+	double terrain_scale;
+
+	bool draw_room, draw_walls, draw_ceiling;
 	float room_width, room_depth, room_height, wall_width;
 
 	/// construct boxes that represent a rectangular table of dimensions tw,td,th, leg width tW, percentual leg offset and table/leg colors
