@@ -160,6 +160,8 @@ vr_scene::vr_scene() : lm(false)
 	set_name("vr_scene");
 	vr_view_ptr = 0;
 
+	std::fill(valid, valid + 5, false);
+
 	table_mode = TM_ROUND;
 	draw_room = true;
 	draw_walls = false;
@@ -265,6 +267,12 @@ void vr_scene::on_set(void* member_ptr)
 
 bool vr_scene::init(cgv::render::context& ctx)
 {
+	for (size_t li = 0; li < ctx.get_nr_default_light_sources(); ++li) {
+		cgv::media::illum::light_source ls = ctx.get_default_light_source(li);
+		ls.set_local_to_eye(false);
+		ctx.set_default_light_source(li, ls);
+	}
+
 	cgv::render::ref_sphere_renderer(ctx, 1);
 	cgv::render::ref_box_renderer(ctx, 1);
 	cgv::render::ref_cone_renderer(ctx, 1);
@@ -308,6 +316,28 @@ bool vr_scene::init(cgv::render::context& ctx)
 
 void vr_scene::init_frame(cgv::render::context& ctx)
 {
+	mat34 ID; ID.identity();
+	pose[0] = pose[1] = ID;
+	valid[0] = valid[1] = true, true;
+	valid[2] = valid[3] = valid[4] = false;
+	// update table pose
+	cgv::math::pose_position(pose[CS_TABLE]) = vec3(0.0f, table_height, 0.0f);
+	// extract poses from tracked vr devices
+	if (vr_view_ptr) {
+		const auto* cs = vr_view_ptr->get_current_vr_state();
+		if (cs) {
+			valid[CS_HEAD] = cs->hmd.status == vr::VRS_TRACKED;
+			valid[CS_LEFT_CONTROLLER] = cs->controller[0].status == vr::VRS_TRACKED;
+			valid[CS_RIGHT_CONTROLLER] = cs->controller[1].status == vr::VRS_TRACKED;
+			if (valid[CS_HEAD])
+				pose[CS_HEAD] = reinterpret_cast<const mat34&>(vr_view_ptr->get_current_vr_state()->hmd.pose[0]);
+			if (valid[CS_LEFT_CONTROLLER])
+				pose[CS_LEFT_CONTROLLER] = reinterpret_cast<const mat34&>(vr_view_ptr->get_current_vr_state()->controller[0].pose[0]);
+			if (valid[CS_RIGHT_CONTROLLER])
+				pose[CS_RIGHT_CONTROLLER] = reinterpret_cast<const mat34&>(vr_view_ptr->get_current_vr_state()->controller[1].pose[0]);
+		}
+	}
+
 	static bool terrain_textures_loaded = false;
 	if (environment_mode == EM_TERRAIN) {
 		if (!terrain_textures_loaded) {
@@ -411,26 +441,6 @@ void vr_scene::finish_frame(cgv::render::context& ctx)
 	std::vector<vec2> E;
 	std::vector<vec4> T;
 	std::vector<rgba> C;
-	mat34 ID; ID.identity();
-	mat34 pose[5] = { ID, ID };
-	bool valid[5] = { true, true, false, false, false };
-	// update table pose
-	cgv::math::pose_position(pose[CS_TABLE]) = vec3(0.0f, table_height, 0.0f);
-	// extract poses from tracked vr devices
-	if (vr_view_ptr) {
-		const auto* cs = vr_view_ptr->get_current_vr_state();
-		if (cs) {
-			valid[CS_HEAD] = cs->hmd.status == vr::VRS_TRACKED;
-			valid[CS_LEFT_CONTROLLER] = cs->controller[0].status == vr::VRS_TRACKED;
-			valid[CS_RIGHT_CONTROLLER] = cs->controller[1].status == vr::VRS_TRACKED;
-			if (valid[CS_HEAD])
-				pose[CS_HEAD] = reinterpret_cast<const mat34&>(vr_view_ptr->get_current_vr_state()->hmd.pose[0]);
-			if (valid[CS_LEFT_CONTROLLER])
-				pose[CS_LEFT_CONTROLLER] = reinterpret_cast<const mat34&>(vr_view_ptr->get_current_vr_state()->controller[0].pose[0]);
-			if (valid[CS_RIGHT_CONTROLLER])
-				pose[CS_RIGHT_CONTROLLER] = reinterpret_cast<const mat34&>(vr_view_ptr->get_current_vr_state()->controller[1].pose[0]);
-		}
-	}
 	// set poses of visible labels in valid coordinate systems
 	for (uint32_t li = 0; li < label_coord_systems.size(); ++li) {
 		//if (label_visibilities[li] == 0 || !valid[label_coord_systems[li]])
