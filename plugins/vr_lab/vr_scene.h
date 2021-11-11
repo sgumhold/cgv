@@ -118,6 +118,11 @@ protected:
 	void update_table_labels();
 	//@}
 
+	/// store poses of different coordinate systems. These are computed in init_frame() function
+	mat34 pose[5];
+	/// store whether poses are valid
+	bool valid[5];
+
 
 	//@name labels
 	//@{	
@@ -230,6 +235,10 @@ public:
 	//@}
 	/// provide access to table dimensions
 	vec3 get_table_extent() const { return vec3(table_width, table_height, table_depth); }
+	/// check whether coordinate system is available
+	bool is_coordsystem_valid(CoordinateSystem cs) const { return valid[cs]; }
+	/// provide access to coordinate system - check validity with is_coordsystem_valid() before
+	const mat34& get_coordsystem(CoordinateSystem cs) const { return pose[cs]; }
 	/// cgv::gui::provider function to create classic UI
 	void create_gui();
 };
