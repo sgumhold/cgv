@@ -22,17 +22,28 @@ enum TableMode
 	TM_ROUND
 };
 
+/// different ground types
+enum GroundMode {
+	GM_NONE,
+	GM_BOXES,
+	GM_TERRAIN
+};
+
+/// different environment modes that are not yet supported
 enum EnvironmentMode {
 	EM_EMPTY,
-	EM_BOXES,
-	EM_TERRAIN
+	EM_SKYBOX,
+	EM_PROCEDURAL
 };
 
 /// support self reflection of table mode
 extern CGV_API cgv::reflect::enum_reflection_traits<TableMode> get_reflection_traits(const TableMode&);
 
+/// support self reflection of ground mode
+extern CGV_API cgv::reflect::enum_reflection_traits<GroundMode> get_reflection_traits(const GroundMode&);
+
 /// support self reflection of environment mode
-extern CGV_API cgv::reflect::enum_reflection_traits<EnvironmentMode> get_reflection_traits(const EnvironmentMode& em);
+extern CGV_API cgv::reflect::enum_reflection_traits<EnvironmentMode> get_reflection_traits(const EnvironmentMode&);
 
 /// class manages static and dynamic parts of scene
 class vr_scene :
@@ -62,6 +73,8 @@ protected:
 	// rendering style for rendering of cones
 	cgv::render::cone_render_style cone_style;
 
+	cgv::render::texture skybox;
+
 	/**@name ui parameters for table construction*/
 	//@{
 	/// table mode
@@ -89,7 +102,8 @@ protected:
 	rgb table_color, leg_color;
 	//@}
 
-	EnvironmentMode environment_mode;
+	GroundMode ground_mode;
+
 	// terrain members
 	std::vector<vec2> custom_positions;
 	std::vector<unsigned int> custom_indices;
@@ -98,6 +112,8 @@ protected:
 	int grid_height;
 	dvec3 terrain_translation;
 	double terrain_scale;
+
+	EnvironmentMode environment_mode;
 
 	bool draw_room, draw_walls, draw_ceiling;
 	float room_width, room_depth, room_height, wall_width;
@@ -109,7 +125,7 @@ protected:
 	/// construct boxes that represent a room of dimensions w,d,h and wall width W
 	void construct_room(float w, float d, float h, float W, bool walls, bool ceiling);
 	/// construct boxes for environment
-	void construct_environment(float s, float ew, float ed, float w, float d, float h);
+	void construct_ground(float s, float ew, float ed, float w, float d, float h);
 	/// construct a scene with a table
 	void build_scene(float w, float d, float h, float W);
 	/// clear scene geometry containers
