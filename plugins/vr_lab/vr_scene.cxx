@@ -106,7 +106,7 @@ void vr_scene::construct_room(float w, float d, float h, float W, bool walls, bo
 	}
 }
 
-void vr_scene::construct_environment(float s, float ew, float ed, float w, float d, float h) {
+void vr_scene::construct_ground(float s, float ew, float ed, float w, float d, float h) {
 	std::default_random_engine generator;
 	std::uniform_real_distribution<float> distribution(0, 1);
 	unsigned n = unsigned(ew / s);
@@ -132,8 +132,8 @@ void vr_scene::build_scene(float w, float d, float h, float W)
 	if (draw_room) {
 		construct_room(w, d, h, W, false, false);
 	}
-	if (environment_mode == EM_BOXES) {
-		construct_environment(0.3f, 3 * w, 3 * d, w, d, h);
+	if (ground_mode == GM_BOXES) {
+		construct_ground(0.3f, 3 * w, 3 * d, w, d, h);
 	}
 	switch (table_mode) {
 	case TM_RECTANGULAR:
@@ -174,7 +174,9 @@ vr_scene::vr_scene() : lm(false)
 	leg_width = 0.03f;
 	percentual_leg_offset = 0.03f;
 
-	environment_mode = EM_BOXES;
+	ground_mode = GM_BOXES;
+
+	environment_mode = EM_SKYBOX;
 
 	terrain_style.noise_layers.emplace_back(300.0F, 15.0F);
 	terrain_style.noise_layers.emplace_back(150.0F, 7.5F);
@@ -212,9 +214,14 @@ cgv::reflect::enum_reflection_traits<TableMode> get_reflection_traits(const Tabl
 	return cgv::reflect::enum_reflection_traits<TableMode>("hide,rectangular,round");
 }
 
+cgv::reflect::enum_reflection_traits<GroundMode> get_reflection_traits(const GroundMode& gm)
+{
+	return cgv::reflect::enum_reflection_traits<GroundMode>("none,boxes,terrain");
+}
+
 cgv::reflect::enum_reflection_traits<EnvironmentMode> get_reflection_traits(const EnvironmentMode& em)
 {
-	return cgv::reflect::enum_reflection_traits<EnvironmentMode>("empty,boxes,terrain");
+	return cgv::reflect::enum_reflection_traits<EnvironmentMode>("empty,skybox,procedural");
 }
 
 bool vr_scene::self_reflect(cgv::reflect::reflection_handler& rh)
@@ -225,7 +232,7 @@ bool vr_scene::self_reflect(cgv::reflect::reflection_handler& rh)
 		rh.reflect_member("table_width", table_width) &&
 		rh.reflect_member("table_depth", table_depth) &&
 		rh.reflect_member("table_height", table_height) &&
-		rh.reflect_member("table_leg color", leg_color) &&
+		rh.reflect_member("table_leg_color", leg_color) &&
 		rh.reflect_member("table_legs", leg_width) &&
 		rh.reflect_member("percentual_leg_offset", percentual_leg_offset) &&
 		rh.reflect_member("draw_room", draw_room) &&
@@ -236,6 +243,7 @@ bool vr_scene::self_reflect(cgv::reflect::reflection_handler& rh)
 		rh.reflect_member("draw_walls", draw_walls) &&
 		rh.reflect_member("terrain_y_offset", terrain_translation[1]) &&
 		rh.reflect_member("draw_ceiling", draw_ceiling) &&
+		rh.reflect_member("ground_mode", ground_mode) &&
 		rh.reflect_member("environment_mode", environment_mode);
 }
 
@@ -255,7 +263,7 @@ void vr_scene::on_set(void* member_ptr)
 			break;
 		}
 	}
-	if (member_ptr == &table_mode || member_ptr == &draw_room || member_ptr == &environment_mode || member_ptr == &draw_walls || member_ptr == &draw_ceiling || (member_ptr >= &room_width && member_ptr < &wall_width + 1)) {
+	if (member_ptr == &table_mode || member_ptr == &draw_room || member_ptr == &ground_mode || member_ptr == &draw_walls || member_ptr == &draw_ceiling || (member_ptr >= &room_width && member_ptr < &wall_width + 1)) {
 		clear_scene();
 		build_scene(room_width, room_depth, room_height, wall_width);
 		if (member_ptr == &table_mode)
@@ -272,6 +280,8 @@ bool vr_scene::init(cgv::render::context& ctx)
 		ls.set_local_to_eye(false);
 		ctx.set_default_light_source(li, ls);
 	}
+
+	//skybox.create_from_images(ctx, "D:/SteamLibrary/steamapps/common/VIVEDriver/App/ViveVRRuntime/ViveVR/ViveVRCompositor/Resources/Cubemaps/Sky01/{0,1,2,3,4,5}.png");
 
 	cgv::render::ref_sphere_renderer(ctx, 1);
 	cgv::render::ref_box_renderer(ctx, 1);
@@ -339,7 +349,7 @@ void vr_scene::init_frame(cgv::render::context& ctx)
 	}
 
 	static bool terrain_textures_loaded = false;
-	if (environment_mode == EM_TERRAIN) {
+	if (ground_mode == GM_TERRAIN) {
 		if (!terrain_textures_loaded) {
 			terrain_style.load_default_textures(ctx);
 			terrain_textures_loaded = true;
@@ -402,7 +412,7 @@ void vr_scene::draw(cgv::render::context& ctx)
 			label_texture_ranges[li] = lm.get_texcoord_range(li);
 	}
 
-	if ((environment_mode == EM_BOXES) || draw_room || table_mode != TM_HIDE) {
+	if ((ground_mode == GM_BOXES) || draw_room || table_mode != TM_HIDE) {
 		// activate render styles
 		auto& br = cgv::render::ref_box_renderer(ctx);
 		br.set_render_style(box_style);
@@ -420,7 +430,7 @@ void vr_scene::draw(cgv::render::context& ctx)
 			cr.render(ctx, 0, cone_vertices.size());
 		}
 	}
-	if (environment_mode == EM_TERRAIN) {
+	if (ground_mode == GM_TERRAIN) {
 		ctx.push_modelview_matrix();
 		ctx.mul_modelview_matrix(cgv::math::scale4<double>(dvec3(terrain_scale))*cgv::math::translate4<double>(terrain_translation));
 			auto& tr = cgv::render::ref_terrain_renderer(ctx);
@@ -508,7 +518,13 @@ void vr_scene::create_gui()
 	add_decorator("vr_scene", "heading");
 	if (begin_tree_node("environment", environment_mode)) {
 		align("\a");
-		add_member_control(this, "mode", environment_mode, "dropdown", "enums='empty,boxes,terrain'");
+		add_member_control(this, "mode", environment_mode, "dropdown", "enums='empty,skybox,procedural'");
+		align("\b");
+		end_tree_node(environment_mode);
+	}
+	if (begin_tree_node("ground", ground_mode)) {
+		align("\a");
+		add_member_control(this, "mode", ground_mode, "dropdown", "enums='none,boxes,terrain'");
 		if (begin_tree_node("Terrain Settings", terrain_style, false, "level=2")) {
 			align("\a");
 			add_member_control(this, "grid width", grid_width, "value_slider", "min=1;max=100;log=true;ticks=true");
@@ -521,7 +537,7 @@ void vr_scene::create_gui()
 			end_tree_node(terrain_style);
 		}
 		align("\b");
-		end_tree_node(environment_mode);
+		end_tree_node(ground_mode);
 	}
 	if (begin_tree_node("room", boxes)) {
 		align("\a");
