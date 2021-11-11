@@ -1,5 +1,11 @@
 var NAVTREEINDEX42 =
 {
+"structcgv_1_1render_1_1box__wire__render__style.html#ab9e51ddef8a68db550e09b61fe6129c4":[11,0,0,9,9,0],
+"structcgv_1_1render_1_1box__wire__render__style.html#abcd4a3a1ac9d67a85d9b38956b943dad":[11,0,0,9,9,15],
+"structcgv_1_1render_1_1box__wire__render__style.html#abd786e7db60f6ea70f54ee2b4cd452e8":[11,0,0,9,9,44],
+"structcgv_1_1render_1_1box__wire__render__style.html#acbbd4166ce26167c5f143eff371aff6d":[11,0,0,9,9,47],
+"structcgv_1_1render_1_1box__wire__render__style.html#ad4dd35d4fafc71b4aedfb032e92335f6":[11,0,0,9,9,36],
+"structcgv_1_1render_1_1box__wire__render__style.html#ad55c8cf5d87080cc934b6d9ee364e704":[11,0,0,9,9,6],
 "structcgv_1_1render_1_1box__wire__render__style.html#ad6cd67abc2b77e76500d387bb85ce300":[11,0,0,9,9,17],
 "structcgv_1_1render_1_1box__wire__render__style.html#adf935427999ed33a4eb7be3bcf9512ad":[11,0,0,9,9,29],
 "structcgv_1_1render_1_1box__wire__render__style.html#ae157c607d60955c0586e5275bcc19b49":[11,0,0,9,9,13],
@@ -243,11 +249,5 @@ var NAVTREEINDEX42 =
 "structcgv_1_1render_1_1point__render__style.html#a6a9f8f657a9a620627e17e8e21f775c1":[11,0,0,9,28,43],
 "structcgv_1_1render_1_1point__render__style.html#a723a0a3000a8117c13c8682adb72df39":[11,0,0,9,28,11],
 "structcgv_1_1render_1_1point__render__style.html#a8089202eec1e378ee65bc3c7b2e677a4":[11,0,0,9,28,31],
-"structcgv_1_1render_1_1point__render__style.html#a87034fc60b5826249e209d9cfc7ccbb2":[11,0,0,9,28,10],
-"structcgv_1_1render_1_1point__render__style.html#a8a5acbe912fb04ad0abac9689882f0e4":[11,0,0,9,28,5],
-"structcgv_1_1render_1_1point__render__style.html#a8f6fdf00ab6917209d081ffe691c75f3":[11,0,0,9,28,34],
-"structcgv_1_1render_1_1point__render__style.html#a9ca3090f2e5ce4fca48a1945308c96f3":[11,0,0,9,28,26],
-"structcgv_1_1render_1_1point__render__style.html#aa4274bbe9929cab87164fda32123be1a":[11,0,0,9,28,35],
-"structcgv_1_1render_1_1point__render__style.html#aa43cb0dae0419ff4da7c26b4c0879ca6":[11,0,0,9,28,4],
-"structcgv_1_1render_1_1point__render__style.html#aaeef17e385a1d3ae754742b2619bd55c":[11,0,0,9,28,47]
+"structcgv_1_1render_1_1point__render__style.html#a87034fc60b5826249e209d9cfc7ccbb2":[11,0,0,9,28,10]
 };

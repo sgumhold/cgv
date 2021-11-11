@@ -1,5 +1,11 @@
 var NAVTREEINDEX45 =
 {
+"structcgv_1_1type_1_1func_1_1make__const.html":[11,0,0,11,2,11],
+"structcgv_1_1type_1_1func_1_1make__ref.html":[11,0,0,11,2,12],
+"structcgv_1_1type_1_1func_1_1promote.html":[11,0,0,11,2,13],
+"structcgv_1_1type_1_1func_1_1promote__const.html":[11,0,0,11,2,14],
+"structcgv_1_1type_1_1func_1_1transfer__const.html":[11,0,0,11,2,15],
+"structcgv_1_1type_1_1info_1_1type__access.html":[11,0,0,11,3,0],
 "structcgv_1_1type_1_1info_1_1type__access.html#a22443b1e04979e01a33f638280423bdd":[11,0,0,11,3,0,0],
 "structcgv_1_1type_1_1info_1_1type__access.html#a2eb3866ac712c9a5bfdc8ebfe717d8a6":[11,0,0,11,3,0,1],
 "structcgv_1_1type_1_1info_1_1type__id.html":[11,0,0,11,3,1],
@@ -243,11 +249,5 @@ var NAVTREEINDEX45 =
 "vr__camera_8h_source.html":[12,0,1,5,2],
 "vr__driver_8h.html":[12,0,1,5,3],
 "vr__driver_8h.html#a3420569d66aab89ad53aa8ee86f76733":[12,0,1,5,3,4],
-"vr__driver_8h.html#a47b17f79c10c7253e14cefa9de1e018e":[12,0,1,5,3,9],
-"vr__driver_8h.html#a715b77ea48336bbd440f9e297a6a8b47":[12,0,1,5,3,3],
-"vr__driver_8h.html#a79801f1f8d60a2fa8b4c57f057035d0f":[12,0,1,5,3,5],
-"vr__driver_8h.html#a848c5ddba64a8edf61f153c9660ef1ad":[12,0,1,5,3,8],
-"vr__driver_8h.html#ab44c0434e588c29a2cae378a2967fa41":[12,0,1,5,3,7],
-"vr__driver_8h.html#ab59f7687898060ad12fa2009c6cd9cbf":[12,0,1,5,3,6],
-"vr__driver_8h.html#ad99996e738d108251465649bee84c178":[12,0,1,5,3,10]
+"vr__driver_8h.html#a47b17f79c10c7253e14cefa9de1e018e":[12,0,1,5,3,9]
 };
