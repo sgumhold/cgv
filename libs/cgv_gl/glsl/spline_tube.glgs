@@ -46,8 +46,8 @@ in flat vec4 color_gs[];
 
 out vec3 position_fs;
 out flat float l_offset_fs;
-out flat vec3 color0_fs;
-out flat vec3 color1_fs;
+out flat vec4 color0_fs;
+out flat vec4 color1_fs;
 out flat QTube qTube_fs;
 
 #define BBOX_LEFT_DN_FRNT bbox[0]
@@ -324,8 +324,8 @@ void main()
 	tube.e.pos_tan = tangent_gs[1].xyz;
 	tube.e.rad_tan = tangent_gs[1].w;
 
-	color0_fs = color_gs[0].rgb;
-	color1_fs = color_gs[1].rgb;
+	color0_fs = color_gs[0];
+	color1_fs = color_gs[1];
 
 	QTube qTube0, qTube1;
 	SplitTube(tube, qTube0, qTube1);
