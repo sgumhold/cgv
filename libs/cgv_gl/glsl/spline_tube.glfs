@@ -41,8 +41,8 @@ struct Hit {
 
 in vec3 position_fs;
 in flat float l_offset_fs;
-in flat vec3 color0_fs;
-in flat vec3 color1_fs;
+in flat vec4 color0_fs;
+in flat vec4 color1_fs;
 in flat QTube qTube_fs;
 
 float Pow2(float x) { return x * x; }
@@ -411,7 +411,8 @@ void main() {
 	);
 	vec4 frag_color = vec4(0.5, 0.5, 0.5, 1.0);
 	// TODO: color tangent is not supported (do we need this?)
-	frag_color.rgb = EvalCSpline(color0_fs, vec3(0.0), color1_fs, vec3(0.0), hit.l * 0.5 + l_offset_fs);
+	//frag_color = EvalCSpline(color0_fs, vec3(0.0), color1_fs, vec3(0.0), hit.l * 0.5 + l_offset_fs);
+	frag_color = mix(color0_fs, color1_fs, hit.l * 0.5 + l_offset_fs);
 	if(hit.t == POS_INF) discard;
 	vec3 hit_pos_eye = direction * hit.t;
 	vec4 v_eye = vec4(hit_pos_eye, 1.0);
