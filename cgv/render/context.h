@@ -958,6 +958,12 @@ public:
 	bool enable_light_source(void* handle);
 	/// disable a given light source and return whether there existed a light source with given handle
 	bool disable_light_source(void* handle);
+	/// return number of default light sources
+	size_t get_nr_default_light_sources() const { return nr_default_light_sources; }
+	/// return i-th default light source
+	const cgv::media::illum::light_source& get_default_light_source(size_t i) const;
+	/// set i-th default light source
+	void set_default_light_source(size_t i, const cgv::media::illum::light_source& ls);
 	//@}
 
 	/**@name text output*/

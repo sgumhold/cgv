@@ -81,7 +81,6 @@ std::string find_data_file(const std::string& file_name, const std::string& stra
 		case 'M' :
 			{
 				std::string fn = find_data_file_1(master_path, sub_directory, file_name, strategy[i] == 'M');
-//				std::cout << "   master = " << master_path << " -> " << fn << std::endl;
 				if (!fn.empty())
 					return fn;
 				break;
@@ -92,7 +91,6 @@ std::string find_data_file(const std::string& file_name, const std::string& stra
 				const std::vector<std::string>& path_list = ref_data_path_list();
 				for (unsigned int i=0; i<path_list.size(); ++i) {
 					std::string fn = find_data_file_1(path_list[i], sub_directory, file_name, strategy[i] == 'D');
-//					std::cout << "   data = " << path_list[i] << " -> " << fn << std::endl;
 					if (!fn.empty())
 						return fn;
 				}
@@ -104,7 +102,6 @@ std::string find_data_file(const std::string& file_name, const std::string& stra
 				const std::vector<std::string>& parent_stack = ref_parent_file_stack();
 				if (!parent_stack.empty()) {
 					std::string fn = find_data_file_1(parent_stack.back(), sub_directory, file_name, strategy[i] == 'P');
-//					std::cout << "   parent = " << parent_stack.back() << " -> " << fn << std::endl;
 					if (!fn.empty())
 						return fn;
 				}
@@ -116,7 +113,6 @@ std::string find_data_file(const std::string& file_name, const std::string& stra
 				const std::vector<std::string>& parent_stack = ref_parent_file_stack();
 				for (size_t i=parent_stack.size(); i>0; --i) {
 					std::string fn = find_data_file_1(parent_stack[i-1], sub_directory, file_name, strategy[i] == 'A');
-//					std::cout << "   anchestor = " << parent_stack[i-1] << " -> " << fn << std::endl;
 					if (!fn.empty())
 						return fn;
 				}
@@ -125,6 +121,143 @@ std::string find_data_file(const std::string& file_name, const std::string& stra
 		}
 	}
 	return std::string();
+}
+
+void stdout_message(const std::string& text)
+{
+	std::cout << text << std::endl;
+}
+
+void stderr_message(const std::string& text)
+{
+	std::cerr << text << std::endl;
+}
+
+int std_query(const std::string& text, const std::string& answers, int default_answer)
+{
+	std::vector<std::string> answer_strings;
+	std::vector<int> answer_values;
+
+	std::vector<cgv::utils::token> tokens;
+	cgv::utils::tokenizer(answers).set_ws(",").bite_all(tokens);
+	std::cout << text << "\n  select answer from {" << answers << "} with 0..." << tokens.size() - 1 << ":>";
+	std::cout.flush();
+	int answer;
+	std::cin >> answer;
+	return answer;
+}
+
+std::string std_ask_dir(const std::string& text, const std::string& path)
+{
+	std::cout << text << "\n:>";
+	std::cout.flush();
+	std::string answer;
+	std::cin >> answer;
+	return answer;
+}
+
+std::string find_or_download_data_file(const std::string& file_name, const std::string& find_strategy,
+	const std::string& url, const std::string& cache_strategy, const std::string& producer,
+	const std::string& sub_directory, const std::string& master_path, user_feedback uf)
+{
+	// first try to find file 
+	std::string file_path = cgv::base::find_data_file(file_name, find_strategy, sub_directory, master_path);
+	if (!file_path.empty())
+		return file_path;
+
+	// if not found find directory in which to cache download according to \c cache_strategy
+	size_t i = 0;
+	while (i < cache_strategy.size() && file_path.empty()) {
+		switch (cache_strategy[i++]) {
+		case 'c':
+		case 'C': file_path = "."; break;
+		case 'm':
+		case 'M': if (cgv::utils::dir::exists(master_path))
+			file_path = master_path;
+			break;
+		case 'd':
+		case 'D': {
+			const std::vector<std::string>& path_list = cgv::base::ref_data_path_list();
+			for (unsigned int i = 0; i < path_list.size(); ++i)
+				if (cgv::utils::dir::exists(path_list[i])) {
+					file_path = path_list[i];
+					break;
+				}
+			break;
+		}
+		case 'p':
+		case 'P': {
+			const std::vector<std::string>& parent_stack = cgv::base::ref_parent_file_stack();
+			if (!parent_stack.empty()) {
+				if (cgv::utils::dir::exists(parent_stack.back()))
+					file_path = parent_stack.back();
+			}
+			break;
+		}
+		case 'a':
+		case 'A': {
+			const std::vector<std::string>& parent_stack = cgv::base::ref_parent_file_stack();
+			for (size_t i = parent_stack.size(); i > 0; --i) {
+				if (cgv::utils::dir::exists(parent_stack[i])) {
+					file_path = parent_stack[i];
+					break;
+				}
+			}
+			break;
+		}
+		}
+	}
+	if (file_path.empty()) {
+		if (uf.query == 0)
+			return "";
+		if (uf.query(producer + " wants to download <" + file_name + "> but has no path to store it. Do you want to specify a path to store the download?",
+			"Yes,No", 0) != 1)
+			return "";
+		if (uf.ask_dir == 0)
+			return "";
+		file_path = uf.ask_dir(std::string("specify path to store ") + producer + " downloads", master_path);
+		if (file_path.empty())
+			return "";
+	}
+	// extend file path with subdirectory
+	if (!sub_directory.empty()) {
+		if (file_path.back() != '/' && file_path.back() != '\\')
+			file_path += '/';
+		file_path += sub_directory;
+		if (!cgv::utils::dir::exists(file_path)) {
+			if (uf.query == 0)
+				return "";
+			if (uf.query(producer + " wants to create directory <" + file_path + "> to store downloads. Do you allow this?",
+				"Yes,No", 0) != 1)
+				return "";
+			if (!cgv::utils::dir::mkdir(file_path)) {
+				if (uf.message != 0)
+					uf.message(std::string("could not create subdirectory <") + sub_directory + "> in cache path");
+				return "";
+			}
+		}
+	}
+	// append file name
+	if (file_path.back() != '/' && file_path.back() != '\\')
+		file_path += '/';
+	file_path += file_name;
+	// try to download file
+	std::string cmd = "curl --output \"";
+	cmd += file_path + "\" " + url;
+	bool retry;
+	do {
+		retry = false;
+		int result = system(cmd.c_str());
+		if (result == -1 || !cgv::utils::file::exists(file_path)) {
+			if (uf.query == 0)
+				return "";
+			if (uf.query(std::string("download of <") + file_name + "> failed. Please check internet connectivity! Try again?",
+				"Yes,No", 0) != 1)
+				return "";
+			retry = true;
+		}
+	} while (retry);
+	return file_path;
 }
 
 std::string clean_data_path(const std::string& data_path)

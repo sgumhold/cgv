@@ -38,6 +38,52 @@ extern CGV_API void pop_file_parent();
 */
 extern CGV_API std::string find_data_file(const std::string& file_name, const std::string& strategy, const std::string& sub_directory = "", const std::string& master_path = "");
 
+
+/// std::cout based implementation of the \c message function for first argument to the \c user_feedback constructor
+extern CGV_API void stdout_message(const std::string& text);
+
+/// std::cerr based implementation of the \c message function for first argument to the \c user_feedback constructor
+extern CGV_API void stderr_message(const std::string& text);
+
+/// std::cout and std::cin based implementation of the \c query function for second argument to the \c user_feedback constructor
+extern CGV_API int std_query(const std::string& text, const std::string& answers, int default_answer);
+
+/// std::cout and std::cin based implementation of the \c ask_dir function for third argument to the \c user_feedback constructor
+extern CGV_API std::string std_ask_dir(const std::string& text, const std::string& path);
+
+/// function pointers implementing user feedback functionality of find_or_download_data_file() function
+struct user_feedback
+{
+	/// pointer to function that shows a text message to user
+	void (*message)(const std::string& text);
+	/// pointer to function that shows a text query and asks for an answer
+	int (*query)(const std::string& text, const std::string& answers, int default_answer);
+	/// pointer to function that opens a directory save dialog
+	std::string(*ask_dir)(const std::string& text, const std::string& path);
+	/// default construction results in no user feedback
+	inline user_feedback(
+		void (*_message)(const std::string&) = 0,
+		int (*_query)(const std::string&, const std::string&, int) = 0,
+		std::string(*_ask_dir)(const std::string&, const std::string&) = 0
+	) : message(_message), query(_query), ask_dir(_ask_dir)
+	{}
+};
+
+/** same as find_data_file() but in case file is not found, it is downloaded from the provided url and stored in a directory
+    searched for with the parameter \c cache_strategy. One can use letters as in the \c strategy parameter to find_data_file()
+	but recursion and ressources are ignored. With the \c user_feedback argument one can control how messages, queries and asking
+	for a path is cast on to the user. By default an empty user feedback is used. To use std in and out you could use the following
+	as the last parameter:
+	
+	<tt> cgv::base::user_feedback(&cgv::base::stdout_message, &cgv::base::std_query, &cgv::base::std_ask_dir) </tt>
+	
+	If a gui driver is available one can use the following alternative after including <cgv/gui/dialog.h> and <cgv/gui/file_dialog.h>
+	
+	<tt> cgv::base::user_feedback(&cgv::gui::message, &cgv::gui::question, &cgv::gui::directory_save_dialog) </tt>*/
+extern CGV_API std::string find_or_download_data_file(const std::string& file_name, const std::string& find_strategy,
+	const std::string& url, const std::string& cache_strategy, const std::string& producer,
+	const std::string& sub_directory = "", const std::string& master_path = "", user_feedback uf = user_feedback());
+
 /// return a reference to the data path list, which is constructed from the environment variable CGV_DATA
 extern CGV_API std::vector<std::string>& ref_data_path_list();
 
