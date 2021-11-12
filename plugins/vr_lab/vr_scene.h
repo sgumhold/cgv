@@ -74,6 +74,10 @@ protected:
 	cgv::render::cone_render_style cone_style;
 
 	cgv::render::texture skybox;
+	cgv::render::shader_program cubemap_prog;
+
+	bool invert_skybox;
+	std::string skybox_file_names;
 
 	/**@name ui parameters for table construction*/
 	//@{

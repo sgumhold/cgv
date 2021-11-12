@@ -8,8 +8,18 @@ name(main):gamma=1.0
 // construct an emulated vr kit 
 type(vr_emulator):current_kit_index=0
 
-// choose environment mode from empty,boxes,terrain
-type(vr_scene):environment_mode=boxes
+// choose environment mode from empty,skybox,procedural
+//type(vr_scene):environment_mode=skybox
+
+//type(vr_scene):skybox_file_names="C:/SteamLibrary/steamapps/common/VIVEDriver/App/ViveVRRuntime/ViveVR/ViveVRCompositor/Resources/Cubemaps/Sky01/{0,1,3,2,4,5}.png"
+//type(vr_scene):skybox_invert=true
+
+
+// choose ground empty,boxes,terrain
+type(vr_scene):ground_mode=terrain
+
+type(vr_scene):terrain_scale=0.02
+type(vr_scene):terrain_y_offset=-25
 
 // choose table mode from hide,rectangular,round
 type(vr_scene):table_mode=rectangular
