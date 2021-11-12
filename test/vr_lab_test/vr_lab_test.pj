@@ -16,7 +16,7 @@ addIncDirs=[INPUT_DIR, CGV_DIR."/libs", CGV_DIR."/test"];
 addSharedDefines=["VR_LAB_TEST_EXPORTS"];
 
 addCommandLineArguments=[
-	after("type(shader_config):shader_path='".INPUT_DIR.";".CGV_DIR."/plugins/crg_vr_view;".CGV_DIR."/plugins/vr_lab;".CGV_DIR."/libs/cgv_gl/glsl;".CGV_DIR."/libs/plot/glsl;".CGV_DIR."/libs/cgv_proc'","cg_fltk"),
+	after("type(shader_config):shader_path='".INPUT_DIR.";".CGV_DIR."/plugins/crg_vr_view;".CGV_DIR."/plugins/vr_lab;".CGV_DIR."/libs/cgv_gl/glsl;"."/libs/cgv_proc/glsl;".CGV_DIR."/libs/plot/glsl;".CGV_DIR."/libs/cgv_proc'","cg_fltk"),
 	'config:"'.INPUT_DIR.'/config.def"'
 ];
 

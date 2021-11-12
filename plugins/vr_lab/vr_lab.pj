@@ -5,7 +5,7 @@ projectGUID="D46FFE4E-B9F5-4FFA-903E-C457E0D23C31";
 addProjectDirs=[CGV_DIR."/libs"];
 addProjectDeps=[
 	"cgv_utils", "cgv_type", "cgv_data", "cgv_base", "cgv_math", "cgv_media", "cgv_gui", "cgv_render", 
-	"cgv_gl", "cg_vr", "rect_pack", "crg_vr_view"
+	"cgv_gl", "cgv_proc", "cg_vr", "rect_pack", "crg_vr_view"
 ];
 addIncDirs=[INPUT_DIR, CGV_DIR."/libs"];
 addSharedDefines=["VR_LAB_EXPORTS"];

@@ -488,23 +488,16 @@ void vr_scene::draw(cgv::render::context& ctx)
 
 	if (environment_mode == EM_SKYBOX && skybox.is_created()) {
 		// lastly render the environment
+		GLint prev_depth_func;
+		glGetIntegerv(GL_DEPTH_FUNC, &prev_depth_func);
 		cubemap_prog.enable(ctx);
-		cubemap_prog.set_uniform(ctx, "resolution", vec2((float)ctx.get_width(), (float)ctx.get_height()));
-		dmat4 MV = ctx.get_modelview_matrix();
-		dmat4 iMV = inv(MV);
-		dvec4 heye = iMV * dvec4(0, 0, 0, 1);
-		vec3 eye_pos = (dvec3&)heye / heye[3];
-		cubemap_prog.set_uniform(ctx, "invert", invert_skybox);
-		cubemap_prog.set_uniform(ctx, "eye_pos", eye_pos);
-
-		glDepthFunc(GL_LEQUAL);
-
-		skybox.enable(ctx, 0);
-		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-		skybox.disable(ctx);
-
-		glDepthFunc(GL_LESS);
-
+			cubemap_prog.set_uniform(ctx, "invert", invert_skybox);
+			cubemap_prog.set_uniform(ctx, "depth_value", 1.0f);
+			glDepthFunc(GL_LEQUAL);
+				skybox.enable(ctx, 0);
+					glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+				skybox.disable(ctx);
+			glDepthFunc(prev_depth_func);
 		cubemap_prog.disable(ctx);
 	}
 }

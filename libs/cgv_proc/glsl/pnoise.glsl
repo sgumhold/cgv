@@ -16,7 +16,7 @@ float p_noise(vec2 p, float freq)
 	vec2 ij = floor(p / unit);
 	vec2 xy = mod(p, unit) / unit;
 	//xy = 3.*xy*xy-2.*xy*xy*xy;
-	xy = .5 * (1. - cos(PI * xy));
+	xy = .5 * (1. - cos(M_PI * xy));
 	float a = prand((ij + vec2(0., 0.)));
 	float b = prand((ij + vec2(1., 0.)));
 	float c = prand((ij + vec2(0., 1.)));
