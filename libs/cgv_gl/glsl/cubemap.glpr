@@ -1,4 +1,4 @@
-vertex_file:cubemap.glvs
+vertex_file:screen_quad.glvs
 fragment_file:cubemap.glfs
 fragment_file:view.glsl
 fragment_file:fragment.glfs

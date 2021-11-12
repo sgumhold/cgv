@@ -5,6 +5,7 @@ mat4 get_modelview_matrix();
 mat4 get_projection_matrix();
 mat4 get_inverse_projection_matrix();
 mat4 get_modelview_projection_matrix();
+vec3 get_eye_world();
 mat4 get_inverse_modelview_matrix();
 mat4 get_inverse_modelview_projection_matrix();
 mat3 get_normal_matrix();
@@ -18,11 +19,9 @@ void finish_fragment(vec4 color);
 
 uniform layout(binding = 0) samplerCube environment_map;
 
-uniform vec3 eye_pos;
 uniform bool invert = false;
-in vec2 texcoord_fs;
 
-//out vec4 frag_color;
+in vec2 texcoord_fs;
 
 void main()
 {
@@ -36,6 +35,7 @@ void main()
     coord /= coord.w;
 
     // calculate the viewing ray in object space
+    vec3 eye_pos = get_eye_world();
     vec3 ray = normalize(invert?eye_pos - coord.xyz:coord.xyz-eye_pos);
 
 	finish_fragment(texture(environment_map, ray));

@@ -6,6 +6,7 @@
 #include <cgv/gui/file_dialog.h>
 #include <cgv/defines/quote.h>
 #include <cgv/base/import.h>
+
 namespace cgv {
 namespace render {
 
@@ -176,11 +177,15 @@ get_reflection_traits(const terrain_render_style&)
 	return {};
 }
 
+
+} // namespace render
+} // namespace cgv
+
 struct terrain_render_style_gui_creator : public cgv::gui::gui_creator
 {
 	/// attempt to create a gui and return whether this was successful
 	bool create(cgv::gui::provider* p, const std::string& label, void* value_ptr, const std::string& value_type,
-				const std::string& gui_type, const std::string& options, bool*) override
+		const std::string& gui_type, const std::string& options, bool*) override
 	{
 		if (value_type != cgv::type::info::type_name<cgv::render::terrain_render_style>::get_name())
 			return false;
@@ -226,9 +231,9 @@ struct terrain_render_style_gui_creator : public cgv::gui::gui_creator
 				const std::string& iStr = std::to_string(i);
 				p->add_member_control(b, "Enabled " + iStr, layer.enabled, "check");
 				p->add_member_control(b, "Frequency " + iStr, layer.frequency, "value_slider",
-									  "min=0.001;max=1000;log=true;ticks=true");
+					"min=0.001;max=1000;log=true;ticks=true");
 				p->add_member_control(b, "Amplitude " + iStr, layer.amplitude, "value_slider",
-									  "min=0.001;max=1000;log=true;ticks=true");
+					"min=0.001;max=1000;log=true;ticks=true");
 			}
 			p->align("\b");
 			p->end_tree_node(style->noise_layers);
@@ -237,7 +242,7 @@ struct terrain_render_style_gui_creator : public cgv::gui::gui_creator
 		if (p->begin_tree_node("Surface", style->damp_factor_dirt, false, "level=3")) {
 			p->align("\a");
 			p->add_gui<cgv::render::surface_render_style>("surface_render_style",
-													  *reinterpret_cast<cgv::render::surface_render_style*>(value_ptr));
+				*reinterpret_cast<cgv::render::surface_render_style*>(value_ptr));
 			p->align("\b");
 			p->end_tree_node(style->damp_factor_dirt);
 		}
@@ -245,10 +250,8 @@ struct terrain_render_style_gui_creator : public cgv::gui::gui_creator
 	}
 };
 
-#include "gl/lib_begin.h"
+#include "lib_begin.h"
 
 CGV_API cgv::gui::gui_creator_registration<terrain_render_style_gui_creator>
-	  terrain_rs_gc_reg("terrain_render_style_gui_creator");
+terrain_rs_gc_reg("terrain_render_style_gui_creator");
 
-} // namespace render
-} // namespace cgv

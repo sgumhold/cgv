@@ -8,7 +8,7 @@
 #include <cgv/utils/ostream_printf.h>
 #include <cgv/gui/provider.h>
 #include <cgv/math/ftransform.h>
-#include <cgv_gl/terrain_renderer.h>
+#include <cgv_proc/terrain_renderer.h>
 
 using namespace cgv::base;
 using namespace cgv::reflect;

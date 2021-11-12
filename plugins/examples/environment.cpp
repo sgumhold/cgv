@@ -373,11 +373,6 @@ public:
 			
 		mat4 light_matrix = light_projection * light_view;
 
-		
-		
-		
-
-
 		rctx.store_view();
 		rctx.light_matrix = light_matrix;
 
@@ -464,23 +459,15 @@ public:
 
 			ctx.pop_modelview_matrix();
 		}
-
-
-
 		// lastly render the environment
 		auto& cubemap_prog = shaders.get("cubemap");
 		cubemap_prog.enable(ctx);
-		cubemap_prog.set_uniform(ctx, "resolution", vec2((float)ctx.get_width(), (float)ctx.get_height()));
-		cubemap_prog.set_uniform(ctx, "eye_pos", eye_pos);
-
+		cubemap_prog.set_uniform(ctx, "depth_value", 1.0f);
 		glDepthFunc(GL_LEQUAL);
-
 		environment_map.enable(ctx, 0);
 		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 		environment_map.disable(ctx);
-
-		glDepthFunc(GL_LESS);
-		
+		glDepthFunc(GL_LESS);		
 		cubemap_prog.disable(ctx);
 	}
 	bool init_ibl_textures(context& ctx) {

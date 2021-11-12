@@ -2,7 +2,7 @@
 
 #include <cgv_gl/surface_renderer.h>
 
-#include "gl/lib_begin.h"
+#include "lib_begin.h"
 
 namespace cgv {
 namespace render {
