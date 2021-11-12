@@ -23,11 +23,13 @@
 #include <chrono>
 #include <point_cloud/point_cloud.h>
 #include <point_cloud/ICP.h>
+#include <point_cloud/SICP.h>
 #include <cg_vr/vr_events.h>
 #include <vr/vr_state.h>
 #include <vr/vr_kit.h>
 #include <vr/vr_driver.h>
 #include <cgv/defines/quote.h>
+#include <numeric>
 
 ///@ingroup VR
 ///@{
@@ -158,6 +160,10 @@ protected:
 	// render style for interaction
 	cgv::render::sphere_render_style srs;
 	cgv::render::box_render_style movable_style;
+
+	//sicp;
+	cgv::pointcloud::SICP::ComputationMode sicp_computation_mode;
+	cgv::pointcloud::SICP sicp;
 
 	// compute intersection points of controller ray with movable boxes
 	void compute_intersections(const vec3& origin, const vec3& direction, int ci, const rgb& color)
@@ -491,9 +497,12 @@ public:
 				size_t N = future_handle.get();
 				// copy computed point cloud
 				if (record_this_frame(t)) {
-					if (registration_started) {
+					if (registration_started && !recorded_pcs.empty()) {
 						//registrationPointCloud();
-						test_icp();
+						//test_icp();
+						on_reg_SICP_cb();
+						registration_started = !registration_started;
+						update_member(&registration_started);
 					}
 					recorded_pcs.push_back(intermediate_pc);
 					if (save_pointcloud){
@@ -590,6 +599,7 @@ public:
 		add_member_control(this, "zoom_out", zoom_out, "check");
 		add_member_control(this, "save_pc", save_pointcloud, "check");
 		add_member_control(this, "register_pc", registration_started, "check");
+		connect_copy(add_button("SICP")->click, rebind(this, &vr_rgbd::on_reg_SICP_cb));
 
 		add_member_control(this, "rgbd_controller_index", rgbd_controller_index, "value_slider", "min=0;max=3;ticks=true");
 		
@@ -951,6 +961,30 @@ public:
 			}
 		}
 	}
+	void on_reg_SICP_cb()
+	{
+		point_cloud source_pc, target_pc;
+		copy_pointcloud(recorded_pcs.front(), target_pc);
+		copy_pointcloud(intermediate_pc, source_pc);
+		sicp.set_source_cloud(source_pc);
+		sicp.set_target_cloud(target_pc);
+		vec3 translation, offset;
+		mat3 rotation;
+		sicp.parameters.max_runs = 20;
+		sicp.parameters.p = 0.4f;
+		sicp.register_point_cloud(cgv::pointcloud::SICP::CM_POINT_TO_POINT, rotation, translation);
+		std::cout << "SICP rot:\n " << rotation << "SICP t:\n" << translation << '\n';
+		vec3 mean = std::accumulate(&source_pc.pnt(0), &source_pc.pnt(0) + source_pc.get_nr_points(), vec3(0, 0, 0)) /
+					((float)source_pc.get_nr_points());
+		// need to de-mean for rotation
+		source_pc.translate(-mean);
+		// do rotation
+		source_pc.rotate(cgv::math::quaternion<float>(rotation));
+		// do translation and reapply mean
+		source_pc.translate(translation + mean);
+
+		post_redraw();
+	}
 };
 
 /// construct boxes that represent a table of dimensions tw,td,th and leg width tW
@@ -1043,6 +1077,8 @@ void vr_rgbd::construct_movable_boxes(float tw, float td, float th, float tW, si
 		movable_box_rotations.push_back(rot);
 	}
 }
+
+
 
 #include <cgv/base/register.h>
 
