@@ -32,7 +32,7 @@ flat in vec4 color_gs[];
 out flat vec2 size_fs;
 out vec2 pix_coord_fs;
 out vec2 tex_coord_fs;
-flat out vec4 color_fs;
+out vec4 color_fs;
 
 vec2 ortho2d(vec2 v) {
 	return vec2(v.y, -v.x);
