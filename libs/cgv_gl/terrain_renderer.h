@@ -42,11 +42,17 @@ struct CGV_API terrain_render_style : public cgv::render::surface_render_style
 	std::vector<NoiseLayer> noise_layers;
 	TerrainLevels levels = {};
 
-	bool wireframe = false;
+	bool  wireframe = false;
 	float tessellation = 60.0F;
-	float uv_scale_factor = 20.0F;
-
-	bool load_default_textures(cgv::render::context& ctx);
+	float uv_scale_factor_grass = 20.0f;
+	float uv_scale_factor_dirt  = 20.0f;
+	float uv_scale_factor_rock  = 20.0f;
+	float aspect_ratio_grass    = 1.0f;
+	float aspect_ratio_dirt     = 1.0f;
+	float aspect_ratio_rock     = 1.0f;
+	float damp_factor_grass     = 1.0f;
+	float damp_factor_dirt      = 1.0f;
+	float damp_factor_rock      = 1.0f;
 
 	bool use_grass_texture = true;
 	bool use_dirt_texture = true;
@@ -54,6 +60,8 @@ struct CGV_API terrain_render_style : public cgv::render::surface_render_style
 	mutable cgv::render::texture grass_texture = {};
 	mutable cgv::render::texture dirt_texture = {};
 	mutable cgv::render::texture rock_texture = {};
+
+	bool load_default_textures(cgv::render::context& ctx);
 };
 
 /// renderer that supports point splatting

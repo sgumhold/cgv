@@ -628,6 +628,17 @@ bool context::disable_light_source(void* handle)
 	return true;
 
 }
+/// return i-th default light source
+const cgv::media::illum::light_source& context::get_default_light_source(size_t i) const
+{
+	return default_light_source[i];
+}
+
+/// set i-th default light source
+void context::set_default_light_source(size_t i, const cgv::media::illum::light_source& ls)
+{
+	default_light_source[i] = ls;
+}
 
 std::string get_render_pass_name(RenderPass rp)
 {

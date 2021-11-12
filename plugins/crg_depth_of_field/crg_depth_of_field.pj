@@ -2,7 +2,7 @@
 projectType="plugin";
 projectName="crg_depth_of_field";
 projectGUID="98E3177A-5804-4de3-B0D2-BCFE4970EDDF";
-addProjectDeps=["cgv_render", "cgv_gui","cgv_base","cgv_data","cgv_type", "cgv_reflect", "cgv_utils","cgv_signal", "crg_stereo_view", "cgv_gl"];
+addProjectDeps=["cgv_render", "cgv_gui","cgv_base","cgv_data","cgv_type", "cgv_reflect", "cgv_utils","cgv_signal", "cgv_gl"];
 addProjectDirs=[CGV_DIR."/plugins", CGV_DIR."/libs/glsu", CGV_DIR."/libs/cgv_gl"];
 addIncDirs=[CGV_DIR."/libs", CGV_DIR."/libs/glsu"];
 addSharedDefines=["CGV_RENDER_DEPTH_OF_FIELD_EXPORTS"];

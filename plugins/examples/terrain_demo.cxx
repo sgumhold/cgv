@@ -32,7 +32,7 @@ class terrain_demo : public base,		   // base class of all to be registered clas
 	int grid_width = 10;
 	int grid_height = 10;
 
-	cgv::math::fvec<double, 3> translation = {0, -250, 0};
+	cgv::math::fvec<double, 3> translation = {0, -40, 0};
 
   public:
 	/// initialize rotation angle
@@ -149,6 +149,11 @@ class terrain_demo : public base,		   // base class of all to be registered clas
 	{
 		add_decorator("Terrain Demo GUI", "heading", "level=1"); // level=1 is default and can be skipped
 
+		add_member_control(this, "grid width", grid_width, "value_slider", "min=1;max=100;log=true;ticks=true");
+		add_member_control(this, "grid height", grid_height, "value_slider", "min=1;max=100;log=true;ticks=true");
+		add_gui("translation", translation, "",
+			"long_label=true;main_label='first';options='min=-100;max=100;ticks=true'");
+
 		if (begin_tree_node("Terrain Settings", terrain_style, false, "level=2")) {
 			align("\a");
 			add_gui("terrain_render_style", terrain_style);
@@ -156,13 +161,7 @@ class terrain_demo : public base,		   // base class of all to be registered clas
 			end_tree_node(terrain_style);
 		}
 
-		add_member_control(this, "Grid Width", grid_width);
-		add_member_control(this, "Grid Height", grid_height);
-		add_gui("Translation", translation, "",
-				"long_label=true;main_label='first';options='min=-100;max=100;ticks=true'");
 	}
 };
 
-// register a newly created cube without options
-// TODO change 'item_text' to "new/terrain demo"
-factory_registration<terrain_demo> terrain_demo_fac("new/terrain demo", 'T', true);
+factory_registration<terrain_demo> terrain_demo_fac("terrain", "shortcut='Ctrl-Shift-T';menu_text='new/demo/terrain'", true);
