@@ -42,8 +42,8 @@ namespace cgv {
 			float pointSize;
 			// draw circles instead of squares
 			bool draw_circles = false;
-			// allow point subset computation to run across multiple rendered frames (broken)
-			int point_filter_delay = 0;
+			// extend frustum by setting this > 1.0
+			float frustum_extend;
 			//@}
 
 			/* @name splat rendering attributes*/
@@ -146,6 +146,8 @@ namespace cgv {
 
 			GLuint max_drawn_points = 500000;
 
+			float frustum_extend = 1.f;
+
 			vec4 pivot_point_in_view_space;
 
 			mat4 model_matrix, view_matrix, projection_matrix;
@@ -211,6 +213,7 @@ namespace cgv {
 			
 
 			*/
+			void set_frustum_extend(const float& fe);
 
 			void set_max_drawn_points(cgv::render::context& ctx, const unsigned max_points);
 			

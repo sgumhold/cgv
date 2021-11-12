@@ -25,7 +25,6 @@ namespace cgv {
 			min_millimeters = 1.f;
 			pointSize = 1.f;
 			draw_circles = false;
-			point_filter_delay = 0;
 			
 			blend_width_in_pixel = 1.0;
 			halo_width_in_pixel = 0.0;
@@ -39,7 +38,7 @@ namespace cgv {
 		void clod_point_renderer::reduce_buffer_init(context& ctx)
 		{
 			reset_draw_parameters(ctx, active_draw_parameter_buffer);
-			reduce_prog.set_uniform(ctx, uniforms.frustum_extent, 1.0f);
+			reduce_prog.set_uniform(ctx, uniforms.frustum_extent, frustum_extend);
 			reduce_prog.set_uniform(ctx, uniforms.target_buffer_size, max_drawn_points);
 			reduce_prog.enable(ctx);
 		}
@@ -76,7 +75,7 @@ namespace cgv {
 				//configure shader to compute everything after one frame
 				reduce_prog.set_uniform(ctx, uniforms.batch_offset, (int)start);
 				reduce_prog.set_uniform(ctx, uniforms.batch_size, (int)count);
-				reduce_prog.set_uniform(ctx, uniforms.frustum_extent, 1.0f);
+				reduce_prog.set_uniform(ctx, uniforms.frustum_extent, frustum_extend);
 				reduce_prog.set_uniform(ctx, uniforms.target_buffer_size, max_drawn_points);
 				reduce_prog.enable(ctx);
 
@@ -94,7 +93,7 @@ namespace cgv {
 		{
 			reset_draw_parameters(ctx, active_draw_parameter_buffer);
 
-			reduce_prog.set_uniform(ctx, uniforms.frustum_extent, 1.0f);
+			reduce_prog.set_uniform(ctx, uniforms.frustum_extent, frustum_extend);
 			reduce_prog.set_uniform(ctx, uniforms.target_buffer_size, max_drawn_points);
 			reduce_prog.enable(ctx);
 
@@ -378,6 +377,11 @@ namespace cgv {
 			}
 		}
 
+		void clod_point_renderer::set_frustum_extend(const float& fe)
+		{
+			frustum_extend = fe;
+		}
+
 		void clod_point_renderer::set_pivot_point(const vec4& pivot)
 		{
 			pivot_point_in_view_space = pivot;
@@ -562,7 +566,6 @@ namespace cgv {
 				p->add_member_control(b, "point size", rs_ptr->pointSize, "value_slider", "min=0.1;max=10;ticks=true");
 				p->add_member_control(b, "min millimeters", rs_ptr->min_millimeters, "value_slider", "min=0.1;max=10;ticks=true");
 				p->add_member_control(b, "draw circles", rs_ptr->draw_circles, "check");
-				//p->add_member_control(b, "filter delay", rs_ptr->point_filter_delay, "value_slider", "min=0;max=10;ticks=true");
 				return true;
 			}
 		};
