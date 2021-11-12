@@ -6,10 +6,10 @@ name(vr interactor):show_focus=true
 
 
 persistent
-name(vr interactor):tracking_rotation=-10
-name(vr interactor):tracking_rotation_origin_x=-0.678893
-name(vr interactor):tracking_rotation_origin_y=0.809627
-name(vr interactor):tracking_rotation_origin_z=0.550162
-name(vr interactor):tracking_origin_x=-0.4
-name(vr interactor):tracking_origin_y=0.930016
-name(vr interactor):tracking_origin_z=-0.4
+name(vr interactor):tracking_rotation=0
+name(vr interactor):tracking_rotation_origin_x=-0.265174
+name(vr interactor):tracking_rotation_origin_y=0.757061
+name(vr interactor):tracking_rotation_origin_z=0.44197
+name(vr interactor):tracking_origin_x=-0.29212
+name(vr interactor):tracking_origin_y=0.94
+name(vr interactor):tracking_origin_z=-0.318886
