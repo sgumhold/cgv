@@ -19,7 +19,7 @@ void finish_fragment(vec4 color);
 uniform layout(binding = 0) samplerCube environment_map;
 
 uniform vec3 eye_pos;
-
+uniform bool invert = false;
 in vec2 texcoord_fs;
 
 //out vec4 frag_color;
@@ -36,7 +36,7 @@ void main()
     coord /= coord.w;
 
     // calculate the viewing ray in object space
-    vec3 ray = normalize(coord.xyz - eye_pos);
+    vec3 ray = normalize(invert?eye_pos - coord.xyz:coord.xyz-eye_pos);
 
 	finish_fragment(texture(environment_map, ray));
 }

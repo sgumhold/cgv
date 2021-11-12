@@ -1,8 +1,13 @@
 #include "vr_scene.h"
 #include <cgv/base/register.h>
+#include <cgv/base/import.h>
 #include <cgv/math/ftransform.h>
 #include <cgv/math/pose.h>
 #include <cg_vr/vr_events.h>
+#include <cgv/os/cmdline_tools.h>
+#include <cgv/gui/dialog.h>
+#include <cgv/gui/file_dialog.h>
+#include <cgv/defines/quote.h>
 #include <random>
 
 namespace vr {
@@ -176,7 +181,7 @@ vr_scene::vr_scene() : lm(false)
 
 	ground_mode = GM_BOXES;
 
-	environment_mode = EM_SKYBOX;
+	environment_mode = EM_EMPTY;
 
 	terrain_style.noise_layers.emplace_back(300.0F, 15.0F);
 	terrain_style.noise_layers.emplace_back(150.0F, 7.5F);
@@ -227,6 +232,8 @@ cgv::reflect::enum_reflection_traits<EnvironmentMode> get_reflection_traits(cons
 bool vr_scene::self_reflect(cgv::reflect::reflection_handler& rh)
 {
 	return 		
+		rh.reflect_member("invert_skybox", invert_skybox) &&
+		rh.reflect_member("skybox_file_names", skybox_file_names) &&
 		rh.reflect_member("table_mode", table_mode) &&
 		rh.reflect_member("table_color", table_color) &&
 		rh.reflect_member("table_width", table_width) &&
@@ -242,6 +249,7 @@ bool vr_scene::self_reflect(cgv::reflect::reflection_handler& rh)
 		rh.reflect_member("wall_width", wall_width) &&
 		rh.reflect_member("draw_walls", draw_walls) &&
 		rh.reflect_member("terrain_y_offset", terrain_translation[1]) &&
+		rh.reflect_member("terrain_scale", terrain_scale) &&
 		rh.reflect_member("draw_ceiling", draw_ceiling) &&
 		rh.reflect_member("ground_mode", ground_mode) &&
 		rh.reflect_member("environment_mode", environment_mode);
@@ -249,6 +257,34 @@ bool vr_scene::self_reflect(cgv::reflect::reflection_handler& rh)
 
 void vr_scene::on_set(void* member_ptr)
 {
+	if (member_ptr == &environment_mode) {
+		if (environment_mode == EM_SKYBOX) {
+			if (skybox_file_names.empty()) {
+				std::string zip_file_path = cgv::base::find_or_download_data_file("vr_scene_skybox.zip", "cmD",
+					"https://learnopengl.com/img/textures/skybox.zip", "Dcm", "vr_scene", "skyboxes", QUOTE_SYMBOL_VALUE(INPUT_DIR),
+					cgv::base::user_feedback(&cgv::gui::message, &cgv::gui::question, &cgv::gui::directory_save_dialog));
+				if (!zip_file_path.empty()) {
+					std::string base_path = cgv::utils::file::get_path(zip_file_path);
+					bool success = true;
+					if (!cgv::utils::file::exists(base_path + "/skybox/right.jpg")) {
+						if (!cgv::os::expand_archive(zip_file_path, base_path)) {
+							cgv::gui::message("could not uncompress downloaded zip archive");
+							success = false;
+						}
+					}
+					if (success) {
+						skybox_file_names = base_path + "/skybox/{right,left,bottom,top,front,back}.jpg";
+						invert_skybox = true;
+						update_member(&invert_skybox);
+						update_member(&skybox_file_names);
+					}
+				}
+				else {
+					cgv::gui::message("download of zip archive failed");
+				}
+			}
+		}		
+	}
 	if (member_ptr >= &table_width && member_ptr < &leg_color + 1) {
 		switch (table_mode) {
 		case TM_RECTANGULAR :
@@ -281,7 +317,9 @@ bool vr_scene::init(cgv::render::context& ctx)
 		ctx.set_default_light_source(li, ls);
 	}
 
-	//skybox.create_from_images(ctx, "D:/SteamLibrary/steamapps/common/VIVEDriver/App/ViveVRRuntime/ViveVR/ViveVRCompositor/Resources/Cubemaps/Sky01/{0,1,2,3,4,5}.png");
+	if (!cubemap_prog.build_program(ctx, "cubemap.glpr", true)) {
+		std::cerr << "could not build cubemap program" << std::endl;
+	}
 
 	cgv::render::ref_sphere_renderer(ctx, 1);
 	cgv::render::ref_box_renderer(ctx, 1);
@@ -326,6 +364,13 @@ bool vr_scene::init(cgv::render::context& ctx)
 
 void vr_scene::init_frame(cgv::render::context& ctx)
 {
+	if (environment_mode == EM_SKYBOX) {
+		static std::string last_file_names;
+		if (skybox_file_names != last_file_names) {
+			skybox.create_from_images(ctx, skybox_file_names);
+			last_file_names = skybox_file_names;
+		}
+	}
 	mat34 ID; ID.identity();
 	pose[0] = pose[1] = ID;
 	valid[0] = valid[1] = true, true;
@@ -440,6 +485,28 @@ void vr_scene::draw(cgv::render::context& ctx)
 			tr.render(ctx, 0, custom_indices.size());
 		ctx.pop_modelview_matrix();
 	}
+
+	if (environment_mode == EM_SKYBOX && skybox.is_created()) {
+		// lastly render the environment
+		cubemap_prog.enable(ctx);
+		cubemap_prog.set_uniform(ctx, "resolution", vec2((float)ctx.get_width(), (float)ctx.get_height()));
+		dmat4 MV = ctx.get_modelview_matrix();
+		dmat4 iMV = inv(MV);
+		dvec4 heye = iMV * dvec4(0, 0, 0, 1);
+		vec3 eye_pos = (dvec3&)heye / heye[3];
+		cubemap_prog.set_uniform(ctx, "invert", invert_skybox);
+		cubemap_prog.set_uniform(ctx, "eye_pos", eye_pos);
+
+		glDepthFunc(GL_LEQUAL);
+
+		skybox.enable(ctx, 0);
+		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+		skybox.disable(ctx);
+
+		glDepthFunc(GL_LESS);
+
+		cubemap_prog.disable(ctx);
+	}
 }
 
 /// draw transparent part here
@@ -519,6 +586,7 @@ void vr_scene::create_gui()
 	if (begin_tree_node("environment", environment_mode)) {
 		align("\a");
 		add_member_control(this, "mode", environment_mode, "dropdown", "enums='empty,skybox,procedural'");
+		add_member_control(this, "invert_skybox", invert_skybox, "check");
 		align("\b");
 		end_tree_node(environment_mode);
 	}
