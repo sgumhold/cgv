@@ -135,7 +135,7 @@ void vr_scene::construct_ground(float s, float ew, float ed, float w, float d, f
 void vr_scene::build_scene(float w, float d, float h, float W)
 {
 	if (draw_room) {
-		construct_room(w, d, h, W, false, false);
+		construct_room(w, d, h, W, draw_walls, draw_ceiling);
 	}
 	if (ground_mode == GM_BOXES) {
 		construct_ground(0.3f, 3 * w, 3 * d, w, d, h);
@@ -465,7 +465,7 @@ void vr_scene::draw(cgv::render::context& ctx)
 		// draw static part
 		br.set_box_array(ctx, boxes);
 		br.set_color_array(ctx, box_colors);
-		br.render(ctx, 0, boxes.size());
+		br.render(ctx, 0, (GLsizei)boxes.size());
 
 		if (!cone_vertices.empty()) {
 			auto& cr = cgv::render::ref_cone_renderer(ctx);
@@ -625,6 +625,12 @@ void vr_scene::create_gui()
 		add_member_control(this, "percentual_offset", percentual_leg_offset, "value_slider", "min=0.0;max=0.5;ticks=true");
 		align("\b");
 		end_tree_node(table_width);
+	}
+	if (begin_tree_node("boxes", box_style)) {
+		align("\a");
+		add_gui("box_style", box_style);
+		align("\b");
+		end_tree_node(box_style);
 	}
 	if (begin_tree_node("labels", lm)) {
 		align("\a");
