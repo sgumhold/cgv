@@ -586,16 +586,15 @@ void vr_scene::create_gui()
 	if (begin_tree_node("ground", ground_mode)) {
 		align("\a");
 		add_member_control(this, "mode", ground_mode, "dropdown", "enums='none,boxes,terrain'");
-		if (begin_tree_node("Terrain Settings", terrain_style, false, "level=2")) {
+		if (begin_tree_node("Terrain Settings", grid_width, false, "level=2")) {
 			align("\a");
 			add_member_control(this, "grid width", grid_width, "value_slider", "min=1;max=100;log=true;ticks=true");
 			add_member_control(this, "grid height", grid_height, "value_slider", "min=1;max=100;log=true;ticks=true");
 			add_member_control(this, "scale", terrain_scale, "value_slider", "min=0.001;max=10;log=true;ticks=true");
 			add_gui("translation", terrain_translation, "",
 				"long_label=true;main_label='first';options='min=-100;max=100;ticks=true'");
-			add_gui("terrain_render_style", terrain_style);
 			align("\b");
-			end_tree_node(terrain_style);
+			end_tree_node(grid_width);
 		}
 		align("\b");
 		end_tree_node(ground_mode);
@@ -626,12 +625,6 @@ void vr_scene::create_gui()
 		align("\b");
 		end_tree_node(table_width);
 	}
-	if (begin_tree_node("boxes", box_style)) {
-		align("\a");
-		add_gui("box_style", box_style);
-		align("\b");
-		end_tree_node(box_style);
-	}
 	if (begin_tree_node("labels", lm)) {
 		align("\a");
 		for (size_t i = 0; i < label_positions.size(); ++i) {
@@ -646,14 +639,37 @@ void vr_scene::create_gui()
 				end_tree_node(label_positions[i]);
 			}
 		}
+		align("\b");
+		end_tree_node(lm);
+	}
+	if (begin_tree_node("styles", table_color)) {
+		align("\a");
 		if (begin_tree_node("rectangles", rrs)) {
 			align("\a");
 			add_gui("rrs", rrs);
 			align("\b");
 			end_tree_node(rrs);
 		}
+		if (begin_tree_node("boxes", box_style)) {
+			align("\a");
+			add_gui("box_style", box_style);
+			align("\b");
+			end_tree_node(box_style);
+		}
+		if (begin_tree_node("cones", cone_style)) {
+			align("\a");
+			add_gui("cone_style", cone_style);
+			align("\b");
+			end_tree_node(cone_style);
+		}
+		if (begin_tree_node("terrain", terrain_style)) {
+			align("\a");
+			add_gui("terrain_render_style", terrain_style);
+			align("\b");
+			end_tree_node(terrain_style);
+		}
 		align("\b");
-		end_tree_node(lm);
+		end_tree_node(table_color);
 	}
 }
 
