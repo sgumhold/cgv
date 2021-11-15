@@ -14,17 +14,26 @@ namespace cgv {
 	namespace media {
 		namespace mesh {
 
-face_info::face_info(unsigned _nr, unsigned _vi0, int _ti0, int _ni0, unsigned _gi, unsigned _mi)
-	: degree(_nr),
-	  first_vertex_index(_vi0),
-	  first_texcoord_index(_ti0),
-	  first_normal_index(_ni0),
-	  group_index(_gi),
-	  material_index(_mi)
-{
-}
+			line_info::line_info(unsigned _nr, unsigned _vi0, int _ti0, int _ni0, unsigned _gi)
+				: length(_nr),
+				first_vertex_index(_vi0),
+				first_texcoord_index(_ti0),
+				first_normal_index(_ni0),
+				group_index(_gi)
+			{
+			}
 
-/// overide this function to process a vertex
+			face_info::face_info(unsigned _nr, unsigned _vi0, int _ti0, int _ni0, unsigned _gi, unsigned _mi)
+				: degree(_nr),
+				first_vertex_index(_vi0),
+				first_texcoord_index(_ti0),
+				first_normal_index(_ni0),
+				group_index(_gi),
+				material_index(_mi)
+			{
+			}
+
+			/// overide this function to process a vertex
 template <typename T>
 void obj_loader_generic<T>::process_vertex(const v3d_type& p)
 {
@@ -50,6 +59,28 @@ void obj_loader_generic<T>::process_color(const color_type& c)
 	colors.push_back(c);
 }
 
+/// overide this function to process a line
+template <typename T>
+void obj_loader_generic<T>::process_line(unsigned vcount, int* vertices,
+	int* texcoords, int* normals)
+{
+	this->convert_to_positive(vcount, vertices, texcoords, normals,
+		(unsigned)this->vertices.size(), (unsigned)this->normals.size(), (unsigned)this->texcoords.size());
+	lines.push_back(line_info(vcount, (unsigned)vertex_indices.size(),
+		texcoords == 0 ? -1 : (int)texcoord_indices.size(),
+		normals == 0 ? -1 : (int)normal_indices.size(),
+		this->get_current_group()));
+	unsigned i;
+	for (i = 0; i < vcount; ++i)
+		vertex_indices.push_back(vertices[i]);
+	if (normals)
+		for (i = 0; i < vcount; ++i)
+			normal_indices.push_back(normals[i]);
+	if (texcoords)
+		for (i = 0; i < vcount; ++i)
+			texcoord_indices.push_back(texcoords[i]);
+}
+
 /// overide this function to process a face
 template <typename T>
 void obj_loader_generic<T>::process_face(unsigned vcount, int *vertices,
@@ -71,6 +102,7 @@ void obj_loader_generic<T>::process_face(unsigned vcount, int *vertices,
 		for (i=0; i<vcount; ++i)
 			texcoord_indices.push_back(texcoords[i]);
 }
+
 
 /// overide this function to process a group given by name
 template <typename T>
@@ -155,7 +187,7 @@ bool obj_loader_generic<T>::read_obj_bin(const std::string& file_name)
 		return false;
 
 	// read element count
-	uint32_type v, n, t, f, h, g, m;
+	uint32_type v, n, t, f, h, g, m, l = 0;
 	if (1!=fread(&v, sizeof(uint32_type), 1, fp) ||
 		1!=fread(&n, sizeof(uint32_type), 1, fp) ||
 		1!=fread(&t, sizeof(uint32_type), 1, fp) ||
@@ -166,13 +198,22 @@ bool obj_loader_generic<T>::read_obj_bin(const std::string& file_name)
 		fclose(fp);
 		return false;
 	}
-
 	bool has_colors = false;
 	if (v > 0x7FFFFFFF) {
 		v = 0xFFFFFFFF - v;
 		has_colors = true;
 	}
-
+	bool has_lines = false;
+	if (f > 0x7FFFFFFF) {
+		f = 0xFFFFFFFF - f;
+		has_lines = true;
+	}
+	if (has_lines) {
+		if (1 != fread(&l, sizeof(uint32_type), 1, fp)) {
+			fclose(fp);
+			return false;
+		}
+	}
 	// reserve space
 	vertices.resize(v);
 	if (has_colors)
@@ -212,7 +253,13 @@ bool obj_loader_generic<T>::read_obj_bin(const std::string& file_name)
 			return false;
 		}
 	}
-	faces.resize(f); 
+	lines.resize(l);
+	if (l > 0 && l != fread(&lines[0], sizeof(line_info), l, fp))
+	{
+		fclose(fp);
+		return false;
+	}
+	faces.resize(f);
 	if (f > 0 && f != fread(&faces[0], sizeof(face_info), f, fp))
 	{
 		fclose(fp);
@@ -281,7 +328,8 @@ bool obj_loader_generic<T>::write_obj_bin(const std::string& file_name) const
 		        n = (unsigned) normals.size(),
 				t = (unsigned) texcoords.size(), 
 				f = (unsigned) faces.size(),
-				h = (unsigned) vertex_indices.size(), 
+				l = (unsigned) lines.size(),
+				h = (unsigned) vertex_indices.size(),
 				g = (unsigned) groups.size(),
 				m = (unsigned) this->mtl_lib_files.size();
 	uint32_type v_write = v;
@@ -289,17 +337,26 @@ bool obj_loader_generic<T>::write_obj_bin(const std::string& file_name) const
 	if (has_colors)
 		v_write = 0xFFFFFFFF - v;
 
+	uint32_type f_write = f;
+	if (l > 0)
+		f_write = 0xFFFFFFFF - f;
+
 	if (1!=fwrite(&v_write, sizeof(uint32_type), 1, fp) ||
 		1!=fwrite(&n, sizeof(uint32_type), 1, fp) ||
 		1!=fwrite(&t, sizeof(uint32_type), 1, fp) ||
-		1!=fwrite(&f, sizeof(uint32_type), 1, fp) ||
+		1!=fwrite(&f_write, sizeof(uint32_type), 1, fp) ||
 		1!=fwrite(&h, sizeof(uint32_type), 1, fp) ||
 		1!=fwrite(&g, sizeof(uint32_type), 1, fp) ||
 		1!=fwrite(&m, sizeof(uint32_type), 1, fp)) {
 		fclose(fp);
 		return false;
 	}
-
+	if (l > 0) {
+		if (1 != fwrite(&l, sizeof(uint32_type), 1, fp)) {
+			fclose(fp);
+			return false;
+		}
+	}
 	if (v != fwrite(&vertices[0], sizeof(v3d_type), v, fp) ||
 		h > 0 && h != fwrite(&vertex_indices[0], sizeof(unsigned), h, fp) )
 	{
@@ -329,6 +386,11 @@ bool obj_loader_generic<T>::write_obj_bin(const std::string& file_name) const
 			fclose(fp);
 			return false;
 		}
+	}
+	if (l > 0 && l != fwrite(&lines[0], sizeof(line_info), l, fp))
+	{
+		fclose(fp);
+		return false;
 	}
 	if (f > 0 && f != fwrite(&faces[0], sizeof(face_info), f, fp))
 	{

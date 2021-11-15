@@ -1,0 +1,143 @@
+#version 330 core
+
+in vec4 color_fs;
+in mat3x2 uv_fs;
+in vec3 normal_eye;
+in vec3 position_eye;
+in float normalized_height_fs;
+
+//***** begin interface of view.glsl ***********************************
+mat4 get_modelview_matrix();
+mat4 get_projection_matrix();
+mat4 get_modelview_projection_matrix();
+mat4 get_inverse_modelview_matrix();
+mat4 get_inverse_modelview_projection_matrix();
+mat3 get_normal_matrix();
+mat3 get_inverse_normal_matrix();
+//***** end interface of view.glsl ***********************************
+
+//***** begin interface of fragment.glfs ***********************************
+uniform float gamma = 2.2;
+void finish_fragment(vec4 color);
+//***** end interface of fragment.glfs ***********************************
+
+//***** begin interface of surface.glsl ***********************************
+struct Material {
+    int brdf_type;
+    vec3 diffuse_reflectance;
+    float roughness;
+    float metalness;
+    float ambient_occlusion;
+    vec3 emission;
+    float transparency;
+    vec2 propagation_slow_down;
+    float roughness_anisotropy;
+    float roughness_orientation;
+    vec3 specular_reflectance;
+};
+
+Material get_material();
+vec4 compute_reflected_radiance(in Material M, vec3 position_eye, vec3 normal_eye);
+vec4 compute_reflected_appearance(vec3 position_eye, vec3 normal_eye, vec4 color, int side);
+vec4 compute_reflected_appearance_texture(vec3 position_eye, vec3 normal_eye, vec2 texcoords, vec4 color, int side);
+//***** end interface of surface.glsl ***********************************
+
+//***** begin interface of side.glsl ***********************************
+bool keep_this_side(in vec3 position, in vec3 normal, out int side);
+void update_material_color_and_transparency(inout vec3 mat_color, inout float transparency, in int side, in vec4 color);
+void update_normal(inout vec3 normal, in int side);
+//***** end interface of side.glsl ***********************************
+
+uniform float grassLevel;
+uniform float rockLevel;
+uniform float blur;
+
+uniform vec3 damp_factor;
+
+uniform bool useGrassTexture;
+uniform bool useDirtTexture;
+uniform bool useRockTexture;
+
+uniform sampler2D grassTexture;
+uniform sampler2D dirtTexture;
+uniform sampler2D rockTexture;
+
+uniform int get_color_implementation = 2;
+
+vec3 get_grass_color() { return (useGrassTexture ? texture(grassTexture, uv_fs[0]).rgb : vec3(0.2,0.9,0.1)) * damp_factor[0]; }
+vec3 get_dirt_color()  { return (useDirtTexture ? texture(dirtTexture, uv_fs[1]).rgb : vec3(0.4,0.3,0.0)) * damp_factor[1]; }
+vec3 get_rock_color()  { return (useRockTexture ? texture(rockTexture, uv_fs[2]).rgb : vec3(0.5,0.5,0.5))*damp_factor[2]; }
+
+// this get color implementation suffers from texture filtering problems due to the if statements
+vec3 getSurfaceColor0(float height) {
+    if (height < grassLevel-blur)
+        return get_grass_color();
+    else if (height < grassLevel+blur)
+        return mix(get_grass_color(), get_dirt_color(), (height-(grassLevel-blur)) / (2.0F*blur));
+    else if (height < rockLevel-blur)
+        return get_dirt_color();
+    else if (height < rockLevel+blur)
+        return mix(get_dirt_color(), get_rock_color(), (height-(rockLevel-blur)) / (2.0F*blur));
+    else
+        return get_rock_color();
+}
+
+// this is equivalent but works with texture filtering
+vec3 getSurfaceColor1(float height) {
+    float s0 = step(grassLevel-blur, height);
+    float s1 = step(grassLevel+blur, height);
+    float s2 = step(rockLevel -blur, height);
+    float s3 = step(rockLevel +blur, height);
+    vec3 gc = get_grass_color();
+    vec3 dc = get_dirt_color();
+    vec3 rc = get_rock_color();
+    float lgd = (height-(grassLevel-blur)) / (2.0f*blur);
+    float ldr = (height-(rockLevel -blur)) / (2.0f*blur);
+    return 
+           (1.0-s0)*gc + 
+        s0*(1.0-s1)*mix(gc, dc, lgd) +
+        s1*(1.0-s2)*dc +
+        s2*(1.0-s3)*mix(dc, rc, ldr) +
+                 s3*rc;
+}
+
+// this is also equivalent and more efficient and also works with texture filtering
+vec3 getSurfaceColor2(float height) 
+{
+    float s0 = clamp((height - (grassLevel-blur))/(2.0f*blur), 0.0, 1.0);
+    float s1 = clamp((height - (rockLevel -blur))/(2.0f*blur), 0.0, 1.0);
+    return
+        get_grass_color()*(1.0-s0) +
+        get_dirt_color()*(s0*(1.0-s1)) +
+        get_rock_color()*(s1);
+}
+
+// this uses the smoothstep function (Hermite interpolation) and also works with texture filtering
+vec3 getSurfaceColor3(float height) 
+{
+    float s0 = smoothstep(grassLevel-blur, grassLevel+blur, height);
+    float s1 = smoothstep(rockLevel -blur, rockLevel+blur, height);
+    return
+        get_grass_color()*(1.0-s0) +
+        get_dirt_color()*(s0*(1.0-s1)) +
+        get_rock_color()*(s1);
+}
+
+vec3 getSurfaceColor(float height) {
+    switch (get_color_implementation) {
+    case 0 : return getSurfaceColor0(height);
+    case 1 : return getSurfaceColor1(height);
+    case 2 : return getSurfaceColor2(height);
+    case 3 : return getSurfaceColor3(height);
+    }
+    return vec3(0.0);
+}
+
+void main() {
+    vec3 normal = normalize(normal_eye);
+    int side;
+    if (!keep_this_side(position_eye, normal, side)) {
+        discard;
+    }
+    finish_fragment(compute_reflected_appearance(position_eye, normal, vec4(getSurfaceColor(normalized_height_fs),color_fs.a), side));
+}

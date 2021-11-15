@@ -77,14 +77,14 @@ namespace cgv {
 		void surface_renderer::set_normal_array(const context& ctx, type_descriptor element_type, const vertex_buffer& vbo, size_t offset_in_bytes, size_t nr_elements, unsigned stride_in_bytes)
 		{
 			has_normals = true;
-			set_attribute_array(ctx, ref_prog().get_attribute_location(ctx, "normal"), element_type, vbo, offset_in_bytes, nr_elements, stride_in_bytes);
+			set_attribute_array(ctx, "normal", element_type, vbo, offset_in_bytes, nr_elements, stride_in_bytes);
 
 		}
 		/// template method to set the texcoord attribute from a vertex buffer object, the element type must be given as explicit template parameter
 		void surface_renderer::set_texcoord_array(const context& ctx, type_descriptor element_type, const vertex_buffer& vbo, size_t offset_in_bytes, size_t nr_elements, unsigned stride_in_bytes)
 		{
 			has_texcoords = true;
-			set_attribute_array(ctx, ref_prog().get_attribute_location(ctx, "texcoord"), element_type, vbo, offset_in_bytes, nr_elements, stride_in_bytes);
+			set_attribute_array(ctx, "texcoord", element_type, vbo, offset_in_bytes, nr_elements, stride_in_bytes);
 
 		}
 		bool surface_renderer::enable(context& ctx)

@@ -1,11 +1,14 @@
 #version 430
-#extension GL_EXT_geometry_shader4 : enable
 
-#define USE_ROUNDED_CAPS 0
+#define MODE 1
 
-//***** begin interface of fragment2d.glsl ***********************************
-uniform float feather_width = 1.0;
-//***** end interface of fragment2d.glsl ***********************************
+//***** begin interface of shape2d.glsl ***********************************
+float get_feather_width();
+vec2 get_shape_size();
+vec4 get_color();
+void override_color(in vec4 color);
+vec4 transform_world_to_window_space(vec2 p);
+//***** end interface of shape2d.glsl ***********************************
 
 layout(lines) in;
 layout(triangle_strip, max_vertices = 4) out;
@@ -17,35 +20,109 @@ const vec2 corners[4] = vec2[](
 	vec2(1.0, 1.0)
 );
 
-uniform mat3 model_matrix = mat3(1.0);
-uniform mat3 view_matrix = mat3(1.0);
-
-uniform ivec2 resolution;
 uniform float width = 1.0;
 
-in vec4 color_gs[];
-
-#if USE_ROUNDED_CAPS == 0
-out vec4 color_fs;
+#if MODE == 0
+flat in vec4 color0_gs[];
+flat in vec4 color1_gs[];
 #else
+flat in vec4 color_gs[];
+#endif
+
+out flat vec2 size_fs;
+out vec2 pix_coord_fs;
+out vec2 tex_coord_fs;
+out vec4 color_fs;
+
+vec2 ortho2d(vec2 v) {
+	return vec2(v.y, -v.x);
+}
+
+void main() {
+	
+	vec2 start = gl_in[0].gl_Position.xy;
+	vec2 end = gl_in[1].gl_Position.xy;
+
+	vec2 delta = end - start;
+	float len = length(delta);
+
+	vec2 u_dir = delta / len;
+	vec2 v_dir = ortho2d(u_dir);
+
+	float fw = get_feather_width();
+
+	float final_width = width + fw;
+	size_fs = vec2(len + 2.0 * fw, final_width);
+
+	u_dir *= fw;
+	v_dir *= 0.5*final_width;
+
+#if MODE == 0
+	vec4 color0 = color0_gs[0];
+	vec4 color1 = color1_gs[0];
+#else
+	vec4 color0 = color_gs[0];
+	vec4 color1 = color_gs[1];
+#endif
+	color_fs = color0;
+	tex_coord_fs = corners[0];
+	pix_coord_fs = size_fs*corners[0] - 0.5*size_fs;
+	gl_Position = transform_world_to_window_space(start.xy - u_dir + v_dir);
+	EmitVertex();
+
+	color_fs = color1;
+	tex_coord_fs = corners[1];
+	pix_coord_fs = size_fs*corners[1] - 0.5*size_fs;
+	gl_Position = transform_world_to_window_space(end.xy + u_dir + v_dir);
+	EmitVertex();
+
+	color_fs = color0;
+	tex_coord_fs = corners[2];
+	pix_coord_fs = size_fs*corners[2] - 0.5*size_fs;
+	gl_Position = transform_world_to_window_space(start.xy - u_dir - v_dir);
+	EmitVertex();
+
+	color_fs = color1;
+	tex_coord_fs = corners[3];
+	pix_coord_fs = size_fs*corners[3] - 0.5*size_fs;
+	gl_Position = transform_world_to_window_space(end.xy + u_dir - v_dir);;
+	EmitVertex();
+}
+
+/* ROUNDED CAPS
+#version 430
+
+//***** begin interface of shape2d.glsl ***********************************
+float get_feather_width();
+vec2 get_shape_size();
+vec4 get_color();
+void override_color(in vec4 color);
+vec4 transform_world_to_window_space(vec2 p);
+//***** end interface of shape2d.glsl ***********************************
+
+layout(lines) in;
+layout(triangle_strip, max_vertices = 4) out;
+
+const vec2 corners[4] = vec2[](
+	vec2(0.0, 0.0),
+	vec2(1.0, 0.0),
+	vec2(0.0, 1.0),
+	vec2(1.0, 1.0)
+);
+
+uniform float width = 1.0;
+
+flat in vec4 color0_gs[];
+flat in vec4 color1_gs[];
+
 out flat vec4 color0_fs;
 out flat vec4 color1_fs;
-#endif
 out flat vec2 size_fs;
 out vec2 tex_coord_fs;
 out vec2 pix_coord_fs;
 
 vec2 ortho2d(vec2 v) {
 	return vec2(v.y, -v.x);
-}
-
-vec4 world_to_window_space(vec2 p) {
-	// apply view transformation
-	vec2 pos = (view_matrix * vec3(p, 1.0)).xy;
-
-	// transform to window space
-	pos = (2.0*pos) / resolution;
-	return vec4(pos - 1.0, 0.0, 1.0);
 }
 
 void main() {
@@ -59,35 +136,14 @@ void main() {
 	vec2 u_dir = delta / len;
 	vec2 v_dir = ortho2d(u_dir.xy);
 
-	float final_width = width + feather_width;
-	size_fs = vec2(len + 2.0 * feather_width, final_width);
+	float fw = get_feather_width();
 
-	u_dir *= feather_width;
+	float final_width = width + fw;
+	size_fs = vec2(len + 2.0 * fw, final_width);
+
+	u_dir *= fw;
 	v_dir *= 0.5*final_width;
 
-#if USE_ROUNDED_CAPS == 0
-	color_fs = color_gs[0];
-	tex_coord_fs = corners[0];
-	pix_coord_fs = size_fs*corners[0] - 0.5*size_fs;
-	gl_Position = world_to_window_space(start.xy - u_dir + v_dir);
-	EmitVertex();
-	color_fs = color_gs[1];
-	tex_coord_fs = corners[1];
-	pix_coord_fs = size_fs*corners[1] - 0.5*size_fs;
-	gl_Position = world_to_window_space(end.xy + u_dir + v_dir);
-	EmitVertex();
-
-	color_fs = color_gs[0];
-	tex_coord_fs = corners[2];
-	pix_coord_fs = size_fs*corners[2] - 0.5*size_fs;
-	gl_Position = world_to_window_space(start.xy - u_dir - v_dir);
-	EmitVertex();
-	color_fs = color_gs[1];
-	tex_coord_fs = corners[3];
-	pix_coord_fs = size_fs*corners[3] - 0.5*size_fs;
-	gl_Position = world_to_window_space(end.xy + u_dir - v_dir);;
-	EmitVertex();
-#else
 	color0_fs = color_gs[0];
 	color1_fs = color_gs[1];
 
@@ -109,3 +165,5 @@ void main() {
 	EmitVertex();
 #endif
 }
+
+*/

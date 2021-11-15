@@ -1,0 +1,11 @@
+@=
+projectName="cgv_proc";
+projectType="library";
+projectGUID="2895162B-10C0-4549-B5DB-795D6E6A82D1";
+addIncDirs=[[CGV_DIR."/libs", "all"], CGV_BUILD_DIR."/".projectName, CGV_DIR."/3rd/glew"];
+addProjectDirs=[CGV_DIR."/libs", CGV_DIR."/3rd/glew"];
+addProjectDeps=["cgv_utils", "cgv_type", "cgv_data", "cgv_base", "cgv_signal", "cgv_math", "cgv_media", "cgv_render", "cgv_reflect_types", "cgv_gl", "glew"];
+if(SYSTEM=="windows") {
+	addStaticDefines=["REGISTER_SHADER_FILES"];
+}
+addSharedDefines=["CGV_PROCEDURAL_EXPORTS"];

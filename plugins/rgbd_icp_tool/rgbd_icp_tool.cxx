@@ -46,6 +46,7 @@ rgbd_icp_tool::rgbd_icp_tool() {
 	trans_intensity = 0.1;
 	//lrs.line_width = 1.0f;
 	rcrs.radius = 0.001f;
+	rcrs.rounded_caps = true;
 
 	icp_iterations = 50;
 	icp_eps = 1e-8;
@@ -82,7 +83,7 @@ bool rgbd_icp_tool::init(cgv::render::context & ctx)
 	}
 	//cgv::render::ref_point_renderer(ctx, 1);
 	cgv::render::ref_surfel_renderer(ctx, 1);
-	cgv::render::ref_rounded_cone_renderer(ctx, 1);
+	cgv::render::ref_cone_renderer(ctx, 1);
 	return true;
 }
 
@@ -111,7 +112,7 @@ void draw_point_cloud(cgv::render::context & ctx, point_cloud & pc, surfel_rende
 	ctx.pop_modelview_matrix();
 }
 
-void draw_correspondences(cgv::render::context& ctx, point_cloud& crspd_src, point_cloud& crspd_tgt, cgv::render::rounded_cone_render_style& rcrs, cgv::math::fvec<float, 4> color) {
+void draw_correspondences(cgv::render::context& ctx, point_cloud& crspd_src, point_cloud& crspd_tgt, cgv::render::cone_render_style& rcrs, cgv::math::fvec<float, 4> color) {
 	ctx.push_modelview_matrix();
 	if (crspd_src.get_nr_points() > 0) {
 		vector<point_cloud::Pnt> P;
@@ -120,7 +121,7 @@ void draw_correspondences(cgv::render::context& ctx, point_cloud& crspd_src, poi
 			P.push_back(crspd_src.pnt(i));
 			P.push_back(crspd_tgt.pnt(i));
 		}
-		cgv::render::rounded_cone_renderer& rcr = ref_rounded_cone_renderer(ctx);
+		cgv::render::cone_renderer& rcr = ref_cone_renderer(ctx);
 		rcr.set_render_style(rcrs);
 		rcr.set_position_array(ctx, P);
 		//rcr.set_radius_array(ctx, radii);
@@ -169,7 +170,7 @@ void rgbd_icp_tool::clear(cgv::render::context & ctx)
 {
 	//cgv::render::ref_point_renderer(ctx, -1);
 	cgv::render::ref_surfel_renderer(ctx, -1);
-	cgv::render::ref_rounded_cone_renderer(ctx, -1);
+	cgv::render::ref_cone_renderer(ctx, -1);
 }
 
 bool rgbd_icp_tool::handle(cgv::gui::event & e)

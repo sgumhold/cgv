@@ -1,0 +1,3 @@
+vertex_file:cubemap_gen.glvs
+geometry_file:cubemap_gen.glgs
+fragment_file:sky_cubemap_gen.glfs

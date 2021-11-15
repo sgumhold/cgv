@@ -9,7 +9,7 @@
 #include <cgv/gui/event_handler.h>
 #include <cgv_gl/box_renderer.h>
 #include <cgv/render/shader_program.h>
-#include <cgv_gl/rounded_cone_renderer.h>
+#include <cgv_gl/cone_renderer.h>
 #include <cgv/render/frame_buffer.h>
 
 ///@ingroup VR

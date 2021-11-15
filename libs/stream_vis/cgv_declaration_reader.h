@@ -20,8 +20,9 @@ namespace stream_vis {
 		bool parse_color(const std::string& name, rgba& color);
 		bool parse_quat(const std::string& name, quat& quat);
 		bool parse_vecn(const std::string& name, float* v, uint32_t dim);
+		bool parse_dvecn(const std::string& name, double* v, uint32_t dim);
 		bool parse_ivecn(const std::string& name, int32_t* v, uint32_t dim);
-		bool parse_bound_vecn(const std::string& name, DomainAdjustment domain_adjustment[3], uint16_t domain_bound_ts_index[3], float* fixed_domain_ptr, int dim);
+		bool parse_bound_vecn(const std::string& name, DomainAdjustment domain_adjustment[3], uint16_t domain_bound_ts_index[3], float* fixed_domain_ptr, int dim, int nr_attributes);
 		bool parse_marks(plot_info& pi, cgv::plot::plot_base_config& cfg, int dim);
 		bool parse_components(cgv::utils::token tok, std::vector<attribute_definition>& ads);
 		bool parse_subplots(plot_info& pi, int dim);

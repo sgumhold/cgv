@@ -26,6 +26,7 @@ protected:
 
 	bool has_constraint = false;
 	rect constraint_area;
+	mat3 inv_transformation;
 
 	std::vector<T> draggables;
 
@@ -49,14 +50,6 @@ protected:
 		return hit;
 	}
 
-
-
-	mat3 transformation;
-	mat3 inv_transformation;
-
-
-
-
 public:
 	draggables_collection() {
 		clear();
@@ -66,8 +59,6 @@ public:
 		dragged = nullptr;
 		selected = nullptr;
 		draggables.clear();
-
-		transformation.identity();
 		inv_transformation.identity();
 	}
 
@@ -79,7 +70,7 @@ public:
 
 	std::vector<T>& ref_draggables() { return draggables; }
 
-	accessor_type operator[](int i) {
+	accessor_type operator[](size_t i) {
 		return draggables[i];
 	}
 
@@ -123,13 +114,9 @@ public:
 		drag_end_callback = func;
 	}
 
-
-
 	void set_transformation(const mat3& matrix) {
-		transformation = matrix;
-		inv_transformation = cgv::math::inv(transformation);
+		inv_transformation = cgv::math::inv(matrix);
 	}
-
 
 	bool handle(cgv::gui::event& e, const ivec2& viewport_size, const rect& container = rect()) {
 		unsigned et = e.get_kind();
@@ -144,8 +131,8 @@ public:
 			mpos -= container.pos();
 
 			vec3 tmp = inv_transformation * vec3(mpos, 1.0f);
-			mpos.x() = tmp.x();
-			mpos.y() = tmp.y();
+			mpos.x() = int(tmp.x());
+			mpos.y() = int(tmp.y());
 
 			if(me.get_button() == cgv::gui::MB_LEFT_BUTTON) {
 				if(ma == cgv::gui::MA_RELEASE) {

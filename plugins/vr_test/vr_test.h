@@ -6,9 +6,9 @@
 #include <cgv_gl/box_renderer.h>
 #include <cgv_gl/gl/mesh_render_info.h>
 #include <cgv_gl/sphere_renderer.h>
-#include <cgv_gl/rounded_cone_renderer.h>
+#include <cgv_gl/cone_renderer.h>
 #include <cgv/render/shader_program.h>
-#include <cgv_gl/rounded_cone_renderer.h>
+#include <cgv_gl/cone_renderer.h>
 #include <cgv/render/frame_buffer.h>
 
 ///@ingroup VR
@@ -44,7 +44,7 @@ protected:
 
 	// rendering styles
 	cgv::render::box_render_style style;
-	cgv::render::rounded_cone_render_style cone_style;
+	cgv::render::cone_render_style cone_style;
 
 	// sample for rendering a mesh
 	double mesh_scale;

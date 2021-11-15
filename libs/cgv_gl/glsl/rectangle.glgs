@@ -3,9 +3,7 @@
 layout(points) in;
 layout(triangle_strip, max_vertices = 4) out;
 
-/// 0 ... separate, 1 ... width is reference, 2 ... height is reference, 3 ... min(width,height) is reference
-uniform int border_mode = 3;
-uniform float pixel_blend = 0.0;
+uniform float pixel_blend     = 0.0;
 uniform float viewport_height = 1.0;
 
 in RECTANGLE_GS {
@@ -13,9 +11,11 @@ in RECTANGLE_GS {
 	vec3  normal_eye;
 	vec2  extent;
 	vec4  color;
+	vec4  secondary_color;
 	vec4  border_color;
 	float percentual_border_width;
 	float border_width_in_pixel; 
+	int   border_mode;
 	vec4  texcoord;
 	float depth_offset;
 } gi[];
@@ -25,6 +25,7 @@ out RECTANGLE_FS {
 	vec3 normal_eye;
 	vec2 texcoord;
 	vec4 color;
+	vec4 secondary_color;
 	vec4 border_color;
 	float depth_offset;
 	flat int side; // 0 is back facing and 1 is front facing
@@ -67,6 +68,7 @@ void main()
 		return;
 	fo.depth_offset = gi[0].depth_offset;
 	fo.color        = gi[0].color;
+	fo.secondary_color = gi[0].secondary_color;
 	fo.border_color = gi[0].border_color;
 	fo.normal_eye   = gi[0].normal_eye;
 	
@@ -85,7 +87,7 @@ void main()
 	float pixel_extent = 2.0*abs(position_eye.z/(viewport_height*get_projection_matrix()[1][1]));
 	vec2 perc_border_width = vec2(gi[0].percentual_border_width);
 	/// 0 ... separate, 1 ... width is reference, 2 ... height is reference, 3 ... min(width,height) is reference
-	switch (border_mode) {
+	switch (gi[0].border_mode) {
 	case 1: 
 		perc_border_width.y *= gi[0].extent.x / gi[0].extent.y;
 		break;

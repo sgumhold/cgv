@@ -30,6 +30,24 @@ struct CGV_API face_info
 	face_info(unsigned _nr = 0, unsigned _vi0 = 0, int _ti0 = -1, int _ni0 = -1, unsigned gi=-1, unsigned mi=-1); 
 };
 
+/** simple structure to describe a line */
+struct CGV_API line_info
+{
+	/// length of line strip
+	unsigned length;
+	/// index into vertex index array
+	unsigned first_vertex_index;
+	/// index into texcoord index array or -1 if not specified
+	int first_texcoord_index;
+	/// index into normal index array or -1 if not specified
+	int first_normal_index;
+	/// index of group to which the face belongs
+	int      group_index;
+	/// construct face info
+	line_info(unsigned _nr = 0, unsigned _vi0 = 0, int _ti0 = -1, int _ni0 = -1, unsigned gi = -1);
+};
+
+
 /** simple structure to describe a group*/
 struct group_info
 {
@@ -60,7 +78,8 @@ public:
 	std::vector<unsigned> normal_indices;
 	std::vector<unsigned> texcoord_indices;
 	
-	std::vector<face_info> faces; 
+	std::vector<line_info> lines;
+	std::vector<face_info> faces;
 	std::vector<group_info> groups;
 	std::vector<cgv::media::illum::obj_material> materials;
 protected:
@@ -74,9 +93,10 @@ protected:
 	void process_normal(const v3d_type& n);
 	/// overide this function to process a color (this called for vc prefixes which is is not in the standard but for example used in pobj-files)
 	void process_color(const color_type& c);
+	/// overide this function to process a line
+	void process_line(unsigned vcount, int* vertices, int* texcoords = 0, int* normals = 0);
 	/// overide this function to process a face
-	void process_face(unsigned vcount, int *vertices, 
-					  int *texcoords = 0, int *normals=0);
+	void process_face(unsigned vcount, int* vertices, int* texcoords = 0, int* normals = 0);
 	/// overide this function to process a group given by name
 	void process_group(const std::string& name, const std::string& parameters);
 	/// process a material definition

@@ -34,6 +34,8 @@ namespace stream_vis {
 		lower_bound_index = uint16_t(-1);
 		upper_bound_index = uint16_t(-1);
 		aabb_mode = AM_BLOCKED_16;
+		transform = TT_NONE;
+		transform_origin = dvec3(0.0);
 		//series().set_ringbuffer_size(1024);
 	}
 	cgv::type::info::TypeId streaming_time_series::get_value_type_id() const

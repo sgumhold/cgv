@@ -1,4 +1,7 @@
 #version 430
+
+#define CAPS 1
+#define CAP_TYPE 0
 #define ENABLE_TEXTURING 0
 #define TEXTURE_BLEND_MODE 0
 #define TEXTURE_TILE_FROM_CENTER 0
@@ -56,6 +59,136 @@ in flat vec3 normal_fs;
 in flat vec3 binormal_fs;
 in flat vec4 color_start_fs;
 in flat vec4 color_end_fs;
+
+out layout(location = 0) vec4 frag_color;
+out layout(location = 1) vec4 frag_position;
+out layout(location = 2) vec3 frag_normal;
+
+float dot2(vec3 v) {
+	return dot(v, v);
+}
+
+// https://www.shadertoy.com/view/llcfRf
+float intersect_cone(in vec3 org, in vec3 dir, in vec3 pa, in vec3 pb, in float ra, in float rb, out vec3 normal, out float l) {
+
+	vec3 ba = pb - pa;
+    vec3 oa = org - pa;
+    vec3 ob = org - pb;
+    
+    float m0 = dot(ba, ba);
+    float m1 = dot(oa, ba);
+    float m2 = dot(ob, ba); 
+    float m3 = dot(dir, ba);
+
+#if CAPS == 1
+    //caps
+    if(m1 < 0.0) {
+		if(dot2(oa*m3-dir*m1) < (ra*ra*m3*m3)) {
+			l = 0.0;
+			normal = -ba*inversesqrt(m0);
+			return -m1/m3;
+		}
+	} else if(m2 > 0.0) {
+		if(dot2(ob*m3-dir*m2) < (rb*rb*m3*m3)) {
+			l = 1.0;
+			normal = +ba*inversesqrt(m0);
+			return -m2/m3;
+		}
+	}
+#endif
+    
+    // body
+    float m4 = dot(dir, oa);
+    float m5 = dot(oa, oa);
+    float rr = ra - rb;
+    float hy = m0 + rr*rr;
+    
+    float k2 = m0*m0    - m3*m3*hy;
+    float k1 = m0*m0*m4 - m1*m3*hy + m0*ra*(rr*m3*1.0        );
+    float k0 = m0*m0*m5 - m1*m1*hy + m0*ra*(rr*m1*2.0 - m0*ra);
+    
+    float h = k1*k1 - k2*k0;
+    if(h < 0.0)
+		return -1e20;
+
+    float t = (-k1-sqrt(h))/k2;
+
+    float y = m1 + t*m3;
+    if(y > 0.0 && y < m0) {
+		l = y / m0;
+        normal = normalize(m0*(m0*(oa+t*dir)+rr*ba*ra)-ba*hy*y);
+		return t;
+    }
+    
+    return -1e20;
+}
+
+// https://www.shadertoy.com/view/MlKfzm
+float intersect_rounded_cone(in vec3 org, in vec3 dir, in vec3 pa, in vec3 pb, in float ra, in float rb, out vec3 normal, out float l) {
+
+    vec3  ba = pb - pa;
+	vec3  oa = org - pa;
+	vec3  ob = org - pb;
+    float rr = ra - rb;
+    float m0 = dot(ba, ba);
+    float m1 = dot(ba, oa);
+    float m2 = dot(ba, dir);
+    float m3 = dot(dir, oa);
+    float m5 = dot(oa, oa);
+	float m6 = dot(ob, dir);
+    float m7 = dot(ob, ob);
+    
+    float d2 = m0 - rr*rr;
+    
+	float k2 = d2    - m2*m2;
+    float k1 = d2*m3 - m1*m2 + m2*rr*ra;
+    float k0 = d2*m5 - m1*m1 + m1*rr*ra*2.0 - m0*ra*ra;
+    
+	float h = k1*k1 - k0*k2;
+
+	if(h < 0.0) {
+		return -1e20;
+	}
+
+    float t = (-sqrt(h) - k1) / k2;
+	float y = m1 - ra*rr + t*m2;
+    
+    if(y > 0.0 && y < d2) {
+		l = y / d2;
+		normal = normalize(d2*(oa + t*dir) - ba*y);
+		return t;
+    } 
+
+#if CAPS == 0
+	return -1e20;
+#else
+	float h1 = m3*m3 - m5 + ra*ra;
+	float h2 = m6*m6 - m7 + rb*rb;
+
+	if(max(h1, h2) < 0.0)
+		return -1e20;
+	
+	float rt = 1e20;
+
+	if(h1 > 0.0) {
+    	t = -m3 - sqrt(h1);
+		rt = t;
+		l = 0.0;
+		normal = normalize((oa + t*dir) / ra);
+	}
+
+	if(h2 > 0.0) {
+    	t = -m6 - sqrt(h2);
+		if(t < rt) {
+			rt = t;
+			l = 1.0;
+			normal = normalize((ob + t*dir) / rb);
+		}
+	}
+
+	return rt;
+#endif
+}
 
 vec2 get_tex_coords(vec3 pos) {
 	
@@ -120,77 +253,19 @@ void main()
 	// transformed vectors and directions.
 	//vec3 org = (get_inverse_modelview_matrix() * vec4(0.98*position, 1.0)).xyz;
 	//vec3 dir = normalize((get_inverse_modelview_matrix() * vec4(normalize(position), 0.0)).xyz);
-	vec3 org = (get_inverse_modelview_matrix() * vec4(0.0, 0.0, 0.0, 1.0)).xyz;
+	vec3 org = (get_inverse_modelview_matrix() * vec4(0.98*position, 1.0)).xyz;
 	vec3 dir = normalize((get_inverse_modelview_matrix() * vec4(normalize(position), 0.0)).xyz);
 	
-	float ra = start_fs.w;
-	float rb = end_fs.w;
+	vec3 normal;
+	float l;
+#if CAP_TYPE == 0
+	float t = intersect_cone(org, dir, start_fs.xyz, end_fs.xyz, start_fs.w, end_fs.w, normal, l);
+#else
+	float t = intersect_rounded_cone(org, dir, start_fs.xyz, end_fs.xyz, start_fs.w, end_fs.w, normal, l);
+#endif
 
-    vec3  ba = end_fs.xyz - start_fs.xyz;
-	vec3  oa = org - start_fs.xyz;
-	vec3  ob = org - end_fs.xyz;
-    float rr = ra - rb;
-    float m0 = dot(ba, ba);
-    float m1 = dot(ba, oa);
-    float m2 = dot(ba, dir);
-    float m3 = dot(dir, oa);
-    float m5 = dot(oa, oa);
-	float m6 = dot(ob, dir);
-    float m7 = dot(ob, ob);
-    
-    float d2 = m0 - rr*rr;
-    
-	float k2 = d2    - m2*m2;
-    float k1 = d2*m3 - m1*m2 + m2*rr*ra;
-    float k0 = d2*m5 - m1*m1 + m1*rr*ra*2.0 - m0*ra*ra;
-    
-	float h = k1*k1 - k0*k2;
-
-	if(h < 0.0) {
-		discard;
-		return;
-	}
-
-	bool hit = false;
-	float l = 0.0;
-	vec3 normal = vec3(0.0);
-
-    float t = (-sqrt(h) - k1) / k2;
-	float y = m1 - ra*rr + t*m2;
-    
-    if(y > 0.0 && y < d2) {
-		hit = true;
-		l = y / d2;
-		normal = normalize(d2*(oa + t*dir) - ba*y);
-    } else {
-		float h1 = m3*m3 - m5 + ra*ra;
-		float h2 = m6*m6 - m7 + rb*rb;
-		
-		float t1 = 1e20;
-
-		if(h1 > 0.0) {
-			hit = true;
-    		t = -m3 - sqrt(h1);
-			t1 = t;
-			l = 0.0;
-			normal = normalize((oa + t*dir) / ra);
-		}
-
-		if(h2 > 0.0) {
-    		t = -m6 - sqrt(h2);
-			if(t < t1) {
-				hit = true;
-				t1 = t;
-				l = 1.0;
-				normal = normalize((ob + t*dir) / rb);
-			}
-		}
-
-		t = t1;
-	}
-
-	if(hit) {
-		// finally get the hit position in object space
+	if(t >= 0.0) {
+		// get the hit position in object space
 		vec3 hit_pos = org + t * dir;
 		vec4 color = mix(color_start_fs, color_end_fs, l);
 
@@ -266,7 +341,14 @@ void main()
 		vec4 v_eye = vec4(hit_pos_eye, 1.0);
 		
 		vec4 depth = get_projection_matrix() * v_eye;
-		finish_fragment(vec4(compute_reflected_appearance(hit_pos_eye, normal_eye, vec4(color.xyz, 1.0), 1).rgb, color.a), 0.5*(depth.z / depth.w) + 0.5);
+		//finish_fragment(vec4(compute_reflected_appearance(hit_pos_eye, normal_eye, vec4(color.xyz, 1.0), 1).rgb, color.a), 0.5*(depth.z / depth.w) + 0.5);
+		
+		vec4 final_color = vec4(compute_reflected_appearance(hit_pos_eye, normal_eye, vec4(color.xyz, 1.0), 1).rgb, color.a);
+		final_color.rgb = pow(final_color.rgb, vec3(gamma));
+		frag_color = final_color;
+		frag_position = vec4(hit_pos_eye, 1.0);
+		frag_normal = normal_eye;
+		gl_FragDepth = 0.5*(depth.z / depth.w) + 0.5;
 	} else {
 		discard;
 	}

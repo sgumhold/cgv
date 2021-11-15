@@ -233,6 +233,16 @@ bool gl_context::configure_gl()
 		core_profile = false;
 #ifdef _DEBUG
 	std::cout << "OpenGL version " << version_major << "." << version_minor << (core_profile?" (core)":"") << (debug?" (debug)":"") << (forward_compatible?" (forward_compatible)":"") << std::endl;
+	const GLubyte* vendor_string = glGetString(GL_VENDOR);
+	const GLubyte* renderer_string = glGetString(GL_RENDER);
+	const GLubyte* glslversion_string = glGetString(GL_SHADING_LANGUAGE_VERSION);
+	if (vendor_string)
+		std::cout << "   vendor     : " << vendor_string << std::endl;
+	if (renderer_string)
+		std::cout << "   renderer   : " << renderer_string << std::endl;
+	if (glslversion_string)
+		std::cout << "   glslversion: " << glslversion_string << std::endl;
+
 #endif
 	if (debug) {
 		glEnable(GL_DEBUG_OUTPUT);
@@ -1490,7 +1500,12 @@ bool gl_context::check_gl_error(const std::string& where, const cgv::render::ren
 	GLenum eid = glGetError();
 	if (eid == GL_NO_ERROR)
 		return false;
-	std::string error_string = where + ": " + std::string((const char*)gluErrorString(eid));
+	const GLubyte* raw_error_string = gluErrorString(eid);
+	std::string error_string = where + ": ";
+	if(raw_error_string)
+		error_string += std::string((const char*)raw_error_string);
+	else
+		error_string += "undefined error (id: " + std::to_string(eid) + ")";
 	error(error_string, rc);
 	return true;
 }
@@ -1874,8 +1889,9 @@ bool gl_context::texture_generate_mipmaps(texture_base& tb, unsigned int dim) co
 	GLuint tmp_id = texture_bind(tb.tt,get_gl_id(tb.handle));
 
 	bool is_array = tb.tt == TT_1D_ARRAY || tb.tt == TT_2D_ARRAY;
+	bool is_cubemap = tb.tt == TT_CUBEMAP;
 	std::string error_string;
-	bool result = generate_mipmaps(dim, is_array, &error_string);
+	bool result = generate_mipmaps(dim, is_cubemap, is_array, &error_string);
 	if (result)
 		tb.have_mipmaps = true;
 	else
@@ -2070,7 +2086,8 @@ bool gl_context::frame_buffer_enable(frame_buffer_base& fbb)
 	if (!context::frame_buffer_enable(fbb))
 		return false;
 	std::vector<int> buffers;
-	get_buffer_list(fbb, buffers, GL_COLOR_ATTACHMENT0);
+	bool depth_buffer = false;
+	get_buffer_list(fbb, depth_buffer, buffers, GL_COLOR_ATTACHMENT0);
 	glBindFramebuffer(GL_FRAMEBUFFER, get_gl_id(fbb.handle));
 
 	if (buffers.size() == 1)
@@ -2078,7 +2095,10 @@ bool gl_context::frame_buffer_enable(frame_buffer_base& fbb)
 	else if (buffers.size() > 1) {
 		glDrawBuffers(GLsizei(buffers.size()), reinterpret_cast<GLenum*>(&buffers[0]));
 	}
-	else {
+	else if(depth_buffer) {
+		glDrawBuffer(GL_NONE);
+		//glReadBuffer(GL_NONE);
+	} else {
 		error("gl_context::frame_buffer_enable: no attached draw buffer selected!!", &fbb);
 		return false;
 	}
@@ -2142,8 +2162,8 @@ bool gl_context::frame_buffer_attach(frame_buffer_base& fbb,
 	}
 	else {
 		if (t.tt == TT_CUBEMAP) {
-			glFramebufferTexture2D(GL_FRAMEBUFFER, 
-				GL_COLOR_ATTACHMENT0+i, 
+			glFramebufferTexture2D(GL_FRAMEBUFFER,
+				GL_COLOR_ATTACHMENT0+i,
 				get_gl_cube_map_target(z_or_cube_side), get_gl_id(t.handle), level);
 		}
 		else {

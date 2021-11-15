@@ -1,0 +1,22 @@
+#version 330 core
+
+//***** begin interface of view.glsl ***********************************
+mat4 get_modelview_matrix();
+mat4 get_projection_matrix();
+mat4 get_modelview_projection_matrix();
+mat4 get_inverse_modelview_matrix();
+mat4 get_inverse_modelview_projection_matrix();
+mat3 get_normal_matrix();
+mat3 get_inverse_normal_matrix();
+//***** end interface of view.glsl ***********************************
+
+layout(location = 0) in vec4 position;
+layout(location = 1) in vec4 color;
+
+out vec4 position_tcs;
+out vec4 color_tcs;
+
+void main() {
+    position_tcs = position;
+    color_tcs = color;
+}

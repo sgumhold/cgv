@@ -73,7 +73,7 @@ void ray_tool::draw(cgv::render::context& ctx)
 	rgb c(float(1 - controller_index), 0.5f * (int)interaction_state, float(controller_index));
 	C.push_back(c);
 	C.push_back(c);
-	auto& cr = cgv::render::ref_rounded_cone_renderer(ctx);
+	auto& cr = cgv::render::ref_cone_renderer(ctx);
 	cr.set_render_style(rcrs);
 	cr.set_position_array(ctx, P);
 	cr.set_color_array(ctx, C);

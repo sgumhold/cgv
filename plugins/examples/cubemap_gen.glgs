@@ -1,0 +1,37 @@
+#version 330
+
+layout(points) in;
+layout(triangle_strip, max_vertices = 4) out;
+
+flat in vec3 edge0[];
+flat in vec3 edge1[];
+flat in int cube_face_idx[];
+
+out vec3 position;
+
+void main()
+{
+	vec3 o = gl_in[0].gl_Position.xyz;
+	vec3 e0 = edge0[0];
+	vec3 e1 = edge1[0];
+
+	gl_Layer = cube_face_idx[0];
+
+	position = o;
+	gl_Position = vec4(-1.0, -1.0, 0.0, 1.0);
+	EmitVertex();
+
+	position = o + e0;
+	gl_Position = vec4(+1.0, -1.0, 0.0, 1.0);
+	EmitVertex();
+
+	position = o + e1;
+	gl_Position = vec4(-1.0, +1.0, 0.0, 1.0);
+	EmitVertex();
+
+	position = o + e0 + e1;
+	gl_Position = vec4(+1.0, +1.0, 0.0, 1.0);
+	EmitVertex();
+
+	EndPrimitive();
+}

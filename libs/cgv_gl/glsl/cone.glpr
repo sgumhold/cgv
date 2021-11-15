@@ -1,4 +1,4 @@
-files:rounded_cone
+files:cone
 vertex_file:group.glsl
 vertex_file:view.glsl
 geometry_file:view.glsl

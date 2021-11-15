@@ -76,15 +76,15 @@ namespace cgv {
 			void set_y_view_angle(float y_view_angle);
 			///
 			template <typename T = float>
-			void set_point_size_array(const context& ctx, const std::vector<T>& point_sizes) { has_point_sizes = true; set_attribute_array(ctx, ref_prog().get_attribute_location(ctx, "point_size"), point_sizes); }
+			void set_point_size_array(const context& ctx, const std::vector<T>& point_sizes) { has_point_sizes = true; set_attribute_array(ctx, "point_size", point_sizes); }
 			/// set per point depth offsets
 			template <typename T = float>
-			void set_depth_offset_array(const context& ctx, const std::vector<T>& depth_offsets) { has_depth_offsets = true; set_attribute_array(ctx, ref_prog().get_attribute_location(ctx, "depth_offset"), depth_offsets); }
+			void set_depth_offset_array(const context& ctx, const std::vector<T>& depth_offsets) { has_depth_offsets = true; set_attribute_array(ctx, "depth_offset", depth_offsets); }
 			///
 			template <typename T = unsigned, typename C = cgv::media::color<float,cgv::media::RGB,cgv::media::OPACITY> >
 			void set_indexed_color_array(const context& ctx, const std::vector<T>& color_indices, const std::vector<C>& palette) {
 				has_indexed_colors = true; 
-				set_attribute_array(ctx, ref_prog().get_attribute_location(ctx, "color_index"), color_indices); 
+				set_attribute_array(ctx, "color_index", color_indices); 
 				ref_prog().set_uniform_array(ctx, "palette", palette); 
 			}
 			///

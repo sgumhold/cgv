@@ -65,7 +65,7 @@ namespace cgv {
 					MI.destruct(ctx);
 					MI.construct(ctx, M);
 					MI.bind(ctx, ctx.ref_surface_shader_program(true), true);
-					MI.bind_wireframe(ctx, cgv::render::ref_rounded_cone_renderer(ctx).ref_prog(), true);
+					MI.bind_wireframe(ctx, cgv::render::ref_cone_renderer(ctx).ref_prog(), true);
 					cone_style.radius = float(0.1f*mesh_box.get_extent().length() / sqrt(M.get_nr_positions()));
 				}
 				new_mesh_file_name = false;
@@ -81,7 +81,7 @@ namespace cgv {
 			if (show_surface)
 				MI.draw_all(ctx);
 			if (show_wireframe) {
-				auto& cr = ref_rounded_cone_renderer(ctx);
+				auto& cr = ref_cone_renderer(ctx);
 				cr.set_render_style(cone_style);
 				if (cr.enable(ctx)) {
 					MI.draw_wireframe(ctx);

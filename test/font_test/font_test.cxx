@@ -123,9 +123,9 @@ public:
 
 		rrs.surface_color = rgba(1, 0, 1, 1);
 		rrs.pixel_blend = 0.0f;
-		rrs.texture_mode = 1;
+		rrs.texture_mode = cgv::render::RTM_REPLACE_ALPHA;
 		rrs.default_depth_offset = -0.0000001f;
-		rrs.border_color = rgba(0, 0, 0, 0);
+		rrs.default_border_color = rgba(0, 0, 0, 0);
 		rrs.map_color_to_material = cgv::render::CM_COLOR_AND_OPACITY;
 		rrs.illumination_mode = cgv::render::IM_OFF;
 	}

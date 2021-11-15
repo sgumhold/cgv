@@ -1468,7 +1468,7 @@ void plot_base::create_base_config_gui(cgv::base::base* bp, cgv::gui::provider& 
 	p.add_member_control(bp, "begin", pbc.begin_sample, "value_slider", "min=0;ticks=true")->set("max", attribute_source_arrays[i].attribute_sources.front().count - 1);
 	p.add_member_control(bp, "end", pbc.end_sample, "value_slider", "min=-1;ticks=true")->set("max", attribute_source_arrays[i].attribute_sources.front().count - 1);
 }
-void plot_base::add_mapped_size_control(cgv::gui::provider& p, cgv::base::base* bp, const std::string& name, mapped_size& ms, std::string options)
+void add_mapped_size_control(cgv::gui::provider& p, cgv::base::base* bp, const std::string& name, mapped_size& ms, std::string options)
 {
 	if (options.empty())
 		options = "min=1;max=20;log=true;ticks=true;w=100";
@@ -1477,18 +1477,18 @@ void plot_base::add_mapped_size_control(cgv::gui::provider& p, cgv::base::base* 
 	p.add_member_control(bp, name, ms.size, "value_slider", options, " ");
 	p.add_member_control(bp, "si", (cgv::type::DummyEnum&)ms.size_idx, "dropdown", "enums='off=-1,primary,secondary';w=52");
 }
-void plot_base::add_mapped_rgb_control(cgv::gui::provider& p, cgv::base::base* bp, const std::string& name, mapped_rgb& ms)
+void add_mapped_rgb_control(cgv::gui::provider& p, cgv::base::base* bp, const std::string& name, mapped_rgb& ms)
 {
 	p.add_member_control(bp, name, ms.color, "", "w=140", " ");
 	p.add_member_control(bp, "ci", (cgv::type::DummyEnum&)ms.color_idx, "dropdown", "enums='off=-1,primary,secondary';w=52");
 }
-void plot_base::add_mapped_rgba_control(cgv::gui::provider& p, cgv::base::base* bp, const std::string& name, mapped_rgba& ms)
+void add_mapped_rgba_control(cgv::gui::provider& p, cgv::base::base* bp, const std::string& name, mapped_rgba& ms)
 {
 	p.add_member_control(bp, name, ms.color, "", "w=80", " ");
 	p.add_member_control(bp, "ci", (cgv::type::DummyEnum&)ms.color_idx, "dropdown", "enums='off=-1,primary,secondary';w=42", " ");
 	p.add_member_control(bp, "oi", (cgv::type::DummyEnum&)ms.opacity_idx, "dropdown", "enums='off=-1,primary,secondary';w=42");
 }
-void plot_base::add_mapped_opacity_control(cgv::gui::provider& p, cgv::base::base* bp, const std::string& name, mapped_opacity& ms)
+void add_mapped_opacity_control(cgv::gui::provider& p, cgv::base::base* bp, const std::string& name, mapped_opacity& ms)
 {
 	p.add_member_control(bp, name, ms.opacity, "", "w=140", " ");
 	p.add_member_control(bp, "oi", (cgv::type::DummyEnum&)ms.opacity_idx, "dropdown", "enums='off=-1,primary,secondary';w=52");

@@ -45,14 +45,19 @@ class CGV_API label_manager : public cgv::render::render_types
 public:
 	typedef cgv::media::axis_aligned_box<int32_t, 2> ibox2;
 protected:
+	/// labels with extent, text, border size and colors
 	std::vector<label> labels;
+	/// packing information for labels with texture coordinate ranges
 	std::vector<ibox2> tex_ranges;
+	/// extent of atlas texture
 	int tex_width, tex_height;
-	/// this is the final texture with all labels in
+	/// atlas texture
 	std::shared_ptr<cgv::render::texture> tex;
+	/// fbo used to render atlas texture
 	cgv::render::frame_buffer fbo;
 	/// this is a temporary rotated texture into which the rotated labels are drawn
 	cgv::render::texture tmp_tex;
+	/// fbo used to render temp texture
 	cgv::render::frame_buffer tmp_fbo;
 
 	std::vector<uint8_t> label_states;
@@ -61,19 +66,27 @@ protected:
 	bool texture_content_outofdate;
 	std::vector<uint32_t> not_rotated_labels;
 	std::vector<uint32_t> rotated_labels;
-	cgv::media::font::font_face_ptr font_face;
+
 	float font_size;
+	cgv::media::font::font_face_ptr font_face;
 	int safety_extension;
 	rgba text_color;
+	rgba background_color;
+
 	cgv::render::rectangle_render_style rrs;
 	cgv::render::attribute_array_manager aam;
+
+	bool render_texture_with_color;
+
 	bool ensure_tex_fbo_combi(cgv::render::context& ctx, cgv::render::texture& tex, cgv::render::frame_buffer& fbo, int width, int height);
 	void draw_label_backgrounds(cgv::render::context& ctx, const std::vector<uint32_t>& indices, bool all, bool swap);
 	void draw_label_texts(cgv::render::context& ctx, const std::vector<uint32_t>& indices, int height, bool all, bool swap);
 	void compute_label_size(label& l);
 public:
-	/// construct label manager
-	label_manager(cgv::media::font::font_face_ptr _font_face = 0, float _font_size = -1);
+	//! construct label manager
+	/*! First parameter controls whether texture has a color format and labels are drawn to texture with color. 
+	    Otherwise the texture only has a red channel. In this case rendering of the labels should use the */
+	label_manager(bool _render_texture_with_color = true, cgv::media::font::font_face_ptr _font_face = 0, float _font_size = -1);
 	/// set the number of texels by which labels are extended in texture space to avoid texture filtering problems at label boundaries, defaults to 4
 	void set_safety_extension(int nr_texels) { safety_extension = nr_texels; packing_outofdate = true; }
 	/// return number of texels by which labels are extended in texture space to avoid texture filtering problems
@@ -84,6 +97,8 @@ public:
 	void set_font_size(float _font_size);
 	/// set default text color active at begin of each label, defaults to opaque black
 	void set_text_color(const rgba& clr);
+	/// return current default text color
+	const rgba& get_text_color() const { return text_color; }
 	//! add a label and return its index
 	/*! If width and height are given, the label size is fixed even if the text does not
 	    fit into the label.

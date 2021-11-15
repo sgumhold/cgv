@@ -114,8 +114,8 @@ vec3 strauss_specular_brdf(vec3 N, vec3 L, vec3 V, float roughness, float metaln
 {
 	roughness = 0.999*roughness + 0.001;
 	vec3 R = -reflect(L, N);
-	float theta_L = acos(dot(L, N));
-	float theta_V = acos(dot(V, N));
+	float theta_L = acos(clamp(-1.0, 1.0, dot(L, N)));
+	float theta_V = acos(clamp(-1.0, 1.0, dot(V, N)));
 	float G_L = G_strauss(theta_L);
 	float G_V = G_strauss(theta_V);
 	float kf = 1.12;
