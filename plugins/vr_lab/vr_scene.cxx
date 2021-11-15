@@ -257,6 +257,53 @@ bool vr_scene::self_reflect(cgv::reflect::reflection_handler& rh)
 
 void vr_scene::on_set(void* member_ptr)
 {
+	if (member_ptr == &ground_mode) {
+		if (ground_mode == GM_TERRAIN && get_context()) {
+			cgv::render::context& ctx = *get_context();
+			static bool terrain_textures_loaded = false;
+			if (ground_mode == GM_TERRAIN) {
+				if (!terrain_textures_loaded) {
+					terrain_style.load_default_textures(ctx);
+					terrain_textures_loaded = true;
+				}
+				static int prev_grid_width = 0;
+				static int prev_grid_height = 0;
+				if (grid_width != prev_grid_width || grid_height != prev_grid_height) {
+					custom_positions.clear();
+					custom_indices.clear();
+					static std::vector<float> quadVertices = {
+						  0.0f, 0.0f, //
+						  1.0f, 0.0f, //
+						  1.0f, 1.0f, //
+						  0.0f, 1.0f, //
+					};
+					for (int row = 0; row < grid_height; row++) {
+						for (int col = 0; col < grid_width; col++) {
+							for (int i = 0; i < static_cast<int64_t>(quadVertices.size() / 2); i++) {
+								float x = (quadVertices[i * 2] + static_cast<float>(row - grid_height / 2)) * 100;
+								float y = (quadVertices[i * 2 + 1] + static_cast<float>(col - grid_width / 2)) * 100;
+								custom_positions.emplace_back(x, y);
+							}
+						}
+					}
+
+					for (int row = 0; row < grid_height; row++) {
+						for (int col = 0; col < grid_width; col++) {
+							const int i = (row * grid_width + col) * 4;
+							custom_indices.emplace_back(i);
+							custom_indices.emplace_back(i + 1);
+							custom_indices.emplace_back(i + 2);
+							custom_indices.emplace_back(i);
+							custom_indices.emplace_back(i + 2);
+							custom_indices.emplace_back(i + 3);
+						}
+					}
+					prev_grid_width = grid_width;
+					prev_grid_height = grid_height;
+				}
+			}
+		}
+	}
 	if (member_ptr == &environment_mode) {
 		if (environment_mode == EM_SKYBOX) {
 			if (skybox_file_names.empty()) {
@@ -392,49 +439,6 @@ void vr_scene::init_frame(cgv::render::context& ctx)
 				pose[CS_RIGHT_CONTROLLER] = reinterpret_cast<const mat34&>(vr_view_ptr->get_current_vr_state()->controller[1].pose[0]);
 		}
 	}
-
-	static bool terrain_textures_loaded = false;
-	if (ground_mode == GM_TERRAIN) {
-		if (!terrain_textures_loaded) {
-			terrain_style.load_default_textures(ctx);
-			terrain_textures_loaded = true;
-		}
-		static int prev_grid_width = 0;
-		static int prev_grid_height = 0;
-		if (grid_width != prev_grid_width || grid_height != prev_grid_height) {
-			custom_positions.clear();
-			custom_indices.clear();
-			static std::vector<float> quadVertices = {
-				  0.0f, 0.0f, //
-				  1.0f, 0.0f, //
-				  1.0f, 1.0f, //
-				  0.0f, 1.0f, //
-			};
-			for (int row = 0; row < grid_height; row++) {
-				for (int col = 0; col < grid_width; col++) {
-					for (int i = 0; i < static_cast<int64_t>(quadVertices.size() / 2); i++) {
-						float x = (quadVertices[i * 2] + static_cast<float>(row - grid_height / 2)) * 100;
-						float y = (quadVertices[i * 2 + 1] + static_cast<float>(col - grid_width / 2)) * 100;
-						custom_positions.emplace_back(x, y);
-					}
-				}
-			}
-
-			for (int row = 0; row < grid_height; row++) {
-				for (int col = 0; col < grid_width; col++) {
-					const int i = (row * grid_width + col) * 4;
-					custom_indices.emplace_back(i);
-					custom_indices.emplace_back(i + 1);
-					custom_indices.emplace_back(i + 2);
-					custom_indices.emplace_back(i);
-					custom_indices.emplace_back(i + 2);
-					custom_indices.emplace_back(i + 3);
-				}
-			}
-			prev_grid_width = grid_width;
-			prev_grid_height = grid_height;
-		}
-	}
 }
 
 void vr_scene::clear(cgv::render::context& ctx)
@@ -475,7 +479,7 @@ void vr_scene::draw(cgv::render::context& ctx)
 			cr.render(ctx, 0, cone_vertices.size());
 		}
 	}
-	if (ground_mode == GM_TERRAIN) {
+	if (ground_mode == GM_TERRAIN && !custom_indices.empty()) {
 		ctx.push_modelview_matrix();
 		ctx.mul_modelview_matrix(cgv::math::scale4<double>(dvec3(terrain_scale))*cgv::math::translate4<double>(terrain_translation));
 			auto& tr = cgv::render::ref_terrain_renderer(ctx);
