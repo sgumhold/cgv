@@ -11,7 +11,7 @@
 #include <cgv/render/texture.h>
 #include <cgv/render/render_types.h>
 #include <cgv_gl/point_renderer.h>
-#include <cgv_gl/rounded_cone_renderer.h>
+#include <cgv_gl/cone_renderer.h>
 #include <cgv_gl/surfel_renderer.h>
 #include <cgv_gl/clod_point_renderer.h>
 #include <cgv/render/shader_program.h>
@@ -154,7 +154,7 @@ private:
 	point_cloud source_pc;
 	cgv::render::point_render_style source_prs;
 	cgv::render::surfel_render_style source_srs;
-	cgv::render::rounded_cone_render_style rcrs;
+	cgv::render::cone_render_style rcrs;
 	cgv::render::sphere_render_style srs;
 	cgv::render::arrow_render_style ars;
 
@@ -188,7 +188,7 @@ private:
 	dmat4 model_transform;
 
 	cgv::render::clod_point_render_style cp_style;
-	cgv::render::rounded_cone_render_style cone_style;
+	cgv::render::cone_render_style cone_style;
 
 	// environment geometry
 	std::vector<box3> boxes;
