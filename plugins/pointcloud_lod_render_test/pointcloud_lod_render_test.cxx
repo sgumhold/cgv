@@ -231,7 +231,7 @@ bool pointcloud_lod_render_test::init(cgv::render::context & ctx)
 	}
 	
 	cgv::render::ref_surfel_renderer(ctx, 1);
-	cgv::render::ref_rounded_cone_renderer(ctx, 1);
+	cgv::render::ref_cone_renderer(ctx, 1);
 	cgv::render::ref_box_renderer(ctx,1);
 	cgv::render::ref_clod_point_renderer(ctx, 1);
 	cgv::render::ref_sphere_renderer(ctx, 1);
@@ -304,7 +304,7 @@ void pointcloud_lod_render_test::draw(cgv::render::context & ctx)
 		vec4 cps = culling_protection_zone_positions[i].lift();
 		mat4 view = ctx.get_modelview_matrix();
 		cps = view * cps;
-		cp_renderer.set_protection_zone(vec3(cps.x(),cps.y(),cps.z()), culling_protection_zone_radii[i], i);
+		//cp_renderer.set_protection_zone(vec3(cps.x(),cps.y(),cps.z()), culling_protection_zone_radii[i], i);
 	}
 
 	if (source_pc.get_nr_points() > 0) {
@@ -404,7 +404,7 @@ void pointcloud_lod_render_test::draw(cgv::render::context & ctx)
 		}
 
 		if (cp_renderer.enable(ctx)) {
-			cp_renderer.reduce_points(ctx, 0, std::min((size_t)source_pc.get_nr_points(), max_points), (size_t)source_pc.get_nr_points());
+			cp_renderer.reduce_points(ctx, 0, /*std::min((size_t)source_pc.get_nr_points(), max_points),*/ (size_t)source_pc.get_nr_points());
 			/*GLint* labels = static_cast<GLint*>(glMapNamedBufferRange(
 				point_label_buffer, 0, source_pc.get_nr_points()*sizeof(GLint), GL_MAP_READ_BIT));
 
@@ -478,7 +478,7 @@ void pointcloud_lod_render_test::draw(cgv::render::context & ctx)
 			}
 		}
 		if (P.size() > 0) {
-			auto& cr = cgv::render::ref_rounded_cone_renderer(ctx);
+			auto& cr = cgv::render::ref_cone_renderer(ctx);
 			cr.set_render_style(cone_style);
 			cr.set_position_array(ctx, P.data(), array_index);
 			cr.set_color_array(ctx, C.data(), array_index);
@@ -510,7 +510,7 @@ void pointcloud_lod_render_test::clear(cgv::render::context & ctx)
 	glDeleteBuffers(1, &point_label_buffer);
 
 	cgv::render::ref_surfel_renderer(ctx, -1);
-	cgv::render::ref_rounded_cone_renderer(ctx, -1);
+	cgv::render::ref_cone_renderer(ctx, -1);
 	cgv::render::ref_box_renderer(ctx, -1);
 	cgv::render::ref_clod_point_renderer(ctx, -1);
 	cgv::render::ref_sphere_renderer(ctx, -1);
