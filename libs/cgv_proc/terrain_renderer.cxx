@@ -110,6 +110,7 @@ bool terrain_renderer::enable(cgv::render::context& ctx)
 	if (style.wireframe) {
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	}
+	ref_prog().set_uniform(ctx, "get_color_implementation", style.get_color_implementation);
 	ref_prog().set_uniform(ctx, "useGrassTexture", 
 		style.use_grass_texture && style.grass_texture.is_created() && style.grass_texture.enable(ctx, 0) && ref_prog().set_uniform(ctx, "grassTexture", 0));
 	ref_prog().set_uniform(ctx, "useDirtTexture",
@@ -205,6 +206,7 @@ struct terrain_render_style_gui_creator : public cgv::gui::gui_creator
 			p->add_member_control(b, "grass level", style->levels.grassLevel, "value_slider", "min=0;max=2;ticks=true");
 			p->add_member_control(b, "rock level", style->levels.rockLevel, "value_slider", "min=0;max=2;ticks=true");
 			p->add_member_control(b, "level blur", style->levels.blur, "value_slider", "min=0;max=0.2;ticks=true");
+			p->add_member_control(b, "get_color_implementation", (cgv::type::DummyEnum&)style->get_color_implementation, "dropdown", "enums='if,step,clamp,smoothstep'");
 			p->add_decorator("grass", "heading", "level=3");
 			p->add_member_control(b, "use texture", style->use_grass_texture, "check");
 			p->add_member_control(b, "damp factor", style->damp_factor_grass, "value_slider", "min=0;max=2;ticks=true");

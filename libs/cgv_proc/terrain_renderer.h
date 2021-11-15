@@ -57,6 +57,9 @@ struct CGV_API terrain_render_style : public cgv::render::surface_render_style
 	bool use_grass_texture = true;
 	bool use_dirt_texture = true;
 	bool use_rock_texture = true;
+
+	int get_color_implementation = 2;
+
 	mutable cgv::render::texture grass_texture = {};
 	mutable cgv::render::texture dirt_texture = {};
 	mutable cgv::render::texture rock_texture = {};
