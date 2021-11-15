@@ -1,0 +1,13 @@
+#version 430
+
+uniform mat4 light_space_matrix;
+
+layout(location = 0) in vec4 position;
+layout(location = 1) in vec3 normal;
+layout(location = 2) in vec2 texcoord;
+layout(location = 3) in vec4 color;
+
+void main()
+{
+	gl_Position = light_space_matrix * position;
+}

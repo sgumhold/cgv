@@ -3,7 +3,8 @@
 #include <cgv_gl/rectangle_renderer.h>
 #include <cgv_gl/sphere_renderer.h>
 #include <cgv_gl/box_renderer.h>
-#include <cgv_gl/rounded_cone_renderer.h>
+#include <cgv_gl/cone_renderer.h>
+#include <cgv_proc/terrain_renderer.h>
 #include <cgv/gui/event_handler.h>
 #include <cgv/gui/provider.h>
 #include <vr_view_interactor.h>
@@ -12,6 +13,37 @@
 #include "lib_begin.h"
 
 namespace vr {
+
+/// different table types
+enum TableMode
+{
+	TM_HIDE,
+	TM_RECTANGULAR,
+	TM_ROUND
+};
+
+/// different ground types
+enum GroundMode {
+	GM_NONE,
+	GM_BOXES,
+	GM_TERRAIN
+};
+
+/// different environment modes that are not yet supported
+enum EnvironmentMode {
+	EM_EMPTY,
+	EM_SKYBOX,
+	EM_PROCEDURAL
+};
+
+/// support self reflection of table mode
+extern CGV_API cgv::reflect::enum_reflection_traits<TableMode> get_reflection_traits(const TableMode&);
+
+/// support self reflection of ground mode
+extern CGV_API cgv::reflect::enum_reflection_traits<GroundMode> get_reflection_traits(const GroundMode&);
+
+/// support self reflection of environment mode
+extern CGV_API cgv::reflect::enum_reflection_traits<EnvironmentMode> get_reflection_traits(const EnvironmentMode&);
 
 /// class manages static and dynamic parts of scene
 class vr_scene :
@@ -31,22 +63,85 @@ protected:
 	std::vector<box3> boxes;
 	std::vector<rgb> box_colors;
 
-	// ui parameters for table construction
-	float table_width, table_depth, table_height, leg_width, leg_offset;
-	rgb table_color, leg_color;
-
 	// rendering style for rendering of boxes
-	cgv::render::box_render_style style;
+	cgv::render::box_render_style box_style;
 
-	/// construct boxes that represent a table of dimensions tw,td,th and leg width tW
-	void construct_table(float tw, float td, float th, float tW, float tO, rgb table_clr, rgb leg_clr);
+	// use cones for the turn table
+	std::vector<vec4> cone_vertices;
+	std::vector<rgb> cone_colors;
+
+	// rendering style for rendering of cones
+	cgv::render::cone_render_style cone_style;
+
+	cgv::render::texture skybox;
+	cgv::render::shader_program cubemap_prog;
+
+	bool invert_skybox;
+	std::string skybox_file_names;
+
+	/**@name ui parameters for table construction*/
+	//@{
+	/// table mode
+	TableMode table_mode;
+	/// global sizes 
+	union {
+		/// width of rectangular table
+		float table_width;
+		/// top radius of round table
+		float table_top_radius;
+	};
+	union {
+		/// depth of rectangular table
+		float table_depth;
+		/// bottom radius of round table
+		float table_bottom_radius;
+	};
+	/// height of table measured from ground to top face
+	float table_height;
+	/// width of legs of rectangular table or radius of central leg of round table
+	float leg_width;
+	/// offset of legs relative to table width/radius 
+	float percentual_leg_offset;
+	/// color of table top and legs
+	rgb table_color, leg_color;
+	//@}
+
+	GroundMode ground_mode;
+
+	// terrain members
+	std::vector<vec2> custom_positions;
+	std::vector<unsigned int> custom_indices;
+	cgv::render::terrain_render_style terrain_style;
+	int grid_width;
+	int grid_height;
+	dvec3 terrain_translation;
+	double terrain_scale;
+
+	EnvironmentMode environment_mode;
+
+	bool draw_room, draw_walls, draw_ceiling;
+	float room_width, room_depth, room_height, wall_width;
+
+	/// construct boxes that represent a rectangular table of dimensions tw,td,th, leg width tW, percentual leg offset and table/leg colors
+	void construct_rectangular_table(float tw, float td, float th, float tW, float tpO, rgb table_clr, rgb leg_clr);
+	/// construct cones that represent a round table of dimensions top/bottom radius ttr/tbr, height th, leg width tW, percentual leg offset and table/leg colors
+	void construct_round_table(float ttr, float tbr, float th, float tW, float tpO, rgb table_clr, rgb leg_clr);
 	/// construct boxes that represent a room of dimensions w,d,h and wall width W
 	void construct_room(float w, float d, float h, float W, bool walls, bool ceiling);
 	/// construct boxes for environment
-	void construct_environment(float s, float ew, float ed, float w, float d, float h);
+	void construct_ground(float s, float ew, float ed, float w, float d, float h);
 	/// construct a scene with a table
 	void build_scene(float w, float d, float h, float W);
+	/// clear scene geometry containers
+	void clear_scene();
+	/// update labels in ui that change based on table type
+	void update_table_labels();
 	//@}
+
+	/// store poses of different coordinate systems. These are computed in init_frame() function
+	mat34 pose[5];
+	/// store whether poses are valid
+	bool valid[5];
 
 
 	//@name labels
@@ -160,6 +255,10 @@ public:
 	//@}
 	/// provide access to table dimensions
 	vec3 get_table_extent() const { return vec3(table_width, table_height, table_depth); }
+	/// check whether coordinate system is available
+	bool is_coordsystem_valid(CoordinateSystem cs) const { return valid[cs]; }
+	/// provide access to coordinate system - check validity with is_coordsystem_valid() before
+	const mat34& get_coordsystem(CoordinateSystem cs) const { return pose[cs]; }
 	/// cgv::gui::provider function to create classic UI
 	void create_gui();
 };

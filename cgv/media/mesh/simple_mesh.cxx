@@ -1,5 +1,6 @@
 #include "simple_mesh.h"
 #include "stl_reader.h"
+#include "obj_loader.h"
 #include <cgv/math/inv.h>
 #include <cgv/utils/scan.h>
 #include <cgv/media/mesh/obj_reader.h>
@@ -100,7 +101,7 @@ void simple_mesh_base::sort_faces(std::vector<idx_type>& perm, bool by_group, bo
 }
 
 /// merge the three indices into one index into a vector of unique index triples
-void simple_mesh_base::merge_indices(std::vector<idx_type>& indices, std::vector<vec3i>& unique_triples, bool* include_tex_coords_ptr, bool* include_normals_ptr) const
+void simple_mesh_base::merge_indices(std::vector<idx_type>& indices, std::vector<vec4i>& unique_quadruples, bool* include_tex_coords_ptr, bool* include_normals_ptr, bool* include_tangents_ptr) const
 {
 	bool include_tex_coords = false;
 	if (include_tex_coords_ptr)
@@ -110,21 +111,26 @@ void simple_mesh_base::merge_indices(std::vector<idx_type>& indices, std::vector
 	if (include_normals_ptr)
 		*include_normals_ptr = include_normals = (normal_indices.size() > 0) && *include_normals_ptr;
 
-	std::map<std::tuple<idx_type, idx_type, idx_type>, idx_type> corner_to_index;
+	bool include_tangents   = false;
+	if(include_tangents_ptr)
+		*include_tangents_ptr = include_tangents = (tangent_indices.size() > 0) && *include_tangents_ptr;
+
+	std::map<std::tuple<idx_type, idx_type, idx_type, idx_type>, idx_type> corner_to_index;
 	for (idx_type ci = 0; ci < position_indices.size(); ++ci) {
 		// construct corner
-		vec3i c(position_indices[ci], 
+		vec4i c(position_indices[ci], 
 			    (include_tex_coords && ci < tex_coord_indices.size()) ? tex_coord_indices[ci] : 0, 
-			    (include_normals && ci < normal_indices.size()) ? normal_indices[ci] : 0);
-		std::tuple<idx_type, idx_type, idx_type> triple(c(0),c(1),c(2));
+			    (include_normals && ci < normal_indices.size()) ? normal_indices[ci] : 0,
+			    (include_tangents && ci < tangent_indices.size()) ? tangent_indices[ci] : 0);
+		std::tuple<idx_type, idx_type, idx_type, idx_type> quadruple(c(0),c(1),c(2),c(3));
 		// look corner up in map
-		auto iter = corner_to_index.find(triple);
+		auto iter = corner_to_index.find(quadruple);
 		// determine vertex index
 		idx_type vi;
 		if (iter == corner_to_index.end()) {
-			vi = idx_type(unique_triples.size());
-			corner_to_index[triple] = vi;
-			unique_triples.push_back(c);
+			vi = idx_type(unique_quadruples.size());
+			corner_to_index[quadruple] = vi;
+			unique_quadruples.push_back(c);
 		}
 		else
 			vi = iter->second;
@@ -261,6 +267,39 @@ void simple_mesh_base::compute_c2f(std::vector<uint32_t>& c2f)
 	}
 }
 
+/// construct from obj loader
+template <typename T>
+void simple_mesh<T>::construct(const obj_loader_generic<T>& loader, bool copy_grp_info, bool copy_material_info)
+{
+	for (unsigned vi = 0; vi < loader.vertices.size(); ++vi)
+		new_position(loader.vertices[vi]);
+	for (unsigned ni = 0; ni < loader.normals.size(); ++ni)
+		new_normal(loader.normals[ni]);
+	for (unsigned ti = 0; ti < loader.texcoords.size(); ++ti)
+		new_tex_coord(loader.texcoords[ti]);
+	if (copy_grp_info)
+		for (unsigned gi = 0; gi < loader.groups.size(); ++gi)
+			new_group(loader.groups[gi].name);
+	if (copy_material_info)
+		for (unsigned mi = 0; mi < loader.materials.size(); ++mi)
+			ref_material(new_material()) = loader.materials[mi];	
+	for (unsigned fi = 0; fi < loader.faces.size(); ++fi) {
+		start_face();
+		const auto& F = loader.faces[fi];
+		if (copy_grp_info && !loader.groups.empty())
+			group_index(fi) = F.group_index;
+		if (copy_material_info && !loader.materials.empty())
+			material_index(fi) = F.material_index;
+		for (unsigned i = 0; i < F.degree; ++i) {
+			new_corner(
+				loader.vertex_indices[F.first_vertex_index + i], 
+				F.first_normal_index != -1 ? loader.normal_indices[F.first_normal_index + i] : -1, 
+				F.first_texcoord_index != -1 ? loader.texcoord_indices[F.first_texcoord_index + i] : -1
+			);
+		}
+	}
+}
+
 template <typename T>
 class simple_mesh_obj_reader : public obj_reader_generic<T>
 {
@@ -340,6 +379,7 @@ simple_mesh<T>& simple_mesh<T>::operator = (const simple_mesh<T>& sm)
 	simple_mesh_base::operator = (sm);
 	positions = sm.positions;
 	normals = sm.normals;
+	tangents = sm.tangents;
 	tex_coords = sm.tex_coords;
 	return *this;
 }
@@ -350,6 +390,7 @@ void simple_mesh<T>::clear()
 {
 	positions.clear(); 
 	normals.clear(); 
+	tangents.clear();
 	tex_coords.clear(); 
 	position_indices.clear(); 
 	tex_coord_indices.clear(); 
@@ -480,13 +521,14 @@ void simple_mesh<T>::compute_vertex_normals()
 template <typename T>
 unsigned simple_mesh<T>::extract_vertex_attribute_buffer(
 	const std::vector<idx_type>& vertex_indices, 
-	const std::vector<vec3i>& unique_triples, 
-	bool include_tex_coords, bool include_normals, 
+	const std::vector<vec4i>& unique_quadruples,
+	bool include_tex_coords, bool include_normals, bool include_tangents,
 	std::vector<T>& attrib_buffer, bool* include_colors_ptr) const
 {
 	// correct inquiry in case data is missing
 	include_tex_coords = include_tex_coords && !tex_coord_indices.empty() && !tex_coords.empty();
 	include_normals = include_normals && !normal_indices.empty() && !normals.empty();
+	include_tangents = include_tangents && !tangent_indices.empty() && !tangents.empty();
 	bool include_colors = false;
 	if (include_colors_ptr)
 		*include_colors_ptr = include_colors = 
@@ -496,15 +538,16 @@ unsigned simple_mesh<T>::extract_vertex_attribute_buffer(
 	unsigned nr_floats = 3;
 	nr_floats += include_tex_coords ? 2 : 0;
 	nr_floats += include_normals ? 3 : 0;
+	nr_floats += include_tangents ? 3 : 0;
 	unsigned color_increment = 0;
 	if (include_colors) {
 		color_increment = (int)ceil((float)get_color_size() / sizeof(T));
 		nr_floats += color_increment;
 	}
 
-	attrib_buffer.resize(nr_floats*unique_triples.size());
+	attrib_buffer.resize(nr_floats*unique_quadruples.size());
 	T* data_ptr = &attrib_buffer.front();
-	for (auto t : unique_triples) {
+	for (auto t : unique_quadruples) {
 		*reinterpret_cast<vec3*>(data_ptr) = positions[t[0]];
 		data_ptr += 3;
 		if (include_tex_coords) {
@@ -513,6 +556,10 @@ unsigned simple_mesh<T>::extract_vertex_attribute_buffer(
 		}
 		if (include_normals) {
 			*reinterpret_cast<vec3*>(data_ptr) = normals[t[2]];
+			data_ptr += 3;
+		}
+		if(include_tangents) {
+			*reinterpret_cast<vec3*>(data_ptr) = tangents[t[3]];
 			data_ptr += 3;
 		}
 		if (include_colors) {
@@ -539,6 +586,8 @@ void simple_mesh<T>::transform(const mat3& linear_transform, const vec3& transla
 		p = linear_transform * p + translation;
 	for (auto& n : normals)
 		n = n * inverse_linear_transform;
+	for(auto& t : tangents)
+		t = t * inverse_linear_transform;
 }
 
 /// construct from string corresponding to conway notation (defaults to empty mesh)
@@ -549,14 +598,27 @@ simple_mesh<T>::simple_mesh(const std::string& conway_notation)
 		construct_conway_polyhedron(conway_notation);
 }
 
-template <typename T> void simple_mesh<T>::compute_face_normals()
+template <typename T> 
+typename simple_mesh<T>::vec3 simple_mesh<T>::compute_face_center(idx_type fi) const
+{
+	vec3 ctr = vec3(0.0f);
+	uint32_t nr = 0;
+	for (uint32_t ci = begin_corner(fi); ci < end_corner(fi); ++ci) {
+		ctr += position(c2p(ci));
+		++nr;
+	}
+	ctr /= float(nr);
+	return ctr;
+}
+
+template <typename T> void simple_mesh<T>::compute_face_normals(bool construct_normal_indices)
 {
 	// compute per face normals
 	for (uint32_t fi = 0; fi < get_nr_faces(); ++fi) {
 		std::vector<vec3> P;
-		vec3 ctr = vec3(0.0f);
-		uint32_t nr = 0;
-		for (uint32_t ci = begin_corner(fi); ci < end_corner(fi); ++ci) {
+		vec3 ctr(0.0f);
+		uint32_t ci, nr = 0;
+		for (ci = begin_corner(fi); ci < end_corner(fi); ++ci) {
 			P.push_back(position(c2p(ci)));
 			ctr += P.back();
 			++nr;
@@ -570,7 +632,67 @@ template <typename T> void simple_mesh<T>::compute_face_normals()
 			prev_p = p;
 		}
 		nml.normalize();
-		new_normal(nml);
+		uint32_t ni = new_normal(nml);
+		if (construct_normal_indices) {
+			for (ci = begin_corner(fi); ci < end_corner(fi); ++ci) {
+				normal_indices.push_back(ni);
+			}
+		}
+	}
+}
+
+template <typename T> void simple_mesh<T>::compute_face_tangents(bool construct_tangent_indices) {
+	// compute per face tangents
+	if(!has_tex_coords())
+		return;
+
+	for(uint32_t fi = 0; fi < get_nr_faces(); ++fi) {
+		std::vector<vec3> _P;
+		std::vector<vec2> _T;
+		vec3 ctr(0.0f);
+		uint32_t ci, nr = 0;
+		for(ci = begin_corner(fi); ci < end_corner(fi); ++ci) {
+			_P.push_back(position(c2p(ci)));
+			_T.push_back(tex_coord(c2t(ci)));
+			ctr += _P.back();
+			++nr;
+		}
+
+		vec3 tng(1.0f, 0.0f, 0.0f);
+
+		// calculate tangents for faces with at least three corners
+		// for more than 3 corners only use the first two edges and assume the face to be planar
+		if(_P.size() > 2) {
+			vec3 edge0 = _P[1] - _P[0];
+			vec3 edge1 = _P[2] - _P[0];
+			vec2 delta_uv0 = _T[1] - _T[0];
+			vec2 delta_uv1 = _T[2] - _T[0];
+
+			float dir_correction = (delta_uv1.x() * delta_uv0.y() - delta_uv1.y() * delta_uv0.x()) < 0.0f ? -1.0f : 1.0f;
+
+			// when t1, t2, t3 in same position in UV space, just use default UV direction.
+			if(delta_uv0.x() * delta_uv1.y() == delta_uv0.y() * delta_uv1.x()) {
+				delta_uv0.x() = 0.0f;
+				delta_uv0.y() = 1.0f;
+				delta_uv1.x() = 1.0f;
+				delta_uv1.y() = 0.0f;
+			}
+
+			tng.x() = delta_uv0.y() * edge1.x() - delta_uv1.y() * edge0.x();
+			tng.y() = delta_uv0.y() * edge1.y() - delta_uv1.y() * edge0.y();
+			tng.z() = delta_uv0.y() * edge1.z() - delta_uv1.y() * edge0.z();
+			tng *= dir_correction;
+		} else {
+			std::cout << "could not compute tangent for non-triangular face" << std::endl;
+		}
+
+		tng.normalize();
+		uint32_t ti = new_tangent(tng);
+		if(construct_tangent_indices) {
+			for(ci = begin_corner(fi); ci < end_corner(fi); ++ci) {
+				tangent_indices.push_back(ti);
+			}
+		}
 	}
 }
 

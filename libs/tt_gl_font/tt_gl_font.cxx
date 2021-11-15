@@ -169,7 +169,7 @@ namespace cgv {
 		static bool initialized = false;
 		if (!initialized) {
 			rrs.pixel_blend = 0.0f;
-			rrs.texture_mode = 1;
+			rrs.texture_mode = cgv::render::RTM_REPLACE_ALPHA;
 			rrs.map_color_to_material = cgv::render::CM_COLOR_AND_OPACITY;
 			rrs.illumination_mode = cgv::render::IM_OFF;
 		}

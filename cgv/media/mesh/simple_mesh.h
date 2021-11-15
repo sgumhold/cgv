@@ -17,6 +17,9 @@ namespace cgv {
 template <typename T>
 class simple_mesh_obj_reader;
 
+template <typename T>
+class CGV_API obj_loader_generic;
+
 /** coordinate type independent base class of simple mesh data structure that handles indices and colors. */
 class CGV_API simple_mesh_base : public colored_model
 {
@@ -27,11 +30,14 @@ public:
 	typedef cgv::math::fvec<idx_type, 2> vec2i;
 	/// define index triple type
 	typedef cgv::math::fvec<idx_type, 3> vec3i;
+	/// define index quadruple type
+	typedef cgv::math::fvec<idx_type, 4> vec4i;
 	/// define material type
 	typedef illum::textured_surface_material mat_type;
 protected:
 	std::vector<idx_type> position_indices;
 	std::vector<idx_type> normal_indices;
+	std::vector<idx_type> tangent_indices;
 	std::vector<idx_type> tex_coord_indices;
 	std::vector<idx_type> faces;
 	std::vector<idx_type> group_indices;
@@ -55,8 +61,12 @@ public:
 	idx_type c2p(idx_type ci) const { return position_indices[ci]; }
 	/// return normal index of corner
 	idx_type c2n(idx_type ci) const { return normal_indices[ci]; }
+	/// return whether normal indices are stored
+	bool has_normal_indices() const { return normal_indices.size() > 0 && normal_indices.size() == position_indices.size(); }
 	/// return texture index of corner
 	idx_type c2t(idx_type ci) const { return tex_coord_indices[ci]; }
+	/// return whether texture coordinate indices are stored
+	bool has_tex_coord_indices() const { return tex_coord_indices.size() > 0 && tex_coord_indices.size() == position_indices.size(); }
 	/// return the number of faces
 	idx_type get_nr_faces() const { return idx_type(faces.size()); }
 	/// return the number of corners
@@ -96,7 +106,7 @@ public:
 	/// sort faces by group and material indices with two bucket sorts
 	void sort_faces(std::vector<idx_type>& perm, bool by_group = true, bool by_material = true) const;
 	/// merge the three indices into one index into a vector of unique index triples
-	void merge_indices(std::vector<idx_type>& vertex_indices, std::vector<vec3i>& unique_triples, bool* include_tex_coords_ptr = 0, bool* include_normals_ptr = 0) const;
+	void merge_indices(std::vector<idx_type>& vertex_indices, std::vector<vec4i>& unique_quadruples, bool* include_tex_coords_ptr = 0, bool* include_normals_ptr = 0, bool* include_tangents_ptr = 0) const;
 	/// extract element array buffers for triangulation
 	void extract_triangle_element_buffer(const std::vector<idx_type>& vertex_indices, std::vector<idx_type>& triangle_element_buffer, 
 		const std::vector<idx_type>* face_perm_ptr = 0, std::vector<vec3i>* material_group_start_ptr = 0) const;
@@ -135,6 +145,7 @@ protected:
 	friend class simple_mesh_obj_reader<T>;
 	std::vector<vec3>  positions;
 	std::vector<vec3>  normals;
+	std::vector<vec3>  tangents;
 	std::vector<vec2>  tex_coords;
 
 	vec3 compute_normal(const vec3& p0, const vec3& p1, const vec3& p2);
@@ -163,16 +174,30 @@ public:
 	idx_type get_nr_normals() const { return idx_type(normals.size()); }
 	vec3& normal(idx_type ni) { return normals[ni]; }
 	const vec3& normal(idx_type ni) const { return normals[ni]; }
+	const std::vector<vec3>& get_normals() const { return normals; }
 
-	/// add a new normal and return normal index
+	/// add a new tangent and return tangent index
+	idx_type new_tangent(const vec3& tc) { tangents.push_back(tc); return idx_type(tangents.size() - 1); }
+	/// access to tangents
+	bool has_tangents() const { return get_nr_tangents() > 0; }
+	idx_type get_nr_tangents() const { return idx_type(tangents.size()); }
+	vec3& tangent(idx_type ti) { return tangents[ti]; }
+	const vec3& tangent(idx_type ti) const { return tangents[ti]; }
+
+	/// add a new texture coordinate and return texture coordinate index
 	idx_type new_tex_coord(const vec2& tc) { tex_coords.push_back(tc); return idx_type(tex_coords.size() - 1); }
 	/// access to texture coordinates
 	bool has_tex_coords() const { return get_nr_tex_coords() > 0; }
 	idx_type get_nr_tex_coords() const { return idx_type(tex_coords.size()); }
 	vec2& tex_coord(idx_type ti) { return tex_coords[ti]; }
 	const vec2& tex_coord(idx_type ti) const { return tex_coords[ti]; }
+
+	/// compute face center
+	vec3 compute_face_center(idx_type fi) const;
 	/// compute per face normals (ensure that per corner normal indices are set correspondingly)
-	void compute_face_normals();
+	void compute_face_normals(bool construct_normal_indices = true);
+	/// compute per face tangents (ensure that per corner tangent indices are set correspondingly)
+	void compute_face_tangents(bool construct_tangent_indices = true);
 	/// Conway ambo operator
 	void ambo();
 	/// Conway truncate operator
@@ -194,6 +219,8 @@ public:
 	box_type compute_box() const;
 	/// compute vertex normals by averaging triangle normals
 	void compute_vertex_normals();
+	/// construct from obj loader
+	void construct(const obj_loader_generic<T>& loader, bool copy_grp_info, bool copy_material_info);
 	/// read simple mesh from file (currently only obj and stl are supported)
 	bool read(const std::string& file_name);
 	/// write simple mesh to file (currently only obj is supported)
@@ -201,8 +228,8 @@ public:
 	/// extract vertex attribute array, return size of color in bytes
 	unsigned extract_vertex_attribute_buffer(
 		const std::vector<idx_type>& vertex_indices,
-		const std::vector<vec3i>& unique_triples,
-		bool include_tex_coords, bool include_normals, 
+		const std::vector<vec4i>& unique_quadruples,
+		bool include_tex_coords, bool include_normals, bool include_tangents, 
 		std::vector<T>& attrib_buffer, bool *include_colors_ptr = 0) const;
 	/// apply transformation to mesh
 	void transform(const mat3& linear_transformation, const vec3& translation);

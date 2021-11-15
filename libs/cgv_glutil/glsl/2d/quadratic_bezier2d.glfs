@@ -7,10 +7,10 @@ uniform float border_width = 0.0;
 vec2 get_shape_size();
 vec4 get_color();
 void override_color(in vec4 color);
-void finish_sdf_fragment2d(in float signed_distance, in vec2 texcoords);
-void finish_sdf_fragment2d(in float signed_distance);
-void finish_fragment2d(in vec2 texcoords);
-void finish_fragment2d();
+void finish_sdf_fragment2d(in float signed_distance, in vec4 color);
+void finish_sdf_fragment2d(in float signed_distance, in vec4 color, in vec2 texcoords);
+void finish_fragment2d(in vec4 color);
+void finish_fragment2d(in vec4 color, in vec2 texcoords);
 //***** end interface of fragment2d.glfs ***********************************
 
 //uniform float dash_length = 0.0;
@@ -98,6 +98,5 @@ void main() {
 
 	color.a *= 1.0 - t;
 
-	override_color(color);
-	finish_fragment2d();
+	finish_fragment2d(color);
 }

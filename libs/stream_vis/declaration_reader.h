@@ -32,9 +32,10 @@ namespace stream_vis {
 		virtual bool parse_color(const std::string& name, rgb& color) = 0;
 		virtual bool parse_color(const std::string& name, rgba& color) = 0;
 		virtual bool parse_quat (const std::string& name, quat& quat) = 0;
-		virtual bool parse_vecn (const std::string& name, float* v, uint32_t dim) = 0;
+		virtual bool parse_vecn(const std::string& name, float* v, uint32_t dim) = 0;
+		virtual bool parse_dvecn(const std::string& name, double* v, uint32_t dim) = 0;
 		virtual bool parse_ivecn(const std::string& name, int32_t* v, uint32_t dim) = 0;
-		virtual bool parse_bound_vecn(const std::string& name, DomainAdjustment domain_adjustment[3], uint16_t domain_bound_ts_index[3], float* fixed_domain_ptr, int dim) = 0;
+		virtual bool parse_bound_vecn(const std::string& name, DomainAdjustment domain_adjustment[3], uint16_t domain_bound_ts_index[3], float* fixed_domain_ptr, int dim, int nr_attributes) = 0;
 		virtual bool parse_marks(plot_info& pi, cgv::plot::plot_base_config& cfg, int dim) = 0;
 		virtual bool parse_subplots(plot_info& pi, int dim) = 0;
 
@@ -44,6 +45,9 @@ namespace stream_vis {
 		bool parse_vec2(const std::string& name, cgv::render::render_types::vec2& v) { return parse_vecn(name, &v[0], 2); }
 		bool parse_vec3(const std::string& name, cgv::render::render_types::vec3& v) { return parse_vecn(name, &v[0], 3); }
 		bool parse_vec4(const std::string& name, cgv::render::render_types::vec4& v) { return parse_vecn(name, &v[0], 4); }
+		bool parse_dvec2(const std::string& name, cgv::render::render_types::dvec2& v) { return parse_dvecn(name, &v[0], 2); }
+		bool parse_dvec3(const std::string& name, cgv::render::render_types::dvec3& v) { return parse_dvecn(name, &v[0], 3); }
+		bool parse_dvec4(const std::string& name, cgv::render::render_types::dvec4& v) { return parse_dvecn(name, &v[0], 4); }
 		bool parse_ivec2(const std::string& name, cgv::render::render_types::ivec2& v) { return parse_ivecn(name, &v[0], 2); }
 		bool parse_ivec3(const std::string& name, cgv::render::render_types::ivec3& v) { return parse_ivecn(name, &v[0], 3); }
 		bool parse_ivec4(const std::string& name, cgv::render::render_types::ivec4& v) { return parse_ivecn(name, &v[0], 4); }

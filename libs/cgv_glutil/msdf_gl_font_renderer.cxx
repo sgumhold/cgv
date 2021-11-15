@@ -30,13 +30,8 @@ void msdf_gl_font_renderer::draw(cgv::render::context& ctx, const ivec2& viewpor
 
 
 		prog.set_uniform(ctx, "position", ivec2(round(position)));
-
 		prog.set_uniform(ctx, "font_size", tg.get_font_size());
 
-		// TODO: make adjustable
-		//prog.set_uniform(ctx, "color", vec4(0.0f, 0.0f, 0.0f, 1.0f));
-		//prog.set_uniform(ctx, "border_color", vec4(1.0f, 0.0f, 0.0f, 1.0f));
-		//prog.set_uniform(ctx, "use_blending", true);
 		glDrawArraysInstancedBaseInstance(GL_TRIANGLE_STRIP, (GLint)0, (GLsizei)4, (GLsizei)text.str.size(), (GLuint)text.offset);
 	}
 

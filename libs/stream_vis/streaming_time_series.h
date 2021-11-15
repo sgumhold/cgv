@@ -5,6 +5,7 @@
 #include <cgv/render/render_types.h>
 #include <cgv/os/mutex.h>
 #include <cgv/type/info/type_id.h>
+#include <cgv/math/geo_transform.h>
 
 #include "lib_begin.h"
 
@@ -19,6 +20,11 @@ namespace stream_vis {
 			value_type value;
 		};
 	}
+	enum TransformType
+	{
+		TT_NONE,
+		TT_GEODETIC2ENU_WGS84
+	};
 	enum AABBMode
 	{
 		AM_NONE,
@@ -54,6 +60,10 @@ namespace stream_vis {
 		/// used for resampled time series to cached timestamp of new value
 		double new_timestamp;
 	public:
+		/// for 2D or 3D vector valued time series the transformation
+		TransformType transform;
+		/// origin used for transformation (geodetic reference point)
+		dvec3 transform_origin;
 		/// whether NAN-values are used; defaults to false
 		bool uses_nan;
 		/// float encoding of nan value; defaults to std::numeric_limits<float>::quiet_NaN()
@@ -249,6 +259,14 @@ namespace stream_vis {
 				case cgv::type::info::TI_UINT64: pos[ci] = (double)reinterpret_cast<const uint64_t&>(values[vi].value[0]); break;
 				case cgv::type::info::TI_INT64: pos[ci] = (double)reinterpret_cast<const int64_t&>(values[vi].value[0]); break;
 				}
+			}
+			switch (transform) {
+			case TT_GEODETIC2ENU_WGS84: {
+				dvec3 pos_geod = dvec3(pos[0], pos[1], N == 2 ? 0.0 : pos[2]);
+				dvec3 pos_ENU = cgv::math::ENU_from_geodetic(pos_geod, transform_origin);
+				pos = cgv::math::fvec<double, N>(N, &pos_ENU[0]);
+			}
+				break;
 			}
 			lock.lock();
 			this->append_sample(timestamp, pos);

@@ -1,0 +1,42 @@
+#version 430
+
+//***** begin interface of view.glsl ***********************************
+mat4 get_modelview_matrix();
+mat4 get_projection_matrix();
+mat4 get_inverse_projection_matrix();
+mat4 get_modelview_projection_matrix();
+vec3 get_eye_world();
+mat4 get_inverse_modelview_matrix();
+mat4 get_inverse_modelview_projection_matrix();
+mat3 get_normal_matrix();
+mat3 get_inverse_normal_matrix();
+//***** end interface of view.glsl ***********************************
+
+//***** begin interface of fragment.glfs ***********************************
+uniform float gamma = 2.2;
+void finish_fragment(vec4 color);
+//***** end interface of fragment.glfs ***********************************
+
+uniform layout(binding = 0) samplerCube environment_map;
+
+uniform bool invert = false;
+
+in vec2 texcoord_fs;
+
+void main()
+{
+    // transform texcoord to clip coordinates
+	vec4 coord = vec4(texcoord_fs, 0.0, 1.0)
+        * vec4(2.0, 2.0, 2.0, 0.0) 
+        + vec4(-1.0, -1.0, -1.0, 1.0);
+
+    // transform fragment coordinates from clip coordinates to object coordinates
+    coord = get_inverse_modelview_projection_matrix() * coord;
+    coord /= coord.w;
+
+    // calculate the viewing ray in object space
+    vec3 eye_pos = get_eye_world();
+    vec3 ray = normalize(invert?eye_pos - coord.xyz:coord.xyz-eye_pos);
+
+	finish_fragment(texture(environment_map, ray));
+}

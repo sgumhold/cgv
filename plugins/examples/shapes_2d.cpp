@@ -13,7 +13,6 @@
 #include <cgv/render/vertex_buffer.h>
 #include <cgv/render/attribute_array_binding.h>
 #include <cgv_gl/gl/gl_context.h>
-#include <cgv_glutil/shader_library.h>
 
 #include <cgv_glutil/msdf_gl_font_renderer.h>
 #include <cgv_glutil/generic_renderer.h>
@@ -22,46 +21,10 @@
 #include <cgv_glutil/2d/draggables_collection.h>
 #include <cgv_glutil/2d/rect.h>
 
+#include <cgv_glutil/2d/canvas.h>
+#include <cgv_glutil/2d/shape2d_styles.h>
 
-
-
-
-
-namespace cgv {
-namespace math {
-/// construct homogeneous 2x2 translation matrix from vec2
-template <typename T> fmat<T, 3, 3>
-	translate2h(const fvec<T, 2>& t) { fmat<T, 3, 3> M; M.identity(); M(0, 2) = t(0); M(1, 2) = t(1); return M; }
-/// construct homogeneous 2x2 translation matrix from xy components
-template <typename T> fmat<T, 3, 3>
-	translate2h(const T& tx, const T& ty) { return scale2h(fvec<T, 2>(tx, ty)); }
-/// construct homogeneous 2x2 scale matrix from vec2
-template <typename T> fmat<T, 3, 3>
-	scale2h(const fvec<T, 2>& s) { fmat<T, 3, 3> M; M.identity(); M(0, 0) = s(0); M(1, 1) = s(1); return M; }
-/// construct homogeneous 2x2 scale matrix from xy components
-template <typename T> fmat<T, 3, 3>
-	scale2h(const T& sx, const T& sy) { return scale2h(fvec<T, 2>(sx, sy)); }
-/// construct homogeneous 2x2 rotation matrix from angle in degrees
-template <typename T> fmat<T, 3, 3>
-	rotate2h(const T& A) {
-		fmat<T, 3, 3> M;
-		M.identity();
-		T angle = T(0.01745329252)*A;
-		T c = cos(angle);
-		T s = sin(angle);
-		M(0, 0) = c;
-		M(0, 1) = -s;
-		M(1, 0) = s;
-		M(1, 1) = c;
-		return M;
-	}
-}
-}
-
-
-
-
-
+using namespace cgv::render;
 
 class shapes_2d :
 	public cgv::base::node,
@@ -98,7 +61,11 @@ private:
 protected:
 	cgv::glutil::rect viewport_rect;
 
-	cgv::glutil::shader_library shaders;
+	cgv::glutil::canvas canvas;
+	cgv::glutil::shape2d_style bg_style, rect_style, circle_style, text_style, draggable_style;
+	cgv::glutil::line2d_style line_style, control_line_style;
+	cgv::glutil::arrow2d_style arrow_style;
+	cgv::glutil::grid2d_style grid_style;
 
 	bool show_background;
 	cgv::render::texture background_tex;
@@ -110,8 +77,11 @@ protected:
 	cgv::glutil::draggables_collection<point*> curve_handles;
 	cgv::glutil::draggables_collection<point*> text_handles;
 
-	cgv::glutil::generic_renderer line_renderer;
-	cgv::glutil::generic_renderer spline_renderer;
+	cgv::glutil::generic_renderer line_renderer, spline_renderer, point_renderer;
+	
+	// TODO: find way to use ivec2 and vec2 as attribs
+	DEFINE_GENERIC_RENDER_DATA_CLASS(point_geometry, 1, vec2, position);
+	point_geometry draggable_points;
 
 	DEFINE_GENERIC_RENDER_DATA_CLASS(line_geometry, 2, vec2, position, rgba, color);
 	line_geometry lines, control_lines;
@@ -120,6 +90,9 @@ protected:
 	spline_geometry curves;
 
 	// shape appearance attributes
+	const rgba light_blue = rgba(0.7f, 0.7f, 1.0f, 1.0f);
+	const rgba blue = rgba(0.4f, 0.4f, 0.9f, 1.0f);
+
 	rgba color = rgba(0.7f, 0.7f, 1.0f, 1.0f);
 	rgba border_color = rgba(0.4f, 0.4f, 0.9f, 1.0f);
 	float border_width = 5.0f;
@@ -168,14 +141,15 @@ public:
 		
 		show_background = true;
 
-		// load some specific 2d shaders
-		shaders.add("rectangle", "rect2d.glpr");
-		shaders.add("circle", "circle2d.glpr");
-		shaders.add("ellipse", "ellipse2d.glpr");
-		shaders.add("arrow", "arrow2d.glpr");
-		
+		canvas.register_shader("rectangle", "rect2d.glpr");
+		canvas.register_shader("circle", "circle2d.glpr");
+		canvas.register_shader("ellipse", "ellipse2d.glpr");
+		canvas.register_shader("arrow", "arrow2d.glpr");
+		canvas.register_shader("grid", "grid2d.glpr");
+
 		line_renderer = cgv::glutil::generic_renderer("line2d.glpr");
 		spline_renderer = cgv::glutil::generic_renderer("cubic_spline2d.glpr");
+		point_renderer = cgv::glutil::generic_renderer("circle2d.glpr");
 
 		text_align_h = text_align_v = cgv::render::TA_NONE;
 
@@ -190,7 +164,7 @@ public:
 	bool handle(cgv::gui::event& e) {
 		bool handled = false;
 
-		mat3 M = get_view_matrix();
+		mat3 M = get_view_matrix() * get_model_matrix();
 		arrow_handles.set_transformation(M);
 		line_handles.set_transformation(M);
 		curve_handles.set_transformation(M);
@@ -210,7 +184,7 @@ public:
 				cgv::gui::MouseAction ma = me.get_action();
 
 				if(ma == cgv::gui::MA_DRAG && me.get_button_state() & cgv::gui::MB_MIDDLE_BUTTON) {
-					view_params.translation += vec2(me.get_dx(), -me.get_dy());
+					view_params.translation += vec2((float)me.get_dx(), (float)-me.get_dy());
 				}
 
 				if(ma == cgv::gui::MA_WHEEL) {
@@ -221,7 +195,7 @@ public:
 					vec2 offset = origin - mpos + view_params.translation;
 
 					float scale = view_params.scale;
-					scale *= me.get_dy() > 0 ? 0.5 : 2.0;
+					scale *= ((float)me.get_dy()) > 0 ? 0.5f : 2.0f;
 
 					scale = cgv::math::clamp(scale, 0.5f, 64.0f);
 
@@ -258,7 +232,7 @@ public:
 		}
 
 		if(member_ptr == &text_align_h || member_ptr == &text_align_v) {
-			for(size_t i = 0; i < texts.size(); ++i)
+			for(unsigned i=0; i<(unsigned)texts.size(); ++i)
 				texts.set_alignment(i, static_cast<cgv::render::TextAlignment>(text_align_h | text_align_v));
 		}
 
@@ -273,7 +247,8 @@ public:
 		return "shapes_2d";
 	}
 	void clear(cgv::render::context& ctx) {
-		shaders.clear(ctx);
+		//shaders.clear(ctx);
+		canvas.destruct(ctx);
 		background_tex.destruct(ctx);
 
 		msdf_font.destruct(ctx);
@@ -281,9 +256,14 @@ public:
 	}
 	bool init(cgv::render::context& ctx) {
 		bool success = true;
-		success &= shaders.load_shaders(ctx);
+
+		success &= canvas.init(ctx);
+
 		success &= line_renderer.init(ctx);
 		success &= spline_renderer.init(ctx);
+		success &= point_renderer.init(ctx);
+
+		set_default_styles();
 
 		// TODO: png images are flipped in y direction, when reading with an image reader first and then creating a texture from the data view
 
@@ -352,12 +332,11 @@ public:
 		if(viewport_resolution != viewport_rect.size()) {
 			viewport_rect.set_size(viewport_resolution);
 
-			set_resolution_uniform(ctx, shaders.get("rectangle"));
-			set_resolution_uniform(ctx, shaders.get("circle"));
-			set_resolution_uniform(ctx, shaders.get("ellipse"));
-			set_resolution_uniform(ctx, shaders.get("arrow"));
+			canvas.set_resolution(ctx, viewport_rect.size());
+
 			set_resolution_uniform(ctx, line_renderer.ref_prog());
 			set_resolution_uniform(ctx, spline_renderer.ref_prog());
+			set_resolution_uniform(ctx, point_renderer.ref_prog());
 
 			// update the constraint for all draggables
 			arrow_handles.set_constraint(viewport_rect);
@@ -377,145 +356,117 @@ public:
 		if(show_background)
 			draw_background(ctx);
 
+		canvas.push_modelview_matrix();
+		canvas.mul_modelview_matrix(ctx, get_view_matrix());
+		canvas.mul_modelview_matrix(ctx, get_model_matrix());
+		canvas.set_feather_scale(1.0f / view_params.scale);
+
 		image_tex.enable(ctx, 0);
 
-		shader_program& rect_prog = shaders.get("rectangle");
-		rect_prog.enable(ctx);
-		rect_prog.set_uniform(ctx, "position", ivec2(100, 100));
-		rect_prog.set_uniform(ctx, "size", ivec2(200, 100));
-		set_shared_uniforms(ctx, rect_prog);
-		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-		rect_prog.disable(ctx);
+		auto& rect_prog = canvas.enable_shader(ctx, "rectangle");
+		rect_style.apply(ctx, rect_prog);
+		canvas.draw_shape(ctx, ivec2(100, 100), ivec2(200, 100), rgba(1, 0, 0, 1));
+		canvas.disable_current_shader(ctx);
 
-		shader_program& circle_prog = shaders.get("circle");
-		circle_prog.enable(ctx);
-		circle_prog.set_uniform(ctx, "position", ivec2(500, 150));
-		circle_prog.set_uniform(ctx, "size", ivec2(100)); // size defines the diameter, both components must be set to the same value
-		circle_prog.set_uniform(ctx, "position_is_center", true);
-		set_shared_uniforms(ctx, circle_prog);
-		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-		circle_prog.disable(ctx);
+		auto& circle_prog = canvas.enable_shader(ctx, "circle");
+		circle_style.apply(ctx, circle_prog);
+		// size defines the diameter, both components must be set to the same value
+		canvas.draw_shape(ctx, ivec2(500, 100), ivec2(100), rgba(0, 1, 0, 1));
+		canvas.disable_current_shader(ctx);
 
-		shader_program& ellipse_prog = shaders.get("ellipse");
-		ellipse_prog.enable(ctx);
-		ellipse_prog.set_uniform(ctx, "position", ivec2(200, 300));
-		ellipse_prog.set_uniform(ctx, "size", ivec2(200, 100));
-		ellipse_prog.set_uniform(ctx, "position_is_center", true);
-		set_shared_uniforms(ctx, ellipse_prog);
-		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-		ellipse_prog.disable(ctx);
+		auto& ellipse_prog = canvas.enable_shader(ctx, "ellipse");
+		circle_style.apply(ctx, ellipse_prog);
+		// size defines the two diameters
+		canvas.draw_shape(ctx, ivec2(200, 300), ivec2(200, 100), rgba(0, 1, 1, 1));
+		canvas.disable_current_shader(ctx);
 
-		shader_program& arrow_prog = shaders.get("arrow");
-		arrow_prog.enable(ctx);
-		arrow_prog.set_uniform(ctx, "position_a", ivec2(arrow_handles[0]->pos));
-		arrow_prog.set_uniform(ctx, "position_b", ivec2(arrow_handles[1]->pos));
-		arrow_prog.set_uniform(ctx, "stem_width", stem_width);
-		arrow_prog.set_uniform(ctx, "head_width", head_width);
-		arrow_prog.set_uniform(ctx, "head_length", head_length_is_relative ? relative_head_length : absolute_head_length);
-		arrow_prog.set_uniform(ctx, "head_length_is_relative", head_length_is_relative);
-		set_shared_uniforms(ctx, arrow_prog);
-		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-		arrow_prog.disable(ctx);
+		auto& arrow_prog = canvas.enable_shader(ctx, "arrow");
+		arrow_style.apply(ctx, arrow_prog);
+		canvas.draw_shape2(ctx, arrow_handles[0]->pos, arrow_handles[1]->pos, rgba(1.0f, 0.0f, 1.0f, 1.0f), rgba(0.0f, 0.0f, 1.0f, 1.0f));
+		canvas.disable_current_shader(ctx);
 
 		shader_program& line_prog = line_renderer.ref_prog();
 		line_prog.enable(ctx);
-		set_shared_uniforms(ctx, line_prog);
-		line_prog.set_uniform(ctx, "width", line_width);
-		line_prog.set_uniform(ctx, "dash_length", dash_length);
-		line_prog.set_uniform(ctx, "dash_ratio", dash_ratio);
+		line_style.apply(ctx, line_prog);
+		canvas.set_view(ctx, line_prog);
 		line_prog.disable(ctx);
 		line_renderer.render(ctx, PT_LINES, lines);
 
 		shader_program& spline_prog = spline_renderer.ref_prog();
 		spline_prog.enable(ctx);
-		set_shared_uniforms(ctx, spline_prog);
-		spline_prog.set_uniform(ctx, "width", line_width);
+		canvas.set_view(ctx, spline_prog);
+		line_style.apply(ctx, spline_prog);
 		spline_prog.disable(ctx);
 		spline_renderer.render(ctx, PT_LINES, curves);
 
 		image_tex.disable(ctx);
 
-		set_shared_uniforms(ctx, font_renderer.ref_prog());
+		// TODO: use style as a parameter in the font renderer render method
+		auto& font_prog = font_renderer.ref_prog();
+		font_prog.enable(ctx);
+		text_style.apply(ctx, font_prog);
+		canvas.set_view(ctx, font_prog);
+		font_prog.disable(ctx);
 		font_renderer.render(ctx, viewport_rect.size(), texts);
 		
 		draw_control_lines(ctx);
 		draw_draggables(ctx);
 
+		canvas.set_feather_scale(1.0f);
+		canvas.pop_modelview_matrix(ctx);
+
 		glDisable(GL_BLEND);
 		glEnable(GL_DEPTH_TEST);
 	}
 	void draw_background(cgv::render::context& ctx) {
-		shader_program& rect_prog = shaders.get("rectangle");
-		rect_prog.enable(ctx);
+		/*auto& rect_prog = canvas.enable_shader(ctx, "rectangle");
+		bg_style.texcoord_scaling = vec2(viewport_rect.size()) / 20.0f;
+		bg_style.apply(ctx, rect_prog);
 
-		mat3 I;
-		I.identity();
-		rect_prog.set_uniform(ctx, "model_matrix", I);
-		rect_prog.set_uniform(ctx, "view_matrix", I);
-
-		rect_prog.set_uniform(ctx, "position", ivec2(0));
-		rect_prog.set_uniform(ctx, "size", viewport_rect.size());
-		rect_prog.set_uniform(ctx, "border_width", 0.0f);
-		rect_prog.set_uniform(ctx, "border_radius", 0.0f);
-		rect_prog.set_uniform(ctx, "ring_width", 0.0f);
-		rect_prog.set_uniform(ctx, "feather_width", 0.0f);
-		rect_prog.set_uniform(ctx, "tex_scaling", vec2(viewport_rect.size()) / 20.0f);
-		rect_prog.set_uniform(ctx, "tex", 0);
-
-		rect_prog.set_uniform(ctx, "use_color", false);
-		rect_prog.set_uniform(ctx, "use_blending", false);
-		rect_prog.set_uniform(ctx, "apply_gamma", true);
-		
 		background_tex.enable(ctx, 0);
-		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+		canvas.draw_shape(ctx, ivec2(0), viewport_rect.size());
 		background_tex.disable(ctx);
 
-		rect_prog.set_uniform(ctx, "tex_scaling", vec2(1.0f));
+		canvas.disable_current_shader(ctx);*/
 
-		rect_prog.disable(ctx);
+		auto& grid_prog = canvas.enable_shader(ctx, "grid");
+		grid_style.texcoord_scaling = vec2(viewport_rect.size()) / 20.0f;
+		grid_style.apply(ctx, grid_prog);
+
+		//background_tex.enable(ctx, 0);
+		canvas.draw_shape(ctx, ivec2(0), viewport_rect.size());
+		//background_tex.disable(ctx);
+
+		canvas.disable_current_shader(ctx);
 	}
 	void draw_control_lines(cgv::render::context& ctx) {
 		shader_program& line_prog = line_renderer.ref_prog();
 		line_prog.enable(ctx);
-
-		line_prog.set_uniform(ctx, "width", 2.0f);
-		line_prog.set_uniform(ctx, "border_width", 0.0f);
-		line_prog.set_uniform(ctx, "dash_length", 10.0f);
-		line_prog.set_uniform(ctx, "dash_ratio", 0.75f);
-		line_prog.set_uniform(ctx, "feather_width", 1.0f / view_params.scale);
-
-		line_prog.set_uniform(ctx, "use_color", true);
-		line_prog.set_uniform(ctx, "use_blending", true);
-		line_prog.set_uniform(ctx, "apply_gamma", true);
+		control_line_style.apply(ctx, line_prog);
 		line_prog.disable(ctx);
 
 		line_renderer.render(ctx, PT_LINES, control_lines);
 	}
 	void draw_draggables(cgv::render::context& ctx) {
-		shader_program& point_prog = shaders.get("circle");
-		point_prog.enable(ctx);
-
-		point_prog.set_uniform(ctx, "position_is_center", true);
-		point_prog.set_uniform(ctx, "border_color", rgba(0.2f, 0.2f, 0.2f, 1.0f));
-		point_prog.set_uniform(ctx, "border_width", 1.5f);
-		point_prog.set_uniform(ctx, "border_radius", 0.0f);
-		point_prog.set_uniform(ctx, "ring_width", 0.0f);
-		point_prog.set_uniform(ctx, "feather_width", 1.0f / view_params.scale);
-		point_prog.set_uniform(ctx, "feather_origin", 0.5f);
-
-		point_prog.set_uniform(ctx, "use_color", true);
-		point_prog.set_uniform(ctx, "use_blending", true);
-		point_prog.set_uniform(ctx, "apply_gamma", true);
+		// TODO: move creation of render data to own function and call only when necessary
+		draggable_points.clear();
+		ivec2 render_size;
 
 		for(unsigned i = 0; i < points.size(); ++i) {
 			const point& p = points[i];
-			point_prog.set_uniform(ctx, "position", p.get_render_position());
-			point_prog.set_uniform(ctx, "size", p.get_render_size());
-			point_prog.set_uniform(ctx, "color", vec4(0.9f, 0.9f, 0.9f, 1.0f));
-			glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+			draggable_points.add(p.get_render_position());
+			render_size = p.get_render_size();
 		}
+		
+		draggable_points.set_out_of_date();
 
+		shader_program& point_prog = point_renderer.ref_prog();
+		point_prog.enable(ctx);
+		canvas.set_view(ctx, point_prog);
+		draggable_style.apply(ctx, point_prog);
+		point_prog.set_attribute(ctx, "size", vec2(render_size));
 		point_prog.disable(ctx);
+		point_renderer.render(ctx, PT_POINTS, draggable_points);
 	}
 	void create_line_render_data() {
 		lines.clear();
@@ -528,6 +479,11 @@ public:
 	void create_curve_render_data() {
 		auto& control_points = curve_handles.ref_draggables();
 
+		const rgba colors[2] = {
+			rgba(1.0f, 0.0f, 0.0f, 1.0f),
+			rgba(1.0f, 1.0f, 0.0f, 1.0f)
+		};
+
 		curves.clear();
 		control_lines.clear();
 		for(unsigned i = 0; i < 2; ++i) {
@@ -537,7 +493,7 @@ public:
 			unsigned pi = (i % 2) ? ei : si;
 			vec2 tangent = 3.0f * (control_points[ei]->pos - control_points[si]->pos);
 			
-			curves.add(control_points[pi]->pos, tangent, color);
+			curves.add(control_points[pi]->pos, tangent, colors[i]);
 			control_lines.add(control_points[si]->pos, rgba(0.7f, 0.2f, 0.2f, 1.0f));
 			control_lines.add(control_points[ei]->pos, rgba(0.7f, 0.2f, 0.2f, 1.0f));
 		}
@@ -555,13 +511,13 @@ public:
 		labels.push_back("CGV Framework");
 
 		texts.clear();
-		for(unsigned i = 0; i < 2; ++i) {
+		for(unsigned i=0; i<2; ++i) {
 			std::string str = labels[i];
 			texts.add_text(str, text_handles[i]->pos, static_cast<cgv::render::TextAlignment>(text_align_h | text_align_v));
 		}
 	}
 	void set_text_positions() {
-		for(size_t i = 0; i < 2; ++i)
+		for(unsigned i=0; i<2; ++i)
 			texts.set_position(i, text_handles[i]->pos);
 
 		ivec2 p(text_handles[0]->pos);
@@ -575,38 +531,49 @@ public:
 	void set_resolution_uniform(cgv::render::context& ctx, cgv::render::shader_program& prog) {
 		prog.enable(ctx);
 		prog.set_uniform(ctx, "resolution", viewport_rect.size());
-		prog.set_uniform(ctx, "tex", 0);
 		prog.disable(ctx);
 	}
-	void set_shared_uniforms(cgv::render::context& ctx, cgv::render::shader_program& prog) {
+	void set_default_styles() {
+		// set background style
+		bg_style.feather_width = 0.0f;
+		bg_style.use_texture = true;
+		bg_style.use_blending = false;
 
-		vec2 vs(viewport_rect.size());
-		mat4 PM = cgv::math::ortho4(0.0f, vs.x(), 0.0f, vs.y(), 0.0f, 10.0f);
-		prog.set_uniform(ctx, "projection_matrix", PM);
-		
-		{
-			mat3 T = cgv::math::translate2h(vec2(model_params.translation));
-			mat3 S = cgv::math::scale2h(vec2(model_params.scale));
-			mat3 R = cgv::math::rotate2h(model_params.angle);
-			mat3 MM = T * S * R;
-			prog.set_uniform(ctx, "model_matrix", MM);
-		}
-		prog.set_uniform(ctx, "view_matrix", get_view_matrix());
-		
-		// appearance
-		prog.set_uniform(ctx, "color", color);
-		prog.set_uniform(ctx, "border_color", border_color);
-		prog.set_uniform(ctx, "border_width", border_width);
-		prog.set_uniform(ctx, "border_radius", border_radius);
-		prog.set_uniform(ctx, "ring_width", ring_width);
-		prog.set_uniform(ctx, "feather_width", feather_width / view_params.scale);
-		prog.set_uniform(ctx, "feather_origin", feather_origin);
+		grid_style.fill_color = rgba(1.0f);
+		grid_style.border_color = rgba(0.9f, 0.9f, 0.9f, 1.0f);
+		grid_style.pattern = cgv::glutil::grid2d_style::GP_CHECKER;
+		grid_style.scale = 0.5f;
 
-		// options
-		prog.set_uniform(ctx, "use_color", use_color);
-		prog.set_uniform(ctx, "use_blending", use_blending);
-		prog.set_uniform(ctx, "use_smooth_feather", use_smooth_feather);
-		prog.set_uniform(ctx, "apply_gamma", apply_gamma);
+		// set control line style
+		control_line_style.use_fill_color = false;
+		control_line_style.width = 2.0f;
+		control_line_style.border_width = 0.0f;
+		control_line_style.dash_length = 10.0f;
+		control_line_style.dash_ratio = 0.75f;
+		control_line_style.use_blending = true;
+
+		// set draggable point style
+		draggable_style.position_is_center = true;
+		draggable_style.fill_color = rgba(0.9f, 0.9f, 0.9f, 1.0f);
+		draggable_style.border_color = rgba(0.2f, 0.2f, 0.2f, 1.0f);
+		draggable_style.border_width = 1.5f;
+		draggable_style.use_blending = true;
+		
+		// set default style of all shapes
+		set_default_shape_style(rect_style);
+		set_default_shape_style(circle_style);
+		set_default_shape_style(text_style);
+		set_default_shape_style(line_style);
+		set_default_shape_style(arrow_style);
+		line_style.width = 20.0f;
+		arrow_style.stem_width = 20.0f;
+		arrow_style.head_width = 40.0f;
+	}
+	void set_default_shape_style(cgv::glutil::shape2d_style& s) {
+		s.fill_color = light_blue;
+		s.border_color = blue;
+		s.border_width = 5.0f;
+		s.use_blending = true;
 	}
 	mat3 get_view_matrix() {
 		mat3 T0 = cgv::math::translate2h(vec2(-viewport_rect.box.get_center()));
@@ -616,6 +583,12 @@ public:
 		mat3 R = cgv::math::rotate2h(view_params.angle);
 		//return T * S * R; // pivot is in lower left corner
 		return T * T1 * S * R * T0; // pivot is in viewport center
+	}
+	mat3 get_model_matrix() {
+		mat3 T = cgv::math::translate2h(vec2(model_params.translation));
+		mat3 S = cgv::math::scale2h(vec2(model_params.scale));
+		mat3 R = cgv::math::rotate2h(model_params.angle);
+		return T * S * R;
 	}
 	point* get_hit_point(const ivec2& pos) {
 		point* hit = nullptr;
@@ -632,46 +605,60 @@ public:
 		add_decorator("Example Settings", "heading", "level=3");
 		add_member_control(this, "Show Background", show_background, "check");
 
-		add_decorator("Render Options", "heading", "level=3");
-		add_member_control(this, "Use Color", use_color, "check");
-		add_member_control(this, "Use Blending", use_blending, "check");
-		add_member_control(this, "Use Smooth Feather", use_smooth_feather, "check");
-		add_member_control(this, "Apply Gamma", apply_gamma, "check");
+		if(begin_tree_node("Grid Style", grid_style, false)) {
+			align("\a");
+			add_gui("grid_style", grid_style);
+			align("\b");
+			end_tree_node(grid_style);
+		}
 
-		add_decorator("Appearance", "heading", "level=3");
-		add_member_control(this, "Color", color, "");
-		add_member_control(this, "Border Color", border_color, "");
-		add_member_control(this, "Border Width", border_width, "value_slider", "min=0;max=20;step=0.5;ticks=true");
-		add_member_control(this, "Border Radius", border_radius, "value_slider", "min=0;max=20;step=0.5;ticks=true");
-		add_member_control(this, "Ring Width", ring_width, "value_slider", "min=0;max=20;step=0.5;ticks=true");
-		add_member_control(this, "Feather Width", feather_width, "value_slider", "min=0;max=20;step=0.5;ticks=true");
-		add_member_control(this, "Feather Origin", feather_origin, "value_slider", "min=0;max=1;step=0.01;ticks=true");
+		if(begin_tree_node("Rectangle Style", rect_style, false)) {
+			align("\a");
+			add_gui("rect_style", rect_style);
+			align("\b");
+			end_tree_node(rect_style);
+		}
 
-		add_decorator("Arrow Appearance", "heading", "level=3");
-		add_member_control(this, "Stem Width", stem_width, "value_slider", "min=0;max=100;step=0.5;ticks=true");
-		add_member_control(this, "Head Width", head_width, "value_slider", "min=0;max=100;step=0.5;ticks=true");
-		add_member_control(this, "Absolute Head Length", absolute_head_length, "value_slider", "min=0;max=200;step=0.5;ticks=true");
-		add_member_control(this, "Relative Head Length", relative_head_length, "value_slider", "min=0;max=1;step=0.01;ticks=true");
-		add_member_control(this, "Head Length is Relative", head_length_is_relative, "check");
-			
-		add_decorator("Line Appearance", "heading", "level=3");
-		add_member_control(this, "Width", line_width, "value_slider", "min=0;max=40;step=0.5;ticks=true");
-		add_member_control(this, "Dash Length", dash_length, "value_slider", "min=0;max=100;step=0.5;ticks=true");
-		add_member_control(this, "Dash Ratio", dash_ratio, "value_slider", "min=0;max=1;step=0.01;ticks=true");
+		if(begin_tree_node("Circle Style", circle_style, false)) {
+			align("\a");
+			add_gui("circle_style", circle_style);
+			align("\b");
+			end_tree_node(circle_style);
+		}
 
-		add_decorator("Text Appearance", "heading", "level=3");
-		add_member_control(this, "Font Size", font_size, "value_slider", "min=1;max=256;step=0.5;ticks=true");
-		add_member_control(this, "Horizontal Alignment", text_align_h, "dropdown", "enums='Center=0,Left=1,Right=2'");
-		add_member_control(this, "Vertical Alignment", text_align_v, "dropdown", "enums='Center=0,Top=4,Botom=8'");
+		if(begin_tree_node("Line Style", line_style, false)) {
+			align("\a");
+			add_gui("line_style", line_style);
+			align("\b");
+			end_tree_node(line_style);
+		}
 
-		add_decorator("View Transformation", "heading", "level=3");
+		if(begin_tree_node("Arrow Style", arrow_style, false)) {
+			align("\a");
+			add_gui("arrow_style", arrow_style);
+			align("\b");
+			end_tree_node(arrow_style);
+		}
+
+		if(begin_tree_node("Text Style", text_style, false)) {
+			align("\a");
+			add_gui("text_style", text_style);
+			add_member_control(this, "Font Size", font_size, "value_slider", "min=1;max=256;step=0.5;ticks=true");
+			add_member_control(this, "Horizontal Alignment", text_align_h, "dropdown", "enums='Center=0,Left=1,Right=2'");
+			add_member_control(this, "Vertical Alignment", text_align_v, "dropdown", "enums='Center=0,Top=4,Botom=8'");
+			align("\b");
+			end_tree_node(text_style);
+		}
+
+		add_decorator("Model Transformation", "heading", "level=3");
 		add_member_control(this, "Translation X", model_params.translation[0], "value_slider", "min=-100;max=100;step=0.5;ticks=true");
 		add_member_control(this, "Translation Y", model_params.translation[1], "value_slider", "min=-100;max=100;step=0.5;ticks=true");
 		add_member_control(this, "Scale", model_params.scale, "value_slider", "min=1;max=5;step=0.1;ticks=true");
 		add_member_control(this, "Angle", model_params.angle, "value_slider", "min=0;max=360;step=0.5;ticks=true");
 
-		add_member_control(this, "Translation X", view_params.translation[0], "wheel", "min=-10000;max=10000;step=0.5;ticks=true");
-		add_member_control(this, "Translation Y", view_params.translation[1], "wheel", "min=-10000;max=10000;step=0.5;ticks=true");
+		add_decorator("View Transformation", "heading", "level=3");
+		add_member_control(this, "Translation X", view_params.translation[0], "value", "min=-10000;max=10000;step=0.5;ticks=true");
+		add_member_control(this, "Translation Y", view_params.translation[1], "value", "min=-10000;max=10000;step=0.5;ticks=true");
 		add_member_control(this, "Scale", view_params.scale, "value_slider", "min=1;max=64;step=0.1;ticks=true");
 		add_member_control(this, "Angle", view_params.angle, "value_slider", "min=0;max=360;step=0.5;ticks=true");
 	}

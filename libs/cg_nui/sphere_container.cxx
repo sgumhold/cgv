@@ -163,14 +163,14 @@ int sphere_container::compute_all_intersections(contact_info& info, const vec3& 
 bool sphere_container::init(cgv::render::context& ctx)
 {
 	cgv::render::ref_sphere_renderer(ctx, 1);
-	cgv::render::ref_rounded_cone_renderer(ctx, 1);
+	cgv::render::ref_cone_renderer(ctx, 1);
 	return true;
 }
 
 void sphere_container::clear(cgv::render::context& ctx)
 {
 	cgv::render::ref_sphere_renderer(ctx, -1);
-	cgv::render::ref_rounded_cone_renderer(ctx, -1);
+	cgv::render::ref_cone_renderer(ctx, -1);
 }
 
 void sphere_container::prepare_render(cgv::render::context& ctx, cgv::render::renderer& r, const cgv::render::render_style& rs, const std::vector<uint32_t>* indices_ptr) const
@@ -185,8 +185,8 @@ void sphere_container::draw(cgv::render::context& ctx)
 {
 	switch (render_type) {
 	case SRT_SPHERES: render(ctx, cgv::render::ref_sphere_renderer(ctx), srs); break;
-	case SRT_ROUNDED_CONES: render(ctx, cgv::render::ref_rounded_cone_renderer(ctx), rcrs); break;
-	case SRT_TUBES: render(ctx, cgv::render::ref_rounded_cone_renderer(ctx), rcrs, &indices); break;
+	case SRT_ROUNDED_CONES: render(ctx, cgv::render::ref_cone_renderer(ctx), rcrs); break;
+	case SRT_TUBES: render(ctx, cgv::render::ref_cone_renderer(ctx), rcrs, &indices); break;
 	}
 }
 const cgv::render::render_style* sphere_container::get_render_style() const 

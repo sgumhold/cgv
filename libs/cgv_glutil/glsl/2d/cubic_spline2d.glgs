@@ -1,5 +1,12 @@
 #version 430
-#extension GL_EXT_geometry_shader4 : enable
+
+//***** begin interface of shape2d.glsl ***********************************
+float get_feather_width();
+vec2 get_shape_size();
+vec4 get_color();
+void override_color(in vec4 color);
+vec4 transform_world_to_window_space(vec2 p);
+//***** end interface of shape2d.glsl ***********************************
 
 layout(lines) in;
 layout(triangle_strip, max_vertices = 8) out;
@@ -27,17 +34,12 @@ const vec2 corners[4] = vec2[](
 	vec2(1.0, 1.0)
 );
 
-uniform mat3 model_matrix = mat3(1.0);
-uniform mat3 view_matrix = mat3(1.0);
-
-uniform ivec2 resolution;
 uniform float width = 1.0;
-uniform float feather_width = 1.0;
 
 in vec4 color_gs[];
 
-out flat int idx_fs;
-out vec4 color_fs;
+out flat vec4 color0_fs;
+out flat vec4 color1_fs;
 out flat vec2 size_fs;
 out vec2 tex_coord_fs;
 out vec2 pix_coord_fs;
@@ -104,15 +106,6 @@ vec4 bbox_bezier(in vec2 p0, in vec2 p1, in vec2 p2) {
     return vec4( mi, ma );
 }
 
-vec4 world_to_window_space(vec2 p) {
-	// apply view transformation
-	vec2 pos = (view_matrix * vec3(p, 1.0)).xy;
-
-	// transform to window space
-	pos = (2.0*pos) / resolution;
-	return vec4(pos - 1.0, 0.0, 1.0);
-}
-
 void emit_bounding_box(in quadratic_segment qseg0, in quadratic_segment qseg1) {
 
 	vec4 box0 = bbox_bezier(qseg0.s, qseg0.h, qseg0.e);
@@ -122,10 +115,10 @@ void emit_bounding_box(in quadratic_segment qseg0, in quadratic_segment qseg1) {
 	box.xy = min(box0.xy, box1.xy);
 	box.zw = max(box0.zw, box1.zw);
 
-	idx_fs = 0;
-	color_fs = color_gs[0];
+	color0_fs = color_gs[0];
+	color1_fs = color_gs[1];
 
-	float final_width = width + feather_width;
+	float final_width = width + get_feather_width();
 
 	// incorporate feather_width
 	box.xy -= 0.5*final_width;
@@ -137,20 +130,20 @@ void emit_bounding_box(in quadratic_segment qseg0, in quadratic_segment qseg1) {
 
 	tex_coord_fs = corners[0];
 	pix_coord_fs = size_fs*corners[0] + org;
-	gl_Position = world_to_window_space(box.xy);
+	gl_Position = transform_world_to_window_space(box.xy);
 	EmitVertex();
 	tex_coord_fs = corners[1];
 	pix_coord_fs = size_fs*corners[1] + org;
-	gl_Position = world_to_window_space(box.zy);
+	gl_Position = transform_world_to_window_space(box.zy);
 	EmitVertex();
 
 	tex_coord_fs = corners[2];
 	pix_coord_fs = size_fs*corners[2] + org;
-	gl_Position = world_to_window_space(box.xw);
+	gl_Position = transform_world_to_window_space(box.xw);
 	EmitVertex();
 	tex_coord_fs = corners[3];
 	pix_coord_fs = size_fs*corners[3] + org;
-	gl_Position = world_to_window_space(box.zw);
+	gl_Position = transform_world_to_window_space(box.zw);
 	EmitVertex();
 }
 

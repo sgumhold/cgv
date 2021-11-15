@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cgv_gl/box_renderer.h>
+#include "render_data_base.h"
 
 #include "lib_begin.h"
 
@@ -10,74 +11,54 @@ namespace cgv {
 namespace glutil {
 
 template <typename ColorType = render_types::rgb>
-class box_render_data : public render_types {
-private:
-	attribute_array_manager* aam_ptr;
-	bool out_of_date;
-
-	std::vector<vec3> pos;
+class box_render_data : public render_data_base {
+protected:
 	std::vector<vec3> ext;
 	std::vector<quat> rot;
 	std::vector<ColorType> col;
-	std::vector<unsigned> idx;
 
-	void transfer(context& ctx, box_renderer& r) {
-		if(pos.size() > 0) {
+	bool transfer(context& ctx, box_renderer& r) {
+		if(render_data_base::transfer(ctx, r)) {
 			r.set_position_array(ctx, pos);
-			if(ext.size() == pos.size())
+			if(ext.size() == size())
 				r.set_extent_array(ctx, ext);
-			if(rot.size() == pos.size())
+			if(rot.size() == size())
 				r.set_rotation_array(ctx, rot);
-			if(col.size() == pos.size())
+			if(col.size() == size())
 				r.set_color_array(ctx, col);
-			if(idx.size() > 0)
-				r.set_indices(ctx, idx);
-			else
-				r.remove_indices(ctx);
+			return true;
 		}
-		out_of_date = false;
+		return false;
 	}
 
 public:
-	box_render_data(bool use_attribute_array_manager = false) {
-		aam_ptr = nullptr;
-		out_of_date = false;
-
-		if(use_attribute_array_manager) {
-			aam_ptr = new attribute_array_manager();
-		}
-	}
-
-	~box_render_data() { clear(); }
-
-	bool init(context& ctx) {
-		if(aam_ptr)
-			return aam_ptr->init(ctx);
-		return true;
-	}
-
-	void destruct(context& ctx) {
-		clear();
-
-		if(aam_ptr) {
-			aam_ptr->destruct(ctx);
-			aam_ptr = nullptr;
-		}
-	}
-
 	void clear() {
-		pos.clear();
+		render_data_base::clear();
+
 		ext.clear();
 		rot.clear();
 		col.clear();
-		idx.clear();
-		
-		out_of_date = true;
 	}
 
-	void set_out_of_date() { out_of_date = true; }
+	std::vector<vec3>&		ref_ext() { return ext; }
+	std::vector<quat>&		ref_rot() { return rot; }
+	std::vector<ColorType>&	ref_col() { return col; }
 
-	size_t size() { return pos.size(); }
+	void early_transfer(context& ctx, box_renderer& r) {
+		r.enable_attribute_array_manager(ctx, aam);
+		if(out_of_date) transfer(ctx, r);
+		r.disable_attribute_array_manager(ctx, aam);
+	}
+
+	void render(context& ctx, box_renderer& r, box_render_style& s, unsigned offset = 0, int count = -1) {
+		if(size() > 0) {
+			r.set_render_style(s);
+			r.enable_attribute_array_manager(ctx, aam);
+			if(out_of_date) transfer(ctx, r);
+			r.render(ctx, offset, count < 0 ? size() : count);
+			r.disable_attribute_array_manager(ctx, aam);
+		}
+	}
 
 	void add(const vec3& p) {
 		pos.push_back(p);
@@ -119,43 +100,6 @@ public:
 	void fill(const ColorType& c) {
 		for(size_t i = col.size(); i < pos.size(); ++i)
 			col.push_back(c);
-	}
-
-	void add_idx(const unsigned int i) {
-		idx.push_back(i);
-	}
-
-	std::vector<vec3>&		ref_pos() { return pos; }
-	std::vector<vec3>&		ref_ext() { return ext; }
-	std::vector<quat>&		ref_rot() { return rot; }
-	std::vector<ColorType>&	ref_col() { return col; }
-	std::vector<unsigned>&	ref_idx() { return idx; }
-
-	attribute_array_manager* get_aam_ptr() { return aam_ptr; }
-
-	void early_transfer(context& ctx, box_renderer& r) {
-		if(aam_ptr) {
-			r.enable_attribute_array_manager(ctx, *aam_ptr);
-			if(out_of_date) transfer(ctx, r);
-			r.disable_attribute_array_manager(ctx, *aam_ptr);
-		} else {
-			transfer(ctx, r);
-		}
-	}
-
-	void render(context& ctx, box_renderer& r, box_render_style& s, unsigned offset = 0, int count = -1) {
-		if(size() > 0) {
-			r.set_render_style(s);
-			if(aam_ptr) {
-				r.enable_attribute_array_manager(ctx, *aam_ptr);
-				if(out_of_date) transfer(ctx, r);
-				r.render(ctx, offset, count < 0 ? size() : count);
-				r.disable_attribute_array_manager(ctx, *aam_ptr);
-			} else {
-				transfer(ctx, r);
-				r.render(ctx, offset, count < 0 ? size() : count);
-			}
-		}
 	}
 };
 

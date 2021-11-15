@@ -36,19 +36,19 @@ namespace cgv {
 		void group_renderer::set_group_index_array(const context& ctx, const std::vector<unsigned>& group_indices)
 		{
 			has_group_indices = true;
-			set_attribute_array(ctx, ref_prog().get_attribute_location(ctx, "group_index"), group_indices);
+			set_attribute_array(ctx, "group_index", group_indices);
 		}
 		/// method to set the group index attribute
 		void group_renderer::set_group_index_array(const context& ctx, const unsigned* group_indices, size_t nr_elements)
 		{
 			has_group_indices = true;
-			set_attribute_array(ctx, ref_prog().get_attribute_location(ctx, "group_index"), group_indices, nr_elements, 0);
+			set_attribute_array(ctx, "group_index", group_indices, nr_elements, 0);
 		}
 		/// template method to set the group index attribute from a vertex buffer object, the element type must be given as explicit template parameter
 		void group_renderer::set_group_index_array(const context& ctx, type_descriptor element_type, const vertex_buffer& vbo, size_t offset_in_bytes, size_t nr_elements, unsigned stride_in_bytes)
 		{
 			has_group_indices = true;
-			set_attribute_array(ctx, ref_prog().get_attribute_location(ctx, "group_index"), element_type, vbo, offset_in_bytes, nr_elements, stride_in_bytes);
+			set_attribute_array(ctx, "group_index", element_type, vbo, offset_in_bytes, nr_elements, stride_in_bytes);
 		}
 		bool group_renderer::validate_attributes(const context& ctx) const
 		{

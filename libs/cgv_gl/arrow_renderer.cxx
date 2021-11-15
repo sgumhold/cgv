@@ -20,7 +20,7 @@ namespace cgv {
 		arrow_render_style::arrow_render_style() 
 		{
 			radius_lower_bound = 0.00001f;
-			inner_outer_lambda = 0.5f;
+			//inner_outer_lambda = 0.5f;
 			radius_relative_to_length = 0.1f;
 			head_radius_scale = 2.0f;
 			head_length_mode = AHLM_MINIMUM_OF_RADIUS_AND_LENGTH;
@@ -31,7 +31,7 @@ namespace cgv {
 			normalize_length = false;
 			relative_location_of_position = 0.0f;
 			length_eps = 0.000001f;
-			nr_subdivisions = 8;
+			//nr_subdivisions = 8;
 		}
 		/// call this before setting attribute arrays to manage attribute array in given manager
 		void arrow_renderer::enable_attribute_array_manager(const context& ctx, attribute_array_manager& aam)
@@ -85,9 +85,9 @@ namespace cgv {
 				ref_prog().set_uniform(ctx, "length_scale", ars.length_scale);
 				ref_prog().set_uniform(ctx, "color_scale", ars.color_scale);
 				ref_prog().set_uniform(ctx, "length_eps", ars.length_eps);
-				ref_prog().set_uniform(ctx, "inner_outer_lambda", ars.inner_outer_lambda);
+				//ref_prog().set_uniform(ctx, "inner_outer_lambda", ars.inner_outer_lambda);
 				ref_prog().set_uniform(ctx, "normalize_length", ars.normalize_length);
-				ref_prog().set_uniform(ctx, "nr_subdivisions", ars.nr_subdivisions);
+				//ref_prog().set_uniform(ctx, "nr_subdivisions", ars.nr_subdivisions);
 				ref_prog().set_uniform(ctx, "direction_is_end_point", direction_is_end_point);
 				ref_prog().set_uniform(ctx, "relative_location_of_position", ars.relative_location_of_position);
 			}
@@ -106,7 +106,9 @@ namespace cgv {
 		void arrow_renderer::draw(context& ctx, size_t start, size_t count, bool use_strips, bool use_adjacency, uint32_t strip_restart_index)
 		{
 			const arrow_render_style& ars = get_style<arrow_render_style>();
-			draw_impl_instanced(ctx, PT_POINTS, start, count, ars.nr_subdivisions, false, false, -1);
+			//draw_impl_instanced(ctx, PT_POINTS, start, count, ars.nr_subdivisions, false, false, -1);
+
+			draw_impl(ctx, PT_POINTS, start, count, false, false, -1);
 		}
 
 		bool arrow_render_style_reflect::self_reflect(cgv::reflect::reflection_handler& rh)
@@ -121,10 +123,10 @@ namespace cgv {
 				rh.reflect_member("length_scale", length_scale) &&
 				rh.reflect_member("color_scale", color_scale) &&
 				rh.reflect_member("length_eps", length_eps) &&
-				rh.reflect_member("inner_outer_lambda", inner_outer_lambda) &&
+				//rh.reflect_member("inner_outer_lambda", inner_outer_lambda) &&
 				rh.reflect_member("normalize_length", normalize_length) &&
-				rh.reflect_member("relative_location_of_position", relative_location_of_position) &&
-				rh.reflect_member("nr_subdivisions", nr_subdivisions);
+				rh.reflect_member("relative_location_of_position", relative_location_of_position);
+				//rh.reflect_member("nr_subdivisions", nr_subdivisions);
 		}
 
 		cgv::reflect::extern_reflection_traits<arrow_render_style, arrow_render_style_reflect> get_reflection_traits(const arrow_render_style&)
@@ -152,7 +154,7 @@ namespace cgv {
 				cgv::base::base* b = dynamic_cast<cgv::base::base*>(p);
 
 				p->add_member_control(b, "relative_location_of_position", ars_ptr->relative_location_of_position, "value_slider", "min=0;max=1;ticks=true");
-				p->add_member_control(b, "nr_subdivisions", ars_ptr->nr_subdivisions, "value_slider", "min=4;max=32;ticks=true");
+				//p->add_member_control(b, "nr_subdivisions", ars_ptr->nr_subdivisions, "value_slider", "min=4;max=32;ticks=true");
 				p->add_member_control(b, "color_scale", ars_ptr->color_scale, "value_slider", "min=0.01;max=100;log=true;ticks=true");
 				if (p->begin_tree_node("length", ars_ptr->length_scale, true, "level=3")) {
 					p->align("\a");
@@ -166,7 +168,7 @@ namespace cgv {
 					p->align("\a");
 					p->add_member_control(b, "radius_relative_to_length", ars_ptr->radius_relative_to_length, "value_slider", "min=0;max=1;ticks=true");
 					p->add_member_control(b, "radius_lower_bound", ars_ptr->radius_lower_bound, "value_slider", "min=0.00000001;step=0.000000001;max=0.01;log=true;ticks=true");
-					p->add_member_control(b, "inner_outer_lambda", ars_ptr->inner_outer_lambda, "value_slider", "min=0;max=1;ticks=true");
+					//p->add_member_control(b, "inner_outer_lambda", ars_ptr->inner_outer_lambda, "value_slider", "min=0;max=1;ticks=true");
 					p->align("\b");
 					p->end_tree_node(ars_ptr->radius_lower_bound);
 				}

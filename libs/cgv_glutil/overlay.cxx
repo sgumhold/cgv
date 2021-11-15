@@ -14,6 +14,8 @@ overlay::overlay() {
 	container.set_size(ivec2(0));
 
 	last_size = ivec2(-1);
+
+	show = true;
 }
 
 void overlay::on_visibility_change() {

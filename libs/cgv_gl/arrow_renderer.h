@@ -52,9 +52,9 @@ namespace cgv {
 			///
 			float length_eps;
 			///
-			float inner_outer_lambda;
+			//float inner_outer_lambda;
 			/// 
-			int nr_subdivisions;
+			//int nr_subdivisions;
 			//@}
 			/// construct with default values
 			arrow_render_style();
@@ -80,16 +80,16 @@ namespace cgv {
 			void disable_attribute_array_manager(const context& ctx, attribute_array_manager& aam);
 			/// templated method to set the direction attribute from a vector of directions of type T, which should have 3 components
 			template <typename T>
-			void set_direction_array(const context& ctx, const std::vector<T>& directions) { has_directions = true;  direction_is_end_point = false;  set_attribute_array(ctx, ref_prog().get_attribute_location(ctx, "direction"), directions); }
+			void set_direction_array(const context& ctx, const std::vector<T>& directions) { has_directions = true;  direction_is_end_point = false;  set_attribute_array(ctx, "direction", directions); }
 			/// templated method to set the direction attribute from an array of directions of type T, which should have 3 components
 			template <typename T>
-			void set_direction_array(const context& ctx, const T* directions, size_t nr_elements, unsigned stride_in_bytes = 0) { has_directions = true; direction_is_end_point = false; set_attribute_array(ctx, ref_prog().get_attribute_location(ctx, "direction"), directions, nr_elements, stride_in_bytes); }
+			void set_direction_array(const context& ctx, const T* directions, size_t nr_elements, unsigned stride_in_bytes = 0) { has_directions = true; direction_is_end_point = false; set_attribute_array(ctx, "direction", directions, nr_elements, stride_in_bytes); }
 			/// templated method to set the end_point attribute from a vector of end_points of type T, which should have 3 components
 			template <typename T>
-			void set_end_point_array(const context& ctx, const std::vector<T>& end_points) { has_directions = true;  direction_is_end_point = true;  set_attribute_array(ctx, ref_prog().get_attribute_location(ctx, "direction"), end_points); }
+			void set_end_point_array(const context& ctx, const std::vector<T>& end_points) { has_directions = true;  direction_is_end_point = true;  set_attribute_array(ctx, "direction", end_points); }
 			/// templated method to set the end_point attribute from an array of end_points of type T, which should have 3 components
 			template <typename T>
-			void set_end_point_array(const context& ctx, const T* end_points, size_t nr_elements, unsigned stride_in_bytes = 0) { has_directions = true; direction_is_end_point = true; set_attribute_array(ctx, ref_prog().get_attribute_location(ctx, "direction"), end_points, nr_elements, stride_in_bytes); }
+			void set_end_point_array(const context& ctx, const T* end_points, size_t nr_elements, unsigned stride_in_bytes = 0) { has_directions = true; direction_is_end_point = true; set_attribute_array(ctx, "direction", end_points, nr_elements, stride_in_bytes); }
 			///
 			bool validate_attributes(const context& ctx) const;
 			///

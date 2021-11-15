@@ -38,7 +38,7 @@ public:
 	}
 
 	T interpolate(float t) const {
-		unsigned count = control_points.size();
+		unsigned count = (unsigned)control_points.size();
 
 		if(count == 0)
 			return (T)0;

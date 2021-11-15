@@ -1,10 +1,10 @@
 #version 150
 
 //***** begin interface of fragment2d.glfs ***********************************
-vec4 get_color();
-void override_color(vec4 color);
-void finish_fragment2d(in vec2 texcoords);
-void finish_fragment2d();
+void finish_sdf_fragment2d(in float signed_distance, in vec4 color);
+void finish_sdf_fragment2d(in float signed_distance, in vec4 color, in vec2 texcoords);
+void finish_fragment2d(in vec4 color);
+void finish_fragment2d(in vec4 color, in vec2 texcoords);
 //***** end interface of fragment2d.glfs ***********************************
 
 uniform float scale_exponent;
@@ -16,5 +16,5 @@ void main() {
 	vec2 tc = tex_coord;
 	tc.y = pow(tc.y, scale_exponent);
 
-	finish_fragment2d(tc);
+	finish_fragment2d(vec4(1.0), tc);
 }

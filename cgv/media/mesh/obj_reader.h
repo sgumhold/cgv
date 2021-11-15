@@ -39,7 +39,7 @@ protected:
 	unsigned nr_normals, nr_texcoords;
 	bool have_default_material;
 	std::set<std::string> mtl_lib_files;
-	void parse_face(const std::vector<cgv::utils::token>& tokens);
+	void parse_face(const std::vector<cgv::utils::token>& tokens, bool is_line = false);
 	void parse_material(const std::vector<cgv::utils::token>& tokens);
 	virtual void parse_and_process_vertex(const std::vector<cgv::utils::token>& tokens) = 0;
 	virtual void parse_and_process_normal(const std::vector<cgv::utils::token>& tokens) = 0;
@@ -65,9 +65,12 @@ protected:
 	void convert_to_positive(unsigned vcount, int *vertices,
 		int *texcoords, int *normals,
 		unsigned v, unsigned n, unsigned t);
-	/// overide this function to process a face, the indices start with 0
-	virtual void process_face(unsigned vcount, int *vertices,
+	/// overide this function to process a line strip, the indices start with 0
+	virtual void process_line(unsigned vcount, int *vertices,
 		int *texcoords = 0, int *normals = 0);
+	/// overide this function to process a face, the indices start with 0
+	virtual void process_face(unsigned vcount, int* vertices,
+		int* texcoords = 0, int* normals = 0);
 	/// overide this function to process a group given by name and parameter string
 	virtual void process_group(const std::string& name, const std::string& parameters);
 	/// process a material definition. If a material with a certain name is overwritten, it will receive the same index

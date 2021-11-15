@@ -13,7 +13,7 @@
 #include <cgv_gl/normal_renderer.h>
 #include <cgv_gl/box_renderer.h>
 #include <cgv_gl/box_wire_renderer.h>
-#include <cgv_gl/rounded_cone_renderer.h>
+#include <cgv_gl/cone_renderer.h>
 #include <cgv_gl/gl/gl.h>
 #include <random>
 
@@ -23,7 +23,7 @@ class renderer_tests :
 	public cgv::gui::provider
 {
 public:
-	enum RenderMode { RM_POINTS, RM_SURFELS, RM_BOXES, RM_BOX_WIRES, RM_NORMALS, RM_ARROWS, RM_SPHERES, RM_ROUNDED_CONES };
+	enum RenderMode { RM_POINTS, RM_SURFELS, RM_BOXES, RM_BOX_WIRES, RM_NORMALS, RM_ARROWS, RM_SPHERES, RM_CONES };
 	struct vertex {
 		vec3 point;
 		vec3 normal;
@@ -57,7 +57,7 @@ protected:
 	std::vector<unsigned> indices;
 	RenderMode mode;
 	cgv::render::view* view_ptr;
-	bool p_vbos_out_of_date, sl_vbos_out_of_date, b_vbos_out_of_date;
+	bool p_vbos_out_of_date, sl_vbos_out_of_date, b_vbos_out_of_date, a_vbos_out_of_date;
 
 	// declare render styles
 	cgv::render::point_render_style point_style;
@@ -67,7 +67,7 @@ protected:
 	cgv::render::normal_render_style normal_style;
 	cgv::render::arrow_render_style arrow_style;
 	cgv::render::sphere_render_style sphere_style;
-	cgv::render::rounded_cone_render_style rounded_cone_style;
+	cgv::render::cone_render_style cone_style;
 
 	// declare attribute managers
 	cgv::render::attribute_array_manager p_manager;
@@ -94,6 +94,7 @@ public:
 		p_vbos_out_of_date = true;
 		sl_vbos_out_of_date = true;
 		b_vbos_out_of_date = true;
+		a_vbos_out_of_date = true;
 		interleaved_mode = false;
 		normal_style.normal_length = 0.01f;
 		// generate random geometry
@@ -137,7 +138,8 @@ public:
 		arrow_style.length_scale = 0.01f;
 		sphere_style.radius = 0.01f;
 		sphere_style.use_group_color = true;
-		rounded_cone_style.radius = 0.01f;
+		cone_style.radius = 0.01f;
+		cone_style.rounded_caps = true;
 	}
 	std::string get_type_name() const
 	{
@@ -159,6 +161,9 @@ public:
 		if ((member_ptr >= &T && member_ptr < &T + 1) || (member_ptr >= &t && member_ptr < &t + 1) || (member_ptr == &lambda) || member_ptr == &transform_points_only) {
 			compute_transformed_points();
 			p_vbos_out_of_date = true;
+			sl_vbos_out_of_date = true;
+			b_vbos_out_of_date = true;
+			a_vbos_out_of_date = true;
 		}
 		if (member_ptr == &sort_points) {
 			disable_depth = sort_points;
@@ -202,7 +207,7 @@ public:
 		cgv::render::ref_normal_renderer		(ctx, 1);
 		cgv::render::ref_arrow_renderer			(ctx, 1);
 		cgv::render::ref_sphere_renderer		(ctx, 1);
-		cgv::render::ref_rounded_cone_renderer	(ctx, 1);
+		cgv::render::ref_cone_renderer	(ctx, 1);
 		return true;
 	}
 
@@ -351,8 +356,10 @@ public:
 			cgv::render::arrow_renderer& a_renderer = cgv::render::ref_arrow_renderer(ctx);
 			a_renderer.set_render_style(arrow_style);
 			a_renderer.enable_attribute_array_manager(ctx, a_manager);
-			a_renderer.set_position_array(ctx, points);
-			a_renderer.set_color_array(ctx, colors);
+			if(a_vbos_out_of_date) {
+				set_geometry(ctx, a_renderer);
+				a_vbos_out_of_date = false;
+			}
 			a_renderer.set_direction_array(ctx, directions);
 			a_renderer.render(ctx, 0, points.size());
 			a_renderer.disable_attribute_array_manager(ctx, a_manager);
@@ -369,10 +376,10 @@ public:
 			render_points(ctx, s_renderer);
 			s_renderer.disable_attribute_array_manager(ctx, s_manager);
 		}	break;
-		case RM_ROUNDED_CONES:
+		case RM_CONES:
 		{
-			cgv::render::rounded_cone_renderer& rc_renderer = cgv::render::ref_rounded_cone_renderer(ctx);
-			rc_renderer.set_render_style(rounded_cone_style);
+			cgv::render::cone_renderer& rc_renderer = cgv::render::ref_cone_renderer(ctx);
+			rc_renderer.set_render_style(cone_style);
 			rc_renderer.enable_attribute_array_manager(ctx, rc_manager);
 			set_geometry(ctx, rc_renderer);
 			render_points(ctx, rc_renderer);
@@ -409,12 +416,12 @@ public:
 		cgv::render::ref_normal_renderer		(ctx, -1);
 		cgv::render::ref_arrow_renderer			(ctx, -1);
 		cgv::render::ref_sphere_renderer		(ctx, -1);
-		cgv::render::ref_rounded_cone_renderer  (ctx, -1);
+		cgv::render::ref_cone_renderer  (ctx, -1);
 	}
 	void create_gui()
 	{
 		add_decorator("renderer tests", "heading");
-		add_member_control(this, "mode", mode, "dropdown", "enums='points,surfels,boxes,box wires,normals,arrows,spheres,rounded cones'");
+		add_member_control(this, "mode", mode, "dropdown", "enums='points,surfels,boxes,box wires,normals,arrows,spheres,cones'");
 		if (begin_tree_node("transformation", lambda, true)) {
 			align("\a");
 			add_member_control(this, "lambda", lambda, "value_slider", "min=0;max=1;ticks=true");
@@ -505,11 +512,11 @@ public:
 			align("\b");
 			end_tree_node(sphere_style);
 		}
-		if(begin_tree_node("Rounded Cone Rendering", rounded_cone_style, false)) {
+		if(begin_tree_node("Cone Rendering", cone_style, false)) {
 			align("\a");
-			add_gui("rounded_cone_style", rounded_cone_style);
+			add_gui("cone_style", cone_style);
 			align("\b");
-			end_tree_node(rounded_cone_style);
+			end_tree_node(cone_style);
 		}
 	}
 };

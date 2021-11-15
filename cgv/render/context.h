@@ -381,6 +381,7 @@ protected:
 	friend class context;
 	bool is_enabled;
 	std::vector<int> enabled_color_attachments;
+	bool depth_attached;
 	bool attached[16];
 	int width, height;
 public:
@@ -670,7 +671,7 @@ protected:
 	virtual bool render_buffer_create       (render_component& rc, cgv::data::component_format& cf, int& _width, int& _height) const = 0;
 	virtual bool render_buffer_destruct     (render_component& rc) const = 0;
 
-	static void get_buffer_list(frame_buffer_base& fbb, std::vector<int>& buffers, int offset = 0);
+	static void get_buffer_list(frame_buffer_base& fbb, bool& depth_buffer, std::vector<int>& buffers, int offset = 0);
 	virtual bool frame_buffer_create		   (frame_buffer_base& fbb) const;
 	virtual bool frame_buffer_attach		   (frame_buffer_base& fbb, const render_component& rb, bool is_depth, int i) const;
 	virtual bool frame_buffer_attach		   (frame_buffer_base& fbb, const texture_base& t, bool is_depth, int level, int i, int z) const;
@@ -957,6 +958,12 @@ public:
 	bool enable_light_source(void* handle);
 	/// disable a given light source and return whether there existed a light source with given handle
 	bool disable_light_source(void* handle);
+	/// return number of default light sources
+	size_t get_nr_default_light_sources() const { return nr_default_light_sources; }
+	/// return i-th default light source
+	const cgv::media::illum::light_source& get_default_light_source(size_t i) const;
+	/// set i-th default light source
+	void set_default_light_source(size_t i, const cgv::media::illum::light_source& ls);
 	//@}
 
 	/**@name text output*/

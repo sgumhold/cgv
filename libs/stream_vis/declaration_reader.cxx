@@ -149,6 +149,21 @@ namespace stream_vis {
 		parse_float("opacity", ts_ptr->default_opacity);
 		parse_float("size", ts_ptr->default_size);
 		std::string identifier;
+		if (get_value("transform", identifier)) {
+			int value;
+			if (cgv::utils::is_integer(identifier, value)) {
+				(int&)ts_ptr->transform = value;
+			}
+			else if (identifier == "none")
+				ts_ptr->transform = TT_NONE;
+			else if (identifier == "geodetic2ENU_WGS84") {
+				ts_ptr->transform = TT_GEODETIC2ENU_WGS84;
+				if (!parse_dvec3("origin", ts_ptr->transform_origin))
+					std::cerr << "geodetic2ENU_WGS84 transform demands for origin:dvec3 <lattitude|longitude|altitude>" << std::endl;
+			}
+			else
+				std::cerr << "unknown transform <" << identifier << ">" << std::endl;
+		}
 		if (get_value("aabb_mode", identifier)) {
 			int value;
 			if (cgv::utils::is_integer(identifier, value)) {
@@ -440,8 +455,8 @@ namespace stream_vis {
 				pi.domain_bound_ts_index[i][j] = uint16_t(-1);
 			}
 		}
-		parse_bound_vecn("view_min", pi.domain_adjustment[0], pi.domain_bound_ts_index[0], &pi.fixed_domain.ref_min_pnt()[0], dim+nr_attributes);
-		parse_bound_vecn("view_max", pi.domain_adjustment[1], pi.domain_bound_ts_index[1], &pi.fixed_domain.ref_max_pnt()[0], dim+nr_attributes);
+		parse_bound_vecn("view_min", pi.domain_adjustment[0], pi.domain_bound_ts_index[0], &pi.fixed_domain.ref_min_pnt()[0], dim, nr_attributes);
+		parse_bound_vecn("view_max", pi.domain_adjustment[1], pi.domain_bound_ts_index[1], &pi.fixed_domain.ref_max_pnt()[0], dim, nr_attributes);
 		bool auto_color = false;
 		parse_bool("auto_color", auto_color);
 		pi.nr_axes = dim + nr_attributes;
@@ -450,6 +465,9 @@ namespace stream_vis {
 			pi.plot_ptr = plot2d_ptr;
 			vec2 ext = vec2(1.0f, 1.0f);
 			parse_vec2("extent", ext);
+			vec2 ext_sca(0.0f);
+			if (parse_vec2("scaling", ext_sca))
+				pi.plot_ptr->set_extent_scaling(ext_sca[0], ext_sca[1]);
 			parse_bool("disable_depth_mask", plot2d_ptr->disable_depth_mask);
 			parse_float("dx", plot2d_ptr->sub_plot_delta[0]);
 			parse_float("dy", plot2d_ptr->sub_plot_delta[1]);
@@ -473,6 +491,9 @@ namespace stream_vis {
 			vec3 ext;
 			if (parse_vec3("extent", ext))
 				pi.plot_ptr->set_extent(ext.to_vec());
+			vec3 ext_sca(0.0f);
+			if (parse_vec3("scaling", ext_sca))
+				pi.plot_ptr->set_extent_scaling(ext_sca[0], ext_sca[1], ext_sca[2]);
 			parse_int("out_of_range_mode_z", pi.plot_ptr->out_of_range_mode[2]);
 			parse_int("out_of_range_mode_a0", pi.plot_ptr->out_of_range_mode[3]);
 		}

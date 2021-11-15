@@ -12,7 +12,7 @@
 #include <cgv/render/render_types.h>
 #include <cgv_gl/point_renderer.h>
 #include <cgv_gl/line_renderer.h>
-#include <cgv_gl/rounded_cone_renderer.h>
+#include <cgv_gl/cone_renderer.h>
 #include <cgv_gl/surfel_renderer.h>
 
 #include <point_cloud.h>
@@ -85,7 +85,7 @@ private:
 	cgv::render::surfel_render_style source_srs;
 	cgv::render::surfel_render_style target_srs;
 	cgv::render::line_render_style lrs;
-	cgv::render::rounded_cone_render_style rcrs;
+	cgv::render::cone_render_style rcrs;
 	float rot_intensity;
 	float trans_intensity;
 	float icp_eps;

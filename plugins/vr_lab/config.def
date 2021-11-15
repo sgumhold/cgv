@@ -2,16 +2,25 @@
 //show all
 
 // configure startup window size and turn off gamma correction
-name(main):W=1280;H=720
+//name(main):W=1280;H=720
 name(main):gamma=1.0
 
 // construct an emulated vr kit 
 //type(vr_emulator):current_kit_index=0
 
-// configure table dimension
+// choose table from hide,rectangular,round [default]
+//type(vr_scene):table_mode=rectangular
+
+// configure rectangular table
 //type(vr_scene):table_width=0.80
 //type(vr_scene):table_depth=0.80
 //type(vr_scene):table_height=1.20
+// specify percentual shift of legs to the inside of table
+//type(vr_scene):percentual_leg_offset=
+// specify table color in RGB
+//type(vr_scene):table_color="0.7 0.8 0.2"
+// specify color of legs in RGB
+//type(vr_scene):table_leg_color="0.4 0.3 0.1"
 
 // read calibration file
 type(vr_view_interactor):calibration_file_path="D:/develop/VIVE_office.cal"

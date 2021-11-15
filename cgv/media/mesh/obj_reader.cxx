@@ -153,6 +153,11 @@ void obj_reader_base::convert_to_positive(unsigned vcount, int *vertices,
 	}
 }
 
+/// overide this function to process a line given by two indices that start with 0
+void obj_reader_base::process_line(unsigned vcount, int* vertices, int* texcoords, int* normals)
+{
+}
+
 /// overide this function to process a face
 void obj_reader_base::process_face(unsigned vcount, int *vertices, int *texcoords, int *normals)
 {
@@ -256,7 +261,16 @@ bool obj_reader_base::read_obj(const std::string& file_name)
 			}
 			parse_face(tokens); 
 			break;
-		case 'g' : 
+		case 'l':
+			if (group_index == -1) {
+				group_index = 0;
+				nr_groups = 1;
+				process_group("main", "");
+				group_index_lut["main"] = group_index;
+			}
+			parse_face(tokens, true);
+			break;
+		case 'g' :
 			if (tokens.size() > 1) {
 				std::string name = to_string(tokens[1]);
 				std::string parameters;
@@ -398,7 +412,7 @@ void obj_reader_base::parse_material(const std::vector<token>& tokens)
 		material_index = it->second;
 }
 
-void obj_reader_base::parse_face(const std::vector<token>& tokens)
+void obj_reader_base::parse_face(const std::vector<token>& tokens, bool is_line)
 {
 	std::vector<int> vertex_indices;
 	std::vector<int> normal_indices;
@@ -445,7 +459,10 @@ void obj_reader_base::parse_face(const std::vector<token>& tokens)
 	int* tex_ptr = 0;
 	if (texcoord_indices.size() == vertex_indices.size())
 		tex_ptr = &texcoord_indices[0];
-	process_face((unsigned) vertex_indices.size(), &vertex_indices[0], tex_ptr, nml_ptr);
+	if (is_line)
+		process_line((unsigned)vertex_indices.size(), &vertex_indices[0], tex_ptr, nml_ptr);
+	else
+		process_face((unsigned) vertex_indices.size(), &vertex_indices[0], tex_ptr, nml_ptr);
 }
 
 

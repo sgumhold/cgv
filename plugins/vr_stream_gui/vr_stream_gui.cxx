@@ -471,7 +471,7 @@ bool vr_stream_gui::init(cgv::render::context& ctx)
 
 	cgv::render::ref_box_renderer(ctx, 1);
 	cgv::render::ref_sphere_renderer(ctx, 1);
-	cgv::render::ref_rounded_cone_renderer(ctx, 1);
+	cgv::render::ref_cone_renderer(ctx, 1);
 	cgv::render::ref_rectangle_renderer(ctx, 1);
 	return true;
 }
@@ -481,7 +481,7 @@ void vr_stream_gui::clear(cgv::render::context& ctx)
 	lm.destruct(ctx);
 	cgv::render::ref_box_renderer(ctx, -1);
 	cgv::render::ref_sphere_renderer(ctx, -1);
-	cgv::render::ref_rounded_cone_renderer(ctx, -1);
+	cgv::render::ref_cone_renderer(ctx, -1);
 	cgv::render::ref_rectangle_renderer(ctx, -1);
 }
 

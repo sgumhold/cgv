@@ -63,20 +63,18 @@ namespace cgv { // @<
 			void set_y_view_angle(float y_view_angle);
 			///
 			template <typename T = float>
-			void set_radius_array(const context& ctx, const std::vector<T>& radii) { has_radii = true; set_attribute_array(ctx, ref_prog().get_attribute_location(ctx, "radius"), radii); }
+			void set_radius_array(const context& ctx, const std::vector<T>& radii) { has_radii = true; set_attribute_array(ctx, "radius", radii); }
 			/// 
 			template <typename T = float>
-			void set_radius_array(const context& ctx, const T* radii, size_t nr_elements, unsigned stride_in_bytes = 0) { has_radii = true;  set_attribute_array(ctx, ref_prog().get_attribute_location(ctx, "radius"), radii, nr_elements, stride_in_bytes); }
+			void set_radius_array(const context& ctx, const T* radii, size_t nr_elements, unsigned stride_in_bytes = 0) { has_radii = true;  set_attribute_array(ctx, "radius", radii, nr_elements, stride_in_bytes); }
 			///
 			template <typename T = float>
 			void set_group_radii(const context& ctx, const std::vector<T>& group_radii) { has_group_radii = true; ref_prog().set_uniform_array(ctx, "group_radii", group_radii); }
 			/// use this function if you store spheres in vec4 with the 4th component the radius
 			template <typename T = float>
 			void set_sphere_array(const context& ctx, const std::vector<cgv::math::fvec<T, 4> >& spheres) {
-				set_composed_attribute_array(ctx, ref_prog().get_attribute_location(ctx, "position"),
-					&spheres.front(), spheres.size(), reinterpret_cast<const cgv::math::fvec<T, 3>&>(spheres.front()));
-				ref_composed_attribute_array(ctx, ref_prog().get_attribute_location(ctx, "radius"),
-					ref_prog().get_attribute_location(ctx, "position"), &spheres.front(), spheres.size(), spheres[0][3]);
+				set_composed_attribute_array(ctx, "position", &spheres.front(), spheres.size(), reinterpret_cast<const cgv::math::fvec<T, 3>&>(spheres.front()));
+				ref_composed_attribute_array(ctx, "radius", "position", &spheres.front(), spheres.size(), spheres[0][3]);
 				has_positions = true;
 				has_radii = true;
 			}

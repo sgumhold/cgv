@@ -11,34 +11,34 @@
 #include <cgv_glutil/cone_render_data.h>
 #include <cgv_glutil/sphere_render_data.h>
 
-class rounded_cone_texturing : public cgv::base::node, public cgv::render::drawable, public cgv::gui::provider {
+class cone_texturing : public cgv::base::node, public cgv::render::drawable, public cgv::gui::provider {
 protected:
-	cgv::render::rounded_cone_render_style cone_style;
+	cgv::render::cone_render_style cone_style;
 	cgv::glutil::cone_render_data<> rd;
 
 	cgv::render::texture tex;
 public:
-	rounded_cone_texturing() : cgv::base::node("rounded cone texturing test") {		
+	cone_texturing() : cgv::base::node("rounded cone texturing test") {		
+		cone_style.rounded_caps = true;
 		cone_style.radius = 0.1f;
 		cone_style.surface_color = rgb(1.0f, 0.5f, 0.2f);
 		cone_style.enable_texturing = true;
-		cone_style.texture_blend_mode = cgv::render::rounded_cone_render_style::TBM_TINT;
-		rd = cgv::glutil::cone_render_data<>(true);
+		cone_style.texture_blend_mode = cgv::render::cone_render_style::TBM_TINT;
 	}
 	void on_set(void* member_ptr) {
 		post_redraw();
 		update_member(member_ptr);
 	}
 	std::string get_type_name() const {
-		return "rounded_cone_texturing";
+		return "cone_texturing";
 	}
 	void clear(cgv::render::context& ctx) {
-		cgv::render::ref_rounded_cone_renderer(ctx, -1);
+		cgv::render::ref_cone_renderer(ctx, -1);
 		rd.destruct(ctx);
 		tex.destruct(ctx);
 	}
 	bool init(cgv::render::context& ctx) {
-		cgv::render::ref_rounded_cone_renderer(ctx, 1);
+		cgv::render::ref_cone_renderer(ctx, 1);
 		if(!rd.init(ctx))
 			return false;
 
@@ -71,7 +71,7 @@ public:
 		if(!tex.is_created())
 			return;
 
-		auto& rcr = ref_rounded_cone_renderer(ctx);
+		auto& rcr = ref_cone_renderer(ctx);
 		rcr.set_albedo_texture(&tex);
 		rd.render(ctx, rcr, cone_style);
 	}
@@ -89,9 +89,9 @@ public:
 
 
 
-class rounded_cone_tree : public cgv::base::node, public cgv::render::drawable, public cgv::gui::provider {
+class cone_tree : public cgv::base::node, public cgv::render::drawable, public cgv::gui::provider {
 protected:
-	cgv::render::rounded_cone_render_style stem_style;
+	cgv::render::cone_render_style stem_style;
 	cgv::glutil::cone_render_data<> stems;
 	cgv::render::sphere_render_style leave_style;
 	cgv::glutil::sphere_render_data<> leaves;
@@ -108,19 +108,18 @@ protected:
 	float radius_factor = 0.95f;
 
 public:
-	rounded_cone_tree() : cgv::base::node("rounded cone tree test") {
+	cone_tree() : cgv::base::node("rounded cone tree test") {
 		leave_style.surface_color = rgb(0.2f, 0.48f, 0.2f);
 		leave_style.radius = 0.2f;
 
+		stem_style.rounded_caps = true;
 		stem_style.radius_scale = 4.0f;
 		stem_style.surface_color = rgb(1.0f, 0.5f, 0.2f);
 		stem_style.enable_texturing = true;
-		stem_style.texture_blend_mode = cgv::render::rounded_cone_render_style::TBM_MIX;
+		stem_style.texture_blend_mode = cgv::render::cone_render_style::TBM_MIX;
 		stem_style.texture_tiling.y() = 2.0f;
 		stem_style.texture_use_reference_length = true;
 		stem_style.texture_reference_length = 0.75f;
-		stems = cgv::glutil::cone_render_data<>(true);
-		leaves = cgv::glutil::sphere_render_data<>(true);
 
 		axiom = "X";
 		rules['X'] = "F+[[X]-X]-F[-FX]+X";
@@ -145,18 +144,18 @@ public:
 		update_member(member_ptr);
 	}
 	std::string get_type_name() const {
-		return "rounded_cone_tree";
+		return "cone_tree";
 	}
 	void clear(cgv::render::context& ctx) {
 		cgv::render::ref_sphere_renderer(ctx, -1);
-		cgv::render::ref_rounded_cone_renderer(ctx, -1);
+		cgv::render::ref_cone_renderer(ctx, -1);
 		stems.destruct(ctx);
 		leaves.destruct(ctx);
 		tex.destruct(ctx);
 	}
 	bool init(cgv::render::context& ctx) {
 		cgv::render::ref_sphere_renderer(ctx, 1);
-		cgv::render::ref_rounded_cone_renderer(ctx, 1);
+		cgv::render::ref_cone_renderer(ctx, 1);
 
 		if(!stems.init(ctx))
 			return false;
@@ -196,14 +195,14 @@ public:
 		if(!tex.is_created())
 			return;
 
-		auto& rcr = ref_rounded_cone_renderer(ctx);
+		auto& rcr = ref_cone_renderer(ctx);
 		rcr.set_albedo_texture(&tex);
 		stems.render(ctx, rcr, stem_style);
 
 		leaves.render(ctx, ref_sphere_renderer(ctx), leave_style);
 	}
 	void create_gui() {
-		add_decorator("rounded cone texturing", "heading");
+		add_decorator("rounded cone tree", "heading");
 
 		add_member_control(this, "seed", seed, "value", "min=0;max=10000;step=1");
 		add_member_control(this, "n", n, "value_slider", "min=0;max=5;step=1;ticks=true");
@@ -346,5 +345,5 @@ public:
 #include <cgv/base/register.h>
 
 /// register a factory to create new rounded cone texturing tests
-cgv::base::factory_registration<rounded_cone_texturing> test_rounded_cone_texturing_fac("new/demo/rounded_cone_texturing", '5');
-cgv::base::factory_registration<rounded_cone_tree> test_rounded_cone_tree_fac("new/demo/rounded_cone_tree", '6');
+cgv::base::factory_registration<cone_texturing> test_cone_texturing_fac("new/demo/cone_texturing", '5');
+cgv::base::factory_registration<cone_tree> test_cone_tree_fac("new/demo/cone_tree", '6');
