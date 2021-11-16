@@ -99,7 +99,7 @@ bool radix_sort_4way::init(context& ctx, size_t count) {
 	return true;
 }
 
-void radix_sort_4way::sort(context& ctx, GLuint data_buffer, GLuint value_buffer, vec3 eye_pos, GLuint auxiliary_buffer) {
+void radix_sort_4way::sort(context& ctx, GLuint data_buffer, GLuint value_buffer, const vec3& eye_pos, const vec3& view_dir, GLuint auxiliary_buffer) {
 
 	GLuint values_in_buffer = value_buffer;
 
@@ -113,6 +113,7 @@ void radix_sort_4way::sort(context& ctx, GLuint data_buffer, GLuint value_buffer
 
 	distance_prog.enable(ctx);
 	distance_prog.set_uniform(ctx, "eye_pos", eye_pos);
+	distance_prog.set_uniform(ctx, "view_dir", view_dir);
 	glDispatchCompute(num_scan_groups, 1, 1);
 	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 	distance_prog.disable(ctx);
