@@ -14,6 +14,7 @@
 #include <cgv_gl/box_renderer.h>
 #include <cgv_gl/point_renderer.h>
 #include <cgv_gl/sphere_renderer.h>
+#include <cgv_gl/arrow_renderer.h>
 #include <cgv/media/mesh/simple_mesh.h>
 #include <cgv_gl/gl/mesh_render_info.h>
 #include <rgbd_input.h>
@@ -153,6 +154,21 @@ protected:
 	std::vector<rgb>  intersection_colors;
 	std::vector<int>  intersection_box_indices;
 	std::vector<int>  intersection_controller_indices;
+	
+	// camera pose points
+	std::vector<vec3> cam_pose_points;
+	std::vector<rgb> cam_pose_colors;
+	std::vector<rgb> cam_cord_x_clr;
+	std::vector<rgb> cam_cord_y_clr;
+	std::vector<rgb> cam_cord_z_clr;
+	std::vector<mat3> cam_pose_ori;
+	std::vector<int> cam_pose_box_indices;
+	std::vector<int> cam_pose_controller_indices;
+
+	std::vector<vec3> cam_cord_x;
+	std::vector<vec3> cam_cord_y;
+	std::vector<vec3> cam_cord_z;
+
 
 	// state of current interaction with boxes for each controller
 	InteractionState state[4];
@@ -160,7 +176,9 @@ protected:
 	// render style for interaction
 	cgv::render::sphere_render_style srs;
 	cgv::render::box_render_style movable_style;
-
+	cgv::render::arrow_render_style ars;
+	//declare aam for arrow renderer
+	cgv::render::attribute_array_manager a_manager;
 	//sicp;
 	cgv::pointcloud::SICP::ComputationMode sicp_computation_mode;
 	cgv::pointcloud::SICP sicp;
@@ -292,6 +310,7 @@ public:
 		connect(cgv::gui::ref_vr_server().on_device_change, this, &vr_rgbd::on_device_change);
 
 		srs.radius = 0.005f;
+		ars.length_scale = 0.03f;
 		state[0] = state[1] = state[2] = state[3] = IS_NONE;
 		rgbd_started = false;
 		record_frame = false;
@@ -620,6 +639,24 @@ public:
 			align("\b");
 			end_tree_node(show_points);
 		}
+
+		add_decorator("SICP", "heading", "level=2");
+		add_member_control(this, "Max SICP runs", sicp.parameters.max_runs, "value_slider",
+						   "min=1;max=500;log=false;ticks=true");
+		add_member_control(this, "outer loop", sicp.parameters.max_outer_loop, "value_slider",
+						   "min=1;max=100;log=false;ticks=true");
+		add_member_control(this, "inner loop", sicp.parameters.max_inner_loop, "value_slider",
+						   "min=1;max=20;log=false;ticks=true");
+		add_member_control(this, "mu", sicp.parameters.mu, "value_slider", "min=1;max=20;log=false;ticks=true");
+		add_member_control(this, "max mu", sicp.parameters.max_mu, "value_slider",
+						   "min=1;max=100000;log=false;ticks=true");
+		add_member_control(this, "use penalty", sicp.parameters.use_penalty, "toggle");
+		add_member_control(this, "p", sicp.parameters.p, "value_slider", "min=0.1;max=1.0;log=false;ticks=true");
+		add_member_control(this, "alpha", sicp.parameters.alpha, "value_slider",
+						   "min=1.05;max=2.0;log=false;ticks=true");
+		add_member_control(this, "stop", sicp.parameters.stop, "value_slider",
+						   "min=0.00000001;max=0.001;log=true;ticks=false");
+
 		if (begin_tree_node("box style", style)) {
 			align("\a");
 			add_gui("box style", style);
@@ -748,8 +785,17 @@ public:
 		case cgv::gui::EID_THROTTLE:
 		{
 			cgv::gui::vr_throttle_event& vrte = static_cast<cgv::gui::vr_throttle_event&>(e);
-			if ((vrte.get_last_value() > 0.5f) != (vrte.get_value() > 0.5f)) {
+			if ((vrte.get_last_value() > 0.8f) != (vrte.get_value() > 0.8f)) {
 				trigger_is_pressed = (vrte.get_value() > 0.5f);
+				cam_pose_points.push_back(controller_position);
+				cam_pose_ori.push_back(controller_orientation);
+				cam_cord_x.push_back(cam_pose_ori.back().row(0));
+				cam_cord_y.push_back(cam_pose_ori.back().row(1));
+				cam_cord_z.push_back(cam_pose_ori.back().row(2));
+				cam_pose_colors.push_back(rgb(1.0, 0.0, 0.0));
+				cam_cord_x_clr.push_back(rgb(1.0, 0.0, 0.0));
+				cam_cord_y_clr.push_back(rgb(0.0, 1.0, 0.0));
+				cam_cord_z_clr.push_back(rgb(0.0, 0.0, 1.0));
 				update_member(&trigger_is_pressed);
 			}
 			break;
@@ -859,6 +905,7 @@ public:
 		}
 		cgv::render::ref_box_renderer(ctx, 1);
 		cgv::render::ref_sphere_renderer(ctx, 1);
+		cgv::render::ref_arrow_renderer(ctx, 1);
 		return true;
 	}
 	void clear(cgv::render::context& ctx)
@@ -866,6 +913,7 @@ public:
 		cgv::render::ref_point_renderer(ctx, -1);
 		cgv::render::ref_box_renderer(ctx, -1);
 		cgv::render::ref_sphere_renderer(ctx, -1);
+		cgv::render::ref_arrow_renderer(ctx, -1);
 	}
 	void draw_pc(cgv::render::context& ctx, const std::vector<vertex>& pc)
 	{
@@ -960,6 +1008,44 @@ public:
 				sr.disable(ctx);
 			}
 		}
+
+		// draw pose of camera
+		if (!cam_pose_points.empty()) {
+			auto& sr = cgv::render::ref_sphere_renderer(ctx);
+			sr.set_position_array(ctx, cam_pose_points);
+			sr.set_color_array(ctx, cam_pose_colors);
+			sr.set_render_style(srs);
+			if (sr.validate_and_enable(ctx)) {
+				glDrawArrays(GL_POINTS, 0, (GLsizei)cam_pose_colors.size());
+				sr.disable(ctx);
+			}
+		}
+		// draw coordinate of camera
+		if (!cam_pose_points.empty()) {
+			cgv::render::arrow_renderer& a_renderer = cgv::render::ref_arrow_renderer(ctx);
+			a_renderer.set_render_style(ars);
+			a_renderer.set_position_array(ctx, cam_pose_points);
+			a_renderer.set_color_array(ctx, cam_cord_x_clr);
+			a_renderer.set_direction_array(ctx, cam_cord_x);
+			a_renderer.render(ctx, 0, cam_pose_points.size());
+		}
+		if (!cam_pose_points.empty()) {
+			cgv::render::arrow_renderer& a_renderer = cgv::render::ref_arrow_renderer(ctx);
+			a_renderer.set_render_style(ars);
+			a_renderer.set_position_array(ctx, cam_pose_points);
+			a_renderer.set_color_array(ctx, cam_cord_y_clr);
+			a_renderer.set_direction_array(ctx, cam_cord_y);
+			a_renderer.render(ctx, 0, cam_pose_points.size());
+		}
+		if (!cam_pose_points.empty()) {
+			cgv::render::arrow_renderer& a_renderer = cgv::render::ref_arrow_renderer(ctx);
+			a_renderer.set_render_style(ars);
+			a_renderer.set_position_array(ctx, cam_pose_points);
+			a_renderer.set_color_array(ctx, cam_cord_z_clr);
+			a_renderer.set_direction_array(ctx, cam_cord_z);
+			a_renderer.render(ctx, 0, cam_pose_points.size());
+		}
+		
 	}
 	void on_reg_SICP_cb()
 	{
