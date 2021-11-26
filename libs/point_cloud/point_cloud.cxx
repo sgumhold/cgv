@@ -642,6 +642,8 @@ bool point_cloud::write(const string& _file_name)
 		return write_obj(_file_name);
 	if (ext == "ply")
 		return write_ply(_file_name);
+	if (ext == "txt")
+		return write_txt(_file_name);
 	cerr << "unknown extension <." << ext << ">." << endl;
 	return false;
 }
@@ -1337,6 +1339,29 @@ bool point_cloud::write_ply(const std::string& file_name) const
 	return true;
 }
 
+bool point_cloud::write_txt(const std::string& file_name) const
+{
+	/*if (!has_components())
+		return false;*/
+	std::ofstream os(file_name);
+	if (os.fail())
+		return false;
+	unsigned int i;
+	//I--Intensity
+	int I = 1;
+	for (i = 0; i < P.size(); ++i) {
+		if (has_colors()) {
+			os << P[i][0] << " " << P[i][1] << " " << P[i][2] << " "<< I << " " << color_component_to_float(C[i][0]) << " "
+			   << color_component_to_float(C[i][1]) << " " << color_component_to_float(C[i][2]) << endl;
+		}
+		else
+			os << P[i][0] << " " << P[i][1] << " " << P[i][2] << endl;
+	}
+	/*for (i = 0; i < N.size(); ++i)
+		os << "vn " << N[i][0] << " " << N[i][1] << " " << N[i][2] << endl;*/
+	return !os.fail();
+}
+
 bool point_cloud::read_ascii(const string& file_name)
 {
 	ifstream is(file_name.c_str());
@@ -1896,4 +1921,27 @@ void point_cloud::estimate_normals(const index_image& img, Crd distance_threshol
 		*nr_iterations = iter;
 	if (nr_left_over)
 		*nr_left_over = int(not_set_normals.size());
+}
+
+bool point_cloud::mdf_clr(const RGBA gt_clr, const Idx& id) {
+	C.at(id) = gt_clr;
+	if (C.at(id).R() == gt_clr.R())
+		return true;
+}
+
+void point_cloud::mdf_clr_public(const RGBA gt_clr, const Idx& id) {
+	mdf_clr(gt_clr, id);
+		/*std::cout << "clr: " << gt_clr << " " << id << " " << C.at(id) << " " << C.at(id).R() << " " << C.at(id).G() << " " << C.at(id).B()
+				  << std::endl;
+	else {
+		std::cout << "clr: " << gt_clr << " " << id << " " << C.at(id) << " " << C.at(id).R() << " " << C.at(id).G()
+				  << " " << C.at(id).B() << std::endl;
+	}*/
+}
+
+void point_cloud::printClr()
+{
+	write_lpc("D:\\tf.lpc");
+	/*for (int i = 0; i < C.size(); i++)
+		std::cout << "i: " << i << " " << C.at(i) << std::endl;*/
 }
