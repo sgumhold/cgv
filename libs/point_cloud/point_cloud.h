@@ -34,6 +34,8 @@ struct point_cloud_types
 	static cgv::type::uint8_type color_component_to_byte(ClrComp c) { return cgv::type::uint8_type(255*c); }
 	static float color_component_to_float(ClrComp c) { return c; }
 #endif // BYTE_COLORS
+	/// floating point color type without opacity
+	typedef cgv::media::color<float, cgv::media::RGB> RGB;
 	/// floating point color type
 	typedef cgv::media::color<float, cgv::media::RGB, cgv::media::OPACITY> RGBA;
 	/// 3d point type
@@ -204,8 +206,7 @@ protected:
 	bool read_ascii(const std::string& file_name);
 	/// file io for point cloud with level of detail 
 	bool read_lpc(const std::string& file_name);
-	///
-	bool write_lpc(const std::string& file_name);
+	
 	//! read binary format
 	/*! Binary format has 8 bytes header encoding two 32-bit unsigned ints n and m.
 	    n is the number of points. In case no colors are provided m is the number of normals, i.e. m=0 in case no normals are provided.
@@ -227,7 +228,14 @@ protected:
 	bool write_obj(const std::string& file_name) const;
 	/// write ply format, see read_ply for format description
 	bool write_ply(const std::string& file_name) const;
-public:
+	/// write LOD point cloud format(.lpc), see read_lpc for format description
+	bool write_lpc(const std::string& file_name);
+	/// write txt format, see read_txt for format description
+	bool write_txt(const std::string& file_name) const;
+	/// modifiy color for ground truth s3d
+	bool mdf_clr(const RGBA gt_clr, const Idx& id);
+
+  public:
 	/// construct empty point cloud
 	point_cloud();
 	/// construct and read file with the read method
@@ -273,7 +281,8 @@ public:
 		- read_bin:   *.bin
 		- read_ply:   *.ply
 		- read_obj:   *.obj
-		- read_points:*.points */
+		- read_points:*.points 
+		- read_txt:   *.txt*/
 	bool read(const std::string& file_name);
 	/// read component transformations from ascii file with 12 numbers per line (9 for rotation matrix and 3 for translation vector)
 	bool read_component_transformations(const std::string& file_name);
@@ -436,6 +445,9 @@ public:
 	Cnt collect_valid_image_neighbors(size_t pi, const index_image& img, std::vector<size_t>& Ni, Crd distance_threshold = 0.0f) const;
 	/// compute the normals with the help of pixel coordinates
 	void estimate_normals(const index_image& img, Crd distance_threshold = 0.0f, Idx component_idx = -1, int* nr_isolated = 0, int* nr_iterations = 0, int* nr_left_over = 0);
+	/// modifiy color for ground truth s3d
+	void mdf_clr_public(const RGBA gt_clr, const Idx& id);
+	void printClr();
 	//}
 };
 
