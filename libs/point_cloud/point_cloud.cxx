@@ -796,6 +796,10 @@ bool point_cloud::read_txt(const std::string& file_name)
 				P.push_back(p);
 				C.push_back(Clr(byte_to_color_component(c[0]), byte_to_color_component(c[1]), byte_to_color_component(c[2])));
 			}
+			else if (sscanf(lines[i].begin, "%f %f %f %d %d %d", &p[0], &p[1], &p[2], c, c + 1, c + 2) == 6) {
+				P.push_back(p);
+				C.push_back(Clr(byte_to_color_component(c[0]), byte_to_color_component(c[1]), byte_to_color_component(c[2])));
+			}
 			content[lines[i].end - content.c_str()] = tmp;
 		}
 		else {
