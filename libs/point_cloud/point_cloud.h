@@ -23,6 +23,7 @@ struct point_cloud_types
 	/// type of color components
 	typedef cgv::type::uint8_type ClrComp;
 	static ClrComp byte_to_color_component(cgv::type::uint8_type c) { return c; }
+	static ClrComp int_to_color_component(int c) { return cgv::type::uint8_type(c); }
 	static ClrComp float_to_color_component(double c) { return cgv::type::uint8_type(255 * c); }
 	static cgv::type::uint8_type color_component_to_byte(ClrComp c) { return c; }
 	static float color_component_to_float(ClrComp c) { return 1.0f/255 * c; }
