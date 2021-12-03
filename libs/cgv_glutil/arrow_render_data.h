@@ -11,12 +11,11 @@ namespace cgv {
 namespace glutil {
 
 template <typename ColorType = render_types::rgb>
-class arrow_render_data : public render_data_base {
+class arrow_render_data : public render_data_base<ColorType> {
 protected:
 	bool direction_is_endpoint = false;
 	std::vector<vec3> dir;
-	std::vector<ColorType> col;
-
+	
 	bool transfer(context& ctx, arrow_renderer& r) {
 		if(render_data_base::transfer(ctx, r)) {
 			if(dir.size() == size())
@@ -24,8 +23,6 @@ protected:
 					r.set_end_point_array(ctx, dir);
 				else
 					r.set_direction_array(ctx, dir);
-			if(col.size() == size())
-				r.set_color_array(ctx, col);
 			return true;
 		}
 		return false;
@@ -34,13 +31,10 @@ protected:
 public:
 	void clear() {
 		render_data_base::clear();
-
 		dir.clear();
-		col.clear();
 	}
 
-	std::vector<vec3>&		ref_dir() { return dir; }
-	std::vector<ColorType>&	ref_col() { return col; }
+	std::vector<vec3>& ref_dir() { return dir; }
 
 	void early_transfer(context& ctx, arrow_renderer& r) {
 		r.enable_attribute_array_manager(ctx, aam);

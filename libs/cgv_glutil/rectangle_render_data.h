@@ -1,6 +1,6 @@
 #pragma once
 
-#include <cgv_gl/box_renderer.h>
+#include <cgv_gl/rectangle_renderer.h>
 #include "render_data_base.h"
 
 #include "lib_begin.h"
@@ -11,12 +11,12 @@ namespace cgv {
 namespace glutil {
 
 template <typename ColorType = render_types::rgb>
-class box_render_data : public render_data_base<ColorType> {
+class rectangle_render_data : public render_data_base<ColorType> {
 protected:
-	std::vector<vec3> ext;
+	std::vector<vec2> ext;
 	std::vector<quat> rot;
 
-	bool transfer(context& ctx, box_renderer& r) {
+	bool transfer(context& ctx, rectangle_renderer& r) {
 		if(render_data_base::transfer(ctx, r)) {
 			r.set_position_array(ctx, pos);
 			if(ext.size() == size())
@@ -35,16 +35,16 @@ public:
 		rot.clear();
 	}
 
-	std::vector<vec3>& ref_ext() { return ext; }
+	std::vector<vec2>& ref_ext() { return ext; }
 	std::vector<quat>& ref_rot() { return rot; }
 
-	void early_transfer(context& ctx, box_renderer& r) {
+	void early_transfer(context& ctx, rectangle_renderer& r) {
 		r.enable_attribute_array_manager(ctx, aam);
 		if(out_of_date) transfer(ctx, r);
 		r.disable_attribute_array_manager(ctx, aam);
 	}
 
-	void render(context& ctx, box_renderer& r, box_render_style& s, unsigned offset = 0, int count = -1) {
+	void render(context& ctx, rectangle_renderer& r, rectangle_render_style& s, unsigned offset = 0, int count = -1) {
 		if(size() > 0) {
 			r.set_render_style(s);
 			r.enable_attribute_array_manager(ctx, aam);
@@ -58,7 +58,7 @@ public:
 		pos.push_back(p);
 	}
 
-	void add(const vec3& p, const vec3& e) {
+	void add(const vec3& p, const vec2& e) {
 		pos.push_back(p);
 		ext.push_back(e);
 	}
@@ -71,7 +71,7 @@ public:
 		col.push_back(c);
 	}
 
-	void add(const vec3& p, const vec3& e, const ColorType& c) {
+	void add(const vec3& p, const vec2& e, const ColorType& c) {
 		add(p, e);
 		add(c);
 	}
@@ -81,7 +81,7 @@ public:
 		add(c);
 	}
 
-	void fill(const vec3& e) {
+	void fill(const vec2& e) {
 		for(size_t i = ext.size(); i < ext.size(); ++i)
 			ext.push_back(e);
 	}
