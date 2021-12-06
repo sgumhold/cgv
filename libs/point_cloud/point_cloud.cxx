@@ -1886,11 +1886,11 @@ void point_cloud::estimate_normals(const index_image& img, Crd distance_threshol
 		}
 
 		// compute cross product normal relative to current point
-		int prev = Ni.back();
+		int prev = static_cast<int>(Ni.back());
 		Nml nml(0, 0, 0);
 		for (int j = 0; j < int(Ni.size()); ++j) {
 			nml += cross(P[Ni[j]] - P[i], P[prev] - P[i]);
-			prev = Ni[j];
+			prev = static_cast<int>(Ni[j]);
 		}
 		nml.normalize();
 		N[i] = nml;
@@ -1931,6 +1931,7 @@ bool point_cloud::mdf_clr(const RGBA gt_clr, const Idx& id) {
 	C.at(id) = gt_clr;
 	if (C.at(id).R() == gt_clr.R())
 		return true;
+	return false;
 }
 
 void point_cloud::mdf_clr_public(const RGBA gt_clr, const Idx& id) {
