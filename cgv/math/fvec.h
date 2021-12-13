@@ -47,6 +47,9 @@ public:
 	typedef std::reverse_iterator<const_iterator> const_reverse_iterator;
 	//@}
 
+	/// compile-time constant indicating the dimensionality of the vector
+	enum { dims = N };
+
 	//@name iterator generation
 	//@{
 	///
