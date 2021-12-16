@@ -232,12 +232,18 @@ namespace cgv {
 			/// set per rectangle depth offsets
 			template <typename T = float>
 			void set_depth_offset_array(const context& ctx, const std::vector<T>& depth_offsets) { has_depth_offsets = true; set_attribute_array(ctx, "depth_offset", depth_offsets); }
+			/// template method to set translation for all rectangles from a vector type T, which should have 3 components
+			template <typename T>
+			void set_translation(const context& ctx, const T& translations) { has_translations = true; ref_prog().set_attribute(ctx, get_prog_attribute_location(ctx, "translation"), translation); }
 			/// template method to set the translations from a vector of vectors of type T, which should have 3 components
 			template <typename T>
 			void set_translation_array(const context& ctx, const std::vector<T>& translations) { has_translations = true; set_attribute_array(ctx, "translation", translations); }
 			/// template method to set the translations from a vector of vectors of type T, which should have 3 components
 			template <typename T>
 			void set_translation_array(const context& ctx, const T* translations, size_t nr_elements, unsigned stride) { has_translations = true; set_attribute_array(ctx, "translation", translations, nr_elements, stride); }
+			/// set single rotation for all rectangles from a quaternion of type T, which has 4 components
+			template <typename T>
+			void set_rotation(const context& ctx, const T& rotation) { has_rotations = true; ref_prog().set_attribute(ctx, get_prog_attribute_location(ctx, "rotation"), rotation); }
 			/// template method to set the rotation from a vector of quaternions of type T, which should have 4 components
 			template <typename T>
 			void set_rotation_array(const context& ctx, const std::vector<T>& rotations) { has_rotations = true; set_attribute_array(ctx, "rotation", rotations); }
