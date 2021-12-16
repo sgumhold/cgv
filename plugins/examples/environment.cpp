@@ -49,8 +49,8 @@ protected:
 
 	float lod = 0.0f;
 
-	float roughness = 0.0f;
-	rgb F0 = rgb(0.0f);
+	float roughness = 1.0f;
+	rgb F0 = rgb(1.0f);
 
 	mesh_render_info box_mesh_info, obj_mesh_info;
 
@@ -144,7 +144,7 @@ protected:
 
 		void draw(render_context& rctx, shader_program& shader) {
 			context& ctx = *rctx.ctx;
-
+			
 			shader.enable(ctx);
 			shader.set_uniform(ctx, "model_matrix", transformation_matrix);
 			shader.set_uniform(ctx, "model_normal_matrix", rctx.get_normal_matrix(transformation_matrix));
@@ -158,14 +158,15 @@ protected:
 			metallic_tex.enable(ctx, 6);
 			roughness_tex.enable(ctx, 7);
 			normal_tex.enable(ctx, 8);
-
+			
 			mri.bind(ctx, shader, true);
 			mri.draw_all(ctx, false, false, false);
-
+			
 			albedo_tex.disable(ctx);
 			metallic_tex.disable(ctx);
 			roughness_tex.disable(ctx);
 			normal_tex.disable(ctx);
+			
 		}
 
 		void draw_depth(render_context& rctx, shader_program& shader) {
@@ -185,7 +186,7 @@ protected:
 	render_context rctx;
 
 	bool animate = false;
-
+	bool show_environment = true;
 	float rot_angle = 0.0f;
 	float height_offset = 0.0f;
 
@@ -351,6 +352,19 @@ public:
 		return NM;
 	}
 	void draw(cgv::render::context& ctx) {
+		// lastly render the environment
+		if (show_environment) {
+			auto& cubemap_prog = shaders.get("cubemap");
+			cubemap_prog.enable(ctx);
+			cubemap_prog.set_uniform(ctx, "depth_value", 1.0f);
+			glEnable(GL_DEPTH_TEST);
+			glDepthFunc(GL_LEQUAL);
+			environment_map.enable(ctx, 0);
+			glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+			environment_map.disable(ctx);
+			glDepthFunc(GL_LESS);
+			cubemap_prog.disable(ctx);
+		}
 		if(!view_ptr)
 			return;
 
@@ -444,12 +458,14 @@ public:
 			jitter_tex.enable(ctx, 4);
 
 			floor.draw(rctx, pbr_tex_prog);
+			// floor.draw(rctx, ctx.ref_surface_shader_program(false));
 
 			obj.position.y() = height_offset;
 			obj.rotation.y() = rot_angle;
 			obj.compute_transformation();
 
 			obj.draw(rctx, pbr_tex_prog);
+			// obj.draw(rctx, ctx.ref_surface_shader_program(false));
 
 			irradiance_map.disable(ctx);
 			prefiltered_specular_map.disable(ctx);
@@ -459,16 +475,6 @@ public:
 
 			ctx.pop_modelview_matrix();
 		}
-		// lastly render the environment
-		auto& cubemap_prog = shaders.get("cubemap");
-		cubemap_prog.enable(ctx);
-		cubemap_prog.set_uniform(ctx, "depth_value", 1.0f);
-		glDepthFunc(GL_LEQUAL);
-		environment_map.enable(ctx, 0);
-		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-		environment_map.disable(ctx);
-		glDepthFunc(GL_LESS);		
-		cubemap_prog.disable(ctx);
 	}
 	bool init_ibl_textures(context& ctx) {
 		bool success = true;
@@ -738,6 +744,7 @@ public:
 	void create_gui() {
 		add_decorator("Environment Demo", "heading");
 
+		add_member_control(this, "Show Environment", show_environment, "check");
 		add_decorator("Sun Position", "heading", "level=3");
 		add_member_control(this, "Horizontal", sun_position[0], "value_slider", "min=0;max=1;step=0.01;ticks=true");
 		add_member_control(this, "Vertical", sun_position[1], "value_slider", "min=0.4;max=1;step=0.01;ticks=true");
