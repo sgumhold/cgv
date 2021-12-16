@@ -1064,15 +1064,9 @@ virtual double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" 
 <tr class="memitem:a0b0017bf20af7756a76bbd30907d6777"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcgv_1_1math_1_1fvec.html">vec3</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a0b0017bf20af7756a76bbd30907d6777">get_model_point</a> (int x_window, int y_window, const <a class="el" href="classcgv_1_1math_1_1fmat.html">dmat4</a> &amp;modelview_projection_window_matrix) const</td></tr>
 <tr class="memdesc:a0b0017bf20af7756a76bbd30907d6777"><td class="mdescLeft">&#160;</td><td class="mdescRight">compute model space 3D point from the given window location and modelview_projection_window matrix  <a href="classcgv_1_1render_1_1context.html#a0b0017bf20af7756a76bbd30907d6777">More...</a><br /></td></tr>
 <tr class="separator:a0b0017bf20af7756a76bbd30907d6777"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a733f8e510fd059cadc967e4a9ba58ab4"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcgv_1_1math_1_1fvec.html">vec3</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a733f8e510fd059cadc967e4a9ba58ab4">get_model_point</a> (int x_window, int y_window, double z_window, const <a class="el" href="classcgv_1_1math_1_1fmat.html">dmat4</a> &amp;modelview_projection_window_matrix) const</td></tr>
-<tr class="memdesc:a733f8e510fd059cadc967e4a9ba58ab4"><td class="mdescLeft">&#160;</td><td class="mdescRight">compute model space 3D point from the given window coordinates with the given modelview_projection_window matrix  <a href="classcgv_1_1render_1_1context.html#a733f8e510fd059cadc967e4a9ba58ab4">More...</a><br /></td></tr>
-<tr class="separator:a733f8e510fd059cadc967e4a9ba58ab4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a720876149d0608e8fff666d7484b1e24"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcgv_1_1math_1_1fvec.html">vec3</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a720876149d0608e8fff666d7484b1e24">get_model_point</a> (const <a class="el" href="classcgv_1_1math_1_1fvec.html">vec3</a> &amp;p_window) const</td></tr>
 <tr class="memdesc:a720876149d0608e8fff666d7484b1e24"><td class="mdescLeft">&#160;</td><td class="mdescRight">compute model space 3D point from the given window space point  <a href="classcgv_1_1render_1_1context.html#a720876149d0608e8fff666d7484b1e24">More...</a><br /></td></tr>
 <tr class="separator:a720876149d0608e8fff666d7484b1e24"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae79fd4236cfcddf1cf2c55f0ad68f75b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcgv_1_1math_1_1fvec.html">vec3</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#ae79fd4236cfcddf1cf2c55f0ad68f75b">get_model_point</a> (const <a class="el" href="classcgv_1_1math_1_1fvec.html">dvec3</a> &amp;p_window, const <a class="el" href="classcgv_1_1math_1_1fmat.html">dmat4</a> &amp;modelview_projection_window_matrix) const</td></tr>
-<tr class="memdesc:ae79fd4236cfcddf1cf2c55f0ad68f75b"><td class="mdescLeft">&#160;</td><td class="mdescRight">compute model space 3D point from the given window space point and the given modelview_projection_window matrix  <a href="classcgv_1_1render_1_1context.html#ae79fd4236cfcddf1cf2c55f0ad68f75b">More...</a><br /></td></tr>
-<tr class="separator:ae79fd4236cfcddf1cf2c55f0ad68f75b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa7f8ae13132d046bf343d5402790c321"><td class="memItemLeft" align="right" valign="top"><a id="aa7f8ae13132d046bf343d5402790c321"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#aa7f8ae13132d046bf343d5402790c321">DEPRECATED</a> (&quot;use <a class="el" href="classcgv_1_1render_1_1context.html#a0e7aa4f692200dc64ee2ad0ca91ae975">get_window_matrix</a>() instead.&quot;) dmat4 get_device_matrix() const</td></tr>
 <tr class="memdesc:aa7f8ae13132d046bf343d5402790c321"><td class="mdescLeft">&#160;</td><td class="mdescRight">return homogeneous 4x4 projection matrix, which transforms from clip to device space <br /></td></tr>
@@ -1112,6 +1106,12 @@ virtual double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" 
 <tr class="memitem:a7092cfe8d92f1b2217368d5fa145c76b"><td class="memItemLeft" align="right" valign="top"><a id="a7092cfe8d92f1b2217368d5fa145c76b"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><b>ensure_window_transformation_index</b> (int &amp;array_index)</td></tr>
 <tr class="separator:a7092cfe8d92f1b2217368d5fa145c76b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8eb35215240bd20a386bd5124a5481e5"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classcgv_1_1math_1_1fvec.html">vec3</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a8eb35215240bd20a386bd5124a5481e5">get_model_point</a> (int x_window, int y_window, double z_window, const <a class="el" href="classcgv_1_1math_1_1fmat.html">dmat4</a> &amp;modelview_projection_window_matrix)</td></tr>
+<tr class="memdesc:a8eb35215240bd20a386bd5124a5481e5"><td class="mdescLeft">&#160;</td><td class="mdescRight">compute model space 3D point from the given window coordinates with the given modelview_projection_window matrix  <a href="classcgv_1_1render_1_1context.html#a8eb35215240bd20a386bd5124a5481e5">More...</a><br /></td></tr>
+<tr class="separator:a8eb35215240bd20a386bd5124a5481e5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a85841c5a4bbec518e80458f85d642f60"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classcgv_1_1math_1_1fvec.html">vec3</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a85841c5a4bbec518e80458f85d642f60">get_model_point</a> (const <a class="el" href="classcgv_1_1math_1_1fvec.html">dvec3</a> &amp;p_window, const <a class="el" href="classcgv_1_1math_1_1fmat.html">dmat4</a> &amp;modelview_projection_window_matrix)</td></tr>
+<tr class="memdesc:a85841c5a4bbec518e80458f85d642f60"><td class="mdescLeft">&#160;</td><td class="mdescRight">compute model space 3D point from the given window space point and the given modelview_projection_window matrix  <a href="classcgv_1_1render_1_1context.html#a85841c5a4bbec518e80458f85d642f60">More...</a><br /></td></tr>
+<tr class="separator:a85841c5a4bbec518e80458f85d642f60"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>base class for all drawables, which is independent of the used rendering API. </p>
@@ -1239,11 +1239,14 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>ensure_window_transfo
 
 </div>
 </div>
-<a id="ae79fd4236cfcddf1cf2c55f0ad68f75b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae79fd4236cfcddf1cf2c55f0ad68f75b">&#9670;&nbsp;</a></span>get_model_point() <span class="overload">[1/6]</span></h2>
+<a id="a85841c5a4bbec518e80458f85d642f60"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a85841c5a4bbec518e80458f85d642f60">&#9670;&nbsp;</a></span>get_model_point() <span class="overload">[1/6]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname"><a class="el" href="classcgv_1_1math_1_1fvec.html">context::vec3</a> cgv::render::context::get_model_point </td>
@@ -1260,9 +1263,14 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>ensure_window_transfo
         <tr>
           <td></td>
           <td>)</td>
-          <td></td><td> const</td>
+          <td></td><td></td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 
 <p>compute model space 3D point from the given window space point and the given modelview_projection_window matrix </p>
@@ -1428,8 +1436,8 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>ensure_window_transfo
 
 </div>
 </div>
-<a id="a733f8e510fd059cadc967e4a9ba58ab4"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a733f8e510fd059cadc967e4a9ba58ab4">&#9670;&nbsp;</a></span>get_model_point() <span class="overload">[6/6]</span></h2>
+<a id="a8eb35215240bd20a386bd5124a5481e5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8eb35215240bd20a386bd5124a5481e5">&#9670;&nbsp;</a></span>get_model_point() <span class="overload">[6/6]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1438,7 +1446,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>ensure_window_transfo
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classcgv_1_1math_1_1fvec.html">vec3</a> cgv::render::context::get_model_point </td>
+          <td class="memname">static <a class="el" href="classcgv_1_1math_1_1fvec.html">vec3</a> cgv::render::context::get_model_point </td>
           <td>(</td>
           <td class="paramtype">int&#160;</td>
           <td class="paramname"><em>x_window</em>, </td>
@@ -1464,12 +1472,12 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>ensure_window_transfo
         <tr>
           <td></td>
           <td>)</td>
-          <td></td><td> const</td>
+          <td></td><td></td>
         </tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
