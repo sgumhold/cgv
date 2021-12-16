@@ -46,6 +46,19 @@ uniform uint n;
 uniform uint n_padded;
 
 uniform vec3 eye_pos;
+uniform vec3 view_dir;
+
+uint flip_float(float f) {
+	uint f_ = floatBitsToUint(f);
+	int mask = -int(f_ >> 31) | 0x80000000;
+	return f_ ^ mask;
+}
+
+/*float i_flip_float(uint f)
+{
+	uint mask = ((f >> 31) - 1) | 0x80000000;
+	return uintBitsToFloat(f ^ mask);
+}*/
 
 void main() {
 
@@ -53,9 +66,11 @@ void main() {
         if(idx < n) {	
 			KEY_DEFINITION
 #if ORDER == 0
-            keys[idx] = floatBitsToUint(key);
+            //keys[idx] = floatBitsToUint(key);
+            keys[idx] = flip_float(key);
 #else
-			keys[idx] = ~floatBitsToUint(key);
+			//keys[idx] = ~floatBitsToUint(key);
+			keys[idx] = ~flip_float(key);
 #endif
         } else {
             keys[idx] = 0xFFFFFFFF;
