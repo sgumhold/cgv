@@ -9,6 +9,7 @@ using namespace cgv::render;
 namespace cgv {
 namespace glutil {
 
+template <typename ColorType = render_types::rgb>
 class render_data_base : public render_types {
 protected:
 	attribute_array_manager aam;
@@ -16,10 +17,13 @@ protected:
 
 	std::vector<unsigned> idx;
 	std::vector<vec3> pos;
+	std::vector<ColorType> col;
 
 	bool transfer(context& ctx, renderer& r) {
 		if(pos.size() > 0) {
 			r.set_position_array(ctx, pos);
+			if(col.size() == size())
+				r.set_color_array(ctx, col);
 			if(idx.size() > 0)
 				r.set_indices(ctx, idx);
 			else
@@ -49,6 +53,7 @@ public:
 	void clear() {
 		idx.clear();
 		pos.clear();
+		col.clear();
 		
 		out_of_date = true;
 	}
@@ -61,6 +66,7 @@ public:
 
 	std::vector<unsigned>&	ref_idx() { return idx; }
 	std::vector<vec3>&		ref_pos() { return pos; }
+	std::vector<ColorType>&	ref_col() { return col; }
 
 	void add_idx(const unsigned int i) {
 		idx.push_back(i);

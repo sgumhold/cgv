@@ -1,6 +1,6 @@
 #pragma once
 
-#include <cgv_gl/sphere_renderer.h>
+#include <cgv_gl/arrow_renderer.h>
 #include "render_data_base.h"
 
 #include "lib_begin.h"
@@ -11,14 +11,18 @@ namespace cgv {
 namespace glutil {
 
 template <typename ColorType = render_types::rgb>
-class sphere_render_data : public render_data_base<ColorType> {
+class arrow_render_data : public render_data_base<ColorType> {
 protected:
-	std::vector<float> rad;
-
-	bool transfer(context& ctx, sphere_renderer& r) {
+	bool direction_is_endpoint = false;
+	std::vector<vec3> dir;
+	
+	bool transfer(context& ctx, arrow_renderer& r) {
 		if(render_data_base::transfer(ctx, r)) {
-			if(rad.size() == size())
-				r.set_radius_array(ctx, rad);
+			if(dir.size() == size())
+				if(direction_is_endpoint)
+					r.set_end_point_array(ctx, dir);
+				else
+					r.set_direction_array(ctx, dir);
 			return true;
 		}
 		return false;
@@ -27,18 +31,18 @@ protected:
 public:
 	void clear() {
 		render_data_base::clear();
-		rad.clear();
+		dir.clear();
 	}
 
-	std::vector<float>& ref_rad() { return rad; }
+	std::vector<vec3>& ref_dir() { return dir; }
 
-	void early_transfer(context& ctx, sphere_renderer& r) {
+	void early_transfer(context& ctx, arrow_renderer& r) {
 		r.enable_attribute_array_manager(ctx, aam);
 		if(out_of_date) transfer(ctx, r);
 		r.disable_attribute_array_manager(ctx, aam);
 	}
 
-	void render(context& ctx, sphere_renderer& r, sphere_render_style& s, unsigned offset = 0, int count = -1) {
+	void render(context& ctx, arrow_renderer& r, arrow_render_style& s, unsigned offset = 0, int count = -1) {
 		if(size() > 0) {
 			r.set_render_style(s);
 			r.enable_attribute_array_manager(ctx, aam);
@@ -48,42 +52,30 @@ public:
 		}
 	}
 
-	void add(const vec3& p) {
+	void add(const vec3& p, const vec3& d) {
 		pos.push_back(p);
-	}
-
-	void add(const float r) {
-		rad.push_back(r);
+		dir.push_back(d);
 	}
 
 	void add(const ColorType& c) {
 		col.push_back(c);
 	}
 
-	void add(const vec3& p, const float r, const ColorType& c) {
-		add(p);
-		add(r);
+	void add(const vec3& p, const vec3& d, const ColorType& c) {
+		add(p, d);
 		add(c);
-	}
-
-	void add(const vec3& p, const float r) {
-		add(p);
-		add(r);
-	}
-
-	void add(const vec3& p, const ColorType& c) {
-		add(p);
-		add(c);
-	}
-
-	void fill(const float& r) {
-		for(size_t i = rad.size(); i < pos.size(); ++i)
-			rad.push_back(r);
 	}
 
 	void fill(const ColorType& c) {
 		for(size_t i = col.size(); i < pos.size(); ++i)
 			col.push_back(c);
+	}
+
+	void set_direction_is_endpoint(bool flag) {
+		if(direction_is_endpoint != flag) {
+			direction_is_endpoint = flag;
+			out_of_date = true;
+		}
 	}
 };
 
