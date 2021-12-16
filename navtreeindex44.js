@@ -1,5 +1,7 @@
 var NAVTREEINDEX44 =
 {
+"structcgv_1_1render_1_1surfel__render__style.html#a8f6fdf00ab6917209d081ffe691c75f3":[11,0,0,9,48,34],
+"structcgv_1_1render_1_1surfel__render__style.html#a99991cb58c4a3a142c06f2a59cf2c642":[11,0,0,9,48,43],
 "structcgv_1_1render_1_1surfel__render__style.html#a9ca3090f2e5ce4fca48a1945308c96f3":[11,0,0,9,48,26],
 "structcgv_1_1render_1_1surfel__render__style.html#aa4274bbe9929cab87164fda32123be1a":[11,0,0,9,48,35],
 "structcgv_1_1render_1_1surfel__render__style.html#aa43cb0dae0419ff4da7c26b4c0879ca6":[11,0,0,9,48,4],
@@ -247,7 +249,5 @@ var NAVTREEINDEX44 =
 "structvr_1_1controller__input__config.html#ab198c80d1ea259c99b1992a2c5f48a63":[11,0,3,0,1],
 "structvr_1_1controller__input__config.html#acf5606e400fcc5736b729565ede2415a":[11,0,3,0,3],
 "structvr_1_1controller__input__config.html#ad2af02d92ee50b37d8c0a62b82263600":[11,0,3,0,0],
-"structvr_1_1driver__registry.html":[11,0,3,1],
-"structvr_1_1vr__controller__info.html":[11,0,3,5],
-"structvr_1_1vr__controller__info.html#a06f7e58b86fce031d08e800028c33ee9":[11,0,3,5,0]
+"structvr_1_1driver__registry.html":[11,0,3,1]
 };
