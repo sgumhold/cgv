@@ -1733,7 +1733,7 @@ context::dmat4 context::get_modelview_projection_window_matrix(unsigned array_in
 }
 
 //! compute model space 3D point from the given window space point and the given modelview_projection_window matrix
-context::vec3 context::get_model_point(const dvec3& p_window, const dmat4& modelview_projection_window_matrix) const
+context::vec3 context::get_model_point(const dvec3& p_window, const dmat4& modelview_projection_window_matrix) 
 {
 	dmat_type A(4, 4, &modelview_projection_window_matrix(0, 0));
 	dvec_type x;
