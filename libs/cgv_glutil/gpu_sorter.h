@@ -148,6 +148,7 @@ public:
 		* input (read only)
 			data - the input data buffer as given to the sort method
 			eye_pos - the eye position as given to the sort method (set to zero if not used)
+			view_dir - the view direction as given to the sort method (set to zero if not used)
 		* in/output
 			values - the values to be sorted
 		*/
@@ -158,7 +159,7 @@ public:
 	void reset_key_definition_override() { key_definition = ""; }
 
 	virtual bool init(context& ctx, size_t count) = 0;
-	virtual void sort(context& ctx, GLuint data_buffer, GLuint value_buffer, vec3 eye_pos, GLuint auxiliary_buffer = 0) = 0;
+	virtual void sort(context& ctx, GLuint data_buffer, GLuint value_buffer, const vec3& eye_pos, const vec3& view_dir, GLuint auxiliary_buffer = 0) = 0;
 };
 
 }

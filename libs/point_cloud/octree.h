@@ -505,9 +505,9 @@ struct SamplerRandom : public Sampler<point_t> {
 		std::string id = "r";
 
 		int currentGridSize = gridSize;
-		int lx = x;
-		int ly = y;
-		int lz = z;
+		int lx = static_cast<int>(x);
+		int ly = static_cast<int>(y);
+		int lz = static_cast<int>(z);
 
 		for (int i = 0; i < level; i++) {
 
@@ -1184,9 +1184,9 @@ struct SamplerRandom : public Sampler<point_t> {
 			double y = xyz[1];
 			double z = xyz[2];
 
-			int64_t ix = std::floor(double(counterGridSize) * (x - min.x()) / size.x());
-			int64_t iy = std::floor(double(counterGridSize) * (y - min.y()) / size.y());
-			int64_t iz = std::floor(double(counterGridSize) * (z - min.z()) / size.z());
+			int64_t ix = static_cast<int64_t>(std::floor(double(counterGridSize) * (x - min.x()) / size.x()));
+			int64_t iy = static_cast<int64_t>(std::floor(double(counterGridSize) * (y - min.y()) / size.y()));
+			int64_t iz = static_cast<int64_t>(std::floor(double(counterGridSize) * (z - min.z()) / size.z()));
 
 			ix = std::max(int64_t(0), std::min(ix, counterGridSize - 1));
 			iy = std::max(int64_t(0), std::min(iy, counterGridSize - 1));

@@ -642,6 +642,8 @@ bool point_cloud::write(const string& _file_name)
 		return write_obj(_file_name);
 	if (ext == "ply")
 		return write_ply(_file_name);
+	if (ext == "txt")
+		return write_txt(_file_name);
 	cerr << "unknown extension <." << ext << ">." << endl;
 	return false;
 }
@@ -791,6 +793,10 @@ bool point_cloud::read_txt(const std::string& file_name)
 			char tmp = lines[i].end[0];
 			content[lines[i].end - content.c_str()] = 0;
 			if (sscanf(lines[i].begin, "%f %f %f %d %d %d %d", &p[0], &p[1], &p[2], &I, c, c + 1, c + 2) == 7) {
+				P.push_back(p);
+				C.push_back(Clr(byte_to_color_component(c[0]), byte_to_color_component(c[1]), byte_to_color_component(c[2])));
+			}
+			else if (sscanf(lines[i].begin, "%f %f %f %d %d %d", &p[0], &p[1], &p[2], c, c + 1, c + 2) == 6) {
 				P.push_back(p);
 				C.push_back(Clr(byte_to_color_component(c[0]), byte_to_color_component(c[1]), byte_to_color_component(c[2])));
 			}
@@ -1337,6 +1343,29 @@ bool point_cloud::write_ply(const std::string& file_name) const
 	return true;
 }
 
+bool point_cloud::write_txt(const std::string& file_name) const
+{
+	/*if (!has_components())
+		return false;*/
+	std::ofstream os(file_name);
+	if (os.fail())
+		return false;
+	unsigned int i;
+	//I--Intensity
+	int I = 1;
+	for (i = 0; i < P.size(); ++i) {
+		if (has_colors()) {
+			os << P[i][0] << " " << P[i][1] << " " << P[i][2] << " "<< I << " " << color_component_to_float(C[i][0]) << " "
+			   << color_component_to_float(C[i][1]) << " " << color_component_to_float(C[i][2]) << endl;
+		}
+		else
+			os << P[i][0] << " " << P[i][1] << " " << P[i][2] << endl;
+	}
+	/*for (i = 0; i < N.size(); ++i)
+		os << "vn " << N[i][0] << " " << N[i][1] << " " << N[i][2] << endl;*/
+	return !os.fail();
+}
+
 bool point_cloud::read_ascii(const string& file_name)
 {
 	ifstream is(file_name.c_str());
@@ -1857,11 +1886,11 @@ void point_cloud::estimate_normals(const index_image& img, Crd distance_threshol
 		}
 
 		// compute cross product normal relative to current point
-		int prev = Ni.back();
+		int prev = static_cast<int>(Ni.back());
 		Nml nml(0, 0, 0);
 		for (int j = 0; j < int(Ni.size()); ++j) {
 			nml += cross(P[Ni[j]] - P[i], P[prev] - P[i]);
-			prev = Ni[j];
+			prev = static_cast<int>(Ni[j]);
 		}
 		nml.normalize();
 		N[i] = nml;
@@ -1896,4 +1925,28 @@ void point_cloud::estimate_normals(const index_image& img, Crd distance_threshol
 		*nr_iterations = iter;
 	if (nr_left_over)
 		*nr_left_over = int(not_set_normals.size());
+}
+
+bool point_cloud::mdf_clr(const RGBA gt_clr, const Idx& id) {
+	C.at(id) = gt_clr;
+	if (C.at(id).R() == gt_clr.R())
+		return true;
+	return false;
+}
+
+void point_cloud::mdf_clr_public(const RGBA gt_clr, const Idx& id) {
+	mdf_clr(gt_clr, id);
+		/*std::cout << "clr: " << gt_clr << " " << id << " " << C.at(id) << " " << C.at(id).R() << " " << C.at(id).G() << " " << C.at(id).B()
+				  << std::endl;
+	else {
+		std::cout << "clr: " << gt_clr << " " << id << " " << C.at(id) << " " << C.at(id).R() << " " << C.at(id).G()
+				  << " " << C.at(id).B() << std::endl;
+	}*/
+}
+
+void point_cloud::printClr()
+{
+	write_lpc("D:\\tf.lpc");
+	/*for (int i = 0; i < C.size(); i++)
+		std::cout << "i: " << i << " " << C.at(i) << std::endl;*/
 }
