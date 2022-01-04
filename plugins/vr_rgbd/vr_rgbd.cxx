@@ -31,6 +31,7 @@
 #include <vr/vr_driver.h>
 #include <cgv/defines/quote.h>
 #include <numeric>
+#include <cgv/type/standard_types.h>
 
 ///@ingroup VR
 ///@{
@@ -66,7 +67,7 @@ class vr_rgbd :
 	public cgv::gui::event_handler,
 	public cgv::gui::provider
 {
-protected:
+  protected:
 	/// internal members used for data storage
 	rgbd::frame_type color_frame, depth_frame, warped_color_frame;
 	rgbd::frame_type color_frame_2, depth_frame_2, ir_frame_2, warped_color_frame_2;
@@ -80,8 +81,6 @@ protected:
 	bool record_key_frames;
 	bool clear_all_frames;
 	bool in_calibration;
-	bool zoom_in;
-	bool zoom_out;
 	bool save_pointcloud;
 	int key_frame_step;
 	/// intermediate point cloud and to be rendered point cloud
@@ -179,7 +178,7 @@ protected:
 	cgv::render::arrow_render_style ars;
 	//declare aam for arrow renderer
 	cgv::render::attribute_array_manager a_manager;
-	//sicp;
+	// sicp;
 	cgv::pointcloud::SICP::ComputationMode sicp_computation_mode;
 	cgv::pointcloud::SICP sicp;
 
@@ -288,8 +287,6 @@ public:
 		controller_orientation.identity();
 		controller_position = vec3(0, 1.5f, 0);
 		in_calibration = false;
-		zoom_in = false;
-		zoom_out = false;
 		save_pointcloud = true;
 		registration_started = false;
 		rgbd_2_controller_orientation.identity();
@@ -578,16 +575,6 @@ public:
 							color_frame_2 = color_frame;
 							depth_frame_2 = depth_frame;
 						}
-						if (zoom_out && !zoom_in)
-						{
-							controller_orientation_pc = controller_orientation * 2;
-							controller_position_pc = controller_position;
-						}
-						else if(zoom_in && !zoom_out)
-						{
-							controller_orientation_pc = controller_orientation * 0.5;
-							controller_position_pc = controller_position;
-						}
 						else {
 							controller_orientation_pc = controller_orientation;
 							controller_position_pc = controller_position;
@@ -614,11 +601,9 @@ public:
 		add_member_control(this, "trigger_is_pressed", trigger_is_pressed, "check");
 		add_member_control(this, "recording_fps", recording_fps, "value_slider", "min=1;max=30;ticks=true;log=true");
 		add_member_control(this, "in_calibration", in_calibration, "check");
-		add_member_control(this, "zoom_in", zoom_in, "check");
-		add_member_control(this, "zoom_out", zoom_out, "check");
 		add_member_control(this, "save_pc", save_pointcloud, "check");
 		add_member_control(this, "register_pc", registration_started, "check");
-		connect_copy(add_button("SICP")->click, rebind(this, &vr_rgbd::on_reg_SICP_cb));
+		//connect_copy(add_button("SICP")->click, rebind(this, &vr_rgbd::on_reg_SICP_cb));
 
 		add_member_control(this, "rgbd_controller_index", rgbd_controller_index, "value_slider", "min=0;max=3;ticks=true");
 		
@@ -656,6 +641,8 @@ public:
 						   "min=1.05;max=2.0;log=false;ticks=true");
 		add_member_control(this, "stop", sicp.parameters.stop, "value_slider",
 						   "min=0.00000001;max=0.001;log=true;ticks=false");
+		add_member_control(this, "Computaion Mode", (cgv::type::DummyEnum&)sicp_computation_mode, "dropdown",
+						   "enums='DEFAULT,POINT_TO_POINT,POINT_TO_PLANE'");
 
 		if (begin_tree_node("box style", style)) {
 			align("\a");
@@ -680,8 +667,6 @@ public:
 	{
 		return
 			rh.reflect_member("rgbd_controller_index", rgbd_controller_index) &&
-			rh.reflect_member("zoom_in", zoom_in) &&
-			rh.reflect_member("zoom_out", zoom_out) &&
 			rh.reflect_member("save_pc", save_pointcloud) &&
 			rh.reflect_member("register_pc", registration_started) &&
 			rh.reflect_member("recording_fps", recording_fps) &&
@@ -743,29 +728,11 @@ public:
 			}
 			if (ci == 0 && vrke.get_key() == vr::VR_DPAD_LEFT)
 			{
-				switch (vrke.get_action()) {
-				case cgv::gui::KA_PRESS :
-					zoom_in = true;
-					update_member(&zoom_in);
-					break;
-				case cgv::gui::KA_RELEASE:
-					zoom_in = false;
-					update_member(&zoom_in);
-					break;
-				}
+				;
 			}
 			if (ci == 0 && vrke.get_key() == vr::VR_DPAD_RIGHT)
 			{
-				switch (vrke.get_action()) {
-				case cgv::gui::KA_PRESS:
-					zoom_out = true;
-					update_member(&zoom_out);
-					break;
-				case cgv::gui::KA_RELEASE:
-					zoom_out = false;
-					update_member(&zoom_out);
-					break;
-				}
+				;
 			}
 			if (ci == 0 && vrke.get_key() == vr::VR_MENU)
 			{
@@ -1058,7 +1025,8 @@ public:
 		mat3 rotation;
 		sicp.parameters.max_runs = 20;
 		sicp.parameters.p = 0.4f;
-		sicp.register_point_cloud(cgv::pointcloud::SICP::CM_POINT_TO_POINT, rotation, translation);
+		//sicp.register_point_cloud(cgv::pointcloud::SICP::CM_POINT_TO_POINT, rotation, translation);
+		sicp.register_point_cloud(cgv::pointcloud::SICP::CM_POINT_TO_PLANE, rotation, translation);
 		std::cout << "SICP rot:\n " << rotation << "SICP t:\n" << translation << '\n';
 		vec3 mean = std::accumulate(&source_pc.pnt(0), &source_pc.pnt(0) + source_pc.get_nr_points(), vec3(0, 0, 0)) /
 					((float)source_pc.get_nr_points());
