@@ -223,6 +223,7 @@ namespace cgv {
 					for (int i = 0; i < parameters.max_inner_loop; ++i) {
 						// update Z
 						for (int i = 0; i < sourceCloud->get_nr_points(); ++i) {
+							// hi = Rxi + t - yi + lamda_i/mu -> source - target + lamda/mu
 							Z[i] = source_points[i] - closest_points[i] + lagrage_multipliers[i] / mu;
 						}
 						// shrinkage operator usually converges in three iterations (I = 3)
@@ -230,6 +231,7 @@ namespace cgv {
 
 						vector<vec3> U(sourceCloud->get_nr_points());
 						for (int i = 0; i < U.size(); ++i) {
+							// ci = yi + zi - lamda_i/mu
 							U[i] = closest_points[i] + Z[i] - lagrage_multipliers[i] / mu;
 						}
 						// ridgid motion estimator
@@ -252,6 +254,7 @@ namespace cgv {
 					for (int i = 0; i < sourceCloud->get_nr_points(); ++i) {
 						vec3 p = source_points[i] - closest_points[i] - Z[i];
 						Pnorms[i] = p.length();
+						// Step 2.3
 						if (!parameters.use_penalty) {
 							lagrage_multipliers[i] += mu * p;
 						}
@@ -326,6 +329,7 @@ namespace cgv {
 					vector<float> P(sourceCloud->get_nr_points());
 					for (int i = 0; i < sourceCloud->get_nr_points(); ++i) {
 						float p = dot(closest_points_normal[i],(source_points[i] - closest_points_position[i])) - Z[i];
+						// step 2.3
 						if (!parameters.use_penalty) {
 							lagrage_multipliers[i] += mu * p;
 							P[i] = p;
