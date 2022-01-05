@@ -279,6 +279,9 @@ namespace cgv {
 		{
 			rotation.identity();
 			translation.zeros();
+			if (!sourceCloud->has_normals()) {
+				//TODO estimate normals
+			}
 			vector<Pnt> source_points(&sourceCloud->pnt(0), &sourceCloud->pnt(0) + sourceCloud->get_nr_points());
 			vector<Pnt> Xo1 = source_points;
 			vector<Pnt> Xo2 = source_points;
