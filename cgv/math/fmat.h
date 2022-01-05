@@ -30,11 +30,19 @@ public:
 	fmat() {}
 	///construct a matrix with all elements set to c
 	fmat(const T& c) : base_type(c) {}
-	///creates a matrix from an array a of given dimensions - by default in column major format
+	///creates a matrix from an array a of given dimensions - by default in column major format - and fills missing entries from identity matrix
 	fmat(cgv::type::uint32_type n, cgv::type::uint32_type m, const T* a, bool column_major = true) {
-		for (cgv::type::uint32_type j = 0; j < std::min(m, M); ++j)
-			for (cgv::type::uint32_type i = 0; i < std::min(n, N); ++i)
+		cgv::type::uint32_type j;
+		for (j = 0; j < std::min(m, M); ++j) {
+			cgv::type::uint32_type i;
+			for (i = 0; i < std::min(n, N); ++i)
 				(*this)(i, j) = a[column_major ? j * n + i : i * m + j];
+			for (; i < N; ++i)
+				(*this)(i, j) = (i == j) ? T(1) : T(0);
+		}
+		for (; j < M; ++j)
+			for (cgv::type::uint32_type i = 0; i < N; ++i)
+				(*this)(i, j) = (i == j) ? T(1) : T(0);
 	}
 	///creates a matrix from an array a of given dimensions but different type - by default in column major format
 	template <typename S>

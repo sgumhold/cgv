@@ -50,12 +50,22 @@ namespace cgv { // @<
 			void set_position_is_center(bool _position_is_center);
 			/// enable box wire renderer
 			bool enable(context& ctx);
+			/// specify a single extent for all boxes
+			template <typename T>
+			void set_extent(const context& ctx, const T& extent) { has_extents = true; ref_prog().set_attribute(ctx, get_prog_attribute_location(ctx, "extent"), extent); }
 			/// extent array specifies box extends in case of position_is_center=true, otherwise the maximum point of each box
 			template <typename T>
 			void set_extent_array(const context& ctx, const std::vector<T>& extents) { has_extents = true;  set_attribute_array(ctx, "extent", extents); }
 			/// extent array specifies box extends in case of position_is_center=true, otherwise the maximum point of each box
 			template <typename T>
 			void set_extent_array(const context& ctx, const T* extents, size_t nr_elements, unsigned stride_in_bytes = 0) { has_extents = true;  set_attribute_array(ctx, "extent", extents, nr_elements, stride_in_bytes); }
+			/// specify a single box. This sets position_is_center to false as well as position and extent attributes
+			template <typename T>
+			void set_box(const context& ctx, const cgv::media::axis_aligned_box<T, 3>& box) {
+				set_position(ctx, box.get_min_pnt());
+				set_extent(ctx, box.get_max_pnt());
+				set_position_is_center(false);
+			}
 			/// specify box array directly. This sets position_is_center to false as well as position and extent array
 			template <typename T>
 			void set_box_array(const context& ctx, const std::vector<cgv::media::axis_aligned_box<T, 3> > & boxes) {

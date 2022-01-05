@@ -200,8 +200,8 @@ bool traverser::process_entry(queue_entry& e)
 */
 
 /// construct from reference on action and traversal order string
-traverser::traverser(action& _a, const std::string& _visit_order, TraverseStrategy _strategy, bool _stop_if_not_implemented) 
-	: a(_a), strategy(_strategy), visit_order(_visit_order), stop_if_not_implemented(_stop_if_not_implemented) 
+traverser::traverser(action& _a, const std::string& _visit_order, TraverseStrategy _strategy, bool _stop_if_not_implemented, bool _ignore_inactive)
+	: a(_a), strategy(_strategy), visit_order(_visit_order), stop_if_not_implemented(_stop_if_not_implemented), ignore_inactive(_ignore_inactive)
 {
 }
 
@@ -242,7 +242,7 @@ bool traverser::traverse_tmp_1(base_ptr dest, base_ptr src, bool& force_terminat
 		return false;
 	}
 	traverse_policy* tp = a.get_policy();
-	if (tp && !tp->get_active())
+	if (!ignore_inactive && tp && !tp->get_active())
 		return false;
 
 	bool success = false;

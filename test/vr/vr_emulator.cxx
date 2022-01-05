@@ -615,9 +615,9 @@ bool vr_emulator::handle(cgv::gui::event& e)
 	case 'S': return check_for_button_toggle(ke, 0, vr::VRF_INPUT0, 0, 0);
 	case 'D': return check_for_button_toggle(ke, 0, vr::VRF_INPUT0_TOUCH, 1, 0);
 
-	case 'Y': return check_for_button_toggle(ke, 0, vr::VRButtonStateFlags(0), -1, -1);
+	case 'Y': return check_for_button_toggle(ke, 0, vr::VRF_GRIP, -1, -1);
 	case 'X': return check_for_button_toggle(ke, 0, vr::VRF_GRIP, 0, -1);
-	case 'C': return check_for_button_toggle(ke, 0, vr::VRButtonStateFlags(0),  1, -1);
+	case 'C': return check_for_button_toggle(ke, 0, vr::VRF_GRIP,  1, -1);
 
 
 	case 'U': return check_for_button_toggle(ke, 1, vr::VRF_SYSTEM, -1, 1);
@@ -628,9 +628,9 @@ bool vr_emulator::handle(cgv::gui::event& e)
 	case 'K': return check_for_button_toggle(ke, 1, vr::VRF_INPUT0, 0, 0);
 	case 'L': return check_for_button_toggle(ke, 1, vr::VRF_INPUT0_TOUCH, 1, 0);
 
-	case 'M': return check_for_button_toggle(ke, 1, vr::VRButtonStateFlags(0), -1, -1);
+	case 'M': return check_for_button_toggle(ke, 1, vr::VRF_GRIP, -1, -1);
 	case ',': return check_for_button_toggle(ke, 1, vr::VRF_GRIP, 0, -1);
-	case '.': return check_for_button_toggle(ke, 1, vr::VRButtonStateFlags(0), 1, -1);
+	case '.': return check_for_button_toggle(ke, 1, vr::VRF_GRIP, 1, -1);
 
 	case cgv::gui::KEY_Left:
 	case cgv::gui::KEY_Num_4:
@@ -670,7 +670,8 @@ void vr_emulator::stream_help(std::ostream& os)
 	   << "          <home|end> .. gear, <alt>+<left|right> .. side step\n"
 	   << "    hand: <home|end> .. trigger\n"
 	   << "    hand&tracker: <left|right|up|down|pgdn|pgup> .. rotate or with <alt> translate\n"
-	   << "  <W|X|Q|E|C|A|S:I|N|O|U|B|K|J> to toggle left:right controller buttons\n"
+	   << "  <Q|W|E|A|S|D|Y|X|C:U|I|O|J|K|L|M|,|.> toggle left:right controller buttons\n"
+	   << "    <System|Menu|A|Touch|Press|Touch|Grip|Grip|Grip>; adjust TP position with Shift\n"
 	   << "  <Shift>-<QWE:ASD:YXC>|<UIO:HJK:BNM> to set left:right controller touch xy to -1|0|+1\n"
 	   << std::endl;
 }
@@ -861,8 +862,8 @@ void vr_emulator::create_gui()
 			add_view("buttons right", kits[i]->fovy, "", "w=0", "");
 			add_gui("button_flags", kits[i]->state.controller[1].button_flags, "bit_field_control",
 				"enums='SY=1,ME=2,GR=4,A=128,TO=256,PR=512';options='w=18;tooltip=\""
-				"SYstem button<U> \nMEnu button <I>\nGRip button <O>\nA button <B>\n"
-				"pad TOuch <K>\npad PRess <J>\"';"
+				"SYstem button<U> \nMEnu button <I>\nGRip button <M>\nA button <O>\n"
+				"pad TOuch <J>\npad PRess <K>\"';"
 				"align='';gui_type='toggle'");			
 			align(" ");
 			add_view("touch xy", kits[i]->state.controller[1].axes[0], "", "w=18", "");
