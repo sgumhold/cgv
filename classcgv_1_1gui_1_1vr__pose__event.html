@@ -101,8 +101,9 @@ Inheritance diagram for cgv::gui::vr_pose_event:</div>
  <div class="center">
   <img src="classcgv_1_1gui_1_1vr__pose__event.png" usemap="#cgv::gui::vr_5Fpose_5Fevent_map" alt=""/>
   <map id="cgv::gui::vr_5Fpose_5Fevent_map" name="cgv::gui::vr_5Fpose_5Fevent_map">
-<area href="classcgv_1_1gui_1_1pose__event.html" title="class to represent all pose events from tracking systems with the EID_POSE" alt="cgv::gui::pose_event" shape="rect" coords="0,56,146,80"/>
-<area href="classcgv_1_1gui_1_1event.html" alt="cgv::gui::event" shape="rect" coords="0,0,146,24"/>
+<area href="classcgv_1_1gui_1_1pose__event.html" title="class to represent all pose events from tracking systems with the EID_POSE" alt="cgv::gui::pose_event" shape="rect" coords="0,56,172,80"/>
+<area href="classcgv_1_1gui_1_1vr__event__extension.html" title="interface common to vr events" alt="cgv::gui::vr_event_extension" shape="rect" coords="182,56,354,80"/>
+<area href="classcgv_1_1gui_1_1event.html" alt="cgv::gui::event" shape="rect" coords="0,0,172,24"/>
   </map>
 </div></div>
 <table class="memberdecls">
@@ -127,18 +128,13 @@ typedef <a class="el" href="classcgv_1_1math_1_1quaternion.html">cgv::math::quat
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:aa8dd7e2a4c7ca1ae794632a038815fa3"><td class="memItemLeft" align="right" valign="top"><a id="aa8dd7e2a4c7ca1ae794632a038815fa3"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1gui_1_1vr__pose__event.html#aa8dd7e2a4c7ca1ae794632a038815fa3">vr_pose_event</a> (void *_device_handle, short _trackable_index, const <a class="el" href="structvr_1_1vr__kit__state.html">vr::vr_kit_state</a> &amp;_state, const float *_pose, const float *_last_pose, unsigned short _player_index, double _time=0)</td></tr>
-<tr class="memdesc:aa8dd7e2a4c7ca1ae794632a038815fa3"><td class="mdescLeft">&#160;</td><td class="mdescRight">construct a key event from its textual description <br /></td></tr>
+<tr class="memitem:aa8dd7e2a4c7ca1ae794632a038815fa3"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1gui_1_1vr__pose__event.html#aa8dd7e2a4c7ca1ae794632a038815fa3">vr_pose_event</a> (void *_device_handle, short _trackable_index, const <a class="el" href="structvr_1_1vr__kit__state.html">vr::vr_kit_state</a> &amp;_state, const float *_pose, const float *_last_pose, unsigned short _player_index, double _time=0)</td></tr>
+<tr class="memdesc:aa8dd7e2a4c7ca1ae794632a038815fa3"><td class="mdescLeft">&#160;</td><td class="mdescRight">construct a pose event from given parameters  <a href="classcgv_1_1gui_1_1vr__pose__event.html#aa8dd7e2a4c7ca1ae794632a038815fa3">More...</a><br /></td></tr>
 <tr class="separator:aa8dd7e2a4c7ca1ae794632a038815fa3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aedcc82c0d9dc834aff20d583ce6a8724"><td class="memItemLeft" align="right" valign="top"><a id="aedcc82c0d9dc834aff20d583ce6a8724"></a>
-void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1gui_1_1vr__pose__event.html#aedcc82c0d9dc834aff20d583ce6a8724">get_device_handle</a> () const</td></tr>
-<tr class="memdesc:aedcc82c0d9dc834aff20d583ce6a8724"><td class="mdescLeft">&#160;</td><td class="mdescRight">return the device id, by default returns 0 <br /></td></tr>
-<tr class="separator:aedcc82c0d9dc834aff20d583ce6a8724"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a37e22bd423759462615608ee0c6d1d3a"><td class="memItemLeft" align="right" valign="top"><a id="a37e22bd423759462615608ee0c6d1d3a"></a>
-const <a class="el" href="structvr_1_1vr__kit__state.html">vr::vr_kit_state</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1gui_1_1vr__pose__event.html#a37e22bd423759462615608ee0c6d1d3a">get_state</a> () const</td></tr>
-<tr class="memdesc:a37e22bd423759462615608ee0c6d1d3a"><td class="mdescLeft">&#160;</td><td class="mdescRight">return the state <br /></td></tr>
-<tr class="separator:a37e22bd423759462615608ee0c6d1d3a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abaf7299ceb771681ba136fd748c422d3"><td class="memItemLeft" align="right" valign="top"><a id="abaf7299ceb771681ba136fd748c422d3"></a>
+void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1gui_1_1vr__pose__event.html#abaf7299ceb771681ba136fd748c422d3">get_device_id</a> () const</td></tr>
+<tr class="memdesc:abaf7299ceb771681ba136fd748c422d3"><td class="mdescLeft">&#160;</td><td class="mdescRight">return the device id, by default returns 0 <br /></td></tr>
+<tr class="separator:abaf7299ceb771681ba136fd748c422d3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a12bd28bc1b614f0690304d94b401fe35"><td class="memItemLeft" align="right" valign="top"><a id="a12bd28bc1b614f0690304d94b401fe35"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1gui_1_1vr__pose__event.html#a12bd28bc1b614f0690304d94b401fe35">stream_out</a> (std::ostream &amp;os) const</td></tr>
 <tr class="memdesc:a12bd28bc1b614f0690304d94b401fe35"><td class="mdescLeft">&#160;</td><td class="mdescRight">write to stream <br /></td></tr>
@@ -199,10 +195,6 @@ const <a class="el" href="classcgv_1_1gui_1_1pose__event.html#ab1899def72c79e496
 <a class="el" href="classcgv_1_1gui_1_1pose__event.html#aa304ba805e6a735e99b5f588cd7ef3b1">quat</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1gui_1_1pose__event.html#a99a1fcf9b071cfb965ad6a96a74bfe07">get_rotation_quaternion</a> () const</td></tr>
 <tr class="memdesc:a99a1fcf9b071cfb965ad6a96a74bfe07"><td class="mdescLeft">&#160;</td><td class="mdescRight">return rotation quaternion between from the last to current orientation <br /></td></tr>
 <tr class="separator:a99a1fcf9b071cfb965ad6a96a74bfe07"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2cf741ae08d04f325553109e11d1c146"><td class="memItemLeft" align="right" valign="top"><a id="a2cf741ae08d04f325553109e11d1c146"></a>
-virtual void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1gui_1_1event.html#a2cf741ae08d04f325553109e11d1c146">get_device_id</a> () const</td></tr>
-<tr class="memdesc:a2cf741ae08d04f325553109e11d1c146"><td class="mdescLeft">&#160;</td><td class="mdescRight">return the device id, by default returns 0 <br /></td></tr>
-<tr class="separator:a2cf741ae08d04f325553109e11d1c146"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9f77f91f3badb2105b0117d69e8f0edc"><td class="memItemLeft" align="right" valign="top"><a id="a9f77f91f3badb2105b0117d69e8f0edc"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1gui_1_1event.html#a9f77f91f3badb2105b0117d69e8f0edc">set_kind</a> (unsigned char _kind)</td></tr>
 <tr class="memdesc:a9f77f91f3badb2105b0117d69e8f0edc"><td class="mdescLeft">&#160;</td><td class="mdescRight">set the kind of the event <br /></td></tr>
@@ -242,17 +234,17 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1gui_1_1event.html#a1fcaac54b1f22358cbe828cc206f1f59">get_time</a> () const</td></tr>
 <tr class="memdesc:a1fcaac54b1f22358cbe828cc206f1f59"><td class="mdescLeft">&#160;</td><td class="mdescRight">return the time of the event in seconds <br /></td></tr>
 <tr class="separator:a1fcaac54b1f22358cbe828cc206f1f59"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5d67565e65a2213fdc0278bc9ee2a880"><td class="memItemLeft" align="right" valign="top"><a id="a5d67565e65a2213fdc0278bc9ee2a880"></a>
+void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1gui_1_1vr__event__extension.html#a5d67565e65a2213fdc0278bc9ee2a880">get_device_handle</a> () const</td></tr>
+<tr class="memdesc:a5d67565e65a2213fdc0278bc9ee2a880"><td class="mdescLeft">&#160;</td><td class="mdescRight">return the device id, by default returns 0 <br /></td></tr>
+<tr class="separator:a5d67565e65a2213fdc0278bc9ee2a880"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a090914a6410fa94f2c49178d83641d24"><td class="memItemLeft" align="right" valign="top"><a id="a090914a6410fa94f2c49178d83641d24"></a>
+const <a class="el" href="structvr_1_1vr__kit__state.html">vr::vr_kit_state</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1gui_1_1vr__event__extension.html#a090914a6410fa94f2c49178d83641d24">get_state</a> () const</td></tr>
+<tr class="memdesc:a090914a6410fa94f2c49178d83641d24"><td class="mdescLeft">&#160;</td><td class="mdescRight">return the state of vr kit <br /></td></tr>
+<tr class="separator:a090914a6410fa94f2c49178d83641d24"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-attribs"></a>
 Protected Attributes</h2></td></tr>
-<tr class="memitem:ac026afee31fc92b1e8fca051925eae82"><td class="memItemLeft" align="right" valign="top"><a id="ac026afee31fc92b1e8fca051925eae82"></a>
-void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1gui_1_1vr__pose__event.html#ac026afee31fc92b1e8fca051925eae82">device_handle</a></td></tr>
-<tr class="memdesc:ac026afee31fc92b1e8fca051925eae82"><td class="mdescLeft">&#160;</td><td class="mdescRight">store device handle <br /></td></tr>
-<tr class="separator:ac026afee31fc92b1e8fca051925eae82"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac9369617185982cf6a4274731ec4067c"><td class="memItemLeft" align="right" valign="top"><a id="ac9369617185982cf6a4274731ec4067c"></a>
-const <a class="el" href="structvr_1_1vr__kit__state.html">vr::vr_kit_state</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1gui_1_1vr__pose__event.html#ac9369617185982cf6a4274731ec4067c">state</a></td></tr>
-<tr class="memdesc:ac9369617185982cf6a4274731ec4067c"><td class="mdescLeft">&#160;</td><td class="mdescRight">access to current vr state <br /></td></tr>
-<tr class="separator:ac9369617185982cf6a4274731ec4067c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a31b40d6f8c85b8e19926530c5d60f207"><td class="memItemLeft" align="right" valign="top"><a id="a31b40d6f8c85b8e19926530c5d60f207"></a>
 float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1gui_1_1pose__event.html#a31b40d6f8c85b8e19926530c5d60f207">pose</a> [12]</td></tr>
 <tr class="memdesc:a31b40d6f8c85b8e19926530c5d60f207"><td class="mdescLeft">&#160;</td><td class="mdescRight">pose stored as 3x4 matrix in column major format <br /></td></tr>
@@ -281,10 +273,80 @@ unsigned char&#160;</td><td class="memItemRight" valign="bottom"><a class="el" h
 double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1gui_1_1event.html#ac31bd0c22ff8cd2fffbf5c17610fb9fd">time</a></td></tr>
 <tr class="memdesc:ac31bd0c22ff8cd2fffbf5c17610fb9fd"><td class="mdescLeft">&#160;</td><td class="mdescRight">store the time of the event in seconds <br /></td></tr>
 <tr class="separator:ac31bd0c22ff8cd2fffbf5c17610fb9fd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab9fa5279690f9c378cc018657e1d8ce0"><td class="memItemLeft" align="right" valign="top"><a id="ab9fa5279690f9c378cc018657e1d8ce0"></a>
+void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1gui_1_1vr__event__extension.html#ab9fa5279690f9c378cc018657e1d8ce0">device_handle</a></td></tr>
+<tr class="memdesc:ab9fa5279690f9c378cc018657e1d8ce0"><td class="mdescLeft">&#160;</td><td class="mdescRight">store device handle <br /></td></tr>
+<tr class="separator:ab9fa5279690f9c378cc018657e1d8ce0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a07ce8d09875f3e7871e70f49ece7fa76"><td class="memItemLeft" align="right" valign="top"><a id="a07ce8d09875f3e7871e70f49ece7fa76"></a>
+const <a class="el" href="structvr_1_1vr__kit__state.html">vr::vr_kit_state</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1gui_1_1vr__event__extension.html#a07ce8d09875f3e7871e70f49ece7fa76">state</a></td></tr>
+<tr class="memdesc:a07ce8d09875f3e7871e70f49ece7fa76"><td class="mdescLeft">&#160;</td><td class="mdescRight">access to current vr state <br /></td></tr>
+<tr class="separator:a07ce8d09875f3e7871e70f49ece7fa76"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>vr extension of pose events </p>
-</div><h2 class="groupheader">Member Function Documentation</h2>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a id="aa8dd7e2a4c7ca1ae794632a038815fa3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa8dd7e2a4c7ca1ae794632a038815fa3">&#9670;&nbsp;</a></span>vr_pose_event()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">cgv::gui::vr_pose_event::vr_pose_event </td>
+          <td>(</td>
+          <td class="paramtype">void *&#160;</td>
+          <td class="paramname"><em>_device_handle</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">short&#160;</td>
+          <td class="paramname"><em>_trackable_index</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="structvr_1_1vr__kit__state.html">vr::vr_kit_state</a> &amp;&#160;</td>
+          <td class="paramname"><em>_state</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const float *&#160;</td>
+          <td class="paramname"><em>_pose</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const float *&#160;</td>
+          <td class="paramname"><em>_last_pose</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">unsigned short&#160;</td>
+          <td class="paramname"><em>_player_index</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>_time</em> = <code>0</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>construct a pose event from given parameters </p>
+<p>construct a key event from its textual description </p>
+
+</div>
+</div>
+<h2 class="groupheader">Member Function Documentation</h2>
 <a id="af8c6041e3055dc0c6325dfed9a773dbb"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#af8c6041e3055dc0c6325dfed9a773dbb">&#9670;&nbsp;</a></span>set_flags()</h2>
 

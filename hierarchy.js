@@ -184,6 +184,12 @@ var hierarchy =
     [ "cgv::gui::text_editor_callback_handler", "structcgv_1_1gui_1_1text__editor__callback__handler.html", null ],
     [ "cgv::gui::text_style", "structcgv_1_1gui_1_1text__style.html", null ],
     [ "cgv::gui::trigger", "classcgv_1_1gui_1_1trigger.html", null ],
+    [ "cgv::gui::vr_event_extension", "classcgv_1_1gui_1_1vr__event__extension.html", [
+      [ "cgv::gui::vr_key_event", "classcgv_1_1gui_1_1vr__key__event.html", null ],
+      [ "cgv::gui::vr_pose_event", "classcgv_1_1gui_1_1vr__pose__event.html", null ],
+      [ "cgv::gui::vr_stick_event", "classcgv_1_1gui_1_1vr__stick__event.html", null ],
+      [ "cgv::gui::vr_throttle_event", "classcgv_1_1gui_1_1vr__throttle__event.html", null ]
+    ] ],
     [ "cgv::gui::vr_server", "classcgv_1_1gui_1_1vr__server.html", null ],
     [ "cgv::gui::with_index_struct< T >", "structcgv_1_1gui_1_1with__index__struct.html", null ],
     [ "cgv::math::adjacency_list< v_type >", "classcgv_1_1math_1_1adjacency__list.html", null ],

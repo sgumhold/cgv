@@ -273,6 +273,11 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1box__wire__renderer.html#a2109e5951841bd52a3dcf2f90527cc85">enable</a> (<a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx)</td></tr>
 <tr class="memdesc:a2109e5951841bd52a3dcf2f90527cc85"><td class="mdescLeft">&#160;</td><td class="mdescRight">enable box wire renderer <br /></td></tr>
 <tr class="separator:a2109e5951841bd52a3dcf2f90527cc85"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a959ace9e98618e5bf37e18fe5bfc5d4a"><td class="memTemplParams" colspan="2"><a id="a959ace9e98618e5bf37e18fe5bfc5d4a"></a>
+template&lt;typename T &gt; </td></tr>
+<tr class="memitem:a959ace9e98618e5bf37e18fe5bfc5d4a"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1box__wire__renderer.html#a959ace9e98618e5bf37e18fe5bfc5d4a">set_extent</a> (const <a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx, const T &amp;extent)</td></tr>
+<tr class="memdesc:a959ace9e98618e5bf37e18fe5bfc5d4a"><td class="mdescLeft">&#160;</td><td class="mdescRight">specify a single extent for all boxes <br /></td></tr>
+<tr class="separator:a959ace9e98618e5bf37e18fe5bfc5d4a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae2256a74f28597a92a4b875ea227ff62"><td class="memTemplParams" colspan="2"><a id="ae2256a74f28597a92a4b875ea227ff62"></a>
 template&lt;typename T &gt; </td></tr>
 <tr class="memitem:ae2256a74f28597a92a4b875ea227ff62"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1box__wire__renderer.html#ae2256a74f28597a92a4b875ea227ff62">set_extent_array</a> (const <a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx, const std::vector&lt; T &gt; &amp;extents)</td></tr>
@@ -283,6 +288,11 @@ template&lt;typename T &gt; </td></tr>
 <tr class="memitem:a24329f9f4326908dd4e2a175e0d37fff"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1box__wire__renderer.html#a24329f9f4326908dd4e2a175e0d37fff">set_extent_array</a> (const <a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx, const T *extents, size_t nr_elements, unsigned stride_in_bytes=0)</td></tr>
 <tr class="memdesc:a24329f9f4326908dd4e2a175e0d37fff"><td class="mdescLeft">&#160;</td><td class="mdescRight">extent array specifies box extends in case of position_is_center=true, otherwise the maximum point of each box <br /></td></tr>
 <tr class="separator:a24329f9f4326908dd4e2a175e0d37fff"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a78d48cd340d9dc15126ab16b0a313782"><td class="memTemplParams" colspan="2"><a id="a78d48cd340d9dc15126ab16b0a313782"></a>
+template&lt;typename T &gt; </td></tr>
+<tr class="memitem:a78d48cd340d9dc15126ab16b0a313782"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1box__wire__renderer.html#a78d48cd340d9dc15126ab16b0a313782">set_box</a> (const <a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx, const <a class="el" href="classcgv_1_1media_1_1axis__aligned__box.html">cgv::media::axis_aligned_box</a>&lt; T, 3 &gt; &amp;box)</td></tr>
+<tr class="memdesc:a78d48cd340d9dc15126ab16b0a313782"><td class="mdescLeft">&#160;</td><td class="mdescRight">specify a single box. This sets position_is_center to false as well as position and extent attributes <br /></td></tr>
+<tr class="separator:a78d48cd340d9dc15126ab16b0a313782"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8d9479c2b1845bde2204a5f6907da7f7"><td class="memTemplParams" colspan="2"><a id="a8d9479c2b1845bde2204a5f6907da7f7"></a>
 template&lt;typename T &gt; </td></tr>
 <tr class="memitem:a8d9479c2b1845bde2204a5f6907da7f7"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1box__wire__renderer.html#a8d9479c2b1845bde2204a5f6907da7f7">set_box_array</a> (const <a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx, const std::vector&lt; <a class="el" href="classcgv_1_1media_1_1axis__aligned__box.html">cgv::media::axis_aligned_box</a>&lt; T, 3 &gt; &gt; &amp;boxes)</td></tr>

@@ -1,5 +1,15 @@
 var NAVTREEINDEX44 =
 {
+"structcgv_1_1render_1_1surfel__render__style.html#a723a0a3000a8117c13c8682adb72df39":[11,0,0,9,48,11],
+"structcgv_1_1render_1_1surfel__render__style.html#a7d36f503553b1e9719b7753ff483a70f":[11,0,0,9,48,53],
+"structcgv_1_1render_1_1surfel__render__style.html#a7dcb5f4ba047993daa2d11d93a828cc6":[11,0,0,9,48,47],
+"structcgv_1_1render_1_1surfel__render__style.html#a8089202eec1e378ee65bc3c7b2e677a4":[11,0,0,9,48,31],
+"structcgv_1_1render_1_1surfel__render__style.html#a81ea3aa6a95e9bcf90718528c5253516":[11,0,0,9,48,42],
+"structcgv_1_1render_1_1surfel__render__style.html#a865652fb13309334074a53b1f3a6cc1c":[11,0,0,9,48,44],
+"structcgv_1_1render_1_1surfel__render__style.html#a87034fc60b5826249e209d9cfc7ccbb2":[11,0,0,9,48,10],
+"structcgv_1_1render_1_1surfel__render__style.html#a875b44fdbea4348dd6b1dfd8525bd95d":[11,0,0,9,48,38],
+"structcgv_1_1render_1_1surfel__render__style.html#a882784fc1c18d636d3f3760aa026f656":[11,0,0,9,48,37],
+"structcgv_1_1render_1_1surfel__render__style.html#a8a5acbe912fb04ad0abac9689882f0e4":[11,0,0,9,48,5],
 "structcgv_1_1render_1_1surfel__render__style.html#a8f6fdf00ab6917209d081ffe691c75f3":[11,0,0,9,48,34],
 "structcgv_1_1render_1_1surfel__render__style.html#a99991cb58c4a3a142c06f2a59cf2c642":[11,0,0,9,48,43],
 "structcgv_1_1render_1_1surfel__render__style.html#a9ca3090f2e5ce4fca48a1945308c96f3":[11,0,0,9,48,26],
@@ -239,15 +249,5 @@ var NAVTREEINDEX44 =
 "structgamepad_1_1gamepad__driver.html#ae35233c535694e3883e0c3c5fd82afd7":[11,0,1,3,1],
 "structgamepad_1_1gamepad__state.html":[11,0,1,4],
 "structgamepad_1_1gamepad__state.html#a085176ecd68c889a3f508dacf9018795":[11,0,1,4,3],
-"structgamepad_1_1gamepad__state.html#a8111170499d3033b263b92b92ac1115a":[11,0,1,4,4],
-"structgamepad_1_1gamepad__state.html#a8fca7b1a05bec5e5d3ca58081ca0b1cb":[11,0,1,4,2],
-"structgamepad_1_1gamepad__state.html#ad0cb46d3168be6f56d1ea2861432f458":[11,0,1,4,1],
-"structgamepad_1_1gamepad__state.html#af831e999b64b14fadfa637c651f6c3fc":[11,0,1,4,0],
-"structgamepad_1_1gamepad__state.html#afe65228383bfc1464c99cecb6c917bef":[11,0,1,4,5],
-"structvr_1_1controller__input__config.html":[11,0,3,0],
-"structvr_1_1controller__input__config.html#a99fc84ca300b055a49c7739b26696f89":[11,0,3,0,2],
-"structvr_1_1controller__input__config.html#ab198c80d1ea259c99b1992a2c5f48a63":[11,0,3,0,1],
-"structvr_1_1controller__input__config.html#acf5606e400fcc5736b729565ede2415a":[11,0,3,0,3],
-"structvr_1_1controller__input__config.html#ad2af02d92ee50b37d8c0a62b82263600":[11,0,3,0,0],
-"structvr_1_1driver__registry.html":[11,0,3,1]
+"structgamepad_1_1gamepad__state.html#a8111170499d3033b263b92b92ac1115a":[11,0,1,4,4]
 };

@@ -189,6 +189,9 @@ Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1gui_1_1vr__calibration.html">vr_calibration</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">vr key events use the key codes defined in <a class="el" href="namespacevr.html#afad282ce40f31e065f752f2216eb7f04" title="enumerate all VR keys starting at 1024">vr::VRKeys</a>  <a href="classcgv_1_1gui_1_1vr__calibration.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1gui_1_1vr__event__extension.html">vr_event_extension</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">interface common to vr events  <a href="classcgv_1_1gui_1_1vr__event__extension.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1gui_1_1vr__key__event.html">vr_key_event</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">vr key events use the key codes defined in <a class="el" href="namespacevr.html#afad282ce40f31e065f752f2216eb7f04" title="enumerate all VR keys starting at 1024">vr::VRKeys</a>  <a href="classcgv_1_1gui_1_1vr__key__event.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -1008,13 +1011,13 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="name
           <td class="memname">CGV_API void cgv::gui::connect_vr_server </td>
           <td>(</td>
           <td class="paramtype">bool&#160;</td>
-          <td class="paramname"><em>connect_device_change_only_to_animation_trigger</em>, </td>
+          <td class="paramname"><em>connect_only_device_change_to_animation_trigger</em> = <code>true</code>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype"><a class="el" href="namespacecgv_1_1gui.html#a10b5584d27bb38b432141d718b0e6d17">cgv::gui::window_ptr</a>&#160;</td>
-          <td class="paramname"><em>w</em>&#160;</td>
+          <td class="paramname"><em>w</em> = <code><a class="el" href="namespacecgv_1_1gui.html#a10b5584d27bb38b432141d718b0e6d17">cgv::gui::window_ptr</a>()</code>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -1025,7 +1028,8 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="name
 </div><div class="memdoc">
 
 <p>connect the gamepad server to the given window or the first window of the application, if window is not provided </p>
-<p>connect the vr server to the given window or the first window of the application, if window is not provided </p>
+<p>connect the vr server to the given window or the first window of the application, if window is not provided</p>
+<p>If first parameter is true, one of the check_new_state() functions needs to be called actively. This is for example done in vr_view_interactor::query_vr_states() in the crg_vr_view plugin, which is the prefered view plugin to be used when using vr. </p>
 
 </div>
 </div>
