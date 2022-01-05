@@ -140,7 +140,7 @@ public:
 	void on_set(void* member_ptr);
 	//@name cgv::nui::focusable interface
 	//@{
-	void focus_change(cgv::nui::focus_change_action action, cgv::nui::refocus_action rfa, const cgv::nui::focus_demand& demand, const cgv::gui::event& e, const cgv::nui::dispatch_info& dis_info, cgv::base::base_ptr other_object_ptr);
+	bool focus_change(cgv::nui::focus_change_action action, cgv::nui::refocus_action rfa, const cgv::nui::focus_demand& demand, const cgv::gui::event& e, const cgv::nui::dispatch_info& dis_info);
 	void stream_help(std::ostream& os);
 	bool handle(const cgv::gui::event& e, const cgv::nui::dispatch_info& dis_info, cgv::nui::focus_request& request);
 	//@}

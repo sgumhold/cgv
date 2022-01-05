@@ -5,6 +5,8 @@
 #include <cg_vr/vr_events.h>
 #include <random>
 
+#define debug_gizmo false
+
 namespace vr {
 	void table_gizmo::compute_arrow_geometry()
 	{
@@ -66,7 +68,21 @@ namespace vr {
 	/// 
 	void table_gizmo::detach()
 	{
-		iis[0].in_focus = iis[1].in_focus = iis[2].in_focus = false;
+		for (int idx = 0; idx < 3; ++idx) {
+			if (iis[idx].in_focus && iis[idx].is_triggered) {
+				if (debug_gizmo) {
+					std::cout << "gizmo(" << idx << "):";
+					if (iis[idx].hid_id.category == cgv::nui::hid_category::controller)
+						std::cout << "ctrl[" << iis[idx].hid_id.index << "]";
+					else
+						std::cout << "mouse";
+					std::cout << " - recover" << std::endl;
+				}
+				recover_focus(iis[idx].hid_id, iis[idx].last_focus_config);
+				iis[idx].is_triggered = false;
+			}
+			iis[idx].in_focus = false;
+		}
 		scale_arrow_focus_idx = -1;
 		hide();
 		arrow_positions.clear();
@@ -136,27 +152,37 @@ namespace vr {
 		post_redraw();
 
 	}
-	void table_gizmo::focus_change(cgv::nui::focus_change_action action, cgv::nui::refocus_action rfa, const cgv::nui::focus_demand& demand, const cgv::gui::event& e, const cgv::nui::dispatch_info& dis_info, cgv::base::base_ptr other_object_ptr)
+	bool table_gizmo::focus_change(cgv::nui::focus_change_action action, cgv::nui::refocus_action rfa, const cgv::nui::focus_demand& demand, const cgv::gui::event& e, const cgv::nui::dispatch_info& dis_info)
 	{
 		// allow one focus per controlled variable
 		if (action == cgv::nui::focus_change_action::attach) {
 			size_t idx = static_cast<const cgv::nui::hit_dispatch_info&>(dis_info).get_hit_info()->primitive_index;
 			auto& is = iis[idx > 2 ? 2 : idx];
-			if (!is.in_focus) {
-				is.in_focus = true;
-				update_member(&is.in_focus);
-				is.hid_id = dis_info.hid_id;
-				if (idx >= 2) {
-					scale_arrow_focus_idx = int(idx - 2);
-					update_member(&scale_arrow_focus_idx);
-				}
-				if (idx == 0)
-					compute_spline_geometry(true);
-				else
-					compute_arrow_geometry();
+			// refuse focus, if ctrl is already focused by other hid
+			if (is.in_focus)
+				return false;
+			is.in_focus = true;
+			update_member(&is.in_focus);
+			is.hid_id = dis_info.hid_id;
+			if (idx >= 2) {
+				scale_arrow_focus_idx = int(idx - 2);
+				update_member(&scale_arrow_focus_idx);
 			}
+			if (idx == 0)
+				compute_spline_geometry(true);
+			else
+				compute_arrow_geometry();
+			if (debug_gizmo) {
+				std::cout << "gizmo(" << idx << "):";
+				if (dis_info.hid_id.category == cgv::nui::hid_category::controller)
+					std::cout << "ctrl[" << dis_info.hid_id.index << "]";
+				else
+					std::cout << "mouse";
+				std::cout << " - attach" << std::endl;
+			}
+			return true;
 		}
-		else if (action == cgv::nui::focus_change_action::index_change) {
+		if (action == cgv::nui::focus_change_action::index_change) {
 			// first find old ctrl idx
 			size_t old_idx;
 			for (old_idx = 0; old_idx < 3; ++old_idx) {
@@ -180,10 +206,19 @@ namespace vr {
 					// is_triggered status is not transmitted to new primitive in order to force fresh triggering
 					ois.is_triggered = false;
 					update_member(&ois.is_triggered);
+					if (debug_gizmo) {
+						std::cout << "gizmo(" << old_idx << "):";
+						if (dis_info.hid_id.category == cgv::nui::hid_category::controller)
+							std::cout << "ctrl[" << dis_info.hid_id.index << "]";
+						else
+							std::cout << "mouse";
+						std::cout << " - index_change " << scale_arrow_focus_idx << " -> " << int(new_prim_idx - 2) << std::endl;
+					}
 					// update index of arrow in focus
 					scale_arrow_focus_idx = int(new_prim_idx - 2);
 					update_member(&scale_arrow_focus_idx);
-					return;
+
+					return true;
 				}
 				// for different ctrl indices
 
@@ -196,22 +231,51 @@ namespace vr {
 					scale_arrow_focus_idx = -1;
 					update_member(&scale_arrow_focus_idx);
 				}
+				if (debug_gizmo) {
+					std::cout << "gizmo(" << old_idx << "):";
+					if (dis_info.hid_id.category == cgv::nui::hid_category::controller)
+						std::cout << "ctrl[" << dis_info.hid_id.index << "]";
+					else
+						std::cout << "mouse";
+					std::cout << " - index_change - discard " << old_idx << " <";
+					if (ois.hid_id.category == cgv::nui::hid_category::controller)
+						std::cout << "ctrl[" << ois.hid_id.index << "]";
+					else
+						std::cout << "mouse";
+					std::cout << ">" << std::endl;
+				}
 				ois.hid_id = cgv::nui::hid_identifier();
 			}
 			// next or if old ctrl was not found ensure that new ctrl is not already in focus by other hid
 			auto& nis = iis[new_idx];
-			if (!nis.in_focus) {
-				nis.in_focus = true;
-				update_member(&nis.in_focus);
-				nis.hid_id = dis_info.hid_id;
-				if (new_idx == 2) {
-					scale_arrow_focus_idx = int(new_prim_idx - 2);
-					update_member(&scale_arrow_focus_idx);
-				}
+			if (nis.in_focus)
+				return false;
+
+			nis.in_focus = true;
+			update_member(&nis.in_focus);
+			nis.hid_id = dis_info.hid_id;
+			if (new_idx == 2) {
+				scale_arrow_focus_idx = int(new_prim_idx - 2);
+				update_member(&scale_arrow_focus_idx);
+			}
+			
+			if (debug_gizmo) {
+				std::cout << "gizmo(" << old_idx << "):";
+				if (dis_info.hid_id.category == cgv::nui::hid_category::controller)
+					std::cout << "ctrl[" << dis_info.hid_id.index << "]";
+				else
+					std::cout << "mouse";
+				std::cout << " - index_change - attach " << new_idx << " <";
+				if (nis.hid_id.category == cgv::nui::hid_category::controller)
+					std::cout << "ctrl[" << nis.hid_id.index << "]";
+				else
+					std::cout << "mouse";
+				std::cout << ">" << std::endl;
 			}
 			// finally update all geometry
 			compute_spline_geometry(iis[0].in_focus);
 			compute_arrow_geometry();
+			return true;
 		}
 		else if (action == cgv::nui::focus_change_action::detach) {
 			for (size_t idx = 0; idx < 3; ++idx) {
@@ -226,6 +290,14 @@ namespace vr {
 						update_member(&scale_arrow_focus_idx);
 					}
 					is.hid_id = cgv::nui::hid_identifier();
+					if (debug_gizmo) {
+						std::cout << "gizmo(" << idx << "):";
+						if (dis_info.hid_id.category == cgv::nui::hid_category::controller)
+							std::cout << "ctrl[" << dis_info.hid_id.index << "]";
+						else
+							std::cout << "mouse";
+						std::cout << " - detach" << std::endl;
+					}
 					if (idx == 0)
 						compute_spline_geometry(false);
 					else
@@ -233,6 +305,7 @@ namespace vr {
 				}
 			}
 		}
+		return true;
 	}
 	void table_gizmo::stream_help(std::ostream& os)
 	{
@@ -252,7 +325,7 @@ namespace vr {
 		// check for vr key events
 		float* value_ptrs[3] = { &table->angle, &table->height, &table->scale };
 		bool triggered;
-		if (is_trigger_change(e, triggered)) {
+		if (is_trigger_change(e, triggered) && triggered != iis[idx].is_triggered) {
 			if (triggered) {
 				iis[idx].is_triggered = true;
 				update_member(&iis[idx].is_triggered);
@@ -262,11 +335,27 @@ namespace vr {
 					iis[idx].arrow_index = int(inter_dis_info.primitive_index) - 2;
 				}
 				reconfigure_focus(request, true, iis[idx].last_focus_config);
+				if (debug_gizmo) {
+					std::cout << "gizmo(" << idx << "):";
+					if (dis_info.hid_id.category == cgv::nui::hid_category::controller)
+						std::cout << "ctrl[" << dis_info.hid_id.index << "]";
+					else
+						std::cout << "mouse";
+					std::cout << " - reconfigure" << std::endl;
+				}
 				return true;
 			}
 			else {
 				iis[idx].is_triggered = false;
 				update_member(&iis[idx].is_triggered);
+				if (debug_gizmo) {
+					std::cout << "gizmo(" << idx << "):";
+					if (dis_info.hid_id.category == cgv::nui::hid_category::controller)
+						std::cout << "ctrl[" << dis_info.hid_id.index << "]";
+					else
+						std::cout << "mouse";
+					std::cout << " - recover" << std::endl;
+				}
 				recover_focus(request, iis[idx].last_focus_config);
 				return true;
 			}

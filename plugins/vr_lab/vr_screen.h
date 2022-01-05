@@ -93,7 +93,7 @@ public:
 	/// ask focusable what it wants to grab focus based on given event - in case of yes, the focus_demand should be filled
 	bool wants_to_grab_focus(const cgv::gui::event& e, const cgv::nui::hid_identifier& hid_id, cgv::nui::focus_demand& demand);
 	/// inform focusable that its focus changed (fst param tells whether receiving or loosing) together with focus request and causing event plus dispatch info
-	void focus_change(cgv::nui::focus_change_action action, cgv::nui::refocus_action rfa, const cgv::nui::focus_demand& demand, const cgv::gui::event& e, const cgv::nui::dispatch_info& dis_info, cgv::base::base_ptr other_object_ptr);
+	bool focus_change(cgv::nui::focus_change_action action, cgv::nui::refocus_action rfa, const cgv::nui::focus_demand& demand, const cgv::gui::event& e, const cgv::nui::dispatch_info& dis_info);
 	/// stream help information to the given output stream
 	void stream_help(std::ostream& os);
 	//! ask active focusable to handle event providing dispatch info

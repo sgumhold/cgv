@@ -90,8 +90,12 @@ namespace cgv {
 			void attach_focus(refocus_action rfa, focus_attachment foc_att, const focus_info& foc_info, const cgv::gui::event& e, const dispatch_info& dis_info, refocus_info& rfi);
 			bool wants_to_grab_recursive(cgv::base::base_ptr root_ptr, cgv::base::base_ptr object_ptr, const cgv::gui::event& e, const hid_identifier& hid_id, refocus_info& rfi);
 			virtual bool dispatch_spatial(const focus_attachment& foc_att, const cgv::gui::event& e, const hid_identifier& hid_id, refocus_info& rfi, bool* handle_called_ptr);
+			friend class focusable;
+			void set_dispatcher_ptr_recursive(cgv::base::base_ptr obj);
+			bool reconfigure(const hid_identifier& hid_id, focus_configuration& focus_config);
 		public:
 			dispatcher();
+			virtual ~dispatcher();
 			virtual void add_object(cgv::base::base_ptr root);
 			virtual void remove_object(cgv::base::base_ptr root);
 			virtual bool dispatch(const cgv::gui::event& e, const hid_identifier& hid_id, dispatch_report* report_ptr);

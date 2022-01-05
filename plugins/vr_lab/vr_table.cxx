@@ -242,7 +242,7 @@ namespace vr {
 			ctx.pop_modelview_matrix();
 		}
 	}
-	void vr_table::focus_change(cgv::nui::focus_change_action action, cgv::nui::refocus_action rfa, const cgv::nui::focus_demand& demand, const cgv::gui::event& e, const cgv::nui::dispatch_info& dis_info, cgv::base::base_ptr other_object_ptr)
+	bool vr_table::focus_change(cgv::nui::focus_change_action action, cgv::nui::refocus_action rfa, const cgv::nui::focus_demand& demand, const cgv::gui::event& e, const cgv::nui::dispatch_info& dis_info)
 	{
 		switch (action) {
 		case cgv::nui::focus_change_action::attach:
@@ -250,17 +250,20 @@ namespace vr {
 				state = dis_info.mode == cgv::nui::dispatch_mode::proximity ? state_enum::close : state_enum::pointed;
 				hid_id = dis_info.hid_id;
 				on_set(&state);
+				return true;
 			}
-			else if (state == state_enum::gizmo && dis_info.mode == cgv::nui::dispatch_mode::pointing) {
+			if (state == state_enum::gizmo && dis_info.mode == cgv::nui::dispatch_mode::pointing) {
 				hid_id = dis_info.hid_id;
+				return true;
 			}
-			break;
+			return false;
 		case cgv::nui::focus_change_action::detach:
 			if (state != state_enum::idle && state != state_enum::gizmo && dis_info.hid_id == hid_id) {
 				state = state_enum::idle;
 				on_set(&state);
 			}
 		}
+		return true;
 	}
 	void vr_table::stream_help(std::ostream& os)
 	{
