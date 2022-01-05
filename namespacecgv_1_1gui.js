@@ -33,6 +33,7 @@ var namespacecgv_1_1gui =
     [ "trigger", "classcgv_1_1gui_1_1trigger.html", "classcgv_1_1gui_1_1trigger" ],
     [ "view", "classcgv_1_1gui_1_1view.html", "classcgv_1_1gui_1_1view" ],
     [ "vr_calibration", "classcgv_1_1gui_1_1vr__calibration.html", "classcgv_1_1gui_1_1vr__calibration" ],
+    [ "vr_event_extension", "classcgv_1_1gui_1_1vr__event__extension.html", "classcgv_1_1gui_1_1vr__event__extension" ],
     [ "vr_key_event", "classcgv_1_1gui_1_1vr__key__event.html", "classcgv_1_1gui_1_1vr__key__event" ],
     [ "vr_pose_event", "classcgv_1_1gui_1_1vr__pose__event.html", "classcgv_1_1gui_1_1vr__pose__event" ],
     [ "vr_server", "classcgv_1_1gui_1_1vr__server.html", "classcgv_1_1gui_1_1vr__server" ],

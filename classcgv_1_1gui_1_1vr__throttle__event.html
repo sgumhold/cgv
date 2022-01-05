@@ -100,8 +100,9 @@ Inheritance diagram for cgv::gui::vr_throttle_event:</div>
  <div class="center">
   <img src="classcgv_1_1gui_1_1vr__throttle__event.png" usemap="#cgv::gui::vr_5Fthrottle_5Fevent_map" alt=""/>
   <map id="cgv::gui::vr_5Fthrottle_5Fevent_map" name="cgv::gui::vr_5Fthrottle_5Fevent_map">
-<area href="classcgv_1_1gui_1_1throttle__event.html" title="class to represent events that inform on a change in a one axis controller with the EID_THROTTLE" alt="cgv::gui::throttle_event" shape="rect" coords="0,56,157,80"/>
-<area href="classcgv_1_1gui_1_1event.html" alt="cgv::gui::event" shape="rect" coords="0,0,157,24"/>
+<area href="classcgv_1_1gui_1_1throttle__event.html" title="class to represent events that inform on a change in a one axis controller with the EID_THROTTLE" alt="cgv::gui::throttle_event" shape="rect" coords="0,56,172,80"/>
+<area href="classcgv_1_1gui_1_1vr__event__extension.html" title="interface common to vr events" alt="cgv::gui::vr_event_extension" shape="rect" coords="182,56,354,80"/>
+<area href="classcgv_1_1gui_1_1event.html" alt="cgv::gui::event" shape="rect" coords="0,0,172,24"/>
   </map>
 </div></div>
 <table class="memberdecls">
@@ -111,14 +112,10 @@ Public Member Functions</h2></td></tr>
 &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1gui_1_1vr__throttle__event.html#a98751cd0ee42a160e607285a2f29ab72">vr_throttle_event</a> (void *_device_handle, unsigned _controller_index, const <a class="el" href="structvr_1_1vr__kit__state.html">vr::vr_kit_state</a> &amp;_state, float _x, float _dx, unsigned _player_index=0, unsigned _throttle_index=0, double _time=0)</td></tr>
 <tr class="memdesc:a98751cd0ee42a160e607285a2f29ab72"><td class="mdescLeft">&#160;</td><td class="mdescRight">construct a throttle event from value and value change <br /></td></tr>
 <tr class="separator:a98751cd0ee42a160e607285a2f29ab72"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a593c992c5b7b537b40bf3eee9f359360"><td class="memItemLeft" align="right" valign="top"><a id="a593c992c5b7b537b40bf3eee9f359360"></a>
-void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1gui_1_1vr__throttle__event.html#a593c992c5b7b537b40bf3eee9f359360">get_device_handle</a> () const</td></tr>
-<tr class="memdesc:a593c992c5b7b537b40bf3eee9f359360"><td class="mdescLeft">&#160;</td><td class="mdescRight">return the device id, by default returns 0 <br /></td></tr>
-<tr class="separator:a593c992c5b7b537b40bf3eee9f359360"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a217ac738afc431737d074b467dd510ef"><td class="memItemLeft" align="right" valign="top"><a id="a217ac738afc431737d074b467dd510ef"></a>
-const <a class="el" href="structvr_1_1vr__kit__state.html">vr::vr_kit_state</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1gui_1_1vr__throttle__event.html#a217ac738afc431737d074b467dd510ef">get_state</a> () const</td></tr>
-<tr class="memdesc:a217ac738afc431737d074b467dd510ef"><td class="mdescLeft">&#160;</td><td class="mdescRight">return the state <br /></td></tr>
-<tr class="separator:a217ac738afc431737d074b467dd510ef"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abaa13dc647c1c63eb33f147aed48c7e9"><td class="memItemLeft" align="right" valign="top"><a id="abaa13dc647c1c63eb33f147aed48c7e9"></a>
+void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1gui_1_1vr__throttle__event.html#abaa13dc647c1c63eb33f147aed48c7e9">get_device_id</a> () const</td></tr>
+<tr class="memdesc:abaa13dc647c1c63eb33f147aed48c7e9"><td class="mdescLeft">&#160;</td><td class="mdescRight">return the device id, by default returns 0 <br /></td></tr>
+<tr class="separator:abaa13dc647c1c63eb33f147aed48c7e9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa500c8abc2cfd2634da61bfe1215f698"><td class="memItemLeft" align="right" valign="top"><a id="aa500c8abc2cfd2634da61bfe1215f698"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1gui_1_1vr__throttle__event.html#aa500c8abc2cfd2634da61bfe1215f698">stream_out</a> (std::ostream &amp;os) const</td></tr>
 <tr class="memdesc:aa500c8abc2cfd2634da61bfe1215f698"><td class="mdescLeft">&#160;</td><td class="mdescRight">write to stream <br /></td></tr>
@@ -150,10 +147,6 @@ float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cla
 float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1gui_1_1throttle__event.html#a0fe098a8069efee56799cbbba7d8ca1d">get_last_value</a> () const</td></tr>
 <tr class="memdesc:a0fe098a8069efee56799cbbba7d8ca1d"><td class="mdescLeft">&#160;</td><td class="mdescRight">return the last value of the throttle <br /></td></tr>
 <tr class="separator:a0fe098a8069efee56799cbbba7d8ca1d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2cf741ae08d04f325553109e11d1c146"><td class="memItemLeft" align="right" valign="top"><a id="a2cf741ae08d04f325553109e11d1c146"></a>
-virtual void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1gui_1_1event.html#a2cf741ae08d04f325553109e11d1c146">get_device_id</a> () const</td></tr>
-<tr class="memdesc:a2cf741ae08d04f325553109e11d1c146"><td class="mdescLeft">&#160;</td><td class="mdescRight">return the device id, by default returns 0 <br /></td></tr>
-<tr class="separator:a2cf741ae08d04f325553109e11d1c146"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9f77f91f3badb2105b0117d69e8f0edc"><td class="memItemLeft" align="right" valign="top"><a id="a9f77f91f3badb2105b0117d69e8f0edc"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1gui_1_1event.html#a9f77f91f3badb2105b0117d69e8f0edc">set_kind</a> (unsigned char _kind)</td></tr>
 <tr class="memdesc:a9f77f91f3badb2105b0117d69e8f0edc"><td class="mdescLeft">&#160;</td><td class="mdescRight">set the kind of the event <br /></td></tr>
@@ -193,17 +186,17 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1gui_1_1event.html#a1fcaac54b1f22358cbe828cc206f1f59">get_time</a> () const</td></tr>
 <tr class="memdesc:a1fcaac54b1f22358cbe828cc206f1f59"><td class="mdescLeft">&#160;</td><td class="mdescRight">return the time of the event in seconds <br /></td></tr>
 <tr class="separator:a1fcaac54b1f22358cbe828cc206f1f59"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5d67565e65a2213fdc0278bc9ee2a880"><td class="memItemLeft" align="right" valign="top"><a id="a5d67565e65a2213fdc0278bc9ee2a880"></a>
+void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1gui_1_1vr__event__extension.html#a5d67565e65a2213fdc0278bc9ee2a880">get_device_handle</a> () const</td></tr>
+<tr class="memdesc:a5d67565e65a2213fdc0278bc9ee2a880"><td class="mdescLeft">&#160;</td><td class="mdescRight">return the device id, by default returns 0 <br /></td></tr>
+<tr class="separator:a5d67565e65a2213fdc0278bc9ee2a880"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a090914a6410fa94f2c49178d83641d24"><td class="memItemLeft" align="right" valign="top"><a id="a090914a6410fa94f2c49178d83641d24"></a>
+const <a class="el" href="structvr_1_1vr__kit__state.html">vr::vr_kit_state</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1gui_1_1vr__event__extension.html#a090914a6410fa94f2c49178d83641d24">get_state</a> () const</td></tr>
+<tr class="memdesc:a090914a6410fa94f2c49178d83641d24"><td class="mdescLeft">&#160;</td><td class="mdescRight">return the state of vr kit <br /></td></tr>
+<tr class="separator:a090914a6410fa94f2c49178d83641d24"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-attribs"></a>
 Protected Attributes</h2></td></tr>
-<tr class="memitem:ac44333af28b191bd032fe20870a451e7"><td class="memItemLeft" align="right" valign="top"><a id="ac44333af28b191bd032fe20870a451e7"></a>
-void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1gui_1_1vr__throttle__event.html#ac44333af28b191bd032fe20870a451e7">device_handle</a></td></tr>
-<tr class="memdesc:ac44333af28b191bd032fe20870a451e7"><td class="mdescLeft">&#160;</td><td class="mdescRight">store device handle <br /></td></tr>
-<tr class="separator:ac44333af28b191bd032fe20870a451e7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa1ded6fa1f4f4bda1380f169a0faaabf"><td class="memItemLeft" align="right" valign="top"><a id="aa1ded6fa1f4f4bda1380f169a0faaabf"></a>
-const <a class="el" href="structvr_1_1vr__kit__state.html">vr::vr_kit_state</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1gui_1_1vr__throttle__event.html#aa1ded6fa1f4f4bda1380f169a0faaabf">state</a></td></tr>
-<tr class="memdesc:aa1ded6fa1f4f4bda1380f169a0faaabf"><td class="mdescLeft">&#160;</td><td class="mdescRight">access to current vr state <br /></td></tr>
-<tr class="separator:aa1ded6fa1f4f4bda1380f169a0faaabf"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7bdfa88afd524c47eb91c02b6dcd141c"><td class="memItemLeft" align="right" valign="top"><a id="a7bdfa88afd524c47eb91c02b6dcd141c"></a>
 unsigned char&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1gui_1_1event.html#a7bdfa88afd524c47eb91c02b6dcd141c">kind</a></td></tr>
 <tr class="memdesc:a7bdfa88afd524c47eb91c02b6dcd141c"><td class="mdescLeft">&#160;</td><td class="mdescRight">store which kind of event we have <br /></td></tr>
@@ -224,6 +217,14 @@ unsigned char&#160;</td><td class="memItemRight" valign="bottom"><a class="el" h
 double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1gui_1_1event.html#ac31bd0c22ff8cd2fffbf5c17610fb9fd">time</a></td></tr>
 <tr class="memdesc:ac31bd0c22ff8cd2fffbf5c17610fb9fd"><td class="mdescLeft">&#160;</td><td class="mdescRight">store the time of the event in seconds <br /></td></tr>
 <tr class="separator:ac31bd0c22ff8cd2fffbf5c17610fb9fd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab9fa5279690f9c378cc018657e1d8ce0"><td class="memItemLeft" align="right" valign="top"><a id="ab9fa5279690f9c378cc018657e1d8ce0"></a>
+void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1gui_1_1vr__event__extension.html#ab9fa5279690f9c378cc018657e1d8ce0">device_handle</a></td></tr>
+<tr class="memdesc:ab9fa5279690f9c378cc018657e1d8ce0"><td class="mdescLeft">&#160;</td><td class="mdescRight">store device handle <br /></td></tr>
+<tr class="separator:ab9fa5279690f9c378cc018657e1d8ce0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a07ce8d09875f3e7871e70f49ece7fa76"><td class="memItemLeft" align="right" valign="top"><a id="a07ce8d09875f3e7871e70f49ece7fa76"></a>
+const <a class="el" href="structvr_1_1vr__kit__state.html">vr::vr_kit_state</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1gui_1_1vr__event__extension.html#a07ce8d09875f3e7871e70f49ece7fa76">state</a></td></tr>
+<tr class="memdesc:a07ce8d09875f3e7871e70f49ece7fa76"><td class="mdescLeft">&#160;</td><td class="mdescRight">access to current vr state <br /></td></tr>
+<tr class="separator:a07ce8d09875f3e7871e70f49ece7fa76"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>vr extension of throttle event </p>
